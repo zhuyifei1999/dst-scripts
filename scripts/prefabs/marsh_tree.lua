@@ -1,0 +1,188 @@
+local assets =
+{
+	Asset("ANIM", "anim/tree_marsh.zip"),
+}
+
+local prefabs =
+{
+    "log",
+    "twigs",
+    "charcoal",
+}
+
+SetSharedLootTable( 'marsh_tree',
+{
+    {'twigs',  1.0},
+    {'log',    0.2},
+})
+
+local function sway(inst)
+    inst.AnimState:PushAnimation("sway"..math.random(4).."_loop", true)
+end
+
+local function chop_tree(inst, chopper, chops)
+    if not chopper or (chopper and not chopper:HasTag("playerghost")) then
+        inst.SoundEmitter:PlaySound("dontstarve/wilson/use_axe_tree")          
+    end
+    inst.AnimState:PlayAnimation("chop")
+    sway(inst)
+end
+
+local function set_stump(inst)
+    inst:RemoveComponent("workable")
+    inst:RemoveComponent("burnable")
+    inst:RemoveComponent("propagator")
+    inst:RemoveComponent("hauntable")
+    if not inst:HasTag("burnt") then MakeHauntableIgnite(inst) end
+    RemovePhysicsColliders(inst)
+    inst:AddTag("stump")
+end
+
+local function dig_up_stump(inst, chopper)
+	inst:Remove()
+	inst.components.lootdropper:SpawnLootPrefab("log")
+end
+
+local function chop_down_tree(inst, chopper)
+    inst.SoundEmitter:PlaySound("dontstarve/forest/treeCrumble")
+    if not chopper or (chopper and not chopper:HasTag("playerghost")) then
+        inst.SoundEmitter:PlaySound("dontstarve/wilson/use_axe_tree")
+    end
+    inst.AnimState:PlayAnimation("fall")
+    inst.AnimState:PushAnimation("stump", false)
+    set_stump(inst)
+    inst.components.lootdropper:DropLoot()
+
+	inst:AddComponent("workable")
+    inst.components.workable:SetWorkAction(ACTIONS.DIG)
+    inst.components.workable:SetOnFinishCallback(dig_up_stump)
+    inst.components.workable:SetWorkLeft(1)
+end
+
+local function chop_down_burnt_tree(inst, chopper)
+    inst.SoundEmitter:PlaySound("dontstarve/forest/treeCrumble")
+    if not chopper or (chopper and not chopper:HasTag("playerghost")) then
+        inst.SoundEmitter:PlaySound("dontstarve/wilson/use_axe_tree")
+    end
+	inst.AnimState:PlayAnimation("burnt_chop")
+    set_stump(inst)
+    inst.Physics:ClearCollisionMask()
+	inst:ListenForEvent("animover", inst.Remove)
+    inst.components.lootdropper:DropLoot()
+end
+
+local function OnBurnt(inst)
+    inst:RemoveComponent("burnable")
+    inst:RemoveComponent("propagator")
+    inst:RemoveComponent("hauntable")
+    MakeHauntableWork(inst)
+
+    inst.components.lootdropper:SetLoot({"charcoal"})
+
+    inst.components.workable:SetWorkLeft(1)
+    inst.components.workable:SetOnWorkCallback(nil)
+    inst.components.workable:SetOnFinishCallback(chop_down_burnt_tree)
+    inst.AnimState:PlayAnimation("burnt_idle", true)
+    inst:AddTag("burnt")
+end
+
+local function inspect_tree(inst)
+    if inst:HasTag("burnt") then
+        return "BURNT"
+    elseif inst:HasTag("stump") then
+        return "CHOPPED"
+    elseif inst.components.burnable and inst.components.burnable:IsBurning() then
+        return "BURNING"
+    end
+end
+
+local function onsave(inst, data)
+    if inst:HasTag("burnt") or inst:HasTag("fire") then
+        data.burnt = true
+    end
+    if inst:HasTag("stump") then
+        data.stump = true
+    end
+end
+        
+local function onload(inst, data)
+    if data then
+        if data.burnt then
+            OnBurnt(inst)
+        elseif data.stump then
+            inst:RemoveComponent("workable")
+            inst:RemoveComponent("burnable")
+            inst:RemoveComponent("propagator")
+            inst:RemoveComponent("growable")
+            inst:RemoveComponent("hauntable")
+            if not inst:HasTag("burnt") then MakeHauntableIgnite(inst) end
+            RemovePhysicsColliders(inst)
+            inst.AnimState:PlayAnimation("stump", false)
+            inst:AddTag("stump")
+            
+            inst:AddComponent("workable")
+            inst.components.workable:SetWorkAction(ACTIONS.DIG)
+            inst.components.workable:SetOnFinishCallback(dig_up_stump)
+            inst.components.workable:SetWorkLeft(1)
+        end
+    end
+end   
+
+local function fn()
+	local inst = CreateEntity()
+
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+    inst.entity:AddDynamicShadow()
+    inst.entity:AddSoundEmitter()
+	inst.entity:AddMiniMapEntity()
+    inst.entity:AddNetwork()
+
+    MakeObstaclePhysics(inst, .25)
+
+    inst.MiniMapEntity:SetIcon("marshtree.png")
+    inst.MiniMapEntity:SetPriority(-1)
+
+    inst:AddTag("tree")
+
+    inst.AnimState:SetBuild("tree_marsh")
+    inst.AnimState:SetBank("marsh_tree")
+
+    MakeSnowCoveredPristine(inst)
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.entity:SetPristine()
+
+    MakeLargeBurnable(inst)
+    inst.components.burnable:SetOnBurntFn(OnBurnt)
+    MakeSmallPropagator(inst)
+
+    inst:AddComponent("lootdropper") 
+    inst.components.lootdropper:SetChanceLootTable('marsh_tree')
+
+    inst:AddComponent("workable")
+    inst.components.workable:SetWorkAction(ACTIONS.CHOP)
+    inst.components.workable:SetWorkLeft(10)
+    inst.components.workable:SetOnWorkCallback(chop_tree)
+    inst.components.workable:SetOnFinishCallback(chop_down_tree)
+
+    MakeHauntableWorkAndIgnite(inst)
+
+    local color = 0.5 + math.random() * 0.5
+    inst.AnimState:SetMultColour(color, color, color, 1)
+    sway(inst)
+    inst.AnimState:SetTime(math.random()*2)
+    
+    inst:AddComponent("inspectable")
+    inst.components.inspectable.getstatus = inspect_tree
+    
+    inst.OnSave = onsave
+    inst.OnLoad = onload
+	MakeSnowCovered(inst)
+    return inst
+end
+
+return Prefab("marsh/objects/marsh_tree", fn, assets)

@@ -1,0 +1,301 @@
+local easing = require("easing")
+
+local function onmax(self, max)
+    self.inst.replica.sanity:SetMax(max)
+end
+
+local function oncurrent(self, current)
+    self.inst.replica.sanity:SetCurrent(self.inducedinsanity and 0 or current)
+end
+
+local function onrate(self, rate)
+    self.inst.replica.sanity:SetRate(rate)
+end
+
+local function onsane(self, sane)
+    self.inst.replica.sanity:SetIsSane(not self.inducedinsanity and sane)
+end
+
+local function oninducedinsanity(self, inducedinsanity)
+    self.inst.replica.sanity:SetIsSane(not inducedinsanity and self.sane)
+    self.inst.replica.sanity:SetCurrent(inducedinsanity and 0 or self.current)
+end
+
+local function onpenalty(self, penalty)
+    self.inst.replica.sanity:SetPenalty(penalty)
+end
+
+local function onghostdrainmult(self, ghostdrainmult)
+    self.inst.replica.sanity:SetGhostDrainMult(ghostdrainmult)
+end
+
+local Sanity = Class(function(self, inst)
+    self.inst = inst
+    self.max = 100
+    self.current = self.max
+    
+    self.rate = 0
+    self.rate_modifier = 1
+    self.sane = true
+    self.fxtime = 0
+    self.dapperness = 0
+    self.inducedinsanity = nil
+    self.night_drain_mult = 1
+    self.neg_aura_mult = 1
+
+    self.penalty = 0
+
+    self.ghost_drain_mult = 0
+
+    self._oldissane = self:IsSane()
+    self._oldpercent = self:GetPercent()
+
+    self.inst:StartUpdatingComponent(self)
+    self:Recalc(0)
+end,
+nil,
+{
+    max = onmax,
+    current = oncurrent,
+    rate = onrate,
+    sane = onsane,
+    inducedinsanity = oninducedinsanity,
+    penalty = onpenalty,
+    ghost_drain_mult = onghostdrainmult,
+})
+
+function Sanity:IsSane()
+    return not self.inducedinsanity and self.sane
+end
+
+function Sanity:IsCrazy()
+    return self.inducedinsanity or not self.sane
+end
+
+function Sanity:RecalculatePenalty()
+    self.penalty = 0
+    for k,v in pairs(Ents) do
+        if v.components.sanityaura and v.components.sanityaura.penalty then
+            self.penalty = self.penalty + v.components.sanityaura.penalty
+        end
+    end
+    self:DoDelta(0)
+end
+
+function Sanity:OnSave()
+    return {
+    current = self.current, 
+    sane = self.sane, 
+    penalty = self.penalty > 0 and self.penalty or nil
+    }
+end
+
+function Sanity:OnLoad(data)
+    if data.penalty then
+        self.penalty = data.penalty
+    end
+
+    if data.sane ~= nil then
+        self.sane = data.sane
+    end
+
+    if data.current then
+        self.current = data.current
+        self:DoDelta(0)
+    end
+end
+
+function Sanity:GetPenaltyPercent()
+    return self.penalty / self.max
+end
+
+function Sanity:GetPercent()
+    if self.inducedinsanity then 
+        return 0
+    else
+        return self.current / self.max
+    end
+end
+
+function Sanity:GetPercentWithPenalty()
+    if self.inducedinsanity then
+        return 0
+    else
+        return self.current / (self.max - self.penalty)
+    end
+end
+
+function Sanity:SetPercent(per, overtime)
+    local target = per * self.max
+    local delta = target - self.current
+    self:DoDelta(delta, overtime)
+end
+
+function Sanity:GetDebugString()
+    return string.format("%2.2f / %2.2f at %2.4f. Penalty of %2.2f", self.current, self.max, self.rate, self.penalty)
+end
+
+function Sanity:SetMax(amount)
+    self.max = amount
+    self.current = amount
+    self:DoDelta(0)
+end
+
+function Sanity:GetMaxWithPenalty()
+    return self.max - self.penalty
+end
+
+function Sanity:GetRate()
+    return self.rate
+end
+
+function Sanity:SetInducedInsanity(val)
+    if self.inducedinsanity ~= val then
+        self.inducedinsanity = val
+        self:DoDelta(0)
+        self.inst:PushEvent("inducedinsanity", val)
+    end
+end
+
+function Sanity:DoDelta(delta, overtime)
+    if self.redirect then
+        self.redirect(self.inst, delta, overtime)
+        return
+    end
+
+    if self.ignore then
+        return
+    end
+
+    local oldpct_ignoresinduced = self.current / self.max
+    self.current = math.min(math.max(self.current + delta, 0), self.max - self.penalty)
+    local newpct_ignoresinduced = self.current / self.max
+
+    --due to inducedinsanity hack...
+    if self.sane and oldpct_ignoresinduced > TUNING.SANITY_BECOME_INSANE_THRESH and newpct_ignoresinduced <= TUNING.SANITY_BECOME_INSANE_THRESH then
+        self.sane = false
+    elseif not self.sane and oldpct_ignoresinduced < TUNING.SANITY_BECOME_SANE_THRESH and newpct_ignoresinduced >= TUNING.SANITY_BECOME_SANE_THRESH then
+        self.sane = true
+    end
+
+    self.inst:PushEvent("sanitydelta", { oldpercent = self._oldpercent, newpercent = self:GetPercent(), overtime = overtime })
+    self._oldpercent = self:GetPercent()
+
+--KAJ: TODO: taken out for now, stats
+--    if delta > 0 and self.inst == ThePlayer then
+--        ProfileStatsAdd("sane+", math.floor(delta))
+--    end
+
+    if self:IsSane() ~= self._oldissane then
+        self._oldissane = self:IsSane()
+        if self._oldissane then
+            if self.onSane ~= nil then
+                self.onSane(self.inst)
+            end
+            self.inst:PushEvent("gosane")
+            ProfileStatsSet("went_sane", true)
+        else
+            if self.onInsane ~= nil then
+                self.onInsane(self.inst)
+            end
+            self.inst:PushEvent("goinsane")
+            ProfileStatsSet("went_insane", true)
+        end
+    end
+end
+
+function Sanity:OnUpdate(dt)
+    if not (self.inst.components.health.invincible or self.inst.is_teleporting) then
+        self:Recalc(dt) 
+    end
+end
+
+local function GetNumGhostPlayers()
+    local num = 0
+    if GetGhostSanityDrain( TheNet:GetServerGameMode() ) then
+       for i,v in pairs(AllPlayers) do
+            if v:HasTag("playerghost") then
+                num = num + 1
+            end
+        end
+    end
+    return num
+end
+
+function Sanity:Recalc(dt)
+    local total_dapperness = self.dapperness or 0
+    local mitigates_rain = false
+    for k,v in pairs (self.inst.components.inventory.equipslots) do
+        if v.components.dapperness then
+            total_dapperness = total_dapperness + v.components.dapperness:GetDapperness(self.inst)
+            if v.components.dapperness.mitigates_rain then
+                mitigates_rain = true
+            end
+        end     
+    end
+    
+    local dapper_delta = total_dapperness*TUNING.SANITY_DAPPERNESS
+    
+    local light_delta = 0
+    local lightval = self.inst.LightWatcher:GetLightValue()
+    
+    local day = TheWorld.state.isday and not TheWorld:HasTag("cave")
+    
+    if day then 
+        light_delta = TUNING.SANITY_DAY_GAIN
+    else    
+        local highval = TUNING.SANITY_HIGH_LIGHT
+        local lowval = TUNING.SANITY_LOW_LIGHT
+
+        if lightval > highval then
+            light_delta =  TUNING.SANITY_NIGHT_LIGHT
+        elseif lightval < lowval then
+            light_delta = TUNING.SANITY_NIGHT_DARK
+        else
+            light_delta = TUNING.SANITY_NIGHT_MID
+        end
+
+        light_delta = light_delta*self.night_drain_mult
+    end
+    
+    local aura_delta = 0
+    local x,y,z = self.inst.Transform:GetWorldPosition()
+    local ents = TheSim:FindEntities(x,y,z, TUNING.SANITY_EFFECT_RANGE, nil, {"FX", "NOCLICK", "DECOR","INLIMBO"} )
+    for k,v in pairs(ents) do 
+        if v.components.sanityaura and v ~= self.inst then
+            local distsq = self.inst:GetDistanceSqToInst(v)
+            local aura_val = v.components.sanityaura:GetAura(self.inst)/math.max(1, distsq)
+            if aura_val < 0 then
+                aura_val = aura_val * self.neg_aura_mult
+            end
+
+            aura_delta = aura_delta + aura_val
+        end
+    end
+
+    local rain_delta = not mitigates_rain and TheWorld.state.israining and
+        -1.5 * TUNING.DAPPERNESS_MED * TheWorld.state.precipitationrate or 0
+
+    self.ghost_drain_mult = GetNumGhostPlayers()
+    if self.ghost_drain_mult > TUNING.MAX_SANITY_GHOST_PLAYER_DRAIN_MULT then
+        self.ghost_drain_mult = TUNING.MAX_SANITY_GHOST_PLAYER_DRAIN_MULT
+    end
+    local ghost_delta = TUNING.SANITY_GHOST_PLAYER_DRAIN * self.ghost_drain_mult
+
+    self.rate = (dapper_delta + light_delta + aura_delta + rain_delta + ghost_delta)  
+    
+    if self.custom_rate_fn then
+        self.rate = self.rate + self.custom_rate_fn(self.inst)
+    end
+
+    self.rate = self.rate * self.rate_modifier
+
+    --print (string.format("dapper: %2.2f light: %2.2f TOTAL: %2.2f", dapper_delta, light_delta, self.rate*dt))
+    self:DoDelta(self.rate*dt, true)
+end
+
+function Sanity:LongUpdate(dt)
+    self:OnUpdate(dt)
+end
+
+return Sanity

@@ -1,0 +1,310 @@
+local actionhandlers =
+{
+    ActionHandler(ACTIONS.HAUNT, "haunt_pre"),
+}
+
+local events =
+{
+    EventHandler("locomote", function(inst, data)
+        if inst.sg:HasStateTag("busy") then
+            return
+        end
+        local is_moving = inst.sg:HasStateTag("moving")
+        local should_move = inst.components.locomotor:WantsToMoveForward()
+
+        if is_moving and not should_move then
+            inst.sg:GoToState("idle")
+        elseif not is_moving and should_move then
+            inst.sg:GoToState("run")
+        elseif data.force_idle_state and not (is_moving or should_move or inst.sg:HasStateTag("idle")) then
+            inst.sg:GoToState("idle")
+        end
+    end),
+
+    EventHandler("attacked", function(inst)
+        if not inst.components.health:IsDead() then
+            inst.sg:GoToState("hit")
+        end
+    end),
+
+    --[[EventHandler("death", function(inst)
+        if inst.components.playercontroller ~= nil then
+            inst.components.playercontroller:Enable(false)
+        end
+        inst.sg:GoToState("dissipate")
+    end),]]
+
+    EventHandler("ontalk", function(inst, data)
+        if inst.sg:HasStateTag("idle") then
+            if inst:HasTag("mime") then
+                inst.sg:GoToState("mime")
+            else
+                inst.sg:GoToState("talk", data.noanim)
+            end
+        end
+    end),
+}
+
+local states =
+{
+    State
+    {
+        name = "idle",
+        tags = { "idle", "canrotate" },
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.components.locomotor:Clear()
+
+            if not inst.AnimState:IsCurrentAnimation("idle") then
+                inst.AnimState:PlayAnimation("idle", true)
+            end
+        end,
+    },
+
+    State
+    {
+        name = "run",
+        tags = { "moving", "running", "canrotate", "autopredict" },
+
+        onenter = function(inst) 
+            inst.components.locomotor:RunForward()
+            if not inst.AnimState:IsCurrentAnimation("idle") then
+                inst.AnimState:PlayAnimation("idle", true)
+            end
+        end,
+
+        onupdate = function(inst)
+            inst.components.locomotor:RunForward()
+        end,
+    },
+
+    State
+    {
+        name = "appear",
+        tags = { "nopredict" },
+
+        onenter = function(inst)
+            if inst.loading_ghost then
+                inst.sg:GoToState("idle")
+                return
+            end
+
+            inst.AnimState:PlayAnimation("appear")
+            if not inst:HasTag("mime") then
+                inst.SoundEmitter:PlaySound(
+                    inst:HasTag("girl") and
+                    "dontstarve/ghost/ghost_girl_howl" or
+                    "dontstarve/ghost/ghost_howl"
+                )
+            end
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+    },
+
+    State
+    {
+        name = "haunt_pre",
+        tags = { "doing", "busy" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("dissipate")
+            inst.SoundEmitter:PlaySound("dontstarve/ghost/ghost_haunt", nil, nil, true)
+        end,
+
+        timeline =
+        {
+            TimeEvent(15 * FRAMES, function(inst)
+                inst:PerformBufferedAction()
+            end)
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("haunt")
+                end
+            end),
+        },
+    },
+
+    State
+    {
+        name = "haunt",
+        tags = { "doing", "busy", "nopredict" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("appear")
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() and inst.entity:IsVisible() then --hidden if resurrecting
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+    },
+
+    State
+    {
+        name = "hit",
+        tags = { "busy", "pausepredict" },
+        
+        onenter = function(inst)
+            if inst.hurtsoundoverride ~= nil then
+                inst.SoundEmitter:PlaySound(hurtsoundoverride)
+            elseif not inst:HasTag("mime") then
+                inst.SoundEmitter:PlaySound(
+                    inst:HasTag("girl") and
+                    "dontstarve/ghost/ghost_girl_howl" or
+                    "dontstarve/ghost/ghost_howl"
+                )
+            end
+
+            inst.AnimState:PlayAnimation("hit")
+            inst:ClearBufferedAction()
+            inst.components.locomotor:Stop()
+
+            if inst.components.playercontroller ~= nil then
+                --Specify 3 frames of pause since "busy" tag may be
+                --removed too fast for our network update interval.
+                inst.components.playercontroller:RemotePausePrediction(3)
+            end
+        end,
+
+        timeline =
+        {
+            TimeEvent(3 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+                inst.sg:RemoveStateTag("pausepredict")
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+    },
+
+    State
+    {
+        name = "dissipate",
+        tags = { "busy", "pausepredict" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.components.locomotor:Clear()
+            inst:ClearBufferedAction()
+            
+            inst.Light:Enable(false)
+            inst.AnimState:PlayAnimation("dissipate")
+            if not inst:HasTag("mime") then
+                inst.SoundEmitter:PlaySound(
+                    inst:HasTag("girl") and
+                    "dontstarve/ghost/ghost_girl_howl" or
+                    "dontstarve/ghost/ghost_howl"
+                )
+            end
+
+            if inst.components.playercontroller ~= nil then
+                inst.components.playercontroller:RemotePausePrediction()
+            end
+        end,
+        
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst:PushEvent("ghostdissipated")
+                end
+            end),
+        },
+    },
+
+    State
+    {
+        name = "talk",
+        tags = { "idle", "talking" },
+        
+        onenter = function(inst, noanim)
+            if not (noanim or inst.AnimState:IsCurrentAnimation("idle")) then
+                inst.AnimState:PlayAnimation("idle", true)
+            end
+
+            if inst.talksoundoverride ~= nil then
+                inst.SoundEmitter:PlaySound(inst.talksoundoverride, "talk")
+            else
+                local sound_name = inst.soundsname or inst.prefab
+                inst.SoundEmitter:PlaySound("dontstarve/characters/"..sound_name.."/ghost_LP", "talk")
+            end
+
+            inst.sg:SetTimeout(1.5 + math.random() * .5)
+        end,
+        
+        ontimeout = function(inst)
+            inst.sg:GoToState("idle")
+        end,
+
+        events =
+        {
+            EventHandler("donetalking", function(inst)
+                inst.sg:GoToState("idle")
+            end),
+        },
+
+        onexit = function(inst)
+            inst.SoundEmitter:KillSound("talk")
+        end,
+    }, 
+    
+    State
+    {
+        name = "mime",
+        tags = { "idle", "talking" },
+        
+        onenter = function(inst)
+            if not inst.AnimState:IsCurrentAnimation("idle") then
+                inst.AnimState:PlayAnimation("idle", true)
+            end
+
+            if inst.talksoundoverride ~= nil then
+                inst.SoundEmitter:PlaySound(inst.talksoundoverride, "talk")
+            end
+
+            inst.sg:SetTimeout(1.5 + math.random() * .5)
+        end,
+        
+        ontimeout = function(inst)
+            inst.sg:GoToState("idle")
+        end,
+
+        events =
+        {
+            EventHandler("donetalking", function(inst)
+                inst.sg:GoToState("idle")
+            end),
+        },
+
+        onexit = function(inst)
+            inst.SoundEmitter:KillSound("talk")
+        end,
+    }, 
+}
+
+return StateGraph("wilsonghost", states, events, "appear", actionhandlers)

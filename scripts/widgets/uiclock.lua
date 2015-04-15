@@ -1,0 +1,262 @@
+--------------------------------------------------------------------------
+--[[ Dependencies ]]
+--------------------------------------------------------------------------
+
+local Widget = require "widgets/widget"
+local Image = require "widgets/image"
+local Text = require "widgets/text"
+local UIAnim = require "widgets/uianim"
+
+--------------------------------------------------------------------------
+--[[ Constants ]]
+--------------------------------------------------------------------------
+
+local NUM_SEGS = 16
+local DAY_COLOUR = Vector3(254 / 255, 212 / 255, 86 / 255)
+local DUSK_COLOUR = Vector3(165 / 255, 91 / 255, 82 / 255)
+local DARKEN_PERCENT = .75
+
+--------------------------------------------------------------------------
+--[[ Constructor ]]
+--------------------------------------------------------------------------
+
+local UIClock = Class(Widget, function(self)
+    Widget._ctor(self, "Clock")
+
+    --Member variables
+    self._moonanim = nil
+    self._anim = nil
+    self._face = nil
+    self._segs = {}
+    self._daysegs = nil
+    self._rim = nil
+    self._hands = nil
+    self._text = nil
+    self._worldnum = SaveGameIndex:GetSlotWorld()
+    self._showingcycles = nil
+    self._cycles = nil
+    self._phase = nil
+    self._moonphase = nil
+    self._time = nil
+
+    local basescale = 1
+    self:SetScale(basescale, basescale, basescale)
+    self:SetPosition(0, 0, 0)
+
+    local moonanimscale = 1
+    self._moonanim = self:AddChild(UIAnim())
+    self._moonanim:SetScale(moonanimscale, moonanimscale, moonanimscale)
+    self._moonanim:GetAnimState():SetBank("moon_phases_clock")
+    self._moonanim:GetAnimState():SetBuild("moon_phases_clock")
+    self._moonanim:GetAnimState():PlayAnimation("hidden")
+
+    local animscale = 1
+    self._anim = self:AddChild(UIAnim())
+    self._anim:SetScale(animscale, animscale, animscale)
+    self._anim:GetAnimState():SetBank("clock01")
+    self._anim:GetAnimState():SetBuild("clock_transitions")
+    self._anim:GetAnimState():PlayAnimation("idle_day", true)
+
+    self._face = self:AddChild(Image("images/hud.xml", "clock_NIGHT.tex"))
+    self._face:SetClickable(false)
+
+    local segscale = .4
+    for i = 1, NUM_SEGS do
+        local seg = self:AddChild(Image("images/hud.xml", "clock_wedge.tex"))
+        seg:SetScale(segscale, segscale, segscale)
+        seg:SetHRegPoint(ANCHOR_LEFT)
+        seg:SetVRegPoint(ANCHOR_BOTTOM)
+        seg:SetRotation((i - 1) * (360 / NUM_SEGS))
+        seg:SetClickable(false)
+        table.insert(self._segs, seg)
+    end
+
+    self._rim = self:AddChild(Image("images/hud.xml", "clock_rim.tex"))
+    self._rim:SetClickable(false)
+
+    self._hands = self:AddChild(Image("images/hud.xml", "clock_hand.tex"))
+    self._hands:SetClickable(false)
+
+    self._text = self:AddChild(Text(BODYTEXTFONT, 33 / basescale))
+    self._text:SetPosition(5, 0 / basescale, 0)
+
+    --Default initialization
+    self:UpdateDayString()
+    self:OnClockSegsChanged({ day = NUM_SEGS })
+
+    --Register events
+    self.inst:ListenForEvent("clocksegschanged", function(inst, data) self:OnClockSegsChanged(data) end, TheWorld)
+    self.inst:ListenForEvent("cycleschanged", function(inst, data) self:OnCyclesChanged(data) end, TheWorld)
+    self.inst:ListenForEvent("phasechanged", function(inst, data) self:OnPhaseChanged(data) end, TheWorld)
+    self.inst:ListenForEvent("moonphasechanged", function(inst, data) self:OnMoonPhaseChanged(data) end, TheWorld)
+    self.inst:ListenForEvent("clocktick", function(inst, data) self:OnClockTick(data) end, TheWorld)
+end)
+
+--------------------------------------------------------------------------
+--[[ Member functions ]]
+--------------------------------------------------------------------------
+
+function UIClock:UpdateDayString()
+    if self._cycles ~= nil then
+        local cycles_lived = ThePlayer.Network:GetPlayerAge()
+    	
+    	local clock_str = STRINGS.UI.HUD.CLOCKDAY.." "..tostring( cycles_lived )
+    	self._text:SetString(clock_str)
+    else
+        self._text:SetString("")
+    end
+    self._showingcycles = true
+end
+
+function UIClock:UpdateWorldString()
+    local cycles_lived = TheWorld.state.cycles + 1
+    local clock_str = STRINGS.UI.HUD.WORLD_CLOCKDAY.." ".. tostring(cycles_lived)
+    self._text:SetString(clock_str)
+    self._showingcycles = false
+end
+
+function UIClock:ShowMoon()
+    local moon_syms =
+    {
+        full = "moon_full",
+        quarter = "moon_quarter",
+        new = "moon_new",
+        threequarter = "moon_three_quarter",
+        half = "moon_half",
+    }
+    self._moonanim:GetAnimState():OverrideSymbol("swap_moon", "moon_phases", moon_syms[self._moonphase] or "moon_full")
+    if self._phase ~= nil then
+        self._moonanim:GetAnimState():PlayAnimation("trans_out")
+        self._moonanim:GetAnimState():PushAnimation("idle", true)
+    else
+        self._moonanim:GetAnimState():PlayAnimation("idle", true)
+    end
+end
+
+--------------------------------------------------------------------------
+--[[ Event handlers ]]
+--------------------------------------------------------------------------
+
+function UIClock:OnGainFocus()
+    UIClock._base.OnGainFocus(self)
+    self:UpdateWorldString()
+    return true
+end
+
+function UIClock:OnLoseFocus()
+    UIClock._base.OnLoseFocus(self)
+    self:UpdateDayString()
+    return true
+end
+
+function UIClock:OnClockSegsChanged(data)
+    local day = data.day or 0
+    local dusk = data.dusk or 0
+    local night = data.night or 0
+    assert(day + dusk + night == NUM_SEGS, "invalid number of time segs")
+
+    local dark = true
+    for k, seg in pairs(self._segs) do
+        if k > day + dusk then
+            seg:Hide()
+        else
+            seg:Show()
+
+            local color
+            if k <= day then
+                color = DAY_COLOUR 
+            else
+                color = DUSK_COLOUR
+            end
+
+            if dark then
+                color = color * DARKEN_PERCENT
+            end
+            dark = not dark
+
+            seg:SetTint(color.x, color.y, color.z, 1)
+        end
+    end
+    self._daysegs = day
+end
+
+function UIClock:OnCyclesChanged(cycles)	
+    self._cycles = cycles
+    if self._showingcycles then
+        self:UpdateDayString()
+    end
+end
+
+function UIClock:OnPhaseChanged(phase)
+    if self._phase == phase then
+        return
+    end
+
+    if self._phase == "night" then
+        self._moonanim:GetAnimState():PlayAnimation("trans_in")
+    end
+
+    if phase == "day" then
+        if self._phase ~= nil then
+            self._anim:GetAnimState():PlayAnimation("trans_night_day")
+            self._anim:GetAnimState():PushAnimation("idle_day", true)
+        else
+            self._anim:GetAnimState():PlayAnimation("idle_day", true)
+        end
+    elseif phase == "dusk" then
+         if self._phase ~= nil then
+            self._anim:GetAnimState():PlayAnimation("trans_day_dusk")
+            self._anim:GetAnimState():PushAnimation("idle_dusk", true)
+        else
+            self._anim:GetAnimState():PlayAnimation("idle_dusk", true)
+        end
+    elseif phase == "night" then
+        if self._phase ~= nil then
+            self._anim:GetAnimState():PlayAnimation("trans_dusk_night")
+            self._anim:GetAnimState():PushAnimation("idle_night", true)
+        else
+            self._anim:GetAnimState():PlayAnimation("idle_night", true)
+        end
+        self:ShowMoon()
+    end
+
+    self._phase = phase
+end
+
+function UIClock:OnMoonPhaseChanged(moonphase)
+    if self._moonphase == moonphase then
+        return
+    end
+
+    self._moonphase = moonphase
+
+    if self._phase == "night" then
+        self:ShowMoon()
+    end
+end
+
+function UIClock:OnClockTick(data)
+    if self._time ~= nil then
+        local prevseg = math.floor(self._time * NUM_SEGS)
+        if prevseg < self._daysegs then
+            local nextseg = math.floor(data.time * NUM_SEGS)
+            if prevseg ~= nextseg and nextseg < self._daysegs then
+                self._anim:GetAnimState():PlayAnimation("pulse_day")
+                self._anim:GetAnimState():PushAnimation("idle_day", true)
+            end
+        end
+    end
+
+    self._time = data.time
+    self._hands:SetRotation(self._time * 360)
+
+    if self._showingcycles then
+        self:UpdateDayString()
+    end
+end
+
+--------------------------------------------------------------------------
+--[[ End ]]
+--------------------------------------------------------------------------
+
+return UIClock

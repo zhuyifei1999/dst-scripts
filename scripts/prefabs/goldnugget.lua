@@ -1,0 +1,53 @@
+local assets =
+{
+	Asset("ANIM", "anim/gold_nugget.zip"),
+}
+
+local function shine(inst)
+    inst.task = nil
+    if not inst.AnimState:IsCurrentAnimation("sparkle") then
+        inst.AnimState:PlayAnimation("sparkle")
+        inst.AnimState:PushAnimation("idle", true)
+    end
+    inst.task = inst:DoTaskInTime(4 + math.random() * 5, shine)
+end
+
+local function fn()
+    
+	local inst = CreateEntity()
+
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+	inst.entity:AddSoundEmitter()
+	inst.entity:AddNetwork()
+
+    MakeInventoryPhysics(inst)
+
+    inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")    
+    inst.AnimState:SetBank("goldnugget")
+    inst.AnimState:SetBuild("gold_nugget")
+    inst.AnimState:PlayAnimation("idle", true)
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.entity:SetPristine()
+
+    inst:AddComponent("edible")
+    inst.components.edible.foodtype = FOODTYPE.ELEMENTAL
+    inst.components.edible.hungervalue = 2
+    inst:AddComponent("tradable")
+    
+    inst:AddComponent("inspectable")
+    
+    inst:AddComponent("inventoryitem")
+    inst:AddComponent("stackable")
+
+    MakeHauntableLaunchAndSmash(inst)
+    
+    shine(inst)
+    return inst
+end
+
+return Prefab("common/inventory/goldnugget", fn, assets)
