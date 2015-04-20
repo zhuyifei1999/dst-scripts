@@ -1,6 +1,6 @@
 local assets =
 {
-	Asset("ANIM", "anim/eyeball_turret_attack.zip"),
+    Asset("ANIM", "anim/eyeball_turret_attack.zip"),
     --Asset("SOUND", "sound/eyeballturret.fsb"),
 }
 
@@ -18,11 +18,11 @@ local function OnThrown(inst)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
     MakeInventoryPhysics(inst)
@@ -36,11 +36,11 @@ local function fn()
 
     inst:AddTag("projectile")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst.persists = false
 
@@ -82,11 +82,14 @@ local function hit_fn()
         inst:DoTaskInTime(0, PlayHitSound)
     end
 
+    inst:AddTag("FX")
+
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst:AddTag("FX")
     inst.persists = false
     inst:DoTaskInTime(0.5, inst.Remove)
 

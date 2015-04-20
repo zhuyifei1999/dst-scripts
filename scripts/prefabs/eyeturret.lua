@@ -2,9 +2,8 @@ require "prefabutil"
 
 local assets =
 {
-	Asset("ANIM", "anim/eyeball_turret.zip"),
+    Asset("ANIM", "anim/eyeball_turret.zip"),
     Asset("ANIM", "anim/eyeball_turret_object.zip"),
-
 }
 
 local prefabs =
@@ -69,10 +68,10 @@ local function EquipWeapon(inst)
 end
 
 local function ondeploy(inst, pt, deployer)
-    local turret = SpawnPrefab("eyeturret") 
+    local turret = SpawnPrefab("eyeturret")
     if turret ~= nil then
         turret.Physics:SetCollides(false)
-        turret.Physics:Teleport(pt.x, 0, pt.z) 
+        turret.Physics:Teleport(pt.x, 0, pt.z)
         turret.Physics:SetCollides(true)
         turret:syncanim("place")
         turret:syncanimpush("idle_loop", true)
@@ -116,11 +115,11 @@ local function itemfn()
 
     inst:AddTag("eyeturret")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("inspectable")
     inst:AddComponent("inventoryitem")
@@ -139,11 +138,11 @@ local function itemfn()
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
- 	inst.entity:AddSoundEmitter()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddLight()
     inst.entity:AddNetwork()
@@ -161,11 +160,11 @@ local function fn()
     inst.AnimState:SetBuild("eyeball_turret")
     inst.AnimState:PlayAnimation("idle_loop")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst.base = SpawnPrefab("eyeturret_base")
     inst.base.entity:SetParent(inst.entity)
@@ -174,7 +173,7 @@ local function fn()
     inst.syncanimpush = syncanimpush
 
     inst:AddComponent("health")
-    inst.components.health:SetMaxHealth(TUNING.EYETURRET_HEALTH) 
+    inst.components.health:SetMaxHealth(TUNING.EYETURRET_HEALTH)
     inst.components.health:StartRegen(TUNING.EYETURRET_REGEN, 1)
 
     inst:AddComponent("combat")
@@ -226,16 +225,16 @@ local function basefn()
     inst.AnimState:SetBuild("eyeball_turret_base")
     inst.AnimState:PlayAnimation("idle_loop")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     return inst
 end
 
 return Prefab("common/eyeturret", fn, assets, prefabs),
-Prefab("common/eyeturret_item", itemfn, assets, prefabs),
-MakePlacer("common/eyeturret_item_placer", "eyeball_turret", "eyeball_turret", "idle_place"),
-Prefab("common/eyeturret_base", basefn, baseassets)
+    Prefab("common/eyeturret_item", itemfn, assets, prefabs),
+    MakePlacer("common/eyeturret_item_placer", "eyeball_turret", "eyeball_turret", "idle_place"),
+    Prefab("common/eyeturret_base", basefn, baseassets)

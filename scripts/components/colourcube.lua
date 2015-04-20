@@ -21,21 +21,38 @@ local INSANITY_COLOURCUBES =
     day = "images/colour_cubes/insane_day_cc.tex",
     dusk = "images/colour_cubes/insane_dusk_cc.tex",
     night = "images/colour_cubes/insane_night_cc.tex",
+    full_moon = "images/colour_cubes/insane_night_cc.tex",
 }
 
 local SEASON_COLOURCUBES =
 {
-    summer =
+    autumn =
     {
         day = "images/colour_cubes/day05_cc.tex",
         dusk = "images/colour_cubes/dusk03_cc.tex",
         night = "images/colour_cubes/night03_cc.tex",
+        full_moon = "images/colour_cubes/purple_moon_cc.tex"
     },
     winter =
     {
         day = "images/colour_cubes/snow_cc.tex",
         dusk = "images/colour_cubes/snowdusk_cc.tex",
         night = "images/colour_cubes/night04_cc.tex",
+        full_moon = "images/colour_cubes/purple_moon_cc.tex"
+    },
+    spring =
+    {
+        day = "images/colour_cubes/spring_day_cc.tex",
+        dusk = "images/colour_cubes/spring_dusk_cc.tex",
+        night = "images/colour_cubes/spring_dusk_cc.tex",--"images/colour_cubes/spring_night_cc.tex",
+        full_moon = "images/colour_cubes/purple_moon_cc.tex"
+    },
+    summer =
+    {
+        day = "images/colour_cubes/summer_day_cc.tex",
+        dusk = "images/colour_cubes/summer_dusk_cc.tex",
+        night = "images/colour_cubes/summer_night_cc.tex",
+        full_moon = "images/colour_cubes/purple_moon_cc.tex"
     },
 }
 
@@ -44,6 +61,7 @@ local CAVE_COLOURCUBES =
     day = "images/colour_cubes/caves_default.tex",
     dusk = "images/colour_cubes/caves_default.tex",
     night = "images/colour_cubes/caves_default.tex",
+    full_moon = "images/colour_cubes/caves_default.tex",
 }
 
 local PHASE_BLEND_TIMES =
@@ -51,6 +69,7 @@ local PHASE_BLEND_TIMES =
     day = 4,
     dusk = 6,
     night = 8,
+    full_moon = 8,
 }
 
 local SEASON_BLEND_TIME = 10
@@ -65,7 +84,7 @@ self.inst = inst
 --Private
 local _iscave = inst:HasTag("cave")
 local _phase = "day"
-local _ambientcctable = _iscave and CAVE_COLOURCUBES or SEASON_COLOURCUBES.summer
+local _ambientcctable = _iscave and CAVE_COLOURCUBES or SEASON_COLOURCUBES.autumn
 local _ambientcc = { _ambientcctable.day, _ambientcctable.day }
 local _insanitycc = { INSANITY_COLOURCUBES.day, INSANITY_COLOURCUBES.day }
 local _overridecc = nil
@@ -74,6 +93,7 @@ local _totalblendtime = 0
 local _fxtime = 0
 local _fxspeed = 0
 local _activatedplayer = nil --cached for activation/deactivation only, NOT for logic use
+local _colourmodifier = nil
 
 --------------------------------------------------------------------------
 --[[ Private member functions ]]
@@ -157,6 +177,9 @@ local function OnPlayerDeactivated(inst, player)
 end
 
 local function OnPhaseChanged(inst, phase)
+    if TheWorld.state.isfullmoon then
+        phase = "full_moon"
+    end
     if _phase ~= phase then
         _phase = phase
 
@@ -187,6 +210,17 @@ local function OnOverrideColourCube(inst, cc)
     end
 end
 
+local function OnOverrideColourModifier(inst, mod)
+    if _colourmodifier ~= mod then
+        if mod then
+            PostProcessor:SetColourModifier(mod)
+        else
+            PostProcessor:SetColourModifier(1.0)
+        end
+    end
+    _colourmodifier = mod
+end
+
 --------------------------------------------------------------------------
 --[[ Initialization ]]
 --------------------------------------------------------------------------
@@ -207,6 +241,7 @@ if not _iscave then
     inst:ListenForEvent("seasontick", OnSeasonTick)
 end
 inst:ListenForEvent("overridecolourcube", OnOverrideColourCube)
+inst:ListenForEvent("overridecolourmodifier", OnOverrideColourModifier)
 
 inst:StartUpdatingComponent(self)
 

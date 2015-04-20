@@ -82,26 +82,9 @@ local function OnNaughtyAction(how_naughty, playerdata)
 		for k = 1, num_krampii do
 			MakeAKrampusForPlayer(player)
 		end
-		
-	else
-		-- play the kramped warning sound. KAJ:should we only schedule if we qualify?
-		self.inst:DoTaskInTime(1 + math.random()*2, function()
-			if player:IsValid() then	-- it may have left us in the meantime
-				local warningSound 
-				local left = playerdata.threshold - playerdata.actions
-				if left < 5 then
-					warningSound= SpawnPrefab("krampuswarning_lvl3")
-				elseif left < 15 then
-					warningSound= SpawnPrefab("krampuswarning_lvl2")
-				elseif left < 20 then
-					warningSound= SpawnPrefab("krampuswarning_lvl1")
-				end
-			    if warningSound then
-   				    warningSound.Transform:SetPosition(player.Transform:GetWorldPosition() )
-			    end
-			end
-		end)
-	end
+    else
+        self:DoWarningSound(player)
+    end
 end
 
 local function onkilledother(victim, killer)
@@ -134,12 +117,18 @@ local function onkilledother(victim, killer)
 				OnNaughtyAction(1, playerdata)
 			elseif victim.prefab == "rabbit" then
 				OnNaughtyAction(1, playerdata)
+			elseif victim.prefab == "mole" then
+				OnNaughtyAction(1, playerdata)
 			elseif victim.prefab == "tallbird" then
 				OnNaughtyAction(2, playerdata)
 			elseif victim.prefab == "bunnyman" then
 				OnNaughtyAction(3, playerdata)
 			elseif victim.prefab == "penguin" then
 				OnNaughtyAction(2, playerdata)
+			elseif victim.prefab == "glommer" then
+				OnNaughtyAction(50, playerdata) -- You've been bad!
+			elseif victim.prefab == "catcoon" then
+				OnNaughtyAction(5, playerdata)
 			end
 		end
 	end
@@ -195,6 +184,24 @@ self.inst:StartUpdatingComponent(self)
 --------------------------------------------------------------------------
 --[[ Public member functions ]]
 --------------------------------------------------------------------------
+
+local function _DoWarningSound(player)
+    local playerdata = _activeplayers[player]
+    if playerdata ~= nil then
+        local score = (playerdata.threshold or 0) - playerdata.actions
+        if score < 20 then
+            SpawnPrefab("krampuswarning_lvl"..
+                ((score < 5 and "3") or
+                (score < 15 and "2") or
+                                "1")
+            ).Transform:SetPosition(player.Transform:GetWorldPosition())
+        end
+    end
+end
+
+function self:DoWarningSound(player)
+    player:DoTaskInTime(1 + math.random() * 2, _DoWarningSound)
+end
 
 function self:OnUpdate(dt)	
 	for _,playerdata in pairs(_activeplayers) do

@@ -52,7 +52,7 @@ function WerePigBrain:OnStart()
 	        DoAction(self.inst, function() return FindFoodAction(self.inst) end, "EatMeat", true)
 		),
 		
-        ChaseAndAttack(self.inst, MAX_CHASE_TIME, MAX_CHASE_DIST),
+        ChaseAndAttack(self.inst, SpringCombatMod(MAX_CHASE_TIME), SpringCombatMod(MAX_CHASE_DIST)),
         Wander(self.inst, function() return self.inst.components.knownlocations:GetLocation("home") end, MAX_WANDER_DIST),
     }, .5)
     
@@ -60,7 +60,7 @@ function WerePigBrain:OnStart()
 end
 
 function WerePigBrain:OnInitializationComplete()
-    self.inst.components.knownlocations:RememberLocation("home", Point(self.inst.Transform:GetWorldPosition()))
+    self.inst.components.knownlocations:RememberLocation("home", Point(self.inst.Transform:GetWorldPosition()), true)
 end
 
 

@@ -10,6 +10,7 @@ local prefabs =
     "fire_projectile",
     "staffcastfx",
     "stafflight",
+    "cutgrass",
 }
 
 ---------RED STAFF---------
@@ -20,7 +21,13 @@ local function onattack_red(inst, attacker, target, skipsanity)
         if target.components.freezable and target.components.freezable:IsFrozen() then           
             target.components.freezable:Unfreeze()            
         else            
-            target.components.burnable:Ignite(true, attacker)
+              if target.components.fueled and target:HasTag("campfire") and target:HasTag("structure") then
+                -- Rather than worrying about adding fuel cmp here, just spawn some fuel and immediately feed it to the fire
+                local fuel = SpawnPrefab("cutgrass")
+                if fuel then target.components.fueled:TakeFuelItem(fuel) end
+            else
+                target.components.burnable:Ignite(true)
+            end
         end   
     end
 
@@ -59,28 +66,33 @@ end
 ---------BLUE STAFF---------
 
 local function onattack_blue(inst, attacker, target, skipsanity)
-
-    target:PushEvent("attacked", {attacker = attacker, damage = 0})
     
     if attacker and attacker.components.sanity and not skipsanity then
         attacker.components.sanity:DoDelta(-TUNING.SANITY_SUPERTINY)
     end
     
-    if target.components.freezable then
-        target.components.freezable:AddColdness(1)
-        target.components.freezable:SpawnShatterFX()
-    end
     if target.components.sleeper and target.components.sleeper:IsAsleep() then
         target.components.sleeper:WakeUp()
     end
-    if target.components.burnable and target.components.burnable:IsBurning() then
-        target.components.burnable:Extinguish()
+    if target.components.burnable then
+        if target.components.burnable:IsBurning() then
+            target.components.burnable:Extinguish()
+        elseif target.components.burnable:IsSmoldering() then
+            target.components.burnable:SmotherSmolder()
+        end
     end
+
     if target.components.combat then
         target.components.combat:SuggestTarget(attacker)
-        if target.sg and not target.sg:HasStateTag("frozen") and target.sg.sg.states.hit and not target:HasTag("player") then
-            target.sg:GoToState("hit")
-        end
+    end
+
+    if target.sg and not target.sg:HasStateTag("frozen") then
+        target:PushEvent("attacked", {attacker = attacker, damage = 0})
+    end
+
+    if target.components.freezable then
+        target.components.freezable:AddColdness(1)
+        target.components.freezable:SpawnShatterFX()
     end
 end
 
@@ -122,11 +134,11 @@ local function teleport_thread(inst, caster, teletarget, loctarget)
 
     if ground.topology.level_type == "cave" then
         TheCamera:Shake("FULL", 0.3, 0.02, .5, 40)
-        ground.components.quaker:MiniQuake(3, 5, 1.5, teleportee)     
+        ground.components.quaker:MiniQuake(3, 5, 1.5, teleportee)
         return
     end
 
-    if teleportee.components.health then
+    if teleportee.components.health ~= nil then
         teleportee.components.health:SetInvincible(true)
     end
 
@@ -141,6 +153,9 @@ local function teleport_thread(inst, caster, teletarget, loctarget)
     end
 
     teleportee:Hide()
+    if teleportee.DynamicShadow ~= nil then
+        teleportee.DynamicShadow:Enable(false)
+    end
 
     if caster and caster.components.sanity then
         caster.components.sanity:DoDelta(-TUNING.SANITY_HUGE)
@@ -182,7 +197,10 @@ local function teleport_thread(inst, caster, teletarget, loctarget)
     end
 
     teleportee:Show()
-    if teleportee.components.health then
+    if teleportee.DynamicShadow ~= nil then
+        teleportee.DynamicShadow:Enable(true)
+    end
+    if teleportee.components.health ~= nil then
         teleportee.components.health:SetInvincible(false)
     end
 
@@ -197,7 +215,6 @@ local function teleport_targets_sort_fn(a, b)
 end
 
 local function teleport_func(inst, target)
-    print(inst, target)
     local mindistance = 1
     local caster = inst.components.inventoryitem.owner
     local tar = target or caster
@@ -234,13 +251,23 @@ end
 ---------ORANGE STAFF-----------
 
 local function onblink(staff, pos, caster)
-
-    if caster.components.sanity then
+    if caster.components.sanity ~= nil then
         caster.components.sanity:DoDelta(-TUNING.SANITY_MED)
     end
-
     staff.components.finiteuses:Use(1) 
+end
 
+local function blinkstaff_reticuletargetfn()
+    local player = ThePlayer
+    local rotation = player.Transform:GetRotation() * DEGREES
+    local pos = player:GetPosition()
+    for r = 13, 1, -1 do
+        local numtries = 2 * PI * r
+        local pt = FindWalkableOffset(pos, rotation, r, numtries)
+        if pt ~= nil then
+            return pt + pos
+        end
+    end
 end
 
 -------GREEN STAFF-----------
@@ -422,10 +449,13 @@ local function createlight(staff, target, pos)
     staff.components.finiteuses:Use(1)
 
     local caster = staff.components.inventoryitem.owner
-    if caster and caster.components.sanity then
+    if caster ~= nil and caster.components.sanity ~= nil then
         caster.components.sanity:DoDelta(-TUNING.SANITY_MEDLARGE)
     end
+end
 
+local function yellow_reticuletargetfn()
+    return Vector3(ThePlayer.entity:LocalToWorldSpace(5, 0, 0))
 end
 
 ---------COMMON FUNCTIONS---------
@@ -473,12 +503,12 @@ local function commonfn(colour, tags)
         end
     end
 
+    inst.entity:SetPristine()
+    
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-    
     -------   
     inst:AddComponent("finiteuses")
     inst.components.finiteuses:SetOnFinished(onfinished)
@@ -501,7 +531,7 @@ end
 ---------COLOUR SPECIFIC CONSTRUCTIONS---------
 
 local function red()
-    local inst = commonfn("red", { "firestaff", "rangedfireweapon" })
+    local inst = commonfn("red", { "firestaff", "rangedfireweapon", "rangedlighter" })
 
     if not TheWorld.ismastersim then
         return inst
@@ -512,9 +542,6 @@ local function red()
     inst.components.weapon:SetRange(8, 10)
     inst.components.weapon:SetOnAttack(onattack_red)
     inst.components.weapon:SetProjectile("fire_projectile")
-
-    inst:AddComponent("lighter")
-    inst.components.lighter:SetOnLightFn(onlight)
 
     inst.components.finiteuses:SetMaxUses(TUNING.FIRESTAFF_USES)
     inst.components.finiteuses:SetUses(TUNING.FIRESTAFF_USES)
@@ -537,7 +564,7 @@ local function red()
 end
 
 local function blue()
-    local inst = commonfn("blue", { "icestaff" })
+    local inst = commonfn("blue", { "icestaff", "extinguisher" })
 
     if not TheWorld.ismastersim then
         return inst
@@ -604,12 +631,12 @@ local function purple()
     return inst
 end
 
-local function yellow_reticuletargetfn()
-    return Vector3(ThePlayer.entity:LocalToWorldSpace(5, 0, 0))
-end
-
 local function yellow()
     local inst = commonfn("yellow", { "nopunch" })
+
+    inst:AddComponent("reticule")
+    inst.components.reticule.targetfn = yellow_reticuletargetfn
+    inst.components.reticule.ease = true
 
     if not TheWorld.ismastersim then
         return inst
@@ -621,10 +648,6 @@ local function yellow()
     inst:AddComponent("spellcaster")
     inst.components.spellcaster:SetSpellFn(createlight)
     inst.components.spellcaster.canuseonpoint = true
-
-    inst:AddComponent("reticule")
-    inst.components.reticule.targetfn = yellow_reticuletargetfn
-    inst.components.reticule.ease = true
 
     inst.components.finiteuses:SetMaxUses(TUNING.YELLOWSTAFF_USES)
     inst.components.finiteuses:SetUses(TUNING.YELLOWSTAFF_USES)
@@ -682,6 +705,10 @@ end
 local function orange()
     local inst = commonfn("orange", { "nopunch" })
 
+    inst:AddComponent("reticule")
+    inst.components.reticule.targetfn = blinkstaff_reticuletargetfn
+    inst.components.reticule.ease = true
+
     if not TheWorld.ismastersim then
         return inst
     end
@@ -691,12 +718,6 @@ local function orange()
 
     inst:AddComponent("blinkstaff")
     inst.components.blinkstaff.onblinkfn = onblink
-
-    inst:AddComponent("reticule")
-    inst.components.reticule.targetfn = function() 
-        return inst.components.blinkstaff:GetBlinkPoint()
-    end
-    inst.components.reticule.ease = true
 
     inst.components.equippable.walkspeedmult = TUNING.CANE_SPEED_MULT
 

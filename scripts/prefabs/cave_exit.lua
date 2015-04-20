@@ -2,15 +2,15 @@ local PopupDialogScreen = require "screens/popupdialog"
 
 local assets =
 {
-	Asset("ANIM", "anim/cave_exit_rope.zip"),
+    Asset("ANIM", "anim/cave_exit_rope.zip"),
 }
 
 local function GetVerb()
-	return STRINGS.ACTIONS.ACTIVATE.CLIMB
+    return STRINGS.ACTIONS.ACTIVATE.CLIMB
 end
 
 local function onnear(inst)
-	inst.AnimState:PlayAnimation("down")
+    inst.AnimState:PlayAnimation("down")
     inst.AnimState:PushAnimation("idle_loop", true)
     inst.SoundEmitter:PlaySound("dontstarve/cave/rope_down")
 end
@@ -21,7 +21,6 @@ local function onfar(inst)
 end
 
 local function OnActivate(inst)
-
 	SetPause(true)
 	local level = TheWorld.topology.level_number or 1
 	local function head_upwards()
@@ -47,10 +46,10 @@ local function OnActivate(inst)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter() 
     inst.entity:AddMiniMapEntity()
 
@@ -63,17 +62,17 @@ local function fn()
     --
 
     inst.MiniMapEntity:SetIcon("cave_open2.png")
-    
+
     inst.AnimState:SetBank("exitrope")
     inst.AnimState:SetBuild("cave_exit_rope")
 
     inst.GetActivateVerb = GetVerb
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("playerprox")
     inst.components.playerprox:SetDist(5,7)
@@ -82,10 +81,10 @@ local function fn()
 
     inst:AddComponent("inspectable")
 
-	inst:AddComponent("activatable")
+    inst:AddComponent("activatable")
     inst.components.activatable.OnActivate = OnActivate
     inst.components.activatable.inactive = true
-	inst.components.activatable.quickaction = true
+    inst.components.activatable.quickaction = true
 
     return inst
 end

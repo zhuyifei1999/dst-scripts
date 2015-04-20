@@ -42,66 +42,86 @@ function Occupiable:OnRemoveFromEntity()
 end
 
 function Occupiable:IsOccupied()
-	return self.occupant ~= nil
+    return self.occupant ~= nil
 end
 
 function Occupiable:CanOccupy(occupier)
-	return self.occupant == nil and
+    return self.occupant == nil and
         self.occupanttype ~= nil and
         occupier:HasTag(self.occupanttype) and
         occupier.components.occupier ~= nil
 end
 
 function Occupiable:Occupy(occupier)
-	
-	if not self.occupant and occupier and occupier.components.occupier then
-		self.occupant = occupier
-		self.occupant.persists = true
-		
-		if occupier.components.occupier.onoccupied then
-			occupier.components.occupier.onoccupied(occupier, self.inst)
-		end
-		
-		if self.onoccupied then
-			self.onoccupied(self.inst, occupier)
-		end	
-		
-		self.inst:AddChild(occupier)
-		occupier:RemoveFromScene()
-	end
-		
+    if self.occupant == nil and occupier ~= nil and occupier.components.occupier ~= nil then
+        self.occupant = occupier
+        self.occupant.persists = true
+
+        if occupier.components.occupier.onoccupied ~= nil then
+            occupier.components.occupier.onoccupied(occupier, self.inst)
+        end
+
+        if self.onoccupied ~= nil then
+            self.onoccupied(self.inst, occupier)
+        end
+
+        self.inst:AddChild(occupier)
+        occupier:RemoveFromScene()
+
+        occupier.occupiableonperish = function(occupier)
+            self.inst:RemoveChild(occupier)
+            occupier:ReturnToScene()
+            if occupier.components.lootdropper ~= nil then
+                occupier.components.lootdropper:DropLoot(self.inst:GetPosition())
+            end
+            if self.onemptied ~= nil then
+                self.onemptied(self.inst)
+            end
+            self.occupant = nil
+        end
+
+        occupier.occupiableonremove = function(occupier)
+            self.inst:RemoveEventCallback("perished", occupier.occupiableonperish, occupier)
+            if self.onemptied ~= nil then
+                self.onemptied(self.inst)
+            end
+            self.occupant = nil
+        end
+
+        self.inst:ListenForEvent("perished", occupier.occupiableonperish, occupier)
+        self.inst:ListenForEvent("onremove", occupier.occupiableonremove, occupier)
+    end
 end
 
 function Occupiable:Harvest()
-	if self.occupant and self.occupant.components.inventoryitem then
-		local occupant = self.occupant
-		self.occupant = nil
-		self.inst:RemoveChild(occupant)
-		if self.onemptied then
-			self.onemptied(self.inst)
-		end
-		occupant:ReturnToScene()
-		return occupant
-	end
+    if self.occupant ~= nil and self.occupant.components.inventoryitem ~= nil then
+        local occupant = self.occupant
+        self.occupant = nil
+        self.inst:RemoveEventCallback("perished", occupant.occupiableonperish, occupant)
+        self.inst:RemoveEventCallback("onremove", occupant.occupiableonremove, occupant)
+        self.inst:RemoveChild(occupant)
+        if self.onemptied ~= nil then
+            self.onemptied(self.inst)
+        end
+        occupant:ReturnToScene()
+        return occupant
+    end
 end
 
 function Occupiable:OnSave()
-    local data = {}
-    if self.occupant and self.occupant:IsValid() then
-		data.occupant = self.occupant:GetSaveRecord()
-    end
-    return data
+    return
+    {
+        occupant = self.occupant ~= nil and self.occupant:IsValid() and self.occupant:GetSaveRecord() or nil,
+    }
 end   
 
 function Occupiable:OnLoad(data, newents)
-
-    if data.occupant then
+    if data.occupant ~= nil then
         local inst = SpawnSaveRecord(data.occupant, newents)
-		if inst then
+		if inst ~= nil then
 			self:Occupy(inst)
 		end
     end
-
 end
 
 return Occupiable

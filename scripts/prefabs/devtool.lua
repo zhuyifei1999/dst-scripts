@@ -1,18 +1,14 @@
-local assets=
+local assets =
 {
-	Asset("ANIM", "anim/axe.zip"),
-	Asset("ANIM", "anim/goldenaxe.zip"),
-	Asset("ANIM", "anim/swap_axe.zip"),
-	Asset("ANIM", "anim/swap_goldenaxe.zip"),
+    Asset("ANIM", "anim/axe.zip"),
+    Asset("ANIM", "anim/goldenaxe.zip"),
+    Asset("ANIM", "anim/swap_axe.zip"),
+    Asset("ANIM", "anim/swap_goldenaxe.zip"),
 }
-
-local function onfinished(inst)
-    inst:Remove()
-end
 
 local function giveitems(inst, data)
     if data.owner.components.inventory and data.recipe then
-      for ik, iv in pairs(data.recipe.ingredients) do
+        for ik, iv in pairs(data.recipe.ingredients) do
             if not data.owner.components.inventory:Has(iv.type, iv.amount) then
                 for i = 1, iv.amount do
                     local item = SpawnPrefab(iv.type)
@@ -25,11 +21,11 @@ end
 
 local function onequipgold(inst, owner) 
     owner.AnimState:OverrideSymbol("swap_object", "swap_goldenaxe", "swap_goldenaxe")
-    owner.SoundEmitter:PlaySound("dontstarve/wilson/equip_item_gold")     
+    owner.SoundEmitter:PlaySound("dontstarve/wilson/equip_item_gold")
     owner.AnimState:Show("ARM_carry") 
     owner.AnimState:Hide("ARM_normal") 
     inst.Light:Enable(true)
-    inst.task = inst:DoPeriodicTask(0.25, function() 
+    inst.task = inst:DoPeriodicTask(0.25, function()
         if owner.components.health then
             owner.components.health:DoDelta(500)
         end
@@ -55,33 +51,68 @@ local function onunequip(inst, owner)
     owner:RemoveEventCallback("cantbuild", giveitems)
 end
 
-local function fn(Sim)
-	local inst = CreateEntity()
-	local trans = inst.entity:AddTransform()
-	local anim = inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
+local function HeatFn(inst, observer)
+    local worldTemp = TheWorld.state.temperature
+    if worldTemp < 10 then
+        inst.components.heater:SetThermics(true, false)
+        return 50
+    elseif worldTemp > 50 then
+        inst.components.heater:SetThermics(false, true)
+        return -50
+    else
+        inst.components.heater:SetThermics(false, false)
+        return 0
+    end
+end
+
+local function fn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
+    inst.entity:AddNetwork()
+
     MakeInventoryPhysics(inst)
-    
-    anim:SetBank("axe")
-    anim:SetBuild("goldenaxe")
-    anim:PlayAnimation("idle")
-    
+
+    inst.AnimState:SetBank("axe")
+    inst.AnimState:SetBuild("goldenaxe")
+    inst.AnimState:PlayAnimation("idle")
+
     inst:AddTag("sharp")
-    
+
+    if BRANCH == "dev" then
+        --HASHEATER (from heater component) added to pristine state for optimization
+        inst:AddTag("HASHEATER")
+
+        inst.entity:AddLight()
+        inst.Light:SetColour(255 / 255, 255 / 255, 192 / 255)
+        inst.Light:SetIntensity(.8)
+        inst.Light:SetRadius(5)
+        inst.Light:SetFalloff(.33)
+    end
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
     -----
 
     inst:AddComponent("inspectable")
-    
+
     inst:AddComponent("inventoryitem")
     inst.components.inventoryitem:ChangeImageName("goldenaxe")
 
     if BRANCH == "dev" then
         inst:AddComponent("weapon")
         inst.components.weapon:SetRange(20)
-        inst.components.weapon:SetDamage(10000)
+        inst.components.weapon:SetDamage(1500)
 
         inst:AddComponent("heater")
-        inst.components.heater.equippedheat = math.huge
+        inst.components.heater.equippedheatfn = HeatFn
+        --inst.components.heater.equippedheat = math.huge
 
         inst:AddComponent("blinkstaff")
 
@@ -92,15 +123,6 @@ local function fn(Sim)
         inst.components.tool:SetAction(ACTIONS.DIG, 100)
         inst.components.tool:SetAction(ACTIONS.NET)
 
-        inst:AddComponent("dapperness")
-        inst.components.dapperness.dapperness = math.huge
-
-        inst.entity:AddLight()
-        inst.Light:SetColour(255/255,255/255,192/255)
-        inst.Light:SetIntensity(.8)
-        inst.Light:SetRadius(5)
-        inst.Light:SetFalloff(.33)
-
         inst:AddComponent("prototyper")
         inst.components.prototyper.trees = {SCIENCE = 100, MAGIC = 100, ANCIENT = 100}
         inst:AddTag("prototyper")
@@ -109,11 +131,14 @@ local function fn(Sim)
         inst.components.equippable:SetOnEquip( onequipgold )  
         inst.components.equippable:SetOnUnequip( onunequip)
         inst.components.equippable.walkspeedmult = 2
+        inst.components.equippable.dapperness = math.huge
     else
-        inst:Remove()
+        inst.persists = false
+        inst.entity:Hide()
+        inst:DoTaskInTime(0, inst.Remove)
     end
-    
+
     return inst
 end
 
-return Prefab( "common/inventory/devtool", fn, assets)
+return Prefab("common/inventory/devtool", fn, assets)

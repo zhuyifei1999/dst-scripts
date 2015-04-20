@@ -169,11 +169,11 @@ local function create_hand()
     inst.AnimState:PlayAnimation("hand_in")
     inst.AnimState:PushAnimation("hand_in_loop", true)
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst.arm = nil
     inst.fire = nil
@@ -219,11 +219,11 @@ local function create_arm()
     inst.AnimState:SetSortOrder(3)
     inst.AnimState:PlayAnimation("arm_loop", true)
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("stretcher")
     inst.components.stretcher:SetRestingLength(4.75)
@@ -235,4 +235,4 @@ local function create_arm()
 end
 
 return Prefab("common/shadowhand", create_hand, assets, prefabs),
-       Prefab("common/shadowhand_arm", create_arm, assets)
+    Prefab("common/shadowhand_arm", create_arm, assets)

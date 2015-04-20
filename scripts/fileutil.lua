@@ -32,18 +32,19 @@ function EraseFiles(cb, files)
 	end
 	
 	for i,v in pairs(files) do
-		print ("Erasing", v)
 		if PLATFORM == "PS4" then
 		    -- skip the file exists check on console
+            print("Erasing", v)
 		    ErasePersistentString(v, function(success) onerased(success, v) end)
 		else
-		    TheSim:CheckPersistentStringExists(v, function (exists)
-				    if exists == true then
-					    ErasePersistentString(v, function(success) onerased(success, v) end)
-				    else
-					    onerased(true, v)
-				    end
-			    end)
+		    TheSim:CheckPersistentStringExists(v, function(exists)
+			    if exists == true then
+                    print("Erasing", v)
+				    ErasePersistentString(v, function(success) onerased(success, v) end)
+			    else
+				    onerased(true, v)
+			    end
+		    end)
 		end
 	end
 end

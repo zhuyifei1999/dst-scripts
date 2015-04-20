@@ -8,7 +8,8 @@ local prefabs =
 {
     "monkey",
     "poop",
-    "cave_banana"
+    "cave_banana",
+    "collapse_small",
 }
 
 SetSharedLootTable( 'monkey_barrel',

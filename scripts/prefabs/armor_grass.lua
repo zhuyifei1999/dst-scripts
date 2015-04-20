@@ -31,21 +31,25 @@ local function fn()
     inst.AnimState:PlayAnimation("anim")
     
     inst:AddTag("grass")
+    MakeDragonflyBait(inst, 3)
     
     inst.foleysound = "dontstarve/movement/foley/grassarmour"
+
+    inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-    
     inst:AddComponent("inspectable")
     
     inst:AddComponent("inventoryitem")
 
     inst:AddComponent("fuel")
     inst.components.fuel.fuelvalue = TUNING.LARGE_FUEL
+
+    MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
+    MakeSmallPropagator(inst)
     
     inst:AddComponent("armor")
     inst.components.armor:InitCondition(TUNING.ARMORGRASS, TUNING.ARMORGRASS_ABSORPTION)

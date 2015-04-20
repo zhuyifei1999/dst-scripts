@@ -4,6 +4,11 @@ local assets =
     Asset("SOUND", "sound/common.fsb"),
 }
 
+local prefabs =
+{
+    "collapse_small",
+}
+
 local heats = { 50, 65, 100 }
 
 local function GetHeatFn(inst)
@@ -40,18 +45,21 @@ local function fn()
     inst.AnimState:SetRayTestOnBB(true)
     --inst.AnimState:SetFinalOffset(-1)
     --inst.AnimState:PlayAnimation("collapse_small")
-    
+
     --inst:AddTag("FX")
     inst:AddTag("NOCLICK")
 
+    --HASHEATER (from heater component) added to pristine state for optimization
+    inst:AddTag("HASHEATER")
+
     inst.Transform:SetScale(1.0, 4, 1)
+
+    inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-    
     inst:AddComponent("firefx")
     inst.components.firefx.levels = firelevels
     inst.components.firefx:SetLevel(3)
@@ -64,4 +72,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/fx/lavalight", fn, assets)
+return Prefab("common/fx/lavalight", fn, assets, prefabs)

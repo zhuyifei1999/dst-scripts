@@ -1,6 +1,6 @@
 local assets =
 {
-	Asset("ANIM", "anim/tree_marsh.zip"),
+    Asset("ANIM", "anim/tree_marsh.zip"),
 }
 
 local prefabs =
@@ -22,7 +22,7 @@ end
 
 local function chop_tree(inst, chopper, chops)
     if not chopper or (chopper and not chopper:HasTag("playerghost")) then
-        inst.SoundEmitter:PlaySound("dontstarve/wilson/use_axe_tree")          
+        inst.SoundEmitter:PlaySound("dontstarve/wilson/use_axe_tree")
     end
     inst.AnimState:PlayAnimation("chop")
     sway(inst)
@@ -39,8 +39,8 @@ local function set_stump(inst)
 end
 
 local function dig_up_stump(inst, chopper)
-	inst:Remove()
-	inst.components.lootdropper:SpawnLootPrefab("log")
+    inst:Remove()
+    inst.components.lootdropper:SpawnLootPrefab("log")
 end
 
 local function chop_down_tree(inst, chopper)
@@ -53,7 +53,7 @@ local function chop_down_tree(inst, chopper)
     set_stump(inst)
     inst.components.lootdropper:DropLoot()
 
-	inst:AddComponent("workable")
+    inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.DIG)
     inst.components.workable:SetOnFinishCallback(dig_up_stump)
     inst.components.workable:SetWorkLeft(1)
@@ -64,10 +64,10 @@ local function chop_down_burnt_tree(inst, chopper)
     if not chopper or (chopper and not chopper:HasTag("playerghost")) then
         inst.SoundEmitter:PlaySound("dontstarve/wilson/use_axe_tree")
     end
-	inst.AnimState:PlayAnimation("burnt_chop")
+    inst.AnimState:PlayAnimation("burnt_chop")
     set_stump(inst)
     inst.Physics:ClearCollisionMask()
-	inst:ListenForEvent("animover", inst.Remove)
+    inst:ListenForEvent("animover", inst.Remove)
     inst.components.lootdropper:DropLoot()
 end
 
@@ -104,13 +104,14 @@ local function onsave(inst, data)
         data.stump = true
     end
 end
-        
+
 local function onload(inst, data)
     if data then
         if data.burnt then
             OnBurnt(inst)
         elseif data.stump then
             inst:RemoveComponent("workable")
+            RemoveDragonflyBait(inst)
             inst:RemoveComponent("burnable")
             inst:RemoveComponent("propagator")
             inst:RemoveComponent("growable")
@@ -119,23 +120,23 @@ local function onload(inst, data)
             RemovePhysicsColliders(inst)
             inst.AnimState:PlayAnimation("stump", false)
             inst:AddTag("stump")
-            
+
             inst:AddComponent("workable")
             inst.components.workable:SetWorkAction(ACTIONS.DIG)
             inst.components.workable:SetOnFinishCallback(dig_up_stump)
             inst.components.workable:SetWorkLeft(1)
         end
     end
-end   
+end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddDynamicShadow()
     inst.entity:AddSoundEmitter()
-	inst.entity:AddMiniMapEntity()
+    inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
 
     MakeObstaclePhysics(inst, .25)
@@ -148,13 +149,14 @@ local function fn()
     inst.AnimState:SetBuild("tree_marsh")
     inst.AnimState:SetBank("marsh_tree")
 
+    MakeDragonflyBait(inst, 1)
     MakeSnowCoveredPristine(inst)
+
+    inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     MakeLargeBurnable(inst)
     inst.components.burnable:SetOnBurntFn(OnBurnt)
@@ -175,13 +177,14 @@ local function fn()
     inst.AnimState:SetMultColour(color, color, color, 1)
     sway(inst)
     inst.AnimState:SetTime(math.random()*2)
-    
+
     inst:AddComponent("inspectable")
     inst.components.inspectable.getstatus = inspect_tree
-    
+
     inst.OnSave = onsave
     inst.OnLoad = onload
-	MakeSnowCovered(inst)
+    MakeSnowCovered(inst)
+
     return inst
 end
 

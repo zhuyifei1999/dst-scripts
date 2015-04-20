@@ -25,8 +25,12 @@ end
 
 local function OnAttacked(inst, data)
     local freezable = inst.components.freezable
-    if freezable then
-        freezable:Unfreeze()
+
+    if freezable and freezable:IsFrozen() then
+        freezable.damagetotal = freezable.damagetotal + math.abs(data.damage)
+        if freezable.damagetotal >= freezable.damagetobreak then
+            freezable:Unfreeze()
+        end
     end
 end
 -----------------------------------------------------------------------------------------------------
@@ -38,6 +42,9 @@ local Freezable = Class(function(self, inst)
     self.coldness = 0
     self.wearofftime = 10
     
+    self.damagetotal = 0
+    self.damagetobreak = 0
+
     self.fxlevel = 1
     self.fxdata = {}
     --self.fxchildren = {}
@@ -98,6 +105,7 @@ end
 
 function Freezable:AddColdness(coldness, freezetime)
     self.coldness = self.coldness + coldness
+    if self.coldness < 0 then self.coldness = 0 end
     self:UpdateTint()
     if self.coldness > self.resistance or self:IsFrozen() then
         self:Freeze(freezetime)
@@ -138,6 +146,11 @@ end
 
 function Freezable:Freeze(freezetime)
     if self.inst.entity:IsVisible() and not (self.inst.components.health and self.inst.components.health:IsDead()) then
+
+        if self.onfreezefn then
+            self.onfreezefn(self.inst)
+        end
+
         local prevState = self.state
         self.state = states.FROZEN
         self:StartWearingOff(freezetime)
@@ -166,6 +179,7 @@ function Freezable:Unfreeze()
 
         self.state = states.NORMAL
         self.coldness = 0
+        self.damagetotal = 0
         
         self:SpawnShatterFX()
         self:UpdateTint()

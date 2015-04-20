@@ -1,8 +1,8 @@
 local assets =
 {
-	Asset("ANIM", "anim/diviningrod.zip"),
-	Asset("ANIM", "anim/swap_diviningrod.zip"),
-	Asset("ANIM", "anim/diviningrod_fx.zip"),
+    Asset("ANIM", "anim/diviningrod.zip"),
+    Asset("ANIM", "anim/swap_diviningrod.zip"),
+    Asset("ANIM", "anim/diviningrod_fx.zip"),
 }
 
 local prefabs =
@@ -73,19 +73,19 @@ local function CheckTargetPiece(inst)
 
         if closeness ~= inst.closeness then
             inst.closeness = closeness
-	        local desc = inst.components.inspectable:GetDescription(inst.components.inventoryitem.owner)
-	        if desc then
-	            inst.components.inventoryitem.owner.components.talker:Say(desc)
-	        end
+            local desc = inst.components.inspectable:GetDescription(inst.components.inventoryitem.owner)
+            if desc then
+                inst.components.inventoryitem.owner.components.talker:Say(desc)
+            end
         end
-        
+
         if fxname ~= nil then
             --Don't care if there is still a reference to previous fx...
             --just let it finish on its own and remove itself
             inst.fx = SpawnPrefab(fxname)
             inst.fx.entity:AddFollower()
             inst.fx.Follower:FollowSymbol(inst.components.inventoryitem.owner.GUID, "swap_object", 80, -320, 0)
-	    end
+        end
 
         inst.SoundEmitter:PlaySound("dontstarve/common/diviningrod_ping", "ping")
         inst.SoundEmitter:SetParameter("ping", "intensity", intensity)
@@ -140,10 +140,10 @@ local function OnLoad(inst, data)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()        
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
@@ -151,39 +151,40 @@ local function fn()
     MakeInventoryPhysics(inst)
 
     inst.MiniMapEntity:SetIcon("diviningrod.png")
-    
+
     inst.AnimState:SetBank("diviningrod")
     inst.AnimState:SetBuild("diviningrod")
     inst.AnimState:PlayAnimation("dropped")
-    
+
     inst:AddTag("irreplaceable")
     inst:AddTag("nonpotatable")
     inst:AddTag("diviningrod")
     inst:AddTag("nopunch")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("inspectable")
 
     inst:AddComponent("key")
     inst.components.key.keytype = LOCKTYPE.MAXWELL
-    
+
     inst:AddComponent("inventoryitem")
     inst.components.inspectable.getstatus = describe
-    
+
     inst:AddComponent("equippable")
-    
+
     inst.components.equippable:SetOnEquip(onequip)
     inst.components.equippable:SetOnUnequip(onunequip)
 
     MakeHauntableLaunch(inst)
     
-	inst.OnSave = OnSave
-	inst.OnLoad = OnLoad
+    inst.OnSave = OnSave
+    inst.OnLoad = OnLoad
+
     return inst
 end
 

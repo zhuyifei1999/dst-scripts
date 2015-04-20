@@ -9,7 +9,8 @@ local assets=
 local prefabs =
 {
 	"meat",
-    "minotaurhorn"
+    "minotaurhorn",
+    "collapse_small",
 }
 
 local loot = 

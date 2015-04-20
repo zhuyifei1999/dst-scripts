@@ -86,6 +86,11 @@ function Spawner:SpawnWithDelay(delay)
         self.task:Cancel()
     end
     self.task = self.inst:DoTaskInTime(delay, OnReleaseChild)
+    return self.task
+end
+
+function Spawner:IsSpawnPending()
+    return self.task ~= nil
 end
 
 function Spawner:SetQueueSpawning(queued, retryperiod)

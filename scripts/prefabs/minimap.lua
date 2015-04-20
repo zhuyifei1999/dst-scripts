@@ -15,6 +15,8 @@ local MINIMAP_GROUND_PROPERTIES =
 	{ GROUND.WOODFLOOR,  { name = "map_edge",      noise_texture = "levels/textures/mini_woodfloor_noise.tex" } },
 	{ GROUND.CARPET,  	 { name = "map_edge",      noise_texture = "levels/textures/mini_carpet_noise.tex" } },
 	{ GROUND.CHECKER,  	 { name = "map_edge",      noise_texture = "levels/textures/mini_checker_noise.tex" } },
+	{ GROUND.DECIDUOUS,  { name = "map_edge",      noise_texture = "levels/textures/mini_deciduous_noise.tex"} },
+	{ GROUND.DESERT_DIRT,{ name = "map_edge",      noise_texture = "levels/textures/mini_desert_dirt_noise.tex"} },
 
 	-- { GROUND.WALL_MARSH, { name = "map_edge",      noise_texture = "levels/textures/mini_marsh_wall_noise.tex" } },
 	-- { GROUND.WALL_ROCKY, { name = "map_edge",      noise_texture = "levels/textures/mini_rocky_wall_noise.tex" } },
@@ -48,11 +50,11 @@ local assets =
 	Asset( "SHADER", fs_shader ),
 }
     
-local function GroundImage( name )
+function GroundImage( name )
 	return "levels/tiles/" .. name .. ".tex"
 end
 
-local function GroundAtlas( name )
+function GroundAtlas( name )
 	return "levels/tiles/" .. name .. ".xml"
 end
 

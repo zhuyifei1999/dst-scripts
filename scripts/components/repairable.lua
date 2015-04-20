@@ -22,16 +22,22 @@ function Repairable:OnRemoveFromEntity()
     end
 end
 
+local NEEDSREPAIRS_THRESHOLD = 0.95 -- don't complain about repairs if we're basically full.
+
 function Repairable:NeedsRepairs()
 	if self.inst.components.health then
-		return self.inst.components.health:GetPercent() < 1
-	elseif self.inst.components.workable.workleft then
-		return self.inst.components.workable.workleft < self.inst.components.workable.maxwork
-	end	
-	return false		
+		return self.inst.components.health:GetPercent() < NEEDSREPAIRS_THRESHOLD
+	elseif self.inst.components.workable and self.inst.components.workable.workleft then
+		return self.inst.components.workable.workleft < self.inst.components.workable.maxwork * NEEDSREPAIRS_THRESHOLD
+    elseif self.inst.components.perishable and self.inst.components.perishable.perishremainingtime then
+        return self.inst.components.perishable.perishremainingtime < self.inst.components.perishable.perishtime * NEEDSREPAIRS_THRESHOLD
+	end
+	return false
 end
 
 function Repairable:Repair(doer, repair_item)
+    local didrepair = false
+
 	if self.inst.components.health and self.inst.components.health:GetPercent() < 1 then
 		if repair_item.components.repairer and self.repairmaterial == repair_item.components.repairer.repairmaterial then
 			if self.inst.components.health.DoDelta then
@@ -44,13 +50,11 @@ function Repairable:Repair(doer, repair_item)
 			else
 				repair_item:Remove()
 			end
-			
-			if self.onrepaired then
-				self.onrepaired(self.inst, doer, repair_item)
-			end
-			return true
-		end
-    elseif self.inst.components.workable.workleft and self.inst.components.workable.workleft < self.inst.components.workable.maxwork then
+
+            didrepair = true
+        end
+    end
+    if self.inst.components.workable and self.inst.components.workable.workleft and self.inst.components.workable.workleft < self.inst.components.workable.maxwork then
 		if repair_item.components.repairer and self.repairmaterial == repair_item.components.repairer.repairmaterial then
 	        self.inst.components.workable:SetWorkLeft( self.inst.components.workable.workleft + repair_item.components.repairer.workrepairvalue )
 			
@@ -60,12 +64,28 @@ function Repairable:Repair(doer, repair_item)
 				repair_item:Remove()
 			end
 
-			if self.onrepaired then
-				self.onrepaired(self.inst, doer, repair_item)
-			end
-			return true
+            didrepair = true
         end
-	end
+    end
+    if self.inst.components.perishable and self.inst.components.perishable.perishremainingtime and self.inst.components.perishable.perishremainingtime < self.inst.components.perishable.perishtime then
+        if repair_item.components.repairer and self.repairmaterial == repair_item.components.repairer.repairmaterial then
+            self.inst.components.perishable:SetPercent( self.inst.components.perishable:GetPercent() + repair_item.components.repairer.perishrepairpercent )
+
+            if repair_item.components.stackable then
+                repair_item.components.stackable:Get():Remove()
+            else
+                repair_item:Remove()
+            end
+
+            didrepair = true
+        end
+    end
+
+    if didrepair and self.onrepaired ~= nil then
+        self.onrepaired(self.inst, doer, repair_item)
+    end
+
+    return didrepair
 end
 
 return Repairable

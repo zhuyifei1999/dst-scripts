@@ -30,6 +30,7 @@ AddRoom("BGRocky", {
 										flint=0.5,
 										rock1=1,
 										rock2=1,
+										rock_ice=0.4,
 										tallbirdnest=0.008,
 					                },
 					            }
@@ -49,9 +50,65 @@ AddRoom("Rocky", {
 					                {
 					                    rock1 = 2,
 					                    rock2 = 2,
+										rock_ice = 1,
 					                    tallbirdnest=.1,
 					                    spiderden=.01,
 					                    blue_mushroom = .002,
 					                },
+					            }
+					})
+AddRoom("RockyBuzzards", {
+					colour={r=.55,g=.75,b=.75,a=.50},
+					value = GROUND.ROCKY,
+					tags = {"ExitPiece", "Chester_Eyebone"},
+					contents =  {
+					                distributepercent = .1,
+					                distributeprefabs=
+					                {
+					                    rock1 = 2,
+					                    rock2 = 2,
+					                    buzzardspawner = .1,
+					                    blue_mushroom = .002,
+					                },
+					            }
+					})
+
+AddRoom("GenericRockyNoThreat", {
+					colour={r=.55,g=.75,b=.75,a=.50},
+					value = GROUND.ROCKY,
+					tags = {"ExitPiece", "Chester_Eyebone"},
+					contents =  {
+					                distributepercent = .1,
+					                distributeprefabs=
+					                {
+					                    rock1 = 2,
+					                    rock2 = 2,
+					                    rock_ice = .75,
+					                    rocks = 1,
+					                    flint = 1,
+					                    blue_mushroom = .002,
+					                    green_mushroom = .002,
+					                    red_mushroom = .002,
+					                },
+					            }
+					})
+
+AddRoom("MolesvilleRocky", {
+					colour={r=.55,g=.75,b=.75,a=.50},
+					value = GROUND.ROCKY, 
+					contents =  {
+									distributepercent = 0.1,
+									distributeprefabs =
+									{
+										marsh_bush = 0.2,
+										rock1 = 1,
+										rock2 = 1,
+										rock_ice = .3,
+										rocks = .5,
+										flint = .1,
+										grass = 0.1,
+										molehill = 1,
+										
+									},
 					            }
 					})

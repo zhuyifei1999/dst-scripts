@@ -116,6 +116,7 @@ local function OnBurnt(inst, imm)
 		inst:RemoveComponent("propagator")
 		inst:RemoveComponent("growable")
         inst:RemoveComponent("hauntable")
+        inst:RemoveTag("shelter")
         MakeHauntableWork(inst)
 
 		inst.components.lootdropper:SetLoot({})
@@ -136,7 +137,7 @@ local function OnBurnt(inst, imm)
 		inst:DoTaskInTime( 0.5, changes)
 	end    
 	inst.AnimState:PlayAnimation(inst.anims.burnt, true)
-    inst.AnimState:SetRayTestOnBB(true);
+    inst.AnimState:SetRayTestOnBB(true)
     inst:AddTag("burnt")
 
     inst.highlight_override = burnt_highlight_override
@@ -166,6 +167,9 @@ local function SetShort(inst)
 	end
 		    
     inst.components.lootdropper:SetLoot(GetBuild(inst).short_loot)
+
+    inst:AddTag("shelter")
+
     Sway(inst)
 end
 
@@ -183,6 +187,9 @@ local function SetNormal(inst)
 	end
 	
     inst.components.lootdropper:SetLoot(GetBuild(inst).normal_loot)
+
+    inst:AddTag("shelter")
+
     Sway(inst)
 end
 
@@ -199,6 +206,9 @@ local function SetTall(inst)
 	end
 	
     inst.components.lootdropper:SetLoot(GetBuild(inst).tall_loot)
+
+    inst:AddTag("shelter")
+
     Sway(inst)
 end
 
@@ -220,6 +230,8 @@ local function SetOld(inst)
 	else
         inst.components.lootdropper:SetLoot({})
     end
+
+    inst:RemoveTag("shelter")
 
     Sway(inst)
 end
@@ -258,7 +270,7 @@ local function chop_tree(inst, chopper, chops)
     end
 
     local x, y, z = inst.Transform:GetWorldPosition()
-    SpawnPrefab("pine_needles").Transform:SetPosition(x, y + math.random() * 2, z)
+    SpawnPrefab("pine_needles_chop").Transform:SetPosition(x, y + math.random() * 2, z)
 
     inst.AnimState:PlayAnimation(inst.anims.chop)
     inst.AnimState:PushAnimation(inst.anims.sway1, true)
@@ -273,7 +285,7 @@ local function chop_tree(inst, chopper, chops)
 	end
 end
 
-local function chop_down_tree_shake(inst, chopper)
+local function chop_down_tree_shake(inst)
     local sz = inst.components.growable ~= nil and inst.components.growable.stage > 2 and .5 or .25
     for i, v in ipairs(AllPlayers) do
         v:ShakeCamera(CAMERASHAKE.FULL, .25, .03, sz, inst, 6)
@@ -281,7 +293,7 @@ local function chop_down_tree_shake(inst, chopper)
 end
 
 local function find_leif_spawn_target(item) 
-    if item.components.growable ~= nil and item.components.growable.stage <= 3 then
+    if item.components.growable ~= nil and item.components.growable.stage <= 3 and not item:HasTag("birchnut") then
         return item:HasTag("tree") and not item:HasTag("stump") and not item:HasTag("burnt") and not item.noleif
     end
     return false
@@ -314,9 +326,11 @@ end
 local function chop_down_tree(inst, chopper)
     inst:RemoveComponent("burnable")
     MakeSmallBurnable(inst)
+	MakeDragonflyBait(inst, 1)
     inst:RemoveComponent("propagator")
     MakeSmallPropagator(inst)
     inst:RemoveComponent("workable")
+    inst:RemoveTag("shelter")
     inst:RemoveComponent("hauntable")
     MakeHauntableIgnite(inst)
     inst.SoundEmitter:PlaySound("dontstarve/forest/treefall")
@@ -333,7 +347,7 @@ local function chop_down_tree(inst, chopper)
         inst.components.lootdropper:DropLoot(pt + TheCamera:GetRightVec())
     end
 
-    inst:DoTaskInTime(.4, chop_down_tree_shake, chopper)
+    inst:DoTaskInTime(.4, chop_down_tree_shake)
     
     RemovePhysicsColliders(inst)
     inst.AnimState:PushAnimation(inst.anims.stump)
@@ -433,6 +447,7 @@ local function onload(inst, data)
         elseif data.stump then
             inst:RemoveComponent("burnable")
             MakeSmallBurnable(inst)
+			MakeDragonflyBait(inst, 1)
             inst:RemoveComponent("workable")
             inst:RemoveComponent("propagator")
             MakeSmallPropagator(inst)
@@ -442,6 +457,7 @@ local function onload(inst, data)
             RemovePhysicsColliders(inst)
             inst.AnimState:PlayAnimation(inst.anims.stump)
             inst:AddTag("stump")
+            inst:RemoveTag("shelter")
             
     		inst:AddComponent("workable")
     	    inst.components.workable:SetWorkAction(ACTIONS.DIG)
@@ -472,8 +488,10 @@ local function OnEntityWake(inst)
         if not inst.components.burnable then
             if inst:HasTag("stump") then
                 MakeSmallBurnable(inst) 
+				MakeDragonflyBait(inst, 1)
             else
-                MakeLargeBurnable(inst)
+                MakeLargeBurnable(inst, TUNING.TREE_BURN_TIME)
+				MakeDragonflyBait(inst, 1)
                 inst.components.burnable:SetFXLevel(5)
                 inst.components.burnable:SetOnBurntFn(tree_burnt)
             end
@@ -483,7 +501,7 @@ local function OnEntityWake(inst)
             if inst:HasTag("stump") then
                 MakeSmallPropagator(inst)
             else
-                MakeLargePropagator(inst)
+                MakeMediumPropagator(inst)
             end
         end
     elseif inst:HasTag("burnt") then
@@ -515,9 +533,10 @@ local function tree(name, build, stage, data)
             inst.MiniMapEntity:SetIcon("evergreen_lumpy.png")
         end
         inst.MiniMapEntity:SetPriority(-1)
-       
+
         inst:AddTag("tree")
         inst:AddTag("workable")
+        inst:AddTag("shelter")
 
         inst.build = build
         inst.AnimState:SetBuild(GetBuild(inst).file)
@@ -525,35 +544,29 @@ local function tree(name, build, stage, data)
 
         inst:SetPrefabName(GetBuild(inst).prefab_name)
 
+        MakeDragonflyBait(inst, 1)
         MakeSnowCoveredPristine(inst)
 
         if data == "stump" then
             RemovePhysicsColliders(inst)
-            inst.AnimState:PlayAnimation(inst.anims.stump)
             inst:AddTag("stump")
         end
+
+        inst.entity:SetPristine()
 
         if not TheWorld.ismastersim then
             return inst
         end
 
-        inst.entity:SetPristine()
-
-        local l_stage = stage
-        if l_stage == 0 then
-            l_stage = math.random(1,3)
-        end
-
         local color = 0.5 + math.random() * 0.5
         inst.AnimState:SetMultColour(color, color, color, 1)
-        
+
         -------------------        
-        MakeLargeBurnable(inst)
+        MakeLargeBurnable(inst, TUNING.TREE_BURN_TIME)
         inst.components.burnable:SetFXLevel(5)
         inst.components.burnable:SetOnBurntFn(tree_burnt)
-        
-        MakeLargePropagator(inst)
-        
+        MakeMediumPropagator(inst)
+
         -------------------        
         inst:AddComponent("inspectable")
         inst.components.inspectable.getstatus = inspect_tree
@@ -570,8 +583,9 @@ local function tree(name, build, stage, data)
         ---------------------        
         inst:AddComponent("growable")
         inst.components.growable.stages = growth_stages
-        inst.components.growable:SetStage(l_stage)
+        inst.components.growable:SetStage(stage == 0 and math.random(1, 3) or stage)
         inst.components.growable.loopstages = true
+        inst.components.growable.springgrowth = true
         inst.components.growable:StartGrowing()
 
         inst.growfromseed = handler_growfromseed
@@ -613,10 +627,10 @@ local function tree(name, build, stage, data)
         end)
 
         ---------------------        
-     
+
         inst.OnSave = onsave
         inst.OnLoad = onload
-        
+
         MakeSnowCovered(inst)
         ---------------------        
 
@@ -631,6 +645,7 @@ local function tree(name, build, stage, data)
             inst.components.workable:SetWorkAction(ACTIONS.DIG)
             inst.components.workable:SetOnFinishCallback(dig_up_stump)
             inst.components.workable:SetWorkLeft(1)
+            inst.AnimState:PlayAnimation(inst.anims.stump)
         else
             inst.AnimState:SetTime(math.random() * 2)
             if data == "burnt" then
@@ -648,11 +663,11 @@ local function tree(name, build, stage, data)
 end
 
 return tree("evergreen", "normal", 0),
-		tree("evergreen_normal", "normal", 2),
+        tree("evergreen_normal", "normal", 2),
         tree("evergreen_tall", "normal", 3),
         tree("evergreen_short", "normal", 1),
-		tree("evergreen_sparse", "sparse", 0),
-		tree("evergreen_sparse_normal", "sparse", 2),
+        tree("evergreen_sparse", "sparse", 0),
+        tree("evergreen_sparse_normal", "sparse", 2),
         tree("evergreen_sparse_tall", "sparse", 3),
         tree("evergreen_sparse_short", "sparse", 1),
         tree("evergreen_burnt", "normal", 0, "burnt"),

@@ -81,6 +81,8 @@ end
 local function HasValidHome(inst)
     return inst.components.homeseeker and 
        inst.components.homeseeker.home and 
+       not inst.components.homeseeker.home:HasTag("fire") and
+       not inst.components.homeseeker.home:HasTag("burnt") and
        inst.components.homeseeker.home:IsValid()
 end
 

@@ -1,16 +1,15 @@
 local assets =
 {
-	Asset("ANIM", "anim/gravestones.zip"),
+    Asset("ANIM", "anim/gravestones.zip"),
 }
 
 local prefabs =
 {
-	"ghost",
-	"mound", 
+    "ghost",
+    "mound",
 }
 
 local function onsave(inst, data)
-	
 	if inst.mound then
 		data.mounddata = inst.mound:GetSaveRecord()
 	end
@@ -18,7 +17,7 @@ local function onsave(inst, data)
 	if inst.setepitaph then
 		data.setepitaph = inst.setepitaph
 	end
-end	
+end
 
 local function onload(inst, data, newents)
 	if data then
@@ -35,14 +34,14 @@ local function onload(inst, data, newents)
 	    	inst.setepitaph = data.setepitaph
 		end
 	end
-end	
+end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddMiniMapEntity()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
 
     MakeObstaclePhysics(inst, .25)
@@ -54,12 +53,12 @@ local function fn()
     inst.AnimState:SetBank("gravestone")
     inst.AnimState:SetBuild("gravestones")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-    
     inst.AnimState:PlayAnimation("grave"..tostring(math.random(4)))
 
     inst:AddComponent("inspectable")	
@@ -71,8 +70,8 @@ local function fn()
     --pos.x = pos.x -.407
     --pos.z = pos.z -.407
 
-	inst.OnLoad = onload
-	inst.OnSave = onsave
+    inst.OnLoad = onload
+    inst.OnSave = onsave
 
     inst.mound.Transform:SetPosition((TheCamera:GetDownVec()*.5):Get())
 

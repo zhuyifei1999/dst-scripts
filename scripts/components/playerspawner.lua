@@ -169,7 +169,7 @@ function self:SpawnAtLocation(inst, player, x, y, z, isloading)
     player.Physics:Teleport(x, y, z)
 
     -- Spawn a light if it's dark
-    if not inst.state.isday then
+    if not inst.state.isday and #TheSim:FindEntities(x, y, z, 4, { "spawnlight" }) <= 0 then
         SpawnPrefab("spawnlight_multiplayer").Transform:SetPosition(x, y, z)
     end
 

@@ -1,210 +1,370 @@
-local function DoDry(inst)
-    local dryer = inst.components.dryer
-    if dryer then
-	    dryer.task = nil
-        --Force the time to be done in case it's out of sync
-        --(also triggers ondried)
-        dryer.targettime = GetTime() - 1
-    	
-	    if dryer.ondonecooking then
-		    dryer.ondonecooking(inst, dryer.product)
-	    end
-    end
-end
-
 local function ondried(self)
-    local time = GetTime()
-    if self.product ~= nil and self.targettime ~= nil and self.targettime < time then
+    if self.product == nil then
+        self.inst:RemoveTag("dried")
+        self.inst:RemoveTag("drying")
+        self.inst:AddTag("candry")
+    elseif self.ingredient == nil then
         self.inst:AddTag("dried")
         self.inst:RemoveTag("drying")
         self.inst:RemoveTag("candry")
     else
         self.inst:RemoveTag("dried")
-        if self.targettime ~= nil and self.targettime >= time then
-            self.inst:AddTag("drying")
-            self.inst:RemoveTag("candry")
-        else
-            self.inst:RemoveTag("drying")
-            self.inst:AddTag("candry")
-        end
+        self.inst:AddTag("drying")
+        self.inst:RemoveTag("candry")
     end
 end
 
 local Dryer = Class(function(self, inst)
     self.inst = inst
-    inst:AddTag("candry")
-    self.targettime = nil
+
     self.ingredient = nil
     self.product = nil
-    self.onstartcooking = nil
-    self.oncontinuecooking = nil
-    self.ondonecooking = nil
-    self.oncontinuedone = nil
+    self.remainingtime = nil
+    self.tasktotime = nil
+    self.task = nil
+
+    self.onstartdrying = nil
+    self.ondonedrying = nil
     self.onharvest = nil
+
+    self.protectedfromrain = nil
+    self.watchingrain = nil
 end,
 nil,
 {
-    targettime = ondried,
+    ingredient = ondried,
     product = ondried,
 })
 
+--------------------------------------------------------------------------
+
+local function OnIsRaining(self, israining)
+    if israining then
+        self:Pause()
+    else
+        self:Resume()
+    end
+end
+
+local function StartWatchingRain(self)
+    if not self.watchingrain then
+        self.watchingrain = true
+        self:WatchWorldState("israining", OnIsRaining)
+    end
+end
+
+local function StopWatchingRain(self)
+    if self.watchingrain then
+        self.watchingrain = nil
+        self:StopWatchingWorldState("israining", OnIsRaining)
+    end
+end
+
+--------------------------------------------------------------------------
+
 function Dryer:OnRemoveFromEntity()
+    if self.task ~= nil then
+        self.task:Cancel()
+    end
+    StopWatchingRain(self)
     self.inst:RemoveTag("dried")
     self.inst:RemoveTag("drying")
     self.inst:RemoveTag("candry")
 end
 
-function Dryer:SetStartDryingFn(fn)
-    self.onstartcooking = fn
-end
+--------------------------------------------------------------------------
 
-function Dryer:SetContinueDryingFn(fn)
-    self.oncontinuecooking = fn
+function Dryer:SetStartDryingFn(fn)
+    self.onstartdrying = fn
 end
 
 function Dryer:SetDoneDryingFn(fn)
-    self.ondonecooking = fn
-end
-
-function Dryer:SetContinueDoneFn(fn)
-    self.oncontinuedone = fn
+    self.ondonedrying = fn
 end
 
 function Dryer:SetOnHarvestFn(fn)
     self.onharvest = fn
 end
 
-function Dryer:GetTimeToDry()
-	if self.targettime then
-		return self.targettime - GetTime()
-	end
-	return 0
+--------------------------------------------------------------------------
+
+function Dryer:CanDry(dryable)
+    return self.product == nil and dryable ~= nil and dryable.components.dryable ~= nil
 end
 
 function Dryer:IsDrying()
-    return self.targettime ~= nil and self.targettime >= GetTime()
+    return self.ingredient ~= nil
 end
 
 function Dryer:IsDone()
-    return self.product ~= nil and self.targettime ~= nil and self.targettime < GetTime()
+    return self.product ~= nil and self.ingredient == nil
 end
 
-function Dryer:CanDry(dryable)
-    return self.inst:HasTag("candry") and dryable:HasTag("dryable")
+function Dryer:GetTimeToDry()
+    return self.ingredient ~= nil and (self.tasktotime ~= nil and self.tasktotime - GetTime() or self.remainingtime) or 0
+end
+
+function Dryer:GetTimeToSpoil()
+    return self.ingredient == nil and (self.tasktotime ~= nil and self.tasktotime - GetTime() or self.remainingtime) or 0
+end
+
+function Dryer:IsPaused()
+    return self.remainingtime ~= nil
+end
+
+--------------------------------------------------------------------------
+
+local function DoSpoil(inst, self)
+    self.ingredient = nil
+    self.product = nil
+    self.remainingtime = nil
+    self.tasktotime = nil
+    self.task = nil
+    StopWatchingRain(self)
+
+    local loot = SpawnPrefab("spoiled_food")
+    if loot ~= nil then
+        loot.Transform:SetPosition(inst.Transform:GetWorldPosition())
+        if loot.components.moisturelistener ~= nil then
+            loot.components.moisturelistener.moisture = TheWorld.state.wetness
+            loot.components.moisturelistener:DoUpdate()
+        end
+    end
+
+    if self.onharvest ~= nil then
+        self.onharvest(inst)
+    end
+end
+
+local function DoDry(inst, self)
+    self.ingredient = nil
+    self.remainingtime = TUNING.PERISH_PRESERVED
+    self.tasktotime = nil
+    self.task = nil
+    StopWatchingRain(self)
+
+    self:Resume()
+
+    if self.ondonedrying ~= nil then
+        self.ondonedrying(inst, self.product)
+    end
 end
 
 function Dryer:StartDrying(dryable)
-	if self:CanDry(dryable) then
-	    self.ingredient = dryable.prefab
-	    if self.onstartcooking then
-		    self.onstartcooking(self.inst, dryable.prefab)
-	    end
-	    local cooktime = dryable.components.dryable:GetDryingTime()
-	    self.product = dryable.components.dryable:GetProduct()
-	    self.targettime = GetTime() + cooktime
-	    self.task = self.inst:DoTaskInTime(cooktime, DoDry)
-	    dryable:Remove()
-		return true
-	end
+    if not self:CanDry(dryable) then
+        return false
+    end
+
+    self.ingredient = dryable.prefab
+    self.product = dryable.components.dryable:GetProduct()
+    self.remainingtime = dryable.components.dryable:GetDryTime()
+    self.tasktotime = nil
+    if self.task ~= nil then
+        self.task:Cancel()
+        self.task = nil
+    end
+    StopWatchingRain(self)
+
+    if self.ingredient == nil or self.product == nil or self.remainingtime == nil then
+        self.ingredient = nil
+        self.product = nil
+        self.remainingtime = nil
+        return false
+    end
+
+    dryable:Remove()
+
+    if not TheWorld.state.israining or self.protectedfromrain then
+        self:Resume()
+    end
+    if not self.protectedfromrain then
+        StartWatchingRain(self)
+    end
+    if self.onstartdrying ~= nil then
+        self.onstartdrying(self.inst, self.ingredient)
+    end
+    return true
 end
 
-function Dryer:OnSave()
-    
+function Dryer:StopDrying(reason)
+    if self.product == nil then
+        return
+    end
+
+    if self.task ~= nil then
+        self.task:Cancel()
+        self.task = nil
+    end
+    StopWatchingRain(self)
+
+    if reason == "fire" then
+        local loot = SpawnPrefab(self.product)
+        if loot ~= nil then
+            loot.Transform:SetPosition(self.inst.Transform:GetWorldPosition())
+        end
+
+        self.ingredient = nil
+        self.product = nil
+        self.remainingtime = nil
+        self.tasktotime = nil
+    elseif self.ingredient ~= nil then
+        DoDry(self.inst, self)
+    else
+        DoSpoil(self.inst, self)
+    end
+end
+
+function Dryer:Pause()
+    if self.tasktotime ~= nil then
+        self.remainingtime = math.max(0, self.tasktotime - GetTime())
+        self.tasktotime = nil
+        if self.task ~= nil then
+            self.task:Cancel()
+            self.task = nil
+        end
+    end
+end
+
+function Dryer:Resume()
+    if self.remainingtime ~= nil then
+        if self.task ~= nil then
+            self.task:Cancel()
+        end
+        self.task = self.inst:DoTaskInTime(self.remainingtime, self.ingredient ~= nil and DoDry or DoSpoil, self)
+        self.tasktotime = GetTime() + self.remainingtime
+        self.remainingtime = nil
+    end
+end
+
+function Dryer:Harvest(harvester)
+    if not self:IsDone() or harvester == nil or harvester.components.inventory == nil then
+        return false
+    end
+
+    local loot = SpawnPrefab(self.product)
+    if loot ~= nil then
+        if loot.components.perishable ~= nil then
+            loot.components.perishable:SetPercent(self:GetTimeToSpoil() / TUNING.PERISH_PRESERVED)
+            loot.components.perishable:StartPerishing()
+        end
+        if loot.components.moisturelistener ~= nil then
+            loot.components.moisturelistener.moisture = self.inst:GetCurrentMoisture()
+            loot.components.moisturelistener:UpdateMoisture(0)
+        end
+        harvester.components.inventory:GiveItem(loot, nil, self.inst:GetPosition())
+    end
+
+    self.ingredient = nil
+    self.product = nil
+    self.remainingtime = nil
+    self.tasktotime = nil
+    if self.task ~= nil then
+        self.task:Cancel()
+        self.task = nil
+    end
+    StopWatchingRain(self)
+
+    if self.onharvest ~= nil then
+        self.onharvest(self.inst)
+    end
+    return true
+end
+
+--------------------------------------------------------------------------
+-- Update
+
+function Dryer:LongUpdate(dt)
+    if self.product == nil then
+        return
+    end
+
+    self:Pause()
+
+    if self.remainingtime > dt then
+        self.remainingtime = self.remainingtime - dt
+    elseif self.ingredient ~= nil then
+        dt = dt - self.remainingtime
+        if TUNING.PERISH_PRESERVED > dt then
+            DoDry(self.inst, self)
+            self:Pause()
+            self.remainingtime = math.max(0, self.remainingtime - dt)
+        else
+            DoSpoil(self.inst, self)
+        end
+    else
+        DoSpoil(self.inst, self)
+    end
+
     if self:IsDrying() then
-		local data = {}
-		data.cooking = true
-		data.ingredient = self.ingredient
-		data.product = self.product
-		data.time = self:GetTimeToDry()
-		return data
-    elseif self:IsDone() then
-		local data = {}
-		data.product = self.product
-		data.done = true
-		return data		
+        if not TheWorld.state.israining or self.protectedfromrain then
+            self:Resume()
+        end
+        if not self.protectedfromrain then
+            StartWatchingRain(self)
+        end
+    else
+        self:Resume()
+    end
+end
+
+--------------------------------------------------------------------------
+-- Save/Load
+
+function Dryer:OnSave()
+    if self.product ~= nil then
+        local remainingtime = (self.tasktotime ~= nil and self.tasktotime - GetTime() or self.remainingtime) or 0
+        return
+        {
+            ingredient = self.ingredient,
+            product = self.product,
+            remainingtime = remainingtime > 0 and remainingtime or nil,
+        }
     end
 end
 
 function Dryer:OnLoad(data)
-    --self.produce = data.produce
-    if data.cooking then
-		self.product = data.product
-		self.ingredient = data.ingredient
-		if self.oncontinuecooking then
-			self.oncontinuecooking(self.inst, self.ingredient)
-			self.targettime = GetTime() + data.time
-			self.task = self.inst:DoTaskInTime(data.time, DoDry)
-		end
-    elseif data.done then
-		self.targettime = GetTime() - 1
-		self.product = data.product
-		if self.oncontinuedone then
-			self.oncontinuedone(self.inst, self.product)
-		end
+    if data.product ~= nil then
+        self.ingredient = data.ingredient
+        self.product = data.product
+        self.remainingtime = data.remainingtime or 0
+        self.tasktotime = nil
+        if self.task ~= nil then
+            self.task:Cancel()
+            self.task = nil
+        end
+        StopWatchingRain(self)
+
+        if self:IsDrying() then
+            if not TheWorld.state.israining or self.protectedfromrain then
+                self:Resume()
+            end
+            if not self.protectedfromrain then
+                StartWatchingRain(self)
+            end
+            if self.onstartdrying ~= nil then
+                self.onstartdrying(self.inst, self.ingredient)
+            end
+        else
+            self:Resume()
+            if self.ondonedrying ~= nil then
+                self.ondonedrying(self.inst, self.product)
+            end
+        end
     end
 end
+
+--------------------------------------------------------------------------
+-- Debug
 
 function Dryer:GetDebugString()
-    local str = nil
-    
-	if self:IsDrying() then 
-		str = "COOKING" 
-	elseif self:IsDone() then
-		str = "FULL"
-	else
-		str = "EMPTY"
-	end
-    if self.targettime then
-        str = str.." ("..tostring(self.targettime - GetTime())..")"
-    end
-    
-    if self.product then
-		str = str.. " ".. self.product
-    end
-    
-	return str
+    return ((self:IsDrying() and "DRYING ") or
+            (self:IsDone() and "DRIED ") or
+            "EMPTY ")
+        ..(self.product or "<none>")
+        ..(self:IsPaused() and " PAUSED" or "")
+        ..string.format(" drytime: %2.2f spoiltime: %2.2f", self:GetTimeToDry(), self:GetTimeToSpoil())
 end
 
-function Dryer:Harvest( harvester )
-	if self:IsDone() then
-		if self.onharvest then
-			self.onharvest(self.inst)
-		end
-		if self.product then
-			if harvester and harvester.components.inventory then
-				local loot = SpawnPrefab(self.product)
-				if loot then
-					if loot and loot.components.perishable then
-					    loot.components.perishable:SetPercent(1) --always full perishable
-					end
-					harvester.components.inventory:GiveItem(loot, nil, self.inst:GetPosition())
-				end
-			end
-			self.product = nil
-		end
-		
-		return true
-	end
-end
-
-function Dryer:LongUpdate(dt)
-	if self:IsDrying() then
-		if self.task then
-			self.task:Cancel()
-			self.task = nil
-		end
-
-		local time_to_wait = self.targettime - GetTime() - dt
-		if time_to_wait <= 0 then
-			self.targettime = GetTime()
-			DoDry(self.inst)
-		else
-			self.targettime = GetTime() + time_to_wait
-			self.task = self.inst:DoTaskInTime(time_to_wait, DoDry)
-		end
-
-
-	end
-end
+--------------------------------------------------------------------------
 
 return Dryer

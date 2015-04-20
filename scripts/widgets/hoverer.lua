@@ -1,3 +1,4 @@
+require("constants")
 local Text = require "widgets/text"
 local Widget = require "widgets/widget"
 
@@ -40,8 +41,12 @@ function HoverText:OnUpdate()
     end
     
     local str = nil
+    local colour = nil
     if self.isFE == false then 
         str = self.owner.HUD.controls:GetTooltip() or self.owner.components.playercontroller:GetHoverTextOverride()
+        if self.owner.HUD.controls:GetTooltip() then
+            colour = self.owner.HUD.controls:GetTooltipColour()
+        end
     else
         str = self.owner:GetTooltip()
     end
@@ -55,10 +60,18 @@ function HoverText:OnUpdate()
         if lmb then
             
             str = lmb:GetActionString()
+
+            if not colour and lmb.target then
+                colour = (lmb.target and lmb.target:GetIsWet()) and WET_TEXT_COLOUR or NORMAL_TEXT_COLOUR
+                if lmb.invobject and not (lmb.invobject.components.weapon or lmb.invobject.components.tool) then
+                    colour = (lmb.invobject and lmb.invobject:GetIsWet()) and WET_TEXT_COLOUR or NORMAL_TEXT_COLOUR
+                end
+            elseif not colour and lmb.invobject then
+                colour = (lmb.invobject and lmb.invobject:GetIsWet()) and WET_TEXT_COLOUR or NORMAL_TEXT_COLOUR
+            end
             
             if lmb.target and lmb.invobject == nil and lmb.target ~= lmb.doer then
                 local name = lmb.target:GetDisplayName() or (lmb.target.components.named and lmb.target.components.named.name)
-                
                 
                 if name then
                     local adjective = lmb.target:GetAdjective()
@@ -96,7 +109,7 @@ function HoverText:OnUpdate()
                 if lmb and lmb.target and lmb.target:HasTag("player") then
                     self.text:SetColour(unpack(lmb.target.playercolour))
                 else
-                    self.text:SetColour(1,1,1,1)
+                    self.text:SetColour(unpack(colour or NORMAL_TEXT_COLOUR))
                 end
                 self.text:SetString(str)
                 self.text:Show()

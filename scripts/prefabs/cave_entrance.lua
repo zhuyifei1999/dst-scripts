@@ -103,9 +103,9 @@ local function Open(inst)
     inst.open = true
 
     inst.name = STRINGS.NAMES.CAVE_ENTRANCE_OPEN
-	if SaveGameIndex:GetCurrentMode() == "cave" then
+	--[[if SaveGameIndex:GetCurrentMode() == "cave" then
         inst.name = STRINGS.NAMES.CAVE_ENTRANCE_OPEN_CAVE
-    end
+    end]]
 	inst:RemoveComponent("lootdropper")
 
 	inst.MiniMapEntity:SetIcon("cave_open.png")
@@ -159,9 +159,9 @@ local function Close(inst)
 	inst.components.lootdropper:SetLoot({"rocks", "rocks", "flint", "flint", "flint"})
 
     inst.name = STRINGS.NAMES.CAVE_ENTRANCE_CLOSED
-	if SaveGameIndex:GetCurrentMode() == "cave" then
+	--[[if SaveGameIndex:GetCurrentMode() == "cave" then
         inst.name = STRINGS.NAMES.CAVE_ENTRANCE_CLOSED_CAVE
-    end
+    end]]
 
     inst.open = false
 end      
@@ -188,13 +188,13 @@ local function GetStatus(inst)
     if inst.open then
         return "OPEN"
     end
-end  
+end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
     inst.entity:AddMiniMapEntity()
 
@@ -208,33 +208,33 @@ local function fn()
 
     MakeObstaclePhysics(inst, 1)
 
-	inst.MiniMapEntity:SetIcon("cave_closed.png")
+    inst.MiniMapEntity:SetIcon("cave_closed.png")
 
     inst.AnimState:SetBank("cave_entrance")
     inst.AnimState:SetBuild("cave_entrance")
 
     inst.GetActivateVerb = GetVerb
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-
     inst:AddComponent("inspectable")
-	inst.components.inspectable:RecordViews()
-	inst.components.inspectable.getstatus = GetStatus
+    inst.components.inspectable:RecordViews()
+    inst.components.inspectable.getstatus = GetStatus
 
-	inst:AddComponent( "childspawner" )
-	inst.components.childspawner:SetRegenPeriod(60)
-	inst.components.childspawner:SetSpawnPeriod(.1)
-	inst.components.childspawner:SetMaxChildren(6)
-	inst.components.childspawner.childname = "bat"
+    inst:AddComponent( "childspawner" )
+    inst.components.childspawner:SetRegenPeriod(60)
+    inst.components.childspawner:SetSpawnPeriod(.1)
+    inst.components.childspawner:SetMaxChildren(6)
+    inst.components.childspawner.childname = "bat"
 
     Close(inst)
-	inst.OnSave = onsave
-	inst.OnLoad = onload
-	
+    inst.OnSave = onsave
+    inst.OnLoad = onload
+
     return inst
 end
 

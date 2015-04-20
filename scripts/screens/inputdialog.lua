@@ -59,7 +59,6 @@ local InputDialogScreen = Class(Screen, function(self, title, buttons)
 	self.edit_text:SetFocusedImage( self.edit_text_bg, "images/textboxes.xml", "textbox_long_over.tex", "textbox_long.tex" )
 	self.edit_text:SetTextLengthLimit( STRING_MAX_LENGTH )
 	self.edit_text:SetCharacterFilter( VALID_CHARS )
-	self.edit_text:SetAllowClipboardPaste( true )
 	
     local spacing = 200
 

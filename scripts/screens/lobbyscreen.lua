@@ -104,16 +104,7 @@ local LobbyScreen = Class(Screen, function(self, profile, cb, no_backbutton, def
 				self.randomcharbutton:Disable()
 				local all_chars = GetActiveCharacterList()
 				local rand_char = all_chars[math.random(#all_chars)]
-				local num_attempts = 0
-				while not self.profile:IsCharacterUnlocked(rand_char) do
-					rand_char = all_chars[math.random(#all_chars)]
-					num_attempts = num_attempts + 1
-					if num_attempts > 10 then 
-						rand_char = "wilson"
-						break
-					end
-				end
-				if self.cb then
+				if self.cb ~= nil then
 					self.cb(rand_char, nil) --2nd parameter is skin
 				end
 			end
@@ -258,17 +249,17 @@ function LobbyScreen:SetOffset(offset)
 	self.offset = offset
 	for k = 1,3 do
 		local character = self:GetCharacterForPortrait(k)
-		
+
 		self.portrait_bgs[k]:GetAnimState():PlayAnimation(k == self.portrait_idx and "selected" or "idle", true)
 
-		local atlas = (table.contains(MODCHARACTERLIST, character) and "images/selectscreen_portraits/"..character..".xml") or "images/selectscreen_portraits.xml"
-		local atlas_silho = (table.contains(MODCHARACTERLIST, character) and "images/selectscreen_portraits/"..character.."_silho.xml") or "images/selectscreen_portraits.xml"
-
-		if not self.profile:IsCharacterUnlocked(character) then
-			self.portraits[k]:SetTexture( atlas_silho, character.."_silho.tex")
-		else
-			self.portraits[k]:SetTexture( atlas, character..".tex")
-		end
+        local islocked = false
+        if islocked then
+            local atlas_silho = table.contains(MODCHARACTERLIST, character) and ("images/selectscreen_portraits/"..character.."_silho.xml") or "images/selectscreen_portraits.xml"
+            self.portraits[k]:SetTexture(atlas_silho, character.."_silho.tex")
+        else
+            local atlas = table.contains(MODCHARACTERLIST, character) and ("images/selectscreen_portraits/"..character..".xml") or "images/selectscreen_portraits.xml"
+            self.portraits[k]:SetTexture(atlas, character..".tex")
+        end
 	end	
 end
 
@@ -291,25 +282,17 @@ function LobbyScreen:OnControl(control, down)
 		return true
     end
 
-    if not down and control == CONTROL_INSPECT then
+    if not down and control == CONTROL_MENU_MISC_2 then
         local all_chars = GetActiveCharacterList()
         local rand_char = all_chars[math.random(#all_chars)]
-        local num_attempts = 0
-        while not self.profile:IsCharacterUnlocked(rand_char) do
-            rand_char = all_chars[math.random(#all_chars)]
-            num_attempts = num_attempts + 1
-            if num_attempts > 10 then 
-                rand_char = "wilson"
-                break
-            end
-        end
-        if self.cb then
+        if self.cb ~= nil then
             self.cb(rand_char, nil) --2nd parameter is skin
         end
         return true
     end
 
-    if down then --#srosen this list isn't large enough to warrant speed-scroll (nor is it presented as the same style as things that do have it)
+    --#srosen this list isn't large enough to warrant speed-scroll (nor is it presented as the same style as things that do have it)
+    --if down then 
         -- if control == CONTROL_SCROLLBACK then
         --     self:Scroll(-1)
         --     self:SelectPortrait(self.portrait_idx)
@@ -321,7 +304,7 @@ function LobbyScreen:OnControl(control, down)
         --     TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
         --     return true
         -- end
-    end
+    --end
 end
 
  function LobbyScreen:DoConfirmQuit() 	
@@ -385,7 +368,7 @@ function LobbyScreen:SelectPortrait(portrait)
 		self.portrait_bgs[portrait]:GetAnimState():PlayAnimation("selected", true)
 	end
 
-	if character and self.profile:IsCharacterUnlocked(character) then
+	if character ~= nil then
 		local charlist = GetActiveCharacterList()
 		if table.contains(charlist, character) then
 			self.heroportait:SetTexture("bigportraits/"..character..".xml", character..".tex")
@@ -393,12 +376,15 @@ function LobbyScreen:SelectPortrait(portrait)
 		self.currentcharacter = character
 		self.charactername:SetString(STRINGS.CHARACTER_TITLES[character] or "")
 		self.characterquote:SetString(STRINGS.CHARACTER_QUOTES[character] or "")
-		self.characterdetails:SetString(STRINGS.CHARACTER_DESCRIPTIONS[character] or "")
+		if character == "woodie" and TheNet:GetCountryCode() == "CA" then
+			self.characterdetails:SetString(STRINGS.CHARACTER_DESCRIPTIONS[character.."_canada"] or "")
+		else
+			self.characterdetails:SetString(STRINGS.CHARACTER_DESCRIPTIONS[character] or "")
+		end
 		self.can_accept = true
-		if self.startbutton then
+		if self.startbutton ~= nil then
 			self.startbutton:Enable()
 		end
-		
 	else
 		self.can_accept = false
 		self.heroportait:SetTexture("bigportraits/locked.xml", "locked.tex")
@@ -411,8 +397,6 @@ function LobbyScreen:SelectPortrait(portrait)
 	end
 end
 
-
-
 function LobbyScreen:GetHelpText()
     local controller_id = TheInput:GetControllerID()
     local t = {}
@@ -424,7 +408,7 @@ function LobbyScreen:GetHelpText()
     --table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_FOCUS_LEFT) .. " " .. STRINGS.UI.HELP.NEXTCHARACTER)
     --table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_FOCUS_RIGHT) .. " " .. STRINGS.UI.HELP.PREVCHARACTER)
 
-   	table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_INSPECT) .. " " .. STRINGS.UI.HELP.RANDOM)
+   	table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_2) .. " " .. STRINGS.UI.HELP.RANDOM)
 
    	if self.can_accept then
    		table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT) .. " " .. STRINGS.UI.HELP.SELECT)

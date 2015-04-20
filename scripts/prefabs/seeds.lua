@@ -2,44 +2,43 @@ require "prefabs/veggies"
 
 local assets =
 {
-	Asset("ANIM", "anim/seeds.zip"),
+    Asset("ANIM", "anim/seeds.zip"),
 }
 
 local prefabs =
 {
     "seeds_cooked",
     "spoiled_food",
-}    
+}
 
 for k,v in pairs(VEGGIES) do
-	table.insert(prefabs, k)
+    table.insert(prefabs, k)
 end
 
 local function pickproduct(inst)
-	
-	local total_w = 0
-	for k,v in pairs(VEGGIES) do
-		total_w = total_w + (v.seed_weight or 1)
-	end
-	
-	local rnd = math.random()*total_w
-	for k,v in pairs(VEGGIES) do
-		rnd = rnd - (v.seed_weight or 1)
-		if rnd <= 0 then
-			return k
-		end
-	end
-	
-	return "carrot"
+    local total_w = 0
+    for k,v in pairs(VEGGIES) do
+        total_w = total_w + (v.seed_weight or 1)
+    end
+
+    local rnd = math.random()*total_w
+    for k,v in pairs(VEGGIES) do
+        rnd = rnd - (v.seed_weight or 1)
+        if rnd <= 0 then
+            return k
+        end
+    end
+
+    return "carrot"
 end
 
 local function common(anim)
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddNetwork()
-    
+
     MakeInventoryPhysics(inst)
 
     inst.AnimState:SetBank("seeds")
@@ -47,15 +46,15 @@ local function common(anim)
     inst.AnimState:PlayAnimation(anim)
     inst.AnimState:SetRayTestOnBB(true)
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-
     inst:AddComponent("inventoryitem")
     inst:AddComponent("stackable")
-	inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
+    inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
 
     inst:AddComponent("edible")
     inst.components.edible.foodtype = FOODTYPE.SEEDS
@@ -67,11 +66,11 @@ local function common(anim)
     MakeSmallPropagator(inst)
     MakeHauntableLaunchAndPerish(inst)
 
-	inst:AddComponent("perishable")
+    inst:AddComponent("perishable")
 
-	inst.components.perishable:SetPerishTime(TUNING.PERISH_SUPERSLOW)
-	inst.components.perishable:StartPerishing()
-	inst.components.perishable.onperishreplacement = "spoiled_food"
+    inst.components.perishable:SetPerishTime(TUNING.PERISH_SUPERSLOW)
+    inst.components.perishable:StartPerishing()
+    inst.components.perishable.onperishreplacement = "spoiled_food"
 
     return inst
 end
@@ -85,11 +84,11 @@ local function raw()
 
     inst.components.edible.healthvalue = 0
     inst.components.edible.hungervalue = TUNING.CALORIES_TINY/2
-    
+
     inst:AddComponent("cookable")
     inst.components.cookable.product = "seeds_cooked"
-    
-	inst:AddComponent("bait")
+
+    inst:AddComponent("bait")
     inst:AddComponent("plantable")
     inst.components.plantable.growtime = TUNING.SEEDS_GROW_TIME
     inst.components.plantable.product = pickproduct
@@ -104,7 +103,7 @@ local function cooked()
         return inst
     end
 
-	inst.components.edible.healthvalue = TUNING.HEALING_TINY
+    inst.components.edible.healthvalue = TUNING.HEALING_TINY
     inst.components.edible.hungervalue = TUNING.CALORIES_TINY/2
     inst.components.perishable:SetPerishTime(TUNING.PERISH_MED)
 
@@ -112,4 +111,4 @@ local function cooked()
 end
 
 return Prefab("common/inventory/seeds", raw, assets, prefabs),
-       Prefab("common/inventory/seeds_cooked", cooked, assets)
+    Prefab("common/inventory/seeds_cooked", cooked, assets)

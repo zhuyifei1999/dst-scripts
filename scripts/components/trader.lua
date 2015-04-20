@@ -9,6 +9,7 @@ end
 local Trader = Class(function(self, inst)
     self.inst = inst
     self.enabled = true
+    self.deleteitemonaccept = true
 end,
 nil,
 {
@@ -40,8 +41,8 @@ function Trader:SetAcceptTest( fn )
     self.test = fn
 end
 
-function Trader:CanAccept( item )
-    return self.enabled and (not self.test or self.test(self.inst, item))
+function Trader:CanAccept( item, giver )
+    return self.enabled and (not self.test or self.test(self.inst, item, giver))
 end
 
 function Trader:AcceptGift( giver, item, count )
@@ -49,7 +50,7 @@ function Trader:AcceptGift( giver, item, count )
         return false
     end
 
-    if self:CanAccept(item) then
+    if self:CanAccept(item, giver) then
         count = count or 1
 
         if item.components.stackable ~= nil and item.components.stackable.stacksize > count then
@@ -62,7 +63,7 @@ function Trader:AcceptGift( giver, item, count )
             item.prevslot = nil
             item.prevcontainer = nil
             self.inst.components.inventory:GiveItem(item, nil, giver ~= nil and giver:GetPosition() or nil)
-        else
+        elseif self.deleteitemonaccept then
             item:Remove()
         end
 

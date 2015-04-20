@@ -171,14 +171,14 @@ local states =
 
         onenter = function(inst)
             --If taking fire damage, spawn fire effect. 
-            inst.components.health:SetAbsorbAmount(TUNING.ROCKY_ABSORB)
+            inst.components.health:SetAbsorptionAmount(TUNING.ROCKY_ABSORB)
             inst.AnimState:PlayAnimation("hide_loop")
             inst.components.health:StartRegen(TUNING.ROCKY_REGEN_AMOUNT, TUNING.ROCKY_REGEN_PERIOD)
             inst.sg:SetTimeout(3)
         end,
 
         onexit = function(inst)
-            inst.components.health:SetAbsorbAmount(0)
+            inst.components.health:SetAbsorptionAmount(0)
             inst.components.health:StopRegen()
         end,
         

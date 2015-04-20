@@ -1,6 +1,6 @@
 local assets =
 {
-	Asset("ANIM", "anim/flint.zip"),
+    Asset("ANIM", "anim/flint.zip"),
 }
 
 --[[
@@ -13,10 +13,10 @@ end
 --]]
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
@@ -27,30 +27,33 @@ local function fn()
     inst.AnimState:SetBuild("flint")
     inst.AnimState:PlayAnimation("idle")
 
+    inst:AddTag("molebait")
     inst:AddTag("renewable")
+
+    inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-
     inst:AddComponent("edible")
     inst.components.edible.foodtype = FOODTYPE.ELEMENTAL
     inst.components.edible.hungervalue = 1
     inst:AddComponent("tradable")
-    
+
     inst:AddComponent("stackable")
-	inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
-    
+    inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
+
     inst:AddComponent("inspectable")
-    
+
     inst:AddComponent("inventoryitem")
 
     MakeHauntableLaunchAndSmash(inst)
 
-	--shine(inst)
-	
+    inst:AddComponent("bait")
+
+    --shine(inst)
+
     return inst
 end
 

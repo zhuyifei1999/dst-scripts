@@ -33,6 +33,12 @@ local function OnDropped(inst)
     end
 end
 
+local function OnPickedUp(inst)
+    if inst.butterflyspawner ~= nil then
+        inst.butterflyspawner:StopTracking(inst)
+    end
+end
+
 local function OnWorked(inst, worker)
     if worker.components.inventory ~= nil then
         if inst.butterflyspawner ~= nil then
@@ -73,9 +79,11 @@ local function fn()
     inst.Physics:CollidesWith(COLLISION.WORLD)
 
     inst:AddTag("butterfly")
+    inst:AddTag("flying")
     inst:AddTag("insect")
     inst:AddTag("smallcreature")
-
+    inst:AddTag("cattoyairborne")
+   
     inst.Transform:SetTwoFaced()
 
     inst.AnimState:SetBuild("butterfly_basic")
@@ -85,11 +93,13 @@ local function fn()
 
     inst.DynamicShadow:SetSize(.8, .5)
 
+    MakeFeedablePetPristine(inst)
+
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     ---------------------
     inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
@@ -100,7 +110,6 @@ local function fn()
     ---------------------
     inst:AddComponent("stackable")
     inst:AddComponent("inventoryitem")
-    inst.components.inventoryitem:SetOnDroppedFn(OnDropped)
     inst.components.inventoryitem.canbepickedup = false
     inst.components.inventoryitem.nobounce = true
 
@@ -123,7 +132,7 @@ local function fn()
 
     ------------------
     inst:AddComponent("inspectable")
-    
+
     ------------------
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:AddRandomLoot("butter", 0.1)
@@ -135,6 +144,9 @@ local function fn()
     inst.components.workable:SetWorkAction(ACTIONS.NET)
     inst.components.workable:SetWorkLeft(1)
     inst.components.workable:SetOnFinishCallback(OnWorked)
+
+    ------------------
+    inst:AddComponent("tradable")
 
     ------------------
     inst:AddComponent("deployable")
@@ -150,7 +162,9 @@ local function fn()
         inst:ListenForEvent("onremove", inst.butterflyspawner.StopTrackingFn)
         inst.butterflyspawner:StartTracking(inst)
     end
-	assert(inst.components.homeseeker)
+    assert(inst.components.homeseeker)
+
+    MakeFeedablePet(inst, TUNING.BUTTERFLY_PERISH_TIME, OnPickedUp, OnDropped)
 
     return inst
 end

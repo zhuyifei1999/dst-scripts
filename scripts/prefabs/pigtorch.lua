@@ -1,29 +1,30 @@
-assets =
+local assets =
 {
-	Asset("ANIM", "anim/pig_torch.zip"),
-	Asset("SOUND", "sound/common.fsb"),
+    Asset("ANIM", "anim/pig_torch.zip"),
+    Asset("SOUND", "sound/common.fsb"),
 }
 
 local prefabs =
 {
-	"pigtorch_flame",
-	"pigtorch_fuel",
-	"pigguard",
+    "pigtorch_flame",
+    "pigtorch_fuel",
+    "pigguard",
+    "collapse_small",
 }
 
 local function onhammered(inst, worker)
-	inst.components.lootdropper:DropLoot()
-	SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
-	inst.SoundEmitter:PlaySound("dontstarve/common/destroy_wood")
-	inst:Remove()
+    inst.components.lootdropper:DropLoot()
+    SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
+    inst.SoundEmitter:PlaySound("dontstarve/common/destroy_wood")
+    inst:Remove()
 end
 
 local function onhit(inst,worker)
-	if inst.components.spawner.child and inst.components.spawner.child.components.combat then
-	    inst.components.spawner.child.components.combat:SuggestTarget(worker)
-	end
-	inst.AnimState:PlayAnimation("hit")
-	inst.AnimState:PushAnimation("idle")
+    if inst.components.spawner.child and inst.components.spawner.child.components.combat then
+        inst.components.spawner.child.components.combat:SuggestTarget(worker)
+    end
+    inst.AnimState:PlayAnimation("hit")
+    inst.AnimState:PushAnimation("idle")
 end
 
 local function onextinguish(inst)
@@ -48,14 +49,14 @@ local function onisraining(inst, israining)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
-	MakeObstaclePhysics(inst, 0.33)
+    MakeObstaclePhysics(inst, 0.33)
 
     inst.AnimState:SetBank("pigtorch")
     inst.AnimState:SetBuild("pig_torch")
@@ -65,16 +66,17 @@ local function fn()
 
     --MakeSnowCoveredPristine(inst)
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
+    inst:AddComponent("inspectable")
 
-	inst:AddComponent("inspectable")
-
-	inst:AddComponent("burnable")
-	inst.components.burnable:AddBurnFX("pigtorch_flame", Vector3(-5, 40, 0), "fire_marker")
+    inst:AddComponent("burnable")
+    inst.components.burnable.canlight = false
+    inst.components.burnable:AddBurnFX("pigtorch_flame", Vector3(-5, 40, 0), "fire_marker")
     inst:ListenForEvent("onextinguish", onextinguish) --in case of creepy hands
 
     inst:AddComponent("fueled")
@@ -89,7 +91,7 @@ local function fn()
             if not inst.components.burnable:IsBurning() then
                 inst.components.burnable:Ignite()
             end
-            
+
             inst.components.burnable:SetFXLevel(section, inst.components.fueled:GetSectionPercent())
         end
     end)
@@ -98,18 +100,18 @@ local function fn()
     inst:WatchWorldState("israining", onisraining)
     onisraining(inst, TheWorld.state.israining)
 
-	inst:AddComponent("lootdropper")
-	inst.components.lootdropper:SetLoot({"log", "log", "log", "poop"})
-	inst:AddComponent("workable")
-	inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
-	inst.components.workable:SetWorkLeft(4)
-	inst.components.workable:SetOnFinishCallback(onhammered)
-	inst.components.workable:SetOnWorkCallback(onhit)
-	
-	inst:AddComponent("spawner")
+    inst:AddComponent("lootdropper")
+    inst.components.lootdropper:SetLoot({"log", "log", "log", "poop"})
+    inst:AddComponent("workable")
+    inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
+    inst.components.workable:SetWorkLeft(4)
+    inst.components.workable:SetOnFinishCallback(onhammered)
+    inst.components.workable:SetOnWorkCallback(onhit)
+
+    inst:AddComponent("spawner")
     inst.components.spawner:Configure("pigguard", TUNING.TOTAL_DAY_TIME*4)
     inst.components.spawner:SetOnlySpawnOffscreen(true)
-	--MakeSnowCovered(inst)
+    --MakeSnowCovered(inst)
 
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetHauntValue(TUNING.HAUNT_SMALL)
@@ -124,28 +126,29 @@ local function fn()
         fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
     end)
 
-	return inst
+    return inst
 end
 
 local function pigtorch_fuel()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
+    inst.entity:AddTransform()
     inst.entity:AddNetwork()
+
+    inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("fuel")
     inst.components.fuel.fuelvalue = TUNING.PIGTORCH_FUEL_MAX
     inst.components.fuel.fueltype = FUELTYPE.PIGTORCH
     inst:AddComponent("inventoryitem")
     inst.components.inventoryitem:SetOnDroppedFn(inst.Remove)
-	return inst
+
+    return inst
 end
 
 return Prefab("forest/objects/pigtorch", fn, assets, prefabs),
-       Prefab("forest/object/pigtorch_fuel", pigtorch_fuel)
+    Prefab("forest/object/pigtorch_fuel", pigtorch_fuel)

@@ -54,16 +54,45 @@ function Networking_Talk(guid, message)
     end
 end
 
+function OnTwitchMessageReceived(username, message, colour)
+    if TheWorld ~= nil then
+        TheWorld:PushEvent("twitchmessage", {
+            username = username,
+            message = message,
+            colour = colour,
+        })
+    end
+end
+
+function OnTwitchLoginAttempt(success, result)
+    if TheWorld ~= nil then
+        TheWorld:PushEvent("twitchloginresult", {
+            success = success,
+            result = result,
+        })
+    end
+end
+
+function OnTwitchChatStatusUpdate(status)
+    if TheWorld ~= nil then
+        TheWorld:PushEvent("twitchstatusupdate", {
+            status = status,
+        })
+    end
+end
+
 function ValidateSpawnPrefabRequest(prefab_name, skin_name)
     local in_dst_char_list = table.contains(DST_CHARACTERLIST, prefab_name)
     local in_mod_char_list = table.contains(MODCHARACTERLIST, prefab_name)
     --TODO: validate skin_name!
     --      second return value is the skin_name if it is valid,
     --      or nil for no skin
-    if in_dst_char_list or in_mod_char_list then
+    if in_dst_char_list then
         return prefab_name, skin_name
+    elseif in_mod_char_list then
+        return prefab_name, nil
     else
-        return DST_CHARACTERLIST[1], skin_name
+        return DST_CHARACTERLIST[1], nil
     end
 end
 

@@ -31,6 +31,8 @@ local function fn()
 
     MakeInventoryPhysics(inst)
 
+    inst:AddTag("hammer")
+
     if not TheWorld.ismastersim then
         return inst
     end

@@ -56,7 +56,13 @@ end
 
 local function OnAttacked(parent, data)
     parent.player_classified.attackedpulseevent:push()
-    parent.player_classified.isattackedbyshadow:set(data ~= nil and data.attacker ~= nil and data.attacker:HasTag("shadow"))
+    parent.player_classified.isattackedbydanger:set(data ~= nil
+                                                and data.attacker ~= nil
+                                                and not (data.attacker:HasTag("shadow")
+                                                         or data.attacker:HasTag("thorny")
+                                                         or data.attacker:HasTag("smolder")
+                                                        )
+                                                )
 end
 
 local function OnBuildSuccess(parent)
@@ -127,7 +133,7 @@ local function OnEntityReplicated(inst)
         print("Unable to initialize classified data for player")
     else
         inst._parent:AttachClassified(inst)
-        for i, v in ipairs({ "builder", "combat", "health", --[["humanity",]] "hunger", "sanity" }) do
+        for i, v in ipairs({ "builder", "combat", "health", "hunger", "sanity" }) do
             if inst._parent.replica[v] ~= nil then
                 inst._parent.replica[v]:AttachClassified(inst)
             end
@@ -163,7 +169,7 @@ end
 
 local function OnAttackedPulseEvent(inst)
     if inst._parent ~= nil then
-        inst._parent:PushEvent("attacked", { shadowattacker = inst.isattackedbyshadow:value() })
+        inst._parent:PushEvent("attacked", { isattackedbydanger = inst.isattackedbydanger:value() })
     end
 end
 
@@ -197,30 +203,20 @@ local function OnSanityDirty(inst)
     end
     inst.issanitypulse:set_local(false)
 end
---[[
-local function OnHumanityDirty(inst)
+
+local function OnMoistureDirty(inst)
     if inst._parent ~= nil then
-        local percent = inst.currenthumanity:value() / inst.maxhumanity:value()
-        local healthpenaltypercent = inst.humanityhealthpenalty:value() / inst.humanityhealthpenaltymax:value()
-        inst._parent:PushEvent("ghostdelta",
-        {
-            oldpercent = inst._oldsanitypercent,
-            newpercent = percent,
-            oldhealthpenaltypercent = inst._oldhumanityhealthpenaltypercent,
-            newhealthpenaltypercent = healthpenaltypercent,
-        })
-        inst._oldhumanitypercent = percent
-        inst._oldhumanityhealthpenaltypercent = healthpenaltypercent
+        inst._parent:PushEvent("moisturedelta", { old = inst._oldmoisture, new = inst.moisture:value() })
+        inst._oldmoisture = inst.moisture:value()
     else
-        inst._oldhumanitypercent = 1
-        inst._oldhumanityhealthpenaltypercent = 0
+        inst._oldmoisture = 0
     end
 end
-]]
+
 local function OnTemperatureDirty(inst)
     DeserializeTemperature(inst)
     if inst._parent == nil then
-        inst._oldtemperature = 30
+        inst._oldtemperature = TUNING.STARTING_TEMP
     elseif inst._oldtemperature ~= inst.currenttemperature then
         if inst._oldtemperature < 0 then
             if inst.currenttemperature >= 0 then
@@ -287,7 +283,7 @@ local function BufferBuild(inst, recipename)
         end
         CancelRefresh(inst)
         QueueRefresh(inst, TIMEOUT)
-        SendRPCToServer(RPC.BufferBuild, recipe.sortkey)
+        SendRPCToServer(RPC.BufferBuild, recipe.rpc_id)
     end
 end
 
@@ -494,8 +490,8 @@ local function RegisterNetListeners(inst)
         inst:ListenForEvent("combat.attackedpulse", OnAttackedPulseEvent)
         inst:ListenForEvent("hungerdirty", OnHungerDirty)
         inst:ListenForEvent("sanitydirty", OnSanityDirty)
-        --inst:ListenForEvent("humanitydirty", OnHumanityDirty)
         inst:ListenForEvent("temperaturedirty", OnTemperatureDirty)
+        inst:ListenForEvent("moisturedirty", OnMoistureDirty)
         inst:ListenForEvent("techtreesdirty", OnTechTreesDirty)
         inst:ListenForEvent("recipesdirty", OnRecipesDirty)
         inst:ListenForEvent("bufferedbuildsdirty", OnBufferedBuildsDirty)
@@ -533,6 +529,9 @@ end
 local function fn()
     local inst = CreateEntity()
 
+    if TheWorld.ismastersim then
+        inst.entity:AddTransform() --So we can follow parent's sleep state
+    end
     inst.entity:AddNetwork()
     inst.entity:Hide()
     inst:AddTag("CLASSIFIED")
@@ -557,24 +556,23 @@ local function fn()
     inst.currentsanity = net_ushortint(inst.GUID, "sanity.current", "sanitydirty")
     inst.maxsanity = net_ushortint(inst.GUID, "sanity.max", "sanitydirty")
     inst.sanitypenalty = net_ushortint(inst.GUID, "sanity.penalty", "sanitydirty")
-    inst.sanityrate = net_byte(inst.GUID, "sanity.rate")
+    inst.sanityratescale = net_tinybyte(inst.GUID, "sanity.ratescale")
     inst.issanitypulse = net_bool(inst.GUID, "sanity.dodeltaovertime")
     inst.issanityghostdrain = net_bool(inst.GUID, "sanity.ghostdrain")
---[[
-    --Humanity variables
-    inst._oldhumanitypercent = 1
-    inst._oldhumanityhealthpenaltypercent = 0
-    inst.currenthumanity = net_ushortint(inst.GUID, "humanity.current", "humanitydirty")
-    inst.maxhumanity = net_ushortint(inst.GUID, "humanity.max", "humanitydirty")
-    inst.humanityhealthpenalty = net_ushortint(inst.GUID, "humanity.healthpenalty", "humanitydirty")
-    inst.humanityhealthpenaltymax = net_ushortint(inst.GUID, "humanity.healthpenaltymax", "humanitydirty")
-    inst.ishumanitypaused = net_bool(inst.GUID, "humanity.ispaused", "humanitydirty")
-]]
+
     --Temperature variables
-    inst._oldtemperature = 30
-    inst.currenttemperature = 30
+    inst._oldtemperature = TUNING.STARTING_TEMP
+    inst.currenttemperature = inst._oldtemperature
     inst.currenttemperaturedata = net_byte(inst.GUID, "temperature.current", "temperaturedirty")
     SetTemperature(inst, inst.currenttemperature)
+
+    --Moisture variables
+    inst._oldmoisture = 0
+    inst.moisture = net_ushortint(inst.GUID, "moisture.moisture", "moisturedirty")
+    inst.maxmoisture = net_ushortint(inst.GUID, "moisture.maxmoisture")
+    inst.moistureratescale = net_tinybyte(inst.GUID, "moisture.ratescale", "moisturedirty")
+    inst.iswet = net_bool(inst.GUID, "moisture.iswet")
+    inst.maxmoisture:set(100)
 
     --PlayerController variables
     inst._pausepredictiontask = nil
@@ -638,7 +636,7 @@ local function fn()
     inst.canattack = net_bool(inst.GUID, "combat.canattack")
     inst.minattackperiod = net_float(inst.GUID, "combat.minattackperiod")
     inst.attackedpulseevent = net_event(inst.GUID, "combat.attackedpulse")
-    inst.isattackedbyshadow = net_bool(inst.GUID, "combat.isattackedbyshadow")
+    inst.isattackedbydanger = net_bool(inst.GUID, "combat.isattackedbydanger")
     inst.canattack:set(true)
     inst.minattackperiod:set(4)
 
@@ -659,6 +657,8 @@ local function fn()
     --Delay net listeners until after initial values are deserialized
     inst:DoTaskInTime(0, RegisterNetListeners)
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         inst._refreshtask = nil
         inst._bufferedbuildspreview = {}
@@ -669,9 +669,6 @@ local function fn()
 
         return inst
     end
-
-    inst.entity:AddTransform() --So we can follow parent's sleep state
-    inst.entity:SetPristine()
 
     --Server interface
     inst.SetValue = SetValue

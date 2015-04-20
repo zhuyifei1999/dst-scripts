@@ -51,47 +51,44 @@ nil,
 })
 
 function Builder:ActivateCurrentResearchMachine()
-	if self.current_prototyper and self.current_prototyper.components.prototyper then
-		self.current_prototyper.components.prototyper:Activate()
-	end
+    if self.current_prototyper ~= nil and self.current_prototyper.components.prototyper ~= nil then
+        self.current_prototyper.components.prototyper:Activate()
+    end
 end
 
 function Builder:OnSave()
-	local data =
-	{
-		buffered_builds = self.buffered_builds
-	}
-	
-	data.recipes = self.recipes
-
-	return data
+    return
+    {
+        buffered_builds = self.buffered_builds,
+        recipes = self.recipes,
+    }
 end
 
 function Builder:OnLoad(data)
     if data.buffered_builds ~= nil then
-		self.buffered_builds = data.buffered_builds
         for k, v in pairs(AllRecipes) do
-            if IsRecipeValid(v.name) then
-                self.inst.replica.builder:SetIsBuildBuffered(v.name, self.buffered_builds[k] == true)
+            if data.buffered_builds[k] ~= nil and IsRecipeValid(v.name) then
+                self.inst.replica.builder:SetIsBuildBuffered(v.name, true)
+                self.buffered_builds[k] = type(data.buffered_builds[k]) == "number" and data.buffered_builds[k] or 0
             end
         end
     end
 
-	if data.recipes ~= nil then
-		for i, v in ipairs(data.recipes) do
+    if data.recipes ~= nil then
+        for i, v in ipairs(data.recipes) do
             if IsRecipeValid(v) then
                 self:AddRecipe(v)
             end
-		end
-	end
+        end
+    end
 end
 
 function Builder:IsBuildBuffered(recname)
-	return self.buffered_builds[recname] == true
+    return self.buffered_builds[recname] ~= nil
 end
 
 function Builder:OnUpdate()
-	self:EvaluateTechTrees()
+    self:EvaluateTechTrees()
 end
 
 function Builder:GiveAllRecipes()
@@ -199,16 +196,47 @@ function Builder:UnlockRecipe(recname)
 	end
 end
 
-function Builder:RemoveIngredients(recname)
-    local recipe = GetValidRecipe(recname)
-    if recipe ~= nil then
-        self.inst:PushEvent("consumeingredients", { recipe = recipe })
-        for k, v in pairs(recipe.ingredients) do
-        	local amt = math.max(1, RoundBiasedUp(v.amount * self.ingredientmod))
-            self.inst.components.inventory:ConsumeByName(v.type, amt)
-        end
+function Builder:GetIngredientWetness(ingredients)
+    local wetness = {}
+    for item, ents in pairs(ingredients) do
+    	for k,v in pairs(ents) do
+			table.insert(wetness, {wetness = k:GetCurrentMoisture(), num = v})
+    	end
     end
+
+    local totalWetness = 0
+    local totalItems = 0
+    for k,v in pairs(wetness) do
+    	totalWetness = totalWetness + (v.wetness * v.num)
+    	totalItems = totalItems + v.num
+    end
+
+    return totalItems > 0 and totalWetness or 0
 end
+
+function Builder:GetIngredients(recname)
+	local recipe = AllRecipes[recname]
+	if recipe then
+		local ingredients = {}
+		for k,v in pairs(recipe.ingredients) do
+			local amt = math.max(1, RoundBiasedUp(v.amount * self.ingredientmod))
+			local items = self.inst.components.inventory:GetItemByName(v.type, amt)
+			ingredients[v.type] = items
+		end
+		return ingredients
+	end
+end
+
+function Builder:RemoveIngredients(ingredients)
+    for item, ents in pairs(ingredients) do
+    	for k,v in pairs(ents) do
+    		for i = 1, v do
+    			self.inst.components.inventory:RemoveItem(k, false):Remove()
+    		end
+    	end
+     end
+    self.inst:PushEvent("consumeingredients")
+ end
 
 function Builder:OnSetProfile(profile)
 end
@@ -233,17 +261,26 @@ end
 function Builder:DoBuild(recname, pt)
     local recipe = GetValidRecipe(recname)
     if recipe ~= nil and (self:IsBuildBuffered(recname) or self:CanBuild(recname)) then
-		if self.buffered_builds[recname] then
-			self.buffered_builds[recname] = nil
+        local wetlevel = self.buffered_builds[recname]
+        if wetlevel ~= nil then
+            self.buffered_builds[recname] = nil
             self.inst.replica.builder:SetIsBuildBuffered(recname, false)
         else
-			self:RemoveIngredients(recname)
-		end
+            local materials = self:GetIngredients(recname)
+            wetlevel = self:GetIngredientWetness(materials)
+            self:RemoveIngredients(materials)
+        end
         self.inst:PushEvent("refreshcrafting")
-		
+
         local prod = SpawnPrefab(recipe.product)
         if prod ~= nil then
             pt = pt or Point(self.inst.Transform:GetWorldPosition())
+
+            if prod.components.moisturelistener ~= nil and wetlevel > 0 then
+                prod.components.moisturelistener.moisture = wetlevel
+                prod.components.moisturelistener:DoUpdate()
+            end
+
             if prod.components.inventoryitem ~= nil then
                 if self.inst.components.inventory ~= nil then
                     --self.inst.components.inventory:GiveItem(prod)
@@ -251,51 +288,51 @@ function Builder:DoBuild(recname, pt)
                     ProfileStatsAdd("build_"..prod.prefab)
 
                     if prod.components.equippable ~= nil and not self.inst.components.inventory:GetEquippedItem(prod.components.equippable.equipslot) then
-                    	--The item is equippable. Equip it.
-						self.inst.components.inventory:Equip(prod)
+                        --The item is equippable. Equip it.
+                        self.inst.components.inventory:Equip(prod)
 
-            			if recipe.numtogive > 1 then
-            				--Looks like the recipe gave more than one item! Spawn in the rest and give them to the player.
-							for i = 2, recipe.numtogive do
-								local addt_prod = SpawnPrefab(recipe.product)
-								self.inst.components.inventory:GiveItem(addt_prod, nil, pt)
-							end
-	                    end
+                        if recipe.numtogive > 1 then
+                            --Looks like the recipe gave more than one item! Spawn in the rest and give them to the player.
+                            for i = 2, recipe.numtogive do
+                                local addt_prod = SpawnPrefab(recipe.product)
+                                self.inst.components.inventory:GiveItem(addt_prod, nil, pt)
+                            end
+                        end
                     elseif recipe.numtogive > 1 and prod.components.stackable then
-                    	--The item is stackable. Just increase the stack size of the original item.
-                    	prod.components.stackable:SetStackSize(recipe.numtogive)
-						self.inst.components.inventory:GiveItem(prod, nil, pt)
+                        --The item is stackable. Just increase the stack size of the original item.
+                        prod.components.stackable:SetStackSize(recipe.numtogive)
+                        self.inst.components.inventory:GiveItem(prod, nil, pt)
                     elseif recipe.numtogive > 1 and not prod.components.stackable then
-                    	--We still need to give the player the original product that was spawned, so do that.
-						self.inst.components.inventory:GiveItem(prod, nil, pt)
-						--Now spawn in the rest of the items and give them to the player.
-						for i = 2, recipe.numtogive do
-							local addt_prod = SpawnPrefab(recipe.product)
-							self.inst.components.inventory:GiveItem(addt_prod, nil, pt)
-						end
+                        --We still need to give the player the original product that was spawned, so do that.
+                        self.inst.components.inventory:GiveItem(prod, nil, pt)
+                        --Now spawn in the rest of the items and give them to the player.
+                        for i = 2, recipe.numtogive do
+                            local addt_prod = SpawnPrefab(recipe.product)
+                            self.inst.components.inventory:GiveItem(addt_prod, nil, pt)
+                        end
                     else
-                    	--Only the original item is being received.
-						self.inst.components.inventory:GiveItem(prod, nil, pt)
+                        --Only the original item is being received.
+                        self.inst.components.inventory:GiveItem(prod, nil, pt)
                     end
 
-					if self.onBuild ~= nil then
-						self.onBuild(self.inst, prod)
-					end	
-					prod:OnBuilt(self.inst)
+                    if self.onBuild ~= nil then
+                        self.onBuild(self.inst, prod)
+                    end
+                    prod:OnBuilt(self.inst)
 
                     return true
                 end
             else
-				prod.Transform:SetPosition(pt:Get())
+                prod.Transform:SetPosition(pt:Get())
                 self.inst:PushEvent("buildstructure", { item = prod, recipe = recipe })
                 prod:PushEvent("onbuilt", { builder=self.inst })
                 ProfileStatsAdd("build_"..prod.prefab)
 
-				if self.onBuild ~= nil then
-					self.onBuild(self.inst, prod)
-				end
+                if self.onBuild ~= nil then
+                    self.onBuild(self.inst, prod)
+                end
 
-				prod:OnBuilt(self.inst)
+                prod:OnBuilt(self.inst)
 
                 return true
             end
@@ -376,8 +413,10 @@ function Builder:BufferBuild(recname)
                 return
             end
         end
-        self:RemoveIngredients(recname)
-        self.buffered_builds[recname] = true
+        local materials = self:GetIngredients(recname)
+        local wetlevel = self:GetIngredientWetness(materials)
+        self:RemoveIngredients(materials)
+        self.buffered_builds[recname] = wetlevel
         self.inst.replica.builder:SetIsBuildBuffered(recname, true)
     end
 end

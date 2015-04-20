@@ -40,13 +40,13 @@ local function OnOpen(inst)
     if not inst.components.health:IsDead() then
         inst.sg:GoToState("open")
     end
-end 
+end
 
 local function OnClose(inst)
     if not inst.components.health:IsDead() and inst.sg.currentstate.name ~= "transition" then
         inst.sg:GoToState("close")
     end
-end 
+end
 
 -- eye bone was killed/destroyed
 local function OnStopFollowing(inst)
@@ -106,7 +106,7 @@ end
 --]]
 
 local function CanMorph(inst)
-    if not (TheWorld.state.isnight and TheWorld.state.isfullmoon) or inst.ChesterState ~= "NORMAL" then
+    if not (TheWorld.state.isfullmoon and TheWorld.state.isnight) or inst.ChesterState ~= "NORMAL" then
         return false, false
     end
 
@@ -138,7 +138,6 @@ end
 local function CheckForMorph(inst)
     local canShadow, canSnow = CanMorph(inst)
     if canShadow or canSnow then
-        print("MORPHING!")
         inst.sg:GoToState("transition")
     end
 end
@@ -146,6 +145,7 @@ end
 local function DoMorph(inst, fn)
     inst.MorphChester = nil
     inst:StopWatchingWorldState("startnight", CheckForMorph)
+    inst:StopWatchingWorldState("isfullmoon", CheckForMorph)
     inst:RemoveEventCallback("onclose", CheckForMorph)
     fn(inst)
 end
@@ -222,13 +222,13 @@ local function create_chester()
 
     inst._isshadowchester = net_bool(inst.GUID, "_isshadowchester", "onisshadowchesterdirty")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         inst._clientshadowmorphed = false
         inst:ListenForEvent("onisshadowchesterdirty", OnIsShadowChesterDirty)
         return inst
     end
-
-    inst.entity:SetPristine()
 
     ------------------------------------------
 
@@ -244,10 +244,9 @@ local function create_chester()
     inst.components.health:StartRegen(TUNING.CHESTER_HEALTH_REGEN_AMOUNT, TUNING.CHESTER_HEALTH_REGEN_PERIOD)
     inst:AddTag("noauradamage")
 
-
     --print("   inspectable")
     inst:AddComponent("inspectable")
-	inst.components.inspectable:RecordViews()
+    inst.components.inspectable:RecordViews()
     --inst.components.inspectable.getstatus = GetStatus
 
     --print("   locomotor")
@@ -265,7 +264,7 @@ local function create_chester()
 
     --print("   burnable")
     MakeSmallBurnableCharacter(inst, "chester_body")
-    
+
     --("   container")
     inst:AddComponent("container")
     inst.components.container:WidgetSetup("chester")
@@ -300,6 +299,7 @@ local function create_chester()
     inst.ChesterState = "NORMAL"
     inst.MorphChester = MorphChester
     inst:WatchWorldState("startnight", CheckForMorph)
+    inst:WatchWorldState("isfullmoon", CheckForMorph)
     inst:ListenForEvent("onclose", CheckForMorph)
 
     inst.OnSave = OnSave

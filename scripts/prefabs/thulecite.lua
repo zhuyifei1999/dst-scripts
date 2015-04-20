@@ -1,13 +1,13 @@
 local assets =
 {
-	Asset("ANIM", "anim/thulecite.zip"),
+    Asset("ANIM", "anim/thulecite.zip"),
 }
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
@@ -17,11 +17,13 @@ local function fn()
     inst.AnimState:SetBuild("thulecite")
     inst.AnimState:PlayAnimation("anim")
 
+    inst:AddTag("molebait")
+
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("repairer")
     inst.components.repairer.repairmaterial = MATERIALS.THULECITE
@@ -38,6 +40,8 @@ local function fn()
     inst:AddComponent("stackable")
 
     MakeHauntableLaunchAndSmash(inst)
+
+    inst:AddComponent("bait")
 
     return inst
 end

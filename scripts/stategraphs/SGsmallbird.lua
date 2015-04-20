@@ -144,7 +144,7 @@ local states=
         {
             EventHandler("animover", function(inst)
                 inst.sg:GoToState("idle")
-                inst.userfunctions.FollowPlayer(inst)
+                inst.userfunctions.FollowLeader(inst)
             end),
         },
     },

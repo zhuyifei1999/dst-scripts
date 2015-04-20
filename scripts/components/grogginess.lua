@@ -26,6 +26,8 @@ end
 function DefaultKnockoutTest(inst)
     local self = inst.components.grogginess
     return self.grog_amount >= self.resistance
+        and not (inst.components.health ~= nil and inst.components.health.takingfiredamage)
+        and not (inst.components.burnable ~= nil and inst.components.burnable:IsBurning())
 end
 
 function DefaultComeToTest(inst)

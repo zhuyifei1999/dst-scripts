@@ -1,6 +1,6 @@
 local assets =
 {
-	Asset("ANIM", "anim/maxwell_torch.zip")
+    Asset("ANIM", "anim/maxwell_torch.zip")
 }
 
 local prefabs =
@@ -15,7 +15,7 @@ local function changelevels(inst, order)
     end
 end
 
-local function light(inst)    
+local function light(inst)
     inst.task = inst:StartThread(function() changelevels(inst, inst.lightorder) end)    
 end
 
@@ -49,11 +49,11 @@ local function fn(name)
         inst:AddTag("_named")
     end
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     if name ~= nil then
         --Remove these tags so that they can be added properly when replicating components below

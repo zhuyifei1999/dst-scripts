@@ -251,6 +251,34 @@ local function EstablishColony(loc)
         newFlock.ice = SpawnPrefab("penguin_ice")
         newFlock.ice.Transform:SetPosition(newFlock.rookery:Get())
         newFlock.ice.spawner = self
+
+        local numboulders = math.random(3,7)
+        local sectorsize = 360 / numboulders
+        local numattempts = 50
+        while numboulders > 0 and numattempts > 0 do
+            local foundvalidplacement = false
+            local placement_attempts = 0
+            while not foundvalidplacement do
+                local minang = (sectorsize * (numboulders - 1)) >= 0 and (sectorsize * (numboulders - 1)) or 0
+                local maxang = (sectorsize * numboulders) <= 360 and (sectorsize * numboulders) or 360
+                local angle = math.random(minang, maxang)
+                local pos = newFlock.ice:GetPosition()
+                local offset = FindWalkableOffset(pos, angle*DEGREES, math.random(5,15), 120, false, false)
+                if offset then 
+                    local ents = TheSim:FindEntities(pos.x + offset.x, pos.y + offset.y, pos.z + offset.z, 1.2)
+                    if #ents == 0 then
+                        foundvalidplacement = true
+                        local icerock = SpawnPrefab("rock_ice")
+                        icerock.Transform:SetPosition(pos.x + offset.x, pos.y + offset.y, pos.z + offset.z)
+                        numboulders = numboulders - 1
+                    end
+                end
+                placement_attempts = placement_attempts + 1
+                print(placement_attempts)
+                if placement_attempts > 10 then break end
+            end
+            numattempts = numattempts - 1
+        end
     else
         return false
     end
@@ -262,16 +290,8 @@ end
 
 local function TryToSpawnFlockForPlayer(playerdata)
     if _active then
-		local player = playerdata.player
-
-        -- dprint("---------PS WINTERTEST:", SaveGameIndex:GetCurrentMode(), TheWorld.meta.level_id )
         -- dprint("---------:", TheWorld.state.season, TheWorld.state.remainingdaysinseason)
-        local mode = SaveGameIndex:GetCurrentMode() 
-        local level = TheWorld.meta and TheWorld.meta.level_id 
-
-	    if not TheWorld.state.iswinter or
-            TheWorld.state.remainingdaysinseason <= 3 or
-            (mode == "adventure" and (level == "ENDING" or level == "RAINY")) then
+	    if not TheWorld.state.iswinter or TheWorld.state.remainingdaysinseason <= 3 then
             return
         end
 
@@ -290,6 +310,7 @@ local function TryToSpawnFlockForPlayer(playerdata)
 --        local playerPos = ThePlayer:GetPosition()
 		-- if any player too close to any of the spawnlocs then bail
 		-- if this player is too close to any of the lastSpawnLocs then don't try
+        local player = playerdata.player
 		local playerPos = player:GetPosition()
 		for i,v in ipairs(_activeplayers) do
 			if v.lastSpawnLoc and distsq(v.lastSpawnLoc,playerPos) < MIN_SPAWN_DIST*MIN_SPAWN_DIST then

@@ -1033,6 +1033,9 @@ end
 local function fn()
     local inst = CreateEntity()
 
+    if TheWorld.ismastersim then
+        inst.entity:AddTransform() --So we can follow parent's sleep state
+    end
     inst.entity:AddNetwork()
     inst.entity:Hide()
     inst:AddTag("CLASSIFIED")
@@ -1063,6 +1066,8 @@ local function fn()
     for k, v in pairs(EQUIPSLOTS) do
         inst._equips[v] = net_entity(inst.GUID, "inventory._equips["..v.."]", "equips["..v.."]dirty")
     end
+
+    inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         --Client interface
@@ -1109,9 +1114,6 @@ local function fn()
         inst:DoTaskInTime(0, RegisterNetListeners)
         return inst
     end
-
-    inst.entity:AddTransform() --So we can follow parent's sleep state
-    inst.entity:SetPristine()
 
     --Server interface
     inst.SetActiveItem = SetActiveItem

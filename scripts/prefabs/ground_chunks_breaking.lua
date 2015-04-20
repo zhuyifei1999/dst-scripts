@@ -39,11 +39,11 @@ local function fn()
         inst:DoTaskInTime(0, PlayChunksAnim)
     end
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst.persists = false
     inst:DoTaskInTime(1, inst.Remove)

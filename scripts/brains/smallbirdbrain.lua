@@ -50,7 +50,7 @@ local function FindFoodAction(inst)
 end
 
 local function GetTraderFn(inst)
-    return (inst.components.follower.leader and inst.components.trader:IsTryingToTradeWithMe(inst.components.follower.leader)) and inst.components.follower.leader or nil
+    return not inst:HasTag("springbird") and (inst.components.follower.leader and inst.components.trader:IsTryingToTradeWithMe(inst.components.follower.leader)) and inst.components.follower.leader or nil
 end
 
 local function KeepTraderFn(inst, target)
@@ -58,7 +58,7 @@ local function KeepTraderFn(inst, target)
 end
 
 local function ShouldRunAwayFromPlayer(inst, player)
-    return inst:HasTag("teenbird") and not inst.components.follower.leader
+    return inst:HasTag("springbird") and not inst.components.follower.leader
 end
 
 local SmallBirdBrain = Class(Brain, function(self, inst)
@@ -85,7 +85,7 @@ function SmallBirdBrain:OnStart()
         SequenceNode{
             ConditionNode(function() return self.inst.components.combat.target ~= nil end, "HasTarget"),
             WaitNode(math.random()*.9),
-            ChaseAndAttack(self.inst, MAX_CHASE_TIME),
+            ChaseAndAttack(self.inst, SpringCombatMod(MAX_CHASE_TIME)),
         },
         RunAway(self.inst, "player", START_RUN_DIST, STOP_RUN_DIST, function(target) return ShouldRunAwayFromPlayer(self.inst, target) end ),
         SequenceNode{

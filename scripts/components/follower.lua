@@ -176,6 +176,25 @@ function Follower:OnLoad(data)
     end
 end
 
+function Follower:IsLeaderSame(otherfollower)
+	local othercmp = otherfollower.components.follower
+	if othercmp == nil or othercmp.leader == nil then
+		return false
+	end
+
+	if othercmp.leader == self.leader then
+		return true
+	end
+
+	if othercmp.leader.components.inventoryitem -- special case for chester
+		and othercmp.leader.components.inventoryitem.owner
+		and othercmp.leader.components.inventoryitem.owner == self.leader then
+		return true
+	end
+
+	return false
+end
+
 function Follower:LongUpdate(dt)
 	if self.leader and self.task and self.targettime then
 		

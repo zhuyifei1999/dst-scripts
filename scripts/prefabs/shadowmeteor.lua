@@ -44,7 +44,7 @@ local function onexplode(inst)
             scorch.Transform:SetScale(scale, scale, scale)
         end
 
-    	local ents = TheSim:FindEntities(x, y, z, inst.size * TUNING.METEOR_RADIUS, nil, { "INLIMBO" })
+        local ents = TheSim:FindEntities(x, y, z, inst.size * TUNING.METEOR_RADIUS, nil, { "INLIMBO" })
         for k,v in pairs(ents) do
             --V2C: things "could" go invalid if something earlier in the list
             --     removes something later in the list.
@@ -105,15 +105,15 @@ end
 local warntime = 1
 local sizes = 
 { 
-    small = .7, 
-    medium = 1, 
+    small = .7,
+    medium = 1,
     large = 1.3,
 }
 local work =
 {
-    small = 1, 
-    medium = 2, 
-    large = 20,   
+    small = 1,
+    medium = 2,
+    large = 20,
 }
 
 local function SetSize(inst, sz, mod)
@@ -183,25 +183,25 @@ local function AutoSize(inst)
 end
 
 local function fn() 
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
     
     inst.Transform:SetTwoFaced()
 
-	inst.AnimState:SetBank("meteor")
-	inst.AnimState:SetBuild("meteor")
+    inst.AnimState:SetBank("meteor")
+    inst.AnimState:SetBuild("meteor")
 
     inst:AddTag("NOCLICK")
+
+    inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst.Transform:SetRotation(math.random(1, 360))
     inst.SetSize = SetSize
@@ -212,7 +212,7 @@ local function fn()
 
     inst.persists = false
 
-	return inst
+    return inst
 end
 
 return Prefab("common/shadowmeteor", fn, assets, prefabs)

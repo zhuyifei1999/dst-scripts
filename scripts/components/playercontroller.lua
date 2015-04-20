@@ -88,7 +88,7 @@ local function OnBuild(inst)
 end
 
 local function OnEquip(inst, data)
-    --Blink Staff
+    --Reticule targeting items
     if data.eslot == EQUIPSLOTS.HANDS then
         local self = inst.components.playercontroller
         if self.reticule ~= nil then
@@ -102,10 +102,16 @@ local function OnEquip(inst, data)
 end
 
 local function OnUnequip(inst, data)
-    local self = inst.components.playercontroller
-    if self.reticule ~= nil and self.reticule == data.item.components.reticule then
-        self.reticule:DestroyReticule()
-        self.reticule = nil
+    --Reticule targeting items
+    if data.eslot == EQUIPSLOTS.HANDS then
+        local self = inst.components.playercontroller
+        if self.reticule ~= nil then
+            local equip = inst.replica.inventory:GetEquippedItem(data.eslot)
+            if equip == nil or self.reticule ~= equip.components.reticule then
+                self.reticule:DestroyReticule()
+                self.reticule = nil
+            end
+        end
     end
 end
 
@@ -654,6 +660,10 @@ function PlayerController:DoControllerAttackButton(target)
             end
         end
         --V2C: controller attacks still happen even with no valid target
+        if target == nil and self.inst:HasTag("playerghost") then
+            --Except for player ghosts!
+            return
+        end
     end
 
     local act = BufferedAction(self.inst, target, ACTIONS.ATTACK)
@@ -799,21 +809,27 @@ function PlayerController:StartBuildPlacementMode(recipe)
 end
 
 local function ValidateAttackTarget(combat, target, force_attack, x, z, has_weapon, reach)
-    if not combat:CanTarget(target)
-        or combat:IsAlly(target)
-        or not (force_attack or
+    if not combat:CanTarget(target) or
+        (target.replica.combat ~= nil --no combat if light/extinguish target
+        and (combat:IsAlly(target) or
+            not (force_attack or
                 target:HasTag("hostile") or
-                (has_weapon and target:HasTag("monster")) or
+                (has_weapon and target:HasTag("monster") and not target:HasTag("player")) or
                 combat:IsRecentTarget(target) or
-                target.replica.combat:GetTarget() == combat.inst) then
+                target.replica.combat:GetTarget() == combat.inst))) then
         return false
     end
     --Now we ensure the target is in range
-    reach = reach + target.Physics:GetRadius()
+    --light/extinguish targets may not have physics
+    reach = target.Physics ~= nil and reach + target.Physics:GetRadius() or reach
     return target:GetDistanceSqToPoint(x, 0, z) <= reach * reach
 end
 
 function PlayerController:GetAttackTarget(force_attack, force_target, isretarget)
+    if self.inst:HasTag("playerghost") then
+        return
+    end
+
     local combat = self.inst.replica.combat
     if combat == nil then
         return
@@ -863,7 +879,9 @@ function PlayerController:GetAttackTarget(force_attack, force_target, isretarget
     end
     
     --To deal with entity collision boxes we need to pad the radius.
-    local nearby_ents = TheSim:FindEntities(x, y, z, rad + 5)
+    --Only include combat targets for auto-targetting, not light/extinguish
+    --See entityreplica.lua (re: "_combat" tag)
+    local nearby_ents = TheSim:FindEntities(x, y, z, rad + 5, { "_combat" })
     for i, v in ipairs(nearby_ents) do
         if ValidateAttackTarget(combat, v, force_attack, x, z, has_weapon, reach) and
             CanEntitySeeTarget(self.inst, v) then
@@ -944,7 +962,9 @@ local function ValidateBugNet(target)
 end
 
 local function GetPickupAction(target, tool)
-    if tool ~= nil then
+    if target:HasTag("smolder") then
+        return ACTIONS.SMOTHER
+    elseif tool ~= nil then
         for k, v in pairs(TOOLACTIONS) do
             if target:HasTag(k.."_workable") then
                 if tool:HasTag(k.."_tool") then
@@ -960,17 +980,18 @@ local function GetPickupAction(target, tool)
         return ACTIONS.ACTIVATE
     elseif target.replica.inventoryitem ~= nil and
         target.replica.inventoryitem:CanBePickedUp() and
-        not target:HasTag("catchable") then
+        not (target:HasTag("catchable") or target:HasTag("fire")) then
         return ACTIONS.PICKUP 
-    elseif target:HasTag("pickable") then
+    elseif target:HasTag("pickable") and not target:HasTag("fire") then
         return ACTIONS.PICK 
     elseif target:HasTag("harvestable") then
         return ACTIONS.HARVEST
-    elseif target:HasTag("readyforharvest") then
+    elseif target:HasTag("readyforharvest") or
+        (target:HasTag("notreadyforharvest") and target:HasTag("withered")) then
         return ACTIONS.HARVEST
-    elseif target:HasTag("dried") then
+    elseif target:HasTag("dried") and not target:HasTag("burnt") then
         return ACTIONS.HARVEST
-    elseif target:HasTag("donecooking") then
+    elseif target:HasTag("donecooking") and not target:HasTag("burnt") then
         return ACTIONS.HARVEST
     end
     --no action found
@@ -990,6 +1011,14 @@ function PlayerController:IsDoingOrWorking()
         or self.inst:HasTag("working")
 end
 
+local TARGET_EXCLUDE_TAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO" }
+local PICKUP_TARGET_EXCLUDE_TAGS = { "catchable" }
+local HAUNT_TARGET_EXCLUDE_TAGS = { "haunted", "catchable" }
+for i, v in ipairs(TARGET_EXCLUDE_TAGS) do
+    table.insert(PICKUP_TARGET_EXCLUDE_TAGS, v)
+    table.insert(HAUNT_TARGET_EXCLUDE_TAGS, v)
+end
+
 function PlayerController:GetActionButtonAction(force_target)
     --HACK: V2C, change this to a flag, and move the actual logic in here, it's just the beaver ...
     if self.actionbuttonoverride ~= nil then
@@ -1002,7 +1031,11 @@ function PlayerController:GetActionButtonAction(force_target)
         return
     end
 
-    if not self:IsDoingOrWorking() then
+    if not (self:IsDoingOrWorking()
+            or (force_target ~= nil
+                and (force_target:HasTag("INLIMBO") or
+                    force_target:HasTag("NOCLICK")))) then
+        --"DECOR" should never change, should be safe to skip that check
         local force_target_distsq
         if force_target ~= nil then
             if not force_target.entity:IsVisible() then
@@ -1014,12 +1047,12 @@ function PlayerController:GetActionButtonAction(force_target)
         if self.inst:HasTag("playerghost") then
             --haunt
             if force_target == nil then
-                local target = FindEntity(self.inst, self.directwalking and 3 or 6, ValidateHaunt, nil, { "haunted" })
+                local target = FindEntity(self.inst, self.directwalking and 3 or 6, ValidateHaunt, nil, HAUNT_TARGET_EXCLUDE_TAGS)
                 if CanEntitySeeTarget(self.inst, target) then
                     return BufferedAction(self.inst, target, ACTIONS.HAUNT)
                 end
             elseif force_target_distsq <= (self.directwalking and 9 or 36) and
-                not force_target:HasTag("haunted") and
+                not (force_target:HasTag("haunted") or force_target:HasTag("catchable")) and
                 ValidateHaunt(force_target) then
                 return BufferedAction(self.inst, force_target, ACTIONS.HAUNT)
             end
@@ -1031,7 +1064,7 @@ function PlayerController:GetActionButtonAction(force_target)
         --bug catching (has to go before combat)
         if tool ~= nil and tool:HasTag(ACTIONS.NET.id.."_tool") then
             if force_target == nil then
-                local target = FindEntity(self.inst, 5, ValidateBugNet, { "_health", ACTIONS.NET.id.."_workable" })
+                local target = FindEntity(self.inst, 5, ValidateBugNet, { "_health", ACTIONS.NET.id.."_workable" }, TARGET_EXCLUDE_TAGS)
                 if CanEntitySeeTarget(self.inst, target) then
                     return BufferedAction(self.inst, target, ACTIONS.NET, tool)
                 end
@@ -1046,7 +1079,7 @@ function PlayerController:GetActionButtonAction(force_target)
         --catching
         if self.inst:HasTag("cancatch") then
             if force_target == nil then
-                local target = FindEntity(self.inst, 10, nil, { "catchable" })
+                local target = FindEntity(self.inst, 10, nil, { "catchable" }, TARGET_EXCLUDE_TAGS)
                 if CanEntitySeeTarget(self.inst, target) then
                     return BufferedAction(self.inst, target, ACTIONS.CATCH)
                 end
@@ -1058,7 +1091,7 @@ function PlayerController:GetActionButtonAction(force_target)
 
         --unstick
         if force_target == nil then
-            local target = FindEntity(self.inst, self.directwalking and 3 or 6, nil, { "pinned" })
+            local target = FindEntity(self.inst, self.directwalking and 3 or 6, nil, { "pinned" }, TARGET_EXCLUDE_TAGS)
             if CanEntitySeeTarget(self.inst, target) then
                 return BufferedAction(self.inst, target, ACTIONS.UNPIN)
             end
@@ -1067,7 +1100,7 @@ function PlayerController:GetActionButtonAction(force_target)
             return BufferedAction(self.inst, force_target, ACTIONS.UNPIN)
         end
 
-        --pickup
+        --misc: pickup, tool work, smother
         if force_target == nil then
             local pickup_tags =
             {
@@ -1075,10 +1108,12 @@ function PlayerController:GetActionButtonAction(force_target)
                 "pickable",
                 "donecooking",
                 "readyforharvest",
+                "notreadyforharvest",
                 "harvestable",
                 "trapsprung",
                 "dried",
-                "inactive"
+                "inactive",
+                "smolder",
             }
             if tool ~= nil then
                 for k, v in pairs(TOOLACTIONS) do
@@ -1088,7 +1123,7 @@ function PlayerController:GetActionButtonAction(force_target)
                 end
             end
             local x, y, z = self.inst.Transform:GetWorldPosition()
-            local ents = TheSim:FindEntities(x, y, z, self.directwalking and 3 or 6, nil, { "catchable" }, pickup_tags)
+            local ents = TheSim:FindEntities(x, y, z, self.directwalking and 3 or 6, nil, PICKUP_TARGET_EXCLUDE_TAGS, pickup_tags)
             for i, v in ipairs(ents) do
                 if v ~= self.inst and v.entity:IsVisible() and CanEntitySeeTarget(self.inst, v) then
                     local action = GetPickupAction(v, tool)
@@ -1581,9 +1616,12 @@ function PlayerController:OnUpdate(dt)
     end
 end
 
-local CONTROLLER_TARGET_EXCLUDE_TAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO" }
-
 local function UpdateControllerAttackTarget(self, dt, x, y, z, dirx, dirz)
+    if self.inst:HasTag("playerghost") then
+        self.controller_attack_target = nil
+        return
+    end
+
     if self.controller_attack_target ~= nil and
         not (self.inst.replica.combat:CanTarget(self.controller_attack_target) and
             CanEntitySeeTarget(self.inst, self.controller_attack_target)) then
@@ -1603,7 +1641,7 @@ local function UpdateControllerAttackTarget(self, dt, x, y, z, dirx, dirz)
     local max_rad_sq = max_rad * max_rad
 
     --see entity_replica.lua for "_combat" tag
-    local nearby_ents = TheSim:FindEntities(x, y, z, max_rad, { "_combat" }, CONTROLLER_TARGET_EXCLUDE_TAGS)
+    local nearby_ents = TheSim:FindEntities(x, y, z, max_rad, { "_combat" }, TARGET_EXCLUDE_TAGS)
     if self.controller_attack_target ~= nil then
         --Note: it may already contain controller_attack_target,
         --      so make sure to handle it only once later
@@ -1633,11 +1671,7 @@ local function UpdateControllerAttackTarget(self, dt, x, y, z, dirx, dirz)
                 if dot > 0 or dist < min_rad then
                     local score = dot + 1 - .5 * dsq / max_rad_sq
 
-                    --V2C: would like to make this chester check a more
-                    --     generic check for non-hostile companions
-                    if v.prefab == "chester"
-                        or (v.replica.follower ~= nil and
-                            v.replica.follower:GetLeader() == self.inst) then
+                    if self.inst.replica.combat:IsAlly(v) then
                         score = score * .25
                     elseif v:HasTag("monster") then
                         score = score * 4
@@ -1685,6 +1719,7 @@ local function UpdateControllerInteractionTarget(self, dt, x, y, z, dirx, dirz)
             self.controller_target:HasTag("INLIMBO") or
             self.controller_target:HasTag("NOCLICK") or
             not CanEntitySeeTarget(self.inst, self.controller_target)) then
+        --"FX" and "DECOR" tag should never change, should be safe to skip that check
         self.controller_target = nil
         --it went invalid, but we're not resetting the age yet
     end
@@ -1697,7 +1732,7 @@ local function UpdateControllerInteractionTarget(self, dt, x, y, z, dirx, dirz)
 
     --catching
     if self.inst:HasTag("cancatch") then
-        local target = FindEntity(self.inst, 10, nil, { "catchable" })
+        local target = FindEntity(self.inst, 10, nil, { "catchable" }, TARGET_EXCLUDE_TAGS)
         if CanEntitySeeTarget(self.inst, target) then
             if target ~= self.controller_target then
                 self.controller_target = target
@@ -1716,7 +1751,7 @@ local function UpdateControllerInteractionTarget(self, dt, x, y, z, dirx, dirz)
             math.max(min_rad, math.min(max_rad, math.sqrt(self.inst:GetDistanceSqToInst(self.controller_target)))) or
             max_rad
 
-    local nearby_ents = TheSim:FindEntities(x, y, z, rad, nil, CONTROLLER_TARGET_EXCLUDE_TAGS)
+    local nearby_ents = TheSim:FindEntities(x, y, z, rad, nil, TARGET_EXCLUDE_TAGS)
     if self.controller_target ~= nil then
         --Note: it may already contain controller_target,
         --      so make sure to handle it only once later
@@ -2082,7 +2117,11 @@ end
 --------------------------------------------------------------------------
 
 function PlayerController:DoCameraControl()
-    if not TheCamera:CanControl() then
+    if not TheCamera:CanControl()
+        or (self.inst.HUD ~= nil and
+            self.inst.HUD:IsCraftingOpen()) then
+        --Check crafting again because this time
+        --we block even with mouse crafting open
         return
     end
 
@@ -2193,7 +2232,9 @@ function PlayerController:DoActionAutoEquip(buffaction)
         buffaction.action ~= ACTIONS.EQUIP and
         buffaction.action ~= ACTIONS.GIVETOPLAYER and
         buffaction.action ~= ACTIONS.GIVEALLTOPLAYER and
-        buffaction.action ~= ACTIONS.GIVE then
+        buffaction.action ~= ACTIONS.GIVE and
+        buffaction.action ~= ACTIONS.ADDFUEL and
+        buffaction.action ~= ACTIONS.ADDWETFUEL then
         self.inst.replica.inventory:EquipActionItem(buffaction.invobject)
         buffaction.autoequipped = true
     end
@@ -2398,10 +2439,16 @@ function PlayerController:GetSceneItemControllerAction(item)
     local itempos = item:GetPosition()
     local lmb = self.inst.components.playeractionpicker:GetLeftClickActions(itempos, item)[1]
     local rmb = self.inst.components.playeractionpicker:GetRightClickActions(itempos, item)[1]
-    if lmb ~= nil and (lmb.action == ACTIONS.LOOKAT or lmb.action == ACTIONS.ATTACK or lmb.action == ACTIONS.WALKTO) then
+    if lmb ~= nil
+        and (lmb.action == ACTIONS.LOOKAT or
+            (lmb.action == ACTIONS.ATTACK and item.replica.combat ~= nil) or
+            lmb.action == ACTIONS.WALKTO) then
         lmb = nil
     end
-    if rmb ~= nil and (rmb.action == ACTIONS.LOOKAT or rmb.action == ACTIONS.ATTACK or rmb.action == ACTIONS.WALKTO) then
+    if rmb ~= nil
+        and (rmb.action == ACTIONS.LOOKAT or
+            (rmb.action == ACTIONS.ATTACK and item.replica.combat ~= nil) or
+            rmb.action == ACTIONS.WALKTO) then
         rmb = nil
     end
     return lmb, rmb ~= nil and (lmb == nil or lmb.action ~= rmb.action) and rmb or nil
@@ -2539,12 +2586,12 @@ end
 function PlayerController:RemoteMakeRecipeFromMenu(recipe)
     if not self.ismastersim then
         if self.locomotor == nil then
-            SendRPCToServer(RPC.MakeRecipeFromMenu, recipe.sortkey)
-        elseif self:CanLocomote() then
+            SendRPCToServer(RPC.MakeRecipeFromMenu, recipe.rpc_id)
+       elseif self:CanLocomote() then
             self.locomotor:Stop()
             local buffaction = BufferedAction(self.inst, nil, ACTIONS.BUILD, nil, nil, recipe.name, 1)
             buffaction.preview_cb = function()
-                SendRPCToServer(RPC.MakeRecipeFromMenu, recipe.sortkey)
+                SendRPCToServer(RPC.MakeRecipeFromMenu, recipe.rpc_id)
             end
             self.locomotor:PreviewAction(buffaction, true)
         end
@@ -2554,12 +2601,12 @@ end
 function PlayerController:RemoteMakeRecipeAtPoint(recipe, pt)
     if not self.ismastersim then
         if self.locomotor == nil then
-            SendRPCToServer(RPC.MakeRecipeAtPoint, recipe.sortkey, pt.x, pt.z)
+            SendRPCToServer(RPC.MakeRecipeAtPoint, recipe.rpc_id, pt.x, pt.z)
         elseif self:CanLocomote() then
             self.locomotor:Stop()
             local buffaction = BufferedAction(self.inst, nil, ACTIONS.BUILD, nil, pt, recipe.name, 1)
             buffaction.preview_cb = function()
-                SendRPCToServer(RPC.MakeRecipeAtPoint, recipe.sortkey, pt.x, pt.z)
+                SendRPCToServer(RPC.MakeRecipeAtPoint, recipe.rpc_id, pt.x, pt.z)
             end
             self.locomotor:PreviewAction(buffaction, true)
         end

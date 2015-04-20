@@ -9,6 +9,7 @@ local prefabs =
     "greengem",
     "orangegem",
     "yellowgem",
+    "collapse_small",
 }
 
 SetSharedLootTable( 'smashables',
@@ -36,10 +37,10 @@ end
 local function OnRepaired(inst)
     if inst.components.health:GetPercent() >= 1 then
         inst.AnimState:PushAnimation("idle")
-		-- KAJ: TODO: should this affect all players in a certain range?
-		for i,v in ipairs(AllPlayers) do
-	        v.components.sanity:DoDelta(TUNING.SANITY_MEDLARGE)
-		end
+        -- KAJ: TODO: should this affect all players in a certain range?
+        for i,v in ipairs(AllPlayers) do
+            v.components.sanity:DoDelta(TUNING.SANITY_MEDLARGE)
+        end
         inst:RemoveComponent("repairable")
         inst.components.inspectable.nameoverride = "relic"
         inst.components.named:SetName(STRINGS.NAMES["RELIC"])
@@ -69,8 +70,8 @@ local function OnLoad(inst, data)
     if not data then
         return
     end
-	inst.rubble = data.rubble
-	if not inst.rubble then
+    inst.rubble = data.rubble
+    if not inst.rubble then
         inst.components.inspectable.nameoverride = "relic"
         inst.components.named:SetName(STRINGS.NAMES["RELIC"])
         if inst.components.health:GetPercent() >= .5 then
@@ -81,13 +82,13 @@ local function OnLoad(inst, data)
         if inst.components.repairable then
             inst:RemoveComponent("repairable")
         end
-	end
+    end
 end
 
 local function OnSave(inst, data)
-	if inst.rubble then
-		data.rubble = inst.rubble
-	end
+    if inst.rubble then
+        data.rubble = inst.rubble
+    end
 end
 
 local function makefn(name, asset, smashsound, rubble, tag)
@@ -123,12 +124,12 @@ local function makefn(name, asset, smashsound, rubble, tag)
         --Sneak these into pristine state for optimization
         inst:AddTag("_named")
 
+        inst.entity:SetPristine()
+
         local world = TheWorld
         if not world.ismastersim then
             return inst
         end
-
-        inst.entity:SetPristine()
 
         --Remove these tags so that they can be added properly when replicating components below
         inst:RemoveTag("_named")
@@ -140,7 +141,7 @@ local function makefn(name, asset, smashsound, rubble, tag)
         inst.OnSave = OnSave
 
         inst:AddComponent("combat")
-		inst.components.combat.onhitfn = OnHit
+        inst.components.combat.onhitfn = OnHit
 
         inst:AddComponent("health")
         inst.components.health.canmurder = false
@@ -194,7 +195,7 @@ local function makefn(name, asset, smashsound, rubble, tag)
             inst.components.inspectable.nameoverride = "ruins_rubble"
             inst.components.named:SetName(STRINGS.NAMES["RUINS_RUBBLE"])
 
-		    inst:AddComponent("repairable")
+            inst:AddComponent("repairable")
             inst.components.repairable.repairmaterial = MATERIALS.STONE
             inst.components.repairable.onrepaired = OnRepaired
         else
@@ -207,15 +208,15 @@ local function makefn(name, asset, smashsound, rubble, tag)
         inst.components.workable:SetWorkLeft(3)
         inst.components.workable.savestate = true
         inst.components.workable:SetOnFinishCallback(OnDeath)
-	    inst.components.workable:SetWorkAction(ACTIONS.MINE)
-		inst.components.workable:SetOnWorkCallback(OnHit) 
+        inst.components.workable:SetWorkAction(ACTIONS.MINE)
+        inst.components.workable:SetOnWorkCallback(OnHit) 
 
         if smashsound then
             inst.smashsound = smashsound
         end
         return inst
     end
-end    
+end
 
 local function item(name, sound)
     return Prefab("cave/objects/smashables/"..name, makefn(name, name, sound, false), makeassetlist(name), prefabs)

@@ -5,8 +5,8 @@ local SLEEP_NEAR_LEADER_DISTANCE = 7
 
 local assets =
 {
-	Asset("ANIM", "anim/smallbird_basic.zip"),
-	--Asset("SOUND", "sound/smallbird.fsb"),
+    Asset("ANIM", "anim/smallbird_basic.zip"),
+    --Asset("SOUND", "sound/smallbird.fsb"),
 }
 
 local prefabs =
@@ -16,11 +16,52 @@ local prefabs =
 
 local teen_assets =
 {
-	Asset("ANIM", "anim/ds_tallbird_basic.zip"),
-	Asset("ANIM", "anim/tallbird_teen_basic.zip"),
-	Asset("ANIM", "anim/tallbird_teen_build.zip"),
-	--Asset("SOUND", "sound/smallbird.fsb"),
+    Asset("ANIM", "anim/ds_tallbird_basic.zip"),
+    Asset("ANIM", "anim/tallbird_teen_basic.zip"),
+    Asset("ANIM", "anim/tallbird_teen_build.zip"),
+    --Asset("SOUND", "sound/smallbird.fsb"),
 }
+
+local function StartSpringSmallBird(inst, leader)
+    inst.leader = leader
+    inst.Transform:SetPosition(leader.Transform:GetWorldPosition())
+    inst:RemoveTag("companion")
+    inst:AddTag("springbird")
+    inst.sg:GoToState("hatch")
+    inst.components.hunger:SetKillRate(0)
+end
+
+local function onsave(inst, data)
+    if inst:HasTag("springbird") then
+        local ents
+        if inst.leader then
+            data.leader = inst.leader.GUID
+            ents = {data.leader}
+        end
+        data.springbird = true
+        return ents
+    end
+end
+
+local function onload(inst, data)
+    if data then
+        if data.springbird then
+            inst:RemoveTag("companion")
+            inst:AddTag("springbird")
+        end
+    end
+end
+
+local function loadpostpass(inst,ents, data)
+    if data then
+        if data.leader then  
+            local leader = ents[data.leader]
+            if leader then
+                inst.leader = leader.entity
+            end
+        end
+    end
+end
 
 local function GetStatus(inst)
     --print("smallbird - GetStatus")
@@ -85,14 +126,17 @@ local function OnRefuseItem(inst, item)
     --inst.sg:GoToState("refuse")
 end
 
-local function FollowPlayer(inst)
-	-- KAJ: TODO: MP_LOGIC
-	local player = inst:GetNearestPlayer()
-	if player and player.components.leader then
+local function FollowLeader(inst)
+    -- KAJ: TODO: MP_LOGIC
+    local leader = inst:GetNearestPlayer()
+    if inst.leader then leader = inst.leader end
+    if leader and leader.components.leader then
         --print("   adding follower")
-		player.components.leader:AddFollower(inst)
-	end
-	
+        leader.components.leader:AddFollower(inst)
+        --[[if leader.components.homeseeker and leader.components.homeseeker:HasHome() and leader.components.homeseeker.home.prefab == "tallbirdnest" then 
+            leader.components.homeseeker.home.canspawnsmallbird = true
+        end]]
+    end
 end
 
 local function SetTeenAttackDefault(inst)
@@ -111,7 +155,7 @@ end
 
 local function OnNewTarget(inst, data)
     --print("teenbird - OnNewTarget", data.target, inst.components.follower.leader)
-    if data.target and data.target:HasTag("player") then
+    if data.target and data.target == inst.components.follower.leader then--old implementation was ":HasTag("player") then "
         -- combat component will restore target to player, give them the benefit of the doubt and use peck instead of attack to begin with
         SetTeenAttackPeck(inst)
     else
@@ -119,13 +163,26 @@ local function OnNewTarget(inst, data)
     end
 end
 
+local function SmallRetarget(inst)
+    if inst:HasTag("springbird") then
+        return nil
+    end
+end
+
+local function SmallKeepTarget(inst, target)
+    if inst:HasTag("springbird") then
+        return false
+    end
+end
+
+
 local function TeenRetarget(inst)
-    return FindEntity(inst, TUNING.TEENBIRD_TARGET_DIST, function(guy)
+    return FindEntity(inst, SpringCombatMod(TUNING.TEENBIRD_TARGET_DIST), function(guy)
         if inst.components.combat:CanTarget(guy)  and (not guy.LightWatcher or guy.LightWatcher:IsInLight()) then
             if inst.components.follower.leader ~= nil then
-                return (guy:HasTag("monster") or (guy == inst.components.follower.leader and guy:HasTag("player") and inst.components.hunger and inst.components.hunger:IsStarving()))
+                return (guy:HasTag("monster") or (guy == inst.components.follower.leader and inst.components.hunger and inst.components.hunger:IsStarving()))
             else
-                return guy:HasTag("monster")
+                return guy:HasTag("monster") or guy:HasTag("tallbird")
             end
         end
     end,
@@ -205,11 +262,11 @@ local function GetPeepChance(inst)
 end
 
 local function GetSmallGrowTime(inst)
-	return TUNING.SMALLBIRD_GROW_TIME
+    return TUNING.SMALLBIRD_GROW_TIME
 end
 
 local function GetTallGrowTime(inst)
-	return TUNING.TEENBIRD_GROW_TIME
+    return TUNING.TEENBIRD_GROW_TIME
 end
 
 local function OnHealthDelta(inst, data)
@@ -227,13 +284,13 @@ end
 local function create_common(inst, physicscylinder)
     --print("smallbird - create_common")
 
-	--inst = inst or CreateEntity()
-	
+    --inst = inst or CreateEntity()
+
     inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
-    
+
     MakeCharacterPhysics(inst, 10, .25)
-    
+
     inst.Physics:SetCollisionGroup(COLLISION.CHARACTERS)
     inst.Physics:ClearCollisionMask()
     inst.Physics:CollidesWith(COLLISION.WORLD)
@@ -250,17 +307,17 @@ local function create_common(inst, physicscylinder)
 
     inst.Transform:SetFourFaced()
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
+    inst:SetBrain(brain)
 
-	inst:SetBrain(brain)	
-
-    inst.userfunctions = 
+    inst.userfunctions =
     {
-        FollowPlayer = FollowPlayer,
+        FollowLeader = FollowLeader,
         GetPeepChance = GetPeepChance,
         SpawnTeen = SpawnTeen,
         SpawnAdult = SpawnAdult,
@@ -271,7 +328,7 @@ local function create_common(inst, physicscylinder)
     inst:AddComponent("hunger")
     inst:AddComponent("health")
     inst:AddComponent("combat")
-	inst:ListenForEvent("attacked", OnAttacked)
+    inst:ListenForEvent("attacked", OnAttacked)
 
     inst:AddComponent("inspectable")
     inst.components.inspectable.getstatus = GetStatus
@@ -297,16 +354,26 @@ local function create_common(inst, physicscylinder)
 
     inst:AddComponent("lootdropper")
 
+    inst.OnSave = onsave
+    inst.OnLoad = onload
+    inst.LoadPostPass = loadpostpass
+
     MakeHauntablePanic(inst)
 
     --print("smallbird - create_common END")
     return inst
 end
 
+local function SetUpSpringSmallBird(inst, data)
+    if inst == data.smallbird then
+        StartSpringSmallBird(data.smallbird, data.tallbird)
+    end
+end
+
 local function create_smallbird()
     --print("smallbird - create_smallbird")
 
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
@@ -330,34 +397,38 @@ local function create_smallbird()
 
     MakeSmallBurnableCharacter(inst, "head")
     MakeSmallFreezableCharacter(inst, "head")
-    
+
     inst.components.health:SetMaxHealth(TUNING.SMALLBIRD_HEALTH)
-    
+
     inst.components.hunger:SetMax(TUNING.SMALLBIRD_HUNGER)
     inst.components.hunger:SetRate(TUNING.SMALLBIRD_HUNGER/TUNING.SMALLBIRD_STARVE_TIME)
     inst.components.hunger:SetKillRate(TUNING.SMALLBIRD_HEALTH/TUNING.SMALLBIRD_STARVE_KILL_TIME)
 
-	inst.components.combat.hiteffectsymbol = "head"
+    inst.components.combat.hiteffectsymbol = "head"
     inst.components.combat:SetRange(TUNING.SMALLBIRD_ATTACK_RANGE)
     inst.components.combat:SetDefaultDamage(TUNING.SMALLBIRD_DAMAGE)
     inst.components.combat:SetAttackPeriod(TUNING.SMALLBIRD_ATTACK_PERIOD)
+    inst.components.combat:SetRetargetFunction(3, SmallRetarget)
+    inst.components.combat:SetKeepTargetFunction(SmallKeepTarget)
 
     inst.components.lootdropper:SetLoot({"smallmeat"})
 
-    inst.components.eater:SetSmallBird()
+    inst.components.eater:SetDiet({ FOODGROUP.BERRIES_AND_SEEDS }, { FOODGROUP.BERRIES_AND_SEEDS })
 
     local growth_stages = {
         {name="small", time = GetSmallGrowTime, fn = function() end },
         {name="tall", fn = SetTeen}
     }
 
-	inst:AddComponent("growable")
+    inst:AddComponent("growable")
     inst.components.growable.stages = growth_stages
     inst.components.growable:SetStage(1)
     inst.components.growable:StartGrowing()
 
+    inst:ListenForEvent("SetUpSpringSmallBird", SetUpSpringSmallBird)
+
     --print("smallbird - create_smallbird END")
-	return inst
+    return inst
 end
 
 local function create_teen_smallbird()
@@ -390,39 +461,39 @@ local function create_teen_smallbird()
 
     MakeLargeBurnableCharacter(inst, "head")
     MakeMediumFreezableCharacter(inst, "head")
-    
+
     inst.components.health:SetMaxHealth(TUNING.TEENBIRD_HEALTH)
     inst:ListenForEvent("healthdelta", OnHealthDelta)
-    
+
     inst.components.hunger:SetMax(TUNING.TEENBIRD_HUNGER)
     inst.components.hunger:SetRate(TUNING.TEENBIRD_HUNGER/TUNING.TEENBIRD_STARVE_TIME)
     inst.components.hunger:SetKillRate(TUNING.TEENBIRD_HEALTH/TUNING.TEENBIRD_STARVE_KILL_TIME)
 
-	inst.components.combat.hiteffectsymbol = "head"
+    inst.components.combat.hiteffectsymbol = "head"
     inst.components.combat:SetRange(TUNING.TEENBIRD_ATTACK_RANGE)
     inst.components.combat:SetRetargetFunction(3, TeenRetarget)
     inst.components.combat:SetKeepTargetFunction(TeenKeepTarget)
     SetTeenAttackDefault(inst)
 
     inst:ListenForEvent("newcombattarget", OnNewTarget)
-    
+
     inst.components.lootdropper:SetLoot({"meat"})
 
-    inst.components.eater:SetOmnivore()
+    inst.components.eater:SetDiet({ FOODGROUP.OMNI }, { FOODGROUP.OMNI })
 
     local growth_stages = {
         {name="tall", time = GetTallGrowTime, fn = function() end },
         {name="adult", fn = SetAdult}
     }
 
-	inst:AddComponent("growable")
+    inst:AddComponent("growable")
     inst.components.growable.stages = growth_stages
     inst.components.growable:SetStage(1)
     inst.components.growable:StartGrowing()
 
     --print("smallbird - create_teen_smallbird END")
-	return inst
+    return inst
 end
 
 return Prefab("common/smallbird", create_smallbird, assets, prefabs),
-	   Prefab("common/teenbird", create_teen_smallbird, teen_assets)
+    Prefab("common/teenbird", create_teen_smallbird, teen_assets)

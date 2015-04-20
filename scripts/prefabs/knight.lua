@@ -1,14 +1,14 @@
 local assets =
 {
-	Asset("ANIM", "anim/knight.zip"),
-	Asset("ANIM", "anim/knight_build.zip"),
+    Asset("ANIM", "anim/knight.zip"),
+    Asset("ANIM", "anim/knight_build.zip"),
     Asset("ANIM", "anim/knight_nightmare.zip"),
-	Asset("SOUND", "sound/chess.fsb"),
+    Asset("SOUND", "sound/chess.fsb"),
 }
 
 local prefabs =
 {
-	"gears",
+    "gears",
     "thulecite_pieces",
     "nightmarefuel",
 }
@@ -61,26 +61,25 @@ local function ShouldWake(inst)
 end
 
 local function Retarget(inst)
-
     local homePos = inst.components.knownlocations:GetLocation("home")
     local myPos = Vector3(inst.Transform:GetWorldPosition() )
     if (homePos and distsq(homePos, myPos) > TUNING.KNIGHT_TARGET_DIST*TUNING.KNIGHT_TARGET_DIST) and not
     (inst.components.follower and inst.components.follower.leader) then
         return
     end
-    
+
     local newtarget = FindEntity(inst, TUNING.KNIGHT_TARGET_DIST, function(guy)
-			local myLeader = inst.components.follower and inst.components.follower.leader
-			local theirLeader = guy.components.follower and guy.components.follower.leader
-			local bothFollowingSamePlayer = myLeader and (myLeader == theirLeader) and myLeader:HasTag("player")
+            local myLeader = inst.components.follower and inst.components.follower.leader
+            local theirLeader = guy.components.follower and guy.components.follower.leader
+            local bothFollowingSamePlayer = myLeader and (myLeader == theirLeader) and myLeader:HasTag("player")
             return 
                    not (guy:HasTag("chess") and (guy.components.follower and not guy.components.follower.leader))
                    and not bothFollowingSamePlayer
                    and not (inst.components.follower and inst.components.follower.leader == guy)
                    and inst.components.combat:CanTarget(guy)
     end,
-	nil,
-	nil,
+    nil,
+    nil,
     {"character","monster"}
     )
     return newtarget
@@ -108,12 +107,12 @@ local function RememberKnownLocation(inst)
 end
 
 local function fn_common(build)
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
-	inst.entity:AddDynamicShadow()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
+    inst.entity:AddDynamicShadow()
     inst.entity:AddNetwork()
 
     MakeCharacterPhysics(inst, 50, .5)
@@ -129,11 +128,11 @@ local function fn_common(build)
     inst:AddTag("chess")
     inst:AddTag("knight")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst.kind = ""
 

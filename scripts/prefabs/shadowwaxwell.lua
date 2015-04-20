@@ -1,44 +1,39 @@
-local assets = 
+local assets =
 {
     Asset("ANIM", "anim/waxwell_shadow_mod.zip"),
-	Asset("SOUND", "sound/maxwell.fsb"),
-	Asset("ANIM", "anim/swap_pickaxe.zip"),
-	Asset("ANIM", "anim/swap_axe.zip"),
-	Asset("ANIM", "anim/swap_nightmaresword.zip"),
-}
-
-local prefabs = 
-{
-
+    Asset("SOUND", "sound/maxwell.fsb"),
+    Asset("ANIM", "anim/swap_pickaxe.zip"),
+    Asset("ANIM", "anim/swap_axe.zip"),
+    Asset("ANIM", "anim/swap_nightmaresword.zip"),
 }
 
 local brain = require"brains/shadowwaxwellbrain"
 
 local items =
 {
-	AXE = "swap_axe",
-	PICK = "swap_pickaxe",
-    SWORD = "swap_nightmaresword"
+    AXE = "swap_axe",
+    PICK = "swap_pickaxe",
+    SWORD = "swap_nightmaresword",
 }
 
 local function ondeath(inst)
-	inst.components.sanityaura.penalty = 0
-	local player = GetPlayer()
-	if player then
-		player.components.sanity:RecalculatePenalty()
-	end
+    inst.components.sanityaura.penalty = 0
+    local player = GetPlayer()
+    if player then
+        player.components.sanity:RecalculatePenalty()
+    end
 end
 
 local function EquipItem(inst, item)
-	if item then
-	    inst.AnimState:OverrideSymbol("swap_object", item, item)
-	    inst.AnimState:Show("ARM_carry") 
-	    inst.AnimState:Hide("ARM_normal")
-	end
+    if item then
+        inst.AnimState:OverrideSymbol("swap_object", item, item)
+        inst.AnimState:Show("ARM_carry") 
+        inst.AnimState:Hide("ARM_normal")
+    end
 end
 
 local function die(inst)
-	inst.components.health:Kill()
+    inst.components.health:Kill()
 end
 
 local function resume(inst, time)
@@ -75,11 +70,11 @@ local function entitydeathfn(inst, data)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
     MakeGhostPhysics(inst, 1, .5)
@@ -97,16 +92,16 @@ local function fn()
     inst:AddTag("scarytoprey")
     inst:AddTag("NOCLICK")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
+    inst:AddComponent("colourtweener")
+    inst.components.colourtweener:StartTween({0,0,0,.5}, 0)
 
-	inst:AddComponent("colourtweener")
-	inst.components.colourtweener:StartTween({0,0,0,.5}, 0)
-
-	inst:AddComponent("locomotor")
+    inst:AddComponent("locomotor")
     inst.components.locomotor:SetSlowMultiplier( 0.6 )
     inst.components.locomotor.pathcaps = { ignorecreep = true }
     inst.components.locomotor.runspeed = TUNING.SHADOWWAXWELL_SPEED
@@ -124,7 +119,7 @@ local function fn()
     inst.components.health.nofadeout = true
     inst:ListenForEvent("death", ondeath)
 
-	inst:AddComponent("inventory")
+    inst:AddComponent("inventory")
 
     inst:AddComponent("sanityaura")
     inst.components.sanityaura.penalty = TUNING.SHADOWWAXWELL_SANITY_PENALTY
@@ -146,10 +141,10 @@ local function fn()
 
     inst:AddComponent("follower")
 
-	inst:SetBrain(brain)
-	inst:SetStateGraph("SGshadowwaxwell")
+    inst:SetBrain(brain)
+    inst:SetStateGraph("SGshadowwaxwell")
 
-	return inst
+    return inst
 end
 
-return Prefab("common/shadowwaxwell", fn, assets, prefabs)
+return Prefab("common/shadowwaxwell", fn, assets)

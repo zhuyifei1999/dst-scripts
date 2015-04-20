@@ -36,11 +36,11 @@ local function fn()
     inst.AnimState:SetFinalOffset(-1)
     --inst.AnimState:SetMultColour(27 / 255, 234 / 255, 245 / 255, .6)
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("firefx")
     inst.components.firefx.levels = firelevels

@@ -1,6 +1,6 @@
 local assets =
 {
-	Asset("ANIM", "anim/burntground.zip")
+    Asset("ANIM", "anim/burntground.zip"),
 }
 
 local function OnIsDay(inst, isday)
@@ -28,10 +28,10 @@ local function OnLoad(inst, data)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddNetwork()
 
     inst.AnimState:SetBuild("burntground")
@@ -44,11 +44,11 @@ local function fn()
     inst:AddTag("NOCLICK")
     inst:AddTag("FX")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst.Transform:SetRotation(math.random() * 360)
 
@@ -56,7 +56,7 @@ local function fn()
     inst:AddComponent("colourtweener")
     inst:WatchWorldState("isday", OnIsDay)
 
-	return inst
+    return inst
 end
 
 return Prefab("common/objects/burntground", fn, assets)

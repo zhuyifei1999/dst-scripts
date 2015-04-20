@@ -1,6 +1,6 @@
 local assets =
 {
-	Asset("ANIM", "anim/poop.zip"),
+    Asset("ANIM", "anim/poop.zip"),
 }
 
 local prefabs =
@@ -38,25 +38,27 @@ local function OnPickup(inst)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
     MakeInventoryPhysics(inst)
-    
+
     inst.AnimState:SetBank("poop")
     inst.AnimState:SetBuild("poop")
     inst.AnimState:PlayAnimation("dump")
     inst.AnimState:PushAnimation("idle")
 
+    MakeDragonflyBait(inst, 3)
+
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("inspectable")
 
@@ -66,6 +68,9 @@ local function fn()
     inst:AddComponent("fertilizer")
     inst.components.fertilizer.fertilizervalue = TUNING.POOP_FERTILIZE
     inst.components.fertilizer.soil_cycles = TUNING.POOP_SOILCYCLES
+    inst.components.fertilizer.withered_cycles = TUNING.POOP_WITHEREDCYCLES
+
+    inst:AddComponent("smotherer")
 
     inst.components.inventoryitem:SetOnDroppedFn(OnDropped)
     inst.components.inventoryitem:SetOnPickupFn(OnPickup)
@@ -77,7 +82,7 @@ local function fn()
     inst.components.fuel.fuelvalue = TUNING.MED_FUEL
     inst.components.fuel:SetOnTakenFn(FuelTaken)
 
-	MakeSmallBurnable(inst, TUNING.MED_BURNTIME)
+    MakeSmallBurnable(inst, TUNING.MED_BURNTIME)
     inst.components.burnable:SetOnIgniteFn(OnBurn)
     MakeSmallPropagator(inst)
 

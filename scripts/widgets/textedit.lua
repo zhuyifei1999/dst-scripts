@@ -28,6 +28,12 @@ function TextEdit:SetEditing(editing)
 		-- Guarantee that we're highlighted
 		self:DoSelectedImage()
 		TheInput:EnableDebugToggle(false)
+		--#srosen this is where we should push whatever text input widget we have for controllers
+		-- we probably don't want to set the focus and whatnot here if controller attached: 
+		-- it screws with textboxes that are child widgets in scroll lists
+		if TheInput:ControllerAttached() then
+
+		end
 	else
 		if self.focus then
 			self:DoHoverImage()
@@ -171,22 +177,22 @@ function TextEdit:OnLoseFocus()
 end
 
 function TextEdit:DoHoverImage()
-	if self.focusedtex and self.unfocusedtex then
-		self.focusimage:SetTexture(self.atlas, self.focus and self.focusedtex or self.unfocusedtex)
+	if self.focusedtex then
+		self.focusimage:SetTexture(self.atlas, self.focusedtex)-- self.focusimage:SetTexture(self.atlas, self.focus and self.focusedtex or self.unfocusedtex)
 		self.focusimage:SetTint(frame_color[1], frame_color[2], frame_color[3], frame_color[4])
 	end
 end
 
 function TextEdit:DoSelectedImage()
-	if self.focusedtex and self.unfocusedtex then
-		self.focusimage:SetTexture(self.atlas, self.focus and self.focusedtex or self.unfocusedtex)
+	if self.focusedtex then
+		self.focusimage:SetTexture(self.atlas, self.focusedtex)-- self.focusimage:SetTexture(self.atlas, self.focus and self.focusedtex or self.unfocusedtex)
 		self.focusimage:SetTint(1,1,1,1)
 	end
 end
 
 function TextEdit:DoIdleImage()
-	if self.focusedtex and self.unfocusedtex then
-		self.focusimage:SetTexture(self.atlas, self.focus and self.focusedtex or self.unfocusedtex)
+	if self.unfocusedtex then
+		self.focusimage:SetTexture(self.atlas, self.unfocusedtex)-- self.focusimage:SetTexture(self.atlas, self.focus and self.focusedtex or self.unfocusedtex)
 		self.focusimage:SetTint(frame_color[1], frame_color[2], frame_color[3], frame_color[4])
 	end
 end
@@ -234,6 +240,15 @@ end
 
 function TextEdit:SetForceUpperCase(to)
 	self.inst.TextEditWidget:SetForceUpperCase(to)
+end
+
+function TextEdit:GetHelpText()
+	local controller_id = TheInput:GetControllerID()
+	local t = {}
+	if not self.editing then
+    	table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT, false, false ) .. " " .. STRINGS.UI.HELP.CHANGE_TEXT)	
+    end
+	return table.concat(t, "  ")
 end
 
 return TextEdit

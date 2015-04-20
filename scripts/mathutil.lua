@@ -40,12 +40,7 @@ end
 
 --Clamps a number between two values
 function math.clamp(num, min, max)
-    
-    num = math.min(num, max)
-    num = math.max(num, min)
-
-    return num
-    
+    return num <= min and min or (num >= max and max or num)
 end
 
 function IsNumberEven(num)

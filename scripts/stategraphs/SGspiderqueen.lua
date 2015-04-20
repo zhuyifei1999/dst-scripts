@@ -193,12 +193,9 @@ local states=
         events=
         {
             EventHandler("animover", function(inst)
-                print("Poop branch: ", inst.components.incrementalproducer:CanProduce())
                 if inst.components.incrementalproducer and inst.components.incrementalproducer:CanProduce() then
-                    print("MOAR POOP")
                     inst.sg:GoToState("poop_loop")
                 else
-                    print("no more poop")
                     inst.sg:GoToState("poop_pst")
                 end
             end),

@@ -1,10 +1,27 @@
 --Sewing should be redone without using the fueled component... it's kind of weird.
 
 local function onfueltype(self, fueltype, old_fueltype)
-    if old_fueltype ~= nil then
+    if old_fueltype ~= nil and old_fueltype ~= self.secondaryfueltype then
         self.inst:RemoveTag(old_fueltype == FUELTYPE.USAGE and "needssewing" or (old_fueltype.."_fueled"))
     end
-    if fueltype == FUELTYPE.USAGE then
+    if fueltype == self.secondaryfueltype then
+        return
+    elseif fueltype == FUELTYPE.USAGE then
+        if self.currentfuel < self.maxfuel then
+            self.inst:AddTag("needssewing")
+        end
+    elseif fueltype ~= nil and self.accepting then
+        self.inst:AddTag(fueltype.."_fueled")
+    end
+end
+
+local function onsecondaryfueltype(self, fueltype, old_fueltype)
+    if old_fueltype ~= nil and old_fueltype ~= self.fueltype then
+        self.inst:RemoveTag(old_fueltype == FUELTYPE.USAGE and "needssewing" or (old_fueltype.."_fueled"))
+    end
+    if fueltype == self.fueltype then
+        return
+    elseif fueltype == FUELTYPE.USAGE then
         if self.currentfuel < self.maxfuel then
             self.inst:AddTag("needssewing")
         end
@@ -21,10 +38,17 @@ local function onaccepting(self, accepting)
             self.inst:RemoveTag(self.fueltype.."_fueled")
         end
     end
+    if self.secondaryfueltype ~= nil and self.secondaryfueltype ~= self.fueltype and self.secondaryfueltype ~= FUELTYPE.USAGE then
+        if self.accepting then
+            self.inst:AddTag(self.secondaryfueltype.."_fueled")
+        else
+            self.inst:RemoveTag(self.secondaryfueltype.."_fueled")
+        end
+    end
 end
 
 local function onfuelpercent(self)
-    if self.fueltype == FUELTYPE.USAGE then
+    if self.fueltype == FUELTYPE.USAGE or self.secondaryfueltype == FUELTYPE.USAGE then
         if self.currentfuel < self.maxfuel then
             self.inst:AddTag("needssewing")
         else
@@ -52,6 +76,7 @@ local Fueled = Class(function(self, inst)
     
     self.accepting = false
     self.fueltype = FUELTYPE.BURNABLE
+    self.secondaryfueltype = nil
     self.sections = 1
     self.sectionfn = nil
     self.period = 1
@@ -61,16 +86,18 @@ end,
 nil,
 {
     fueltype = onfueltype,
+    secondaryfueltype = onsecondaryfueltype,
     accepting = onaccepting,
     maxfuel = onfuelpercent,
     currentfuel = oncurrentfuel,
 })
 
 function Fueled:OnRemoveFromEntity()
-    if self.fueltype == FUELTYPE.USAGE then
-        self.inst:RemoveTag("needssewing")
-    elseif self.fueltype ~= nil then
-        self.inst:RemoveTag(self.fueltype.."_fueled")
+    if self.fueltype ~= nil then
+        self.inst:RemoveTag(self.fueltype == FUELTYPE.USAGE and "needssewing" or (self.fueltype.."_fueled"))
+    end
+    if self.secondaryfueltype ~= nil and self.secondaryfueltype ~= self.fueltype then
+        self.inst:RemoveTag(self.secondaryfueltype == FUELTYPE.USAGE and "needssewing" or (self.secondaryfueltype.."_fueled"))
     end
     self.inst:RemoveTag("fueldepleted")
 end
@@ -110,7 +137,7 @@ function Fueled:SetSections(num)
 end
 
 function Fueled:CanAcceptFuelItem(item)
-    return self.accepting and item and item.components.fuel and item.components.fuel.fueltype == self.fueltype
+    return self.accepting and item and item.components.fuel and (item.components.fuel.fueltype == self.fueltype or item.components.fuel.fueltype == self.secondaryfueltype)
 end
 
 function Fueled:GetCurrentSection()
@@ -129,27 +156,14 @@ end
 function Fueled:TakeFuelItem(item)
     if self:CanAcceptFuelItem(item) then
         local oldsection = self:GetCurrentSection()
-    
-        -- self.currentfuel = self.currentfuel + (item.components.fuel.fuelvalue * self.bonusmult)
-        -- if self.currentfuel > self.maxfuel then
-        --     self.currentfuel = self.maxfuel
-        -- end
 
-        self:DoDelta(item.components.fuel.fuelvalue * self.bonusmult)
+        local wetmult = item:GetIsWet() and TUNING.WET_FUEL_PENALTY or 1
+        self:DoDelta(item.components.fuel.fuelvalue * self.bonusmult * wetmult)
 
         if item.components.fuel then
             item.components.fuel:Taken(self.inst)
         end
         item:Remove()
-        
-        if self.sections > 1 and self.sectionfn then
-        
-            local newsection = self:GetCurrentSection()
-            if oldsection ~= newsection then
-                self.sectionfn(newsection,oldsection)
-            end
-            
-        end
         
         if self.ontakefuelfn then
             self.ontakefuelfn(self.inst)
@@ -206,7 +220,7 @@ function Fueled:InitializeFuelLevel(fuel)
     
     local newsection = self:GetCurrentSection()
     if oldsection ~= newsection and self.sectionfn then
-        self.sectionfn(newsection,oldsection)
+        self.sectionfn(newsection, oldsection, self.inst)
     end
 end
 
@@ -219,7 +233,7 @@ function Fueled:DoDelta(amount)
     
     if oldsection ~= newsection then
         if self.sectionfn then
-            self.sectionfn(newsection,oldsection)
+            self.sectionfn(newsection, oldsection, self.inst)
         end
         if self.currentfuel <= 0 and self.depleted then
             self.depleted(self.inst)
@@ -229,19 +243,18 @@ function Fueled:DoDelta(amount)
     self.inst:PushEvent("percentusedchange", {percent = self:GetPercent()})    
 end
 
-function Fueled:DoUpdate( dt )
+function Fueled:DoUpdate(dt)
     if self.consuming then
         self:DoDelta(-dt*self.rate)
     end
-    
+
     if self:IsEmpty() then
         self:StopConsuming()
     end
-    
-    if self.updatefn then
+
+    if self.updatefn ~= nil then
         self.updatefn(self.inst)
     end
-
 end
 
 function Fueled:StopConsuming()
@@ -252,8 +265,6 @@ function Fueled:StopConsuming()
     end
 end
 
-function Fueled:LongUpdate(dt)
-	self:DoUpdate(dt)
-end
+Fueled.LongUpdate = Fueled.DoUpdate
 
 return Fueled

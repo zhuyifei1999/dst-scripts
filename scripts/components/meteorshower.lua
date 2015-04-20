@@ -48,30 +48,27 @@ end)
 
 
 function MeteorShower:OnSave()
-	if not self.noserial then
-        if self.showerold then
-            self.showerlevel = self.showerold
-            self.showerold = nil
-            self.showertime = self.showerlevel.showertime()
-            self.meteorspersecond = self.showerlevel.meteorspersecond()
-            self.nextshower = self.showerlevel.nextshower()
-            self.maxmediummeteors = self.showerlevel.maxmediummeteors()
-            self.maxlargemeteors = self.showerlevel.maxlargemeteors()
-            self.waitforplayertimeout = self.showerlevel.waitforplayertimeout()
-            self.waittime = self.waittime
-        end
-		return
-		{
-			showertime = self.showertime,
-			meteorspersecond = self.meteorspersecond,
-			nextshower = self.nextshower,
-			maxlargemeteors = self.maxlargemeteors,
-			maxmediummeteors = self.maxmediummeteors,
-			waitforplayertimeout = self.waitforplayertimeout,
-			waittime = self.waittime
-		}
-	end
-	self.noserial = false
+    if self.showerold then
+        self.showerlevel = self.showerold
+        self.showerold = nil
+        self.showertime = self.showerlevel.showertime()
+        self.meteorspersecond = self.showerlevel.meteorspersecond()
+        self.nextshower = self.showerlevel.nextshower()
+        self.maxmediummeteors = self.showerlevel.maxmediummeteors()
+        self.maxlargemeteors = self.showerlevel.maxlargemeteors()
+        self.waitforplayertimeout = self.showerlevel.waitforplayertimeout()
+        self.waittime = self.waittime
+    end
+	return
+	{
+		showertime = self.showertime,
+		meteorspersecond = self.meteorspersecond,
+		nextshower = self.nextshower,
+		maxlargemeteors = self.maxlargemeteors,
+		maxmediummeteors = self.maxmediummeteors,
+		waitforplayertimeout = self.waitforplayertimeout,
+		waittime = self.waittime
+	}
 end
 
 function MeteorShower:OnLoad(data)
@@ -82,10 +79,6 @@ function MeteorShower:OnLoad(data)
 	self.maxmediummeteors = data.maxmediummeteors or self.showerlevel.maxmediummeteors()
 	self.waitforplayertimeout = data.waitforplayertimeout or self.showerlevel.waitforplayertimeout()
 	self.waittime = data.waittime or 0
-end
-
-function MeteorShower:OnProgress()
-	self.noserial = true
 end
 
 function MeteorShower:GetDebugString()

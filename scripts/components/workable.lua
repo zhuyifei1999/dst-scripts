@@ -1,11 +1,11 @@
-local function onworkleft(self)
-    if self.maxwork ~= nil and self.workleft < self.maxwork then
+local function updatetags(self)
+    if self.maxwork ~= nil and self.workleft < self.maxwork and self.workable then
         self.inst:AddTag("workrepairable")
     else
         self.inst:RemoveTag("workrepairable")
     end
     if self.action ~= nil then
-        if self.workleft > 0 then
+        if self.workleft > 0 and self.workable then
             self.inst:AddTag(self.action.id.."_workable")
         else
             self.inst:RemoveTag(self.action.id.."_workable")
@@ -13,8 +13,17 @@ local function onworkleft(self)
     end
 end
 
+
+local function onworkleft(self)
+    updatetags(self)
+end
+
+local function onworkable(self, workable)
+    updatetags(self)
+end
+
 local function onaction(self, action, old_action)
-    if self.workleft > 0 then
+    if self.workleft > 0 and self.workable then
         if old_action ~= nil then
             self.inst:RemoveTag(old_action.id.."_workable")
         end
@@ -33,12 +42,14 @@ local Workable = Class(function(self, inst)
     self.action = ACTIONS.CHOP
     self.savestate = false
     self.destroyed = false
+    self.workable = true
 end,
 nil,
 {
     workleft = onworkleft,
     maxwork = onworkleft,
     action = onaction,
+    workable = onworkable,
 })
 
 function Workable:OnRemoveFromEntity()
@@ -60,6 +71,10 @@ function Workable:SetWorkAction(act)
     self.action = act
 end
 
+function Workable:GetWorkAction(act)
+    return self.action
+end
+
 function Workable:Destroy(destroyer)
     if not self.destroyed then
         self:WorkedBy(destroyer, self.workleft)
@@ -67,7 +82,12 @@ function Workable:Destroy(destroyer)
     end
 end
 
+function Workable:SetWorkable(able)
+    self.workable = able
+end
+
 function Workable:SetWorkLeft(work)
+    if not self.workable then self.workable = true end
     work = work or 10
     work = (work <= 0 and 1) or work
     if self.maxwork > 0 then
@@ -111,6 +131,7 @@ end
 function Workable:WorkedBy(worker, numworks)
     numworks = numworks or 1
     self.workleft = self.workleft - numworks
+    self.lastworktime = GetTime()
 
     worker:PushEvent("working", {target = self.inst})
     self.inst:PushEvent("worked", {worker = worker, workleft = self.workleft})
@@ -128,6 +149,8 @@ function Workable:WorkedBy(worker, numworks)
 end
 
 function Workable:IsActionValid(action, right)
+    if not self.workable then return false end
+    
     if action == ACTIONS.HAMMER and not right then
 		return false
     end

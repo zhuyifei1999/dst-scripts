@@ -30,11 +30,11 @@ local function fn()
     inst:AddTag("spiderden")
     inst.MiniMapEntity:SetIcon("whitespider_den.png")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:ListenForEvent("creepactivate", SpawnInvestigators)
 

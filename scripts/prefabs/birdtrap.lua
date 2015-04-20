@@ -1,21 +1,21 @@
 local assets =
 {
-	Asset("ANIM", "anim/birdtrap.zip"),
+    Asset("ANIM", "anim/birdtrap.zip"),
     Asset("SOUND", "sound/common.fsb"),
 
-	Asset("ANIM", "anim/crow_build.zip"),
-	Asset("ANIM", "anim/robin_build.zip"),
-	Asset("ANIM", "anim/robin_winter_build.zip"),
+    Asset("ANIM", "anim/crow_build.zip"),
+    Asset("ANIM", "anim/robin_build.zip"),
+    Asset("ANIM", "anim/robin_winter_build.zip"),
 
-	-- Swapsymbol assets
+    -- Swapsymbol assets
 }
 
 local prefabs =
 {
-	-- everything it can "produce" and might need symbol swaps from
-	"crow",
-	"robin",
-	"robin_winter",
+    -- everything it can "produce" and might need symbol swaps from
+    "crow",
+    "robin",
+    "robin_winter",
 }
 
 --this should be redone as a periodic test, probably, so that we can control the expected return explicitly
@@ -37,13 +37,13 @@ end
 
 local sounds =
 {
-	close = "dontstarve/common/birdtrap_close",
-	rustle = "dontstarve/common/birdtrap_rustle",
+    close = "dontstarve/common/birdtrap_close",
+    rustle = "dontstarve/common/birdtrap_rustle",
 }
 
 local function OnHarvested(inst)
     if inst.components.finiteuses then
-	    inst.components.finiteuses:Use(1)
+        inst.components.finiteuses:Use(1)
     end
 end
 
@@ -71,10 +71,10 @@ local function OnLoad(inst, data)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
@@ -87,14 +87,14 @@ local function fn()
     inst.AnimState:SetBuild("birdtrap")
     inst.AnimState:PlayAnimation("idle")
     inst.sounds = sounds
-    
+
     inst:AddTag("trap")
-    
+
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("inspectable")
     inst:AddComponent("inventoryitem")
@@ -103,13 +103,13 @@ local function fn()
     inst.components.finiteuses:SetMaxUses(TUNING.TRAP_USES)
     inst.components.finiteuses:SetUses(TUNING.TRAP_USES)
     inst.components.finiteuses:SetOnFinished(inst.Remove)
-    
+
     inst:AddComponent("trap")
     inst.components.trap.targettag = "bird"
     inst.components.trap:SetOnHarvestFn(OnHarvested)
     inst.components.trap:SetOnSpringFn(OnSpring)
-    
-	inst:ListenForEvent("entitysleep", OnSleep)
+
+    inst:ListenForEvent("entitysleep", OnSleep)
 
     inst:SetStateGraph("SGtrap")
     

@@ -6,6 +6,9 @@ local assets =
     
     Asset("ATLAS", "images/fx.xml"),
     Asset("IMAGE", "images/fx.tex"),
+    
+    Asset("ATLAS", "images/fx2.xml"),
+    Asset("IMAGE", "images/fx2.tex"),
 
     Asset("ANIM", "anim/clock_transitions.zip"),
     Asset("ANIM", "anim/moon_phases_clock.zip"),
@@ -39,6 +42,9 @@ local assets =
     
     Asset("ATLAS", "images/inventoryimages.xml"),
     Asset("IMAGE", "images/inventoryimages.tex"),    
+
+    Asset("ANIM", "anim/wet_meter_player.zip"), 
+    Asset("ANIM", "anim/wet_meter.zip"),
 
     Asset("ANIM", "anim/hunger_ghost.zip"),
     Asset("ANIM", "anim/health_ghost.zip"),

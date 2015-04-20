@@ -25,25 +25,25 @@ local function Retarget(inst)
         inst.components.homeseeker:HasHome() and
         FindEntity(
             inst.components.homeseeker.home,
-            TUNING.TALLBIRD_DEFEND_DIST,
+            SpringCombatMod(TUNING.TALLBIRD_DEFEND_DIST),
             IsValidTarget,
             { "_combat", "_health" },
-            { "tallbird" },
+            { "tallbird", "springbird" },
             { "character", "animal", "monster" })
         or --Nearby pigman (Why the hatred for pigs? It's expensive!)
         FindEntity(
             inst,
-            TUNING.TALLBIRD_TARGET_DIST,
+            SpringCombatMod(TUNING.TALLBIRD_TARGET_DIST),
             IsValidTarget,
             { "pig", "_combat", "_health" },
             { "werepig" })
         or --Nearby character or monster
         FindEntity(
             inst,
-            TUNING.TALLBIRD_TARGET_DIST,
+            SpringCombatMod(TUNING.TALLBIRD_TARGET_DIST),
             IsValidTarget,
             { "_combat", "_health" },
-            { "tallbird" },
+            { "tallbird", "springbird" },
             { "character", "monster" })
 end
 
@@ -57,8 +57,8 @@ local function KeepTarget(inst, target)
             target == home.thief and
             home.components.pickable ~= nil and
             not home.components.pickable:CanBePicked() and
-            MAX_CHASE_DIST or
-            MAX_CHASEAWAY_DIST)
+            SpringCombatMod(MAX_CHASE_DIST) or
+            SpringCombatMod(MAX_CHASEAWAY_DIST))
 end
 
 local function ShouldSleep(inst)
@@ -111,14 +111,27 @@ local function OnAttacked(inst, data)
     end
 end
 
+local function OnEntitySleep(inst, data)
+    inst.entitysleeping = true
+    if inst.pending_spawn_smallbird then
+        local smallbird = SpawnPrefab("smallbird")
+        smallbird:PushEvent("SetUpSpringSmallBird", {smallbird=smallbird, tallbird=inst})
+        inst.pending_spawn_smallbird = false
+    end
+end
+
+local function OnEntityWake(inst, data)
+    inst.entitysleeping = false
+end
+
 local function fn()
-	local inst = CreateEntity()
-	
+    local inst = CreateEntity()
+
     inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
-	inst.entity:AddLightWatcher()
-	inst.entity:AddDynamicShadow()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
+    inst.entity:AddLightWatcher()
+    inst.entity:AddDynamicShadow()
     inst.entity:AddNetwork()
 
     MakeCharacterPhysics(inst, 10, .5)
@@ -126,25 +139,26 @@ local function fn()
     inst.DynamicShadow:SetSize(2.75, 1)
     --inst.Transform:SetScale(1.5, 1.5, 1.5)
     inst.Transform:SetFourFaced()
-    
+
     ----------
     inst:AddTag("tallbird")
     inst:AddTag("animal")
     inst:AddTag("largecreature")
+
     inst.AnimState:SetBank("tallbird")
     inst.AnimState:SetBuild("ds_tallbird_basic")
     inst.AnimState:PlayAnimation("idle")
     inst.AnimState:Hide("beakfull")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-
     inst._last_attacker = nil
     inst._last_attacked_time = nil
-    
+
     inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
     inst.components.locomotor.walkspeed = 7
 
@@ -158,7 +172,7 @@ local function fn()
     inst.components.health:SetMaxHealth(TUNING.TALLBIRD_HEALTH)
 
     ------------------
-    
+
     inst:AddComponent("combat")
     inst.components.combat.hiteffectsymbol = "head"
     inst.components.combat:SetDefaultDamage(TUNING.TALLBIRD_DAMAGE)
@@ -171,14 +185,16 @@ local function fn()
     MakeLargeFreezableCharacter(inst, "head")
     MakeHauntablePanic(inst)
     ------------------
-    
+
     inst:AddComponent("knownlocations")
 
+    inst:AddComponent("leader")
+
     ------------------
-    
+
     inst:AddComponent("eater")
-    inst.components.eater:SetOmnivore()
-    
+    inst.components.eater:SetDiet({ FOODGROUP.OMNI }, { FOODGROUP.OMNI })
+
     ------------------
     inst:AddComponent("sleeper")
     inst.components.sleeper:SetResistance(3)
@@ -186,14 +202,17 @@ local function fn()
     inst.components.sleeper:SetSleepTest(ShouldSleep)
     inst.components.sleeper:SetWakeTest(ShouldWake)
     ------------------
-    
+
     inst:AddComponent("inspectable")
-    
+
     ------------------
-    
+
     inst:SetBrain(brain)
 
     inst:ListenForEvent("attacked", OnAttacked)
+
+    inst:ListenForEvent("entitysleep", OnEntitySleep)
+    inst:ListenForEvent("entitywake", OnEntityWake)
 
     return inst
 end

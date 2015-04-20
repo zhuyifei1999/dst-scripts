@@ -1,6 +1,6 @@
 local assets =
 {
-	Asset("ANIM", "anim/livinglog.zip"),
+    Asset("ANIM", "anim/livinglog.zip"),
 }
 
 local function FuelTaken(inst, taker)
@@ -10,7 +10,7 @@ local function FuelTaken(inst, taker)
 end
 
 local function oneaten(inst, eater)
-	inst.SoundEmitter:PlaySound("dontstarve/creatures/leif/livinglog_burn") 
+    inst.SoundEmitter:PlaySound("dontstarve/creatures/leif/livinglog_burn")
 end
 
 local function onignite(inst)
@@ -18,24 +18,26 @@ local function onignite(inst)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
-    
+
     MakeInventoryPhysics(inst)
 
     inst.AnimState:SetBank("livinglog")
     inst.AnimState:SetBuild("livinglog")
     inst.AnimState:PlayAnimation("idle")
 
+    MakeDragonflyBait(inst, 3)
+
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("fuel")
     inst.components.fuel.fuelvalue = TUNING.MED_FUEL
@@ -44,24 +46,24 @@ local function fn()
     inst:AddComponent("edible")
     inst.components.edible.foodtype = FOODTYPE.WOOD
     inst.components.edible.woodiness = 50
-	inst.components.edible:SetOnEatenFn(oneaten)
+    inst.components.edible:SetOnEatenFn(oneaten)
 
-	MakeSmallBurnable(inst, TUNING.MED_BURNTIME)
+    MakeSmallBurnable(inst, TUNING.MED_BURNTIME)
     MakeSmallPropagator(inst)
     MakeHauntableLaunchAndIgnite(inst)
 
-    ---------------------       
+    ---------------------
 
     inst:AddComponent("inspectable")
 
     inst:AddComponent("inventoryitem")
     inst:AddComponent("stackable")
 
-	inst:AddComponent("repairer")
-	inst.components.repairer.repairmaterial = MATERIALS.WOOD
-	inst.components.repairer.healthrepairvalue = TUNING.REPAIR_LOGS_HEALTH*3
+    inst:AddComponent("repairer")
+    inst.components.repairer.repairmaterial = MATERIALS.WOOD
+    inst.components.repairer.healthrepairvalue = TUNING.REPAIR_LOGS_HEALTH*3
 
-	inst:ListenForEvent("onignite", onignite)
+    inst:ListenForEvent("onignite", onignite)
 
     return inst
 end

@@ -1,6 +1,6 @@
 local assets =
 {
-	Asset("ANIM", "anim/boat_sunk.zip"),
+    Asset("ANIM", "anim/boat_sunk.zip"),
 }
 
 local function fn()
@@ -17,11 +17,11 @@ local function fn()
 
     --MakeSnowCoveredPristine(inst)
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("inspectable")
     --MakeSnowCovered(inst)

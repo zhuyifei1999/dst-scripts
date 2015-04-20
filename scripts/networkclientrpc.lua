@@ -367,7 +367,7 @@ local RPC_HANDLERS =
         local builder = player.components.builder
         if builder ~= nil then
             for k, v in pairs(AllRecipes) do
-                if v.sortkey == recipe then
+                if v.rpc_id == recipe then
                     builder:MakeRecipeFromMenu(v)
                     return
                 end
@@ -379,7 +379,7 @@ local RPC_HANDLERS =
         local builder = player.components.builder
         if builder ~= nil then
             for k, v in pairs(AllRecipes) do
-                if v.sortkey == recipe then
+                if v.rpc_id == recipe then
                     builder:MakeRecipeAtPoint(v, Vector3(x, 0, z))
                     return
                 end
@@ -391,7 +391,7 @@ local RPC_HANDLERS =
         local builder = player.components.builder
         if builder ~= nil then
             for k, v in pairs(AllRecipes) do
-                if v.sortkey == recipe then
+                if v.rpc_id == recipe then
                     builder:BufferBuild(k)
                 end
             end

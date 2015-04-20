@@ -6,7 +6,7 @@ local assets =
 
 local prefabs =
 {
-    "explode_small"
+    "explode_small",
 }
 
 local function OnIgniteFn(inst)
@@ -33,6 +33,8 @@ local function fn()
     inst.AnimState:SetBank("slurtle_slime")
     inst.AnimState:SetBuild("slurtle_slime")
     inst.AnimState:PlayAnimation("idle")
+
+    MakeDragonflyBait(inst, 3)
     
     --[[
     inst.Light:SetFalloff(0.7)
@@ -42,12 +44,12 @@ local function fn()
     inst.Light:Enable(true)
     --]]
 
+    inst.entity:SetPristine()
+    
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-    
     inst:AddComponent("stackable")
     inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM    
     inst:AddComponent("inspectable")

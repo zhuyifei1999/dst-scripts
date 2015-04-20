@@ -74,7 +74,7 @@ function RockyBrain:OnStart()
 	{
         UseShield(self.inst, DAMAGE_UNTIL_SHIELD, SHIELD_TIME, AVOID_PROJECTILE_ATTACKS),
         WhileNode( function() return self.inst.components.hauntable and self.inst.components.hauntable.panic end, "PanicHaunted", Panic(self.inst)),
-		ChaseAndAttack(self.inst, MAX_CHASE_TIME, MAX_CHASE_DIST),
+		ChaseAndAttack(self.inst, SpringCombatMod(MAX_CHASE_TIME), SpringCombatMod(MAX_CHASE_DIST)),
         DoAction(self.inst, EatFoodAction),
         Follow(self.inst, function(inst) return inst.components.follower.leader end , MIN_FOLLOW_DIST, TARGET_FOLLOW_DIST, MAX_FOLLOW_DIST),
         FaceEntity(self.inst, GetFaceTargetFn, KeepFaceTargetFn),

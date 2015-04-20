@@ -77,16 +77,18 @@ function ConsoleScreen:OnRawKey(key, down)
 			end
 		end
 	elseif key == KEY_LCTRL or key == KEY_RCTRL then
-		if self.toggle_remote_execute then
-			-- self.console_edit:SetPosition( 0,0,0 )
+		local is_valid_time_to_use_remote = TheNet:GetIsClient() and TheNet:GetIsServerAdmin()
+		if is_valid_time_to_use_remote then
+			if self.toggle_remote_execute then
+				self.console_remote_execute:Hide()
+			else
+				self.console_remote_execute:Show()
+			end
+			self.toggle_remote_execute = not self.toggle_remote_execute
+		elseif self.toggle_remote_execute then
 			self.console_remote_execute:Hide()
-			-- self.console_edit:SetRegionSize( self.edit_width, self.label_height )
-		else
-			-- self.console_edit:SetPosition( self.console_remote_execute_region_width * 0.5,0,0 )
-			-- self.console_edit:SetRegionSize( self.edit_width - self.console_remote_execute_region_width, self.label_height )
-			self.console_remote_execute:Show()
+			self.toggle_remote_execute = false
 		end
-		self.toggle_remote_execute = not self.toggle_remote_execute
 	else
 		self.autocompletePrefix = nil
 		self.autocompleteObjName = ""

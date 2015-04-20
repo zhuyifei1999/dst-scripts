@@ -6,6 +6,7 @@ local assets =
 local prefabs =
 {
 	"gemsocket",
+	"collapse_small",
 }
 
 local function teleport_target(inst)

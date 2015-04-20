@@ -103,7 +103,7 @@ local function commonfn()
     inst:SetStateGraph("SGslurtle")    
 
     inst:AddComponent("eater")
-    inst.components.eater:SetElemental()
+    inst.components.eater:SetDiet({ FOODTYPE.ELEMENTAL }, { FOODTYPE.ELEMENTAL })
 
     inst:AddComponent("combat")
     inst.components.combat.hiteffectsymbol = "shell"

@@ -43,7 +43,7 @@ end
 
 local function GoToBrokenState(inst)
     inst.broken = true
-    
+
     inst.SoundEmitter:PlaySound("dontstarve/wilson/rock_break")
 
     inst.AnimState:PushAnimation("med")
@@ -134,18 +134,18 @@ local function fn()
     MakeObstaclePhysics(inst, 2)
 
     inst.MiniMapEntity:SetIcon("cavespider_den.png")
-    
+
     inst.AnimState:SetBank("spider_mound")
     inst.AnimState:SetBuild("spider_mound")
     inst.AnimState:PlayAnimation("full")
 
     inst:AddTag("spiderden")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("inspectable")
     inst:AddComponent("health")

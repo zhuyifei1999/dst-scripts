@@ -60,7 +60,7 @@ function TallbirdBrain:OnStart()
         {
             WhileNode( function() return self.inst.components.hauntable and self.inst.components.hauntable.panic end, "PanicHaunted", Panic(self.inst)),
             WhileNode( function() return self.inst.components.health.takingfiredamage end, "OnFire", Panic(self.inst)),
-			ChaseAndAttack(self.inst, MAX_CHASE_TIME),
+			ChaseAndAttack(self.inst, SpringCombatMod(MAX_CHASE_TIME)),
 			WhileNode(function() return self.inst.components.homeseeker and self.inst.components.homeseeker:HasHome() and GetNearbyThreatFn(self.inst.components.homeseeker.home) end, "ThreatNearNest",
 				DoAction(self.inst, function() return DefendHomeAction(self.inst) end, "GoHome", true)
 			),

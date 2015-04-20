@@ -39,6 +39,8 @@ end
 local function GoHomeAction(inst)
     if inst.components.homeseeker and 
        inst.components.homeseeker.home and 
+        not inst.components.homeseeker.home:HasTag("fire") and
+       not inst.components.homeseeker.home:HasTag("burnt") and
        inst.components.homeseeker.home:IsValid() and
        not inst.components.combat.target then
         return BufferedAction(inst, inst.components.homeseeker.home, ACTIONS.GOHOME)
@@ -67,7 +69,7 @@ function MermBrain:OnStart()
         WhileNode( function() return self.inst.components.hauntable and self.inst.components.hauntable.panic end, "PanicHaunted", Panic(self.inst)),
         WhileNode( function() return self.inst.components.health.takingfiredamage end, "OnFire", Panic(self.inst)),
         WhileNode( function() return self.inst.components.combat.target == nil or not self.inst.components.combat:InCooldown() end, "AttackMomentarily",
-            ChaseAndAttack(self.inst, MAX_CHASE_TIME, MAX_CHASE_DIST) ),
+            ChaseAndAttack(self.inst, SpringCombatMod(MAX_CHASE_TIME), SpringCombatMod(MAX_CHASE_DIST)) ),
         WhileNode( function() return self.inst.components.combat.target and self.inst.components.combat:InCooldown() end, "Dodge",
             RunAway(self.inst, function() return self.inst.components.combat.target end, RUN_AWAY_DIST, STOP_RUN_AWAY_DIST) ),
         WhileNode(function() return ShouldGoHome(self.inst) end, "ShouldGoHome",

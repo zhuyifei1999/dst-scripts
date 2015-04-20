@@ -71,7 +71,8 @@ STRINGS=
         wickerbottom = "*Knows many things\n*Self-publishes books\n*Can't sleep, hates spoilage",
         wes = "*Can't talk\n*Has trouble staying alive\n*Practices balloonomancy",
         waxwell = "*Is dapper but frail\n*Can fragment his mind\n*Brings his own sword",
-        woodie = "*Has a lovely axe\n*Has a terrible secret",
+        woodie = "*Has a lovely axe\n*Has a terrible secret\n*Celebrates Thanksgiving too early",
+        woodie_canada = "*Has a lovely axe\n*Has a terrible secret\n*Celebrates Thanksgiving at the correct time",
         wathgrithr = "*Excels in battle\n*Gains power from fallen foes\n*Only eats meat",
         webber = "*Is a monster\n*Can befriend spiders\n*Grows a silky smooth beard",
     },
@@ -108,11 +109,10 @@ STRINGS=
         FERTILIZE = "Fertilize",
         SMOTHER = "Extinguish",
         MANUALEXTINGUISH = "Extinguish",
-        RANGEDSMOTHER = "Extinguish",
-        RANGEDLIGHT = "Light",
         EAT = "Eat", 
         BAIT = "Bait",
         COOK = "Cook",
+        FILL = "Fill",
         ADDFUEL = "Add Fuel",
         ADDWETFUEL = "Add Wet Fuel",
         LIGHT = "Light",
@@ -124,6 +124,9 @@ STRINGS=
         {
             GENERIC = "Attack",
             SMASHABLE = "Smash",
+            RANGEDSMOTHER = "Extinguish",
+            RANGEDLIGHT = "Light",
+            WHACK = "Whack",
         },
         WALKTO = "Walk To",
         CHECKTRAP = "Check",
@@ -196,7 +199,10 @@ STRINGS=
         },
         TEACH = "Learn",
         TURNON = "Turn On",
-        TURNOFF = "Turn Off",
+        TURNOFF = { 
+        			GENERIC = "Turn Off",
+        			EMERGENCY = "Emergency Mode",
+        		  },
         USEITEM = "Use",
         TAKEITEM = "Take Item",
         CASTSPELL = 
@@ -206,13 +212,13 @@ STRINGS=
             },
         BLINK = "Telepoof",
         COMBINESTACK = "Combine Stack",
-        WHACK = "Whack",
         BURY = "Bury",
         FEED = "Feed",
         FAN = "Fan",
         UPGRADE = "Upgrade",
         HAUNT = "Haunt",
         UNPIN = "Unstick",
+        TOSS = "Toss",
     },
 
     LMB              = "\255", --"ÿ",
@@ -489,6 +495,7 @@ STRINGS=
         INSANITYROCK = "Obelisk",
         SANITYROCK = "Obelisk",
         SKELETON = "Skeleton",
+        SCORCHED_SKELETON = "Crispy Skeleton",
         SKELETON_PLAYER = "Skeleton",
         PIGHEAD = "Pig Head",
         MERMHEAD = "Merm Head",
@@ -541,6 +548,7 @@ STRINGS=
         PLANT_NORMAL = "Crop",
         RAZOR = "Razor",
         BEARDHAIR = "Beard Hair",
+        FURTUFT = "Fur Tuft",
         TREASURECHEST = "Chest",
         DRAGONFLYCHEST = "Scaled Chest",
         SKULLCHEST = "Skullchest",
@@ -564,6 +572,7 @@ STRINGS=
         MARSH_PLANT = "Plant",
         TUMBLEWEED = "Tumbleweed",
         MARSH_BUSH = "Spiky Bush",
+        BURNT_MARSH_BUSH = "Spiky Bush",
         PAPYRUS = "Papyrus",
         MARSH_TREE = "Spiky Tree",
         PANFLUTE = "Pan Flute",
@@ -762,6 +771,7 @@ STRINGS=
         MEATRACK = "Drying Rack",
         BANDAGE = "Honey Poultice",
         HEALINGSALVE = "Healing Salve",
+        WATERBALLOON = "Waterballoon",
         LIFEINJECTOR = "Booster Shot",
         CANE = "Walking Cane",
         LIGHTNING = "Lightning",
@@ -942,11 +952,17 @@ STRINGS=
         TORNADO = "Tornado",
         EYEBRELLAHAT = "Eyebrella",
         FEATHERFAN = "Luxury Fan",
+        HANDFAN = "Small Fan",
+        MINIFAN = "Whirly Fan",
 
         REVIVER = "Telltale Heart",
         SHADOWMETEOR = "Meteor",
 
         MOONROCKNUGGET = "Moon Rock",
+
+        LAVAE = "Lavae",
+        LAVA_POND = "Magma",
+        LAVA_POND_ROCK = "Rock",
     },
 
     DIRECTIONS=
@@ -1086,6 +1102,7 @@ STRINGS=
         MEATRACK = "The jerkiest of racks.",
         BANDAGE = "Heal your minor wounds.",
         HEALINGSALVE = "Disinfectant for cuts and abrasions.",
+        WATERBALLOON = "Spheroid Fire Suppression.",
         LIFEINJECTOR = "Boosts your declining max health.",
         LIGHTNING_ROD = "Protection from strikes.",
         CANE = "Trot on with speed and poise.",
@@ -1108,6 +1125,7 @@ STRINGS=
         POTTEDFERN = "Make a pot and stick a fern inside.",
         THULECITE = "Combine tiny bits into a big chunk.",
         RUINSHAT = "Complete with ancient force field!",
+        SPIDEREGGSACK = "Get a little help from your friends.",
 
         RAINCOAT = "A waterproof coat to keep you dry.",
         RAINHAT = "Soft to the touch, slick to the rain.",
@@ -1605,6 +1623,7 @@ STRINGS.UI =
         SAVEPRESET = "Save Preset",
         SCROLL_UP = "Scroll Up",
         SCROLL_DOWN = "Scroll Down",
+        CHANGE_TEXT = "Change Text",
     },
     CHARACTERSELECT=
     {
@@ -1628,23 +1647,6 @@ STRINGS.UI =
         NEEDPRESTIHATITATOR = "Use a Prestihatitator to build a prototype!",
         NEEDSANCIENT_FOUR = "It seems that this altar is not fully functional!",
         CANTRESEARCH = "Some things are unknowable",
-    },
-    
-    DEATHSCREEN=
-    {
-        MAINMENU = "Main Menu",
-        RETRY = "Retry",
-        CONTINUE = "Continue",
-        YOUAREDEAD = "YOU ARE DEAD!",
-        YOUESCAPED = "You escaped!",
-        DAYS = "days",
-        DAY = "day",
-        SURVIVEDDAYS = "You survived",
-        NEXTREWARD = "Next Reward...",
-        LEVEL = "Level ",
-        ATCAP = "At Cap!",
-        DISCONNECT = "Disconnect",
-        CHARACTER = "Character",
     },
     
     CREDITS=
@@ -1681,6 +1683,12 @@ STRINGS.UI =
             "Paul Ku",
             "Vito Sze",
             "Mark Laprairie",
+            "Peter Andrews",
+            "Mike Bell",
+            "Nabie-Ah Yousuf",
+            "Elizabeth Gordon",
+            "Nana Fujino",
+            "Toni Zhang",
         },
 
         ALTGAMES = 
@@ -1936,6 +1944,14 @@ STRINGS.UI =
         CONTROLLER_DETECTED_BODY = "Do you want to use the controller to play Don't Starve?\nYou won't be asked again but you can change this setting in the controls screen if you change your mind.\n\nNOTE: Controller support is under active development.\nSome functionality will be missing.",--"Do you want to use the controller to play Don't Starve?\n\nYou will not be asked again, but you can change this setting in the controls screen if you change your mind.",
         ENABLECONTROLLER = "Enable Controller",
         DISABLECONTROLLER = "Disable Controller",
+
+        VERSION_YOURS = "Your Version: %s",
+        VERSION_LATEST = "Latest Version: %s",
+        VERSION_CHECKING = "Checking for update",
+        VERSION_UPTODATE = "Up to date!",
+        VERSION_NOTUPTODATE = "Update required!",
+        VERSION_MOREINFO = "Instructions",
+        VERSION_ERROR = "Problem checking for latest version."
     },
     
     HUD =
@@ -2363,7 +2379,7 @@ STRINGS.UI =
         BACKTITLE = "Discard Changes",
         BACKBODY = "Do you want to discard the changes you made to your world generation options?",
         INVALIDSEASONCOMBO_TITLE = "All Seasons Disabled",
-        INVALIDSEASONCOMBO_BODY = "You have set all of the seasons to the \"None\" option.\nTurn on at least one season to continue.\nDid you really expect that to work?",
+        INVALIDSEASONCOMBO_BODY = "You have set all of the seasons to the \"None\" option.\nTurn on at least one season to continue.",
         OKAY = "Okay",
 
         PRESETLEVELS = {
@@ -2376,7 +2392,8 @@ STRINGS.UI =
                 "Island you an axe",        -- Island hopping
                 "Crazy Eddie",              -- Focus on sanity play
                 "Nighttime Antics",         -- Focus on nighttime play
-        	"Together Forever",	    -- Multiplayer coop
+                "Together Forever",	    -- Multiplayer coop
+                "No Giants Here",     -- Nothing Reign Of Giants
                 },      
                 
         PRESETLEVELDESC = {
@@ -2390,6 +2407,7 @@ STRINGS.UI =
             "The standard Don't Starve Experience 8",
             "The standard Don't Starve Experience 9",
             "The multiplayer Don't Starve experience.",
+            "Don't Starve Together with Reign of Giants turned off.",
         },
 
         CUSTOM_PRESET = "Custom Preset",
@@ -2432,7 +2450,6 @@ STRINGS.UI =
         SERVERTYPE = "Server Type:",
         ISEMPTY = "Show Empty Servers:",
         ISFULL = "Show Full Servers:",
-        MAXPING = "Max Ping:",
         MINCURRPLAYERS = "Min Players Active",
         MAXCURRPLAYERS = "Max Players Active",
         MAXSERVERSIZE = "Max Players",--"Max Server Size",
@@ -2478,6 +2495,7 @@ STRINGS.UI =
                 SPRING = "Spring",
                 AUTUMN = "Autumn",
             },
+        SEASONFILTER = "Season",
         EARLY_SEASON_1 = "Early ",
         EARLY_SEASON_2 = "",
         LATE_SEASON_1 = "Late ",
@@ -2531,6 +2549,7 @@ STRINGS.UI =
         SURE = "Are you sure?",
         SERVERDAY = "World: Day",
         SERVERDAY_NEW = "New World",
+        SELECT_SLOT = "Select Slot",
     },
     
     
@@ -3136,14 +3155,6 @@ STRINGS.UI =
         NO = "No",
     },
 
-    RESETCAVE=
-    {
-        TITLE="Regen this cave?",
-        BODY="Are you sure you want to make a new cave here?",
-        YES="Yes",
-        NO="No",
-    },
-    
     STARTADVENTURE=
     {
         TITLE="Doorway to Adventure!",
@@ -3227,7 +3238,7 @@ STRINGS.UI =
         SLIDEFAST = "Fast",
         SLIDEVERYFAST = "Very Fast",
         
-        DEFAULT = "Autumn or Spring",
+        DEFAULT = "Autumn",
         SUMMER = "Summer",
         WINTER = "Winter",
         SPRING = "Spring",
@@ -3324,12 +3335,9 @@ STRINGS.CHARACTERS =
     WENDY = require "speech_wendy",
     WOODIE = require "speech_woodie",
     WICKERBOTTOM = require "speech_wickerbottom",
+	WATHGRITHR = require "speech_wathgrithr",
+	WEBBER = require "speech_webber",
 }
-
-if IsDLCEnabled and IsDLCEnabled(REIGN_OF_GIANTS) then
-    STRINGS.CHARACTERS.WATHGRITHR = require "speech_wathgrithr"
-    STRINGS.CHARACTERS.WEBBER = require "speech_webber"
-end
 
 STRINGS.LUCY =
 {
@@ -3458,6 +3466,6 @@ STRINGS.MODS =
 {
 	VERSIONING =
 	{
-		OUT_OF_DATE = "The server mod \"%s\" is out of date and needs to be updated for new users to be able to join.",
+		OUT_OF_DATE = "The server mod \"%s\" is out of date. The server needs to get the latest version of the mod for users to be able to join.",
 	},
 }

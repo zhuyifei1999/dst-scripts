@@ -4,11 +4,8 @@ USE_SETTINGS_FILE = PLATFORM ~= "PS4" and PLATFORM ~= "NACL"
 PlayerProfile = Class(function(self)
     self.persistdata = 
     {
-        xp = 0,
         unlocked_worldgen = {},
-        unlocked_characters = {},        
         render_quality = RENDER_QUALITY.DEFAULT,
-        characterinthrone = "waxwell",
         -- Controlls should be a seperate file
         controls = {},
         starts = 0,
@@ -38,18 +35,13 @@ PlayerProfile = Class(function(self)
 
 end)
 
-
 function PlayerProfile:Reset()
-	
-    self.persistdata.xp = 0
 	self.persistdata.unlocked_worldgen = {}
-	self.persistdata.unlocked_characters = {}
-	self.persistdata.characterinthrone = "waxwell"
     self.persistdata.saw_display_adjustment_popup = false
     self.persistdata.device_caps_a = 0
     self.persistdata.device_caps_b = 20
     self.persistdata.customizationpresets = {}
-	
+
  	if not USE_SETTINGS_FILE then
         self.persistdata.volume_ambient = 7
         self.persistdata.volume_sfx = 7
@@ -63,22 +55,19 @@ function PlayerProfile:Reset()
         self.persistdata.warneddifficultyrog = false
         self.persistdata.controller_popup = false
 	end
-	
+
     --self.persistdata.starts = 0 -- save starts?
 	self.dirty = true
 	self:Save()
 end
 
 function PlayerProfile:SoftReset()
-    self.persistdata.xp = 0
 	self.persistdata.unlocked_worldgen = {}
-	self.persistdata.unlocked_characters = {}
-	self.persistdata.characterinthrone = "waxwell"
     self.persistdata.saw_display_adjustment_popup = false
     self.persistdata.device_caps_a = 0
     self.persistdata.device_caps_b = 20
     self.persistdata.customizationpresets = {}
-	
+
  	if not USE_SETTINGS_FILE then
         self.persistdata.volume_ambient = 7
         self.persistdata.volume_sfx = 7
@@ -97,26 +86,8 @@ function PlayerProfile:SoftReset()
     self:Set(str, nil)
 end
 
-
 function PlayerProfile:UnlockEverything()
-    self.persistdata.xp = 0
-	self.persistdata.unlocked_characters = {}
-	local characters = {'willow', 'wendy', 'wolfgang', 'wilton', 'wx78', 'wickerbottom', 'wes', 'waxwell', 'woodie', 'wathgrithr', 'webber'}
-	for k,v in pairs(characters) do
-		self:UnlockCharacter(v)
-	end
-	self.dirty = true
-	self:Save()
-end
-
-function PlayerProfile:UnlockDSTCharacters()
-	self.persistdata.xp = 0
-	self.persistdata.unlocked_characters = {}
-	for k,v in pairs(DST_CHARACTERLIST) do
-		self:UnlockCharacter(v)
-	end
-	self.dirty = true
-	self:Save()
+    --Nothing locked in DST
 end
 
 function PlayerProfile:SetValue(name, value)
@@ -419,48 +390,6 @@ end
 
 ----------------------------
 
-function PlayerProfile:IsCharacterUnlocked(character)
-    if character == "wilson" then
-		return true
-    end
-    
-    if self.persistdata.unlocked_characters[character] then
-        return true
-	end
-
-	if not table.contains(GetOfficialCharacterList(), character) then
-		return true -- mod character
-	end
-
-	return false
-end
-
-local cheevos = {
-	willow = "achievement_1",
-	wolfgang = "achievement_2",
-	wendy = "achievement_3",
-	wx78 = "achievement_4",
-	wickerbottom = "achievement_5",
-	woodie = "achievement_6",
-	wes = "achievement_7",
-	waxwell = "achievement_8",
-}
-
-function PlayerProfile:UnlockCharacter(character)
-
-	if cheevos[character] then
-		TheGameService:AwardAchievement(cheevos[character])
-	end
-
-    self.persistdata.unlocked_characters[character] = true
-    self.dirty = true
-end
-
-function PlayerProfile:GetUnlockedCharacters()
-    return self.persistdata.unlocked_characters
-end
-----------------------------
-
 function PlayerProfile:IsWorldGenUnlocked(area, item)
 	if self.persistdata.unlocked_worldgen == nil then
 		return false
@@ -494,20 +423,10 @@ function PlayerProfile:GetUnlockedWorldGen()
     return self.persistdata.unlocked_worldgen
 end
 
-
 ----------------------------
-
 
 function PlayerProfile:GetSaveName()
     return BRANCH == "release" and "profile" or "profile_"..BRANCH
-end
-
-function PlayerProfile:GetXP()
-    return self.persistdata.xp
-end
-
-function PlayerProfile:SetXP(xp)
-    self:SetValue("xp", xp)
 end
 
 function PlayerProfile:Save(callback)

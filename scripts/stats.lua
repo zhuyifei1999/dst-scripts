@@ -500,6 +500,7 @@ function OnLaunchComplete()
 		local sendstats = BuildContextTable()
 		sendstats.ownsds = TheSim:GetUserHasLicenseForApp(DONT_STARVE_APPID)
 		sendstats.ownsrog = TheSim:GetUserHasLicenseForApp(REIGN_OF_GIANTS_APPID)
+		sendstats.betabranch = TheSim:GetSteamBetaBranchName()
 		local jsonstats = json.encode( sendstats )
 	   	TheSim:SendProfileStats( jsonstats )
 	end

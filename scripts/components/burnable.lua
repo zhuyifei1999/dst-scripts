@@ -1,23 +1,57 @@
 
+require("standardcomponents")
+
+local SMOLDER_TICK_TIME = 2
+
+local function SmolderUpdate(inst)
+    local burnable = inst.components.burnable
+
+    if burnable.smolder_task then
+        burnable.smolder_task:Cancel()
+        burnable.smolder_task = nil
+    end
+
+    local pos = Vector3(inst.Transform:GetWorldPosition())
+    local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, 12, {"propagator"}) -- this radius should be larger than the propogation, so that once there's a lot of blazes in an area, fire starts spreading quickly.
+    local nearbyheat = 0
+    for _,v in ipairs(ents) do
+        if v.components.propagator then
+            nearbyheat = nearbyheat + v.components.propagator.currentheat
+        end
+    end
+    local smoldermod = math.clamp(Remap(nearbyheat, 20, 90, 1, 2.2), 1, 2.2) -- smolder about twice as fast if there's lots of heat nearby
+
+    burnable.smoldertimeremaining = burnable.smoldertimeremaining - SMOLDER_TICK_TIME * smoldermod
+
+    if burnable.smoldertimeremaining <= 0 then
+        burnable:Ignite()
+    else
+        burnable.smolder_task = inst:DoTaskInTime(SMOLDER_TICK_TIME, SmolderUpdate)
+    end
+end
+
 local function OnKilled(inst)
     if inst.components.burnable and inst.components.burnable:IsBurning() and not inst:HasTag("player") then
         inst.AnimState:SetMultColour(.2,.2,.2,1)
     end
 end
 
-local function DoneBurning(inst)
-    local burnable = inst.components.burnable
-    if burnable then
-        if burnable.onburnt then
-            burnable.onburnt(inst)
-        end
+local function DoneBurning(inst, self)
+    RemoveDragonflyBait(inst)
 
-        if inst.components.explosive then
-            --explosive explode
-            inst.components.explosive:OnBurnt()
-        end
+    inst:PushEvent("onburnt")
 
-        burnable:Extinguish()
+    if self.onburnt ~= nil then
+        self.onburnt(inst)
+    end
+
+    if inst.components.explosive ~= nil then
+        --explosive explode
+        inst.components.explosive:OnBurnt()
+    end
+
+    if self.extinguishimmediately then
+        self:Extinguish()
     end
 end
 
@@ -31,21 +65,38 @@ local function oncanlight(self)
     end
 end
 
+local function stopsmoldering(inst)
+    if self:IsSmoldering() then
+        self:StopSmoldering()
+    end 
+end
+
+local function onrainstart(inst, data)
+	inst:DoTaskInTime(2, stopsmoldering)
+end
+
 local Burnable = Class(function(self, inst)
     self.inst = inst
 
     self.flammability = 1
-    
+
     self.fxdata = {}
     self.fxlevel = 1
     self.fxchildren = {}
     self.burning = false
     self.burntime = nil
-    
+    self.extinguishimmediately = true
+    self.smoldertimeremaining = nil
+
     self.onignite = nil
     self.onextinguish = nil
     self.onburnt = nil
     self.canlight = true
+
+    self.lightningimmune = false
+    
+    self.smoldering = false
+    self.inst:ListenForEvent("rainstart", onrainstart, TheWorld)
 end,
 nil,
 {
@@ -75,6 +126,10 @@ end
 
 function Burnable:SetBurnTime(time)
     self.burntime = time
+end
+
+function Burnable:IsSmoldering()
+    return self.smoldering
 end
 
 --- Add an effect to be spawned when burning
@@ -115,17 +170,56 @@ function Burnable:IsBurning()
 end
 
 function Burnable:GetDebugString()
-    return string.format("%s ", self.burning and "BURNING" or "NOT BURNING")
+    if self.smoldering then
+        return string.format("SMOLDERING %.2f", self.smoldertimeremaining)
+    elseif self.burning then
+        return "BURNING"
+    else
+        return "NOT BURNING"
+    end
 end
 
 function Burnable:OnRemoveEntity()
+	self:StopSmoldering()
 	self:KillFX()
 end
 
+function Burnable:StartWildfire()
+    if not self.burning and not self.smoldering and not self.inst:HasTag("fireimmune") then
+        self.smoldering = true
+        self.inst:AddTag("smolder")
+        self.smoke = SpawnPrefab("smoke_plant")
+        if self.smoke then
+            if #self.fxdata == 1 and self.fxdata[1].follow then
+                local follower = self.smoke.entity:AddFollower()
+                follower:FollowSymbol( self.inst.GUID, self.fxdata[1].follow, self.fxdata[1].x,self.fxdata[1].y,self.fxdata[1].z)
+            else
+                self.inst:AddChild(self.smoke)
+            end
+            self.smoke.Transform:SetPosition(0,0,0)
+        end
+
+        self.smoldertimeremaining = self.inst.components.propagator and self.inst.components.propagator.flashpoint
+                                or math.random(TUNING.MIN_SMOLDER_TIME, TUNING.MAX_SMOLDER_TIME)
+
+        SmolderUpdate(self.inst)
+    end
+end
+
 function Burnable:Ignite(immediate, source)
-    if not self.burning then
+    if not self.burning and not self.inst:HasTag("fireimmune") then
+    	if self.smoldering then
+            self.smoldering = false
+            self.inst:RemoveTag("smolder")
+            if self.inst.components.inspectable then self.inst.components.inspectable.smoldering = false end
+            if self.smoke then 
+                self.smoke.SoundEmitter:KillSound("smolder")
+                self.smoke:Remove() 
+            end
+        end
         self.inst:AddTag("fire")
         self.burning = true
+
         self.inst:ListenForEvent("death", OnKilled)
         
         self:SpawnFX(immediate)
@@ -147,30 +241,65 @@ function Burnable:Ignite(immediate, source)
         end
         
         if self.burntime then
-            if self.task then
+            if self.task ~= nil then
                 self.task:Cancel()
-                self.task = nil
             end
-            self.task = self.inst:DoTaskInTime(self.burntime, DoneBurning)
+            self.task = self.inst:DoTaskInTime(self.burntime, DoneBurning, self)
         end
-        
     end
 end
 
 function Burnable:LongUpdate(dt)
-	
 	--kind of a coarse assumption...
 	if self.burning then
-		if self.task then
+		if self.task ~= nil then
 			self.task:Cancel()
 			self.task = nil
 		end
-		DoneBurning(self.inst)
+		DoneBurning(self.inst, self)
 	end
-	
 end
 
-function Burnable:Extinguish()
+function Burnable:SmotherSmolder(smotherer)
+    if smotherer and smotherer.components.finiteuses then
+        smotherer.components.finiteuses:Use()
+    elseif smotherer and smotherer.components.stackable then
+        smotherer.components.stackable:Get(1):Remove()
+    elseif smotherer and smotherer.components.health and smotherer.components.combat then
+        smotherer.components.health:DoFireDamage(TUNING.SMOTHER_DAMAGE, nil, true)
+        smotherer:PushEvent("burnt")
+    end
+    self:StopSmoldering(-1.0) -- After you smother something, it has a bit of forgiveness before it will light again
+end
+
+function Burnable:StopSmoldering(heatpct)
+    if self.smoldering then
+        if self.smoke then 
+            self.smoke.SoundEmitter:KillSound("smolder")
+            self.smoke:Remove() 
+        end
+        self.smoldering = false
+        self.inst:RemoveTag("smolder")
+        if self.smolder_task then
+            self.smolder_task:Cancel()
+            self.smolder_task = nil
+        end
+
+        if self.inst.components.propagator then
+            self.inst.components.propagator:StopSpreading(true, heatpct)
+        end
+    end
+end
+
+
+function Burnable:Extinguish(resetpropagator, heatpct, smotherer)
+    self:StopSmoldering()
+
+    if smotherer and smotherer.components.finiteuses then
+        smotherer.components.finiteuses:Use()
+    elseif smotherer and smotherer.components.stackable then
+        smotherer.components.stackable:Get(1):Remove()
+    end
     if self.burning then
     
         if self.task then
@@ -179,7 +308,11 @@ function Burnable:Extinguish()
         end
         
         if self.inst.components.propagator then
-            self.inst.components.propagator:StopSpreading()
+        	if resetpropagator then
+                self.inst.components.propagator:StopSpreading(true, heatpct)
+            else
+            	self.inst.components.propagator:StopSpreading()
+            end
         end
         
         self.inst:RemoveTag("fire")
@@ -207,6 +340,7 @@ function Burnable:SpawnFX(immediate)
 	    for k,v in pairs(self.fxdata) do
 			local fx = SpawnPrefab(v.prefab)
 			if fx then
+				fx.Transform:SetScale(self.inst.Transform:GetScale())
 				if v.follow then
 					local follower = fx.entity:AddFollower()
 					follower:FollowSymbol( self.inst.GUID, v.follow, v.x,v.y,v.z)
@@ -237,7 +371,9 @@ function Burnable:KillFX()
 end
 
 function Burnable:OnRemoveFromEntity()
+	self:StopSmoldering()
     self:Extinguish()
+    RemoveDragonflyBait(self.inst)
     if self.task then
         self.task:Cancel()
         self.task = nil

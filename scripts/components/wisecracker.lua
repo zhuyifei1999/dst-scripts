@@ -10,29 +10,29 @@ local Wisecracker = Class(function(self, inst)
 				
 				if data.food.prefab == "spoiled_food" then
 					inst.components.talker:Say(GetString(inst.prefab, "ANNOUNCE_EAT", "SPOILED"))
-				elseif data.food.components.edible:GetHealth(inst) < 0 and data.food.components.edible:GetSanity(inst) <= 0 then
+				elseif data.food.components.edible:GetHealth(inst) < 0 and data.food.components.edible:GetSanity(inst) <= 0 and not
+                (inst.prefab == "webber" and data.food:HasTag("monstermeat")) then
 					inst.components.talker:Say(GetString(inst.prefab, "ANNOUNCE_EAT", "PAINFUL"))
 				elseif data.food.components.perishable and not data.food.components.perishable:IsFresh() then
-					if data.food.components.perishable:IsStale() then
+					if data.food.components.perishable:IsStale() and data.food.components.edible.degrades_with_spoilage then
 						inst.components.talker:Say(GetString(inst.prefab, "ANNOUNCE_EAT", "STALE"))
-					elseif data.food.components.perishable:IsSpoiled() then
+					elseif data.food.components.perishable:IsSpoiled() and data.food.components.edible.degrades_with_spoilage then
 						inst.components.talker:Say(GetString(inst.prefab, "ANNOUNCE_EAT", "SPOILED"))
 					end
 				end
 			end
         end)
 
-
-	inst:StartUpdatingComponent(self)
+    inst:StartUpdatingComponent(self)
     
-    if not TheWorld:HasTag("cave") then
+    if not TheWorld:HasTag("cave")  or not data.newdusk then
         inst:WatchWorldState("startdusk", function()
             if inst.components.talker then inst.components.talker:Say(GetString(inst, "ANNOUNCE_DUSK")) end
         end)
     end
 
-    inst:ListenForEvent("torchranout", function(inst, data)
-            inst.components.talker:Say(GetString(inst.prefab, "ANNOUNCE_TORCH_OUT"))
+    inst:ListenForEvent("torchranout", function(inst)
+        inst.components.talker:Say(GetString(inst.prefab, "ANNOUNCE_TORCH_OUT"))
     end)
 
     inst:ListenForEvent("heargrue", function(inst, data)
@@ -52,6 +52,9 @@ local Wisecracker = Class(function(self, inst)
 		end
     end)
 
+    inst:ListenForEvent("insufficientfertilizer", function(inst, data)
+        inst.components.talker:Say(GetString(inst.prefab, "ANNOUNCE_INSUFFICIENTFERTILIZER"))
+    end)
     
     inst:ListenForEvent("attackedbygrue", function(inst, data)
             if inst.components.talker then inst.components.talker:Say(GetString(inst.prefab, "ANNOUNCE_CHARLIE_ATTACK")) end
@@ -59,6 +62,10 @@ local Wisecracker = Class(function(self, inst)
     
     inst:ListenForEvent("thorns", function(inst, data)
             inst.components.talker:Say(GetString(inst.prefab, "ANNOUNCE_THORNS"))
+    end)
+
+    inst:ListenForEvent("burnt", function(inst, data)
+            inst.components.talker:Say(GetString(inst.prefab, "ANNOUNCE_BURNT"))
     end)
     
     inst:ListenForEvent("hungerdelta", 
@@ -84,6 +91,11 @@ local Wisecracker = Class(function(self, inst)
 			inst.components.talker:Say(GetString(inst.prefab, "ANNOUNCE_COLD"))
         end)
     
+    inst:ListenForEvent("startoverheating", 
+        function(inst, data) 
+            inst.components.talker:Say(GetString(inst.prefab, "ANNOUNCE_HOT"))
+        end)
+
     inst:ListenForEvent( "inventoryfull", function(it, data) 
 			if inst.components.inventory:IsFull() then
 				inst.components.talker:Say(GetString(inst.prefab, "ANNOUNCE_INV_FULL"))
@@ -99,11 +111,19 @@ local Wisecracker = Class(function(self, inst)
     end)
 
     inst:ListenForEvent("huntlosttrail", function(inst, data)
-        inst.components.talker:Say(GetString(inst, "ANNOUNCE_HUNT_LOST_TRAIL"))
+		if data.washedaway then
+			inst.components.talker:Say(GetString(inst.prefab, "ANNOUNCE_HUNT_LOST_TRAIL_SPRING"))
+		else
+            inst.components.talker:Say(GetString(inst.prefab, "ANNOUNCE_HUNT_LOST_TRAIL"))
+		end
     end)
         
     inst:ListenForEvent("huntbeastnearby", function(inst, data)
         inst.components.talker:Say(GetString(inst.prefab, "ANNOUNCE_HUNT_BEAST_NEARBY"))
+    end)
+
+    inst:ListenForEvent("lightningdamageavoided", function(inst, data)
+        inst.components.talker:Say(GetString(inst.prefab, "ANNOUNCE_LIGHTNING_DAMAGE_AVOIDED"))
     end)
         
 end)

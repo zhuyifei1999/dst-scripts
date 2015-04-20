@@ -35,6 +35,7 @@ local foods=
 		perishtime = TUNING.PERISH_SLOW,
 		sanity = TUNING.SANITY_MED,
 		cooktime = 2,
+		tags = {"honeyed"}
 	},
 	
 	pumpkincookie =
@@ -47,6 +48,7 @@ local foods=
 		perishtime = TUNING.PERISH_MED,
 		sanity = TUNING.SANITY_MED,
 		cooktime = 2,
+		tags = {"honeyed"}
 	},	
 	
 	stuffedeggplant =
@@ -58,6 +60,8 @@ local foods=
 		hunger = TUNING.CALORIES_LARGE,
 		perishtime = TUNING.PERISH_SLOW,
 		sanity = TUNING.SANITY_TINY,
+		temperature = TUNING.HOT_FOOD_BONUS_TEMP,
+		temperatureduration = TUNING.FOOD_TEMP_BRIEF,
 		cooktime = 2,
 	},
 	
@@ -71,6 +75,7 @@ local foods=
 		perishtime = TUNING.PERISH_MED,
 		sanity = TUNING.SANITY_TINY,
 		cooktime = 2,
+		tags = {"catfood"}
 	},
 	
 	honeynuggets =
@@ -83,6 +88,7 @@ local foods=
 		perishtime = TUNING.PERISH_SLOW,
 		sanity = TUNING.SANITY_TINY,
 		cooktime = 2,
+		tags = {"honeyed"}
 	},
 	
 	honeyham =
@@ -94,7 +100,10 @@ local foods=
 		hunger = TUNING.CALORIES_HUGE,
 		perishtime = TUNING.PERISH_SLOW,
 		sanity = TUNING.SANITY_TINY,
+		temperature = TUNING.HOT_FOOD_BONUS_TEMP,
+		temperatureduration = TUNING.FOOD_TEMP_AVERAGE,
 		cooktime = 2,
+		tags = {"honeyed"}
 	},
 	
 	dragonpie =
@@ -106,6 +115,8 @@ local foods=
 		hunger = TUNING.CALORIES_HUGE,
 		perishtime = TUNING.PERISH_SLOW,
 		sanity = TUNING.SANITY_TINY,
+		temperature = TUNING.HOT_FOOD_BONUS_TEMP,
+		temperatureduration = TUNING.FOOD_TEMP_AVERAGE,
 		cooktime = 2,
 	},
 	kabobs =
@@ -117,6 +128,8 @@ local foods=
 		hunger = TUNING.CALORIES_LARGE,
 		perishtime = TUNING.PERISH_SLOW,
 		sanity = TUNING.SANITY_TINY,
+		temperature = TUNING.HOT_FOOD_BONUS_TEMP,
+		temperatureduration = TUNING.FOOD_TEMP_LONG,
 		cooktime = 2,
 	},
 	mandrakesoup =
@@ -183,6 +196,8 @@ local foods=
 		hunger = TUNING.CALORIES_HUGE,
 		perishtime = TUNING.PERISH_FAST,
 		sanity = TUNING.SANITY_TINY,
+		temperature = TUNING.HOT_FOOD_BONUS_TEMP,
+		temperatureduration = TUNING.FOOD_TEMP_AVERAGE,
 		cooktime = 3,
 	},
 	ratatouille =
@@ -217,6 +232,8 @@ local foods=
 		hunger = TUNING.CALORIES_MED,
 		perishtime = TUNING.PERISH_FAST,
 		sanity = TUNING.SANITY_TINY,
+		temperature = TUNING.COLD_FOOD_BONUS_TEMP,
+		temperatureduration = TUNING.FOOD_TEMP_BRIEF,
 		cooktime = .5,
 	},
 	fishtacos =
@@ -252,6 +269,7 @@ local foods=
 		perishtime = TUNING.PERISH_FAST,
 		sanity = -TUNING.SANITY_MEDLARGE,
 		cooktime = .5,
+		tags = {"monstermeat"},
 	},
 
 	powcake =
@@ -264,6 +282,7 @@ local foods=
 		perishtime = 9000000,
 		sanity = 0,
 		cooktime = 0.5,
+		tags = {"honeyed"}
 	},
 
 	unagi =
@@ -287,7 +306,86 @@ local foods=
 		perishtime = TUNING.PERISH_FAST,
 		sanity = 0,
 		cooktime = .25,
+		wet_prefix = STRINGS.WET_PREFIX.WETGOOP,
 	},
+	
+	flowersalad =
+	{
+		test = function(cooker, names, tags) return names.cactus_flower and tags.veggie and tags.veggie >= 2 and not tags.meat and not tags.inedible and not tags.egg and not tags.sweetener and not tags.fruit end,
+		priority = 10,
+		foodtype = "VEGGIE",
+		health = TUNING.HEALING_LARGE,
+		hunger = TUNING.CALORIES_SMALL,
+		perishtime = TUNING.PERISH_FAST,
+		sanity = TUNING.SANITY_TINY,
+		cooktime = .5,
+	},	
+
+	icecream =
+	{
+		test = function(cooker, names, tags) return tags.frozen and tags.dairy and tags.sweetener and not tags.meat and not tags.veggie and not tags.inedible and not tags.egg end,
+		priority = 10,
+		foodtype = "VEGGIE",
+		health = 0,
+		hunger = TUNING.CALORIES_MED,
+		perishtime = TUNING.PERISH_SUPERFAST,
+		sanity = TUNING.SANITY_HUGE,
+		temperature = TUNING.COLD_FOOD_BONUS_TEMP,
+		temperatureduration = TUNING.FOOD_TEMP_LONG,
+		cooktime = .5,
+	},	
+
+	watermelonicle =
+	{
+		test = function(cooker, names, tags) return names.watermelon and tags.frozen and names.twigs and not tags.meat and not tags.veggie and not tags.egg end,
+		priority = 10,
+		foodtype = "VEGGIE",
+		health = TUNING.HEALING_SMALL,
+		hunger = TUNING.CALORIES_SMALL,
+		perishtime = TUNING.PERISH_SUPERFAST,
+		sanity = TUNING.SANITY_MEDLARGE,
+		temperature = TUNING.COLD_FOOD_BONUS_TEMP,
+		temperatureduration = TUNING.FOOD_TEMP_AVERAGE,
+		cooktime = .5,
+	},	
+
+	trailmix =
+	{
+		test = function(cooker, names, tags) return names.acorn_cooked and tags.seed and tags.seed >= 1 and (names.berries or names.berries_cooked) and tags.fruit and tags.fruit >= 1 and not tags.meat and not tags.veggie and not tags.egg and not tags.dairy end,
+		priority = 10,
+		foodtype = "VEGGIE",
+		health = TUNING.HEALING_MEDLARGE,
+		hunger = TUNING.CALORIES_SMALL,
+		perishtime = TUNING.PERISH_SLOW,
+		sanity = TUNING.SANITY_TINY,
+		cooktime = .5,
+	},
+
+	hotchili =
+	{
+		test = function(cooker, names, tags) return tags.meat and tags.veggie and tags.meat >= 1.5 and tags.veggie >= 1.5 end,
+		priority = 10,
+		foodtype = "MEAT",
+		health = TUNING.HEALING_MED,
+		hunger = TUNING.CALORIES_LARGE,
+		perishtime = TUNING.PERISH_MED,
+		sanity = 0,
+		temperature = TUNING.HOT_FOOD_BONUS_TEMP,
+		temperatureduration = TUNING.FOOD_TEMP_LONG,
+		cooktime = .5,
+	},	
+
+	guacamole = 
+	{
+		test = function(cooker, names, tags) return names.mole and names.cactus_meat and not tags.fruit end,
+		priority = 10,
+		foodtype = "MEAT",
+		health = TUNING.HEALING_MED,
+		hunger = TUNING.CALORIES_LARGE,
+		perishtime = TUNING.PERISH_MED,
+		sanity = 0,
+		cooktime = .5,
+	}
 }
 for k,v in pairs(foods) do
 	v.name = k

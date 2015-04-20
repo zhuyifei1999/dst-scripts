@@ -81,6 +81,7 @@ local assets =
 	Asset("SHADER", "shaders/postprocessbloomdistort.ksh"),
 
 	Asset("SHADER", "shaders/waves.ksh"),
+	Asset("SHADER", "shaders/overheat.ksh"),
 
     --common UI elements that we will always need
     Asset("ATLAS", "images/ui.xml"),
@@ -104,6 +105,9 @@ local assets =
 
     Asset("ATLAS", "images/globalpanels2.xml"),
     Asset("IMAGE", "images/globalpanels2.tex"),
+
+    Asset("ATLAS", "images/bg_rog_portal.xml"),
+    Asset("IMAGE", "images/bg_rog_portal.tex"),
 }
 
 

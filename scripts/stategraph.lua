@@ -423,6 +423,7 @@ local SGTagsToEntTags =
     lure = true,
     moving = true,
     nibble = true,
+    noattack = true,
     nopredict = true,
     pausepredict = true,
     sleeping = true,

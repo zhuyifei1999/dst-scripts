@@ -8,13 +8,13 @@ local assets =
 
 local function onequip(inst, owner)
     owner.AnimState:OverrideSymbol("swap_object", "swap_shovel", "swap_shovel")
-    owner.AnimState:Show("ARM_carry") 
-    owner.AnimState:Hide("ARM_normal") 
+    owner.AnimState:Show("ARM_carry")
+    owner.AnimState:Hide("ARM_normal")
 end
 
 local function onunequip(inst, owner)
-    owner.AnimState:Hide("ARM_carry") 
-    owner.AnimState:Show("ARM_normal") 
+    owner.AnimState:Hide("ARM_carry")
+    owner.AnimState:Show("ARM_normal")
 end
 
 local function common_fn(bank, build)
@@ -31,11 +31,11 @@ local function common_fn(bank, build)
     inst.AnimState:SetBuild(build)
     inst.AnimState:PlayAnimation("idle")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     -----
     inst:AddComponent("tool")

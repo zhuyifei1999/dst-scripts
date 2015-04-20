@@ -37,7 +37,6 @@ function AddIngredientValues(names, tags, cancook, candry)
 	end
 end
 
-
 local fruits = {"pomegranate", "dragonfruit", "cave_banana"}
 AddIngredientValues(fruits, {fruit=1}, true)
 
@@ -67,6 +66,15 @@ AddIngredientValues({"bird_egg"}, {egg=1}, true)
 AddIngredientValues({"butterflywings"}, {decoration=2})
 AddIngredientValues({"butter"}, {fat=1, dairy=1})
 AddIngredientValues({"twigs"}, {inedible=1})
+
+AddIngredientValues({"ice"}, {frozen=1})
+AddIngredientValues({"mole"}, {meat=.5})
+AddIngredientValues({"cactus_meat"}, {veggie=1}, true)
+AddIngredientValues({"watermelon"}, {fruit=1}, true)
+AddIngredientValues({"cactus_flower"}, {veggie=.5})
+AddIngredientValues({"acorn_cooked"}, {seed=1})
+AddIngredientValues({"goatmilk"}, {dairy=1})
+-- AddIngredientValues({"seeds"}, {seed=1}, true)
 
 
 --our naming conventions aren't completely consistent, sadly

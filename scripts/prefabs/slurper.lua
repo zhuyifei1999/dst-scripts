@@ -234,7 +234,7 @@ local function fn()
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetChanceLootTable('slurper')
 	-- inst:AddComponent("eater")
-	-- inst.components.eater:SetVegetarian()
+	-- inst.components.eater:SetDiet({ FOODTYPE.VEGGIE }, { FOODTYPE.VEGGIE })
 	-- inst.components.eater:SetOnEatFn(oneat)
 
  	local light = inst.entity:AddLight()

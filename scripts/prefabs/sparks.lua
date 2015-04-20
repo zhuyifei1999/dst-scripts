@@ -78,11 +78,11 @@ local function fn()
     inst._complete = false
     inst:ListenForEvent("randdirty", OnRandDirty)
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst.persists = false
     inst:DoTaskInTime(1, inst.Remove)

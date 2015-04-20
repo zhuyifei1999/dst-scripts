@@ -200,6 +200,20 @@ function Node:SetTilesViaFunction(entities, width, height)
 	self.populated = true
 end
 
+local function resolveswappableprefabs(table)
+	local tbl = {}
+
+	for k,v in pairs(table) do
+		if type(v) == "table" then
+			local choice = GetRandomItem(v.prefabs)
+			tbl[choice] = v.weight
+		else
+			tbl[k] = v
+		end
+	end
+	return tbl
+end
+
 function Node:PopulateVoronoi(spawnFn, entitiesOut, width, height, world_gen_choices)
 
 	if self.populated == true then
@@ -283,10 +297,12 @@ function Node:PopulateVoronoi(spawnFn, entitiesOut, width, height, world_gen_cho
 
 	if self.data.terrain_contents.distributepercent and self.data.terrain_contents.distributeprefabs then
 		local idx_left = {}
+
+		local distributeprefabs = resolveswappableprefabs(self.data.terrain_contents.distributeprefabs)
 		
 		for current_pos_idx = current_pos_idx, #points_x  do
 			if math.random() < self.data.terrain_contents.distributepercent then
-				local prefab = spawnFn.pickspawnprefab(self.data.terrain_contents.distributeprefabs, points_type[current_pos_idx])
+				local prefab = spawnFn.pickspawnprefab(distributeprefabs, points_type[current_pos_idx])
 				if prefab ~= nil then
 					local prefab_data = {}
 					prefab_data.data = self.data.terrain_contents.prefabdata and self.data.terrain_contents.prefabdata[prefab] or nil			
@@ -343,7 +359,7 @@ function Node:PopulateChildren(spawnFn, entitiesOut, width, height, backgroundRo
 			local idx_left = {}
 
 			for current_pos_idx = 1, #points_x do
-				if perTerrain then
+				if perTerrain then -- For use in biomes with mixed tile types (caves mostly)
 					room = backgroundRoom[points_type[current_pos_idx]]
 				end
 

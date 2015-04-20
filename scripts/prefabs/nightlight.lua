@@ -6,6 +6,7 @@ local assets =
 local prefabs =
 {
     "campfirefire",
+    "collapse_small",
 }
 
 local function onhammered(inst, worker)

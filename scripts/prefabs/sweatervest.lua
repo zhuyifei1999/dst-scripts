@@ -34,10 +34,9 @@ local function fn()
 
     inst:AddComponent("inventoryitem")
 
-    inst:AddComponent("dapperness")
-    inst.components.dapperness.dapperness = TUNING.DAPPERNESS_MED
     inst:AddComponent("equippable")
     inst.components.equippable.equipslot = EQUIPSLOTS.BODY
+    inst.components.equippable.dapperness = TUNING.DAPPERNESS_MED
 
     inst.components.equippable:SetOnEquip( onequip )
     inst.components.equippable:SetOnUnequip( onunequip )
@@ -48,7 +47,7 @@ local function fn()
     inst.components.fueled:SetDepletedFn(inst.Remove)
 
 	inst:AddComponent("insulator")
-    inst.components.insulator.insulation = TUNING.INSULATION_SMALL
+    inst.components.insulator:SetInsulation( TUNING.INSULATION_SMALL )
 
     MakeHauntableLaunch(inst)
 

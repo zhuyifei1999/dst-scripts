@@ -1,11 +1,9 @@
-
-function MakeHat(name)
-
+local function MakeHat(name)
     local fname = "hat_"..name
     local symname = name.."hat"
     local texture = symname..".tex"
     local prefabname = symname
-    local assets=
+    local assets =
     {
         Asset("ANIM", "anim/"..fname..".zip"),
         --Asset("IMAGE", texture),
@@ -15,6 +13,12 @@ function MakeHat(name)
         table.insert(assets, Asset("ANIM", "anim/hat_miner_off.zip"))
     end
 
+    --If you want to use generic_perish to do more, it's still
+    --commented in all the relevant places below in this file.
+    --[[local function generic_perish(inst)
+        inst:Remove()
+    end]]
+
     local function onequip(inst, owner, fname_override)
         local build = fname_override or fname
         owner.AnimState:OverrideSymbol("swap_hat", build, "swap_hat")
@@ -22,15 +26,15 @@ function MakeHat(name)
         owner.AnimState:Show("HAT_HAIR")
         owner.AnimState:Hide("HAIR_NOHAT")
         owner.AnimState:Hide("HAIR")
-        
+
         if owner:HasTag("player") then
-			owner.AnimState:Hide("HEAD")
-			owner.AnimState:Show("HEAD_HAT")
-		end
+            owner.AnimState:Hide("HEAD")
+            owner.AnimState:Show("HEAD_HAT")
+        end
         
-		if inst.components.fueled then
-			inst.components.fueled:StartConsuming()        
-		end
+        if inst.components.fueled then
+            inst.components.fueled:StartConsuming()
+        end
     end
 
     local function onunequip(inst, owner)
@@ -39,16 +43,16 @@ function MakeHat(name)
         owner.AnimState:Show("HAIR_NOHAT")
         owner.AnimState:Show("HAIR")
 
-		if owner:HasTag("player") then
-	        owner.AnimState:Show("HEAD")
-			owner.AnimState:Hide("HEAD_HAT")
-		end
+        if owner:HasTag("player") then
+            owner.AnimState:Show("HEAD")
+            owner.AnimState:Hide("HEAD_HAT")
+        end
 
-		if inst.components.fueled then
-			inst.components.fueled:StopConsuming()        
-		end
+        if inst.components.fueled then
+            inst.components.fueled:StopConsuming()
+        end
     end
-    
+
     local function opentop_onequip(inst, owner)
         owner.AnimState:OverrideSymbol("swap_hat", fname, "swap_hat")
         owner.AnimState:Show("HAT")
@@ -59,9 +63,9 @@ function MakeHat(name)
         owner.AnimState:Show("HEAD")
         owner.AnimState:Hide("HEAD_HAT")
 
-		if inst.components.fueled then
-			inst.components.fueled:StartConsuming()        
-		end
+        if inst.components.fueled then
+            inst.components.fueled:StartConsuming()
+        end
     end
 
 
@@ -84,11 +88,11 @@ function MakeHat(name)
             custom_init(inst)
         end
 
+        inst.entity:SetPristine()
+
         if not TheWorld.ismastersim then
             return inst
         end
-
-        inst.entity:SetPristine()
 
         inst:AddComponent("inventoryitem")
         inst:AddComponent("inspectable")
@@ -98,11 +102,38 @@ function MakeHat(name)
         inst:AddComponent("equippable")
         inst.components.equippable.equipslot = EQUIPSLOTS.HEAD
 
-        inst.components.equippable:SetOnEquip( onequip )
+        inst.components.equippable:SetOnEquip(onequip)
 
-        inst.components.equippable:SetOnUnequip( onunequip )
+        inst.components.equippable:SetOnUnequip(onunequip)
 
         MakeHauntableLaunch(inst)
+
+        return inst
+    end
+
+    local function straw_custom_init(inst)
+        --waterproofer (from waterproofer component) added to pristine state for optimization
+        inst:AddTag("waterproofer")
+    end
+
+    local function straw()
+        local inst = simple(straw_custom_init)
+
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        inst:AddComponent("waterproofer")
+        inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALL)
+
+        inst:AddComponent("insulator")
+        inst.components.insulator:SetSummer()
+        inst.components.insulator:SetInsulation(TUNING.INSULATION_SMALL)
+
+        inst:AddComponent("fueled")
+        inst.components.fueled.fueltype = FUELTYPE.USAGE
+        inst.components.fueled:InitializeFuelLevel(TUNING.STRAWHAT_PERISHTIME)
+        inst.components.fueled:SetDepletedFn(--[[generic_perish]]inst.Remove)
 
         return inst
     end
@@ -111,17 +142,24 @@ function MakeHat(name)
         return simple()
     end
 
+    local function bee_custom_init(inst)
+        --waterproofer (from waterproofer component) added to pristine state for optimization
+        inst:AddTag("waterproofer")
+    end
+
     local function bee()
-        local inst = simple()
+        local inst = simple(bee_custom_init)
 
         if not TheWorld.ismastersim then
             return inst
         end
 
-		inst:AddComponent("armor")
-		inst.components.armor:InitCondition(TUNING.ARMOR_BEEHAT, TUNING.ARMOR_BEEHAT_ABSORPTION)
-		inst.components.armor:SetTags({"bee"})
-		return inst
+        inst:AddComponent("armor")
+        inst.components.armor:InitCondition(TUNING.ARMOR_BEEHAT, TUNING.ARMOR_BEEHAT_ABSORPTION)
+        inst.components.armor:SetTags({"bee"})
+        inst:AddComponent("waterproofer")
+        inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALL)
+        return inst
     end
 
     local function earmuffs_custom_init(inst)
@@ -136,15 +174,15 @@ function MakeHat(name)
         end
 
         inst:AddComponent("insulator")
-        inst.components.insulator.insulation = TUNING.INSULATION_SMALL
+        inst.components.insulator:SetInsulation( TUNING.INSULATION_SMALL )
         inst.components.equippable:SetOnEquip( opentop_onequip )
         inst:AddComponent("fueled")
         inst.components.fueled.fueltype = FUELTYPE.USAGE
         inst.components.fueled:InitializeFuelLevel(TUNING.EARMUFF_PERISHTIME)
         inst.components.fueled:SetDepletedFn(inst.Remove)
-		return inst
+        return inst
     end
-   
+
     local function winter()
         local inst = simple()
 
@@ -152,29 +190,36 @@ function MakeHat(name)
             return inst
         end
 
-		inst:AddComponent("dapperness")
-		inst.components.dapperness.dapperness = TUNING.DAPPERNESS_TINY
+        inst.components.equippable.dapperness = TUNING.DAPPERNESS_TINY
         inst:AddComponent("insulator")
-        inst.components.insulator.insulation = TUNING.INSULATION_MED
-        
+        inst.components.insulator:SetInsulation( TUNING.INSULATION_MED )
+
         inst:AddComponent("fueled")
         inst.components.fueled.fueltype = FUELTYPE.USAGE
         inst.components.fueled:InitializeFuelLevel(TUNING.WINTERHAT_PERISHTIME)
         inst.components.fueled:SetDepletedFn(inst.Remove)
-        
-		return inst
+
+        return inst
+    end
+
+    local function football_custom_init(inst)
+        --waterproofer (from waterproofer component) added to pristine state for optimization
+        inst:AddTag("waterproofer")
     end
 
     local function football()
-        local inst = simple()
+        local inst = simple(football_custom_init)
 
         if not TheWorld.ismastersim then
             return inst
         end
 
-		inst:AddComponent("armor")
-		inst.components.armor:InitCondition(TUNING.ARMOR_FOOTBALLHAT, TUNING.ARMOR_FOOTBALLHAT_ABSORPTION)
-		return inst
+        inst:AddComponent("armor")
+        inst.components.armor:InitCondition(TUNING.ARMOR_FOOTBALLHAT, TUNING.ARMOR_FOOTBALLHAT_ABSORPTION)
+
+        inst:AddComponent("waterproofer")
+        inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALL)
+        return inst
     end
 
     local function ruinshat_proc(inst, owner)
@@ -233,7 +278,7 @@ function MakeHat(name)
         owner:RemoveEventCallback("attacked", inst.procfn)
 
     end
-    
+
     local function ruins_onequip(inst, owner)
         owner.AnimState:OverrideSymbol("swap_hat", fname, "swap_hat")
         owner.AnimState:Show("HAT")
@@ -292,9 +337,7 @@ function MakeHat(name)
             return inst
         end
 
-		inst:AddComponent("dapperness")
-		inst.components.dapperness.dapperness = TUNING.DAPPERNESS_SMALL
-        
+        inst.components.equippable.dapperness = TUNING.DAPPERNESS_SMALL
         inst.components.equippable:SetOnEquip( feather_equip )
         inst.components.equippable:SetOnUnequip( feather_unequip )
         
@@ -303,7 +346,7 @@ function MakeHat(name)
         inst.components.fueled:InitializeFuelLevel(TUNING.FEATHERHAT_PERISHTIME)
         inst.components.fueled:SetDepletedFn(inst.Remove)
         
-		return inst
+        return inst
     end
 
     local function beefalo_equip(inst, owner)
@@ -316,8 +359,13 @@ function MakeHat(name)
         owner:RemoveTag("beefalo")
     end
 
+    local function beefalo_custom_init(inst)
+        --waterproofer (from waterproofer component) added to pristine state for optimization
+        inst:AddTag("waterproofer")
+    end
+
     local function beefalo()
-        local inst = simple()
+        local inst = simple(beefalo_custom_init)
 
         if not TheWorld.ismastersim then
             return inst
@@ -327,8 +375,11 @@ function MakeHat(name)
         inst.components.equippable:SetOnUnequip( beefalo_unequip )
 
         inst:AddComponent("insulator")
-        inst.components.insulator.insulation = TUNING.INSULATION_LARGE
-        
+        inst.components.insulator:SetInsulation( TUNING.INSULATION_LARGE )
+
+        inst:AddComponent("waterproofer")
+        inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALL)
+ 
         inst:AddComponent("fueled")
         inst.components.fueled.fueltype = FUELTYPE.USAGE
         inst.components.fueled:InitializeFuelLevel(TUNING.BEEFALOHAT_PERISHTIME)
@@ -344,11 +395,10 @@ function MakeHat(name)
             return inst
         end
 
-        inst:AddComponent("dapperness")
-        inst.components.dapperness.dapperness = TUNING.DAPPERNESS_LARGE
+        inst.components.equippable.dapperness = TUNING.DAPPERNESS_LARGE
 
         inst:AddComponent("insulator")
-        inst.components.insulator.insulation = TUNING.INSULATION_MED
+        inst.components.insulator:SetInsulation( TUNING.INSULATION_MED )
 
         inst:AddComponent("fueled")
         inst.components.fueled.fueltype = FUELTYPE.USAGE
@@ -398,9 +448,19 @@ function MakeHat(name)
     end
 
     local function miner_perish(inst)
-        local owner = inst.components.inventoryitem ~= nil and inst.components.inventoryitem.owner or nil
-        if owner ~= nil then
-            owner:PushEvent("torchranout", { torch = inst })
+        local equippable = inst.components.equippable
+        if equippable ~= nil and equippable:IsEquipped() then
+            local owner = inst.components.inventoryitem ~= nil and inst.components.inventoryitem.owner or nil
+            if owner ~= nil then
+                local data =
+                {
+                    prefab = inst.prefab,
+                    equipslot = equippable.equipslot,
+                }
+                miner_turnoff(inst)
+                owner:PushEvent("torchranout", data)
+                return
+            end
         end
         miner_turnoff(inst)
     end
@@ -452,13 +512,28 @@ function MakeHat(name)
         end
         local owner = inst.components.inventoryitem and inst.components.inventoryitem.owner
         if owner and owner.components.leader then
-            owner:RemoveTag("monster")
-            for k,v in pairs(owner.components.leader.followers) do
-                if k:HasTag("spider") and k.components.combat then
-                    k.components.combat:SuggestTarget(owner)
+            
+            if not owner:HasTag("spiderwhisperer") then --Webber has to stay a monster.
+                owner:RemoveTag("monster")
+
+                for k,v in pairs(owner.components.leader.followers) do
+                    if k:HasTag("spider") and k.components.combat then
+                        k.components.combat:SuggestTarget(owner)
+                    end
                 end
+                owner.components.leader:RemoveFollowersByTag("spider")
+            else
+                owner.components.leader:RemoveFollowersByTag("spider", function(follower)
+                    if follower and follower.components.follower then
+                        if follower.components.follower:GetLoyaltyPercent() > 0 then
+                            return false
+                        else
+                            return true
+                        end
+                    end
+                end)
             end
-            owner.components.leader:RemoveFollowersByTag("spider")
+
         end
     end
 
@@ -500,39 +575,57 @@ function MakeHat(name)
         inst:Remove()
     end
 
-	local function top()
-		local inst = simple()
+    local function top_custom_init(inst)
+        --waterproofer (from waterproofer component) added to pristine state for optimization
+        inst:AddTag("waterproofer")
+    end
+
+    local function top()
+        local inst = simple(top_custom_init)
 
         if not TheWorld.ismastersim then
             return inst
         end
 
-		inst:AddComponent("dapperness")
-		inst.components.dapperness.dapperness = TUNING.DAPPERNESS_MED
+        inst.components.equippable.dapperness = TUNING.DAPPERNESS_MED
+
         inst:AddComponent("fueled")
         inst.components.fueled.fueltype = FUELTYPE.USAGE
         inst.components.fueled:InitializeFuelLevel(TUNING.TOPHAT_PERISHTIME)
         inst.components.fueled:SetDepletedFn(spider_perish)
-		return inst
-	end
-	
+
+        inst:AddComponent("waterproofer")
+        inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALL)
+
+        return inst
+    end
+
+    local function spider_custom_init(inst)
+        --waterproofer (from waterproofer component) added to pristine state for optimization
+        inst:AddTag("waterproofer")
+    end
+
     local function spider()
-        local inst = simple()
+        local inst = simple(spider_custom_init)
 
         if not TheWorld.ismastersim then
             return inst
         end
 
-		inst:AddComponent("dapperness")
-		inst.components.dapperness.dapperness = -TUNING.DAPPERNESS_SMALL
+        inst.components.inventoryitem:SetOnDroppedFn(spider_disable)
 
-        inst.components.inventoryitem:SetOnDroppedFn( spider_disable )
-        inst.components.equippable:SetOnEquip( spider_equip )
-        inst.components.equippable:SetOnUnequip( spider_unequip )
+        inst.components.equippable.dapperness = -TUNING.DAPPERNESS_SMALL
+        inst.components.equippable:SetOnEquip(spider_equip)
+        inst.components.equippable:SetOnUnequip(spider_unequip)
+
         inst:AddComponent("fueled")
         inst.components.fueled.fueltype = FUELTYPE.SPIDERHAT
         inst.components.fueled:InitializeFuelLevel(TUNING.SPIDERHAT_PERISHTIME)
         inst.components.fueled:SetDepletedFn(spider_perish)
+
+        inst:AddComponent("waterproofer")
+        inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALL)
+
         return inst
     end
 
@@ -556,10 +649,10 @@ function MakeHat(name)
         end
         
         if inst.components.fueled then
-            inst.components.fueled:StartConsuming()        
+            inst.components.fueled:StartConsuming()
         end
 
-        inst:ListenForEvent("newstate", stopusingbush, owner) 
+        inst:ListenForEvent("newstate", stopusingbush, owner)
     end
 
     local function onunequipbush(inst, owner)
@@ -613,37 +706,33 @@ function MakeHat(name)
         inst:AddTag("show_spoilage")
     end
 
-	local function flower()
-		local inst = simple(flower_custom_init)
+    local function flower()
+        local inst = simple(flower_custom_init)
 
         if not TheWorld.ismastersim then
             return inst
         end
 
-		inst:AddComponent("dapperness")
-		inst.components.dapperness.dapperness = TUNING.DAPPERNESS_TINY
+        inst.components.equippable.dapperness = TUNING.DAPPERNESS_TINY
 
-		--[[
-		inst:AddComponent("edible")
-		inst.components.edible.healthvalue = TUNING.HEALING_SMALL
-		inst.components.edible.hungervalue = 0
-		inst.components.edible.sanityvalue = TUNING.SANITY_SMALL
-		inst.components.edible.foodtype = FOODTYPE.VEGGIE
-		--]]
-		
-		inst:AddComponent("perishable")
-		inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)
-		inst.components.perishable:StartPerishing()
-		inst.components.perishable:SetOnPerishFn(inst.Remove)
+        inst:AddComponent("perishable")
+        inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)
+        inst.components.perishable:StartPerishing()
+        inst.components.perishable:SetOnPerishFn(inst.Remove)
         inst.components.equippable:SetOnEquip( opentop_onequip )
 
         MakeHauntableLaunchAndPerish(inst)
 
-		return inst
-    end 
+        return inst
+    end
+
+    local function slurtle_custom_init(inst)
+        --waterproofer (from waterproofer component) added to pristine state for optimization
+        inst:AddTag("waterproofer")
+    end
 
     local function slurtle()
-        local inst = simple()
+        local inst = simple(slurtle_custom_init)
 
         if not TheWorld.ismastersim then
             return inst
@@ -651,6 +740,240 @@ function MakeHat(name)
 
         inst:AddComponent("armor")
         inst.components.armor:InitCondition(TUNING.ARMOR_SLURTLEHAT, TUNING.ARMOR_SLURTLEHAT_ABSORPTION)
+
+        inst:AddComponent("waterproofer")
+        inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALL)
+
+        return inst
+    end
+
+    local function rain_custom_init(inst)
+        --waterproofer (from waterproofer component) added to pristine state for optimization
+        inst:AddTag("waterproofer")
+    end
+
+    local function rain()
+        local inst = simple(rain_custom_init)
+
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        inst:AddComponent("fueled")
+        inst.components.fueled.fueltype = FUELTYPE.USAGE
+        inst.components.fueled:InitializeFuelLevel(TUNING.RAINHAT_PERISHTIME)
+        inst.components.fueled:SetDepletedFn(--[[generic_perish]]inst.Remove)
+
+        inst:AddComponent("waterproofer")
+        inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_LARGE)
+
+        inst.components.equippable.insulated = true
+
+        return inst
+    end
+
+    local function eyebrella_onequip(inst, owner) 
+        opentop_onequip(inst, owner)
+        
+        owner.DynamicShadow:SetSize(2.2, 1.4)
+    end
+
+    local function eyebrella_onunequip(inst, owner) 
+        onunequip(inst, owner)
+
+        owner.DynamicShadow:SetSize(1.3, 0.6)
+    end
+    
+    local function eyebrella_perish(inst)
+        local equippable = inst.components.equippable
+        if equippable ~= nil and equippable:IsEquipped() then
+            local owner = inst.components.inventoryitem ~= nil and inst.components.inventoryitem.owner or nil
+            if owner ~= nil then
+                owner.DynamicShadow:SetSize(1.3, 0.6)
+                local data =
+                {
+                    prefab = inst.prefab,
+                    equipslot = equippable.equipslot,
+                }
+                inst:Remove()--generic_perish(inst)
+                owner:PushEvent("umbrellaranout", data)
+                return
+            end
+        end
+        inst:Remove()--generic_perish(inst)
+    end
+
+    local function eyebrella_custom_init(inst)
+        inst:AddTag("umbrella")
+
+        --waterproofer (from waterproofer component) added to pristine state for optimization
+        inst:AddTag("waterproofer")
+    end
+
+    local function eyebrella()
+        local inst = simple(eyebrella_custom_init)
+
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        inst:AddComponent("fueled")
+        inst.components.fueled.fueltype = FUELTYPE.USAGE
+        inst.components.fueled:InitializeFuelLevel(TUNING.EYEBRELLA_PERISHTIME)
+        inst.components.fueled:SetDepletedFn(eyebrella_perish)
+
+        inst.components.equippable:SetOnEquip(eyebrella_onequip)
+        inst.components.equippable:SetOnUnequip(eyebrella_onunequip)
+
+        inst:AddComponent("waterproofer")
+        inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_ABSOLUTE)
+
+        inst:AddComponent("insulator")
+        inst.components.insulator:SetInsulation(TUNING.INSULATION_LARGE)
+        inst.components.insulator:SetSummer()
+
+        inst.components.equippable.insulated = true
+
+        return inst
+    end
+
+    local function wathgrithr_custom_init(inst)
+        --waterproofer (from waterproofer component) added to pristine state for optimization
+        inst:AddTag("waterproofer")
+    end
+
+    local function wathgrithr()
+        local inst = simple(wathgrithr_custom_init)
+
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        inst:AddComponent("armor")
+        inst.components.armor:InitCondition(TUNING.ARMOR_WATHGRITHRHAT, TUNING.ARMOR_WATHGRITHRHAT_ABSORPTION)
+
+        inst:AddComponent("waterproofer")
+        inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALL)
+
+        return inst
+    end
+
+    local function ice_custom_init(inst)
+        inst:AddTag("show_spoilage")
+        inst:AddTag("frozen")
+        inst:AddTag("icebox_valid")
+
+        --HASHEATER (from heater component) added to pristine state for optimization
+        inst:AddTag("HASHEATER")
+
+        --waterproofer (from waterproofer component) added to pristine state for optimization
+        inst:AddTag("waterproofer")
+    end
+
+    local function ice()
+        local inst = simple(ice_custom_init)
+        
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        inst:AddComponent("heater")
+        inst.components.heater:SetThermics(false, true)
+        inst.components.heater.equippedheat = TUNING.ICEHAT_COOLER
+
+        inst.components.equippable.walkspeedmult = 0.9
+        inst.components.equippable.equippedmoisture = 1
+        inst.components.equippable.maxequippedmoisture = 49 -- Meter reading rounds up, so set 1 below
+
+        inst:AddComponent("insulator")
+        inst.components.insulator:SetInsulation(TUNING.INSULATION_LARGE)
+        inst.components.insulator:SetSummer()
+
+        inst:AddComponent("waterproofer")
+        inst.components.waterproofer.effectiveness = 0
+
+        inst:AddComponent("perishable")
+        inst.components.perishable:SetPerishTime(TUNING.PERISH_FASTISH)
+        inst.components.perishable:StartPerishing()
+        inst.components.perishable:SetOnPerishFn(function(inst)
+            local owner = inst.components.inventoryitem.owner
+            if owner ~= nil then
+                if owner.components.moisture then
+                    owner.components.moisture:DoDelta(30)
+                end
+                if owner.components.moisturelistener then
+                    owner.components.moisturelistener:DoDelta(50)
+                end
+            end
+            inst:Remove()
+        end)
+
+        inst:AddComponent("repairable")
+        inst.components.repairable.repairmaterial = MATERIALS.ICE
+        inst.components.repairable.announcecanfix = false
+
+        return inst
+    end
+
+    local function catcoon()
+        local inst = simple()
+
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        inst:AddComponent("fueled")
+        inst.components.fueled.fueltype = FUELTYPE.USAGE
+        inst.components.fueled:InitializeFuelLevel(TUNING.CATCOONHAT_PERISHTIME)
+        inst.components.fueled:SetDepletedFn(--[[generic_perish]]inst.Remove)
+
+        inst.components.equippable.dapperness = TUNING.DAPPERNESS_MED
+
+        inst:AddComponent("insulator")
+        inst.components.insulator:SetInsulation(TUNING.INSULATION_SMALL)
+
+        return inst
+    end
+
+    local function watermelon_custom_init(inst)
+        inst:AddTag("icebox_valid")
+
+        --HASHEATER (from heater component) added to pristine state for optimization
+        inst:AddTag("HASHEATER")
+
+        --waterproofer (from waterproofer component) added to pristine state for optimization
+        inst:AddTag("waterproofer")
+    end
+
+    local function watermelon()
+        local inst = simple(watermelon_custom_init)
+
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        inst:AddComponent("heater")
+        inst.components.heater:SetThermics(false, true)
+        inst.components.heater.equippedheat = TUNING.WATERMELON_COOLER
+
+        inst.components.equippable.equippedmoisture = 0.5
+        inst.components.equippable.maxequippedmoisture = 32 -- Meter reading rounds up, so set 1 below
+
+        inst:AddComponent("insulator")
+        inst.components.insulator:SetInsulation(TUNING.INSULATION_MED)
+        inst.components.insulator:SetSummer()
+
+        inst:AddComponent("perishable")
+        inst.components.perishable:SetPerishTime(TUNING.PERISH_SUPERFAST)
+        inst.components.perishable:StartPerishing()
+        inst.components.perishable:SetOnPerishFn(--[[generic_perish]]inst.Remove)
+        inst:AddTag("show_spoilage")
+
+        inst:AddComponent("waterproofer")
+        inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALL)
+
+        inst.components.equippable.dapperness = -TUNING.DAPPERNESS_SMALL
+
         return inst
     end
 
@@ -658,16 +981,18 @@ function MakeHat(name)
     local prefabs = nil
     if name == "bee" then
         fn = bee
+    elseif name == "straw" then 
+        fn = straw
     elseif name == "top" then
-		fn = top
+        fn = top
     elseif name == "feather" then
-		fn = feather
+        fn = feather
     elseif name == "football" then
-		fn = football
+        fn = football
     elseif name == "flower" then
-		fn = flower
+        fn = flower
     elseif name == "spider" then
-		fn = spider
+        fn = spider
     elseif name == "miner" then
         fn = miner
         prefabs =
@@ -675,11 +1000,11 @@ function MakeHat(name)
             "strawhat",
         }
     elseif name == "earmuffs" then
-		fn = earmuffs
+        fn = earmuffs
     elseif name == "winter" then
-		fn = winter
+        fn = winter
     elseif name == "beefalo" then
-		fn = beefalo
+        fn = beefalo
     elseif name == "bush" then
         fn = bush
     elseif name == "walrus" then
@@ -689,6 +1014,18 @@ function MakeHat(name)
     elseif name == "ruins" then
         prefabs = {"forcefieldfx"}
         fn = ruins
+    elseif name == "wathgrithr" then
+        fn = wathgrithr
+    elseif name == "ice" then
+        fn = ice
+    elseif name == "rain" then
+        fn = rain
+    elseif name == "catcoon" then
+        fn = catcoon
+    elseif name == "watermelon" then
+        fn = watermelon
+    elseif name == "eyebrella" then 
+        fn = eyebrella
     end
 
     return Prefab("common/inventory/"..prefabname, fn or default, assets, prefabs)
@@ -708,18 +1045,18 @@ local function minerhatlightfn()
     inst.Light:SetRadius(2.5)
     inst.Light:SetColour(180 / 255, 195 / 255, 150 / 255)
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst.persists = false
 
     return inst
 end
 
-return MakeHat("straw"),
+return  MakeHat("straw"),
         MakeHat("top"),
         MakeHat("beefalo"),
         MakeHat("feather"),
@@ -734,4 +1071,10 @@ return MakeHat("straw"),
         MakeHat("walrus"),
         MakeHat("slurtle"),
         MakeHat("ruins"),
+        MakeHat("wathgrithr"),
+        MakeHat("ice"),
+        MakeHat("rain"),
+        MakeHat("catcoon"),
+        MakeHat("watermelon"),
+        MakeHat("eyebrella"),
         Prefab("common/inventory/minerhatlight", minerhatlightfn)

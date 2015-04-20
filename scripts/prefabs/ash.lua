@@ -1,6 +1,6 @@
 local assets =
 {
-	Asset("ANIM", "anim/ash.zip"),
+    Asset("ANIM", "anim/ash.zip"),
 }
 
 -- NOTE:
@@ -12,37 +12,21 @@ local function GetStatus(inst)
         or nil
 end
 
-local function BlowAway(inst)
-	if inst.blowawaytask then
-		inst.blowawaytask:Cancel()
-    	inst.blowawaytask = nil
-    end
+local function VacuumUp(inst)
+	inst.components.disappears:StopDisappear()
     inst.persists = false
     inst:RemoveComponent("inventoryitem")
     inst:RemoveComponent("inspectable")
-	inst.SoundEmitter:PlaySound("dontstarve/common/dust_blowaway")
-	inst.AnimState:PlayAnimation("disappear")
-	inst:ListenForEvent("animover", inst.Remove)
-end
-
-local function StopBlowAway(inst)
-	if inst.blowawaytask then
-		inst.blowawaytask:Cancel()
-		inst.blowawaytask = nil
-	end
-end
-		
-local function PrepareBlowAway(inst)
-	StopBlowAway(inst)
-	inst.blowawaytask = inst:DoTaskInTime(25+math.random()*10, BlowAway)
+	inst.AnimState:PlayAnimation("eaten")
+	inst:ListenForEvent("animover", function() inst:Remove() end)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
     MakeInventoryPhysics(inst)
@@ -51,19 +35,26 @@ local function fn()
     inst.AnimState:SetBuild("ash")
     inst.AnimState:PlayAnimation("idle")
 
+    inst:AddTag("molebait")
+    inst:AddTag("ashes")
+
     --Sneak these into pristine state for optimization
     inst:AddTag("_named")
+
+    inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-
     --Remove these tags so that they can be added properly when replicating components below
     inst:RemoveTag("_named")
 
     ---------------------
+
+    inst:AddComponent("disappears")
+    inst.components.disappears.sound = "dontstarve/common/dust_blowaway"
+    inst.components.disappears.anim = "disappear"
 
     inst:AddComponent("stackable")
     inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
@@ -72,10 +63,12 @@ local function fn()
 	inst.components.inspectable.getstatus = GetStatus
 
     inst:AddComponent("inventoryitem")
-    inst.components.inventoryitem:SetOnPutInInventoryFn(StopBlowAway)
+    inst.components.inventoryitem:SetOnPutInInventoryFn(function() inst.components.disappears:StopDisappear() end)
 
 	inst:AddComponent("named")
 	inst.components.named.nameformat = STRINGS.NAMES.ASH_REMAINS
+
+    inst:AddComponent("bait")
 
 	inst:ListenForEvent("stacksizechange", function(inst, stackdata)
 		if stackdata.stacksize and stackdata.stacksize > 1 then
@@ -83,17 +76,19 @@ local function fn()
 		end
 	end)
 
-	inst:ListenForEvent("ondropped", PrepareBlowAway)
-	PrepareBlowAway(inst)
+	inst:ListenForEvent("ondropped", function() inst.components.disappears:PrepareDisappear() end)
+	inst.components.disappears:PrepareDisappear()
 
 	inst:AddComponent("hauntable")
 	inst.components.hauntable.cooldown_on_successful_haunt = false
 	inst.components.hauntable.usefx = false
 	inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
 	inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
-		BlowAway(inst)
+		inst.components.disappears:Disappear()
 		return true
 	end)
+
+	inst.VacuumUp = VacuumUp
 
     return inst
 end

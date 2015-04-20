@@ -30,6 +30,7 @@ local function sanityfn(inst)
     		local rad = v.components.burnable:GetLargestLightRadius() or 1
     		sz = sz * ( math.min(max_rad, rad) / max_rad )
 			local distsq = inst:GetDistanceSqToInst(v)
+			distsq = distsq - 9 -- shift the value so that a distance of 3 is the minimum
 			delta = delta + sz/math.max(1, distsq)
     	end
     end

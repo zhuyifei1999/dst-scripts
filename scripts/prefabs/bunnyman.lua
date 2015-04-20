@@ -1,14 +1,14 @@
 local assets =
 {
-	Asset("ANIM", "anim/manrabbit_basic.zip"),
-	Asset("ANIM", "anim/manrabbit_actions.zip"),
-	Asset("ANIM", "anim/manrabbit_attacks.zip"),
-	Asset("ANIM", "anim/manrabbit_build.zip"),
-	
-	Asset("ANIM", "anim/manrabbit_beard_build.zip"),
-	Asset("ANIM", "anim/manrabbit_beard_basic.zip"),
-	Asset("ANIM", "anim/manrabbit_beard_actions.zip"),
-	Asset("SOUND", "sound/bunnyman.fsb"),
+    Asset("ANIM", "anim/manrabbit_basic.zip"),
+    Asset("ANIM", "anim/manrabbit_actions.zip"),
+    Asset("ANIM", "anim/manrabbit_attacks.zip"),
+    Asset("ANIM", "anim/manrabbit_build.zip"),
+
+    Asset("ANIM", "anim/manrabbit_beard_build.zip"),
+    Asset("ANIM", "anim/manrabbit_beard_basic.zip"),
+    Asset("ANIM", "anim/manrabbit_beard_actions.zip"),
+    Asset("SOUND", "sound/bunnyman.fsb"),
 }
 
 local prefabs =
@@ -216,16 +216,16 @@ local function LootSetupFunction(self)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
-	inst.entity:AddDynamicShadow()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
+    inst.entity:AddDynamicShadow()
     inst.entity:AddLightWatcher()
     inst.entity:AddNetwork()
 
-	inst.AnimState:SetBuild("manrabbit_build")
+    inst.AnimState:SetBuild("manrabbit_build")
 
     MakeCharacterPhysics(inst, 50, .5)
 
@@ -248,11 +248,11 @@ local function fn()
     --Sneak these into pristine state for optimization
     inst:AddTag("_named")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     --Remove these tags so that they can be added properly when replicating components below
     inst:RemoveTag("_named")
@@ -263,7 +263,8 @@ local function fn()
 
     ------------------------------------------
     inst:AddComponent("eater")
-    inst.components.eater:SetVegetarian()
+    inst.components.eater:SetDiet({ FOODTYPE.VEGGIE }, { FOODTYPE.VEGGIE })
+    inst.components.eater:SetCanEatRaw()
 
     ------------------------------------------
     inst:AddComponent("combat")
@@ -278,7 +279,7 @@ local function fn()
     inst:AddComponent("named")
     inst.components.named.possiblenames = STRINGS.BUNNYMANNAMES
     inst.components.named:PickNewName()
-    
+
     ------------------------------------------
     inst:AddComponent("follower")
     inst.components.follower.maxfollowtime = TUNING.PIG_LOYALTY_MAXTIME
@@ -293,7 +294,7 @@ local function fn()
     ------------------------------------------
 
     inst:AddComponent("lootdropper")
-	inst.components.lootdropper:SetLootSetupFn(LootSetupFunction)
+    inst.components.lootdropper:SetLootSetupFn(LootSetupFunction)
 
     ------------------------------------------
 
@@ -332,8 +333,8 @@ local function fn()
     inst:ListenForEvent("attacked", OnAttacked)    
     inst:ListenForEvent("newcombattarget", OnNewTarget)
 
-	--inst.components.werebeast:SetOnWereFn(SetBeardlord)
-	--inst.components.werebeast:SetOnNormaleFn(SetNormalRabbit)
+    --inst.components.werebeast:SetOnWereFn(SetBeardlord)
+    --inst.components.werebeast:SetOnNormaleFn(SetNormalRabbit)
 
     inst.components.sleeper:SetResistance(2)
     inst.components.sleeper.nocturnal = true

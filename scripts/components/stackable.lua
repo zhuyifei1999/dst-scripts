@@ -94,15 +94,20 @@ function Stackable:Put(item, source_pos)
         local oldsize = self.stacksize
         local newsize = math.min(self.maxsize, newtotal)        
         local numberadded = newsize - oldsize
+
+        if self.inst.components.perishable then
+            self.inst.components.perishable:Dilute(numberadded, item.components.perishable.perishremainingtime)
+        end
+
+        if self.inst.components.moisturelistener and item.components.moisturelistener then
+            self.inst.components.moisturelistener:DoUpdate()
+            item.components.moisturelistener:DoUpdate()
+            self.inst.components.moisturelistener:Dilute(numberadded, item.components.moisturelistener.moisture)
+        end
+
         if self.maxsize >= newtotal then
-            if self.inst.components.perishable then
-                self.inst.components.perishable:Dilute(numberadded, item.components.perishable.perishremainingtime)
-            end
             item:Remove()
         else
-            if self.inst.components.perishable then
-                self.inst.components.perishable:Dilute(numberadded, item.components.perishable.perishremainingtime)
-            end
             _src_pos = source_pos
             item.components.stackable.stacksize = newtotal - self.maxsize
             _src_pos = nil

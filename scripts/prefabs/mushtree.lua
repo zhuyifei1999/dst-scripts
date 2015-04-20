@@ -82,11 +82,36 @@ local function workcallback(inst, worker, workleft)
 	end
 end
 
-local loot = {
-        small  = {"log", "green_cap"},
-        medium = {"log", "red_cap"},
-        tall   = {"log", "log", "blue_cap"},
-        }
+local data =
+{
+    small = {
+        bank = "mushroom_tree_small",
+        build = "mushroom_tree_small",
+        icon = "mushroom_tree_small.png",
+        loot = {"log", "green_cap"},
+        work = TUNING.MUSHTREE_CHOPS_SMALL,
+        lightradius = 1.0,
+        lightcolour = {146/255, 225/255, 146/255},
+    },
+    medium = {
+        bank = "mushroom_tree_med",
+        build = "mushroom_tree_med",
+        icon = "mushroom_tree_med.png",
+        loot = {"log", "red_cap"},
+        work = TUNING.MUSHTREE_CHOPS_MEDIUM,
+        lightradius = 1.25,
+        lightcolour = {197/255, 126/255, 126/255},
+    },
+    tall = {
+        bank = "mushroom_tree",
+        build = "mushroom_tree_tall",
+        icon = "mushroom_tree.png",
+        loot = {"log", "log", "blue_cap"},
+        work = TUNING.MUSHTREE_CHOPS_TALL,
+        lightradius = 1.5,
+        lightcolour = {111/255, 111/255, 227/255},
+    },
+}
 
 local function onsave(inst, data)
     if inst:HasTag("burnt") or inst:HasTag("fire") then
@@ -113,166 +138,63 @@ local function onload(inst, data)
     end
 end        
 
---[[
-    Really should make these into one parameterized function - drf
---]]
---
-local function tallfn()
-	local inst = CreateEntity()
+local function maketree(data)
+    local function fn()
+        local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
-    inst.entity:AddMiniMapEntity()
-    inst.entity:AddLight()
-    inst.entity:AddNetwork()
-	
-    MakeObstaclePhysics(inst, 1)
+        inst.entity:AddTransform()
+        inst.entity:AddAnimState()
+        inst.entity:AddSoundEmitter()
+        inst.entity:AddMiniMapEntity()
+        inst.entity:AddLight()
+        inst.entity:AddNetwork()
 
-    if not TheWorld.ismastersim then
+        MakeObstaclePhysics(inst, 1)
+
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        MakeMediumPropagator(inst)
+        MakeLargeBurnable(inst)
+        inst.components.burnable:SetFXLevel(5)
+        inst.components.burnable:SetOnBurntFn(tree_burnt)
+
+        inst.MiniMapEntity:SetIcon(data.icon)
+
+        inst.AnimState:SetBuild(data.build)
+        inst.AnimState:SetBank(data.bank)
+        inst.AnimState:PlayAnimation("idle_loop", true)
+        inst.AnimState:SetTime(math.random() * 2)
+
+        inst:AddComponent("lootdropper")
+        inst.components.lootdropper:SetLoot(data.loot)
+
+        inst:AddComponent("inspectable")
+        inst.components.inspectable.getstatus = inspect_tree
+
+        inst:AddComponent("workable")
+        inst.components.workable:SetWorkAction(ACTIONS.CHOP)
+        inst.components.workable:SetWorkLeft(data.chops)
+        inst.components.workable:SetOnWorkCallback(workcallback)
+
+        inst:AddComponent("transformer")
+
+        --inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+
+        inst.Light:SetFalloff(0.5)
+        inst.Light:SetIntensity(.8)
+        inst.Light:SetRadius(data.lightradius)
+        inst.Light:SetColour(unpack(data.lightcolour))
+        inst.Light:Enable(true)
+
+        inst.OnSave = onsave
+        inst.OnLoad = onload
         return inst
     end
-
-	MakeLargePropagator(inst)
-	MakeLargeBurnable(inst)
-    inst.components.burnable:SetFXLevel(5)
-    inst.components.burnable:SetOnBurntFn(tree_burnt)
-
-	inst.MiniMapEntity:SetIcon("mushroom_tree.png")
-
-	inst.AnimState:SetBuild("mushroom_tree_tall")
-	inst.AnimState:SetBank("mushroom_tree")
-	inst.AnimState:PlayAnimation("idle_loop", true)
-	inst.AnimState:SetTime(math.random() * 2)    
-	
-    inst:AddComponent("lootdropper")
-    inst.components.lootdropper:SetLoot(loot.tall)
-
-    inst:AddComponent("inspectable")
-    inst.components.inspectable.getstatus = inspect_tree
-
-    inst:AddComponent("workable")
-    inst.components.workable:SetWorkAction(ACTIONS.CHOP)
-    inst.components.workable:SetWorkLeft(TUNING.MUSHTREE_CHOPS_TALL)
-    inst.components.workable:SetOnWorkCallback(workcallback)
-
-	--inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
-
-	inst.Light:SetFalloff(0.5)
-	inst.Light:SetIntensity(.8)
-	inst.Light:SetRadius(1.5)
-	inst.Light:SetColour(111/255, 111/255, 227/255)
-    inst.Light:Enable(true)
-
-	inst.OnSave = onsave
-	inst.OnLoad = onload
-	return inst
+    return fn
 end
 
-local function mediumfn()
-	local inst = CreateEntity()
-
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
-    inst.entity:AddMiniMapEntity()
-    inst.entity:AddLight()
-    inst.entity:AddNetwork()
-
-    MakeObstaclePhysics(inst, 1)
-
-    if not TheWorld.ismastersim then
-        return inst
-    end
-	
-	MakeLargePropagator(inst)
-	MakeLargeBurnable(inst)
-    inst.components.burnable:SetFXLevel(5)
-    inst.components.burnable:SetOnBurntFn(tree_burnt)
-
-	inst.MiniMapEntity:SetIcon("mushroom_tree_med.png")
-
-	inst.AnimState:SetBuild("mushroom_tree_med")
-	inst.AnimState:SetBank("mushroom_tree_med")
-	inst.AnimState:PlayAnimation("idle_loop", true)
-	inst.AnimState:SetTime(math.random() * 2) 
-	
-    inst:AddComponent("lootdropper")
-    inst.components.lootdropper:SetLoot(loot.medium)
-
-    inst:AddComponent("inspectable")
-    inst.components.inspectable.getstatus = inspect_tree
-
-    inst:AddComponent("workable")
-    inst.components.workable:SetWorkAction(ACTIONS.CHOP)
-    inst.components.workable:SetWorkLeft(TUNING.MUSHTREE_CHOPS_MEDIUM)
-    inst.components.workable:SetOnWorkCallback(workcallback)
-
-	--inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
-
-	inst.Light:SetFalloff(0.5)
-	inst.Light:SetIntensity(.8)
-	inst.Light:SetRadius(1.25)
-	inst.Light:SetColour(197/255, 126/255, 126/255)
-    inst.Light:Enable(true)
-
-	inst.OnSave = onsave
-	inst.OnLoad = onload
-	return inst
-end
-
-local function smallfn()
-	local inst = CreateEntity()
-
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
-    inst.entity:AddMiniMapEntity()
-    inst.entity:AddLight()
-    inst.entity:AddNetwork()
-
-    MakeObstaclePhysics(inst, 1)
-
-    if not TheWorld.ismastersim then
-        return inst
-    end
-	
-	MakeLargePropagator(inst)
-	MakeLargeBurnable(inst)
-    inst.components.burnable:SetFXLevel(5)
-    inst.components.burnable:SetOnBurntFn(tree_burnt)
-
-	inst.MiniMapEntity:SetIcon("mushroom_tree_small.png")
-
-	inst.AnimState:SetBuild("mushroom_tree_small")
-	inst.AnimState:SetBank("mushroom_tree_small")
-	inst.AnimState:PlayAnimation("idle_loop", true)
-	inst.AnimState:SetTime(math.random() * 2)    
-	
-    inst:AddComponent("lootdropper") 
-    inst.components.lootdropper:SetLoot(loot.small)
-
-    inst:AddComponent("inspectable")
-    inst.components.inspectable.getstatus = inspect_tree
-
-    inst:AddComponent("workable")
-    inst.components.workable:SetWorkAction(ACTIONS.CHOP)
-    inst.components.workable:SetWorkLeft(TUNING.MUSHTREE_CHOPS_SMALL)
-    inst.components.workable:SetOnWorkCallback(workcallback)
-
-	-- inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
-
-	inst.Light:SetFalloff(0.5)
-	inst.Light:SetIntensity(.8)
-	inst.Light:SetRadius(1.0)
-	inst.Light:SetColour(146/255, 225/255, 146/255)
-    inst.Light:Enable(true)
-
-	inst.OnSave = onsave
-	inst.OnLoad = onload
-	return inst
-end
-
-return Prefab("cave/objects/mushtree_tall", tallfn, { Asset("ANIM", "anim/mushroom_tree_tall.zip") }, prefabs),
-       Prefab("cave/objects/mushtree_medium", mediumfn, { Asset("ANIM", "anim/mushroom_tree_med.zip") }, prefabs),
-       Prefab("cave/objects/mushtree_small", smallfn, { Asset("ANIM", "anim/mushroom_tree_small.zip") }, prefabs)
+return Prefab("cave/objects/mushtree_tall", maketree(data.tall), { Asset("ANIM", "anim/mushroom_tree_tall.zip") }, prefabs),
+       Prefab("cave/objects/mushtree_medium", maketree(data.medium), { Asset("ANIM", "anim/mushroom_tree_med.zip") }, prefabs),
+       Prefab("cave/objects/mushtree_small", maketree(data.small), { Asset("ANIM", "anim/mushroom_tree_small.zip") }, prefabs)

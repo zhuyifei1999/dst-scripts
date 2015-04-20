@@ -51,6 +51,15 @@ local ControllerCrafting = Class(Crafting, function(self, owner)
 	self.inst:ListenForEvent("unlockrecipe", function() self:Refresh() end, self.owner)
 end)
 
+--We don't want this to happen in ControllerCrafting so override it to do nothing.
+function ControllerCrafting:Resize(num_recipes)
+end
+
+--We don't want this to happen in ControllerCrafting so override it to do nothing.
+function ControllerCrafting:UpdateIdx()
+    self.use_idx = true
+end
+
 function ControllerCrafting:GetTabs()
     return self.parent ~= nil and self.parent.name == "CraftTabs" and self.parent or nil
 end
@@ -107,8 +116,8 @@ function ControllerCrafting:SelectRecipe(recipe)
     local slot_idx = k - self.idx
     if slot_idx <= 1 then
         self.idx = k - 2
-    elseif slot_idx >= self.num_slots then
-        self.idx = self.idx + slot_idx - self.num_slots + 1
+    elseif slot_idx >= self.max_slots then
+        self.idx = self.idx + slot_idx - self.max_slots + 1
     end
 
     self.selected_recipe_by_tab_idx[self.tabidx] = recipe

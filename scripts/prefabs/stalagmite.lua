@@ -1,20 +1,20 @@
 local stalagmite_assets =
 {
-	Asset("ANIM", "anim/rock_stalagmite.zip"),
+    Asset("ANIM", "anim/rock_stalagmite.zip"),
 }
 
 local prefabs =
 {
-	"rocks",
-	"nitre",
-	"flint",
-	"goldnugget",
-	"orangegem",
+    "rocks",
+    "nitre",
+    "flint",
+    "goldnugget",
+    "orangegem",
 }
 
 SetSharedLootTable( 'full_rock',
 {
-    {'rocks',     	1.00},
+    {'rocks',       1.00},
     {'rocks',       1.00},
     {'rocks',       1.00},
     {'goldnugget',  1.00},
@@ -27,7 +27,7 @@ SetSharedLootTable( 'full_rock',
 
 SetSharedLootTable( 'med_rock',
 {
-    {'rocks',     	1.00},
+    {'rocks',       1.00},
     {'rocks',       1.00},
     {'flint',       1.00},
     {'goldnugget',  0.50},
@@ -36,38 +36,38 @@ SetSharedLootTable( 'med_rock',
 
 SetSharedLootTable( 'low_rock',
 {
-    {'rocks',     	1.00},
+    {'rocks',       1.00},
     {'flint',       1.00},
     {'goldnugget',  0.25},
     {'flint',       0.30},
 })
 
 local function workcallback(inst, worker, workleft)
-	if workleft <= 0 then
-		inst.SoundEmitter:PlaySound("dontstarve/wilson/rock_break")
-		inst.components.lootdropper:DropLoot(inst:GetPosition())
-		inst:Remove()
-	elseif workleft <= TUNING.ROCKS_MINE / 3 then
-		inst.AnimState:PlayAnimation("low")
-	elseif workleft <= TUNING.ROCKS_MINE * 2 / 3 then
-		inst.AnimState:PlayAnimation("med")
-	else
-		inst.AnimState:PlayAnimation("full")
-	end
+    if workleft <= 0 then
+        inst.SoundEmitter:PlaySound("dontstarve/wilson/rock_break")
+        inst.components.lootdropper:DropLoot(inst:GetPosition())
+        inst:Remove()
+    elseif workleft <= TUNING.ROCKS_MINE / 3 then
+        inst.AnimState:PlayAnimation("low")
+    elseif workleft <= TUNING.ROCKS_MINE * 2 / 3 then
+        inst.AnimState:PlayAnimation("med")
+    else
+        inst.AnimState:PlayAnimation("full")
+    end
 end
 
 local function commonfn(anim)
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
 
-	inst.MiniMapEntity:SetIcon("stalagmite.png")
+    inst.MiniMapEntity:SetIcon("stalagmite.png")
 
-	MakeObstaclePhysics(inst, 1)
+    MakeObstaclePhysics(inst, 1)
 
     inst.AnimState:SetBank("rock_stalagmite")
     inst.AnimState:SetBuild("rock_stalagmite")
@@ -76,11 +76,11 @@ local function commonfn(anim)
     --Sneak these into pristine state for optimization
     inst:AddTag("_named")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     --Remove these tags so that they can be added properly when replicating components below
     inst:RemoveTag("_named")
@@ -88,59 +88,59 @@ local function commonfn(anim)
     local color = 0.5 + math.random() * 0.5
     inst.AnimState:SetMultColour(color, color, color, 1)
 
-	inst:AddComponent("lootdropper") 
+    inst:AddComponent("lootdropper") 
 
-	inst:AddComponent("inspectable")
-	inst.components.inspectable.nameoverride = "stalagmite"
+    inst:AddComponent("inspectable")
+    inst.components.inspectable.nameoverride = "stalagmite"
 
-	inst:AddComponent("named")
-	inst.components.named:SetName(STRINGS.NAMES["STALAGMITE"])
+    inst:AddComponent("named")
+    inst.components.named:SetName(STRINGS.NAMES["STALAGMITE"])
 
-	inst:AddComponent("workable")
-	inst.components.workable:SetWorkAction(ACTIONS.MINE)
-	inst.components.workable:SetWorkLeft(TUNING.ROCKS_MINE)
+    inst:AddComponent("workable")
+    inst.components.workable:SetWorkAction(ACTIONS.MINE)
+    inst.components.workable:SetWorkLeft(TUNING.ROCKS_MINE)
 
-	inst.components.workable:SetOnWorkCallback(workcallback)
+    inst.components.workable:SetOnWorkCallback(workcallback)
 
-	return inst
+    return inst
 end
 
 local function fullrock()
-	local inst = commonfn("full")
+    local inst = commonfn("full")
 
     if not TheWorld.ismastersim then
         return inst
     end
 
-	inst.components.lootdropper:SetChanceLootTable('full_rock')
+    inst.components.lootdropper:SetChanceLootTable('full_rock')
 
-	return inst
+    return inst
 end
 
 local function medrock()
-	local inst = commonfn("med")
+    local inst = commonfn("med")
 
     if not TheWorld.ismastersim then
         return inst
     end
 
-	inst.components.workable:SetWorkLeft(TUNING.ROCKS_MINE_MED)
-	inst.components.lootdropper:SetChanceLootTable('med_rock')
+    inst.components.workable:SetWorkLeft(TUNING.ROCKS_MINE_MED)
+    inst.components.lootdropper:SetChanceLootTable('med_rock')
 
-	return inst
+    return inst
 end
 
 local function lowrock()
-	local inst = commonfn("low")
+    local inst = commonfn("low")
 
     if not TheWorld.ismastersim then
         return inst
     end
 
-	inst.components.workable:SetWorkLeft(TUNING.ROCKS_MINE_LOW)
-	inst.components.lootdropper:SetChanceLootTable('low_rock')
+    inst.components.workable:SetWorkLeft(TUNING.ROCKS_MINE_LOW)
+    inst.components.lootdropper:SetChanceLootTable('low_rock')
 
-	return inst
+    return inst
 end
 
 return Prefab("cave/objects/stalagmite_full", fullrock, stalagmite_assets, prefabs),

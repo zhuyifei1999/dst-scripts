@@ -12,9 +12,9 @@
     Spawn a dirt mound that must be dug up to get loot?
 ]]
 
-local assets=
+local assets =
 {
-	Asset("ANIM", "anim/worm.zip"),
+    Asset("ANIM", "anim/worm.zip"),
     Asset("SOUND", "sound/worm.fsb"),
 }
 
@@ -51,7 +51,7 @@ local function shouldKeepTarget(inst, target)
     end
 
     local home = inst.components.knownlocations:GetLocation("home")
-    
+
     if target and target:IsValid() and target.components.health and not target.components.health:IsDead() then
         if home then
             return distsq(home, target:GetPosition()) < TUNING.WORM_CHASE_DIST * TUNING.WORM_CHASE_DIST
@@ -162,44 +162,44 @@ local function onattacked(inst, data)
 end
 
 local function fn()
-	local inst = CreateEntity()
-	
+    local inst = CreateEntity()
+
     inst.entity:AddTransform()
-	inst.entity:AddAnimState()
- 	inst.entity:AddSoundEmitter()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
     inst.entity:AddLight()
     inst.entity:AddNetwork()
 
     MakeCharacterPhysics(inst, 1000, .5)
-    
+
     inst.Transform:SetFourFaced()
 
     inst.AnimState:SetBank("worm")
     inst.AnimState:SetBuild("worm")
     inst.AnimState:PlayAnimation("idle_loop")
 
-    inst:AddTag("monster")    
+    inst:AddTag("monster")
     inst:AddTag("hostile")
     inst:AddTag("wet")
-    
+
     inst.displaynamefn = displaynamefn  --Handles the changing names.
+
+    inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-
     inst:AddComponent("health")
     inst.components.health:SetMaxHealth(TUNING.WORM_HEALTH)
-        
+
     inst:AddComponent("combat")
     inst.components.combat:SetRange(TUNING.WORM_ATTACK_DIST)
     inst.components.combat:SetDefaultDamage(TUNING.WORM_DAMAGE)
     inst.components.combat:SetAttackPeriod(TUNING.WORM_ATTACK_PERIOD)
     inst.components.combat:SetRetargetFunction(GetRandomWithVariance(2, 0.5), retargetfn)
     inst.components.combat:SetKeepTargetFunction(shouldKeepTarget)
-        
+
     inst:AddComponent("sanityaura")
     inst.components.sanityaura.aura = -TUNING.SANITYAURA_SMALL
 
@@ -210,7 +210,7 @@ local function fn()
     inst.components.locomotor.pathcaps = { ignorecreep = true }
 
     inst:AddComponent("eater")
-    inst.components.eater:SetOmnivore()
+    inst.components.eater:SetDiet({ FOODGROUP.OMNI }, { FOODGROUP.OMNI })
 
     inst:AddComponent("pickable")
     inst.components.pickable.canbepicked = false

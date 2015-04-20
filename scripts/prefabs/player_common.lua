@@ -50,7 +50,7 @@ local function GetTemperature(inst)
     elseif inst.player_classified ~= nil then
         return inst.player_classified.currenttemperature
     else
-        return 30
+        return TUNING.STARTING_TEMP
     end
 end
 
@@ -59,6 +59,56 @@ local function IsFreezing(inst)
         return inst.components.temperature:IsFreezing()
     elseif inst.player_classified ~= nil then
         return inst.player_classified.currenttemperature < 0
+    else
+        return false
+    end
+end
+
+local function IsOverheating(inst)
+    if inst.components.temperature ~= nil then
+        return inst.components.temperature:IsOverheating()
+    elseif inst.player_classified ~= nil then
+        return inst.player_classified.currenttemperature > TUNING.OVERHEAT_TEMP
+    else
+        return false
+    end
+end
+
+local function GetMoisture(inst)
+    if inst.components.moisture ~= nil then
+        return inst.components.moisture:GetMoisture()
+    elseif inst.player_classified ~= nil then
+        return inst.player_classified.moisture:value()
+    else
+        return 0
+    end
+end
+
+local function GetMaxMoisture(inst)
+    if inst.components.moisture ~= nil then
+        return inst.components.moisture:GetMaxMoisture()
+    elseif inst.player_classified ~= nil then
+        return inst.player_classified.maxmoisture:value()
+    else
+        return 100
+    end
+end
+
+local function GetMoistureRateScale(inst)
+    if inst.components.moisture ~= nil then
+        return inst.components.moisture:GetRateScale()
+    elseif inst.player_classified ~= nil then
+        return inst.player_classified.moistureratescale:value()
+    else
+        return RATE_SCALE.NEUTRAL
+    end
+end
+
+local function IsWet(inst)
+    if inst.components.moisture ~= nil then
+        return inst.components.moisture:GetIsWet()
+    elseif inst.player_classified ~= nil then
+        return inst.player_classified.iswet:value()
     else
         return false
     end
@@ -91,6 +141,55 @@ local function OnGetItem(inst, giver, item)
         end
 
         inst.components.health:RecalculatePenalty(true)
+    end
+end
+
+local function DropItem(inst, target, item)
+    inst.components.inventory:Unequip(EQUIPSLOTS.HANDS, true) 
+    inst.components.inventory:DropItem(item)
+    if item.Physics then
+        local x, y, z = item:GetPosition():Get()
+        y = .3
+        item.Physics:Teleport(x,y,z)
+
+        local hp = target:GetPosition()
+        local pt = inst:GetPosition()
+        local vel = (hp - pt):GetNormalized()     
+        local speed = 3 + (math.random() * 2)
+        local angle = -math.atan2(vel.z, vel.x) + (math.random() * 20 - 10) * DEGREES
+        item.Physics:SetVel(math.cos(angle) * speed, 10, math.sin(angle) * speed)
+    end
+    inst.components.talker:Say(GetString(inst.prefab, "ANNOUNCE_TOOL_SLIP"))
+end
+
+local function DropWetTool(inst, data)
+    --Tool slip.
+    if inst.components.moisture:GetSegs() < 4 then
+        return
+    end
+
+    local tool = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+    if tool ~= nil and tool:GetIsWet() and math.random() < easing.inSine(TheWorld.state.wetness, 0, 0.15, inst.components.moisture:GetMaxMoisture()) then
+        DropItem(inst, data.target, tool)
+        --Lock out from picking up for a while?
+    end
+end
+
+local function FrozenItems(item)
+    return item:HasTag("frozen")
+end
+
+local function OnStartFireDamage(inst)
+    local frozenitems = inst.components.inventory:FindItems(FrozenItems)
+    for i, v in ipairs(frozenitems) do
+        v:PushEvent("firemelt")
+    end
+end
+
+local function OnStopFireDamage(inst)
+    local frozenitems = inst.components.inventory:FindItems(FrozenItems)
+    for i, v in ipairs(frozenitems) do
+        v:PushEvent("stopfiremelt")
     end
 end
 
@@ -142,6 +241,16 @@ local function OnActionFailed(inst, data)
     end
 end
 
+local function OnWontEatFood(inst, data)
+    if inst.components.talker ~= nil then
+        inst.components.talker:Say(GetString(inst.prefab, "ANNOUNCE_EAT", "YUCKY"))
+    end
+end
+
+local function OnWork(inst, data)
+    DropWetTool(inst, data)
+end
+
 --------------------------------------------------------------------------
 --PVP events
 --------------------------------------------------------------------------
@@ -149,6 +258,9 @@ end
 local function OnAttackOther(inst, data)
     if data ~= nil and data.target ~= nil and data.target:HasTag("player") then
         inst.hasAttackedPlayer = true
+    end
+    if data.weapon then
+        DropWetTool(inst, data)
     end
 end
 
@@ -188,6 +300,8 @@ local function RegisterMasterEventListeners(inst)
 
     --Speech events
     inst:ListenForEvent("actionfailed", OnActionFailed)
+    inst:ListenForEvent("wonteatfood", OnWontEatFood)
+    inst:ListenForEvent("working", OnWork)
 
     --PVP events
     inst:ListenForEvent("onattackother", OnAttackOther)
@@ -271,7 +385,7 @@ local function OnPlayerJoined(inst)
     if TheWorld.ismastersim then
         TheWorld:PushEvent("ms_playerjoined", inst)
         TheNet:Announce(inst:GetDisplayName().." "..STRINGS.UI.NOTIFICATION.JOINEDGAME, inst.entity, true)
-    end	
+    end
 end
 
 local function ConfigurePlayerLocomotor(inst)
@@ -280,7 +394,7 @@ local function ConfigurePlayerLocomotor(inst)
     inst.components.locomotor.walkspeed = TUNING.WILSON_WALK_SPEED -- 4
     inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED -- 6
     inst.components.locomotor.fasteronroad = true
-    inst.components.locomotor.triggerscreep = true
+    inst.components.locomotor:SetTriggersCreep(not inst:HasTag("spiderwhisperer"))
 end
 
 local function ConfigureGhostLocomotor(inst)
@@ -289,7 +403,7 @@ local function ConfigureGhostLocomotor(inst)
     inst.components.locomotor.walkspeed = TUNING.WILSON_WALK_SPEED -- 4 is base
     inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED -- 6 is base
     inst.components.locomotor.fasteronroad = false
-    inst.components.locomotor.triggerscreep = false
+    inst.components.locomotor:SetTriggersCreep(false)
 end
 
 local function OnCancelMovementPrediction(inst)
@@ -529,10 +643,10 @@ local function OnPlayerDeath(inst, data)
 end
 
 local function DoActualRez(inst, source)
-	if inst == ThePlayer then
-		TheWorld.minimap.MiniMap:EnablePlayerMinimapUpdate(true)
-	end
-	
+    if inst == ThePlayer then
+        TheWorld.minimap.MiniMap:EnablePlayerMinimapUpdate(true)
+    end
+
     local x, y, z
     if source ~= nil then
         x, y, z = source.Transform:GetWorldPosition()
@@ -544,18 +658,14 @@ local function DoActualRez(inst, source)
     if diefx and x and y and z then
         diefx.Transform:SetPosition(x, y, z)
     end
-	
-    inst.AnimState:SetBank("wilson")
-    inst.AnimState:SetBuild(inst.skin_name or inst.prefab)
 
-	inst.AnimState:Hide("HAT")
-	inst.AnimState:Hide("HAT_HAIR")
-	inst.AnimState:Show("HAIR_NOHAT")
-	inst.AnimState:Show("HAIR")
-	inst.AnimState:Show("HEAD")
-	inst.AnimState:Hide("HEAD_HAT")
+    inst.AnimState:Hide("HAT_HAIR")
+    inst.AnimState:Show("HAIR_NOHAT")
+    inst.AnimState:Show("HAIR")
+    inst.AnimState:Show("HEAD")
+    inst.AnimState:Hide("HEAD_HAT")
 
-    inst.DynamicShadow:Enable(true)
+    inst:Show()
 
     inst:SetStateGraph("SGwilson")
 
@@ -566,11 +676,12 @@ local function DoActualRez(inst, source)
 
     -- Resurrector is involved
     if source ~= nil then
-        inst.Light:Enable(false)
+        inst.DynamicShadow:Enable(true)
+        inst.AnimState:SetBank("wilson")
+        inst.AnimState:SetBuild(inst.skin_name or inst.prefab)
         inst.AnimState:ClearBloomEffectHandle()
         inst.AnimState:Hide("HAT")
         inst.AnimState:Hide("HatFX")
-        inst:Show()
 
         source:PushEvent("activateresurrection", inst)
 
@@ -582,7 +693,6 @@ local function DoActualRez(inst, source)
             inst.sg:GoToState("wakeup")
         elseif source.prefab == "resurrectionstatue" then
             inst.sg:GoToState("rebirth")
-            source:Remove()
         elseif source.prefab == "multiplayer_portal" then
             inst.components.health.numrevives = inst.components.health.numrevives + 1
             if inst.components.health.numrevives > 3 then
@@ -592,9 +702,16 @@ local function DoActualRez(inst, source)
             source:PushEvent("rez_player")
             inst.sg:GoToState("portal_rez")
         end
-    else -- Humanity rez
+    else -- Telltale Heart
         inst.sg:GoToState("reviver_rebirth")
     end
+
+    --Default to electrocute light values
+    inst.Light:SetIntensity(.8)
+    inst.Light:SetRadius(.5)
+    inst.Light:SetFalloff(.65)
+    inst.Light:SetColour(255 / 255, 255 / 255, 236 / 255)
+    inst.Light:Enable(false)
 
     MakeCharacterPhysics(inst, 75, .5)
 
@@ -609,12 +726,12 @@ local function DoActualRez(inst, source)
     inst:AddComponent("grogginess")
     inst.components.grogginess:SetResistance(3)
 
+    inst.components.moisture:ForceDry(false)
+
+    inst.components.sheltered:Start()
+
     --we disabled health penalty for PAX. I think I prefer it. If we like it, do it properly.
     inst.components.health:RecalculatePenalty(true)
-
-    -- inst:RemoveComponent("sanityaura")
-    --inst:RemoveComponent("humanity")
-    --inst:RemoveComponent("haunter")
 
     --don't ignore sanity any more
     inst.components.sanity.ignore = false
@@ -724,6 +841,7 @@ local function OnMakePlayerGhost( inst, data )
 
     inst:SetStateGraph("SGwilsonghost")
 
+    --Switch to ghost light values
     inst.Light:SetIntensity(.6)
     inst.Light:SetRadius(.5)
     inst.Light:SetFalloff(.6)
@@ -745,19 +863,12 @@ local function OnMakePlayerGhost( inst, data )
 
     inst:RemoveComponent("grogginess")
 
-    --inst:AddComponent("haunter")
+    inst.components.moisture:ForceDry(true)
 
-    -- inst:AddComponent("sanityaura")
-    -- inst.components.sanityaura.aura = -TUNING.SANITYAURA_MED
+    inst.components.sheltered:Stop()
 
     inst.components.age:PauseAging()
---[[
-    inst:AddComponent("humanity")
-    inst.components.humanity.health_penalty_max = inst.components.health.maxhealth
-    inst.components.humanity.health_penalty = inst.components.health:GetPenaltyPercent() * inst.components.health.maxhealth
-    inst.components.humanity.max = inst.components.health.maxhealth
-    inst.components.humanity.current = inst.components.humanity.max/2 --divide by two so it doesn't start at max/do an instant rez
-]]
+
     inst.components.health:Respawn(TUNING.RESURRECT_HEALTH)
     inst.components.health:SetInvincible(true) 
 
@@ -767,7 +878,7 @@ local function OnMakePlayerGhost( inst, data )
     inst.components.hunger:SetPercent(2 / 3, true)
     inst.components.hunger:Pause()
 
-    inst.components.temperature:SetTemp(30)
+    inst.components.temperature:SetTemp(TUNING.STARTING_TEMP)
 
     if inst.components.playercontroller ~= nil then
         inst.components.playercontroller:Enable(true)
@@ -881,7 +992,7 @@ local function OnDespawn(inst)
     inst:OnWakeUp()
     --
 
-    inst.components.inventory:DropEverythingWithTag("irreplaceable", true)
+    inst.components.inventory:DropEverythingWithTag("irreplaceable")
     inst.components.leader:RemoveAllFollowers()
 
     if inst.components.playercontroller ~= nil then
@@ -998,6 +1109,38 @@ end
 
 --------------------------------------------------------------------------
 
+local function ApplyScale(inst, source, scale)
+    if TheWorld.ismastersim and source ~= nil then
+        if scale ~= 1 and scale ~= nil then
+            if inst._scalesource == nil then
+                inst._scalesource = { [source] = scale }
+                inst.Transform:SetScale(scale, scale, scale)
+            elseif inst._scalesource[source] ~= scale then
+                inst._scalesource[source] = scale
+                local scale = 1
+                for k, v in pairs(inst._scalesource) do
+                    scale = scale * v
+                end
+                inst.Transform:SetScale(scale, scale, scale)
+            end
+        elseif inst._scalesource ~= nil and inst._scalesource[source] ~= nil then
+            inst._scalesource[source] = nil
+            if next(inst._scalesource) == nil then
+                inst._scalesource = nil
+                inst.Transform:SetScale(1, 1, 1)
+            else
+                local scale = 1
+                for k, v in pairs(inst._scalesource) do
+                    scale = scale * v
+                end
+                inst.Transform:SetScale(scale, scale, scale)
+            end
+        end
+    end
+end
+
+--------------------------------------------------------------------------
+
 local function MakePlayerCharacter(name, customprefabs, customassets, common_postinit, master_postinit, starting_inventory)
     local assets =
     {
@@ -1026,7 +1169,11 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_one_man_band.zip"),
         Asset("ANIM", "anim/player_slurtle_armor.zip"),
         Asset("ANIM", "anim/player_staff.zip"),
+
         Asset("ANIM", "anim/player_frozen.zip"),
+        Asset("ANIM", "anim/player_shock.zip"),
+        Asset("ANIM", "anim/shock_fx.zip"),
+        Asset("ANIM", "anim/player_tornado.zip"),
 
         Asset("ANIM", "anim/goo.zip"),
 
@@ -1044,7 +1191,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/tears.zip"),
         Asset("ANIM", "anim/puff_spawning.zip"),
 
-        Asset("ANIM", "anim/player_idles_groggy.zip"),        
+        Asset("ANIM", "anim/player_idles_groggy.zip"),
         Asset("ANIM", "anim/player_groggy.zip"),
 
         Asset("ANIM", "anim/fish01.zip"),   --These are used for the fishing animations.
@@ -1083,13 +1230,13 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
             table.insert(prefabs, v)
         end
     end
-    
+
     if customprefabs ~= nil then
         for i, v in ipairs(customprefabs) do
             table.insert(prefabs, v)
         end
     end
-    
+
     if customassets ~= nil then
         for i, v in ipairs(customassets) do
             table.insert(assets, v)
@@ -1117,13 +1264,12 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.AnimState:PlayAnimation("idle")
 
         inst.AnimState:Hide("ARM_carry")
-
-		inst.AnimState:Hide("HAT")
-		inst.AnimState:Hide("HAT_HAIR")
-		inst.AnimState:Show("HAIR_NOHAT")
-		inst.AnimState:Show("HAIR")
-		inst.AnimState:Show("HEAD")
-		inst.AnimState:Hide("HEAD_HAT")
+        inst.AnimState:Hide("HAT")
+        inst.AnimState:Hide("HAT_HAIR")
+        inst.AnimState:Show("HAIR_NOHAT")
+        inst.AnimState:Show("HAIR")
+        inst.AnimState:Show("HEAD")
+        inst.AnimState:Hide("HEAD_HAT")
 
         inst.AnimState:OverrideSymbol("fx_wipe", "wilson_fx", "fx_wipe")
         inst.AnimState:OverrideSymbol("fx_liquid", "wilson_fx", "fx_liquid")
@@ -1135,10 +1281,11 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.MiniMapEntity:SetPriority(10)
         inst.MiniMapEntity:SetCanUseCache(false)
 
-        inst.Light:SetIntensity(.6)
+        --Default to electrocute light values
+        inst.Light:SetIntensity(.8)
         inst.Light:SetRadius(.5)
-        inst.Light:SetFalloff(.6)
-        inst.Light:SetColour(180/255, 195/255, 225/255)
+        inst.Light:SetFalloff(.65)
+        inst.Light:SetColour(255 / 255, 255 / 255, 236 / 255)
         inst.Light:Enable(false)
 
         inst.LightWatcher:SetLightThresh(.075)
@@ -1149,6 +1296,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst:AddTag("player")
         inst:AddTag("scarytoprey")
         inst:AddTag("character")
+        inst:AddTag("lightningtarget")
 
         inst.AttachClassified = AttachClassified
         inst.DetachClassified = DetachClassified
@@ -1156,6 +1304,11 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.CanExamine = CanExamine -- Needs to be on client as well for actions
         inst.GetTemperature = GetTemperature -- Didn't want to make temperature a networked component
         inst.IsFreezing = IsFreezing -- Didn't want to make temperature a networked component
+        inst.IsOverheating = IsOverheating -- Didn't want to make temperature a networked component
+        inst.GetMoisture = GetMoisture -- Didn't want to make moisture a networked component
+        inst.GetMaxMoisture = GetMaxMoisture -- Didn't want to make moisture a networked component
+        inst.GetMoistureRateScale = GetMoistureRateScale -- Didn't want to make moisture a networked component
+        inst.IsWet = IsWet -- Didn't want to make moisture a networked component
         inst.EnableMovementPrediction = EnableMovementPrediction
         inst.ShakeCamera = ShakeCamera
         inst.SetGhostMode = SetGhostMode
@@ -1168,6 +1321,9 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.jointask = inst:DoTaskInTime(0, OnPlayerJoined)
         inst:ListenForEvent("setowner", OnSetOwner)
 
+        -- V2C: also TODO implement talker properly after PAX
+        inst:AddComponent("talker")
+
         if common_postinit ~= nil then
             common_postinit(inst)
         end
@@ -1176,34 +1332,31 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst:AddTag("_health")
         inst:AddTag("_hunger")
         inst:AddTag("_sanity")
-        --[[if inst.ghostenabled then
-            inst:AddTag("__humanity")
-        end]]
         inst:AddTag("_builder")
         inst:AddTag("_combat")
+        inst:AddTag("_sheltered")
 
-    	inst.userid = ""
-	
-        -- V2C: also TODO implement talker properly after PAX
-        inst:AddComponent("talker")
+        inst.userid = ""
+
+        inst.entity:SetPristine()
 
         if not TheWorld.ismastersim then
             return inst
         end
 
-        inst.entity:SetPristine()
         inst.persists = false --handled in a special way
 
         --Remove these tags so that they can be added properly when replicating components below
         inst:RemoveTag("_health")
         inst:RemoveTag("_hunger")
         inst:RemoveTag("_sanity")
-        if inst.ghostenabled then
-            --inst:RemoveTag("__humanity")
-            inst.Network:RemoveUserFlag(USERFLAGS.IS_GHOST)
-        end
         inst:RemoveTag("_builder")
         inst:RemoveTag("_combat")
+        inst:RemoveTag("_sheltered")
+
+        if inst.ghostenabled then
+            inst.Network:RemoveUserFlag(USERFLAGS.IS_GHOST)
+        end
 
         inst.player_classified = SpawnPrefab("player_classified")
         inst.player_classified.entity:SetParent(inst.entity)
@@ -1255,6 +1408,12 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst:AddComponent("inspectable")
         inst.components.inspectable.getstatus = GetStatus
 
+        inst:AddComponent("temperature")
+        inst.components.temperature.usespawnlight = true
+
+        inst:AddComponent("moisture")
+        inst:AddComponent("sheltered")
+
         -------
         
         inst:AddComponent("health")
@@ -1269,21 +1428,16 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst:AddComponent("sanity")
         inst.components.sanity:SetMax(TUNING.WILSON_SANITY)
 
-        --[[if inst.ghostenabled then
-            inst:PrereplicateComponent("humanity")
-        end]]
-
         inst:AddComponent("builder")
 
         -------
 
         inst:AddComponent("wisecracker")
         inst:AddComponent("distancetracker")
-        inst:AddComponent("resurrectable")
-
-        inst:AddComponent("temperature")
 
         inst:AddComponent("catcher")
+
+        inst:AddComponent("playerlightningtarget")
 
         inst:AddComponent("trader")
         inst.components.trader:SetAcceptTest(ShouldAcceptItem)
@@ -1328,6 +1482,10 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.ScreenFade = ScreenFade
         inst.ScreenFlash = ScreenFlash
 
+        --Other
+        inst._scalesource = nil
+        inst.ApplyScale = ApplyScale
+
         if master_postinit ~= nil then
             master_postinit(inst)
         end
@@ -1340,8 +1498,8 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst._OnLoad = inst.OnLoad
         inst._OnDespawn = inst.OnDespawn
         inst._OnSetSkin = inst.OnSetSkin
-		inst.OnSave = OnSave
-		inst.OnLoad = OnLoad
+        inst.OnSave = OnSave
+        inst.OnLoad = OnLoad
         inst.OnDespawn = OnDespawn
         inst.OnSetSkin = OnSetSkin
 
@@ -1363,6 +1521,9 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
                 end
             end
         end
+
+        inst:ListenForEvent("startfiredamage", OnStartFireDamage)
+        inst:ListenForEvent("stopfiredamage", OnStopFireDamage)
 
         TheWorld:PushEvent("ms_playerspawn", inst)
 

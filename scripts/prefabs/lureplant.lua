@@ -1,6 +1,6 @@
 local assets =
 {
-	Asset("ANIM", "anim/eyeplant_trap.zip"),
+    Asset("ANIM", "anim/eyeplant_trap.zip"),
     Asset("ANIM", "anim/meat_rack_food.zip"),
     Asset("SOUND", "sound/plant.fsb"),
 }
@@ -94,9 +94,9 @@ end
 local function OnPicked(inst)
     if inst.lure then
         if inst.lure.onperishfn then
-			inst:RemoveEventCallback("onremoved", inst.lure.onperishfn)
-		end
-		inst.lure = nil
+            inst:RemoveEventCallback("onremoved", inst.lure.onperishfn)
+        end
+        inst.lure = nil
     end
     inst.components.shelf.cantakeitem = false
     inst.sg:GoToState("picked")
@@ -142,13 +142,13 @@ local function CollectItems(inst)
                         local it = v.components.inventory:RemoveItem(item)
                         
                         if it.components.perishable then
-							local top = it.components.perishable:GetPercent()
-							local bottom = .2
-							if top > bottom then
-								it.components.perishable:SetPercent(bottom + math.random()*(top-bottom))
-							end
+                            local top = it.components.perishable:GetPercent()
+                            local bottom = .2
+                            if top > bottom then
+                                it.components.perishable:SetPercent(bottom + math.random()*(top-bottom))
+                            end
                         end
-						inst.components.inventory:GiveItem(it)
+                        inst.components.inventory:GiveItem(it)
                                         
                         
                     elseif item then
@@ -190,11 +190,11 @@ local function OnDeath(inst)
 end
 
 local function CanDigest(owner, item)
-    if owner.components.shelf.itemonshelf and owner.components.shelf.itemonshelf.components.stackable.stacksize <= 5 then
-        return item ~= owner.components.shelf.itemonshelf
-    else
-        return true
-    end
+    --If it's not itemonshelf, then go ahead and digest it
+    --If it IS itemonshelf, only digest if there's more than a stack of 5
+    return item ~= owner.components.shelf.itemonshelf
+        or (item.components.stackable ~= nil and
+            item.components.stackable.stacksize > 5)
 end
 
 local function OnLoad(inst, data)
@@ -266,11 +266,11 @@ local function OnMinionChange(inst)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
 
@@ -279,6 +279,7 @@ local function fn()
     inst:AddTag("lureplant")
     inst:AddTag("hostile")
     inst:AddTag("veggie")
+    inst:AddTag("wildfirepriority")
 
     inst.MiniMapEntity:SetIcon("eyeplant.png")
 
@@ -286,11 +287,11 @@ local function fn()
     inst.AnimState:SetBuild("eyeplant_trap")
     inst.AnimState:PlayAnimation("idle_hidden", true)
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("health")
     inst.components.health:SetMaxHealth(300)
@@ -305,7 +306,7 @@ local function fn()
     inst:AddComponent("inventory")
 
     inst:AddComponent("eater")
-    inst.components.eater:SetCarnivore()
+    inst.components.eater:SetDiet({ FOODTYPE.MEAT }, { FOODTYPE.MEAT })
 
     inst:AddComponent("inspectable")
 
@@ -314,7 +315,7 @@ local function fn()
 
     inst:AddComponent("minionspawner")
     inst.components.minionspawner.onminionattacked = HideBait
-    inst.components.minionspawner.validtiletypes = {4,5,6,7,8,13,14,15,17}
+    inst.components.minionspawner.validtiletypes = {4,5,6,7,8,13,14,15,17,30}
 
     inst:AddComponent("digester")
     inst.components.digester.itemstodigestfn = CanDigest
@@ -333,7 +334,7 @@ local function fn()
     inst.OnEntityWake = OnEntityWake
 
     MakeLargeBurnable(inst)
-    MakeLargePropagator(inst)
+    MakeMediumPropagator(inst)
 
     MakeHauntableIgnite(inst, TUNING.HAUNT_CHANCE_OCCASIONAL)
     AddHauntableCustomReaction(inst, function(inst, haunter)
@@ -359,7 +360,7 @@ local function fn()
 
     inst:SetBrain(brain)
 
-	return inst
+    return inst
 end
 
 return Prefab("cave/lureplant", fn, assets, prefabs)

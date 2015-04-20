@@ -140,6 +140,7 @@ AddTask("Frogs and bugs", {
 			["BeeClearing"] = 1,
 			["FlowerPatch"] = 1 + math.random(SIZE_VARIATION), 
 			["Clearing"] = 2,
+			["GrassyMoleColony"] = 1,
 		}, 
 		room_bg=GROUND.GRASS,
 		background_room="BGGrass",
@@ -317,6 +318,39 @@ AddTask("The Deep Forest", {
 		background_room="BGDeepForest",
 		colour={r=1,g=0,b=0,a=1}
 	}) 
+
+--------------------------------------------------------------------------------
+-- Moles
+--------------------------------------------------------------------------------
+
+ AddTask("Mole Colony Deciduous", {
+		locks={LOCKS.TIER1},
+		keys_given={KEYS.TIER2},
+		room_choices={
+			["MolesvilleDeciduous"] = 1,
+			["DeepDeciduous"] = 2,
+			["DeciduousMole"] = 2,
+			["DeciduousClearing"] = 1,
+		},  
+		room_bg=GROUND.DECIDUOUS,
+		background_room="BGDeciduous",
+		colour={r=.15,g=.5,b=.05,a=1}
+	}) 
+
+  AddTask("Mole Colony Rocks", {
+		locks={LOCKS.TIER1},
+		keys_given={KEYS.ROCKS, KEYS.GOLD,KEYS.TIER2},
+		room_choices={
+			["RockyBuzzards"] = 1,
+			--["Wormhole"] = 1,
+			["GenericRockyNoThreat"] = 2 + math.random(SIZE_VARIATION), 
+			["MolesvilleRocky"] = 1,
+		}, 
+		room_bg=GROUND.ROCKY,
+		background_room="BGRocky",
+		colour={r=1,g=1,b=0,a=1}
+	}) 
+
 --------------------------------------------------------------------------------
 -- Pigs 
 --------------------------------------------------------------------------------
@@ -420,6 +454,19 @@ AddTask("The Pigs are back in town", {
 		colour={r=1,g=1,b=0,a=1}
 	}) 
  AddTask("Speak to the king", {
+		locks={LOCKS.PIGKING,LOCKS.TIER2},
+		keys_given={KEYS.PIGS,KEYS.GOLD,KEYS.TIER3},
+		room_choices={
+			["PigKingdom"] = 1,
+			["GrassySinkhole"] = 1,
+			["MagicalDeciduous"] = 1,
+			["DeepDeciduous"] = 3 + math.random(SIZE_VARIATION), 
+		}, 
+		room_bg=GROUND.GRASS,
+		background_room="BGDeciduous",
+		colour={r=1,g=1,b=0,a=1}
+	}) 
+ AddTask("Speak to the king classic", {
 		locks={LOCKS.PIGKING,LOCKS.TIER2},
 		keys_given={KEYS.PIGS,KEYS.GOLD,KEYS.TIER3},
 		room_choices={
@@ -562,13 +609,13 @@ AddTask("Guarded Squeltch", {
 		colour={r=.05,g=.05,b=.05,a=1}
 	}) 
 AddTask("Squeltch", {
-		locks={LOCKS.SPIDERDENS,LOCKS.TIER1},
-		keys_given={KEYS.MEAT,KEYS.SILK,KEYS.SPIDERS,KEYS.TIER2},
+		locks={LOCKS.SPIDERDENS,LOCKS.TIER2},
+		keys_given={KEYS.MEAT,KEYS.SILK,KEYS.SPIDERS,KEYS.TIER3},
 		room_choices={
 			["Sinkhole"] = 1,
-			["Marsh"] = 2+math.random(SIZE_VARIATION), 
-			["Forest"] = math.random(SIZE_VARIATION), 
-			["DeepForest"] = 1+math.random(SIZE_VARIATION),
+			["Marsh"] = 5+math.random(SIZE_VARIATION), 
+			--["Forest"] = math.random(SIZE_VARIATION), 
+			--["DeepForest"] = 1+math.random(SIZE_VARIATION),
 			["SlightlyMermySwamp"]=1,
 		},
 		room_bg=GROUND.MARSH,
@@ -801,7 +848,8 @@ AddTask("Forest hunters", {
 		room_choices={
 			["WalrusHut_Grassy"] = 1,
 			--["Wormhole"] = 1,
-			["Forest"] = 2,
+			["Forest"] = 1,
+			["ForestMole"] = 2,
 			["DeepForest"] = 1,
 			["Clearing"] = 1,
 		},  
@@ -974,16 +1022,20 @@ AddTask("Chessworld", {
 	})
 
 
+
 require("map/tasks/maxwell")
 require("map/tasks/island_hopping")
 
 require("map/tasks/caves")
 require("map/tasks/ruins")
 
+require("map/tasks/DLCtasks")
 
+require("map/tasks/dst_tasks")
 ------------------------------------------------------------
 -- TEST TASKS
 ------------------------------------------------------------
+
 AddTask("TEST_TASK", {
 		locks=LOCKS.NONE,
 		keys_given=KEYS.LIGHT,

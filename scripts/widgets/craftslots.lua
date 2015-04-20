@@ -11,13 +11,41 @@ local CraftSlot = require "widgets/craftslot"
 local CraftSlots = Class(Widget, function(self, num, owner)
     Widget._ctor(self, "CraftSlots")
     
+    self.owner = owner
     self.slots = {}
     for k = 1, num do
         local slot = CraftSlot(HUD_ATLAS, "craft_slot.tex", owner)
-        self.slots[k] = slot
+        -- self.slots[k] = slot
         self:AddChild(slot)
+        table.insert(self.slots, slot)
     end
 end)
+
+function CraftSlots:SetNumSlots(num)
+    if num >= #self.slots then
+        self:ShowAll()
+        return 
+    end
+
+    self:HideAll()
+
+    for i = 1, num do
+        local slot = self.slots[i]
+        slot:Show()
+    end
+end
+
+function CraftSlots:HideAll()
+    for k,v in ipairs(self.slots) do
+        v:Hide()
+    end
+end
+
+function CraftSlots:ShowAll()
+    for k,v in ipairs(self.slots) do
+        v:Show()
+    end
+end
 
 function CraftSlots:EnablePopups()
     for k,v in ipairs(self.slots) do

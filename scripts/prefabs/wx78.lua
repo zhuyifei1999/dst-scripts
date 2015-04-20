@@ -3,82 +3,82 @@ local MakePlayerCharacter = require("prefabs/player_common")
 local assets =
 {
     Asset("ANIM", "anim/wx78.zip"),
-	Asset("SOUND", "sound/wx78.fsb"),
+    Asset("SOUND", "sound/wx78.fsb"),
 
-    Asset("ANIM", "anim/ghost_wx78_build.zip"),   
+    Asset("ANIM", "anim/ghost_wx78_build.zip"),
 }
 
 local prefabs =
 {
-	"sparks",
+    "sparks",
 }
 
 --hunger, health, sanity
 local function applyupgrades(inst)
-	local max_upgrades = 15
+    local max_upgrades = 15
     inst.level = math.min(inst.level, max_upgrades)
 
-	local hunger_percent = inst.components.hunger:GetPercent()
-	local health_percent = inst.components.health:GetPercent()
-	local sanity_percent = inst.components.sanity:GetPercent()
+    local hunger_percent = inst.components.hunger:GetPercent()
+    local health_percent = inst.components.health:GetPercent()
+    local sanity_percent = inst.components.sanity:GetPercent()
 
-	inst.components.hunger.max = math.ceil(TUNING.WX78_MIN_HUNGER + inst.level * (TUNING.WX78_MAX_HUNGER - TUNING.WX78_MIN_HUNGER) / max_upgrades)
-	inst.components.health:SetMaxHealth(math.ceil(TUNING.WX78_MIN_HEALTH + inst.level * (TUNING.WX78_MAX_HEALTH - TUNING.WX78_MIN_HEALTH) / max_upgrades))
-	inst.components.sanity.max = math.ceil(TUNING.WX78_MIN_SANITY + inst.level * (TUNING.WX78_MAX_SANITY - TUNING.WX78_MIN_SANITY) / max_upgrades)
+    inst.components.hunger.max = math.ceil(TUNING.WX78_MIN_HUNGER + inst.level * (TUNING.WX78_MAX_HUNGER - TUNING.WX78_MIN_HUNGER) / max_upgrades)
+    inst.components.health:SetMaxHealth(math.ceil(TUNING.WX78_MIN_HEALTH + inst.level * (TUNING.WX78_MAX_HEALTH - TUNING.WX78_MIN_HEALTH) / max_upgrades))
+    inst.components.sanity.max = math.ceil(TUNING.WX78_MIN_SANITY + inst.level * (TUNING.WX78_MAX_SANITY - TUNING.WX78_MIN_SANITY) / max_upgrades)
 
-	inst.components.hunger:SetPercent(hunger_percent)
-	inst.components.health:SetPercent(health_percent)
-	inst.components.sanity:SetPercent(sanity_percent)
+    inst.components.hunger:SetPercent(hunger_percent)
+    inst.components.health:SetPercent(health_percent)
+    inst.components.sanity:SetPercent(sanity_percent)
 end
 
 local function oneat(inst, food)
-	
-	if food and food.components.edible and food.components.edible.foodtype == FOODTYPE.GEARS then
-		--give an upgrade!
-		inst.level = inst.level + 1
-		applyupgrades(inst)	
-		inst.SoundEmitter:PlaySound("dontstarve/characters/wx78/levelup")
-		
-		-- MarkL Can't do this here, need to do it inside the component
-		-- todo pax Move upgrade logic elsewhere.  
-		--inst.HUD.controls.status.heart:PulseGreen()
-		--inst.HUD.controls.status.stomach:PulseGreen()
-		--inst.HUD.controls.status.brain:PulseGreen()
-		
-		--inst.HUD.controls.status.brain:ScaleTo(1.3,1,.7)
-		--inst.HUD.controls.status.heart:ScaleTo(1.3,1,.7)
-		--inst.HUD.controls.status.stomach:ScaleTo(1.3,1,.7)
-		
-	end
+    
+    if food and food.components.edible and food.components.edible.foodtype == FOODTYPE.GEARS then
+        --give an upgrade!
+        inst.level = inst.level + 1
+        applyupgrades(inst) 
+        inst.SoundEmitter:PlaySound("dontstarve/characters/wx78/levelup")
+        
+        -- MarkL Can't do this here, need to do it inside the component
+        -- todo pax Move upgrade logic elsewhere.  
+        --inst.HUD.controls.status.heart:PulseGreen()
+        --inst.HUD.controls.status.stomach:PulseGreen()
+        --inst.HUD.controls.status.brain:PulseGreen()
+        
+        --inst.HUD.controls.status.brain:ScaleTo(1.3,1,.7)
+        --inst.HUD.controls.status.heart:ScaleTo(1.3,1,.7)
+        --inst.HUD.controls.status.stomach:ScaleTo(1.3,1,.7)
+        
+    end
 end
 
 local function onupdate(inst, dt)
-	inst.charge_time = inst.charge_time - dt
-	if inst.charge_time <= 0 then
-		inst.charge_time = 0
-		if inst.charged_task ~= nil then
-			inst.charged_task:Cancel()
-			inst.charged_task = nil
-		end
-		inst.SoundEmitter:KillSound("overcharge_sound")
-		inst.Light:Enable(false)
-		inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED 
-		inst.AnimState:SetBloomEffectHandle("")
-		inst.components.temperature.mintemp = -20
-		inst.components.talker:Say(GetString(inst, "ANNOUNCE_DISCHARGE"))
-	else
-    	local runspeed_bonus = .5
-    	local rad = 3
-    	if inst.charge_time < 60 then
-    		rad = math.max(.1, rad * (inst.charge_time / 60))
-    		runspeed_bonus = (inst.charge_time / 60)*runspeed_bonus
-    	end
+    inst.charge_time = inst.charge_time - dt
+    if inst.charge_time <= 0 then
+        inst.charge_time = 0
+        if inst.charged_task ~= nil then
+            inst.charged_task:Cancel()
+            inst.charged_task = nil
+        end
+        inst.SoundEmitter:KillSound("overcharge_sound")
+        inst.Light:Enable(false)
+        inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED 
+        inst.AnimState:SetBloomEffectHandle("")
+        inst.components.temperature.mintemp = -20
+        inst.components.talker:Say(GetString(inst, "ANNOUNCE_DISCHARGE"))
+    else
+        local runspeed_bonus = .5
+        local rad = 3
+        if inst.charge_time < 60 then
+            rad = math.max(.1, rad * (inst.charge_time / 60))
+            runspeed_bonus = (inst.charge_time / 60)*runspeed_bonus
+        end
 
-    	inst.Light:Enable(true)
-    	inst.Light:SetRadius(rad)
-		inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED*(1+runspeed_bonus)
-		inst.components.temperature.mintemp = 10
-	end
+        inst.Light:Enable(true)
+        inst.Light:SetRadius(rad)
+        inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED*(1+runspeed_bonus)
+        inst.components.temperature.mintemp = 10
+    end
 
 end
 
@@ -120,35 +120,59 @@ local function onload(inst, data)
 end
 
 local function onsave(inst, data)
-	data.level = inst.level > 0 and inst.level or nil
-	data.charge_time = inst.charge_time > 0 and inst.charge_time or nil
+    data.level = inst.level > 0 and inst.level or nil
+    data.charge_time = inst.charge_time > 0 and inst.charge_time or nil
 end
 
 local function onlightingstrike(inst)
-	inst.components.health:DoDelta(TUNING.HEALING_SUPERHUGE, false, "lightning")
-	inst.components.sanity:DoDelta(-TUNING.SANITY_LARGE)
-	inst.components.talker:Say(GetString(inst, "ANNOUNCE_CHARGE"))
+    if inst.components.health ~= nil and not (inst.components.health:IsDead() or inst.components.health:IsInvincible()) then
+        if inst.components.inventory:IsInsulated() then
+            inst:PushEvent("lightningdamageavoided")
+        else
+            inst.components.health:DoDelta(TUNING.HEALING_SUPERHUGE, false, "lightning")
+            inst.components.sanity:DoDelta(-TUNING.SANITY_LARGE)
+            inst.components.talker:Say(GetString(inst, "ANNOUNCE_CHARGE"))
 
-    startovercharge(inst, inst.charge_time + TUNING.TOTAL_DAY_TIME * (.5 + .5 * math.random()))
+            startovercharge(inst, inst.charge_time + TUNING.TOTAL_DAY_TIME * (.5 + .5 * math.random()))
+        end
+    end
 end
 
 local function dorainsparks(inst, dt)
-	for k, v in pairs(inst.components.inventory.equipslots) do
-		if v.components.dapperness ~= nil and v.components.dapperness.mitigates_rain then
-            --Mitigates rain, no sparks
-            return
-		end
-	end
+    if inst.components.moisture ~= nil and inst.components.moisture:GetMoisture() > 0 then
+        local t = GetTime()
 
-    if inst.spark_time > dt then
-        inst.spark_time = inst.spark_time - dt
-    else
-		inst.spark_time = 3 + math.random() * 2
-		inst.components.health:DoDelta(-.5, false, "rain")
-		local sparks = SpawnPrefab("sparks")
-        sparks.entity:SetParent(inst.entity)
-        sparks.Transform:SetPosition(0, 1 + math.random() * 1.5, 0)
-	end
+        -- Raining, no moisture-giving equipment on head, and moisture is increasing. Pro-rate damage based on waterproofness.
+        if inst.components.inventory:GetEquippedMoistureRate(EQUIPSLOTS.HEAD) <= 0 and inst.components.moisture:GetRate() > 0 then
+            local waterproofmult =
+                (   inst.components.sheltered ~= nil and
+                    inst.components.sheltered.sheltered and
+                    inst.components.sheltered.waterproofness or 0
+                ) +
+                (   inst.components.inventory ~= nil and
+                    inst.components.inventory:GetWaterproofness() or 0
+                )
+            if waterproofmult < 1 and t > inst.spark_time + inst.spark_time_offset + waterproofmult * 7 then
+                inst.components.health:DoDelta(TUNING.WX78_MAX_MOISTURE_DAMAGE, false, "rain")
+                inst.spark_time_offset = 3 + math.random() * 2
+                inst.spark_time = t
+                local x, y, z = inst.Transform:GetWorldPosition()
+                y = y + 1 + math.random() * 1.5
+                SpawnPrefab("sparks").Transform:SetPosition(x, y, z)
+            end
+        elseif t > inst.spark_time + inst.spark_time_offset then -- We have moisture-giving equipment on our head or it is not raining and we are just passively wet (but drying off). Do full damage.
+            inst.components.health:DoDelta(
+                inst.components.moisture:GetRate() >= 0 and
+                TUNING.WX78_MAX_MOISTURE_DAMAGE or
+                TUNING.WX78_MOISTURE_DRYING_DAMAGE,
+                false, "water")
+            inst.spark_time_offset = 3 + math.random() * 2
+            inst.spark_time = t
+            local x, y, z = inst.Transform:GetWorldPosition()
+            y = y + .25 + math.random() * 2
+            SpawnPrefab("sparks").Transform:SetPosition(x, y, z)
+        end
+    end
 end
 
 local function onisraining(inst, israining)
@@ -163,13 +187,13 @@ local function onisraining(inst, israining)
 end
 
 local function onbecamerobot(inst)
-    if inst.components.playerlightningtarget == nil then
-        inst:AddComponent("playerlightningtarget")
-        inst:ListenForEvent("lightningstrike", onlightingstrike)
+    if not inst.watchingrain then
+        inst.watchingrain = true
         inst:WatchWorldState("israining", onisraining)
         onisraining(inst, TheWorld.state.israining)
     end
 
+    --Override with overcharge light values
     inst.Light:Enable(false)
     inst.Light:SetRadius(2)
     inst.Light:SetFalloff(0.75)
@@ -193,9 +217,8 @@ local function onbecameghost(inst)
         inst.spark_task = nil
     end
 
-    if inst.components.playerlightningtarget ~= nil then
-        inst:RemoveComponent("playerlightningtarget")
-        inst:RemoveEventCallback("lightningstrike", onlightingstrike)
+    if inst.watchingrain then
+        inst.watchingrain = false
         inst:StopWatchingWorldState("israining", onisraining)
     end
 end
@@ -228,32 +251,42 @@ local function ondeath(inst)
 end
 
 local function common_postinit(inst)
-	inst:AddTag("nofiredamagefromlightning")
+    inst:AddTag("electricdamageimmune")
+    --electricdamageimmune is for combat and not lightning strikes
+    --also used in stategraph for not stomping custom light values
+
     inst.foleysound = "dontstarve/movement/foley/wx78"
 end
 
 local function master_postinit(inst)
-	inst.level = 0
+    inst.level = 0
     inst.charged_task = nil
-	inst.charge_time = 0
+    inst.charge_time = 0
     inst.spark_task = nil
-	inst.spark_time = 3
+    inst.spark_time = 0
+    inst.spark_time_offset = 3
+    inst.watchingrain = false
 
-	inst.components.eater.ignoresspoilage = true
+    inst.components.eater.ignoresspoilage = true
     inst.components.eater:SetCanEatGears()
-	inst.components.eater:SetOnEatFn(oneat)
-	applyupgrades(inst)
+    inst.components.eater:SetOnEatFn(oneat)
+    applyupgrades(inst)
 
     inst:ListenForEvent("ms_respawnedfromghost", onbecamerobot)
     inst:ListenForEvent("ms_becameghost", onbecameghost)
     inst:ListenForEvent("death", ondeath)
 
+    inst.components.playerlightningtarget:SetHitChance(1)
+    inst.components.playerlightningtarget:SetOnStrikeFn(onlightingstrike)
+
+    inst.components.talker.mod_str_fn = string.upper
+
     onbecamerobot(inst)
 
     inst.OnLongUpdate = onlongupdate
-	inst.OnSave = onsave
-	inst.OnLoad = onload
-	inst.OnPreLoad = onpreload
+    inst.OnSave = onsave
+    inst.OnLoad = onload
+    inst.OnPreLoad = onpreload
 end
 
 return MakePlayerCharacter("wx78", prefabs, assets, common_postinit, master_postinit)

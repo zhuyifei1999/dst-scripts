@@ -53,6 +53,7 @@ local function common(anim, tags, removephysicscolliders)
 
     inst:AddTag("blowdart")
     inst:AddTag("sharp")
+    inst:AddTag("projectile")
     if tags ~= nil then
         for i, v in ipairs(tags) do
             inst:AddTag(v)
@@ -63,11 +64,11 @@ local function common(anim, tags, removephysicscolliders)
         RemovePhysicsColliders(inst)
     end
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("weapon")
     inst.components.weapon:SetDamage(0)
@@ -103,7 +104,7 @@ end
 local function sleepattack(inst, attacker, target)
     if target.components.sleeper and not (inst.components.freezable and inst.components.freezable:IsFrozen() ) then
         target.SoundEmitter:PlaySound("dontstarve/wilson/blowdart_impact_sleep")
-        target.components.sleeper:AddSleepiness(1, 15)
+        target.components.sleeper:AddSleepiness(1, 15, inst)
         if target.components.combat then
             target.components.combat:SuggestTarget(attacker)
         end

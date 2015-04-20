@@ -28,9 +28,13 @@ function PeriodicSpawner:SetPrefab(prefab)
     self.prefab = prefab
 end
 
-function PeriodicSpawner:SetRandomTimes(basetime, variance)
+function PeriodicSpawner:SetRandomTimes(basetime, variance, no_reset)
     self.basetime = basetime
     self.randtime = variance
+    if self.task and not no_reset then
+        self:Stop()
+        self:Start()
+    end
 end
 
 function PeriodicSpawner:SetDensityInRange(range, density)

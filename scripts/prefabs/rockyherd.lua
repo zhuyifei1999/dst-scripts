@@ -35,6 +35,14 @@ local function OnFull(inst)
     --TODO: mark some beefalo for death
 end
 
+local function SeasonalSpawningChanges(inst, season)
+    if season == SEASONS.SPRING then
+        inst.components.periodicspawner:SetRandomTimes(TUNING.ROCKY_SPAWN_DELAY * TUNING.SPRING_GROWTH_MODIFIER, TUNING.ROCKY_SPAWN_VAR)
+    else
+        inst.components.periodicspawner:SetRandomTimes(TUNING.ROCKY_SPAWN_DELAY, TUNING.ROCKY_SPAWN_VAR)
+    end
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -59,13 +67,14 @@ local function fn()
     inst.components.herd.maxsize = 6
 
     inst:AddComponent("periodicspawner")
-    inst.components.periodicspawner:SetRandomTimes(TUNING.ROCKY_SPAWN_DELAY, TUNING.ROCKY_SPAWN_VAR)
     inst.components.periodicspawner:SetPrefab("rocky")
     inst.components.periodicspawner:SetOnSpawnFn(OnSpawned)
     inst.components.periodicspawner:SetSpawnTestFn(CanSpawn)
     inst.components.periodicspawner:SetDensityInRange(20, 6)
     inst.components.periodicspawner:Start()
     inst.components.periodicspawner:SetOnlySpawnOffscreen(true)
+    SeasonalSpawningChanges(inst, TheWorld.state.season)
+    inst:WatchWorldState("season", SeasonalSpawningChanges)
 
     return inst
 end

@@ -105,9 +105,7 @@ function Hauntable:DoHaunt(doer)
 		self.haunted = self.onhaunt(self.inst, doer)
 		if self.haunted then
             if doer ~= nil then
-                if doer.components.haunter ~= nil then
-                    doer.components.haunter:OnHaunt(self.inst, self.hauntvalue)
-                elseif doer:HasTag("playerghost") and self.hauntvalue == TUNING.HAUNT_INSTANT_REZ then
+                if self.hauntvalue == TUNING.HAUNT_INSTANT_REZ and doer:HasTag("playerghost") then
                     doer:PushEvent("respawnfromghost", { source = self.inst })
                 end
                 if not self.no_wipe_value then
@@ -122,9 +120,6 @@ function Hauntable:DoHaunt(doer)
 			end
 		else
 			self.haunted = true
-            if doer ~= nil and doer.components.haunter ~= nil then
-                doer.components.haunter:OnHaunt(self.inst, TUNING.HAUNT_TINY)
-            end
             self.cooldowntimer = self.cooldown or TUNING.HAUNT_COOLDOWN_SMALL
 			self:StartFX(true)
 			self:StartShaderFx()

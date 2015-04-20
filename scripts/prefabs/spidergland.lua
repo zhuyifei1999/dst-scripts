@@ -1,13 +1,13 @@
 local assets =
 {
-	Asset("ANIM", "anim/spider_gland.zip"),
+    Asset("ANIM", "anim/spider_gland.zip"),
 }
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddNetwork()
 
     MakeInventoryPhysics(inst)
@@ -16,13 +16,15 @@ local function fn()
     inst.AnimState:SetBuild("spider_gland")
     inst.AnimState:PlayAnimation("idle")
 
+    inst:AddTag("cattoy")
+
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-
-	MakeSmallBurnable(inst, TUNING.TINY_BURNTIME)
+    MakeSmallBurnable(inst, TUNING.TINY_BURNTIME)
     MakeSmallPropagator(inst)
     MakeHauntableLaunchAndIgnite(inst)
 
@@ -32,6 +34,7 @@ local function fn()
 
     inst:AddComponent("inventoryitem")
     inst:AddComponent("stackable")
+    inst:AddComponent("tradable")
 
     inst:AddComponent("healer")
     inst.components.healer:SetHealthAmount(TUNING.HEALING_MEDSMALL)

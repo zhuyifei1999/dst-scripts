@@ -90,7 +90,9 @@ local function onsleep(inst)
 end
 
 local function OnSave(inst, data)
-    data.readytolay = inst.readytolay
+    data.readytolay = inst.readytolayson
+    --data.canspawn = inst.canspawnsmallbird
+    data.havespawned = inst.spawnedsmallbirdthisseason
     if inst.nesttime and inst.nesttime > GetTime() then
         data.timetonest = inst.nesttime - GetTime()
     end
@@ -102,6 +104,36 @@ local function OnLoad(inst, data)
         if data.timetonest then
             StartNesting(inst, data.timetonest)
         end
+        --inst.canspawnsmallbird = data.canspawn or true
+        inst.spawnedsmallbirdthisseason = data.havespawned or false
+    end
+end
+
+local function SpawnSmallBird(inst)
+	local tallbird = nil
+    for k,v in pairs(inst.components.childspawner.childrenoutside) do
+        if v.prefab == "tallbird" then tallbird = v break end
+    end
+    --print("spawning smallbird for tallbird", tallbird)
+    if tallbird and tallbird:IsValid() then
+        --inst.canspawnsmallbird = false  
+        inst.spawnedsmallbirdthisseason = true
+        if tallbird.entitysleeping then
+            local smallbird = SpawnPrefab("smallbird")
+            smallbird:PushEvent("SetUpSpringSmallBird", {smallbird=smallbird, tallbird=tallbird})
+        else
+            tallbird.pending_spawn_smallbird = true
+        end
+    end
+end
+
+local function SeasonalSpawnChanges(inst)
+    if TheWorld.state.isspring then
+        if (inst.spawnedsmallbirdthisseason == nil or inst.spawnedsmallbirdthisseason == false) then
+            inst:DoTaskInTime(math.random(TUNING.MIN_SPRING_SMALL_BIRD_SPAWN_TIME, TUNING.MAX_SPRING_SMALL_BIRD_SPAWN_TIME), SpawnSmallBird)
+        end
+    else
+        inst.spawnedsmallbirdthisseason = false
     end
 end
 
@@ -149,6 +181,9 @@ local function fn(Sim)
 	inst.OnSave = OnSave
 	inst.OnLoad = OnLoad
    
+   	SeasonalSpawnChanges(inst)
+	inst:WatchWorldState("isspring", SeasonalSpawnChanges)
+
     return inst
 end
 

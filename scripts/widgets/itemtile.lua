@@ -1,3 +1,4 @@
+require("constants")
 local Text = require "widgets/text"
 local Image = require "widgets/image"
 local Widget = require "widgets/widget"
@@ -29,11 +30,17 @@ local ItemTile = Class(Widget, function(self, invitem)
 	self.basescale = 1
 	
 	self.spoilage = self:AddChild(UIAnim())
-	
     self.spoilage:GetAnimState():SetBank("spoiled_meter")
     self.spoilage:GetAnimState():SetBuild("spoiled_meter")
     self.spoilage:Hide()
     self.spoilage:SetClickable(false)
+
+    self.wetness = self:AddChild(UIAnim())
+    self.wetness:GetAnimState():SetBank("wet_meter")
+    self.wetness:GetAnimState():SetBuild("wet_meter")
+    self.wetness:GetAnimState():PlayAnimation("idle")
+    self.wetness:Hide()
+    self.wetness:SetClickable(false)
 
     self.image = self:AddChild(Image(invitem.replica.inventoryitem:GetAtlas(), invitem.replica.inventoryitem:GetImage()))
     --self.image:SetClickable(false)
@@ -45,6 +52,10 @@ local ItemTile = Class(Widget, function(self, invitem)
 	if self:HasSpoilage() then
 		self.spoilage:Show()
 	end
+
+    if self.item:GetIsWet() then
+        self.wetness:Show()
+    end
 
     self.inst:ListenForEvent("imagechange", function(invitem) 
         self.image:SetTexture(invitem.replica.inventoryitem:GetAtlas(), invitem.replica.inventoryitem:GetImage())
@@ -117,6 +128,16 @@ local ItemTile = Class(Widget, function(self, invitem)
             end, invitem)
     end
 
+    self.inst:ListenForEvent("wetnesschange", function(sender, wet)
+        if wet then
+            if ThePlayer.replica.inventory:GetActiveItem() ~= invitem then
+                self.wetness:Show()
+            end
+        else
+            self.wetness:Hide()
+        end
+    end, invitem)
+
     self:Refresh()
 end)
 
@@ -166,6 +187,11 @@ end
 function ItemTile:UpdateTooltip()
 	local str = self:GetDescriptionString()
 	self:SetTooltip(str)
+    if self.item:GetIsWet() then
+        self:SetTooltipColour(unpack(WET_TEXT_COLOUR))
+    else
+        self:SetTooltipColour(unpack(NORMAL_TEXT_COLOUR))
+    end
 end
 
 function ItemTile:GetDescriptionString()
@@ -180,20 +206,7 @@ function ItemTile:GetDescriptionString()
         local player = ThePlayer
         local actionpicker = player.components.playeractionpicker
         local active_item = player.replica.inventory:GetActiveItem()
-        if active_item ~= nil then 
-            if not (self.item.replica.equippable ~= nil and self.item.replica.equippable:IsEquipped()) then
-                if active_item.replica.stackable ~= nil and active_item.prefab == self.item.prefab then
-                    str = str.."\n"..STRINGS.LMB..": "..STRINGS.UI.HUD.PUT
-                else
-                    str = str.."\n"..STRINGS.LMB..": "..STRINGS.UI.HUD.SWAP
-                end
-            end 
-            
-            local actions = actionpicker:GetUseItemActions(self.item, active_item, true)
-            if #actions > 0 then
-                str = str.."\n"..STRINGS.RMB..": "..actions[1]:GetActionString()
-            end
-        else
+        if active_item == nil then
             if not (self.item.replica.equippable ~= nil and self.item.replica.equippable:IsEquipped()) then
                 --self.namedisp:SetHAlign(ANCHOR_LEFT)
                 if TheInput:IsControlPressed(CONTROL_FORCE_INSPECT) then
@@ -208,6 +221,19 @@ function ItemTile:GetDescriptionString()
             end
 
             local actions = actionpicker:GetInventoryActions(self.item)
+            if #actions > 0 then
+                str = str.."\n"..STRINGS.RMB..": "..actions[1]:GetActionString()
+            end
+        elseif active_item:IsValid() then
+            if not (self.item.replica.equippable ~= nil and self.item.replica.equippable:IsEquipped()) then
+                if active_item.replica.stackable ~= nil and active_item.prefab == self.item.prefab then
+                    str = str.."\n"..STRINGS.LMB..": "..STRINGS.UI.HUD.PUT
+                else
+                    str = str.."\n"..STRINGS.LMB..": "..STRINGS.UI.HUD.SWAP
+                end
+            end
+
+            local actions = actionpicker:GetUseItemActions(self.item, active_item, true)
             if #actions > 0 then
                 str = str.."\n"..STRINGS.RMB..": "..actions[1]:GetActionString()
             end
@@ -273,6 +299,7 @@ function ItemTile:StartDrag()
     --self:SetScale(1,1,1)
 	if self.item.replica.inventoryitem ~= nil then -- HACK HACK: items without an inventory component won't have any of these
 	    self.spoilage:Hide()
+        self.wetness:Hide()
 	    self.bg:Hide( )
 	    self.image:SetClickable(false)
 	end

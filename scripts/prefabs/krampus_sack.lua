@@ -1,7 +1,7 @@
 local assets =
 {
-	Asset("ANIM", "anim/backpack.zip"),
-	Asset("ANIM", "anim/swap_krampus_sack.zip"),
+    Asset("ANIM", "anim/backpack.zip"),
+    Asset("ANIM", "anim/swap_krampus_sack.zip"),
 }
 
 local function onequip(inst, owner)
@@ -17,10 +17,10 @@ local function onunequip(inst, owner)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
 
@@ -34,11 +34,16 @@ local function fn()
 
     inst.foleysound = "dontstarve/movement/foley/krampuspack"
 
+    inst:AddTag("backpack")
+
+    --waterproofer (from waterproofer component) added to pristine state for optimization
+    inst:AddTag("waterproofer")
+
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("inspectable")
 
@@ -47,9 +52,11 @@ local function fn()
 
     inst:AddComponent("equippable")
     inst.components.equippable.equipslot = EQUIPSLOTS.BODY
-
     inst.components.equippable:SetOnEquip(onequip)
     inst.components.equippable:SetOnUnequip(onunequip)
+
+    inst:AddComponent("waterproofer")
+    inst.components.waterproofer:SetEffectiveness(0)
 
     inst:AddComponent("container")
     inst.components.container:WidgetSetup("krampus_sack")

@@ -1,6 +1,6 @@
 local assets =
 {
-	Asset("ANIM", "anim/meteor_shadow.zip"),
+    Asset("ANIM", "anim/meteor_shadow.zip"),
 }
 
 local function startshadow(inst, time, starttint, endtint)
@@ -9,10 +9,10 @@ local function startshadow(inst, time, starttint, endtint)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
@@ -22,12 +22,12 @@ local function fn()
     inst.AnimState:SetFinalOffset(-1)
 
     inst:AddTag("FX")
-    
+
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst.SoundEmitter:PlaySound("dontstarve/common/meteor_spawn")
 

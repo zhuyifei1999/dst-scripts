@@ -48,7 +48,7 @@ local function auratest(inst, target)
         return false
     end
 
-    return target:HasTag("monster") or target:HasTag("prey")
+    return not target:HasTag("player") and target:HasTag("monster") or target:HasTag("prey")
 end
 
 local function updatedamage(inst, phase)
@@ -133,11 +133,11 @@ local function fn()
     --It's a loop that's always on, so we can start this in our pristine state
     inst.SoundEmitter:PlaySound("dontstarve/ghost/ghost_girl_howl_LP", "howl")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:SetBrain(brain)
     

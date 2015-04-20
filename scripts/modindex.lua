@@ -104,6 +104,26 @@ function ModIndex:GetModNames()
 	return names
 end
 
+function ModIndex:GetClientModNames()
+	local names = {}
+	for name,_ in pairs(self.savedata.known_mods) do
+		if self:GetModInfo().client_only_mod then
+			table.insert(names, name)
+		end
+	end
+	return names
+end
+
+function ModIndex:GetServerModNames()
+	local names = {}
+	for name,_ in pairs(self.savedata.known_mods) do
+		if not self:GetModInfo().client_only_mod then
+			table.insert(names, name)
+		end
+	end
+	return names
+end
+
 function ModIndex:Save(callback)
     if PLATFORM == "PS4" then
         return
@@ -192,6 +212,13 @@ function ModIndex:UpdateModInfo()
 	end
 end
 
+function ModIndex:UpdateSingleModInfo(modname)
+	if not self.savedata.known_mods[modname] then
+		self.savedata.known_mods[modname] = {}
+	end
+	self.savedata.known_mods[modname].modinfo = self:LoadModInfo(modname)
+end
+
 function ModIndex:LoadModOverides()
 	local overrides = {}
 	
@@ -256,18 +283,21 @@ function ModIndex:ApplyConfigOptionOverrides(mod_overrides)
 	--print("ModIndex:ApplyConfigOptionOverrides for mods" )
 	for modname,env in pairs(mod_overrides) do
 		if env.configuration_options ~= nil then
-			print( "applying configuration_options from modoverrides.lua to mod " .. modname )
-			
-			local force_local_options = true
-			local config_options,_ = self:GetModConfigurationOptions(modname,force_local_options)
+			local actual_modname = ResolveModname(modname)
+			if actual_modname ~= nil then			
+				print( "applying configuration_options from modoverrides.lua to mod " .. actual_modname )
+				
+				local force_local_options = true
+				local config_options,_ = self:GetModConfigurationOptions(actual_modname,force_local_options)
 
-			if config_options and type(config_options) == "table" then
-				for option,override in pairs(env.configuration_options) do
-					for _,config_option in pairs(config_options) do
-			  			if config_option.name == option then
-			  				print( "Overriding mod " .. modname .. "'s option " .. option .. " with value " .. tostring(override) )
-			  				config_option.saved = override
-			  			end
+				if config_options and type(config_options) == "table" then
+					for option,override in pairs(env.configuration_options) do
+						for _,config_option in pairs(config_options) do
+			  				if config_option.name == option then
+			  					print( "Overriding mod " .. actual_modname .. "'s option " .. option .. " with value " .. tostring(override) )
+			  					config_option.saved = override
+			  				end
+						end
 					end
 				end
 			end
@@ -317,6 +347,11 @@ function ModIndex:InitializeModInfo(modname)
 		env.old = true
 	else
 		local status, r = RunInEnvironment(fn,env)
+
+		--if api_version_dst exists, we want to promote it to be the actual api_version of this mod.
+		if env.api_version_dst ~= nil then
+			env.api_version = env.api_version_dst
+		end
 
 		if status == false then
 			print("Error loading mod: "..ModInfoname(modname).."!\n "..r.."\n")

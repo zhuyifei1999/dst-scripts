@@ -399,6 +399,10 @@ function ServerListingScreen:UpdateServerData( selected_index_actual )
             self.viewtags_button:Disable()
         end
 
+        local seasondesc = self.selected_server.season and STRINGS.UI.SERVERLISTINGSCREEN.SEASONS[string.upper(self.selected_server.season)] or STRINGS.UI.SERVERLISTINGSCREEN.UNKNOWN_SEASON
+        self.season_description.text:SetString(seasondesc)
+
+
         local success, data = RunInSandboxSafe(self.selected_server.data)
         if success and data then
             if data.worldgenoptions then
@@ -406,14 +410,6 @@ function ServerListingScreen:UpdateServerData( selected_index_actual )
             else
                 self.viewworld_button:Disable()
             end
-
-            local seasondesc = data and data.season and STRINGS.UI.SERVERLISTINGSCREEN.SEASONS[string.upper(data.season)] or STRINGS.UI.SERVERLISTINGSCREEN.UNKNOWN_SEASON
-            if data and data.daysleftinseason and data.daysleftinseason <= 5 then
-                seasondesc = STRINGS.UI.SERVERLISTINGSCREEN.LATE_SEASON_1..seasondesc..STRINGS.UI.SERVERLISTINGSCREEN.LATE_SEASON_2
-            elseif data and data.dayselapsedinseason and data.dayselapsedinseason <= 5 then
-                seasondesc = STRINGS.UI.SERVERLISTINGSCREEN.EARLY_SEASON_1..seasondesc..STRINGS.UI.SERVERLISTINGSCREEN.EARLY_SEASON_2
-            end
-            self.season_description.text:SetString(seasondesc)
 
             local phasename = ""--data and data.clockphase and STRINGS.UI.SERVERLISTINGSCREEN.PHASES[string.upper(data.clockphase)] or STRINGS.UI.SERVERLISTINGSCREEN.UNKNOWN_PHASE
             local day = data and data.day or STRINGS.UI.SERVERLISTINGSCREEN.UNKNOWN
@@ -473,8 +469,6 @@ function ServerListingScreen:UpdateServerData( selected_index_actual )
         end
 
         self.join_button:Enable()
-        self.report_button:Enable()
-        self.report_button:SetTextSize(40)
     end
 end
 
@@ -495,8 +489,6 @@ function ServerListingScreen:ServerSelected(new_index)
         self.details_servername:SetString(STRINGS.UI.SERVERLISTINGSCREEN.NOSERVERSELECTED)
         self.details_serverdesc:SetString("")
         self.join_button:Disable()
-        self.report_button:Disable()
-        self.report_button:SetTextSize(38)
     end
 
     self:GuaranteeSelectedServerHighlighted()
@@ -1038,6 +1030,13 @@ function ServerListingScreen:IsValidWithFilters(server)
         valid = false
     end
 	 
+    -- Hide version mismatched servers on live builds
+    local version_mismatch = APP_VERSION ~= tostring(server.version)
+    local dev_build = APP_VERSION == "-1" or BRANCH ~= "release"
+    if version_mismatch and not dev_build then
+        valid = false
+    end
+	
     -- Check spinner validation
     if valid then
         for i,v in pairs(self.filters) do
@@ -1052,9 +1051,9 @@ function ServerListingScreen:IsValidWithFilters(server)
                 or (v.name == "MINOPENSLOTS" and v.spinner:GetSelectedData() ~= "ANY" and server.max_players - server.current_players < v.spinner:GetSelectedData())
                 or (v.name == "ISFULL" and (server.current_players >= server.max_players and v.spinner:GetSelectedData() == false))
                 or (v.name == "ISEMPTY" and (server.current_players <= 0 and v.spinner:GetSelectedData() == false))
-                or (v.name == "MAXPING" and v.spinner:GetSelectedData() ~= "ANY" and server.ping > v.spinner:GetSelectedData())
                 or (v.name == "FRIENDSONLY" and v.spinner:GetSelectedData() ~= "ANY" and v.spinner:GetSelectedData() ~= server.friend )
-                or (v.name == "VERSIONCHECK" and v.spinner:GetSelectedData() and APP_VERSION ~= tostring(server.version) )
+                or (v.name == "SEASON" and v.spinner:GetSelectedData() ~= "ANY" and v.spinner:GetSelectedData() ~= server.season )
+                or (v.name == "VERSIONCHECK" and v.spinner:GetSelectedData() and version_mismatch )
                 or (v.name == "ISDEDICATED" and v.spinner:GetSelectedData() ~= "ANY" and server.dedicated ~= v.spinner:GetSelectedData())
                 or (v.name == "MODSENABLED" and v.spinner:GetSelectedData() ~= "ANY" and server.mods_enabled ~= v.spinner:GetSelectedData())
                 or (v.name == "HASCHARACTER" and v.spinner:GetSelectedData() ~= "ANY" and charInvalid(server.session, v.spinner:GetSelectedData()))) then
@@ -1314,12 +1313,18 @@ function ServerListingScreen:MakeFiltersPanel(filter_data)
     local yes_no = {{ text = STRINGS.UI.SERVERLISTINGSCREEN.YES, data = true }, { text = STRINGS.UI.SERVERLISTINGSCREEN.NO, data = false }}
     local no_yes = {{ text = STRINGS.UI.SERVERLISTINGSCREEN.NO, data = false }, { text = STRINGS.UI.SERVERLISTINGSCREEN.YES, data = true }}
     local any_dedicated_hosted = {{ text = STRINGS.UI.SERVERLISTINGSCREEN.ANY, data = "ANY" }, { text = STRINGS.UI.SERVERLISTINGSCREEN.DEDICATED, data = true }, { text = STRINGS.UI.SERVERLISTINGSCREEN.HOSTED, data = false }}
+    
+    local seasons = {{ text = STRINGS.UI.SERVERLISTINGSCREEN.ANY, data = "ANY" },
+                    { text = STRINGS.UI.SERVERLISTINGSCREEN.SEASONS.SPRING, data = "spring" }, 
+                    { text = STRINGS.UI.SERVERLISTINGSCREEN.SEASONS.SUMMER, data = "summer" },
+                    { text = STRINGS.UI.SERVERLISTINGSCREEN.SEASONS.AUTUMN, data = "autumn" },
+                    { text = STRINGS.UI.SERVERLISTINGSCREEN.SEASONS.WINTER, data = "winter" }}
+    
     local game_modes = {{ text = STRINGS.UI.SERVERLISTINGSCREEN.ANY, data = "ANY" }}
  	for gm_name,game_mode_details in pairs(GAME_MODES) do
 		table.insert( game_modes, { text = game_mode_details.text, data = gm_name} )
 	end
 	table.insert( game_modes, { text = STRINGS.UI.SERVERLISTINGSCREEN.CUSTOM, data = "custom" } )
-    local pings = {{ text = STRINGS.UI.SERVERLISTINGSCREEN.ANY, data = "ANY" }, { text = 50, data = 50 }, { text = 100, data = 100 }, { text = 150, data = 150 }, { text = 250, data = 250 }, { text = 350, data = 350 }, { text = 600, data = 600 }}
     local player_slots = {{ text = STRINGS.UI.SERVERLISTINGSCREEN.ANY, data = "ANY" }}
     local i = TUNING.MAX_SERVER_SIZE
     while i > 0 do
@@ -1338,7 +1343,6 @@ function ServerListingScreen:MakeFiltersPanel(filter_data)
     searchbox.textbox:SetFocusedImage( searchbox.bg, "images/textboxes.xml", "textbox_long_over.tex", "textbox_long.tex" )
     searchbox.textbox:SetTextLengthLimit( STRING_MAX_LENGTH )
     searchbox.textbox:SetCharacterFilter( VALID_CHARS )
-    searchbox.textbox:SetAllowClipboardPaste( false )
     searchbox.label = searchbox:AddChild(Text(BUTTONFONT, 35))
     searchbox.label:SetString(STRINGS.UI.SERVERLISTINGSCREEN.SEARCH)
     searchbox.label:SetRegionSize( 165, 50 )
@@ -1360,6 +1364,7 @@ function ServerListingScreen:MakeFiltersPanel(filter_data)
     table.insert(self.filters, CreateSpinner( self, "HASCHARACTER", STRINGS.UI.SERVERLISTINGSCREEN.HASCHARACTER, any_yes_no, false )) --#srosen disabled until we can get perf better on this
     table.insert(self.filters, CreateSpinner( self, "ISFULL", STRINGS.UI.SERVERLISTINGSCREEN.ISFULL, yes_no, false ))
     table.insert(self.filters, CreateSpinner( self, "FRIENDSONLY", STRINGS.UI.SERVERLISTINGSCREEN.FRIENDSONLY, any_yes_no, false ))
+    table.insert(self.filters, CreateSpinner( self, "SEASON", STRINGS.UI.SERVERLISTINGSCREEN.SEASONFILTER, seasons, false ))
     table.insert(self.filters, CreateSpinner( self, "ISDEDICATED", STRINGS.UI.SERVERLISTINGSCREEN.SERVERTYPE, any_dedicated_hosted, false ))
     table.insert(self.filters, CreateSpinner( self, "HASPASSWORD", STRINGS.UI.SERVERLISTINGSCREEN.HASPASSWORD, any_no_yes, false ))
     table.insert(self.filters, CreateSpinner( self, "MODSENABLED", STRINGS.UI.SERVERLISTINGSCREEN.MODSENABLED, any_no_yes, false ))
@@ -1368,16 +1373,13 @@ function ServerListingScreen:MakeFiltersPanel(filter_data)
     table.insert(self.filters, CreateSpinner( self, "MINOPENSLOTS", STRINGS.UI.SERVERLISTINGSCREEN.MINOPENSLOTS, player_slots, false ))
     -- table.insert(self.filters, CreateSpinner( "MAXSERVERSIZE", STRINGS.UI.SERVERLISTINGSCREEN.MAXSERVERSIZE, {min=2,max=4}, true ))
     table.insert(self.filters, CreateSpinner( self, "ISEMPTY", STRINGS.UI.SERVERLISTINGSCREEN.ISEMPTY, yes_no, false ))
-    table.insert(self.filters, CreateSpinner( self, "MAXPING", STRINGS.UI.SERVERLISTINGSCREEN.MAXPING, pings, false ))
     
-    local default_version_check_mode = yes_no
     if APP_VERSION == "-1" then
-        default_version_check_mode = no_yes
+        table.insert(self.filters, CreateSpinner( self, "VERSIONCHECK", STRINGS.UI.SERVERLISTINGSCREEN.VERSIONCHECK, no_yes, false ))
+    else
+        TheNet:SetCheckVersionOnQuery( true )
     end
-    table.insert(self.filters, CreateSpinner( self, "VERSIONCHECK", STRINGS.UI.SERVERLISTINGSCREEN.VERSIONCHECK, default_version_check_mode, false, function() 
-    -- Cache server downloads everything at the moment, no point in doing this
-    --    self:SearchForServers() 
-    end ))
+    
     if not self.offlinemode then
         self.lan_spinner = CreateSpinner( self, "SHOWLAN", STRINGS.UI.SERVERLISTINGSCREEN.SHOWLAN, no_yes, false, function() 
             self:SearchForServers() 
@@ -1439,8 +1441,6 @@ function ServerListingScreen:MakeMenuButtons(left_col, right_col)
     self.refresh_button = MakeImgButton(self.server_list_titles, left_col+875, 125, STRINGS.UI.SERVERLISTINGSCREEN.REFRESH, function() self:SearchForServers() end)
     self.join_button = MakeImgButton(self.server_detail_panel, 108, -272, STRINGS.UI.SERVERLISTINGSCREEN.JOIN, function() self:Join() end, "large")
     self.join_button.text:SetPosition(-3,0)
-    self.report_button = MakeImgButton(self.server_list_titles, column_offsets.DETAILS+10, -425, STRINGS.UI.SERVERLISTINGSCREEN.REPORT, function() self:Report() end)
-    self.report_button:SetScale(.8)
     self.cancel_button = MakeImgButton(self.server_detail_panel, -120, -270, STRINGS.UI.SERVERLISTINGSCREEN.BACK, function() self:Cancel() end)
     self.filters_button = MakeImgButton(self.server_detail_panel, -140, 218, STRINGS.UI.SERVERLISTINGSCREEN.FILTERS, function() self:ToggleShowFilters() end, "tab")
     self.filters_button.text:SetPosition(3,-5)
@@ -1476,8 +1476,6 @@ function ServerListingScreen:MakeMenuButtons(left_col, right_col)
     self.details_button.image:SetScale(1.6,1)
 
     self.join_button:Disable()
-    self.report_button:Disable()
-    self.report_button:SetTextSize(38)
 
     self.details_shown = false
     self.filters_shown = false

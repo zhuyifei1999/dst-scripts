@@ -4,6 +4,7 @@ require "playerdeaths"
 require "saveindex"
 require "map/extents"
 require "perfutil"
+require "maputil"
 
 -- globals
 chestfunctions = require("scenarios/chestfunctions")
@@ -59,7 +60,7 @@ function ForceAuthenticationDialog()
 		if active_screen ~= nil and active_screen.name == "MainScreen" then
 			active_screen:OnPlayMultiplayerButton()
 		elseif MainScreen then
-			local main_screen = MainScreen(PlayerProfile())
+			local main_screen = MainScreen(Profile)
 			TheFrontEnd:ShowScreen( main_screen )
 			main_screen:OnPlayMultiplayerButton()
 		end
@@ -133,13 +134,12 @@ local function LoadAssets(asset_set)
 			table.insert(RECIPE_PREFABS, v.placer)
 		end
 	end
-	
 	local load_frontend = Settings.reset_action == nil
 	local in_backend = Settings.last_reset_action ~= nil
 	local in_frontend = not in_backend
 	
 	KeepAlive()
-	
+
 	if Settings.current_asset_set == "FRONTEND" then
 		if Settings.last_asset_set == "FRONTEND" then
 			print( "\tFE assets already loaded" )			
@@ -150,24 +150,25 @@ local function LoadAssets(asset_set)
 		else
 			print("\tUnload BE")
 			TheSim:UnloadPrefabs(RECIPE_PREFABS)
-			KeepAlive()
-			TheSystemService:SetStalling(true)
 			TheSim:UnloadPrefabs(BACKEND_PREFABS)
 			print("\tUnload BE done")
-			TheSim:UnregisterAllPrefabs()
-			TheSystemService:SetStalling(false)
 			KeepAlive()
 			TheSystemService:SetStalling(true)
+			TheSim:UnregisterAllPrefabs()
 
 			RegisterAllDLC()
 			for i,file in ipairs(PREFABFILES) do -- required from prefablist.lua
 				LoadPrefabFile("prefabs/"..file)
 			end
 			ModManager:RegisterPrefabs()
+			TheSystemService:SetStalling(false)
+			KeepAlive()
 			print("\tLoad FE")
+			TheSystemService:SetStalling(true)
 			TheSim:LoadPrefabs(FRONTEND_PREFABS)
-			print("\tLoad FE: done")	
+
 			TheSystemService:SetStalling(false)	
+			print("\tLoad FE: done")	
 		end
 	else
 		if Settings.last_asset_set == "BACKEND" then
@@ -182,7 +183,7 @@ local function LoadAssets(asset_set)
 			TheSim:UnloadPrefabs(FRONTEND_PREFABS)
 			print("\tUnload FE done")
 			KeepAlive()
-
+			
 			TheSystemService:SetStalling(true)
 			TheSim:UnregisterAllPrefabs()
 			RegisterAllDLC()
@@ -217,27 +218,6 @@ function GetTimePlaying()
 	return GetTime() - start_game_time 
 end
 
-function CalculatePlayerRewards(wilson)
-	local Progression = require "progressionconstants"
-	
-	print("Calculating progression")
-	
-	--increment the xp counter and give rewards
-	local days_survived = TheWorld.state.cycles
-	local start_xp = wilson.profile:GetXP()
-	local reward_xp = Progression.GetXPForDays(days_survived)
-	local new_xp = math.min(start_xp + reward_xp, Progression.GetXPCap())
-    local capped = Progression.IsCappedXP(start_xp)
-	local all_rewards = Progression.GetRewardsForTotalXP(new_xp)
-	for k,v in pairs(all_rewards) do
-		wilson.profile:UnlockCharacter(v)
-	end
-	wilson.profile:SetXP(new_xp)
-
-	print("Progression: ",days_survived, start_xp, reward_xp, new_xp)
-	return days_survived, start_xp, reward_xp, new_xp, capped
-end
-
 local deprecated = { turf_webbing = true }
 local replace = { 
 				farmplot = "slow_farmplot", farmplot2 = "fast_farmplot", 
@@ -246,71 +226,15 @@ local replace = {
 			}
 
 POPULATING = false
-function PopulateWorld(savedata, profile, playersavedataoverride)
+function PopulateWorld(savedata, profile)
     POPULATING = true
     TheSystemService:SetStalling(true)
 	Print(VERBOSITY.DEBUG, "PopulateWorld")
  	Print(VERBOSITY.DEBUG,  "[Instantiating objects...]" )
-    if savedata then
-		
-        --figure out our start info
-        local spawnpoint = Vector3(0,0,0)
-        local playerdata = {}
-        if savedata.playerinfo then
-        
-            if savedata.playerinfo.x and savedata.playerinfo.z then
-				local y = savedata.playerinfo.y or 0
-                spawnpoint = Vector3(savedata.playerinfo.x, y, savedata.playerinfo.z)
-            end
-
-            if savedata.playerinfo.data then
-                playerdata = savedata.playerinfo.data
-            end
-        end
-        
-        local travel_direction = SaveGameIndex:GetDirectionOfTravel()	
-        local cave_num = SaveGameIndex:GetCaveNumber()
-        --print("travel_direction:", travel_direction, "cave#:",cave_num)
-        local spawn_ent = nil
-        if travel_direction == "ascend" then
-			if savedata.ents["cave_entrance"] then
-				if cave_num == nil then
-					spawn_ent = savedata.ents["cave_entrance"][1]
-				else
-					for k,v in ipairs(savedata.ents["cave_entrance"]) do
-						if v.data and v.data.cavenum == cave_num then
-							spawn_ent = v
-							break
-						end
-					end
-				end
-			end
-		elseif travel_direction == "descend" then
-			if savedata.ents["cave_exit"] then
-				spawn_ent = savedata.ents["cave_exit"][1]
-			end
-		end
-        	
-        if spawn_ent and spawn_ent.x and spawn_ent.z then
-	        spawnpoint = Vector3(spawn_ent.x or 0, spawn_ent.y or 0, spawn_ent.z or 0)
-	    end
-        
-		if playersavedataoverride then
-			playerdata = playersavedataoverride
-		end
-		
-		local newents = {}
-		
-		--local world = SpawnPrefab("forest")
-		local world = nil
-		local ceiling = nil
-		if savedata.map.prefab == "cave" then
-			world = SpawnPrefab("cave")
-			-- ceiling = SpawnPrefab("ceiling")
-		else
-			world = SpawnPrefab("forest")
-		end
+    if savedata ~= nil then
+		local world = SpawnPrefab(savedata.map.prefab)
         assert(TheWorld == world)
+        assert(ThePlayer == nil)
 
         if not LOAD_UPFRONT_MODE then
             local oldloaded = {}
@@ -339,9 +263,6 @@ function PopulateWorld(savedata, profile, playersavedataoverride)
                 TheSim:LoadPrefabs(newchars)
             end
         end
-
-        --spawn the player character and set him up
-        assert(ThePlayer == nil)
 
         --this was spawned by the level file. kinda lame - we should just do everything from in here.
         world.Map:SetSize(savedata.map.width, savedata.map.height)
@@ -465,20 +386,18 @@ function PopulateWorld(savedata, profile, playersavedataoverride)
 			end
 
             -- Clear out one time overrides
+			local onetime = {"season_start", "autumn", "winter", "spring", "summer"}
             if world.topology.overrides.misc then
-                for i, v in ipairs(world.topology.overrides.misc) do
-                    if v[1] == "season_start" then
-                        table.remove(world.topology.overrides.misc, i)
-                        break
+                for i=#world.topology.overrides.misc,1,-1 do
+                    if table.contains(onetime, world.topology.overrides.misc[i][1]) then
+						table.remove(world.topology.overrides.misc, i)
                     end
                 end
             end
 		end
         
-        -- Clean out any stale ones
-        SaveGameIndex:ClearCurrentResurrectors()
-
         --instantiate all the dudes
+        local newents = {}
         for prefab, ents in pairs(savedata.ents) do
 			local prefab = replace[prefab] or prefab
        		if not deprecated[prefab] then
@@ -487,7 +406,7 @@ function PopulateWorld(savedata, profile, playersavedataoverride)
 					SpawnSaveRecord(v, newents)
 				end
 			end
-        end    
+        end
     
         --post pass in neccessary to hook up references
         for k, v in pairs(newents) do
@@ -508,6 +427,7 @@ function PopulateWorld(savedata, profile, playersavedataoverride)
         
         --Start checking if the server's mods are up to date
         ModManager:StartVersionChecking()
+		ReconstructTopology(world.topology)
     else
         Print(VERBOSITY.ERROR, "[MALFORMED SAVE DATA] PopulateWorld complete" )
         TheSystemService:SetStalling(false)
@@ -596,10 +516,10 @@ local function OnPlayerDeactivated(world, player)
 end
 
 --OK, we have our savedata and a profile. Instatiate everything and start the game!
-local function DoInitGame( savedata, profile, next_world_playerdata, fast)	
+local function DoInitGame(savedata, profile)
 	local was_file_load = Settings.playeranim == "file_load"
 
-	--print("DoInitGame", savedata, profile, next_world_playerdata, fast)
+	--print("DoInitGame", savedata, profile)
 	TheFrontEnd:ClearScreens()
 
 	assert(savedata.map, "Map missing from savedata on load")
@@ -694,18 +614,18 @@ local function DoInitGame( savedata, profile, next_world_playerdata, fast)
 
     --some lame explicit loads
 	Print(VERBOSITY.DEBUG, "DoInitGame Loading prefabs...")
-    
+
 	Print(VERBOSITY.DEBUG, "DoInitGame Adjusting audio...")
     TheMixer:SetLevel("master", 0)
-    
+
 	--apply the volumes
-	
+
 	Print(VERBOSITY.DEBUG, "DoInitGame Populating world...")
-	
+
     TheFrontEnd:GetSound():KillSound("FEMusic") -- just in case...
 
-    PopulateWorld(savedata, profile, next_world_playerdata)
-    
+    PopulateWorld(savedata, profile)
+
     if Profile.persistdata.debug_world  == 1 then
     	if savedata.map.topology == nil then
     		Print(VERBOSITY.ERROR, "OI! Where is my topology info!")
@@ -713,12 +633,7 @@ local function DoInitGame( savedata, profile, next_world_playerdata, fast)
     		DrawDebugGraph(savedata.map.topology)
      	end
     end
-    
-    local function OnStart()
-    	Print(VERBOSITY.DEBUG, "DoInitGame OnStart Callback... turning volume up")
-		SetPause(false)
-    end
-	
+
 	if not TheFrontEnd:IsDisplayingError() then
 	    --clear the player stats, so that it doesn't count items "acquired" from the save file
 	    GetProfileStats(true)
@@ -761,14 +676,10 @@ local function DoInitGame( savedata, profile, next_world_playerdata, fast)
             end
         end
 
-	    if fast then
-	    	OnStart()
-	    else
-			SetPause(true, "InitGame")
-            TheFrontEnd:SetFadeLevel(1)
-            TheWorld:ListenForEvent("playeractivated", OnPlayerActivated)
-            TheWorld:ListenForEvent("playerdeactivated", OnPlayerDeactivated)
-	    end
+        SetPause(true, "InitGame")
+        TheFrontEnd:SetFadeLevel(1)
+        TheWorld:ListenForEvent("playeractivated", OnPlayerActivated)
+        TheWorld:ListenForEvent("playerdeactivated", OnPlayerDeactivated)
 
 	    if savedata.map.hideminimap ~= nil then
 	        TheWorld.minimap:DoTaskInTime(0, function(inst) inst.MiniMap:ContinuouslyClearRevealedAreas(savedata.map.hideminimap) end)
@@ -817,6 +728,17 @@ local function DoInitGame( savedata, profile, next_world_playerdata, fast)
     
 end
 
+local function UpgradeSaveFile(savedata)
+    print("Save file is at version "..tostring(savedata.meta.saveversion))
+    for i,upgrade in ipairs(require("savefileupgrades").upgrades) do
+        if savedata.meta.saveversion == nil or savedata.meta.saveversion < upgrade.version then
+            print("\tUpgrading to "..tostring(upgrade.version).."...")
+            upgrade.fn(savedata)
+            savedata.meta.saveversion = upgrade.version
+        end
+    end
+end
+
 ------------------------THESE FUNCTIONS HANDLE STARTUP FLOW
 
 local function DoLoadWorldFile(file)
@@ -824,22 +746,24 @@ local function DoLoadWorldFile(file)
 		assert(savedata, "DoLoadWorld: Savedata is NIL on load")
 		assert(GetTableSize(savedata)>0, "DoLoadWorld: Savedata is empty on load")
 
-		DoInitGame( savedata, Profile, nil)
+        UpgradeSaveFile(savedata)
+		DoInitGame(savedata, Profile)
 	end
-	SaveGameIndex:GetSaveDataFile(file, nil, onload)
+	SaveGameIndex:GetSaveDataFile(file, onload)
 end
 
-local function DoLoadWorld(saveslot, playerdataoverride)
+local function DoLoadWorld(saveslot)
 	local function onload(savedata)
 		assert(savedata, "DoLoadWorld: Savedata is NIL on load")
 		assert(GetTableSize(savedata)>0, "DoLoadWorld: Savedata is empty on load")
 
-		DoInitGame(savedata, Profile, playerdataoverride)
+        UpgradeSaveFile(savedata)
+		DoInitGame(savedata, Profile)
 	end
-	SaveGameIndex:GetSaveData(saveslot, SaveGameIndex:GetCurrentMode(saveslot), onload)
+	SaveGameIndex:GetSaveData(saveslot, onload)
 end
 
-local function DoGenerateWorld(saveslot, type_override)
+local function DoGenerateWorld(saveslot)
 	local function onComplete(savedata)
 		assert(savedata, "DoGenerateWorld: Savedata is NIL on load")
 		assert(#savedata>0, "DoGenerateWorld: Savedata is empty on load")
@@ -848,7 +772,10 @@ local function DoGenerateWorld(saveslot, type_override)
 			local success, world_table = RunInSandbox(savedata)
 			if success then
 				LoadAssets("BACKEND")
-				DoInitGame( world_table, Profile, SaveGameIndex:GetPlayerData(saveslot))
+
+                -- This is a brand new save file, so set it's version to current
+                world_table.meta.saveversion = require("savefileupgrades").VERSION
+				DoInitGame(world_table, Profile)
 			end
 		end
 
@@ -864,17 +791,11 @@ local function DoGenerateWorld(saveslot, type_override)
 
 	local world_gen_options =
 	{
-		level_type = type_override or SaveGameIndex:GetCurrentMode(saveslot),
-		custom_options = SaveGameIndex:GetSlotGenOptions(saveslot,SaveGameIndex:GetCurrentMode()),
-		level_world = SaveGameIndex:GetSlotLevelIndexFromPlaylist(saveslot),
+		level_type = "survival",
+		custom_options = SaveGameIndex:GetSlotGenOptions(saveslot),
+		level_world = 1,
 		profiledata = Profile.persistdata,
 	}
-	
-	if world_gen_options.level_type == "adventure" then
-		world_gen_options["adventure_progress"] = SaveGameIndex:GetSlotWorld(saveslot)
-	elseif world_gen_options.level_type == "cave" then
-		world_gen_options["cave_progress"] = SaveGameIndex:GetCurrentCaveLevel()
-	end
 
 	--Load world gen options overrides
 	local filename = "../worldgenoverride.lua"
@@ -896,21 +817,16 @@ local function DoGenerateWorld(saveslot, type_override)
 				end
 			end
 		end)
-    
+
 	TheFrontEnd:PushScreen(WorldGenScreen(Profile, onComplete, world_gen_options))
 end
 
 local function LoadSlot(slot)
     TheFrontEnd:ClearScreens()
-    if SaveGameIndex:HasWorld(slot, SaveGameIndex:GetCurrentMode(slot)) then
+    if SaveGameIndex:CheckWorldFile(slot) then
         --print("Load Slot: Has World")
         LoadAssets("BACKEND")
-        DoLoadWorld(slot, SaveGameIndex:GetModeData(slot, SaveGameIndex:GetCurrentMode(slot)).playerdata)
-    elseif SaveGameIndex:GetCurrentMode(slot) == "survival" and SaveGameIndex:IsContinuePending(slot) then
-        --print("Load Slot: Has no World")
-        --print("Load Slot: ... but continue pending")
-        --V2C: What's this case for? Prolly not DST?
-        LoadAssets("FRONTEND")
+        DoLoadWorld(slot)
     else			
         --print("Load Slot: Has no World")
         print("Load Slot: ... generating new world")
@@ -946,19 +862,23 @@ local function DoResetAction()
 	if Settings.reset_action then
 		if Settings.reset_action == RESET_ACTION.DO_DEMO then
 			SaveGameIndex:DeleteSlot(1, function()
-				SaveGameIndex:StartSurvivalMode(1, "wilson", {}, function() 
+				SaveGameIndex:StartSurvivalMode(1, nil, nil, function() 
 					--print("Reset Action: DO_DEMO")
 					DoGenerateWorld(1)
 				end)
 			end)
 		elseif Settings.reset_action == RESET_ACTION.LOAD_SLOT then
-			if not SaveGameIndex:GetCurrentMode(Settings.save_slot) then
+			if SaveGameIndex:IsSlotEmpty(Settings.save_slot) then
 				--print("Reset Action: LOAD_SLOT -- Re-generate world")
-				SaveGameIndex:DeleteSlot(Settings.save_slot, function()
-					SaveGameIndex:StartSurvivalMode(Settings.save_slot, "wilson", {}, function() 
-						DoGenerateWorld(Settings.save_slot)
-					end)
-				end)
+                SaveGameIndex:DeleteSlot(Settings.save_slot, function()
+                    SaveGameIndex:StartSurvivalMode(
+                        Settings.save_slot,
+                        SaveGameIndex:GetSlotGenOptions(Settings.save_slot),
+                        SaveGameIndex:GetSlotServerData(Settings.save_slot),
+                        function()
+                            DoGenerateWorld(Settings.save_slot)
+                        end)
+                end, true)
 			else
 				--print("Reset Action: LOAD_SLOT -- current save")
 				LoadSlot(Settings.save_slot)
@@ -991,7 +911,7 @@ local function DoResetAction()
 					local function onsaved()
 						SimReset({reset_action="printtextureinfo",save_slot=1})
 					end
-					SaveGameIndex:StartSurvivalMode(1, "wilson", {}, onsaved)
+					SaveGameIndex:StartSurvivalMode(1, nil, nil, onsaved)
 				end)
 		else
 			LoadAssets("FRONTEND")
@@ -1017,6 +937,16 @@ end
 
 local function OnFilesLoaded()
 	print("OnFilesLoaded()")
+    if not TheNet:IsDedicated() then
+        local host_sessions = {}
+        for i = 1, NUM_SAVE_SLOTS do
+            local session = SaveGameIndex:GetSlotSession(i)
+            if session ~= nil then
+                table.insert(host_sessions, session)
+            end
+        end
+        TheNet:CleanupSessionCache(host_sessions)
+    end
 	UpdateGamePurchasedState(OnUpdatePurchaseStateComplete)
 end
 

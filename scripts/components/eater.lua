@@ -1,15 +1,15 @@
-local function clearfoodprefs(self, foodprefs)
-    for i, v in ipairs(foodprefs) do
+local function clearcaneat(self, caneat)
+    for i, v in ipairs(caneat) do
         self.inst:RemoveTag((type(v) == "table" and v.name or v).."_eater")
     end
 end
 
-local function onfoodprefs(self, foodprefs, old_foodprefs)
-    if old_foodprefs ~= nil then
-        clearfoodprefs(self, old_foodprefs)
+local function oncaneat(self, caneat, old_caneat)
+    if old_caneat ~= nil then
+        clearcaneat(self, old_caneat)
     end
-    if foodprefs ~= nil then
-        for i, v in ipairs(foodprefs) do
+    if caneat ~= nil then
+        for i, v in ipairs(caneat) do
             self.inst:AddTag((type(v) == "table" and v.name or v).."_eater")
         end
     end
@@ -19,53 +19,39 @@ local Eater = Class(function(self, inst)
     self.inst = inst
     self.eater = false
     self.strongstomach = false
-    self.foodprefs = nil
-    self:SetOmnivore()
+    self.preferseating = { FOODGROUP.OMNI }
+    self.caneat = { FOODGROUP.OMNI }
     self.oneatfn = nil
     self.lasteattime = nil
     self.ignoresspoilage = false
+    self.eatwholestack = false
 end,
 nil,
 {
-    foodprefs = onfoodprefs,
+    caneat = oncaneat,
 })
 
 function Eater:OnRemoveFromEntity()
-    clearfoodprefs(self, self.foodprefs)
+    clearpreferseating(self, self.preferseating)
 end
 
-function Eater:SetVegetarian()
-    self.foodprefs = { FOODTYPE.VEGGIE }
-end
-
-function Eater:SetCarnivore()
-    self.foodprefs = { FOODTYPE.MEAT }
-end
-
-function Eater:SetInsectivore()
-    self.foodprefs = { FOODTYPE.INSECT }
-end
-
-function Eater:SetBird()
-    self.foodprefs = { FOODTYPE.SEEDS }
-end
-
-function Eater:SetSmallBird()
-    self.foodprefs = { FOODGROUP.BERRIES_AND_SEEDS }
-end
-
-function Eater:SetBeaver()
-    self.foodprefs = { FOODTYPE.WOOD }
-end
-
-function Eater:SetElemental()
-    self.foodprefs = { FOODTYPE.ELEMENTAL }
+function Eater:SetDiet(caneat, preferseating)
+	self.caneat = caneat
+	if preferseating then 
+		self.preferseating = preferseating
+	else
+		self.preferseating = self.caneat
+	end
 end
 
 function Eater:TimeSinceLastEating()
-	if self.lasteattime then
-		return GetTime() - self.lasteattime
-	end
+    if self.lasteattime then
+        return GetTime() - self.lasteattime
+    end
+end
+
+function Eater:HasBeen(time)
+    return self.lasteattime and self:TimeSinceLastEating() >= time or true
 end
 
 function Eater:OnSave()
@@ -81,39 +67,64 @@ function Eater:OnLoad(data)
 end
 
 function Eater:SetCanEatHorrible()
-	table.insert(self.foodprefs, FOODTYPE.HORRIBLE)
+    table.insert(self.preferseating, FOODTYPE.HORRIBLE)
+    table.insert(self.caneat, FOODTYPE.HORRIBLE)
     self.inst:AddTag(FOODTYPE.HORRIBLE.."_eater")
 end
 
 function Eater:SetCanEatGears()
-    table.insert(self.foodprefs, FOODTYPE.GEARS)
+    table.insert(self.preferseating, FOODTYPE.GEARS)
+    table.insert(self.caneat, FOODTYPE.GEARS)
     self.inst:AddTag(FOODTYPE.GEARS.."_eater")
 end
 
-function Eater:SetOmnivore()
-    self.foodprefs = { FOODGROUP.OMNI }
+function Eater:SetCanEatRaw()
+    table.insert(self.preferseating, FOODTYPE.RAW)
+    table.insert(self.caneat, FOODTYPE.RAW)
+    self.inst:AddTag(FOODTYPE.RAW.."_eater")
 end
 
 function Eater:SetOnEatFn(fn)
     self.oneatfn = fn
 end
 
-function Eater:Eat(food)
-    if self:CanEat(food) then
-		
-        if self.inst.components.health then
-			local healthvalue = food.components.edible:GetHealth(self.inst)
-			if healthvalue > 0 or not self.strongstomach then
-				self.inst.components.health:DoDelta(healthvalue, nil, food.prefab)
+function Eater:DoFoodEffects(food)
+    return not (self.strongstomach and food:HasTag("monstermeat"))
+end
+
+function Eater:GetEdibleTags()
+	local tags = {}
+	for i, v in ipairs(self.caneat) do
+		if type(v) == "table" then
+			for i2, v2 in ipairs(v.types) do
+				table.insert(tags, "edible_"..v2)
 			end
+		else
+			table.insert(tags, "edible_"..v)
+		end
+	end
+	return tags
+end
+
+function Eater:Eat(food, force)
+    -- This used to be CanEat. The reason for two checks is to that special diet characters (e.g.
+    -- wigfrid) can TRY to eat all foods (they get the actions for it) but upon actually put it in 
+    -- their mouth, they bail and "spit it out" so to speak.
+    if self:PrefersToEat(food) or (force and self:CanEat(food)) then
+        
+        if self.inst.components.health then
+            local healthvalue = food.components.edible:GetHealth(self.inst)
+            if (food.components.edible.healthvalue < 0 and self:DoFoodEffects(food) or food.components.edible.healthvalue > 0) and self.inst.components.health then
+                self.inst.components.health:DoDelta(healthvalue, nil, food.prefab)
+            end
         end
 
         if self.inst.components.hunger then
             self.inst.components.hunger:DoDelta(food.components.edible:GetHunger(self.inst))
         end
         
-        if self.inst.components.sanity then
-			self.inst.components.sanity:DoDelta(food.components.edible:GetSanity(self.inst))
+        if (food.components.edible.sanityvalue < 0 and self:DoFoodEffects(food) or food.components.edible.sanityvalue > 0) and self.inst.components.sanity then
+            self.inst.components.sanity:DoDelta(food.components.edible:GetSanity(self.inst))
         end
         
         self.inst:PushEvent("oneat", {food = food})
@@ -125,7 +136,7 @@ function Eater:Eat(food)
             food.components.edible:OnEaten(self.inst)
         end
         
-        if food.components.stackable and food.components.stackable.stacksize > 1 then
+        if food.components.stackable and food.components.stackable.stacksize > 1 and not self.eatwholestack then
             food.components.stackable:Get():Remove()
         else
             food:Remove()
@@ -139,20 +150,28 @@ function Eater:Eat(food)
     end
 end
 
-function Eater:CanEat(inst)
-    if inst ~= nil and inst.components.edible ~= nil then
-        for i, v in ipairs(self.foodprefs) do
+function Eater:TestFood(food, testvalues)
+    if food ~= nil and food.components.edible ~= nil then
+        for i, v in ipairs(testvalues) do
             if type(v) == "table" then
                 for i2, v2 in ipairs(v.types) do
-                    if inst:HasTag("edible_"..v2) then
+                    if food:HasTag("edible_"..v2) then
                         return true
                     end
                 end
-            elseif inst:HasTag("edible_"..v) then
+            elseif food:HasTag("edible_"..v) then
                 return true
             end
         end
     end
+end
+
+function Eater:PrefersToEat(inst)
+    return self:TestFood(inst, self.preferseating)
+end
+
+function Eater:CanEat(inst)
+    return self:TestFood(inst, self.caneat)
 end
 
 return Eater

@@ -1,6 +1,6 @@
 local assets =
 {
-	Asset("ANIM", "anim/mosquito.zip"),
+    Asset("ANIM", "anim/mosquito.zip"),
 }
 
 local prefabs =
@@ -17,7 +17,7 @@ local sounds =
     buzz = "dontstarve/creatures/mosquito/mosquito_fly_LP",
     hit = "dontstarve/creatures/mosquito/mosquito_hurt",
     death = "dontstarve/creatures/mosquito/mosquito_death",
-	explode = "dontstarve/creatures/mosquito/mosquito_explo",
+    explode = "dontstarve/creatures/mosquito/mosquito_explo",
 }
 
 SetSharedLootTable('mosquito',
@@ -40,7 +40,9 @@ local function OnWorked(inst, worker)
 end
 
 local function StartBuzz(inst)
-    inst.SoundEmitter:PlaySound(inst.sounds.buzz, "buzz")
+    if not inst.components.inventoryitem:IsHeld() then
+        inst.SoundEmitter:PlaySound(inst.sounds.buzz, "buzz")
+    end
 end
 
 local function StopBuzz(inst)
@@ -53,26 +55,30 @@ local function OnDropped(inst)
         inst.components.workable:SetWorkLeft(1)
     end
     if inst.brain then
-		inst.brain:Start()
-	end
-	if inst.sg then
-	    inst.sg:Start()
-	end
-	if inst.components.stackable then
-	    while inst.components.stackable:StackSize() > 1 do
-	        local item = inst.components.stackable:Get()
-	        if item then
-	            if item.components.inventoryitem then
-	                item.components.inventoryitem:OnDropped()
-	            end
-	            item.Physics:Teleport(inst.Transform:GetWorldPosition())
-	        end
-	    end
-	end
+        inst.brain:Start()
+    end
+    if inst.sg then
+        inst.sg:Start()
+    end
+    if inst.components.stackable then
+        while inst.components.stackable:StackSize() > 1 do
+            local item = inst.components.stackable:Get()
+            if item then
+                if item.components.inventoryitem then
+                    item.components.inventoryitem:OnDropped()
+                end
+                item.Physics:Teleport(inst.Transform:GetWorldPosition())
+            end
+        end
+    end
+end
+
+local function OnPickedUp(inst)
+    inst.SoundEmitter:KillSound("buzz")
 end
 
 local function KillerRetarget(inst)
-    return FindEntity(inst, 20, function(guy)
+    return FindEntity(inst, SpringCombatMod(20), function(guy)
         return inst.components.combat:CanTarget(guy)
     end,
     nil,
@@ -81,23 +87,23 @@ local function KillerRetarget(inst)
 end
 
 local function SwapBelly(inst, size)
-	for i=1,4 do
-		if i == size then
-			inst.AnimState:Show("body_"..tostring(i))
-		else
-			inst.AnimState:Hide("body_"..tostring(i))
-		end
-	end
+    for i=1,4 do
+        if i == size then
+            inst.AnimState:Show("body_"..tostring(i))
+        else
+            inst.AnimState:Hide("body_"..tostring(i))
+        end
+    end
 end
 
 local function TakeDrink(inst, data)
-	inst.drinks = inst.drinks + 1
-	if inst.drinks > inst.maxdrinks then
-		inst.toofat = true
-		inst.components.health:Kill()
-	else
-		SwapBelly(inst, inst.drinks)
-	end
+    inst.drinks = inst.drinks + 1
+    if inst.drinks > inst.maxdrinks then
+        inst.toofat = true
+        inst.components.health:Kill()
+    else
+        SwapBelly(inst, inst.drinks)
+    end
 end
 
 local function ShareTargetFn(dude)
@@ -106,17 +112,17 @@ end
 
 local function OnAttacked(inst, data)
     inst.components.combat:SetTarget(data.attacker)
-    inst.components.combat:ShareTarget(data.attacker, SHARE_TARGET_DIST, ShareTargetFn, MAX_TARGET_SHARES)
+    inst.components.combat:ShareTarget(data.attacker, SpringCombatMod(SHARE_TARGET_DIST), ShareTargetFn, MAX_TARGET_SHARES)
 end
 
 local function mosquito()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
     inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
-	inst.entity:AddLightWatcher()
-	inst.entity:AddDynamicShadow()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
+    inst.entity:AddLightWatcher()
+    inst.entity:AddDynamicShadow()
     inst.entity:AddNetwork()
 
     MakeCharacterPhysics(inst, 1, .5)
@@ -130,18 +136,22 @@ local function mosquito()
 
     inst:AddTag("mosquito")
     inst:AddTag("insect")
+    inst:AddTag("flying")
     inst:AddTag("smallcreature")
+    inst:AddTag("cattoyairborne")
 
     inst.AnimState:SetBank("mosquito")
     inst.AnimState:SetBuild("mosquito")
     inst.AnimState:PlayAnimation("idle")
     inst.AnimState:SetRayTestOnBB(true)
 
+    MakeFeedablePetPristine(inst)
+
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:SetBrain(brain)
 
@@ -149,32 +159,32 @@ local function mosquito()
 
     inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
     inst.components.locomotor:EnableGroundSpeedMultiplier(false)
-	inst.components.locomotor:SetTriggersCreep(false)
-	inst.components.locomotor.walkspeed = TUNING.MOSQUITO_WALKSPEED
-	inst.components.locomotor.runspeed = TUNING.MOSQUITO_RUNSPEED
+    inst.components.locomotor:SetTriggersCreep(false)
+    inst.components.locomotor.walkspeed = TUNING.MOSQUITO_WALKSPEED
+    inst.components.locomotor.runspeed = TUNING.MOSQUITO_RUNSPEED
     inst:SetStateGraph("SGmosquito")
 
-	inst.sounds = sounds
+    inst.sounds = sounds
 
     inst.OnEntityWake = StartBuzz
     inst.OnEntitySleep = StopBuzz
 
     inst:AddComponent("stackable")
-	inst:AddComponent("inventoryitem")
-	inst.components.inventoryitem:SetOnDroppedFn(OnDropped)
-	inst.components.inventoryitem:SetOnPutInInventoryFn(StopBuzz)
-	inst.components.inventoryitem.canbepickedup = false
+    inst:AddComponent("inventoryitem")
+    inst.components.inventoryitem.canbepickedup = false
 
-	---------------------
+    ---------------------
 
-	inst:AddComponent("lootdropper")
-    inst.components.lootdropper:SetChanceLootTable('mosquito')
+    inst:AddComponent("lootdropper")
+    inst.components.lootdropper:SetChanceLootTable('mosquito')  
 
-	 ------------------
-	inst:AddComponent("workable")
-	inst.components.workable:SetWorkAction(ACTIONS.NET)
-	inst.components.workable:SetWorkLeft(1)
-	inst.components.workable:SetOnFinishCallback(OnWorked)
+    inst:AddComponent("tradable")
+
+     ------------------
+    inst:AddComponent("workable")
+    inst.components.workable:SetWorkAction(ACTIONS.NET)
+    inst.components.workable:SetWorkLeft(1)
+    inst.components.workable:SetOnFinishCallback(OnWorked)
 
     MakeSmallBurnableCharacter(inst, "body", Vector3(0, -1, 1))
     MakeTinyFreezableCharacter(inst, "body", Vector3(0, -1, 1))
@@ -190,10 +200,10 @@ local function mosquito()
     inst.components.combat:SetAttackPeriod(TUNING.MOSQUITO_ATTACK_PERIOD)
     inst.components.combat:SetRetargetFunction(2, KillerRetarget)
 
-	inst.drinks = 1
-	inst.maxdrinks = TUNING.MOSQUITO_MAX_DRINKS
-	inst:ListenForEvent("onattackother", TakeDrink)
-	SwapBelly(inst, 1)
+    inst.drinks = 1
+    inst.maxdrinks = TUNING.MOSQUITO_MAX_DRINKS
+    inst:ListenForEvent("onattackother", TakeDrink)
+    SwapBelly(inst, 1)
 
     MakeHauntablePanic(inst)
     AddHauntableCustomReaction(inst, function(inst, haunter)
@@ -215,6 +225,8 @@ local function mosquito()
     inst:AddComponent("inspectable")
 
     inst:ListenForEvent("attacked", OnAttacked)
+
+    MakeFeedablePet(inst, TUNING.TOTAL_DAY_TIME*2, OnPickedUp, OnDropped)
 
     return inst
 end

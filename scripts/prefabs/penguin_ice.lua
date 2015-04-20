@@ -93,7 +93,7 @@ end
 
 local function OnEntityWake(inst)
     dprint("ENTITY WAKE",inst)
-    if TheWorld.state.issummer then
+    if not TheWorld.state.iswinter then
         inst.faded = true
         inst.AnimState:SetErosionParams( 1.0, 0.1, 1.0 )
         return
@@ -121,7 +121,7 @@ local function OnEntitySleep(inst)
             end
         end
     end
-    if TheWorld.state.issummer then
+    if not TheWorld.state.iswinter then
         inst.faded = true
         inst.AnimState:SetErosionParams( 1.0, 0.1, 1.0 )
     end

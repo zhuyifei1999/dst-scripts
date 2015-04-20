@@ -21,9 +21,9 @@ local function OnInvestigated(inst, doer)
     --print("dirtpile - OnInvestigated", pt)
 
     local hunter = TheWorld.components.hunter
-	if hunter ~= nil then
-		hunter:OnDirtInvestigated(pt, doer)
-	end
+    if hunter ~= nil then
+        hunter:OnDirtInvestigated(pt, doer)
+    end
 
     SpawnPrefab("small_puff").Transform:SetPosition(pt:Get())
     --PlayFX(pt, "small_puff", "smoke_puff_small", "puff", "dontstarve/common/deathpoof", nil, Vector3(216/255, 154/255, 132/255))
@@ -70,12 +70,12 @@ local function create()
 
     inst.GetActivateVerb = GetVerb
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-    
     inst:AddComponent("inspectable")
     --inst.components.inspectable.getstatus = GetStatus
 

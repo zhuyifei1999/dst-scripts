@@ -1,22 +1,18 @@
 local assets =
 {
-	Asset("ANIM", "anim/ghost.zip"),
-	Asset("ANIM", "anim/ghost_build.zip"),
-	Asset("SOUND", "sound/ghost.fsb"),
-}
-
-local prefabs = 
-{
+    Asset("ANIM", "anim/ghost.zip"),
+    Asset("ANIM", "anim/ghost_build.zip"),
+    Asset("SOUND", "sound/ghost.fsb"),
 }
 
 local brain = require "brains/ghostbrain"
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
     inst.entity:AddLight()
     inst.entity:AddNetwork()
 
@@ -42,11 +38,13 @@ local function fn()
     inst:AddTag("ghost")
     inst:AddTag("noauradamage")
 
+    inst.SoundEmitter:PlaySound("dontstarve/ghost/ghost_howl_LP", "howl")
+
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:SetBrain(brain)
 
@@ -57,13 +55,13 @@ local function fn()
 
     inst:SetStateGraph("SGghost")
 
-	inst:AddComponent("sanityaura")
+    inst:AddComponent("sanityaura")
     inst.components.sanityaura.aura = -TUNING.SANITYAURA_MED
 
     inst:AddComponent("inspectable")
 
     inst:AddComponent("health")
-	inst.components.health:SetMaxHealth(TUNING.GHOST_HEALTH)
+    inst.components.health:SetMaxHealth(TUNING.GHOST_HEALTH)
 
     inst:AddComponent("combat")
     inst.components.combat.defaultdamage = TUNING.GHOST_DAMAGE
@@ -74,9 +72,8 @@ local function fn()
     inst.components.aura.tickperiod = TUNING.GHOST_DMG_PERIOD
 
     ------------------
-    inst.SoundEmitter:PlaySound("dontstarve/ghost/ghost_howl_LP", "howl")
 
     return inst
 end
 
-return Prefab("common/monsters/ghost", fn, assets, prefabs)
+return Prefab("common/monsters/ghost", fn, assets)

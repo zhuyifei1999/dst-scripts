@@ -1,14 +1,14 @@
 local assets =
 {
-	Asset("ANIM", "anim/tallbird_egg.zip"),
+    Asset("ANIM", "anim/tallbird_egg.zip"),
 }
 
 local prefabs =
 {
-	"smallbird",
-	"tallbirdegg_cracked",
-	"tallbirdegg_cooked",
-	"spoiled_food",
+    "smallbird",
+    "tallbirdegg_cracked",
+    "tallbirdegg_cooked",
+    "spoiled_food",
 }
 
 local loot_hot =
@@ -86,7 +86,7 @@ end
 
 local function DropLoot(inst)
     --print("tallbirdegg - DropLoot")
-    
+
     inst:AddComponent("lootdropper")
     if inst.components.hatchable.toohot then
         inst.components.lootdropper:SetLoot(loot_hot)
@@ -102,7 +102,7 @@ end
 
 local function OnHatchState(inst, state)
     --print("tallbirdegg - OnHatchState", state)
-    
+
     inst.SoundEmitter:KillSound("uncomfy")
 
     if state == "crack" then
@@ -135,7 +135,7 @@ local function OnHatchState(inst, state)
             inst:DoTaskInTime(30*FRAMES, DropLoot)
             inst.AnimState:PlayAnimation("toocold")
         end
-        
+
         inst:ListenForEvent("animover", inst.Remove)
     end
 end
@@ -147,40 +147,41 @@ local function OnEaten(inst, eater)
 end
 
 local function commonfn(anim, withsound)
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     if withsound then
         inst.entity:AddSoundEmitter()
     end
     inst.entity:AddNetwork()
-    
+
     MakeInventoryPhysics(inst)
 
     inst.AnimState:SetBuild("tallbird_egg")
     inst.AnimState:SetBank("egg")
     inst.AnimState:PlayAnimation("egg")
 
+    inst:AddTag("cattoy")
+
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-    
     inst:AddComponent("inspectable")
-    
+
     inst:AddComponent("inventoryitem")
 
     inst:AddComponent("edible")
+    inst.components.edible.foodtype = FOODTYPE.MEAT
 
-    inst:AddTag("cattoy")
-    
     return inst
 end
 
 local function defaultfn(anim)
-	local inst = commonfn(anim, true)
+    local inst = commonfn(anim, true)
 
     if not TheWorld.ismastersim then
         return inst
@@ -208,7 +209,7 @@ local function defaultfn(anim)
 
     inst.playernear = false
 
-	return inst
+    return inst
 end
 
 local function normalfn()
@@ -221,7 +222,7 @@ local function crackedfn()
     if not TheWorld.ismastersim then
         return inst
     end
-    
+
     inst.components.hatchable.state = "comfy"
 
     inst:AddComponent("playerprox")
@@ -235,8 +236,8 @@ local function crackedfn()
 end
 
 local function cookedfn()
-	local inst = commonfn("cooked")
-    
+    local inst = commonfn("cooked")
+
     if not TheWorld.ismastersim then
         return inst
     end
@@ -247,17 +248,17 @@ local function cookedfn()
 
     inst.components.edible.healthvalue = 0
     inst.components.edible.hungervalue = TUNING.CALORIES_LARGE
-    
-	inst:AddComponent("perishable")
-	inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)
-	inst.components.perishable:StartPerishing()
-	inst.components.perishable.onperishreplacement = "spoiled_food"
+
+    inst:AddComponent("perishable")
+    inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)
+    inst.components.perishable:StartPerishing()
+    inst.components.perishable.onperishreplacement = "spoiled_food"
 
     MakeHauntableLaunchAndPerish(inst)
-    
-	return inst
+
+    return inst
 end
 
 return Prefab("common/inventory/tallbirdegg", normalfn, assets, prefabs),
-		Prefab("common/inventory/tallbirdegg_cracked", crackedfn, assets),
-		Prefab("common/inventory/tallbirdegg_cooked", cookedfn, assets)
+    Prefab("common/inventory/tallbirdegg_cracked", crackedfn, assets),
+    Prefab("common/inventory/tallbirdegg_cooked", cookedfn, assets)

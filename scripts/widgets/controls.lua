@@ -35,6 +35,10 @@ local Controls = Class(Widget, function(self, owner)
     self.playeractionhint:SetOffset(Vector3(0, 100, 0))
     self.playeractionhint:Hide()
 
+    self.playeractionhint_itemhighlight = self:AddChild(FollowText(TALKINGFONT, 28))
+    self.playeractionhint_itemhighlight:SetOffset(Vector3(0, 100, 0))
+    self.playeractionhint_itemhighlight:Hide()
+
     self.attackhint = self:AddChild(FollowText(TALKINGFONT, 28))
     self.attackhint:SetOffset(Vector3(0, 100, 0))
     self.attackhint:Hide()
@@ -75,9 +79,9 @@ local Controls = Class(Widget, function(self, owner)
     
     self.clock = self.sidepanel:AddChild(UIClock(self.owner))
 
-    local broadcasting_options = TheFrontEnd:GetBroadcastingOptions()
-    if broadcasting_options ~= nil and broadcasting_options:SupportedByPlatform() then
-        if broadcasting_options:IsInitialized() and broadcasting_options:GetBroadcastingEnabled() and broadcasting_options:GetVisibleChatEnabled() then
+    local twitch_options = TheFrontEnd:GetTwitchOptions()
+    if twitch_options ~= nil and twitch_options:SupportedByPlatform() then
+        if twitch_options:IsInitialized() and twitch_options:GetBroadcastingEnabled() and twitch_options:GetVisibleChatEnabled() then
             self.chatqueue = self.sidepanel:AddChild(ChatQueue(self.owner))
         end
     end
@@ -227,6 +231,7 @@ function Controls:OnUpdate(dt)
 
 	if PerformingRestart then 
 	    self.playeractionhint:SetTarget(nil)
+	    self.playeractionhint_itemhighlight:SetTarget(nil)
 	    self.attackhint:SetTarget(nil)
 	    self.groundactionhint:SetTarget(nil)
 	    return 
@@ -254,6 +259,9 @@ function Controls:OnUpdate(dt)
 			self.demotimer = nil
 		end
 	end
+
+	local shownItemIndex = nil
+	local itemInActions = false		-- the item is either shown through the actionhint or the groundaction
 
 	if controller_mode and not (self.inv.open or self.crafttabs.controllercraftingopen) and self.owner:IsActionsVisible() then
 
@@ -302,13 +310,16 @@ function Controls:OnUpdate(dt)
 				cmds = ground_cmds
 				textblock = self.groundactionhint.text
 				self.playeractionhint:Hide()
+				itemInActions = false
 			else
 				self.playeractionhint:Show()
 				self.playeractionhint:SetTarget(controller_target)
+				itemInActions = true
 			end
 
 			local l, r = self.owner.components.playercontroller:GetSceneItemControllerAction(controller_target)
 			table.insert(cmds, controller_target:GetDisplayName())
+			shownItemIndex = #cmds
 
 			if controller_target == controller_attack_target then
 				table.insert(cmds, TheInput:GetLocalizedControl(controller_id, CONTROL_CONTROLLER_ATTACK) .. " " .. STRINGS.UI.HUD.ATTACK)
@@ -386,6 +397,48 @@ function Controls:OnUpdate(dt)
 				self.playeractionhint:SetScreenOffset(d/2,0)
 			end
 		end
+	end
+
+	self:HighlightActionItem(shownItemIndex, itemInActions)
+end
+
+function Controls:HighlightActionItem(itemIndex, itemInActions)
+	if itemIndex then
+		local followerWidget
+		if itemInActions then
+			followerWidget = self.playeractionhint
+		else
+			followerWidget = self.groundactionhint
+		end
+		self.playeractionhint_itemhighlight:Show()
+		local offsetx, offsety = followerWidget:GetScreenOffset()
+		self.playeractionhint_itemhighlight:SetScreenOffset(offsetx, offsety)
+		self.playeractionhint_itemhighlight:SetTarget(followerWidget.target)
+
+		local str = followerWidget.text.string
+		local itemlines = {}
+		local commandlines = {}
+		local target = self.owner.components.playercontroller.controller_target
+	    for idx,line in ipairs(string.split(str, "\r\n")) do
+			if idx==itemIndex then
+				local itemString = target:GetDisplayName()
+				itemlines[#itemlines+1] = itemString
+				commandlines[#commandlines+1]=" "
+			else
+				itemlines[#itemlines+1] = " "
+				commandlines[#commandlines+1] = line
+			end
+    	end
+		followerWidget.text:SetString(table.concat(commandlines,"\r\n"))
+
+		self.playeractionhint_itemhighlight.text:SetString(table.concat(itemlines,"\r\n"))
+		if target:GetIsWet() then
+	       	self.playeractionhint_itemhighlight.text:SetColour(unpack(WET_TEXT_COLOUR))
+		else
+			self.playeractionhint_itemhighlight.text:SetColour(unpack(NORMAL_TEXT_COLOUR))
+		end
+	else
+		self.playeractionhint_itemhighlight:Hide()
 	end
 end
 

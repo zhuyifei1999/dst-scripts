@@ -1,6 +1,6 @@
 local assets =
 {
-	Asset("ANIM", "anim/poop_cloud.zip"),
+    Asset("ANIM", "anim/poop_cloud.zip"),
 }
 
 local function PlayCloudAnim(proxy)
@@ -25,9 +25,9 @@ local function PlayCloudAnim(proxy)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
+    inst.entity:AddTransform()
     inst.entity:AddNetwork()
 
     inst:AddTag("FX")
@@ -39,11 +39,11 @@ local function fn()
         inst:DoTaskInTime(0, PlayCloudAnim)
     end
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst.persists = false
     inst:DoTaskInTime(1, inst.Remove)

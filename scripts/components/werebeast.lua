@@ -1,19 +1,19 @@
 local function CanToggleWere(self)
     return self.inst.entity:IsVisible() and
-        (TheWorld.state.isnight and TheWorld.state.isfullmoon) ~= self:IsInWereState()
+        TheWorld.state.isfullmoon ~= self:IsInWereState()
 end
 
 local function OnToggleWere(self)
     if CanToggleWere(self) then
-        if TheWorld.state.isnight and TheWorld.state.isfullmoon then
+        if TheWorld.state.isfullmoon then
             self.inst:DoTaskInTime(GetRandomWithVariance(1, 2), function()
-                if TheWorld.state.isnight and TheWorld.state.isfullmoon and CanToggleWere(self) then
+                if TheWorld.state.isfullmoon and CanToggleWere(self) then
                     self:SetWere()
                 end
             end)
         else
             self.inst:DoTaskInTime(GetRandomWithVariance(1, 2), function()
-                if not (TheWorld.state.isnight and TheWorld.state.isfullmoon) and CanToggleWere(self) then
+                if not TheWorld.state.isfullmoon and CanToggleWere(self) then
                     self:SetNormal()
                 end
             end)
@@ -32,8 +32,11 @@ local WereBeast = Class(function(self, inst)
     self.triggeramount = nil
     self.triggerthreshold = nil
     
-    self:WatchWorldState("isnight", OnToggleWere)
     self:WatchWorldState("isfullmoon", OnToggleWere)
+
+    self.inst:ListenForEvent("exitlimbo", function(inst)
+        inst:DoTaskInTime(0.2, function(inst) OnToggleWere(self) end)
+    end)
 end)
 
 local willTransform = {}

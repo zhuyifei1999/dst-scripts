@@ -1,11 +1,11 @@
 local assets =
 {
-	Asset("ANIM", "anim/evergreen_living_wood.zip"),
+    Asset("ANIM", "anim/evergreen_living_wood.zip"),
 }
 
 local prefabs =
 {
-	"livinglog",
+    "livinglog",
 }
 
 local function chop_down_burnt_tree(inst, chopper)
@@ -14,9 +14,9 @@ local function chop_down_burnt_tree(inst, chopper)
     if not chopper or (chopper and not chopper:HasTag("playerghost")) then
         inst.SoundEmitter:PlaySound("dontstarve/wilson/use_axe_tree")          
     end
-	inst.AnimState:PlayAnimation("chop_burnt_tall")
+    inst.AnimState:PlayAnimation("chop_burnt_tall")
     RemovePhysicsColliders(inst)
-	inst:ListenForEvent("animover", inst.Remove)
+    inst:ListenForEvent("animover", inst.Remove)
     inst.components.lootdropper:SpawnLootPrefab("charcoal")
     inst.components.lootdropper:DropLoot()
 end
@@ -40,15 +40,15 @@ local function Extinguish(inst)
 end
 
 local function OnBurnt(inst)
-	inst:DoTaskInTime(0.5, Extinguish)
-	inst.AnimState:PlayAnimation("burnt_tall", true)
+    inst:DoTaskInTime(0.5, Extinguish)
+    inst.AnimState:PlayAnimation("burnt_tall", true)
     inst.AnimState:SetRayTestOnBB(true)
     inst:AddTag("burnt")
 end
 
 local function ondug(inst, worker)
-	inst:Remove()
-	inst.components.lootdropper:SpawnLootPrefab("livinglog")
+    inst:Remove()
+    inst.components.lootdropper:SpawnLootPrefab("livinglog")
 end
 
 local function makestump(inst, instant)
@@ -57,11 +57,11 @@ local function makestump(inst, instant)
     MakeHauntableIgnite(inst)
     RemovePhysicsColliders(inst)
     if instant then
-    	inst.AnimState:PlayAnimation("stump")
+        inst.AnimState:PlayAnimation("stump")
     else
-    	inst.AnimState:PushAnimation("stump")
+        inst.AnimState:PushAnimation("stump")
     end
-	inst:AddComponent("workable")
+    inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.DIG)
     inst.components.workable:SetOnFinishCallback(ondug)
     inst.components.workable:SetWorkLeft(1)
@@ -70,15 +70,15 @@ end
 
 local function onworked(inst, chopper, workleft)
     if not chopper or (chopper and not chopper:HasTag("playerghost")) then
-    	if chopper and chopper.components.beaverness and chopper.components.beaverness:IsBeaver() then
-    		inst.SoundEmitter:PlaySound("dontstarve/characters/woodie/beaver_chop_tree")
-    	else
-    		inst.SoundEmitter:PlaySound("dontstarve/wilson/use_axe_tree")    
-    	end
+        if chopper and chopper.components.beaverness and chopper.components.beaverness:IsBeaver() then
+            inst.SoundEmitter:PlaySound("dontstarve/characters/woodie/beaver_chop_tree")
+        else
+            inst.SoundEmitter:PlaySound("dontstarve/wilson/use_axe_tree")    
+        end
     end
-	inst.SoundEmitter:PlaySound("dontstarve/creatures/leif/livingtree_hit")
-	inst.AnimState:PlayAnimation("chop")
-	inst.AnimState:PushAnimation("idle", true)
+    inst.SoundEmitter:PlaySound("dontstarve/creatures/leif/livingtree_hit")
+    inst.AnimState:PlayAnimation("chop")
+    inst.AnimState:PushAnimation("idle", true)
 end
 
 local function ShakeCamera(inst)
@@ -88,7 +88,7 @@ local function ShakeCamera(inst)
 end
 
 local function onworkfinish(inst, chopper)
-	inst.SoundEmitter:PlaySound("dontstarve/forest/treefall")
+    inst.SoundEmitter:PlaySound("dontstarve/forest/treefall")
     local pt = Vector3(inst.Transform:GetWorldPosition())
     local hispos = Vector3(chopper.Transform:GetWorldPosition())
     local he_right = (hispos - pt):Dot(TheCamera:GetRightVec()) > 0
@@ -109,9 +109,9 @@ local function onworkfinish(inst, chopper)
 end
 
 local function onsave(inst, data)
-	if inst:HasTag("stump") then
-		data.stump = true
-	end
+    if inst:HasTag("stump") then
+        data.stump = true
+    end
 
     if inst:HasTag("burnt") or inst:HasTag("fire") then
         data.burnt = true
@@ -119,13 +119,13 @@ local function onsave(inst, data)
 end
 
 local function onload(inst, data)
-	if data and data.stump then
-		makestump(inst, true)
-	end
+    if data and data.stump then
+        makestump(inst, true)
+    end
 
-	if data and data.burnt then
-		OnBurnt(inst)
-	end
+    if data and data.burnt then
+        OnBurnt(inst)
+    end
 end
 
 local function fn()
@@ -134,13 +134,13 @@ local function fn()
     inst.entity:AddTransform()
     inst.entity:AddAnimState()        
     inst.entity:AddSoundEmitter()
-	inst.entity:AddMiniMapEntity()
+    inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
 
     MakeObstaclePhysics(inst, .75)
 
     inst.MiniMapEntity:SetIcon("livingtree.png")
-    
+
     inst:AddTag("tree")
     inst:AddTag("workable")
 
@@ -150,35 +150,35 @@ local function fn()
 
     MakeSnowCoveredPristine(inst)
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
+    inst:AddComponent("inspectable")
 
-	inst:AddComponent("inspectable")
+    inst:AddComponent("lootdropper")
+    inst.components.lootdropper:SetLoot({"livinglog", "livinglog"})
 
-	inst:AddComponent("lootdropper")
-	inst.components.lootdropper:SetLoot({"livinglog", "livinglog"})
-
-	inst:AddComponent("workable")
-	inst.components.workable:SetWorkAction(ACTIONS.CHOP)
-	inst.components.workable:SetWorkLeft(20)
-	inst.components.workable:SetOnWorkCallback(onworked)
-	inst.components.workable:SetOnFinishCallback(onworkfinish)
+    inst:AddComponent("workable")
+    inst.components.workable:SetWorkAction(ACTIONS.CHOP)
+    inst.components.workable:SetWorkLeft(20)
+    inst.components.workable:SetOnWorkCallback(onworked)
+    inst.components.workable:SetOnFinishCallback(onworkfinish)
 
     MakeLargeBurnable(inst)
     inst.components.burnable:SetFXLevel(5)
     inst.components.burnable:SetOnBurntFn(OnBurnt)
-    MakeLargePropagator(inst)
+    MakeMediumPropagator(inst)
     MakeHauntableWorkAndIgnite(inst)
 
-	MakeSnowCovered(inst)
+    MakeSnowCovered(inst)
 
-	inst.OnSave = onsave
-	inst.OnLoad = onload
+    inst.OnSave = onsave
+    inst.OnLoad = onload
 
-	return inst
+    return inst
 end
 
 return Prefab("common/livingtree", fn, assets, prefabs)

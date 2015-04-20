@@ -1,17 +1,21 @@
 local assets =
 {
-	Asset("ANIM", "anim/portal_dst.zip"),
+    Asset("ANIM", "anim/portal_dst.zip"),
 }
 
 local function GetVerb()
-	return STRINGS.ACTIONS.ACTIVATE.GENERIC
+    return STRINGS.ACTIONS.ACTIVATE.GENERIC
 end
 
 --local function OnActivate(inst)
 --end
 
+local function OnRezPlayer(inst)
+    inst.sg:GoToState("spawn_pre")
+end
+
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
     inst.entity:AddTransform()
 
@@ -22,7 +26,7 @@ local function fn()
         return inst
     end
 
-	inst.entity:AddAnimState()
+    inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
@@ -37,48 +41,46 @@ local function fn()
 
     inst.GetActivateVerb = GetVerb
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-
     inst:SetStateGraph("SGmultiplayerportal")
 
     inst:AddComponent("inspectable")
-	inst.components.inspectable:RecordViews()
+    inst.components.inspectable:RecordViews()
 
-	-- inst:AddComponent("activatable")
+    -- inst:AddComponent("activatable")
  --    inst.components.activatable.OnActivate = OnActivate
  --    inst.components.activatable.inactive = true
-	-- inst.components.activatable.quickaction = true
+    -- inst.components.activatable.quickaction = true
 
-	if GetPortalRez( gamemode ) then
-		inst:AddComponent("hauntable")
-    	inst.components.hauntable:SetHauntValue(TUNING.HAUNT_INSTANT_REZ)
-    	inst:AddTag("resurrector")
+    if GetPortalRez(gamemode) then
+        inst:AddComponent("hauntable")
+        inst.components.hauntable:SetHauntValue(TUNING.HAUNT_INSTANT_REZ)
+        inst:AddTag("resurrector")
     end
 
-	inst:ListenForEvent("ms_newplayercharacterspawned", function(it, data) 
-		if data and data.player then
-			data.player.AnimState:SetMultColour(0,0,0,1)
-			data.player:Hide()
-			data.player.components.playercontroller:Enable(false)
-			data.player:DoTaskInTime(12*FRAMES, function(inst) 
-				data.player:Show()
-				data.player:DoTaskInTime(60*FRAMES, function(inst)
-					inst.components.colourtweener:StartTween({1,1,1,1}, 14*FRAMES, function(inst)
-	           			data.player.components.playercontroller:Enable(true)
-	            	end)
-	            end)
+    inst:ListenForEvent("ms_newplayercharacterspawned", function(world, data) 
+        if data and data.player then
+            data.player.AnimState:SetMultColour(0,0,0,1)
+            data.player:Hide()
+            data.player.components.playercontroller:Enable(false)
+            data.player:DoTaskInTime(12*FRAMES, function(inst) 
+                data.player:Show()
+                data.player:DoTaskInTime(60*FRAMES, function(inst)
+                    inst.components.colourtweener:StartTween({1,1,1,1}, 14*FRAMES, function(inst)
+                        data.player.components.playercontroller:Enable(true)
+                    end)
+                end)
             end)
-		end
-		inst.sg:GoToState("spawn_pre") 
-	end, TheWorld)
+        end
+        inst.sg:GoToState("spawn_pre") 
+    end, TheWorld)
 
-	inst:ListenForEvent("rez_player", function(inst) 
-		inst.sg:GoToState("spawn_pre") 
-	end)
+    inst:ListenForEvent("rez_player", OnRezPlayer)
 
     return inst
 end

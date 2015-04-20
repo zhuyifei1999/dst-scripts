@@ -1,6 +1,6 @@
 local assets =
 {
-	Asset("ANIM", "anim/trap.zip"),
+    Asset("ANIM", "anim/trap.zip"),
     Asset("SOUND", "sound/common.fsb"),
 }
 
@@ -12,15 +12,15 @@ local sounds =
 
 local function onharvested(inst)
     if inst.components.finiteuses then
-	    inst.components.finiteuses:Use(1)
+        inst.components.finiteuses:Use(1)
     end
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
@@ -35,11 +35,11 @@ local function fn()
 
     inst:AddTag("trap")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst.sounds = sounds
 

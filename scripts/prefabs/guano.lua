@@ -14,7 +14,7 @@ local function OnBurn(inst)
     if inst.flies then
         inst.flies:Remove()
         inst.flies = nil
-    end   
+    end
 end
 
 local function FuelTaken(inst, taker)
@@ -52,11 +52,13 @@ local function fn()
     inst.AnimState:PlayAnimation("dump")
     inst.AnimState:PushAnimation("idle")
 
+    MakeDragonflyBait(inst, 3)
+
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("inspectable")
 
@@ -66,6 +68,9 @@ local function fn()
     inst:AddComponent("fertilizer")
     inst.components.fertilizer.fertilizervalue = TUNING.GUANO_FERTILIZE
     inst.components.fertilizer.soil_cycles = TUNING.GUANO_SOILCYCLES
+    inst.components.fertilizer.withered_cycles = TUNING.GUANO_WITHEREDCYCLES
+
+    inst:AddComponent("smotherer")
 
     inst.components.inventoryitem:SetOnDroppedFn(ondropped)
     inst.components.inventoryitem:SetOnPickupFn(onpickup)

@@ -90,6 +90,13 @@ function Combat:GetAttackRangeWithWeapon()
     return self._attackrange:value()
 end
 
+function Combat:GetWeapon()
+    if self.inst.replica.inventory ~= nil then
+        local item = self.inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+        return item ~= nil and item:HasTag("weapon") and item or nil
+    end
+end
+
 function Combat:SetMinAttackPeriod(minattackperiod)
     if self.classified ~= nil then
         self.classified.minattackperiod:set(minattackperiod)
@@ -152,7 +159,21 @@ function Combat:CanAttack(target)
         --account for position error due to prediction
         range = math.max(range - error_threshold, 0)
 
-        return distsq(target:GetPosition(), self.inst:GetPosition()) <= range * range
+        -- V2C: this is 3D distsq
+        if distsq(target:GetPosition(), self.inst:GetPosition()) > range * range then
+            return false
+        end
+
+        -- gjans: Some specific logic so the birchnutter doesn't attack it's spawn with it's AOE
+        -- This could possibly be made more generic so that "things" don't attack other things in their "group" or something
+        if self.inst:HasTag("birchnutroot")
+            and (target:HasTag("birchnutroot") or
+                target:HasTag("birchnut") or
+                target:HasTag("birchnutdrage")) then
+            return false
+        end
+
+        return true
     else
         return false
     end
@@ -164,16 +185,25 @@ function Combat:CanHitTarget(target)
     elseif self.classified ~= nil then
         if target ~= nil and
             target:IsValid() and
-            not target:HasTag("INLIMBO") and
-            target.replica.combat ~= nil and
-            target.replica.combat:CanBeAttacked(self.inst) then
+            not target:HasTag("INLIMBO") then
 
-            local range = self:GetAttackRangeWithWeapon() + (target.Physics ~= nil and target.Physics:GetRadius() or 0)
-            local error_threshold = .5
-            --account for position error due to prediction
-            range = math.max(range - error_threshold, 0)
+            local weapon = self:GetWeapon()
+            local specialcase_target =
+                weapon ~= nil
+                and ((weapon:HasTag("extinguisher") and (target:HasTag("smolder") or target:HasTag("fire"))) or
+                    (weapon:HasTag("rangedlighter") and target:HasTag("canlight")))
 
-            return distsq(target:GetPosition(), self.inst:GetPosition()) <= range * range
+            if specialcase_target or
+                (target.replica.combat ~= nil and target.replica.combat:CanBeAttacked(self.inst)) then
+
+                local range = self:GetAttackRangeWithWeapon() + (target.Physics ~= nil and target.Physics:GetRadius() or 0)
+                local error_threshold = .5
+                --account for position error due to prediction
+                range = math.max(range - error_threshold, 0)
+
+                -- V2C: this is 3D distsq
+                return distsq(target:GetPosition(), self.inst:GetPosition()) <= range * range
+            end
         end
     else
         return false
@@ -181,25 +211,48 @@ function Combat:CanHitTarget(target)
 end
 
 function Combat:IsValidTarget(target)
-    return target ~= nil and
-        target ~= self.inst and
-        target.entity:IsValid() and
-        target.entity:IsVisible() and
+    if target == nil or
+        target == self.inst or
+        not (target.entity:IsValid() and target.entity:IsVisible()) then
+        return false
+    end
+
+    local weapon = self:GetWeapon()
+    if weapon ~= nil then
+        -- Light fire with ranged lighter
+        if weapon:HasTag("rangedlighter")
+            and target:HasTag("canlight")
+            and not (target:HasTag("fire") or target:HasTag("burnt")) then
+            return true
+
+        -- Extinguish smoldering fire
+        elseif weapon:HasTag("extinguisher")
+            and (target:HasTag("smolder") or target:HasTag("fire")) then
+            return true
+        end
+    end
+
+    return
         target.replica.combat ~= nil and
         target.replica.health ~= nil and
         not target.replica.health:IsDead() and
         not (target:HasTag("shadow") and self.inst.replica.sanity == nil) and
         not (target:HasTag("playerghost") and (self.inst.replica.sanity == nil or self.inst.replica.sanity:IsSane())) and
+        -- gjans: Some specific logic so the birchnutter doesn't attack it's spawn with it's AOE
+        -- This could possibly be made more generic so that "things" don't attack other things in their "group" or something
+        (not self.inst:HasTag("birchnutroot") or not (target:HasTag("birchnutroot") or target:HasTag("birchnut") or target:HasTag("birchnutdrake"))) and 
         (TheNet:GetPVPEnabled() or not (self.inst:HasTag("player") and target:HasTag("player"))) and
-        target:GetPosition().y <= self._attackrange:value()
+        target:GetPosition().y <= self._attackrange:value() 
 end
 
 function Combat:CanTarget(target)
-    return self:IsValidTarget(target) and
-        not (self._ispanic:value() or
-            target:HasTag("INLIMBO") or
-            target:HasTag("invisible")) and
-        target.replica.combat:CanBeAttacked(self.inst)
+    return self:IsValidTarget(target)
+        and not (self._ispanic:value()
+                or target:HasTag("INLIMBO")
+                or target:HasTag("invisible")
+                or target:HasTag("debugnoattack"))
+        and (target.replica.combat == nil
+            or target.replica.combat:CanBeAttacked(self.inst))
 end
 
 function Combat:IsAlly(guy)
@@ -215,26 +268,35 @@ function Combat:CanBeAttacked(attacker)
         self.inst:HasTag("invisible") then
         --Can't be attacked by anyone
         return false
-    elseif attacker ~= nil and
-        not TheNet:GetPVPEnabled() and
-        attacker:HasTag("player") and
-        self.inst:HasTag("player") then
-        --PVP check
-        return false
-    elseif attacker ~= nil and
-        attacker.replica.sanity ~= nil and
-        attacker.replica.sanity:IsCrazy() then
-        --Insane attacker can pretty much attack anything
-        return true
-    elseif self.inst:HasTag("playerghost") or
+    elseif attacker ~= nil then
+        --Attacker checks
+        if self.inst:HasTag("birchnutdrake") and
+            not (attacker:HasTag("birchnutdrake") or
+                attacker:HasTag("birchnutroot") or
+                attacker:HasTag("birchnut")) then
+            --Birchnut check
+            return false
+        elseif not TheNet:GetPVPEnabled() and
+            attacker:HasTag("player") and
+            self.inst:HasTag("player") then
+            --PVP check
+            return false
+        elseif attacker.replica.sanity ~= nil and
+            attacker.replica.sanity:IsCrazy() then
+            --Insane attacker can pretty much attack anything
+            return true
+        end
+    end
+
+    if self.inst:HasTag("playerghost") or
         (self.inst:HasTag("shadowcreature") and self._target:value() == nil) then
         --Not insane attacker cannot attack player ghosts or shadow creatures
         --(unless shadow creature has a target)
         return false
-    else
-        --Can be attacked by anyone
-        return true
     end
+
+    --Passed all checks, can be attacked by anyone
+    return true
 end
 
 return Combat

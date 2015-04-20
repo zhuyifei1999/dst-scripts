@@ -1,15 +1,15 @@
 local assets =
 {
-	Asset("ANIM", "anim/ds_pig_basic.zip"),
-	Asset("ANIM", "anim/ds_pig_actions.zip"),
-	Asset("ANIM", "anim/ds_pig_attacks.zip"),
-	Asset("ANIM", "anim/pig_build.zip"),
-	Asset("ANIM", "anim/pigspotted_build.zip"),
-	Asset("ANIM", "anim/pig_guard_build.zip"),
-	Asset("ANIM", "anim/werepig_build.zip"),
-	Asset("ANIM", "anim/werepig_basic.zip"),
-	Asset("ANIM", "anim/werepig_actions.zip"),
-	Asset("SOUND", "sound/pig.fsb"),
+    Asset("ANIM", "anim/ds_pig_basic.zip"),
+    Asset("ANIM", "anim/ds_pig_actions.zip"),
+    Asset("ANIM", "anim/ds_pig_attacks.zip"),
+    Asset("ANIM", "anim/pig_build.zip"),
+    Asset("ANIM", "anim/pigspotted_build.zip"),
+    Asset("ANIM", "anim/pig_guard_build.zip"),
+    Asset("ANIM", "anim/werepig_build.zip"),
+    Asset("ANIM", "anim/werepig_basic.zip"),
+    Asset("ANIM", "anim/werepig_actions.zip"),
+    Asset("SOUND", "sound/pig.fsb"),
 }
 
 local prefabs =
@@ -26,20 +26,20 @@ local MAX_TARGET_SHARES = 5
 local SHARE_TARGET_DIST = 30
 
 local function ontalk(inst, script)
-	inst.SoundEmitter:PlaySound("dontstarve/pig/grunt")
+    inst.SoundEmitter:PlaySound("dontstarve/pig/grunt")
 end
 
 local function CalcSanityAura(inst, observer)
-	if inst.components.werebeast
+    if inst.components.werebeast
        and inst.components.werebeast:IsInWereState() then
-		return -TUNING.SANITYAURA_LARGE
-	end
-	
-	if inst.components.follower and inst.components.follower.leader == observer then
-		return TUNING.SANITYAURA_SMALL
-	end
-	
-	return 0
+        return -TUNING.SANITYAURA_LARGE
+    end
+
+    if inst.components.follower and inst.components.follower.leader == observer then
+        return TUNING.SANITYAURA_SMALL
+    end
+
+    return 0
 end
 
 local function ShouldAcceptItem(inst, item)
@@ -57,24 +57,23 @@ local function ShouldAcceptItem(inst, item)
            and inst.components.follower:GetLoyaltyPercent() > 0.9 then
             return false
         end
-        
-        if item.components.edible.foodtype == FOODTYPE.VEGGIE then
-			local last_eat_time = inst.components.eater:TimeSinceLastEating()
-			if last_eat_time and last_eat_time < TUNING.PIG_MIN_POOP_PERIOD then        
-				return false
-			end
+
+        if item.components.edible.foodtype == FOODTYPE.VEGGIE or item.components.edible.foodtype == FOODTYPE.RAW then
+            local last_eat_time = inst.components.eater:TimeSinceLastEating()
+            if last_eat_time and last_eat_time < TUNING.PIG_MIN_POOP_PERIOD then        
+                return false
+            end
 
             if inst.components.inventory:Has(item.prefab, 1) then
                 return false
             end
-		end
-		
+        end
+
         return true
     end
 end
 
 local function OnGetItemFromPlayer(inst, giver, item)
-    
     --I eat food
     if item.components.edible then
         --meat makes us friends (unless I'm a guard)
@@ -82,8 +81,8 @@ local function OnGetItemFromPlayer(inst, giver, item)
             if inst.components.combat.target and inst.components.combat.target == giver then
                 inst.components.combat:SetTarget(nil)
             elseif giver.components.leader and not inst:HasTag("guard") then
-				inst.SoundEmitter:PlaySound("dontstarve/common/makeFriend")
-				giver.components.leader:AddFollower(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/common/makeFriend")
+                giver.components.leader:AddFollower(inst)
                 inst.components.follower:AddLoyaltyTime(item.components.edible:GetHunger() * TUNING.PIG_LOYALTY_PER_HUNGER)
             end
         end
@@ -124,19 +123,50 @@ local function OnEat(inst, food)
     end
 end
 
+local function OnAttackedByDecidRoot(inst, attacker)
+    local fn = function(dude) return dude:HasTag("pig") and not dude:HasTag("werepig") and not dude:HasTag("guard") end
+
+    local x,y,z = inst.Transform:GetWorldPosition()
+    local ents = nil
+    if TheWorld.state.isspring then
+        ents = TheSim:FindEntities(x,y,z, (SHARE_TARGET_DIST * TUNING.SPRING_COMBAT_MOD) / 2)
+    else
+        ents = TheSim:FindEntities(x,y,z, SHARE_TARGET_DIST / 2)
+    end
+
+    if ents then
+        local num_helpers = 0
+        for k,v in pairs(ents) do
+            if v ~= inst and v.components.combat and not (v.components.health and v.components.health:IsDead()) and fn(v) then
+                if v:PushEvent("suggest_tree_target", {tree=attacker}) then
+                    num_helpers = num_helpers + 1
+                end
+            end
+            if num_helpers >= MAX_TARGET_SHARES then
+                break
+            end
+        end
+    end
+end
+
 local function OnAttacked(inst, data)
     --print(inst, "OnAttacked")
     local attacker = data.attacker
+    inst:ClearBufferedAction()
 
-    inst.components.combat:SetTarget(attacker)
+    if attacker.prefab == "deciduous_root" and attacker.owner then 
+        OnAttackedByDecidRoot(inst, attacker.owner)
+    elseif attacker.prefab ~= "deciduous_root" then
+        inst.components.combat:SetTarget(attacker)
 
-    if inst:HasTag("werepig") then
-        inst.components.combat:ShareTarget(attacker, SHARE_TARGET_DIST, function(dude) return dude:HasTag("werepig") end, MAX_TARGET_SHARES)
-    elseif inst:HasTag("guard") then
-            inst.components.combat:ShareTarget(attacker, SHARE_TARGET_DIST, function(dude) return dude:HasTag("pig") and (dude:HasTag("guard") or not attacker:HasTag("pig")) end, MAX_TARGET_SHARES)
-    else
-        if not (attacker:HasTag("pig") and attacker:HasTag("guard") ) then
-            inst.components.combat:ShareTarget(attacker, SHARE_TARGET_DIST, function(dude) return dude:HasTag("pig") and not dude:HasTag("werepig") end, MAX_TARGET_SHARES)
+        if inst:HasTag("werepig") then
+            inst.components.combat:ShareTarget(attacker, SHARE_TARGET_DIST, function(dude) return dude:HasTag("werepig") end, MAX_TARGET_SHARES)
+        elseif inst:HasTag("guard") then
+                inst.components.combat:ShareTarget(attacker, SHARE_TARGET_DIST, function(dude) return dude:HasTag("pig") and (dude:HasTag("guard") or not attacker:HasTag("pig")) end, MAX_TARGET_SHARES)
+        else
+            if not (attacker:HasTag("pig") and attacker:HasTag("guard") ) then
+                inst.components.combat:ShareTarget(attacker, SHARE_TARGET_DIST, function(dude) return dude:HasTag("pig") and not dude:HasTag("werepig") end, MAX_TARGET_SHARES)
+            end
         end
     end
 end
@@ -184,18 +214,24 @@ end
 
 local normalbrain = require "brains/pigbrain"
 
+local function SuggestTreeTarget(inst, data)
+    if data and data.tree and inst:GetBufferedAction() ~= ACTIONS.CHOP then
+        inst.tree_target = data.tree
+    end
+end
+
 local function SetNormalPig(inst)
     inst:RemoveTag("werepig")
     inst:RemoveTag("guard")
     inst:SetBrain(normalbrain)
     inst:SetStateGraph("SGpig")
-	inst.AnimState:SetBuild(inst.build)
-    
+    inst.AnimState:SetBuild(inst.build)
+
     if inst.components.hauntable then 
         inst.components.hauntable.haunted = false 
         inst.components.hauntable.cooldown_on_successful_haunt = true
     end
-	inst.components.werebeast:SetOnNormalFn(SetNormalPig)
+    inst.components.werebeast:SetOnNormalFn(SetNormalPig)
     inst.components.sleeper:SetResistance(2)
 
     inst.components.combat:SetDefaultDamage(TUNING.PIG_DAMAGE)
@@ -203,10 +239,10 @@ local function SetNormalPig(inst)
     inst.components.combat:SetKeepTargetFunction(NormalKeepTargetFn)
     inst.components.locomotor.runspeed = TUNING.PIG_RUN_SPEED
     inst.components.locomotor.walkspeed = TUNING.PIG_WALK_SPEED
-    
+
     inst.components.sleeper:SetSleepTest(NormalShouldSleep)
     inst.components.sleeper:SetWakeTest(DefaultWakeTest)
-    
+
     inst.components.lootdropper:SetLoot({})
     inst.components.lootdropper:AddRandomLoot("meat",3)
     inst.components.lootdropper:AddRandomLoot("pigskin",1)
@@ -215,25 +251,28 @@ local function SetNormalPig(inst)
     inst.components.health:SetMaxHealth(TUNING.PIG_HEALTH)
     inst.components.combat:SetRetargetFunction(3, NormalRetargetFn)
     inst.components.combat:SetTarget(nil)
-    
+    inst:ListenForEvent("suggest_tree_target", SuggestTreeTarget)
+
     inst.components.trader:Enable()
     inst.components.talker:StopIgnoringAll()
-    inst.components.combat:SetHurtSound(nil)
 end
 
 local function GuardRetargetFn(inst)
     local home = inst.components.homeseeker and inst.components.homeseeker.home
     --defend the king, then the torch, then myself
-    local defenseTarget = FindEntity(inst, TUNING.PIG_GUARD_DEFEND_DIST, nil,
+
+    local defendDist = SpringCombatMod(TUNING.PIG_GUARD_DEFEND_DIST)
+
+    local defenseTarget = FindEntity(inst, defendDist, nil,
     {"king"}
     )
-    if not defenseTarget and home and inst:GetDistanceSqToInst(home) < TUNING.PIG_GUARD_DEFEND_DIST*TUNING.PIG_GUARD_DEFEND_DIST then
+    if not defenseTarget and home and inst:GetDistanceSqToInst(home) < defendDist*defendDist then
         defenseTarget = home
     end
     if not defenseTarget then
         defenseTarget = inst
     end
-    local invader = FindEntity(defenseTarget or inst, TUNING.PIG_GUARD_TARGET_DIST, nil,
+    local invader = FindEntity(defenseTarget or inst, SpringCombatMod(TUNING.PIG_GUARD_TARGET_DIST), nil,
     {"character"},
     {"guard"}
     )
@@ -256,7 +295,7 @@ local function GuardRetargetFn(inst)
             end
         end
     end
-    return FindEntity(defenseTarget, TUNING.PIG_GUARD_DEFEND_DIST, nil,
+    return FindEntity(defenseTarget, defendDist, nil,
     {"monster"}
     )
 end
@@ -264,15 +303,15 @@ end
 local function GuardKeepTargetFn(inst, target)
     local home = inst.components.homeseeker and inst.components.homeseeker.home
     if home then
-        local defendDist = TUNING.PIG_GUARD_DEFEND_DIST
+        local defendDist = SpringCombatMod(TUNING.PIG_GUARD_DEFEND_DIST)
         if not TheWorld.state.isday and home.components.burnable and home.components.burnable:IsBurning() then
             defendDist = home.components.burnable:GetLargestLightRadius()
         end
         return home:GetDistanceSqToInst(target) < defendDist*defendDist
                and home:GetDistanceSqToInst(inst) < defendDist*defendDist
     end
-    return inst.components.combat:CanTarget(target)     
-           and not (target.sg and target.sg:HasStateTag("transform") )
+    return inst.components.combat:CanTarget(target)
+           and not (target.sg and target.sg:HasStateTag("transform"))
 end
 
 local function GuardShouldSleep(inst)
@@ -290,13 +329,13 @@ local function SetGuardPig(inst)
     inst:AddTag("guard")
     inst:SetBrain(guardbrain)
     inst:SetStateGraph("SGpig")
-	inst.AnimState:SetBuild(inst.build)
-    
+    inst.AnimState:SetBuild(inst.build)
+
     if inst.components.hauntable then 
         inst.components.hauntable.haunted = false 
         inst.components.hauntable.cooldown_on_successful_haunt = true
     end
-	inst.components.werebeast:SetOnNormalFn(SetGuardPig)
+    inst.components.werebeast:SetOnNormalFn(SetGuardPig)
     inst.components.sleeper:SetResistance(3)
 
     inst.components.health:SetMaxHealth(TUNING.PIG_GUARD_HEALTH)
@@ -307,10 +346,10 @@ local function SetGuardPig(inst)
     inst.components.combat:SetTarget(nil)
     inst.components.locomotor.runspeed = TUNING.PIG_RUN_SPEED
     inst.components.locomotor.walkspeed = TUNING.PIG_WALK_SPEED
-    
+
     inst.components.sleeper:SetSleepTest(GuardShouldSleep)
     inst.components.sleeper:SetWakeTest(GuardShouldWake)
-    
+
     inst.components.lootdropper:SetLoot({})
     inst.components.lootdropper:AddRandomLoot("meat",3)
     inst.components.lootdropper:AddRandomLoot("pigskin",1)
@@ -319,15 +358,12 @@ local function SetGuardPig(inst)
     inst.components.trader:Enable()
     inst.components.talker:StopIgnoringAll()
     inst.components.follower:SetLeader(nil)
-
-    inst.components.combat:SetHurtSound(nil)
-
 end
 
 local function WerepigRetargetFn(inst)
-    return FindEntity(inst, TUNING.PIG_TARGET_DIST, function(guy)
+    return FindEntity(inst, SpringCombatMod(TUNING.PIG_TARGET_DIST), function(guy)
         return inst.components.combat:CanTarget(guy)
-               and not (guy.sg and guy.sg:HasStateTag("transform") )
+               and not (guy.sg and guy.sg:HasStateTag("transform"))
     end,
     nil,
     {"werepig","alwaysblock"}
@@ -358,28 +394,26 @@ local function SetWerePig(inst)
     inst.AnimState:SetBuild("werepig_build")
 
     inst.components.sleeper:SetResistance(3)
-    
+
     inst.components.combat:SetDefaultDamage(TUNING.WEREPIG_DAMAGE)
     inst.components.combat:SetAttackPeriod(TUNING.WEREPIG_ATTACK_PERIOD)
     inst.components.locomotor.runspeed = TUNING.WEREPIG_RUN_SPEED 
     inst.components.locomotor.walkspeed = TUNING.WEREPIG_WALK_SPEED 
-    
+
     inst.components.sleeper:SetSleepTest(WerepigSleepTest)
     inst.components.sleeper:SetWakeTest(WerepigWakeTest)
-    
+
     inst.components.lootdropper:SetLoot({"meat","meat", "pigskin"})
     inst.components.lootdropper.numrandomloot = 0
-    
+
     inst.components.health:SetMaxHealth(TUNING.WEREPIG_HEALTH)
     inst.components.combat:SetTarget(nil)
     inst.components.combat:SetRetargetFunction(3, WerepigRetargetFn)
     inst.components.combat:SetKeepTargetFunction(WerepigKeepTargetFn)
-    
+
     inst.components.trader:Disable()
     inst.components.follower:SetLeader(nil)
     inst.components.talker:IgnoreAll()
-    inst.components.combat:SetHurtSound("dontstarve/creatures/werepig/hurt")
-
 end
 
 local function GetStatus(inst)
@@ -394,7 +428,7 @@ end
 
 local function OnSave(inst, data)
     data.build = inst.build
-end        
+end
 
 local function OnLoad(inst, data)    
     if data ~= nil then
@@ -406,12 +440,12 @@ local function OnLoad(inst, data)
 end
 
 local function common()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
-	inst.entity:AddDynamicShadow()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
+    inst.entity:AddDynamicShadow()
     inst.entity:AddLightWatcher()
     inst.entity:AddNetwork()
 
@@ -430,11 +464,11 @@ local function common()
     --Sneak these into pristine state for optimization
     inst:AddTag("_named")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     --Remove these tags so that they can be added properly when replicating components below
     inst:RemoveTag("_named")
@@ -445,15 +479,16 @@ local function common()
     inst.components.talker.font = TALKINGFONT
     --inst.components.talker.colour = Vector3(133/255, 140/255, 167/255)
     inst.components.talker.offset = Vector3(0,-400,0)
-    
+
     inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
     inst.components.locomotor.runspeed = TUNING.PIG_RUN_SPEED --5
     inst.components.locomotor.walkspeed = TUNING.PIG_WALK_SPEED --3
 
     ------------------------------------------
     inst:AddComponent("eater")
-    inst.components.eater:SetOmnivore()
-	inst.components.eater:SetCanEatHorrible()
+    inst.components.eater:SetDiet({ FOODGROUP.OMNI }, { FOODGROUP.OMNI })
+    inst.components.eater:SetCanEatHorrible()
+    inst.components.eater:SetCanEatRaw()
     inst.components.eater.strongstomach = true -- can eat monster meat!
     inst.components.eater:SetOnEatFn(OnEat)
     ------------------------------------------
@@ -466,11 +501,11 @@ local function common()
     inst:AddComponent("named")
     inst.components.named.possiblenames = STRINGS.PIGNAMES
     inst.components.named:PickNewName()
-    
+
     ------------------------------------------
-	inst:AddComponent("werebeast")
-	inst.components.werebeast:SetOnWereFn(SetWerePig)
-	inst.components.werebeast:SetTriggerLimit(4)
+    inst:AddComponent("werebeast")
+    inst.components.werebeast:SetOnWereFn(SetWerePig)
+    inst.components.werebeast:SetTriggerLimit(4)
 
     MakeHauntablePanic(inst)
     AddHauntableCustomReaction(inst, function(inst, haunter)
@@ -481,14 +516,14 @@ local function common()
             inst.components.hauntable.hauntvalue = TUNING.HAUNT_LARGE
         end
     end, true, nil, true)
-	
+
     ------------------------------------------
     inst:AddComponent("follower")
     inst.components.follower.maxfollowtime = TUNING.PIG_LOYALTY_MAXTIME
     ------------------------------------------
 
     inst:AddComponent("inventory")
-    
+
     ------------------------------------------
 
     inst:AddComponent("lootdropper")
@@ -503,7 +538,7 @@ local function common()
     inst.components.trader:SetAcceptTest(ShouldAcceptItem)
     inst.components.trader.onaccept = OnGetItemFromPlayer
     inst.components.trader.onrefuse = OnRefuseItem
-    
+
     ------------------------------------------
 
     inst:AddComponent("sanityaura")
@@ -512,10 +547,10 @@ local function common()
     ------------------------------------------
 
     inst:AddComponent("sleeper")
-    
+
     ------------------------------------------
     MakeMediumFreezableCharacter(inst, "pig_torso")
-    
+
     ------------------------------------------
 
     inst:AddComponent("inspectable")
@@ -558,4 +593,4 @@ local function guard()
 end
 
 return Prefab("common/characters/pigman", normal, assets, prefabs),
-       Prefab("common/character/pigguard", guard, assets, prefabs)
+    Prefab("common/character/pigguard", guard, assets, prefabs)

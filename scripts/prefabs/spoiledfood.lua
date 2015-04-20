@@ -1,13 +1,13 @@
 local assets =
 {
-	Asset("ANIM", "anim/spoiled_food.zip"),
+    Asset("ANIM", "anim/spoiled_food.zip"),
 }
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddNetwork()
 
     MakeInventoryPhysics(inst)
@@ -16,20 +16,26 @@ local function fn()
     inst.AnimState:SetBuild("spoiled_food")
     inst.AnimState:PlayAnimation("idle")
 
+    MakeDragonflyBait(inst, 3)
+
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("fertilizer")
     inst.components.fertilizer.fertilizervalue = TUNING.SPOILEDFOOD_FERTILIZE
     inst.components.fertilizer.soil_cycles = TUNING.SPOILEDFOOD_SOILCYCLES
 
+    inst.components.fertilizer.withered_cycles = TUNING.SPOILEDFOOD_WITHEREDCYCLES
+
+    inst:AddComponent("smotherer")
+
     inst:AddComponent("inspectable")
     inst:AddComponent("inventoryitem")
     inst:AddComponent("stackable")
-	inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
+    inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
 
     inst:AddComponent("selfstacker")
 

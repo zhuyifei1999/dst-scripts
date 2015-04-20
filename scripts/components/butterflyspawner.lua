@@ -62,7 +62,7 @@ end
 
 local function ScheduleSpawn(player, initialspawn)
     if _scheduledtasks[player] == nil then
-        local basedelay = initialspawn and 0 or 10
+        local basedelay = initialspawn and 0.3 or 10
         _scheduledtasks[player] = player:DoTaskInTime(basedelay + math.random() * 10, SpawnButterflyForPlayer, ScheduleSpawn)
     end
 end
@@ -75,7 +75,7 @@ local function CancelSpawn(player)
 end
 
 local function ToggleUpdate(force)
-    if _worldstate.isday and _worldstate.issummer and _maxbutterflies > 0 then
+    if _worldstate.isday and not _worldstate.iswinter and _maxbutterflies > 0 then
         if not _updating then
             _updating = true
             for i, v in ipairs(_activeplayers) do
@@ -147,11 +147,17 @@ end
 
 --Register events
 inst:WatchWorldState("isday", ToggleUpdate)
-inst:WatchWorldState("issummer", ToggleUpdate)
+inst:WatchWorldState("iswinter", ToggleUpdate)
 inst:ListenForEvent("ms_playerjoined", OnPlayerJoined, TheWorld)
 inst:ListenForEvent("ms_playerleft", OnPlayerLeft, TheWorld)
 
-ToggleUpdate(true)
+--------------------------------------------------------------------------
+--[[ Post initialization ]]
+--------------------------------------------------------------------------
+
+function self:OnPostInit()
+    ToggleUpdate(true)
+end
 
 --------------------------------------------------------------------------
 --[[ Public member functions ]]
@@ -233,7 +239,7 @@ function self:GetDebugString()
     for k, v in pairs(_butterflies) do
         numbutterflies = numbutterflies + 1
     end
-    return string.format("butterflies:%d/%d", numbutterflies, _maxbutterflies)
+    return string.format("updating:%s butterflies:%d/%d", tostring(_updating), numbutterflies, _maxbutterflies)
 end
 
 --------------------------------------------------------------------------

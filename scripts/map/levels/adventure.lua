@@ -55,9 +55,12 @@ AddLevel(LEVELTYPE.ADVENTURE, {
 			{"start_node", 		"Forest"},	
 
 			{"season", 			"autumn"}, 
-			{"season_start", 	"summer"},
+			{"season_start", 	"autumn"},
 			
 			{"deerclops", 		"never"},
+			{"bearger", 		"never"},
+			{"dragonfly", 		"never"},
+			{"goosemoose", 		"never"},
 			{"hounds", 			"never"},
 			{"mactusk", 		"always"},
 			{"leifs",			"always"},
@@ -153,6 +156,9 @@ AddLevel(LEVELTYPE.ADVENTURE, {
 			{"weather", 		{"always", "often"}},		
 			
 			{"deerclops", 		"often"},
+			{"bearger", 		"never"},
+			{"dragonfly", 		"never"},
+			{"goosemoose", 		"never"},
 			{"hounds", 			"never"},
 			{"mactusk", 		"always"},
 			
@@ -213,6 +219,11 @@ AddLevel(LEVELTYPE.ADVENTURE, {
 			{"season_start", 	"winter"},
 			{"spiders",			"often"},
 
+			{"deerclops", 		"never"},
+			{"bearger", 		"never"},
+			{"dragonfly", 		"never"},
+			{"goosemoose", 		"never"},
+
 			{"branching",		"default"},
 			{"loop",			"never"},
 		},
@@ -268,8 +279,13 @@ AddLevel(LEVELTYPE.ADVENTURE, {
 			{"islands", 		"always"},	
 			{"roads", 			"never"},	
 			{"start_node",		"BGGrass"},
-			{"start_setpeice", 	"ThisMeansWarStart"},
-			{"weather", 		{"rare", "default", "often"}},
+			{"season_start", 	"autumn"},
+			{"season_mode", 	"classic"},
+ 			{"start_setpeice", 	"ThisMeansWarStart"},
+ 			{"weather", 		{"rare", "default", "often"}},
+			{"bearger", 		"never"},
+			{"dragonfly", 		"never"},
+			{"goosemoose",		"never"},
 		},
 		substitutes = GetRandomSubstituteList(SUBS_1, 3),
 		tasks = {
@@ -307,13 +323,17 @@ AddLevel(LEVELTYPE.ADVENTURE, {
 			--{"world_size", 		"medium"},
 			{"day", 			"longday"}, 
 			{"season", 			"onlysummer"},
-			{"season_start",	"summer"},
+			{"season_start",	"autumn"},
 			
 			{"islands", 		"always"},	
 			{"roads", 			"never"},	
 				
 			{"start_setpeice", 	"BargainStart"},		
 			{"start_node",		"Clearing"},
+
+			{"bearger", 		"never"},
+			{"dragonfly", 		"never"},
+			{"goosemoose", 		"never"},
 		},
 		substitutes = GetRandomSubstituteList(SUBS_1, 3),
 		tasks = {
@@ -362,7 +382,7 @@ AddLevel(LEVELTYPE.ADVENTURE, {
 		overrides={
 			{"branching",		"never"},
 			{"day", 			"onlynight"}, 
-			{"season_start", 	"summer"},
+			{"season_start", 	"autumn"},
 			{"season", 			"onlysummer"},
 			{"weather", 		"often"}, -- always
 
@@ -379,6 +399,9 @@ AddLevel(LEVELTYPE.ADVENTURE, {
 			{"start_node",		"BGGrass"},
 
 			{"maxwelllight_area",	"always"},
+			{"bearger", 		"never"},
+			{"dragonfly", 		"never"},
+			{"goosemoose", 		"never"},
 		},
 		substitutes = MergeMaps( {["pighouse"] = {perstory=1,weight=1,pertask=1}},
 								 GetRandomSubstituteList(SUBS_1, 3) ),
@@ -441,6 +464,10 @@ AddLevel(LEVELTYPE.ADVENTURE, {
 			{"creepyeyes", 		"always"},
 			{"waves", 			"off"},
 			{"boons",			"never"},
+			{"deerclops", 		"never"},
+			{"bearger", 		"never"},
+			{"dragonfly", 		"never"},
+			{"goosemoose", 		"never"},
 		},	
 		tasks = {
 			"MaxHome",

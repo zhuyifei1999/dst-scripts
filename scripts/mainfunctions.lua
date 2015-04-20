@@ -511,7 +511,7 @@ end
 
 --isshutdown means players have been cleaned up by OnDespawn()
 --and the sim will shutdown after saving
-function SaveGame(savename, isshutdown, cb)
+function SaveGame(isshutdown, cb)
     if not TheNet:GetIsServer() then
         print("SaveGame disabled for Clients in Don't Starve Together")
         if cb ~= nil then
@@ -957,14 +957,6 @@ function DisplayError(error)
                 20
                 ))
     end
-end
-
---V2C: What is this for??
---     Oh @Markle says it used to be for Twitch
---     So lets keep it here in case we want to reimplement that some day
-function OnMessageReceived(username, message)
-    --TODO: forward to player hud's controls' chatqueue
-    --NOTE: supports colours too if we have that info!
 end
 
 function SetPauseFromCode(pause)

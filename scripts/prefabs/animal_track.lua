@@ -4,23 +4,26 @@ local assets =
 }
 
 local function OnSave(inst, data)
-    --print("animal_track - OnSave")
-
     data.direction = inst.Transform:GetRotation()
-    --print("    direction", data.direction)
 end
-        
-local function OnLoad(inst, data)
-    --print("animal_track - OnLoad")
 
-    if data and data.direction then
-        --print("    direction", data.direction)
+local function OnLoad(inst, data)
+    if data ~= nil and data.direction ~= nil then
         inst.Transform:SetRotation(data.direction)
     end
 end
 
-local function create(sim)
-    --print("animal_track - create")
+local function fadeout(inst, duration, dt)
+    if inst._fadetime > dt then
+        inst._fadetime = inst._fadetime - dt
+        local k = inst._fadetime / duration
+        inst.AnimState:SetMultColour(k, k, k, k)
+    else
+        inst:Remove()
+    end
+end
+
+local function fn()
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -29,40 +32,33 @@ local function create(sim)
 
     MakeInventoryPhysics(inst)
 
-    if not TheWorld.ismastersim then
-        return inst
-    end
-    
     inst:AddTag("track")
     
     inst.AnimState:SetBank("track")
     inst.AnimState:SetBuild("koalefant_tracks")
     inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
     inst.AnimState:SetLayer(LAYER_BACKGROUND)
-    inst.AnimState:SetSortOrder( 3 )
+    inst.AnimState:SetSortOrder(3)
     inst.AnimState:SetRayTestOnBB(true)
     inst.AnimState:PlayAnimation("idle")
 
-    --inst.Transform:SetRotation(math.random(360))
-    
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
     inst:AddComponent("inspectable")
 
-    inst:StartThread(
-        function ()
-            Sleep(30)
-            fadeout(inst, 15) 
-            inst:Remove() 
-        end 
-    )
+    inst._fadetime = 15
+    inst:DoPeriodicTask(FRAMES, fadeout, 30, inst._fadetime, FRAMES)
 
     inst.OnLoad = OnLoad
     inst.OnSave = OnSave
 
-    -- inst:DoTaskInTime(10, fadeout, 5)
-    -- inst:ListenForEvent("fadecomplete", inst.Remove)
+    inst.persists = false
 
-    --inst.persists = false
     return inst
 end
 
-return Prefab("forest/objects/animal_track", create, assets)
+return Prefab("forest/objects/animal_track", fn, assets)

@@ -42,8 +42,8 @@ local _scheduledtrailtasks = {}
 local _worldstate = TheWorld.state
 local _map = TheWorld.Map
 local _updating = false
-local _spawninterval = TUNING.TOTAL_DAY_TIME * 12
-local _spawnintervalvariance = TUNING.TOTAL_DAY_TIME * 3
+local _spawninterval = TUNING.TOTAL_DAY_TIME * 4
+local _spawnintervalvariance = TUNING.TOTAL_DAY_TIME * 1
 
 --------------------------------------------------------------------------
 --[[ Private member functions ]]
@@ -125,8 +125,11 @@ end
 
 local function SpawnLurePlantForPlayer(playerinst, playerdata, reschedule)
     if not _worldstate.iswinter then
+
+        local chance = 1/#_activeplayers
+        local should_spawn = math.random() < chance
         local loc = FindSpawnLocationInTrail(playerdata.trail) or FindSpawnLocation(playerinst.Transform:GetWorldPosition())
-        if loc ~= nil then
+        if loc ~= nil and should_spawn then
             local plant = SpawnPrefab("lureplant")
             plant.Physics:Teleport(loc:Get())
             plant.sg:GoToState("spawn")
@@ -153,7 +156,11 @@ local function CancelSpawnTask(playerdata)
     end
 end
 
-local function ToggleUpdate(force)
+local function StartUpdating(force)
+    if not TheWorld.state.isspring then
+        return
+    end
+
     if _spawninterval > 0 then
         if not _updating then
             _updating = true
@@ -169,7 +176,11 @@ local function ToggleUpdate(force)
                 ScheduleSpawnTask(v)
             end
         end
-    elseif _updating then
+    end
+end
+
+local function StopUpdating()
+    if _updating then
         _updating = false
         for i, v in ipairs(_activeplayers) do
             CancelTrailLog(v)
@@ -207,6 +218,14 @@ local function OnPlayerLeft(src, player)
     end
 end
 
+local OnSeasonTick = function(inst, data)
+    if data.season == "spring" then
+        StartUpdating()
+    else
+        StopUpdating()
+    end
+end
+
 --------------------------------------------------------------------------
 --[[ Initialization ]]
 --------------------------------------------------------------------------
@@ -220,7 +239,9 @@ end
 inst:ListenForEvent("ms_playerjoined", OnPlayerJoined, TheWorld)
 inst:ListenForEvent("ms_playerleft", OnPlayerLeft, TheWorld)
 
-ToggleUpdate(true)
+inst:ListenForEvent("seasontick", OnSeasonTick, TheWorld)
+
+StartUpdating(true)
 
 --------------------------------------------------------------------------
 --[[ Public member functions ]]
@@ -229,25 +250,25 @@ ToggleUpdate(true)
 function self:SpawnModeNever()
     _spawninterval = 0
     _spawnintervalvariance = 0
-    ToggleUpdate(true)
+    StartUpdating(true)
 end
 
 function self:SpawnModeHeavy()
-    _spawninterval = TUNING.TOTAL_DAY_TIME * 6
-    _spawnintervalvariance = TUNING.TOTAL_DAY_TIME * 2
-    ToggleUpdate(true)
+    _spawninterval = TUNING.TOTAL_DAY_TIME * 2
+    _spawnintervalvariance = TUNING.TOTAL_DAY_TIME * 1
+    StartUpdating(true)
 end
 
 function self:SpawnModeMed()
-    _spawninterval = TUNING.TOTAL_DAY_TIME * 9
-    _spawnintervalvariance = TUNING.TOTAL_DAY_TIME * 3
-    ToggleUpdate(true)
+    _spawninterval = TUNING.TOTAL_DAY_TIME * 4
+    _spawnintervalvariance = TUNING.TOTAL_DAY_TIME * 1
+    StartUpdating(true)
 end
 
 function self:SpawnModeLight()
-    _spawninterval = TUNING.TOTAL_DAY_TIME * 24
-    _spawnintervalvariance = TUNING.TOTAL_DAY_TIME * 6
-    ToggleUpdate(true)
+    _spawninterval = TUNING.TOTAL_DAY_TIME * 10
+    _spawnintervalvariance = TUNING.TOTAL_DAY_TIME * 2
+    StartUpdating(true)
 end
 
 --------------------------------------------------------------------------
@@ -268,7 +289,7 @@ function self:OnLoad(data)
     _spawninterval = data.spawninterval or TUNING.TOTAL_DAY_TIME * 12
     _spawnintervalvariance = data.spawnintervalvariance or TUNING.TOTAL_DAY_TIME * 3
 
-    ToggleUpdate(true)
+    StartUpdating(true)
 end
 
 --------------------------------------------------------------------------

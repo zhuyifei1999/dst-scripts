@@ -1,13 +1,13 @@
 local assets =
 {
-	Asset("ANIM", "anim/thulecite_pieces.zip"),
+    Asset("ANIM", "anim/thulecite_pieces.zip"),
 }
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
@@ -17,11 +17,13 @@ local function fn()
     inst.AnimState:SetBuild("thulecite_pieces")
     inst.AnimState:PlayAnimation("anim")
 
+    inst:AddTag("molebait")
+
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("edible")
     inst.components.edible.foodtype = FOODTYPE.ELEMENTAL
@@ -30,6 +32,8 @@ local function fn()
     inst:AddComponent("tradable")
     inst:AddComponent("inspectable")
     inst:AddComponent("inventoryitem")
+
+    inst:AddComponent("bait")
 
     inst:AddComponent("repairer")
     inst.components.repairer.repairmaterial = MATERIALS.THULECITE
@@ -40,7 +44,7 @@ local function fn()
     inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
 
     MakeHauntableLaunchAndSmash(inst)
-    
+
     return inst
 end
 

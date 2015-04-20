@@ -598,6 +598,8 @@ local ExampleLayout =
 
 	["RuinsCamp"] = StaticLayout.Get("map/static_layouts/ruins_camp"),
 
+	["DeciduousPond"] = StaticLayout.Get("map/static_layouts/deciduous_pond", {disable_transform = true}),
+
 	["Chessy_1"] = StaticLayout.Get("map/static_layouts/chessy_1"),
 	["Chessy_2"] = StaticLayout.Get("map/static_layouts/chessy_2"),
 	["Chessy_3"] = StaticLayout.Get("map/static_layouts/chessy_3"),
@@ -608,6 +610,26 @@ local ExampleLayout =
 	["Warzone_1"] = StaticLayout.Get("map/static_layouts/warzone_1"),
 	["Warzone_2"] = StaticLayout.Get("map/static_layouts/warzone_2"),
 	["Warzone_3"] = StaticLayout.Get("map/static_layouts/warzone_3"),
+
+--------------------------------------------------------------------------------
+-- DST
+--------------------------------------------------------------------------------
+
+	["MooseNest"] = StaticLayout.Get("map/static_layouts/moose_nest",
+	{
+		areas =
+		{
+			randomtree = function(area) return PickSomeWithDups(1, {"evergreen", "deciduoustree"}) end,
+		},
+	}),
+
+	["DragonflyArena"] = StaticLayout.Get("map/static_layouts/dragonfly_arena",
+	{
+			start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+			fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+			layout_position = LAYOUT_POSITION.CENTER,
+	}),
+
 }
-	
+
 return {Layouts = ExampleLayout}

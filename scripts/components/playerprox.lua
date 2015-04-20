@@ -25,16 +25,14 @@ local function AnyPlayer(inst, self)
 end
 
 local function SpecificPlayer(inst, self)
-    local x, y, z = inst.Transform:GetWorldPosition()
-    local p1x, p1y, p1z = self.target.Transform:GetWorldPosition()
     if not self.isclose then
-        if distsq(x, z, p1x, p1z) < self.near * self.near then
+        if self.target:IsNear(inst, self.near) then
             self.isclose = true
             if self.onnear ~= nil then
                 self.onnear(inst, self.target)
             end
         end
-    elseif distsq(x, z, p1x, p1z) > self.far * self.far then
+    elseif not self.target:IsNear(inst, self.far) then
         self.isclose = false
         if self.onfar ~= nil then
             self.onfar(inst)
@@ -43,8 +41,8 @@ local function SpecificPlayer(inst, self)
 end
 
 local function LockOnPlayer(inst, self)
-    local x, y, z = inst.Transform:GetWorldPosition()
     if not self.isclose then
+        local x, y, z = inst.Transform:GetWorldPosition()
         local player = FindClosestPlayerInRange(x, y, z, self.near)
         if player ~= nil then
             self.isclose = true
@@ -53,14 +51,11 @@ local function LockOnPlayer(inst, self)
                 self.onnear(inst, player)
             end
         end
-    else
-        local p1x, p1y, p1z = self.target.Transform:GetWorldPosition()
-        if distsq(x, z, p1x, p1z) > self.far * self.far then
-            self.isclose = false
-            self:SetTarget(nil)
-            if self.onfar ~= nil then
-                self.onfar(inst)
-            end
+    elseif not self.target:IsNear(inst, self.far) then
+        self.isclose = false
+        self:SetTarget(nil)
+        if self.onfar ~= nil then
+            self.onfar(inst)
         end
     end
 end

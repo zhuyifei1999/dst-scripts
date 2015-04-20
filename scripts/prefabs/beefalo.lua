@@ -1,11 +1,11 @@
 local assets =
 {
-	Asset("ANIM", "anim/beefalo_basic.zip"),
-	Asset("ANIM", "anim/beefalo_actions.zip"),
-	Asset("ANIM", "anim/beefalo_build.zip"),
-	Asset("ANIM", "anim/beefalo_heat_build.zip"),
-	Asset("ANIM", "anim/beefalo_shaved_build.zip"),
-	Asset("SOUND", "sound/beefalo.fsb"),
+    Asset("ANIM", "anim/beefalo_basic.zip"),
+    Asset("ANIM", "anim/beefalo_actions.zip"),
+    Asset("ANIM", "anim/beefalo_build.zip"),
+    Asset("ANIM", "anim/beefalo_heat_build.zip"),
+    Asset("ANIM", "anim/beefalo_shaved_build.zip"),
+    Asset("SOUND", "sound/beefalo.fsb"),
 }
 
 local prefabs =
@@ -127,33 +127,33 @@ local function OnHairGrowth(inst)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
-	inst.entity:AddDynamicShadow()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
+    inst.entity:AddDynamicShadow()
     inst.entity:AddNetwork()
 
     MakeCharacterPhysics(inst, 100, .5)
 
     inst.DynamicShadow:SetSize(6, 2)
-    inst.Transform:SetFourFaced()
+    inst.Transform:SetSixFaced()
 
     inst.AnimState:SetBank("beefalo")
     inst.AnimState:SetBuild("beefalo_build")
     inst.AnimState:PlayAnimation("idle_loop", true)
-    
+
     inst:AddTag("beefalo")
     inst:AddTag("animal")
     inst:AddTag("largecreature")
+
+    inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-    
     inst.sounds = sounds
 
     local hair_growth_days = 3
@@ -167,30 +167,30 @@ local function fn()
     inst.components.beard.prize = "beefalowool"
     inst.components.beard:AddCallback(0, OnShaved)
     inst.components.beard:AddCallback(hair_growth_days, OnHairGrowth)
-    
+
     inst:AddComponent("eater")
-    inst.components.eater:SetVegetarian()
-    
+    inst.components.eater:SetDiet({ FOODTYPE.VEGGIE }, { FOODTYPE.VEGGIE })
+
     inst:AddComponent("combat")
     inst.components.combat.hiteffectsymbol = "beefalo_body"
     inst.components.combat:SetDefaultDamage(TUNING.BEEFALO_DAMAGE)
     inst.components.combat:SetRetargetFunction(1, Retarget)
     inst.components.combat:SetKeepTargetFunction(KeepTarget)
-     
+
     inst:AddComponent("health")
     inst.components.health:SetMaxHealth(TUNING.BEEFALO_HEALTH)
 
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetChanceLootTable('beefalo')    
-    
+
     inst:AddComponent("inspectable")
     inst.components.inspectable.getstatus = GetStatus
-    
+
     inst:AddComponent("knownlocations")
     inst:AddComponent("herdmember")
     inst:ListenForEvent("entermood", OnEnterMood)
     inst:ListenForEvent("leavemood", OnLeaveMood)
-    
+
     inst:AddComponent("leader")
     inst:AddComponent("follower")
     inst.components.follower.maxfollowtime = TUNING.BEEFALO_FOLLOW_TIME
@@ -207,11 +207,11 @@ local function fn()
 
     MakeLargeBurnableCharacter(inst, "beefalo_body")
     MakeLargeFreezableCharacter(inst, "beefalo_body")
-    
+
     inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
     inst.components.locomotor.walkspeed = 1.5
     inst.components.locomotor.runspeed = 7
-    
+
     inst:AddComponent("sleeper")
     inst.components.sleeper:SetResistance(3)
 
@@ -220,7 +220,7 @@ local function fn()
         inst.components.periodicspawner:TrySpawn()
         return true
     end, true, false, true)
-    
+
     inst:SetBrain(brain)
     inst:SetStateGraph("SGBeefalo")
     return inst

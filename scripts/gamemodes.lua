@@ -52,11 +52,6 @@ function GetIsModGameMode( game_mode )
 	return true	
 end
 
-function GetGameModeStringWithDetails( game_mode, world, day )
-	local gamemode_str = GetGameModeString( game_mode )
-    return string.format( "%s %d-%d", gamemode_str, world, day )
-end
-
 function GetGhostSanityDrain( game_mode )
 	if GAME_MODES[game_mode] then
 		return GAME_MODES[game_mode].ghost_sanity_drain

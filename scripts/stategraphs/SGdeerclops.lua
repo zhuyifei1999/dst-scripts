@@ -83,8 +83,7 @@ local states=
             inst.AnimState:PlayAnimation("taunt")
             
             if inst.bufferedaction and inst.bufferedaction.action == ACTIONS.GOHOME then
-                inst:ClearBufferedAction()
-                inst.components.knownlocations:RememberLocation("home", nil)
+            	inst:PerformBufferedAction()
             end
         end,
         

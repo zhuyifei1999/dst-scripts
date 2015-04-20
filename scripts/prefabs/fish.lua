@@ -1,7 +1,7 @@
 local assets =
 {
-	Asset("ANIM", "anim/fish.zip"),
-	Asset("ANIM", "anim/fish01.zip"),
+    Asset("ANIM", "anim/fish.zip"),
+    Asset("ANIM", "anim/fish01.zip"),
 }
 
 local prefabs =
@@ -14,33 +14,39 @@ local function stopkicking(inst)
     inst.AnimState:PlayAnimation("dead")
 end
 
-local function commonfn(build, anim, loop)
+local function commonfn(build, anim, loop, dryable)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
     inst.entity:AddNetwork()
-    
+
     MakeInventoryPhysics(inst)
-    
+
     inst.AnimState:SetBank("fish")
     inst.AnimState:SetBuild("fish")
     inst.AnimState:PlayAnimation(anim, loop)
 
     inst:AddTag("meat")
+    inst:AddTag("catfood")
+
+    if dryable then
+        --dryable (from dryable component) added to pristine state for optimization
+        inst:AddTag("dryable")
+    end
+
+    inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-
     inst.build = build --This is used within SGwilson, sent from an event in fishingrod.lua
-    
+
     inst:AddComponent("edible")
     inst.components.edible.ismeat = true
     inst.components.edible.foodtype = FOODTYPE.MEAT
-    
+
     inst:AddComponent("stackable")
     inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
 
@@ -50,6 +56,12 @@ local function commonfn(build, anim, loop)
     inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)
     inst.components.perishable:StartPerishing()
     inst.components.perishable.onperishreplacement = "spoiled_food"
+
+    if dryable then
+        inst:AddComponent("dryable")
+        inst.components.dryable:SetProduct("smallmeat_dried")
+        inst.components.dryable:SetDryTime(TUNING.DRY_FAST)
+    end
 
     inst:AddComponent("inspectable")
 
@@ -65,7 +77,7 @@ local function commonfn(build, anim, loop)
 end
 
 local function rawfn(build)
-    local inst = commonfn(build, "idle", true)
+    local inst = commonfn(build, "idle", true, true)
 
     if not TheWorld.ismastersim then
         return inst
@@ -74,16 +86,13 @@ local function rawfn(build)
     inst.components.edible.healthvalue = TUNING.HEALING_TINY
     inst.components.edible.hungervalue = TUNING.CALORIES_SMALL
     inst.components.perishable:SetPerishTime(TUNING.PERISH_SUPERFAST)
-    
+
     inst:AddComponent("cookable")
     inst.components.cookable.product = "fish_cooked"
-    inst:AddComponent("dryable")
-    inst.components.dryable:SetProduct("smallmeat_dried")
-    inst.components.dryable:SetDryTime(TUNING.DRY_FAST)
     inst:DoTaskInTime(5, stopkicking)
     inst.components.inventoryitem:SetOnPickupFn(stopkicking)
     inst.OnLoad = stopkicking
-    
+
     return inst
 end
 

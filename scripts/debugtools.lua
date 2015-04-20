@@ -21,6 +21,22 @@ local function formatinfo(info)
         return ("\t%s in (%s) %s (%s) <%d-%d>"):format(source, info.namewhat, info.name or "?", info.what, info.linedefined, info.lastlinedefined)
 end
 
+function printwrap(msg, ...)
+	if type(...) == "table" then
+		print(msg)
+		dumptable(..., 0, 0)
+	else
+		print(msg, ...)
+	end
+	return ...
+end
+
+function printsel(inst, ...)
+    if c_sel() == inst or (inst.inst and c_sel() == inst.inst) then
+        print(...)
+    end
+end
+
 function debugstack(start, top, bottom)
         if not bottom then bottom = 10 end
         if not top then top = 12 end

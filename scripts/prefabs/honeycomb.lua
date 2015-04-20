@@ -1,13 +1,13 @@
 local assets =
 {
-	Asset("ANIM", "anim/honeycomb.zip"),
+    Asset("ANIM", "anim/honeycomb.zip"),
 }
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddNetwork()
 
     MakeInventoryPhysics(inst)
@@ -16,11 +16,13 @@ local function fn()
     inst.AnimState:SetBank("honeycomb")
     inst.AnimState:PlayAnimation("idle")
 
+    inst:AddTag("honeyed")
+
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     --inst:AddComponent("edible")
     --inst.components.edible.healthvalue = TUNING.HONEYCOMB_HEALTH

@@ -57,6 +57,7 @@ local Quaker = Class(function(self,inst)
 	self.quaketime = self.quakelevel.quaketime()
 	self.debrispersecond = self.quakelevel.debrispersecond()
 	self.nextquake = self.quakelevel.nextquake()
+	self.mammals_per_quake = self.quakelevel.mammals
 
 	self.inst:ListenForEvent("explosion", function(inst, data)
 		if not self.quake and self.nextquake > self.prequake + 1 then
@@ -79,7 +80,9 @@ local debris =
 	rare = 
 	{
 		"goldnugget",
-		"nitre"
+		"nitre",
+		"rabbit",
+		"mole",
 	},
 	veryrare =
 	{
@@ -92,24 +95,23 @@ local debris =
 
 
 function Quaker:OnSave()
-	if not self.noserial then
-        if self.quakeold then
-            self.quakelevel = self.quakeold
-            self.quakeold = nil
-            self.prequake = self.quakelevel.prequake
-            self.quaketime = self.quakelevel.quaketime()
-            self.debrispersecond = self.quakelevel.debrispersecond()
-            self.nextquake = self.quakelevel.nextquake()
-        end
-		return
-		{
-			prequake = self.prequake,
-			quaketime = self.quaketime,
-			debrispersecond = self.debrispersecond,
-			nextquake = self.nextquake,
-		}
-	end
-	self.noserial = false
+    if self.quakeold then
+        self.quakelevel = self.quakeold
+        self.quakeold = nil
+        self.prequake = self.quakelevel.prequake
+        self.quaketime = self.quakelevel.quaketime()
+        self.debrispersecond = self.quakelevel.debrispersecond()
+        self.nextquake = self.quakelevel.nextquake()
+        self.mammals_per_quake = self.quakelevel.mammals
+    end
+	return
+	{
+		prequake = self.prequake,
+		quaketime = self.quaketime,
+		debrispersecond = self.debrispersecond,
+		nextquake = self.nextquake,
+		mammals = self.mammals_per_quake
+	}
 end
 
 function Quaker:OnLoad(data)
@@ -117,10 +119,7 @@ function Quaker:OnLoad(data)
 	self.quaketime = data.quaketime or self.quakelevel.quaketime()
 	self.debrispersecond = data.debrispersecond or self.quakelevel.debrispersecond()
 	self.nextquake = data.nextquake or self.quakelevel.nextquake()
-end
-
-function Quaker:OnProgress()
-	self.noserial = true
+	self.mammals_per_quake = data.mammals or self.quakelevel.mammals
 end
 
 function Quaker:GetDebugString()
@@ -137,6 +136,7 @@ function Quaker:SetNextQuake()
 	self.quaketime = self.quakelevel.quaketime()
 	self.debrispersecond = self.quakelevel.debrispersecond()
 	self.nextquake = self.quakelevel.nextquake()
+	self.mammals_per_quake = self.quakelevel.mammals
 end
 
 function Quaker:GetTimeForNextDebris()
@@ -193,6 +193,7 @@ function Quaker:EndQuake()
         self.quaketime = self.quakelevel.quaketime()
         self.debrispersecond = self.quakelevel.debrispersecond()
         self.nextquake = self.quakelevel.nextquake()
+        self.mammals_per_quake = self.quakelevel.mammals
     end
 	self.quake = false
 	self.inst:PushEvent("endquake")
@@ -214,6 +215,7 @@ function Quaker:ForceQuake(level)
         self.quaketime = self.quakelevel.quaketime()
         self.debrispersecond = self.quakelevel.debrispersecond()
         self.nextquake = self.quakelevel.nextquake()
+        self.mammals_per_quake  = self.quakelevel.mammals
     end
 	self.nextquake = self.prequake
 
@@ -240,7 +242,15 @@ function Quaker:GetDebris()
 	if rng < 0.75 then
 		todrop = debris.common[math.random(1, #debris.common)]
 	elseif rng >= 0.75 and rng < 0.95 then
+		if self.mammals_per_quake > 0 and TheWorld.state.isruins then self.mammals_per_quake = 0 end  -- Don't allow mammals to spawn from quakes in the ruins
 		todrop = debris.rare[math.random(1, #debris.rare)]
+		-- Make sure we don't spawn a ton of mammals per quake
+		local attempts = 0
+		while self.mammals_per_quake <= 0 and (todrop == "mole" or todrop == "rabbit") do
+			todrop = debris.rare[math.random(1, #debris.rare)]
+			attempts = attempts + 1
+			if attempts > 10 then break end
+		end
 	else
 		todrop = debris.veryrare[math.random(1, #debris.veryrare)]
 	end
@@ -251,6 +261,10 @@ function Quaker:SpawnDebris(spawn_point)
     local prefab = self:GetDebris()
 	if prefab then
 	    local db = SpawnPrefab(prefab)
+	    if db and (prefab == "rabbit" or prefab == "mole") and db.sg then
+	    	self.mammals_per_quake = self.mammals_per_quake - 1
+	    	db.sg:GoToState("fall")
+	    end
 	    if math.random() < .5 then
 		    db.Transform:SetRotation(180)
 	    end
@@ -286,6 +300,7 @@ local function grounddetection_update(inst)
 	end
 
 	if pt.y < 2 then
+		inst.fell = true
 		inst.Physics:SetMotorVel(0,0,0)
     end
 
@@ -297,7 +312,7 @@ local function grounddetection_update(inst)
 
 		local ents = TheSim:FindEntities(pt.x, 0, pt.z, 2, nil, {'smashable'})
 	    for k,v in pairs(ents) do
-	    	if v and v.components.combat then  -- quakes shouldn't break the set dressing
+	    	if v and v.components.combat and v ~= inst then  -- quakes shouldn't break the set dressing
 	    		v.components.combat:GetAttacked(inst, 20, nil)
 	    	end
 	   	end
@@ -311,7 +326,7 @@ local function grounddetection_update(inst)
 			inst.updatetask = nil
 		end
 
-		if math.random() < 0.75 then
+		if math.random() < 0.75 and not (inst.prefab == "mole" or inst.prefab == "rabbit") then
 			--spawn break effect
 			inst.SoundEmitter:PlaySound("dontstarve/common/stone_drop")
 			local pt = Vector3(inst.Transform:GetWorldPosition())
@@ -320,6 +335,15 @@ local function grounddetection_update(inst)
 			inst:Remove()
 		end
 	end
+
+	-- Failsafe: if the entity has been alive for at least 1 second, hasn't changed height significantly since last tick, and isn't near the ground, remove it and its shadow
+	if inst.last_y and pt.y > 2 and inst.last_y > 2 and (inst.last_y - pt.y  < 1) and inst:GetTimeAlive() > 1 and not inst.fell then
+		if inst.shadow then
+			inst.shadow:Remove()
+		end
+		inst:Remove()
+	end
+	inst.last_y = pt.y
 end
 
 local function start_grounddetection(inst)

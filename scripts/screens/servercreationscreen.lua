@@ -105,9 +105,9 @@ local ServerCreationScreen = Class(Screen, function(self, customoptions, slotdat
     self:MakeDetailPanel(left_col, right_col)
     self:MakeButtons()
 
-    if self.saveslot < 0 or not SaveGameIndex:GetCurrentMode(self.saveslot) then
+    if self.saveslot < 0 or SaveGameIndex:IsSlotEmpty(self.saveslot) then
         for k = 1, NUM_DST_SAVE_SLOTS do
-            if not SaveGameIndex:GetCurrentMode(k) then
+            if SaveGameIndex:IsSlotEmpty(k) then
                 self.saveslot = k
                 break
             end
@@ -123,6 +123,8 @@ local ServerCreationScreen = Class(Screen, function(self, customoptions, slotdat
     self:RefreshLoadTiles()    
 
     self.default_focus = self.load_slots_menu
+
+    self:DoFocusHookUps()
 
     self:OnClickTile(self.saveslot, true)
     self:Enable()
@@ -213,11 +215,10 @@ function ServerCreationScreen:OnConfigureButton()
 
     local resume_customoptions = nil
     self.editable_customoptions = true
-    if self.saveslot > 0 and SaveGameIndex:GetCurrentMode(self.saveslot) then
+    if self.saveslot > 0 and not SaveGameIndex:IsSlotEmpty(self.saveslot) then
         resume_customoptions = SaveGameIndex:GetSlotGenOptions(self.saveslot)
         self.editable_customoptions = false
     end
-
 
     self:Disable()
     TheFrontEnd:Fade(false, screen_fade_time, function()
@@ -276,7 +277,7 @@ function ServerCreationScreen:Create()
 			-- If not, look for the first empty one
 			local emptySlot = nil
 			for k = 1, NUM_DST_SAVE_SLOTS do
-				if not SaveGameIndex:GetCurrentMode(k) then
+				if SaveGameIndex:IsSlotEmpty(k) then
 					emptySlot = k
 					break
 				end
@@ -310,17 +311,17 @@ function ServerCreationScreen:Create()
 				end
 			end
 
-			self.server_name_textbox:SetEditing(false)
-			self.server_pw_textbox:SetEditing(false)
-			self.server_desc_textbox:SetEditing(false)
-			TheNet:SetDefaultServerName(self.server_name_textbox:GetString())
-			TheNet:SetDefaultServerPassword(self.server_pw_textbox:GetLineEditString())
-			TheNet:SetDefaultServerDescription(self.server_desc_textbox:GetString())
+			self.server_name.textbox:SetEditing(false)
+			self.server_pw.textbox:SetEditing(false)
+			self.server_desc.textbox:SetEditing(false)
+			TheNet:SetDefaultServerName(self.server_name.textbox:GetString())
+			TheNet:SetDefaultServerPassword(self.server_pw.textbox:GetLineEditString())
+			TheNet:SetDefaultServerDescription(self.server_desc.textbox:GetString())
 			TheNet:SetDefaultGameMode(self.game_mode.spinner:GetSelectedData())
 			TheNet:SetDefaultMaxPlayers(self.max_players.spinner:GetSelectedData())
 			TheNet:SetDefaultPvpSetting(self.pvp.spinner:GetSelectedData())
 			TheNet:SetFriendsOnlyServer(self.friends_only.spinner:GetSelectedData())
-			--#srosen collect the tags we want and set the tags string
+			-- Collect the tags we want and set the tags string
 			local tags = ""
 			tags = BuildTagsString(tags)
 			TheNet:SetServerTags(tags)
@@ -335,9 +336,9 @@ function ServerCreationScreen:Create()
 				DisableAllDLC()
 				local serverdata = 
 				{
-					name = self.server_name_textbox:GetString(),
-					password = self.server_pw_textbox:GetLineEditString(),
-					description = self.server_desc_textbox:GetString(),
+					name = self.server_name.textbox:GetString(),
+					password = self.server_pw.textbox:GetLineEditString(),
+					description = self.server_desc.textbox:GetString(),
 					game_mode = self.game_mode.spinner:GetSelectedData(),
 					maxplayers = self.max_players.spinner:GetSelectedData(),
 					pvp = self.pvp.spinner:GetSelectedData(),
@@ -345,10 +346,10 @@ function ServerCreationScreen:Create()
 					online_mode = self.online_mode.spinner:GetSelectedData(), 
 				}
 				TheFrontEnd:Fade(false, screen_fade_time, function() 
-					if not SaveGameIndex:GetCurrentMode(self.saveslot) then
-						SaveGameIndex:StartSurvivalMode(self.saveslot, nil, self.customoptions, onsaved, GetEnabledDLCs(), serverdata) 
+					if SaveGameIndex:IsSlotEmpty(self.saveslot) then
+						SaveGameIndex:StartSurvivalMode(self.saveslot, self.customoptions, serverdata, onsaved) 
 					else
-						SaveGameIndex:UpdateServerData(self.saveslot, onsaved, serverdata)
+						SaveGameIndex:UpdateServerData(self.saveslot, serverdata, onsaved)
 					end
 				end )
 			end
@@ -357,7 +358,7 @@ function ServerCreationScreen:Create()
 		
 	if not self.online_mode.spinner:GetSelectedData() then
 	    local offline_mode_body = ""
-	    if SaveGameIndex:GetCurrentMode(self.saveslot) then
+	    if not SaveGameIndex:IsSlotEmpty(self.saveslot) then
 	        offline_mode_body = STRINGS.UI.SERVERCREATIONSCREEN.OFFLINEMODEBODYRESUME
 	    else
 	        -- new game
@@ -389,9 +390,9 @@ end
 
 function ServerCreationScreen:Cancel()
     self:Disable()
-    self.server_name_textbox:SetEditing(false)
-    self.server_pw_textbox:SetEditing(false)
-    self.server_desc_textbox:SetEditing(false)
+    self.server_name.textbox:SetEditing(false)
+    self.server_pw.textbox:SetEditing(false)
+    self.server_desc.textbox:SetEditing(false)
     TheFrontEnd:Fade(false, screen_fade_time, function()
         if self.cb then
             self.cb(self.customoptions, self.slotdata)
@@ -403,11 +404,15 @@ end
 
 function ServerCreationScreen:UpdatePanels(slotnum, prevslot)
     -- No save data
-    if slotnum < 0 or not SaveGameIndex:GetCurrentMode(slotnum) then
-        self.delete_button:Disable()
-        self.configure_world_button:SetText(STRINGS.UI.SERVERCREATIONSCREEN.WORLD)
-        self.create_button:SetText(STRINGS.UI.SERVERCREATIONSCREEN.CREATE)
-        self.create_button:Enable()
+    if slotnum < 0 or SaveGameIndex:IsSlotEmpty(slotnum) then
+        if not TheInput:ControllerAttached() then
+            self.blacklist_button:Disable()
+            self.blacklist_button.text:SetSize(36)
+            self.configure_world_button:SetText(STRINGS.UI.SERVERCREATIONSCREEN.WORLD)
+            self.delete_button:Disable()
+            self.create_button:SetText(STRINGS.UI.SERVERCREATIONSCREEN.CREATE)
+            self.create_button:Enable()
+        end
 
         -- no slot, so hide all the details and set all the text boxes back to their defaults
         if prevslot and prevslot > 0 then
@@ -419,12 +424,12 @@ function ServerCreationScreen:UpdatePanels(slotnum, prevslot)
                 friends_only = self.friends_only.spinner:GetSelectedData(),
                 online_mode = self.online_mode.spinner:GetSelectedData(),-- and TheNet:IsOnlineMode(),
                 max_players = self.max_players.spinner:GetSelectedData(),
-                server_name = self.server_name_textbox:GetString(),
-                server_pw = self.server_pw_textbox:GetLineEditString(),
-                server_desc = self.server_desc_textbox:GetString(),
+                server_name = self.server_name.textbox:GetString(),
+                server_pw = self.server_pw.textbox:GetLineEditString(),
+                server_desc = self.server_desc.textbox:GetString(),
             }
             -- Duplicate prevslot's data into our new slot if it was also a blank slot
-            if not SaveGameIndex:GetCurrentMode(prevslot) then
+            if SaveGameIndex:IsSlotEmpty(prevslot) then
                 self.slotdata[slotnum] =
                 {
                     pvp = self.pvp.spinner:GetSelectedData(),
@@ -432,9 +437,9 @@ function ServerCreationScreen:UpdatePanels(slotnum, prevslot)
                     friends_only = self.friends_only.spinner:GetSelectedData(),
                     online_mode = self.online_mode.spinner:GetSelectedData(),-- and TheNet:IsOnlineMode(),
                     max_players = self.max_players.spinner:GetSelectedData(),
-                    server_name = self.server_name_textbox:GetString(),
-                    server_pw = self.server_pw_textbox:GetLineEditString(),
-                    server_desc = self.server_desc_textbox:GetString(),
+                    server_name = self.server_name.textbox:GetString(),
+                    server_pw = self.server_pw.textbox:GetLineEditString(),
+                    server_desc = self.server_desc.textbox:GetString(),
                 }
             end
         end
@@ -456,9 +461,9 @@ function ServerCreationScreen:UpdatePanels(slotnum, prevslot)
         self.friends_only.spinner:SetSelected(self.slotdata[prevslot] and self.slotdata[prevslot].friends_only or TheNet:GetFriendsOnlyServer())
         self.online_mode.spinner:SetSelected(online)
         self.max_players.spinner:SetSelected(self.slotdata[prevslot] and self.slotdata[prevslot].max_players or TheNet:GetDefaultMaxPlayers())
-        self.server_name_textbox:SetString(self.slotdata[prevslot] and self.slotdata[prevslot].server_name or TheNet:GetDefaultServerName())
-        self.server_pw_textbox:SetString(self.slotdata[prevslot] and self.slotdata[prevslot].server_pw or TheNet:GetDefaultServerPassword())
-        self.server_desc_textbox:SetString(self.slotdata[prevslot] and self.slotdata[prevslot].server_desc or TheNet:GetDefaultServerDescription())
+        self.server_name.textbox:SetString(self.slotdata[prevslot] and self.slotdata[prevslot].server_name or TheNet:GetDefaultServerName())
+        self.server_pw.textbox:SetString(self.slotdata[prevslot] and self.slotdata[prevslot].server_pw or TheNet:GetDefaultServerPassword())
+        self.server_desc.textbox:SetString(self.slotdata[prevslot] and self.slotdata[prevslot].server_desc or TheNet:GetDefaultServerDescription())
         self.server_day:SetString(STRINGS.UI.SERVERCREATIONSCREEN.SERVERDAY_NEW)
 
 		if TheNet:IsOnlineMode() and not TheFrontEnd:GetIsOfflineMode() then
@@ -478,25 +483,26 @@ function ServerCreationScreen:UpdatePanels(slotnum, prevslot)
                 friends_only = self.friends_only.spinner:GetSelectedData(),
                 online_mode = self.online_mode.spinner:GetSelectedData(),
                 max_players = self.max_players.spinner:GetSelectedData(),
-                server_name = self.server_name_textbox:GetString(),
-                server_pw = self.server_pw_textbox:GetLineEditString(),
-                server_desc = self.server_desc_textbox:GetString(),
+                server_name = self.server_name.textbox:GetString(),
+                server_pw = self.server_pw.textbox:GetLineEditString(),
+                server_desc = self.server_desc.textbox:GetString(),
             }
         end
 
-        self.delete_button:Enable()
-        self.create_button:SetText(STRINGS.UI.SERVERCREATIONSCREEN.RESUME)
-        self.configure_world_button:SetText(STRINGS.UI.SERVERCREATIONSCREEN.VIEWWORLD)
-
-        local data = SaveGameIndex:GetModeData(slotnum, SaveGameIndex:GetCurrentMode(slotnum))
-        if data then
-            self.server_day:SetString(data.day and (STRINGS.UI.SERVERCREATIONSCREEN.SERVERDAY.." "..data.day) or "")
-            -- world = 1, -- world (i.e. teleportato) doesn't exist yet, but leaving this here as a reminder
-            -- waiting on hooks for char details
+        if not TheInput:ControllerAttached() then
+            self.blacklist_button:Enable()
+            self.blacklist_button.text:SetSize(40)
+            self.delete_button:Enable()
+            self.create_button:SetText(STRINGS.UI.SERVERCREATIONSCREEN.RESUME)
+            self.configure_world_button:SetText(STRINGS.UI.SERVERCREATIONSCREEN.VIEWWORLD)
         end
+
+        self.server_day:SetString(STRINGS.UI.SERVERCREATIONSCREEN.SERVERDAY.." "..(SaveGameIndex:GetSlotDay(slotnum) or STRINGS.UI.SERVERLISTINGSCREEN.UNKNOWN))
+        -- world = 1, -- world (i.e. teleportato) doesn't exist yet, but leaving this here as a reminder
+        -- waiting on hooks for char details
         
-        local server_data = SaveGameIndex:GetServerData(slotnum)
-        if server_data then
+        local server_data = SaveGameIndex:GetSlotServerData(slotnum)
+        if server_data ~= nil then
             local pvp = false
             if self.slotdata[slotnum] ~= nil and self.slotdata[slotnum].pvp ~= nil then
                 pvp = self.slotdata[slotnum].pvp
@@ -515,9 +521,9 @@ function ServerCreationScreen:UpdatePanels(slotnum, prevslot)
             self.friends_only.spinner:SetSelected(self.slotdata[slotnum] and self.slotdata[slotnum].friends_only or server_data.friends_only)
             self.online_mode.spinner:SetSelected(online)
             self.max_players.spinner:SetSelected(self.slotdata[slotnum] and self.slotdata[slotnum].max_players or server_data.maxplayers)
-            self.server_name_textbox:SetString(self.slotdata[slotnum] and self.slotdata[slotnum].server_name or server_data.name)
-            self.server_pw_textbox:SetString(self.slotdata[slotnum] and self.slotdata[slotnum].server_pw or server_data.password)
-            self.server_desc_textbox:SetString(self.slotdata[slotnum] and self.slotdata[slotnum].server_desc or server_data.description)
+            self.server_name.textbox:SetString(self.slotdata[slotnum] and self.slotdata[slotnum].server_name or server_data.name)
+            self.server_pw.textbox:SetString(self.slotdata[slotnum] and self.slotdata[slotnum].server_pw or server_data.password)
+            self.server_desc.textbox:SetString(self.slotdata[slotnum] and self.slotdata[slotnum].server_desc or server_data.description)
         end
 		
 		-- No editing online or game mode for servers that have already been created
@@ -536,14 +542,14 @@ function ServerCreationScreen:OnControl(control, down)
     if ServerCreationScreen._base.OnControl(self, control, down) then return true end
 
     -- Force these damn things to gobble controls if they're editing (stupid missing focus/hover distinction)
-    if self.server_name_textbox and self.server_name_textbox.editing then
-        self.server_name_textbox:OnControl(control, down)
+    if self.server_name.textbox and self.server_name.textbox.editing or (TheInput:ControllerAttached() and self.server_name.focus) then
+        self.server_name.textbox:OnControl(control, down)
         return true
-    elseif self.server_pw_textbox and self.server_pw_textbox.editing then
-        self.server_pw_textbox:OnControl(control, down)
+    elseif self.server_pw.textbox and self.server_pw.textbox.editing or (TheInput:ControllerAttached() and self.server_pw.focus) then
+        self.server_pw.textbox:OnControl(control, down)
         return true
-    elseif self.server_desc_textbox and self.server_desc_textbox.editing then
-        self.server_desc_textbox:OnControl(control, down)
+    elseif self.server_desc.textbox and self.server_desc.textbox.editing or (TheInput:ControllerAttached() and self.server_desc.focus)  then
+        self.server_desc.textbox:OnControl(control, down)
         return true
     end
 
@@ -551,7 +557,27 @@ function ServerCreationScreen:OnControl(control, down)
         if control == CONTROL_CANCEL then 
             self:Cancel()
         else
-            return false
+            if self.saveslot < 0 or SaveGameIndex:IsSlotEmpty(self.saveslot) then
+                if control == CONTROL_MENU_MISC_1 then
+                    self:OnConfigureButton()
+                elseif control == CONTROL_PAUSE and TheInput:ControllerAttached() then
+                    self:Create()
+                else
+                    return false
+                end
+            else
+                if control == CONTROL_MAP and TheInput:ControllerAttached() then
+                    self:DeleteSlot(self.saveslot)
+                elseif control == CONTROL_MENU_MISC_2 then
+                    self:ShowServerAdmin()
+                elseif control == CONTROL_MENU_MISC_1 then
+                    self:OnConfigureButton()
+                elseif control == CONTROL_PAUSE and TheInput:ControllerAttached() then
+                    self:Create()
+                else
+                    return false
+                end
+            end
         end
 
         return true
@@ -561,6 +587,16 @@ end
 function ServerCreationScreen:GetHelpText()
     local controller_id = TheInput:GetControllerID()
     local t = {}
+
+    if self.saveslot < 0 or SaveGameIndex:IsSlotEmpty(self.saveslot) then
+        table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_1) .. " " .. STRINGS.UI.SERVERCREATIONSCREEN.WORLD)
+        table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_PAUSE) .. " " .. STRINGS.UI.SERVERCREATIONSCREEN.CREATE)
+    else
+        table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_MAP) .. " " .. STRINGS.UI.SERVERCREATIONSCREEN.DELETE_SLOT)
+        table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_2) .. " " .. STRINGS.UI.SERVERCREATIONSCREEN.ADMIN)
+        table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_1) .. " " .. STRINGS.UI.SERVERCREATIONSCREEN.VIEWWORLD)
+        table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_PAUSE) .. " " .. STRINGS.UI.SERVERCREATIONSCREEN.RESUME)
+    end
 
     table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_CANCEL) .. " " .. STRINGS.UI.HELP.BACK)
 
@@ -594,6 +630,9 @@ function ServerCreationScreen:RefreshLoadTiles()
     
     self.load_slots_menu = self.load_panel:AddChild(Menu(nil, -88, false))
     self.load_slots_menu:SetPosition( 0, 195, 0)
+    if TheInput:ControllerAttached() then
+        self.load_slots_menu:SetPosition( 0, 175, 0)
+    end
 
     for k = 1, NUM_DST_SAVE_SLOTS do
         local tile = self:MakeSaveTile(k)
@@ -602,83 +641,67 @@ function ServerCreationScreen:RefreshLoadTiles()
 end
 
 function ServerCreationScreen:MakeSaveTile(slotnum)
-    
     local widget = Widget("savetile")
     widget.base = widget:AddChild(Widget("base"))
     
-    local mode = SaveGameIndex:GetCurrentMode(slotnum)
-    local gamemode = SaveGameIndex:GetGameMode(slotnum)
-    local day = SaveGameIndex:GetSlotDay(slotnum)
-    local world = SaveGameIndex:GetSlotWorld(slotnum)
+    local isempty = SaveGameIndex:IsSlotEmpty(slotnum)
 
     --SaveGameIndex:LoadSlotCharacter is not cheap! Use it in FE only.
     --V2C: This comment is here as a warning to future copy&pasters - __-"
-    local character = SaveGameIndex:LoadSlotCharacter(slotnum) or "random"
+    local character = SaveGameIndex:LoadSlotCharacter(slotnum)
+    local atlas = "images/saveslot_portraits"
+    if character ~= nil then
+        if not table.contains(GetActiveCharacterList(), character) then
+            character = "random"
+        elseif table.contains(MODCHARACTERLIST, character) then
+            atlas = atlas.."/"..character
+        end
+        atlas = atlas..".xml"
+    end
 
-    -- local DLC = SaveGameIndex:GetSlotDLC(slotnum)
-    -- local RoG = (DLC ~= nil and DLC.REIGN_OF_GIANTS ~= nil) and DLC.REIGN_OF_GIANTS or false
-    
     widget.bg = widget.base:AddChild(UIAnim())
     widget.bg:GetAnimState():SetBuild("savetile")
     widget.bg:GetAnimState():SetBank("savetile")
     widget.bg:GetAnimState():PlayAnimation("anim")
-    widget.bg:GetAnimState():SetMultColour(.5,.5,.5,1)
-    
+    widget.bg:GetAnimState():SetMultColour(.5, .5, .5, 1)
+
     widget.portraitbg = widget.base:AddChild(Image("images/saveslot_portraits.xml", "background.tex"))
-    widget.portraitbg:SetScale(.65,.65,1)
-    if JapaneseOnPS4() then
-        widget.portraitbg:SetPosition(-120 + 20, 2, 0)
-    else    
-        widget.portraitbg:SetPosition(-120 + 40, 2, 0)
-    end
+    widget.portraitbg:SetScale(.65, .65, 1)
+    widget.portraitbg:SetPosition(-100, 0, 0)
     widget.portraitbg:SetClickable(false)   
-    
+
     widget.portrait = widget.base:AddChild(Image())
-    widget.portrait:SetClickable(false) 
-    if character and mode then  
-        local atlas = (table.contains(MODCHARACTERLIST, character) and "images/saveslot_portraits/"..character..".xml") or "images/saveslot_portraits.xml"
+    widget.portrait:SetClickable(false)
+    if character ~= nil and not isempty then
         widget.portrait:SetTexture(atlas, character..".tex")
     else
         widget.portraitbg:Hide()
     end
 
-    widget.portrait:SetScale(.65,.65,1)
-    if JapaneseOnPS4() then
-        widget.portrait:SetPosition(-120 + 20, 0, 0)    
-    else
-        widget.portrait:SetPosition(-120 + 40, 0, 0)    
-    end
-    
-    
-    if JapaneseOnPS4() then
-        widget.text = widget.base:AddChild(Text(BUTTONFONT, 40 * 0.8))   -- KAJ
-    else
-        widget.text = widget.base:AddChild(Text(BUTTONFONT, 40))
-    end
-    -- if character and mode and RoG then
-    --     widget.dlcindicator = widget.base:AddChild(Image())
-    --     widget.dlcindicator:SetClickable(false)
-    --     widget.dlcindicator:SetTexture("images/ui.xml", "DLCicon.tex")
-    --     widget.dlcindicator:SetScale(.5,.5,1)
-    --     widget.dlcindicator:SetPosition(-142, 2, 0)
-    -- end
+    widget.portrait:SetScale(.65, .65, 1)
+    widget.portrait:SetPosition(-100, 0, 0)
 
-    widget.text:SetPosition(40,0,0)
-    widget.text:SetRegionSize(200 ,70)
-    widget.text:SetColour(0,0,0,1)
-    
-    if not mode then -- No data
+    widget.text = widget.base:AddChild(Text(BUTTONFONT, 36))
+    widget.text:SetColour(0, 0, 0, 1)
+
+    if isempty then -- No data
         widget.text:SetString(STRINGS.UI.SERVERCREATIONSCREEN.NEWGAME)
-        widget.text:SetPosition(0,0,0)
+        widget.text:SetPosition(0, -2, 0)
     else -- We have data, show the relevant bit of info
-        widget.text:SetString( GetGameModeStringWithDetails( gamemode, world, day ) )
+        local servername = SaveGameIndex:GetSlotServerData(slotnum).name or ""
+        if character == nil then
+            widget.text:SetPosition(0, -2, 0)
+            widget.text:SetTruncatedString(servername, 300, 60)
+        else
+            widget.text:SetPosition(50, -2, 0)
+            widget.text:SetTruncatedString(servername, 200, 40)
+        end
     end
-    
+
     widget.text:SetVAlign(ANCHOR_MIDDLE)
-    --widget.text:EnableWordWrap(true)
 
     widget.bg:SetScale(1,.9,1)
-    
+
     widget.OnGainFocus = function(self)
         Widget.OnGainFocus(self)
         TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover")
@@ -695,7 +718,7 @@ function ServerCreationScreen:MakeSaveTile(slotnum)
             widget.bg:GetAnimState():PlayAnimation("anim")
         end
     end
-        
+
     widget.OnControl = function(self, control, down)
         if control == CONTROL_ACCEPT then
             if down then 
@@ -707,11 +730,11 @@ function ServerCreationScreen:MakeSaveTile(slotnum)
             return true
         end
     end
-    
+
     widget.GetHelpText = function(self)
         local controller_id = TheInput:GetControllerID()
         local t = {}
-        table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT) .. " " .. STRINGS.UI.HELP.SELECT)   
+        table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT) .. " " .. STRINGS.UI.SERVERCREATIONSCREEN.SELECT_SLOT)   
         return table.concat(t, "  ")
     end
 
@@ -728,6 +751,7 @@ function ServerCreationScreen:OnClickTile(slotnum, silent)
         if k == slotnum then
             self.load_slots_menu.items[k].bg:GetAnimState():PlayAnimation("over")
             self.load_slots_menu.items[k].bg:GetAnimState():SetMultColour(0,0,0,1)
+            self.load_slots_menu.items[k]:SetFocus()
         else
             self.load_slots_menu.items[k].bg:GetAnimState():PlayAnimation("anim")
             self.load_slots_menu.items[k].bg:GetAnimState():SetMultColour(.5,.5,.5,1)
@@ -761,89 +785,138 @@ function ServerCreationScreen:MakeDetailPanel(left_col, right_col)
     self.server_day:SetPosition((edit_width * .5) - label_offset + space_between + 15, serv_name_height + 75)
 
     --#srosen need to make the width of these text boxes more dynamic based on the width of the string (for loc)
-    local name = Widget("name")
-    self.server_name_label = name:AddChild(Text(BUTTONFONT, 35))
-    self.server_name_label:SetString(STRINGS.UI.SERVERCREATIONSCREEN.SERVERNAME)
-    self.server_name_label:SetHAlign(ANCHOR_LEFT)
-    self.server_name_label:SetPosition(-240,0)
-    self.server_name_label:SetColour(0,0,0,1)
-    local w,h = self.server_name_label:GetRegionSize()
-    self.server_name_textbox_bg = self.server_name_label:AddChild( Image("images/textboxes.xml", "textbox_long.tex") )
-    self.server_name_textbox_bg:ScaleToSize(edit_width - w + space_between, label_height )
-    self.server_name_textbox = self.server_name_label:AddChild(TextEdit( BODYTEXTFONT, font_size*textbox_font_ratio, TheNet:GetDefaultServerName() ) )
-    self.server_name_textbox_bg:SetPosition( edit_width - 240, 0, 0)
-    self.server_name_textbox:SetPosition(edit_width - 225 - space_between/2-5, 0, 0)
-    self.server_name_textbox:SetRegionSize( edit_width - w - space_between-10, label_height )
-    self.server_name_textbox:SetHAlign(ANCHOR_LEFT)
-    self.server_name_textbox:SetFocusedImage( self.server_name_textbox_bg, "images/textboxes.xml", "textbox_long_over.tex", "textbox_long.tex" )
-    self.server_name_textbox:SetTextLengthLimit( SERVER_NAME_MAX_LENGTH )
-    self.server_name_textbox:SetCharacterFilter( VALID_CHARS )
-    self.server_name_textbox:SetAllowClipboardPaste( false )
-
-    local pw = Widget("pw")
-    self.server_pw_label = pw:AddChild(Text(BUTTONFONT, 35))
-    self.server_pw_label:SetString(STRINGS.UI.SERVERCREATIONSCREEN.SERVERPASSWORD)
-    self.server_pw_label:SetHAlign(ANCHOR_LEFT)
-    self.server_pw_label:SetPosition(-225,0)
-    self.server_pw_label:SetColour(0,0,0,1)
-    local w,h = self.server_pw_label:GetRegionSize()
-    self.server_pw_textbox_bg = self.server_pw_label:AddChild( Image("images/textboxes.xml", "textbox_long.tex") )
-    self.server_pw_textbox_bg:ScaleToSize(edit_width - w + space_between, label_height )
-    self.server_pw_textbox = self.server_pw_label:AddChild(TextEdit( BODYTEXTFONT, font_size*textbox_font_ratio, TheNet:GetDefaultServerName() ) )
-    self.server_pw_textbox_bg:SetPosition( edit_width - 240, 0, 0)
-    self.server_pw_textbox:SetPosition(edit_width - 225 - space_between/2-5, 0, 0)
-    self.server_pw_textbox:SetRegionSize( edit_width - w - space_between-10, label_height )
-    self.server_pw_textbox:SetHAlign(ANCHOR_LEFT)
-    self.server_pw_textbox:SetFocusedImage( self.server_pw_textbox_bg, "images/textboxes.xml", "textbox_long_over.tex", "textbox_long.tex" )
-    self.server_pw_textbox:SetTextLengthLimit( STRING_MAX_LENGTH )
-    self.server_pw_textbox:SetCharacterFilter( VALID_PASSWORD_CHARS )
-    self.server_pw_textbox:SetAllowClipboardPaste( false )
-    if not Profile:GetShowPasswordEnabled() then
-        self.server_pw_textbox:SetPassword(true)
+    self.server_name = Widget("name")
+    self.server_name.label = self.server_name:AddChild(Text(BUTTONFONT, 35))
+    self.server_name.label:SetString(STRINGS.UI.SERVERCREATIONSCREEN.SERVERNAME)
+    self.server_name.label:SetHAlign(ANCHOR_LEFT)
+    self.server_name.label:SetPosition(-240,0)
+    self.server_name.label:SetColour(0,0,0,1)
+    local w,h = self.server_name.label:GetRegionSize()
+    self.server_name.textbox_bg = self.server_name.label:AddChild( Image("images/textboxes.xml", "textbox_long.tex") )
+    self.server_name.textbox_bg:ScaleToSize(edit_width - w + space_between, label_height )
+    self.server_name.textbox_bg:SetPosition( edit_width - 240, 0, 0)
+    self.server_name.textbox = self.server_name.label:AddChild(TextEdit( BODYTEXTFONT, font_size*textbox_font_ratio, TheNet:GetDefaultServerName() ) )
+    self.server_name.textbox:SetPosition(edit_width - 225 - space_between/2-5, 0, 0)
+    self.server_name.textbox:SetRegionSize( edit_width - w - space_between-10, label_height )
+    self.server_name.textbox:SetHAlign(ANCHOR_LEFT)
+    self.server_name.textbox:SetFocusedImage( self.server_name.textbox_bg, "images/textboxes.xml", "textbox_long_over.tex", "textbox_long.tex" )
+    self.server_name.textbox:SetTextLengthLimit( SERVER_NAME_MAX_LENGTH )
+    self.server_name.textbox:SetCharacterFilter( VALID_CHARS )
+    
+    local screen = self
+    self.server_name.OnGainFocus = function(self)
+        Widget.OnGainFocus(self)
+        screen.server_name.textbox:OnGainFocus()
+    end
+    self.server_name.OnLoseFocus = function(self)
+        Widget.OnLoseFocus(self)
+        screen.server_name.textbox:OnLoseFocus()
+    end
+    self.server_name.GetHelpText = function(self)
+        local controller_id = TheInput:GetControllerID()
+        local t = {}
+        if not screen.server_name.textbox.editing and not screen.server_name.textbox.focus then
+            table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT, false, false ) .. " " .. STRINGS.UI.HELP.CHANGE_TEXT)   
+        end
+        return table.concat(t, "  ")
     end
 
-    local desc = Widget("desc")
-    self.server_desc_label = desc:AddChild(Text(BUTTONFONT, 35))
-    self.server_desc_label:SetString(STRINGS.UI.SERVERCREATIONSCREEN.SERVERDESC)
-    self.server_desc_label:SetHAlign(ANCHOR_LEFT)
-    self.server_desc_label:SetPosition(-218,0)
-    self.server_desc_label:SetColour(0,0,0,1)
-    local w,h = self.server_desc_label:GetRegionSize()
-    self.server_desc_textbox_bg = self.server_desc_label:AddChild( Image("images/textboxes.xml", "textbox_long.tex") )
-    self.server_desc_textbox_bg:ScaleToSize(edit_width - w + space_between, label_height )
-    self.server_desc_textbox = self.server_desc_label:AddChild(TextEdit( BODYTEXTFONT, font_size*textbox_font_ratio, TheNet:GetDefaultServerName() ) )
-    self.server_desc_textbox_bg:SetPosition( edit_width - 240, 0, 0)
-    self.server_desc_textbox:SetPosition(edit_width - 225 - space_between/2-5, 0, 0)
-    self.server_desc_textbox:SetRegionSize( edit_width - w - space_between-10, label_height )
-    self.server_desc_textbox:SetHAlign(ANCHOR_LEFT)
-    self.server_desc_textbox:SetFocusedImage( self.server_desc_textbox_bg, "images/textboxes.xml", "textbox_long_over.tex", "textbox_long.tex" )
-    self.server_desc_textbox:SetTextLengthLimit( STRING_MAX_LENGTH )
-    self.server_desc_textbox:SetCharacterFilter( VALID_CHARS )
-    self.server_desc_textbox:SetAllowClipboardPaste( false )
+    self.server_pw = Widget("pw")
+    self.server_pw.label = self.server_pw:AddChild(Text(BUTTONFONT, 35))
+    self.server_pw.label:SetString(STRINGS.UI.SERVERCREATIONSCREEN.SERVERPASSWORD)
+    self.server_pw.label:SetHAlign(ANCHOR_LEFT)
+    self.server_pw.label:SetPosition(-225,0)
+    self.server_pw.label:SetColour(0,0,0,1)
+    local w,h = self.server_pw.label:GetRegionSize()
+    self.server_pw.textbox_bg = self.server_pw.label:AddChild( Image("images/textboxes.xml", "textbox_long.tex") )
+    self.server_pw.textbox_bg:ScaleToSize(edit_width - w + space_between, label_height )
+    self.server_pw.textbox_bg:SetPosition( edit_width - 240, 0, 0)
+    self.server_pw.textbox = self.server_pw.label:AddChild(TextEdit( BODYTEXTFONT, font_size*textbox_font_ratio, TheNet:GetDefaultServerName() ) )
+    self.server_pw.textbox:SetPosition(edit_width - 225 - space_between/2-5, 0, 0)
+    self.server_pw.textbox:SetRegionSize( edit_width - w - space_between-10, label_height )
+    self.server_pw.textbox:SetHAlign(ANCHOR_LEFT)
+    self.server_pw.textbox:SetFocusedImage( self.server_pw.textbox_bg, "images/textboxes.xml", "textbox_long_over.tex", "textbox_long.tex" )
+    self.server_pw.textbox:SetTextLengthLimit( STRING_MAX_LENGTH )
+    self.server_pw.textbox:SetCharacterFilter( VALID_PASSWORD_CHARS )
+    
+    if not Profile:GetShowPasswordEnabled() then
+        self.server_pw.textbox:SetPassword(true)
+    end
+    self.server_pw.OnGainFocus = function(self)
+        Widget.OnGainFocus(self)
+        screen.server_pw.textbox:OnGainFocus()
+    end
+    self.server_pw.OnLoseFocus = function(self)
+        Widget.OnLoseFocus(self)
+        screen.server_pw.textbox:OnLoseFocus()
+    end
+    self.server_pw.GetHelpText = function(self)
+        local controller_id = TheInput:GetControllerID()
+        local t = {}
+        if not screen.server_pw.textbox.editing and not screen.server_pw.textbox.focus then
+            table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT, false, false ) .. " " .. STRINGS.UI.HELP.CHANGE_TEXT)   
+        end
+        return table.concat(t, "  ")
+    end
 
-    self.server_name_textbox:SetOnTabGoToTextEditWidget(function()
-        if self.server_pw_textbox:IsVisible() then
-            return self.server_pw_textbox
-        elseif self.server_desc_textbox:IsVisible() then
-            return self.server_desc_textbox
+    self.server_desc = Widget("desc")
+    self.server_desc.label = self.server_desc:AddChild(Text(BUTTONFONT, 35))
+    self.server_desc.label:SetString(STRINGS.UI.SERVERCREATIONSCREEN.SERVERDESC)
+    self.server_desc.label:SetHAlign(ANCHOR_LEFT)
+    self.server_desc.label:SetPosition(-218,0)
+    self.server_desc.label:SetColour(0,0,0,1)
+    local w,h = self.server_desc.label:GetRegionSize()
+    self.server_desc.textbox_bg = self.server_desc.label:AddChild( Image("images/textboxes.xml", "textbox_long.tex") )
+    self.server_desc.textbox_bg:ScaleToSize(edit_width - w + space_between, label_height )
+    self.server_desc.textbox_bg:SetPosition( edit_width - 240, 0, 0)
+    self.server_desc.textbox = self.server_desc.label:AddChild(TextEdit( BODYTEXTFONT, font_size*textbox_font_ratio, TheNet:GetDefaultServerName() ) )
+    self.server_desc.textbox:SetPosition(edit_width - 225 - space_between/2-5, 0, 0)
+    self.server_desc.textbox:SetRegionSize( edit_width - w - space_between-10, label_height )
+    self.server_desc.textbox:SetHAlign(ANCHOR_LEFT)
+    self.server_desc.textbox:SetFocusedImage( self.server_desc.textbox_bg, "images/textboxes.xml", "textbox_long_over.tex", "textbox_long.tex" )
+    self.server_desc.textbox:SetTextLengthLimit( STRING_MAX_LENGTH )
+    self.server_desc.textbox:SetCharacterFilter( VALID_CHARS )
+    
+    self.server_desc.OnGainFocus = function(self)
+        Widget.OnGainFocus(self)
+        screen.server_desc.textbox:OnGainFocus()
+    end
+    self.server_desc.OnLoseFocus = function(self)
+        Widget.OnLoseFocus(self)
+        screen.server_desc.textbox:OnLoseFocus()
+    end
+    self.server_desc.GetHelpText = function(self)
+        local controller_id = TheInput:GetControllerID()
+        local t = {}
+        if not screen.server_desc.textbox.editing and not screen.server_desc.textbox.focus then
+            table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT, false, false ) .. " " .. STRINGS.UI.HELP.CHANGE_TEXT)   
+        end
+        return table.concat(t, "  ")
+    end
+
+    self.server_name.textbox:SetOnTabGoToTextEditWidget(function()
+        if self.server_pw.textbox:IsVisible() then
+            return self.server_pw.textbox
+        elseif self.server_desc.textbox:IsVisible() then
+            return self.server_desc.textbox
         else
             return nil
         end        
     end)
-    self.server_pw_textbox:SetOnTabGoToTextEditWidget(function()
-        if self.server_desc_textbox:IsVisible() then
-            return self.server_desc_textbox
-        elseif self.server_name_textbox:IsVisible() then
-            return self.server_name_textbox
+    self.server_pw.textbox:SetOnTabGoToTextEditWidget(function()
+        if self.server_desc.textbox:IsVisible() then
+            return self.server_desc.textbox
+        elseif self.server_name.textbox:IsVisible() then
+            return self.server_name.textbox
         else
             return nil
         end  
     end)
-    self.server_desc_textbox:SetOnTabGoToTextEditWidget(function()
-        if self.server_name_textbox:IsVisible() then
-            return self.server_name_textbox
-        elseif self.server_pw_textbox:IsVisible() then
-            return self.server_pw_textbox
+    self.server_desc.textbox:SetOnTabGoToTextEditWidget(function()
+        if self.server_name.textbox:IsVisible() then
+            return self.server_name.textbox
+        elseif self.server_pw.textbox:IsVisible() then
+            return self.server_pw.textbox
         else
             return nil
         end  
@@ -930,9 +1003,9 @@ function ServerCreationScreen:MakeDetailPanel(left_col, right_col)
 
     self.page_widgets = 
     {
-        name,
-        pw,
-        desc,
+        self.server_name,
+        self.server_pw,
+        self.server_desc,
         self.game_mode,
         self.pvp,
         self.max_players,
@@ -940,29 +1013,54 @@ function ServerCreationScreen:MakeDetailPanel(left_col, right_col)
         self.online_mode,
     }
     self.scroll_list = self.detail_panel:AddChild(ScrollableList(self.page_widgets, 270, 360, 45, 10))
+    -- It's gross & inconsistent but don't show the shoulder button scroll prompts on the screen:
+    -- the scrollable list is small, and we're low on space for button prompts
+    self.scroll_list.GetHelpText = function(self)
+        local controller_id = TheInput:GetControllerID()
+        local t = {}
+        return table.concat(t, "  ")
+    end
     self.scroll_list:SetPosition(120,0)
 end
 
 function ServerCreationScreen:MakeButtons()
-    self.cancel_button = MakeImgButton(self.load_panel, -95, -250, STRINGS.UI.SERVERCREATIONSCREEN.BACK, function() self:Cancel() end)
-    self.create_button = MakeImgButton(self.load_panel, 85, -253, STRINGS.UI.SERVERCREATIONSCREEN.CREATE, function() self:Create() end, true)
-    self.create_button.text:SetPosition(1,0)
+    if not TheInput:ControllerAttached() then
+        self.cancel_button = MakeImgButton(self.load_panel, -95, -250, STRINGS.UI.SERVERCREATIONSCREEN.BACK, function() self:Cancel() end)
+        
+        self.create_button = MakeImgButton(self.load_panel, 85, -253, STRINGS.UI.SERVERCREATIONSCREEN.CREATE, function() self:Create() end, true)
+        self.create_button.text:SetPosition(1,0)
 
-    self.blacklist_button = MakeImgButton(self.load_panel, 100, 300, STRINGS.UI.SERVERCREATIONSCREEN.ADMIN, function() self:ShowServerAdmin() end)
-    
-    self.manage_account = MakeImgButton(self.load_panel,-100, 300, STRINGS.UI.SERVERCREATIONSCREEN.MANAGE_ACCOUNT, 
-						   function() VisitURL(TheFrontEnd:GetAccountManager():GetViewAccountURL(), true ) end)
+        self.blacklist_button = MakeImgButton(self.load_panel, 100, 300, STRINGS.UI.SERVERCREATIONSCREEN.ADMIN, function() self:ShowServerAdmin() end)
+
+        self.delete_button = MakeImgButton(self.detail_panel, 115, -250, STRINGS.UI.SERVERCREATIONSCREEN.DELETE_SLOT, function() self:DeleteSlot(self.saveslot) end)
+
+        self.configure_world_button = MakeImgButton(self.detail_panel, -90, -250, STRINGS.UI.SERVERCREATIONSCREEN.WORLD, function() self:OnConfigureButton() end)
+
+        self.manage_account = MakeImgButton(self.load_panel, -100, 300, STRINGS.UI.SERVERCREATIONSCREEN.MANAGE_ACCOUNT, 
+                       function() VisitURL(TheFrontEnd:GetAccountManager():GetViewAccountURL(), true ) end)
+    else
+        self.manage_account = MakeImgButton(self.load_panel, 0, 300, STRINGS.UI.SERVERCREATIONSCREEN.MANAGE_ACCOUNT, 
+                       function() VisitURL(TheFrontEnd:GetAccountManager():GetViewAccountURL(), true ) end)
+    end
+
     -- If we don't have a steam token, disable
     if not TheFrontEnd:GetAccountManager():HasSteamTicket() then
-		self.manage_account:Disable()
+        self.manage_account:Disable()
     end
-            
-         
-    self.configure_world_button = MakeImgButton(self.detail_panel, -90, -250, STRINGS.UI.SERVERCREATIONSCREEN.WORLD, function() self:OnConfigureButton() end)
-    self.delete_button = MakeImgButton(self.detail_panel, 115, -250, STRINGS.UI.SERVERCREATIONSCREEN.DELETE_SLOT, function() self:DeleteSlot(self.saveslot) end)
     
-    -- mode (once exists) - spinner
     self:UpdatePanels(self.saveslot)
+end
+
+function ServerCreationScreen:DoFocusHookUps()
+    if not TheInput:ControllerAttached() then
+
+    else
+        self.manage_account:SetFocusChangeDir(MOVE_DOWN, self.load_slots_menu)
+        self.load_slots_menu:SetFocusChangeDir(MOVE_UP, self.manage_account)
+        self.load_slots_menu:SetFocusChangeDir(MOVE_RIGHT, self.scroll_list)
+        self.manage_account:SetFocusChangeDir(MOVE_RIGHT, self.scroll_list)
+        self.scroll_list:SetFocusChangeDir(MOVE_LEFT, self.load_slots_menu)
+    end
 end
 
 function ServerCreationScreen:ShowServerAdmin()

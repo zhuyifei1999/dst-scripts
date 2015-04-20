@@ -58,6 +58,13 @@ require("map/rooms/terrain_fungus")
 require("map/rooms/terrain_cave")
 require("map/rooms/terrain_mazes")
 
+
+require("map/rooms/DLCrooms")
+
+--DST Stuff
+
+require("map/rooms/dst_rooms/giants")
+
 ------------------------------------------------------------------------------------
 -- EXIT ROOM -----------------------------------------------------------------------
 ------------------------------------------------------------------------------------

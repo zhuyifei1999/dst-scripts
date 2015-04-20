@@ -1,6 +1,6 @@
 local assets =
 {
-	Asset("ANIM", "anim/sewing_kit.zip"),
+    Asset("ANIM", "anim/sewing_kit.zip"),
 }
 
 local function onsewn(inst, target, doer)
@@ -8,23 +8,23 @@ local function onsewn(inst, target, doer)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddNetwork()
-    
+
     MakeInventoryPhysics(inst)
 
     inst.AnimState:SetBank("sewing_kit")
     inst.AnimState:SetBuild("sewing_kit")
     inst.AnimState:PlayAnimation("idle")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("finiteuses")
     inst.components.finiteuses:SetMaxUses(TUNING.SEWINGKIT_USES)

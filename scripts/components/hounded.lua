@@ -223,6 +223,10 @@ local function GetSpecialHoundChance()
 	        return chance
 	    end
 	end
+
+	if TheWorld.state.issummer then
+		chance = chance * 1.5
+	end
 	
 	return chance
 end
@@ -238,7 +242,7 @@ local function SummonHound(pt)
 		local special_hound_chance = GetSpecialHoundChance()
 
 		if math.random() < special_hound_chance then
-		    if TheWorld.state.iswinter then
+		    if TheWorld.state.iswinter or TheWorld.state.isspring then
 		        prefab = "icehound"
 		    else
 			    prefab = "firehound"
@@ -329,9 +333,14 @@ function self:GetWarning()
 	return _warning
 end
 
+function self:GetAttacking()
+	return ((_timetoattack <= 0) and _attackplanned)
+end
+
 --------------------------------------------------------------------------
 --[[ Public member functions ]]
 --------------------------------------------------------------------------
+
 function self:SpawnModeEscalating()
 	_spawnmode = "escalating"
 	PlanNextHoundAttack()
@@ -387,6 +396,28 @@ function self:ForceNextHoundWave()
 	self:OnUpdate(1)
 end
 
+local function _DoWarningSpeech(player)
+    player.components.talker:Say(GetString(player.prefab, "ANNOUNCE_HOUNDS"))
+end
+
+function self:DoWarningSpeech()
+    for i, v in ipairs(_activeplayers) do
+        v:DoTaskInTime(math.random() * 2, _DoWarningSpeech)
+    end
+end
+
+function self:DoWarningSound()
+    --All players hear their own warning sound from a random
+    --random direction relative to their own local positions
+    SpawnPrefab("houndwarning_lvl"..
+        (((_timetoattack == nil or
+        _timetoattack < 30) and "4") or
+        (_timetoattack < 60 and "3") or
+        (_timetoattack < 90 and "2") or
+                                "1")
+    )
+end
+
 function self:OnUpdate(dt)
 	if _spawnmode == "never" then
 		return
@@ -399,7 +430,7 @@ function self:OnUpdate(dt)
 
 	_timetoattack = _timetoattack - dt
 
-	if _timetoattack <= 0 then
+	if _timetoattack < 0 then
 		-- Okay, it's hound-day, get number of dogs for each player
 		if not _spawninfo then
 			GetHoundAmounts()
@@ -447,37 +478,25 @@ function self:OnUpdate(dt)
 			_timetonextwarningsound = 0
 		end
 	end
-	
-	if _warning then
-		_timetonextwarningsound	= _timetonextwarningsound - dt
-		
-		if _timetonextwarningsound <= 0 then
-		
-			_announcewarningsoundinterval = _announcewarningsoundinterval - 1
-			if _announcewarningsoundinterval <= 0 then
-				_announcewarningsoundinterval = 10 + math.random(5)
-				for i,v in ipairs(AllPlayers) do
-					local delay = math.random() * 2
-					v:DoTaskInTime(delay, function() v.components.talker:Say(GetString(v, "ANNOUNCE_HOUNDS")) end )
-				end
-			end
-		
-			local warningSound
-			if _timetoattack < 30 then
-				_timetonextwarningsound = .3 + math.random(1)
-				warningSound = SpawnPrefab("houndwarning_lvl4")
-			elseif _timetoattack < 60 then
-				_timetonextwarningsound = 2 + math.random(1)
-				warningSound = SpawnPrefab("houndwarning_lvl3")
-			elseif _timetoattack < 90 then
-				_timetonextwarningsound = 4 + math.random(2)
-				warningSound = SpawnPrefab("houndwarning_lvl2")
-			else
-				_timetonextwarningsound = 5 + math.random(4)
-				warningSound = SpawnPrefab("houndwarning_lvl1")
-			end
-		end
-	end
+
+    if _warning then
+        _timetonextwarningsound	= _timetonextwarningsound - dt
+
+        if _timetonextwarningsound <= 0 then
+            _announcewarningsoundinterval = _announcewarningsoundinterval - 1
+            if _announcewarningsoundinterval <= 0 then
+                _announcewarningsoundinterval = 10 + math.random(5)
+                self:DoWarningSpeech()
+            end
+
+            _timetonextwarningsound =
+                (_timetoattack < 30 and .3 + math.random(1)) or
+                (_timetoattack < 60 and 2 + math.random(1)) or
+                (_timetoattack < 90 and 4 + math.random(2)) or
+                                        5 + math.random(4)
+            self:DoWarningSound()
+        end
+    end
 end
 
 --------------------------------------------------------------------------
@@ -485,16 +504,13 @@ end
 --------------------------------------------------------------------------
 
 function self:OnSave()
-	if not self.noserial then
-		return 
-		{
-			warning = _warning,
-			timetoattack = _timetoattack,
-			warnduration = _warnduration,
-			attackplanned = _attackplanned,
-		}
-	end
-	self.noserial = false
+	return 
+	{
+		warning = _warning,
+		timetoattack = _timetoattack,
+		warnduration = _warnduration,
+		attackplanned = _attackplanned,
+	}
 end
 
 function self:OnLoad(data)
@@ -514,10 +530,6 @@ function self:OnLoad(data)
 	else
 		PlanNextHoundAttack()
 	end
-end
-
-function self:OnProgress()
-	self.noserial = true
 end
 
 --------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 local assets =
 {
-	Asset("ANIM", "anim/gems.zip"),
+    Asset("ANIM", "anim/gems.zip"),
 }
 
 local function buildgem(colour)
@@ -19,24 +19,28 @@ local function buildgem(colour)
         inst.entity:AddAnimState()
         inst.entity:AddSoundEmitter()
         inst.entity:AddNetwork()
-            
+
         MakeInventoryPhysics(inst)
 
         inst.AnimState:SetBank("gems")
         inst.AnimState:SetBuild("gems")
         inst.AnimState:PlayAnimation(colour.."gem_idle", true)
 
+        inst:AddTag("molebait")
+
+        inst.entity:SetPristine()
+
         if not TheWorld.ismastersim then
             return inst
         end
-
-        inst.entity:SetPristine()
 
         inst:AddComponent("edible")
         inst.components.edible.foodtype = FOODTYPE.ELEMENTAL
         inst:AddComponent("tradable")
         inst.components.edible.hungervalue = 5
-        
+
+        inst:AddComponent("bait")
+
         inst:AddComponent("repairer")
         inst.components.repairer.repairmaterial = MATERIALS.GEM
         inst.components.repairer.workrepairvalue = TUNING.REPAIR_GEMS_WORK
@@ -45,7 +49,7 @@ local function buildgem(colour)
         inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
 
         inst:AddComponent("inspectable")
-        
+
         inst:AddComponent("inventoryitem")
 
         MakeHauntableLaunchAndSmash(inst)

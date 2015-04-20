@@ -13,6 +13,7 @@ local pig_prefabs =
 	"flies",
 	"pigskin",
 	"twigs",
+	"collapse_small",
 }
 
 local merm_prefabs =
@@ -20,18 +21,61 @@ local merm_prefabs =
 	"flies",
 	"spoiled_food",
 	"twigs",
+	"collapse_small",
 }
 
 local function OnFinish(inst)
+	if inst:HasTag("fire") and inst.components.burnable then 
+		inst.components.burnable:Extinguish()
+	end
 	SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
 	inst.SoundEmitter:PlaySound("dontstarve/common/destroy_wood")
+	if TheWorld.state.isfullmoon then
+		inst.components.lootdropper:SpawnLootPrefab("nightmarefuel")
+	end
 	inst.components.lootdropper:DropLoot()
 	inst:Remove()
 end
 
 local function OnWorked(inst) 
-    inst.AnimState:PlayAnimation("hit")
-    inst.AnimState:PushAnimation("idle_asleep")
+	if not inst:HasTag("burnt") then 
+    	inst.AnimState:PlayAnimation("hit")
+    	inst.AnimState:PushAnimation("idle_asleep")
+    end
+end
+
+local function OnFullMoon(inst, value)
+	if value then
+		if not inst:HasTag("burnt") then
+			inst.AnimState:PlayAnimation("wake")
+			inst.AnimState:PushAnimation("idle_awake", false)
+			inst.awake = true
+		end
+	else
+		if not inst:HasTag("burnt") then
+			if inst.awake then
+				inst.awake = false
+				inst.AnimState:PlayAnimation("sleep")
+				inst.AnimState:PushAnimation("idle_asleep", false)
+			end
+		end
+	end
+end
+
+local function onsave(inst, data)
+	if inst:HasTag("burnt") or inst:HasTag("fire") then
+        data.burnt = true
+    end
+end
+
+local function onload(inst, data)
+	if data and data.burnt then
+        inst.components.burnable.onburnt(inst)
+    else
+    	inst:DoTaskInTime(0, function(inst) 
+	    	OnFullMoon(inst, TheWorld.state.isfullmoon)
+		end)
+	end
 end
 
 local function create_common()
@@ -57,6 +101,15 @@ local function create_common()
 	inst.components.workable:SetWorkLeft(3)
 	inst.components.workable:SetOnWorkCallback(OnWorked)
 	inst.components.workable.onfinish = OnFinish
+
+	inst:AddTag("structure")
+	MakeSmallBurnable(inst, nil, nil, true)
+	MakeSmallPropagator(inst)
+	inst.OnSave = onsave
+	inst.OnLoad = onload
+
+	inst:WatchWorldState("isfullmoon", OnFullMoon)
+	OnFullMoon(inst, TheWorld.state.isfullmoon)
 
 	inst:AddComponent("hauntable")
 	inst.components.hauntable.cooldown = TUNING.HAUNT_COOLDOWN_MEDIUM

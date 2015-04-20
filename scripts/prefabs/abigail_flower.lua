@@ -37,7 +37,7 @@ local function deactivate(inst)
 end
 
 local function IsValidLink(inst, player)
-    return player.prefab == inst.components.characterspecific.character and player.abigail == nil
+    return player:HasTag("ghostlyfriend") and player.abigail == nil
 end
 
 local function dodecay(inst)
@@ -228,15 +228,13 @@ local function fn()
 
     MakeInventoryPhysics(inst)
 
-    inst:AddTag("irreplaceable")
-    
     inst.MiniMapEntity:SetIcon("abigail_flower.png")
-    
+
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst._chargestate = nil
     inst._playerlink = nil
@@ -288,9 +286,6 @@ local function fn()
     inst:ListenForEvent("ondropped", toground)
 
     MakeHauntableLaunch(inst)
-
-    inst:AddComponent("characterspecific")
-    inst.components.characterspecific:SetOwner("wendy")
 
     inst.OnLoad = onload
     inst.OnSave = onsave

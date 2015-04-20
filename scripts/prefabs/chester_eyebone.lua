@@ -61,8 +61,8 @@ end
 local function GetSpawnPoint(pt)
     local theta = math.random() * 2 * PI
     local radius = SPAWN_DIST
-	local offset = FindWalkableOffset(pt, theta, radius, 12, true)
-	return offset ~= nil and (pt + offset) or nil
+    local offset = FindWalkableOffset(pt, theta, radius, 12, true)
+    return offset ~= nil and (pt + offset) or nil
 end
 
 local function SpawnChester(inst)
@@ -208,11 +208,11 @@ local function fn()
     inst.AnimState:SetBuild("chester_eyebone_build")
     inst.AnimState:PlayAnimation("idle_loop", true)
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("inventoryitem")
     inst.components.inventoryitem:SetOnPutInInventoryFn(OnPutInInventory)
@@ -226,7 +226,7 @@ local function fn()
 
     inst:AddComponent("inspectable")
     inst.components.inspectable.getstatus = GetStatus
-	inst.components.inspectable:RecordViews()
+    inst.components.inspectable:RecordViews()
 
     inst:AddComponent("leader")
 
@@ -239,7 +239,7 @@ local function fn()
     inst.OnLoad = OnLoad
     inst.OnSave = OnSave
 
-	inst.fixtask = inst:DoTaskInTime(1, FixChester)
+    inst.fixtask = inst:DoTaskInTime(1, FixChester)
 
     return inst
 end

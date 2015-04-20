@@ -22,7 +22,11 @@ local Edible = Class(function(self, inst)
     self.sanityvalue = 0
     self.foodtype = FOODTYPE.GENERIC
     self.oneaten = nil
+    self.degrades_with_spoilage = true
 	self.gethealthfn = nil
+
+	self.temperaturedelta = 0
+	self.temperatureduration = 0
     
     self.stale_hunger = TUNING.STALE_FOOD_HUNGER
     self.stale_health = TUNING.STALE_FOOD_HEALTH
@@ -52,7 +56,8 @@ end
 
 function Edible:GetSanity(eater)
 
-	local ignore_spoilage = (eater and eater.components.eater and eater.components.eater.ignoresspoilage) or self.hungervalue < 0
+	local ignore_spoilage = not self.degrades_with_spoilage or ((eater and eater.components.eater and eater.components.eater.ignoresspoilage) or self.sanityvalue < 0)
+
 	if self.inst.components.perishable and not ignore_spoilage then
 		if self.inst.components.perishable:IsStale() then
 			if self.sanityvalue > 0 then
@@ -62,14 +67,14 @@ function Edible:GetSanity(eater)
 			return -TUNING.SANITY_SMALL
 		end
 	end
-	
+
 	return self.sanityvalue
 end
 
 function Edible:GetHunger(eater)
 	local multiplier = 1
 	
-	local ignore_spoilage = (eater and eater.components.eater and eater.components.eater.ignoresspoilage) or self.hungervalue < 0
+	local ignore_spoilage = not self.degrades_with_spoilage or ((eater and eater.components.eater and eater.components.eater.ignoresspoilage) or self.hungervalue < 0)
 	
 	if self.inst.components.perishable and not ignore_spoilage then
 		if self.inst.components.perishable:IsStale() then
@@ -86,7 +91,7 @@ function Edible:GetHealth(eater)
 	local multiplier = 1
 	local healthvalue = self.gethealthfn and self.gethealthfn(self.inst, eater) or self.healthvalue
 
-	local ignore_spoilage = (eater and eater.components.eater and eater.components.eater.ignoresspoilage) or healthvalue < 0
+	local ignore_spoilage = not self.degrades_with_spoilage or (eater and eater.components.eater and eater.components.eater.ignoresspoilage) or healthvalue < 0
 	
 	if self.inst.components.perishable and not ignore_spoilage then
 		if self.inst.components.perishable:IsStale() then
@@ -114,6 +119,12 @@ function Edible:OnEaten(eater)
     if self.oneaten then
         self.oneaten(self.inst, eater)
     end
+
+    -- Food is an implicit heater/cooler if it has temperature
+    if self.temperaturedelta ~= 0 and self.temperatureduration ~= 0 and eater and eater.components.temperature then
+        eater.components.temperature:SetTemperatureInBelly(self.temperaturedelta, self.temperatureduration)
+    end
+
     self.inst:PushEvent("oneaten", {eater = eater})
 end
 

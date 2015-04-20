@@ -59,6 +59,7 @@ local function doreset()
     })
 end
 
+
 -- Roll back *count* number of saves (default 1)
 function c_rollback(count)
     if TheWorld ~= nil and TheWorld.ismastersim then
@@ -578,10 +579,69 @@ function c_combatgear()
 	give("spear")
 end
 
+function c_combatsimulator(prefab, count)
+	count = count or 1
+
+    local x,y,z = ConsoleWorldPosition():Get()
+    local MakeBattle = nil
+    MakeBattle = function()
+		local creature = DebugSpawn(prefab)
+		creature:ListenForEvent("onremove", MakeBattle)
+        creature.Transform:SetPosition(x,y,z)
+		if creature.components.knownlocations then
+			creature.components.knownlocations:RememberLocation("home", {x=x,y=y,z=z})
+		end
+    end
+
+	for i=1,count do
+		MakeBattle()
+	end
+end
+
 function c_dump()
 	local ent = GetDebugEntity()
 	if not ent then
 		ent = ConsoleWorldEntityUnderMouse()
 	end
 	DumpEntity(ent)
+end
+
+function c_dumpseasons()
+	local str = TheWorld.net.components.seasons:GetDebugString()
+	print(str)
+end
+
+function c_dumpworldstate()
+    print("")
+    print("//======================== DUMPING WORLD STATE ========================\\\\")
+	TheWorld.components.worldstate:Dump()
+    print("\\\\=====================================================================//")
+    print("")
+end
+
+function c_makeinvisible()
+	local player = ConsoleCommandPlayer()
+	player:AddTag("debugnoattack")
+	print("Has debugnoattack tag?", player, player:HasTag("debugnoattack"))
+end
+
+function c_selectnext(name)
+	c_select(c_findnext(name))
+end
+
+function c_summondeerclops()
+	local player = ConsoleCommandPlayer()
+	TheWorld.components.deerclopsspawner:SummonMonster(player)
+end
+
+function c_summonbearger()
+	local player = ConsoleCommandPlayer()
+	TheWorld.components.beargerspawner:SummonMonster(player)
+end
+
+function c_gatherplayers()
+    local x,y,z = ConsoleWorldPosition():Get()
+	for k,v in pairs(AllPlayers) do
+		v.Transform:SetPosition(x,y,z)
+	end
 end

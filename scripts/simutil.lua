@@ -66,6 +66,12 @@ function FindClosestPlayer(x, y, z, isalive)
     return FindClosestPlayerInRangeSq(x, y, z, math.huge, isalive)
 end
 
+function FindClosestPlayerToInst(inst, range, isalive)
+    local x, y, z = inst.Transform:GetWorldPosition()
+	return FindClosestPlayerInRange(x, y, z, range, isalive)
+end
+
+
 function FindPlayersInRangeSq(x, y, z, rangesq, isalive)
     local players = {}
     for i, v in ipairs(AllPlayers) do
@@ -129,53 +135,6 @@ function DeleteCloseEntsWithTag(tag, inst, radius)
     for i, v in ipairs(ents) do
         v:Remove()
     end
-end
-
-function fadeout(inst, time)
-   
-    local mult = 1
-    local ticktime = GetTickTime()
-    
-    local r,g,b,a = inst.AnimState:GetMultColour()
-    local delta = ticktime/time
-    while mult > 0 do
-        inst.AnimState:SetMultColour(r,g,b,mult)
-        Yield()
-        mult = mult - delta
-    end
-    inst.AnimState:SetMultColour(r,g,b,0)
-    inst:PushEvent("fadecomplete")
-end
-
-function PlayFX(position, bank, build, anim, sound, sounddelay, tint, tintalpha)
-	--[[
-    local inst = CreateEntity()
-    
-    
-    inst:AddTag("FX")
-    inst.entity:AddTransform()
-    inst.entity:AddAnimState()
-    inst.Transform:SetPosition(position.x,position.y,position.z)
-    inst.AnimState:SetBank(bank)
-    inst.AnimState:SetBuild(build)
-    inst.AnimState:PlayAnimation(anim)
-    inst:ListenForEvent("animover", function(inst) inst:Remove() end)
-    if sound then
-		inst.entity:AddSoundEmitter()
-		
-		if sounddelay then
-			inst:DoTaskInTime(sounddelay, function() inst.SoundEmitter:PlaySound(sound) end)
-		else
-			inst.SoundEmitter:PlaySound(sound)
-		end
-    end
-    if tint then
-		inst.AnimState:SetMultColour(tint.x,tint.y,tint.z,tintalpha or 1)
-    end
-
-    return inst
-    --]]
-    return nil
 end
 
 function AnimateUIScale(item, total_time, start_scale, end_scale)
@@ -291,4 +250,8 @@ function CanEntitySeeTarget(inst, target)
     end
     local x, y, z = target.Transform:GetWorldPosition()
     return CanEntitySeePoint(inst, x, y, z)
+end
+
+function SpringCombatMod(amount)
+    return TheWorld.state.isspring and amount * TUNING.SPRING_COMBAT_MOD or amount
 end

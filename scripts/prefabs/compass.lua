@@ -1,6 +1,6 @@
 local assets =
 {
-	Asset("ANIM", "anim/compass.zip"),
+    Asset("ANIM", "anim/compass.zip"),
 }
 
 local dirs =
@@ -40,21 +40,23 @@ local function GetStatus(inst, viewer)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddNetwork()
 
     MakeInventoryPhysics(inst)
 
-    if not TheWorld.ismastersim then
-        return inst
-    end
-
     inst.AnimState:SetBank("compass")
     inst.AnimState:SetBuild("compass")
     inst.AnimState:PlayAnimation("idle")
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
 
     inst:AddComponent("inventoryitem")
     inst:AddComponent("inspectable")

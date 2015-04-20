@@ -22,7 +22,6 @@ local Countdown = require "widgets/countdown"
 local ControlsScreen = require "screens/controlsscreen"
 local OptionsScreen = require "screens/optionsscreen"
 local ServerListingScreen = require "screens/serverlistingscreen"
-local BroadcastingOptionsScreen = require "screens/broadcastingoptionsscreen"
 local MorgueScreen = require "screens/morguescreen"
 local RoGUpgrade = require "widgets/rogupgrade"
 
@@ -30,6 +29,7 @@ local NoAuthenticationPopupDialogScreen = require "screens/noauthenticationpopup
 local NetworkLoginPopup = require "screens/networkloginpopup"
 
 local OnlineStatus = require "widgets/onlinestatus"
+local GameVersion = require "widgets/gameversion"
 
 local rcol = RESOLUTION_X/2 -200
 local lcol = -RESOLUTION_X/2 +200
@@ -72,8 +72,18 @@ function MainScreen:DoInit( )
 	-- Make sure that DLC starts as on every time
 	EnableAllMenuDLC()
 
-	self.bg = self:AddChild(Image("images/bg_logo.xml", "bg.tex"))
-	TintBackground(self.bg)
+	local r = math.random()
+    if r < .25 then
+        self.bg = self:AddChild(Image("images/bg_rog_logo_1.xml", "bg.tex"))
+    elseif r < .5 then
+        self.bg = self:AddChild(Image("images/bg_rog_logo_2.xml", "bg.tex"))
+    elseif r < .75 then
+        self.bg = self:AddChild(Image("images/bg_rog_logo_3.xml", "bg.tex"))
+    else
+        self.bg = self:AddChild(Image("images/bg_rog_logo_4.xml", "bg.tex"))
+    end
+	-- TintBackground(self.bg)
+    self.bg:SetTint(.85,.85,.85,1)
 
     self.bg:SetVRegPoint(ANCHOR_MIDDLE)
     self.bg:SetHRegPoint(ANCHOR_MIDDLE)
@@ -222,9 +232,11 @@ function MainScreen:DoInit( )
     self.updatename:SetColour(1,1,1,1)
     local suffix = ""
     if BRANCH == "dev" then
-		suffix = " (internal)"
+		suffix = " (internal v"..APP_VERSION..")"
     elseif BRANCH == "staging" then
-		suffix = " (preview)"
+		suffix = " (preview v"..APP_VERSION..")"
+    else
+        suffix = " (v"..APP_VERSION..")"
     end
     self.updatename:SetString(STRINGS.UI.MAINSCREEN.DST_UPDATENAME .. suffix)
     self.updatenameshadow:SetString(STRINGS.UI.MAINSCREEN.DST_UPDATENAME .. suffix)
@@ -294,8 +306,14 @@ function MainScreen:DoInit( )
     self.onlinestatus:SetHAnchor(ANCHOR_RIGHT)
     self.onlinestatus:SetVAnchor(ANCHOR_BOTTOM)    
 
+    self.gameversion = self.fg:AddChild(GameVersion())
+    self.gameversion:SetHAnchor(ANCHOR_MIDDLE)
+    self.gameversion:SetVAnchor(ANCHOR_BOTTOM)
+    self.gameversion:SetPosition( 35, 18, 0 )
+
 	if PLATFORM ~= "NACL" then
 		self:UpdateMOTD()
+		self:UpdateCurrentVersion()
 		self:UpdateCountdown()
 	end
 
@@ -376,7 +394,6 @@ function MainScreen:OnPlayMultiplayerButton( push_listings_screen )
     end
 	
     local function GoToServerListingScreen( show_lan )
-    	self.profile:UnlockDSTCharacters()
     	if not self.filter_settings then
     		self.filter_settings = Profile:GetSavedFilters()
     	end
@@ -411,7 +428,6 @@ function MainScreen:OnPlayMultiplayerButton( push_listings_screen )
     end
     	
     local function onLogin(forceOffline)
-	    self.profile:UnlockDSTCharacters()
 	    local account_manager = TheFrontEnd:GetAccountManager()
 	    local is_banned = (account_manager:IsBanned() == true)
 	    local failed_email = account_manager:MustValidateEmail()
@@ -499,14 +515,6 @@ function MainScreen:Settings()
 	self.menu:Disable()
 	TheFrontEnd:Fade(false, screen_fade_time, function()
 		TheFrontEnd:PushScreen(OptionsScreen(false))
-		TheFrontEnd:Fade(true, screen_fade_time)
-	end)
-end
-
-function MainScreen:BroadcastingMenu()
-	self.menu:Disable()
-	TheFrontEnd:Fade(false, screen_fade_time, function()
-		TheFrontEnd:PushScreen(BroadcastingOptionsScreen())
 		TheFrontEnd:Fade(true, screen_fade_time)
 	end)
 end
@@ -760,6 +768,22 @@ function MainScreen:OnUpdate(dt)
 	end
 end
 
+function MainScreen:SetCurrentVersion(str)
+	local status, version = pcall( function() return json.decode(str) end )
+	local most_recent_cl = -2 
+	if status and version then
+		if version.main and table.getn(version.main) > 0 then
+			for idx,changelist in ipairs(version.main) do
+				if tonumber(changelist) > most_recent_cl then
+					most_recent_cl = tonumber(changelist)
+				end
+			end
+			self.currentversion = most_recent_cl
+		end
+	end
+	self.gameversion:SetTargetGameVersion(most_recent_cl)
+end
+
 function MainScreen:SetMOTD(str, cache)
 	--print("MainScreen:SetMOTD", str, cache)
 
@@ -810,8 +834,19 @@ function MainScreen:OnCachedMOTDLoad(load_success, str)
 	TheSim:QueryServer( "https://s3-us-west-2.amazonaws.com/kleifiles/external/ds_motd.json", function(...) self:OnMOTDQueryComplete(...) end, "GET" )
 end
 
+function MainScreen:OnCurrentVersionQueryComplete( result, isSuccessful, resultCode )
+ 	if isSuccessful and string.len(result) > 1 and resultCode == 200 then 
+ 		self:SetCurrentVersion(result, true)
+ 	else
+		self.gameversion:SetTargetGameVersion(-2)
+	end
+end
+
+function MainScreen:UpdateCurrentVersion()
+	TheSim:QueryServer( "https://s3.amazonaws.com/dstbuilds/builds.json", function(...) self:OnCurrentVersionQueryComplete(...) end, "GET" )
+end
+
 function MainScreen:UpdateMOTD()
-	--print("MainScreen:UpdateMOTD()")
 	TheSim:GetPersistentString("motd", function(...) self:OnCachedMOTDLoad(...) end)
 end
 

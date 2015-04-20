@@ -14,9 +14,6 @@ local function ShouldSleep(inst)
     return DefaultSleepTest(inst) and not inst.sg:HasStateTag("flying")
 end
 
-local function OnDrop(inst)
-    inst.sg:GoToState("stunned")
-end
 
 local function OnAttacked(inst, data)
     local x, y, z = inst.Transform:GetWorldPosition()
@@ -41,8 +38,12 @@ local function OnTrapped(inst, data)
     end
 end
 
+local function OnDropped(inst)
+    inst.sg:GoToState("stunned")
+end
+
 local function SeedSpawnTest()
-    return TheWorld.state.issummer
+    return not TheWorld.state.iswinter
 end
 
 local function makebird(name, soundname)
@@ -92,11 +93,13 @@ local function makebird(name, soundname)
         inst.DynamicShadow:SetSize(1, .75)
         inst.DynamicShadow:Enable(false)
 
+        MakeFeedablePetPristine(inst)
+
+        inst.entity:SetPristine()
+
         if not TheWorld.ismastersim then
             return inst
         end
-
-        inst.entity:SetPristine()
 
         inst.sounds =
         {
@@ -120,7 +123,7 @@ local function makebird(name, soundname)
         inst:AddComponent("occupier")
         
         inst:AddComponent("eater")
-        inst.components.eater:SetBird()
+        inst.components.eater:SetDiet({ FOODTYPE.SEEDS }, { FOODTYPE.SEEDS })
         
         inst:AddComponent("sleeper")
         inst.components.sleeper:SetSleepTest(ShouldSleep)
@@ -128,7 +131,6 @@ local function makebird(name, soundname)
         inst:AddComponent("inventoryitem")
         inst.components.inventoryitem.nobounce = true
         inst.components.inventoryitem.canbepickedup = false
-        inst.components.inventoryitem:SetOnDroppedFn(OnDrop)
 
         inst:AddComponent("cookable")
         inst.components.cookable.product = "cookedsmallmeat"
@@ -163,9 +165,11 @@ local function makebird(name, soundname)
         if birdspawner ~= nil then
             inst:ListenForEvent("onremove", birdspawner.StopTrackingFn)
             inst:ListenForEvent("enterlimbo", birdspawner.StopTrackingFn)
-            inst:ListenForEvent("exitlimbo", birdspawner.StartTrackingFn)
+            -- inst:ListenForEvent("exitlimbo", birdspawner.StartTrackingFn)
             birdspawner:StartTracking(inst)
         end
+
+        MakeFeedablePet(inst, TUNING.BIRD_PERISH_TIME, nil, OnDropped)
 
         return inst
     end

@@ -30,6 +30,7 @@ end
 function HealthBadge:OnUpdate(dt)
 	local down = self.owner ~= nil and
         (self.owner.IsFreezing ~= nil and self.owner:IsFreezing()) or
+        (self.owner.IsOverheating ~= nil and self.owner:IsOverheating()) or
         (self.owner.replica.hunger ~= nil and self.owner.replica.hunger:IsStarving()) or
         (self.owner.replica.health ~= nil and self.owner.replica.health:IsTakingFireDamage())
 

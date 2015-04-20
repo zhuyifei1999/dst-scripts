@@ -16,8 +16,10 @@ local easing = require("easing")
 
 local SEASON_NAMES =
 {
-    "summer",
+    "autumn",
     "winter",
+    "spring",
+    "summer",
 }
 local SEASONS = table.invert(SEASON_NAMES)
 
@@ -32,29 +34,15 @@ local MODES = table.invert(MODE_NAMES)
 local NUM_CLOCK_SEGS = 16
 local DEFAULT_CLOCK_SEGS =
 {
-    summer = { day = 10, dusk = 4, night = 2 },
-    winter = { day = 6, dusk = 6, night = 4 },
+    autumn = { day = 8, dusk = 6, night = 2 },
+    winter = { day = 5, dusk = 5, night = 6 },
+    spring = { day = 5, dusk = 8, night = 3 },
+    summer = { day = 11, dusk = 1, night = 4 },
 }
 
 local ENDLESS_PRE_DAYS = 10
 local ENDLESS_RAMP_DAYS = 10
 local ENDLESS_DAYS = 10000
-
-local DSP =
-{
-    winter =
-    {
-        ["set_music"] = 2000,
-        --["set_ambience"] = 5000,
-        --["set_sfx/HUD"] = 5000,
-        --["set_sfx/movement"] = 5000,
-        ["set_sfx/creature"] = 5000,
-        ["set_sfx/player"] = 5000,
-        ["set_sfx/sfx"] = 5000,
-        ["set_sfx/voice"] = 5000,
-        ["set_sfx/set_ambience"] = 5000,
-    },
-}
 
 --------------------------------------------------------------------------
 --[[ Member variables ]]
@@ -66,12 +54,12 @@ self.inst = inst
 --Private
 local _world = TheWorld
 local _ismastersim = _world.ismastersim
-local _dsp = {}
 
 --Master simulation
 local _mode
-local _preendlessmode
+local _premode
 local _segs
+local _segmod
 
 --Network
 local _season = net_tinybyte(inst.GUID, "seasons._season", "seasondirty")
@@ -89,7 +77,7 @@ end
 --------------------------------------------------------------------------
 
 local GetPrevSeason = _ismastersim and function()
-    if _preendlessmode or _mode == MODES.always then
+    if _premode or _mode == MODES.always then
         return _season:value()
     end
 
@@ -105,7 +93,7 @@ local GetPrevSeason = _ismastersim and function()
 end or nil
 
 local GetNextSeason = _ismastersim and function()
-    if not _preendlessmode and (_mode == MODES.endless or _mode == MODES.always) then
+    if not _premode and (_mode == MODES.endless or _mode == MODES.always) then
         return _season:value()
     end
 
@@ -118,6 +106,33 @@ local GetNextSeason = _ismastersim and function()
     end
 
     return season
+end or nil
+
+local GetModifiedSegs = _ismastersim and function(segs, mod)
+	local importance = {"day", "dusk", "night"}
+	table.sort(importance, function(a,b) return mod[a] < mod[b] end)
+
+	local retsegs = {}
+	for k,v in pairs(segs) do
+		retsegs[k] = math.ceil(math.clamp(v * mod[k], 0, 16))
+	end
+
+	local total = retsegs.day + retsegs.dusk + retsegs.night
+	while total ~= 16 do
+		for i=1, #importance do
+			if total >= 16 and retsegs[importance[i]] > 1 then
+				retsegs[importance[i]] = retsegs[importance[i]] - 1
+			elseif total < 16 and retsegs[importance[i]] > 0 then
+				retsegs[importance[i]] = retsegs[importance[i]] + 1
+			end
+			total = retsegs.day + retsegs.dusk + retsegs.night
+			if total == 16 then
+			    break
+			end
+		end
+    end
+
+	return retsegs
 end or nil
 
 local PushSeasonClockSegs = _ismastersim and function()
@@ -137,37 +152,71 @@ local PushSeasonClockSegs = _ismastersim and function()
         segs.dusk = NUM_CLOCK_SEGS - segs.day - segs.night
     end
 
+	segs = GetModifiedSegs(segs, _segmod)
+
     _world:PushEvent("ms_setclocksegs", segs)
 end or nil
 
-local function ModifySeasonDSP(duration)
-    local dsp = DSP[SEASON_NAMES[_season:value()]]
+local UpdateSeasonMode = _ismastersim and function()
 
-    if dsp then
-        for k, v in pairs(dsp) do
-            _dsp[k] = v
-        end
+	local numactiveseasons = 0
+	local allowedseason = nil
+	for i,length in ipairs(_lengths) do
+		if length:value() > 0 then
+			numactiveseasons = numactiveseasons + 1
+			allowedseason = i
+		end
+	end
 
-        for k in pairs(_dsp) do
-            if dsp[k] == nil then
-                _dsp[k] = nil
-            end
-        end
+	if numactiveseasons == 1 then
+		if allowedseason == _season:value() then
+			_mode = MODES.always
+		else
+			_mode = MODES.endless
+		end
+	else
+		_mode = MODES.cycle
+	end
+
+    if _mode == MODES.endless then
+		_premode = true
+		_totaldaysinseason:set(ENDLESS_PRE_DAYS * 2)
+		_remainingdaysinseason:set(ENDLESS_PRE_DAYS)
+		_endlessdaysinseason:set(false)
+    elseif _mode == MODES.always then
+		_premode = false
+        _totaldaysinseason:set(2)
+        _remainingdaysinseason:set(1)
+        _endlessdaysinseason:set(true)
     else
-        for k in pairs(_dsp) do
-            _dsp[k] = nil
-        end
+		if _lengths[_season:value()]:value() == 0 then
+			-- We can have a cycle that doesn't include the starting season (a "cycle pre" if you will)
+			_premode = true
+			_totaldaysinseason:set(ENDLESS_PRE_DAYS * 2)
+			_remainingdaysinseason:set(ENDLESS_PRE_DAYS)
+			_endlessdaysinseason:set(false)
+		else
+			if _season:value() == SEASONS.summer or _season:value() == SEASONS.winter then
+				_totaldaysinseason:set(_lengths[_season:value()]:value())
+				_remainingdaysinseason:set(math.ceil(_totaldaysinseason:value()))
+			 else
+				-- For spring and autumn, we artificially start "in the middle" for temperature, precip, etc. to prevent weird starts
+				_totaldaysinseason:set(_lengths[_season:value()]:value() * 2)
+				_remainingdaysinseason:set(_lengths[_season:value()]:value())
+			end
+			_premode = false
+			_endlessdaysinseason:set(false)
+		end
+
     end
 
-    _world:PushEvent("refreshdsp", duration)
-end
+end or nil
 
 --------------------------------------------------------------------------
 --[[ Private event handlers ]]
 --------------------------------------------------------------------------
 
 local function OnSeasonDirty()
-    ModifySeasonDSP(5)
 
     local data = {
         season = SEASON_NAMES[_season:value()],
@@ -199,9 +248,10 @@ local OnAdvanceSeason = _ismastersim and function()
             _totaldaysinseason:set(_lengths[_season:value()]:value())
             _elapseddaysinseason:set(0)
             _remainingdaysinseason:set(_totaldaysinseason:value())
+			_premode = false
         end
     elseif _mode == MODES.endless then
-        if _preendlessmode then
+        if _premode then
             if _remainingdaysinseason:value() > 1 then
                 --Progress pre endless season
                 _remainingdaysinseason:set(_remainingdaysinseason:value() - 1)
@@ -212,11 +262,11 @@ local OnAdvanceSeason = _ismastersim and function()
                 _elapseddaysinseason:set(0)
                 _remainingdaysinseason:set(_totaldaysinseason:value())
                 _endlessdaysinseason:set(true)
-                _preendlessmode = false
+                _premode = false
             end
         elseif _remainingdaysinseason:value() > ENDLESS_RAMP_DAYS then
             --Progress to peak of endless season
-            _remainingdaysinseason:set(_remainingdaysinseason:value() - 1)
+            _remainingdaysinseason:set(math.max(_remainingdaysinseason:value() - 1, ENDLESS_RAMP_DAYS))
         end
     else
         return
@@ -242,7 +292,7 @@ local OnRetreatSeason = _ismastersim and function()
             _remainingdaysinseason:set(1)
         end
     elseif _mode == MODES.endless then
-        if not _preendlessmode then
+        if not _premode then
             if _remainingdaysinseason:value() < _totaldaysinseason:value() then
                 --Regress endless season
                 _remainingdaysinseason:set(_remainingdaysinseason:value() + 1)
@@ -253,7 +303,7 @@ local OnRetreatSeason = _ismastersim and function()
                 _elapseddaysinseason:set(math.max(ENDLESS_PRE_DAYS - 1, 0))
                 _remainingdaysinseason:set(1)
                 _endlessdaysinseason:set(false)
-                _preendlessmode = true
+                _premode = true
             end
         elseif _remainingdaysinseason:value() < ENDLESS_PRE_DAYS then
             --Regress to peak of pre endless season
@@ -279,40 +329,7 @@ local OnSetSeason = _ismastersim and function(src, season)
         _elapseddaysinseason:set(0)
     end
 
-    if _mode == MODES.endless then
-        _preendlessmode = true
-        _totaldaysinseason:set(ENDLESS_PRE_DAYS * 2)
-        _remainingdaysinseason:set(ENDLESS_PRE_DAYS)
-        _endlessdaysinseason:set(false)
-    elseif _mode ~= MODES.always then
-        _totaldaysinseason:set(_lengths[_season:value()]:value())
-        _remainingdaysinseason:set(_totaldaysinseason:value())
-    end
-
-    PushSeasonClockSegs()
-end or nil
-
-local OnSetSeasonMode = _ismastersim and function(src, mode)
-    if MODES[mode] == nil then
-        return
-    end
-
-    _mode = MODES[mode]
-
-    if _mode == MODES.endless then
-        _preendlessmode = true
-        _totaldaysinseason:set(ENDLESS_PRE_DAYS * 2)
-        _remainingdaysinseason:set(ENDLESS_PRE_DAYS)
-        _endlessdaysinseason:set(false)
-    elseif _mode == MODES.always then
-        _totaldaysinseason:set(2)
-        _remainingdaysinseason:set(1)
-        _endlessdaysinseason:set(true)
-    else
-        _totaldaysinseason:set(_lengths[_season:value()]:value())
-        _remainingdaysinseason:set(math.ceil(_totaldaysinseason:value() * .5))
-        _endlessdaysinseason:set(false)
-    end
+	UpdateSeasonMode()
 
     PushSeasonClockSegs()
 end or nil
@@ -338,22 +355,30 @@ local OnSetSeasonClockSegs = _ismastersim and function(src, segs)
     PushSeasonClockSegs()
 end or nil
 
-local OnSetSeasonLengths = _ismastersim and function(src, lengths)
-    for i, v in ipairs(SEASON_NAMES) do
-        _lengths[i]:set(lengths[v] or 0)
-    end
+local OnSetSeasonLength = _ismastersim and function(src, data)
+	local season = data.season
+	local length = data.length
+
+	assert(SEASONS[season], "Tried setting the length of an invalid season.")
+	_lengths[SEASONS[season]]:set(length or 0)
+
+	local p = 1
+	if _totaldaysinseason:value() > 0 then
+		p = _remainingdaysinseason:value() / _totaldaysinseason:value()
+	end
+
+	UpdateSeasonMode()
 
     if _mode ~= MODES.endless and _mode ~= MODES.always then
-        local p = 1
-        if _totaldaysinseason:value() > 0 then
-            p = _remainingdaysinseason:value() / _totaldaysinseason:value()
-        end
-
-        _totaldaysinseason:set(_lengths[_season:value()]:value())
         _remainingdaysinseason:set(math.ceil(_totaldaysinseason:value() * p))
 
         PushSeasonClockSegs()
     end
+end or nil
+
+local OnSetSeasonSegModifier = _ismastersim and function(src, mod)
+	_segmod = mod
+	PushSeasonClockSegs()
 end or nil
 
 --------------------------------------------------------------------------
@@ -361,10 +386,10 @@ end or nil
 --------------------------------------------------------------------------
 
 --Initialize network variables
-_season:set(SEASONS.summer)
-_totaldaysinseason:set(TUNING.SUMMER_LENGTH)
+_season:set(SEASONS.autumn)
+_totaldaysinseason:set(TUNING.SEASON_LENGTH_FRIENDLY_DEFAULT * 2)
+_remainingdaysinseason:set(TUNING.SEASON_LENGTH_FRIENDLY_DEFAULT)
 _elapseddaysinseason:set(0)
-_remainingdaysinseason:set(_totaldaysinseason:value())
 _endlessdaysinseason:set(false)
 for i, v in ipairs(_lengths) do
     v:set(TUNING[string.upper(SEASON_NAMES[i]).."_LENGTH"] or 0)
@@ -376,12 +401,14 @@ inst:ListenForEvent("lengthsdirty", OnLengthsDirty)
 
 if _ismastersim then
     _mode = MODES.cycle
-    _preendlessmode = false
+    _premode = false
     _segs = {}
 
     for i, v in ipairs(SEASON_NAMES) do
         _segs[i] = DEFAULT_CLOCK_SEGS[v]
     end
+
+	_segmod = {day = 1, dusk = 1, night = 1}
 
     PushSeasonClockSegs()
 
@@ -390,19 +417,11 @@ if _ismastersim then
     inst:ListenForEvent("ms_advanceseason", OnAdvanceSeason, _world)
     inst:ListenForEvent("ms_retreatseason", OnRetreatSeason, _world)
     inst:ListenForEvent("ms_setseason", OnSetSeason, _world)
-    inst:ListenForEvent("ms_setseasonmode", OnSetSeasonMode, _world)
+    inst:ListenForEvent("ms_setseasonlength", OnSetSeasonLength, _world)
     inst:ListenForEvent("ms_setseasonclocksegs", OnSetSeasonClockSegs, _world)
-    inst:ListenForEvent("ms_setseasonlengths", OnSetSeasonLengths, _world)
+    inst:ListenForEvent("ms_setseasonsegmodifier", OnSetSeasonSegModifier, _world)
 end
 
-local dsp = DSP[SEASON_NAMES[_season:value()]]
-if dsp ~= nil then
-    for k, v in pairs(dsp) do
-        _dsp[k] = v
-    end
-end
-
-_world:PushEvent("pushdsp", { dsp = _dsp, duration = 0 })
 
 --------------------------------------------------------------------------
 --[[ Save/Load ]]
@@ -412,7 +431,7 @@ if _ismastersim then function self:OnSave()
     local data =
     {
         mode = MODE_NAMES[_mode],
-        preendlessmode = _preendlessmode,
+        premode = _premode,
         segs = {},
         season = SEASON_NAMES[_season:value()],
         totaldaysinseason = _totaldaysinseason:value(),
@@ -438,7 +457,7 @@ if _ismastersim then function self:OnLoad(data)
         local totalsegs = 0
 
         for k, v1 in pairs(_segs[i]) do
-            segs[k] = data.segs and data.segs[v][k] or 0
+            segs[k] = data.segs and data.segs[v] and data.segs[v][k] or 0
             totalsegs = totalsegs + segs[k]
         end
 
@@ -451,17 +470,15 @@ if _ismastersim then function self:OnLoad(data)
         _lengths[i]:set(data.lengths and data.lengths[v] or TUNING[string.upper(v).."_LENGTH"] or 0)
     end
 
-    _preendlessmode = data.preendlessmode == true
-    _mode = MODES[data.mode] or (_preendlessmode and MODES.endless or MODES.cycle)
-    _preendlessmode = _preendlessmode and _mode == MODES.endless
-    _season:set(SEASONS[data.season] or SEASONS.summer)
+    _premode = data.premode == true
+    _mode = MODES[data.mode] or MODES.cycle
+    _season:set(SEASONS[data.season] or SEASONS.autumn)
     _totaldaysinseason:set(data.totaldaysinseason or _lengths[_season:value()]:value())
     _elapseddaysinseason:set(data.elapseddaysinseason or 0)
     _remainingdaysinseason:set(math.min(data.remainingdaysinseason or _totaldaysinseason:value(), _totaldaysinseason:value()))
-    _endlessdaysinseason:set(not _preendlessmode and _mode ~= MODES.cycle)
+    _endlessdaysinseason:set(not _premode and _mode ~= MODES.cycle)
 
     PushSeasonClockSegs()
-    ModifySeasonDSP(0)
 end end
 
 --------------------------------------------------------------------------
@@ -469,7 +486,7 @@ end end
 --------------------------------------------------------------------------
 
 function self:GetDebugString()
-    return string.format("%s %d days", SEASON_NAMES[_season:value()], _endlessdaysinseason:value() and ENDLESS_DAYS or _remainingdaysinseason:value())
+    return string.format("%s %d -> %d days (%.0f %%) %s %s", SEASON_NAMES[_season:value()], _elapseddaysinseason:value(), _endlessdaysinseason:value() and ENDLESS_DAYS or _remainingdaysinseason:value(), 100-100*(_remainingdaysinseason:value() / _totaldaysinseason:value()), MODE_NAMES[_mode] or "", _premode and "(PRE)" or "")
 end
 
 --------------------------------------------------------------------------

@@ -126,7 +126,7 @@ CommonStates.AddIdle = function(states, funny_idle_state, anim_override, timelin
 end
 
     
-CommonStates.AddSimpleState = function(states, name, anim, tags)
+CommonStates.AddSimpleState = function(states, name, anim, tags, finishstate)
     table.insert(states, State{
         name = name,
         tags = tags or {},
@@ -138,12 +138,12 @@ CommonStates.AddSimpleState = function(states, name, anim, tags)
         
         events=
         {
-            EventHandler("animover", function(inst) inst.sg:GoToState("idle") end ),
+            EventHandler("animover", function(inst) inst.sg:GoToState(finishstate or "idle") end ),
         },        
     })    
 end
 
-CommonStates.AddSimpleActionState = function(states, name, anim, time, tags)
+CommonStates.AddSimpleActionState = function(states, name, anim, time, tags, finishstate)
     table.insert(states, State{
         name = name,
         
@@ -161,7 +161,7 @@ CommonStates.AddSimpleActionState = function(states, name, anim, time, tags)
         
         events=
         {
-            EventHandler("animover", function(inst) inst.sg:GoToState("idle") end ),
+            EventHandler("animover", function(inst) inst.sg:GoToState(finishstate or "idle") end ),
         },        
     } )    
 end

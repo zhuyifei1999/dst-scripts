@@ -34,6 +34,8 @@ local function fn()
 	inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
 
+	MakeDragonflyBait(inst, 1)
+
     if not TheWorld.ismastersim then
         return inst
     end

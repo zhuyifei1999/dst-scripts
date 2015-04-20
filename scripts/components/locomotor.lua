@@ -266,11 +266,11 @@ end
 function LocoMotor:UpdateGroundSpeedMultiplier()
 	self.groundspeedmultiplier = 1
     local ground = TheWorld
-	local oncreep = ground.GroundCreep:OnCreep(self.inst.Transform:GetWorldPosition())
+	local oncreep = self.triggerscreep and ground.GroundCreep:OnCreep(self.inst.Transform:GetWorldPosition())
 	local x,y,z = self.inst.Transform:GetWorldPosition()
 	if oncreep then
         -- if this ever needs to happen when self.enablegroundspeedmultiplier is set, need to move the check for self.enablegroundspeedmultiplier above
-	    if self.triggerscreep and not self.wasoncreep then
+	    if not self.wasoncreep then
 	        local triggered = ground.GroundCreep:GetTriggeredCreepSpawners(x, y, z)
 	        for _,v in ipairs(triggered) do
 	            v:PushEvent("creepactivate", {target = self.inst})
@@ -290,14 +290,16 @@ function LocoMotor:UpdateGroundSpeedMultiplier()
 	end
 end
 
-function LocoMotor:WalkForward()
+function LocoMotor:WalkForward(direct)
 	self.isrunning = false
+    if direct then self.wantstomoveforward = true end
     self.inst.Physics:SetMotorVel(self:GetWalkSpeed(),0,0)
     self.inst:StartUpdatingComponent(self)
 end
 
-function LocoMotor:RunForward()
+function LocoMotor:RunForward(direct)
 	self.isrunning = true
+    if direct then self.wantstomoveforward = true end
     self.inst.Physics:SetMotorVel(self:GetRunSpeed(),0,0)
     self.inst:StartUpdatingComponent(self)
 end

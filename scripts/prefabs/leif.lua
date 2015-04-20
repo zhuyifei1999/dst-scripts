@@ -2,20 +2,20 @@ local brain = require "brains/leifbrain"
 
 local assets =
 {
-	Asset("ANIM", "anim/leif_walking.zip"),
-	Asset("ANIM", "anim/leif_actions.zip"),
-	Asset("ANIM", "anim/leif_attacks.zip"),
-	Asset("ANIM", "anim/leif_idles.zip"),
-	Asset("ANIM", "anim/leif_build.zip"),
-	Asset("ANIM", "anim/leif_lumpy_build.zip"),
-	Asset("SOUND", "sound/leif.fsb"),
+    Asset("ANIM", "anim/leif_walking.zip"),
+    Asset("ANIM", "anim/leif_actions.zip"),
+    Asset("ANIM", "anim/leif_attacks.zip"),
+    Asset("ANIM", "anim/leif_idles.zip"),
+    Asset("ANIM", "anim/leif_build.zip"),
+    Asset("ANIM", "anim/leif_lumpy_build.zip"),
+    Asset("SOUND", "sound/leif.fsb"),
 }
 
 local prefabs =
 {
-	"meat",
-	"log", 
-	"character_fire",
+    "meat",
+    "log", 
+    "character_fire",
     "livinglog",
 }
 
@@ -42,15 +42,8 @@ local onsavefn = function(inst, data)
     end
 end
 
-local function CalcSanityAura(inst, observer)
-	
-	if inst.components.combat.target then
-		return -TUNING.SANITYAURA_LARGE
-	else
-		return -TUNING.SANITYAURA_MED
-	end
-	
-	return 0
+local function CalcSanityAura(inst)
+    return inst.components.combat.target ~= nil and -TUNING.SANITYAURA_LARGE or -TUNING.SANITYAURA_MED
 end
 
 local function OnBurnt(inst)
@@ -64,13 +57,12 @@ local function OnAttacked(inst, data)
 end
 
 local function common_fn(build)
-    
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
-	inst.entity:AddDynamicShadow()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
+    inst.entity:AddDynamicShadow()
     inst.entity:AddNetwork()
 
     MakeCharacterPhysics(inst, 1000, .5)
@@ -89,14 +81,14 @@ local function common_fn(build)
     inst.AnimState:SetBuild(build)
     inst.AnimState:PlayAnimation("idle_loop", true)
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-
-	inst.OnLoad = onloadfn
-	inst.OnSave = onsavefn
+    inst.OnLoad = onloadfn
+    inst.OnSave = onsavefn
 
     ------------------------------------------
 
@@ -144,7 +136,7 @@ local function common_fn(build)
     ------------------------------------------
 
     inst:AddComponent("inspectable")
-	inst.components.inspectable:RecordViews()
+    inst.components.inspectable:RecordViews()
     ------------------------------------------
 
     inst:SetBrain(brain)
@@ -159,8 +151,8 @@ local function normal_fn()
 end
 
 local function sparse_fn()
-	return common_fn("leif_lumpy_build")
+    return common_fn("leif_lumpy_build")
 end
 
 return Prefab("common/leif", normal_fn, assets, prefabs),
-	   Prefab("common/leif_sparse", sparse_fn, assets, prefabs)
+    Prefab("common/leif_sparse", sparse_fn, assets, prefabs)

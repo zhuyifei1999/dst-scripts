@@ -25,7 +25,7 @@ local MinionSpawner = Class(function(self, inst)
 	self.shouldspawn = true
 	self.timeuntilspawn = nil
 	self.minionpositions = nil
-	self.validtiletypes = {2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17}
+	self.validtiletypes = {2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,30}
 	self.freepositions = generatefreepositions(self.maxminions * pos_modifier)
 	self.inst:DoTaskInTime(1, function() self:StartNextSpawn() end)
 end)

@@ -115,7 +115,7 @@ FrontEnd = Class(function(self, name)
 	self.gameinterface = CreateEntity()
 	self.gameinterface.entity:AddSoundEmitter()
 	self.gameinterface.entity:AddGraphicsOptions()
-	self.gameinterface.entity:AddBroadcastingOptions()
+	self.gameinterface.entity:AddTwitchOptions()
 	self.gameinterface.entity:AddAccountManager()
 
 	TheInput:AddKeyHandler(function(key, down) self:OnRawKey(key, down) end )
@@ -382,8 +382,8 @@ function FrontEnd:GetGraphicsOptions()
 	return self.gameinterface.GraphicsOptions
 end
 
-function FrontEnd:GetBroadcastingOptions()
-	return self.gameinterface.BroadcastingOptions
+function FrontEnd:GetTwitchOptions()
+	return self.gameinterface.TwitchOptions
 end
 
 function FrontEnd:GetAccountManager()
@@ -468,8 +468,6 @@ function FrontEnd:Update(dt)
 	end
 	
 	if self.saving_indicator.shown then
-		
-
 		if self.save_indicator_fade then
 			local alpha = 1
 			self.save_indicator_fade_time = self.save_indicator_fade_time - math.min(dt, 1/60)
@@ -498,7 +496,6 @@ function FrontEnd:Update(dt)
 				self.save_indicator_fade_time = save_fade_time
 			end
 		end
-
 	end
 
 	if self.consoletext.shown then
@@ -507,7 +504,7 @@ function FrontEnd:Update(dt)
 
 	self:DoFadingUpdate(dt)
 	self:DoTitleFade(dt)
-	
+
 	if #self.screenstack > 0 then
 		self.screenstack[#self.screenstack]:OnUpdate(dt)
 	end	
@@ -534,35 +531,27 @@ function FrontEnd:Update(dt)
         self.scroll_repeat_time = -1
     elseif self.scroll_repeat_time > dt then
         self.scroll_repeat_time = self.scroll_repeat_time - dt
-    else
-        local repeat_time = SCROLL_REPEAT_TIME
-        if not TheInput:ControllerAttached() then
-            TheInput:GetLocalizedControl(TheInput:GetControllerID(), CONTROL_SCROLLBACK)
+    elseif TheInput:IsControlPressed(CONTROL_SCROLLBACK) then
+        local repeat_time =
+            TheInput:GetControlIsMouseWheel(CONTROL_SCROLLBACK) and
+            MOUSE_SCROLL_REPEAT_TIME or
+            SCROLL_REPEAT_TIME
+        if self.scroll_repeat_time < 0 then
+            self.scroll_repeat_time = repeat_time > dt and repeat_time - dt or 0
+        else
+            self.scroll_repeat_time = repeat_time
+            self:OnControl(CONTROL_SCROLLBACK, true)
         end
-        if TheInput:IsControlPressed(CONTROL_SCROLLBACK) then
-            local repeat_time =
-                not TheInput:ControllerAttached()
-                and TheInput:GetLocalizedControl(0, CONTROL_SCROLLBACK) == STRINGS.UI.CONTROLSSCREEN.INPUTS[1][1003]
-                and MOUSE_SCROLL_REPEAT_TIME
-                or SCROLL_REPEAT_TIME
-            if self.scroll_repeat_time < 0 then
-                self.scroll_repeat_time = repeat_time > dt and repeat_time - dt or 0
-            else
-                self.scroll_repeat_time = repeat_time
-                self:OnControl(CONTROL_SCROLLBACK, true)
-            end
-        else--if TheInput:IsControlPressed(CONTROL_SCROLLFWD) then
-            local repeat_time =
-                not TheInput:ControllerAttached()
-                and TheInput:GetLocalizedControl(0, CONTROL_SCROLLFWD) == STRINGS.UI.CONTROLSSCREEN.INPUTS[1][1004]
-                and MOUSE_SCROLL_REPEAT_TIME
-                or SCROLL_REPEAT_TIME
-            if self.scroll_repeat_time < 0 then
-                self.scroll_repeat_time = repeat_time > dt and repeat_time - dt or 0
-            else
-                self.scroll_repeat_time = repeat_time
-                self:OnControl(CONTROL_SCROLLFWD, true)
-            end
+    else--if TheInput:IsControlPressed(CONTROL_SCROLLFWD) then
+        local repeat_time =
+            TheInput:GetControlIsMouseWheel(CONTROL_SCROLLFWD) and
+            MOUSE_SCROLL_REPEAT_TIME or
+            SCROLL_REPEAT_TIME
+        if self.scroll_repeat_time < 0 then
+            self.scroll_repeat_time = repeat_time > dt and repeat_time - dt or 0
+        else
+            self.scroll_repeat_time = repeat_time
+            self:OnControl(CONTROL_SCROLLFWD, true)
         end
     end
 
@@ -612,7 +601,6 @@ function FrontEnd:Update(dt)
 		self.updating_widgets_alt[k] = nil
 	end
 
-
 	self.helptext:Hide()
 	if TheInput:ControllerAttached() then
 		local str = self:GetHelpText()
@@ -623,10 +611,6 @@ function FrontEnd:Update(dt)
 	end
 	
 	TheSim:ProfilerPop()
-
-
-
-
 end
 
 function FrontEnd:StartUpdatingWidget(w)

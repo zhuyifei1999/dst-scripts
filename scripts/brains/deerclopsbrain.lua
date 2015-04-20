@@ -5,7 +5,7 @@ require "behaviours/doaction"
 require "behaviours/attackwall"
 require "behaviours/panic"
 require "behaviours/minperiod"
-
+require "giantutils"
 
 local SEE_DIST = 40
 
@@ -15,7 +15,7 @@ local CHASE_TIME = 20
 local function BaseDestroy(inst)
     if inst.components.knownlocations:GetLocation("targetbase") then
     	local target = FindEntity(inst, SEE_DIST, function(item) 
-    			if item.components.workable
+    			if item.components.workable and item:HasTag("structure")
     				and item.components.workable.action == ACTIONS.HAMMER
     			then
     				return true
@@ -33,6 +33,13 @@ end
 local function GoHome(inst)
     if inst.components.knownlocations:GetLocation("home") then
         return BufferedAction(inst, nil, ACTIONS.GOHOME, nil, inst.components.knownlocations:GetLocation("home") )
+    else
+    	-- Pick a point to go to that is some distance away from here.
+    	local targetPos = Vector3(inst.Transform:GetWorldPosition())
+    	local wanderAwayPoint = GetWanderAwayPoint(targetPos)
+        if wanderAwayPoint then
+            inst.components.knownlocations:RememberLocation("home", wanderAwayPoint)
+        end
     end
 end
 
@@ -57,8 +64,7 @@ function DeerclopsBrain:OnStart()
 			AttackWall(self.inst),
             ChaseAndAttack(self.inst, CHASE_TIME, CHASE_DIST),
             DoAction(self.inst, function() return BaseDestroy(self.inst) end, "DestroyBase", true),
-            WhileNode(function() return self.inst.components.knownlocations:GetLocation("home") end, "HasHome",
-                DoAction(self.inst, function() return GoHome(self.inst) end, "GoHome", true) ),
+			DoAction(self.inst, function() return GoHome(self.inst) end, "GoHome", true),
             Wander(self.inst, GetWanderPos, 30, {minwwwalktime = 10}),
         },1)
     

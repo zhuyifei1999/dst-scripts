@@ -4,6 +4,8 @@ local InventoryItem = Class(function(self, inst)
     self.inst = inst
 
     self._cannotbepickedup = net_bool(inst.GUID, "inventoryitem._cannotbepickedup")
+    self._canbedropped = net_bool(inst.GUID, "inventoryitem._canbedropped")
+    self._trappable = net_bool(inst.GUID, "inventoryitem._trappable")
 
     if TheWorld.ismastersim then
         self.classified = SpawnPrefab("inventoryitem_classified")
@@ -24,6 +26,11 @@ local InventoryItem = Class(function(self, inst)
 
         if inst.components.equippable ~= nil then
             self:SetWalkSpeedMult(inst.components.equippable.walkspeedmult or 1)
+        end
+
+        if inst.components.moisturelistener ~= nil then
+            self:SetMoistureLevel(inst.components.moisturelistener.moisture)
+            self:SetIsWet(inst.components.moisturelistener.wet)
         end
     elseif self.classified == nil and inst.inventoryitem_classified ~= nil then
         self:AttachClassified(inst.inventoryitem_classified)
@@ -70,6 +77,22 @@ function InventoryItem:CanBePickedUp()
     return not self._cannotbepickedup:value()
 end
 
+function InventoryItem:SetCanBeDropped( canbedropped )
+    self._canbedropped:set(canbedropped)
+end
+
+function InventoryItem:CanBeDropped()
+    return self._canbedropped:value()
+end
+
+function InventoryItem:SetTrappable(trappable)
+    self._trappable:set(trappable)
+end
+
+function InventoryItem:GetTrappable()
+    return self._trappable:value()
+end
+
 function InventoryItem:SetCanGoInContainer(cangoincontainer)
     self.classified.cangoincontainer:set(cangoincontainer)
 end
@@ -110,7 +133,9 @@ function InventoryItem:SetOwner(owner)
     if self.inst.Network ~= nil then
         self.inst.Network:SetClassifiedTarget(owner)
     end
-    self.classified.Network:SetClassifiedTarget(owner or self.inst)
+    if self.classified ~= nil then
+        self.classified.Network:SetClassifiedTarget(owner or self.inst)
+    end
 end
 
 function InventoryItem:IsHeld()
@@ -257,7 +282,15 @@ function InventoryItem:IsWeapon()
 end
 
 function InventoryItem:SetWalkSpeedMult(walkspeedmult)
-    local x = math.floor((walkspeedmult or 1) * 100)
+    --V2C: inconsistent precision errors with math.floor
+    --     e.g. math.floor(1.15 * 100) => 114 ERMAHGERD
+    --     switched to a string solution instead
+    --local x = math.floor((walkspeedmult or 1) * 100)
+    local x = 100
+    if walkspeedmult ~= nil then
+        x = tostring(x * walkspeedmult)
+        x = tonumber(x:sub(x:find("^%-?%d+")))
+    end
     assert(x >= 0 and x <= 255, "Walk speed multiplier out of range: "..tostring(walkspeedmult))
     assert(walkspeedmult == nil or math.abs(walkspeedmult * 100 - x) < .01 , "Walk speed multiplier can only have up to .01 precision: "..tostring(walkspeedmult))
     self.classified.walkspeedmult:set(x)
@@ -270,6 +303,38 @@ function InventoryItem:GetWalkSpeedMult()
         return self.classified.walkspeedmult:value() / 100
     else
         return 1
+    end
+end
+
+function InventoryItem:SetMoistureLevel(moisture)
+    if self.classified ~= nil then
+        self.classified.moisture:set(moisture)
+    end
+end
+
+function InventoryItem:GetMoisture()
+    if self.inst.components.moisturelistener ~= nil then
+        return self.inst.components.moisturelistener:GetMoisture()
+    elseif self.classified ~= nil then
+        return self.classified.moisture:value()
+    else
+        return 0
+    end
+end
+
+function InventoryItem:SetWet(wet)
+    if self.classified ~= nil then
+        self.classified.wet:set(wet)
+    end
+end
+
+function InventoryItem:GetIsWet()
+    if self.inst.components.moisturelistener ~= nil then
+        return self.inst.components.moisturelistener:GetIsWet()
+    elseif self.classified ~= nil then
+        return self.classified.wet:value()
+    else
+        return 0
     end
 end
 

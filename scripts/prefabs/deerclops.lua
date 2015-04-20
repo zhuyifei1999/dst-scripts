@@ -5,6 +5,7 @@ local assets =
     Asset("ANIM", "anim/deerclops_basic.zip"),
     Asset("ANIM", "anim/deerclops_actions.zip"),
     Asset("ANIM", "anim/deerclops_build.zip"),
+    Asset("ANIM", "anim/deerclops_neutral_build.zip"),
     Asset("SOUND", "sound/deerclops.fsb"),
 }
 
@@ -18,31 +19,35 @@ local prefabs =
     "icespike_fx_4",
 }
 
-local TARGET_DIST = 30
+local TARGET_DIST = 16
+local STRUCTURES_PER_HARASS = 5
 
-local function CalcSanityAura(inst, observer)
-    
-    if inst.components.combat.target then
-        return -TUNING.SANITYAURA_HUGE
-    else
-        return -TUNING.SANITYAURA_LARGE
+local function CalcSanityAura(inst)
+    return inst.components.combat.target ~= nil and -TUNING.SANITYAURA_HUGE or -TUNING.SANITYAURA_LARGE
+end
+
+local function FindBaseToAttack(inst, target)
+    --print("Deerclops finding base to attack")
+    local structure = GetClosestInstWithTag("structure", target, 40)
+    if structure then
+        local targetPos = Vector3(structure.Transform:GetWorldPosition() )
+        inst.components.knownlocations:RememberLocation("targetbase", targetPos)
+        inst.AnimState:ClearOverrideSymbol("deerclops_head")
     end
-    
-    return 0
 end
 
 local function RetargetFn(inst)
+    --print("Deerclops retarget", debugstack())
     return FindEntity(inst, TARGET_DIST, function(guy)
         return inst.components.combat:CanTarget(guy)
-               and (inst.components.knownlocations:GetLocation("targetbase") == nil or guy.components.combat.target == inst)
-    end,
-    nil,
-    {"prey", "smallcreature"}
-    )
+               and (guy.components.combat.target == inst)
+    end, nil, {"prey", "smallcreature"})
 end
 
 local function KeepTargetFn(inst, target)
-    return inst.components.combat:CanTarget(target)
+    --print("Deerclops keep target")
+    local now = GetTime()
+    return inst.components.combat:CanTarget(target) and ((now - inst.components.combat:GetLastAttackedTime()) < TUNING.DEERCLOPS_LOSE_TARGET_PERIOD)
 end
 
 local function AfterWorking(inst, data)
@@ -50,8 +55,9 @@ local function AfterWorking(inst, data)
         local recipe = AllRecipes[data.target.prefab]
         if recipe then
             inst.structuresDestroyed = inst.structuresDestroyed + 1
-            if inst.structuresDestroyed >= 2 then
+            if inst.structuresDestroyed >= STRUCTURES_PER_HARASS then
                 inst.components.knownlocations:ForgetLocation("targetbase")
+                inst.AnimState:OverrideSymbol("deerclops_head", "deerclops_neutral_build", "deerclops_head")
             end
         end
     end
@@ -66,15 +72,16 @@ local function ShouldWake(inst)
 end
 
 local function OnEntitySleep(inst)
-    if TheWorld.iswinter then
+    if not TheWorld.state.iswinter or inst.structuresDestroyed >= STRUCTURES_PER_HARASS then
+        inst.structuresDestroyed = 0 -- reset this for the stored version
+        TheWorld:PushEvent("storehassler", inst)
         inst:Remove()
-    else
-        inst.structuresDestroyed = 0
     end
 end
 
-local function OnStartWinter(inst)
+local function OnStopWinter(inst)
     if inst:IsAsleep() then
+        TheWorld:PushEvent("storehassler", inst)
         inst:Remove()
     end
 end
@@ -91,6 +98,9 @@ end
 
 local function OnAttacked(inst, data)
     inst.components.combat:SetTarget(data.attacker)
+    if data.attacker:HasTag("player") and inst.structuresDestroyed < STRUCTURES_PER_HARASS and inst.components.knownlocations:GetLocation("targetbase") == nil then
+        FindBaseToAttack(inst, data.attacker)
+    end
 end
 
 local function OnHitOther(inst, data)
@@ -101,6 +111,14 @@ local function OnHitOther(inst, data)
     end
 end
 
+local function OnRemove(inst)
+    TheWorld:PushEvent("hasslerremoved", inst)
+end
+
+local function OnDead(inst)
+    TheWorld:PushEvent("hasslerkilled", inst)
+end
+
 local function oncollapse(inst, other)
     if other and other.components.workable ~= nil and other.components.workable.workleft > 0 then
         SpawnPrefab("collapse_small").Transform:SetPosition(other:GetPosition():Get())
@@ -109,10 +127,10 @@ local function oncollapse(inst, other)
 end
 
 local function oncollide(inst, other)
-    if other == nil or not other:HasTag("tree") then
+    if other == nil or not (other:HasTag("tree") or other:HasTag("boulder")) then
         return
     end
-    
+
     local v1 = Vector3(inst.Physics:GetVelocity())
     if v1:LengthSq() < 1 then
         return
@@ -124,7 +142,6 @@ end
 local loot = {"meat", "meat", "meat", "meat", "meat", "meat", "meat", "meat", "deerclops_eyeball"}
 
 local function fn()
-    
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -133,7 +150,7 @@ local function fn()
     inst.entity:AddDynamicShadow()
     inst.entity:AddNetwork()
 
-    MakeCharacterPhysics(inst, 1000, .5)
+    MakeGiantCharacterPhysics(inst, 1000, .5)
 
     local s  = 1.65
     inst.Transform:SetScale(s, s, s)
@@ -151,11 +168,11 @@ local function fn()
     inst.AnimState:SetBuild("deerclops_build")
     inst.AnimState:PlayAnimation("idle_loop", true)
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst.Physics:SetCollisionCallback(oncollide)
 
@@ -186,8 +203,8 @@ local function fn()
     inst:AddComponent("combat")
     inst.components.combat:SetDefaultDamage(TUNING.DEERCLOPS_DAMAGE)
     inst.components.combat.playerdamagepercent = TUNING.DEERCLOPS_DAMAGE_PLAYER_PERCENT
-    inst.components.combat:SetRange(8)
-    inst.components.combat:SetAreaDamage(6, 0.8)
+    inst.components.combat:SetRange(TUNING.DEERCLOPS_ATTACK_RANGE)
+    inst.components.combat:SetAreaDamage(TUNING.DEERCLOPS_AOE_RANGE, TUNING.DEERCLOPS_AOE_SCALE)
     inst.components.combat.hiteffectsymbol = "deerclops_body"
     inst.components.combat:SetAttackPeriod(TUNING.DEERCLOPS_ATTACK_PERIOD)
     inst.components.combat:SetRetargetFunction(3, RetargetFn)
@@ -217,8 +234,10 @@ local function fn()
     inst:ListenForEvent("entitysleep", OnEntitySleep)
     inst:ListenForEvent("attacked", OnAttacked)
     inst:ListenForEvent("onhitother", OnHitOther)
+    inst:ListenForEvent("death", OnDead)
+    inst:ListenForEvent("onremove", OnRemove)
 
-    inst:WatchWorldState("startwinter", OnStartWinter)
+    inst:WatchWorldState("stopwinter", OnStopWinter)
 
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad

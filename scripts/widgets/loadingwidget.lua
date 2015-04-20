@@ -27,6 +27,22 @@ function LoadingWidget:KeepAlive( auto_increment )
 
 	local just_initialized = false
 	if self.initialized == false then
+		local background_widget = self:AddChild(Image("images/bg_rog_portal.xml", "bg.tex"))
+		background_widget:SetScaleMode(SCALEMODE_FILLSCREEN)
+		background_widget:SetVAnchor(ANCHOR_MIDDLE)
+   		background_widget:SetHAnchor(ANCHOR_MIDDLE)
+
+		-- local r = math.random()
+	 --    if r < .25 then
+	 --        local background_widget = self:AddChild(Image("images/bg_rog_logo_1.xml", "bg.tex"))
+	 --    elseif r < .5 then
+	 --        local background_widget = self:AddChild(Image("images/bg_rog_logo_2.xml", "bg.tex"))
+	 --    elseif r < .75 then
+	 --        local background_widget = self:AddChild(Image("images/bg_rog_logo_3.xml", "bg.tex"))
+	 --    else
+	 --        local background_widget = self:AddChild(Image("images/bg_rog_logo_4.xml", "bg.tex"))
+	 --    end
+
 		local local_loading_widget = self:AddChild(Text(UIFONT, 33))
 		local_loading_widget:SetPosition(115, 60)
 		local_loading_widget:SetRegionSize( 130, 44 )

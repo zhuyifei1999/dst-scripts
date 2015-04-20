@@ -13,6 +13,9 @@ local Talker = Class(function(self, inst)
     self.inst = inst
     self.task = nil
     self.ignoring = false
+
+    self.mod_str_fn = nil
+
 end)
 
 function Talker:IgnoreAll()
@@ -52,6 +55,11 @@ local function sayfn(self, script, nobroadcast, colour)
 
     for i, line in ipairs(script) do
         if line.message ~= nil then
+
+            if self.mod_str_fn then
+                line.message = self.mod_str_fn(line.message)
+            end
+
             if self.widget ~= nil then
                 self.widget.text:SetString(line.message)
             end

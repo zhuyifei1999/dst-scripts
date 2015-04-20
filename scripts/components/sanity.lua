@@ -8,8 +8,8 @@ local function oncurrent(self, current)
     self.inst.replica.sanity:SetCurrent(self.inducedinsanity and 0 or current)
 end
 
-local function onrate(self, rate)
-    self.inst.replica.sanity:SetRate(rate)
+local function onratescale(self, ratescale)
+    self.inst.replica.sanity:SetRateScale(ratescale)
 end
 
 local function onsane(self, sane)
@@ -35,13 +35,16 @@ local Sanity = Class(function(self, inst)
     self.current = self.max
     
     self.rate = 0
+    self.ratescale = RATE_SCALE.NEUTRAL
     self.rate_modifier = 1
     self.sane = true
     self.fxtime = 0
     self.dapperness = 0
     self.inducedinsanity = nil
+    self.inducedinsanity_sources = nil
     self.night_drain_mult = 1
     self.neg_aura_mult = 1
+    self.dapperness_mult = 1
 
     self.penalty = 0
 
@@ -57,7 +60,7 @@ nil,
 {
     max = onmax,
     current = oncurrent,
-    rate = onrate,
+    ratescale = onratescale,
     sane = onsane,
     inducedinsanity = oninducedinsanity,
     penalty = onpenalty,
@@ -145,11 +148,26 @@ function Sanity:GetMaxWithPenalty()
     return self.max - self.penalty
 end
 
-function Sanity:GetRate()
-    return self.rate
+function Sanity:GetRateScale()
+    return self.ratescale
 end
 
-function Sanity:SetInducedInsanity(val)
+function Sanity:SetInducedInsanity(src, val)
+    if val then
+        if self.inducedinsanity_sources == nil then
+            self.inducedinsanity_sources = { [src] = true }
+        else
+            self.inducedinsanity_sources[src] = true
+        end
+    elseif self.inducedinsanity_sources ~= nil then
+        self.inducedinsanity_sources[src] = nil
+        if next(self.inducedinsanity_sources) == nil then
+            self.inducedinsanity_sources = nil
+            val = nil
+        else
+            val = true
+        end
+    end
     if self.inducedinsanity ~= val then
         self.inducedinsanity = val
         self:DoDelta(0)
@@ -158,7 +176,7 @@ function Sanity:SetInducedInsanity(val)
 end
 
 function Sanity:DoDelta(delta, overtime)
-    if self.redirect then
+    if self.redirect ~= nil then
         self.redirect(self.inst, delta, overtime)
         return
     end
@@ -205,45 +223,58 @@ function Sanity:DoDelta(delta, overtime)
 end
 
 function Sanity:OnUpdate(dt)
-    if not (self.inst.components.health.invincible or self.inst.is_teleporting) then
-        self:Recalc(dt) 
+    if not (self.inst.components.health.invincible or
+            self.inst.is_teleporting or
+            (self.ignore and self.redirect == nil)) then
+        self:Recalc(dt)
+    else
+        --Always want to update badge
+        self:RecalcGhostDrain()
+
+        --Disable arrows
+        self.rate = 0
+        self.ratescale = RATE_SCALE.NEUTRAL
     end
 end
 
-local function GetNumGhostPlayers()
+function Sanity:RecalcGhostDrain()
     local num = 0
-    if GetGhostSanityDrain( TheNet:GetServerGameMode() ) then
-       for i,v in pairs(AllPlayers) do
+    if GetGhostSanityDrain(TheNet:GetServerGameMode()) then
+        for i, v in ipairs(AllPlayers) do
             if v:HasTag("playerghost") then
                 num = num + 1
+                if num >= TUNING.MAX_SANITY_GHOST_PLAYER_DRAIN_MULT then
+                    break
+                end
             end
         end
     end
-    return num
+    self.ghost_drain_mult = num
 end
 
 function Sanity:Recalc(dt)
     local total_dapperness = self.dapperness or 0
     local mitigates_rain = false
     for k,v in pairs (self.inst.components.inventory.equipslots) do
-        if v.components.dapperness then
-            total_dapperness = total_dapperness + v.components.dapperness:GetDapperness(self.inst)
-            if v.components.dapperness.mitigates_rain then
-                mitigates_rain = true
-            end
-        end     
+        if v.components.equippable then
+            total_dapperness = total_dapperness + v.components.equippable:GetDapperness(self.inst)
+        end
     end
-    
-    local dapper_delta = total_dapperness*TUNING.SANITY_DAPPERNESS
+
+    total_dapperness = total_dapperness * self.dapperness_mult
+
+    local dapper_delta = total_dapperness * TUNING.SANITY_DAPPERNESS
+
+    local moisture_delta = easing.inSine(self.inst.components.moisture:GetMoisture(), 0, TUNING.MOISTURE_SANITY_PENALTY_MAX, self.inst.components.moisture:GetMaxMoisture())
     
     local light_delta = 0
     local lightval = self.inst.LightWatcher:GetLightValue()
     
     local day = TheWorld.state.isday and not TheWorld:HasTag("cave")
-    
-    if day then 
+
+    if day then
         light_delta = TUNING.SANITY_DAY_GAIN
-    else    
+    else
         local highval = TUNING.SANITY_HIGH_LIGHT
         local lowval = TUNING.SANITY_LOW_LIGHT
 
@@ -257,7 +288,7 @@ function Sanity:Recalc(dt)
 
         light_delta = light_delta*self.night_drain_mult
     end
-    
+
     local aura_delta = 0
     local x,y,z = self.inst.Transform:GetWorldPosition()
     local ents = TheSim:FindEntities(x,y,z, TUNING.SANITY_EFFECT_RANGE, nil, {"FX", "NOCLICK", "DECOR","INLIMBO"} )
@@ -273,25 +304,27 @@ function Sanity:Recalc(dt)
         end
     end
 
-    local rain_delta = not mitigates_rain and TheWorld.state.israining and
-        -1.5 * TUNING.DAPPERNESS_MED * TheWorld.state.precipitationrate or 0
-
-    self.ghost_drain_mult = GetNumGhostPlayers()
-    if self.ghost_drain_mult > TUNING.MAX_SANITY_GHOST_PLAYER_DRAIN_MULT then
-        self.ghost_drain_mult = TUNING.MAX_SANITY_GHOST_PLAYER_DRAIN_MULT
-    end
+    self:RecalcGhostDrain()
     local ghost_delta = TUNING.SANITY_GHOST_PLAYER_DRAIN * self.ghost_drain_mult
 
-    self.rate = (dapper_delta + light_delta + aura_delta + rain_delta + ghost_delta)  
+    self.rate = (dapper_delta + moisture_delta + light_delta + aura_delta + ghost_delta)  
     
     if self.custom_rate_fn then
         self.rate = self.rate + self.custom_rate_fn(self.inst)
     end
 
     self.rate = self.rate * self.rate_modifier
+    self.ratescale =
+        (self.rate > .2 and RATE_SCALE.INCREASE_HIGH) or
+        (self.rate > .1 and RATE_SCALE.INCREASE_MED) or
+        (self.rate > .01 and RATE_SCALE.INCREASE_LOW) or
+        (self.rate < -.3 and RATE_SCALE.DECREASE_HIGH) or
+        (self.rate < -.1 and RATE_SCALE.DECREASE_MED) or
+        (self.rate < -.02 and RATE_SCALE.DECREASE_LOW) or
+        RATE_SCALE.NEUTRAL
 
     --print (string.format("dapper: %2.2f light: %2.2f TOTAL: %2.2f", dapper_delta, light_delta, self.rate*dt))
-    self:DoDelta(self.rate*dt, true)
+    self:DoDelta(self.rate * dt, true)
 end
 
 function Sanity:LongUpdate(dt)

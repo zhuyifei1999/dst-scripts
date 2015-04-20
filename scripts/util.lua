@@ -29,6 +29,31 @@ function DebugSpawn(prefab)
 	end
 end
 
+function GetClosest(target, entities)
+    local max_dist = nil
+    local min_dist = nil
+
+    local closest = nil
+
+    local tpos = target:GetPosition()
+
+    for k,v in pairs(entities) do
+        local epos = v:GetPosition()
+        local dist = distsq(tpos, epos)
+
+        if not max_dist or dist > max_dist then
+            max_dist = dist
+        end
+
+        if not min_dist or dist < min_dist then
+            min_dist = dist
+            closest = v
+        end
+    end
+
+    return closest
+end
+
 function SpawnAt(prefab, loc, scale, offset)
 
     offset = ToVector3(offset) or Vector3(0,0,0)
@@ -285,12 +310,18 @@ function distsq(v1, v2, v3, v4)
     return dx*dx+dy*dy+dz*dz
 end
 
+local memoizedFilePaths = {}
+
 -- look in package loaders to find the file from the root directories
 -- this will look first in the mods and then in the data directory
 function resolvefilepath( filepath )
-	local resolved = softresolvefilepath(filepath)
-	assert(resolved ~= nil, "Could not find an asset matching "..filepath.." in any of the search paths.")
-    return resolved
+    if memoizedFilePaths[filepath] then
+        return memoizedFilePaths[filepath]
+    end
+    local resolved = softresolvefilepath(filepath)
+    assert(resolved ~= nil, "Could not find an asset matching "..filepath.." in any of the search paths.")
+    memoizedFilePaths[filepath] = resolved
+   return resolved
 end
 
 function softresolvefilepath(filepath)
@@ -529,15 +560,6 @@ end
 -- 	end
 -- 	return true	
 -- end
-
-function math.clamp(input, min_val, max_val)
-    if input < min_val then
-        input = min_val
-    elseif input > max_val then
-        input = max_val
-    end
-    return input
-end
 
 function fastdump(value)
 	local tostring = tostring
@@ -791,4 +813,25 @@ end
 
 function checkbit(x, b)
     return x % (b + b) >= b
+end
+
+-- Width is the total width of the region we are interested in, in radians.
+-- Returns true if testPos is within .5*width of forward on either side
+-- Forward is a vector, position and testPos are both locations, all are represented as Vector3s
+function IsWithinAngle(position, forward, width, testPos)
+
+	-- Get vector from position to testpos (testVec)
+	local testVec = testPos - position
+
+	-- Test angle from forward to testVec (testAngle)
+	testVec = testVec:GetNormalized()
+	forward = forward:GetNormalized()
+	local testAngle = math.acos(testVec:Dot(forward))
+
+	-- Return true if testAngle is <= +/- .5*width
+	if math.abs(testAngle) <= .5*math.abs(width) then 
+		return true
+	else 
+		return false
+	end
 end

@@ -2,7 +2,7 @@ require "prefabutil"
 
 local assets =
 {
-	Asset("ANIM", "anim/spider_egg_sac.zip"),
+    Asset("ANIM", "anim/spider_egg_sac.zip"),
     Asset("SOUND", "sound/spider.fsb"),
 }
 
@@ -21,11 +21,11 @@ local function onpickup(inst)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
     MakeInventoryPhysics(inst)
@@ -34,24 +34,28 @@ local function fn()
     inst.AnimState:SetBuild("spider_egg_sac")
     inst.AnimState:PlayAnimation("idle")
 
+    inst:AddTag("cattoy")
+    MakeDragonflyBait(inst, 3)
+
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-
     inst:AddComponent("stackable")
-	inst.components.stackable.maxsize = TUNING.STACK_SIZE_LARGEITEM    
+    inst.components.stackable.maxsize = TUNING.STACK_SIZE_LARGEITEM    
     inst:AddComponent("inspectable")
 
     inst:AddComponent("fuel")
     inst.components.fuel.fuelvalue = TUNING.LARGE_FUEL
 
-	MakeSmallBurnable(inst, TUNING.LARGE_BURNTIME)
+    MakeSmallBurnable(inst, TUNING.LARGE_BURNTIME)
     MakeSmallPropagator(inst)
     MakeHauntableLaunchAndIgnite(inst)
 
     inst:AddComponent("inventoryitem")
+    inst:AddComponent("tradable")
 
     inst.components.inventoryitem:SetOnPickupFn(onpickup)
 
@@ -63,4 +67,4 @@ local function fn()
 end
 
 return Prefab("common/inventory/spidereggsack", fn, assets),
-	   MakePlacer("common/spidereggsack_placer", "spider_cocoon", "spider_cocoon", "cocoon_small")
+    MakePlacer("common/spidereggsack_placer", "spider_cocoon", "spider_cocoon", "cocoon_small")

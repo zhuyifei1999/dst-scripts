@@ -28,8 +28,76 @@ local prefabs =
 	"spider_web_spit",
 }
 
+local function ShouldAcceptItem(inst, item, giver)
+
+    if not giver:HasTag("spiderwhisperer") then
+        return false
+    end
+
+    if inst.components.sleeper:IsAsleep() then
+        return false
+    end
+    
+    if inst.components.eater:CanEat(item) then
+        return true
+    end
+end
+
+function GetOtherSpiders(inst)
+    local x,y,z = inst.Transform:GetWorldPosition()
+    local ents = TheSim:FindEntities(x,y,z, 15,  {"spider"}, {"FX", "NOCLICK", "DECOR","INLIMBO"})
+    return ents
+end
+
+local function OnGetItemFromPlayer(inst, giver, item)
+    if inst.components.eater:CanEat(item) then  
+
+        if inst.components.combat.target and inst.components.combat.target == giver then
+            inst.components.combat:SetTarget(nil)
+        elseif giver.components.leader then
+            inst.SoundEmitter:PlaySound("dontstarve/common/makeFriend")
+            giver.components.leader:AddFollower(inst)
+            local loyaltyTime = item.components.edible:GetHunger() * TUNING.SPIDER_LOYALTY_PER_HUNGER
+            inst.components.follower:AddLoyaltyTime(loyaltyTime)
+        end
+
+        local spiders = GetOtherSpiders(inst)
+        local maxSpiders = 3
+
+        for k,v in pairs(spiders) do
+            if maxSpiders < 0 then
+                break
+            end
+
+            if v.components.combat.target and v.components.combat.target == giver then
+                v.components.combat:SetTarget(nil)
+            elseif giver.components.leader then
+                v.SoundEmitter:PlaySound("dontstarve/common/makeFriend")
+                giver.components.leader:AddFollower(v)
+                local loyaltyTime = item.components.edible:GetHunger() * TUNING.SPIDER_LOYALTY_PER_HUNGER
+                print(loyaltyTime)
+                v.components.follower:AddLoyaltyTime(loyaltyTime)
+            end
+            maxSpiders = maxSpiders - 1
+
+            if v.components.sleeper:IsAsleep() then
+                v.components.sleeper:WakeUp()
+            end
+        end
+        item:Remove()
+    end
+end
+
+local function OnRefuseItem(inst, item)
+    inst.sg:GoToState("taunt")
+    if inst.components.sleeper:IsAsleep() then
+        inst.components.sleeper:WakeUp()
+    end
+end
+
+
 local function Retarget(inst)
-    return FindEntity(inst, TUNING.SPIDER_WARRIOR_TARGET_DIST, function(guy)
+    return FindEntity(inst, SpringCombatMod(TUNING.SPIDER_WARRIOR_TARGET_DIST), function(guy)
 		return inst.components.combat:CanTarget(guy)
 			and not (inst.components.follower and inst.components.follower.leader == guy)
 	end,
@@ -40,7 +108,7 @@ local function Retarget(inst)
 end
 
 local function FindTargets(guy)
-	return (guy:HasTag("character") or guy:HasTag("pig"))
+    return (guy:HasTag("character") or guy:HasTag("pig"))
        and inst.components.combat:CanTarget(guy)
        and not (inst.components.follower and inst.components.follower.leader == guy)
 end
@@ -51,6 +119,7 @@ local function keeptargetfn(inst, target)
           and target.components.health
           and not target.components.health:IsDead()
           and not (inst.components.follower and inst.components.follower.leader == target)
+          and not (inst.components.follower and inst.components.follower:IsLeaderSame(target))
 end
 
 local function ShouldSleep(inst)
@@ -107,6 +176,17 @@ end
 
 local function WeaponDropped(inst)
     inst:Remove()
+end
+
+
+local function SanityAura(inst, observer)
+
+    if observer:HasTag("spiderwhisperer") then
+        return 0
+    end
+
+    return -TUNING.SANITYAURA_SMALL
+
 end
 
 local function MakeWeapon(inst)
@@ -172,6 +252,7 @@ local function create_common()
     inst.components.lootdropper.numrandomloot = 1
     
     inst:AddComponent("follower")
+    inst.components.follower.maxfollowtime = TUNING.TOTAL_DAY_TIME
     
    
     ---------------------        
@@ -206,7 +287,7 @@ local function create_common()
     ------------------
     
     inst:AddComponent("eater")
-    inst.components.eater:SetCarnivore()
+    inst.components.eater:SetDiet({ FOODTYPE.MEAT }, { FOODTYPE.MEAT })
     inst.components.eater:SetCanEatHorrible()
     inst.components.eater.strongstomach = true -- can eat monster meat!
     
@@ -215,9 +296,17 @@ local function create_common()
     inst:AddComponent("inspectable")
     
     ------------------
+
+    inst:AddComponent("trader")
+    inst.components.trader:SetAcceptTest(ShouldAcceptItem)
+    inst.components.trader.onaccept = OnGetItemFromPlayer
+    inst.components.trader.onrefuse = OnRefuseItem
+
+    ------------------
+
     
-	inst:AddComponent("sanityaura")
-    inst.components.sanityaura.aura = -TUNING.SANITYAURA_SMALL
+    inst:AddComponent("sanityaura")
+    inst.components.sanityaura.aurafn = SanityAura
     
     
     local brain = require "brains/spiderbrain"

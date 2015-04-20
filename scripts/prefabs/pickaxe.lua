@@ -33,11 +33,11 @@ local function common_fn(bank, build)
 
     inst:AddTag("sharp")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     -----
     inst:AddComponent("tool")

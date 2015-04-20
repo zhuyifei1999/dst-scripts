@@ -1,16 +1,16 @@
 local assets =
 {
-	Asset("ANIM", "anim/gravestones.zip"),
+    Asset("ANIM", "anim/gravestones.zip"),
 }
 
 local prefabs =
 {
-	"ghost",
-	"amulet",
-	"redgem",
-	"gears",
-	"bluegem",
-	"nightmarefuel",
+    "ghost",
+    "amulet",
+    "redgem",
+    "gears",
+    "bluegem",
+    "nightmarefuel",
 }
 
 for k = 1, NUM_TRINKETS do
@@ -25,6 +25,16 @@ local LOOTS =
     redgem = 5,
     bluegem = 5,
 }
+
+local function ReturnChildren(inst)
+    for k,child in pairs(inst.components.childspawner.childrenoutside) do
+        if child:IsAsleep() then
+            child:Remove()
+        else
+            child.components.health:Kill()
+        end
+    end
+end
 
 local function spawnghost(inst, chance)
     if inst.ghost == nil and math.random() <= (chance or 1) then
@@ -43,23 +53,34 @@ local function onfinishcallback(inst, worker)
     inst.AnimState:PlayAnimation("dug")
     inst:RemoveComponent("workable")
 
-	if worker ~= nil then
-		if worker.components.sanity ~= nil then
-			worker.components.sanity:DoDelta(-TUNING.SANITY_SMALL)
-		end
-		if not spawnghost(inst, .1) and worker.components.inventory ~= nil then
-			local item = nil
-			if math.random() < .5 then
-				item = weighted_random_choice(LOOTS)
-			else
-				item = "trinket_"..tostring(math.random(NUM_TRINKETS))
-			end
+    if worker ~= nil then
+        if worker.components.sanity ~= nil then
+            worker.components.sanity:DoDelta(-TUNING.SANITY_SMALL)
+        end
+        if not spawnghost(inst, .1) and worker.components.inventory ~= nil then
+            local item = nil
+            if math.random() < .5 then
+                item = weighted_random_choice(LOOTS)
+            else
+                item = "trinket_"..tostring(math.random(NUM_TRINKETS))
+            end
 
-			if item ~= nil then
-				inst.components.lootdropper:SpawnLootPrefab(item)
-			end
-		end
-	end	
+            if item ~= nil then
+                inst.components.lootdropper:SpawnLootPrefab(item)
+            end
+        end
+    end
+end
+
+local function onfullmoon(inst)
+    if TheWorld.state.isfullmoon then
+        inst.components.childspawner:StartSpawning()
+        inst.components.childspawner:StopRegen()
+    else
+        inst.components.childspawner:StopSpawning()
+        inst.components.childspawner:StartRegen()
+        ReturnChildren(inst)
+    end
 end
 
 local function GetStatus(inst)
@@ -72,7 +93,7 @@ local function OnSave(inst, data)
     if inst.components.workable == nil then
         data.dug = true
     end
-end        
+end
 
 local function OnLoad(inst, data)
     if data ~= nil and data.dug or inst.components.workable == nil then
@@ -86,21 +107,21 @@ local function OnHaunt(inst, haunter)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddNetwork()
 
     inst.AnimState:SetBank("gravestone")
     inst.AnimState:SetBuild("gravestones")
     inst.AnimState:PlayAnimation("gravedirt")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("inspectable")
     inst.components.inspectable.getstatus = GetStatus
@@ -108,8 +129,8 @@ local function fn()
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.DIG)
     inst.components.workable:SetWorkLeft(1)
-	inst:AddComponent("lootdropper")
-        
+    inst:AddComponent("lootdropper")
+
     inst.components.workable:SetOnFinishCallback(onfinishcallback)
 
     inst.ghost = nil
@@ -117,6 +138,14 @@ local function fn()
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetHauntValue(TUNING.HAUNT_SMALL)
     inst.components.hauntable:SetOnHauntFn(OnHaunt)
+
+    inst:AddComponent("childspawner")
+    inst.components.childspawner.childname = "ghost"
+    inst.components.childspawner:SetMaxChildren(1)
+    inst.components.childspawner:SetSpawnPeriod(10, 3)
+
+    inst:WatchWorldState("isfullmoon", onfullmoon)
+    inst:DoTaskInTime(0, onfullmoon)
 
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad

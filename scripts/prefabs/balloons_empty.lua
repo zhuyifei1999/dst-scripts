@@ -1,34 +1,38 @@
 local assets =
 {
-	Asset("ANIM", "anim/balloons_empty.zip"),
-	--Asset("SOUND", "sound/common.fsb"),
+    Asset("ANIM", "anim/balloons_empty.zip"),
+    --Asset("SOUND", "sound/common.fsb"),
 }
 
 local prefabs =
 {
-	"balloon",
-}    
+    "balloon",
+}
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
 
     MakeInventoryPhysics(inst)
 
-    if not TheWorld.ismastersim then
-        return inst
-    end
+    inst:AddTag("cattoy")
 
     inst.AnimState:SetBank("balloons_empty")
     inst.AnimState:SetBuild("balloons_empty")
     inst.AnimState:PlayAnimation("idle")
 
     inst.MiniMapEntity:SetIcon("balloons_empty.png")
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
 
     inst:AddComponent("inventoryitem")
     -----------------------------------
@@ -48,8 +52,7 @@ local function fn()
         return false
     end)
 
-    inst:AddComponent("characterspecific")
-    inst.components.characterspecific:SetOwner("wes")
+    inst:AddComponent("tradable")
 
     return inst
 end

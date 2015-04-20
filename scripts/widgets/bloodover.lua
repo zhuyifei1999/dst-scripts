@@ -20,14 +20,17 @@ local BloodOver =  Class(Widget, function(self, owner)
     self.base_level = 0
     self.level = 0
     self.k = 1
-    self:UpdateState()
+    --self:UpdateState()
     self.time_since_pulse = 0 
     self.pulse_period = 1
+
+    self.inst:DoTaskInTime(0, function() self:UpdateState() end)
 
 end)
 
 function BloodOver:UpdateState()
 	if (self.owner.IsFreezing ~= nil and self.owner:IsFreezing()) or
+        (self.owner.IsOverheating ~= nil and self.owner:IsOverheating()) or
         (self.owner.replica.hunger ~= nil and self.owner.replica.hunger:IsStarving()) then
 		self:TurnOn()
 	else
@@ -48,6 +51,7 @@ end
 function BloodOver:TurnOff()
     self.base_level = 0    
     self.k = 5
+    self:OnUpdate(0)
 end
 
 function BloodOver:OnUpdate(dt)

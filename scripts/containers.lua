@@ -24,7 +24,7 @@ params.backpack =
         slotpos = {},
         animbank = "ui_backpack_2x4",
         animbuild = "ui_backpack_2x4",
-        pos = Vector3(-5, -50, 0),
+        pos = Vector3(-5, -70, 0),
     },
     issidewidget = true,
     type = "pack",
@@ -33,6 +33,28 @@ params.backpack =
 for y = 0, 3 do
     table.insert(params.backpack.widget.slotpos, Vector3(-162, -75 * y + 114, 0))
     table.insert(params.backpack.widget.slotpos, Vector3(-162 + 75, -75 * y + 114, 0))
+end
+
+--------------------------------------------------------------------------
+--[[ icepack ]]
+--------------------------------------------------------------------------
+
+params.icepack =
+{
+    widget =
+    {
+        slotpos = {},
+        animbank = "ui_icepack_2x3",
+        animbuild = "ui_icepack_2x3",
+        pos = Vector3(-5, -70, 0),
+    },
+    issidewidget = true,
+    type = "pack",
+}
+
+for y = 0, 2 do
+    table.insert(params.icepack.widget.slotpos, Vector3(-162, -75 * y + 75, 0))
+    table.insert(params.icepack.widget.slotpos, Vector3(-162 + 75, -75 * y + 75, 0))
 end
 
 --------------------------------------------------------------------------
@@ -111,7 +133,9 @@ params.cookpot =
 }
 
 function params.cookpot.itemtestfn(container, item, slot)
-    return cooking.IsCookingIngredient(item.prefab)
+	if not container.inst:HasTag("burnt") then 
+    	return cooking.IsCookingIngredient(item.prefab)
+    end
 end
 
 function params.cookpot.widget.buttoninfo.fn(inst)
@@ -154,6 +178,10 @@ function params.icebox.itemtestfn(container, item, slot)
         return true
     end
 
+    if item:HasTag("icebox_valid") then
+        return true
+    end
+
     --Perishable
     if not (item:HasTag("fresh") or item:HasTag("stale") or item:HasTag("spoiled")) then
         return false
@@ -180,7 +208,7 @@ params.krampus_sack =
         slotpos = {},
         animbank = "ui_krampusbag_2x8",
         animbuild = "ui_krampusbag_2x8",
-        pos = Vector3(-5, -75, 0),
+        pos = Vector3(-5, -120, 0),
     },
     issidewidget = true,
     type = "pack",
@@ -276,6 +304,8 @@ end
 params.pandorachest = params.treasurechest
 params.skullchest = params.treasurechest
 params.minotaurchest = params.treasurechest
+
+params.dragonflychest = params.shadowchester
 
 --------------------------------------------------------------------------
 

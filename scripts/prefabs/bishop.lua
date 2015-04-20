@@ -153,11 +153,11 @@ local function common_fn(build)
     inst:AddTag("chess")
     inst:AddTag("bishop")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("lootdropper")
 

@@ -16,6 +16,8 @@ local Perishable = Class(function(self, inst)
     self.inst = inst
     self.perishfn = nil
     self.perishtime = nil
+
+    self.frozenfiremult = false
     
     self.targettime = nil
     self.perishremainingtime = nil
@@ -35,6 +37,10 @@ function Perishable:OnRemoveFromEntity()
     self.inst:RemoveTag("spoiled")
 end
 
+function Perishable:OnRemoveEntity()
+	self:StopPerishing()
+end
+
 local function Update(inst, dt)
     if inst.components.perishable then
 		
@@ -42,28 +48,64 @@ local function Update(inst, dt)
 		local owner = inst.components.inventoryitem and inst.components.inventoryitem.owner or nil
 		if owner then
 			if owner:HasTag("fridge") then
-				modifier = TUNING.PERISH_FRIDGE_MULT 
+				if inst:HasTag("frozen") and not owner:HasTag("nocool") and not owner:HasTag("lowcool") then
+					modifier = TUNING.PERISH_COLD_FROZEN_MULT
+				else
+					modifier = TUNING.PERISH_FRIDGE_MULT 
+				end
 			elseif owner:HasTag("spoiler") then
 				modifier = TUNING.PERISH_GROUND_MULT 
 			end
 		else
 			modifier = TUNING.PERISH_GROUND_MULT 
 		end
+
+		if inst:GetIsWet() then
+			modifier = modifier * TUNING.PERISH_WET_MULT
+		end
+
 		
 		if TheWorld.state.temperature < 0 then
-			modifier = modifier * TUNING.PERISH_WINTER_MULT
+			if inst:HasTag("frozen") and not inst.components.perishable.frozenfiremult then
+				modifier = TUNING.PERISH_COLD_FROZEN_MULT
+			else
+				modifier = modifier * TUNING.PERISH_WINTER_MULT
+			end
+		end
+
+		if inst.components.perishable.frozenfiremult then
+			modifier = modifier * TUNING.PERISH_FROZEN_FIRE_MULT
+		end
+
+		if TheWorld.state.temperature > TUNING.OVERHEAT_TEMP then
+			modifier = modifier * TUNING.PERISH_SUMMER_MULT
 		end
 
 		modifier = modifier * TUNING.PERISH_GLOBAL_MULT
 		
 		local old_val = inst.components.perishable.perishremainingtime
-		inst.components.perishable.perishremainingtime = inst.components.perishable.perishremainingtime - dt*modifier
-        if math.floor(old_val*100) ~= math.floor(inst.components.perishable.perishremainingtime*100) then
-	        inst:PushEvent("perishchange", {percent = inst.components.perishable:GetPercent()})
-	    end
+		local delta = dt or (10 + math.random()*FRAMES*8)
+		if inst.components.perishable.perishremainingtime then 
+			inst.components.perishable.perishremainingtime = inst.components.perishable.perishremainingtime - delta*modifier
+	        if math.floor(old_val*100) ~= math.floor(inst.components.perishable.perishremainingtime*100) then
+		        inst:PushEvent("perishchange", {percent = inst.components.perishable:GetPercent()})
+		    end
+		end
+
+		-- Cool off hot foods over time (faster if in a fridge)
+		if inst.components.edible and inst.components.edible.temperaturedelta and inst.components.edible.temperaturedelta > 0 then
+			if owner and owner:HasTag("fridge") then
+				if not owner:HasTag("nocool") then
+					inst.components.edible.temperatureduration = inst.components.edible.temperatureduration - 1
+				end
+			elseif TheWorld.state.temperature < TUNING.OVERHEAT_TEMP - 5 then
+				inst.components.edible.temperatureduration = inst.components.edible.temperatureduration - .25
+			end
+			if inst.components.edible.temperatureduration < 0 then inst.components.edible.temperatureduration = 0 end
+		end
         
         --trigger the next callback
-        if inst.components.perishable.perishremainingtime <= 0 then
+        if inst.components.perishable.perishremainingtime and inst.components.perishable.perishremainingtime <= 0 then
 			inst.components.perishable:Perish()
         end
     end
@@ -83,7 +125,12 @@ end
 
 function Perishable:Dilute(number, timeleft)
 	if self.inst.components.stackable then
-		self.perishremainingtime = (self.inst.components.stackable.stacksize * self.perishremainingtime + number * timeleft) / ( number + self.inst.components.stackable.stacksize )
+        if self.perishremainingtime or self.perishtime then
+            local perishtime = self.perishremainingtime or self.perishtime
+            self.perishremainingtime = (self.inst.components.stackable.stacksize * perishtime + number * timeleft) / ( number + self.inst.components.stackable.stacksize )
+        else
+            self.perishremainingtime = timeleft
+        end
 		self.inst:PushEvent("perishchange", {percent = self:GetPercent()})
 	end
 end
@@ -106,9 +153,12 @@ function Perishable:GetPercent()
 end
 
 function Perishable:SetPercent(percent)
-	if percent < 0 then percent = 0 end
-	if percent > 1 then percent = 1 end
-	self.perishremainingtime = percent*self.perishtime
+	if self.perishtime then 
+		if percent < 0 then percent = 0 end
+		if percent > 1 then percent = 1 end
+		self.perishremainingtime = percent*self.perishtime
+	    self.inst:PushEvent("perishchange", {percent = self.inst.components.perishable:GetPercent()})
+	end
 end
 
 function Perishable:ReducePercent(amount)
@@ -118,22 +168,26 @@ end
 
 function Perishable:GetDebugString()
 	if self.perishremainingtime and  self.perishremainingtime > 0 then
-		return string.format("%s %2.2fs", self.updatetask and "Perishing" or "Paused", self.perishremainingtime)
+        return string.format("%s %2.2fs %s",
+            self.updatetask and "Perishing" or "Paused",
+            self.perishremainingtime,
+            self.frozenfiremult and "frozenfiremult" or "")
 	else
 		return "perished"
 	end
 end
 
 function Perishable:LongUpdate(dt)
-	Update(self.inst, dt)
+    if self.updatetask ~= nil then
+        Update(self.inst, dt or 0)
+    end
 end
 
 function Perishable:StartPerishing()
-    
-	if self.updatetask then
-		self.updatetask:Cancel()
-		self.updatetask = nil
-	end
+    if self.updatetask ~= nil then
+        self.updatetask:Cancel()
+        self.updatetask = nil
+    end
 
     local dt = 10 + math.random()*FRAMES*8--math.max( 4, math.min( self.perishtime / 100, 10)) + ( math.random()* FRAMES * 8)
 
@@ -154,7 +208,13 @@ function Perishable:Perish()
         self.perishfn(self.inst)
     end
 
-    if self.onperishreplacement ~= nil then
+    if self.inst:IsValid() then
+        self.inst:PushEvent("perished")
+    end
+
+    --NOTE: callbacks may have removed this inst!
+
+    if self.inst:IsValid() and self.onperishreplacement ~= nil then
         local goop = SpawnPrefab(self.onperishreplacement)
         if goop ~= nil then
             if goop.components.stackable ~= nil and self.inst.components.stackable ~= nil then
@@ -176,28 +236,26 @@ function Perishable:Perish()
 end
 
 function Perishable:StopPerishing()
-	if self.updatetask then
-		self.updatetask:Cancel()
-		self.updatetask = nil
-	end
+    if self.updatetask ~= nil then
+        self.updatetask:Cancel()
+        self.updatetask = nil
+    end
 end
 
 function Perishable:OnSave()
-    local data = {}
+    return
+    {
+        paused = self.updatetask == nil or nil,
+        time = self.perishremainingtime,
+    }
+end
 
-    data.paused = self.updatetask == nil
-    data.time = self.perishremainingtime
-
-    return data
-end   
-      
 function Perishable:OnLoad(data)
-
-    if data and data.time then
-		self.perishremainingtime = data.time
-		if not data.paused then
-			self:StartPerishing()
-		end
+    if data ~= nil and data.time ~= nil then
+        self.perishremainingtime = data.time
+        if not data.paused then
+            self:StartPerishing()
+        end
     end
 end
 

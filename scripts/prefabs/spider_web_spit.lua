@@ -1,6 +1,6 @@
 local assets =
 {
-	Asset("ANIM", "anim/spider_spit.zip"),
+    Asset("ANIM", "anim/spider_spit.zip"),
 }
 
 local prefabs =
@@ -14,11 +14,11 @@ local function OnThrown(inst)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
     MakeInventoryPhysics(inst)
@@ -32,11 +32,11 @@ local function fn()
 
     inst:AddTag("projectile")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst.persists = false
 

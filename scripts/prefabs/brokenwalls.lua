@@ -32,6 +32,11 @@ function MakeWallType(data)
 		Asset("ANIM", "anim/wall_".. data.name..".zip"),
 	}
 
+	local prefabs = 
+	{
+		"collapse_small",
+	}
+
 	local function fn()
 		local inst = CreateEntity()
 
@@ -55,11 +60,11 @@ function MakeWallType(data)
         --Sneak these into pristine state for optimization
         inst:AddTag("_named")
 
+        inst.entity:SetPristine()
+
         if not TheWorld.ismastersim then
             return inst
         end
-
-        inst.entity:SetPristine()
 
         --Remove these tags so that they can be added properly when replicating components below
         inst:RemoveTag("_named")
@@ -81,7 +86,7 @@ function MakeWallType(data)
 		return inst
 	end
 
-	return Prefab("common/brokenwall_"..data.name, fn, assets)
+	return Prefab( "common/brokenwall_"..data.name, fn, assets, prefabs)
 end
 
 local wallprefabs = {}

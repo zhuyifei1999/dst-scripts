@@ -111,6 +111,14 @@ function Harvestable:StopGrowing()
 	end
 end
 
+local function UpdateMoisture(item)
+    if item.components.moisturelistener then 
+        item.components.moisturelistener.moisture = item.target_moisture
+        item.target_moisture = nil
+        item.components.moisturelistener:DoUpdate()
+    end
+end
+
 function Harvestable:Harvest(picker)
     if self:CanBeHarvested() then
         local produce = self.produce
@@ -125,6 +133,9 @@ function Harvestable:Harvest(picker)
             for i = 1, produce, 1 do
                 local loot = SpawnPrefab(self.product)
                 if loot then
+                    loot.target_moisture = self.inst:GetCurrentMoisture()
+                    loot:DoTaskInTime(2*FRAMES, UpdateMoisture)
+
                     picker.components.inventory:GiveItem(loot)
                 end
             end

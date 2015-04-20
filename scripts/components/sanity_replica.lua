@@ -109,23 +109,19 @@ function Sanity:GetPenaltyPercent()
     end
 end
 
-function Sanity:SetRate(rate)
+function Sanity:SetRateScale(ratescale)
     if self.classified ~= nil then
-        local neg = rate < 0
-        rate = math.min(math.floor(math.abs(rate) * 100 + 0.5), 127)
-        self.classified.sanityrate:set(neg and rate + 128 or rate)
+        self.classified.sanityratescale:set(ratescale)
     end
 end
 
-function Sanity:GetRate()
+function Sanity:GetRateScale()
     if self.inst.components.sanity ~= nil then
-        return self.inst.components.sanity:GetRate()
-    elseif self.classified == nil then
-        return 0
-    elseif self.classified.sanityrate:value() >= 128 then
-        return (128 - self.classified.sanityrate:value()) / 100
+        return self.inst.components.sanity:GetRateScale()
+    elseif self.classified ~= nil then
+        return self.classified.sanityratescale:value()
     else
-        return self.classified.sanityrate:value() / 100
+        return RATE_SCALE.NEUTRAL
     end
 end
 

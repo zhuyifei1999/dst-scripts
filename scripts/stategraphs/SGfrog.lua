@@ -31,6 +31,11 @@ local events=
                 end
             end
         end),
+    EventHandler("attacked", function(inst)
+        if inst.components.health:GetPercent() > 0 and not inst.sg:HasStateTag("busy") and not inst.sg:HasStateTag("attack") then
+            inst.sg:GoToState("hit")
+        end
+    end),
 }
 
 local states=
@@ -201,8 +206,23 @@ local states=
             end
         end,
     },    
-    
-   
+
+    State{
+        name = "hit",
+        tags = {"busy"},
+
+        onenter = function(inst)
+            inst.SoundEmitter:PlaySound("dontstarve/frog/grunt")
+            inst.AnimState:PlayAnimation("hit")
+            inst.Physics:Stop()
+        end,
+
+        events=
+        {
+            EventHandler("animover", function(inst) inst.sg:GoToState("idle") end ),
+        },
+    },
+
     State{
         name = "death",
         tags = {"busy"},

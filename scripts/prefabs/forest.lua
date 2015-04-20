@@ -6,9 +6,16 @@ local assets =
     Asset("IMAGE", "images/colour_cubes/snow_cc.tex"),
     Asset("IMAGE", "images/colour_cubes/snowdusk_cc.tex"),
     Asset("IMAGE", "images/colour_cubes/night04_cc.tex"),
+    Asset("IMAGE", "images/colour_cubes/summer_day_cc.tex"),
+    Asset("IMAGE", "images/colour_cubes/summer_dusk_cc.tex"),
+    Asset("IMAGE", "images/colour_cubes/summer_night_cc.tex"),
+    Asset("IMAGE", "images/colour_cubes/spring_day_cc.tex"),
+    Asset("IMAGE", "images/colour_cubes/spring_dusk_cc.tex"),
+    Asset("IMAGE", "images/colour_cubes/spring_night_cc.tex"),
     Asset("IMAGE", "images/colour_cubes/insane_day_cc.tex"),
     Asset("IMAGE", "images/colour_cubes/insane_dusk_cc.tex"),
     Asset("IMAGE", "images/colour_cubes/insane_night_cc.tex"),
+    Asset("IMAGE", "images/colour_cubes/purple_moon_cc.tex"),
 
     Asset("ANIM", "anim/snow.zip"),
     Asset("ANIM", "anim/lightning.zip"),
@@ -16,7 +23,10 @@ local assets =
     Asset("ANIM", "anim/frozen.zip"),
 
     Asset("SOUND", "sound/forest_stream.fsb"),
+    Asset("SOUND", "sound/amb_stream.fsb"),
+
     Asset("IMAGE", "levels/textures/snow.tex"),
+    Asset("IMAGE", "levels/textures/mud.tex"),
     Asset("IMAGE", "images/wave.tex"),
 }
 
@@ -26,6 +36,7 @@ local prefabs =
     "adventure_portal",
     "resurrectionstone",
     "deerclops",
+    "bearger",
     "gravestone",
     "flower",
     "animal_track",
@@ -43,9 +54,10 @@ local prefabs =
     "pighead",
     "mermhead",
     "rabbithole",
+    "molehill",
     "carrot_planted",
     "tentacle",
-    "wormhole",
+	"wormhole",
     "cave_entrance",
     "teleportato_base",
     "teleportato_ring",
@@ -59,6 +71,7 @@ local prefabs =
     "mist",
     "snow",
     "rain",
+    "pollen",
     "maxwellthrone",
     "maxwellendgame",
     "maxwelllight",
@@ -80,11 +93,17 @@ local prefabs =
     "purpleamulet",
     "monkey",
     "livingtree",
+    "tumbleweed",
+    "rock_ice",
+    "catcoonden",
     "shadowmeteor",
     "meteorwarning",
     "warg",
     "spat",
     "multiplayer_portal",
+    "lavae",
+    "lava_pond",
+    "scorchedground",
 }
 
 local function fn()
@@ -109,25 +128,32 @@ local function fn()
     if not TheNet:IsDedicated() then
         inst:AddComponent("dynamicmusic")
         inst:AddComponent("ambientsound")
+        inst:AddComponent("dsp")
         inst:AddComponent("colourcube")
         inst:AddComponent("hallucinations")
     end
 
     if inst.ismastersim then
         --Spawners
+    	inst:AddComponent("flowerspawner")
         inst:AddComponent("birdspawner")
         inst:AddComponent("butterflyspawner")
         inst:AddComponent("hounded")
+        inst:AddComponent("worlddeciduoustreeupdater")
         inst:AddComponent("kramped")
-        --inst:AddComponent("frograin") --Adventure mode not supported in DST
+        inst:AddComponent("frograin")
         inst:AddComponent("penguinspawner")
-        inst:AddComponent("basehassler")
+        inst:AddComponent("deerclopsspawner")
+        inst:AddComponent("beargerspawner")
+        inst:AddComponent("moosespawner")
         inst:AddComponent("hunter")
         inst:AddComponent("lureplantspawner")
         inst:AddComponent("shadowcreaturespawner")
         inst:AddComponent("shadowhandspawner")
+        inst:AddComponent("inventorymoisture")
+        inst:AddComponent("wildfires")
+        inst:AddComponent("worldwind")
         inst:AddComponent("forestresourcespawner")
-
         if METRICS_ENABLED then
             inst:AddComponent("worldoverseer")
         end
@@ -135,8 +161,6 @@ local function fn()
         --world health management
         inst:AddComponent("skeletonsweeper")
     end
-
-    inst.Map:SetOverlayTexture("levels/textures/snow.tex")
 
     return inst
 end

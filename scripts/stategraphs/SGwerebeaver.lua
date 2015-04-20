@@ -17,7 +17,13 @@ local events=
     CommonHandlers.OnAttack(),
     CommonHandlers.OnAttacked(),
     CommonHandlers.OnDeath(),
-    EventHandler("transform_person", function(inst) inst.sg:GoToState("towoodie") end)
+    EventHandler("transform_person", function(inst) inst.sg:GoToState("towoodie") end),
+    EventHandler("freeze", 
+        function(inst)
+            if inst.components.health and inst.components.health:GetPercent() > 0 then
+                inst.sg:GoToState("frozen")
+            end
+        end),
 }
 
 local states=
@@ -110,6 +116,33 @@ local states=
     },
 
     State{
+        name = "frozen",
+        tags = {"busy", "frozen"},
+        
+        onenter = function(inst)
+            inst.components.playercontroller:Enable(false)
+
+            if inst.components.locomotor then
+                inst.components.locomotor:StopMoving()
+            end
+            inst.AnimState:PlayAnimation("frozen")
+            inst.SoundEmitter:PlaySound("dontstarve/common/freezecreature")
+            inst.AnimState:OverrideSymbol("swap_frozen", "frozen", "frozen")
+        end,
+        
+        onexit = function(inst)
+            inst.components.playercontroller:Enable(true)
+
+            inst.AnimState:ClearOverrideSymbol("swap_frozen")
+        end,
+        
+        events=
+        {   
+            EventHandler("onthaw", function(inst) inst.sg:GoToState("thaw") end ),        
+        },
+    },
+
+    State{
         name = "eat",
         tags = {"busy"},
         
@@ -161,6 +194,7 @@ CommonStates.AddRunStates(states,
 })
 
 CommonStates.AddIdle(states)
+CommonStates.AddFrozenStates(states)
     
 return StateGraph("werebeaver", states, events, "idle", actionhandlers)
 

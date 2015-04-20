@@ -1,6 +1,6 @@
 local assets =
 {
-	Asset("ANIM", "anim/tentacle_arm.zip"),
+    Asset("ANIM", "anim/tentacle_arm.zip"),
     Asset("ANIM", "anim/tentacle_arm_black_build.zip"),
     Asset("SOUND", "sound/tentacle.fsb"),
 }
@@ -10,10 +10,10 @@ local function shouldKeepTarget()
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
@@ -32,11 +32,11 @@ local function fn()
     inst:AddTag("notarget")
     inst:AddTag("noattack")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("health")
     inst.components.health:SetMaxHealth(TUNING.TENTACLE_HEALTH)
@@ -48,8 +48,8 @@ local function fn()
     inst.components.combat:SetKeepTargetFunction(shouldKeepTarget)
 
     MakeLargeFreezableCharacter(inst)
-    
-	inst:AddComponent("sanityaura")
+
+    inst:AddComponent("sanityaura")
     inst.components.sanityaura.aura = -TUNING.SANITYAURA_MED
 
     inst:AddComponent("lootdropper")

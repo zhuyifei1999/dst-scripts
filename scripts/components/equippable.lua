@@ -20,6 +20,12 @@ local Equippable = Class(function(self, inst)
     self.onpocketfn = nil
     self.equipstack = false
     self.walkspeedmult = nil
+    self.dapperness = 0
+    self.dapperfn = nil
+    self.insulated = false
+    self.equippedmoisture = 0
+    self.maxequippedmoisture = 0
+
 end,
 nil,
 {
@@ -31,6 +37,10 @@ function Equippable:OnRemoveFromEntity()
     if self.inst.replica.inventoryitem ~= nil then
         self.inst.replica.inventoryitem:SetWalkSpeedMult(1)
     end
+end
+
+function Equippable:IsInsulated() -- from electricity, not temperature
+	return self.insulated
 end
 
 function Equippable:SetOnEquip(fn)
@@ -52,6 +62,10 @@ end
 function Equippable:Equip(owner, slot)
     self.isequipped = true
     
+    if self.inst.components.burnable then
+        self.inst.components.burnable:StopSmoldering()
+    end
+    
     if self.onequipfn then
         self.onequipfn(self.inst, owner)
     end
@@ -63,7 +77,6 @@ function Equippable:ToPocket(owner)
     if self.onpocketfn then
         self.onpocketfn(self.inst, owner)
     end
-
 end
 
 function Equippable:Unequip(owner, slot)
@@ -78,6 +91,24 @@ end
 
 function Equippable:GetWalkSpeedMult()
 	return self.walkspeedmult or 1.0
+end
+
+function Equippable:GetDapperness(owner)
+    local dapperness = self.dapperness
+    
+    if self.dapperfn then
+        dapperness = self.dapperfn(self.inst, owner)
+    end
+
+    if self.inst:GetIsWet() then
+        dapperness = dapperness + TUNING.WET_ITEM_DAPPERNESS
+    end
+
+    return dapperness
+end
+
+function Equippable:GetEquippedMoisture()
+    return {moisture = self.equippedmoisture, max = self.maxequippedmoisture}
 end
 
 return Equippable

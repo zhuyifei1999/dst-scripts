@@ -23,6 +23,26 @@ local SPAWN_MODE_FN =
     rare = "SpawnModeLight",
 }
 
+local SEASON_FRIENDLY_LENGTHS =
+{
+	noseason = 0,
+	veryshortseason = TUNING.SEASON_LENGTH_FRIENDLY_VERYSHORT,
+	shortseason = TUNING.SEASON_LENGTH_FRIENDLY_SHORT,
+	default = TUNING.SEASON_LENGTH_FRIENDLY_DEFAULT,
+	longseason = TUNING.SEASON_LENGTH_FRIENDLY_LONG,
+	verylongseason = TUNING.SEASON_LENGTH_FRIENDLY_VERYLONG,
+}
+
+local SEASON_HARSH_LENGTHS =
+{
+	noseason = 0,
+	veryshortseason = TUNING.SEASON_LENGTH_HARSH_VERYSHORT,
+	shortseason = TUNING.SEASON_LENGTH_HARSH_SHORT,
+	default = TUNING.SEASON_LENGTH_HARSH_DEFAULT,
+	longseason = TUNING.SEASON_LENGTH_HARSH_LONG,
+	verylongseason = TUNING.SEASON_LENGTH_HARSH_VERYLONG,
+}
+
 local function SetSpawnMode(spawner, difficulty)
     if spawner then
         spawner[SPAWN_MODE_FN[difficulty]](spawner)
@@ -36,20 +56,82 @@ return
     end,
 
     deerclops = function(difficulty)
-        local basehassler = TheWorld.components.basehassler
-        if basehassler then
+        local deerclopsspawner = TheWorld.components.deerclopsspawner
+        if deerclopsspawner then
             if difficulty == "never" then
-                basehassler:OverrideAttacksPerSeason("DEERCLOPS", 0)
-                basehassler:OverrideAttackDuringOffSeason("DEERCLOPS", false)
+                deerclopsspawner:OverrideAttacksPerSeason("DEERCLOPS", 0)
+                deerclopsspawner:OverrideAttackDuringOffSeason("DEERCLOPS", false)
             elseif difficulty == "rare" then
-                basehassler:OverrideAttacksPerSeason("DEERCLOPS", 1)
-                basehassler:OverrideAttackDuringOffSeason("DEERCLOPS", false)
+                deerclopsspawner:OverrideAttacksPerSeason("DEERCLOPS", 2)
+                deerclopsspawner:OverrideAttackDuringOffSeason("DEERCLOPS", false)
+            elseif difficulty == "default" then
+				-- Defaults specified in deerclopsspawner.lua
             elseif difficulty == "often" then
-                basehassler:OverrideAttacksPerSeason("DEERCLOPS", 2)
-                basehassler:OverrideAttackDuringOffSeason("DEERCLOPS", false)
+                deerclopsspawner:OverrideAttacksPerSeason("DEERCLOPS", 8)
+                deerclopsspawner:OverrideAttackDuringOffSeason("DEERCLOPS", false)
             elseif difficulty == "always" then
-                basehassler:OverrideAttacksPerSeason("DEERCLOPS", 3)
-                basehassler:OverrideAttackDuringOffSeason("DEERCLOPS", true)
+                deerclopsspawner:OverrideAttacksPerSeason("DEERCLOPS", 10)
+                deerclopsspawner:OverrideAttackDuringOffSeason("DEERCLOPS", true)
+            end
+        end
+    end,
+
+    bearger = function(difficulty)
+        local beargerspawner = TheWorld.components.beargerspawner
+        if beargerspawner then
+            if difficulty == "never" then
+	            -- no beargers    
+	            beargerspawner:SetFirstBeargerChance(0)
+	            beargerspawner:SetSecondBeargerChance(0)
+            elseif difficulty == "rare" then
+            	-- 50% chance of bearger (Should he have a chance of despawning?)
+            	 beargerspawner:SetFirstBeargerChance(.5)
+	            beargerspawner:SetSecondBeargerChance(0)
+            elseif difficulty == "default" then 
+            	-- spawn 1 bearger
+            elseif difficulty == "often" then
+            	-- 1 bearger
+            	-- 50% chance of spawning a second bearger
+            	 beargerspawner:SetFirstBeargerChance(1)
+	            beargerspawner:SetSecondBeargerChance(.5)
+            elseif difficulty == "always" then
+            	-- 2 beargers
+            	 beargerspawner:SetFirstBeargerChance(1)
+	            beargerspawner:SetSecondBeargerChance(1)
+            end
+        end
+    end,
+
+    goosemoose = function(difficulty)
+        local moosespawner = TheWorld.components.moosespawner
+        if moosespawner then
+            if difficulty == "never" then
+                moosespawner:OverrideAttackDensity(0)
+            elseif difficulty == "rare" then
+                moosespawner:OverrideAttackDensity(0.25)
+            elseif difficulty == "often" then
+                moosespawner:OverrideAttackDensity(0.75)
+            elseif difficulty == "always" then
+                moosespawner:OverrideAttackDensity(1)
+            end
+        end
+    end,
+
+    dragonfly = function(difficulty)
+        local deerclopsspawner = TheWorld.components.deerclopsspawner
+        if deerclopsspawner then
+            if difficulty == "never" then
+                deerclopsspawner:OverrideAttacksPerSeason("DRAGONFLY", 0)
+                deerclopsspawner:OverrideAttackDuringOffSeason("DRAGONFLY", false)
+            elseif difficulty == "rare" then
+                deerclopsspawner:OverrideAttacksPerSeason("DRAGONFLY", 1)
+                deerclopsspawner:OverrideAttackDuringOffSeason("DRAGONFLY", false)
+            elseif difficulty == "often" then
+                deerclopsspawner:OverrideAttacksPerSeason("DRAGONFLY", 2)
+                deerclopsspawner:OverrideAttackDuringOffSeason("DRAGONFLY", false)
+            elseif difficulty == "always" then
+                deerclopsspawner:OverrideAttacksPerSeason("DRAGONFLY", 3)
+                deerclopsspawner:OverrideAttackDuringOffSeason("DRAGONFLY", true)
             end
         end
     end,
@@ -87,6 +169,17 @@ return
         OverrideTuningVariables(tuning_vars[difficulty])
     end,
 
+	deciduousmonster = function(difficulty)
+		local tuning_vars =
+		{
+			never =  {DECID_MONSTER_MIN_DAY = 9999, DECID_MONSTER_SPAWN_CHANCE_BASE = -1, DECID_MONSTER_SPAWN_CHANCE_LOW = -1, DECID_MONSTER_SPAWN_CHANCE_MED = -1, DECID_MONSTER_SPAWN_CHANCE_HIGH = -1},
+			rare = 	 {DECID_MONSTER_MIN_DAY = 5, DECID_MONSTER_SPAWN_CHANCE_BASE = .015, DECID_MONSTER_SPAWN_CHANCE_LOW = .04, DECID_MONSTER_SPAWN_CHANCE_MED = .075, DECID_MONSTER_SPAWN_CHANCE_HIGH = .167},
+			often =  {DECID_MONSTER_MIN_DAY = 2, DECID_MONSTER_SPAWN_CHANCE_BASE = .07, DECID_MONSTER_SPAWN_CHANCE_LOW = .15, DECID_MONSTER_SPAWN_CHANCE_MED = .33, DECID_MONSTER_SPAWN_CHANCE_HIGH = .5},
+			always = {DECID_MONSTER_MIN_DAY = 1, DECID_MONSTER_SPAWN_CHANCE_BASE = .2, DECID_MONSTER_SPAWN_CHANCE_LOW = .33, DECID_MONSTER_SPAWN_CHANCE_MED = .5, DECID_MONSTER_SPAWN_CHANCE_HIGH = .67},
+		}
+		OverrideTuningVariables(tuning_vars[difficulty])
+	end,
+
 	krampus = function(difficulty)
         local tuning_vars =
         {
@@ -100,6 +193,10 @@ return
 
     butterfly = function(difficulty)
         SetSpawnMode(TheWorld.components.butterflyspawner, difficulty)
+    end,
+
+    flowers = function(difficulty)
+        SetSpawnMode(TheWorld.components.flowerspawner, difficulty)
     end,
 
     birds = function(difficulty)
@@ -136,79 +233,91 @@ return
         OverrideTuningVariables(tuning_vars[difficulty])
     end,
 
-    day = function(difficulty)
-        local lookup =
-        {
-            onlyday =
-            {
-                summer = { day = 16, dusk = 0, night = 0 },
-            },
-            onlydusk =
-            {
-                summer = { day = 0, dusk = 16, night = 0 },
-            },
-            onlynight =
-            {
-                summer = { day = 0, dusk = 0, night = 16 },
-            },
-            default =
-            {
-                summer = { day = 10, dusk = 2, night = 4 },
-                winter = { day = 6, dusk = 5, night = 5 },
-            },
-            longday =
-            {
-                summer = { day = 14, dusk = 1, night = 1 },
-                winter = { day = 13, dusk = 1, night = 2 },
-            },
-            longdusk =
-            {
-                summer = { day = 7, dusk = 6, night = 3 },
-                winter = { day = 3, dusk = 8, night = 5 },
-            },
-            longnight =
-            {
-                summer ={ day = 5, dusk = 2, night = 9 },
-                winter ={ day = 2, dusk = 2, night = 12 },
-            },
-        }
-        TheWorld:PushEvent("ms_setseasonclocksegs", lookup[difficulty])
+	day = function(difficulty)
+		local lookup = { 
+			["onlyday"]={
+				day = 3, dusk = 0, night = 0
+			},
+			["onlydusk"]={
+				day = 0, dusk = 3, night = 0
+			},
+			["onlynight"]={
+				day = 0, dusk = 0, night = 3
+			},
+			["default"]={
+				day = 1, dusk = 1, night = 1
+			},
+			["longday"]={
+				day = 1.6, dusk = 0.7, night = 0.7
+			},
+			["longdusk"]={
+				day = 0.7, dusk = 1.6, night = 0.7
+			},
+			["longnight"]={
+				day = 0.7, dusk = 0.7, night = 1.6
+			},
+			["noday"]={ 
+				day = 0, dusk = 1.5, night = 1.5
+			},
+			["nodusk"]={
+				day = 1.5, dusk = 0, night = 1.5
+			},
+			["nonight"]={
+				day = 1.5, dusk = 1.5, night = 0
+			}
+		}
+        TheWorld:PushEvent("ms_setseasonsegmodifier", lookup[difficulty])
     end,
 
-    season = function(difficulty)
-        if difficulty == "preonlywinter" then
-            TheWorld:PushEvent("ms_setseasonmode", "endless")
-            TheWorld:PushEvent("ms_setseason", "summer")
-        elseif difficulty == "preonlysummer" then
-            TheWorld:PushEvent("ms_setseasonmode", "endless")
-            TheWorld:PushEvent("ms_setseason", "winter")
-        elseif difficulty == "onlysummer" then
-            TheWorld:PushEvent("ms_setseasonmode", "always")
-            TheWorld:PushEvent("ms_setseason", "summer")
-        elseif difficulty == "onlywinter" then
-            TheWorld:PushEvent("ms_setseasonmode", "always")
-            TheWorld:PushEvent("ms_setseason", "summer")
-        else
-            local lookup =
-            {
-                longsummer = { summer = 50, winter = 10 },
-                longwinter = { summer = 10, winter = 50 },
-                longboth = { summer = 50, winter = 50 },
-                shortboth = { summer = 10, winter = 10 },
-                autumn = { summer = 5, winter = 3 },
-                spring = { summer = 3, winter = 5 },
-            }
-            TheWorld:PushEvent("ms_setseasonlengths", lookup[difficulty])
-        end
-    end,
+	autumn = function(difficulty)
+		if difficulty == "random" then
+			TheWorld:PushEvent("ms_setseasonlength", {season = "autumn", length = GetRandomItem(SEASON_FRIENDLY_LENGTHS)})
+		else
+			TheWorld:PushEvent("ms_setseasonlength", {season = "autumn", length = SEASON_FRIENDLY_LENGTHS[difficulty]})
+		end
+	end,
+
+	winter = function(difficulty)
+		if difficulty == "random" then
+			TheWorld:PushEvent("ms_setseasonlength", {season = "winter", length = GetRandomItem(SEASON_HARSH_LENGTHS)})
+		else
+			TheWorld:PushEvent("ms_setseasonlength", {season = "winter", length = SEASON_HARSH_LENGTHS[difficulty]})
+		end
+	end,
+
+	spring = function(difficulty)
+		if difficulty == "random" then
+			TheWorld:PushEvent("ms_setseasonlength", {season = "spring", length = GetRandomItem(SEASON_FRIENDLY_LENGTHS)})
+		else
+			TheWorld:PushEvent("ms_setseasonlength", {season = "spring", length = SEASON_FRIENDLY_LENGTHS[difficulty]})
+		end
+	end,
+
+	summer = function(difficulty)
+		if difficulty == "random" then
+			TheWorld:PushEvent("ms_setseasonlength", {season = "summer", length = GetRandomItem(SEASON_HARSH_LENGTHS)})
+		else
+			TheWorld:PushEvent("ms_setseasonlength", {season = "summer", length = SEASON_HARSH_LENGTHS[difficulty]})
+		end
+	end,
 
     season_start = function(difficulty)
-        if difficulty == "summer" then
+		if difficulty == "random" then
+			difficulty = GetRandomItem({"winter","spring","summer","autumn"})
+		end
+
+        if difficulty == "winter" then
+            TheWorld:PushEvent("ms_setseason", "winter")
+            TheWorld:PushEvent("ms_setsnowlevel", 1)
+        elseif difficulty == "spring" then
+            TheWorld:PushEvent("ms_setseason", "spring")
+            TheWorld:PushEvent("ms_setsnowlevel", 0)
+        elseif difficulty == "summer" then
             TheWorld:PushEvent("ms_setseason", "summer")
             TheWorld:PushEvent("ms_setsnowlevel", 0)
         else
-            TheWorld:PushEvent("ms_setseason", "winter")
-            TheWorld:PushEvent("ms_setsnowlevel", 1)
+            TheWorld:PushEvent("ms_setseason", "autumn")
+            TheWorld:PushEvent("ms_setsnowlevel", 0)
         end
     end,
 
@@ -241,6 +350,29 @@ return
             TheWorld:PushEvent("ms_setlightningdelay", { min = 10, max = 30 })
         end
     end,
+
+	frograin = function(difficulty)
+		local tuning_vars = {
+			default =  {FROG_RAIN_CHANCE=.16, FROG_RAIN_LOCAL_MIN_EARLY = 7, FROG_RAIN_LOCAL_MAX_EARLY = 15, FROG_RAIN_LOCAL_MIN_LATE = 12, FROG_RAIN_LOCAL_MAX_LATE = 30},
+			never = {FROG_RAIN_CHANCE= -1, FROG_RAIN_LOCAL_MIN_EARLY = 0, FROG_RAIN_LOCAL_MAX_EARLY = 1, FROG_RAIN_LOCAL_MIN_LATE = 0, FROG_RAIN_LOCAL_MAX_LATE = 1},
+			rare =  {FROG_RAIN_CHANCE=.08, FROG_RAIN_LOCAL_MIN_EARLY = 3, FROG_RAIN_LOCAL_MAX_EARLY = 7, FROG_RAIN_LOCAL_MIN_LATE = 7, FROG_RAIN_LOCAL_MAX_LATE = 20},
+			often =  {FROG_RAIN_CHANCE=.33, FROG_RAIN_LOCAL_MIN_EARLY = 10, FROG_RAIN_LOCAL_MAX_EARLY = 23, FROG_RAIN_LOCAL_MIN_LATE = 15, FROG_RAIN_LOCAL_MAX_LATE = 40},
+			always =  {FROG_RAIN_CHANCE=.5, FROG_RAIN_LOCAL_MIN_EARLY = 10, FROG_RAIN_LOCAL_MAX_EARLY = 30, FROG_RAIN_LOCAL_MIN_LATE = 20, FROG_RAIN_LOCAL_MAX_LATE = 50},
+			force =  {FROG_RAIN_CHANCE=1, FROG_RAIN_LOCAL_MIN_EARLY = 10, FROG_RAIN_LOCAL_MAX_EARLY = 30, FROG_RAIN_LOCAL_MIN_LATE = 20, FROG_RAIN_LOCAL_MAX_LATE = 50},
+		}
+		OverrideTuningVariables(tuning_vars[difficulty])
+	end,
+
+	wildfires = function(difficulty)
+		local tuning_vars = {
+			never = {WILDFIRE_CHANCE = -1},
+			rare =  {WILDFIRE_CHANCE = .1},
+			default =  {WILDFIRE_CHANCE = .2},
+			often =  {WILDFIRE_CHANCE = .4},
+			always =  {WILDFIRE_CHANCE = .75},
+		}
+		OverrideTuningVariables(tuning_vars[difficulty])
+	end,
 
     creepyeyes = function(difficulty)
         local tuning_vars =

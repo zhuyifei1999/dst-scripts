@@ -216,7 +216,7 @@ local ServerAdminScreen = Class(Screen, function(self, save_slot, in_game, cb)
 	
 	self.save_slot = save_slot
 	self.session_id = SaveGameIndex:GetSlotSession(save_slot)
-    self.online_mode = SaveGameIndex:GetSlotOnlineMode(save_slot)
+    self.online_mode = SaveGameIndex:GetSlotServerData(save_slot).online_mode
 	self.in_game = in_game
 	
     self.bg:SetVRegPoint(ANCHOR_MIDDLE)
@@ -430,7 +430,6 @@ function ServerAdminScreen:PromptDeletePlayer(selected_player)
     end	      
 end
 
-
 function ServerAdminScreen:DeletePlayer(selected_player)
     if selected_player then                
         table.remove(self.blacklist, selected_player)    
@@ -485,14 +484,11 @@ function ServerAdminScreen:MakeSnapshotPanel(left_col, right_col)
     self.snapshot_panel_bg:SetScale(1.1,1.1)
     self.snapshot_panel_bg:SetPosition(0,-10)
         
-    local data = SaveGameIndex:GetServerData(self.save_slot)
-    
     self.snapshot_header = self.snapshot_panel:AddChild(Text(BUTTONFONT, 40))
-    self.snapshot_header:SetColour(0,0,0,1)
-    self.snapshot_header:SetString(data and data.name or STRINGS.UI.SERVERADMINSCREEN.EMPTY_SLOT_TITLE)
-    self.snapshot_header:SetPosition( 0, 240, 0 )
-    self.snapshot_header:SetHAlign( ANCHOR_MIDDLE )
-    self.snapshot_header:SetRegionSize(370, 100)
+    self.snapshot_header:SetColour(0, 0, 0, 1)
+    self.snapshot_header:SetPosition(0, 240, 0)
+    self.snapshot_header:SetHAlign(ANCHOR_MIDDLE)
+    self.snapshot_header:SetTruncatedString(SaveGameIndex:GetSlotServerData(self.save_slot).name or STRINGS.UI.SERVERADMINSCREEN.EMPTY_SLOT_TITLE, 370, 70)
     
     self.snapshot_view_offset = 0
     
@@ -529,50 +525,39 @@ function ServerAdminScreen:MakeSnapshotsMenu()
 
         if data and not data.empty then
             local snapshot = data
-            local character = snapshot.character or "random"
-            
+            local character = snapshot.character
+            local atlas = "images/saveslot_portraits"
+            if character ~= nil then
+                if not table.contains(GetActiveCharacterList(), character) then
+                    character = "random"
+                elseif table.contains(MODCHARACTERLIST, character) then
+                    atlas = atlas.."/"..character
+                end
+                atlas = atlas..".xml"
+            end
+
             widget.portraitbg = widget.base:AddChild(Image("images/saveslot_portraits.xml", "background.tex"))
-            widget.portraitbg:SetScale(.65,.65,1)
-            widget.portraitbg:SetPosition(-100, -1, 0)
-            widget.portraitbg:SetClickable(false)   
+            widget.portraitbg:SetScale(.65, .65, 1)
+            widget.portraitbg:SetPosition(-100, 2, 0)
+            widget.portraitbg:SetClickable(false)
             
             widget.portrait = widget.base:AddChild(Image())
-            widget.portrait:SetClickable(false) 
+            widget.portrait:SetClickable(false)
             if character ~= nil then
-                local atlas = (table.contains(MODCHARACTERLIST, character) and "images/saveslot_portraits/"..snapshot.character..".xml") or "images/saveslot_portraits.xml"
                 widget.portrait:SetTexture(atlas, character..".tex")
             else
                 widget.portraitbg:Hide()
             end
-            widget.portrait:SetScale(.65,.65,1)
-            widget.portrait:SetPosition(-100, -1, 0)    
+            widget.portrait:SetScale(.65, .65, 1)
+            widget.portrait:SetPosition(-100, 2, 0)
             
             local day_text = string.format("%s %d", STRINGS.UI.SERVERADMINSCREEN.DAY, snapshot.world_day)
-            widget.day = widget.base:AddChild(Text(BUTTONFONT, 35))
-            widget.day:SetColour(0,0,0,1)
+            widget.day = widget.base:AddChild(Text(BUTTONFONT, 36))
+            widget.day:SetColour(0, 0, 0, 1)
             widget.day:SetString(day_text)
-            if JapaneseOnPS4() then
-                --widget.day:SetPosition(60,12,0)
-                widget.day:SetPosition(60, 0, 0)
-            else
-                --widget.day:SetPosition(40,12,0)
-                widget.day:SetPosition(40, 0, 0)
-            end
+            widget.day:SetPosition(character ~= nil and 40 or 0, 0, 0)
             widget.day:SetHAlign(ANCHOR_MIDDLE)
             widget.day:SetVAlign(ANCHOR_MIDDLE)
-
-            --[[
-            widget.date = widget.base:AddChild(Text(BUTTONFONT, 28))
-            widget.date:SetColour(0,0,0,1)
-            widget.date:SetString(snapshot.timestamp)
-            if JapaneseOnPS4() then
-                widget.date:SetPosition(60,-23,0)
-            else
-                widget.date:SetPosition(40,-23,0)
-            end
-            widget.date:SetHAlign(ANCHOR_MIDDLE)
-            widget.date:SetVAlign(ANCHOR_MIDDLE)
-            ]]
 
             widget.OnGainFocus = function(self)
                 Widget.OnGainFocus(self)
@@ -608,10 +593,10 @@ function ServerAdminScreen:MakeSnapshotsMenu()
                 return table.concat(t, "  ")
             end
         else
-            widget.day = widget.base:AddChild(Text(BUTTONFONT, 32))
-            widget.day:SetColour(0,0,0,1)
+            widget.day = widget.base:AddChild(Text(BUTTONFONT, 28))
+            widget.day:SetColour(0, 0, 0, 1)
             widget.day:SetString(STRINGS.UI.SERVERADMINSCREEN.EMPTY_SLOT)
-            widget.day:SetPosition(0,0,0)
+            widget.day:SetPosition(0, 0, 0)
             widget.day:SetHAlign(ANCHOR_MIDDLE)
             widget.day:SetVAlign(ANCHOR_MIDDLE)
         end

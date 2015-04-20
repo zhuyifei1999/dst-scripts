@@ -1,7 +1,7 @@
 local assets =
 {
-	Asset("ANIM", "anim/cane.zip"),
-	Asset("ANIM", "anim/swap_cane.zip"),
+    Asset("ANIM", "anim/cane.zip"),
+    Asset("ANIM", "anim/swap_cane.zip"),
 }
 
 local function onequip(inst, owner)
@@ -16,10 +16,10 @@ local function onunequip(inst, owner)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
@@ -29,12 +29,12 @@ local function fn()
     inst.AnimState:SetBuild("cane")
     inst.AnimState:PlayAnimation("idle")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-    
     inst:AddComponent("weapon")
     inst.components.weapon:SetDamage(TUNING.CANE_DAMAGE)
 

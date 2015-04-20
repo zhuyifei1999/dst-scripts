@@ -1,7 +1,7 @@
 local assets =
 {
-	Asset("ANIM", "anim/bat_basic.zip"),
-	Asset("SOUND", "sound/bat.fsb"),
+    Asset("ANIM", "anim/bat_basic.zip"),
+    Asset("SOUND", "sound/bat.fsb"),
 }
 
 local prefabs =
@@ -66,7 +66,7 @@ local function Retarget(inst)
     local newtarget = FindEntity(inst, TUNING.BISHOP_TARGET_DIST, function(guy)
             return inst.components.combat:CanTarget(guy)
     end,
-	nil,
+    nil,
     {"bat"},
     {"character", "monster"}
     )
@@ -112,12 +112,12 @@ local function RememberLocation(inst)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
-	inst.entity:AddDynamicShadow()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
+    inst.entity:AddDynamicShadow()
     inst.entity:AddNetwork()
 
     MakeGhostPhysics(inst, 1, .5)
@@ -137,25 +137,25 @@ local function fn()
     inst:AddTag("scarytoprey")
     inst:AddTag("flying")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-    
     inst:AddComponent("locomotor")
     inst.components.locomotor:SetSlowMultiplier( 1 )
     inst.components.locomotor:SetTriggersCreep(false)
     inst.components.locomotor.pathcaps = { ignorecreep = true }
     inst.components.locomotor.walkspeed = TUNING.BAT_WALK_SPEED
-    
+
     inst:SetStateGraph("SGbat")
     inst:SetBrain(brain)
 
     inst:AddComponent("eater")
-    inst.components.eater:SetCarnivore()
+    inst.components.eater:SetDiet({ FOODTYPE.MEAT }, { FOODTYPE.MEAT })
     inst.components.eater.strongstomach = true
-    
+
     inst:AddComponent("sleeper")
     inst.components.sleeper:SetResistance(3)
     inst.components.sleeper:SetNocturnal(true)
@@ -183,12 +183,12 @@ local function fn()
     inst.components.periodicspawner:SetDensityInRange(30, 2)
     inst.components.periodicspawner:SetMinimumSpacing(8)
     inst.components.periodicspawner:Start()
-    
+
     inst:AddComponent("inspectable")
     inst:AddComponent("knownlocations")
-    
+
     inst:DoTaskInTime(1*FRAMES, RememberLocation)
-    
+
     inst:ListenForEvent("wingdown", OnWingDown)
 
     MakeMediumBurnableCharacter(inst, "bat_body")
@@ -200,7 +200,7 @@ local function fn()
     inst:ListenForEvent("attacked", OnAttacked)
 
     MakeHauntablePanic(inst)
-    
+
     return inst
 end
 

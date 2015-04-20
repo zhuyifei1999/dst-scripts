@@ -1,21 +1,12 @@
-local function ondryable(self)
-    if self.product ~= nil and self.drytime ~= nil then
-        self.inst:AddTag("dryable")
-    else
-        self.inst:RemoveTag("dryable")
-    end
-end
-
 local Dryable = Class(function(self, inst)
     self.inst = inst
+
     self.product = nil
     self.drytime = nil
-end,
-nil,
-{
-    product = ondryable,
-    drytime = ondryable,
-})
+
+    --V2C: Recommended to explicitly add tag to prefab pristine state
+    inst:AddTag("dryable")
+end)
 
 function Dryable:OnRemoveFromEntity()
     self.inst:RemoveTag("dryable")
@@ -29,12 +20,12 @@ function Dryable:GetProduct()
     return self.product
 end
 
-function Dryable:GetDryingTime()
-    return self.drytime
-end
-
 function Dryable:SetDryTime(time)
     self.drytime = time
+end
+
+function Dryable:GetDryTime()
+    return self.drytime
 end
 
 return Dryable

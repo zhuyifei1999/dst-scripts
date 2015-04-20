@@ -1,19 +1,18 @@
-
 local assets =
 {
-	Asset("ANIM", "anim/hound_basic.zip"),
-	Asset("ANIM", "anim/hound.zip"),
-	Asset("ANIM", "anim/hound_red.zip"),
-	Asset("ANIM", "anim/hound_ice.zip"),
-	Asset("SOUND", "sound/hound.fsb"),
+    Asset("ANIM", "anim/hound_basic.zip"),
+    Asset("ANIM", "anim/hound.zip"),
+    Asset("ANIM", "anim/hound_red.zip"),
+    Asset("ANIM", "anim/hound_ice.zip"),
+    Asset("SOUND", "sound/hound.fsb"),
 }
 
 local prefabs =
 {
-	"houndstooth",
-	"monstermeat",
-	"redgem",
-	"bluegem",
+    "houndstooth",
+    "monstermeat",
+    "redgem",
+    "bluegem",
 }
 
 local brain = require "brains/houndbrain"
@@ -23,7 +22,7 @@ SetSharedLootTable( 'hound',
     {'monstermeat', 1.000},
     {'houndstooth',  0.125},
 })
- 
+
 SetSharedLootTable( 'hound_fire',
 {
     {'monstermeat', 1.0},
@@ -46,6 +45,8 @@ local WAKE_TO_FOLLOW_DISTANCE = 8
 local SLEEP_NEAR_HOME_DISTANCE = 10
 local SHARE_TARGET_DIST = 30
 local HOME_TELEPORT_DIST = 30
+
+local NO_TAGS = {"FX", "NOCLICK","DECOR","INLIMBO"}
 
 local function ShouldWakeUp(inst)
     return DefaultWakeTest(inst) or (inst.components.follower and inst.components.follower.leader and not inst.components.follower:IsNearLeader(WAKE_TO_FOLLOW_DISTANCE))
@@ -71,7 +72,7 @@ local function retargetfn(inst)
         dist = TUNING.HOUND_FOLLOWER_TARGET_DIST
     end
     return FindEntity(inst, dist, function(guy) 
-		return inst.components.combat:CanTarget(guy)
+        return inst.components.combat:CanTarget(guy)
     end,
     nil,
     {"wall","houndmound","hound","houndfriend"}
@@ -134,7 +135,7 @@ local function OnSave(inst, data)
     data.ispet = inst:HasTag("pet_hound")
     --print("OnSave", inst, data.ispet)
 end
-        
+
 local function OnLoad(inst, data)
     --print("OnLoad", inst, data.ispet)
     if data and data.ispet then
@@ -146,34 +147,34 @@ local function OnLoad(inst, data)
 end
 
 local function fncommon(build)
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddPhysics()
-	inst.entity:AddSoundEmitter()
-	inst.entity:AddDynamicShadow()
+    inst.entity:AddSoundEmitter()
+    inst.entity:AddDynamicShadow()
     inst.entity:AddNetwork()
 
     MakeCharacterPhysics(inst, 10, .5)
 
     inst.DynamicShadow:SetSize(2.5, 1.5)
     inst.Transform:SetFourFaced()
-    
+
     inst:AddTag("scarytoprey")
     inst:AddTag("monster")
     inst:AddTag("hostile")
     inst:AddTag("hound")
-    
+
     inst.AnimState:SetBank("hound")
     inst.AnimState:SetBuild(build or "hound")
     inst.AnimState:PlayAnimation("idle")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
     inst.components.locomotor.runspeed = TUNING.HOUND_SPEED
@@ -182,16 +183,16 @@ local function fncommon(build)
     inst:SetBrain(brain)
 
     inst:AddComponent("follower")
-    
+
     inst:AddComponent("eater")
-    inst.components.eater:SetCarnivore()
-	inst.components.eater:SetCanEatHorrible()
+    inst.components.eater:SetDiet({ FOODTYPE.MEAT }, { FOODTYPE.MEAT })
+    inst.components.eater:SetCanEatHorrible()
 
     inst.components.eater.strongstomach = true -- can eat monster meat!
-    
+
     inst:AddComponent("health")
     inst.components.health:SetMaxHealth(TUNING.HOUND_HEALTH)
-    
+
     inst:AddComponent("sanityaura")
     inst.components.sanityaura.aura = -TUNING.SANITYAURA_MED
 
@@ -234,7 +235,7 @@ local function fncommon(build)
 end
 
 local function fndefault()
-	local inst = fncommon()
+    local inst = fncommon()
 
     if not TheWorld.ismastersim then
         return inst
@@ -242,7 +243,7 @@ local function fndefault()
 
     MakeMediumFreezableCharacter(inst, "hound_body")
     MakeMediumBurnableCharacter(inst, "hound_body")
-	return inst
+    return inst
 end
 
 local function PlayFireExplosionSound(inst)
@@ -250,7 +251,7 @@ local function PlayFireExplosionSound(inst)
 end
 
 local function fnfire()
-	local inst = fncommon("hound_red")
+    local inst = fncommon("hound_red")
 
     if not TheWorld.ismastersim then
         return inst
@@ -265,17 +266,30 @@ local function fnfire()
     inst.components.health:SetMaxHealth(TUNING.FIREHOUND_HEALTH)
     inst.components.lootdropper:SetChanceLootTable('hound_fire')
 
-	inst:ListenForEvent("death", PlayFireExplosionSound)
+    inst:ListenForEvent("death", PlayFireExplosionSound)
 
-	return inst
+    return inst
 end
 
-local function PlayIceExplosionSound(inst)
+local function DoIceExplosion(inst)
+     if not inst.components.freezable then
+            MakeMediumFreezableCharacter(inst, "hound_body")
+        end
+        inst.components.freezable:SpawnShatterFX()
+        inst:RemoveComponent("freezable")
+        local x,y,z = inst.Transform:GetWorldPosition()
+        local ents = TheSim:FindEntities(x, y, z, 4, {"freezable"}, NO_TAGS) 
+        for i,v in pairs(ents) do
+            if v.components.freezable then
+                v.components.freezable:AddColdness(2)
+            end
+        end
+
     inst.SoundEmitter:PlaySound("dontstarve/creatures/hound/icehound_explo", "explosion")
 end
 
 local function fncold()
-	local inst = fncommon("hound_ice")
+    local inst = fncommon("hound_ice")
 
     if not TheWorld.ismastersim then
         return inst
@@ -288,25 +302,25 @@ local function fncold()
     inst.components.locomotor.runspeed = TUNING.ICEHOUND_SPEED
     inst.components.health:SetMaxHealth(TUNING.ICEHOUND_HEALTH)
     inst.components.lootdropper:SetChanceLootTable('hound_cold')
-	
-	inst:ListenForEvent("death", PlayIceExplosionSound)
 
-	return inst
+    inst:ListenForEvent("death", DoIceExplosion)
+
+    return inst
 end
 
 local function fnfiredrop()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
+    inst.entity:AddTransform()
     inst.entity:AddNetwork()
 
     MakeInventoryPhysics(inst)
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     MakeLargeBurnable(inst, 6 + math.random() * 6)
     MakeLargePropagator(inst)
@@ -315,6 +329,6 @@ local function fnfiredrop()
 end
 
 return Prefab("monsters/hound", fndefault, assets, prefabs),
-		Prefab("monsters/firehound", fnfire, assets, prefabs),
-		Prefab("monsters/icehound", fncold, assets, prefabs),
-		Prefab("monsters/houndfire", fnfiredrop, assets, prefabs)
+        Prefab("monsters/firehound", fnfire, assets, prefabs),
+        Prefab("monsters/icehound", fncold, assets, prefabs),
+        Prefab("monsters/houndfire", fnfiredrop, assets, prefabs)

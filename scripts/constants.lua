@@ -39,6 +39,7 @@ MOVE_DOWN = 2
 MOVE_LEFT = 3
 MOVE_RIGHT = 4
 
+NUM_CRAFTING_RECIPES = 10
 
 --push priorities
 STATIC_PRIORITY = 10000
@@ -250,11 +251,13 @@ GESTURE_ROTATE_LEFT = 902
 GESTURE_ROTATE_RIGHT = 903
 GESTURE_MAX = 904
 
+--Legacy table, not for DST
 MAIN_CHARACTERLIST = 
 {
 	"wilson", "willow", "wolfgang", "wendy", "wx78", "wickerbottom", "woodie", "wes", "waxwell",
 }
 
+--Legacy table, not for DST
 ROG_CHARACTERLIST =
 {
 	"wathgrithr", "webber",
@@ -262,7 +265,7 @@ ROG_CHARACTERLIST =
 
 DST_CHARACTERLIST =
 {
-	"wilson", "willow", "wolfgang", "wendy", "wx78", "wickerbottom",
+	"wilson", "willow", "wolfgang", "wendy", "wx78", "wickerbottom", "wathgrithr", "webber",
 }
 
 MAINSCREEN_CHAR_1 = "corner_dude"
@@ -292,9 +295,9 @@ MAINSCREEN_HAT_LIST =
 MAINSCREEN_HAT_1 = ""
 MAINSCREEN_HAT_2 = ""
 
-MODCHARACTERLIST =
+MODCHARACTERLIST = 
 {
-	--populated by mods
+	-- this gets populated by mods
 }
 
 CHARACTER_GENDERS = 
@@ -303,7 +306,7 @@ CHARACTER_GENDERS =
 		"willow",
 		"wendy",
 		"wickerbottom",
-		'wathgrithr'
+		"wathgrithr",
 	},
 	MALE = {
 		"wilson",
@@ -311,10 +314,11 @@ CHARACTER_GENDERS =
 		"waxwell",
 		"wolfgang",
 		"wes",
-		'webber'
+		"webber",
 	},
 	ROBOT = {
 		"wx78",
+		"pyro",
 	},
 	NEUTRAL = {}, --empty, for modders to add to
 	PLURAL = {}, --empty, for modders to add to
@@ -375,7 +379,11 @@ GROUND =
 	FUNGUSRED = 24,
 	FUNGUSGREEN = 25,
 
+	DECIDUOUS = 30,
+	DESERT_DIRT = 31,
+
     -- Noise
+    DIRT_NOISE = 123,
 	ABYSS_NOISE = 124,
 	GROUND_NOISE = 125,
 	CAVE_NOISE = 126,
@@ -413,6 +421,9 @@ TECH = {
 	-- Magic starts at level 2 so it's not teased from the start.
 	MAGIC_TWO = {MAGIC = 2},
 	MAGIC_THREE = {MAGIC = 3},
+
+	LOST = {MAGIC = 10, SCIENCE = 10, ANCIENT = 10},
+
 	ANCIENT_TWO = {ANCIENT = 2},
 	ANCIENT_THREE = {ANCIENT = 3},
 	ANCIENT_FOUR = {ANCIENT = 4},
@@ -556,7 +567,9 @@ COLLISION =
     OBSTACLES = 512,
     CHARACTERS = 1024,
     FLYERS = 2048,
-    SANITY = 4096
+    SANITY = 4096,
+    SMALLOBSTACLES = 8192,	-- collide with characters but not giants
+    GIANTS = 16384,	-- collide with obstacles but not small obstacles
 }
 
 BLENDMODE =
@@ -614,8 +627,10 @@ NUM_TRINKETS = 13
 
 SEASONS =
 {
-	SUMMER = "summer",
+	AUTUMN = "autumn",
 	WINTER = "winter",
+	SPRING = "spring",
+	SUMMER = "summer",
 	CAVES = "caves",
 }
 
@@ -650,7 +665,7 @@ end
 BGCOLOURS =
 {
 	RED =          RGB(255, 89,  46 ),
-	PURPLE =       RGB(202, 48,  209),
+	PURPLE =       RGB(184, 87,  198),
 	YELLOW =       RGB(255, 196, 45 ),
 	GREY =         RGB(75,  75,  75 ),
 	FULL =         RGB(255, 255, 255),
@@ -704,7 +719,12 @@ DEFAULT_PLAYER_COLOUR = RGB(153, 153, 153) -- GREY
 
 SAY_COLOR =         RGB(255, 255, 255)
 WHISPER_COLOR =     RGB(153, 153, 153)
+TWITCH_COLOR  =     RGB(153, 153, 255)
+
 MAX_CHAT_NAME_LENGTH = 13
+
+WET_TEXT_COLOUR = RGB(149, 191, 242)
+NORMAL_TEXT_COLOUR = RGB(255, 255, 255)
 
 ROAD_STRIPS = 
 {
@@ -740,7 +760,7 @@ VIBRATION_CAMERA_SHAKE = 0
 VIBRATION_BLOOD_FLASH = 1
 VIBRATION_BLOOD_OVER = 2
 
-NUM_SAVE_SLOTS = 4
+NUM_SAVE_SLOTS = 5
 
 SAVELOAD = 
 {    
@@ -774,6 +794,13 @@ MATERIALS =
     GEM = "gem",
     GEARS = "gears",
     MOONROCK = "moonrock",
+    ICE = "ice",
+}
+
+UPGRADETYPES =
+{
+	DEFAULT = "default",
+	SPIDER = "spider",
 }
 
 LOCKTYPE =
@@ -792,6 +819,7 @@ FUELTYPE =
     NIGHTMARE = "NIGHTMARE",
     ONEMANBAND = "ONEMANBAND",
     PIGTORCH = "PIGTORCH",
+    CHEMICAL = "CHEMICAL",
 }
 
 OCCUPANTTYPE =
@@ -811,6 +839,7 @@ FOODTYPE =
     INSECT = "INSECT",
     SEEDS = "SEEDS",
     BERRY = "BERRY", --hack for smallbird; berries are actually part of veggie
+    RAW = "RAW", -- things which some animals can eat off the ground, but players need to cook
 }
 
 FOODGROUP =
@@ -834,6 +863,27 @@ FOODGROUP =
         {
             FOODTYPE.SEEDS,
             FOODTYPE.BERRY,
+        },
+    },
+    BEARGER =
+    {
+        name = "BEARGER",
+        types =
+        {
+            FOODTYPE.MEAT,
+            FOODTYPE.VEGGIE,
+			FOODTYPE.BERRY,
+			FOODTYPE.GENERIC,
+        },
+    },
+    MOOSE =
+    {
+        name = "MOOSE",
+        types =
+        {
+            FOODTYPE.MEAT,
+            FOODTYPE.VEGGIE,
+			FOODTYPE.SEEDS,
         },
     },
 }
@@ -914,4 +964,25 @@ CAMERASHAKE =
     FULL = 0,
     SIDE = 1,
     VERTICAL = 2,
+}
+
+--Badge/meter arrow sizes
+RATE_SCALE =
+{
+    NEUTRAL = 0,
+    INCREASE_HIGH = 1,
+    INCREASE_MED = 2,
+    INCREASE_LOW = 3,
+    DECREASE_HIGH = 4,
+    DECREASE_MED = 5,
+    DECREASE_LOW = 6,
+}
+
+-- Twitch status codes
+TWITCH = 
+{
+    UNDEFINED = -1,
+    CHAT_CONNECTED = 0,
+    CHAT_DISCONNECTED = 1,
+    CHAT_CONNECT_FAILED = 2,
 }

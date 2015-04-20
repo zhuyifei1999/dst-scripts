@@ -1,14 +1,14 @@
 --Down when sane, up when insane.
-local assets = 
+local assets =
 {
     Asset("ANIM", "anim/blocker_sanity.zip"),
     Asset("ANIM", "anim/blocker_sanity_fx.zip"),
 }
 
-local prefabs = 
+local prefabs =
 {
     "sanity_raise",
-    "sanity_lower"
+    "sanity_lower",
 }
 
 local COLLISION_SIZE = 1 --must be an int
@@ -234,11 +234,11 @@ local function commonfn()
 
     inst.OnRemoveEntity = onremove
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst.active = false
     inst.activatetask = nil

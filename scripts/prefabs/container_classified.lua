@@ -617,6 +617,9 @@ end
 local function fn()
     local inst = CreateEntity()
 
+    if TheWorld.ismastersim then
+        inst.entity:AddTransform() --So we can follow parent's sleep state
+    end
     inst.entity:AddNetwork()
     inst.entity:Hide()
     inst:AddTag("CLASSIFIED")
@@ -635,6 +638,8 @@ local function fn()
     for i = 1, containers.MAXITEMSLOTS do
         table.insert(inst._itemspool, net_entity(inst.GUID, "container._items["..tostring(i).."]", "items["..tostring(i).."]dirty"))
     end
+
+    inst.entity:SetPristine()
 
     --Common interface
     inst.InitializeSlots = InitializeSlots
@@ -668,9 +673,6 @@ local function fn()
         inst:DoTaskInTime(0, RegisterNetListeners)
         return inst
     end
-
-    inst.entity:AddTransform() --So we can follow parent's sleep state
-    inst.entity:SetPristine()
 
     --Server interface
     inst.SetSlotItem = SetSlotItem

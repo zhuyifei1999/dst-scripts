@@ -85,4 +85,9 @@ function Machine:IsOn()
 	return self.ison
 end
 
+function Machine:GetDebugString()
+   
+    return string.format("on=%s, cooldowntime=%2.2f, oncooldown=%s", tostring(self.ison), self.cooldowntime, tostring(self.oncooldown) )
+end
+
 return Machine

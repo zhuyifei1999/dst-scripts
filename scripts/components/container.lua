@@ -96,25 +96,14 @@ function Container:DropItemBySlot(slot)
     end
 end
 
-function Container:DropEverythingWithTag(tag, keepcharacterspecific, exclude)
+function Container:DropEverythingWithTag(tag)
     local containers = {}
-    local checkowner = keepcharacterspecific and
-        self.inst.components.inventoryitem ~= nil and
-        self.inst.components.inventoryitem:GetGrandOwner() or nil
-    exclude = checkowner ~= nil and (exclude or {}) or nil
 
     for i = 1, self.numslots do
         local item = self.slots[i]
         if item ~= nil then
             if item:HasTag(tag) then
-                if checkowner ~= nil and
-                    item.components.characterspecific ~= nil and
-                    item.components.characterspecific.character == checkowner.prefab and
-                    not table.contains(exclude, item.prefab) then
-                    table.insert(exclude, item.prefab)
-                else
-                    self:DropItemBySlot(i)
-                end
+                self:DropItemBySlot(i)
             elseif item.components.container ~= nil then
                 table.insert(containers, item)
             end
@@ -122,7 +111,7 @@ function Container:DropEverythingWithTag(tag, keepcharacterspecific, exclude)
     end
 
     for i, v in ipairs(containers) do
-        v.components.container:DropEverythingWithTag(tag, keepcharacterspecific, exclude)
+        v.components.container:DropEverythingWithTag(tag)
     end
 end
 
@@ -414,6 +403,41 @@ function Container:Has(item, amount)
     return num_found >= amount, num_found
 end
 
+function Container:GetItemByName(item, amount)
+    local total_num_found = 0
+    local items = {}
+
+    local function tryfind(v)
+        local num_found = 0
+        if v and v.prefab == item then
+            local num_left_to_find = amount - total_num_found
+            if v.components.stackable then
+                if v.components.stackable.stacksize > num_left_to_find then
+                    items[v] = num_left_to_find
+                    num_found = amount
+                else
+                    items[v] = v.components.stackable.stacksize
+                    num_found = num_found + v.components.stackable.stacksize
+                end
+            else
+                items[v] = 1
+                num_found = num_found + 1
+            end
+        end
+        return num_found
+    end
+
+    for k,v in pairs(self.slots) do
+        total_num_found = total_num_found + tryfind(v)
+        
+        if total_num_found >= amount then
+            break
+        end
+    end
+
+    return items
+end
+
 function Container:ConsumeByName(item, amount)
     
     local total_num_found = 0
@@ -450,14 +474,20 @@ end
 
 function Container:OnSave()
     local data = {items= {}}
+    local references = {}
+    local refs = {}
     for k,v in pairs(self.slots) do
-        if v:IsValid() then --only save the valid items
-			data.items[k] = v:GetSaveRecord()
-		end
+        if v:IsValid() and v.persists then --only save the valid items
+            data.items[k], refs = v:GetSaveRecord()
+            if refs then
+                for k,v in pairs(refs) do
+                    table.insert(references, v)
+                end 
+            end
+        end
     end
-    
-    return data
-end   
+    return data, references
+end
 
 function Container:OnLoad(data, newents)
     if data.items then

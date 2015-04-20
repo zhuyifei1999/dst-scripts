@@ -42,6 +42,7 @@ local prefabs =
     "gears",
     "crawlingnightmare",
     "nightmarebeak",
+    "collapse_small",
 }
 
 local spawns =
@@ -385,11 +386,11 @@ local function CreateAltar(name, state, soundprefix, techtree)
         inst.Light:SetIntensity(.5)
         inst.Light:SetColour(1, 1, 1)
 
+        inst.entity:SetPristine()
+
         if not TheWorld.ismastersim then
             return inst
         end
-
-        inst.entity:SetPristine()
 
         inst.OnSave = OnSave
         inst.OnLoad = OnLoad

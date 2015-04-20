@@ -1,6 +1,6 @@
 local assets =
 {
-	Asset("ANIM", "anim/tentacle.zip"),
+    Asset("ANIM", "anim/tentacle.zip"),
     Asset("SOUND", "sound/tentacle.fsb"),
 }
 
@@ -77,16 +77,16 @@ local function OnAttacked(inst, data)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
+    inst.entity:AddTransform()
     inst.entity:AddPhysics()
-	inst.entity:AddAnimState()
+    inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
     inst.Physics:SetCylinder(0.25, 2)
-    
+
     inst.AnimState:SetBank("tentacle")
     inst.AnimState:SetBuild("tentacle")
     inst.AnimState:PlayAnimation("idle")
@@ -96,11 +96,11 @@ local function fn()
     inst:AddTag("wet")
     inst:AddTag("WORM_DANGER")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst._last_attacker = nil
     inst._last_attacked_time = nil
@@ -117,7 +117,7 @@ local function fn()
 
     MakeLargeFreezableCharacter(inst)
 
-	inst:AddComponent("sanityaura")
+    inst:AddComponent("sanityaura")
     inst.components.sanityaura.aura = -TUNING.SANITYAURA_MED
 
     inst:AddComponent("inspectable")

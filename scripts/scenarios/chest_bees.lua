@@ -30,7 +30,7 @@ local function OnIsDay(inst, isday)
     if inst.components.childspawner then
         if not isday then
             inst.components.childspawner:StopSpawning()
-        elseif TheWorld.state.issummer then
+        elseif not TheWorld.state.iswinter then
             inst.components.childspawner:StartSpawning()
         end
     end
@@ -43,7 +43,7 @@ local function OnLoad(inst, scenariorunner)
 	inst.components.childspawner:SetRegenPeriod(TUNING.BEEHIVE_REGEN_TIME)
 	inst.components.childspawner:SetSpawnPeriod(TUNING.BEEHIVE_RELEASE_TIME)
 	inst.components.childspawner:SetMaxChildren(TUNING.BEEHIVE_BEES)
-	if TheWorld.state.issummer then
+	if not TheWorld.state.iswinter then
 		inst.components.childspawner:StartSpawning()
 	end
 

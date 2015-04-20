@@ -1,72 +1,62 @@
-local HOUND_SPAWN_DIST = 30
+local HOUND_SPAWN_DIST = 30 --hounded.lua::HOUND_SPAWN_DIST
 
-local function PlayWarningSound(proxy, level)
-	-- the prefab is spawned in a player's position
-	if ThePlayer == nil then
-		return
-	end
+local WARNING_LEVEL_DISTANCE =
+{
+    HOUND_SPAWN_DIST + 30,
+    HOUND_SPAWN_DIST + 20,
+    HOUND_SPAWN_DIST + 10,
+    HOUND_SPAWN_DIST,
+}
 
-	-- The sound needs to be moved away by my distance from the relevant player, so if I am near that player I hear it at about the same volume, if I am farther away
-	-- I hear it less loud, even if according to the other player it's in my direction (only because it's less relevant to me - since it's a random position (and just ambient warning) there really is no valid logic)
-	local inst = CreateEntity()
+local function PlayWarningSound(proxy, radius)
+    local inst = CreateEntity()
 
     --[[Non-networked entity]]
 
-	inst.entity:AddTransform()
+    inst.entity:AddTransform()
     inst.entity:AddSoundEmitter()
+    inst.entity:SetParent(TheFocalPoint.entity)
 
-	local radius = HOUND_SPAWN_DIST + (level - 1) * 10
-	local theta = math.random() * 2 * PI
-    local x, y, z = ThePlayer.Transform:GetWorldPosition()
-	inst.Transform:SetPosition(x + radius * math.cos(theta), 0, z - radius * math.sin(theta))
-	inst.SoundEmitter:PlaySound("dontstarve/creatures/hound/distant")
+    --Everyone gets their own hounds and therefore their own warnings
+    local theta = math.random() * 2 * PI
 
-	inst:Remove()
+    inst.Transform:SetPosition(radius * math.cos(theta), 0, radius * math.sin(theta))
+    inst.SoundEmitter:PlaySound("dontstarve/creatures/hound/distant")
+
+    inst:Remove()
 end
 
-local function houndwarning(level)
-	local inst = CreateEntity()
-    inst.entity:AddNetwork()
+local function makewarning(distance)
+    return function()
+        local inst = CreateEntity()
 
-    inst:AddTag("FX")
+        inst.entity:AddNetwork()
 
-    --Dedicated server does not need to spawn the local fx
-    if not TheNet:IsDedicated() then
-        --Delay one frame so that we are positioned properly before starting the effect
-        --or in case we are about to be removed
-        inst:DoTaskInTime(0, PlayWarningSound, level)
-    end
+        inst:AddTag("FX")
 
-    if not TheWorld.ismastersim then
+        --Dedicated server does not need to spawn the local fx
+        if not TheNet:IsDedicated() then
+            --Delay one frame in case we are about to be removed
+            inst:DoTaskInTime(0, PlayWarningSound, distance)
+        end
+
+        inst.entity:SetPristine()
+
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        inst.entity:SetCanSleep(false)
+        inst.persists = false
+
+        inst:DoTaskInTime(1, inst.Remove)
+
         return inst
     end
-
-    inst.entity:SetPristine()
-    inst.entity:SetCanSleep(false)
-    inst.persists = false
-
-    inst:DoTaskInTime(1, inst.Remove)
-
-    return inst
 end
 
-local function houndwarning_1()
-	return houndwarning(1)
+local t = {}
+for level, distance in ipairs(WARNING_LEVEL_DISTANCE) do
+    table.insert(t, Prefab("common/fx/houndwarning_lvl"..level, makewarning(distance)))
 end
-
-local function houndwarning_2()
-	return houndwarning(2)
-end
-
-local function houndwarning_3()
-	return houndwarning(3)
-end
-
-local function houndwarning_4()
-	return houndwarning(4)
-end
-
-return Prefab("common/fx/houndwarning_lvl1", houndwarning_1),
-	   Prefab("common/fx/houndwarning_lvl2", houndwarning_2),
-	   Prefab("common/fx/houndwarning_lvl3", houndwarning_3),
-	   Prefab("common/fx/houndwarning_lvl4", houndwarning_4)
+return unpack(t)

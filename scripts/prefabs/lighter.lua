@@ -84,16 +84,14 @@ local function fn()
     inst.AnimState:SetBuild("lighter")
     inst.AnimState:PlayAnimation("idle")
 
-    inst:AddTag("irreplaceable")
-
     inst.MiniMapEntity:SetIcon("lighter.png")
+
+    inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
- 
     inst:AddComponent("weapon")
     inst.components.weapon:SetDamage(TUNING.LIGHTER_DAMAGE)
     inst.components.weapon:SetAttackCallback(onattack)
@@ -111,13 +109,8 @@ local function fn()
     inst.components.equippable:SetOnUnequip(onunequip)
 
     -----------------------------------
-    
+
     inst:AddComponent("inspectable")
-
-    -----------------------------------
-
-    inst:AddComponent("heater")
-    inst.components.heater.equippedheat = 5
 
     -----------------------------------
 
@@ -133,19 +126,24 @@ local function fn()
         function(section)
             if section == 0 then
                 --when we burn out
-                if inst.components.burnable then
+                if inst.components.burnable ~= nil then
                     inst.components.burnable:Extinguish()
                 end
-                
-                if inst.components.inventoryitem and inst.components.inventoryitem:IsHeld() then
-                    local owner = inst.components.inventoryitem.owner
-                    inst:Remove()
-                    
-                    if owner then
-                        owner:PushEvent("torchranout", {torch = inst})
+                local equippable = inst.components.equippable
+                if equippable ~= nil and equippable:IsEquipped() then
+                    local owner = inst.components.inventoryitem ~= nil and inst.components.inventoryitem.owner or nil
+                    if owner ~= nil then
+                        local data =
+                        {
+                            prefab = inst.prefab,
+                            equipslot = equippable.equipslot,
+                        }
+                        inst:Remove()
+                        owner:PushEvent("torchranout", data)
+                        return
                     end
                 end
-                
+                inst:Remove()
             end
         end)
 
@@ -169,10 +167,6 @@ local function fn()
         end
         return false
     end, true, false, true)
-
-
-    inst:AddComponent("characterspecific")
-    inst.components.characterspecific:SetOwner("willow")
 
     return inst
 end

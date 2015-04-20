@@ -38,8 +38,8 @@ local function applymightiness(inst)
 		hunger_rate = easing.linear(wimpy_percent, TUNING.WOLFGANG_HUNGER_RATE_MULT_WIMPY, TUNING.WOLFGANG_HUNGER_RATE_MULT_NORMAL - TUNING.WOLFGANG_HUNGER_RATE_MULT_WIMPY, 1)	
 		scale = easing.linear(wimpy_percent, wimpy_scale, 1 - wimpy_scale, 1)	
 	end
-	
-	inst.Transform:SetScale(scale,scale,scale)
+
+    inst:ApplyScale("mightiness", scale)
 	inst.components.hunger:SetRate(hunger_rate*TUNING.WILSON_HUNGER_RATE)
 	inst.components.combat.damagemultiplier = damage_mult
 

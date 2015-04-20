@@ -15,6 +15,8 @@ local MIN_FOLLOW_DIST = 2
 local TARGET_FOLLOW_DIST = 3
 local MAX_FOLLOW_DIST = 8
 
+local TRADE_DIST = 20
+
 local MAX_CHASE_DIST = 7
 local MAX_CHASE_TIME = 8
 local MAX_WANDER_DIST = 32
@@ -30,9 +32,21 @@ local SpiderBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
 end)
 
+local function GetTraderFn(inst)
+    if inst.components.trader then
+        return FindEntity(inst, TRADE_DIST, function(target) return inst.components.trader:IsTryingToTradeWithMe(target) end, {"player"})
+    end
+end
+
+local function KeepTraderFn(inst, target)
+    if inst.components.trader then
+        return inst.components.trader:IsTryingToTradeWithMe(target)
+    end
+end
+
 local function EatFoodAction(inst)
 
-    local target = FindEntity(inst, SEE_FOOD_DIST, function(item) return inst.components.eater:CanEat(item) and item:IsOnValidGround() end)
+    local target = FindEntity(inst, SEE_FOOD_DIST, function(item) return inst.components.eater:CanEat(item) and item:IsOnValidGround() and item:GetTimeAlive() > TUNING.SPIDER_EAT_DELAY end)
     if target then
         return BufferedAction(inst, target, ACTIONS.EAT)
     end
@@ -72,7 +86,7 @@ function SpiderBrain:OnStart()
             IfNode(function() return self.inst:HasTag("spider_hider") end, "IsHider", 
                 UseShield(self.inst, DAMAGE_UNTIL_SHIELD, SHIELD_TIME, AVOID_PROJECTILE_ATTACKS)),
             AttackWall(self.inst),
-            ChaseAndAttack(self.inst, MAX_CHASE_TIME),
+            ChaseAndAttack(self.inst, SpringCombatMod(MAX_CHASE_TIME)),
             DoAction(self.inst, function() return EatFoodAction(self.inst) end ),
             Follow(self.inst, function() return self.inst.components.follower.leader end, MIN_FOLLOW_DIST, TARGET_FOLLOW_DIST, MAX_FOLLOW_DIST),
             IfNode(function() return self.inst.components.follower.leader ~= nil end, "HasLeader",
@@ -80,6 +94,7 @@ function SpiderBrain:OnStart()
             DoAction(self.inst, function() return InvestigateAction(self.inst) end ),
             WhileNode(function() return TheWorld.state.isday end, "IsDay",
                     DoAction(self.inst, function() return GoHomeAction(self.inst) end ) ),
+            FaceEntity(self.inst, GetTraderFn, KeepTraderFn),
             Wander(self.inst, function() return self.inst.components.knownlocations:GetLocation("home") end, MAX_WANDER_DIST)            
         },1)
     

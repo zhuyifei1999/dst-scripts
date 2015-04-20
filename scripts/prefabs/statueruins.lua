@@ -1,9 +1,9 @@
 local assets =
 {
     Asset("ANIM", "anim/statue_ruins_small.zip"),
-	Asset("ANIM", "anim/statue_ruins_small_gem.zip"),
+    Asset("ANIM", "anim/statue_ruins_small_gem.zip"),
     Asset("ANIM", "anim/statue_ruins.zip"),
-	Asset("ANIM", "anim/statue_ruins_gem.zip"),
+    Asset("ANIM", "anim/statue_ruins_gem.zip"),
 }
 
 local prefabs =
@@ -16,6 +16,7 @@ local prefabs =
     "orangegem",
     "purplegem",
     "nightmarefuel",
+    "collapse_small",
 }
 
 local gemlist  =
@@ -127,7 +128,7 @@ local function OnWork(inst, worked, workleft)
         inst.SoundEmitter:KillSound("hoverloop")
         inst.SoundEmitter:PlaySound("dontstarve/wilson/rock_break")
         inst.components.lootdropper:DropLoot(inst:GetPosition())
-	    SpawnAt("collapse_small", inst)
+        SpawnAt("collapse_small", inst)
 
         local nclock = GetNightmareClock()
         if nclock and nclock:IsNightmare() then
@@ -141,7 +142,7 @@ local function OnWork(inst, worked, workleft)
         end
 
         inst:Remove()
-    else                
+    else
         ShowState(inst, nil, true)
     end
 end
@@ -173,11 +174,11 @@ local function commonfn(small)
     --Sneak these into pristine state for optimization
     inst:AddTag("_named")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     --Remove these tags so that they can be added properly when replicating components below
     inst:RemoveTag("_named")
@@ -204,12 +205,12 @@ local function commonfn(small)
     inst:AddComponent("lootdropper")
 
     if GetNightmareClock() then
-	    inst:WatchWorldState("phase", ShowState)
+        inst:WatchWorldState("phase", ShowState)
     end
 
     inst:DoTaskInTime(1 * FRAMES, ShowState)
     
-	--fade_in(inst,0)
+    --fade_in(inst,0)
 
     return inst
 end
@@ -248,6 +249,6 @@ local function nogem(small)
 end
 
 return Prefab("cave/objects/ruins_statue_head", function() return gem(true) end, assets, prefabs),
-       Prefab("cave/objects/ruins_statue_head_nogem", function() return nogem(true) end, assets, prefabs),
-       Prefab("cave/objects/ruins_statue_mage", function() return gem() end, assets, prefabs),
-       Prefab("cave/objects/ruins_statue_mage_nogem", function() return nogem() end, assets, prefabs)
+    Prefab("cave/objects/ruins_statue_head_nogem", function() return nogem(true) end, assets, prefabs),
+    Prefab("cave/objects/ruins_statue_mage", function() return gem() end, assets, prefabs),
+    Prefab("cave/objects/ruins_statue_mage_nogem", function() return nogem() end, assets, prefabs)

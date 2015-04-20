@@ -253,11 +253,11 @@ local function IsNearHunt(player)
 end
 
 -- something went unrecoverably wrong, try again after a breif pause
-local function ResetHunt(hunt)
+local function ResetHunt(hunt, washedaway)
 	assert(hunt)
     trace("Hunter:ResetHunt - The Hunt was a dismal failure, please stand by...")
 	if hunt.activeplayer then
-	    hunt.activeplayer:PushEvent("huntlosttrail")
+	    hunt.activeplayer:PushEvent("huntlosttrail", {washedaway=washedaway})
 	end
 
     StartCooldown(hunt, TUNING.HUNT_RESET_TIME)
@@ -270,26 +270,30 @@ OnUpdateHunt = function(hunt)
     trace("Hunter:OnUpdateHunt")
 
     if hunt.lastdirttime then
-        if (GetTime() - hunt.lastdirttime) > (.75*TUNING.SEG_TIME) and hunt.huntedbeast == nil and hunt.trackspawned >= 1 then
+		if hunt.huntedbeast == nil and hunt.trackspawned >= 1 then
+			local wet = TheWorld.state.wetness > 15 or TheWorld.state.israining
+			if (wet and (GetTime() - hunt.lastdirttime) > (.75*TUNING.SEG_TIME))
+				or (GetTime() - hunt.lastdirttime) > (1.25*TUNING.SEG_TIME) then
         
-            -- check if the player is currently active in any other hunts
-          	local playerIsInOtherHunt = false
-		    for i,v in ipairs(_activehunts) do
-			    if v ~= hunt and v.activeplayer and hunt.activeplayer then
-			        if v.activeplayer == hunt.activeplayer then
-				        playerIsInOtherHunt = true
-				    end
-			    end
-		    end
-		    
-		    -- if the player is still active in another hunt then end this one quietly
-		    if playerIsInOtherHunt then
-		        StartCooldown(hunt)
-		    else
-                ResetHunt(hunt, true) --Wash the tracks away but only if the player has seen at least 1 track
-            end
-            
-            return
+				-- check if the player is currently active in any other hunts
+				local playerIsInOtherHunt = false
+				for i,v in ipairs(_activehunts) do
+					if v ~= hunt and v.activeplayer and hunt.activeplayer then
+						if v.activeplayer == hunt.activeplayer then
+							playerIsInOtherHunt = true
+						end
+					end
+				end
+				
+				-- if the player is still active in another hunt then end this one quietly
+				if playerIsInOtherHunt then
+					StartCooldown(hunt)
+				else
+					ResetHunt(hunt, wet) --Wash the tracks away but only if the player has seen at least 1 track
+				end
+				
+				return
+			end
         end
     end
 
@@ -492,6 +496,21 @@ function self:OnDirtInvestigated(pt, doer)
         else
             trace("SpawnTrack FAILED! RESETTING")
             ResetHunt(hunt)
+        end
+    end
+end
+
+--------------------------------------------------------------------------
+--[[ Update ]]
+--------------------------------------------------------------------------
+
+function self:LongUpdate(dt)
+    for i,hunt in ipairs(_activehunts) do
+        if hunt.cooldowntask and hunt.cooldowntime then
+            hunt.cooldowntask:Cancel()
+            hunt.cooldowntask = nil
+            hunt.cooldowntime = hunt.cooldowntime - dt
+            hunt.cooldowntask = self.inst:DoTaskInTime(hunt.cooldowntime - GetTime(), function() OnCooldownEnd(hunt) end)
         end
     end
 end

@@ -79,16 +79,16 @@ local function fn()
     inst.AnimState:SetBuild("boomerang")
     inst.AnimState:PlayAnimation("idle")
     inst.AnimState:SetRayTestOnBB(true)
-    
+
     inst:AddTag("projectile")
     inst:AddTag("thrown")
+
+    inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-    
     inst:AddComponent("weapon")
     inst.components.weapon:SetDamage(TUNING.BOOMERANG_DAMAGE)
     inst.components.weapon:SetRange(TUNING.BOOMERANG_DISTANCE, TUNING.BOOMERANG_DISTANCE+2)
@@ -97,7 +97,7 @@ local function fn()
     inst:AddComponent("finiteuses")
     inst.components.finiteuses:SetMaxUses(TUNING.BOOMERANG_USES)
     inst.components.finiteuses:SetUses(TUNING.BOOMERANG_USES)
-    
+
     inst.components.finiteuses:SetOnFinished(OnFinished)
 
     inst:AddComponent("inspectable")
@@ -109,10 +109,10 @@ local function fn()
     inst.components.projectile:SetOnHitFn(OnHit)
     inst.components.projectile:SetOnMissFn(ReturnToOwner)
     inst.components.projectile:SetOnCaughtFn(OnCaught)
-    
+
     inst:AddComponent("inventoryitem")
     inst.components.inventoryitem:SetOnDroppedFn(OnDropped)
-    
+
     inst:AddComponent("equippable")
     inst.components.equippable:SetOnEquip(OnEquip)
     inst.components.equippable:SetOnUnequip(OnUnequip)
@@ -131,7 +131,7 @@ local function fn()
         end
         return false
     end, true, false, true)
-    
+
     return inst
 end
 

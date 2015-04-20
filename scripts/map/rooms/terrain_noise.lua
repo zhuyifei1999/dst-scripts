@@ -13,7 +13,7 @@ AddRoom("BGNoise", {
 										rock1=0.1,
 										rock2=0.1,
 										grass=0.09,
-										rabbithole=0.025,
+										smallmammal = {weight = 0.025, prefabs = {"rabbithole", "molehill"}},
 										flower=0.003,
 										spiderden=0.001,
 										beehive=0.003,

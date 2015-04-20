@@ -1,26 +1,26 @@
 local assets =
 {
-	Asset("ANIM", "anim/pumpkin_lantern.zip"),
+    Asset("ANIM", "anim/pumpkin_lantern.zip"),
 }
 
-local prefabs = 
+local prefabs =
 {
-	"fireflies",
+    "fireflies",
 }
 
 local INTENSITY = .8
 
 local function flicker_stop(inst)
     if inst.flickertask then
-		inst.flickertask:Cancel()
-		inst.flickertask = nil
-	end
+        inst.flickertask:Cancel()
+        inst.flickertask = nil
+    end
 end
 
 local function flicker_update(inst)
     local time = GetTime()*30
-	local flicker = ( math.sin( time ) + math.sin( time + 2 ) + math.sin( time + 0.7777 ) ) / 2.0 -- range = [-1 , 1]
-	flicker = ( 1.0 + flicker ) / 2.0 -- range = 0:1
+    local flicker = ( math.sin( time ) + math.sin( time + 2 ) + math.sin( time + 0.7777 ) ) / 2.0 -- range = [-1 , 1]
+    flicker = ( 1.0 + flicker ) / 2.0 -- range = 0:1
     inst.Light:SetRadius( 1.5 + 0.1 * flicker)
     inst.flickertask = inst:DoTaskInTime(0.1, function() flicker_update(inst) end)
 end
@@ -44,20 +44,20 @@ local function fade_out(inst)
 end
 
 local function ondeath(inst)
-	inst.components.fader:StopAll()
-	inst.Light:Enable(false)
-	inst.components.perishable:StopPerishing()
+    inst.components.fader:StopAll()
+    inst.Light:Enable(false)
+    inst.components.perishable:StopPerishing()
     if not inst:HasTag("rotten") then
         inst.AnimState:PlayAnimation("broken")
         inst.SoundEmitter:PlaySound("dontstarve/common/vegi_smash")
-		inst.components.lootdropper:SpawnLootPrefab("fireflies")
+        inst.components.lootdropper:SpawnLootPrefab("fireflies")
     end
 end
 
 local function onperish(inst)
-	inst:AddTag("rotten")
-	inst.components.health:Kill()
-	inst.AnimState:PlayAnimation("rotten")
+    inst:AddTag("rotten")
+    inst.components.health:Kill()
+    inst.AnimState:PlayAnimation("rotten")
 end
 
 local function CanFade(inst)
@@ -84,11 +84,24 @@ local function OnIsDay(inst, isday)
     end
 end
 
+local function OnDropped(inst)
+    inst.components.perishable:StartPerishing()
+    if not TheWorld.state.isday then
+        fade_in(inst)
+    end
+end
+
+local function OnPutInInventory(inst)
+    inst.components.perishable:StopPerishing()
+    fade_out(inst)
+end
+
 local function fn()
-	local inst = CreateEntity()
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
     inst.entity:AddLight()
     inst.entity:AddNetwork()
 
@@ -106,18 +119,18 @@ local function fn()
     inst.AnimState:SetBuild("pumpkin_lantern")
     inst.AnimState:PlayAnimation("idle_day")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-	
     inst:AddComponent("fader")
 
     inst:AddComponent("inspectable")
     inst:AddComponent("inventoryitem")
     inst.components.inventoryitem.nobounce = true
-    
+
     inst:AddComponent("combat")
     inst:AddComponent("health")
     inst.components.health.canmurder = false
@@ -126,18 +139,10 @@ local function fn()
     inst:ListenForEvent("death", ondeath)
 
     inst:AddComponent("perishable")
-    inst.components.perishable:SetPerishTime(30*TUNING.SEG_TIME)
+    inst.components.perishable:SetPerishTime(30 * TUNING.SEG_TIME)
     inst.components.perishable:SetOnPerishFn(onperish)
-    inst.components.inventoryitem:SetOnDroppedFn(function(inst)
-		inst.components.perishable:StartPerishing()
-		if not TheWorld.state.isday then
-			fade_in(inst)
-		end
-    end)
-    inst.components.inventoryitem:SetOnPutInInventoryFn(function(inst)
-		inst.components.perishable:StopPerishing()
-		fade_out(inst)
-    end)
+    inst.components.inventoryitem:SetOnDroppedFn(OnDropped)
+    inst.components.inventoryitem:SetOnPutInInventoryFn(OnPutInInventory)
 
     inst:WatchWorldState("isday", OnIsDay)
 

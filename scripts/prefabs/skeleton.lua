@@ -5,13 +5,14 @@ local assets =
 
 local prefabs =
 {
-    "ash",
+    "boneshard",
     "collapse_small",
 }
 
 SetSharedLootTable('skeleton',
 {
-    {'ash',   1.00},
+    {'boneshard',   1.00},
+    {'boneshard',   1.00},
 })
 
 local animstates = { 1, 3, 4, 5, 6 } --not going to use the spear skeleton until anim to take spear is made
@@ -111,16 +112,16 @@ local function fn()
     inst.entity:AddNetwork()
     inst.entity:AddSoundEmitter()
 
-    MakeObstaclePhysics(inst, 0.25)
+    MakeSmallObstaclePhysics(inst, 0.25)
 
     inst.AnimState:SetBank("skeleton")
     inst.AnimState:SetBuild("skeletons")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst.animnum = animstates[math.random(#animstates)]
     inst.AnimState:PlayAnimation("idle"..inst.animnum)

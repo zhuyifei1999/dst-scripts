@@ -12,7 +12,7 @@ local Crafting = require "widgets/crafting"
 require "widgets/widgetutil"
 
 local MouseCrafting = Class(Crafting, function(self, owner)
-    Crafting._ctor(self, owner, 7)
+    Crafting._ctor(self, owner, NUM_CRAFTING_RECIPES)
     self:SetOrientation(false)
     self.in_pos = Vector3(145,0,0)
     self.out_pos = Vector3(0,0,0)

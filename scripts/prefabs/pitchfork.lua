@@ -16,7 +16,7 @@ local function onunequip(inst, owner)
     owner.AnimState:Hide("ARM_carry")
     owner.AnimState:Show("ARM_normal")
 end
- 
+
 --local function common_fn(bank, build)
 local function normal()
     local inst = CreateEntity()
@@ -36,11 +36,11 @@ local function normal()
 
     inst:AddTag("sharp")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     -------
     inst:AddComponent("finiteuses")

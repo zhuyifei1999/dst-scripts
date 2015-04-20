@@ -386,14 +386,14 @@ local states=
 
         onenter = function(inst)
             --If taking fire damage, spawn fire effect. 
-            inst.components.health:SetAbsorbAmount(TUNING.SPIDER_HIDER_SHELL_ABSORB)
+            inst.components.health:SetAbsorptionAmount(TUNING.SPIDER_HIDER_SHELL_ABSORB)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("hide")
             inst.AnimState:PushAnimation("hide_loop")
         end,
 
         onexit = function(inst)
-            inst.components.health:SetAbsorbAmount(0)
+            inst.components.health:SetAbsorptionAmount(0)
         end,
     },
 

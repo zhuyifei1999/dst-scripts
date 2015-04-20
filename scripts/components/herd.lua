@@ -17,6 +17,8 @@ local Herd = Class(function(self, inst)
     self.onempty = nil
     self.onfull = nil
     self.addmember = nil
+
+    self.updatepos = true
     
     self.task = self.inst:DoPeriodicTask(math.random()*2+6, function() self:OnUpdate() end)
 end)
@@ -154,7 +156,8 @@ function Herd:OnUpdate()
         for k,v in pairs(self.members) do
             if self.membertag and not k:HasTag(self.membertag) then
                 self:RemoveMember(k)
-            elseif (k.components.combat and not k.components.combat.target)
+            elseif self.updatepos
+               and (k.components.combat and not k.components.combat.target)
                and self.inst:GetDistanceSqToInst(k) <= self.updaterange*self.updaterange then
                 if not updatedPos then
                     updatedPos = Vector3(k.Transform:GetWorldPosition() )

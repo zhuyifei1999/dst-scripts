@@ -8,7 +8,7 @@ function ModInfoname(name)
 	end
 end
 
--- This isn't for modders to use: see mods.lua, CreateEnvironment function (line 94 specifically)
+-- This isn't for modders to use: see environment version added in InsertPostInitFunctions
 function GetModConfigData(optionname, modname, get_local_config)
 	assert(modname, "modname must be supplied manually if calling GetModConfigData from outside of modmain or modworldgenmain. Use ModIndex:GetModActualName(fancyname) function [fancyname is name string from modinfo].")
 	local force_local_options = false
@@ -338,11 +338,20 @@ local function InsertPostInitFunctions(env, isworldgen)
 		AddModCharacter(name, gender)
 	end
 
-	env.Recipe = function(...)
+	env.AddRecipe = function(...)
 		arg = {...}
-		initprint("Recipe", arg[1])
+		initprint("AddRecipe", arg[1])
 		require("recipe")
-		return Recipe(...)
+		mod_protect_Recipe = false
+		local rec = Recipe(...)
+		mod_protect_Recipe = true
+		rec:SetModRPCID()
+		return rec
+	end
+	
+	env.Recipe = function(...)
+		print("Warning: function Recipe in modmain is deprecated, please use AddRecipe")
+		return env.AddRecipe(...)
 	end
 
 	env.Prefab = Prefab
@@ -385,7 +394,7 @@ local function InsertPostInitFunctions(env, isworldgen)
             print("WARNING: SetModHUDFocus called when there is no active player HUD")
         end
         ThePlayer.HUD:SetModFocus(env.modname, focusid, hasfocus)
-    end
+    end    
 end
 
 return {

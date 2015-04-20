@@ -25,12 +25,12 @@ local assets =
 local function BeaverActionButton(inst)
 
 	local action_target = FindEntity(inst, 6, function(guy) return (guy.components.edible and inst.components.eater:CanEat(guy)) or
-		 													 (guy.components.workable and inst.components.worker:CanDoAction(guy.components.workable.action)) end)
+		 													 (guy.components.workable and guy.components.workable.workable and inst.components.worker:CanDoAction(guy.components.workable.action)) end)
 	
 	if not inst.sg:HasStateTag("busy") and action_target then
 		if (action_target.components.edible and inst.components.eater:CanEat(action_target)) then
 			return BufferedAction(inst, action_target, ACTIONS.EAT)
-		else
+		elseif action_target.components.workable.workable then
 			return BufferedAction(inst, action_target, action_target.components.workable.action)
 		end
 	end
@@ -45,7 +45,7 @@ local function LeftClickPicker(inst, target_ent, pos)
 		return inst.components.playeractionpicker:SortActionList({ACTIONS.EAT}, target_ent, nil)
 	end
 
-    if target_ent and target_ent.components.workable and inst.components.worker:CanDoAction(target_ent.components.workable.action) then
+    if target_ent and target_ent.components.workable and target_ent.components.workable.workable and inst.components.worker:CanDoAction(target_ent.components.workable.action) then
         return inst.components.playeractionpicker:SortActionList({target_ent.components.workable.action}, target_ent, nil)
     end
 end
@@ -148,7 +148,7 @@ local function BecomeWoodie(inst)
 	inst.components.playercontroller.actionbuttonoverride = nil
 	inst.components.playeractionpicker.leftclickoverride = nil
 	inst.components.playeractionpicker.rightclickoverride = nil
-	inst.components.eater:SetOmnivore()
+	inst.components.eater:SetDiet({ FOODGROUP.OMNI }, { FOODGROUP.OMNI })
 
 
 	inst.components.hunger:Resume()
@@ -192,7 +192,7 @@ local function BecomeBeaver(inst)
 	inst.components.playercontroller.actionbuttonoverride = BeaverActionButton
 	inst.components.playeractionpicker.leftclickoverride = LeftClickPicker
 	inst.components.playeractionpicker.rightclickoverride = RightClickPicker
-	inst.components.eater:SetBeaver()
+	inst.components.eater:SetDiet({ FOODTYPE.WOOD }, { FOODTYPE.WOOD })
 
 	inst:AddComponent("worker")
 	inst.components.worker:SetAction(ACTIONS.DIG, 1)

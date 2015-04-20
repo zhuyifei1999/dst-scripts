@@ -1,15 +1,16 @@
 local assets =
 {
     Asset("ANIM", "anim/hound_base.zip"),
-	Asset("SOUND", "sound/hound.fsb"),
+    Asset("SOUND", "sound/hound.fsb"),
 }
 
 local prefabs =
 {
-	"hound",
+    "hound",
     "firehound",
     "icehound",
     "houndstooth",
+    "boneshard",
 }
 
 SetSharedLootTable( 'hound_mound',
@@ -17,32 +18,34 @@ SetSharedLootTable( 'hound_mound',
     {'houndstooth', 1.00},
     {'houndstooth', 1.00},
     {'houndstooth', 1.00},
+    {'boneshard',   1.00},
+    {'boneshard',   1.00},
     {'redgem',      0.01},
     {'bluegem',     0.01},
 })
 
 local function GetSpecialHoundChance()
-	local day = TheWorld.state.cycles
-	local chance = 0
-	for k,v in ipairs(TUNING.HOUND_SPECIAL_CHANCE) do
-	    if day > v.minday then
-	        chance = v.chance
-	    elseif day <= v.minday then
-	        return chance
-	    end
-	end
-	return chance
+    local day = TheWorld.state.cycles
+    local chance = 0
+    for k,v in ipairs(TUNING.HOUND_SPECIAL_CHANCE) do
+        if day > v.minday then
+            chance = v.chance
+        elseif day <= v.minday then
+            return chance
+        end
+    end
+    return chance
 end
 
 local function SpawnGuardHound(inst, attacker)
     local prefab = "hound"
     if math.random() < GetSpecialHoundChance() then
-        if TheWorld.state.iswinter then
+        if TheWorld.state.iswinter or TheWorld.state.isspring then
             prefab = "icehound"
         else
-	        prefab = "firehound"
-	    end
-	end
+            prefab = "firehound"
+        end
+    end
     local defender = inst.components.childspawner:SpawnChild(attacker, prefab)
     if defender and attacker and defender.components.combat then
         defender.components.combat:SetTarget(attacker)
@@ -61,6 +64,8 @@ end
 
 local function SpawnAllGuards(inst, attacker)
     if not inst.components.health:IsDead() and inst.components.childspawner then
+        inst.AnimState:PlayAnimation("hit")
+        inst.AnimState:PushAnimation("idle", false)
         local num_to_release = inst.components.childspawner.childreninside
         for k = 1,num_to_release do
             SpawnGuardHound(inst)
@@ -72,6 +77,7 @@ local function OnKilled(inst)
     if inst.components.childspawner then
         inst.components.childspawner:ReleaseAllChildren()
     end
+    inst.AnimState:PlayAnimation("death", false)
     inst.SoundEmitter:KillSound("loop")
     inst.components.lootdropper:DropLoot(Vector3(inst.Transform:GetWorldPosition()))
 end
@@ -82,14 +88,14 @@ local function OnEntityWake(inst)
 end
 
 local function OnEntitySleep(inst)
-	inst.SoundEmitter:KillSound("loop")
+    inst.SoundEmitter:KillSound("loop")
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
@@ -107,24 +113,34 @@ local function fn()
 
     MakeSnowCoveredPristine(inst)
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-
     -------------------
-	inst:AddComponent("health")
+    inst:AddComponent("health")
     inst.components.health:SetMaxHealth(300)
     inst:ListenForEvent("death", OnKilled)
 
     -------------------
-	inst:AddComponent("childspawner")
-	inst.components.childspawner.childname = "hound"
-	inst.components.childspawner:SetRegenPeriod(TUNING.HOUNDMOUND_REGEN_TIME)
-	inst.components.childspawner:SetSpawnPeriod(TUNING.HOUNDMOUND_RELEASE_TIME)
-	inst.components.childspawner:SetMaxChildren(TUNING.HOUNDMOUND_HOUNDS)
- 
+    inst:AddComponent("childspawner")
+    inst.components.childspawner.childname = "hound"
+    inst.components.childspawner:SetRegenPeriod(TUNING.HOUNDMOUND_REGEN_TIME)
+    inst.components.childspawner:SetSpawnPeriod(TUNING.HOUNDMOUND_RELEASE_TIME)
+    inst.components.childspawner:SetMaxChildren(math.random(TUNING.HOUNDMOUND_HOUNDS_MIN, TUNING.HOUNDMOUND_HOUNDS_MAX))
+
+    local function SetFireHounds()
+        if TheWorld.state.issummer then 
+            inst.components.childspawner:SetRareChild("firehound", 0.2)
+        else
+            inst.components.childspawner:SetRareChild("firehound", 0)
+        end
+    end
+
+    inst:WatchWorldState("issummer", SetFireHounds)
+
     ---------------------
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetChanceLootTable('hound_mound')
@@ -156,11 +172,11 @@ local function fn()
 
     ---------------------
     inst:AddComponent("inspectable")
-	inst.OnEntitySleep = OnEntitySleep
-	inst.OnEntityWake = OnEntityWake
-	MakeSnowCovered(inst)
+    inst.OnEntitySleep = OnEntitySleep
+    inst.OnEntityWake = OnEntityWake
+    MakeSnowCovered(inst)
 
-	return inst
+    return inst
 end
 
 return Prefab("forest/monsters/houndmound", fn, assets, prefabs)

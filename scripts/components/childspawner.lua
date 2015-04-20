@@ -161,6 +161,10 @@ function ChildSpawner:SetVacateFn(fn)
     self.onvacate = fn
 end
 
+function ChildSpawner:SetOnAddChildFn(fn)
+	self.onaddchild = fn
+end
+
 function ChildSpawner:CountChildrenOutside(fn)
     local vacantchildren = 0
     for k,v in pairs(self.childrenoutside) do
@@ -233,11 +237,11 @@ function ChildSpawner:GetDebugString()
 	end
 	
 	if self.spawning then
-		str = str.."S"
+		str = str.." : Spawning "
 	end
 
 	if self.regening then
-		str = str.."R"
+		str = str.." : Regening :"
 	end
 
 	if self.maxemergencychildren > 0 then
@@ -292,7 +296,9 @@ function ChildSpawner:DoTakeOwnership(child)
     child:AddComponent("homeseeker")
     child.components.homeseeker:SetHome(self.inst)
 	self.inst:ListenForEvent( "ontrapped", function() self:OnChildKilled( child ) end, child )
-	self.inst:ListenForEvent( "death", function() self:OnChildKilled( child ) end, child )
+    self.inst:ListenForEvent( "death", function() self:OnChildKilled( child ) end, child )
+	self.inst:ListenForEvent( "onremove", function() self:OnChildKilled( child ) end, child )
+	self.inst:ListenForEvent( "pickedup", function() self:OnChildKilled( child ) end, child )
 end
 
 function ChildSpawner:TakeOwnership(child)
@@ -463,6 +469,10 @@ function ChildSpawner:CanSpawn()
     if self.inst.components.health and self.inst.components.health:IsDead() then
         return false
     end
+
+    if self.canspawnfn then
+    	self.canspawnfn(self.inst)
+    end
     
     return true
 end
@@ -496,6 +506,10 @@ function ChildSpawner:OnChildKilled( child )
     if self.childrenoutside[child] then
         self.childrenoutside[child] = nil
         self.numchildrenoutside = self.numchildrenoutside - 1
+
+        if self.onchildkilledfn then
+        	self.onchildkilledfn(self.inst, child)
+        end
         
         if self.regening then
 			self:StartUpdate(6)
@@ -524,6 +538,9 @@ end
 function ChildSpawner:AddChildrenInside(count)
     if self.childreninside == 0 and self.onoccupied then
         self.onoccupied(self.inst)
+    end
+    if self.onaddchild then
+    	self.onaddchild(self.inst, count)
     end
     self.childreninside = self.childreninside + count
     if self.maxchildren then

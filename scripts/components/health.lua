@@ -48,6 +48,7 @@ local Health = Class(function(self, inst)
     self.penalty = 0
     self.absorb = 0
     self.playerabsorb = 0
+    self.destroytime = nil
 
     self.canmurder = true
     self.canheal = true
@@ -83,20 +84,7 @@ function Health:OnSave()
 end
 
 function Health:RecalculatePenalty(forceupdatewidget) 
-    if SaveGameIndex:CanUseExternalResurector() == false then
-        -- Adventure mode only
-        self.penalty = self.numrevives*TUNING.REVIVE_HEALTH_PENALTY_AS_MULTIPLE_OF_EFFIGY
-        for k,v in pairs(Ents) do
-            if v.components.resurrector and v.components.resurrector.penalty then
-                self.penalty = self.penalty + v.components.resurrector.penalty
-            end
-        end
-    else 
-        --#srosen this won't work for caves but we can cross that bridge when we come to it
-        self.penalty = self.numrevives*TUNING.REVIVE_HEALTH_PENALTY_AS_MULTIPLE_OF_EFFIGY
-        -- self.penalty = SaveGameIndex:GetResurrectorPenalty() + self.numrevives*TUNING.REVIVE_HEALTH_PENALTY_AS_MULTIPLE_OF_EFFIGY
-    end
-    
+    self.penalty = self.numrevives * TUNING.REVIVE_HEALTH_PENALTY_AS_MULTIPLE_OF_EFFIGY
     self:DoDelta(0, nil, "resurrection_penalty", forceupdatewidget)
 end
 
@@ -120,7 +108,7 @@ end
 local FIRE_TIMEOUT = .5
 local FIRE_TIMESTART = 1.0
 
-function Health:DoFireDamage(amount, doer)
+function Health:DoFireDamage(amount, doer, instant)
     if not self.invincible and self.fire_damage_scale > 0 then
         if not self.takingfiredamage then
             self.takingfiredamage = true
@@ -133,7 +121,7 @@ function Health:DoFireDamage(amount, doer)
         local time = GetTime()
         self.lastfiredamagetime = time
         
-        if time - self.takingfiredamagestarttime > FIRE_TIMESTART and amount > 0 then
+        if (instant or time - self.takingfiredamagestarttime > FIRE_TIMESTART) and amount > 0 then
             self:DoDelta(-amount*self.fire_damage_scale, false, "fire")
             self.inst:PushEvent("firedamage")       
         end
@@ -161,7 +149,6 @@ function Health:DoRegen()
 end
 
 function Health:StartRegen(amount, period, interruptcurrentregen)
-    --print("Health:StopRegen", amount, period)
 
     -- We don't always do this just for backwards compatibility sake. While unlikely, it's possible some modder was previously relying on
     -- the fact that StartRegen didn't stop the existing task. If they want to continue using that behavior, they now just need to add
@@ -170,7 +157,6 @@ function Health:StartRegen(amount, period, interruptcurrentregen)
         self:StopRegen()
     end
 
-    --print("Health:StopRegen", amount, period)
     if not self.regen then
         self.regen = {}
     end
@@ -178,16 +164,15 @@ function Health:StartRegen(amount, period, interruptcurrentregen)
     self.regen.period = period
 
     if not self.regen.task then
-        --print("   starting task")
         self.regen.task = self.inst:DoPeriodicTask(self.regen.period, function() self:DoRegen() end)
     end
 end
 
-function Health:SetAbsorbAmount(amount)
+function Health:SetAbsorptionAmount(amount)
     self.absorb = amount
 end
 
-function Health:SetAbsorbAmountFromPlayer(amount)
+function Health:SetAbsorptionAmountFromPlayer(amount)
     self.playerabsorb = amount
 end
 
@@ -279,10 +264,6 @@ function Health:SetPercent(percent, overtime, cause)
     self:DoDelta(0, overtime, cause)
 end
 
-function Health:OnProgress()
-    self.penalty = 0
-end
-
 function Health:SetVal(val, cause, afflicter)
     local old_percent = self:GetPercent()
 
@@ -309,12 +290,12 @@ function Health:SetVal(val, cause, afflicter)
         if not self.nofadeout then
             self.inst:AddTag("NOCLICK")
             self.inst.persists = false
-            self.inst:DoTaskInTime(2, destroy)
+            self.inst:DoTaskInTime(self.destroytime or 2, destroy)
         end
     end
 end
 
-function Health:DoDelta(amount, overtime, cause, ignore_invincible, afflicter)
+function Health:DoDelta(amount, overtime, cause, ignore_invincible, afflicter, ignore_absorb)
 
     if self.redirect then
         self.redirect(self.inst, amount, overtime, cause)
@@ -326,17 +307,19 @@ function Health:DoDelta(amount, overtime, cause, ignore_invincible, afflicter)
     end
     
     if amount < 0 then
-        amount = amount - (amount * self.absorb)
-        if afflicter ~= nil and afflicter:HasTag("player") then
-            amount = amount - (amount * self.playerabsorb)
-        end
+    	if not ignore_absorb then 
+	        amount = amount - (amount * self.absorb)
+	        if afflicter ~= nil and afflicter:HasTag("player") then
+	            amount = amount - (amount * self.playerabsorb)
+	        end
+	    end
     end
 
     local old_percent = self:GetPercent()
     self:SetVal(self.currenthealth + amount, cause, afflicter)
     local new_percent = self:GetPercent()
 
-    self.inst:PushEvent("healthdelta", {oldpercent = old_percent, newpercent = self:GetPercent(), overtime = overtime, cause = cause, afflicter = afflicter })
+    self.inst:PushEvent("healthdelta", {oldpercent = old_percent, newpercent = self:GetPercent(), overtime = overtime, cause = cause, afflicter = afflicter, amount = amount })
 
 -- KAJ: TODO: GetPlayer reference but only used for metrics/fightstat
 --    if METRICS_ENABLED and self.inst == GetPlayer() and cause and cause ~= "debug_key" then

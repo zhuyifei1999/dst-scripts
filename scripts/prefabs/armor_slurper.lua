@@ -1,6 +1,6 @@
 local assets =
 {
-	Asset("ANIM", "anim/armor_slurper.zip"),
+    Asset("ANIM", "anim/armor_slurper.zip"),
 }
 
 local function onequip(inst, owner) 
@@ -22,10 +22,10 @@ local function onunequip(inst, owner)
 end
 
 local function fn()
-	local inst = CreateEntity()
-    
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddNetwork()
 
     MakeInventoryPhysics(inst)
@@ -33,38 +33,36 @@ local function fn()
     inst.AnimState:SetBank("armor_slurper")
     inst.AnimState:SetBuild("armor_slurper")
     inst.AnimState:PlayAnimation("anim")
-    
+
     inst:AddTag("fur")
     inst:AddTag("ruins")
 
     inst.foleysound = "dontstarve/movement/foley/fur"
-    
+
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-    
     inst:AddComponent("inspectable")
-    
+
     inst:AddComponent("inventoryitem")
-    
-    inst:AddComponent("dapperness")
-    inst.components.dapperness.dapperness = TUNING.DAPPERNESS_SMALL
 
     inst:AddComponent("equippable")
     inst.components.equippable.equipslot = EQUIPSLOTS.BODY
+    inst.components.equippable.dapperness = TUNING.DAPPERNESS_SMALL
 
     inst:AddComponent("fueled")
     inst.components.fueled.fueltype = FUELTYPE.USAGE
     inst.components.fueled:InitializeFuelLevel(TUNING.HUNGERBELT_PERISHTIME)
     inst.components.fueled:SetDepletedFn(inst.Remove)
-    
+
     inst.components.equippable:SetOnEquip(onequip)
     inst.components.equippable:SetOnUnequip(onunequip)
 
     MakeHauntableLaunch(inst)
-    
+
     return inst
 end
 

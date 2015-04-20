@@ -1,12 +1,12 @@
 local assets =
 {
-	Asset("ANIM", "anim/book_maxwell.zip"),
+    Asset("ANIM", "anim/book_maxwell.zip"),
 }
 
 local prefabs =
 {
-	"shadowwaxwell",
-    "waxwell_book_fx"
+    "shadowwaxwell",
+    "waxwell_book_fx",
 }
 
 local function doeffects(inst, pos)
@@ -58,25 +58,26 @@ local function onread(inst, reader, ignorecosts)
     end
 end
 
-
-
 local function fn()
-	local inst = CreateEntity()
-	local trans = inst.entity:AddTransform()
-	local anim = inst.entity:AddAnimState()
-    local sound = inst.entity:AddSoundEmitter()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
     MakeInventoryPhysics(inst)
 
+    inst.AnimState:SetBank("book_maxwell")
+    inst.AnimState:SetBuild("book_maxwell")
+    inst.AnimState:PlayAnimation("idle")
+
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-    
-    anim:SetBank("book_maxwell")
-    anim:SetBuild("book_maxwell")
-    anim:PlayAnimation("idle")
-    
+
     inst:AddComponent("inventoryitem")
 
     -----------------------------------
@@ -86,9 +87,6 @@ local function fn()
 
     MakeSmallBurnable(inst)
     MakeSmallPropagator(inst)
-
-    -- inst:AddComponent("characterspecific")
-    -- inst.components.characterspecific:SetOwner("waxwell")
 
     MakeHauntableLaunch(inst)
     AddHauntableCustomReaction(inst, function(inst, haunter)
@@ -100,8 +98,7 @@ local function fn()
         return false
     end, true, false, true)
 
-
     return inst
 end
 
-return Prefab("common/waxwelljournal", fn, assets)
+return Prefab("common/waxwelljournal", fn, assets, prefabs)

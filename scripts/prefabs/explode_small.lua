@@ -38,13 +38,16 @@ local function fn()
         inst:DoTaskInTime(0, PlayExplodeAnim)
     end
 
+    inst.Transform:SetFourFaced()
+
+    inst:AddTag("FX")
+
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.Transform:SetFourFaced()
-
-    inst:AddTag("FX")
     inst.persists = false
     inst:DoTaskInTime(1, inst.Remove)
 

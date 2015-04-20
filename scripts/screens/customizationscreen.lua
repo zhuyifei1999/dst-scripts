@@ -44,32 +44,29 @@ local CustomizationScreen = Class(Screen, function(self, profile, cb, defaults, 
 		customise = require("map/customise")
 
 		options = {}
-		local numgroup = 1
-		local numitem = 1
-		for k,v in pairs(customise.GROUP) do
-			local nextgroup = v
-			local nextgroupname = k
-			for i, j in pairs(customise.GROUP) do
-				if j.order < nextgroup.order and j.order == numgroup or nextgroup.order < numgroup then
-					nextgroup = j
-					nextgroupname = i
-				end
-			end
-			for kk, vv in pairs(nextgroup.items) do
-				local nextitem = vv
-				local nextitemname = kk
-				for ii, jj in pairs(nextgroup.items) do
-					if jj.order < nextitem.order and jj.order == numitem or nextitem.order < numitem then
-						nextitem = jj
-						nextitemname = ii
-					end
-				end
-				table.insert(options, {name = nextitemname, image = nextitem.image, options = nextitem.desc or nextgroup.desc, default = nextitem.value, group = nextgroupname})
-				numitem = numitem + 1
-			end
-			numgroup = numgroup + 1
-			numitem = 1
-		end
+
+        local groups = {}
+        for k,v in pairs(customise.GROUP) do
+            table.insert(groups,k)
+        end
+
+        table.sort(groups, function(a,b) return customise.GROUP[a].order < customise.GROUP[b].order end)
+
+        for i,groupname in ipairs(groups) do
+            local items = {}
+            local group = customise.GROUP[groupname]
+            for k,v in pairs(group.items) do
+                table.insert(items, k)
+            end
+
+            table.sort(items, function(a,b) return group.items[a].order < group.items[b].order end)
+
+            for ii,itemname in ipairs(items) do
+                local item = group.items[itemname]
+				table.insert(options, {name = itemname, image = item.image, options = item.desc or group.desc, default = item.value, group = groupname, grouplabel = group.text})
+            end
+        end
+
 	end
 	
 	if defaults and self.RoGEnabled == RoGEnabled then
@@ -367,45 +364,6 @@ function CustomizationScreen:SetOptionEnabled(option, enabled,blacktext)
 	return newEnabled ~= oldEnabled
 end
 
-function CustomizationScreen:ValidateOptionCombinations()
-	local dirty = false
-	local seasonOption = self:GetValueForOption("season")
-	if (seasonOption == "onlysummer") then
-		-- set the season start and disable the spinner
-		local oldValue = self:GetValueForOption( "season_start" )
-		if oldValue ~= "summer" then
-			if not self.oldSeasonStart then -- already overriding
-				self.oldSeasonStart = oldValue
-			end
-			self:SetValueForOption("season_start","summer")
-		end
-		dirty = self:SetOptionEnabled("season_start",false)
-	elseif (seasonOption == "onlywinter") then
-		-- set the season start and disable the spinner
-		local oldValue = self:GetValueForOption( "season_start" )
-		if oldValue ~= "winter" then
-			if not self.oldSeasonStart then -- already overriding
-				self.oldSeasonStart = oldValue
-			end
-			self:SetValueForOption("season_start","winter")
-		end
-		dirty = self:SetOptionEnabled("season_start",false)
-	else
-		if self.oldSeasonStart then
-			self:SetValueForOption("season_start",self.oldSeasonStart)
-			self.oldSeasonStart = nil
-		end
-		dirty = self:SetOptionEnabled("season_start", true)
-	end
-	if dirty then
-		self:HookupFocusMoves()
-	end
-
-	if self.allowEdit == false then
-		self:SetOptionEnabled("season_start",false,true)
-	end
-end
-
 function CustomizationScreen:HookupFocusMoves()
 	-- local GetFirstEnabledSpinnerAbove = function(k, tbl)
 	-- 	for i=k-1,1,-1 do
@@ -578,21 +536,31 @@ function CustomizationScreen:MakeOptionSpinners()
 	end
 
 	local i = 1
+    local lastgroup = nil
 	while i <= #options do
 		local rowWidget = Widget("row")
 
 		local v = options[i]
-		local index = i
-		AddSpinnerToRow(self, v, index, rowWidget, "left")
+
+        if v.group ~= lastgroup then
+            local labelWidget = Text(BUTTONFONT,37)
+            labelWidget:SetString(v.grouplabel)
+            labelWidget:SetColour(0,0,0,1)
+            table.insert(self.optionwidgets, labelWidget)
+            lastgroup = v.group
+        end
+
+		AddSpinnerToRow(self, v, i, rowWidget, "left")
 
 
-		if options[i+1] then
+		if options[i+1] and options[i+1].group == lastgroup then
 			local v = options[i+1]
-			local index = i + 1
-			AddSpinnerToRow(self, v, index, rowWidget, "right")
+			AddSpinnerToRow(self, v, i+1, rowWidget, "right")
+            i = i + 2
+        else
+            i = i + 1
 		end
 
-		i = i + 2
 		table.insert(self.optionwidgets, rowWidget)
 	end
 
@@ -635,9 +603,6 @@ function CustomizationScreen:RefreshOptions()
 		end
 	end
 	
-	-- call this before the focus moves so we can check if spinners are accessible
-	self:ValidateOptionCombinations()
-
 	--hook up all of the focus moves
 	self:HookupFocusMoves()
 
@@ -668,7 +633,6 @@ function CustomizationScreen:MakePresetDirty()
 			self.presetspinner:UpdateText(v.text .. " " .. STRINGS.UI.CUSTOMIZATIONSCREEN.CUSTOM)
 		end
 	end
-	self:ValidateOptionCombinations()
 end
 
 function CustomizationScreen:MakePresetClean()
@@ -881,27 +845,17 @@ function CustomizationScreen:Apply()
 		end
 	end
 
-	if IsDLCEnabled(REIGN_OF_GIANTS) then
-		if self:VerifyValidSeasonSettings() then
-			collectCustomPresetOptions()
-			self:Disable()
-		    TheFrontEnd:Fade(false, screen_fade_time, function()
-		    	self.cb(self.options)
-		        TheFrontEnd:PopScreen()
-		        TheFrontEnd:Fade(true, screen_fade_time)
-		    end)
-		else
-			TheFrontEnd:PushScreen(PopupDialogScreen(STRINGS.UI.CUSTOMIZATIONSCREEN.INVALIDSEASONCOMBO_TITLE, STRINGS.UI.CUSTOMIZATIONSCREEN.INVALIDSEASONCOMBO_BODY, 
-						{{text=STRINGS.UI.CUSTOMIZATIONSCREEN.OKAY, cb = function() TheFrontEnd:PopScreen() end}}))
-		end
-	else
+	if self:VerifyValidSeasonSettings() then
 		collectCustomPresetOptions()
 		self:Disable()
-	    TheFrontEnd:Fade(false, screen_fade_time, function()
-	    	self.cb(self.options)
-	        TheFrontEnd:PopScreen()
-	        TheFrontEnd:Fade(true, screen_fade_time)
-	    end)
+		TheFrontEnd:Fade(false, screen_fade_time, function()
+			self.cb(self.options)
+			TheFrontEnd:PopScreen()
+			TheFrontEnd:Fade(true, screen_fade_time)
+		end)
+	else
+		TheFrontEnd:PushScreen(PopupDialogScreen(STRINGS.UI.CUSTOMIZATIONSCREEN.INVALIDSEASONCOMBO_TITLE, STRINGS.UI.CUSTOMIZATIONSCREEN.INVALIDSEASONCOMBO_BODY, 
+					{{text=STRINGS.UI.CUSTOMIZATIONSCREEN.OKAY, cb = function() TheFrontEnd:PopScreen() end}}))
 	end
 end
 

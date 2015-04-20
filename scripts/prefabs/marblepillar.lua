@@ -1,11 +1,11 @@
-assets =
+local assets =
 {
-	Asset("ANIM", "anim/marble_pillar.zip"),
+    Asset("ANIM", "anim/marble_pillar.zip"),
 }
 
 local prefabs =
 {
-	"marble",
+    "marble",
 }
 
 SetSharedLootTable( 'marble_pillar',
@@ -30,15 +30,15 @@ local function onworked(inst, worker, workleft)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
 
-	MakeObstaclePhysics(inst, 1)
+    MakeObstaclePhysics(inst, 1)
 
     inst.AnimState:SetBank("marble_pillar")
     inst.AnimState:SetBuild("marble_pillar")
@@ -48,25 +48,25 @@ local function fn()
 
     MakeSnowCoveredPristine(inst)
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
+    inst:AddComponent("lootdropper")
+    inst.components.lootdropper:SetChanceLootTable('marble_pillar')
 
-	inst:AddComponent("lootdropper")
-	inst.components.lootdropper:SetChanceLootTable('marble_pillar')
+    inst:AddComponent("inspectable")
+    inst:AddComponent("workable")
+    inst.components.workable:SetWorkAction(ACTIONS.MINE)
+    inst.components.workable:SetWorkLeft(TUNING.MARBLEPILLAR_MINE)
+    inst.components.workable:SetOnWorkCallback(onworked)
 
-	inst:AddComponent("inspectable")
-	inst:AddComponent("workable")
-	inst.components.workable:SetWorkAction(ACTIONS.MINE)
-	inst.components.workable:SetWorkLeft(TUNING.MARBLEPILLAR_MINE)
-	inst.components.workable:SetOnWorkCallback(onworked)
+    MakeHauntableWork(inst)
+    MakeSnowCovered(inst)
 
-	MakeHauntableWork(inst)
-
-	MakeSnowCovered(inst)
-	return inst
+    return inst
 end
 
 return Prefab("forest/objects/marblepillar", fn, assets, prefabs)

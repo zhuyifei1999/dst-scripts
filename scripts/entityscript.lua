@@ -4,6 +4,8 @@ local BehaviourTrees = {}
 local StateGraphs = {}
 local Components = {}
 
+StopUpdatingComponents = {}
+
 local function EntityWatchWorldState(self, var, fn)
     if self.worldstatewatching == nil then
         self.worldstatewatching = {}
@@ -254,11 +256,11 @@ function EntityScript:GetSaveRecord()
         y = y ~= y and 0 or y
         z = z ~= z and 0 or z
 
-        record.x = math.floor(x*1000)/1000
-        record.z = math.floor(z*1000)/1000
+        record.x = x and math.floor(x*1000)/1000 or 0
+        record.z = z and math.floor(z*1000)/1000 or 0
         --y is often 0 in our game, so be selective.
         if y ~= 0 then
-            record.y = math.floor(y*1000)/1000
+            record.y = y and math.floor(y*1000)/1000 or 0
         end
     end
     
@@ -341,14 +343,6 @@ function EntityScript:ReturnToScene()
     self:PushEvent("exitlimbo")
 end
 
-function EntityScript:OnProgress()
-	for k,v in pairs(self.components) do
-		if v.OnProgress then
-			v:OnProgress()
-		end
-	end
-end
-
 function EntityScript:__tostring()
     return string.format("%d - %s%s", self.GUID, self.prefab or "", self.inlimbo and "(LIMBO)" or "")
 end
@@ -386,6 +380,9 @@ function EntityScript:StartUpdatingComponent(cmp)
         num_updating_ents = num_updating_ents + 1
     end
     
+    if StopUpdatingComponents[cmp] == self then
+        StopUpdatingComponents[cmp] = nil
+    end
     
 	local cmpname = nil
 	for k,v in pairs(self.components) do
@@ -398,7 +395,12 @@ function EntityScript:StartUpdatingComponent(cmp)
 end
 
 function EntityScript:StopUpdatingComponent(cmp)
-    
+    if self.updatecomponents then   
+        StopUpdatingComponents[cmp] = self
+    end
+end    
+
+function EntityScript:StopUpdatingComponent_Deferred(cmp)
     if self.updatecomponents then
         self.updatecomponents[cmp] = nil
 
@@ -531,10 +533,58 @@ function EntityScript:RemoveComponent(name)
 end
 
 function EntityScript:GetDisplayName()
-    if self.displaynamefn then
-        return (self.displaynamefn(self))
+    local name = self.displaynamefn ~= nil and self:displaynamefn() or self.name
+
+    if self:HasTag("player") then
+        --No adjectives for players
+        return name
+    elseif self:HasTag("smolder") then
+        return ConstructAdjectivedName(self, name, STRINGS.SMOLDERINGITEM)
+    elseif self:HasTag("withered") then
+        return ConstructAdjectivedName(self, name, STRINGS.WITHEREDITEM)
+    elseif not self.no_wet_prefix and (self.always_wet or self:GetIsWet()) then
+        if self.wet_prefix then
+            return ConstructAdjectivedName(self, name, self.wet_prefix)
+        elseif self.components.edible and ThePlayer and ThePlayer.components.eater and ThePlayer.components.eater:CanEat(self) then
+            return ConstructAdjectivedName(self, name, STRINGS.WET_PREFIX.FOOD)
+        elseif self.components.equippable and (self.components.equippable.equipslot == EQUIPSLOTS.HEAD or self.components.equippable.equipslot == EQUIPSLOTS.BODY) then
+            return ConstructAdjectivedName(self, name, STRINGS.WET_PREFIX.CLOTHING)
+        elseif self.components.equippable and self.components.equippable.equipslot == EQUIPSLOTS.HANDS then
+            return ConstructAdjectivedName(self, name, STRINGS.WET_PREFIX.TOOL)
+        elseif self.components.fuel then
+            return ConstructAdjectivedName(self, name, STRINGS.WET_PREFIX.FUEL)
+        else
+            return ConstructAdjectivedName(self, name, STRINGS.WET_PREFIX.GENERIC)
+        end
+    else
+        return name
     end
-    return self.name
+end
+
+function EntityScript:GetIsWet()
+    if self:HasTag("waterproofer") then
+        return false
+    elseif self:HasTag("wet") then
+        return true
+    elseif self:HasTag("notwet") then
+        return false
+    elseif self.IsWet ~= nil then
+        return self:IsWet()
+    else
+        return TheWorld.state.iswet
+    end
+end
+
+function EntityScript:GetCurrentMoisture()
+    if self:HasTag("waterproofer") then
+        return 0
+    elseif self.replica.inventoryitem then
+        return self.replica.inventoryitem:GetMoisture()
+    elseif self.GetMoisture ~= nil then
+        return self:GetMoisture()
+    else
+        return TheWorld.state.wetness
+    end
 end
 
 function EntityScript:SetPrefabName(name)
@@ -1089,7 +1139,7 @@ function EntityScript:PushBufferedAction(bufferedaction)
 	if dupe then
 		return
 	end
-    
+
     if self.bufferedaction then
         self.bufferedaction:Fail()
         self.bufferedaction = nil
@@ -1349,7 +1399,7 @@ function EntityScript:GetPersistData()
         end
         
     end
-    
+
     if (data and next(data)) or references then
 		return data, references
     end
@@ -1373,7 +1423,7 @@ function EntityScript:LoadPostPass(newents, savedata)
 end
 
 function EntityScript:SetPersistData(data, newents)
-	
+
 	if self.OnPreLoad then
 		self:OnPreLoad(data, newents)
 	end
@@ -1394,11 +1444,21 @@ end
 
 function EntityScript:GetAdjective()
     local spoiled = self:HasTag("spoiled")
-    if spoiled or self:HasTag("stale") then
-        for k, v in pairs(FOODTYPE) do
-            if self:HasTag("edible_"..v) then
-                return STRINGS.UI.HUD[spoiled and "SPOILED" or "STALE"]
-            end
+    local stale = self:HasTag("stale")
+    local frozen = self:HasTag("frozen")
+    if self:HasTag("pet") then
+        if stale then
+            return STRINGS.UI.HUD.HUNGRY
+        elseif spoiled then
+            return STRINGS.UI.HUD.STARVING
+        end
+    else
+        if (spoiled or stale) and frozen then
+            return STRINGS.UI.HUD.STALE_FROZEN
+        elseif stale then
+            return STRINGS.UI.HUD.STALE
+        elseif spoiled then
+            return STRINGS.UI.HUD.SPOILED
         end
     end
 end

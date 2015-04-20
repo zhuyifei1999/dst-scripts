@@ -4,6 +4,7 @@ local Growable = Class(function(self, inst)
     self.stage = 1
     self.loopstages = false
     self.growonly = false
+    self.springgrowth = false
 end)
 
 --[[local waiting_for_growth = {}
@@ -61,6 +62,9 @@ function Growable:StartGrowing(time)
 		--print ("growing ", time, self.stage, timeToGrow)
 
         if timeToGrow then
+            if self.springgrowth and TheWorld.state.isspring then
+                timeToGrow = timeToGrow * TUNING.SPRING_GROWTH_MODIFIER
+            end
 			self.targettime = GetTime() + timeToGrow
             
             if not self.inst:IsAsleep() then

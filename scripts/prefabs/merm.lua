@@ -1,10 +1,10 @@
 local assets =
 {
-	Asset("ANIM", "anim/merm_build.zip"),
-	Asset("ANIM", "anim/ds_pig_basic.zip"),
-	Asset("ANIM", "anim/ds_pig_actions.zip"),
-	Asset("ANIM", "anim/ds_pig_attacks.zip"),
-	Asset("SOUND", "sound/merm.fsb"),
+    Asset("ANIM", "anim/merm_build.zip"),
+    Asset("ANIM", "anim/ds_pig_basic.zip"),
+    Asset("ANIM", "anim/ds_pig_actions.zip"),
+    Asset("ANIM", "anim/ds_pig_attacks.zip"),
+    Asset("SOUND", "sound/merm.fsb"),
 }
 
 local prefabs =
@@ -50,7 +50,7 @@ local function RetargetFn(inst)
     if home and inst:GetDistanceSqToInst(home) < TUNING.MERM_DEFEND_DIST * TUNING.MERM_DEFEND_DIST then
         defenseTarget = home
     end
-    return FindEntity(defenseTarget or inst, TUNING.MERM_TARGET_DIST, FindInvaderFn)
+    return FindEntity(defenseTarget or inst, SpringCombatMod(TUNING.MERM_TARGET_DIST), FindInvaderFn)
 end
 
 local function KeepTargetFn(inst, target)
@@ -59,7 +59,7 @@ local function KeepTargetFn(inst, target)
         return home:GetDistanceSqToInst(target) < TUNING.MERM_DEFEND_DIST*TUNING.MERM_DEFEND_DIST
                and home:GetDistanceSqToInst(inst) < TUNING.MERM_DEFEND_DIST*TUNING.MERM_DEFEND_DIST
     end
-    return inst.components.combat:CanTarget(target)     
+    return inst.components.combat:CanTarget(target)
 end
 
 local function OnAttacked(inst, data)
@@ -83,12 +83,12 @@ local function OnAttacked(inst, data)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
-	inst.entity:AddDynamicShadow()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
+    inst.entity:AddDynamicShadow()
     inst.entity:AddNetwork()
 
     MakeCharacterPhysics(inst, 50, .5)
@@ -104,22 +104,22 @@ local function fn()
     inst:AddTag("merm")
     inst:AddTag("wet")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-
     inst:AddComponent("locomotor")
     inst.components.locomotor.runspeed = TUNING.MERM_RUN_SPEED
     inst.components.locomotor.walkspeed = TUNING.MERM_WALK_SPEED
-    
+
     inst:SetStateGraph("SGmerm")
 
     inst:SetBrain(brain)
 
     inst:AddComponent("eater")
-    inst.components.eater:SetVegetarian()
+    inst.components.eater:SetDiet({ FOODTYPE.VEGGIE }, { FOODTYPE.VEGGIE })
 
     inst:AddComponent("sleeper")
     inst.components.sleeper:SetWakeTest(ShouldWake)

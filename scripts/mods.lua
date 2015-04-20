@@ -57,8 +57,10 @@ function GetEnabledModNamesDetailed() --just used for callstack reporting
 	return name_details
 end
 
-function GetModVersion(mod_name)
-	KnownModIndex:UpdateModInfo()
+function GetModVersion(mod_name, mod_info_use)
+	if mod_info_use == "update_mod_info" then
+		KnownModIndex:UpdateSingleModInfo(mod_name)
+	end
 	local modinfo = KnownModIndex:GetModInfo(mod_name)
 	if modinfo ~= nil and modinfo.version ~= nil then
 		return modinfo.version 

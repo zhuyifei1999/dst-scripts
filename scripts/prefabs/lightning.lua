@@ -82,11 +82,12 @@ local function fn()
     --or in case we are about to be removed
     inst:DoTaskInTime(0, StartFX)
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
     inst.entity:SetCanSleep(false)
     inst.persists = false
     inst:DoTaskInTime(1, inst.Remove)

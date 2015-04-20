@@ -18,7 +18,8 @@ local Crafting = Class(Widget, function(self, owner, num_slots)
     self.bg = self:AddChild(TileBG(HUD_ATLAS, "craft_slotbg.tex"))
 
     --slots
-    self.num_slots = num_slots
+    self.max_slots = num_slots
+    self.current_slots = num_slots
     self.craftslots = CraftSlots(num_slots, owner)
     self:AddChild(self.craftslots)
 
@@ -44,7 +45,7 @@ function Crafting:SetOrientation(horizontal)
         self.bg.sepim = "craft_sep.tex"
     end
 
-    self.bg:SetNumTiles(self.num_slots)
+    self.bg:SetNumTiles(self.current_slots)
     local slot_w, slot_h = self.bg:GetSlotSize()
     local w, h = self.bg:GetSize()
     
@@ -94,73 +95,121 @@ local function SortByKey(a, b)
     return a.sortkey < b.sortkey
 end
 
+function Crafting:Resize(num_recipes)
+    if self.num_recipes == num_recipes then return end
+
+    self.num_recipes = num_recipes
+
+    self.current_slots = math.min(num_recipes, self.max_slots)
+
+    self.craftslots:SetNumSlots(self.current_slots)
+
+    self:SetOrientation(false)
+
+    if num_recipes <= self.max_slots then
+        self.upbutton:Hide()
+        self.downbutton:Hide()
+    else
+        self.upbutton:Show()
+        self.downbutton:Show()
+    end
+end
+
+function Crafting:UpdateIdx()
+    self.use_idx = #self.valid_recipes > self.max_slots
+end
+
 function Crafting:UpdateRecipes()
-    self.craftslots:Clear()
+
     if self.owner ~= nil and self.owner.replica.builder ~= nil then
 
         self.valid_recipes = {}
 
-        for k, v in pairs(AllRecipes) do
-            if IsRecipeValid(v.name) and
-                (self.filter == nil or self.filter(v.name)) and
-                (self.owner.replica.builder:KnowsRecipe(v.name) or ShouldHintRecipe(v.level, self.owner.replica.builder:GetTechTrees())) then
+        for k,v in pairs(AllRecipes) do
+            if IsRecipeValid(v.name)
+            and (self.filter == nil or self.filter(v.name)) --Has no filter or passes the filter in place
+            and (self.owner.replica.builder:KnowsRecipe(v.name) --[[Knows the recipe]] or ShouldHintRecipe(v.level, self.owner.replica.builder:GetTechTrees())) --[[ Knows enough to see it]] then
                 table.insert(self.valid_recipes, v)
             end
         end
         table.sort(self.valid_recipes, SortByKey)
 
-        local shown_num = 0
+        local shown_num = 0 --Number of recipes shown
 
-        local num = math.min(self.num_slots, #self.valid_recipes)
+        local num = math.min(self.max_slots, #self.valid_recipes) --How many recipe slots we're going to need
 
-		if self.idx > #self.valid_recipes - (self.num_slots - 1) then
-			self.idx = #self.valid_recipes - (self.num_slots - 1)
-		end 
+        self:Resize(#self.valid_recipes)
+        self.craftslots:Clear()
 
-        if self.idx < -1 then
-            self.idx = -1
-        end
+        local default_idx = -1 --By default, the recipe starts in the top slot.
 
-        for k = 1, num + 1 do
-            local slot = self.craftslots.slots[k]
+        self:UpdateIdx()
+
+        self.idx = math.clamp(self.idx, default_idx, #self.valid_recipes - (self.max_slots - 1)) --Make sure our idx is in range
+
+        for i = 1, num + 1 do --For each visible slot assign a recipe
+            local slot = self.craftslots.slots[i]
             if slot ~= nil then
-                local recipe = self.valid_recipes[self.idx + k]
-                if recipe ~= nil and (self.filter == nil or self.filter(recipe.name)) then
+                local recipe = self.valid_recipes[((self.use_idx and self.idx) or 0) + i]
+                if recipe then
                     slot:SetRecipe(recipe.name)
                     shown_num = shown_num + 1
                 end
             end
         end
 
+        -- #### It should be noted that downbutton goes "up" and up button goes "down"! ####
+
         if self.idx >= 0 then
-        	self.downbutton:Enable()
+            self.downbutton:Enable()
         else
-        	self.downbutton:Disable()
+            self.downbutton:Disable()
         end
 
-        if #self.valid_recipes < self.idx + self.num_slots then  
-        	self.upbutton:Disable()
+        if #self.valid_recipes < self.idx + self.current_slots then  
+            self.upbutton:Disable()
         else
-        	self.upbutton:Enable()
+            self.upbutton:Enable()
+        end
+
+
+    end
+end
+
+function Crafting:OnControl(control, down)
+    if Crafting._base.OnControl(self, control, down) then return true end
+
+    if down and self.focus then
+        if control == CONTROL_SCROLLBACK then
+            self:ScrollDown()
+            return true
+        elseif control == CONTROL_SCROLLFWD then
+            self:ScrollUp()
+            return true
         end
     end
 end
 
 function Crafting:ScrollUp()
-	if not IsPaused() then
+    if not IsPaused() then
+        local oldidx = self.idx
         self.idx = self.idx + 1
-		self:UpdateRecipes()
-		
-		TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/craft_up")
-	end
+        self:UpdateRecipes()
+        if self.idx ~= oldidx then
+            TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/craft_up")
+        end
+    end
 end
 
 function Crafting:ScrollDown()
-	if not IsPaused() then
-		self.idx = self.idx - 1
-		self:UpdateRecipes()
-		TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/craft_down")
-	end
+    if not IsPaused() then
+        local oldidx = self.idx
+        self.idx = self.idx - 1
+        self:UpdateRecipes()
+        if self.idx ~= oldidx then
+            TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/craft_down")
+        end
+    end
 end
 
 return Crafting

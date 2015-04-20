@@ -179,7 +179,7 @@ function Update( dt )
 				if v.updatecomponents then
 					for cmp in pairs(v.updatecomponents) do
 						--TheSim:ProfilerPush(v:GetComponentName(cmp))
-						if cmp.OnUpdate then
+						if cmp.OnUpdate and not StopUpdatingComponents[cmp] then
 							cmp:OnUpdate( dt )
 						end
 						--TheSim:ProfilerPop()
@@ -192,6 +192,12 @@ function Update( dt )
 				UpdatingEnts[k] = v
 			end
 			NewUpdatingEnts = {}
+
+			for k,v in pairs(StopUpdatingComponents) do
+				v:StopUpdatingComponent_Deferred(k)
+			end
+			StopUpdatingComponents = {}
+
 			TheSim:ProfilerPop()
 
 			for i = last_tick_seen + 1, tick do

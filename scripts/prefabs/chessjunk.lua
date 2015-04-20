@@ -93,7 +93,8 @@ local prefabs =
 	"yellowgem",
 	"purplegem",
 	"orangegem",
-}
+    "collapse_small",
+}    
 
 local function BasePile()
     local inst = CreateEntity()

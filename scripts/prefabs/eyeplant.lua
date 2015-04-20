@@ -1,6 +1,6 @@
 local assets =
 {
-	Asset("ANIM", "anim/eyeplant.zip"),
+    Asset("ANIM", "anim/eyeplant.zip"),
     Asset("SOUND", "sound/plant.fsb"),
 }
 
@@ -53,11 +53,11 @@ local function ongotnewitem(inst, data)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
     MakeObstaclePhysics(inst, .1)
@@ -74,11 +74,11 @@ local function fn()
     inst:AddTag("smallcreature")
     inst:AddTag("hostile")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("locomotor")
     inst.components.locomotor:SetSlowMultiplier( 1 )
@@ -92,7 +92,7 @@ local function fn()
     inst.components.combat:SetRetargetFunction(0.2, retargetfn)
     inst.components.combat:SetKeepTargetFunction(shouldKeepTarget)
     inst.components.combat:SetDefaultDamage(TUNING.EYEPLANT_DAMAGE)
-    
+
     inst:ListenForEvent("newcombattarget", onnewcombattarget)
 
     inst:ListenForEvent("gotnewitem", ongotnewitem)
@@ -101,7 +101,7 @@ local function fn()
     inst.components.health:SetMaxHealth(TUNING.EYEPLANT_HEALTH)
 
     inst:AddComponent("eater")
-    inst.components.eater:SetCarnivore()
+    inst.components.eater:SetDiet({ FOODTYPE.MEAT }, { FOODTYPE.MEAT })
 
     inst:AddComponent("inventory")
 
@@ -112,11 +112,11 @@ local function fn()
     inst:AddComponent("lootdropper")
 
     MakeSmallBurnable(inst)
-    MakeLargePropagator(inst)
+    MakeMediumPropagator(inst)
 
     MakeHauntableIgnite(inst)
 
-	return inst
+    return inst
 end
 
 return Prefab("cave/eyeplant", fn, assets)

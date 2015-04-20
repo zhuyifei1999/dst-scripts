@@ -1,12 +1,13 @@
 local assets =
 {
-	Asset("ANIM", "anim/structure_collapse_fx.zip"),
+    Asset("ANIM", "anim/structure_collapse_fx.zip"),
 }
 
 local function playfx(proxy, anim)
     local inst = CreateEntity()
 
     inst:AddTag("NOCLICK")
+    inst:AddTag("FX")
     --[[Non-networked entity]]
     inst.entity:SetCanSleep(false)
     inst.persists = false
@@ -33,6 +34,9 @@ local function makefn(anim)
         inst.entity:AddTransform()
         inst.entity:AddNetwork()
 
+        inst:AddTag("NOCLICK")
+        inst:AddTag("FX")
+
         --Dedicated server does not need to spawn the local fx
         if not TheNet:IsDedicated() then
             --Delay one frame so that we are positioned properly before starting the effect
@@ -40,11 +44,12 @@ local function makefn(anim)
             inst:DoTaskInTime(0, playfx, anim)
         end
 
+        inst.entity:SetPristine()
+
         if not TheWorld.ismastersim then
             return inst
         end
 
-        inst:AddTag("NOCLICK")
         inst.persists = false
         inst:DoTaskInTime(1, inst.Remove)
 
@@ -53,4 +58,4 @@ local function makefn(anim)
 end
 
 return Prefab("fx/collapse_big", makefn("collapse_large"), assets),
-        Prefab("fx/collapse_small", makefn("collapse_small"), assets)
+    Prefab("fx/collapse_small", makefn("collapse_small"), assets)

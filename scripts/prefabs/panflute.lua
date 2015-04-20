@@ -1,13 +1,12 @@
 local assets =
 {
-	Asset("ANIM", "anim/pan_flute.zip"),
+    Asset("ANIM", "anim/pan_flute.zip"),
 }
 
 local function HearPanFlute(inst, musician, instrument)
-	if inst.components.sleeper then
-	    inst.components.sleeper:AddSleepiness(10, TUNING.PANFLUTE_SLEEPTIME)
-	end
-
+    if inst.components.sleeper then
+        inst.components.sleeper:AddSleepiness(10, TUNING.PANFLUTE_SLEEPTIME, inst)
+    end
 
     if inst ~= musician and inst:HasTag("player") then
         if inst.components.grogginess then
@@ -19,25 +18,25 @@ local function HearPanFlute(inst, musician, instrument)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddNetwork()
-	
+
     MakeInventoryPhysics(inst)
 
     inst:AddTag("flute")
-    
+
     inst.AnimState:SetBank("pan_flute")
     inst.AnimState:SetBuild("pan_flute")
     inst.AnimState:PlayAnimation("idle")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("inspectable")
     inst:AddComponent("instrument")

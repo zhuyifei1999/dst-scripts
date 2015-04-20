@@ -130,11 +130,12 @@ AddRoom("DeepForest", {
 					                distributeprefabs=
 					                {
                                         fireflies = 0.1,
-					                    evergreen = 6,
+										--evergreen = 6,
 					                    grass = .05,
 					                    sapling=.5,
 					                    berrybush=.02,
 					                    blue_mushroom = 0.02,
+										trees = {weight = 6, prefabs = {"evergreen", "evergreen_sparse"}}
 					                },
 					            }
 					
@@ -152,14 +153,37 @@ AddRoom("Forest", {
 					                distributeprefabs=
 					                {
                                         fireflies = 0.2,
-					                    evergreen = 6,
+										--evergreen = 6,
 					                    rock1 = 0.05,
 					                    grass = .05,
 					                    sapling=.8,
-					                    rabbithole=.05,
+										--rabbithole=.05,
 					                    berrybush=.03,
 					                    red_mushroom = .03,
 					                    green_mushroom = .02,
+										trees = {weight = 6, prefabs = {"evergreen", "evergreen_sparse"}}
+					                },
+					            }
+					})
+	-- Trees, very few rocks, very few molehills
+AddRoom("ForestMole", {
+					colour={r=.5,g=0.6,b=.080,a=.10},
+					value = GROUND.FOREST,
+					tags = {"ExitPiece", "Chester_Eyebone"},
+					contents =  {
+					                distributepercent = .3,
+					                distributeprefabs=
+					                {
+                                        fireflies = 0.2,
+					                    --evergreen = 6,
+					                    rock1 = 0.05,
+					                    grass = .05,
+					                    sapling=.8,
+					                    molehill=.3,
+					                    berrybush=.03,
+					                    red_mushroom = .03,
+					                    green_mushroom = .02,
+					                    trees = {weight = 6, prefabs = {"evergreen", "evergreen_sparse"}}
 					                },
 					            }
 					})
@@ -179,7 +203,7 @@ AddRoom("CrappyForest", {
 					                    rock1 = 0.05,
 					                    grass = .05,
 					                    sapling=.8,
-					                    rabbithole=.05,
+					                    molehill=.05,
 					                    berrybush=.03,
 					                    red_mushroom = .03,
 					                    green_mushroom = .02,

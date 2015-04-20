@@ -2,6 +2,7 @@ local Placer = Class(function(self, inst)
     self.inst = inst
 	self.can_build = false
 	self.radius = 1
+	self.selected_pos = nil
 	self.inst:AddTag("NOCLICK")
 end)
 
@@ -14,7 +15,10 @@ end
 
 function Placer:GetDeployAction()
 	if self.invobject ~= nil then
-		return BufferedAction(self.builder, nil, ACTIONS.DEPLOY, self.invobject, self.inst:GetPosition())
+		self.selected_pos = self.inst:GetPosition()
+		local action = BufferedAction(self.builder, nil, ACTIONS.DEPLOY, self.invobject, self.selected_pos)
+		table.insert(action.onsuccess, function() self.selected_pos = nil end)
+		return action
 	end
 end
 
@@ -22,7 +26,7 @@ function Placer:OnUpdate(dt)
     if ThePlayer == nil then
         return
 	elseif not TheInput:ControllerAttached() then
-		local pt = Input:GetWorldPosition()
+		local pt = self.selected_pos or Input:GetWorldPosition()
 		if self.snap_to_tile then
 			pt = Vector3(TheWorld.Map:GetTileCenterPoint(pt:Get()))
 		elseif self.snap_to_meters then

@@ -2,26 +2,27 @@ require "prefabutil"
 
 local assets =
 {
-	Asset("ANIM", "anim/firepit.zip"),
+    Asset("ANIM", "anim/firepit.zip"),
 }
 
 local prefabs =
 {
     "campfirefire",
-}    
+    "collapse_small",
+}
 
 local function onhammered(inst, worker)
-	inst.components.lootdropper:DropLoot()
-	local ash = SpawnPrefab("ash")
-	ash.Transform:SetPosition(inst.Transform:GetWorldPosition())
-	SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
-	inst.SoundEmitter:PlaySound("dontstarve/common/destroy_stone")
-	inst:Remove()
+    inst.components.lootdropper:DropLoot()
+    local ash = SpawnPrefab("ash")
+    ash.Transform:SetPosition(inst.Transform:GetWorldPosition())
+    SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
+    inst.SoundEmitter:PlaySound("dontstarve/common/destroy_stone")
+    inst:Remove()
 end
 
 local function onhit(inst, worker)
-	inst.AnimState:PlayAnimation("hit")
-	inst.AnimState:PushAnimation("idle")
+    inst.AnimState:PlayAnimation("hit")
+    inst.AnimState:PushAnimation("idle")
 end
 
 local function onignite(inst)
@@ -75,12 +76,12 @@ local function onbuilt(inst)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
-	inst.entity:AddMiniMapEntity()
+    inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
 
     MakeObstaclePhysics(inst, .3)
@@ -90,15 +91,17 @@ local function fn()
 
     inst.AnimState:SetBank("firepit")
     inst.AnimState:SetBuild("firepit")
-    inst.AnimState:PlayAnimation("idle",false)
+    inst.AnimState:PlayAnimation("idle", false)
+
     inst:AddTag("campfire")
     inst:AddTag("structure")
+    inst:AddTag("wildfireprotected")
+
+    inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     -----------------------
     inst:AddComponent("burnable")
@@ -106,20 +109,20 @@ local function fn()
     inst.components.burnable:AddBurnFX("campfirefire", Vector3(0, .4, 0))
     inst:ListenForEvent("onextinguish", onextinguish)
     inst:ListenForEvent("onignite", onignite)
-    
+
     -------------------------
     inst:AddComponent("lootdropper")
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
     inst.components.workable:SetWorkLeft(4)
-	inst.components.workable:SetOnFinishCallback(onhammered)
-	inst.components.workable:SetOnWorkCallback(onhit)    
+    inst.components.workable:SetOnFinishCallback(onhammered)
+    inst.components.workable:SetOnWorkCallback(onhit)    
 
     -------------------------
     inst:AddComponent("fueled")
     inst.components.fueled.maxfuel = TUNING.FIREPIT_FUEL_MAX
     inst.components.fueled.accepting = true
-    
+
     inst.components.fueled:SetSections(4)
     inst.components.fueled.bonusmult = TUNING.FIREPIT_BONUS_MULT
     inst.components.fueled.ontakefuelfn = ontakefuel
@@ -131,9 +134,9 @@ local function fn()
             if not inst.components.burnable:IsBurning() then
                 inst.components.burnable:Ignite()
             end
-            
+
             inst.components.burnable:SetFXLevel(section, inst.components.fueled:GetSectionPercent())
-            
+
         end
     end)
     inst.components.fueled:InitializeFuelLevel(TUNING.FIREPIT_FUEL_START)
@@ -146,12 +149,9 @@ local function fn()
         local ret = false
         if math.random() <= TUNING.HAUNT_CHANCE_RARE then
             if inst.components.fueled and not inst.components.fueled:IsEmpty() then
-                local fuel = SpawnPrefab("petals")
-                if fuel then 
-                    inst.components.fueled:TakeFuelItem(fuel)
-                    inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
-                    ret = true
-                end
+                inst.components.fueled:DoDelta(TUNING.MED_FUEL)
+                inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
+                ret = true
             end
         end
         if math.random() <= TUNING.HAUNT_CHANCE_HALF then
@@ -163,16 +163,16 @@ local function fn()
         end
         return ret
     end)
-    
+
     -----------------------------
-    
+
     inst:AddComponent("inspectable")
     inst.components.inspectable.getstatus = getstatus
-    
+
     inst:ListenForEvent("onbuilt", onbuilt)
     
     return inst
 end
 
 return Prefab("common/objects/firepit", fn, assets, prefabs),
-		MakePlacer("common/firepit_placer", "firepit", "firepit", "preview")
+    MakePlacer("common/firepit_placer", "firepit", "firepit", "preview")

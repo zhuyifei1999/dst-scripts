@@ -7,6 +7,11 @@ local assets=
 	Asset("ANIM", "anim/player_mime.zip"),    
 }
 
+local prefabs =
+{
+	"collapse_small",
+}
+
 local function removewes(inst)
 	SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
 	inst.SoundEmitter:PlaySound("dontstarve/common/destroy_wood")
@@ -42,4 +47,4 @@ local function fn(Sim)
     return inst
 end
 
-return Prefab( "common/lockedwes", fn, assets) 
+return Prefab( "common/lockedwes", fn, assets, prefabs) 

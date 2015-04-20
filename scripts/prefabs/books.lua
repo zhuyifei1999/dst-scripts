@@ -1,7 +1,7 @@
 local assets =
 {
-	Asset("ANIM", "anim/books.zip"),
-	--Asset("SOUND", "sound/common.fsb"),
+    Asset("ANIM", "anim/books.zip"),
+    --Asset("SOUND", "sound/common.fsb"),
 }
 
 local prefabs =
@@ -147,12 +147,11 @@ function growfn(inst, reader)
 end
 
 function MakeBook(name, usefn, bookuses)
-
     local function fn()
-    	local inst = CreateEntity()
+        local inst = CreateEntity()
 
-    	inst.entity:AddTransform()
-    	inst.entity:AddAnimState()
+        inst.entity:AddTransform()
+        inst.entity:AddAnimState()
         inst.entity:AddSoundEmitter()
         inst.entity:AddNetwork()
 
@@ -161,15 +160,15 @@ function MakeBook(name, usefn, bookuses)
         inst.AnimState:SetBank("books")
         inst.AnimState:SetBuild("books")
         inst.AnimState:PlayAnimation(name)
-        
+
+        inst.entity:SetPristine()
+
         if not TheWorld.ismastersim then
             return inst
         end
 
-        inst.entity:SetPristine()
-
         -----------------------------------
-        
+
         inst:AddComponent("inspectable")
         inst:AddComponent("book")
         inst.components.book.onread = usefn
@@ -183,9 +182,6 @@ function MakeBook(name, usefn, bookuses)
 
         MakeSmallBurnable(inst)
         MakeSmallPropagator(inst)
-
-        inst:AddComponent("characterspecific")
-        inst.components.characterspecific:SetOwner("wickerbottom")
 
         MakeHauntableLaunch(inst)
         AddHauntableCustomReaction(inst, function(inst, haunter)

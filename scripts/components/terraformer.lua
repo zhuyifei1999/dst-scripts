@@ -24,6 +24,9 @@ local GROUND_TURFS =
 	[GROUND.UNDERROCK]	= "turf_underrock",
 	[GROUND.MUD]		= "turf_mud",
 
+	[GROUND.DESERT_DIRT]= "turf_desertdirt",
+	[GROUND.DECIDUOUS]	= "turf_deciduous",
+
 	webbing				= "turf_webbing",
 }
 

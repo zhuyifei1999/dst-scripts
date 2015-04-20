@@ -571,6 +571,25 @@ function Inv:CloseControllerInventory()
     end
 end
 
+function Inv:GetDescriptionString(item)
+    local str = nil
+    local in_equip_slot = item and item.components.equippable and item.components.equippable:IsEquipped()
+    if item and item.components.inventoryitem then
+        local adjective = item:GetAdjective()
+        if adjective then
+            str = adjective .. " " .. item:GetDisplayName()
+        else
+            str = item:GetDisplayName()
+        end
+    end
+    
+    return str or ""
+end
+
+function Inv:SetTooltipColour(r,g,b,a)
+   self.actionstringtitle:SetColour(r,g,b,a)
+end
+
 function Inv:UpdateCursorText()
     local inv_item = self:GetCursorItem()
     local active_item = self.cursortile ~= nil and self.cursortile.item or nil
@@ -583,7 +602,25 @@ function Inv:UpdateCursorText()
     if active_item ~= nil or inv_item ~= nil then
         local controller_id = TheInput:GetControllerID()
 
-        self.actionstringtitle:SetString((active_item or inv_item).name)
+        if inv_item ~= nil then
+            local itemname = self:GetDescriptionString(inv_item)
+            self.actionstringtitle:SetString(itemname)
+            if inv_item:GetIsWet() then
+                self:SetTooltipColour(unpack(WET_TEXT_COLOUR))
+            else
+                self:SetTooltipColour(unpack(NORMAL_TEXT_COLOUR))
+            end
+        elseif active_item ~= nil then
+            local itemname = self:GetDescriptionString(active_item)
+            self.actionstringtitle:SetString(itemname)
+            if active_item:GetIsWet() then
+                self:SetTooltipColour(unpack(WET_TEXT_COLOUR))
+            else
+                self:SetTooltipColour(unpack(NORMAL_TEXT_COLOUR))
+            end
+        end
+
+
         local is_equip_slot = self.active_slot and self.active_slot.equipslot
         local str = {}
 

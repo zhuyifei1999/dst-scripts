@@ -3,8 +3,7 @@ local assets =
     Asset("ANIM", "anim/walrus_tusk.zip"),
 }
 
-local function create()
-
+local function fn()
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -18,11 +17,11 @@ local function create()
     inst.AnimState:SetBuild("walrus_tusk")
     inst.AnimState:PlayAnimation("idle")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("inspectable")
 
@@ -36,4 +35,4 @@ local function create()
     return inst
 end
 
-return Prefab("common/inventory/walrus_tusk", create, assets)
+return Prefab("common/inventory/walrus_tusk", fn, assets)

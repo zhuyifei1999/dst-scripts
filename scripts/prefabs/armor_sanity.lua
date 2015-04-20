@@ -1,6 +1,6 @@
 local assets =
 {
-	Asset("ANIM", "anim/armor_sanity.zip"),
+    Asset("ANIM", "anim/armor_sanity.zip"),
 }
 
 local function OnBlocked(owner) 
@@ -18,21 +18,21 @@ local function onunequip(inst, owner)
 end
 
 local function OnTakeDamage(inst, damage_amount)
-	local owner = inst.components.inventoryitem.owner
-	if owner then
-		local sanity = owner.components.sanity
-		if sanity then
-			local unsaneness = damage_amount * TUNING.ARMOR_SANITY_DMG_AS_SANITY
-			sanity:DoDelta(-unsaneness, false)
-		end
-	end
+    local owner = inst.components.inventoryitem.owner
+    if owner then
+        local sanity = owner.components.sanity
+        if sanity then
+            local unsaneness = damage_amount * TUNING.ARMOR_SANITY_DMG_AS_SANITY
+            sanity:DoDelta(-unsaneness, false)
+        end
+    end
 end
 
 local function fn()
-	local inst = CreateEntity()
-    
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddNetwork()
 
     MakeInventoryPhysics(inst)
@@ -41,36 +41,34 @@ local function fn()
     inst.AnimState:SetBuild("armor_sanity")
     inst.AnimState:PlayAnimation("anim")
     --inst.AnimState:SetMultColour(1, 1, 1, 0.6)
-    
+
     inst:AddTag("sanity")
 
     inst.foleysound = "dontstarve/movement/foley/nightarmour"
     
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-    
     inst:AddComponent("inspectable")
-    
+
     inst:AddComponent("inventoryitem")
 
-    inst:AddComponent("dapperness")
-    inst.components.dapperness.dapperness = TUNING.CRAZINESS_SMALL
-    
     inst:AddComponent("armor")
     inst.components.armor:InitCondition(TUNING.ARMOR_SANITY, TUNING.ARMOR_SANITY_ABSORPTION)
-	inst.components.armor.ontakedamage = OnTakeDamage
-    
+    inst.components.armor.ontakedamage = OnTakeDamage
+
     inst:AddComponent("equippable")
     inst.components.equippable.equipslot = EQUIPSLOTS.BODY
-    
+    inst.components.equippable.dapperness = TUNING.CRAZINESS_SMALL
+
     inst.components.equippable:SetOnEquip(onequip)
     inst.components.equippable:SetOnUnequip(onunequip)
 
     MakeHauntableLaunch(inst)
-    
+
     return inst
 end
 

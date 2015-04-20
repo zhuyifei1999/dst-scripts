@@ -6,6 +6,7 @@ local Widget = require "widgets/widget"
 local IceOver = require "widgets/iceover"
 local FireOver = require "widgets/fireover"
 local BloodOver = require "widgets/bloodover"
+local HeatOver = require "widgets/heatover"
 local easing = require("easing")
 
 local PauseScreen = require "screens/pausescreen"
@@ -44,8 +45,10 @@ function PlayerHud:CreateOverlays(owner)
     self.bloodover = self.overlayroot:AddChild(BloodOver(owner))
     self.iceover = self.overlayroot:AddChild(IceOver(owner))
     self.fireover = self.overlayroot:AddChild(FireOver(owner))
+    self.heatover = self.overlayroot:AddChild(HeatOver(owner))
     self.iceover:Hide()
     self.fireover:Hide()
+    self.heatover:Hide()
 
     self.clouds = self.overlayroot:AddChild(UIAnim())
     self.clouds:SetClickable(false)
@@ -191,10 +194,13 @@ function PlayerHud:SetMainCharacter(maincharacter)
 
 		self.inst:ListenForEvent("badaura", function() return self.bloodover:Flash() end, self.owner)
 		self.inst:ListenForEvent("attacked", function() return self.bloodover:Flash() end, self.owner)
+		self.inst:ListenForEvent("damaged", function() return self.bloodover:Flash() end, self.owner) -- same as attacked, but for non-combat situations like making a telltale heart
 		self.inst:ListenForEvent("startstarving", function() self.bloodover:UpdateState() end, self.owner)
 		self.inst:ListenForEvent("stopstarving", function() self.bloodover:UpdateState() end, self.owner)
 		self.inst:ListenForEvent("startfreezing", function() self.bloodover:UpdateState() end, self.owner)
 		self.inst:ListenForEvent("stopfreezing", function() self.bloodover:UpdateState() end, self.owner)
+		self.inst:ListenForEvent("startoverheating", function() self.bloodover:UpdateState() end, self.owner)
+		self.inst:ListenForEvent("stopoverheating", function() self.bloodover:UpdateState() end, self.owner)
 		self.inst:ListenForEvent("gosane", function() self:GoSane() end, self.owner)
 		self.inst:ListenForEvent("goinsane", function() self:GoInsane() end, self.owner)
 
@@ -285,6 +291,10 @@ end
 
 function PlayerHud:IsControllerCraftingOpen()
     return self.controls ~= nil and self.controls.crafttabs.controllercraftingopen
+end
+
+function PlayerHud:IsCraftingOpen()
+    return self.controls ~= nil and self.controls.crafttabs:IsCraftingOpen()
 end
 
 function PlayerHud:IsPauseScreenOpen()

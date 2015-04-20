@@ -1,8 +1,8 @@
 local assets =
 {
-	Asset("ANIM", "anim/perd_basic.zip"),
-	Asset("ANIM", "anim/perd.zip"),
-	Asset("SOUND", "sound/perd.fsb"),
+    Asset("ANIM", "anim/perd_basic.zip"),
+    Asset("ANIM", "anim/perd.zip"),
+    Asset("SOUND", "sound/perd.fsb"),
 }
 
 local prefabs =
@@ -24,12 +24,12 @@ local function ShouldWake()
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
-	inst.entity:AddDynamicShadow()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
+    inst.entity:AddDynamicShadow()
     inst.entity:AddNetwork()
 
     MakeCharacterPhysics(inst, 50, .5)
@@ -44,11 +44,11 @@ local function fn()
     inst:AddTag("character")
     inst:AddTag("berrythief")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("locomotor")
     inst.components.locomotor.runspeed = TUNING.PERD_RUN_SPEED
@@ -60,7 +60,8 @@ local function fn()
     inst:SetBrain(brain)
 
     inst:AddComponent("eater")
-    inst.components.eater:SetVegetarian()
+    inst.components.eater:SetDiet({ FOODTYPE.VEGGIE }, { FOODTYPE.VEGGIE })
+    inst.components.eater:SetCanEatRaw()
 
     inst:AddComponent("sleeper")
     inst.components.sleeper:SetWakeTest(ShouldWake)

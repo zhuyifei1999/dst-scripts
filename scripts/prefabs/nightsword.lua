@@ -50,12 +50,11 @@ local function fn()
     inst:AddComponent("inspectable")
 
     inst:AddComponent("inventoryitem")
-    inst:AddComponent("dapperness")
-    inst.components.dapperness.dapperness = TUNING.CRAZINESS_MED
 
     inst:AddComponent("equippable")
     inst.components.equippable:SetOnEquip(onequip)
     inst.components.equippable:SetOnUnequip(onunequip)
+    inst.components.equippable.dapperness = TUNING.CRAZINESS_MED
 
     MakeHauntableLaunch(inst)
 

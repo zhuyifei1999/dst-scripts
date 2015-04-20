@@ -1,6 +1,6 @@
 local assets =
 {
-	Asset("ANIM", "anim/armor_wood.zip"),
+    Asset("ANIM", "anim/armor_wood.zip"),
 }
 
 local function OnBlocked(owner) 
@@ -18,10 +18,10 @@ local function onunequip(inst, owner)
 end
 
 local function fn()
-	local inst = CreateEntity()
-    
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddNetwork()
 
     MakeInventoryPhysics(inst)
@@ -29,35 +29,39 @@ local function fn()
     inst.AnimState:SetBank("armor_wood")
     inst.AnimState:SetBuild("armor_wood")
     inst.AnimState:PlayAnimation("anim")
-    
+
     inst:AddTag("wood")
+    MakeDragonflyBait(inst, 3)
 
     inst.foleysound = "dontstarve/movement/foley/logarmour"
-    
+
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-    
     inst:AddComponent("inspectable")
-    
+
     inst:AddComponent("inventoryitem")
 
     inst:AddComponent("fuel")
     inst.components.fuel.fuelvalue = TUNING.LARGE_FUEL
-    
+
+    MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
+    MakeSmallPropagator(inst)
+
     inst:AddComponent("armor")
     inst.components.armor:InitCondition(TUNING.ARMORWOOD, TUNING.ARMORWOOD_ABSORPTION)
-    
+
     inst:AddComponent("equippable")
     inst.components.equippable.equipslot = EQUIPSLOTS.BODY
-    
+
     inst.components.equippable:SetOnEquip(onequip)
     inst.components.equippable:SetOnUnequip(onunequip)
 
     MakeHauntableLaunch(inst)
-    
+
     return inst
 end
 

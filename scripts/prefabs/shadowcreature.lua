@@ -6,9 +6,9 @@ local prefabs =
 local brain = require("brains/shadowcreaturebrain")
 
 local function NotifyBrainOfTarget(inst, target)
-	if inst.brain and inst.brain.SetTarget then
-		inst.brain:SetTarget(target)
-	end
+    if inst.brain and inst.brain.SetTarget then
+        inst.brain:SetTarget(target)
+    end
 end
 
 local function retargetfn(inst)
@@ -18,9 +18,9 @@ local function retargetfn(inst)
 end
 
 local function onkilledbyother(inst, attacker)
-	if attacker and attacker.components.sanity then
-		attacker.components.sanity:DoDelta(inst.sanityreward or TUNING.SANITY_SMALL)
-	end
+    if attacker and attacker.components.sanity then
+        attacker.components.sanity:DoDelta(inst.sanityreward or TUNING.SANITY_SMALL)
+    end
 end
 
 SetSharedLootTable("shadow_creature",
@@ -43,14 +43,14 @@ local function OnAttacked(inst, data)
 end
 
 local function OnNewCombatTarget(inst, data)
-	NotifyBrainOfTarget(inst, data.target)
+    NotifyBrainOfTarget(inst, data.target)
 end
 
 local function MakeShadowCreature(data)
 
     local assets =
     {
-	    Asset("ANIM", "anim/"..data.build..".zip"),
+        Asset("ANIM", "anim/"..data.build..".zip"),
     }
 
     local sounds =
@@ -65,12 +65,12 @@ local function MakeShadowCreature(data)
     }
 
     local function fn()
-	    local inst = CreateEntity()
+        local inst = CreateEntity()
 
-	    inst.entity:AddTransform()
-	    inst.entity:AddAnimState()
+        inst.entity:AddTransform()
+        inst.entity:AddAnimState()
         inst.entity:AddPhysics()
-	    inst.entity:AddSoundEmitter()
+        inst.entity:AddSoundEmitter()
         inst.entity:AddNetwork()
 
         MakeCharacterPhysics(inst, 10, 1.5)
@@ -92,14 +92,14 @@ local function MakeShadowCreature(data)
         inst.AnimState:PlayAnimation("idle_loop")
         inst.AnimState:SetMultColour(1, 1, 1, 0.5)
 
-		-- this is purely view related
+        -- this is purely view related
         inst:AddComponent("transparentonsanity")
+
+        inst.entity:SetPristine()
 
         if not TheWorld.ismastersim then
             return inst
         end
-
-        inst.entity:SetPristine()
 
         inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
         inst.components.locomotor.walkspeed = data.speed
@@ -108,13 +108,13 @@ local function MakeShadowCreature(data)
 
         inst:SetBrain(brain)
 
-	    inst:AddComponent("sanityaura")
-	    inst.components.sanityaura.aurafn = CalcSanityAura
+        inst:AddComponent("sanityaura")
+        inst.components.sanityaura.aurafn = CalcSanityAura
 
         inst:AddComponent("health")
         inst.components.health:SetMaxHealth(data.health)
 
-		inst.sanityreward = data.sanityreward
+        inst.sanityreward = data.sanityreward
 
         inst:AddComponent("combat")
         inst.components.combat:SetDefaultDamage(data.damage)
@@ -126,7 +126,7 @@ local function MakeShadowCreature(data)
         inst.components.lootdropper:SetChanceLootTable('shadow_creature')
 
         inst:ListenForEvent("attacked", OnAttacked)
-		inst:ListenForEvent("newcombattarget", OnNewCombatTarget)
+        inst:ListenForEvent("newcombattarget", OnNewCombatTarget)
 
         inst.persists = false
 
@@ -163,6 +163,6 @@ local data =
 }
 local ret = {}
 for i, v in ipairs(data) do
-	table.insert(ret, MakeShadowCreature(v))
+    table.insert(ret, MakeShadowCreature(v))
 end
 return unpack(ret)

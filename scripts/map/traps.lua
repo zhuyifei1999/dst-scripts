@@ -10,7 +10,11 @@ local Forest = {
 	["Chilled Base"] = StaticLayout.Get("map/static_layouts/trap_winter"),
 }
 
+local Deciduous = {
+}
+
 local Grasslands = {
+	["Chilled Decid Base"] = StaticLayout.Get("map/static_layouts/trap_winter_deciduous"),
 }
 
 local Swamp = {
@@ -20,9 +24,9 @@ local Swamp = {
 local Rocky = {
 }
 
-local Dirt = {
+local Badlands = {
+	["Hot Base"] = StaticLayout.Get("map/static_layouts/trap_summer"),
 }
-
 
 local Savanna = {
 	["Beefalo Farm"] = StaticLayout.Get("map/static_layouts/beefalo_farm"),
@@ -37,11 +41,11 @@ local SandboxModeTraps = {
 	["Rare"] = Rare,
 	["Any"] = Any,
 	[GROUND.ROCKY] = Rocky,
-	[GROUND.DIRT] = Dirt,
 	[GROUND.SAVANNA] = Savanna,
 	[GROUND.GRASS] = Grasslands,
 	[GROUND.FOREST] = Forest,
 	[GROUND.MARSH] = Swamp,
+	[GROUND.DIRT] = Badlands,
 }
 
 local layouts = {}

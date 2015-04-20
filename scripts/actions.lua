@@ -45,8 +45,10 @@ ACTIONS =
     GIVEALLTOPLAYER = Action(3, nil, nil, nil, nil, nil, true, DefaultRangeCheck),
     FEEDPLAYER = Action(3, nil, true, nil, nil, nil, true, DefaultRangeCheck),
     COOK = Action(),
+    FILL = Action(),
     DRY = Action(),
     ADDFUEL = Action(),
+    ADDWETFUEL = Action(),
     LIGHT = Action(-4),
     EXTINGUISH = Action(0),
     LOOKAT = Action(-3, true, nil, nil, true),
@@ -75,6 +77,8 @@ ACTIONS =
     REEL = Action(0, true),
     POLLINATE = Action(),
     FERTILIZE = Action(),
+    SMOTHER = Action(1),
+    MANUALEXTINGUISH = Action(1),
     LAYEGG = Action(),
     HAMMER = Action(3),
     TERRAFORM = Action(),
@@ -96,9 +100,22 @@ ACTIONS =
     CASTSPELL = Action(-1, false, true, 20),
     BLINK = Action(10, false, true, 36),
     COMBINESTACK = Action(),
-    TOGGLE_DEPLOY_MODE = Action(1),
+    TOGGLE_DEPLOY_MODE = Action(0, true),
+    SUMMONGUARDIAN = Action(0, false, false, 5),
+    LAVASPIT = Action(0, false, false, 2),
+	SPAWN = Action(0, false, false, 5),
     HAUNT = Action(0, false, false, 2, true, true, true, DefaultRangeCheck),
     UNPIN = Action(),
+    STEALMOLEBAIT = Action(0, false, false, .75),
+    MAKEMOLEHILL = Action(4, false, false, 0),
+    MOLEPEEK = Action(0, false, false, 1),
+    FEED = Action(0, false, true),
+    UPGRADE = Action(0, false, true),
+    HAIRBALL = Action(0, false, false, 3),
+    CATPLAYGROUND = Action(0, false, false, 1),
+    CATPLAYAIR = Action(0, false, false, 2),
+    FAN = Action(0, false, true),
+    TOSS = Action(0, false, true, 8),
 }
 
 ACTION_IDS = {}
@@ -211,12 +228,14 @@ ACTIONS.RUMMAGE.fn = function(act)
     if targ ~= nil and targ.components.container ~= nil then
         if targ.components.container:IsOpenedBy(act.doer) then
             targ.components.container:Close()
+            act.doer:PushEvent("closecontainer", {container=targ})
             return true
         elseif targ.components.container:IsOpen() then
             return false, "INUSE"
         elseif targ.components.container.canbeopened then
             --Silent fail for opening containers in the dark
             if CanEntitySeeTarget(act.doer, targ) then
+                act.doer:PushEvent("opencontainer", {container=targ})
                 targ.components.container:Open(act.doer)
             end
             return true
@@ -305,13 +324,11 @@ end
 
 ACTIONS.DEPLOY.fn = function(act)
     if act.invobject and act.invobject.components.deployable and act.invobject.components.deployable:CanDeploy(act.pos) then
-        local container = act.invobject.components.inventoryitem and act.invobject.components.inventoryitem:GetContainer()
-	    local obj = container and container:RemoveItem(act.invobject) or act.invobject
+        local obj = (act.doer.components.inventory and act.doer.components.inventory:RemoveItem(act.invobject)) or 
+        (act.doer.components.container and act.doer.components.container:RemoveItem(act.invobject))
 	    if obj then
 			if obj.components.deployable:Deploy(act.pos, act.doer) then
 				return true
-            elseif container then
-                container:GiveItem(obj)
             else
                 act.doer.components.inventory:GiveItem(obj)
 			end
@@ -328,6 +345,40 @@ ACTIONS.DEPLOY.strfn = function(act)
         elseif act.invobject:HasTag("eyeturret") then
             return "TURRET"
         end
+    end
+end
+
+
+ACTIONS.TOGGLE_DEPLOY_MODE.strfn = function(act)
+    if act.invobject and act.invobject:HasTag("groundtile") then
+        return "GROUNDTILE"
+    elseif act.invobject and act.invobject:HasTag("wallbuilder") then
+        return "WALL"
+    elseif act.invobject and act.invobject:HasTag("eyeturret") then
+        return "TURRET"
+    end
+end
+
+ACTIONS.SUMMONGUARDIAN.fn = function(act)
+    if act.doer and act.target and act.target.components.guardian then
+        act.target.components.guardian:Call()
+    end
+end
+
+ACTIONS.LAVASPIT.fn = function(act)
+    if act.doer then
+        local spit = SpawnPrefab("lavaspit")
+        local x,y,z = act.doer.Transform:GetWorldPosition()
+        local facingangle = act.doer.Transform:GetRotation() *DEGREES
+        local offsetvec = Vector3(1.7 * math.cos( -facingangle ), -.3, 1.7 * math.sin( -facingangle ))
+        spit.Transform:SetPosition(x+offsetvec.x, y+offsetvec.y, z+offsetvec.z)
+        spit.Transform:SetRotation(act.doer.Transform:GetRotation())
+    end
+end
+
+ACTIONS.SPAWN.fn = function(act)
+    if act.doer and act.doer.components.rampingspawner then
+        act.doer.components.rampingspawner:SpawnEntity()
     end
 end
 
@@ -353,23 +404,41 @@ ACTIONS.CHOP.fn = function(act)
 end
 
 ACTIONS.FERTILIZE.fn = function(act)
-    if act.target.components.crop and not act.target.components.crop:IsReadyForHarvest() and act.invobject and act.invobject.components.fertilizer then
-		local obj = act.doer.components.inventory:RemoveItem(act.invobject)
-        if act.target.components.crop:Fertilize(obj) then
+    if act.target and act.target.components.crop and not act.target.components.crop:IsReadyForHarvest() and not act.target:HasTag("withered")
+        and act.invobject and act.invobject.components.fertilizer then
+
+        local obj = act.invobject
+
+        if act.target.components.crop:Fertilize(obj, act.doer) then
 			return true
 		else
-			act.doer.components.inventory:GiveItem(obj)
 			return false
 		end
     elseif act.target.components.grower and act.target.components.grower:IsEmpty() and act.invobject and act.invobject.components.fertilizer then
-		local obj = act.doer.components.inventory:RemoveItem(act.invobject)
-        act.target.components.grower:Fertilize(obj)
+		local obj = act.invobject
+        act.target.components.grower:Fertilize(obj, act.doer)
         return true
 	elseif act.target.components.pickable and act.target.components.pickable:CanBeFertilized() and act.invobject and act.invobject.components.fertilizer then
-		local obj = act.doer.components.inventory:RemoveItem(act.invobject)
-        act.target.components.pickable:Fertilize(obj)
+		local obj = act.invobject
+        act.target.components.pickable:Fertilize(obj, act.doer)
 		return true		
 	end
+end
+
+
+ACTIONS.SMOTHER.fn = function(act)
+    if act.target.components.burnable and act.target.components.burnable:IsSmoldering() then
+        local smotherer = act.invobject or act.doer
+        act.target.components.burnable:SmotherSmolder(smotherer)
+        return true
+    end
+end
+
+ACTIONS.MANUALEXTINGUISH.fn = function(act)
+    if act.invobject:HasTag("frozen") and act.target.components.burnable and act.target.components.burnable:IsBurning() then
+        act.target.components.burnable:Extinguish(true, TUNING.SMOTHERER_EXTINGUISH_HEAT_PERCENT, act.invobject)
+        return true
+    end
 end
 
 ACTIONS.MINE.fn = function(act)
@@ -473,9 +542,24 @@ ACTIONS.ATTACK.fn = function(act)
 end
 
 ACTIONS.ATTACK.strfn = function(act)
-    local targ = act.target or act.invobject
-    
-    if targ and targ:HasTag("smashable") then
+    local targ = act.target
+    local weapon = act.invobject
+
+    if targ and weapon
+        and weapon:HasTag("extinguisher")
+        and (targ:HasTag("smolder") or targ:HasTag("fire")) then
+        return "RANGEDSMOTHER"
+    elseif targ and weapon
+        and weapon:HasTag("rangedlighter")
+        and targ:HasTag("canlight")
+        and not targ:HasTag("fire")
+        and not targ:HasTag("burnt") then
+        return "RANGEDLIGHT"
+    elseif targ and weapon
+        and targ:HasTag("mole")
+        and weapon:HasTag("hammer") then
+        return "WHACK"
+    elseif targ and targ:HasTag("smashable") then
         return "SMASHABLE"
     end
 end
@@ -495,7 +579,7 @@ ACTIONS.COOK.fn = function(act)
 	        return true
 	    end
     elseif act.target.components.stewer ~= nil then
-        if act.target.components.stewer.cooking then
+        if act.target.components.stewer:IsCooking() then
             --Already cooking
             return true
         end
@@ -507,6 +591,15 @@ ACTIONS.COOK.fn = function(act)
         end
 		act.target.components.stewer:StartCooking()
 		return true
+    end
+end
+
+ACTIONS.FILL.fn = function(act)
+    if act.target and act.target:HasTag("watersource") then
+        if act.invobject and act.invobject.components.fillable then
+            act.invobject.components.fillable:Fill()
+            return true
+        end
     end
 end
 
@@ -539,6 +632,20 @@ ACTIONS.ADDFUEL.fn = function(act)
     end
 end
 
+ACTIONS.ADDWETFUEL.fn = function(act)
+    if act.doer.components.inventory then
+        local fuel = act.doer.components.inventory:RemoveItem(act.invobject)
+        if fuel then
+            if act.target.components.fueled:TakeFuelItem(fuel) then
+                return true
+            else
+                -- print("False")
+                act.doer.components.inventory:GiveItem(fuel)
+            end
+        end
+    end
+end
+
 ACTIONS.GIVE.fn = function(act)
     if act.target ~= nil and act.target.components.trader ~= nil then
         act.target.components.trader:AcceptGift(act.doer, act.invobject)
@@ -547,7 +654,10 @@ ACTIONS.GIVE.fn = function(act)
 end
 
 ACTIONS.GIVETOPLAYER.fn = function(act)
-    if act.target ~= nil and act.target.components.trader ~= nil and act.target.components.inventory ~= nil then
+    if act.target ~= nil and
+        act.target.components.trader ~= nil and
+        act.target.components.inventory ~= nil and
+        (act.target.components.inventory:IsOpenedBy(act.target) or act.target:HasTag("playerghost")) then
         if act.target.components.inventory:CanAcceptCount(act.invobject, 1) <= 0 then
             return false, "FULL"
         end
@@ -557,7 +667,10 @@ ACTIONS.GIVETOPLAYER.fn = function(act)
 end
 
 ACTIONS.GIVEALLTOPLAYER.fn = function(act)
-    if act.target ~= nil and act.target.components.trader ~= nil and act.target.components.inventory ~= nil then
+    if act.target ~= nil and
+        act.target.components.trader ~= nil and
+        act.target.components.inventory ~= nil and
+        act.target.components.inventory:IsOpenedBy(act.target) then
         local count = act.target.components.inventory:CanAcceptCount(act.invobject)
         if count <= 0 then
             return false, "FULL"
@@ -582,18 +695,23 @@ ACTIONS.FEEDPLAYER.fn = function(act)
         not (act.invobject:HasTag("badfood") or
             act.invobject:HasTag("spoiled"))) then
 
-        local food = act.invobject.components.inventoryitem:RemoveFromOwner()
-        if food ~= nil then
-            act.target:AddChild(food)
-            food:RemoveFromScene()
-            food.components.inventoryitem:HibernateLivingItem()
-            food.persists = false
-            if food.components.edible.foodtype == FOODTYPE.MEAT then
-                act.target.sg:GoToState("eat", food)
-            else
-                act.target.sg:GoToState("quickeat", food)
+        if act.target.components.eater:PrefersToEat(act.invobject) then
+            local food = act.invobject.components.inventoryitem:RemoveFromOwner()
+            if food ~= nil then
+                act.target:AddChild(food)
+                food:RemoveFromScene()
+                food.components.inventoryitem:HibernateLivingItem()
+                food.persists = false
+                if food.components.edible.foodtype == FOODTYPE.MEAT then
+                    act.target.sg:GoToState("eat", food, true)
+                else
+                    act.target.sg:GoToState("quickeat", food, true)
+                end
+                return true
             end
-            return true
+        else
+            act.target:PushEvent("wonteatfood", {food=act.invobject})
+            return true -- the action still "succeeded", there's just no result on this end
         end
     end
 end
@@ -697,6 +815,9 @@ ACTIONS.HARVEST.strfn = function(act)
     if act.target ~= nil and act.target.prefab == "birdcage" then
         return "FREE"
     end
+    if act.target ~= nil and act.target.components.crop and act.target:HasTag("withered") then
+        return "WITHERED"
+    end
 end
 
 ACTIONS.LIGHT.fn = function(act)
@@ -785,11 +906,14 @@ end
 
 ACTIONS.GOHOME.fn = function(act)
     --this is gross. make it better later.
-    if act.target.components.spawner then
+    if act.doer.force_onwenthome_message then
+        act.doer:PushEvent("onwenthome")
+    end
+    if act.target and act.target.components.spawner then
         return act.target.components.spawner:GoHome(act.doer)
-    elseif act.target.components.childspawner then
+    elseif act.target and act.target.components.childspawner then
         return act.target.components.childspawner:GoHome(act.doer)
-    elseif act.pos then
+    elseif act.pos or act.target then
         if act.target then
             act.target:PushEvent("onwenthome", {doer = act.doer})
         end
@@ -829,7 +953,7 @@ ACTIONS.HAUNT.fn = function(act)
     if act.target ~= nil and
         act.target:IsValid() and
         act.target.components.hauntable ~= nil and
-        not act.target:HasTag("haunted") then
+        not (act.target:HasTag("haunted") or act.target:HasTag("catchable")) then
         act.doer:PushEvent("haunt", { target = act.target })
         act.target.components.hauntable:DoHaunt(act.doer)
         return true
@@ -906,10 +1030,15 @@ ACTIONS.TURNON.fn = function(act)
     end
 end
 
+ACTIONS.TURNOFF.strfn = function(act)
+    local tar = act.target
+    return tar ~= nil and tar:HasTag("hasemergencymode") and "EMERGENCY" or nil
+end
+
 ACTIONS.TURNOFF.fn = function(act)
     local tar = act.target or act.invobject
     if tar and tar.components.machine and tar.components.machine:IsOn() then
-            tar.components.machine:TurnOff(tar)
+        tar.components.machine:TurnOff(tar)
         return true
     end
 end
@@ -927,6 +1056,14 @@ ACTIONS.TAKEITEM.fn = function(act)
     if act.target and act.target.components.shelf and act.target.components.shelf.cantakeitem then
         act.target.components.shelf:TakeItem(act.doer)
         return true
+    end
+end
+
+ACTIONS.CASTSPELL.strfn = function(act)
+    local targ = act.invobject
+    
+    if targ and targ.components.spellcaster then
+        return targ.components.spellcaster.actiontype
     end
 end
 
@@ -967,8 +1104,111 @@ ACTIONS.UNPIN.fn = function(act)
     if act.doer ~= act.target and act.target.components.pinnable and act.target.components.pinnable:IsStuck() then
         act.target:PushEvent("unpinned")
         return true
+	end
+end
+
+ACTIONS.STEALMOLEBAIT.fn = function(act)
+    if act.doer and act.target and act.doer.prefab == "mole" then
+        act.target.selectedasmoletarget = false
+        act.target:PushEvent("onstolen", {thief=act.doer})
+        return true
     end
 end
+
+ACTIONS.MAKEMOLEHILL.fn = function(act)
+    if act.doer and act.doer.prefab == "mole" then
+        local molehill = SpawnPrefab("molehill")
+        local pt = act.doer:GetPosition()
+        molehill.Transform:SetPosition(pt.x, pt.y, pt.z)
+        molehill:PushEvent("confignewhome", {mole=act.doer})
+        act.doer.needs_home_time = nil
+        return true
+    end
+end
+
+ACTIONS.MOLEPEEK.fn = function(act)
+    if act.doer and act.doer.prefab == "mole" then
+        act.doer:PushEvent("peek")
+        return true
+    end
+end
+
+ACTIONS.FEED.fn = function(act)
+    if act.doer and act.target and act.target.components.eater and act.target.components.eater:CanEat(act.invobject) then
+        act.target.components.eater:Eat(act.invobject)
+        return true
+    end
+end
+
+ACTIONS.HAIRBALL.fn = function(act)
+    if act.doer and act.doer.prefab == "catcoon" then
+        return true
+    end
+end
+
+ACTIONS.CATPLAYGROUND.fn = function(act)
+    if act.doer and act.doer.prefab == "catcoon" then
+        if act.target then
+            if math.random() < TUNING.CATCOON_ATTACK_CONNECT_CHANCE and act.target.components.health and act.target.components.health.maxhealth <= TUNING.PENGUIN_HEALTH -- Only bother attacking if it's a penguin or weaker
+            and act.target.components.combat and act.target.components.combat:CanBeAttacked(act.doer)
+            and not (act.doer.components.follower and act.doer.components.follower:IsLeaderSame(act.target))
+            and not act.target:HasTag("player") then
+                act.doer.components.combat:DoAttack(act.target, nil, nil, nil, 2) --2*25 dmg
+            elseif math.random() < TUNING.CATCOON_PICKUP_ITEM_CHANCE and act.target.components.inventoryitem and act.target.components.inventoryitem.canbepickedup then
+                act.target:Remove()
+            end
+        end
+        return true
+    end
+end
+
+ACTIONS.CATPLAYAIR.fn = function(act)
+    if act.doer and act.doer.prefab == "catcoon" then
+        if act.target and math.random() < TUNING.CATCOON_ATTACK_CONNECT_CHANCE
+        and act.target.components.health and act.target.components.health.maxhealth <= TUNING.PENGUIN_HEALTH -- Only bother attacking if it's a penguin or weaker
+        and act.target.components.combat and act.target.components.combat:CanBeAttacked(act.doer)
+        and not (act.doer.components.follower and act.doer.components.follower:IsLeaderSame(act.target)) then
+            act.doer.components.combat:DoAttack(act.target, nil, nil, nil, 2) --2*25 dmg
+        end
+        act.doer.last_play_air_time = GetTime()
+        return true
+    end
+end
+
+ACTIONS.FAN.fn = function(act)
+    if act.invobject and act.invobject.components.fan then
+        local target = act.target or act.doer
+        return act.invobject.components.fan:Fan(target)
+    end
+end
+
+ACTIONS.TOSS.fn = function(act)
+    if act.invobject and act.doer then
+        if act.invobject.components.complexprojectile and act.doer.components.inventory then
+            local projectile = act.doer.components.inventory:DropItem(act.invobject, false)
+            if projectile then
+                local pos = nil
+                if act.target then
+                    pos = act.target:GetPosition()
+                    projectile.components.complexprojectile.targetoffset = {x=0,y=1.5,z=0}
+                else
+                    pos = act.pos
+                end
+                projectile.components.complexprojectile:Launch(pos, act.doer)
+                return true
+            end
+        end
+    end
+end
+
+ACTIONS.UPGRADE.fn = function(act)
+    if act.invobject and act.target
+        and act.invobject.components.upgrader
+        and act.invobject.components.upgrader:CanUpgrade(act.target, act.doer) then
+        return act.target.components.upgradeable:Upgrade(act.invobject)
+    end
+end
+
 
 --[[ACTIONS.OPEN_SHOP.fn = function(act)
     if act.target.components.shop then

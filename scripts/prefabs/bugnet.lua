@@ -1,7 +1,7 @@
 local assets =
 {
-	Asset("ANIM", "anim/bugnet.zip"),
-	Asset("ANIM", "anim/swap_bugnet.zip"),
+    Asset("ANIM", "anim/bugnet.zip"),
+    Asset("ANIM", "anim/swap_bugnet.zip"),
 }
 
 local function onequip(inst, owner)
@@ -16,10 +16,10 @@ local function onunequip(inst, owner)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddNetwork()
 
     MakeInventoryPhysics(inst)
@@ -28,32 +28,32 @@ local function fn()
     inst.AnimState:SetBuild("bugnet")
     inst.AnimState:PlayAnimation("idle")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-    
-    inst.entity:SetPristine()
-    
+
     inst:AddComponent("weapon")
     inst.components.weapon:SetDamage(TUNING.BUGNET_DAMAGE)
-	inst.components.weapon.attackwear = 3
+    inst.components.weapon.attackwear = 3
 
     -----
     inst:AddComponent("tool")
     inst.components.tool:SetAction(ACTIONS.NET)
     -------
-    
+
     inst:AddComponent("finiteuses")
     inst.components.finiteuses:SetMaxUses(TUNING.BUGNET_USES)
     inst.components.finiteuses:SetUses(TUNING.BUGNET_USES)
     inst.components.finiteuses:SetOnFinished(inst.Remove)
-    
+
     inst.components.finiteuses:SetConsumption(ACTIONS.NET, 1)
 
     inst:AddComponent("inspectable")
-    
+
     inst:AddComponent("inventoryitem")
-    
+
     inst:AddComponent("equippable")
     inst.components.equippable:SetOnEquip(onequip)
     inst.components.equippable:SetOnUnequip(onunequip)

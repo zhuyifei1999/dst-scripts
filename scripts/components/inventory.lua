@@ -67,27 +67,54 @@ end
 --GuaranteeItems deprecated.
 --Rethink logic for multiplayer if you want to resurrect it.
 
+function Inventory:TransferInventory(receiver)
+    if not receiver.components.inventory then return end
+
+    local inv = receiver.components.inventory
+
+    for k,v in pairs(self.itemslots) do
+        inv:GiveItem(self:RemoveItemBySlot(k))
+    end
+end
+
 function Inventory:OnSave()
     local data = {items= {}, equip = {}}
 
+    local references = {}
+    local refs = {}
     for k,v in pairs(self.itemslots) do
         if v.persists then
-            data.items[k] = v:GetSaveRecord()
+            data.items[k], refs = v:GetSaveRecord()
+            if refs then
+                for k,v in pairs(refs) do
+                    table.insert(references, v)
+                end
+            end
         end
     end
 
     for k,v in pairs(self.equipslots) do
         if v.persists then
-            data.equip[k] = v:GetSaveRecord()
+            data.equip[k], refs = v:GetSaveRecord()
+            if refs then
+                for k,v in pairs(refs) do
+                    table.insert(references, v)
+                end
+            end
         end
     end
     
     
     if self.activeitem and not (self.activeitem.components.equippable and self.equipslots[self.activeitem.components.equippable.equipslot] == self.activeitem) then
-        data.activeitem = self.activeitem:GetSaveRecord()
+        data.activeitem, refs = self.activeitem:GetSaveRecord()
+        if refs then
+            for k,v in pairs(refs) do
+                table.insert(references, v)
+            end
+        end
     end
     
-    return data
+    return data, references
 end   
 
 function Inventory:CanTakeItemInSlot(item, slot)
@@ -378,7 +405,7 @@ function Inventory:RemoveItemBySlot(slot)
 end
 
 function Inventory:DropItem(item, wholestack, randomdir, pos)
-    if not item or not item.components.inventoryitem then
+    if not item or not (item.components.inventoryitem and item.components.inventoryitem.candrop) then
         return
     end
     
@@ -400,6 +427,14 @@ function Inventory:DropItem(item, wholestack, randomdir, pos)
     end
 
     return dropped
+end
+
+function Inventory:IsInsulated() -- from electricity, not temperature
+    for k,v in pairs(self.equipslots) do
+        if v and v.components.equippable:IsInsulated() then
+            return true
+        end
+    end
 end
 
 function Inventory:GetEquippedItem(eslot)
@@ -688,7 +723,7 @@ function Inventory:GiveItem( inst, slot, src_pos )
     end
 end
 
-function Inventory:Unequip(equipslot)
+function Inventory:Unequip(equipslot, slip)
     local item = self.equipslots[equipslot]
     --print("Inventory:Unequip", item)
     if item and item.components.equippable then
@@ -699,7 +734,7 @@ function Inventory:Unequip(equipslot)
         end
     end
     self.equipslots[equipslot] = nil
-    self.inst:PushEvent("unequip", {item=item, eslot=equipslot})
+    self.inst:PushEvent("unequip", {item=item, eslot=equipslot, slip=slip})
     return item
 end
 
@@ -798,7 +833,7 @@ function Inventory:RemoveItem(item, wholestack)
         return
     end
 
-    local prevslot = item.components.inventoryitem:GetSlotNum()
+    local prevslot = item.components.inventoryitem and item.components.inventoryitem:GetSlotNum() or nil
 
     if not wholestack and item.components.stackable ~= nil and item.components.stackable:IsStack() then
         local dec = item.components.stackable:Get()
@@ -878,6 +913,53 @@ function Inventory:Has(item, amount)
     return num_found >= amount, num_found
 end
 
+function Inventory:GetItemByName(item, amount)
+    local total_num_found = 0
+    local items = {}
+
+    local function tryfind(v)
+        local num_found = 0
+        if v and v.prefab == item then
+            local num_left_to_find = amount - total_num_found
+            if v.components.stackable then
+                if v.components.stackable.stacksize > num_left_to_find then
+                    items[v] = num_left_to_find
+                    num_found = amount
+                else
+                    items[v] = v.components.stackable.stacksize
+                    num_found = num_found + v.components.stackable.stacksize
+                end
+            else
+                items[v] = 1
+                num_found = num_found + 1
+            end
+        end
+        return num_found
+    end
+
+    for k = 1,self.maxslots do
+        local v = self.itemslots[k]
+        total_num_found = total_num_found + tryfind(v)
+        if total_num_found >= amount then
+            break
+        end
+    end
+    
+    if self.activeitem and self.activeitem.prefab == item and total_num_found < amount then
+        total_num_found = total_num_found + tryfind(self.activeitem)
+    end
+    
+    local overflow = self:GetOverflowContainer()
+    if overflow and total_num_found < amount then
+        local overflow_items = overflow:GetItemByName(item, (amount - total_num_found))
+        for k,v in pairs(overflow_items) do
+            items[k] = v
+        end
+    end
+ 
+    return items
+end
+
 function Inventory:ConsumeByName(item, amount)
     
     local total_num_found = 0
@@ -924,24 +1006,13 @@ function Inventory:ConsumeByName(item, amount)
     end
 end
 
-function Inventory:DropEverythingWithTag(tag, keepcharacterspecific, exclude)
-    -- Only allow one copy of a char specific item 
-    -- #srosen this does prevent you taking mult copies of books or other char's books, etc, which isn't great...
-    -- #v2c books are not "irreplaceable" and can be crafted so we don't care who takes them
+function Inventory:DropEverythingWithTag(tag)
     local containers = {}
-    exclude = keepcharacterspecific and (exclude or {}) or nil
 
     if self.activeitem ~= nil then
         if self.activeitem:HasTag(tag) then
-            if keepcharacterspecific and
-                self.activeitem.components.characterspecific ~= nil and
-                self.activeitem.components.characterspecific.character == self.inst.prefab and
-                not table.contains(exclude, self.activeitem.prefab) then
-                table.insert(exclude, self.activeitem.prefab)
-            else
-                self:DropItem(self.activeitem)
-                self:SetActiveItem(nil)
-            end
+            self:DropItem(self.activeitem)
+            self:SetActiveItem(nil)
         elseif self.activeitem.components.container ~= nil then
             table.insert(containers, self.activeitem)
         end
@@ -951,14 +1022,7 @@ function Inventory:DropEverythingWithTag(tag, keepcharacterspecific, exclude)
         local v = self.itemslots[k]
         if v ~= nil then
             if v:HasTag(tag) then
-                if keepcharacterspecific and
-                    v.components.characterspecific ~= nil and
-                    v.components.characterspecific.character == self.inst.prefab and
-                    not table.contains(exclude, v.prefab) then
-                    table.insert(exclude, v.prefab)
-                else
-                    self:DropItem(v, true, true)
-                end
+                self:DropItem(v, true, true)
             elseif v.components.container ~= nil then
                 table.insert(containers, v)
             end
@@ -967,21 +1031,14 @@ function Inventory:DropEverythingWithTag(tag, keepcharacterspecific, exclude)
 
     for k, v in pairs(self.equipslots) do
         if v:HasTag(tag) then
-            if keepcharacterspecific and
-                v.components.characterspecific ~= nil and
-                v.components.characterspecific.character == self.inst.prefab and
-                not table.contains(exclude, v.prefab) then
-                table.insert(exclude, v.prefab)
-            else
-                self:DropItem(v, true, true)
-            end
+            self:DropItem(v, true, true)
         elseif v.components.container ~= nil then
             table.insert(containers, v)
         end
     end
 
     for i, v in ipairs(containers) do
-        v.components.container:DropEverythingWithTag(tag, keepcharacterspecific, exclude)
+        v.components.container:DropEverythingWithTag(tag)
     end
 end
 
@@ -1019,39 +1076,6 @@ function Inventory:BurnNonpotatableInContainer(container)
     end
 end
 
-function Inventory:OnProgress()
-
-    if SaveGameIndex:GetCurrentMode(Settings.save_slot) == "adventure" then
-        local teleportato = TheSim:FindFirstEntityWithTag("teleportato")
-        if teleportato and teleportato.components.container then
-            self:DropEverything()
-            for k,v in pairs(teleportato.components.container.slots) do
-                local item = teleportato.components.container:RemoveItemBySlot(k)
-                self:GiveItem(item)
-            end
-        end
-    else
-        for i = 1,self:GetNumSlots() do
-            if self.itemslots[i] and self.itemslots[i]:HasTag("nonpotatable") then
-                local olditem = self:RemoveItem(self.itemslots[i], true)
-                local itemash = SpawnPrefab("ash")
-                itemash.components.named:SetName( olditem.name )
-                self:GiveItem(itemash,i)
-                olditem:Remove()
-            elseif self.itemslots[i] and self.itemslots[i].components.container then
-                local container = self.itemslots[i].components.container
-                self:BurnNonpotatableInContainer(container)
-            end
-        end
-        for k,item in pairs(self.equipslots) do
-            if item and item.components.container then
-                local container = item.components.container
-                self:BurnNonpotatableInContainer(container)
-            end
-        end
-    end
-end
-
 function Inventory:GetDebugString()
     local s = ""
     local count = 0
@@ -1062,7 +1086,12 @@ function Inventory:GetDebugString()
             s = s.." x"..tostring(item.components.stackable:StackSize())
         end
     end
-    return count..s
+
+    s = count..": "..s
+
+    s = s..string.format(" waterproofness:",self:GetWaterproofness())
+
+    return s
 end
 
 function Inventory:IsOpenedBy(guy)
@@ -1502,6 +1531,49 @@ function Inventory:MoveItemFromHalfOfSlot(slot, container)
             end
         end
     end
+end
+
+function Inventory:GetEquippedMoistureRate(slot)
+    local moisture = 0
+    local max = 0
+    if slot then
+        local item = self:GetItemInSlot(slot)
+        if item and item.components.equippable then
+            local data = item.components.equippable:GetEquippedMoisture()
+            moisture = moisture + data.moisture
+            max = max + data.max
+        end
+    else
+        for k,v in pairs(self.equipslots) do
+            if v and v.components.equippable then
+                local data = v.components.equippable:GetEquippedMoisture()
+                moisture = moisture + data.moisture
+                max = max + data.max
+            end
+        end
+    end
+    return moisture, max
+end
+ 
+function Inventory:GetWaterproofness(slot)
+    local waterproofness = 0
+    if slot then
+        local item = self:GetItemInSlot(slot)
+        if item and item.components.waterproofer then
+            waterproofness = waterproofness + item.components.waterproofer:GetEffectiveness()
+        end
+    else
+        for k,v in pairs(self.equipslots) do
+            if v and v.components.waterproofer then
+                waterproofness = waterproofness + v.components.waterproofer:GetEffectiveness()  
+            end
+        end
+    end
+    return waterproofness
+end
+
+function Inventory:IsWaterproof()
+    return self:GetWaterproofness() >= 1
 end
 
 return Inventory

@@ -1,8 +1,8 @@
 local assets =
 {
-	Asset("ANIM", "anim/penguin.zip"),
-	Asset("ANIM", "anim/penguin_build.zip"),
-	Asset("SOUND", "sound/pengull.fsb"),
+    Asset("ANIM", "anim/penguin.zip"),
+    Asset("ANIM", "anim/penguin_build.zip"),
+    Asset("SOUND", "sound/pengull.fsb"),
 }
 
 local prefabs =
@@ -30,14 +30,14 @@ local SHARE_TARGET_DIST = 40
 
 local function OnEntityWake(inst)
     if CHEATS_ENABLED then return end
-    if TheWorld.state.issummer or TheWorld.state.remainingdaysinseason < 3 then
+    if not TheWorld.state.iswinter or TheWorld.state.remainingdaysinseason < 3 then
         inst:Remove()
     end
 end
 
 local function OnEntitySleep(inst)
     if CHEATS_ENABLED then return end
-    if TheWorld.state.issummer or TheWorld.state.remainingdaysinseason < 3 then
+    if not TheWorld.state.iswinter or TheWorld.state.remainingdaysinseason < 3 then
         inst:Remove()
     end
 end
@@ -97,12 +97,12 @@ end
 local function OnEat(inst, food)
 --[[    if food.components.edible and math.random() <. 2 then
         -- Not until we have a small poop...
-		local poo = SpawnPrefab("poop")
+        local poo = SpawnPrefab("poop")
         poo.components.fertilizer.fertilizervalue = TUNING.POOP_FERTILIZE/2
         poo.components.fertilizer.soil_cycles = TUNING.POOP_SOILCYCLES/2
-		poo.Transform:SetPosition(inst.Transform:GetWorldPosition())		
-		poo.Transform:SetScale(.5,.5,.5)
-	end
+        poo.Transform:SetPosition(inst.Transform:GetWorldPosition())        
+        poo.Transform:SetScale(.5,.5,.5)
+    end
 --]]
 end
 
@@ -245,12 +245,12 @@ local function RememberKnownLocation(inst)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
-	inst.entity:AddDynamicShadow()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
+    inst.entity:AddDynamicShadow()
     inst.entity:AddNetwork()
 
     MakeCharacterPhysics(inst, 50, .5)
@@ -265,11 +265,11 @@ local function fn()
     inst:AddTag("animal")
     inst:AddTag("smallcreature")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("locomotor")
     inst.components.locomotor.walkspeed = 0.75
@@ -295,7 +295,7 @@ local function fn()
     inst.components.hunger:SetMax(TUNING.PENGUIN_HUNGER)
     inst.components.hunger:SetRate(TUNING.PENGUIN_HUNGER/TUNING.PENGUIN_STARVE_TIME)
     inst.components.hunger:SetKillRate(TUNING.SMALLBIRD_HEALTH/TUNING.SMALLBIRD_STARVE_KILL_TIME)
-    
+
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetChanceLootTable('penguin')
 
@@ -314,7 +314,7 @@ local function fn()
     inst.components.teamattacker.leashdistance = 99999
 
     inst:AddComponent("eater")
-    inst.components.eater:SetOmnivore()
+    inst.components.eater:SetDiet({ FOODGROUP.OMNI }, { FOODGROUP.OMNI })
     inst.components.eater:SetCanEatHorrible()
     inst.components.eater.strongstomach = true -- can eat monster meat!
     inst.components.eater:SetOnEatFn(OnEat)
@@ -339,8 +339,8 @@ local function fn()
     inst.components.inspectable.getstatus = GetStatus
 
     inst:AddComponent("inventory")
-	inst.components.inventory.maxslots = 1
-	inst.components.inventory.acceptsstacks = false
+    inst.components.inventory.maxslots = 1
+    inst.components.inventory.acceptsstacks = false
 
     inst:ListenForEvent("attacked", OnAttacked)
     inst:ListenForEvent("hostileprojectile", OnThrown)

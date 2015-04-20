@@ -53,6 +53,8 @@ local function OnWorked(inst, worker)
         if METRICS_ENABLED then
 			FightStat_Caught(inst)
 		end
+
+		inst.SoundEmitter:KillAllSounds()
 		
         worker.components.inventory:GiveItem(inst, nil, inst:GetPosition())
     end
@@ -84,11 +86,24 @@ end
 
 local function OnPickedUp(inst)
     inst.sg:GoToState("idle")
+    inst.SoundEmitter:KillSound("buzz")
     inst.SoundEmitter:KillAllSounds()
 end
 
+local function SpringBeeRetarget(inst)
+    if TheWorld.state.isspring then
+        return FindEntity(inst, 4, function(guy)
+            return (guy:HasTag("character") or guy:HasTag("animal") or guy:HasTag("monster") )
+                and not guy:HasTag("insect")
+                and inst.components.combat:CanTarget(guy)
+        end)
+    else
+        return nil
+    end
+end
+
 local function KillerRetarget(inst)
-    return FindEntity(inst, 8, function(guy)
+    return FindEntity(inst, SpringCombatMod(8), function(guy)
         return inst.components.combat:CanTarget(guy)
     end,
     nil,
@@ -119,6 +134,8 @@ local function commonfn(build, tags)
     inst:AddTag("bee")
     inst:AddTag("insect")
     inst:AddTag("smallcreature")
+    inst:AddTag("cattoyairborne")
+    inst:AddTag("flying")
     for i, v in ipairs(tags) do
         inst:AddTag(v)
     end
@@ -128,11 +145,13 @@ local function commonfn(build, tags)
     inst.AnimState:PlayAnimation("idle")
     inst.AnimState:SetRayTestOnBB(true)
 
+    MakeFeedablePetPristine(inst)
+
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
     inst.components.locomotor:EnableGroundSpeedMultiplier(false)
@@ -142,8 +161,8 @@ local function commonfn(build, tags)
     inst:AddComponent("stackable")
 	inst:AddComponent("inventoryitem")
 	inst.components.inventoryitem.nobounce = true
-	inst.components.inventoryitem:SetOnDroppedFn(OnDropped)
-	inst.components.inventoryitem:SetOnPutInInventoryFn(OnPickedUp)
+	-- inst.components.inventoryitem:SetOnDroppedFn(OnDropped) Done in MakeFeedablePet
+	-- inst.components.inventoryitem:SetOnPutInInventoryFn(OnPickedUp)
 	inst.components.inventoryitem.canbepickedup = false
 
 	---------------------
@@ -178,9 +197,15 @@ local function commonfn(build, tags)
     ------------------
     
     inst:AddComponent("inspectable")
+
+    ------------------
+
+    inst:AddComponent("tradable")
     
     inst:ListenForEvent("attacked", beecommon.OnAttacked)
     inst:ListenForEvent("worked", beecommon.OnWorked)
+
+    MakeFeedablePet(inst, TUNING.TOTAL_DAY_TIME*2, OnPickedUp, OnDropped)
 
     return inst
 end
@@ -203,6 +228,9 @@ end
 
 local function workerbee()
     local inst = commonfn("bee_build", { "worker" })
+    if TheWorld.state.isspring then
+        inst.AnimState:SetBuild("bee_angry_build")
+    end
 
     if not TheWorld.ismastersim then
         return inst
@@ -211,6 +239,7 @@ local function workerbee()
     inst.components.health:SetMaxHealth(TUNING.BEE_HEALTH)
     inst.components.combat:SetDefaultDamage(TUNING.BEE_DAMAGE)
     inst.components.combat:SetAttackPeriod(TUNING.BEE_ATTACK_PERIOD)
+    inst.components.combat:SetRetargetFunction(2, SpringBeeRetarget)
 	inst:AddComponent("pollinator")
     inst:SetBrain(workerbrain)
     inst.sounds = workersounds

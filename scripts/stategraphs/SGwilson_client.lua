@@ -62,18 +62,22 @@ local actionhandlers =
             end
         end),
     ActionHandler(ACTIONS.FERTILIZE, "doshortaction"),
+	ActionHandler(ACTIONS.SMOTHER, "dolongaction"),
+    ActionHandler(ACTIONS.MANUALEXTINGUISH, "dolongaction"),
     ActionHandler(ACTIONS.TRAVEL, "doshortaction"),
     ActionHandler(ACTIONS.LIGHT, "give"),
     ActionHandler(ACTIONS.UNLOCK, "give"),
     ActionHandler(ACTIONS.TURNOFF, "give"),
     ActionHandler(ACTIONS.TURNON, "give"),
     ActionHandler(ACTIONS.ADDFUEL, "doshortaction"),
+    ActionHandler(ACTIONS.ADDWETFUEL, "doshortaction"),
     ActionHandler(ACTIONS.REPAIR, "dolongaction"),
     ActionHandler(ACTIONS.READ, "book"),
     ActionHandler(ACTIONS.DEPLOY, "doshortaction"),
     ActionHandler(ACTIONS.STORE, "doshortaction"),
     ActionHandler(ACTIONS.DROP, "doshortaction"),
     ActionHandler(ACTIONS.MURDER, "dolongaction"),
+    ActionHandler(ACTIONS.UPGRADE, "dolongaction"),
     ActionHandler(ACTIONS.ACTIVATE,
         function(inst, action)
             return action.target:HasTag("quickactivate") and "doshortaction" or "dolongaction"
@@ -94,6 +98,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.BUILD, "dolongaction"),
     ActionHandler(ACTIONS.SHAVE, "shave"),
     ActionHandler(ACTIONS.COOK, "dolongaction"),
+    ActionHandler(ACTIONS.FILL, "dolongaction"),
     ActionHandler(ACTIONS.PICKUP, "doshortaction"),
     ActionHandler(ACTIONS.CHECKTRAP, "doshortaction"),
     ActionHandler(ACTIONS.RUMMAGE, "doshortaction"),
@@ -143,6 +148,7 @@ local actionhandlers =
                 return "attack"
             end
         end),
+    ActionHandler(ACTIONS.TOSS, "throw"),
     ActionHandler(ACTIONS.UNPIN, "doshortaction"),
     ActionHandler(ACTIONS.CATCH, "catch_pre"),
 }
@@ -203,6 +209,9 @@ local states =
             elseif inst.IsFreezing ~= nil and inst:IsFreezing() then
                 table.insert(anims, "idle_shiver_pre")
                 table.insert(anims, "idle_shiver_loop")
+            elseif inst.IsOverheating ~= nil and inst:IsOverheating() then
+                table.insert(anims, "idle_hot_pre")
+                table.insert(anims, "idle_hot_loop")
             elseif inst:HasTag("groggy") then
                 table.insert(anims, "idle_groggy_pre")
                 table.insert(anims, "idle_groggy")

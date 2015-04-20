@@ -2,7 +2,7 @@
 --      logic should be driven off this component!
 
 local function PushAlpha(inst, alpha, most_alpha)
-    inst.AnimState:OverrideMultColour(1, 1, 1, alpha)
+    inst.AnimState:OverrideMultColour(alpha, alpha, alpha, alpha)
     if inst.SoundEmitter ~= nil then
         inst.SoundEmitter:OverrideVolumeMultiplier(alpha / most_alpha)
     end

@@ -1,22 +1,42 @@
 require "prefabutil"
 
 local function onhammered(inst, worker)
-	inst.components.lootdropper:DropLoot()
-	SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
-	inst.SoundEmitter:PlaySound("dontstarve/common/destroy_wood")
-	inst:Remove()
+    if inst:HasTag("fire") and inst.components.burnable then
+        inst.components.burnable:Extinguish()
+    end
+    inst.components.lootdropper:DropLoot()
+    SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
+    inst.SoundEmitter:PlaySound("dontstarve/common/destroy_wood")
+    inst:Remove()
 end
 
 local function onhit(inst, worker)
-	inst.AnimState:PlayAnimation("hit")
-	inst.AnimState:PushAnimation(inst.components.prototyper.on and "proximity_loop" or "idle", true)
+    if not inst:HasTag("burnt") then 
+        inst.AnimState:PlayAnimation("hit")
+        inst.AnimState:PushAnimation(inst.components.prototyper.on and "proximity_loop" or "idle", true)
+    end
 end
 
 local function spawnrabbits(inst)
-	if math.random() <= 0.1 then
-		local rabbit = SpawnPrefab("rabbit")
-		rabbit.Transform:SetPosition(inst.Transform:GetWorldPosition())
-	end
+    if not inst:HasTag("burnt") then 
+        if math.random() <= 0.1 then
+            local rabbit = SpawnPrefab("rabbit")
+            rabbit.Transform:SetPosition(inst.Transform:GetWorldPosition())
+        end
+    end
+end
+
+
+local function onsave(inst, data)
+    if inst:HasTag("burnt") or inst:HasTag("fire") then
+        data.burnt = true
+    end
+end
+
+local function onload(inst, data)
+    if data and data.burnt then
+        inst.components.burnable.onburnt(inst)
+    end
 end
 
 local function doonact(inst, soundprefix, onact)
@@ -33,33 +53,39 @@ local function onbuiltsound(inst, soundprefix)
 end
 
 local function createmachine(level, name, soundprefix, sounddelay, techtree, mergeanims, onact)
-	
-	local function onturnon(inst)
-		if mergeanims then
-			inst.AnimState:PlayAnimation("proximity_pre")
-			inst.AnimState:PushAnimation("proximity_loop", true)
-		else
-			inst.AnimState:PlayAnimation("proximity_loop", true)
-		end
-		inst.SoundEmitter:PlaySound("dontstarve/common/researchmachine_"..soundprefix.."_idle_LP","idlesound")
-	end
+    
+    local function onturnon(inst)
+        if not inst:HasTag("burnt") then 
+            if mergeanims then
+                inst.AnimState:PlayAnimation("proximity_pre")
+                inst.AnimState:PushAnimation("proximity_loop", true)
+            else
+                inst.AnimState:PlayAnimation("proximity_loop", true)
+            end
+            inst.SoundEmitter:PlaySound("dontstarve/common/researchmachine_"..soundprefix.."_idle_LP","idlesound")
+        end
+    end
 
-	local function onturnoff(inst)
-		if mergeanims then
-			inst.AnimState:PushAnimation("proximity_pst")
-		    inst.AnimState:PushAnimation("idle", true)
-		else
-		    inst.AnimState:PlayAnimation("idle", true)
-		end
-		inst.SoundEmitter:KillSound("idlesound")
-	end
+    local function onturnoff(inst)
+        if not inst:HasTag("burnt") then 
+            if mergeanims then
+                inst.AnimState:PushAnimation("proximity_pst")
+                inst.AnimState:PushAnimation("idle", true)
+            else
+                inst.AnimState:PlayAnimation("idle", true)
+            end
+            inst.SoundEmitter:KillSound("idlesound")
+        end
+    end
 
     local function onactivate(inst)
-        inst.AnimState:PlayAnimation("use")
-        inst.AnimState:PushAnimation("idle")
-        inst.AnimState:PushAnimation("proximity_loop", true)
-        inst.SoundEmitter:PlaySound("dontstarve/common/researchmachine_"..soundprefix.."_run","sound")
-        inst:DoTaskInTime(1.5, doonact, soundprefix, onact)
+        if not inst:HasTag("burnt") then 
+            inst.AnimState:PlayAnimation("use")
+            inst.AnimState:PushAnimation("idle")
+            inst.AnimState:PushAnimation("proximity_loop", true)
+            inst.SoundEmitter:PlaySound("dontstarve/common/researchmachine_"..soundprefix.."_run","sound")
+            inst:DoTaskInTime(1.5, doonact, soundprefix, onact)
+        end
     end
 
     local function onbuilt(inst)
@@ -70,18 +96,23 @@ local function createmachine(level, name, soundprefix, sounddelay, techtree, mer
         inst:DoTaskInTime(sounddelay, onbuiltsound, soundprefix)
     end
 
-	local assets = 
-	{
-		Asset("ANIM", "anim/"..name..".zip"),
-	}
+    local assets =
+    {
+        Asset("ANIM", "anim/"..name..".zip"),
+    }
 
-	local function fn()
-		local inst = CreateEntity()
+    local prefabs =
+    {
+        "collapse_small",
+    }
 
-		inst.entity:AddTransform()
-		inst.entity:AddAnimState()
-		inst.entity:AddMiniMapEntity()
-		inst.entity:AddSoundEmitter()
+    local function fn()
+        local inst = CreateEntity()
+
+        inst.entity:AddTransform()
+        inst.entity:AddAnimState()
+        inst.entity:AddMiniMapEntity()
+        inst.entity:AddSoundEmitter()
         inst.entity:AddNetwork()
 
         MakeObstaclePhysics(inst, .4)
@@ -99,39 +130,45 @@ local function createmachine(level, name, soundprefix, sounddelay, techtree, mer
 
         MakeSnowCoveredPristine(inst)
         
+        inst.entity:SetPristine()
+
         if not TheWorld.ismastersim then
             return inst
         end
 
-        inst.entity:SetPristine()
+        inst:AddComponent("inspectable")
+        inst:AddComponent("prototyper")
+        inst.components.prototyper.onturnon = onturnon
+        inst.components.prototyper.onturnoff = onturnoff
+        inst.components.prototyper.trees = techtree
+        inst.components.prototyper.onactivate = onactivate
 
-		inst:AddComponent("inspectable")
-		inst:AddComponent("prototyper")
-		inst.components.prototyper.onturnon = onturnon
-		inst.components.prototyper.onturnoff = onturnoff
-		inst.components.prototyper.trees = techtree
-		inst.components.prototyper.onactivate = onactivate
+        inst:ListenForEvent("onbuilt", onbuilt)
 
-		inst:ListenForEvent("onbuilt", onbuilt)
+        inst:AddComponent("lootdropper")
+        inst:AddComponent("workable")
+        inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
+        inst.components.workable:SetWorkLeft(4)
+        inst.components.workable:SetOnFinishCallback(onhammered)
+        inst.components.workable:SetOnWorkCallback(onhit)       
+        MakeSnowCovered(inst)
 
-		inst:AddComponent("lootdropper")
-		inst:AddComponent("workable")
-		inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
-		inst.components.workable:SetWorkLeft(4)
-		inst.components.workable:SetOnFinishCallback(onhammered)
-		inst.components.workable:SetOnWorkCallback(onhit)		
-		MakeSnowCovered(inst)
+        MakeLargeBurnable(inst, nil, nil, true)
+        MakeLargePropagator(inst)
 
-		inst:AddComponent("hauntable")
-		inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
+        inst.OnSave = onsave 
+        inst.OnLoad = onload
 
-		return inst
-	end
-	return Prefab("common/objects/"..name, fn, assets)
+        inst:AddComponent("hauntable")
+        inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
+
+        return inst
+    end
+    return Prefab("common/objects/"..name, fn, assets, prefabs)
 end
 
 --Using old prefab names
 return createmachine(3, "researchlab3", "lvl3", 0.15, TUNING.PROTOTYPER_TREES.SHADOWMANIPULATOR, true),
-createmachine(4, "researchlab4", "lvl4", 0, TUNING.PROTOTYPER_TREES.PRESTIHATITATOR, false, spawnrabbits),
-MakePlacer("common/researchlab3_placer", "researchlab3", "researchlab3", "idle"),
-MakePlacer("common/researchlab4_placer", "researchlab4", "researchlab4", "idle")
+    createmachine(4, "researchlab4", "lvl4", 0, TUNING.PROTOTYPER_TREES.PRESTIHATITATOR, false, spawnrabbits),
+    MakePlacer("common/researchlab3_placer", "researchlab3", "researchlab3", "idle"),
+    MakePlacer("common/researchlab4_placer", "researchlab4", "researchlab4", "idle")

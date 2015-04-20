@@ -15,12 +15,24 @@ return {
 	ANNOUNCE_WIMPYTONORMAL="Wolfgang is better.",
 	ANNOUNCE_MIGHTYTONORMAL="I need to filly my mighty belly again!",
 
-
+	ANNOUNCE_NOSLEEPONFIRE = "Is too hot for sleeping.",
+	ANNOUNCE_NODANGERSIESTA = "Wolfgang prefer fight to nap.",
+	ANNOUNCE_NONIGHTSIESTA = "Wolfgang have principles against siesta at night.",
+	ANNOUNCE_NONIGHTSIESTA_CAVE = "Wolfgang is tense, too tense to relax.",
+	ANNOUNCE_NOHUNGERSIESTA = "Wolfgang take siesta after eating time.",
+	ANNOUNCE_SHELTER = "Wolfgang hide under tree.",
+	ANNOUNCE_BURNT = "Burny is not fair!",
+	ANNOUNCE_TOOL_SLIP = "Is too slippery for holding!",
+	ANNOUNCE_DAMP = "Water time.",
+	ANNOUNCE_WET = "Wolfgang does not like bath time.",
+	ANNOUNCE_WETTER = "It is like sitting in pond.",
+	ANNOUNCE_SOAKED = "Wolfgang is maybe now made of water.",
 	ANNOUNCE_ADVENTUREFAIL = "Next time I will be mightier!",
 	ANNOUNCE_BOOMERANG = "Ow! Why did you hurt me, throwy stick?",
 	ANNOUNCE_CHARLIE = "Show yourself!",
 	ANNOUNCE_CHARLIE_ATTACK = "Ow! It got me!",
 	ANNOUNCE_COLD = "Brrrrrrr! Is frosty!",
+	ANNOUNCE_HOT = "Hah, is sticky and hot!",
 	ANNOUNCE_CRAFTING_FAIL = "I need to gather more things to make that.",
 	ANNOUNCE_DUSK = "The scary time is coming soon.",
 	ANNOUNCE_EAT =
@@ -29,6 +41,8 @@ return {
 		PAINFUL = "Ooooh. I have belly ache.",
 		SPOILED = "Ew! Tastes like garbage!",
 		STALE = "Tastes funny.",
+		INVALID = "Hahah! That's not food!",
+		YUCKY = "Stomach is not strong enough for that.",
 	},
 	ANNOUNCE_ENTER_DARK = "I cannot see! I am scared!",
 	ANNOUNCE_ENTER_LIGHT = "I can see again!",
@@ -36,6 +50,7 @@ return {
 	ANNOUNCE_HUNGRY = "My mighty belly is empty!",
 	ANNOUNCE_HUNT_BEAST_NEARBY = "Animal is close!",
 	ANNOUNCE_HUNT_LOST_TRAIL = "No animal here.",
+	ANNOUNCE_HUNT_LOST_TRAIL_SPRING = "Animal tracks is mud now.",
 	ANNOUNCE_INV_FULL = "My mighty arms can carry no more.",
 	ANNOUNCE_PECKED = "What I do to deserve this?",
 	ANNOUNCE_TORCH_OUT = "Oh no! The light is gone!",
@@ -52,7 +67,7 @@ return {
     ANNOUNCE_THORNS = "Pointy is not fair!",
     ANNOUNCE_NODAYSLEEP_CAVE = "Is creepy in cave.",
     ANNOUNCE_BEES = "Bees! Nasty stinging bug men!",
-    ANNOUNCE_KNOCKEDOUT = "Ugh, Wolfgang must have hit head.",
+    ANNOUNCE_KNOCKEDOUT = "Ugh, I must have hit head.",
     ANNOUNCE_LOWRESEARCH = "Is tiny information.",
     ANNOUNCE_DEERCLOPS = "Sound like big strong man coming.",
     ANNOUNCE_MOSQUITOS = "Wolfgang need blood, get away sucking bugs!",
@@ -60,6 +75,8 @@ return {
 	ANNOUNCE_CANFIX = "\nMighty brain could make this better!",
 	ANNOUNCE_ACCOMPLISHMENT= "I am doing great things with tiny arrow!",
 	ANNOUNCE_ACCOMPLISHMENT_DONE = "I have defeated the tiny arrow!",	
+	ANNOUNCE_INSUFFICIENTFERTILIZER = "Is not enough poop.",
+	ANNOUNCE_LIGHTNING_DAMAGE_AVOIDED = "Lightning is weak compared to Wolfgang clothes!",
 	BATTLECRY =
 	{
 		GENERIC = "I will punch you!",
@@ -78,6 +95,261 @@ return {
 	},
 	DESCRIBE =
 	{
+		GLOMMER = "Why you follow me, weird bug?",
+        GLOMMERFLOWER = 
+        {
+        	GENERIC = "Is shiny flower.",
+        	DEAD = "Is sad and shiny flower.",
+        },
+        GLOMMERWINGS = "Small like fairy wings.",
+        GLOMMERFUEL = "Weird bug make weird poop.",
+        BELL = "Bell make dainty sound.",
+        STATUEGLOMMER = 
+        {	
+        	GENERIC = "Why statue is not flying?",
+        	EMPTY = "Smash!",
+    	},
+		WEBBERSKULL = "I crush skull!",
+		MOLE =
+		{
+			HELD = "Wolfgang have mercy for tiny soft animal.",
+			UNDERGROUND = "Stay underground where you are safe from Wolfgang.",
+			ABOVEGROUND = "Now you will know Wolfgang's strength!",
+		},
+		MOLEHILL = "Mole hole.",
+		MOLEHAT = "Mole skin is stretchy.",
+		NIGHTSTICK = "Wolfgang like fists better.",
+		RABBITHOUSE=
+		{
+			GENERIC = "I hear nomming inside.",
+			BURNT = "Nomming is over.",
+		},
+		TURF_DECIDUOUS = "Step stones.",
+		TURF_SANDY = "Step stones.",
+		TURF_BADLANDS = "Step stones.",
+		BEARGER = "Wolfgang not want to fight big bear.",
+		BEARGERVEST = "Big bear shirt.",
+		ICEPACK = "Furry bag.",
+		BEARGER_FUR = "Is like hair on Wolfgang chest.",
+		FURTUFT = "Fur from bear?", 
+		BIGFOOT = "Foot is too big!",
+		BONESHARD = "Wolfgang crush into even smaller bones!",
+		BUZZARD = "Carry on.",
+		CACTUS = 
+		{
+			GENERIC = "Wolfgang not like sharp plant.",
+			PICKED = "Ha! Is flat plant.",
+		},
+		CACTUS_MEAT_COOKED = "Is safe now.",
+		CACTUS_MEAT = "Spiky plant meat.",
+		CACTUS_FLOWER = "Is not worth it.",
+		COLDFIRE =
+		{
+			EMBERS = "The darkness is coming!",
+			GENERIC = "Good bye dark times!",
+			HIGH = "Is too much fire!",
+			LOW = "The fire is not cold enough.",
+			NORMAL = "Is good fire!",
+			OUT = "Uh oh. It turned off.",
+		},
+		CATCOON = "Wolfgang does not trust it.",
+		CATCOONDEN = 
+		{
+			GENERIC = "Stump is suspicious.",
+			EMPTY = "Wolfgang more comfortable now that stump is empty.",
+		},
+		CATCOONHAT = "Now Wolfgang not trust himself.",
+		COONTAIL = "Wiggly cat part!",
+		COOKPOT =
+		{
+			COOKING_LONG = "This take long time.",
+			COOKING_SHORT = "Is almost cook!",
+			DONE = "Is time to eat!",
+			EMPTY = "Empty pot make Wolfgang think hungry thoughts.",
+			BURNT = "Pot is dead.",
+		},
+		EYEBRELLAHAT =	"Is always looking up.",
+		ARMORDRAGONFLY = "Wolfgang not need protection.",
+		DRAGON_SCALES = "Glowy scales.",
+		DRAGONFLYCHEST = "Chest is not afraid of fire.",
+		DECIDUOUSTREE = 
+		{
+			BURNING = "I broke it.",
+			BURNT = "Is small and broken now.",
+			CHOPPED = "Ha! I have prevailed!",
+			GENERIC = "Hello, tree!",
+			POISON = "Is big and angry tree.",
+		},
+		ACORN_COOKED = "Wolfgang cook tree out of nut.",
+		BIRCHNUTDRAKE = "Is small and angry nut.",
+		FARMPLOT =
+		{
+			GENERIC = "I will grow mighty crops here!",
+			GROWING = "Grow my little friends! Grow!",
+			NEEDSFERTILIZER = "Dirt is not dirty enough to make plants.",
+			BURNT = "No more growing.",
+		},
+		COLDFIREPIT =
+		{
+			EMBERS = "The darkness is coming!",
+			GENERIC = "Good bye dark times!",
+			HIGH = "Is too much fire!",
+			LOW = "The fire is not cold enough.",
+			NORMAL = "Is good fire!",
+			OUT = "Uh oh. It turned off.",
+		},
+		FIRESUPPRESSOR = 
+		{	
+			ON = "I can throw better.",
+			OFF = "Machine know Wolfgang is stronger.",
+			LOWFUEL = "Are you hungry, machine?",
+		},
+		ICEHAT = "Why put big ice on head?",
+		LIGHTNINGGOAT = 
+		{
+			GENERIC = "Hello, goat.",
+			CHARGED = "Is flash before eyes.",
+		},
+		LIGHTNINGGOATHORN = "Tiny lightning bone.",
+		GOATMILK = "Milk for muscles!",
+		MEATRACK =
+		{
+			DONE = "Yum, meaty leather!",
+			DRYING = "Dry meaty things! Dry!",
+			DRYINGINRAIN = "Go away, rain! Meat is drying!",
+			GENERIC = "I can dry meat!",
+			BURNT = "Cannot dry meat now.",
+		},
+		MERMHEAD = 
+		{
+			GENERIC = "What a handsome devil!",
+			BURNT = "Not so nice looking now.",
+		},
+		MERMHOUSE = 
+		{
+			GENERIC = "The house was not strong enough.",
+			BURNT = "The house was really not strong enough.",
+		},
+		FLOWERSALAD = "Is not spinach, but maybe still work!",
+        ICECREAM = "Well, is Sunday after all.",
+        WATERMELONICLE = "Ha! Melon on a stick.",
+        TRAILMIX = "Berries and nuts, berries and nuts!",
+        HOTCHILI = "Haha, nothing is too spicy for Wolfgang!",
+        GUACAMOLE = "Wolfgang does not trust green mush.",
+		MOOSE = "Very strange creature.",
+		MOOSEEGG = "Breakfast for whole family!",
+		MOSSLING = "Mmmm. Is still breakfast, I think.",
+		FEATHERFAN = "Ha! Is as big as head!",
+		GOOSE_FEATHER = "Tickle tickle tickle!",
+		STAFF_TORNADO = "Spin and spin!",
+		PIGHEAD = 
+		{	
+			GENERIC = "Why long face?",
+			BURNT = "Why no face?",
+		},
+		PIGHOUSE =
+		{
+			FULL = "Hey! Come out here, pig man!",
+			GENERIC = "The door is too small for me.",
+			LIGHTSOUT = "Where did he go?",
+			BURNT = "Pig home is gone.",
+		},
+		FERTILIZER = "Bucket full of smelly.",
+		RAINOMETER = 
+		{	
+			GENERIC = "Splish! Splash!",
+			BURNT = "Crackle!",
+		},
+		RAINCOAT = "Dry is nice.",
+		RAINHAT = "Is like water off mole's back.",
+		RESEARCHLAB = 
+		{	
+			GENERIC = "I am not sure how I feel about... science.",
+			BURNT = "Science not so strong after all.",
+		},
+		RESEARCHLAB2 = 
+		{
+			GENERIC = "I am not sure how I feel about... science.",
+			BURNT = "Science not so strong after all.",
+		},
+		RESEARCHLAB3 = 
+		{
+			GENERIC = "What has Wolfgang done?",
+			BURNT = "Well, is over now.",
+		},
+		RESEARCHLAB4 = 
+		{
+			GENERIC = "Hat not just for head.",
+			BURNT = "Hat also for burning.",
+		},
+		RESURRECTIONSTATUE = 
+		{
+			GENERIC = "I'm not going to die.",
+			BURNT = "Better him than real life Wolfgang.",
+		},
+		ROCK_ICE = 
+		{
+			GENERIC = "Rocks made of water.",
+			MELTED = "I cannot grab water.",
+		},
+		ROCK_ICE_MELTED = "I cannot grab water.",
+		ICE = "Good for refreshing drink.",
+        REFLECTIVEVEST = "A vest's a vest.",
+		HAWAIIANSHIRT = "Is vacation shirt.",
+		TENT = 
+		{
+			GENERIC = "It is time for a mighty nap.",
+			BURNT = "Nothing left to nap in.",
+		},
+		SIESTAHUT = 
+		{
+			GENERIC = "Napping place.",
+			BURNT = "Napping place is gone.",
+		},
+		TRANSISTOR = "Science bean.",
+		TREASURECHEST = 
+		{
+			GENERIC = "I put stuff there!",
+			BURNT = "Nothing will stay inside.",
+		},
+		TUMBLEWEED = "Come back little tumbling ball!",
+		GRASS_UMBRELLA = "I do not like tiny umbrella.",
+		UNIMPLEMENTED = "I do not trust unfinished business.",
+		WALL_HAY = 
+		{	
+			GENERIC = "Wall is made of grass!",
+			BURNT = "Grass burned up!",
+		},
+		WALL_WOOD = 
+		{
+			GENERIC = "Hello, pointy sticks!",
+			BURNT = "Goodbye, pointy sticks!",
+		},
+		WARG = "Big puppy!",
+		WATERMELON = "So many seeds.",
+		WATERMELON_COOKED = "I cook seeds out of melon.",
+		WATERMELONHAT = "Why not wear melon on head! Haha!",
+		WINTEROMETER = 
+		{
+			GENERIC = "Cold go up! Red go down!",
+			BURNT = "Flames go up! Thermometer go down!",
+		},
+		HOMESIGN = 
+		{
+			GENERIC = "Is no time for reading signs!",
+			BURNT = "Sign can't be read.",
+		},
+		BEEBOX =
+		{
+			GENERIC = "Bees!",
+			READY = "Is ready for harvest!",
+			FULLHONEY = "Is ready for harvest!",
+			NOHONEY = "It has no honey.",
+			SOMEHONEY = "Bees are busy.",
+			BURNT = "Bees are burned.",
+		},
+		LIVINGTREE = "I do not like tree with eyes.",
+		ICESTAFF = "Frosted tip.",
 		WORMLIGHT = "Pretty light.",
 		WORM =
 		{
@@ -115,7 +387,6 @@ return {
 			GEMS = "Is empty.",
 		},
 		STAFFLIGHT = "It hurts to touch.",
-		RESEARCHLAB4 = "Hat not just for head.",
 
         ANCIENT_ALTAR =
         {
@@ -159,7 +430,6 @@ return {
 		MUSHTREE_TALL  ="Big mushtree is big.",
 		MUSHTREE_MEDIUM="Mushy bush.",
 		MUSHTREE_SMALL ="Mushy shrub.",
-		RABBITHOUSE="I hear nomming inside.",
 		SLURTLE="Ha! You are slow!",
 		SLURTLE_SHELLPIECES="Is broken.",
 		SLURTLEHAT="Keeps my head safe.",
@@ -216,6 +486,7 @@ return {
 		ASH =
 		{
 			GENERIC = "Is skeleton of fire.",
+			REMAINS_GLOMMERFLOWER = "Is burned pieces of flower from I teleport!",
 			REMAINS_EYE_BONE = "Is burned pieces of eyebone from I teleport!",
 			REMAINS_THINGIE = "Is burned pieces of some thing. Is dead now...",
 		},
@@ -231,11 +502,6 @@ return {
 		{
 			GENERIC = "Is fat and angry-looking.",
 			HELD = "Is safely in my pocket.",
-		},
-		BEEBOX =
-		{
-			GENERIC = "Bees!",
-			READY = "Is ready for harvest!",
 		},
 		BEEFALO =
 		{
@@ -255,6 +521,7 @@ return {
 		BERRYBUSH =
 		{
 			BARREN = "I need to poop on it.",
+			WITHERED = "Is too hot for bush.",
 			GENERIC = "Is full of food-balls!",
 			PICKED = "Eating part is gone.",
 		},
@@ -273,6 +540,7 @@ return {
 		BLOWDART_PIPE = "Dart do pain to enemies.",
 		BLUEGEM = "Pretty rock.",
 		BLUEPRINT = "Pretty pictures!",
+		BELL_BLUEPRINT = "Pretty pictures!",
 		BLUE_CAP = "Is good for me, I think.",
 		BLUE_CAP_COOKED = "Is not same.",
 		BLUE_MUSHROOM =
@@ -321,13 +589,6 @@ return {
 		COOKEDMEAT = "I made meat good with fire!",
 		COOKEDMONSTERMEAT = "I still do not want to eat this.",
 		COOKEDSMALLMEAT = "It is even smaller cooked!",
-		COOKPOT =
-		{
-			COOKING_LONG = "This take long time.",
-			COOKING_SHORT = "Is almost cook!",
-			DONE = "Is time to eat!",
-			EMPTY = "Empty pot make Wolfgang think hungry thoughts.",
-		},
 		CORN = "Is corn. What expect?",
 		CORN_COOKED = "Pop pop pop! Ha ha, funny corn.",
 		CORN_SEEDS = "Is seeds for grow corn.",
@@ -362,6 +623,12 @@ return {
 			UNLOCKED = "Rod thing is on!",
 		},
 		DIVININGRODSTART = "Is funny rod thing.",
+		DRAGONFLY = "I confuse: is dragonfly or a dragon-fly?",
+		LAVASPIT = 
+		{
+			HOT = "Is hot mouth germs.",
+			COOL = "Is cold, hard mouth germs.",
+		},
 		DRAGONFRUIT = "Is funny looking fruit.",
 		DRAGONFRUIT_COOKED = "Is cooked but still look funny.",
 		DRAGONFRUIT_SEEDS = "I use this to grow funny fruit.",
@@ -381,6 +648,11 @@ return {
 		EGGPLANT_COOKED = "Has no yolk! Yolk is strongest part!",
 		EGGPLANT_SEEDS = "Teensy fake egg plant.",
 		STUFFEDEGGPLANT = "I make yolk of other foods.",
+		ACORN = 
+		{
+		    GENERIC = "I could crush this tree-seed with my hands!",
+		    PLANTED = "It will be tree soon.",
+		},
 		EVERGREEN =
 		{
 			BURNING = "I broke it.",
@@ -396,12 +668,6 @@ return {
 			GENERIC = "Cheer up, tree!",
 		},
 		EYEPLANT = "They are not what they seem.",
-		FARMPLOT =
-		{
-			GENERIC = "I will grow mighty crops here!",
-			GROWING = "Grow my little friends! Grow!",
-			NEEDSFERTILIZER = "Dirt is not dirty enough to make plants.",
-		},
 		FEATHERHAT = "Is silly hat of feather. Is Wolfgang bird now?",
 		FEATHER_CROW = "Is feather of bird black.",
 		FEATHER_ROBIN = "Is feather of bird red.",
@@ -454,9 +720,10 @@ return {
 		GRASS =
 		{
 			BARREN = "It needs poop.",
+			WITHERED = "Grass has been defeated by heat.",
 			BURNING = "Not good!",
 			GENERIC = "Is grass.",
-			PICKED = "I have defeated the grass!",
+			PICKED = "The grass has been defeated!",
 		},
 		GREEN_CAP = "Is for salads. Blech.",
 		GREEN_CAP_COOKED = "Is not same.",
@@ -472,12 +739,12 @@ return {
 		HEALINGSALVE = "It makes me feel alive!",
 		HEATROCK =
 		{
-			COLD = "Cold rock is useless!",
+			FROZEN = "Brrr! Is cold rock!",
+			COLD = "Rock is a little bit cold.",
 			GENERIC = "This round rock is like my head!",
-			HOT = "Is finally hot enough!",
-			WARM = "Is nice to touch!",
+			WARM = "Is pretty normal rock.",
+			HOT = "Is hot enough for Wolfgang!",
 		},
-		HOMESIGN = "Is no time for reading signs!",
 		HONEY = "Is yum!",
 		HONEYCOMB = "Bee used to live inside.",
 		HONEYHAM = "Big meat with sweet is good meat.",
@@ -551,16 +818,8 @@ return {
 		MAXWELLTHRONE = "Scary chair!",
 		MEAT = "Meat makes me strong!",
 		MEATBALLS = "Ball of meats make me strong!",
-		MEATRACK =
-		{
-			DONE = "Yum, meaty leather!",
-			DRYING = "Dry meaty things! Dry!",
-			GENERIC = "I can dry meat!",
-		},
 		MEAT_DRIED = "Look like leather, taste like meat.",
 		MERM = "Is fishy man!",
-		MERMHEAD = "What a handsome devil!",
-		MERMHOUSE = "The house was not strong enough.",
 		MONSTERLASAGNA = "Taste like hairs and meats with noodle.",
 		MONSTERMEAT = "It is not looking like food.",
 		MONSTERMEAT_DRIED = "Look like leather, taste like leather.",
@@ -591,13 +850,6 @@ return {
 		PHLEGM = "A ha ha ha! Boogers! Oh ho ho!",
 		PICKAXE = "Pick!",
 		PIGGYBACK = "Smelly bag!",
-		PIGHEAD = "Why long face?",
-		PIGHOUSE =
-		{
-			FULL = "Hey! Come out here, pig man!",
-			GENERIC = "The door is too small for me.",
-			LIGHTSOUT = "Where did he go?",
-		},
 		PIGKING = "Ha! Is good people!",
 		PIGMAN =
 		{
@@ -622,6 +874,7 @@ return {
 			GENERIC = "Leafy!",
 			GROWING = "Is still growing.",
 			READY = "Mmmm. Is tasty now.",
+			WITHERED = "Is sad and dried plant.",
 		},
 		POMEGRANATE = "Look like smartypants' brain.",
 		POMEGRANATE_COOKED = "Ha ha ha! I cook brain! Not so smart now.",
@@ -639,8 +892,11 @@ return {
 			GENERIC = "Tiny rabbit! Hide from me!",
 			HELD = "He is my friend.",
 		},
-		RABBITHOLE = "You can not hide forever, jumping meat!",
-		RAINOMETER = "Splish! Splash!",
+		RABBITHOLE = 
+		{
+			GENERIC = "You can not hide forever, jumping meat!",
+			SPRING = "Is busy time in rabbit home.",
+		},
 		RATATOUILLE = "Is food. Sort of.",
 		RAZOR = "My skin is too strong for hairs!",
 		REDGEM = "Pretty rock.",
@@ -664,10 +920,6 @@ return {
             BROKEN = "Smashed all the way!",
         },
         RUBBLE = "Broken house stuff.",
-		RESEARCHLAB = "I am not sure how I feel about... science.",
-		RESEARCHLAB2 = "I am not sure how I feel about... science.",
-		RESEARCHLAB3 = "What has Wolfgang done?",
-		RESURRECTIONSTATUE = "I'm not going to die.",
 		RESURRECTIONSTONE = "Hop on rock!",
 		ROBIN =
 		{
@@ -700,6 +952,7 @@ return {
 		SAPLING =
 		{
 			BURNING = "Oops.",
+			WITHERED = "Puny tree could not take heat.",
 			GENERIC = "Puny tree! I am stronger than you!",
 			PICKED = "Ha! Ha! Ha! Tree is floppy!",
 		},
@@ -709,6 +962,16 @@ return {
 		SHOVEL = "Dirt Spoon!",
 		SILK = "Is too fancy.",
 		SKELETON = "Not enough muscle.",
+		--SKELETON_PLAYER = "Where did all muscles go?!",
+
+		SKELETON_PLAYER =
+		{
+			MALE = "Hah. %s did not have enough muscle to fend off %s.",
+			FEMALE = "Hah. %s did not have enough muscle to fend off %s.",
+			ROBOT = "Hah. %s did not have enough muscle to fend off %s.",
+			DEFAULT = "Hah. %s did not have enough muscle to fend off %s.",
+		},
+
 		SKULLCHEST = "This man had big head!",
 		SMALLBIRD =
 		{
@@ -745,7 +1008,7 @@ return {
 		STRAWHAT = "Is good hat!",
 		SUNKBOAT = "Is broken!",
 		SWEATERVEST = "Is vest with pattern for fancy man.",
-		TAFFY = "Is sweet candy thing.",
+		TAFFY = "Is taffy for crushing!",
 		TALLBIRD = "Is tallest bird!",
 		TALLBIRDEGG = "There is bird inside.",
 		TALLBIRDEGG_COOKED = "Cooked bird. Good for breakfast!",
@@ -779,7 +1042,6 @@ return {
 		TELEPORTATO_CRANK = "Bendy thing is made of metal!",
 		TELEPORTATO_POTATO = "Ha ha! Ha ha! What ugly potato!",
 		TELEPORTATO_RING = "I will bend into perfect circle!",
-		TENT = "It is time for a mighty nap.",
 		TENTACLE = "Skinny monster!",
 		TENTACLESPOTS = "Yuck! Slimy!",
         TENTACLESPIKE = "Perfect for sticking!",
@@ -792,7 +1054,6 @@ return {
 		TRAP = "No trap can hold me!",
 		TRAP_TEETH = "It bites bottoms from below!",
 		TRAP_TEETH_MAXWELL = "Whoever put this is bad fella!",
-		TREASURECHEST = "I put stuff there!",
 		TRINKET_1 = "Is junk, I think.",
 		TRINKET_10 = "Is junk, I think.",
 		TRINKET_11 = "Is junk, I think.",
@@ -815,13 +1076,11 @@ return {
 		TWIGS = "Puny twigs! I can break them!",
 		UMBRELLA = "The rain hurts my mighty skin.",
 		WAFFLES = "Why does bread have holes?",
-		WALL_HAY = "Wall is made of grass!",
 		WALL_HAY_ITEM = "Scratchy straws!",
 		WALL_STONE = "Wall is strong like me!",
 		WALL_STONE_ITEM = "Piles of rocks!",
 		WALL_RUINS = "Old Wall is strong!",
 		WALL_RUINS_ITEM = "Stack of old rocks!",
-		WALL_WOOD = "Hello, pointy sticks!",
 		WALL_WOOD_ITEM = "Pokey sticks!",
 		WALRUS = "Sea cow man!",
 		WALRUSHAT = "I have sea cow man's hat!",
@@ -835,7 +1094,6 @@ return {
 		WASPHIVE = "Mind says no. Muscles say yes!",
 		WETGOOP = "Wolfgang ruin food!",
 		WINTERHAT = "It make ears happy in cold!",
-		WINTEROMETER = "Cold go up! Red go down!",
 		WORMHOLE =
 		{
 			GENERIC = "Like soft pillow, growing on ground.",
@@ -869,12 +1127,11 @@ return {
         SPIDER_DROPPER = "Scary spider from above.", 
         THULECITE = "Is pretty rock.",
         YELLOWAMULET = "Is glowing yellow.",    
-		ACCOMPLISHMENT_SHRINE = "I will defeat you, tiny arrow!",  
-		LIVINGTREE = "Tree is spooky!",
-		ICESTAFF = "Is my cold stick!",              
+		ACCOMPLISHMENT_SHRINE = "I will defeat you, tiny arrow!",                
 	},
 	DESCRIBE_GENERIC = "What is this thing?",
 	DESCRIBE_TOODARK = "Help me! It is dark!",
+	DESCRIBE_SMOLDERING = "Is almost on fire.",
 	EAT_FOOD =
 	{
 		TALLBIRDEGG_CRACKED = "This egg too crunchy.",

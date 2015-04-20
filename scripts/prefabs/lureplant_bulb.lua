@@ -2,25 +2,26 @@ require "prefabutil"
 
 local assets =
 {
-	Asset("ANIM", "anim/eyeplant_bulb.zip"),
+    Asset("ANIM", "anim/eyeplant_bulb.zip"),
     Asset("ANIM", "anim/eyeplant_trap.zip"),
 }
 
 local function ondeploy(inst, pt)
     local lp = SpawnPrefab("lureplant")
     if lp then
-        lp.Transform:SetPosition(pt.x, pt.y, pt.z)
+        lp.Transform:SetPosition(pt.x, pt.y, pt.z) 
         inst.components.stackable:Get():Remove()
         lp.sg:GoToState("spawn")
+        MakeDragonflyBait(inst, 1)
     end 
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
     MakeInventoryPhysics(inst)
@@ -29,20 +30,22 @@ local function fn()
     inst.AnimState:SetBuild("eyeplant_bulb")
     inst.AnimState:PlayAnimation("idle")
 
+    MakeDragonflyBait(inst, 3)
+
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-
     inst:AddComponent("stackable")
-	inst.components.stackable.maxsize = TUNING.STACK_SIZE_LARGEITEM    
+    inst.components.stackable.maxsize = TUNING.STACK_SIZE_LARGEITEM    
     inst:AddComponent("inspectable")
 
     inst:AddComponent("fuel")
     inst.components.fuel.fuelvalue = TUNING.LARGE_FUEL
 
-	MakeSmallBurnable(inst, TUNING.LARGE_BURNTIME)
+    MakeSmallBurnable(inst, TUNING.LARGE_BURNTIME)
     MakeSmallPropagator(inst)
 
     inst:AddComponent("inventoryitem")

@@ -2,7 +2,7 @@
 package.path = "scripts\\?.lua;scriptlibs\\?.lua"
 
 --defines
-math.randomseed(TheSim:GetRealTime())
+math.randomseed(os.time())
 MAIN = 1
 ENCODE_SAVES = BRANCH ~= "dev"
 CHEATS_ENABLED = BRANCH == "dev" or (PLATFORM == "PS4" and CONFIGURATION ~= "PRODUCTION")

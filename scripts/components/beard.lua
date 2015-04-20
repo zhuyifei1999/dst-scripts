@@ -15,6 +15,7 @@ local Beard = Class(function(self, inst)
     self.callbacks = {}
     self.prize = nil
     self.bits = 0
+    self.insulation_factor = 1
         
     self:WatchWorldState("cycles", OnDayComplete)
     
@@ -26,7 +27,7 @@ function Beard:OnRemoveFromEntity()
 end
 
 function Beard:GetInsulation()
-	return self.bits * TUNING.INSULATION_PER_BEARD_BIT
+	return self.bits * TUNING.INSULATION_PER_BEARD_BIT * self.insulation_factor
 end
 
 function Beard:ShouldTryToShave(who, whithwhat)

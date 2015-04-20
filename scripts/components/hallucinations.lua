@@ -177,7 +177,7 @@ end
 --------------------------------------------------------------------------
 
 local function OnIsNight(inst, isnight)
-    if isnight then
+    if isnight and not TheWorld.state.isfullmoon then
         Start(true)
     else
         Stop(true)

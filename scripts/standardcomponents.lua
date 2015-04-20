@@ -1,36 +1,110 @@
 function DefaultIgniteFn(inst)
-	if inst.components.burnable then inst.components.burnable:Ignite() end 
+    if inst.components.burnable ~= nil then
+        inst.components.burnable:StartWildfire()
+    end
 end
 
 function DefaultBurnFn(inst)
-    if inst.components.workable and inst.components.workable.action ~= ACTIONS.HAMMER then
-        inst.components.workable:SetWorkLeft(0)
+    if not (inst:HasTag("tree") or inst:HasTag("structure")) then
+        inst.persists = false
     end
-    if inst.components.pickable then
-        inst:RemoveComponent("pickable")
-    end
-    if inst.components.growable then
-        inst:RemoveComponent("growable")
-    end
-    if inst.components.inventoryitem and not inst.components.inventoryitem:IsHeld() then
-        inst:RemoveComponent("inventoryitem")
-    end
-    
-    if not inst:HasTag("tree") then
-		inst.persists = false
-	end
 end
 
 function DefaultBurntFn(inst)
+    if inst.components.growable ~= nil then
+        inst:RemoveComponent("growable")
+    end
+
+    if inst.inventoryitemdata ~= nil then
+        inst.inventoryitemdata = nil
+    end
+
+    if inst.components.workable ~= nil and inst.components.workable.action ~= ACTIONS.HAMMER then
+        inst.components.workable:SetWorkLeft(0)
+    end
+
     local ash = SpawnPrefab("ash")
     ash.Transform:SetPosition(inst.Transform:GetWorldPosition())
-    
-    if inst.components.stackable then
-        ash.components.stackable.stacksize = inst.components.stackable.stacksize
+
+    if inst.components.stackable ~= nil then
+        ash.components.stackable.stacksize = math.min(ash.components.stackable.maxsize, inst.components.stackable.stacksize)
     end
 
     inst:Remove()
 end
+
+function DefaultExtinguishFn(inst)
+    if not (inst:HasTag("tree") or inst:HasTag("structure")) then
+        inst.persists = true
+    end
+end
+
+function DefaultBurntStructureFn(inst)
+    inst:AddTag("burnt")
+    inst.components.burnable.canlight = false
+    if inst.AnimState then
+        inst.AnimState:PlayAnimation("burnt", true)
+    end
+    inst:PushEvent("burntup")
+    if inst.SoundEmitter then
+        inst.SoundEmitter:KillSound("idlesound")
+        inst.SoundEmitter:KillSound("sound")
+        inst.SoundEmitter:KillSound("loop")
+        inst.SoundEmitter:KillSound("snd")
+    end
+    if inst.MiniMapEntity then
+        inst.MiniMapEntity:SetEnabled(false)
+    end
+    if inst.components.workable then
+        inst.components.workable:SetWorkLeft(1)
+    end
+    if inst.components.childspawner then
+        if inst:GetTimeAlive() > 5 then inst.components.childspawner:ReleaseAllChildren() end
+        inst.components.childspawner:StopSpawning()
+        inst:RemoveComponent("childspawner")
+    end
+    if inst.components.container then
+        inst.components.container:DropEverything()
+        inst.components.container:Close()
+        inst:RemoveComponent("container")
+    end
+    if inst.components.dryer then
+        inst.components.dryer:StopDrying("fire")
+        inst:RemoveComponent("dryer")
+    end
+    if inst.components.stewer then
+        inst.components.stewer:StopCooking("fire") 
+        inst:RemoveComponent("stewer")
+    end
+    if inst.components.harvestable then
+        inst.components.harvestable:StopGrowing()
+        inst:RemoveComponent("harvestable")
+    end
+    if inst.components.sleepingbag then
+        inst:RemoveComponent("sleepingbag")
+    end
+    if inst.components.grower then
+        inst.components.grower:Reset("fire")
+        inst:RemoveComponent("grower")
+    end
+    if inst.components.spawner then
+        if inst:GetTimeAlive() > 5 then inst.components.spawner:ReleaseChild() end
+        inst:RemoveComponent("spawner")
+    end
+    if inst.components.prototyper then
+        inst:RemoveComponent("prototyper")
+    end
+    if inst.Light then
+        inst.Light:Enable(false)
+    end
+    if inst.components.burnable then
+        inst:RemoveComponent("burnable")
+    end
+    inst:RemoveTag("dragonflybait_lowprio")
+    inst:RemoveTag("dragonflybait_medprio")
+    inst:RemoveTag("dragonflybait_highprio")
+end
+
 
 local burnfx = 
 {
@@ -38,31 +112,52 @@ local burnfx =
     generic = "fire",
 }
 
-function MakeSmallBurnable(inst, time, offset)
+function MakeSmallBurnable(inst, time, offset, structure)
     inst:AddComponent("burnable")
     inst.components.burnable:SetFXLevel(2)
-    inst.components.burnable:SetBurnTime(time or 5)
-    inst.components.burnable:AddBurnFX(burnfx.generic, offset or Vector3(0, 0, 0) )
-    inst.components.burnable:SetOnIgniteFn(DefaultBurnFn)
-    inst.components.burnable:SetOnBurntFn(DefaultBurntFn)
-end
-
-function MakeMediumBurnable(inst, time, offset)
-    inst:AddComponent("burnable")
-    inst.components.burnable:SetFXLevel(3)
     inst.components.burnable:SetBurnTime(time or 10)
     inst.components.burnable:AddBurnFX(burnfx.generic, offset or Vector3(0, 0, 0) )
     inst.components.burnable:SetOnIgniteFn(DefaultBurnFn)
     inst.components.burnable:SetOnBurntFn(DefaultBurntFn)
+    inst.components.burnable:SetOnExtinguishFn(DefaultExtinguishFn)
+    if structure then
+        inst.components.burnable:SetOnBurntFn(DefaultBurntStructureFn)
+        MaybeMakeDragonflyBait(inst, 2)
+    else
+        inst.components.burnable:SetOnBurntFn(DefaultBurntFn)
+    end
 end
 
-function MakeLargeBurnable(inst, time, offset)
+function MakeMediumBurnable(inst, time, offset, structure)
     inst:AddComponent("burnable")
-    inst.components.burnable:SetFXLevel(4)
-    inst.components.burnable:SetBurnTime(time or 15)
+    inst.components.burnable:SetFXLevel(3)
+    inst.components.burnable:SetBurnTime(time or 20)
     inst.components.burnable:AddBurnFX(burnfx.generic, offset or Vector3(0, 0, 0) )
     inst.components.burnable:SetOnIgniteFn(DefaultBurnFn)
     inst.components.burnable:SetOnBurntFn(DefaultBurntFn)
+    inst.components.burnable:SetOnExtinguishFn(DefaultExtinguishFn)
+    if structure then
+        inst.components.burnable:SetOnBurntFn(DefaultBurntStructureFn)
+        MaybeMakeDragonflyBait(inst, 2)
+    else
+        inst.components.burnable:SetOnBurntFn(DefaultBurntFn)
+    end
+end
+
+function MakeLargeBurnable(inst, time, offset, structure)
+    inst:AddComponent("burnable")
+    inst.components.burnable:SetFXLevel(4)
+    inst.components.burnable:SetBurnTime(time or 30)
+    inst.components.burnable:AddBurnFX(burnfx.generic, offset or Vector3(0, 0, 0) )
+    inst.components.burnable:SetOnIgniteFn(DefaultBurnFn)
+    inst.components.burnable:SetOnBurntFn(DefaultBurntFn)
+    inst.components.burnable:SetOnExtinguishFn(DefaultExtinguishFn)
+    if structure then
+        inst.components.burnable:SetOnBurntFn(DefaultBurntStructureFn)
+        MaybeMakeDragonflyBait(inst, 2)
+    else
+        inst.components.burnable:SetOnBurntFn(DefaultBurntFn)
+    end
 end
 
 function MakeSmallPropagator(inst)
@@ -71,24 +166,38 @@ function MakeSmallPropagator(inst)
     inst.components.propagator.acceptsheat = true
     inst.components.propagator:SetOnFlashPoint(DefaultIgniteFn)
     inst.components.propagator.flashpoint = 5 + math.random()*5
-    inst.components.propagator.decayrate = 1
-    inst.components.propagator.propagaterange = 3
-    inst.components.propagator.heatoutput = 8
+    inst.components.propagator.decayrate = 0.5
+    inst.components.propagator.propagaterange = 5
+    inst.components.propagator.heatoutput = 5--8
     
     inst.components.propagator.damagerange = 2
     inst.components.propagator.damages = true
 end
 
-function MakeLargePropagator(inst)
-    
+function MakeMediumPropagator(inst)
+
     inst:AddComponent("propagator")
     inst.components.propagator.acceptsheat = true
     inst.components.propagator:SetOnFlashPoint(DefaultIgniteFn)
     inst.components.propagator.flashpoint = 15+math.random()*10
-    inst.components.propagator.decayrate = 1
-    inst.components.propagator.propagaterange = 6
-    inst.components.propagator.heatoutput = 12
-    
+    inst.components.propagator.decayrate = 0.5
+    inst.components.propagator.propagaterange = 7
+    inst.components.propagator.heatoutput = 8.5--12
+
+    inst.components.propagator.damagerange = 3
+    inst.components.propagator.damages = true
+end
+
+function MakeLargePropagator(inst)
+
+    inst:AddComponent("propagator")
+    inst.components.propagator.acceptsheat = true
+    inst.components.propagator:SetOnFlashPoint(DefaultIgniteFn)
+    inst.components.propagator.flashpoint = 45+math.random()*10
+    inst.components.propagator.decayrate = 0.5
+    inst.components.propagator.propagaterange = 8
+    inst.components.propagator.heatoutput = 9.5--12
+
     inst.components.propagator.damagerange = 3
     inst.components.propagator.damages = true
 end
@@ -172,6 +281,7 @@ function MakeInventoryPhysics(inst)
     phys:ClearCollisionMask()
     phys:CollidesWith(COLLISION.WORLD)
     phys:CollidesWith(COLLISION.OBSTACLES)
+    phys:CollidesWith(COLLISION.SMALLOBSTACLES)
 end
 
 function MakeCharacterPhysics(inst, mass, rad)
@@ -184,7 +294,23 @@ function MakeCharacterPhysics(inst, mass, rad)
     phys:ClearCollisionMask()
     phys:CollidesWith(COLLISION.WORLD)
     phys:CollidesWith(COLLISION.OBSTACLES)
+    phys:CollidesWith(COLLISION.SMALLOBSTACLES)
     phys:CollidesWith(COLLISION.CHARACTERS)
+    phys:CollidesWith(COLLISION.GIANTS)
+end
+
+function MakeGiantCharacterPhysics(inst, mass, rad)
+    local phys = inst.entity:AddPhysics()
+    phys:SetMass(mass)
+    phys:SetCapsule(rad, 1)
+    phys:SetFriction(0)
+    phys:SetDamping(5)
+    phys:SetCollisionGroup(COLLISION.GIANTS)
+    phys:ClearCollisionMask()
+    phys:CollidesWith(COLLISION.WORLD)
+    phys:CollidesWith(COLLISION.OBSTACLES)
+    phys:CollidesWith(COLLISION.CHARACTERS)
+    phys:CollidesWith(COLLISION.GIANTS)
 end
 
 function MakeGhostPhysics(inst, mass, rad)
@@ -198,6 +324,7 @@ function MakeGhostPhysics(inst, mass, rad)
     phys:CollidesWith(COLLISION.WORLD)
     --phys:CollidesWith(COLLISION.OBSTACLES)
     phys:CollidesWith(COLLISION.CHARACTERS)
+    phys:CollidesWith(COLLISION.GIANTS)
 end
 
 function ChangeToGhostPhysics(inst)
@@ -207,6 +334,7 @@ function ChangeToGhostPhysics(inst)
     phys:CollidesWith(COLLISION.WORLD)
     --phys:CollidesWith(COLLISION.OBSTACLES)
     phys:CollidesWith(COLLISION.CHARACTERS)
+    phys:CollidesWith(COLLISION.GIANTS)
 end
 
 function ChangeToCharacterPhysics(inst)
@@ -215,7 +343,9 @@ function ChangeToCharacterPhysics(inst)
     phys:ClearCollisionMask()
     phys:CollidesWith(COLLISION.WORLD)
     phys:CollidesWith(COLLISION.OBSTACLES)
+    phys:CollidesWith(COLLISION.SMALLOBSTACLES)
     phys:CollidesWith(COLLISION.CHARACTERS)
+    phys:CollidesWith(COLLISION.GIANTS)
 end
 
 function ChangeToObstaclePhysics(inst)
@@ -226,6 +356,7 @@ function ChangeToObstaclePhysics(inst)
     --phys:CollidesWith(COLLISION.GROUND)
     phys:CollidesWith(COLLISION.ITEMS)
     phys:CollidesWith(COLLISION.CHARACTERS)
+    phys:CollidesWith(COLLISION.GIANTS)
 end
 
 function ChangeToInventoryPhysics(inst)
@@ -234,6 +365,7 @@ function ChangeToInventoryPhysics(inst)
     phys:ClearCollisionMask()
     phys:CollidesWith(COLLISION.WORLD)
     phys:CollidesWith(COLLISION.OBSTACLES)
+    phys:CollidesWith(COLLISION.SMALLOBSTACLES)
 end
 
 function MakeObstaclePhysics(inst, rad, height)
@@ -247,6 +379,23 @@ function MakeObstaclePhysics(inst, rad, height)
     phys:SetMass(0) 
     phys:SetCapsule(rad,height)
     phys:SetCollisionGroup(COLLISION.OBSTACLES)
+    phys:ClearCollisionMask()
+    phys:CollidesWith(COLLISION.ITEMS)
+    phys:CollidesWith(COLLISION.CHARACTERS)
+    phys:CollidesWith(COLLISION.GIANTS)
+end
+
+function MakeSmallObstaclePhysics(inst, rad, height)
+    height = height or 2
+    inst:AddTag("blocker")
+    local phys = inst.entity:AddPhysics()
+    --this is lame. Bullet wants 0 mass for static objects, 
+    -- for for some reason it is slow when we do that
+    
+    -- Doesnt seem to slow anything down now.
+    phys:SetMass(0) 
+    phys:SetCapsule(rad,height)
+    phys:SetCollisionGroup(COLLISION.SMALLOBSTACLES)
     phys:ClearCollisionMask()
     phys:CollidesWith(COLLISION.ITEMS)
     phys:CollidesWith(COLLISION.CHARACTERS)
@@ -285,6 +434,100 @@ function MakeSnowCovered(inst)
         inst.AnimState:Show("snow")
     else
         inst.AnimState:Hide("snow")
+    end
+end
+
+local function oneat(inst)
+    if inst.components.perishable ~= nil then
+        inst.components.perishable:SetPercent(1)
+    end
+end
+
+local function onperish(inst)
+    local owner = inst.components.inventoryitem.owner
+    if owner ~= nil then
+        inst.components.inventoryitem:RemoveFromOwner(true)
+
+        local container = owner.components.inventory or owner.components.container or nil
+        if container ~= nil and inst.components.lootdropper ~= nil then
+            local stacksize = inst.components.stackable ~= nil and inst.components.stackable.stacksize or 1
+            for i = 1, stacksize do
+                local loots = inst.components.lootdropper:GenerateLoot()
+                for k, v in pairs(loots) do
+                    local loot = SpawnPrefab(v)
+                    container:GiveItem(loot)
+                end
+            end
+        end
+
+        inst:Remove()
+    end
+end
+
+function MakeFeedablePetPristine(inst)
+    inst:AddTag("show_spoilage")
+    inst:AddTag("pet")
+end
+
+function MakeFeedablePet(inst, starvetime, oninventory, ondropped)
+    MakeFeedablePetPristine(inst)
+
+    --This is acceptable.  Some eaters are added already to specify diets.
+    if inst.components.eater == nil then
+        inst:AddComponent("eater")
+    end
+    inst.components.eater:SetOnEatFn(oneat)
+
+    --We want to see the warnings for duplicating perishable
+    inst:AddComponent("perishable")
+    inst.components.perishable:SetPerishTime(starvetime)
+    inst.components.perishable:StopPerishing()
+    inst.components.perishable:SetOnPerishFn(onperish)
+
+    inst.components.inventoryitem:SetOnPutInInventoryFn(function(inst)
+        inst.components.perishable:StartPerishing()
+        if oninventory ~= nil then
+            oninventory(inst)
+        end
+    end)
+
+    inst.components.inventoryitem:SetOnDroppedFn(function(inst)
+        inst.components.perishable:StopPerishing()
+        if ondropped ~= nil then
+            ondropped(inst)
+        end
+    end)
+end
+
+local dragonprioritytag =
+{
+    "dragonflybait_lowprio",
+    "dragonflybait_medprio",
+    "dragonflybait_highprio",
+}
+function MakeDragonflyBait(inst, priority)
+    priority = priority or 1
+    if inst.dragonflypriority ~= priority then
+        if inst.dragonflypriority ~= nil then
+            inst:RemoveTag(dragonprioritytag[inst.dragonflypriority])
+        end
+        inst.dragonflypriority = priority
+        inst:AddTag(dragonprioritytag[priority])
+    end
+end
+
+-- Used by the standard components above to only add the tags if it doesn't already have one
+function MaybeMakeDragonflyBait(inst, priority)
+    if inst.dragonflypriority == nil then
+        inst.dragonflypriority = priority or 1
+        inst:AddTag(dragonprioritytag[inst.dragonflypriority])
+    end
+end
+
+function RemoveDragonflyBait(inst)
+    if inst.dragonflypriority ~= nil then
+        inst:RemoveTag(dragonprioritytag[inst.dragonflypriority])
+        inst.dragonflypriority = nil
     end
 end
 
@@ -719,4 +962,30 @@ function AddHauntableCustomReaction(inst, fn, secondrxn, ignoreinitialresult, ig
         end
         return result
     end)
+end
+
+function AddHauntableDropItemOrWork(inst)
+    if not inst.components.hauntable then inst:AddComponent("hauntable") end
+	inst.components.hauntable.cooldown = TUNING.HAUNT_COOLDOWN_SMALL
+    inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
+		local ret = false
+		if math.random() <= TUNING.HAUNT_CHANCE_OCCASIONAL then
+			if inst.components.container then
+				local item = inst.components.container:FindItem(function(item) return not item:HasTag("nosteal") end)
+				if item then
+					inst.components.container:DropItem(item)
+					inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
+					ret = true
+				end
+			end
+		end
+		if math.random() <= TUNING.HAUNT_CHANCE_VERYRARE then
+			if inst.components.workable then
+				inst.components.workable:WorkedBy(haunter, 1)
+				inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
+				ret = true
+			end
+		end
+		return ret
+	end)
 end

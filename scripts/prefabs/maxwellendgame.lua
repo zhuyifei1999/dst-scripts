@@ -1,4 +1,4 @@
-assets = 
+local assets = 
 {
 	Asset("ANIM", "anim/maxwell_endgame.zip"),
 	Asset("SOUND", "sound/maxwell.fsb"),

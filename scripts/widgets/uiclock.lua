@@ -32,7 +32,6 @@ local UIClock = Class(Widget, function(self)
     self._rim = nil
     self._hands = nil
     self._text = nil
-    self._worldnum = SaveGameIndex:GetSlotWorld()
     self._showingcycles = nil
     self._cycles = nil
     self._phase = nil

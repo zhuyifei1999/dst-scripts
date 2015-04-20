@@ -101,12 +101,12 @@ local function EquipBlowdart(inst)
 end
 
 local function create_common(build, scale, tag)
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
-	inst.entity:AddDynamicShadow()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
+    inst.entity:AddDynamicShadow()
     inst.entity:AddNetwork()
 
     MakeCharacterPhysics(inst, 50, .5)
@@ -126,16 +126,16 @@ local function create_common(build, scale, tag)
         inst:AddTag(tag)
     end
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-
     inst:AddComponent("locomotor")
     inst.components.locomotor.runspeed = 4
     inst.components.locomotor.walkspeed = 2
-    
+
     inst:SetStateGraph("SGwalrus")
     inst.soundgroup = "mctusk"
 
@@ -145,7 +145,7 @@ local function create_common(build, scale, tag)
     inst.components.sleeper:SetSleepTest(ShouldSleep)
 
     inst:AddComponent("eater")
-    inst.components.eater:SetCarnivore()
+    inst.components.eater:SetDiet({ FOODTYPE.MEAT }, { FOODTYPE.MEAT })
 
     inst:AddComponent("combat")
     inst.components.combat.hiteffectsymbol = "pig_torso"

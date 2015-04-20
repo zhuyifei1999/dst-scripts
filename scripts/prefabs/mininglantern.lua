@@ -1,7 +1,7 @@
 local assets =
 {
-	Asset("ANIM", "anim/lantern.zip"),
-	Asset("ANIM", "anim/swap_lantern.zip"),
+    Asset("ANIM", "anim/lantern.zip"),
+    Asset("ANIM", "anim/swap_lantern.zip"),
     Asset("SOUND", "sound/wilson.fsb"),
 }
 
@@ -99,13 +99,13 @@ local function onequip(inst, owner)
     owner.AnimState:Show("ARM_carry")
     owner.AnimState:Hide("ARM_normal")
     owner.AnimState:OverrideSymbol("lantern_overlay", "swap_lantern", "lantern_overlay")
-	
+    
     if inst.components.fueled:IsEmpty() then
         owner.AnimState:OverrideSymbol("swap_object", "swap_lantern", "swap_lantern_off")
-		owner.AnimState:Hide("LANTERN_OVERLAY") 
+        owner.AnimState:Hide("LANTERN_OVERLAY") 
     else
         owner.AnimState:OverrideSymbol("swap_object", "swap_lantern", "swap_lantern_on")
-		owner.AnimState:Show("LANTERN_OVERLAY") 
+        owner.AnimState:Show("LANTERN_OVERLAY") 
     end
     turnon(inst)
 end
@@ -114,13 +114,23 @@ local function onunequip(inst, owner)
     owner.AnimState:Hide("ARM_carry")
     owner.AnimState:Show("ARM_normal")
     owner.AnimState:ClearOverrideSymbol("lantern_overlay")
-	owner.AnimState:Hide("LANTERN_OVERLAY")
+    owner.AnimState:Hide("LANTERN_OVERLAY")
 end
 
 local function nofuel(inst)
-    local owner = inst.components.inventoryitem ~= nil and inst.components.inventoryitem.owner or nil
-    if owner ~= nil then
-        owner:PushEvent("torchranout", { torch = inst })
+    local equippable = inst.components.equippable
+    if equippable ~= nil and equippable:IsEquipped() then
+        local owner = inst.components.inventoryitem ~= nil and inst.components.inventoryitem.owner or nil
+        if owner ~= nil then
+            local data =
+            {
+                prefab = inst.prefab,
+                equipslot = equippable.equipslot,
+            }
+            turnoff(inst)
+            owner:PushEvent("torchranout", data)
+            return
+        end
     end
     turnoff(inst)
 end
@@ -142,11 +152,11 @@ local function lanternlightfn()
 
     inst.Light:SetColour(180 / 255, 195 / 255, 150 / 255)
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst.persists = false
 
@@ -154,11 +164,11 @@ local function lanternlightfn()
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-    inst.entity:AddSoundEmitter()        
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
     MakeInventoryPhysics(inst)
@@ -169,14 +179,14 @@ local function fn()
 
     inst:AddTag("light")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-
     inst:AddComponent("inspectable")
-    
+
     inst:AddComponent("inventoryitem")
 
     inst.components.inventoryitem:SetOnDroppedFn(ondropped)

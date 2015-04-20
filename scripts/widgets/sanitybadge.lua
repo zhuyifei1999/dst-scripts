@@ -40,6 +40,16 @@ function SanityBadge:SetPercent(val, max, penaltypercent)
 	self.topperanim:GetAnimState():SetPercent("anim", self.penaltypercent)
 end
 
+local RATE_SCALE_ANIM =
+{
+    [RATE_SCALE.INCREASE_HIGH] = "arrow_loop_increase_most",
+    [RATE_SCALE.INCREASE_MED] = "arrow_loop_increase_more",
+    [RATE_SCALE.INCREASE_LOW] = "arrow_loop_increase",
+    [RATE_SCALE.DECREASE_HIGH] = "arrow_loop_decrease_most",
+    [RATE_SCALE.DECREASE_MED] = "arrow_loop_decrease_more",
+    [RATE_SCALE.DECREASE_LOW] = "arrow_loop_decrease",
+}
+
 function SanityBadge:OnUpdate(dt)
     local sanity = self.owner.replica.sanity
     local anim = "neutral"
@@ -52,22 +62,18 @@ function SanityBadge:OnUpdate(dt)
                 anim = "arrow_loop_increase"
             end
         else
-            local rate = sanity:GetRate()
-            if rate > 0 and sanity:GetPercentWithPenalty() < 1 then
-                if rate > .2 then
-                    anim = "arrow_loop_increase_most"
-                elseif rate > .1 then
-                    anim = "arrow_loop_increase_more"
-                elseif rate > .01 then
-                    anim = "arrow_loop_increase"
+            local ratescale = sanity:GetRateScale()
+            if ratescale == RATE_SCALE.INCREASE_LOW or
+                ratescale == RATE_SCALE.INCREASE_MED or
+                ratescale == RATE_SCALE.INCREASE_HIGH then
+                if sanity:GetPercentWithPenalty() < 1 then
+                    anim = RATE_SCALE_ANIM[ratescale]
                 end
-            elseif rate < 0 and sanity:GetPercentWithPenalty() > 0 then
-                if rate < -.3 then
-                    anim = "arrow_loop_decrease_most"
-                elseif rate < -.1 then
-                    anim = "arrow_loop_decrease_more"
-                elseif rate < -.02 then
-                    anim = "arrow_loop_decrease"
+            elseif ratescale == RATE_SCALE.DECREASE_LOW or
+                ratescale == RATE_SCALE.DECREASE_MED or
+                ratescale == RATE_SCALE.DECREASE_HIGH then
+                if sanity:GetPercentWithPenalty() > 0 then
+                    anim = RATE_SCALE_ANIM[ratescale]
                 end
             end
         end

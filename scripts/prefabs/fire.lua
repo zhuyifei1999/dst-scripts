@@ -1,13 +1,13 @@
 local assets =
 {
-	Asset("ANIM", "anim/fire.zip"),
-	Asset("SOUND", "sound/common.fsb"),
+    Asset("ANIM", "anim/fire.zip"),
+    Asset("SOUND", "sound/common.fsb"),
 }
 
 local heats = { 30, 70, 120, 180, 220 }
 
 local function GetHeatFn(inst)
-	return heats[inst.components.firefx.level] or 20
+    return heats[inst.components.firefx.level] or 20
 end
 
 local firelevels =
@@ -20,12 +20,12 @@ local firelevels =
 }
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
-	inst.entity:AddLight()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
+    inst.entity:AddLight()
     inst.entity:AddNetwork()
 
     inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
@@ -33,29 +33,32 @@ local function fn()
     inst.AnimState:SetBuild("fire")
     inst.AnimState:SetRayTestOnBB(true)
     inst.AnimState:SetFinalOffset(-1)
-    
+
     inst:AddTag("FX")
+
+    --HASHEATER (from heater component) added to pristine state for optimization
+    inst:AddTag("HASHEATER")
+
+    inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-
     inst:AddComponent("firefx")
     inst.components.firefx.levels = firelevels
 
     inst.components.firefx.extinguishsoundtest = function() 
-	    local x,y,z = inst.Transform:GetWorldPosition()
-	    local ents = TheSim:FindEntities(x,y,z, 5) 
-	    local fireyness = 0
-	    for k,v in pairs(ents) do
-			if v ~= inst and v.components.firefx and v.components.firefx.level then
-				fireyness = fireyness + v.components.firefx.level
-			end
-	    end
-	    
-	    return fireyness < 5
+        local x,y,z = inst.Transform:GetWorldPosition()
+        local ents = TheSim:FindEntities(x,y,z, 5) 
+        local fireyness = 0
+        for k,v in pairs(ents) do
+            if v ~= inst and v.components.firefx and v.components.firefx.level then
+                fireyness = fireyness + v.components.firefx.level
+            end
+        end
+
+        return fireyness < 5
     end
 
     inst:AddComponent("heater")

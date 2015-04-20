@@ -26,8 +26,24 @@ function TabGroup:HideTab(tab)
 	end
 end
 
-function TabGroup:GetNextIdx()
+function TabGroup:GetFirstIdx()
+    for idx, tab in ipairs(self.tabs) do
+        if tab ~= nil and self.shown[tab] then
+            return idx
+        end
+    end
+end
 
+function TabGroup:GetLastIdx()
+    for idx = #self.tabs, 1, -1 do
+        local tab = self.tabs[idx]
+        if tab ~= nil and self.shown[tab] then
+            return idx
+        end
+    end
+end
+
+function TabGroup:GetNextIdx()
     local idx = self:GetCurrentIdx() or 1
     while idx < #self.tabs do
         idx = idx + 1
@@ -38,11 +54,9 @@ function TabGroup:GetNextIdx()
         end
     end
     return self:GetCurrentIdx()
-
 end
 
 function TabGroup:GetPrevIdx()
-
     local idx = self:GetCurrentIdx() or 1
     while idx > 1 do
         idx = idx - 1
@@ -53,9 +67,7 @@ function TabGroup:GetPrevIdx()
         end
     end
     return self:GetCurrentIdx()
-
 end
-
 
 function TabGroup:GetCurrentIdx()
 	for k,v in pairs(self.tabs) do
@@ -84,7 +96,6 @@ function TabGroup:OpenTab(idx)
 	end
 end
 
-
 function TabGroup:AddTab(name, atlas, icon_atlas, icon, imnorm, imselected, imhighlight, imalthighlight, imoverlay, highlightpos, onselect, ondeselect)
 
     local tab = self:AddChild(Tab(self, name, atlas, icon_atlas, icon, imnorm, imselected, imhighlight, imalthighlight, imoverlay, highlightpos, onselect, ondeselect))
@@ -105,7 +116,6 @@ function TabGroup:AddTab(name, atlas, icon_atlas, icon, imnorm, imselected, imhi
     self.shown[tab] = true
     return tab
 end
-
 
 function TabGroup:OnTabsChanged()
     local selected = nil

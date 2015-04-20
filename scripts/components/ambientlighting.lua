@@ -15,6 +15,7 @@ local PHASE_COLOURS =
     night = { colour = Point(0 / 255, 0 / 255, 0 / 255), time = 8 },
 }
 
+local FULL_MOON_COLOUR = { colour = Point(84 / 255, 122 / 255, 156 / 255), time = 8 }
 local CAVE_COLOUR = { colour = Point(0 / 255, 0 / 255, 0 / 255), time = 2 }
 
 --------------------------------------------------------------------------
@@ -68,7 +69,9 @@ end
 --------------------------------------------------------------------------
 
 local function OnPhaseChanged(src, phase)
-    local col = _iscave and CAVE_COLOUR or PHASE_COLOURS[phase]
+    local col = _iscave and CAVE_COLOUR
+                or TheWorld.state.isfullmoon and FULL_MOON_COLOUR
+                or PHASE_COLOURS[phase]
     if col == nil then
         return
     end

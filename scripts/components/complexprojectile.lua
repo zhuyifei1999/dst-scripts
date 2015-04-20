@@ -15,6 +15,7 @@ local ComplexProjectile = Class(function(self, inst)
 	self.onhitfn = nil
 	self.onmissfn = nil
 
+    self.usehigharc = true
 end)
 
 function ComplexProjectile:GetDebugString()
@@ -23,6 +24,10 @@ end
 
 function ComplexProjectile:SetHorizontalSpeed(speed)
 	self.horizontalSpeed = speed
+end
+
+function ComplexProjectile:SetGravity(g)
+    self.gravity = g
 end
 
 function ComplexProjectile:SetLaunchOffset(offset)
@@ -41,6 +46,8 @@ function ComplexProjectile:SetOnHit(fn)
 	self.onhitfn = fn
 end
 
+local flip = false
+
 function ComplexProjectile:CalculateTrajectory(startPos, endPos, speed)
 	local speedSq = speed * speed;
 	local speed4th = speedSq * speedSq;
@@ -52,7 +59,13 @@ function ComplexProjectile:CalculateTrajectory(startPos, endPos, speed)
 	local discriminant = speed4th - g*(g*dx*dx + 2*dy*speedSq);
 	local angle;
 	if discriminant >= 0.0 then
-		angle = math.atan( ( speedSq - math.sqrt( discriminant ) ) / ( g * dx ) )
+        local angleA = math.atan( ( speedSq - math.sqrt( discriminant ) ) / ( g * dx ) )
+        local angleB = math.atan( ( speedSq + math.sqrt( discriminant ) ) / ( g * dx ) )
+        if self.usehigharc then
+            angle = math.max(angleA, angleB)
+        else
+            angle = math.min(angleA, angleB)
+        end
 	else
 		angle = 30.0*DEGREES
 	end
@@ -65,7 +78,7 @@ end
 
 function ComplexProjectile:Launch(targetPos, attacker, owningweapon)
 	local pos = self.inst:GetPosition()
-	self.owningweapon = owningweapon
+	self.owningweapon = owningweapon or self
 	self.attacker = attacker
 
     local offset = self.launchoffset

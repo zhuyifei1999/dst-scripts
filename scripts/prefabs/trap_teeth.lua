@@ -1,7 +1,7 @@
 local assets =
 {
-	Asset("ANIM", "anim/trap_teeth.zip"),
-	Asset("ANIM", "anim/trap_teeth_maxwell.zip"),
+    Asset("ANIM", "anim/trap_teeth.zip"),
+    Asset("ANIM", "anim/trap_teeth_maxwell.zip"),
 }
 
 local function onfinished_normal(inst)
@@ -22,33 +22,33 @@ end
 local function onfinished_maxwell(inst)
     inst:RemoveComponent("mine")
     inst.persists = false
-	inst:DoTaskInTime(1.25, onused_maxwell)
+    inst:DoTaskInTime(1.25, onused_maxwell)
 end
 
 local function OnExplode(inst, target)
     inst.AnimState:PlayAnimation("trap")
     if target then
         inst.SoundEmitter:PlaySound("dontstarve/common/trap_teeth_trigger")
-	    target.components.combat:GetAttacked(inst, TUNING.TRAP_TEETH_DAMAGE)
+        target.components.combat:GetAttacked(inst, TUNING.TRAP_TEETH_DAMAGE)
         if METRICS_ENABLED then
-			FightStat_TrapSprung(inst,target,TUNING.TRAP_TEETH_DAMAGE)
-		end
+            FightStat_TrapSprung(inst,target,TUNING.TRAP_TEETH_DAMAGE)
+        end
     end
     if inst.components.finiteuses then
-	    inst.components.finiteuses:Use(1)
+        inst.components.finiteuses:Use(1)
     end
 end
 
 local function OnReset(inst)
     inst.SoundEmitter:PlaySound("dontstarve/common/trap_teeth_reset")
-	inst.AnimState:PlayAnimation("reset")
-	inst.AnimState:PushAnimation("idle", false)
+    inst.AnimState:PlayAnimation("reset")
+    inst.AnimState:PushAnimation("idle", false)
 end
 
 local function OnResetMax(inst)
     inst.SoundEmitter:PlaySound("dontstarve/common/trap_teeth_reset")
-	inst.AnimState:PlayAnimation("idle")
-	--inst.AnimState:PushAnimation("idle", false)
+    inst.AnimState:PlayAnimation("idle")
+    --inst.AnimState:PushAnimation("idle", false)
 end
 
 local function SetSprung(inst)
@@ -60,19 +60,19 @@ local function SetInactive(inst)
 end
 
 local function OnDropped(inst)
-	inst.components.mine:Deactivate()
+    inst.components.mine:Deactivate()
 end
 
 local function ondeploy(inst, pt, deployer)
-	inst.components.mine:Reset()
-	inst.Physics:Teleport(pt:Get())
+    inst.components.mine:Reset()
+    inst.Physics:Teleport(pt:Get())
 end
 
 --legacy save support - mines used to start out activated
 local function onload(inst, data)
-	if not data or not data.mine then
-		inst.components.mine:Reset()
-	end
+    if not data or not data.mine then
+        inst.components.mine:Reset()
+    end
 end
 
 local function common_fn(bank, build, isinventoryitem)
@@ -87,18 +87,18 @@ local function common_fn(bank, build, isinventoryitem)
     MakeInventoryPhysics(inst)
 
     inst.MiniMapEntity:SetIcon("toothtrap.png")
-   
+
     inst.AnimState:SetBank(bank)
     inst.AnimState:SetBuild(build)
     inst.AnimState:PlayAnimation("idle")
-    
+
     inst:AddTag("trap")
+
+    inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("inspectable")
 
@@ -133,13 +133,13 @@ local function common_fn(bank, build, isinventoryitem)
                 if math.random() <= TUNING.HAUNT_CHANCE_HALF then
                     inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
                     local target = FindEntity(inst, TUNING.TRAP_TEETH_RADIUS*1.5, 
-						function(dude, inst) 
-							return not (dude.components.health and dude.components.health:IsDead() and dude.components.combat:CanBeAttacked(inst)) 
-						end, 
-						{"_combat"}, -- see entityscript.lua
-						{"notraptrigger", "flying", "playerghost"}, 
-						{"monster", "character", "animal"}
-					)
+                        function(dude, inst) 
+                            return not (dude.components.health and dude.components.health:IsDead() and dude.components.combat:CanBeAttacked(inst)) 
+                        end,
+                        {"_combat"}, -- see entityscript.lua
+                        {"notraptrigger", "flying", "playerghost"}, 
+                        {"monster", "character", "animal"}
+                    )
                     inst.components.mine:Explode(target)
                     return true
                 end
@@ -174,17 +174,17 @@ local function MakeTeethTrapMaxwell()
         return inst
     end
 
-	inst.components.mine:SetAlignment("nobody")
-	inst.components.mine:SetOnResetFn(OnResetMax)
-	inst.components.finiteuses:SetMaxUses(1)
-	inst.components.finiteuses:SetUses(1)
-	inst.components.finiteuses:SetOnFinished(onfinished_maxwell)
+    inst.components.mine:SetAlignment("nobody")
+    inst.components.mine:SetOnResetFn(OnResetMax)
+    inst.components.finiteuses:SetMaxUses(1)
+    inst.components.finiteuses:SetUses(1)
+    inst.components.finiteuses:SetOnFinished(onfinished_maxwell)
 
-	inst.components.mine:Reset()
+    inst.components.mine:Reset()
 
-	return inst
+    return inst
 end
 
 return Prefab("common/inventory/trap_teeth", MakeTeethTrapNormal, assets),
-		MakePlacer("common/trap_teeth_placer", "trap_teeth", "trap_teeth", "idle"),
-	   Prefab("common/inventory/trap_teeth_maxwell", MakeTeethTrapMaxwell, assets)
+    MakePlacer("common/trap_teeth_placer", "trap_teeth", "trap_teeth", "idle"),
+    Prefab("common/inventory/trap_teeth_maxwell", MakeTeethTrapMaxwell, assets)

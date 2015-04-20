@@ -22,6 +22,7 @@ local Combat = Class(function(self, inst)
     self.inst = inst
 
     self.nextbattlecrytime = nil
+    self.battlecryenabled = true
     self.attackrange = 3
     self.hitrange = 3
     self.areahitrange = nil
@@ -33,6 +34,7 @@ local Combat = Class(function(self, inst)
     self.onhitfn = nil
     self.onhitotherfn = nil
     self.laststartattacktime = 0
+    self.lastwasattackedtime = 0
     self.keeptargetfn = nil
     self.keeptargettimeout = 0
     self.hiteffectsymbol = "marker"
@@ -40,6 +42,7 @@ local Combat = Class(function(self, inst)
     self.lasttargetGUID = nil
     self.target = nil
     self.panic_thresh = nil
+    self.forcefacing = true
 end,
 nil,
 {
@@ -57,6 +60,10 @@ end
 
 function Combat:SetAttackPeriod(period)
     self.min_attack_period = period
+end
+
+function Combat:TargetIs(target)
+    return self.target and self.target == target
 end
 
 function Combat:InCooldown()
@@ -106,7 +113,7 @@ function Combat:ShareTarget(target, range, fn, maxnum)
     --print("Combat:ShareTarget", self.inst, target)
 
     local x, y, z = self.inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, range, { "_combat" })
+    local ents = TheSim:FindEntities(x, y, z, SpringCombatMod(range), { "_combat" })
 
     local num_helpers = 0
     for i, v in ipairs(ents) do
@@ -157,9 +164,12 @@ function Combat:TryRetarget()
         and not (self.inst.components.sleeper ~= nil and
                 self.inst.components.sleeper:IsInDeepSleep()) then
 
-        local newtarget = self.targetfn(self.inst)
+        local newtarget, forcechange = self.targetfn(self.inst)
         if newtarget ~= nil and newtarget ~= self.target and not newtarget:HasTag("notarget") then
-            if self.target ~= nil and self.target:HasTag("structure") and not newtarget:HasTag("structure") then
+
+            if forcechange then
+                self:SetTarget(newtarget)
+            elseif self.target ~= nil and self.target:HasTag("structure") and not newtarget:HasTag("structure") then
                 self:SetTarget(newtarget)
             else
                 self:SuggestTarget(newtarget)
@@ -248,19 +258,24 @@ function Combat:StopTrackingTarget(target)
 	self.inst:RemoveEventCallback("onremove", self.losetargetcallback, target)
 end
 
-function Combat:DropTarget()
+function Combat:DropTarget(hasnexttarget)
 	if self.target then
 	    SetLastTarget(self, self.target)
 		self:StopTrackingTarget(self.target)
 		self.inst:StopUpdatingComponent(self)
+		local oldtarget = self.target
 		self.target = nil
+		if not hasnexttarget then
+			self.inst:PushEvent("droppedtarget", {target=oldtarget})
+		end
 	end
 end
 
 function Combat:EngageTarget(target)
 	if target then
+        local oldtarget = self.target
 		self.target = target
-		self.inst:PushEvent("newcombattarget", {target=target})
+		self.inst:PushEvent("newcombattarget", {target=target, oldtarget=oldtarget})
 		self:StartTrackingTarget(target)
 	    if self.keeptargetfn then
     	    self.inst:StartUpdatingComponent(self)
@@ -274,7 +289,7 @@ end
 function Combat:SetTarget(target)
     local new = target ~= self.target
     if new and (not target or self:IsValidTarget(target) ) and not (target and target.sg and target.sg:HasStateTag("hiding") and target:HasTag("player")) then
-		self:DropTarget()
+		self:DropTarget(target ~= nil)
 		self:EngageTarget(target)
     end
 end
@@ -337,8 +352,8 @@ end
 
 function Combat:BattleCry()
 
-    if not self.nextbattlecrytime or GetTime() > self.nextbattlecrytime then
-        self.nextbattlecrytime = GetTime() + 5+math.random()*3
+    if self.battlecryenabled and (not self.nextbattlecrytime or GetTime() > self.nextbattlecrytime) then
+        self.nextbattlecrytime = GetTime() + (self.battlecryinterval and self.battlecryinterval or 5)+math.random()*3
         if self.inst.components.talker then            
             local cry = self:GetBattleCryString(self.target)
             if cry then
@@ -354,7 +369,9 @@ function Combat:SetHurtSound(sound)
     self.hurtsound = sound
 end
 
-function Combat:GetAttacked(attacker, damage, weapon)
+function Combat:GetAttacked(attacker, damage, weapon, stimuli)
+	self.lastwasattackedtime = GetTime()
+
     --print ("ATTACKED", self.inst, attacker, damage)
     local blocked = false
 -- KAJ: TODO: Metrics related. disabled until we know what to do
@@ -409,24 +426,22 @@ function Combat:GetAttacked(attacker, damage, weapon)
             self.inst.SoundEmitter:PlaySound(hitsound)
             --print (hitsound)
         end
-
         if self.hurtsound then
             self.inst.SoundEmitter:PlaySound(self.hurtsound)
         end
-
     end
     
     if not blocked then
-        self.inst:PushEvent("attacked", {attacker = attacker, damage = damage, weapon = weapon})
+        self.inst:PushEvent("attacked", {attacker = attacker, damage = damage, weapon = weapon, stimuli = stimuli})
     
         if self.onhitfn then
             self.onhitfn(self.inst, attacker, damage)
         end
         
         if attacker then
-            attacker:PushEvent("onhitother", {target = self.inst, damage = damage})
+            attacker:PushEvent("onhitother", {target = self.inst, damage = damage, stimuli = stimuli})
             if attacker.components.combat and attacker.components.combat.onhitotherfn then
-                attacker.components.combat.onhitotherfn(attacker, self.inst, damage)
+                attacker.components.combat.onhitotherfn(attacker, self.inst, damage, stimuli)
             end
         end
     else
@@ -437,99 +452,75 @@ function Combat:GetAttacked(attacker, damage, weapon)
 end
 
 function Combat:GetImpactSound(target, weapon)
-    if not target then
+    if target == nil then
         return
     end
+
+    --V2C: Considered creating a mapping for tags to strings, but we cannot really
+    --     rely on these tags being properly mutually exclusive, so it's better to
+    --     leave it like this as if explicitly ordered by priority.
+
     local hitsound = "dontstarve/impacts/impact_"
-    local specialtype = nil
-    if target.components.inventory and target.components.inventory:IsWearingArmor() then
-        if target.components.inventory:ArmorHasTag("grass") then
-            hitsound = hitsound.."straw_"
-        elseif target.components.inventory:ArmorHasTag("forcefield") then
-            hitsound = hitsound.."forcefield_"        
-        elseif target.components.inventory:ArmorHasTag("sanity") then
-            hitsound = hitsound.."sanity_"
-        elseif target.components.inventory:ArmorHasTag("sanity") then
-            hitsound = hitsound.."sanity_"
-        elseif target.components.inventory:ArmorHasTag("marble") then
-            hitsound = hitsound.."marble_"
-        elseif target.components.inventory:ArmorHasTag("shell") then
-            hitsound = hitsound.."shell_"                
-        elseif target.components.inventory:ArmorHasTag("fur") then
-            hitsound = hitsound.."fur_"
-        elseif target.components.inventory:ArmorHasTag("metal") then
-            hitsound = hitsound.."metal_"
-        else
-            hitsound = hitsound.."wood_"
-        end
-        specialtype = "armour"
+    local weaponmod = weapon ~= nil and weapon:HasTag("sharp") and "sharp" or "dull"
+    local tgtinv = target.components.inventory
+    if tgtinv ~= nil and tgtinv:IsWearingArmor() then
+        return
+            hitsound..(
+                (tgtinv:ArmorHasTag("grass") and "straw_armour_") or
+                (tgtinv:ArmorHasTag("forcefield") and "forcefield_armour_") or
+                (tgtinv:ArmorHasTag("sanity") and "sanity_armour_") or
+                (tgtinv:ArmorHasTag("sanity") and "sanity_armour_") or
+                (tgtinv:ArmorHasTag("marble") and "marble_armour_") or
+                (tgtinv:ArmorHasTag("shell") and "shell_armour_") or
+                (tgtinv:ArmorHasTag("fur") and "fur_armour_") or
+                (tgtinv:ArmorHasTag("metal") and "metal_armour_") or
+                "wood_armour_"
+            )..weaponmod
+
     elseif target:HasTag("wall") then
-        if target:HasTag("grass") then
-            hitsound = hitsound.."straw_"
-        elseif target:HasTag("stone") then
-            hitsound = hitsound.."stone_"
-        elseif target:HasTag("marble") then
-            hitsound = hitsound.."marble_"
-        else
-            hitsound = hitsound.."wood_"
-        end
-        specialtype = "wall"   
+        return
+            hitsound..(
+                (target:HasTag("grass") and "straw_wall_") or
+                (target:HasTag("stone") and "stone_wall_") or
+                (target:HasTag("marble") and "marble_wall_") or
+                "wood_wall_"
+            )..weaponmod
+
     elseif target:HasTag("object") then
-        if target:HasTag("clay") then
-            hitsound = hitsound.."clay_"
-        elseif target:HasTag("stone") then
-            hitsound = hitsound.."stone_"
-        end
-        specialtype = "object"
-    elseif target:HasTag("hive") or target:HasTag("eyeturret") then
-        hitsound = hitsound.."hive_"
-    elseif target:HasTag("ghost") then
-        hitsound = hitsound.."ghost_"
-    elseif target:HasTag("insect") or target:HasTag("spider") then
-        hitsound = hitsound.."insect_"
-    elseif target:HasTag("chess") or target:HasTag("mech") then
-        hitsound = hitsound.."mech_"
-    elseif target:HasTag("mound") then
-        hitsound = hitsound.."mound_"
-    elseif target:HasTag("shadow") then
-        hitsound = hitsound.."shadow_"
-    elseif target:HasTag("tree") then
-        hitsound = hitsound.."tree_"
-    elseif target:HasTag("veggie") then
-        hitsound = hitsound.."vegetable_"
-    elseif target:HasTag("shell") then
-        hitsound = hitsound.."shell_"
-    elseif target:HasTag("rocky") then
-        hitsound = hitsound.."stone_"
+        return
+            hitsound..(
+                (target:HasTag("clay") and "clay_object_") or
+                (target:HasTag("stone") and "stone_object_") or
+                "object_"
+            )..weaponmod
+
     else
-        hitsound = hitsound.."flesh_"
+        return
+            hitsound..(
+                ((target:HasTag("hive") or target:HasTag("eyeturret") or target:HasTag("houndmound")) and "hive_") or
+                (target:HasTag("ghost") and "ghost_") or
+                ((target:HasTag("insect") or target:HasTag("spider")) and "insect_") or
+                ((target:HasTag("chess") or target:HasTag("mech")) and "mech_") or
+                (target:HasTag("mound") and "mound_") or
+                (target:HasTag("shadow") and "shadow_") or
+                (target:HasTag("tree") and "tree_") or
+                (target:HasTag("veggie") and "vegetable_") or
+                (target:HasTag("shell") and "shell_") or
+                (target:HasTag("rocky") and "stone_") or
+                "flesh_"
+            )..(
+                ((target:HasTag("smallcreature") or target:HasTag("small")) and "sml_") or
+                ((target:HasTag("largecreature") or target:HasTag("epic") or target:HasTag("large")) and "lrg_") or
+                (target:HasTag("wet") and "wet_") or
+                "med_"
+            )..weaponmod
     end
- 
-
-
-
-
-    if specialtype then
-        hitsound = hitsound..specialtype.."_"
-    elseif target:HasTag("smallcreature") or target:HasTag("small") then
-        hitsound = hitsound.."sml_"
-    elseif target:HasTag("largecreature") or target:HasTag("epic") or target:HasTag("large") then
-        hitsound = hitsound.."lrg_"
-    elseif target:HasTag("wet") then
-        hitsound = hitsound.."wet_"
-    else
-        hitsound = hitsound.."med_"
-    end
-    
-    if weapon and weapon:HasTag("sharp") then
-        hitsound = hitsound.."sharp"
-    else
-        hitsound = hitsound.."dull"
-    end
-    return hitsound
 end
 
 function Combat:StartAttack()
+    if self.target and self.forcefacing then
+        self.inst:ForceFacePoint(self.target:GetPosition())
+    end
     self.laststartattacktime = GetTime()
 end
 
@@ -541,11 +532,15 @@ function Combat:CanTarget(target)
     return self.inst.replica.combat:CanTarget(target)
 end
 
+function Combat:HasTarget()
+    return self.target ~= nil
+end
+
 function Combat:CanAttack(target)
     if not self.canattack then 
 		return false 
 	end
-    
+
     if self.laststartattacktime ~= nil and
         GetTime() - self.laststartattacktime < self.min_attack_period then
         return false
@@ -555,8 +550,22 @@ function Combat:CanAttack(target)
         (self.inst.sg ~= nil and (not self.inst.sg:HasStateTag("hit") and self.inst.sg:HasStateTag("busy"))) then
 		return false
 	end
-    
-	return distsq(target:GetPosition(), self.inst:GetPosition()) <= self:CalcAttackRangeSq(target)
+
+    -- V2C: this is 3D distsq
+    if distsq(target:GetPosition(), self.inst:GetPosition()) > self:CalcAttackRangeSq(target) then
+        return false
+    end
+
+    -- gjans: Some specific logic so the birchnutter doesn't attack it's spawn with it's AOE
+    -- This could possibly be made more generic so that "things" don't attack other things in their "group" or something
+    if self.inst:HasTag("birchnutroot")
+        and (target:HasTag("birchnutroot") or
+            target:HasTag("birchnut") or
+            target:HasTag("birchnutdrage")) then
+        return false
+    end
+
+    return true
 end
 
 
@@ -586,12 +595,14 @@ function Combat:ForceAttack()
 end
 
 function Combat:GetWeapon()
-    if self.inst.components.inventory then
+    if self.inst.components.inventory ~= nil then
         local item = self.inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-        if item and item.components.weapon then
-            return item
-        end
+        return item ~= nil and item.components.weapon ~= nil and item or nil
     end
+end
+
+function Combat:GetLastAttackedTime()
+	return self.lastwasattackedtime
 end
 
 function Combat:CalcDamage(target, weapon, multiplier)
@@ -599,7 +610,8 @@ function Combat:CalcDamage(target, weapon, multiplier)
     if target:HasTag("alwaysblock") then
         return 0
     end
-	local multiplier = multiplier or self.damagemultiplier or 1
+	local multiplier = multiplier or 1
+    if self.damagemultiplier then multiplier = multiplier * self.damagemultiplier end
 	local bonus = self.damagebonus or 0
     if weapon then
         local weapondamage = 0
@@ -631,42 +643,31 @@ function Combat:CalcDamage(target, weapon, multiplier)
 end
 
 function Combat:GetAttackRange()
-    local range = self.attackrange
     local weapon = self:GetWeapon()
-
-    if weapon and weapon.components.weapon.variedmodefn then
-        local weaponrange = weapon.components.weapon.variedmodefn(weapon)
-        range = range + weaponrange.attackrange
-    elseif weapon and weapon.components.weapon.attackrange then
-        range = range + weapon.components.weapon.attackrange
-    end
-
-    return range
+    return (weapon == nil and self.attackrange)
+        or (weapon.components.weapon.variedmodefn ~= nil and self.attackrange + weapon.components.weapon.variedmodefn(weapon).attackrange)
+        or (weapon.components.weapon.attackrange ~= nil and self.attackrange + weapon.components.weapon.attackrange)
+        or self.attackrange
 end
 
 function Combat:CalcAttackRangeSq(target)
     target = target or self.target
-    local range = self:GetAttackRange() + (target.Physics and target.Physics:GetRadius() or 0)
-    return range*range
+    local range = self:GetAttackRange() + (target.Physics ~= nil and target.Physics:GetRadius() or 0)
+    return range * range
 end
 
 function Combat:GetHitRange()
-    local range = self.hitrange
     local weapon = self:GetWeapon()
-    if weapon and weapon.components.weapon.variedmodefn then
-        local weaponrange = weapon.components.weapon.variedmodefn(weapon)
-        range = range + weaponrange.hitrange
-    elseif weapon and weapon.components.weapon.hitrange then
-        range = range + weapon.components.weapon.hitrange
-    end
-    --print("GetHitRange", self.inst, self.hitrange, range)
-    return range
+    return (weapon == nil and self.hitrange)
+        or (weapon.components.weapon.variedmodefn ~= nil and self.hitrange + weaponrange.components.weapon.variedmodefn(weapon).hitrange)
+        or (weapon.components.weapon.hitrange ~= nil and self.hitrange + weapon.components.weapon.hitrange)
+        or self.hitrange
 end
 
 function Combat:CalcHitRangeSq(target)
     target = target or self.target
-    local range = self:GetHitRange() + (target.Physics and target.Physics:GetRadius() or 0)
-    return range*range
+    local range = self:GetHitRange() + (target.Physics ~= nil and target.Physics:GetRadius() or 0)
+    return range * range
 end
 
 function Combat:CanHitTarget(target, weapon)
@@ -674,48 +675,66 @@ function Combat:CanHitTarget(target, weapon)
         self.inst:IsValid() and
         target ~= nil and
         target:IsValid() and
-        not target:IsInLimbo() and
-        target.components.combat ~= nil and
-        target.components.combat:CanBeAttacked(self.inst) then
+        not target:IsInLimbo() then
 
-        if self.inst:GetDistanceSqToInst(target) <= self:CalcHitRangeSq(target) then
-            return true
-        end
+        local specialcase_target =
+            weapon ~= nil
+            and ((weapon:HasTag("extinguisher") and (target:HasTag("smolder") or target:HasTag("fire"))) or
+                (weapon:HasTag("rangedlighter") and target:HasTag("canlight")))
 
-        if weapon ~= nil and weapon.components.projectile ~= nil then
-            local range = weapon.components.projectile.hitdist + (target.Physics ~= nil and target.Physics:GetRadius() or 0)
-            if weapon:GetDistanceSqToInst(target) < range * range then
+        if specialcase_target or 
+            (target.components.combat ~= nil and target.components.combat:CanBeAttacked(self.inst)) then
+
+            local targetpos = target:GetPosition()
+            -- V2C: this is 3D distsq
+            if distsq(targetpos, self.inst:GetPosition()) <= self:CalcHitRangeSq(target) then
                 return true
+            elseif weapon ~= nil and weapon.components.projectile ~= nil then
+                local range = weapon.components.projectile.hitdist + (target.Physics ~= nil and target.Physics:GetRadius() or 0)
+                -- V2C: this is 3D distsq
+                return distsq(targetpos, weapon:GetPosition()) <= range * range
             end
         end
     end
 end
 
-function Combat:CanAreaHitTarget(targ)
-    if self:IsValidTarget(targ) then
-        return true
-    end
-end
-
-function Combat:DoAttack(target_override, weapon, projectile)
+function Combat:DoAttack(target_override, weapon, projectile, stimuli, instancemult)
     
     local targ = target_override or self.target
     local weapon = weapon or self:GetWeapon()
     
     if self:CanHitTarget(targ, weapon) then
-        self.inst:PushEvent("onattackother", {target = targ, weapon = weapon, projectile = projectile})
+
+        self.inst:PushEvent("onattackother", {target = targ, weapon = weapon, projectile = projectile, stimuli = stimuli})
         if weapon and weapon.components.projectile and not projectile then
             local projectile = self.inst.components.inventory:DropItem(weapon, false)
             if projectile then
                 projectile.components.projectile:Throw(self.inst, targ)
             end
+        elseif weapon and weapon.components.complexprojectile and not projectile then
+            local projectile = self.inst.components.inventory:DropItem(weapon, false)
+            if projectile then
+                projectile.components.complexprojectile:Launch(targ:GetPosition(), self.inst)
+            end
         elseif weapon and weapon.components.weapon:CanRangedAttack() and not projectile then
             weapon.components.weapon:LaunchProjectile(self.inst, targ)
         else
-            local damage = self:CalcDamage(targ, weapon)
-            targ.components.combat:GetAttacked(self.inst, damage, weapon)
+            local mult = 1
+            if stimuli == "electric" or (weapon and weapon.components.weapon and weapon.components.weapon.stimuli == "electric") then
+                if not targ:HasTag("electricdamageimmune") and (not targ.components.inventory or (targ.components.inventory and not targ.components.inventory:IsInsulated())) then
+                    mult = TUNING.ELECTRIC_DAMAGE_MULT
+                    if targ.components.moisture then
+                        mult = mult + (TUNING.ELECTRIC_WET_DAMAGE_MULT * targ.components.moisture:GetMoisturePercent())
+                    elseif targ:GetIsWet() then
+                        mult = mult + TUNING.ELECTRIC_WET_DAMAGE_MULT 
+                    end
+                end
+            end
+            local damage = self:CalcDamage(targ, weapon, mult)
+            if instancemult then damage = damage * instancemult end
+            if targ.components.combat then targ.components.combat:GetAttacked(self.inst, damage, weapon, stimuli) end
 
--- KAJ: TODO: Metrics related. disabled until we know what to do
+--  KAJ: TODO: Metrics related. disabled until we know what to do
 --            if METRICS_ENABLED and self.inst:HasTag( "player" ) then
 --                ProfileStatsAdd("hitson_"..targ.prefab,math.floor(damage))
 --                FightStat_Attack(targ,weapon,projectile,damage)
@@ -729,7 +748,7 @@ function Combat:DoAttack(target_override, weapon, projectile)
                 weapon.components.weapon:OnAttack(self.inst, targ, projectile)
             end
             if self.areahitrange then
-                self:DoAreaAttack(targ, self.areahitrange, weapon)
+                self:DoAreaAttack(targ, self.areahitrange, weapon, nil, stimuli)
             end
             self.lastdoattacktime = GetTime()
         end
@@ -737,23 +756,23 @@ function Combat:DoAttack(target_override, weapon, projectile)
         self.inst:PushEvent("onmissother", {target = targ, weapon = weapon})
         if self.areahitrange then
             local epicentre = projectile or self.inst
-            self:DoAreaAttack(epicentre, self.areahitrange, weapon)
+            self:DoAreaAttack(epicentre, self.areahitrange, weapon, nil, stimuli)
         end
     end
 
 end
 
-function Combat:DoAreaAttack(target, range, weapon, validfn)
+function Combat:DoAreaAttack(target, range, weapon, validfn, stimuli)
     local hitcount = 0
     local x, y, z = target.Transform:GetWorldPosition()
     local ents = TheSim:FindEntities(x, y, z, range, { "_combat" })
     for i, ent in ipairs(ents) do
         if ent ~= target and
             ent ~= self.inst and
-            self:CanAreaHitTarget(ent) and
+            self:IsValidTarget(ent) and
             (validfn == nil or validfn(ent)) then
-            self.inst:PushEvent("onareaattackother", { target = target, weapon = weapon })
-            ent.components.combat:GetAttacked(self.inst, self:CalcDamage(ent, weapon, self.areahitdamagepercent), weapon)
+            self.inst:PushEvent("onareaattackother", { target = target, weapon = weapon, stimuli = stimuli })
+            ent.components.combat:GetAttacked(self.inst, self:CalcDamage(ent, weapon, self.areahitdamagepercent), weapon, stimuli)
             hitcount = hitcount + 1
         end
     end
@@ -781,6 +800,11 @@ function Combat:LoadPostPass(newents, data)
             self:SetTarget(target.entity)
         end
     end
+end
+
+function Combat:OnRemoveFromEntity()
+    self.inst:RemoveTag("hascombatcomponent")    
+    self.inst:RemoveTag("combat")
 end
 
 return Combat

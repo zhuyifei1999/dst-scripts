@@ -1,16 +1,17 @@
 local assets =
 {
-	Asset("ANIM", "anim/rook.zip"),
-	Asset("ANIM", "anim/rook_build.zip"),
-	Asset("ANIM", "anim/rook_nightmare.zip"),
-	Asset("SOUND", "sound/chess.fsb"),
+    Asset("ANIM", "anim/rook.zip"),
+    Asset("ANIM", "anim/rook_build.zip"),
+    Asset("ANIM", "anim/rook_nightmare.zip"),
+    Asset("SOUND", "sound/chess.fsb"),
 }
 
 local prefabs =
 {
-	"gears",
+    "gears",
     "thulecite_pieces",
     "nightmarefuel",
+    "collapse_small",
 }
 
 local brain = require "brains/rookbrain"
@@ -69,9 +70,9 @@ local function Retarget(inst)
     end
     
     local newtarget = FindEntity(inst, TUNING.ROOK_TARGET_DIST, function(guy)
-			local myLeader = inst.components.follower and inst.components.follower.leader
-			local theirLeader = guy.components.follower and guy.components.follower.leader
-			local bothFollowingSamePlayer = myLeader and (myLeader == theirLeader) and myLeader:HasTag("player")
+            local myLeader = inst.components.follower and inst.components.follower.leader
+            local theirLeader = guy.components.follower and guy.components.follower.leader
+            local bothFollowingSamePlayer = myLeader and (myLeader == theirLeader) and myLeader:HasTag("player")
             return not (inst.components.follower and inst.components.follower.leader == guy)
                    and not (guy:HasTag("chess") and (guy.components.follower and not guy.components.follower.leader))
                    and not bothFollowingSamePlayer
@@ -177,18 +178,18 @@ local function RememberKnownLocation(inst)
 end
 
 local function common_fn(build)
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
-	inst.entity:AddDynamicShadow()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
+    inst.entity:AddDynamicShadow()
     inst.entity:AddNetwork()
 
     MakeCharacterPhysics(inst, 50, 1.5)
 
     inst.DynamicShadow:SetSize(3, 1.25)
-    inst.Transform:SetFourFaced()
+    inst.Transform:SetSixFaced()
     inst.Transform:SetScale(0.66, 0.66, 0.66)
 
     inst.AnimState:SetBank("rook")
@@ -199,11 +200,11 @@ local function common_fn(build)
     inst:AddTag("chess")
     inst:AddTag("rook")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst.Physics:SetCollisionCallback(oncollide)
 
@@ -215,7 +216,7 @@ local function common_fn(build)
 
     inst:SetStateGraph("SGrook")
     inst:SetBrain(brain)
-    
+
     inst:AddComponent("sleeper")
     inst.components.sleeper:SetWakeTest(ShouldWake)
     inst.components.sleeper:SetSleepTest(ShouldSleep)
@@ -290,4 +291,4 @@ local function rook_nightmare_fn()
 end
 
 return Prefab("chessboard/rook", rook_fn, assets, prefabs),
-       Prefab("cave/monsters/rook_nightmare", rook_nightmare_fn, assets, prefabs)
+    Prefab("cave/monsters/rook_nightmare", rook_nightmare_fn, assets, prefabs)

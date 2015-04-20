@@ -11,12 +11,12 @@ local REPLICATABLE_COMPONENTS =
     fishingrod = true,
     follower = true,
     health = true,
-    --humanity = true,
     hunger = true,
     inventory = true,
     inventoryitem = true,
     named = true,
     sanity = true,
+    sheltered = true,
     stackable = true,
 }
 

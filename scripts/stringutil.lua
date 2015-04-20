@@ -1,3 +1,17 @@
+local function getmodifiedstring(topic_tab, modifier)
+	if type(modifier) == "table" then
+		local ret = topic_tab
+		for i,v in ipairs(modifier) do
+			ret = ret[v]
+		end
+		return ret
+	else
+		return (modifier ~= nil and topic_tab[modifier])
+			or topic_tab.GENERIC
+			or (#topic_tab > 0 and topic_tab[math.random(#topic_tab)] or nil)
+	end
+end
+
 local function getcharacterstring(tab, item, modifier)
     if tab == nil then
         return
@@ -12,11 +26,15 @@ local function getcharacterstring(tab, item, modifier)
         return
     end
 
-    modifier = modifier ~= nil and string.upper(modifier) or nil
+	if type(modifier) == "table" then
+		for i,v in ipairs(modifier) do
+			v = string.upper(v)
+		end
+	else
+		modifier = modifier ~= nil and string.upper(modifier) or nil
+	end
 
-    return (modifier ~= nil and topic_tab[modifier])
-        or topic_tab.GENERIC
-        or (#topic_tab > 0 and topic_tab[math.random(#topic_tab)] or nil)
+	return getmodifiedstring(topic_tab, modifier)
 end
 
 function GetGenderStrings(charactername)
@@ -110,7 +128,13 @@ function GetString(inst, stringtype, modifier)
 
     character = character ~= nil and string.upper(character) or nil
     stringtype = stringtype ~= nil and string.upper(stringtype) or nil
-    modifier = modifier ~= nil and string.upper(modifier) or nil
+	if type(modifier) == "table" then
+		for i,v in ipairs(modifier) do
+			v = string.upper(v)
+		end
+	else
+		modifier = modifier ~= nil and string.upper(modifier) or nil
+	end
 
     local specialcharacter =
         type(inst) == "table"
@@ -139,7 +163,13 @@ function GetDescription(inst, item, modifier)
     character = character ~= nil and string.upper(character) or nil
     local itemname = item.components.inspectable.nameoverride or item.prefab or nil
     itemname = itemname ~= nil and string.upper(itemname) or nil
-    modifier = modifier ~= nil and string.upper(modifier) or nil
+	if type(modifier) == "table" then
+		for i,v in ipairs(modifier) do
+			v = string.upper(v)
+		end
+	else
+		modifier = modifier ~= nil and string.upper(modifier) or nil
+	end
 
     local specialcharacter =
         type(inst) == "table"
@@ -195,6 +225,8 @@ function GetActionFailString(inst, action, reason)
     if ret ~= nil then
         return ret
     end
+
+    character = string.upper(character)
 
     return (STRINGS.CHARACTERS[character] ~= nil and getcharacterstring(STRINGS.CHARACTERS[character].ACTIONFAIL, action, reason))
         or getcharacterstring(STRINGS.CHARACTERS.GENERIC.ACTIONFAIL, action, reason)

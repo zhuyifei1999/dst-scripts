@@ -1,4 +1,4 @@
-assets = 
+local assets = 
 {
 	Asset("ANIM", "anim/nightmare_timepiece.zip"),
 }

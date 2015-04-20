@@ -35,11 +35,11 @@ local function fn()
     inst.Light:SetFalloff(.3)
     inst.Light:SetColour(180 / 255, 195 / 255, 150 / 255)
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst.TurnOn = TurnOn
     inst.TurnOff = TurnOff

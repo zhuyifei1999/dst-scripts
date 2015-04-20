@@ -1,15 +1,15 @@
 local assets =
 {
-	Asset("ANIM", "anim/krampus_basic.zip"),
-	Asset("ANIM", "anim/krampus_build.zip"),
-	Asset("SOUND", "sound/krampus.fsb"),
+    Asset("ANIM", "anim/krampus_basic.zip"),
+    Asset("ANIM", "anim/krampus_build.zip"),
+    Asset("SOUND", "sound/krampus.fsb"),
 }
 
 local prefabs =
 {
-	"charcoal",
-	"monstermeat",
-	"krampus_sack",
+    "charcoal",
+    "monstermeat",
+    "krampus_sack",
 }
 
 local brain = require "brains/krampusbrain"
@@ -23,20 +23,20 @@ SetSharedLootTable( 'krampus',
 })
 
 local function NotifyBrainOfTarget(inst, target)
-	if inst.brain and inst.brain.SetTarget then
-		inst.brain:SetTarget(target)
-	end
+    if inst.brain and inst.brain.SetTarget then
+        inst.brain:SetTarget(target)
+    end
 end
 
 local function makebagfull(inst)
-	inst.AnimState:Show("SACK")
-	inst.AnimState:Hide("ARM")
-end 
+    inst.AnimState:Show("SACK")
+    inst.AnimState:Hide("ARM")
+end
 
 local function makebagempty(inst)
-	inst.AnimState:Hide("SACK")
-	inst.AnimState:Show("ARM")
-end 
+    inst.AnimState:Hide("SACK")
+    inst.AnimState:Show("ARM")
+end
 
 local function OnAttacked(inst, data)
     inst.components.combat:SetTarget(data.attacker)
@@ -44,16 +44,16 @@ local function OnAttacked(inst, data)
 end
 
 local function OnNewCombatTarget(inst, data)
-	NotifyBrainOfTarget(inst, data.target)
+    NotifyBrainOfTarget(inst, data.target)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
-	inst.entity:AddDynamicShadow()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
+    inst.entity:AddDynamicShadow()
     inst.entity:AddNetwork()
 
     MakeCharacterPhysics(inst, 10, .5)
@@ -70,11 +70,11 @@ local function fn()
     inst.AnimState:SetBuild("krampus_build")
     inst.AnimState:PlayAnimation("run_loop", true)
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("inventory")
     inst.components.inventory.ignorescangoincontainer = true
@@ -89,8 +89,8 @@ local function fn()
     MakeLargeFreezableCharacter(inst, "krampus_torso")
 
  --[[   inst:AddComponent("eater")
-    inst.components.eater:SetCarnivore()
-	inst.components.eater:SetCanEatHorrible()
+    inst.components.eater:SetDiet({ FOODTYPE.MEAT }, { FOODTYPE.MEAT })
+    inst.components.eater:SetCanEatHorrible()
     inst.components.eater.strongstomach = true -- can eat monster meat!--]]
 
     inst:AddComponent("sleeper")
@@ -106,10 +106,10 @@ local function fn()
     inst.components.lootdropper:SetChanceLootTable('krampus')
 
     inst:AddComponent("inspectable")
-	inst.components.inspectable:RecordViews()
+    inst.components.inspectable:RecordViews()
 
     inst:ListenForEvent("attacked", OnAttacked)
-	inst:ListenForEvent("newcombattarget", OnNewCombatTarget)
+    inst:ListenForEvent("newcombattarget", OnNewCombatTarget)
 
     return inst
 end

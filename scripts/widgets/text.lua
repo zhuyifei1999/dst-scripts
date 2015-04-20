@@ -60,6 +60,38 @@ function Text:GetString()
     return self.inst.TextWidget:GetString() or ""
 end
 
+--WARNING: This is not optimized!
+-- Recommend to use only in FE menu screens.
+--
+-- maxwidth [optional]: max region width, only works when autosizing
+-- maxchars [optional]: max chars from original string
+-- ellipses [optional]: defaults to "..."
+--
+-- Works best specifying BOTH maxwidth AND maxchars!
+--
+-- How to pick non-arbitrary maxchars:
+--  1) Call with only maxwidth, and a super long string of dots:
+--     e.g. wdgt:SetTruncatedString(".............................", 30)
+--  2) Find out how many dots were actually kept:
+--     e.g. print(wdgt:GetString():len())
+--  3) Use that number as an estimate for maxchars, or round up
+--     a little just in case dots aren't the smallest character
+function Text:SetTruncatedString(str, maxwidth, maxchars, ellipses)
+    ellipses = ellipses or "..."
+    if maxchars ~= nil and str:len() > maxchars then
+        str = str:sub(1, maxchars)
+        self.inst.TextWidget:SetString(str..ellipses)
+    else
+        self.inst.TextWidget:SetString(str)
+    end
+    if maxwidth ~= nil then
+        while self.inst.TextWidget:GetRegionSize() > maxwidth do
+            str = str:sub(1, str:len() - 1)
+            self.inst.TextWidget:SetString(str..ellipses)
+        end
+    end
+end
+
 function Text:SetHoverText(text)
     if text then
         if not self.hover then

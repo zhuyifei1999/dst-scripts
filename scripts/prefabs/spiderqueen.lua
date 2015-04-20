@@ -1,10 +1,10 @@
 local assets =
 {
-	Asset("ANIM", "anim/spider_queen_build.zip"),
-	Asset("ANIM", "anim/spider_queen.zip"),
-	Asset("ANIM", "anim/spider_queen_2.zip"),
-	--Asset("ANIM", "anim/spider_queen_3.zip"),
-	--Asset("SOUND", "sound/spider.fsb"),
+    Asset("ANIM", "anim/spider_queen_build.zip"),
+    Asset("ANIM", "anim/spider_queen.zip"),
+    Asset("ANIM", "anim/spider_queen_2.zip"),
+    --Asset("ANIM", "anim/spider_queen_3.zip"),
+    --Asset("SOUND", "sound/spider.fsb"),
 }
 
 local prefabs =
@@ -38,14 +38,15 @@ local function Retarget(inst)
         local oldtarget = inst.components.combat.target
 
         local newtarget = FindEntity(inst, 10, 
-      	    function(guy) 
-				return inst.components.combat:CanTarget(guy) 
+            function(guy) 
+                return inst.components.combat:CanTarget(guy) 
             end,
-            {"character"}
+            {"character"},
+            {"monster"}
         )
-        
+
         if newtarget and newtarget ~= oldtarget then
-			inst.components.combat:SetTarget(newtarget)
+            inst.components.combat:SetTarget(newtarget)
         end
     end
 end
@@ -54,6 +55,16 @@ local function ShareTargetFn(dude)
     return dude.prefab == "spiderqueen" and not dude.components.health:IsDead()
 end
 
+local function SanityAura(inst, observer)
+
+    if observer:HasTag("spiderwhisperer") then
+        return 0
+    end
+
+    return -TUNING.SANITYAURA_HUGE
+
+end
+    
 local function OnAttacked(inst, data)
     inst.components.combat:SetTarget(data.attacker)
     inst.components.combat:ShareTarget(data.attacker, SHARE_TARGET_DIST, ShareTargetFn, 2)
@@ -94,15 +105,15 @@ local function AdditionalBabies(inst)
 
     return RoundBiasedUp(addspiders)
 end
-    
+
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
     inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
-	inst.entity:AddLightWatcher()
-	inst.entity:AddDynamicShadow()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
+    inst.entity:AddLightWatcher()
+    inst.entity:AddDynamicShadow()
     inst.entity:AddNetwork()
 
     MakeCharacterPhysics(inst, 1000, 1)
@@ -112,20 +123,20 @@ local function fn()
 
     inst:AddTag("monster")
     inst:AddTag("hostile")
-    inst:AddTag("epic")    
+    inst:AddTag("epic")
     inst:AddTag("largecreature")
-    inst:AddTag("spiderqueen")    
-    inst:AddTag("spider")    
+    inst:AddTag("spiderqueen")
+    inst:AddTag("spider")
 
     inst.AnimState:SetBank("spider_queen")
     inst.AnimState:SetBuild("spider_queen_build")
     inst.AnimState:PlayAnimation("idle", true)
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:SetStateGraph("SGspiderqueen")
 
@@ -151,8 +162,8 @@ local function fn()
 
     ------------------
 
-	inst:AddComponent("sanityaura")
-    inst.components.sanityaura.aura = -TUNING.SANITYAURA_HUGE
+    inst:AddComponent("sanityaura")
+    inst.components.sanityaura.aurafn = SanityAura
 
     ------------------
 
@@ -161,15 +172,15 @@ local function fn()
     ------------------
 
     inst:AddComponent("locomotor")
-	inst.components.locomotor:SetSlowMultiplier( 1 )
-	inst.components.locomotor:SetTriggersCreep(false)
-	inst.components.locomotor.pathcaps = { ignorecreep = true }
-	inst.components.locomotor.walkspeed = TUNING.SPIDERQUEEN_WALKSPEED
+    inst.components.locomotor:SetSlowMultiplier( 1 )
+    inst.components.locomotor:SetTriggersCreep(false)
+    inst.components.locomotor.pathcaps = { ignorecreep = true }
+    inst.components.locomotor.walkspeed = TUNING.SPIDERQUEEN_WALKSPEED
 
     ------------------
 
     inst:AddComponent("eater")
-    inst.components.eater:SetCarnivore()
+    inst.components.eater:SetDiet({ FOODTYPE.MEAT }, { FOODTYPE.MEAT })
     inst.components.eater:SetCanEatHorrible()
     inst.components.eater.strongstomach = true -- can eat monster meat!
 

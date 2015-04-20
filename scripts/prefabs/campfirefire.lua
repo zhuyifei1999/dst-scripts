@@ -1,13 +1,13 @@
 local assets =
 {
-	Asset("ANIM", "anim/campfire_fire.zip"),
-	Asset("SOUND", "sound/common.fsb"),
+    Asset("ANIM", "anim/campfire_fire.zip"),
+    Asset("SOUND", "sound/common.fsb"),
 }
 
-local heats = { 70, 120, 180, 220 }
+local heats = { 70, 85, 100, 115 }
 
 local function GetHeatFn(inst)
-	return heats[inst.components.firefx.level] or 20
+    return heats[inst.components.firefx.level] or 20
 end
 
 local firelevels =
@@ -19,12 +19,12 @@ local firelevels =
 }
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
-	inst.entity:AddLight()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
+    inst.entity:AddLight()
     inst.entity:AddNetwork()
 
     inst.AnimState:SetBank("campfire_fire")
@@ -32,15 +32,17 @@ local function fn()
     inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
     inst.AnimState:SetRayTestOnBB(true)
     inst.AnimState:SetFinalOffset(-1)
-    
+
     inst:AddTag("FX")
+
+    --HASHEATER (from heater component) added to pristine state for optimization
+    inst:AddTag("HASHEATER")
+
+    inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
-
     inst:AddComponent("heater")
     inst.components.heater.heatfn = GetHeatFn
 

@@ -123,11 +123,11 @@ local function BeeMine(name, alignment, skin, spawnprefab, inventory)
 
         inst:AddTag("mine")
 
+        inst.entity:SetPristine()
+
         if not TheWorld.ismastersim then
             return inst
         end
-
-        inst.entity:SetPristine()
 
         inst:AddComponent("mine")
         inst.components.mine:SetOnExplodeFn(OnExplode)

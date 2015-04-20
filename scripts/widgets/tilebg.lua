@@ -52,10 +52,11 @@ function TileBG:SetNumTiles(numtiles)
 
     local sep_w, sep_h = 0, 0
     self.seps = {}
-    if self.sepim then
+    if self.sepim and numtiles > 1 then
         for k = 1,numtiles-1 do
             self.seps[k] = self:AddChild(Image(self.atlas, self.sepim))
         end
+
         sep_w, sep_h = self.seps[1]:GetSize()
     end
     
@@ -65,7 +66,7 @@ function TileBG:SetNumTiles(numtiles)
         end_w, end_h = end1:GetSize()
     end
     
-    local tile_w, tile_h = self.bgs[1]:GetSize()
+    local tile_w, tile_h =  self.bgs[1]:GetSize()
     
 
     if self.horizontal then

@@ -17,22 +17,28 @@ local easing = require("easing")
 local HALF_TILES = 5
 local MAX_MIX_SOUNDS = 3
 local WAVE_VOLUME_SCALE = 3 / (HALF_TILES * HALF_TILES * 8)
-local WAVE_SOUND = "dontstarve/ocean/waves"
-local WINTER_WAVE_SOUND = "dontstarve/winter/winterwaves"
+local WAVE_SOUNDS = { 
+    ["autumn"] = "dontstarve/ocean/waves",
+    ["winter"] = "dontstarve/winter/winterwaves",
+    ["spring"] = "dontstarve/ocean/waves",--"dontstarve_DLC001/spring/springwaves",
+    ["summer"] = "dontstarve_DLC001/summer/summerwaves",
+}
 local SANITY_SOUND = "dontstarve/sanity/sanity"
 
 local AMBIENT_SOUNDS =
 {
-    [GROUND.ROAD] = { sound = "dontstarve/rocky/rockyAMB", wintersound = "dontstarve/winter/winterrockyAMB", rainsound = "dontstarve/rain/rainrockyAMB" },
-    [GROUND.ROCKY] = { sound = "dontstarve/rocky/rockyAMB", wintersound = "dontstarve/winter/winterrockyAMB", rainsound = "dontstarve/rain/rainrockyAMB" },
-    [GROUND.DIRT] = { sound = "dontstarve/badland/badlandAMB", wintersound = "dontstarve/winter/winterbadlandAMB", rainsound = "dontstarve/rain/rainbadlandAMB" },
-    [GROUND.WOODFLOOR] = { sound = "dontstarve/rocky/rockyAMB", wintersound = "dontstarve/winter/winterrockyAMB", rainsound = "dontstarve/rain/rainrockyAMB" },
-    [GROUND.SAVANNA] = { sound = "dontstarve/grassland/grasslandAMB", wintersound = "dontstarve/winter/wintergrasslandAMB", rainsound = "dontstarve/rain/raingrasslandAMB" },
-    [GROUND.GRASS] = { sound = "dontstarve/meadow/meadowAMB", wintersound = "dontstarve/winter/wintermeadowAMB", rainsound = "dontstarve/rain/rainmeadowAMB" },
-    [GROUND.FOREST] = { sound = "dontstarve/forest/forestAMB", wintersound = "dontstarve/winter/winterforestAMB", rainsound = "dontstarve/rain/rainforestAMB" },
-    [GROUND.MARSH] = { sound = "dontstarve/marsh/marshAMB", wintersound = "dontstarve/winter/wintermarshAMB", rainsound = "dontstarve/rain/rainmarshAMB" },
-    [GROUND.CHECKER] = { sound = "dontstarve/chess/chessAMB", wintersound = "dontstarve/winter/winterchessAMB", rainsound = "dontstarve/rain/rainchessAMB" },
-    [GROUND.CAVE] = { sound = "dontstarve/cave/caveAMB" },
+    [GROUND.ROAD] = {sound = "dontstarve/rocky/rockyAMB", wintersound = "dontstarve/winter/winterrockyAMB", springsound = "dontstarve/rocky/rockyAMB", summersound = "dontstarve_DLC001/summer/summerrockyAMB", rainsound = "dontstarve/rain/rainrockyAMB"},--springsound = "dontstarve_DLC001/spring/springrockyAMB", summersound = "dontstarve_DLC001/summer/summerrockyAMB", rainsound = "dontstarve/rain/rainrockyAMB"},
+    [GROUND.ROCKY] = {sound = "dontstarve/rocky/rockyAMB", wintersound = "dontstarve/winter/winterrockyAMB", springsound = "dontstarve/rocky/rockyAMB", summersound = "dontstarve_DLC001/summer/summerrockyAMB", rainsound = "dontstarve/rain/rainrockyAMB"},--springsound = "dontstarve_DLC001/spring/springrockyAMB", summersound = "dontstarve_DLC001/summer/summerrockyAMB", rainsound = "dontstarve/rain/rainrockyAMB"},
+    [GROUND.DIRT] = {sound = "dontstarve/badland/badlandAMB", wintersound = "dontstarve/winter/winterbadlandAMB", springsound = "dontstarve/badland/badlandAMB", summersound = "dontstarve_DLC001/summer/summerbadlandAMB", rainsound = "dontstarve/rain/rainbadlandAMB"},--springsound = "dontstarve_DLC001/spring/springbadlandAMB", summersound = "dontstarve_DLC001/summer/summerbadlandAMB", rainsound = "dontstarve/rain/rainbadlandAMB"},
+    [GROUND.WOODFLOOR] = {sound = "dontstarve/rocky/rockyAMB", wintersound = "dontstarve/winter/winterrockyAMB", springsound = "dontstarve/rocky/rockyAMB", summersound = "dontstarve_DLC001/summer/summerrockyAMB", rainsound = "dontstarve/rain/rainrockyAMB"},--springsound = "dontstarve_DLC001/spring/springrockyAMB", summersound = "dontstarve_DLC001/summer/summerrockyAMB", rainsound = "dontstarve/rain/rainrockyAMB"},
+    [GROUND.SAVANNA] = {sound = "dontstarve/grassland/grasslandAMB", wintersound = "dontstarve/winter/wintergrasslandAMB", springsound = "dontstarve/grassland/grasslandAMB", summersound = "dontstarve_DLC001/summer/summergrasslandAMB", rainsound = "dontstarve/rain/raingrasslandAMB"},--springsound = "dontstarve_DLC001/spring/springgrasslandAMB", summersound = "dontstarve_DLC001/summer/summergrasslandAMB", rainsound = "dontstarve/rain/raingrasslandAMB"},
+    [GROUND.GRASS] = {sound = "dontstarve/meadow/meadowAMB", wintersound = "dontstarve/winter/wintermeadowAMB", springsound = "dontstarve/meadow/meadowAMB", summersound = "dontstarve_DLC001/summer/summermeadowAMB", rainsound = "dontstarve/rain/rainmeadowAMB"},--springsound = "dontstarve_DLC001/spring/springmeadowAMB", summersound = "dontstarve_DLC001/summer/summermeadowAMB", rainsound = "dontstarve/rain/rainmeadowAMB"},
+    [GROUND.FOREST] = {sound = "dontstarve/forest/forestAMB", wintersound = "dontstarve/winter/winterforestAMB", springsound = "dontstarve/forest/forestAMB", summersound = "dontstarve_DLC001/summer/summerforestAMB", rainsound = "dontstarve/rain/rainforestAMB"},--springsound = "dontstarve_DLC001/spring/springforestAMB", summersound = "dontstarve_DLC001/summer/summerforestAMB", rainsound = "dontstarve/rain/rainforestAMB"},
+    [GROUND.MARSH] = {sound = "dontstarve/marsh/marshAMB", wintersound = "dontstarve/winter/wintermarshAMB", springsound = "dontstarve/marsh/marshAMB", summersound = "dontstarve_DLC001/summer/summermarshAMB", rainsound = "dontstarve/rain/rainmarshAMB"},--springsound = "dontstarve_DLC001/spring/springmarshAMB", summersound = "dontstarve_DLC001/summer/summermarshAMB", rainsound = "dontstarve/rain/rainmarshAMB"},
+    [GROUND.DECIDUOUS] = {sound = "dontstarve/forest/forestAMB", wintersound = "dontstarve/winter/winterforestAMB", springsound = "dontstarve/forest/forestAMB", summersound = "dontstarve_DLC001/summer/summerforestAMB", rainsound = "dontstarve/rain/rainforestAMB"},
+    [GROUND.DESERT_DIRT] = {sound = "dontstarve/badland/badlandAMB", wintersound = "dontstarve/winter/winterbadlandAMB", springsound = "dontstarve/badland/badlandAMB", summersound = "dontstarve_DLC001/summer/summerbadlandAMB", rainsound = "dontstarve/rain/rainbadlandAMB"},
+    [GROUND.CHECKER] = {sound = "dontstarve/chess/chessAMB", wintersound = "dontstarve/winter/winterchessAMB", springsound = "dontstarve/chess/chessAMB", summersound = "dontstarve_DLC001/summer/summerchessAMB", rainsound = "dontstarve/rain/rainchessAMB"},--springsound = "dontstarve_DLC001/spring/springchessAMB", summersound = "dontstarve_DLC001/summer/summerchessAMB", rainsound = "dontstarve/rain/rainchessAMB"},
+    [GROUND.CAVE] = {sound = "dontstarve/cave/caveAMB"},
 
     [GROUND.FUNGUS] = { sound = "dontstarve/cave/fungusforestAMB" },
     [GROUND.FUNGUSRED] = { sound = "dontstarve/cave/fungusforestAMB" },
@@ -50,8 +56,15 @@ local AMBIENT_SOUNDS =
     [GROUND.TRIM_GLOW] = { sound = "dontstarve/cave/ruinsAMB" },
 
     ABYSS = { sound = "dontstarve/cave/pitAMB" },
-    VOID = { sound = "dontstarve/chess/void", wintersound = "dontstarve/chess/void", rainsound = "dontstarve/chess/void" },
+    VOID = { sound = "dontstarve/chess/void", wintersound = "dontstarve/chess/void", springsound="dontstarve/chess/void", summersound="dontstarve/chess/void", rainsound = "dontstarve/chess/void" },
     CIVRUINS = { sound = "dontstarve/cave/civruinsAMB" },
+}
+local SEASON_SOUND_KEY =
+{
+    ["autumn"] = "sound",
+    ["winter"] = "wintersound",
+    ["spring"] = "springsound",
+    ["summer"] = "summersound",
 }
 
 local DAYTIME_PARAMS =
@@ -72,18 +85,17 @@ self.inst = inst
 local _map = inst.Map
 local _iscave = inst:HasTag("cave")
 local _lightattenuation = false
-local _wintermix = false
+local _seasonmix = "autumn"
 local _rainmix = false
+local _heavyrainmix = false
 local _lastplayerpos = nil
 local _daytimeparam = 1
 local _sanityparam = 0
 local _soundvolumes = {}
-local _wavessound = WAVE_SOUND
+local _wavessound = WAVE_SOUNDS[_seasonmix]
 local _wavesvolume = 0
 local _ambientvolume = 1
 local _tileoverrides = {}
-local _dspstack = {}
-local _dspcomp = {}
 
 --------------------------------------------------------------------------
 --[[ Private member functions ]]
@@ -104,6 +116,14 @@ local function OnPrecipitationChanged(src, preciptype)
     end
 end
 
+local function OnWeatherTick(src, data)
+    -- We don't want to play rain ambients if it's just trickling down
+    if _heavyrainmix  ~= (data.precipitationrate > 0.5) then
+        _heavyrainmix = not _heavyrainmix
+        _lastplayerpos = nil
+    end
+end
+
 local function OnOverrideAmbientSound(src, data)
     _tileoverrides[data.tile] = data.override
 end
@@ -120,58 +140,18 @@ local function OnSetAmbientSoundDaytime(src, daytime)
     end
 end
 
-local function OnRefreshDSP(src, duration)
-    local dsp = {}
-    duration = duration or 0
-
-    for i, v in ipairs(_dspstack) do
-        for k, v1 in pairs(v) do
-            dsp[k] = v1
-        end
-    end
-
-    for k, v in pairs(dsp) do
-        if v ~= _dspcomp[k] then
-            TheMixer:SetLowPassFilter(k, v, duration)
-        end
-    end
-
-    for k, v in pairs(_dspcomp) do
-        if dsp[k] == nil then
-            TheMixer:ClearLowPassFilter(k, duration)
-        end
-    end
-
-    _dspcomp = dsp
-end
-
-local function OnPushDSP(src, data)
-    table.insert(_dspstack, data.dsp)
-    OnRefreshDSP(data.duration)
-end
-
-local function OnPopDSP(src, data)
-    for i = #_dspstack, 1, -1 do
-        if _dspstack[i] == data.dsp then
-            table.remove(_dspstack, i)
-            OnRefreshDSP(data.duration)
-            return
-        end
-    end
-end
-
 local function OnPhaseChanged(src, phase)
     _lightattenuation = phase ~= "day"
     OnSetAmbientSoundDaytime(src, DAYTIME_PARAMS[phase])
 end
 
 local function OnSeasonTick(src, data)
-    if _wintermix ~= (data.season == "winter") then
-        _wintermix = not _wintermix
+    if _seasonmix ~= data.season then
+        _seasonmix = data.season
         _lastplayerpos = nil
 
         if _wavesvolume <= 0 then
-            _wavessound = _wintermix and WINTER_WAVE_SOUND or WAVE_SOUND
+            _wavessound = WAVE_SOUNDS[_seasonmix]
         end
     end
 end
@@ -183,10 +163,8 @@ end
 --Register events
 inst:ListenForEvent("overrideambientsound", OnOverrideAmbientSound)
 inst:ListenForEvent("setambientsounddaytime", OnSetAmbientSoundDaytime)
-inst:ListenForEvent("refreshdsp", OnRefreshDSP)
-inst:ListenForEvent("pushdsp", OnPushDSP)
-inst:ListenForEvent("popdsp", OnPopDSP)
 inst:ListenForEvent("seasontick", OnSeasonTick)
+inst:ListenForEvent("weathertick", OnWeatherTick)
 inst:ListenForEvent("precipitationchanged", OnPrecipitationChanged)
 
 TheSim:SetReverbPreset(_iscave and "cave" or "default")
@@ -234,11 +212,12 @@ function self:OnUpdate(dt)
                 if tile == GROUND.IMPASSABLE then
                     wavecount = wavecount + 1
                 elseif tile ~= nil then
-                    local sound = AMBIENT_SOUNDS[tile]
-                    if sound ~= nil then
-                        sound = (_wintermix and sound.wintersound) or
-                                (_rainmix and sound.rainsound) or
-                                sound.sound
+                    local soundgroup = AMBIENT_SOUNDS[tile]
+                    if soundgroup ~= nil then
+                        local sound = 
+                                (_rainmix and _heavyrainmix and soundgroup.rainsound) or
+                                (_seasonmix and soundgroup[SEASON_SOUND_KEY[_seasonmix]]) or
+                                soundgroup.sound
                         local counter = soundmixcounters[sound]
                         if counter == nil then
                             counter = { sound = sound, count = 1 }
@@ -280,11 +259,11 @@ function self:OnUpdate(dt)
         ambientvolume = math.min(ambientvolume + dt * .05, 1)
     end
 
-    if (_wavessound == WINTER_WAVE_SOUND) ~= _wintermix then
+    if _wavessound ~= WAVE_SOUNDS[_seasonmix] then
         if _wavesvolume > 0 then
             inst.SoundEmitter:KillSound("waves")
         end
-        _wavessound = _wintermix and WINTER_WAVE_SOUND or WAVE_SOUND
+        _wavessound = WAVE_SOUNDS[_seasonmix]
         _wavesvolume = wavesvolume
         if wavesvolume > 0 then
             inst.SoundEmitter:PlaySound(_wavessound, "waves")
@@ -343,7 +322,7 @@ end
 function self:GetDebugString()
     local str = {}
     
-    table.insert(str, "AMBIENT SOUNDS:")
+    table.insert(str, string.format("AMBIENT SOUNDS: raining:%s heavy:%s season:%s", tostring(_rainmix), tostring(_heavyrainmix), _seasonmix))
     table.insert(str, string.format("atten=%2.2f, day=%2.2f, waves=%2.2f", _ambientvolume, _daytimeparam, _wavesvolume))
     
     for k, v in pairs(_soundvolumes) do

@@ -1,70 +1,107 @@
 local easing = require("easing")
 
+local ZERO_DISTANCE = 10
+local ZERO_DISTSQ = ZERO_DISTANCE * ZERO_DISTANCE
+
 local function oncurrent(self, current)
     if self.inst.player_classified ~= nil then
         self.inst.player_classified:SetTemperature(current)
     end
 end
 
+local function onsheltered(inst, sheltered)
+    inst.components.temperature.sheltered = sheltered
+end
+
 local Temperature = Class(function(self, inst)
     self.inst = inst
-	self.settemp = nil
-	self.rate = 0
-	self.current = 30
-	self.maxtemp = 40
-	self.mintemp = -20
-	self.hurtrate = TUNING.WILSON_HEALTH / TUNING.FREEZING_KILL_TIME
-	self.inherentinsulation = 0
-	self:OnUpdate(0)
+    self.settemp = nil
+    self.current = TUNING.STARTING_TEMP
+    self.maxtemp = TUNING.MAX_ENTITY_TEMP
+    self.mintemp = TUNING.MIN_ENTITY_TEMP
+    self.overheattemp = TUNING.OVERHEAT_TEMP
+    self.hurtrate = TUNING.WILSON_HEALTH / TUNING.FREEZING_KILL_TIME
+    self.inherentinsulation = 0
+    self.inherentsummerinsulation = 0
+    self.shelterinsulation = TUNING.INSULATION_MED_LARGE
+    self.bellytemperaturedelta = nil
+    self.bellytime = nil
+    self.bellytask = nil
+    self.ignoreheatertags = { "INLIMBO" }
+    self.usespawnlight = nil
 
-	self.last_real_delta = 0
-	
-	self.inst:StartUpdatingComponent(self)
+    --At max moisture, the player will feel cooler than at minimum
+    self.maxmoisturepenalty = TUNING.MOISTURE_TEMP_PENALTY
+
+    self:OnUpdate(0)
+
+    --Cached update values
+    self.externalheaterpower = 0
+    self.delta = 0
+    self.rate = 0
+
+    self.sheltered = false
+    self.inst:ListenForEvent("sheltered", onsheltered)
+
+    self.inst:StartUpdatingComponent(self)
 end,
 nil,
 {
     current = oncurrent,
 })
 
-function Temperature:OnRemoveFromEntity()
-    if self.inst.player_classified ~= nil then
-        self.inst.player_classified.isfreezing:set(false)
+function Temperature:DoDelta(delta)
+    self:SetTemperature(self.current + delta)
+end
+
+local function ClearBellyTemperature(inst, self)
+    self.bellytemperaturedelta = nil
+    self.bellytime = nil
+    if self.bellytask ~= nil then
+        self.bellytask:Cancel()
+        self.bellytask = nil
     end
 end
 
+function Temperature:SetTemperatureInBelly(delta, duration)
+    self.bellytemperaturedelta = delta
+    self.bellytime = GetTime() + duration
+    if self.bellytask ~= nil then
+        self.bellytask:Cancel()
+    end
+    self.bellytask = self.inst:DoTaskInTime(duration, ClearBellyTemperature, self)
+end
+
+function Temperature:OnRemoveFromEntity()
+    ClearBellyTemperature(nil, self)
+    if self.inst.player_classified ~= nil then
+        self.inst.player_classified.isfreezing:set(false)
+    end
+    self.inst:RemoveEventCallback("sheltered", onsheltered)
+end
+
 function Temperature:GetCurrent()
-	return self.current 
+    return self.current
+end
+
+function Temperature:GetMax()
+    return self.maxtemp
 end
 
 function Temperature:OnSave()
-	return { current = self.current }
-end
-
-function Temperature:SetTemp(temp)
-	if temp then
-		self.settemp = temp
-		local old = self.current 
-		self.current = temp
-
-        if temp < 0 then
-            if old >= 0 then
-                self.inst:PushEvent("startfreezing")
-            end
-        elseif old < 0 then
-            self.inst:PushEvent("stopfreezing")
-        end
-
-		self.inst:PushEvent("temperaturedelta", {last = old, new = self.current})		
-	else
-		self.settemp = nil
-	end
-end
-
-function Temperature:OnProgress()
-	self.current = 30
+    return
+    {
+        current = self.current,
+        bellytemperaturedelta = self.bellytemperaturedelta,
+        bellytime = self.bellytemperaturedelta ~= nil and self.bellytime - GetTime() or nil,
+    }
 end
 
 function Temperature:OnLoad(data)
+    if data.bellytemperaturedelta ~= nil then
+        self:SetTemperatureInBelly(data.bellytemperaturedelta, data.bellytime)
+    end
+
     if data.current ~= nil and self.current ~= data.current then
         if self.inst:HasTag("player") then
             --world updates while players are logged off, so it looks glitchy
@@ -87,138 +124,241 @@ function Temperature:OnLoad(data)
     end
 end
 
+function Temperature:IgnoreTags(...)
+    self.ignoreheatertags = { "INLIMBO", ... }
+end
+
+function Temperature:SetTemp(temp)
+    self.settemp = temp
+    if temp ~= nil then
+        self:SetTemperature(temp)
+    end
+end
+
 function Temperature:SetTemperature(value)
-	self.current = value
+    local last = self.current
+    self.current = value
+
+    if (self.current < 0) ~= (last < 0) then
+        self.inst:PushEvent(self.current < 0 and "startfreezing" or "stopfreezing")
+    end
+
+    if (self.current > self.overheattemp) ~= (last > self.overheattemp) then
+        self.inst:PushEvent(self.current > self.overheattemp and "startoverheating" or "stopoverheating")
+    end
+
+    self.inst:PushEvent("temperaturedelta", { last = last, new = self.current })
 end
 
 function Temperature:GetDebugString()
-    return string.format("%2.2fC at %2.2f (delta: %2.2f)", self:GetCurrent(), self.rate, self.last_real_delta)
+    return string.format("%2.2fC at %2.2f (delta: %2.2f)", self:GetCurrent(), self.rate, self.delta)
 end
 
 function Temperature:IsFreezing()
-	return self.current < 0
+    return self.current < 0
+end
+
+function Temperature:IsOverheating()
+    return self.current > self.overheattemp
+end
+
+function Temperature:GetInsulation()
+    local winterInsulation = self.inherentinsulation
+    local summerInsulation = self.inherentsummerinsulation
+
+    if self.inst.components.inventory ~= nil then
+        for k, v in pairs(self.inst.components.inventory.equipslots) do
+            if v.components.insulator ~= nil then
+                local insulationValue, insulationType = v.components.insulator:GetInsulation()
+                
+                if insulationType == SEASONS.WINTER then
+                    winterInsulation = winterInsulation + insulationValue
+                elseif insulationType == SEASONS.SUMMER then
+                    summerInsulation = summerInsulation + insulationValue
+                else
+                    print(v, " has invalid insulation type: ", insulationType)
+                end
+            end
+        end
+    end
+
+    if self.inst.components.beard ~= nil then
+        --Beards help winterInsulation but hurt summerInsulation
+        winterInsulation = winterInsulation + self.inst.components.beard:GetInsulation()
+        summerInsulation = summerInsulation - self.inst.components.beard:GetInsulation()
+    end
+
+    if self.sheltered then
+        summerInsulation = summerInsulation + self.shelterinsulation
+    end
+
+    --if TheWorld:HasTag("cave") then
+    --    summerInsulation = summerInsulation + TUNING.CAVE_INSULATION_BONUS
+    --    winterInsulation = winterInsulation + TUNING.CAVE_INSULATION_BONUS
+    --end
+
+    if TheWorld.state.isdusk then
+        summerInsulation = summerInsulation + TUNING.DUSK_INSULATION_BONUS
+    elseif TheWorld.state.isnight then
+        summerInsulation = summerInsulation + TUNING.NIGHT_INSULATION_BONUS
+    end
+
+    return math.max(0, winterInsulation), math.max(0, summerInsulation)
+end
+
+function Temperature:GetMoisturePenalty()
+    return self.inst.components.moisture ~= nil and Lerp(0, self.maxmoisturepenalty, self.inst.components.moisture:GetMoisturePercent()) or 0
 end
 
 function Temperature:OnUpdate(dt, applyhealthdelta)
-	
-	if self.settemp then return end
+    self.externalheaterpower = 0
+    self.delta = 0
+    self.rate = 0
 
-
-	if applyhealthdelta == nil then
-		applyhealthdelta = true
-	end
-	
-	if (self.inst.components.health and self.inst.components.health.invincible == true) or self.inst.is_teleporting == true then
-		return
-	end
-
-    local last = self.current
-
-	local ambient_delta = TheWorld.state.temperature - self.current
-
-	--figure out our insulation
-	local total_insulation = 0
-
-	total_insulation = total_insulation + self.inherentinsulation
-
-	if self.inst.components.inventory then
-		for k,v in pairs (self.inst.components.inventory.equipslots) do
-			if v.components.heater then
-				local heat = v.components.heater:GetEquippedHeat()
-				if heat > self.current and not v.components.heater.iscooler then
-					ambient_delta = ambient_delta + (heat - self.current)
-				elseif heat < self.current and v.components.heater.iscooler then
-					ambient_delta = ambient_delta + (heat - self.current)
-				end
-			end
-			
-			if v.components.insulator then
-				total_insulation = total_insulation + v.components.insulator.insulation
-			end
-		end
-		for k,v in pairs(self.inst.components.inventory.itemslots) do
-			if v.components.heater then
-				local heat = v.components.heater:GetCarriedHeat()
-				if heat > self.current and not v.components.heater.iscooler then
-					ambient_delta = ambient_delta + (heat - self.current)
-				elseif heat < self.current and v.components.heater.iscooler then
-					ambient_delta = ambient_delta + (heat - self.current)
-				end
-			end
-		end
-
-        local overflow = self.inst.components.inventory:GetOverflowContainer()
-		if overflow ~= nil then
-			for k, v in pairs(overflow.slots) do
-				if v.components.heater then
-					local heat = v.components.heater:GetCarriedHeat()
-					if heat > self.current and not v.components.heater.iscooler then
-						ambient_delta = ambient_delta + (heat - self.current)
-					elseif heat < self.current and v.components.heater.iscooler then
-						ambient_delta = ambient_delta + (heat - self.current)
-					end
-				end
-			end
-		end
-	end
-	
-	if self.inst.components.beard then
-		total_insulation = total_insulation + self.inst.components.beard:GetInsulation()
-	end
-
-	--now figure out the temperature where we are standing
-	local x,y,z = self.inst.Transform:GetWorldPosition()
-	
-	local ZERO_DISTANCE = 10
-	local ZERO_DISTSQ = ZERO_DISTANCE*ZERO_DISTANCE
-
-	local ents = TheSim:FindEntities(x,y,z, ZERO_DISTANCE, {"HASHEATER"})
-    for k,v in pairs(ents) do 
-		if v.components.heater and v ~= self.inst and not v:IsInLimbo() then
-			local heat = v.components.heater:GetHeat(self.inst)
-			local distsq = self.inst:GetDistanceSqToInst(v)
-
-			-- This produces a gentle falloff from 1 to zero.
-			local heatfactor = ((-1/ZERO_DISTSQ)*distsq) + 1
-
-			if heat*heatfactor > self.current then
-				ambient_delta = ambient_delta + (heat*heatfactor - self.current)
-			end
-		end
-    end	
-
-	local delta = ambient_delta
-	self.last_real_delta = delta
-	local freeze_time = TUNING.SEG_TIME + total_insulation
-	local WARM_DEGREES_PER_SECOND = 1
-	local THAW_DEGREES_PER_SECOND = 5
-	
-	if delta < 0 then
-		self.rate = math.max(delta, -30 / freeze_time)
-	elseif delta > 0 then
-		
-		self.rate = math.min(delta, self.current <= 0 and THAW_DEGREES_PER_SECOND or WARM_DEGREES_PER_SECOND)
-	else
-		self.rate = 0
-	end
-	
-	
-    self.current = math.max( math.min( self.current + self.rate*dt, self.maxtemp), self.mintemp)
-	
-    if (self.current < 0) ~= (last < 0)  then
-    	if self.current < 0 then
-    		self.inst:PushEvent("startfreezing")
-    	else
-    		self.inst:PushEvent("stopfreezing")
-    	end
+    if self.settemp ~= nil or
+        self.inst.is_teleporting or
+        (self.inst.components.health ~= nil and self.inst.components.health.invincible) then
+        return
     end
 
-	self.inst:PushEvent("temperaturedelta")
-	
-	if applyhealthdelta and self.current < 0 and self.inst.components.health then
-		self.inst.components.health:DoDelta(-self.hurtrate*dt, true, "cold") 
-	end
+    -- Can override range, e.g. in special containers
+    local mintemp = self.mintemp
+    local maxtemp = self.maxtemp
 
+    local owner = self.inst.components.inventoryitem ~= nil and self.inst.components.inventoryitem.owner or nil
+    if owner ~= nil and owner:HasTag("fridge") and not owner:HasTag("nocool") then
+        -- Inside a fridge, excluding icepack ("nocool")
+        mintemp = 0 -- Don't cool it below freezing
+        self.rate = owner:HasTag("lowcool") and -.5 * TUNING.WARM_DEGREES_PER_SEC or -TUNING.WARM_DEGREES_PER_SEC
+    else
+        -- Prepare to figure out the temperature where we are standing
+        local ambient_temperature = TheWorld.state.temperature
+        local x, y, z = self.inst.Transform:GetWorldPosition()
+        local ents = self.usespawnlight and
+            TheSim:FindEntities(x, y, z, ZERO_DISTANCE, nil, self.ignoreheatertags, { "HASHEATER", "spawnlight" }) or
+            TheSim:FindEntities(x, y, z, ZERO_DISTANCE, { "HASHEATER" }, self.ignoreheatertags)
+        if self.usespawnlight and #ents > 0 then
+            for i, v in ipairs(ents) do
+                if v.components.heater == nil and v:HasTag("spawnlight") then
+                    ambient_temperature = math.clamp(ambient_temperature, 10, TUNING.OVERHEAT_TEMP - 20)
+                    table.remove(ents, i)
+                    break
+                end
+            end
+        end
+
+        self.delta = ambient_temperature - self.current - self:GetMoisturePenalty()
+
+        if self.inst.components.inventory ~= nil then
+            for k, v in pairs(self.inst.components.inventory.equipslots) do
+                if v.components.heater ~= nil then
+                    local heat = v.components.heater:GetEquippedHeat()
+                    if heat ~= nil and
+                        ((heat > self.current and v.components.heater:IsExothermic()) or
+                        (heat < self.current and v.components.heater:IsEndothermic())) then
+                        self.delta = self.delta + heat - self.current
+                    end
+                end
+            end
+            for k, v in pairs(self.inst.components.inventory.itemslots) do
+                if v.components.heater ~= nil then
+                    local heat, carriedmult = v.components.heater:GetCarriedHeat()
+                    if heat ~= nil and
+                        ((heat > self.current and v.components.heater:IsExothermic()) or
+                        (heat < self.current and v.components.heater:IsEndothermic())) then
+                        self.delta = self.delta + (heat - self.current) * carriedmult
+                    end
+                end
+            end
+            local overflow = self.inst.components.inventory:GetOverflowContainer()
+            if overflow ~= nil then
+                for k, v in pairs(overflow.slots) do
+                    if v.components.heater ~= nil then
+                        local heat, carriedmult = v.components.heater:GetCarriedHeat()
+                        if heat ~= nil and
+                            ((heat > self.current and v.components.heater:IsExothermic()) or
+                            (heat < self.current and v.components.heater:IsEndothermic())) then
+                            self.delta = self.delta + (heat - self.current) * carriedmult
+                        end
+                    end
+                end
+            end
+        end
+
+        -- Recently eaten temperatured food is inherently equipped heat/cold
+        if self.bellytemperaturedelta ~= nil then
+            self.delta = self.delta + self.bellytemperaturedelta
+        end
+
+        -- If very hot (basically only when have overheating screen effect showing) and under shelter, cool slightly
+        if self.sheltered and self.current > TUNING.TREE_SHADE_COOLING_THRESHOLD then
+            self.delta = self.delta - (self.current - TUNING.TREE_SHADE_COOLER)
+        end
+
+        for i, v in ipairs(ents) do 
+            if v ~= self.inst and
+                not v:IsInLimbo() and
+                v.components.heater ~= nil and
+                (v.components.heater:IsExothermic() or v.components.heater:IsEndothermic()) then
+
+                local heat = v.components.heater:GetHeat(self.inst)
+                if heat ~= nil then
+                    -- This produces a gentle falloff from 1 to zero.
+                    local heatfactor = 1 - self.inst:GetDistanceSqToInst(v) / ZERO_DISTSQ
+                    if self.inst:GetIsWet() then
+                        heatfactor = heatfactor * TUNING.WET_HEAT_FACTOR_PENALTY
+                    end
+
+                    if v.components.heater:IsExothermic() then
+                        -- heating heatfactor is relative to 0 (freezing)
+                        local warmingtemp = heat * heatfactor
+                        if warmingtemp > self.current then
+                            self.delta = self.delta + warmingtemp - self.current
+                        end
+                        self.externalheaterpower = self.externalheaterpower + warmingtemp
+                    else--if v.components.heater:IsEndothermic() then
+                        -- cooling heatfactor is relative to overheattemp
+                        local coolingtemp = (heat - self.overheattemp) * heatfactor + self.overheattemp
+                        if coolingtemp < self.current then
+                            self.delta = self.delta + coolingtemp - self.current
+                        end
+                    end
+                end
+            end
+        end
+
+        -- Winter insulation only affects you when it's cold out, summer insulation only helps when it's warm
+        if ambient_temperature >= TUNING.STARTING_TEMP then
+            -- it's warm out
+            if self.delta > 0 then
+                -- If the player is heating up, defend using insulation.
+                local winterInsulation, summerInsulation = self:GetInsulation()
+                self.rate = math.min(self.delta, TUNING.SEG_TIME / (TUNING.SEG_TIME + summerInsulation))
+            else
+                -- If they are cooling, do it at full speed, and faster if they're overheated
+                self.rate = math.max(self.delta, self.current >= self.overheattemp and -TUNING.THAW_DEGREES_PER_SEC or -TUNING.WARM_DEGREES_PER_SEC)
+            end
+        -- it's cold out
+        elseif self.delta < 0 then
+            -- If the player is cooling, defend using insulation.
+            local winterInsulation, summerInsulation = self:GetInsulation()
+            self.rate = math.max(self.delta, -TUNING.SEG_TIME / (TUNING.SEG_TIME + winterInsulation))
+        else
+            -- If they are heating up, do it at full speed, and faster if they're freezing
+            self.rate = math.min(self.delta, self.current <= 0 and TUNING.THAW_DEGREES_PER_SEC or TUNING.WARM_DEGREES_PER_SEC)
+        end
+    end
+
+    self:SetTemperature(math.clamp(self.current + self.rate * dt, mintemp, maxtemp))
+
+    --applyhealthdelta nil defaults to true
+    if applyhealthdelta ~= false and self.inst.components.health ~= nil then
+        if self.current < 0 then
+            self.inst.components.health:DoDelta(-self.hurtrate * dt, true, "cold")
+        elseif self.current > self.overheattemp then
+            self.inst.components.health:DoDelta(-self.hurtrate * dt, true, "hot")
+        end
+    end
 end
 
 return Temperature

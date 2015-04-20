@@ -1,12 +1,12 @@
 local assets =
 {
-	Asset("ANIM", "anim/gunpowder.zip"),
+    Asset("ANIM", "anim/gunpowder.zip"),
     Asset("ANIM", "anim/explode.zip"),
 }
 
 local prefabs =
 {
-    "explode_small"
+    "explode_small",
 }
 
 local function OnIgniteFn(inst)
@@ -20,11 +20,17 @@ local function OnExplodeFn(inst)
     SpawnPrefab("explode_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
 end
 
-local function fn()
-	local inst = CreateEntity()
+local function OnPutInInv(inst, owner)
+    if owner.prefab == "mole" then
+        inst.components.explosive:OnBurnt()
+    end
+end
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+local function fn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
@@ -34,18 +40,20 @@ local function fn()
     inst.AnimState:SetBuild("gunpowder")
     inst.AnimState:PlayAnimation("idle")
 
+    inst:AddTag("molebait")
+
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-
     inst:AddComponent("stackable")
-	inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
+    inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
 
     inst:AddComponent("inspectable")
 
-	MakeSmallBurnable(inst, 3 + math.random() * 3)
+    MakeSmallBurnable(inst, 3 + math.random() * 3)
     MakeSmallPropagator(inst)
     --V2C: Remove default OnBurnt handler, as it conflicts with
     --explosive component's OnBurnt handler for removing itself
@@ -57,6 +65,9 @@ local function fn()
     inst.components.explosive.explosivedamage = TUNING.GUNPOWDER_DAMAGE
 
     inst:AddComponent("inventoryitem")
+    inst.components.inventoryitem:SetOnPutInInventoryFn(OnPutInInv)
+
+    inst:AddComponent("bait")
 
     MakeHauntableLaunchAndIgnite(inst)
 

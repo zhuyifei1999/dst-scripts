@@ -40,3 +40,15 @@ function DumpEntity(ent)
 	end
 	print("====================================================================================================================================")
 end
+
+function DumpUpvalues(func)
+	print("============================================ Dumping Upvalues ============================================")
+	local info = debug.getinfo(func, "nuS")
+	print(string.format("Upvalues (%d of 'em) for function %s defined at %s:%s", info.nups, tostring(info.name), tostring(info.source), tostring(info.linedefined)))
+    for i = 1,math.huge do
+        local name, v = debug.getupvalue(func,i)
+        if name == nil then break end
+        print(string.format("%d:\t %s (%s) \t= %s", i,name,type(v),tostring(v)))
+    end
+	print("--------------------------------------------------------------------------------------------------------------------")
+end

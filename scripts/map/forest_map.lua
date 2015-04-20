@@ -60,7 +60,7 @@ local MULTIPLY = {
 	["often"] = 1.5,
 	["mostly"] = 2.2,
 	["always"] = 3,		
-	}
+}
 
 	
 local TRANSLATE_TO_PREFABS = {
@@ -69,15 +69,16 @@ local TRANSLATE_TO_PREFABS = {
 	["tallbirds"] = 		{"tallbirdnest"},
 	["pigs"] = 				{"pighouse"},
 	["rabbits"] = 			{"rabbithole"},
+	["moles"] =				{"molehill"},
 	["beefalo"] = 			{"beefalo"},
-	["frogs"] = 			{"pond"},
+	["ponds"] = 			{"pond", "pond_mos"},
 	["bees"] = 				{"beehive", "bee"},
 	["grass"] = 			{"grass"},
-	["rock"] = 				{"rock1", "rock2", "rock_flintless", "rock_moon"}, 
-	["rocks"] = 			{"rocks"}, 
+	["rock"] = 				{"rocks", "rock1", "rock2", "rock_flintless"}, 
+	["rock_ice"] = 			{"rock_ice"}, 
 	["sapling"] = 			{"sapling"},
 	["reeds"] = 			{"reeds"},	
-	["trees"] = 			{"evergreen", "evergreen_sparse"},	
+	["trees"] = 			{"evergreen", "evergreen_sparse", "deciduoustree", "marsh_tree"},	
 	["evergreen"] = 		{"evergreen"},	
 	["carrot"] = 			{"carrot_planted"},
 	["berrybush"] = 		{"berrybush", "berrybush2"},
@@ -85,17 +86,25 @@ local TRANSLATE_TO_PREFABS = {
 	["maxwelllight_area"] = {"maxwelllight_area"},
 	["fireflies"] = 		{"fireflies"},
 	["cave_entrance"] = 	{"cave_entrance"},
-	["flowers"] = 			{"flower", "flower_evil"},
+	["tumbleweed"] = 		{"tumbleweedspawner"},
+	["cactus"] = 			{"cactus"},
+	["lightninggoat"] = 	{"lightninggoat"},
+	["catcoon"] = 			{"catcoonden"},
+	["merm"] = 				{"mermhouse"},
+	["buzzard"] = 			{"buzzardspawner"},
 	["mushroom"] =			{"red_mushroom", "green_mushroom", "blue_mushroom"},
 	["marshbush"] = 		{"marsh_bush"},
-	["merm"] = 				{"merm"},
 	["flint"] = 			{"flint"},
 	["mandrake"] = 			{"mandrake"},
 	["angrybees"] = 		{"wasphive", "killerbee"},
+	["houndmound"] = 		{"houndmound"},
 	["chess"] = 			{"knight", "bishop", "rook"},
 	["walrus"] = 			{"walrus_camp"},
-	["meteorspawner"] =		{"meteorspawner"},
-	}
+}
+
+local TRANSLATE_AND_OVERRIDE = { --These are entities that should be translated to prefabs for world gen but also have a postinit override to do
+	["flowers"] =			{"flower", "flower_evil"},
+}
 
 local customise = require("map/customise")
 local function TranslateWorldGenChoices(world_gen_choices)
@@ -109,14 +118,23 @@ local function TranslateWorldGenChoices(world_gen_choices)
 	for group, items in pairs(world_gen_choices["tweak"]) do
 		for selected, v in pairs(items) do
 			if v ~= "default" then
-				if TRANSLATE_TO_PREFABS[selected] == nil then
-					local area = customise.GetGroupForItem(selected)
-					-- Modify world now
+				if TRANSLATE_AND_OVERRIDE[selected] ~= nil then --Override and Translate
+					local area = customise.GetGroupForItem(selected) --Override
 					if runtime_overrides[area] == nil then
 						runtime_overrides[area] = {}
 					end
 					table.insert(runtime_overrides[area], {selected, v})
-				else
+
+					for i,prefab in ipairs(TRANSLATE_AND_OVERRIDE[selected]) do --Translate
+						translated[prefab] = MULTIPLY[v]
+					end
+				elseif TRANSLATE_TO_PREFABS[selected] == nil then --Override only
+					local area = customise.GetGroupForItem(selected)
+					if runtime_overrides[area] == nil then
+						runtime_overrides[area] = {}
+					end
+					table.insert(runtime_overrides[area], {selected, v})
+				else --Translate only
 					for i,prefab in ipairs(TRANSLATE_TO_PREFABS[selected]) do
 						translated[prefab] = MULTIPLY[v]
 					end	

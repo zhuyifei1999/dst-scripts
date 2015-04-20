@@ -2,153 +2,87 @@ require "prefabutil"
 
 local assets =
 {
-	Asset("ANIM", "anim/wilsonstatue.zip"),
+    Asset("ANIM", "anim/wilsonstatue.zip"),
+}
+
+local prefabs =
+{
+    "collapse_small",
+    "charcoal",
 }
 
 local function onhammered(inst, worker)
-	if inst.components.lootdropper and not inst.components.resurrector.used then
-		inst.components.lootdropper:DropLoot()
-	end
-	SpawnPrefab("collapse_big").Transform:SetPosition(inst.Transform:GetWorldPosition())
-	inst.SoundEmitter:PlaySound("dontstarve/common/destroy_wood")
-	inst.components.resurrector.penalty = 0
-	inst:Remove()
-
-	-- Remove from save index
-	SaveGameIndex:DeregisterResurrector(inst)
-
-	if not inst.components.resurrector.used then
-		for i,v in ipairs(AllPlayers) do
-			v.components.health:RecalculatePenalty()
-		end
-	end
-	
+    if inst:HasTag("fire") and inst.components.burnable ~= nil then
+        inst.components.burnable:Extinguish()
+    end
+    if inst:HasTag("burnt") then
+        if inst.components.lootdropper ~= nil then
+            inst.components.lootdropper:SpawnLootPrefab("charcoal")
+        end
+        SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
+    else
+        if inst.components.lootdropper ~= nil then
+            inst.components.lootdropper:DropLoot()
+        end
+        SpawnPrefab("collapse_big").Transform:SetPosition(inst.Transform:GetWorldPosition())
+    end
+    inst.SoundEmitter:PlaySound("dontstarve/common/destroy_wood")
+    inst:Remove()
 end
 
-local function makeused(inst)
-	inst.AnimState:PlayAnimation("debris")
-	inst.components.resurrector.penalty = 0
+local function onhaunt(inst, haunter)
+    if not inst:HasTag("burnt") then
+        return true
+    end
+    if inst.components.workable ~= nil then
+        inst.components.workable:WorkedBy(haunter, 1)
+    end
+    return false
+end
+
+local function onburnt(inst)
+    inst:AddTag("burnt")
+    inst.components.burnable.canlight = false
+    if inst.components.workable ~= nil then
+        inst.components.workable:SetWorkLeft(1)
+    end
+    inst.AnimState:PlayAnimation("burnt", true)
 end
 
 local function onhit(inst, worker)
-	if not inst.components.resurrector.used then
-		inst.AnimState:PlayAnimation("hit")
-		inst.AnimState:PushAnimation("idle")
-	end
+    if not inst:HasTag("burnt") then 
+        inst.AnimState:PlayAnimation("hit")
+        inst.AnimState:PushAnimation("idle")
+    end
 end
 
-local function onduderebirth(dude, inst)
-    if dude.HUD then
-        dude.HUD:Show()
+local function onsave(inst, data)
+    if inst:HasTag("burnt") or inst:HasTag("fire") then
+        data.burnt = true
     end
-
-    if dude.components.hunger then
-        dude.components.hunger:SetPercent(2 / 3)
-    end
-
-    if dude.components.health then
-        dude.components.health:RecalculatePenalty()
-        dude.components.health:Respawn(TUNING.RESURRECT_HEALTH)
-        dude.components.health:SetInvincible(true)
-    end
-
-    if dude.components.sanity then
-        dude.components.sanity:SetPercent(.5)
-    end
-
-    if dude.components.playercontroller then
-        dude.components.playercontroller:Enable(true)
-    end
-
-    dude.components.hunger:Resume()
-
-    TheCamera:SetDefault()
-
-    --HACK: see explosive component
-    inst.isresurrecting = nil
 end
 
-local function onendresurrect(inst, dude)
-    dude.components.health:SetInvincible(false)
-    inst:Show()
-end
-
-local function doerode(inst)
-    local tick_time = TheSim:GetTickTime()
-    local time_to_erode = 4
-    inst:StartThread(function()
-        local ticks = 0
-        while ticks * tick_time < time_to_erode do
-            local erode_amount = ticks * tick_time / time_to_erode
-            inst.AnimState:SetErosionParams(erode_amount, 0.1, 1.0)
-            ticks = ticks + 1
-            Yield()
-        end
-        inst:Remove()
-    end)
-end
-
-local function onresurrect(inst, dude)
-    dude:Show()
-
-    inst:Hide()
-    inst.AnimState:PlayAnimation("debris")
-    inst.components.resurrector.penalty = 0
-
-    dude.sg:GoToState("rebirth")
-
-    --SaveGameIndex:SaveCurrent()
-    dude:DoTaskInTime(3, onduderebirth, inst)
-    inst:DoTaskInTime(4, onendresurrect, dude)
-    inst:DoTaskInTime(7, doerode)
-end
-
-local function doresurrect(inst, dude)
-    --HACK: see explosive component
-    inst.isresurrecting = true
-
-	inst.persists = false
-    inst:RemoveComponent("lootdropper")
-    inst:RemoveComponent("workable")
-    inst:RemoveComponent("inspectable")
-	inst.MiniMapEntity:SetEnabled(false)
-    if inst.Physics then
-		RemovePhysicsColliders(inst)
+local function onload(inst, data)
+    if data ~= nil and data.burnt then
+        inst.components.burnable.onburnt(inst)
     end
-
-    TheWorld:PushEvent("ms_nextcycle")
-    dude.Transform:SetPosition(inst.Transform:GetWorldPosition())
-    dude:Hide()
-    dude:ClearBufferedAction()
-
-    if dude.HUD then
-        dude.HUD:Hide()
-    end
-    if dude.components.playercontroller then
-        dude.components.playercontroller:Enable(false)
-    end
-
-    TheCamera:SetDistance(12)
-	dude.components.hunger:Pause()
-
-    scheduler:ExecuteInTime(3, onresurrect, nil, inst, dude)
 end
 
 local function onbuilt(inst, data)
-	inst.AnimState:PlayAnimation("place")
-	inst.AnimState:PushAnimation("idle", false)
+    inst.AnimState:PlayAnimation("place")
+    inst.AnimState:PushAnimation("idle", false)
     --if data ~= nil and data.builder ~= nil and data.builder.components.health ~= nil then
         --TODO: Hurt the builder like the Telltale Heart does?
     --end
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
     inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddMiniMapEntity()
-	inst.entity:AddSoundEmitter()
+    inst.entity:AddAnimState()
+    inst.entity:AddMiniMapEntity()
+    inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
     MakeObstaclePhysics(inst, .3)
@@ -164,34 +98,42 @@ local function fn()
 
     MakeSnowCoveredPristine(inst)
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-
     inst:AddComponent("inspectable")
-    inst:AddComponent("resurrector")
-    -- inst.components.resurrector.active = true -- we don't want auto-rez
-	inst.components.resurrector.doresurrect = doresurrect
-	inst.components.resurrector.makeusedfn = makeused
-	inst.components.resurrector.penalty = 1
 
     inst:AddComponent("lootdropper")
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
     inst.components.workable:SetWorkLeft(4)
-	inst.components.workable:SetOnFinishCallback(onhammered)
-	inst.components.workable:SetOnWorkCallback(onhit)
-	inst:ListenForEvent("onbuilt", onbuilt)
+    inst.components.workable:SetOnFinishCallback(onhammered)
+    inst.components.workable:SetOnWorkCallback(onhit)
+    inst:ListenForEvent("onbuilt", onbuilt)
+
+    inst:AddComponent("burnable")
+    inst.components.burnable:SetFXLevel(3)
+    inst.components.burnable:SetBurnTime(10)
+    inst.components.burnable:AddBurnFX("fire", Vector3(0, 0, 0))
+    inst.components.burnable:SetOnBurntFn(onburnt)
+    MakeLargePropagator(inst)
+
+    inst.OnSave = onsave 
+    inst.OnLoad = onload
 
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetHauntValue(TUNING.HAUNT_INSTANT_REZ)
+    inst.components.hauntable:SetOnHauntFn(onhaunt)
 
     MakeSnowCovered(inst)
+
+    inst:ListenForEvent("activateresurrection", inst.Remove)
 
     return inst
 end
 
-return Prefab("common/objects/resurrectionstatue", fn, assets),
-		MakePlacer("common/resurrectionstatue_placer", "wilsonstatue", "wilsonstatue", "idle")
+return Prefab("common/objects/resurrectionstatue", fn, assets, prefabs),
+    MakePlacer("common/resurrectionstatue_placer", "wilsonstatue", "wilsonstatue", "idle")

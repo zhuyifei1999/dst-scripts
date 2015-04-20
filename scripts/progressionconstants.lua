@@ -24,13 +24,15 @@ if TheSim and	-- we can be loaded by updateprefabs
 	        -- XP_PER_DAY*48,
 	        -- XP_PER_DAY*64,
 	        -- XP_PER_DAY*80,
+	        -- XP_PER_DAY*96,
+	        -- XP_PER_DAY*112,
 	        --50000, --
 	        --100000, --
 	    }
 end
 
 --Wes & Maxwell unlocked through other means.
-local Level_rewards = {'willow', 'wolfgang', 'wendy', 'wx78', 'wickerbottom', 'woodie'} 
+local Level_rewards = {'willow', 'wolfgang', 'wendy', 'wx78', 'wickerbottom', 'woodie', 'wathgrithr'} 
 local Level_cap = #XP_levels
 
 local function GetLevelForXP(xp)

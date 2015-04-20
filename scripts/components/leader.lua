@@ -5,6 +5,7 @@ local Leader = Class(function(self, inst)
     
     self.inst:ListenForEvent("newcombattarget", function(inst, data) self:OnNewTarget(data.target) end)
     self.inst:ListenForEvent("attacked", function(inst, data) self:OnAttacked(data.attacker) end)    
+    self.inst:ListenForEvent("death", function(inst) self:RemoveAllFollowers() end)
 end)
 
 function Leader:IsFollower(guy)
@@ -47,6 +48,9 @@ function Leader:RemoveFollower(follower, invalid)
     if follower and self.followers[follower] then
         self.followers[follower] = nil
         self.numfollowers = self.numfollowers - 1
+        if self.onremovefollower then
+            self.onremovefollower(self.inst, follower)
+        end
 
 		if not invalid then
 	        follower:PushEvent("stopfollowing", {leader = self.inst} )
@@ -78,10 +82,16 @@ function Leader:AddFollower(follower, keepondeath)
 	end
 end
 
-function Leader:RemoveFollowersByTag(tag)
+function Leader:RemoveFollowersByTag(tag, validateremovefn)
     for k,v in pairs(self.followers) do
         if k:HasTag(tag) then
-            self:RemoveFollower(k)
+            if validateremovefn then
+                if validateremovefn(k) then
+                    self:RemoveFollower(k)
+                end
+            else
+                self:RemoveFollower(k)
+            end
         end
     end
 end

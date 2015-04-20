@@ -1,6 +1,6 @@
 local assets =
 {
-	Asset("ANIM", "anim/fireflies.zip"),
+    Asset("ANIM", "anim/fireflies.zip"),
 }
 
 local INTENSITY = .5
@@ -60,14 +60,14 @@ local function OnIsNight(inst)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddPhysics()
     inst.entity:AddLight()
     inst.entity:AddNetwork()
- 
+
     inst:AddTag("NOBLOCK")
 
     inst.Light:SetFalloff(1)
@@ -75,39 +75,42 @@ local function fn()
     inst.Light:SetRadius(1)
     inst.Light:SetColour(180/255, 195/255, 150/255)
     inst.Light:Enable(false)
-    
+
     inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
-    
+
     inst.AnimState:SetBank("fireflies")
     inst.AnimState:SetBuild("fireflies")
-
     inst.AnimState:SetRayTestOnBB(true)
-    
+
+    inst:AddTag("cattoyairborne")
+
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("playerprox")
 
     inst:AddComponent("inspectable")
     inst.components.inspectable.getstatus = getstatus
-    
+
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.NET)
     inst.components.workable:SetWorkLeft(1)
     inst.components.workable:SetOnFinishCallback(onworked)
 
     inst:AddComponent("fader")
-    
+
     inst:AddComponent("stackable")
-	inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
+    inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
     inst.components.stackable.forcedropsingle = true
 
     inst:AddComponent("inventoryitem")
     inst.components.inventoryitem:SetOnDroppedFn(ondropped)
     inst.components.inventoryitem.canbepickedup = false
+
+    inst:AddComponent("tradable")
 
     inst:AddComponent("fuel")
     inst.components.fuel.fuelvalue = TUNING.LARGE_FUEL
@@ -123,7 +126,7 @@ local function fn()
     inst:WatchWorldState("isnight", OnIsNight)
 
     updatelight(inst)
-    
+
     return inst
 end
 

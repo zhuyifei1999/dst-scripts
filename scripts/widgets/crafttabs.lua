@@ -12,6 +12,8 @@ local ControllerCrafting = require "widgets/controllercrafting"
 local base_scale = .75
 local selected_scale = .9
 local HINT_UPDATE_INTERVAL = 2.0 -- once per second
+local SCROLL_REPEAT_TIME = .15
+local MOUSE_SCROLL_REPEAT_TIME = 0
 
 local tab_bg = 
 {
@@ -38,11 +40,17 @@ local CraftTabs = Class(Widget, function(self, owner, top_root)
     
     self.controllercrafting = self.craftroot:AddChild(ControllerCrafting(owner))
     --]]
+
+    local crafting_scale = 0.95
+
     self.controllercrafting = self:AddChild(ControllerCrafting(owner))
     self.controllercrafting:Hide()
+    -- self.controllercrafting:SetScale(crafting_scale, crafting_scale, crafting_scale)
 
     self.crafting = self:AddChild(MouseCrafting(owner))
     self.crafting:Hide()
+    self.crafting:SetScale(crafting_scale, crafting_scale, crafting_scale)
+
     self.bg = self:AddChild(Image("images/hud.xml", "craft_bg.tex"))      
     
     self.tabs = self:AddChild(TabGroup())
@@ -76,24 +84,33 @@ local CraftTabs = Class(Widget, function(self, owner, top_root)
     
     self.tabbyfilter = {}
     for k,v in ipairs(tabnames) do
-        local tab = self.tabs:AddTab(STRINGS.TABS[v.str], resolvefilepath("images/hud.xml"), v.icon_atlas or resolvefilepath("images/hud.xml"), v.icon, tab_bg.normal, tab_bg.selected, tab_bg.highlight, tab_bg.bufferedhighlight, tab_bg.overlay,
+        local tab = self.tabs:AddTab(STRINGS.TABS[v.str], resolvefilepath("images/hud.xml"), v.icon_atlas or resolvefilepath("images/hud.xml"),
+        v.icon, tab_bg.normal, tab_bg.selected, tab_bg.highlight, tab_bg.bufferedhighlight, tab_bg.overlay,
             
             function() --select fn
                 if not self.controllercraftingopen then
-                    
+
                     if self.craft_idx_by_tab[k] then
                         self.crafting.idx = self.craft_idx_by_tab[k]
                     end
 
-                    self.crafting:SetFilter( 
-                        function(recname)
-                            local recipe = GetValidRecipe(recname)
-                            return recipe ~= nil
-                                and recipe.tab == v
-                                and (self.owner.replica.builder == nil or
-                                    self.owner.replica.builder:CanLearn(recname))
-                        end)
+                    local default_filter = function(recname)
+                        local recipe = GetValidRecipe(recname)
+                        return recipe ~= nil
+                        and recipe.tab == v
+                        and (self.owner.replica.builder == nil or
+                        self.owner.replica.builder:CanLearn(recname))
+                    end
 
+                    local advanced_filter = function(recname)
+                        local recipe = GetValidRecipe(recname)
+                        return recipe ~= nil
+                        and recipe.tab == v
+                        and (self.owner.replica.builder == nil or
+                        self.owner.replica.builder:CanLearn(recname))
+                    end
+
+                    self.crafting:SetFilter(advanced_filter)
                     self.crafting:Open()
                 end
             end, 
@@ -211,6 +228,66 @@ end
 
 function CraftTabs:GetPrevIdx()
     return self.tabs:GetPrevIdx()
+end
+
+function CraftTabs:IsCraftingOpen()
+    return self.crafting.open or self.controllercraftingopen
+end
+
+function CraftTabs:OnControl(control, down)
+    if CraftTabs._base.OnControl(self, control, down) then return true end
+
+    if down and self.focus then
+        if control == CONTROL_SCROLLBACK then
+            if self.controllercraftingopen then
+                if self.controllercrafting.repeat_time <= 0 then
+                    local idx = self.tabs:GetPrevIdx()
+                    if self.controllercrafting.tabidx ~= idx and self.controllercrafting:OpenRecipeTab(idx) then
+                        TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/craft_up")
+                    end
+                    self.controllercrafting.repeat_time =
+                        TheInput:GetControlIsMouseWheel(control)
+                        and MOUSE_SCROLL_REPEAT_TIME
+                        or SCROLL_REPEAT_TIME
+                end
+            elseif self.crafting.open then
+                local idx = self.tabs:GetPrevIdx()
+                if self.tabs:GetCurrentIdx() ~= idx and self:OpenTab(idx) then
+                    TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/craft_open")
+                end
+            else
+                local idx = self.tabs:GetLastIdx()
+                if idx ~= nil and self:OpenTab(idx) then
+                    TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/craft_open")
+                end
+            end
+            return true
+        elseif control == CONTROL_SCROLLFWD then
+            if self.controllercraftingopen then
+                if self.controllercrafting.repeat_time <= 0 then
+                    local idx = self.tabs:GetNextIdx()
+                    if self.controllercrafting.tabidx ~= idx and self.controllercrafting:OpenRecipeTab(idx) then
+                        TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/craft_down")
+                    end
+                    self.controllercrafting.repeat_time =
+                        TheInput:GetControlIsMouseWheel(control)
+                        and MOUSE_SCROLL_REPEAT_TIME
+                        or SCROLL_REPEAT_TIME
+                end
+            elseif self.crafting.open then
+                local idx = self.tabs:GetNextIdx()
+                if self.tabs:GetCurrentIdx() ~= idx and self:OpenTab(idx) then
+                    TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/craft_open")
+                end
+            else
+                local idx = self.tabs:GetFirstIdx()
+                if idx ~= nil and self:OpenTab(idx) then
+                    TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/craft_open")
+                end
+            end
+            return true
+        end
+    end
 end
 
 function CraftTabs:UpdateRecipes()

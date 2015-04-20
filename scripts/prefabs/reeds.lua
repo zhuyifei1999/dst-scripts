@@ -1,8 +1,8 @@
 local assets =
 {
-	Asset("ANIM", "anim/grass.zip"),
-	Asset("ANIM", "anim/reeds.zip"),
-	Asset("SOUND", "sound/common.fsb"),
+    Asset("ANIM", "anim/grass.zip"),
+    Asset("ANIM", "anim/reeds.zip"),
+    Asset("SOUND", "sound/common.fsb"),
 }
 
 local prefabs =
@@ -22,14 +22,14 @@ local function onregenfn(inst)
 end
 
 local function makeemptyfn(inst)
-	inst.AnimState:PlayAnimation("picked")
+    inst.AnimState:PlayAnimation("picked")
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
@@ -40,11 +40,11 @@ local function fn()
     inst.AnimState:SetBuild("reeds")
     inst.AnimState:PlayAnimation("idle", true)
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst.AnimState:SetTime(math.random() * 2)
     local color = 0.75 + math.random() * 0.25
@@ -53,8 +53,8 @@ local function fn()
     inst:AddComponent("pickable")
     inst.components.pickable.picksound = "dontstarve/wilson/pickup_reeds"
     inst.components.pickable:SetUp("cutreeds", TUNING.REEDS_REGROW_TIME)
-	inst.components.pickable.onregenfn = onregenfn
-	inst.components.pickable.onpickedfn = onpickedfn
+    inst.components.pickable.onregenfn = onregenfn
+    inst.components.pickable.onpickedfn = onpickedfn
     inst.components.pickable.makeemptyfn = makeemptyfn
     inst.components.pickable.SetRegenTime = 120
 
@@ -64,13 +64,13 @@ local function fn()
     inst:AddComponent("fuel")
     inst.components.fuel.fuelvalue = TUNING.SMALL_FUEL
 
-	MakeSmallBurnable(inst, TUNING.SMALL_FUEL)
+    MakeSmallBurnable(inst, TUNING.SMALL_FUEL)
     MakeSmallPropagator(inst)
-	MakeNoGrowInWinter(inst)
+    MakeNoGrowInWinter(inst)
     MakeHauntableIgnite(inst)    
     ---------------------   
 
     return inst
 end
 
-return Prefab("forest/objects/reeds", fn, assets, prefabs) 
+return Prefab("forest/objects/reeds", fn, assets, prefabs)

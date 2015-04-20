@@ -1,46 +1,40 @@
 local assets =
 {
-	Asset("ANIM", "anim/teleporter_worm.zip"),
-	Asset("ANIM", "anim/teleporter_sickworm_build.zip"),
-	Asset("SOUND", "sound/common.fsb"),
+    Asset("ANIM", "anim/teleporter_worm.zip"),
+    Asset("ANIM", "anim/teleporter_sickworm_build.zip"),
+    Asset("SOUND", "sound/common.fsb"),
 }
 
 local function onsave(inst, data)
-	data.usesleft = inst.usesleft
+    data.usesleft = inst.usesleft
 end
 
 local function onload(inst, data)
-	if data and data.usesleft then
-		inst.usesleft = data.usesleft
-	end
+    if data and data.usesleft then
+        inst.usesleft = data.usesleft
+    end
 end
 
 local function GetStatus(inst)
-	if inst.sg.currentstate.name ~= "idle" then
-		return "OPEN"
-	else
-		return "CLOSED"
-	end
+    return inst.sg.currentstate.name ~= "idle" and "OPEN" or "CLOSED"
 end
 
 local function incrementuses(inst)
-	
-	local sisterworm = inst.components.teleporter.targetTeleporter 
-	inst.usesleft = inst.usesleft - 1
-	print("Worm Uses Left:", inst.usesleft)
-	if inst.usesleft <= 0 then
-		inst.sg:GoToState("death")
-		inst.components.teleporter.targetTeleporter = nil
-	end
+    local sisterworm = inst.components.teleporter.targetTeleporter 
+    inst.usesleft = inst.usesleft - 1
+    print("Worm Uses Left:", inst.usesleft)
+    if inst.usesleft <= 0 then
+        inst.sg:GoToState("death")
+        inst.components.teleporter.targetTeleporter = nil
+    end
 
-	if sisterworm then
-		sisterworm.usesleft = sisterworm.usesleft - 1
-		if sisterworm.usesleft <= 0 then
-			sisterworm.sg:GoToState("death")
-			sisterworm.components.teleporter.targetTeleporter = nil
-		end
-	end
-
+    if sisterworm then
+        sisterworm.usesleft = sisterworm.usesleft - 1
+        if sisterworm.usesleft <= 0 then
+            sisterworm.sg:GoToState("death")
+            sisterworm.components.teleporter.targetTeleporter = nil
+        end
+    end
 end
 
 local function oncameraarrive(doer)
@@ -64,49 +58,49 @@ local function ondoerwormholespit(doer)
 end
 
 local function OnActivate(inst, doer)
-	if inst.components.teleporter.targetTeleporter and inst.usesleft > 0 then
-		if doer:HasTag("player") then
+    if inst.components.teleporter.targetTeleporter and inst.usesleft > 0 then
+        if doer:HasTag("player") then
             ProfileStatsSet("wormhole_ltd_used", true)
-			doer.components.health:SetInvincible(true)
-			doer.components.playercontroller:Enable(false)
+            doer.components.health:SetInvincible(true)
+            doer.components.playercontroller:Enable(false)
 
-			if inst.components.teleporter.targetTeleporter ~= nil then
-				DeleteCloseEntsWithTag("WORM_DANGER", inst.components.teleporter.targetTeleporter, 15)
-			end
+            if inst.components.teleporter.targetTeleporter ~= nil then
+                DeleteCloseEntsWithTag("WORM_DANGER", inst.components.teleporter.targetTeleporter, 15)
+            end
 
             doer:Hide()
             doer.DynamicShadow:Enable(false)
             doer:ScreenFade(false)
             doer:DoTaskInTime(3, oncameraarrive)
-			doer:DoTaskInTime(4, ondoerarrive)
+            doer:DoTaskInTime(4, ondoerarrive)
             doer:DoTaskInTime(5, ondoerwormholespit)
             inst:DoTaskInTime(4.5, incrementuses)
             --Sounds are triggered in player's stategraph
-		elseif doer.SoundEmitter then
-			inst.SoundEmitter:PlaySound("dontstarve/common.teleportworm/swallow")
-		end
+        elseif doer.SoundEmitter then
+            inst.SoundEmitter:PlaySound("dontstarve/common.teleportworm/swallow")
+        end
 
-	end
+    end
 end
 
 local function onnear(inst)
-	if inst.components.teleporter.targetTeleporter ~= nil then
-		inst.sg:GoToState("opening")
-	end
+    if inst.components.teleporter.targetTeleporter ~= nil then
+        inst.sg:GoToState("opening")
+    end
 end
 
 local function onfar(inst)
-	inst.sg:GoToState("closing")
+    inst.sg:GoToState("closing")
 end
 
 local function onaccept(reciever, giver, item)
-	if giver and giver.components.inventory then
-		giver.components.inventory:DropItem(item)
-	end
-	if reciever and reciever.components.teleporter then
+    if giver and giver.components.inventory then
+        giver.components.inventory:DropItem(item)
+    end
+    if reciever and reciever.components.teleporter then
         ProfileStatsSet("wormhole_ltd_accept_item", item.prefab)
-		reciever.components.teleporter:Activate(item)
-	end
+        reciever.components.teleporter:Activate(item)
+    end
 end
 
 local function makewormhole(uses)
@@ -127,11 +121,11 @@ local function makewormhole(uses)
         inst.AnimState:SetLayer(LAYER_BACKGROUND)
         inst.AnimState:SetSortOrder(3)
 
+        inst.entity:SetPristine()
+
         if not TheWorld.ismastersim then
             return inst
         end
-
-        inst.entity:SetPristine()
 
         inst.usesleft = uses
 
@@ -157,7 +151,7 @@ local function makewormhole(uses)
         inst.components.trader.onaccept = onaccept
 
         inst:AddComponent("hauntable")
-		inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
+        inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
 
         inst.OnSave = onsave
         inst.OnLoad = onload
@@ -165,7 +159,7 @@ local function makewormhole(uses)
         return inst
     end
 
-	return Prefab("common/wormhole_limited_"..uses, fn, assets)
+    return Prefab("common/wormhole_limited_"..uses, fn, assets)
 end
 
 return makewormhole(1)

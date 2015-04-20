@@ -1,7 +1,7 @@
 local assets =
 {
-	Asset("ANIM", "anim/armor_trunkvest_summer.zip"),
-	Asset("ANIM", "anim/armor_trunkvest_winter.zip"),
+    Asset("ANIM", "anim/armor_trunkvest_summer.zip"),
+    Asset("ANIM", "anim/armor_trunkvest_winter.zip"),
 }
 
 local function onequip_summer(inst, owner) 
@@ -9,12 +9,12 @@ local function onequip_summer(inst, owner)
     inst.components.fueled:StartConsuming()
 end
 
-local function onequip_winter(inst, owner) 
+local function onequip_winter(inst, owner)
     owner.AnimState:OverrideSymbol("swap_body", "armor_trunkvest_winter", "swap_body")
     inst.components.fueled:StartConsuming()
 end
 
-local function onunequip(inst, owner) 
+local function onunequip(inst, owner)
     owner.AnimState:ClearOverrideSymbol("swap_body")
     inst.components.fueled:StopConsuming()
 end
@@ -34,25 +34,23 @@ local function create_common(bankandbuild)
 
     inst.foleysound = "dontstarve/movement/foley/trunksuit"
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-    
     inst:AddComponent("inspectable")
 
     inst:AddComponent("inventoryitem")
 
-    inst:AddComponent("dapperness")
-    inst.components.dapperness.dapperness = TUNING.DAPPERNESS_SMALL
-
     inst:AddComponent("equippable")
     inst.components.equippable.equipslot = EQUIPSLOTS.BODY
+    inst.components.equippable.dapperness = TUNING.DAPPERNESS_SMALL
 
     inst.components.equippable:SetOnUnequip( onunequip )
 
-	inst:AddComponent("insulator")
+    inst:AddComponent("insulator")
 
     inst:AddComponent("fueled")
     inst.components.fueled.fueltype = FUELTYPE.USAGE
@@ -73,9 +71,9 @@ local function create_summer()
 
     inst.components.equippable:SetOnEquip(onequip_summer)
 
-    inst.components.insulator.insulation = TUNING.INSULATION_SMALL
+    inst.components.insulator:SetInsulation( TUNING.INSULATION_SMALL )
     
-	return inst
+    return inst
 end
 
 local function create_winter()
@@ -87,10 +85,10 @@ local function create_winter()
 
     inst.components.equippable:SetOnEquip(onequip_winter)
 
-    inst.components.insulator.insulation = TUNING.INSULATION_LARGE
+    inst.components.insulator:SetInsulation( TUNING.INSULATION_LARGE )
 
-	return inst
+    return inst
 end
 
 return Prefab("common/inventory/trunkvest_summer", create_summer, assets),
-		Prefab("common/inventory/trunkvest_winter", create_winter, assets)
+    Prefab("common/inventory/trunkvest_winter", create_winter, assets)

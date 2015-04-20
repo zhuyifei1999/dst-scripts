@@ -105,17 +105,39 @@ end
 
 
 local function KeepChoppingAction(inst)
-    return inst.components.follower.leader and inst.components.follower.leader:GetDistanceSqToInst(inst) <= KEEP_CHOPPING_DIST*KEEP_CHOPPING_DIST
+    local keep_chop = inst.components.follower.leader and inst.components.follower.leader:GetDistanceSqToInst(inst) <= KEEP_CHOPPING_DIST*KEEP_CHOPPING_DIST
+    local target = FindEntity(inst, SEE_TREE_DIST/3, function(item)
+        return item.prefab == "deciduoustree" and item.monster and item.components.workable and item.components.workable.action == ACTIONS.CHOP 
+    end)    
+    if inst.tree_target ~= nil then target = inst.tree_target end
+
+    return (keep_chop or target ~= nil)
 end
 
 local function StartChoppingCondition(inst)
-    return inst.components.follower.leader and inst.components.follower.leader.sg and inst.components.follower.leader.sg:HasStateTag("chopping")
+    local start_chop = inst.components.follower.leader and inst.components.follower.leader.sg and inst.components.follower.leader.sg:HasStateTag("chopping")
+    local target = FindEntity(inst, SEE_TREE_DIST/3, function(item) 
+        return item.prefab == "deciduoustree" and item.monster and item.components.workable and item.components.workable.action == ACTIONS.CHOP 
+    end)
+    if inst.tree_target ~= nil then target = inst.tree_target end
+    
+    return (start_chop or target ~= nil)
 end
 
 
 local function FindTreeToChopAction(inst)
     local target = FindEntity(inst, SEE_TREE_DIST, function(item) return item.components.workable and item.components.workable.action == ACTIONS.CHOP end)
     if target then
+        local decid_monst_target = FindEntity(inst, SEE_TREE_DIST/3, function(item)
+            return item.prefab == "deciduoustree" and item.monster and item.components.workable and item.components.workable.action == ACTIONS.CHOP 
+        end)
+        if decid_monst_target ~= nil then 
+            target = decid_monst_target 
+        end
+        if inst.tree_target then 
+            target = inst.tree_target
+            inst.tree_target = nil 
+        end
         return BufferedAction(inst, target, ACTIONS.CHOP)
     end
 end
@@ -123,6 +145,8 @@ end
 local function HasValidHome(inst)
     return inst.components.homeseeker and 
        inst.components.homeseeker.home and 
+       not inst.components.homeseeker.home:HasTag("fire") and
+       not inst.components.homeseeker.home:HasTag("burnt") and
        inst.components.homeseeker.home:IsValid()
 end
 

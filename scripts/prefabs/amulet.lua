@@ -1,7 +1,7 @@
 local assets =
 {
-	Asset("ANIM", "anim/amulets.zip"),
-	Asset("ANIM", "anim/torso_amulets.zip"),
+    Asset("ANIM", "anim/amulets.zip"),
+    Asset("ANIM", "anim/torso_amulets.zip"),
 }
 
 --[[ Each amulet has a seperate onequip and onunequip function so we can also
@@ -45,7 +45,7 @@ local function onequip_blue(inst, owner)
     inst:ListenForEvent("attacked", inst.freezefn, owner)
 
     if inst.components.fueled then
-        inst.components.fueled:StartConsuming()        
+        inst.components.fueled:StartConsuming()
     end
 
 end
@@ -56,31 +56,29 @@ local function onunequip_blue(inst, owner)
     inst:RemoveEventCallback("attacked", inst.freezefn, owner)
 
     if inst.components.fueled then
-        inst.components.fueled:StopConsuming()        
+        inst.components.fueled:StopConsuming()
     end
 end
 
 ---PURPLE
-local function induceinsanity(val, owner)
-    if owner.components.sanity ~= nil then
-        owner.components.sanity:SetInducedInsanity(val)
-    end
-end
-
 local function onequip_purple(inst, owner)
     owner.AnimState:OverrideSymbol("swap_body", "torso_amulets", "purpleamulet")
     if inst.components.fueled then
-        inst.components.fueled:StartConsuming()        
+        inst.components.fueled:StartConsuming()
     end
-    induceinsanity(true, owner)
+    if owner.components.sanity ~= nil then
+        owner.components.sanity:SetInducedInsanity(inst, true)
+    end
 end
 
 local function onunequip_purple(inst, owner)
     owner.AnimState:ClearOverrideSymbol("swap_body")
     if inst.components.fueled then
-        inst.components.fueled:StopConsuming()        
+        inst.components.fueled:StopConsuming()
     end
-    induceinsanity(nil, owner)
+    if owner.components.sanity ~= nil then
+        owner.components.sanity:SetInducedInsanity(inst, false)
+    end
 end
 
 ---GREEN
@@ -234,19 +232,17 @@ local function commonfn(anim, tag, custom_init)
         custom_init(inst)
     end
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("inspectable")
 
     inst:AddComponent("equippable")
     inst.components.equippable.equipslot = EQUIPSLOTS.BODY
-
-	inst:AddComponent("dapperness")
-	inst.components.dapperness.dapperness = TUNING.DAPPERNESS_SMALL    
+	inst.components.equippable.dapperness = TUNING.DAPPERNESS_SMALL    
 
     inst:AddComponent("inventoryitem")
 
@@ -279,7 +275,8 @@ local function red()
 end
 
 local function blue()
-    local inst = commonfn("blueamulet")
+    local inst = commonfn("blueamulet", "HASHEATER")
+    --HASHEATER (from heater component) added to pristine state for optimization
 
     if not TheWorld.ismastersim then
         return inst
@@ -288,7 +285,7 @@ local function blue()
     inst.components.equippable:SetOnEquip(onequip_blue)
     inst.components.equippable:SetOnUnequip(onunequip_blue)
     inst:AddComponent("heater")
-    inst.components.heater.iscooler = true
+    inst.components.heater:SetThermics(false, true)
     inst.components.heater.equippedheat = TUNING.BLUEGEM_COOLER
 
     inst:AddComponent("fueled")
@@ -329,7 +326,7 @@ local function purple()
     inst.components.equippable:SetOnEquip(onequip_purple)
     inst.components.equippable:SetOnUnequip(onunequip_purple)
 
-    inst.components.dapperness.dapperness = -TUNING.DAPPERNESS_MED    
+    inst.components.equippable.dapperness = -TUNING.DAPPERNESS_MED    
 
     MakeHauntableLaunch(inst)
 

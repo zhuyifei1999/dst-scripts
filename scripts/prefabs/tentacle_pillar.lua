@@ -9,7 +9,7 @@
 --
 -- 
 
-local all_active_arms = {}         -- 
+local all_active_arms = {}
 local global_loot_drops = { spikedone = false, skeletondone = false, turfcount = 0 }
 local global_reset = 0
 local global_time = false
@@ -20,7 +20,7 @@ local prefabs =
     "tentaclespots",
     "lightbulb",
     "skeleton",
-	"slurtleslime",
+    "slurtleslime",
     "turf_marsh",
     "rocks",
 }
@@ -45,14 +45,14 @@ local function OnLoad(inst, data)
             -- inst.Physics:SetCollisionGroup(COLLISION.GROUND)
             inst.SoundEmitter:KillSound("loop")
             inst.AnimState:PlayAnimation("idle_hole", true)
-	        inst.AnimState:SetTime(math.random()*2)    
+            inst.AnimState:SetTime(math.random()*2)    
             inst.SoundEmitter:PlaySound("dontstarve/tentacle/tentapiller_hiddenidle_LP","loop") 
             inst:RemoveTag("wet")
             inst:AddTag("rocky")
         else
             inst.SoundEmitter:KillSound("loop")
             inst.AnimState:PlayAnimation("idle", true)
-	        inst.AnimState:SetTime(math.random() * 2)    
+            inst.AnimState:SetTime(math.random() * 2)    
             inst.SoundEmitter:PlaySound("dontstarve/tentacle/tentapiller_idle_LP","loop") 
             inst:RemoveTag("rocky")
             inst:AddTag("wet")
@@ -192,7 +192,7 @@ end
 
 local function Emerge(inst)
     if inst and inst.brain then
-        inst.brain.followtarget = inst:GetNearestPlayer()	-- KAJ: This would be iffy at best, but the tentacle_arms have no brain
+        inst.brain.followtarget = inst:GetNearestPlayer()   -- KAJ: This would be iffy at best, but the tentacle_arms have no brain
     end
     -- inst.sg:GoToState("emerge")
     Dbg(inst, true, "Pillar says emerge")
@@ -205,9 +205,9 @@ local function SpawnArms(inst, attacker, forcelocal)
         return
     end
 
-	-- this can be called with false for the attacker. It should use the(?errr?) player then - this is only used for the position when forcelocal is false
-	-- It seems this is actually not used in this combination. When it's called without a target it's called with forcelocal set to true
-	-- if no attacker then use the closest player. It's the best we can do
+    -- this can be called with false for the attacker. It should use the(?errr?) player then - this is only used for the position when forcelocal is false
+    -- It seems this is actually not used in this combination. When it's called without a target it's called with forcelocal set to true
+    -- if no attacker then use the closest player. It's the best we can do
     attacker = attacker or inst:GetNearestPlayer()
 
     --spawn tentacles to spring the trap
@@ -404,7 +404,7 @@ local function OnEntityWake(inst)
 end
 
 local function OnEntitySleep(inst)
-	inst.SoundEmitter:KillSound("loop")
+    inst.SoundEmitter:KillSound("loop")
     KillArms(inst, true)
 end
 
@@ -445,7 +445,7 @@ local function OnHit(inst, attacker, damage)
         inst.AnimState:PushAnimation("idle", true)
 
         if attacker:HasTag("player") then
-    	    attacker:ShakeCamera(CAMERASHAKE.SIDE, .5, .05, .2)
+            attacker:ShakeCamera(CAMERASHAKE.SIDE, .5, .05, .2)
         end
         SpawnArms(inst, attacker)
     elseif inst.retracted and not inst:HasTag("pillaremerging") and not inst:HasTag("pillarretracting") then
@@ -467,10 +467,10 @@ local function OnHit(inst, attacker, damage)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
@@ -489,18 +489,18 @@ local function fn()
 
     inst.MiniMapEntity:SetIcon("tentapillar.png")
 
-    inst.AnimState:SetBank("tentaclepillar")     -- flash animation .fla 
-    inst.AnimState:SetBuild("tentacle_pillar")   -- art files
+    inst.AnimState:SetBank("tentaclepillar") -- flash animation .fla 
+    inst.AnimState:SetBuild("tentacle_pillar") -- art files
     -- inst.AnimState:SetMultColour(.2, 1, .2, 1.0)
+
+    --inst.SoundEmitter:PlaySound("dontstarve/tentacle/tentapiller_idle_LP","loop")
+
+    inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-
-    --inst.SoundEmitter:PlaySound("dontstarve/tentacle/tentapiller_idle_LP","loop")
-	
     inst.OnLoad = OnLoad
     inst.OnSave = OnSave
 
@@ -554,10 +554,10 @@ local function Garden()   -- prefab with garden of arms
     inst.garden = true
     if math.random() < .2 then
         inst.retracted = true
-	    inst.AnimState:SetTime(math.random() * 2)    
+        inst.AnimState:SetTime(math.random() * 2)    
         inst:DoTaskInTime(2 * FRAMES, StartAnim, "idle_hole")
     else
-	    inst.AnimState:SetTime(math.random() * 2)
+        inst.AnimState:SetTime(math.random() * 2)
         inst.SoundEmitter:PlaySound("dontstarve/tentacle/tentapiller_idle_LP", "loop")
         inst:DoTaskInTime(2 * FRAMES, StartAnim, "idle")
     end
@@ -565,5 +565,5 @@ local function Garden()   -- prefab with garden of arms
     return inst
 end
 
-return Prefab("cave/monsters/tentacle_pillar", fn,     assets, prefabs),
-       Prefab("cave/monsters/tentacle_garden", Garden, assets, prefabs)
+return Prefab("cave/monsters/tentacle_pillar", fn, assets, prefabs),
+    Prefab("cave/monsters/tentacle_garden", Garden, assets, prefabs)

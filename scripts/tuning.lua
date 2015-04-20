@@ -72,6 +72,7 @@ function Tune(overrides)
 	    WILLOW_FIRE_DAMAGE = 0.5,
 
 	    HAMMER_LOOT_PERCENT = .5,
+	    BURNT_HAMMER_LOOT_PERCENT = .25,
 	    AXE_USES = 100,
 	    HAMMER_USES = 75,
 	    SHOVEL_USES = 25,
@@ -79,6 +80,7 @@ function Tune(overrides)
 	    PICKAXE_USES = 33,
 	    BUGNET_USES = 10,
 	    SPEAR_USES = 150,
+	    WATHGRITHR_SPEAR_USES = 200,
 	    SPIKE_USES = 100,
 	    FISHINGROD_USES = 9,
 	    TRAP_USES = 8,
@@ -127,7 +129,9 @@ function Tune(overrides)
 		-------
 	    SPIKE_DAMAGE = wilson_attack*1.5,
 		HAMBAT_DAMAGE = wilson_attack*1.75,
+		HAMBAT_MIN_DAMAGE_MODIFIER = .5,
 	    SPEAR_DAMAGE = wilson_attack,
+	    WATHGRITHR_SPEAR_DAMAGE = wilson_attack * 1.25,
 	    AXE_DAMAGE = wilson_attack*.8,
 	    PICK_DAMAGE = wilson_attack*.8,
 	    BOOMERANG_DAMAGE = wilson_attack*.8,
@@ -142,12 +146,16 @@ function Tune(overrides)
 	    BEAVER_DAMAGE = wilson_attack*1.5,
 	    MULTITOOL_DAMAGE = wilson_attack*.9,
 	    RUINS_BAT_DAMAGE = wilson_attack * 1.75,
+	    NIGHTSTICK_DAMAGE = wilson_attack*.85, -- Due to the damage being electric, it will get multiplied by 1.5 against any mob
+	    MINIFAN_DAMAGE = wilson_attack*.5,
 
 		CANE_SPEED_MULT = 1.25,
-		PIGGYBACK_SPEED_MULT = 0.8,
+		PIGGYBACK_SPEED_MULT = 0.9,
 
 
 	    TORCH_ATTACK_IGNITE_PERCENT = 1,
+
+	    SPRING_COMBAT_MOD = 1.33,
 
 	    PINNABLE_WEAR_OFF_TIME = 10,
 	    PINNABLE_ATTACK_WEAR_OFF = 2.0,
@@ -160,6 +168,9 @@ function Tune(overrides)
 	    PIG_LOYALTY_MAXTIME = 2.5*total_day_time,
 	    PIG_LOYALTY_PER_HUNGER = total_day_time/25,
 	    PIG_MIN_POOP_PERIOD = seg_time * .5,
+
+	    SPIDER_LOYALTY_MAXTIME = 2.5*total_day_time,
+	    SPIDER_LOYALTY_PER_HUNGER = total_day_time/25,
 	    
 	    WEREPIG_DAMAGE = 40,
 	    WEREPIG_HEALTH = 350 * 1.5, -- harder for multiplayer
@@ -273,7 +284,28 @@ function Tune(overrides)
 	    SNURTLE_DAMAGE_UNTIL_SHIELD = 10,
 	    SNURTLE_EXPLODE_DAMAGE = 300,
 	    
-	    LIGHTNING_DAMAGE = 20,
+	    LIGHTNING_DAMAGE = 10,
+
+	    ELECTRIC_WET_DAMAGE_MULT = 1,
+	    ELECTRIC_DAMAGE_MULT = 1.5,
+
+	    LIGHTNING_GOAT_DAMAGE = 25,
+	    LIGHTNING_GOAT_ATTACK_RANGE = 3,
+	    LIGHTNING_GOAT_ATTACK_PERIOD = 2,
+	    LIGHTNING_GOAT_WALK_SPEED = 4,
+	    LIGHTNING_GOAT_RUN_SPEED = 8,
+	    LIGHTNING_GOAT_TARGET_DIST = 5,
+	    LIGHTNING_GOAT_CHASE_DIST = 30,
+	    LIGHTNING_GOAT_FOLLOW_TIME = 30,
+	    LIGHTNING_GOAT_MATING_SEASON_BABYDELAY = total_day_time*1.5,
+	    LIGHTNING_GOAT_MATING_SEASON_BABYDELAY_VARIANCE = 0.5*total_day_time,
+
+	    BUZZARD_DAMAGE = 15,
+	    BUZZARD_ATTACK_RANGE = 2,
+	    BUZZARD_ATTACK_PERIOD = 2,
+	    BUZZARD_WALK_SPEED = 4,
+	    BUZZARD_RUN_SPEED = 8,
+	    BUZZARD_HEALTH = 125 * 2, -- harder for multiplayer
 
 	    FREEZING_KILL_TIME = 120,
 	    STARVE_KILL_TIME = 120,
@@ -283,6 +315,7 @@ function Tune(overrides)
 	    GRUEDAMAGE = wilson_health*.667,
 	    
 	    MARSHBUSH_DAMAGE = wilson_health*.02,
+	    CACTUS_DAMAGE = wilson_health*.04,
 	    
 	    GHOST_SPEED = 2,
 	    GHOST_HEALTH = 200,
@@ -298,6 +331,12 @@ function Tune(overrides)
 	    ABIGAIL_DMG_PLAYER_PERCENT = 0.25,
         ABIGAIL_FLOWER_DECAY_TIME = total_day_time * 3,
 	
+	    MIN_LEAF_CHANGE_TIME = .1 * day_time,
+	    MAX_LEAF_CHANGE_TIME = 3 * day_time,
+	    MIN_SWAY_FX_FREQUENCY = 1 * seg_time,
+	    MAX_SWAY_FX_FREQUENCY = 2 * seg_time,
+	    SWAY_FX_FREQUENCY = 1 * seg_time,
+
 		EVERGREEN_GROW_TIME =
 	    {
 	        {base=1.5*day_time, random=0.5*day_time},   --short
@@ -305,17 +344,29 @@ function Tune(overrides)
 	        {base=5*day_time, random=2*day_time},   --tall
 	        {base=1*day_time, random=0.5*day_time}   --old
 	    },
-	    
 	    PINECONE_GROWTIME = {base=0.75*day_time, random=0.25*day_time},
-	    
 	    EVERGREEN_CHOPS_SMALL = 5,
 	    EVERGREEN_CHOPS_NORMAL = 10,
 	    EVERGREEN_CHOPS_TALL = 15,
+
+	    DECIDUOUS_GROW_TIME =
+	    {
+	        {base=1.5*day_time, random=0.5*day_time},   --short
+	        {base=5*day_time, random=2*day_time},   --normal
+	        {base=5*day_time, random=2*day_time},   --tall
+	        {base=1*day_time, random=0.5*day_time}   --old
+	    },
+	    ACORN_GROWTIME = {base=0.75*day_time, random=0.25*day_time},
+	   	DECIDUOUS_CHOPS_SMALL = 5,
+	    DECIDUOUS_CHOPS_NORMAL = 10,
+	    DECIDUOUS_CHOPS_TALL = 15,
+	    DECIDUOUS_CHOPS_MONSTER = 12 * 1.5, -- harder for multiplayer
 	
 	    MUSHTREE_CHOPS_SMALL = 10,
 	    MUSHTREE_CHOPS_MEDIUM = 10,
 	    MUSHTREE_CHOPS_TALL = 15,
 	    
+	    ICE_MINE = 3,
 	    ROCKS_MINE = 6,
 	    ROCKS_MINE_MED = 4,
 	    ROCKS_MINE_LOW = 2,
@@ -327,7 +378,7 @@ function Tune(overrides)
 	    BEEFALO_HEALTH = 500 * 2, -- harder for multiplayer
 	    BEEFALO_DAMAGE = 34,
 	    BEEFALO_MATING_SEASON_LENGTH = 3,
-	    BEEFALO_MATING_SEASON_WAIT = 12,
+	    BEEFALO_MATING_SEASON_WAIT = 20,
 	    BEEFALO_MATING_SEASON_BABYDELAY = total_day_time*1.5,
 	    BEEFALO_MATING_SEASON_BABYDELAY_VARIANCE = 0.5*total_day_time,
 	    BEEFALO_TARGET_DIST = 5,
@@ -384,6 +435,7 @@ function Tune(overrides)
 	    SPIDER_WAKE_RADIUS = 4,
 	    SPIDER_FLAMMABILITY = .33,
 		SPIDER_SUMMON_WARRIORS_RADIUS = 12,
+		SPIDER_EAT_DELAY = 1.5, 
 	    
 	    SPIDER_WALK_SPEED = 3,
 	    SPIDER_RUN_SPEED = 5,
@@ -439,21 +491,31 @@ function Tune(overrides)
 	    DEERCLOPS_HEALTH = 2000 * 2, -- harder for multiplayer
 	    DEERCLOPS_DAMAGE = 150,
 	    DEERCLOPS_DAMAGE_PLAYER_PERCENT = .5,
-	    DEERCLOPS_ATTACK_PERIOD = 3,
+	    DEERCLOPS_ATTACK_PERIOD = 4,
+	    DEERCLOPS_ATTACK_RANGE = 8,
+	    DEERCLOPS_AOE_RANGE = 6,
+	    DEERCLOPS_AOE_SCALE = 0.8,
+	    DEERCLOPS_LOSE_TARGET_PERIOD = 60,
 	    
 	    BIRD_SPAWN_MAX = 4,
 	    BIRD_SPAWN_DELAY = {min=5, max=15},
 	    BIRD_SPAWN_MAX_FEATHERHAT = 7,
 	    BIRD_SPAWN_DELAY_FEATHERHAT = {min=2, max=10},
-
+	    
 		FROG_RAIN_DELAY = {min=0.1, max=2},
 		FROG_RAIN_SPAWN_RADIUS = 60,
 		FROG_RAIN_MAX = 300,
-		FROG_RAIN_LOCAL_MAX = 25,
+		FROG_RAIN_LOCAL_MIN = 5,
+		FROG_RAIN_LOCAL_MAX = 35,
+		FROG_RAIN_LOCAL_MIN_EARLY = 5,
+		FROG_RAIN_LOCAL_MAX_EARLY = 15,
+		FROG_RAIN_LOCAL_MIN_LATE = 20,
+		FROG_RAIN_LOCAL_MAX_LATE = 35,
+		FROG_RAIN_LOCAL_MIN_ADVENTURE = 10,
+		FROG_RAIN_LOCAL_MAX_ADVENTURE = 25,
 		FROG_RAIN_MAX_RADIUS = 50,
-		FROG_RAIN_PRECIPITATION = 0.8, -- 0-1, 0.8 by default (old "often" setting for Adventure)
+		FROG_RAIN_PRECIPITATION = 0.55, -- 0-1, 0.8 by default (old "often" setting for Adventure)
 		FROG_RAIN_MOISTURE = 2500, -- 0-4000ish, 2500 by default (old "often" setting for Adventure)
-		SURVIVAL_FROG_RAIN_PRECIPITATION = 0.67,
 		FROG_RAIN_CHANCE = .16,
 
 	    BEE_HEALTH = 100,
@@ -474,10 +536,11 @@ function Tune(overrides)
 		SPIDERDEN_REGEN_TIME = 3*seg_time,
 		SPIDERDEN_RELEASE_TIME = 5,
 		
-		HOUNDMOUND_HOUNDS = 3,
-		HOUNDMOUND_REGEN_TIME = seg_time,
-		HOUNDMOUND_RELEASE_TIME = 5,
-
+		HOUNDMOUND_HOUNDS_MIN = 2,
+		HOUNDMOUND_HOUNDS_MAX = 3,
+		HOUNDMOUND_REGEN_TIME = seg_time * 4,
+		HOUNDMOUND_RELEASE_TIME = seg_time,
+	    
 		MERMHOUSE_MERMS = 3,
 		MERMHOUSE_EMERGENCY_MERMS = 3,
 		MERMHOUSE_EMERGENCY_RADIUS = 15,
@@ -542,6 +605,8 @@ function Tune(overrides)
 	    
 	    LUREPLANT_HIBERNATE_TIME = total_day_time * 2,
 	    LUREPLANT_GROWTHCHANCE = 0.02,
+	    LUREPLANT_SPAWNTIME = total_day_time * 12,
+	    LUREPLANT_SPAWNTIME_VARIANCE = total_day_time * 3,
 	    
 	    TALLBIRD_HEALTH = 400 * 2, -- harder for multiplayer
 	    TALLBIRD_DAMAGE = 50,
@@ -567,7 +632,7 @@ function Tune(overrides)
 	    SMALLBIRD_DAMAGE = 10,
 	    SMALLBIRD_ATTACK_PERIOD = 1,
 	    SMALLBIRD_ATTACK_RANGE = 3,
-	    SMALLBIRD_HUNGER = 20,
+	    SMALLBIRD_HUNGER = 2, --20,
 	    SMALLBIRD_STARVE_TIME = total_day_time * 1,
 	    SMALLBIRD_STARVE_KILL_TIME = 120,
 	    SMALLBIRD_GROW_TIME = total_day_time*10,
@@ -576,6 +641,9 @@ function Tune(overrides)
 	    SMALLBIRD_HATCH_TIME = total_day_time * 3, -- must be content for this amount of cumulative time to hatch
 	    SMALLBIRD_HATCH_FAIL_TIME = night_time * .5, -- being too hot or too cold this long will kill the egg
 
+	    MIN_SPRING_SMALL_BIRD_SPAWN_TIME = 1, --total_day_time * 2,
+	    MAX_SPRING_SMALL_BIRD_SPAWN_TIME = 2, --total_day_time * 8,
+	
 	    HATCH_UPDATE_PERIOD = 3,
 	    HATCH_CAMPFIRE_RADIUS = 4,
 	   
@@ -630,6 +698,7 @@ function Tune(overrides)
 
 	 
 	    RABBIT_HEALTH = 25*multiplayer_attack_modifier,
+	    MOLE_HEALTH = 30,
 	    
 	    FROG_HEALTH = 100,
 	    FROG_DAMAGE = 10,
@@ -705,9 +774,13 @@ function Tune(overrides)
 	    POOP_FERTILIZE = day_time,
 	    POOP_SOILCYCLES = 10,
 	    POOP_WITHEREDCYCLES = 1,
+	    POOP_CAN_USES = 8,
 	    GUANO_FERTILIZE = day_time * 1.5,
 	    GUANO_SOILCYCLES = 12,
 	    GUANO_WITHEREDCYCLES = 1,
+
+	    GLOMMERFUEL_FERTILIZE = day_time,
+	    GLOMMERFUEL_SOILCYCLES = 8,
 	
 	    SPOILEDFOOD_FERTILIZE = day_time/4,
 	    SPOILEDFOOD_SOILCYCLES = 2,
@@ -718,6 +791,8 @@ function Tune(overrides)
 	    FISHING_CATCH_CHANCE = 0.4,
 	    FISHING_LOSEROD_CHANCE = 0.4,
 	
+		WET_FUEL_PENALTY = 0.75,
+	    
 	    TINY_FUEL = seg_time*.25,
 	    SMALL_FUEL = seg_time * .5,
 	    MED_FUEL = seg_time * 1.5,
@@ -728,10 +803,16 @@ function Tune(overrides)
 	    SMALL_BURNTIME = seg_time*.25,
 	    MED_BURNTIME = seg_time*0.5,
 	    LARGE_BURNTIME = seg_time,
+
+        TREE_BURN_TIME = 45,
 	    
 	    CAMPFIRE_RAIN_RATE = 2.5,
 	    CAMPFIRE_FUEL_MAX = (night_time+dusk_time)*1.5,
 	    CAMPFIRE_FUEL_START = (night_time+dusk_time)*.75,
+
+	    COLDFIRE_RAIN_RATE = 2.5,
+	    COLDFIRE_FUEL_MAX = (night_time+dusk_time)*1.5,
+	    COLDFIRE_FUEL_START = (night_time+dusk_time)*.75,
 
         ROCKLIGHT_FUEL_MAX = (night_time+dusk_time)*1.5,
 	
@@ -739,6 +820,11 @@ function Tune(overrides)
 	    FIREPIT_FUEL_MAX = (night_time+dusk_time)*2,
 	    FIREPIT_FUEL_START = night_time+dusk_time,
 	    FIREPIT_BONUS_MULT = 2,
+
+	    COLDFIREPIT_RAIN_RATE = 2,
+	    COLDFIREPIT_FUEL_MAX = (night_time+dusk_time)*2,
+	    COLDFIREPIT_FUEL_START = night_time+dusk_time,
+	    COLDFIREPIT_BONUS_MULT = 2,
 
 	    PIGTORCH_RAIN_RATE = 2,
 	    PIGTORCH_FUEL_MAX = night_time,
@@ -749,6 +835,9 @@ function Tune(overrides)
 	    TORCH_RAIN_RATE = 1.5,
 	    TORCH_FUEL = night_time*1.25,
 
+        MINIFAN_FUEL = day_time * 0.8,
+
+	    NIGHTSTICK_FUEL = night_time*6,
 	    LIGHTER_RAIN_RATE = 1,
 	    LIGHTER_FUEL = total_day_time*1.25,
 
@@ -760,23 +849,36 @@ function Tune(overrides)
 	    ONEMANBAND_RANGE = 12,
 	    HEATROCK_NUMUSES = 8,
 	    
+	    GRASS_UMBRELLA_PERISHTIME = 2*total_day_time*perish_warp,
 	    UMBRELLA_PERISHTIME = total_day_time*6,
+	    EYEBRELLA_PERISHTIME = total_day_time*9,
 
+		STRAWHAT_PERISHTIME = total_day_time*5,
 		EARMUFF_PERISHTIME = total_day_time*5,
 		WINTERHAT_PERISHTIME = total_day_time*10,
 		BEEFALOHAT_PERISHTIME = total_day_time*10,
 		
 		TRUNKVEST_PERISHTIME = total_day_time*15,
+		REFLECTIVEVEST_PERISHTIME = total_day_time*8,
+		HAWAIIANSHIRT_PERISHTIME = total_day_time*15,
 		SWEATERVEST_PERISHTIME = total_day_time*10,
 		HUNGERBELT_PERISHTIME = total_day_time*8,
+		BEARGERVEST_PERISHTIME = total_day_time*7,
+		RAINCOAT_PERISHTIME = total_day_time*10,
 
 		WALRUSHAT_PERISHTIME = total_day_time*25,
 		FEATHERHAT_PERISHTIME = total_day_time*8,
 		TOPHAT_PERISHTIME = total_day_time*8,
+
+		ICEHAT_PERISHTIME = total_day_time*4,
+		MOLEHAT_PERISHTIME = total_day_time*1.5,
+		RAINHAT_PERISHTIME = total_day_time*10,
+		CATCOONHAT_PERISHTIME = total_day_time*10,
 	    
 	    GRASS_REGROW_TIME = total_day_time*3,
 	    SAPLING_REGROW_TIME = total_day_time*4,
 	    MARSHBUSH_REGROW_TIME = total_day_time*4,
+	    CACTUS_REGROW_TIME = total_day_time*4,
 	    FLOWER_CAVE_REGROW_TIME = total_day_time*3,
 	    LICHEN_REGROW_TIME = total_day_time*5,
 	    
@@ -790,8 +892,23 @@ function Tune(overrides)
 	    CROW_LEAVINGS_CHANCE = .3333,
 	    BIRD_TRAP_CHANCE = 0.025,
 	    BIRD_HEALTH = 25*multiplayer_attack_modifier,
+	    BIRD_PERISH_TIME = total_day_time * 5,
+	    
+	    BUTTERFLY_SPAWN_TIME = 10*multiplayer_wildlife_respawn_modifier,
+	    BUTTERFLY_POP_CAP = 4,
+	    BUTTERFLY_PERISH_TIME = total_day_time * 3,
+
+	    FLOWER_SPAWN_TIME_VARIATION = 20,
+	    FLOWER_SPAWN_TIME = 30,
+	    MAX_FLOWERS_PER_AREA = 50,
+ 	    
+	    MOLE_RESPAWN_TIME = day_time*4*multiplayer_wildlife_respawn_modifier,
 	    
 	    RABBIT_RESPAWN_TIME = day_time*4*multiplayer_wildlife_respawn_modifier,
+	    RABBIT_PERISH_TIME = total_day_time * 5,
+	    
+	    MIN_RABBIT_HOLE_TRANSITION_TIME = day_time*.5,
+	    MAX_RABBIT_HOLE_TRANSITION_TIME = day_time*2,
 	    
 	    FULL_ABSORPTION = 1,
 	    ARMORGRASS = wilson_health*1.5*multiplayer_armor_durability_modifier,
@@ -810,6 +927,15 @@ function Tune(overrides)
 		ARMORSLURPER = wilson_health * 4*multiplayer_armor_durability_modifier,
 	    ARMOR_FOOTBALLHAT = wilson_health*3*multiplayer_armor_durability_modifier,
 		ARMOR_FOOTBALLHAT_ABSORPTION = .8*multiplayer_armor_absorption_modifier,
+ 
+		ARMORDRAGONFLY = wilson_health * 9*multiplayer_armor_durability_modifier,
+		ARMORDRAGONFLY_ABSORPTION = 0.7*multiplayer_armor_absorption_modifier,
+		ARMORDRAGONFLY_FIRE_RESIST = 1,
+
+		ARMORBEARGER_SLOW_HUNGER = 0.75,
+
+		ARMOR_WATHGRITHRHAT = wilson_health * 5*multiplayer_armor_durability_modifier,
+		ARMOR_WATHGRITHRHAT_ABSORPTION = .8*multiplayer_armor_absorption_modifier,
 
 		ARMOR_RUINSHAT = wilson_health*8*multiplayer_armor_durability_modifier,
 		ARMOR_RUINSHAT_ABSORPTION = 0.9*multiplayer_armor_absorption_modifier,
@@ -891,6 +1017,7 @@ function Tune(overrides)
 		PERISH_TWO_DAY = 2*total_day_time*perish_warp,
 		PERISH_SUPERFAST = 3*total_day_time*perish_warp,
 		PERISH_FAST = 6*total_day_time*perish_warp,
+		PERISH_FASTISH = 8*total_day_time*perish_warp,
 		PERISH_MED = 10*total_day_time*perish_warp,
 		PERISH_SLOW = 15*total_day_time*perish_warp,
 		PERISH_PRESERVED = 20*total_day_time*perish_warp,
@@ -909,8 +1036,11 @@ function Tune(overrides)
 		
 	    SPOILED_HEALTH = -1,
 	    SPOILED_HUNGER = -10,
+	    PERISH_COLD_FROZEN_MULT = 0, -- frozen things don't spoil in an ice box or if it's cold out
+	    PERISH_FROZEN_FIRE_MULT = 30, -- frozen things spoil very quickly if near a fire
 	    PERISH_FRIDGE_MULT = .5,
 	    PERISH_GROUND_MULT = 1.5,
+	    PERISH_WET_MULT = 1.3,
 	    PERISH_GLOBAL_MULT = 1,
 	    PERISH_WINTER_MULT = .75,
 	    PERISH_SUMMER_MULT = 1.25,
@@ -985,20 +1115,33 @@ function Tune(overrides)
 		DAPPERNESS_TINY = 100/(day_time*15),
 		DAPPERNESS_SMALL = 100/(day_time*10),
 		DAPPERNESS_MED = 100/(day_time*6),
+		DAPPERNESS_MED_LARGE = 100/(day_time*4.5),
 		DAPPERNESS_LARGE = 100/(day_time*3),
 		DAPPERNESS_HUGE = 100/(day_time),
 
-
-		MOISTURE_SANITY_PENALTY_MAX = 100/(day_time*15),
-		
+		MOISTURE_SANITY_PENALTY_MAX = -100/(day_time*6), -- Was originally 10 days
 		
 		CRAZINESS_SMALL = -100/(day_time*2),
 		CRAZINESS_MED = -100/(day_time),
 		
 		RABBIT_RUN_SPEED = 5,
 		SANITY_EFFECT_RANGE	= 10,
+		AUTUMN_LENGTH = 20,
 		WINTER_LENGTH = 15,
-		SUMMER_LENGTH = 20,
+		SPRING_LENGTH = 20,
+		SUMMER_LENGTH = 15,
+
+		SEASON_LENGTH_FRIENDLY_DEFAULT = 20,
+		SEASON_LENGTH_HARSH_DEFAULT = 15,
+
+		SEASON_LENGTH_FRIENDLY_VERYSHORT = 5,
+		SEASON_LENGTH_FRIENDLY_SHORT = 12,
+		SEASON_LENGTH_FRIENDLY_LONG = 30,
+		SEASON_LENGTH_FRIENDLY_VERYLONG = 50,
+		SEASON_LENGTH_HARSH_VERYSHORT = 5,
+		SEASON_LENGTH_HARSH_SHORT = 10,
+		SEASON_LENGTH_HARSH_LONG = 22,
+		SEASON_LENGTH_HARSH_VERYLONG = 40,
 		
 		DIVINING_DISTANCES = 
 		{
@@ -1014,21 +1157,83 @@ function Tune(overrides)
 		INSULATION_TINY = seg_time,
 		INSULATION_SMALL = seg_time*2,
 		INSULATION_MED = seg_time*4,
+		INSULATION_MED_LARGE = seg_time*6,
 		INSULATION_LARGE = seg_time*8,
 		INSULATION_PER_BEARD_BIT = seg_time*.5,
+		WEBBER_BEARD_INSULATION_FACTOR = .75,
 		
 		PLAYER_FREEZE_WEAR_OFF_TIME = 3,
 		PLAYER_BURN_TIME = 5.3,
 		
-		CROP_BONUS_TEMP = 28,
+		CAVE_INSULATION_BONUS = seg_time*8,
+
+		DUSK_INSULATION_BONUS = seg_time*2,
+		NIGHT_INSULATION_BONUS = seg_time*4,
+
+		PLAYER_FREEZE_WEAR_OFF_TIME = 3,
+
+		--CROP_BONUS_TEMP = 28,
 		MIN_CROP_GROW_TEMP = 5,
-		CROP_HEAT_BONUS = 1,
+		--CROP_HEAT_BONUS = 1,
 		CROP_RAIN_BONUS = 3,
 
+		WITHER_BUFFER_TIME = 15,
+		MIN_PLANT_WITHER_TEMP = 70,
+		MAX_PLANT_WITHER_TEMP = 94, -- max world temperature is 95
+		MIN_PLANT_REJUVENATE_TEMP = 45,
+		MAX_PLANT_REJUVENATE_TEMP = 55,
+		SPRING_GROWTH_MODIFIER = 0.75,
+
+		MIN_TUMBLEWEEDS_PER_SPAWNER = 4,
+		MAX_TUMBLEWEEDS_PER_SPAWNER = 7,
+		MIN_TUMBLEWEED_SPAWN_PERIOD = total_day_time*.5,
+		MAX_TUMBLEWEED_SPAWN_PERIOD = total_day_time*3,
+		TUMBLEWEED_REGEN_PERIOD = total_day_time*1.5,
+
+		HEAT_ROCK_CARRIED_BONUS_HEAT_FACTOR = 2.1,--1.85,
+
+		DAY_HEAT = 8,
+		NIGHT_COLD = -10,
+		CAVES_MOISTURE_MULT = 3,--6.5,
+		CAVES_TEMP = 0,--20,
+		SUMMER_RAIN_TEMP = -20,
+		STARTING_TEMP = 35,
+		OVERHEAT_TEMP = 70,
+		TARGET_SLEEP_TEMP = 35,
+		MIN_ENTITY_TEMP = -20,
+		MAX_ENTITY_TEMP = 90,
 		WARM_DEGREES_PER_SEC = 1,
 		THAW_DEGREES_PER_SEC = 5,
 
+		EMERGENCY_BURNT_NUMBER = 2,
+		EMERGENCY_RESPONSE_TIME = 10, -- BURNT_NUMBER structures must burn within this time period to trigger flingomatic emergency response
+		EMERGENCY_SHUT_OFF_TIME = 30, -- stay on for this length of time
+
+        -- The target temperatures for these coolers
+		ICEHAT_COOLER = 40,
+		WATERMELON_COOLER = 55,
+        MINIFAN_COOLER = 55,
+		TREE_SHADE_COOLER = 45,
+		TREE_SHADE_COOLING_THRESHOLD = 63,
+
+		HOT_FOOD_BONUS_TEMP = 40,
+		COLD_FOOD_BONUS_TEMP = -40,
+		FOOD_TEMP_BRIEF = 5,
+		FOOD_TEMP_AVERAGE = 10,
+		FOOD_TEMP_LONG = 15,
+
+		WET_HEAT_FACTOR_PENALTY = 0.75,
+
+		SPRING_FIRE_RANGE_MOD = 0.67,
+ 
+		WILDFIRE_THRESHOLD = 80,
+		WILDFIRE_CHANCE = 0.2,
+		WILDFIRE_RETRY_TIME = seg_time * 1.5,
+		MIN_SMOLDER_TIME = .5*seg_time,
+		MAX_SMOLDER_TIME = seg_time,
+
 		TENT_USES = 6,
+		SIESTA_CANOPY_USES = 6,
 
 		BEARDLING_SANITY = .4,
 		UMBRELLA_USES = 20,
@@ -1082,10 +1287,83 @@ function Tune(overrides)
 		MONKEY_MOVE_SPEED = 7,
 		MONKEY_NIGHTMARE_CHASE_DIST = 40,
 
+		MOOSE_HEALTH = 3000 * 2, -- harder for multiplayer
+		MOOSE_DAMAGE = 150,
+		MOOSE_ATTACK_PERIOD = 3,
+		MOOSE_ATTACK_RANGE = 5.5,
+		MOOSE_WALK_SPEED = 8,
+		MOOSE_RUN_SPEED = 12,
+
+		MOOSE_EGG_NUM_MOSSLINGS = 5,
+		MOOSE_EGG_HATCH_TIMER = total_day_time * 2,
+		MOOSE_EGG_DAMAGE = 10,
+
+		MOSSLING_HEALTH = 350 * 1.5, -- harder for multiplayer
+		MOSSLING_DAMAGE = 50,
+		MOSSLING_ATTACK_PERIOD = 3,
+		MOSSLING_ATTACK_RANGE = 2,
+		MOSSLING_WALK_SPEED = 5,
+
+		DRAGONFLY_HEALTH = 27500,
+	    DRAGONFLY_DAMAGE = 150,
+	    DRAGONFLY_ATTACK_PERIOD = 4,
+	    DRAGONFLY_ATTACK_RANGE = 4,
+	    DRAGONFLY_HIT_RANGE = 5,
+	    DRAGONFLY_SPEED = 5,
+
+	    DRAGONFLY_FIRE_ATTACK_PERIOD = 3,
+	    DRAGONFLY_FIRE_DAMAGE = 300,
+	    DRAGONFLY_FIRE_HIT_RANGE = 6,
+	    DRAGONFLY_FIRE_SPEED = 7,
+
+	    DRAGONFLY_RESET_DIST = 60,
+	    DRAGONFLY_AGGRO_DIST = 15,
+
+		DRAGONFLY_STUN = 1250,
+		DRAGONFLY_STUN_PERIOD = 5,
+		DRAGONFLY_STUN_DURATION = 10,
+		DRAGONFLY_STUN_COOLDOWN = 60,
+		DRAGONFLY_STUN_RESIST = 250,
+
+		DRAGONFLY_ENRAGE_DURATION = 60,
+		DRAGONFLY_BREAKOFF_DAMAGE = 2500,
+
+		DRAGONFLY_FREEZE_RESIST = 100,
+		DRAGONFLY_POUND_CD = 20,
+		DRAGONFLY_HIT_RECOVERY = 5,
+
+		DRAGONFLY_FREEZE_THRESHOLD = 8,
+		DRAGONFLY_ENRAGED_FREEZE_BONUS = 4,
+
+		LAVAE_HEALTH = 500,
+		LAVAE_DAMAGE = 50,
+		LAVAE_ATTACK_PERIOD = 4,
+		LAVAE_HIT_RANGE = 3,
+		LAVAE_ATTACK_RANGE = 6,
+
+		BEARGER_HEALTH = 3000 * 2, -- harder for multiplayer
+		BEARGER_DAMAGE = 200,
+		BEARGER_ATTACK_PERIOD = 3,
+		BEARGER_MELEE_RANGE = 6,
+		BEARGER_ATTACK_RANGE = 6,
+		BEARGER_CALM_WALK_SPEED = 3,
+		BEARGER_ANGRY_WALK_SPEED = 6,
+		BEARGER_RUN_SPEED = 10,
+		BEARGER_DISGRUNTLE_TIME = 30,
+		BEARGER_STOLEN_TARGETS_FOR_AGRO = 3,
+		BEARGER_GROWL_INTERVAL = 10,
+		BEARGER_SHORT_TRAVEL = 30,
+		BEARGER_LONG_TRAVEL = 400,
+		BEARGER_SHED_INTERVAL = 45, -- time in seconds
+		BEARGER_ATTACK_CONE_WIDTH = math.pi/2,
+
 	    LIGHTER_ATTACK_IGNITE_PERCENT = .5,
 	    LIGHTER_DAMAGE = wilson_attack*.5,
 		WILLOW_LIGHTFIRE_SANITY_THRESH = .5,
 		WX78_RAIN_HURT_RATE = 1,
+		WX78_MIN_MOISTURE_DAMAGE= -.1,
+		WX78_MAX_MOISTURE_DAMAGE = -.5,
+		WX78_MOISTURE_DRYING_DAMAGE = -.3,
 
 
 		WOLFGANG_HUNGER = 300,
@@ -1108,6 +1386,16 @@ function Tune(overrides)
 		WOLFGANG_ATTACKMULT_NORMAL = 1,
 		WOLFGANG_ATTACKMULT_WIMPY_MAX = .75,
 		WOLFGANG_ATTACKMULT_WIMPY_MIN = .5,
+
+		WATHGRITHR_HEALTH = 200,
+		WATHGRITHR_SANITY = 120,
+		WATHGRITHR_HUNGER = 120,
+		WATHGRITHR_DAMAGE_MULT = 1.25,
+		WATHGRITHR_ABSORPTION = 0.25,
+
+		WEBBER_HEALTH = 175,
+		WEBBER_SANITY = 100,
+		WEBBER_HUNGER = 175,
 
 		WENDY_DAMAGE_MULT = .75,
 		WENDY_SANITY_MULT = .75,
@@ -1154,6 +1442,116 @@ function Tune(overrides)
 		SHADOWWAXWELL_FUEL_COST = 2,
 
 		LIVINGTREE_CHANCE = 0.55,
+		
+		-- Birchnut monster chances have been reduced and tied to seasons instead of the number of days to balance things out for dedicated servers (which may be running for extremely long times)
+		DECID_MONSTER_MIN_DAY = 20, -- No monsters during the first autumn
+	    DECID_MONSTER_SPAWN_CHANCE_AUTUMN = .15,	-- high chance of monsters in autumn to cancel out double birchnut and general easyness of autumn
+	    DECID_MONSTER_SPAWN_CHANCE_SPRING = .08, -- next highest in spring because everything attacks in spring
+	    DECID_MONSTER_SPAWN_CHANCE_SUMMER = .033, -- low chance in summer since summer is hard anyway
+	    DECID_MONSTER_SPAWN_CHANCE_WINTER = 0, -- can't make monsters in winter, they have to have leaves
+
+		DECID_MONSTER_TARGET_DIST = 7,
+		DECID_MONSTER_ATTACK_PERIOD = 2.3,
+		DECID_MONSTER_ROOT_ATTACK_RADIUS = 3.7,
+		DECID_MONSTER_DAMAGE = 30,
+		DECID_MONSTER_ADDITIONAL_LOOT_CHANCE = .2,
+		DECID_MONSTER_DURATION = total_day_time*.5,
+		MIN_TREE_DRAKES = 3,
+		MAX_TREE_DRAKES = 5,
+		PASSIVE_DRAKE_SPAWN_NUM_NORMAL = 1,
+		PASSIVE_DRAKE_SPAWN_NUM_LARGE = 2,
+		PASSIVE_DRAKE_SPAWN_INTERVAL = 12,
+		PASSIVE_DRAKE_SPAWN_INTERVAL_VARIANCE = 3,
+
+		WET_TIME =  10, --seg_time,
+		DRY_TIME = 10, --seg_time * 2,
+		WET_ITEM_DAPPERNESS = -0.1,
+		WET_EMPTY_SLOT_DAPPERNESS = -0.2,
+
+		MOISTURE_TEMP_PENALTY = 30,
+		MOISTURE_WET_THRESHOLD = 35,
+		MOISTURE_DRY_THRESHOLD = 15,
+		SLEEP_MOISTURE_DELTA = 30,
+
+		FIRE_DETECTOR_PERIOD = 1,
+		FIRE_DETECTOR_RANGE = 15,
+		FIRESUPPRESSOR_RELOAD_TIME = 3,
+		FIRESUPPRESSOR_MAX_FUEL_TIME = total_day_time*5,
+		FIRESUPPRESSOR_EXTINGUISH_HEAT_PERCENT = -1,
+		FIRESUPPRESSOR_TEMP_REDUCTION = 5,
+        FIRESUPPRESSOR_PROTECTION_TIME = 60,
+        FIRESUPPRESSOR_ADD_COLDNESS = 2,
+		SMOTHERER_EXTINGUISH_HEAT_PERCENT = .2,
+
+        WATERBALLOON_EXTINGUISH_HEAT_PERCENT = -1,
+        WATERBALLOON_TEMP_REDUCTION = 5,
+        WATERBALLOON_ADD_WETNESS = 20,
+        WATERBALLOON_PROTECTION_TIME = 30,
+
+		WATERPROOFNESS_SMALL = 0.2,
+		WATERPROOFNESS_SMALLMED = 0.35,
+		WATERPROOFNESS_MED = 0.5,
+		WATERPROOFNESS_LARGE = 0.7,
+		WATERPROOFNESS_HUGE = 0.9,
+		WATERPROOFNESS_ABSOLUTE = 1,
+
+		CATCOONDEN_REGEN_TIME = seg_time * 4,
+		CATCOONDEN_RELEASE_TIME = seg_time,	
+
+		CATCOON_ATTACK_RANGE = 4,
+		CATCOON_MELEE_RANGE = 3,
+		CATCOON_TARGET_DIST = 25,
+		CATCOON_SPEED = 3,
+		CATCOON_DAMAGE = 25,
+		CATCOON_LIFE = 150,
+		CATCOON_ATTACK_PERIOD = 2,
+		CATCOON_LOYALTY_MAXTIME = total_day_time,
+	    CATCOON_LOYALTY_PER_ITEM = total_day_time*.1,
+	    CATCOON_MIN_HAIRBALL_TIME_FRIENDLY = .25 * total_day_time,
+	    CATCOON_MAX_HAIRBALL_TIME_FRIENDLY = total_day_time,
+	    CATCOON_MIN_HAIRBALL_TIME_BASE = .75 * total_day_time,
+	    CATCOON_MAX_HAIRBALL_TIME_BASE = 1.5 * total_day_time,
+	    MIN_CATNAP_INTERVAL = 30,
+	    MAX_CATNAP_INTERVAL = 120,
+	    MIN_CATNAP_LENGTH = 20,
+	    MAX_CATNAP_LENGTH = 40,
+	    MIN_HAIRBALL_FRIEND_INTERVAL = 30,
+	    MAX_HAIRBALL_FRIEND_INTERVAL = 90,
+	    MIN_HAIRBALL_NEUTRAL_INTERVAL = .5*total_day_time,
+	    MAX_HAIRBALL_NEUTRAL_INTERVAL = total_day_time,
+	    CATCOON_PICKUP_ITEM_CHANCE = .67,
+	    CATCOON_ATTACK_CONNECT_CHANCE = .25,
+
+		FERTILIZER_USES = 10,
+
+		GLOMMERBELL_USES = 3,
+
+	    WARG_RUNSPEED = 5.5,
+	    WARG_HEALTH = 600,
+	    WARG_DAMAGE = 50,
+	    WARG_ATTACKPERIOD = 3,
+	    WARG_ATTACKRANGE = 5,
+	    WARG_FOLLOWERS = 6,
+	    WARG_SUMMONPERIOD = 15,
+	    WARG_MAXHELPERS = 10,
+	    WARG_TARGETRANGE = 10,
+
+	    SMOTHER_DAMAGE = 3,
+
+	    TORNADO_WALK_SPEED = 25,
+	    TORNADO_DAMAGE = 7,
+	    TORNADO_LIFETIME = 5,
+	    TORNADOSTAFF_USES = 15,
+
+	    FEATHERFAN_USES = 15,
+	    FEATHERFAN_COOLING = -50,
+        FEATHERFAN_RADIUS = 7,
+
+	    HANDFAN_USES = 10,
+	    HANDFAN_COOLING = -10,
+        HANDFAN_RADIUS = 3,
+
+	    NO_BOSS_TIME = 20,
 
 		HAUNT_COOLDOWN_TINY = 1,
 		HAUNT_COOLDOWN_SMALL = 3,
@@ -1190,9 +1588,9 @@ function Tune(overrides)
 		SLEEP_HUNGER_PER_TICK = -1,
 		SLEEP_HEALTH_PER_TICK = 1,
 		SLEEP_TEMP_PER_TICK = 1,
+		SLEEP_WETNESS_PER_TICK = -1,
 		SLEEP_TARGET_TEMP_TENT = 40,
 		SLEEP_TARGET_TEMP_BEDROLL_FURRY = 30,
-		SLEEP_TARGET_TEMP_BEDROLL_STRAW = 20,
 
 		PVP_DAMAGE_MOD = .5,
 

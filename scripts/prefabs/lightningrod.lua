@@ -1,30 +1,31 @@
 local assets =
 {
-	Asset("ANIM", "anim/lightning_rod.zip"),
-	Asset("ANIM", "anim/lightning_rod_fx.zip"),
+    Asset("ANIM", "anim/lightning_rod.zip"),
+    Asset("ANIM", "anim/lightning_rod_fx.zip"),
 }
 
 local prefabs =
 {
-    "lightning_rod_fx"
+    "lightning_rod_fx",
+    "collapse_small",
 }
 
 local function onhammered(inst, worker)
-	inst.components.lootdropper:DropLoot()
-	SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
-	inst:Remove()
-	inst.SoundEmitter:PlaySound("dontstarve/common/destroy_wood")
+    inst.components.lootdropper:DropLoot()
+    SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
+    inst:Remove()
+    inst.SoundEmitter:PlaySound("dontstarve/common/destroy_wood")
 end
-        
+
 local function onhit(inst, worker)
-	inst.AnimState:PlayAnimation("hit")
-	inst.AnimState:PushAnimation("idle", false)
+    inst.AnimState:PlayAnimation("hit")
+    inst.AnimState:PushAnimation("idle", false)
 end
 
 local function discharge(inst)
     inst.AnimState:SetBloomEffectHandle("")
-	inst.charged = false
-	inst.chargeleft = nil
+    inst.charged = false
+    inst.chargeleft = nil
     inst.Light:Enable(false)
     if inst.zaptask then
         inst.zaptask:Cancel()
@@ -57,10 +58,10 @@ end
 
 local function setcharged(inst)
     dozap(inst)
-	inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+    inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
     inst.Light:Enable(true)
-	inst.charged = true
-	inst.chargeleft = 3
+    inst.charged = true
+    inst.chargeleft = 3
     inst:WatchWorldState("cycles", ondaycomplete)
 end
 
@@ -84,28 +85,28 @@ local function OnLoad(inst, data)
 end
 
 local function getstatus(inst)
-	if inst.charged then
-		return "CHARGED"
-	end
+    if inst.charged then
+        return "CHARGED"
+    end
 end
 
 local function onbuilt(inst)
-	inst.AnimState:PlayAnimation("place")
-	inst.AnimState:PushAnimation("idle")
+    inst.AnimState:PlayAnimation("place")
+    inst.AnimState:PushAnimation("idle")
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState() 
- 	inst.entity:AddMiniMapEntity()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState() 
+    inst.entity:AddMiniMapEntity()
     inst.entity:AddLight()
     inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
     inst.MiniMapEntity:SetIcon("lightningrod.png")
-    
+
     inst.Light:Enable(false)
     inst.Light:SetRadius(1.5)
     inst.Light:SetFalloff(1)
@@ -121,32 +122,34 @@ local function fn()
 
     MakeSnowCoveredPristine(inst)
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
+    inst:ListenForEvent("lightningstrike", onlightning)
 
-	inst:ListenForEvent("lightningstrike", onlightning)
     inst:AddComponent("lootdropper")
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
     inst.components.workable:SetWorkLeft(4)
-	inst.components.workable:SetOnFinishCallback(onhammered)
-	inst.components.workable:SetOnWorkCallback(onhit)
-	
+    inst.components.workable:SetOnFinishCallback(onhammered)
+    inst.components.workable:SetOnWorkCallback(onhit)
+
     inst:AddComponent("inspectable")
-	inst.components.inspectable.getstatus = getstatus
-    
-	MakeSnowCovered(inst)
-	inst:ListenForEvent("onbuilt", onbuilt)
+    inst.components.inspectable.getstatus = getstatus
+
+    MakeSnowCovered(inst)
+    inst:ListenForEvent("onbuilt", onbuilt)
 
     MakeHauntableWork(inst)
-	
+
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad
+
     return inst
 end
 
 return Prefab("common/objects/lightning_rod", fn, assets, prefabs),
-	   MakePlacer("common/lightning_rod_placer", "lightning_rod", "lightning_rod", "idle")
+    MakePlacer("common/lightning_rod_placer", "lightning_rod", "lightning_rod", "idle")

@@ -134,11 +134,9 @@ local OptionsScreen = Class(Screen, function(self, in_game)
 		vibration = Profile:GetVibrationEnabled(),
 		showpassword = Profile:GetShowPasswordEnabled(),
 		automods = Profile:GetAutoSubscribeModsEnabled(),
+		wathgrithrfont = Profile:IsWathgrithrFontEnabled(),
 	}
 
-	if IsDLCInstalled(REIGN_OF_GIANTS) then
-		self.options.wathgrithrfont = Profile:IsWathgrithrFontEnabled()
-	end
 
 	--[[if PLATFORM == "WIN32_STEAM" and not self.in_game then
 		self.options.steamcloud = TheSim:GetSetting("STEAM", "DISABLECLOUD") ~= "true"
@@ -329,7 +327,7 @@ function OptionsScreen:Save(cb)
 	Profile:SetBloomEnabled( self.options.bloom )
 	Profile:SetDistortionEnabled( self.options.distortion )
 	Profile:SetScreenShakeEnabled( self.options.screenshake )
-	if IsDLCInstalled(REIGN_OF_GIANTS) then Profile:SetWathgrithrFontEnabled( self.options.wathgrithrfont ) end
+	Profile:SetWathgrithrFontEnabled( self.options.wathgrithrfont )
 	Profile:SetHUDSize( self.options.hudSize )
 	Profile:SetVibrationEnabled( self.options.vibration )
 	Profile:SetShowPasswordEnabled( self.options.showpassword )
@@ -429,7 +427,7 @@ function OptionsScreen:Apply( )
 	gopts:SetDistortionEnabled( self.working.distortion )
 	gopts:SetSmallTexturesMode( self.working.smalltextures )
 	Profile:SetScreenShakeEnabled( self.working.screenshake )
-	if IsDLCInstalled(REIGN_OF_GIANTS) then Profile:SetWathgrithrFontEnabled( self.working.wathgrithrfont ) end
+	Profile:SetWathgrithrFontEnabled( self.working.wathgrithrfont )
 	TheSim:SetNetbookMode(self.working.netbookmode)
 end
 
@@ -634,15 +632,13 @@ function OptionsScreen:DoInit()
 			self:UpdateMenu()
 		end
 
-	if IsDLCInstalled(REIGN_OF_GIANTS) then
-		self.wathgrithrfontSpinner = Spinner( enableDisableOptions, nil, nil, nil, nil, nil, nil, true )
-		self.wathgrithrfontSpinner.OnChanged =
-			function( _, data )
-				this.working.wathgrithrfont = data
-				--this:Apply()
-				self:UpdateMenu()
-			end
-	end
+	self.wathgrithrfontSpinner = Spinner( enableDisableOptions, nil, nil, nil, nil, nil, nil, true )
+	self.wathgrithrfontSpinner.OnChanged =
+		function( _, data )
+			this.working.wathgrithrfont = data
+			--this:Apply()
+			self:UpdateMenu()
+		end
 	
 	self.automodsSpinner = Spinner( enableDisableOptions, nil, nil, nil, nil, nil, nil, true )
 	self.automodsSpinner.OnChanged =
@@ -671,9 +667,7 @@ function OptionsScreen:DoInit()
 		table.insert( right_spinners, { STRINGS.UI.OPTIONS.AMBIENT, self.ambientVolume } )
 		table.insert( right_spinners, { STRINGS.UI.OPTIONS.HUDSIZE, self.hudSize} )
 		table.insert( right_spinners, { STRINGS.UI.OPTIONS.VIBRATION, self.vibrationSpinner} )
-		if IsDLCInstalled(REIGN_OF_GIANTS) then
-			table.insert( right_spinners, { STRINGS.UI.OPTIONS.WATHGRITHRFONT, self.wathgrithrfontSpinner} )
-		end
+		table.insert( right_spinners, { STRINGS.UI.OPTIONS.WATHGRITHRFONT, self.wathgrithrfontSpinner} )
 		table.insert( right_spinners, { STRINGS.UI.OPTIONS.SHOWPASSWORD, self.passwordSpinner} )
 		table.insert( right_spinners, { STRINGS.UI.OPTIONS.AUTOMODS, self.automodsSpinner } )
 	else
@@ -687,9 +681,7 @@ function OptionsScreen:DoInit()
 		table.insert( right_spinners, { STRINGS.UI.OPTIONS.HUDSIZE, self.hudSize} )
 		table.insert( right_spinners, { STRINGS.UI.OPTIONS.VIBRATION, self.vibrationSpinner} )
 		table.insert( right_spinners, { STRINGS.UI.OPTIONS.SHOWPASSWORD, self.passwordSpinner} )
-		if IsDLCInstalled(REIGN_OF_GIANTS) then
-			table.insert( right_spinners, { STRINGS.UI.OPTIONS.WATHGRITHRFONT, self.wathgrithrfontSpinner} )
-		end
+		table.insert( right_spinners, { STRINGS.UI.OPTIONS.WATHGRITHRFONT, self.wathgrithrfontSpinner} )
 		table.insert( right_spinners, { STRINGS.UI.OPTIONS.AUTOMODS, self.automodsSpinner } )
 	end
 
@@ -743,7 +735,7 @@ function OptionsScreen:InitializeSpinners()
 	self.hudSize:SetSelectedIndex( self.working.hudSize or 5)
 	self.vibrationSpinner:SetSelectedIndex( EnabledOptionsIndex( self.working.vibration ) )
 	self.passwordSpinner:SetSelectedIndex( EnabledOptionsIndex( self.working.showpassword ) )
-	if IsDLCInstalled(REIGN_OF_GIANTS) then self.wathgrithrfontSpinner:SetSelectedIndex( EnabledOptionsIndex( self.working.wathgrithrfont ) ) end
+	self.wathgrithrfontSpinner:SetSelectedIndex( EnabledOptionsIndex( self.working.wathgrithrfont ) )
 	
 	self.automodsSpinner:SetSelectedIndex( EnabledOptionsIndex( self.working.automods ) )
 end

@@ -1,6 +1,6 @@
 local assets =
 {
-	Asset("ANIM", "anim/flowers_evil.zip"),
+    Asset("ANIM", "anim/flowers_evil.zip"),
 }
 
 local prefabs =
@@ -12,28 +12,28 @@ local prefabs =
 local names = {"f1","f2","f3","f4","f5","f6","f7","f8"}
 
 local function onsave(inst, data)
-	data.anim = inst.animname
+    data.anim = inst.animname
 end
 
 local function onload(inst, data)
     if data and data.anim then
         inst.animname = data.anim
-	    inst.AnimState:PlayAnimation(inst.animname)
-	end
+        inst.AnimState:PlayAnimation(inst.animname)
+    end
 end
 
 local function onpickedfn(inst, picker)
-	if picker and picker.components.sanity then
-		picker.components.sanity:DoDelta(-TUNING.SANITY_TINY)
-	end		
-	inst:Remove()
+    if picker and picker.components.sanity then
+        picker.components.sanity:DoDelta(-TUNING.SANITY_TINY)
+    end
+    inst:Remove()
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddNetwork()
 
     inst.AnimState:SetBank("flowers_evil")
@@ -42,11 +42,11 @@ local function fn()
 
     inst:AddTag("flower")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst.animname = names[math.random(#names)]
     inst.AnimState:PlayAnimation(inst.animname)
@@ -59,10 +59,13 @@ local function fn()
     inst:AddComponent("pickable")
     inst.components.pickable.picksound = "dontstarve/wilson/pickup_plants"
     inst.components.pickable:SetUp("petals_evil", 10)
-	inst.components.pickable.onpickedfn = onpickedfn
+    inst.components.pickable.onpickedfn = onpickedfn
     inst.components.pickable.quickpick = true
+    inst.components.pickable.wildfirestarter = true
 
-	MakeSmallBurnable(inst)
+    --inst:AddComponent("transformer")
+
+    MakeSmallBurnable(inst)
     MakeSmallPropagator(inst)
 
     MakeHauntableIgnite(inst)

@@ -17,6 +17,7 @@ local prefabs =
 	"crow",
 	"robin",
 	"robin_winter",
+	"collapse_small",
 }
 
 local bird_symbols=
@@ -63,6 +64,10 @@ local function OnDigest(inst, item)
         else
             inst.components.lootdropper:SpawnLootPrefab("seeds")
         end
+    end
+    if inst.components.occupiable and inst.components.occupiable.occupant 
+        and inst.components.occupiable.occupant:IsValid() and inst.components.occupiable.occupant.components.perishable then
+        inst.components.occupiable.occupant.components.perishable:SetPercent(1)		         
     end
 end
 
@@ -123,6 +128,10 @@ local function ShouldWake(inst)
 end
 
 local function onoccupied(inst, bird)
+
+	if bird.components.perishable then
+		bird.components.perishable:StopPerishing()
+	end
 
     inst:AddComponent("sleeper")
     inst.components.sleeper:SetSleepTest(ShouldSleep)
@@ -223,11 +232,11 @@ local function fn()
 
     MakeSnowCoveredPristine(inst)
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("inspectable")
     

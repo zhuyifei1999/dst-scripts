@@ -47,11 +47,11 @@ local function fn()
     --Sneak these into pristine state for optimization
     inst:AddTag("_named")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     --Remove these tags so that they can be added properly when replicating components below
     inst:RemoveTag("_named")
@@ -77,7 +77,7 @@ local function fn()
 		    end
 		    local r = selectrecipe_any(recipes)
 		    if r ~= nil then
-				inst.recipetouse = r.name
+				inst.recipetouse = r.name or "Unknown"
 				inst.components.teacher:SetRecipe(inst.recipetouse)
 				inst.components.named:SetName(STRINGS.NAMES[string.upper(inst.recipetouse)].." Blueprint")
 				inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
@@ -120,7 +120,7 @@ local function MakeAnyBlueprint()
     local r = selectrecipe_any(recipes)
     if r ~= nil then
 		if not inst.recipetouse then
-			inst.recipetouse = r.name
+			inst.recipetouse = r.name or "Unknown"
 		end
 		inst.components.teacher:SetRecipe(inst.recipetouse)
 		inst.components.named:SetName(STRINGS.NAMES[string.upper(inst.recipetouse)].." Blueprint")
@@ -208,11 +208,11 @@ end
 
 local prefabs = {}
 
-table.insert(prefabs, Prefab("common/inventory/blueprint", MakeAnyBlueprint, assets))
+table.insert(prefabs, Prefab("common/blueprints/blueprint", MakeAnyBlueprint, assets))
 for k,v in pairs(RECIPETABS) do
-	table.insert(prefabs, Prefab("common/inventory/"..string.lower(v.str or "NONAME").."_blueprint", MakeSpecificBlueprint(v), assets))
+	table.insert(prefabs, Prefab("common/blueprints/"..string.lower(v.str or "NONAME").."_blueprint", MakeSpecificBlueprint(v), assets))
 end
 for k,v in pairs(AllRecipes) do
-	table.insert(prefabs, Prefab("common/inventory/"..string.lower(k or "NONAME").."_blueprint", MakeAnySpecificBlueprint(k), assets))
+	table.insert(prefabs, Prefab("common/blueprints/"..string.lower(k or "NONAME").."_blueprint", MakeAnySpecificBlueprint(k), assets))
 end
 return unpack(prefabs)

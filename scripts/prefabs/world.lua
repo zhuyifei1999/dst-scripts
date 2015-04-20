@@ -4,6 +4,7 @@ require "components/map" --extends Map component
 local assets =
 {
     Asset("SOUND", "sound/sanity.fsb"),
+    Asset("SOUND", "sound/amb_stream.fsb"),
     Asset("SHADER", "shaders/uifade.ksh"),
     Asset("ATLAS", "images/selectscreen_portraits.xml"), -- we need all these frontend assets in the world prefab so we can show the character select screen from the death screen
     Asset("IMAGE", "images/selectscreen_portraits.tex"),
@@ -13,7 +14,7 @@ local assets =
 }
 
 -- Add all the characters by name
-local charlist = GetActiveCharacterList and GetActiveCharacterList() or MAIN_CHARACTERLIST
+local charlist = GetActiveCharacterList and GetActiveCharacterList() or DST_CHARACTERLIST
 for i, char in ipairs(charlist) do
     table.insert(assets, Asset("ATLAS", "bigportraits/"..char..".xml"))
     table.insert(assets, Asset("IMAGE", "bigportraits/"..char..".tex"))
@@ -113,6 +114,27 @@ local prefabs =
     "chessjunk3",
     "statue_transition_2",
     "statue_transition",
+
+    "lightninggoat",
+    "smoke_plant",
+    "acorn",
+    "deciduoustree",
+    "deciduoustree_normal",
+    "deciduoustree_tall",
+    "deciduoustree_short",
+    "deciduoustree_burnt",
+    "deciduoustree_stump",
+    "buzzardspawner",
+
+    "glommer",
+    "statueglommer",
+
+    "moose",
+    "mossling",
+    "bearger",
+    "dragonfly",
+
+    "cactus"
 }
 
 local function PostInit(inst)
@@ -149,6 +171,7 @@ local function OnUpdateServerListing(inst)
         dayselapsedinseason = inst.state.elapseddaysinseason,
         worldgenoptions = SaveGameIndex:GetSlotGenOptions() or {},
     })
+    TheNet:SetSeason( inst.state.season )
 end
 
 local function fn()

@@ -29,6 +29,8 @@ LOCKS_ARRAY =
 	"WILDS",
 	"RUINS",
 	"SACRED",
+	"BADLANDS",
+	"HOUNDS",
 	--"ADVANCED_COMBAT",
 }
 LOCKS = {}
@@ -81,6 +83,7 @@ KEYS_ARRAY =
 	"WILDS",
 	"RUINS",
 	"SACRED",
+	"BADLANDS",
 }
 KEYS = {}
 for i,v in ipairs(KEYS_ARRAY) do

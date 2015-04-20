@@ -13,7 +13,7 @@ local WorldGenScreen = Class(Screen, function(self, profile, cb, world_gen_optio
     self.profile = profile
     self.log = true
 
-    self.bg = self:AddChild(Image("images/bg_plain.xml", "bg.tex"))
+    self.bg = self:AddChild(Image("images/bg_rog_portal.xml", "bg.tex"))
     TintBackground(self.bg)
    	
     self.bg:SetVRegPoint(ANCHOR_MIDDLE)

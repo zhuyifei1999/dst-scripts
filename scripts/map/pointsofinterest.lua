@@ -53,6 +53,9 @@ local Any = {
 	["skeleton_construction"] = StaticLayout.Get("map/static_layouts/skeleton_construction"),
 	["skeleton_fisher"] = StaticLayout.Get("map/static_layouts/skeleton_fisher"),
 	["skeleton_graverobber"] = StaticLayout.Get("map.static_layouts/skeleton_graverobber"),
+	["skeleton_night_hunter"] = StaticLayout.Get("map/static_layouts/skeleton_night_hunter"),
+	["skeleton_summer"] = StaticLayout.Get("map/static_layouts/skeleton_summer"),
+	["skeleton_rain_coat"] = StaticLayout.Get("map/static_layouts/skeleton_rain_coat"),
 }
 
 -- TODO: Add winter/summer, nighttime/dusk/day filters

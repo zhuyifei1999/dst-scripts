@@ -1,13 +1,13 @@
 local assets =
 {
-	Asset("ANIM", "anim/purple_gem.zip"),
+    Asset("ANIM", "anim/purple_gem.zip"),
 }
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddNetwork()
 
     MakeInventoryPhysics(inst)
@@ -16,21 +16,21 @@ local function fn()
     inst.AnimState:SetBuild("purple_gem")
     inst.AnimState:PlayAnimation("idle")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
+    inst:AddComponent("key")
+    inst.components.key.keytype = LOCKTYPE.MAXWELL
 
-	inst:AddComponent("key")
-	inst.components.key.keytype = LOCKTYPE.MAXWELL
+    inst:AddComponent("inspectable")
 
-	inst:AddComponent("inspectable")
+    inst:AddComponent("inventoryitem")
+    inst.components.inventoryitem:ChangeImageName("purplegem")
 
-	inst:AddComponent("inventoryitem")
-	inst.components.inventoryitem:ChangeImageName("purplegem")
-
-	return inst
+    return inst
 end
 
 return Prefab("common/inventory/maxwellkey", fn, assets)

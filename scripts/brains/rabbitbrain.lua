@@ -48,6 +48,8 @@ function RabbitBrain:OnStart()
             DoAction(self.inst, GoHomeAction, "go home", true )),
         WhileNode(function() return not TheWorld.state.isday end, "IsNight",
             DoAction(self.inst, GoHomeAction, "go home", true )),
+        WhileNode(function() return TheWorld.state.isspring end, "IsSpring",
+            DoAction(self.inst, GoHomeAction, "go home", true )),
         DoAction(self.inst, EatFoodAction),
         Wander(self.inst, function() return self.inst.components.knownlocations:GetLocation("home") end, MAX_WANDER_DIST)
     }, .25)

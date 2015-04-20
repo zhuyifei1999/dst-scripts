@@ -5,6 +5,34 @@
 return Class(function(self, inst)
 
 --------------------------------------------------------------------------
+--[[ Constants ]]
+--------------------------------------------------------------------------
+
+local SEASON_BUSY_MUSIC =
+{
+    autumn = "dontstarve/music/music_work",
+    winter = "dontstarve/music/music_work_winter",
+    spring = "dontstarve_DLC001/music/music_work_spring",
+    summer = "dontstarve_DLC001/music/music_work_summer",
+}
+
+local SEASON_EPICFIGHT_MUSIC =
+{
+    autumn = "dontstarve/music/music_epicfight",
+    winter = "dontstarve/music/music_epicfight_winter",
+    spring = "dontstarve_DLC001/music/music_epicfight_spring",
+    summer = "dontstarve_DLC001/music/music_epicfight_summer",
+}
+
+local SEASON_DANGER_MUSIC =
+{
+    autumn = "dontstarve/music/music_danger",
+    winter = "dontstarve/music/music_danger_winter",
+    spring = "dontstarve_DLC001/music/music_danger_spring",
+    summer = "dontstarve_DLC001/music/music_danger_summer",
+}
+
+--------------------------------------------------------------------------
 --[[ Member variables ]]
 --------------------------------------------------------------------------
 
@@ -57,8 +85,7 @@ local function StartBusy()
             _soundemitter:PlaySound(
                 (_isruin and "dontstarve/music/music_work_ruins") or
                 (_iscave and "dontstarve/music/music_work_cave") or
-                (inst.state.iswinter and "dontstarve/music/music_work_winter") or
-                "dontstarve/music/music_work",
+                (SEASON_BUSY_MUSIC[inst.state.season]),
                 "busy")
         end
         _soundemitter:SetParameter("busy", "intensity", 1)
@@ -100,12 +127,10 @@ local function StartDanger(player)
             GetClosestInstWithTag("epic", player, 30) ~= nil
             and ((_isruin and "dontstarve/music/music_epicfight_ruins") or
                 (_iscave and "dontstarve/music/music_epicfight_cave") or
-                (inst.state.iswinter and "dontstarve/music/music_epicfight_winter") or
-                "dontstarve/music/music_epicfight")
+                (SEASON_EPICFIGHT_MUSIC[inst.state.season]))
             or ((_isruin and "dontstarve/music/music_danger_ruins") or
                 (_iscave and "dontstarve/music/music_danger_cave") or
-                (inst.state.iswinter and "dontstarve/music/music_danger_winter") or
-                "dontstarve/music/music_danger"),
+                (SEASON_DANGER_MUSIC[inst.state.season])),
             "danger")
         _dangertask = inst:DoTaskInTime(10, StopDanger, true)
         _extendtime = 0
@@ -120,8 +145,10 @@ local function CheckAction(player)
                 target:HasTag("bird") or
                 target:HasTag("butterfly") or
                 target:HasTag("shadow") or
+                target:HasTag("thorny") or
                 target:HasTag("smashable") or
                 target:HasTag("wall") or
+                target:HasTag("smoldering") or
                 target:HasTag("veggie")) then
             StartDanger(player)
             return
@@ -136,9 +163,12 @@ local function OnAttacked(player, data)
     if data ~= nil and
         --For a valid client side check, shadowattacker must be
         --false and not nil, pushed from player_classified
-        (data.shadowattacker == false or
+        (data.isattackedbydanger == true or
         --For a valid server side check, attacker must be non-nil
-        (data.attacker ~= nil and not data.attacker:HasTag("shadow"))) then
+        (data.attacker ~= nil and not (data.attacker:HasTag("shadow")
+                                       or data.attacker:HasTag("thorny")
+                                       or data.attacker:HasTag("smolder")
+                                      ))) then
 
         StartDanger(player)
     end
@@ -194,7 +224,7 @@ local function OnPhase(inst, phase)
     _extendtime = (time or GetTime()) + 15
 end
 
-local function OnIsWinter()
+local function OnSeason()
     _isbusydirty = true
 end
 
@@ -206,7 +236,7 @@ local function StartSoundEmitter()
         if not _iscave then
             _isday = inst.state.isday
             inst:WatchWorldState("phase", OnPhase)
-            inst:WatchWorldState("iswinter", OnIsWinter)
+            inst:WatchWorldState("season", OnSeason)
         end
     end
 end
@@ -217,7 +247,7 @@ local function StopSoundEmitter()
         StopBusy()
         _soundemitter:KillSound("busy")
         inst:StopWatchingWorldState("phase", OnPhase)
-        inst:StopWatchingWorldState("iswinter", OnIsWinter)
+        inst:StopWatchingWorldState("season", OnSeason)
         _isday = nil
         _isbusydirty = nil
         _extendtime = nil

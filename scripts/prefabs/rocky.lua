@@ -1,12 +1,12 @@
 local assets =
 {
-	Asset("ANIM", "anim/rocky.zip"),
+    Asset("ANIM", "anim/rocky.zip"),
     Asset("SOUND", "sound/rocklobster.fsb"),
 }
 
 local prefabs =
 {
-	"rocks",
+    "rocks",
 }
 
 local brain = require "brains/rockybrain"
@@ -105,11 +105,11 @@ local function onload(inst, data)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
     inst.entity:AddDynamicShadow()
     inst.entity:AddNetwork()
 
@@ -127,13 +127,13 @@ local function fn()
 
     inst.DynamicShadow:SetSize(1.75, 1.75)
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-
-	--orange(186/255,158/255,139/255,1), blue(159/255,185/255,187/255,1), green(163/255,181/255,128/255,1)
+    --orange(186/255,158/255,139/255,1), blue(159/255,185/255,187/255,1), green(163/255,181/255,128/255,1)
 
     inst.colour_idx = math.random(#colours)
     inst.AnimState:SetMultColour(colours[inst.colour_idx][1],colours[inst.colour_idx][2],colours[inst.colour_idx][3],1)
@@ -164,10 +164,10 @@ local function fn()
     inst:AddComponent("health")
     inst.components.health:SetMaxHealth(TUNING.ROCKY_HEALTH)
 
-	inst:AddComponent("inspectable")
+    inst:AddComponent("inspectable")
 
     inst:AddComponent("eater")
-    inst.components.eater:SetElemental()
+    inst.components.eater:SetDiet({ FOODTYPE.ELEMENTAL }, { FOODTYPE.ELEMENTAL })
 
     inst:AddComponent("locomotor")
     inst.components.locomotor:SetSlowMultiplier( 1 )
@@ -197,7 +197,7 @@ local function fn()
     end, true, false, true)
 
     inst:SetBrain(brain)
-	inst:SetStateGraph("SGrocky")
+    inst:SetStateGraph("SGrocky")
 
     inst:ListenForEvent("attacked", OnAttacked)
 

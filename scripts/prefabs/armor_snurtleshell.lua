@@ -1,6 +1,6 @@
 local assets =
 {
-	Asset("ANIM", "anim/armor_slurtleshell.zip"),
+    Asset("ANIM", "anim/armor_slurtleshell.zip"),
 }
 
 local function OnBlocked(owner)
@@ -67,10 +67,10 @@ local function onunequip(inst, owner)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddNetwork()
 
     MakeInventoryPhysics(inst)
@@ -83,11 +83,11 @@ local function fn()
 
     inst.foleysound = "dontstarve/movement/foley/shellarmour"
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("inspectable")
     inst:AddComponent("inventoryitem")
@@ -106,7 +106,7 @@ local function fn()
 
     MakeHauntableLaunch(inst)
 
-	return inst
+    return inst
 end
 
 return Prefab("common/inventory/armorsnurtleshell", fn, assets)

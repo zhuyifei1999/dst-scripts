@@ -1,6 +1,6 @@
 local assets =
 {
-   Asset("ANIM", "anim/star.zip")
+    Asset("ANIM", "anim/star.zip"),
 }
 
 local PULSE_SYNC_PERIOD = 30
@@ -74,9 +74,9 @@ local function pulse_light(inst)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
+    inst.entity:AddTransform()
     inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
     inst.entity:AddLight()
@@ -90,6 +90,22 @@ local function fn()
 
     inst:DoPeriodicTask(0.1, pulse_light)
 
+    inst.Light:SetColour(223 / 255, 208 / 255, 69 / 255)
+    inst.Light:Enable(false)
+    inst.Light:EnableClientModulation(true)
+
+    inst.AnimState:SetBank("star")
+    inst.AnimState:SetBuild("star")
+    inst.AnimState:PlayAnimation("appear")
+    inst.AnimState:PushAnimation("idle_loop", true)
+
+    inst.SoundEmitter:PlaySound("dontstarve/common/staff_star_LP", "staff_star_loop")
+
+    --HASHEATER (from heater component) added to pristine state for optimization
+    inst:AddTag("HASHEATER")
+
+    inst.entity:SetPristine()
+
     if not inst._ismastersim then
         inst:ListenForEvent("pulsetimedirty", onpulsetimedirty)
         return inst
@@ -101,15 +117,6 @@ local function fn()
     inst.init_time = 120
     inst.death = inst:DoTaskInTime(inst.init_time, kill_light)
 
-    inst.Light:SetColour(223/255, 208/255, 69/255)
-    inst.Light:Enable(false)
-    inst.Light:EnableClientModulation(true)
-
-    inst.AnimState:SetBank("star")
-    inst.AnimState:SetBuild("star")
-    inst.AnimState:PlayAnimation("appear")
-    inst.AnimState:PushAnimation("idle_loop", true)
-
     inst:AddComponent("inspectable")
 
     inst:AddComponent("cooker")
@@ -120,10 +127,9 @@ local function fn()
     inst.components.propagator:StartUpdating()
 
     inst:AddComponent("heater")
-    inst.components.heater.heat = 180
+    inst.components.heater.heat = 100
 
     inst.SoundEmitter:PlaySound("dontstarve/common/staff_star_create")
-    inst.SoundEmitter:PlaySound("dontstarve/common/staff_star_LP", "staff_star_loop")    
 
     inst:AddComponent("sanityaura")
     inst.components.sanityaura.aura = TUNING.SANITYAURA_SMALL

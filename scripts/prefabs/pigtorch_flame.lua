@@ -29,11 +29,11 @@ local function fn()
 
     inst:AddTag("FX")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("firefx")
     inst.components.firefx.levels = firelevels

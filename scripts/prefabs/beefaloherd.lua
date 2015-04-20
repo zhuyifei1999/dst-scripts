@@ -28,6 +28,7 @@ local function LeaveMood(inst)
             k:PushEvent("leavemood")
         end
     end
+    inst.components.mood:CheckForMoodChange()
 end
 
 local function AddMember(inst, member)
@@ -95,9 +96,11 @@ local function fn()
     
     inst:AddComponent("mood")
     inst.components.mood:SetMoodTimeInDays(TUNING.BEEFALO_MATING_SEASON_LENGTH, TUNING.BEEFALO_MATING_SEASON_WAIT)
+    inst.components.mood:SetMoodSeason(SEASONS.SPRING)
     inst.components.mood:SetInMoodFn(InMood)
     inst.components.mood:SetLeaveMoodFn(LeaveMood)
     inst.components.mood:CheckForMoodChange()
+    inst:DoTaskInTime(0, function() inst.components.mood:ValidateMood() end )
     
     inst:AddComponent("periodicspawner")
     inst.components.periodicspawner:SetRandomTimes(TUNING.BEEFALO_MATING_SEASON_BABYDELAY, TUNING.BEEFALO_MATING_SEASON_BABYDELAY_VARIANCE)

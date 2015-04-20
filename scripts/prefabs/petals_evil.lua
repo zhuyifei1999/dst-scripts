@@ -1,6 +1,6 @@
 local assets =
 {
-	Asset("ANIM", "anim/flower_petals_evil.zip"),
+    Asset("ANIM", "anim/flower_petals_evil.zip"),
 }
 
 local function oneaten(inst, eater)
@@ -10,10 +10,10 @@ local function oneaten(inst, eater)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddNetwork()
 
     MakeInventoryPhysics(inst)
@@ -22,14 +22,16 @@ local function fn()
     inst.AnimState:SetBuild("flower_petals_evil")
     inst.AnimState:PlayAnimation("anim")
 
+    MakeDragonflyBait(inst, 3)
+
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-
     inst:AddComponent("stackable")
-	inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
+    inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
 
     inst:AddComponent("tradable")
 
@@ -38,7 +40,7 @@ local function fn()
     inst:AddComponent("fuel")
     inst.components.fuel.fuelvalue = TUNING.TINY_FUEL
 
-	MakeSmallBurnable(inst, TUNING.TINY_BURNTIME)
+    MakeSmallBurnable(inst, TUNING.TINY_BURNTIME)
     MakeSmallPropagator(inst)
 
     inst:AddComponent("inventoryitem")
@@ -49,10 +51,10 @@ local function fn()
     inst.components.edible.foodtype = FOODTYPE.VEGGIE
     inst.components.edible:SetOnEatenFn(oneaten)
 
-	inst:AddComponent("perishable")
-	inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)
-	inst.components.perishable:StartPerishing()
-	inst.components.perishable.onperishreplacement = "spoiled_food"
+    inst:AddComponent("perishable")
+    inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)
+    inst.components.perishable:StartPerishing()
+    inst.components.perishable.onperishreplacement = "spoiled_food"
 
     MakeHauntableLaunchAndPerish(inst)
     inst:ListenForEvent("spawnedfromhaunt", function(inst, data)

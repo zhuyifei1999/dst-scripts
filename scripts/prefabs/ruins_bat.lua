@@ -1,7 +1,7 @@
 local assets =
 {
-	Asset("ANIM", "anim/ruins_bat.zip"),
-	Asset("ANIM", "anim/swap_ruins_bat.zip"),
+    Asset("ANIM", "anim/ruins_bat.zip"),
+    Asset("ANIM", "anim/swap_ruins_bat.zip"),
 }
 
 local prefabs =
@@ -9,15 +9,15 @@ local prefabs =
     "shadowtentacle",
 }
 
-local function onequip(inst, owner) 
+local function onequip(inst, owner)
     owner.AnimState:OverrideSymbol("swap_object", "swap_ruins_bat", "swap_ruins_bat")
-    owner.AnimState:Show("ARM_carry") 
-    owner.AnimState:Hide("ARM_normal") 
+    owner.AnimState:Show("ARM_carry")
+    owner.AnimState:Hide("ARM_normal")
 end
 
-local function onunequip(inst, owner) 
-    owner.AnimState:Hide("ARM_carry") 
-    owner.AnimState:Show("ARM_normal") 
+local function onunequip(inst, owner)
+    owner.AnimState:Hide("ARM_carry")
+    owner.AnimState:Show("ARM_normal")
 end
 
 local summonchance = 0.2
@@ -39,10 +39,10 @@ local function onattack(inst, owner, target)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
@@ -52,14 +52,14 @@ local function fn()
     inst.AnimState:SetBank("ruins_bat")
     inst.AnimState:SetBuild("ruins_bat")
     inst.AnimState:PlayAnimation("idle")
-    
+
     inst:AddTag("sharp")
+
+    inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("weapon")
     inst.components.weapon:SetDamage(TUNING.RUINS_BAT_DAMAGE)

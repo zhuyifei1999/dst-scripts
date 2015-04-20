@@ -99,11 +99,6 @@ function InitDLC(index)
 end
 
 function GetOfficialCharacterList()
-    --[[local list = MAIN_CHARACTERLIST
-    if IsDLCEnabled(REIGN_OF_GIANTS) then
-        list = JoinArrays(list, ROG_CHARACTERLIST)
-    end
-    return list]]
     -- #srosen we handle DST char list separately (for now, anyhow)
     return DST_CHARACTERLIST    
 end

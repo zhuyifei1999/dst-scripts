@@ -14,17 +14,18 @@ local assets =
 }
 
 local function SetStage(inst, stage)
-    if stage <= 3 then
+    if stage <= 3 and inst.components.childspawner then -- if childspawner doesn't exist, then this den is burning down
         inst.SoundEmitter:PlaySound("dontstarve/creatures/spider/spiderLair_grow")
-        inst.components.childspawner:SetMaxChildren(TUNING.SPIDERDEN_SPIDERS[stage])
+        inst.components.childspawner:SetMaxChildren(math.floor(SpringCombatMod(TUNING.SPIDERDEN_SPIDERS[stage])))
         inst.components.childspawner:SetMaxEmergencyChildren(TUNING.SPIDERDEN_EMERGENCY_WARRIORS[stage])
         inst.components.childspawner:SetEmergencyRadius(TUNING.SPIDERDEN_EMERGENCY_RADIUS[stage])
         inst.components.health:SetMaxHealth(TUNING.SPIDERDEN_HEALTH[stage])
-    
+
         inst.AnimState:PlayAnimation(inst.anims.init)
         inst.AnimState:PushAnimation(inst.anims.idle, true)
     end
-    
+
+    inst.components.upgradeable:SetStage(stage)
     inst.data.stage = stage -- track here, as growable component may go away
 end
 
@@ -41,7 +42,7 @@ local function SetSmall(inst)
 
     if inst.components.burnable then
         inst.components.burnable:SetFXLevel(3)
-        inst.components.burnable:SetBurnTime(10)
+        inst.components.burnable:SetBurnTime(20)
     end
 
     if inst.components.freezable then
@@ -65,7 +66,7 @@ local function SetMedium(inst)
 
     if inst.components.burnable then
         inst.components.burnable:SetFXLevel(3)
-        inst.components.burnable:SetBurnTime(10)
+        inst.components.burnable:SetBurnTime(20)
     end
 
     if inst.components.freezable then
@@ -89,7 +90,7 @@ local function SetLarge(inst)
 
     if inst.components.burnable then
         inst.components.burnable:SetFXLevel(4)
-        inst.components.burnable:SetBurnTime(15)
+        inst.components.burnable:SetBurnTime(30)
     end
 
     if inst.components.freezable then
@@ -111,7 +112,7 @@ local function SpawnQueen(inst, should_duplicate)
     local angle = math.random(2 * PI)
     queen.Transform:SetPosition(x + rad * math.cos(angle), 0, z + rad * math.sin(angle))
     queen.sg:GoToState("birth")
-    
+
     if not should_duplicate then
         inst:Remove()
     end
@@ -132,15 +133,15 @@ local function AttemptMakeQueen(inst)
         inst.components.growable:StartGrowing(60 + math.random(60))
         return
     end
-    
+
     local check_range = 60
     local cap = 4
     local x, y, z = inst.Transform:GetWorldPosition()
     local ents = TheSim:FindEntities(x, y, z, check_range, nil, nil, { "spiderden", "spiderqueen" })
     local num_dens = #ents
-    
+
     inst.components.growable:SetStage(1)
-    
+
     inst.AnimState:PlayAnimation("cocoon_large_burst")
     inst.AnimState:PushAnimation("cocoon_large_burst_pst")
     inst.AnimState:PushAnimation("cocoon_small", true)
@@ -185,6 +186,8 @@ local function SpawnDefenders(inst, attacker)
             local max_release_per_stage = {2, 4, 6}
             local num_to_release = math.min( max_release_per_stage[inst.data.stage] or 1, inst.components.childspawner.childreninside)
             local num_warriors = math.min(num_to_release, TUNING.SPIDERDEN_WARRIORS[inst.data.stage])
+            num_to_release = math.floor( SpringCombatMod(num_to_release) )
+            num_warriors = math.floor( SpringCombatMod(num_warriors) )
             num_warriors = num_warriors - inst.components.childspawner:CountChildrenOutside(IsDefender)
             for k = 1,num_to_release do
                 if k <= num_warriors then
@@ -221,6 +224,7 @@ local function SpawnInvestigators(inst, data)
         if inst.components.childspawner then
             local max_release_per_stage = {1, 2, 3}
             local num_to_release = math.min( max_release_per_stage[inst.data.stage] or 1, inst.components.childspawner.childreninside)
+            num_to_release = math.floor( SpringCombatMod(num_to_release) )
             local num_investigators = inst.components.childspawner:CountChildrenOutside(IsInvestigator)
             num_to_release = num_to_release - num_investigators
             local targetpos = data ~= nil and data.target ~= nil and Vector3(data.target.Transform:GetWorldPosition()) or nil
@@ -258,12 +262,8 @@ local function OnIgnite(inst)
     DefaultBurnFn(inst)
 end
 
-local function OnBurnt(inst)
-
-end
-
 local function OnFreeze(inst)
-    print(inst, "OnFreeze")
+    --print(inst, "OnFreeze")
     inst.SoundEmitter:PlaySound("dontstarve/common/freezecreature")
     inst.AnimState:PlayAnimation(inst.anims.freeze, true)
     inst.AnimState:OverrideSymbol("swap_frozen", "frozen", "frozen")
@@ -276,14 +276,14 @@ local function OnFreeze(inst)
 end
 
 local function OnThaw(inst)
-    print(inst, "OnThaw")
+    --print(inst, "OnThaw")
     inst.AnimState:PlayAnimation(inst.anims.thaw, true)
     inst.SoundEmitter:PlaySound("dontstarve/common/freezethaw", "thawing")
     inst.AnimState:OverrideSymbol("swap_frozen", "frozen", "frozen")
 end
 
 local function OnUnFreeze(inst)
-    print(inst, "OnUnFreeze")
+    --print(inst, "OnUnFreeze")
     inst.AnimState:PlayAnimation(inst.anims.idle, true)
     inst.SoundEmitter:KillSound("thawing")
     inst.AnimState:ClearOverrideSymbol("swap_frozen")
@@ -323,11 +323,23 @@ local function OnIsDay(inst, isday)
     end
 end
 
+local function OnStageAdvance(inst)
+   inst.components.growable:DoGrowth()
+   return true
+end
+
+local function OnUpgrade(inst)
+   inst.AnimState:PlayAnimation(inst.anims.hit)
+   inst.AnimState:PushAnimation(inst.anims.idle)
+end
+
+
 local growth_stages = {
     {name="small", time = GetSmallGrowTime, fn = SetSmall },
     {name="med", time = GetMedGrowTime , fn = SetMedium },
     {name="large", time = GetLargeGrowTime, fn = SetLarge},
-    {name="queen", fn = AttemptMakeQueen}}
+    {name="queen", fn = AttemptMakeQueen}
+}
 
 local function MakeSpiderDenFn(den_level)
     return function()
@@ -357,11 +369,11 @@ local function MakeSpiderDenFn(den_level)
 
         inst:SetPrefabName("spiderden")
 
+        inst.entity:SetPristine()
+
         if not TheWorld.ismastersim then
             return inst
         end
-
-        inst.entity:SetPristine()
 
         inst.data = {}
 
@@ -407,11 +419,19 @@ local function MakeSpiderDenFn(den_level)
         inst.components.combat:SetOnHit(SpawnDefenders)
         inst:ListenForEvent("death", OnKilled)
 
+        --------------------
+
+        inst:AddComponent("upgradeable")
+        inst.components.upgradeable.upgradetype = UPGRADETYPES.SPIDER
+        inst.components.upgradeable.onupgradefn = OnUpgrade
+        inst.components.upgradeable.onstageadvancefn = OnStageAdvance
+
         ---------------------
-        MakeLargePropagator(inst)
+        MakeMediumPropagator(inst)
 
         ---------------------
         inst:AddComponent("growable")
+        inst.components.growable.springgrowth = true
         inst.components.growable.stages = growth_stages
         inst.components.growable:SetStage(den_level)
         inst.components.growable:StartGrowing()
@@ -459,5 +479,5 @@ local function MakeSpiderDenFn(den_level)
 end
 
 return Prefab("forest/monsters/spiderden", MakeSpiderDenFn(1), assets, prefabs),
-       Prefab("forest/monsters/spiderden_2", MakeSpiderDenFn(2), assets, prefabs),
-       Prefab("forest/monsters/spiderden_3", MakeSpiderDenFn(3), assets, prefabs)
+    Prefab("forest/monsters/spiderden_2", MakeSpiderDenFn(2), assets, prefabs),
+    Prefab("forest/monsters/spiderden_3", MakeSpiderDenFn(3), assets, prefabs)

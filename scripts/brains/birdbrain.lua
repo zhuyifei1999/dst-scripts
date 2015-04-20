@@ -25,6 +25,8 @@ function BirdBrain:OnStart()
         WhileNode( function() return self.inst.components.hauntable and self.inst.components.hauntable.panic end, "PanicHaunted", Panic(self.inst)),
         IfNode(function() return ShouldFlyAway(self.inst) end, "Threat Near",
             ActionNode(function() return FlyAway(self.inst) end)),
+        EventNode(self.inst, "threatnear", 
+        	ActionNode(function() return FlyAway(self.inst) end)),
         EventNode(self.inst, "gohome", 
             ActionNode(function() return FlyAway(self.inst) end)),
     }, .25)

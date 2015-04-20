@@ -4,7 +4,7 @@
 --      unset persistant flag
 local assets =
 {
-	Asset("ANIM", "anim/tentacle_arm.zip"),
+    Asset("ANIM", "anim/tentacle_arm.zip"),
     Asset("ANIM", "anim/tentacle_arm_build.zip"),
 
     Asset("SOUND", "sound/tentacle.fsb"),
@@ -64,7 +64,7 @@ local function OnHit(inst, attacker, damage)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
     inst.entity:AddTransform()
     inst.entity:AddPhysics()
@@ -83,18 +83,18 @@ local function fn()
     inst.AnimState:PlayAnimation("breach_pre")
     -- inst.AnimState:SetMultColour(.2, 1, .2, 1.0)
 
-    inst:AddTag("monster")    
+    inst:AddTag("monster")
     inst:AddTag("hostile")
     inst:AddTag("wet")
     inst:AddTag("WORM_DANGER")
+
+    inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-
-	inst.persists = false           -- don't need to save these
+    inst.persists = false -- don't need to save these
 
     inst:AddComponent("health")
     inst.components.health:SetMaxHealth(TUNING.TENTACLE_PILLAR_ARM_HEALTH)
@@ -114,7 +114,7 @@ local function fn()
     inst.components.playerprox:SetOnPlayerNear(onnear)
     inst.components.playerprox:SetOnPlayerFar(onfar)
 
-	inst:AddComponent("sanityaura")
+    inst:AddComponent("sanityaura")
     inst.components.sanityaura.aura = -TUNING.SANITYAURA_MED
 
     inst:AddComponent("inspectable")

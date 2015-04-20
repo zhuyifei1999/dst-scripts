@@ -57,10 +57,10 @@ local function oncollide(inst, other)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
     inst.entity:AddDynamicShadow()
     inst.entity:AddNetwork()
@@ -77,15 +77,19 @@ local function fn()
 
     inst.DynamicShadow:SetSize(1, .5)
 
+    inst:AddTag("cattoyairborne")
+
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-
     inst.Physics:SetCollisionCallback(oncollide)
 
     inst.AnimState:SetTime(math.random() * 2)
+
+    inst:AddComponent("tradable")
 
     inst.balloon_num = math.random(4)
     inst.AnimState:OverrideSymbol("swap_balloon", "balloon_shapes", "balloon_"..tostring(inst.balloon_num))

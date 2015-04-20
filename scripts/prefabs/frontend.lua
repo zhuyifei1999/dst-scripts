@@ -30,12 +30,27 @@ local assets =
     Asset("ATLAS", "images/bg_logo.xml"),
     Asset("IMAGE", "images/bg_logo.tex"),
 
+    Asset("ATLAS", "images/bg_rog_logo_1.xml"),
+    Asset("IMAGE", "images/bg_rog_logo_1.tex"),
+
+    Asset("ATLAS", "images/bg_rog_logo_2.xml"),
+    Asset("IMAGE", "images/bg_rog_logo_2.tex"),
+
+    Asset("ATLAS", "images/bg_rog_logo_3.xml"),
+    Asset("IMAGE", "images/bg_rog_logo_3.tex"),
+
+    Asset("ATLAS", "images/bg_rog_logo_4.xml"),
+    Asset("IMAGE", "images/bg_rog_logo_4.tex"),
+
     Asset("ATLAS", "images/historyscreen.xml"),
     Asset("IMAGE", "images/historyscreen.tex"),
     
 	--character portraits
 	Asset("ATLAS", "images/saveslot_portraits.xml"),
     Asset("IMAGE", "images/saveslot_portraits.tex"),
+
+    -- update spinner
+    Asset("ANIM", "anim/researchlab.zip"),
 }
 
 if PLATFORM == "PS4" then
@@ -49,7 +64,7 @@ end
 
 
 -- Add all the characters by name
-local charlist = GetActiveCharacterList and GetActiveCharacterList() or MAIN_CHARACTERLIST
+local charlist = GetActiveCharacterList and GetActiveCharacterList() or DST_CHARACTERLIST
 for i,char in ipairs(charlist) do
 	table.insert(assets, Asset("ATLAS", "bigportraits/"..char..".xml"))
 	table.insert(assets, Asset("IMAGE", "bigportraits/"..char..".tex"))

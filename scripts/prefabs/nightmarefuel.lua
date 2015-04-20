@@ -1,13 +1,13 @@
 local assets =
 {
-	Asset("ANIM", "anim/nightmarefuel.zip"),
+    Asset("ANIM", "anim/nightmarefuel.zip"),
 }
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddNetwork()
 
     MakeInventoryPhysics(inst)
@@ -17,14 +17,14 @@ local function fn()
     inst.AnimState:PlayAnimation("idle_loop", true)
     inst.AnimState:SetMultColour(1, 1, 1, 0.5)
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-
     inst:AddComponent("stackable")
-	inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM    
+    inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM    
     inst:AddComponent("inspectable")
     inst:AddComponent("fuel")
     inst.components.fuel.fueltype = FUELTYPE.NIGHTMARE
@@ -34,7 +34,7 @@ local function fn()
 
     inst:AddComponent("inventoryitem")
 
-	return inst
+    return inst
 end
 
 return Prefab("common/inventory/nightmarefuel", fn, assets)

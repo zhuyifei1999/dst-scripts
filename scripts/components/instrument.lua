@@ -2,6 +2,7 @@ local Instrument = Class(function(self, inst)
     self.inst = inst
     self.range = 15
     self.onheard = nil
+    self.onplayed = nil
 end)
 
 function Instrument:SetOnHeardFn(fn)
@@ -9,6 +10,9 @@ function Instrument:SetOnHeardFn(fn)
 end
 
 function Instrument:Play(musician)
+    if self.onplayed then
+        self.onplayed(self.inst, musician)
+    end
     local pos = Vector3(musician.Transform:GetWorldPosition())
     local ents = TheSim:FindEntities(pos.x,pos.y,pos.z, self.range)
     for k,v in pairs(ents) do

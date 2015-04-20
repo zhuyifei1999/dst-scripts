@@ -1,11 +1,11 @@
 local mushassets =
 {
-	Asset("ANIM", "anim/mushrooms.zip"),
+    Asset("ANIM", "anim/mushrooms.zip"),
 }
 
 local cookedassets =
 {
-	Asset("ANIM", "anim/mushrooms.zip"),
+    Asset("ANIM", "anim/mushrooms.zip"),
 }
 
 local capassets =
@@ -77,6 +77,10 @@ local function onregenfn(inst)
     if inst.data.open_time == TheWorld.state.phase then
         open(inst)
     end
+end
+
+local function testfortransformonload(inst)
+    return TheWorld.state.isfullmoon
 end
 
 local function OnIsOpenPhase(inst, isopen)
@@ -158,11 +162,11 @@ local function mushcommonfn(data)
     inst.AnimState:PlayAnimation(data.animname)
     inst.AnimState:SetRayTestOnBB(true)
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst.data = data
 
@@ -197,7 +201,7 @@ local function mushcommonfn(data)
     inst.components.pickable.onregenfn = onregenfn
     inst.components.pickable:SetMakeEmptyFn(makeemptyfn)
     --inst.components.pickable.quickpick = true
-    
+
     inst.rain = 0
 
     inst:AddComponent("lootdropper")
@@ -213,10 +217,16 @@ local function mushcommonfn(data)
     end)
     inst.components.workable:SetWorkLeft(1)
 
+    --inst:AddComponent("transformer")
+    --inst.components.transformer:SetTransformWorldEvent("isfullmoon", true)
+    --inst.components.transformer:SetRevertWorldEvent("isfullmoon", false)
+    --inst.components.transformer:SetOnLoadCheck(testfortransformonload)
+    --inst.components.transformer.transformPrefab = data.transform_prefab
+
     MakeSmallBurnable(inst)
     MakeSmallPropagator(inst)
     MakeNoGrowInWinter(inst)
-    
+
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
         local ret = false
@@ -230,23 +240,23 @@ local function mushcommonfn(data)
                 new.Transform:SetPosition(inst.Transform:GetWorldPosition())
                 -- Make it the right state
                 if inst.components.pickable and not inst.components.pickable.canbepicked then
-					if new.components.pickable then
-	                    new.components.pickable:MakeEmpty()
-					end
+                    if new.components.pickable then
+                        new.components.pickable:MakeEmpty()
+                    end
                 elseif inst.components.pickable and not inst.components.pickable.caninteractwith then
                     new.AnimState:PlayAnimation("inground")
-					if new.components.pickable then
-	                    new.components.pickable.caninteractwith = false
-					end
+                    if new.components.pickable then
+                        new.components.pickable.caninteractwith = false
+                    end
                 else
                     new.AnimState:PlayAnimation(new.data.animname)
-					if new.components.pickable then
-                    	new.components.pickable.caninteractwith = true
-					end
+                    if new.components.pickable then
+                        new.components.pickable.caninteractwith = true
+                    end
                 end
             end
             inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
-            inst:DoTaskInTime(0, function(inst) inst:Remove() end)
+            inst:DoTaskInTime(0, inst.Remove)
             ret = true
         elseif inst.components.pickable and inst.components.pickable:CanBePicked() and inst.components.pickable.caninteractwith then
             inst:closetaskfn()
@@ -293,18 +303,20 @@ local function capcommonfn(data)
     inst.AnimState:SetBuild("mushrooms")
     inst.AnimState:PlayAnimation(data.animname.."_cap")
 
+    MakeDragonflyBait(inst, 3)
+
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-    
     inst:AddComponent("stackable")
     inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
 
     inst:AddComponent("tradable")
     inst:AddComponent("inspectable")
-    
+
     MakeSmallBurnable(inst, TUNING.TINY_BURNTIME)
     MakeSmallPropagator(inst)
     inst:AddComponent("inventoryitem")
@@ -315,7 +327,7 @@ local function capcommonfn(data)
     inst.components.edible.hungervalue = data.hunger
     inst.components.edible.sanityvalue = data.sanity
     inst.components.edible.foodtype = FOODTYPE.VEGGIE
-    
+
     inst:AddComponent("perishable")
     inst.components.perishable:SetPerishTime(TUNING.PERISH_MED)
     inst.components.perishable:StartPerishing()
@@ -337,7 +349,7 @@ local function capcommonfn(data)
                 new:PushEvent("spawnedfromhaunt", {haunter=haunter, oldPrefab=inst})
             end
             inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
-            inst:DoTaskInTime(0, function(inst) inst:Remove() end)
+            inst:DoTaskInTime(0, inst.Remove)
             return true
         end
         return false
@@ -365,18 +377,18 @@ local function cookedcommonfn(data)
     inst.AnimState:SetBuild("mushrooms")
     inst.AnimState:PlayAnimation(data.pickloot.."_cooked")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("stackable")
     inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
 
     inst:AddComponent("tradable")
     inst:AddComponent("inspectable")
-    
+
     inst:AddComponent("fuel")
     inst.components.fuel.fuelvalue = TUNING.TINY_FUEL
     MakeSmallBurnable(inst, TUNING.TINY_BURNTIME)
@@ -399,7 +411,7 @@ local function cookedcommonfn(data)
                 new:PushEvent("spawnedfromhaunt", {haunter=haunter, oldPrefab=inst})
             end
             inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
-            inst:DoTaskInTime(0, function(inst) inst:Remove() end)
+            inst:DoTaskInTime(0, inst.Remove)
             return true
         end
         return false
@@ -414,7 +426,7 @@ local function cookedcommonfn(data)
     inst.components.edible.hungervalue = data.cookedhunger
     inst.components.edible.sanityvalue = data.cookedsanity
     inst.components.edible.foodtype = FOODTYPE.VEGGIE
-    
+
     inst:AddComponent("perishable")
     inst.components.perishable:SetPerishTime(TUNING.PERISH_MED)
     inst.components.perishable:StartPerishing()
@@ -427,8 +439,8 @@ local function MakeMushroom(data)
 
     local prefabs =
     {
-        data.pickloot
-    }    
+        data.pickloot,
+    }
 
     local function mushfn()
         return mushcommonfn(data)
@@ -437,22 +449,56 @@ local function MakeMushroom(data)
     local function capfn()
         return capcommonfn(data)
     end
-    
+
     local function cookedfn()
         return cookedcommonfn(data)
-    end    
+    end
 
     return Prefab("forest/objects/"..data.name, mushfn, mushassets, prefabs),
            Prefab("common/inventory/"..data.pickloot, capfn, capassets),
            Prefab("common/inventory/"..data.pickloot.."_cooked", cookedfn, cookedassets)
 end
 
-local data = { {name = "red_mushroom", animname="red", pickloot="red_cap", open_time = "day",	sanity = 0, health = -TUNING.HEALING_MED, hunger = TUNING.CALORIES_SMALL,
-																								cookedsanity = -TUNING.SANITY_SMALL, cookedhealth = TUNING.HEALING_TINY, cookedhunger = 0}, 
-               {name = "green_mushroom", animname="green", pickloot="green_cap", open_time = "dusk",	sanity = -TUNING.SANITY_HUGE, health= 0, hunger = TUNING.CALORIES_SMALL,
-																										cookedsanity = TUNING.SANITY_MED, cookedhealth = -TUNING.HEALING_TINY, cookedhunger = 0}, 
-               {name = "blue_mushroom", animname="blue", pickloot="blue_cap", open_time = "night",	sanity = -TUNING.SANITY_MED, health= TUNING.HEALING_MED, hunger = TUNING.CALORIES_SMALL, 
-																									cookedsanity = TUNING.SANITY_SMALL, cookedhealth = -TUNING.HEALING_SMALL, cookedhunger = 0}}
+local data = {
+    {
+        name = "red_mushroom",
+        animname="red",
+        pickloot="red_cap",
+        open_time = "day",
+        sanity = 0,
+        health = -TUNING.HEALING_MED,
+        hunger = TUNING.CALORIES_SMALL,
+        cookedsanity = -TUNING.SANITY_SMALL,
+        cookedhealth = TUNING.HEALING_TINY,
+        cookedhunger = 0,
+        transform_prefab = "mushtree_medium",
+    }, 
+    {
+        name = "green_mushroom",
+        animname="green",
+        pickloot="green_cap",
+        open_time = "dusk", sanity = -TUNING.SANITY_HUGE,
+        health= 0,
+        hunger = TUNING.CALORIES_SMALL,
+        cookedsanity = TUNING.SANITY_MED,
+        cookedhealth = -TUNING.HEALING_TINY,
+        cookedhunger = 0,
+        transform_prefab = "mushtree_small",
+    },
+    {
+        name = "blue_mushroom",
+        animname="blue",
+        pickloot="blue_cap",
+        open_time = "night",    sanity = -TUNING.SANITY_MED,
+        health= TUNING.HEALING_MED,
+        hunger = TUNING.CALORIES_SMALL,
+        cookedsanity = TUNING.SANITY_SMALL,
+        cookedhealth = -TUNING.HEALING_SMALL,
+        cookedhunger = 0,
+        transform_prefab = "mushtree_tall",
+    },
+}
+
 local prefabs = {}
 
 for k,v in pairs(data) do

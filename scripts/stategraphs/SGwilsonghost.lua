@@ -1,6 +1,11 @@
 local actionhandlers =
 {
     ActionHandler(ACTIONS.HAUNT, "haunt_pre"),
+    ActionHandler(ACTIONS.ATTACK,
+        function()
+            --dummy handler in case any attack controls came through network
+            print("Player ghost ignored attack control")
+        end),
 }
 
 local events =

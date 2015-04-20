@@ -37,9 +37,9 @@ function GetProfilerSave(results)
 	if not TheWorld or not TheNet:GetIsMasterSimulation() then
 		return
 	else
-		local save_index = SaveGameIndex:GetCurrentSaveSlot()
+		local save_index = SaveGameIndex:GetSlotSession()
 		if save_index then
-			local filename = SaveGameIndex.data.slots[save_index].modes.survival.file
+			local filename = TheNet:GetWorldSessionFile(SaveGameIndex:GetSlotSession())
 			if filename then
 				TheSim:GetPersistentString( filename,	
 					function(load_success, str)

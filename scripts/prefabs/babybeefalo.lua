@@ -1,9 +1,9 @@
 local assets =
 {
-	Asset("ANIM", "anim/beefalo_basic.zip"),
-	Asset("ANIM", "anim/beefalo_actions.zip"),
-	Asset("ANIM", "anim/beefalo_baby_build.zip"),
-	Asset("SOUND", "sound/beefalo.fsb"),
+    Asset("ANIM", "anim/beefalo_basic.zip"),
+    Asset("ANIM", "anim/beefalo_actions.zip"),
+    Asset("ANIM", "anim/beefalo_baby_build.zip"),
+    Asset("SOUND", "sound/beefalo.fsb"),
 }
 
 local prefabs =
@@ -45,9 +45,9 @@ local function FollowGrownBeefalo(inst)
     {"beefalo"},
     {"baby"}
     )
-	if nearest and nearest.components.leader then
-		nearest.components.leader:AddFollower(inst)
-	end
+    if nearest and nearest.components.leader then
+        nearest.components.leader:AddFollower(inst)
+    end
 end
 
 local function Grow(inst)
@@ -64,22 +64,22 @@ local function GetGrowTime()
 end
 
 local function SetBaby(inst)
-	local scale = 0.5
-	inst.Transform:SetScale(scale, scale, scale)
+    local scale = 0.5
+    inst.Transform:SetScale(scale, scale, scale)
     inst.components.lootdropper:SetLoot(babyloot)
     inst.components.sleeper:SetResistance(1)
 end
 
 local function SetToddler(inst)
-	local scale = 0.7
-	inst.Transform:SetScale(scale, scale, scale)
+    local scale = 0.7
+    inst.Transform:SetScale(scale, scale, scale)
     inst.components.lootdropper:SetLoot(toddlerloot)
     inst.components.sleeper:SetResistance(2)
 end
 
 local function SetTeen(inst)
-	local scale = 0.9
-	inst.Transform:SetScale(scale, scale, scale)
+    local scale = 0.9
+    inst.Transform:SetScale(scale, scale, scale)
     inst.components.lootdropper:SetLoot(teenloot)
     inst.components.sleeper:SetResistance(2)
 end
@@ -101,12 +101,12 @@ local growth_stages =
 }
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
-	inst.entity:AddDynamicShadow()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
+    inst.entity:AddDynamicShadow()
     inst.entity:AddNetwork()
 
     inst.Transform:SetFourFaced()
@@ -124,28 +124,28 @@ local function fn()
 
     MakeCharacterPhysics(inst, 100, .75)
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-    
     inst.sounds = sounds
 
     inst:AddComponent("eater")
-    inst.components.eater:SetVegetarian()
-    
+    inst.components.eater:SetDiet({ FOODTYPE.VEGGIE }, { FOODTYPE.VEGGIE })
+
     inst:AddComponent("combat")
     inst.components.combat.hiteffectsymbol = "beefalo_body"
-     
+
     inst:AddComponent("health")
     inst.components.health:SetMaxHealth(TUNING.BABYBEEFALO_HEALTH)
 
     inst:AddComponent("lootdropper")
-    
+
     inst:AddComponent("inspectable")
     inst:AddComponent("sleeper")
-    
+
     inst:AddComponent("knownlocations")
     inst:AddComponent("herdmember")
     inst:AddComponent("follower")
@@ -157,7 +157,7 @@ local function fn()
     inst.components.periodicspawner:SetDensityInRange(20, 2)
     inst.components.periodicspawner:SetMinimumSpacing(8)
     inst.components.periodicspawner:Start()
-    
+
     inst:AddComponent("growable")
     inst.components.growable.stages = growth_stages
     inst.components.growable.growonly = true
@@ -171,9 +171,9 @@ local function fn()
     inst.components.locomotor.runspeed = 9
 
     MakeHauntablePanic(inst)
-    
+
     inst:DoTaskInTime(1, FollowGrownBeefalo)
-    
+
     inst:SetBrain(brain)
 
     inst:SetStateGraph("SGBeefalo")

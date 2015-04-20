@@ -1,12 +1,12 @@
 local assets =
 {
-	Asset("ANIM", "anim/pig_king.zip"),
-	Asset("SOUND", "sound/pig.fsb"),
+    Asset("ANIM", "anim/pig_king.zip"),
+    Asset("SOUND", "sound/pig.fsb"),
 }
 
 local prefabs =
 {
-	"goldnugget",
+    "goldnugget",
 }
 
 local function ontradeforgold(inst, item)
@@ -50,10 +50,10 @@ local function OnGetItemFromPlayer(inst, giver, item)
 end
 
 local function OnRefuseItem(inst, giver, item)
-	inst.SoundEmitter:PlaySound("dontstarve/pig/PigKingReject")
+    inst.SoundEmitter:PlaySound("dontstarve/pig/PigKingReject")
     inst.AnimState:PlayAnimation("unimpressed")
-	inst.AnimState:PushAnimation("idle", true)
-	inst.happy = false
+    inst.AnimState:PushAnimation("idle", true)
+    inst.happy = false
 end
 
 local function AcceptTest(inst, item)
@@ -64,22 +64,22 @@ local function OnIsNight(inst, isnight)
     if isnight then
         inst.components.trader:Disable()
         inst.AnimState:PlayAnimation("sleep_pre")
-        inst.AnimState:PushAnimation("sleep_loop", true)    
+        inst.AnimState:PushAnimation("sleep_loop", true)
     else
         inst.components.trader:Enable()
         inst.AnimState:PlayAnimation("sleep_pst")
-        inst.AnimState:PushAnimation("idle", true)    
+        inst.AnimState:PushAnimation("idle", true)
     end
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
     inst.entity:AddDynamicShadow()
-	inst.entity:AddMiniMapEntity()
+    inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
 
     MakeObstaclePhysics(inst, 2, .5)
@@ -89,25 +89,25 @@ local function fn()
     inst.MiniMapEntity:SetPriority(1)
 
     inst.DynamicShadow:SetSize(10, 5)
-    
+
     --inst.Transform:SetScale(1.5, 1.5, 1.5)
-    
+
     inst:AddTag("king")
     inst.AnimState:SetBank("Pig_King")
     inst.AnimState:SetBuild("Pig_King")
     inst.AnimState:PlayAnimation("idle", true)
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("inspectable")
 
     inst:AddComponent("trader")
 
-	inst.components.trader:SetAcceptTest(AcceptTest)
+    inst.components.trader:SetAcceptTest(AcceptTest)
     inst.components.trader.onaccept = OnGetItemFromPlayer
     inst.components.trader.onrefuse = OnRefuseItem
 
@@ -123,7 +123,7 @@ local function fn()
         end
         return false
     end)
-    
+
     return inst
 end
 

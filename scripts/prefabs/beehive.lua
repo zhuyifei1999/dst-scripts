@@ -1,7 +1,7 @@
 local prefabs =
 {
-	"bee",
-	"killerbee",
+    "bee",
+    "killerbee",
     "honey",
     "honeycomb",
 }
@@ -9,7 +9,7 @@ local prefabs =
 local assets =
 {
     Asset("ANIM", "anim/beehive.zip"),
-	Asset("SOUND", "sound/bee.fsb"),
+    Asset("SOUND", "sound/bee.fsb"),
 }
 
 local function OnEntityWake(inst)
@@ -17,21 +17,21 @@ local function OnEntityWake(inst)
 end
 
 local function OnEntitySleep(inst)
-	inst.SoundEmitter:KillSound("loop")
+    inst.SoundEmitter:KillSound("loop")
 end
 
 local function StartSpawning(inst)
-	if inst.components.childspawner 
-            and TheWorld.state.issummer
-            and not (inst.components.freezable and inst.components.freezable:IsFrozen()) then
-		inst.components.childspawner:StartSpawning()
-	end
+    if inst.components.childspawner 
+        and not TheWorld.state.iswinter
+        and not (inst.components.freezable and inst.components.freezable:IsFrozen()) then
+        inst.components.childspawner:StartSpawning()
+    end
 end
 
 local function StopSpawning(inst)
-	if inst.components.childspawner then
-		inst.components.childspawner:StopSpawning()
-	end
+    if inst.components.childspawner then
+        inst.components.childspawner:StopSpawning()
+    end
 end
 
 local function OnIsDay(inst, isday)
@@ -98,11 +98,25 @@ local function OnHit(inst, attacker, damage)
     end
 end
 
-local function fn()
-	local inst = CreateEntity()
+local function SeasonalSpawnChanges(inst, season)
+    if inst.components.childspawner then
+        if season == SEASONS.SPRING then
+            inst.components.childspawner:SetRegenPeriod(TUNING.BEEBOX_REGEN_TIME / TUNING.SPRING_COMBAT_MOD)
+            inst.components.childspawner:SetSpawnPeriod(TUNING.BEEBOX_RELEASE_TIME / TUNING.SPRING_COMBAT_MOD)
+            inst.components.childspawner:SetMaxChildren(TUNING.BEEBOX_BEES * TUNING.SPRING_COMBAT_MOD)
+        else
+            inst.components.childspawner:SetRegenPeriod(TUNING.BEEBOX_REGEN_TIME)
+            inst.components.childspawner:SetSpawnPeriod(TUNING.BEEBOX_RELEASE_TIME)
+            inst.components.childspawner:SetMaxChildren(TUNING.BEEBOX_BEES)
+        end
+    end
+end
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+local function fn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
@@ -117,15 +131,16 @@ local function fn()
 
     inst:AddTag("structure")
     inst:AddTag("hive")
+    inst:AddTag("beehive")
 
     MakeSnowCoveredPristine(inst)
+
+    inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-    
     -------------------
     inst:AddComponent("health")
     inst.components.health:SetMaxHealth(200)
@@ -133,21 +148,20 @@ local function fn()
     -------------------
 	inst:AddComponent("childspawner")
 	inst.components.childspawner.childname = "bee"
-	inst.components.childspawner:SetRegenPeriod(TUNING.BEEHIVE_REGEN_TIME)
-	inst.components.childspawner:SetSpawnPeriod(TUNING.BEEHIVE_RELEASE_TIME)
-	inst.components.childspawner:SetMaxChildren(TUNING.BEEHIVE_BEES)
+    SeasonalSpawnChanges(inst, TheWorld.state.season)
+    inst:WatchWorldState("season", SeasonalSpawnChanges)
     inst.components.childspawner.emergencychildname = "bee"
     inst.components.childspawner.emergencychildrenperplayer = 1
     inst.components.childspawner:SetMaxEmergencyChildren(TUNING.BEEHIVE_EMERGENCY_BEES)
     inst.components.childspawner:SetEmergencyRadius(TUNING.BEEHIVE_EMERGENCY_RADIUS)
 
-
-    if TheWorld.state.isday then
-        StartSpawning(inst)
-    end
-
+    inst:DoTaskInTime(0, function()
+        if TheWorld.state.isday then
+            StartSpawning(inst)
+        end
+    end)
     inst:WatchWorldState("isday", OnIsDay)
-	
+
     ---------------------  
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetLoot({"honey","honey","honey","honeycomb"})
@@ -168,7 +182,7 @@ local function fn()
     inst:AddComponent("combat")
     inst.components.combat:SetOnHit(OnHit)
     inst:ListenForEvent("death", OnKilled)
-    
+
     ---------------------
     MakeLargePropagator(inst)
     MakeSnowCovered(inst)
@@ -195,14 +209,14 @@ local function fn()
 
         return false
     end)
-    
-    ---------------------
-    
-    inst:AddComponent("inspectable")
-	inst.OnEntitySleep = OnEntitySleep
-	inst.OnEntityWake = OnEntityWake
 
-	return inst
+    ---------------------
+
+    inst:AddComponent("inspectable")
+    inst.OnEntitySleep = OnEntitySleep
+    inst.OnEntityWake = OnEntityWake
+
+    return inst
 end
 
 return Prefab("forest/monsters/beehive", fn, assets, prefabs)

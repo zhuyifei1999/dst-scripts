@@ -2,12 +2,12 @@ local brain = require "brains/koalefantbrain"
 
 local assets =
 {
-	Asset("ANIM", "anim/koalefant_basic.zip"),
+    Asset("ANIM", "anim/koalefant_basic.zip"),
     Asset("ANIM", "anim/koalefant_actions.zip"),
     --Asset("ANIM", "anim/koalefant_build.zip"),
     Asset("ANIM", "anim/koalefant_summer_build.zip"),
     Asset("ANIM", "anim/koalefant_winter_build.zip"),
-	Asset("SOUND", "sound/koalefant.fsb"),
+    Asset("SOUND", "sound/koalefant.fsb"),
 }
 
 local prefabs =
@@ -21,7 +21,6 @@ local prefabs =
 local loot_summer = {"meat","meat","meat","meat","meat","meat","meat","meat","trunk_summer"}
 local loot_winter = {"meat","meat","meat","meat","meat","meat","meat","meat","trunk_winter"}
 
-
 local WAKE_TO_RUN_DISTANCE = 10
 local SLEEP_NEAR_ENEMY_DISTANCE = 14
 
@@ -33,20 +32,8 @@ local function ShouldSleep(inst)
     return DefaultSleepTest(inst) and not inst:IsNear(ThePlayer, SLEEP_NEAR_ENEMY_DISTANCE)
 end
 
-local function Retarget(inst)
-
-end
-
 local function KeepTarget(inst, target)
     return distsq(Vector3(target.Transform:GetWorldPosition()), Vector3(inst.Transform:GetWorldPosition())) < TUNING.KOALEFANT_CHASE_DIST * TUNING.KOALEFANT_CHASE_DIST
-end
-
-local function OnNewTarget(inst, data)
-
-end
-
-local function GetStatus(inst)
-
 end
 
 local function ShareTargetFn(dude)
@@ -59,18 +46,18 @@ local function OnAttacked(inst, data)
 end
 
 local function create_base(build)
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
-	inst.entity:AddDynamicShadow()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
+    inst.entity:AddDynamicShadow()
     inst.entity:AddNetwork()
 
     MakeCharacterPhysics(inst, 100, .75)
-    
+
     inst.DynamicShadow:SetSize(4.5, 2)
-    inst.Transform:SetFourFaced()
+    inst.Transform:SetSixFaced()
 
     inst:AddTag("koalefant")
     inst:AddTag("animal")
@@ -80,21 +67,19 @@ local function create_base(build)
     inst.AnimState:SetBuild(build)
     inst.AnimState:PlayAnimation("idle_loop", true)
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-
     inst:AddComponent("eater")
-    inst.components.eater:SetVegetarian()
+    inst.components.eater:SetDiet({ FOODTYPE.VEGGIE }, { FOODTYPE.VEGGIE })
 
     inst:AddComponent("combat")
     inst.components.combat.hiteffectsymbol = "beefalo_body"
     inst.components.combat:SetDefaultDamage(TUNING.KOALEFANT_DAMAGE)
-    inst.components.combat:SetRetargetFunction(1, Retarget)
     inst.components.combat:SetKeepTargetFunction(KeepTarget)
-    inst:ListenForEvent("newcombattarget", OnNewTarget)
     inst:ListenForEvent("attacked", OnAttacked)
 
     inst:AddComponent("health")
@@ -103,7 +88,6 @@ local function create_base(build)
     inst:AddComponent("lootdropper")
 
     inst:AddComponent("inspectable")
-    inst.components.inspectable.getstatus = GetStatus
 
     inst:AddComponent("knownlocations")
 
@@ -134,7 +118,7 @@ local function create_base(build)
 end
 
 local function create_summer()
-	local inst = create_base("koalefant_summer_build")
+    local inst = create_base("koalefant_summer_build")
 
     if not TheWorld.ismastersim then
         return inst
@@ -142,11 +126,11 @@ local function create_summer()
 
     inst.components.lootdropper:SetLoot(loot_summer)
 
-	return inst
+    return inst
 end
 
 local function create_winter()
-	local inst = create_base("koalefant_winter_build")
+    local inst = create_base("koalefant_winter_build")
 
     if not TheWorld.ismastersim then
         return inst
@@ -154,8 +138,8 @@ local function create_winter()
 
     inst.components.lootdropper:SetLoot(loot_winter)
 
-	return inst
+    return inst
 end
 
 return Prefab("forest/animals/koalefant_summer", create_summer, assets, prefabs),
-	   Prefab("forest/animals/koalefant_winter", create_winter, assets, prefabs)
+    Prefab("forest/animals/koalefant_winter", create_winter, assets, prefabs)

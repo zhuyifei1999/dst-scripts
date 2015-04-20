@@ -132,21 +132,17 @@ AddGlobalDebugKey(KEY_R, function()
 end)
 
 AddGameDebugKey(KEY_F2, function()
-    if TheInput:IsKeyDown(KEY_SHIFT) and TheInput:IsKeyDown(KEY_CTRL) then
-        LOCAL_HISTORY = JoinArrays(GetConsoleHistory(),LOCAL_HISTORY)
+    if c_sel() == TheWorld then
+        c_select(TheWorld.net)
     else
-        SetConsoleHistory(JoinArrays(GetConsoleHistory(),LOCAL_HISTORY))
+        c_select(TheWorld)
     end
 end)
 
 AddGameDebugKey(KEY_F3, function()
-    c_countprefabs("mushtree_tall")
-    c_countprefabs("mushtree_medium")    
-    c_countprefabs("mushtree_small")
-
-    c_countprefabs("blue_mushroom")
-    c_countprefabs("red_mushroom")    
-    c_countprefabs("green_mushroom")
+    for i=1,TheWorld.state.remainingdaysinseason do
+        TheWorld:PushEvent("ms_advanceseason")
+    end
 end)
 
 AddGameDebugKey(KEY_R, function()
@@ -169,27 +165,16 @@ AddGameDebugKey(KEY_F4, function()
 end)
 
 AddGameDebugKey(KEY_F5, function()
-	if TheInput:IsKeyDown(KEY_SHIFT) then
-		print("Running stress test")
-  		scheduler:ExecutePeriodic(0.01, function() 
-            local MainCharacter = DebugKeyPlayer()
-            if MainCharacter ~= nil then
-                local x = math.random()*(350.0*4.0)-(350.0/2.0)*4.0
-                local z = math.random()*(350.0*4.0)-(350.0/2.0)*4.0
-                if TheWorld.Map:IsPassableAtPoint(x, 0, z) then
-                    MainCharacter.Transform:SetPosition(x,0,z)
-                end
-                -- local locaton = GetRandomItem(locations)
-                -- MainCharacter.Transform:SetPosition(locaton.x, 0, locaton.z) 
-            end   
-        end)
-    else
-		local pos = TheInput:GetWorldPosition()
-        TheWorld:PushEvent("ms_sendlightningstrike", pos)
-	end
+    TheWorld:PushEvent("ms_setseasonlength", {season="autumn", length=12})
+    TheWorld:PushEvent("ms_setseasonlength", {season="winter", length=10})
+    TheWorld:PushEvent("ms_setseasonlength", {season="spring", length=12})
+    TheWorld:PushEvent("ms_setseasonlength", {season="summer", length=10})
 	return true
 end)
 
+AddGameDebugKey(KEY_F6, function()
+    -- F6 is used by the hot-reload functionality!
+end)
 
 AddGameDebugKey(KEY_F12, function()
     local positions = {}
@@ -214,31 +199,56 @@ end)
 
 
 AddGameDebugKey(KEY_F7, function()
-    local pt = DebugKeyPlayer():GetPosition()
-    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, 40, {"selfstacker"})
+    local player = ConsoleCommandPlayer()
+    if player then
+        local x, y, z = player.Transform:GetWorldPosition()
+        for i, node in ipairs(TheWorld.topology.nodes) do
+            if TheSim:WorldPointInPoly(x, z, node.poly) then
+                print("/********************\\")
+                print("Standing in", i)
+                print("id", TheWorld.topology.ids[i])
+                print("type", node.type)
+                print("story depth", TheWorld.topology.story_depths[i])
+                print("area", node.area)
 
-    for k,v in pairs(ents) do
-        v.components.selfstacker.stackpartner = nil
-        if v and v.components.selfstacker:CanSelfStack() then
-            v:DoTaskInTime(math.random() * .1, function() v.components.selfstacker:DoStack() end)
+                if TheInput:IsKeyDown(KEY_SHIFT) then
+                    c_teleport(node.cent[1], 0, node.cent[2], player)
+                    print("center", unpack(node.cent))
+                elseif TheInput:IsKeyDown(KEY_CTRL) then
+                    print("poly size", #node.poly)
+                    for _,v in ipairs(node.poly) do
+                        print("\t", unpack(v))
+                    end
+
+                    local idx = 1
+                    local nextpoint = nil
+                    nextpoint = function()
+                        c_teleport(node.poly[idx][1], 0, node.poly[idx][2], player)
+                        idx = idx + 1
+                        if idx <= #node.poly then
+                            player:DoTaskInTime(0.3, nextpoint)
+                        end
+                    end
+                    nextpoint()
+                end
+                print("\\********************/")
+            end
         end
     end
-
-	return true
 end)
 
 ---Spawn random items from the "items" table in a circles around me.
 
 AddGameDebugKey(KEY_F8, function()
     --Spawns a lot of prefabs around you in rings.
-    local items = {"houndstooth"} --Which items spawn. 
+    local items = {"grass"} --Which items spawn. 
     local player = DebugKeyPlayer()
     local pt = Vector3(player.Transform:GetWorldPosition())
     local theta = math.random() * 2 * PI
-    local numrings = 20 --How many rings of stuff you spawn
+    local numrings = 10 --How many rings of stuff you spawn
     local radius = 5 --Initial distance from player
-    local radius_step_distance = .5 --How much the radius increases per ring.
-    local itemdensity = 2 --(X items per unit)
+    local radius_step_distance = 1 --How much the radius increases per ring.
+    local itemdensity = .1 --(X items per unit)
     local map = TheWorld.Map
     
     local finalRad = (radius + (radius_step_distance * numrings))
@@ -269,9 +279,11 @@ end)
 
 AddGameDebugKey(KEY_PAGEUP, function()
     if TheInput:IsKeyDown(KEY_SHIFT) then
-        TheWorld:PushEvent("ms_deltamoistureceil", 100)
+        TheWorld:PushEvent("ms_deltawetness", 5)
     elseif TheInput:IsKeyDown(KEY_CTRL) then
         TheWorld:PushEvent("ms_deltamoisture", 100)
+    elseif TheInput:IsKeyDown(KEY_ALT) then
+        TheWorld:PushEvent("ms_setsnowlevel", TheWorld.state.snowlevel + .5)
     else
         TheWorld:PushEvent("ms_advanceseason")
     end
@@ -280,9 +292,11 @@ end)
 
 AddGameDebugKey(KEY_PAGEDOWN, function()
     if TheInput:IsKeyDown(KEY_SHIFT) then
-        TheWorld:PushEvent("ms_deltamoistureceil", -100)
+        TheWorld:PushEvent("ms_deltawetness", -5)
     elseif TheInput:IsKeyDown(KEY_CTRL) then
         TheWorld:PushEvent("ms_deltamoisture", -100)
+    elseif TheInput:IsKeyDown(KEY_ALT) then
+        TheWorld:PushEvent("ms_setsnowlevel", TheWorld.state.snowlevel - .5)
     else
         TheWorld:PushEvent("ms_retreatseason")
     end
@@ -670,20 +684,39 @@ AddGameDebugKey(KEY_INSERT, function()
     return true
 end)
 
+AddGameDebugKey(KEY_I, function()
+    if TheInput:IsKeyDown(KEY_SHIFT) and not TheInput:IsKeyDown(KEY_CTRL) then
+        c_spawn("dragonfly")
+    elseif TheInput:IsKeyDown(KEY_CTRL) and not TheInput:IsKeyDown(KEY_SHIFT) then
+        c_spawn("lavae")
+    elseif TheInput:IsKeyDown(KEY_CTRL) and TheInput:IsKeyDown(KEY_SHIFT) then
+        local lavae = {}
+        for k, v in pairs(Ents) do
+            if v.prefab == "lavae" then
+                table.insert(lavae, v)
+            end
+        end
+
+        for k,v in pairs(lavae) do
+            v.LockTargetFn(v, ConsoleCommandPlayer())
+        end
+    end
+
+    return true
+end)
+
 
 -------------------------------------------MOUSE HANDLING
 
 
 local function DebugRMB(x,y)
-    dprint("MBHAND:CTRL=",TheInput:IsKeyDown(KEY_CTRL)," SHIFT=", TheInput:IsKeyDown(KEY_SHIFT))
     local MouseCharacter = TheInput:GetWorldEntityUnderMouse()
     local pos = TheInput:GetWorldPosition()
 
     if TheInput:IsKeyDown(KEY_CTRL) and
        TheInput:IsKeyDown(KEY_SHIFT) and
-       c_ent.prefab then
-        global("c_ent")
-        local spawn = c_spawn(c_ent.prefab)
+       c_sel() and c_sel().prefab then
+        local spawn = c_spawn(c_sel().prefab)
         if spawn then
             spawn.Transform:SetPosition(pos:Get())
         end
@@ -708,10 +741,7 @@ local function DebugRMB(x,y)
 
     elseif TheInput:IsKeyDown(KEY_SHIFT) then
         if MouseCharacter then
-            global("c_ent")
-            c_ent = MouseCharacter
             SetDebugEntity(MouseCharacter)
-            dprint("Selected: ",c_ent)
         else
             SetDebugEntity(TheWorld)
         end

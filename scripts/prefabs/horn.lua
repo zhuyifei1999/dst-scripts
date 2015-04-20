@@ -1,6 +1,6 @@
 local assets =
 {
-	Asset("ANIM", "anim/horn.zip"),
+    Asset("ANIM", "anim/horn.zip"),
 }
 
 local function FollowLeader(follower, leader)
@@ -40,12 +40,12 @@ local function HearHorn(inst, musician, instrument)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddNetwork()
-	
+    
     MakeInventoryPhysics(inst)
 
     inst:AddTag("horn")
@@ -54,11 +54,11 @@ local function fn()
     inst.AnimState:SetBuild("horn")
     inst.AnimState:PlayAnimation("idle")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("inspectable")
     inst:AddComponent("instrument")

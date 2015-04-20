@@ -1,11 +1,11 @@
 local assets =
 {
-	Asset("ANIM", "anim/meat.zip"),
-	Asset("ANIM", "anim/meat_monster.zip"),
-	Asset("ANIM", "anim/meat_small.zip"),
+    Asset("ANIM", "anim/meat.zip"),
+    Asset("ANIM", "anim/meat_monster.zip"),
+    Asset("ANIM", "anim/meat_small.zip"),
     Asset("ANIM", "anim/meat_human.zip"),
-	Asset("ANIM", "anim/drumstick.zip"),
-	Asset("ANIM", "anim/meat_rack_food.zip"),
+    Asset("ANIM", "anim/drumstick.zip"),
+    Asset("ANIM", "anim/meat_rack_food.zip"),
     Asset("ANIM", "anim/batwing.zip"),
     Asset("ANIM", "anim/plant_meat.zip"),
 }
@@ -58,32 +58,36 @@ local plantmeatprefabs =
 }
 
 local function AddMonsterMeatChange(inst, prefab)
-    if not prefab or not inst then return end
     AddHauntableCustomReaction(inst, function(inst, haunter)
         if math.random() <= TUNING.HAUNT_CHANCE_OCCASIONAL then
-            local fx = SpawnPrefab("small_puff")
-            if fx then fx.Transform:SetPosition(inst.Transform:GetWorldPosition()) end
+            local x, y, z = inst.Transform:GetWorldPosition()
+            SpawnPrefab("small_puff").Transform:SetPosition(x, y, z)
             local new = SpawnPrefab(prefab)
-            if new then
-                new.Transform:SetPosition(inst.Transform:GetWorldPosition())
-                if new.components.perishable and inst.components.perishable then
+            if new ~= nil then
+                new.Transform:SetPosition(x, y, z)
+                if new.components.perishable ~= nil and inst.components.perishable ~= nil then
                     new.components.perishable:SetPercent(inst.components.perishable:GetPercent())
                 end
-                new:PushEvent("spawnedfromhaunt", {haunter=haunter, oldPrefab=inst})
+                new:PushEvent("spawnedfromhaunt", { haunter = haunter })
             end
             inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
-            inst:DoTaskInTime(0, function(inst) inst:Remove() end)
+            --Delayed because the hauntable handler does not
+            --expect inst to become invalid during the event
+            inst.entity:Hide()
+            RemovePhysicsColliders(inst)
+            inst.persists = false
+            inst:DoTaskInTime(0, inst.Remove)
             return true
         end
         return false
     end, false, true, false)
 end
 
-local function common(bank, build, anim, tag)
-	local inst = CreateEntity()
+local function common(bank, build, anim, tags, dryable)
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddNetwork()
     
     MakeInventoryPhysics(inst)
@@ -93,15 +97,22 @@ local function common(bank, build, anim, tag)
     inst.AnimState:PlayAnimation(anim)
 
     inst:AddTag("meat")
-    if tag ~= nil then
-        inst:AddTag(tag)
+    if tags ~= nil then
+        for i, v in ipairs(tags) do
+            inst:AddTag(v)
+        end
     end
+
+    if dryable ~= nil then
+        --dryable (from dryable component) added to pristine state for optimization
+        inst:AddTag("dryable")
+    end
+
+    inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("edible")
     inst.components.edible.ismeat = true    
@@ -117,10 +128,16 @@ local function common(bank, build, anim, tag)
     inst:AddComponent("tradable")
     inst.components.tradable.goldvalue = TUNING.GOLD_VALUES.MEAT
 
-	inst:AddComponent("perishable")
-	inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)
-	inst.components.perishable:StartPerishing()
-	inst.components.perishable.onperishreplacement = "spoiled_food"
+    inst:AddComponent("perishable")
+    inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)
+    inst.components.perishable:StartPerishing()
+    inst.components.perishable.onperishreplacement = "spoiled_food"
+
+    if dryable ~= nil then
+        inst:AddComponent("dryable")
+        inst.components.dryable:SetProduct(dryable.product)
+        inst.components.dryable:SetDryTime(dryable.time)
+    end
 
     MakeHauntableLaunchAndPerish(inst)
     inst:ListenForEvent("spawnedfromhaunt", function(inst, data)
@@ -131,7 +148,7 @@ local function common(bank, build, anim, tag)
 end
 
 local function humanmeat()
-    local inst = common("meat_human", "meat_human", "raw")
+    local inst = common("meat_human", "meat_human", "raw", nil, { product = "humanmeat_dried", time = TUNING.DRY_FAST })
 
     if not TheWorld.ismastersim then
         return inst
@@ -150,9 +167,7 @@ local function humanmeat()
 
     inst:AddComponent("cookable")
     inst.components.cookable.product = "humanmeat_cooked"
-    inst:AddComponent("dryable")
-    inst.components.dryable:SetProduct("humanmeat_dried")
-    inst.components.dryable:SetDryTime(TUNING.DRY_FAST)
+
     return inst
 end
 
@@ -192,7 +207,7 @@ local function humanmeat_dried()
 end
     
 local function monster()
-	local inst = common("monstermeat", "meat_monster", "idle")
+    local inst = common("monstermeat", "meat_monster", "idle", { "monstermeat" }, { product = "monstermeat_dried", time = TUNING.DRY_FAST })
 
     if not TheWorld.ismastersim then
         return inst
@@ -205,21 +220,19 @@ local function monster()
     inst.components.edible.sanityvalue = -TUNING.SANITY_MED
     inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)
 
-	inst.components.tradable.goldvalue = 0
+    inst.components.tradable.goldvalue = 0
 
     inst:AddComponent("selfstacker")
 
     inst:AddComponent("cookable")
     inst.components.cookable.product = "cookedmonstermeat"
-    inst:AddComponent("dryable")
-    inst.components.dryable:SetProduct("monstermeat_dried")
-    inst.components.dryable:SetDryTime(TUNING.DRY_FAST)
+
     return inst
 end
 
 
 local function cookedmonster()
-	local inst = common("monstermeat", "meat_monster", "cooked")
+    local inst = common("monstermeat", "meat_monster", "cooked", { "monstermeat" })
 
     if not TheWorld.ismastersim then
         return inst
@@ -237,8 +250,7 @@ local function cookedmonster()
 end
 
 local function driedmonster()
-	local inst = common("meat_rack_food", "meat_rack_food", "idle_dried_monster")
-
+    local inst = common("meat_rack_food", "meat_rack_food", "idle_dried_monster", { "monstermeat" })
     if not TheWorld.ismastersim then
         return inst
     end
@@ -253,7 +265,7 @@ local function driedmonster()
 end
 
 local function cooked()
-	local inst = common("meat", "meat", "cooked")
+    local inst = common("meat", "meat", "cooked")
 
     if not TheWorld.ismastersim then
         return inst
@@ -262,7 +274,7 @@ local function cooked()
     inst.components.edible.healthvalue = TUNING.HEALING_SMALL
     inst.components.edible.hungervalue = TUNING.CALORIES_MED
     inst.components.edible.sanityvalue = 0
-	inst.components.perishable:SetPerishTime(TUNING.PERISH_MED)
+    inst.components.perishable:SetPerishTime(TUNING.PERISH_MED)
 
     AddMonsterMeatChange(inst, "cookedmonstermeat")
 
@@ -270,7 +282,7 @@ local function cooked()
 end
 
 local function driedmeat()
-	local inst = common("meat_rack_food", "meat_rack_food", "idle_dried_large")
+    local inst = common("meat_rack_food", "meat_rack_food", "idle_dried_large")
 
     if not TheWorld.ismastersim then
         return inst
@@ -279,7 +291,7 @@ local function driedmeat()
     inst.components.edible.healthvalue = TUNING.HEALING_MED
     inst.components.edible.hungervalue = TUNING.CALORIES_MED
     inst.components.edible.sanityvalue = TUNING.SANITY_MED
-	inst.components.perishable:SetPerishTime(TUNING.PERISH_PRESERVED)
+    inst.components.perishable:SetPerishTime(TUNING.PERISH_PRESERVED)
 
     AddMonsterMeatChange(inst, "monstermeat_dried")
 
@@ -289,8 +301,8 @@ end
 
 
 local function raw()
-	local inst = common("meat", "meat", "raw")
-
+	local inst = common("meat", "meat", "raw", { "catfood" }, { product = "meat_dried", time = TUNING.DRY_MED })
+    
     if not TheWorld.ismastersim then
         return inst
     end
@@ -298,14 +310,11 @@ local function raw()
     inst.components.edible.healthvalue = TUNING.HEALING_TINY
     inst.components.edible.hungervalue = TUNING.CALORIES_MED
     inst.components.edible.sanityvalue = -TUNING.SANITY_SMALL
-
+    
     inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)
 
     inst:AddComponent("cookable")
     inst.components.cookable.product = "cookedmeat"
-    inst:AddComponent("dryable")
-    inst.components.dryable:SetProduct("meat_dried")
-    inst.components.dryable:SetDryTime(TUNING.DRY_MED)
 
     AddMonsterMeatChange(inst, "monstermeat")
 
@@ -313,7 +322,7 @@ local function raw()
 end
 
 local function smallmeat()
-	local inst = common("meat_small", "meat_small", "raw")
+	local inst = common("meat_small", "meat_small", "raw", { "catfood" }, { product = "smallmeat_dried", time = TUNING.DRY_FAST })
 
     if not TheWorld.ismastersim then
         return inst
@@ -322,15 +331,12 @@ local function smallmeat()
     inst.components.edible.healthvalue = 0
     inst.components.edible.hungervalue = TUNING.CALORIES_SMALL
     inst.components.edible.sanityvalue = -TUNING.SANITY_SMALL
-
+    
     inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)
 
     inst:AddComponent("cookable")
     inst.components.cookable.product = "cookedsmallmeat"
 	inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
-    inst:AddComponent("dryable")
-    inst.components.dryable:SetProduct("smallmeat_dried")
-    inst.components.dryable:SetDryTime(TUNING.DRY_FAST)
 
     return inst
 end
@@ -372,7 +378,7 @@ local function driedsmallmeat()
 end
 
 local function drumstick()
-	local inst = common("drumstick", "drumstick", "raw", "drumstick")
+	local inst = common("drumstick", "drumstick", "raw", { "drumstick", "catfood" }, { product = "smallmeat_dried", time = TUNING.DRY_FAST })
 
     if not TheWorld.ismastersim then
         return inst
@@ -386,14 +392,12 @@ local function drumstick()
 
     inst:AddComponent("cookable")
     inst.components.cookable.product = "drumstick_cooked"
-    inst:AddComponent("dryable")
-    inst.components.dryable:SetProduct("smallmeat_dried")
-    inst.components.dryable:SetDryTime(TUNING.DRY_FAST)
+
     return inst
 end
 
 local function drumstick_cooked()
-	local inst = common("drumstick", "drumstick", "cooked", "drumstick")
+	local inst = common("drumstick", "drumstick", "cooked", { "drumstick" })
 
     if not TheWorld.ismastersim then
         return inst
@@ -407,7 +411,7 @@ local function drumstick_cooked()
 end
 
 local function batwing()
-    local inst = common("batwing", "batwing", "raw", "batwing")
+    local inst = common("batwing", "batwing", "raw", { "batwing", "catfood" }, { product = "smallmeat_dried", time = TUNING.DRY_MED })
 
     if not TheWorld.ismastersim then
         return inst
@@ -416,12 +420,8 @@ local function batwing()
     inst.components.edible.healthvalue = TUNING.HEALING_SMALL
     inst.components.edible.hungervalue = TUNING.CALORIES_SMALL
     inst.components.edible.sanityvalue = -TUNING.SANITY_SMALL
-
+    
     inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)
-
-    inst:AddComponent("dryable")
-    inst.components.dryable:SetProduct("smallmeat_dried")
-    inst.components.dryable:SetDryTime(TUNING.DRY_MED)
 
     inst:AddComponent("cookable")
     inst.components.cookable.product = "batwing_cooked"
@@ -430,7 +430,7 @@ local function batwing()
 end
 
 local function batwing_cooked()
-    local inst = common("batwing", "batwing", "cooked", "batwing")
+    local inst = common("batwing", "batwing", "cooked", { "batwing" })
 
     if not TheWorld.ismastersim then
         return inst

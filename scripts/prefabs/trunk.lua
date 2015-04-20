@@ -1,6 +1,6 @@
 local assets =
 {
-	Asset("ANIM", "anim/koalephant_trunk.zip"),
+    Asset("ANIM", "anim/koalephant_trunk.zip"),
 }
 
 local prefabs =
@@ -22,11 +22,11 @@ local function create_common(anim)
     inst.AnimState:SetBuild("koalephant_trunk")
     inst.AnimState:PlayAnimation(anim)
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("stackable")
     inst.components.stackable.maxsize = TUNING.STACK_SIZE_MEDITEM
@@ -110,5 +110,5 @@ local function create_cooked()
 end
 
 return Prefab("common/inventory/trunk_summer", create_summer, assets, prefabs),
-        Prefab("common/inventory/trunk_winter", create_winter, assets, prefabs),
-        Prefab("common/inventory/trunk_cooked", create_cooked, assets)
+    Prefab("common/inventory/trunk_winter", create_winter, assets, prefabs),
+    Prefab("common/inventory/trunk_cooked", create_cooked, assets)

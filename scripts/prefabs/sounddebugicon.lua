@@ -12,7 +12,7 @@ local function fn()
 
     inst.Label:SetFontSize(20)
     inst.Label:SetFont(DEFAULTFONT)
-    inst.Label:SetPos(0, 0, 0)
+    inst.Label:SetWorldOffset(0, 0, 0)
     inst.Label:SetColour(.73, .05, .02)
     inst.Label:Enable(true)
 	

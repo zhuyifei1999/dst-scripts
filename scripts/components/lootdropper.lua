@@ -10,6 +10,8 @@ local LootDropper = Class(function(self, inst)
     self.loot = nil
     self.chanceloottable = nil
 
+    self.trappable = true
+
 	self.lootfn = nil
     
 end)
@@ -146,9 +148,6 @@ function LootDropper:GenerateLoot()
 	local recipe = AllRecipes[self.inst.prefab]
 
 	if recipe then
-
-		
-		
 		local percent = 1
 
 		if self.inst.components.finiteuses then
@@ -157,15 +156,43 @@ function LootDropper:GenerateLoot()
 
 		for k,v in ipairs(recipe.ingredients) do
 			local amt = math.ceil( (v.amount * TUNING.HAMMER_LOOT_PERCENT) * percent)
+			if self.inst:HasTag("burnt") then 
+				amt = math.ceil( (v.amount * TUNING.BURNT_HAMMER_LOOT_PERCENT) * percent)
+			end
 			for n = 1, amt do
 				table.insert(loots, v.type)
 			end
 		end
 	end
     
+	if self.inst:HasTag("burnt") and math.random() < .4 then
+		table.insert(loots, "charcoal") -- Add charcoal to loot for burnt structures
+	end
+
     return loots
 end
 
+local function UpdateMoisture(item)
+	if item.components.moisturelistener then 
+		item.components.moisturelistener.moisture = item.target_moisture
+		item.target_moisture = nil
+		item.components.moisturelistener:DoUpdate()
+	end
+end
+
+local function SplashOceanLoot(loot)
+	if not (loot.components.inventoryitem and loot.components.inventoryitem:IsHeld()) then
+		if not loot:IsOnValidGround() then
+			SpawnPrefab("splash_ocean").Transform:SetPosition(loot.Transform:GetWorldPosition())
+	        if loot:HasTag("irreplaceable") then
+	        	local x,y,z = FindSafeSpawnLocation(loot.Transform:GetWorldPosition())								
+	        	loot.Transform:SetPosition(x,y,z)
+	        else
+	        	loot:Remove()
+	        end
+	    end
+	end
+end
 
 function LootDropper:SpawnLootPrefab(lootprefab, pt)
     if lootprefab then
@@ -176,32 +203,22 @@ function LootDropper:SpawnLootPrefab(lootprefab, pt)
 			end
 	        
 			loot.Transform:SetPosition(pt.x,pt.y,pt.z)
+
+			loot.target_moisture = self.inst:GetCurrentMoisture()
+			loot:DoTaskInTime(2*FRAMES, UpdateMoisture)
 	        
 			if loot.Physics then
 	        
 				local angle = math.random()*2*PI
-				loot.Physics:SetVel(2*math.cos(angle), 10, 2*math.sin(angle))
+				local speed = math.random()*2
+				loot.Physics:SetVel(speed*math.cos(angle), GetRandomWithVariance(8, 4), speed*math.sin(angle))
 
 				if loot and loot.Physics and self.inst and self.inst.Physics then
 					pt = pt + Vector3(math.cos(angle), 0, math.sin(angle))*((loot.Physics:GetRadius() or 1) + (self.inst.Physics:GetRadius() or 1))
 					loot.Transform:SetPosition(pt.x,pt.y,pt.z)
 				end
 				
-				loot:DoTaskInTime(1, 
-					function() 
-						if not (loot.components.inventoryitem and loot.components.inventoryitem:IsHeld()) then
-							if not loot:IsOnValidGround() then
-								SpawnPrefab("splash_ocean").Transform:SetPosition(loot.Transform:GetWorldPosition())
-						        --PlayFX(loot:GetPosition(), "splash", "splash_ocean", "idle")
-								if loot:HasTag("irreplaceable") then
-									local x,y,z = FindSafeSpawnLocation(loot.Transform:GetWorldPosition())								
-									loot.Transform:SetPosition(x,y,z)
-								else
-									loot:Remove()
-								end
-							end
-						end
-					end)
+				loot:DoTaskInTime(1, SplashOceanLoot)
 			end
 	        
 			return loot

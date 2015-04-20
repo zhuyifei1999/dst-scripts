@@ -3,6 +3,16 @@ local assets =
     Asset("ANIM", "anim/staff_projectile.zip"),
 }
 
+local function OnHitIce(inst, owner, target)
+    if not target:HasTag("freezable") then
+        local fx = SpawnPrefab("shatter")
+        fx.Transform:SetPosition(target:GetPosition():Get())
+        fx.components.shatterfx:SetLevel(2)
+    end
+
+    inst:Remove()
+end
+
 local function common(anim, bloom)
     local inst = CreateEntity()
 
@@ -22,12 +32,12 @@ local function common(anim, bloom)
 
     inst:AddTag("projectile")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-    
     inst:AddComponent("projectile")
     inst.components.projectile:SetSpeed(50)
     inst.components.projectile:SetOnHitFn(inst.Remove)
@@ -37,7 +47,14 @@ local function common(anim, bloom)
 end
 
 local function ice()
-    return common("ice_spin_loop")
+    local inst = common("ice_spin_loop")
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.components.projectile:SetOnHitFn(OnHitIce)
+    return inst
 end
 
 local function fire()
@@ -45,4 +62,4 @@ local function fire()
 end
 
 return Prefab("common/inventory/ice_projectile", ice, assets), 
-       Prefab("common/inventory/fire_projectile", fire, assets)
+    Prefab("common/inventory/fire_projectile", fire, assets)

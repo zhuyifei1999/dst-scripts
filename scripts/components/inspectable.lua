@@ -29,14 +29,18 @@ function Inspectable:GetStatus(viewer)
             status = "SLEEPING"
         elseif self.inst.components.burnable and self.inst.components.burnable:IsBurning() then
             status = "BURNING"
+        elseif self.inst.components.pickable and self.inst:HasTag("withered") then 
+        	status = "WITHERED"
 		elseif self.inst.components.pickable and self.inst.components.pickable:IsBarren() then
-			return "BARREN"
+			status = "BARREN"
         elseif self.inst.components.pickable and not self.inst.components.pickable:CanBePicked() then
             status = "PICKED"
         elseif self.inst.components.inventoryitem and self.inst.components.inventoryitem:IsHeld() then
             status = "HELD"
         elseif self.inst.components.occupiable and self.inst.components.occupiable:IsOccupied() then
             status = "OCCUPIED"
+        elseif self.inst:HasTag("burnt") then
+            status = "BURNT"
         end
     end
     if self.recordview then
@@ -53,6 +57,10 @@ function Inspectable:GetDescription(viewer)
 
     local desc = self.description
 
+    if desc == nil and self.descriptionfn then
+        desc = self.descriptionfn(self.inst, viewer)
+    end
+
     -- for cases where we need to do additional processing before calling GetDescription (i.e. player skeleton)
     if self.getspecialdescription ~= nil then
         desc = self.getspecialdescription(self.inst, viewer)
@@ -67,6 +75,11 @@ function Inspectable:GetDescription(viewer)
         return GetDescription(viewer, self.inst, self:GetStatus(viewer))
     end
 
+        
+    if self.inst:HasTag("smolder") then
+        desc = GetString(viewer.prefab, "DESCRIBE_SMOLDERING")
+    end
+        
     return desc
 end
 

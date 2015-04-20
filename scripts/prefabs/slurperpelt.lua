@@ -1,13 +1,13 @@
 local assets =
 {
-	Asset("ANIM", "anim/slurper_pelt.zip"),
+    Asset("ANIM", "anim/slurper_pelt.zip"),
 }
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddNetwork()
 
     MakeInventoryPhysics(inst)
@@ -16,22 +16,22 @@ local function fn()
     inst.AnimState:SetBuild("slurper_pelt")
     inst.AnimState:PlayAnimation("idle")
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-
     inst:AddComponent("stackable")
-	inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
+    inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
 
     inst:AddComponent("inspectable")
 
-	MakeSmallBurnable(inst)
+    MakeSmallBurnable(inst)
     MakeSmallPropagator(inst)
 
-	inst:AddComponent("tradable")    
-	inst.components.tradable.goldvalue = TUNING.GOLD_VALUES.MEAT
+    inst:AddComponent("tradable")
+    inst.components.tradable.goldvalue = TUNING.GOLD_VALUES.MEAT
 
     inst:AddComponent("inventoryitem")
 

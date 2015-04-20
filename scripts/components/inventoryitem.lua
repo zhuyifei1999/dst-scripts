@@ -18,6 +18,14 @@ local function oncangoincontainer(self, cangoincontainer)
     self.inst.replica.inventoryitem:SetCanGoInContainer(cangoincontainer)
 end
 
+local function oncandrop( self, candrop )
+    self.inst.replica.inventoryitem:SetCanBeDropped(candrop)
+end
+
+local function ontrappable( self, trappable )
+    self.inst.replica.inventoryitem:SetTrappable(trappable)
+end
+
 local InventoryItem = Class(function(self, inst)
     self.inst = inst
 
@@ -37,6 +45,14 @@ local InventoryItem = Class(function(self, inst)
     self.atlasname = nil
     self.imagename = nil
     self.onactiveitemfn = nil
+    self.candrop = true
+    self.trappable = true
+
+    if self.canbepickedup and not self.inst.components.waterproofer then
+        if not self.inst.components.moisturelistener then 
+            self.inst:AddComponent("moisturelistener")
+        end
+    end
 end,
 nil,
 {
@@ -45,6 +61,8 @@ nil,
     owner = onowner,
     canbepickedup = oncanbepickedup,
     cangoincontainer = oncangoincontainer,
+    candrop = oncandrop,
+    trappable = ontrappable,
 })
 
 function InventoryItem:SetOwner(owner)
@@ -188,6 +206,14 @@ function InventoryItem:OnPickup(pickupguy)
         self.isnew = false
     end
 
+    if self.inst.components.burnable and self.inst.components.burnable:IsSmoldering() then
+        self.inst.components.burnable:StopSmoldering()
+        if pickupguy.components.health then
+            pickupguy.components.health:DoFireDamage(TUNING.SMOTHER_DAMAGE, nil, true)
+            pickupguy:PushEvent("burnt")
+        end
+    end
+
     self.inst.Transform:SetPosition(0,0,0)
     self.inst:PushEvent("onpickup", {owner = pickupguy})
     if self.onpickupfn and type(self.onpickupfn) == "function" then
@@ -220,6 +246,7 @@ end
 
 function InventoryItem:OnRemoveEntity()
     self:RemoveFromOwner(true)
+    TheWorld:PushEvent("forgetinventoryitem", self.inst)
 end
 
 function InventoryItem:GetGrandOwner()
@@ -231,5 +258,11 @@ function InventoryItem:GetGrandOwner()
 		end
 	end
 end
+
+function InventoryItem:IsSheltered()
+    return self:IsHeld() and 
+    ((self.owner.components.container) or (self.owner.components.inventory and self.owner.components.inventory:IsWaterproof()))
+end
+
 
 return InventoryItem

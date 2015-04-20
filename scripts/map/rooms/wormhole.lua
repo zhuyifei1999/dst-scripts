@@ -89,3 +89,21 @@ AddRoom("Sinkhole", { -- This room is used to tag for the caves - it will be rem
 					                }
 					            }
 					})
+AddRoom("GrassySinkhole", {					
+					colour={r=0,g=0,b=0,a=0.9},
+					value = GROUND.GRASS,
+					contents =  {
+									countprefabs = {
+										cave_entrance = 1,
+									},
+									distributepercent=0.3,
+					                distributeprefabs= {
+					                    grass = 1,
+										sapling = 1,
+										rocks = 3,
+										deciduoustree_normal = 1,
+										deciduoustree_short = 5,
+										deciduoustree_tall = 1,
+					                }
+					            }
+					})

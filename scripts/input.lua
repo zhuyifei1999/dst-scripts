@@ -329,6 +329,15 @@ function Input:GetLocalizedControl(deviceId, controlId, use_default_mapping, use
     return text
 end
 
+function Input:GetControlIsMouseWheel(controlId)
+    if self:ControllerAttached() then
+        return false
+    end
+    local localized = self:GetLocalizedControl(0, controlId)
+    local stringtable = STRINGS.UI.CONTROLSSCREEN.INPUTS[1]
+    return localized == stringtable[1003] or localized == stringtable[1004]
+end
+
 function Input:GetStringIsButtonImage(str)
     if table.contains(STRINGS.UI.CONTROLSSCREEN.INPUTS[2], str) or
         table.contains(STRINGS.UI.CONTROLSSCREEN.INPUTS[4], str) or

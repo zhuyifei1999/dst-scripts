@@ -40,6 +40,14 @@ local function TryGuaranteeCoverage(item, usePrefix)
 	if STRINGS.WET_PREFIX[string.upper(item)] then USE_PREFIX[STRINGS.WET_PREFIX[string.upper(item)]] = usePrefix end
 end
 
+-- Check if the item uses a prefix or a suffix
+local function UsesPrefix(item)
+    if type(item) ~= "string" then return end
+    if item then
+        return USE_PREFIX[item]
+    end
+end
+
 -- Use this to make all adjectives into suffixes
 function MakeAllSuffixes(fn)
     for i,v in pairs(USE_PREFIX) do
@@ -72,14 +80,6 @@ function SetUsesPrefix(item, usePrefix)
     if item and usePrefix ~= nil then
         USE_PREFIX[item] = usePrefix
         TryGuaranteeCoverage(item, usePrefix)
-    end
-end
-
--- Check if the item uses a prefix or a suffix
-function UsesPrefix(item)
-    if type(item) ~= "string" then return end
-    if item then
-        return USE_PREFIX[item]
     end
 end
 

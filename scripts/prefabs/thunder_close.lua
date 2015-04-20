@@ -45,11 +45,12 @@ local function fn()
         inst:ListenForEvent("randdirty", OnRandDirty)
     end
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
     inst.entity:SetCanSleep(false)
     inst.persists = false
 

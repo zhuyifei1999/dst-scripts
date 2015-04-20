@@ -1,4 +1,3 @@
-
 local function fn()
     local inst = CreateEntity()
 
@@ -9,4 +8,4 @@ local function fn()
     return inst
 end
    
-return Prefab("forest/objects/cave_stairs", fn, assets)
+return Prefab("forest/objects/cave_stairs", fn)

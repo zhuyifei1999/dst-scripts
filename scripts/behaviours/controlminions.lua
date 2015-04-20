@@ -78,7 +78,7 @@ function ControlMinions:Visit()
 					local mn = self:GetClosestMinion(v, self.ms.minions)
 					if mn and not mn.sg:HasStateTag("busy") then
 						if (v.components.crop and v.components.crop:IsReadyForHarvest()) or
-						   (v.components.stewer and v.components.stewer.done) or
+						   (v.components.stewer and v.components.stewer:IsDone()) or
             			   (v.components.dryer and v.components.dryer:IsDone()) then
             			   --Harvest!
             			   local ba = BufferedAction(mn,v,ACTIONS.HARVEST)

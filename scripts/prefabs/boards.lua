@@ -15,12 +15,14 @@ local function fn()
     inst.AnimState:SetBank("boards")
     inst.AnimState:SetBuild("boards")
     inst.AnimState:PlayAnimation("idle")
+
+	MakeDragonflyBait(inst, 3)
     
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.entity:SetPristine()
 
     inst:AddComponent("stackable")
     inst.components.stackable.maxsize = TUNING.STACK_SIZE_LARGEITEM

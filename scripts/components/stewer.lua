@@ -22,13 +22,14 @@ end
 
 local Stewer = Class(function(self, inst)
     self.inst = inst
-    self.cooking = false
-    self.done = false
-    
+
+    self.done = nil
+    self.targettime = nil
+    self.task = nil
     self.product = nil
     self.product_spoilage = nil
-    self.recipes = nil
-    self.default_recipe = nil
+    self.spoiledproduct = "spoiled_food"
+    self.spoiltime = nil
 
     --"readytocook" means it's CLOSED and FULL
     --This tag is used for gathering scene actions only
@@ -40,6 +41,8 @@ local Stewer = Class(function(self, inst)
 
     inst:ListenForEvent("itemlose", onnotready)
     inst:ListenForEvent("onopen", onnotready)
+
+    self.inst:AddTag("stewer")
 end,
 nil,
 {
@@ -51,177 +54,265 @@ function Stewer:OnRemoveFromEntity()
     self.inst:RemoveTag("readytocook")
 end
 
-local function dostew(inst)
-	inst.components.stewer.task = nil
-	
-	if inst.components.stewer.ondonecooking then
-		inst.components.stewer.ondonecooking(inst)
-	end
-	
-	inst.components.stewer.done = true
-	inst.components.stewer.cooking = nil
-end
+local function dospoil(inst, self)
+    self.task = nil
+    self.targettime = nil
+    self.spoiltime = nil
 
-function Stewer:GetTimeToCook()
-	if self.cooking then
-		return self.targettime - GetTime()
-	end
-	return 0
-end
-
-function Stewer:CanCook()
-	return self.inst.components.container ~= nil and self.inst.components.container:IsFull()
-end
-
-function Stewer:StartCooking()
-	if not self.done and not self.cooking then
-		if self.inst.components.container then
-		
-			self.done = nil
-			self.cooking = true
-			
-			if self.onstartcooking then
-				self.onstartcooking(self.inst)
-			end
-		
-			
-
-			local spoilage_total = 0
-			local spoilage_n = 0
-			local ings = {}			
-			for k,v in pairs (self.inst.components.container.slots) do
-				table.insert(ings, v.prefab)
-				if v.components.perishable then
-					spoilage_n = spoilage_n + 1
-					spoilage_total = spoilage_total + v.components.perishable:GetPercent()
-				end
-			end
-			self.product_spoilage = 1
-			if spoilage_total > 0 then
-				self.product_spoilage = spoilage_total / spoilage_n
-				self.product_spoilage = 1 - (1 - self.product_spoilage)*.5
-			end
-			
-			local cooktime = 1
-			self.product, cooktime = cooking.CalculateRecipe(self.inst.prefab, ings)
-			
-			local grow_time = TUNING.BASE_COOK_TIME * cooktime
-			self.targettime = GetTime() + grow_time
-			self.task = self.inst:DoTaskInTime(grow_time, dostew, "stew")
-
-			self.inst.components.container:Close()
-			self.inst.components.container:DestroyContents()
-			self.inst.components.container.canbeopened = false
-		end
-		
-	end
-end
-
-function Stewer:OnSave()
-    
-    if self.cooking then
-		local data = {}
-		data.cooking = true
-		data.product = self.product
-		data.product_spoilage = self.product_spoilage
-		local time = GetTime()
-		if self.targettime and self.targettime > time then
-			data.time = self.targettime - time
-		end
-		return data
-    elseif self.done then
-		local data = {}
-		data.product = self.product
-		data.product_spoilage = self.product_spoilage
-		data.done = true
-		return data		
+    if self.onspoil ~= nil then
+        self.onspoil(inst)
     end
 end
 
+local function dostew(inst, self)
+    self.task = nil
+    self.targettime = nil
+    self.spoiltime = nil
+    
+    if self.ondonecooking ~= nil then
+        self.ondonecooking(inst)
+    end
+
+    if self.product == self.spoiledproduct then
+        if self.onspoil ~= nil then
+            self.onspoil(inst)
+        end
+    elseif self.product ~= nil then
+        local prep_perishtime = (cooking.recipes and cooking.recipes[inst.prefab]
+                and cooking.recipes[inst.prefab][self.product]
+                and cooking.recipes[inst.prefab][self.product].perishtime)
+                or TUNING.PERISH_SUPERFAST
+        local prod_spoil = self.product_spoilage or 1
+        self.spoiltime = prep_perishtime * prod_spoil
+        self.targettime =  GetTime() + self.spoiltime
+        self.task = self.inst:DoTaskInTime(self.spoiltime, dospoil, self)
+    end
+
+    self.done = true
+end
+
+function Stewer:IsDone()
+    return self.done
+end
+
+function Stewer:IsSpoiling()
+    return self.done and self.targettime ~= nil
+end
+
+function Stewer:IsCooking()
+    return not self.done and self.targettime ~= nil
+end
+
+function Stewer:GetTimeToCook()
+    return not self.done and self.targettime ~= nil and self.targettime - GetTime() or 0
+end
+
+function Stewer:GetTimeToSpoil()
+    return self.done and self.targettime ~= nil and self.targettime - GetTime() or 0
+end
+
+function Stewer:CanCook()
+    return self.inst.components.container ~= nil and self.inst.components.container:IsFull()
+end
+
+function Stewer:StartCooking()
+    if self.targettime == nil and self.inst.components.container ~= nil then
+        self.done = nil
+        self.spoiltime = nil
+
+        if self.onstartcooking ~= nil then
+            self.onstartcooking(self.inst)
+        end
+
+        local spoilage_total = 0
+        local spoilage_n = 0
+        local ings = {}         
+        for k, v in pairs (self.inst.components.container.slots) do
+            table.insert(ings, v.prefab)
+            if v.components.perishable ~= nil then
+                spoilage_n = spoilage_n + 1
+                spoilage_total = spoilage_total + v.components.perishable:GetPercent()
+            end
+        end
+        self.product_spoilage = 1
+        if spoilage_total > 0 then
+            self.product_spoilage = spoilage_total / spoilage_n
+            self.product_spoilage = 1 - (1 - self.product_spoilage) * .5
+        end
+        
+        local cooktime = 1
+        self.product, cooktime = cooking.CalculateRecipe(self.inst.prefab, ings)
+        
+        cooktime = TUNING.BASE_COOK_TIME * cooktime
+        self.targettime = GetTime() + cooktime
+        if self.task ~= nil then
+            self.task:Cancel()
+        end
+        self.task = self.inst:DoTaskInTime(cooktime, dostew, self)
+
+        self.inst.components.container:Close()
+        self.inst.components.container:DestroyContents()
+        self.inst.components.container.canbeopened = false
+    end
+end
+
+local function StopProductPhysics(prod)
+    prod.Physics:Stop()
+end
+
+function Stewer:StopCooking(reason)
+    if self.task ~= nil then
+        self.task:Cancel()
+        self.task = nil
+    end
+    if self.product ~= nil and reason == "fire" then
+        local prod = SpawnPrefab(self.product)
+        if prod ~= nil then
+            prod.Transform:SetPosition(self.inst.Transform:GetWorldPosition())
+            prod:DoTaskInTime(0, StopProductPhysics)
+        end
+    end
+    self.product = nil
+    self.product_spoilage = nil
+    self.spoiltime = nil
+    self.targettime = nil
+    self.done = nil
+end
+
+function Stewer:OnSave()
+    local remainingtime = self.targettime ~= nil and self.targettime - GetTime() or 0
+    return
+    {
+        done = self.done,
+        product = self.product,
+        product_spoilage = self.product_spoilage,
+        spoiltime = self.spoiltime,
+        remainingtime = remainingtime > 0 and remainingtime or nil,
+    }
+end
+
 function Stewer:OnLoad(data)
-    --self.produce = data.produce
-    if data.cooking then
-		self.product = data.product
-		if self.oncontinuecooking then
-			local time = data.time or 1
-			self.product_spoilage = data.product_spoilage or 1
-			self.oncontinuecooking(self.inst)
-			self.cooking = true
-			self.targettime = GetTime() + time
-			self.task = self.inst:DoTaskInTime(time, dostew, "stew")
-			
-			if self.inst.components.container then		
-				self.inst.components.container.canbeopened = false
-			end
-			
-		end
-    elseif data.done then
-		self.product_spoilage = data.product_spoilage or 1
-		self.done = true
-		self.product = data.product
-		if self.oncontinuedone then
-			self.oncontinuedone(self.inst)
-		end
-		if self.inst.components.container then		
-			self.inst.components.container.canbeopened = false
-		end
-		
+    if data.product ~= nil then
+        self.done = data.done or nil
+        self.product = data.product
+        self.product_spoilage = data.product_spoilage
+        self.spoiltime = data.spoiltime
+
+        if self.task ~= nil then
+            self.task:Cancel()
+            self.task = nil
+        end
+        self.targettime = nil
+
+        if data.remainingtime ~= nil then
+            self.targettime = GetTime() + math.max(0, data.remainingtime)
+            if self.done then
+                self.task = self.inst:DoTaskInTime(data.remainingtime, dospoil, self)
+                if self.oncontinuedone ~= nil then
+                    self.oncontinuedone(self.inst)
+                end
+            else
+                self.task = self.inst:DoTaskInTime(data.remainingtime, dostew, self)
+                if self.oncontinuecooking ~= nil then
+                    self.oncontinuecooking(self.inst)
+                end
+            end
+        elseif self.product ~= self.spoiledproduct then
+            self.targettime = GetTime()
+            self.task = self.inst:DoTaskInTime(0, dostew, self)
+            if self.oncontinuecooking ~= nil then
+                self.oncontinuecooking(self.inst)
+            end
+        elseif self.oncontinuedone ~= nil then
+            self.oncontinuedone(self.inst)
+        end
+
+        if self.inst.components.container ~= nil then
+            self.inst.components.container.canbeopened = false
+        end
     end
 end
 
 function Stewer:GetDebugString()
-    local str = nil
-    
-	if self.cooking then 
-		str = "COOKING" 
-	elseif self.done then
-		str = "FULL"
-	else
-		str = "EMPTY"
-	end
-    if self.targettime then
-        str = str.." ("..tostring(self.targettime - GetTime())..")"
-    end
-    
-    if self.product then
-		str = str.. " ".. self.product
-    end
-    
-    if self.product_spoilage then
-		str = str.."("..self.product_spoilage..")"
-    end
-    
-	return str
+    local status = (self:IsCooking() and "COOKING")
+                or (self:IsDone() and "FULL")
+                or "EMPTY"
+
+    return string.format("%s %s timetocook: %.2f timetospoil: %.2f productspoilage: %.2f",
+            self.product or "<none>",
+            status,
+            self:GetTimeToCook(),
+            self:GetTimeToSpoil(),
+            self.product_spoilage or -1)
 end
 
-function Stewer:Harvest( harvester )
-	if self.done then
-		if self.onharvest then
-			self.onharvest(self.inst)
-		end
-		self.done = nil
-		if self.product then
-			if harvester and harvester.components.inventory then
-				local loot = SpawnPrefab(self.product)
-				
-				
-				if loot then
-				
-					if loot and loot.components.perishable then
-					loot.components.perishable:SetPercent( self.product_spoilage)
-					end
-					harvester.components.inventory:GiveItem(loot, nil, self.inst:GetPosition())
-				end
-			end
-			self.product = nil
-		end
-		
-		if self.inst.components.container then		
-			self.inst.components.container.canbeopened = true
-		end
-		
-		return true
-	end
+function Stewer:Harvest(harvester)
+    if self.done then
+        if self.onharvest ~= nil then
+            self.onharvest(self.inst)
+        end
+
+        if self.product ~= nil then
+            if harvester ~= nil and harvester.components.inventory ~= nil then
+                local loot = SpawnPrefab(self.product)
+                if loot ~= nil then
+                    if self.spoiltime ~= nil and loot.components.perishable ~= nil then
+                        local spoilpercent = 1 - self:GetTimeToSpoil() / self.spoiltime
+                        loot.components.perishable:SetPercent(self.product_spoilage * spoilpercent)
+                        loot.components.perishable:StartPerishing()
+                    end
+                    if loot.components.moisturelistener ~= nil then 
+                        loot.components.moisturelistener.moisture = 0
+                        loot.components.moisturelistener:UpdateMoisture(0)
+                    end
+                    harvester.components.inventory:GiveItem(loot, nil, self.inst:GetPosition())
+                end
+            end
+            self.product = nil
+        end
+
+        if self.task ~= nil then
+            self.task:Cancel()
+            self.task = nil
+        end
+        self.targettime = nil
+        self.done = nil
+        self.spoiltime = nil
+        self.product_spoilage = nil
+
+        if self.inst.components.container ~= nil then      
+            self.inst.components.container.canbeopened = true
+        end
+
+        return true
+    end
+end
+
+function Stewer:LongUpdate(dt)
+    if self:IsCooking() then
+        if self.task ~= nil then
+            self.task:Cancel()
+        end
+        if self.targettime - dt > GetTime() then
+            self.targettime = self.targettime - dt
+            self.task = self.inst:DoTaskInTime(self.targettime - GetTime(), dostew, self)
+        else
+            dostew(self.inst, self)
+            dt = dt - (self.targettime - GetTime())
+        end
+    end
+
+    if dt > 0 and self:IsSpoiling() then
+        if self.task ~= nil then
+            self.task:Cancel()
+        end
+        if self.targettime - dt > GetTime() then
+            self.targettime = self.targettime - dt
+            self.task = self.inst:DoTaskInTime(self.targettime - GetTime(), dospoil, self)
+        else
+            dospoil(self.inst, self)
+        end
+    end
 end
 
 return Stewer

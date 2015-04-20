@@ -10,6 +10,7 @@ local prefabs =
 	"bee",
     "honey",
     "honeycomb",
+    "collapse_small",
 }
 
 local levels =
@@ -28,17 +29,23 @@ local function OnIsDay(inst, isday)
         if inst.components.childspawner then
             inst.components.childspawner:StopSpawning()
         end
-    elseif TheWorld.state.issummer then
-        if inst.components.harvestable and inst.components.harvestable.growtime then
-            inst.components.harvestable:StartGrowing()
-        end
-        if inst.components.childspawner then
-            inst.components.childspawner:StartSpawning()
-        end
+    elseif not TheWorld.state.iswinter then
+    	if not inst:HasTag("burnt") then 
+	        if inst.components.harvestable and inst.components.harvestable.growtime then
+	            inst.components.harvestable:StartGrowing()
+	        end
+	        if inst.components.childspawner then
+	            inst.components.childspawner:StartSpawning()
+	        end
+	    end
     end
 end
 
 local function onhammered(inst, worker)
+	if inst:HasTag("fire") and inst.components.burnable then
+		inst.components.burnable:Extinguish()
+	end
+	inst.SoundEmitter:KillSound("loop")
 	inst.components.lootdropper:DropLoot()
 	SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
 	inst.SoundEmitter:PlaySound("dontstarve/common/destroy_wood")
@@ -46,62 +53,86 @@ local function onhammered(inst, worker)
 end
 
 local function onhit(inst, worker)
-	inst.AnimState:PlayAnimation(inst.anims.hit)
-	inst.AnimState:PushAnimation(inst.anims.idle, false)
+	if not inst:HasTag("burnt") then 
+		inst.AnimState:PlayAnimation(inst.anims.hit)
+		inst.AnimState:PushAnimation(inst.anims.idle, false)
+	end
 end
 
 local function setlevel(inst, level)
-    if not inst.anims then
-        inst.anims = {idle = level.idle, hit = level.hit}
-    else
-        inst.anims.idle = level.idle
-        inst.anims.hit = level.hit
-    end
-    inst.AnimState:PlayAnimation(inst.anims.idle)
+	if not inst:HasTag("burnt") then 
+	    if not inst.anims then
+	        inst.anims = {idle = level.idle, hit = level.hit}
+	    else
+	        inst.anims.idle = level.idle
+	        inst.anims.hit = level.hit
+	    end
+	    inst.AnimState:PlayAnimation(inst.anims.idle)
+	end
 end
 
 local function updatelevel(inst)
-    for k,v in pairs(levels) do
-        if inst.components.harvestable.produce >= v.amount then
-            setlevel(inst, v)
-            break
-        end
-    end
+	if not inst:HasTag("burnt") then 
+	    for k,v in pairs(levels) do
+	        if inst.components.harvestable.produce >= v.amount then
+	            setlevel(inst, v)
+	            break
+	        end
+	    end
+	end
 end
 
 local function onharvest(inst, picker)
 	--print(inst, "onharvest")
-    updatelevel(inst)
-	if inst.components.childspawner and not TheWorld.state.iswinter then
-	    inst.components.childspawner:ReleaseAllChildren(picker)
+	if not inst:HasTag("burnt") then 
+	    updatelevel(inst)
+		if inst.components.childspawner and not TheWorld.state.iswinter then
+		    inst.components.childspawner:ReleaseAllChildren(picker)
+		end
 	end
 end
 
 local function onchildgoinghome(inst, data)
-    if data.child and data.child.components.pollinator and data.child.components.pollinator:HasCollectedEnough() then
-        if inst.components.harvestable then
-            inst.components.harvestable:Grow()
-        end
+	if not inst:HasTag("burnt") then 
+	    if data.child and data.child.components.pollinator and data.child.components.pollinator:HasCollectedEnough() then
+	        if inst.components.harvestable then
+	            inst.components.harvestable:Grow()
+	        end
+	    end
+	end
+end
+
+local function OnSave(inst, data)
+	if inst:HasTag("burnt") or inst:HasTag("fire") then
+        data.burnt = true
     end
 end
 
 local function onsleep(inst)
-    if inst.components.harvestable then
-        inst.components.harvestable:SetGrowTime(TUNING.BEEBOX_HONEY_TIME)
-        inst.components.harvestable:StartGrowing()
-    end
+	if not inst:HasTag("burnt") then 
+	    if inst.components.harvestable then
+	        inst.components.harvestable:SetGrowTime(TUNING.BEEBOX_HONEY_TIME)
+	        inst.components.harvestable:StartGrowing()
+	    end
+	end
 end
 
 local function stopsleep(inst)
-    if inst.components.harvestable then
-        inst.components.harvestable:SetGrowTime(nil)
-        inst.components.harvestable:StopGrowing()
-    end
+	if not inst:HasTag("burnt") then 
+	    if inst.components.harvestable then
+	        inst.components.harvestable:SetGrowTime(nil)
+	        inst.components.harvestable:StopGrowing()
+	    end
+	end
 end
 
 local function OnLoad(inst, data)
 	--print(inst, "OnLoad")
-	updatelevel(inst)
+	if data and data.burnt then
+        inst.components.burnable.onburnt(inst)
+    else
+		updatelevel(inst)
+	end
 end
 
 local function onbuilt(inst)
@@ -109,6 +140,12 @@ local function onbuilt(inst)
 	inst.AnimState:PushAnimation("idle", false)
 end
 
+local function onignite(inst)
+    if inst.components.childspawner then
+        inst.components.childspawner:ReleaseAllChildren()
+        inst.components.childspawner:StopSpawning()
+    end
+end
 
 local function OnEntityWake(inst)
     inst.SoundEmitter:PlaySound("dontstarve/bee/bee_box_LP", "loop")
@@ -119,8 +156,22 @@ local function OnEntitySleep(inst)
 end
 
 local function GetStatus(inst)
-    if inst.components.harvestable:CanBeHarvested() then
+    if inst.components.harvestable and inst.components.harvestable:CanBeHarvested() then
         return "READY"
+    end
+end
+
+local function SeasonalSpawnChanges(inst, season)
+    if inst.components.childspawner then
+        if season == SEASONS.SPRING then
+            inst.components.childspawner:SetRegenPeriod(TUNING.BEEBOX_REGEN_TIME / TUNING.SPRING_COMBAT_MOD)
+            inst.components.childspawner:SetSpawnPeriod(TUNING.BEEBOX_RELEASE_TIME / TUNING.SPRING_COMBAT_MOD)
+            inst.components.childspawner:SetMaxChildren(TUNING.BEEBOX_BEES * TUNING.SPRING_COMBAT_MOD)
+        else
+            inst.components.childspawner:SetRegenPeriod(TUNING.BEEBOX_REGEN_TIME)
+            inst.components.childspawner:SetSpawnPeriod(TUNING.BEEBOX_RELEASE_TIME)
+            inst.components.childspawner:SetMaxChildren(TUNING.BEEBOX_BEES)
+        end
     end
 end
 
@@ -143,15 +194,16 @@ local function fn()
 
     inst:AddTag("structure")
     inst:AddTag("playerowned")
+    inst:AddTag("beebox")
 
     MakeSnowCoveredPristine(inst)
+
+    inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.entity:SetPristine()
-    
     ---------------------  
 
     inst:AddComponent("harvestable")
@@ -161,11 +213,10 @@ local function fn()
     
 	inst:AddComponent("childspawner")
 	inst.components.childspawner.childname = "bee"
-	inst.components.childspawner:SetRegenPeriod(TUNING.BEEBOX_REGEN_TIME)
-	inst.components.childspawner:SetSpawnPeriod(TUNING.BEEBOX_RELEASE_TIME)
-	inst.components.childspawner:SetMaxChildren(TUNING.BEEBOX_BEES)
+    SeasonalSpawnChanges(inst, TheWorld.state.season)
+    inst:WatchWorldState("season", SeasonalSpawnChanges)
     
-	if TheWorld.state.isday and TheWorld.state.issummer then
+	if TheWorld.state.isday and not TheWorld.state.iswinter then
 		inst.components.childspawner:StartSpawning()
 	end
 
@@ -190,6 +241,10 @@ local function fn()
     
 	MakeSnowCovered(inst)
 	inst:ListenForEvent("onbuilt", onbuilt)
+
+	MakeMediumBurnable(inst, nil, nil, true)
+	MakeLargePropagator(inst)
+	inst:ListenForEvent("onignite", onignite)
 
 	inst.OnLoad = OnLoad
 	inst.OnEntitySleep = OnEntitySleep

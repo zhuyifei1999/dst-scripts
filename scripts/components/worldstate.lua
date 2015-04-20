@@ -64,22 +64,29 @@ local function OnPhaseChanged(src, phase)
     SetVariable("isday", phase == "day", "day")
     SetVariable("isdusk", phase == "dusk", "dusk")
     SetVariable("isnight", phase == "night", "night")
+    SetVariable("isfullmoon", phase == "night" and self.data.moonphase == "full")
 end
 
 local function OnMoonPhaseChanged(src, moonphase)
-    SetVariable("isfullmoon", moonphase == "full")
+    SetVariable("moonphase", moonphase)
+    SetVariable("isfullmoon", self.data.isnight and moonphase == "full")
 end
 
 local function OnSeasonTick(src, data)
     SetVariable("season", data.season)
-    SetVariable("issummer", data.season == "summer", "summer")
+    SetVariable("isautumn", data.season == "autumn", "autumn")
     SetVariable("iswinter", data.season == "winter", "winter")
+    SetVariable("isspring", data.season == "spring", "spring")
+    SetVariable("issummer", data.season == "summer", "summer")
     SetVariable("elapseddaysinseason", data.elapseddaysinseason)
     SetVariable("remainingdaysinseason", data.remainingdaysinseason)
+    SetVariable("seasonprogress", data.progress)
 end
 
 local function OnSeasonLengthsChanged(src, data)
+	SetVariable("springlength", data.spring)
     SetVariable("summerlength", data.summer)
+    SetVariable("autumnlength", data.autumn)
     SetVariable("winterlength", data.winter)
 end
 
@@ -89,6 +96,7 @@ local function OnWeatherTick(src, data)
     SetVariable("pop", data.pop)
     SetVariable("precipitationrate", data.precipitationrate)
     SetVariable("snowlevel", data.snowlevel)
+    SetVariable("wetness", data.wetness)
 end
 
 local function OnMoistureCeilChanged(src, moistureceil)
@@ -110,6 +118,10 @@ local function OnSnowCoveredChanged(src, show)
     SetVariable("issnowcovered", show)
 end
 
+local function OnWetChanged(src, wet)
+    SetVariable("iswet", wet)
+end
+
 --------------------------------------------------------------------------
 --[[ Initialization ]]
 --------------------------------------------------------------------------
@@ -117,7 +129,7 @@ end
     World state variables are initialized to default values that can be
     used by entities if there are no world components controlling those
     variables.  e.g. If there is no season component on the world, then
-    everything will run in summer state.
+    everything will run in autumn state.
 --]]
 
 --Clock
@@ -128,6 +140,7 @@ self.data.phase = "day"
 self.data.isday = true
 self.data.isdusk = false
 self.data.isnight = false
+self.data.moonphase = "new"
 self.data.isfullmoon = false
 
 inst:ListenForEvent("clocktick", OnClockTick)
@@ -136,19 +149,23 @@ inst:ListenForEvent("phasechanged", OnPhaseChanged)
 inst:ListenForEvent("moonphasechanged", OnMoonPhaseChanged)
 
 --Season
-self.data.season = "summer"
-self.data.issummer = true
+self.data.season = "autumn"
+self.data.isspring = false
+self.data.issummer = false
+self.data.isautumn = true
 self.data.iswinter = false
 self.data.elapseddaysinseason = 0
-self.data.remainingdaysinseason = math.ceil(TUNING.SUMMER_LENGTH * .5)
-self.data.summerlength = TUNING.SUMMER_LENGTH
+self.data.remainingdaysinseason = math.ceil(TUNING.AUTUMN_LENGTH * .5)
+self.data.autumnlength = TUNING.AUTUMN_LENGTH
 self.data.winterlength = TUNING.WINTER_LENGTH
+self.data.springlength = TUNING.SPRING_LENGTH
+self.data.summerlength = TUNING.SUMMER_LENGTH
 
 inst:ListenForEvent("seasontick", OnSeasonTick)
 inst:ListenForEvent("seasonlengthschanged", OnSeasonLengthsChanged)
 
 --Weather
-self.data.temperature = 30
+self.data.temperature = TUNING.STARTING_TEMP
 self.data.moisture = 0
 self.data.moistureceil = 8 * TUNING.TOTAL_DAY_TIME
 self.data.pop = 0
@@ -158,11 +175,14 @@ self.data.israining = false
 self.data.issnowing = false
 self.data.issnowcovered = false
 self.data.snowlevel = 0
+self.data.wetness = 0
+self.data.iswet = false
 
 inst:ListenForEvent("weathertick", OnWeatherTick)
 inst:ListenForEvent("moistureceilchanged", OnMoistureCeilChanged)
 inst:ListenForEvent("precipitationchanged", OnPrecipitationChanged)
 inst:ListenForEvent("snowcoveredchanged", OnSnowCoveredChanged)
+inst:ListenForEvent("wetchanged", OnWetChanged)
 
 --------------------------------------------------------------------------
 --[[ Public member functions ]]
@@ -231,8 +251,19 @@ function self:OnLoad(data)
     for k, v in pairs(data) do
         if self.data[k] ~= nil then
             self.data[k] = v
+            print("setting ", k, v)
         end
     end
+end
+
+--------------------------------------------------------------------------
+--[[ Debug ]]
+--------------------------------------------------------------------------
+
+function self:Dump()
+	for k,v in pairs(self.data) do 
+		print(k, v)
+	end
 end
 
 --------------------------------------------------------------------------
