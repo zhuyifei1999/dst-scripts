@@ -22,6 +22,16 @@ local prefabs =
 local TARGET_DIST = 16
 local STRUCTURES_PER_HARASS = 5
 
+local function IsSated(inst)
+    return inst.structuresDestroyed >= STRUCTURES_PER_HARASS
+end
+
+local function WantsToLeave(inst)
+    return not inst.components.combat:HasTarget()
+    and inst:IsSated()
+    and inst:GetTimeAlive() >= 120
+end
+
 local function CalcSanityAura(inst)
     return inst.components.combat.target ~= nil and -TUNING.SANITYAURA_HUGE or -TUNING.SANITYAURA_LARGE
 end
@@ -40,14 +50,12 @@ local function RetargetFn(inst)
     --print("Deerclops retarget", debugstack())
     return FindEntity(inst, TARGET_DIST, function(guy)
         return inst.components.combat:CanTarget(guy)
-               and (guy.components.combat.target == inst)
+               and (guy.components.combat.target == inst or (inst:GetPosition():Dist(guy:GetPosition()) <= 6))
     end, nil, {"prey", "smallcreature"})
 end
 
 local function KeepTargetFn(inst, target)
-    --print("Deerclops keep target")
-    local now = GetTime()
-    return inst.components.combat:CanTarget(target) and ((now - inst.components.combat:GetLastAttackedTime()) < TUNING.DEERCLOPS_LOSE_TARGET_PERIOD)
+    return inst.components.combat:CanTarget(target)
 end
 
 local function AfterWorking(inst, data)
@@ -55,7 +63,7 @@ local function AfterWorking(inst, data)
         local recipe = AllRecipes[data.target.prefab]
         if recipe then
             inst.structuresDestroyed = inst.structuresDestroyed + 1
-            if inst.structuresDestroyed >= STRUCTURES_PER_HARASS then
+            if inst:IsSated() then
                 inst.components.knownlocations:ForgetLocation("targetbase")
                 inst.AnimState:OverrideSymbol("deerclops_head", "deerclops_neutral_build", "deerclops_head")
             end
@@ -72,7 +80,7 @@ local function ShouldWake(inst)
 end
 
 local function OnEntitySleep(inst)
-    if not TheWorld.state.iswinter or inst.structuresDestroyed >= STRUCTURES_PER_HARASS then
+    if inst:WantsToLeave() then
         inst.structuresDestroyed = 0 -- reset this for the stored version
         TheWorld:PushEvent("storehassler", inst)
         inst:Remove()
@@ -137,6 +145,14 @@ local function oncollide(inst, other)
     end
 
     inst:DoTaskInTime(2*FRAMES, oncollapse, other)
+end
+
+local function OnNewTarget(inst, data)
+    FindBaseToAttack(inst, data.target or inst)
+    if inst.components.knownlocations:GetLocation("targetbase") then
+        inst.structuresDestroyed = inst.structuresDestroyed - 1
+        inst.components.knownlocations:ForgetLocation("home")
+    end
 end
 
 local loot = {"meat", "meat", "meat", "meat", "meat", "meat", "meat", "meat", "deerclops_eyeball"}
@@ -236,11 +252,14 @@ local function fn()
     inst:ListenForEvent("onhitother", OnHitOther)
     inst:ListenForEvent("death", OnDead)
     inst:ListenForEvent("onremove", OnRemove)
+    inst:ListenForEvent("newcombattarget", OnNewTarget)
 
     inst:WatchWorldState("stopwinter", OnStopWinter)
 
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad
+    inst.IsSated = IsSated
+    inst.WantsToLeave = WantsToLeave
 
     return inst
 end

@@ -1,14 +1,13 @@
 local brain = require("brains/lavaebrain")
-require("stategraphs/SGlavae")
 
 local assets =
 {
-	Asset("ANIM", "anim/lavae.zip"),
+    Asset("ANIM", "anim/lavae.zip"),
 }
 
 local prefabs =
 {
-	"lavae_move_fx",
+    "lavae_move_fx",
 }
 
 SetSharedLootTable( 'lavae_lava',
@@ -30,55 +29,56 @@ SetSharedLootTable( 'lavae_frozen',
 })
 
 local function OnCollide(inst, other)
-	if other.components.burnable then
-		other.components.burnable:Ignite(true, inst)
-	end
+    if other ~= nil and other:IsValid() and other.components.burnable ~= nil then
+        other.components.burnable:Ignite(true, inst)
+    end
 end
 
 local function LockTarget(inst, target)
-	inst.components.combat:SetTarget(target)
+    inst.components.combat:SetTarget(target)
 end
 
 local function OnTargetDeath(inst, data)
-	local new_target = inst.components.grouptargeter:SelectTarget()
-	if new_target then
-		inst.components.combat:SetTarget(new_target)
-	end
+    local new_target = inst.components.grouptargeter:SelectTarget()
+    if new_target then
+        inst.components.combat:SetTarget(new_target)
+    end
 end
 
 local function OnNewTarget(inst, data)
-	local old = data.oldtarget
-	if old and old.lavae_ontargetdeathfn then 
-		inst:RemoveEventCallback("death", old.lavae_ontargetdeathfn, old) 
-	end
+    local old = data.oldtarget
+    if old and old.lavae_ontargetdeathfn then 
+        inst:RemoveEventCallback("death", old.lavae_ontargetdeathfn, old) 
+    end
 
-	local new = data.target
-	if new then
-		new.lavae_ontargetdeathfn = function() OnTargetDeath(inst) end
-		if new:HasTag("player") then
-			inst:ListenForEvent("death", new.lavae_ontargetdeathfn, new)
-		end
-	end
+    local new = data.target
+    if new then
+        new.lavae_ontargetdeathfn = function() OnTargetDeath(inst) end
+        if new:HasTag("player") then
+            inst:ListenForEvent("death", new.lavae_ontargetdeathfn, new)
+        end
+    end
 end
 
 local function OnEntitySleep(inst)
-	if inst.reset then
-		inst:Remove()
-	end
+    if inst.reset then
+        inst:Remove()
+    end
 end
 
 local function fn()
-	local inst = CreateEntity()
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
-	inst.entity:AddDynamicShadow()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
+    inst.entity:AddDynamicShadow()
+    inst.entity:AddLight()
     inst.entity:AddNetwork()
 
     inst.DynamicShadow:SetSize(2, 1)
     inst.Transform:SetSixFaced()
     MakeCharacterPhysics(inst, 50, 0.5)
-    inst.Physics:SetCollisionCallback(OnCollide)
 
     inst.AnimState:SetBank("lavae")
     inst.AnimState:SetBuild("lavae")
@@ -88,18 +88,19 @@ local function fn()
     inst:AddTag("monster")
     inst:AddTag("hostile")
 
-	local light = inst.entity:AddLight()
-	light:Enable(true)
-	light:SetRadius(2)
-	light:SetFalloff(0.5)
-	light:SetIntensity(0.75)
-	light:SetColour(235/255, 121/255, 12/255)
+    inst.Light:SetRadius(2)
+    inst.Light:SetFalloff(0.5)
+    inst.Light:SetIntensity(0.75)
+    inst.Light:SetColour(235/255, 121/255, 12/255)
+    inst.Light:Enable(true)
 
     inst.entity:SetPristine()
     
     if not TheWorld.ismastersim then
-    	return inst
+        return inst
     end
+
+    inst.Physics:SetCollisionCallback(OnCollide)
 
     inst:AddComponent("health")
     inst:AddComponent("combat")
@@ -120,16 +121,16 @@ local function fn()
 
     inst.components.locomotor.walkspeed = 5.5
 
-	inst.LockTargetFn = LockTarget
+    inst.LockTargetFn = LockTarget
 
-	inst:ListenForEvent("newcombattarget", OnNewTarget)
-	inst:ListenForEvent("entitysleep", OnEntitySleep)
+    inst:ListenForEvent("newcombattarget", OnNewTarget)
+    inst:ListenForEvent("entitysleep", OnEntitySleep)
 
     MakeHauntablePanic(inst)
 
-	MakeLargeFreezableCharacter(inst)
+    MakeLargeFreezableCharacter(inst)
 
-	return inst
+    return inst
 end
 
 return Prefab("common/monsters/lavae", fn, assets, prefabs)

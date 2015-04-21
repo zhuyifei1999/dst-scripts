@@ -20,28 +20,25 @@ local function BaseDestroy(inst)
     			then
     				return true
     			end
-    		end,
-    		nil,
-    		{"wall"}
-    		)
+    		end, nil, {"wall"})
     	if target then
     		return BufferedAction(inst, target, ACTIONS.HAMMER)
     	end
     end
 end
 
-local function GoHome(inst)
-    if inst.components.knownlocations:GetLocation("home") then
-        return BufferedAction(inst, nil, ACTIONS.GOHOME, nil, inst.components.knownlocations:GetLocation("home") )
-    else
-    	-- Pick a point to go to that is some distance away from here.
-    	local targetPos = Vector3(inst.Transform:GetWorldPosition())
-    	local wanderAwayPoint = GetWanderAwayPoint(targetPos)
-        if wanderAwayPoint then
-            inst.components.knownlocations:RememberLocation("home", wanderAwayPoint)
-        end
-    end
-end
+-- local function GoHome(inst)
+--     if inst.components.knownlocations:GetLocation("home") then
+--         return BufferedAction(inst, nil, ACTIONS.GOHOME, nil, inst.components.knownlocations:GetLocation("home") )
+--     else
+--     	-- Pick a point to go to that is some distance away from here.
+--     	local targetPos = Vector3(inst.Transform:GetWorldPosition())
+--     	local wanderAwayPoint = GetWanderAwayPoint(targetPos)
+--         if wanderAwayPoint then
+--             inst.components.knownlocations:RememberLocation("home", wanderAwayPoint)
+--         end
+--     end
+-- end
 
 local function GetWanderPos(inst)
     if inst.components.knownlocations:GetLocation("targetbase") then
@@ -53,6 +50,28 @@ local function GetWanderPos(inst)
 	end
 end
 
+local function GetNewHome(inst)
+    if inst.forgethometask then
+        inst.forgethometask:Cancel()
+        inst.forgethometask = nil
+    end
+    -- Pick a point to go to that is some distance away from here.
+    local targetPos = Vector3(inst.Transform:GetWorldPosition())
+    local wanderAwayPoint = GetWanderAwayPoint(targetPos)
+    if wanderAwayPoint then
+        inst.components.knownlocations:RememberLocation("home", wanderAwayPoint)
+    end
+
+    inst.forgethometask = inst:DoTaskInTime(30, function() inst.components.knownlocations:ForgetLocation("home") end)
+end
+
+local function GetHomePos(inst)
+    if not inst.components.knownlocations:GetLocation("home") then
+        GetNewHome(inst)
+    end
+    return inst.components.knownlocations:GetLocation("home")
+end
+
 local DeerclopsBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
 end)
@@ -61,10 +80,12 @@ function DeerclopsBrain:OnStart()
     local root =
         PriorityNode(
         {
-			AttackWall(self.inst),
+            AttackWall(self.inst),
             ChaseAndAttack(self.inst, CHASE_TIME, CHASE_DIST),
             DoAction(self.inst, function() return BaseDestroy(self.inst) end, "DestroyBase", true),
-			DoAction(self.inst, function() return GoHome(self.inst) end, "GoHome", true),
+            WhileNode(function() return self.inst:WantsToLeave() end, "Trying To Leave", 
+                Wander(self.inst, GetHomePos, 30)),
+
             Wander(self.inst, GetWanderPos, 30, {minwwwalktime = 10}),
         },1)
     

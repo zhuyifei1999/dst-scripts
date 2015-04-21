@@ -257,7 +257,7 @@ function Stewer:Harvest(harvester)
                 local loot = SpawnPrefab(self.product)
                 if loot ~= nil then
                     if self.spoiltime ~= nil and loot.components.perishable ~= nil then
-                        local spoilpercent = 1 - self:GetTimeToSpoil() / self.spoiltime
+                        local spoilpercent = self:GetTimeToSpoil() / self.spoiltime
                         loot.components.perishable:SetPercent(self.product_spoilage * spoilpercent)
                         loot.components.perishable:StartPerishing()
                     end
@@ -296,9 +296,10 @@ function Stewer:LongUpdate(dt)
         if self.targettime - dt > GetTime() then
             self.targettime = self.targettime - dt
             self.task = self.inst:DoTaskInTime(self.targettime - GetTime(), dostew, self)
+            dt = 0            
         else
+            dt = dt - self.targettime + GetTime()
             dostew(self.inst, self)
-            dt = dt - (self.targettime - GetTime())
         end
     end
 
