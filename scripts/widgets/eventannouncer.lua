@@ -14,14 +14,12 @@ local EventAnnouncer = Class(Widget, function(self, owner)
     self.message_font = UIFONT
     self.message_size = 30
 
-    local screenWidth, screenHeight = TheSim:GetScreenSize()
-    
     for i = 1,ANNOUNCEMENT_QUEUE_SIZE do
         local message_widget = self:AddChild(Text(self.message_font, self.message_size))
-        message_widget:SetVAnchor(ANCHOR_TOP)
-        message_widget:SetHAnchor(ANCHOR_MIDDLE)
+        message_widget:SetVAlign(ANCHOR_TOP)
+        message_widget:SetHAlign(ANCHOR_MIDDLE)
         message_widget:SetPosition(0, -15 - (i * (self.message_size+1)))
-        message_widget:SetRegionSize( screenWidth, (self.message_size+2) )
+        message_widget:SetRegionSize(1100, (self.message_size+2) )
         message_widget:SetString("")
         self.messages[i] = message_widget   
         

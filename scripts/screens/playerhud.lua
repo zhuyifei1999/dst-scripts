@@ -60,7 +60,11 @@ function PlayerHud:CreateOverlays(owner)
     self.clouds:GetAnimState():SetMultColour(1,1,1,0)
     self.clouds:Hide()
 
-    self.eventannouncer = self.overlayroot:AddChild(EventAnnouncer(owner))
+    self.eventannouncer = self.overlayroot:AddChild(Widget("eventannouncer_root"))
+    self.eventannouncer:SetScaleMode(SCALEMODE_PROPORTIONAL)
+    self.eventannouncer:SetHAnchor(ANCHOR_MIDDLE)
+    self.eventannouncer:SetVAnchor(ANCHOR_TOP)
+    self.eventannouncer = self.eventannouncer:AddChild(EventAnnouncer(owner))
 
     -- self.ping = self.overlayroot:AddChild(Ping(owner))
     -- self.ping:SetHAnchor(ANCHOR_LEFT)
