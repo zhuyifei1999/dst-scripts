@@ -634,6 +634,38 @@ local states=
 
 	},
 
+	State{
+		name = "land",
+		tags = {"flying", "busy"},
+
+		onenter= function(inst)
+			inst.AnimState:PlayAnimation("walk_angry", true)
+			inst.Physics:SetMotorVelOverride(0,-11,0)
+		end,
+
+		onupdate= function(inst)
+			inst.Physics:SetMotorVelOverride(0,-15,0)
+			local pt = Point(inst.Transform:GetWorldPosition())
+			if pt.y < 2 then
+				inst.Physics:ClearMotorVelOverride()
+				pt.y = 0
+				inst.Physics:Stop()
+				inst.Physics:Teleport(pt.x,pt.y,pt.z)
+				inst.DynamicShadow:Enable(true)
+				inst.sg:GoToState("idle", {softstop = true})
+				ShakeIfClose(inst)
+			end
+		end,
+
+		onexit = function(inst)
+			if inst:GetPosition().y > 0 then
+				local pos = inst:GetPosition()
+				pos.y = 0
+				inst.Transform:SetPosition(pos:Get())
+			end
+		end,
+	},
+
 }
 
 CommonStates.AddFrozenStates(states)

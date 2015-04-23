@@ -471,7 +471,7 @@ local function DrawDebugGraph(graph)
 			local n1 = graph.nodes[edge.n1]
 			local n2 = graph.nodes[edge.n2]
 			if n1 ~= nil and n2 ~= nil then
-				draw:Line(n1.cent[1], n1.cent[2], n2.cent[1], n2.cent[2], colour.r, colour.g, colour.b, colour.a)
+                draw:Line(n1.cent[1], n1.cent[2], n2.cent[1], n2.cent[2], colour.r, colour.g, colour.b, colour.a)
 			end
 		end
 	end 
@@ -796,27 +796,6 @@ local function DoGenerateWorld(saveslot)
 		level_world = 1,
 		profiledata = Profile.persistdata,
 	}
-
-	--Load world gen options overrides
-	local filename = "../worldgenoverride.lua"
-	TheSim:GetPersistentString( filename,
-		function(load_success, str)
-    		if load_success == true then
-				local success, savedata = RunInSandboxSafe(str)
-				if success and string.len(str) > 0 then
-					if savedata ~= nil and savedata.override_enabled then
-						print("Loaded and applied world gen overrides from "..filename)
-						savedata.override_enabled = nil --remove this so the rest of the table can be interpreted as a tweak table
-						if world_gen_options.custom_options == nil then
-							world_gen_options.custom_options = {}
-						end
-						world_gen_options.custom_options.tweak = savedata
-					end
-				else
-					print("ERROR: Failed to load "..filename)
-				end
-			end
-		end)
 
 	TheFrontEnd:PushScreen(WorldGenScreen(Profile, onComplete, world_gen_options))
 end

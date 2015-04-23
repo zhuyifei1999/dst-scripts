@@ -62,7 +62,9 @@ end
 local function OnOpenChestTrap(inst, openfn, scenariorunner, data) 
 	if math.random() < .66 then
 		local talkabouttrap = function(inst, txt)
-			inst.components.talker:Say(txt)
+			if inst.components.talker then  -- Apparently inst can be Deerclops, and Deerclops has no talker
+				inst.components.talker:Say(txt)
+			end
 		end
 
     	inst.SoundEmitter:PlaySound("dontstarve/common/chest_trap")

@@ -632,7 +632,7 @@ function Tune(overrides)
 	    SMALLBIRD_DAMAGE = 10,
 	    SMALLBIRD_ATTACK_PERIOD = 1,
 	    SMALLBIRD_ATTACK_RANGE = 3,
-	    SMALLBIRD_HUNGER = 2, --20,
+	    SMALLBIRD_HUNGER = 20,
 	    SMALLBIRD_STARVE_TIME = total_day_time * 1,
 	    SMALLBIRD_STARVE_KILL_TIME = 120,
 	    SMALLBIRD_GROW_TIME = total_day_time*10,
@@ -641,8 +641,8 @@ function Tune(overrides)
 	    SMALLBIRD_HATCH_TIME = total_day_time * 3, -- must be content for this amount of cumulative time to hatch
 	    SMALLBIRD_HATCH_FAIL_TIME = night_time * .5, -- being too hot or too cold this long will kill the egg
 
-	    MIN_SPRING_SMALL_BIRD_SPAWN_TIME = 1, --total_day_time * 2,
-	    MAX_SPRING_SMALL_BIRD_SPAWN_TIME = 2, --total_day_time * 8,
+	    MIN_SPRING_SMALL_BIRD_SPAWN_TIME = total_day_time * 2,
+	    MAX_SPRING_SMALL_BIRD_SPAWN_TIME = total_day_time * 8,
 	
 	    HATCH_UPDATE_PERIOD = 3,
 	    HATCH_CAMPFIRE_RADIUS = 4,
@@ -1303,6 +1303,9 @@ function Tune(overrides)
 		MOSSLING_ATTACK_PERIOD = 3,
 		MOSSLING_ATTACK_RANGE = 2,
 		MOSSLING_WALK_SPEED = 5,
+
+		DRAGONFLY_RESPAWN_TIME = total_day_time * 20,
+		DRAGONFLY_SPAWN_TIME = 1,
 
 		DRAGONFLY_HEALTH = 27500,
 	    DRAGONFLY_DAMAGE = 150,

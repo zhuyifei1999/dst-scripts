@@ -81,4 +81,9 @@ function Trader:AcceptGift( giver, item, count )
     end
 end
 
+function Trader:GetDebugString()
+    local str = string.format("%s", (self.enabled and "true") or "false")
+    return str
+end
+
 return Trader

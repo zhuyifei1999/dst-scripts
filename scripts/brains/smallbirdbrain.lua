@@ -31,7 +31,8 @@ local function IsStarving(inst)
 end
 
 local function ShouldStandStill(inst)
-    return inst.components.hunger and inst.components.hunger:IsStarving() and not inst:HasTag("teenbird") 
+    return (inst.components.hunger and inst.components.hunger:IsStarving() and not inst:HasTag("teenbird")
+    	and (not inst.components.follower.leader or not inst.components.follower.leader:HasTag("tallbird")))
 end
 
 local function CanSeeFood(inst)

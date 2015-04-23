@@ -30,11 +30,12 @@ local loots =
 }
 
 local function onhammered(inst)
-    if inst.components.childspawner then
+    if inst.components.childspawner ~= nil then
         inst.components.childspawner:ReleaseAllChildren()
     end
-    inst.components.lootdropper:DropLoot(Vector3(inst.Transform:GetWorldPosition()))
-    SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
+    local x, y, z = inst.Transform:GetWorldPosition()
+    inst.components.lootdropper:DropLoot(Vector3(x, y, z))
+    SpawnPrefab("collapse_small").Transform:SetPosition(x, y, z)
     inst.SoundEmitter:PlaySound("dontstarve/common/destroy_wood")
     inst:Remove()
 end
@@ -46,21 +47,21 @@ local function onhit(inst)
 end
 
 local function OnEntityWake(inst)
-    if inst.components.childspawner then
+    if inst.components.childspawner ~= nil then
         inst.components.childspawner:StartSpawning()
     end
-    if inst.lives_left <= 0 then
+    if not inst.playing_dead_anim and inst.lives_left <= 0 then
         inst.playing_dead_anim = true
         inst.AnimState:PlayAnimation("dead", true)
     end
 end
 
-local function OnEntitySleep(inst)
-end
+--local function OnEntitySleep(inst)
+--end
 
 local function OnChildChilled(inst, child)
     inst.lives_left = inst.lives_left - 1
-    if inst.lives_left <= 0 then
+    if inst.lives_left <= 0 and inst.components.childspawner ~= nil then
         inst.components.childspawner:StopRegen()
         inst.components.childspawner:StopSpawning()
         inst:RemoveComponent("childspawner")
@@ -80,11 +81,15 @@ local function onload(inst, data)
                     v:Remove()
                 end
             end
-            inst.components.childspawner:StopRegen()
-            inst.components.childspawner:StopSpawning()
-            inst:RemoveComponent("childspawner")
-            inst.playing_dead_anim = true
-            inst.AnimState:PlayAnimation("dead", true)
+            if inst.components.childspawner ~= nil then
+                inst.components.childspawner:StopRegen()
+                inst.components.childspawner:StopSpawning()
+                inst:RemoveComponent("childspawner")
+            end
+            if not inst.playing_dead_anim then
+                inst.playing_dead_anim = true
+                inst.AnimState:PlayAnimation("dead", true)
+            end
         end
     end
 end
@@ -141,7 +146,7 @@ local function fn()
     inst.components.childspawner.canspawnfn = canspawn
 
     inst.lives_left = 9
-    inst.components.childspawner.onchildkilledfn =  OnChildChilled
+    inst.components.childspawner.onchildkilledfn = OnChildChilled
 
     ---------------------
     inst:AddComponent("lootdropper")
@@ -159,7 +164,7 @@ local function fn()
 
     MakeSnowCovered(inst)
 
-    inst.OnEntitySleep = OnEntitySleep
+    --inst.OnEntitySleep = OnEntitySleep
     inst.OnEntityWake = OnEntityWake
 
     inst.OnSave = onsave

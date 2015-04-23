@@ -36,6 +36,8 @@ local function fn()
         return inst
     end
 
+    inst.persists = false
+
     return inst
 end
 

@@ -62,7 +62,85 @@ local t = {
                         worldstate.issummer = false
                         worldstate.isspring = false
                     end
+
+                    local monsters={
+                        { "bearger", "never" },
+                        { "goosemoose", "never" },
+                        { "dragonfly", "never" },
+                        { "deciduousmonster", "never" }
+                    }
+                    local misc={
+                        { "frograin", "never" },
+                        { "wildfires", "never" }
+                    }
+                    local original={
+                        level_id=2,
+                        preset="SURVIVAL_TOGETHER_CLASSIC",
+                        tweak={
+                            unprepared={
+                                cactus="never"
+                            },
+                            misc={
+                                cave_entrance="never",
+                                spring="noseason",
+                                world_size="large",
+                                wildfires="never",
+                                summer="noseason",
+                                frograin="never",
+                                start_setpeice="DefaultStart",
+                                season_start="autumn",
+                                start_node="Clearing"
+                            },
+                            animals={
+                                moles="never",
+                                lightninggoat="never",
+                                buzzard="never",
+                                catcoon="never"
+                            },
+                            monsters={
+                                bearger="never",
+                                deciduousmonster="never",
+                                dragonfly="never",
+                                goosemoose="never"
+                            },
+                            resources={
+                                rock_ice="never"
+                            }
+                        }
+                    }
+
+                    local overrides = savedata.map.topology and savedata.map.topology.overrides
+                    if overrides ~= nil then
+                        print("Merging overrides with Vanilla versions")
+
+                        if overrides.monsters then
+                            overrides.monsters = MergeKeyValueList(monsters, overrides.monsters)
+                        else
+                            overrides.monsters = monsters
+                        end
+
+                        if overrides.misc then
+                            overrides.misc = MergeKeyValueList(misc, overrides.misc)
+                        else
+                            overrides.misc = misc
+                        end
+
+                        if overrides.original then
+                            overrides.original = MergeMapsDeep(original, overrides.original)
+                        else
+                            overrides.original = original
+                        end
+                        
+                    else
+                        print("No overrides found, supplying Vanilla versions")
+                        savedata.map.topology.overrides = {
+                            monsters,
+                            misc,
+                            original
+                        }
+                    end
                 end
+
             end,
         }
     },

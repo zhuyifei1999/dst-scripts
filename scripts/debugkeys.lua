@@ -165,10 +165,15 @@ AddGameDebugKey(KEY_F4, function()
 end)
 
 AddGameDebugKey(KEY_F5, function()
-    TheWorld:PushEvent("ms_setseasonlength", {season="autumn", length=12})
-    TheWorld:PushEvent("ms_setseasonlength", {season="winter", length=10})
-    TheWorld:PushEvent("ms_setseasonlength", {season="spring", length=12})
-    TheWorld:PushEvent("ms_setseasonlength", {season="summer", length=10})
+	if TheInput:IsKeyDown(KEY_SHIFT) then
+		local pos = TheInput:GetWorldPosition()
+		TheWorld:PushEvent("ms_sendlightningstrike", pos)
+	else
+    	TheWorld:PushEvent("ms_setseasonlength", {season="autumn", length=12})
+    	TheWorld:PushEvent("ms_setseasonlength", {season="winter", length=10})
+    	TheWorld:PushEvent("ms_setseasonlength", {season="spring", length=12})
+    	TheWorld:PushEvent("ms_setseasonlength", {season="summer", length=10})
+	end
 	return true
 end)
 

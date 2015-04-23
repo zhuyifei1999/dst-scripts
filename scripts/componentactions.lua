@@ -544,8 +544,10 @@ local COMPONENT_ACTIONS =
             for k, v in pairs(TOOLACTIONS) do
                 if inst:HasTag(k.."_tool") then
                     if target:IsActionValid(ACTIONS[k], right) then
-                        table.insert(actions, ACTIONS[k])
-                        return
+                        if not right or ACTIONS[k].rmb or not target:HasTag("smolder") then
+                            table.insert(actions, ACTIONS[k])
+                            return
+                        end
                     end
                 end
             end

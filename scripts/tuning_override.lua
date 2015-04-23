@@ -118,22 +118,16 @@ return
     end,
 
     dragonfly = function(difficulty)
-        local deerclopsspawner = TheWorld.components.deerclopsspawner
-        if deerclopsspawner then
-            if difficulty == "never" then
-                deerclopsspawner:OverrideAttacksPerSeason("DRAGONFLY", 0)
-                deerclopsspawner:OverrideAttackDuringOffSeason("DRAGONFLY", false)
-            elseif difficulty == "rare" then
-                deerclopsspawner:OverrideAttacksPerSeason("DRAGONFLY", 1)
-                deerclopsspawner:OverrideAttackDuringOffSeason("DRAGONFLY", false)
-            elseif difficulty == "often" then
-                deerclopsspawner:OverrideAttacksPerSeason("DRAGONFLY", 2)
-                deerclopsspawner:OverrideAttackDuringOffSeason("DRAGONFLY", false)
-            elseif difficulty == "always" then
-                deerclopsspawner:OverrideAttacksPerSeason("DRAGONFLY", 3)
-                deerclopsspawner:OverrideAttackDuringOffSeason("DRAGONFLY", true)
-            end
-        end
+
+        local tuning_vars =
+        {
+            never =     {DRAGONFLY_RESPAWN_TIME = TUNING.TOTAL_DAY_TIME * 9999, DRAGONFLY_SPAWN_TIME = TUNING.TOTAL_DAY_TIME * 9999},
+            rare =      {DRAGONFLY_RESPAWN_TIME = TUNING.TOTAL_DAY_TIME * 40},
+            often =     {DRAGONFLY_RESPAWN_TIME = TUNING.TOTAL_DAY_TIME * 10},
+            always =    {DRAGONFLY_RESPAWN_TIME = TUNING.TOTAL_DAY_TIME * 5},
+        }
+
+        OverrideTuningVariables(tuning_vars[difficulty])
     end,
 
     perd = function(difficulty)

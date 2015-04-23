@@ -313,6 +313,20 @@ function MakeGiantCharacterPhysics(inst, mass, rad)
     phys:CollidesWith(COLLISION.GIANTS)
 end
 
+function MakeFlyingGiantCharacterPhysics(inst, mass, rad)
+    local phys = inst.entity:AddPhysics()
+    phys:SetMass(mass)
+    phys:SetCapsule(rad, 1)
+    phys:SetFriction(0)
+    phys:SetDamping(5)
+    phys:SetCollisionGroup(COLLISION.GIANTS)
+    phys:ClearCollisionMask()
+    phys:CollidesWith(COLLISION.WORLD)
+    --phys:CollidesWith(COLLISION.OBSTACLES)
+    phys:CollidesWith(COLLISION.CHARACTERS)
+    phys:CollidesWith(COLLISION.GIANTS)
+end
+
 function MakeGhostPhysics(inst, mass, rad)
     local phys = inst.entity:AddPhysics()
     phys:SetMass(mass)

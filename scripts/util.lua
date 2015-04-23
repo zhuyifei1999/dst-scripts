@@ -253,6 +253,68 @@ function MergeMaps(...)
 	return ret
 end
 
+-- merge two map-style tables, overwriting duplicate keys with the latter map's value
+-- subtables are recursed into
+function MergeMapsDeep(...)
+    local keys = {}
+    for i,map in ipairs({...}) do
+        for k,v in pairs(map) do
+            if keys[k] == nil then
+                keys[k] = type(v)
+            else
+                assert(keys[k] == type(v), "Attempting to merge incompatible tables.")
+            end
+        end
+    end
+
+    local ret = {}
+    for k,t in pairs(keys) do
+        if t == "table" then
+            local subtables = {}
+            for i,map in ipairs({...}) do
+                if map[k] ~= nil then
+                    table.insert(subtables, map[k])
+                end
+            end
+            ret[k] = MergeMapsDeep(unpack(subtables))
+        else
+            for i,map in ipairs({...}) do
+                if map[k] ~= nil then
+                    ret[k] = map[k]
+                end
+            end
+        end
+    end
+
+    return ret
+end
+
+-- merges two lists of this form (used in e.g. our customization stuff)
+-- {
+--      { "key", "value" },
+--      { "key2", "value2" },
+-- }
+-- overwrites duplicate "keys" with the latter list's value
+function MergeKeyValueList(...)
+    local ret = {}
+    for i,list in ipairs({...}) do
+        for i,map in ipairs(list) do
+            local found = false
+            for i2,savedmap in ipairs(ret) do
+                if map[1] == savedmap[1] then
+                    found = true
+                    savedmap[2] = map[2]
+                    break
+                end
+            end
+            if not found then
+                table.insert(ret, map)
+            end
+        end
+    end
+    return ret
+end
+
 -- Adds 'addition' to the end of 'orig', 'mult' times.
 -- ExtendedArray({"one"}, {"two","three"}, 2) == {"one", "two", "three", "two", "three" }
 function ExtendedArray(orig, addition, mult)

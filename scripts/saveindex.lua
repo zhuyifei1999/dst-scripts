@@ -26,6 +26,30 @@ local function ResetSlotData(data)
     data.session_id = nil
 end
 
+local function GetWorldgenOverride(cb)
+	local filename = "../worldgenoverride.lua"
+	TheSim:GetPersistentString( filename,
+		function(load_success, str)
+    		if load_success == true then
+				local success, savedata = RunInSandboxSafe(str)
+				if success and string.len(str) > 0 then
+					if savedata ~= nil and savedata.override_enabled then
+						print("Loaded and applied world gen overrides from "..filename)
+						savedata.override_enabled = nil --remove this so the rest of the table can be interpreted as a tweak table
+						cb( savedata )
+                        return
+                    else
+                        print("Found world gen overrides but not enabled.")
+					end
+				else
+					print("ERROR: Failed to load "..filename)
+				end
+			end
+            print("Not applying world gen overrides.")
+            cb( nil )
+		end)
+end
+
 function SaveIndex:GuaranteeMinNumSlots(numslots)
     for i = #self.data.slots + 1, numslots do
         table.insert(self.data.slots, NewSlotData())
@@ -228,7 +252,16 @@ function SaveIndex:StartSurvivalMode(saveslot, customoptions, serverdata, onsave
         pvp = TheNet:GetDefaultPvpSetting() == true,
     }
 
-    self:UpdateServerData(saveslot, serverdata, onsavedcb)
+    GetWorldgenOverride(function(overrideoptions)
+        if overrideoptions then
+            if slot.world.options == nil then
+                slot.world.options = {}
+            end
+            slot.world.options.tweak = overrideoptions
+        end
+
+        self:UpdateServerData(saveslot, serverdata, onsavedcb)
+    end)
 end
 
 function SaveIndex:IsSlotEmpty(slot)
