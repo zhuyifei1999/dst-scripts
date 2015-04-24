@@ -108,9 +108,7 @@ local function sleepattack(inst, attacker, target)
         if target.components.combat then
             target.components.combat:SuggestTarget(attacker)
         end
-        if target.sg and not target.sg:HasStateTag("sleeping") and target.sg.sg.states.hit then
-            target.sg:GoToState("hit")
-        end
+        target:PushEvent("attacked", {attacker = attacker, damage = 0, weapon = inst})
     elseif target.components.grogginess and not (inst.components.freezable and inst.components.freezable:IsFrozen()) then
         target.SoundEmitter:PlaySound("dontstarve/wilson/blowdart_impact_sleep")
         target:PushEvent("attacked", {attacker = attacker, damage = 0, weapon = inst})
@@ -165,9 +163,6 @@ local function fireattack(inst, attacker, target)
     end
     if target.components.combat then
         target.components.combat:SuggestTarget(attacker)
-    end
-    if target.sg and target.sg.sg.states.hit and not target:HasTag("player") then
-        target.sg:GoToState("hit")
     end
 end
 

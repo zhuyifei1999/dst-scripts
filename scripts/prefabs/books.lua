@@ -109,15 +109,22 @@ function firefn(inst, reader)
 end
 
 function sleepfn(inst, reader)
-    local pt = Vector3(reader.Transform:GetWorldPosition())
-
     reader.components.sanity:DoDelta(-TUNING.SANITY_LARGE)
 
+    local x, y, z = reader.Transform:GetWorldPosition()
     local range = 30
-    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, range)
-    for k, v in pairs(ents) do
-        if v.components.sleeper ~= nil and v ~= reader then
-            v.components.sleeper:AddSleepiness(10, 20)
+    local ents = TheNet:GetPVPEnabled() and
+                TheSim:FindEntities(x, y, z, range, nil, { "playerghost" }, { "sleeper", "player" }) or
+                TheSim:FindEntities(x, y, z, range, { "sleeper" }, { "player" })
+    for i, v in ipairs(ents) do
+        if v ~= reader then
+            if v.components.sleeper ~= nil then
+                v.components.sleeper:AddSleepiness(10, 20)
+            elseif v.components.grogginess ~= nil then
+                v.components.grogginess:AddGrogginess(10, 20)
+            else
+                v:PushEvent("knockedout")
+            end
         end
     end
     return true

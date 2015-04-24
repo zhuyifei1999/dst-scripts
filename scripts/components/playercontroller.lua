@@ -1312,7 +1312,7 @@ function PlayerController:OnUpdate(dt)
             end
             self.highlight_guy = nil
 
-            if not ishudblocking and self.inst.HUD ~= nil and self.inst.HUD:IsVisible() then
+            if not ishudblocking and self.inst.HUD ~= nil and self.inst.HUD:IsVisible() and not self.inst.HUD:HasInputFocus() then
                 self:DoCameraControl()
             end
         end

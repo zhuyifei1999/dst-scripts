@@ -29,6 +29,8 @@ local loots =
     {'smallmeat', 0.3},
 }
 
+local MAX_LIVES = 9
+
 local function onhammered(inst)
     if inst.components.childspawner ~= nil then
         inst.components.childspawner:ReleaseAllChildren()
@@ -47,10 +49,20 @@ local function onhit(inst)
 end
 
 local function OnEntityWake(inst)
-    if inst.components.childspawner ~= nil then
-        inst.components.childspawner:StartSpawning()
+    if inst.lives_left <= 0 and inst.delay_end <= GetTime() then
+        inst.lives_left = MAX_LIVES
+        if inst.components.childspawner ~= nil then
+            inst.components.childspawner:SetMaxChildren(1)
+            inst.components.childspawner:StartRegen()
+            inst.components.childspawner:StartSpawning()
+        end
     end
-    if not inst.playing_dead_anim and inst.lives_left <= 0 then
+    if inst.playing_dead_anim then
+        if inst.lives_left > 0 then
+            inst.playing_dead_anim = nil
+            inst.AnimState:PlayAnimation("idle")
+        end
+    elseif inst.lives_left <= 0 then
         inst.playing_dead_anim = true
         inst.AnimState:PlayAnimation("dead", true)
     end
@@ -61,35 +73,76 @@ end
 
 local function OnChildChilled(inst, child)
     inst.lives_left = inst.lives_left - 1
-    if inst.lives_left <= 0 and inst.components.childspawner ~= nil then
-        inst.components.childspawner:StopRegen()
-        inst.components.childspawner:StopSpawning()
-        inst:RemoveComponent("childspawner")
+    if inst.lives_left <= 0 then
+        if inst.components.childspawner ~= nil then
+            inst.components.childspawner:StopRegen()
+            inst.components.childspawner:StopSpawning()
+            inst.components.childspawner:SetMaxChildren(0)
+        end
+        local mindelay = TheWorld.state.winterlength
+        if mindelay <= 0 then
+            mindelay = TheWorld.state.autumnlength
+            if mindelay <= 0 then
+                mindelay = TheWorld.state.summerlength
+                if mindelay <= 0 then
+                    mindelay = TheWorld.state.springlength
+                end
+            end
+        end
+        local delay = TheWorld.state.remainingdaysinseason
+        if TheWorld.state.season ~= "winter" then
+            delay = delay + TheWorld.state.winterlength
+            if TheWorld.state.season ~= "autumn" then
+                delay = delay + TheWorld.state.autumnlength
+                if TheWorld.state.summer ~= "summer" then
+                    delay = delay + TheWorld.state.summerlength
+                end
+            end
+        end
+        inst.delay_end = GetTime() + math.max(delay, mindelay) * TUNING.TOTAL_DAY_TIME
     end
 end
 
 local function onsave(inst, data)
-    data.lives = inst.lives_left
+    if inst.lives_left > 0 then
+        data.lives = inst.lives_left
+    elseif inst.delay_end > GetTime() then
+        data.delay_remaining = inst.delay_end - GetTime()
+    end
 end
 
 local function onload(inst, data)
-    if data and data.lives then
-        inst.lives_left = data.lives
-        if inst.lives_left <= 0 then
-            if #inst.components.childspawner.childrenoutside > 0 then
-                for i,v in pairs(inst.components.childspawner.childrenoutside) do
-                    v:Remove()
-                end
+    if data ~= nil then
+        if data.lives_left ~= nil and data.lives_left > 0 then
+            if inst.lives_left <= 0 and inst.components.childspawner ~= nil then
+                inst.components.childspawner:SetMaxChildren(1)
+                inst.components.childspawner:StartRegen()
+                inst.components.childspawner:StartSpawning()
             end
-            if inst.components.childspawner ~= nil then
+            inst.lives_left = data.lives_left
+            inst.delay_end = 0
+        else
+            if inst.lives_left > 0 and inst.components.childspawner ~= nil then
+                if #inst.components.childspawner.childrenoutside > 0 then
+                    for i, v in pairs(inst.components.childspawner.childrenoutside) do
+                        v:Remove()
+                    end
+                end
                 inst.components.childspawner:StopRegen()
                 inst.components.childspawner:StopSpawning()
-                inst:RemoveComponent("childspawner")
+                inst.components.childspawner:SetMaxChildren(0)
             end
-            if not inst.playing_dead_anim then
-                inst.playing_dead_anim = true
-                inst.AnimState:PlayAnimation("dead", true)
+            inst.lives_left = 0
+            inst.delay_end = GetTime() + (data.delay_remaining or 0)
+        end
+        if inst.playing_dead_anim then
+            if inst.lives_left > 0 then
+                inst.playing_dead_anim = nil
+                inst.AnimState:PlayAnimation("idle")
             end
+        elseif inst.lives_left <= 0 then
+            inst.playing_dead_anim = true
+            inst.AnimState:PlayAnimation("dead", true)
         end
     end
 end
@@ -144,8 +197,11 @@ local function fn()
     inst.components.childspawner:SetSpawnPeriod(TUNING.CATCOONDEN_RELEASE_TIME)
     inst.components.childspawner:SetMaxChildren(1)
     inst.components.childspawner.canspawnfn = canspawn
+    inst.components.childspawner:StartSpawning()
 
-    inst.lives_left = 9
+    inst.playing_dead_anim = nil
+    inst.delay_end = 0
+    inst.lives_left = MAX_LIVES
     inst.components.childspawner.onchildkilledfn = OnChildChilled
 
     ---------------------

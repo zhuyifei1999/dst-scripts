@@ -44,9 +44,6 @@ local function onattack_red(inst, attacker, target, skipsanity)
 
     if target.components.combat then
         target.components.combat:SuggestTarget(attacker)
-        if target.sg and target.sg.sg.states.hit and not target:HasTag("player") then
-            target.sg:GoToState("hit")
-        end
     end
 
     if attacker and attacker.components.sanity and not skipsanity then

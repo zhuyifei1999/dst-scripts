@@ -59,7 +59,7 @@ end
 
 local function CanPhlegmNow(inst)
     local target = inst.components.combat.target
-    return target ~= nil and (not target.components.pinnable or target.components.pinnable:IsValidPinTarget()) and not inst.components.combat:InCooldown()
+    return target ~= nil and target.components.pinnable and target.components.pinnable:IsValidPinTarget() and not inst.components.combat:InCooldown()
 end
 
 local function EquipPhlegm(inst)

@@ -4,12 +4,10 @@ local assets =
 }
 
 local function HearPanFlute(inst, musician, instrument)
-    if inst.components.sleeper then
-        inst.components.sleeper:AddSleepiness(10, TUNING.PANFLUTE_SLEEPTIME, inst)
-    end
-
-    if inst ~= musician and inst:HasTag("player") then
-        if inst.components.grogginess then
+    if inst ~= musician and (TheNet:GetPVPEnabled() or not inst:HasTag("player")) then
+        if inst.components.sleeper ~= nil then
+            inst.components.sleeper:AddSleepiness(10, TUNING.PANFLUTE_SLEEPTIME)
+        elseif inst.components.grogginess ~= nil then
             inst.components.grogginess:AddGrogginess(10, TUNING.PANFLUTE_SLEEPTIME)
         else
             inst:PushEvent("knockedout")

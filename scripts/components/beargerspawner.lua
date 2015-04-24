@@ -115,34 +115,42 @@ end
 --------------------------------------------------------------------------
 
 local function OnAutumn()
+	if (TheWorld.state.isautumn == true) then 
+		--print("BeargerSpawner got isautumn event")
 
-	_targetNum = 0
-	local chance = math.random()
-	--print("Spawning first bearger?", chance, _firstBeargerSpawnChance)
-	if chance < _firstBeargerSpawnChance then 
-		_targetNum = _targetNum + 1
-	end
-
-	chance = math.random()
-	--print("Spawning second bearger?", chance, _secondBeargerSpawnChance)
-	if _targetNum > 0 and chance < _secondBeargerSpawnChance then 
-		_targetNum = _targetNum + 1
-	end
-
-	--print("OnAutumn chose target number ", _targetNum )
-	local numActive = 0
-	for i,v in pairs(_activehasslers) do 
-		if v ~= nil then 
-			numActive = numActive + 1
+		_targetNum = 0
+		local chance = math.random()
+		--print("Spawning first bearger?", chance, _firstBeargerSpawnChance)
+		if chance < _firstBeargerSpawnChance then 
+			_targetNum = _targetNum + 1
 		end
-	end
 
-	_numSpawned = numActive
-	if numActive >= _targetNum then 
-		_targetNum = numActive
-	end
+		chance = math.random()
+		--print("Spawning second bearger?", chance, _secondBeargerSpawnChance)
+		if _targetNum > 0 and chance < _secondBeargerSpawnChance then 
+			_targetNum = _targetNum + 1
+		end
 
-	-- if _numSpawned is less than _targetNum, then allow spawning
+		--print("OnAutumn chose target number ", _targetNum )
+		local numActive = 0
+		for i,v in pairs(_activehasslers) do 
+			if v ~= nil then 
+				numActive = numActive + 1
+			end
+		end
+
+		_numSpawned = numActive
+		if numActive >= _targetNum then 
+			_targetNum = numActive
+		end
+
+		-- if _numSpawned is less than _targetNum, then allow spawning
+		if _numSpawned < _targetNum then 
+			SpawnBearger()
+		end
+	--else 
+		--print("BeargerSpawner got end autumn")
+	end
 end
 
 
@@ -165,11 +173,13 @@ local function OnPlayerLeft(src,player)
 end
 
 local function OnHasslerRemoved(src, hassler)
+	--print("Bearger removed", hassler)
 	_activehasslers[hassler] = nil
 end
 
 
 local function OnHasslerKilled(src, hassler)
+	--print("Bearger killed", hassler)
 	_activehasslers[hassler] = nil
 	if (_firstBeargerSpawnChance >= 1 and _secondBeargerSpawnChance >= 1) then 
 		_numSpawned = _numSpawned - 1
@@ -215,6 +225,7 @@ function self:DoWarningSound(_targetplayer)
 end
 
 function self:OnUpdate(dt)
+	--print("BeargerSpawner time to spawn is ", _timetospawn or "nil", _numSpawned or "0", _targetNum or "0")
     if _timetospawn ~= nil then 
 		_timetospawn = _timetospawn - dt
 		if _timetospawn <= 0 then
@@ -261,6 +272,7 @@ function self:OnUpdate(dt)
 			end
 		end
 	elseif TheWorld.state.isautumn == true and TheWorld.state.cycles > TUNING.NO_BOSS_TIME and _numSpawned < _targetNum then 
+		--print("BeargerSpawner spawning bearger")
 		SpawnBearger()
 	end
 end
@@ -278,6 +290,7 @@ function self:OnSave()
 	{
 		warning = _warning,
 		timetospawn = _timetospawn,
+		targetnum = _targetNum
 	}
 
 	local ents = {}
@@ -297,10 +310,14 @@ end
 function self:OnLoad(data)
 	_warning = data.warning or false
 	_timetospawn = data.timetospawn
+	_targetNum = data.targetnum
 
-	if _timetospawn and _timetospawn > 0 then 
+	--print("Bearger OnLoad", _targetNum or "nil", _timetospawn or "nil")
+	self.inst:StopUpdatingComponent(self)
+
+	--[[if _timetospawn and _timetospawn > 0 then 
 		self.inst:StartUpdatingComponent(self)
-	end
+	end]]
 end
 
 function self:LoadPostPass(newents, savedata)
@@ -310,10 +327,17 @@ function self:LoadPostPass(newents, savedata)
 			if newents[v] ~= nil then 
 				_activehasslers[newents[v].entity] = true
 				_numSpawned = _numSpawned + 1
-				self.inst:StopUpdatingComponent(self)
+				--self.inst:StopUpdatingComponent(self)
 			end
 		end
 	end
+
+	--print("BeargerSpawner LoadPostPass")
+
+	if TheWorld.state.season == "autumn" then
+		--print("calling OnAutumn") 
+		OnAutumn() 
+	end 
 end
 
 
@@ -332,7 +356,11 @@ function self:GetDebugString()
 	else
 		s = s .. string.format("SPAWNING!!!")
 	end
-	s = s .. string.format(" active: %s", _activehasslers ~= nil and #_activehasslers or "<nil>")
+	local numActive = 0
+	for k,v in pairs(_activehasslers) do 
+		numActive = numActive + 1
+	end
+	s = s .. string.format(" active: %s", numActive)
 	return s
 end
 

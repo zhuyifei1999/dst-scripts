@@ -14,9 +14,7 @@ local function OnHit(inst, owner, target)
     end
     SpawnPrefab("poop").Transform:SetPosition(inst.Transform:GetWorldPosition())
     inst.SoundEmitter:PlaySound("dontstarve/creatures/monkey/poopsplat")
-    if target.sg ~= nil and not target.sg:HasStateTag("frozen") and target.sg.sg.states.hit then
-        target.sg:GoToState("hit")
-    end
+    target:PushEvent("attacked", {attacker = owner, damage = 0})
     inst:Remove()
 end
 

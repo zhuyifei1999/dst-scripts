@@ -647,6 +647,10 @@ local states =
         tags = { "busy", "pausepredict" },
 
         onenter = function(inst)
+            if inst.components.freezable ~= nil and inst.components.freezable:IsFrozen() then
+                inst.components.freezable:Unfreeze()
+            end
+
             inst.components.locomotor:Stop()
             inst:ClearBufferedAction()
 
