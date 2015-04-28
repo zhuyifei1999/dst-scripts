@@ -162,18 +162,18 @@ function DownloadMods( server_listing )
 		return false
 	end
 	
-	print("DownloadMods")
+	print("DownloadMods and temp disable")
 	KnownModIndex:ClearAllTempModFlags() --clear all old temp mod flags when connecting incase someone killed the process before disconnecting
 	
 	KnownModIndex:UpdateModInfo()
-	for _,mod_name in pairs(ModManager:GetEnabledModNames()) do
+	for _,mod_name in pairs(KnownModIndex:GetServerModNames()) do
 		local modinfo = KnownModIndex:GetModInfo(mod_name)
 		if not modinfo.client_only_mod then
 			if server_listing_contains( server_listing.mods_description, mod_name ) then
 				--we found it, so leave the mod enabled	
 			else
 				--this mod is required by all clients but the server doesn't have it enabled or it's a server mod, so locally disable it temporarily.
-				print("Temp disabling ",mod_name)
+				--print("Temp disabling ",mod_name)
 				KnownModIndex:TempDisable(mod_name)
 			end
 		end

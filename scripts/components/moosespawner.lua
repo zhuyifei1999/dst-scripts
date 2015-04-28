@@ -62,7 +62,6 @@ function self:DoSoftSpawn(nest)
 end
 
 function self:DoHardSpawn(nest)
-	--Moose is out of range of players. Force spawn moose and egg at location.
 
 	nest.mooseIncoming = false
 
@@ -88,9 +87,7 @@ function self:InitializeNest(nest)
 end
 
 function self:InitializeNests()
-
-	print("########InitializeNests()!")
-
+	print("MooseSpawner - InitializeNests")
 	local nests = FindNests()
 	local num_to_spawn = math.ceil(#nests * _moosedensity)
 	_seasonalnests = PickSome(num_to_spawn, nests)
@@ -100,16 +97,12 @@ function self:InitializeNests()
 	end
 end
 
---------------------------------------------------------------------------
---[[ Save/Load ]]
---------------------------------------------------------------------------
-
-local function OnSeasonChange(inst, data)
-	if TheWorld.state.isspring and TheWorld.state.cycles > TUNING.NO_BOSS_TIME then
+local function OnSpringChange(inst, isSpring)
+	if isSpring and TheWorld.state.cycles > TUNING.NO_BOSS_TIME then
 		self:InitializeNests()	
 	end
 end
 
-inst:WatchWorldState("season", function() OnSeasonChange(inst) end)
+inst:WatchWorldState("isspring", OnSpringChange)
 
 end)

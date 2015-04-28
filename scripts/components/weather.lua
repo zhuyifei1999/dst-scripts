@@ -142,7 +142,7 @@ local PEAK_PRECIPITATION_RANGES =
     autumn = { min = .10, max = .66 },
     winter = { min = .10, max = .80 },
     spring = { min = .50, max = 1.00 },
-    summer = { min = .01, max = .33 },
+    summer = { min = 1.0, max = 1.0 },
 }
 
 --------------------------------------------------------------------------
@@ -261,7 +261,6 @@ local _moistureceil = net_float(inst.GUID, "weather._moistureceil", "moisturecei
 local _moisturefloor = net_float(inst.GUID, "weather._moisturefloor")
 local _precipmode = net_tinybyte(inst.GUID, "weather._precipmode")
 local _preciptype = net_tinybyte(inst.GUID, "weather._preciptype", "preciptypedirty")
-local _precipintensity = net_float(inst.GUID, "weather._precipintensity")
 local _peakprecipitationrate = net_float(inst.GUID, "weather._peakprecipitationrate")
 local _snowlevel = net_float(inst.GUID, "weather._snowlevel")
 local _snowcovered = net_bool(inst.GUID, "weather._snowcovered", "snowcovereddirty")
@@ -384,14 +383,10 @@ local RandomizeMoistureFloor = _ismastersim and function(season)
     return (.25 + math.random() * .5) * _moisture:value() * _moisturefloormultiplier
 end or nil
 
-local RandomizePeakIntensity = _ismastersim and function()
-    return math.random()
-end or nil
-
 local RandomizePeakPrecipitationRate = _ismastersim and function(season)
     local range = PEAK_PRECIPITATION_RANGES[season]
     return range.min + math.random() * (range.max-range.min)
-end
+end or nil
 
 local function CalculatePrecipitationRate()
     if _precipmode:value() == PRECIP_MODES.always then
@@ -408,7 +403,6 @@ local StartPrecipitation = _ismastersim and function(temperature)
     _nextlightningtime = GetRandomMinMax(_minlightningdelay or 5, _maxlightningdelay or 15)
     _moisture:set(_moistureceil:value())
     _moisturefloor:set(RandomizeMoistureFloor(_season))
-    _precipintensity:set(RandomizePeakIntensity())
     _peakprecipitationrate:set(RandomizePeakPrecipitationRate(_season))
     _preciptype:set(temperature < _startsnowthreshold and PRECIP_TYPES.snow or PRECIP_TYPES.rain)
 end or nil
@@ -694,7 +688,6 @@ _moistureceil:set(0)
 _moisturefloor:set(0)
 _precipmode:set(PRECIP_MODES.dynamic)
 _preciptype:set(PRECIP_TYPES.none)
-_precipintensity:set(1)
 _peakprecipitationrate:set(1)
 _snowlevel:set(0)
 _wetness:set(0)
@@ -897,8 +890,8 @@ function self:OnUpdate(dt)
         end
         StartAmbientRainSound(preciprate_sound)
         if _hasfx then
-            _rainfx.particles_per_tick = (5 + _precipintensity:value() * 25) * preciprate
-            _rainfx.splashes_per_tick = 1 + 2 * _precipintensity:value() * preciprate
+            _rainfx.particles_per_tick = 5 * preciprate
+            _rainfx.splashes_per_tick = 2 * preciprate
             _snowfx.particles_per_tick = 0
         end
     else
@@ -1019,7 +1012,6 @@ if _ismastersim then function self:OnSave()
         moistureceil = _moistureceil:value(),
         precipmode = PRECIP_MODE_NAMES[_precipmode:value()],
         preciptype = PRECIP_TYPE_NAMES[_preciptype:value()],
-        precipintensity = _precipintensity:value(),
         peakprecipitationrate = _peakprecipitationrate:value(),
         snowlevel = _snowlevel:value(),
         snowcovered = _snowcovered:value() or nil,
@@ -1051,7 +1043,6 @@ if _ismastersim then function self:OnLoad(data)
     _moistureceil:set(data.moistureceil or RandomizeMoistureCeil())
     _precipmode:set(PRECIP_MODES[data.precipmode] or PRECIP_MODES.dynamic)
     _preciptype:set(PRECIP_TYPES[data.preciptype] or PRECIP_TYPES.none)
-    _precipintensity:set(data.precipintensity or 1)
     _peakprecipitationrate:set(data.peakprecipitationrate or 1)
     _snowlevel:set(data.snowlevel or 0)
     _snowcovered:set(data.snowcovered == true)
@@ -1078,8 +1069,8 @@ function self:GetDebugString()
     local str =
     {
         string.format("%2.2fC", temperature),
-        string.format("moisture:%2.2f(%2.2f/%2.2f)", _moisture:value(), _moisturefloor:value(), _moistureceil:value()),
-        string.format("preciprate:(%2.2f of %2.2f) * %2.2f", preciprate, _peakprecipitationrate:value(), _precipintensity:value()),
+        string.format("moisture:%2.2f(%2.2f/%2.2f) + %2.2f", _moisture:value(), _moisturefloor:value(), _moistureceil:value(), _moisturerate:value()),
+        string.format("preciprate:(%2.2f of %2.2f)", preciprate, _peakprecipitationrate:value()),
         string.format("snowlevel:%2.2f", _snowlevel:value()),
         string.format("wetness:%2.2f(%s%2.2f)%s", _wetness:value(), wetrate > 0 and "+" or "", wetrate, _wet:value() and " WET" or ""),
     }
@@ -1096,3 +1087,4 @@ end
 --------------------------------------------------------------------------
 
 end)
+

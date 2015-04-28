@@ -133,29 +133,6 @@ function GetEnabledModsConfigData()
 	return encoded_data
 end
 
-function LoadServerModsFile()
-	local function ServerModSetup(product_id)
-		TheNet:ServerModSetup(product_id)
-	end
-	local function ServerModCollectionSetup(collection_id)
-		TheNet:ServerModCollectionSetup(collection_id)
-	end
-	
-	local env = {
-		ServerModSetup = ServerModSetup,
-		ServerModCollectionSetup = ServerModCollectionSetup,
-	}
-
-	local filename = "../mods/dedicated_server_mods_setup.lua"
-	local fn = kleiloadlua( filename )
-	if fn ~= nil then	
-		if type(fn)=="string" then
-			error("Error loading dedicated_server_mods_setup.lua:\n"..fn)
-		end
-		setfenv(fn, env)
-		fn()
-	end
-end
 	
 local function modprint(...)
 	--print(unpack({...}))
@@ -294,12 +271,46 @@ function CreateEnvironment(modname, isworldgen)
 	return env
 end
 
+function ModWrangler:LoadServerModsFile()
+	local function ServerModSetup(product_id)
+		TheNet:ServerModSetup(product_id)
+	end
+	local function ServerModCollectionSetup(collection_id)
+		TheNet:ServerModCollectionSetup(collection_id)
+	end
+	
+	local env = {
+		ServerModSetup = ServerModSetup,
+		ServerModCollectionSetup = ServerModCollectionSetup,
+	}
+
+	KnownModIndex:UpdateModInfo() --we have to update the modinfo so that we have the correct mod versions
+	
+	TheNet:BeginServerModSetup()
+	
+	local filename = "../mods/dedicated_server_mods_setup.lua"
+	local fn = kleiloadlua( filename )
+	if fn ~= nil then	
+		if type(fn)=="string" then
+			error("Error loading dedicated_server_mods_setup.lua:\n"..fn)
+		end
+		setfenv(fn, env)
+		fn()
+	end
+	
+	TheNet:DownloadServerMods()
+end
+
 function ModWrangler:LoadMods(worldgen)	
 	if not MODS_ENABLED then
 		return
 	end
 
 	self.worldgen = worldgen or false
+
+	if not worldgen and TheNet:IsDedicated() then
+		self:LoadServerModsFile()
+	end
 
 	local mod_overrides = {}
 	if not worldgen then

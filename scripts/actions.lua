@@ -183,7 +183,8 @@ ACTIONS.PICKUP.fn = function(act)
         act.target ~= nil and
         act.target.components.inventoryitem ~= nil and
         not act.target:IsInLimbo() and
-        not act.target:HasTag("catchable") then
+        not act.target:HasTag("catchable") and
+        not act.target:HasTag("fire") then
 
         act.doer:PushEvent("onpickup", {item = act.target})
 

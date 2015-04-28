@@ -631,12 +631,17 @@ end
 
 function c_summondeerclops()
 	local player = ConsoleCommandPlayer()
-	TheWorld.components.deerclopsspawner:SummonMonster(player)
+	if player then 
+		TheWorld.components.deerclopsspawner:SummonMonster(player)
+	end
 end
 
 function c_summonbearger()
 	local player = ConsoleCommandPlayer()
-	TheWorld.components.beargerspawner:SummonMonster(player)
+	print("Summoning bearger for player ", player)
+	if player then 
+		TheWorld.components.beargerspawner:SummonMonster(player)
+	end
 end
 
 function c_gatherplayers()
@@ -644,4 +649,9 @@ function c_gatherplayers()
 	for k,v in pairs(AllPlayers) do
 		v.Transform:SetPosition(x,y,z)
 	end
+end
+
+function c_speedup()
+	TheSim:SetTimeScale(TheSim:GetTimeScale() *10)
+	print("Speed is now ", TheSim:GetTimeScale())
 end

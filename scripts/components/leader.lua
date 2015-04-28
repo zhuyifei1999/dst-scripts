@@ -5,7 +5,7 @@ local Leader = Class(function(self, inst)
     
     self.inst:ListenForEvent("newcombattarget", function(inst, data) self:OnNewTarget(data.target) end)
     self.inst:ListenForEvent("attacked", function(inst, data) self:OnAttacked(data.attacker) end)    
-    self.inst:ListenForEvent("death", function(inst) self:RemoveAllFollowers() end)
+    self.inst:ListenForEvent("death", function(inst) self:RemoveAllFollowersOnDeath() end)
 end)
 
 function Leader:IsFollower(guy)
@@ -99,6 +99,14 @@ end
 function Leader:RemoveAllFollowers()
     for k,v in pairs(self.followers) do
         self:RemoveFollower(k)
+    end
+end
+
+function Leader:RemoveAllFollowersOnDeath()
+    for k, v in pairs(self.followers) do
+        if not (k.components.follower ~= nil and k.components.follower.keepdeadleader) then
+            self:RemoveFollower(k)
+        end
     end
 end
 

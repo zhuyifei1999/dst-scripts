@@ -94,8 +94,8 @@ local function OnEntitySleep(inst)
     end
 end
 
-local function OnSeasonChange(inst, data)
-    inst.shouldGoAway = not TheWorld.state.isspring
+local function OnSpringChange(inst, isSpring)
+    inst.shouldGoAway = not isSpring
     if inst:IsAsleep() then
         OnEntitySleep(inst)
     end
@@ -105,7 +105,6 @@ local function OnAttacked(inst, data)
     inst.components.combat:SetTarget(data.attacker)
     inst.components.combat:ShareTarget(data.attacker, 60, function(guy) return guy.prefab == inst.prefab end, 60)
 end
-
 
 local function fn()
     local inst = CreateEntity()
@@ -191,7 +190,7 @@ local function fn()
 
     ------------------------------------------
 
-    inst:WatchWorldState("season", function() OnSeasonChange(inst) end)
+    inst:WatchWorldState("isspring", OnSpringChange)
     inst:ListenForEvent("attacked", OnAttacked)
     inst:ListenForEvent("entitysleep", OnEntitySleep)
 

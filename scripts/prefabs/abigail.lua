@@ -1,8 +1,8 @@
 local assets =
 {
-	Asset("ANIM", "anim/ghost.zip"),
-	Asset("ANIM", "anim/ghost_wendy_build.zip"),
-	Asset("SOUND", "sound/ghost.fsb"),
+    Asset("ANIM", "anim/ghost.zip"),
+    Asset("ANIM", "anim/ghost_wendy_build.zip"),
+    Asset("SOUND", "sound/ghost.fsb"),
 }
 
 local brain = require("brains/abigailbrain")
@@ -100,18 +100,19 @@ local function linktoplayer(inst, player)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
     inst.entity:AddLight()
     inst.entity:AddNetwork()
 
     inst.AnimState:SetBank("ghost")
     inst.AnimState:SetBuild("ghost_wendy_build")
-    inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
     inst.AnimState:PlayAnimation("idle", true)
+    inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+    inst.AnimState:SetLightOverride(TUNING.GHOST_LIGHT_OVERRIDE)
     --inst.AnimState:SetMultColour(1, 1, 1, .6)
 
     inst:AddTag("character")
@@ -140,7 +141,7 @@ local function fn()
     end
 
     inst:SetBrain(brain)
-    
+
     inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
     inst.components.locomotor.walkspeed = TUNING.ABIGAIL_SPEED*.5
     inst.components.locomotor.runspeed = TUNING.ABIGAIL_SPEED
@@ -153,7 +154,7 @@ local function fn()
     inst.components.health:SetMaxHealth(TUNING.ABIGAIL_HEALTH)
     inst.components.health:StartRegen(1, 1)
 
-	inst:AddComponent("combat")
+    inst:AddComponent("combat")
     inst.components.combat.defaultdamage = TUNING.ABIGAIL_DAMAGE_PER_SECOND
     inst.components.combat.playerdamagepercent = TUNING.ABIGAIL_DMG_PLAYER_PERCENT
     inst.components.combat:SetRetargetFunction(3, Retarget)
@@ -164,17 +165,18 @@ local function fn()
     inst.components.aura.ignoreallies = true
     inst.components.aura.auratestfn = auratest
 
-    MakeHauntableGoToState(inst, "haunted", nil, 64*FRAMES*1.2)
+    MakeHauntableGoToState(inst, "haunted", nil, 64 * FRAMES * 1.2)
 
     inst:AddComponent("lootdropper")
     ------------------    
 
     inst:AddComponent("follower")
-    
+    inst.components.follower.keepdeadleader = true
+
     inst:ListenForEvent("attacked", OnAttacked)
 
     inst:WatchWorldState("phase", updatedamage)
-    
+
     updatedamage(inst, TheWorld.state.phase)
 
     inst.LinkToPlayer = linktoplayer

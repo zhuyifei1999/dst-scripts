@@ -14,7 +14,7 @@ local function WearOff(inst)
         elseif freezable.state == states.THAWING then
             freezable:Unfreeze()
         elseif freezable.coldness > 0 then
-            freezable.coldness = freezable.coldness - 1
+            freezable.coldness = math.max(0, freezable.coldness - 1)
             if freezable.coldness > 0 then
                 freezable:StartWearingOff()
             end
@@ -104,14 +104,13 @@ function Freezable:GetDebugString()
 end
 
 function Freezable:AddColdness(coldness, freezetime)
-    self.coldness = self.coldness + coldness
-    if self.coldness < 0 then self.coldness = 0 end
+    self.coldness = math.max(0, self.coldness + coldness)
     self:UpdateTint()
     if self.coldness > self.resistance or self:IsFrozen() then
         self:Freeze(freezetime)
     elseif self.coldness == self.resistance then
         self:Freeze(freezetime)
-    else
+    elseif self.coldness > 0 then
         self:StartWearingOff()
     end
 end

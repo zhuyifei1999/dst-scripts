@@ -50,7 +50,7 @@ local _activeplayers = {}
 local function AllowedToAttack()
 	--print("Deerclopsspawner allowed to attack?", TheWorld.state.cycles, _attackduringoffseason, TheWorld.state.season)
     return  #_activeplayers > 0 and
-            TheWorld.state.cycles >= (TUNING.NO_BOSS_TIME - 1) and  -- the season flips when cycles == 19 for some reason 
+            TheWorld.state.cycles > TUNING.NO_BOSS_TIME and  
                 (_attackduringoffseason or
                 TheWorld.state.season == "winter")
 end
@@ -109,8 +109,14 @@ local function TryStartAttacks(killed)
         end
 
         self.inst:StartUpdatingComponent(self)
+        self:StopWatchingWorldState("cycles", TryStartAttacks)
+        self.inst.watchingcycles = nil
     else
         PauseAttacks()
+        if not self.inst.watchingcycles then 
+        	self:WatchWorldState("cycles", TryStartAttacks)  -- keep checking every day until NO_BOSS_TIME is up
+        	self.inst.watchingcycles = true
+        end
     end
 end
 

@@ -157,7 +157,7 @@ local states=
         events=
         {
             EventHandler("animover", function(inst) inst.sg:GoToState("distress") end ),
-            EventHandler("onextinguish", function(inst) if inst.components.health:GetPercent() > 0 then inst.sg:GoToState("idle", "flap_post") end end ),
+            EventHandler("onextinguish", function(inst) if inst.components.health:GetPercent() > 0 then inst.sg:GoToState("idle", "flap_pst") end end ),
         },
     },
     

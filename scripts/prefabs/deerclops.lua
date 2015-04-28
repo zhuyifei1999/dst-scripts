@@ -149,7 +149,7 @@ end
 
 local function OnNewTarget(inst, data)
     FindBaseToAttack(inst, data.target or inst)
-    if inst.components.knownlocations:GetLocation("targetbase") then
+    if inst.components.knownlocations:GetLocation("targetbase") and data.target:HasTag("player") then
         inst.structuresDestroyed = inst.structuresDestroyed - 1
         inst.components.knownlocations:ForgetLocation("home")
     end

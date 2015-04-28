@@ -107,9 +107,10 @@ function Propagator:OnUpdate(dt)
                     v.components.propagator:AddHeat(self.heatoutput*percent_heat*dt)
 			    end
 
-                if v ~= self.inst and v.components.freezable then
-                    v.components.freezable:AddColdness((-self.heatoutput/4)*dt)
-                    if v.components.freezable:IsFrozen() and v.components.freezable.coldness > 0 then
+                if v ~= self.inst and v.components.freezable ~= nil then
+                    v.components.freezable:AddColdness(-.25 * self.heatoutput *dt)
+                    if v.components.freezable:IsFrozen() and v.components.freezable.coldness <= 0 then
+                        --Skip thawing
                         v.components.freezable:Unfreeze()
                     end
                 end

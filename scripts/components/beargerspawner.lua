@@ -54,6 +54,7 @@ local function PickPlayer()
 	table.remove(_activeplayers, playeri)
 	table.insert(_activeplayers, player)
 	_targetplayer = player
+	--print("Picked player ", _targetplayer)
 end
 
 
@@ -70,13 +71,14 @@ end
 
 local function ReleaseHassler(targetPlayer)
 	assert(targetPlayer)
+	--print("Releasing hassler!", targetPlayer)
 
 	self.inst:StopUpdatingComponent(self)
 
 	local pt = Vector3(targetPlayer.Transform:GetWorldPosition())
 
 	if _numSpawned >= _targetNum then 
-		return 
+		return nil
 	end
 
     local spawn_pt = GetSpawnPoint(pt)
@@ -85,8 +87,7 @@ local function ReleaseHassler(targetPlayer)
 	   
 		local hassler = SpawnPrefab("bearger")
 		_numSpawned = _numSpawned + 1
-	   
-	    --print("spawned bearger ", hassler)
+	  
         if hassler then
             hassler.Physics:Teleport(spawn_pt:Get())
 
@@ -106,6 +107,8 @@ local function SpawnBearger()
 		_timetospawn = GetRandomWithVariance(spawndelay, spawnrandom or 0)
 		--print("Spawning Bearger ", _timetospawn)
 		self.inst:StartUpdatingComponent(self)
+	else
+		_timetospawn = nil
 	end
 
 end
@@ -164,9 +167,13 @@ local function OnPlayerJoined(src,player)
 end
 
 local function OnPlayerLeft(src,player)
+	--print("Player ", player, "left, targetplayer is ", _targetplayer or "nil")
     for i, v in ipairs(_activeplayers) do
         if v == player then
             table.remove(_activeplayers, i)
+            if player == _targetplayer then 
+            	_targetplayer = nil
+            end
             return
         end
     end
@@ -181,6 +188,11 @@ end
 local function OnHasslerKilled(src, hassler)
 	--print("Bearger killed", hassler)
 	_activehasslers[hassler] = nil
+	_timetospawn = nil
+	_targetplayer = nil
+
+	-- If WorldSettings has Bearger = Lots, then let Beargers respawn immediately after being killed instead 
+	-- of waiting for the following autumn
 	if (_firstBeargerSpawnChance >= 1 and _secondBeargerSpawnChance >= 1) then 
 		_numSpawned = _numSpawned - 1
 		SpawnBearger()
@@ -234,9 +246,10 @@ function self:OnUpdate(dt)
 			if _targetplayer == nil then
 				PickPlayer() -- In case a long update skipped the warning or something
 			end
-			--print("TimeToSpawn: ", _targetplayer)
+			--print("TimeToSpawn: ", _timetospawn, _targetplayer)
 	        if _targetplayer ~= nil then
-	            _activehasslers[ReleaseHassler(_targetplayer)] = true
+	        	local hassler = ReleaseHassler(_targetplayer)
+	            _activehasslers[hassler] = true
 	        end
 		else
 			if not _warning and _timetospawn < _warnduration then

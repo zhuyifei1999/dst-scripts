@@ -106,9 +106,9 @@ end
 
 function ModIndex:GetClientModNames()
 	local names = {}
-	for name,_ in pairs(self.savedata.known_mods) do
-		if self:GetModInfo().client_only_mod then
-			table.insert(names, name)
+	for modname,_ in pairs(self.savedata.known_mods) do
+		if self:GetModInfo(modname).client_only_mod then
+			table.insert(names, modname)
 		end
 	end
 	return names
@@ -116,9 +116,9 @@ end
 
 function ModIndex:GetServerModNames()
 	local names = {}
-	for name,_ in pairs(self.savedata.known_mods) do
-		if not self:GetModInfo().client_only_mod then
-			table.insert(names, name)
+	for modname,_ in pairs(self.savedata.known_mods) do
+		if not self:GetModInfo(modname).client_only_mod then
+			table.insert(names, modname)
 		end
 	end
 	return names
@@ -261,18 +261,22 @@ function ResolveModname(modname)
 end
 
 function ModIndex:ApplyEnabledOverrides(mod_overrides)
-	--Enable mods that are being forced on in the modoverrides.lua file
-	--print("ModIndex:ApplyEnabledOverrides for mods" )
-	for modname,env in pairs(mod_overrides) do
-		--print( "modname override enabled ", env.enabled )
-		if env.enabled ~= nil then
-			local actual_modname = ResolveModname(modname)
-			if actual_modname ~= nil then
-				if env.enabled then
-					print( "modoverrides.lua enabling " .. actual_modname )
-					self:Enable(actual_modname)
-				else
-					self:Disable(actual_modname)
+	if mod_overrides == nil then
+		print("Warning: modoverrides.lua is empty, or is failing to return a table.")
+	else	
+		--Enable mods that are being forced on in the modoverrides.lua file
+		--print("ModIndex:ApplyEnabledOverrides for mods" )
+		for modname,env in pairs(mod_overrides) do
+			--print( "modname override enabled ", env.enabled )
+			if env.enabled ~= nil then
+				local actual_modname = ResolveModname(modname)
+				if actual_modname ~= nil then
+					if env.enabled then
+						print( "modoverrides.lua enabling " .. actual_modname )
+						self:Enable(actual_modname)
+					else
+						self:Disable(actual_modname)
+					end
 				end
 			end
 		end

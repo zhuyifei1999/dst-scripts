@@ -40,7 +40,7 @@ local BASE_TAGS = {"structure"}
 local SEE_STRUCTURE_DIST = 20
 
 local TARGET_DIST = 10
-local LOSE_TARGET_DIST = 30
+local LOSE_TARGET_DIST = 20
 
 local function NearPlayerBase(inst)
     local pt = inst:GetPosition()
@@ -76,10 +76,11 @@ local function RetargetFn(inst)
 end
 
 local function KeepTargetFn(inst, target)
-    local landing = inst.components.knownlocations:GetLocation("landpoint")
+    local landing = inst.components.knownlocations:GetLocation("landpoint") or inst:GetPosition()
 
-    return inst.components.combat:CanTarget(target) and inst:GetDistanceSqToInst(target) <= LOSE_TARGET_DIST*LOSE_TARGET_DIST and
-    (landing and target:GetPosition():DistSq(landing) <= LOSE_TARGET_DIST* LOSE_TARGET_DIST or true)
+    return inst.components.combat:CanTarget(target) 
+    and inst:GetPosition():Dist(target:GetPosition()) <= LOSE_TARGET_DIST 
+    and target:GetPosition():Dist(landing) <= LOSE_TARGET_DIST
 
 end
 
@@ -89,8 +90,8 @@ local function OnEntitySleep(inst)
     end
 end
 
-local function OnSeasonChange(inst, data)
-    inst.shouldGoAway = not TheWorld.state.isspring or TheWorld.state.iscave
+local function OnSpringChange(inst, isSpring)
+    inst.shouldGoAway = not isSpring or TheWorld.state.iscave
     if inst:IsAsleep() then
         OnEntitySleep(inst)
     end
@@ -234,7 +235,7 @@ local function fn()
 
     ------------------------------------------
 
-    inst:WatchWorldState("season", OnSeasonChange)
+    inst:WatchWorldState("isspring", OnSpringChange)
     inst:ListenForEvent("attacked", OnAttacked)
     inst:ListenForEvent("entitysleep", OnEntitySleep)
 

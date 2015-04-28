@@ -3260,7 +3260,8 @@ local states =
                 inst.SoundEmitter:PlaySound("dontstarve/ghost/ghost_use_bloodpump")
             end),
             TimeEvent(96 * FRAMES, function(inst) 
-                inst.AnimState:ClearBloomEffectHandle() 
+                inst.AnimState:ClearBloomEffectHandle()
+                inst.AnimState:SetLightOverride(0)
                 inst.AnimState:Hide("HAT")
                 inst.AnimState:Hide("HatFX")
             end),
@@ -3281,6 +3282,7 @@ local states =
             inst.AnimState:SetBank("wilson")
             inst.AnimState:SetBuild(inst.skin_name or inst.prefab)
             inst.AnimState:ClearBloomEffectHandle()
+            inst.AnimState:SetLightOverride(0)
             inst.AnimState:Hide("HAT")
             inst.AnimState:Hide("HatFX")
             --
@@ -3615,6 +3617,9 @@ local states =
             EventHandler("onthaw", function(inst)
                 inst.sg.statemem.isstillfrozen = true
                 inst.sg:GoToState("thaw")
+            end),
+            EventHandler("unfreeze", function(inst)
+                inst.sg:GoToState("hit")
             end),
         },
 

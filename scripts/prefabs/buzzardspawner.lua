@@ -12,8 +12,32 @@ local prefabs =
 local FOOD_TAGS = {"edible", "prey"}
 local NO_TAGS = {"FX", "NOCLICK", "DECOR","INLIMBO"}
 
-local function RemoveShadow(inst, shadow)
-	shadow.components.colourtweener:StartTween({1,1,1,0}, 3, function() shadow:Remove() inst.buzzards[shadow] = nil end)
+local function RemoveBuzzardShadow(inst, shadow)
+	shadow.components.colourtweener:StartTween({1,1,1,0}, 3, function() shadow:Remove() end)
+    for i,v in ipairs(inst.buzzardshadows) do
+        if v == shadow then
+            table.remove(inst.buzzardshadows, i)
+            break
+        end
+    end
+end
+
+local function SpawnBuzzardShadow(inst)
+	local shadow = SpawnPrefab("circlingbuzzard")
+	shadow.components.circler:SetCircleTarget(inst)
+	shadow.components.circler:Start()
+    return shadow
+end
+
+local function UpdateShadows(inst)
+    local count = inst.components.childspawner.childreninside
+    while #inst.buzzardshadows < count do
+        table.insert(inst.buzzardshadows, SpawnBuzzardShadow(inst))
+    end
+    while #inst.buzzardshadows > count do
+        local shadow = inst.buzzardshadows[#inst.buzzardshadows]
+        RemoveBuzzardShadow(inst, shadow)
+    end
 end
 
 local function ReturnChildren(inst)
@@ -25,29 +49,20 @@ local function ReturnChildren(inst)
 	end
 end
 
-local function SpawnBuzzardShadow(inst)
-	local buzzard = SpawnPrefab("circlingbuzzard")
-	buzzard.components.circler:SetCircleTarget(inst)
-	buzzard.components.circler:Start()
-	inst.buzzards[buzzard] = buzzard
-end
-
-local function OnAddChild(inst, num)
-	for i = 1, num or 1 do
-		SpawnBuzzardShadow(inst)
-	end
+local function OnAddChild(inst)
+    UpdateShadows(inst)
 end
 
 local function OnSpawn(inst, child)
-	for k,v in pairs(inst.buzzards) do
-		if k and k:IsValid() then
-			local dist = v.components.circler.distance
-			local angle = v.components.circler.angleRad
+	for i,shadow in ipairs(inst.buzzardshadows) do
+		if shadow and shadow:IsValid() then
+			local dist = shadow.components.circler.distance
+			local angle = shadow.components.circler.angleRad
 			local offset = FindWalkableOffset(inst:GetPosition(), angle, dist, 8, false) or Vector3(0,0,0)
 			offset.y = 30
 			child.Transform:SetPosition((inst:GetPosition() + offset):Get())
 			child.sg:GoToState("glide")
-			RemoveShadow(inst, k)		
+			RemoveBuzzardShadow(inst, shadow)
 			break
 		end
 	end
@@ -71,8 +86,18 @@ local function SpawnOnFood(inst, food)
 		end
 		
 		buzzard:FacePoint(food.Transform:GetWorldPosition())
-		food:ListenForEvent("onpickup", function() food.buzzardHunted = nil end)
+
+        local stophuntingfood = nil
+        stophuntingfood = function()
+            food.buzzardHunted = nil
+            food:RemoveEventCallback("onpickup", stophuntingfood)
+            buzzard:RemoveEventCallback("onremove", stophuntingfood)
+        end
+
+		food:ListenForEvent("onpickup", stophuntingfood)
+        buzzard:ListenForEvent("onremove", stophuntingfood)
 		food.buzzardHunted = true
+
 		inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/buzzard/distant")
 	end
 end
@@ -95,9 +120,9 @@ local function LookForFood(inst)
 end
 
 local function OnEntitySleep(inst)
-	for k,v in pairs(inst.buzzards) do
-		k:Remove()
-		k = nil
+	for i,buzzard in ipairs(inst.buzzardshadows) do
+		buzzard:Remove()
+		inst.buzzardshadows[i] = nil
 	end
 	if inst.foodTask then
 		inst.foodTask:Cancel()
@@ -111,9 +136,7 @@ local function OnEntityWake(inst)
 			if not inst.components.childspawner then 
 				print("no childspawner on ", inst)
 			else
-				for i = 1, inst.components.childspawner.childreninside do
-					SpawnBuzzardShadow(inst)
-				end
+                UpdateShadows(inst)
 			end
 		end
 	end)
@@ -162,7 +185,7 @@ local function fn()
 	inst:WatchWorldState("isday", OnIsDay)
 	inst:WatchWorldState("isnight", OnIsNight)
 	
-	inst.buzzards = {}
+	inst.buzzardshadows = {}
 
 	inst.OnEntityWake = OnEntityWake
 	inst.OnEntitySleep = OnEntitySleep

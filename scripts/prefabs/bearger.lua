@@ -56,6 +56,18 @@ local function CalcSanityAura(inst, observer)
 	return -TUNING.SANITYAURA_LARGE
 end
 
+local function SetGroundPounderSettings(inst, mode)
+	if mode == "normal" then 
+		inst.components.groundpounder.damageRings = 2
+		inst.components.groundpounder.destructionRings = 2
+		inst.components.groundpounder.numRings = 3
+	elseif mode == "hibernation" then 
+		inst.components.groundpounder.damageRings = 3
+		inst.components.groundpounder.destructionRings = 3
+		inst.components.groundpounder.numRings = 4
+	end
+end
+
 local function RetargetFn(inst)
 	if inst.components.sleeper and inst.components.sleeper:IsAsleep() then return end	
 
@@ -113,7 +125,14 @@ local function OnLoad(inst, data)
 end
 
 local function OnSeasonChange(inst, data)
-	
+	if TheWorld.state.season == "autumn" or TheWorld.state.season == "summer" then 
+		SetGroundPounderSettings(inst, "normal")
+		inst.components.health:SetAbsorptionAmount(0)
+		inst:RemoveTag("hibernation")
+	else
+		SetGroundPounderSettings(inst, "hibernation")
+		inst:AddTag("hibernation")
+	end
 end
 
 local function OnAttacked(inst, data)
@@ -197,8 +216,16 @@ local function ShouldSleep(inst)
 		return false
 	end
 
+	-- don't fall asleep while on fire
+	if inst.components.health.takingfiredamage then 
+		return false
+	end
+
 	if TheWorld.state.season == "winter" or TheWorld.state.season == "spring" then 
 		inst.components.shedder:StopShedding()
+		inst:AddTag("hibernation")
+		SetGroundPounderSettings(inst, "hibernation")
+		inst.components.health:SetAbsorptionAmount(.15)
 		return true
 	end
 	
@@ -209,7 +236,9 @@ local function ShouldWake(inst)
 	if TheWorld.state.season == "summer" or TheWorld.state.season == "autumn" then 
 		
 		inst.components.shedder:StartShedding(TUNING.BEARGER_SHED_INTERVAL)
-		
+		inst:RemoveTag("hibernation")
+		SetGroundPounderSettings(inst, "normal")
+		inst.components.health:SetAbsorptionAmount(0)
 		return true
 	else
 		return false
@@ -421,9 +450,10 @@ local function fn()
 	inst:AddComponent("inventory")
 	inst:AddComponent("groundpounder")
 	inst.components.groundpounder.destroyer = true
-	inst.components.groundpounder.damageRings = 2
-	inst.components.groundpounder.destructionRings = 2
-	inst.components.groundpounder.numRings = 3
+	SetGroundPounderSettings(inst, "normal")
+	--inst.components.groundpounder.damageRings = 2
+	--inst.components.groundpounder.destructionRings = 2
+	--inst.components.groundpounder.numRings = 3
 	inst.components.groundpounder.groundpoundFn = OnGroundPound
 	inst:AddComponent("timer")
 	inst:AddComponent("eater")
@@ -432,7 +462,7 @@ local function fn()
 
 	------------------------------------------
 
-	--inst:WatchWorldState("season", OnSeasonChange)
+	inst:WatchWorldState("season", OnSeasonChange)
 	inst:ListenForEvent("attacked", OnAttacked)
 	inst:ListenForEvent("onhitother", OnHitOther)
 	inst:ListenForEvent("entitysleep", OnEntitySleep)

@@ -122,5 +122,9 @@ function GroundPounder:GroundPound_Offscreen(position)
 	end
 end
 
+function GroundPounder:GetDebugString()
+    local str = string.format("num rings: %d, damage rings: %d, destruction rings: %d", self.numRings, self.damageRings, self.destructionRings)
+    return str
+end
 
 return GroundPounder

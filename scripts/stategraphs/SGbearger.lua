@@ -31,7 +31,10 @@ local function onattackfn(inst)
 		end
 
 		if not inst.cangroundpound and not inst.components.timer:TimerExists("GroundPound") then
-			inst.components.timer:StartTimer("GroundPound", 10)
+			if inst:HasTag("hibernation") then 
+				inst.components.timer:StartTimer("GroundPound", TUNING.BEARGER_SLEEPY_GROUNDPOUND_COOLDOWN)
+			end
+			inst.components.timer:StartTimer("GroundPound", TUNING.BEARGER_NORMAL_GROUNDPOUND_COOLDOWN)
 		end
 
 		if inst.sg:HasStateTag("running") then
@@ -298,7 +301,10 @@ local states=
 				inst.components.groundpounder:GroundPound()
 				inst.cangroundpound = false
 				if not inst.components.timer:TimerExists("GroundPound") then
-					inst.components.timer:StartTimer("GroundPound", 10)
+					if inst:HasTag("hibernation") then 
+						inst.components.timer:StartTimer("GroundPound", TUNING.BEARGER_SLEEPY_GROUNDPOUND_COOLDOWN)
+					end
+					inst.components.timer:StartTimer("GroundPound", TUNING.BEARGER_NORMAL_GROUNDPOUND_COOLDOWN)
 				end
 				inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/bearger/groundpound")
 			end),

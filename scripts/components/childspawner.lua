@@ -4,6 +4,38 @@
 -- @param delay The time between spawning children when the spawner is actively spawning. If nil, only manual spawning works.
 -- @param newchilddelay The time it takes for a killed/captured child to be regenerated in the childspawner. If nil, dead children aren't regenerated.
 -- It's also a good idea to call SetMaxChildren as part of the childspawner setup.
+
+local function AddChildOutside(self, child)
+    if self.childrenoutside[child] ~= nil then
+        print("Ack! We already have this child outside!?")
+        return
+    end
+
+    self.childrenoutside[child] = child
+    self.numchildrenoutside = GetTableSize(self.childrenoutside)
+end
+
+local function RemoveChildOutside(self, child)
+    if self.childrenoutside[child] == nil then
+        print("Ack! That's not our child, or he's not outside!")
+        return
+    end
+
+    self.childrenoutside[child] = nil
+    self.numchildrenoutside = GetTableSize(self.childrenoutside)
+end
+
+local function AddEmergencyChildOutside(self, child)
+	self.emergencychildrenoutside[child] = child
+	self.numemergencychildrenoutside = GetTableSize(self.emergencychildrenoutside)
+end
+
+local function RemoveEmergencyChildOutside(self, child)
+	self.emergencychildrenoutside[child] = nil
+	self.numemergencychildrenoutside = GetTableSize(self.emergencychildrenoutside)
+end
+
+
 local ChildSpawner = Class(function(self, inst)
 	self.inst = inst
 	self.childrenoutside = {}
@@ -225,7 +257,7 @@ function ChildSpawner:OnSave()
 end
 
 function ChildSpawner:GetDebugString()
-    local str = string.format("%s - %d in, %d out", self.childname, self.childreninside, self.numchildrenoutside )
+    local str = string.format("%s: %d in, %d out", self.childname, self.childreninside, self.numchildrenoutside )
 	
 	local num_children = self.numchildrenoutside + self.childreninside
 	if num_children < self.maxchildren and self.regening then
@@ -303,14 +335,12 @@ end
 
 function ChildSpawner:TakeOwnership(child)
 	self:DoTakeOwnership(child)
-	self.childrenoutside[child] = child
-	self.numchildrenoutside = self.numchildrenoutside + 1
+    AddChildOutside(self, child)
 end
 
 function ChildSpawner:TakeEmergencyOwnership(child)
 	self:DoTakeOwnership(child)
-	self.emergencychildrenoutside[child] = child
-	self.numemergencychildrenoutside = self.numemergencychildrenoutside + 1
+    AddEmergencyChildOutside(self, child)
 end
 
 function ChildSpawner:LoadPostPass(newents, savedata)
@@ -432,9 +462,6 @@ function ChildSpawner:GoHome( child )
             self.ongohome(self.inst, child)
         end
         child:Remove()
-        self.childrenoutside[child] = nil
-
-        self.numchildrenoutside = self.numchildrenoutside - 1
         self:AddChildrenInside(1)
         return true
     end
@@ -445,9 +472,6 @@ function ChildSpawner:GoHome( child )
             self.ongohome(self.inst, child)
         end
         child:Remove()
-        self.emergencychildrenoutside[child] = nil
-
-        self.numemergencychildrenoutside = self.numemergencychildrenoutside - 1
         self:AddEmergencyChildrenInside(1)
         return true
     end
@@ -504,8 +528,7 @@ end
 
 function ChildSpawner:OnChildKilled( child )
     if self.childrenoutside[child] then
-        self.childrenoutside[child] = nil
-        self.numchildrenoutside = self.numchildrenoutside - 1
+        RemoveChildOutside(self, child)
 
         if self.onchildkilledfn then
         	self.onchildkilledfn(self.inst, child)
@@ -516,8 +539,7 @@ function ChildSpawner:OnChildKilled( child )
         end
     end
     if self.emergencychildrenoutside[child] then
-    	self.emergencychildrenoutside[child] = nil
-    	self.numemergencychildrenoutside = self.numemergencychildrenoutside - 1
+        RemoveEmergencyChildOutside(self, child)
 
         if self.regening then
 			self:StartUpdate(6)
@@ -539,12 +561,12 @@ function ChildSpawner:AddChildrenInside(count)
     if self.childreninside == 0 and self.onoccupied then
         self.onoccupied(self.inst)
     end
-    if self.onaddchild then
-    	self.onaddchild(self.inst, count)
-    end
     self.childreninside = self.childreninside + count
     if self.maxchildren then
         self.childreninside = math.min(self.maxchildren, self.childreninside)
+    end
+    if self.onaddchild then
+    	self.onaddchild(self.inst, count)
     end
 end
 

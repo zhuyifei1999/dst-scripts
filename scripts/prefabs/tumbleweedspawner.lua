@@ -5,10 +5,6 @@ local prefabs =
 	"tumbleweed",
 }
 
-local function OnAddChild(inst, num)
-	
-end
-
 local function OnSpawn(inst, child)
 	if child then
 		child.owner = inst
@@ -36,7 +32,6 @@ local function fn()
 	inst:AddComponent( "childspawner" )
 	inst.components.childspawner.childname = "tumbleweed"
 	inst.components.childspawner:SetSpawnedFn(OnSpawn)
-	inst.components.childspawner:SetOnAddChildFn(OnAddChild)
 	inst.components.childspawner:SetMaxChildren(math.random(TUNING.MIN_TUMBLEWEEDS_PER_SPAWNER,TUNING.MAX_TUMBLEWEEDS_PER_SPAWNER))
 	inst.components.childspawner:SetSpawnPeriod(math.random(TUNING.MIN_TUMBLEWEED_SPAWN_PERIOD, TUNING.MAX_TUMBLEWEED_SPAWN_PERIOD))
 	inst.components.childspawner:SetRegenPeriod(TUNING.TUMBLEWEED_REGEN_PERIOD)

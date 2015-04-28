@@ -148,10 +148,14 @@ local function LoadAssets(asset_set)
 			end
 			ModManager:RegisterPrefabs()
 		else
-			print("\tUnload BE")
-			TheSim:UnloadPrefabs(RECIPE_PREFABS)
-			TheSim:UnloadPrefabs(BACKEND_PREFABS)
-			print("\tUnload BE done")
+			if Settings.last_asset_set ~= nil then
+				print("\tUnload BE")
+				TheSim:UnloadPrefabs(RECIPE_PREFABS)
+				TheSim:UnloadPrefabs(BACKEND_PREFABS)
+				print("\tUnload BE done")
+			else
+				--print("No assets to unload because we have no previous asset set ")
+			end
 			KeepAlive()
 			TheSystemService:SetStalling(true)
 			TheSim:UnregisterAllPrefabs()

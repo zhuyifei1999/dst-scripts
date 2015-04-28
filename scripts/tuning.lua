@@ -323,6 +323,7 @@ function Tune(overrides)
 	    GHOST_DAMAGE = wilson_health*0.1,
 	    GHOST_DMG_PERIOD = 1.2,
 	    GHOST_DMG_PLAYER_PERCENT = 1,
+        GHOST_LIGHT_OVERRIDE = .1,
 
 	    ABIGAIL_SPEED = 5,
 	    ABIGAIL_HEALTH = wilson_health*4,
@@ -1359,6 +1360,8 @@ function Tune(overrides)
 		BEARGER_LONG_TRAVEL = 400,
 		BEARGER_SHED_INTERVAL = 45, -- time in seconds
 		BEARGER_ATTACK_CONE_WIDTH = math.pi/2,
+		BEARGER_NORMAL_GROUNDPOUND_COOLDOWN = 10,
+		BEARGER_SLEEPY_GROUNDPOUND_COOLDOWN = 2,
 
 	    LIGHTER_ATTACK_IGNITE_PERCENT = .5,
 	    LIGHTER_DAMAGE = wilson_attack*.5,
@@ -1554,7 +1557,7 @@ function Tune(overrides)
 	    HANDFAN_COOLING = -10,
         HANDFAN_RADIUS = 3,
 
-	    NO_BOSS_TIME = 20,
+	    NO_BOSS_TIME = 26,  -- 1.5 seasons
 
 		HAUNT_COOLDOWN_TINY = 1,
 		HAUNT_COOLDOWN_SMALL = 3,
