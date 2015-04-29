@@ -142,7 +142,7 @@ end
 
 local function OnEaten(inst, eater)
     if eater.components.talker then
-        eater.components.talker:Say( GetString(eater.prefab, "EAT_FOOD", "TALLBIRDEGG_CRACKED") )
+        eater.components.talker:Say( GetString(eater, "EAT_FOOD", "TALLBIRDEGG_CRACKED") )
     end
 end
 

@@ -32,17 +32,30 @@ function GetModConfigData(optionname, modname, get_local_config)
 	return nil
 end
 
+local function DoesCharacterExistInGendersTable(charactername)
+    for gender,characters in pairs(CHARACTER_GENDERS) do
+        if table.contains(characters, charactername) then
+            return true
+        end
+    end
+    return false
+end
+
 local function AddModCharacter(name, gender)
     table.insert(MODCHARACTERLIST, name)
-    if gender == nil then
-		print( "Warning: Mod Character " .. name .. " does not currently specify a gender. Please update the call to AddModCharacter to include a gender. \"FEMALE\", \"MALE\", \"ROBOT\", or \"NEUTRAL\", or \"PLURAL\" " )
-		gender = "NEUTRAL"
-    end
-    gender = gender:upper()
-    if not CHARACTER_GENDERS[gender] then
-		CHARACTER_GENDERS[gender] = {}
-    end
-    table.insert( CHARACTER_GENDERS[gender], name )
+    if not DoesCharacterExistInGendersTable(name) then
+		if gender == nil then
+			print( "Warning: Mod Character " .. name .. " does not currently specify a gender. Please update the call to AddModCharacter to include a gender. \"FEMALE\", \"MALE\", \"ROBOT\", or \"NEUTRAL\", or \"PLURAL\" " )
+			gender = "NEUTRAL"
+		end
+		gender = gender:upper()
+		if not CHARACTER_GENDERS[gender] then
+			CHARACTER_GENDERS[gender] = {}
+		end
+		table.insert( CHARACTER_GENDERS[gender], name )
+	else
+		print( "Warning: Mod Character " .. name .. " already exists in the CHARACTER_GENDERS table. It was either added previously, or added twice. You only need to call AddModCharacter now." )
+	end
 end
 
 local function initprint(...)

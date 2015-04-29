@@ -213,7 +213,7 @@ end
 
 local function _DoWarningSpeech(player)
     --TODO: bearger specific strings
-    player.components.talker:Say(GetString(player.prefab, "ANNOUNCE_DEERCLOPS"))
+    player.components.talker:Say(GetString(player, "ANNOUNCE_DEERCLOPS"))
 end
 
 function self:DoWarningSpeech(_targetplayer)

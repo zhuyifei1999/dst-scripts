@@ -5,6 +5,27 @@ local assets =
 
 local INTENSITY = .5
 
+local function randomizefadein()
+    return math.random(1, 31)
+end
+
+local function randomizefadeout()
+    return math.random(32, 63)
+end
+
+local function immediatefadeout()
+    return 0
+end
+
+local function resolvefaderate(x)
+    --immediate fadeout -> 0
+    --randomize fadein -> INTENSITY * FRAMES / (3 + math.random() * 2)
+    --randomize fadeout -> -INTENSITY * FRAMES / (.75 + math.random())
+    return (x == 0 and 0)
+        or (x < 32 and INTENSITY * FRAMES / (3 + (x - 1) / 15))
+        or INTENSITY * FRAMES / ((32 - x) / 31 - .75)
+end
+
 local function updatefade(inst, rate)
     inst._fadeval:set_local(math.clamp(inst._fadeval:value() + rate, 0, INTENSITY))
 
@@ -25,20 +46,18 @@ end
 
 local function fadein(inst)
     local ismastersim = TheWorld.ismastersim
-    if not ismastersim or inst._faderate:value() <= 0 then
+    if not ismastersim or resolvefaderate(inst._faderate:value()) <= 0 then
         if ismastersim then
             inst:RemoveTag("NOCLICK")
             inst.Light:Enable(true)
             inst.AnimState:PlayAnimation("swarm_pre")
             inst.AnimState:PushAnimation("swarm_loop", true)
-            local t = 3 + math.random() * 2
-            local rate = INTENSITY * FRAMES / t
-            inst._faderate:set(rate)
+            inst._faderate:set(randomizefadein())
         end
         if inst._fadetask ~= nil then
             inst._fadetask:Cancel()
         end
-        local rate = inst._faderate:value() * math.clamp(1 - inst._fadeval:value() / INTENSITY, 0, 1)
+        local rate = resolvefaderate(inst._faderate:value()) * math.clamp(1 - inst._fadeval:value() / INTENSITY, 0, 1)
         inst._fadetask = inst:DoPeriodicTask(FRAMES, updatefade, nil, rate)
         if not ismastersim then
             updatefade(inst, rate)
@@ -48,17 +67,15 @@ end
 
 local function fadeout(inst)
     local ismastersim = TheWorld.ismastersim
-    if not ismastersim or inst._faderate:value() > 0 then
+    if not ismastersim or resolvefaderate(inst._faderate:value()) > 0 then
         if ismastersim then
             inst.AnimState:PlayAnimation("swarm_pst")
-            local t = .75 + math.random()
-            local rate = -INTENSITY * FRAMES / t
-            inst._faderate:set(rate)
+            inst._faderate:set(randomizefadeout())
         end
         if inst._fadetask ~= nil then
             inst._fadetask:Cancel()
         end
-        local rate = inst._faderate:value() * math.clamp(inst._fadeval:value() / INTENSITY, 0, 1)
+        local rate = resolvefaderate(inst._faderate:value()) * math.clamp(inst._fadeval:value() / INTENSITY, 0, 1)
         inst._fadetask = inst:DoPeriodicTask(FRAMES, updatefade, nil, rate)
         if not ismastersim then
             updatefade(inst, rate)
@@ -67,9 +84,10 @@ local function fadeout(inst)
 end
 
 local function OnFadeRateDirty(inst)
-    if inst._faderate:value() > 0 then
+    local rate = resolvefaderate(inst._faderate:value())
+    if rate > 0 then
         fadein(inst)
-    elseif inst._faderate:value() < 0 then
+    elseif rate < 0 then
         fadeout(inst)
     elseif inst._fadetask ~= nil then
         inst._fadetask:Cancel()
@@ -92,7 +110,7 @@ end
 local function ondropped(inst)
     inst.components.workable:SetWorkLeft(1)
     inst._fadeval:set(0)
-    inst._faderate:set_local(0)
+    inst._faderate:set_local(immediatefadeout())
     fadein(inst)
     inst:DoTaskInTime(2 + math.random(), updatelight)
 end
@@ -103,7 +121,7 @@ local function onpickup(inst)
         inst._fadetask = nil
     end
     inst._fadeval:set_local(0)
-    inst._faderate:set(0)
+    inst._faderate:set(immediatefadeout())
     inst.Light:SetIntensity(0)
     inst.Light:Enable(false)
 end
@@ -153,7 +171,7 @@ local function fn()
     inst:AddTag("cattoyairborne")
 
     inst._fadeval = net_float(inst.GUID, "fireflies._fadeval")
-    inst._faderate = net_float(inst.GUID, "fireflies._faderate", "onfaderatedirty")
+    inst._faderate = net_smallbyte(inst.GUID, "fireflies._faderate", "onfaderatedirty")
     inst._fadetask = nil
 
     inst.entity:SetPristine()

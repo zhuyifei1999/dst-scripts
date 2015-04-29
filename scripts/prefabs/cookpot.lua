@@ -79,12 +79,22 @@ local function spoilfn(inst)
 	end
 end
 
+local function ShowProduct(inst)
+	if not inst:HasTag("burnt") then
+		local product = inst.components.stewer.product
+	    if IsModCookingProduct(inst.prefab, product) then
+	        inst.AnimState:OverrideSymbol("swap_cooked", product, product)
+	    else
+			inst.AnimState:OverrideSymbol("swap_cooked", "cook_pot_food", product)
+		end
+	end
+end
+
 local function donecookfn(inst)
 	if not inst:HasTag("burnt") then
 		inst.AnimState:PlayAnimation("cooking_pst")
 		inst.AnimState:PushAnimation("idle_full")
-		inst.AnimState:OverrideSymbol("swap_cooked", "cook_pot_food", inst.components.stewer.product)
-		
+		ShowProduct(inst)
 		inst.SoundEmitter:KillSound("snd")
 		inst.SoundEmitter:PlaySound("dontstarve/common/cookingpot_finish", "snd")
 		inst.Light:Enable(false)
@@ -95,7 +105,7 @@ end
 local function continuedonefn(inst)
 	if not inst:HasTag("burnt") then 
 		inst.AnimState:PlayAnimation("idle_full")
-		inst.AnimState:OverrideSymbol("swap_cooked", "cook_pot_food", inst.components.stewer.product)
+		ShowProduct(inst)
 	end
 end
 

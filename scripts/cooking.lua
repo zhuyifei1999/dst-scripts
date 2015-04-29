@@ -37,6 +37,18 @@ function AddIngredientValues(names, tags, cancook, candry)
 	end
 end
 
+function IsModCookingProduct(cooker, name)
+	local enabledmods = ModManager:GetEnabledModNames()
+    for i,v in ipairs(enabledmods) do
+        local mod = ModManager:GetMod(v)
+        if mod.cookerrecipes and mod.cookerrecipes[cooker] and table.contains(mod.cookerrecipes[cooker], name) then
+            return true
+        end
+    end
+    return false
+end
+
+
 local fruits = {"pomegranate", "dragonfruit", "cave_banana"}
 AddIngredientValues(fruits, {fruit=1}, true)
 

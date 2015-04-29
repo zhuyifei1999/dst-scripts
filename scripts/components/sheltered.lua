@@ -47,7 +47,7 @@ function Sheltered:SetSheltered(issheltered)
         self.sheltered = true
         self.inst:PushEvent("sheltered", true)
         if self.announcecooldown <= 0 and (TheWorld.state.israining or TheWorld.state.temperature >= TUNING.OVERHEAT_TEMP - 5) then
-            self.inst.components.talker:Say(GetString(self.inst.prefab, "ANNOUNCE_SHELTER"))
+            self.inst.components.talker:Say(GetString(self.inst, "ANNOUNCE_SHELTER"))
             self.announcecooldown = TUNING.TOTAL_DAY_TIME
         end
     end

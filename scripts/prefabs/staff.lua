@@ -464,7 +464,7 @@ end
 
 local function unimplementeditem(inst)
     local player = ThePlayer
-    player.components.talker:Say(GetString(player.prefab, "ANNOUNCE_UNIMPLEMENTED"))
+    player.components.talker:Say(GetString(player, "ANNOUNCE_UNIMPLEMENTED"))
     if player.components.health.currenthealth > 1 then
         player.components.health:DoDelta(-player.components.health.currenthealth * 0.5)
     end

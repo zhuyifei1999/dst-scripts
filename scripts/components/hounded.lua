@@ -397,7 +397,7 @@ function self:ForceNextHoundWave()
 end
 
 local function _DoWarningSpeech(player)
-    player.components.talker:Say(GetString(player.prefab, "ANNOUNCE_HOUNDS"))
+    player.components.talker:Say(GetString(player, "ANNOUNCE_HOUNDS"))
 end
 
 function self:DoWarningSpeech()

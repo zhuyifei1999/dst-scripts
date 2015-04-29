@@ -258,16 +258,14 @@ local actionhandlers =
                 elseif action.invobject:HasTag("horn") then
                     return "play_horn"
                 elseif action.invobject:HasTag("bell") then
-                	return "play_bell"
+                    return "play_bell"
                 end
             end
         end),
-	ActionHandler(ACTIONS.FAN, function(inst, action)
-		return "use_fan"
-	end),
+    ActionHandler(ACTIONS.FAN, "use_fan"),
     ActionHandler(ACTIONS.JUMPIN, "jumpin"),
     ActionHandler(ACTIONS.DRY, "doshortaction"),
-     ActionHandler(ACTIONS.CASTSPELL, 
+    ActionHandler(ACTIONS.CASTSPELL, 
         function(inst, action) 
             return action.invobject.components.spellcaster.castingstate or "castspell"
         end),
@@ -3307,10 +3305,10 @@ local states =
             inst.AnimState:PushAnimation("jump", false)
         end,
 
-		timeline =
+        timeline =
         {
-			-- this is just hacked in here to make the sound play BEFORE the player hits the wormhole
-			TimeEvent(19 * FRAMES, function(inst)
+            -- this is just hacked in here to make the sound play BEFORE the player hits the wormhole
+            TimeEvent(19 * FRAMES, function(inst)
                 if inst.bufferedaction ~= nil and inst.bufferedaction.target ~= nil then
                     if inst.bufferedaction.target.SoundEmitter ~= nil then
                         inst.bufferedaction.target.SoundEmitter:PlaySound("dontstarve/common/teleportworm/swallow")
@@ -3318,17 +3316,37 @@ local states =
                     inst:PushEvent("wormholetravel") --Event for playing local travel sound
                 end
             end),
-		},
+        },
 
         events =
         {
             EventHandler("animqueueover", function(inst)
                 if inst.AnimState:AnimDone() then
-				    inst:PerformBufferedAction()
-				    inst.sg:GoToState("idle")
+                    if inst:PerformBufferedAction() then
+                        inst.sg.statemem.isteleporting = true
+                        inst.components.health:SetInvincible(true)
+                        if inst.components.playercontroller ~= nil then
+                            inst.components.playercontroller:Enable(false)
+                        end
+                        inst:Hide()
+                        inst.DynamicShadow:Enable(false)
+                    else
+                        inst.sg:GoToState("jumpout")
+                    end
                 end
-			end),
+            end),
         },
+
+        onexit = function(inst)
+            if inst.sg.statemem.isteleporting then
+                inst.components.health:SetInvincible(false)
+                if inst.components.playercontroller ~= nil then
+                    inst.components.playercontroller:Enable(true)
+                end
+                inst:Show()
+                inst.DynamicShadow:Enable(true)
+            end
+        end,
     },
 
     State{

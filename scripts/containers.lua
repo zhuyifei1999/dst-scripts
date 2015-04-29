@@ -124,7 +124,7 @@ params.cookpot =
         side_align_tip = 100,
         buttoninfo =
         {
-            text = "Cook",
+            text = STRINGS.ACTIONS.COOK,
             position = Vector3(0, -165, 0),
         }
     },
@@ -263,7 +263,7 @@ params.teleportato_base =
         type = "cooker",
         buttoninfo =
         {
-            text = "Activate",
+            text = STRINGS.ACTIONS.ACTIVATE.GENERIC,
             position = Vector3(0, -165, 0),
         },
     },

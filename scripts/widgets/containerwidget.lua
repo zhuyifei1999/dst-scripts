@@ -42,41 +42,47 @@ function ContainerWidget:Open(container, doer)
 		self:SetPosition(widget.pos)
 	end
 
-	if widget.buttoninfo ~= nil and not TheInput:ControllerAttached() then
-		self.button = self:AddChild(ImageButton("images/ui.xml", "button_small.tex", "button_small_over.tex", "button_small_disabled.tex"))
-	    self.button:SetPosition(widget.buttoninfo.position)
-	    self.button:SetText(widget.buttoninfo.text)
-        if widget.buttoninfo.fn ~= nil then
-            self.button:SetOnClick(function()
-                if doer ~= nil then
-                    if doer:HasTag("busy") then
-                        --Ignore button click when doer is busy
-                        return
-                    elseif doer.components.playercontroller ~= nil then
-                        local iscontrolsenabled, ishudblocking = doer.components.playercontroller:IsEnabled()
-                        if not (iscontrolsenabled or ishudblocking) then
-                            --Ignore button click when controls are disabled
-                            --but not just because of the HUD blocking input
+    if widget.buttoninfo ~= nil then
+        if doer ~= nil and doer.components.playeractionpicker ~= nil then
+            doer.components.playeractionpicker:RegisterContainer(container)
+        end
+
+        if not TheInput:ControllerAttached() then
+            self.button = self:AddChild(ImageButton("images/ui.xml", "button_small.tex", "button_small_over.tex", "button_small_disabled.tex"))
+            self.button:SetPosition(widget.buttoninfo.position)
+            self.button:SetText(widget.buttoninfo.text)
+            if widget.buttoninfo.fn ~= nil then
+                self.button:SetOnClick(function()
+                    if doer ~= nil then
+                        if doer:HasTag("busy") then
+                            --Ignore button click when doer is busy
                             return
+                        elseif doer.components.playercontroller ~= nil then
+                            local iscontrolsenabled, ishudblocking = doer.components.playercontroller:IsEnabled()
+                            if not (iscontrolsenabled or ishudblocking) then
+                                --Ignore button click when controls are disabled
+                                --but not just because of the HUD blocking input
+                                return
+                            end
                         end
                     end
-                end
-                widget.buttoninfo.fn(container, doer)
-            end)
-        end
-	    self.button:SetFont(BUTTONFONT)
-	    self.button:SetTextSize(35)
-	    self.button.text:SetVAlign(ANCHOR_MIDDLE)
-	    self.button.text:SetColour(0, 0, 0, 1)
+                    widget.buttoninfo.fn(container, doer)
+                end)
+            end
+            self.button:SetFont(BUTTONFONT)
+            self.button:SetTextSize(35)
+            self.button.text:SetVAlign(ANCHOR_MIDDLE)
+            self.button.text:SetColour(0, 0, 0, 1)
 
-		if widget.buttoninfo.validfn ~= nil then
-			if widget.buttoninfo.validfn(container) then
-				self.button:Enable()
-			else
-				self.button:Disable()
-			end
-		end
-	end
+            if widget.buttoninfo.validfn ~= nil then
+                if widget.buttoninfo.validfn(container) then
+                    self.button:Enable()
+                else
+                    self.button:Disable()
+                end
+            end
+        end
+    end
 
     self.isopen = true
     self:Show()
@@ -177,13 +183,15 @@ end
 
 function ContainerWidget:Close()
     if self.isopen then
-
 		if self.button ~= nil then
 			self.button:Kill()
 			self.button = nil
 		end
 		
 		if self.container ~= nil then
+            if self.owner ~= nil and self.owner.components.playeractionpicker ~= nil then
+                self.owner.components.playeractionpicker:UnregisterContainer(self.container)
+            end
 			if self.onitemlosefn ~= nil then
 				self.inst:RemoveEventCallback("itemlose", self.onitemlosefn, self.container)
 				self.onitemlosefn = nil

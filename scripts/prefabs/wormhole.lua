@@ -15,45 +15,67 @@ local function oncameraarrive(doer)
 end
 
 local function ondoerarrive(doer)
-    doer:Show()
-    doer.DynamicShadow:Enable(true)
     doer.sg:GoToState("jumpout")
     if doer.components.sanity ~= nil then
         doer.components.sanity:DoDelta(-TUNING.SANITY_MED)
     end
 end
 
-local function ondoerwormholespit(doer)
-    doer:PushEvent("wormholespit")
-    doer.components.health:SetInvincible(false)
-    doer.components.playercontroller:Enable(true)
+local function ondoneteleporting(other)
+    if other.teleporting ~= nil then
+        if other.teleporting > 1 then
+            other.teleporting = other.teleporting - 1
+        else
+            other.teleporting = nil
+            if not other.components.playerprox:IsPlayerClose() then
+                other.sg:GoToState("closing")
+            end
+        end
+    end
 end
 
 local function OnActivate(inst, doer)
     --print("OnActivated!")
     if doer:HasTag("player") then
         ProfileStatsSet("wormhole_used", true)
-        doer.components.health:SetInvincible(true)
-        doer.components.playercontroller:Enable(false)
-        
-        if inst.components.teleporter.targetTeleporter ~= nil then
-            DeleteCloseEntsWithTag("WORM_DANGER", inst.components.teleporter.targetTeleporter, 15)
+
+        local other = inst.components.teleporter.targetTeleporter
+        if other ~= nil then
+            DeleteCloseEntsWithTag("WORM_DANGER", other, 15)
+            other.teleporting = (other.teleporting or 0) + 1
+            other:DoTaskInTime(4.5, ondoneteleporting)
         end
 
-        doer:Hide()
-        doer.DynamicShadow:Enable(false)
+        if doer.components.talker ~= nil then
+            doer.components.talker:ShutUp()
+        end
+
         doer:ScreenFade(false)
         doer:DoTaskInTime(3, oncameraarrive)
         doer:DoTaskInTime(4, ondoerarrive)
-        doer:DoTaskInTime(5, ondoerwormholespit)
+        doer:DoTaskInTime(5, doer.PushEvent, "wormholespit") --for wisecracker
         --Sounds are triggered in player's stategraph
-    elseif doer.SoundEmitter then
+    elseif doer.SoundEmitter ~= nil then
         inst.SoundEmitter:PlaySound("dontstarve/common/teleportworm/swallow")
     end
 end
 
 local function OnActivateOther(inst, other, doer)
-    other.sg:GoToState("open")
+    if not other.sg:HasStateTag("open") then
+        other.sg:GoToState("opening")
+    end
+end
+
+local function onnear(inst)
+    if inst.components.teleporter.targetTeleporter ~= nil and not inst.sg:HasStateTag("open") then
+        inst.sg:GoToState("opening")
+    end
+end
+
+local function onfar(inst)
+    if inst.teleporting == nil then
+        inst.sg:GoToState("closing")
+    end
 end
 
 local function fn()
@@ -86,15 +108,11 @@ local function fn()
     inst.components.inspectable:RecordViews()
 
     inst:AddComponent("playerprox")
-    inst.components.playerprox:SetDist(4,5)
-    inst.components.playerprox.onnear = function()
-        if inst.components.teleporter.targetTeleporter ~= nil and not inst.sg:HasStateTag("open") then
-            inst.sg:GoToState("opening")
-        end
-    end
-    inst.components.playerprox.onfar = function()
-        inst.sg:GoToState("closing")
-    end
+    inst.components.playerprox:SetDist(4, 5)
+    inst.components.playerprox.onnear = onnear
+    inst.components.playerprox.onfar = onfar
+
+    inst.teleporting = nil
 
     inst:AddComponent("teleporter")
     inst.components.teleporter.onActivate = OnActivate
@@ -109,9 +127,6 @@ local function fn()
         reciever.components.inventory:DropItem(item)
         inst.components.teleporter:Activate(item)
     end
-
-    inst:AddComponent("hauntable")
-    inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
 
     --print("Wormhole Spawned!")
 

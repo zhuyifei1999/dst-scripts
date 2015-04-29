@@ -38,10 +38,12 @@ local function getcharacterstring(tab, item, modifier)
 end
 
 function GetGenderStrings(charactername)
-    return (table.contains(CHARACTER_GENDERS.MALE, charactername) and "MALE")
-        or (table.contains(CHARACTER_GENDERS.FEMALE, charactername) and "FEMALE")
-        or (table.contains(CHARACTER_GENDERS.ROBOT, charactername) and "ROBOT")
-        or "DEFAULT"
+    for gender,characters in pairs(CHARACTER_GENDERS) do
+        if table.contains(characters, charactername) then
+            return gender
+        end
+    end
+    return "DEFAULT"
 end
 
 ---------------------------------------------------------

@@ -272,7 +272,7 @@ local function OnSave(inst, data)
 end
 
 local function OnLoad(inst, data)
-    if GetNightmareClock() then
+    --[[if GetNightmareClock() then
         local phase = GetNightmareClock():GetPhase()
 
         if phase == "nightmare" or phase == "dawn" then
@@ -280,7 +280,7 @@ local function OnLoad(inst, data)
         else
             SetNormalMonkey(inst)
         end
-    end
+    end]]
 end
 
 local function fn()
@@ -374,14 +374,14 @@ local function fn()
     inst:ListenForEvent("calmstart", function() DoFx(inst) SetNormalMonkey(inst) end, TheWorld)
     inst:ListenForEvent("nightmarestart",function() DoFx(inst) SetNightmareMonkey(inst) end, TheWorld)
 
-    if GetNightmareClock() then
+    --[[if GetNightmareClock() then
         local phase = GetNightmareClock():GetPhase()
         if phase == "nightmare" or phase == "dawn" then
             SetNightmareMonkey(inst)
         else
             SetNormalMonkey(inst)
         end
-    end
+    end]]
 
     MakeHauntablePanic(inst)
     AddHauntableCustomReaction(inst, function(inst, haunter)

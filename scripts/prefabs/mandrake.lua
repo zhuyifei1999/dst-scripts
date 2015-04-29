@@ -119,7 +119,7 @@ local function DoAreaEffect(inst, user, range, time, knockout)
 		elseif v:HasTag("player") and knockout then
             v:PushEvent("knockedout")
 	        -- v.sg:GoToState("wakeup")
-	        -- v.components.talker:Say(GetString(inst.prefab, "ANNOUNCE_KNOCKEDOUT") )
+	        -- v.components.talker:Say(GetString(inst, "ANNOUNCE_KNOCKEDOUT") )
 	    end
     end
 

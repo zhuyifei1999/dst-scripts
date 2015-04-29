@@ -67,9 +67,9 @@ function birdsfn(inst, reader)
 	local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, 10, nil, nil, { "magicalbird" })
 	if #ents > 30 then
 		num = 0
-		reader.components.talker:Say(GetString(reader.prefab, "ANNOUNCE_WAYTOOMANYBIRDS"))
+		reader.components.talker:Say(GetString(reader, "ANNOUNCE_WAYTOOMANYBIRDS"))
 	elseif #ents > 20 then
-		reader.components.talker:Say(GetString(reader.prefab, "ANNOUNCE_TOOMANYBIRDS"))
+		reader.components.talker:Say(GetString(reader, "ANNOUNCE_TOOMANYBIRDS"))
 		num = 10 + math.random(10)
 	end
     

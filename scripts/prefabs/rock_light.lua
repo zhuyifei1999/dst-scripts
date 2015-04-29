@@ -2,7 +2,7 @@ require "prefabutil"
 
 local assets =
 {
-	Asset("ANIM", "anim/rock_light.zip"),
+    Asset("ANIM", "anim/rock_light.zip"),
 }
 
 local prefabs =
@@ -28,7 +28,7 @@ local function SetWorkLevel( inst, workleft )
     elseif workleft <= MEDIUM and inst.state == MAXWORK then
         inst.state = MEDIUM
         dprint("MAX -> MED")
-	    inst.AnimState:PlayAnimation("med")
+        inst.AnimState:PlayAnimation("med")
         inst.components.fueled:ChangeSection(1)
         inst.components.fueled:StartConsuming()
     elseif workleft <= MEDIUM and inst.state == LOW then
@@ -38,7 +38,7 @@ local function SetWorkLevel( inst, workleft )
     elseif workleft <= LOW and inst.state == MEDIUM then
         dprint("MED -> LOW")
         inst.state = LOW
-	    inst.AnimState:PlayAnimation("low")
+        inst.AnimState:PlayAnimation("low")
         inst.components.fueled:ChangeSection(1)
     end
     if workleft < 0 then
@@ -47,12 +47,12 @@ local function SetWorkLevel( inst, workleft )
 end
 
 local function onhammered(inst, worker)
-	inst.SoundEmitter:PlaySound("dontstarve/common/destroy_stone")
+    inst.SoundEmitter:PlaySound("dontstarve/common/destroy_stone")
     SetWorkLevel( inst, 0 )
 end
 
 local function onhit(inst, worker, workleft)
-	inst.SoundEmitter:PlaySound("dontstarve/common/destroy_stone")
+    inst.SoundEmitter:PlaySound("dontstarve/common/destroy_stone")
     SetWorkLevel( inst, workleft )
 end
 
@@ -65,16 +65,15 @@ local function onextinguish(inst)
     end
 end
 
-
 local function getsanityaura(inst, observer)
     local lightRadius = inst.components.burnable and inst.components.burnable:GetLargestLightRadius()
     if lightRadius and inst:GetDistanceSqToInst(observer) < 0.5*lightRadius then
-        local clock = GetNightmareClock()
-        if clock and clock:IsCalm() then
-            return -TUNING.SANITY_SMALL
-        else
+        --local clock = GetNightmareClock()
+        --if clock and clock:IsCalm() then
+            --return -TUNING.SANITY_SMALL
+        --else
             return TUNING.SANITY_SMALL
-        end
+        --end
     end
     return 0
 end
@@ -108,26 +107,33 @@ function ExplodeRock(rock)
     rock:DoTaskInTime(5,SealUp)
 end
 
-local function fn(Sim)
+local function fn()
+    local inst = CreateEntity()
 
-	local inst = CreateEntity()
-	local trans = inst.entity:AddTransform()
-	local anim = inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
+    --inst.entity:AddMiniMapEntity()
+    inst.entity:AddNetwork()
 
-	--local minimap = inst.entity:AddMiniMapEntity()
-	--minimap:SetIcon( "rock_light.png" )
-	--minimap:SetPriority( 1 )
+    --inst.MiniMapEntity:SetIcon("rock_light.png")
+    --inst.MiniMapEntity:SetPriority(1)
 
-    anim:SetBuild("rock_light")
-    anim:SetBank("rock_light")
-    anim:PlayAnimation("full",false)
+    inst.AnimState:SetBuild("rock_light")
+    inst.AnimState:SetBank("rock_light")
+    inst.AnimState:PlayAnimation("full", false)
     inst:AddTag("rocklight")
     inst:AddTag("structure")
     inst:AddTag("stone")
   
     MakeObstaclePhysics(inst, 1)    
-    inst.Transform:SetScale(1.0,1.0,1.0)
+    inst.Transform:SetScale(1, 1, 1)
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
 
     -----------------------
 
@@ -141,14 +147,14 @@ local function fn(Sim)
     inst.components.burnable:AddBurnFX("character_fire", Vector3(0,1,0) )
     inst:ListenForEvent("onextinguish", onextinguish)
     inst:ListenForEvent("onignite", onignite)
-    
+
     -------------------------
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.MINE)
     inst.components.workable:SetWorkLeft(MAXWORK)
     inst.components.workable:SetMaxWork(MAXWORK)
-	inst.components.workable:SetOnFinishCallback(onhammered)
-	inst.components.workable:SetOnWorkCallback(onhit)    
+    inst.components.workable:SetOnFinishCallback(onhammered)
+    inst.components.workable:SetOnWorkCallback(onhit)    
 
     -------------------------
     inst:AddComponent("fueled")
@@ -158,14 +164,14 @@ local function fn(Sim)
     inst.components.fueled:InitializeFuelLevel(0)
     -- inst.components.fueled.bonusmult = TUNING.FIREPIT_BONUS_MULT
     -- inst.components.fueled.ontakefuelfn = function() inst.SoundEmitter:PlaySound("dontstarve/common/fireAddFuel") end
-    
+
     inst.components.fueled:SetUpdateFn( function()
         if inst.components.burnable and inst.components.fueled then
             dprint("fuel Update:", inst.components.fueled:GetCurrentSection()," %=", inst.components.fueled:GetSectionPercent())
             inst.components.burnable:SetFXLevel(inst.components.fueled:GetCurrentSection(), inst.components.fueled:GetSectionPercent())
         end
     end)
-        
+
     inst.components.fueled:SetSectionCallback( function(section,oldsection)
         dprint(string.format("SectionCallback: old=%d, new=%d, perc=%f",oldsection, section, inst.components.fueled:GetSectionPercent()))
         if section == 0 then
@@ -173,9 +179,9 @@ local function fn(Sim)
             inst:DoTaskInTime(2, function(inst)
                                      inst.components.workable:SetWorkLeft(MAXWORK)
                                      SetWorkLevel( inst, MAXWORK )
-	                                 --inst.AnimState:PlayAnimation("med_grow")
-                                     inst.components.burnable:SetFXLevel(0,0) 
-                                 end)  
+                                     --inst.AnimState:PlayAnimation("med_grow")
+                                     inst.components.burnable:SetFXLevel(0,0)
+                                 end)
         else
             inst.components.burnable:SetFXLevel(section, inst.components.fueled:GetSectionPercent())
             --if not inst.components.burnable:IsBurning() then
@@ -193,7 +199,7 @@ local function fn(Sim)
         end
         inst.prev = section
     end)
-        
+
     -----------------------------
     inst:AddComponent("inspectable")
     inst.components.inspectable.getstatus = function(inst)
@@ -206,7 +212,7 @@ local function fn(Sim)
             return t[sec]
         end
     end
-    
+
     -----------------------------
 
     inst.blastTask = inst:DoTaskInTime(GetRandomWithVariance(120,60), ExplodeRock)
@@ -218,4 +224,3 @@ local function fn(Sim)
 end
 
 return Prefab( "common/objects/rock_light", fn, assets, prefabs)
-

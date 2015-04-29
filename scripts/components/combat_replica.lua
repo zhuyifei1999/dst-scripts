@@ -270,8 +270,8 @@ function Combat:CanBeAttacked(attacker)
         return false
     elseif attacker ~= nil then
         --Attacker checks
-        if self.inst:HasTag("birchnutdrake") and
-            not (attacker:HasTag("birchnutdrake") or
+        if self.inst:HasTag("birchnutdrake")
+            and (attacker:HasTag("birchnutdrake") or
                 attacker:HasTag("birchnutroot") or
                 attacker:HasTag("birchnut")) then
             --Birchnut check

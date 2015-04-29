@@ -158,26 +158,22 @@ function GetNewDeathAnnouncementString(theDead, source, pkname)
         end
 
         if not theDead.ghostenabled then
-            message = message.."."
-        elseif table.contains(CHARACTER_GENDERS.MALE, theDead.prefab) then
-            message = message..STRINGS.UI.HUD.DEATH_ANNOUNCEMENT_2_MALE
-        elseif table.contains(CHARACTER_GENDERS.FEMALE, theDead.prefab) then
-            message = message..STRINGS.UI.HUD.DEATH_ANNOUNCEMENT_2_FEMALE
-        elseif table.contains(CHARACTER_GENDERS.ROBOT, theDead.prefab) then
-            message = message..STRINGS.UI.HUD.DEATH_ANNOUNCEMENT_2_ROBOT
-        else
-            message = message..STRINGS.UI.HUD.DEATH_ANNOUNCEMENT_2_DEFAULT
-        end
+			message = message.."."
+		else
+			local gender = GetGenderStrings(theDead.prefab)
+			if STRINGS.UI.HUD["DEATH_ANNOUNCEMENT_2_"..gender] then
+				message = message..STRINGS.UI.HUD["DEATH_ANNOUNCEMENT_2_"..gender]
+			else
+				message = message..STRINGS.UI.HUD.DEATH_ANNOUNCEMENT_2_DEFAULT
+			end
+		end
     else
-        if table.contains(CHARACTER_GENDERS.MALE, theDead.prefab) then
-            message = theDead:GetDisplayName().." "..STRINGS.UI.HUD.GHOST_DEATH_ANNOUNCEMENT_MALE
-        elseif table.contains(CHARACTER_GENDERS.FEMALE, theDead.prefab) then
-            message = theDead:GetDisplayName().." "..STRINGS.UI.HUD.GHOST_DEATH_ANNOUNCEMENT_FEMALE
-        elseif table.contains(CHARACTER_GENDERS.ROBOT, theDead.prefab) then
-            message = theDead:GetDisplayName().." "..STRINGS.UI.HUD.GHOST_DEATH_ANNOUNCEMENT_ROBOT
-        else
-            message = theDead:GetDisplayName().." "..STRINGS.UI.HUD.GHOST_DEATH_ANNOUNCEMENT_DEFAULT
-        end
+        local gender = GetGenderStrings(theDead.prefab)
+		if STRINGS.UI.HUD["GHOST_DEATH_ANNOUNCEMENT_"..gender] then
+			message = theDead:GetDisplayName().." "..STRINGS.UI.HUD["GHOST_DEATH_ANNOUNCEMENT_"..gender]
+		else
+			message = theDead:GetDisplayName().." "..STRINGS.UI.HUD.GHOST_DEATH_ANNOUNCEMENT_DEFAULT
+		end
     end
 
 	return message

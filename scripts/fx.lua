@@ -278,7 +278,7 @@ local FX =
     	anim = "move",
     	nameoverride = STRINGS.NAMES.MOLE_UNDERGROUND,
     	description = function(inst, viewer)
-    					return GetString(viewer.prefab, "DESCRIBE", {"MOLE", "UNDERGROUND"})
+    					return GetString(viewer, "DESCRIBE", {"MOLE", "UNDERGROUND"})
     				end,
     	dlc = true,
 	},

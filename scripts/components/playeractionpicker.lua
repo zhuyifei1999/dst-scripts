@@ -1,7 +1,24 @@
 local PlayerActionPicker = Class(function(self, inst)
     self.inst = inst
     self.map = TheWorld.Map
+    self.containers = {}
 end)
+
+function PlayerActionPicker:RegisterContainer(container)
+    if container ~= nil and self.containers[container] == nil then
+        self.containers[container] = function()
+            self:UnregisterContainer(container)
+        end
+        self.inst:ListenForEvent("onremove", self.containers[container], container)
+    end
+end
+
+function PlayerActionPicker:UnregisterContainer(container)
+    if container ~= nil and self.containers[container] ~= nil then
+        self.inst:RemoveEventCallback("onremove", self.containers[container], container)
+        self.containers[container] = nil
+    end
+end
 
 local function OrderByPriority(l, r)
     return l.priority > r.priority
@@ -181,8 +198,11 @@ function PlayerActionPicker:GetRightClickActions(position, target)
     local equipitem = self.inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
     local ispassable = self.map:IsPassableAtPoint(position:Get())
 
-    --if we're specifically using an item, see if we can use it on the target entity
-    if useitem ~= nil then
+    if target ~= nil and self.containers[target] then
+        --check if we have container widget actions
+        actions = self:GetSceneActions(target, true)
+    elseif useitem ~= nil then
+        --if we're specifically using an item, see if we can use it on the target entity
         if useitem:IsValid() then
             if target == self.inst then
                 actions = self:GetInventoryActions(useitem, true)

@@ -1,6 +1,7 @@
 local actionhandlers =
 {
     ActionHandler(ACTIONS.HAUNT, "haunt_pre"),
+    ActionHandler(ACTIONS.JUMPIN, "jumpin"),
     ActionHandler(ACTIONS.ATTACK,
         function()
             --dummy handler in case any attack controls came through network
@@ -310,6 +311,77 @@ local states =
             inst.SoundEmitter:KillSound("talk")
         end,
     }, 
+
+    State
+    {
+        name = "jumpin",
+        tags = { "doing", "busy", "canrotate" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("dissipate")
+            inst.SoundEmitter:PlaySound("dontstarve/ghost/ghost_haunt", nil, nil, true)
+        end,
+
+        timeline =
+        {
+            -- this is just hacked in here to make the sound play BEFORE the player hits the wormhole
+            TimeEvent(3 * FRAMES, function(inst)
+                if inst.bufferedaction ~= nil and inst.bufferedaction.target ~= nil then
+                    if inst.bufferedaction.target.SoundEmitter ~= nil then
+                        inst.bufferedaction.target.SoundEmitter:PlaySound("dontstarve/common/teleportworm/swallow")
+                    end
+                    inst:PushEvent("wormholetravel") --Event for playing local travel sound
+                end
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    if inst:PerformBufferedAction() then
+                        inst.sg.statemem.isteleporting = true
+                        if inst.components.playercontroller ~= nil then
+                            inst.components.playercontroller:Enable(false)
+                        end
+                        inst:Hide()
+                    else
+                        inst.sg:GoToState("jumpout")
+                    end
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            if inst.sg.statemem.isteleporting then
+                if inst.components.playercontroller ~= nil then
+                    inst.components.playercontroller:Enable(true)
+                end
+                inst:Show()
+            end
+        end,
+    },
+
+    State
+    {
+        name = "jumpout",
+        tags = { "doing", "busy", "canrotate", "nopredict" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("appear")
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+    },
 }
 
 return StateGraph("wilsonghost", states, events, "appear", actionhandlers)

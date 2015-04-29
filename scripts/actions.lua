@@ -29,7 +29,7 @@ end)
 
 ACTIONS =
 {
-	REPAIR = Action(),
+    REPAIR = Action(),
     READ = Action(),
     DROP = Action(-1),
     TRAVEL = Action(),
@@ -70,7 +70,7 @@ ACTIONS =
     DEPLOY = Action(),
     PLAY = Action(),
     CREATE = Action(),
-	JOIN = Action(),
+    JOIN = Action(),
     NET = Action(3, nil, nil, nil, nil, nil, true, DefaultRangeCheck),
     CATCH = Action(3, nil, nil, math.huge),
     FISH = Action(),
@@ -82,8 +82,8 @@ ACTIONS =
     LAYEGG = Action(),
     HAMMER = Action(3),
     TERRAFORM = Action(),
-	JUMPIN = Action(),
-	RESETMINE = Action(3),
+    JUMPIN = Action(0, nil, nil, nil, true),
+    RESETMINE = Action(3),
     ACTIVATE = Action(),
     MURDER = Action(0),
     HEAL = Action(),
@@ -103,7 +103,7 @@ ACTIONS =
     TOGGLE_DEPLOY_MODE = Action(0, true),
     SUMMONGUARDIAN = Action(0, false, false, 5),
     LAVASPIT = Action(0, false, false, 2),
-	SPAWN = Action(0, false, false, 5),
+    SPAWN = Action(0, false, false, 5),
     HAUNT = Action(0, false, false, 2, true, true, true, DefaultRangeCheck),
     UNPIN = Action(),
     STEALMOLEBAIT = Action(0, false, false, .75),
@@ -921,6 +921,10 @@ ACTIONS.GOHOME.fn = function(act)
         act.doer:Remove()
         return true
     end
+end
+
+ACTIONS.JUMPIN.strfn = function(act)
+    return act.doer ~= nil and act.doer:HasTag("playerghost") and "HAUNT" or nil
 end
 
 ACTIONS.JUMPIN.fn = function(act)

@@ -189,7 +189,11 @@ STRINGS=
             CLIMB = "Climb",
             ACCOMPLISH = "Wind",
         },
-        JUMPIN = "Jump In",
+        JUMPIN =
+        {
+            GENERIC = "Jump In",
+            HAUNT = "Haunt",
+        },
         MURDER = "Murder",
         HEAL = "Heal",
         UNLOCK = 

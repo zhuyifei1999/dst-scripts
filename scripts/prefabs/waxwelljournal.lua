@@ -23,7 +23,7 @@ local function onread(inst, reader, ignorecosts)
     --Check sanity
     if not ignorecosts and not canread(reader) then 
         if reader.components.talker then
-            reader.components.talker:Say(GetString(reader.prefab, "ANNOUNCE_NOSANITY"))
+            reader.components.talker:Say(GetString(reader, "ANNOUNCE_NOSANITY"))
             return true
         end
     end
@@ -31,7 +31,7 @@ local function onread(inst, reader, ignorecosts)
     --Check reagent
     if not ignorecosts and not reader.components.inventory:Has("nightmarefuel", TUNING.SHADOWWAXWELL_FUEL_COST) then
         if reader.components.talker then
-            reader.components.talker:Say(GetString(reader.prefab, "ANNOUNCE_NOFUEL"))
+            reader.components.talker:Say(GetString(reader, "ANNOUNCE_NOFUEL"))
             return true
         end
     end

@@ -159,7 +159,7 @@ local function DropItem(inst, target, item)
         local angle = -math.atan2(vel.z, vel.x) + (math.random() * 20 - 10) * DEGREES
         item.Physics:SetVel(math.cos(angle) * speed, 10, math.sin(angle) * speed)
     end
-    inst.components.talker:Say(GetString(inst.prefab, "ANNOUNCE_TOOL_SLIP"))
+    inst.components.talker:Say(GetString(inst, "ANNOUNCE_TOOL_SLIP"))
 end
 
 local function DropWetTool(inst, data)
@@ -243,7 +243,7 @@ end
 
 local function OnWontEatFood(inst, data)
     if inst.components.talker ~= nil then
-        inst.components.talker:Say(GetString(inst.prefab, "ANNOUNCE_EAT", "YUCKY"))
+        inst.components.talker:Say(GetString(inst, "ANNOUNCE_EAT", "YUCKY"))
     end
 end
 

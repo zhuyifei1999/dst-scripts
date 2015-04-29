@@ -246,7 +246,7 @@ function self:OverrideAttackDuringOffSeason(name, bool)
 end
 
 local function _DoWarningSpeech(player)
-    player.components.talker:Say(GetString(player.prefab, "ANNOUNCE_DEERCLOPS"))
+    player.components.talker:Say(GetString(player, "ANNOUNCE_DEERCLOPS"))
 end
 
 function self:DoWarningSpeech(_targetplayer)

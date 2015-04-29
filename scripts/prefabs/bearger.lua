@@ -224,6 +224,7 @@ local function ShouldSleep(inst)
 	if TheWorld.state.season == "winter" or TheWorld.state.season == "spring" then 
 		inst.components.shedder:StopShedding()
 		inst:AddTag("hibernation")
+		--inst:AddTag("asleep")
 		SetGroundPounderSettings(inst, "hibernation")
 		inst.components.health:SetAbsorptionAmount(.15)
 		return true
@@ -237,6 +238,7 @@ local function ShouldWake(inst)
 		
 		inst.components.shedder:StartShedding(TUNING.BEARGER_SHED_INTERVAL)
 		inst:RemoveTag("hibernation")
+		--inst:RemoveTag("asleep")
 		SetGroundPounderSettings(inst, "normal")
 		inst.components.health:SetAbsorptionAmount(0)
 		return true
@@ -310,6 +312,10 @@ local function OnRemove(inst)
 end
 
 local function OnPlayerAction(inst, player, data)
+	if inst.components.sleeper.isasleep then 
+		return -- don't react to things when asleep
+	end
+
 	local playerAction = data.action
 	local selfAction = inst:GetBufferedAction()
 

@@ -77,7 +77,7 @@ function Inspectable:GetDescription(viewer)
 
         
     if self.inst:HasTag("smolder") then
-        desc = GetString(viewer.prefab, "DESCRIBE_SMOLDERING")
+        desc = GetString(viewer, "DESCRIBE_SMOLDERING")
     end
         
     return desc

@@ -79,7 +79,7 @@ local function ShowState(inst, phase, fromwork)
         return
     end
 
-    local nclock = GetNightmareClock()
+    --local nclock = GetNightmareClock()
     local suffix = ""
     local workleft = inst.components.workable.workleft
 
@@ -94,13 +94,13 @@ local function ShowState(inst, phase, fromwork)
         end
     end
 
-    if nclock and nclock:IsNightmare() then
+    --[[if nclock and nclock:IsNightmare() then
         suffix = "_night"
         inst.AnimState:SetBloomEffectHandle( "shaders/anim.ksh" )
         if not fromwork then
             DoFx(inst)
         end
-    end
+    end]]
 
     if phase ~= nil and inst.phase ~= phase and phase ~= "nightmare" then
         if phase == "warn" then
@@ -130,7 +130,7 @@ local function OnWork(inst, worked, workleft)
         inst.components.lootdropper:DropLoot(inst:GetPosition())
         SpawnAt("collapse_small", inst)
 
-        local nclock = GetNightmareClock()
+        --[[local nclock = GetNightmareClock()
         if nclock and nclock:IsNightmare() then
             if math.random() <= 0.3 then
                 if math.random() <= 0.5 then
@@ -139,7 +139,7 @@ local function OnWork(inst, worked, workleft)
                     SpawnAt("nightmarebeak", inst)
                 end
             end
-        end
+        end]]
 
         inst:Remove()
     else
@@ -198,18 +198,18 @@ local function commonfn(small)
     inst.components.workable:SetOnWorkCallback(OnWork)
 
     inst:AddComponent("fader")
-    
+
     inst:AddComponent("lighttweener")
     inst.components.lighttweener:StartTween(inst.Light, 1, .9, 0.9, {255/255,255/255,255/255}, 0, turnoff)
 
     inst:AddComponent("lootdropper")
 
-    if GetNightmareClock() then
+    --[[if GetNightmareClock() then
         inst:WatchWorldState("phase", ShowState)
-    end
+    end]]
 
     inst:DoTaskInTime(1 * FRAMES, ShowState)
-    
+
     --fade_in(inst,0)
 
     return inst
