@@ -347,9 +347,9 @@ end
 function self:OnLoad(data)
 	_warning = data.warning or false
 	_timetospawn = data.timetospawn
-	_targetNum = data.targetnum
+	_targetNum = data.targetnum or 0
 	_lastBeargerKillDay = data.lastKillDay
-	_numSpawned = data.numSpawned
+	_numSpawned = data.numSpawned or 0
 
 	--print("Bearger OnLoad", _targetNum or "nil", _timetospawn or "nil", _numSpawned or "nil", _lastBeargerKillDay or "nil")
 	self.inst:StopUpdatingComponent(self)
