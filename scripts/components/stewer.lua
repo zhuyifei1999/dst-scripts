@@ -261,10 +261,6 @@ function Stewer:Harvest(harvester)
                         loot.components.perishable:SetPercent(self.product_spoilage * spoilpercent)
                         loot.components.perishable:StartPerishing()
                     end
-                    if loot.components.moisturelistener ~= nil then 
-                        loot.components.moisturelistener.moisture = 0
-                        loot.components.moisturelistener:UpdateMoisture(0)
-                    end
                     harvester.components.inventory:GiveItem(loot, nil, self.inst:GetPosition())
                 end
             end

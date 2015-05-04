@@ -43,10 +43,22 @@ local _targetplayer = nil
 local _activehasslers = {}
 local _activeplayers = {}
 
+local _lastBeargerKillDay = nil
+
 --------------------------------------------------------------------------
 --[[ Private member functions ]]
 --------------------------------------------------------------------------
 
+local function CanSpawnBearger()
+	--print("TheWorld state.isautumn", TheWorld.state.isautumn)
+	--print("No boss time?", TheWorld.state.cycles, TUNING.NO_BOSS_TIME)
+	--print("numspawned", _numSpawned, _targetNum)
+	--print("lastkillday", _lastBeargerKillDay)
+	return (TheWorld.state.isautumn == true) and
+	 		TheWorld.state.cycles > TUNING.NO_BOSS_TIME and 
+	 		(_numSpawned < _targetNum or 
+			(not _lastBeargerKillDay or ((TheWorld.state.cycles - _lastBeargerKillDay) > TUNING.NO_BOSS_TIME)))
+end
 
 local function PickPlayer()
 	local playeri = math.min(math.floor(easing.inQuint(math.random(), 1, #_activeplayers, 1)), #_activeplayers)
@@ -117,10 +129,14 @@ end
 --[[ Private event handlers ]]
 --------------------------------------------------------------------------
 
-local function OnAutumn()
-	if (TheWorld.state.isautumn == true) then 
-		--print("BeargerSpawner got isautumn event")
 
+local function OnAutumn()
+	-- If bearger gets killed and bearger isn't set to lots, _lastBeargerKillDay will be set
+	-- In this case, we need to not respawn until the following autumn, so let's make sure that 
+	-- a fairly large number of days has passed since the kill. 
+	--print("BeargerSpawner got isautumn event", _lastBeargerKillDay or "nil", TheWorld.state.cycles)
+
+	if (TheWorld.state.isautumn == true) and (not _lastBeargerKillDay or ((TheWorld.state.cycles - _lastBeargerKillDay) > TUNING.NO_BOSS_TIME)) then   
 		_targetNum = 0
 		local chance = math.random()
 		--print("Spawning first bearger?", chance, _firstBeargerSpawnChance)
@@ -191,11 +207,16 @@ local function OnHasslerKilled(src, hassler)
 	_timetospawn = nil
 	_targetplayer = nil
 
+
 	-- If WorldSettings has Bearger = Lots, then let Beargers respawn immediately after being killed instead 
 	-- of waiting for the following autumn
 	if (_firstBeargerSpawnChance >= 1 and _secondBeargerSpawnChance >= 1) then 
+		--print("Bearger settings were lots, respawning immediately")
 		_numSpawned = _numSpawned - 1
 		SpawnBearger()
+	else
+		_lastBeargerKillDay = TheWorld.state.cycles
+		--print("Kill day is", _lastBeargerKillDay)
 	end
 end
 
@@ -235,6 +256,7 @@ function self:DoWarningSound(_targetplayer)
                                "1")
     ).Transform:SetPosition(_targetplayer.Transform:GetWorldPosition())
 end
+
 
 function self:OnUpdate(dt)
 	--print("BeargerSpawner time to spawn is ", _timetospawn or "nil", _numSpawned or "0", _targetNum or "0")
@@ -284,8 +306,8 @@ function self:OnUpdate(dt)
 				self:DoWarningSound(_targetplayer)
 			end
 		end
-	elseif TheWorld.state.isautumn == true and TheWorld.state.cycles > TUNING.NO_BOSS_TIME and _numSpawned < _targetNum then 
-		--print("BeargerSpawner spawning bearger")
+	elseif CanSpawnBearger() then 
+		--print("BeargerSpawner OnUpdate spawning bearger")
 		SpawnBearger()
 	end
 end
@@ -303,7 +325,9 @@ function self:OnSave()
 	{
 		warning = _warning,
 		timetospawn = _timetospawn,
-		targetnum = _targetNum
+		targetnum = _targetNum,
+		lastKillDay = _lastBeargerKillDay,
+		numSpawned = _numSpawned,
 	}
 
 	local ents = {}
@@ -324,33 +348,30 @@ function self:OnLoad(data)
 	_warning = data.warning or false
 	_timetospawn = data.timetospawn
 	_targetNum = data.targetnum
+	_lastBeargerKillDay = data.lastKillDay
+	_numSpawned = data.numSpawned
 
-	--print("Bearger OnLoad", _targetNum or "nil", _timetospawn or "nil")
+	--print("Bearger OnLoad", _targetNum or "nil", _timetospawn or "nil", _numSpawned or "nil", _lastBeargerKillDay or "nil")
 	self.inst:StopUpdatingComponent(self)
 
-	--[[if _timetospawn and _timetospawn > 0 then 
-		self.inst:StartUpdatingComponent(self)
-	end]]
 end
 
 function self:LoadPostPass(newents, savedata)
-	_numSpawned = 0
 	if savedata.activehasslers ~= nil then
 		for k,v in pairs(savedata.activehasslers) do 
 			if newents[v] ~= nil then 
 				_activehasslers[newents[v].entity] = true
-				_numSpawned = _numSpawned + 1
-				--self.inst:StopUpdatingComponent(self)
 			end
 		end
 	end
 
 	--print("BeargerSpawner LoadPostPass")
 
-	if TheWorld.state.season == "autumn" then
-		--print("calling OnAutumn") 
-		OnAutumn() 
-	end 
+
+	if CanSpawnBearger() then
+		self.inst:StartUpdatingComponent(self)
+	end
+	
 end
 
 

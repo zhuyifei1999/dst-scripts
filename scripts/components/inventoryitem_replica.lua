@@ -4,8 +4,7 @@ local InventoryItem = Class(function(self, inst)
     self.inst = inst
 
     self._cannotbepickedup = net_bool(inst.GUID, "inventoryitem._cannotbepickedup")
-    self._canbedropped = net_bool(inst.GUID, "inventoryitem._canbedropped")
-    self._trappable = net_bool(inst.GUID, "inventoryitem._trappable")
+    self._iswet = net_bool(inst.GUID, "inventoryitem._iswet", "iswetdirty")
 
     if TheWorld.ismastersim then
         self.classified = SpawnPrefab("inventoryitem_classified")
@@ -26,11 +25,6 @@ local InventoryItem = Class(function(self, inst)
 
         if inst.components.equippable ~= nil then
             self:SetWalkSpeedMult(inst.components.equippable.walkspeedmult or 1)
-        end
-
-        if inst.components.moisturelistener ~= nil then
-            self:SetMoistureLevel(inst.components.moisturelistener.moisture)
-            self:SetIsWet(inst.components.moisturelistener.wet)
         end
     elseif self.classified == nil and inst.inventoryitem_classified ~= nil then
         self:AttachClassified(inst.inventoryitem_classified)
@@ -75,22 +69,6 @@ end
 
 function InventoryItem:CanBePickedUp()
     return not self._cannotbepickedup:value()
-end
-
-function InventoryItem:SetCanBeDropped( canbedropped )
-    self._canbedropped:set(canbedropped)
-end
-
-function InventoryItem:CanBeDropped()
-    return self._canbedropped:value()
-end
-
-function InventoryItem:SetTrappable(trappable)
-    self._trappable:set(trappable)
-end
-
-function InventoryItem:GetTrappable()
-    return self._trappable:value()
 end
 
 function InventoryItem:SetCanGoInContainer(cangoincontainer)
@@ -313,8 +291,8 @@ function InventoryItem:SetMoistureLevel(moisture)
 end
 
 function InventoryItem:GetMoisture()
-    if self.inst.components.moisturelistener ~= nil then
-        return self.inst.components.moisturelistener:GetMoisture()
+    if self.inst.components.inventoryitemmoisture ~= nil then
+        return self.inst.components.inventoryitemmoisture.moisture
     elseif self.classified ~= nil then
         return self.classified.moisture:value()
     else
@@ -322,20 +300,15 @@ function InventoryItem:GetMoisture()
     end
 end
 
-function InventoryItem:SetWet(wet)
-    if self.classified ~= nil then
-        self.classified.wet:set(wet)
+function InventoryItem:SetIsWet(iswet)
+    if iswet ~= self._iswet:value() then
+        self._iswet:set(iswet)
+        self.inst:PushEvent("wetnesschange", iswet)
     end
 end
 
-function InventoryItem:GetIsWet()
-    if self.inst.components.moisturelistener ~= nil then
-        return self.inst.components.moisturelistener:GetIsWet()
-    elseif self.classified ~= nil then
-        return self.classified.wet:value()
-    else
-        return 0
-    end
+function InventoryItem:IsWet()
+    return self._iswet:value()
 end
 
 return InventoryItem

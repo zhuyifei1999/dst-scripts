@@ -199,9 +199,13 @@ end
 function Builder:GetIngredientWetness(ingredients)
     local wetness = {}
     for item, ents in pairs(ingredients) do
-    	for k,v in pairs(ents) do
-			table.insert(wetness, {wetness = k:GetCurrentMoisture(), num = v})
-    	end
+        for k, v in pairs(ents) do
+            table.insert(wetness,
+            {
+                wetness = k.components.inventoryitem ~= nil and k.components.inventoryitem:GetMoisture() or TheWorld.state.wetness,
+                num = v,
+            })
+        end
     end
 
     local totalWetness = 0
@@ -276,9 +280,8 @@ function Builder:DoBuild(recname, pt)
         if prod ~= nil then
             pt = pt or Point(self.inst.Transform:GetWorldPosition())
 
-            if prod.components.moisturelistener ~= nil and wetlevel > 0 then
-                prod.components.moisturelistener.moisture = wetlevel
-                prod.components.moisturelistener:DoUpdate()
+            if wetlevel > 0 and prod.components.inventoryitem ~= nil then
+                prod.components.inventoryitem:InheritMoisture(wetlevel, self.inst:GetIsWet())
             end
 
             if prod.components.inventoryitem ~= nil then

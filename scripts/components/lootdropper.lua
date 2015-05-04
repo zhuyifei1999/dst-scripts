@@ -172,14 +172,6 @@ function LootDropper:GenerateLoot()
     return loots
 end
 
-local function UpdateMoisture(item)
-	if item.components.moisturelistener then 
-		item.components.moisturelistener.moisture = item.target_moisture
-		item.target_moisture = nil
-		item.components.moisturelistener:DoUpdate()
-	end
-end
-
 local function SplashOceanLoot(loot)
 	if not (loot.components.inventoryitem and loot.components.inventoryitem:IsHeld()) then
 		if not loot:IsOnValidGround() then
@@ -195,32 +187,36 @@ local function SplashOceanLoot(loot)
 end
 
 function LootDropper:SpawnLootPrefab(lootprefab, pt)
-    if lootprefab then
+    if lootprefab ~= nil then
         local loot = SpawnPrefab(lootprefab)
         if loot then
-			if not pt then
-				pt = Point(self.inst.Transform:GetWorldPosition())
+			if pt == nil then
+				pt = self.inst:GetPosition()
 			end
-	        
-			loot.Transform:SetPosition(pt.x,pt.y,pt.z)
 
-			loot.target_moisture = self.inst:GetCurrentMoisture()
-			loot:DoTaskInTime(2*FRAMES, UpdateMoisture)
-	        
-			if loot.Physics then
-	        
+			loot.Transform:SetPosition(pt:Get())
+
+            if loot.components.inventoryitem ~= nil then
+                if self.inst.components.inventoryitem ~= nil then
+                    loot.components.inventoryitem:InheritMoisture(self.inst.components.inventoryitem:GetMoisture(), self.inst.components.inventoryitem:IsWet())
+                else
+                    loot.components.inventoryitem:InheritMoisture(TheWorld.state.wetness, TheWorld.state.iswet)
+                end
+            end
+
+			if loot.Physics ~= nil then
 				local angle = math.random()*2*PI
 				local speed = math.random()*2
 				loot.Physics:SetVel(speed*math.cos(angle), GetRandomWithVariance(8, 4), speed*math.sin(angle))
 
 				if loot and loot.Physics and self.inst and self.inst.Physics then
 					pt = pt + Vector3(math.cos(angle), 0, math.sin(angle))*((loot.Physics:GetRadius() or 1) + (self.inst.Physics:GetRadius() or 1))
-					loot.Transform:SetPosition(pt.x,pt.y,pt.z)
+					loot.Transform:SetPosition(pt:Get())
 				end
-				
+
 				loot:DoTaskInTime(1, SplashOceanLoot)
 			end
-	        
+
 			return loot
 		end
     end

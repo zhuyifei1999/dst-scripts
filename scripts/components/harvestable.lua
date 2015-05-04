@@ -77,7 +77,7 @@ function Harvestable:GetDebugString()
     if self.targettime then
         str = str.." ("..tostring(self.targettime - GetTime())..")"
     end
-	return str
+    return str
 end
 
 function Harvestable:Grow()
@@ -98,24 +98,16 @@ function Harvestable:StartGrowing(time)
     self:StopGrowing()
     local growtime = time or self.growtime
     if growtime then
-		self.task = self.inst:DoTaskInTime(growtime, function() self:Grow() end, "grow")
-		self.targettime = GetTime() + growtime
-	end
+        self.task = self.inst:DoTaskInTime(growtime, function() self:Grow() end, "grow")
+        self.targettime = GetTime() + growtime
+    end
 end
 
 function Harvestable:StopGrowing()
     if self.task then
-		self.task:Cancel()
-		self.task = nil
-		self.targettime = nil
-	end
-end
-
-local function UpdateMoisture(item)
-    if item.components.moisturelistener then 
-        item.components.moisturelistener.moisture = item.target_moisture
-        item.target_moisture = nil
-        item.components.moisturelistener:DoUpdate()
+        self.task:Cancel()
+        self.task = nil
+        self.targettime = nil
     end
 end
 
@@ -123,19 +115,19 @@ function Harvestable:Harvest(picker)
     if self:CanBeHarvested() then
         local produce = self.produce
         self.produce = 0
-        
-        if self.onharvestfn then
+
+        if self.onharvestfn ~= nil then
             self.onharvestfn(self.inst, picker, produce)
         end
-        
-        if picker.components.inventory and self.product then
-	        picker:PushEvent("harvestsomething", {object = self.inst})
+
+        if picker.components.inventory ~= nil and self.product ~= nil then
+            picker:PushEvent("harvestsomething", { object = self.inst })
             for i = 1, produce, 1 do
                 local loot = SpawnPrefab(self.product)
-                if loot then
-                    loot.target_moisture = self.inst:GetCurrentMoisture()
-                    loot:DoTaskInTime(2*FRAMES, UpdateMoisture)
-
+                if loot ~= nil then
+                    if loot.components.inventoryitem ~= nil then
+                        loot.components.inventoryitem:InheritMoisture(TheWorld.state.wetness, TheWorld.state.iswet)
+                    end
                     picker.components.inventory:GiveItem(loot)
                 end
             end

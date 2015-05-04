@@ -470,7 +470,7 @@ local COMPONENT_ACTIONS =
         end,
 
         inventoryitem = function(inst, doer, pos, actions, right)
-            if not right and inst.replica.inventoryitem:CanBeDropped() and inst.replica.inventoryitem:IsHeldBy(doer) then
+            if not right and inst.replica.inventoryitem:IsHeldBy(doer) then
                 table.insert(actions, ACTIONS.DROP)
             end
         end,

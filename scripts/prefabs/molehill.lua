@@ -9,17 +9,12 @@ local prefabs =
     "mole",
 }
 
-local function GetChild(inst)
-    return "mole"
-end
-
-local function dig_up(inst, chopper)
-    if inst.components.spawner.child and not inst.components.spawner.child:HasTag("INLIMBO") then
+local function dig_up(inst)
+    if inst.components.spawner.child ~= nil then
         inst.components.spawner.child.needs_home_time = GetTime()
-    end
-    if inst.components.spawner:IsOccupied() then
-        inst.components.spawner:ReleaseChild()
-        inst.components.spawner.child.needs_home_time = GetTime()
+        if inst.components.spawner:IsOccupied() then
+            inst.components.spawner:ReleaseChild()
+        end
     end
     inst.components.lootdropper:DropLoot()
     inst.components.inventory:DropEverything(false, true)
@@ -27,14 +22,17 @@ local function dig_up(inst, chopper)
 end
 
 local function startspawning(inst)
-    if inst.components.spawner and not inst.components.spawner:IsSpawnPending() then
-        inst.components.spawner:SpawnWithDelay(5 + math.random(15))
+    if inst.components.spawner ~= nil then
+        inst.components.spawner:SetQueueSpawning(false)
+        if not inst.components.spawner:IsSpawnPending() then
+            inst.components.spawner:SpawnWithDelay(math.random(5, 20))
+        end
     end
 end
 
 local function stopspawning(inst)
-    if inst.components.spawner then
-        inst.components.spawner:CancelSpawning()
+    if inst.components.spawner ~= nil then
+        inst.components.spawner:SetQueueSpawning(true, math.random(5, 15))
     end
 end
 
@@ -44,10 +42,33 @@ local function onoccupied(inst)
     end
 end
 
-local function confignewhome(inst, data)
-    if inst.spawner_config_task then inst.spawner_config_task:Cancel() end
-    if data.mole then inst.components.spawner:TakeOwnership(data.mole) end
-    inst.components.spawner:Configure( "mole", TUNING.MOLE_RESPAWN_TIME)
+local function OnIsDay(inst, isday)
+    if not isday and inst.components.spawner ~= nil and inst.components.spawner:IsOccupied() then
+        startspawning(inst)
+    else
+        stopspawning(inst)
+    end
+end
+
+local function AdoptChild(inst, child)
+    inst.AdoptChild = nil
+    if inst.components.spawner ~= nil then
+        inst.components.spawner:CancelSpawning()
+        inst.components.spawner:TakeOwnership(child)
+        stopspawning(inst)
+    end
+end
+
+local function OnInit(inst)
+    inst.AdoptChild = nil
+    inst:WatchWorldState("isday", OnIsDay)
+    OnIsDay(inst, TheWorld.state.isday)
+end
+
+local function OnHaunt(inst)
+    return inst.components.spawner ~= nil
+        and inst.components.spawner:IsOccupied()
+        and inst.components.spanwer:ReleaseChild()
 end
 
 local function fn()
@@ -80,31 +101,24 @@ local function fn()
     inst:AddComponent("inventory")
     inst.components.inventory.maxslots = 50
 
-    inst:AddComponent( "spawner" )
+    inst:AddComponent("spawner")
     inst.components.spawner:SetOnOccupiedFn(onoccupied)
     inst.components.spawner:SetOnVacateFn(stopspawning)
-    inst.components.spawner.childfn = GetChild
-    inst:ListenForEvent("confignewhome", confignewhome)
-    inst.spawner_config_task = inst:DoTaskInTime(1, function(inst)
-        inst.components.spawner:Configure( "mole", TUNING.MOLE_RESPAWN_TIME)
-        inst.spawner_config_task = nil
-    end)
+    inst.components.spawner:Configure("mole", TUNING.MOLE_RESPAWN_TIME)
+
+    inst:DoTaskInTime(0, OnInit)
+    inst.AdoptChild = AdoptChild
 
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.DIG)
     inst.components.workable:SetOnFinishCallback(dig_up)
     inst.components.workable:SetWorkLeft(1)
 
-    inst:WatchWorldState( "startdusk", startspawning )
-    inst:WatchWorldState( "stopnight", stopspawning )
-
     inst:AddComponent("inspectable")
 
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetHauntValue(TUNING.HAUNT_SMALL)
-    inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
-        return not inst.spring and inst.components.spawner:ReleaseChild()
-    end)
+    inst.components.hauntable:SetOnHauntFn(OnHaunt)
 
     return inst
 end

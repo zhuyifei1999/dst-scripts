@@ -571,7 +571,6 @@ local function fn()
     inst.moisture = net_ushortint(inst.GUID, "moisture.moisture", "moisturedirty")
     inst.maxmoisture = net_ushortint(inst.GUID, "moisture.maxmoisture")
     inst.moistureratescale = net_tinybyte(inst.GUID, "moisture.ratescale", "moisturedirty")
-    inst.iswet = net_bool(inst.GUID, "moisture.iswet")
     inst.maxmoisture:set(100)
 
     --PlayerController variables

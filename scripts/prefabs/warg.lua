@@ -101,7 +101,7 @@ local function fn()
 
     inst.AnimState:SetBank("warg")
     inst.AnimState:SetBuild("warg_build")
-    inst.AnimState:PlayAnimation("idle")
+    inst.AnimState:PlayAnimation("idle_loop", true)
 
     inst.entity:SetPristine()
 

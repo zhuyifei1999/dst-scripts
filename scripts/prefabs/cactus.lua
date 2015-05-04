@@ -14,14 +14,6 @@ local function ontransplantfn(inst)
     inst.components.pickable:MakeEmpty()
 end
 
-local function UpdateMoisture(item)
-    if item.components.moisturelistener then 
-        item.components.moisturelistener.moisture = item.target_moisture
-        item.target_moisture = nil
-        item.components.moisturelistener:DoUpdate()
-    end
-end
-
 local function onpickedfn(inst, picker)
     inst.Physics:SetActive(false)
     if inst.has_flower then
@@ -34,13 +26,14 @@ local function onpickedfn(inst, picker)
         picker.components.combat:GetAttacked(inst, TUNING.CACTUS_DAMAGE)
         picker:PushEvent("thorns")
     end
-    
+
     if inst.has_flower then -- You get a cactus flower, yay.
-        if picker and picker.components.inventory then
+        if picker ~= nil and picker.components.inventory ~= nil then
             local loot = SpawnPrefab("cactus_flower")
-            if loot then
-                loot.target_moisture = inst:GetCurrentMoisture()
-                loot:DoTaskInTime(2*FRAMES, UpdateMoisture)
+            if loot ~= nil then
+                if loot.components.inventoryitem ~= nil then
+                    loot.components.inventoryitem:InheritMoisture(TheWorld.state.wetness, TheWorld.state.iswet)
+                end
                 picker.components.inventory:GiveItem(loot, nil, Vector3(TheSim:GetScreenPos(inst.Transform:GetWorldPosition())))
             end
         end

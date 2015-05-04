@@ -98,7 +98,7 @@ end
 function StatusDisplays:HealthDelta(data)
     self.heart:SetPercent(data.newpercent, self.owner.replica.health:Max(), self.owner.replica.health:GetPenaltyPercent()) 
 
-    if data.oldpercent > .33 and data.newpercent <= .33 then
+    if data.newpercent <= .33 then
         self.heart:StartWarning()
     else
         self.heart:StopWarning()

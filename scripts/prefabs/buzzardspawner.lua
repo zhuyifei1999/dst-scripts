@@ -9,8 +9,8 @@ local prefabs =
 	"buzzard",
 }
 
-local FOOD_TAGS = {"edible", "prey"}
-local NO_TAGS = {"FX", "NOCLICK", "DECOR","INLIMBO"}
+local FOOD_TAGS = { "edible_"..FOODTYPE.MEAT, "prey" }
+local NO_TAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO" }
 
 local function RemoveBuzzardShadow(inst, shadow)
 	shadow.components.colourtweener:StartTween({1,1,1,0}, 3, function() shadow:Remove() end)
@@ -68,54 +68,48 @@ local function OnSpawn(inst, child)
 	end
 end
 
-local function BuzzardNearFood(inst, food)
-    local x,y,z = food.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x,y,z, 3,  {"buzzard"}, {"FX", "NOCLICK", "DECOR","INLIMBO"})
-    return #ents > 0
+local function stophuntingfood(inst)
+    local food = inst.foodHunted or inst
+    local buzzard = inst.buzzardHunted or inst
+    if food ~= nil and buzzard ~= nil then
+        food.buzzardHunted = nil
+        buzzard.foodHunted = nil
+        food:RemoveEventCallback("onpickup", stophuntingfood)
+        food:RemoveEventCallback("onremove", stophuntingfood)
+        buzzard:RemoveEventCallback("onremove", stophuntingfood)
+    end
 end
 
-local function SpawnOnFood(inst, food)
-	if food.buzzardHunted then return end
-	if math.random() > 0.25 then
-		local buzzard = inst.components.childspawner:SpawnChild()
-		local foodPos = food:GetPosition()
-		buzzard.Transform:SetPosition(foodPos.x + math.random(-1.5, 1.5), 30, foodPos.z + math.random(-1.5, 1.5))
-
-		if food:HasTag("prey") then
-			buzzard.sg.statemem.target = food
-		end
-		
-		buzzard:FacePoint(food.Transform:GetWorldPosition())
-
-        local stophuntingfood = nil
-        stophuntingfood = function()
-            food.buzzardHunted = nil
-            food:RemoveEventCallback("onpickup", stophuntingfood)
-            buzzard:RemoveEventCallback("onremove", stophuntingfood)
-        end
-
-		food:ListenForEvent("onpickup", stophuntingfood)
-        buzzard:ListenForEvent("onremove", stophuntingfood)
-		food.buzzardHunted = true
-
-		inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/buzzard/distant")
-	end
+local function CanBeHunted(food)
+    return food.buzzardHunted == nil and food:IsOnValidGround() and FindEntity(food, 3, nil, { "buzzard" }, NO_TAGS) == nil
 end
 
 local function LookForFood(inst)
-	if not inst.components.childspawner then 
-		print("no childspawner on ", inst)
-	end
-	if not inst.components.childspawner:CanSpawn() or TheWorld.state.isnight then return end
+    if inst.components.childspawner == nil or
+        not inst.components.childspawner:CanSpawn() or
+        TheWorld.state.isnight or
+        math.random() <= .25 then
+        return
+    end
 
-	local pt = inst:GetPosition()
-    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, 25, nil, NO_TAGS)
-    for k,v in pairs(ents) do
-        if v and v:IsOnValidGround() and (v.components.edible and v.components.edible.foodtype == "MEAT" and not v.components.inventoryitem:IsHeld())
-        or v:HasTag("prey") and not BuzzardNearFood(inst, v) and not v.buzzardHunted then
-        	SpawnOnFood(inst, v)
-            break
+    local food = FindEntity(inst, 25, CanBeHunted, nil, NO_TAGS, FOOD_TAGS)
+    if food ~= nil then
+        local buzzard = inst.components.childspawner:SpawnChild()
+        local x, y, z = food.Transform:GetWorldPosition()
+        buzzard.Transform:SetPosition(x + math.random(-1.5, 1.5), 30, z + math.random(-1.5, 1.5))
+        buzzard:FacePoint(x, y, z)
+
+        if food:HasTag("prey") then
+            buzzard.sg.statemem.target = food
         end
+
+        food.buzzardHunted = buzzard
+        buzzard.foodHunted = food
+        food:ListenForEvent("onpickup", stophuntingfood)
+        food:ListenForEvent("onremove", stophuntingfood)
+        buzzard:ListenForEvent("onremove", stophuntingfood)
+
+        inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/buzzard/distant")
     end
 end
 

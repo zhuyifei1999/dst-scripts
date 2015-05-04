@@ -59,9 +59,7 @@ function Pickable:OnRemoveFromEntity()
 end
 
 function Pickable:LongUpdate(dt)
-
 	if not self.paused and self.targettime and not self.inst:HasTag("withered") then
-	
 		if self.task then 
 			self.task:Cancel()
 			self.task = nil
@@ -380,18 +378,8 @@ function Pickable:MakeEmpty()
 	
 end
 
-local function UpdateMoisture(item)
-	if item.components.moisturelistener then 
-		item.components.moisturelistener.moisture = item.target_moisture
-		item.target_moisture = nil
-		item.components.moisturelistener:DoUpdate()
-	end
-end
-
 function Pickable:Pick(picker)
-    
     if self.canbepicked and self.caninteractwith then
-
         if self.transplanted and self.cycles_left ~= nil then
             self.cycles_left = math.max(0, self.cycles_left - 1)
         end
@@ -410,19 +398,20 @@ function Pickable:Pick(picker)
         if picker and picker.components.inventory and self.product then
             loot = SpawnPrefab(self.product)
 
-            if loot then
-				loot.target_moisture = self.inst:GetCurrentMoisture()
-				loot:DoTaskInTime(2*FRAMES, UpdateMoisture)
+            if loot ~= nil then
+                if loot.components.inventoryitem ~= nil then
+                    loot.components.inventoryitem:InheritMoisture(TheWorld.state.wetness, TheWorld.state.iswet)
+                end
 
 	            if self.numtoharvest > 1 and loot.components.stackable then
 	            	loot.components.stackable:SetStackSize(self.numtoharvest)
 	            end
-		        picker:PushEvent("picksomething", {object = self.inst, loot= loot})
+		        picker:PushEvent("picksomething", { object = self.inst, loot = loot })
                 picker.components.inventory:GiveItem(loot, nil, self.inst:GetPosition())
             end
         end
-        
-        if self.onpickedfn then
+
+        if self.onpickedfn ~= nil then
             self.onpickedfn(self.inst, picker, loot)
         end
 
