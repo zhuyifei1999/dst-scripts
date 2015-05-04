@@ -898,11 +898,10 @@ local function MakeHat(name)
         inst.components.perishable:SetOnPerishFn(function(inst)
             local owner = inst.components.inventoryitem.owner
             if owner ~= nil then
-                if owner.components.moisture then
+                if owner.components.moisture ~= nil then
                     owner.components.moisture:DoDelta(30)
-                end
-                if owner.components.moisturelistener then
-                    owner.components.moisturelistener:DoDelta(50)
+                elseif owner.components.inventoryitem ~= nil then
+                    owner.components.inventoryitem:AddMoisture(50)
                 end
             end
             inst:Remove()

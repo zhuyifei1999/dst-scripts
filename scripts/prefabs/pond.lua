@@ -124,6 +124,8 @@ local function commonfn(pondtype)
 
     inst:AddTag("watersource")
 
+    inst.no_wet_prefix = true
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -142,7 +144,6 @@ local function commonfn(pondtype)
 
     inst:AddComponent("inspectable")
     inst.components.inspectable.nameoverride = "pond"
-    inst.no_wet_prefix = true
 
     inst:AddComponent("fishable")
     inst.components.fishable:SetRespawnTime(TUNING.FISH_RESPAWN_TIME)

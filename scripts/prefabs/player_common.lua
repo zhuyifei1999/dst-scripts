@@ -104,16 +104,6 @@ local function GetMoistureRateScale(inst)
     end
 end
 
-local function IsWet(inst)
-    if inst.components.moisture ~= nil then
-        return inst.components.moisture:GetIsWet()
-    elseif inst.player_classified ~= nil then
-        return inst.player_classified.iswet:value()
-    else
-        return false
-    end
-end
-
 local function ShouldAcceptItem(inst, item)
     if item == nil or inst:HasTag("busy") then
         return false
@@ -1310,7 +1300,6 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.GetMoisture = GetMoisture -- Didn't want to make moisture a networked component
         inst.GetMaxMoisture = GetMaxMoisture -- Didn't want to make moisture a networked component
         inst.GetMoistureRateScale = GetMoistureRateScale -- Didn't want to make moisture a networked component
-        inst.IsWet = IsWet -- Didn't want to make moisture a networked component
         inst.EnableMovementPrediction = EnableMovementPrediction
         inst.ShakeCamera = ShakeCamera
         inst.SetGhostMode = SetGhostMode
@@ -1336,6 +1325,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst:AddTag("_sanity")
         inst:AddTag("_builder")
         inst:AddTag("_combat")
+        inst:AddTag("_moisture")
         inst:AddTag("_sheltered")
 
         inst.userid = ""
@@ -1354,6 +1344,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst:RemoveTag("_sanity")
         inst:RemoveTag("_builder")
         inst:RemoveTag("_combat")
+        inst:RemoveTag("_moisture")
         inst:RemoveTag("_sheltered")
 
         if inst.ghostenabled then

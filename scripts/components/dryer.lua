@@ -125,9 +125,8 @@ local function DoSpoil(inst, self)
     local loot = SpawnPrefab("spoiled_food")
     if loot ~= nil then
         loot.Transform:SetPosition(inst.Transform:GetWorldPosition())
-        if loot.components.moisturelistener ~= nil then
-            loot.components.moisturelistener.moisture = TheWorld.state.wetness
-            loot.components.moisturelistener:DoUpdate()
+        if loot.components.inventoryitem ~= nil and not self.protectedfromrain then
+            loot.components.inventoryitem:InheritMoisture(TheWorld.state.wetness, TheWorld.state.iswet)
         end
     end
 
@@ -247,9 +246,8 @@ function Dryer:Harvest(harvester)
             loot.components.perishable:SetPercent(self:GetTimeToSpoil() / TUNING.PERISH_PRESERVED)
             loot.components.perishable:StartPerishing()
         end
-        if loot.components.moisturelistener ~= nil then
-            loot.components.moisturelistener.moisture = self.inst:GetCurrentMoisture()
-            loot.components.moisturelistener:UpdateMoisture(0)
+        if loot.components.inventoryitem ~= nil and not self.protectedfromrain then
+            loot.components.inventoryitem:InheritMoisture(TheWorld.state.wetness, TheWorld.state.iswet)
         end
         harvester.components.inventory:GiveItem(loot, nil, self.inst:GetPosition())
     end

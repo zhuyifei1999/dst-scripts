@@ -56,8 +56,11 @@ local function OnStackSizeDirty(parent)
     TheWorld:PushEvent("stackitemdirty", parent)
 end
 
-local function OnWetDirty(inst)
-    inst._parent:PushEvent("wetnesschange", inst.wet:value())
+local function OnIsWetDirty(parent)
+    local inventoryitem = parent.replica.inventoryitem
+    if inventoryitem ~= nil then
+        parent:PushEvent("wetnesschange", inventoryitem:IsWet())
+    end
 end
 
 local function RegisterNetListeners(inst)
@@ -65,7 +68,7 @@ local function RegisterNetListeners(inst)
     inst:ListenForEvent("percentuseddirty", DeserializePercentUsed)
     inst:ListenForEvent("perishdirty", DeserializePerish)
     inst:ListenForEvent("stacksizedirty", OnStackSizeDirty, inst._parent)
-    inst:ListenForEvent("wetdirty", OnWetDirty)
+    inst:ListenForEvent("iswetdirty", OnIsWetDirty, inst._parent)
 end
 
 local function fn()
@@ -94,8 +97,7 @@ local function fn()
     inst.usegridplacer = net_bool(inst.GUID, "deployable.usegridplacer")
     inst.attackrange = net_float(inst.GUID, "weapon.attackrange")
     inst.walkspeedmult = net_byte(inst.GUID, "equippable.walkspeedmult")
-    inst.moisture = net_uint(inst.GUID, "moisturelistener.moisture")
-    inst.wet = net_bool(inst.GUID, "moisturelistener.wet", "wetdirty")
+    inst.moisture = net_float(inst.GUID, "inventoryitemmoisture.moisture")
 
     inst.image:set(0)
     inst.atlas:set(0)
@@ -109,7 +111,6 @@ local function fn()
     inst.attackrange:set(-1)
     inst.walkspeedmult:set(1)
     inst.moisture:set(0)
-    inst.wet:set(false)
 
     inst.entity:SetPristine()
 

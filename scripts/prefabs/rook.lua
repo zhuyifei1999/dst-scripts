@@ -189,7 +189,7 @@ local function common_fn(build)
     MakeCharacterPhysics(inst, 50, 1.5)
 
     inst.DynamicShadow:SetSize(3, 1.25)
-    inst.Transform:SetSixFaced()
+    inst.Transform:SetFourFaced()
     inst.Transform:SetScale(0.66, 0.66, 0.66)
 
     inst.AnimState:SetBank("rook")

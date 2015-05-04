@@ -18,13 +18,12 @@ end
 
 local function onperish(inst)
     local owner = inst.components.inventoryitem.owner
-    if owner then
+    if owner ~= nil then
         local stacksize = inst.components.stackable:StackSize()
-        if owner.components.moisture then
-            owner.components.moisture:DoDelta(2*stacksize)
-        end
-        if owner.components.moisturelistener then
-            owner.components.moisturelistener:DoDelta(4*stacksize)
+        if owner.components.moisture ~= nil then
+            owner.components.moisture:DoDelta(2 * stacksize)
+        elseif owner.components.inventoryitem ~= nil then
+            owner.components.inventoryitem:AddMoisture(4 * stacksize)
         end
         inst:Remove()
     else

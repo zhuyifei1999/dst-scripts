@@ -5,10 +5,18 @@ local WaterProofer = Class(function(self, inst)
 
     --V2C: Recommended to explicitly add tag to prefab pristine state
     inst:AddTag("waterproofer")
+
+    if inst.components.inventoryitem ~= nil then
+        inst.components.inventoryitem:EnableMoisture(false)
+    end
 end)
 
 function WaterProofer:OnRemoveFromEntity()
     self.inst:RemoveTag("waterproofer")
+
+    if inst.components.inventoryitem ~= nil then
+        inst.components.inventoryitem:EnableMoisture(true)
+    end
 end
 
 function WaterProofer:GetEffectiveness()

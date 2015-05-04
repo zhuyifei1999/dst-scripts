@@ -158,16 +158,7 @@ function Crop:StartGrowing(prod, grow_time, grower, percent)
     self.grower = grower
 end
 
-local function UpdateMoisture(item)
-	if item.components.moisturelistener then 
-		item.components.moisturelistener.moisture = item.target_moisture
-		item.target_moisture = nil
-		item.components.moisturelistener:DoUpdate()
-	end
-end
-
 function Crop:Harvest(harvester)
-    
     if self.matured or self.inst:HasTag("withered") then
 		local product = nil
         if self.grower and self.grower:HasTag("fire") or self.inst:HasTag("fire") then
@@ -182,28 +173,27 @@ function Crop:Harvest(harvester)
             product = SpawnPrefab(self.product_prefab)
         end
 
-        if product then
-           
-           	product.target_moisture = self.inst:GetCurrentMoisture()
-			product:DoTaskInTime(2*FRAMES, UpdateMoisture)
+        if product ~= nil then
+            if product.components.inventoryitem ~= nil then
+                product.components.inventoryitem:InheritMoisture(TheWorld.state.wetness, TheWorld.state.iswet)
+            end
 
-			if harvester then 
+			if harvester ~= nil then
 				harvester.components.inventory:GiveItem(product, nil, self.inst:GetPosition())
-			else 
+			else
 				-- just drop the thing (happens if you haunt the fully grown crop)
 				local pos = Vector3(self.inst.Transform:GetWorldPosition())
 				product.Transform:SetPosition(pos:Get())
 			end
-        	ProfileStatsAdd("grown_"..product.prefab) 
+        	ProfileStatsAdd("grown_"..product.prefab)
         end
-       
-        
+
         self.matured = false
         self.growthpercent = 0
         self.product_prefab = nil
         self.grower.components.grower:RemoveCrop(self.inst)
         self.grower = nil
-        
+
         return true
     end
 end
@@ -222,7 +212,7 @@ function Crop:IsReadyForHarvest()
 end
 
 function Crop:LongUpdate(dt)
-	self:DoGrow(dt)		
+	self:DoGrow(dt)
 end
 
 return Crop

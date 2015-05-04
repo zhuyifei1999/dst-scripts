@@ -60,8 +60,14 @@ local function onpickup(inst)
     inst.SoundEmitter:KillSound("move")
     inst.SoundEmitter:KillSound("sniff")
     inst.SoundEmitter:KillSound("stunned")
-    if inst.stunnedkillsleepsfxtask then inst.stunnedkillsleepsfxtask:Cancel() inst.stunnedkillsleepsfxtask = nil end
-    if inst.stunnedsleepsfxtask then inst.stunnedsleepsfxtask:Cancel() inst.stunnedsleepsfxtask = nil end
+    if inst.sg.statemem.playtask ~= nil then
+        inst.sg.statemem.playtask:Cancel()
+        inst.sg.statemem.playtask = nil
+    end
+    if inst.sg.statemem.killtask ~= nil then
+        inst.sg.statemem.killtask:Cancel()
+        inst.sg.statemem.killtask = nil
+    end
 end
 
 local function OnLoad(inst, data)
@@ -74,49 +80,43 @@ local function OnSave(inst, data)
     data.needs_home_time = inst.needs_home_time and (GetTime() - inst.needs_home_time) or nil
 end
 
-local function SetState(inst, state)
-    --"under" or "above"
-    if state == "under" and not inst:HasTag("under") then
+local function SetUnderPhysics(inst)
+    if inst.isunder ~= true then
+        inst.isunder = true
         inst.Physics:SetCollisionGroup(COLLISION.CHARACTERS)
         inst.Physics:ClearCollisionMask()
         inst.Physics:CollidesWith(COLLISION.WORLD)
         inst.Physics:CollidesWith(COLLISION.OBSTACLES)
-        inst:RemoveTag("above")
-        inst:AddTag("under")
-        inst:AddTag("noattack")
-    elseif state == "above" and not inst:HasTag("above") then
+    end
+end
+
+local function SetAbovePhysics(inst)
+    if inst.isunder ~= false then
+        inst.isunder = false
         ChangeToCharacterPhysics(inst)
-        inst:RemoveTag("under")
-        inst:RemoveTag("noattack")
-        inst:AddTag("above")
     end
 end
 
 local function displaynamefn(inst)
-    if inst:HasTag("under") and not inst:HasTag("INLIMBO") then
-        return STRINGS.NAMES.MOLE_UNDERGROUND
-    else
-        return STRINGS.NAMES.MOLE_ABOVEGROUND
-    end
+    return inst:HasTag("noattack")
+        and not inst:HasTag("INLIMBO")
+        and not (inst.replica.inventoryitem ~= nil and inst.replica.inventoryitem:CanBePickedUp())
+        and STRINGS.NAMES.MOLE_UNDERGROUND
+        or STRINGS.NAMES.MOLE_ABOVEGROUND
 end
 
 local function getstatus(inst)
-    if inst.components.inventoryitem and inst.components.inventoryitem:IsHeld() then
-        return "HELD"
-    elseif inst:HasTag("under") then
-        return "UNDERGROUND"
-    else
-        return "ABOVEGROUND"
-    end
+    return (inst.components.inventoryitem ~= nil and inst.components.inventoryitem:IsHeld() and "HELD")
+        or (inst.isunder and "UNDERGROUND")
+        or "ABOVEGROUND"
 end
 
 local function ondrop(inst)
     inst.SoundEmitter:KillSound("move")
     inst.SoundEmitter:KillSound("sniff")
     inst.SoundEmitter:KillSound("stunned")
-    inst:SetState("above")
     inst.sg:GoToState("stunned", true)
-    if not (inst.components.homeseeker and inst.components.homeseeker.home and inst.components.homeseeker.home:IsValid()) and not TheWorld.state.iscave then
+    if not (inst.components.homeseeker ~= nil and inst.components.homeseeker.home ~= nil and inst.components.homeseeker.home:IsValid()) and not TheWorld:HasTag("cave") then
         inst.needs_home_time = GetTime()
     end
 end
@@ -143,6 +143,7 @@ local function fn()
     inst.Transform:SetFourFaced()
 
     MakeCharacterPhysics(inst, 99999, 0.5)
+    SetUnderPhysics(inst)
 
     inst.AnimState:SetBank("mole")
     inst.AnimState:SetBuild("mole_build")
@@ -160,9 +161,14 @@ local function fn()
 
     MakeFeedablePetPristine(inst)
 
+    inst.displaynamefn = displaynamefn
+    inst.name = STRINGS.NAMES.MOLE_ABOVEGROUND
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
+        inst.isunder = nil --this flag is not valid on clients
+
         return inst
     end
 
@@ -211,13 +217,11 @@ local function fn()
 
     inst:AddComponent("inspectable")
     inst.components.inspectable.getstatus = getstatus
-    inst.displaynamefn = displaynamefn
-    inst.name = STRINGS.NAMES.MOLE_ABOVEGROUND
 
     inst:AddComponent("sleeper")
 
-    SetState(inst, "under")
-    inst.SetState = SetState
+    inst.SetUnderPhysics = SetUnderPhysics
+    inst.SetAbovePhysics = SetAbovePhysics
 
     -- MakeSmallBurnableCharacter(inst, "mole")
     MakeTinyFreezableCharacter(inst, "chest")

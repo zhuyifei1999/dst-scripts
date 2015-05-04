@@ -542,49 +542,47 @@ function EntityScript:GetDisplayName()
         return ConstructAdjectivedName(self, name, STRINGS.SMOLDERINGITEM)
     elseif self:HasTag("withered") then
         return ConstructAdjectivedName(self, name, STRINGS.WITHEREDITEM)
-    elseif not self.no_wet_prefix and (self.always_wet or self:GetIsWet()) then
-        if self.wet_prefix then
+    elseif not self.no_wet_prefix and (self.always_wet_prefix or self:GetIsWet()) then
+        --custom
+        if self.wet_prefix ~= nil then
             return ConstructAdjectivedName(self, name, self.wet_prefix)
-        elseif self.components.edible and ThePlayer and ThePlayer.components.eater and ThePlayer.components.eater:CanEat(self) then
-            return ConstructAdjectivedName(self, name, STRINGS.WET_PREFIX.FOOD)
-        elseif self.components.equippable and (self.components.equippable.equipslot == EQUIPSLOTS.HEAD or self.components.equippable.equipslot == EQUIPSLOTS.BODY) then
-            return ConstructAdjectivedName(self, name, STRINGS.WET_PREFIX.CLOTHING)
-        elseif self.components.equippable and self.components.equippable.equipslot == EQUIPSLOTS.HANDS then
-            return ConstructAdjectivedName(self, name, STRINGS.WET_PREFIX.TOOL)
-        elseif self.components.fuel then
-            return ConstructAdjectivedName(self, name, STRINGS.WET_PREFIX.FUEL)
-        else
-            return ConstructAdjectivedName(self, name, STRINGS.WET_PREFIX.GENERIC)
         end
+        --equippable
+        local equippable = self.replica.equippable
+        if equippable ~= nil then
+            local eslot = equippable:EquipSlot()
+            if eslot == EQUIPSLOTS.HANDS then
+                return ConstructAdjectivedName(self, name, STRINGS.WET_PREFIX.TOOL)
+            elseif eslot == EQUIPSLOTS.HEAD or eslot == EQUIPSLOTS.BODY then
+                return ConstructAdjectivedName(self, name, STRINGS.WET_PREFIX.CLOTHING)
+            end
+        end
+        --edible
+        for k, v in pairs(FOODTYPE) do
+            if self:HasTag("edible_"..v) then
+                return ConstructAdjectivedName(self, name, STRINGS.WET_PREFIX.FOOD)
+            end
+        end
+        --fuel
+        for k, v in pairs(FUELTYPE) do
+            if self:HasTag(v.."_fuel") then
+                return ConstructAdjectivedName(self, name, STRINGS.WET_PREFIX.FUEL)
+            end
+        end
+        --generic
+        return ConstructAdjectivedName(self, name, STRINGS.WET_PREFIX.GENERIC)
     else
         return name
     end
 end
 
+--Can be used on clients
 function EntityScript:GetIsWet()
-    if self:HasTag("waterproofer") then
-        return false
-    elseif self:HasTag("wet") then
-        return true
-    elseif self:HasTag("notwet") then
-        return false
-    elseif self.IsWet ~= nil then
-        return self:IsWet()
-    else
-        return TheWorld.state.iswet
+    local replica = self.replica.inventoryitem or self.replica.moisture
+    if replica ~= nil then
+        return replica:IsWet()
     end
-end
-
-function EntityScript:GetCurrentMoisture()
-    if self:HasTag("waterproofer") then
-        return 0
-    elseif self.replica.inventoryitem then
-        return self.replica.inventoryitem:GetMoisture()
-    elseif self.GetMoisture ~= nil then
-        return self:GetMoisture()
-    else
-        return TheWorld.state.wetness
-    end
+    return self:HasTag("wet") or TheWorld.state.iswet
 end
 
 function EntityScript:SetPrefabName(name)

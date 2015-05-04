@@ -91,7 +91,7 @@ local function OnEntitySleep(inst)
 end
 
 local function OnSpringChange(inst, isSpring)
-    inst.shouldGoAway = not isSpring or TheWorld.state.iscave
+    inst.shouldGoAway = not isSpring or TheWorld:HasTag("cave")
     if inst:IsAsleep() then
         OnEntitySleep(inst)
     end

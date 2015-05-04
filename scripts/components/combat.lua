@@ -511,7 +511,7 @@ function Combat:GetImpactSound(target, weapon)
             )..(
                 ((target:HasTag("smallcreature") or target:HasTag("small")) and "sml_") or
                 ((target:HasTag("largecreature") or target:HasTag("epic") or target:HasTag("large")) and "lrg_") or
-                (target:HasTag("wet") and "wet_") or
+                (target:GetIsWet() and "wet_") or
                 "med_"
             )..weaponmod
     end

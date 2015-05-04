@@ -19,9 +19,7 @@ local function onratescale(self, ratescale)
 end
 
 local function onwet(self, wet)
-    if self.inst.player_classified ~= nil then
-       self.inst.player_classified.iswet:set(wet)
-    end
+    self.inst.replica.moisture:SetIsWet(wet)
 end
 
 local Moisture = Class(function(self, inst)
@@ -79,7 +77,8 @@ function Moisture:GetDebugString()
     local equippedmoisturerate = self:GetEquippedMoistureRate(dryingrate)
     local rate = moisturerate + equippedmoisturerate - dryingrate
 
-    return string.format("rate: %s%2.2f (precip: %s%2.2f equip: %s%2.2f drying: %s%2.2f)%s",
+    return string.format("moisture: %2.2f rate: %s%2.2f (precip: %s%2.2f equip: %s%2.2f drying: %s%2.2f)%s",
+        self:GetMoisture(),
         rate > 0 and "+" or "", rate,
         moisturerate > 0 and "+" or "", moisturerate,
         equippedmoisturerate > 0 and "+" or "", equippedmoisturerate,
@@ -126,7 +125,7 @@ function Moisture:SetMoistureLevel(num)
     self.inst:PushEvent("moisturedelta", { old = self.moisture, new = self.moisture })
 end
 
-function Moisture:GetIsWet()
+function Moisture:IsWet()
     return self.wet
 end
 

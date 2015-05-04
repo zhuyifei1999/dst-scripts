@@ -4,19 +4,16 @@
 -- and leave the spawner (eg. spiders). it can manage more than one, but can not maintain
 -- individual properties of each entity
 
-local function OnReleaseChild(inst)
-    local self = inst.components.spawner
-    if self ~= nil then
-        self.task = nil
-        if not self.spawnoffscreen or inst:IsAsleep() then
-            self:ReleaseChild()
-        end
+local function OnReleaseChild(inst, self)
+    self.task = nil
+    if not self.spawnoffscreen or inst:IsAsleep() then
+        self:ReleaseChild()
     end
 end
 
 local function OnEntitySleep(inst)
     local self = inst.components.spawner
-    if self ~= nil and self.spawnoffscreen and self.nextspawntime ~= nil and GetTime() > self.nextspawntime then
+    if self ~= nil and self.nextspawntime ~= nil and GetTime() > self.nextspawntime then
         self:ReleaseChild()
     end
 end
@@ -27,30 +24,19 @@ local Spawner = Class(function(self, inst)
     self.delay = 0
     self.onoccupied = nil
     self.onvacate = nil
-    self.spawnsleft = nil
-    self.spawnoffscreen = false
+    self.spawnoffscreen = nil
     
     self.task = nil
     self.nextspawntime = nil
+    self.queue_spawn = nil
+    self.retry_period = nil
 end)
 
 function Spawner:GetDebugString()
-    local str = "child: "..tostring(self.child)
-    if self:IsOccupied() then
-        str = str.." occupied"
-    end
-    if self.task ~= nil then
-        if self.nextspawntime ~= nil then
-            str = str..string.format(" spawn in %2.2fs", self.nextspawntime - GetTime())
-        end
-        if self.nextretrytime ~= nil then
-            str = str..string.format(" queued spawn, checking in %2.2fs", self.nextretrytime - GetTime())
-        end
-    end
-    if self.spawnsleft ~= nil then
-        str = str.." left: "..tostring(self.spawnsleft)
-    end
-    return str
+    return "child: "..tostring(self.child)
+        ..(self:IsOccupied() and " occupied" or "")
+        ..(self.queue_spawn and " queued" or "")
+        ..(self.nextspawntime ~= nil and string.format(" spawn in %2.2fs", self.nextspawntime - GetTime()) or "")
 end
 
 function Spawner:SetOnOccupiedFn(fn)
@@ -62,13 +48,14 @@ function Spawner:SetOnVacateFn(fn)
 end
 
 function Spawner:SetOnlySpawnOffscreen(offscreen)
-    if self.spawnoffscreen ~= offscreen then
-        self.spawnoffscreen = offscreen
-        if offscreen then
+    if offscreen then
+        if not self.spawnoffscreen then
+            self.spawnoffscreen = true
             self.inst:ListenForEvent("entitysleep", OnEntitySleep)
-        else
-            self.inst:RemoveEventCallback("entitysleep", OnEntitySleep)
         end
+    elseif self.spawnoffscreen then
+        self.spawnoffscreen = nil
+        self.inst:RemoveEventCallback("entitysleep", OnEntitySleep)
     end
 end
 
@@ -85,8 +72,7 @@ function Spawner:SpawnWithDelay(delay)
     if self.task ~= nil then
         self.task:Cancel()
     end
-    self.task = self.inst:DoTaskInTime(delay, OnReleaseChild)
-    return self.task
+    self.task = self.inst:DoTaskInTime(delay, OnReleaseChild, self)
 end
 
 function Spawner:IsSpawnPending()
@@ -98,9 +84,8 @@ function Spawner:SetQueueSpawning(queued, retryperiod)
         self.queue_spawn = true
         self.retryperiod = retryperiod
     else
-        self.queue_spawn = false
+        self.queue_spawn = nil
         self.retryperiod = nil
-        self.nextretrytime = nil
     end
 end
 
@@ -108,8 +93,8 @@ function Spawner:CancelSpawning()
     if self.task ~= nil then
         self.task:Cancel()
         self.task = nil
-        self.nextspawntime = nil
     end
+    self.nextspawntime = nil
 end
 
 function Spawner:OnSave()
@@ -119,11 +104,9 @@ function Spawner:OnSave()
         data.child = self.child:GetSaveRecord()
     elseif self.child ~= nil and self.child.components.health ~= nil and not self.child.components.health:IsDead() then
         data.childid = self.child.GUID
-    elseif self.nextspawntime then
+    elseif self.nextspawntime ~= nil then
         data.startdelay = self.nextspawntime - GetTime()
     end
-
-    data.spawnsleft = self.spawnsleft
 
     local refs = data.childid ~= nil and { data.childid } or nil
     return data, refs
@@ -142,15 +125,6 @@ function Spawner:OnLoad(data, newents)
     if data.startdelay ~= nil then
         self:SpawnWithDelay(data.startdelay)
     end
-
-    --[[
-    if data.spawnsleft ~= nil then
-		self.spawnsleft = data.spawnsleft
-		if data.spawnsleft == 0 and self.onoutofspawns ~= nil then
-			self.onoutofspawns(self.inst)
-		end
-    end
-    --]]
 end
 
 function Spawner:TakeOwnership(child)
@@ -183,28 +157,26 @@ function Spawner:IsOccupied()
 end
 
 function Spawner:ReleaseChild()
-    if self.spawnsleft ~= nil and self.spawnsleft == 0 then
-        return
-    end
-
     self:CancelSpawning()
 
-    -- We want to release child, but are we set to queue the spawn right now?
-    if self.queue_spawn and self.retryperiod ~= nil then
-        self.task = self.inst:DoTaskInTime(self.retryperiod, OnReleaseChild)
-        self.nextretrytime = GetTime() + self.retryperiod
-    -- If not, go for it!
-    else
-        if self.child == nil then
-            local childname = self.childfn ~= nil and self.childfn(self.inst) or self.childname
-            local child = SpawnPrefab(childname)
-            if child ~= nil then            
-                self:TakeOwnership(child)
-                self:GoHome(child)
+    if self.child == nil then
+        local childname = self.childfn ~= nil and self.childfn(self.inst) or self.childname
+        local child = SpawnPrefab(childname)
+        if child ~= nil then            
+            self:TakeOwnership(child)
+            if self:GoHome(child) then
+                self:CancelSpawning()
             end
         end
+    end
 
-        if self:IsOccupied() then
+    if self:IsOccupied() then
+        -- We want to release child, but are we set to queue the spawn right now?
+        if self.queue_spawn and self.retryperiod ~= nil then
+            self.task = self.inst:DoTaskInTime(self.retryperiod, OnReleaseChild, self)
+            self.nextspawntime = GetTime() + self.retryperiod
+        -- If not, go for it!
+        else
             self.inst:RemoveChild(self.child)
             self.child:ReturnToScene()
 
@@ -270,14 +242,7 @@ function Spawner:GoHome(child)
 end
 
 function Spawner:OnChildKilled(child)
-    if self.spawnsleft ~= nil and self.spawnsleft > 0 then
-        self.spawnsleft = self.spawnsleft - 1
-        if self.spawnsleft == 0 and self.onoutofspawns ~= nil then
-            self.onoutofspawns(self.inst)
-        end
-    end
-
-    if (self.spawnsleft == nil or self.spawnsleft > 0) and not self:IsOccupied() then
+    if self.child == child then
         self.child = nil
         self:SpawnWithDelay(self.delay)
     end

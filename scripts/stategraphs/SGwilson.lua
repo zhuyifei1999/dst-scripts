@@ -2881,8 +2881,7 @@ local states =
             inst.components.locomotor:Stop()
             inst:ClearBufferedAction()
 
-            inst.AnimState:PlayAnimation("dozy")
-            inst.AnimState:PushAnimation("sleep_loop", true)
+            inst.AnimState:PlayAnimation(inst:HasTag("insomniac") and "insomniac_dozy" or "dozy")
 
             SetSleeperSleepState(inst)
 
@@ -2920,7 +2919,7 @@ local states =
                         inst.sg.statemem.iswaking = true
                         inst.sg:GoToState("wakeup")
                     else
-                        inst.AnimState:PlayAnimation("sleep_loop", true)
+                        inst.AnimState:PlayAnimation(inst:HasTag("insomniac") and "insomniac_sleep_loop" or "sleep_loop", true)
                         inst.sg:AddStateTag("sleeping")
                     end
                 end

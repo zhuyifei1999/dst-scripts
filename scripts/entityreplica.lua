@@ -14,6 +14,7 @@ local REPLICATABLE_COMPONENTS =
     hunger = true,
     inventory = true,
     inventoryitem = true,
+    moisture = true,
     named = true,
     sanity = true,
     sheltered = true,

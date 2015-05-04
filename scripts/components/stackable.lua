@@ -61,22 +61,26 @@ function Stackable:Get(num)
     -- If we have more than one item in the stack
     if self.stacksize > num_to_get then
         local instance = SpawnPrefab(self.inst.prefab)
-    
+
         self:SetStackSize(self.stacksize - num_to_get)
         instance.components.stackable:SetStackSize(num_to_get)
-        
-        if self.ondestack then
+
+        if self.ondestack ~= nil then
             self.ondestack(instance)
         end
-        
-        if instance.components.perishable then
+
+        if instance.components.perishable ~= nil then
             instance.components.perishable.perishremainingtime = self.inst.components.perishable.perishremainingtime
         end
-        
+
+        if instance.components.inventoryitem ~= nil and self.inst.components.inventoryitem ~= nil then
+            instance.components.inventoryitem:InheritMoisture(self.inst.components.inventoryitem:GetMoisture(), self.inst.components.inventoryitem:IsWet())
+        end
+
         return instance
     end
-    
-    return self.inst    
+
+    return self.inst
 end
 
 function Stackable:RoomLeft()
@@ -95,14 +99,12 @@ function Stackable:Put(item, source_pos)
         local newsize = math.min(self.maxsize, newtotal)        
         local numberadded = newsize - oldsize
 
-        if self.inst.components.perishable then
+        if self.inst.components.perishable ~= nil then
             self.inst.components.perishable:Dilute(numberadded, item.components.perishable.perishremainingtime)
         end
 
-        if self.inst.components.moisturelistener and item.components.moisturelistener then
-            self.inst.components.moisturelistener:DoUpdate()
-            item.components.moisturelistener:DoUpdate()
-            self.inst.components.moisturelistener:Dilute(numberadded, item.components.moisturelistener.moisture)
+        if self.inst.components.inventoryitem ~= nil then
+            self.inst.components.inventoryitem:DiluteMoisture(item, numberadded)
         end
 
         if self.maxsize >= newtotal then
@@ -121,13 +123,6 @@ function Stackable:Put(item, source_pos)
         self.inst:PushEvent("stacksizechange", {stacksize = self.stacksize, oldstacksize=oldsize, src_pos = source_pos})
     end
     return ret
-end
-
-function Stackable:CollectUseActions(doer, target, actions)
-    if target and target.components.inventoryitem and not target.components.inventoryitem:IsHeld() and target.components.stackable
-    and not target.components.stackable:IsFull() and target.prefab == self.inst.prefab and target.components.inventoryitem.canbepickedup then
-        table.insert(actions, ACTIONS.COMBINESTACK)
-    end
 end
 
 return Stackable

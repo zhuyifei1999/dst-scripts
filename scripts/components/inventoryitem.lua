@@ -18,14 +18,6 @@ local function oncangoincontainer(self, cangoincontainer)
     self.inst.replica.inventoryitem:SetCanGoInContainer(cangoincontainer)
 end
 
-local function oncandrop( self, candrop )
-    self.inst.replica.inventoryitem:SetCanBeDropped(candrop)
-end
-
-local function ontrappable( self, trappable )
-    self.inst.replica.inventoryitem:SetTrappable(trappable)
-end
-
 local InventoryItem = Class(function(self, inst)
     self.inst = inst
 
@@ -36,22 +28,19 @@ local InventoryItem = Class(function(self, inst)
     self.nobounce = false
     self.cangoincontainer = true
     self.inst:ListenForEvent("stacksizechange", 
-		function(inst, data)
-			 if self.owner then 
-				self.owner:PushEvent("stacksizechange", { item = self.inst, src_pos = data.src_pos, stacksize = data.stacksize, oldstacksize = data.oldstacksize })
-			end 
-	end)
-	self.keepondeath = false
+        function(inst, data)
+            if self.owner then
+                self.owner:PushEvent("stacksizechange", { item = self.inst, src_pos = data.src_pos, stacksize = data.stacksize, oldstacksize = data.oldstacksize })
+            end
+    end)
+    self.keepondeath = false
     self.atlasname = nil
     self.imagename = nil
     self.onactiveitemfn = nil
-    self.candrop = true
     self.trappable = true
 
-    if self.canbepickedup and not self.inst.components.waterproofer then
-        if not self.inst.components.moisturelistener then 
-            self.inst:AddComponent("moisturelistener")
-        end
+    if self.inst.components.waterproofer == nil then
+        self:EnableMoisture(true)
     end
 end,
 nil,
@@ -61,9 +50,49 @@ nil,
     owner = onowner,
     canbepickedup = oncanbepickedup,
     cangoincontainer = oncangoincontainer,
-    candrop = oncandrop,
-    trappable = ontrappable,
 })
+
+function InventoryItem:OnRemoveFromEntity()
+    self:EnableMoisture(false)
+end
+
+--Provided specifically for waterproofer component
+function InventoryItem:EnableMoisture(enable)
+    if enable == false then
+        if self.inst.components.inventoryitemmoisture ~= nil then
+            self.inst:RemoveComponent("inventoryitemmoisture")
+        end
+    elseif self.inst.components.inventoryitemmoisture == nil then
+        self.inst:AddComponent("inventoryitemmoisture")
+        self.inst.components.inventoryitemmoisture:AttachReplica(self.inst.replica.inventoryitem)
+    end
+end
+
+function InventoryItem:GetMoisture()
+    return self.inst.components.inventoryitemmoisture ~= nil and self.inst.components.inventoryitemmoisture.moisture or 0
+end
+
+function InventoryItem:IsWet()
+    return self.inst.components.inventoryitemmoisture ~= nil and self.inst.components.inventoryitemmoisture.iswet
+end
+
+function InventoryItem:InheritMoisture(moisture, iswet)
+    if self.inst.components.inventoryitemmoisture ~= nil then
+        self.inst.components.inventoryitemmoisture:InheritMoisture(moisture, iswet)
+    end
+end
+
+function InventoryItem:DiluteMoisture(item, count)
+    if self.inst.components.inventoryitemmoisture ~= nil then
+        self.inst.components.inventoryitemmoisture:DiluteMoisture(item, count)
+    end
+end
+
+function InventoryItem:AddMoisture(delta)
+    if self.inst.components.inventoryitemmoisture ~= nil then
+        self.inst.components.inventoryitemmoisture:DoDelta(delta)
+    end
+end
 
 function InventoryItem:SetOwner(owner)
     self.owner = owner
@@ -122,8 +151,8 @@ function InventoryItem:OnPutInInventory(owner)
 --    print(string.format("InventoryItem:OnPutInInventory[%s]", self.inst.prefab))
 --    print("   transform=", Point(self.inst.Transform:GetWorldPosition()))
     self.inst.components.inventoryitem:SetOwner(owner)
-	owner:AddChild(self.inst)
-	self.inst:RemoveFromScene()
+    owner:AddChild(self.inst)
+    self.inst:RemoveFromScene()
     self.inst.Transform:SetPosition(0,0,0) -- transform is now local?
 --    print("   updated transform=", Point(self.inst.Transform:GetWorldPosition()))
     self:HibernateLivingItem()
@@ -138,17 +167,17 @@ function InventoryItem:OnRemoved()
         self.owner:RemoveChild(self.inst)
     end
     self:ClearOwner()
-	self.inst:ReturnToScene()
+    self.inst:ReturnToScene()
     self:WakeLivingItem()
 end
 
 function InventoryItem:OnDropped(randomdir)
     --print("InventoryItem:OnDropped", self.inst, randomdir)
     
-	if not self.inst:IsValid() then
-		return
-	end
-	
+    if not self.inst:IsValid() then
+        return
+    end
+    
     --print("OWNER", self.owner, self.owner and Point(self.owner.Transform:GetWorldPosition()))
 
     local x,y,z = self.inst.Transform:GetWorldPosition()
@@ -160,7 +189,7 @@ function InventoryItem:OnDropped(randomdir)
     end
 
     --print("REMOVED", self.inst)
-	self:OnRemoved()
+    self:OnRemoved()
 
     -- now in world space, if we weren't already
     --print("setpos", x,y,z)
@@ -171,21 +200,21 @@ function InventoryItem:OnDropped(randomdir)
             y = y + 1
             --print("setpos", x,y,z)
             self.inst.Physics:Teleport(x,y,z)
-		end
+        end
 
-		local vel = Vector3(0, 5, 0)
+        local vel = Vector3(0, 5, 0)
         if randomdir then
             local speed = 2 + math.random()
             local angle = math.random()*2*PI
             vel.x = speed*math.cos(angle)
-			vel.y = speed*3
+            vel.y = speed*3
             vel.z = speed*math.sin(angle)
         end
         if self.nobounce then
-			vel.y = 0
+            vel.y = 0
         end
         --print("vel", vel.x, vel.y, vel.z)
-		self.inst.Physics:SetVel(vel.x, vel.y, vel.z)
+        self.inst.Physics:SetVel(vel.x, vel.y, vel.z)
     end
 
     if self.ondropfn then
@@ -250,19 +279,18 @@ function InventoryItem:OnRemoveEntity()
 end
 
 function InventoryItem:GetGrandOwner()
-	if self.owner then
-		if self.owner.components.inventoryitem then
-			return self.owner.components.inventoryitem:GetGrandOwner()
-		else
-			return self.owner
-		end
-	end
+    if self.owner then
+        if self.owner.components.inventoryitem then
+            return self.owner.components.inventoryitem:GetGrandOwner()
+        else
+            return self.owner
+        end
+    end
 end
 
 function InventoryItem:IsSheltered()
     return self:IsHeld() and 
     ((self.owner.components.container) or (self.owner.components.inventory and self.owner.components.inventory:IsWaterproof()))
 end
-
 
 return InventoryItem

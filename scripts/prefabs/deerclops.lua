@@ -50,7 +50,7 @@ local function RetargetFn(inst)
     --print("Deerclops retarget", debugstack())
     return FindEntity(inst, TARGET_DIST, function(guy)
         return inst.components.combat:CanTarget(guy)
-               and (guy.components.combat.target == inst or (inst:GetPosition():Dist(guy:GetPosition()) <= 6))
+               and (guy.components.combat.target == inst or (inst:GetPosition():Dist(guy:GetPosition()) <= (inst.Physics:GetRadius() + 8)))
     end, nil, {"prey", "smallcreature"})
 end
 
@@ -223,7 +223,7 @@ local function fn()
     inst.components.combat:SetAreaDamage(TUNING.DEERCLOPS_AOE_RANGE, TUNING.DEERCLOPS_AOE_SCALE)
     inst.components.combat.hiteffectsymbol = "deerclops_body"
     inst.components.combat:SetAttackPeriod(TUNING.DEERCLOPS_ATTACK_PERIOD)
-    inst.components.combat:SetRetargetFunction(3, RetargetFn)
+    inst.components.combat:SetRetargetFunction(1, RetargetFn)
     inst.components.combat:SetKeepTargetFunction(KeepTargetFn)
 
     ------------------------------------------

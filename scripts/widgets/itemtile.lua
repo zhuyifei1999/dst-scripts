@@ -17,19 +17,19 @@ local ItemTile = Class(Widget, function(self, invitem)
     self.ismoving = false
     self.ignore_stacksize_anim = nil
 
-	-- NOT SURE WAHT YOU WANT HERE
-	if invitem.replica.inventoryitem == nil then
-		print("NO INVENTORY ITEM COMPONENT"..tostring(invitem.prefab), invitem)
-		return
-	end
-	
-	self.bg = self:AddChild(Image())
-	self.bg:SetTexture(HUD_ATLAS, "inv_slot_spoiled.tex")
-	self.bg:Hide()
-	self.bg:SetClickable(false)
-	self.basescale = 1
-	
-	self.spoilage = self:AddChild(UIAnim())
+    -- NOT SURE WAHT YOU WANT HERE
+    if invitem.replica.inventoryitem == nil then
+        print("NO INVENTORY ITEM COMPONENT"..tostring(invitem.prefab), invitem)
+        return
+    end
+    
+    self.bg = self:AddChild(Image())
+    self.bg:SetTexture(HUD_ATLAS, "inv_slot_spoiled.tex")
+    self.bg:Hide()
+    self.bg:SetClickable(false)
+    self.basescale = 1
+    
+    self.spoilage = self:AddChild(UIAnim())
     self.spoilage:GetAnimState():SetBank("spoiled_meter")
     self.spoilage:GetAnimState():SetBuild("spoiled_meter")
     self.spoilage:Hide()
@@ -46,56 +46,64 @@ local ItemTile = Class(Widget, function(self, invitem)
     --self.image:SetClickable(false)
 
     if self.item.prefab == "spoiled_food" or self:HasSpoilage() then
-		self.bg:Show( )
-	end
-	
-	if self:HasSpoilage() then
-		self.spoilage:Show()
-	end
-
-    if self.item:GetIsWet() then
-        self.wetness:Show()
+        self.bg:Show()
+    end
+    
+    if self:HasSpoilage() then
+        self.spoilage:Show()
     end
 
-    self.inst:ListenForEvent("imagechange", function(invitem) 
-        self.image:SetTexture(invitem.replica.inventoryitem:GetAtlas(), invitem.replica.inventoryitem:GetImage())
-    end, invitem)
+    self.inst:ListenForEvent("imagechange",
+        function(invitem) 
+            self.image:SetTexture(invitem.replica.inventoryitem:GetAtlas(), invitem.replica.inventoryitem:GetImage())
+        end, invitem)
 
     self.inst:ListenForEvent("stacksizechange",
-            function(invitem, data)
-                if invitem.replica.stackable ~= nil then
-                    if self.ignore_stacksize_anim then
-                        self:SetQuantity(data.stacksize)
-					elseif data.src_pos ~= nil then
-						local dest_pos = self:GetWorldPosition()
-						local im = Image(invitem.replica.inventoryitem:GetAtlas(), invitem.replica.inventoryitem:GetImage())
-						im:MoveTo(Vector3(TheSim:GetScreenPos(data.src_pos:Get())), dest_pos, .3, function()
-                            self.ismoving = false
-							self:SetQuantity(data.stacksize)
-							self:ScaleTo(self.basescale * 2, self.basescale, .25)
-							im:Kill()
-                        end)
-                        self.ismoving = true
-                    elseif not self.ispreviewing then
+        function(invitem, data)
+            if invitem.replica.stackable ~= nil then
+                if self.ignore_stacksize_anim then
+                    self:SetQuantity(data.stacksize)
+                elseif data.src_pos ~= nil then
+                    local dest_pos = self:GetWorldPosition()
+                    local im = Image(invitem.replica.inventoryitem:GetAtlas(), invitem.replica.inventoryitem:GetImage())
+                    im:MoveTo(Vector3(TheSim:GetScreenPos(data.src_pos:Get())), dest_pos, .3, function()
+                        self.ismoving = false
                         self:SetQuantity(data.stacksize)
                         self:ScaleTo(self.basescale * 2, self.basescale, .25)
-					end
+                        im:Kill()
+                    end)
+                    self.ismoving = true
+                elseif not self.ispreviewing then
+                    self:SetQuantity(data.stacksize)
+                    self:ScaleTo(self.basescale * 2, self.basescale, .25)
                 end
-            end, invitem)
+            end
+        end, invitem)
 
     self.inst:ListenForEvent("percentusedchange",
-            function(invitem, data)
-                self:SetPercent(data.percent)
-            end, invitem)
+        function(invitem, data)
+            self:SetPercent(data.percent)
+        end, invitem)
 
     self.inst:ListenForEvent("perishchange",
-            function(invitem, data)
-                if self:HasSpoilage() then
-                    self:SetPerishPercent(data.percent)
-				elseif invitem:HasTag("fresh") or invitem:HasTag("stale") or invitem:HasTag("spoiled") then
-                    self:SetPercent(data.percent)
-				end
-            end, invitem)
+        function(invitem, data)
+            if self:HasSpoilage() then
+                self:SetPerishPercent(data.percent)
+            elseif invitem:HasTag("fresh") or invitem:HasTag("stale") or invitem:HasTag("spoiled") then
+                self:SetPercent(data.percent)
+            end
+        end, invitem)
+
+    self.inst:ListenForEvent("wetnesschange",
+        function(invitem, wet)
+            if not self.isactivetile then
+                if wet then
+                    self.wetness:Show()
+                else
+                    self.wetness:Hide()
+                end
+            end
+        end, invitem)
 
     if not TheWorld.ismastersim then
         self.inst:ListenForEvent("stacksizepreview",
@@ -127,16 +135,6 @@ local ItemTile = Class(Widget, function(self, invitem)
                 end
             end, invitem)
     end
-
-    self.inst:ListenForEvent("wetnesschange", function(sender, wet)
-        if wet then
-            if ThePlayer.replica.inventory:GetActiveItem() ~= invitem then
-                self.wetness:Show()
-            end
-        else
-            self.wetness:Hide()
-        end
-    end, invitem)
 
     self:Refresh()
 end)
@@ -172,11 +170,19 @@ function ItemTile:Refresh()
     if self.item.components.armor ~= nil then
         self:SetPercent(self.item.components.armor:GetPercent())
     end
+
+    if not self.isactivetile then
+        if self.item:GetIsWet() then
+            self.wetness:Show()
+        else
+            self.wetness:Hide()
+        end
+    end
 end
 
 function ItemTile:SetBaseScale(sc)
-	self.basescale = sc
-	self:SetScale(sc)
+    self.basescale = sc
+    self:SetScale(sc)
 end
 
 function ItemTile:OnControl(control, down)
@@ -185,8 +191,8 @@ function ItemTile:OnControl(control, down)
 end
 
 function ItemTile:UpdateTooltip()
-	local str = self:GetDescriptionString()
-	self:SetTooltip(str)
+    local str = self:GetDescriptionString()
+    self:SetTooltip(str)
     if self.item:GetIsWet() then
         self:SetTooltipColour(unpack(WET_TEXT_COLOUR))
     else
@@ -272,7 +278,7 @@ function ItemTile:SetPercent(percent)
     if val_to_show > 0 and val_to_show < 1 then
         val_to_show = 1
     end
-	self.percent:SetString(string.format("%2.0f%%", val_to_show))
+    self.percent:SetString(string.format("%2.0f%%", val_to_show))
         
     --end
 end
@@ -280,29 +286,27 @@ end
 --[[
 function ItemTile:CancelDrag()
     self:StopFollowMouse()
-    
-    if self.item.prefab == "spoiled_food" or (self.item.components.edible and self.item.components.perishable) then
-		self.bg:Show( )
-	end
-	
-	if self.item.components.perishable and self.item.components.edible then
-		self.spoilage:Show()
-	end
-	
-	self.image:SetClickable(true)
 
-    
+    if self.item.prefab == "spoiled_food" or (self.item.components.edible and self.item.components.perishable) then
+        self.bg:Show( )
+    end
+
+    if self.item.components.perishable and self.item.components.edible then
+        self.spoilage:Show()
+    end
+
+    self.image:SetClickable(true) 
 end
 --]]
 
 function ItemTile:StartDrag()
     --self:SetScale(1,1,1)
-	if self.item.replica.inventoryitem ~= nil then -- HACK HACK: items without an inventory component won't have any of these
-	    self.spoilage:Hide()
+    if self.item.replica.inventoryitem ~= nil then -- HACK HACK: items without an inventory component won't have any of these
+        self.spoilage:Hide()
         self.wetness:Hide()
-	    self.bg:Hide( )
-	    self.image:SetClickable(false)
-	end
+        self.bg:Hide()
+        self.image:SetClickable(false)
+    end
 end
 
 function ItemTile:HasSpoilage()

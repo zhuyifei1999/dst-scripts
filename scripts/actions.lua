@@ -1123,9 +1123,8 @@ end
 ACTIONS.MAKEMOLEHILL.fn = function(act)
     if act.doer and act.doer.prefab == "mole" then
         local molehill = SpawnPrefab("molehill")
-        local pt = act.doer:GetPosition()
-        molehill.Transform:SetPosition(pt.x, pt.y, pt.z)
-        molehill:PushEvent("confignewhome", {mole=act.doer})
+        molehill.Transform:SetPosition(act.doer.Transform:GetWorldPosition())
+        molehill:AdoptChild(act.doer)
         act.doer.needs_home_time = nil
         return true
     end

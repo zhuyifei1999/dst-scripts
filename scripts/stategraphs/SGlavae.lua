@@ -31,8 +31,8 @@ local events =
     CommonHandlers.OnAttack(),
 }
 
-function SpawnMoveFx(inst)
-    SpawnPrefab("lavae_move_fx").Transform:SetPosition(inst:GetPosition():Get())
+local function SpawnMoveFx(inst)
+    SpawnPrefab("lavae_move_fx").Transform:SetPosition(inst.Transform:GetWorldPosition())
 end
 
 local states =

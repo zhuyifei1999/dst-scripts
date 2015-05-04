@@ -405,7 +405,7 @@ function Inventory:RemoveItemBySlot(slot)
 end
 
 function Inventory:DropItem(item, wholestack, randomdir, pos)
-    if not item or not (item.components.inventoryitem and item.components.inventoryitem.candrop) then
+    if item == nil or item.components.inventoryitem == nil then
         return
     end
     
