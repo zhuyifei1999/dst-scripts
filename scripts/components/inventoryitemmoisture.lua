@@ -124,7 +124,7 @@ function InventoryItemMoisture:DiluteMoisture(item, count)
 end
 
 function InventoryItemMoisture:DoDelta(delta)
-    self:SetMoiture(self.moisture + delta)
+    self:SetMoisture(self.moisture + delta)
 end
 
 function InventoryItemMoisture:SetMoisture(moisture)
