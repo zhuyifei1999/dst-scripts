@@ -68,7 +68,7 @@ end
 local function OnHaunt(inst)
     return inst.components.spawner ~= nil
         and inst.components.spawner:IsOccupied()
-        and inst.components.spanwer:ReleaseChild()
+        and inst.components.spawner:ReleaseChild()
 end
 
 local function fn()

@@ -110,10 +110,6 @@ local function onsleeptick(inst, sleeper)
         end
     end
 
-    if sleeper.components.moisture ~= nil and sleeper.components.moisture.moisture then
-        sleeper.components.moisture:DoDelta(TUNING.SLEEP_WETNESS_PER_TICK)
-    end
-
     if isstarving then
         inst.components.sleepingbag:DoWakeUp()
     end
@@ -191,6 +187,8 @@ local function common_fn(bank, build, icon, tag)
     inst:AddComponent("sleepingbag")
     inst.components.sleepingbag.onsleep = onsleep
     inst.components.sleepingbag.onwake = onwake
+    --convert wetness delta to drying rate
+    inst.components.sleepingbag.dryingrate = math.max(0, -TUNING.SLEEP_WETNESS_PER_TICK / TUNING.SLEEP_TICK_PERIOD)
 
     MakeSnowCovered(inst)
     inst:ListenForEvent("onbuilt", onbuilt)

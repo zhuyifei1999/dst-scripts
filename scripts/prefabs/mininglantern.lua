@@ -16,38 +16,36 @@ end
 
 local function turnon(inst)
     if not inst.components.fueled:IsEmpty() then
-        if not inst.components.machine.ison then
-            if inst.components.fueled then
-                inst.components.fueled:StartConsuming()
-            end
-
-            local owner = inst.components.inventoryitem ~= nil and inst.components.inventoryitem.owner or nil
-
-            if inst._light == nil or not inst._light:IsValid() then
-                inst._light = SpawnPrefab("lanternlight")
-                fuelupdate(inst)
-            end
-            inst._light.entity:SetParent((owner or inst).entity)
-
-            inst.AnimState:PlayAnimation("idle_on")
-
-            if owner ~= nil and inst.components.equippable:IsEquipped() then
-                owner.AnimState:OverrideSymbol("swap_object", "swap_lantern", "swap_lantern_on")
-                owner.AnimState:Show("LANTERN_OVERLAY")
-            end
-
-            inst.components.machine.ison = true
-
-            inst.SoundEmitter:PlaySound("dontstarve/wilson/lantern_on")
-            inst.SoundEmitter:PlaySound("dontstarve/wilson/lantern_LP", "loop")
-
-            inst.components.inventoryitem:ChangeImageName("lantern_lit")
+        if inst.components.fueled ~= nil then
+            inst.components.fueled:StartConsuming()
         end
+
+        local owner = inst.components.inventoryitem ~= nil and inst.components.inventoryitem.owner or nil
+
+        if inst._light == nil or not inst._light:IsValid() then
+            inst._light = SpawnPrefab("lanternlight")
+            fuelupdate(inst)
+        end
+        inst._light.entity:SetParent((owner or inst).entity)
+
+        inst.AnimState:PlayAnimation("idle_on")
+
+        if owner ~= nil and inst.components.equippable:IsEquipped() then
+            owner.AnimState:OverrideSymbol("swap_object", "swap_lantern", "swap_lantern_on")
+            owner.AnimState:Show("LANTERN_OVERLAY")
+        end
+
+        inst.components.machine.ison = true
+
+        inst.SoundEmitter:PlaySound("dontstarve/wilson/lantern_on")
+        inst.SoundEmitter:PlaySound("dontstarve/wilson/lantern_LP", "loop")
+
+        inst.components.inventoryitem:ChangeImageName("lantern_lit")
     end
 end
 
 local function turnoff(inst)
-    if inst.components.fueled then
+    if inst.components.fueled ~= nil then
         inst.components.fueled:StopConsuming()
     end
 
@@ -71,16 +69,6 @@ local function turnoff(inst)
     inst.SoundEmitter:PlaySound("dontstarve/wilson/lantern_off")
 
     inst.components.inventoryitem:ChangeImageName("lantern")
-end
-
-local function OnLoad(inst, data)
-    if inst.components.machine and inst.components.machine.ison then
-        inst.AnimState:PlayAnimation("idle_on")
-        turnon(inst)
-    else
-        inst.AnimState:PlayAnimation("idle_off")
-        turnoff(inst)
-    end
 end
 
 local function OnRemove(inst)
@@ -225,7 +213,6 @@ local function fn()
     inst.components.equippable:SetOnEquip(onequip)
     inst.components.equippable:SetOnUnequip(onunequip)
 
-    inst.OnLoad = OnLoad
     inst.OnRemoveEntity = OnRemove
 
     return inst

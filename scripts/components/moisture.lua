@@ -72,18 +72,22 @@ function Moisture:ForceDry(force)
 end
 
 function Moisture:GetDebugString()
-    local moisturerate = self:GetMoistureRate()
-    local dryingrate = self:GetDryingRate(moisturerate)
-    local equippedmoisturerate = self:GetEquippedMoistureRate(dryingrate)
-    local rate = moisturerate + equippedmoisturerate - dryingrate
-
-    return string.format("moisture: %2.2f rate: %s%2.2f (precip: %s%2.2f equip: %s%2.2f drying: %s%2.2f)%s",
-        self:GetMoisture(),
-        rate > 0 and "+" or "", rate,
-        moisturerate > 0 and "+" or "", moisturerate,
-        equippedmoisturerate > 0 and "+" or "", equippedmoisturerate,
-        dryingrate < 0 and "+" or (dryingrate > 0 and "-") or "", math.abs(dryingrate),
-        self.forceddry and " FORCED DRY" or "")
+    local str = string.format("moisture: %2.2f", self:GetMoisture())
+    local sleepingbagdryingrate = self:GetSleepingBagDryingRate()
+    if sleepingbagdryingrate ~= nil then
+        str = str..string.format(" rate: %2.2f (sleepingbag)", -sleepingbagdryingrate)
+    else
+        local moisturerate = self:GetMoistureRate()
+        local dryingrate = self:GetDryingRate(moisturerate)
+        local equippedmoisturerate = self:GetEquippedMoistureRate(dryingrate)
+        local rate = moisturerate + equippedmoisturerate - dryingrate
+        str = str..string.format(" rate: %s%2.2f (precip: %s%2.2f equip: %s%2.2f drying: %s%2.2f)",
+            rate > 0 and "+" or "", rate,
+            moisturerate > 0 and "+" or "", moisturerate,
+            equippedmoisturerate > 0 and "+" or "", equippedmoisturerate,
+            dryingrate < 0 and "+" or (dryingrate > 0 and "-") or "", math.abs(dryingrate))
+    end
+    return self.forceddry and (str.." FORCED DRY") or str
 end
 
 function Moisture:AnnounceMoisture(oldSegs, newSegs)
@@ -205,6 +209,11 @@ function Moisture:GetDryingRate(moisturerate)
     return math.clamp(rate, 0, self.maxDryingRate + self.maxPlayerTempDrying)
 end
 
+function Moisture:GetSleepingBagDryingRate()
+    local rate = self.inst.sleepingbag ~= nil and self.inst.sleepingbag.components.sleepingbag ~= nil and self.inst.sleepingbag.components.sleepingbag.dryingrate or nil
+    return rate ~= nil and math.max(0, rate) or nil
+end
+
 function Moisture:GetRate()
     return self.rate
 end
@@ -220,11 +229,17 @@ function Moisture:OnUpdate(dt)
         return
     end
 
-    local moisturerate = self:GetMoistureRate()
-    local dryingrate = self:GetDryingRate(moisturerate)
-    local equippedmoisturerate = self:GetEquippedMoistureRate(dryingrate)
+    local sleepingbagdryingrate = self:GetSleepingBagDryingRate()
+    if sleepingbagdryingrate ~= nil then
+        self.rate = -sleepingbagdryingrate
+    else
+        local moisturerate = self:GetMoistureRate()
+        local dryingrate = self:GetDryingRate(moisturerate)
+        local equippedmoisturerate = self:GetEquippedMoistureRate(dryingrate)
 
-    self.rate = moisturerate + equippedmoisturerate - dryingrate
+        self.rate = moisturerate + equippedmoisturerate - dryingrate
+    end
+
     self.ratescale =
         (self.rate > .3 and RATE_SCALE.INCREASE_HIGH) or
         (self.rate > .15 and RATE_SCALE.INCREASE_MED) or

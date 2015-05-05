@@ -21,6 +21,7 @@ end
 local SleepingBag = Class(function(self, inst)
     self.inst = inst
     self.healthsleep = true
+    self.dryingrate = nil
     self.sleeper = nil
     self.onsleep = nil
     self.onwake = nil
