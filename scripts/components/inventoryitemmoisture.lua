@@ -34,6 +34,10 @@ local function RegisterUpdate(self)
 end
 
 local function UnregisterUpdate(self)
+    if self._bucket == nil then
+        --Guard against bad code out there that is removing an entity multiple times
+        return
+    end
     for i, v in ipairs(self._bucket) do
         if v == self then
             table.remove(self._bucket, i)
