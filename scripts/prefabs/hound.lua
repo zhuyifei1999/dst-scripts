@@ -56,7 +56,7 @@ local function ShouldSleep(inst)
     return inst:HasTag("pet_hound")
     and not TheWorld.state.isday
     and not (inst.components.combat and inst.components.combat.target)
-    and not (inst.components.burnable and inst.components.burnable:IsBurning() )
+    and not (inst.components.burnable and inst.components.burnable:IsBurning())
     and (not inst.components.homeseeker or inst:IsNear(inst.components.homeseeker.home, SLEEP_NEAR_HOME_DISTANCE))
 end
 
@@ -71,7 +71,7 @@ local function retargetfn(inst)
     if inst:HasTag("pet_hound") then
         dist = TUNING.HOUND_FOLLOWER_TARGET_DIST
     end
-    return FindEntity(inst, dist, function(guy) 
+    return FindEntity(inst, dist, function(guy)
         return inst.components.combat:CanTarget(guy)
     end,
     nil,
@@ -324,7 +324,12 @@ local function fnfiredrop()
 
     MakeLargeBurnable(inst, 6 + math.random() * 6)
     MakeLargePropagator(inst)
+
+    --Remove the default handlers that toggle persists flag
+    inst.components.burnable:SetOnIgniteFn(nil)
+    inst.components.burnable:SetOnExtinguishFn(inst.Remove)
     inst.components.burnable:Ignite()
+
     return inst
 end
 
