@@ -35,6 +35,7 @@ local FireDetector = Class(function(self, inst)
     self.emergencyBurnt = nil
     self.emergencyShutdownTask = nil
     self.emergencyShutdownTime = nil
+    self.warningStartTime = nil
 end,
 nil,
 {
@@ -89,6 +90,7 @@ local function Cancel(inst, self)
     self.emergencyBurnt = nil
     self.emergencyLevel = 0
     self.emergency = false
+    self.warningStartTime = nil
 end
 
 function FireDetector:OnRemoveFromEntity()
@@ -200,6 +202,7 @@ local function LookForFireEmergencies(inst, self, force)
     end
 end
 
+
 local function EmergencyResponse(inst, self, target)
     if target ~= nil then
         inst:RemoveEventCallback("onburnt", self.emergencyWatched[target].onburnt, target)
@@ -219,7 +222,10 @@ local function EmergencyResponse(inst, self, target)
             end
         end
 
-        if #self.emergencyBurnt >= self.emergencyLevelMax and DetectFireEmergency(inst, self) ~= nil then
+        if self.warningStartTime ~= nil and
+            #self.emergencyBurnt >= self.emergencyLevelMax and
+            GetTime() - self.warningStartTime > TUNING.EMERGENCY_WARNING_TIME and 
+            DetectFireEmergency(inst, self) ~= nil then
             Cancel(inst, self)
             self.emergencyLevel = self.emergencyLevelMax
             self.emergency = true
@@ -230,6 +236,7 @@ local function EmergencyResponse(inst, self, target)
         elseif #self.emergencyBurnt > 0 then
             if self.emergencyLevel <= 0 then
                 self.emergencyLevel = #self.emergencyBurnt
+                self.warningStartTime = GetTime()
                 if self.onbeginwarning ~= nil then
                     self.onbeginwarning(inst, self.emergencyLevel)
                 end
@@ -241,6 +248,7 @@ local function EmergencyResponse(inst, self, target)
             end
         elseif self.emergencyLevel > 0 then
             self.emergencyLevel = 0
+            self.warningStartTime = nil
             if self.onendwarning ~= nil then
                 self.onendwarning(inst, self.emergencyLevel)
             end
@@ -369,6 +377,9 @@ function FireDetector:GetDebugString()
         .." level: "..tostring(self.emergencyLevel)
         .." watching: "..tostring(GetTableSize(self.emergencyWatched))
         .." recent: "..tostring(GetTableSize(self.detectedItems))
+        ..string.format(" warningdelay: %2.2f",
+            (self.warningStartTime ~= nil and math.max(0, self.warningStartTime + TUNING.EMERGENCY_WARNING_TIME - GetTime())) or
+            0)
         ..string.format(" cooldown: %2.2f",
             (self.emergencyShutdownTime ~= nil and self.emergencyShutdownTime - GetTime()) or
             (self.emergencyBurnt ~= nil and #self.emergencyBurnt > 0 and self.emergencyBurnt[1] + self.emergencyResponsePeriod - GetTime()) or

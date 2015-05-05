@@ -109,7 +109,7 @@ local function fn()
     inst.entity:AddDynamicShadow()
     inst.entity:AddNetwork()
 
-    inst.Transform:SetFourFaced()
+    inst.Transform:SetSixFaced()
     inst.Transform:SetScale(0.5, 0.5, 0.5)
 
     inst.DynamicShadow:SetSize(2.5, 1.25)

@@ -49,8 +49,8 @@ local WarningColours =
 
 local function GetWarningLevelLight(level)
     return (level == nil and "off")
-        or (level < 1 and "green")
-        or (level < 2 and "yellow")
+        or (level <= 0 and "green")
+        or (level <= TUNING.EMERGENCY_BURNT_NUMBER and "yellow")
         or "red"
 end
 
@@ -97,7 +97,7 @@ local function TurnOn(inst, instant)
 end
 
 local function OnBeginEmergency(inst, level)
-    SetWarningLevelLight(inst, level)
+    SetWarningLevelLight(inst, math.huge)
     if not inst.on then
         inst.components.machine:TurnOn()
     end
@@ -118,7 +118,7 @@ end
 
 local function OnUpdateWarning(inst, level)
     SetWarningLevelLight(inst, level)
-    inst:PushEvent("warninglevelchanged", { level = level })
+    --inst:PushEvent("warninglevelchanged", { level = level })
 end
 
 local function OnEndWarning(inst, level)
