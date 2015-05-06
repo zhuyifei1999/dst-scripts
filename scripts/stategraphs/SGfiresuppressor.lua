@@ -13,17 +13,27 @@ local events =
 
 local function PlayWarningSound(inst)
     inst.SoundEmitter:PlaySound("dontstarve_DLC001/common/firesupressor_warningbell")
-    inst.sg.mem.lastwarningsoundtime = GetTime()
+end
+
+local function ToggleWarningSound(inst, on)
+    if on then
+        if inst.sg.mem.soundtask == nil then
+            inst.sg.mem.soundtask = inst:DoPeriodicTask(24 * FRAMES, PlayWarningSound, 0)
+        end
+    elseif inst.sg.mem.soundtask ~= nil then
+        inst.sg.mem.soundtask:Cancel()
+        inst.sg.mem.soundtask = nil
+    end
 end
 
 local states =
 {
-
     State{
         name = "turn_on",
         tags = { "idle" },
 
-        onenter = function(inst)
+        onenter = function(inst, isemergency)
+            ToggleWarningSound(inst, isemergency)
             inst.SoundEmitter:PlaySound("dontstarve_DLC001/common/firesupressor_on")
             inst.AnimState:PlayAnimation("turn_on")
         end,
@@ -41,6 +51,7 @@ local states =
         tags = { "idle" },
 
         onenter = function(inst)
+            ToggleWarningSound(inst, false)
             inst.SoundEmitter:PlaySound("dontstarve_DLC001/common/firesupressor_off")
             inst.AnimState:PlayAnimation("turn_off")
         end,
@@ -57,7 +68,10 @@ local states =
         name = "idle_on",
         tags = { "idle" },
 
-        onenter = function(inst)
+        onenter = function(inst, forceisemergency)
+            if forceisemergency ~= nil then
+                ToggleWarningSound(inst, forceisemergency)
+            end
             if not inst.SoundEmitter:PlayingSound("firesuppressor_idle") then
                 inst.SoundEmitter:PlaySound("dontstarve_DLC001/common/firesupressor_idle", "firesuppressor_idle")
             end
@@ -84,6 +98,7 @@ local states =
         tags = { "idle" },
 
         onenter = function(inst)
+            ToggleWarningSound(inst, false)
             inst.SoundEmitter:KillSound("firesuppressor_idle")
             inst.AnimState:PlayAnimation("idle_off", true)
         end,
@@ -94,7 +109,7 @@ local states =
         tags = { "idle", "light" },
 
         onenter = function(inst)
-            PlayWarningSound(inst)
+            ToggleWarningSound(inst, true)
             inst.AnimState:PlayAnimation("light_on")
         end,
 
@@ -111,6 +126,7 @@ local states =
         tags = { "idle" },
 
         onenter = function(inst)
+            ToggleWarningSound(inst, false)
             inst.SoundEmitter:PlaySound("dontstarve_DLC001/common/firesupressor_off")
             inst.AnimState:PlayAnimation("light_off")
         end,
@@ -128,12 +144,10 @@ local states =
         tags = { "idle", "light" },
 
         onenter = function(inst)
+            ToggleWarningSound(inst, true)
             if not inst.SoundEmitter:PlayingSound("firesuppressor_idle") then
                 inst.SoundEmitter:PlaySound("dontstarve_DLC001/common/firesupressor_idle", "firesuppressor_idle")
             end
-            local period = 24 * FRAMES
-            local delay = inst.sg.mem.lastwarningsoundtime ~= nil and math.max(0, inst.sg.mem.lastwarningsoundtime + period - GetTime()) or 0
-            inst.sg.statemem.soundtask = inst:DoPeriodicTask(period, PlayWarningSound, delay)
             inst.AnimState:PlayAnimation("idle_light_loop", true)
         end,
 
@@ -143,13 +157,6 @@ local states =
                 inst.sg:GoToState("idle_light_change")
             end),
         }]]
-
-        onexit = function(inst)
-            if inst.sg.statemem.soundtask ~= nil then
-                inst.sg.statemem.soundtask:Cancel()
-                inst.sg.statemem.soundtask = nil
-            end
-        end,
     },
 
     --[[State{
@@ -174,6 +181,7 @@ local states =
         tags = { "idle" },
 
         onenter = function(inst)
+            ToggleWarningSound(inst, true)
             inst.SoundEmitter:PlaySound("dontstarve_DLC001/common/firesupressor_on")
             inst.AnimState:PlayAnimation("turn_on_light")
         end,

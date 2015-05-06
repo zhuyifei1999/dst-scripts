@@ -183,10 +183,19 @@ local function Reset(inst)
     ResetLavae(inst)
     --Fly off
     inst.reset = true
+
+    --No longer start the respawn task here - was possible to duplicate this is the exiting failed.
+end
+
+local function DoDespawn(inst)
     --Schedule new spawn time
+    --Called at the time the dragonfly actually leaves the world.
     local home = inst.components.homeseeker.home
     if home then
-        home.components.timer:StartTimer("regen_dragonfly", TUNING.SEG_TIME * 0.5)
+        home.components.childspawner:GoHome(inst)
+        home.components.childspawner:StartSpawning()
+    else
+        inst:Remove() --Dragonfly was probably debug spawned in?
     end
 end
 
@@ -329,6 +338,12 @@ local function OnSpawnStop(inst)
     inst.components.locomotor.bonusspeed = 0
 end
 
+local function OnAttacked(inst, data)
+    if data.attacker then
+        inst.components.combat:SuggestTarget(data.attacker)
+    end
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -457,6 +472,7 @@ local function fn()
     inst:ListenForEvent("rampingspawner_death", OnLavaeDeath)
     inst:ListenForEvent("moisturedelta", OnMoistureDelta)
     inst:ListenForEvent("timerdone", OnTimerDone)
+    inst:ListenForEvent("attacked", OnAttacked)
 
     -- Variables
 
@@ -465,6 +481,7 @@ local function fn()
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad -- Reset fight if in combat with players.
     inst.Reset = Reset
+    inst.DoDespawn = DoDespawn
     inst.TransformFire = TransformFire
     inst.TransformNormal = TransformNormal
     inst.can_ground_pound = false

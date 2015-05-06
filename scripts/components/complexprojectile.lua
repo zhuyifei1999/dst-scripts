@@ -1,29 +1,29 @@
 local ComplexProjectile = Class(function(self, inst)
-	self.inst = inst
+    self.inst = inst
 
-	self.velocity = Vector3(0,0,0)
-	self.gravity = -9.81
+    self.velocity = Vector3(0, 0, 0)
+    self.gravity = -9.81
 
-	self.horizontalSpeed = 4
-	self.launchoffset = nil
-	self.targetoffset = nil
+    self.horizontalSpeed = 4
+    self.launchoffset = nil
+    self.targetoffset = nil
 
-	self.owningweapon = nil
-	self.attacker = nil
+    self.owningweapon = nil
+    self.attacker = nil
 
-	self.onlaunchfn = nil
-	self.onhitfn = nil
-	self.onmissfn = nil
+    self.onlaunchfn = nil
+    self.onhitfn = nil
+    self.onmissfn = nil
 
     self.usehigharc = true
 end)
 
 function ComplexProjectile:GetDebugString()
-	return tostring(self.velocity)
+    return tostring(self.velocity)
 end
 
 function ComplexProjectile:SetHorizontalSpeed(speed)
-	self.horizontalSpeed = speed
+    self.horizontalSpeed = speed
 end
 
 function ComplexProjectile:SetGravity(g)
@@ -39,94 +39,91 @@ function ComplexProjectile:SetTargetOffset(offset)
 end
 
 function ComplexProjectile:SetOnLaunch(fn)
-	self.onlaunchfn = fn
+    self.onlaunchfn = fn
 end
 
 function ComplexProjectile:SetOnHit(fn)
-	self.onhitfn = fn
+    self.onhitfn = fn
 end
 
-local flip = false
-
 function ComplexProjectile:CalculateTrajectory(startPos, endPos, speed)
-	local speedSq = speed * speed;
-	local speed4th = speedSq * speedSq;
-	local g = -self.gravity
+    local speedSq = speed * speed
+    local g = -self.gravity
 
-	local dx = math.sqrt((endPos.x-startPos.x)*(endPos.x-startPos.x) + (endPos.z-startPos.z)*(endPos.z-startPos.z));
-	local dy = endPos.y - startPos.y;
+    local dx = endPos.x - startPos.x
+    local dy = endPos.y - startPos.y
+    local dz = endPos.z - startPos.z
 
-	local discriminant = speed4th - g*(g*dx*dx + 2*dy*speedSq);
-	local angle;
-	if discriminant >= 0.0 then
-        local angleA = math.atan( ( speedSq - math.sqrt( discriminant ) ) / ( g * dx ) )
-        local angleB = math.atan( ( speedSq + math.sqrt( discriminant ) ) / ( g * dx ) )
-        if self.usehigharc then
-            angle = math.max(angleA, angleB)
-        else
-            angle = math.min(angleA, angleB)
-        end
-	else
-		angle = 30.0*DEGREES
-	end
-	local result = Vector3(endPos.x-startPos.x, 0.0, endPos.z-startPos.z):GetNormalized();
-	result = result * math.cos( angle ) * speed;
-	result.y = math.sin( angle ) * speed;
+    local rangeSq = dx * dx + dz * dz
+    local range = math.sqrt(rangeSq)
+    local discriminant = speedSq * speedSq - g * (g * rangeSq + 2 * dy * speedSq)
+    local angle
+    if discriminant >= 0 then
+        local discriminantSqrt = math.sqrt(discriminant)
+        local gXrange = g * range
+        local angleA = math.atan((speedSq - discriminantSqrt) / gXrange)
+        local angleB = math.atan((speedSq + discriminantSqrt) / gXrange)
+        angle = self.usehigharc and math.max(angleA, angleB) or math.min(angleA, angleB)
+    else
+        --Not enough speed to reach endPos
+        angle = 30 * DEGREES
+    end
 
-	return result;
+    local cosangleXspeed = math.cos(angle) * speed
+    self.velocity.x = dx / range * cosangleXspeed
+    self.velocity.z = dz / range * cosangleXspeed
+    self.velocity.y = math.sin(angle) * speed
 end
 
 function ComplexProjectile:Launch(targetPos, attacker, owningweapon)
-	local pos = self.inst:GetPosition()
-	self.owningweapon = owningweapon or self
-	self.attacker = attacker
+    local pos = self.inst:GetPosition()
+    self.owningweapon = owningweapon or self
+    self.attacker = attacker
 
     local offset = self.launchoffset
-    if attacker and offset then
-        local facing_angle = attacker.Transform:GetRotation()*DEGREES
-        local offset_vec = Vector3(offset.x * math.cos( facing_angle ), offset.y, -offset.x * math.sin( facing_angle ))
+    if attacker ~= nil and offset ~= nil then
+        local facing_angle = attacker.Transform:GetRotation() * DEGREES
+        pos.x = pos.x + offset.x * math.cos(facing_angle)
+        pos.y = pos.y + offset.y
+        pos.z = pos.z - offset.x * math.sin(facing_angle)
         -- print("facing", facing_angle)
         -- print("offset", offset)
-        -- print("vec", offset_vec)
-        pos = pos + offset_vec
-        self.inst.Transform:SetPosition( pos:Get() )
+        self.inst.Transform:SetPosition(pos:Get())
     end
 
-    if self.targetoffset then
-	    targetPos.y = self.targetoffset.y
-	else
-		-- hit when you hit the ground
-		targetPos.y = 0
-	end
+    -- use targetoffset height, otherwise hit when you hit the ground
+    targetPos.y = self.targetoffset ~= nil and self.targetoffset.y or 0
 
-	self.velocity = self:CalculateTrajectory(pos, targetPos, self.horizontalSpeed)
+    self:CalculateTrajectory(pos, targetPos, self.horizontalSpeed)
 
-	if self.onlaunchfn then
-		self.onlaunchfn(self.inst)
-	end
+    if self.onlaunchfn ~= nil then
+        self.onlaunchfn(self.inst)
+    end
 
-	self.inst:StartUpdatingComponent(self)
+    self.inst:StartUpdatingComponent(self)
 end
 
 function ComplexProjectile:Hit(target)
-	self.inst:StopUpdatingComponent(self)
+    self.inst:StopUpdatingComponent(self)
 
-	self.inst.Physics:SetMotorVel(0,0,0)
-	self.inst.Physics:Stop()
-	self.velocity = Vector3(0,0,0)
+    self.inst.Physics:SetMotorVel(0,0,0)
+    self.inst.Physics:Stop()
+    self.velocity.x, self.velocity.y, self.velocity.z = 0, 0, 0
 
-	if self.onhitfn then
-		self.onhitfn(self.inst, self.attacker, target)
-	end
+    if self.onhitfn ~= nil then
+        self.onhitfn(self.inst, self.attacker, target)
+    end
 end
 
 function ComplexProjectile:OnUpdate(dt)
-	self.inst.Physics:SetMotorVel(self.velocity.x, self.velocity.y, self.velocity.z)
-	self.velocity.y = self.velocity.y + (self.gravity * dt)
-	local pos = self.inst:GetPosition()
-	if pos.y <= 0.05 and self.velocity.y < 0 then -- a tiny bit above the ground, to account for collision issues
-		self:Hit()
-	end
+    self.inst.Physics:SetMotorVel(self.velocity:Get())
+    self.velocity.y = self.velocity.y + (self.gravity * dt)
+    if self.velocity.y < 0 then
+        local x, y, z = self.inst.Transform:GetWorldPosition()
+        if y <= 0.05 then -- a tiny bit above the ground, to account for collision issues
+            self:Hit()
+        end
+    end
 end
 
 return ComplexProjectile

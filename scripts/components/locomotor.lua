@@ -647,8 +647,10 @@ function LocoMotor:OnUpdate(dt)
             end
 
             if self.bufferedaction and self.bufferedaction ~= self.inst.bufferedaction then
-                if self.bufferedaction.target and self.bufferedaction.target.Transform then
+                if self.bufferedaction.target ~= nil and self.bufferedaction.target.Transform ~= nil then
                     self.inst:FacePoint(self.bufferedaction.target.Transform:GetWorldPosition())
+                elseif self.bufferedaction.pos ~= nil and self.bufferedaction.invobject ~= nil then
+                    self.inst:FacePoint(self.bufferedaction.pos:Get())
                 end
                 if self.ismastersim then
                     self.inst:PushBufferedAction(self.bufferedaction)

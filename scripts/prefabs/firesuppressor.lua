@@ -1,4 +1,5 @@
 require "prefabutil"
+local easing = require("easing")
 
 local assets =
 {
@@ -21,23 +22,25 @@ local prefabs =
 }
 
 local function LaunchProjectile(inst, targetpos)
-    --if not inst.canFire then return end
+    local x, y, z = inst.Transform:GetWorldPosition()
+
     local projectile = SpawnPrefab("snowball")
-    --projectile.owner = inst
-    projectile.Transform:SetPosition(inst.Transform:GetWorldPosition())
+    projectile.Transform:SetPosition(x, y, z)
+
+    --V2C: scale the launch speed based on distance
+    --     because 15 does not reach our max range.
+    local dx = targetpos.x - x
+    local dz = targetpos.z - z
+    local rangesq = dx * dx + dz * dz
+    local maxrange = TUNING.FIRE_DETECTOR_RANGE
+    local speed = easing.linear(rangesq, 15, 3, maxrange * maxrange)
+    projectile.components.complexprojectile:SetHorizontalSpeed(speed)
+    projectile.components.complexprojectile:SetGravity(-25)
     projectile.components.complexprojectile:Launch(targetpos, inst, inst)
-    --inst.canFire = false
-    --inst.components.timer:StartTimer("Reload", TUNING.FIRESUPPRESSOR_RELOAD_TIME)
 end
 
 local function OnFindFire(inst, firePos)
     inst:PushEvent("putoutfire", { firePos = firePos })
-end
-
-local function ontimerdone(inst, data)
-    if data.name == "Reload" then
-        inst.canFire = true
-    end
 end
 
 local WarningColours =
@@ -87,13 +90,14 @@ end
 
 local function TurnOn(inst, instant)
     inst.on = true
-    if not inst.components.firedetector:IsEmergency() then
+    local isemergency = inst.components.firedetector:IsEmergency()
+    if not isemergency then
         local randomizedStartTime = POPULATING
         inst.components.firedetector:Activate(randomizedStartTime)
         SetWarningLevelLight(inst, 0)
     end
     inst.components.fueled:StartConsuming()
-    inst.sg:GoToState(instant and "idle_on" or (inst.sg:HasStateTag("light") and "turn_on_light" or "turn_on"))
+    inst.sg:GoToState(instant and "idle_on" or (inst.sg:HasStateTag("light") and "turn_on_light" or "turn_on"), isemergency == true--[[must not be nil]])
 end
 
 local function OnBeginEmergency(inst, level)
@@ -153,7 +157,7 @@ local function onhammered(inst, worker)
     if inst:HasTag("fire") and inst.components.burnable then
         inst.components.burnable:Extinguish()
     end
-    inst.SoundEmitter:KillSound("idleloop")
+    inst.SoundEmitter:KillSound("firesuppressor_idle")
     inst.components.lootdropper:DropLoot()
     SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
     inst.SoundEmitter:PlaySound("dontstarve/common/destroy_wood")
@@ -283,10 +287,6 @@ local function fn()
     inst.components.wateryprotection.witherprotectiontime = TUNING.FIRESUPPRESSOR_PROTECTION_TIME
     inst.components.wateryprotection.addcoldness = TUNING.FIRESUPPRESSOR_ADD_COLDNESS
     inst.components.wateryprotection:AddIgnoreTag("player")
-
-    inst:AddComponent("timer")
-    inst:ListenForEvent("timerdone", ontimerdone)
-    --inst.canFire = true
 
     inst:AddComponent("lootdropper")
     inst:AddComponent("workable")

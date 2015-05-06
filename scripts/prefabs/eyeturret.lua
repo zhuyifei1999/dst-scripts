@@ -15,25 +15,30 @@ local prefabs =
 local brain = require "brains/eyeturretbrain"
 
 local function retargetfn(inst)
-    local player = ThePlayer
-    local newtarget = FindEntity(inst, 20, function(guy)
-            return  inst.components.combat:CanTarget(guy) and
-                    (guy.components.combat.target == player or player.components.combat.target == guy)
-    end,
-    {"_combat"} -- see entityreplica.lua
-    )
+    local playertargets = {}
+    for i, v in ipairs(AllPlayers) do
+        if v.components.combat.target ~= nil then
+            playertargets[v.components.combat.target] = true
+        end
+    end
 
-    return newtarget
+    return FindEntity(inst, 20,
+        function(guy)
+            return inst.components.combat:CanTarget(guy)
+                and (playertargets[guy] or
+                    (guy.components.combat.target ~= nil and guy.components.combat.target:HasTag("player")))
+        end,
+        { "_combat" }, --see entityreplica.lua
+        { "INLIMBO", "player" }
+    )
 end
 
 local function shouldKeepTarget(inst, target)
-    if target and target:IsValid() and
-        (target.components.health and not target.components.health:IsDead()) then
-        local distsq = target:GetDistanceSqToInst(inst)
-        return distsq < 20*20
-    else
-        return false
-    end
+    return target ~= nil
+        and target:IsValid()
+        and target.components.health ~= nil
+        and not target.components.health:IsDead()
+        and inst:IsNear(target, 20)
 end
 
 local function ShareTargetFn(dude)
@@ -41,12 +46,11 @@ local function ShareTargetFn(dude)
 end
 
 local function OnAttacked(inst, data)
-    local attacker = data ~= nil and data.attacker
-    if attacker == ThePlayer then
-        return
+    local attacker = data ~= nil and data.attacker or nil
+    if attacker ~= nil and not attacker:HasTag("player") then
+        inst.components.combat:SetTarget(attacker)
+        inst.components.combat:ShareTarget(attacker, 15, ShareTargetFn, 10)
     end
-    inst.components.combat:SetTarget(attacker)
-    inst.components.combat:ShareTarget(attacker, 15, ShareTargetFn, 10)
 end
 
 local function EquipWeapon(inst)

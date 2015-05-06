@@ -14,7 +14,6 @@ local function onissprung(self, issprung)
     end
 end
 
-
 local function OnTimerDone(inst, data)
     if data.name == "foodspoil" then
         inst.components.trap:OnTrappedStarve()
@@ -58,7 +57,6 @@ function Trap:SetOnSpringFn(fn)
 end
 
 function Trap:GetDebugString()
-    
     local str = nil
     if self.isset then 
         str = "SET! "
@@ -67,7 +65,7 @@ function Trap:GetDebugString()
     else 
         str = "IDLE! "
     end
-    
+
     if self.bait then
         str = str.."Bait:"..tostring(self.bait).." "
     end
@@ -79,12 +77,11 @@ function Trap:GetDebugString()
     if self.lootprefabs and #self.lootprefabs > 0 then
         str = str.."Loot: "
         for k,v in pairs(self.lootprefabs) do
-			str = str .. v.." "
+            str = str .. v.." "
         end
     end
-    
+
     return str
-    
 end
 
 function Trap:SetOnBaitedFn(fn)
@@ -96,7 +93,7 @@ function Trap:IsFree()
 end
 
 function Trap:IsBaited()
-	return self.isset and not self.issprung and self.bait ~= nil
+    return self.isset and not self.issprung and self.bait ~= nil
 end
 
 function Trap:Reset()
@@ -110,35 +107,40 @@ function Trap:Reset()
 end
 
 function Trap:Disarm()
-	self:Reset()
+    self:Reset()
 end
 
 function Trap:Set()
     self:Reset()
     self.isset = true
-    self:StartUpdate()   
+    self:StartUpdate()
 end
 
 function Trap:StopUpdating()
-	if self.task then
-		self.task:Cancel()
-		self.task = nil
-	end
+    if self.task then
+        self.task:Cancel()
+        self.task = nil
+    end
+end
+
+local function _OnUpdate(inst, self)
+    self:OnUpdate(self.checkperiod)
 end
 
 function Trap:StartUpdate()
-	if not self.task then
-		self.task = self.inst:DoPeriodicTask(self.checkperiod, function() self:OnUpdate(self.checkperiod) end)
-	end
+    if self.task == nil then
+        self.task = self.inst:DoPeriodicTask(self.checkperiod, _OnUpdate, nil, self)
+    end
+end
+
+local function CheckTrappable(guy)
+    return guy.components.health == nil or not guy.components.health:IsDead()
 end
 
 function Trap:OnUpdate(dt)
     if self.isset then
-        local guy = FindEntity(self.inst, self.range, function(guy)
-            return not (guy.components.health and guy.components.health:IsDead() )
-            and not (guy.components.inventoryitem and guy.components.inventoryitem:IsHeld() )
-        end, {self.targettag})
-        if guy then
+        local guy = FindEntity(self.inst, self.range, CheckTrappable, { self.targettag }, { "INLIMBO" })
+        if guy ~= nil then
             self.target = guy
             self:StopUpdating()
             self.inst:PushEvent("springtrap")
@@ -149,46 +151,40 @@ end
 
 function Trap:OnTrappedStarve()
     if self.issprung then
-
         self.inst:PushEvent("harvesttrap")
-        if self.onharvest then
+        if self.onharvest ~= nil then
             self.onharvest(self.inst)
         end
 
         local timeintrap = self.inst.components.timer:GetTimeElapsed("foodspoil") or TUNING.TOTAL_DAY_TIME * 2
 
-        if self.starvedlootprefabs then
-            for k,v in ipairs(self.starvedlootprefabs) do
+        if self.starvedlootprefabs ~= nil then
+            for i, v in ipairs(self.starvedlootprefabs) do
                 local loot = SpawnPrefab(v)
-                if loot then
-                    loot.Transform:SetPosition(self.inst:GetPosition():Get())
-
-                    if loot.components.perishable then
+                if loot ~= nil then
+                    loot.Transform:SetPosition(self.inst.Transform:GetWorldPosition())
+                    if loot.components.perishable ~= nil then
                         loot.components.perishable:LongUpdate(timeintrap)
                     end
-
                 end
             end
         end
 
         self:Reset()
-        
         self.inst.sg:GoToState("empty")
     end
 end
 
 function Trap:StartStarvation()
-    local perishTime = TUNING.TOTAL_DAY_TIME * 2
+    local perishTime =
+        self.target.components.perishable ~= nil and
+        self.target.components.perishable.perishremainingtime or
+        TUNING.TOTAL_DAY_TIME * 2
     
-    if self.target.components.perishable then
-        perishTime = self.target.components.perishable.perishremainingtime
-    end
-    
-    self.starvedlootprefabs = {"spoiled_food"}
-    
-    if self.target.components.lootdropper then
-        self.starvedlootprefabs = self.target.components.lootdropper:GenerateLoot()
-    end
+    self.starvedlootprefabs =
+        self.target.components.lootdropper ~= nil and
+        self.target.components.lootdropper:GenerateLoot() or
+        { "spoiled_food" }
 
     self.inst.components.timer:StartTimer("foodspoil", perishTime)
 end
@@ -198,65 +194,65 @@ function Trap:StopStarvation()
     self.starvedlootprefabs = nil
 end
 
+local BAIT_TAGS = { "molebait" }
+for k, v in pairs(FOODTYPE) do
+    table.insert(BAIT_TAGS, "edible_"..v)
+end
+
 function Trap:DoSpring()
     self:StopUpdating()
-	if self.target and self.target:HasTag("insprungtrap") then
-		return -- this animal is already in a trap this tick, just waiting to be Remove()'d
-	end
-    
-    if self.target and self.target:IsValid() and not self.target:IsInLimbo() then
-        if self.onspring then
+    if self.target ~= nil and not self.target:IsValid() then
+        return -- this animal is already in a trap this tick, just waiting to be Remove()'d
+    end
+
+    if self.target ~= nil and not self.target:IsInLimbo() and
+        not (self.target.components.health ~= nil and self.target.components.health:IsDead()) then
+        if self.onspring ~= nil then
             self.onspring(self.inst, self.target, self.bait)
         end
-        if self.target.components.inventoryitem and self.target.components.inventoryitem.trappable then
-            self.lootprefabs = {self.target.prefab}
-        else
-            if self.target.components.lootdropper and self.target.components.lootdropper.trappable then
-                self.lootprefabs = self.target.components.lootdropper:GenerateLoot()
-            end
-        end
+
+        self.lootprefabs =
+            (self.target.components.inventoryitem ~= nil and self.target.components.inventoryitem.trappable and { self.target.prefab }) or
+            (self.target.components.lootdropper ~= nil and self.target.components.lootdropper.trappable and self.target.components.lootdropper:GenerateLoot()) or
+            nil
 
         self:StartStarvation()
 
-        if self.lootprefabs then
-            self.target:PushEvent("ontrapped", {trapper=self.inst, bait=self.bait})
-            ProfileStatsAdd("trapped_" .. self.target.prefab)
-    		self.target:AddTag("insprungtrap") -- prevents the same ent from being caught in two traps on the same frame
+        if self.lootprefabs ~= nil then
+            self.target:PushEvent("ontrapped", { trapper = self.inst, bait = self.bait })
+            ProfileStatsAdd("trapped_"..self.target.prefab)
             self.target:Remove()
         end
+    else
+        self.lootprefabs = nil
     end
-    
-    if self.bait and self.bait:IsValid() then
-        if self.target and self.target:HasTag("baitstealer") and self.target.components.inventory then
+
+    if self.bait ~= nil and self.bait:IsValid() then
+        if self.target ~= nil and self.target.components.inventory ~= nil and self.target:HasTag("baitstealer") then
             self.target.components.inventory:GiveItem(self.bait)
             self:RemoveBait()
         else
             self.bait:Remove()
         end
-    else
+    elseif self.target ~= nil then
+        local ismole = self.target:HasTag("mole")
         local x, y, z = self.inst.Transform:GetWorldPosition()
-        local ents = TheSim:FindEntities(x,y,z, 2)
-        for k,v in pairs(ents) do
-            if v.components.bait then
-                -- check if the bait type is a valid bait for the thing we're trapping
-                local validbait = false
-                if self.target and self.target:HasTag("mole") and v:HasTag("molebait") then validbait = true end
-                if not validbait and self.target and self.target.components.eater then
-                    validbait = self.target.components.eater:CanEat(v)
+        local ents = TheSim:FindEntities(x, y, z, 2, nil, { "INLIMBO" }, BAIT_TAGS)
+        for i, v in ipairs(ents) do
+            if v.components.bait ~= nil
+                and (ismole and v:HasTag("molebait") or
+                    (self.target.components.eater ~= nil and self.target.components.eater:CanEat(v))) then
+                -- bait type is a valid bait for the thing we're trapping
+                if self.target.components.inventory ~= nil and self.target:HasTag("baitstealer") then
+                    self.target.components.inventory:GiveItem(v)
+                else
+                    v:Remove()
                 end
-                -- don't remove items out of nearby chests, or the user's inventory
-                if validbait and (v.components.inventoryitem == nil or v.components.inventoryitem.owner == nil) then
-                    if self.target and self.target:HasTag("baitstealer") and self.target.components.inventory then
-                        self.target.components.inventory:GiveItem(v)
-                    else
-                        v:Remove()
-                    end
-                    break
-                end
+                break
             end
         end
     end
-    
+
     self.target = nil
     self.bait = nil
     self.isset = false
@@ -271,33 +267,33 @@ end
 function Trap:Harvest(doer)
     if self.issprung then
         self.inst:PushEvent("harvesttrap")
-        if self.onharvest then
-			self.onharvest(self.inst)
+        if self.onharvest ~= nil then
+            self.onharvest(self.inst)
         end
-        
-        local timeintrap = self.inst.components.timer:GetTimeElapsed("foodspoil") or 0
-        if self.lootprefabs and doer.components.inventory then
-            for k,v in ipairs(self.lootprefabs) do
+
+        if self.lootprefabs ~= nil and doer.components.inventory ~= nil then
+            local timeintrap = self.inst.components.timer:GetTimeElapsed("foodspoil") or 0
+            for i, v in ipairs(self.lootprefabs) do
                 local loot = SpawnPrefab(v)
-                if loot then
+                if loot ~= nil then
                     doer.components.inventory:GiveItem(loot, nil, self.inst:GetPosition())
-                        if loot.components.perishable then
+                    if loot.components.perishable ~= nil then
                         loot.components.perishable:LongUpdate(timeintrap)
                     end
                 end
             end
         end
         self:Reset()
-        
-        if self.inst.components.finiteuses and self.inst.components.finiteuses:GetUses() > 0 then
+
+        if self.inst.components.finiteuses ~= nil and self.inst.components.finiteuses:GetUses() > 0 then
             doer.components.inventory:GiveItem(self.inst, nil, self.inst:GetPosition())
         end
     end
 end
 
 function Trap:RemoveBait()
-    if self.bait then
-        if self.baitlayer then
+    if self.bait ~= nil then
+        if self.baitlayer ~= nil then
             self.bait.AnimState:SetSortOrder(0)
         end
         self.bait.components.bait.trap = nil
@@ -307,25 +303,21 @@ end
 
 function Trap:SetBait(bait)
     self:RemoveBait()
-    if bait and bait.components.bait then
+    if bait ~= nil and bait.components.bait ~= nil then
         self.bait = bait
-        if self.baitlayer then
+        if self.baitlayer ~= nil then
             self.bait.AnimState:SetSortOrder(self.baitsortorder)
         end
         bait.components.bait.trap = self
         bait.Transform:SetPosition(self.inst.Transform:GetWorldPosition())
-        if self.onbaited then
+        if self.onbaited ~= nil then
             self.onbaited(self.inst, self.bait)
         end
     end
 end
 
 function Trap:BaitTaken(eater)
-    if eater and eater:HasTag(self.targettag) then
-        self.target = eater
-        self:StopUpdating()
-        self.inst:PushEvent("springtrap")
-    elseif eater and eater:HasTag("baitstealer") then
+    if eater ~= nil and (eater:HasTag(self.targettag) or eater:HasTag("baitstealer")) then
         self.target = eater
         self:StopUpdating()
         self.inst:PushEvent("springtrap")
@@ -341,48 +333,43 @@ end
 function Trap:OnSave()
     return
     {
-        sprung = self.issprung,
-        isset = self.isset,
+        sprung = self.issprung or nil,
+        isset = self.isset or nil,
         bait = self.bait and self.bait.GUID or nil,
         loot = self.lootprefabs,
         starvedloot = self.starvedlootprefabs,
-    }, 
+    },
     {
-		self.bait and self.bait.GUID or nil
+        self.bait ~= nil and self.bait.GUID or nil,
     }
 end
 
 function Trap:OnLoad(data)
-    self.sprung = data.sprung
-    self.isset = data.isset
-    
-    --backwards compatability
-    if type(data.loot) == "string" then
-        self.lootprefabs = {data.loot}
-    elseif type(data.loot) == "table" then
-        self.lootprefabs = data.loot
-    end
+    self.sprung = (data.sprung == true)
+    self.isset = (data.isset == true)
 
-    if type(data.starvedloot) == "string" then
-        self.starvedlootprefabs = {data.starvedloot}
-    elseif type(data.starvedloot) == "table" then
-        self.starvedlootprefabs = data.starvedloot
-    else
-        self.starvedlootprefabs = {"spoiled_food"}
-    end
-    
+    --backwards compatability
+    self.lootprefabs =
+        (type(data.loot) == "string" and { data.loot }) or
+        (type(data.loot) == "table" and data.loot) or
+        nil
+
+    self.starvedlootprefabs =
+        (type(data.starvedloot) == "string" and { data.starvedloot }) or
+        (type(data.starvedloot) == "table" and data.starvedloot) or
+        { "spoiled_food" }
+
     if self.isset then
         self:StartUpdate()
     elseif self.sprung then
         self.inst:PushEvent("springtrap")
     end
-    
 end
 
 function Trap:LoadPostPass(newents, savedata)
-    if savedata.bait then
+    if savedata.bait ~= nil then
         local bait = newents[savedata.bait]
-        if bait then
+        if bait ~= nil then
             self:SetBait(bait.entity)
         end
     end

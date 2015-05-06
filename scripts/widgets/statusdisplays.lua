@@ -10,25 +10,25 @@ local function OnSetPlayerMode(inst, self)
     if self.onhealthdelta == nil then
         self.onhealthdelta = function(owner, data) self:HealthDelta(data) end
         self.inst:ListenForEvent("healthdelta", self.onhealthdelta, self.owner)
-        self.heart:SetPercent(self.owner.replica.health:GetPercent(), self.owner.replica.health:Max(), self.owner.replica.health:GetPenaltyPercent())
+        self:SetHealthPercent(self.owner.replica.health:GetPercent())
     end
 
     if self.onhungerdelta == nil then
         self.onhungerdelta = function(owner, data) self:HungerDelta(data) end
         self.inst:ListenForEvent("hungerdelta", self.onhungerdelta, self.owner)
-        self.stomach:SetPercent(self.owner.replica.hunger:GetPercent(), self.owner.replica.hunger:Max())
+        self:SetHungerPercent(self.owner.replica.hunger:GetPercent())
     end
 
     if self.onsanitydelta == nil then
         self.onsanitydelta = function(owner, data) self:SanityDelta(data) end
         self.inst:ListenForEvent("sanitydelta", self.onsanitydelta, self.owner)
-        self.brain:SetPercent(self.owner.replica.sanity:GetPercent(), self.owner.replica.sanity:Max(), self.owner.replica.sanity:GetPenaltyPercent())
+        self:SetSanityPercent(self.owner.replica.sanity:GetPercent())
     end
 
     if self.onmoisturedelta == nil then
         self.onmoisturedelta = function(owner, data) self:MoistureDelta(data) end
         self.inst:ListenForEvent("moisturedelta", self.onmoisturedelta, self.owner)
-        self.moisturemeter:SetValue(self.owner:GetMoisture(), self.owner:GetMaxMoisture(), self.owner:GetMoistureRateScale())
+        self:SetMoisturePercent(self.owner:GetMoisture())
     end
 end
 
@@ -82,6 +82,10 @@ function StatusDisplays:SetGhostMode(ghostmode)
         self.stomach:Hide()
         self.brain:Hide()
         self.moisturemeter:Hide()
+
+        self.heart:StopWarning()
+        self.stomach:StopWarning()
+        self.brain:StopWarning()
     else
         self.heart:Show()
         self.stomach:Show()
@@ -95,14 +99,18 @@ function StatusDisplays:SetGhostMode(ghostmode)
     self.modetask = self.inst:DoTaskInTime(0, ghostmode and OnSetGhostMode or OnSetPlayerMode, self)
 end
 
-function StatusDisplays:HealthDelta(data)
-    self.heart:SetPercent(data.newpercent, self.owner.replica.health:Max(), self.owner.replica.health:GetPenaltyPercent()) 
+function StatusDisplays:SetHealthPercent(pct)
+    self.heart:SetPercent(pct, self.owner.replica.health:Max(), self.owner.replica.health:GetPenaltyPercent()) 
 
-    if data.newpercent <= .33 then
+    if pct <= .33 then
         self.heart:StartWarning()
     else
         self.heart:StopWarning()
     end
+end
+
+function StatusDisplays:HealthDelta(data)
+    self:SetHealthPercent(data.newpercent)
 
     if not data.overtime then
         if data.newpercent > data.oldpercent then
@@ -115,14 +123,18 @@ function StatusDisplays:HealthDelta(data)
     end
 end
 
-function StatusDisplays:HungerDelta(data)
-    self.stomach:SetPercent(data.newpercent, self.owner.replica.hunger:Max())
+function StatusDisplays:SetHungerPercent(pct)
+    self.stomach:SetPercent(pct, self.owner.replica.hunger:Max())
 
-    if data.newpercent <= 0 then
+    if pct <= 0 then
         self.stomach:StartWarning()
     else
         self.stomach:StopWarning()
     end
+end
+
+function StatusDisplays:HungerDelta(data)
+    self:SetHungerPercent(data.newpercent)
 
     if not data.overtime then
         if data.newpercent > data.oldpercent then
@@ -135,14 +147,18 @@ function StatusDisplays:HungerDelta(data)
     end	
 end
 
-function StatusDisplays:SanityDelta(data)
-    self.brain:SetPercent(data.newpercent, self.owner.replica.sanity:Max(), self.owner.replica.sanity:GetPenaltyPercent())
+function StatusDisplays:SetSanityPercent(pct)
+    self.brain:SetPercent(pct, self.owner.replica.sanity:Max(), self.owner.replica.sanity:GetPenaltyPercent())
 
     if self.owner.replica.sanity:IsCrazy() then
         self.brain:StartWarning()
     else
         self.brain:StopWarning()
     end
+end
+
+function StatusDisplays:SanityDelta(data)
+    self:SetSanityPercent(data.newpercent)
 
     if not data.overtime then
         if data.newpercent > data.oldpercent then
@@ -155,8 +171,12 @@ function StatusDisplays:SanityDelta(data)
     end
 end
 
+function StatusDisplays:SetMoisturePercent(pct)
+    self.moisturemeter:SetValue(pct, self.owner:GetMaxMoisture(), self.owner:GetMoistureRateScale())
+end
+
 function StatusDisplays:MoistureDelta(data)
-    self.moisturemeter:SetValue(data.new, self.owner:GetMaxMoisture(), self.owner:GetMoistureRateScale())
+    self:SetMoisturePercent(data.new)
 end
 
 return StatusDisplays

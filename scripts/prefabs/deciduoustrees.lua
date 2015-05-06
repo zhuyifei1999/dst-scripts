@@ -1,3 +1,5 @@
+--V2C: "fire" tag misuse here GG.... refactor this GD 1.3k line file
+
 local assets =
 {
     Asset("ANIM", "anim/tree_leaf_short.zip"),
