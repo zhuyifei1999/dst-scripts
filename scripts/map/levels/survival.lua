@@ -102,6 +102,7 @@ AddLevel(LEVELTYPE.SURVIVAL, {
             {"catcoon",			"never"},
             {"moles",			"never"},
             {"lightninggoat",	"never"},
+            {"houndmound",		"never"},
 
             {"rock_ice",		"never"},
             {"cactus",			"never"},

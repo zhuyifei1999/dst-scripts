@@ -182,6 +182,7 @@ ACTIONS.PICKUP.fn = function(act)
     if act.doer.components.inventory ~= nil and
         act.target ~= nil and
         act.target.components.inventoryitem ~= nil and
+        act.target.components.inventoryitem.canbepickedup and
         not act.target:IsInLimbo() and
         not act.target:HasTag("catchable") and
         not act.target:HasTag("fire") then

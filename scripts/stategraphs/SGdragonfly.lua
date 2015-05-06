@@ -24,6 +24,16 @@ local function onattackfn(inst, data)
     end
 end
 
+local function onsleepfn(inst)
+    if inst.components.health and inst.components.health:GetPercent() > 0 and not inst.sg:HasStateTag("flyaway") then
+        if inst.sg:HasStateTag("sleeping") then
+            inst.sg:GoToState("sleeping")
+        else
+            inst.sg:GoToState("sleep")
+        end
+    end
+end
+
 local function onstunnedfn(inst, data)
 	if inst.components.health and not inst.components.health:IsDead() then
 		inst.sg:GoToState("knockdown")
@@ -49,6 +59,7 @@ local function transform(inst, data)
 	end
 end
 
+
 local actionhandlers = 
 {
 	ActionHandler(ACTIONS.GOHOME, "flyaway"),
@@ -58,9 +69,9 @@ local actionhandlers =
 local events=
 {
 	CommonHandlers.OnLocomote(false,true),
-	CommonHandlers.OnSleep(),
 	CommonHandlers.OnFreeze(),
 	CommonHandlers.OnDeath(),
+	EventHandler("gotosleep", onsleepfn),
 	EventHandler("doattack", onattackfn),
 	EventHandler("attacked", onattackedfn),
 	EventHandler("stunned", onstunnedfn),
@@ -193,8 +204,6 @@ local states=
 			if inst.components.locomotor then
 				inst.components.locomotor:StopMoving()
 			end
-
-			--Start taking extra damage
 			--Start tracking progress towards breakoff loot
 			inst.AnimState:PlayAnimation("hit_large")
 			inst.components.damagetracker:Start()
@@ -253,7 +262,6 @@ local states=
 		onenter = function(inst)
 			inst.AnimState:PlayAnimation("sleep_pst")
 			inst.components.damagetracker:Stop()
-			--Stop taking extra damage.
 			--Stop tracking progress towards breakoff loot
 		end,
 
@@ -268,18 +276,19 @@ local states=
 
 	State{
 		name = "flyaway",
-		tags = {"flying", "busy"},
+		tags = {"flying", "busy", "flyaway", "noattack"},
 
 		onenter = function(inst)
 			inst.Physics:Stop()
 			inst.DynamicShadow:Enable(false)
+			inst.components.health:SetInvincible(true)
+
 			inst.AnimState:PlayAnimation("taunt_pre")
 			inst.AnimState:PushAnimation("taunt")
 			inst.AnimState:PushAnimation("taunt_pst") --59 frames
 
 			inst.AnimState:PushAnimation("walk_angry_pre") -- 75 frames
 			inst.AnimState:PushAnimation("walk_angry", true)
-
 		end,
 
 		timeline =
@@ -288,10 +297,17 @@ local states=
 				inst.Physics:SetMotorVel(math.random()*4,7+math.random()*2,math.random()*4)
 			end),
 			TimeEvent(6, function(inst) 
-				--Push event to spawner to respawn in a day or two.
-				inst:Remove()
+				inst:DoDespawn()
 			end)
-		}
+		},
+
+		onexit = function(inst)
+			--You somehow left this state?! (not supposed to happen).
+			--Cancel the action to avoid getting stuck.
+			print("Dragonfly left the flyaway state! How could this happen?!")
+			inst.components.health:SetInvincible(false)
+			inst:ClearBufferedAction()
+		end,
 	},
 
 	State{

@@ -9,14 +9,12 @@ local EyeTurretBrain = Class(Brain, function(self, inst)
 end)
 
 local function GetFaceTargetFn(inst)
-    local target = GetClosestInstWithTag("player", inst, START_FACE_DIST)
-    if target and not target:HasTag("notarget") then
-        return target
-    end
+    local target = FindClosestPlayerToInst(inst, START_FACE_DIST)
+    return target ~= nil and not target:HasTag("notarget") and target or nil
 end
 
 local function KeepFaceTargetFn(inst, target)
-    return inst:GetDistanceSqToInst(target) <= KEEP_FACE_DIST*KEEP_FACE_DIST and not target:HasTag("notarget")
+    return not target:HasTag("notarget") and inst:IsNear(target, KEEP_FACE_DIST)
 end
 
 function EyeTurretBrain:OnStart()
@@ -24,9 +22,8 @@ function EyeTurretBrain:OnStart()
     {
         StandAndAttack(self.inst),
         FaceEntity(self.inst, GetFaceTargetFn, KeepFaceTargetFn),
-
     }, .25)
-    
+
     self.bt = BT(self.inst, root)
 end
 

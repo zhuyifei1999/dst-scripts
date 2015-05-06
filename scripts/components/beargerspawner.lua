@@ -90,6 +90,7 @@ local function ReleaseHassler(targetPlayer)
 	local pt = Vector3(targetPlayer.Transform:GetWorldPosition())
 
 	if _numSpawned >= _targetNum then 
+		print("Not spawning bearger - already at maximum number")
 		return nil
 	end
 
@@ -106,6 +107,8 @@ local function ReleaseHassler(targetPlayer)
 			return hassler
 		end
 	end
+
+	print("Not spawning bearger - can't find spawn point")
 end
 
 local function SpawnBearger()
@@ -271,7 +274,9 @@ function self:OnUpdate(dt)
 			--print("TimeToSpawn: ", _timetospawn, _targetplayer)
 	        if _targetplayer ~= nil then
 	        	local hassler = ReleaseHassler(_targetplayer)
-	            _activehasslers[hassler] = true
+	        	if hassler then 
+	            	_activehasslers[hassler] = true
+	            end
 	        end
 		else
 			if not _warning and _timetospawn < _warnduration then
@@ -399,7 +404,8 @@ function self:GetDebugString()
 end
 
 function self:SummonMonster(player)
-	ReleaseHassler(player)
+	_timetospawn = 10
+	self.inst:StartUpdatingComponent(self)
 end
 
 --------------------------------------------------------------------------

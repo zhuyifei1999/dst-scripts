@@ -29,6 +29,7 @@ local FireDetector = Class(function(self, inst)
     self.emergencyResponsePeriod = TUNING.EMERGENCY_RESPONSE_TIME
     self.emergencyShutdownPeriod = TUNING.EMERGENCY_SHUT_OFF_TIME
     self.emergencyLevelMax = TUNING.EMERGENCY_BURNT_NUMBER
+    self.emergencyLevelFireThreshold = TUNING.EMERGENCY_BURNING_NUMBER
     self.emergencyLevel = 0
     self.emergency = false
     self.emergencyWatched = nil
@@ -259,6 +260,7 @@ end
 local function OnDetectEmergencyTargets(inst, self)
     local x, y, z = inst.Transform:GetWorldPosition()
     local ents = TheSim:FindEntities(x, y, z, self.range, nil, NOTAGS, EMERGENCYTAGS)
+    local firecount = 0
     for i, v in ipairs(ents) do
         if not v:IsValid() then
             --Just in case didn't clean up properly
@@ -267,18 +269,31 @@ local function OnDetectEmergencyTargets(inst, self)
                 inst:RemoveEventCallback("onremove", self.emergencyWatched[v].onremove, v)
                 self.emergencyWatched[v] = nil
             end
-        elseif self.emergencyWatched[v] == nil and v.components.burnable ~= nil then
-            self.emergencyWatched[v] =
-            {
-                onburnt = function()
-                    EmergencyResponse(inst, self, v)
-                end,
-                onremove = function()
-                    self.emergencyWatched[v] = nil
-                end,
-            }
-            inst:ListenForEvent("onburnt", self.emergencyWatched[v].onburnt, v)
-            inst:ListenForEvent("onremove", self.emergencyWatched[v].onremove, v)
+        elseif v.components.burnable ~= nil then
+            if self.emergencyWatched[v] == nil then
+                self.emergencyWatched[v] =
+                {
+                    onburnt = function()
+                        EmergencyResponse(inst, self, v)
+                    end,
+                    onremove = function()
+                        self.emergencyWatched[v] = nil
+                    end,
+                }
+                inst:ListenForEvent("onburnt", self.emergencyWatched[v].onburnt, v)
+                inst:ListenForEvent("onremove", self.emergencyWatched[v].onremove, v)
+            end
+            if v.components.burnable:IsBurning() then
+                firecount = firecount + 1
+            end
+        end
+    end
+    if firecount >= self.emergencyLevelFireThreshold and self.emergencyBurnt ~= nil then
+        if self.emergencyLevel < math.min(1, self.emergencyLevelMax) then
+            table.insert(self.emergencyBurnt, 0)
+            self:ResetEmergencyCooldown()
+        elseif self.emergencyLevel == 1 then
+            self:ResetEmergencyCooldown()
         end
     end
     EmergencyResponse(inst, self)

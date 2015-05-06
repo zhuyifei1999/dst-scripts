@@ -30,6 +30,8 @@ local function destroy(inst)
     local time_to_erode = 1
     local tick_time = TheSim:GetTickTime()
 
+    inst.persists = false
+
     if inst.DynamicShadow then
         inst.DynamicShadow:Enable(false)
     end
@@ -70,6 +72,16 @@ local function getstatus(inst)
     return (sec == 0 and "OUT")
         or (sec <= #status_table and status_table[sec])
         or nil
+end
+
+local function OnHaunt(inst)
+    if inst.components.fueled ~= nil and
+        inst.components.fueled.accepting and
+        math.random() <= TUNING.HAUNT_CHANCE_OCCASIONAL then
+        inst.components.fueled:DoDelta(TUNING.TINY_FUEL)
+        inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
+        return true
+    end
 end
 
 local function fn()
@@ -128,24 +140,24 @@ local function fn()
     inst.components.fueled:SetSectionCallback(
         function(section)
             if section == 0 then
-                inst.components.burnable:Extinguish() 
-                inst.AnimState:PlayAnimation("dead") 
-                RemovePhysicsColliders(inst)             
+                inst.components.burnable:Extinguish()
+                inst.AnimState:PlayAnimation("dead")
+                RemovePhysicsColliders(inst)
 
-				local ash = SpawnPrefab("ash")
-				ash.Transform:SetPosition(inst.Transform:GetWorldPosition())
+                local ash = SpawnPrefab("ash")
+                ash.Transform:SetPosition(inst.Transform:GetWorldPosition())
 
                 inst.components.fueled.accepting = false
                 inst:RemoveComponent("cooker")
                 inst:RemoveComponent("propagator")
                 destroy(inst)
             else
-                inst.AnimState:PlayAnimation("idle") 
-                inst.components.burnable:SetFXLevel(section, inst.components.fueled:GetSectionPercent() )
+                inst.AnimState:PlayAnimation("idle")
+                inst.components.burnable:SetFXLevel(section, inst.components.fueled:GetSectionPercent())
                 inst.components.fueled.rate = 1
-                
-                local ranges = {1,2,3,4}
-                local output = {2,5,5,10}
+
+                local ranges = { 1, 2, 3, 4 }
+                local output = { 2, 5, 5, 10 }
                 inst.components.propagator.propagaterange = ranges[section]
                 inst.components.propagator.heatoutput = output[section]
             end
@@ -166,19 +178,10 @@ local function fn()
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetHauntValue(TUNING.HAUNT_SMALL)
     inst.components.hauntable.cooldown = TUNING.HAUNT_COOLDOWN_HUGE
-    inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
-        if math.random() <= TUNING.HAUNT_CHANCE_OCCASIONAL then
-            if inst.components.fueled then
-                inst.components.fueled:DoDelta(TUNING.TINY_FUEL)
-                inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
-                return true
-            end
-        end
-        return false
-    end)
+    inst.components.hauntable:SetOnHauntFn(OnHaunt)
 
     return inst
 end
 
 return Prefab("common/objects/campfire", fn, assets, prefabs),
-	MakePlacer("common/campfire_placer", "campfire", "campfire", "preview")
+    MakePlacer("common/campfire_placer", "campfire", "campfire", "preview")

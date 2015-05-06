@@ -1208,6 +1208,7 @@ function Tune(overrides)
 
 		-- Ice Flingomatic emergency mode
 		EMERGENCY_BURNT_NUMBER = 2,
+        EMERGENCY_BURNING_NUMBER = 5, -- number of fires to maintain warning level one automatically
 		EMERGENCY_WARNING_TIME = 3,   -- minimum length of warning period
 		EMERGENCY_RESPONSE_TIME = 15, -- BURNT_NUMBER structures must burn within this time period to trigger flingomatic emergency response
 		EMERGENCY_SHUT_OFF_TIME = 30, -- stay on for this length of time
