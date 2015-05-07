@@ -121,6 +121,9 @@ local function fn()
     inst:AddTag("character")
     inst:AddTag("animal")
 
+    --trader (from trader component) added to pristine state for optimization
+    inst:AddTag("trader")
+
     inst.AnimState:SetBank("rocky")
     inst.AnimState:SetBuild("rocky")
     inst.AnimState:PlayAnimation("idle_loop", true)
@@ -180,7 +183,8 @@ local function fn()
     inst.components.trader.onaccept = OnGetItemFromPlayer
     inst.components.trader.onrefuse = OnRefuseItem
     inst.components.trader:Enable()
-
+    inst.components.trader.deleteitemonaccept = false
+    
     MakeHauntablePanic(inst)
     AddHauntableCustomReaction(inst, function(inst, haunter)
         if math.random() <= TUNING.HAUNT_CHANCE_OCCASIONAL then

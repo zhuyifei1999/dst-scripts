@@ -21,6 +21,7 @@ local prefabs =
     "firesuppressor_glow",
 }
 
+--Called from stategraph
 local function LaunchProjectile(inst, targetpos)
     local x, y, z = inst.Transform:GetWorldPosition()
 
@@ -39,8 +40,16 @@ local function LaunchProjectile(inst, targetpos)
     projectile.components.complexprojectile:Launch(targetpos, inst, inst)
 end
 
+local function SpreadProtectionAtPoint(inst, firePos)
+    inst.components.wateryprotection:SpreadProtectionAtPoint(firePos:Get())
+end
+
 local function OnFindFire(inst, firePos)
-    inst:PushEvent("putoutfire", { firePos = firePos })
+    if inst:IsAsleep() then
+        inst:DoTaskInTime(1 + math.random(), SpreadProtectionAtPoint, firePos)
+    else
+        inst:PushEvent("putoutfire", { firePos = firePos })
+    end
 end
 
 local WarningColours =
@@ -236,6 +245,7 @@ local function fn()
     inst.AnimState:OverrideSymbol("swap_meter", "firefighter_meter", 10)
 
     inst:AddTag("hasemergencymode")
+    inst:AddTag("structure")
 
     inst.Light:SetIntensity(.4)
     inst.Light:SetRadius(.8)

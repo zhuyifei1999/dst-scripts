@@ -28,10 +28,6 @@ local function ShouldAcceptItem(inst, item, giver)
         return false
     end
 
-    if inst.components.sleeper:IsAsleep() then
-        return false
-    end
-    
     if inst.components.eater:CanEat(item) then
         return true
     end
@@ -218,6 +214,9 @@ local function create_common(build, tag)
     if tag ~= nil then
         inst:AddTag(tag)
     end
+
+    --trader (from trader component) added to pristine state for optimization
+    inst:AddTag("trader")
 
     inst.AnimState:SetBank("spider")
     inst.AnimState:SetBuild(build)

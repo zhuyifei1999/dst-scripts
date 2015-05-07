@@ -97,6 +97,9 @@ local function fn()
     inst.AnimState:SetBuild("Pig_King")
     inst.AnimState:PlayAnimation("idle", true)
 
+    --trader (from trader component) added to pristine state for optimization
+    inst:AddTag("trader")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

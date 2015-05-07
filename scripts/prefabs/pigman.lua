@@ -43,10 +43,6 @@ local function CalcSanityAura(inst, observer)
 end
 
 local function ShouldAcceptItem(inst, item)
-    if inst.components.sleeper:IsAsleep() then
-        return false
-    end
-
     if item.components.equippable and item.components.equippable.equipslot == EQUIPSLOTS.HEAD then
         return true
     end
@@ -461,6 +457,9 @@ local function common()
     inst.AnimState:PlayAnimation("idle_loop")
     inst.AnimState:Hide("hat")
 
+    --trader (from trader component) added to pristine state for optimization
+    inst:AddTag("trader")
+
     --Sneak these into pristine state for optimization
     inst:AddTag("_named")
 
@@ -538,7 +537,8 @@ local function common()
     inst.components.trader:SetAcceptTest(ShouldAcceptItem)
     inst.components.trader.onaccept = OnGetItemFromPlayer
     inst.components.trader.onrefuse = OnRefuseItem
-
+    inst.components.trader.deleteitemonaccept = false
+    
     ------------------------------------------
 
     inst:AddComponent("sanityaura")

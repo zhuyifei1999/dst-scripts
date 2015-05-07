@@ -140,6 +140,8 @@ function CreateSphereEmitter( radius )
 	end
 end
 
+-- NOTE from gjans: These params don't make much sense, because UnitRand is [-1,1]. So the min/max
+-- behave kinda more like center/halfwidth, but not really. I'm not changing it now though.
 function CreateBoxEmitter( x_min, y_min, z_min, x_max, y_max, z_max )
 	local dx = x_max - x_min
 	local dy = y_max - y_min

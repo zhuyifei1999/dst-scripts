@@ -207,6 +207,7 @@ end
 EntityScript = Class(function(self, entity)
     self.entity = entity
     self.components = {}
+    self.lower_components_shadow = {}
     self.GUID = entity:GetGUID()
     self.spawntime = GetTime()
     self.persists = true
@@ -498,9 +499,11 @@ require("componentactions")
 --         EntityScript:IsActionValid(action, right)
 
 function EntityScript:AddComponent(name)
-    if self.components[name] then
-        print("component "..name.." already exists!")
+	local lower_name = string.lower(name)
+    if self.lower_components_shadow[lower_name] ~= nil then
+		print("component "..name.." already exists!")
     end
+    
     local cmp = LoadComponent(name)
     assert(cmp, "component ".. name .. " does not exist!")
 
@@ -508,6 +511,8 @@ function EntityScript:AddComponent(name)
 
     local loadedcmp = cmp(self)
     self.components[name] = loadedcmp
+    self.lower_components_shadow[lower_name] = true
+    
     local postinitfns = ModManager:GetPostInitFns("ComponentPostInit", name)
 
     for k,fn in ipairs(postinitfns) do
@@ -523,6 +528,8 @@ function EntityScript:RemoveComponent(name)
 		self:StopUpdatingComponent(cmp)
 		self:StopWallUpdatingComponent(cmp)
         self.components[name] = nil
+		self.lower_components_shadow[string.lower(name)] = nil
+		
         if cmp.OnRemoveFromEntity then
             cmp:OnRemoveFromEntity()
         end

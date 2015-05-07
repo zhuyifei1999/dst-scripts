@@ -17,8 +17,7 @@ function WateryProtection:AddIgnoreTag(tag)
     end
 end
 
-function WateryProtection:SpreadProtection(inst, dist, noextinguish)
-    local x, y, z = inst.Transform:GetWorldPosition()
+function WateryProtection:SpreadProtectionAtPoint(x, y, z, dist, noextinguish)
     local ents = TheSim:FindEntities(x, y, z, dist or 4, nil, self.ignoretags)
     for i, v in ipairs(ents) do
         if v.components.burnable ~= nil then
@@ -40,9 +39,15 @@ function WateryProtection:SpreadProtection(inst, dist, noextinguish)
             v.components.temperature:SetTemperature(v.components.temperature:GetCurrent() - self.temperaturereduction)
         end
         if self.addwetness > 0 and v.components.moisture ~= nil then
-            v.components.moisture:DoDelta(self.addwetness)
+            local waterproofness = v.components.inventory and math.min(v.components.inventory:GetWaterproofness(),1) or 0
+            v.components.moisture:DoDelta(self.addwetness * (1 - waterproofness))
         end
     end
+end
+
+function WateryProtection:SpreadProtection(inst, dist, noextinguish)
+    local x, y, z = inst.Transform:GetWorldPosition()
+    self:SpreadProtectionAtPoint(x, y, z, dist, noextinguish)
 end
 
 return WateryProtection

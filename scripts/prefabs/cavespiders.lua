@@ -33,10 +33,6 @@ local function ShouldAcceptItem(inst, item, giver)
     if not giver:HasTag("spiderwhisperer") then
         return false
     end
-
-    if inst.components.sleeper:IsAsleep() then
-        return false
-    end
     
     if inst.components.eater:CanEat(item) then
         return true
@@ -348,6 +344,7 @@ local function create_spitter()
     inst:AddTag("spider_spitter")
 
     inst:AddComponent("inventory")
+    inst.components.trader.deleteitemonaccept = false
 
     inst.components.health:SetMaxHealth(TUNING.SPIDER_SPITTER_HEALTH)
 

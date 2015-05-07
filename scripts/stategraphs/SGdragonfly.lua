@@ -25,7 +25,7 @@ local function onattackfn(inst, data)
 end
 
 local function onsleepfn(inst)
-    if inst.components.health and inst.components.health:GetPercent() > 0 and not inst.sg:HasStateTag("flyaway") then
+    if inst.components.health and inst.components.health:GetPercent() > 0 and not inst.sg:HasStateTag("flying") then
         if inst.sg:HasStateTag("sleeping") then
             inst.sg:GoToState("sleeping")
         else
@@ -276,7 +276,7 @@ local states=
 
 	State{
 		name = "flyaway",
-		tags = {"flying", "busy", "flyaway", "noattack"},
+		tags = {"flying", "busy"},
 
 		onenter = function(inst)
 			inst.Physics:Stop()

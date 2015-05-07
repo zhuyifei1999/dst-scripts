@@ -51,13 +51,9 @@ local function onburnt(inst)
 end
 
 local function GetStatus(inst)
-    if inst.components.crop:IsReadyForHarvest() then
-        return "READY"
-    elseif inst:HasTag("withered") then 
-        return "WITHERED"
-    else
-        return "GROWING"
-    end
+    return (inst:HasTag("withered") and "WITHERED")
+        or (inst.components.crop:IsReadyForHarvest() and "READY")
+        or "GROWING"
 end
 
 local function fn()

@@ -14,10 +14,13 @@ assert(TheWorld.ismastersim, "Wildfires should not exist on client")
 self.inst = inst
 
 --Private
+local _world = TheWorld
+local _ismastersim = _world.ismastersim
+
 local _activeplayers = {}
 local _scheduledtasks = {}
-local _worldstate = TheWorld.state
-local _map = TheWorld.Map
+local _worldstate = _world.state
+local _map = _world.Map
 local _tempthreshold = TUNING.WILDFIRE_THRESHOLD
 local _retrytime = TUNING.WILDFIRE_RETRY_TIME
 local _chance = TUNING.WILDFIRE_CHANCE
@@ -49,7 +52,7 @@ local function CheckValidWildfireStarter(obj)
 end
 
 local function LightFireForPlayer(player, rescheduleFn)
-    if _worldstate.temperature > _tempthreshold then 
+    if _worldstate.temperature > _tempthreshold and _worldstate.isday and not _worldstate.israining then
         local rnd = math.random()
         if rnd <= _chance then
             local x, y, z = player.Transform:GetWorldPosition()
@@ -76,7 +79,10 @@ local function LightFireForPlayer(player, rescheduleFn)
         end
     end
 
-    _scheduledtasks[player] = nil
+    if _scheduledtasks[player] ~= nil then
+        _scheduledtasks[player]:Cancel()
+        _scheduledtasks[player] = nil
+    end
     rescheduleFn(player)
 end
 
@@ -146,6 +152,10 @@ local function OnPlayerLeft(src, player)
     end
 end
 
+local function OnSetWildfireChance(src, chance)
+    _chance = chance
+end
+
 local function ForceWildfireForPlayer(src, player)
     LightFireForPlayer(player, ScheduleSpawn)
 end
@@ -163,13 +173,33 @@ end
 inst:WatchWorldState("temperature", OnStateChange)
 inst:WatchWorldState("israining", OnStateChange)
 inst:WatchWorldState("issummer", OnStateChange)
---inst:ListenForEvent("seasontick", ToggleUpdate, TheWorld)
-inst:ListenForEvent("ms_playerjoined", OnPlayerJoined, TheWorld)
-inst:ListenForEvent("ms_playerleft", OnPlayerLeft, TheWorld)
+--inst:ListenForEvent("seasontick", ToggleUpdate, _world)
+inst:ListenForEvent("ms_playerjoined", OnPlayerJoined, _world)
+inst:ListenForEvent("ms_playerleft", OnPlayerLeft, _world)
 
-inst:ListenForEvent("ms_lightwildfireforplayer", ForceWildfireForPlayer, TheWorld)
+inst:ListenForEvent("ms_setwildfirechance", OnSetWildfireChance, _world)
+inst:ListenForEvent("ms_lightwildfireforplayer", ForceWildfireForPlayer, _world)
 
 ToggleUpdate(true)
+
+--------------------------------------------------------------------------
+--[[ Save/Load ]]
+--------------------------------------------------------------------------
+
+if _ismastersim then function self:OnSave()
+    return
+    {
+        tempthreshold = _tempthreshold,
+        retrytime = _retrytime,
+        chance = _chance,
+    }
+end end
+
+if _ismastersim then function self:OnLoad(data)
+    _tempthreshold = data.tempthreshold or _tempthreshold
+    _retrytime = data.retrytime or _retrytime
+    _chance = data.chance or _chance
+end end
 
 --------------------------------------------------------------------------
 --[[ Debug ]]

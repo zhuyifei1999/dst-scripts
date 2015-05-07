@@ -245,6 +245,9 @@ local function fn()
 
     inst.AnimState:SetClientsideBuildOverride("insane", "manrabbit_build", "manrabbit_beard_build")
 
+    --trader (from trader component) added to pristine state for optimization
+    inst:AddTag("trader")
+
     --Sneak these into pristine state for optimization
     inst:AddTag("_named")
 
@@ -311,7 +314,8 @@ local function fn()
     inst.components.trader:SetAcceptTest(ShouldAcceptItem)
     inst.components.trader.onaccept = OnGetItemFromPlayer
     inst.components.trader.onrefuse = OnRefuseItem
-    
+    inst.components.trader.deleteitemonaccept = false
+        
     ------------------------------------------
 
     inst:AddComponent("sanityaura")

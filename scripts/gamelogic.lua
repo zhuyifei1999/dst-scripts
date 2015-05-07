@@ -384,13 +384,14 @@ function PopulateWorld(savedata, profile)
 			for area, overrides in pairs(world.topology.overrides) do	
 				for i,override in ipairs(overrides) do	
 					if retune[override[1]] ~= nil then
+                        print("OVERRIDE: setting",override[1],"to",override[2])
 						retune[override[1]](override[2])
 					end
 				end
 			end
 
             -- Clear out one time overrides
-			local onetime = {"season_start", "autumn", "winter", "spring", "summer"}
+			local onetime = {"season_start", "autumn", "winter", "spring", "summer", "frograin", "wildfires"}
             if world.topology.overrides.misc then
                 for i=#world.topology.overrides.misc,1,-1 do
                     if table.contains(onetime, world.topology.overrides.misc[i][1]) then

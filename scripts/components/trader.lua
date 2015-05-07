@@ -1,8 +1,24 @@
 local function onenabled(self, enabled)
     if enabled then
         self.inst:AddTag("trader")
+        if self.acceptnontradable then
+            self.inst:AddTag("alltrader")
+        end
     else
         self.inst:RemoveTag("trader")
+        if self.acceptnontradable then
+            self.inst:RemoveTag("alltrader")
+        end
+    end
+end
+
+local function onacceptnontradable(self, acceptnontradable)
+    if self.enabled then
+        if acceptnontradable then
+            self.inst:AddTag("alltrader")
+        else
+            self.inst:RemoveTag("alltrader")
+        end
     end
 end
 
@@ -10,14 +26,21 @@ local Trader = Class(function(self, inst)
     self.inst = inst
     self.enabled = true
     self.deleteitemonaccept = true
+    self.acceptnontradable = false
+
+    --V2C: Recommended to explicitly add tags to prefab pristine state
+    --On construciton, "trader" tag is added by default
+    --If acceptnontradable will be true, then "alltrader" tag should also be added
 end,
 nil,
 {
     enabled = onenabled,
+    acceptnontradable = onacceptnontradable,
 })
 
 function Trader:OnRemoveFromEntity()
     self.inst:RemoveTag("trader")
+    self.inst:RemoveTag("alltrader")
 end
 
 function Trader:IsTryingToTradeWithMe(inst)
@@ -29,28 +52,47 @@ function Trader:IsTryingToTradeWithMe(inst)
             act.action == ACTIONS.GIVE)
 end
 
-function Trader:Enable( fn )
+function Trader:Enable()
     self.enabled = true
 end
 
-function Trader:Disable( fn )
+function Trader:Disable()
     self.enabled = false
 end
 
-function Trader:SetAcceptTest( fn )
+function Trader:SetAcceptTest(fn)
     self.test = fn
 end
 
-function Trader:CanAccept( item, giver )
+-- Able to accept refers to physical ability, i.e. am I in combat, or sleeping, or dead
+function Trader:AbleToAccept(item, giver)
+    if not self.enabled or item == nil then
+        return false, nil
+    end
+    if self.inst.components.health and self.inst.components.health:IsDead() then
+        return false, "DEAD"
+    end
+    if self.inst.components.sleeper and self.inst.components.sleeper:IsAsleep() then
+        return false, "SLEEPING"
+    end
+    if self.inst:HasTag("busy") then
+        return false, "BUSY"
+    end
+    return true
+end
+
+-- Wants to accept refers to desire, i.e. do I think that object is disgusting. This one triggers
+-- the "refuse" callback.
+function Trader:WantsToAccept(item, giver)
     return self.enabled and (not self.test or self.test(self.inst, item, giver))
 end
 
-function Trader:AcceptGift( giver, item, count )
-    if not self.enabled then
+function Trader:AcceptGift(giver, item, count)
+    if self:AbleToAccept(item, giver) ~= true then
         return false
     end
 
-    if self:CanAccept(item, giver) then
+    if self:WantsToAccept(item, giver) then
         count = count or 1
 
         if item.components.stackable ~= nil and item.components.stackable.stacksize > count then
@@ -78,12 +120,12 @@ function Trader:AcceptGift( giver, item, count )
 
     if self.onrefuse ~= nil then
         self.onrefuse(self.inst, giver, item)
+        return false
     end
 end
 
 function Trader:GetDebugString()
-    local str = string.format("%s", (self.enabled and "true") or "false")
-    return str
+    return self.enabled and "true" or "false"
 end
 
 return Trader

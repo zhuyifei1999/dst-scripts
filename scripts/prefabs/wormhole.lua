@@ -55,7 +55,7 @@ local function OnActivate(inst, doer)
         doer:DoTaskInTime(4, ondoerarrive)
         doer:DoTaskInTime(5, doer.PushEvent, "wormholespit") --for wisecracker
         --Sounds are triggered in player's stategraph
-    elseif doer.SoundEmitter ~= nil then
+    elseif inst.SoundEmitter ~= nil then
         inst.SoundEmitter:PlaySound("dontstarve/common/teleportworm/swallow")
     end
 end
@@ -73,9 +73,59 @@ local function onnear(inst)
 end
 
 local function onfar(inst)
-    if inst.teleporting == nil then
+    if inst.teleporting == nil and inst.sg:HasStateTag("open") then
         inst.sg:GoToState("closing")
     end
+end
+
+local function onitemarrive(other, item)
+    if not item:IsValid() then
+        return
+    end
+
+    other:RemoveChild(item)
+    item:ReturnToScene()
+
+    if item.Transform ~= nil then
+        local x, y, z = item.Transform:GetWorldPosition()
+        local angle = math.random() * 2 * PI
+        if item.Physics ~= nil then
+            item.Physics:Stop()
+            if item:IsAsleep() then
+                local radius = 2 + math.random() * .5
+                item.Physics:Teleport(
+                    x + math.cos(angle) * radius,
+                    0,
+                    z - math.sin(angle) * radius)
+            else
+                local bounce = item.components.inventoryitem ~= nil and not item.components.inventoryitem.nobounce
+                local speed = (bounce and 3 or 4) + math.random() * .5
+                item.Physics:Teleport(x, 0, z)
+                item.Physics:SetVel(
+                    speed * math.cos(angle),
+                    bounce and speed * 3 or 0,
+                    speed * math.sin(angle))
+            end
+        else
+            local radius = 2 + math.random() * .5
+            item.Transform:SetPosition(
+                x + math.cos(angle) * radius,
+                0,
+                z - math.sin(angle) * radius)
+        end
+    end
+end
+
+local function onaccept(inst, giver, item)
+    inst.components.inventory:DropItem(item)
+    inst.components.teleporter:Activate(item)
+
+    local other = inst.components.teleporter.targetTeleporter or inst
+    item:RemoveFromScene()
+    other:AddChild(item)
+    other.teleporting = (other.teleporting or 0) + 1
+    other:DoTaskInTime(.5, onitemarrive, item)
+    other:DoTaskInTime(1.5, ondoneteleporting)
 end
 
 local function fn()
@@ -94,6 +144,10 @@ local function fn()
     inst.AnimState:PlayAnimation("idle_loop", true)
     inst.AnimState:SetLayer(LAYER_BACKGROUND)
     inst.AnimState:SetSortOrder(3)
+
+    --trader, alltrader (from trader component) added to pristine state for optimization
+    inst:AddTag("trader")
+    inst:AddTag("alltrader")
 
     inst.entity:SetPristine()
 
@@ -122,13 +176,9 @@ local function fn()
     inst:AddComponent("inventory")
 
     inst:AddComponent("trader")
-    inst.components.trader.onaccept = function(reciever, giver, item)
-        -- pass this on to our better half
-        reciever.components.inventory:DropItem(item)
-        inst.components.teleporter:Activate(item)
-    end
-
-    --print("Wormhole Spawned!")
+    inst.components.trader.acceptnontradable = true
+    inst.components.trader.onaccept = onaccept
+    inst.components.trader.deleteitemonaccept = false
 
     return inst
 end

@@ -1012,7 +1012,7 @@ function ModsScreen:LoadModInfoPrefabs(prefabtable)
 		if info.icon_atlas and info.icon then
 			local atlaspath = "../mods/"..modname.."/"..info.icon_atlas
 			local iconpath = string.gsub(atlaspath, "/[^/]*$", "") .. "/"..info.icon
-			if softresolvefilepath(atlaspath) and softresolvefilepath(iconpath) then
+			if info.icon_atlas ~= "" and softresolvefilepath(atlaspath) and info.icon ~= "" and softresolvefilepath(iconpath) then
 				local modinfoassets = {
 					Asset("ATLAS", atlaspath),
 					Asset("IMAGE", iconpath),

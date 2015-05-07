@@ -173,19 +173,20 @@ end
 
 function InventoryItem:OnDropped(randomdir)
     --print("InventoryItem:OnDropped", self.inst, randomdir)
-    
+
     if not self.inst:IsValid() then
         return
     end
-    
+
     --print("OWNER", self.owner, self.owner and Point(self.owner.Transform:GetWorldPosition()))
 
-    local x,y,z = self.inst.Transform:GetWorldPosition()
-    --print("pos", x,y,z)
-
-    if self.owner then
+    local x, y, z
+    if self.owner ~= nil then
         -- if we're owned, our own coords are junk at this point
-        x,y,z = self.owner.Transform:GetWorldPosition()
+        x, y, z = self.owner.Transform:GetWorldPosition()
+    else
+        x, y, z = self.inst.Transform:GetWorldPosition()
+        --print("pos", x,y,z)
     end
 
     --print("REMOVED", self.inst)
@@ -193,38 +194,39 @@ function InventoryItem:OnDropped(randomdir)
 
     -- now in world space, if we weren't already
     --print("setpos", x,y,z)
-    self.inst.Transform:SetPosition(x,y,z)
+    self.inst.Transform:SetPosition(x, y, z)
 
-    if self.inst.Physics then
+    if self.inst.Physics ~= nil then
         if not self.nobounce then
             y = y + 1
             --print("setpos", x,y,z)
-            self.inst.Physics:Teleport(x,y,z)
+            self.inst.Physics:Teleport(x, y, z)
         end
 
-        local vel = Vector3(0, 5, 0)
+        -- convert x, y, z to velocity
         if randomdir then
             local speed = 2 + math.random()
-            local angle = math.random()*2*PI
-            vel.x = speed*math.cos(angle)
-            vel.y = speed*3
-            vel.z = speed*math.sin(angle)
+            local angle = math.random() * 2 * PI
+            x = speed * math.cos(angle)
+            y = self.nobounce and 0 or speed * 3
+            z = -speed * math.sin(angle)
+        else
+            x = 0
+            y = self.nobounce and 0 or 5
+            z = 0
         end
-        if self.nobounce then
-            vel.y = 0
-        end
-        --print("vel", vel.x, vel.y, vel.z)
-        self.inst.Physics:SetVel(vel.x, vel.y, vel.z)
+        --print("vel", x, y, z)
+        self.inst.Physics:SetVel(x, y, z)
     end
 
-    if self.ondropfn then
+    if self.ondropfn ~= nil then
         self.ondropfn(self.inst)
     end
     self.inst:PushEvent("ondropped")
-    
-    if self.inst.components.propagator then
+
+    if self.inst.components.propagator ~= nil then
         self.inst.components.propagator:Delay(5)
-    end    
+    end
 end
 
 -- If this function retrns true then it has destroyed itself and you shouldnt give it to the player

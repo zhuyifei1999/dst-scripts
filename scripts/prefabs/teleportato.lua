@@ -239,6 +239,9 @@ local function fn()
 
     inst:AddTag("teleportato")
 
+    --trader (from trader component) added to pristine state for optimization
+    inst:AddTag("trader")
+
     inst.MiniMapEntity:SetIcon("teleportato.png")
     inst.MiniMapEntity:SetPriority(1)
 
