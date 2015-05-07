@@ -29,7 +29,8 @@ SetSharedLootTable( 'lavae_frozen',
 })
 
 local function OnCollide(inst, other)
-    if other ~= nil and other:IsValid() and other.components.burnable ~= nil then
+    if other ~= nil and other:IsValid() and other.components.burnable ~= nil 
+    and not other.components.fueled then
         other.components.burnable:Ignite(true, inst)
     end
 end

@@ -329,7 +329,6 @@ function ChildSpawner:DoTakeOwnership(child)
     child.components.homeseeker:SetHome(self.inst)
 	self.inst:ListenForEvent( "ontrapped", function() self:OnChildKilled( child ) end, child )
     self.inst:ListenForEvent( "death", function() self:OnChildKilled( child ) end, child )
-	self.inst:ListenForEvent( "onremove", function() self:OnChildKilled( child ) end, child )
 	self.inst:ListenForEvent( "pickedup", function() self:OnChildKilled( child ) end, child )
 end
 
@@ -461,6 +460,7 @@ function ChildSpawner:GoHome( child )
         if self.ongohome then
             self.ongohome(self.inst, child)
         end
+        RemoveChildOutside(self, child)
         child:Remove()
         self:AddChildrenInside(1)
         return true
@@ -471,6 +471,7 @@ function ChildSpawner:GoHome( child )
         if self.ongohome then
             self.ongohome(self.inst, child)
         end
+        RemoveEmergencyChildOutside(self, child)
         child:Remove()
         self:AddEmergencyChildrenInside(1)
         return true

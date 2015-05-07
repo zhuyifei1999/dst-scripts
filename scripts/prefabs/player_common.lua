@@ -105,9 +105,7 @@ local function GetMoistureRateScale(inst)
 end
 
 local function ShouldAcceptItem(inst, item)
-    if item == nil or inst:HasTag("busy") then
-        return false
-    elseif inst:HasTag("playerghost") then
+    if inst:HasTag("playerghost") then
         return item.prefab == "reviver"
     else
         return item.components.inventoryitem ~= nil
@@ -1319,6 +1317,9 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
             common_postinit(inst)
         end
 
+        --trader (from trader component) added to pristine state for optimization
+        inst:AddTag("trader")
+
         --Sneak these into pristine state for optimization
         inst:AddTag("_health")
         inst:AddTag("_hunger")
@@ -1435,6 +1436,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst:AddComponent("trader")
         inst.components.trader:SetAcceptTest(ShouldAcceptItem)
         inst.components.trader.onaccept = OnGetItem
+        inst.components.trader.deleteitemonaccept = false
 
         -------
 

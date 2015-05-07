@@ -248,7 +248,6 @@ local function PickRandomGift(inst, tier)
 end
 
 local function ShouldAcceptItem(inst, item)
-	if inst.components.health and inst.components.health:IsDead() then return false end
 	if item:HasTag("cattoy") or item:HasTag("catfood") or item:HasTag("cattoyairborne") then
 		return true
 	else
@@ -315,6 +314,9 @@ local function fn()
 	inst:AddTag("smallcreature")
 	inst:AddTag("animal")
 	inst:AddTag("catcoon")
+
+    --trader (from trader component) added to pristine state for optimization
+    inst:AddTag("trader")
 
     inst.entity:SetPristine()
 

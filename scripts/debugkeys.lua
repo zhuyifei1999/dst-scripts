@@ -117,7 +117,10 @@ AddGlobalDebugKey(KEY_F1, function()
  	if TheInput:IsKeyDown(KEY_CTRL) then
 		TheSim:TogglePerfGraph()
 		return true
+    else
+        TheWorld:PushEvent("ms_lightwildfireforplayer", ThePlayer)
 	end
+
 end)
 
 AddGlobalDebugKey(KEY_R, function()
@@ -352,27 +355,6 @@ end)
 AddGameDebugKey(KEY_F11, function()
    	--GetNightmareClock():NextPhase()
    	return true
-end)
-
-AddGameDebugKey(KEY_F1, function()
-
-    local armour = SpawnPrefab("armorruins")
-    local weapon = SpawnPrefab("ruins_bat")
-    local hat = SpawnPrefab("ruinshat")
-
-    local inv = DebugKeyPlayer().components.inventory
-	if inv ~= nil then
-		inv:GiveItem(armour)
-		inv:GiveItem(weapon)
-		inv:GiveItem(hat)
-
-		inv:Equip(armour)
-		inv:Equip(weapon)
-		inv:Equip(hat)
-    end
-
-    --local maxwell = c_spawn("shadowmaxwell")
-
 end)
 
 local potatoparts = { "teleportato_ring", "teleportato_box", "teleportato_crank", "teleportato_potato", "teleportato_base", "adventure_portal" }

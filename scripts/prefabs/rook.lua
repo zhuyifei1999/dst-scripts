@@ -29,125 +29,101 @@ SetSharedLootTable( 'rook_nightmare',
     {'thulecite_pieces', 0.5},
 })
 
-local SLEEP_DIST_FROMHOME = 1
+local SLEEP_DIST_FROMHOME_SQ = 1 * 1
 local SLEEP_DIST_FROMTHREAT = 20
-local MAX_CHASEAWAY_DIST = 40
+local MAX_CHASEAWAY_DIST_SQ = 40 * 40
 local MAX_TARGET_SHARES = 5
 local SHARE_TARGET_DIST = 40
 
 local function ShouldSleep(inst)
     local homePos = inst.components.knownlocations:GetLocation("home")
-    local myPos = Vector3(inst.Transform:GetWorldPosition() )
-    if not (homePos and distsq(homePos, myPos) <= SLEEP_DIST_FROMHOME*SLEEP_DIST_FROMHOME)
-       or (inst.components.combat and inst.components.combat.target)
-       or (inst.components.burnable and inst.components.burnable:IsBurning() )
-       or (inst.components.freezable and inst.components.freezable:IsFrozen() ) then
-        return false
-    end
-    local nearestEnt = GetClosestInstWithTag("character", inst, SLEEP_DIST_FROMTHREAT)
-    return nearestEnt == nil
+    return homePos ~= nil
+        and inst:GetDistanceSqToPoint(homePos:Get()) <= SLEEP_DIST_FROMHOME_SQ
+        and (inst.components.combat == nil or inst.components.combat.target == nil)
+        and (inst.components.burnable == nil or not inst.components.burnable:IsBurning())
+        and (inst.components.freezable == nil or not inst.components.freezable:IsFrozen())
+        and GetClosestInstWithTag("character", inst, SLEEP_DIST_FROMTHREAT) == nil
 end
 
 local function ShouldWake(inst)
     local homePos = inst.components.knownlocations:GetLocation("home")
-    local myPos = Vector3(inst.Transform:GetWorldPosition() )
-    if (homePos and distsq(homePos, myPos) > SLEEP_DIST_FROMHOME*SLEEP_DIST_FROMHOME)
-       or (inst.components.combat and inst.components.combat.target)
-       or (inst.components.burnable and inst.components.burnable:IsBurning() )
-       or (inst.components.freezable and inst.components.freezable:IsFrozen() ) then
-        return true
-    end
-    local nearestEnt = GetClosestInstWithTag("character", inst, SLEEP_DIST_FROMTHREAT)
-    return nearestEnt
+    return (homePos ~= nil and
+            inst:GetDistanceSqToPoint(homePos:Get()) > SLEEP_DIST_FROMHOME_SQ)
+        or (inst.components.combat ~= nil and inst.components.combat.target ~= nil)
+        or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning())
+        or (inst.components.freezable ~= nil and inst.components.freezable:IsFrozen())
+        or GetClosestInstWithTag("character", inst, SLEEP_DIST_FROMTHREAT) ~= nil
 end
 
 local function Retarget(inst)
     local homePos = inst.components.knownlocations:GetLocation("home")
-    local myPos = Vector3(inst.Transform:GetWorldPosition() )
-    if (homePos and distsq(homePos, myPos) > 40*40)  and not
-    (inst.components.follower and inst.components.follower.leader)then
+    if (homePos ~= nil and inst:GetDistanceSqToPoint(homePos:Get()) > MAX_CHASEAWAY_DIST_SQ)
+        and (inst.components.follower == nil or inst.components.follower.leader == nil) then
+        --no leader, and i'm far from home
         return
     end
-    
-    local newtarget = FindEntity(inst, TUNING.ROOK_TARGET_DIST, function(guy)
-            local myLeader = inst.components.follower and inst.components.follower.leader
-            local theirLeader = guy.components.follower and guy.components.follower.leader
-            local bothFollowingSamePlayer = myLeader and (myLeader == theirLeader) and myLeader:HasTag("player")
-            return not (inst.components.follower and inst.components.follower.leader == guy)
-                   and not (guy:HasTag("chess") and (guy.components.follower and not guy.components.follower.leader))
-                   and not bothFollowingSamePlayer
-                   and inst.components.combat:CanTarget(guy)
-    end,
-    nil,
-    nil,
-    {"character","monster"}
+    local myLeader = inst.components.follower ~= nil and inst.components.follower.leader or nil
+    return FindEntity(inst, TUNING.ROOK_TARGET_DIST,
+        function(guy)
+            if myLeader == guy then
+                return
+            end
+            local theirLeader = guy.components.follower ~= nil and guy.components.follower.leader or nil
+            return (myLeader == nil or myLeader ~= theirLeader) --check same leader
+                and (theirLeader ~= nil or not guy:HasTag("chess")) --can't hit other chess pieces unless they are following someone else
+                and inst.components.combat:CanTarget(guy)
+        end,
+        { "_combat", "_health" }, --see entityreplica.lua
+        { "INLIMBO" },
+        { "character", "monster" }
     )
-    return newtarget
 end
 
 local function KeepTarget(inst, target)
-
-    if (inst.components.follower and inst.components.follower.leader) then
+    if (inst.components.follower ~= nil and inst.components.follower.leader ~= nil) or
+        (inst.sg ~= nil and inst.sg:HasStateTag("running")) then
         return true
     end
-
-    if inst.sg and inst.sg:HasStateTag("running") then
-        return true
-    end
-
     local homePos = inst.components.knownlocations:GetLocation("home")
-    local myPos = Vector3(inst.Transform:GetWorldPosition() )
-    return (homePos and distsq(homePos, myPos) < 40*40)
+    return homePos ~= nil and inst:GetDistanceSqToPoint(homePos:Get()) <= MAX_CHASEAWAY_DIST_SQ
+end
+
+local function IsChess(dude)
+    return dude:HasTag("chess")
 end
 
 local function OnAttacked(inst, data)
-    local attacker = data and data.attacker
-    if attacker and attacker:HasTag("chess") then return end
-    inst.components.combat:SetTarget(attacker)
-    inst.components.combat:ShareTarget(attacker, SHARE_TARGET_DIST, function(dude) return dude:HasTag("chess") end, MAX_TARGET_SHARES)
+    if data ~= nil and data.attacker ~= nil and not data.attacker:HasTag("chess") then
+        inst.components.combat:SetTarget(data.attacker)
+        inst.components.combat:ShareTarget(data.attacker, SHARE_TARGET_DIST, IsChess, MAX_TARGET_SHARES)
+    end
 end
 
-local function ClearRecentlyCharged(inst, target)
-    inst.recentlycharged[target] = nil
-end
-
-local function DoChargeDamage(inst, target)
-    if not inst.recentlycharged then
-        inst.recentlycharged = {}
-    end
-
-    for k,v in pairs(inst.recentlycharged) do
-        if v == target then
-            --You've already done damage to this by charging it recently.
-            return
-        end
-    end
-    inst.recentlycharged[target] = target
-    inst:DoTaskInTime(3, ClearRecentlyCharged, target)
-    inst.components.combat:DoAttack(target, inst.weapon)
-    inst.SoundEmitter:PlaySound("dontstarve/creatures/rook/explo") 
+local function ClearRecentlyCharged(inst, other)
+    inst.recentlycharged[other] = nil
 end
 
 local function onothercollide(inst, other)
-    if other == nil then
+    if not other:IsValid() then
         return
     elseif other:HasTag("smashable") then
         --other.Physics:SetCollides(false)
         other.components.health:Kill()
     elseif other.components.workable ~= nil and other.components.workable.workleft > 0 then
-        SpawnPrefab("collapse_small").Transform:SetPosition(other:GetPosition():Get())
+        SpawnPrefab("collapse_small").Transform:SetPosition(other.Transform:GetWorldPosition())
         other.components.workable:Destroy(inst)
-    elseif other.components.health ~= nil and other.components.health:GetPercent() >= 0 then
-        DoChargeDamage(inst, other)
+    elseif not inst.recentlycharged[other] and other.components.health ~= nil and not other.components.health:IsDead() then
+        inst.recentlycharged[other] = true
+        inst:DoTaskInTime(3, ClearRecentlyCharged, other)
+        inst.components.combat:DoAttack(other, inst.weapon)
+        inst.SoundEmitter:PlaySound("dontstarve/creatures/rook/explo")
     end
 end
 
 local function oncollide(inst, other)
-    if other:HasTag("player") then
-        return
-    end
-    local v1 = Vector3(inst.Physics:GetVelocity())
-    if v1:LengthSq() < 42 then
+    if not (other ~= nil and other:IsValid() and inst:IsValid())
+        or other:HasTag("player")
+        or Vector3(inst.Physics:GetVelocity()):LengthSq() < 42 then
         return
     end
 
@@ -155,7 +131,7 @@ local function oncollide(inst, other)
         v:ShakeCamera(CAMERASHAKE.SIDE, .5, .05, .1, inst, 40)
     end
 
-    inst:DoTaskInTime(2*FRAMES, onothercollide, other)
+    inst:DoTaskInTime(2 * FRAMES, onothercollide, other)
 end
 
 local function CreateWeapon(inst)
@@ -174,7 +150,7 @@ local function CreateWeapon(inst)
 end
 
 local function RememberKnownLocation(inst)
-    inst.components.knownlocations:RememberLocation("home", Vector3(inst.Transform:GetWorldPosition()))
+    inst.components.knownlocations:RememberLocation("home", inst:GetPosition())
 end
 
 local function common_fn(build)
@@ -206,6 +182,7 @@ local function common_fn(build)
         return inst
     end
 
+    inst.recentlycharged = {}
     inst.Physics:SetCollisionCallback(oncollide)
 
     inst:AddComponent("lootdropper")

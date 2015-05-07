@@ -346,26 +346,40 @@ return
     end,
 
 	frograin = function(difficulty)
-		local tuning_vars = {
-			default =  {FROG_RAIN_CHANCE=.16, FROG_RAIN_LOCAL_MIN_EARLY = 7, FROG_RAIN_LOCAL_MAX_EARLY = 15, FROG_RAIN_LOCAL_MIN_LATE = 12, FROG_RAIN_LOCAL_MAX_LATE = 30},
-			never = {FROG_RAIN_CHANCE= -1, FROG_RAIN_LOCAL_MIN_EARLY = 0, FROG_RAIN_LOCAL_MAX_EARLY = 1, FROG_RAIN_LOCAL_MIN_LATE = 0, FROG_RAIN_LOCAL_MAX_LATE = 1},
-			rare =  {FROG_RAIN_CHANCE=.08, FROG_RAIN_LOCAL_MIN_EARLY = 3, FROG_RAIN_LOCAL_MAX_EARLY = 7, FROG_RAIN_LOCAL_MIN_LATE = 7, FROG_RAIN_LOCAL_MAX_LATE = 20},
-			often =  {FROG_RAIN_CHANCE=.33, FROG_RAIN_LOCAL_MIN_EARLY = 10, FROG_RAIN_LOCAL_MAX_EARLY = 23, FROG_RAIN_LOCAL_MIN_LATE = 15, FROG_RAIN_LOCAL_MAX_LATE = 40},
-			always =  {FROG_RAIN_CHANCE=.5, FROG_RAIN_LOCAL_MIN_EARLY = 10, FROG_RAIN_LOCAL_MAX_EARLY = 30, FROG_RAIN_LOCAL_MIN_LATE = 20, FROG_RAIN_LOCAL_MAX_LATE = 50},
-			force =  {FROG_RAIN_CHANCE=1, FROG_RAIN_LOCAL_MIN_EARLY = 10, FROG_RAIN_LOCAL_MAX_EARLY = 30, FROG_RAIN_LOCAL_MIN_LATE = 20, FROG_RAIN_LOCAL_MAX_LATE = 50},
-		}
-		OverrideTuningVariables(tuning_vars[difficulty])
+        if difficulty == "never" then
+            TheWorld:PushEvent("ms_setfrograinchance", -1)
+            TheWorld:PushEvent("ms_setfrograinlocalfrogs", {min=0,max=1})
+        elseif difficulty == "rare" then
+            TheWorld:PushEvent("ms_setfrograinchance", .08)
+            TheWorld:PushEvent("ms_setfrograinlocalfrogs", {min=3,max=20})
+        elseif difficulty == "default" then
+            TheWorld:PushEvent("ms_setfrograinchance", .16)
+            TheWorld:PushEvent("ms_setfrograinlocalfrogs", {min=12,max=35})
+        elseif difficulty == "often" then
+            TheWorld:PushEvent("ms_setfrograinchance", .33)
+            TheWorld:PushEvent("ms_setfrograinlocalfrogs", {min=23,max=40})
+        elseif difficulty == "always" then
+            TheWorld:PushEvent("ms_setfrograinchance", .50)
+            TheWorld:PushEvent("ms_setfrograinlocalfrogs", {min=30,max=50})
+        elseif difficulty == "force" then
+            -- This preset can only be used by custom levels, not from the front-end settings
+            TheWorld:PushEvent("ms_setfrograinchance", 1.0)
+            TheWorld:PushEvent("ms_setfrograinlocalfrogs", {min=30,max=50})
+        end
 	end,
 
 	wildfires = function(difficulty)
-		local tuning_vars = {
-			never = {WILDFIRE_CHANCE = -1},
-			rare =  {WILDFIRE_CHANCE = .1},
-			default =  {WILDFIRE_CHANCE = .2},
-			often =  {WILDFIRE_CHANCE = .4},
-			always =  {WILDFIRE_CHANCE = .75},
-		}
-		OverrideTuningVariables(tuning_vars[difficulty])
+        if difficulty == "never" then
+            TheWorld:PushEvent("ms_setwildfirechance", -1)
+        elseif difficulty == "rare" then
+            TheWorld:PushEvent("ms_setwildfirechance", .1)
+        elseif difficulty == "default" then
+            TheWorld:PushEvent("ms_setwildfirechance", .2)
+        elseif difficulty == "often" then
+            TheWorld:PushEvent("ms_setwildfirechance", .4)
+        elseif difficulty == "always" then
+            TheWorld:PushEvent("ms_setwildfirechance", .8)
+        end
 	end,
 
     creepyeyes = function(difficulty)

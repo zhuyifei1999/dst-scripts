@@ -23,6 +23,12 @@ local _frogcap = 0
 local _spawntime = TUNING.FROG_RAIN_DELAY
 local _updating = false
 
+local _chance = TUNING.FROG_RAIN_CHANCE
+local _localfrogs = {
+    min = TUNING.FROG_RAIN_LOCAL_MIN,
+    max = TUNING.FROG_RAIN_LOCAL_MAX,
+}
+
 --------------------------------------------------------------------------
 --[[ Private member functions ]]
 --------------------------------------------------------------------------
@@ -118,8 +124,8 @@ end
 --------------------------------------------------------------------------
 
 local function OnIsRaining(inst, israining)
-    if israining and (math.random() < TUNING.FROG_RAIN_CHANCE) then -- only add fromgs to some rains
-        _frogcap = math.random(TUNING.FROG_RAIN_LOCAL_MIN, TUNING.FROG_RAIN_LOCAL_MAX)
+    if israining and (math.random() < _chance) then -- only add fromgs to some rains
+        _frogcap = math.random(_localfrogs.min, _localfrogs.max)
     else
         _frogcap = 0
     end
@@ -148,6 +154,14 @@ local function OnPlayerLeft(src, player)
     end
 end
 
+local function OnSetChance(src, chance)
+    _chance = chance
+end
+
+local function OnSetLocalMax(src, maxtable)
+    _localfrogs = maxtable
+end
+
 local function OnTargetSleep(target)
     inst:DoTaskInTime(0, AutoRemoveTarget, target)
 end
@@ -164,8 +178,13 @@ end
 --Register events
 inst:WatchWorldState("israining", OnIsRaining)
 inst:WatchWorldState("precipitationrate", ToggleUpdate)
+
 inst:ListenForEvent("ms_playerjoined", OnPlayerJoined, TheWorld)
 inst:ListenForEvent("ms_playerleft", OnPlayerLeft, TheWorld)
+
+inst:ListenForEvent("ms_setfrograinchance", OnSetChance, TheWorld)
+inst:ListenForEvent("ms_setfrograinlocalfrogs", OnSetLocalMax, TheWorld)
+
 
 ToggleUpdate(true)
 
@@ -218,12 +237,16 @@ function self:OnSave()
     {
         frogcap = _frogcap,
         spawntime = _spawntime,
+        chance = _chance,
+        localfrogs = _localfrogs,
     }
 end
 
 function self:OnLoad(data)
-    _frogcap = data.frogcap or TUNING.FROG_RAIN_MAX
+    _frogcap = data.frogcap or 0
     _spawntime = data.spawntime or TUNING.FROG_RAIN_DELAY
+    _chance = data.chance or TUNING.FROG_RAIN_CHANCE
+    _localfrogs = data.localfrogs or {min=TUNING.FROG_RAIN_LOCAL_MIN, max=TUNING.FROG_RAIN_LOCAL_MAX}
 
     ToggleUpdate(true)
 end

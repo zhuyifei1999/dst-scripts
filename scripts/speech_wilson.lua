@@ -23,13 +23,25 @@ return {
             GENERIC = "I can't do that.",
             INUSE = "I should wait my turn.",
         },
+        GIVE =
+        {
+            DEAD = "Maybe I'll just hold on to this.",
+            SLEEPING = "Too unconcious to care.",
+            BUSY = "I'll try again in a second.",
+        },
         GIVETOPLAYER = 
         {
         	FULL = "Their pockets are too full!",
+            DEAD = "Maybe I'll just hold on to this.",
+            SLEEPING = "Too unconcious to care.",
+            BUSY = "I'll try again in a second.",
     	},
     	GIVEALLTOPLAYER = 
         {
         	FULL = "Their pockets are too full!",
+            DEAD = "Maybe I'll just hold on to this.",
+            SLEEPING = "Too unconcious to care.",
+            BUSY = "I'll try again in a second.",
     	},
 	},
 	ACTIONFAIL_GENERIC = "I can't do that.",

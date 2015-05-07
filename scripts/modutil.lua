@@ -394,9 +394,9 @@ local function InsertPostInitFunctions(env, isworldgen)
 		AddModRPCHandler(namespace, name, fn)
 	end
 
-	env.SendModRPCToServer = function(id_table)
+	env.SendModRPCToServer = function(id_table,...)
 		initprint("SendModRPCToServer", id_table.namespace, id_table.id)
-		SendModRPCToServer(id_table)
+		SendModRPCToServer(id_table,...)
 	end
 
 	env.MOD_RPC = MOD_RPC

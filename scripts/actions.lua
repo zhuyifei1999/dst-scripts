@@ -650,6 +650,10 @@ end
 
 ACTIONS.GIVE.fn = function(act)
     if act.target ~= nil and act.target.components.trader ~= nil then
+        local able, reason = act.target.components.trader:AbleToAccept(act.invobject, act.doer)
+        if not able then
+            return false, reason
+        end
         act.target.components.trader:AcceptGift(act.doer, act.invobject)
         return true
     end
@@ -662,6 +666,10 @@ ACTIONS.GIVETOPLAYER.fn = function(act)
         (act.target.components.inventory:IsOpenedBy(act.target) or act.target:HasTag("playerghost")) then
         if act.target.components.inventory:CanAcceptCount(act.invobject, 1) <= 0 then
             return false, "FULL"
+        end
+        local able, reason = act.target.components.trader:AbleToAccept(act.invobject, act.doer)
+        if not able then
+            return false, reason
         end
         act.target.components.trader:AcceptGift(act.doer, act.invobject, 1)
         return true
@@ -676,6 +684,10 @@ ACTIONS.GIVEALLTOPLAYER.fn = function(act)
         local count = act.target.components.inventory:CanAcceptCount(act.invobject)
         if count <= 0 then
             return false, "FULL"
+        end
+        local able, reason = act.target.components.trader:AbleToAccept(act.invobject, act.doer)
+        if not able then
+            return false, reason
         end
         act.target.components.trader:AcceptGift(act.doer, act.invobject, count)
         return true

@@ -54,7 +54,7 @@ local function fn(Sim)
 	emitter:SetScaleEnvelope( scale_envelope_name );
 	emitter:SetBlendMode( BLENDMODE.Premultiplied )
 	emitter:SetSortOrder( 3 )
-	emitter:SetLayer( LAYER_BACKGROUND )
+	--emitter:SetLayer( LAYER_BACKGROUND )
 	emitter:SetAcceleration( 0, 0.0001, 0 )
 	emitter:SetDragCoefficient( 0.0001 )
 	emitter:EnableDepthTest( false )
@@ -70,23 +70,30 @@ local function fn(Sim)
 
 	inst.num_particles_to_emit = inst.particles_per_tick
 
-	local bx, by, bz = 0, 0.3, 0
-	local emitter_shape = CreateBoxEmitter( bx, by, bz, bx + 40, by, bz + 40 )
+    local halfheight = 2
+	local emitter_shape = CreateBoxEmitter( 0, 0, 0, 40, halfheight, 40 )
 
 	local emit_fn = function()
 		if TheWorld.Map ~= nil then
 			local x, y, z = inst.Transform:GetWorldPosition()
 	        local px, py, pz = emitter_shape()		
+            py = py + halfheight -- otherwise the particles appear under the ground
 			x = x + px
 			z = z + pz
 
             -- don't spawn particles over water
 			if TheWorld.Map:GetTileAtPoint( x, y, z ) ~= GROUND.IMPASSABLE then
 				
-	            local vx = 0.03 * (math.random() - 0.5)
-	            local vy = 0
-	            local vz = 0.03 * (math.random() - 0.5)        		
-	            local lifetime = min_lifetime + ( max_lifetime - min_lifetime ) * UnitRand()
+                local vx = 0.03 * (math.random() - 0.5)
+                local vy = 0
+                local vz = 0.03 * (math.random() - 0.5)        		
+                if TheWorld.state.isday and TheWorld.state.temperature > TUNING.WILDFIRE_THRESHOLD then
+                    vx = vx * 0.1
+                    vy = 0.01
+                    vz = vz * 0.1
+                end
+
+                local lifetime = min_lifetime + ( max_lifetime - min_lifetime ) * UnitRand()
 
 	            emitter:AddParticle(
 		            lifetime,			-- lifetime
@@ -111,9 +118,14 @@ local function fn(Sim)
 		inst.interval = inst.interval + 1
 		if 10 < inst.interval then
 		    inst.interval = 0
-		    local sin_val = 0.006 * math.sin(inst.time/3)
-		    local cos_val = 0.006 * math.cos(inst.time/3)
-		    emitter:SetAcceleration( sin_val, 0.05 * sin_val, cos_val )
+            if TheWorld.state.isday and TheWorld.state.temperature > TUNING.WILDFIRE_THRESHOLD then
+                local sin_val = 0.01 * math.sin(inst.time*.8)
+                emitter:SetAcceleration( 0, sin_val, 0 )
+            else
+                local sin_val = 0.006 * math.sin(inst.time/3)
+                local cos_val = 0.006 * math.cos(inst.time/3)
+                emitter:SetAcceleration( sin_val, 0.05 * sin_val, cos_val )
+            end
 		end
 		
 	end

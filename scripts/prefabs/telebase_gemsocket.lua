@@ -1,13 +1,10 @@
-local assets = 
+local assets =
 {
     Asset("ANIM", "anim/staff_purple_base.zip"),
 }
 
 local function ItemTradeTest(inst, item)
-    if item.prefab == "purplegem" then
-        return true
-    end
-    return false
+    return item.prefab == "purplegem"
 end
 
 local function OnGemGiven(inst, giver, item)
@@ -19,7 +16,6 @@ local function OnGemGiven(inst, giver, item)
     inst.components.pickable:Pause()
     inst.components.pickable.caninteractwith = true
     inst.AnimState:PlayAnimation("idle_full_loop", true)
-
 end
 
 local function OnGemTaken(inst)
@@ -27,7 +23,6 @@ local function OnGemTaken(inst)
     inst.components.trader:Enable()
     inst.components.pickable.caninteractwith = false
     inst.AnimState:PlayAnimation("idle_empty")
-
 end
 
 local function ShatterGem(inst) 
@@ -53,11 +48,15 @@ local function OnLoad(inst, data)
 end
 
 local function getstatus(inst)
-    if inst.components.pickable.caninteractwith then
-        return "VALID"
-    else
-        return "GEMS"
+    return inst.components.pickable.caninteractwith and "VALID" or "GEMS"
+end
+
+local function onhaunt(inst)
+    if inst.components.trader ~= nil and not inst.components.trader.enabled and math.random() <= TUNING.HAUNT_CHANCE_RARE then
+        DestroyGem(inst)
+        return true
     end
+    return false
 end
 
 local function fn()
@@ -68,13 +67,18 @@ local function fn()
     inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
-    if not TheWorld.ismastersim then
-        return inst
-    end
-
     inst.AnimState:SetBank("staff_purple_base")
     inst.AnimState:SetBuild("staff_purple_base")
     inst.AnimState:PlayAnimation("idle_empty")
+
+    --trader (from trader component) added to pristine state for optimization
+    inst:AddTag("trader")
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
 
     inst:AddComponent("inspectable")
     inst.components.inspectable.getstatus = getstatus
@@ -91,17 +95,11 @@ local function fn()
 
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetHauntValue(TUNING.HAUNT_MEDIUM)
-    inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
-        if inst.components.trader and not inst.components.trader.enabled and math.random() <= TUNING.HAUNT_CHANCE_RARE then
-            DestroyGem(inst)
-            return true
-        end
-        return false
-    end)
+    inst.components.hauntable:SetOnHauntFn(onhaunt)
 
     inst.OnLoad = OnLoad
 
     return inst
-end  
+end
 
 return Prefab("forest/objects/telebase/gemsocket", fn, assets)

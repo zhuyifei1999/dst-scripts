@@ -18,7 +18,7 @@ local events=
             if not inst.sg:HasStateTag("idle") and not inst.sg:HasStateTag("moving") then return end
             
             if not inst.components.locomotor:WantsToMoveForward() then
-                if not inst.sg:HasStateTag("idle") then
+                if not inst.sg:HasStateTag("idle") and not inst.sg:HasStateTag("hopping") then
                     inst.sg:GoToState("idle")
                 end
             else

@@ -305,6 +305,8 @@ local COMPONENT_ACTIONS =
                     inst.replica.stackable:IsStack() and
                     ACTIONS.GIVEALLTOPLAYER or
                     ACTIONS.GIVETOPLAYER)
+            elseif target:HasTag("alltrader") then
+                table.insert(actions, ACTIONS.GIVE)
             end
         end,
 

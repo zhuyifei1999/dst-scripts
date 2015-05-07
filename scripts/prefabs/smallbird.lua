@@ -305,6 +305,9 @@ local function create_common(inst, physicscylinder)
     inst:AddTag("character")
     inst:AddTag("smallbird")
 
+    --trader (from trader component) added to pristine state for optimization
+    inst:AddTag("trader")
+
     inst.Transform:SetFourFaced()
 
     inst.entity:SetPristine()
