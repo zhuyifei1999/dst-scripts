@@ -886,22 +886,28 @@ local function OnEntitySleep(inst)
 end
 
 local function OnEntityWake(inst)
-    if not (inst._wasonfire or inst:HasTag("burnt") or inst:HasTag("fire") or inst:HasTag("stump")) then
-        if inst.components.burnable == nil then
-            MakeLargeBurnable(inst, TUNING.TREE_BURN_TIME)
-            inst.components.burnable:SetFXLevel(5)
-            inst.components.burnable:SetOnBurntFn(tree_burnt)
-            inst.components.burnable.extinguishimmediately = false
-            inst.components.burnable:SetOnIgniteFn(onignite)
-            inst.components.burnable:SetOnExtinguishFn(onextinguish)
-        end
+    if not (inst._wasonfire or inst:HasTag("burnt") or inst:HasTag("fire")) then
+        if inst:HasTag("stump") then
+            inst:RemoveComponent("burnable")
+            MakeSmallBurnable(inst)
+            inst:RemoveComponent("propagator")
+        else
+            if inst.components.burnable == nil then
+                MakeLargeBurnable(inst, TUNING.TREE_BURN_TIME)
+                inst.components.burnable:SetFXLevel(5)
+                inst.components.burnable:SetOnBurntFn(tree_burnt)
+                inst.components.burnable.extinguishimmediately = false
+                inst.components.burnable:SetOnIgniteFn(onignite)
+                inst.components.burnable:SetOnExtinguishFn(onextinguish)
+            end
 
-        if inst.components.propagator == nil then
-            MakeMediumPropagator(inst)
-        end
+            if inst.components.propagator == nil then
+                MakeMediumPropagator(inst)
+            end
 
-        if inst.components.deciduoustreeupdater == nil then
-            inst:AddComponent("deciduoustreeupdater")
+            if inst.components.deciduoustreeupdater == nil then
+                inst:AddComponent("deciduoustreeupdater")
+            end
         end
     end
 

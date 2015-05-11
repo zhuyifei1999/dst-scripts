@@ -306,6 +306,10 @@ function Tune(overrides)
 	    BUZZARD_WALK_SPEED = 4,
 	    BUZZARD_RUN_SPEED = 8,
 	    BUZZARD_HEALTH = 125 * 2, -- harder for multiplayer
+	    
+	    BUZZARD_REGEN_PERIOD = total_day_time*3*multiplayer_wildlife_respawn_modifier,
+	    BUZZARD_SPAWN_PERIOD = seg_time*1.5,
+	    BUZZARD_SPAWN_VARIANCE = seg_time*0.5,
 
 	    FREEZING_KILL_TIME = 120,
 	    STARVE_KILL_TIME = 120,
@@ -535,7 +539,7 @@ function Tune(overrides)
 		
 		HOUNDMOUND_HOUNDS_MIN = 2,
 		HOUNDMOUND_HOUNDS_MAX = 3,
-		HOUNDMOUND_REGEN_TIME = seg_time * 4,
+		HOUNDMOUND_REGEN_TIME = seg_time * 6,
 		HOUNDMOUND_RELEASE_TIME = seg_time,
 	    
 		MERMHOUSE_MERMS = 3,

@@ -3,9 +3,54 @@ local assets =
     Asset("ANIM", "anim/meteor_shadow.zip"),
 }
 
+local function AlphaToFade(alpha)
+    return math.floor(alpha * 63 + .5)
+end
+
+local function FadeToAlpha(fade)
+    return fade / 63
+end
+
+local function CalculatePeriod(time, starttint, endtint)
+    return time / math.max(1, AlphaToFade(endtint) - AlphaToFade(starttint))
+end
+
+local DEFAULT_START = .33
+local DEFAULT_END = 1
+local DEFAULT_DURATION = 1
+local DEFAULT_PERIOD = CalculatePeriod(DEFAULT_DURATION, DEFAULT_START, DEFAULT_END)
+
+local function PushAlpha(inst)
+    local alpha = FadeToAlpha(inst._fade:value())
+    inst.AnimState:OverrideMultColour(alpha, alpha, alpha, alpha)
+end
+
+local function UpdateFade(inst)
+    if inst._fade:value() < inst._fadeend:value() then
+        inst._fade:set_local(inst._fade:value() + 1)
+        PushAlpha(inst)
+    end
+    if inst._fade:value() >= inst._fadeend:value() and inst._task ~= nil then
+        inst._task:Cancel()
+        inst._task = nil
+    end
+end
+
+local function OnFadeDirty(inst)
+    PushAlpha(inst)
+    if inst._task ~= nil then
+        inst._task:Cancel()
+    end
+    inst._task = inst:DoPeriodicTask(inst._period:value(), UpdateFade)
+end
+
 local function startshadow(inst, time, starttint, endtint)
-    inst.components.colourtweener:StartTween({starttint,starttint,starttint,starttint}, 0)
-    inst.components.colourtweener:StartTween({endtint,endtint,endtint,endtint}, time)
+    if time ~= DEFAULT_DURATION or starttint ~= DEFAULT_START or endtint ~= DEFAULT_END then
+        inst._fade:set(AlphaToFade(starttint))
+        inst._fadeend:set(AlphaToFade(endtint))
+        inst._period:set(CalculatePeriod(time, starttint, endtint))
+        OnFadeDirty(inst)
+    end
 end
 
 local function fn()
@@ -22,16 +67,26 @@ local function fn()
     inst.AnimState:SetFinalOffset(-1)
 
     inst:AddTag("FX")
+    inst:AddTag("NOCLICK")
+
+    inst._fade = net_smallbyte(inst.GUID, "meteorwarning._fade", "fadedirty")
+    inst._fadeend = net_smallbyte(inst.GUID, "meteorwarning._fadeend", "fadedirty")
+    inst._period = net_float(inst.GUID, "meteorwarning._period", "fadedirty")
+    inst._fade:set(AlphaToFade(DEFAULT_START))
+    inst._fadeend:set(AlphaToFade(DEFAULT_END))
+    inst._period:set(DEFAULT_PERIOD)
+    inst._task = nil
+    OnFadeDirty(inst)
 
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
+        inst:ListenForEvent("fadedirty", OnFadeDirty)
+
         return inst
     end
 
     inst.SoundEmitter:PlaySound("dontstarve/common/meteor_spawn")
-
-    inst:AddComponent("colourtweener")
 
     inst.startfn = startshadow
 

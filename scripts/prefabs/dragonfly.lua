@@ -184,7 +184,7 @@ local function Reset(inst)
     --Fly off
     inst.reset = true
 
-    --No longer start the respawn task here - was possible to duplicate this is the exiting failed.
+    --No longer start the respawn task here - was possible to duplicate this if the exiting failed.
 end
 
 local function DoDespawn(inst)
@@ -283,6 +283,7 @@ local function OnLavaeSpawn(inst, data)
     if not target then
         target = inst.components.grouptargeter:SelectTarget()
     end
+    lavae.components.entitytracker:TrackEntity("mother", inst)
     lavae.LockTargetFn(lavae, target)
 end
 
@@ -344,6 +345,10 @@ local function OnAttacked(inst, data)
     end
 end
 
+local function OnDeath(inst, data)
+    ResetLavae(inst)
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -403,9 +408,8 @@ local function fn()
     inst:AddComponent("stunnable")
     inst:AddComponent("healthtrigger")
     inst:AddComponent("rampingspawner")
-    inst:AddComponent("homeseeker")
+    inst:AddComponent("homeseeker") --V2C: #TODO: this is incorrect, homeseeker should be added/removed by childspawner, solve dragonfly specific problem with a LoadPostPass instead
     inst:AddComponent("moisture")
-    inst:AddComponent("timer")
     inst:SetStateGraph("SGdragonfly")
     inst:SetBrain(brain)
 
@@ -473,6 +477,7 @@ local function fn()
     inst:ListenForEvent("moisturedelta", OnMoistureDelta)
     inst:ListenForEvent("timerdone", OnTimerDone)
     inst:ListenForEvent("attacked", OnAttacked)
+    inst:ListenForEvent("death", OnDeath) --Get rid of lavaes.
 
     -- Variables
 

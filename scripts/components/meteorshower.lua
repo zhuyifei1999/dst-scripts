@@ -1,286 +1,299 @@
 local easing = require("easing")
 
-local showerlevels =
+local RETRY_INTERVAL = TUNING.SEG_TIME / 3
+local RETRY_PERIOD = TUNING.TOTAL_DAY_TIME / 2
+local NUM_RETRIES = math.floor(RETRY_PERIOD / RETRY_INTERVAL + .5)
+
+local SHOWER_LEVELS =
 {
-	level1={
-		showertime = function() return math.random(TUNING.METEOR_SHOWER_LVL1_DURATIONVAR_MIN, TUNING.METEOR_SHOWER_LVL1_DURATIONVAR_MAX) + TUNING.METEOR_SHOWER_LVL1_DURATION_BASE end, --how long the shower lasts
-		meteorspersecond = function() return math.random(TUNING.METEOR_SHOWER_LVL1_METEORSPERSEC_MIN, TUNING.METEOR_SHOWER_LVL1_METEORSPERSEC_MAX) end,									--how many meteors falls every second
-		maxmediummeteors = function() return math.random(TUNING.METEOR_SHOWER_LVL1_MEDMETEORS_MIN, TUNING.METEOR_SHOWER_LVL1_MEDMETEORS_MAX) end,										--maximum shatter meteors that can be spawned
-		maxlargemeteors = function() return math.random(TUNING.METEOR_SHOWER_LVL1_LRGMETEORS_MIN, TUNING.METEOR_SHOWER_LVL1_LRGMETEORS_MAX) end,										--maximum boulders that can be spawned
-		nextshower = function() return TUNING.METEOR_SHOWER_LVL1_BASETIME + (math.random() * TUNING.METEOR_SHOWER_LVL1_VARTIME) end,													--how long until the next shower
-		waitforplayertimeout = function() return TUNING.TOTAL_DAY_TIME * 1 end, 																										--how long do we wait for a player to arrive
-	},
+    --level: 1
+    {
+        duration =
+        {
+            base = TUNING.METEOR_SHOWER_LVL1_DURATION_BASE,
+            min_variance = TUNING.METEOR_SHOWER_LVL1_DURATIONVAR_MIN,
+            max_variance = TUNING.METEOR_SHOWER_LVL1_DURATIONVAR_MAX,
+        },
+        rate =
+        {
+            base = 0,
+            min_variance = TUNING.METEOR_SHOWER_LVL1_METEORSPERSEC_MIN,
+            max_variance = TUNING.METEOR_SHOWER_LVL1_METEORSPERSEC_MAX,
+        },
+        max_medium =
+        {
+            base = 0,
+            min_variance = TUNING.METEOR_SHOWER_LVL1_MEDMETEORS_MIN,
+            max_variance = TUNING.METEOR_SHOWER_LVL1_MEDMETEORS_MAX,
+        },
+        max_large =
+        {
+            base = 0,
+            min_variance = TUNING.METEOR_SHOWER_LVL1_LRGMETEORS_MIN,
+            max_variance = TUNING.METEOR_SHOWER_LVL1_LRGMETEORS_MAX,
+        },
+        cooldown =
+        {
+            base = TUNING.METEOR_SHOWER_LVL1_BASETIME,
+            min_variance = 0,
+            max_variance = TUNING.METEOR_SHOWER_LVL1_VARTIME,
+        },
+    },
 
-	level2={
-		showertime = function() return math.random(TUNING.METEOR_SHOWER_LVL2_DURATIONVAR_MIN, TUNING.METEOR_SHOWER_LVL2_DURATIONVAR_MAX) + TUNING.METEOR_SHOWER_LVL2_DURATION_BASE end, 
-		meteorspersecond = function() return math.random(TUNING.METEOR_SHOWER_LVL2_METEORSPERSEC_MIN, TUNING.METEOR_SHOWER_LVL2_METEORSPERSEC_MAX) end,									
-		maxmediummeteors = function() return math.random(TUNING.METEOR_SHOWER_LVL2_MEDMETEORS_MIN, TUNING.METEOR_SHOWER_LVL2_MEDMETEORS_MAX) end,										
-		maxlargemeteors = function() return math.random(TUNING.METEOR_SHOWER_LVL2_LRGMETEORS_MIN, TUNING.METEOR_SHOWER_LVL2_LRGMETEORS_MAX) end,										
-		nextshower = function() return TUNING.METEOR_SHOWER_LVL2_BASETIME + (math.random() * TUNING.METEOR_SHOWER_LVL2_VARTIME) end,													
-		waitforplayertimeout = function() return TUNING.TOTAL_DAY_TIME * 2 end,
-	},
+    --level: 2
+    {
+        duration =
+        {
+            base = TUNING.METEOR_SHOWER_LVL2_DURATION_BASE,
+            min_variance = TUNING.METEOR_SHOWER_LVL2_DURATIONVAR_MIN,
+            max_variance = TUNING.METEOR_SHOWER_LVL2_DURATIONVAR_MAX,
+        },
+        rate =
+        {
+            base = 0,
+            min_variance = TUNING.METEOR_SHOWER_LVL2_METEORSPERSEC_MIN,
+            max_variance = TUNING.METEOR_SHOWER_LVL2_METEORSPERSEC_MAX,
+        },
+        max_medium =
+        {
+            base = 0,
+            min_variance = TUNING.METEOR_SHOWER_LVL2_MEDMETEORS_MIN,
+            max_variance = TUNING.METEOR_SHOWER_LVL2_MEDMETEORS_MAX,
+        },
+        max_large =
+        {
+            base = 0,
+            min_variance = TUNING.METEOR_SHOWER_LVL2_LRGMETEORS_MIN,
+            max_variance = TUNING.METEOR_SHOWER_LVL2_LRGMETEORS_MAX,
+        },
+        cooldown =
+        {
+            base = TUNING.METEOR_SHOWER_LVL2_BASETIME,
+            min_variance = 0,
+            max_variance = TUNING.METEOR_SHOWER_LVL2_VARTIME,
+        },
+    },
 
-	level3={
-		showertime = function() return math.random(TUNING.METEOR_SHOWER_LVL3_DURATIONVAR_MIN, TUNING.METEOR_SHOWER_LVL3_DURATIONVAR_MAX) + TUNING.METEOR_SHOWER_LVL3_DURATION_BASE end, 
-		meteorspersecond = function() return math.random(TUNING.METEOR_SHOWER_LVL3_METEORSPERSEC_MIN, TUNING.METEOR_SHOWER_LVL3_METEORSPERSEC_MAX) end,									
-		maxmediummeteors = function() return math.random(TUNING.METEOR_SHOWER_LVL3_MEDMETEORS_MIN, TUNING.METEOR_SHOWER_LVL3_MEDMETEORS_MAX) end,										
-		maxlargemeteors = function() return math.random(TUNING.METEOR_SHOWER_LVL3_LRGMETEORS_MIN, TUNING.METEOR_SHOWER_LVL3_LRGMETEORS_MAX) end,										
-		nextshower = function() return TUNING.METEOR_SHOWER_LVL3_BASETIME + (math.random() * TUNING.METEOR_SHOWER_LVL3_VARTIME) end,													
-		waitforplayertimeout = function() return TUNING.TOTAL_DAY_TIME * 3 end,
-	},
+    --level: 3
+    {
+        duration =
+        {
+            base = TUNING.METEOR_SHOWER_LVL3_DURATION_BASE,
+            min_variance = TUNING.METEOR_SHOWER_LVL3_DURATIONVAR_MIN,
+            max_variance = TUNING.METEOR_SHOWER_LVL3_DURATIONVAR_MAX,
+        },
+        rate =
+        {
+            base = 0,
+            min_variance = TUNING.METEOR_SHOWER_LVL3_METEORSPERSEC_MIN,
+            max_variance = TUNING.METEOR_SHOWER_LVL3_METEORSPERSEC_MAX,
+        },
+        max_medium =
+        {
+            base = 0,
+            min_variance = TUNING.METEOR_SHOWER_LVL3_MEDMETEORS_MIN,
+            max_variance = TUNING.METEOR_SHOWER_LVL3_MEDMETEORS_MAX,
+        },
+        max_large =
+        {
+            base = 0,
+            min_variance = TUNING.METEOR_SHOWER_LVL3_LRGMETEORS_MIN,
+            max_variance = TUNING.METEOR_SHOWER_LVL3_LRGMETEORS_MAX,
+        },
+        cooldown =
+        {
+            base = TUNING.METEOR_SHOWER_LVL3_BASETIME,
+            min_variance = 0,
+            max_variance = TUNING.METEOR_SHOWER_LVL3_VARTIME,
+        },
+    },
 }
 
+local function RandomizeInteger(params)
+    return params.base + math.random(params.min_variance, params.max_variance)
+end
+
+local function RandomizeFloat(params)
+    return params.base + params.min_variance + math.random() * (params.max_variance - params.min_variance)
+end
+
+local function RandomizeLevel()
+    return math.random(#SHOWER_LEVELS)
+end
+
 local MeteorShower = Class(function(self,inst)
-	self.inst = inst
-	self.timetospawn = 0
-	self.spawntime = 0.5
-	self.shower = false
-	self.inst:StartUpdatingComponent(self)
-	self.showerlevel = showerlevels[self:PickNextShowerLevel()]
-	self.showertime = self.showerlevel.showertime()
-	self.meteorspersecond = self.showerlevel.meteorspersecond()
-	self.nextshower = self.showerlevel.nextshower()
-	self.maxmediummeteors = self.showerlevel.maxmediummeteors()
-	self.maxlargemeteors = self.showerlevel.maxlargemeteors()
-	self.waitforplayertimeout = self.showerlevel.waitforplayertimeout()
-	self.waittime = 0
+    self.inst = inst
+
+    self.dt = nil
+    self.spawn_mod = nil
+    self.medium_remaining = nil
+    self.large_remaining = nil
+    self.retries_remaining = nil
+
+    self.task = nil
+    self.tasktotime = nil
+
+    self.level = RandomizeLevel()
+    self:StartCooldown()
 end)
 
+function MeteorShower:IsShowering()
+    return self.dt ~= nil
+end
+
+function MeteorShower:IsCoolingDown()
+    return self.task ~= nil and self.dt == nil
+end
+
+function MeteorShower:SpawnMeteor(mod)
+    --Randomize spawn point
+    local x, y, z = self.inst.Transform:GetWorldPosition()
+    local theta = math.random() * 2 * PI
+    -- Do some easing fanciness to make it less clustered around the spawner prefab
+    local radius = easing.outSine(math.random(), math.random() * 7, TUNING.METEOR_SHOWER_SPAWN_RADIUS, 1)
+
+    local map = TheWorld.Map
+    local fan_offset = FindValidPositionByFan(theta, radius, 30,
+        function(offset)
+            return map:IsPassableAtPoint(x + offset.x, y + offset.y, z + offset.z)
+        end)
+
+    if fan_offset ~= nil then
+        local met = SpawnPrefab("shadowmeteor")
+        met.Transform:SetPosition(x + fan_offset.x, y + fan_offset.y, z + fan_offset.z)
+
+        if mod == nil then
+            mod = 1
+        end
+
+        --Randomize size
+        local rand = math.random()
+        local cost = math.floor(1 / mod + .5)
+        if rand <= TUNING.METEOR_LARGE_CHANCE * mod and (self.large_remaining == nil or self.large_remaining >= cost) then
+            met:SetSize("large", mod)
+            if self.large_remaining ~= nil then
+                self.large_remaining = self.large_remaining - cost
+            end
+        elseif rand <= TUNING.METEOR_MEDIUM_CHANCE * mod  and (self.medium_remaining == nil or self.medium_remaining >= cost) then
+            met:SetSize("medium", mod)
+            if self.medium_remaining ~= nil then
+                self.medium_remaining = self.medium_remaining - cost
+            end
+        else
+            met:SetSize("small", mod)
+        end
+        return met
+    end
+end
+
+local function OnUpdate(inst, self)
+    if inst:IsNearPlayer(TUNING.METEOR_SHOWER_SPAWN_RADIUS + 30) then
+        self.spawn_mod = nil
+        self:SpawnMeteor()
+    else
+        self.spawn_mod = (self.spawn_mod or 1) - TUNING.METEOR_SHOWER_OFFSCREEN_MOD
+        if self.spawn_mod <= 0 then
+            self.spawn_mod = self.spawn_mod + 1
+            self:SpawnMeteor(TUNING.METEOR_SHOWER_OFFSCREEN_MOD)            
+        end
+    end
+
+    if GetTime() >= self.tasktotime then
+        self:StartCooldown()
+    end
+end
+
+function MeteorShower:StartShower(level)
+    self:StopShower()
+
+    self.level = level or RandomizeLevel()
+
+    local level_params = SHOWER_LEVELS[self.level]
+    local duration = RandomizeFloat(level_params.duration)
+    local rate = RandomizeInteger(level_params.rate)
+
+    self.dt = 1 / rate
+    self.medium_remaining = RandomizeInteger(level_params.max_medium)
+    self.large_remaining = RandomizeInteger(level_params.max_large)
+
+    self.task = self.inst:DoPeriodicTask(self.dt, OnUpdate, nil, self)
+    self.tasktotime = GetTime() + duration
+end
+
+function MeteorShower:StopShower()
+    if self.task ~= nil then
+        self.task:Cancel()
+        self.task = nil
+    end
+    self.tasktotime = nil
+    self.dt = nil
+    self.spawn_mod = nil
+    self.medium_remaining = nil
+    self.large_remaining = nil
+    self.retries_remaining = nil
+end
+
+local function OnCooldown(inst, self)
+    if inst:IsNearPlayer(TUNING.METEOR_SHOWER_SPAWN_RADIUS + 60) then
+        self:StartShower()
+    elseif self.retries_remaining > 0 then
+        self.retries_remaining = self.retries_remaining - 1
+        self.tasktotime = GetTime() + RETRY_INTERVAL
+    else
+        self:StartCooldown()
+    end
+end
+
+function MeteorShower:StartCooldown()
+    self:StopShower()
+
+    local level_params = SHOWER_LEVELS[self.level]
+    local cooldown = RandomizeFloat(level_params.cooldown)
+
+    self.retries_remaining = NUM_RETRIES
+    self.task = self.inst:DoPeriodicTask(RETRY_INTERVAL, OnCooldown, cooldown, self)
+    self.tasktotime = GetTime() + cooldown
+end
 
 function MeteorShower:OnSave()
-    if self.showerold then
-        self.showerlevel = self.showerold
-        self.showerold = nil
-        self.showertime = self.showerlevel.showertime()
-        self.meteorspersecond = self.showerlevel.meteorspersecond()
-        self.nextshower = self.showerlevel.nextshower()
-        self.maxmediummeteors = self.showerlevel.maxmediummeteors()
-        self.maxlargemeteors = self.showerlevel.maxlargemeteors()
-        self.waitforplayertimeout = self.showerlevel.waitforplayertimeout()
-        self.waittime = self.waittime
-    end
-	return
-	{
-		showertime = self.showertime,
-		meteorspersecond = self.meteorspersecond,
-		nextshower = self.nextshower,
-		maxlargemeteors = self.maxlargemeteors,
-		maxmediummeteors = self.maxmediummeteors,
-		waitforplayertimeout = self.waitforplayertimeout,
-		waittime = self.waittime
-	}
+    return
+    {
+        level = self.level,
+        remainingtime = self.tasktotime ~= nil and self.tasktotime - GetTime() or nil,
+        interval = self.dt,
+        mediumleft = self.medium_remaining,
+        largeleft = self.large_remaining,
+        retriesleft = self.retries_remaining,
+    }
 end
 
 function MeteorShower:OnLoad(data)
-	self.showertime = data.showertime or self.showerlevel.showertime()
-	self.meteorspersecond = data.meteorspersecond or self.showerlevel.meteorspersecond()
-	self.nextshower = data.nextshower or self.showerlevel.nextshower()
-	self.maxlargemeteors = data.maxlargemeteors or self.showerlevel.maxlargemeteors()
-	self.maxmediummeteors = data.maxmediummeteors or self.showerlevel.maxmediummeteors()
-	self.waitforplayertimeout = data.waitforplayertimeout or self.showerlevel.waitforplayertimeout()
-	self.waittime = data.waittime or 0
+    if data ~= nil and data.level ~= nil then
+        self:StopShower()
+        self.level = math.clamp(data.level, 1, #SHOWER_LEVELS)
+        if data.remainingtime ~= nil then
+            local remaining_time = math.max(0, data.remainingtime)
+            if data.interval ~= nil then
+                self.dt = math.max(0, data.interval)
+                self.medium_remaining = math.max(0, data.medium_remaining or 0)
+                self.large_remaining = math.max(0, data.large_remaining or 0)
+                self.task = self.inst:DoPeriodicTask(self.dt, OnUpdate, nil, self)
+            else
+                self.retries_remaining = math.max(0, data.retriesleft or NUM_RETRIES)
+                self.task = self.inst:DoPeriodicTask(RETRY_INTERVAL, OnCooldown, remaining_time, self)
+            end
+            self.tasktotime = GetTime() + remaining_time
+        end
+    end
 end
 
 function MeteorShower:GetDebugString()
-	if not self.shower then
-		return string.format("Next shower in %2.2f. Waiting for player for %2.2f seconds (max of %2.2f). %2.2f meteors will fall every second. It will last for %2.2f seconds",
-		self.nextshower, self.waittime, self.waitforplayertimeout, self.meteorspersecond, self.showertime)
-	else
-		return string.format("SHOWERING")
-	end
+    return string.format("Level %d ", self.level)
+        ..((self:IsShowering() and string.format("SHOWERING: %2.2f, interval: %2.2f (mod: %s), stock: (%d large, %d medium, unlimited small)", self.tasktotime - GetTime(), self.dt, self.spawn_mod ~= nil and string.format("%1.1f", TUNING.METEOR_SHOWER_OFFSCREEN_MOD) or "---", self.large_remaining, self.medium_remaining)) or
+            (self:IsCoolingDown() and string.format("COOLDOWN: %2.2f, retry: %d/%d", self.tasktotime - GetTime(), NUM_RETRIES - self.retries_remaining, NUM_RETRIES)) or
+            "STOPPED")
 end
 
-function MeteorShower:SetNextShower()
-	-- Use the cooldown from the previous shower if available, not the new one
-	self.nextshower = self.prevshowerlevel and self.prevshowerlevel.nextshower() or self.showerlevel.nextshower()
-
-	-- Set the rest of the data on the new shower level
-	self.showertime = self.showerlevel.showertime()
-	self.meteorspersecond = self.showerlevel.meteorspersecond()
-	self.maxmediummeteors = self.showerlevel.maxmediummeteors()
-	self.maxlargemeteors = self.showerlevel.maxlargemeteors()
-	self.waitforplayertimeout = self.showerlevel.waitforplayertimeout()
-	self.waittime = 0
-end
-
-function MeteorShower:GetTimeForNextMeteor()
-	if self.offscreen then
-		return 1/(self.meteorspersecond*TUNING.METEOR_SHOWER_OFFSCREEN_MOD)
-	else
-		return 1/self.meteorspersecond
-	end
-end
-
-function MeteorShower:GetNextMeteorSize()
-	local rand = math.random()
-	local size = nil
-	local mod = 1
-	if self.offscreen then
-		mod = TUNING.METEOR_SHOWER_OFFSCREEN_MOD
-	end
-	if rand <= TUNING.METEOR_LARGE_CHANCE*mod and self.numlargemeteors < self.maxlargemeteors*mod then
-		size = "large"
-		self.numlargemeteors = self.numlargemeteors + 1
-	end
-
-	if not size and rand <= TUNING.METEOR_MEDIUM_CHANCE*mod and self.nummediummeteors < self.maxmediummeteors*mod then
-		size = "medium"
-		self.nummediummeteors = self.nummediummeteors + 1
-	end
-
-	if not size then
-		size = "small"
-	end
-	
-	return size, mod
-end
-
-function MeteorShower:SetShowerLevel(level)
-	self.prevshowerlevel = self.showerlevel
- 	self.showerlevel = showerlevels[level]
-    self.levelname = level
-	self:SetNextShower()
-end
-
-function MeteorShower:StartShower(playerpresent)
-	self.shower = true
-	self.nummediummeteors = 0
-	self.numlargemeteors = 0
-	if playerpresent == false then
-		self.offscreen = true
-	else
-		self.offscreen = false
-	end
-end
-
-function MeteorShower:ForceShower(level)
-
-	if self.shower then return false end  
-
-    if level and showerlevels[level] then
- 	    self.showerold = self.showerlevel
- 	    self.showerlevel = showerlevels[level]
-        self.showertime = self.showerlevel.showertime()
-        self.meteorspersecond = self.showerlevel.meteorspersecond()
-        self.nextshower = self.showerlevel.nextshower()
-        self.maxmediummeteors = self.showerlevel.maxmediummeteors()
-        self.maxlargemeteors = self.showerlevel.maxlargemeteors()
-        self.waitforplayertimeout = self.showerlevel.waitforplayertimeout()
-        self.waittime = 0
-    end
-	self.nextshower = 1
-
-    return true
-end
-
-function MeteorShower:PickNextShowerLevel()
-	local rand = math.random()
-	if rand <= .33 then
-		return "level1"
-	elseif rand <= .67 then
-		return "level2"
-	else
-		return "level3"
-	end
-end
-
-function MeteorShower:EndShower()
-    if self.showerold then
- 	    self.showerlevel = self.showerold
- 	    self.showerold = nil
-        self.showertime = self.showerlevel.showertime()
-        self.meteorspersecond = self.showerlevel.meteorspersecond()
-        self.nextshower = self.showerlevel.nextshower()
-        self.maxmediummeteors = self.showerlevel.maxmediummeteors()
-        self.maxlargemeteors = self.showerlevel.maxlargemeteors()
-        self.waitforplayertimeout = self.showerlevel.waitforplayertimeout()
-        self.waittime = 0
-    end
-
-	self.shower = false
-
-	local level = self:PickNextShowerLevel()
-	self:SetShowerLevel(level)
-end
-
-function MeteorShower:GetSpawnPoint(rad)
-	if not self.pos then
-		self.pos = self.inst:GetPosition()
-	end
-    local theta = math.random() * 2 * PI
-    -- Do some easing fanciness to make it less clustered around the spawner prefab
-    local radius = easing.outSine(math.random(), math.random()*7, rad or TUNING.METEOR_SHOWER_SPAWN_RADIUS, 1)
-
-    local fan_offset = FindValidPositionByFan(theta, radius, 30, 
-    	function(offset)
-    		local spawnpt = self.pos + offset
-	        return TheWorld.Map:IsPassableAtPoint(spawnpt:Get())
-    	end) 
-    if fan_offset then
-	    return self.pos + fan_offset
-	end
-end
-
-function MeteorShower:SpawnMeteor(spawn_point)
-    local met = SpawnPrefab("shadowmeteor")
-
-    met.Transform:SetPosition(spawn_point.x, spawn_point.y, spawn_point.z)
-
-    return met
-end
-
-function MeteorShower:OnUpdate( dt )
-
-	-- If everything is zero'd out, just stop
-	if self.showertime == 0 and self.meteorspersecond == 0 and self.maxmediummeteors == 0 and self.maxlargemeteors == 0 then
-		self.inst:StopUpdatingComponent(self)
-		return
-	end
-
-	if self.nextshower > 0 then
-		self.nextshower = self.nextshower - dt
-		if self.nextshower <= 0 then
-			self.waittime = 0
-		end
-	elseif self.nextshower <= 0 and not self.shower then
-		if not self.pos then
-			self.pos = self.inst:GetPosition()
-		end
-		if IsAnyPlayerInRange(self.pos.x, self.pos.y, self.pos.z, TUNING.METEOR_SHOWER_SPAWN_RADIUS*1.2) then
-			self:StartShower()
-		else
-			self.waittime = self.waittime + dt
-			if self.waittime >= self.waitforplayertimeout then
-				self:StartShower(false)
-			end
-		end
-	end
-
-
-	if self.shower then
-		if self.showertime > 0 then
-			self.showertime = self.showertime - dt
-
-			if self.timetospawn > 0 then
-				self.timetospawn = self.timetospawn - dt
-			end
-
-			if self.timetospawn <= 0 then				
-				local spawn_point = self:GetSpawnPoint()								
-				if spawn_point then
-					local met = self:SpawnMeteor(spawn_point)	
-					local size, mod = self:GetNextMeteorSize()
-					met:SetSize(size, mod)
-
-					if self.spawntime then
-						self.timetospawn = self:GetTimeForNextMeteor()
-					end
-				end
-			end
-		else
-			self:EndShower()
-		end
-	end    
-end
+MeteorShower.OnRemoveFromEntity = MeteorShower.StopShower
 
 return MeteorShower

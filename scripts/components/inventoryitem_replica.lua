@@ -194,13 +194,13 @@ function InventoryItem:SetDeploySpacing(deployspacing)
     self.classified.deployspacing:set(deployspacing)
 end
 
-function InventoryItem:DeploySpacingSq()
+function InventoryItem:DeploySpacingRadius()
     if self.inst.components.deployable ~= nil then
-        return self.inst.components.deployable:DeploySpacingSq()
+        return self.inst.components.deployable:DeploySpacingRadius()
     elseif self.classified ~= nil then
-        return DEPLOYSPACING_SQ[self.classified.deployspacing:value()]
+        return DEPLOYSPACING_RADIUS[self.classified.deployspacing:value()]
     else
-        return DEPLOYSPACING_SQ[DEPLOYSPACING.DEFAULT]
+        return DEPLOYSPACING_RADIUS[DEPLOYSPACING.DEFAULT]
     end
 end
 

@@ -3,27 +3,42 @@ local assets =
     Asset("ANIM", "anim/burntground.zip"),
 }
 
-local function OnIsDay(inst, isday)
-    if isday then
-        inst.alpha = inst.alpha - .2
-        inst:DoTaskInTime(math.random(), function(inst)
-            inst.components.colourtweener:StartTween({1,1,1,inst.alpha}, 3, function(inst)
-                if inst.alpha <= 0 then
-                    inst:Remove()
-                end
-            end)
-        end)
+local FADE_INTERVAL = TUNING.TOTAL_DAY_TIME * 5 / 64 --64 ticks for smallbyte
+
+local function OnFadeDirty(inst)
+    local alpha = (64 - inst._fade:value()) / 65
+    inst.AnimState:OverrideMultColour(alpha, alpha, alpha, alpha)
+end
+
+local function UpdateFade(inst)
+    if inst._fade:value() < 63 then
+        inst._fade:set_local(inst._fade:value() + 1)
+        OnFadeDirty(inst)
+    elseif TheWorld.ismastersim then
+        inst:Remove()
+    else
+        inst.AnimState:OverrideMultColour(0, 0, 0, 0)
     end
 end
 
 local function OnSave(inst, data)
-    data.alpha = inst.alpha
+    data.fade = inst._fade:value() > 0 and inst._fade:value() or nil
+    data.rotation = inst.Transform:GetRotation()
+    data.scale = { inst.Transform:GetScale() }
 end
 
 local function OnLoad(inst, data)
-    if data then
-        inst.alpha = data.alpha or 1
-        inst.AnimState:SetMultColour(1,1,1,inst.alpha)
+    if data ~= nil then
+        if data.rotation ~= nil then
+            inst.Transform:SetRotation(data.rotation)
+        end
+        if data.scale ~= nil then
+            inst.Transform:SetScale(data.scale[1] or 1, data.scale[2] or 2, data.scale[3] or 3)
+        end
+        if data.fade ~= nil and data.fade > 0 then
+            inst._fade:set(math.min(data.fade, 63))
+            OnFadeDirty(inst)
+        end
     end
 end
 
@@ -44,17 +59,24 @@ local function fn()
     inst:AddTag("NOCLICK")
     inst:AddTag("FX")
 
+    inst._fade = net_smallbyte(inst.GUID, "burntground._fade", "fadedirty")
+    OnFadeDirty(inst)
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
+        inst:DoPeriodicTask(FADE_INTERVAL, UpdateFade, math.random())
+        inst:ListenForEvent("fadedirty", OnFadeDirty)
+
         return inst
     end
 
+    inst:DoPeriodicTask(FADE_INTERVAL, UpdateFade, math.max(0, FADE_INTERVAL - math.random()))
+
     inst.Transform:SetRotation(math.random() * 360)
 
-    inst.alpha = 1
-    inst:AddComponent("colourtweener")
-    inst:WatchWorldState("isday", OnIsDay)
+    inst.OnSave = OnSave
+    inst.OnLoad = OnLoad
 
     return inst
 end
