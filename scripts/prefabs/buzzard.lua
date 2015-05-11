@@ -18,7 +18,6 @@ local brain = require("brains/buzzardbrain")
 SetSharedLootTable('buzzard',
 {
     {'drumstick',             1.00},
-    {'smallmeat',             1.00},
     {'smallmeat',             0.33},
     {'feather_crow',          0.33},
 })

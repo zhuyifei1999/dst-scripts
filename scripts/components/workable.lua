@@ -1,4 +1,4 @@
-local function updatetags(self)
+local function onworkable(self)
     if self.maxwork ~= nil and self.workleft < self.maxwork and self.workable then
         self.inst:AddTag("workrepairable")
     else
@@ -11,15 +11,6 @@ local function updatetags(self)
             self.inst:RemoveTag(self.action.id.."_workable")
         end
     end
-end
-
-
-local function onworkleft(self)
-    updatetags(self)
-end
-
-local function onworkable(self, workable)
-    updatetags(self)
 end
 
 local function onaction(self, action, old_action)
@@ -46,8 +37,8 @@ local Workable = Class(function(self, inst)
 end,
 nil,
 {
-    workleft = onworkleft,
-    maxwork = onworkleft,
+    workleft = onworkable,
+    maxwork = onworkable,
     action = onaction,
     workable = onworkable,
 })
@@ -60,7 +51,9 @@ function Workable:OnRemoveFromEntity()
 end
 
 function Workable:GetDebugString()
-    return "workleft: "..self.workleft .. " maxwork:" .. self.maxwork
+    return "workleft: "..tostring(self.workleft)
+        .." maxwork: "..tostring(self.maxwork)
+        .." workable: "..tostring(self.workable)
 end
 
 function Workable:AddStage(amount)
@@ -71,7 +64,7 @@ function Workable:SetWorkAction(act)
     self.action = act
 end
 
-function Workable:GetWorkAction(act)
+function Workable:GetWorkAction()
     return self.action
 end
 
@@ -108,23 +101,22 @@ function Workable:SetMaxWork(work)
     self.maxwork = work
 end
 
-function Workable:OnSave()    
+function Workable:OnSave()
     if self.savestate then
-        return 
-            {
-                maxwork = self.maxwork,
-                workleft = self.workleft
-            }
-   else
-        return {}
-   end
+        return
+        {
+            maxwork = self.maxwork,
+            workleft = self.workleft
+        }
+    end
+    return {}
 end
 
 function Workable:OnLoad(data)
     self.workleft = data.workleft or self.workleft
     self.maxwork = data.maxwork or self.maxwork
-    if self.onloadfn then
-        self.onloadfn(self.inst,data)
+    if self.onloadfn ~= nil then
+        self.onloadfn(self.inst, data)
     end
 end
 
@@ -140,23 +132,14 @@ function Workable:WorkedBy(worker, numworks)
         self.onwork(self.inst, worker, self.workleft)
     end
 
-    if self.workleft <= 0 then        
-        if self.onfinish then self.onfinish(self.inst, worker) end        
-        self.inst:PushEvent("workfinished", {worker = worker})
+    if self.workleft <= 0 then
+        if self.onfinish ~= nil then
+            self.onfinish(self.inst, worker)
+        end
+        self.inst:PushEvent("workfinished", { worker = worker })
 
-        worker:PushEvent("finishedwork", {target = self.inst, action = self.action})
+        worker:PushEvent("finishedwork", { target = self.inst, action = self.action })
     end
-end
-
-function Workable:IsActionValid(action, right)
-    if not self.workable then return false end
-    
-    if action == ACTIONS.HAMMER and not right then
-		return false
-    end
-    
-    return self.workleft > 0 and action == self.action
-    
 end
 
 function Workable:SetOnWorkCallback(fn)

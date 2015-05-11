@@ -108,92 +108,92 @@ local function propertech(recipetree, buildertree)
 end
 
 function Builder:UnlockRecipesForTech(tech)
-	for k, v in pairs(AllRecipes) do
-		if IsRecipeValid(v.name) and propertech(v.level, tech) then
-			self:UnlockRecipe(v.name)
-		end
-	end
+    for k, v in pairs(AllRecipes) do
+        if IsRecipeValid(v.name) and propertech(v.level, tech) then
+            self:UnlockRecipe(v.name)
+        end
+    end
 end
 
 function Builder:EvaluateTechTrees()
-	local pos = self.inst:GetPosition()
-	local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, TUNING.RESEARCH_MACHINE_DIST, {"prototyper"})
+    local pos = self.inst:GetPosition()
+    local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, TUNING.RESEARCH_MACHINE_DIST, {"prototyper"})
 
-	local old_accessible_tech_trees = deepcopy(self.accessible_tech_trees or TECH.NONE)
-	local old_prototyper = self.current_prototyper
-	self.current_prototyper = nil
+    local old_accessible_tech_trees = deepcopy(self.accessible_tech_trees or TECH.NONE)
+    local old_prototyper = self.current_prototyper
+    self.current_prototyper = nil
 
-	local prototyper_active = false
-	for k,v in pairs(ents) do
-		if v.components.prototyper then
-			if not prototyper_active then
-				--activate the first machine in the list. This will be the one you're closest to.
-				v.components.prototyper:TurnOn()
-				self.accessible_tech_trees = v.components.prototyper:GetTechTrees()
-				prototyper_active = true
-				self.current_prototyper = v
-			else
-				--you've already activated a machine. Turn all the other machines off.
-				v.components.prototyper:TurnOff()
-			end
-		end
-	end
+    local prototyper_active = false
+    for k,v in pairs(ents) do
+        if v.components.prototyper then
+            if not prototyper_active then
+                --activate the first machine in the list. This will be the one you're closest to.
+                v.components.prototyper:TurnOn()
+                self.accessible_tech_trees = v.components.prototyper:GetTechTrees()
+                prototyper_active = true
+                self.current_prototyper = v
+            else
+                --you've already activated a machine. Turn all the other machines off.
+                v.components.prototyper:TurnOff()
+            end
+        end
+    end
 
-	--add any character specific bonuses to your current tech levels.
-	if not prototyper_active  then
-		self.accessible_tech_trees.SCIENCE = self.science_bonus
-		self.accessible_tech_trees.MAGIC = self.magic_bonus
-		self.accessible_tech_trees.ANCIENT = self.ancient_bonus
-	else
-		self.accessible_tech_trees.SCIENCE = self.accessible_tech_trees.SCIENCE + self.science_bonus
-		self.accessible_tech_trees.MAGIC = self.accessible_tech_trees.MAGIC + self.magic_bonus
-		self.accessible_tech_trees.ANCIENT = self.accessible_tech_trees.ANCIENT + self.ancient_bonus
-	end
+    --add any character specific bonuses to your current tech levels.
+    if not prototyper_active  then
+        self.accessible_tech_trees.SCIENCE = self.science_bonus
+        self.accessible_tech_trees.MAGIC = self.magic_bonus
+        self.accessible_tech_trees.ANCIENT = self.ancient_bonus
+    else
+        self.accessible_tech_trees.SCIENCE = self.accessible_tech_trees.SCIENCE + self.science_bonus
+        self.accessible_tech_trees.MAGIC = self.accessible_tech_trees.MAGIC + self.magic_bonus
+        self.accessible_tech_trees.ANCIENT = self.accessible_tech_trees.ANCIENT + self.ancient_bonus
+    end
 
-	local trees_changed = false
-	
-	for k,v in pairs(old_accessible_tech_trees) do
-		if v ~= self.accessible_tech_trees[k] then 
-			trees_changed = true
-			break
-		end
-	end
-	if not trees_changed then
-		for k,v in pairs(self.accessible_tech_trees) do
-			if v ~= old_accessible_tech_trees[k] then 
-				trees_changed = true
-				break
-			end
-		end
-	end
+    local trees_changed = false
+    
+    for k,v in pairs(old_accessible_tech_trees) do
+        if v ~= self.accessible_tech_trees[k] then 
+            trees_changed = true
+            break
+        end
+    end
+    if not trees_changed then
+        for k,v in pairs(self.accessible_tech_trees) do
+            if v ~= old_accessible_tech_trees[k] then 
+                trees_changed = true
+                break
+            end
+        end
+    end
 
-	if old_prototyper and old_prototyper.components.prototyper and old_prototyper.entity:IsValid() and old_prototyper ~= self.current_prototyper then
-		old_prototyper.components.prototyper:TurnOff()
-	end
+    if old_prototyper and old_prototyper.components.prototyper and old_prototyper.entity:IsValid() and old_prototyper ~= self.current_prototyper then
+        old_prototyper.components.prototyper:TurnOff()
+    end
 
-	if trees_changed then
-		self.inst:PushEvent("techtreechange", {level = self.accessible_tech_trees})
+    if trees_changed then
+        self.inst:PushEvent("techtreechange", {level = self.accessible_tech_trees})
         self.inst.replica.builder:SetTechTrees(self.accessible_tech_trees)
-	end
+    end
 end
 
 function Builder:AddRecipe(recname)
-	if not table.contains(self.recipes, recname) then
-	    table.insert(self.recipes, recname)
+    if not table.contains(self.recipes, recname) then
+        table.insert(self.recipes, recname)
     end
     self.inst.replica.builder:AddRecipe(recname)
 end
 
 function Builder:UnlockRecipe(recname)
-	local recipe = GetValidRecipe(recname)
-	if recipe ~= nil and not recipe.nounlock then
-	--print("Unlocking: ", recname)
-		if self.inst.components.sanity ~= nil then
-			self.inst.components.sanity:DoDelta(TUNING.SANITY_MED)
-		end
-		self:AddRecipe(recname)
-		self.inst:PushEvent("unlockrecipe", { recipe = recname })
-	end
+    local recipe = GetValidRecipe(recname)
+    if recipe ~= nil and not recipe.nounlock then
+    --print("Unlocking: ", recname)
+        if self.inst.components.sanity ~= nil then
+            self.inst.components.sanity:DoDelta(TUNING.SANITY_MED)
+        end
+        self:AddRecipe(recname)
+        self.inst:PushEvent("unlockrecipe", { recipe = recname })
+    end
 end
 
 function Builder:GetIngredientWetness(ingredients)
@@ -211,33 +211,33 @@ function Builder:GetIngredientWetness(ingredients)
     local totalWetness = 0
     local totalItems = 0
     for k,v in pairs(wetness) do
-    	totalWetness = totalWetness + (v.wetness * v.num)
-    	totalItems = totalItems + v.num
+        totalWetness = totalWetness + (v.wetness * v.num)
+        totalItems = totalItems + v.num
     end
 
     return totalItems > 0 and totalWetness or 0
 end
 
 function Builder:GetIngredients(recname)
-	local recipe = AllRecipes[recname]
-	if recipe then
-		local ingredients = {}
-		for k,v in pairs(recipe.ingredients) do
-			local amt = math.max(1, RoundBiasedUp(v.amount * self.ingredientmod))
-			local items = self.inst.components.inventory:GetItemByName(v.type, amt)
-			ingredients[v.type] = items
-		end
-		return ingredients
-	end
+    local recipe = AllRecipes[recname]
+    if recipe then
+        local ingredients = {}
+        for k,v in pairs(recipe.ingredients) do
+            local amt = math.max(1, RoundBiasedUp(v.amount * self.ingredientmod))
+            local items = self.inst.components.inventory:GetItemByName(v.type, amt)
+            ingredients[v.type] = items
+        end
+        return ingredients
+    end
 end
 
 function Builder:RemoveIngredients(ingredients)
     for item, ents in pairs(ingredients) do
-    	for k,v in pairs(ents) do
-    		for i = 1, v do
-    			self.inst.components.inventory:RemoveItem(k, false):Remove()
-    		end
-    	end
+        for k,v in pairs(ents) do
+            for i = 1, v do
+                self.inst.components.inventory:RemoveItem(k, false):Remove()
+            end
+        end
      end
     self.inst:PushEvent("consumeingredients")
  end
@@ -247,17 +247,16 @@ end
 
 function Builder:MakeRecipe(recipe, pt, onsuccess)
     if recipe ~= nil then
-    	self.inst:PushEvent("makerecipe", { recipe = recipe })
-		pt = pt or Point(self.inst.Transform:GetWorldPosition())
-		if self:IsBuildBuffered(recipe.name) or self:CanBuild(recipe.name) then
-			self.inst.components.locomotor:Stop()
-			local buffaction = BufferedAction(self.inst, nil, ACTIONS.BUILD, nil, pt, recipe.name, 1)
-			if onsuccess ~= nil then
-				buffaction:AddSuccessAction(onsuccess)
-			end
-			self.inst.components.locomotor:PushAction(buffaction, true)
-			return true
-		end
+        self.inst:PushEvent("makerecipe", { recipe = recipe })
+        if self:IsBuildBuffered(recipe.name) or self:CanBuild(recipe.name) then
+            self.inst.components.locomotor:Stop()
+            local buffaction = BufferedAction(self.inst, nil, ACTIONS.BUILD, nil, pt or self.inst:GetPosition(), recipe.name, 1)
+            if onsuccess ~= nil then
+                buffaction:AddSuccessAction(onsuccess)
+            end
+            self.inst.components.locomotor:PushAction(buffaction, true)
+            return true
+        end
     end
     return false
 end
@@ -328,7 +327,7 @@ function Builder:DoBuild(recname, pt)
             else
                 prod.Transform:SetPosition(pt:Get())
                 self.inst:PushEvent("buildstructure", { item = prod, recipe = recipe })
-                prod:PushEvent("onbuilt", { builder=self.inst })
+                prod:PushEvent("onbuilt", { builder = self.inst })
                 ProfileStatsAdd("build_"..prod.prefab)
 
                 if self.onBuild ~= nil then
@@ -400,7 +399,10 @@ function Builder:MakeRecipeFromMenu(recipe)
 end
 
 function Builder:MakeRecipeAtPoint(recipe, pt)
-    if recipe.placer ~= nil and self:KnowsRecipe(recipe.name) and self:IsBuildBuffered(recipe.name) then
+    if recipe.placer ~= nil and
+        self:KnowsRecipe(recipe.name) and
+        self:IsBuildBuffered(recipe.name) and
+        TheWorld.Map:CanDeployRecipeAtPoint(pt, recipe) then
         self:MakeRecipe(recipe, pt)
     end
 end

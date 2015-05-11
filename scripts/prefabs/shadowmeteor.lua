@@ -13,12 +13,25 @@ local prefabs =
     "rock_moon",
 }
 
-local function onexplode(inst)
+local SMASHABLE_WORK_ACTIONS =
+{
+    CHOP = true,
+    DIG = true,
+    HAMMER = true,
+    MINE = true,
+}
+local SMASHABLE_TAGS = { "_combat", "_inventoryitem" }
+for k, v in pairs(SMASHABLE_WORK_ACTIONS) do
+    table.insert(SMASHABLE_TAGS, k.."_workable")
+end
+local NON_SMASHABLE_TAGS = { "INLIMBO", "playerghost" }
 
+local function onexplode(inst)
     inst.SoundEmitter:PlaySound("dontstarve/common/meteor_impact")
 
-    if inst.warnshadow then
+    if inst.warnshadow ~= nil then
         inst.warnshadow:Remove()
+        inst.warnshadow = nil
     end
 
     local shakeduration = .7 * inst.size
@@ -33,58 +46,88 @@ local function onexplode(inst)
 
     if not inst:IsOnValidGround() then
         local splash = SpawnPrefab("splash_ocean")
-        if splash then
+        if splash ~= nil then
             splash.Transform:SetPosition(x, y, z)
         end
     else
         local scorch = SpawnPrefab("burntground")
-        if scorch then
+        if scorch ~= nil then
             scorch.Transform:SetPosition(x, y, z)
             local scale = inst.size * 1.3
             scorch.Transform:SetScale(scale, scale, scale)
         end
-
-        local ents = TheSim:FindEntities(x, y, z, inst.size * TUNING.METEOR_RADIUS, nil, { "INLIMBO" })
-        for k,v in pairs(ents) do
+        local launched = {}
+        local ents = TheSim:FindEntities(x, y, z, inst.size * TUNING.METEOR_RADIUS, nil, NON_SMASHABLE_TAGS, SMASHABLE_TAGS)
+        for i, v in ipairs(ents) do
             --V2C: things "could" go invalid if something earlier in the list
             --     removes something later in the list.
             --     another problem is containers, occupiables, traps, etc.
             --     inconsistent behaviour with what happens to their contents
-            --     also, stuff in backpacks will just get removed, even if they
-            --     shouldn't (like eyebones)
-            if v:IsValid() and
-                not (v.components.inventoryitem ~= nil and
-                    v.components.inventoryitem:IsHeld()) then
-
-                if v.components.workable and not v:HasTag("busy") then
-                    v.components.workable:WorkedBy(inst, inst.workdone or 20)
-                end
-
-                if v.components.combat and not v:HasTag("playerghost") then
-                    v.components.combat:GetAttacked(inst, inst.size*TUNING.METEOR_DAMAGE, nil)
-                end
-
-                if v.components.inventoryitem then
+            --     also, make sure stuff in backpacks won't just get removed
+            --     also, don't dig up spawners
+            if v:IsValid() and not v:IsInLimbo() then
+                if v.components.workable ~= nil then
+                    if v.sg == nil or not v.sg:HasStateTag("busy") then
+                        local work_action = v.components.workable:GetWorkAction()
+                        if work_action ~= nil and
+                            SMASHABLE_WORK_ACTIONS[work_action.id] and
+                            (work_action ~= ACTIONS.DIG
+                            or (v.components.spawner == nil and
+                                v.components.childspawner == nil)) then
+                            v.components.workable:WorkedBy(inst, inst.workdone or 20)
+                        end
+                    end
+                elseif v.components.combat ~= nil then
+                    v.components.combat:GetAttacked(inst, inst.size * TUNING.METEOR_DAMAGE, nil)
+                elseif v.components.inventoryitem ~= nil then
                     if math.random() <= TUNING.METEOR_SMASH_INVITEM_CHANCE then
-                        inst.SoundEmitter:PlaySound("dontstarve/common/stone_drop")
-                        local x1, y1, z1 = v.Transform:GetWorldPosition()
-                        local breaking = SpawnPrefab("ground_chunks_breaking") --spawn break effect
-                        breaking.Transform:SetPosition(x1, 0, z1)
-                        v:Remove()
+                        if v.components.container ~= nil then
+                            v.components.container:DropEverything()
+                        end
+                        if v:HasTag("irreplaceable") then
+                            Launch(v, inst, TUNING.LAUNCH_SPEED_SMALL)
+                            launched[v] = true
+                        else
+                            inst.SoundEmitter:PlaySound("dontstarve/common/stone_drop")
+                            local x1, y1, z1 = v.Transform:GetWorldPosition()
+                            local breaking = SpawnPrefab("ground_chunks_breaking") --spawn break effect
+                            breaking.Transform:SetPosition(x1, 0, z1)
+                            v:Remove()
+                        end
                     else
                         Launch(v, inst, TUNING.LAUNCH_SPEED_SMALL)
+                        launched[v] = true
                     end
                 end
             end
         end
 
-        for i,v in pairs(inst.loot) do
+        for i, v in ipairs(inst.loot) do
             if math.random() <= v.chance then
-                local drop = SpawnPrefab(v.prefab)
-                if drop then
-                    drop.Transform:SetPosition(x, y, z)
-                    if drop.components.inventoryitem then
-                        drop.components.inventoryitem:OnDropped(true)
+                local canspawn = true
+                if v.radius ~= nil then
+                    --Check if there's space to deploy rocks
+                    --Similar to CanDeployAtPoint check in map.lua
+                    local ents = TheSim:FindEntities(x, y, z, v.radius, nil, { "NOBLOCK", "FX" })
+                    for k, v in pairs(ents) do
+                        if v ~= inst and
+                            not launched[v] and
+                            v.entity:IsValid() and
+                            v.entity:IsVisible() and
+                            v.components.placer == nil and
+                            v.entity:GetParent() == nil then
+                            canspawn = false
+                            break
+                        end
+                    end
+                end
+                if canspawn then
+                    local drop = SpawnPrefab(v.prefab)
+                    if drop ~= nil then
+                        drop.Transform:SetPosition(x, y, z)
+                        if drop.components.inventoryitem ~= nil then
+                            drop.components.inventoryitem:OnDropped(true)
+                        end
                     end
                 end
             end
@@ -98,8 +141,7 @@ local function dostrike(inst)
     inst:DoTaskInTime(0.33, onexplode)
     inst:ListenForEvent("animover", inst.Remove)
     -- animover isn't triggered when the entity is asleep, so just in case
-    local len = inst.AnimState:GetCurrentAnimationLength()
-    inst:DoTaskInTime(len + 0.1,inst.Remove)
+    inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength() + FRAMES, inst.Remove)
 end
 
 local warntime = 1
@@ -117,6 +159,10 @@ local work =
 }
 
 local function SetSize(inst, sz, mod)
+    if inst.autosizetask ~= nil then
+        inst.autosizetask:Cancel()
+        inst.autosizetask = nil
+    end
     if inst.striketask ~= nil then
         return
     end
@@ -133,40 +179,47 @@ local function SetSize(inst, sz, mod)
         mod = 1
     end
 
-    local rand = math.random()
-    inst.loot = {}
-    if sz == "small" then
-        -- No loot
-    elseif sz == "medium" then
-        table.insert(inst.loot, {prefab='rocks', chance=TUNING.METEOR_CHANCE_INVITEM_OFTEN*mod})
-        table.insert(inst.loot, {prefab='rocks', chance=TUNING.METEOR_CHANCE_INVITEM_RARE*mod})
-        table.insert(inst.loot, {prefab='flint', chance=TUNING.METEOR_CHANCE_INVITEM_ALWAYS*mod})
-        table.insert(inst.loot, {prefab='flint', chance=TUNING.METEOR_CHANCE_INVITEM_VERYRARE*mod})
-        table.insert(inst.loot, {prefab='moonrocknugget', chance=TUNING.METEOR_CHANCE_INVITEM_SUPERRARE*mod})
+    if sz == "medium" then
+        inst.loot =
+        {
+            { prefab = "rocks", chance = TUNING.METEOR_CHANCE_INVITEM_OFTEN * mod },
+            { prefab = "rocks", chance = TUNING.METEOR_CHANCE_INVITEM_RARE * mod },
+            { prefab = "flint", chance = TUNING.METEOR_CHANCE_INVITEM_ALWAYS * mod },
+            { prefab = "flint", chance = TUNING.METEOR_CHANCE_INVITEM_VERYRARE * mod },
+            { prefab = "moonrocknugget", chance = TUNING.METEOR_CHANCE_INVITEM_SUPERRARE * mod },
+        }
     elseif sz == "large" then
-        local picked_boulder = false
-        if rand <= TUNING.METEOR_CHANCE_BOULDERMOON*mod then
-            table.insert(inst.loot, {prefab="rock_moon", chance=1})
-            picked_boulder = true
+        local rand = math.random()
+        if rand <= TUNING.METEOR_CHANCE_BOULDERMOON * mod then
+            inst.loot =
+            {
+                { prefab = "rock_moon", chance = 1, radius = 1.5 },
+            }
+        elseif rand <= TUNING.METEOR_CHANCE_BOULDERFLINTLESS * mod then
+            rand = math.random() -- Randomize which flintless rock we use
+            inst.loot =
+            {
+                {
+                    prefab =
+                        (rand <= .33 and "rock_flintless") or
+                        (rand <= .67 and "rock_flintless_med") or
+                        "rock_flintless_low",
+                    chance = 1,
+                    radius = 2,
+                },
+            }
+        else -- Don't check for chance or mod this one: we need to pick a boulder
+            inst.loot =
+            {
+                { prefab = "rock1", chance = 1, radius = 2 },
+            }
         end
-        if not picked_boulder and rand <= TUNING.METEOR_CHANCE_BOULDERFLINTLESS*mod then
-            local r = math.random()
-            if r <= .33 then -- Randomize which flintless rock we use
-                table.insert(inst.loot, {prefab="rock_flintless", chance=1})
-            elseif r <= .67 then
-                table.insert(inst.loot, {prefab="rock_flintless_med", chance=1})
-            else
-                table.insert(inst.loot, {prefab="rock_flintless_low", chance=1})
-            end
-            picked_boulder = true
-        end
-        if not picked_boulder then -- Don't check for chance or mod this one: we need to pick a boulder
-            table.insert(inst.loot, {prefab="rock1", chance=1})
-        end
+    else -- "small" or other undefined
+        inst.loot = {}
     end
 
-    inst.Transform:SetScale(inst.size,inst.size,inst.size)
-    inst.warnshadow.Transform:SetScale(inst.size,inst.size,inst.size)
+    inst.Transform:SetScale(inst.size, inst.size, inst.size)
+    inst.warnshadow.Transform:SetScale(inst.size, inst.size, inst.size)
 
     -- Now that we've been set to the appropriate size, go for the gusto
     inst.striketask = inst:DoTaskInTime(warntime, dostrike)
@@ -176,10 +229,9 @@ local function SetSize(inst, sz, mod)
 end
 
 local function AutoSize(inst)
-    if inst.striketask == nil then
-        local rand = math.random()
-        SetSize(inst, rand <= .33 and "large" or (rand <= .67 and "medium" or "small"))
-    end
+    inst.autosizetask = nil
+    local rand = math.random()
+    inst:SetSize(rand <= .33 and "large" or (rand <= .67 and "medium" or "small"))
 end
 
 local function fn() 
@@ -203,12 +255,12 @@ local function fn()
         return inst
     end
 
-    inst.Transform:SetRotation(math.random(1, 360))
+    inst.Transform:SetRotation(math.random(360))
     inst.SetSize = SetSize
     inst.striketask = nil
 
-    -- For spawning these things in ways other than from meteor showers (failsafe set a size after .5s)
-    inst:DoTaskInTime(.5, AutoSize)
+    -- For spawning these things in ways other than from meteor showers (failsafe set a size after delay)
+    inst.autosizetask = inst:DoTaskInTime(0, AutoSize)
 
     inst.persists = false
 

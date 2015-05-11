@@ -211,30 +211,7 @@ function Builder:CanLearn(recipename)
 end
 
 function Builder:CanBuildAtPoint(pt, recipe)
-    if not TheWorld.Map:IsPassableAtPoint(pt:Get()) then
-        return false
-    end
-
-    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, 6, nil, { "player", "FX", "NOBLOCK" }) -- or we could include a flag to the search?
-    for k, v in pairs(ents) do
-        if v ~= self.inst and
-            v.components.placer == nil and
-            v.entity:IsVisible() and
-            not (v.replica.inventoryitem ~= nil and v.replica.inventoryitem:IsHeld()) then
-            local min_rad = recipe.min_spacing or 2 + 1.2
-            --local rad = (v.Physics and v.Physics:GetRadius() or 1) + 1.25
-            
-            --stupid finalling hack because it's too late to change stuff
-            if recipe.name == "treasurechest" and v.prefab == "pond" then
-                min_rad = min_rad + 1
-            end
-
-            if distsq(v:GetPosition(), pt) <= min_rad * min_rad then
-                return false
-            end
-        end
-    end
-    return true
+    return TheWorld.Map:CanDeployRecipeAtPoint(pt, recipe)
 end
 
 function Builder:MakeRecipeFromMenu(recipe)

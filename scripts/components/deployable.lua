@@ -46,8 +46,8 @@ function Deployable:SetUseGridPlacer(usegridplacer)
     self.usegridplacer = usegridplacer
 end
 
-function Deployable:DeploySpacingSq()
-    return DEPLOYSPACING_SQ[self.spacing]
+function Deployable:DeploySpacingRadius()
+    return DEPLOYSPACING_RADIUS[self.spacing]
 end
 
 function Deployable:CanDeploy(pt, mouseover)

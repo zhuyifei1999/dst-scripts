@@ -35,6 +35,34 @@ local function OnCollide(inst, other)
     end
 end
 
+local function RetargetFn(inst)
+    local mother = inst.components.entitytracker:GetEntity("mother")
+    if mother and not inst.components.combat:HasTarget() then
+        local group_targets = inst.components.grouptargeter:GetTargets()
+        local targets = {}
+        for k,v in pairs(group_targets) do
+            table.insert(targets, k)
+        end
+
+        local target = GetClosest(mother, targets)
+        if target then
+            return target
+        end
+    elseif not inst.components.combat:HasTarget() or not mother then
+        --Shouldn't be in the world. Leave.
+        inst.reset = true
+    end
+end
+
+local function KeepTargetFn(inst, target)
+    local mother = inst.components.entitytracker:GetEntity("mother")
+
+    if mother then
+        local distance = mother:GetPosition():Dist(target:GetPosition())
+        return distance <= 75
+    end
+end
+
 local function LockTarget(inst, target)
     inst.components.combat:SetTarget(target)
 end
@@ -49,7 +77,7 @@ end
 local function OnNewTarget(inst, data)
     local old = data.oldtarget
     if old and old.lavae_ontargetdeathfn then 
-        inst:RemoveEventCallback("death", old.lavae_ontargetdeathfn, old) 
+        inst:RemoveEventCallback("death", old.lavae_ontargetdeathfn, old)
     end
 
     local new = data.target
@@ -110,6 +138,7 @@ local function fn()
     inst:AddComponent("locomotor")
     inst:AddComponent("grouptargeter")
     inst:AddComponent("homeseeker")
+    inst:AddComponent("entitytracker")
     inst:SetStateGraph("SGlavae")
     inst:SetBrain(brain)
 
@@ -119,6 +148,8 @@ local function fn()
     inst.components.combat:SetDefaultDamage(TUNING.LAVAE_DAMAGE)
     inst.components.combat:SetRange(TUNING.LAVAE_ATTACK_RANGE, TUNING.LAVAE_HIT_RANGE)
     inst.components.combat:SetAttackPeriod(TUNING.LAVAE_ATTACK_PERIOD)
+    inst.components.combat:SetKeepTargetFunction(KeepTargetFn)
+    inst.components.combat:SetRetargetFunction(3, RetargetFn)
 
     inst.components.locomotor.walkspeed = 5.5
 
