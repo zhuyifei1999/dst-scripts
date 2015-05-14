@@ -325,7 +325,7 @@ return
         elseif difficulty == "squall" then
             TheWorld:PushEvent("ms_setmoisturescale", 30)
         elseif difficulty == "always" then
-            TheWorld:PushEvent("ms_setprecipmode", "always")
+            TheWorld:PushEvent("ms_setprecipitationmode", "always")
         end
     end,
 
