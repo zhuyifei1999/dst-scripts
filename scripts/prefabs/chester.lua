@@ -106,7 +106,7 @@ end
 --]]
 
 local function CanMorph(inst)
-    if not (TheWorld.state.isfullmoon and TheWorld.state.isnight) or inst.ChesterState ~= "NORMAL" then
+    if inst.ChesterState ~= "NORMAL" or not TheWorld.state.isfullmoon then
         return false, false
     end
 
@@ -144,10 +144,9 @@ end
 
 local function DoMorph(inst, fn)
     inst.MorphChester = nil
-    inst:StopWatchingWorldState("startnight", CheckForMorph)
     inst:StopWatchingWorldState("isfullmoon", CheckForMorph)
     inst:RemoveEventCallback("onclose", CheckForMorph)
-    fn(inst)
+    fn(inst) 
 end
 
 local function MorphChester(inst)
@@ -298,7 +297,6 @@ local function create_chester()
 
     inst.ChesterState = "NORMAL"
     inst.MorphChester = MorphChester
-    inst:WatchWorldState("startnight", CheckForMorph)
     inst:WatchWorldState("isfullmoon", CheckForMorph)
     inst:ListenForEvent("onclose", CheckForMorph)
 

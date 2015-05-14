@@ -227,8 +227,27 @@ function ServerCreationScreen:OnConfigureButton()
     end)
 end
 
+
+function BuildTagsStringHosting(creationScreen)
+    if TheNet:IsDedicated() then return nil end
+    
+    local tagsTable = {}
+
+    table.insert(tagsTable, creationScreen.game_mode.spinner:GetSelectedData())
+    
+    if creationScreen.pvp.spinner:GetSelectedData() then
+        table.insert(tagsTable, "pvp")
+    end
+    
+    if creationScreen.friends_only.spinner:GetSelectedData() then
+        table.insert(tagsTable, "friendsonly")
+    end
+    
+    return BuildTagsStringCommon(tagsTable)
+end
+
 function ServerCreationScreen:Create()
-    local function onsaved()
+    local function onsaved()    
         StartNextInstance({reset_action=RESET_ACTION.LOAD_SLOT, save_slot = self.saveslot})
     end
     local function GetEnabledDLCs()
@@ -321,10 +340,10 @@ function ServerCreationScreen:Create()
 			TheNet:SetDefaultMaxPlayers(self.max_players.spinner:GetSelectedData())
 			TheNet:SetDefaultPvpSetting(self.pvp.spinner:GetSelectedData())
 			TheNet:SetFriendsOnlyServer(self.friends_only.spinner:GetSelectedData())
-			-- Collect the tags we want and set the tags string
-			local tags = ""
-			tags = BuildTagsString(tags)
-			TheNet:SetServerTags(tags)
+			
+            -- Collect the tags we want and set the tags string
+            local tags = BuildTagsStringHosting(self)
+            TheNet:SetServerTags(tags)
 
 			local start_in_online_mode = self.online_mode.spinner:GetSelectedData()
             if TheFrontEnd:GetIsOfflineMode() then

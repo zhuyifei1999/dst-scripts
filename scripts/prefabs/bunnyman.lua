@@ -16,57 +16,58 @@ local prefabs =
     "meat",
     "monstermeat",
     "manrabbit_tail",
+    "beardhair",
+    "carrot",
 }
 
-local brain = require "brains/bunnymanbrain"
+local beardlordloot = { "beardhair", "beardhair", "monstermeat" }
+local regularloot = { "carrot", "carrot" }
+
+local brain = require("brains/bunnymanbrain")
 
 local MAX_TARGET_SHARES = 5
 local SHARE_TARGET_DIST = 30
 
-local function ontalk(inst, script)
-	inst.SoundEmitter:PlaySound("dontstarve/creatures/bunnyman/idle_med")
-	--inst.SoundEmitter:PlaySound("dontstarve/pig/grunt")
+local function IsCrazyGuy(guy)
+    return guy ~= nil and guy.components.sanity ~= nil and guy.components.sanity:IsCrazy() and guy:HasTag("player")
+end
+
+local function ontalk(inst)
+    inst.SoundEmitter:PlaySound("dontstarve/creatures/bunnyman/idle_med")
 end
 
 local function CalcSanityAura(inst, observer)
-
-	if inst.beardlord then
-        return -TUNING.SANITYAURA_MED
-    end
-    
-    if inst.components.follower and inst.components.follower.leader == observer then
-		return TUNING.SANITYAURA_SMALL
-	end
-	
-	return 0
+    return (IsCrazyGuy(observer) and -TUNING.SANITYAURA_MED)
+        or (inst.components.follower ~= nil and
+            inst.components.follower.leader == observer and
+            -TUNING.SANITYAURA_SMALL)
+        or 0
 end
 
 local function ShouldAcceptItem(inst, item)
-    if item.components.equippable and item.components.equippable.equipslot == EQUIPSLOTS.HEAD then
-        return true
-    end
-    if item.components.edible then
-        
-        if (item.prefab == "carrot" or item.prefab == "carrot_cooked")
-           and inst.components.follower.leader
-           and inst.components.follower:GetLoyaltyPercent() > 0.9 then
-            return false
-        end
-        
-        return true
-    end
+    return
+        (   --accept all hats!
+            item.components.equippable ~= nil and
+            item.components.equippable.equipslot == EQUIPSLOTS.HEAD
+        ) or
+        (   --accept food, but not too many carrots for loyalty!
+            item.components.edible ~= nil and
+            (   (item.prefab ~= "carrot" and item.prefab ~= "carrot_cooked") or
+                inst.components.follower.leader == nil or
+                inst.components.follower:GetLoyaltyPercent() <= .9
+            )
+        )
 end
 
 local function OnGetItemFromPlayer(inst, giver, item)
-    
     --I eat food
-    if item.components.edible then
-        if (item.prefab == "carrot" or item.prefab == "carrot_cooked") then
-            if inst.components.combat.target and inst.components.combat.target == giver then
+    if item.components.edible ~= nil then
+        if item.prefab == "carrot" or item.prefab == "carrot_cooked" then
+            if inst.components.combat.target == giver then
                 inst.components.combat:SetTarget(nil)
-            elseif giver.components.leader then
-				inst.SoundEmitter:PlaySound("dontstarve/common/makeFriend")
-				giver.components.leader:AddFollower(inst)
+            elseif giver.components.leader ~= nil then
+                inst.SoundEmitter:PlaySound("dontstarve/common/makeFriend")
+                giver.components.leader:AddFollower(inst)
                 inst.components.follower:AddLoyaltyTime(TUNING.RABBIT_CARROT_LOYALTY)
             end
         end
@@ -77,12 +78,12 @@ local function OnGetItemFromPlayer(inst, giver, item)
     end
 
     --I wear hats
-    if item.components.equippable and item.components.equippable.equipslot == EQUIPSLOTS.HEAD then
+    if item.components.equippable ~= nil and item.components.equippable.equipslot == EQUIPSLOTS.HEAD then
         local current = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HEAD)
-        if current then
+        if current ~= nil then
             inst.components.inventory:DropItem(current)
         end
-        
+
         inst.components.inventory:Equip(item)
         inst.AnimState:Show("hat")
     end
@@ -107,112 +108,55 @@ local function OnNewTarget(inst, data)
 end
 
 local function is_meat(item)
-	return item.components.edible and item.components.edible.foodtype == FOODTYPE.MEAT
+    return item.components.edible ~= nil  and item.components.edible.foodtype == FOODTYPE.MEAT
 end
 
 local function NormalRetargetFn(inst)
-    
     return FindEntity(inst, TUNING.PIG_TARGET_DIST,
         function(guy)
-            if not guy.components.health:IsDead() and inst.components.combat:CanTarget(guy) then
-                if guy:HasTag("monster") then return guy end
-                if guy:HasTag("player") and guy.components.inventory and guy:GetDistanceSqToInst(inst) < TUNING.BUNNYMAN_SEE_MEAT_DIST*TUNING.BUNNYMAN_SEE_MEAT_DIST and guy.components.inventory:FindItem(is_meat ) then return guy end
-            end
+            return inst.components.combat:CanTarget(guy)
+                and (guy:HasTag("monster")
+                    or (guy.components.inventory ~= nil and
+                        guy:IsNear(inst, TUNING.BUNNYMAN_SEE_MEAT_DIST) and
+                        guy.components.inventory:FindItem(is_meat) ~= nil))
         end,
-        {"_health"}, -- see entityreplica.lua
+        { "_combat", "_health" }, -- see entityreplica.lua
         nil,
-        {"monster","player"}
-        )
+        { "monster", "player" })
 end
 
 local function NormalKeepTargetFn(inst, target)
-    
-    return inst.components.combat:CanTarget(target) and not (target.sg and target.sg:HasStateTag("hiding")) 
+    return inst.components.combat:CanTarget(target) and not (target.sg ~= nil and target.sg:HasStateTag("hiding"))
 end
 
-local function giveupstring(combatcmp, target)
+local function giveupstring()
     return STRINGS.RABBIT_GIVEUP[math.random(#STRINGS.RABBIT_GIVEUP)]
 end
 
 local function battlecry(combatcmp, target)
-    
-    if target and target.components.inventory then
-    
-
-        local item = target.components.inventory:FindItem(function(item) return item.components.edible and item.components.edible.foodtype == FOODTYPE.MEAT end )
-        if item then
-            return STRINGS.RABBIT_MEAT_BATTLECRY[math.random(#STRINGS.RABBIT_MEAT_BATTLECRY)]
-        end
-    end
-    return STRINGS.RABBIT_BATTLECRY[math.random(#STRINGS.RABBIT_BATTLECRY)]
-end
-
-local function SetBeardlord(inst)
-	if not inst.beardlord then
-		inst.beardlord = true
-
-		-- KAJ: DISABLED, this is different behaviour on client and server
-		--[[
-        inst.components.combat:SetDefaultDamage(TUNING.BEARDLORD_DAMAGE)
-        inst.components.combat:SetAttackPeriod(TUNING.BEARDLORD_ATTACK_PERIOD)
-        inst.components.combat.panic_thresh = TUNING.BEARDLORD_PANIC_THRESH
-		]]
-
-		-- KAJ: DISABLED, this is different behaviour on client and server
-		--[[
-        inst.components.sleeper:SetSleepTest(function() return false end)
-        inst.components.sleeper:SetWakeTest(function() return true end)
-		]]
-	end
-end
-
-local function SetNormalRabbit(inst)
-	if inst.beardlord or inst.beardlord == nil then
-		inst.beardlord = false
-        if inst.components.hauntable then 
-            inst.components.hauntable.haunted = false 
-        end
-        
-  
-		-- TODO: Not sure what to do with this. It`s different depending on who sees it
-		-- KAJ: DISABLED, this is different behaviour on client and server
-		--[[
-        inst.components.combat:SetDefaultDamage(TUNING.BUNNYMAN_DAMAGE)
-        inst.components.combat:SetAttackPeriod(TUNING.BUNNYMAN_ATTACK_PERIOD)
-        inst.components.combat.panic_thresh = TUNING.BUNNYMAN_PANIC_THRESH
-		]]
-		-- KAJ: DISABLED, this is different behaviour on client and server
-		--[[
-        inst.components.sleeper:SetDefaultTests()
-		]]
-	end
-	
+    return target ~= nil
+        and target.components.inventory ~= nil
+        and target.components.inventory:FindItem(is_meat) ~= nil
+        and STRINGS.RABBIT_MEAT_BATTLECRY[math.random(#STRINGS.RABBIT_MEAT_BATTLECRY)]
+        or STRINGS.RABBIT_BATTLECRY[math.random(#STRINGS.RABBIT_BATTLECRY)]
 end
 
 local function GetStatus(inst)
-    if inst.components.follower.leader ~= nil then
-        return "FOLLOWER"
-    end
+    return inst.components.follower.leader ~= nil and "FOLLOWER" or nil
 end
 
-local function LootSetupFunction(self)
-	local sane = true
-	-- were we killed by an insane player?
-	if self.inst.causeofdeath and self.inst.causeofdeath:HasTag("player") then
-		if self.inst.causeofdeath.components.sanity ~= nil and self.inst.causeofdeath.components.sanity:IsCrazy() then
-			sane = false
-		end
-	end
-	if not sane then
-		-- beard lord
-        self.inst.components.lootdropper:SetLoot({"beardhair", "beardhair", "monstermeat"})
-	else
-		-- regular loot
-        self.inst.components.lootdropper:SetLoot({"carrot","carrot"})
-        self.inst.components.lootdropper:AddRandomLoot("meat",3)
-        self.inst.components.lootdropper:AddRandomLoot("manrabbit_tail",1)
+local function LootSetupFunction(lootdropper)
+    local guy = lootdropper.inst.causeofdeath
+    if IsCrazyGuy(guy ~= nil and guy.components.follower ~= nil and guy.components.follower.leader or guy) then
+        -- beard lord
+        self.inst.components.lootdropper:SetLoot(beardlordloot)
+    else
+        -- regular loot
+        self.inst.components.lootdropper:SetLoot(regularloot)
+        self.inst.components.lootdropper:AddRandomLoot("meat", 3)
+        self.inst.components.lootdropper:AddRandomLoot("manrabbit_tail", 1)
         self.inst.components.lootdropper.numrandomloot = 1
-	end
+    end
 end
 
 local function fn()
@@ -315,7 +259,7 @@ local function fn()
     inst.components.trader.onaccept = OnGetItemFromPlayer
     inst.components.trader.onrefuse = OnRefuseItem
     inst.components.trader.deleteitemonaccept = false
-        
+
     ------------------------------------------
 
     inst:AddComponent("sanityaura")
@@ -324,21 +268,18 @@ local function fn()
     ------------------------------------------
 
     inst:AddComponent("sleeper")
-    
+
     ------------------------------------------
     MakeMediumFreezableCharacter(inst, "pig_torso")
-    
+
     ------------------------------------------
 
     inst:AddComponent("inspectable")
     inst.components.inspectable.getstatus = GetStatus
     ------------------------------------------
-    
+
     inst:ListenForEvent("attacked", OnAttacked)    
     inst:ListenForEvent("newcombattarget", OnNewTarget)
-
-    --inst.components.werebeast:SetOnWereFn(SetBeardlord)
-    --inst.components.werebeast:SetOnNormaleFn(SetNormalRabbit)
 
     inst.components.sleeper:SetResistance(2)
     inst.components.sleeper.nocturnal = true
@@ -359,20 +300,8 @@ local function fn()
     inst.components.health:SetMaxHealth(TUNING.BUNNYMAN_HEALTH)
 
     inst.components.trader:Enable()
-    --inst.Label:Enable(true)
-    --inst.components.talker:StopIgnoringAll()
 
     MakeHauntablePanic(inst, 5, nil, 5)
-    -- AddHauntableCustomReaction(inst, function(inst, haunter)
-    --     if math.random() <= TUNING.HAUNT_CHANCE_OCCASIONAL then
-    --         SetBeardlord(inst)
-    --         inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
-    --         if inst.checktask then
-    --             inst.checktask:Cancel()
-    --             inst.checktask = nil
-    --         end
-    --     end
-    -- end, true, nil, true)
 
     inst:SetBrain(brain)
     inst:SetStateGraph("SGbunnyman")

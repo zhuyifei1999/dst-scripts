@@ -238,20 +238,32 @@ function c_sel_health()
 end
 
 function c_sethealth(n)
-    SuUsed("c_sethealth", true)
-	ConsoleCommandPlayer().components.health:SetPercent(n)
+    local player = ConsoleCommandPlayer()
+    if player ~= nil and not player:HasTag("playerghost") then
+        SuUsed("c_sethealth", true)
+        player.components.health:SetPercent(n)
+    end
 end
 function c_setminhealth(n)
-    SuUsed("c_minhealth", true)
-    ConsoleCommandPlayer().components.health:SetMinHealth(n)
+    local player = ConsoleCommandPlayer()
+    if player ~= nil and not player:HasTag("playerghost") then
+        SuUsed("c_minhealth", true)
+        player.components.health:SetMinHealth(n)
+    end
 end
 function c_setsanity(n)
-    SuUsed("c_setsanity", true)
-	ConsoleCommandPlayer().components.sanity:SetPercent(n)
+    local player = ConsoleCommandPlayer()
+    if player ~= nil and not player:HasTag("playerghost") then
+        SuUsed("c_setsanity", true)
+        player.components.sanity:SetPercent(n)
+    end
 end
 function c_sethunger(n)
-    SuUsed("c_sethunger", true)
-	ConsoleCommandPlayer().components.hunger:SetPercent(n)
+    local player = ConsoleCommandPlayer()
+    if player ~= nil and not player:HasTag("playerghost") then
+        SuUsed("c_sethunger", true)
+        ConsoleCommandPlayer().components.hunger:SetPercent(n)
+    end
 end
 
 -- Work in progress direct connect code.
@@ -390,23 +402,19 @@ function c_findnext(prefab, radius, inst)
 end
 
 function c_godmode()
-	if ConsoleCommandPlayer() then
+    local player = ConsoleCommandPlayer()
+    if player ~= nil then
         SuUsed("c_godmode", true)
-		if ConsoleCommandPlayer():HasTag("playerghost") then
-			ConsoleCommandPlayer():PushEvent("respawnfromghost")
-	        c_sethunger(1)
-	        c_sethealth(1)
-	        c_setsanity(1)
-			print("Reviving",ConsoleCommandPlayer().name,"from ghost.")
-			return
-		else
-			if ConsoleCommandPlayer().components.health ~= nil then
-				local godmode = ConsoleCommandPlayer().components.health.invincible
-				ConsoleCommandPlayer().components.health:SetInvincible(not godmode)
-				print("God mode: ",not godmode) 
-			end
-		end
-	end
+        if player:HasTag("playerghost") then
+            player:PushEvent("respawnfromghost")
+            print("Reviving "..player.name.." from ghost.")
+            return
+        elseif player.components.health ~= nil then
+            local godmode = player.components.health.invincible
+            player.components.health:SetInvincible(not godmode)
+            print("God mode: "..tostring(not godmode))
+        end
+    end
 end
 
 function c_find(prefab, radius, inst)

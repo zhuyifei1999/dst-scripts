@@ -12,75 +12,77 @@ local prefabs =
     "mosquito",
 }
 
-local function ReturnChildren(inst)
-    for k,child in pairs(inst.components.childspawner.childrenoutside) do
-        if child.components.homeseeker then
-            child.components.homeseeker:GoHome()
+local function SpawnPlants(inst)
+    inst.task = nil
+
+    if inst.plant_ents ~= nil then
+        return
+    end
+
+    if inst.plants == nil then
+        inst.plants = {}
+        for i = 1, math.random(2, 4) do
+            local theta = math.random() * 2 * PI
+            table.insert(inst.plants,
+            {
+                offset =
+                {
+                    math.sin(theta) * 1.9 + math.random() * .3,
+                    0,
+                    math.cos(theta) * 2.1 + math.random() * .3,
+                },
+            })
         end
-        child:PushEvent("gohome")
+    end
+
+    inst.plant_ents = {}
+
+    for i, v in pairs(inst.plants) do
+        if type(v.offset) == "table" and #v.offset == 3 then
+            local plant = SpawnPrefab(inst.planttype)
+            if plant ~= nil then
+                plant.entity:SetParent(inst.entity)
+                plant.Transform:SetPosition(unpack(v.offset))
+                plant.persists = false
+                table.insert(inst.plant_ents, plant)
+            end
+        end
     end
 end
 
-local function SpawnPlants(inst, plantname)
-
-    if inst.decor then
-        for i,item in ipairs(inst.decor) do
-            item:Remove()
-        end
-    end
-    inst.decor = {}
-
-    local plant_offsets = {}
-
-    for i=1,math.random(2,4) do
-        local a = math.random()*math.pi*2
-        local x = math.sin(a)*1.9+math.random()*0.3
-        local z = math.cos(a)*2.1+math.random()*0.3
-        table.insert(plant_offsets, {x,0,z})
-    end
-
-    for k, offset in pairs( plant_offsets ) do
-        local plant = SpawnPrefab( plantname )
-        plant.entity:SetParent( inst.entity )
-        plant.Transform:SetPosition( offset[1], offset[2], offset[3] )
-        table.insert( inst.decor, plant )
-        
-        plant:ListenForEvent("onremove", function()
-            for k,v in pairs(inst.decor) do
-                if v == plant then
-                    table.remove( inst.decor, k )
-                    return
-                end
+local function DespawnPlants(inst)
+    if inst.plant_ents ~= nil then
+        for i, v in ipairs(inst.plant_ents) do
+            if v:IsValid() then
+                v:Remove()
             end
-        end, plant)
+        end
+
+        inst.plant_ents = nil
     end
+
+    inst.plants = nil
 end
 
-local function OnSnowLevel(inst, snowlevel, thresh)
-    thresh = thresh or .02
+local function OnSnowLevel(inst, snowlevel)
+    if snowlevel > .02 then
+        if not inst.frozen then
+            inst.frozen = true
+            inst.AnimState:PlayAnimation("frozen")
+            inst.SoundEmitter:PlaySound("dontstarve/winter/pondfreeze")
+            inst.components.childspawner:StopSpawning()
+            inst.components.fishable:Freeze()
 
-    if snowlevel > thresh and not inst.frozen then
-        inst.frozen = true
-        inst.AnimState:PlayAnimation("frozen")
-        inst.SoundEmitter:PlaySound("dontstarve/winter/pondfreeze")
-        inst.components.childspawner:StopSpawning()
-        inst.components.fishable:Freeze()
+            inst.Physics:SetCollisionGroup(COLLISION.OBSTACLES)
+            inst.Physics:ClearCollisionMask()
+            inst.Physics:CollidesWith(COLLISION.WORLD)
+            inst.Physics:CollidesWith(COLLISION.ITEMS)
 
-        inst.Physics:SetCollisionGroup(COLLISION.OBSTACLES)
-        inst.Physics:ClearCollisionMask()
-        inst.Physics:CollidesWith(COLLISION.WORLD)
-        inst.Physics:CollidesWith(COLLISION.ITEMS)
+            DespawnPlants(inst)
 
-        for i,item in ipairs(inst.decor) do
-            if item:IsValid() then
-                item:Remove()
-            end
+            inst:RemoveTag("watersource")
         end
-        inst.decor = {}
-
-        inst:RemoveTag("watersource")
-
-    elseif snowlevel < thresh and inst.frozen then
+    elseif inst.frozen then
         inst.frozen = false
         inst.AnimState:PlayAnimation("idle"..inst.pondtype)
         inst.components.childspawner:StartSpawning()
@@ -92,14 +94,23 @@ local function OnSnowLevel(inst, snowlevel, thresh)
         inst.Physics:CollidesWith(COLLISION.ITEMS)
         inst.Physics:CollidesWith(COLLISION.CHARACTERS)
 
-        SpawnPlants(inst, inst.planttype)
+        SpawnPlants(inst)
 
         inst:AddTag("watersource")
+    elseif inst.frozen == nil then
+        inst.frozen = false
+        SpawnPlants(inst)
     end
 end
 
-local function onload(inst, data, newents)
-    OnSnowLevel(inst, TheWorld.state.snowlevel)
+local function OnSave(inst, data)
+    data.plants = inst.plants
+end
+
+local function OnLoad(inst, data)
+    if data ~= nil and data.plants ~= nil and inst.plants == nil and inst.task ~= nil then
+        inst.plants = data.plants
+    end
 end
 
 local function commonfn(pondtype)
@@ -134,13 +145,15 @@ local function commonfn(pondtype)
 
     inst.pondtype = pondtype
 
-    inst:AddComponent( "childspawner" )
+    inst:AddComponent("childspawner")
     inst.components.childspawner:SetRegenPeriod(TUNING.POND_REGEN_TIME)
     inst.components.childspawner:SetSpawnPeriod(TUNING.POND_SPAWN_TIME)
-    inst.components.childspawner:SetMaxChildren(math.random(3,4))
+    inst.components.childspawner:SetMaxChildren(math.random(3, 4))
     inst.components.childspawner:StartRegen()
 
-    inst.frozen = false
+    inst.frozen = nil
+    inst.plants = nil
+    inst.plant_ents = nil
 
     inst:AddComponent("inspectable")
     inst.components.inspectable.nameoverride = "pond"
@@ -148,9 +161,19 @@ local function commonfn(pondtype)
     inst:AddComponent("fishable")
     inst.components.fishable:SetRespawnTime(TUNING.FISH_RESPAWN_TIME)
 
-    inst.OnLoad = onload
+    inst.OnSave = OnSave
+    inst.OnLoad = OnLoad
 
     return inst
+end
+
+local function ReturnChildren(inst)
+    for k, child in pairs(inst.components.childspawner.childrenoutside) do
+        if child.components.homeseeker ~= nil then
+            child.components.homeseeker:GoHome()
+        end
+        child:PushEvent("gohome")
+    end
 end
 
 local function OnIsDay(inst, isday)
@@ -162,6 +185,14 @@ local function OnIsDay(inst, isday)
     end
 end
 
+local function OnInit(inst)
+    inst.task = nil
+    inst:WatchWorldState("isday", OnIsDay)
+    inst:WatchWorldState("snowlevel", OnSnowLevel)
+    OnIsDay(inst, TheWorld.state.isday)
+    OnSnowLevel(inst, TheWorld.state.snowlevel)
+end
+
 local function pondmos()
     local inst = commonfn("_mos")
 
@@ -171,12 +202,10 @@ local function pondmos()
 
     inst.components.childspawner.childname = "mosquito"
     inst.components.fishable:AddFish("fish")
-    inst.planttype = "marsh_plant"
-    SpawnPlants(inst,inst.planttype )
 
+    inst.planttype = "marsh_plant"
     inst.dayspawn = false
-    inst:WatchWorldState("isday", OnIsDay)
-    inst:WatchWorldState("snowlevel", OnSnowLevel)
+    inst.task = inst:DoTaskInTime(0, OnInit)
 
     return inst
 end 
@@ -190,12 +219,10 @@ local function pondfrog()
 
     inst.components.childspawner.childname = "frog"
     inst.components.fishable:AddFish("fish")
-    inst.planttype = "marsh_plant"
-    SpawnPlants(inst, inst.planttype)
 
+    inst.planttype = "marsh_plant"
     inst.dayspawn = true
-    inst:WatchWorldState("isday", OnIsDay)
-    inst:WatchWorldState("snowlevel", OnSnowLevel)
+    inst.task = inst:DoTaskInTime(0, OnInit)
 
     return inst
 end
@@ -208,8 +235,9 @@ local function pondcave()
     end
 
     inst.components.fishable:AddFish("eel")
+
     inst.planttype = "pond_algae"
-    SpawnPlants(inst, inst.planttype)
+    inst.task = inst:DoTaskInTime(0, SpawnPlants)
 
     --These spawn nothing at this time.
     return inst

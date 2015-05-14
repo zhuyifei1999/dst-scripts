@@ -12,17 +12,16 @@ it should head back there. Killer bees come out to defend beehives when they, th
 ]]--
 local assets =
 {
-	Asset("ANIM", "anim/bee.zip"),
-	Asset("ANIM", "anim/bee_build.zip"),
-	Asset("ANIM", "anim/bee_angry_build.zip"),
-	Asset("SOUND", "sound/bee.fsb"),
+    Asset("ANIM", "anim/bee.zip"),
+    Asset("ANIM", "anim/bee_build.zip"),
+    Asset("ANIM", "anim/bee_angry_build.zip"),
+    Asset("SOUND", "sound/bee.fsb"),
 }
-    
-    
+
 local prefabs =
 {
-	"stinger",
-	"honey",
+    "stinger",
+    "honey",
 }
 
 local workersounds =
@@ -44,44 +43,44 @@ local killersounds =
 }
 
 local function OnWorked(inst, worker)
-    local owner = inst.components.homeseeker and inst.components.homeseeker.home
-    if owner and owner.components.childspawner then
+    local owner = inst.components.homeseeker ~= nil and inst.components.homeseeker.home
+    if owner ~= nil and owner.components.childspawner ~= nil then
         owner.components.childspawner:OnChildKilled(inst)
     end
-    if worker.components.inventory then
-        
+    if worker.components.inventory ~= nil then
         if METRICS_ENABLED then
-			FightStat_Caught(inst)
-		end
+            FightStat_Caught(inst)
+        end
 
-		inst.SoundEmitter:KillAllSounds()
-		
+        inst.SoundEmitter:KillAllSounds()
+
         worker.components.inventory:GiveItem(inst, nil, inst:GetPosition())
     end
 end
 
 local function OnDropped(inst)
     inst.sg:GoToState("catchbreath")
-    if inst.components.workable then
+    if inst.components.workable ~= nil then
         inst.components.workable:SetWorkLeft(1)
     end
-    if inst.brain then
-		inst.brain:Start()
-	end
-	if inst.sg then
-	    inst.sg:Start()
-	end
-	if inst.components.stackable then
-	    while inst.components.stackable:StackSize() > 1 do
-	        local item = inst.components.stackable:Get()
-	        if item then
-	            if item.components.inventoryitem then
-	                item.components.inventoryitem:OnDropped()
-	            end
-	            item.Physics:Teleport(inst.Transform:GetWorldPosition() )
-	        end
-	    end
-	end
+    if inst.brain ~= nil then
+        inst.brain:Start()
+    end
+    if inst.sg ~= nil then
+        inst.sg:Start()
+    end
+    if inst.components.stackable ~= nil and inst.components.stackable:IsStack() then
+        local x, y, z = inst.Transform:GetWorldPosition()
+        while inst.components.stackable:IsStack() do
+            local item = inst.components.stackable:Get()
+            if item ~= nil then
+                if item.components.inventoryitem ~= nil then
+                    item.components.inventoryitem:OnDropped()
+                end
+                item.Physics:Teleport(x, y, z)
+            end
+        end
+    end
 end
 
 local function OnPickedUp(inst)
@@ -90,36 +89,36 @@ local function OnPickedUp(inst)
     inst.SoundEmitter:KillAllSounds()
 end
 
-local function SpringBeeRetarget(inst)
-    if TheWorld.state.isspring then
-        return FindEntity(inst, 4, function(guy)
-            return (guy:HasTag("character") or guy:HasTag("animal") or guy:HasTag("monster") )
-                and not guy:HasTag("insect")
-                and inst.components.combat:CanTarget(guy)
-        end)
-    else
-        return nil
-    end
+local function KillerRetarget(inst)
+    return FindEntity(inst, SpringCombatMod(8),
+        function(guy)
+            return inst.components.combat:CanTarget(guy)
+        end,
+        { "_combat", "_health" },
+        { "insect", "INLIMBO" },
+        { "character", "animal", "monster" })
 end
 
-local function KillerRetarget(inst)
-    return FindEntity(inst, SpringCombatMod(8), function(guy)
-        return inst.components.combat:CanTarget(guy)
-    end,
-    nil,
-    {"insect"},
-    {"character","animal","monster"}
-    )
+local function SpringBeeRetarget(inst)
+    return TheWorld.state.isspring and
+        FindEntity(inst, 4,
+            function(guy)
+                return inst.components.combat:CanTarget(guy)
+            end,
+            { "_combat", "_health" },
+            { "insect", "INLIMBO" },
+            { "character", "animal", "monster" })
+        or nil
 end
 
 local function commonfn(build, tags)
-	local inst = CreateEntity()
-	
+    local inst = CreateEntity()
+
     inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
-	inst.entity:AddLightWatcher()
-	inst.entity:AddDynamicShadow()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
+    inst.entity:AddLightWatcher()
+    inst.entity:AddDynamicShadow()
     inst.entity:AddNetwork()
 
     MakeCharacterPhysics(inst, 1, .5)
@@ -139,7 +138,7 @@ local function commonfn(build, tags)
     for i, v in ipairs(tags) do
         inst:AddTag(v)
     end
-    
+
     inst.AnimState:SetBank("bee")
     inst.AnimState:SetBuild(build)
     inst.AnimState:PlayAnimation("idle")
@@ -155,53 +154,54 @@ local function commonfn(build, tags)
 
     inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
     inst.components.locomotor:EnableGroundSpeedMultiplier(false)
-	inst.components.locomotor:SetTriggersCreep(false)
+    inst.components.locomotor:SetTriggersCreep(false)
     inst:SetStateGraph("SGbee")
-    
-    inst:AddComponent("stackable")
-	inst:AddComponent("inventoryitem")
-	inst.components.inventoryitem.nobounce = true
-	-- inst.components.inventoryitem:SetOnDroppedFn(OnDropped) Done in MakeFeedablePet
-	-- inst.components.inventoryitem:SetOnPutInInventoryFn(OnPickedUp)
-	inst.components.inventoryitem.canbepickedup = false
 
-	---------------------
-	
-	inst:AddComponent("lootdropper")
-	inst.components.lootdropper:AddRandomLoot("honey", 1)
-	inst.components.lootdropper:AddRandomLoot("stinger", 5)   
-	inst.components.lootdropper.numrandomloot = 1
-	
-	 ------------------
-	inst:AddComponent("workable")
-	inst.components.workable:SetWorkAction(ACTIONS.NET)
-	inst.components.workable:SetWorkLeft(1)
-	inst.components.workable:SetOnFinishCallback(OnWorked)
-   
+    inst:AddComponent("stackable")
+    inst:AddComponent("inventoryitem")
+    inst.components.inventoryitem.nobounce = true
+    -- inst.components.inventoryitem:SetOnDroppedFn(OnDropped) Done in MakeFeedablePet
+    -- inst.components.inventoryitem:SetOnPutInInventoryFn(OnPickedUp)
+    inst.components.inventoryitem.canbepickedup = false
+    inst.components.inventoryitem.canbepickedupalive = true
+
+    ---------------------
+
+    inst:AddComponent("lootdropper")
+    inst.components.lootdropper:AddRandomLoot("honey", 1)
+    inst.components.lootdropper:AddRandomLoot("stinger", 5)   
+    inst.components.lootdropper.numrandomloot = 1
+
+    ------------------
+    inst:AddComponent("workable")
+    inst.components.workable:SetWorkAction(ACTIONS.NET)
+    inst.components.workable:SetWorkLeft(1)
+    inst.components.workable:SetOnFinishCallback(OnWorked)
+
     MakeSmallBurnableCharacter(inst, "body", Vector3(0, -1, 1))
     MakeTinyFreezableCharacter(inst, "body", Vector3(0, -1, 1))
-    
+
     ------------------
-    
+
     inst:AddComponent("health")
     inst:AddComponent("combat")
     inst.components.combat.hiteffectsymbol = "body"
 
     ------------------
-    
+
     inst:AddComponent("sleeper")
     ------------------
-    
+
     inst:AddComponent("knownlocations")
 
     ------------------
-    
+
     inst:AddComponent("inspectable")
 
     ------------------
 
     inst:AddComponent("tradable")
-    
+
     inst:ListenForEvent("attacked", beecommon.OnAttacked)
     inst:ListenForEvent("worked", beecommon.OnWorked)
 
@@ -228,19 +228,20 @@ end
 
 local function workerbee()
     local inst = commonfn("bee_build", { "worker" })
-    if TheWorld.state.isspring then
-        inst.AnimState:SetBuild("bee_angry_build")
-    end
 
     if not TheWorld.ismastersim then
         return inst
+    end
+
+    if TheWorld.state.isspring then
+        inst.AnimState:SetBuild("bee_angry_build")
     end
 
     inst.components.health:SetMaxHealth(TUNING.BEE_HEALTH)
     inst.components.combat:SetDefaultDamage(TUNING.BEE_DAMAGE)
     inst.components.combat:SetAttackPeriod(TUNING.BEE_ATTACK_PERIOD)
     inst.components.combat:SetRetargetFunction(2, SpringBeeRetarget)
-	inst:AddComponent("pollinator")
+    inst:AddComponent("pollinator")
     inst:SetBrain(workerbrain)
     inst.sounds = workersounds
 
@@ -248,8 +249,14 @@ local function workerbee()
     inst.OnEntitySleep = OnSleep    
 
     MakeHauntableChangePrefab(inst, "killerbee")
-    
+
     return inst
+end
+
+local function OnSpawnedFromHaunt(inst)
+    if inst.components.hauntable ~= nil then
+        inst.components.hauntable:Panic()
+    end
 end
 
 local function killerbee()
@@ -270,14 +277,10 @@ local function killerbee()
     inst.OnEntitySleep = OnSleep    
 
     MakeHauntablePanic(inst)
-    inst:ListenForEvent("spawnedfromhaunt", function(inst)
-        if inst.components.hauntable then
-            inst.components.hauntable:Panic()
-        end
-    end)
+    inst:ListenForEvent("spawnedfromhaunt", OnSpawnedFromHaunt)
 
     return inst
 end 
 
 return Prefab("forest/monsters/bee", workerbee, assets, prefabs),
-       Prefab("forest/monsters/killerbee", killerbee, assets, prefabs)
+        Prefab("forest/monsters/killerbee", killerbee, assets, prefabs)

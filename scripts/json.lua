@@ -403,7 +403,8 @@ function encodeString(s)
   s = string.gsub(s,'"','\\"')
   s = string.gsub(s,"'","\\'")
   s = string.gsub(s,'\n','\\n')
-  s = string.gsub(s,'\t','\\t')
+  s = string.gsub(s,'\t','\\t')  
+  s = string.gsub(s,'\r','\\r')
   return s 
 end
 

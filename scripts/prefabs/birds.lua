@@ -131,6 +131,7 @@ local function makebird(name, soundname)
         inst:AddComponent("inventoryitem")
         inst.components.inventoryitem.nobounce = true
         inst.components.inventoryitem.canbepickedup = false
+        inst.components.inventoryitem.canbepickedupalive = true
 
         inst:AddComponent("cookable")
         inst.components.cookable.product = "cookedsmallmeat"

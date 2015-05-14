@@ -9,21 +9,26 @@ local prefabs =
 }
 
 local function OnLoseChild(inst, child)
-    print("bye bye glommer")
+    if not inst:HasTag("glommerflower") then
+        return
+    end
+
     inst:AddComponent("perishable")
     inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)
     inst:AddTag("show_spoilage")
-    inst.deadchild = true
     inst.components.inventoryitem:ChangeImageName("glommerflower_dead")
     inst.AnimState:PlayAnimation("idle_dead")
     inst:RemoveTag("glommerflower")
 
+    --V2C: I think this is trying to refresh the inventory tile
+    --     because show_spoilage doesn't refresh automatically.
+    --     Plz document hacks like this in the future -_ -""
     if inst.components.inventoryitem:IsHeld() then
         local owner = inst.components.inventoryitem.owner
         inst.components.inventoryitem:RemoveFromOwner(true)
-        if owner.components.container then
+        if owner.components.container ~= nil then
             owner.components.container:GiveItem(inst)
-        elseif owner.components.inventory then
+        elseif owner.components.inventory ~= nil then
             owner.components.inventory:GiveItem(inst)
         end
     end
@@ -35,41 +40,31 @@ local function OnLoseChild(inst, child)
     MakeDragonflyBait(inst, 3)
 end
 
-local function RebindGlommer(inst)
-    local glommer = TheSim:FindFirstEntityWithTag("glommer")
-    if not inst.deadchild and glommer and glommer.components.health and not glommer.components.health:IsDead() then
-        if glommer.components.follower.leader ~= inst then
-            glommer.components.follower:SetLeader(inst)
-        end
-    end
-end
-
 local function getstatus(inst)
-    if inst.deadchild then
-        return "DEAD"
-    end
-end
-
-local function IsActive(inst)
-    return not inst.deadchild
+    return not inst:HasTag("glommerflower") and "DEAD" or nil
 end
 
 local function OnPreLoad(inst, data)
-    if data then
-        inst.deadchild = data.deadchild
-    end
-
-    if inst.deadchild then
+    if data ~= nil and data.deadchild then
         OnLoseChild(inst)
     end
 end
 
-local function OnLoad(inst, data)
-    inst:DoTaskInTime(1, function() RebindGlommer(inst) end)
+local function OnSave(inst, data)
+    data.deadchild = not inst:HasTag("glommerflower") or nil
 end
 
-local function OnSave(inst, data)
-    data.deadchild = inst.deadchild
+local function OnInit(inst)
+    if inst:HasTag("glommerflower") then
+        --Rebind Glommer
+        local glommer = TheSim:FindFirstEntityWithTag("glommer")
+        if glommer ~= nil and
+            glommer.components.health ~= nil and
+            not glommer.components.health:IsDead() and
+            glommer.components.follower.leader ~= inst then
+            glommer.components.follower:SetLeader(inst)
+        end
+    end
 end
 
 local function fn()
@@ -87,6 +82,7 @@ local function fn()
 
     inst:AddTag("glommerflower")
     inst:AddTag("nonpotatable")
+    inst:AddTag("irreplaceable")
 
     inst.entity:SetPristine()
 
@@ -103,10 +99,10 @@ local function fn()
 
     MakeHauntableLaunch(inst)
 
-    inst.IsActive = IsActive
     inst.OnPreLoad = OnPreLoad
-    inst.OnLoad = OnLoad
     inst.OnSave = OnSave
+
+    inst:DoTaskInTime(0, OnInit)
 
     return inst
 end

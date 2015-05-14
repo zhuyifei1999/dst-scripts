@@ -263,7 +263,8 @@ function Combat:IsAlly(guy)
 end
 
 function Combat:CanBeAttacked(attacker)
-    if self.inst:HasTag("noattack") or
+    if self.inst:HasTag("playerghost") or
+        self.inst:HasTag("noattack") or
         self.inst:HasTag("flying") or
         self.inst:HasTag("invisible") then
         --Can't be attacked by anyone
@@ -288,9 +289,8 @@ function Combat:CanBeAttacked(attacker)
         end
     end
 
-    if self.inst:HasTag("playerghost") or
-        (self.inst:HasTag("shadowcreature") and self._target:value() == nil) then
-        --Not insane attacker cannot attack player ghosts or shadow creatures
+    if self.inst:HasTag("shadowcreature") and self._target:value() == nil then
+        --Not insane attacker cannot attack shadow creatures
         --(unless shadow creature has a target)
         return false
     end

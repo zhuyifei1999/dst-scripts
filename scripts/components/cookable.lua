@@ -15,7 +15,7 @@ function Cookable:Cook(cooker, chef)
     if self.product then
         local prefab = self.product
         if type(self.product) == "function" then
-            prefab = self.product(self.inst)
+            prefab = self.product(self.inst, cooker, chef)
         end
         local prod = SpawnPrefab(prefab)
         

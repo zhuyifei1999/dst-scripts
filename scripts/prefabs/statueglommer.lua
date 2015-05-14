@@ -11,7 +11,7 @@ local prefabs =
     "marble",
 }
 
-SetSharedLootTable( 'statueglommer',
+SetSharedLootTable('statueglommer',
 {
     {'marble',  1.00},
     {'marble',  1.00},
@@ -19,18 +19,47 @@ SetSharedLootTable( 'statueglommer',
     --{'bell_blueprint', 1.00}, -- Biigfoot probably won't work with multi-player, says Graham.
 })
 
-local function GetSpawnPoint(pt)
-    local theta = math.random() * 2 * PI
-    local offset = FindWalkableOffset(pt, theta, 35, 12, true)
-    if offset then
-        return pt+offset
+local LIGHT_FRAMES = 6
+
+local function PushLight(inst)
+    inst.Light:SetRadius(Lerp(0, .75, inst.lightval:value() / LIGHT_FRAMES))
+    if TheWorld.ismastersim then
+        inst.Light:Enable(inst.lightval:value() > 0)
     end
+end
+
+local function OnUpdateLight(inst, dframes)
+    if inst.islighton:value() then
+        if inst.lightval:value() < LIGHT_FRAMES then
+            inst.lightval:set_local(inst.lightval:value() + dframes)
+        elseif inst.lighttask ~= nil then
+            inst.lighttask:Cancel()
+            inst.lighttask = nil
+        end
+    elseif inst.lightval:value() > 0 then
+        inst.lightval:set_local(inst.lightval:value() - dframes)
+    elseif inst.lighttask ~= nil then
+        inst.lighttask:Cancel()
+        inst.lighttask = nil
+    end
+
+    PushLight(inst)
+end
+
+local function OnLightDirty(inst)
+    if inst.lighttask == nil then
+        inst.lighttask = inst:DoPeriodicTask(FRAMES, OnUpdateLight, nil, 1)
+    end
+    OnUpdateLight(inst, 0)
 end
 
 local function OnMakeEmpty(inst)
     inst.AnimState:ClearOverrideSymbol("swap_flower")
     inst.AnimState:Hide("swap_flower")
-    inst.components.lighttweener:StartTween(inst.Light, 0, .9, .3, nil, FRAMES*6, function(inst) inst.Light:Enable(false) end)
+    if inst.islighton:value() then
+        inst.islighton:set(false)
+        OnLightDirty(inst)
+    end
 end
 
 local function OnMakeFull(inst)
@@ -39,147 +68,142 @@ local function OnMakeFull(inst)
 end
 
 local function SpawnGlommer(inst)
-    local pt = Vector3(inst.Transform:GetWorldPosition())        
-    local spawn_pt = GetSpawnPoint(pt)
-
-    if spawn_pt == nil then
-        spawn_pt = pt
+    --Get spawn point
+    local x, y, z = inst.Transform:GetWorldPosition()
+    local spawn_pt = Vector3(x, y, z)
+    local theta = math.random() * 2 * PI
+    local offset = FindWalkableOffset(spawn_pt, theta, 35, 12, true)
+    if offset ~= nil then
+        spawn_pt.x = spawn_pt.x + offset.x
+        spawn_pt.y = spawn_pt.y + offset.y
+        spawn_pt.z = spawn_pt.z + offset.z
     end
 
     local glommer = SpawnPrefab("glommer")
-    if glommer then
+    if glommer ~= nil then
         if glommer.components.follower.leader ~= inst then
             glommer.components.follower:SetLeader(inst)
         end
         glommer.Physics:Teleport(spawn_pt:Get())
-        glommer:FacePoint(pt.x, pt.y, pt.z)
+        glommer:FacePoint(x, y, z)
         return glommer
     end
 end
 
 local function SpawnGland(inst)
-    if TheWorld.state.isfullmoon and TheWorld.state.isnight then 
-        local gland = TheSim:FindFirstEntityWithTag("glommerflower")
-        if (gland and gland:IsActive()) or inst.cooldown then
-            return
+    if inst.components.pickable.canbepicked then
+        --already has a flower on the shelf
+        --double check light, because this path is really for loading
+        if not inst.islighton:value() then
+            inst.islighton:set(true)
+            OnLightDirty(inst)
         end
-
-        inst.components.lighttweener:StartTween(inst.Light, 0, .9, .3, nil, 0, function(inst) inst.Light:Enable(true) end)    
-        inst.components.lighttweener:StartTween(inst.Light, .75, nil, nil, nil, FRAMES*6)
-
-        local glommer = TheSim:FindFirstEntityWithTag("glommer")
-        if not glommer then glommer = SpawnGlommer(inst) end
-        glommer.ShouldLeaveWorld = false
-        inst.components.pickable:Regen()
+        return
+    elseif inst.components.timer:TimerExists("Cooldown") then
+        --picked recently
+        return
     end
+
+    local gland = TheSim:FindFirstEntityWithTag("glommerflower")
+    if gland ~= nil then
+        return
+    end
+
+    if not inst.islighton:value() then
+        inst.islighton:set(true)
+        OnLightDirty(inst)
+    end
+
+    local glommer = TheSim:FindFirstEntityWithTag("glommer") or SpawnGlommer(inst)
+    if glommer ~= nil then
+        glommer.ShouldLeaveWorld = false
+    end
+
+    inst.components.pickable:Regen()
 end
 
 local function RemoveGland(inst)
-    if not TheWorld.state.isfullmoon then
-        inst.components.pickable:MakeEmpty()
-        
-        local gland = TheSim:FindFirstEntityWithTag("glommerflower")
-        if not gland or (gland and not gland:IsActive()) then
-            local glommer = TheSim:FindFirstEntityWithTag("glommer")
-            if glommer then
-                glommer.ShouldLeaveWorld = true
-            end
+    inst.components.pickable:MakeEmpty()
+
+    local gland = TheSim:FindFirstEntityWithTag("glommerflower")
+    if gland == nil then
+        local glommer = TheSim:FindFirstEntityWithTag("glommer")
+        if glommer ~= nil then
+            glommer.ShouldLeaveWorld = true
         end
     end
 end
 
-local function ToggleGland(inst)
-    if TheWorld.state.isfullmoon then
-        SpawnGland(inst)
-    else 
+local function OnIsFullmoon(inst, isfullmoon)
+    if not isfullmoon then
         RemoveGland(inst)
+    else
+        SpawnGland(inst)
     end
 end
 
-local function OnLoseChild(inst, child)
+local function OnInit(inst)
+    inst:WatchWorldState("isfullmoon", OnIsFullmoon)
+    OnIsFullmoon(inst, TheWorld.state.isfullmoon)
+    if inst.islighton:value() then
+        --Finish the light tween immediately for loading
+        inst.lightval:set(LIGHT_FRAMES)
+        OnLightDirty(inst)
+    end
+end
+
+local function OnLoseChild(inst)
     inst.components.pickable:MakeEmpty()
-end
-
-local function OnTimerDone(inst, data)
-    if data.name == "Cooldown" then
-        inst.cooldown = nil
-    end
 end
 
 local function OnPicked(inst, picker, loot)
     local glommer = TheSim:FindFirstEntityWithTag("glommer")
-    if glommer then
-        if glommer.components.follower.leader ~= loot then
-            glommer.components.follower:StopFollowing()
-            glommer.components.follower:SetLeader(loot)
-        end
+    if glommer ~= nil and glommer.components.follower.leader ~= loot then
+        glommer.components.follower:StopFollowing()
+        glommer.components.follower:SetLeader(loot)
     end
 
     inst.components.timer:StartTimer("Cooldown", TUNING.TOTAL_DAY_TIME * 3)
-    inst.cooldown = true
-
 end
 
-local function MakeWorkable(inst)
-    inst:AddComponent("workable")
-    inst.components.workable:SetWorkAction(ACTIONS.MINE)
-    inst.components.workable:SetWorkLeft(TUNING.ROCKS_MINE) 
-    inst.components.workable:SetOnWorkCallback(
-        function(inst, worker, workleft)
-            local pt = Point(inst.Transform:GetWorldPosition())
-            if workleft <= 0 then
-                inst.SoundEmitter:PlaySound("dontstarve/wilson/rock_break")
-                inst.components.lootdropper:DropLoot(pt)
-                inst.worked = true
-                inst.AnimState:PlayAnimation("low")
-                inst:RemoveComponent("workable")
-            else            
-                if workleft < TUNING.ROCKS_MINE*(1/2) then
-                    inst.AnimState:PlayAnimation("med")
-                else
-                    inst.AnimState:PlayAnimation("full")
-                end
-            end
-        end)
-
-    inst:AddComponent("lootdropper")
-    inst.components.lootdropper:SetChanceLootTable("statueglommer")
-end
-
-local function MakeWorked(inst)
-    inst.AnimState:PlayAnimation("low")
+local function OnWorked(inst, worker, workleft)
+    if workleft <= 0 then
+        inst.SoundEmitter:PlaySound("dontstarve/wilson/rock_break")
+        inst.components.lootdropper:DropLoot(inst:GetPosition())
+        inst.AnimState:PlayAnimation("low")
+        inst:RemoveComponent("workable")
+        inst:RemoveComponent("lootdropper")
+    else
+        inst.AnimState:PlayAnimation(workleft < TUNING.ROCKS_MINE * .5 and "med" or "full")
+    end
 end
 
 local function OnSave(inst, data)
-    data.cooldown = inst.cooldown
-    data.worked = inst.worked
+    data.worked = inst.components.workable == nil or nil
 end
 
 local function OnLoad(inst, data)
-    if data then
-        inst.cooldown = data.cooldown
-        inst.worked = data.worked
+    if data ~= nil and data.worked and inst.components.workable ~= nil then
+        inst.AnimState:PlayAnimation("low")
+        inst:RemoveComponent("workable")
+        inst:RemoveComponent("lootdropper")
     end
+end
 
-    if not inst.worked then
-        MakeWorkable(inst)
-    else
-        MakeWorked(inst)
-    end
-
-    inst:DoTaskInTime(0, function(inst)
-        if (TheWorld.state.isnight and TheWorld.state.isfullmoon) then
-            if not inst.components.pickable.canbepicked then -- If it can't be picked, we don't have a flower on the shelf
-                SpawnGland(inst) -- SpawnGland will handle the case where it has been picked recently
-            end
+local function OnLoadWorked(inst)
+    if inst.components.workable ~= nil then
+        if inst.components.workable.workleft <= 0 then
+            inst.AnimState:PlayAnimation("low")
+            inst:RemoveComponent("workable")
+            inst:RemoveComponent("lootdropper")
         else
-            RemoveGland(inst) -- RemoveGland will handle the case where the flower isn't on the shelf any longer
+            inst.AnimState:PlayAnimation(inst.components.workable.workleft < TUNING.ROCKS_MINE * .5 and "med" or "full")
         end
-    end)
+    end
 end
 
 local function getstatus(inst)
-    return inst.worked and "EMPTY" or nil
+    return inst.components.workable == nil and "EMPTY" or nil
 end
 
 local function fn()
@@ -201,15 +225,22 @@ local function fn()
     inst.AnimState:SetBuild("glommer_statue")
     inst.AnimState:PlayAnimation("full")
 
-    inst.Light:SetRadius(5)
+    inst.Light:SetRadius(0)
     inst.Light:SetIntensity(0.9)
     inst.Light:SetFalloff(0.3)
     inst.Light:SetColour(180 / 255, 195 / 255, 150 / 255)
     inst.Light:Enable(false)
+    inst.Light:EnableClientModulation(true)
+
+    inst.lightval = net_tinybyte(inst.GUID, "statueglommer.lightval", "lightdirty")
+    inst.islighton = net_bool(inst.GUID, "statueglommer.islighton", "lightdirty")
+    inst.lighttask = nil
 
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
+        inst:ListenForEvent("lightdirty", OnLightDirty)
+
         return inst
     end
 
@@ -226,14 +257,20 @@ local function fn()
     inst.components.pickable:SetMakeEmptyFn(OnMakeEmpty)
     inst.components.pickable.makefullfn = OnMakeFull
 
-    inst:AddComponent("lighttweener")
+    inst:AddComponent("workable")
+    inst.components.workable:SetWorkAction(ACTIONS.MINE)
+    inst.components.workable:SetWorkLeft(TUNING.ROCKS_MINE)
+    inst.components.workable:SetOnWorkCallback(OnWorked)
+    inst.components.workable.savestate = true
+    inst.components.workable:SetOnLoadFn(OnLoadWorked)
+
+    inst:AddComponent("lootdropper")
+    inst.components.lootdropper:SetChanceLootTable("statueglommer")
 
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad
 
-    inst:ListenForEvent("timerdone", OnTimerDone)
-
-    inst:WatchWorldState("isfullmoon", ToggleGland)
+    inst:DoTaskInTime(0, OnInit)
 
     MakeHauntableWork(inst)
 
