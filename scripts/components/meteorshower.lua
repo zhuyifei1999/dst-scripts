@@ -212,12 +212,14 @@ function MeteorShower:StartShower(level)
     local duration = RandomizeFloat(level_params.duration)
     local rate = RandomizeInteger(level_params.rate)
 
-    self.dt = 1 / rate
-    self.medium_remaining = RandomizeInteger(level_params.max_medium)
-    self.large_remaining = RandomizeInteger(level_params.max_large)
+    if duration > 0 and rate > 0 then
+        self.dt = 1 / rate
+        self.medium_remaining = RandomizeInteger(level_params.max_medium)
+        self.large_remaining = RandomizeInteger(level_params.max_large)
 
-    self.task = self.inst:DoPeriodicTask(self.dt, OnUpdate, nil, self)
-    self.tasktotime = GetTime() + duration
+        self.task = self.inst:DoPeriodicTask(self.dt, OnUpdate, nil, self)
+        self.tasktotime = GetTime() + duration
+    end
 end
 
 function MeteorShower:StopShower()
@@ -250,9 +252,11 @@ function MeteorShower:StartCooldown()
     local level_params = SHOWER_LEVELS[self.level]
     local cooldown = RandomizeFloat(level_params.cooldown)
 
-    self.retries_remaining = NUM_RETRIES
-    self.task = self.inst:DoPeriodicTask(RETRY_INTERVAL, OnCooldown, cooldown, self)
-    self.tasktotime = GetTime() + cooldown
+    if cooldown > 0 then
+        self.retries_remaining = NUM_RETRIES
+        self.task = self.inst:DoPeriodicTask(RETRY_INTERVAL, OnCooldown, cooldown, self)
+        self.tasktotime = GetTime() + cooldown
+    end
 end
 
 function MeteorShower:OnSave()
