@@ -1009,13 +1009,14 @@ end
 
 local screen_fade_time = .25
 
-function OnPlayerLeave(player_guid)
+function OnPlayerLeave(player_guid, expected)
     if TheWorld.ismastersim and player_guid ~= nil then
 		local player = Ents[player_guid]
 		if player ~= nil then
 			TheNet:Announce(player:GetDisplayName().." "..STRINGS.UI.NOTIFICATION.LEFTGAME, player.entity, true)
             --Save must happen when the player is actually removed
             --This is currently handled in playerspawner listening to ms_playerdespawn
+            TheWorld:PushEvent("ms_playerdisconnected", {player=player, wasExpected=expected})
             TheWorld:PushEvent("ms_playerdespawn", player)
 		end
 	end
@@ -1270,5 +1271,14 @@ function NotifyLoadingState( loading_state )
 	end
 end
 
+
+function BuildTagsStringCommon(tagsTable)
+    -- Mods tags
+    for i,mod_tag in pairs( KnownModIndex:GetEnabledModTags() ) do
+        table.insert(tagsTable, mod_tag)
+    end
+    -- Concat & return the string
+    return table.concat(tagsTable, ", ")
+end
 
 require("dlcsupport")

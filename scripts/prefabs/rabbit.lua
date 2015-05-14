@@ -11,7 +11,10 @@ local prefabs =
 {
     "smallmeat",
     "cookedsmallmeat",
+    "cookedmonstermeat",
     "beardhair",
+    "monstermeat",
+    "nightmarefuel",
 }
 
 local rabbitsounds =
@@ -32,129 +35,193 @@ local wintersounds =
     hurt = "dontstarve/rabbit/winterscream_short",
 }
 
-local brain = require "brains/rabbitbrain"
+local rabbitloot = { "smallmeat" }
+
+local brain = require("brains/rabbitbrain")
+
+local function IsWinterRabbit(inst)
+    return inst.sounds == wintersounds
+end
+
+local function IsCrazyGuy(guy)
+    return guy ~= nil and guy.components.sanity ~= nil and guy.components.sanity:IsCrazy() and guy:HasTag("player")
+end
+
+local function SetRabbitLoot(lootdropper)
+    lootdropper:SetLoot(rabbitloot)
+end
+
+local function SetBeardlingLoot(lootdropper)
+    lootdropper:SetLoot(nil)
+    lootdropper:AddRandomLoot("beardhair", .5)
+    lootdropper:AddRandomLoot("monstermeat", 1)
+    lootdropper:AddRandomLoot("nightmarefuel", 1)
+    lootdropper.numrandomloot = 1
+end
+
+local function MakeInventoryRabbit(inst)
+    inst.components.inventoryitem:ChangeImageName(IsWinterRabbit(inst) and "rabbit_winter" or "rabbit")
+    inst.components.health.murdersound = inst.sounds.hurt
+    SetRabbitLoot(inst.components.lootdropper)
+end
+
+local function MakeInventoryBeardMonster(inst)
+    SetBeardlingLoot(inst.components.lootdropper)
+    inst.components.inventoryitem:ChangeImageName("beard_monster")
+    inst.components.health.murdersound = beardsounds.hurt
+end
 
 local function BecomeRabbit(inst)
-    if not inst.israbbit or inst.iswinterrabbit then
-        inst.AnimState:SetBuild("rabbit_build")
-
-        inst.israbbit = true
-        inst.iswinterrabbit = false
-        -- TODO, not sure where to fit this
-        inst.components.inventoryitem:ChangeImageName("rabbit")
-        -- TODO: sounds need to be overridden clientside as well
-        inst.sounds = rabbitsounds
-        if inst.components.hauntable then 
-            inst.components.hauntable.haunted = false 
-        end
+    if inst.components.health:IsDead() then
+        return
+    end
+    inst.AnimState:SetBuild("rabbit_build")
+    inst.sounds = rabbitsounds
+    inst.UpdateInventoryState()
+    if inst.components.hauntable ~= nil then
+        inst.components.hauntable.haunted = false
     end
 end
 
-local function DonWinterFur(inst)
-    if not inst.iswinterrabbit or inst.israbbit then
-        inst.AnimState:SetBuild("rabbit_winter_build")
-
-        inst.israbbit = false
-        inst.iswinterrabbit = true
-        -- TODO, not sure where to fit this
-        inst.components.inventoryitem:ChangeImageName("rabbit_winter")
-        -- TODO: sounds need to be overridden clientside as well
-        inst.sounds = wintersounds
-        if inst.components.hauntable then 
-            inst.components.hauntable.haunted = false 
-        end
+local function BecomeWinterRabbit(inst)
+    if inst.components.health:IsDead() then
+        return
+    end
+    inst.AnimState:SetBuild("rabbit_winter_build")
+    inst.sounds = wintersounds
+    inst.UpdateInventoryState()
+    if inst.components.hauntable ~= nil then
+        inst.components.hauntable.haunted = false
     end
 end
 
-local function CheckTransformState(inst)
-    if not inst.components.health:IsDead() then
-        if not TheWorld.state.iswinter then
-            BecomeRabbit(inst)
-        else
-            DonWinterFur(inst)
-        end
+local function OnIsWinter(inst, iswinter)
+    if inst.task ~= nil then
+        inst.task:Cancel()
+        inst.task = nil
     end
-end
-
-local function ondrop(inst)
-    inst.sg:GoToState("stunned")
-    CheckTransformState(inst)
+    if iswinter then
+        if not IsWinterRabbit(inst) then
+            inst.task = inst:DoTaskInTime(math.random() * .5, BecomeWinterRabbit)
+        end
+    elseif IsWinterRabbit(inst) then
+        inst.task = inst:DoTaskInTime(math.random() * .5, BecomeRabbit)
+    end
 end
 
 local function OnWake(inst)
-    CheckTransformState(inst)
-    inst.checktask = inst:DoPeriodicTask(10, CheckTransformState)
+    inst:WatchWorldState("iswinter", OnIsWinter)
+    if inst.task ~= nil then
+        inst.task:Cancel()
+        inst.task = nil
+    end
+    if TheWorld.state.iswinter then
+        if not IsWinterRabbit(inst) then
+            BecomeWinterRabbit(inst)
+        end
+    elseif IsWinterRabbit(inst) then
+        BecomeRabbit(inst)
+    end
 end
 
 local function OnSleep(inst)
-     if inst.checktask then
-        inst.checktask:Cancel()
-        inst.checktask = nil
-     end
+    inst:StopWatchingWorldState("iswinter", OnIsWinter)
+    if inst.task ~= nil then
+        inst.task:Cancel()
+        inst.task = nil
+    end
 end
 
-local function GetCookProductFn(inst)
-    return (inst.israbbit or inst.iswinterrabbit) and "cookedsmallmeat" or "cookedmonstermeat"
+local function OnInit(inst)
+    inst.OnEntityWake = OnWake
+    inst.OnEntitySleep = OnSleep
+    if inst.entity:IsAwake() then
+        OnWake(inst)
+    end
 end
 
-local function OnCookedFn(inst)
-    inst.SoundEmitter:PlaySound("dontstarve/rabbit/scream_short")
+local function SanityAuraFn(inst, observer)
+    return IsCrazyGuy(observer) and -TUNING.SANITYAURA_MED or 0
+end
+
+local function GetCookProductFn(inst, cooker, chef)
+    return IsCrazyGuy(chef) and "cookedmonstermeat" or "cookedsmallmeat"
+end
+
+local function OnCookedFn(inst, cooker, chef)
+    inst.SoundEmitter:PlaySound(IsCrazyGuy(chef) and beardsounds.hurt or inst.sounds.hurt)
+end
+
+local function LootSetupFunction(lootdropper)
+    local guy = lootdropper.inst.causeofdeath
+    if IsCrazyGuy(guy ~= nil and guy.components.follower ~= nil and guy.components.follower.leader or guy) then
+        SetBeardlingLoot(lootdropper)
+    else
+        SetRabbitLoot(lootdropper)
+    end
 end
 
 local function OnAttacked(inst, data)
-    local x,y,z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x,y,z, 30, {'rabbit'})
-
-    local num_friends = 0
+    local x, y, z = inst.Transform:GetWorldPosition()
+    local ents = TheSim:FindEntities(x, y, z, 30, { "rabbit" }, { "INLIMBO" })
     local maxnum = 5
-    for k,v in pairs(ents) do
+    for i, v in ipairs(ents) do
         v:PushEvent("gohome")
-        num_friends = num_friends + 1
-        
-        if num_friends > maxnum then
+        if i >= maxnum then
             break
         end
     end
 end
 
-local function OnSave(inst, data)
-    if not inst.israbbit then
-        data.israbbit = inst.israbbit
+local function StopWatchingSanity(inst)
+    if inst._sanitywatching ~= nil then
+        inst:RemoveEventCallback("goinsane", inst.UpdateInventoryState, inst._sanitywatching)
+        inst:RemoveEventCallback("gosane", inst.UpdateInventoryState, inst._sanitywatching)
+        inst._sanitywatching = nil
     end
-    data.iswinterrabbit = inst.iswinterrabbit or nil
 end
 
-local function OnLoad(inst, data)
-    if data ~= nil and data.israbbit == false then
-        if data.iswinterrabbit then
-            DonWinterFur(inst)
-        end
-    end 
+local function WatchSanity(inst, target)
+    StopWatchingSanity(inst)
+    if target ~= nil then
+        inst:ListenForEvent("goinsane", inst.UpdateInventoryState, target)
+        inst:ListenForEvent("gosane", inst.UpdateInventoryState, target)
+        inst._sanitywatching = target
+    end
 end
 
-local function LootSetupFunction(self)
-    local sane = true
-    -- were we killed by an insane player?
-    if self.inst.causeofdeath and self.inst.causeofdeath:HasTag("player") then
-        if self.inst.causeofdeath.components.sanity ~= nil and self.inst.causeofdeath.components.sanity:IsCrazy() then
-            sane = false
-        end
+local function StopWatchingForOpener(inst)
+    if inst._openerwatching ~= nil then
+        inst:RemoveEventCallback("onopen", inst.OnContainerOpened, inst._openerwatching)
+        inst:RemoveEventCallback("onclose", inst.OnContainerClosed, inst._openerwatching)
+        inst._openerwatching = nil
     end
-    if not sane then
-        -- beardling loot
-        self:SetLoot{}
-        self:AddRandomLoot("beardhair", .5)
-        self:AddRandomLoot("monstermeat", 1)
-        self:AddRandomLoot("nightmarefuel", 1)
-        self.numrandomloot = 1  
+end
+
+local function WatchForOpener(inst, target)
+    StopWatchingForOpener(inst)
+    if target ~= nil then
+        inst:ListenForEvent("onopen", inst.OnContainerOpened, target)
+        inst:ListenForEvent("onclose", inst.OnContainerClosed, target)
+        inst._openerwatching = target
+    end
+end
+
+local function OnPickup(inst, owner)
+    if owner.components.container ~= nil then
+        WatchForOpener(inst, owner)
+        WatchSanity(inst, owner.components.container.opener)
     else
-        -- regular loot
-        self:SetLoot({"smallmeat"})
+        StopWatchingForOpener(inst)
+        WatchSanity(inst, owner)
     end
+    inst.UpdateInventoryState()
 end
 
-local function PlayerSanityListener()
-    return ThePlayer.components.sanity:GetPercent() > TUNING.BEARDLING_SANITY
+local function OnDropped(inst)
+    StopWatchingSanity(inst)
+    inst.UpdateInventoryState()
+    inst.sg:GoToState("stunned")
 end
 
 local function fn()
@@ -200,30 +267,16 @@ local function fn()
 
     inst:SetBrain(brain)
 
-    inst.data = {}
-
     inst:AddComponent("eater")
     inst.components.eater:SetDiet({ FOODTYPE.VEGGIE }, { FOODTYPE.VEGGIE })
 
     inst:AddComponent("inventoryitem")
     inst.components.inventoryitem.nobounce = true
     inst.components.inventoryitem.canbepickedup = false
+    inst.components.inventoryitem.canbepickedupalive = true
 
     inst:AddComponent("sanityaura")
-    inst.components.sanityaura.aurafn = function(inst, observer)
-                                            local sane = true
-                                            -- were we killed by an insane player?
-                                            if observer and observer:HasTag("player") then
-                                                if observer.components.sanity ~= nil and observer.components.sanity:IsCrazy() then
-                                                    sane = false
-                                                end
-                                            end
-                                            if not sane then
-                                                return -TUNING.SANITYAURA_MED       
-                                            else
-                                                return 0
-                                            end
-                                        end
+    inst.components.sanityaura.aurafn = SanityAuraFn
 
     inst:AddComponent("cookable")
     inst.components.cookable.product = GetCookProductFn
@@ -235,66 +288,53 @@ local function fn()
 
     inst:AddComponent("health")
     inst.components.health:SetMaxHealth(TUNING.RABBIT_HEALTH)
-    inst.components.health.murdersound = "dontstarve/rabbit/scream_short"
 
     MakeSmallBurnableCharacter(inst, "chest")
     MakeTinyFreezableCharacter(inst, "chest")
 
     inst:AddComponent("lootdropper")
-    inst.components.lootdropper:SetLootSetupFn(
-                        LootSetupFunction
---[[
-                        function(self)
-                            local sane = true
-                            -- were we killed by an insane player?
-                            if self.inst.causeofdeath and self.inst.causeofdeath:HasTag("player") then
-                                if self.inst.causeofdeath.components.sanity ~= nil and self.inst.causeofdeath.components.sanity:IsCrazy() then
-                                    sane = false
-                                end
-                            end
-                            if not sane then
-                                -- beardling loot
-                                self:SetLoot{}
-                                self:AddRandomLoot("beardhair", .5)     
-                                self:AddRandomLoot("monstermeat", 1)        
-                                self:AddRandomLoot("nightmarefuel", 1)    
-                                self.numrandomloot = 1  
-                            else
-                                -- regular loot
-                                self:SetLoot({"smallmeat"})
-                            end
-                        end
-]]
-                        )
+    inst.components.lootdropper:SetLootSetupFn(LootSetupFunction)
 
     inst:AddComponent("inspectable")
     inst:AddComponent("sleeper")
     inst:AddComponent("tradable")
 
-    BecomeRabbit(inst)
-    CheckTransformState(inst)
-    inst.CheckTransformState = CheckTransformState
+    --declared here so it can be used for event handlers
+    inst.UpdateInventoryState = function()
+        local viewer = inst.components.inventoryitem:GetGrandOwner()
+        while viewer ~= nil and viewer.components.container ~= nil do
+            viewer = viewer.components.container.opener
+        end
+        if IsCrazyGuy(viewer) then
+            MakeInventoryBeardMonster(inst)
+        else
+            MakeInventoryRabbit(inst)
+        end
+    end
 
-    inst.OnEntityWake = OnWake
-    inst.OnEntitySleep = OnSleep    
-    inst.OnSave = OnSave
-    inst.OnLoad = OnLoad
+    inst.OnContainerOpened = function(container, data)
+        WatchSanity(inst, data.doer)
+        inst.UpdateInventoryState()
+    end
+
+    inst.OnContainerClosed = function()
+        StopWatchingSanity(inst)
+        inst.UpdateInventoryState()
+    end
+
+    inst._sanitywatching = nil
+    inst._openerwatching = nil
+
+    inst.sounds = nil
+    inst.task = nil
+    BecomeRabbit(inst)
+    inst:DoTaskInTime(0, OnInit)
 
     MakeHauntablePanic(inst)
-    -- AddHauntableCustomReaction(inst, function(inst, haunter)
-    --     if math.random() <= TUNING.HAUNT_CHANCE_OCCASIONAL then
-    --         BecomeBeardling(inst)
-    --         inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
-    --         if inst.checktask then
-    --             inst.checktask:Cancel()
-    --             inst.checktask = nil
-    --         end
-    --     end
-    -- end, true, nil, true)
-        
+
     inst:ListenForEvent("attacked", OnAttacked)
 
-    MakeFeedablePet(inst, TUNING.RABBIT_PERISH_TIME, nil, ondrop)
+    MakeFeedablePet(inst, TUNING.RABBIT_PERISH_TIME, OnPickup, OnDropped)
 
     return inst
 end

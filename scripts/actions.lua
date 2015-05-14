@@ -182,10 +182,11 @@ ACTIONS.PICKUP.fn = function(act)
     if act.doer.components.inventory ~= nil and
         act.target ~= nil and
         act.target.components.inventoryitem ~= nil and
-        act.target.components.inventoryitem.canbepickedup and
-        not act.target:IsInLimbo() and
-        not act.target:HasTag("catchable") and
-        not act.target:HasTag("fire") then
+        (act.target.components.inventoryitem.canbepickedup or
+        (act.target.components.inventoryitem.canbepickedupalive and not act.doer:HasTag("player"))) and
+        not (act.target:IsInLimbo() or
+            (act.target.components.burnable ~= nil and act.target.components.burnable:IsBurning()) or
+            (act.target.components.projectile ~= nil and act.target.components.projectile:IsThrown())) then
 
         act.doer:PushEvent("onpickup", {item = act.target})
 
@@ -979,33 +980,32 @@ ACTIONS.HAUNT.fn = function(act)
 end
 
 ACTIONS.MURDER.fn = function(act)
-
     local murdered = act.invobject or act.target
-    if murdered and murdered.components.health then
-
+    if murdered ~= nil and murdered.components.health ~= nil then
+        local x, y, z = act.doer.Transform:GetWorldPosition()
         murdered.components.inventoryitem:RemoveFromOwner(true)
-        murdered.Transform:SetPosition(act.doer.Transform:GetWorldPosition())
+        murdered.Transform:SetPosition(x, y, z)
 
-        if murdered.components.health.murdersound then
+        if murdered.components.health.murdersound ~= nil then
             act.doer.SoundEmitter:PlaySound(murdered.components.health.murdersound)
         end
 
-        local stacksize = 1
-        if murdered.components.stackable then
-            stacksize = murdered.components.stackable.stacksize
-        end
-
-        if murdered.components.lootdropper then
+        if murdered.components.lootdropper ~= nil then
+            murdered.causeofdeath = act.doer
+            local pos = Vector3(x, y, z)
+            local stacksize = murdered.components.stackable ~= nil and murdered.components.stackable:StackSize() or 1
             for i = 1, stacksize do
                 local loots = murdered.components.lootdropper:GenerateLoot()
                 for k, v in pairs(loots) do
                     local loot = SpawnPrefab(v)
-                    act.doer.components.inventory:GiveItem(loot)
+                    if loot ~= nil then
+                        act.doer.components.inventory:GiveItem(loot, nil, pos)
+                    end
                 end
             end
         end
 
-        act.doer:PushEvent("killed", {victim = murdered})
+        act.doer:PushEvent("killed", { victim = murdered })
         murdered:Remove()
 
         return true

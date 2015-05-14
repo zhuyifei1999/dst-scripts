@@ -498,10 +498,10 @@ function MakeFeedablePet(inst, starvetime, oninventory, ondropped)
     inst.components.perishable:StopPerishing()
     inst.components.perishable:SetOnPerishFn(onperish)
 
-    inst.components.inventoryitem:SetOnPutInInventoryFn(function(inst)
+    inst.components.inventoryitem:SetOnPutInInventoryFn(function(inst, owner)
         inst.components.perishable:StartPerishing()
         if oninventory ~= nil then
-            oninventory(inst)
+            oninventory(inst, owner)
         end
     end)
 

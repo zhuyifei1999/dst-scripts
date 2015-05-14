@@ -1,22 +1,6 @@
 local assets =
 {
-	Asset("ANIM", "anim/lava_tile.zip"),
-}
-
-local rocktypes =
-{
-    "idle",
-    "idle2",
-    "idle3",
-    "idle4",
-    "idle5",
-    "idle6",
-    "idle7",
-}
-
-local rock_assets =
-{
-    Asset("ANIM", "anim/scorched_rock.zip")
+    Asset("ANIM", "anim/lava_tile.zip"),
 }
 
 local prefabs =
@@ -24,80 +8,107 @@ local prefabs =
     "lava_pond_rock",
 }
 
-local function rock_fn()
-    local inst = CreateEntity()
+local rock_assets =
+{
+    Asset("ANIM", "anim/scorched_rock.zip"),
+}
 
-    inst.entity:AddTransform()
-    inst.entity:AddAnimState()
-    inst.entity:AddNetwork()
+local rocktypes =
+{
+    "",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+}
 
-    inst.AnimState:SetBank("scorched_rock")
-    inst.AnimState:SetBuild("scorched_rock")
-    inst.AnimState:PlayAnimation(GetRandomItem(rocktypes))
+local function makerock(rocktype)
+    local function fn()
+        local inst = CreateEntity()
 
-    inst.entity:SetPristine()
+        inst.entity:AddTransform()
+        inst.entity:AddAnimState()
+        inst.entity:AddNetwork()
 
-    if not TheWorld.ismastersim then
+        inst.AnimState:SetBank("scorched_rock")
+        inst.AnimState:SetBuild("scorched_rock")
+        inst.AnimState:PlayAnimation("idle"..rocktype)
+
+        inst.entity:SetPristine()
+
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        inst:AddComponent("inspectable")
+
         return inst
     end
-
-    inst:AddComponent("inspectable")
-
-    return inst
+    return Prefab("object/lava_pond_rock"..rocktype, fn, rock_assets)
 end
 
-local function SpawnRocks(inst, rockname)
-
-    if inst.decor then
-        for i,item in ipairs(inst.decor) do
-            item:Remove()
+local function SpawnRocks(inst)
+    inst.task = nil
+    if inst.rocks == nil then
+        inst.rocks = {}
+        for i = 1, math.random(2, 4) do
+            local theta = math.random() * 2 * PI
+            table.insert(inst.rocks,
+            {
+                rocktype = rocktypes[math.random(#rocktypes)],
+                offset =
+                {
+                    math.sin(theta) * 2.1 + math.random() * .3,
+                    0,
+                    math.cos(theta) * 2.1 + math.random() * .3,
+                },
+            })
         end
     end
-    inst.decor = {}
-
-    local rock_offsets = {}
-
-    for i=1,math.random(2,4) do
-        local a = math.random()*math.pi*2
-        local x = math.sin(a)*2.1+math.random()*0.3
-        local z = math.cos(a)*2.1+math.random()*0.3
-        table.insert(rock_offsets, {x,0,z})
-    end
-
-    for k, offset in pairs( rock_offsets ) do
-        local rock = SpawnPrefab( rockname )
-        rock.entity:SetParent( inst.entity )
-        rock.Transform:SetPosition( offset[1], offset[2], offset[3] )
-        table.insert( inst.decor, rock )
-        
-        rock:ListenForEvent("onremove", function()
-            for k,v in pairs(inst.decor) do
-                if v == rock then
-                    table.remove( inst.decor, k )
-                    return
-                end
+    for i, v in ipairs(inst.rocks) do
+        if type(v.rocktype) == "string" and type(v.offset) == "table" and #v.offset == 3 then
+            local rock = SpawnPrefab("lava_pond_rock"..v.rocktype)
+            if rock ~= nil then
+                rock.entity:SetParent(inst.entity)
+                rock.Transform:SetPosition(unpack(v.offset))
+                rock.persists = false
             end
-        end, rock)
+        end
+    end
+end
+
+local function OnSave(inst, data)
+    data.rocks = inst.rocks
+end
+
+local function OnLoad(inst, data)
+    if data ~= nil and data.rocks ~= nil and inst.rocks == nil and inst.task ~= nil then
+        inst.task:Cancel()
+        inst.task = nil
+        inst.rocks = data.rocks
+        SpawnRocks(inst)
     end
 end
 
 local function OnCollide(inst, other)
-    if other and other.components.burnable then
+    if other ~= nil and other:IsValid() and inst:IsValid() and other.components.burnable ~= nil then
         other.components.burnable:Ignite(true, inst)
     end
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
+    inst.entity:AddLight()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
 
     MakeSmallObstaclePhysics(inst, 1.95)
-    inst.Physics:SetCollisionCallback(OnCollide)
 
     inst.AnimState:SetBuild("lava_tile")
     inst.AnimState:SetBank("lava_tile")
@@ -110,22 +121,23 @@ local function fn()
 
     inst:AddTag("lava")
 
-    local light = inst.entity:AddLight()
-    light:Enable(true)
-    light:SetRadius(1.5)
-    light:SetFalloff(0.66)
-    light:SetIntensity(0.66)
-    light:SetColour(235/255, 121/255, 12/255)
+    inst.Light:Enable(true)
+    inst.Light:SetRadius(1.5)
+    inst.Light:SetFalloff(0.66)
+    inst.Light:SetIntensity(0.66)
+    inst.Light:SetColour(235 / 255, 121 / 255, 12 / 255)
+
+    inst.no_wet_prefix = true
 
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
-    	return inst
+        return inst
     end
 
-    inst:AddComponent("inspectable")
-    inst.no_wet_prefab = true
+    inst.Physics:SetCollisionCallback(OnCollide)
 
+    inst:AddComponent("inspectable")
     inst:AddComponent("heater")
     inst.components.heater.heat = 500
 
@@ -137,10 +149,17 @@ local function fn()
 
     inst:AddComponent("cooker")
 
-    SpawnRocks(inst, "lava_pond_rock")
+    inst.rocks = nil
+    inst.task = inst:DoTaskInTime(0, SpawnRocks)
+
+    inst.OnSave = OnSave
+    inst.OnLoad = OnLoad
 
     return inst
 end
 
-return Prefab("object/lava_pond", fn, assets, prefabs),
-Prefab("object/lava_pond_rock", rock_fn, rock_assets)
+local prefabs = { Prefab("object/lava_pond", fn, assets, prefabs) }
+for i, v in ipairs(rocktypes) do
+    table.insert(prefabs, makerock(v))
+end
+return unpack(prefabs)

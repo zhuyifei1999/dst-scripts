@@ -51,41 +51,32 @@ local states=
         name = "look",
         tags = {"idle", "canrotate" },
         onenter = function(inst)
-            
-            inst.data.lookingup = nil
-            inst.data.donelooking = nil
-            
             if math.random() > .5 then
                 inst.AnimState:PlayAnimation("lookup_pre")
                 inst.AnimState:PushAnimation("lookup_loop", true)
-                inst.data.lookingup = true
+                inst.sg.statemem.lookingup = true
             else
                 inst.AnimState:PlayAnimation("lookdown_pre")
                 inst.AnimState:PushAnimation("lookdown_loop", true)
             end
-            
-            inst.sg:SetTimeout(1 + math.random()*1)
+            inst.sg:SetTimeout(1 + math.random())
         end,
-        
+
         ontimeout = function(inst)
-            inst.data.donelooking = true
-            if inst.data.lookingup then
-                inst.AnimState:PlayAnimation("lookup_pst")
-            else
-                inst.AnimState:PlayAnimation("lookdown_pst")
-            end
+            inst.sg.statemem.donelooking = true
+            inst.AnimState:PlayAnimation(inst.sg.statemem.lookingup and "lookup_pst" or "lookdown_pst")
         end,
-        
-        events=
+
+        events =
         {
             EventHandler("animover", function (inst, data)
-                if inst.data.donelooking then
+                if inst.sg.statemem.donelooking then
                     inst.sg:GoToState("idle")
                 end
             end),
-        }
+        },
     },
-    
+
     State{
         
         name = "idle",
@@ -215,7 +206,6 @@ local states=
             inst.Physics:SetDamping(0)
             inst.Physics:SetMotorVel(0,-20+math.random()*10,0)
             inst.AnimState:PlayAnimation("stunned_loop", true)
-            inst:CheckTransformState()
         end,
         
         onupdate = function(inst)

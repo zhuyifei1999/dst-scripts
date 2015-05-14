@@ -29,12 +29,14 @@ local SHARE_TARGET_DIST = 30
 local MAX_TARGET_SHARES = 10
 
 local function OnWorked(inst, worker)
-    local owner = inst.components.homeseeker and inst.components.homeseeker.home
-    if owner and owner.components.childspawner then
+    local owner = inst.components.homeseeker ~= nil and inst.components.homeseeker.home
+    if owner ~= nil and owner.components.childspawner ~= nil then
         owner.components.childspawner:OnChildKilled(inst)
     end
-    if METRICS_ENABLED and worker.components.inventory then
-        FightStat_Caught(inst)
+    if worker.components.inventory ~= nil then
+        if METRICS_ENABLED then
+            FightStat_Caught(inst)
+        end
         worker.components.inventory:GiveItem(inst, nil, inst:GetPosition())
     end
 end
@@ -51,23 +53,24 @@ end
 
 local function OnDropped(inst)
     inst.sg:GoToState("idle")
-    if inst.components.workable then
+    if inst.components.workable ~= nil then
         inst.components.workable:SetWorkLeft(1)
     end
-    if inst.brain then
+    if inst.brain ~= nil then
         inst.brain:Start()
     end
-    if inst.sg then
+    if inst.sg ~= nil then
         inst.sg:Start()
     end
-    if inst.components.stackable then
-        while inst.components.stackable:StackSize() > 1 do
+    if inst.components.stackable ~= nil and inst.components.stackable:IsStack() then
+        local x, y, z = inst.Transform:GetWorldPosition()
+        while inst.components.stackable:IsStack()do
             local item = inst.components.stackable:Get()
-            if item then
-                if item.components.inventoryitem then
+            if item ~= nil then
+                if item.components.inventoryitem ~= nil then
                     item.components.inventoryitem:OnDropped()
                 end
-                item.Physics:Teleport(inst.Transform:GetWorldPosition())
+                item.Physics:Teleport(x, y, z)
             end
         end
     end
@@ -78,16 +81,17 @@ local function OnPickedUp(inst)
 end
 
 local function KillerRetarget(inst)
-    return FindEntity(inst, SpringCombatMod(20), function(guy)
-        return inst.components.combat:CanTarget(guy)
-    end,
-    nil,
-    {"insect"},
-    {"character","animal","monster"})
+    return FindEntity(inst, SpringCombatMod(20),
+        function(guy)
+            return inst.components.combat:CanTarget(guy)
+        end,
+        { "_combat", "_health" },
+        { "insect", "INLIMBO" },
+        { "character", "animal", "monster" })
 end
 
 local function SwapBelly(inst, size)
-    for i=1,4 do
+    for i = 1, 4 do
         if i == size then
             inst.AnimState:Show("body_"..tostring(i))
         else
@@ -172,6 +176,7 @@ local function mosquito()
     inst:AddComponent("stackable")
     inst:AddComponent("inventoryitem")
     inst.components.inventoryitem.canbepickedup = false
+    inst.components.inventoryitem.canbepickedupalive = true
 
     ---------------------
 
@@ -226,7 +231,7 @@ local function mosquito()
 
     inst:ListenForEvent("attacked", OnAttacked)
 
-    MakeFeedablePet(inst, TUNING.TOTAL_DAY_TIME*2, OnPickedUp, OnDropped)
+    MakeFeedablePet(inst, TUNING.TOTAL_DAY_TIME * 2, OnPickedUp, OnDropped)
 
     return inst
 end

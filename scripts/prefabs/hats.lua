@@ -575,31 +575,6 @@ local function MakeHat(name)
         inst:Remove()
     end
 
-    local function top_custom_init(inst)
-        --waterproofer (from waterproofer component) added to pristine state for optimization
-        inst:AddTag("waterproofer")
-    end
-
-    local function top()
-        local inst = simple(top_custom_init)
-
-        if not TheWorld.ismastersim then
-            return inst
-        end
-
-        inst.components.equippable.dapperness = TUNING.DAPPERNESS_MED
-
-        inst:AddComponent("fueled")
-        inst.components.fueled.fueltype = FUELTYPE.USAGE
-        inst.components.fueled:InitializeFuelLevel(TUNING.TOPHAT_PERISHTIME)
-        inst.components.fueled:SetDepletedFn(spider_perish)
-
-        inst:AddComponent("waterproofer")
-        inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALL)
-
-        return inst
-    end
-
     local function spider_custom_init(inst)
         --waterproofer (from waterproofer component) added to pristine state for optimization
         inst:AddTag("waterproofer")
@@ -622,6 +597,31 @@ local function MakeHat(name)
         inst.components.fueled.fueltype = FUELTYPE.SPIDERHAT
         inst.components.fueled:InitializeFuelLevel(TUNING.SPIDERHAT_PERISHTIME)
         inst.components.fueled:SetDepletedFn(spider_perish)
+
+        inst:AddComponent("waterproofer")
+        inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALL)
+
+        return inst
+    end
+
+    local function top_custom_init(inst)
+        --waterproofer (from waterproofer component) added to pristine state for optimization
+        inst:AddTag("waterproofer")
+    end
+
+    local function top()
+        local inst = simple(top_custom_init)
+
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        inst.components.equippable.dapperness = TUNING.DAPPERNESS_MED
+
+        inst:AddComponent("fueled")
+        inst.components.fueled.fueltype = FUELTYPE.USAGE
+        inst.components.fueled:InitializeFuelLevel(TUNING.TOPHAT_PERISHTIME)
+        inst.components.fueled:SetDepletedFn(--[[generic_perish]]inst.Remove)
 
         inst:AddComponent("waterproofer")
         inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALL)

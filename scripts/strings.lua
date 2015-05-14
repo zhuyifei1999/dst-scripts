@@ -2179,6 +2179,7 @@ STRINGS.UI =
             SERVER_MODS_WORKSHOP_VERSION_MISMATCH = "Disconnected Due To Missing Mods",
             SERVER_MODS_WORKSHOP_FAILURE = "Disconnected Due To Missing Mods",
             SERVER_MODS_WORKSHOP_ACCESS_DENIED = "Disconnected Due To Missing Mods",
+            ID_DST_SLOT_RESERVATION = "Slot Reserved",
         },
         BODY =
         {   
@@ -2218,6 +2219,7 @@ STRINGS.UI =
             SERVER_MODS_WORKSHOP_VERSION_MISMATCH = "The server is running mods with an old version. The server owner must update the mods so that new players can join.",
             SERVER_MODS_WORKSHOP_FAILURE = "You failed to download the required mods from the Steam Workshop. Please try again.",
             SERVER_MODS_WORKSHOP_ACCESS_DENIED = "You failed to download the required mods from the Steam Workshop because one or more are not visible to you.",
+            ID_DST_SLOT_RESERVATION = "Unable to join the server. The only unused slots are reserved. Try again later once one of these miscreants has been consumed by the gaping maw that is this game.",
 		},
 		OK = "OK",
     },

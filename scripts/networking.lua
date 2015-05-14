@@ -404,6 +404,24 @@ function WorldResetFromSim()
     end
 end
 
+local function BuildTagsStringDedicated()
+    if not TheNet:IsDedicated() then return nil end
+    
+    local tagsTable = {}
+    
+    table.insert(tagsTable, TheNet:GetDefaultGameMode())
+    
+    if TheNet:GetDefaultPvpSetting() then
+        table.insert(tagsTable, "pvp")
+    end
+    
+    if TheNet:GetFriendsOnlyServer() then
+        table.insert(tagsTable, "friendsonly")
+    end
+    
+    return BuildTagsStringCommon(tagsTable)
+end
+
 function StartDedicatedServer()
 	print "Starting Dedicated Server Game"
 	local start_in_online_mode = not TheNet:IsDedicatedLanServer()
@@ -415,8 +433,14 @@ function StartDedicatedServer()
 			print( "Overriding server save slot to: ", server_save_slot )
 			SaveGameIndex:SetCurrentIndex( server_save_slot )
 		end
-        
+		
+        -- Collect the tags we want and set the tags string
+        local tags = BuildTagsStringDedicated()
+        TheNet:SetServerTags(tags)
 		StartNextInstance({reset_action = RESET_ACTION.LOAD_SLOT, save_slot=SaveGameIndex:GetCurrentSaveSlot()})
 	end
 end
 	
+function JoinServerFilter(user_id)
+	return true
+end

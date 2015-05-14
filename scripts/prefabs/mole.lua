@@ -45,10 +45,6 @@ local function OnWentHome(inst)
     inst.sg:GoToState("idle")
 end
 
-local function GetCookProductFn(inst)
-    return "cookedsmallmeat"
-end
-
 local function OnCookedFn(inst)
     if inst.components.health then
         inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/mole/death")
@@ -181,7 +177,7 @@ local function fn()
     inst:SetBrain(brain)
 
     inst:AddComponent("cookable")
-    inst.components.cookable.product = GetCookProductFn
+    inst.components.cookable.product = "cookedsmallmeat"
     inst.components.cookable:SetOnCookedFn(OnCookedFn)
 
     inst:AddComponent("health")
@@ -206,6 +202,7 @@ local function fn()
     inst:AddComponent("inventoryitem")
     inst.components.inventoryitem.nobounce = true
     inst.components.inventoryitem.canbepickedup = false
+    inst.components.inventoryitem.canbepickedupalive = true
     inst.components.inventoryitem.trappable = false
     -- inst.components.inventoryitem:SetOnPickupFn(onpickup)
     -- inst.components.inventoryitem:SetOnDroppedFn(ondrop) Done in MakeFeedablePet

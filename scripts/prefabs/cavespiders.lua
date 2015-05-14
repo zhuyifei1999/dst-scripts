@@ -71,7 +71,6 @@ local function OnGetItemFromPlayer(inst, giver, item)
                 v.SoundEmitter:PlaySound("dontstarve/common/makeFriend")
                 giver.components.leader:AddFollower(v)
                 local loyaltyTime = item.components.edible:GetHunger() * TUNING.SPIDER_LOYALTY_PER_HUNGER
-                print(loyaltyTime)
                 v.components.follower:AddLoyaltyTime(loyaltyTime)
             end
             maxSpiders = maxSpiders - 1
@@ -141,10 +140,12 @@ local function DoReturn(inst)
 	end
 end
 
-local function OnStartDay(inst)
-	if inst:IsAsleep() then
-		DoReturn(inst)	
-	end
+local function OnIsDay(inst, isday)
+	if not isday then
+        inst.components.sleeper:WakeUp()
+    elseif inst:IsAsleep() then
+        DoReturn(inst)
+    end
 end
 
 local function OnEntitySleep(inst)
@@ -204,20 +205,20 @@ local function MakeWeapon(inst)
     end
 end
 
-local function create_common()
+local function create_common(bank, build, tag)
 	local inst = CreateEntity()
-	
-    inst:WatchWorldState("startday", OnStartDay)
-	inst.OnEntitySleep = OnEntitySleep
 	
     inst.entity:AddTransform()
 	inst.entity:AddAnimState()
 	inst.entity:AddSoundEmitter()
 	inst.entity:AddLightWatcher()
-	local shadow = inst.entity:AddDynamicShadow()
-	shadow:SetSize( 1.5, .5 )
-    inst.Transform:SetFourFaced()
+	inst.entity:AddDynamicShadow()
+	inst.entity:AddNetwork()
     
+    MakeCharacterPhysics(inst, 10, .5)
+
+    inst.DynamicShadow:SetSize(1.5, .5)
+    inst.Transform:SetFourFaced()
     
     ----------
     
@@ -225,15 +226,27 @@ local function create_common()
     inst:AddTag("hostile")
 	inst:AddTag("scarytoprey")    
     inst:AddTag("canbetrapped")    
-    
-    MakeCharacterPhysics(inst, 10, .5)
-
-    
+    inst:AddTag("smallcreature")
     inst:AddTag("spider")
-    inst.AnimState:SetBank("spider")
+    if tag ~= nil then
+        inst:AddTag(tag)
+    end
+    
+    inst.AnimState:SetBank(bank)
+    inst.AnimState:SetBuild(build)
     inst.AnimState:PlayAnimation("idle")
     
-    -- locomotor must be constructed before the stategraph!
+    inst.entity:SetPristine()
+    
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    ----------
+    inst.OnEntitySleep = OnEntitySleep
+
+
+-- locomotor must be constructed before the stategraph!
     inst:AddComponent("locomotor")
 	inst.components.locomotor:SetSlowMultiplier( 1 )
 	inst.components.locomotor:SetTriggersCreep(false)
@@ -246,10 +259,6 @@ local function create_common()
     inst.components.lootdropper:AddRandomLoot("silk", .5)
     inst.components.lootdropper:AddRandomLoot("spidergland", .5)
     inst.components.lootdropper.numrandomloot = 1
-    
-    inst:AddComponent("follower")
-    inst.components.follower.maxfollowtime = TUNING.TOTAL_DAY_TIME
-    
    
     ---------------------        
     MakeMediumBurnableCharacter(inst, "body")
@@ -268,6 +277,9 @@ local function create_common()
     inst.components.combat:SetKeepTargetFunction(keeptargetfn)
 	inst.components.combat:SetOnHit(SummonFriends)
     inst.components.combat:SetHurtSound("dontstarve/creatures/cavespider/hit_response")
+     
+    inst:AddComponent("follower")
+    inst.components.follower.maxfollowtime = TUNING.TOTAL_DAY_TIME
     
     
     ------------------
@@ -309,20 +321,21 @@ local function create_common()
     inst:SetBrain(brain)
 
     inst:ListenForEvent("attacked", OnAttacked)
+    
+    inst:WatchWorldState("isday", OnIsDay)
 
     return inst
 end
 
 local function create_hider()
-    local inst = create_common()
+    local inst = create_common("spider_hider","DS_spider_caves","spider_hider")
     
-    inst.AnimState:SetBank("spider_hider")
-    inst.AnimState:SetBuild("DS_spider_caves")
+    if not TheWorld.ismastersim then
+        return inst
+    end
 
-    --inst:AddTag("spider_warrior")
     inst.components.health:SetMaxHealth(TUNING.SPIDER_HIDER_HEALTH)
 
-    inst:AddTag("spider_hider")
 
     inst.components.combat:SetDefaultDamage(TUNING.SPIDER_HIDER_DAMAGE)
     inst.components.combat:SetAttackPeriod(TUNING.SPIDER_HIDER_ATTACK_PERIOD)
@@ -336,12 +349,11 @@ local function create_hider()
 end
 
 local function create_spitter()
-    local inst = create_common()
+    local inst = create_common("spider_spitter", "DS_spider2_caves", "spider_spitter")
 
-	inst.AnimState:SetBank("spider_spitter")
-    inst.AnimState:SetBuild("DS_spider2_caves")
-
-    inst:AddTag("spider_spitter")
+    if not TheWorld.ismastersim then
+        return inst
+    end
 
     inst:AddComponent("inventory")
     inst.components.trader.deleteitemonaccept = false
@@ -363,11 +375,11 @@ local function create_spitter()
 end
 
 local function create_dropper()
-    local inst = create_common()
-
-    inst.AnimState:SetBuild("spider_white")
-
-    inst:AddTag("spider_warrior")
+    local inst = create_common("spider", "spider_white","spider_warrior")
+    
+    if not TheWorld.ismastersim then
+        return inst
+    end
 
     inst.components.health:SetMaxHealth(TUNING.SPIDER_WARRIOR_HEALTH)
 

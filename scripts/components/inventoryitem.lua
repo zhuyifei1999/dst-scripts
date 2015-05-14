@@ -23,6 +23,7 @@ local InventoryItem = Class(function(self, inst)
 
     self.owner = nil
     self.canbepickedup = true
+    self.canbepickedupalive = false --added for minion pickup behaviour, e.g. eyeplants
     self.onpickupfn = nil
     self.isnew = true
     self.nobounce = false

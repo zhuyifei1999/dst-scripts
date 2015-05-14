@@ -125,7 +125,25 @@ function SaveIndex:GetSaveDataFile(file, cb)
 
         print("Deserialize world session from "..file)
         local success, savedata = RunInSandbox(str)
-        
+
+        --#V2C #TODO #DELETEME temp logging for crash
+        if not success and savedata ~= nil then
+            local len = savedata:len()
+            local i = savedata:find("#")
+            local j = 0
+            while i ~= nil do
+                if j == 0 then
+                    print("BEGIN corrupt save data inspection")
+                end
+                j = j + 1
+                print(string.format("#E%d: %s", j, savedata:sub(math.max(1, i - 50), math.min(len, i + 50))))
+                i = i < len and savedata:find("#", i + 1) or nil
+            end
+            if j > 0 then
+                print("END corrupt save data inspection")
+            end
+        end
+        -----------------------------------------------
         assert(success, "Corrupt Save file ["..file.."]")
         assert(savedata, "SaveIndex:GetSaveData: Savedata is NIL on load ["..file.."]")
         assert(GetTableSize(savedata) > 0, "SaveIndex:GetSaveData: Savedata is empty on load ["..file.."]")
