@@ -1128,14 +1128,14 @@ function PlayerController:GetActionButtonAction(force_target)
                 if v ~= self.inst and v.entity:IsVisible() and CanEntitySeeTarget(self.inst, v) then
                     local action = GetPickupAction(v, tool)
                     if action ~= nil then
-                        return BufferedAction(self.inst, v, action, tool)
+                        return BufferedAction(self.inst, v, action, action ~= ACTIONS.SMOTHER and tool or nil)
                     end
                 end
             end
         elseif force_target_distsq <= (self.directwalking and 9 or 36) then
             local action = GetPickupAction(force_target, tool)
             if action ~= nil then
-                return BufferedAction(self.inst, force_target, action, tool)
+                return BufferedAction(self.inst, force_target, action, action ~= ACTIONS.SMOTHER and tool or nil)
             end
         end
     end

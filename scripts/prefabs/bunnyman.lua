@@ -149,13 +149,13 @@ local function LootSetupFunction(lootdropper)
     local guy = lootdropper.inst.causeofdeath
     if IsCrazyGuy(guy ~= nil and guy.components.follower ~= nil and guy.components.follower.leader or guy) then
         -- beard lord
-        self.inst.components.lootdropper:SetLoot(beardlordloot)
+        lootdropper:SetLoot(beardlordloot)
     else
         -- regular loot
-        self.inst.components.lootdropper:SetLoot(regularloot)
-        self.inst.components.lootdropper:AddRandomLoot("meat", 3)
-        self.inst.components.lootdropper:AddRandomLoot("manrabbit_tail", 1)
-        self.inst.components.lootdropper.numrandomloot = 1
+        lootdropper:SetLoot(regularloot)
+        lootdropper:AddRandomLoot("meat", 3)
+        lootdropper:AddRandomLoot("manrabbit_tail", 1)
+        lootdropper.numrandomloot = 1
     end
 end
 
