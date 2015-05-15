@@ -30,8 +30,7 @@ end
 
 local function cold(inst)
     inst.AnimState:SetPercent("cool", 1)
-    if inst.components.propagator then
-        inst.components.propagator:StopSpreading()
+    if inst.components.propagator ~= nil then
         inst:RemoveComponent("propagator")
     end
     inst.cooled = true

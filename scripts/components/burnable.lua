@@ -144,7 +144,7 @@ local function SmolderUpdate(inst, self)
     local x, y, z = inst.Transform:GetWorldPosition()
     -- this radius should be larger than the propogation, so that once
     -- there's a lot of blazes in an area, fire starts spreading quickly
-    local ents = TheSim:FindEntities(x, y, z, 12, { "propagator" })
+    local ents = TheSim:FindEntities(x, y, z, 12)
     local nearbyheat = 0
     for i, v in ipairs(ents) do
         if v.components.propagator ~= nil then
@@ -212,7 +212,11 @@ local function OnKilled(inst)
 end
 
 function Burnable:Ignite(immediate, source)
+
     if not (self.burning or self.inst:HasTag("fireimmune")) then
+        --V2C: #DELETEME temp log for crash debugging
+        local wasvalid = self.inst:IsValid()
+        --
         self:StopSmoldering()
 
         self.burning = true
@@ -240,6 +244,12 @@ function Burnable:Ignite(immediate, source)
         if self.task ~= nil then
             self.task:Cancel()
         end
+        --V2C: #DELETEME temp log for crash debugging
+        if not self.inst:IsValid() then
+            print("*** Ignite ("..tostring(wasvalid).."): "..tostring(self.inst))
+            print(debugstack())
+        end
+        --
         self.task = self.burntime ~= nil and self.inst:DoTaskInTime(self.burntime, DoneBurning, self) or nil
     end
 end

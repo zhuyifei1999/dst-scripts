@@ -14,32 +14,48 @@ local Propagator = Class(function(self, inst)
 
     self.acceptsheat = false
     self.spreading = false
-    self.delay = false
-
-    self.inst:AddTag("propagator")
+    self.delay = nil
 end)
 
+function Propagator:OnRemoveFromEntity()
+    self:StopSpreading(true)
+    self:OnUpdate(0)
+    if self.delay ~= nil then
+        self.delay:Cancel()
+        self.delay = nil
+    end
+end
 
 function Propagator:SetOnFlashPoint(fn)
     self.onflashpoint = fn
 end
 
+local function OnDelay(inst, self)
+    self.delay = nil
+end
+
 function Propagator:Delay(time)
-    self.delay = true
-    self.inst:DoTaskInTime(time, function() self.delay = false end)
+    if self.delay ~= nil then
+        self.delay:Cancel()
+    end
+    self.delay = self.inst:DoTaskInTime(time, OnDelay, self)
 end
 
 function Propagator:StopUpdating()
-    if self.task then
+    if self.task ~= nil then
         self.task:Cancel()
         self.task = nil
     end
 end
 
+local function _OnUpdate(inst, self, dt)
+    self:OnUpdate(dt)
+end
+
 function Propagator:StartUpdating()
-    if not self.task then
+    if self.task == nil then
         local dt = .5
-        self.task = self.inst:DoPeriodicTask(dt, function() self:OnUpdate(dt) end, dt + math.random()*.67)
+        self.task = self.inst:DoPeriodicTask(dt, _OnUpdate, dt + math.random() * .67, self, dt)
     end
 end
 
@@ -53,95 +69,92 @@ function Propagator:StopSpreading(reset, heatpct)
     self.source = nil
     self.spreading = false
     if reset then
-        self.currentheat = heatpct and (heatpct * self.flashpoint) or 0
+        self.currentheat = heatpct ~= nil and heatpct * self.flashpoint or 0
         self.acceptsheat = true
     end
 end
 
 function Propagator:AddHeat(amount)
-    
-    if self.delay or self.inst:HasTag("fireimmune") then
+    if self.delay ~= nil or self.inst:HasTag("fireimmune") then
         return
     end
-    
+
     if self.currentheat <= 0 then
-        self:StartUpdating()        
+        self:StartUpdating()
     end
-    
+
     self.currentheat = self.currentheat + amount
 
     if self.currentheat > self.flashpoint then
         self.acceptsheat = false
-        if self.onflashpoint then
+        if self.onflashpoint ~= nil then
             self.onflashpoint(self.inst)
         end
     end
 end
 
 function Propagator:Flash()
-    if self.acceptsheat and not self.delay then
-        self:AddHeat(self.flashpoint+1)
+    if self.acceptsheat and self.delay == nil then
+        self:AddHeat(self.flashpoint + 1)
     end
 end
 
 function Propagator:OnUpdate(dt)
-    
-    if self.currentheat > 0 then
-        self.currentheat = self.currentheat - dt*self.decayrate
-    end
+    self.currentheat = math.max(0, self.currentheat - dt * self.decayrate)
 
     if self.spreading then
-        
-        local pos = Vector3(self.inst.Transform:GetWorldPosition())
-        local prop_range = self.propagaterange
-        if TheWorld.state.isspring then prop_range = prop_range * TUNING.SPRING_FIRE_RANGE_MOD end
-        local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, prop_range, {"propagator"})
-        
-        for k,v in pairs(ents) do
-            if not v:IsInLimbo() then
+        local pos = self.inst:GetPosition()
+        local prop_range = TheWorld.state.isspring and self.propagaterange * TUNING.SPRING_FIRE_RANGE_MOD or self.propagaterange
+        local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, prop_range, nil, { "INLIMBO" })
+        if #ents > 0 then
+            local dmg_range = TheWorld.state.isspring and self.damagerange * TUNING.SPRING_FIRE_RANGE_MOD or self.damagerange
+            local dmg_range_sq = dmg_range * dmg_range
+            local prop_range_sq = prop_range * prop_range
+            local isendothermic = self.inst.components.heater ~= nil and self.inst.components.heater:IsEndothermic()
 
-                local dsq = distsq(pos, Vector3(v.Transform:GetWorldPosition()))
-                local percent_heat = math.max(0.1, 1- (dsq / (self.propagaterange*self.propagaterange)))
+            for i, v in ipairs(ents) do
+                if v:IsValid() and v.components.propagator ~= nil then
+                    --3D distance
+                    local dsq = distsq(pos, v:GetPosition())
 
-			    if v ~= self.inst and v.components.propagator and v.components.propagator.acceptsheat then
-                    v.components.propagator:AddHeat(self.heatoutput*percent_heat*dt)
-			    end
+                    if v ~= self.inst then
+                        if v.components.propagator.acceptsheat then
+                            local percent_heat = math.max(.1, 1 - dsq / prop_range_sq)
+                            v.components.propagator:AddHeat(self.heatoutput * percent_heat * dt)
+                        end
 
-                if v ~= self.inst and v.components.freezable ~= nil then
-                    v.components.freezable:AddColdness(-.25 * self.heatoutput *dt)
-                    if v.components.freezable:IsFrozen() and v.components.freezable.coldness <= 0 then
-                        --Skip thawing
-                        v.components.freezable:Unfreeze()
+                        if v.components.freezable ~= nil then
+                            v.components.freezable:AddColdness(-.25 * self.heatoutput *dt)
+                            if v.components.freezable:IsFrozen() and v.components.freezable.coldness <= 0 then
+                                --Skip thawing
+                                v.components.freezable:Unfreeze()
+                            end
+                        end
+
+                        if not isendothermic and v:HasTag("frozen") then
+                            v:PushEvent("firemelt")
+                            v:AddTag("firemelt")
+                        end
+                    end
+
+                    if self.damages and
+                        dsq < dmg_range_sq and
+                        v.components.health ~= nil and
+                        v.components.health.vulnerabletoheatdamage then
+                        --V2C: Confirmed that distance scaling was intentionally removed as a design decision
+                        --local percent_damage = math.min(.5, 1 - math.min(1, dsq / dmg_range_sq))
+                        local percent_damage = self.source ~= nil and self.source:HasTag("player") and self.pvp_damagemod or 1
+                        v.components.health:DoFireDamage(self.heatoutput * percent_damage * dt)
                     end
                 end
-
-                if v ~= self.inst and v:HasTag("frozen") and not (self.inst.components.heater and self.inst.components.heater:IsEndothermic()) then
-                    v:PushEvent("firemelt")
-                    if not v:HasTag("firemelt") then v:AddTag("firemelt") end
-                end
-    			
-			    if self.damages and v.components.health and v.components.health.vulnerabletoheatdamage then
-				    local dsq = distsq(pos, Vector3(v.Transform:GetWorldPosition()))
-                    local dmg_range = self.damagerange*self.damagerange
-                    if TheWorld.state.isspring then dmg_range = dmg_range * TUNING.SPRING_FIRE_RANGE_MOD end
-				    if dsq < dmg_range then
-					    --local percent_damage = math.min(.5, 1- (math.min(1, dsq / self.damagerange*self.damagerange)))
-                        if self.source and self.source:HasTag("player") then
-                            v.components.health:DoFireDamage(self.heatoutput*dt*self.pvp_damagemod)
-                        else
-					       v.components.health:DoFireDamage(self.heatoutput*dt)
-                        end
-				    end
-			    end
-			end
+            end
         end
-    end
-        
-    if not self.spreading and not (self.inst.components.heater and self.inst.components.heater:IsEndothermic()) then
-        local pos = Vector3(self.inst.Transform:GetWorldPosition())
-        local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, self.propagaterange, {"frozen", "firemelt"})
-        if #ents > 0 then
-            for k,v in pairs(ents) do
+    else
+        if not (self.inst.components.heater ~= nil and self.inst.components.heater:IsEndothermic()) then
+            local x, y, z = self.inst.Transform:GetWorldPosition()
+            local prop_range = TheWorld.state.isspring and self.propagaterange * TUNING.SPRING_FIRE_RANGE_MOD or self.propagaterange
+            local ents = TheSim:FindEntities(x, y, z, prop_range, { "frozen", "firemelt" })
+            for i, v in ipairs(ents) do
                 v:PushEvent("stopfiremelt")
                 v:RemoveTag("firemelt")
             end
@@ -150,11 +163,10 @@ function Propagator:OnUpdate(dt)
             self:StopUpdating()
         end
     end
-    
 end
 
 function Propagator:GetDebugString()
-    return string.format("range: %.2f output: %.2f flashpoint: %.2f delay: %s -- spreading: %s acceptsheat: %s currentheat: %s", self.propagaterange, self.heatoutput, self.flashpoint, tostring(self.delay), tostring(self.spreading), tostring(self.acceptsheat), tostring(self.currentheat))
+    return string.format("range: %.2f output: %.2f flashpoint: %.2f delay: %s -- spreading: %s acceptsheat: %s currentheat: %s", self.propagaterange, self.heatoutput, self.flashpoint, tostring(self.delay ~= nil), tostring(self.spreading), tostring(self.acceptsheat), tostring(self.currentheat))
 end
 
 return Propagator

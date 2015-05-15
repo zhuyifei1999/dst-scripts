@@ -317,7 +317,7 @@ return
 
     weather = function(difficulty)
         if difficulty == "never" then
-            TheWorld:PushEvent("ms_setprecipmode", "never")
+            TheWorld:PushEvent("ms_setprecipitationmode", "never")
         elseif difficulty == "rare" then
             TheWorld:PushEvent("ms_setmoisturescale", .5)
         elseif difficulty == "often" then

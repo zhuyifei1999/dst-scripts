@@ -283,6 +283,18 @@ end
 
 local function oncollide(inst, other)
     OnProjectileHit(inst)
+    
+    -- If there is a physics collision, try to do some damage to that thing.
+    -- This is so you can't hide forever behind walls etc.
+
+    local attacker = inst.components.complexprojectile.attacker
+    local owningweapon = inst.components.complexprojectile.owningweapon
+    if other and other ~= attacker.components.combat.target and other.components.combat then
+        attacker.components.combat:DoAttack(other, owningweapon, inst)
+        if other.components.pinnable then
+            other.components.pinnable:Stick()
+        end
+    end
 end
 
 local function projectilefn()
