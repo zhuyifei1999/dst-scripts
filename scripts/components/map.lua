@@ -46,7 +46,9 @@ local function CanDeployAtPoint(pt, inst)
             v.entity:IsValid() and
             v.entity:IsVisible() and
             v.components.placer == nil and
-            v.entity:GetParent() == nil then
+            v.entity:GetParent() == nil and
+            --FindEntities range check is <=, but we want <
+            v:GetDistanceSqToPoint(pt:Get()) < min_spacing * min_spacing then
             return false
         end
     end
@@ -73,7 +75,8 @@ function Map:CanDeployWallAtPoint(pt, inst)
             v.entity:IsVisible() and
             v.components.placer == nil and
             v.entity:GetParent() == nil and
-            (not v:HasTag("wall") or v:GetDistanceSqToPoint(pt:Get()) < .1) then
+            --FindEntities range check is <=, but we want <
+            v:GetDistanceSqToPoint(pt:Get()) < (v:HasTag("wall") and .1 or 1) then
             return false
         end
     end
@@ -113,13 +116,10 @@ function Map:CanDeployRecipeAtPoint(pt, recipe)
             v.entity:IsVisible() and
             v.components.placer == nil and
             v.entity:GetParent() == nil then
-            if pad_spacing <= 0 or padding[v.prefab] == pad_spacing then
+            --FindEntities range check is <=, but we want <
+            local v_spacing = min_spacing + (pad_spacing > 0 and padding[v.prefab] or 0)
+            if v:GetDistanceSqToPoint(pt:Get()) < v_spacing * v_spacing then
                 return false
-            else
-                local v_spacing = min_spacing + (padding[v.prefab] or 0)
-                if v:GetDistanceSqToPoint(pt:Get()) < v_spacing * v_spacing then
-                    return false
-                end
             end
         end
     end

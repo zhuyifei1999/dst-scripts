@@ -200,17 +200,8 @@ function ServerCreationScreen:OnConfigureButton()
         self.customoptions.actualpreset = nil
     end
     -- Clean up the tweak table since we're going back to customization screen, not to worldgen
-    if self.customoptions and self.customoptions.faketweak and self.customoptions.tweak and #self.customoptions.faketweak > 0 then
-        for i,v in pairs(self.customoptions.faketweak) do
-            for m,n in pairs(self.customoptions.tweak) do
-                for j,k in pairs(n) do
-                    if v == j then -- Found the fake tweak setting, now remove it from the table
-                        self.customoptions.tweak[m][j] = nil
-                        break
-                    end
-                end
-            end
-        end
+    if self.customoptions then
+        self.customoptions.presetdata = nil
     end
 
     local resume_customoptions = nil
@@ -316,20 +307,6 @@ function ServerCreationScreen:Create()
 				TheFrontEnd:PushScreen( popup )
 			end
 		else
-			-- Clean up the tweak table since we don't want "default" overrides
-			if self.customoptions and self.customoptions.faketweak and self.customoptions.tweak and #self.customoptions.faketweak > 0 then
-				for i,v in pairs(self.customoptions.faketweak) do
-					for m,n in pairs(self.customoptions.tweak) do
-						for j,k in pairs(n) do
-							if v == j and k == "default" then -- Found the fake tweak setting for "default", now remove it from the table
-								self.customoptions.tweak[m][j] = nil
-								break
-							end
-						end
-					end
-				end
-			end
-
 			self.server_name.textbox:SetEditing(false)
 			self.server_pw.textbox:SetEditing(false)
 			self.server_desc.textbox:SetEditing(false)

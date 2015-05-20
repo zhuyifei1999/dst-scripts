@@ -130,6 +130,10 @@ local CustomizationScreen = Class(Screen, function(self, profile, cb, defaults, 
 			table.insert(self.presets, {text=level.text, data=level.data, desc = level.desc, overrides = level.overrides, basepreset=level.basepreset})
 		end
 	end
+
+    if self.defaults and self.defaults.presetdata then
+        table.insert(self.presets, 1, self.defaults.presetdata)
+    end
     
     self.presetpanel = self.clickroot:AddChild(Widget("presetpanel"))
     self.presetpanel:SetScale(.9)
@@ -222,7 +226,7 @@ local CustomizationScreen = Class(Screen, function(self, profile, cb, defaults, 
 
 	--add the custom options panel
 	
-	local preset = (self.defaults and self.defaults.preset) or self.presets[1].data
+	local preset = (self.defaults and (self.defaults.actualpreset or self.defaults.preset)) or self.presets[1].data
 
 	self:LoadPreset(preset)
 
@@ -586,12 +590,19 @@ function CustomizationScreen:RefreshOptions()
 	end
 
 	if not self.allowEdit then
-		if self.defaults and self.defaults.tweak then
-			for k,v in pairs(self.defaults.tweak) do
-				for m,n in pairs(v) do
-					self.overrides[m] = n
-				end
-			end
+		if self.defaults then
+            if self.defaults.presetdata and self.defaults.presetdata.overrides then
+                for i,override in ipairs(self.defaults.presetdata.overrides) do
+                    self.overrides[override[1]] = override[2]
+                end
+            end
+            if self.defaults.tweak then
+                for k,v in pairs(self.defaults.tweak) do
+                    for m,n in pairs(v) do
+                        self.overrides[m] = n
+                    end
+                end
+            end
 		end
 	end
 
@@ -724,36 +735,32 @@ function CustomizationScreen:SavePreset()
 		self:MakePresetClean()
 	end
 
-	-- Grab the data (values from current preset + tweaks)
-	local presetoverrides = {}
-	local overrides = {}
-	for k,v in pairs(self.presets) do
-		if self.preset.data == v.data then
-			for m,n in pairs(v.overrides) do
-				overrides[n[1]] = n[2]
-				table.insert(presetoverrides, n)
-			end
-		end
-	end
-	for i,v in ipairs(options) do
-		local value = overrides[options[i].name] or options[i].default
-		value = (self.options.tweak[options[i].group] and self.options.tweak[options[i].group][options[i].name]) and self.options.tweak[options[i].group][options[i].name] or value
+	-- Grab the current data
+    -- First, the current preset's values
+    local newoverrides = {}
+    for i,override in ipairs(self.preset.overrides) do
+        table.insert(newoverrides, {override[1], override[2]})
+    end
 
-		local pos = nil
-		for m,n in ipairs(presetoverrides) do
-			if n[1] == options[i].name then
-				pos = m
-				break
-			end
-		end
-		if not pos then
-			table.insert(presetoverrides, {options[i].name, value})
-		else
-			presetoverrides[pos] = {options[i].name, value}
-		end
-	end
+    -- Then, the current tweaks
+    for group,tweaks in pairs(self.options.tweak) do
+        for tweakname, tweakvalue in pairs(tweaks) do
+            local found = false
+            for i,override in ipairs(newoverrides) do
+                if override[1] == tweakname then
+                    override[2] = tweakvalue
+                    found = true
+                    break
+                end
+            end
 
-	if #presetoverrides <= 0 then return end
+            if not found then
+                table.insert(newoverrides, {tweakname, tweakvalue})
+            end
+        end
+    end
+
+	if #newoverrides <= 0 then return end
 
 	-- Figure out what the id, name and description should be
 	local presetnum = (Profile:GetWorldCustomizationPresets() and #Profile:GetWorldCustomizationPresets() or 0) + 1
@@ -779,7 +786,7 @@ function CustomizationScreen:SavePreset()
 			{text=STRINGS.UI.CUSTOMIZATIONSCREEN.OVERWRITE, 
 				cb = function() 
 					TheFrontEnd:PopScreen()
-					AddPreset(overwrite_spinner:GetSelectedIndex(), presetoverrides)
+					AddPreset(overwrite_spinner:GetSelectedIndex(), newoverrides)
 				end, offset=Vector3(-90,0,0)},
 			{text=STRINGS.UI.CUSTOMIZATIONSCREEN.CANCEL, 
 				cb = function() 
@@ -796,57 +803,21 @@ function CustomizationScreen:SavePreset()
 	    modal.menu.items[3]:SetFocusChangeDir(MOVE_UP, modal.menu.items[1])
 		TheFrontEnd:PushScreen(modal)
 	else -- Otherwise, just save it
-		AddPreset(presetnum, presetoverrides)
+		AddPreset(presetnum, newoverrides)
 	end
 end
 
 function CustomizationScreen:Apply()
 
-	local function collectCustomPresetOptions()
-		-- Dump custom preset info into the tweak table because it's easier than rewriting the presets world gen code
-		if self.presetspinner:GetSelectedIndex() > #levels.sandbox_levels then
-			self.options.faketweak = {}
-			local tweaked = false
-			for i,v in pairs(self.presetspinner:GetSelected().overrides) do
-				for k,j in pairs(self.options.tweak) do
-					for m,n in pairs(j) do
-						if v[1] == m then
-							tweaked = true
-							break
-						end
-					end
-				end
-				if not tweaked then
-					local group = nil
-					local name = nil
-					for b,c in ipairs(options) do
-						for d,f in pairs(c) do
-							if c.name == v[1] then
-								group = c.group
-								name = c.name
-								break
-							end
-						end
-					end
-
-					if group and name then
-						if not self.options.tweak[group] then
-							self.options.tweak[group] = {}
-						end
-						self.options.tweak[group][name] = v[2]
-						table.insert(self.options.faketweak, v[1])
-					end					
-				end
-				tweaked = false
-			end
-
-			self.options.actualpreset = self.presetspinner:GetSelected().data
-			self.options.preset = self.presetspinner:GetSelected().basepreset
-		end
-	end
+    local function collectPresetOptions()
+        -- Dump custom preset info into the tweak table because it's easier than rewriting the presets world gen code
+        self.options.presetdata = deepcopy(self.preset)
+        self.options.actualpreset = self.presetspinner:GetSelected().data
+        self.options.preset = self.presetspinner:GetSelected().basepreset
+    end
 
 	if self:VerifyValidSeasonSettings() then
-		collectCustomPresetOptions()
+		collectPresetOptions()
 		self:Disable()
 		TheFrontEnd:Fade(false, screen_fade_time, function()
 			self.cb(self.options)

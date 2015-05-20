@@ -39,15 +39,6 @@ local function LeaveWorld(inst)
 	inst:Remove()
 end
 
-local function NearPlayerBase(inst)
-	local pt = inst:GetPosition()
-	local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, SEE_STRUCTURE_DIST, BASE_TAGS)
-	if #ents >= 2 then
-		inst.seenbase = true
-		return true
-	end
-end
-
 local function CalcSanityAura(inst, observer)
 	if inst.components.combat.target then
 		return -TUNING.SANITYAURA_HUGE
@@ -100,12 +91,8 @@ local function KeepTargetFn(inst, target)
 	return inst.components.combat:CanTarget(target)
 end
 
-local function OnEntitySleep(inst)
-	
-end
-
 local function OnSave(inst, data)
-	data.seenbase = inst.seenbase
+	data.seenbase = inst.seenbase or nil-- from brain
 	data.cangroundpound = inst.cangroundpound
 	data.num_food_cherrypicked = inst.num_food_cherrypicked
 	data.num_good_food_eaten = inst.num_good_food_eaten
@@ -114,8 +101,8 @@ local function OnSave(inst, data)
 end
 
 local function OnLoad(inst, data)
-	if data then
-		inst.seenbase = data.seenbase
+	if data ~= nil then
+		inst.seenbase = data.seenbase or nil-- for brain
 		inst.cangroundpound = data.cangroundpound
 		inst.num_food_cherrypicked = data.num_food_cherrypicked or 0
 		inst.num_good_food_eaten = data.num_good_food_eaten or 0
@@ -471,7 +458,6 @@ local function fn()
 	inst:WatchWorldState("season", OnSeasonChange)
 	inst:ListenForEvent("attacked", OnAttacked)
 	inst:ListenForEvent("onhitother", OnHitOther)
-	inst:ListenForEvent("entitysleep", OnEntitySleep)
 	inst:ListenForEvent("timerdone", ontimerdone)
 	inst:ListenForEvent("death", OnDead)
 	inst:ListenForEvent("onremove", OnRemove)
@@ -485,7 +471,6 @@ local function fn()
 	inst.SetStandState = SetStandState
 	inst.IsStandState = IsStandState
 	inst.seenbase = false
-	inst.NearPlayerBase = NearPlayerBase
 	inst.WorkEntities = WorkEntities
 	inst.cangroundpound = false
 	inst.killedplayer = false
@@ -497,6 +482,8 @@ local function fn()
 
 	inst:ListenForEvent("killed", OnKill)
 	inst:ListenForEvent("newcombattarget", OnCombatTarget)
+
+    inst.seenbase = nil -- for brain
 
 	inst.OnSave = OnSave
 	inst.OnLoad = OnLoad

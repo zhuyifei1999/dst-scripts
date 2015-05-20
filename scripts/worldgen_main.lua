@@ -73,6 +73,7 @@ if moddata then
 end
 
 require("map/tasks")
+local customise = require("map/customise")
 
 print ("running worldgen_main.lua\n")
 
@@ -259,31 +260,57 @@ function CheckMapSaveData(savedata)
 	assert(savedata.ents, "Entites missing from savedata on generate")
 end
 
-local function OverrideTweaks(level, world_gen_choices)
+local function ApplySingleTweak(tweaktable, tweak)
+    local name = tweak[1]
+    local value = tweak[2]
+
+    if type(name) == type({}) then
+        name = name[math.random(#name)]
+    end
+    if type(value) == type({}) then
+        value = value[math.random(#value)]
+    end
+
+    local group = customise.GetGroupForItem(name)
+
+    if tweaktable[group] == nil then
+        tweaktable[group] = {}
+    end
+    tweaktable[group][name] = value
+end
+
+
+local function OverrideTweaks(level, gen_params)
+    -- Level settings come first, then presetdata (which is identical for known
+    -- presets, but different for custom presets), and then tweaks.
+    -- We just apply them all with the latter ones stomping the former ones.
+    
+    local finaltweak = {}
+
 	local customise = require("map/customise")
 	for i,v in ipairs(level.overrides) do
-		local name = v[1]
-		local value = v[2]
-		
-		if type(name) == type({}) then
-			name = name[math.random(#name)]
-		end
-		if type(value) == type({}) then
-			value = value[math.random(#value)]
-		end
+        ApplySingleTweak(finaltweak, v)
+    end
 
-		local area = customise.GetGroupForItem(name)
-		-- Modify world now
-		if not (world_gen_choices["tweak"] and world_gen_choices["tweak"][area] and world_gen_choices["tweak"][area][name]) then
-			if world_gen_choices["tweak"] == nil then
-				world_gen_choices["tweak"] = {}
-			end
-			if world_gen_choices["tweak"][area] == nil then
-				world_gen_choices["tweak"][area] = {}
-			end
-			world_gen_choices["tweak"][area][name] = value
-		end
-	end
+    if gen_params.presetdata ~= nil then
+        for i,v in ipairs(gen_params.presetdata.overrides) do
+            ApplySingleTweak(finaltweak, v)
+        end
+    end
+
+    if gen_params.tweak ~= nil then
+        for group,tweaks in pairs(gen_params.tweak) do
+            if finaltweak[group] == nil then
+                finaltweak[group] = {}
+            end
+
+            for tweakname, tweakvalue in pairs(tweaks) do
+                finaltweak[group][tweakname] = tweakvalue
+            end
+        end
+    end
+
+    return finaltweak
 end
 
 local function GetRandomFromLayouts( layouts )
@@ -343,7 +370,7 @@ local function AddSingleSetPeice(level, choicefile)
 	end
 end
 
-local function AddSetPeices(level, world_gen_choices)
+local function AddSetPeices(level, gen_params)
 
 	local boons_override = "default"
 	local touchstone_override = "default"
@@ -351,23 +378,23 @@ local function AddSetPeices(level, world_gen_choices)
 	local poi_override = "default"
 	local protected_override = "default"
 
-	if world_gen_choices["tweak"] ~=nil and 
-		world_gen_choices["tweak"]["misc"] ~= nil then
+	if gen_params.finaltweak ~=nil and 
+		gen_params.finaltweak["misc"] ~= nil then
 
-		if world_gen_choices["tweak"]["misc"]["boons"] ~= nil then
-			boons_override = world_gen_choices["tweak"]["misc"]["boons"]
+		if gen_params.finaltweak["misc"]["boons"] ~= nil then
+			boons_override = gen_params.finaltweak["misc"]["boons"]
 		end
-		if world_gen_choices["tweak"]["misc"]["touchstone"] ~= nil then
-			touchstone_override = world_gen_choices["tweak"]["misc"]["touchstone"]
+		if gen_params.finaltweak["misc"]["touchstone"] ~= nil then
+			touchstone_override = gen_params.finaltweak["misc"]["touchstone"]
 		end
-		if world_gen_choices["tweak"]["misc"]["traps"] ~= nil then
-			traps_override = world_gen_choices["tweak"]["misc"]["traps"]
+		if gen_params.finaltweak["misc"]["traps"] ~= nil then
+			traps_override = gen_params.finaltweak["misc"]["traps"]
 		end
-		if world_gen_choices["tweak"]["misc"]["poi"] ~= nil then
-			poi_override = world_gen_choices["tweak"]["misc"]["poi"]
+		if gen_params.finaltweak["misc"]["poi"] ~= nil then
+			poi_override = gen_params.finaltweak["misc"]["poi"]
 		end
-		if world_gen_choices["tweak"]["misc"]["protected"] ~= nil then
-			protected_override = world_gen_choices["tweak"]["misc"]["protected"]
+		if gen_params.finaltweak["misc"]["protected"] ~= nil then
+			protected_override = gen_params.finaltweak["misc"]["protected"]
 		end
 	end
 
@@ -486,7 +513,7 @@ function GenerateNew(debug, parameters)
 		modfn(level)
 	end
 
-	OverrideTweaks(level, parameters.world_gen_choices)	
+	parameters.world_gen_choices.finaltweak = OverrideTweaks(level, parameters.world_gen_choices)	
 	local level_area_triggers = level.override_triggers or nil
 	AddSetPeices(level, parameters.world_gen_choices)
 
@@ -500,8 +527,8 @@ function GenerateNew(debug, parameters)
 	local nomaxwell = level.nomaxwell or false
 
 	local prefab = "forest"
-	if parameters.world_gen_choices.tweak and parameters.world_gen_choices.tweak.misc then
-		prefab = parameters.world_gen_choices.tweak.misc.location or "forest"
+	if parameters.world_gen_choices.finaltweak and parameters.world_gen_choices.finaltweak.misc then
+		prefab = parameters.world_gen_choices.finaltweak.misc.location or "forest"
 	end
 
 	local choose_tasks = level:GetTasksForLevel(tasks.sampletasks)

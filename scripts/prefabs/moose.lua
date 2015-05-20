@@ -42,15 +42,6 @@ local SEE_STRUCTURE_DIST = 20
 local TARGET_DIST = 10
 local LOSE_TARGET_DIST = 20
 
-local function NearPlayerBase(inst)
-    local pt = inst:GetPosition()
-    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, SEE_STRUCTURE_DIST, BASE_TAGS)
-    if #ents >= 2 then
-        inst.SeenBase = true
-        return true
-    end
-end
-
 local function RetargetFn(inst)
     if inst.sg:HasStateTag("busy") then return end
 
