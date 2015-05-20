@@ -200,7 +200,6 @@ local function fn()
     inst.components.burnable.lightningimmune = true
     MakeHugeFreezableCharacter(inst, "mossling_body")
 
-    inst.SeenBase = false
     inst.HasGuardian = HasGuardian
 
     inst.OnSave = OnSave

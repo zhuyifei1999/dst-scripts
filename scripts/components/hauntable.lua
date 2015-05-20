@@ -37,10 +37,6 @@ nil,
     haunted = onhaunted,
 })
 
-function Hauntable:OnRemoveFromEntity()
-    self.inst:RemoveTag("haunted")
-end
-
 function Hauntable:SetOnHauntFn(fn)
 	-- This function, whatever it is, should return true for successful haunts (to trigger haunter effects) and nil or false for unsuccessful haunts
 	-- A successful haunt should be determined on a per-entity basis (i.e. rates/conditions might vary for different ents)
@@ -191,6 +187,7 @@ end
 
 function Hauntable:OnRemoveFromEntity()
 	self:StopFX()
+    self.inst:RemoveTag("haunted")
 end
 
 return Hauntable

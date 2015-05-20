@@ -108,6 +108,7 @@ local function fn()
     inst.components.trap.targettag = "bird"
     inst.components.trap:SetOnHarvestFn(OnHarvested)
     inst.components.trap:SetOnSpringFn(OnSpring)
+    inst.components.trap.baitsortorder = 1
 
     inst:ListenForEvent("entitysleep", OnSleep)
 

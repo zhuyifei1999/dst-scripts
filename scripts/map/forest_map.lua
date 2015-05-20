@@ -107,15 +107,15 @@ local TRANSLATE_AND_OVERRIDE = { --These are entities that should be translated 
 }
 
 local customise = require("map/customise")
-local function TranslateWorldGenChoices(world_gen_choices)
-	if world_gen_choices == nil or GetTableSize(world_gen_choices["tweak"]) == 0 then
+local function TranslateWorldGenChoices(gen_params)
+	if gen_params == nil or GetTableSize(gen_params.finaltweak) == 0 then
 		return nil, nil
 	end
 	
 	local translated = {}
 	local runtime_overrides = {}
 	
-	for group, items in pairs(world_gen_choices["tweak"]) do
+	for group, items in pairs(gen_params.finaltweak) do
 		for selected, v in pairs(items) do
 			if v ~= "default" then
 				if TRANSLATE_AND_OVERRIDE[selected] ~= nil then --Override and Translate
@@ -154,8 +154,8 @@ local function TranslateWorldGenChoices(world_gen_choices)
 	return translated, runtime_overrides
 end
 	
-local function UpdatePercentage(distributeprefabs, world_gen_choices)
-	for selected, v in pairs(world_gen_choices) do
+local function UpdatePercentage(distributeprefabs, gen_params)
+	for selected, v in pairs(gen_params) do
 		if v ~= "default" then		
 			for i, prefab in ipairs(TRANSLATE_TO_PREFABS[selected]) do
 				if distributeprefabs[prefab] ~= nil then
@@ -166,14 +166,14 @@ local function UpdatePercentage(distributeprefabs, world_gen_choices)
 	end
 end
 	
-local function UpdateTerrainValues(world_gen_choices)
-	if world_gen_choices == nil or GetTableSize(world_gen_choices) == 0 then
+local function UpdateTerrainValues(gen_params)
+	if gen_params == nil or GetTableSize(gen_params) == 0 then
 		return
 	end
 	
 	for name,val in pairs(terrain.rooms) do
 		if val.contents.distributeprefabs ~= nil then
-			UpdatePercentage(val.contents.distributeprefabs, world_gen_choices)
+			UpdatePercentage(val.contents.distributeprefabs, gen_params)
 		end
 	end
 end
@@ -206,34 +206,34 @@ local function GenerateVoro(prefab, map_width, map_height, tasks, world_gen_choi
   	story_gen_params.impassible_value = defalt_impassible_tile
 	story_gen_params.level_type = level_type
 	
-	if current_gen_params["tweak"] ~=nil and current_gen_params["tweak"]["misc"] ~= nil then
-		if  current_gen_params["tweak"]["misc"]["start_setpeice"] ~= nil then
-			story_gen_params.start_setpeice = current_gen_params["tweak"]["misc"]["start_setpeice"]
-			current_gen_params["tweak"]["misc"]["start_setpeice"] = nil
+	if current_gen_params.finaltweak ~=nil and current_gen_params.finaltweak["misc"] ~= nil then
+		if  current_gen_params.finaltweak["misc"]["start_setpeice"] ~= nil then
+			story_gen_params.start_setpeice = current_gen_params.finaltweak["misc"]["start_setpeice"]
+			current_gen_params.finaltweak["misc"]["start_setpeice"] = nil
 		end
 
-		if  current_gen_params["tweak"]["misc"]["start_node"] ~= nil then
-			story_gen_params.start_node = current_gen_params["tweak"]["misc"]["start_node"]
-			current_gen_params["tweak"]["misc"]["start_node"] = nil
+		if  current_gen_params.finaltweak["misc"]["start_node"] ~= nil then
+			story_gen_params.start_node = current_gen_params.finaltweak["misc"]["start_node"]
+			current_gen_params.finaltweak["misc"]["start_node"] = nil
 		end
 		
-		if  current_gen_params["tweak"]["misc"]["islands"] ~= nil then
+		if  current_gen_params.finaltweak["misc"]["islands"] ~= nil then
 			local percent = {always=1, never=0,default=0.2, sometimes=0.1, often=0.8}
-			story_gen_params.island_percent = percent[current_gen_params["tweak"]["misc"]["islands"]]
-			current_gen_params["tweak"]["misc"]["islands"] = nil
+			story_gen_params.island_percent = percent[current_gen_params.finaltweak["misc"]["islands"]]
+			current_gen_params.finaltweak["misc"]["islands"] = nil
 		end
 
-		if  current_gen_params["tweak"]["misc"]["branching"] ~= nil then
-			story_gen_params.branching = current_gen_params["tweak"]["misc"]["branching"]
-			current_gen_params["tweak"]["misc"]["branching"] = nil
+		if  current_gen_params.finaltweak["misc"]["branching"] ~= nil then
+			story_gen_params.branching = current_gen_params.finaltweak["misc"]["branching"]
+			current_gen_params.finaltweak["misc"]["branching"] = nil
 		end
 
-		if  current_gen_params["tweak"]["misc"]["loop"] ~= nil then
+		if  current_gen_params.finaltweak["misc"]["loop"] ~= nil then
 			local loop_percent = { never=0, default=nil, always=1.0 }
 			local loop_target = { never="any", default=nil, always="end"}
-			story_gen_params.loop_percent = loop_percent[current_gen_params["tweak"]["misc"]["loop"]]
-			story_gen_params.loop_target = loop_target[current_gen_params["tweak"]["misc"]["loop"]]
-			current_gen_params["tweak"]["misc"]["loop"] = nil
+			story_gen_params.loop_percent = loop_percent[current_gen_params.finaltweak["misc"]["loop"]]
+			story_gen_params.loop_target = loop_target[current_gen_params.finaltweak["misc"]["loop"]]
+			current_gen_params.finaltweak["misc"]["loop"] = nil
 		end
 	end
 
@@ -255,7 +255,7 @@ local function GenerateVoro(prefab, map_width, map_height, tasks, world_gen_choi
     save.map.prefab = prefab  
    
 	local min_size = 350
-	if current_gen_params["tweak"] ~= nil and current_gen_params["tweak"]["misc"] ~= nil and current_gen_params["tweak"]["misc"]["world_size"] ~= nil then
+	if current_gen_params.finaltweak ~= nil and current_gen_params.finaltweak["misc"] ~= nil and current_gen_params.finaltweak["misc"]["world_size"] ~= nil then
 		local sizes ={
 			["tiny"] = 1,
 			["default"] = 350,
@@ -264,9 +264,9 @@ local function GenerateVoro(prefab, map_width, map_height, tasks, world_gen_choi
 			["huge"] = 450,
 			}
 			
-		min_size = sizes[current_gen_params["tweak"]["misc"]["world_size"]]
-		--print("New size:", min_size, current_gen_params["tweak"]["misc"]["world_size"])
-		current_gen_params["tweak"]["misc"]["world_size"] = nil
+		min_size = sizes[current_gen_params.finaltweak["misc"]["world_size"]]
+		--print("New size:", min_size, current_gen_params.finaltweak["misc"]["world_size"])
+		current_gen_params.finaltweak["misc"]["world_size"] = nil
 	end
 		
 	map_width = min_size
@@ -520,7 +520,8 @@ local function GenerateVoro(prefab, map_width, map_height, tasks, world_gen_choi
 	if save.map.topology.overrides == nil then
 		save.map.topology.overrides = {}
 	end
-   	save.map.topology.overrides.original = world_gen_choices
+    save.map.topology.overrides.original = world_gen_choices
+    save.map.topology.overrides.original.finaltweak = nil -- save the data, this can be reassembled after the fact
    	
    	if current_gen_params ~= nil then
 	   	-- Filter out any etities over our overrides
@@ -568,11 +569,11 @@ local function GenerateVoro(prefab, map_width, map_height, tasks, world_gen_choi
     if prefab == "forest" then	   	
 
 	    local current_pos_idx = 1
-	    if (world_gen_choices["tweak"] == nil or world_gen_choices["tweak"]["misc"] == nil or world_gen_choices["tweak"]["misc"]["roads"] == nil) or world_gen_choices["tweak"]["misc"]["roads"] ~= "never" then
+	    if (current_gen_params.finaltweak == nil or current_gen_params.finaltweak["misc"] == nil or current_gen_params.finaltweak["misc"]["roads"] == nil) or current_gen_params.finaltweak["misc"]["roads"] ~= "never" then
 		    local num_roads, road_weight, points_x, points_y = WorldSim:GetRoad(0, join_islands)
 		    local current_road = 1
 		    local min_road_length = math.random(3,5)
-		   	--print("Building roads... Min Length:"..min_road_length, world_gen_choices["tweak"]["misc"]["roads"])
+		   	--print("Building roads... Min Length:"..min_road_length, current_gen_params.finaltweak["misc"]["roads"])
 		   	
 		    
 		    if #points_x>=min_road_length then

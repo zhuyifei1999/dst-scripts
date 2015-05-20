@@ -54,6 +54,7 @@ local function fn()
     inst:AddComponent("trap")
     inst.components.trap.targettag = "canbetrapped"
     inst.components.trap:SetOnHarvestFn(onharvested)
+    inst.components.trap.baitsortorder = 1
 
     MakeHauntableLaunch(inst)
 

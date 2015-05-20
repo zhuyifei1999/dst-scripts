@@ -293,8 +293,8 @@ end
 
 function Trap:RemoveBait()
     if self.bait ~= nil then
-        if self.baitlayer ~= nil then
-            self.bait.AnimState:SetSortOrder(0)
+        if self.baitsortorder ~= nil then
+            self.bait.AnimState:SetFinalOffset(0)
         end
         self.bait.components.bait.trap = nil
         self.bait = nil
@@ -305,8 +305,8 @@ function Trap:SetBait(bait)
     self:RemoveBait()
     if bait ~= nil and bait.components.bait ~= nil then
         self.bait = bait
-        if self.baitlayer ~= nil then
-            self.bait.AnimState:SetSortOrder(self.baitsortorder)
+        if self.baitsortorder ~= nil then
+            self.bait.AnimState:SetFinalOffset(self.baitsortorder)
         end
         bait.components.bait.trap = self
         bait.Transform:SetPosition(self.inst.Transform:GetWorldPosition())

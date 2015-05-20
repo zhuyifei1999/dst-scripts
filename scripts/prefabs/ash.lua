@@ -12,13 +12,23 @@ local function GetStatus(inst)
         or nil
 end
 
-local function VacuumUp(inst)
-	inst.components.disappears:StopDisappear()
-    inst.persists = false
-    inst:RemoveComponent("inventoryitem")
-    inst:RemoveComponent("inspectable")
-	inst.AnimState:PlayAnimation("eaten")
-	inst:ListenForEvent("animover", function() inst:Remove() end)
+local function OnPickup(inst)
+    inst.components.disappears:StopDisappear()
+end
+
+local function OnStackSizeChange(inst, data)
+    if data ~= nil and data.stacksize ~= nil and data.stacksize > 1 then
+        inst.components.named:SetName(nil)
+    end
+end
+
+local function OnDropped(inst)
+    inst.components.disappears:PrepareDisappear()
+end
+
+local function OnHaunt(inst)
+    inst.components.disappears:Disappear()
+    return true
 end
 
 local function fn()
@@ -60,35 +70,26 @@ local function fn()
     inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
 
     inst:AddComponent("inspectable")
-	inst.components.inspectable.getstatus = GetStatus
+    inst.components.inspectable.getstatus = GetStatus
 
     inst:AddComponent("inventoryitem")
-    inst.components.inventoryitem:SetOnPutInInventoryFn(function() inst.components.disappears:StopDisappear() end)
+    inst.components.inventoryitem:SetOnPutInInventoryFn(OnPickup)
 
-	inst:AddComponent("named")
-	inst.components.named.nameformat = STRINGS.NAMES.ASH_REMAINS
+    inst:AddComponent("named")
+    inst.components.named.nameformat = STRINGS.NAMES.ASH_REMAINS
 
     inst:AddComponent("bait")
 
-	inst:ListenForEvent("stacksizechange", function(inst, stackdata)
-		if stackdata.stacksize and stackdata.stacksize > 1 then
-			inst.components.named:SetName(nil)
-		end
-	end)
+    inst:ListenForEvent("stacksizechange", OnStackSizeChange)
 
-	inst:ListenForEvent("ondropped", function() inst.components.disappears:PrepareDisappear() end)
-	inst.components.disappears:PrepareDisappear()
+    inst:ListenForEvent("ondropped", OnDropped)
+    inst.components.disappears:PrepareDisappear()
 
-	inst:AddComponent("hauntable")
-	inst.components.hauntable.cooldown_on_successful_haunt = false
-	inst.components.hauntable.usefx = false
-	inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
-	inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
-		inst.components.disappears:Disappear()
-		return true
-	end)
-
-	inst.VacuumUp = VacuumUp
+    inst:AddComponent("hauntable")
+    inst.components.hauntable.cooldown_on_successful_haunt = false
+    inst.components.hauntable.usefx = false
+    inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
+    inst.components.hauntable:SetOnHauntFn(OnHaunt)
 
     return inst
 end
