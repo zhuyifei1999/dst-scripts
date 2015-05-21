@@ -253,7 +253,7 @@ local function fn()
     inst.AnimState:SetClientsideBuildOverride("insane", "rabbit_build", "beard_monster")
     inst.AnimState:SetClientsideBuildOverride("insane", "rabbit_winter_build", "beard_monster")
 
-    MakeFeedablePetPristine(inst)
+    MakeFeedableSmallLivestockPristine(inst)
 
     inst.entity:SetPristine()
 
@@ -334,7 +334,7 @@ local function fn()
 
     inst:ListenForEvent("attacked", OnAttacked)
 
-    MakeFeedablePet(inst, TUNING.RABBIT_PERISH_TIME, OnPickup, OnDropped)
+    MakeFeedableSmallLivestock(inst, TUNING.RABBIT_PERISH_TIME, OnPickup, OnDropped)
 
     return inst
 end

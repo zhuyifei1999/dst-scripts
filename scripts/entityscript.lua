@@ -1428,66 +1428,55 @@ function EntityScript:LoadPostPass(newents, savedata)
 end
 
 function EntityScript:SetPersistData(data, newents)
+    if self.OnPreLoad ~= nil then
+        self:OnPreLoad(data, newents)
+    end
 
-	if self.OnPreLoad then
-		self:OnPreLoad(data, newents)
-	end
-    
-    if data then
-        for k,v in pairs(data) do
+    if data ~= nil then
+        for k, v in pairs(data) do
             local cmp = self.components[k]
-            if cmp and cmp.OnLoad then
+            if cmp ~= nil and cmp.OnLoad ~= nil then
                 cmp:OnLoad(v, newents)
             end
         end
     end
 
-    if self.OnLoad then
+    if self.OnLoad ~= nil then
         self:OnLoad(data, newents)
     end
 end
 
 function EntityScript:GetAdjective()
-    local spoiled = self:HasTag("spoiled")
-    local stale = self:HasTag("stale")
-    local frozen = self:HasTag("frozen")
-    if self:HasTag("pet") then
-        if stale then
-            return STRINGS.UI.HUD.HUNGRY
-        elseif spoiled then
-            return STRINGS.UI.HUD.STARVING
-        end
-    else
-        if (spoiled or stale) and frozen then
-            return STRINGS.UI.HUD.STALE_FROZEN
-        elseif stale then
-            return STRINGS.UI.HUD.STALE
-        elseif spoiled then
-            return STRINGS.UI.HUD.SPOILED
-        end
+    if self:HasTag("small_livestock") then
+        return (self:HasTag("stale") and STRINGS.UI.HUD.HUNGRY)
+            or (self:HasTag("spoiled") and STRINGS.UI.HUD.STARVING)
+            or nil
+    elseif self:HasTag("stale") then
+        return self:HasTag("frozen") and STRINGS.UI.HUD.STALE_FROZEN or STRINGS.UI.HUD.STALE
+    elseif self:HasTag("spoiled") then
+        return self:HasTag("frozen") and STRINGS.UI.HUD.STALE_FROZEN or STRINGS.UI.HUD.SPOILED
     end
 end
 
 function EntityScript:SetProfile(profile)
     self.profile = profile
-    if profile then
-        for k,v in pairs(self.components) do
-            if v.OnSetProfile then
+    if profile ~= nil then
+        for k, v in pairs(self.components) do
+            if v.OnSetProfile ~= nil then
                 v:OnSetProfile(profile)
             end
         end
     end
-    
-    if self.OnSetProfile then
+
+    if self.OnSetProfile ~= nil then
         self:OnSetProfile(profile)
     end
-    
+
     self:PushEvent("onsetprofile", {})
-    
 end
 
 function EntityScript:SetInherentSceneAction(action)
-	self.inherentsceneaction = action
+    self.inherentsceneaction = action
     if self.actionreplica.inherentsceneaction ~= nil then
         self.actionreplica.inherentsceneaction:set(SerializeAction(action))
     end

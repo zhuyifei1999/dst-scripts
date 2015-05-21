@@ -108,7 +108,6 @@ local function OnGetItemFromPlayer(inst, giver, item)
             -- yay!?
         end
     end
-
 end
 
 local function OnEat(inst, food)
@@ -121,16 +120,19 @@ local function OnEat(inst, food)
     end
 end
 
-local function OnRefuseItem(inst, item)
+--local function OnRefuseItem(inst, item)
     --print("smallbird - OnRefuseItem")
     --inst.sg:GoToState("refuse")
-end
+--end
 
 local function FollowLeader(inst)
-    -- KAJ: TODO: MP_LOGIC
-    local leader = inst:GetNearestPlayer()
-    if inst.leader then leader = inst.leader end
-    if leader and leader.components.leader then
+    local leader = inst.leader
+    if leader == nil or not leader:IsValid() then
+        local x, y, z = inst.Transform:GetWorldPosition()
+        leader = FindClosestPlayerInRange(x, y, z, 10, true)
+        inst.leader = nil
+    end
+    if leader ~= nil and leader.components.leader ~= nil then
         --print("   adding follower")
         leader.components.leader:AddFollower(inst)
         --[[if leader.components.homeseeker and leader.components.homeseeker:HasHome() and leader.components.homeseeker.home.prefab == "tallbirdnest" then 
@@ -174,7 +176,6 @@ local function SmallKeepTarget(inst, target)
         return false
     end
 end
-
 
 local function TeenRetarget(inst)
     return FindEntity(inst, SpringCombatMod(TUNING.TEENBIRD_TARGET_DIST), function(guy)
@@ -353,7 +354,7 @@ local function create_common(inst, physicscylinder)
     inst:AddComponent("trader")
     inst.components.trader:SetAcceptTest(ShouldAcceptItem)
     inst.components.trader.onaccept = OnGetItemFromPlayer
-    inst.components.trader.onrefuse = OnRefuseItem
+    --inst.components.trader.onrefuse = OnRefuseItem
 
     inst:AddComponent("lootdropper")
 
@@ -373,9 +374,17 @@ local function SetUpSpringSmallBird(inst, data)
     end
 end
 
+local function dummy()
+end
+
+local small_growth_stages =
+{
+    { name = "small", time = GetSmallGrowTime, fn = dummy },
+    { name = "tall", fn = SetTeen },
+}
+
 local function create_smallbird()
     --print("smallbird - create_smallbird")
-
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -418,13 +427,8 @@ local function create_smallbird()
 
     inst.components.eater:SetDiet({ FOODGROUP.BERRIES_AND_SEEDS }, { FOODGROUP.BERRIES_AND_SEEDS })
 
-    local growth_stages = {
-        {name="small", time = GetSmallGrowTime, fn = function() end },
-        {name="tall", fn = SetTeen}
-    }
-
     inst:AddComponent("growable")
-    inst.components.growable.stages = growth_stages
+    inst.components.growable.stages = small_growth_stages
     inst.components.growable:SetStage(1)
     inst.components.growable:StartGrowing()
 
@@ -434,9 +438,14 @@ local function create_smallbird()
     return inst
 end
 
+local teen_growth_stages =
+{
+    { name = "tall", time = GetTallGrowTime, fn = dummy },
+    { name = "adult", fn = SetAdult },
+}
+
 local function create_teen_smallbird()
     --print("smallbird - create_teen_smallbird")
-
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -484,13 +493,8 @@ local function create_teen_smallbird()
 
     inst.components.eater:SetDiet({ FOODGROUP.OMNI }, { FOODGROUP.OMNI })
 
-    local growth_stages = {
-        {name="tall", time = GetTallGrowTime, fn = function() end },
-        {name="adult", fn = SetAdult}
-    }
-
     inst:AddComponent("growable")
-    inst.components.growable.stages = growth_stages
+    inst.components.growable.stages = teen_growth_stages
     inst.components.growable:SetStage(1)
     inst.components.growable:StartGrowing()
 

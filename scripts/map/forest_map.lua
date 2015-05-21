@@ -521,7 +521,6 @@ local function GenerateVoro(prefab, map_width, map_height, tasks, world_gen_choi
 		save.map.topology.overrides = {}
 	end
     save.map.topology.overrides.original = world_gen_choices
-    save.map.topology.overrides.original.finaltweak = nil -- save the data, this can be reassembled after the fact
    	
    	if current_gen_params ~= nil then
 	   	-- Filter out any etities over our overrides
@@ -603,6 +602,8 @@ local function GenerateVoro(prefab, map_width, map_height, tasks, world_gen_choi
 			end
 		end
 	end
+
+    save.map.topology.overrides.original.finaltweak = nil -- composite tweaks no longer needed, discard. They can be reconstructed.
 
 	print("Done "..prefab.." map gen!")
 

@@ -212,7 +212,7 @@ local COMPONENT_ACTIONS =
                             if inst:HasTag("edible_"..v2) then
                                 if target:HasTag("player") and (TheNet:GetPVPEnabled() or not (inst:HasTag("badfood") or inst:HasTag("spoiled"))) then
                                     table.insert(actions, ACTIONS.FEEDPLAYER)
-                                elseif target:HasTag("pet") then
+                                elseif target:HasTag("small_livestock") then
                                     table.insert(actions, ACTIONS.FEED)
                                 end
                                 return
@@ -224,7 +224,7 @@ local COMPONENT_ACTIONS =
                     if inst:HasTag("edible_"..v) and target:HasTag(v.."_eater") then
                         if target:HasTag("player") and (TheNet:GetPVPEnabled() or not (inst:HasTag("badfood") or inst:HasTag("spoiled"))) then
                             table.insert(actions, ACTIONS.FEEDPLAYER)
-                        elseif target:HasTag("pet") then
+                        elseif target:HasTag("small_livestock") then
                             table.insert(actions, ACTIONS.FEED)
                         end
                         return

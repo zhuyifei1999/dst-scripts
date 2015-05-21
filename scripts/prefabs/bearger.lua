@@ -2,6 +2,7 @@ local assets =
 {
 	Asset("ANIM", "anim/bearger_build.zip"),
 	Asset("ANIM", "anim/bearger_basic.zip"),
+	Asset("ANIM", "anim/bearger_groggy_build.zip"),
 	Asset("ANIM", "anim/bearger_actions.zip"),
 	Asset("SOUND", "sound/bearger.fsb"),
 }
@@ -52,10 +53,10 @@ local function SetGroundPounderSettings(inst, mode)
 		inst.components.groundpounder.damageRings = 2
 		inst.components.groundpounder.destructionRings = 2
 		inst.components.groundpounder.numRings = 3
-	elseif mode == "hibernation" then 
+	--[[elseif mode == "hibernation" then 
 		inst.components.groundpounder.damageRings = 3
 		inst.components.groundpounder.destructionRings = 3
-		inst.components.groundpounder.numRings = 4
+		inst.components.groundpounder.numRings = 4]]
 	end
 end
 
@@ -117,7 +118,7 @@ local function OnSeasonChange(inst, data)
 		inst.components.health:SetAbsorptionAmount(0)
 		inst:RemoveTag("hibernation")
 	else
-		SetGroundPounderSettings(inst, "hibernation")
+		--SetGroundPounderSettings(inst, "hibernation")
 		inst:AddTag("hibernation")
 	end
 end
@@ -194,6 +195,8 @@ end
 local function ontimerdone(inst, data)
 	if data.name == "GroundPound" then
 		inst.cangroundpound = true
+	elseif data.name == "Yawn" and inst:HasTag("hibernation") then 
+		inst.canyawn = true
 	end
 end
 
@@ -211,9 +214,10 @@ local function ShouldSleep(inst)
 	if TheWorld.state.season == "winter" or TheWorld.state.season == "spring" then 
 		inst.components.shedder:StopShedding()
 		inst:AddTag("hibernation")
-		--inst:AddTag("asleep")
-		SetGroundPounderSettings(inst, "hibernation")
-		inst.components.health:SetAbsorptionAmount(.15)
+		inst:AddTag("asleep")
+		inst.AnimState:SetBuild("bearger_groggy_build")
+		--SetGroundPounderSettings(inst, "hibernation")
+		--inst.components.health:SetAbsorptionAmount(.15)
 		return true
 	end
 	
@@ -225,9 +229,10 @@ local function ShouldWake(inst)
 		
 		inst.components.shedder:StartShedding(TUNING.BEARGER_SHED_INTERVAL)
 		inst:RemoveTag("hibernation")
-		--inst:RemoveTag("asleep")
-		SetGroundPounderSettings(inst, "normal")
-		inst.components.health:SetAbsorptionAmount(0)
+		inst:RemoveTag("asleep")
+		inst.AnimState:SetBuild("bearger_build")
+		--SetGroundPounderSettings(inst, "normal")
+		--inst.components.health:SetAbsorptionAmount(0)
 		return true
 	else
 		return false
@@ -299,7 +304,7 @@ local function OnRemove(inst)
 end
 
 local function OnPlayerAction(inst, player, data)
-	if inst.components.sleeper.isasleep then 
+	if inst.components.sleeper and inst.components.sleeper:IsAsleep() then 
 		return -- don't react to things when asleep
 	end
 

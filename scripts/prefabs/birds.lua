@@ -93,7 +93,7 @@ local function makebird(name, soundname)
         inst.DynamicShadow:SetSize(1, .75)
         inst.DynamicShadow:Enable(false)
 
-        MakeFeedablePetPristine(inst)
+        MakeFeedableSmallLivestockPristine(inst)
 
         inst.entity:SetPristine()
 
@@ -170,7 +170,7 @@ local function makebird(name, soundname)
             birdspawner:StartTracking(inst)
         end
 
-        MakeFeedablePet(inst, TUNING.BIRD_PERISH_TIME, nil, OnDropped)
+        MakeFeedableSmallLivestock(inst, TUNING.BIRD_PERISH_TIME, nil, OnDropped)
 
         return inst
     end

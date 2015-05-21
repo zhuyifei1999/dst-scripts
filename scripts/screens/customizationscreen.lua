@@ -666,6 +666,16 @@ function CustomizationScreen:LoadPreset(preset)
 			return
 		end
 	end
+
+    -- We should never get here, adding some error logging.
+    print("Presets:")
+    local s = {}
+    for k,p in pairs(self.presets) do
+        table.insert(s, p.data)
+    end
+    print(table.concat(s,", "))
+    print("Error: Tried loading preset "..preset.." but we don't have that!")
+    print(self.defaults and "Have default: "..(self.defaults.preset or "<nil>")..", "..(self.defaults.actualpreset or "<nil>")..", saved preset data: "..(self.defaults.presetdata and self.defaults.presetdata.data or "<nil>") or "No defaults found.")
 end
 
 function CustomizationScreen:Cancel()
@@ -694,6 +704,8 @@ function CustomizationScreen:OnControl(control, down)
     	elseif control == CONTROL_INSPECT then
     		self:SavePreset()
     		return false
+        else
+            return false
     	end 
 
     	return true

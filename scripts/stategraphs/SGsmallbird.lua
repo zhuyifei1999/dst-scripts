@@ -6,7 +6,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.EAT, "eat"),
 }
 
-local events=
+local events =
 {
     CommonHandlers.OnStep(),
     CommonHandlers.OnSleep(),
@@ -26,7 +26,21 @@ local events=
     EventHandler("death", function(inst) inst.sg:GoToState("death") end),
 }
 
-local states=
+local function CheckForNewLeader(inst)
+    if inst.components.follower ~= nil and inst.components.follower.leader == nil then
+        inst.userfunctions.FollowLeader(inst)
+        if inst.components.follower.leader == nil then
+            --Didn't find a leader yet
+            return
+        end
+    end
+    if inst.sg.statemem.checkleadertask ~= nil then
+        inst.sg.statemem.checkleadertask:Cancel()
+        inst.sg.statemem.checkleadertask = nil
+    end
+end
+
+local states =
 {
     State{
         name = "idle",
@@ -35,7 +49,11 @@ local states=
         onenter = function(inst, pushanim)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("idle", true)
-            inst.sg:SetTimeout(4 + 4*math.random())
+            inst.sg:SetTimeout(4 + 4 * math.random())
+            CheckForNewLeader(inst)
+            if inst.components.follower ~= nil and inst.components.follower.leader == nil then
+                inst.sg.statemem.checkleadertask = inst:DoPeriodicTask(1, CheckForNewLeader)
+            end
         end,
 
         ontimeout = function(inst)
@@ -47,7 +65,7 @@ local states=
             end
         end,
 
-        events=
+        events =
         {
             EventHandler("startstarving", 
                 function(inst, data)
@@ -56,6 +74,13 @@ local states=
                 end
             ),
         },
+
+        onexit = function(inst)
+            if inst.sg.statemem.checkleadertask ~= nil then
+                inst.sg.statemem.checkleadertask:Cancel()
+                inst.sg.statemem.checkleadertask = nil
+            end
+        end,
     },
 
     State{
@@ -65,6 +90,7 @@ local states=
         onenter = function(inst)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("idle_blink")
+            CheckForNewLeader(inst)
         end,
        
         timeline = 
@@ -93,6 +119,7 @@ local states=
         onenter = function(inst)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("meep")
+            CheckForNewLeader(inst)
         end,
        
         timeline = 
@@ -144,7 +171,6 @@ local states=
         {
             EventHandler("animover", function(inst)
                 inst.sg:GoToState("idle")
-                inst.userfunctions.FollowLeader(inst)
             end),
         },
     },

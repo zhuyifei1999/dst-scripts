@@ -456,7 +456,7 @@ function ModIndex:Load(callback)
         function(load_success, str)
         	if load_success == true then
 				local success, savedata = RunInSandboxSafe(str)
-				if success and string.len(str) > 0 then
+				if success and string.len(str) > 0 and savedata ~= nil then
 					self.savedata = savedata
 					for k,info in pairs(self.savedata.known_mods) do
 						info.was_enabled = info.enabled
@@ -467,6 +467,9 @@ function ModIndex:Load(callback)
 		--print("\n\n---END LOADING MOD INDEX---\n\n")
 				else
 					print ("Could not load "..filename)
+					if string.len(str) > 0 then
+						print("File str is ["..str.."]")
+					end
 				end
 			else
 				print ("Could not load "..filename)
