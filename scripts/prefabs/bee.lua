@@ -144,7 +144,7 @@ local function commonfn(build, tags)
     inst.AnimState:PlayAnimation("idle")
     inst.AnimState:SetRayTestOnBB(true)
 
-    MakeFeedablePetPristine(inst)
+    MakeFeedableSmallLivestockPristine(inst)
 
     inst.entity:SetPristine()
 
@@ -160,7 +160,7 @@ local function commonfn(build, tags)
     inst:AddComponent("stackable")
     inst:AddComponent("inventoryitem")
     inst.components.inventoryitem.nobounce = true
-    -- inst.components.inventoryitem:SetOnDroppedFn(OnDropped) Done in MakeFeedablePet
+    -- inst.components.inventoryitem:SetOnDroppedFn(OnDropped) Done in MakeFeedableSmallLivestock
     -- inst.components.inventoryitem:SetOnPutInInventoryFn(OnPickedUp)
     inst.components.inventoryitem.canbepickedup = false
     inst.components.inventoryitem.canbepickedupalive = true
@@ -205,7 +205,7 @@ local function commonfn(build, tags)
     inst:ListenForEvent("attacked", beecommon.OnAttacked)
     inst:ListenForEvent("worked", beecommon.OnWorked)
 
-    MakeFeedablePet(inst, TUNING.TOTAL_DAY_TIME*2, OnPickedUp, OnDropped)
+    MakeFeedableSmallLivestock(inst, TUNING.TOTAL_DAY_TIME*2, OnPickedUp, OnDropped)
 
     return inst
 end

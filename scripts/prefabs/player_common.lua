@@ -104,6 +104,10 @@ local function GetMoistureRateScale(inst)
     end
 end
 
+local function ShouldKnockout(inst)
+    return DefaultKnockoutTest(inst) and not inst.sg:HasStateTag("yawn")
+end
+
 local function ShouldAcceptItem(inst, item)
     if inst:HasTag("playerghost") then
         return item.prefab == "reviver"
@@ -714,6 +718,7 @@ local function DoActualRez(inst, source)
 
     inst:AddComponent("grogginess")
     inst.components.grogginess:SetResistance(3)
+    inst.components.grogginess:SetKnockOutTest(ShouldKnockout)
 
     inst.components.moisture:ForceDry(false)
 
@@ -1452,6 +1457,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
 
         inst:AddComponent("grogginess")
         inst.components.grogginess:SetResistance(3)
+        inst.components.grogginess:SetKnockOutTest(ShouldKnockout)
 
         inst:AddComponent("colourtweener")
 

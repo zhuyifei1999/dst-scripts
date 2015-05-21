@@ -478,13 +478,13 @@ local function onperish(inst)
     end
 end
 
-function MakeFeedablePetPristine(inst)
+function MakeFeedableSmallLivestockPristine(inst)
     inst:AddTag("show_spoilage")
-    inst:AddTag("pet")
+    inst:AddTag("small_livestock")
 end
 
-function MakeFeedablePet(inst, starvetime, oninventory, ondropped)
-    MakeFeedablePetPristine(inst)
+function MakeFeedableSmallLivestock(inst, starvetime, oninventory, ondropped)
+    MakeFeedableSmallLivestockPristine(inst)
 
     --This is acceptable.  Some eaters are added already to specify diets.
     if inst.components.eater == nil then
@@ -512,6 +512,12 @@ function MakeFeedablePet(inst, starvetime, oninventory, ondropped)
         end
     end)
 end
+
+--Backward compatibility for mods
+--The old "pets" are now "livestock", since
+--DST will have an actual player pet system
+MakeFeedablePetPristine = MakeFeedableSmallLivestockPristine
+MakeFeedablePet = MakeFeedableSmallLivestock
 
 local dragonprioritytag =
 {

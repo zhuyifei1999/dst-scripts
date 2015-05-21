@@ -93,7 +93,7 @@ local function fn()
 
     inst.DynamicShadow:SetSize(.8, .5)
 
-    MakeFeedablePetPristine(inst)
+    MakeFeedableSmallLivestockPristine(inst)
 
     inst.entity:SetPristine()
 
@@ -165,7 +165,7 @@ local function fn()
     end
     assert(inst.components.homeseeker)
 
-    MakeFeedablePet(inst, TUNING.BUTTERFLY_PERISH_TIME, OnPickedUp, OnDropped)
+    MakeFeedableSmallLivestock(inst, TUNING.BUTTERFLY_PERISH_TIME, OnPickedUp, OnDropped)
 
     return inst
 end

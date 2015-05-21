@@ -2,63 +2,96 @@ require("stategraphs/commonstates")
 
 local SHAKE_DIST = 40
 
+function yawnfn(inst)
+    local x, y, z = inst.Transform:GetWorldPosition()
+    local ents = TheSim:FindEntities(x, y, z, TUNING.BEARGER_YAWN_RANGE, nil, { "playerghost" }, { "sleeper", "player" })
+    for i, v in ipairs(ents) do
+        if v ~= inst and v:IsValid() then
+            if v:HasTag("player") then
+                v:PushEvent("yawn", { grogginess = 4, knockoutduration = TUNING.BEARGER_YAWN_SLEEPTIME })
+            elseif v.components.sleeper ~= nil then
+                v.components.sleeper:AddSleepiness(7, TUNING.BEARGER_YAWN_SLEEPTIME)
+            elseif v.components.grogginess ~= nil then
+                v.components.grogginess:AddGrogginess(4, TUNING.BEARGER_YAWN_SLEEPTIME)
+            else
+                v:PushEvent("knockedout")
+            end
+        end
+    end
+    inst.canyawn = nil
+    return true
+end
+
 local function onattackedfn(inst, data)
-	if inst.components.health and not inst.components.health:IsDead()
-	and (not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("frozen")) then
-		-- Clear out the inventory if he got interrupted
-		local target = inst.components.inventory:FindItem(function(item) return inst.components.eater:CanEat(item) end)
-		while target do
-			target:Remove()
-			target = inst.components.inventory:FindItem(function(item) return inst.components.eater:CanEat(item) end)
-		end
-	   inst.sg:GoToState("hit")
-	end
+    if inst.components.health ~= nil and
+        not inst.components.health:IsDead() and
+       (not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("frozen")) then
+
+        -- Clear out the inventory if he got interrupted
+        local target = inst.components.inventory:FindItem(function(item) return inst.components.eater:CanEat(item) end)
+        while target ~= nil do
+            target:Remove()
+            target = inst.components.inventory:FindItem(function(item) return inst.components.eater:CanEat(item) end)
+        end
+
+        inst.sg:GoToState("hit")
+    end
 end
 
 local function onattackfn(inst)
-	if inst.components.health and not inst.components.health:IsDead()
-		and (inst.sg:HasStateTag("hit") or not inst.sg:HasStateTag("busy")) then
-		-- Clear out the inventory if he got interrupted
-		local target = inst.components.inventory:FindItem(function(item) return inst.components.eater:CanEat(item) end)
-		while target do
-			target:Remove()
-			target = inst.components.inventory:FindItem(function(item) return inst.components.eater:CanEat(item) end)
-		end
+    if inst.components.health ~= nil and
+        not inst.components.health:IsDead() and
+        (inst.sg:HasStateTag("hit") or not inst.sg:HasStateTag("busy")) then
 
-		if inst.components.combat and inst.components.combat.target and inst.components.combat.target:HasTag("beehive") then
-			inst.sg:GoToState("attack")
-			return
-		end
+        -- Clear out the inventory if he got interrupted
+        local target = inst.components.inventory:FindItem(function(item) return inst.components.eater:CanEat(item) end)
+        while target ~= nil do
+            target:Remove()
+            target = inst.components.inventory:FindItem(function(item) return inst.components.eater:CanEat(item) end)
+        end
 
-		if not inst.cangroundpound and not inst.components.timer:TimerExists("GroundPound") then
-			if inst:HasTag("hibernation") then 
-				inst.components.timer:StartTimer("GroundPound", TUNING.BEARGER_SLEEPY_GROUNDPOUND_COOLDOWN)
-			end
-			inst.components.timer:StartTimer("GroundPound", TUNING.BEARGER_NORMAL_GROUNDPOUND_COOLDOWN)
-		end
+        if inst.components.combat ~= nil and
+            inst.components.combat.target ~= nil and
+            inst.components.combat.target:HasTag("beehive") then
+            inst.sg:GoToState("attack")
+            return
+        end
 
-		if inst.sg:HasStateTag("running") then
-			inst.sg:GoToState("pound")
-		else
-			if inst.cangroundpound then
-				inst.sg:GoToState("pound")
-			else
-				inst.sg:GoToState("attack")
-			end
-		end
-	end
+        if not (inst.cangroundpound or inst.components.timer:TimerExists("GroundPound")) then
+            inst.components.timer:StartTimer("GroundPound", TUNING.BEARGER_NORMAL_GROUNDPOUND_COOLDOWN)
+        end
+
+        if not (inst.canyawn or inst.components.timer:TimerExists("Yawn")) and inst:HasTag("hibernation") then 
+            --print("Starting yawn timer ", TUNING.BEARGER_YAWN_COOLDOWN)
+            inst.components.timer:StartTimer("Yawn", TUNING.BEARGER_YAWN_COOLDOWN)
+        end
+
+        if inst.sg:HasStateTag("running") then
+            inst.sg:GoToState("pound")
+        elseif inst.canyawn and not inst.sg:HasStateTag("yawn") then
+            inst.sg:GoToState("yawn")
+        elseif inst.cangroundpound then
+            inst.sg:GoToState("pound")
+        else
+            inst.sg:GoToState("attack")
+        end
+    end
 end
 
 local function destroystuff(inst)
-	local pt = inst:GetPosition()
-	local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, 5)
-	local heading_angle = -(inst.Transform:GetRotation())
-	for k,v in pairs(ents) do
-		if v and v.components.workable and v.components.workable.workleft > 0 and v.components.workable.action ~= ACTIONS.NET then
-			SpawnPrefab("collapse_small").Transform:SetPosition(v:GetPosition():Get())
-			v.components.workable:Destroy(inst)
-		end
-	end
+    local x, y, z = inst.Transform:GetWorldPosition()
+    local ents = TheSim:FindEntities(x, y, z, 5)
+    local heading_angle = -inst.Transform:GetRotation()
+    for i, v in ipairs(ents) do
+        if v:IsValid() and
+            v.components.workable ~= nil and
+            v.components.workable.workleft > 0 and
+            v.components.workable.workable and
+            v.components.workable.action ~= ACTIONS.NET then
+            SpawnPrefab("collapse_small").Transform:SetPosition(v.Transform:GetWorldPosition())
+            v.components.workable:Destroy(inst)
+        end
+    end
 end
 
 local actionhandlers =
@@ -252,6 +285,38 @@ local states=
 	},
 
 	State{
+		name = "yawn",
+		tags = {"yawn", "busy"},
+
+		onenter = function(inst)
+			
+			if inst.components.locomotor then 
+				inst.components.locomotor:StopMoving()
+			end
+
+			inst.AnimState:PlayAnimation("yawn")
+		end,
+
+		timeline =
+		{
+			TimeEvent(22*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/bearger/yawn") end),
+			TimeEvent(50*FRAMES, yawnfn),
+		},
+
+		events =
+		{
+			EventHandler("animqueueover", function(inst) 
+					if not inst.components.timer:TimerExists("Yawn") then
+						--print("Starting yawn timer ", TUNING.BEARGER_YAWN_COOLDOWN)
+						inst.components.timer:StartTimer("Yawn", TUNING.BEARGER_YAWN_COOLDOWN)
+					end
+
+					inst.sg:GoToState("idle")
+			end),
+		},
+	},
+
+	State{
 		name = "attack",
 		tags = {"attack", "busy", "canrotate"},
 
@@ -301,9 +366,6 @@ local states=
 				inst.components.groundpounder:GroundPound()
 				inst.cangroundpound = false
 				if not inst.components.timer:TimerExists("GroundPound") then
-					if inst:HasTag("hibernation") then 
-						inst.components.timer:StartTimer("GroundPound", TUNING.BEARGER_SLEEPY_GROUNDPOUND_COOLDOWN)
-					end
 					inst.components.timer:StartTimer("GroundPound", TUNING.BEARGER_NORMAL_GROUNDPOUND_COOLDOWN)
 				end
 				inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/bearger/groundpound")
@@ -690,7 +752,7 @@ local states=
 
 			events=
 			{
-				EventHandler("animover", function(inst) inst.sg:GoToState("idle") end ),
+				EventHandler("animover", function(inst)  inst.sg:GoToState("yawn") end ),
 			},
 
 			timeline=
@@ -703,4 +765,3 @@ local states=
 CommonStates.AddFrozenStates(states)
 
 return StateGraph("bearger", states, events, "idle", actionhandlers)
-

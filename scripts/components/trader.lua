@@ -120,8 +120,8 @@ function Trader:AcceptGift(giver, item, count)
 
     if self.onrefuse ~= nil then
         self.onrefuse(self.inst, giver, item)
-        return false
     end
+    return false
 end
 
 function Trader:GetDebugString()

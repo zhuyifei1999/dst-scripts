@@ -110,8 +110,6 @@ function Grogginess:AddGrogginess(grogginess, knockoutduration)
         return
     end
 
-    knockoutduration = knockoutduration or TUNING.MIN_KNOCKOUT_TIME
-
     self.grog_amount = self.grog_amount + grogginess
     self.wearofftime = 0
 
@@ -125,7 +123,7 @@ function Grogginess:AddGrogginess(grogginess, knockoutduration)
         if not self:IsKnockedOut() then
             self.knockouttime = 0
         end
-        self.knockoutduration = math.max(self.knockoutduration, knockoutduration)
+        self.knockoutduration = math.max(self.knockoutduration, knockoutduration or TUNING.MIN_KNOCKOUT_TIME)
         self:KnockOut()
     end
 end

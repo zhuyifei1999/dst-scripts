@@ -149,7 +149,7 @@ local function mosquito()
     inst.AnimState:PlayAnimation("idle")
     inst.AnimState:SetRayTestOnBB(true)
 
-    MakeFeedablePetPristine(inst)
+    MakeFeedableSmallLivestockPristine(inst)
 
     inst.entity:SetPristine()
 
@@ -231,7 +231,7 @@ local function mosquito()
 
     inst:ListenForEvent("attacked", OnAttacked)
 
-    MakeFeedablePet(inst, TUNING.TOTAL_DAY_TIME * 2, OnPickedUp, OnDropped)
+    MakeFeedableSmallLivestock(inst, TUNING.TOTAL_DAY_TIME * 2, OnPickedUp, OnDropped)
 
     return inst
 end

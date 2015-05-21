@@ -155,7 +155,7 @@ local function fn()
     inst:AddTag("catfood")
     --inst:AddTag("wildfireprotected") --Only if burnable
 
-    MakeFeedablePetPristine(inst)
+    MakeFeedableSmallLivestockPristine(inst)
 
     inst.displaynamefn = displaynamefn
     inst.name = STRINGS.NAMES.MOLE_ABOVEGROUND
@@ -205,7 +205,7 @@ local function fn()
     inst.components.inventoryitem.canbepickedupalive = true
     inst.components.inventoryitem.trappable = false
     -- inst.components.inventoryitem:SetOnPickupFn(onpickup)
-    -- inst.components.inventoryitem:SetOnDroppedFn(ondrop) Done in MakeFeedablePet
+    -- inst.components.inventoryitem:SetOnDroppedFn(ondrop) Done in MakeFeedableSmallLivestock
 
     inst:AddComponent("knownlocations")
     inst.last_above_time = 0
@@ -233,7 +233,7 @@ local function fn()
     inst:ListenForEvent("attacked", OnAttacked)
     inst:ListenForEvent("onwenthome", OnWentHome)
 
-    MakeFeedablePet(inst, TUNING.TOTAL_DAY_TIME*2, onpickup, ondrop)
+    MakeFeedableSmallLivestock(inst, TUNING.TOTAL_DAY_TIME*2, onpickup, ondrop)
 
     AddHauntableCustomReaction(inst, function(inst, haunter)
         if math.random() < TUNING.HAUNT_CHANCE_OFTEN then
