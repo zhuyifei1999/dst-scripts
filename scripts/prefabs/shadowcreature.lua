@@ -29,8 +29,10 @@ SetSharedLootTable("shadow_creature",
     { "nightmarefuel",  0.5 },
 })
 
-local function CalcSanityAura(inst)
-    return inst.components.combat.target ~= nil and -TUNING.SANITYAURA_LARGE or 0
+local function CalcSanityAura(inst, observer)
+    return (inst.components.combat.target ~= nil 
+    and observer.components.sanity:IsCrazy()
+    and -TUNING.SANITYAURA_LARGE) or 0
 end
 
 local function ShareTargetFn(dude)

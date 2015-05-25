@@ -35,7 +35,7 @@ end
 
 function GetOtherSpiders(inst)
     local x,y,z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x,y,z, 15,  {"spider"}, {"FX", "NOCLICK", "DECOR","INLIMBO"})
+    local ents = TheSim:FindEntities(x,y,z, 15,  {"spider"}, {"FX", "NOCLICK", "DECOR","INLIMBO", "following"})
     return ents
 end
 

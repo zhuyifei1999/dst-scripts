@@ -31,6 +31,13 @@ local function fn()
     inst:AddComponent("fuel")
     inst.components.fuel.fuelvalue = TUNING.MED_FUEL
 
+    inst:AddComponent("edible")
+    inst.components.edible.foodtype = FOODTYPE.BURNT
+    inst.components.edible.hungervalue = 20
+    inst.components.edible.healthvalue = 20
+        
+    inst:AddComponent("tradable")
+
     inst:AddComponent("bait")
 
     MakeSmallBurnable(inst, TUNING.MED_BURNTIME)

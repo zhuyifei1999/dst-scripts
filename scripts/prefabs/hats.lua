@@ -38,6 +38,7 @@ local function MakeHat(name)
     end
 
     local function onunequip(inst, owner)
+        owner.AnimState:ClearOverrideSymbol("swap_hat")
         owner.AnimState:Hide("HAT")
         owner.AnimState:Hide("HAT_HAIR")
         owner.AnimState:Show("HAIR_NOHAT")
@@ -265,6 +266,8 @@ local function MakeHat(name)
     end
 
     local function ruins_onunequip(inst, owner)
+        owner.AnimState:ClearOverrideSymbol("swap_hat")
+        
         owner.AnimState:Hide("HAT")
         owner.AnimState:Hide("HAT_HAIR")
         owner.AnimState:Show("HAIR_NOHAT")
@@ -280,6 +283,8 @@ local function MakeHat(name)
     end
 
     local function ruins_onequip(inst, owner)
+        owner.AnimState:ClearOverrideSymbol("swap_hat")
+
         owner.AnimState:OverrideSymbol("swap_hat", fname, "swap_hat")
         owner.AnimState:Show("HAT")
         owner.AnimState:Hide("HAT_HAIR")
@@ -656,6 +661,8 @@ local function MakeHat(name)
     end
 
     local function onunequipbush(inst, owner)
+        owner.AnimState:ClearOverrideSymbol("swap_hat")
+
         owner.AnimState:Hide("HAT")
         owner.AnimState:Hide("HAT_HAIR")
         owner.AnimState:Show("HAIR_NOHAT")

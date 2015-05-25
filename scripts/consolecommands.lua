@@ -266,6 +266,14 @@ function c_sethunger(n)
     end
 end
 
+function c_setmoisture(n)
+    local player = ConsoleCommandPlayer()
+    if player ~= nil and not player:HasTag("playerghost") then
+        SuUsed("c_sethunger", true)
+        ConsoleCommandPlayer().components.moisture:SetPercent(n)
+    end
+end
+
 -- Work in progress direct connect code.
 -- Currently, to join an online server you must authenticate first.
 -- In the future this authentication will be taken care of for you.
@@ -662,4 +670,9 @@ end
 function c_speedup()
 	TheSim:SetTimeScale(TheSim:GetTimeScale() *10)
 	print("Speed is now ", TheSim:GetTimeScale())
+end
+
+function c_skip(num)
+	num = num or 1
+	LongUpdate(TUNING.TOTAL_DAY_TIME * num)
 end

@@ -208,7 +208,11 @@ STRINGS=
         			EMERGENCY = "Emergency Mode",
         		  },
         USEITEM = "Use",
-        TAKEITEM = "Take Item",
+        TAKEITEM = 
+            {
+                GENERIC = "Take Item",
+                BIRDCAGE = "Muck Out",
+            },
         CASTSPELL = 
             {   
                 GENERIC = "Cast Spell", --"Cast Spell on"
@@ -375,6 +379,7 @@ STRINGS=
         TURF_WOODFLOOR = "Wooden Flooring",
         TURF_CARPETFLOOR = "Carpeted Flooring",
         TURF_CHECKERFLOOR = "Checkered Flooring",
+        TURF_DRAGONFLY = "Scaled Flooring",
 
         TURF_CAVE = "Guano Turf",
         TURF_FUNGUS = "Fungal Turf",
@@ -569,6 +574,8 @@ STRINGS=
         CHARCOAL = "Charcoal",
         ASH = "Ashes",
         ASH_REMAINS = "Ashes of %s",
+        MANDRAKE_ACTIVE = "Mandrake",
+        MANDRAKE_PLANTED = "Mandrake",
         MANDRAKE = "Mandrake",
         COOKEDMANDRAKE = "Cooked Mandrake",
         REEDS = "Reeds",
@@ -965,6 +972,10 @@ STRINGS=
         MOONROCKNUGGET = "Moon Rock",
 
         LAVAE = "Lavae",
+        LAVAE_PET = "Extra-Adorable Lavae",
+        LAVAE_EGG = "Lavae Egg",
+        LAVAE_EGG_CRACKED = "Lavae Egg",
+        LAVAE_TOOTH = "Lavae Tooth",
         LAVA_POND = "Magma",
         LAVA_POND_ROCK = "Rock",
     },
@@ -1097,6 +1108,7 @@ STRINGS=
         TURF_CHECKERFLOOR = "Nicely checkered marble tiles.",
         TURF_CARPETFLOOR = "Super soft. Smells like Beefalo.",
         TURF_ROAD = "Build your own road to nowhere.",
+        TURF_DRAGONFLY = "Quell the spread of fire.",
         SEWING_KIT = "Fix up degraded clothing items.",
         NIGHTLIGHT = "Light the night with your dreams.",
         NIGHTSWORD = "Lucid dreaming damage.",

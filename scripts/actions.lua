@@ -44,7 +44,7 @@ ACTIONS =
     GIVETOPLAYER = Action(3, nil, nil, nil, nil, nil, true, DefaultRangeCheck),
     GIVEALLTOPLAYER = Action(3, nil, nil, nil, nil, nil, true, DefaultRangeCheck),
     FEEDPLAYER = Action(3, nil, true, nil, nil, nil, true, DefaultRangeCheck),
-    COOK = Action(),
+    COOK = Action(1),
     FILL = Action(),
     DRY = Action(),
     ADDFUEL = Action(),
@@ -116,6 +116,7 @@ ACTIONS =
     CATPLAYAIR = Action(0, false, false, 2),
     FAN = Action(0, false, true),
     TOSS = Action(0, false, true, 8),
+    NUZZLE = Action(),
 }
 
 ACTION_IDS = {}
@@ -1077,6 +1078,16 @@ ACTIONS.TAKEITEM.fn = function(act)
     end
 end
 
+ACTIONS.TAKEITEM.strfn = function(act)
+    local targ = act.target
+
+    if targ.prefab == "birdcage" then
+        return "BIRDCAGE"
+    else
+        return "GENERIC"  
+    end
+end
+
 ACTIONS.CASTSPELL.strfn = function(act)
     local targ = act.invobject
     
@@ -1223,6 +1234,13 @@ ACTIONS.UPGRADE.fn = function(act)
         and act.invobject.components.upgrader
         and act.invobject.components.upgrader:CanUpgrade(act.target, act.doer) then
         return act.target.components.upgradeable:Upgrade(act.invobject)
+    end
+end
+
+ACTIONS.NUZZLE.fn = function(act)
+    if act.target then
+        --print(string.format("%s loves %s!", act.doer.prefab, act.target.prefab))
+        return true
     end
 end
 

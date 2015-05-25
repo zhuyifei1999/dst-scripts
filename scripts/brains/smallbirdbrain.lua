@@ -51,7 +51,11 @@ local function FindFoodAction(inst)
 end
 
 local function GetTraderFn(inst)
-    return not inst:HasTag("springbird") and (inst.components.follower.leader and inst.components.trader:IsTryingToTradeWithMe(inst.components.follower.leader)) and inst.components.follower.leader or nil
+    return inst.components.follower.leader ~= nil
+        and inst.components.trader:IsTryingToTradeWithMe(inst.components.follower.leader)
+        and inst:HasTag("companion")
+        and inst.components.follower.leader
+        or nil
 end
 
 local function KeepTraderFn(inst, target)
@@ -59,7 +63,7 @@ local function KeepTraderFn(inst, target)
 end
 
 local function ShouldRunAwayFromPlayer(inst, player)
-    return inst:HasTag("springbird") and not inst.components.follower.leader
+    return inst.components.follower.leader == nil and not inst:HasTag("companion")
 end
 
 local SmallBirdBrain = Class(Brain, function(self, inst)

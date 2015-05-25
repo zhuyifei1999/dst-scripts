@@ -101,7 +101,7 @@ function Trader:AcceptGift(giver, item, count)
             item.components.inventoryitem:RemoveFromOwner(true)
         end
 
-        if self.inst.components.inventory ~= nil then
+        if self.inst.components.inventory ~= nil and not self.deleteitemonaccept then
             item.prevslot = nil
             item.prevcontainer = nil
             self.inst.components.inventory:GiveItem(item, nil, giver ~= nil and giver:GetPosition() or nil)

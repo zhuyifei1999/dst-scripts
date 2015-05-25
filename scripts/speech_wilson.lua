@@ -487,6 +487,10 @@ return {
 			GENERIC = "I should put a bird in it.",
 			OCCUPIED = "That's my bird!",
 			SLEEPING = "Awwww, he's asleep.",
+			HUNGRY = "He's looking a bit peckish.",
+			STARVING = "Did I forget to feed you?",
+			DEAD = "Maybe he's just resting?",
+			SKELETON = "That bird is definitely deceased.",
 		},
 		BIRDTRAP = "Gives me a net advantage!",
 		BIRD_EGG = "A small, normal egg.",
@@ -632,6 +636,26 @@ return {
 			HOT = "Hot spit!",
 			COOL = "I like to call it 'Basaliva'.",
 		},
+
+		LAVAE = "Too hot to handle.",
+		LAVAE_PET = 
+		{
+			STARVING = "Poor thing must be starving.",
+			HUNGRY = "I hear a tiny stomach grumbling.",
+			CONTENT = "It seems happy.",
+			GENERIC = "Aww. Who's a good monster?",
+		},
+		LAVAE_EGG = 
+		{
+			GENERIC = "I can feel a faint warmth coming from inside.",
+		},
+		LAVAE_EGG_CRACKED =
+		{
+			COLD = "I don't think that egg is warm enough.",
+			COMFY = "I never thought I would see a happy egg.",
+		},
+		LAVAE_TOOTH = "It's an egg tooth!",
+
 		DRAGONFRUIT = "What a weird fruit.",
 		DRAGONFRUIT_COOKED = "Still weird.",
 		DRAGONFRUIT_SEEDS = "It's a seed.",
@@ -839,12 +863,11 @@ return {
 		LUREPLANT = "It's so alluring.",
 		LUREPLANTBULB = "Now I can start my very own meat farm.",
 		MALE_PUPPET = "He's trapped!",
-		MANDRAKE =
-		{
-			DEAD = "A mandrake root has strange powers.",
-			GENERIC = "I've heard strange things about those plants.",
-			PICKED = "Stop following me!",
-		},
+
+		MANDRAKE_ACTIVE = "Stop following me!",
+		MANDRAKE_PLANTED = "I've heard strange things about those plants.",
+		MANDRAKE = "A mandrake root has strange powers.",
+
 		MANDRAKESOUP = "I cooked it myself!",
 		MANDRAKE_COOKED = "It doesn't seem so strange anymore.",
 		MARBLE = "Fancy!",

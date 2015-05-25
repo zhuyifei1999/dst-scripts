@@ -411,13 +411,34 @@ return
 		    WARMER = "I must be getting close.",
 		    HOT = "Here we are!",
 		},
-		DIVININGRODSTART = "This rod might could be useful!",
+		DIVININGRODSTART = "This rod could be useful!",
         DRAGONFLY = "It's some kind of mythical variant of a Diptera.",
         LAVASPIT = 
         {
             HOT = "Its saliva is similar to molten lava.",
             COOL = "It's cooled down, almost like basalt.",
         },
+
+        LAVAE = "I believe it is a larval dragonfly.",
+		LAVAE_PET = 
+		{
+			STARVING = "This creature requires sustenance immediately!",
+			HUNGRY = "This creature is hungry.",
+			CONTENT = "I have to admit it is rather appealing.",
+			GENERIC = "A healthy larval dragonfly.",
+		},
+		LAVAE_EGG = 
+		{
+			GENERIC = "A large macrolecithal egg.",
+		},
+		LAVAE_EGG_CRACKED =
+		{
+			COLD = "The temperature of this egg is below optimal.",
+			COMFY = "This egg is at a suitable temperature for hatching.",
+		},
+		LAVAE_TOOTH = "An egg tooth used by a baby reptile to break out of its egg.",
+
+
         DRAGONFRUIT = "Hylocereus undatus, or pitahaya blanca.",
         DRAGONFRUIT_COOKED = "Pleasantly prepared pitahaya blanca.",
         DRAGONFRUIT_SEEDS = "A seed for the magnificently mild Hylocereus undatus.",
@@ -446,6 +467,10 @@ return
 			GENERIC = "This will safely contain one avian specimen.",
 			OCCUPIED = "He is contained.",
 			SLEEPING = "Shhhhh!",
+            HUNGRY = "He's getting hungry.",
+            STARVING = "He's looking a bit malnourished.",
+            DEAD = "I do believe he has starved.",
+            SKELETON = "I guess I could study the bones.",
         },
         MEAT = "I normally wouldn't eat this raw.",
         SMALLMEAT = "It's a small, raw piece of meat.",
@@ -473,12 +498,10 @@ return
             SLEEPING = "It's sleeping.",
         },
         BABYBEEFALO = "Look at his widdle face! (ahem!)",
-        MANDRAKE =
-        {
-			GENERIC = "Mandragora officinarum.",
-			PICKED = "Mandragora officinarum. But with a face.",
-			DEAD = "Mandragora officinarum. Deceased.",
-        },
+        MANDRAKE_ACTIVE = "Mandragora officinarum. But with a face.",
+        MANDRAKE_PLANTED = "Mandragora officinarum.",
+        MANDRAKE = "Mandragora officinarum. Deceased.",
+
         COOKEDMANDRAKE = "Mandragora officinarum, cooked in the name of discovery.",
         MANDRAKESOUP = "Mandragora officinarum, prepared as a soup in the name of discovery.",
 		KRAMPUS = "It's a mythological holiday monster.",

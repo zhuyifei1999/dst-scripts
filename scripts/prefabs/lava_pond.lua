@@ -121,6 +121,9 @@ local function fn()
 
     inst:AddTag("lava")
 
+    --cooker (from cooker component) added to pristine state for optimization
+    inst:AddTag("cooker")
+
     inst.Light:Enable(true)
     inst.Light:SetRadius(1.5)
     inst.Light:SetFalloff(0.66)

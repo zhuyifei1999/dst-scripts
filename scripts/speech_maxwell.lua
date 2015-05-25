@@ -525,6 +525,10 @@ return {
 			GENERIC = "You'll never get me behind bars again.",
 			OCCUPIED = "I feel for ya, feathers.",
 			SLEEPING = "You'll still be in there when you wake up.",
+			HUNGRY = "What's all the fuss about, feathers?",
+			STARVING = "Oh, come on. I fed you last week.",
+			DEAD = "That's a deep sleep.",
+			SKELETON = "Maybe he wasn't sleeping.",
 		},
 		BIRDTRAP = "They keep falling for it!",
 		BIRD_EGG = "I like to think of it as baby bird prison.",
@@ -794,12 +798,10 @@ return {
 		LUREPLANT = "A vicious plant.",
 		LUREPLANTBULB = "Perhaps I can use this to my advantange.",
 		MALE_PUPPET = "Better him than me.",
-		MANDRAKE =
-		{
-			DEAD = "My ears are still ringing.",
-			GENERIC = "Oh shut UP, will you?",
-			PICKED = "What a disturbing root.",
-		},
+        MANDRAKE_ACTIVE = "Oh shut UP, will you?",
+        MANDRAKE_PLANTED = "What a disturbing root.",
+        MANDRAKE = "My ears are still ringing.",
+
 		MANDRAKESOUP = "My compliments to the chef!",
 		MANDRAKE_COOKED = "Looks like I got the last meep.",
 		MARBLE = "It's strong stuff.",

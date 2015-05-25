@@ -26,6 +26,7 @@ local prefabs =
 SetSharedLootTable( 'dragonfly',
 {
     {'dragon_scales',    1.00},
+    {'lavae_egg',        0.33},
     
     {'meat',             1.00},
     {'meat',             1.00},

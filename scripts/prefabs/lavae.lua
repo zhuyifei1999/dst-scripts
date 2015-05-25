@@ -3,6 +3,7 @@ local brain = require("brains/lavaebrain")
 local assets =
 {
     Asset("ANIM", "anim/lavae.zip"),
+    Asset("SOUND", "sound/together.fsb"),
 }
 
 local prefabs =

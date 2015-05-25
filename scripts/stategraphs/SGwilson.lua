@@ -805,8 +805,14 @@ local states =
             end
         end,
 
+        onexit = function(inst)
+            --You should never leave this state once you enter it!
+            assert(false, "Left death state.")
+        end,
+
         events =
         {
+
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
                     inst:PushEvent(inst.ghostenabled and "makeplayerghost" or "playerdied", { skeleton = true })
@@ -1788,22 +1794,17 @@ local states =
             inst.components.locomotor:Clear()
             inst:ClearBufferedAction()
 
-            inst.AnimState:PlayAnimation("refuseeat_pre")
-            inst.AnimState:PushAnimation("refuseeat", false)
+            inst.AnimState:PlayAnimation("refuseeat")
 
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:RemotePausePrediction()
             end
+            inst.sg:SetTimeout(22 * FRAMES)
         end,
 
-        events =
-        {
-            EventHandler("animqueueover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("idle")
-                end
-            end),
-        },
+        ontimeout = function(inst)
+            inst.sg:GoToState("idle", true)
+        end,
     },
 
     State{

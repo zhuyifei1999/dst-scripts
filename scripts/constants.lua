@@ -379,10 +379,12 @@ GROUND =
 	FUNGUSRED = 24,
 	FUNGUSGREEN = 25,
 
+	--EXPANDED FLOOR TILES
 	DECIDUOUS = 30,
 	DESERT_DIRT = 31,
+	SCALE = 32,
 
-    -- Noise
+    --NOISE
     DIRT_NOISE = 123,
 	ABYSS_NOISE = 124,
 	GROUND_NOISE = 125,
@@ -840,6 +842,7 @@ FOODTYPE =
     SEEDS = "SEEDS",
     BERRY = "BERRY", --hack for smallbird; berries are actually part of veggie
     RAW = "RAW", -- things which some animals can eat off the ground, but players need to cook
+    BURNT = "BURNT", --For lavae.
 }
 
 FOODGROUP =

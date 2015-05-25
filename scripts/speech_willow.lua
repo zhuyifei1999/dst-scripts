@@ -556,6 +556,10 @@ return {
 			GENERIC = "Bird prison!",
 			OCCUPIED = "Ha! I have you now!",
 			SLEEPING = "Stupid bird. Wake up!",
+			HUNGRY = "What's all the fuss about?",
+			STARVING = "He won't be quiet!",
+			DEAD = "At least he's quiet now.",
+			SKELETON = "Maybe I should clean that up.",
 		},
 		BIRDTRAP = "I'll catch those creepy birds.",
 		BIRD_EGG = "It smells like a bird's butt.",
@@ -651,6 +655,26 @@ return {
 			HOT = "The coolest drool!",
 			COOL = "Cool drool, literally.",
 		},
+
+		LAVAE = "Why can't we be friends?",
+		LAVAE_PET = 
+		{
+			STARVING = "I can see her ribs!",
+			HUNGRY = "I think she wants some burnings.",
+			CONTENT = "My own little burninator.",
+			GENERIC = "She's... perfect.",
+		},
+		LAVAE_EGG = 
+		{
+			GENERIC = "I think a fire is trying to escape.",
+		},
+		LAVAE_EGG_CRACKED =
+		{
+			COLD = "It has a chill.",
+			COMFY = "That egg looks happy.",
+		},
+		LAVAE_TOOTH = "I hope she's not a biter.",
+
 		DRAGONFRUIT = "It looks sort of like a fire!",
 		DRAGONFRUIT_COOKED = "It looks more like a fruit that's been in a fire now.",
 		DRAGONFRUIT_SEEDS = "Seeds for that fire-looking fruit.",
@@ -819,12 +843,11 @@ return {
 		LUREPLANT = "I bet a quick fire would take care of this.",
 		LUREPLANTBULB = "It's mine now.",
 		MALE_PUPPET = "He looks scared half to death.",
-		MANDRAKE =
-		{
-			DEAD = "Why did this plant have a face?",
-			GENERIC = "That's not a normal plant",
-			PICKED = "Now that's just creepy!",
-		},
+
+		MANDRAKE_ACTIVE = "Now that's just creepy!",
+		MANDRAKE_PLANTED = "That's not a normal plant.",
+		MANDRAKE = "Why did this plant have a face?",
+
 		COOKEDMANDRAKE = "The fire didn't get rid of its face. Gives me the willies.",
 		MANDRAKESOUP = "Blending it into a soup got rid of its face.",
 		MARBLE = "It's heavy!",

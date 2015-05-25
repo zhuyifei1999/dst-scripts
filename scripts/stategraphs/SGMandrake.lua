@@ -51,6 +51,12 @@ local states=
             inst.Physics:Stop()
             inst:AddTag("dead")
         end,
+
+        events =
+        {
+            EventHandler("animover", function(inst) inst:ondeath() end),
+        },
+
     },
     
     State{

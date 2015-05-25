@@ -10,6 +10,13 @@ local Hatchable = Class(function(self, inst)
     self.hatchtime = 600
     self.hatchfailtime = 60
 
+    self.heater_prefs =
+    {
+        day = false,
+        dusk = nil,
+        night = true,
+    }
+
     self.delay = false
 end)
 
@@ -67,6 +74,17 @@ function Hatchable:StartUpdating()
     end
 end
 
+function Hatchable:SetHeaterPrefs(day, dusk, night)
+    --If this is "nil" then the egg does not care either way.
+    self.heater_prefs["day"] = day
+    self.heater_prefs["dusk"] = dusk
+    self.heater_prefs["night"] = night
+end
+
+function Hatchable:GetHeaterPref(phase)
+    return self.heater_prefs[TheWorld.state.phase]
+end
+
 function Hatchable:OnUpdate(dt)
     --print("Hatchable:OnUpdate", self.state)
 
@@ -74,14 +92,25 @@ function Hatchable:OnUpdate(dt)
         return
     end
 
-    local fire = FindEntity(self.inst, TUNING.HATCH_CAMPFIRE_RADIUS, nil,
-    {"campfire", "fire"}
-    )
-    
-    local hasfire = (fire ~= nil)
+    local heater = FindEntity(self.inst, TUNING.HATCH_CAMPFIRE_RADIUS, nil, {"campfire", "fire"})
+
+    local has_heater = (heater ~= nil)
+
+    local wants_heater = self:GetHeaterPref()
+
+    self.toohot = false
+    self.toocold = false
+
+    if wants_heater ~= nil then
+        if has_heater and not wants_heater then
+            self.toohot = true
+        elseif not has_heater and wants_heater then
+            self.toocold = true
+        end
+    end
 
     if self.state == "unhatched" then
-		if hasfire then
+		if has_heater then
 			self.progress = self.progress + dt
 			if self.progress >= self.cracktime then
 				self.progress = 0
@@ -90,39 +119,18 @@ function Hatchable:OnUpdate(dt)
 		else
 			self.progress = 0
 		end
-        --print(string.format("   crack progress=%u/%u", self.progress, self.cracktime))
         return
     end
 
     local oldstate = self.state
- 
-    self.toohot = false
-    self.toocold = false
 
-    if TheWorld.state.isday then
-        if hasfire then
-            --print("   too hot!")
-            self.toohot = true
-            self:OnState("uncomfy")
-        else
-            self:OnState("comfy")
-        end
-    elseif TheWorld.state.isnight then
-        if not hasfire then
-            --print("   too cold!")
-            self.toocold = true
-            self:OnState("uncomfy")
-        else
-            self:OnState("comfy")
-        end
+    if self.toohot or self.toocold then
+        self:OnState("uncomfy")
     else
-        -- I guess during dusk you can be either near or not near the fire and it's ok
         self:OnState("comfy")
     end
-    
-    if self.state == "comfy" then
-        --print("   comfy")
 
+    if self.state == "comfy" then
         self.discomfort = math.max(self.discomfort - dt, 0)
         if self.discomfort <= 0 then
             self.progress = self.progress + dt
@@ -139,7 +147,6 @@ function Hatchable:OnUpdate(dt)
             self:OnState("dead")
         end
     end
-    --print(string.format(" progress=%u/%u, discomfort=%u/%u", self.progress, self.hatchtime, self.discomfort, self.hatchfailtime))
 end
 
 function Hatchable:OnSave()
@@ -154,7 +161,7 @@ function Hatchable:OnSave()
     }
     --print("   state,progress,discomfort", data.state, data.progress, data.discomfort)
     return data
-end   
+end
 
 function Hatchable:OnLoad(data)
     --print("Hatchable:OnLoad")
