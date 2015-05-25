@@ -145,6 +145,15 @@ function Moisture:GetMoisturePercent()
     return self.moisture / self.maxmoisture
 end
 
+function Moisture:SetPercent(per)
+    local current = self.moisture
+    local max = self.maxmoisture
+    local target = self.maxmoisture * per
+
+    local delta = target - current
+    self:DoDelta(delta)
+end
+
 function Moisture:GetSegs()
     local num = self.moisture / self.maxmoisture * self.numSegs
     local full = math.max(0, math.ceil(num - 1))

@@ -530,6 +530,10 @@ return {
 			GENERIC = "Is home for my birdies.",
 			OCCUPIED = "Hello birdie!",
 			SLEEPING = "I should be quiet!",
+			HUNGRY = "I hear tiny grumbles!",
+			STARVING = "His tiny stomach is empty!",
+			DEAD = "Birdie? Are you ok?",
+			SKELETON = "He is not ok.",
 		},
 		BIRDTRAP = "I will catch bird!",
 		BIRD_EGG = "Poor birdy.",
@@ -629,6 +633,26 @@ return {
 			HOT = "Is hot mouth germs.",
 			COOL = "Is cold, hard mouth germs.",
 		},
+
+		LAVAE = "I must run!",
+		LAVAE_PET = 
+		{
+			STARVING = "Tiny baby is starving!",
+			HUNGRY = "Tiny baby is hungry.",
+			CONTENT = "Tiny baby looks content.",
+			GENERIC = "Tiny baby seems happy.",
+		},
+		LAVAE_EGG = 
+		{
+			GENERIC = "Is made of rock?",
+		},
+		LAVAE_EGG_CRACKED =
+		{
+			COLD = "Little egg is shivering.",
+			COMFY = "Little egg... seems comfortable.",
+		},
+		LAVAE_TOOTH = "What a mighty tooth!",
+
 		DRAGONFRUIT = "Is funny looking fruit.",
 		DRAGONFRUIT_COOKED = "Is cooked but still look funny.",
 		DRAGONFRUIT_SEEDS = "I use this to grow funny fruit.",
@@ -786,12 +810,9 @@ return {
 		LUREPLANT = "You cannot fool Wolfgang!",
 		LUREPLANTBULB = "Ah ha! Who is tricky now?",
 		MALE_PUPPET = "Scary chair scare him!",
-		MANDRAKE =
-		{
-			DEAD = "Little plant man is died!",
-			GENERIC = "Is strange plant.",
-			PICKED = "Little plant man friend!",
-		},
+		MANDRAKE_ACTIVE = "Little plant man friend!",
+		MANDRAKE_PLANTED = "Is strange plant.",
+		MANDRAKE = "Little plant man is died!",
 		COOKEDMANDRAKE = "Little plant man is food?",
 		MANDRAKESOUP = "Little plant man is for make soup!",
 		MARBLE = "I can lift!",

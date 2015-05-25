@@ -5,6 +5,13 @@ local function onattacked(inst,data )
 end
 
 local function onleader(self, leader)
+
+	if leader then
+		self.inst:AddTag("following")
+	else
+		self.inst:RemoveTag("following")
+	end
+
     self.inst.replica.follower:SetLeader(leader)
 end
 

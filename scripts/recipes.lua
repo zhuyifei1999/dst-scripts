@@ -36,6 +36,7 @@ Recipe("turf_road", {Ingredient("turf_rocky", 1), Ingredient("boards", 1)}, RECI
 Recipe("turf_woodfloor", {Ingredient("boards", 1)}, RECIPETABS.TOWN, TECH.SCIENCE_TWO)
 Recipe("turf_checkerfloor", {Ingredient("marble", 1)}, RECIPETABS.TOWN, TECH.SCIENCE_TWO)
 Recipe("turf_carpetfloor", {Ingredient("boards", 1), Ingredient("beefalowool", 1)}, RECIPETABS.TOWN, TECH.SCIENCE_TWO)
+Recipe("turf_dragonfly", {Ingredient("dragon_scales", 1)}, RECIPETABS.TOWN, TECH.SCIENCE_TWO, nil, nil, nil, 4)
 
 Recipe("pottedfern", {Ingredient("foliage", 5), Ingredient("slurtle_shellpieces",1 )}, RECIPETABS.TOWN, TECH.SCIENCE_TWO, "pottedfern_placer", 0.9)
 
@@ -212,5 +213,12 @@ Recipe("book_gardening", {Ingredient("papyrus", 2), Ingredient("seeds", 1), Ingr
 Recipe("book_sleep", {Ingredient("papyrus", 2), Ingredient("nightmarefuel", 2)}, CUSTOM_RECIPETABS.BOOKS, {MAGIC = 2}, nil, nil, nil, nil, "bookbuilder")
 Recipe("book_brimstone", {Ingredient("papyrus", 2), Ingredient("redgem", 1)}, CUSTOM_RECIPETABS.BOOKS, {MAGIC = 3}, nil, nil, nil, nil, "bookbuilder")
 Recipe("book_tentacles", {Ingredient("papyrus", 2), Ingredient("tentaclespots", 1)}, CUSTOM_RECIPETABS.BOOKS, {SCIENCE = 3}, nil, nil, nil, nil, "bookbuilder")
+
+
+----UNCRAFTABLE----
+--NOTE: These recipes are not supposed to be craftable!
+Recipe("pighead", {Ingredient("pigskin", 4), Ingredient("twigs", 4)}, nil, TECH.LOST)
+Recipe("mermhead", {Ingredient("spoiled_food", 4), Ingredient("twigs", 4)}, nil, TECH.LOST)
+
 
 mod_protect_Recipe = true

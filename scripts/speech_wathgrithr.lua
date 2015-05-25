@@ -364,6 +364,10 @@ return {
 			GENERIC = "A home for my ravens!",
 			OCCUPIED = "Are you having a nice time?",
 			SLEEPING = "Sweet dreams raven friend.",
+			HUNGRY = "What do you want little friend?",
+			STARVING = "He wishes to feast!",
+			DEAD = "You can feast in Valhalla now, friend.",
+			SKELETON = "... Maybe I should clean that up.",
 		},
 		BIRDTRAP = "I'm a cunning raven catcher!",
 		BIRD_EGG = "Eggy.",
@@ -507,6 +511,26 @@ return {
 			HOT = "Your fire pools are no match for me!",
 			COOL = "It's not very scary now, is it?",
 		},
+
+		LAVAE = "A fiery foe!",
+		LAVAE_PET = 
+		{
+			STARVING = "Its fires are dying out.",
+			HUNGRY = "You must eat to keep your fires burning.",
+			CONTENT = "It glows contentedly.",
+			GENERIC = "A faithful fiery friend.",
+		},
+		LAVAE_EGG = 
+		{
+			GENERIC = "A dragon egg!",
+		},
+		LAVAE_EGG_CRACKED =
+		{
+			COLD = "This egg looks chilly.",
+			COMFY = "It's warm and toasty.",
+		},
+		LAVAE_TOOTH = "It's an egg tooth!",
+
 		DRAGONFRUIT = "It's very fancy.",
 		DRAGONFRUIT_COOKED = "Grilled fancy fruit.",
 		DRAGONFRUIT_SEEDS = "Tiny nature bits.",
@@ -553,7 +577,7 @@ return {
 			CHOPPED = "Chopped by the warrior in the woods!",
 			GENERIC = "A good sturdy tree.",
 		},
-		EYEPLANT = "Don't point your eyeball at me foliage!",
+		EYEPLANT = "Don't point your eyeball at me, foliage!",
 		FARMPLOT =
 		{
 			GENERIC = "I can't grow meat, what's the point?",
@@ -714,12 +738,10 @@ return {
 		LUREPLANT = "Finally! A useful vegetable.",
 		LUREPLANTBULB = "Perhaps I will be a meat farmer after all!",
 		MALE_PUPPET = "He looks unhappy upon his throne.",
-		MANDRAKE =
-		{
-			DEAD = "The corpse of the rutabaga still retains its magic.",
-			GENERIC = "A rutabaga!",
-			PICKED = "She just wants to go on a rutabaga saga.",
-		},
+        MANDRAKE_ACTIVE = "She just wants to go on a rutabaga saga.",
+        MANDRAKE_PLANTED = "A rutabaga!",
+        MANDRAKE = "The corpse of the rutabaga still retains its magic.",
+
 		MANDRAKESOUP = "A stew of magic!",
 		MANDRAKE_COOKED = "Grilled rutabaga.",
 		MARBLE = "The warrior stone!",

@@ -132,6 +132,9 @@ local function fn()
         inst.components.equippable:SetOnUnequip( onunequip)
         inst.components.equippable.walkspeedmult = 2
         inst.components.equippable.dapperness = math.huge
+
+        inst:AddComponent("waterproofer")
+        inst.components.waterproofer:SetEffectiveness(1)
     else
         inst.persists = false
         inst.entity:Hide()

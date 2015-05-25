@@ -1,5 +1,7 @@
 local Cooker = Class(function(self, inst)
     self.inst = inst
+
+    --V2C: Recommended to explicitly add tag to prefab pristine state
     inst:AddTag("cooker")
 end)
 

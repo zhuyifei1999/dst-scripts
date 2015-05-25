@@ -19,6 +19,9 @@ local function Retarget(inst)
     local function IsValidTarget(guy)
         return not guy.components.health:IsDead()
             and inst.components.combat:CanTarget(guy)
+            --smallbirds that aren't companions are parented
+            --to other tallbirds, so don't target them!
+            and (not inst:HasTag("smallbird") or inst:HasTag("companion"))
     end
     return --Threat to nest
         inst.components.homeseeker ~= nil and
@@ -28,7 +31,7 @@ local function Retarget(inst)
             SpringCombatMod(TUNING.TALLBIRD_DEFEND_DIST),
             IsValidTarget,
             { "_combat", "_health" },
-            { "tallbird", "springbird" },
+            { "tallbird" },
             { "character", "animal", "monster" })
         or --Nearby pigman (Why the hatred for pigs? It's expensive!)
         FindEntity(
@@ -43,7 +46,7 @@ local function Retarget(inst)
             SpringCombatMod(TUNING.TALLBIRD_TARGET_DIST),
             IsValidTarget,
             { "_combat", "_health" },
-            { "tallbird", "springbird" },
+            { "tallbird" },
             { "character", "monster" })
 end
 

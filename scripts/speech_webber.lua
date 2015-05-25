@@ -364,6 +364,10 @@ return {
 			GENERIC = "It's the jail.",
 			OCCUPIED = "Jailbird.",
 			SLEEPING = "You have to sleep to survive in the jail.",
+			HUNGRY = "He looks hungry.",
+			STARVING = "We need to feed him.",
+			DEAD = "We have failed him.",
+			SKELETON = "Eww.",
 		},
 		BIRDTRAP = "Come to our web trap, birds!",
 		BIRD_EGG = "A hard shelled egg.",
@@ -507,6 +511,27 @@ return {
 			HOT = "Too hot for us!",
 			COOL = "Looks safe now.",
 		},
+
+		LAVAE = "Sizzling hot!",
+		LAVAE_PET = 
+		{
+			STARVING = "It looks starving!",
+			HUNGRY = "Poor hungry lavae.",
+			CONTENT = "Happy lavae!",
+			GENERIC = "It's my friend.",
+		},
+		LAVAE_EGG = 
+		{
+			GENERIC = "Maybe I can make it hatch?",
+		},
+		LAVAE_EGG_CRACKED =
+		{
+			COLD = "Poor egg. It looks cold.",
+			COMFY = "The egg seems happy.",
+		},
+		LAVAE_TOOTH = "What a weird tooth.",
+
+
 		DRAGONFRUIT = "It looks suspect.",
 		DRAGONFRUIT_COOKED = "It looks tastier now.",
 		DRAGONFRUIT_SEEDS = "We could grow something with these.",
@@ -712,12 +737,10 @@ return {
 		LUREPLANT = "What a colourful plant.",
 		LUREPLANTBULB = "I wish we could learn to generate meat.",
 		MALE_PUPPET = "He doesn't look like he's having much fun.",
-		MANDRAKE =
-		{
-			DEAD = "The skin is all seared.",
-			GENERIC = "That's a funny looking plant.",
-			PICKED = "You're a bad friend!",
-		},
+        MANDRAKE_ACTIVE = "You're a bad friend!",
+        MANDRAKE_PLANTED = "That's a funny looking plant.",
+        MANDRAKE = "The skin is all seared.",
+
 		MANDRAKESOUP = "We're accomplished chefs!",
 		MANDRAKE_COOKED = "The meeping had to stop.",
 		MARBLE = "Maybe we should take up sculpting.",

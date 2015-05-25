@@ -540,6 +540,10 @@ return {
 			GENERIC = "Some of us can see our cages.",
 			OCCUPIED = "He is happier now.",
 			SLEEPING = "Is he dead? No. Just sleeping.",
+			HUNGRY = "Must be hungry.",
+			STARVING = "The emptiness is consuming him.",
+			DEAD = "Bereft of life, it rests it peace.",
+			SKELETON = "That... is an ex-bird.",
 		},
 		BIRDTRAP = "Sticks and silk turned lethal.",
 		BIRD_EGG = "So much hope, dashed.",
@@ -639,6 +643,27 @@ return {
 			HOT = "It spit up.",
 			COOL = "It's cooled off and smells funny.",
 		},
+
+		LAVAE = "It burns with the fires of Hell.",
+		LAVAE_PET = 
+		{
+			STARVING = "He is approaching death.",
+			HUNGRY = "He is suffering the pangs of hunger.",
+			CONTENT = "Enjoy your happiness while it lasts, little lavae.",
+			GENERIC = "A spark of life illuminating the darkness.",
+		},
+		LAVAE_EGG = 
+		{
+			GENERIC = "It has potential for life, but I control its fate.",
+		},
+		LAVAE_EGG_CRACKED =
+		{
+			COLD = "This egg is almost as cold as my heart.",
+			COMFY = "The egg is warm, but my heart is still cold.",
+		},
+		LAVAE_TOOTH = "Forsooth, it's a tooth.",
+
+
 		DRAGONFRUIT = "This isn't shaped like a dragon at all.",
 		DRAGONFRUIT_COOKED = "Still not a dragon. At least it's dead.",
 		DRAGONFRUIT_SEEDS = "It's a seed. It won't grow a dragon.",
@@ -785,12 +810,10 @@ return {
 		LUREPLANT = "It consumes all.",
 		LUREPLANTBULB = "Life goes on.",
 		MALE_PUPPET = "I wonder what he did.",
-		MANDRAKE =
-		{
-			DEAD = "Alas, poor mandrake!",
-			GENERIC = "The mighty mandrake. I should pick it at night.",
-			PICKED = "Onward, my vegetable minions!",
-		},
+        MANDRAKE_ACTIVE = "Onward, my vegetable minion!",
+        MANDRAKE_PLANTED = "The mighty mandrake. I should pick it at night.",
+        MANDRAKE = "Alas, poor mandrake!",
+
 		MANDRAKESOUP = "Boiled the life out of him.",
 		MARBLE = "Smooth and lifeless.",
 		MARBLEPILLAR = "Even stone can not withstand the constant pull of decay.",

@@ -52,7 +52,8 @@ local function destroystuff(inst)
     for k,v in pairs(ents) do
         if v and v.components.workable and v.components.workable.workleft > 0 then
             SpawnPrefab("collapse_small").Transform:SetPosition(v:GetPosition():Get())        
-            v.components.workable:Destroy(inst)
+            v.components.workable:WorkedBy(inst, 2)
+            --v.components.workable:Destroy(inst)
         end
 
         if v and v.components.health and not v.components.health:IsDead() 

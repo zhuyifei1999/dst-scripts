@@ -1347,6 +1347,11 @@ function Tune(overrides)
 		LAVAE_ATTACK_PERIOD = 4,
 		LAVAE_HIT_RANGE = 3,
 		LAVAE_ATTACK_RANGE = 6,
+		LAVAE_HUNGER_RATE = 50/total_day_time,
+
+	    LAVAE_HATCH_CRACK_TIME = 10,
+	    LAVAE_HATCH_TIME = total_day_time*2,
+	    LAVAE_HATCH_FAIL_TIME = night_time,
 
 		BEARGER_HEALTH = 3000 * 2, -- harder for multiplayer
 		BEARGER_DAMAGE = 200,

@@ -104,6 +104,7 @@ local prefabs =
     "lavae",
     "lava_pond",
     "scorchedground",
+    "lavae_egg",
 }
 
 local function fn()

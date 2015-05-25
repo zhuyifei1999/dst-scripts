@@ -520,7 +520,7 @@ local function GenerateVoro(prefab, map_width, map_height, tasks, world_gen_choi
 	if save.map.topology.overrides == nil then
 		save.map.topology.overrides = {}
 	end
-    save.map.topology.overrides.original = world_gen_choices
+    save.map.topology.overrides.original = deepcopy(world_gen_choices)
    	
    	if current_gen_params ~= nil then
 	   	-- Filter out any etities over our overrides

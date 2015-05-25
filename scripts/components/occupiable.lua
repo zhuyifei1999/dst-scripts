@@ -45,6 +45,10 @@ function Occupiable:IsOccupied()
     return self.occupant ~= nil
 end
 
+function Occupiable:GetOccupant()
+    return self.occupant
+end
+
 function Occupiable:CanOccupy(occupier)
     return self.occupant == nil and
         self.occupanttype ~= nil and
@@ -69,15 +73,17 @@ function Occupiable:Occupy(occupier)
         occupier:RemoveFromScene()
 
         occupier.occupiableonperish = function(occupier)
+            self.inst:RemoveEventCallback("onremove", occupier.occupiableonremove, occupier)
             self.inst:RemoveChild(occupier)
             occupier:ReturnToScene()
-            if occupier.components.lootdropper ~= nil then
-                occupier.components.lootdropper:DropLoot(self.inst:GetPosition())
-            end
             if self.onemptied ~= nil then
                 self.onemptied(self.inst)
             end
+            if self.onperishfn then
+                self.onperishfn(self.inst, self.occupant)
+            end
             self.occupant = nil
+            occupier:Remove()
         end
 
         occupier.occupiableonremove = function(occupier)
@@ -90,6 +96,8 @@ function Occupiable:Occupy(occupier)
 
         self.inst:ListenForEvent("perished", occupier.occupiableonperish, occupier)
         self.inst:ListenForEvent("onremove", occupier.occupiableonremove, occupier)
+
+        return true
     end
 end
 

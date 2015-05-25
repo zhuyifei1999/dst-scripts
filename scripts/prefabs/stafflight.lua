@@ -104,6 +104,9 @@ local function fn()
     --HASHEATER (from heater component) added to pristine state for optimization
     inst:AddTag("HASHEATER")
 
+    --cooker (from cooker component) added to pristine state for optimization
+    inst:AddTag("cooker")
+
     inst.entity:SetPristine()
 
     if not inst._ismastersim then

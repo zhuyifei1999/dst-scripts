@@ -27,6 +27,8 @@ local GROUND_TURFS =
 	[GROUND.DESERT_DIRT]= "turf_desertdirt",
 	[GROUND.DECIDUOUS]	= "turf_deciduous",
 
+	[GROUND.SCALE]  	= "turf_dragonfly",
+
 	webbing				= "turf_webbing",
 }
 

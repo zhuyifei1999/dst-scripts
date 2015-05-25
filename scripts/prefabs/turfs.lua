@@ -111,6 +111,7 @@ local turfs =
     {name="mud",            anim="mud",         tile=GROUND.MUD},
     {name="deciduous",      anim="deciduous",   tile=GROUND.DECIDUOUS},
     {name="desertdirt",     anim="dirt",        tile=GROUND.DESERT_DIRT},
+    {name="dragonfly",      anim="dragonfly",   tile=GROUND.SCALE},
 }
 
 local prefabs= {}

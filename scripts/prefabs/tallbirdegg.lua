@@ -33,7 +33,7 @@ end
 
 local function CheckHatch(inst)
     --print("tallbirdegg - CheckHatch")
-    if inst.playernear and inst.components.hatchable.state == "hatch" then
+    if inst.components.playerprox ~= nil and inst.components.playerprox:IsPlayerClose() and inst.components.hatchable.state == "hatch" then
         Hatch(inst)
     end
 end
@@ -45,17 +45,6 @@ local function PlayUncomfySound(inst)
     elseif inst.components.hatchable.toocold then
         inst.SoundEmitter:PlaySound("dontstarve/creatures/egg/egg_cold_shiver_LP", "uncomfy")
     end
-end
-
-local function OnNear(inst)
-    --print("tallbirdegg - OnNear")
-    inst.playernear = true
-    CheckHatch(inst)
-end
-
-local function OnFar(inst)
-    --print("tallbirdegg - OnFar")
-    inst.playernear = false
 end
 
 local function OnDropped(inst)
@@ -136,6 +125,8 @@ local function OnHatchState(inst, state)
             inst.AnimState:PlayAnimation("toocold")
         end
 
+        inst.components.inventoryitem.canbepickedup = false
+        inst.persists = false
         inst:ListenForEvent("animover", inst.Remove)
     end
 end
@@ -195,6 +186,7 @@ local function defaultfn(anim)
     inst.components.hatchable:SetCrackTime(TUNING.SMALLBIRD_HATCH_CRACK_TIME)
     inst.components.hatchable:SetHatchTime(TUNING.SMALLBIRD_HATCH_TIME)
     inst.components.hatchable:SetHatchFailTime(TUNING.SMALLBIRD_HATCH_FAIL_TIME)
+    inst.components.hatchable:SetHeaterPrefs(false, nil, true)
     inst.components.hatchable:StartUpdating()
 
     inst:AddComponent("cookable")
@@ -206,8 +198,6 @@ local function defaultfn(anim)
     inst.components.inspectable.getstatus = GetStatus
 
     MakeHauntableLaunch(inst)
-
-    inst.playernear = false
 
     return inst
 end
@@ -227,8 +217,7 @@ local function crackedfn()
 
     inst:AddComponent("playerprox")
     inst.components.playerprox:SetDist(4, 6)
-    inst.components.playerprox:SetOnPlayerNear(OnNear)
-    inst.components.playerprox:SetOnPlayerFar(OnFar)
+    inst.components.playerprox:SetOnPlayerNear(CheckHatch)
     
     inst.components.edible:SetOnEatenFn(OnEaten)
 

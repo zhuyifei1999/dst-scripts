@@ -80,6 +80,13 @@ local function fn()
 
     inst:AddComponent("bait")
 
+    inst:AddComponent("edible")
+    inst.components.edible.foodtype = FOODTYPE.BURNT
+    inst.components.edible.hungervalue = 20
+    inst.components.edible.healthvalue = 20
+
+    inst:AddComponent("tradable")
+
     inst:ListenForEvent("stacksizechange", OnStackSizeChange)
 
     inst:ListenForEvent("ondropped", OnDropped)

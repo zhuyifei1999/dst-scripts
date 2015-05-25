@@ -22,44 +22,25 @@ local teen_assets =
     --Asset("SOUND", "sound/smallbird.fsb"),
 }
 
-local function StartSpringSmallBird(inst, leader)
-    inst.leader = leader
-    inst.Transform:SetPosition(leader.Transform:GetWorldPosition())
+local function SetSpringBirdState(inst)
     inst:RemoveTag("companion")
-    inst:AddTag("springbird")
-    inst.sg:GoToState("hatch")
     inst.components.hunger:SetKillRate(0)
 end
 
+local function StartSpringSmallBird(inst, leader)
+    SetSpringBirdState(inst)
+    inst.leader = leader
+    inst.Transform:SetPosition(leader.Transform:GetWorldPosition())
+    inst.sg:GoToState("hatch")
+end
+
 local function onsave(inst, data)
-    if inst:HasTag("springbird") then
-        local ents
-        if inst.leader then
-            data.leader = inst.leader.GUID
-            ents = {data.leader}
-        end
-        data.springbird = true
-        return ents
-    end
+    data.springbird = not inst:HasTag("companion") or nil
 end
 
 local function onload(inst, data)
-    if data then
-        if data.springbird then
-            inst:RemoveTag("companion")
-            inst:AddTag("springbird")
-        end
-    end
-end
-
-local function loadpostpass(inst,ents, data)
-    if data then
-        if data.leader then  
-            local leader = ents[data.leader]
-            if leader then
-                inst.leader = leader.entity
-            end
-        end
+    if data ~= nil and data.springbird then
+        SetSpringBirdState(inst)
     end
 end
 
@@ -128,11 +109,19 @@ end
 local function FollowLeader(inst)
     local leader = inst.leader
     if leader == nil or not leader:IsValid() then
+        inst.leader = nil
+        if not inst:HasTag("companion") then
+            --Spring birds just become orphans
+            return
+        end
         local x, y, z = inst.Transform:GetWorldPosition()
         leader = FindClosestPlayerInRange(x, y, z, 10, true)
-        inst.leader = nil
+        if leader == nil then
+            --Didn't find a new parent yet
+            return
+        end
     end
-    if leader ~= nil and leader.components.leader ~= nil then
+    if leader.components.leader ~= nil then
         --print("   adding follower")
         leader.components.leader:AddFollower(inst)
         --[[if leader.components.homeseeker and leader.components.homeseeker:HasHome() and leader.components.homeseeker.home.prefab == "tallbirdnest" then 
@@ -165,17 +154,20 @@ local function OnNewTarget(inst, data)
     end
 end
 
+--[[
+--V2C: These aren't doing anything useful yo!
 local function SmallRetarget(inst)
-    if inst:HasTag("springbird") then
+    if not inst:HasTag("companion") then
         return nil
     end
 end
 
 local function SmallKeepTarget(inst, target)
-    if inst:HasTag("springbird") then
+    if not inst:HasTag("companion") then
         return false
     end
 end
+]]
 
 local function TeenRetarget(inst)
     return FindEntity(inst, SpringCombatMod(TUNING.TEENBIRD_TARGET_DIST), function(guy)
@@ -194,7 +186,7 @@ local function TeenRetarget(inst)
 end
 
 local function TeenKeepTarget(inst, target)
-    return inst.components.combat:CanTarget(target) and (not target.LightWatcher or target.LightWatcher:IsInLight())
+    return inst.components.combat:CanTarget(target) and (target.LightWatcher == nil or target.LightWatcher:IsInLight())
 end
 
 local function OnAttacked(inst, data)
@@ -360,7 +352,6 @@ local function create_common(inst, physicscylinder)
 
     inst.OnSave = onsave
     inst.OnLoad = onload
-    inst.LoadPostPass = loadpostpass
 
     MakeHauntablePanic(inst)
 
@@ -420,8 +411,8 @@ local function create_smallbird()
     inst.components.combat:SetRange(TUNING.SMALLBIRD_ATTACK_RANGE)
     inst.components.combat:SetDefaultDamage(TUNING.SMALLBIRD_DAMAGE)
     inst.components.combat:SetAttackPeriod(TUNING.SMALLBIRD_ATTACK_PERIOD)
-    inst.components.combat:SetRetargetFunction(3, SmallRetarget)
-    inst.components.combat:SetKeepTargetFunction(SmallKeepTarget)
+    --inst.components.combat:SetRetargetFunction(3, SmallRetarget)
+    --inst.components.combat:SetKeepTargetFunction(SmallKeepTarget)
 
     inst.components.lootdropper:SetLoot({"smallmeat"})
 

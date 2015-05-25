@@ -147,7 +147,7 @@ local function create_pighead()
 	inst.AnimState:SetBuild("pig_head")
     inst.AnimState:PlayAnimation("idle_asleep")
 
-	inst.components.lootdropper:SetLoot({"pigskin", "pigskin", "twigs", "twigs"})
+	--inst.components.lootdropper:SetLoot({"pigskin", "pigskin", "twigs", "twigs"})
 
 	return inst
 end
@@ -163,7 +163,7 @@ local function create_mermhead()
 	inst.AnimState:SetBuild("merm_head")
     inst.AnimState:PlayAnimation("idle_asleep")
 
-	inst.components.lootdropper:SetLoot({"spoiled_food", "spoiled_food", "twigs", "twigs"})
+	--inst.components.lootdropper:SetLoot({"spoiled_food", "spoiled_food", "twigs", "twigs"})
 
 	return inst
 end
