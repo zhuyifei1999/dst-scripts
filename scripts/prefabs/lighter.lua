@@ -69,6 +69,25 @@ local function onupdatefueled(inst)
     end
 end
 
+local function OnHaunt(inst, haunter)
+    if math.random() <= TUNING.HAUNT_CHANCE_RARE then
+        local x, y, z = inst.Transform:GetWorldPosition()
+        local ents = TheSim:FindEntities(x, y, z, 5, { "canlight" }, { "fire", "burnt", "INLIMBO" })
+        local didburn = false
+        for i, v in ipairs(ents) do
+            if v:IsValid() and not v:IsInLimbo() and v.components.burnable ~= nil then
+                v.components.burnable:Ignite()
+                didburn = true
+            end
+        end
+        if didburn then
+            inst.components.hauntable.hauntvalue = TUNING.HAUNT_LARGE
+            return true
+        end
+    end
+    return false
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -151,22 +170,7 @@ local function fn()
     inst.components.fueled:SetDepletedFn(inst.Remove)
 
     MakeHauntableLaunch(inst)
-    AddHauntableCustomReaction(inst, function(inst, haunter)
-        if math.random() <= TUNING.HAUNT_CHANCE_RARE then
-            local x,y,z = inst.Transform:GetWorldPosition()
-            local ents = TheSim:FindEntities(x,y,z, 5, {"canlight"}, {"fire", "burnt"})
-            for i,v in pairs(ents) do --#srosen should port over the d-fly's firewave fx and use those here
-                if v and v.components.burnable then
-                    v.components.burnable:Ignite()
-                end
-            end
-            if #ents > 0 then
-                inst.components.hauntable.hauntvalue = TUNING.HAUNT_LARGE
-            end
-            return true
-        end
-        return false
-    end, true, false, true)
+    AddHauntableCustomReaction(inst, OnHaunt, true, false, true)
 
     return inst
 end

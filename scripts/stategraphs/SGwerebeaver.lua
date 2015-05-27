@@ -20,7 +20,7 @@ local events=
     EventHandler("transform_person", function(inst) inst.sg:GoToState("towoodie") end),
     EventHandler("freeze", 
         function(inst)
-            if inst.components.health and inst.components.health:GetPercent() > 0 then
+            if inst.components.health ~= nil and not inst.components.health:IsDead() then
                 inst.sg:GoToState("frozen")
             end
         end),

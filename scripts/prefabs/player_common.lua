@@ -610,6 +610,8 @@ local function OnPlayerDeath(inst, data)
         return
     end
 
+    inst:ClearBufferedAction()
+
     inst.components.age:PauseAging()
     inst.components.inventory:Close()
 

@@ -17,7 +17,7 @@ local prefabs =
 local WAKE_TO_FOLLOW_DISTANCE = 14
 local SLEEP_NEAR_LEADER_DISTANCE = 7
 local MIN_HEAT = 15
-local MAX_HEAT = 135
+local MAX_HEAT = 100
 
 local function ShouldWakeUp(inst)
     return DefaultWakeTest(inst)
@@ -32,29 +32,6 @@ local function ShouldSleep(inst)
     and inst.components.hunger:GetPercent() > 0.25
 end
 
-local function OnAttacked(inst, data)
-    if data ~= nil and data.attacker ~= nil then
-        inst.components.combat:SuggestTarget(data.attacker)
-    end
-end
-
-local function KeepTarget(inst)
-    --Forget target if you're too far from your leader.
-    return inst.components.follower:IsNearLeader(20)
-end
-
-local function SetTarget(inst, target)
-    --Set target from leader.
-    inst.components.combat:SetTarget(target)
-end
-
-local function OnAttackOther(inst, data)
-    local tar = data.target
-    if tar ~= nil and tar.components.burnable ~= nil then
-        tar.components.burnable:Ignite()
-    end
-end
-
 local function ShouldAcceptItem(inst, item)
     --Can I eat it?
     return not (inst.components.sleeper:IsAsleep() or
@@ -66,8 +43,8 @@ end
 local function OnHungerDelta(inst, data)
     --Adjust heat and light put off.
     inst.components.heater.heat = Lerp(MIN_HEAT, MAX_HEAT, data.newpercent)
-    inst.Light:SetRadius(Lerp(0, 1, data.newpercent))
-    inst.Light:SetIntensity(Lerp(0, .75, data.newpercent))
+    inst.Light:SetRadius(Lerp(.33, 1, data.newpercent))
+    inst.Light:SetIntensity(Lerp(.25, .75, data.newpercent))
 end
 
 local function OnHaunt(inst, haunter)
@@ -178,18 +155,9 @@ local function fn()
     inst.components.health:SetMaxHealth(250)
     inst.components.health.fire_damage_scale = 0
 
-    inst.components.combat:SetDefaultDamage(20)
-    inst.components.combat:SetRange(2, 4)
-    inst.components.combat:SetAttackPeriod(3)
-    inst.components.combat:SetKeepTargetFunction(KeepTarget)
-
     inst.components.locomotor.walkspeed = 7.5
 
-    inst:ListenForEvent("attacked", OnAttacked)
-    inst:ListenForEvent("onattackother", OnAttackOther)
     inst:ListenForEvent("hungerdelta", OnHungerDelta)
-
-    inst.SetTarget = SetTarget
 
     MakeLargeFreezableCharacter(inst)
     AddHauntableCustomReaction(inst, OnHaunt, false, false, true)

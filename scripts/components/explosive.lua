@@ -18,12 +18,12 @@ end
 
 function Explosive:OnIgnite()
     DefaultBurnFn(self.inst)
-    if self.onignitefn then
+    if self.onignitefn ~= nil then
         self.onignitefn(self.inst)
     end
 end
 
-function Explosive:OnBurnt()   
+function Explosive:OnBurnt()
     for i, v in ipairs(AllPlayers) do
         local distSq = v:GetDistanceSqToInst(self.inst)
         local k = math.max(0, math.min(1, distSq / 1600))
@@ -38,40 +38,43 @@ function Explosive:OnBurnt()
         self.onexplodefn(self.inst)
     end
 
+    local stacksize = self.inst.components.stackable ~= nil and self.inst.components.stackable:StackSize() or 1
+    local totaldamage = self.explosivedamage * stacksize
+
     local x, y, z = self.inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, self.explosiverange)
+    local ents = TheSim:FindEntities(x, y, z, self.explosiverange, nil, { "INLIMBO" })
 
-    for k, v in pairs(ents) do
-        local inpocket = v.components.inventoryitem and v.components.inventoryitem:IsHeld()
-
-        if not inpocket then
-
-            if v.components.workable and not v.isresurrecting then --Haaaaaaack! (see resurrectionstatue & resurrectionstone prefabs)
+    for i, v in ipairs(ents) do
+        if v ~= self.inst and v:IsValid() and not v:IsInLimbo() then
+            if v.components.workable ~= nil and
+                v.components.workable.workleft > 0 and
+                v.components.workalbe.workable then
                 v.components.workable:WorkedBy(self.inst, self.buildingdamage)
-            elseif v.components.burnable and not v.components.fueled and self.lightonexplode then
-                v.components.burnable:Ignite()
             end
 
-            self.stacksize = 1
+            --Recheck valid after work
+            if v:IsValid() and not v:IsInLimbo() then
+                if self.lightonexplode and
+                    v.components.fueled == nil and
+                    v.components.burnable ~= nil and
+                    not v.components.burnable:IsBurning() and
+                    not v:HasTag("burnt") then
+                    v.components.burnable:Ignite()
+                end
 
-            if self.inst.components.stackable then
-                self.stacksize =  self.inst.components.stackable.stacksize
+                if v.components.combat ~= nil then
+                    v.components.combat:GetAttacked(self.inst, totaldamage, nil)
+                end
+
+                v:PushEvent("explosion", { explosive = self.inst })
             end
-
-            if v.components.combat and v ~= self.inst then
-                v.components.combat:GetAttacked(self.inst, self.explosivedamage * self.stacksize or 1, nil)
-            end
-
-            v:PushEvent("explosion", {explosive = self.inst})
         end
     end
 
     local world = TheWorld
-    for i = 1, self.stacksize, 1 do
+    for i = 1, stacksize do
         world:PushEvent("explosion", { damage = self.explosivedamage })
     end
-
-    --self.inst:PushEvent("explosion")
 
     if self.inst.components.health ~= nil then
         self.inst:PushEvent("death")

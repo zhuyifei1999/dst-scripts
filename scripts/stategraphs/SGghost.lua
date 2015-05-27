@@ -23,7 +23,7 @@ local events =
     CommonHandlers.OnLocomote(true, true),
     EventHandler("startaura", startaura),
     EventHandler("stopaura", stopaura),
-    EventHandler("attacked", function(inst) if inst.components.health:GetPercent() > 0 then inst.sg:GoToState("hit") end end),
+    EventHandler("attacked", function(inst) if not inst.components.health:IsDead() then inst.sg:GoToState("hit") end end),
 	EventHandler("death", function(inst) inst.sg:GoToState("dissipate") end),
 }
 

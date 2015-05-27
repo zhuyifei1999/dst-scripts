@@ -16,8 +16,8 @@ local actionhandlers =
 
 local events=
 {
-    EventHandler("attacked", function(inst) if inst.components.health:GetPercent() > 0 then inst.sg:GoToState("hit") end end),
-    EventHandler("doattack", function(inst) if inst.components.health:GetPercent() > 0 and not inst.sg:HasStateTag("busy") then inst.sg:GoToState("attack") end end),
+    EventHandler("attacked", function(inst) if not inst.components.health:IsDead() then inst.sg:GoToState("hit") end end),
+    EventHandler("doattack", function(inst) if not inst.components.health:IsDead() and not inst.sg:HasStateTag("busy") then inst.sg:GoToState("attack") end end),
     EventHandler("death", function(inst) inst.sg:GoToState("death") end),
     CommonHandlers.OnSleep(),
     CommonHandlers.OnFreeze(),

@@ -15,7 +15,7 @@ local events=
 {
     CommonHandlers.OnSleep(),
     CommonHandlers.OnFreeze(),
-    EventHandler("attacked", function(inst) if inst.components.health:GetPercent() > 0 then inst.sg:GoToState("hit") end end),
+    EventHandler("attacked", function(inst) if not inst.components.health:IsDead() then inst.sg:GoToState("hit") end end),
 --    EventHandler("death", function(inst) inst.sg:GoToState("death") end),
     EventHandler("death", function(inst, data) 
 				inst.sg:GoToState("death", data) 

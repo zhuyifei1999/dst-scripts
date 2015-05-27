@@ -63,7 +63,7 @@ local events=
                                 end 
                             end),
     EventHandler("flyaway", function(inst) 
-        if inst.components.health:GetPercent() > 0 and not inst.sg:HasStateTag("flying") then 
+        if not inst.components.health:IsDead() and not inst.sg:HasStateTag("flying") then 
             inst.sg:GoToState("flyaway") 
         end 
     end),

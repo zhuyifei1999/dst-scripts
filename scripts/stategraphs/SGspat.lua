@@ -30,19 +30,19 @@ local events=
     end),
     EventHandler("death", function(inst) inst.sg:GoToState("death") end),
     EventHandler("attacked", function(inst)
-        if inst.components.health:GetPercent() > 0 and not inst.sg:HasStateTag("busy") then
+        if not inst.components.health:IsDead() and not inst.sg:HasStateTag("busy") then
             inst.sg:GoToState("hit")
         end
     end),    
     EventHandler("heardhorn", function(inst, data)
-        if inst.components.health:GetPercent() > 0
+        if not inst.components.health:IsDead()
            and not inst.sg:HasStateTag("attack")
            and data and data.musician then
             inst:FacePoint(Vector3(data.musician.Transform:GetWorldPosition()))
             inst.sg:GoToState("bellow")
         end
     end),    
-    EventHandler("loseloyalty", function(inst) if inst.components.health:GetPercent() > 0 and not inst.sg:HasStateTag("attack") then inst.sg:GoToState("shake") end end),    
+    EventHandler("loseloyalty", function(inst) if not inst.components.health:IsDead() and not inst.sg:HasStateTag("attack") then inst.sg:GoToState("shake") end end),    
     
 }
 

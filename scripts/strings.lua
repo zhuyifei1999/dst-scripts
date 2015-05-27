@@ -2434,6 +2434,8 @@ STRINGS.UI =
         MAX_PRESETS_EXCEEDED_BODY = "Only 5 custom presets allowed. Choose one to overwrite:",
         MAX_PRESETS_EXCEEDED_BODYSPACING = "\n\n\n\n ",
         OVERWRITE = "Overwrite",
+        UNKNOWN_PRESET = "Unknown Preset",
+        UNKNOWN_PRESET_DESC = "This game was started with some weird settings.",
                 
     },
     

@@ -11,18 +11,20 @@ local function onpickup(inst)
 end
 
 local function doareasleep(inst, range, time)
-    local pos = Vector3(inst.Transform:GetWorldPosition())
-    local ents = TheSim:FindEntities(pos.x,pos.y,pos.z, range)
-    for k,v in pairs(ents) do
-        local fudge = math.random()
-        if v:HasTag("player") then
-            v:PushEvent("yawn", { grogginess = 4, knockoutduration = time + fudge })
-        elseif v.components.sleeper ~= nil then
-            v.components.sleeper:AddSleepiness(7, time + fudge)
-        elseif v.components.grogginess ~= nil then
-            v.components.grogginess:AddGrogginess(4, time + fudge)
-        else
-            v:PushEvent("knockedout")
+    local x, y, z = inst.Transform:GetWorldPosition()
+    local ents = TheSim:FindEntities(x, y, z, range)
+    for i, v in ipairs(ents) do
+        if not (v.components.freezable ~= nil and v.components.freezable:IsFrozen()) and
+            not (v.components.pinnable ~= nil and v.components.pinnable:IsStuck()) then
+            if v:HasTag("player") then
+                v:PushEvent("yawn", { grogginess = 4, knockoutduration = time + math.random() })
+            elseif v.components.sleeper ~= nil then
+                v.components.sleeper:AddSleepiness(7, time + math.random())
+            elseif v.components.grogginess ~= nil then
+                v.components.grogginess:AddGrogginess(4, time + math.random())
+            else
+                v:PushEvent("knockedout")
+            end
         end
     end
 end

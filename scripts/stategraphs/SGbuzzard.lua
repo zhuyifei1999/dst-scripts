@@ -19,12 +19,12 @@ local events=
     CommonHandlers.OnDeath(),
 
     EventHandler("flyaway", function(inst) 
-        if inst.components.health:GetPercent() > 0 and not inst.sg:HasStateTag("busy") then 
+        if not inst.components.health:IsDead() and not inst.sg:HasStateTag("busy") then 
             inst.sg:GoToState("flyaway") 
         end 
     end),
 
-    EventHandler("onignite", function(inst) if inst.components.health:GetPercent() > 0 then inst.sg:GoToState("distress_pre") end end),
+    EventHandler("onignite", function(inst) if not inst.components.health:IsDead() then inst.sg:GoToState("distress_pre") end end),
 
     EventHandler("locomote", 
     function(inst) 
@@ -157,7 +157,7 @@ local states=
         events=
         {
             EventHandler("animover", function(inst) inst.sg:GoToState("distress") end ),
-            EventHandler("onextinguish", function(inst) if inst.components.health:GetPercent() > 0 then inst.sg:GoToState("idle", "flap_pst") end end ),
+            EventHandler("onextinguish", function(inst) if not inst.components.health:IsDead() then inst.sg:GoToState("idle", "flap_pst") end end ),
         },
     },
     

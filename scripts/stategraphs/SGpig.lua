@@ -22,7 +22,7 @@ local events=
     CommonHandlers.OnAttack(),
     CommonHandlers.OnAttacked(true),
     CommonHandlers.OnDeath(),
-    EventHandler("transformnormal", function(inst) if inst.components.health:GetPercent() > 0 then inst.sg:GoToState("transformNormal") end end),
+    EventHandler("transformnormal", function(inst) if not inst.components.health:IsDead() then inst.sg:GoToState("transformNormal") end end),
     EventHandler("doaction", 
         function(inst, data) 
             if not inst.components.health:IsDead() and not inst.sg:HasStateTag("busy") then

@@ -9,7 +9,7 @@ local actionhandlers =
 local events=
 {
     EventHandler("gotosleep", function(inst)
-        if inst.components.health:GetPercent() > 0 then
+        if not inst.components.health:IsDead() then
             local pt = Vector3(inst.Transform:GetWorldPosition())
             if pt.y > 1 then
                 inst.sg:GoToState("fall")   --special bird behaviour
@@ -21,14 +21,14 @@ local events=
         end
     end),
     CommonHandlers.OnFreeze(),
-    EventHandler("attacked", function(inst) if inst.components.health:GetPercent() > 0 then inst.sg:GoToState("hit") end end),
+    EventHandler("attacked", function(inst) if not inst.components.health:IsDead() then inst.sg:GoToState("hit") end end),
     EventHandler("death", function(inst) inst.sg:GoToState("death") end),
     EventHandler("flyaway", function(inst) 
-        if inst.components.health:GetPercent() > 0 and not inst.sg:HasStateTag("busy") then 
+        if not inst.components.health:IsDead() and not inst.sg:HasStateTag("busy") then 
             inst.sg:GoToState("flyaway") 
         end 
     end),
-    EventHandler("onignite", function(inst) if inst.components.health:GetPercent() > 0 then inst.sg:GoToState("distress_pre") end end),
+    EventHandler("onignite", function(inst) if not inst.components.health:IsDead() then inst.sg:GoToState("distress_pre") end end),
     EventHandler("trapped", function(inst) inst.sg:GoToState("trapped") end),
 }
 
@@ -145,7 +145,7 @@ local states=
         events=
         {
             EventHandler("animover", function(inst) inst.sg:GoToState("distress") end ),
-            EventHandler("onextinguish", function(inst) if inst.components.health:GetPercent() > 0 then inst.sg:GoToState("idle", "flap_post") end end ),
+            EventHandler("onextinguish", function(inst) if not inst.components.health:IsDead() then inst.sg:GoToState("idle", "flap_post") end end ),
         },
     },
     

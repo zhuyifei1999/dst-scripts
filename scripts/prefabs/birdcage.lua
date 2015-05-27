@@ -21,12 +21,11 @@ local prefabs =
 
 local invalid_foods =
 {
-	"egg",
 	"bird_egg",
 	"rottenegg",
 	"monstermeat",
-	"cookedmonstermeat",
-	"monstermeat_dried",
+	-- "cookedmonstermeat",
+	-- "monstermeat_dried",
 }
 
 local CAGE_STATES =
@@ -440,9 +439,11 @@ local function fn()
     inst.AnimState:PlayAnimation("idle_empty")
 
     inst:AddTag("structure")
+    inst:AddTag("cage")
 
     --trader (from trader component) added to pristine state for optimization
     inst:AddTag("trader")
+
 
     MakeSnowCoveredPristine(inst)
 

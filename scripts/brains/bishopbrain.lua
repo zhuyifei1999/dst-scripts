@@ -12,58 +12,53 @@ local MAX_CHASE_DIST = 40
 local RUN_AWAY_DIST = 5
 local STOP_RUN_AWAY_DIST = 8
 
-
 local BishopBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
 end)
 
 local function GoHomeAction(inst)
-    local homePos = inst.components.knownlocations:GetLocation("home")
-    if homePos and 
-       not inst.components.combat.target then
-        return BufferedAction(inst, nil, ACTIONS.WALKTO, nil, homePos, nil, 0.2)
+    if inst.components.combat.target ~= nil then
+        return
     end
+    local homePos = inst.components.knownlocations:GetLocation("home")
+    return homePos ~= nil
+        and BufferedAction(inst, nil, ACTIONS.WALKTO, nil, homePos, nil, .2)
+        or nil
 end
 
 local function GetFaceTargetFn(inst)
-    local target = GetClosestInstWithTag("player", inst, START_FACE_DIST)
-    if target and not target:HasTag("notarget") then
-        return target
-    end
+    local target = FindClosestPlayerToInst(inst, START_FACE_DIST, true)
+    return target ~= nil and not target:HasTag("notarget") and target or nil
 end
 
 local function KeepFaceTargetFn(inst, target)
-    return inst:GetDistanceSqToInst(target) <= KEEP_FACE_DIST*KEEP_FACE_DIST and not target:HasTag("notarget")
+    return not target:HasTag("notarget") and inst:IsNear(target, KEEP_FACE_DIST)
 end
 
 local function ShouldGoHome(inst)
-
-    if (inst.components.follower and inst.components.follower.leader) then
+    if inst.components.follower ~= nil and inst.components.follower.leader ~= nil then
         return false
     end
-
     local homePos = inst.components.knownlocations:GetLocation("home")
-    local myPos = Vector3(inst.Transform:GetWorldPosition() )
-    return (homePos and distsq(homePos, myPos) > GO_HOME_DIST*GO_HOME_DIST)
+    return homePos ~= nil and inst:GetDistanceSqToPoint(homePos:Get()) > GO_HOME_DIST * GO_HOME_DIST
 end
 
 function BishopBrain:OnStart()
     local root = PriorityNode(
     {
-        WhileNode( function() return self.inst.components.hauntable and self.inst.components.hauntable.panic end, "PanicHaunted", Panic(self.inst)),
-        WhileNode( function() return self.inst.components.health.takingfiredamage end, "OnFire", Panic(self.inst)),
+        WhileNode(function() return self.inst.components.hauntable ~= nil and self.inst.components.hauntable.panic end, "PanicHaunted", Panic(self.inst)),
+        WhileNode(function() return self.inst.components.health.takingfiredamage end, "OnFire", Panic(self.inst)),
         ChaseAndAttack(self.inst, MAX_CHASE_TIME, MAX_CHASE_DIST),
         WhileNode(function() return ShouldGoHome(self.inst) end, "ShouldGoHome",
             DoAction(self.inst, GoHomeAction, "Go Home", true )),
-        Follow(self.inst, function() return self.inst.components.follower and self.inst.components.follower.leader end, 
-             5, 7, 12),
+        Follow(self.inst, function() return self.inst.components.follower ~= nil  and self.inst.components.follower.leader or nil end,
+            5, 7, 12),
 
         FaceEntity(self.inst, GetFaceTargetFn, KeepFaceTargetFn),
         StandStill(self.inst),
     }, .25)
-    
-    self.bt = BT(self.inst, root)
 
+    self.bt = BT(self.inst, root)
 end
 
 return BishopBrain

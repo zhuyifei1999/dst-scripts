@@ -28,7 +28,7 @@ local events=
 	CommonHandlers.OnDeath(),
 
 	EventHandler("flyaway", function(inst)
-		if inst.components.health:GetPercent() > 0 and not inst.sg:HasStateTag("busy") then
+		if not inst.components.health:IsDead() and not inst.sg:HasStateTag("busy") then
 			inst.sg:GoToState("flyaway")
 		end
 	end),

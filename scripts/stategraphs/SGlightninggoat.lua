@@ -153,7 +153,7 @@ local states=
 
     State{
         name = "bleet",
-        tags = {"busy"},
+        tags = {"idle"},
         
         onenter = function(inst)
             inst.Physics:Stop()

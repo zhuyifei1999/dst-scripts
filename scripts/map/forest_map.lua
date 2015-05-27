@@ -568,7 +568,7 @@ local function GenerateVoro(prefab, map_width, map_height, tasks, world_gen_choi
     if prefab == "forest" then	   	
 
 	    local current_pos_idx = 1
-	    if (current_gen_params.finaltweak == nil or current_gen_params.finaltweak["misc"] == nil or current_gen_params.finaltweak["misc"]["roads"] == nil) or current_gen_params.finaltweak["misc"]["roads"] ~= "never" then
+	    if current_gen_params == nil or (current_gen_params.finaltweak == nil or current_gen_params.finaltweak["misc"] == nil or current_gen_params.finaltweak["misc"]["roads"] == nil) or current_gen_params.finaltweak["misc"]["roads"] ~= "never" then
 		    local num_roads, road_weight, points_x, points_y = WorldSim:GetRoad(0, join_islands)
 		    local current_road = 1
 		    local min_road_length = math.random(3,5)

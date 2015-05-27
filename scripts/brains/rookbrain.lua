@@ -14,83 +14,79 @@ local CHASE_GIVEUP_DIST = 10
 local RUN_AWAY_DIST = 5
 local STOP_RUN_AWAY_DIST = 8
 
-
 local RookBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
 end)
 
 local function GoHomeAction(inst)
-    local homePos = inst.components.knownlocations:GetLocation("home")
-    if homePos and 
-       not inst.components.combat.target then
-        return BufferedAction(inst, nil, ACTIONS.WALKTO, nil, homePos, nil, 0.2)
+    if inst.components.combat.target ~= nil then
+        return
     end
+    local homePos = inst.components.knownlocations:GetLocation("home")
+    return homePos ~= nil
+        and BufferedAction(inst, nil, ACTIONS.WALKTO, nil, homePos, nil, .2)
+        or nil
 end
 
 local function GetFaceTargetFn(inst)
-
     local homePos = inst.components.knownlocations:GetLocation("home")
-    local myPos = Vector3(inst.Transform:GetWorldPosition() )
-    if (homePos and distsq(homePos, myPos) > 40*40) then
+    if homePos ~= nil and inst:GetDistanceSqToPoint(homePos:Get()) > GO_HOME_DIST * GO_HOME_DIST then
         return
     end
-
-    local target = GetClosestInstWithTag("player", inst, START_FACE_DIST)
-    if target and not target:HasTag("notarget") then
-        return target
-    end
+    local target = FindClosestPlayerToInst(inst, START_FACE_DIST, true)
+    return target ~= nil and not target:HasTag("notarget") and target or nil
 end
 
 local function KeepFaceTargetFn(inst, target)
-    
     local homePos = inst.components.knownlocations:GetLocation("home")
-    local myPos = Vector3(inst.Transform:GetWorldPosition() )
-    if (homePos and distsq(homePos, myPos) > 40*40) then
-        return false
-    end
-
-    return inst:GetDistanceSqToInst(target) <= KEEP_FACE_DIST*KEEP_FACE_DIST and not target:HasTag("notarget")
+    return (homePos == nil or
+            inst:GetDistanceSqToPoint(homePos:Get()) <= GO_HOME_DIST * GO_HOME_DIST)
+        and not target:HasTag("notarget")
+        and inst:IsNear(target, KEEP_FACE_DIST)
 end
 
 local function ShouldGoHome(inst)
-
-    if (inst.components.follower and inst.components.follower.leader) then
+    if inst.components.follower ~= nil and inst.components.follower.leader ~= nil then
         return false
     end
 
     local homePos = inst.components.knownlocations:GetLocation("home")
-    local myPos = Vector3(inst.Transform:GetWorldPosition() )
-    local dist = homePos and distsq(homePos, myPos)
-    if not dist then
+    if homePos == nil then
         return
     end
-    return (dist > GO_HOME_DIST*GO_HOME_DIST) or (dist > 10*10 and inst.components.combat.target == nil)
+
+    local dist_sq = inst:GetDistanceSqToPoint(homePos:Get())
+    return dist_sq > GO_HOME_DIST * GO_HOME_DIST
+        or (inst.components.combat.target == nil and
+            dist_sq > CHASE_GIVEUP_DIST * CHASE_GIVEUP_DIST)
 end
 
 function RookBrain:OnStart()
     local root = PriorityNode(
     {
-
-        WhileNode( function() return self.inst.components.combat.target == nil or not self.inst.components.combat:InCooldown() end,
+        WhileNode(function() return self.inst.components.combat.target == nil or not self.inst.components.combat:InCooldown() end,
             "RamAttack",
-            ChaseAndRam(self.inst, MAX_CHASE_TIME, CHASE_GIVEUP_DIST, MAX_CHARGE_DIST) ),
-        WhileNode( function() return self.inst.components.combat.target and self.inst.components.combat:InCooldown()
-        and not (self.inst.components.follower and self.inst.components.follower.leader) end, "Dodge",
-            RunAway(self.inst, function() return self.inst.components.combat.target end, RUN_AWAY_DIST, STOP_RUN_AWAY_DIST) ),
-        WhileNode( function() return self.inst.components.hauntable and self.inst.components.hauntable.panic end, "PanicHaunted", Panic(self.inst)),
-        WhileNode( function() return self.inst.components.health.takingfiredamage end, "OnFire", Panic(self.inst)),
+            ChaseAndRam(self.inst, MAX_CHASE_TIME, CHASE_GIVEUP_DIST, MAX_CHARGE_DIST)),
+        WhileNode(function()
+                return self.inst.components.combat.target ~= nil
+                    and self.inst.components.combat:InCooldown()
+                    and not (self.inst.components.follower ~= nil and
+                            self.inst.components.follower.leader ~= nil)
+            end,
+            "Dodge",
+            RunAway(self.inst, function() return self.inst.components.combat.target end, RUN_AWAY_DIST, STOP_RUN_AWAY_DIST)),
+        WhileNode(function() return self.inst.components.hauntable ~= nil and self.inst.components.hauntable.panic end, "PanicHaunted", Panic(self.inst)),
+        WhileNode(function() return self.inst.components.health.takingfiredamage end, "OnFire", Panic(self.inst)),
         WhileNode(function() return ShouldGoHome(self.inst) end, "ShouldGoHome",
-            DoAction(self.inst, GoHomeAction, "Go Home", false )),
+            DoAction(self.inst, GoHomeAction, "Go Home", false)),
 
-        Follow(self.inst, function() return self.inst.components.follower and self.inst.components.follower.leader end, 
+        Follow(self.inst, function() return self.inst.components.follower ~= nil and self.inst.components.follower.leader or nil end,
             5, 7, 12, false),
 
         FaceEntity(self.inst, GetFaceTargetFn, KeepFaceTargetFn),
         StandStill(self.inst)
-
-
     }, .25)
-    
+
     self.bt = BT(self.inst, root)
 end
 

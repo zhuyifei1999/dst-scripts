@@ -1,77 +1,85 @@
 CommonStates = {}
 CommonHandlers = {}
 
-CommonHandlers.OnStep = function()
-    return EventHandler("step", function(inst)
-        local sound = inst.SoundEmitter
-        if sound then
-            sound:PlaySound("dontstarve/movement/run_dirt")
-            --[[else
-                sound:PlaySound("dontstarve/movement/walk_dirt")
-            end--]]
-        end
-    end)
+--------------------------------------------------------------------------
+local function onstep(inst)
+    if inst.SoundEmitter ~= nil then
+        inst.SoundEmitter:PlaySound("dontstarve/movement/run_dirt")
+        --inst.SoundEmitter:PlaySound("dontstarve/movement/walk_dirt")
+    end
+end
 
+CommonHandlers.OnStep = function()
+    return EventHandler("step", onstep)
+end
+
+--------------------------------------------------------------------------
+local function onsleep(inst)
+    if inst.components.health ~= nil and not inst.components.health:IsDead() then
+        inst.sg:GoToState(inst.sg:HasStateTag("sleeping") and "sleeping" or "sleep")
+    end
 end
 
 CommonHandlers.OnSleep = function()
-    return EventHandler("gotosleep", function(inst)
-        if inst.components.health and inst.components.health:GetPercent() > 0 then
-            if inst.sg:HasStateTag("sleeping") then
-                inst.sg:GoToState("sleeping")
-            else
-                inst.sg:GoToState("sleep")
-            end
-        end
-    end)
+    return EventHandler("gotosleep", onsleep)
+end
+
+--------------------------------------------------------------------------
+local function onfreeze(inst)
+    if inst.components.health ~= nil and not inst.components.health:IsDead() then
+        inst.sg:GoToState("frozen")
+    end
 end
 
 CommonHandlers.OnFreeze = function()
-    return EventHandler("freeze", function(inst)
-        if inst.components.health and inst.components.health:GetPercent() > 0 then
-            inst.sg:GoToState("frozen")
-        end
-    end)
+    return EventHandler("freeze", onfreeze)
+end
+
+--------------------------------------------------------------------------
+local function onattacked(inst, data)
+    if inst.components.health ~= nil and not inst.components.health:IsDead()
+        and (not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("frozen")) then
+        inst.sg:GoToState("hit")
+    end
 end
 
 CommonHandlers.OnAttacked = function()
-    return EventHandler("attacked", function(inst)
-        if inst.components.health and not inst.components.health:IsDead()
-           and (not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("frozen") ) then
-            inst.sg:GoToState("hit")
-        end
-    end)
+    return EventHandler("attacked", onattacked)
+end
+
+--------------------------------------------------------------------------
+local function onattack(inst)
+    if inst.components.health ~= nil and not inst.components.health:IsDead()
+        and (not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("hit")) then
+        inst.sg:GoToState("attack")
+    end
 end
 
 CommonHandlers.OnAttack = function()
-    return EventHandler("doattack", function(inst)
-        if inst.components.health and not inst.components.health:IsDead()
-           and (inst.sg:HasStateTag("hit") or not inst.sg:HasStateTag("busy")) then
-            inst.sg:GoToState("attack")
-        end
-    end)
+    return EventHandler("doattack", onattack)
 end
+
+--------------------------------------------------------------------------
+local function ondeath(inst, data)
+    inst.sg:GoToState("death", data)
+end    
 
 CommonHandlers.OnDeath = function()
-    return EventHandler("death", function(inst, data) inst.sg:GoToState("death", data) end)
+    return EventHandler("death", ondeath)
 end
 
+--------------------------------------------------------------------------
 CommonHandlers.OnLocomote = function(can_run, can_walk)
-
     return EventHandler("locomote", function(inst)
         local is_moving = inst.sg:HasStateTag("moving")
         local is_running = inst.sg:HasStateTag("running")
-        
         local is_idling = inst.sg:HasStateTag("idle")
-        
+
         local should_move = inst.components.locomotor:WantsToMoveForward()
         local should_run = inst.components.locomotor:WantsToRun()
+
         if is_moving and not should_move then
-            if is_running then
-                inst.sg:GoToState("run_stop")
-            else
-                inst.sg:GoToState("walk_stop")
-            end
+            inst.sg:GoToState(is_running and "run_stop" or "walk_stop")
         elseif (is_idling and should_move) or (is_moving and should_move and is_running ~= should_run and can_run and can_walk) then
             if can_run and (should_run or not can_walk) then
                 inst.sg:GoToState("run_start")
@@ -80,26 +88,26 @@ CommonHandlers.OnLocomote = function(can_run, can_walk)
             end
         end
     end)
-
 end
 
+--------------------------------------------------------------------------
 CommonStates.AddIdle = function(states, funny_idle_state, anim_override, timeline)
-    
-    table.insert(states, State {
+    table.insert(states, State
+    {
         name = "idle",
-        tags = {"idle", "canrotate"},
-        timeline = timeline,
+        tags = { "idle", "canrotate" },
+
         onenter = function(inst, pushanim)
-            inst.components.locomotor:StopMoving()
-            local anim = "idle_loop"
-            if anim_override then
-                if type(anim_override) == "function" then
-                    anim = anim_override(inst)
-                else
-                    anim = anim_override
-                end
+            if inst.components.locomotor ~= nil then
+                inst.components.locomotor:StopMoving()
             end
-               
+
+            local anim =
+                (anim_override == nil and "idle_loop") or
+                (type(anim_override) ~= "function" and anim_override) or
+                anim_override(inst)
+
+            --pushanim could be bool or string?
             if pushanim then
                 if type(pushanim) == "string" then
                     inst.AnimState:PlayAnimation(pushanim)
@@ -107,466 +115,502 @@ CommonStates.AddIdle = function(states, funny_idle_state, anim_override, timelin
                 inst.AnimState:PushAnimation(anim, true)
             elseif not inst.AnimState:IsCurrentAnimation(anim) then
                 inst.AnimState:PlayAnimation(anim, true)
-            end 
-
+            end
         end,
-        
-       events=
+
+        timeline = timeline,
+
+        events =
         {
-            EventHandler("animover", function(inst) 
-                if funny_idle_state and math.random() < .1 then
-                    inst.sg:GoToState(funny_idle_state)                
-                else
-                    inst.sg:GoToState("idle")                                    
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState(math.random() < .1 and funny_idle_state or "idle")
                 end
             end),
-        }, 
-
+        },
     })
 end
 
-    
+--------------------------------------------------------------------------
 CommonStates.AddSimpleState = function(states, name, anim, tags, finishstate)
-    table.insert(states, State{
+    table.insert(states, State
+    {
         name = name,
         tags = tags or {},
-        
-        onenter = function(inst)
-            inst.AnimState:PlayAnimation(anim)
-            inst.components.locomotor:StopMoving()            
-        end,
-        
-        events=
-        {
-            EventHandler("animover", function(inst) inst.sg:GoToState(finishstate or "idle") end ),
-        },        
-    })    
-end
 
-CommonStates.AddSimpleActionState = function(states, name, anim, time, tags, finishstate)
-    table.insert(states, State{
-        name = name,
-        
-        tags = tags or {},
-        
         onenter = function(inst)
+            if inst.components.locomotor ~= nil then
+                inst.components.locomotor:StopMoving()
+            end
             inst.AnimState:PlayAnimation(anim)
-            inst.components.locomotor:StopMoving()            
         end,
-        
-        timeline=
-        {
-            TimeEvent(time, function(inst) inst:PerformBufferedAction() end),
-        },
-        
-        events=
-        {
-            EventHandler("animover", function(inst) inst.sg:GoToState(finishstate or "idle") end ),
-        },        
-    } )    
-end
 
-CommonStates.AddShortAction = function( states, name, anim, timeout )
-    table.insert(states, State{
-        name = "name",
-        tags = {"doing"},
-        
-        onenter = function(inst)
-            inst.components.locomotor:StopMoving()
-            inst.AnimState:PlayAnimation(anim)
-            inst.sg:SetTimeout(timeout or 6*FRAMES)
-        end,
-        
-        ontimeout= function(inst)
-            doer:PerformBufferedAction()         
-        end,
-        
-        events=
+        events =
         {
-            EventHandler("animover", function(inst) if inst.AnimState:AnimDone() then inst.sg:GoToState("idle") end end ),
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState(finishstate or "idle")
+                end
+            end),
         },
     })
 end
 
+--------------------------------------------------------------------------
+local function performbufferedaction(inst)
+    inst:PerformBufferedAction()
+end
 
-local function get_loco_state(inst, override, default)
-    local anim = default
-    if override then
-        anim = type(override) == "function" and override(inst) or override
+--------------------------------------------------------------------------
+CommonStates.AddSimpleActionState = function(states, name, anim, time, tags, finishstate)
+    table.insert(states, State
+    {
+        name = name,
+        tags = tags or {},
+
+        onenter = function(inst)
+            if inst.components.locomotor ~= nil then
+                inst.components.locomotor:StopMoving()
+            end
+            inst.AnimState:PlayAnimation(anim)
+        end,
+
+        timeline =
+        {
+            TimeEvent(time, performbufferedaction),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState(finishstate or "idle")
+                end
+            end),
+        },
+    })
+end
+
+--------------------------------------------------------------------------
+CommonStates.AddShortAction = function(states, name, anim, timeout, finishstate)
+    table.insert(states, State
+    {
+        name = "name",
+        tags = { "doing" },
+
+        onenter = function(inst)
+            if inst.components.locomotor ~= nil then
+                inst.components.locomotor:StopMoving()
+            end
+            inst.AnimState:PlayAnimation(anim)
+            inst.sg:SetTimeout(timeout or 6 * FRAMES)
+        end,
+
+        ontimeout = performbufferedaction,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState(finishstate or "idle")
+                end
+            end),
+        },
+    })
+end
+
+--------------------------------------------------------------------------
+local function idleonanimover(inst)
+    if inst.AnimState:AnimDone() then
+        inst.sg:GoToState("idle")
     end
-    return anim
+end
+
+--------------------------------------------------------------------------
+local function get_loco_anim(inst, override, default)
+    return (override == nil and default)
+        or (type(override) ~= "function" and override)
+        or override(inst)
+end
+
+--------------------------------------------------------------------------
+local function runonanimover(inst)
+    if inst.AnimState:AnimDone() then
+        inst.sg:GoToState("run")
+    end
+end
+
+local function runontimeout(inst)
+    inst.sg:GoToState("run")
 end
 
 CommonStates.AddRunStates = function(states, timelines, anims, softstop)
-   local startrun = State{
-            name = "run_start",
-            tags = {"moving", "running", "canrotate"},
-            
-            onenter = function(inst) 
-                inst.components.locomotor:RunForward()
-                inst.AnimState:PlayAnimation(get_loco_state(inst, anims and anims.startrun, "run_pre"))
-            end,
+    table.insert(states, State
+    {
+        name = "run_start",
+        tags = { "moving", "running", "canrotate" },
 
-            events=
-            {   
-                EventHandler("animover", function(inst) inst.sg:GoToState("run") end ),        
-            },
-            
-        }
-    
+        onenter = function(inst)
+            inst.components.locomotor:RunForward()
+            inst.AnimState:PlayAnimation(get_loco_anim(inst, anims ~= nil and anims.startrun or nil, "run_pre"))
+        end,
 
-    local run = State{
-            
-            name = "run",
-            tags = {"moving", "running", "canrotate"},
-            
-            onenter = function(inst) 
-                inst.components.locomotor:RunForward()
-                if not inst.AnimState:IsCurrentAnimation("run_loop") then
-                    inst.AnimState:PlayAnimation(get_loco_state(inst, anims and anims.run, "run_loop"), true)
-                end
-                inst.sg:SetTimeout( inst.AnimState:GetCurrentAnimationLength() )
-            end,
-            
-            ontimeout = function(inst)
-                inst.sg:GoToState("run")
-            end,
-            
-        }
-        
-    local stoprun = State{
-        
-            name = "run_stop",
-            tags = {"idle"},
-            
-            onenter = function(inst) 
-                inst.components.locomotor:StopMoving()
+        timeline = timelines ~= nil and timelines.starttimeline or nil,
 
-                local should_softstop = (type(softstop) == "function" and softstop(inst)) or softstop
+        events =
+        {
+            EventHandler("animover", runonanimover),
+        },
+    })
 
-                if should_softstop then
-                    inst.AnimState:PushAnimation(get_loco_state(inst, anims and anims.stoprun, "run_pst"))
-                else
-                    inst.AnimState:PlayAnimation(get_loco_state(inst, anims and anims.stoprun, "run_pst"))
-                end
-            end,
-            
-            events=
-            {   
-                EventHandler("animover", function(inst) inst.sg:GoToState("idle") end ),        
-            },
-        }
-        
-    if timelines then
-        startrun.timeline = timelines.starttimeline
-        run.timeline = timelines.runtimeline
-        stoprun.timeline = timelines.endtimeline
-    end        
+    table.insert(states, State
+    {
+        name = "run",
+        tags = { "moving", "running", "canrotate" },
 
-    table.insert(states, startrun)
-    table.insert(states, run)
-    table.insert(states, stoprun)
+        onenter = function(inst)
+            inst.components.locomotor:RunForward()
+            local anim_to_play = get_loco_anim(inst, anims ~= nil and anims.run or nil, "run_loop")
+            if not inst.AnimState:IsCurrentAnimation(anim_to_play) then
+                inst.AnimState:PlayAnimation(anim_to_play, true)
+            end
+            inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
+        end,
+
+        timeline = timelines ~= nil and timelines.runtimeline or nil,
+
+        ontimeout = runontimeout,
+    })
+
+    table.insert(states, State
+    {
+        name = "run_stop",
+        tags = { "idle" },
+
+        onenter = function(inst) 
+            inst.components.locomotor:StopMoving()
+            if softstop == true or (type(softstop) == "function" and softstop(inst)) then
+                inst.AnimState:PushAnimation(get_loco_anim(inst, anims ~= nil and anims.stoprun or nil, "run_pst"))
+            else
+                inst.AnimState:PlayAnimation(get_loco_anim(inst, anims ~= nil and anims.stoprun or nil, "run_pst"))
+            end
+        end,
+
+        timeline = timelines ~= nil and timelines.endtimeline or nil,
+
+        events =
+        {
+            EventHandler("animover", idleonanimover),
+        },
+    })
 end
 
+--------------------------------------------------------------------------
 CommonStates.AddSimpleRunStates = function(states, anim, timelines)
     CommonStates.AddRunStates(states, timelines, { startrun = anim, run = anim, stoprun = anim } )
 end
 
-
-CommonStates.AddWalkStates = function(states, timelines, anims, softstop)
-    
-    local startwalk = State{
-            name = "walk_start",
-            tags = {"moving", "canrotate"},
-
-            onenter = function(inst) 
-                inst.components.locomotor:WalkForward()
-                inst.AnimState:PlayAnimation(get_loco_state(inst, anims and anims.startwalk, "walk_pre"))
-            end,
-
-            events =
-            {   
-                EventHandler("animover", function(inst) inst.sg:GoToState("walk") end ),        
-            },
-        }
-        
-    local walk = State{
-            
-            name = "walk",
-            tags = {"moving", "canrotate"},
-            
-            onenter = function(inst) 
-                inst.components.locomotor:WalkForward()
-                local anim_to_play = get_loco_state(inst, anims and anims.walk, "walk_loop")
-                if not inst.AnimState:IsCurrentAnimation(anim_to_play) then
-                    inst.AnimState:PlayAnimation(anim_to_play, true)
-                end
-                inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
-            end,
-
-            ontimeout = function(inst)
-                inst.sg:GoToState("walk")
-            end,
-        }        
-    
-    local endwalk = State{
-            
-            name = "walk_stop",
-            tags = {"canrotate"},
-            
-            onenter = function(inst) 
-                inst.components.locomotor:StopMoving()
-                
-                local should_softstop = (type(softstop) == "function" and softstop(inst)) or softstop
-
-                if should_softstop then
-                    inst.AnimState:PushAnimation(get_loco_state(inst, anims and anims.stopwalk, "walk_pst"))
-				else
-                    inst.AnimState:PlayAnimation(get_loco_state(inst, anims and anims.stopwalk, "walk_pst"))
-				end
-            end,
-
-            events=
-            {   
-                EventHandler("animover", function(inst) inst.sg:GoToState("idle") end ),        
-            },
-        }
-        
-    if timelines then
-        startwalk.timeline = timelines.starttimeline
-        walk.timeline = timelines.walktimeline
-        endwalk.timeline = timelines.endtimeline
+--------------------------------------------------------------------------
+local function walkonanimover(inst)
+    if inst.AnimState:AnimDone() then
+        inst.sg:GoToState("walk")
     end
-    
-    table.insert(states, startwalk)    
-    table.insert(states, walk)
-    table.insert(states, endwalk)
 end
 
+local function walkontimeout(inst)
+    inst.sg:GoToState("walk")
+end
+
+CommonStates.AddWalkStates = function(states, timelines, anims, softstop)
+    table.insert(states, State
+    {
+        name = "walk_start",
+        tags = { "moving", "canrotate" },
+
+        onenter = function(inst)
+            inst.components.locomotor:WalkForward()
+            inst.AnimState:PlayAnimation(get_loco_anim(inst, anims ~= nil and anims.startwalk or nil, "walk_pre"))
+        end,
+
+        timeline = timelines ~= nil and timelines.starttimeline or nil,
+
+        events =
+        {
+            EventHandler("animover", walkonanimover),
+        },
+    })
+
+    table.insert(states, State
+    {
+        name = "walk",
+        tags = { "moving", "canrotate" },
+
+        onenter = function(inst)
+            inst.components.locomotor:WalkForward()
+            local anim_to_play = get_loco_anim(inst, anims ~= nil and anims.walk or nil, "walk_loop")
+            if not inst.AnimState:IsCurrentAnimation(anim_to_play) then
+                inst.AnimState:PlayAnimation(anim_to_play, true)
+            end
+            inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
+        end,
+
+        timeline = timelines ~= nil and timelines.walktimeline or nil,
+
+        ontimeout = walkontimeout,
+    })
+
+    table.insert(states, State
+    {
+        name = "walk_stop",
+        tags = { "canrotate" },
+
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+            if softstop == true or (type(softstop) == "function" and softstop(inst)) then
+                inst.AnimState:PushAnimation(get_loco_anim(inst, anims ~= nil and anims.stopwalk or nil, "walk_pst"))
+            else
+                inst.AnimState:PlayAnimation(get_loco_anim(inst, anims ~= nil and anims.stopwalk or nil, "walk_pst"))
+            end
+        end,
+
+        timeline = timelines ~= nil and timelines.endtimeline or nil,
+
+        events =
+        {
+            EventHandler("animover", idleonanimover),
+        },
+    })
+end
+
+--------------------------------------------------------------------------
 CommonStates.AddSimpleWalkStates = function(states, anim, timelines)
-    CommonStates.AddWalkStates(states, timelines, { startwalk = anim, walk = anim, stopwalk = anim }, true )
+    CommonStates.AddWalkStates(states, timelines, { startwalk = anim, walk = anim, stopwalk = anim }, true)
+end
+
+--------------------------------------------------------------------------
+local function sleeponanimover(inst)
+    if inst.AnimState:AnimDone() then
+        inst.sg:GoToState("sleeping")
+    end
+end
+
+local function onwakeup(inst)
+    inst.sg:GoToState("wake")
+end
+
+local function onentersleeping(inst)
+    inst.AnimState:PlayAnimation("sleep_loop")
 end
 
 CommonStates.AddSleepStates = function(states, timelines, fns)
-    
-    local startsleep = State{
-            name = "sleep",
-            tags = {"busy", "sleeping"},
-            
-            onenter = function(inst) 
+    table.insert(states, State
+    {
+        name = "sleep",
+        tags = { "busy", "sleeping" },
+
+        onenter = function(inst)
+            if inst.components.locomotor ~= nil then
                 inst.components.locomotor:StopMoving()
-                inst.AnimState:PlayAnimation("sleep_pre")
-                if fns and fns.onsleep then
-					fns.onsleep(inst)
-                end
-            end,
-
-            events=
-            {   
-                EventHandler("animover", function(inst) inst.sg:GoToState("sleeping") end ),        
-                EventHandler("onwakeup", function(inst) inst.sg:GoToState("wake") end),
-            },
-        }
-        
-    local sleep = State{
-            
-            name = "sleeping",
-            tags = {"busy", "sleeping"},
-            
-            onenter = function(inst) 
-                inst.AnimState:PlayAnimation("sleep_loop")
-            end,
-            
-            events=
-            {   
-                EventHandler("animover", function(inst) inst.sg:GoToState("sleeping") end ),        
-                EventHandler("onwakeup", function(inst) inst.sg:GoToState("wake") end),
-            },
-        }        
-    
-    local endsleep = State{
-            
-            name = "wake",
-            tags = {"busy", "waking"},
-            
-            onenter = function(inst) 
-                inst.components.locomotor:StopMoving()
-                inst.AnimState:PlayAnimation("sleep_pst")
-                if inst.components.sleeper and inst.components.sleeper:IsAsleep() then
-                    inst.components.sleeper:WakeUp()
-                end
-                if fns and fns.onwake then
-					fns.onwake(inst)
-                end
-                
-            end,
-
-            events=
-            {   
-                EventHandler("animover", function(inst) inst.sg:GoToState("idle") end ),        
-            },
-        }
-
-
-    local forcesleep = State{
-            name = "forcesleep",
-            tags = {"busy", "sleeping"},
-
-            onenter = function(inst)
-                inst.components.locomotor:StopMoving()            
-                inst.AnimState:PlayAnimation("sleep_loop", true)
             end
-        }
-        
-    if timelines then
-        startsleep.timeline = timelines.starttimeline
-        sleep.timeline = timelines.sleeptimeline
-        endsleep.timeline = timelines.waketimeline
+            inst.AnimState:PlayAnimation("sleep_pre")
+            if fns ~= nil and fns.onsleep ~= nil then
+                fns.onsleep(inst)
+            end
+        end,
+
+        timeline = timelines ~= nil and timelines.starttimeline or nil,
+
+        events =
+        {
+            EventHandler("animover", sleeponanimover),
+            EventHandler("onwakeup", onwakeup),
+        },
+    })
+
+    table.insert(states, State
+    {
+        name = "sleeping",
+        tags = { "busy", "sleeping" },
+
+        onenter = onentersleeping,
+
+        timeline = timelines ~= nil and timelines.sleeptimeline or nil,
+
+        events =
+        {
+            EventHandler("animover", sleeponanimover),
+            EventHandler("onwakeup", onwakeup),
+        },
+    })
+
+    table.insert(states, State
+    {
+        name = "wake",
+        tags = { "busy", "waking" },
+
+        onenter = function(inst)
+            if inst.components.locomotor ~= nil then
+                inst.components.locomotor:StopMoving()
+            end
+            inst.AnimState:PlayAnimation("sleep_pst")
+            if inst.components.sleeper ~= nil and inst.components.sleeper:IsAsleep() then
+                inst.components.sleeper:WakeUp()
+            end
+            if fns ~= nil and fns.onwake ~= nil then
+                fns.onwake(inst)
+            end
+        end,
+
+        timeline = timelines ~= nil and timelines.waketimeline or nil,
+
+        events =
+        {
+            EventHandler("animover", idleonanimover),
+        },
+    })
+end
+
+--------------------------------------------------------------------------
+local function onenterfrozen(inst)
+    if inst.components.locomotor ~= nil then
+        inst.components.locomotor:StopMoving()
     end
-    
-    table.insert(states, startsleep)    
-    table.insert(states, sleep)
-    table.insert(states, endsleep)
-    table.insert(states, forcesleep)
+    inst.AnimState:PlayAnimation("frozen")
+    inst.SoundEmitter:PlaySound("dontstarve/common/freezecreature")
+    inst.AnimState:OverrideSymbol("swap_frozen", "frozen", "frozen")
+end
+
+local function onexitfrozen(inst)
+    inst.AnimState:ClearOverrideSymbol("swap_frozen")
+end
+
+local function onunfreeze(inst)
+    inst.sg:GoToState(inst.sg.sg.states.hit ~= nil and "hit" or "idle")
+end
+
+local function onthaw(inst)
+    inst.sg:GoToState("thaw")
+end
+
+local function onenterthaw(inst)
+    if inst.components.locomotor ~= nil then
+        inst.components.locomotor:StopMoving()
+    end
+    inst.AnimState:PlayAnimation("frozen_loop_pst", true)
+    inst.SoundEmitter:PlaySound("dontstarve/common/freezethaw", "thawing")
+    inst.AnimState:OverrideSymbol("swap_frozen", "frozen", "frozen")
+end
+
+local function onexitthaw(inst)
+    inst.SoundEmitter:KillSound("thawing")
+    inst.AnimState:ClearOverrideSymbol("swap_frozen")
 end
 
 CommonStates.AddFrozenStates = function(states)
-
-    local frozen = State{
+    table.insert(states, State
+    {
         name = "frozen",
-        tags = {"busy", "frozen"},
-        
-        onenter = function(inst)
-            if inst.components.locomotor then
-                inst.components.locomotor:StopMoving()
-            end
-            inst.AnimState:PlayAnimation("frozen")
-            inst.SoundEmitter:PlaySound("dontstarve/common/freezecreature")
-            inst.AnimState:OverrideSymbol("swap_frozen", "frozen", "frozen")
-        end,
-        
-        onexit = function(inst)
-            inst.AnimState:ClearOverrideSymbol("swap_frozen")
-        end,
-        
-        events =
-        {   
-            EventHandler("unfreeze", function(inst)
-                if inst.sg.sg.states.hit then
-                    inst.sg:GoToState("hit")
-                else
-                    inst.sg:GoToState("idle")
-                end
-            end ),
-            EventHandler("onthaw", function(inst) inst.sg:GoToState("thaw") end ),        
-        },
-    }
+        tags = { "busy", "frozen" },
 
-    local thaw = State{
+        onenter = onenterfrozen,
+
+        events =
+        {
+            EventHandler("unfreeze", onunfreeze),
+            EventHandler("onthaw", onthaw),
+        },
+
+        onexit = onexitfrozen,
+    })
+
+    table.insert(states, State
+    {
         name = "thaw",
-        tags = {"busy", "thawing"},
-        
-        onenter = function(inst) 
-            if inst.components.locomotor then
-                inst.components.locomotor:StopMoving()
-            end
-            inst.AnimState:PlayAnimation("frozen_loop_pst", true)
-            inst.SoundEmitter:PlaySound("dontstarve/common/freezethaw", "thawing")
-            inst.AnimState:OverrideSymbol("swap_frozen", "frozen", "frozen")
-        end,
-        
-        onexit = function(inst)
-            inst.SoundEmitter:KillSound("thawing")
-            inst.AnimState:ClearOverrideSymbol("swap_frozen")
-        end,
+        tags = { "busy", "thawing" },
+
+        onenter = onenterthaw,
 
         events =
-        {   
-            EventHandler("unfreeze", function(inst)
-                if inst.sg.sg.states.hit then
-                    inst.sg:GoToState("hit")
-                else
-                    inst.sg:GoToState("idle")
-                end
-            end ),
+        {
+            EventHandler("unfreeze", onunfreeze),
         },
-    }
 
-    table.insert(states, frozen)    
-    table.insert(states, thaw)    
+        onexit = onexitthaw,
+    })
 end
 
+--------------------------------------------------------------------------
 CommonStates.AddCombatStates = function(states, timelines, anims)
-    local hit = State{
+    table.insert(states, State
+    {
         name = "hit",
-        tags = {"hit", "busy"},
-        
-        onenter = function(inst, cb)
-            if inst.components.locomotor then
+        tags = { "hit", "busy" },
+
+        onenter = function(inst)
+            if inst.components.locomotor ~= nil then
                 inst.components.locomotor:StopMoving()
             end
-            local hitanim = "hit"
-            if anims and anims.hit then
-                if type(anims.hit) == "function" then
-                    hitanim = anims.hit(inst)
-                else
-                    hitanim = anims.hit
-                end
-            end
+
+            local hitanim =
+                ((anims == nil or anims.hit == nil) and "hit") or
+                (type(anims.hit) ~= "function" and anims.hit) or
+                anims.hit(inst)
+
             inst.AnimState:PlayAnimation(hitanim)
-            if inst.SoundEmitter and inst.sounds then
-                if inst.sounds.hit then
-                    inst.SoundEmitter:PlaySound(inst.sounds.hit)
-                end
+
+            if inst.SoundEmitter ~= nil and inst.sounds ~= nil and inst.sounds.hit ~= nil then
+                inst.SoundEmitter:PlaySound(inst.sounds.hit)
             end
         end,
-        
+
+        timeline = timelines ~= nil and timelines.hittimeline or nil,
+
         events =
         {
-            EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
+            EventHandler("animover", idleonanimover),
         },
-    }
+    })
 
-    local attack = State{
+    table.insert(states, State
+    {
         name = "attack",
-        tags = {"attack", "busy"},
-        
+        tags = { "attack", "busy" },
+
         onenter = function(inst, target)
-            if inst.components.locomotor then
+            if inst.components.locomotor ~= nil then
                 inst.components.locomotor:StopMoving()
             end
+            inst.AnimState:PlayAnimation(anims ~= nil and anims.attack or "atk")
             inst.components.combat:StartAttack()
-            inst.AnimState:PlayAnimation(anims and anims.attack or "atk")
+
+            --V2C: Cached for external use? why?
+            --     why not use combat component target?
+            --     WHO KNOWS. legacy stuff.
             inst.sg.statemem.target = target
         end,
-        
-        events=
-        {
-            EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
-        },
-    }
 
-    local death = State{
-        name = "death",  
-        tags = {"busy"},
-        
+        timeline = timelines ~= nil and timelines.attacktimeline or nil,
+
+        events =
+        {
+            EventHandler("animover", idleonanimover),
+        },
+    })
+
+    table.insert(states, State
+    {
+        name = "death",
+        tags = { "busy" },
+
         onenter = function(inst)
-            inst.AnimState:PlayAnimation(anims and anims.death or "death")
-            if inst.components.locomotor then
+            if inst.components.locomotor ~= nil then
                 inst.components.locomotor:StopMoving()
             end
-			inst.Physics:ClearCollisionMask()
-            inst.components.lootdropper:DropLoot(Vector3(inst.Transform:GetWorldPosition()))            
+            inst.AnimState:PlayAnimation(anims ~= nil and anims.death or "death")
+            inst.Physics:ClearCollisionMask()
+            inst.components.lootdropper:DropLoot(inst:GetPosition())
         end,
-    }
 
-    if timelines then
-        hit.timeline = timelines.hittimeline
-        attack.timeline = timelines.attacktimeline
-        death.timeline = timelines.deathtimeline
-    end
-    
-    table.insert(states, hit)    
-    table.insert(states, attack)    
-    table.insert(states, death)    
+        timeline = timelines ~= nil and timelines.deathtimeline or nil,
+    })
 end
