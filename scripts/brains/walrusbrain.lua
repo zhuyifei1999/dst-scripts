@@ -46,6 +46,7 @@ end
 local function GetNoLeaderFollowTarget(inst)
     return GetLeader(inst) == nil
         and FindClosestPlayerToInst(inst, MAX_PLAYER_STALK_DISTANCE, true)
+        or nil
 end
 
 local function GetHome(inst)
