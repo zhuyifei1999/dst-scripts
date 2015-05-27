@@ -48,7 +48,7 @@ function Explosive:OnBurnt()
         if v ~= self.inst and v:IsValid() and not v:IsInLimbo() then
             if v.components.workable ~= nil and
                 v.components.workable.workleft > 0 and
-                v.components.workalbe.workable then
+                v.components.workable.workable then
                 v.components.workable:WorkedBy(self.inst, self.buildingdamage)
             end
 
