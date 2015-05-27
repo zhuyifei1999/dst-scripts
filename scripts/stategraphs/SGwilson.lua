@@ -521,25 +521,19 @@ local events =
         end),
     EventHandler("pinned",
         function(inst, data)
-            if inst.components.health and inst.components.health:GetPercent() > 0 then
+            if inst.components.health ~= nil and not inst.components.health:IsDead() then
                 inst.sg:GoToState("pinned_pre", data)
             end
         end),
-    EventHandler("onunpin",
-        function(inst, data)
-            if inst.sg:HasStateTag("pinned") then
-                inst.sg:GoToState("breakfree", data)
-            end
-        end),
-    EventHandler("freeze", 
+    EventHandler("freeze",
         function(inst)
-            if inst.components.health and inst.components.health:GetPercent() > 0 then
+            if inst.components.health ~= nil and not inst.components.health:IsDead() then
                 inst.sg:GoToState("frozen")
             end
         end),
-    EventHandler("wonteatfood", 
+    EventHandler("wonteatfood",
         function(inst)
-            if inst.components.health and inst.components.health:GetPercent() > 0 then
+            if inst.components.health ~= nil and not inst.components.health:IsDead() then
                 inst.sg:GoToState("refuseeat")
             end
         end),
@@ -670,6 +664,9 @@ local states =
             if inst.components.freezable ~= nil and inst.components.freezable:IsFrozen() then
                 inst.components.freezable:Unfreeze()
             end
+            if inst.components.pinnable ~= nil and inst.components.pinnable:IsStuck() then
+                inst.components.pinnable:Unstick()
+            end
 
             inst.components.locomotor:Stop()
             inst:ClearBufferedAction()
@@ -792,6 +789,9 @@ local states =
         tags = { "busy", "pausepredict", "nomorph" },
 
         onenter = function(inst)
+            --Don't process other queued events if we died this frame
+            inst.sg:ClearBufferedEvents()
+
             inst.components.locomotor:Stop()
             inst.components.locomotor:Clear()
             inst:ClearBufferedAction()
@@ -812,7 +812,6 @@ local states =
 
         events =
         {
-
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
                     inst:PushEvent(inst.ghostenabled and "makeplayerghost" or "playerdied", { skeleton = true })
@@ -2564,7 +2563,7 @@ local states =
         },
 
         events =
-        {   
+        {
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
                     inst.sg:GoToState("run")
@@ -2627,7 +2626,7 @@ local states =
         end,
 
         events =
-        {   
+        {
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
                     inst.sg:GoToState("idle")
@@ -2846,7 +2845,7 @@ local states =
             local bufferedaction = inst:GetBufferedAction()
             if bufferedaction == nil then
                 inst.AnimState:PlayAnimation("pickup_pst")
-                insg.sg:GoToState("idle", true)
+                inst.sg:GoToState("idle", true)
             end
             local tent = bufferedaction.target
             if tent == nil or
@@ -3653,7 +3652,7 @@ local states =
         end,
 
         events =
-        {   
+        {
             EventHandler("onthaw", function(inst)
                 inst.sg.statemem.isstillfrozen = true
                 inst.sg:GoToState("thaw")
@@ -3678,7 +3677,7 @@ local states =
     State{
         name = "thaw",
         tags = { "busy", "thawing", "nopredict" },
-        
+
         onenter = function(inst) 
             inst.components.locomotor:Stop()
             inst:ClearBufferedAction()
@@ -3695,7 +3694,7 @@ local states =
         end,
 
         events =
-        {   
+        {
             EventHandler("unfreeze", function(inst)
                 inst.sg:GoToState("hit")
             end),
@@ -3732,6 +3731,9 @@ local states =
 
         events =
         {
+            EventHandler("onunpin", function(inst, data)
+                inst.sg:GoToState("breakfree", data)
+            end),
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
                     inst.sg.statemem.isstillpinned = true
@@ -3771,6 +3773,13 @@ local states =
             end
         end,
 
+        events =
+        {
+            EventHandler("onunpin", function(inst, data)
+                inst.sg:GoToState("breakfree", data)
+            end),
+        },
+
         onexit = function(inst)
             inst.components.inventory:Show()
             if inst.components.playercontroller ~= nil then
@@ -3803,6 +3812,9 @@ local states =
 
         events =
         {
+            EventHandler("onunpin", function(inst, data)
+                inst.sg:GoToState("breakfree", data)
+            end),
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
                     inst.sg.statemem.isstillpinned = true

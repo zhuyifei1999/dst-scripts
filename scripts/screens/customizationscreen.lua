@@ -667,7 +667,7 @@ function CustomizationScreen:LoadPreset(preset)
 		end
 	end
 
-    -- We should never get here, adding some error logging.
+    -- We can only get here if a world was created before all preset data was being populated into the save index.
     print("Presets:")
     local s = {}
     for k,p in pairs(self.presets) do
@@ -676,6 +676,29 @@ function CustomizationScreen:LoadPreset(preset)
     print(table.concat(s,", "))
     print("Error: Tried loading preset "..preset.." but we don't have that!")
     print(self.defaults and "Have default: "..(self.defaults.preset or "<nil>")..", "..(self.defaults.actualpreset or "<nil>")..", saved preset data: "..(self.defaults.presetdata and self.defaults.presetdata.data or "<nil>") or "No defaults found.")
+
+    self:LoadUnknownPreset()
+end
+
+function CustomizationScreen:LoadUnknownPreset()
+    -- Populate a "fake" empty preset so that the screen still functions in case the loaded preset is missing.
+    -- This is super gross, I know. I apologize. ~gjans
+    self.presetspinner:UpdateText(STRINGS.UI.CUSTOMIZATIONSCREEN.UNKNOWN_PRESET)
+    self.presetdesc:SetString(STRINGS.UI.CUSTOMIZATIONSCREEN.UNKNOWN_PRESET_DESC)
+    self.presetdirty = false
+    self.preset = {
+        basepreset = "UNKNOWN_PRESET",
+        data = "UNKNOWN_PRESET",
+        overrides = {},
+        text = STRINGS.UI.CUSTOMIZATIONSCREEN.UNKNOWN_PRESET,
+        desc = STRINGS.UI.CUSTOMIZATIONSCREEN.UNKNOWN_PRESET_DESC,
+    }
+    table.insert(self.presets, 1, self.preset)
+    if not self.optionwidgets then
+        self:MakeOptionSpinners()
+    else
+        self:RefreshOptions()
+    end
 end
 
 function CustomizationScreen:Cancel()

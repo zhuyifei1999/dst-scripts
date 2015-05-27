@@ -102,18 +102,18 @@ local function sleepthrown(inst)
 end
 
 local function sleepattack(inst, attacker, target)
-    if target.components.sleeper and not (inst.components.freezable and inst.components.freezable:IsFrozen() ) then
-        target.SoundEmitter:PlaySound("dontstarve/wilson/blowdart_impact_sleep")
+    target.SoundEmitter:PlaySound("dontstarve/wilson/blowdart_impact_sleep")
+
+    if target.components.sleeper ~= nil then
         target.components.sleeper:AddSleepiness(1, 15, inst)
-        if target.components.combat then
-            target.components.combat:SuggestTarget(attacker)
-        end
-        target:PushEvent("attacked", {attacker = attacker, damage = 0, weapon = inst})
-    elseif target.components.grogginess and not (inst.components.freezable and inst.components.freezable:IsFrozen()) then
-        target.SoundEmitter:PlaySound("dontstarve/wilson/blowdart_impact_sleep")
-        target:PushEvent("attacked", {attacker = attacker, damage = 0, weapon = inst})
+    elseif target.components.grogginess ~= nil then
         target.components.grogginess:AddGrogginess(1, 15)
     end
+
+    if target.components.combat ~= nil and not target:HasTag("player") then
+        target.components.combat:SuggestTarget(attacker)
+    end
+    target:PushEvent("attacked", { attacker = attacker, damage = 0, weapon = inst })
 end
 
 local function sleep()

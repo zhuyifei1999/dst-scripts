@@ -391,8 +391,8 @@ function Combat:GetAttacked(attacker, damage, weapon, stimuli)
 --        end
         if damage > 0 and self.inst.components.health:IsInvincible() == false then
             self.inst.components.health:DoDelta(-damage, nil, attacker and attacker.prefab or "NIL", nil, attacker)
-            if self.inst.components.health:GetPercent() <= 0 then
-				if attacker then
+            if self.inst.components.health:IsDead() then
+				if attacker ~= nil then
 					attacker:PushEvent("killed", {victim = self.inst})
 				end
 
@@ -410,7 +410,7 @@ function Combat:GetAttacked(attacker, damage, weapon, stimuli)
 --                    FightStat_AddKillByMine(self.inst,damage)
 --                end
                 
-                if self.onkilledbyother then
+                if self.onkilledbyother ~= nil then
 					self.onkilledbyother(self.inst, attacker)
                 end
             end

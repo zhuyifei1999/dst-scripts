@@ -46,16 +46,22 @@ local function Update(inst, dt)
 		
 		local modifier = 1
 		local owner = inst.components.inventoryitem and inst.components.inventoryitem.owner or nil
+        if not owner and inst.components.occupier then
+            owner = inst.components.occupier:GetOwner()
+        end
+
 		if owner then
 			if owner:HasTag("fridge") then
 				if inst:HasTag("frozen") and not owner:HasTag("nocool") and not owner:HasTag("lowcool") then
 					modifier = TUNING.PERISH_COLD_FROZEN_MULT
 				else
-					modifier = TUNING.PERISH_FRIDGE_MULT 
+					modifier = TUNING.PERISH_FRIDGE_MULT
 				end
 			elseif owner:HasTag("spoiler") then
 				modifier = TUNING.PERISH_GROUND_MULT 
-			end
+			elseif owner:HasTag("cage") and inst:HasTag("small_livestock") then
+                modifier = TUNING.PERISH_CAGE_MULT
+            end
 		else
 			modifier = TUNING.PERISH_GROUND_MULT 
 		end

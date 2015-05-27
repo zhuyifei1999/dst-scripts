@@ -16,7 +16,7 @@ local events =
     CommonHandlers.OnAttack(),
     CommonHandlers.OnAttacked(),
     CommonHandlers.OnDeath(),
-    EventHandler("transformwere", function(inst) if inst.components.health:GetPercent() > 0 then inst.sg:GoToState("transformWere") end end),
+    EventHandler("transformwere", function(inst) if not inst.components.health:IsDead() then inst.sg:GoToState("transformWere") end end),
     EventHandler("giveuptarget", function(inst, data) if data.target then inst.sg:GoToState("howl") end end),
     EventHandler("newcombattarget", function(inst, data)
         if data.target and not inst.sg:HasStateTag("busy") then

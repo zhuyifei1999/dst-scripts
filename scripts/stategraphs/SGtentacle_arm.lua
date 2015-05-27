@@ -17,7 +17,7 @@ local events=
                     end),
     EventHandler("attacked",
                  function(inst) 
-                        if inst.components.health:GetPercent() > 0 
+                        if not inst.components.health:IsDead()
                            and not inst.sg:HasStateTag("hit")
                            and not inst.sg:HasStateTag("attack") then 
                             inst.sg:GoToState("hit")

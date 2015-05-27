@@ -60,7 +60,7 @@ function Occupiable:Occupy(occupier)
     if self.occupant == nil and occupier ~= nil and occupier.components.occupier ~= nil then
         self.occupant = occupier
         self.occupant.persists = true
-
+        self.occupant.components.occupier:SetOwner(self.inst)
         if occupier.components.occupier.onoccupied ~= nil then
             occupier.components.occupier.onoccupied(occupier, self.inst)
         end
@@ -104,6 +104,7 @@ end
 function Occupiable:Harvest()
     if self.occupant ~= nil and self.occupant.components.inventoryitem ~= nil then
         local occupant = self.occupant
+        occupant.components.occupier:SetOwner(nil)
         self.occupant = nil
         self.inst:RemoveEventCallback("perished", occupant.occupiableonperish, occupant)
         self.inst:RemoveEventCallback("onremove", occupant.occupiableonremove, occupant)

@@ -527,6 +527,23 @@ end
 
 ---------COLOUR SPECIFIC CONSTRUCTIONS---------
 
+local function onhauntred(inst, haunter)
+    if math.random() <= TUNING.HAUNT_CHANCE_RARE then
+        local x, y, z = inst.Transform:GetWorldPosition() 
+        local ents = TheSim:FindEntities(x, y, z, 6, { "canlight" }, { "fire", "burnt", "INLIMBO" })
+        if #ents > 0 then
+            for i, v in ipairs(ents) do
+                if v:IsValid() and not v:IsInLimbo() then
+                    onattack_red(inst, haunter, v, true) 
+                end
+            end
+            inst.components.hauntable.hauntvalue = TUNING.HAUNT_LARGE
+            return true
+        end
+    end
+    return false
+end
+
 local function red()
     local inst = commonfn("red", { "firestaff", "rangedfireweapon", "rangedlighter" })
 
@@ -544,18 +561,7 @@ local function red()
     inst.components.finiteuses:SetUses(TUNING.FIRESTAFF_USES)
 
     MakeHauntableLaunch(inst)
-    AddHauntableCustomReaction(inst, function(inst, haunter)
-        local x,y,z = inst.Transform:GetWorldPosition() 
-        local burnables = TheSim:FindEntities(x, y, z, 6, {"canlight"}, {"fire", "burnt"})
-        if burnables and #burnables > 0 and math.random() <= TUNING.HAUNT_CHANCE_RARE then
-            for i,v in pairs(burnables) do --#srosen should port over the d-fly's firewave fx and use those here
-                onattack_red(inst, haunter, v, true) 
-            end
-            inst.components.hauntable.hauntvalue = TUNING.HAUNT_LARGE
-            return true
-        end
-        return false
-    end, true, false, true)
+    AddHauntableCustomReaction(inst, onhauntred, true, false, true)
 
     return inst
 end

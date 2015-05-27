@@ -1,3 +1,15 @@
+local function onattacked(inst, data)
+    if inst.components.sleeper ~= nil then
+        inst.components.sleeper:WakeUp()
+    end
+end
+
+local function onnewcombattarget(inst, data)
+    if data.target ~= nil and inst.components.sleeper ~= nil then
+        inst.components.sleeper:StartTesting()
+    end
+end
+
 local Sleeper = Class(function(self, inst)
     self.inst = inst
     inst:AddTag("sleeper")
@@ -14,14 +26,16 @@ local Sleeper = Class(function(self, inst)
     self.hibernate = false
     self.nocturnal = false
     
-    self.inst:ListenForEvent("onignite", function(inst, data) self:WakeUp() end)
-    self.inst:ListenForEvent("attacked", function(inst, data) self:WakeUp() end)
-    self.inst:ListenForEvent("newcombattarget", function(inst, data)
-        if data.target then self:StartTesting() end end)
+    self.inst:ListenForEvent("onignite", onattacked)
+    self.inst:ListenForEvent("attacked", onattacked)
+    self.inst:ListenForEvent("newcombattarget", onnewcombattarget)
 end)
 
 function Sleeper:OnRemoveFromEntity()
     self.inst:RemoveTag("sleeper")
+    self.inst:RemoveEventCallback("onignite", onattacked)
+    self.inst:RemoveEventCallback("attacked", onattacked)
+    self.inst:RemoveEventCallback("newcombattarget", onnewcombattarget)
 end
 
 function Sleeper:SetDefaultTests()
@@ -38,11 +52,11 @@ end
 
 function DefaultSleepTest(inst)
 
-	local near_home_dist = 40
-	local has_home_near = inst.components.homeseeker and 
-					 inst.components.homeseeker.home and 
-					 inst.components.homeseeker.home:IsValid() and
-					 inst:GetDistanceSqToInst(inst.components.homeseeker.home) < near_home_dist*near_home_dist
+    local near_home_dist = 40
+    local has_home_near = inst.components.homeseeker and 
+                     inst.components.homeseeker.home and 
+                     inst.components.homeseeker.home:IsValid() and
+                     inst:GetDistanceSqToInst(inst.components.homeseeker.home) < near_home_dist*near_home_dist
 
     if not inst.components.sleeper.nocturnal then
         return TheWorld.state.isnight
@@ -136,11 +150,11 @@ function Sleeper:SetSleepTest(fn)
 end
 
 function Sleeper:OnEntitySleep()
-	self:StopTesting()
+    self:StopTesting()
 end
 
 function Sleeper:OnEntityWake()
-	self:StartTesting()
+    self:StartTesting()
 end
 
 function Sleeper:SetResistance(resist)
@@ -198,10 +212,8 @@ function Sleeper:AddSleepiness(sleepiness, sleeptime)
         self:GoToSleep(sleeptime)
     elseif self.sleepiness == self.resistance then
         self.inst:DoTaskInTime(self.resistance, function() self:GoToSleep(sleeptime) end )
-    else
-        if not self.wearofftask then
-            self.wearofftask = self.inst:DoPeriodicTask(self.wearofftime, WearOff)
-        end
+    elseif self.wearofftask == nil then
+        self.wearofftask = self.inst:DoPeriodicTask(self.wearofftime, WearOff)
     end
 end
 

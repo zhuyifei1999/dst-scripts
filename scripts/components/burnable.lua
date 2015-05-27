@@ -212,11 +212,7 @@ local function OnKilled(inst)
 end
 
 function Burnable:Ignite(immediate, source)
-
     if not (self.burning or self.inst:HasTag("fireimmune")) then
-        --V2C: #DELETEME temp log for crash debugging
-        local wasvalid = self.inst:IsValid()
-        --
         self:StopSmoldering()
 
         self.burning = true
@@ -244,12 +240,6 @@ function Burnable:Ignite(immediate, source)
         if self.task ~= nil then
             self.task:Cancel()
         end
-        --V2C: #DELETEME temp log for crash debugging
-        if not self.inst:IsValid() then
-            print("*** Ignite ("..tostring(wasvalid).."): "..tostring(self.inst))
-            print(debugstack())
-        end
-        --
         self.task = self.burntime ~= nil and self.inst:DoTaskInTime(self.burntime, DoneBurning, self) or nil
     end
 end

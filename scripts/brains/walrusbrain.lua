@@ -31,84 +31,83 @@ local START_FACE_DIST = MAX_FOLLOW_DIST
 local KEEP_FACE_DIST = MAX_FOLLOW_DIST
 
 local function GetFaceTargetFn(inst)
-    return GetClosestInstWithTag("player", inst, START_FACE_DIST)
+    local target = FindClosestPlayerToInst(inst, START_FACE_DIST, true)
+    return target ~= nil and not target:HasTag("notarget") and target or nil
 end
 
 local function KeepFaceTargetFn(inst, target)
-    return inst:IsNear(target, KEEP_FACE_DIST)
+    return not target:HasTag("notarget") and inst:IsNear(target, KEEP_FACE_DIST)
 end
 
 local function GetLeader(inst)
-    return inst.components.follower and inst.components.follower.leader
+    return inst.components.follower ~= nil and inst.components.follower.leader or nil
 end
 
 local function GetNoLeaderFollowTarget(inst)
-    if GetLeader(inst) then
-        return nil
-    end
-    return GetClosestInstWithTag("player", inst, MAX_PLAYER_STALK_DISTANCE)
+    return GetLeader(inst) == nil
+        and FindClosestPlayerToInst(inst, MAX_PLAYER_STALK_DISTANCE, true)
 end
 
 local function GetHome(inst)
-    return inst.components.homeseeker and inst.components.homeseeker.home
+    return inst.components.homeseeker ~= nil and inst.components.homeseeker.home or nil
 end
 
 local function ShouldRunAway(guy)
-    return not guy:HasTag("walrus") and not guy:HasTag("hound") and (guy:HasTag("character") or guy:HasTag("monster")) and not guy:HasTag("notarget")
+    return not (guy:HasTag("walrus") or
+                guy:HasTag("hound") or
+                guy:HasTag("notarget"))
+        and (guy:HasTag("character") or
+            guy:HasTag("monster"))
 end
 
 local function EatFoodAction(inst)
-    local target = nil
-
-    if not target then
-        target = FindEntity(inst, SEE_FOOD_DIST, function(item) return inst.components.eater:CanEat(item) end)
-        if target then
-            --check for scary things near the food
-            local predator = GetClosestInstWithTag("character", target, RUN_START_DIST)
-            if predator then target = nil end
-        end
+    local target = FindEntity(inst, SEE_FOOD_DIST, nil, { "edible_MEAT" })
+    --check for scary things near the food
+    if target ~= nil and GetClosestInstWithTag("character", target, RUN_START_DIST) ~= nil then
+        target = nil
     end
-    if target then
+    if target ~= nil then
         local act = BufferedAction(inst, target, ACTIONS.EAT)
-        act.validfn = function() return not (target.components.inventoryitem and target.components.inventoryitem.owner and target.components.inventoryitem.owner ~= inst) end
+        act.validfn = function() return target.components.inventoryitem == nil or target.components.inventoryitem.owner == nil or target.components.inventoryitem.owner == inst end
         return act
     end
 end
 
 local function ShouldGoHomeAtNight(inst)
-    if TheWorld.state.isnight and not GetLeader(inst) and GetHome(inst) and not inst.components.combat.target then
-        return true
-    end
+    return TheWorld.state.isnight
+        and GetLeader(inst) == nil
+        and GetHome(inst) ~= nil
+        and inst.components.combat.target == nil
 end
 
 local function ShouldGoHomeScared(inst)
-    if inst:HasTag("taunt_attack") and not (GetLeader(inst) and GetLeader(inst):IsValid()) and inst.components.leader:CountFollowers() == 0 then
-        return true
+    if not inst:HasTag("taunt_attack") or inst.components.leader:CountFollowers() ~= 0 then
+        return false
     end
+    local leader = GetLeader(inst)
+    return leader == nil or not leader:IsValid()
 end
 
 local function GoHomeAction(inst)
-    if GetHome(inst) and GetHome(inst):IsValid() then
-        return BufferedAction(inst, inst.components.homeseeker.home, ACTIONS.GOHOME, nil, inst.components.homeseeker:GetHomePos())
-    end
+    local home = GetHome(inst)
+    return home ~= nil
+        and home:IsValid()
+        and BufferedAction(inst, home, ACTIONS.GOHOME, nil, home:GetPosition())
+        or nil
 end
 
 local function GetHomeLocation(inst)
-    return GetHome(inst) and inst.components.homeseeker:GetHomePos()
+    local home = GetHome(inst)
+    return home ~= nil and home:GetPosition() or nil
 end
 
 local function GetNoLeaderLeashPos(inst)
-    if GetLeader(inst) then
-        return nil
-    end
-    return GetHomeLocation(inst)
+    return GetLeader(inst) == nil and GetHomeLocation(inst) or nil
 end
-
 
 local function CanAttackNow(inst)
     return inst.components.combat.target == nil or not inst.components.combat:InCooldown()
 end
-
 
 local WalrusBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
@@ -117,8 +116,8 @@ end)
 function WalrusBrain:OnStart()
     local root = PriorityNode(
     {
-        WhileNode( function() return self.inst.components.hauntable and self.inst.components.hauntable.panic end, "PanicHaunted", Panic(self.inst)),
-        WhileNode( function() return self.inst.components.health.takingfiredamage end, "OnFire", Panic(self.inst)),
+        WhileNode(function() return self.inst.components.hauntable ~= nil and self.inst.components.hauntable.panic end, "PanicHaunted", Panic(self.inst)),
+        WhileNode(function() return self.inst.components.health.takingfiredamage end, "OnFire", Panic(self.inst)),
 
         Leash(self.inst, GetNoLeaderLeashPos, LEASH_MAX_DIST, LEASH_RETURN_DIST),
 
@@ -127,10 +126,10 @@ function WalrusBrain:OnStart()
 
         Follow(self.inst, GetLeader, MIN_FOLLOW_LEADER, TARGET_FOLLOW_LEADER, MAX_FOLLOW_LEADER, false),
 
-        WhileNode(function() return CanAttackNow(self.inst) end, "AttackMomentarily", ChaseAndAttack(self.inst, MAX_CHASE_TIME) ),
+        WhileNode(function() return CanAttackNow(self.inst) end, "AttackMomentarily", ChaseAndAttack(self.inst, MAX_CHASE_TIME)),
         Follow(self.inst, function() return self.inst.components.combat.target end, MIN_FOLLOW_DIST, TARGET_FOLLOW_DIST, MAX_FOLLOW_DIST, true),
 
-        WhileNode(function() return ShouldGoHomeAtNight(self.inst) end, "ShouldGoHomeAtNight", DoAction(self.inst, GoHomeAction, "Go Home Night" )),
+        WhileNode(function() return ShouldGoHomeAtNight(self.inst) end, "ShouldGoHomeAtNight", DoAction(self.inst, GoHomeAction, "Go Home Night")),
 
         Follow(self.inst, GetNoLeaderFollowTarget, MIN_FOLLOW_DIST, TARGET_FOLLOW_DIST, MAX_FOLLOW_DIST, false),
 
@@ -141,7 +140,7 @@ function WalrusBrain:OnStart()
 
         Wander(self.inst, GetHomeLocation, MAX_WANDER_DIST),
     }, .25)
-    
+
     self.bt = BT(self.inst, root)
 end
 
