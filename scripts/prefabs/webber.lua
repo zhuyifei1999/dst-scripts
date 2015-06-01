@@ -21,8 +21,6 @@ local start_inv =
 }
 
 local function common_postinit(inst)
-    inst.talker_path_override = "dontstarve_DLC001/characters/"
-
     inst:AddTag("spiderwhisperer")
     inst:AddTag("monster")
     inst:AddTag(UPGRADETYPES.SPIDER.."_upgradeuser")
@@ -52,6 +50,8 @@ local function OnGrowLongBeard(inst)
 end
 
 local function master_postinit(inst)
+    inst.talker_path_override = "dontstarve_DLC001/characters/"
+
     inst.components.eater.strongstomach = true
 
     inst.components.health:SetMaxHealth(TUNING.WEBBER_HEALTH)

@@ -399,7 +399,7 @@ function PlayerController:DoControllerActionButton()
             self.placer.components.placer.can_build and
             self.inst.replica.builder ~= nil and
             not self.inst.replica.builder:IsBusy() then
-            self.inst.replica.builder:MakeRecipeAtPoint(self.placer_recipe, self.placer:GetPosition())
+            self.inst.replica.builder:MakeRecipeAtPoint(self.placer_recipe, self.placer:GetPosition(), self.placer:GetRotation())
             self:CancelPlacement()
         end
         return
@@ -1164,7 +1164,7 @@ function PlayerController:DoActionButton()
         self.inst.replica.builder ~= nil and
         not self.inst.replica.builder:IsBusy() then
         --do the placement
-        self.inst.replica.builder:MakeRecipeAtPoint(self.placer_recipe, self.placer:GetPosition())
+        self.inst.replica.builder:MakeRecipeAtPoint(self.placer_recipe, self.placer:GetPosition(), self.placer:GetRotation())
     end
 
     --Still need to let the server know our action button is down
@@ -2262,7 +2262,7 @@ function PlayerController:OnLeftClick(down)
         if self.placer.components.placer.can_build and
             self.inst.replica.builder ~= nil and
             not self.inst.replica.builder:IsBusy() then
-            self.inst.replica.builder:MakeRecipeAtPoint(self.placer_recipe, TheInput:GetWorldPosition())
+            self.inst.replica.builder:MakeRecipeAtPoint(self.placer_recipe, TheInput:GetWorldPosition(), self.placer:GetRotation())
             self:CancelPlacement()
         end
         return
@@ -2598,15 +2598,15 @@ function PlayerController:RemoteMakeRecipeFromMenu(recipe)
     end
 end
 
-function PlayerController:RemoteMakeRecipeAtPoint(recipe, pt)
+function PlayerController:RemoteMakeRecipeAtPoint(recipe, pt, rot)
     if not self.ismastersim then
         if self.locomotor == nil then
-            SendRPCToServer(RPC.MakeRecipeAtPoint, recipe.rpc_id, pt.x, pt.z)
+            SendRPCToServer(RPC.MakeRecipeAtPoint, recipe.rpc_id, pt.x, pt.z, rot)
         elseif self:CanLocomote() then
             self.locomotor:Stop()
-            local buffaction = BufferedAction(self.inst, nil, ACTIONS.BUILD, nil, pt, recipe.name, 1)
+            local buffaction = BufferedAction(self.inst, nil, ACTIONS.BUILD, nil, pt, recipe.name, 1, nil, rot)
             buffaction.preview_cb = function()
-                SendRPCToServer(RPC.MakeRecipeAtPoint, recipe.rpc_id, pt.x, pt.z)
+                SendRPCToServer(RPC.MakeRecipeAtPoint, recipe.rpc_id, pt.x, pt.z, rot)
             end
             self.locomotor:PreviewAction(buffaction, true)
         end

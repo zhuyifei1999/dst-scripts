@@ -117,6 +117,7 @@ ACTIONS =
     FAN = Action(0, false, true),
     TOSS = Action(0, false, true, 8),
     NUZZLE = Action(),
+    WRITE = Action(),
 }
 
 ACTION_IDS = {}
@@ -790,7 +791,7 @@ end
 
 ACTIONS.BUILD.fn = function(act)
     if act.doer.components.builder then
-	    if act.doer.components.builder:DoBuild(act.recipe, act.pos) then
+	    if act.doer.components.builder:DoBuild(act.recipe, act.pos, act.rotation) then
 	        return true
 	    end
 	end
@@ -1244,6 +1245,19 @@ ACTIONS.NUZZLE.fn = function(act)
     end
 end
 
+ACTIONS.WRITE.fn = function(act)
+    if act.doer ~= nil and
+        act.target ~= nil and
+        act.target.components.writeable ~= nil and
+        not act.target.components.writeable:IsWritten() then
+
+        if act.target.components.writeable:IsBeingWritten() then
+            return false, "INUSE"
+        end
+        act.target.components.writeable:BeginWriting(act.doer)
+        return true
+    end
+end
 
 --[[ACTIONS.OPEN_SHOP.fn = function(act)
     if act.target.components.shop then

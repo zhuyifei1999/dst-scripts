@@ -3,7 +3,6 @@ local AnimButton = require "widgets/animbutton"
 local ImageButton = require "widgets/imagebutton"
 local TextButton = require "widgets/textbutton"
 local Button = require "widgets/button"
-local InputDialogScreen = require "screens/inputdialog"
 local ServerAdminScreen = require "screens/serveradminscreen"
 
 local Text = require "widgets/text"
@@ -792,6 +791,7 @@ function ServerCreationScreen:MakeDetailPanel(left_col, right_col)
     self.server_name.textbox_bg:ScaleToSize(edit_width - w + space_between, label_height )
     self.server_name.textbox_bg:SetPosition( edit_width - 240, 0, 0)
     self.server_name.textbox = self.server_name.label:AddChild(TextEdit( BODYTEXTFONT, font_size*textbox_font_ratio, TheNet:GetDefaultServerName() ) )
+    self.server_name.textbox:SetForceEdit(true)
     self.server_name.textbox:SetPosition(edit_width - 225 - space_between/2-5, 0, 0)
     self.server_name.textbox:SetRegionSize( edit_width - w - space_between-10, label_height )
     self.server_name.textbox:SetHAlign(ANCHOR_LEFT)
@@ -828,6 +828,7 @@ function ServerCreationScreen:MakeDetailPanel(left_col, right_col)
     self.server_pw.textbox_bg:ScaleToSize(edit_width - w + space_between, label_height )
     self.server_pw.textbox_bg:SetPosition( edit_width - 240, 0, 0)
     self.server_pw.textbox = self.server_pw.label:AddChild(TextEdit( BODYTEXTFONT, font_size*textbox_font_ratio, TheNet:GetDefaultServerName() ) )
+    self.server_pw.textbox:SetForceEdit(true)
     self.server_pw.textbox:SetPosition(edit_width - 225 - space_between/2-5, 0, 0)
     self.server_pw.textbox:SetRegionSize( edit_width - w - space_between-10, label_height )
     self.server_pw.textbox:SetHAlign(ANCHOR_LEFT)
@@ -866,6 +867,7 @@ function ServerCreationScreen:MakeDetailPanel(left_col, right_col)
     self.server_desc.textbox_bg:ScaleToSize(edit_width - w + space_between, label_height )
     self.server_desc.textbox_bg:SetPosition( edit_width - 240, 0, 0)
     self.server_desc.textbox = self.server_desc.label:AddChild(TextEdit( BODYTEXTFONT, font_size*textbox_font_ratio, TheNet:GetDefaultServerName() ) )
+    self.server_desc.textbox:SetForceEdit(true)
     self.server_desc.textbox:SetPosition(edit_width - 225 - space_between/2-5, 0, 0)
     self.server_desc.textbox:SetRegionSize( edit_width - w - space_between-10, label_height )
     self.server_desc.textbox:SetHAlign(ANCHOR_LEFT)

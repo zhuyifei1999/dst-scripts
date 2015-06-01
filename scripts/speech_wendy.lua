@@ -31,6 +31,7 @@ return {
 	ANNOUNCE_QUAKE = "The ground shakes. Will it swallow me whole?",
 	ANNOUNCE_THORNS = "Ow! Prickly, like me.",
 	ANNOUNCE_TORCH_OUT = "Darkness has returned!",
+    ANNOUNCE_COMPASS_OUT = "It feels the force of the earth no more.",
 	ANNOUNCE_TRAP_WENT_OFF = "Oh, goodness.",
 	ANNOUNCE_WORMHOLE = "I emerge into this world once more.",
 	ANNOUNCE_CANFIX = "\nI think I can fix this!",
@@ -312,9 +313,22 @@ return {
 			GENERIC = "Why do I feel that it is measuring my mortality?",
 			BURNT = "Does that mean my day to die is here?",
 		},
-		HOMESIGN = 
+		HOMESIGN =
 		{
 			GENERIC = "A mark is made, however transient.",
+            UNWRITTEN = "It's blank face shall soon bear a secret.",
+			BURNT = "Transient, indeed.",
+		},
+		ARROWSIGN_POST =
+		{
+			GENERIC = "A mark is made, however transient.",
+            UNWRITTEN = "It's blank face shall soon bear a secret.",
+			BURNT = "Transient, indeed.",
+		},
+		ARROWSIGN_PANEL =
+		{
+			GENERIC = "A mark is made, however transient.",
+            UNWRITTEN = "It's blank face shall soon bear a secret.",
 			BURNT = "Transient, indeed.",
 		},
 		BEEBOX =

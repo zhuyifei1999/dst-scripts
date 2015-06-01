@@ -19,6 +19,7 @@ local REPLICATABLE_COMPONENTS =
     sanity = true,
     sheltered = true,
     stackable = true,
+    writeable = true,
 }
 
 local Replicas = {}

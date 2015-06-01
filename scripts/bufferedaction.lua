@@ -1,5 +1,5 @@
 
-BufferedAction = Class(function(self, doer, target, action, invobject, pos, recipe, distance, forced)
+BufferedAction = Class(function(self, doer, target, action, invobject, pos, recipe, distance, forced, rotation)
     self.doer = doer
     self.target = target
     self.initialtargetowner = target ~= nil and target.components.inventoryitem ~= nil and target.components.inventoryitem.owner or nil
@@ -7,6 +7,7 @@ BufferedAction = Class(function(self, doer, target, action, invobject, pos, reci
     self.invobject = invobject
     self.doerownsobject = doer ~= nil and invobject ~= nil and invobject.replica.inventoryitem ~= nil and invobject.replica.inventoryitem:IsHeldBy(doer)
     self.pos = pos
+    self.rotation = rotation
     self.onsuccess = {}
     self.onfail = {}
     self.recipe = recipe

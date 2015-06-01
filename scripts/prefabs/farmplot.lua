@@ -299,6 +299,8 @@ local function plot(level)
         inst.components.workable:SetWorkLeft(4)
         inst.components.workable:SetOnFinishCallback(onhammered)
 
+        inst:AddComponent("savedrotation")
+
         inst:AddComponent("hauntable")
         inst.components.hauntable.cooldown = TUNING.HAUNT_COOLDOWN_SMALL
         inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
@@ -334,5 +336,5 @@ end
 return --Prefab("common/objects/farmplot",  plot(1), assets, prefabs),
         Prefab("common/objects/slow_farmplot", plot(2), assets, prefabs),
         Prefab("common/objects/fast_farmplot", plot(3), assets, prefabs),
-        MakePlacer("common/slow_farmplot_placer", "farmplot", "farmplot", "full"),
-        MakePlacer("common/fast_farmplot_placer", "farmplot", "farmplot", "full")
+        MakePlacer("common/slow_farmplot_placer", "farmplot", "farmplot", "full", true, nil, nil, nil, 90),
+        MakePlacer("common/fast_farmplot_placer", "farmplot", "farmplot", "full", true, nil, nil, nil, 90)

@@ -280,20 +280,22 @@ function JoinServer( server_listing, optional_password_override )
 			TheFrontEnd:Fade(true, 0)
 			local password_prompt_screen
 			password_prompt_screen = InputDialogScreen( STRINGS.UI.SERVERLISTINGSCREEN.PASSWORDREQUIRED, 
-											{   { 
-													text = STRINGS.UI.SERVERLISTINGSCREEN.OK, 
-													cb = function()
-														start_client( password_prompt_screen:GetActualString() ) 
-														TheFrontEnd:PopScreen()             
-													end
-												},
-												{ 
-													text = STRINGS.UI.SERVERLISTINGSCREEN.CANCEL, 
-													cb = function()
-														TheFrontEnd:PopScreen()                 
-													end
-											}   } 
-										)
+											{
+                                                {
+                                                    text = STRINGS.UI.SERVERLISTINGSCREEN.CANCEL,
+                                                    cb = function()
+                                                        TheFrontEnd:PopScreen()
+                                                    end
+                                                },
+                                                {
+                                                    text = STRINGS.UI.SERVERLISTINGSCREEN.OK,
+                                                    cb = function()
+                                                        start_client( password_prompt_screen:GetActualString() )
+                                                        TheFrontEnd:PopScreen()
+                                                    end
+                                                },
+                                            },
+										true )
 			password_prompt_screen.edit_text.OnTextEntered = function()
 				start_client( password_prompt_screen:GetActualString() ) 
 				TheFrontEnd:PopScreen()
@@ -302,6 +304,7 @@ function JoinServer( server_listing, optional_password_override )
 				password_prompt_screen.edit_text:SetPassword(true)
 			end
 			TheFrontEnd:PushScreen(password_prompt_screen)	
+			password_prompt_screen.edit_text:SetForceEdit(true)
 			password_prompt_screen.edit_text:OnControl(CONTROL_ACCEPT, false)
 		else
 			start_client( optional_password_override or "" )

@@ -49,7 +49,7 @@ local function ShouldGoHome(inst)
     if homePos == nil then
         return false
     end
-    local dist_sq = inst:GetDistanceSqToPoint(homePos:get())
+    local dist_sq = inst:GetDistanceSqToPoint(homePos:Get())
     return dist_sq > GO_HOME_DIST * GO_HOME_DIST
         or (dist_sq > CHASE_GIVEUP_DIST * CHASE_GIVEUP_DIST and
             inst.components.combat.target == nil)

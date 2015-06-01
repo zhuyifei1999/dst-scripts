@@ -7,6 +7,7 @@ local EquipSlot = require "widgets/equipslot"
 local ItemTile = require "widgets/itemtile"
 local Text = require "widgets/text"
 local ThreeSlice = require "widgets/threeslice"
+local HudCompass = require "widgets/hudcompass"
 
 local HUD_ATLAS = "images/hud.xml"
 local W = 68
@@ -41,7 +42,11 @@ local Inv = Class(Widget, function(self, owner)
     }
 
     self.root = self:AddChild(Widget("root"))
-    
+
+    self.hudcompass = self.root:AddChild(HudCompass(owner, true))
+    self.hudcompass:SetScale(1.5, 1.5)
+    self.hudcompass:SetMaster()
+
     self.bg = self.root:AddChild(Image(HUD_ATLAS, "inventory_bg.tex"))
     self.bg:SetScale(1.15,1,1)
     --self.bg = self.root:AddChild(ThreeSlice(HUD_ATLAS, "inventory_corner.tex", "inventory_filler.tex"))
@@ -141,6 +146,7 @@ function Inv:Rebuild()
 
     local inventory = self.owner.replica.inventory
     local overflow = inventory:GetOverflowContainer()
+    local do_integrated_backpack = overflow ~= nil and TheInput:ControllerAttached()
 
     local y = overflow ~= nil and ((W + YSEP) / 2) or 0
     local eslot_order = {}
@@ -162,6 +168,9 @@ function Inv:Rebuild()
             slot:SetTile(ItemTile(item))
         end
 
+        if v.slot == EQUIPSLOTS.HANDS then
+            self.hudcompass:SetPosition(x, do_integrated_backpack and 80 or 40, 0)
+        end
     end    
 
     for k = 1, num_slots do
@@ -187,7 +196,6 @@ function Inv:Rebuild()
         self.backpack = nil
     end
 
-    local do_integrated_backpack = TheInput:ControllerAttached() and overflow ~= nil
     if do_integrated_backpack then
         local num = overflow:GetNumSlots()
 

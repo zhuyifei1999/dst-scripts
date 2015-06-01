@@ -39,9 +39,12 @@ local RecipePopup = Class(Widget, function(self, horizontal)
         self.name = self.contents:AddChild(Text(UIFONT, 42))
 	end
     self.name:SetPosition(320, 142, 0)
+    self.name:SetHAlign(ANCHOR_MIDDLE)
     if JapaneseOnPS4() then
         self.name:SetRegionSize(64*3+20,90)
         self.name:EnableWordWrap(true)
+    else
+        self.name:SetRegionSize(64*3+20,70)
     end
 
     if JapaneseOnPS4() then
@@ -236,7 +239,7 @@ function RecipePopup:Refresh()
             self.button.image:SetTexture(UI_ATLAS, self.button.image_normal)
 
 			self.button:Show()
-			self.button:SetPosition(320, -105, 0)
+			self.button:SetPosition(315, -105, 0)
 			self.button:SetScale(1,1,1)
             
 			self.button:SetText(STRINGS.UI.CRAFTING.PROTOTYPE)
@@ -262,25 +265,28 @@ function RecipePopup:Refresh()
     end
     self.ing = {}
 
-    local center = 330
-    local num = 0
-    for k,v in pairs(recipe.ingredients) do num = num + 1 end
+    local center = 315
+    local num = recipe.ingredients and #recipe.ingredients or 0
     local w = 64
     local div = 10
     
     local offset = center
     if num > 1 then 
-        offset = offset - (w/2 + div)*(num-1)
+        offset = offset - (w/2)*(num-1) - (div/2)*(num-1)
     end
     
+    local numShown = 0
     for k,v in pairs(recipe.ingredients) do
     
         local has, num_found = owner.replica.inventory:Has(v.type, RoundBiasedUp(v.amount * owner.replica.builder:IngredientMod()))
         
+        --#srosen we should add support for this to show health and make the telltale heart do so
         local ing = self.contents:AddChild(IngredientUI(v.atlas, v.type..".tex", v.amount, num_found, has, STRINGS.NAMES[string.upper(v.type)], owner))
+        if num > 1 and numShown > 0 then offset = offset + div/2 end
         ing:SetPosition(Vector3(offset, 80, 0))
-        offset = offset + (w+ div)
+        offset = offset + (w+ (div/2))
         self.ing[k] = ing
+        numShown = numShown + 1
     end
 end
 

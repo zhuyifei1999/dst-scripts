@@ -13,34 +13,50 @@ local STRING_MAX_LENGTH = 254 -- http://tools.ietf.org/html/rfc5321#section-4.5.
 
 local InputDialogString = ""
 
-local InputDialogScreen = Class(Screen, function(self, title, buttons)
+local InputDialogScreen = Class(Screen, function(self, title, buttons, modal, start_editing)
 	Screen._ctor(self, "InputDialogScreen")
+	self.buttons = buttons
 
-	--darken everything behind the dialog
     self.black = self:AddChild(Image("images/global.xml", "square.tex"))
     self.black:SetVRegPoint(ANCHOR_MIDDLE)
     self.black:SetHRegPoint(ANCHOR_MIDDLE)
     self.black:SetVAnchor(ANCHOR_MIDDLE)
     self.black:SetHAnchor(ANCHOR_MIDDLE)
     self.black:SetScaleMode(SCALEMODE_FILLSCREEN)
-	self.black:SetTint(0,0,0,.75)	
-    
-	self.proot = self:AddChild(Widget("ROOT"))
-    self.proot:SetVAnchor(ANCHOR_MIDDLE)
-    self.proot:SetHAnchor(ANCHOR_MIDDLE)
-    self.proot:SetPosition(0,0,0)
+    if modal then
+        --darken everything behind the dialog for modals
+        self.black:SetTint(0,0,0,.75)
+    else
+        -- non-modals are still technically modal, they just cancel if the outside is clicked
+        self.black:SetTint(0,0,0,0)
+        self.black.OnMouseButton = function(wdgt, button, down, x, y)
+            if #self.buttons > 1 and self.buttons[1] then
+                self.buttons[1].cb()
+                print("cancel bg")
+                return true
+            end
+        end
+    end
+        
+    self.proot = self:AddChild(Widget("ROOT"))
     self.proot:SetScaleMode(SCALEMODE_PROPORTIONAL)
+    if modal then
+        self.proot:SetVAnchor(ANCHOR_MIDDLE)
+        self.proot:SetHAnchor(ANCHOR_MIDDLE)
+        self.proot:SetPosition(0,0,0)
+    else
+        self.proot:SetVAnchor(ANCHOR_BOTTOM)
+        self.proot:SetHAnchor(ANCHOR_MIDDLE)
+        self.proot:SetPosition(0,120,0)
+    end
 
 	--throw up the background
     self.bg = self.proot:AddChild(Image("images/fepanels_dst.xml", "small_panel.tex"))
     self.bg:SetVRegPoint(ANCHOR_MIDDLE)
     self.bg:SetHRegPoint(ANCHOR_MIDDLE)
-	self.bg:SetScale(1.2,1.2,1.2)
-	
-	if #buttons >2 then
-		self.bg:SetScale(2,1.2,1.2)
-	end
-	
+    local bg_x = math.max(1.2, 0.45 * #buttons )
+	self.bg:SetScale(bg_x,1.2,1.2)
+
 	--title	
     self.title = self.proot:AddChild(Text(BUTTONFONT, 50))
     self.title:SetPosition(0, 70, 0)
@@ -64,7 +80,6 @@ local InputDialogScreen = Class(Screen, function(self, title, buttons)
 
 	self.menu = self.proot:AddChild(Menu(buttons, spacing, true))
 	self.menu:SetPosition(-(spacing*(#buttons-1))/2, -70, 0) 
-	self.buttons = buttons
 	self.default_focus = self.edit_text
 end)
 
@@ -76,9 +91,12 @@ function InputDialogScreen:GetActualString()
 	return self.edit_text and self.edit_text:GetLineEditString() or ""
 end
 
+function InputDialogScreen:OverrideText(text)
+    self.edit_text:SetString(text)
+end
+
 function InputDialogScreen:SetValidChars(chars)
-	VALID_CHARS = chars
-	self.edit_text:SetCharacterFilter(VALID_CHARS)
+	self.edit_text:SetCharacterFilter(chars)
 end
 
 function InputDialogScreen:SetTitleTextSize(size)
@@ -91,6 +109,7 @@ end
 
 function InputDialogScreen:OnControl(control, down)
 
+
 	if self.edit_text ~= nil then
 		InputDialogString = self.edit_text:GetString()
 	end
@@ -102,9 +121,20 @@ function InputDialogScreen:OnControl(control, down)
        	return true
     end
     
-    if control == CONTROL_CANCEL and not down then    
-        if #self.buttons > 1 and self.buttons[#self.buttons] then
-            self.buttons[#self.buttons].cb()
+    -- gjans: This makes it so that if the text box loses focus and you click
+    -- on the bg, it presses accept. Kind of weird behaviour. I'm guessing
+    -- something like it is needed for controllers, but it's not exaaaactly
+    -- this.
+    --if control == CONTROL_ACCEPT and not down then
+        --if #self.buttons >= 1 and self.buttons[#self.buttons] then
+            --self.buttons[#self.buttons].cb()
+            --return true
+        --end
+    --end
+
+    if control == CONTROL_CANCEL and not down then
+        if #self.buttons > 1 and self.buttons[1] then
+            self.buttons[1].cb()
             return true
         end
     end

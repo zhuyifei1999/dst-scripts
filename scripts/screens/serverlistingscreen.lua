@@ -248,20 +248,22 @@ function ServerListingScreen:Report()
     local guid = self.servers[index] and self.servers[index].guid
     local servname = string.len(self.servers[index].name) > 18 and string.sub(self.servers[index].name,1,18).."..." or self.servers[index].name
     local report_dialog = InputDialogScreen( STRINGS.UI.SERVERLISTINGSCREEN.REPORTREASON.." ("..servname..")", 
-                                        {   { 
+                                        {
+                                            {
+                                                text = STRINGS.UI.SERVERLISTINGSCREEN.CANCEL, 
+                                                cb = function()
+                                                    TheFrontEnd:PopScreen()
+                                                end
+                                            },
+                                            {
                                                 text = STRINGS.UI.SERVERLISTINGSCREEN.OK, 
                                                 cb = function()
                                                     TheNet:ReportListing(guid, InputDialogScreen:GetText())
-                                                    TheFrontEnd:PopScreen()             
+                                                    TheFrontEnd:PopScreen()
                                                 end
                                             },
-                                            { 
-                                                text = STRINGS.UI.SERVERLISTINGSCREEN.CANCEL, 
-                                                cb = function()
-                                                    TheFrontEnd:PopScreen()                 
-                                                end
-                                        }   } 
-                                    )
+                                        },
+                                    true )
     report_dialog.edit_text.OnTextEntered = function()
         TheNet:ReportListing(guid, InputDialogScreen:GetText())
         TheFrontEnd:PopScreen()
@@ -1336,6 +1338,7 @@ function ServerListingScreen:MakeFiltersPanel(filter_data)
     searchbox.bg = searchbox:AddChild( Image("images/textboxes.xml", "textbox_long.tex") )
     searchbox.bg:ScaleToSize( 250 + 30, 50 )
     searchbox.textbox = searchbox:AddChild(TextEdit( BODYTEXTFONT, font_size *.8 ) )
+    searchbox.textbox:SetForceEdit(true)
     searchbox.bg:SetPosition((250 * .5) - 100 + 12, 8, 0)
     searchbox.textbox:SetPosition((250 * .5) - 100 + 15, 8, 0)
     searchbox.textbox:SetRegionSize( 250, 50 )

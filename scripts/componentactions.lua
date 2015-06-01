@@ -180,6 +180,12 @@ local COMPONENT_ACTIONS =
                 table.insert(actions, ACTIONS.CHECKTRAP)
             end
         end,
+
+        writeable = function(inst, doer, actions)
+            if inst:HasTag("writeable") then
+                table.insert(actions, ACTIONS.WRITE)
+            end
+        end,
     },
 
     USEITEM = --args: inst, doer, target, actions, right

@@ -10,11 +10,17 @@ local TextEdit = Class(Text, function(self, font, size, text)
 
     self.inst.entity:AddTextEditWidget()
     self:SetString(text)
+    self.editing = false
     self:SetEditing(false)
     self.validrawkeys = {}
-    self.pass_control_cancel_to_screen = false
+    self.force_edit = false
+    self.pass_controls_to_screen = {}
 
 end)
+
+function TextEdit:SetForceEdit(force)
+    self.force_edit = force
+end
 
 function TextEdit:SetString(str)
 	if self.inst and self.inst.TextEditWidget then
@@ -23,7 +29,9 @@ function TextEdit:SetString(str)
 end
 
 function TextEdit:SetEditing(editing)
-	if editing then
+	if editing and not self.editing then
+        self.editing = true
+
 		self:SetFocus()
 		-- Guarantee that we're highlighted
 		self:DoSelectedImage()
@@ -34,14 +42,24 @@ function TextEdit:SetEditing(editing)
 		if TheInput:ControllerAttached() then
 
 		end
-	else
+
+        if self.force_edit then
+            TheFrontEnd:SetForceProcessTextInput(true, self)
+        end
+	elseif not editing and self.editing then
+        self.editing = false
+
 		if self.focus then
 			self:DoHoverImage()
 		else
 			self:DoIdleImage()
 		end
+
+        if self.force_edit then
+            TheFrontEnd:SetForceProcessTextInput(false, self)
+        end
 	end
-	self.editing = editing
+
 	self.inst.TextWidget:ShowEditCursor(self.editing)
 end
 
@@ -92,6 +110,7 @@ end
 
 function TextEdit:OnRawKey(key, down)
 	if TextEdit._base.OnRawKey(self, key, down) then return true end
+	
 	if self.editing then
 		if down then
 			if key == KEY_ENTER then
@@ -103,9 +122,7 @@ function TextEdit:OnRawKey(key, down)
 					nextWidg = self.nextTextEditWidget()
 				end
 				if nextWidg and (type(nextWidg) == "table" and nextWidg.inst.TextEditWidget) then
-					TheFrontEnd:SetForceProcessTextInput(false)
 					self:SetEditing(false)
-					TheFrontEnd:SetForceProcessTextInput(true, nextWidg)
 					nextWidg:SetEditing(true)
 				end
 				-- self.nextTextEditWidget:OnControl(CONTROL_ACCEPT, false)
@@ -121,37 +138,32 @@ function TextEdit:OnRawKey(key, down)
 	return true --gobble this up, or we will engage debug keys!
 end
 
-function TextEdit:SetPassCancelToScreen(pass)
-	self.pass_control_cancel_to_screen = pass
+function TextEdit:SetPassControlToScreen(control, pass)
+	self.pass_controls_to_screen[control] = pass or nil
 end
 
 function TextEdit:OnControl(control, down)
-	if TextEdit._base.OnControl(self, control, down) then return true end
+    if TextEdit._base.OnControl(self, control, down) then return true end
 
-	--gobble up extra controls
-	if self.editing and (control ~= CONTROL_CANCEL and control ~= CONTROL_OPEN_DEBUG_CONSOLE and control ~= CONTROL_ACCEPT) then
-		return true
-	end
+    --gobble up extra controls
+    if self.editing and (control ~= CONTROL_CANCEL and control ~= CONTROL_OPEN_DEBUG_CONSOLE and control ~= CONTROL_ACCEPT) then
+        return not self.pass_controls_to_screen[control]
+    end
 
-	if self.editing and not down and control == CONTROL_CANCEL then
-		TheFrontEnd:SetForceProcessTextInput(false)
-		self:SetEditing(false)
-		TheInput:EnableDebugToggle(true)
-		if self.pass_control_cancel_to_screen then
-			return false
-		else
-			return true
-		end
-	end
+    if self.editing and not down and control == CONTROL_CANCEL then
+        self:SetEditing(false)
+        TheInput:EnableDebugToggle(true)
+        return not self.pass_controls_to_screen[control]
+    end
 
-	if not down and control == CONTROL_ACCEPT then
-		TheFrontEnd:SetForceProcessTextInput(true, self)
-		self:SetEditing(true)
-		return true
-	end
+    if not down and control == CONTROL_ACCEPT then
+        self:SetEditing(true)
+        return not self.pass_controls_to_screen[control]
+    end
 end
 
 function TextEdit:OnDestroy()
+    Self:SetEditing(false)
 	TheInput:EnableDebugToggle(true)
 end
 
@@ -242,13 +254,8 @@ function TextEdit:SetForceUpperCase(to)
 	self.inst.TextEditWidget:SetForceUpperCase(to)
 end
 
-function TextEdit:GetHelpText()
-	local controller_id = TheInput:GetControllerID()
-	local t = {}
-	if not self.editing then
-    	table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT, false, false ) .. " " .. STRINGS.UI.HELP.CHANGE_TEXT)	
-    end
-	return table.concat(t, "  ")
+function TextEdit:EnableScrollEditWindow(enable)
+    self.inst.TextEditWidget:EnableScrollEditWindow(enable)
 end
 
 return TextEdit

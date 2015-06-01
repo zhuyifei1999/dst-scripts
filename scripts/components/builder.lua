@@ -245,12 +245,12 @@ function Builder:RemoveIngredients(ingredients)
 function Builder:OnSetProfile(profile)
 end
 
-function Builder:MakeRecipe(recipe, pt, onsuccess)
+function Builder:MakeRecipe(recipe, pt, rot, onsuccess)
     if recipe ~= nil then
         self.inst:PushEvent("makerecipe", { recipe = recipe })
         if self:IsBuildBuffered(recipe.name) or self:CanBuild(recipe.name) then
             self.inst.components.locomotor:Stop()
-            local buffaction = BufferedAction(self.inst, nil, ACTIONS.BUILD, nil, pt or self.inst:GetPosition(), recipe.name, 1)
+            local buffaction = BufferedAction(self.inst, nil, ACTIONS.BUILD, nil, pt or self.inst:GetPosition(), recipe.name, 1, nil, rot)
             if onsuccess ~= nil then
                 buffaction:AddSuccessAction(onsuccess)
             end
@@ -261,7 +261,7 @@ function Builder:MakeRecipe(recipe, pt, onsuccess)
     return false
 end
 
-function Builder:DoBuild(recname, pt)
+function Builder:DoBuild(recname, pt, rotation)
     local recipe = GetValidRecipe(recname)
     if recipe ~= nil and (self:IsBuildBuffered(recname) or self:CanBuild(recname)) then
         local wetlevel = self.buffered_builds[recname]
@@ -326,6 +326,7 @@ function Builder:DoBuild(recname, pt)
                 end
             else
                 prod.Transform:SetPosition(pt:Get())
+                prod.Transform:SetRotation(rotation)
                 self.inst:PushEvent("buildstructure", { item = prod, recipe = recipe })
                 prod:PushEvent("onbuilt", { builder = self.inst })
                 ProfileStatsAdd("build_"..prod.prefab)
@@ -390,7 +391,7 @@ function Builder:MakeRecipeFromMenu(recipe)
         elseif CanPrototypeRecipe(recipe.level, self.accessible_tech_trees) and
             self:CanLearn(recipe.name) and
             self:CanBuild(recipe.name) then
-            self:MakeRecipe(recipe, nil, function()
+            self:MakeRecipe(recipe, nil, nil, function()
                 self:ActivateCurrentResearchMachine()
                 self:UnlockRecipe(recipe.name)
             end)
@@ -398,12 +399,12 @@ function Builder:MakeRecipeFromMenu(recipe)
     end
 end
 
-function Builder:MakeRecipeAtPoint(recipe, pt)
+function Builder:MakeRecipeAtPoint(recipe, pt, rot)
     if recipe.placer ~= nil and
         self:KnowsRecipe(recipe.name) and
         self:IsBuildBuffered(recipe.name) and
         TheWorld.Map:CanDeployRecipeAtPoint(pt, recipe) then
-        self:MakeRecipe(recipe, pt)
+        self:MakeRecipe(recipe, pt, rot)
     end
 end
 

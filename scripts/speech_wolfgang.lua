@@ -54,6 +54,7 @@ return {
 	ANNOUNCE_INV_FULL = "My mighty arms can carry no more.",
 	ANNOUNCE_PECKED = "What I do to deserve this?",
 	ANNOUNCE_TORCH_OUT = "Oh no! The light is gone!",
+    ANNOUNCE_COMPASS_OUT = "Little needle broke off!",
 	ANNOUNCE_WORMHOLE = "It makes me feel alive!",
 	ANNOUNCE_TRAP_WENT_OFF = "Ack! Do not surprise Wolfgang!",
     ANNOUNCE_QUAKE = "Ground is shake. Wolfgang hate shaking ground.",
@@ -334,9 +335,22 @@ return {
 			GENERIC = "Cold go up! Red go down!",
 			BURNT = "Flames go up! Thermometer go down!",
 		},
-		HOMESIGN = 
+		HOMESIGN =
 		{
 			GENERIC = "Is no time for reading signs!",
+            UNWRITTEN = "Practice my letters!",
+			BURNT = "Sign can't be read.",
+		},
+		ARROWSIGN_POST =
+		{
+			GENERIC = "Is no time for reading signs!",
+            UNWRITTEN = "Practice my letters!",
+			BURNT = "Sign can't be read.",
+		},
+		ARROWSIGN_PANEL =
+		{
+			GENERIC = "Is no time for reading signs!",
+            UNWRITTEN = "Practice my letters!",
 			BURNT = "Sign can't be read.",
 		},
 		BEEBOX =

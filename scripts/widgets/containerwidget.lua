@@ -49,6 +49,8 @@ function ContainerWidget:Open(container, doer)
 
         if not TheInput:ControllerAttached() then
             self.button = self:AddChild(ImageButton("images/ui.xml", "button_small.tex", "button_small_over.tex", "button_small_disabled.tex"))
+            self.button.image:SetScale(1.07)
+            self.button.text:SetPosition(2,-2)
             self.button:SetPosition(widget.buttoninfo.position)
             self.button:SetText(widget.buttoninfo.text)
             if widget.buttoninfo.fn ~= nil then
@@ -70,7 +72,7 @@ function ContainerWidget:Open(container, doer)
                 end)
             end
             self.button:SetFont(BUTTONFONT)
-            self.button:SetTextSize(35)
+            self.button:SetTextSize(33)
             self.button.text:SetVAlign(ANCHOR_MIDDLE)
             self.button.text:SetColour(0, 0, 0, 1)
 
