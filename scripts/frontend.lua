@@ -259,58 +259,53 @@ end
 
 function FrontEnd:OnControl(control, down)
 --	print ("FE:Oncontrol", control, down)
-	if self:GetFadeLevel() > 0 then
-		return true
-	end
-	--handle focus moves
+    if self:GetFadeLevel() > 0 then
+        return true
+    --handle focus moves
 
-	if #self.screenstack > 0 then
-		local screen = self.screenstack[#self.screenstack]
-		if control == CONTROL_PRIMARY then control = CONTROL_ACCEPT end  --map this one for buttons
-		if screen:OnControl(control, down) then return true end
-	end
+    --map CONTROL_PRIMARY to CONTROL_ACCEPT for buttons
+    elseif #self.screenstack > 0 and self.screenstack[#self.screenstack]:OnControl(control == CONTROL_PRIMARY and CONTROL_ACCEPT or control, down) then
+        return true
 
-	if CONSOLE_ENABLED then
-		if not down and control == CONTROL_OPEN_DEBUG_CONSOLE then
-			self:PushScreen(ConsoleScreen())
-			return true
-		end
-	end
+    elseif CONSOLE_ENABLED and not down and control == CONTROL_OPEN_DEBUG_CONSOLE then
+        self:PushScreen(ConsoleScreen())
+        return true
 
-	if DEBUG_MENU_ENABLED then
-		if not down and control == CONTROL_OPEN_DEBUG_MENU then
-			self:PushScreen(DebugMenuScreen())
-			return true
-		end
-	end
+    elseif DEBUG_MENU_ENABLED and not down and control == CONTROL_OPEN_DEBUG_MENU then
+        self:PushScreen(DebugMenuScreen())
+        return true
 
-	if SHOWLOG_ENABLED then
-		if not down and control == CONTROL_TOGGLE_LOG then
-			if self.consoletext.shown then 
-				self:HideConsoleLog()
-			else
-				self:ShowConsoleLog()
-			end
-			return true
-		end
-	end
+    elseif SHOWLOG_ENABLED and not down and control == CONTROL_TOGGLE_LOG then
+        if self.consoletext.shown then 
+            self:HideConsoleLog()
+        else
+            self:ShowConsoleLog()
+        end
+        return true
 
-	if DEBUGRENDER_ENABLED then
-		if not down and control == CONTROL_TOGGLE_DEBUGRENDER then
-					if TheInput:IsKeyDown(KEY_CTRL) then
-						TheSim:SetDebugPhysicsRenderEnabled(not TheSim:GetDebugPhysicsRenderEnabled())
-					else
-						TheSim:SetDebugRenderEnabled(not TheSim:GetDebugRenderEnabled())
-					end
-			return true
-		end
-	end
+    elseif DEBUGRENDER_ENABLED and not down and control == CONTROL_TOGGLE_DEBUGRENDER then
+        --V2C: Special logic when text edit has focus, and assuming
+        --     CONTROL_TOGGLE_DEBUGRENDER will always be BACKSPACE.
 
+        --NOTE: Even though it looks like we're traversing the
+        --      screen hierarchy again, it's still better than
+        --      embedding the logic in Widget:OnControl, since
+        --      it only triggers here on a backspace keyup.
+
+        if #self.screenstack > 0 and self.screenstack[#self.screenstack]:IsEditing() then
+            --Ignore since backspace is used by text edit
+        elseif TheInput:IsKeyDown(KEY_CTRL) then
+            TheSim:SetDebugPhysicsRenderEnabled(not TheSim:GetDebugPhysicsRenderEnabled())
+        else
+            TheSim:SetDebugRenderEnabled(not TheSim:GetDebugRenderEnabled())
+        end
+        return true
 
 --[[
-		elseif control == CONTROL_CANCEL then
-			return screen:OnCancel(down)
+    elseif control == CONTROL_CANCEL then
+        return screen:OnCancel(down)
 --]]
+    end
 end
 
 function FrontEnd:ShowTitle(text,subtext)

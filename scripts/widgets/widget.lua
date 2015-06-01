@@ -118,7 +118,22 @@ function Widget:OnControl(control, down)
     return false
 end
 
+function Widget:IsEditing()
+    --recursive check to see if anything has text edit focus
+    if self.editing then
+        return true
+    elseif not self.focus then
+        return false
+    end
 
+    for k, v in pairs(self.children) do
+        if v:IsEditing() then
+            return true
+        end
+    end
+
+    return false
+end
 
 function Widget:ScaleTo(from, to, time, fn)
     
