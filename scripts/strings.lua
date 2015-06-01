@@ -227,6 +227,7 @@ STRINGS=
         HAUNT = "Haunt",
         UNPIN = "Unstick",
         TOSS = "Toss",
+        WRITE = "Write on",
     },
 
     LMB              = "\255", --"ÿ",
@@ -483,6 +484,8 @@ STRINGS=
         DEPLETED_GRASS = "Grass",
         GRAVESTONE = "Headstone",
         HOMESIGN = "Sign",
+        ARROWSIGN_POST = "Directional Sign",
+        ARROWSIGN_PANEL = "Directional Sign",
         MAXWELL = "Maxwell",
         MOUND = "Grave",
         PIGHOUSE = "Pig House",
@@ -1100,6 +1103,7 @@ STRINGS=
         PURPLEGEM = "By your colours combined!",
         HAMBAT = "It takes food to make food.",
         HOMESIGN = "Make your mark upon the world.",
+        ARROWSIGN_POST = "Point fingers at the world. Or signs.",
         WALL_WOOD_ITEM = "Wooden wall segments.",
         WALL_STONE_ITEM = "Stone wall segments.",
         WALL_HAY_ITEM = "Hay wall segments. Not very sturdy.",
@@ -1910,7 +1914,7 @@ STRINGS.UI =
         NEWGAME = "Start a new game!",
         NEWGO = "Lets Go!",
         ASKQUIT = "Do you really want to quit?",
-        ASKQUITDESC = "Maxwell will miss you!",
+        ASKQUITDESC = "Your friends will miss you!",
 
         FRESHBUILD = "Fresh Build!",
         LASTBUILDDAYS = "Last build %d days ago",
@@ -2570,6 +2574,7 @@ STRINGS.UI =
         SERVERDAY = "World: Day",
         SERVERDAY_NEW = "New World",
         SELECT_SLOT = "Select Slot",
+        HOST_GAME = "Host Game",
     },
     
     
@@ -3487,5 +3492,127 @@ STRINGS.MODS =
 	VERSIONING =
 	{
 		OUT_OF_DATE = "The server mod \"%s\" is out of date. The server needs to get the latest version of the mod for users to be able to join.",
+	},
+}
+
+
+STRINGS.SIGNS = 
+{
+	QUANTIFIERS = 
+	{
+		"Really",
+		"Very",
+		"Quite",
+		"Very Very",
+		"Extremely",
+		"Moderately",
+		"Minimally",
+		"Sort of",
+		"Totally",
+	},
+
+	ADJECTIVES = 
+	{
+		"Sunny",
+		"Danker",
+		"Dark",
+		"Morose",
+		"Morbid",
+		"Awful",
+		"Horrible",
+		"Perfectly Normal",
+		"Ordinary",
+		"Perilous",
+		"Dangerous",
+		"Hazardous",
+		"Creepy",
+		"Empty",
+		"Lonely",
+		"Wet",
+		"Dry",
+		"Huge",
+		"Small",
+		"Little",
+		"Picturesque",
+		"Hideous",
+		"Dreary",
+		"Repulsive",
+		"Boring",
+		"Good",
+		"Striking",
+		"Uninteresting",
+		"Fascinating",
+		"Magnificent",
+		"Souless",
+		"Echoing",
+		"Sleepy",
+		"Smelly",
+		"Mediocre",
+		"Awesome",
+		"Brilliant",
+		"Excellent",
+	},
+
+	-- Indices match ground types in constants.lua
+	NOUNS = 
+	{
+		[2] = {"Road", "Path"},
+		[3] = {"Crag", "Area", "Region", "Rocky Place"},
+		[4] = {"Patch", "Turf", "Area", "Tract"},
+		[5] = {"Savannah", "Grassland", "Prairie"},
+		[6] = {"Field", "Pasture", "Meadow", "Garden"},
+		[7] = {"Forest", "Woods", "Thicket", "Grove"},
+		[8] = {"Marsh", "Swamp", "Bog", "Fen"},
+		[9] = {"Web", "Cobweb"},
+		[10] = {"Place", "Corner", "Spot", "Base", "Hidey-Hole"},
+		[11] = {"Place", "Corner", "Spot", "Base", "Hidey-Hole", "Carpet", "Rug"},
+		[12] = {"Place", "Corner", "Spot", "Base", "Checkerboard", "Zone"},
+
+		[13] = {"Cave"},
+		[14] = {"Cave"},
+		[15] = {"Cave"},
+	    [16] = {"Cave"},
+	    [17] = {"Cave"},
+	    [18] = {"Cave"},
+	    [19] = {"Cave"},
+	    [20] = {"Cave"},
+	    [21] = {"Cave"},
+	    [22] = {"Cave"},
+	    [23] = {"Cave"},
+		[24] = {"Cave"},
+		[25] = {"Cave"},
+
+		[30] = {"Forest", "Woods", "Thicket", "Grove"},
+
+		[31] = {"Desert", "Badlands", "Flats"},
+
+		[32] = {"Place", "Corner", "Spot", "Base", "Hidey-Hole", "Zone", "Scale"},
+	},
+
+	DEFAULT_NOUNS = 
+	{
+		"Spot", 
+		"Area", 
+		"Region",
+		"Point",
+		"Locality",
+		"Site"
+	},
+
+	ADDITIONS = 
+	{
+		"of Perilousness",
+		"of Horribleness",
+		"of Loneliness",
+		"of Sorrow",
+		"of Danger",
+		"of Hunger",
+		"of Shadows",
+		"infested with Monsters",
+		"crawling with Horrors",
+		"of Happiness",
+		"of Dreariness",
+		"of Death",
+		"full of Bees",
 	},
 }

@@ -250,9 +250,22 @@ return
             GENERIC = "Measure before you act.",
             BURNT = "I can't read any measurements from that husk.",
         },
-        HOMESIGN = 
+        HOMESIGN =
         {
             GENERIC = "A navigational aid.",
+            UNWRITTEN = "A chance to give direction.",
+            BURNT = "Not much of an aid now.",
+        },
+        ARROWSIGN_POST =
+        {
+            GENERIC = "A navigational aid.",
+            UNWRITTEN = "A chance to give direction.",
+            BURNT = "Not much of an aid now.",
+        },
+        ARROWSIGN_PANEL =
+        {
+            GENERIC = "A navigational aid.",
+            UNWRITTEN = "A chance to give direction.",
             BURNT = "Not much of an aid now.",
         },
         BEEBOX =
@@ -1113,6 +1126,7 @@ return
     ANNOUNCE_HOT = "The ambient temperature is high.",
     ANNOUNCE_HUNGRY = "Librarian needs food.",
     ANNOUNCE_TORCH_OUT = "I need another light.",
+    ANNOUNCE_COMPASS_OUT = "My compass has become demagnetized.",
     ANNOUNCE_DUSK = "Night will be here soon.",
 
     ANNOUNCE_CHARLIE_ATTACK = "OUCH! Something bit me!",

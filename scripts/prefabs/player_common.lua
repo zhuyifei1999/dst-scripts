@@ -614,6 +614,7 @@ local function OnPlayerDeath(inst, data)
 
     inst.components.age:PauseAging()
     inst.components.inventory:Close()
+    inst:PushEvent("ms_closepopups")
 
     inst.deathcause = data ~= nil and data.cause or "unknown"
     inst.deathpkname =
@@ -685,6 +686,7 @@ local function DoActualRez(inst, source)
             inst.sg:GoToState("amulet_rebirth")
         elseif source.prefab == "resurrectionstone" then
             inst.components.inventory:Hide()
+            inst:PushEvent("ms_closepopups")
             inst.sg:GoToState("wakeup")
         elseif source.prefab == "resurrectionstatue" then
             inst.sg:GoToState("rebirth")

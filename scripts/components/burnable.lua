@@ -136,11 +136,6 @@ function Burnable:OnRemoveEntity()
 end
 
 local function SmolderUpdate(inst, self)
-    if TheWorld.state.israining then
-        self:StopSmoldering()
-        return
-    end
-
     local x, y, z = inst.Transform:GetWorldPosition()
     -- this radius should be larger than the propogation, so that once
     -- there's a lot of blazes in an area, fire starts spreading quickly
@@ -151,17 +146,37 @@ local function SmolderUpdate(inst, self)
             nearbyheat = nearbyheat + v.components.propagator.currentheat
         end
     end
+
+    if TheWorld.state.israining then
+        -- smolder more slowly, or even unsmolder, if we're being rained on.
+        if nearbyheat > 0 then
+            local rainmod = 1.8 * TheWorld.state.precipitationrate
+            self.smoldertimeremaining = self.smoldertimeremaining + SMOLDER_TICK_TIME * rainmod
+        else
+            -- Un-smolder at a fixed rate when there's no more heat, otherwise it takes foreeeever during gentle rain.
+            self.smoldertimeremaining = self.smoldertimeremaining + SMOLDER_TICK_TIME * 3.0
+        end
+    end
+
     -- smolder about twice as fast if there's lots of heat nearby
-    local smoldermod = math.clamp(Remap(nearbyheat, 20, 90, 1, 2.2), 1, 2.2)
-    self.smoldertimeremaining = self.smoldertimeremaining - SMOLDER_TICK_TIME * smoldermod
+    local heatmod = math.clamp(Remap(nearbyheat, 20, 90, 1, 2.2), 1, 2.2)
+
+    print ("heatmod", heatmod)
+    self.smoldertimeremaining = self.smoldertimeremaining - SMOLDER_TICK_TIME * heatmod
     if self.smoldertimeremaining <= 0 then
         self:StopSmoldering() --JUST in case ignite fails...
         self:Ignite()
+    elseif self.inst.components.propagator
+        and self.inst.components.propagator.flashpoint
+        and self.smoldertimeremaining > self.inst.components.propagator.flashpoint * 1.1 -- a small buffer to prevent flickering
+        then
+        -- extinguished by rain
+        self:StopSmoldering()
     end
 end
 
 function Burnable:StartWildfire()
-    if not (self.burning or self.smoldering or TheWorld.state.israining or self.inst:HasTag("fireimmune")) then
+    if not (self.burning or self.smoldering or self.inst:HasTag("fireimmune")) then
         self.smoldering = true
         self.smoke = SpawnPrefab("smoke_plant")
         if self.smoke ~= nil then

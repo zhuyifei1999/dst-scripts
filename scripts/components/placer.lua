@@ -47,6 +47,11 @@ function Placer:OnUpdate(dt)
 		self.inst.Transform:SetPosition(1,0,0)
 	end
 
+    if self.fixedcameraoffset then
+        local rot = TheCamera:GetHeading()
+        self.inst.Transform:SetRotation(-rot+self.fixedcameraoffset) -- rotate against the camera
+    end
+
 	self.can_build = self.testfn == nil or self.testfn(self.inst:GetPosition())
 
 	--self.inst.AnimState:SetMultColour(0,0,0,.5)

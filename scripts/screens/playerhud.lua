@@ -1,5 +1,6 @@
 local Screen = require "widgets/screen"
 local ContainerWidget = require("widgets/containerwidget")
+local WriteableWidget = require("widgets/writeablewidget")
 local Controls = require("widgets/controls")
 local UIAnim = require "widgets/uianim"
 local Widget = require "widgets/widget"
@@ -12,6 +13,7 @@ local easing = require("easing")
 local PauseScreen = require "screens/pausescreen"
 local ChatInputScreen = require "screens/chatinputscreen"
 local PlayerStatusScreen = require "screens/playerstatusscreen"
+local InputDialogScreen = require "screens/inputdialog"
 
 local TargetIndicator = require "widgets/targetindicator"
 
@@ -177,6 +179,25 @@ function PlayerHud:OpenContainer(container, side)
         self.controls[side and "containerroot_side" or "containerroot"]:AddChild(containerwidget)
         containerwidget:Open(container, self.owner)
         self.controls.containers[container] = containerwidget
+    end
+end
+
+function PlayerHud:ShowWriteableWidget(writeable, config)
+    if writeable == nil then
+        return
+    else
+        self.writeablescreen = WriteableWidget(self.owner, writeable, config)
+        TheFrontEnd:PushScreen(self.writeablescreen)
+        -- Have to set editing AFTER pushscreen finishes.
+        self.writeablescreen.edit_text:SetEditing(true)
+        return self.writeablescreen
+    end
+end
+
+function PlayerHud:CloseWriteableWidget()
+    if self.writeablescreen then
+        self.writeablescreen:Close()
+        self.writeablescreen = nil
     end
 end
 
@@ -347,6 +368,12 @@ function PlayerHud:ShowPlayerStatusScreen()
 	TheFrontEnd:PushScreen(self.playerstatusscreen)
 	self.playerstatusscreen:MoveToFront()
 	self.playerstatusscreen:Show()
+end
+
+function PlayerHud:ShowGenericInputScreen(title, buttons)
+    local screen = InputDialogScreen(title, buttons, true)
+    TheFrontEnd:PushScreen(screen)
+    return screen
 end
 
 function PlayerHud:OnControl(control, down)

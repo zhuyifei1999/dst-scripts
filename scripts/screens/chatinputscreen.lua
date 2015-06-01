@@ -179,9 +179,9 @@ function ChatInputScreen:DoInit()
 	self.chat_edit:SetHAlign(ANCHOR_LEFT)
 
 	self.chat_edit.OnTextEntered = function() self:OnTextEntered() end
-	self.chat_edit:SetCharacterFilter( VALID_CHARS )
-	self.chat_edit:SetPassCancelToScreen(true)
-	self.chat_edit:SetTextLengthLimit( CHAT_INPUT_MAX_LENGTH )
+	self.chat_edit:SetCharacterFilter(VALID_CHARS)
+	self.chat_edit:SetPassControlToScreen(CONTROL_CANCEL, true)
+	self.chat_edit:SetTextLengthLimit(CHAT_INPUT_MAX_LENGTH)
 
 	self.chat_edit:SetString("")
 	self.history_idx = nil

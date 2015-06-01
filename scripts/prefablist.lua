@@ -16,6 +16,7 @@ PREFABFILES = {
   "armor_slurper",
   "armor_snurtleshell",
   "armor_wood",
+  "arrowsign",
   "ash",
   "axe",
   "axe_pickaxe",
@@ -481,5 +482,6 @@ PREFABFILES = {
   "wormhole",
   "wormhole_limited",
   "wormlight",
+  "writeable_classified",
   "wx78" 
 }

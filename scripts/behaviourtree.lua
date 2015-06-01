@@ -453,9 +453,8 @@ function RandomNode:Visit()
     if self.status == READY then
         --pick a new child
         self.idx = math.random(#self.children)
-        local start = inst.idx
+        local start = self.idx
         while true do
-        
             local child = self.children[self.idx]
             child:Visit()
             
@@ -465,12 +464,12 @@ function RandomNode:Visit()
             end
             
             self.idx = self.idx + 1
-            if self.idx == #self.children then
+            if self.idx > #self.children then
                 self.idx = 1
             end
             
             if self.idx == start then
-                inst.status = FAILED
+                self.status = FAILED
                 return
             end
         end

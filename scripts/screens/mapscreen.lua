@@ -4,10 +4,12 @@ local MAX_HUD_SCALE = 1.25
 local MapWidget = require("widgets/mapwidget")
 local Widget = require "widgets/widget"
 local MapControls = require "widgets/mapcontrols"
+local HudCompass = require "widgets/hudcompass"
 
-local MapScreen = Class(Screen, function(self)
+local MapScreen = Class(Screen, function(self, owner)
+    self.owner = owner
 	Screen._ctor(self, "MapScreen")
-	self.minimap = self:AddChild(MapWidget(ThePlayer))    
+	self.minimap = self:AddChild(MapWidget(self.owner))    
 	
 	self.bottomright_root = self:AddChild(Widget("br_root"))
 
@@ -16,7 +18,7 @@ local MapScreen = Class(Screen, function(self)
     self.bottomright_root:SetVAnchor(ANCHOR_BOTTOM)
     self.bottomright_root:SetMaxPropUpscale(MAX_HUD_SCALE)
 	self.bottomright_root = self.bottomright_root:AddChild(Widget("br_scale_root"))
-
+	
 
 	local scale = TheFrontEnd:GetHUDScale()
     self.bottomright_root:SetScale(scale)
@@ -26,6 +28,10 @@ local MapScreen = Class(Screen, function(self)
 	    self.mapcontrols:SetPosition(-60,70,0)
 	    self.mapcontrols.pauseBtn:Hide()
     end	    
+
+    self.hudcompass = self.bottomright_root:AddChild(HudCompass(self.owner, false))
+    self.hudcompass:SetPosition(-160,70,0)
+
 	self.repeat_time = 0
 
 end)

@@ -44,6 +44,7 @@ return {
 	},
 	ANNOUNCE_PECKED = "No! Bad birdy!",
 	ANNOUNCE_TORCH_OUT = "My precious light is gone!",
+    ANNOUNCE_COMPASS_OUT = "Arrgh the needle is stuck!",
 	ANNOUNCE_WORMHOLE = "I'll have to burn these clothes!",
 	ANNOUNCE_TRAP_WENT_OFF = "Aah!",
     ANNOUNCE_CRAFTING_FAIL = "I'm missing something.",
@@ -322,9 +323,22 @@ return {
 			GENERIC = "It would be better if it measured fire.",
 			BURNT = "If you'd measured fire, maybe you woulda been prepared!",
 		},
-		HOMESIGN = 
+		HOMESIGN =
 		{
 			GENERIC = "Less reading! More burning!",
+            UNWRITTEN = "I should burn something into it.",
+			BURNT = "Hahaha, yesss!",
+		},
+		ARROWSIGN_POST =
+		{
+			GENERIC = "Less reading! More burning!",
+            UNWRITTEN = "I should burn something into it.",
+			BURNT = "Hahaha, yesss!",
+		},
+		ARROWSIGN_PANEL =
+		{
+			GENERIC = "Less reading! More burning!",
+            UNWRITTEN = "I should burn something into it.",
 			BURNT = "Hahaha, yesss!",
 		},
 		BEEBOX =

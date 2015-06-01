@@ -222,11 +222,11 @@ function Builder:MakeRecipeFromMenu(recipe)
     end
 end
 
-function Builder:MakeRecipeAtPoint(recipe, pt)
+function Builder:MakeRecipeAtPoint(recipe, pt, rot)
     if self.inst.components.builder ~= nil then
-        self.inst.components.builder:MakeRecipeAtPoint(recipe, pt)
+        self.inst.components.builder:MakeRecipeAtPoint(recipe, pt, rot)
     elseif self.inst.components.playercontroller ~= nil then
-        self.inst.components.playercontroller:RemoteMakeRecipeAtPoint(recipe, pt)
+        self.inst.components.playercontroller:RemoteMakeRecipeAtPoint(recipe, pt, rot)
     end
 end
 

@@ -838,6 +838,8 @@ function Tune(overrides)
 
         MINIFAN_FUEL = day_time * 0.8,
 
+        COMPASS_FUEL = day_time * 4,
+
 	    NIGHTSTICK_FUEL = night_time*6,
 	    LIGHTER_RAIN_RATE = 1,
 	    LIGHTER_FUEL = total_day_time*1.25,

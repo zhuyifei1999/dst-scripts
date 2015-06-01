@@ -69,6 +69,7 @@ return {
 	ANNOUNCE_RESEARCH = "Knowledge is power. And power is... well, power.",
 	ANNOUNCE_THORNS = "I scratched my arms up doing that.",
 	ANNOUNCE_TORCH_OUT = "Dang it, another light down.",
+    ANNOUNCE_COMPASS_OUT = "The compass has fallen to pieces.",
 	ANNOUNCE_TRAP_WENT_OFF = "Ack!",
 	ANNOUNCE_UNIMPLEMENTED = "Hmm, not quite done.",
 	ANNOUNCE_WORMHOLE = "Yech. It's horrible in there.",
@@ -748,9 +749,22 @@ return {
 			HOT = "It's almost too hot to hold.",
 		},
 		HOME = "There's no place like it.",
-		HOMESIGN = 
+		HOMESIGN =
 		{
 			GENERIC = "It says... nothing.",
+            UNWRITTEN = "This requires profundity.",
+			BURNT = "Somehow, it says even less now.",
+		},
+		ARROWSIGN_POST =
+		{
+			GENERIC = "It says... nothing.",
+            UNWRITTEN = "This requires profundity.",
+			BURNT = "Somehow, it says even less now.",
+		},
+		ARROWSIGN_PANEL =
+		{
+			GENERIC = "It says... nothing.",
+            UNWRITTEN = "This requires profundity.",
 			BURNT = "Somehow, it says even less now.",
 		},
 		HONEY = "Sticky and sweet.",

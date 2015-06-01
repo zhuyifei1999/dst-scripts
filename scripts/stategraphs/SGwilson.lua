@@ -84,6 +84,7 @@ local function SetSleeperSleepState(inst)
     end
     inst:OnSleepIn()
     inst.components.inventory:Hide()
+    inst:PushEvent("ms_closepopups")
     inst:ShowActions(false)
 end
 
@@ -297,6 +298,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.TOSS, "throw"),
     ActionHandler(ACTIONS.UNPIN, "doshortaction"),
     ActionHandler(ACTIONS.CATCH, "catch_pre"),
+    ActionHandler(ACTIONS.WRITE, "doshortaction"),
 }
 
 local events =
@@ -3645,6 +3647,7 @@ local states =
             inst.SoundEmitter:PlaySound("dontstarve/common/freezecreature")
 
             inst.components.inventory:Hide()
+            inst:PushEvent("ms_closepopups")
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:EnableMapControls(false)
                 inst.components.playercontroller:Enable(false)
@@ -3687,6 +3690,7 @@ local states =
             inst.SoundEmitter:PlaySound("dontstarve/common/freezethaw", "thawing")
 
             inst.components.inventory:Hide()
+            inst:PushEvent("ms_closepopups")
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:EnableMapControls(false)
                 inst.components.playercontroller:Enable(false)
@@ -3723,6 +3727,7 @@ local states =
             inst.AnimState:PlayAnimation("hit")
 
             inst.components.inventory:Hide()
+            inst:PushEvent("ms_closepopups")
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:EnableMapControls(false)
                 inst.components.playercontroller:Enable(false)
@@ -3767,6 +3772,7 @@ local states =
             inst.SoundEmitter:PlaySound("dontstarve/creatures/spat/spit_playerstruggle", "struggling")
 
             inst.components.inventory:Hide()
+            inst:PushEvent("ms_closepopups")
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:EnableMapControls(false)
                 inst.components.playercontroller:Enable(false)
@@ -3804,6 +3810,7 @@ local states =
             DoHurtSound(inst)
 
             inst.components.inventory:Hide()
+            inst:PushEvent("ms_closepopups")
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:EnableMapControls(false)
                 inst.components.playercontroller:Enable(false)
@@ -3846,6 +3853,7 @@ local states =
             inst.SoundEmitter:PlaySound("dontstarve/creatures/spat/spit_playerunstuck")
 
             inst.components.inventory:Hide()
+            inst:PushEvent("ms_closepopups")
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:EnableMapControls(false)
                 inst.components.playercontroller:Enable(false)

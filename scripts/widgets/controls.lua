@@ -104,7 +104,7 @@ local Controls = Class(Widget, function(self, owner)
 
 	self.mapcontrols = self.bottomright_root:AddChild(MapControls())
 	self.mapcontrols:SetPosition(-60,70,0)
-	
+
     if true or not IsGamePurchased() then
 		self.demotimer = self.top_root:AddChild(DemoTimer(self.owner))
 		self.demotimer:SetPosition(320, -25, 0)
@@ -190,7 +190,7 @@ function Controls:MakeScalingNodes()
     self.bottomright_root:SetHAnchor(ANCHOR_RIGHT)
     self.bottomright_root:SetVAnchor(ANCHOR_BOTTOM)
     self.bottomright_root:SetMaxPropUpscale(MAX_HUD_SCALE)
-
+    
 	self.left_root = self:AddChild(Widget("left_root"))
     self.left_root:SetScaleMode(SCALEMODE_PROPORTIONAL)
     self.left_root:SetHAnchor(ANCHOR_LEFT)
@@ -450,7 +450,7 @@ function Controls:ToggleMap()
         	if self.owner.HUD:IsStatusScreenOpen() then
         		TheFrontEnd:PopScreen()
         	end
-            TheFrontEnd:PushScreen(MapScreen())
+            TheFrontEnd:PushScreen(MapScreen(self.owner))
         end
 	end
 end

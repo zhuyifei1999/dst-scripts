@@ -1,12 +1,14 @@
 local assets =
 {
-    Asset("ANIM", "anim/sign_home.zip"),
+    Asset("ANIM", "anim/sign_arrow_post.zip"),
+    Asset("ANIM", "anim/sign_arrow_panel.zip"),
 }
 
 
 local prefabs =
 {
     "collapse_small",
+    "arrowsign_panel",
 }
 
 local function onhammered(inst, worker)
@@ -51,9 +53,11 @@ local function fn()
 
     inst.MiniMapEntity:SetIcon("sign.png")
 
-    inst.AnimState:SetBank("sign_home")
-    inst.AnimState:SetBuild("sign_home")
+    inst.AnimState:SetBank("sign_arrow_post")
+    inst.AnimState:SetBuild("sign_arrow_post")
     inst.AnimState:PlayAnimation("idle")
+
+    inst.Transform:SetEightFaced()
 
     MakeSnowCoveredPristine(inst)
 
@@ -78,7 +82,10 @@ local function fn()
     inst.components.workable:SetWorkLeft(4)
     inst.components.workable:SetOnFinishCallback(onhammered)
     inst.components.workable:SetOnWorkCallback(onhit)
+
     MakeSnowCovered(inst)
+
+    inst:AddComponent("savedrotation")
 
     inst:AddTag("structure")
     MakeSmallBurnable(inst, nil, nil, true)
@@ -91,5 +98,44 @@ local function fn()
     return inst
 end
 
-return Prefab("common/objects/homesign", fn, assets, prefabs),
-        MakePlacer("common/homesign_placer", "sign_home", "sign_home", "idle")
+local function panelfn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddNetwork()
+
+    inst.AnimState:SetBank("sign_arrow_panel")
+    inst.AnimState:SetBuild("sign_arrow_panel")
+    inst.AnimState:PlayAnimation("idle")
+
+    inst.Transform:SetEightFaced()
+
+    MakeSnowCoveredPristine(inst)
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst:AddComponent("inspectable")
+    inst:AddComponent("writeable")
+    inst:AddComponent("lootdropper")
+
+    inst:AddComponent("savedrotation")
+
+    -- TODO: Make workable, but transfer the work to the sign base instead
+
+    MakeSnowCovered(inst)
+
+    inst.OnSave = onsave
+    inst.OnLoad = onload
+
+    return inst
+end
+
+return Prefab("common/objects/arrowsign_post", fn, assets, prefabs),
+        MakePlacer("common/arrowsign_post_placer", "sign_arrow_post", "sign_arrow_post", "idle", nil, nil, nil, nil, -90, "eight"),
+        Prefab("common/objects/arrowsign_panel", panelfn, assets, prefabs),
+        MakePlacer("common/arrowsign_panel_placer", "sign_arrow_panel", "sign_arrow_panel", "idle", nil, nil, nil, nil, -90, "eight")

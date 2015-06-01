@@ -676,3 +676,12 @@ function c_skip(num)
 	num = num or 1
 	LongUpdate(TUNING.TOTAL_DAY_TIME * num)
 end
+
+function c_groundtype()
+	local index, table = ConsoleCommandPlayer():GetCurrentTileType()
+	print("Ground type is ", index)
+
+	for k,v in pairs(table) do 
+		print(k,v)
+	end
+end

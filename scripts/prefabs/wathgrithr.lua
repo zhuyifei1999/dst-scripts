@@ -108,8 +108,6 @@ end
 local function common_init(inst)
     inst:AddTag("valkyrie")
 
-    inst.talker_path_override = "dontstarve_DLC001/characters/"
-
     inst.components.talker.font = Profile:IsWathgrithrFontEnabled() and TALKINGFONT_WATHGRITHR or TALKINGFONT
     inst:ListenForEvent("continuefrompause", function()
         inst.components.talker.font = Profile:IsWathgrithrFontEnabled() and TALKINGFONT_WATHGRITHR or TALKINGFONT
@@ -117,6 +115,8 @@ local function common_init(inst)
 end
 
 local function master_init(inst)
+    inst.talker_path_override = "dontstarve_DLC001/characters/"
+
     inst.components.eater:SetDiet({ FOODGROUP.OMNI }, { FOODTYPE.MEAT })
 
     inst.components.health:SetMaxHealth(TUNING.WATHGRITHR_HEALTH)

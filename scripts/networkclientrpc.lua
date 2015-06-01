@@ -375,12 +375,12 @@ local RPC_HANDLERS =
         end
     end,
 
-    MakeRecipeAtPoint = function(player, recipe, x, z)
+    MakeRecipeAtPoint = function(player, recipe, x, z, rot)
         local builder = player.components.builder
         if builder ~= nil then
             for k, v in pairs(AllRecipes) do
                 if v.rpc_id == recipe then
-                    builder:MakeRecipeAtPoint(v, Vector3(x, 0, z))
+                    builder:MakeRecipeAtPoint(v, Vector3(x, 0, z), rot)
                     return
                 end
             end
@@ -406,6 +406,15 @@ local RPC_HANDLERS =
             player.sg:HasStateTag("sleeping") and
             (player.sg:HasStateTag("bedroll") or player.sg:HasStateTag("tent")) then
             player:PushEvent("locomote")
+        end
+    end,
+
+    SetWriteableText= function(player, writeableinst, text)
+        -- Todo: Test if the player is authorized to write on this object
+        local writeable = writeableinst and  writeableinst.components.writeable
+        if writeable then
+            writeable:SetText(text)
+            writeable:EndWriting()
         end
     end,
 }

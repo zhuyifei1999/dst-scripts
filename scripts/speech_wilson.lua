@@ -43,6 +43,11 @@ return {
             SLEEPING = "Too unconcious to care.",
             BUSY = "I'll try again in a second.",
     	},
+        WRITE =
+        {
+            GENERIC = "I can't do that.",
+            INUSE = "There's only room for one scribbler.",
+        }
 	},
 	ACTIONFAIL_GENERIC = "I can't do that.",
 	ANNOUNCE_ADVENTUREFAIL = "That didn't go well. I'll have to try again.",
@@ -95,6 +100,7 @@ return {
 	ANNOUNCE_THORNS = "Ow!",
 	ANNOUNCE_BURNT = "Yikes! That was hot!",
 	ANNOUNCE_TORCH_OUT = "My light just ran out!",
+    ANNOUNCE_COMPASS_OUT = "This compass doesn't point anymore.",
 	ANNOUNCE_TRAP_WENT_OFF = "Oops.",
 	ANNOUNCE_UNIMPLEMENTED = "OW! I don't think it's ready yet.",
 	ANNOUNCE_WORMHOLE = "That was not a sane thing to do.",
@@ -323,7 +329,7 @@ return {
 		
 		COMPASS =
 		{
-			GENERIC="I can't get a reading.",
+			GENERIC="Which way am I facing?",
 			N = "North",
 			S = "South",
 			E = "East",
@@ -805,10 +811,23 @@ return {
 			HOT = "Nice and toasty hot!",
 		},
 		HOME = "Someone must live here.",
-		HOMESIGN = 
+		HOMESIGN =
 		{
 			GENERIC = "It says 'You are here'.",
-			BURNT = "I can't read it any longer.",
+            UNWRITTEN = "The sign is currently blank.",
+			BURNT = "\"Don't play with matches.\"",
+		},
+		ARROWSIGN_POST =
+		{
+			GENERIC = "It says 'Thataway'.",
+            UNWRITTEN = "The sign is currently blank.",
+			BURNT = "\"Don't play with matches.\"",
+		},
+		ARROWSIGN_PANEL =
+		{
+			GENERIC = "It says 'Thataway'.",
+            UNWRITTEN = "The sign is currently blank.",
+			BURNT = "\"Don't play with matches.\"",
 		},
 		HONEY = "Looks delicious!",
 		HONEYCOMB = "Bees used to live in this.",

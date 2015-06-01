@@ -17,6 +17,7 @@ local MINIMAP_GROUND_PROPERTIES =
 	{ GROUND.CHECKER,  	 { name = "map_edge",      noise_texture = "levels/textures/mini_checker_noise.tex" } },
 	{ GROUND.DECIDUOUS,  { name = "map_edge",      noise_texture = "levels/textures/mini_deciduous_noise.tex"} },
 	{ GROUND.DESERT_DIRT,{ name = "map_edge",      noise_texture = "levels/textures/mini_desert_dirt_noise.tex"} },
+	{ GROUND.SCALE,		 { name = "map_edge",      noise_texture = "levels/textures/mini_dragonfly_noise.tex"} },
 
 	-- { GROUND.WALL_MARSH, { name = "map_edge",      noise_texture = "levels/textures/mini_marsh_wall_noise.tex" } },
 	-- { GROUND.WALL_ROCKY, { name = "map_edge",      noise_texture = "levels/textures/mini_rocky_wall_noise.tex" } },

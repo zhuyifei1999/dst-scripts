@@ -62,6 +62,7 @@ return {
 	ANNOUNCE_SHELTER = "Aha! Shelter!",
 	ANNOUNCE_THORNS = "Arg, I've been poked!",
 	ANNOUNCE_TORCH_OUT = "My light is quenched!",
+    ANNOUNCE_COMPASS_OUT = "I fear I'm going to lose my way!",
 	ANNOUNCE_TRAP_WENT_OFF = "That wasn't part of the plan.",
 	ANNOUNCE_UNIMPLEMENTED = "It is not of this world.",
 	ANNOUNCE_WORMHOLE = "That was a sloppy adventure.",
@@ -201,19 +202,6 @@ return {
 		CAVE_BANANA_COOKED = "Warmed monkey food.",
 		CAVE_BANANA_TREE = "A flimsy monkey tree.",
 		ROCKY = "He may be a worthy combat comrade.",
-		
-		COMPASS =
-		{
-			GENERIC="I can't get a reading.",
-			N = "North",
-			S = "South",
-			E = "East",
-			W = "West",
-			NE = "Northeast",
-			SE = "Southeast",
-			NW = "Northwest",
-			SW = "Southwest",
-		},
 
 		NIGHTMARE_TIMEPIECE =
 		{
@@ -679,9 +667,22 @@ return {
 			WARM = "The stone has taken on warmth!",
 			HOT = "Loge would be proud.",
 		},
-		HOMESIGN = 
+		HOMESIGN =
 		{
 			GENERIC = "A most well placed sign.",
+            UNWRITTEN = "I shall write a tale to triumph!",
+			BURNT = "Signs of a battle past.",
+		},
+		ARROWSIGN_POST =
+		{
+			GENERIC = "A most well placed sign.",
+            UNWRITTEN = "I shall point the way to triumph!",
+			BURNT = "Signs of a battle past.",
+		},
+		ARROWSIGN_PANEL =
+		{
+			GENERIC = "A most well placed sign.",
+            UNWRITTEN = "I shall point the way to triumph!",
 			BURNT = "Signs of a battle past.",
 		},
 		HONEY = "Sticky and gross.",

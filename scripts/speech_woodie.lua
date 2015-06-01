@@ -64,6 +64,7 @@ return {
 	ANNOUNCE_QUAKE = "The ground is heaving!",
 	ANNOUNCE_THORNS = "Ouch!",
 	ANNOUNCE_TORCH_OUT = "My light ran out!",
+    ANNOUNCE_COMPASS_OUT = "I'll always have the north in my heart.",
 	ANNOUNCE_TRAP_WENT_OFF = "Oops!",
 	ANNOUNCE_WORMHOLE = "It was gross in there!",
 	ANNOUNCE_CANFIX = "\nI think I can fix this!",
@@ -402,7 +403,7 @@ return {
 		
 		COMPASS =
 		{
-			GENERIC="I can't read it.",
+			GENERIC="Points to the True North.",
 			N = "True north.",
 			S = "South",
 			E = "East",
@@ -776,9 +777,22 @@ return {
 			HOT = "I could chop all winter with that in my pocket!",
 		},
 		HOME = "Who's there?",
-		HOMESIGN = 
+		HOMESIGN =
 		{
 			GENERIC = "Is there anything wood can't do?",
+            UNWRITTEN = "Let's give our neighbours some guidance.",
+			BURNT = "Wood is the best at burning.",
+		},
+		ARROWSIGN_POST =
+		{
+			GENERIC = "Is there anything wood can't do?",
+            UNWRITTEN = "Let's give our neighbours some guidance.",
+			BURNT = "Wood is the best at burning.",
+		},
+		ARROWSIGN_PANEL =
+		{
+			GENERIC = "Is there anything wood can't do?",
+            UNWRITTEN = "Let's give our neighbours some guidance.",
 			BURNT = "Wood is the best at burning.",
 		},
 		HONEY = "Mmmmmm-mmmm. Bee syrup.",

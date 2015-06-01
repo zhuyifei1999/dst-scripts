@@ -767,7 +767,7 @@ function FrontEnd:SetForceProcessTextInput(takeText, widget)
 			self.textProcessorWidget:OnStopForceProcessTextInput()
 		end
 		self.textProcessorWidget = widget
-	else
+	elseif widget == nil or widget == self.textProcessorWidget then
 		self.forceProcessText = false
 		if self.textProcessorWidget then
 			self.textProcessorWidget:OnStopForceProcessTextInput()

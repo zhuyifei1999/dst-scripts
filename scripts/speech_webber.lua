@@ -63,6 +63,7 @@ return {
 	ANNOUNCE_THORNS = "Yowch!",
 	ANNOUNCE_BURNT = "Jeepers, that was hot!",
 	ANNOUNCE_TORCH_OUT = "Waah, our light went out!",
+    ANNOUNCE_COMPASS_OUT = "Uh oh, I broke it.",
 	ANNOUNCE_TRAP_WENT_OFF = "Eek!",
 	ANNOUNCE_UNIMPLEMENTED = "Gah! It needs more time.",
 	ANNOUNCE_WORMHOLE = "That was a scary hole!",
@@ -203,19 +204,6 @@ return {
 		CAVE_BANANA_TREE = "It's a tropical cave tree, of course.",
 		ROCKY = "Snip snap!",
 		
-		COMPASS =
-		{
-			GENERIC="I can't get a reading.",
-			N = "North",
-			S = "South",
-			E = "East",
-			W = "West",
-			NE = "Northeast",
-			SE = "Southeast",
-			NW = "Northwest",
-			SW = "Southwest",
-		},
-
 		NIGHTMARE_TIMEPIECE =
 		{
 			CALM = "Everything's dandy.",
@@ -679,9 +667,22 @@ return {
 			WARM = "It's getting hot!",
 			HOT = "It's hot to the touch!",
 		},
-		HOMESIGN = 
+		HOMESIGN =
 		{
 			GENERIC = "We could write on that if only we had a pen!",
+            UNWRITTEN = "Ooooh what should we say?",
+			BURNT = "The lettering burnt off.",
+		},
+		ARROWSIGN_POST =
+		{
+			GENERIC = "We could write on that if only we had a pen!",
+            UNWRITTEN = "Ooooh what should we say?",
+			BURNT = "The lettering burnt off.",
+		},
+		ARROWSIGN_PANEL =
+		{
+			GENERIC = "We could write on that if only we had a pen!",
+            UNWRITTEN = "Ooooh what should we say?",
 			BURNT = "The lettering burnt off.",
 		},
 		HONEY = "Sticky and sweet.",

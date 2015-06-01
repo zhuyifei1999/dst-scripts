@@ -20,6 +20,7 @@ local assets =
     Asset("ANIM", "anim/ui_krampusbag_2x8.zip"),
     Asset("ANIM", "anim/ui_cookpot_1x4.zip"), 
     Asset("ANIM", "anim/ui_krampusbag_2x5.zip"),
+    Asset("ANIM", "anim/ui_board_5x3.zip"),
 
     Asset("ANIM", "anim/health.zip"),
     Asset("ANIM", "anim/sanity.zip"),
@@ -30,6 +31,9 @@ local assets =
     Asset("ANIM", "anim/beaver_meter.zip"),
     Asset("ANIM", "anim/hunger_health_pulse.zip"),
     Asset("ANIM", "anim/spoiled_meter.zip"),
+    Asset("ANIM", "anim/compass_bg.zip"),
+    Asset("ANIM", "anim/compass_needle.zip"),
+    Asset("ANIM", "anim/compass_hud.zip"),
     
     Asset("ANIM", "anim/saving.zip"),
     Asset("ANIM", "anim/vig.zip"),
