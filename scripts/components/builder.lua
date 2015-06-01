@@ -326,7 +326,11 @@ function Builder:DoBuild(recname, pt, rotation)
                 end
             else
                 prod.Transform:SetPosition(pt:Get())
-                prod.Transform:SetRotation(rotation)
+                --V2C: nil check added for backward compatibility with mods that
+                --     have not been updated to support placement rotation yet
+                if rotation ~= nil then
+                    prod.Transform:SetRotation(rotation)
+                end
                 self.inst:PushEvent("buildstructure", { item = prod, recipe = recipe })
                 prod:PushEvent("onbuilt", { builder = self.inst })
                 ProfileStatsAdd("build_"..prod.prefab)

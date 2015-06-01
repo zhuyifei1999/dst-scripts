@@ -16,7 +16,7 @@ kinds["homesign"] = {
         end, control = CONTROL_MENU_MISC_2 },
     acceptbtn = { text = "Write it!", cb = nil, control = CONTROL_ACCEPT },
 
-    defaulttext = SignGenerator,
+    --defaulttext = SignGenerator,
 }
 kinds["arrowsign_post"] = kinds["homesign"]
 kinds["arrowsign_panel"] = kinds["homesign"]

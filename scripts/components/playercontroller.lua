@@ -330,7 +330,7 @@ end
 
 --------------------------------------------------------------------------
 
-local MOD_CONTRLOLS =
+local MOD_CONTROLS =
 {
     CONTROL_FORCE_INSPECT,
     CONTROL_FORCE_ATTACK,
@@ -341,7 +341,7 @@ local MOD_CONTRLOLS =
 function PlayerController:EncodeControlMods()
     local code = 0
     local bit = 1
-    for i, v in ipairs(MOD_CONTRLOLS) do
+    for i, v in ipairs(MOD_CONTROLS) do
         code = code + (TheInput:IsControlPressed(v) and bit or 0)
         bit = bit * 2
     end
@@ -350,20 +350,20 @@ end
 
 function PlayerController:DecodeControlMods(code)
     code = code or 0
-    local bit = 2 ^ (#MOD_CONTRLOLS - 1)
-    for i = #MOD_CONTRLOLS, 1, -1 do
+    local bit = 2 ^ (#MOD_CONTROLS - 1)
+    for i = #MOD_CONTROLS, 1, -1 do
         if code >= bit then
-            self.remote_controls[MOD_CONTRLOLS[i]] = 0
+            self.remote_controls[MOD_CONTROLS[i]] = 0
             code = code - bit
         else
-            self.remote_controls[MOD_CONTRLOLS[i]] = nil
+            self.remote_controls[MOD_CONTROLS[i]] = nil
         end
         bit = bit / 2
     end
 end
 
 function PlayerController:ClearControlMods()
-    for i, v in ipairs(MOD_CONTRLOLS) do
+    for i, v in ipairs(MOD_CONTROLS) do
         self.remote_controls[v] = nil
     end
 end

@@ -79,6 +79,12 @@ local function ondepleted(inst)
     inst:Remove()
 end
 
+local function onattack(inst, attacker, target)
+    if inst.components.fueled ~= nil then
+        inst.components.fueled:DoDelta(inst.components.fueled.maxfuel * TUNING.COMPASS_ATTACK_DECAY_PERCENT)
+    end
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -112,6 +118,10 @@ local function fn()
     inst:AddComponent("fueled")
     inst.components.fueled:InitializeFuelLevel(TUNING.COMPASS_FUEL)
     inst.components.fueled:SetDepletedFn(ondepleted)
+
+    inst:AddComponent("weapon")
+    inst.components.weapon:SetDamage(TUNING.UNARMED_DAMAGE)
+    inst.components.weapon:SetOnAttack(onattack)
 
     -- TODO: Make this work on the client
     --inst.spookyoffsettarget = 0

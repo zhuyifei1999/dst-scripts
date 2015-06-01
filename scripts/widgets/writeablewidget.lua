@@ -14,15 +14,24 @@ local function onaccept(inst, doer, widget)
     if not widget.isopen then
         return
     end
-   -- print("OnAccept",inst,doer,widget)
+    -- print("OnAccept",inst,doer,widget)
+
+    --strip leading/trailing whitespace
+    local msg = widget:GetText()
+    local processed_msg = msg:match("^%s*(.-%S)%s*$") or ""
+    if msg ~= processed_msg then
+        widget.edit_text:SetString(processed_msg)
+        widget.edit_text:SetEditing(true)
+        return
+    end
 
     if inst.components.writeable ~= nil then
-        inst.components.writeable:SetText(widget:GetText())
+        inst.components.writeable:SetText(msg)
         inst.components.writeable:EndWriting()
-    elseif inst.replica.writeable and inst.replica.writeable.classified ~= nil then
-        SendRPCToServer(RPC.SetWriteableText, inst, widget:GetText())
+    elseif inst.replica.writeable ~= nil and inst.replica.writeable.classified ~= nil then
+        SendRPCToServer(RPC.SetWriteableText, inst, msg)
     end
-    if widget.config.acceptbtn.cb then
+    if widget.config.acceptbtn.cb ~= nil then
         widget.config.acceptbtn.cb(inst, doer, widget)
     end
 
@@ -148,7 +157,7 @@ local WriteableWidget = Class(Screen, function(self, owner, writeable, config)
 
     self:OverrideText( defaulttext )
     self.edit_text:OnControl(CONTROL_ACCEPT, false)
-    self.edit_text.OnTextEntered = function() onaccept(self.writeable, self.owner, self) end
+    --self.edit_text.OnTextEntered = function() onaccept(self.writeable, self.owner, self) end
 
     if config.bgatlas ~= nil and config.bgimage ~= nil then
         self.bgimage:SetTexture(config.bgatlas, config.bgimage)

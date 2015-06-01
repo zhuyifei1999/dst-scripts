@@ -154,9 +154,10 @@ local function fn()
                         {
                             prefab = inst.prefab,
                             equipslot = equippable.equipslot,
+                            announce = "ANNOUNCE_TORCH_OUT"
                         }
                         inst:Remove()
-                        owner:PushEvent("torchranout", data)
+                        owner:PushEvent("itemranout", data)
                         return
                     end
                 end

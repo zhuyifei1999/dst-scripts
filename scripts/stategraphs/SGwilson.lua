@@ -468,7 +468,7 @@ local events =
             end
         end),
 
-    EventHandler("torchranout",
+    EventHandler("itemranout",
         function(inst, data)
             if inst.components.inventory:GetEquippedItem(data.equipslot) == nil then
                 local sameTool = inst.components.inventory:FindItem(function(item)
