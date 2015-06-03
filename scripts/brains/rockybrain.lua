@@ -29,7 +29,7 @@ local function KeepFaceTargetFn(inst, target)
     return not target:HasTarget("notarget") and inst:IsNear(target, KEEP_FACE_DIST)
 end
 
-local function CanPickup(inst)
+local function CanPickup(item)
     return item.components.inventoryitem.canbepickedup and item:GetTimeAlive() >= 8 and item:IsOnValidGround()
 end
 

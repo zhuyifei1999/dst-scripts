@@ -140,6 +140,8 @@ local function fn()
         return inst
     end
 
+    inst._playerlink = nil
+
     inst:SetBrain(brain)
 
     inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph

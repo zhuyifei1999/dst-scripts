@@ -9,7 +9,7 @@ local prefabs =
     "spoiled_food",
 }
 
-local function create_common(anim)
+local function create_common(anim, cookable)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -21,6 +21,11 @@ local function create_common(anim)
     inst.AnimState:SetBank("trunk")
     inst.AnimState:SetBuild("koalephant_trunk")
     inst.AnimState:PlayAnimation(anim)
+
+    if cookable then
+        --cookable (from cookable component) added to pristine state for optimization
+        inst:AddTag("cookable")
+    end
 
     inst.entity:SetPristine()
 
@@ -41,6 +46,11 @@ local function create_common(anim)
     inst.components.edible.ismeat = true
     inst.components.edible.foodtype = FOODTYPE.MEAT
 
+    if cookable then
+        inst:AddComponent("cookable")
+        inst.components.cookable.product = "trunk_cooked"
+    end
+
     inst:AddComponent("perishable")
     inst.components.perishable.onperishreplacement = "spoiled_food"
 
@@ -50,7 +60,7 @@ local function create_common(anim)
 end
 
 local function create_summer()
-    local inst = create_common("idle_summer")
+    local inst = create_common("idle_summer", true)
 
     if not TheWorld.ismastersim then
         return inst
@@ -63,15 +73,12 @@ local function create_summer()
 
     inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)
     inst.components.perishable:StartPerishing()
-
-    inst:AddComponent("cookable")
-    inst.components.cookable.product = "trunk_cooked"
 
     return inst
 end
 
 local function create_winter()
-    local inst = create_common("idle_winter")
+    local inst = create_common("idle_winter", true)
 
     if not TheWorld.ismastersim then
         return inst
@@ -84,9 +91,6 @@ local function create_winter()
 
     inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)
     inst.components.perishable:StartPerishing()
-
-    inst:AddComponent("cookable")
-    inst.components.cookable.product = "trunk_cooked"
 
     return inst
 end

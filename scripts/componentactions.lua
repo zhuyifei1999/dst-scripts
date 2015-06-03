@@ -178,7 +178,7 @@ local COMPONENT_ACTIONS =
         trap = function(inst, doer, actions)
             if inst:HasTag("trapsprung") then
                 table.insert(actions, ACTIONS.CHECKTRAP)
-            end
+            end 
         end,
 
         writeable = function(inst, doer, actions)
@@ -197,7 +197,17 @@ local COMPONENT_ACTIONS =
         end,
 
         cookable = function(inst, doer, target, actions)
-            if target:HasTag("cooker") then
+            if target:HasTag("cooker") and
+                not target:HasTag("fueldepleted") and
+                (not target:HasTag("dangerouscooker") or doer:HasTag("expertchef")) then
+                table.insert(actions, ACTIONS.COOK)
+            end
+        end,
+
+        cooker = function(inst, doer, target, actions)
+            if target:HasTag("cookable") and
+                not inst:HasTag("fueldepleted") and
+                (not inst:HasTag("dangerouscooker") or doer:HasTag("expertchef")) then
                 table.insert(actions, ACTIONS.COOK)
             end
         end,
@@ -526,6 +536,15 @@ local COMPONENT_ACTIONS =
             end
         end,
 
+        cooker = function(inst, doer, target, actions, right)
+            if right and
+                target:HasTag("cookable") and
+                not inst:HasTag("fueldepleted") and
+                (not inst:HasTag("dangerouscooker") or doer:HasTag("expertchef")) then
+                table.insert(actions, ACTIONS.COOK)
+            end
+        end,
+
         lighter = function(inst, doer, target, actions, right)
             if right and target:HasTag("canlight") and not (target:HasTag("fueldepleted") or target:HasTag("INLIMBO")) then
                 table.insert(actions, ACTIONS.LIGHT)
@@ -600,6 +619,7 @@ local COMPONENT_ACTIONS =
 
     INVENTORY = --args: inst, doer, actions, right
     {
+
         balloonmaker = function(inst, doer, actions)
             table.insert(actions, ACTIONS.MAKEBALLOON)
         end,

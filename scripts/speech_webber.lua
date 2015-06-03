@@ -97,6 +97,15 @@ return {
 	},
 	DESCRIBE =
 	{
+
+		BERNIE_INACTIVE =
+		{
+			BROKEN = "It's all busted up.",
+			GENERIC = "A teddy bear.",
+		},
+		BERNIE_ACTIVE = "That teddy bear is moving!",
+		
+
         GLOMMER = "Nice eyes.",
         GLOMMERFLOWER = 
         {

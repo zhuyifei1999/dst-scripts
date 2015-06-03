@@ -250,6 +250,9 @@ local function fn()
     inst:AddTag("cattoy")
     inst:AddTag("catfood")
 
+    --cookable (from cookable component) added to pristine state for optimization
+    inst:AddTag("cookable")
+
     inst.AnimState:SetClientsideBuildOverride("insane", "rabbit_build", "beard_monster")
     inst.AnimState:SetClientsideBuildOverride("insane", "rabbit_winter_build", "beard_monster")
 

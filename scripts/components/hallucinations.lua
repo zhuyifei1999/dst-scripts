@@ -176,8 +176,8 @@ end
 --[[ Private event handlers ]]
 --------------------------------------------------------------------------
 
-local function OnIsNight(inst, isnight)
-    if isnight and not TheWorld.state.isfullmoon then
+local function OnIsNight(inst)
+    if inst.state.isnight and not inst.state.isfullmoon then
         Start(true)
     else
         Stop(true)
@@ -187,7 +187,8 @@ end
 local function OnPlayerActivated(inst, player)
     if _player == nil then
         inst:WatchWorldState("isnight", OnIsNight)
-        OnIsNight(inst.state.isnight)
+        inst:WatchWorldState("isfullmoon", OnIsNight)
+        OnIsNight(inst)
         Start(false)
     end
     _player = player
@@ -197,6 +198,7 @@ local function OnPlayerDeactivated(inst, player)
     if _player == player then
         _player = nil
         inst:StopWatchingWorldState("isnight", OnIsNight)
+        inst:StopWatchingWorldState("isfullmoon", OnIsNight)
         Stop()
     end
 end

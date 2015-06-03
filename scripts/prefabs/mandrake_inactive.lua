@@ -3,11 +3,11 @@
 
 local assets =
 {
-	Asset("ANIM", "anim/mandrake.zip"),
+    Asset("ANIM", "anim/mandrake.zip"),
 }
 
 local function onpickup(inst)
-	inst.AnimState:PlayAnimation("object")
+    inst.AnimState:PlayAnimation("object")
 end
 
 local function doareasleep(inst, range, time)
@@ -30,28 +30,28 @@ local function doareasleep(inst, range, time)
 end
 
 local function oneaten_raw(inst, eater)
-	eater.SoundEmitter:PlaySound("dontstarve/creatures/mandrake/death")
+    eater.SoundEmitter:PlaySound("dontstarve/creatures/mandrake/death")
     eater:DoTaskInTime(0.5, function() 
         doareasleep(eater, TUNING.MANDRAKE_SLEEP_RANGE, TUNING.MANDRAKE_SLEEP_TIME)
     end)
 end
 
 local function oncooked(inst, cooker, chef)
-	chef.SoundEmitter:PlaySound("dontstarve/creatures/mandrake/death")
-	chef:DoTaskInTime(0.5, function()
+    chef.SoundEmitter:PlaySound("dontstarve/creatures/mandrake/death")
+    chef:DoTaskInTime(0.5, function()
         doareasleep(chef, TUNING.MANDRAKE_SLEEP_RANGE_COOKED, TUNING.MANDRAKE_SLEEP_TIME)
-	end)
+    end)
 end
 
 local function oneaten_cooked(inst, eater)
-	eater.SoundEmitter:PlaySound("dontstarve/creatures/mandrake/death")
-	eater:DoTaskInTime(0.5, function() 
+    eater.SoundEmitter:PlaySound("dontstarve/creatures/mandrake/death")
+    eater:DoTaskInTime(0.5, function() 
         doareasleep(eater, TUNING.MANDRAKE_SLEEP_RANGE_COOKED, TUNING.MANDRAKE_SLEEP_TIME)
-	end)
+    end)
 end
 
-local function commonfn()
-	local inst = CreateEntity()
+local function commonfn(anim, cookable)
+    local inst = CreateEntity()
 
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
@@ -61,32 +61,42 @@ local function commonfn()
 
     inst.AnimState:SetBank("mandrake")
     inst.AnimState:SetBuild("mandrake")
-    inst.AnimState:PlayAnimation("object")
+    inst.AnimState:PlayAnimation(anim)
 
-
-	if not TheWorld.ismastersim then
-		return inst
-	end
-
-	inst:AddComponent("inspectable")
-	inst:AddComponent("inventoryitem")
-
-    inst:AddComponent("stackable")
-	inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
-
-	inst:AddComponent("edible")
-    inst.components.edible.foodtype = FOODTYPE.VEGGIE
-
-	return inst
-end
-
-local function rawfn()
-	local inst = commonfn()
+    if cookable then
+        --cookable (from cookable component) added to pristine state for optimization
+        inst:AddTag("cookable")
+    end
 
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
-    	return inst
+        return inst
+    end
+
+    inst:AddComponent("inspectable")
+    inst:AddComponent("inventoryitem")
+
+    inst:AddComponent("stackable")
+    inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
+
+    inst:AddComponent("edible")
+    inst.components.edible.foodtype = FOODTYPE.VEGGIE
+
+    if cookable then
+        inst:AddComponent("cookable")
+        inst.components.cookable.product = "cookedmandrake"
+        inst.components.cookable:SetOnCookedFn(oncooked)
+    end
+
+    return inst
+end
+
+local function rawfn()
+    local inst = commonfn("object", true)
+
+    if not TheWorld.ismastersim then
+        return inst
     end
 
     inst.components.edible.healthvalue = TUNING.HEALING_HUGE
@@ -95,22 +105,14 @@ local function rawfn()
 
     inst.components.inventoryitem:SetOnPickupFn(onpickup)
 
-    inst:AddComponent("cookable")
-    inst.components.cookable.product = "cookedmandrake"
-    inst.components.cookable:SetOnCookedFn(oncooked)
-
-	return inst
+    return inst
 end
 
 local function cookedfn()
-	local inst = commonfn()
-
-    inst.AnimState:PlayAnimation("cooked")
-
-    inst.entity:SetPristine()
+    local inst = commonfn("cooked")
 
     if not TheWorld.ismastersim then
-    	return inst
+        return inst
     end
 
     inst.components.edible.healthvalue = TUNING.HEALING_SUPERHUGE
@@ -121,4 +123,4 @@ local function cookedfn()
 end
 
 return Prefab("common/mandrake", rawfn, assets),
-Prefab("common/cookedmandrake", cookedfn, assets)
+    Prefab("common/cookedmandrake", cookedfn, assets)

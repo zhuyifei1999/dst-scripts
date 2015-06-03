@@ -685,3 +685,37 @@ function c_groundtype()
 		print(k,v)
 	end
 end
+
+function c_searchprefabs(str)
+    local regex = ""
+    for i=1,str:len() do
+        if i > 1 then
+            regex = regex .. ".*"
+        end
+        regex = regex .. str:sub(i,i)
+    end
+    local res = {}
+    for prefab,v in pairs(Prefabs) do
+        local s,f = string.lower(prefab):find(regex)
+        if s ~= nil then
+            -- Tightest match first, with a bias towards the match near the beginning, and shorter prefab names
+            local weight = (f-s) - (100-s)/100 - (100-prefab:len())/100
+            table.insert(res, {name=prefab,weight=weight})
+        end
+    end
+
+    table.sort(res, function(a,b) return a.weight < b.weight end)
+
+    if #res == 0 then
+        print("Found no prefabs matching "..str)
+    elseif #res == 1 then
+        print("Found a prefab called "..res[1].name)
+        return res[1]
+    else
+        print("Found "..tostring(#res).." matches:")
+        for i,v in ipairs(res) do
+            print("\t"..v.name.." ("..tostring(v.weight)..")")
+        end
+        return res[1].name
+    end
+end

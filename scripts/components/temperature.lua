@@ -33,9 +33,8 @@ local Temperature = Class(function(self, inst)
     --At max moisture, the player will feel cooler than at minimum
     self.maxmoisturepenalty = TUNING.MOISTURE_TEMP_PENALTY
 
-    self:OnUpdate(0)
-
     --Cached update values
+    self.totalmodifiers = 0
     self.externalheaterpower = 0
     self.delta = 0
     self.rate = 0
@@ -43,6 +42,7 @@ local Temperature = Class(function(self, inst)
     self.sheltered = false
     self.inst:ListenForEvent("sheltered", onsheltered)
 
+    self:OnUpdate(0)
     self.inst:StartUpdatingComponent(self)
 end,
 nil,
@@ -151,7 +151,7 @@ function Temperature:SetTemperature(value)
 end
 
 function Temperature:GetDebugString()
-    return string.format("%2.2fC at %2.2f (delta: %2.2f)", self:GetCurrent(), self.rate, self.delta)
+    return string.format("%2.2fC at %2.2f (delta: %2.2f) (modifiers: %2.2f)", self.current, self.rate, self.delta, self.totalmodifiers)
 end
 
 function Temperature:IsFreezing()
@@ -160,6 +160,39 @@ end
 
 function Temperature:IsOverheating()
     return self.current > self.overheattemp
+end
+
+function Temperature:SetModifier(name, value)
+    if value == nil or value == 0 then
+        return self:RemoveModifier(name)
+    elseif self.temperature_modifiers == nil then
+        self.temperature_modifiers = { [name] = value }
+        self.totalmodifiers = value
+        return
+    end
+    local m = self.temperature_modifiers[name]
+    if m == value then
+        return
+    end
+    self.temperature_modifiers[name] = value
+    self.totalmodifiers = self.totalmodifiers + value - (m or 0)
+end
+
+function Temperature:RemoveModifier(name)
+    if self.temperature_modifiers == nil then
+        return
+    end
+    local m = self.temperature_modifiers[name]
+    if m == nil then
+        return
+    end
+    self.temperature_modifiers[name] = nil
+    if next(self.temperature_modifiers) == nil then
+        self.temperature_modifiers = nil
+        self.totalmodifiers = 0
+    else
+        self.totalmodifiers = self.totalmodifiers - m
+    end
 end
 
 function Temperature:GetInsulation()
@@ -207,7 +240,7 @@ function Temperature:GetInsulation()
 end
 
 function Temperature:GetMoisturePenalty()
-    return self.inst.components.moisture ~= nil and Lerp(0, self.maxmoisturepenalty, self.inst.components.moisture:GetMoisturePercent()) or 0
+    return self.inst.components.moisture ~= nil and -Lerp(0, self.maxmoisturepenalty, self.inst.components.moisture:GetMoisturePercent()) or 0
 end
 
 function Temperature:OnUpdate(dt, applyhealthdelta)
@@ -247,7 +280,7 @@ function Temperature:OnUpdate(dt, applyhealthdelta)
             end
         end
 
-        self.delta = ambient_temperature - self.current - self:GetMoisturePenalty()
+        self.delta = (ambient_temperature + self.totalmodifiers + self:GetMoisturePenalty()) - self.current
 
         if self.inst.components.inventory ~= nil then
             for k, v in pairs(self.inst.components.inventory.equipslots) do

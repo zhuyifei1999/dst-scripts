@@ -8,7 +8,7 @@ mod_protect_Recipe = false
 --LIGHT
 Recipe("campfire", {Ingredient("cutgrass", 3),Ingredient("log", 2)}, RECIPETABS.LIGHT, TECH.NONE, "campfire_placer")
 Recipe("firepit", {Ingredient("log", 2),Ingredient("rocks", 12)}, RECIPETABS.LIGHT, TECH.NONE, "firepit_placer")
-Recipe("lighter", {Ingredient("rope", 1), Ingredient("goldnugget", 2), Ingredient("petals", 3)}, RECIPETABS.LIGHT, TECH.NONE, nil, nil, nil, nil, "pyromaniac")
+Recipe("lighter", {Ingredient("rope", 1), Ingredient("goldnugget", 1), Ingredient("petals", 3)}, RECIPETABS.LIGHT, TECH.NONE, nil, nil, nil, nil, "pyromaniac")
 Recipe("torch", {Ingredient("cutgrass", 2),Ingredient("twigs", 2)}, RECIPETABS.LIGHT, TECH.NONE)
 Recipe("coldfire", {Ingredient("cutgrass", 3), Ingredient("nitre", 2)}, RECIPETABS.LIGHT, TECH.SCIENCE_ONE, "coldfire_placer")
 Recipe("coldfirepit", {Ingredient("nitre", 2), Ingredient("cutstone", 4), Ingredient("transistor", 2)}, RECIPETABS.LIGHT, TECH.SCIENCE_TWO, "coldfirepit_placer")
@@ -55,6 +55,7 @@ Recipe("icebox", {Ingredient("goldnugget", 2), Ingredient("gears", 1), Ingredien
 
 --SURVIVAL
 Recipe("reviver", {Ingredient("cutgrass", 3), Ingredient("spidergland", 1)}, RECIPETABS.SURVIVAL,  TECH.NONE)
+Recipe("bernie_inactive", {Ingredient("beardhair", 2), Ingredient("beefalowool", 2), Ingredient("silk", 2)}, RECIPETABS.SURVIVAL,  TECH.NONE, nil, nil, nil, nil, "pyromaniac")
 Recipe("trap", {Ingredient("twigs", 2),Ingredient("cutgrass", 6)}, RECIPETABS.SURVIVAL, TECH.NONE)
 Recipe("birdtrap", {Ingredient("twigs", 3),Ingredient("silk", 4)}, RECIPETABS.SURVIVAL, TECH.SCIENCE_ONE)
 Recipe("bugnet", {Ingredient("twigs", 4), Ingredient("silk", 2), Ingredient("rope", 1)}, RECIPETABS.SURVIVAL, TECH.SCIENCE_ONE)

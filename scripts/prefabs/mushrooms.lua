@@ -305,6 +305,9 @@ local function capcommonfn(data)
 
     MakeDragonflyBait(inst, 3)
 
+    --cookable (from cookable component) added to pristine state for optimization
+    inst:AddTag("cookable")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

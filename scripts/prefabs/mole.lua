@@ -155,6 +155,9 @@ local function fn()
     inst:AddTag("catfood")
     --inst:AddTag("wildfireprotected") --Only if burnable
 
+    --cookable (from cookable component) added to pristine state for optimization
+    inst:AddTag("cookable")
+
     MakeFeedableSmallLivestockPristine(inst)
 
     inst.displaynamefn = displaynamefn

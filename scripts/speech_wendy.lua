@@ -74,6 +74,15 @@ return {
 	},
 	DESCRIBE =
 	{
+
+		BERNIE_INACTIVE =
+		{
+			BROKEN = "He has passed.",
+			GENERIC = "He's had a rough life.",
+		},
+		BERNIE_ACTIVE = "He seeks sweet relief.",
+		
+
 		GLOMMER = "Well aren't you a happy little fuzzball. Die.",
         GLOMMERFLOWER = 
         {

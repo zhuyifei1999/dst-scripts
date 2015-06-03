@@ -10,17 +10,8 @@ local prefabs =
     "campfirefire",
 }
 
-local function onignite(inst)
-    if not inst.components.cooker then
-        inst:AddComponent("cooker")
-    end
-end
-
 local function onextinguish(inst)
-    if inst.components.cooker then
-        inst:RemoveComponent("cooker")
-    end
-    if inst.components.fueled then
+    if inst.components.fueled ~= nil then
         inst.components.fueled:InitializeFuelLevel(0)
     end
 end
@@ -115,8 +106,9 @@ local function fn()
     --inst.components.burnable:SetFXLevel(2)
     inst.components.burnable:AddBurnFX("campfirefire", Vector3())
     inst:ListenForEvent("onextinguish", onextinguish)
-    inst:ListenForEvent("onignite", onignite)
 
+    -------------------------
+    inst:AddComponent("cooker")
     -------------------------
     inst:AddComponent("fueled")
     inst.components.fueled.maxfuel = TUNING.CAMPFIRE_FUEL_MAX

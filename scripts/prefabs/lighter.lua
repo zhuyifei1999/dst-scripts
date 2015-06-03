@@ -69,6 +69,19 @@ local function onupdatefueled(inst)
     end
 end
 
+local function oncook(inst, product, chef)
+    local fuel_delta = 0.01
+    if not chef:HasTag("expertchef") then
+        --burn
+        fuel_delta = 0.05
+        if chef.components.health ~= nil then
+            chef.components.health:DoFireDamage(5, inst, true)
+            chef:PushEvent("burnt")
+        end
+    end
+    inst.components.fueled:DoDelta(-inst.components.fueled.maxfuel * fuel_delta)
+end
+
 local function OnHaunt(inst, haunter)
     if math.random() <= TUNING.HAUNT_CHANCE_RARE then
         local x, y, z = inst.Transform:GetWorldPosition()
@@ -105,6 +118,11 @@ local function fn()
 
     inst.MiniMapEntity:SetIcon("lighter.png")
 
+    inst:AddTag("dangerouscooker")
+
+    --cooker (from cooker component) added to pristine state for optimization
+    inst:AddTag("cooker")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -118,8 +136,10 @@ local function fn()
     -----------------------------------
     inst:AddComponent("lighter")
     -----------------------------------
-
     inst:AddComponent("inventoryitem")
+    -----------------------------------
+    inst:AddComponent("cooker")
+    inst.components.cooker.oncookfn = oncook
     -----------------------------------
 
     inst:AddComponent("equippable")

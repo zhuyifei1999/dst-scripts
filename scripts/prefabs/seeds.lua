@@ -32,7 +32,7 @@ local function pickproduct(inst)
     return "carrot"
 end
 
-local function common(anim)
+local function common(anim, cookable)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -46,6 +46,11 @@ local function common(anim)
     inst.AnimState:PlayAnimation(anim)
     inst.AnimState:SetRayTestOnBB(true)
 
+    if cookable then
+        --cookable (from cookable component) added to pristine state for optimization
+        inst:AddTag("cookable")
+    end
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -58,6 +63,11 @@ local function common(anim)
 
     inst:AddComponent("edible")
     inst.components.edible.foodtype = FOODTYPE.SEEDS
+
+    if cookable then
+        inst:AddComponent("cookable")
+        inst.components.cookable.product = "seeds_cooked"
+    end
 
     inst:AddComponent("tradable")
     inst:AddComponent("inspectable")
@@ -76,7 +86,7 @@ local function common(anim)
 end
 
 local function raw()
-    local inst = common("idle")
+    local inst = common("idle", true)
 
     if not TheWorld.ismastersim then
         return inst
@@ -84,9 +94,6 @@ local function raw()
 
     inst.components.edible.healthvalue = 0
     inst.components.edible.hungervalue = TUNING.CALORIES_TINY/2
-
-    inst:AddComponent("cookable")
-    inst.components.cookable.product = "seeds_cooked"
 
     inst:AddComponent("bait")
     inst:AddComponent("plantable")
