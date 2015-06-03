@@ -10,30 +10,22 @@ local prefabs =
     "spoiled_food"
 }
 
-local function growtree(inst)
-	print ("GROWTREE")
-    inst.growtask = nil
-    inst.growtime = nil
-	local tree = SpawnPrefab("deciduoustree") 
-    if tree then 
-		tree.Transform:SetPosition(inst.Transform:GetWorldPosition() ) 
-        tree:growfromseed()--PushEvent("growfromseed")
-        inst:Remove()
-	end
+local function plant(inst, growtime)
+    local sapling = SpawnPrefab("acorn_sapling")
+    sapling:StartGrowing()
+    sapling.Transform:SetPosition(inst.Transform:GetWorldPosition())
+    sapling.SoundEmitter:PlaySound("dontstarve/wilson/plant_tree")
+    inst:Remove()
 end
 
-local function plant(inst, growtime)
-    inst:RemoveComponent("inventoryitem")
-    RemovePhysicsColliders(inst)
-    inst.AnimState:PlayAnimation("idle_planted")
-    inst.SoundEmitter:PlaySound("dontstarve/wilson/plant_tree")
-    inst.growtime = GetTime() + growtime
-    if inst.components.edible then
-        inst:RemoveComponent("edible")
-    end
-    print ("PLANT", growtime)
+local function ondeploy (inst, pt)
+    inst = inst.components.stackable:Get()
+    inst.Transform:SetPosition(pt:Get() )
+    local timeToGrow = GetRandomWithVariance(TUNING.ACORN_GROWTIME.base, TUNING.ACORN_GROWTIME.random)
+    plant(inst, timeToGrow)	
+
     -- Pacify a nearby monster tree
-    local ent = FindEntity(inst, 30, nil, {"birchnut", "monster"}, {"stump", "burnt", "FX", "NOCLICK","DECOR","INLIMBO"})
+    local ent = FindEntity(inst, TUNING.DECID_MONSTER_ACORN_CHILL_RADIUS, nil, {"birchnut", "monster"}, {"stump", "burnt", "FX", "NOCLICK","DECOR","INLIMBO"})
     if ent then
         if ent.monster_start_task ~= nil then
             ent.monster_start_task:Cancel()
@@ -47,47 +39,6 @@ local function plant(inst, growtime)
                 end)
             end
         end
-    end
-    inst.growtask = inst:DoTaskInTime(growtime, growtree)
-end
-
-local function ondeploy (inst, pt)
-    inst = inst.components.stackable:Get()
-    inst.Transform:SetPosition(pt:Get() )
-    inst:RemoveComponent("perishable")
-    local timeToGrow = GetRandomWithVariance(TUNING.ACORN_GROWTIME.base, TUNING.ACORN_GROWTIME.random)
-    plant(inst, timeToGrow)	
-end
-
-local function stopgrowing(inst)
-    if inst.growtask then
-        inst.growtask:Cancel()
-        inst.growtask = nil
-    end
-    inst.growtime = nil
-end
-
-local function restartgrowing(inst)
-    if inst and not inst.growtask then
-        local growtime = GetRandomWithVariance(TUNING.ACORN_GROWTIME.base, TUNING.ACORN_GROWTIME.random)
-        inst.growtime = GetTime() + growtime
-        inst.growtask = inst:DoTaskInTime(growtime, growtree)
-    end
-end
-
-local function describe(inst)
-    if inst.growtime then
-        return "PLANTED"
-    end
-end
-
-local function displaynamefn(inst)
-    return inst.growtime ~= nil and STRINGS.NAMES.ACORN_SAPLING or STRINGS.NAMES.ACORN
-end
-
-local function OnSave(inst, data)
-    if inst.growtime then
-        data.growtime = inst.growtime - GetTime()
     end
 end
 
@@ -117,8 +68,6 @@ local function fn()
     --cookable (from cookable component) added to pristine state for optimization
     inst:AddTag("cookable")
 
- 	inst.displaynamefn = displaynamefn
-
  	MakeDragonflyBait(inst, 3)
 
     inst.entity:SetPristine()
@@ -146,11 +95,8 @@ local function fn()
 	inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
 
     inst:AddComponent("inspectable")
-    inst.components.inspectable.getstatus = describe
     
 	MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
-	inst:ListenForEvent("onignite", stopgrowing)
-    inst:ListenForEvent("onextinguish", restartgrowing)
     MakeSmallPropagator(inst)
     
     inst:AddComponent("inventoryitem")
@@ -161,7 +107,6 @@ local function fn()
 
     MakeHauntableLaunchAndIgnite(inst)
     
-    inst.OnSave = OnSave
     inst.OnLoad = OnLoad
 
     return inst

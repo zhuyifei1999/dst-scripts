@@ -280,7 +280,9 @@ function Temperature:OnUpdate(dt, applyhealthdelta)
             end
         end
 
+        --print(ambient_temperature, "ambient_temperature")
         self.delta = (ambient_temperature + self.totalmodifiers + self:GetMoisturePenalty()) - self.current
+        --print(self.delta + self.current, "initial target")
 
         if self.inst.components.inventory ~= nil then
             for k, v in pairs(self.inst.components.inventory.equipslots) do
@@ -318,15 +320,21 @@ function Temperature:OnUpdate(dt, applyhealthdelta)
             end
         end
 
+        --print(self.delta + self.current, "after carried/equipped")
+
         -- Recently eaten temperatured food is inherently equipped heat/cold
         if self.bellytemperaturedelta ~= nil then
             self.delta = self.delta + self.bellytemperaturedelta
         end
 
+        --print(self.delta + self.current, "after belly")
+
         -- If very hot (basically only when have overheating screen effect showing) and under shelter, cool slightly
         if self.sheltered and self.current > TUNING.TREE_SHADE_COOLING_THRESHOLD then
             self.delta = self.delta - (self.current - TUNING.TREE_SHADE_COOLER)
         end
+
+        --print(self.delta + self.current, "after shelter")
 
         for i, v in ipairs(ents) do 
             if v ~= self.inst and
@@ -360,6 +368,8 @@ function Temperature:OnUpdate(dt, applyhealthdelta)
             end
         end
 
+        --print(self.delta + self.current, "after heaters")
+
         -- Winter insulation only affects you when it's cold out, summer insulation only helps when it's warm
         if ambient_temperature >= TUNING.STARTING_TEMP then
             -- it's warm out
@@ -380,6 +390,9 @@ function Temperature:OnUpdate(dt, applyhealthdelta)
             -- If they are heating up, do it at full speed, and faster if they're freezing
             self.rate = math.min(self.delta, self.current <= 0 and TUNING.THAW_DEGREES_PER_SEC or TUNING.WARM_DEGREES_PER_SEC)
         end
+
+        --print(self.delta + self.current, "after insulation")
+        --print(self.rate, "final rate\n\n")
     end
 
     self:SetTemperature(math.clamp(self.current + self.rate * dt, mintemp, maxtemp))

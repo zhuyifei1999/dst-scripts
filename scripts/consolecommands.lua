@@ -300,6 +300,7 @@ function c_give(prefab, count)
 			if inst then
 print("giving ",inst)
 				MainCharacter.components.inventory:GiveItem(inst)
+                SetDebugEntity(inst)
                 SuUsed("c_give_" .. inst.prefab)
 			end
 		end
@@ -714,8 +715,82 @@ function c_searchprefabs(str)
     else
         print("Found "..tostring(#res).." matches:")
         for i,v in ipairs(res) do
-            print("\t"..v.name.." ("..tostring(v.weight)..")")
+            print("\t"..v.name)
         end
         return res[1].name
+    end
+end
+
+function c_maintainhealth(player, percent)
+    player = player or ConsoleCommandPlayer()
+    if player.debug_maintainhealthtask ~= nil then
+        player.debug_maintainhealthtask:Cancel()
+    end
+    player.debug_maintainhealthtask = player:DoPeriodicTask(3, function(inst) inst.components.health:SetPercent(percent or 1) end)
+end
+
+function c_maintainsanity(player, percent)
+    player = player or ConsoleCommandPlayer()
+    if player.debug_maintainsanitytask ~= nil then
+        player.debug_maintainsanitytask:Cancel()
+    end
+    player.debug_maintainsanitytask = player:DoPeriodicTask(3, function(inst) inst.components.sanity:SetPercent(percent or 1) end)
+end
+
+function c_maintainhunger(player, percent)
+    player = player or ConsoleCommandPlayer()
+    if player.debug_maintainhungertask ~= nil then
+        player.debug_maintainhungertask:Cancel()
+    end
+    player.debug_maintainhungertask = player:DoPeriodicTask(3, function(inst) inst.components.hunger:SetPercent(percent or 1) end)
+end
+
+function c_maintaintemperature(player, temp)
+    player = player or ConsoleCommandPlayer()
+    if player.debug_maintaintemptask ~= nil then
+        player.debug_maintaintemptask:Cancel()
+    end
+    player.debug_maintaintemptask = player:DoPeriodicTask(3, function(inst) inst.components.temperature:SetTemperature(temp or 25) end)
+end
+
+function c_maintainmoisture(player, percent)
+    player = player or ConsoleCommandPlayer()
+    if player.debug_maintainmoisturetask ~= nil then
+        player.debug_maintainmoisturetask:Cancel()
+    end
+    player.debug_maintainmoisturetask = player:DoPeriodicTask(3, function(inst) inst.components.moisture:SetPercent(percent or 0) end)
+end
+
+-- Use this instead of godmode if you still want to see deltas and things
+function c_maintainall(player)
+    player = player or ConsoleCommandPlayer()
+    c_maintainhealth(player)
+    c_maintainsanity(player)
+    c_maintainhunger(player)
+    c_maintaintemperature(player)
+    c_maintainmoisture(player)
+end
+
+function c_cancelmaintaintasks(player)
+    player = player or ConsoleCommandPlayer()
+    if player.debug_maintainhealthtask ~= nil then
+        player.debug_maintainhealthtask:Cancel()
+        player.debug_maintainhealthtask = nil
+    end
+    if player.debug_maintainsanitytask ~= nil then
+        player.debug_maintainsanitytask:Cancel()
+        player.debug_maintainsanitytask = nil
+    end
+    if player.debug_maintainhungertask ~= nil then
+        player.debug_maintainhungertask:Cancel()
+        player.debug_maintainhungertask = nil
+    end
+    if player.debug_maintaintemptask ~= nil then
+        player.debug_maintaintemptask:Cancel()
+        player.debug_maintaintemptask = nil
+    end
+    if player.debug_maintainmoisturetask ~= nil then
+        player.debug_maintainmoisturetask:Cancel()
+        player.debug_maintainmoisturetask = nil
     end
 end

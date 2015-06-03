@@ -551,11 +551,8 @@ return {
 			POISON = "I've got to work a bit harder for this firewood.",
 			GENERIC = "Future firewood!",
 		},
-		ACORN = 
-		{
-		    GENERIC = "There's a tree hiding within.",
-		    PLANTED = "Grow strong young twigs!",
-		},
+		ACORN = "There's a tree hiding within.",
+        ACORN_SAPLING = "Grow strong young twigs!",
 		ACORN_COOKED = "I cooked the young tree.",
 		BIRCHNUTDRAKE = "A young tree warrior!",
 		EVERGREEN =
@@ -863,11 +860,8 @@ return {
 		},
 		PIGSKIN = "The hide of a pig creature.",
 		PIGTORCH = "Do these pigs worship Loge?",
-		PINECONE = 
-		{
-		    GENERIC = "This baby tree is well protected by spiky armour.",
-		    PLANTED = "It has shed its armour. Grow, baby tree!",
-		},
+		PINECONE = "This baby tree is well protected by spiky armour.",
+        PINECONE_SAPLING = "It has shed its armour. Grow, baby tree!",
 		PITCHFORK = "A weapon for farmers.",
 		PLANTMEAT = "I suppose it's close enough.",
 		PLANTMEAT_COOKED = "Still green, but it'll do.",

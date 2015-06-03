@@ -64,7 +64,7 @@ STRINGS=
     CHARACTER_DESCRIPTIONS =
     {
         wilson = "*Grows a magnificent beard",
-        willow = "*Resistant to fire damage\n*Can craft a sweet lighter\n*Has a fragile mind",
+        willow = "*Resistant to fire damage\n*Can craft a sweet lighter and a cuddly bear\n*Loses heat when insane",
         wendy = "*Haunted by her twin sister\n*Comfortable with darkness\n*Doesn't hit very hard",
         wolfgang = "*Gets stronger with a full belly\n*Is afraid of the dark and monsters",
         wx78 = "*Not a picky eater\n*Charged by lightning, damaged by water\n*Can upgrade with gears",

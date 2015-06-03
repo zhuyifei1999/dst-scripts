@@ -695,11 +695,8 @@ return {
 		EGGPLANT_COOKED = "Has no yolk! Yolk is strongest part!",
 		EGGPLANT_SEEDS = "Teensy fake egg plant.",
 		STUFFEDEGGPLANT = "I make yolk of other foods.",
-		ACORN = 
-		{
-		    GENERIC = "I could crush this tree-seed with my hands!",
-		    PLANTED = "It will be tree soon.",
-		},
+		ACORN = "I could crush this tree-seed with my hands!",
+        ACORN_SAPLING = "It will be tree soon.",
 		EVERGREEN =
 		{
 			BURNING = "I broke it.",
@@ -905,11 +902,8 @@ return {
 		},
 		PIGSKIN = "Why long butt? Ha ha, Wolfgang is funny man.",
 		PIGTORCH = "How is fire made?",
-		PINECONE = 
-		{
-		    GENERIC = "I could crush this tree-seed with my hands!",
-		    PLANTED = "It will be tree soon.",
-		},
+		PINECONE = "I could crush this tree-seed with my hands!",
+        PINECONE_SAPLING = "It will be tree soon.",
 		PITCHFORK = "Reminds me of childhood.",
 		PLANTMEAT = "What is this? Meat for baby man?",
 		PLANTMEAT_COOKED = "Is slightly better now.",

@@ -173,28 +173,26 @@ function LootDropper:GenerateLoot()
 end
 
 local function SplashOceanLoot(loot)
-	if not (loot.components.inventoryitem and loot.components.inventoryitem:IsHeld()) then
-		if not loot:IsOnValidGround() then
-			SpawnPrefab("splash_ocean").Transform:SetPosition(loot.Transform:GetWorldPosition())
-	        if loot:HasTag("irreplaceable") then
-	        	local x,y,z = FindSafeSpawnLocation(loot.Transform:GetWorldPosition())								
-	        	loot.Transform:SetPosition(x,y,z)
-	        else
-	        	loot:Remove()
-	        end
-	    end
-	end
+    if not (loot.components.inventoryitem ~= nil and loot.components.inventoryitem:IsHeld()) and
+        not loot:IsOnValidGround() then
+        SpawnPrefab("splash_ocean").Transform:SetPosition(loot.Transform:GetWorldPosition())
+        if loot:HasTag("irreplaceable") then
+            loot.Transform:SetPosition(FindSafeSpawnLocation(loot.Transform:GetWorldPosition()))
+        else
+            loot:Remove()
+        end
+    end
 end
 
 function LootDropper:SpawnLootPrefab(lootprefab, pt)
     if lootprefab ~= nil then
         local loot = SpawnPrefab(lootprefab)
-        if loot then
-			if pt == nil then
-				pt = self.inst:GetPosition()
-			end
+        if loot ~= nil then
+            if pt == nil then
+                pt = self.inst:GetPosition()
+            end
 
-			loot.Transform:SetPosition(pt:Get())
+            loot.Transform:SetPosition(pt:Get())
 
             if loot.components.inventoryitem ~= nil then
                 if self.inst.components.inventoryitem ~= nil then
@@ -204,21 +202,36 @@ function LootDropper:SpawnLootPrefab(lootprefab, pt)
                 end
             end
 
-			if loot.Physics ~= nil then
-				local angle = math.random()*2*PI
-				local speed = math.random()*2
-				loot.Physics:SetVel(speed*math.cos(angle), GetRandomWithVariance(8, 4), speed*math.sin(angle))
+            if loot.Physics ~= nil then
+                local angle = math.random() * 2 * PI
+                local speed = math.random() * 2
+                if loot:IsAsleep() then
+                    local radius = .5 * speed + (self.inst ~= nil and self.inst.Physics ~= nil and (loot.Physics:GetRadius() or 1) + (self.inst.Physics:GetRadius() or 1) or 0)
+                    loot.Transform:SetPosition(
+                        pt.x + math.cos(angle) * radius,
+                        0,
+                        pt.z + math.sin(angle) * radius
+                    )
 
-				if loot and loot.Physics and self.inst and self.inst.Physics then
-					pt = pt + Vector3(math.cos(angle), 0, math.sin(angle))*((loot.Physics:GetRadius() or 1) + (self.inst.Physics:GetRadius() or 1))
-					loot.Transform:SetPosition(pt:Get())
-				end
+                    SplashOceanLoot(loot)
+                else
+                    loot.Physics:SetVel(speed * math.cos(angle), GetRandomWithVariance(8, 4), speed * math.sin(angle))
 
-				loot:DoTaskInTime(1, SplashOceanLoot)
-			end
+                    if self.inst ~= nil and self.inst.Physics ~= nil then
+                        local radius = (loot.Physics:GetRadius() or 1) + (self.inst.Physics:GetRadius() or 1)
+                        loot.Transform:SetPosition(
+                            pt.x + math.cos(angle) * radius,
+                            pt.y,
+                            pt.z + math.sin(angle) * radius
+                        )
+                    end
 
-			return loot
-		end
+                    loot:DoTaskInTime(1, SplashOceanLoot)
+                end
+            end
+
+            return loot
+        end
     end
 end
 

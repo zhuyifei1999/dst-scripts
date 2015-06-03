@@ -1,8 +1,5 @@
 SaveIndex = Class(function(self)
     self:Init()
-
-    --V2C: #DELETEME (eventually) temp cleanup code
-    EraseFiles(nil, { "survival_1", "survival_2", "survival_3", "survival_4", "survival_5" })
 end)
 
 function SaveIndex:Init()
@@ -90,16 +87,6 @@ function SaveIndex:Load(callback)
                         v.world = v2.world or v.world
                         v.server = v2.server or v.server
                         v.session_id = v2.session_id or v.session_id
-
-                        --V2C: #DELETEME (eventually) temp backward compatibility
-                        if v2.modes ~= nil and v2.modes.survival ~= nil then
-                            if v.world.day == nil then
-                                v.world.day = v2.modes.survival.day
-                            end
-                            if v.world.options == nil then
-                                v.world.options = v2.modes.survival.options
-                            end
-                        end
                     end
                 end
                 print ("loaded "..filename)

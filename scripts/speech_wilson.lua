@@ -697,11 +697,8 @@ return {
 			POISON = "It looks unhappy about me stealing those Birchnuts!",
 			GENERIC = "It's all Leafy. Most of the time.",
 		},
-		ACORN = 
-		{
-		    GENERIC = "There's definitely something inside there.",
-		    PLANTED = "It'll be a tree soon!",
-		},
+		ACORN = "There's definitely something inside there.",
+        ACORN_SAPLING = "It'll be a tree soon!",
 		ACORN_COOKED = "Roasted to perfection.",
 		BIRCHNUTDRAKE = "A mad little nut.",
 		EVERGREEN =
@@ -1013,11 +1010,8 @@ return {
 		PIGSKIN = "It still has the tail on it.",
 		PIGTENT = "Smells like bacon.",
 		PIGTORCH = "Sure looks cozy.",
-		PINECONE = 
-		{
-		    GENERIC = "I can hear a tiny tree inside it, trying to get out.",
-		    PLANTED = "It'll be a tree soon!",
-		},
+		PINECONE = "I can hear a tiny tree inside it, trying to get out.",
+        PINECONE_SAPLING = "It'll be a tree soon!",
 		PITCHFORK = "Maxwell might be looking for this.",
 		PLANTMEAT = "That doesn't look very appealing.",
 		PLANTMEAT_COOKED = "At least it's warm now.",
