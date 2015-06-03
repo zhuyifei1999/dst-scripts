@@ -485,8 +485,8 @@ local events =
     EventHandler("armorbroke",
         function(inst, data)
             inst.sg:GoToState("armorbroke", data.armor)
-        end),        
-        
+        end),
+
     EventHandler("fishingcancel",
         function(inst)
             if inst.sg:HasStateTag("fishing") then
@@ -791,9 +791,6 @@ local states =
         tags = { "busy", "pausepredict", "nomorph" },
 
         onenter = function(inst)
-            --Don't process other queued events if we died this frame
-            inst.sg:ClearBufferedEvents()
-
             inst.components.locomotor:Stop()
             inst.components.locomotor:Clear()
             inst:ClearBufferedAction()
@@ -805,6 +802,9 @@ local states =
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:RemotePausePrediction()
             end
+
+            --Don't process other queued events if we died this frame
+            inst.sg:ClearBufferedEvents()
         end,
 
         onexit = function(inst)

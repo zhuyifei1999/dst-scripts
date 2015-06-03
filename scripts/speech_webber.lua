@@ -554,11 +554,8 @@ return {
 			POISON = "What're you so mad about?",
 			GENERIC = "My, what nice foliage you have.",
 		},
-		ACORN = 
-		{
-		    GENERIC = "Tree or food, there's something inside.",
-		    PLANTED = "May you have a long and free life.",
-		},
+		ACORN = "Tree or food, there's something inside.",
+        ACORN_SAPLING = "May you have a long and free life.",
 		ACORN_COOKED = "Roasted on an open fire.",
 		BIRCHNUTDRAKE = "So that's what's inside!",
 		EVERGREEN =
@@ -863,11 +860,8 @@ return {
 		},
 		PIGSKIN = "Take that!",
 		PIGTORCH = "If only we could get closer.",
-		PINECONE = 
-		{
-		    GENERIC = "It's bursting with life.",
-		    PLANTED = "Grow, grow!",
-		},
+		PINECONE = "It's bursting with life.",
+        PINECONE_SAPLING = "Grow, grow!",
 		PITCHFORK = "A good tool to play in the dirt.",
 		PLANTMEAT = "It's all squishy.",
 		PLANTMEAT_COOKED = "It smells kind of rotten.",

@@ -651,11 +651,8 @@ return {
 		EGGPLANT = "Just another boring plant.",
 		EGGPLANT_COOKED = "A little more refined, at least.",
 		EGGPLANT_SEEDS = "This labour is beneath me.",
-		ACORN = 
-		{
-		    GENERIC = "A more outdoorsy type might be able to make something of this.",
-		    PLANTED = "Huh, it seems to belong in the ground.",
-		},
+		ACORN = "A more outdoorsy type might be able to make something of this.",
+        ACORN_SAPLING = "Huh, it seems to belong in the ground.",
 		EVERGREEN =
 		{
 			BURNING = "Oops.",
@@ -889,11 +886,8 @@ return {
 		PIGSKIN = "It was him or me.",
 		PIGTENT = "That's just nasty.",
 		PIGTORCH = "Great. Now they have fire.",
-		PINECONE = 
-		{
-		    GENERIC = "A more outdoorsy type might be able to make something of this.",
-		    PLANTED = "Huh, it seems to belong in the ground.",
-		},
+		PINECONE = "A more outdoorsy type might be able to make something of this.",
+        PINECONE_SAPLING = "Huh, it seems to belong in the ground.",
 		PITCHFORK = "The tool of choice for perfectionists.",
 		PLANTMEAT = "A feeble attempt to trick the weaker minded.",
 		PLANTMEAT_COOKED = "The heat has made this a suitable meal.",

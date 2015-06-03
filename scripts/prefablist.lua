@@ -316,6 +316,7 @@ PREFABFILES = {
   "pinecone",
   "pitchfork",
   "plantables",
+  "planted_tree",
   "plant_normal",
   "player_classified",
   "player_common",

@@ -704,11 +704,8 @@ return {
 		EGGPLANT = "Almost a deadly nightshade. Almost.",
 		EGGPLANT_COOKED = "Cooking this nightshade made it even less deadly.",
 		EGGPLANT_SEEDS = "It's a nightshade seed.",
-		ACORN = 
-		{
-		    GENERIC = "A tiny life, ensconced in brittle death.",
-		    PLANTED = "A tree will grow soon.",
-		},
+		ACORN = "A tiny life, ensconced in brittle death.",
+        ACORN_SAPLING = "A tree will grow soon.",
 		EVERGREEN =
 		{
 			BURNING = "It's burning brightly.",
@@ -905,11 +902,8 @@ return {
 		},
 		PIGSKIN = "The hide of a pig that once was.",
 		PIGTORCH = "It cuts at the darkness.",
-		PINECONE = 
-		{
-		    GENERIC = "A tiny life, ensconced in brittle death.",
-		    PLANTED = "A tree will grow soon.",
-		},
+		PINECONE = "A tiny life, ensconced in brittle death.",
+        PINECONE_SAPLING = "A tree will grow soon.",
 		PITCHFORK = "What a devilish tool!",
 		PLANTMEAT = "It has a foul smell.",
 		PLANTMEAT_COOKED = "It's only slightly more appealing.",

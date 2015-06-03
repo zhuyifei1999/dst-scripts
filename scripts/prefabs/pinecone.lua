@@ -4,29 +4,12 @@ local assets =
     Asset("ANIM", "anim/pinecone.zip"),
 }
 
-local function growtree(inst)
-    --print ("GROWTREE")
-    inst.growtask = nil
-    inst.growtime = nil
-    inst.issapling:set(false)
-    local tree = SpawnPrefab("evergreen_short")
-    if tree then
-        tree.Transform:SetPosition(inst.Transform:GetWorldPosition())
-        tree:growfromseed()--PushEvent("growfromseed")
-        inst:Remove()
-    end
-end
-
 local function plant(inst, growtime)
-    inst:RemoveComponent("inventoryitem")
-    MakeHauntableIgnite(inst)
-    RemovePhysicsColliders(inst)
-    inst.AnimState:PlayAnimation("idle_planted")
-    inst.SoundEmitter:PlaySound("dontstarve/wilson/plant_tree")
-    inst.growtime = GetTime() + growtime
-    inst.issapling:set(true)
-    --print ("PLANT", growtime)
-    inst.growtask = inst:DoTaskInTime(growtime, growtree)
+    local sapling = SpawnPrefab("pinecone_sapling")
+    sapling:StartGrowing()
+    sapling.Transform:SetPosition(inst.Transform:GetWorldPosition())
+    sapling.SoundEmitter:PlaySound("dontstarve/wilson/plant_tree")
+    inst:Remove()
 end
 
 local function ondeploy(inst, pt)
@@ -55,45 +38,11 @@ local function ondeploy(inst, pt)
                 played_sound = true
             end
         end
-        
-    end
-    
-end
-
-local function stopgrowing(inst)
-    if inst.growtask then
-        inst.growtask:Cancel()
-        inst.growtask = nil
-    end
-    inst.growtime = nil
-    inst.issapling:set(false)
-end
-
-local function restartgrowing(inst)
-    if inst and not inst.growtask then
-        local growtime = GetRandomWithVariance(TUNING.PINECONE_GROWTIME.base, TUNING.PINECONE_GROWTIME.random)
-        inst.growtime = GetTime() + growtime
-        inst.growtask = inst:DoTaskInTime(growtime, growtree)
-    end
-end
-
-local function describe(inst)
-    if inst.growtime then
-        return "PLANTED"
-    end
-end
-
-local function displaynamefn(inst)
-    return STRINGS.NAMES[inst.issapling:value() and "PINECONE_SAPLING" or "PINECONE"]
-end
-
-local function OnSave(inst, data)
-    if inst.growtime then
-        data.growtime = inst.growtime - GetTime()
     end
 end
 
 local function OnLoad(inst, data)
+    dumptable(data)
     if data and data.growtime then
         plant(inst, data.growtime)
     end
@@ -112,11 +61,6 @@ local function fn()
     inst.AnimState:SetBank("pinecone")
     inst.AnimState:SetBuild("pinecone")
     inst.AnimState:PlayAnimation("idle")
-
-    inst.issapling = net_bool(inst.GUID, "issapling")
-    inst.issapling:set(false)
-
-    inst.displaynamefn = displaynamefn
 
     inst:AddTag("cattoy")
     MakeDragonflyBait(inst, 3)
@@ -137,14 +81,11 @@ local function fn()
     inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
 
     inst:AddComponent("inspectable")
-    inst.components.inspectable.getstatus = describe
 
     inst:AddComponent("fuel")
     inst.components.fuel.fuelvalue = TUNING.SMALL_FUEL
 
     MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
-    inst:ListenForEvent("onignite", stopgrowing)
-    inst:ListenForEvent("onextinguish", restartgrowing)
     MakeSmallPropagator(inst)
 
     inst:AddComponent("inventoryitem")
@@ -155,7 +96,7 @@ local function fn()
     inst.components.deployable:SetDeployMode(DEPLOYMODE.PLANT)
     inst.components.deployable.ondeploy = ondeploy
 
-    inst.OnSave = OnSave
+    -- This is left in for "save file upgrading", June 3 2015. We can remove it after some time.
     inst.OnLoad = OnLoad
 
     return inst

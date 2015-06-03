@@ -390,14 +390,16 @@ function StateGraphInstance:HandleEvents()
     assert(self.currentstate ~= nil, "we are not in a state!")
     
     if self.inst:IsValid() then
-        for k, event in ipairs(self.bufferedevents) do
+        local buff_events = self.bufferedevents
+        for k, event in ipairs(buff_events) do
             if not self.currentstate:HandleEvent(self, event.name, event.data) then
                 local handler = self.sg.events[event.name]
                 if handler ~= nil then
                     handler.fn(self.inst, event.data)
                 end
             end
-            if #self.bufferedevents <= 0 then
+            if buff_events ~= self.bufferedevents then
+                --V2C: This happens if ClearBufferedEvents() is called in a state handler
                 return
             end
         end

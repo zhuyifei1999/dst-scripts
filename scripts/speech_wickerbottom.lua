@@ -527,11 +527,8 @@ return
         MANDRAKESOUP = "Mandragora officinarum, prepared as a soup in the name of discovery.",
 		KRAMPUS = "It's a mythological holiday monster.",
 		KRAMPUS_SACK = "It seems bigger inside than out.",
-        PINECONE = 
-        {
-            GENERIC = "Conifer seeds encased in a mature strobilus.",
-            PLANTED = "Conifer seeds approaching maturity.",
-        },
+        PINECONE = "Conifer seeds encased in a mature strobilus.",
+        PINECONE_SAPLING = "Conifer seeds approaching maturity.",
         ARMORWOOD = "Crude plate mail cobbled together from log sections.",
 		ARMOR_SANITY = "Protective shroud which transfers attacks to another dimension.",
         ASH =
@@ -868,11 +865,8 @@ return
         BUTTERFLYMUFFIN = "Who knew that butterflies made such nice baked goods?",
         BUTTER = "Lepidopterous lipids?",
 
-        ACORN = 
-        {
-            GENERIC = "Deciduous seeds encased in a Pericarp.",
-            PLANTED = "Deciduous seeds approaching maturity.",
-        },
+        ACORN = "Deciduous seeds encased in a Pericarp.",
+        ACORN_SAPLING = "Deciduous seeds approaching maturity.",
         EVERGREEN = {
             GENERIC = "A generically coniferous tree.",
             CHOPPED = "It has been harvested.",

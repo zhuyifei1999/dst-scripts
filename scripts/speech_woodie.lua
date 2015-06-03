@@ -679,11 +679,8 @@ return {
 		EGGPLANT = "I bet birds have something to do with this.",
 		EGGPLANT_COOKED = "Suspiciously birdy.",
 		EGGPLANT_SEEDS = "Hmmm. I'm not sure.",
-		ACORN = 
-		{
-		    GENERIC = "I should grow it and then chop it down!",
-		    PLANTED = "Here comes a tree!",
-		},
+		ACORN = "I should grow it and then chop it down!",
+        ACORN_SAPLING = "Here comes a tree!",
 		EVERGREEN =
 		{
 			BURNING = "Nooo! I could have chopped it!",
@@ -913,11 +910,8 @@ return {
 		},
 		PIGSKIN = "Bacon with tail.",
 		PIGTORCH = "How did they do that without thumbs?",
-		PINECONE = 
-		{
-		    GENERIC = "I should grow it and then chop it down!",
-		    PLANTED = "Here comes a tree!",
-		},
+		PINECONE = "I should grow it and then chop it down!",
+        PINECONE_SAPLING = "Here comes a tree!",
 		
 		PITCHFORK = "This really isn't my style.",
 		PLANTMEAT = "That's gross!",

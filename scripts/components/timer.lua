@@ -6,11 +6,12 @@ local Timer = Class(function(self, inst)
 end)
 
 function Timer:GetDebugString()
-	local str = "\n"
+	local str = ""
 		for k,v in pairs(self.timers) do
-			str = str.."	--"..k.."\n"
-			str = str..string.format("		--timeleft: %f \n", self:GetTimeLeft(k) or 0)
-			str = str..string.format("		--paused: %s \n", tostring(self:IsPaused(k) == true))
+			str = str..string.format("\n	--%s: timeleft: %.2f paused: %s",
+                                    k,
+                                    self:GetTimeLeft(k) or 0,
+                                    tostring(self:IsPaused(k) == true))
 		end
 	return str
 end
@@ -19,7 +20,7 @@ function Timer:TimerExists(name)
 	return self.timers[name] ~= nil
 end
 
-function Timer:StartTimer(name, time, paused)
+function Timer:StartTimer(name, time, paused, initialtime_override)
 	
 	if self:TimerExists(name) then
 		print("A timer with the name ", name, " already exists on ", self.inst, "!")
@@ -32,7 +33,7 @@ function Timer:StartTimer(name, time, paused)
 	self.timers[name].timer = self.inst:DoTaskInTime(time, timerfn)
 	self.timers[name].timeleft = time
 	self.timers[name].end_time = GetTime() + time
-	self.timers[name].initial_time = time
+	self.timers[name].initial_time = initialtime_override or time
 	self.timers[name].paused = false
 
 	if paused then
@@ -133,29 +134,9 @@ end
 function Timer:OnLoad(data)
 	if data.timers then
 		for k,v in pairs(data.timers) do
-			self:ResumeTimerOnLoad(k, v.initial_time, v.timeleft, v.paused)
+            self:StopTimer(k)
+            self:StartTimer(k, v.timeleft, v.paused, v.initial_time)
 		end
-	end
-end
-
-function Timer:ResumeTimerOnLoad(name, initial_time, timeleft, paused)
-	
-	if self:TimerExists(name) then
-		print("A timer with the name ", name, " already exists on ", self.inst, "!")
-		return
-	end
-
-	local timerfn = function() self.inst:PushEvent("timerdone", {name = name}) self:StopTimer(name) end
-	self.timers[name] = {}
-	self.timers[name].timerfn = timerfn
-	self.timers[name].timer = self.inst:DoTaskInTime(timeleft, timerfn)
-	self.timers[name].timeleft = timeleft
-	self.timers[name].end_time = GetTime() + timeleft
-	self.timers[name].initial_time = initial_time
-	self.timers[name].paused = false
-
-	if paused then
-		self:PauseTimer(name)
 	end
 end
 

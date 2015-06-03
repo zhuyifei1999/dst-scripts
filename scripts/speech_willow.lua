@@ -722,11 +722,8 @@ return {
 			CHOPPED = "One less tree in the world.",
 			GENERIC = "It looks like it would burn well.",
 		},
-		ACORN = 
-		{
-		    GENERIC = "Hey there, tree seed.",
-		    PLANTED = "You'll be a real tree soon.",
-		},
+		ACORN = "Hey there, tree seed.",
+        ACORN_SAPLING = "You'll be a real tree soon.",
 		EVERGREEN =
 		{
 			BURNING = "YES! BURN!",
@@ -938,11 +935,8 @@ return {
 		},
 		PIGSKIN = "Ha ha. A pig's butt.",
 		PIGTORCH = "These pigs sure know how to have a good time.",
-		PINECONE = 
-		{
-		    GENERIC = "Hey there, tree seed.",
-		    PLANTED = "You'll be a real tree soon.",
-		},
+		PINECONE = "Hey there, tree seed.",
+        PINECONE_SAPLING = "You'll be a real tree soon.",
 		PITCHFORK = "Three times the pointiness.",
 		PLANTMEAT = "Eww, it's all slimy.",
 		PLANTMEAT_COOKED = "Fire makes everything better.",
