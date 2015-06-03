@@ -1,55 +1,53 @@
+--Inventory item version
 local assets =
 {
-    Asset("ANIM", "anim/abigail_flower.zip"),
+    Asset("ANIM", "anim/bernie.zip"),
+    Asset("ANIM", "anim/bernie_build.zip"),
 }
 
 local prefabs =
 {
-    "abigail",
-    "flower",
+    "beardhair",
+    "beefalowool",
+    "silk",
     "small_puff",
 }
 
 local function getstatus(inst)
-    if inst._chargestate == 3 then
-        return inst.components.inventoryitem.owner ~= nil and
-            "HAUNTED_POCKET" or "HAUNTED_GROUND"
-    end
-
-    local time_charge = inst.components.cooldown:GetTimeToCharged()
-    if time_charge < TUNING.TOTAL_DAY_TIME * .5 then
-        return "SOON"
-    elseif time_charge < TUNING.TOTAL_DAY_TIME * 2 then
-        return "MEDIUM"
-    else
-        return "LONG"
-    end
+    return inst.components.fueled:IsEmpty() and "BROKEN" or "GENERIC"
 end
 
 local function activate(inst)
-    inst.SoundEmitter:PlaySound("dontstarve/common/haunted_flower_LP", "loop")
-    inst:ListenForEvent("entity_death", inst._onentitydeath, TheWorld)
+    if inst._activatetask == nil then
+        inst._activatetask = inst:DoPeriodicTask(1, inst._onplayergoinsane)
+    end
 end
 
 local function deactivate(inst)
-    inst.SoundEmitter:KillAllSounds()
-    inst:RemoveEventCallback("entity_death", inst._onentitydeath, TheWorld)
+    if inst._activatetask ~= nil then
+        inst._activatetask:Cancel()
+        inst._activatetask = nil
+    end
 end
 
 local function IsValidLink(inst, player)
-    return player:HasTag("ghostlyfriend") and player.abigail == nil
+    return player:HasTag("pyromaniac") and player.bernie == nil
 end
 
 local function dodecay(inst)
-    local x, y, z = inst.Transform:GetWorldPosition()
+    if inst.components.lootdropper == nil then
+        inst:AddComponent("lootdropper")
+    end
+    inst.components.lootdropper:SpawnLootPrefab("beardhair")
+    inst.components.lootdropper:SpawnLootPrefab("beefalowool")
+    inst.components.lootdropper:SpawnLootPrefab("silk")
+    SpawnPrefab("small_puff").Transform:SetPosition(inst.Transform:GetWorldPosition())
     inst:Remove()
-    SpawnPrefab("flower").Transform:SetPosition(x, y, z)
-    SpawnPrefab("small_puff").Transform:SetPosition(x, y, z)
 end
 
 local function startdecay(inst)
     if inst._decaytask == nil then
-        inst._decaytask = inst:DoTaskInTime(TUNING.ABIGAIL_FLOWER_DECAY_TIME, dodecay)
+        inst._decaytask = inst:DoTaskInTime(TUNING.BERNIE_DECAY_TIME, dodecay)
         inst._decaystart = GetTime()
     end
 end
@@ -73,60 +71,50 @@ end
 
 local function onload(inst, data)
     if inst._decaytask ~= nil and data ~= nil and data.decaytime ~= nil then
-        local remaining = math.max(0, TUNING.ABIGAIL_FLOWER_DECAY_TIME - data.decaytime)
+        local remaining = math.max(0, TUNING.BERNIE_DECAY_TIME - data.decaytime)
         inst._decaytask:Cancel()
         inst._decaytask = inst:DoTaskInTime(remaining, dodecay)
-        inst._decaystart = GetTime() + remaining - TUNING.ABIGAIL_FLOWER_DECAY_TIME
+        inst._decaystart = GetTime() + remaining - TUNING.BERNIE_DECAY_TIME
     end
 end
 
 local function updatestate(inst)
-    if inst._playerlink ~= nil and inst.components.cooldown:IsCharged() then
-        if inst._chargestate ~= 3 then
-            inst._chargestate = 3
-            inst.components.inventoryitem:ChangeImageName("abigail_flower_haunted")
-            inst.AnimState:PlayAnimation("haunted_pre")
-            inst.AnimState:PushAnimation("idle_haunted_loop", true)
-            inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
-            if inst.components.inventoryitem.owner == nil then
-                activate(inst)
-            end
+    if inst.components.fueled:IsEmpty() then
+        if not inst._isdeadstate then
+            inst._isdeadstate = true
+            inst.AnimState:PlayAnimation("dead_loop")
+            inst.components.inventoryitem:ChangeImageName("bernie_dead")
         end
+    elseif inst._isdeadstate then
+        inst._isdeadstate = nil
+        inst.AnimState:PlayAnimation("inactive")
+        inst.components.inventoryitem:ChangeImageName("bernie_dead")
+    end
+
+    if inst._playerlink ~= nil and
+        not inst.components.fueled:IsEmpty() and
+        inst.components.inventoryitem.owner == nil then
+        activate(inst)
     else
-        if inst._chargestate == 3 then
-            inst.AnimState:SetBloomEffectHandle("")
-            deactivate(inst)
-        end
-        if inst._playerlink ~= nil and inst.components.cooldown:GetTimeToCharged() < TUNING.TOTAL_DAY_TIME then
-            if inst._chargestate ~= 2 then
-                inst._chargestate = 2
-                inst.components.inventoryitem:ChangeImageName("abigail_flower2")
-                inst.AnimState:PlayAnimation("idle_2")
-            end
-        elseif inst._chargestate ~= 1 then
-            inst._chargestate = 1
-            inst.components.inventoryitem:ChangeImageName("abigail_flower")
-            inst.AnimState:PlayAnimation("idle_1")
-        end
+        deactivate(inst)
     end
 end
 
-local function ondeath(inst, deadthing)
-    if inst._chargestate == 3 and
-        inst._playerlink ~= nil and
-        inst._playerlink.abigail == nil and
+local function tryreanimate(inst)
+    if inst._playerlink ~= nil and
+        inst._playerlink.bernie == nil and
+        inst._playerlink.components.sanity:IsCrazy() and
         inst._playerlink.components.leader ~= nil and
         inst.components.inventoryitem.owner == nil and
-        deadthing ~= nil and
-        not deadthing:HasTag("wall") and
-        inst:GetDistanceSqToInst(deadthing) < 256 --[[16 * 16]] then
+        not inst.components.fueled:IsEmpty() and
+        inst:GetDistanceSqToInst(inst._playerlink) < 256 --[[16 * 16]] then
 
-        inst._playerlink.components.sanity:DoDelta(-TUNING.SANITY_HUGE)
-        local abigail = SpawnPrefab("abigail")
-        if abigail ~= nil then
-            abigail.Transform:SetPosition(inst.Transform:GetWorldPosition())
-            abigail.SoundEmitter:PlaySound("dontstarve/common/ghost_spawn")
-            abigail:LinkToPlayer(inst._playerlink)
+        local active = SpawnPrefab("bernie_active")
+        if active ~= nil then
+            --Transform fuel % into health.
+            active.components.health:SetPercent(inst.components.fueled:GetPercent())
+            active.Transform:SetPosition(inst.Transform:GetWorldPosition())
+            active:LinkToPlayer(inst._playerlink)
             inst:Remove()
         end
     end
@@ -135,17 +123,17 @@ end
 local function linktoplayer(inst, player)
     if player ~= nil and IsValidLink(inst, player) then
         inst:ListenForEvent("onremove", inst._onremoveplayer, player)
-        inst:ListenForEvent("killed", inst._onplayerkillthing, player)
+        inst:ListenForEvent("goinsane", inst._onplayergoinsane, player)
         inst._playerlink = player
-        player.abigail_flowers[inst] = true
+        player.bernie_bears[inst] = true
     end
 end
 
 local function unlink(inst)
     if inst._playerlink ~= nil then
         inst:RemoveEventCallback("onremove", inst._onremoveplayer, inst._playerlink)
-        inst:RemoveEventCallback("killed", inst._onplayerkillthing, inst._playerlink)
-        inst._playerlink.abigail_flowers[inst] = nil
+        inst:RemoveEventCallback("goinsane", inst._onplayergoinsane, inst._playerlink)
+        inst._playerlink.bernie_bears[inst] = nil
         inst._playerlink = nil
     end
 end
@@ -187,10 +175,10 @@ end
 
 local function toground(inst)
     unstore(inst)
-    if inst._chargestate == 3 then
-        activate(inst)
-    elseif inst._playerlink == nil then
+    if inst._playerlink == nil then
         startdecay(inst)
+    elseif not inst.components.fueled:IsEmpty() then
+        activate(inst)
     end
 end
 
@@ -213,22 +201,25 @@ local function refresh(inst)
     end
 end
 
+local function externallinktoplayer(inst, player)
+    linktoplayer(inst, player)
+    updatestate(inst)
+end
+
 local function fn()
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
-    inst.entity:AddMiniMapEntity()
+    inst.entity:AddDynamicShadow()
     inst.entity:AddNetwork()
-
-    inst.AnimState:SetBank("abigail_flower")
-    inst.AnimState:SetBuild("abigail_flower")
-    inst.AnimState:PlayAnimation("idle_1")
 
     MakeInventoryPhysics(inst)
 
-    inst.MiniMapEntity:SetIcon("abigail_flower.png")
+    inst.AnimState:SetBank("bernie")
+    inst.AnimState:SetBuild("bernie_build")
+    inst.AnimState:PlayAnimation("inactive")
 
     inst.entity:SetPristine()
 
@@ -236,13 +227,14 @@ local function fn()
         return inst
     end
 
-    inst._chargestate = nil
+    inst._isdeadstate = nil
     inst._playerlink = nil
     inst._container = nil
     inst._decaytask = nil
     inst._decaystart = nil
+    inst._activatetask = nil
 
-    inst._onremoveplayer = function()
+    inst._onremoveplayer = function() 
         unlink(inst)
         updatestate(inst)
         if inst.components.inventoryitem.owner == nil then
@@ -250,12 +242,8 @@ local function fn()
         end
     end
 
-    inst._onplayerkillthing = function(player, data)
-        ondeath(inst, data.victim)
-    end
-
-    inst._onentitydeath = function(world, data)
-        ondeath(inst, data.inst)
+    inst._onplayergoinsane = function()
+        tryreanimate(inst)
     end
 
     inst._ontogglecontainer = function(container)
@@ -266,19 +254,16 @@ local function fn()
         unstore(inst)
     end
 
-    inst:AddComponent("inventoryitem")
-    -----------------------------------
-    
     inst:AddComponent("inspectable")
     inst.components.inspectable.getstatus = getstatus
 
-    inst:AddComponent("cooldown")
-    inst.components.cooldown.cooldown_duration = TUNING.TOTAL_DAY_TIME + math.random()*TUNING.TOTAL_DAY_TIME*2
-    inst.components.cooldown.onchargedfn = updatestate
-    inst.components.cooldown.startchargingfn = updatestate
-    inst.components.cooldown:StartCharging()
-    
-    inst:WatchWorldState("phase", updatestate)
+    inst:AddComponent("inventoryitem")
+
+    inst:AddComponent("fueled")
+    inst.components.fueled.fueltype = FUELTYPE.USAGE
+    inst.components.fueled:InitializeFuelLevel(TUNING.BERNIE_FUEL)
+    inst.components.fueled:SetSectionCallback(function() updatestate(inst) end)
+
     updatestate(inst)
     startdecay(inst)
 
@@ -291,8 +276,9 @@ local function fn()
     inst.OnSave = onsave
     inst.OnRemoveEntity = unlink
     inst.Refresh = refresh
+    inst.LinkToPlayer = externallinktoplayer
 
     return inst
 end
 
-return Prefab("common/abigail_flower", fn, assets, prefabs)
+return Prefab("common/bernie_inactive", fn, assets, prefabs)

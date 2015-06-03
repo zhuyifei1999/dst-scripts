@@ -11,6 +11,14 @@ return
     },
     DESCRIBE=
     {
+        BERNIE_INACTIVE =
+        {
+            BROKEN = "That bear is in need of repair.",
+            GENERIC = "It's a teddy bear.",
+        },
+        BERNIE_ACTIVE = "That teddy bear seems to be animated somehow.",
+        
+
         GLOMMER = "A bizarre specimen of the insecta class.",
         GLOMMERFLOWER = 
         {

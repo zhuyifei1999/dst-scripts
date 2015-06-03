@@ -44,6 +44,7 @@ local Health = Class(function(self, inst)
     self.takingfiredamage = false
     self.takingfiredamagetime = 0
     self.fire_damage_scale = 1
+    self.fire_timestart = 1
     self.nofadeout = false
     self.penalty = 0
     self.absorb = 0
@@ -106,7 +107,6 @@ function Health:OnLoad(data)
 end
 
 local FIRE_TIMEOUT = .5
-local FIRE_TIMESTART = 1.0
 
 function Health:DoFireDamage(amount, doer, instant)
     if not self.invincible and self.fire_damage_scale > 0 then
@@ -117,11 +117,11 @@ function Health:DoFireDamage(amount, doer, instant)
             self.inst:PushEvent("startfiredamage")
             ProfileStatsAdd("onfire")
         end
-        
+
         local time = GetTime()
         self.lastfiredamagetime = time
         
-        if (instant or time - self.takingfiredamagestarttime > FIRE_TIMESTART) and amount > 0 then
+        if (instant or time - self.takingfiredamagestarttime > self.fire_timestart) and amount > 0 then
             self:DoDelta(-amount*self.fire_damage_scale, false, "fire")
             self.inst:PushEvent("firedamage")       
         end

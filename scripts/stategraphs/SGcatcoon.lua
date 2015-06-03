@@ -192,7 +192,7 @@ local states=
                 local friendmax = inst.friendGiftPrefabs and #inst.friendGiftPrefabs or 7
                 local MAX_RETCHES = (inst.components.follower and inst.components.follower.leader) and friendmax or neutralmax
                 local rand = math.random()
-                print("Retching:", inst.numretches, .8/inst.numretches, rand)
+                --print("Retching:", inst.numretches, .8/inst.numretches, rand)
                 if inst.numretches >= MAX_RETCHES or rand < (.8/inst.numretches) then
                     inst.sg:GoToState("hairball")
                 else

@@ -41,6 +41,8 @@ PREFABFILES = {
   "beefalowool",
   "beehive",
   "beemine",
+  "bernie_active",
+  "bernie_inactive",
   "berrybush",
   "birchnutdrake",
   "birdcage",

@@ -90,6 +90,14 @@ return {
 	},
 	DESCRIBE =
 	{
+
+		BERNIE_INACTIVE =
+		{
+			BROKEN = "HE HAS DIED.",
+			GENERIC = "IT'S SO CUDDLY!",
+		},
+		BERNIE_ACTIVE = "HANG IN THERE, BEAR!",
+		
 		GLOMMER = "SENTIENT VERSION OF STONE INSECT",
         GLOMMERFLOWER = 
         {

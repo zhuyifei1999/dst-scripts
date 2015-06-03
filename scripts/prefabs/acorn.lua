@@ -114,6 +114,9 @@ local function fn()
     inst:AddTag("cattoy")
  	inst:AddTag("show_spoilage")
 
+    --cookable (from cookable component) added to pristine state for optimization
+    inst:AddTag("cookable")
+
  	inst.displaynamefn = displaynamefn
 
  	MakeDragonflyBait(inst, 3)

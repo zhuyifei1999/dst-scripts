@@ -8,7 +8,7 @@ local prefabs =
     "froglegs_cooked",
 }
 
-local function commonfn(anim, dryable)
+local function commonfn(anim, dryable, cookable)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -27,6 +27,11 @@ local function commonfn(anim, dryable)
     if dryable then
         --dryable (from dryable component) added to pristine state for optimization
         inst:AddTag("dryable")
+    end
+
+    if cookable then
+        --cookable (from cookable component) added to pristine state for optimization
+        inst:AddTag("cookable")
     end
 
     inst.entity:SetPristine()
@@ -49,6 +54,11 @@ local function commonfn(anim, dryable)
         inst.components.dryable:SetDryTime(TUNING.DRY_FAST)
     end
 
+    if cookable then
+        inst:AddComponent("cookable")
+        inst.components.cookable.product = "froglegs_cooked"
+    end
+
     inst:AddComponent("stackable")
     inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
 
@@ -67,7 +77,7 @@ local function commonfn(anim, dryable)
 end
 
 local function defaultfn()
-    local inst = commonfn("idle", true)
+    local inst = commonfn("idle", true, true)
 
     if not TheWorld.ismastersim then
         return inst
@@ -77,9 +87,6 @@ local function defaultfn()
     inst.components.edible.hungervalue = TUNING.CALORIES_SMALL
     inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)
     inst.components.edible.sanityvalue = -TUNING.SANITY_SMALL
-
-    inst:AddComponent("cookable")
-    inst.components.cookable.product = "froglegs_cooked"
 
     return inst
 end

@@ -132,12 +132,12 @@ local function OnHatchState(inst, state)
 end
 
 local function OnEaten(inst, eater)
-    if eater.components.talker then
+    if eater.components.talker ~= nil then
         eater.components.talker:Say( GetString(eater, "EAT_FOOD", "TALLBIRDEGG_CRACKED") )
     end
 end
 
-local function commonfn(anim, withsound)
+local function commonfn(anim, withsound, cookable)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -155,6 +155,11 @@ local function commonfn(anim, withsound)
 
     inst:AddTag("cattoy")
 
+    if cookable then
+        --cookable (from cookable component) added to pristine state for optimization
+        inst:AddTag("cookable")
+    end
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -168,11 +173,16 @@ local function commonfn(anim, withsound)
     inst:AddComponent("edible")
     inst.components.edible.foodtype = FOODTYPE.MEAT
 
+    if cookable then
+        inst:AddComponent("cookable")
+        inst.components.cookable.product = "tallbirdegg_cooked"
+    end
+
     return inst
 end
 
 local function defaultfn(anim)
-    local inst = commonfn(anim, true)
+    local inst = commonfn(anim, true, true)
 
     if not TheWorld.ismastersim then
         return inst
@@ -188,9 +198,6 @@ local function defaultfn(anim)
     inst.components.hatchable:SetHatchFailTime(TUNING.SMALLBIRD_HATCH_FAIL_TIME)
     inst.components.hatchable:SetHeaterPrefs(false, nil, true)
     inst.components.hatchable:StartUpdating()
-
-    inst:AddComponent("cookable")
-    inst.components.cookable.product = "tallbirdegg_cooked"
 
     inst.components.inventoryitem:SetOnDroppedFn(OnDropped)
     inst.components.inventoryitem:SetOnPutInInventoryFn(OnPutInInventory)

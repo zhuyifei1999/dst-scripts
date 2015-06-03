@@ -84,6 +84,9 @@ local function makebird(name, soundname)
         inst:AddTag(name)
         inst:AddTag("smallcreature")
 
+        --cookable (from cookable component) added to pristine state for optimization
+        inst:AddTag("cookable")
+
         inst.Transform:SetTwoFaced()
 
         inst.AnimState:SetBank("crow")

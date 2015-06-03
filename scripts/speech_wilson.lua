@@ -22,6 +22,7 @@ return {
         {
             GENERIC = "I can't do that.",
             INUSE = "I should wait my turn.",
+            TOOFAR = "It's too far away!",
         },
         GIVE =
         {
@@ -139,6 +140,15 @@ return {
 	},
 	DESCRIBE =
 	{
+
+		BERNIE_INACTIVE =
+		{
+			BROKEN = "It finally fell apart.",
+			GENERIC = "It's all scorched.",
+		},
+		BERNIE_ACTIVE = "That teddy bear is moving around. Interesting.",
+		
+
         PLAYER =
         {
             GENERIC = "It's %s!",

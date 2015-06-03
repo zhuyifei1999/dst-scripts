@@ -118,6 +118,7 @@ ACTIONS =
     TOSS = Action(0, false, true, 8),
     NUZZLE = Action(),
     WRITE = Action(),
+    TAUNT = Action(0, nil, nil, 30),
 }
 
 ACTION_IDS = {}
@@ -570,19 +571,19 @@ ACTIONS.ATTACK.strfn = function(act)
 end
 
 ACTIONS.COOK.fn = function(act)
-	if act.target.components.cooker ~= nil then
-	    local ingredient = act.doer.components.inventory:RemoveItem(act.invobject)
+    if act.target.components.cooker ~= nil then
+        local ingredient = act.doer.components.inventory:RemoveItem(act.invobject)
         ingredient.Transform:SetPosition(act.target.Transform:GetWorldPosition())
 
-        if ingredient.components.health and ingredient.components.combat then
-            act.doer:PushEvent("killed", {victim = ingredient})
+        if ingredient.components.health ~= nil and ingredient.components.combat ~= nil then
+            act.doer:PushEvent("killed", { victim = ingredient })
         end
 
-	    local product = act.target.components.cooker:CookItem(ingredient, act.doer)
-	    if product then
-	        act.doer.components.inventory:GiveItem(product, nil, act.target:GetPosition())
-	        return true
-	    end
+        local product = act.target.components.cooker:CookItem(ingredient, act.doer)
+        if product ~= nil then
+            act.doer.components.inventory:GiveItem(product, nil, act.target:GetPosition())
+            return true
+        end
     elseif act.target.components.stewer ~= nil then
         if act.target.components.stewer:IsCooking() then
             --Already cooking
@@ -594,8 +595,42 @@ ACTIONS.COOK.fn = function(act)
         elseif not act.target.components.stewer:CanCook() then
             return false
         end
-		act.target.components.stewer:StartCooking()
-		return true
+        act.target.components.stewer:StartCooking()
+        return true
+    elseif act.target.components.cookable ~= nil
+        and act.invobject ~= nil
+        and act.invobject.components.cooker ~= nil then
+
+        local cook_pos = act.target:GetPosition()
+
+        --Intentional use of 3D dist check for birds.
+        if act.doer:GetPosition():Dist(cook_pos) > 2 then
+            return false, "TOOFAR"
+        end
+
+        local owner = act.target.components.inventoryitem:GetGrandOwner()
+        local container = owner ~= nil and (owner.components.inventory or owner.components.container) or nil
+        local stacked = act.target.components.stackable ~= nil and act.target.components.stackable:IsStack()
+        local ingredient = stacked and act.target.components.stackable:Get() or act.target
+
+        if ingredient.components.health ~= nil and ingredient.components.combat ~= nil then
+            act.doer:PushEvent("killed", { victim = ingredient })
+        end
+
+        local product = act.invobject.components.cooker:CookItem(ingredient, act.doer)
+        if product ~= nil then
+            if container ~= nil then
+                container:GiveItem(product, nil, cook_pos)
+            else
+                product.Transform:SetPosition(cook_pos:Get())
+                if stacked and product.Physics ~= nil then
+                    local angle = math.random() * 2 * PI
+                    local speed = math.random() * 2
+                    product.Physics:SetVel(speed * math.cos(angle), GetRandomWithVariance(8, 4), speed * math.sin(angle))
+                end
+            end
+            return true
+        end
     end
 end
 
@@ -1255,6 +1290,15 @@ ACTIONS.WRITE.fn = function(act)
             return false, "INUSE"
         end
         act.target.components.writeable:BeginWriting(act.doer)
+        return true
+    end
+end
+
+ACTIONS.TAUNT.fn = function(act)
+    if act.target ~= nil and
+        act.target.components.combat ~= nil and
+        act.target.components.combat:CanTarget(act.doer) then
+        act.target.components.combat:SetTarget(act.doer)
         return true
     end
 end

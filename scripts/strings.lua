@@ -981,6 +981,9 @@ STRINGS=
         LAVAE_TOOTH = "Lavae Tooth",
         LAVA_POND = "Magma",
         LAVA_POND_ROCK = "Rock",
+
+        BERNIE_INACTIVE = "Bernie",
+        BERNIE_ACTIVE = "Bernie",
     },
 
     DIRECTIONS=
@@ -1169,6 +1172,8 @@ STRINGS=
 
         REVIVER = "Ghastly revival of a ghostly friend.",
         ABIGAIL_FLOWER = "A magical keepsake.",
+
+        BERNIE_INACTIVE = "A familiar face in this mad world.",
     },
 
     -- MAXWELL_TEST = {"Say pal, you don't look so good.", "You better find something to eat before night comes!"},

@@ -94,6 +94,9 @@ local function MakeVeggie(name, has_seeds)
         inst.AnimState:SetBuild("seeds")
         inst.AnimState:SetRayTestOnBB(true)
 
+        --cookable (from cookable component) added to pristine state for optimization
+        inst:AddTag("cookable")
+
         inst.entity:SetPristine()
 
         if not TheWorld.ismastersim then
@@ -144,6 +147,9 @@ local function MakeVeggie(name, has_seeds)
         inst.AnimState:SetBank(name)
         inst.AnimState:SetBuild(name)
         inst.AnimState:PlayAnimation("idle")
+
+        --cookable (from cookable component) added to pristine state for optimization
+        inst:AddTag("cookable")
 
         inst.entity:SetPristine()
 

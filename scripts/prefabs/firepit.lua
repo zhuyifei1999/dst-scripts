@@ -25,17 +25,8 @@ local function onhit(inst, worker)
     inst.AnimState:PushAnimation("idle")
 end
 
-local function onignite(inst)
-    if not inst.components.cooker then
-        inst:AddComponent("cooker")
-    end
-end
-
 local function onextinguish(inst)
-    if inst.components.cooker then
-        inst:RemoveComponent("cooker")
-    end
-    if inst.components.fueled then
+    if inst.components.fueled ~= nil then
         inst.components.fueled:InitializeFuelLevel(0)
     end
 end
@@ -97,6 +88,9 @@ local function fn()
     inst:AddTag("structure")
     inst:AddTag("wildfireprotected")
 
+    --cooker (from cooker component) added to pristine state for optimization
+    inst:AddTag("cooker")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -108,7 +102,6 @@ local function fn()
     --inst.components.burnable:SetFXLevel(2)
     inst.components.burnable:AddBurnFX("campfirefire", Vector3(0, .4, 0))
     inst:ListenForEvent("onextinguish", onextinguish)
-    inst:ListenForEvent("onignite", onignite)
 
     -------------------------
     inst:AddComponent("lootdropper")
@@ -118,6 +111,8 @@ local function fn()
     inst.components.workable:SetOnFinishCallback(onhammered)
     inst.components.workable:SetOnWorkCallback(onhit)    
 
+    -------------------------
+    inst:AddComponent("cooker")
     -------------------------
     inst:AddComponent("fueled")
     inst.components.fueled.maxfuel = TUNING.FIREPIT_FUEL_MAX
@@ -170,7 +165,7 @@ local function fn()
     inst.components.inspectable.getstatus = getstatus
 
     inst:ListenForEvent("onbuilt", onbuilt)
-    
+
     return inst
 end
 

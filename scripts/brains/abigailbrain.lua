@@ -5,6 +5,8 @@ require "behaviours/wander"
 local AbigailBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
 	self.mytarget = nil
+
+    self.listenerfunc = function() self.mytarget = nil end
 end)
 
 local MIN_FOLLOW = 4
@@ -23,7 +25,6 @@ local function KeepFaceTargetFn(inst, target)
 end
 
 function AbigailBrain:SetTarget(target)
-	self.listenerfunc = function() self.mytarget = nil end
 	if target ~= self.target then
 		if self.mytarget then
 			self.inst:RemoveEventCallback("onremove", self.listenerfunc, self.mytarget)

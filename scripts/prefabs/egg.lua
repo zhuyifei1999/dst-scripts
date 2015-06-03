@@ -9,7 +9,7 @@ local prefabs =
     "rottenegg",
 }
 
-local function commonfn(anim)
+local function commonfn(anim, cookable)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -24,6 +24,11 @@ local function commonfn(anim)
 
     inst:AddTag("catfood")
 
+    if cookable then
+        --cookable (from cookable component) added to pristine state for optimization
+        inst:AddTag("cookable")
+    end
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -32,6 +37,11 @@ local function commonfn(anim)
 
     inst:AddComponent("edible")
     inst.components.edible.foodtype = FOODTYPE.MEAT
+
+    if cookable then
+        inst:AddComponent("cookable")
+        inst.components.cookable.product = "bird_egg_cooked"
+    end
 
     inst:AddComponent("perishable")
     inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)
@@ -56,7 +66,7 @@ local function commonfn(anim)
 end
 
 local function defaultfn()
-    local inst = commonfn("idle")
+    local inst = commonfn("idle", true)
 
     if not TheWorld.ismastersim then
         return inst
@@ -67,8 +77,6 @@ local function defaultfn()
     inst.components.edible.hungervalue = TUNING.CALORIES_TINY
     inst.components.perishable:SetPerishTime(TUNING.PERISH_MED)
     
-    inst:AddComponent("cookable")
-    inst.components.cookable.product = "bird_egg_cooked"
     return inst
 end
 

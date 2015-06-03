@@ -6,9 +6,9 @@ local Menu = require "widgets/menu"
 local UIAnim = require "widgets/uianim"
 local ImageButton = require "widgets/imagebutton"
 
-local VALID_CHARS = " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,[]@!()'*+-/?{}\""
+local VALID_CHARS = [[ abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,:;[]\@!#$%&()'*+-/=?^_{|}~"<>]]
+--local VALID_CHARS = " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,[]@!()'*+-/?{}\""
 local STRING_MAX_LENGTH = 100 -- http://tools.ietf.org/html/rfc5321#section-4.5.3.1
-
 
 local function onaccept(inst, doer, widget)
     if not widget.isopen then
@@ -19,7 +19,7 @@ local function onaccept(inst, doer, widget)
     --strip leading/trailing whitespace
     local msg = widget:GetText()
     local processed_msg = msg:match("^%s*(.-%S)%s*$") or ""
-    if msg ~= processed_msg then
+    if msg ~= processed_msg or #msg <= 0 then
         widget.edit_text:SetString(processed_msg)
         widget.edit_text:SetEditing(true)
         return

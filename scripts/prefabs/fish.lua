@@ -14,7 +14,7 @@ local function stopkicking(inst)
     inst.AnimState:PlayAnimation("dead")
 end
 
-local function commonfn(build, anim, loop, dryable)
+local function commonfn(build, anim, loop, dryable, cookable)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -33,6 +33,11 @@ local function commonfn(build, anim, loop, dryable)
     if dryable then
         --dryable (from dryable component) added to pristine state for optimization
         inst:AddTag("dryable")
+    end
+
+    if cookable then
+        --cookable (from cookable component) added to pristine state for optimization
+        inst:AddTag("cookable")
     end
 
     inst.entity:SetPristine()
@@ -63,6 +68,11 @@ local function commonfn(build, anim, loop, dryable)
         inst.components.dryable:SetDryTime(TUNING.DRY_FAST)
     end
 
+    if cookable then
+        inst:AddComponent("cookable")
+        inst.components.cookable.product = "fish_cooked"
+    end
+
     inst:AddComponent("inspectable")
 
     inst:AddComponent("inventoryitem")
@@ -77,7 +87,7 @@ local function commonfn(build, anim, loop, dryable)
 end
 
 local function rawfn(build)
-    local inst = commonfn(build, "idle", true, true)
+    local inst = commonfn(build, "idle", true, true, true)
 
     if not TheWorld.ismastersim then
         return inst
@@ -87,8 +97,6 @@ local function rawfn(build)
     inst.components.edible.hungervalue = TUNING.CALORIES_SMALL
     inst.components.perishable:SetPerishTime(TUNING.PERISH_SUPERFAST)
 
-    inst:AddComponent("cookable")
-    inst.components.cookable.product = "fish_cooked"
     inst:DoTaskInTime(5, stopkicking)
     inst.components.inventoryitem:SetOnPickupFn(stopkicking)
     inst.OnLoad = stopkicking

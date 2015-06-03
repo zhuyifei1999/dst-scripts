@@ -96,6 +96,13 @@ return {
 	},
 	DESCRIBE =
 	{		
+		BERNIE_INACTIVE =
+		{
+			BROKEN = "He has gone to Valhalla.",
+			GENERIC = "It's a stuffed bear.",
+		},
+		BERNIE_ACTIVE = "What a brave bear!",
+
 		GLOMMER = "A majestic goober.",
         GLOMMERFLOWER = 
         {

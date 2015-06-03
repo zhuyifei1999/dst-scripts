@@ -103,9 +103,9 @@ function Fueled:OnRemoveFromEntity()
 end
 
 function Fueled:MakeEmpty()
-	if self.currentfuel > 0 then
-		self:DoDelta(-self.currentfuel)
-	end
+    if self.currentfuel > 0 then
+        self:DoDelta(-self.currentfuel)
+    end
 end
 
 function Fueled:OnSave()
@@ -164,14 +164,13 @@ function Fueled:TakeFuelItem(item)
             item.components.fuel:Taken(self.inst)
         end
         item:Remove()
-        
+
         if self.ontakefuelfn then
             self.ontakefuelfn(self.inst)
         end
-        
+
         return true
     end
-    
 end
 
 function Fueled:SetUpdateFn(fn)
@@ -179,9 +178,8 @@ function Fueled:SetUpdateFn(fn)
 end
 
 function Fueled:GetDebugString()
-
     local section = self:GetCurrentSection()
-    
+
     return string.format("%s %2.2f/%2.2f (-%2.2f) : section %d/%d %2.2f", self.consuming and "ON" or "OFF", self.currentfuel, self.maxfuel, self.rate, section, self.sections, self:GetSectionPercent())
 end
 
@@ -217,7 +215,7 @@ function Fueled:InitializeFuelLevel(fuel)
         self.maxfuel = fuel
     end
     self.currentfuel = fuel
-    
+
     local newsection = self:GetCurrentSection()
     if oldsection ~= newsection and self.sectionfn then
         self.sectionfn(newsection, oldsection, self.inst)
@@ -226,11 +224,11 @@ end
 
 function Fueled:DoDelta(amount)
     local oldsection = self:GetCurrentSection()
-    
+
     self.currentfuel = math.max(0, math.min(self.maxfuel, self.currentfuel + amount) )
-    
+
     local newsection = self:GetCurrentSection()
-    
+
     if oldsection ~= newsection then
         if self.sectionfn then
             self.sectionfn(newsection, oldsection, self.inst)
@@ -239,8 +237,8 @@ function Fueled:DoDelta(amount)
             self.depleted(self.inst)
         end
     end
-    
-    self.inst:PushEvent("percentusedchange", {percent = self:GetPercent()})    
+
+    self.inst:PushEvent("percentusedchange", { percent = self:GetPercent() })
 end
 
 function Fueled:DoUpdate(dt)

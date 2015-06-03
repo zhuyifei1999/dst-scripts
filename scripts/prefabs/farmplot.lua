@@ -258,7 +258,7 @@ local function plot(level)
 
         inst.MiniMapEntity:SetIcon("farm"..level..".png")
 
-        inst.Transform:SetRotation(45)
+        --inst.Transform:SetRotation(45)
 
         inst.entity:SetPristine()
 
