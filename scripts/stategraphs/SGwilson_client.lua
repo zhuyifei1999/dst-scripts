@@ -134,6 +134,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.CASTSPELL, "castspell"),
     ActionHandler(ACTIONS.BLINK, "quicktele"),
     ActionHandler(ACTIONS.COMBINESTACK, "doshortaction"),
+    ActionHandler(ACTIONS.FEED, "dolongaction"),
     ActionHandler(ACTIONS.ATTACK,
         function(inst)
             if not (inst.replica.health:IsDead() or inst.sg:HasStateTag("attack")) then

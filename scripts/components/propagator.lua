@@ -74,9 +74,13 @@ function Propagator:StopSpreading(reset, heatpct)
     end
 end
 
-function Propagator:GetFlashPoint()
+function Propagator:GetHeatResistance()
     local tile, data = self.inst:GetCurrentTileType()
-    return self.flashpoint + ((data and data.flashpoint_modifier) or 0)
+    return data ~= nil
+        and data.flashpoint_modifier ~= nil
+        and data.flashpoint_modifier ~= 0
+        and math.max(1, self.flashpoint) / math.max(1, self.flashpoint + data.flashpoint_modifier)
+        or 1
 end
 
 function Propagator:AddHeat(amount)
@@ -88,9 +92,9 @@ function Propagator:AddHeat(amount)
         self:StartUpdating()
     end
 
-    self.currentheat = self.currentheat + amount
+    self.currentheat = self.currentheat + amount * self:GetHeatResistance()
 
-    if self.currentheat > self:GetFlashPoint() then
+    if self.currentheat > self.flashpoint then
         self.acceptsheat = false
         if self.onflashpoint ~= nil then
             self.onflashpoint(self.inst)
@@ -171,7 +175,7 @@ function Propagator:OnUpdate(dt)
 end
 
 function Propagator:GetDebugString()
-    return string.format("range: %.2f output: %.2f flashpoint: %.2f delay: %s -- spreading: %s acceptsheat: %s currentheat: %s", self.propagaterange, self.heatoutput, self:GetFlashPoint(), tostring(self.delay ~= nil), tostring(self.spreading), tostring(self.acceptsheat), tostring(self.currentheat))
+    return string.format("range: %.2f output: %.2f heatresistance: %.2f flashpoint: %.2f delay: %s -- spreading: %s acceptsheat: %s currentheat: %s", self.propagaterange, self.heatoutput, self:GetHeatResistance(), self.flashpoint, tostring(self.delay ~= nil), tostring(self.spreading), tostring(self.acceptsheat), tostring(self.currentheat))
 end
 
 return Propagator

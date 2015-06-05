@@ -3031,7 +3031,7 @@ local states =
         tags = { "busy", "pausepredict" },
         onenter = function(inst, tool)
             inst.AnimState:PlayAnimation("hit")
-            inst.SoundEmitter:PlaySound("dontstarve/wilson/use_break")
+            inst.SoundEmitter:PlaySound("dontstarve/common/tool_slip")
             inst.AnimState:Hide("ARM_carry") 
             inst.AnimState:Show("ARM_normal") 
             local splash = SpawnPrefab("splash")

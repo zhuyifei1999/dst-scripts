@@ -501,7 +501,7 @@ require("componentactions")
 function EntityScript:AddComponent(name)
 	local lower_name = string.lower(name)
     if self.lower_components_shadow[lower_name] ~= nil then
-		print("component "..name.." already exists!")
+        print("component "..name.." already exists! "..debugstack_oneline(3))
     end
     
     local cmp = LoadComponent(name)
@@ -651,14 +651,18 @@ function EntityScript:GetBrainString()
 end
 
 function EntityScript:GetDebugString()
+    if not self:IsValid() then
+        return tostring(self).." <INVALID>"
+    end
+
     local str = {}
-    
+
     table.insert(str, tostring(self))
     table.insert(str, string.format(" age %2.2f", self:GetTimeAlive()))
     table.insert(str, "\n")
-    
+
     table.insert(str, self.entity:GetDebugString())
-    
+
     table.insert(str, "Buffered Action: "..tostring(self.bufferedaction).."\n")
 
     if self.sg then
@@ -670,7 +674,7 @@ function EntityScript:GetDebugString()
     end
 
     table.insert(str, "-----------\n")
-    
+
     ----[[
     for k,v in pairs(self.components) do
         if v.GetDebugString and k and v:GetDebugString() then
@@ -685,8 +689,7 @@ function EntityScript:GetDebugString()
         table.insert(str, "--------\n")
     end
     --]]
-    
-    
+
     --[[
     if self.event_listening or self.event_listeners then
         table.insert(str, "-------\n")
@@ -708,7 +711,7 @@ function EntityScript:GetDebugString()
             table.insert(str, "\n")
         end
     end
-    
+
     if self.event_listeners then
         table.insert(str, "Broadcasting Events:\n")
         for event, listeners in pairs(self.event_listeners) do
@@ -725,7 +728,7 @@ function EntityScript:GetDebugString()
             table.insert(str, "\n")
         end
     end
-    
+
     --]]
     --[[
     if self.pendingtasks then

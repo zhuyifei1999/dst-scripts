@@ -73,7 +73,7 @@ local function fn()
     inst.entity:AddNetwork()
 
     --Initialize physics
-    MakeCharacterPhysics(inst, 1, .25)
+    MakeCharacterPhysics(inst, 1, .5)
     inst.Physics:SetCollisionGroup(COLLISION.FLYERS)
     inst.Physics:ClearCollisionMask()
     inst.Physics:CollidesWith(COLLISION.WORLD)
@@ -83,6 +83,7 @@ local function fn()
     inst:AddTag("insect")
     inst:AddTag("smallcreature")
     inst:AddTag("cattoyairborne")
+    inst:AddTag("wildfireprotected")
    
     inst.Transform:SetTwoFaced()
 

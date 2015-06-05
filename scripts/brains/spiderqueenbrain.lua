@@ -62,7 +62,7 @@ function SpiderQueenBrain:OnStart()
         
         --SPIDERQUEEN_MINDENSPACING
         
-        ChaseAndAttack(self.inst, 100),
+        ChaseAndAttack(self.inst, 60, 40),
         Wander(self.inst),
     }, 2)
     

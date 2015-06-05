@@ -298,7 +298,13 @@ local states=
         
         events=
         {
-            EventHandler("animover", function(inst) inst.sg:GoToState("idle") end ),
+            EventHandler("animover", function(inst) 
+                if inst.components.burnable and inst.components.burnable:IsBurning() then
+                    inst.sg:GoToState("distress_pre")
+                else
+                    inst.sg:GoToState("idle") 
+                end
+            end ),
         },        
     },    
 
