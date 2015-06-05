@@ -47,6 +47,8 @@ function Tune(overrides)
 		STACK_SIZE_LARGEITEM = 10,
 		STACK_SIZE_MEDITEM = 20,
 		STACK_SIZE_SMALLITEM = 40,
+
+		MAX_FIRE_DAMAGE_PER_SECOND = 120,
 		
 		GOLDENTOOLFACTOR = 4*multiplayer_goldentool_modifier,
 	

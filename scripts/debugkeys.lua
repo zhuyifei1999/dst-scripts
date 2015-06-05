@@ -462,6 +462,8 @@ AddGameDebugKey(KEY_G, function()
                 MouseCharacter.components.cooldown:LongUpdate(MouseCharacter.components.cooldown.cooldown_duration)
             end
         end
+    elseif TheInput:IsKeyDown(KEY_SHIFT) then
+		c_supergodmode()
     else
         c_godmode()
     end

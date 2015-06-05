@@ -27,6 +27,7 @@ local Sleeper = Class(function(self, inst)
     self.nocturnal = false
     
     self.inst:ListenForEvent("onignite", onattacked)
+    self.inst:ListenForEvent("firedamage", onattacked)
     self.inst:ListenForEvent("attacked", onattacked)
     self.inst:ListenForEvent("newcombattarget", onnewcombattarget)
 end)
@@ -34,6 +35,7 @@ end)
 function Sleeper:OnRemoveFromEntity()
     self.inst:RemoveTag("sleeper")
     self.inst:RemoveEventCallback("onignite", onattacked)
+    self.inst:RemoveEventCallback("firedamage", onattacked)
     self.inst:RemoveEventCallback("attacked", onattacked)
     self.inst:RemoveEventCallback("newcombattarget", onnewcombattarget)
 end

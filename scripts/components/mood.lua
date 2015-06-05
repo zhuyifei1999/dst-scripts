@@ -29,11 +29,11 @@ function Mood:SetMoodTimeInDays(length, wait)
     self.isinmood = false
 end
 
-local function OnSeasonChange(inst, data)
+local function OnSeasonChange(inst, season)
 	local active = false
 	if inst.components.mood.moodseasons then 
 	    for i, s in pairs(inst.components.mood.moodseasons) do
-	        if s == data.season then
+	        if s == season then
 	            active = true
 	            break
 	        end

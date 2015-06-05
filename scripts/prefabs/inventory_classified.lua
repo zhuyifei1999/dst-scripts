@@ -505,7 +505,7 @@ local function ReturnActiveItem(inst)
             QueueRefresh(inst, TIMEOUT)
         else
             if inst._returncontainer ~= nil then
-                if inst._returncontainer:IsValid() then
+                if inst._returncontainer:IsValid() and inst._activeitem:IsValid() then
                     inst._returncontainer:ReturnActiveItemToSlot(inst._returnslot)
                 else
                     inst._returncontainer = nil

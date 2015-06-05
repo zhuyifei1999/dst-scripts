@@ -68,6 +68,10 @@ function debugstack(start, top, bottom)
         return concat(s, "\n")
 end
 
+function debugstack_oneline(linenum)
+    return formatinfo(getinfo(linenum))
+end
+
 function debuglocals (level)
         local t = {}
         local index = 1

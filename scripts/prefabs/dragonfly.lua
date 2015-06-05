@@ -77,7 +77,7 @@ local function TransformNormal(inst)
     inst.components.locomotor.walkspeed = TUNING.DRAGONFLY_SPEED
     inst.components.combat:SetDefaultDamage(TUNING.DRAGONFLY_DAMAGE)
     inst.components.combat:SetAttackPeriod(TUNING.DRAGONFLY_ATTACK_PERIOD)
-    inst.components.combat:SetRange(TUNING.DRAGONFLY_ATTACK_RANGE, TUNING.DRAGONFLY_FIRE_HIT_RANGE)
+    inst.components.combat:SetRange(TUNING.DRAGONFLY_ATTACK_RANGE, TUNING.DRAGONFLY_HIT_RANGE)
 
     UpdateFreezeThreshold(inst)
 
@@ -94,7 +94,7 @@ local function TransformFire(inst)
     inst.components.locomotor.walkspeed = TUNING.DRAGONFLY_FIRE_SPEED
     inst.components.combat:SetDefaultDamage(TUNING.DRAGONFLY_FIRE_DAMAGE)
     inst.components.combat:SetAttackPeriod(TUNING.DRAGONFLY_FIRE_ATTACK_PERIOD)
-    inst.components.combat:SetRange(TUNING.DRAGONFLY_ATTACK_RANGE, TUNING.DRAGONFLY_HIT_RANGE)
+    inst.components.combat:SetRange(TUNING.DRAGONFLY_ATTACK_RANGE, TUNING.DRAGONFLY_FIRE_HIT_RANGE)
 
     inst.Light:Enable(true)
     inst.components.propagator:StartSpreading()
@@ -346,10 +346,6 @@ local function OnAttacked(inst, data)
     end
 end
 
-local function OnDeath(inst, data)
-    ResetLavae(inst)
-end
-
 local function fn()
     local inst = CreateEntity()
 
@@ -478,7 +474,7 @@ local function fn()
     inst:ListenForEvent("moisturedelta", OnMoistureDelta)
     inst:ListenForEvent("timerdone", OnTimerDone)
     inst:ListenForEvent("attacked", OnAttacked)
-    inst:ListenForEvent("death", OnDeath) --Get rid of lavaes.
+    inst:ListenForEvent("death", ResetLavae) --Get rid of lavaes.
 
     -- Variables
 

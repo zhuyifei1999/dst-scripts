@@ -216,7 +216,7 @@ local ServerAdminScreen = Class(Screen, function(self, save_slot, in_game, cb)
 	
 	self.save_slot = save_slot
 	self.session_id = SaveGameIndex:GetSlotSession(save_slot)
-    self.online_mode = SaveGameIndex:GetSlotServerData(save_slot).online_mode
+    self.online_mode = SaveGameIndex:GetSlotServerData(save_slot).online_mode == true
 	self.in_game = in_game
 	
     self.bg:SetVRegPoint(ANCHOR_MIDDLE)

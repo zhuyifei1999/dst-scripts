@@ -4,9 +4,19 @@ local pinecone_assets =
     Asset("ANIM", "anim/pinecone.zip"),
 }
 
+local pinecone_prefabs =
+{
+    "evergreen_short",
+}
+
 local acorn_assets =
 {
     Asset("ANIM", "anim/acorn.zip"),
+}
+
+local acorn_prefabs =
+{
+    "deciduoustree",
 }
 
 local function growtree(inst)
@@ -90,5 +100,5 @@ local function sapling_fn(build, anim, growprefab)
     return fn
 end
 
-return Prefab("common/forest/pinecone_sapling", sapling_fn("pinecone", "idle_planted", "evergreen_short"), pinecone_assets),
-    Prefab("common/forest/acorn_sapling", sapling_fn("acorn", "idle_planted", "deciduoustree"), acorn_assets)
+return Prefab("common/forest/pinecone_sapling", sapling_fn("pinecone", "idle_planted", "evergreen_short"), pinecone_assets, pinecone_prefabs),
+    Prefab("common/forest/acorn_sapling", sapling_fn("acorn", "idle_planted", "deciduoustree"), acorn_assets, acorn_prefabs)

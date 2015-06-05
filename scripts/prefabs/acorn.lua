@@ -6,8 +6,9 @@ Asset("ANIM", "anim/acorn.zip"),
 
 local prefabs = 
 {
+    "acorn_sapling",
     "acorn_cooked",
-    "spoiled_food"
+    "spoiled_food",
 }
 
 local function plant(inst, growtime)

@@ -361,13 +361,15 @@ function GetDebugEntity()
 end
 
 function SetDebugEntity(inst)
-	if debug_entity then
-		debug_entity.entity:SetSelected(false)
-	end
-	debug_entity = inst
-	if inst then
-		inst.entity:SetSelected(true)
-	end
+    if debug_entity ~= nil and debug_entity:IsValid() then
+        debug_entity.entity:SetSelected(false)
+    end
+    if inst ~= nil and inst:IsValid() then
+        debug_entity = inst
+        inst.entity:SetSelected(true)
+    else
+        debug_entity = nil
+    end
 end
 
 function OnEntitySleep(guid)

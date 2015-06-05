@@ -40,8 +40,8 @@ local function fn()
 
     inst:AddComponent("bait")
 
-    MakeSmallBurnable(inst, TUNING.MED_BURNTIME)
-    MakeSmallPropagator(inst)
+    MakeMediumBurnable(inst, TUNING.MED_BURNTIME)
+    MakeMediumPropagator(inst)
 
     MakeHauntableLaunchAndIgnite(inst)
 

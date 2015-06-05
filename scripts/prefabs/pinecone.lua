@@ -4,6 +4,11 @@ local assets =
     Asset("ANIM", "anim/pinecone.zip"),
 }
 
+local prefabs =
+{
+    "pinecone_sapling",
+}
+
 local function plant(inst, growtime)
     local sapling = SpawnPrefab("pinecone_sapling")
     sapling:StartGrowing()
@@ -102,5 +107,5 @@ local function fn()
     return inst
 end
 
-return Prefab("common/inventory/pinecone", fn, assets),
+return Prefab("common/inventory/pinecone", fn, assets, prefabs),
     MakePlacer("common/pinecone_placer", "pinecone", "pinecone", "idle_planted")

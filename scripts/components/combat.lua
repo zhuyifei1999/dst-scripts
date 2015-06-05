@@ -803,8 +803,9 @@ function Combat:LoadPostPass(newents, data)
 end
 
 function Combat:OnRemoveFromEntity()
-    self.inst:RemoveTag("hascombatcomponent")    
-    self.inst:RemoveTag("combat")
+    if self.target ~= nil then
+        self:StopTrackingTarget(self.target)
+    end
 end
 
 return Combat

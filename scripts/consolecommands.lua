@@ -108,17 +108,21 @@ end
 
 -- Restart the server, optionally save before restarting (does not save by default)
 function c_reset(save)
-    if TheWorld ~= nil and TheWorld.ismastersim then
-		if save then
-			for i, v in ipairs(AllPlayers) do
-				v:OnDespawn()
+	if InGamePlay() then
+		if TheWorld ~= nil and TheWorld.ismastersim then
+			if save then
+				for i, v in ipairs(AllPlayers) do
+					v:OnDespawn()
+				end
+				TheSystemService:EnableStorage(true)
+				SaveGameIndex:SaveCurrent(doreset, true)
+			else
+				doreset()
 			end
-			TheSystemService:EnableStorage(true)
-			SaveGameIndex:SaveCurrent(doreset, true)
-		else
-			doreset()
 		end
-    end
+	else
+		StartNextInstance()
+	end
 end
 
 -- Permanently delete the game world, rengerates a new world afterwords
@@ -269,8 +273,16 @@ end
 function c_setmoisture(n)
     local player = ConsoleCommandPlayer()
     if player ~= nil and not player:HasTag("playerghost") then
-        SuUsed("c_sethunger", true)
+        SuUsed("c_setmoisture", true)
         ConsoleCommandPlayer().components.moisture:SetPercent(n)
+    end
+end
+
+function c_settemperature(n)
+    local player = ConsoleCommandPlayer()
+    if player ~= nil and not player:HasTag("playerghost") then
+        SuUsed("c_settemperature", true)
+        ConsoleCommandPlayer().components.temperature:SetTemperature(n)
     end
 end
 
@@ -421,6 +433,27 @@ function c_godmode()
         elseif player.components.health ~= nil then
             local godmode = player.components.health.invincible
             player.components.health:SetInvincible(not godmode)
+            print("God mode: "..tostring(not godmode))
+        end
+    end
+end
+
+function c_supergodmode()
+    local player = ConsoleCommandPlayer()
+    if player ~= nil then
+        SuUsed("c_supergodmode", true)
+        if player:HasTag("playerghost") then
+            player:PushEvent("respawnfromghost")
+            print("Reviving "..player.name.." from ghost.")
+            return
+        elseif player.components.health ~= nil then
+            local godmode = player.components.health.invincible
+            player.components.health:SetInvincible(not godmode)
+            c_sethealth(1)
+            c_setsanity(1)
+            c_sethunger(1)
+            c_settemperature(25)
+            c_setmoisture(0)
             print("God mode: "..tostring(not godmode))
         end
     end

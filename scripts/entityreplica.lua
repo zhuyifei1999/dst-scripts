@@ -42,7 +42,7 @@ function EntityScript:ReplicateComponent(name)
     end
 
     if rawget(self.replica, "_")[name] ~= nil then
-        print("replica "..name.." already exists!")
+        print("replica "..name.." already exists! "..debugstack_oneline(3))
     end
 
     local filename = name.."_replica"

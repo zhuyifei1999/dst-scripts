@@ -45,6 +45,8 @@ local Health = Class(function(self, inst)
     self.takingfiredamagetime = 0
     self.fire_damage_scale = 1
     self.fire_timestart = 1
+    self.firedamageinlastsecond = 0
+    self.firedamagecaptimer = 0
     self.nofadeout = false
     self.penalty = 0
     self.absorb = 0
@@ -122,8 +124,21 @@ function Health:DoFireDamage(amount, doer, instant)
         self.lastfiredamagetime = time
         
         if (instant or time - self.takingfiredamagestarttime > self.fire_timestart) and amount > 0 then
+
+            --We're going to take damage at this point, so make sure it's now over the cap/second
+            if self.firedamagecaptimer <= time then
+                self.firedamageinlastsecond = 0
+                self.firedamagecaptimer = time + 1
+            end
+
+            if self.firedamageinlastsecond + amount > TUNING.MAX_FIRE_DAMAGE_PER_SECOND then
+                amount = TUNING.MAX_FIRE_DAMAGE_PER_SECOND - self.firedamageinlastsecond
+            end
+
             self:DoDelta(-amount*self.fire_damage_scale, false, "fire")
             self.inst:PushEvent("firedamage")       
+
+            self.firedamageinlastsecond = self.firedamageinlastsecond + amount
         end
     end
 end

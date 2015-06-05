@@ -114,7 +114,7 @@ local function fn()
         inst.components.heater.equippedheatfn = HeatFn
         --inst.components.heater.equippedheat = math.huge
 
-        inst:AddComponent("blinkstaff")
+        --inst:AddComponent("blinkstaff")
 
         inst:AddComponent("tool")
         inst.components.tool:SetAction(ACTIONS.CHOP, 100)
