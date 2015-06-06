@@ -572,8 +572,16 @@ end
 
 ACTIONS.COOK.fn = function(act)
     if act.target.components.cooker ~= nil then
+        local cook_pos = act.target:GetPosition()
         local ingredient = act.doer.components.inventory:RemoveItem(act.invobject)
-        ingredient.Transform:SetPosition(act.target.Transform:GetWorldPosition())
+
+        --V2C: position usually matters for listeners of "killed" event
+        ingredient.Transform:SetPosition(cook_pos:Get())
+
+        if not act.target.components.cooker:CanCook(ingredient, act.doer) then
+            act.doer.components.inventory:GiveItem(ingredient, nil, cook_pos)
+            return false
+        end
 
         if ingredient.components.health ~= nil and ingredient.components.combat ~= nil then
             act.doer:PushEvent("killed", { victim = ingredient })
@@ -581,9 +589,12 @@ ACTIONS.COOK.fn = function(act)
 
         local product = act.target.components.cooker:CookItem(ingredient, act.doer)
         if product ~= nil then
-            act.doer.components.inventory:GiveItem(product, nil, act.target:GetPosition())
+            act.doer.components.inventory:GiveItem(product, nil, cook_pos)
             return true
+        elseif ingredient:IsValid() then
+            act.doer.components.inventory:GiveItem(ingredient, nil, cook_pos)
         end
+        return false
     elseif act.target.components.stewer ~= nil then
         if act.target.components.stewer:IsCooking() then
             --Already cooking
@@ -613,6 +624,21 @@ ACTIONS.COOK.fn = function(act)
         local stacked = act.target.components.stackable ~= nil and act.target.components.stackable:IsStack()
         local ingredient = stacked and act.target.components.stackable:Get() or act.target
 
+        if ingredient ~= act.target then
+            --V2C: position usually matters for listeners of "killed" event
+            ingredient.Transform:SetPosition(cook_pos:Get())
+        end
+
+        if not act.invobject.components.cooker:CanCook(ingredient, act.doer) then
+            if container ~= nil then
+                container:GiveItem(ingredient, nil, cook_pos)
+            elseif stacked and ingredient ~= act.target then
+                act.target.components.stackable:SetStackSize(act.target.components.stackable:StackSize() + 1)
+                ingredient:Remove()
+            end
+            return false
+        end
+
         if ingredient.components.health ~= nil and ingredient.components.combat ~= nil then
             act.doer:PushEvent("killed", { victim = ingredient })
         end
@@ -630,7 +656,15 @@ ACTIONS.COOK.fn = function(act)
                 end
             end
             return true
+        elseif ingredient:IsValid() then
+            if container ~= nil then
+                container:GiveItem(ingredient, nil, cook_pos)
+            elseif stacked and ingredient ~= act.target then
+                act.target.components.stackable:SetStackSize(act.target.components.stackable:StackSize() + 1)
+                ingredient:Remove()
+            end
         end
+        return false
     end
 end
 

@@ -366,6 +366,12 @@ local function InsertPostInitFunctions(env, isworldgen)
 		print("Warning: function Recipe in modmain is deprecated, please use AddRecipe")
 		return env.AddRecipe(...)
 	end
+	
+    env.AddRecipeTab = function( rec_str, rec_sort, rec_atlas, rec_icon, rec_owner_tag )
+		CUSTOM_RECIPETABS[rec_str] = { str = rec_str, sort = rec_sort, icon_atlas = rec_atlas, icon = rec_icon, owner_tag = rec_owner_tag }
+		STRINGS.TABS[rec_str] = rec_str
+		return CUSTOM_RECIPETABS[rec_str]
+    end
 
 	env.Prefab = Prefab
 
@@ -407,7 +413,7 @@ local function InsertPostInitFunctions(env, isworldgen)
             print("WARNING: SetModHUDFocus called when there is no active player HUD")
         end
         ThePlayer.HUD:SetModFocus(env.modname, focusid, hasfocus)
-    end    
+    end
 end
 
 return {

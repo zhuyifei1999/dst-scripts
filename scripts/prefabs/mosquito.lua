@@ -29,7 +29,7 @@ local SHARE_TARGET_DIST = 30
 local MAX_TARGET_SHARES = 10
 
 local function OnWorked(inst, worker)
-    local owner = inst.components.homeseeker ~= nil and inst.components.homeseeker.home
+    local owner = inst.components.homeseeker ~= nil and inst.components.homeseeker.home or nil
     if owner ~= nil and owner.components.childspawner ~= nil then
         owner.components.childspawner:OnChildKilled(inst)
     end

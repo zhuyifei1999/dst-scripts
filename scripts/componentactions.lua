@@ -205,10 +205,15 @@ local COMPONENT_ACTIONS =
         end,
 
         cooker = function(inst, doer, target, actions)
-            if target:HasTag("cookable") and
-                not inst:HasTag("fueldepleted") and
-                (not inst:HasTag("dangerouscooker") or doer:HasTag("expertchef")) then
-                table.insert(actions, ACTIONS.COOK)
+            if (not inst:HasTag("dangerouscooker") or doer:HasTag("expertchef")) and
+                target:HasTag("cookable") and
+                not (inst:HasTag("fueldepleted") or
+                    target:HasTag("fire") or
+                    target:HasTag("catchable")) then
+                local inventoryitem = target.replica.inventoryitem
+                if inventoryitem == nil or inventoryitem:IsHeld() or inventoryitem:CanBePickedUp() then
+                    table.insert(actions, ACTIONS.COOK)
+                end
             end
         end,
 
@@ -538,10 +543,15 @@ local COMPONENT_ACTIONS =
 
         cooker = function(inst, doer, target, actions, right)
             if right and
+                (not inst:HasTag("dangerouscooker") or doer:HasTag("expertchef")) and
                 target:HasTag("cookable") and
-                not inst:HasTag("fueldepleted") and
-                (not inst:HasTag("dangerouscooker") or doer:HasTag("expertchef")) then
-                table.insert(actions, ACTIONS.COOK)
+                not (inst:HasTag("fueldepleted") or
+                    target:HasTag("fire") or
+                    target:HasTag("catchable")) then
+                local inventoryitem = target.replica.inventoryitem
+                if inventoryitem == nil or inventoryitem:IsHeld() or inventoryitem:CanBePickedUp() then
+                    table.insert(actions, ACTIONS.COOK)
+                end
             end
         end,
 

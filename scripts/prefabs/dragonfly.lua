@@ -333,11 +333,11 @@ local function OnTimerDone(inst, data)
 end
 
 local function OnSpawnStart(inst)
-    inst.components.locomotor.bonusspeed = 2
+    inst.components.locomotor:SetExternalSpeedMultiplier(inst, "spawning", 1.4)
 end
 
 local function OnSpawnStop(inst)
-    inst.components.locomotor.bonusspeed = 0
+    inst.components.locomotor:RemoveExternalSpeedMultiplier(inst, "spawning")
 end
 
 local function OnAttacked(inst, data)

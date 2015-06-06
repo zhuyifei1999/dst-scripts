@@ -13,7 +13,13 @@ function Cooker:CanCook(item, chef)
     return item ~= nil
         and item.components.cookable ~= nil
         and not (self.inst.components.fueled ~= nil and self.inst.components.fueled:IsEmpty())
+        and not (item.components.burnable ~= nil and item.components.burnable:IsBurning())
+        and not (item.components.projectile ~= nil and item.components.projectile:IsThrown())
         and (not self.inst:HasTag("dangerouscooker") or chef:HasTag("expertchef"))
+
+    --V2C: don't do held or canbepickedup checks here, because it's really
+    --     inconsistent; lots of code that shoves not canbepickedup things
+    --     into your inventory!
 end
 
 function Cooker:CookItem(item, chef)

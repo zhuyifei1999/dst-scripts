@@ -5,29 +5,32 @@ local actionhandlers =
     ActionHandler(ACTIONS.GOHOME, "action"),
 }
 
-local events=
+local events =
 {
     EventHandler("gotosleep", function(inst)
-    	if not inst.sg:HasStateTag("hidden") then
-        	inst.sg:GoToState("exit")
+        if not inst.sg:HasStateTag("hidden") then
+            inst.sg:GoToState("exit")
         end
     end),
     CommonHandlers.OnFreeze(),
     EventHandler("doattack", function(inst, data) 
-        if not inst.components.health:IsDead() and not inst.sg:HasStateTag("busy") then 
-            if inst:GetDistanceSqToInst(data.target) > 2*2 then
-                inst.sg:GoToState("attack_leap")
-            else
-            	inst.sg:GoToState("attack")
-            end
+        if not (inst.sg:HasStateTag("busy") or inst.components.health:IsDead()) then
+            --target CAN go invalid because SG events are buffered
+            inst.sg:GoToState(
+                data.target:IsValid()
+                and not inst:IsNear(data.target, 2)
+                and "attack_leap"
+                or "attack",
+                data.target
+            )
         end 
     end),
     CommonHandlers.OnAttacked(),
     CommonHandlers.OnDeath(),
-    CommonHandlers.OnLocomote(false,true),
+    CommonHandlers.OnLocomote(false, true),
 }
 
-local states=
+local states =
 {
 	State
 	{
@@ -40,11 +43,7 @@ local states=
 			inst.AnimState:PlayAnimation("idle_loop")
 		end,
 
-		timeline = 
-		{
-		},
-
-		events = 
+		events =
 		{
 			EventHandler("animover", function(inst) 
 				inst.sg:GoToState("idle") 
@@ -62,12 +61,12 @@ local states=
 			inst.AnimState:PlayAnimation("ground_enter")
 		end,
 
-		timeline = 
+		timeline =
 		{
 			TimeEvent(1*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/decidous/drake_pop_small") end),
 		},
 
-		events = 
+		events =
 		{
 			EventHandler("animover", function(inst) 
 				inst.sg:GoToState("enter") 
@@ -85,14 +84,14 @@ local states=
 			inst.AnimState:PlayAnimation("ground_loop")
 		end,
 
-		timeline = 
+		timeline =
 		{
 		},
 
-		events = 
+		events =
 		{
-			EventHandler("animover", function(inst) 
-				inst.sg:GoToState("ground_idle") 
+			EventHandler("animover", function(inst)
+				inst.sg:GoToState("ground_idle")
 			end)
 		},
 	},
@@ -107,15 +106,15 @@ local states=
 			inst.AnimState:PlayAnimation("enter")
 		end,
 
-		timeline = 
+		timeline =
 		{
 			TimeEvent(1*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/decidous/drake_pop_large") end),
 		},
 
-		events = 
+		events =
 		{
-			EventHandler("animover", function(inst) 
-				inst.sg:GoToState("idle") 
+			EventHandler("animover", function(inst)
+				inst.sg:GoToState("idle")
 			end)
 		},
 	},
@@ -133,15 +132,15 @@ local states=
 			inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/decidous/drake_run_voice")
 		end,
 
-		timeline = 
+		timeline =
 		{
 			TimeEvent(15*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/decidous/drake_intoground") end),
 			TimeEvent(20*FRAMES, function(inst) inst.Physics:ClearCollisionMask() end),
 		},
 
-		events = 
+		events =
 		{
-			EventHandler("animqueueover", function(inst) 
+			EventHandler("animqueueover", function(inst)
 				inst:Remove()
 			end)
 		},
@@ -158,6 +157,7 @@ local states=
             inst.components.combat:StartAttack()
             inst.AnimState:PlayAnimation("atk")
             inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/decidous/drake_jump")
+            inst.sg.statemem.target = target
         end,
 
         onexit = function(inst)
@@ -165,11 +165,11 @@ local states=
             inst.components.locomotor:EnableGroundSpeedMultiplier(true)
         end,
 
-		timeline = 
+		timeline =
 		{
             TimeEvent(3*FRAMES, function(inst) inst.Physics:SetMotorVelOverride(5,0,0) end),
-            TimeEvent(12*FRAMES, function(inst) 
-            	inst.components.combat:DoAttack() 
+            TimeEvent(12*FRAMES, function(inst)
+            	inst.components.combat:DoAttack(inst.sg.statemem.target)
             	inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/decidous/drake_attack")
             end),
             TimeEvent(25*FRAMES,
@@ -179,9 +179,9 @@ local states=
 				end),
 		},
 
-		events = 
+		events =
 		{
-			EventHandler("animover", function(inst) 
+			EventHandler("animover", function(inst)
 				inst.sg:GoToState("idle")
 			end)
 		},
@@ -191,26 +191,26 @@ local states=
 CommonStates.AddCombatStates(states,
 {
 	hittimeline = {},
-	attacktimeline = 
+	attacktimeline =
 	{
 		TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/decidous/drake_jump") end),
-		TimeEvent(12*FRAMES, function(inst) 
+		TimeEvent(12*FRAMES, function(inst)
 			inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/decidous/drake_attack")
-			inst.components.combat:DoAttack() 
+			inst.components.combat:DoAttack(inst.sg.statemem.target)
 		end)
 	},
-	deathtimeline = 
+	deathtimeline =
 	{
-		TimeEvent(1*FRAMES, function(inst) 
+		TimeEvent(1*FRAMES, function(inst)
 			inst.Physics:ClearCollisionMask()
-			inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/decidous/drake_die") 
+			inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/decidous/drake_die")
 		end),
 	},
 })
-CommonStates.AddWalkStates(states, 
-{	
+CommonStates.AddWalkStates(states,
+{
 	starttimeline = {},
-	walktimeline = 
+	walktimeline =
 	{
 		TimeEvent(1*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/decidous/drake_run_voice") end),
 		TimeEvent(1*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/decidous/drake_run_rustle") end),
@@ -224,5 +224,5 @@ CommonStates.AddSleepStates(states,
 	endtimeline = {},
 })
 CommonStates.AddFrozenStates(states)
-  
+
 return StateGraph("birchnutdrake", states, events, "spawn", actionhandlers)

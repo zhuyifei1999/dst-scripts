@@ -23,6 +23,7 @@ local RENEWABLES =
     flint = { flint = true },
     sapling = { sapling = true },
     grass = { grass = true, depleted_grass = true },
+    berrybush = { berrybush = true, berrybush2 = true },
 }
 
 --------------------------------------------------------------------------

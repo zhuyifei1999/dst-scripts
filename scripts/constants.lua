@@ -608,7 +608,7 @@ RECIPETABS=
 
 CUSTOM_RECIPETABS =
 {
-    BOOKS = { str = "BOOKS", sort = 999, icon = "tab_book.tex" },
+    BOOKS = { str = "BOOKS", sort = 999, icon = "tab_book.tex", owner_tag = "bookbuilder" },
 }
 
 VERBOSITY =

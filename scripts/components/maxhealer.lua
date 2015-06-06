@@ -9,11 +9,11 @@ function MaxHealer:SetHealthAmount(health)
 end
 
 function MaxHealer:Heal(target) 
-    if target.components.health then
+    if target.components.health ~= nil then
         target.components.health.numrevives = math.max(0, target.components.health.numrevives - self.maxhealth) --borked for meat eff max health losses
         target.components.health:RecalculatePenalty(true)
         --print(target.components.health.penalty)
-        if self.inst.components.stackable and self.inst.components.stackable.stacksize > 1 then
+        if self.inst.components.stackable ~= nil and self.inst.components.stackable:IsStack() then
             self.inst.components.stackable:Get():Remove()
         else
             self.inst:Remove()

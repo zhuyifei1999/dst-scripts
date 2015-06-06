@@ -32,32 +32,28 @@ nil,
 })
 
 function Eater:OnRemoveFromEntity()
-    clearpreferseating(self, self.preferseating)
+    clearcaneat(self, self.caneat)
 end
 
 function Eater:SetDiet(caneat, preferseating)
-	self.caneat = caneat
-	if preferseating then 
-		self.preferseating = preferseating
-	else
-		self.preferseating = self.caneat
-	end
+    self.caneat = caneat
+    self.preferseating = preferseating or caneat
 end
 
 function Eater:TimeSinceLastEating()
-    if self.lasteattime then
-        return GetTime() - self.lasteattime
-    end
+    return self.lasteattime ~= nil and GetTime() - self.lasteattime or nil
 end
 
 function Eater:HasBeen(time)
-    return self.lasteattime and self:TimeSinceLastEating() >= time or true
+    return self.lasteattime == nil or self:TimeSinceLastEating() >= time
 end
 
 function Eater:OnSave()
-    if self.lasteattime then
-        return {time_since_eat = self:TimeSinceLastEating()}
-    end
+    return self.lasteattime ~= nil
+        and {
+                time_since_eat = self:TimeSinceLastEating(),
+            }
+        or nil
 end
 
 function Eater:OnLoad(data)
@@ -93,17 +89,17 @@ function Eater:DoFoodEffects(food)
 end
 
 function Eater:GetEdibleTags()
-	local tags = {}
-	for i, v in ipairs(self.caneat) do
-		if type(v) == "table" then
-			for i2, v2 in ipairs(v.types) do
-				table.insert(tags, "edible_"..v2)
-			end
-		else
-			table.insert(tags, "edible_"..v)
-		end
-	end
-	return tags
+    local tags = {}
+    for i, v in ipairs(self.caneat) do
+        if type(v) == "table" then
+            for i2, v2 in ipairs(v.types) do
+                table.insert(tags, "edible_"..v2)
+            end
+        else
+            table.insert(tags, "edible_"..v)
+        end
+    end
+    return tags
 end
 
 function Eater:Eat(food, force)
@@ -111,41 +107,41 @@ function Eater:Eat(food, force)
     -- wigfrid) can TRY to eat all foods (they get the actions for it) but upon actually put it in 
     -- their mouth, they bail and "spit it out" so to speak.
     if self:PrefersToEat(food) or (force and self:CanEat(food)) then
-        
-        if self.inst.components.health then
-            local healthvalue = food.components.edible:GetHealth(self.inst)
-            if (food.components.edible.healthvalue < 0 and self:DoFoodEffects(food) or food.components.edible.healthvalue > 0) and self.inst.components.health then
-                self.inst.components.health:DoDelta(healthvalue, nil, food.prefab)
-            end
+        if self.inst.components.health ~= nil and
+            (food.components.edible.healthvalue > 0 or
+            (food.components.edible.healthvalue < 0 and self:DoFoodEffects(food))) then
+            self.inst.components.health:DoDelta(food.components.edible:GetHealth(self.inst), nil, food.prefab)
         end
 
-        if self.inst.components.hunger then
+        if self.inst.components.hunger ~= nil then
             self.inst.components.hunger:DoDelta(food.components.edible:GetHunger(self.inst))
         end
-        
-        if (food.components.edible.sanityvalue < 0 and self:DoFoodEffects(food) or food.components.edible.sanityvalue > 0) and self.inst.components.sanity then
+
+        if self.inst.components.sanity ~= nil and
+            (food.components.edible.sanityvalue > 0 or
+            (food.components.edible.sanityvalue < 0 and self:DoFoodEffects(food))) then
             self.inst.components.sanity:DoDelta(food.components.edible:GetSanity(self.inst))
         end
-        
-        self.inst:PushEvent("oneat", {food = food})
-        if self.oneatfn then
+
+        self.inst:PushEvent("oneat", { food = food })
+        if self.oneatfn ~= nil then
             self.oneatfn(self.inst, food)
         end
-        
-        if food.components.edible then
+
+        if food.components.edible ~= nil then
             food.components.edible:OnEaten(self.inst)
         end
-        
-        if food.components.stackable and food.components.stackable.stacksize > 1 and not self.eatwholestack then
+
+        if not self.eatwholestack and food.components.stackable ~= nil and food.components.stackable:IsStack() then
             food.components.stackable:Get():Remove()
         else
             food:Remove()
         end
-        
+
         self.lasteattime = GetTime()
-        
-        self.inst:PushEvent("oneatsomething", {food = food})
-        
+
+        self.inst:PushEvent("oneatsomething", { food = food })
+
         return true
     end
 end
