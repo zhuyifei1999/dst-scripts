@@ -1179,7 +1179,7 @@ local function OnHaunt(inst, haunter)
         inst.components.hauntable.cooldown_on_successful_haunt = false
         return true
     elseif not (isstump or inst.monster) and
-        math.random() <= 1 then
+        math.random() <= TUNING.HAUNT_CHANCE_SUPERRARE then
         inst:StartMonster(true)
         inst.components.hauntable.hauntvalue = TUNING.HAUNT_HUGE
         return true

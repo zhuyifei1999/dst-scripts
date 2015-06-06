@@ -1,16 +1,16 @@
 require("stategraphs/commonstates")
 
-local actionhandlers = 
+local actionhandlers =
 {
     ActionHandler(ACTIONS.EAT, "eat"),
     ActionHandler(ACTIONS.GOHOME, "eat"),
     ActionHandler(ACTIONS.INVESTIGATE, "investigate"),
 }
 
-local events=
+local events =
 {
-    EventHandler("attacked", function(inst) 
-        if not inst.components.health:IsDead() then 
+    EventHandler("attacked", function(inst)
+        if not inst.components.health:IsDead() then
             if inst:HasTag("spider_warrior") or inst:HasTag("spider_spitter") then
                 if not inst.sg:HasStateTag("attack") then -- don't interrupt attack or exit shield
                     inst.sg:GoToState("hit") -- can still attack
@@ -18,35 +18,40 @@ local events=
             elseif not inst.sg:HasStateTag("shield") then
                 inst.sg:GoToState("hit_stunlock")  -- can't attack during hit reaction
             end
-        end 
+        end
     end),
     EventHandler("doattack", function(inst, data) 
-        if not inst.components.health:IsDead() and not inst.sg:HasStateTag("busy") then 
-            if inst:HasTag("spider_warrior") and
-                data.target:IsValid() and
-                inst:GetDistanceSqToInst(data.target) > TUNING.SPIDER_WARRIOR_MELEE_RANGE*TUNING.SPIDER_WARRIOR_MELEE_RANGE then
-                --Do leap attack
-                inst.sg:GoToState("warrior_attack", data.target) 
-            elseif inst:HasTag("spider_spitter") and
-                data.target:IsValid() and
-                inst:GetDistanceSqToInst(data.target) > TUNING.SPIDER_SPITTER_MELEE_RANGE*TUNING.SPIDER_SPITTER_MELEE_RANGE then
-                --Do spit attack
-                inst.sg:GoToState("spitter_attack", data.target)
+        if not (inst.sg:HasStateTag("busy") or inst.components.health:IsDead()) then
+            --target CAN go invalid because SG events are buffered
+            if inst:HasTag("spider_warrior") then
+                inst.sg:GoToState(
+                    data.target:IsValid()
+                    and not inst:IsNear(data.target, TUNING.SPIDER_WARRIOR_MELEE_RANGE)
+                    and "warrior_attack" --Do leap attack
+                    or "attack",
+                    data.target
+                )
+            elseif inst:HasTag("spider_spitter") then
+                inst.sg:GoToState(
+                    data.target:IsValid()
+                    and not inst:IsNear(data.target, TUNING.SPIDER_SPITTER_MELEE_RANGE)
+                    and "spitter_attack" --Do spit attack
+                    or "attack",
+                    data.target
+                )
             else
-                inst.sg:GoToState("attack", data.target) 
+                inst.sg:GoToState("attack", data.target)
             end
-        end 
+        end
     end),
     EventHandler("death", function(inst) inst.sg:GoToState("death") end),
     CommonHandlers.OnSleep(),
     CommonHandlers.OnFreeze(),
     EventHandler("entershield", function(inst) inst.sg:GoToState("shield") end),
     EventHandler("exitshield", function(inst) inst.sg:GoToState("shield_end") end),
-    
-    
+
     EventHandler("locomote", function(inst) 
         if not inst.sg:HasStateTag("busy") then
-            
             local is_moving = inst.sg:HasStateTag("moving")
             local wants_to_move = inst.components.locomotor:WantsToMoveForward()
             if not inst.sg:HasStateTag("attack") and is_moving ~= wants_to_move then
@@ -57,7 +62,7 @@ local events=
                 end
             end
         end
-    end),    
+    end),
 }
 
 local function SoundPath(inst, event)
@@ -73,85 +78,79 @@ local function SoundPath(inst, event)
     return "dontstarve/creatures/" .. creature .. "/" .. event
 end
 
-local states=
+local states =
 {
-    
-    
     State{
         name = "death",
         tags = {"busy"},
-        
+
         onenter = function(inst)
             inst.SoundEmitter:PlaySound(SoundPath(inst, "die"))
             inst.AnimState:PlayAnimation("death")
             inst.Physics:Stop()
-            RemovePhysicsColliders(inst)            
+            RemovePhysicsColliders(inst)
             inst.components.lootdropper:DropLoot(Vector3(inst.Transform:GetWorldPosition()))            
         end,
+    },
 
-    },    
-    
     State{
         name = "premoving",
         tags = {"moving", "canrotate"},
-        
+
         onenter = function(inst)
             inst.components.locomotor:WalkForward()
             inst.AnimState:PlayAnimation("walk_pre")
         end,
-        
+
         timeline=
         {
             TimeEvent(3*FRAMES, function(inst) inst.SoundEmitter:PlaySound(SoundPath(inst, "walk_spider")) end),
         },
-        
+
         events=
         {
             EventHandler("animover", function(inst) inst.sg:GoToState("moving") end),
         },
     },
-    
+
     State{
         name = "moving",
         tags = {"moving", "canrotate"},
-        
+
         onenter = function(inst)
             inst.components.locomotor:RunForward()
             inst.AnimState:PushAnimation("walk_loop")
         end,
-        
+
         timeline=
         {
-        
             TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound(SoundPath(inst, "walk_spider")) end),
             TimeEvent(3*FRAMES, function(inst) inst.SoundEmitter:PlaySound(SoundPath(inst, "walk_spider")) end),
             TimeEvent(7*FRAMES, function(inst) inst.SoundEmitter:PlaySound(SoundPath(inst, "walk_spider")) end),
             TimeEvent(12*FRAMES, function(inst) inst.SoundEmitter:PlaySound(SoundPath(inst, "walk_spider")) end),
         },
-        
+
         events=
         {
             EventHandler("animover", function(inst) inst.sg:GoToState("moving") end),
         },
-        
-    },    
-    
-    
+    },
+
     State{
         name = "idle",
         tags = {"idle", "canrotate"},
-        
+
         ontimeout = function(inst)
-			inst.sg:GoToState("taunt")
+            inst.sg:GoToState("taunt")
         end,
-        
+
         onenter = function(inst, start_anim)
             inst.Physics:Stop()
             local animname = "idle"
             if math.random() < .3 then
-				inst.sg:SetTimeout(math.random()*2 + 2)
-			end
-            
+                inst.sg:SetTimeout(math.random()*2 + 2)
+            end
+
             if inst.LightWatcher:GetLightValue() > 1 then
                 inst.AnimState:PlayAnimation("cower" )
                 inst.AnimState:PushAnimation("cower_loop", true)
@@ -165,16 +164,16 @@ local states=
             end
         end,
     },
-    
+
     State{
         name = "eat",
         tags = {"busy"},
-        
+
         onenter = function(inst)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("eat")
         end,
-        
+
         events=
         {
             EventHandler("animover", function(inst)
@@ -186,32 +185,31 @@ local states=
             end),
         },
     },  
-    
-    
-	State{
+
+    State{
         name = "born",
         tags = {"busy"},
-        
+
         onenter = function(inst)
             inst.AnimState:PlayAnimation("taunt")
         end,
-        
+
         events=
         {
             EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
         },
-    },      
-    
+    },
+
     State{
         name = "eat_loop",
         tags = {"busy"},
-        
+
         onenter = function(inst)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("eat_loop", true)
             inst.sg:SetTimeout(1+math.random()*1)
         end,
-        
+
         ontimeout = function(inst)
             inst.sg:GoToState("idle", "eat_pst")
         end,       
@@ -220,29 +218,29 @@ local states=
     State{
         name = "taunt",
         tags = {"busy"},
-        
+
         onenter = function(inst)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("taunt")
             inst.SoundEmitter:PlaySound(SoundPath(inst, "scream"))
         end,
-        
+
         events=
         {
             EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
         },
     },    
-    
+
     State{
         name = "investigate",
         tags = {"busy"},
-        
+
         onenter = function(inst)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("taunt")
             inst.SoundEmitter:PlaySound(SoundPath(inst, "scream"))
         end,
-        
+
         events=
         {
             EventHandler("animover", function(inst)
@@ -250,26 +248,26 @@ local states=
                 inst.sg:GoToState("idle")
             end),
         },
-    },    
-    
+    },
+
     State{
         name = "attack",
         tags = {"attack", "busy"},
-        
+
         onenter = function(inst, target)
             inst.Physics:Stop()
             inst.components.combat:StartAttack()
             inst.AnimState:PlayAnimation("atk")
             inst.sg.statemem.target = target
         end,
-        
+
         timeline=
         {
             TimeEvent(10*FRAMES, function(inst) inst.SoundEmitter:PlaySound(SoundPath(inst, "Attack")) end),
             TimeEvent(10*FRAMES, function(inst) inst.SoundEmitter:PlaySound(SoundPath(inst, "attack_grunt")) end),
             TimeEvent(25*FRAMES, function(inst) inst.components.combat:DoAttack(inst.sg.statemem.target) end),
         },
-        
+
         events=
         {
             EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
@@ -279,7 +277,7 @@ local states=
     State{
         name = "warrior_attack",
         tags = {"attack", "canrotate", "busy", "jumping"},
-        
+
         onenter = function(inst, target)
             inst.components.locomotor:Stop()
             inst.components.locomotor:EnableGroundSpeedMultiplier(false)
@@ -293,7 +291,7 @@ local states=
             inst.components.locomotor:Stop()
             inst.components.locomotor:EnableGroundSpeedMultiplier(true)
         end,
-        
+
         timeline =
         {
             TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound(SoundPath(inst, "attack_grunt")) end),
@@ -302,12 +300,12 @@ local states=
             TimeEvent(9*FRAMES, function(inst) inst.SoundEmitter:PlaySound(SoundPath(inst, "Attack")) end),
             TimeEvent(19*FRAMES, function(inst) inst.components.combat:DoAttack(inst.sg.statemem.target) end),
             TimeEvent(20*FRAMES,
-				function(inst)
+                function(inst)
                     inst.Physics:ClearMotorVelOverride()
-					inst.components.locomotor:Stop()
-				end),
+                    inst.components.locomotor:Stop()
+                end),
         },
-        
+
         events=
         {
             EventHandler("animover", function(inst) inst.sg:GoToState("taunt") end),
@@ -319,13 +317,14 @@ local states=
         tags = {"attack", "canrotate", "busy", "spitting"},
 
         onenter = function(inst, target)
-            if inst.weapon and inst.components.inventory then 
+            if inst.weapon and inst.components.inventory then
                 inst.components.inventory:Equip(inst.weapon)
             end
             if inst.components.locomotor then
                 inst.components.locomotor:StopMoving()
             end
             inst.AnimState:PlayAnimation("spit")
+            inst.sg.statemem.target = target
         end,
 
         onexit = function(inst)
@@ -339,7 +338,7 @@ local states=
             TimeEvent(7*FRAMES, function(inst) 
             inst.SoundEmitter:PlaySound(SoundPath(inst, "spit_web")) end),
 
-            TimeEvent(21*FRAMES, function(inst) inst.components.combat:DoAttack()
+            TimeEvent(21*FRAMES, function(inst) inst.components.combat:DoAttack(inst.sg.statemem.target)
             inst.SoundEmitter:PlaySound(SoundPath(inst, "spit_voice"))
              end),
         },
@@ -352,33 +351,33 @@ local states=
 
     State{
         name = "hit",
-        
+
         onenter = function(inst)
             inst.AnimState:PlayAnimation("hit")
             inst.Physics:Stop()            
         end,
-        
+
         events=
         {
             EventHandler("animover", function(inst) inst.sg:GoToState("idle") end ),
         },
-    },    
-    
+    },
+
     State{
         name = "hit_stunlock",
         tags = {"busy"},
-        
+
         onenter = function(inst)
             inst.SoundEmitter:PlaySound(SoundPath(inst, "hit_response"))
             inst.AnimState:PlayAnimation("hit")
-            inst.Physics:Stop()            
+            inst.Physics:Stop()
         end,
-        
+
         events=
         {
             EventHandler("animover", function(inst) inst.sg:GoToState("idle") end ),
         },
-    },  
+    },
 
     State{
         name = "shield",
@@ -402,14 +401,14 @@ local states=
         tags = {"busy", "shield"},
 
         onenter = function(inst)
-            inst.AnimState:PlayAnimation("unhide")            
+            inst.AnimState:PlayAnimation("unhide")
         end,
 
         events=
         {
             EventHandler("animqueueover", function(inst) inst.sg:GoToState("idle") end ),
         },
-    }, 
+    },
 
     State{
         name = "dropper_enter",
@@ -425,27 +424,22 @@ local states=
         {
             EventHandler("animqueueover", function(inst) inst.sg:GoToState("taunt") end ),
         },
-
-
-
     },
-    
 }
 
 CommonStates.AddSleepStates(states,
 {
-	starttimeline = {
-		TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound(SoundPath(inst, "fallAsleep")) end ),
-	},
-	sleeptimeline = 
-	{
-		TimeEvent(35*FRAMES, function(inst) inst.SoundEmitter:PlaySound(SoundPath(inst, "sleeping")) end ),
-	},
-	waketimeline = {
-		TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound(SoundPath(inst, "wakeUp")) end ),
-	},
+    starttimeline = {
+        TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound(SoundPath(inst, "fallAsleep")) end ),
+    },
+    sleeptimeline = 
+    {
+        TimeEvent(35*FRAMES, function(inst) inst.SoundEmitter:PlaySound(SoundPath(inst, "sleeping")) end ),
+    },
+    waketimeline = {
+        TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound(SoundPath(inst, "wakeUp")) end ),
+    },
 })
 CommonStates.AddFrozenStates(states)
 
 return StateGraph("spider", states, events, "idle", actionhandlers)
-

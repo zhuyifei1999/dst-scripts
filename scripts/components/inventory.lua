@@ -266,38 +266,38 @@ function Inventory:SelectActiveItemFromEquipSlot(slot)
 end
 
 function Inventory:CombineActiveStackWithSlot(slot, stack_mod)
-    if not self.itemslots[slot] and not self.equipslots[slot] then
+    local invitem = self.itemslots[slot] or self.equipslots[slot]
+    if invitem == nil then
         return
     end
-    
-    local handitem = self.activeitem
-    local invitem = self.itemslots[slot] or self.equipslots[slot]
 
-    if handitem and invitem and handitem.prefab == invitem.prefab and handitem.components.stackable then
-    
-        if stack_mod and handitem.components.stackable.stacksize > 1 then
-            handitem.components.stackable:SetStackSize(handitem.components.stackable.stacksize - 1)
-            invitem.components.stackable:SetStackSize(invitem.components.stackable.stacksize + 1)
-        else
-            local leftovers = invitem.components.stackable:Put(handitem)
-            self:SetActiveItem(leftovers)
-        end
+    local handitem = self.activeitem
+    if handitem == nil or handitem.prefab ~= invitem.prefab or handitem.components.stackable == nil then
+        return
+    end
+
+    if stack_mod and handitem.components.stackable:IsStack() then
+        handitem.components.stackable:SetStackSize(handitem.components.stackable:StackSize() - 1)
+        invitem.components.stackable:SetStackSize(invitem.components.stackable:StackSize() + 1)
+    else
+        local leftovers = invitem.components.stackable:Put(handitem)
+        self:SetActiveItem(leftovers)
     end
 end
 
 function Inventory:SelectActiveItemFromSlot(slot)
-    if not self.itemslots[slot] then
+    if self.itemslots[slot] == nil then
         return
     end
-    
+
     local olditem = self.activeitem
     local newitem = self.itemslots[slot]
     self.itemslots[slot] = nil
-    self.inst:PushEvent("itemlose", {slot = slot})
+    self.inst:PushEvent("itemlose", { slot = slot })
     
     self:SetActiveItem(newitem)
 
-    if olditem then
+    if olditem ~= nil then
         self:GiveItem(olditem, slot)
     end
 
@@ -305,23 +305,20 @@ function Inventory:SelectActiveItemFromSlot(slot)
 end
 
 function Inventory:ReturnActiveItem(slot, stack_mod)
+    if self.activeitem == nil then
+        return
+    end
 
-    if self.activeitem then
-        
-        if stack_mod and self.activeitem.components.stackable and self.activeitem.components.stackable.stacksize > 1 then
-            local item = self.activeitem.components.stackable:Get()
-            if not self:GiveItem(item, slot) then
-                self:DropItem(item)
-            end
-            
-        else
-        
-            if not self:GiveItem(self.activeitem, slot) then
-                self:DropItem(self.activeitem)
-            end
-
-            self:SetActiveItem(nil)
+    if stack_mod and self.activeitem.components.stackable ~= nil and self.activeitem.components.stackable:IsStack() then
+        local item = self.activeitem.components.stackable:Get()
+        if not self:GiveItem(item, slot) then
+            self:DropItem(item)
         end
+    else
+        if not self:GiveItem(self.activeitem, slot) then
+            self:DropItem(self.activeitem)
+        end
+        self:SetActiveItem(nil)
     end
 end
 

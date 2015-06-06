@@ -17,39 +17,24 @@ local NO_ISLAND = 127
 local ARRIVE_STEP = .15
 
 function Dest:IsValid()
-    if self.inst then
-        if not self.inst:IsValid() then
-            return false
-        end
-    end
-    
-    return true
-
+    return self.inst == nil or self.inst:IsValid()
 end
 
 function Dest:__tostring()
-    if self.inst then
-        return "Going to Entity: " .. tostring(self.inst)
-    elseif self.world_offset then
-        return "Heading to Point: " .. tostring(self.world_offset)
-    else
-        return "No Dest"
-    end
-    
+    return (self.inst ~= nil and ("Going to Entity: "..tostring(self.inst)))
+        or (self.world_offset ~= nil and ("Heading to Point: "..tostring(self.world_offset)))
+        or "No Dest"
 end
 
 function Dest:GetPoint()
-    local pt = nil
-    
-    if self.inst and self.inst.components.inventoryitem and self.inst.components.inventoryitem.owner then
+    if self.inst ~= nil and self.inst.components.inventoryitem ~= nil and self.inst.components.inventoryitem.owner ~= nil then
         return self.inst.components.inventoryitem.owner.Transform:GetWorldPosition()
-    elseif self.inst then
+    elseif self.inst ~= nil then
         return self.inst.Transform:GetWorldPosition()
     elseif self.world_offset then
-        return self.world_offset.x,self.world_offset.y,self.world_offset.z
-    else
-        return 0, 0, 0
+        return self.world_offset:Get()
     end
+    return 0, 0, 0
 end
 
 local function onrunspeed(self, runspeed)
@@ -101,21 +86,20 @@ local LocoMotor = Class(function(self, inst)
     self.arrive_dist = ARRIVE_STEP
     self.walkspeed = TUNING.WILSON_WALK_SPEED -- 4
     self.runspeed = TUNING.WILSON_RUN_SPEED -- 6
-    self.bonusspeed = 0
     self.throttle = 1
     self.lastpos = {}
-	self.slowmultiplier = 0.6
-	self.fastmultiplier = 1.3
+    self.slowmultiplier = 0.6
+    self.fastmultiplier = 1.3
 
-	self.groundspeedmultiplier = 1.0
+    self.groundspeedmultiplier = 1.0
     self.enablegroundspeedmultiplier = true
-	self.isrunning = false
+    self.isrunning = false
 
     self._externalspeedmultipliers = {}
     self.externalspeedmultiplier = 1
-	
-	self.wasoncreep = false
-	self.triggerscreep = true
+    
+    self.wasoncreep = false
+    self.triggerscreep = true
 end,
 nil,
 {
@@ -123,24 +107,23 @@ nil,
     externalspeedmultiplier = onexternalspeedmultiplier,
 })
 
-
 --local function DozeOff(inst)
---	local locomotor = inst.components.locomotor
---	if locomotor then
---		locomotor:Stop()
---	end
+--  local locomotor = inst.components.locomotor
+--  if locomotor then
+--      locomotor:Stop()
+--  end
 --end
 
 function LocoMotor:OnEntitySleep()
-	self:Stop()
---   	self.dozeOffTask = self.inst:DoTaskInTime(DOZE_OFF_TIME, DozeOff)
+    self:Stop()
+--      self.dozeOffTask = self.inst:DoTaskInTime(DOZE_OFF_TIME, DozeOff)
 end
 
 --function LocoMotor:OnEntityWake()
---	if self.dozeOffTask then
---		self.dozeOffTask:Cancel()
---		self.dozeOffTask = nil
---	end
+--  if self.dozeOffTask then
+--      self.dozeOffTask:Cancel()
+--      self.dozeOffTask = nil
+--  end
 --end
 
 function LocoMotor:OnRemoveFromEntity()
@@ -150,7 +133,7 @@ function LocoMotor:OnRemoveFromEntity()
 end
 
 function LocoMotor:StopMoving()
-	self.isrunning = false
+    self.isrunning = false
     self.inst.Physics:Stop()
 end
 
@@ -225,11 +208,11 @@ function LocoMotor:GetExternalSpeedMultiplier(source, key)
 end
 
 function LocoMotor:SetSlowMultiplier(m)
-	self.slowmultiplier = m
+    self.slowmultiplier = m
 end
 
 function LocoMotor:SetTriggersCreep(triggers)
-	self.triggerscreep = triggers
+    self.triggerscreep = triggers
 end
 
 function LocoMotor:EnableGroundSpeedMultiplier(enable)
@@ -240,15 +223,11 @@ function LocoMotor:EnableGroundSpeedMultiplier(enable)
 end
 
 function LocoMotor:GetWalkSpeed()
-    return (self.walkspeed + self:GetBonusSpeed()) * self:GetSpeedMultiplier()
+    return self.walkspeed * self:GetSpeedMultiplier()
 end
 
 function LocoMotor:GetRunSpeed()
-    return (self:RunSpeed() + self:GetBonusSpeed()) * self:GetSpeedMultiplier()
-end
-
-function LocoMotor:GetBonusSpeed()
-    return self.bonusspeed
+    return self:RunSpeed() * self:GetSpeedMultiplier()
 end
 
 function LocoMotor:GetSpeedMultiplier()
@@ -264,41 +243,41 @@ function LocoMotor:GetSpeedMultiplier()
 end
 
 function LocoMotor:UpdateGroundSpeedMultiplier()
-	self.groundspeedmultiplier = 1
+    self.groundspeedmultiplier = 1
     local ground = TheWorld
-	local oncreep = self.triggerscreep and ground.GroundCreep:OnCreep(self.inst.Transform:GetWorldPosition())
-	local x,y,z = self.inst.Transform:GetWorldPosition()
-	if oncreep then
+    local oncreep = self.triggerscreep and ground.GroundCreep:OnCreep(self.inst.Transform:GetWorldPosition())
+    local x,y,z = self.inst.Transform:GetWorldPosition()
+    if oncreep then
         -- if this ever needs to happen when self.enablegroundspeedmultiplier is set, need to move the check for self.enablegroundspeedmultiplier above
-	    if not self.wasoncreep then
-	        local triggered = ground.GroundCreep:GetTriggeredCreepSpawners(x, y, z)
-	        for _,v in ipairs(triggered) do
-	            v:PushEvent("creepactivate", {target = self.inst})
-	        end
-	        self.wasoncreep = true
-	    end
-		self.groundspeedmultiplier = self.slowmultiplier
-	else
+        if not self.wasoncreep then
+            local triggered = ground.GroundCreep:GetTriggeredCreepSpawners(x, y, z)
+            for _,v in ipairs(triggered) do
+                v:PushEvent("creepactivate", {target = self.inst})
+            end
+            self.wasoncreep = true
+        end
+        self.groundspeedmultiplier = self.slowmultiplier
+    else
         self.wasoncreep = false
-		if self.fasteronroad then
+        if self.fasteronroad then
             --print(self.inst, "UpdateGroundSpeedMultiplier check road" )
-			if (RoadManager ~= nil and RoadManager:IsOnRoad(x, 0, z)) or
+            if (RoadManager ~= nil and RoadManager:IsOnRoad(x, 0, z)) or
                 ground.Map:GetTileAtPoint(x, 0, z) == GROUND.ROAD then
-				self.groundspeedmultiplier = self.fastmultiplier
-			end
-		end
-	end
+                self.groundspeedmultiplier = self.fastmultiplier
+            end
+        end
+    end
 end
 
 function LocoMotor:WalkForward(direct)
-	self.isrunning = false
+    self.isrunning = false
     if direct then self.wantstomoveforward = true end
     self.inst.Physics:SetMotorVel(self:GetWalkSpeed(),0,0)
     self.inst:StartUpdatingComponent(self)
 end
 
 function LocoMotor:RunForward(direct)
-	self.isrunning = true
+    self.isrunning = true
     if direct then self.wantstomoveforward = true end
     self.inst.Physics:SetMotorVel(self:GetRunSpeed(),0,0)
     self.inst:StartUpdatingComponent(self)
@@ -373,7 +352,7 @@ function LocoMotor:PreviewAction(bufferedaction, run, try_instant)
 end
 
 function LocoMotor:PushAction(bufferedaction, run, try_instant)
-	if bufferedaction == nil then
+    if bufferedaction == nil then
         return
     end
 
@@ -428,23 +407,23 @@ end
 function LocoMotor:GoToEntity(inst, bufferedaction, run)
     self.dest = Dest(inst)
     self.throttle = 1
-    
+
     self:SetBufferedAction(bufferedaction)
     self.wantstomoveforward = true
-    
+
     if bufferedaction and bufferedaction.distance then
-		self.arrive_dist = bufferedaction.distance
-	else
+        self.arrive_dist = bufferedaction.distance
+    else
         self.arrive_dist = ARRIVE_STEP
 
-		if inst.Physics then
-			self.arrive_dist = self.arrive_dist + ( inst.Physics:GetRadius() or 0)
-		end
+        if inst.Physics then
+            self.arrive_dist = self.arrive_dist + ( inst.Physics:GetRadius() or 0)
+        end
 
-		if self.inst.Physics then
-			self.arrive_dist = self.arrive_dist + (self.inst.Physics:GetRadius() or 0)
-		end
-	end
+        if self.inst.Physics then
+            self.arrive_dist = self.arrive_dist + (self.inst.Physics:GetRadius() or 0)
+        end
+    end
 
     if self.directdrive then
         if run then
@@ -455,7 +434,7 @@ function LocoMotor:GoToEntity(inst, bufferedaction, run)
     else
         self:FindPath()
     end
-    
+
     self.wantstorun = run
     --self.arrive_step_dist = ARRIVE_STEP
     self.inst:StartUpdatingComponent(self)    
@@ -467,13 +446,13 @@ function LocoMotor:GoToPoint(pt, bufferedaction, run, overridedest)
     self.throttle = 1
 
     if bufferedaction and bufferedaction.distance then
-		self.arrive_dist = bufferedaction.distance
-	else
-		self.arrive_dist = ARRIVE_STEP
-	end
+        self.arrive_dist = bufferedaction.distance
+    else
+        self.arrive_dist = ARRIVE_STEP
+    end
     --self.arrive_step_dist = ARRIVE_STEP
     self.wantstorun = run
-    
+
     if self.directdrive then
         if run then
             self:RunForward()
@@ -498,7 +477,7 @@ end
 
 function LocoMotor:Stop(sgparams)
     --Print(VERBOSITY.DEBUG, "LocoMotor:Stop", self.inst.prefab)
-	self.isrunning = false
+    self.isrunning = false
     self.dest = nil
     self:ResetPath()
     self.lastdesttile = nil
@@ -507,7 +486,7 @@ function LocoMotor:Stop(sgparams)
     --self:SetBufferedAction(nil)
     self.wantstomoveforward = false
     self.wantstorun = false
-    
+
     self:StopMoving()
 
     self.inst:PushEvent("locomote", sgparams)
@@ -516,30 +495,28 @@ end
 
 function LocoMotor:WalkInDirection(direction, should_run)
     --Print(VERBOSITY.DEBUG, "LocoMotor:WalkInDirection ", self.inst.prefab)
-	self:SetBufferedAction(nil)
+    self:SetBufferedAction(nil)
     if not self.inst.sg or self.inst.sg:HasStateTag("canrotate") then
         self.inst.Transform:SetRotation(direction)
     end
-            
+
     self.wantstomoveforward = true
     self.wantstorun = should_run
     self:ResetPath()
     self.lastdesttile = nil
-    
+
     if self.directdrive then
         self:WalkForward()
     end
     self.inst:PushEvent("locomote")
     self.inst:StartUpdatingComponent(self)
-    
 end
-
 
 function LocoMotor:RunInDirection(direction, throttle)
     --Print(VERBOSITY.DEBUG, "LocoMotor:RunInDirection ", self.inst.prefab)
-    
+
     self.throttle = throttle or 1
-    
+
     self:SetBufferedAction(nil)
     self.dest = nil
     self:ResetPath()
@@ -548,7 +525,7 @@ function LocoMotor:RunInDirection(direction, throttle)
     if not self.inst.sg or self.inst.sg:HasStateTag("canrotate") then
         self.inst.Transform:SetRotation(direction)
     end
-            
+
     self.wantstomoveforward = true
     self.wantstorun = true
 
@@ -598,19 +575,19 @@ function LocoMotor:OnUpdate(dt)
     if not self.inst:IsValid() then
         Print(VERBOSITY.DEBUG, "OnUpdate INVALID", self.inst.prefab)
         self:ResetPath()
-		self.inst:StopUpdatingComponent(self)	
-		return
+        self.inst:StopUpdatingComponent(self)   
+        return
     end
-    
-	if self.enablegroundspeedmultiplier then
+
+    if self.enablegroundspeedmultiplier then
         local x,y,z = self.inst.Transform:GetWorldPosition()
         local tx, ty = TheWorld.Map:GetTileCoordsAtPoint(x, 0, z)
-		if tx ~= self.lastpos.x or ty ~= self.lastpos.y then
-			self:UpdateGroundSpeedMultiplier()
+        if tx ~= self.lastpos.x or ty ~= self.lastpos.y then
+            self:UpdateGroundSpeedMultiplier()
             self.lastpos = {x=tx,y=ty}
-		end
-	end
-    
+        end
+    end
+
     --Print(VERBOSITY.DEBUG, "OnUpdate", self.inst.prefab)
     if self.dest then
         --Print(VERBOSITY.DEBUG, "    w dest")
@@ -618,12 +595,12 @@ function LocoMotor:OnUpdate(dt)
             self:Clear()
             return
         end
-        
+
         if self.inst.components.health and self.inst.components.health:IsDead() then
             self:Clear()
             return
         end
-        
+
         local destpos_x, destpos_y, destpos_z = self.dest:GetPoint()
         local mypos_x, mypos_y, mypos_z = self.inst.Transform:GetWorldPosition()
 
@@ -733,19 +710,18 @@ function LocoMotor:OnUpdate(dt)
                 local x,y,z = self.inst.Physics:GetMotorVel()
                 if x < 0 then
                     --Print(VERBOSITY.DEBUG, "SET ROT", facepos)
-	                local angle = self.inst:GetAngleToPoint(facepos_x, facepos_y, facepos_z)
+                    local angle = self.inst:GetAngleToPoint(facepos_x, facepos_y, facepos_z)
                     self.inst.Transform:SetRotation(180 + angle)
                 else
                     --Print(VERBOSITY.DEBUG, "FACE PT", facepos)
                     self.inst:FacePoint(facepos_x, facepos_y, facepos_z)
                 end
-
             end
-            
+
             self.wantstomoveforward = self.wantstomoveforward or not self:WaitingForPathSearch()
         end
     end
-    
+
     local should_locomote = false
     if (self.ismastersim and not self.inst:IsInLimbo()) or not (self.ismastersim or self.inst:HasTag("INLIMBO")) then
         local is_moving = self.inst.sg ~= nil and self.inst.sg:HasStateTag("moving")
@@ -762,23 +738,23 @@ function LocoMotor:OnUpdate(dt)
         self:ResetPath()
         self.inst:StopUpdatingComponent(self)
     end
-    
-	local cur_speed = self.inst.Physics:GetMotorSpeed()
-	if cur_speed > 0 then
-		
-		local speed_mult = self:GetSpeedMultiplier()
-		local desired_speed = self.isrunning and self:RunSpeed() or self.walkspeed
-		if self.dest and self.dest:IsValid() then
-			local destpos_x, destpos_y, destpos_z = self.dest:GetPoint()
-			local mypos_x, mypos_y, mypos_z = self.inst.Transform:GetWorldPosition()
-			local dsq = distsq(destpos_x, destpos_z, mypos_x, mypos_z)
-			if dsq <= .25 then
-				speed_mult = math.max(.33, math.sqrt(dsq))
-			end
-		end
-		
-		self.inst.Physics:SetMotorVel((desired_speed + self.bonusspeed) * speed_mult, 0, 0)
-	end
+
+    local cur_speed = self.inst.Physics:GetMotorSpeed()
+    if cur_speed > 0 then
+        
+        local speed_mult = self:GetSpeedMultiplier()
+        local desired_speed = self.isrunning and self:RunSpeed() or self.walkspeed
+        if self.dest and self.dest:IsValid() then
+            local destpos_x, destpos_y, destpos_z = self.dest:GetPoint()
+            local mypos_x, mypos_y, mypos_z = self.inst.Transform:GetWorldPosition()
+            local dsq = distsq(destpos_x, destpos_z, mypos_x, mypos_z)
+            if dsq <= .25 then
+                speed_mult = math.max(.33, math.sqrt(dsq))
+            end
+        end
+
+        self.inst.Physics:SetMotorVel(desired_speed * speed_mult, 0, 0)
+    end
 end
 
 function LocoMotor:FindPath()
@@ -852,7 +828,6 @@ function LocoMotor:FindPath()
                 end
             end
         end
-
     end
 end
 

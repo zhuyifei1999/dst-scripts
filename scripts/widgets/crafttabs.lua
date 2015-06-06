@@ -53,12 +53,12 @@ local CraftTabs = Class(Widget, function(self, owner, top_root)
 
     self.bg = self:AddChild(Image("images/hud.xml", "craft_bg.tex"))      
     
-    self.tabs = self:AddChild(TabGroup())
-    self.tabs:SetPosition(-16,0,0)
-    
     self.bg_cover = self:AddChild(Image("images/hud.xml", "craft_bg_cover.tex"))
     self.bg_cover:SetPosition(-38, 0, 0)
     self.bg_cover:SetClickable(false)
+    
+    self.tabs = self:AddChild(TabGroup())
+    self.tabs:SetPosition(-16,0,0)
 
     self.tabs.onopen = function() TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/craft_open") end
     self.tabs.onchange = function() TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/craft_open") end
@@ -71,10 +71,12 @@ local CraftTabs = Class(Widget, function(self, owner, top_root)
     for k,v in pairs(RECIPETABS) do
         table.insert(tabnames, v)
     end
-
-    if owner:HasTag("bookbuilder") then
-        table.insert(tabnames, CUSTOM_RECIPETABS.BOOKS)
-    end
+    
+    for k,v in pairs(CUSTOM_RECIPETABS) do
+		if v.owner_tag == nil or owner:HasTag( v.owner_tag ) then
+			table.insert(tabnames, v)
+		end
+	end
 
     table.sort(tabnames, function(a,b) return a.sort < b.sort end)
     

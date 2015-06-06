@@ -583,9 +583,8 @@ CommonStates.AddCombatStates = function(states, timelines, anims)
             inst.AnimState:PlayAnimation(anims ~= nil and anims.attack or "atk")
             inst.components.combat:StartAttack()
 
-            --V2C: Cached for external use? why?
-            --     why not use combat component target?
-            --     WHO KNOWS. legacy stuff.
+            --V2C: Cached to force the target to be the same one later in the timeline
+            --     e.g. combat:DoAttack(inst.sg.statemem.target)
             inst.sg.statemem.target = target
         end,
 

@@ -1,6 +1,6 @@
 -- not local - debugkeys use it too
 function ConsoleCommandPlayer()
-	return (c_sel() and c_sel():HasTag("player") and c_sel()) or ThePlayer or AllPlayers[1]
+    return (c_sel() and c_sel():HasTag("player") and c_sel()) or ThePlayer or AllPlayers[1]
 end
 
 local function Spawn(prefab)
@@ -78,21 +78,21 @@ end
 -- Spawn At Cursor and select the new ent
 -- Has a gimpy short name so it's easier to type from the console
 function c_spawn(prefab, count)
-	count = count or 1
-	local inst = nil
-	for i = 1, count do
-		inst = DebugSpawn(prefab)
-		inst.Transform:SetPosition(ConsoleWorldPosition():Get())
-	end
-	SetDebugEntity(inst)
+    count = count or 1
+    local inst = nil
+    for i = 1, count do
+        inst = DebugSpawn(prefab)
+        inst.Transform:SetPosition(ConsoleWorldPosition():Get())
+    end
+    SetDebugEntity(inst)
     SuUsed("c_spawn_"..prefab , true)
-	return inst
+    return inst
 end
 
 -- Shutdown the application, optionally close with out saving (saves by default)
 function c_shutdown(save)
     print("c_shutdown", save)
-    if not save or TheWorld == nil then
+    if save == false or TheWorld == nil then
         Shutdown()
     elseif TheWorld.ismastersim then
         for i, v in ipairs(AllPlayers) do
@@ -108,21 +108,19 @@ end
 
 -- Restart the server, optionally save before restarting (does not save by default)
 function c_reset(save)
-	if InGamePlay() then
-		if TheWorld ~= nil and TheWorld.ismastersim then
-			if save then
-				for i, v in ipairs(AllPlayers) do
-					v:OnDespawn()
-				end
-				TheSystemService:EnableStorage(true)
-				SaveGameIndex:SaveCurrent(doreset, true)
-			else
-				doreset()
-			end
-		end
-	else
-		StartNextInstance()
-	end
+    if not InGamePlay() then
+        StartNextInstance()
+    elseif TheWorld ~= nil and TheWorld.ismastersim then
+        if save then
+            for i, v in ipairs(AllPlayers) do
+                v:OnDespawn()
+            end
+            TheSystemService:EnableStorage(true)
+            SaveGameIndex:SaveCurrent(doreset, true)
+        else
+            doreset()
+        end
+    end
 end
 
 -- Permanently delete the game world, rengerates a new world afterwords
@@ -162,7 +160,7 @@ end
 
 -- Return a listing of currently active players
 function c_listplayers()
-	print( dumptable( TheNet:GetClientTable() ) )
+    print( dumptable( TheNet:GetClientTable() ) )
 end
 
 -- Return a listing of AllPlayers table
@@ -175,70 +173,70 @@ end
 -- Get the currently selected entity, so it can be modified etc.
 -- Has a gimpy short name so it's easier to type from the console
 function c_sel()
-	return GetDebugEntity()
+    return GetDebugEntity()
 end
 
 function c_select(inst)
-	if not inst then
-		inst = ConsoleWorldEntityUnderMouse()
-	end
-	return SetDebugEntity(inst)
+    if not inst then
+        inst = ConsoleWorldEntityUnderMouse()
+    end
+    return SetDebugEntity(inst)
 end
 
 -- Print the (visual) tile under the cursor
 function c_tile()
-	local s = ""
+    local s = ""
 
     local map = TheWorld.Map
-	local mx, my, mz = ConsoleWorldPosition():Get()
-	local tx, ty = map:GetTileCoordsAtPoint(mx,my,mz)
-	s = s..string.format("world[%f,%f,%f] tile[%d,%d] ", mx,my,mz, tx,ty)
+    local mx, my, mz = ConsoleWorldPosition():Get()
+    local tx, ty = map:GetTileCoordsAtPoint(mx,my,mz)
+    s = s..string.format("world[%f,%f,%f] tile[%d,%d] ", mx,my,mz, tx,ty)
 
-	local tile = map:GetTileAtPoint(ConsoleWorldPosition():Get())
-	for k,v in pairs(GROUND) do
-		if v == tile then
-			s = s..string.format("ground[%s] ", k)
-			break
-		end
-	end
+    local tile = map:GetTileAtPoint(ConsoleWorldPosition():Get())
+    for k,v in pairs(GROUND) do
+        if v == tile then
+            s = s..string.format("ground[%s] ", k)
+            break
+        end
+    end
 
-	print(s)
+    print(s)
 end
 
 -- Apply a scenario script to the selection and run it.
 function c_doscenario(scenario)
-	local inst = GetDebugEntity()
-	if not inst then
-		print("Need to select an entity to apply the scenario to.")
-		return
-	end
-	if inst.components.scenariorunner then
-		inst.components.scenariorunner:ClearScenario()
-	end
+    local inst = GetDebugEntity()
+    if not inst then
+        print("Need to select an entity to apply the scenario to.")
+        return
+    end
+    if inst.components.scenariorunner then
+        inst.components.scenariorunner:ClearScenario()
+    end
 
-	-- force reload the script -- this is for testing after all!
-	package.loaded["scenarios/"..scenario] = nil
+    -- force reload the script -- this is for testing after all!
+    package.loaded["scenarios/"..scenario] = nil
 
-	inst:AddComponent("scenariorunner")
-	inst.components.scenariorunner:SetScript(scenario)
-	inst.components.scenariorunner:Run()
+    inst:AddComponent("scenariorunner")
+    inst.components.scenariorunner:SetScript(scenario)
+    inst.components.scenariorunner:Run()
     SuUsed("c_doscenario_"..scenario, true)
 end
 
 
 -- Some helper shortcut functions
 function c_sel_health()
-	if c_sel() then
-		local health = c_sel().components.health
-		if health then
-			return health
-		else
-			print("Gah! Selection doesn't have a health component!")
-			return
-		end
-	else
-		print("Gah! Need to select something to access it's components!")
-	end
+    if c_sel() then
+        local health = c_sel().components.health
+        if health then
+            return health
+        else
+            print("Gah! Selection doesn't have a health component!")
+            return
+        end
+    else
+        print("Gah! Need to select something to access it's components!")
+    end
 end
 
 function c_sethealth(n)
@@ -290,33 +288,33 @@ end
 -- Currently, to join an online server you must authenticate first.
 -- In the future this authentication will be taken care of for you.
 function c_connect( ip, port, password )
-	local start_worked = TheNet:StartClient( ip, port, 0, password )
-	if start_worked then
-		DisableAllDLC()
-	end
-	ShowCancelTip()
-	ShowLoading()
-	TheFrontEnd:Fade(false, 1)
-	return start_worked
+    local start_worked = TheNet:StartClient( ip, port, 0, password )
+    if start_worked then
+        DisableAllDLC()
+    end
+    ShowCancelTip()
+    ShowLoading()
+    TheFrontEnd:Fade(false, 1)
+    return start_worked
 end
 
 -- Put an item(s) in the player's inventory
 function c_give(prefab, count)
-	count = count or 1
+    count = count or 1
 
     local MainCharacter = ConsoleCommandPlayer()
     
-	if MainCharacter then
-		for i=1,count do
-			local inst = DebugSpawn(prefab)
-			if inst then
+    if MainCharacter then
+        for i=1,count do
+            local inst = DebugSpawn(prefab)
+            if inst then
 print("giving ",inst)
-				MainCharacter.components.inventory:GiveItem(inst)
+                MainCharacter.components.inventory:GiveItem(inst)
                 SetDebugEntity(inst)
                 SuUsed("c_give_" .. inst.prefab)
-			end
-		end
-	end
+            end
+        end
+    end
 end
 
 function c_mat(recname)
@@ -334,27 +332,27 @@ function c_mat(recname)
 end
 
 function c_pos(inst)
-	return inst and Point(inst.Transform:GetWorldPosition())
+    return inst and Point(inst.Transform:GetWorldPosition())
 end
 
 function c_printpos(inst)
-	print(c_pos(inst))
+    print(c_pos(inst))
 end
 
 function c_teleport(x, y, z, inst)
-	inst = inst or ConsoleCommandPlayer()
-	inst.Transform:SetPosition(x, y, z)
+    inst = inst or ConsoleCommandPlayer()
+    inst.Transform:SetPosition(x, y, z)
     SuUsed("c_teleport", true)
 end
 
 function c_move(inst)
-	inst = inst or c_sel()
-	inst.Transform:SetPosition(ConsoleWorldPosition():Get())
+    inst = inst or c_sel()
+    inst.Transform:SetPosition(ConsoleWorldPosition():Get())
     SuUsed("c_move", true)
 end
 
 function c_goto(dest, inst)
-	inst = inst or ConsoleCommandPlayer()
+    inst = inst or ConsoleCommandPlayer()
     if inst.Physics ~= nil then
         inst.Physics:Teleport(dest.Transform:GetWorldPosition())
     else
@@ -365,16 +363,16 @@ function c_goto(dest, inst)
 end
 
 function c_inst(guid)
-	return Ents[guid]
+    return Ents[guid]
 end
 
 function c_list(prefab)
     local x,y,z = ConsoleCommandPlayer().Transform:GetWorldPosition()
     local ents = TheSim:FindEntities(x,y,z, 9001)
     for k,v in pairs(ents) do
-    	if v.prefab == prefab then
-	    	print(string.format("%s {%2.2f, %2.2f, %2.2f}", tostring(v), v.Transform:GetWorldPosition()))
-    	end
+        if v.prefab == prefab then
+            print(string.format("%s {%2.2f, %2.2f, %2.2f}", tostring(v), v.Transform:GetWorldPosition()))
+        end
     end
 end
 
@@ -383,42 +381,42 @@ function c_listtag(tag)
     local x,y,z = ConsoleCommandPlayer().Transform:GetWorldPosition()
     local ents = TheSim:FindEntities(x,y,z, 9001, tags)
     for k,v in pairs(ents) do
-    	print(string.format("%s {%2.2f, %2.2f, %2.2f}", tostring(v), v.Transform:GetWorldPosition()))
+        print(string.format("%s {%2.2f, %2.2f, %2.2f}", tostring(v), v.Transform:GetWorldPosition()))
     end
 end
 
 local lastfound = -1
 function c_findnext(prefab, radius, inst)
-	inst = inst or ConsoleCommandPlayer()
-	radius = radius or 9001
+    inst = inst or ConsoleCommandPlayer()
+    radius = radius or 9001
 
     local trans = inst.Transform
     local found = nil
-	local foundlowestid = nil
-	local reallowest = nil
-	local reallowestid = nil
+    local foundlowestid = nil
+    local reallowest = nil
+    local reallowestid = nil
 
-	print("Finding a ",prefab)
+    print("Finding a ",prefab)
 
     local x,y,z = trans:GetWorldPosition()
     local ents = TheSim:FindEntities(x,y,z, radius)
     for k,v in pairs(ents) do
         if v ~= inst and v.prefab == prefab then
-        	print(v.GUID,lastfound,foundlowestid )
-			if v.GUID > lastfound and (foundlowestid == nil or v.GUID < foundlowestid) then
-				found = v
-				foundlowestid = v.GUID
-			end
-			if not reallowestid or v.GUID < reallowestid then
-				reallowest = v
-				reallowestid = v.GUID
-			end
+            print(v.GUID,lastfound,foundlowestid )
+            if v.GUID > lastfound and (foundlowestid == nil or v.GUID < foundlowestid) then
+                found = v
+                foundlowestid = v.GUID
+            end
+            if not reallowestid or v.GUID < reallowestid then
+                reallowest = v
+                reallowestid = v.GUID
+            end
         end
     end
-	if not found then
-		found = reallowest
-	end
-	lastfound = found.GUID
+    if not found then
+        found = reallowest
+    end
+    lastfound = found.GUID
     return found
 end
 
@@ -460,8 +458,8 @@ function c_supergodmode()
 end
 
 function c_find(prefab, radius, inst)
-	inst = inst or ConsoleCommandPlayer()
-	radius = radius or 9001
+    inst = inst or ConsoleCommandPlayer()
+    radius = radius or 9001
 
     local trans = inst.Transform
     local found = nil
@@ -481,87 +479,87 @@ function c_find(prefab, radius, inst)
 end
 
 function c_findtag(tag, radius, inst)
-	return GetClosestInstWithTag(tag, inst or ConsoleCommandPlayer(), radius or 1000)
+    return GetClosestInstWithTag(tag, inst or ConsoleCommandPlayer(), radius or 1000)
 end
 
 function c_gonext(name)
-	return c_goto(c_findnext(name))
+    return c_goto(c_findnext(name))
 end
 
 function c_printtextureinfo( filename )
-	TheSim:PrintTextureInfo( filename )
+    TheSim:PrintTextureInfo( filename )
 end
 
 function c_simphase(phase)
-	TheWorld:PushEvent("phasechange", {newphase = phase})
+    TheWorld:PushEvent("phasechange", {newphase = phase})
 end
 
 function c_anim(animname, loop)
-	if GetDebugEntity() then
-		GetDebugEntity().AnimState:PlayAnimation(animname, loop or false)
-	else
-		print("No DebugEntity selected")
-	end
+    if GetDebugEntity() then
+        GetDebugEntity().AnimState:PlayAnimation(animname, loop or false)
+    else
+        print("No DebugEntity selected")
+    end
 end
 
 function c_light(c1, c2, c3)
-	TheSim:SetAmbientColour(c1, c2 or c1, c3 or c1)
+    TheSim:SetAmbientColour(c1, c2 or c1, c3 or c1)
 end
 
 function c_spawn_ds(prefab, scenario)
-	local inst = c_spawn(prefab)
-	if not inst then
-		print("Need to select an entity to apply the scenario to.")
-		return
-	end
+    local inst = c_spawn(prefab)
+    if not inst then
+        print("Need to select an entity to apply the scenario to.")
+        return
+    end
 
-	if inst.components.scenariorunner then
-		inst.components.scenariorunner:ClearScenario()
-	end
+    if inst.components.scenariorunner then
+        inst.components.scenariorunner:ClearScenario()
+    end
 
-	-- force reload the script -- this is for testing after all!
-	package.loaded["scenarios/"..scenario] = nil
+    -- force reload the script -- this is for testing after all!
+    package.loaded["scenarios/"..scenario] = nil
 
-	inst:AddComponent("scenariorunner")
-	inst.components.scenariorunner:SetScript(scenario)
-	inst.components.scenariorunner:Run()
+    inst:AddComponent("scenariorunner")
+    inst.components.scenariorunner:SetScript(scenario)
+    inst.components.scenariorunner:Run()
 end
 
 
 function c_countprefabs(prefab, noprint)
-	local count = 0
-	for k,v in pairs(Ents) do
-		if v.prefab == prefab then
-			count = count + 1
-		end
-	end
-	if not noprint then
-		print("There are ", count, prefab.."s in the world.")
-	end
-	return count
+    local count = 0
+    for k,v in pairs(Ents) do
+        if v.prefab == prefab then
+            count = count + 1
+        end
+    end
+    if not noprint then
+        print("There are ", count, prefab.."s in the world.")
+    end
+    return count
 end
 
 function c_counttagged(tag, noprint)
-	local count = 0
-	for k,v in pairs(Ents) do
-		if v:HasTag(tag) then
-			count = count + 1
-		end
-	end
-	if not noprint then
-		print("There are ", count, tag.."-tagged ents in the world.")
-	end
-	return count
+    local count = 0
+    for k,v in pairs(Ents) do
+        if v:HasTag(tag) then
+            count = count + 1
+        end
+    end
+    if not noprint then
+        print("There are ", count, tag.."-tagged ents in the world.")
+    end
+    return count
 end
 
 function c_countallprefabs()
-	local counted = {}
-	for k,v in pairs(Ents) do
-		if v.prefab and not table.findfield(counted, v.prefab) then 
-			local num = c_countprefabs(v.prefab, true)
-			counted[v.prefab] = num
-		end
-	end
+    local counted = {}
+    for k,v in pairs(Ents) do
+        if v.prefab and not table.findfield(counted, v.prefab) then 
+            local num = c_countprefabs(v.prefab, true)
+            counted[v.prefab] = num
+        end
+    end
 
     local function pairsByKeys (t, f)
       local a = {}
@@ -578,146 +576,149 @@ function c_countallprefabs()
     end
 
     for k,v in pairsByKeys(counted) do
-    	print(k, v)
+        print(k, v)
     end
 
-	print("There are ", GetTableSize(counted), " different prefabs in the world.")
+    print("There are ", GetTableSize(counted), " different prefabs in the world.")
 end
 
-function c_speed(speed)
-	ConsoleCommandPlayer().components.locomotor.bonusspeed = speed
+function c_speedmult(multiplier)
+    local inst = ConsoleCommandPlayer()
+    if inst ~= nil then
+        inst.components.locomotor:SetExternalSpeedMultiplier(inst, "c_speedmult", multiplier)
+    end
 end
 
 function c_testruins()
-	ConsoleCommandPlayer().components.builder:UnlockRecipesForTech({SCIENCE = 2, MAGIC = 2})
-	c_give("log", 20)
-	c_give("flint", 20)
-	c_give("twigs", 20)
-	c_give("cutgrass", 20)
-	c_give("lightbulb", 5)
-	c_give("healingsalve", 5)
-	c_give("batbat")
-	c_give("icestaff")
-	c_give("firestaff")
-	c_give("tentaclespike")
-	c_give("slurtlehat")
-	c_give("armorwood")
-	c_give("minerhat")
-	c_give("lantern")
-	c_give("backpack")
+    ConsoleCommandPlayer().components.builder:UnlockRecipesForTech({SCIENCE = 2, MAGIC = 2})
+    c_give("log", 20)
+    c_give("flint", 20)
+    c_give("twigs", 20)
+    c_give("cutgrass", 20)
+    c_give("lightbulb", 5)
+    c_give("healingsalve", 5)
+    c_give("batbat")
+    c_give("icestaff")
+    c_give("firestaff")
+    c_give("tentaclespike")
+    c_give("slurtlehat")
+    c_give("armorwood")
+    c_give("minerhat")
+    c_give("lantern")
+    c_give("backpack")
 end
 
 
 function c_teststate(state)
-	c_sel().sg:GoToState(state)
+    c_sel().sg:GoToState(state)
 end
 
 function c_combatgear()
     local function give(prefab)
-		if ConsoleCommandPlayer() then
-			local inst = DebugSpawn(prefab)
-			if inst then
-				print("giving ",inst)
-				ConsoleCommandPlayer().components.inventory:GiveItem(inst)
-				ConsoleCommandPlayer().components.inventory:Equip(inst)
-	            SuUsed("c_give_" .. inst.prefab)
-			end
-		end
-	end
-	give("armorwood")
-	give("footballhat")
-	give("spear")
+        if ConsoleCommandPlayer() then
+            local inst = DebugSpawn(prefab)
+            if inst then
+                print("giving ",inst)
+                ConsoleCommandPlayer().components.inventory:GiveItem(inst)
+                ConsoleCommandPlayer().components.inventory:Equip(inst)
+                SuUsed("c_give_" .. inst.prefab)
+            end
+        end
+    end
+    give("armorwood")
+    give("footballhat")
+    give("spear")
 end
 
 function c_combatsimulator(prefab, count)
-	count = count or 1
+    count = count or 1
 
     local x,y,z = ConsoleWorldPosition():Get()
     local MakeBattle = nil
     MakeBattle = function()
-		local creature = DebugSpawn(prefab)
-		creature:ListenForEvent("onremove", MakeBattle)
+        local creature = DebugSpawn(prefab)
+        creature:ListenForEvent("onremove", MakeBattle)
         creature.Transform:SetPosition(x,y,z)
-		if creature.components.knownlocations then
-			creature.components.knownlocations:RememberLocation("home", {x=x,y=y,z=z})
-		end
+        if creature.components.knownlocations then
+            creature.components.knownlocations:RememberLocation("home", {x=x,y=y,z=z})
+        end
     end
 
-	for i=1,count do
-		MakeBattle()
-	end
+    for i=1,count do
+        MakeBattle()
+    end
 end
 
 function c_dump()
-	local ent = GetDebugEntity()
-	if not ent then
-		ent = ConsoleWorldEntityUnderMouse()
-	end
-	DumpEntity(ent)
+    local ent = GetDebugEntity()
+    if not ent then
+        ent = ConsoleWorldEntityUnderMouse()
+    end
+    DumpEntity(ent)
 end
 
 function c_dumpseasons()
-	local str = TheWorld.net.components.seasons:GetDebugString()
-	print(str)
+    local str = TheWorld.net.components.seasons:GetDebugString()
+    print(str)
 end
 
 function c_dumpworldstate()
     print("")
     print("//======================== DUMPING WORLD STATE ========================\\\\")
-	TheWorld.components.worldstate:Dump()
+    TheWorld.components.worldstate:Dump()
     print("\\\\=====================================================================//")
     print("")
 end
 
 function c_makeinvisible()
-	local player = ConsoleCommandPlayer()
-	player:AddTag("debugnoattack")
-	print("Has debugnoattack tag?", player, player:HasTag("debugnoattack"))
+    local player = ConsoleCommandPlayer()
+    player:AddTag("debugnoattack")
+    print("Has debugnoattack tag?", player, player:HasTag("debugnoattack"))
 end
 
 function c_selectnext(name)
-	c_select(c_findnext(name))
+    c_select(c_findnext(name))
 end
 
 function c_summondeerclops()
-	local player = ConsoleCommandPlayer()
-	if player then 
-		TheWorld.components.deerclopsspawner:SummonMonster(player)
-	end
+    local player = ConsoleCommandPlayer()
+    if player then 
+        TheWorld.components.deerclopsspawner:SummonMonster(player)
+    end
 end
 
 function c_summonbearger()
-	local player = ConsoleCommandPlayer()
-	print("Summoning bearger for player ", player)
-	if player then 
-		TheWorld.components.beargerspawner:SummonMonster(player)
-	end
+    local player = ConsoleCommandPlayer()
+    print("Summoning bearger for player ", player)
+    if player then 
+        TheWorld.components.beargerspawner:SummonMonster(player)
+    end
 end
 
 function c_gatherplayers()
     local x,y,z = ConsoleWorldPosition():Get()
-	for k,v in pairs(AllPlayers) do
-		v.Transform:SetPosition(x,y,z)
-	end
+    for k,v in pairs(AllPlayers) do
+        v.Transform:SetPosition(x,y,z)
+    end
 end
 
 function c_speedup()
-	TheSim:SetTimeScale(TheSim:GetTimeScale() *10)
-	print("Speed is now ", TheSim:GetTimeScale())
+    TheSim:SetTimeScale(TheSim:GetTimeScale() *10)
+    print("Speed is now ", TheSim:GetTimeScale())
 end
 
 function c_skip(num)
-	num = num or 1
-	LongUpdate(TUNING.TOTAL_DAY_TIME * num)
+    num = num or 1
+    LongUpdate(TUNING.TOTAL_DAY_TIME * num)
 end
 
 function c_groundtype()
-	local index, table = ConsoleCommandPlayer():GetCurrentTileType()
-	print("Ground type is ", index)
+    local index, table = ConsoleCommandPlayer():GetCurrentTileType()
+    print("Ground type is ", index)
 
-	for k,v in pairs(table) do 
-		print(k,v)
-	end
+    for k,v in pairs(table) do 
+        print(k,v)
+    end
 end
 
 function c_searchprefabs(str)
