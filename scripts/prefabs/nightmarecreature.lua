@@ -3,40 +3,44 @@ local prefabs =
     "nightmarefuel",
 }
 
+local brain = require( "brains/nightmarecreaturebrain")
+
 local function retargetfn(inst)
-    local entity = FindEntity(inst, TUNING.SHADOWCREATURE_TARGET_DIST, function(guy) 
-		return inst.components.combat:CanTarget(guy)
-    end,
-    {"player"}
+    return FindEntity(inst, TUNING.SHADOWCREATURE_TARGET_DIST,
+        function(guy) 
+            return inst.components.combat:CanTarget(guy)
+        end,
+        { "player" },
+        { "playerghost" }
     )
-    return entity
 end
 
-SetSharedLootTable( 'nightmare_creature',
+SetSharedLootTable('nightmare_creature',
 {
     {'nightmarefuel', 1.0},
     {'nightmarefuel', 0.5},
 })
 
-local function CalcSanityAura(inst, observer)	
-	return -TUNING.SANITYAURA_LARGE
+local function CanShareTargetWith(dude)
+    return dude:HasTag("shadowcreature") and not dude.components.health:IsDead()
 end
 
 local function OnAttacked(inst, data)
-    inst.components.combat:SetTarget(data.attacker)
-    inst.components.combat:ShareTarget(data.attacker, 30, function(dude) return dude:HasTag("shadowcreature") and not dude.components.health:IsDead() end, 1)
+    if data.attacker ~= nil then
+        inst.components.combat:SetTarget(data.attacker)
+        inst.components.combat:ShareTarget(data.attacker, 30, CanShareTargetWith, 1)
+    end
 end
 
 local function MakeShadowCreature(data)
-
     local bank = data.bank 
     local build = data.build 
-    
-    local assets=
+
+    local assets =
     {
-	    Asset("ANIM", "anim/"..data.build..".zip"),
+        Asset("ANIM", "anim/"..data.build..".zip"),
     }
-    
+
     local sounds = 
     {
         attack = "dontstarve/sanity/creature"..data.num.."/attack",
@@ -49,42 +53,50 @@ local function MakeShadowCreature(data)
     }
 
     local function fn()
-	    local inst = CreateEntity()
-	    local trans = inst.entity:AddTransform()
-	    local anim = inst.entity:AddAnimState()
-        local physics = inst.entity:AddPhysics()
-	    local sound = inst.entity:AddSoundEmitter()
+        local inst = CreateEntity()
+
+        inst.entity:AddTransform()
+        inst.entity:AddAnimState()
+        inst.entity:AddSoundEmitter()
+        inst.entity:AddNetwork()
+
         inst.Transform:SetFourFaced()
-        inst:AddTag("shadowcreature")
-    	
+
         MakeCharacterPhysics(inst, 10, 1.5)
         RemovePhysicsColliders(inst)
-	    inst.Physics:SetCollisionGroup(COLLISION.SANITY)
-	    inst.Physics:CollidesWith(COLLISION.SANITY)      
+        inst.Physics:SetCollisionGroup(COLLISION.SANITY)
+        inst.Physics:CollidesWith(COLLISION.SANITY)      
          
-        anim:SetBank(bank)
-        anim:SetBuild(build)
-        anim:PlayAnimation("idle_loop")
-        anim:SetMultColour(1, 1, 1, 0.5)
-        inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
-        inst.components.locomotor.walkspeed = data.speed
-        inst.sounds = sounds
-        inst:SetStateGraph("SGshadowcreature")
+        inst.AnimState:SetBank(bank)
+        inst.AnimState:SetBuild(build)
+        inst.AnimState:PlayAnimation("idle_loop")
+        inst.AnimState:SetMultColour(1, 1, 1, 0.5)
 
+        inst:AddTag("shadowcreature")
         inst:AddTag("monster")
-	    inst:AddTag("hostile")
+        inst:AddTag("hostile")
         inst:AddTag("shadow")
         inst:AddTag("notraptrigger")
 
-        local brain = require "brains/nightmarecreaturebrain"
+        inst.entity:SetPristine()
+
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
+        inst.components.locomotor.walkspeed = data.speed
+        inst.sounds = sounds
+
+        inst:SetStateGraph("SGshadowcreature")
         inst:SetBrain(brain)
-        
-	    inst:AddComponent("sanityaura")
-	    inst.components.sanityaura.aurafn = CalcSanityAura
+
+        inst:AddComponent("sanityaura")
+        inst.components.sanityaura.aura = -TUNING.SANITYAURA_LARGE
 
         inst:AddComponent("health")
         inst.components.health:SetMaxHealth(data.health)
-		
+
         inst:AddComponent("combat")
         inst.components.combat:SetDefaultDamage(data.damage)
         inst.components.combat:SetAttackPeriod(data.attackperiod)
@@ -92,7 +104,7 @@ local function MakeShadowCreature(data)
 
         inst:AddComponent("lootdropper")
         inst.components.lootdropper:SetChanceLootTable('nightmare_creature')
-        
+
         inst:ListenForEvent("attacked", OnAttacked)
         -- if GetNightmareClock() then
         --     inst:ListenForEvent( "phasechange", 
@@ -112,23 +124,43 @@ local function MakeShadowCreature(data)
 
         -- end
 
-        inst:AddComponent("knownlocations")    
-
+        inst:AddComponent("knownlocations")
 
         return inst
     end
-        
+
     return Prefab("monsters/"..data.name, fn, assets, prefabs)
 end
 
-
-local data = {{name="crawlingnightmare", build = "shadow_insanity1_basic", bank = "shadowcreature1", num = 1, speed = TUNING.CRAWLINGHORROR_SPEED, health=TUNING.CRAWLINGHORROR_HEALTH, damage=TUNING.CRAWLINGHORROR_DAMAGE, attackperiod = TUNING.CRAWLINGHORROR_ATTACK_PERIOD, sanityreward = TUNING.SANITY_MED},
-			  {name="nightmarebeak", build = "shadow_insanity2_basic", bank = "shadowcreature2", num = 2, speed = TUNING.TERRORBEAK_SPEED, health=TUNING.TERRORBEAK_HEALTH, damage=TUNING.TERRORBEAK_DAMAGE, attackperiod = TUNING.TERRORBEAK_ATTACK_PERIOD, sanityreward = TUNING.SANITY_LARGE}}
+local data =
+{
+    {
+        name = "crawlingnightmare",
+        build = "shadow_insanity1_basic",
+        bank = "shadowcreature1",
+        num = 1,
+        speed = TUNING.CRAWLINGHORROR_SPEED,
+        health = TUNING.CRAWLINGHORROR_HEALTH,
+        damage = TUNING.CRAWLINGHORROR_DAMAGE,
+        attackperiod = TUNING.CRAWLINGHORROR_ATTACK_PERIOD,
+        sanityreward = TUNING.SANITY_MED,
+    },
+    {
+        name = "nightmarebeak",
+        build = "shadow_insanity2_basic",
+        bank = "shadowcreature2",
+        num = 2,
+        speed = TUNING.TERRORBEAK_SPEED,
+        health = TUNING.TERRORBEAK_HEALTH,
+        damage = TUNING.TERRORBEAK_DAMAGE,
+        attackperiod = TUNING.TERRORBEAK_ATTACK_PERIOD,
+        sanityreward = TUNING.SANITY_LARGE,
+    },
+}
 
 local ret = {}
-for k,v in pairs(data) do
-	table.insert(ret, MakeShadowCreature(v))
+for i, v in ipairs(data) do
+    table.insert(ret, MakeShadowCreature(v))
 end
-
 
 return unpack(ret) 

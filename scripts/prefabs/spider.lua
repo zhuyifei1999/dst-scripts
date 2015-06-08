@@ -186,8 +186,8 @@ local function OnIsDay(inst, isday)
     end
 end
 
-local function SanityAura(inst, observer)
-    return observer:HasTag("spiderwhisperer") and 0 or -TUNING.SANITYAURA_SMALL
+local function CalcSanityAura(inst, observer)
+    return observer:HasTag("spiderwhisperer") and 0 or inst.components.sanityaura.aura
 end
 
 local function create_common(build, tag)
@@ -292,7 +292,7 @@ local function create_common(build, tag)
     ------------------
 
     inst:AddComponent("sanityaura")
-    inst.components.sanityaura.aurafn = SanityAura
+    inst.components.sanityaura.aurafn = CalcSanityAura
 
     MakeHauntablePanic(inst)
 
@@ -321,6 +321,8 @@ local function create_spider()
     inst.components.locomotor.walkspeed = TUNING.SPIDER_WALK_SPEED
     inst.components.locomotor.runspeed = TUNING.SPIDER_RUN_SPEED
 
+    inst.components.sanityaura.aura = -TUNING.SANITYAURA_SMALL
+
     return inst
 end
 
@@ -342,6 +344,7 @@ local function create_warrior()
     inst.components.locomotor.runspeed = TUNING.SPIDER_WARRIOR_RUN_SPEED
 
     inst.components.sanityaura.aura = -TUNING.SANITYAURA_MED
+
     return inst
 end
 

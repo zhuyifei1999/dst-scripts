@@ -31,21 +31,10 @@ SetSharedLootTable( 'bearger',
 	{'bearger_fur',		 1.00},
 })
 
-local BASE_TAGS = {"structure"}
-local SEE_STRUCTURE_DIST = 20
-
 local TARGET_DIST = 7.5
 
-local function LeaveWorld(inst)
-	inst:Remove()
-end
-
 local function CalcSanityAura(inst, observer)
-	if inst.components.combat.target then
-		return -TUNING.SANITYAURA_HUGE
-	end
-
-	return -TUNING.SANITYAURA_LARGE
+    return inst.components.combat.target ~= nil and -TUNING.SANITYAURA_HUGE or -TUNING.SANITYAURA_LARGE
 end
 
 local function SetGroundPounderSettings(inst, mode)

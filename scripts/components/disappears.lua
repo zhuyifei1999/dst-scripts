@@ -26,6 +26,11 @@ function Disappears:Disappear()
         self.disappearFn(self.inst)
     end
 
+    if self.inst:IsAsleep() then
+        self.inst:Remove()
+        return
+    end
+
     self.inst.persists = false
     self.inst:AddTag("NOCLICK")
 
@@ -39,6 +44,8 @@ function Disappears:Disappear()
     end
     self.inst.AnimState:PlayAnimation(self.anim)
     self.inst:ListenForEvent("animover", self.inst.Remove)
+    --timer removal in case animation is paused off screen
+    self.inst:DoTaskInTime(self.inst.AnimState:GetCurrentAnimationLength() + .1, self.inst.Remove)
 end
 
 function Disappears:StopDisappear()

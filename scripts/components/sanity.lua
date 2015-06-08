@@ -54,7 +54,7 @@ local Sanity = Class(function(self, inst)
     self._oldpercent = self:GetPercent()
 
     self.inst:StartUpdatingComponent(self)
-    self:Recalc(0)
+    self:RecalcGhostDrain()
 end,
 nil,
 {
@@ -76,6 +76,7 @@ function Sanity:IsCrazy()
 end
 
 function Sanity:RecalculatePenalty()
+    --V2C: HOLY CARP THIS IS NOT GOOD
     self.penalty = 0
     for k,v in pairs(Ents) do
         if v.components.sanityaura and v.components.sanityaura.penalty then
@@ -86,15 +87,16 @@ function Sanity:RecalculatePenalty()
 end
 
 function Sanity:OnSave()
-    return {
-    current = self.current, 
-    sane = self.sane, 
-    penalty = self.penalty > 0 and self.penalty or nil
+    return
+    {
+        current = self.current,
+        sane = self.sane,
+        penalty = self.penalty > 0 and self.penalty or nil,
     }
 end
 
 function Sanity:OnLoad(data)
-    if data.penalty then
+    if data.penalty ~= nil then
         self.penalty = data.penalty
     end
 
@@ -102,7 +104,7 @@ function Sanity:OnLoad(data)
         self.sane = data.sane
     end
 
-    if data.current then
+    if data.current ~= nil then
         self.current = data.current
         self:DoDelta(0)
     end
@@ -113,19 +115,11 @@ function Sanity:GetPenaltyPercent()
 end
 
 function Sanity:GetPercent()
-    if self.inducedinsanity then 
-        return 0
-    else
-        return self.current / self.max
-    end
+    return self.inducedinsanity and 0 or self.current / self.max
 end
 
 function Sanity:GetPercentWithPenalty()
-    if self.inducedinsanity then
-        return 0
-    else
-        return self.current / (self.max - self.penalty)
-    end
+    return self.inducedinsanity and 0 or self.current / (self.max - self.penalty)
 end
 
 function Sanity:SetPercent(per, overtime)
@@ -327,8 +321,6 @@ function Sanity:Recalc(dt)
     self:DoDelta(self.rate * dt, true)
 end
 
-function Sanity:LongUpdate(dt)
-    self:OnUpdate(dt)
-end
+Sanity.LongUpdate = Sanity.OnUpdate
 
 return Sanity

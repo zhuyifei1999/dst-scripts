@@ -36,10 +36,6 @@ local function ShouldSleep(inst)
     and not TheWorld.state.isfullmoon
 end
 
-local function CalcSanityAura(inst, observer)
-    return TUNING.SANITYAURA_TINY
-end
-
 local function LeaveWorld(inst)
     inst:Remove()
 end
@@ -127,7 +123,7 @@ local function fn()
     inst.components.sleeper:SetWakeTest(ShouldWakeUp)
 
     inst:AddComponent("sanityaura")
-    inst.components.sanityaura.aurafn = CalcSanityAura
+    inst.components.sanityaura.aura = TUNING.SANITYAURA_TINY
 
     inst:AddComponent("locomotor")
     inst.components.locomotor.walkspeed = 6
