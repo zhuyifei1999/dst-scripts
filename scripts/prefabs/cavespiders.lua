@@ -175,15 +175,8 @@ local function WeaponDropped(inst)
     inst:Remove()
 end
 
-
 local function SanityAura(inst, observer)
-
-    if observer:HasTag("spiderwhisperer") then
-        return 0
-    end
-
-    return -TUNING.SANITYAURA_SMALL
-
+    return observer:HasTag("spiderwhisperer") and 0 or -TUNING.SANITYAURA_SMALL
 end
 
 local function MakeWeapon(inst)

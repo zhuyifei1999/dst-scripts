@@ -1,6 +1,6 @@
 local assets =
 {
-	Asset("ANIM", "anim/nightmare_torch.zip"),
+    Asset("ANIM", "anim/nightmare_torch.zip"),
 }
 
 local prefabs =
@@ -10,35 +10,32 @@ local prefabs =
 }
 
 local function onhammered(inst, worker)
-	inst.components.lootdropper:DropLoot()
-	SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
-	inst.SoundEmitter:PlaySound("dontstarve/common/destroy_metal")
-	inst:Remove()
+    inst.components.lootdropper:DropLoot()
+    SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
+    inst.SoundEmitter:PlaySound("dontstarve/common/destroy_metal")
+    inst:Remove()
 end
 
 local function onhit(inst, worker)
-	inst.AnimState:PlayAnimation("hit")
-	inst.AnimState:PushAnimation("idle")
+    inst.AnimState:PlayAnimation("hit")
+    inst.AnimState:PushAnimation("idle")
 end
 
 local function onextinguish(inst)
-    if inst.components.fueled then
+    if inst.components.fueled ~= nil then
         inst.components.fueled:InitializeFuelLevel(0)
     end
 end
 
-local function getsanityaura(inst, observer)
-    local lightRadius = inst.components.burnable and inst.components.burnable:GetLargestLightRadius()
-    if lightRadius and inst:GetDistanceSqToInst(observer) < 0.5*lightRadius then
-        return -.05
-    end
-    return 0
+local function CalcSanityAura(inst, observer)
+    local lightRadius = inst.components.burnable ~= nil and inst.components.burnable:GetLargestLightRadius() or 0
+    return lightRadius > 0 and inst:GetDistanceSqToInst(observer) < .5 * lightRadius and -.05 or 0
 end
 
 local function onbuilt(inst)
-	inst.SoundEmitter:PlaySound("dontstarve/common/nightmareAddFuel")
-	inst.AnimState:PlayAnimation("place")
-	inst.AnimState:PushAnimation("idle", false)
+    inst.SoundEmitter:PlaySound("dontstarve/common/nightmareAddFuel")
+    inst.AnimState:PlayAnimation("place")
+    inst.AnimState:PushAnimation("idle", false)
 end
 
 local function ontakefuel(inst)
@@ -46,30 +43,43 @@ local function ontakefuel(inst)
 end
 
 local function onupdatefueled(inst)
-    local burnable = inst.components.burnable
-    if burnable ~= nil then
-        local fueled = inst.components.fueled
-        burnable:SetFXLevel(fueled:GetCurrentSection(), fueled:GetSectionPercent())
+    if inst.components.burnable ~= nil then
+        inst.components.burnable:SetFXLevel(inst.components.fueled:GetCurrentSection(), inst.components.fueled:GetSectionPercent())
     end
 end
 
+local function OnHaunt(inst, haunter)
+    local ret = false
+    if inst.components.fueled ~= nil and
+        not inst.components.fueled:IsEmpty() and
+        math.random() <= TUNING.HAUNT_CHANCE_HALF then
+        inst.components.fueled:MakeEmpty()
+        inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
+        ret = true
+    end
+    if inst.components.workable ~= nil and
+        inst.components.workable.workleft > 0 and
+        ints.components.workable.workable and
+        math.random() <= TUNING.HAUNT_CHANCE_HALF then
+        inst.components.workable:WorkedBy(haunter, 1)
+        inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
+        ret = true
+    end
+    return ret
+end
+
 local function fn()
+    local inst = CreateEntity()
 
-	local inst = CreateEntity()
-
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
-	inst.entity:AddMiniMapEntity()
+    inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
 
     MakeObstaclePhysics(inst, .1)
 
-    if not TheWorld.ismastersim then
-        return inst
-    end
-
-	inst.MiniMapEntity:SetIcon("nightlight.png")
+    inst.MiniMapEntity:SetIcon("nightlight.png")
 
     inst.AnimState:SetBank("nightmare_torch")
     inst.AnimState:SetBuild("nightmare_torch")
@@ -77,21 +87,27 @@ local function fn()
 
     inst:AddTag("structure")
 
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
     -----------------------
     inst:AddComponent("burnable")
     inst.components.burnable:AddBurnFX("nightlight_flame", Vector3(0, 0, 0), "fire_marker")
     inst:ListenForEvent("onextinguish", onextinguish)
     
     inst:AddComponent("sanityaura")
-    inst.components.sanityaura.aurafn = getsanityaura
+    inst.components.sanityaura.aurafn = CalcSanityAura
 
     -------------------------
     inst:AddComponent("lootdropper")
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
     inst.components.workable:SetWorkLeft(4)
-	inst.components.workable:SetOnFinishCallback(onhammered)
-	inst.components.workable:SetOnWorkCallback(onhit)    
+    inst.components.workable:SetOnFinishCallback(onhammered)
+    inst.components.workable:SetOnWorkCallback(onhit)    
 
     -------------------------
     inst:AddComponent("fueled")
@@ -119,24 +135,7 @@ local function fn()
     -----------------------------
 
     inst:AddComponent("hauntable")
-    inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
-        local ret = false
-        if math.random() <= TUNING.HAUNT_CHANCE_HALF then
-            if inst.components.fueled and not inst.components.fueled:IsEmpty() then
-                inst.components.fueled:MakeEmpty()
-                inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
-                ret = true
-            end
-        end
-        if math.random() <= TUNING.HAUNT_CHANCE_HALF then
-            if inst.components.workable and inst.components.workable.workleft > 0 then
-                inst.components.workable:WorkedBy(haunter, 1)
-                inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
-                ret = true
-            end
-        end
-        return ret
-    end)
+    inst.components.hauntable:SetOnHauntFn(OnHaunt)
 
     -----------------------------
 
@@ -148,4 +147,4 @@ local function fn()
 end
 
 return Prefab("common/objects/nightlight", fn, assets, prefabs),
-		MakePlacer("common/nightlight_placer", "nightmare_torch", "nightmare_torch", "idle")
+    MakePlacer("common/nightlight_placer", "nightmare_torch", "nightmare_torch", "idle")

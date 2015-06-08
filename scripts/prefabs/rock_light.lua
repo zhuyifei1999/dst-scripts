@@ -15,7 +15,7 @@ local MAXWORK = 6
 local MEDIUM  = 4
 local LOW     = 2
 
-local function SetWorkLevel( inst, workleft )
+local function SetWorkLevel(inst, workleft)
     dprint(string.format("SetWORKLEVEL: left=%d, state=%d",workleft,inst.state))
     if inst.exploding then
         return
@@ -48,7 +48,7 @@ end
 
 local function onhammered(inst, worker)
     inst.SoundEmitter:PlaySound("dontstarve/common/destroy_stone")
-    SetWorkLevel( inst, 0 )
+    SetWorkLevel(inst, 0)
 end
 
 local function onhit(inst, worker, workleft)
@@ -56,26 +56,21 @@ local function onhit(inst, worker, workleft)
     SetWorkLevel( inst, workleft )
 end
 
-local function onignite(inst)
-end
-
 local function onextinguish(inst)
-    if inst.components.fueled then
+    if inst.components.fueled ~= nil then
         inst.components.fueled:MakeEmpty()
     end
 end
 
-local function getsanityaura(inst, observer)
-    local lightRadius = inst.components.burnable and inst.components.burnable:GetLargestLightRadius()
-    if lightRadius and inst:GetDistanceSqToInst(observer) < 0.5*lightRadius then
-        --local clock = GetNightmareClock()
-        --if clock and clock:IsCalm() then
-            --return -TUNING.SANITY_SMALL
-        --else
-            return TUNING.SANITY_SMALL
-        --end
-    end
-    return 0
+local function CalcSanityAura(inst, observer)
+    local lightRadius = inst.components.burnable ~= nil and inst.components.burnable:GetLargestLightRadius() or 0
+    return lightRadius > 0
+        and inst:GetDistanceSqToInst(observer) < .5 * lightRadius
+        and (--[[nightmareclock ~= nil and
+            nightmareclock:IsCalm() and
+            -TUNING.SANITY_SMALL or]]
+            TUNING.SANITY_SMALL)
+        or 0
 end
 
 local function DoShake(inst)
@@ -138,7 +133,7 @@ local function fn()
     -----------------------
 
     inst:AddComponent("sanityaura")
-    inst.components.sanityaura.aurafn = getsanityaura
+    inst.components.sanityaura.aurafn = CalcSanityAura
 
     -----------------------
     inst:AddComponent("burnable")
@@ -146,7 +141,6 @@ local function fn()
     --  campfirefire character_fire  maxwelllight_flame nightlight_flame
     inst.components.burnable:AddBurnFX("character_fire", Vector3(0,1,0) )
     inst:ListenForEvent("onextinguish", onextinguish)
-    inst:ListenForEvent("onignite", onignite)
 
     -------------------------
     inst:AddComponent("workable")

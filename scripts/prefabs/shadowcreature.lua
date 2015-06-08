@@ -6,7 +6,7 @@ local prefabs =
 local brain = require("brains/shadowcreaturebrain")
 
 local function NotifyBrainOfTarget(inst, target)
-    if inst.brain and inst.brain.SetTarget then
+    if inst.brain ~= nil and inst.brain.SetTarget ~= nil then
         inst.brain:SetTarget(target)
     end
 end
@@ -30,9 +30,10 @@ SetSharedLootTable("shadow_creature",
 })
 
 local function CalcSanityAura(inst, observer)
-    return (inst.components.combat.target ~= nil 
-    and observer.components.sanity:IsCrazy()
-    and -TUNING.SANITYAURA_LARGE) or 0
+    return inst.components.combat.target ~= nil 
+        and observer.components.sanity:IsCrazy()
+        and -TUNING.SANITYAURA_LARGE
+        or 0
 end
 
 local function ShareTargetFn(dude)

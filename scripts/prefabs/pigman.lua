@@ -30,16 +30,9 @@ local function ontalk(inst, script)
 end
 
 local function CalcSanityAura(inst, observer)
-    if inst.components.werebeast
-       and inst.components.werebeast:IsInWereState() then
-        return -TUNING.SANITYAURA_LARGE
-    end
-
-    if inst.components.follower and inst.components.follower.leader == observer then
-        return TUNING.SANITYAURA_SMALL
-    end
-
-    return 0
+    return (inst.components.werebeast ~= nil and inst.components.werebeast:IsInWereState() and -TUNING.SANITYAURA_LARGE)
+        or (inst.components.follower ~= nil and inst.components.follower.leader == observer and TUNING.SANITYAURA_SMALL)
+        or 0
 end
 
 local function ShouldAcceptItem(inst, item)

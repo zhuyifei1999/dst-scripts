@@ -51,23 +51,19 @@ local function Retarget(inst)
     end
 end
 
+local function CalcSanityAura(inst, observer)
+    return observer:HasTag("spiderwhisperer") and 0 or -TUNING.SANITYAURA_HUGE
+end
+    
 local function ShareTargetFn(dude)
     return dude.prefab == "spiderqueen" and not dude.components.health:IsDead()
 end
 
-local function SanityAura(inst, observer)
-
-    if observer:HasTag("spiderwhisperer") then
-        return 0
-    end
-
-    return -TUNING.SANITYAURA_HUGE
-
-end
-    
 local function OnAttacked(inst, data)
-    inst.components.combat:SetTarget(data.attacker)
-    inst.components.combat:ShareTarget(data.attacker, SHARE_TARGET_DIST, ShareTargetFn, 2)
+    if data.attacker ~= nil then
+        inst.components.combat:SetTarget(data.attacker)
+        inst.components.combat:ShareTarget(data.attacker, SHARE_TARGET_DIST, ShareTargetFn, 2)
+    end
 end
 
 local function BabyCount(inst)
@@ -163,7 +159,7 @@ local function fn()
     ------------------
 
     inst:AddComponent("sanityaura")
-    inst.components.sanityaura.aurafn = SanityAura
+    inst.components.sanityaura.aurafn = CalcSanityAura
 
     ------------------
 

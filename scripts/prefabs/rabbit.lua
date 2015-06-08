@@ -140,7 +140,7 @@ local function OnInit(inst)
     end
 end
 
-local function SanityAuraFn(inst, observer)
+local function CalcSanityAura(inst, observer)
     return IsCrazyGuy(observer) and -TUNING.SANITYAURA_MED or 0
 end
 
@@ -279,7 +279,7 @@ local function fn()
     inst.components.inventoryitem.canbepickedupalive = true
 
     inst:AddComponent("sanityaura")
-    inst.components.sanityaura.aurafn = SanityAuraFn
+    inst.components.sanityaura.aurafn = CalcSanityAura
 
     inst:AddComponent("cookable")
     inst.components.cookable.product = GetCookProductFn

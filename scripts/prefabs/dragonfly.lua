@@ -61,11 +61,10 @@ SetSharedLootTable( 'dragonfly',
 })
 
 local function UpdateFreezeThreshold(inst)
-    local total = TUNING.DRAGONFLY_FREEZE_THRESHOLD + inst.freezable_extra_resist
-
-    if inst.enraged then
-        total = total + TUNING.DRAGONFLY_ENRAGED_FREEZE_BONUS
-    end
+    local total =
+        TUNING.DRAGONFLY_FREEZE_THRESHOLD +
+        inst.freezable_extra_resist +
+        (inst.enraged and TUNING.DRAGONFLY_ENRAGED_FREEZE_BONUS or 0)
 
     inst.components.freezable:SetResistance(total)
 end
@@ -112,11 +111,6 @@ local function TransformFire(inst)
         function() if inst.enraged then 
             inst:PushEvent("transform", {transformstate = "normal"})
         end end)
-end
-
-local function CalcSanityAura(inst, observer)
-    --Maybe we don't want this if players are supposed to seek out and fight the creature
-    return 0
 end
 
 local function IsFightingPlayers(inst)
@@ -346,6 +340,11 @@ local function OnAttacked(inst, data)
     end
 end
 
+local function OnFreeze(inst)
+    inst.freezable_extra_resist = inst.freezable_extra_resist + 2
+    UpdateFreezeThreshold(inst)
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -389,7 +388,6 @@ local function fn()
 
     -- Component Definitions
 
-    inst:AddComponent("sanityaura")
     inst:AddComponent("health")
     inst:AddComponent("groundpounder")
     inst:AddComponent("combat")
@@ -429,8 +427,6 @@ local function fn()
     inst.components.healthtrigger:AddTrigger(0.8, start_spawning)
     inst.components.healthtrigger:AddTrigger(0.5, start_spawning)
     inst.components.healthtrigger:AddTrigger(0.2, start_spawning)
-
-    inst.components.sanityaura.aurafn = CalcSanityAura
 
     inst.components.health:SetMaxHealth(TUNING.DRAGONFLY_HEALTH)
     inst.components.health.destroytime = 5 --Take 5 seconds to be removed when killed
@@ -478,8 +474,6 @@ local function fn()
 
     -- Variables
 
-
-
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad -- Reset fight if in combat with players.
     inst.Reset = Reset
@@ -493,10 +487,7 @@ local function fn()
     MakeHugeFreezableCharacter(inst)
     inst.components.freezable:SetResistance(TUNING.DRAGONFLY_FREEZE_THRESHOLD)
     inst.components.freezable.damagetobreak = TUNING.DRAGONFLY_FREEZE_RESIST
-    inst.components.freezable.onfreezefn = function()
-        inst.freezable_extra_resist = inst.freezable_extra_resist + 2
-        UpdateFreezeThreshold(inst)
-    end
+    inst.components.freezable.onfreezefn = OnFreeze
 
     MakeLargePropagator(inst)
     inst.components.propagator.decayrate = 0
