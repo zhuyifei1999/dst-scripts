@@ -69,6 +69,7 @@ return {
 	ANNOUNCE_RESEARCH = "Knowledge is power. And power is... well, power.",
 	ANNOUNCE_THORNS = "I scratched my arms up doing that.",
 	ANNOUNCE_TORCH_OUT = "Dang it, another light down.",
+    ANNOUNCE_FAN_OUT = "There goes my respite.",
     ANNOUNCE_COMPASS_OUT = "The compass has fallen to pieces.",
 	ANNOUNCE_TRAP_WENT_OFF = "Ack!",
 	ANNOUNCE_UNIMPLEMENTED = "Hmm, not quite done.",
@@ -239,6 +240,7 @@ return {
 		MOOSEEGG = "Ride the lightning, you big egg.",
 		MOSSLING = "That's a fluffy... thing.",
 		FEATHERFAN = "Is it windy out or is it just my fan?",
+        MINIFAN = "This pathetic device... gets the job done.",
 		GOOSE_FEATHER = "I could use a pillow filled with these.",
 		STAFF_TORNADO = "Wind power.",
 		PIGHEAD = 

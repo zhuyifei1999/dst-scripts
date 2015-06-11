@@ -54,7 +54,7 @@ function SaveIndex:GuaranteeMinNumSlots(numslots)
 end
 
 function SaveIndex:GetSaveIndexName()
-    return BRANCH == "release" and "saveindex" or ("saveindex_"..BRANCH)
+    return BRANCH ~= "dev" and "saveindex" or ("saveindex_"..BRANCH)
 end
 
 function SaveIndex:Save(callback)

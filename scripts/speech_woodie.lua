@@ -64,6 +64,7 @@ return {
 	ANNOUNCE_QUAKE = "The ground is heaving!",
 	ANNOUNCE_THORNS = "Ouch!",
 	ANNOUNCE_TORCH_OUT = "My light ran out!",
+    ANNOUNCE_FAN_OUT = "I guess I'll just have to suffer now.",
     ANNOUNCE_COMPASS_OUT = "I'll always have the north in my heart.",
 	ANNOUNCE_TRAP_WENT_OFF = "Oops!",
 	ANNOUNCE_WORMHOLE = "It was gross in there!",
@@ -227,6 +228,7 @@ return {
 		MOOSEEGG = "Well, it lays eggs, apparently.",
 		MOSSLING = "Feathery moose baby!",
 		FEATHERFAN = "A traditional Canadian fan.",
+        MINIFAN = "I'm not used to the heat in this place!",
 		GOOSE_FEATHER = "Pillowy plumage.",
 		STAFF_TORNADO = "I prefer to chop the trees myself.",
 		PIGHEAD = 

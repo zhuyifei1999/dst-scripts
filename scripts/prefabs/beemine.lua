@@ -1,14 +1,14 @@
 local assets =
 {
-	Asset("ANIM", "anim/bee_mine.zip"),
-	Asset("ANIM", "anim/bee_mine_maxwell.zip"),
+    Asset("ANIM", "anim/bee_mine.zip"),
+    Asset("ANIM", "anim/bee_mine_maxwell.zip"),
     Asset("SOUND", "sound/bee.fsb"),
 }
 
 local prefabs =
 {
     "bee",
-	"mosquito",
+    "mosquito",
 }
 
 local function SpawnBees(inst)
@@ -57,14 +57,14 @@ local function OnExplode(inst)
         inst.components.inventoryitem.canbepickedup = false
     end
     if METRICS_ENABLED then
-		FightStat_TrapSprung(inst,nil,0)
-	end
+        FightStat_TrapSprung(inst,nil,0)
+    end
 end
 
 local function onhammered(inst, worker)
-	if inst.components.mine then
-	    inst.components.mine:Explode(worker)
-	end
+    if inst.components.mine then
+        inst.components.mine:Explode(worker)
+    end
 end
 
 local function MineRattle(inst)
@@ -89,18 +89,29 @@ local function StopRattling(inst)
 end
 
 local function ondeploy(inst, pt, deployer)
-	inst.components.mine:Reset()
-	inst.Physics:Teleport(pt:Get())
-	StartRattling(inst)
+    inst.components.mine:Reset()
+    inst.Physics:Teleport(pt:Get())
+    StartRattling(inst)
 end
 
 local function SetInactive(inst)
-	inst.AnimState:PlayAnimation("inactive")
-	StopRattling(inst)
+    inst.AnimState:PlayAnimation("inactive")
+    StopRattling(inst)
 end
 
 local function OnDropped(inst)
-	inst.components.mine:Deactivate()
+    inst.components.mine:Deactivate()
+end
+
+local function OnHaunt(inst)
+    if math.random() <= TUNING.HAUNT_CHANCE_RARE then
+        inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
+        OnExplode(inst)
+        return true
+    end
+    inst.components.hauntable.hauntvalue = TUNING.HAUNT_TINY
+    MineRattle(inst)
+    return true
 end
 
 local function BeeMine(name, alignment, skin, spawnprefab, inventory)
@@ -134,10 +145,10 @@ local function BeeMine(name, alignment, skin, spawnprefab, inventory)
         inst.components.mine:SetAlignment(alignment)
         inst.components.mine:SetRadius(TUNING.BEEMINE_RADIUS)
         inst.components.mine:SetOnDeactivateFn(SetInactive)
-        
+
         inst.components.mine:StartTesting()
         inst.beeprefab = spawnprefab
-        
+
         inst:AddComponent("inspectable")
         inst:AddComponent("lootdropper")
         inst:AddComponent("workable")
@@ -159,25 +170,13 @@ local function BeeMine(name, alignment, skin, spawnprefab, inventory)
         end
 
         inst:AddComponent("hauntable")
-        inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
-            if math.random() <= TUNING.HAUNT_CHANCE_ALWAYS then
-                if math.random() <= TUNING.HAUNT_CHANCE_RARE then
-                    inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
-                    OnExplode(inst)
-                    return true
-                end
-                inst.components.hauntable.hauntvalue = TUNING.HAUNT_TINY
-                MineRattle(inst)
-                return true
-            end
-            return false
-        end)
-        
+        inst.components.hauntable:SetOnHauntFn(OnHaunt)
+
         return inst
     end
-	return Prefab("common/inventory/"..name, fn, assets, prefabs)
+    return Prefab("common/inventory/"..name, fn, assets, prefabs)
 end
 
 return BeeMine("beemine", "player", "bee_mine", "bee", true),
-		MakePlacer("common/beemine_placer", "bee_mine", "bee_mine", "idle"),
-	   BeeMine("beemine_maxwell", "nobody", "bee_mine_maxwell", "mosquito", false)
+    MakePlacer("common/beemine_placer", "bee_mine", "bee_mine", "idle"),
+    BeeMine("beemine_maxwell", "nobody", "bee_mine_maxwell", "mosquito", false)

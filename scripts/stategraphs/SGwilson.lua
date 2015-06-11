@@ -110,6 +110,20 @@ local function SetSleeperAwakeState(inst)
     inst:ShowActions(true)
 end
 
+local function DoEmoteFX(inst, prefab, offset)
+    local fx = SpawnPrefab(prefab)
+    if fx ~= nil then
+        if offset ~= nil then
+            fx.Transform:SetPosition(offset:Get())
+        end
+        fx.entity:SetParent(inst.entity)
+    end
+end
+
+local function DoEmoteSound(inst, soundname)
+    inst.SoundEmitter:PlaySound(soundname, "emotesound")
+end
+
 local actionhandlers =
 {
     ActionHandler(ACTIONS.CHOP,
@@ -417,8 +431,7 @@ local events =
         inst.SoundEmitter:PlaySound("dontstarve/wilson/death")    
         
         if not inst:HasTag("mime") then
-            local path = inst.talker_path_override or "dontstarve/characters/"
-            inst.SoundEmitter:PlaySound(path..(inst.soundsname or inst.prefab).."/death_voice")
+            inst.SoundEmitter:PlaySound((inst.talker_path_override or "dontstarve/characters/")..(inst.soundsname or inst.prefab).."/death_voice")
         end
         
         if inst.components.inventory ~= nil then
@@ -3538,43 +3551,37 @@ local states =
             inst.components.locomotor:Stop()
 
             local anim = data.anim
-            local loop = data.loop
-
-            if type(anim) == "string" then
-                inst.AnimState:PlayAnimation(anim)
-            elseif type(anim) == "table" then
-                if data.randomanim then
-                    inst.AnimState:PlayAnimation(anim[math.random(#anim)])
-                else
-                    for i,v in ipairs(anim) do
-                        if i == 1 then
-                            inst.AnimState:PlayAnimation(v, false)
-                        else
-                            inst.AnimState:PushAnimation(v, false)
-                        end
-                    end
-                end
+            local animtype = type(anim)
+            if data.randomanim and animtype == "table" then
+                anim = anim[math.random(#anim)]
+                animtype = type(anim)
+            end
+            if animtype == "table" and #anim <= 1 then
+                anim = anim[1]
+                animtype = type(anim)
             end
 
-            if data.fx then
-                if not data.fxdelay or data.fxdelay == 0 then
+            if animtype == "string" then
+                inst.AnimState:PlayAnimation(anim, data.loop)
+            elseif animtype == "table" then
+                inst.AnimState:PlayAnimation(anim[1])
+                for i = 2, #anim - 1 do
+                    inst.AnimState:PushAnimation(anim[i])
+                end
+                inst.AnimState:PushAnimation(anim[#anim], data.loop == true)
+            end
+
+            if data.fx then --fx might be a boolean, so don't do ~= nil
+                if data.fxdelay == nil or data.fxdelay == 0 then
                     local fx = SpawnPrefab(data.fx)
                     if fx ~= nil then
-                        if data.fxoffset and type(data.fxoffset) == "table" and #data.fxoffset == 3 then
-                            fx.Transform:SetPosition(data.fxoffset[1],data.fxoffset[2],data.fxoffset[3])
+                        if data.fxoffset ~= nil then
+                            fx.Transform:SetPosition(data.fxoffset:Get())
                         end
                         fx.entity:SetParent(inst.entity)
                     end
                 else
-                    inst.emotefxtask = inst:DoTaskInTime(data.fxdelay, function(inst) 
-                        local fx = SpawnPrefab(data.fx)
-                        if fx ~= nil then
-                            if data.fxoffset and type(data.fxoffset) == "table" and #data.fxoffset == 3 then
-                                fx.Transform:SetPosition(data.fxoffset[1],data.fxoffset[2],data.fxoffset[3])
-                            end
-                            fx.entity:SetParent(inst.entity)
-                        end
-                    end)
+                    inst.sg.statemem.emotefxtask = inst:DoTaskInTime(data.fxdelay, DoEmoteFX, data.fx, data.fxoffset)
                 end
             elseif data.fx ~= false then
                 local emote_fx = SpawnPrefab("emote_fx")
@@ -3583,21 +3590,16 @@ local states =
                 end
             end
 
-            if data.sound then
-                if not data.sounddelay or data.sounddelay == 0 then
+            if data.sound then --sound might be a boolean, so don't do ~= nil
+                if data.sounddelay == nil or data.sounddelay == 0 then
                     inst.SoundEmitter:PlaySound(data.sound, "emotesound")
                 else
-                    inst.emotesoundtask = inst:DoTaskInTime(data.sounddelay, function(inst) 
-                        inst.SoundEmitter:PlaySound(data.sound, "emotesound")
-                    end)
+                    inst.sg.statemem.emotesoundtask = inst:DoTaskInTime(data.sounddelay, DoEmoteSound, data.sound)
                 end
             elseif data.sound ~= false then
-                local path = inst.talker_path_override or "dontstarve/characters/"
-                inst.SoundEmitter:PlaySound(path..(inst.soundsname or inst.prefab).."/emote", "emotesound")
+                inst.SoundEmitter:PlaySound((inst.talker_path_override or "dontstarve/characters/")..(inst.soundsname or inst.prefab).."/emote", "emotesound")
             end
 
-            --DoTalkSound(inst)
-            
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:RemotePausePrediction()
             end
@@ -3622,14 +3624,13 @@ local states =
 
         onexit = function(inst)
             inst.SoundEmitter:KillSound("emotesound")
-            --inst.SoundEmitter:KillSound("talk")
-            if inst.emotefxtask ~= nil then
-                inst.emotefxtask:Cancel()
-                inst.emotefxtask = nil
+            if inst.sg.statemem.emotefxtask ~= nil then
+                inst.sg.statemem.emotefxtask:Cancel()
+                inst.sg.statemem.emotefxtask = nil
             end
-            if inst.emotesoundtask ~= nil then
-                inst.emotesoundtask:Cancel()
-                inst.emotesoundtask = nil
+            if inst.sg.statemem.emotesoundtask ~= nil then
+                inst.sg.statemem.emotesoundtask:Cancel()
+                inst.sg.statemem.emotesoundtask = nil
             end
         end,
     },

@@ -31,7 +31,9 @@ local servers =
 {
 	release = "http://dontstarve-release.appspot.com",
 	dev = "http://dontstarve-dev.appspot.com",
-	staging = "http://dontstarve-staging.appspot.com",
+	--staging = "http://dontstarve-staging.appspot.com",
+    --staging is now the live preview branch
+    staging = "http://dontstarve-release.appspot.com",
 }
 GAME_SERVER = servers[BRANCH]
 

@@ -63,24 +63,17 @@ end
 
 
 function BuildContextTable()
-	local sendstats = {}
+    local sendstats = {}
 
-	sendstats.user = TheNet:GetUserID().."@chester"
+    sendstats.user = TheNet:GetUserID()
+    sendstats.user =
+        (sendstats.user ~= nil and (sendstats.user.."@chester")) or
+        (BRANCH == "dev" and "testing") or
+        "unknown"
 
-	if sendstats.user == nil then
-		if BRANCH == "release" then
-			sendstats.user = "unknown"
-		else
-			sendstats.user = "testing"
-		end
-	end
 	local steamID = TheSim:GetSteamUserID()
 	if steamID ~= "" and steamID ~= "unknownID" then
 		sendstats.steamid = steamID
-	end
-
-	if BRANCH ~= "release" then
-		sendstats.user = sendstats.user
 	end
 
 	sendstats.branch = BRANCH

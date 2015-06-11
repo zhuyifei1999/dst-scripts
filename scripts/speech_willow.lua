@@ -44,6 +44,7 @@ return {
 	},
 	ANNOUNCE_PECKED = "No! Bad birdy!",
 	ANNOUNCE_TORCH_OUT = "My precious light is gone!",
+    ANNOUNCE_FAN_OUT = "Stupid thing broke!",
     ANNOUNCE_COMPASS_OUT = "Arrgh the needle is stuck!",
 	ANNOUNCE_WORMHOLE = "I'll have to burn these clothes!",
 	ANNOUNCE_TRAP_WENT_OFF = "Aah!",
@@ -236,6 +237,7 @@ return {
 		MOOSEEGG = "It's huuuuge!",
 		MOSSLING = "Its feathers are frazzled.",
 		FEATHERFAN = "I donno... it could put out some fires....",
+        MINIFAN = "No fun, making me exercise to stay cool!",
 		GOOSE_FEATHER = "So snuggly!",
 		STAFF_TORNADO = "Always wwirling! Swirling towards destruction!",
 		PIGHEAD = 

@@ -28,7 +28,7 @@ local RoGUpgrade = require "widgets/rogupgrade"
 local NoAuthenticationPopupDialogScreen = require "screens/noauthenticationpopupdialogscreen"
 local NetworkLoginPopup = require "screens/networkloginpopup"
 
-local OnlineStatus = require "widgets/onlinestatus"
+--local OnlineStatus = require "widgets/onlinestatus"
 local GameVersion = require "widgets/gameversion"
 
 local rcol = RESOLUTION_X/2 -200
@@ -301,10 +301,11 @@ function MainScreen:DoInit( )
 			self.purchasebutton:SetText( STRINGS.UI.MAINSCREEN.GIFT )
 		end	
 	end
-
+--[[
     self.onlinestatus = self.fg:AddChild(OnlineStatus())
     self.onlinestatus:SetHAnchor(ANCHOR_RIGHT)
     self.onlinestatus:SetVAnchor(ANCHOR_BOTTOM)    
+]]
 
     self.gameversion = self.fg:AddChild(GameVersion())
     self.gameversion:SetHAnchor(ANCHOR_MIDDLE)
@@ -454,7 +455,7 @@ function MainScreen:OnPlayMultiplayerButton( push_listings_screen )
 	            GoToServerListingScreen(forceOffline or false )
 	        end)
         elseif not communication_succeeded then  -- We could not communicate with our auth server or steam is down
-            print ( "failed_communication" )
+            --print ( "failed_communication" )
             TheFrontEnd:PopScreen()
             local confirm = PopupDialogScreen( STRINGS.UI.MAINSCREEN.OFFLINEMODE,STRINGS.UI.MAINSCREEN.OFFLINEMODEDESC,
 								{
@@ -604,7 +605,7 @@ function MainScreen:DoOptionsMenu()
 		table.insert( menu_items, {text=STRINGS.UI.MAINSCREEN.MOREGAMES, cb= function() VisitURL("http://store.steampowered.com/search/?developer=Klei%20Entertainment") end})
 	end
 	
-	if BRANCH ~= "release" then
+	if BRANCH == "dev" then
 		table.insert( menu_items, {text=STRINGS.UI.MAINSCREEN.CHEATS, cb= function() self:CheatMenu() end})
 	end
 	

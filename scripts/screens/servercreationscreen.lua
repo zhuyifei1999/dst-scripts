@@ -21,7 +21,7 @@ local Levels = require "map/levels"
 local CustomizationScreen = require "screens/customizationscreen"
 local PopupDialogScreen = require "screens/popupdialog"
 
-local OnlineStatus = require "widgets/onlinestatus"
+--local OnlineStatus = require "widgets/onlinestatus"
 
 local ScrollableList = require "widgets/scrollablelist"
 
@@ -112,11 +112,11 @@ local ServerCreationScreen = Class(Screen, function(self, customoptions, slotdat
             end
         end
     end
-
+--[[
     self.onlinestatus = self.fg:AddChild(OnlineStatus())
     self.onlinestatus:SetHAnchor(ANCHOR_RIGHT)
     self.onlinestatus:SetVAnchor(ANCHOR_BOTTOM)
-
+]]
     self.refresh_load_panel = false
 
     self:RefreshLoadTiles()    

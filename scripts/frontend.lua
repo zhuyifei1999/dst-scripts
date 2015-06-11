@@ -844,7 +844,7 @@ function FrontEnd:OnMouseButton(button, down, x, y)
 		if self.screenstack[#self.screenstack]:OnMouseButton(button, down, x, y) then return true end
 	end
 
-	if BRANCH ~= "release" and PLATFORM ~= "NACL" and CHEATS_ENABLED then
+	if BRANCH == "dev" and PLATFORM ~= "NACL" and CHEATS_ENABLED then
 		return DoDebugMouse(button, down, x, y)
 	end
 end

@@ -101,6 +101,7 @@ return {
 	ANNOUNCE_THORNS = "Ow!",
 	ANNOUNCE_BURNT = "Yikes! That was hot!",
 	ANNOUNCE_TORCH_OUT = "My light just ran out!",
+	ANNOUNCE_FAN_OUT = "My fan is gone with the wind.",
     ANNOUNCE_COMPASS_OUT = "This compass doesn't point anymore.",
 	ANNOUNCE_TRAP_WENT_OFF = "Oops.",
 	ANNOUNCE_UNIMPLEMENTED = "OW! I don't think it's ready yet.",
@@ -957,6 +958,7 @@ return {
 		MOOSEEGG = "Its contents are like excited electrons trying to escape.",
 		MOSSLING = "Aaah! You are definitely not an electron!",
 		FEATHERFAN = "Down to bring my temperature down.",
+        MINIFAN = "Somehow the breeze comes out the back twice as fast.",
 		GOOSE_FEATHER = "Fluffy!",
 		STAFF_TORNADO = "Spinning doom.",
 		MOSQUITO =

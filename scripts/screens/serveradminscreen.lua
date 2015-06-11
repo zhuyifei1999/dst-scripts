@@ -12,7 +12,7 @@ local Spinner = require "widgets/spinner"
 local UIAnim = require "widgets/uianim"
 
 local ScrollableList = require "widgets/scrollablelist"
-local OnlineStatus = require "widgets/onlinestatus"
+--local OnlineStatus = require "widgets/onlinestatus"
 
 require("constants")
 
@@ -89,11 +89,11 @@ local PlayerDetailsPopup = Class(Screen, function(self, entry, buttons)
     self.root:SetHAnchor(ANCHOR_MIDDLE)
     self.root:SetPosition(0,0,0)
     self.root:SetScaleMode(SCALEMODE_PROPORTIONAL)
-
+--[[
     self.onlinestatus = self.root:AddChild(OnlineStatus())
     self.onlinestatus:SetHAnchor(ANCHOR_RIGHT)
     self.onlinestatus:SetVAnchor(ANCHOR_BOTTOM)
-    
+]]    
     self.details_panel = self.root:AddChild(Widget("player_detail_panel"))
     self.details_panel:SetPosition(0,-10,0)
     self.details_panelbg = self.details_panel:AddChild(Image("images/fepanels_dst.xml", "wide_panel.tex"))

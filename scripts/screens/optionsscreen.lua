@@ -15,7 +15,7 @@ local Widget = require "widgets/widget"
 
 local PopupDialogScreen = require "screens/popupdialog"
 
-local OnlineStatus = require "widgets/onlinestatus"
+--local OnlineStatus = require "widgets/onlinestatus"
 
 
 local show_graphics = PLATFORM ~= "NACL"
@@ -184,11 +184,11 @@ local OptionsScreen = Class(Screen, function(self, in_game)
    	self.title:SetPosition(0, 225, 0)
    	self.title:SetColour(0,0,0,1)
    	self.title:SetString(STRINGS.UI.OPTIONS.OPTIONS)
-	
+--[[
 	self.onlinestatus = self.root:AddChild(OnlineStatus())
     self.onlinestatus:SetHAnchor(ANCHOR_RIGHT)
     self.onlinestatus:SetVAnchor(ANCHOR_BOTTOM)
-
+]]
 	self.menu = self.root:AddChild(Menu(nil, -80, false))
 	self.menu:SetPosition(30, -220 ,0)
 	self.menu:SetScale(.8)

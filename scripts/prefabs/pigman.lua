@@ -253,8 +253,7 @@ local function GuardRetargetFn(inst)
     local defendDist = SpringCombatMod(TUNING.PIG_GUARD_DEFEND_DIST)
 
     local defenseTarget = FindEntity(inst, defendDist, nil,
-    {"king"}
-    )
+    {"king"})
     if not defenseTarget and home and inst:GetDistanceSqToInst(home) < defendDist*defendDist then
         defenseTarget = home
     end
@@ -262,9 +261,7 @@ local function GuardRetargetFn(inst)
         defenseTarget = inst
     end
     local invader = FindEntity(defenseTarget or inst, SpringCombatMod(TUNING.PIG_GUARD_TARGET_DIST), nil,
-    {"character"},
-    {"guard"}
-    )
+    {"character"}, {"guard"})
     if not defenseTarget.happy then
         if invader
            and not (defenseTarget.components.trader and defenseTarget.components.trader:IsTryingToTradeWithMe(invader) )
@@ -284,13 +281,16 @@ local function GuardRetargetFn(inst)
             end
         end
     end
-    return FindEntity(defenseTarget, defendDist, nil,
-    {"monster"}
-    )
+    return FindEntity(defenseTarget, defendDist, nil, {"monster"})
 end
 
 local function GuardKeepTargetFn(inst, target)
+    local cantarget = inst.components.combat:CanTarget(target) 
+        and not (target.sg and target.sg:HasStateTag("transform"))
+        and not (target:HasTag("guard") and target:HasTag("pig"))
+
     local home = inst.components.homeseeker and inst.components.homeseeker.home
+
     if home then
         local defendDist = SpringCombatMod(TUNING.PIG_GUARD_DEFEND_DIST)
         if not TheWorld.state.isday and home.components.burnable and home.components.burnable:IsBurning() then
@@ -298,9 +298,10 @@ local function GuardKeepTargetFn(inst, target)
         end
         return home:GetDistanceSqToInst(target) < defendDist*defendDist
                and home:GetDistanceSqToInst(inst) < defendDist*defendDist
+               and cantarget
     end
-    return inst.components.combat:CanTarget(target)
-           and not (target.sg and target.sg:HasStateTag("transform"))
+
+    return cantarget
 end
 
 local function GuardShouldSleep(inst)

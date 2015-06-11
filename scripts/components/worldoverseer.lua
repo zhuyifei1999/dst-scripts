@@ -47,25 +47,20 @@ function WorldOverseer:RecordPlayerLeft(player)
 end
 
 function WorldOverseer:BuildContextTable(player)
-	local sendstats = {}
-	-- can be called with a player or a userid
-	if type(player) == "table" then
-		sendstats.user = player.userid
-	else
-		sendstats.user = player
-	end
+    local sendstats = {}
+    -- can be called with a player or a userid
+    if type(player) == "table" then
+        sendstats.user = player.userid
+    else
+        sendstats.user = player
+    end
 
-	if sendstats.user == nil then
-		if BRANCH == "release" then
-			sendstats.user = "unknown"
-		else
-			sendstats.user = "testing"
-		end
-	else
-		sendstats.user = sendstats.user.."@chester"
-	end
+    sendstats.user =
+        (sendstats.user ~= nil and (sendstats.user.."@chester")) or
+        (BRANCH == "dev" and "testing") or
+        "unknown"
 
-	return sendstats
+    return sendstats
 end
 
 function WorldOverseer:CalcPlayerStats()

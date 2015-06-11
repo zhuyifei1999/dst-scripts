@@ -37,13 +37,16 @@ local function fn()
         inst:DoTaskInTime(0, PlayImpactAnim)
     end
 
+    inst.Transform:SetTwoFaced()
+
+    inst:AddTag("FX")
+
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.Transform:SetTwoFaced()
-
-    inst:AddTag("FX")
     inst.persists = false
     inst:DoTaskInTime(0.5, inst.Remove)
 

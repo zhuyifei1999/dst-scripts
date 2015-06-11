@@ -39,7 +39,7 @@ end
 ----------------------------
 
 function PlayerDeaths:GetSaveName()
-    return BRANCH == "release" and "morgue" or "morgue_"..BRANCH
+    return BRANCH ~= "dev" and "morgue" or ("morgue_"..BRANCH)
 end
 
 

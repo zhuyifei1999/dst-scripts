@@ -14,7 +14,7 @@ local BigPopupDialogScreen = require "screens/bigpopupdialog"
 local ModConfigurationScreen = require "screens/modconfigurationscreen"
 
 local ScrollableList = require "widgets/scrollablelist"
-local OnlineStatus = require "widgets/onlinestatus"
+--local OnlineStatus = require "widgets/onlinestatus"
 
 local text_font = DEFAULTFONT--NUMBERFONT
 
@@ -83,11 +83,11 @@ local ModsScreen = Class(Screen, function(self)
     self.cleanallbutton:SetPosition(Vector3(0,305,0))
     self.cleanallbutton:SetScale(.85)
     self.cleanallbutton:SetOnClick(function() self:CleanAllButton() end)
-    
+--[[    
 	self.onlinestatus = self.root:AddChild(OnlineStatus())
     self.onlinestatus:SetHAnchor(ANCHOR_RIGHT)
     self.onlinestatus:SetVAnchor(ANCHOR_BOTTOM)  
-	
+]]
 	-- top mods panel
 	self:CreateTopModsPanel()
 

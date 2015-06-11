@@ -966,7 +966,6 @@ STRINGS=
         TORNADO = "Tornado",
         EYEBRELLAHAT = "Eyebrella",
         FEATHERFAN = "Luxury Fan",
-        HANDFAN = "Small Fan",
         MINIFAN = "Whirly Fan",
 
         REVIVER = "Telltale Heart",
@@ -1165,6 +1164,7 @@ STRINGS=
 
         EYEBRELLAHAT = "An eye on the sky keeps you dry.",
         FEATHERFAN = "Luxuriously soft, luxuriously large.",
+        MINIFAN = "You have to run to create a breeze!",
 
         BELL = "This isn't just any bell.",
 

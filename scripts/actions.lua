@@ -1043,6 +1043,7 @@ ACTIONS.HAUNT.fn = function(act)
     if act.target ~= nil and
         act.target:IsValid() and
         act.target.components.hauntable ~= nil and
+        not (act.target.components.inventoryitem ~= nil and act.target.components.inventoryitem:IsHeld()) and
         not (act.target:HasTag("haunted") or act.target:HasTag("catchable")) then
         act.doer:PushEvent("haunt", { target = act.target })
         act.target.components.hauntable:DoHaunt(act.doer)

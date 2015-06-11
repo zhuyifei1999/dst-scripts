@@ -848,7 +848,7 @@ function Tune(overrides)
 	    TORCH_RAIN_RATE = 1.5,
 	    TORCH_FUEL = night_time*1.25,
 
-        MINIFAN_FUEL = day_time * 0.8,
+        MINIFAN_FUEL = day_time * 0.3,
 
         COMPASS_FUEL = day_time * 4,
         COMPASS_ATTACK_DECAY_PERCENT = -0.3,
@@ -1580,10 +1580,6 @@ function Tune(overrides)
 	    FEATHERFAN_USES = 15,
 	    FEATHERFAN_COOLING = -50,
         FEATHERFAN_RADIUS = 7,
-
-	    HANDFAN_USES = 10,
-	    HANDFAN_COOLING = -10,
-        HANDFAN_RADIUS = 3,
 
 	    NO_BOSS_TIME = 26,  -- 1.5 seasons
 

@@ -74,6 +74,7 @@ Recipe("bedroll_straw", {Ingredient("cutgrass", 6), Ingredient("rope", 1)}, RECI
 Recipe("bedroll_furry", {Ingredient("bedroll_straw", 1), Ingredient("manrabbit_tail", 2)}, RECIPETABS.SURVIVAL, TECH.SCIENCE_TWO)
 Recipe("tent", {Ingredient("silk", 6),Ingredient("twigs", 4),Ingredient("rope", 3)}, RECIPETABS.SURVIVAL, TECH.SCIENCE_TWO, "tent_placer")
 Recipe("siestahut", {Ingredient("silk", 2),Ingredient("boards", 4),Ingredient("rope", 3)}, RECIPETABS.SURVIVAL, TECH.SCIENCE_TWO, "siestahut_placer")
+Recipe("minifan", {Ingredient("twigs", 3), Ingredient("petals",1)}, RECIPETABS.SURVIVAL, TECH.NONE)
 Recipe("featherfan", {Ingredient("goose_feather", 5), Ingredient("cutreeds", 2), Ingredient("rope", 2)}, RECIPETABS.SURVIVAL, TECH.SCIENCE_TWO)
 Recipe("icepack", {Ingredient("bearger_fur", 1), Ingredient("gears", 3), Ingredient("transistor", 3)}, RECIPETABS.SURVIVAL, TECH.SCIENCE_TWO)
 
