@@ -3,6 +3,7 @@ DIALOGFONT = "opensans"
 TITLEFONT = "bp100"
 UIFONT = "bp50"
 BUTTONFONT="buttonfont"
+NEWFONT="spirequal"
 NUMBERFONT = "stint-ucr"
 TALKINGFONT = "talkingfont"
 TALKINGFONT_WATHGRITHR = "talkingfont_wathgrithr"
@@ -35,4 +36,5 @@ FONTS = {
 	{ filename = "fonts/belisaplumilla50"..font_posfix..".zip", alias = "bp50" },
 	{ filename = "fonts/belisaplumilla100"..font_posfix..".zip", alias = "bp100" },	
 	{ filename = "fonts/buttonfont"..font_posfix..".zip", alias = "buttonfont" },	
+	{ filename = "fonts/spirequal"..font_posfix..".zip", alias = "spirequal" },	
 }

@@ -24,6 +24,8 @@ local Projectile = Class(function(self, inst)
     self.onhit = nil
     self.onmiss = nil
     self.oncaught = nil
+
+    self.stimuli = nil
 end,
 nil,
 {
@@ -41,6 +43,10 @@ end
 
 function Projectile:SetSpeed(speed)
     self.speed = speed
+end
+
+function Projectile:SetStimuli(stimuli)
+    self.stimuli = stimuli
 end
 
 function Projectile:SetRange(range)
@@ -148,7 +154,7 @@ function Projectile:Hit(target)
         attacker = weapon.components.inventoryitem.owner
     end
     if attacker and attacker.components.combat then
-        attacker.components.combat:DoAttack(target, weapon, self.inst)
+        attacker.components.combat:DoAttack(target, weapon, self.inst, self.stimuli)
     end
     
     if self.onhit then

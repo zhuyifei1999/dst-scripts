@@ -918,6 +918,8 @@ function DisplayError(error)
         return nil
     end
 
+	print (error) -- Failsafe since sometimes the error screen is no shown
+
     local modnames = ModManager:GetEnabledModNames()
 
     if #modnames > 0 then

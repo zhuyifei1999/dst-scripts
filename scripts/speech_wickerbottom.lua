@@ -164,6 +164,7 @@ return
         MOOSEEGG = "What a marvel!",
         MOSSLING = "I suppose that's approximately what I expected.",
         FEATHERFAN = "This will induce quite an airflow!",
+        MINIFAN = "It's aerodynamic principals are astonishing.",
         GOOSE_FEATHER = "Soft body down! Makes me wish I could sleep.",
         STAFF_TORNADO = "I've never seen a weather vane employed as a weapon.",
         PIGHEAD = 
@@ -924,6 +925,7 @@ return
         TRINKET_7 = "I'd rather use my hands to read a book.",
         TRINKET_8 = "It reminds me of my bath tub. I could use a long soak.",
         TRINKET_9 = "Hmm, don't think I'm missing any buttons at the moment.",
+        TRINKET_26 = "It appears to be a primitive cup fashioned from a tuber.",
 		SKULLCHEST = "A container resembling a cranium.",
 		PANDORASCHEST = "An artifact which may contain other artifacts.",
 
@@ -1128,6 +1130,7 @@ return
     ANNOUNCE_HOT = "The ambient temperature is high.",
     ANNOUNCE_HUNGRY = "Librarian needs food.",
     ANNOUNCE_TORCH_OUT = "I need another light.",
+    ANNOUNCE_FAN_OUT = "This fragile device has decayed.",
     ANNOUNCE_COMPASS_OUT = "My compass has become demagnetized.",
     ANNOUNCE_DUSK = "Night will be here soon.",
 

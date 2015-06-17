@@ -4,338 +4,335 @@ local assets =
 {
     Asset("ANIM", "anim/bird_cage.zip"),
 
-	Asset("ANIM", "anim/crow_build.zip"),
-	Asset("ANIM", "anim/robin_build.zip"),
-	Asset("ANIM", "anim/robin_winter_build.zip"),	
+    Asset("ANIM", "anim/crow_build.zip"),
+    Asset("ANIM", "anim/robin_build.zip"),
+    Asset("ANIM", "anim/robin_winter_build.zip"),   
 }
 
 local prefabs =
 {
-	"bird_egg",
-	"crow",
-	"robin",
-	"robin_winter",
-	"collapse_small",
-	"guano",
+    "bird_egg",
+    "crow",
+    "robin",
+    "robin_winter",
+    "collapse_small",
+    "guano",
 }
 
 local invalid_foods =
 {
-	"bird_egg",
-	"rottenegg",
-	"monstermeat",
-	-- "cookedmonstermeat",
-	-- "monstermeat_dried",
+    "bird_egg",
+    "rottenegg",
+    "monstermeat",
+    -- "cookedmonstermeat",
+    -- "monstermeat_dried",
 }
 
 local CAGE_STATES =
 {
-	DEAD = "_death",
-	SKELETON = "_skeleton",
-	EMPTY = "_empty",
-	FULL = "_bird",
+    DEAD = "_death",
+    SKELETON = "_skeleton",
+    EMPTY = "_empty",
+    FULL = "_bird",
 }
 
 local function SetBirdType(inst, bird)
-	inst.bird_type = bird
+    inst.bird_type = bird
     inst.AnimState:AddOverrideBuild(inst.bird_type.."_build")
 end
 
 local function SetCageState(inst, state)
-	inst.CAGE_STATE = state
+    inst.CAGE_STATE = state
 end
 
 local function GetCageState(inst)
-	return inst.CAGE_STATE
+    return inst.CAGE_STATE
 end
 
 local function PlayStateAnim(inst, anim, push) --Only use for hit and idle anims
-	if push then
-		inst.AnimState:PushAnimation(anim..GetCageState(inst), true)
-	else
-		inst.AnimState:PlayAnimation(anim..GetCageState(inst))
-	end
+    if push then
+        inst.AnimState:PushAnimation(anim..GetCageState(inst), true)
+    else
+        inst.AnimState:PlayAnimation(anim..GetCageState(inst))
+    end
 end
 
 local function GetBird(inst)
-	return (inst.components.occupiable and inst.components.occupiable:GetOccupant()) or nil
+    return (inst.components.occupiable and inst.components.occupiable:GetOccupant()) or nil
 end
 
 local function GetHunger(bird)
-	return (bird and bird.components.perishable and bird.components.perishable:GetPercent()) or 1
+    return (bird and bird.components.perishable and bird.components.perishable:GetPercent()) or 1
 end
 
 local function DigestFood(inst, food)
+    if food.components.edible.foodtype == FOODTYPE.MEAT then
+        --If the food is meat:
+            --Spawn an egg.
+        inst.components.lootdropper:SpawnLootPrefab("bird_egg")
+    else
+        local seed_name = string.lower(food.prefab .. "_seeds")
+        if Prefabs[seed_name] ~= nil then
+            --If the food has a relavent seed type:
+                --Spawn 1 or 2 of those seeds.
+            local num_seeds = math.random(2)
+            for k = 1, num_seeds do
+                inst.components.lootdropper:SpawnLootPrefab(seed_name)
+            end
+                --Spawn regular seeds on a 50% chance.
+            if math.random() < 0.5 then
+                inst.components.lootdropper:SpawnLootPrefab("seeds")
+            end
+        else
+            --Otherwise...
+                --Spawn a poop 1/3 times.
+            if math.random() < 0.33 then
+                local loot = inst.components.lootdropper:SpawnLootPrefab("guano")
+                loot.Transform:SetScale(.33, .33, .33)
+            end
+        end
+    end
 
-	if food.components.edible.foodtype == FOODTYPE.MEAT then
-		--If the food is meat:
-			--Spawn an egg.
-		inst.components.lootdropper:SpawnLootPrefab("bird_egg")
-	else
-		local seed_name = string.lower(food.prefab .. "_seeds")
-		if Prefabs[seed_name] ~= nil then
-			--If the food has a relavent seed type:
-				--Spawn 1 or 2 of those seeds.
-			local num_seeds = math.random(2)
-			for k = 1, num_seeds do
-				inst.components.lootdropper:SpawnLootPrefab(seed_name)
-			end
-				--Spawn regular seeds on a 50% chance.
-			if math.random() < 0.5 then
-				inst.components.lootdropper:SpawnLootPrefab("seeds")
-			end
-		else
-			--Otherwise...
-				--Spawn a poop 1/3 times.
-			if math.random() < 0.33 then
-				local loot = inst.components.lootdropper:SpawnLootPrefab("guano")
-				loot.Transform:SetScale(.33, .33, .33)
-			end
-		end
-	end
-
-	--Refill bird stomach.
-	local bird = GetBird(inst)
-	if bird and bird:IsValid() and bird.components.perishable then
-		bird.components.perishable:SetPercent(1)
-	end
+    --Refill bird stomach.
+    local bird = GetBird(inst)
+    if bird and bird:IsValid() and bird.components.perishable then
+        bird.components.perishable:SetPercent(1)
+    end
 end
 
 local function ShouldAcceptItem(inst, item)
-	
-	local seed_name = string.lower(item.prefab .. "_seeds")
-	--Item should be:
-	--Edible
-		--Seeds
-		--Meat
+    local seed_name = string.lower(item.prefab .. "_seeds")
+    
+    --Item should be:
+    --Edible
+        --Seeds
+        --Meat
 
     local can_accept = item.components.edible
-		and (Prefabs[seed_name] 
-		or item.prefab == "seeds"
-		or item.components.edible.foodtype == FOODTYPE.MEAT)
+        and (Prefabs[seed_name] 
+        or item.prefab == "seeds"
+        or item.components.edible.foodtype == FOODTYPE.MEAT)
 
-	--Item should NOT be:
-		--Monster Meat
-		--Eggs
-		--Bird Eggs
-		--Rotton Eggs
+    --Item should NOT be:
+        --Monster Meat
+        --Eggs
+        --Bird Eggs
+        --Rotton Eggs
 
-	if table.contains(invalid_foods, item.prefab) then
-		can_accept = false
-	end
+    if table.contains(invalid_foods, item.prefab) then
+        can_accept = false
+    end
 
-	return can_accept
+    return can_accept
 end
 
 local function OnGetItem(inst, giver, item)
-	--If you're sleeping, wake up.
-	if inst.components.sleeper and inst.components.sleeper:IsAsleep() then
-		inst.components.sleeper:WakeUp()
-	end
+    --If you're sleeping, wake up.
+    if inst.components.sleeper and inst.components.sleeper:IsAsleep() then
+        inst.components.sleeper:WakeUp()
+    end
 
-	if item.components.edible ~= nil and
-		(	item.components.edible.foodtype == FOODTYPE.MEAT
-			or item.prefab == "seeds"
-			or Prefabs[string.lower(item.prefab .. "_seeds")] ~= nil
-		) then
-		--If the item is edible...
-			--Play some animations (peck, peck, peck, hop, idle)
-		inst.AnimState:PlayAnimation("peck")
-		inst.AnimState:PushAnimation("peck")
-		inst.AnimState:PushAnimation("peck")
-		inst.AnimState:PushAnimation("hop")
-		inst:PlayStateAnim("idle", true)
-			--Digest Food in 60 frames.
-		inst:DoTaskInTime(60 * FRAMES, DigestFood, item)
-	end
+    if item.components.edible ~= nil and
+        (   item.components.edible.foodtype == FOODTYPE.MEAT
+            or item.prefab == "seeds"
+            or Prefabs[string.lower(item.prefab .. "_seeds")] ~= nil
+        ) then
+        --If the item is edible...
+            --Play some animations (peck, peck, peck, hop, idle)
+        inst.AnimState:PlayAnimation("peck")
+        inst.AnimState:PushAnimation("peck")
+        inst.AnimState:PushAnimation("peck")
+        inst.AnimState:PushAnimation("hop")
+        inst:PlayStateAnim("idle", true)
+            --Digest Food in 60 frames.
+        inst:DoTaskInTime(60 * FRAMES, DigestFood, item)
+    end
 end
 
 local function OnRefuseItem(inst, item)
-	--Play animation (flap, idle)
-	inst.AnimState:PlayAnimation("flap")
-	inst:PlayStateAnim("idle", true)
-	--Play sound (wingflap in cage)
+    --Play animation (flap, idle)
+    inst.AnimState:PlayAnimation("flap")
+    inst:PlayStateAnim("idle", true)
+    --Play sound (wingflap in cage)
     inst.SoundEmitter:PlaySound("dontstarve/birds/wingflap_cage")
 end
 
 local function DoAnimationTask(inst)
-	local bird = GetBird(inst)
-	local hunger = GetHunger(bird)
-	local rand = math.random()
+    local bird = GetBird(inst)
+    local hunger = GetHunger(bird)
+    local rand = math.random()
 
-	if hunger < 0.33 then
-	--If you're REALLY hungry...
-		--Play either idle or idle3
-		if rand < 0.75 then
-			inst.AnimState:PlayAnimation("idle_bird3")
-        	--Flaps - 5, 15, 28, 99
-        	inst:DoTaskInTime(5 * FRAMES, function() inst.SoundEmitter:PlaySound("dontstarve/birds/wingflap_cage") end)
-        	inst:DoTaskInTime(15 * FRAMES, function() inst.SoundEmitter:PlaySound("dontstarve/birds/wingflap_cage") end)
-        	inst:DoTaskInTime(28 * FRAMES, function() inst.SoundEmitter:PlaySound("dontstarve/birds/wingflap_cage") end)
-        	inst:DoTaskInTime(99 * FRAMES, function() inst.SoundEmitter:PlaySound("dontstarve/birds/wingflap_cage") end)
-        	--Chirps - 4, 27, 42, 100
-        	inst:DoTaskInTime(4 * FRAMES, function() inst.SoundEmitter:PlaySound(bird.sounds.chirp) end)
-        	inst:DoTaskInTime(27 * FRAMES, function() inst.SoundEmitter:PlaySound(bird.sounds.chirp) end)
-        	inst:DoTaskInTime(42 * FRAMES, function() inst.SoundEmitter:PlaySound(bird.sounds.chirp) end)
-        	inst:DoTaskInTime(100 * FRAMES, function() inst.SoundEmitter:PlaySound(bird.sounds.chirp) end)
-		end
-	elseif hunger < 0.66 then
-	--If you're hungry...
-		--Play either idle or idle2
-		if rand < 0.5 then
-			inst.AnimState:PlayAnimation("idle_bird2")
-        	--26, 81, 96
-        	inst:DoTaskInTime(26 * FRAMES, function() inst.SoundEmitter:PlaySound(bird.sounds.chirp) end)
-        	inst:DoTaskInTime(81 * FRAMES, function() inst.SoundEmitter:PlaySound(bird.sounds.chirp) end)
-        	inst:DoTaskInTime(96 * FRAMES, function() inst.SoundEmitter:PlaySound(bird.sounds.chirp) end)
-		end
+    if hunger < 0.33 then
+    --If you're REALLY hungry...
+        --Play either idle or idle3
+        if rand < 0.75 then
+            inst.AnimState:PlayAnimation("idle_bird3")
+            --Flaps - 5, 15, 28, 99
+            inst:DoTaskInTime(5 * FRAMES, function() inst.SoundEmitter:PlaySound("dontstarve/birds/wingflap_cage") end)
+            inst:DoTaskInTime(15 * FRAMES, function() inst.SoundEmitter:PlaySound("dontstarve/birds/wingflap_cage") end)
+            inst:DoTaskInTime(28 * FRAMES, function() inst.SoundEmitter:PlaySound("dontstarve/birds/wingflap_cage") end)
+            inst:DoTaskInTime(99 * FRAMES, function() inst.SoundEmitter:PlaySound("dontstarve/birds/wingflap_cage") end)
+            --Chirps - 4, 27, 42, 100
+            inst:DoTaskInTime(4 * FRAMES, function() inst.SoundEmitter:PlaySound(bird.sounds.chirp) end)
+            inst:DoTaskInTime(27 * FRAMES, function() inst.SoundEmitter:PlaySound(bird.sounds.chirp) end)
+            inst:DoTaskInTime(42 * FRAMES, function() inst.SoundEmitter:PlaySound(bird.sounds.chirp) end)
+            inst:DoTaskInTime(100 * FRAMES, function() inst.SoundEmitter:PlaySound(bird.sounds.chirp) end)
+        end
+    elseif hunger < 0.66 then
+    --If you're hungry...
+        --Play either idle or idle2
+        if rand < 0.5 then
+            inst.AnimState:PlayAnimation("idle_bird2")
+            --26, 81, 96
+            inst:DoTaskInTime(26 * FRAMES, function() inst.SoundEmitter:PlaySound(bird.sounds.chirp) end)
+            inst:DoTaskInTime(81 * FRAMES, function() inst.SoundEmitter:PlaySound(bird.sounds.chirp) end)
+            inst:DoTaskInTime(96 * FRAMES, function() inst.SoundEmitter:PlaySound(bird.sounds.chirp) end)
+        end
     else
-	--If you're content...
-		--Play either caw (50%), flap (10%) or hop (40%)
-		if rand < 0.5 then
-	        inst.AnimState:PlayAnimation("caw")
-	        if inst.chirpsound then
-				inst.SoundEmitter:PlaySound(inst.chirpsound)
-			end
-		elseif rand < 0.6 then
-	        inst.AnimState:PlayAnimation("flap")
-        	inst.SoundEmitter:PlaySound("dontstarve/birds/wingflap_cage")
-		else
-	        inst.AnimState:PlayAnimation("hop")
-		end
+    --If you're content...
+        --Play either caw (50%), flap (10%) or hop (40%)
+        if rand < 0.5 then
+            inst.AnimState:PlayAnimation("caw")
+            if inst.chirpsound then
+                inst.SoundEmitter:PlaySound(inst.chirpsound)
+            end
+        elseif rand < 0.6 then
+            inst.AnimState:PlayAnimation("flap")
+            inst.SoundEmitter:PlaySound("dontstarve/birds/wingflap_cage")
+        else
+            inst.AnimState:PlayAnimation("hop")
+        end
     end
-	--End with pushing "idle" animation
-	inst:PlayStateAnim("idle", true)
+    --End with pushing "idle" animation
+    inst:PlayStateAnim("idle", true)
 end
 
 local function StartAnimationTask(inst)
-	inst.AnimationTask = inst:DoPeriodicTask(6, DoAnimationTask)
+    inst.AnimationTask = inst:DoPeriodicTask(6, DoAnimationTask)
 end
 
 local function StopAnimationTask(inst)
-	if inst.AnimationTask then
-		inst.AnimationTask:Cancel()
-		inst.AnimationTask = nil
-	end
+    if inst.AnimationTask then
+        inst.AnimationTask:Cancel()
+        inst.AnimationTask = nil
+    end
 end
 
 local function ShouldSleep(inst)
-	--Sleep during night, but not if you're very hungry.
-	local bird = GetBird(inst)
-	return TheWorld.state.isnight and GetHunger(bird) >= 0.33
+    --Sleep during night, but not if you're very hungry.
+    local bird = GetBird(inst)
+    return TheWorld.state.isnight and GetHunger(bird) >= 0.33
 end
 
 local function GoToSleep(inst)
-	if inst.components.occupiable:IsOccupied() then
-		StopAnimationTask(inst)
-		inst.AnimState:PlayAnimation("sleep_pre")
-		inst.AnimState:PushAnimation("sleep_loop", true)
-	end
+    if inst.components.occupiable:IsOccupied() then
+        StopAnimationTask(inst)
+        inst.AnimState:PlayAnimation("sleep_pre")
+        inst.AnimState:PushAnimation("sleep_loop", true)
+    end
 end
 
 local function ShouldWake(inst)
-	--Wake during day or if you're very hungry.
-	local bird = GetBird(inst)
-	return TheWorld.state.isday or GetHunger(bird) < 0.33
+    --Wake during day or if you're very hungry.
+    local bird = GetBird(inst)
+    return TheWorld.state.isday or GetHunger(bird) < 0.33
 end
 
 local function WakeUp(inst)
-	if inst.components.occupiable:IsOccupied() then
-		inst.AnimState:PlayAnimation("sleep_pst")
-		inst:PlayStateAnim("idle", true)
-		StartAnimationTask(inst)
-	end
+    if inst.components.occupiable:IsOccupied() then
+        inst.AnimState:PlayAnimation("sleep_pst")
+        inst:PlayStateAnim("idle", true)
+        StartAnimationTask(inst)
+    end
 end
 
 local function OnOccupied(inst, bird)
-	SetCageState(inst, CAGE_STATES.FULL)
+    SetCageState(inst, CAGE_STATES.FULL)
 
-	--Add the sleeper component & initialize
-	inst:AddComponent("sleeper")
-	inst.components.sleeper:SetSleepTest(ShouldSleep)
-	inst.components.sleeper:SetWakeTest(ShouldWake)
+    --Add the sleeper component & initialize
+    inst:AddComponent("sleeper")
+    inst.components.sleeper:SetSleepTest(ShouldSleep)
+    inst.components.sleeper:SetWakeTest(ShouldWake)
 
-	--Enable the trader component
-	inst.components.trader:Enable()
+    --Enable the trader component
+    inst.components.trader:Enable()
 
-	--Set up the bird symbol, play an animation.
-	SetBirdType(inst, bird.prefab)
+    --Set up the bird symbol, play an animation.
+    SetBirdType(inst, bird.prefab)
 
-	inst.chirpsound = bird.sounds and bird.sounds.chirp
-	inst.AnimState:PlayAnimation("flap")
+    inst.chirpsound = bird.sounds and bird.sounds.chirp
+    inst.AnimState:PlayAnimation("flap")
     inst.SoundEmitter:PlaySound("dontstarve/birds/wingflap_cage")
-	inst:PlayStateAnim("idle", true)
+    inst:PlayStateAnim("idle", true)
 
-	--Start the idling task
-	StartAnimationTask(inst)
+    --Start the idling task
+    StartAnimationTask(inst)
 end
 
 local function OnEmptied(inst, bird)
+    SetCageState(inst, CAGE_STATES.EMPTY)
 
-	SetCageState(inst, CAGE_STATES.EMPTY)
+    --Remove sleeper component
+    inst:RemoveComponent("sleeper")
 
-	--Remove sleeper component
-	inst:RemoveComponent("sleeper")
+    --Disable trader component
+    inst.components.trader:Disable()
 
-	--Disable trader component
-	inst.components.trader:Disable()
+    --Refresh anim state.
+    inst:PlayStateAnim("idle")
 
-	--Refresh anim state.
-	inst:PlayStateAnim("idle")
-
-	--Stop the idling task
-	StopAnimationTask(inst)
+    --Stop the idling task
+    StopAnimationTask(inst)
 end
 
 local function OnWorkFinished(inst, worker)
-	--If there is a bird inside drop the proper loot (bird, meat or rot)
-	if inst.components.occupiable and inst.components.occupiable:IsOccupied() then
-		local item = inst.components.occupiable:Harvest()
-		if item then
-			item.Transform:SetPosition(inst.Transform:GetWorldPosition())
-			item.components.inventoryitem:OnDropped()
-		end
-	end
-	inst.components.lootdropper:DropLoot()
-	inst.components.inventory:DropEverything(true)
-	inst:Remove()
+    --If there is a bird inside drop the proper loot (bird, meat or rot)
+    if inst.components.occupiable and inst.components.occupiable:IsOccupied() then
+        local item = inst.components.occupiable:Harvest()
+        if item then
+            item.Transform:SetPosition(inst.Transform:GetWorldPosition())
+            item.components.inventoryitem:OnDropped()
+        end
+    end
+    inst.components.lootdropper:DropLoot()
+    inst.components.inventory:DropEverything(true)
+    inst:Remove()
 end
 
 local function OnWorked(inst, worker)
-	--If there is a bird play the bird animations/ sound
-	inst:PlayStateAnim("hit")
+    --If there is a bird play the bird animations/ sound
+    inst:PlayStateAnim("hit")
 
-	if inst.components.occupiable and inst.components.occupiable:IsOccupied() then
-		inst.AnimState:PushAnimation("flap")
+    if inst.components.occupiable and inst.components.occupiable:IsOccupied() then
+        inst.AnimState:PushAnimation("flap")
         inst.SoundEmitter:PlaySound("dontstarve/birds/wingflap_cage")
-	end
+    end
 
-	inst:PlayStateAnim("idle", true)
+    inst:PlayStateAnim("idle", true)
 end
 
 local function OnBuilt(inst)
-	inst.AnimState:PlayAnimation("place")
-	inst:PlayStateAnim("idle", true)
+    inst.AnimState:PlayAnimation("place")
+    inst:PlayStateAnim("idle", true)
 end
 
 local function OnBirdRot(inst)
-	SetCageState(inst, CAGE_STATES.SKELETON)
-	inst:PlayStateAnim("idle")
+    SetCageState(inst, CAGE_STATES.SKELETON)
+    inst:PlayStateAnim("idle")
 
-	inst:DoTaskInTime(0, function()
-		local item = inst.components.inventory:GetItemInSlot(1)
-		if item then
-			inst.components.shelf:PutItemOnShelf(item)
-		end
-	end)
+    inst:DoTaskInTime(0, function()
+        local item = inst.components.inventory:GetItemInSlot(1)
+        if item then
+            inst.components.shelf:PutItemOnShelf(item)
+        end
+    end)
 end
 
 local function OnBirdStarve(inst, bird)
-
-	SetCageState(inst, CAGE_STATES.DEAD)
-	
-	inst.AnimState:PlayAnimation("death")
-	inst:PlayStateAnim("idle", true)
+    SetCageState(inst, CAGE_STATES.DEAD)
+    
+    inst.AnimState:PlayAnimation("death")
+    inst:PlayStateAnim("idle", true)
 
     --Put loot on "shelf"
     local loot = SpawnPrefab("smallmeat")
@@ -353,72 +350,72 @@ local function OnGetShelfItem(inst, item)
 end
 
 local function OnLoseShelfItem(inst, taker, item)
-	if item and item.OnRotFn then
+    if item and item.OnRotFn then
         inst:RemoveEventCallback("perished", item.OnRotFn, item)
     end
 
-	--Activate occupiable
-	if not inst.components.occupiable then
-		inst:AddComponent("occupiable")
-		inst.components.occupiable.occupanttype = OCCUPANTTYPE.BIRD
-		inst.components.occupiable.onoccupied = OnOccupied
-		inst.components.occupiable.onemptied = OnEmptied
-		inst.components.occupiable.onperishfn = OnBirdStarve
-	end
+    --Activate occupiable
+    if not inst.components.occupiable then
+        inst:AddComponent("occupiable")
+        inst.components.occupiable.occupanttype = OCCUPANTTYPE.BIRD
+        inst.components.occupiable.onoccupied = OnOccupied
+        inst.components.occupiable.onemptied = OnEmptied
+        inst.components.occupiable.onperishfn = OnBirdStarve
+    end
 
-	local bird = GetBird(inst)
-	if bird then
-		OnOccupied(inst, bird)
-	else
-		OnEmptied(inst, bird)
-	end
+    local bird = GetBird(inst)
+    if bird then
+        OnOccupied(inst, bird)
+    else
+        OnEmptied(inst, bird)
+    end
 end
 
 local function OnSave(inst, data)
-	data.CAGE_STATE = inst.CAGE_STATE
-	data.bird_type = inst.bird_type
+    data.CAGE_STATE = inst.CAGE_STATE
+    data.bird_type = inst.bird_type
 end
 
 local function OnLoad(inst, data)
-	if data and data.CAGE_STATE then
-		SetCageState(inst, data.CAGE_STATE)
-	end
-	if data and data.bird_type then
-		SetBirdType(inst, data.bird_type)
-	end
-	inst:PlayStateAnim("idle")
+    if data and data.CAGE_STATE then
+        SetCageState(inst, data.CAGE_STATE)
+    end
+    if data and data.bird_type then
+        SetBirdType(inst, data.bird_type)
+    end
+    inst:PlayStateAnim("idle")
 end
 
 local function OnLoadPostPass(inst, ents, data)
-	--Check in inventory, put on shelf if needed.
-	local item = inst.components.inventory:GetItemInSlot(1)
+    --Check in inventory, put on shelf if needed.
+    local item = inst.components.inventory:GetItemInSlot(1)
 
-	if item then
-		inst.components.shelf:PutItemOnShelf(item)
-	end
+    if item then
+        inst.components.shelf:PutItemOnShelf(item)
+    end
 end
 
 local function GetStatus(inst)
-	if inst.CAGE_STATE == CAGE_STATES.EMPTY then
-		return "GENERIC"
-	elseif inst.CAGE_STATE == CAGE_STATES.FULL then
-		local bird = GetBird(inst)
-		local hunger = GetHunger(bird)
-		if inst.components.sleeper and inst.components.sleeper:IsAsleep() then
-			return "SLEEPING"
-		elseif hunger < 0.33 then
-			return "STARVING"
-		elseif hunger < 0.66 then
-			return "HUNGRY"
-		else
-			return "OCCUPIED"
-		end
+    if inst.CAGE_STATE == CAGE_STATES.EMPTY then
+        return "GENERIC"
+    elseif inst.CAGE_STATE == CAGE_STATES.FULL then
+        local bird = GetBird(inst)
+        local hunger = GetHunger(bird)
+        if inst.components.sleeper and inst.components.sleeper:IsAsleep() then
+            return "SLEEPING"
+        elseif hunger < 0.33 then
+            return "STARVING"
+        elseif hunger < 0.66 then
+            return "HUNGRY"
+        else
+            return "OCCUPIED"
+        end
 
-	elseif inst.CAGE_STATE == CAGE_STATES.DEAD then
-		return "DEAD"
-	elseif inst.CAGE_STATE == CAGE_STATES.SKELETON then
-		return "SKELETON"
-	end
+    elseif inst.CAGE_STATE == CAGE_STATES.DEAD then
+        return "DEAD"
+    elseif inst.CAGE_STATE == CAGE_STATES.SKELETON then
+        return "SKELETON"
+    end
 end
 
 local function fn()
@@ -453,52 +450,53 @@ local function fn()
         return inst
     end
 
-	inst:AddComponent("inspectable")
-	inst.components.inspectable.getstatus = GetStatus
+    inst:AddComponent("inspectable")
+    inst.components.inspectable.getstatus = GetStatus
 
-	inst:AddComponent("lootdropper")
+    inst:AddComponent("lootdropper")
 
-	inst:AddComponent("occupiable")
-	inst.components.occupiable.occupanttype = OCCUPANTTYPE.BIRD
-	inst.components.occupiable.onoccupied = OnOccupied
-	inst.components.occupiable.onemptied = OnEmptied
-	inst.components.occupiable.onperishfn = OnBirdStarve
+    inst:AddComponent("occupiable")
+    inst.components.occupiable.occupanttype = OCCUPANTTYPE.BIRD
+    inst.components.occupiable.onoccupied = OnOccupied
+    inst.components.occupiable.onemptied = OnEmptied
+    inst.components.occupiable.onperishfn = OnBirdStarve
 
-	inst:AddComponent("workable")
-	inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
-	inst.components.workable:SetWorkLeft(4)
-	inst.components.workable:SetOnFinishCallback(OnWorkFinished)
-	inst.components.workable:SetOnWorkCallback(OnWorked)
+    inst:AddComponent("workable")
+    inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
+    inst.components.workable:SetWorkLeft(4)
+    inst.components.workable:SetOnFinishCallback(OnWorkFinished)
+    inst.components.workable:SetOnWorkCallback(OnWorked)
 
-	inst:AddComponent("trader")
-	inst.components.trader:SetAcceptTest(ShouldAcceptItem)
-	inst.components.trader.onaccept = OnGetItem
-	inst.components.trader.onrefuse = OnRefuseItem
-	inst.components.trader:Disable()
+    inst:AddComponent("trader")
+    inst.components.trader:SetAcceptTest(ShouldAcceptItem)
+    inst.components.trader.onaccept = OnGetItem
+    inst.components.trader.onrefuse = OnRefuseItem
 
-	inst:AddComponent("inventory")
-	inst.components.inventory.maxslots = 1
+    inst.components.trader:Disable()
 
-	inst:AddComponent("shelf")
-	inst.components.shelf:SetOnShelfItem(OnGetShelfItem)
-	inst.components.shelf:SetOnTakeItem(OnLoseShelfItem)
+    inst:AddComponent("inventory")
+    inst.components.inventory.maxslots = 1
 
-	MakeSnowCovered(inst)
+    inst:AddComponent("shelf")
+    inst.components.shelf:SetOnShelfItem(OnGetShelfItem)
+    inst.components.shelf:SetOnTakeItem(OnLoseShelfItem)
 
-	inst:ListenForEvent("onbuilt", OnBuilt)
-	inst:ListenForEvent("gotosleep", GoToSleep)
-	inst:ListenForEvent("onwakeup", WakeUp)
+    MakeSnowCovered(inst)
 
-	inst.PlayStateAnim = PlayStateAnim
-	inst.CAGE_STATE = nil
-	SetCageState(inst, CAGE_STATES.EMPTY)
+    inst:ListenForEvent("onbuilt", OnBuilt)
+    inst:ListenForEvent("gotosleep", GoToSleep)
+    inst:ListenForEvent("onwakeup", WakeUp)
 
-	inst.OnSave = OnSave
-	inst.OnLoad = OnLoad
-	inst.OnLoadPostPass = OnLoadPostPass
+    inst.PlayStateAnim = PlayStateAnim
+    inst.CAGE_STATE = nil
+    SetCageState(inst, CAGE_STATES.EMPTY)
 
-	return inst
+    inst.OnSave = OnSave
+    inst.OnLoad = OnLoad
+    inst.OnLoadPostPass = OnLoadPostPass
+
+    return inst
 end
 
 return Prefab("common/birdcage", fn, assets, prefabs),
-		MakePlacer("common/birdcage_placer", "birdcage", "bird_cage", "idle_empty")
+    MakePlacer("common/birdcage_placer", "birdcage", "bird_cage", "idle_empty")

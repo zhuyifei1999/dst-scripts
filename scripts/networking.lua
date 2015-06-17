@@ -82,15 +82,21 @@ function OnTwitchChatStatusUpdate(status)
 end
 
 function ValidateSpawnPrefabRequest(prefab_name, skin_name)
-    local in_dst_char_list = table.contains(DST_CHARACTERLIST, prefab_name)
+    
     local in_mod_char_list = table.contains(MODCHARACTERLIST, prefab_name)
+    local valid_chars = ExceptionArrays(DST_CHARACTERLIST, MODCHARACTEREXCEPTIONS_DST)
+    local on_valid_char_list = table.contains(valid_chars, prefab_name)
+    
     --TODO: validate skin_name!
     --      second return value is the skin_name if it is valid,
     --      or nil for no skin
-    if in_dst_char_list then
+    
+    if on_valid_char_list then
         return prefab_name, skin_name
     elseif in_mod_char_list then
         return prefab_name, nil
+    elseif table.getn(valid_chars) > 0 then
+		return valid_chars[1], nil
     else
         return DST_CHARACTERLIST[1], nil
     end
@@ -436,7 +442,6 @@ function StartDedicatedServer()
 			print( "Overriding server save slot to: ", server_save_slot )
 			SaveGameIndex:SetCurrentIndex( server_save_slot )
 		end
-		
         -- Collect the tags we want and set the tags string
         local tags = BuildTagsStringDedicated()
         TheNet:SetServerTags(tags)

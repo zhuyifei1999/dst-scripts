@@ -514,6 +514,16 @@ local function chop_down_tree(inst, chopper)
             chance = TUNING.DECID_MONSTER_SPAWN_CHANCE_WINTER -- this should always be 0 (because barren trees can't become monsters), but is included in tuning values for consistency
         end
 
+        local chance_mod = TUNING.DECID_MONSTER_SPAWN_CHANCE_MOD[1]
+        for k,v in ipairs(TUNING.DECID_MONSTER_DAY_THRESHOLDS) do
+            if days_survived >= v then
+                chance_mod = TUNING.DECID_MONSTER_SPAWN_CHANCE_MOD[k+1]
+            else
+                break
+            end
+        end
+        chance = chance * chance_mod
+
         --print("Chance is ", chance, TheWorld.state.season)
         if math.random() <= chance then
             --print("Trying to spawn monster")

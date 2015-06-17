@@ -31,6 +31,7 @@ return {
 	ANNOUNCE_QUAKE = "The ground shakes. Will it swallow me whole?",
 	ANNOUNCE_THORNS = "Ow! Prickly, like me.",
 	ANNOUNCE_TORCH_OUT = "Darkness has returned!",
+    ANNOUNCE_FAN_OUT = "The fan has breathed it's last.",
     ANNOUNCE_COMPASS_OUT = "It feels the force of the earth no more.",
 	ANNOUNCE_TRAP_WENT_OFF = "Oh, goodness.",
 	ANNOUNCE_WORMHOLE = "I emerge into this world once more.",
@@ -228,6 +229,7 @@ return {
 		MOOSEEGG = "Not sure how a thing like that happens.",
 		MOSSLING = "A new life. The last thing anyone needs.",
 		FEATHERFAN = "That'll make quite a draft.",
+        MINIFAN = "When I am still, it is as lifeless as Abigail.",
 		GOOSE_FEATHER = "Plucked like Abigail was from me.",
 		STAFF_TORNADO = "Some weather out there.",
 		PIGHEAD = 
@@ -1105,6 +1107,7 @@ return {
 		TRINKET_7 = "Just a simple game.",
 		TRINKET_8 = "I wish I could take a bath.",
 		TRINKET_9 = "Mismatched buttons for a mismatched life.",
+		TRINKET_26 = "The potato is as hollow as I am.",
 		TRUNKVEST_SUMMER = "Skin to wear on my skin.",
 		TRUNKVEST_WINTER = "It may warm my body, but what of my spirit?",
 		TRUNK_COOKED = "It looks even worse now.",

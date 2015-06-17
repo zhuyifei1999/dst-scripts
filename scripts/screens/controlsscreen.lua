@@ -11,7 +11,7 @@ local Widget = require "widgets/widget"
 
 local PopupDialogScreen = require "screens/popupdialog"
 
-local OnlineStatus = require "widgets/onlinestatus"
+--local OnlineStatus = require "widgets/onlinestatus"
 
 local ScrollableList = require "widgets/scrollablelist"
 
@@ -216,9 +216,11 @@ local ControlsScreen = Class(Screen, function(self, in_game)
     self.fg:SetHAnchor(ANCHOR_MIDDLE)
     self.fg:SetScaleMode(SCALEMODE_FILLSCREEN)
 
+--[[
     self.onlinestatus = self.root:AddChild(OnlineStatus())
     self.onlinestatus:SetHAnchor(ANCHOR_RIGHT)
     self.onlinestatus:SetVAnchor(ANCHOR_BOTTOM)
+]]
 
     self.applybutton = self.root:AddChild(ImageButton("images/ui.xml", "button_large.tex", "button_large_over.tex", "button_large_disabled.tex", "button_large_onclick.tex"))
     self.applybutton:SetPosition(left_col+110, btn_height-2, 0)

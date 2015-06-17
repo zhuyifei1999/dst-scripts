@@ -3,11 +3,6 @@ local feather_assets =
     Asset("ANIM", "anim/fan.zip"),
 }
 
-local hand_assets =
-{
-    Asset("ANIM", "anim/fan.zip"),
-}
-
 local function OnUse(inst, target, cooling, radius)
     local coolingAmount = cooling
     local pos = target:GetPosition()
@@ -29,10 +24,6 @@ end
 
 local function OnUseFeather(inst, target)
     OnUse(inst, target, TUNING.FEATHERFAN_COOLING, TUNING.FEATHERFAN_RADIUS)
-end
-
-local function OnUseHand(inst, target)
-    OnUse(inst, target, TUNING.HANDFAN_COOLING, TUNING.HANDFAN_RADIUS)
 end
 
 local function common_fn(bank, build)

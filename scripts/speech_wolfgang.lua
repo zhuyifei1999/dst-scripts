@@ -54,6 +54,7 @@ return {
 	ANNOUNCE_INV_FULL = "My mighty arms can carry no more.",
 	ANNOUNCE_PECKED = "What I do to deserve this?",
 	ANNOUNCE_TORCH_OUT = "Oh no! The light is gone!",
+    ANNOUNCE_FAN_OUT = "Tiny fan is broken!",
     ANNOUNCE_COMPASS_OUT = "Little needle broke off!",
 	ANNOUNCE_WORMHOLE = "It makes me feel alive!",
 	ANNOUNCE_TRAP_WENT_OFF = "Ack! Do not surprise Wolfgang!",
@@ -250,6 +251,7 @@ return {
 		MOOSEEGG = "Breakfast for whole family!",
 		MOSSLING = "Mmmm. Is still breakfast, I think.",
 		FEATHERFAN = "Ha! Is as big as head!",
+        MINIFAN = "It's so twirly when I run! Haha!",
 		GOOSE_FEATHER = "Tickle tickle tickle!",
 		STAFF_TORNADO = "Spin and spin!",
 		PIGHEAD = 
@@ -1105,6 +1107,7 @@ return {
 		TRINKET_7 = "Is junk, I think.",
 		TRINKET_8 = "Is junk, I think.",
 		TRINKET_9 = "Is junk, I think.",
+		TRINKET_26 = "Is cup, I think.",
 		TRUNKVEST_SUMMER = "Is warm fuzzy nose.",
 		TRUNKVEST_WINTER = "I'm real cozy in this nose!",
 		TRUNK_COOKED = "Is cooked nose.",

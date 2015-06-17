@@ -1,50 +1,66 @@
 local EMOTES =
 {
     ["/wave"] =             { anim = { "emoteXL_waving1", "emoteXL_waving2" }, randomanim = true },
-    ["/waves"] =            { anim = { "emoteXL_waving1", "emoteXL_waving2" }, randomanim = true },
-    ["/goaway"] =           { anim = { "emoteXL_waving4", "emoteXL_waving3" }, randomanim = true },
+    ["/waves"] =            "/wave",
+
     ["/bye"] =              { anim = { "emoteXL_waving4", "emoteXL_waving3" }, randomanim = true },
-    ["/goodbye"] =          { anim = { "emoteXL_waving4", "emoteXL_waving3" }, randomanim = true },
+    ["/goaway"] =           "/bye",
+    ["/goodbye"] =          "/bye",
+
     ["/cheer"] =            { anim = "emoteXL_happycheer" },
-    ["/cheers"] =           { anim = "emoteXL_happycheer" },
-    ["/happy"] =            { anim = "emoteXL_happycheer" },
+    ["/cheers"] =           "/cheer",
+    ["/happy"] =            "/cheer",
+
     ["/angry"] =            { anim = "emoteXL_angry" },
-    ["/anger"] =            { anim = "emoteXL_angry" },
-    ["/grimace"] =          { anim = "emoteXL_angry" },
-    ["/grimaces"] =         { anim = "emoteXL_angry" },
-    ["/frustrate"] =        { anim = "emoteXL_angry" },
-    ["/frustrated"] =       { anim = "emoteXL_angry" },
-    ["/frustration"] =      { anim = "emoteXL_angry" },
-    ["/sad"] =              { anim = "emoteXL_sad", fx = "tears", fxoffset = { 0, -.8, 0 }, fxdelay = 17 * FRAMES },
-    ["/cry"] =              { anim = "emoteXL_sad", fx = "tears", fxoffset = { 0, -.8, 0 }, fxdelay = 17 * FRAMES },
-    ["/annoyed"] =          { anim = "emoteXL_annoyed" },
-    ["/annoy"] =            { anim = "emoteXL_annoyed" },
+    ["/anger"] =            "/angry",
+    ["/grimace"] =          "/angry",
+    ["/grimaces"] =         "/angry",
+    ["/frustrate"] =        "/angry",
+    ["/frustrated"] =       "/angry",
+    ["/frustration"] =      "/angry",
+
+    ["/cry"] =              { anim = "emoteXL_sad", fx = "tears", fxoffset = Vector3(0, -.8, 0), fxdelay = 17 * FRAMES },
+    ["/sad"] =              "/cry",
+
     ["/no"] =               { anim = "emoteXL_annoyed" },
-    ["/shakehead"] =        { anim = "emoteXL_annoyed" },
-    ["/shake"] =            { anim = "emoteXL_annoyed" },
-    ["/confuse"] =          { anim = "emoteXL_annoyed" },
-    ["/confused"] =         { anim = "emoteXL_annoyed" },
-    ["/click"] =            { anim = "research", fx = false },
-    ["/heelclick"] =        { anim = "research", fx = false },
-    ["/heels"] =            { anim = "research", fx = false },
+    ["/annoyed"] =          "/no",
+    ["/annoy"] =            "/no",
+    ["/shakehead"] =        "/no",
+    ["/shake"] =            "/no",
+    ["/confuse"] =          "/no",
+    ["/confused"] =         "/no",
+
     ["/joy"] =              { anim = "research", fx = false },
-    ["/celebrate"] =        { anim = "research", fx = false },
-    ["/celebration"] =      { anim = "research", fx = false },
-    ["/dance"] =            { anim = { "run_pre", "run_loop", "run_loop", "run_loop", "run_pst" } },
+    ["/click"] =            "/joy",
+    ["/heelclick"] =        "/joy",
+    ["/heels"] =            "/joy",
+    ["/celebrate"] =        "/joy",
+    ["/celebration"] =      "/joy",
+
+    ["/dance"] =            { anim = { "emoteXL_pre_dance0", "emoteXL_loop_dance0" }, loop = true, fx = false },
+
     ["/bonesaw"] =          { anim = "emoteXL_bonesaw" },
-    ["/ready"] =            { anim = "emoteXL_bonesaw" },
-    ["/goingnowhere"] =     { anim = "emoteXL_bonesaw" },
-    ["/playtime"] =         { anim = "emoteXL_bonesaw" },
-    ["/threeminutes"] =     { anim = "emoteXL_bonesaw" },
+    ["/ready"] =            "/bonesaw",
+    ["/goingnowhere"] =     "/bonesaw",
+    ["/playtime"] =         "/bonesaw",
+    ["/threeminutes"] =     "/bonesaw",
+
     ["/facepalm"] =         { anim = "emoteXL_facepalm" },
-    ["/doh"] =              { anim = "emoteXL_facepalm" },
-    ["/slapintheface"] =    { anim = "emoteXL_facepalm" },
+    ["/doh"] =              "/facepalm",
+    ["/slapintheface"] =    "/facepalm",
+
     ["/kiss"] =             { anim = "emoteXL_kiss" },
-    ["/blowkiss"] =         { anim = "emoteXL_kiss" },
-    ["/smooch"] =           { anim = "emoteXL_kiss" },
-    ["/mwa"] =              { anim = "emoteXL_kiss" },
-    ["/mwah"] =             { anim = "emoteXL_kiss" },
+    ["/blowkiss"] =         "/kiss",
+    ["/smooch"] =           "/kiss",
+    ["/mwa"] =              "/kiss",
+    ["/mwah"] =             "/kiss",
 }
+
+for k, v in pairs(EMOTES) do
+    if type(v) == "string" then
+        EMOTES[k] = EMOTES[v]
+    end
+end
 
 local REGEX_EMOTES =
 {

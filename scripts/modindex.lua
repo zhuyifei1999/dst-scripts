@@ -34,11 +34,7 @@ known_mods = {
 --]]
 
 function ModIndex:GetModIndexName()
-	local name = "modindex" 
-	if BRANCH ~= "release" then
-		name = name .. "_"..BRANCH
-	end
-	return name
+    return BRANCH ~= "dev" and "modindex" or ("modindex_"..BRANCH)
 end
 
 function ModIndex:GetModConfigurationPath(modname)

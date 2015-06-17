@@ -49,5 +49,6 @@ local ret = {}
 for k =1,NUM_TRINKETS do
     table.insert(ret, MakeTrinket(k))
 end
+table.insert(ret, MakeTrinket(26)) --potato cup
 
 return unpack(ret)

@@ -8,7 +8,7 @@ local Image = require "widgets/image"
 local Widget = require "widgets/widget"
 local Levels = require "map/levels"
 
-local OnlineStatus = require "widgets/onlinestatus"
+--local OnlineStatus = require "widgets/onlinestatus"
 
 local ScrollableList = require "widgets/scrollablelist"
 
@@ -179,11 +179,11 @@ local MorgueScreen = Class(Screen, function(self, in_game)
     self.fg:SetVAnchor(ANCHOR_MIDDLE)
     self.fg:SetHAnchor(ANCHOR_MIDDLE)
     self.fg:SetScaleMode(SCALEMODE_FILLSCREEN)
-
+--[[
     self.onlinestatus = self.fg:AddChild(OnlineStatus())
     self.onlinestatus:SetHAnchor(ANCHOR_RIGHT)
     self.onlinestatus:SetVAnchor(ANCHOR_BOTTOM)  
-
+]]
     if not Input:ControllerAttached() then
         self.OK_button = self.root:AddChild(ImageButton("images/ui.xml", "button_large.tex", "button_large_over.tex", "button_large_disabled.tex", "button_large_onclick.tex"))
         self.OK_button:SetScale(.75)

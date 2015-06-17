@@ -426,7 +426,7 @@ end
 ----------------------------
 
 function PlayerProfile:GetSaveName()
-    return BRANCH == "release" and "profile" or "profile_"..BRANCH
+    return BRANCH ~= "dev" and "profile" or ("profile_"..BRANCH)
 end
 
 function PlayerProfile:Save(callback)

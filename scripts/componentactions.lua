@@ -218,11 +218,11 @@ local COMPONENT_ACTIONS =
         end,
 
         dryable = function(inst, doer, target, actions)
-        	if not target:HasTag("burnt") then 
-	            if target:HasTag("candry") and inst:HasTag("dryable") then
-	                table.insert(actions, ACTIONS.DRY)
-	            end
-	        end
+            if not target:HasTag("burnt") then 
+                if target:HasTag("candry") and inst:HasTag("dryable") then
+                    table.insert(actions, ACTIONS.DRY)
+                end
+            end
         end,
 
         edible = function(inst, doer, target, actions, right)
@@ -399,12 +399,12 @@ local COMPONENT_ACTIONS =
         end,
 
         smotherer = function(inst, doer, target, actions)
-        	if target:HasTag("smolder") then
-		        table.insert(actions, ACTIONS.SMOTHER)
-		    elseif inst:HasTag("frozen") and target:HasTag("fire") then
-		    	table.insert(actions, ACTIONS.MANUALEXTINGUISH)
-		    end
-		end,
+            if target:HasTag("smolder") then
+                table.insert(actions, ACTIONS.SMOTHER)
+            elseif inst:HasTag("frozen") and target:HasTag("fire") then
+                table.insert(actions, ACTIONS.MANUALEXTINGUISH)
+            end
+        end,
 
         stackable = function(inst, doer, target, actions)
             if inst.prefab == target.prefab and
@@ -591,18 +591,18 @@ local COMPONENT_ACTIONS =
         end,
 
         weapon = function(inst, doer, target, actions, right)
-		    if not right 
-		    	and doer.replica.combat ~= nil
-		        and inst:HasTag("extinguisher")
-		        and (target:HasTag("smolder") or target:HasTag("fire")) then
-		        table.insert(actions, ACTIONS.ATTACK)
-		    elseif not right 
-		    	and doer.replica.combat ~= nil
-		        and inst:HasTag("rangedlighter")
-		        and target:HasTag("canlight")
-		        and not target:HasTag("fire")
-		        and not target:HasTag("burnt") then
-		        table.insert(actions, ACTIONS.ATTACK)
+            if not right 
+                and doer.replica.combat ~= nil
+                and inst:HasTag("extinguisher")
+                and (target:HasTag("smolder") or target:HasTag("fire")) then
+                table.insert(actions, ACTIONS.ATTACK)
+            elseif not right 
+                and doer.replica.combat ~= nil
+                and inst:HasTag("rangedlighter")
+                and target:HasTag("canlight")
+                and not target:HasTag("fire")
+                and not target:HasTag("burnt") then
+                table.insert(actions, ACTIONS.ATTACK)
             elseif not right 
                 and doer.replica.combat ~= nil
                 and target.replica.combat ~= nil
@@ -629,9 +629,10 @@ local COMPONENT_ACTIONS =
 
     INVENTORY = --args: inst, doer, actions, right
     {
-
         balloonmaker = function(inst, doer, actions)
-            table.insert(actions, ACTIONS.MAKEBALLOON)
+            if doer:HasTag("balloonomancer") then
+                table.insert(actions, ACTIONS.MAKEBALLOON)
+            end
         end,
 
         book = function(inst, doer, actions)
@@ -641,12 +642,12 @@ local COMPONENT_ACTIONS =
         end,
 
         container = function(inst, doer, actions)
-        	if not inst:HasTag("burnt") then 
-	            if inst.replica.container:CanBeOpened() and doer.replica.inventory ~= nil and
-	                not (doer.HUD ~= nil and inst.replica.container:IsSideWidget() and TheInput:ControllerAttached()) then
-	                table.insert(actions, ACTIONS.RUMMAGE)
-	            end
-	        end
+            if not inst:HasTag("burnt") then 
+                if inst.replica.container:CanBeOpened() and doer.replica.inventory ~= nil and
+                    not (doer.HUD ~= nil and inst.replica.container:IsSideWidget() and TheInput:ControllerAttached()) then
+                    table.insert(actions, ACTIONS.RUMMAGE)
+                end
+            end
         end,
 
         deployable = function(inst, doer, actions)
@@ -812,7 +813,6 @@ local function RemapComponentActions()
 end
 RemapComponentActions()
 
-
 local MOD_COMPONENT_ACTIONS = {}
 local MOD_ACTION_COMPONENT_NAMES = {}
 local MOD_ACTION_COMPONENT_IDS = {}
@@ -820,15 +820,15 @@ local MOD_ACTION_COMPONENT_IDS = {}
 function AddComponentAction(actiontype, component, fn, modname)
     --ensure this mod is setup in the tables
     if MOD_COMPONENT_ACTIONS[modname] == nil then
-		MOD_COMPONENT_ACTIONS[modname] = {}
-		MOD_ACTION_COMPONENT_NAMES[modname] = {}
-		MOD_ACTION_COMPONENT_IDS[modname] = {}
+        MOD_COMPONENT_ACTIONS[modname] = {}
+        MOD_ACTION_COMPONENT_NAMES[modname] = {}
+        MOD_ACTION_COMPONENT_IDS[modname] = {}
     end
-    
+
     if MOD_COMPONENT_ACTIONS[modname][actiontype] == nil then
-		MOD_COMPONENT_ACTIONS[modname][actiontype] = {}
+        MOD_COMPONENT_ACTIONS[modname][actiontype] = {}
     end
-    
+
     MOD_COMPONENT_ACTIONS[modname][actiontype][component] = fn
     table.insert(MOD_ACTION_COMPONENT_NAMES[modname], component)
     MOD_ACTION_COMPONENT_IDS[modname][component] = #MOD_ACTION_COMPONENT_NAMES[modname]
@@ -842,26 +842,26 @@ function EntityScript:RegisterComponentActions(name)
             self.actionreplica.actioncomponents:set(self.actioncomponents)
         end
     end
-    
-	for modname,modtable in pairs(MOD_ACTION_COMPONENT_IDS) do
-		id = modtable[name]
-		if id ~= nil then
-			--found this component in this mod's table
-			if self.modactioncomponents == nil then
-				self.modactioncomponents = {}
-				--print("on ", self, " adding self.modactioncomponents")
-			end				    
-			if self.modactioncomponents[modname] == nil then
-				self.modactioncomponents[modname] = {}
-				--print("on ", self, " adding self.modactioncomponents[",modname,"]")
-			end
-			--print("Adding to self.modactioncomponents[",modname,"] ",id)
-			table.insert( self.modactioncomponents[modname], id )
-			if self.actionreplica ~= nil then
-				self.actionreplica.modactioncomponents[modname]:set(self.modactioncomponents[modname])
-			end
-		end
-	end
+
+    for modname,modtable in pairs(MOD_ACTION_COMPONENT_IDS) do
+        id = modtable[name]
+        if id ~= nil then
+            --found this component in this mod's table
+            if self.modactioncomponents == nil then
+                self.modactioncomponents = {}
+                --print("on ", self, " adding self.modactioncomponents")
+            end
+            if self.modactioncomponents[modname] == nil then
+                self.modactioncomponents[modname] = {}
+                --print("on ", self, " adding self.modactioncomponents[",modname,"]")
+            end
+            --print("Adding to self.modactioncomponents[",modname,"] ",id)
+            table.insert( self.modactioncomponents[modname], id )
+            if self.actionreplica ~= nil then
+                self.actionreplica.modactioncomponents[modname]:set(self.modactioncomponents[modname])
+            end
+        end
+    end
 end
 
 function EntityScript:UnregisterComponentActions(name)
@@ -877,20 +877,20 @@ function EntityScript:UnregisterComponentActions(name)
             end
         end
     else
-		for modname,modtable in pairs(MOD_ACTION_COMPONENT_IDS) do
-			id = modtable[name]
-			if id ~= nil then
-				for i, v in ipairs(self.modactioncomponents[modname]) do
-					if v == id then
-						table.remove(self.modactioncomponents[modname], i)
-						if self.actionreplica ~= nil then
-							self.actionreplica.modactioncomponents[modname]:set(self.modactioncomponents[modname])
-						end
-						return
-					end
-				end
-			end
-		end
+        for modname,modtable in pairs(MOD_ACTION_COMPONENT_IDS) do
+            id = modtable[name]
+            if id ~= nil then
+                for i, v in ipairs(self.modactioncomponents[modname]) do
+                    if v == id then
+                        table.remove(self.modactioncomponents[modname], i)
+                        if self.actionreplica ~= nil then
+                            self.actionreplica.modactioncomponents[modname]:set(self.modactioncomponents[modname])
+                        end
+                        return
+                    end
+                end
+            end
+        end
     end
 end
 
@@ -904,27 +904,27 @@ function EntityScript:CollectActions(type, ...)
             end
         end
         if self.modactioncomponents ~= nil then
-			--print("EntityScript:CollectActions on ", self)
-			for modname,modtable in pairs(self.modactioncomponents) do
-				--print("modname ",modname, #modtable)
-				if MOD_COMPONENT_ACTIONS[modname] == nil then
-					print( "ERROR: Mod component actions are out of sync for mod " .. (modname or "unknown") .. ". This is likely a result of your mod's calls to AddComponentAction not happening on both the server and the client." )
-					print( "self.modactioncomponents is\n" .. (dumptable(self.modactioncomponents) or "") )
-					print( "MOD_COMPONENT_ACTIONS is\n" .. (dumptable(MOD_COMPONENT_ACTIONS) or "") )
-				end
-				t = MOD_COMPONENT_ACTIONS[modname][type]
-				if t ~= nil then
-					for i, v in ipairs(modtable) do
-						local collector = t[MOD_ACTION_COMPONENT_NAMES[modname][v]]
-						if collector ~= nil then
-							collector(self, ...)
-						end
-					end
-				end
-			end
+            --print("EntityScript:CollectActions on ", self)
+            for modname,modtable in pairs(self.modactioncomponents) do
+                --print("modname ",modname, #modtable)
+                if MOD_COMPONENT_ACTIONS[modname] == nil then
+                    print( "ERROR: Mod component actions are out of sync for mod " .. (modname or "unknown") .. ". This is likely a result of your mod's calls to AddComponentAction not happening on both the server and the client." )
+                    print( "self.modactioncomponents is\n" .. (dumptable(self.modactioncomponents) or "") )
+                    print( "MOD_COMPONENT_ACTIONS is\n" .. (dumptable(MOD_COMPONENT_ACTIONS) or "") )
+                end
+                t = MOD_COMPONENT_ACTIONS[modname][type]
+                if t ~= nil then
+                    for i, v in ipairs(modtable) do
+                        local collector = t[MOD_ACTION_COMPONENT_NAMES[modname][v]]
+                        if collector ~= nil then
+                            collector(self, ...)
+                        end
+                    end
+                end
+            end
         end
     else
-		print("Type ",type," doesn't exist in the table of component actions. Is your component name correct in AddComponentAction?")
+        print("Type ",type," doesn't exist in the table of component actions. Is your component name correct in AddComponentAction?")
     end
 end
 
@@ -939,18 +939,18 @@ function EntityScript:IsActionValid(action, right)
             return true
         end
     end
-    
+
     if self.modactioncomponents ~= nil then
-		for modname,modtable in ipairs(self.modactioncomponents) do
-			t = MOD_COMPONENT_ACTIONS[modname][type]
-			for i, v in ipairs(modtable) do
-				local vaildator = t[MOD_ACTION_COMPONENT_NAMES[modname][v]]
-				if vaildator ~= nil and vaildator(self, action, right) then
-					return true
-				end
-			end
-		end
-	end
+        for modname,modtable in ipairs(self.modactioncomponents) do
+            t = MOD_COMPONENT_ACTIONS[modname][type]
+            for i, v in ipairs(modtable) do
+                local vaildator = t[MOD_ACTION_COMPONENT_NAMES[modname][v]]
+                if vaildator ~= nil and vaildator(self, action, right) then
+                    return true
+                end
+            end
+        end
+    end
 end
 
 function EntityScript:HasActionComponent(name)
@@ -961,17 +961,17 @@ function EntityScript:HasActionComponent(name)
                 return true
             end
         end
-	else
-		for modname,modtable in pairs(MOD_ACTION_COMPONENT_IDS) do
-			id = modtable[name]
-			if id ~= nil then
-				for i, v in ipairs(self.modactioncomponents[modname]) do
-					if v == id then
-						return true
-					end
-				end
-			end
-		end
+    else
+        for modname,modtable in pairs(MOD_ACTION_COMPONENT_IDS) do
+            id = modtable[name]
+            if id ~= nil then
+                for i, v in ipairs(self.modactioncomponents[modname]) do
+                    if v == id then
+                        return true
+                    end
+                end
+            end
+        end
     end
     return false
 end

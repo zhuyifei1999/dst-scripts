@@ -101,6 +101,7 @@ return {
 	ANNOUNCE_THORNS = "Ow!",
 	ANNOUNCE_BURNT = "Yikes! That was hot!",
 	ANNOUNCE_TORCH_OUT = "My light just ran out!",
+	ANNOUNCE_FAN_OUT = "My fan is gone with the wind.",
     ANNOUNCE_COMPASS_OUT = "This compass doesn't point anymore.",
 	ANNOUNCE_TRAP_WENT_OFF = "Oops.",
 	ANNOUNCE_UNIMPLEMENTED = "OW! I don't think it's ready yet.",
@@ -957,6 +958,7 @@ return {
 		MOOSEEGG = "Its contents are like excited electrons trying to escape.",
 		MOSSLING = "Aaah! You are definitely not an electron!",
 		FEATHERFAN = "Down to bring my temperature down.",
+        MINIFAN = "Somehow the breeze comes out the back twice as fast.",
 		GOOSE_FEATHER = "Fluffy!",
 		STAFF_TORNADO = "Spinning doom.",
 		MOSQUITO =
@@ -1277,6 +1279,7 @@ return {
 		TRINKET_7 = "I have no time for fun and games!",
 		TRINKET_8 = "Great. All of my tub stopping needs are met.",
 		TRINKET_9 = "I'm more of a zipper person, myself.",
+		TRINKET_26 = "Food and a cup! The ultimate survival container.",
 		TRUNKVEST_SUMMER = "Wilderness casual.",
 		TRUNKVEST_WINTER = "Winter survival gear.",
 		TRUNK_COOKED = "Somehow even more nasal than before.",

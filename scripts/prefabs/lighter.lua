@@ -101,6 +101,7 @@ local function OnHaunt(inst, haunter)
     return false
 end
 
+
 local function fn()
     local inst = CreateEntity()
 

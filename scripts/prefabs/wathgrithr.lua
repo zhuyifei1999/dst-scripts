@@ -39,6 +39,7 @@ local function IsValidVictim(victim)
         and not (victim:HasTag("prey") or
                 victim:HasTag("veggie") or
                 victim:HasTag("structure") or
+                victim:HasTag("wall") or
                 victim:HasTag("companion"))
         and victim.components.health ~= nil
         and victim.components.combat ~= nil

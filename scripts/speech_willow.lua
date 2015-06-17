@@ -44,6 +44,7 @@ return {
 	},
 	ANNOUNCE_PECKED = "No! Bad birdy!",
 	ANNOUNCE_TORCH_OUT = "My precious light is gone!",
+    ANNOUNCE_FAN_OUT = "Stupid thing broke!",
     ANNOUNCE_COMPASS_OUT = "Arrgh the needle is stuck!",
 	ANNOUNCE_WORMHOLE = "I'll have to burn these clothes!",
 	ANNOUNCE_TRAP_WENT_OFF = "Aah!",
@@ -236,6 +237,7 @@ return {
 		MOOSEEGG = "It's huuuuge!",
 		MOSSLING = "Its feathers are frazzled.",
 		FEATHERFAN = "I donno... it could put out some fires....",
+        MINIFAN = "No fun, making me exercise to stay cool!",
 		GOOSE_FEATHER = "So snuggly!",
 		STAFF_TORNADO = "Always wwirling! Swirling towards destruction!",
 		PIGHEAD = 
@@ -1135,6 +1137,7 @@ return {
 		TRINKET_7 = "Fire is more fun.",
 		TRINKET_8 = "I've never liked bathing with water.",
 		TRINKET_9 = "You can strike a match on a zipper, but not on buttons.",
+		TRINKET_26 = "I would have roasted it.",
 		TRUNKVEST_SUMMER = "Now I'll be with my friend forever.",
 		TRUNKVEST_WINTER = "Not as warm as a good fire, but still pretty good!",
 		TRUNK_COOKED = "I'm still not sure I want to eat this.",

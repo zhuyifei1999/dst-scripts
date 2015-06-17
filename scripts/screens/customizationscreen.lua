@@ -14,7 +14,7 @@ local PopupDialogScreen = require "screens/popupdialog"
 local BigPopupDialogScreen = require "screens/bigpopupdialog"
 
 local ScrollableList = require "widgets/scrollablelist"
-local OnlineStatus = require "widgets/onlinestatus"
+--local OnlineStatus = require "widgets/onlinestatus"
 
 local levels = require "map/levels"
 local customise = nil
@@ -101,11 +101,11 @@ local CustomizationScreen = Class(Screen, function(self, profile, cb, defaults, 
     self.fg:SetVAnchor(ANCHOR_MIDDLE)
     self.fg:SetHAnchor(ANCHOR_MIDDLE)
     self.fg:SetScaleMode(SCALEMODE_FILLSCREEN)
-
+--[[
     self.onlinestatus = self.fg:AddChild(OnlineStatus())
     self.onlinestatus:SetHAnchor(ANCHOR_RIGHT)
     self.onlinestatus:SetVAnchor(ANCHOR_BOTTOM)
-
+]]
     self.clickroot = self:AddChild(Widget("clickroot"))
     self.clickroot:SetVAnchor(ANCHOR_MIDDLE)
     self.clickroot:SetHAnchor(ANCHOR_MIDDLE)

@@ -62,6 +62,7 @@ return {
 	ANNOUNCE_SHELTER = "Aha! Shelter!",
 	ANNOUNCE_THORNS = "Arg, I've been poked!",
 	ANNOUNCE_TORCH_OUT = "My light is quenched!",
+    ANNOUNCE_FAN_OUT = "I've lost another fan!",
     ANNOUNCE_COMPASS_OUT = "I fear I'm going to lose my way!",
 	ANNOUNCE_TRAP_WENT_OFF = "That wasn't part of the plan.",
 	ANNOUNCE_UNIMPLEMENTED = "It is not of this world.",
@@ -809,6 +810,7 @@ return {
 		MOOSEEGG = "Something is bouncing around inside.",
 		MOSSLING = "You are not large enough to be a steed.",
 		FEATHERFAN = "The luxuries of camp, on the go.",
+        MINIFAN = "What a delicate prop.",
 		GOOSE_FEATHER = "A shieldmaiden deserves a soft bed of dunn.",
 		STAFF_TORNADO = "A storm of pain.",
 		MOSQUITO =
@@ -1133,6 +1135,7 @@ return {
 		TRINKET_7 = "No time for games! There is battle at hand!",
 		TRINKET_8 = "It would make an okay weapon in a pinch.",
 		TRINKET_9 = "No decent armour can be made with these.",
+		TRINKET_26 = "A cup for a long march.",
 		TRUNKVEST_SUMMER = "It will not suffice in the frozen wastes.",
 		TRUNKVEST_WINTER = "The warm pelt of a bested creature. A fine garment.",
 		TRUNK_COOKED = "A juicy reward after a hard battle.",

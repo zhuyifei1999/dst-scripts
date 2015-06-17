@@ -22,7 +22,7 @@ local ScrollableList = require "widgets/scrollablelist"
 local ServerCreationScreen = require "screens/servercreationscreen"
 local CustomizationScreen = require "screens/customizationscreen"
 
-local OnlineStatus = require "widgets/onlinestatus"
+--local OnlineStatus = require "widgets/onlinestatus"
 
 require("constants")
 
@@ -129,11 +129,11 @@ local ServerListingScreen = Class(Screen, function(self, filters, cb, customopti
     self:MakeMenuButtons(left_col, right_col)
 
     self:MakeFiltersPanel(filters)
-
+--[[
     self.onlinestatus = self.root:AddChild(OnlineStatus())
     self.onlinestatus:SetHAnchor(ANCHOR_RIGHT)
     self.onlinestatus:SetVAnchor(ANCHOR_BOTTOM)
-    
+]]    
     self:UpdateServerInformation(false)
     self:ToggleShowFilters()
 
@@ -1034,7 +1034,7 @@ function ServerListingScreen:IsValidWithFilters(server)
 	 
     -- Hide version mismatched servers on live builds
     local version_mismatch = APP_VERSION ~= tostring(server.version)
-    local dev_build = APP_VERSION == "-1" or BRANCH ~= "release"
+    local dev_build = APP_VERSION == "-1" or BRANCH == "dev"
     if version_mismatch and not dev_build then
         valid = false
     end

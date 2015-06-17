@@ -102,9 +102,8 @@ local LobbyScreen = Class(Screen, function(self, profile, cb, no_backbutton, def
 		self.randomcharbutton:SetOnClick(
 			function()
 				self.randomcharbutton:Disable()
-				local all_chars = GetActiveCharacterList()
-				local rand_char = all_chars[math.random(#all_chars)]
 				if self.cb ~= nil then
+                    local rand_char = self.characters[math.random(#self.characters)]
 					self.cb(rand_char, nil) --2nd parameter is skin
 				end
 			end
@@ -113,7 +112,6 @@ local LobbyScreen = Class(Screen, function(self, profile, cb, no_backbutton, def
 		self.randomcharbutton:SetTextSize(40)
 		self.randomcharbutton.text:SetColour(0,0,0,1)
 		self.randomcharbutton:SetPosition( 820 - 83 + adjust, 75, 0)
-
 
 		if not no_backbutton then
 		
@@ -131,7 +129,7 @@ local LobbyScreen = Class(Screen, function(self, profile, cb, no_backbutton, def
 		end
 	end
     
-	self.characters = GetActiveCharacterList()
+	self.characters = JoinArrays(ExceptionArrays(DST_CHARACTERLIST, MODCHARACTEREXCEPTIONS_DST), MODCHARACTERLIST)
 
 	self.portrait_bgs = {}
 
@@ -283,9 +281,8 @@ function LobbyScreen:OnControl(control, down)
     end
 
     if not down and control == CONTROL_MENU_MISC_2 then
-        local all_chars = GetActiveCharacterList()
-        local rand_char = all_chars[math.random(#all_chars)]
         if self.cb ~= nil then
+            local rand_char = self.characters[math.random(#self.characters)]
             self.cb(rand_char, nil) --2nd parameter is skin
         end
         return true
@@ -369,8 +366,7 @@ function LobbyScreen:SelectPortrait(portrait)
 	end
 
 	if character ~= nil then
-		local charlist = GetActiveCharacterList()
-		if table.contains(charlist, character) then
+		if table.contains(self.characters, character) then
 			self.heroportait:SetTexture("bigportraits/"..character..".xml", character..".tex")
 		end
 		self.currentcharacter = character

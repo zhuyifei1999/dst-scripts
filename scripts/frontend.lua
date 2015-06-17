@@ -844,7 +844,7 @@ function FrontEnd:OnMouseButton(button, down, x, y)
 		if self.screenstack[#self.screenstack]:OnMouseButton(button, down, x, y) then return true end
 	end
 
-	if BRANCH ~= "release" and PLATFORM ~= "NACL" and CHEATS_ENABLED then
+	if BRANCH == "dev" and PLATFORM ~= "NACL" and CHEATS_ENABLED then
 		return DoDebugMouse(button, down, x, y)
 	end
 end
@@ -1000,4 +1000,51 @@ end
 
 function FrontEnd:GetIsOfflineMode()
 	return self.offline
+end
+
+function FrontEnd:FindLengthForTruncatedString(str, font, size, maxwidth)
+    if str and maxwidth and font and size then
+        local tempStr = Text(font, size, str)
+
+        local len = str:len()
+        while tempStr:GetRegionSize() > maxwidth do
+            str = str:sub(1, str:len() - 1)
+            tempStr:SetString(str)
+        end
+        len = str:len()
+
+        tempStr:Kill()
+
+        return len
+    else
+        return str and str:len() or 1
+    end
+end
+
+function FrontEnd:GetTruncatedString(str, font, size, maxwidth, maxchars, ellipses)
+	if str and font and size and (maxwidth or maxchars) then
+		local ret = str
+		local tempStr = Text(font, size, str)
+
+		ellipses = ellipses and "..." or ""
+	    if maxchars ~= nil and str:len() > maxchars then
+	        str = str:sub(1, maxchars)
+	        tempStr:SetString(str..ellipses)
+	    else
+	        tempStr:SetString(str)
+	    end
+	    if maxwidth ~= nil then
+	        while tempStr:GetRegionSize() > maxwidth do
+	            str = str:sub(1, str:len() - 1)
+	            tempStr:SetString(str..ellipses)
+	        end
+	    end
+
+	    ret = tempStr:GetString()
+	    tempStr:Kill()
+
+	    return ret
+	else
+		return "ERROR: NEED STRING, FONT AND SIZE TO GET TRUNCATED STRING"
+	end
 end
