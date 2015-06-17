@@ -1124,6 +1124,7 @@ return {
 		TRINKET_10 = "Just like grandpa wears!.",
 		TRINKET_11 = "Beep boop!",
 		TRINKET_12 = "Feels leathery.",
+		TRINKET_26 = "You're my cuppy cup!",
 		TRUNKVEST_SUMMER = "It's so puffy!",
 		TRUNKVEST_WINTER = "It'll keep us from catching a cold.",
 		TRUNK_COOKED = "Looks filling!",

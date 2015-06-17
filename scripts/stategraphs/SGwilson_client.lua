@@ -73,6 +73,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.ADDWETFUEL, "doshortaction"),
     ActionHandler(ACTIONS.REPAIR, "dolongaction"),
     ActionHandler(ACTIONS.READ, "book"),
+    ActionHandler(ACTIONS.MAKEBALLOON, "makeballoon"),
     ActionHandler(ACTIONS.DEPLOY, "doshortaction"),
     ActionHandler(ACTIONS.STORE, "doshortaction"),
     ActionHandler(ACTIONS.DROP, "doshortaction"),
@@ -904,7 +905,51 @@ local states =
         name = "dolongaction",
         tags = { "doing", "busy" },
 
-        onenter = function(inst, timeout)
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.SoundEmitter:PlaySound("dontstarve/wilson/make_trap", "make_preview")
+            inst.AnimState:PlayAnimation("build_pre")
+            inst.AnimState:PushAnimation("build_loop", true)
+
+            inst:PerformPreviewBufferedAction()
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        timeline =
+        {
+            TimeEvent(4 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
+        },
+
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.AnimState:PlayAnimation("build_pst")
+                inst.sg:GoToState("idle", true)
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.AnimState:PlayAnimation("build_pst")
+            inst.sg:GoToState("idle", true)
+        end,
+        
+        onexit = function(inst)
+            inst.SoundEmitter:KillSound("make_preview")
+        end,
+    },
+
+    State
+    {
+        name = "makeballoon",
+        tags = { "doing", "busy" },
+
+        onenter = function(inst)
             inst.components.locomotor:Stop()
             inst.SoundEmitter:PlaySound("dontstarve/wilson/make_trap", "make_preview")
             inst.AnimState:PlayAnimation("build_pre")

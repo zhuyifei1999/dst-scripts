@@ -54,13 +54,13 @@ local function onuse(inst)
 end
 
 local function onequip(inst, owner) 
-    owner.AnimState:OverrideSymbol("swap_body", "armor_slurtleshell", "swap_body")
+    owner.AnimState:OverrideSymbol("swap_body_tall", "armor_slurtleshell", "swap_body_tall")
     inst:ListenForEvent("blocked", OnBlocked, owner)
     inst:ListenForEvent("newstate", ProtectionLevels, owner) 
 end
 
 local function onunequip(inst, owner)
-    owner.AnimState:ClearOverrideSymbol("swap_body")
+    owner.AnimState:ClearOverrideSymbol("swap_body_tall")
     inst:RemoveEventCallback("blocked", OnBlocked, owner)
     inst:RemoveEventCallback("newstate", ProtectionLevels, owner)
 

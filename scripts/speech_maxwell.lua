@@ -1087,6 +1087,7 @@ return {
 		TRINKET_7 = "This was important to someone once.",
 		TRINKET_8 = "This was important to someone once.",
 		TRINKET_9 = "This was important to someone once.",
+		TRINKET_26 = "This was important to one very specific person once.",
 		TRUNKVEST_SUMMER = "It's more of a fall vest.",
 		TRUNKVEST_WINTER = "It's so hard to look fashionable in the winter.",
 		TRUNK_COOKED = "At least the mucus burned off.",

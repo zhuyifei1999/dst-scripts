@@ -1971,27 +1971,46 @@ local states =
 
     State{
         name = "makeballoon",
-        tags = { "doing", "nopredict" },
+        tags = { "doing", "busy" },
 
         onenter = function(inst, timeout)
+            inst.sg.statemem.action = inst.bufferedaction
             inst.sg:SetTimeout(timeout or 1)
             inst.components.locomotor:Stop()
             inst.SoundEmitter:PlaySound("dontstarve/common/balloon_make", "make")
             inst.SoundEmitter:PlaySound("dontstarve/common/balloon_blowup")
-            
             inst.AnimState:PlayAnimation("build_pre")
             inst.AnimState:PushAnimation("build_loop", true)
         end,
 
+        timeline =
+        {
+            TimeEvent(4 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
+        },
+
         ontimeout = function(inst)
+            inst.SoundEmitter:KillSound("make")
             inst.AnimState:PlayAnimation("build_pst")
-            inst.sg:GoToState("idle", false)
-            inst:PerformBufferedAction()
-        
+            inst:PerformBufferedAction()        
         end,
+
+        events =
+        {
+            EventHandler("animqueueover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
 
         onexit = function(inst)
             inst.SoundEmitter:KillSound("make")
+            if inst.bufferedaction == inst.sg.statemem.action then
+                inst:ClearBufferedAction()
+            end
+            inst.sg.statemem.action = nil
         end,
     },
 

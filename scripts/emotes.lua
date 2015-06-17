@@ -1,12 +1,3 @@
-local function PlayClapFX(inst)
-    local fx = SpawnPrefab("impact")
-    if fx ~= nil then
-        local x, y, z = inst.Transform:GetWorldPosition()
-        fx.Transform:SetPosition(x, y + .95, z)
-        fx.Transform:SetScale(.65, .65, .65)
-    end
-end
-
 local EMOTES =
 {
     ["/wave"] =             { anim = { "emoteXL_waving1", "emoteXL_waving2" }, randomanim = true },
@@ -46,23 +37,7 @@ local EMOTES =
     ["/celebrate"] =        "/joy",
     ["/celebration"] =      "/joy",
 
-    ["/dance"] =            {
-                                anim =
-                                {
-                                    { "emoteXL_pre_dance1", "emoteXL_loop_dance1" },
-                                    "emoteXL_dance2",
-                                    { "emoteXL_pre_dance4", "emoteXL_loop_dance4" },
-                                    { "emoteXL_pre_dance5", "emoteXL_loop_dance5" },
-                                    { "emoteXL_pre_dance6", "emoteXL_loop_dance6" },
-                                    { "emoteXL_pre_dance7", "emoteXL_loop_dance7" },
-                                    { "emoteXL_pre_dance8", "emoteXL_loop_dance8" },
-                                },
-                                randomanim = true,
-                                loop = true,
-                                fx = false,
-                            },
-
-    ["/robot"] =            { anim = { "emoteXL_pre_dance8", "emoteXL_loop_dance8" }, loop = true, fx = false },
+    ["/dance"] =            { anim = { "emoteXL_pre_dance0", "emoteXL_loop_dance0" }, loop = true, fx = false },
 
     ["/bonesaw"] =          { anim = "emoteXL_bonesaw" },
     ["/ready"] =            "/bonesaw",

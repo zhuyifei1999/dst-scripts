@@ -1279,6 +1279,7 @@ return {
 		TRINKET_7 = "I have no time for fun and games!",
 		TRINKET_8 = "Great. All of my tub stopping needs are met.",
 		TRINKET_9 = "I'm more of a zipper person, myself.",
+		TRINKET_26 = "Food and a cup! The ultimate survival container.",
 		TRUNKVEST_SUMMER = "Wilderness casual.",
 		TRUNKVEST_WINTER = "Winter survival gear.",
 		TRUNK_COOKED = "Somehow even more nasal than before.",

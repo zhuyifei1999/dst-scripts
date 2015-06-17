@@ -3,7 +3,7 @@ package.path = package.path .. ";scripts/?.lua"
 --local BAD_CONNECT = 219000 -- 
 --SEED = 372000 -- Force roads test level 3
 if SEED == nil then
-	SEED = getrealtime()
+	SEED = os.time()
 end
 
 math.randomseed(SEED)

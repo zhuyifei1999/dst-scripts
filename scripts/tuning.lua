@@ -83,6 +83,9 @@ function Tune(overrides)
 	    BERNIE_DECAY_TIME = total_day_time * 3,
 	    BERNIE_SPEED = 1,
 
+	    BALLOON_PILE_DECAY_TIME = total_day_time * 3,
+        BALLOON_MAX_COUNT = 100,
+
 	    HAMMER_LOOT_PERCENT = .5,
 	    BURNT_HAMMER_LOOT_PERCENT = .25,
 	    AXE_USES = 100,
@@ -987,7 +990,7 @@ function Tune(overrides)
 	        RAREMEAT = 5,
 	        TRINKETS=
 	        {
-	            4,6,4,5,4,5,4,8,7,2,5,8,5,
+	            4,6,4,5,4,5,4,8,7,2,5,8,5,3,3,3,3,3,3,3,3,3,3,3,3,9
 	        }
 	    },
 	
@@ -1476,11 +1479,13 @@ function Tune(overrides)
 		LIVINGTREE_CHANCE = 0.55,
 		
 		-- Birchnut monster chances have been reduced and tied to seasons instead of the number of days to balance things out for dedicated servers (which may be running for extremely long times)
-		DECID_MONSTER_MIN_DAY = 20, -- No monsters during the first autumn
+		DECID_MONSTER_MIN_DAY = 3, -- No monsters during the first few days
 	    DECID_MONSTER_SPAWN_CHANCE_AUTUMN = .15,	-- high chance of monsters in autumn to cancel out double birchnut and general easyness of autumn
 	    DECID_MONSTER_SPAWN_CHANCE_SPRING = .08, -- next highest in spring because everything attacks in spring
 	    DECID_MONSTER_SPAWN_CHANCE_SUMMER = .033, -- low chance in summer since summer is hard anyway
 	    DECID_MONSTER_SPAWN_CHANCE_WINTER = 0, -- can't make monsters in winter, they have to have leaves
+	    DECID_MONSTER_DAY_THRESHOLDS = { 20, 35, 70 }, -- Ramp monster spawns a bit over time
+	   	DECID_MONSTER_SPAWN_CHANCE_MOD = { .2, .5, 1, 1.12},
 
 		DECID_MONSTER_TARGET_DIST = 7,
 		DECID_MONSTER_ATTACK_PERIOD = 2.3,

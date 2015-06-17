@@ -1108,6 +1108,7 @@ return {
 		TRINKET_7 = "I could play this for hours!",
 		TRINKET_8 = "If I find a tub, I'm all set.",
 		TRINKET_9 = "I just sew my clothing shut around me when I put it on.",
+		TRINKET_26 = "Genius! A cup for a proper woodsman.",
 		TRUNKVEST_SUMMER = "Nice and breezy",
 		TRUNKVEST_WINTER = "This could stand up to the winters back home, eh?",
 		TRUNK_COOKED = "I think it boiled off all of the nose cheese.",

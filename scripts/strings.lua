@@ -665,6 +665,7 @@ STRINGS=
         TRINKET_11 = "Lying Robot",
         TRINKET_12 = "Dessicated Tentacle",
         TRINKET_13 = "Gnome",
+        TRINKET_26 = "Potato Cup",
 
         CARROT_PLANTED = "Carrot",
         LEIF = "Treeguard",
@@ -1125,6 +1126,7 @@ STRINGS=
         BANDAGE = "Heal your minor wounds.",
         HEALINGSALVE = "Disinfectant for cuts and abrasions.",
         WATERBALLOON = "Spheroid Fire Suppression.",
+        BALLOONS_EMPTY = "If only there was an easier way.",
         LIFEINJECTOR = "Boosts your declining max health.",
         LIGHTNING_ROD = "Protection from strikes.",
         CANE = "Trot on with speed and poise.",
@@ -1965,6 +1967,12 @@ STRINGS.UI =
         PLAYOFFLINE = "Play Offline",
         CANCELOFFLINE = "Cancel",
 
+        VERSION_OUT_OF_DATE_TITLE = "Version Out of Date",
+        VERSION_OUT_OF_DATE_BODY = "Your game looks like it's on an old version. We recommend that you update to the latest version.",
+        VERSION_OUT_OF_DATE_PLAY = "Play Anyway",
+        VERSION_OUT_OF_DATE_INSTRUCTIONS = "Instructions",
+        VERSION_OUT_OF_DATE_CANCEL = "Cancel",
+
         CONTROLLER_DETECTED_HEADER = "Controller Detected",
         CONTROLLER_DETECTED_BODY = "Do you want to use the controller to play Don't Starve?\nYou won't be asked again but you can change this setting in the controls screen if you change your mind.\n\nNOTE: Controller support is under active development.\nSome functionality will be missing.",--"Do you want to use the controller to play Don't Starve?\n\nYou will not be asked again, but you can change this setting in the controls screen if you change your mind.",
         ENABLECONTROLLER = "Enable Controller",
@@ -2086,6 +2094,8 @@ STRINGS.UI =
     
     OPTIONS=
     {
+        SETTINGS = "Settings",
+        CONTROLS = "Controls",
         OPTIONS = "Options",
         BACK = "Back",
         YES = "Yes",

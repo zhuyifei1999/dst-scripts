@@ -1107,6 +1107,7 @@ return {
 		TRINKET_7 = "Is junk, I think.",
 		TRINKET_8 = "Is junk, I think.",
 		TRINKET_9 = "Is junk, I think.",
+		TRINKET_26 = "Is cup, I think.",
 		TRUNKVEST_SUMMER = "Is warm fuzzy nose.",
 		TRUNKVEST_WINTER = "I'm real cozy in this nose!",
 		TRUNK_COOKED = "Is cooked nose.",

@@ -2,6 +2,9 @@ local function getmodifiedstring(topic_tab, modifier)
 	if type(modifier) == "table" then
 		local ret = topic_tab
 		for i,v in ipairs(modifier) do
+			if ret == nil then
+				return nil
+			end
 			ret = ret[v]
 		end
 		return ret
@@ -114,8 +117,8 @@ function GetSpecialCharacterString(character)
 
     character = string.lower(character)
 
-    return (character == "ghost" and CraftOooh())
-        or (character == "mime" and "")
+    return (character == "mime" and "")
+        or (character == "ghost" and CraftOooh())
         or (character == "wilton" and wilton_sayings[math.random(#wilton_sayings)])
         or nil
 end
@@ -140,8 +143,8 @@ function GetString(inst, stringtype, modifier)
 
     local specialcharacter =
         type(inst) == "table"
-        and ((inst:HasTag("playerghost") and "ghost") or
-            (inst:HasTag("mime") and "mime"))
+        and ((inst:HasTag("mime") and "mime") or
+        (inst:HasTag("playerghost") and "ghost"))
         or character
 
     return GetSpecialCharacterString(specialcharacter)
@@ -175,8 +178,8 @@ function GetDescription(inst, item, modifier)
 
     local specialcharacter =
         type(inst) == "table"
-        and ((inst:HasTag("playerghost") and "ghost") or
-            (inst:HasTag("mime") and "mime"))
+        and ((inst:HasTag("mime") and "mime") or
+            (inst:HasTag("playerghost") and "ghost"))
         or character
 
     local ret = GetSpecialCharacterString(specialcharacter)
@@ -237,4 +240,8 @@ end
 
 function FirstToUpper(str)
     return str:gsub("^%l", string.upper)
+end
+
+function TrimString( s )
+   return string.match( s, "^()%s*$" ) and "" or string.match( s, "^%s*(.*%S)" )
 end

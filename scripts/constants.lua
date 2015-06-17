@@ -142,6 +142,8 @@ CONTROL_MENU_MISC_4 = 71
 
 CONTROL_CUSTOM_START = 100
 
+XBOX_CONTROLLER_ID = 17
+
 
 
 KEY_TAB = 9
@@ -266,7 +268,7 @@ ROG_CHARACTERLIST =
 
 DST_CHARACTERLIST =
 {
-	"wilson", "willow", "wolfgang", "wendy", "wx78", "wickerbottom", "wathgrithr", "webber",
+    "wilson", "willow", "wolfgang", "wendy", "wx78", "wickerbottom", "wes", "wathgrithr", "webber",
 }
 
 MAINSCREEN_CHAR_1 = "corner_dude"
@@ -299,6 +301,11 @@ MAINSCREEN_HAT_2 = ""
 MODCHARACTERLIST = 
 {
 	-- this gets populated by mods
+}
+
+MODCHARACTEREXCEPTIONS_DST = 
+{
+	-- this also gets populated by mods
 }
 
 CHARACTER_GENDERS = 
@@ -946,6 +953,12 @@ NUM_DST_SAVE_SLOTS = 5
 -- and someone might be able to do something cool with it.
 HUMAN_MEAT_ENABLED = false
 
+SCREEN_FADE_TIME = .25
+BACK_BUTTON_X = 60
+BACK_BUTTON_Y = 60
+
+GOLD = {202/255, 174/255, 118/255, 255/255}
+
 --Bit flags, currently supports up to 8
 --Server may use these for things that clients need to know about
 --other clients whose player entities may or may not be available
@@ -990,3 +1003,5 @@ TWITCH =
     CHAT_DISCONNECTED = 1,
     CHAT_CONNECT_FAILED = 2,
 }
+
+-- This line is added as a test. Delete it if you see it.

@@ -58,6 +58,18 @@ local function AddModCharacter(name, gender)
 	end
 end
 
+local function RemoveDefaultCharacter(name)
+	if table.contains(DST_CHARACTERLIST, name) then
+		if not table.contains(MODCHARACTEREXCEPTIONS_DST, name) then
+			table.insert(MODCHARACTEREXCEPTIONS_DST, name)
+		else
+			print ("Warning: Character " .. name .. " has already been removed")
+		end
+	else
+		print ("Warning: Character " .. name .. " is not a default character")
+	end
+end
+
 local function initprint(...)
 	if KnownModIndex:IsModInitPrintEnabled() then
 		local modname = getfenv(3).modname
@@ -351,6 +363,11 @@ local function InsertPostInitFunctions(env, isworldgen)
 		AddModCharacter(name, gender)
 	end
 
+	env.RemoveDefaultCharacter = function (name)
+		initprint("RemoveDefaultCharacter", name)
+		RemoveDefaultCharacter(name)
+	end
+
 	env.AddRecipe = function(...)
 		arg = {...}
 		initprint("AddRecipe", arg[1])
@@ -414,6 +431,16 @@ local function InsertPostInitFunctions(env, isworldgen)
         end
         ThePlayer.HUD:SetModFocus(env.modname, focusid, hasfocus)
     end
+  
+    
+	env.AddVoteCommand = function(command_name, init_options_fn, process_result_fn, vote_timeout )
+		initprint("AddVoteCommand", command_name, init_options_fn, process_result_fn, vote_timeout )
+		
+		if env.vote_commands == nil then
+	        env.vote_commands = {}
+	    end
+		env.vote_commands[command_name] = { InitOptionsFn = init_options_fn, ProcessResultFn = process_result_fn, Timeout = vote_timeout or 15 }
+	end
 end
 
 return {

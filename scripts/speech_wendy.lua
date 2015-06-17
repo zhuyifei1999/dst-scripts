@@ -1107,6 +1107,7 @@ return {
 		TRINKET_7 = "Just a simple game.",
 		TRINKET_8 = "I wish I could take a bath.",
 		TRINKET_9 = "Mismatched buttons for a mismatched life.",
+		TRINKET_26 = "The potato is as hollow as I am.",
 		TRUNKVEST_SUMMER = "Skin to wear on my skin.",
 		TRUNKVEST_WINTER = "It may warm my body, but what of my spirit?",
 		TRUNK_COOKED = "It looks even worse now.",

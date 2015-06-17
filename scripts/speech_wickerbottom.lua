@@ -925,6 +925,7 @@ return
         TRINKET_7 = "I'd rather use my hands to read a book.",
         TRINKET_8 = "It reminds me of my bath tub. I could use a long soak.",
         TRINKET_9 = "Hmm, don't think I'm missing any buttons at the moment.",
+        TRINKET_26 = "It appears to be a primitive cup fashioned from a tuber.",
 		SKULLCHEST = "A container resembling a cranium.",
 		PANDORASCHEST = "An artifact which may contain other artifacts.",
 

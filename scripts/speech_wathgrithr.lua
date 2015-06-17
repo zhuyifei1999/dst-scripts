@@ -1135,6 +1135,7 @@ return {
 		TRINKET_7 = "No time for games! There is battle at hand!",
 		TRINKET_8 = "It would make an okay weapon in a pinch.",
 		TRINKET_9 = "No decent armour can be made with these.",
+		TRINKET_26 = "A cup for a long march.",
 		TRUNKVEST_SUMMER = "It will not suffice in the frozen wastes.",
 		TRUNKVEST_WINTER = "The warm pelt of a bested creature. A fine garment.",
 		TRUNK_COOKED = "A juicy reward after a hard battle.",

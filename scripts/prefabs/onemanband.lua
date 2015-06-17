@@ -65,7 +65,7 @@ end
 
 local function onequip(inst, owner) 
     if owner then
-        owner.AnimState:OverrideSymbol("swap_body", "swap_one_man_band", "swap_body")
+        owner.AnimState:OverrideSymbol("swap_body_tall", "swap_one_man_band", "swap_body_tall")
         inst.components.fueled:StartConsuming()
     end
 
@@ -74,7 +74,7 @@ end
 
 local function onunequip(inst, owner) 
     if owner then
-        owner.AnimState:ClearOverrideSymbol("swap_body") 
+        owner.AnimState:ClearOverrideSymbol("swap_body_tall") 
         inst.components.fueled:StopConsuming()
     end
 

@@ -1223,6 +1223,10 @@ function EntityScript:OnBuilt(builder)
             v:OnBuilt(builder)
         end
     end
+
+    if self.OnBuiltFn then
+        self:OnBuiltFn(builder)
+    end
 end
 
 function EntityScript:Remove()

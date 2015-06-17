@@ -248,10 +248,11 @@ local ServerAdminScreen = Class(Screen, function(self, save_slot, in_game, cb)
     
     self:MakeMenuButtons(left_col, right_col)
 
+--[[
     self.onlinestatus = self.root:AddChild(OnlineStatus())
     self.onlinestatus:SetHAnchor(ANCHOR_RIGHT)
     self.onlinestatus:SetVAnchor(ANCHOR_BOTTOM)
-
+]]
     self:MakePlayersClean()
     
 end)

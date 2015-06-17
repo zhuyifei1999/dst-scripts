@@ -229,6 +229,18 @@ function JoinArrays(...)
 	return ret
 end
 
+-- returns a new array with the difference between the two provided arrays
+function ExceptionArrays(tSource, tException)
+	local ret = {}
+	ret = JoinArrays(ret, tSource)
+	for i, val in ipairs(tException) do
+		if table.contains(ret, val) then
+			RemoveByValue(ret, val)
+		end
+	end
+	return ret
+end
+
 -- merge two array-style tables, only allowing each value once
 function ArrayUnion(...)
 	local ret = {}

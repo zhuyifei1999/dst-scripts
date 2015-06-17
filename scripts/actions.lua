@@ -136,7 +136,7 @@ ACTION_MOD_IDS = {} --This will be filled in when mods add actions via AddAction
 ACTIONS.EAT.fn = function(act)
     local obj = act.target or act.invobject
     if act.doer.components.eater and obj and obj.components.edible then
-    	return act.doer.components.eater:Eat(obj) 
+        return act.doer.components.eater:Eat(obj) 
     end
 end
 
@@ -151,17 +151,29 @@ ACTIONS.STEAL.fn = function(act)
 end
 
 ACTIONS.MAKEBALLOON.fn = function(act)
-    if act.doer and act.invobject and act.invobject.components.balloonmaker then
-        if act.doer.components.sanity then
+    if act.doer ~= nil and
+        act.invobject ~= nil and
+        act.invobject.components.balloonmaker ~= nil and
+        act.doer:HasTag("balloonomancer") then
+        if act.doer.components.sanity ~= nil then
+            if act.doer.components.sanity.current < TUNING.SANITY_TINY then
+                return false
+            end
             act.doer.components.sanity:DoDelta(-TUNING.SANITY_TINY)
         end
-        local x,y,z = act.doer.Transform:GetWorldPosition()
-        local angle = TheCamera.headingtarget + math.random()*10*DEGREES-5*DEGREES
-        x = x + .5*math.cos(angle)
-        z = z + .5*math.sin(angle)
-        act.invobject.components.balloonmaker:MakeBalloon(x,y,z)
+        --Spawn it to either side of doer's current facing with some variance
+        local x, y, z = act.doer.Transform:GetWorldPosition()
+        local angle = act.doer.Transform:GetRotation()
+        local angle_offset = GetRandomMinMax(-10, 10)
+        angle_offset = angle_offset + (angle_offset < 0 and -65 or 65)
+        angle = (angle + angle_offset) * DEGREES
+        act.invobject.components.balloonmaker:MakeBalloon(
+            x + .5 * math.cos(angle),
+            0,
+            z - .5 * math.sin(angle)
+        )
+        return true
     end
-    return true
 end
 
 ACTIONS.EQUIP.fn = function(act)
@@ -669,12 +681,11 @@ ACTIONS.COOK.fn = function(act)
 end
 
 ACTIONS.FILL.fn = function(act)
-    if act.target and act.target:HasTag("watersource") then
-        if act.invobject and act.invobject.components.fillable then
-            act.invobject.components.fillable:Fill()
-            return true
-        end
-    end
+    return act.target ~= nil
+        and act.invobject ~= nil
+        and act.invobject.components.fillable ~= nil
+        and act.target:HasTag("watersource")
+        and act.invobject.components.fillable:Fill()
 end
 
 ACTIONS.DRY.fn = function(act)
