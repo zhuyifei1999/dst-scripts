@@ -804,6 +804,8 @@ local states =
         tags = { "busy", "pausepredict", "nomorph" },
 
         onenter = function(inst)
+            assert(inst.deathcause ~= nil, "Entered death state without cause.")
+
             inst.components.locomotor:Stop()
             inst.components.locomotor:Clear()
             inst:ClearBufferedAction()
@@ -3292,7 +3294,9 @@ local states =
             inst.components.locomotor:Clear()
             inst:ClearBufferedAction()
 
-            SpawnPrefab("ghost_transform_overlay_fx").entity:SetParent(inst.entity)
+            local fx = SpawnPrefab("ghost_transform_overlay_fx")
+            fx.entity:SetParent(inst.entity)
+            fx:ListenForEvent("onremove", function() fx:Remove() end, inst)
 
             inst.SoundEmitter:PlaySound("dontstarve/ghost/ghost_get_bloodpump")
             inst.AnimState:PlayAnimation("shudder")

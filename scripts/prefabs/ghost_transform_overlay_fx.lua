@@ -70,7 +70,7 @@ local function fn()
     inst:DoTaskInTime(74 * FRAMES, Flash, .8, 1)
 
     inst.entity:SetPristine()
-    
+
     if not TheWorld.ismastersim then
         return inst
     end
