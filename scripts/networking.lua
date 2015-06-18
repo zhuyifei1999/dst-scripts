@@ -35,7 +35,7 @@ end
 function Networking_Say(guid, userid, name, prefab, message, colour, whisper)
     local entity = Ents[guid]
     if entity ~= nil and entity.components.talker ~= nil then
-        entity.components.talker:Say(message, nil, nil, nil, true, colour)
+        entity.components.talker:Say(entity:HasTag("mime") and "" or message, nil, nil, nil, true, colour)
     end
     local hud = ThePlayer ~= nil and ThePlayer.HUD or nil
     if hud ~= nil
