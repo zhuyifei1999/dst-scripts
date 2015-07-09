@@ -1,263 +1,622 @@
 local MakePlayerCharacter = require("prefabs/player_common")
-local Badge = require("widgets/badge")
 local easing = require("easing")
 
 local prefabs =
 {
-	"lucy",
+    "shovel_dirt",
+    "werebeaver_transform_fx",
+}
+
+local starting_inv =
+{
+    "lucy",
 }
 
 local assets =
 {
     Asset("ANIM", "anim/woodie.zip"),
-	Asset("SOUND", "sound/woodie.fsb"),
-    
+    Asset("SOUND", "sound/woodie.fsb"),
+
     Asset("ANIM", "anim/werebeaver_build.zip"),
     Asset("ANIM", "anim/werebeaver_basic.zip"),
+    Asset("ANIM", "anim/werebeaver_groggy.zip"),
+    Asset("ANIM", "anim/player_revive_to_werebeaver.zip"),
+    Asset("ANIM", "anim/player_amulet_resurrect_werebeaver.zip"),
+    Asset("ANIM", "anim/player_rebirth_werebeaver.zip"),
     Asset("ANIM", "anim/player_woodie.zip"),
     Asset("ATLAS", "images/woodie.xml"),
     Asset("IMAGE", "images/woodie.tex"),
     Asset("IMAGE", "images/colour_cubes/beaver_vision_cc.tex"),
 
     Asset("ANIM", "anim/ghost_woodie_build.zip"),
+    Asset("ANIM", "anim/ghost_werebeaver_build.zip"),
 }
 
-local function BeaverActionButton(inst)
+local BEAVERVISION_COLOURCUBES =
+{
+    day = "images/colour_cubes/beaver_vision_cc.tex",
+    dusk = "images/colour_cubes/beaver_vision_cc.tex",
+    night = "images/colour_cubes/beaver_vision_cc.tex",
+    full_moon = "images/colour_cubes/beaver_vision_cc.tex",
+}
 
-	local action_target = FindEntity(inst, 6, function(guy) return (guy.components.edible and inst.components.eater:CanEat(guy)) or
-		 													 (guy.components.workable and guy.components.workable.workable and inst.components.worker:CanDoAction(guy.components.workable.action)) end)
-	
-	if not inst.sg:HasStateTag("busy") and action_target then
-		if (action_target.components.edible and inst.components.eater:CanEat(action_target)) then
-			return BufferedAction(inst, action_target, ACTIONS.EAT)
-		elseif action_target.components.workable.workable then
-			return BufferedAction(inst, action_target, action_target.components.workable.action)
-		end
-	end
+--------------------------------------------------------------------------
+
+local BEAVER_DIET =
+{
+    FOODTYPE.WOOD,
+}
+
+local BEAVER_LMB_ACTIONS =
+{
+    "CHOP",
+    "MINE",
+    "DIG",
+}
+
+local BEAVER_RMB_ACTIONS =
+{
+    "HAMMER",
+}
+
+local BEAVER_ACTION_TAGS = {}
+
+for i, v in ipairs(BEAVER_LMB_ACTIONS) do
+    table.insert(BEAVER_ACTION_TAGS, v.."_workable")
 end
 
-local function LeftClickPicker(inst, target_ent, pos)
-    if inst.components.combat:CanTarget(target_ent) then
-        return inst.components.playeractionpicker:SortActionList({ACTIONS.ATTACK}, target_ent, nil)
+local BEAVER_TARGET_EXCLUDE_TAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO", "catchable" }
+
+local function CannotExamine(inst)
+    return false
+end
+
+local function BeaverActionString(inst, action)
+    return (action.action == ACTIONS.EAT and STRINGS.ACTIONS.EAT)
+        or STRINGS.ACTIONS.GNAW
+end
+
+local function GetBeaverAction(target)
+    for i, v in ipairs(BEAVER_LMB_ACTIONS) do
+        if target:HasTag(v.."_workable") then
+            return ACTIONS[v]
+        end
     end
+end
 
-	if target_ent and target_ent.components.edible and inst.components.eater:CanEat(target_ent) then
-		return inst.components.playeractionpicker:SortActionList({ACTIONS.EAT}, target_ent, nil)
-	end
-
-    if target_ent and target_ent.components.workable and target_ent.components.workable.workable and inst.components.worker:CanDoAction(target_ent.components.workable.action) then
-        return inst.components.playeractionpicker:SortActionList({target_ent.components.workable.action}, target_ent, nil)
+local function BeaverActionButton(inst, force_target)
+    if not inst.components.playercontroller:IsDoingOrWorking() then
+        if force_target == nil then
+            local x, y, z = inst.Transform:GetWorldPosition()
+            local ents = TheSim:FindEntities(x, y, z, inst.components.playercontroller.directwalking and 3 or 6, nil, BEAVER_TARGET_EXCLUDE_TAGS, BEAVER_ACTION_TAGS)
+            for i, v in ipairs(ents) do
+                if v ~= inst and v.entity:IsVisible() and CanEntitySeeTarget(inst, v) then
+                    local action = GetBeaverAction(v)
+                    if action ~= nil then
+                        return BufferedAction(inst, v, action)
+                    end
+                end
+            end
+        elseif inst:GetDistanceSqToInst(force_target) <= (inst.components.playercontroller.directwalking and 9 or 36) then
+            local action = GetBeaverAction(force_target)
+            if action ~= nil then
+                return BufferedAction(inst, force_target, action)
+            end
+        end
     end
 end
 
-local function RightClickPicker(inst, target_ent, pos)
-	return {}
+local function LeftClickPicker(inst, target)
+    if target ~= nil and target ~= inst then
+        if inst.replica.combat:CanTarget(target) then
+            return (not target:HasTag("player") or inst.components.playercontroller:IsControlPressed(CONTROL_FORCE_ATTACK))
+                and inst.components.playeractionpicker:SortActionList({ ACTIONS.ATTACK }, target, nil)
+                or nil
+        end
+        for i, v in ipairs(BEAVER_LMB_ACTIONS) do
+            if target:HasTag(v.."_workable") then
+                return inst.components.playeractionpicker:SortActionList({ ACTIONS[v] }, target, nil)
+            end
+        end
+    end
 end
 
-local BeaverBadge = Class(Badge, function(self, owner)
-	Badge._ctor(self, "beaver_meter", owner)
-end)
-
-local function onbeavereat(inst, data)
-	if data.food and data.food.components.edible.woodiness and inst.components.beaverness then
-		inst.components.beaverness:DoDelta(data.food.components.edible.woodiness)
-	end
+local function RightClickPicker(inst, target)
+    if target ~= nil and target ~= inst then
+        for i, v in ipairs(BEAVER_DIET) do
+            if target:HasTag("edible_"..v) then
+                return inst.components.playeractionpicker:SortActionList({ ACTIONS.EAT }, target, nil)
+            end
+        end
+        for i, v in ipairs(BEAVER_RMB_ACTIONS) do
+            if target:HasTag(v.."_workable") then
+                return inst.components.playeractionpicker:SortActionList({ ACTIONS[v] }, target, nil)
+            end
+        end
+    end
 end
 
-local function beaveractionstring(inst, action)
-	return STRINGS.ACTIONS.GNAW
+local function SetBeaverActions(inst, enable)
+    if enable then
+        inst.ActionStringOverride = BeaverActionString
+        if inst.components.playercontroller ~= nil then
+            inst.components.playercontroller.actionbuttonoverride = BeaverActionButton
+        end
+        if inst.components.playeractionpicker ~= nil then
+            inst.components.playeractionpicker.leftclickoverride = LeftClickPicker
+            inst.components.playeractionpicker.rightclickoverride = RightClickPicker
+        end
+    else
+        inst.ActionStringOverride = nil
+        if inst.components.playercontroller ~= nil then
+            inst.components.playercontroller.actionbuttonoverride = nil
+        end
+        if inst.components.playeractionpicker ~= nil then
+            inst.components.playeractionpicker.leftclickoverride = nil
+            inst.components.playeractionpicker.rightclickoverride = nil
+        end
+    end
 end
 
-local function beaverhurt(inst, delta)
-	if delta < 0 then
-		inst.sg:PushEvent("attacked")
-		inst.components.beaverness:DoDelta(delta*.25)
-		TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/health_down")
-		inst.HUD.controls.beaverbadge:PulseRed()
-		if inst.HUD.bloodover then
-			inst.HUD.bloodover:Flash()
-		end
-	end
+local function SetBeaverVision(inst, enable)
+    if enable then
+        inst.components.playervision:ForceNightVision(true)
+        inst.components.playervision:SetCustomCCTable(BEAVERVISION_COLOURCUBES)
+    else
+        inst.components.playervision:ForceNightVision(false)
+        inst.components.playervision:SetCustomCCTable(nil)
+    end
 end
 
-local function SetHUDState(inst)
-	if inst.HUD then
-		if inst.components.beaverness:IsBeaver() and not inst.HUD.controls.beaverbadge then
-			inst.HUD.controls.beaverbadge = ThePlayer.HUD.controls.sidepanel:AddChild(BeaverBadge(inst))
-			inst.HUD.controls.beaverbadge:SetPosition(0,-100,0)
-		    inst.HUD.controls.beaverbadge:SetPercent(1)
-			
-			inst.HUD.controls.beaverbadge.inst:ListenForEvent("beavernessdelta", function(_, data) 
-				inst.HUD.controls.beaverbadge:SetPercent(inst.components.beaverness:GetPercent(), inst.components.beaverness.max)
-				if not data.overtime then
-					if data.newpercent > data.oldpercent then
-						inst.HUD.controls.beaverbadge:PulseGreen()
-						TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/health_up")
-					elseif data.newpercent < data.oldpercent then
-						TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/health_down")
-						inst.HUD.controls.beaverbadge:PulseRed()
-					end
-				end
-			end, inst)
-			inst.HUD.controls.crafttabs:Hide()
-			inst.HUD.controls.inv:Hide()
-            inst.HUD.controls.containerroot_side:Hide()
-			inst.HUD.controls.status:Hide()
-			inst.HUD.controls.mapcontrols.minimapBtn:Hide()
+local function SetBeaverMode(inst, isbeaver)
+    if isbeaver then
+        TheWorld:PushEvent("enabledynamicmusic", false)
+        if not TheFocalPoint.SoundEmitter:PlayingSound("beavermusic") then
+            TheFocalPoint.SoundEmitter:PlaySound("dontstarve/music/music_hoedown", "beavermusic")
+        end
 
-		    inst.HUD.beaverOL = inst.HUD.under_root:AddChild(Image("images/woodie.xml", "beaver_vision_OL.tex"))
-		    inst.HUD.beaverOL:SetVRegPoint(ANCHOR_MIDDLE)
-		    inst.HUD.beaverOL:SetHRegPoint(ANCHOR_MIDDLE)
-		    inst.HUD.beaverOL:SetVAnchor(ANCHOR_MIDDLE)
-		    inst.HUD.beaverOL:SetHAnchor(ANCHOR_MIDDLE)
-		    inst.HUD.beaverOL:SetScaleMode(SCALEMODE_FILLSCREEN)
-		    inst.HUD.beaverOL:SetClickable(false)
-		
-		elseif not inst.components.beaverness:IsBeaver() and inst.HUD.controls.beaverbadge then
-			if inst.HUD.controls.beaverbadge then
-				inst.HUD.controls.beaverbadge:Kill()
-				inst.HUD.controls.beaverbadge = nil
-			end
+        inst.HUD.controls.status:SetBeaverMode(true)
+        if inst.HUD.beaverOL ~= nil then
+            inst.HUD.beaverOL:Show()
+        end
 
-			if inst.HUD.beaverOL then
-				inst.HUD.beaverOL:Kill()
-				inst.HUD.beaverOL = nil
-			end
+        if not TheWorld.ismastersim then
+            inst.CanExamine = CannotExamine
+            SetBeaverActions(inst, true)
+            SetBeaverVision(inst, true)
+            if inst.components.locomotor ~= nil then
+                inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED * 1.1
+            end
+        end
+    else
+        TheWorld:PushEvent("enabledynamicmusic", true)
+        TheFocalPoint.SoundEmitter:KillSound("beavermusic")
 
-			inst.HUD.controls.crafttabs:Show()
-			inst.HUD.controls.inv:Show()
-            inst.HUD.controls.containerroot_side:Show()
-			inst.HUD.controls.status:Show()
-			inst.HUD.controls.mapcontrols.minimapBtn:Show()
-		end
-	end
+        inst.HUD.controls.status:SetBeaverMode(false)
+        if inst.HUD.beaverOL ~= nil then
+            inst.HUD.beaverOL:Hide()
+        end
+
+        if not TheWorld.ismastersim then
+            inst.CanExamine = inst.isbeavermode:value() and CannotExamine or nil
+            SetBeaverActions(inst, false)
+            SetBeaverVision(inst, false)
+            if inst.components.locomotor ~= nil then
+                inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED
+            end
+        end
+    end
 end
 
-local function BecomeWoodie(inst)
-    inst.ActionStringOverride = nil
-    inst.AnimState:SetBank("wilson")
-	inst.AnimState:SetBuild("woodie")
-	inst:SetStateGraph("SGwilson")
-	inst:RemoveTag("beaver")
-	
-	inst:RemoveComponent("worker")
-	inst.components.talker:StopIgnoringAll()
-	inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED
-	inst.components.combat:SetDefaultDamage(TUNING.UNARMED_DAMAGE)
-	
-	inst.components.playercontroller.actionbuttonoverride = nil
-	inst.components.playeractionpicker.leftclickoverride = nil
-	inst.components.playeractionpicker.rightclickoverride = nil
-	inst.components.eater:SetDiet({ FOODGROUP.OMNI }, { FOODGROUP.OMNI })
+local function SetGhostMode(inst, isghost)
+    if isghost then
+        SetBeaverMode(inst, false)
+        inst._SetGhostMode(inst, true)
+    else
+        inst._SetGhostMode(inst, false)
+        SetBeaverMode(inst, inst.isbeavermode:value())
+    end
+end
 
+local function OnBeaverModeDirty(inst)
+    if inst.HUD ~= nil and not inst:HasTag("playerghost") then
+        SetBeaverMode(inst, inst.isbeavermode:value())
+    end
+end
 
-	inst.components.hunger:Resume()
-	inst.components.sanity.ignore = false
-	inst.components.health.redirect = nil
+local function OnPlayerDeactivated(inst)
+    inst:RemoveEventCallback("onremove", OnPlayerDeactivated)
+    if not TheWorld.ismastersim then
+        inst:RemoveEventCallback("isbeavermodedirty", OnBeaverModeDirty)
+    end
+    TheFocalPoint.SoundEmitter:KillSound("beavermusic")
+end
 
-	inst.components.beaverness:StartTimeEffect(2, -1)
+local function OnPlayerActivated(inst)
+    if inst.HUD.beaverOL == nil then
+        inst.HUD.beaverOL = inst.HUD.overlayroot:AddChild(Image("images/woodie.xml", "beaver_vision_OL.tex"))
+        inst.HUD.beaverOL:SetVRegPoint(ANCHOR_MIDDLE)
+        inst.HUD.beaverOL:SetHRegPoint(ANCHOR_MIDDLE)
+        inst.HUD.beaverOL:SetVAnchor(ANCHOR_MIDDLE)
+        inst.HUD.beaverOL:SetHAnchor(ANCHOR_MIDDLE)
+        inst.HUD.beaverOL:SetScaleMode(SCALEMODE_FILLSCREEN)
+        inst.HUD.beaverOL:SetClickable(false)
+    end
+    inst:ListenForEvent("onremove", OnPlayerDeactivated)
+    if not TheWorld.ismastersim then
+        inst:ListenForEvent("isbeavermodedirty", OnBeaverModeDirty)
+    end
+    OnBeaverModeDirty(inst)
+end
 
-	inst:RemoveEventCallback("oneatsomething", onbeavereat)
-	inst.Light:Enable(false)
-    inst.SoundEmitter:KillSound("beavermusic")
-    inst:PushEvent("enabledynamicmusic", true)
-    TheWorld:PushEvent("overridecolourcube")
-	inst.components.temperature:SetTemp(nil)
-	inst:DoTaskInTime(0, function() SetHUDState(inst) end)
-	
+--------------------------------------------------------------------------
+
+local function GetBeaverness(inst)
+    if inst.components.beaverness ~= nil then
+        return inst.components.beaverness:GetPercent()
+    elseif inst.player_classified ~= nil then
+        return inst.player_classified.currentbeaverness:value() * .01
+    else
+        return 1
+    end
+end
+
+local function IsBeaverStarving(inst)
+    if inst.components.beaverness ~= nil then
+        return inst.components.beaverness:IsStarving()
+    elseif inst.player_classified ~= nil then
+        return inst.player_classified.currentbeaverness:value() <= 0
+    else
+        return false
+    end
+end
+
+local function CanShaveTest(inst)
+    return false, "REFUSE"
+end
+
+local function OnResetBeard(inst)
+    inst.components.beard.bits = inst.isbeavermode:value() and 0 or 3
+end
+
+local function beaversanityfn(inst)
+    return TUNING.BEAVER_SANITY_PENALTY
+end
+
+local function beaverbonusdamagefn(inst, target, damage, weapon)
+    return (target:HasTag("tree") or target:HasTag("beaverchewable")) and TUNING.BEAVER_WOOD_DAMAGE or 0
+end
+
+--------------------------------------------------------------------------
+
+local function IsLucy(item)
+    return item.prefab == "lucy"
 end
 
 local function onworked(inst, data)
-	if not inst.components.beaverness:IsBeaver() and data.target and data.target.components.workable and data.target.components.workable.action == ACTIONS.CHOP then
-		inst.components.beaverness:DoDelta(3)
-		--local dist = easing.linear(inst.components.beaverness:GetPercent(), 0, .1, 1)
-		--TheCamera:Shake("SIDE", .15, .05, dist*.66)
-	--else
-		--TheCamera:Shake("SIDE", .15, .05, .1)
-	end
+    if data.target ~= nil and data.target.components.workable ~= nil then
+        if inst.isbeavermode:value() then
+            inst.components.beaverness:DoDelta(TUNING.BEAVER_GNAW_GAIN, true)
+        elseif data.target.components.workable.action == ACTIONS.CHOP then
+            inst.components.beaverness:DoDelta(TUNING.WOODIE_CHOP_DRAIN, true)
+
+            local equipitem = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+            if equipitem.prefab == "axe" or equipitem.prefab == "goldenaxe" then
+                local itemuses = equipitem.components.finiteuses ~= nil and equipitem.components.finiteuses:GetUses() or nil
+                if itemuses == nil or itemuses > 0 then
+                    --Don't make Lucy if we already have one
+                    if inst.components.inventory:FindItem(IsLucy) == nil then
+                        local lucy = SpawnPrefab("lucy")
+                        lucy.components.possessedaxe.revert_prefab = equipitem.prefab
+                        lucy.components.possessedaxe.revert_uses = itemuses
+                        equipitem:Remove()
+                        inst.components.inventory:Equip(lucy)
+                        if lucy.components.possessedaxe.transform_fx ~= nil then
+                            local fx = SpawnPrefab(lucy.components.possessedaxe.transform_fx)
+                            if fx ~= nil then
+                                fx.entity:AddFollower()
+                                fx.Follower:FollowSymbol(inst.GUID, "swap_object", 50, -25, 0)
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
 end
 
-local function BecomeBeaver(inst)
-	inst.ActionStringOverride = beaveractionstring
-	inst:AddTag("beaver")
-	inst.AnimState:SetBuild("werebeaver_build")
-	inst.AnimState:SetBank("werebeaver")
-	inst:SetStateGraph("SGwerebeaver")
-	inst.components.talker:IgnoreAll()
-	inst.components.combat:SetDefaultDamage(TUNING.BEAVER_DAMAGE)
-
-	inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED*1.1
-	inst.components.inventory:DropEverything()
-	
-	inst.components.playercontroller.actionbuttonoverride = BeaverActionButton
-	inst.components.playeractionpicker.leftclickoverride = LeftClickPicker
-	inst.components.playeractionpicker.rightclickoverride = RightClickPicker
-	inst.components.eater:SetDiet({ FOODTYPE.WOOD }, { FOODTYPE.WOOD })
-
-	inst:AddComponent("worker")
-	inst.components.worker:SetAction(ACTIONS.DIG, 1)
-	inst.components.worker:SetAction(ACTIONS.CHOP, 4)
-	inst.components.worker:SetAction(ACTIONS.MINE, 1)
-	inst.components.worker:SetAction(ACTIONS.HAMMER, 1)
-	inst:ListenForEvent("oneatsomething", onbeavereat)
-
-	inst.components.sanity:SetPercent(1)
-	inst.components.health:SetPercent(1)
-	inst.components.hunger:SetPercent(1)
-
-	inst.components.hunger:Pause()
-	inst.components.sanity.ignore = true
-	inst.components.health.redirect = beaverhurt
-	inst.components.health.redirect_percent = .25
-
-	local dt = 3
-	local BEAVER_DRAIN_TIME = 120
-	inst.components.beaverness:StartTimeEffect(dt, (-100/BEAVER_DRAIN_TIME)*dt)
-	inst.Light:Enable(true)
-    inst:PushEvent("enabledynamicmusic", false)
-	inst.SoundEmitter:PlaySound("dontstarve/music/music_hoedown", "beavermusic")
-    TheWorld:PushEvent("overridecolourcube", "images/colour_cubes/beaver_vision_cc.tex")
-    inst.components.temperature:SetTemp(20)
-	inst:DoTaskInTime(0, function() SetHUDState(inst) end)
-    
+local function ondeployitem(inst, data)
+    if data.prefab == "pinecone" or data.prefab == "acorn" then
+        --inst.components.beaverness:DoDelta(TUNING.WOODIE_PLANT_TREE_GAIN)
+        inst.components.sanity:DoDelta(TUNING.SANITY_TINY)
+    end
 end
 
-local function OnStartNight(inst)
-    if TheWorld.state.isfullmoon and
-        not inst.components.beaverness:IsBeaver() and
-        not inst.components.beaverness.ignoremoon and
-        not inst.components.beaverness.doing_transform then
-        inst.components.beaverness:SetPercent(1)
+local function OnIsFullmoon(inst, isfullmoon)
+    if isfullmoon then
+        if inst.components.beaverness:GetPercent() > .25 then
+            inst.components.beaverness:SetPercent(.25)
+        end
+        inst.components.beaverness:SetTimeEffectMultiplier(TUNING.BEAVER_FULLMOON_DRAIN_MULTIPLIER)
+    else
+        inst.components.beaverness:SetTimeEffectMultiplier(1)
+    end
+end
+
+local function onbeavernesschange(inst)
+    if inst.sg:HasStateTag("nomorph") or
+        inst.sg:HasStateTag("silentmorph") or
+        inst:HasTag("playerghost") or
+        inst.components.health:IsDead() or
+        not inst.entity:IsVisible() then
+        return
+    end
+
+    if inst.isbeavermode:value() then
+        if inst.components.beaverness:GetPercent() > TUNING.WOODIE_TRANSFORM_TO_HUMAN then
+            inst:PushEvent("transform_person")
+        end
+    elseif inst.components.beaverness:GetPercent() <= TUNING.WOODIE_TRANSFORM_TO_BEAVER then
+        inst:PushEvent("transform_werebeaver")
+    end
+end
+
+local function onnewstate(inst)
+    if inst._wasnomorph ~= (inst.sg:HasStateTag("nomorph") or inst.sg:HasStateTag("silentmorph")) then
+        inst._wasnomorph = not inst._wasnomorph
+        if not inst._wasnomorph then
+            onbeavernesschange(inst)
+        end
+    end
+end
+
+--------------------------------------------------------------------------
+
+local function SetBeaverWorker(inst, enable)
+    if enable then
+        if inst.components.worker == nil then
+            inst:AddComponent("worker")
+            inst.components.worker:SetAction(ACTIONS.CHOP, 4)
+            inst.components.worker:SetAction(ACTIONS.MINE, .334)
+            inst.components.worker:SetAction(ACTIONS.DIG, .334)
+            inst.components.worker:SetAction(ACTIONS.HAMMER, .25)
+        end
+    elseif inst.components.worker ~= nil then
+        inst:RemoveComponent("worker")
+    end
+end
+
+local function SetBeaverSounds(inst, enable)
+    if enable then
+        inst.hurtsoundoverride = "dontstarve/characters/woodie/hurt_beaver"
+    else
+        inst.hurtsoundoverride = nil
+    end
+end
+
+--------------------------------------------------------------------------
+
+local function onbecamehuman(inst)
+    if inst.prefab ~= nil and inst.sg.currentstate.name ~= "reviver_rebirth" then
+        inst.AnimState:SetBank("wilson")
+        inst.AnimState:SetBuild(inst.skin_name or inst.prefab)
+    end
+
+    inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED
+    inst.components.combat:SetDefaultDamage(TUNING.UNARMED_DAMAGE)
+    inst.components.combat.bonusdamagefn = nil
+    inst.components.sanity.custom_rate_fn = nil
+    inst.components.eater:SetDiet({ FOODGROUP.WOODIE }, { FOODGROUP.WOODIE })
+    inst.components.pinnable.canbepinned = true
+    inst.components.hunger:Resume()
+    inst.components.temperature.inherentinsulation = 0
+    inst.components.temperature.inherentsummerinsulation = 0
+    inst.components.talker:StopIgnoringAll("becamebeaver")
+    inst.components.catcher:SetEnabled(true)
+
+    inst.CanExamine = nil
+
+    if inst.components.playercontroller ~= nil then
+        inst.components.playercontroller:SetCanUseMap(true)
+    end
+
+    SetBeaverWorker(inst, false)
+    SetBeaverActions(inst, false)
+    SetBeaverSounds(inst, false)
+    SetBeaverVision(inst, false)
+
+    if inst.isbeavermode:value() then
+        inst:RemoveTag("beaver")
+        inst.Network:RemoveUserFlag(USERFLAGS.CHARACTER_STATE_1)
+        inst.isbeavermode:set(false)
+        inst:PushEvent("stopbeaver")
+        OnBeaverModeDirty(inst)
+    end
+
+    OnResetBeard(inst)
+end
+
+local function onbecamebeaver(inst)
+    if inst.sg.currentstate.name ~= "reviver_rebirth" then
+        inst.AnimState:SetBank("werebeaver")
+        inst.AnimState:SetBuild("werebeaver_build")
+    end
+
+    inst.hurtsoundoverride = "dontstarve/characters/woodie/hurt_beaver"
+
+    inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED * 1.1
+    inst.components.combat:SetDefaultDamage(TUNING.BEAVER_DAMAGE)
+    inst.components.combat.bonusdamagefn = beaverbonusdamagefn
+    inst.components.sanity.custom_rate_fn = beaversanityfn
+    inst.components.eater:SetDiet(BEAVER_DIET, BEAVER_DIET)
+    inst.components.pinnable.canbepinned = false
+    inst.components.hunger:Pause()
+    inst.components.temperature.inherentinsulation = TUNING.INSULATION_LARGE
+    inst.components.temperature.inherentsummerinsulation = TUNING.INSULATION_LARGE
+    inst.components.talker:IgnoreAll("becamebeaver")
+    inst.components.catcher:SetEnabled(false)
+
+    inst.CanExamine = CannotExamine
+
+    if inst.components.playercontroller ~= nil then
+        inst.components.playercontroller:SetCanUseMap(false)
+    end
+
+    SetBeaverWorker(inst, true)
+    SetBeaverActions(inst, true)
+    SetBeaverSounds(inst, true)
+    SetBeaverVision(inst, true)
+
+    if not inst.isbeavermode:value() then
+        inst:AddTag("beaver")
+        inst.Network:AddUserFlag(USERFLAGS.CHARACTER_STATE_1)
+        inst.isbeavermode:set(true)
+        inst:PushEvent("startbeaver")
+        OnBeaverModeDirty(inst)
+    end
+
+    OnResetBeard(inst)
+end
+
+local function onrespawnedfromghost(inst)
+    inst.components.beaverness:StartTimeEffect(1, -.75 * inst.components.beaverness.max / TUNING.BEAVER_DRAIN_TIME)
+
+    if inst._wasnomorph == nil then
+        inst._wasnomorph = inst.sg:HasStateTag("nomorph") or inst.sg:HasStateTag("silentmorph")
+        inst:ListenForEvent("working", onworked)
+        inst:ListenForEvent("deployitem", ondeployitem)
+        inst:ListenForEvent("beavernessdelta", onbeavernesschange)
+        inst:ListenForEvent("newstate", onnewstate)
+        inst:WatchWorldState("isfullmoon", OnIsFullmoon)
+    end
+
+    if inst.isbeavermode:value() then
+        inst.components.inventory:Close()
+        onbecamebeaver(inst)
+    else
+        onbecamehuman(inst)
+    end
+
+    OnIsFullmoon(inst, TheWorld.state.isfullmoon)
+end
+
+local function onbecameghost(inst)
+    if inst.isbeavermode:value() then
+        inst.AnimState:SetBuild("ghost_werebeaver_build")
+    end
+
+    inst.components.beaverness:StopTimeEffect()
+
+    if inst._wasnomorph ~= nil then
+        inst._wasnomorph = nil
+        inst:RemoveEventCallback("working", onworked)
+        inst:RemoveEventCallback("deployitem", ondeployitem)
+        inst:RemoveEventCallback("beavernessdelta", onbeavernesschange)
+        inst:RemoveEventCallback("newstate", onnewstate)
+        inst:StopWatchingWorldState("isfullmoon", OnIsFullmoon)
+    end
+
+    SetBeaverWorker(inst, false)
+    SetBeaverActions(inst, false)
+    SetBeaverSounds(inst, false)
+    SetBeaverVision(inst, false)
+end
+
+local function TransformBeaver(inst, isbeaver)
+    if isbeaver then
+        onbecamebeaver(inst)
+    else
+        onbecamehuman(inst)
+    end
+end
+
+--------------------------------------------------------------------------
+
+--Re-enter idle state right after loading because
+--idle animations are determined by beaver state.
+local function onentityreplicated(inst)
+    if inst.sg ~= nil and inst:HasTag("beaver") then
+        inst.sg:GoToState("idle")
+    end
+end
+
+local function onpreload(inst, data)
+    if data ~= nil and data.isbeaver then
+        onbecamebeaver(inst)
+        inst.sg:GoToState("idle")
+    end
+end
+
+local function onload(inst)
+    if inst.isbeavermode:value() and not inst:HasTag("playerghost") then
+        inst.components.inventory:Close()
+    end
+end
+
+local function onsave(inst, data)
+    data.isbeaver = inst.isbeavermode:value() or nil
+end
+
+local function onsetskin(inst)
+    if inst.isbeavermode:value() and not inst:HasTag("playerghost") then
+        inst.AnimState:SetBuild("werebeaver_build")
+    end
+end
+
+--------------------------------------------------------------------------
+
+local function common_postinit(inst)
+    inst:AddTag("woodcutter")
+    inst:AddTag("polite")
+    inst:AddTag("ghostwithhat")
+
+    --bearded (from beard component) added to pristine state for optimization
+    inst:AddTag("bearded")
+
+    --beaverness (from beaverness component) added to pristine state for optimization
+    inst:AddTag("beaverness")
+
+    inst.GetBeaverness = GetBeaverness -- Didn't want to make beaverness a networked component
+    inst.IsBeaverStarving = IsBeaverStarving -- Didn't want to make beaverness a networked component
+
+    inst.isbeavermode = net_bool(inst.GUID, "woodie.isbeavermode", "isbeavermodedirty")
+    inst:ListenForEvent("playeractivated", OnPlayerActivated)
+    inst:ListenForEvent("playerdeactivated", OnPlayerDeactivated)
+
+    if inst.ghostenabled then
+        inst._SetGhostMode = inst.SetGhostMode
+        inst.SetGhostMode = SetGhostMode
+    end
+
+    if not TheWorld.ismastersim then
+        inst.OnEntityReplicated = onentityreplicated
     end
 end
 
 local function master_postinit(inst)
-	--inst:ListenForEvent("transform", function() if inst:HasTag("beaver") then BecomeWoodie(inst) else BecomeBeaver(inst) end end)
-	
-	inst:AddComponent("beaverness")
-	inst.components.beaverness.makeperson = BecomeWoodie
-	inst.components.beaverness.makebeaver = BecomeBeaver
-	
-	inst.components.beaverness.onbecomeperson = function()
-		inst:PushEvent("transform_person")
-	end
+    -- Give Woodie a beard so he gets some insulation from winter cold
+    -- (Value is Wilson's level 2 beard.)
+    inst:AddComponent("beard")
+    inst.components.beard.canshavetest = CanShaveTest
+    inst.components.beard.onreset = OnResetBeard
+    inst.components.beard:EnableGrowth(false)
 
-	inst.components.beaverness.onbecomebeaver = function()
-		inst:PushEvent("transform_werebeaver")
-		--BecomeBeaver(inst)
-	end
+    OnResetBeard(inst)
 
-    inst.Light:Enable(false)
-	inst.Light:SetRadius(5)
-    inst.Light:SetFalloff(.5)
-    inst.Light:SetIntensity(.6)
-    inst.Light:SetColour(245/255,40/255,0/255)
+    inst:AddComponent("beaverness")
 
-	inst:ListenForEvent("working", onworked)
+    inst._wasnomorph = nil
+    inst.TransformBeaver = TransformBeaver
 
-	BecomeWoodie(inst)
+    inst:ListenForEvent("ms_respawnedfromghost", onrespawnedfromghost)
+    inst:ListenForEvent("ms_becameghost", onbecameghost)
 
-    inst:WatchWorldState("startnight", OnStartNight)
+    onrespawnedfromghost(inst)
+
+    inst.OnSave = onsave
+    inst.OnLoad = onload
+    inst.OnPreLoad = onpreload
+    inst.OnSetSkin = onsetskin
 end
 
-return MakePlayerCharacter("woodie", prefabs, assets, nil, master_postinit, prefabs)
+return MakePlayerCharacter("woodie", prefabs, assets, common_postinit, master_postinit, starting_inv)

@@ -53,6 +53,7 @@ local function fn()
 
     inst:AddComponent("armor")
     inst.components.armor:InitCondition(TUNING.ARMORWOOD, TUNING.ARMORWOOD_ABSORPTION)
+    inst.components.armor:AddWeakness("beaver", TUNING.BEAVER_WOOD_DAMAGE)
 
     inst:AddComponent("equippable")
     inst.components.equippable.equipslot = EQUIPSLOTS.BODY

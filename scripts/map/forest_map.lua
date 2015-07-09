@@ -487,7 +487,10 @@ local function GenerateVoro(prefab, map_width, map_height, tasks, world_gen_choi
 	    end
 	end
 
-   	topology_save.root:PopulateVoronoi(SpawnFunctions, entities, map_width, map_height, current_gen_params)
+    save.map.generated = {}
+    save.map.generated.densities = {}
+
+   	topology_save.root:PopulateVoronoi(SpawnFunctions, entities, map_width, map_height, current_gen_params, save.map.generated.densities)
 	topology_save.root:GlobalPostPopulate(entities, map_width, map_height)
 
 	for k,ents in pairs(entities) do

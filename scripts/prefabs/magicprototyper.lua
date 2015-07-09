@@ -1,7 +1,7 @@
 require "prefabutil"
 
 local function onhammered(inst, worker)
-    if inst:HasTag("fire") and inst.components.burnable then
+    if inst.components.burnable ~= nil and inst.components.burnable:IsBurning() then
         inst.components.burnable:Extinguish()
     end
     inst.components.lootdropper:DropLoot()
@@ -18,11 +18,8 @@ local function onhit(inst, worker)
 end
 
 local function spawnrabbits(inst)
-    if not inst:HasTag("burnt") then 
-        if math.random() <= 0.1 then
-            local rabbit = SpawnPrefab("rabbit")
-            rabbit.Transform:SetPosition(inst.Transform:GetWorldPosition())
-        end
+    if not inst:HasTag("burnt") and math.random() <= 0.1 then
+        SpawnPrefab("rabbit").Transform:SetPosition(inst.Transform:GetWorldPosition())
     end
 end
 
@@ -34,7 +31,7 @@ local function onsave(inst, data)
 end
 
 local function onload(inst, data)
-    if data and data.burnt then
+    if data ~= nil and data.burnt ~= nil then
         inst.components.burnable.onburnt(inst)
     end
 end
@@ -43,13 +40,17 @@ local function doonact(inst, soundprefix, onact)
     if onact ~= nil then
         onact(inst)
     end
-    --inst.SoundEmitter:KillSound("sound")
+    if inst._activecount > 1 then
+        inst._activecount = inst._activecount - 1
+    else
+        inst._activecount = 0
+        inst.SoundEmitter:KillSound("sound")
+    end
     inst.SoundEmitter:PlaySound("dontstarve/common/researchmachine_"..soundprefix.."_ding")
 end
 
 local function onbuiltsound(inst, soundprefix)
     inst.SoundEmitter:PlaySound("dontstarve/common/researchmachine_"..soundprefix.."_place")
-    inst.SoundEmitter:PlaySound("dontstarve/common/researchmachine_"..soundprefix.."_idle_LP","idlesound")
 end
 
 local function createmachine(level, name, soundprefix, sounddelay, techtree, mergeanims, onact)
@@ -62,7 +63,9 @@ local function createmachine(level, name, soundprefix, sounddelay, techtree, mer
             else
                 inst.AnimState:PlayAnimation("proximity_loop", true)
             end
-            inst.SoundEmitter:PlaySound("dontstarve/common/researchmachine_"..soundprefix.."_idle_LP","idlesound")
+            if not inst.SoundEmitter:PlayingSound("idlesound") then
+                inst.SoundEmitter:PlaySound("dontstarve/common/researchmachine_"..soundprefix.."_idle_LP", "idlesound")
+            end
         end
     end
 
@@ -83,7 +86,10 @@ local function createmachine(level, name, soundprefix, sounddelay, techtree, mer
             inst.AnimState:PlayAnimation("use")
             inst.AnimState:PushAnimation("idle")
             inst.AnimState:PushAnimation("proximity_loop", true)
-            inst.SoundEmitter:PlaySound("dontstarve/common/researchmachine_"..soundprefix.."_run","sound")
+            if not inst.SoundEmitter:PlayingSound("sound") then
+                inst.SoundEmitter:PlaySound("dontstarve/common/researchmachine_"..soundprefix.."_run", "sound")
+            end
+            inst._activecount = inst._activecount + 1
             inst:DoTaskInTime(1.5, doonact, soundprefix, onact)
         end
     end
@@ -93,6 +99,7 @@ local function createmachine(level, name, soundprefix, sounddelay, techtree, mer
         inst.AnimState:PlayAnimation("place")
         inst.AnimState:PushAnimation("idle")
         inst.AnimState:PushAnimation("proximity_loop", true)
+        inst.SoundEmitter:PlaySound("dontstarve/common/researchmachine_"..soundprefix.."_idle_LP", "idlesound")
         inst:DoTaskInTime(sounddelay, onbuiltsound, soundprefix)
     end
 
@@ -135,6 +142,8 @@ local function createmachine(level, name, soundprefix, sounddelay, techtree, mer
         if not TheWorld.ismastersim then
             return inst
         end
+
+        inst._activecount = 0
 
         inst:AddComponent("inspectable")
         inst:AddComponent("prototyper")

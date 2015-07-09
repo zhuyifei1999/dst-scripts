@@ -26,8 +26,22 @@ local function onhit(inst, worker)
 end
 
 local function onextinguish(inst)
-    if inst.components.fueled then
+    if inst.components.fueled ~= nil then
         inst.components.fueled:InitializeFuelLevel(0)
+    end
+end
+
+local function ontakefuel(inst)
+    inst.SoundEmitter:PlaySound("dontstarve/common/fireAddFuel")
+end
+
+local function onupdatefueled(inst)
+    local fueled = inst.components.fueled
+
+    fueled.rate = TheWorld.state.israining and 1 + TUNING.COLDFIREPIT_RAIN_RATE * TheWorld.state.precipitationrate or 1
+
+    if inst.components.burnable ~= nil then
+        inst.components.burnable:SetFXLevel(fueled:GetCurrentSection(), fueled:GetSectionPercent())
     end
 end
 
@@ -37,14 +51,33 @@ local function onbuilt(inst)
     inst.SoundEmitter:PlaySound("dontstarve/common/fireAddFuel")
 end
 
+local SECTION_STATUS =
+{
+    [0] = "OUT",
+    [1] = "EMBERS",
+    [2] = "LOW",
+    [3] = "NORMAL",
+    [4] = "HIGH",
+}
 local function getstatus(inst)
-    local sec = inst.components.fueled:GetCurrentSection()
-    if sec == 0 then 
-        return "OUT"
-    elseif sec <= 4 then
-        local t = {"EMBERS","LOW","NORMAL","HIGH"}
-        return t[sec]
+    return SECTION_STATUS[inst.components.fueled:GetCurrentSection()]
+end
+
+local function OnHaunt(inst, haunter)
+    if math.random() <= TUNING.HAUNT_CHANCE_RARE and
+        inst.components.fueled ~= nil and
+        not inst.components.fueled:IsEmpty() then
+        inst.components.fueled:DoDelta(TUNING.MED_FUEL)
+        inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
+        return true
+    elseif math.random() <= TUNING.HAUNT_CHANCE_HALF and
+        inst.components.workable ~= nil and
+        inst.components.workable:CanBeWorked() then
+        inst.components.workable:WorkedBy(haunter, 1)
+        inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
+        return true
     end
+    return false
 end
 
 local function fn()
@@ -67,7 +100,7 @@ local function fn()
     inst:AddTag("structure")
     inst:AddTag("wildfireprotected")
 
-    MakeObstaclePhysics(inst, .3)    
+    MakeObstaclePhysics(inst, .3)
 
     inst.entity:SetPristine()
 
@@ -96,20 +129,8 @@ local function fn()
     inst.components.fueled.secondaryfueltype = FUELTYPE.CHEMICAL
     inst.components.fueled:SetSections(4)
     inst.components.fueled.bonusmult = TUNING.COLDFIREPIT_BONUS_MULT
-    inst.components.fueled.ontakefuelfn = function() inst.SoundEmitter:PlaySound("dontstarve/common/fireAddFuel") end
-
-    inst.components.fueled:SetUpdateFn(function()
-        if TheWorld.state.israining then
-            inst.components.fueled.rate = 1 + TUNING.COLDFIREPIT_RAIN_RATE*TheWorld.state.precipitationrate
-        else
-            inst.components.fueled.rate = 1
-        end
-
-        if inst.components.burnable and inst.components.fueled then
-            inst.components.burnable:SetFXLevel(inst.components.fueled:GetCurrentSection(), inst.components.fueled:GetSectionPercent())
-        end
-    end)
-
+    inst.components.fueled.ontakefuelfn = ontakefuel
+    inst.components.fueled:SetUpdateFn(onupdatefueled)
     inst.components.fueled:SetSectionCallback(function(section)
         if section == 0 then
             inst.components.burnable:Extinguish() 
@@ -130,24 +151,7 @@ local function fn()
 
     inst:AddComponent("hauntable")
     inst.components.hauntable.cooldown = TUNING.HAUNT_COOLDOWN_HUGE
-    inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
-        local ret = false
-        if math.random() <= TUNING.HAUNT_CHANCE_RARE then
-            if inst.components.fueled and not inst.components.fueled:IsEmpty() then
-                inst.components.fueled:DoDelta(TUNING.MED_FUEL)
-                inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
-                ret = true
-            end
-        end
-        if math.random() <= TUNING.HAUNT_CHANCE_HALF then
-            if inst.components.workable and inst.components.workable.workleft > 0 then
-                inst.components.workable:WorkedBy(haunter, 1)
-                inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
-                ret = true
-            end
-        end
-        return ret
-    end)
+    inst.components.hauntable:SetOnHauntFn(OnHaunt)
 
     inst:ListenForEvent("onbuilt", onbuilt)
 
@@ -155,4 +159,4 @@ local function fn()
 end
 
 return Prefab("common/objects/coldfirepit", fn, assets, prefabs),
-MakePlacer("common/coldfirepit_placer", "coldfirepit", "coldfirepit", "preview")
+    MakePlacer("common/coldfirepit_placer", "coldfirepit", "coldfirepit", "preview")

@@ -51,7 +51,7 @@ local function digup(inst, digger)
     inst:Remove()
 end
 
-local function sapling_fn(build, anim, growprefab)
+local function sapling_fn(build, anim, growprefab, tag)
     local function fn()
         local inst = CreateEntity()
 
@@ -65,6 +65,8 @@ local function sapling_fn(build, anim, growprefab)
         inst.AnimState:PlayAnimation(anim)
 
         MakeDragonflyBait(inst, 3)
+
+        inst:AddTag(tag)
 
         inst.entity:SetPristine()
 
@@ -100,5 +102,6 @@ local function sapling_fn(build, anim, growprefab)
     return fn
 end
 
-return Prefab("common/forest/pinecone_sapling", sapling_fn("pinecone", "idle_planted", "evergreen_short"), pinecone_assets, pinecone_prefabs),
-    Prefab("common/forest/acorn_sapling", sapling_fn("acorn", "idle_planted", "deciduoustree"), acorn_assets, acorn_prefabs)
+return Prefab("common/forest/pinecone_sapling", sapling_fn("pinecone", "idle_planted", "evergreen_short", "evergreen"), pinecone_assets, pinecone_prefabs),
+    Prefab("common/forest/lumpy_sapling", sapling_fn("pinecone", "idle_planted2", "evergreen_sparse_short", "evergreen_sparse"), pinecone_assets, pinecone_prefabs),
+    Prefab("common/forest/acorn_sapling", sapling_fn("acorn", "idle_planted", "deciduoustree", "deciduoustree"), acorn_assets, acorn_prefabs)

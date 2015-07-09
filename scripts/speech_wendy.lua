@@ -906,6 +906,7 @@ return {
 		PIGTORCH = "It cuts at the darkness.",
 		PINECONE = "A tiny life, ensconced in brittle death.",
         PINECONE_SAPLING = "A tree will grow soon.",
+        LUMPY_SAPLING = "This life appeared from nowhere.",
 		PITCHFORK = "What a devilish tool!",
 		PLANTMEAT = "It has a foul smell.",
 		PLANTMEAT_COOKED = "It's only slightly more appealing.",

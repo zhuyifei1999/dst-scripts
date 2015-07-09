@@ -1,17 +1,7 @@
 local function MakeHat(name)
     local fname = "hat_"..name
     local symname = name.."hat"
-    local texture = symname..".tex"
     local prefabname = symname
-    local assets =
-    {
-        Asset("ANIM", "anim/"..fname..".zip"),
-        --Asset("IMAGE", texture),
-    }
-
-    if name == "miner" then
-        table.insert(assets, Asset("ANIM", "anim/hat_miner_off.zip"))
-    end
 
     --If you want to use generic_perish to do more, it's still
     --commented in all the relevant places below in this file.
@@ -32,7 +22,7 @@ local function MakeHat(name)
             owner.AnimState:Show("HEAD_HAT")
         end
         
-        if inst.components.fueled then
+        if inst.components.fueled ~= nil then
             inst.components.fueled:StartConsuming()
         end
     end
@@ -49,7 +39,7 @@ local function MakeHat(name)
             owner.AnimState:Hide("HEAD_HAT")
         end
 
-        if inst.components.fueled then
+        if inst.components.fueled ~= nil then
             inst.components.fueled:StopConsuming()
         end
     end
@@ -68,7 +58,6 @@ local function MakeHat(name)
             inst.components.fueled:StartConsuming()
         end
     end
-
 
     local function simple(custom_init)
         local inst = CreateEntity()
@@ -577,7 +566,7 @@ local function MakeHat(name)
 
     local function spider_perish(inst)
         spider_disable(inst)
-        inst:Remove()
+        inst:Remove()--generic_perish(inst)
     end
 
     local function spider_custom_init(inst)
@@ -599,9 +588,10 @@ local function MakeHat(name)
         inst.components.equippable:SetOnUnequip(spider_unequip)
 
         inst:AddComponent("fueled")
-        inst.components.fueled.fueltype = FUELTYPE.SPIDERHAT
+        inst.components.fueled.fueltype = FUELTYPE.USAGE
         inst.components.fueled:InitializeFuelLevel(TUNING.SPIDERHAT_PERISHTIME)
         inst.components.fueled:SetDepletedFn(spider_perish)
+        inst.components.fueled.no_sewing = true
 
         inst:AddComponent("waterproofer")
         inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALL)
@@ -911,7 +901,7 @@ local function MakeHat(name)
                     owner.components.inventoryitem:AddMoisture(50)
                 end
             end
-            inst:Remove()
+            inst:Remove()--generic_perish(inst)
         end)
 
         inst:AddComponent("repairable")
@@ -983,11 +973,64 @@ local function MakeHat(name)
         return inst
     end
 
+    local function mole_turnon(owner)
+        owner.SoundEmitter:PlaySound("dontstarve_DLC001/common/moggles_on")
+    end
+
+    local function mole_turnoff(owner)
+        owner.SoundEmitter:PlaySound("dontstarve_DLC001/common/moggles_off")
+    end
+     
+    local function mole_onequip(inst, owner)
+        onequip(inst, owner)
+        mole_turnon(owner)
+    end
+
+    local function mole_onunequip(inst, owner)
+        onunequip(inst, owner)
+        mole_turnoff(owner)
+    end
+
+    local function mole_perish(inst)
+        if inst.components.equippable ~= nil and inst.components.equippable:IsEquipped() then
+            local owner = inst.components.inventoryitem ~= nil and inst.components.inventoryitem.owner or nil
+            if owner ~= nil then
+                mole_turnoff(owner)
+            end
+        end
+        inst:Remove()--generic_perish(inst)
+    end
+
+    local function mole_custom_init(inst)
+        inst:AddTag("nightvision")
+    end
+
+    local function mole()
+        local inst = simple(mole_custom_init)
+
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        inst.components.equippable:SetOnEquip(mole_onequip)
+        inst.components.equippable:SetOnUnequip(mole_onunequip)
+
+        inst:AddComponent("fueled")
+        inst.components.fueled.fueltype = FUELTYPE.WORMLIGHT
+        inst.components.fueled:InitializeFuelLevel(TUNING.MOLEHAT_PERISHTIME)
+        inst.components.fueled:SetDepletedFn(mole_perish)
+        inst.components.fueled.accepting = true
+
+        return inst
+    end
+
     local fn = nil
+    local assets = { Asset("ANIM", "anim/"..fname..".zip") }
     local prefabs = nil
+
     if name == "bee" then
         fn = bee
-    elseif name == "straw" then 
+    elseif name == "straw" then
         fn = straw
     elseif name == "top" then
         fn = top
@@ -1001,10 +1044,8 @@ local function MakeHat(name)
         fn = spider
     elseif name == "miner" then
         fn = miner
-        prefabs =
-        {
-            "strawhat",
-        }
+        table.insert(assets, Asset("ANIM", "anim/hat_miner_off.zip"))
+        prefabs = { "minerhatlight" }
     elseif name == "earmuffs" then
         fn = earmuffs
     elseif name == "winter" then
@@ -1018,8 +1059,10 @@ local function MakeHat(name)
     elseif name == "slurtle" then
         fn = slurtle
     elseif name == "ruins" then
-        prefabs = {"forcefieldfx"}
         fn = ruins
+        prefabs = { "forcefieldfx" }
+    elseif name == "mole" then
+        fn = mole
     elseif name == "wathgrithr" then
         fn = wathgrithr
     elseif name == "ice" then
@@ -1077,6 +1120,7 @@ return  MakeHat("straw"),
         MakeHat("walrus"),
         MakeHat("slurtle"),
         MakeHat("ruins"),
+        MakeHat("mole"),
         MakeHat("wathgrithr"),
         MakeHat("ice"),
         MakeHat("rain"),

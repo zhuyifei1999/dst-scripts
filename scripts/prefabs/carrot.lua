@@ -8,6 +8,11 @@ local prefabs =
     "carrot",
 }
 
+local function onpicked(inst)
+    TheWorld:PushEvent("beginregrowth", inst)
+    inst:Remove()
+end
+
 local function fn()
     --Carrot you eat is defined in veggies.lua
     local inst = CreateEntity()
@@ -33,7 +38,7 @@ local function fn()
     inst:AddComponent("pickable")
     inst.components.pickable.picksound = "dontstarve/wilson/pickup_plants"
     inst.components.pickable:SetUp("carrot", 10)
-    inst.components.pickable.onpickedfn = inst.Remove
+    inst.components.pickable.onpickedfn = onpicked
 
     inst.components.pickable.quickpick = true
 

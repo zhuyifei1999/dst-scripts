@@ -12,21 +12,41 @@ end)
 local Talker = Class(function(self, inst)
     self.inst = inst
     self.task = nil
-    self.ignoring = false
-
+    self.ignoring = nil
     self.mod_str_fn = nil
-
 end)
 
-function Talker:IgnoreAll()
-    self.ignoring = true
+function Talker:OnRemoveFromEntity()
+    if TheWorld.ismastersim then
+        self.inst:RemoveTag("ignoretalking")
+    end
 end
 
-function Talker:StopIgnoringAll()
-    self.ignoring = false
+function Talker:IgnoreAll(source)
+    if self.ignoring == nil then
+        self.ignoring = { [source or self] = true }
+        if TheWorld.ismastersim then
+            self.inst:AddTag("ignoretalking")
+        end
+    else
+        self.ignoring[source or self] = true
+    end
 end
 
-local function sayfn(self, script, nobroadcast, colour)   
+function Talker:StopIgnoringAll(source)
+    if self.ignoring == nil then
+        return
+    end
+    self.ignoring[source or self] = nil
+    if next(self.ignoring) == nil then
+        self.ignoring = nil
+        if TheWorld.ismastersim then
+            self.inst:RemoveTag("ignoretalking")
+        end
+    end
+end
+
+local function sayfn(self, script, nobroadcast, colour)
     local player = ThePlayer
     if self.inst.userid ~= nil and
         player ~= nil and
@@ -56,7 +76,7 @@ local function sayfn(self, script, nobroadcast, colour)
     for i, line in ipairs(script) do
         if line.message ~= nil then
 
-            if self.mod_str_fn then
+            if self.mod_str_fn ~= nil then
                 line.message = self.mod_str_fn(line.message)
             end
 
@@ -85,14 +105,22 @@ end
 function Talker:Say(script, time, noanim, force, nobroadcast, colour)
     if TheWorld.ismastersim then
         if not force
-            and ((self.inst.components.health ~= nil and self.inst.components.health:IsDead()) or
-                (self.inst.components.sleeper ~= nil and self.inst.components.sleeper:IsAsleep()) or
-                self.ignoring) then
+            and (self.ignoring ~= nil or
+                (self.inst.components.health ~= nil and self.inst.components.health:IsDead()) or
+                (self.inst.components.sleeper ~= nil and self.inst.components.sleeper:IsAsleep())) then
             return
         end
-    	if self.ontalk ~= nil then
+        if self.ontalk ~= nil then
             self.ontalk(self.inst, script)
-    	end
+        end
+    elseif not force then
+        if self.inst:HasTag("ignoretalking") then
+            return
+        end
+        local health = self.inst.replica.health
+        if health ~= nil and health:IsDead() then
+            return
+        end
     end
 
     self:ShutUp()

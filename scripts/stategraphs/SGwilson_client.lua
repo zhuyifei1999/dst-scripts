@@ -18,38 +18,40 @@ local actionhandlers =
 {
     ActionHandler(ACTIONS.CHOP,
         function(inst)
-            if not inst.sg:HasStateTag("prechop") then
-                return "chop_start"
+            if inst:HasTag("beaver") then
+                return not inst.sg:HasStateTag("gnawing") and "gnaw" or nil
             end
+            return not inst.sg:HasStateTag("prechop") and "chop_start" or nil
         end),
     ActionHandler(ACTIONS.MINE,
         function(inst)
-            if not inst.sg:HasStateTag("premine") then
-                return "mine_start"
+            if inst:HasTag("beaver") then
+                return not inst.sg:HasStateTag("gnawing") and "gnaw" or nil
             end
+            return not inst.sg:HasStateTag("premine") and "mine_start" or nil
         end),
     ActionHandler(ACTIONS.HAMMER,
         function(inst)
-            if not inst.sg:HasStateTag("prehammer") then
-                return "hammer_start"
+            if inst:HasTag("beaver") then
+                return not inst.sg:HasStateTag("gnawing") and "gnaw" or nil
             end
+            return not inst.sg:HasStateTag("prehammer") and "hammer_start" or nil
         end),
     ActionHandler(ACTIONS.TERRAFORM, "terraform"),
     ActionHandler(ACTIONS.DIG,
         function(inst)
-            if not inst.sg:HasStateTag("predig") then
-                return "dig_start"
+            if inst:HasTag("beaver") then
+                return not inst.sg:HasStateTag("gnawing") and "gnaw" or nil
             end
+            return not inst.sg:HasStateTag("predig") and "dig_start" or nil
         end),
     ActionHandler(ACTIONS.NET,
         function(inst)
-            if not inst.sg:HasStateTag("prenet") then
-                if inst.sg:HasStateTag("netting") then
-                    return "bugnet"
-                else
-                    return "bugnet_start"
-                end
-            end
+            return not inst.sg:HasStateTag("prenet")
+                and (inst.sg:HasStateTag("netting") and
+                    "bugnet" or
+                    "bugnet_start")
+                or nil
         end),
     ActionHandler(ACTIONS.FISH, "fishing_pre"),
     ActionHandler(ACTIONS.REEL,
@@ -89,11 +91,7 @@ local actionhandlers =
         end),
     ActionHandler(ACTIONS.SLEEPIN,
         function(inst, action)
-            if action.invobject ~= nil then
-                return "bedroll"
-            else
-                return "tent"
-            end
+            return action.invobject ~= nil and "bedroll" or "tent"
         end),
     ActionHandler(ACTIONS.TAKEITEM, "dolongaction"),
     ActionHandler(ACTIONS.BUILD, "dolongaction"),
@@ -119,7 +117,9 @@ local actionhandlers =
             end
             for k, v in pairs(FOODTYPE) do
                 if obj:HasTag("edible_"..v) then
-                    return v == FOODTYPE.MEAT and "eat" or "quickeat"
+                    return (inst:HasTag("beaver") and "beavereat")
+                        or (v == FOODTYPE.MEAT and "eat")
+                        or "quickeat"
                 end
             end
         end),
@@ -140,14 +140,14 @@ local actionhandlers =
         function(inst)
             if not (inst.replica.health:IsDead() or inst.sg:HasStateTag("attack")) then
                 local equip = inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-                if equip ~= nil and equip.replica.inventoryitem ~= nil and equip.replica.inventoryitem:IsWeapon() then
-                    if equip:HasTag("blowdart") then
-                        return "blowdart"
-                    elseif equip:HasTag("thrown") then
-                        return "throw"
-                    end
+                if equip == nil then
+                    return "attack"
                 end
-                return "attack"
+                local inventoryitem = equip.replica.inventoryitem
+                return (not (inventoryitem ~= nil and inventoryitem:IsWeapon()) and "attack")
+                    or (equip:HasTag("blowdart") and "blowdart")
+                    or (equip:HasTag("thrown") and "throw")
+                    or "attack"
             end
         end),
     ActionHandler(ACTIONS.TOSS, "throw"),
@@ -206,7 +206,14 @@ local states =
             local anims = {}
             local anim = "idle_loop"
 
-            if inst.replica.sanity ~= nil and not inst.replica.sanity:IsSane() then
+            if inst:HasTag("beaver") then
+                if inst:HasTag("groggy") then
+                    table.insert(anims, "idle_groggy_pre")
+                    table.insert(anims, "idle_groggy")
+                else
+                    table.insert(anims, "idle_loop")
+                end
+            elseif inst.replica.sanity ~= nil and not inst.replica.sanity:IsSane() then
                 table.insert(anims, "idle_sanity_pre")
                 table.insert(anims, "idle_sanity_loop")
             elseif inst.IsFreezing ~= nil and inst:IsFreezing() then
@@ -381,8 +388,9 @@ local states =
         onenter = function(inst)
             inst.components.locomotor:Stop()
             if not inst:HasTag("working") then
-                if inst.prefab == "woodie" then
+                if inst:HasTag("woodcutter") then
                     inst.AnimState:PlayAnimation("woodie_chop_pre")
+                    inst.AnimState:PushAnimation("woodie_chop_lag", false)
                 else
                     inst.AnimState:PlayAnimation("chop_pre")
                     inst.AnimState:PushAnimation("chop_lag", false)
@@ -474,6 +482,38 @@ local states =
             inst:ClearBufferedAction()
             inst.AnimState:PlayAnimation("pickaxe_pst")
             inst.sg:GoToState("idle", true)
+        end,
+    },
+
+    State
+    {
+        name = "gnaw",
+        tags = { "gnawing", "working" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            if not inst:HasTag("working") then
+                inst.AnimState:PlayAnimation("atk_pre")
+                inst.AnimState:PushAnimation("atk_lag", false)
+            end
+
+            inst:PerformPreviewBufferedAction()
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        onupdate = function(inst)
+            if inst:HasTag("working") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.sg:GoToState("idle")
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.sg:GoToState("idle")
         end,
     },
 
@@ -840,6 +880,36 @@ local states =
             inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation("quick_eat_pre")
             inst.AnimState:PushAnimation("quick_eat_lag", false)
+ 
+            inst:PerformPreviewBufferedAction()
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        onupdate = function(inst)
+            if inst:HasTag("busy") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.sg:GoToState("idle")
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.sg:GoToState("idle")
+        end,
+    },
+
+    State
+    {
+        name = "beavereat",
+        tags = { "busy" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("eat_pre")
+            inst.AnimState:PushAnimation("eat_lag", false)
  
             inst:PerformPreviewBufferedAction()
             inst.sg:SetTimeout(TIMEOUT)
@@ -1246,6 +1316,14 @@ local states =
                 if cooldown > 0 then
                     cooldown = math.max(cooldown, 13 * FRAMES)
                 end
+            elseif inst:HasTag("beaver") then
+                inst.sg.statemem.isbeaver = true
+                inst.AnimState:PlayAnimation("atk_pre")
+                inst.AnimState:PushAnimation("atk", false)
+                inst.SoundEmitter:PlaySound("dontstarve/wilson/attack_whoosh", nil, nil, true)
+                if cooldown > 0 then
+                    cooldown = math.max(cooldown, 8 * FRAMES)
+                end
             else
                 inst.AnimState:PlayAnimation("punch")
                 inst.SoundEmitter:PlaySound("dontstarve/wilson/attack_whoosh", nil, nil, true)
@@ -1271,9 +1349,17 @@ local states =
 
         timeline =
         {
+            TimeEvent(6 * FRAMES, function(inst)
+                if inst.sg.statemem.isbeaver then
+                    inst:ClearBufferedAction()
+                    inst.sg:RemoveStateTag("abouttoattack")
+                end
+            end),
             TimeEvent(8 * FRAMES, function(inst)
-                inst:ClearBufferedAction()
-                inst.sg:RemoveStateTag("abouttoattack")
+                if not inst.sg.statemem.isbeaver then
+                    inst:ClearBufferedAction()
+                    inst.sg:RemoveStateTag("abouttoattack")
+                end
             end),
         },
 

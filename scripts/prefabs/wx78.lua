@@ -32,23 +32,21 @@ local function applyupgrades(inst)
 end
 
 local function oneat(inst, food)
-    
     if food and food.components.edible and food.components.edible.foodtype == FOODTYPE.GEARS then
         --give an upgrade!
         inst.level = inst.level + 1
         applyupgrades(inst) 
         inst.SoundEmitter:PlaySound("dontstarve/characters/wx78/levelup")
-        
+
         -- MarkL Can't do this here, need to do it inside the component
         -- todo pax Move upgrade logic elsewhere.  
         --inst.HUD.controls.status.heart:PulseGreen()
         --inst.HUD.controls.status.stomach:PulseGreen()
         --inst.HUD.controls.status.brain:PulseGreen()
-        
+
         --inst.HUD.controls.status.brain:ScaleTo(1.3,1,.7)
         --inst.HUD.controls.status.heart:ScaleTo(1.3,1,.7)
         --inst.HUD.controls.status.stomach:ScaleTo(1.3,1,.7)
-        
     end
 end
 
@@ -63,7 +61,7 @@ local function onupdate(inst, dt)
         inst.SoundEmitter:KillSound("overcharge_sound")
         inst.Light:Enable(false)
         inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED 
-        inst.AnimState:SetBloomEffectHandle("")
+        inst.AnimState:ClearBloomEffectHandle()
         inst.components.temperature.mintemp = -20
         inst.components.talker:Say(GetString(inst, "ANNOUNCE_DISCHARGE"))
     else

@@ -1,7 +1,6 @@
 local assets =
 {
     Asset("ANIM", "anim/player_revive_fx.zip"),
-    -- Asset("ANIM", "anim/player_revive_WithoutGhostHat.zip"),
 }
 
 local function Flash(inst, intensity, radius)

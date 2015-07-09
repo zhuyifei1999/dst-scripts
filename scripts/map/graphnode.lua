@@ -1,5 +1,9 @@
 require "class"
 require "map/terrain"
+require "mathutil"
+
+-- Save characters in the save file
+local DENSITY_PRECISION = 1/10000
 
 Node = Class(function(self, id, data)
 	self.id = id
@@ -214,7 +218,7 @@ local function resolveswappableprefabs(table)
 	return tbl
 end
 
-function Node:PopulateVoronoi(spawnFn, entitiesOut, width, height, world_gen_choices)
+function Node:PopulateVoronoi(spawnFn, entitiesOut, width, height, world_gen_choices, prefabDensities)
 
 	if self.populated == true then
 		--table.insert(entitiesOut[prefab], save_data)
@@ -319,10 +323,14 @@ function Node:PopulateVoronoi(spawnFn, entitiesOut, width, height, world_gen_cho
 		self:PopulateExtra(world_gen_choices, spawnFn, {points_type=points_type, points_x=points_x, points_y=points_y, idx_left=idx_left, entitiesOut=entitiesOut, width=width, height=height, prefab_list=prefab_list})
 	end
 
+    prefabDensities[self.id] ={}
+    for k,v in pairs(prefab_list) do
+        prefabDensities[self.id][k] = RoundToNearest(v / #points_x, DENSITY_PRECISION)
+    end
 end
 
 
-function Node:PopulateChildren(spawnFn, entitiesOut, width, height, backgroundRoom, perTerrain, world_gen_choices)
+function Node:PopulateChildren(spawnFn, entitiesOut, width, height, backgroundRoom, perTerrain, world_gen_choices, prefabDensities)
 	-- Fill in any background sites that we have generated
 
 	if self.children_populated == true then
@@ -330,7 +338,6 @@ function Node:PopulateChildren(spawnFn, entitiesOut, width, height, backgroundRo
 	end
 	self.children_populated = true
 
-	local prefab_list = {}
 	local children = WorldSim:GetChildrenForSite(self.id)
 
 	--if not perTerrain then
@@ -346,6 +353,8 @@ function Node:PopulateChildren(spawnFn, entitiesOut, width, height, backgroundRo
 	if children ~= nil then
 
 		for i,id in ipairs(children) do
+
+            local prefab_list = {}
 			
 			local points_x, points_y, points_type = WorldSim:GetPointsForSite(id) -- minus the sites that have been taken
 			if points_x == nil then
@@ -380,6 +389,11 @@ function Node:PopulateChildren(spawnFn, entitiesOut, width, height, backgroundRo
 			end
 			
 			self:PopulateExtra(world_gen_choices, spawnFn, {points_type=points_type, points_x=points_x, points_y=points_y, idx_left=idx_left, entitiesOut=entitiesOut, width=width, height=height, prefab_list=prefab_list})
+
+            prefabDensities[self.id] ={}
+            for k,v in pairs(prefab_list) do
+                prefabDensities[self.id][k] = RoundToNearest(v / #points_x, DENSITY_PRECISION)
+            end
 		end
 	end
 

@@ -4,12 +4,12 @@ local assets =
 }
 
 local function FuelTaken(inst, taker)
-    if taker and taker.SoundEmitter then
+    if taker ~= nil and taker.SoundEmitter ~= nil then
         taker.SoundEmitter:PlaySound("dontstarve/creatures/leif/livinglog_burn")
     end
 end
 
-local function oneaten(inst, eater)
+local function oneaten(inst)
     inst.SoundEmitter:PlaySound("dontstarve/creatures/leif/livinglog_burn")
 end
 
@@ -46,6 +46,8 @@ local function fn()
     inst:AddComponent("edible")
     inst.components.edible.foodtype = FOODTYPE.WOOD
     inst.components.edible.woodiness = 50
+    inst.components.edible.healthvalue = TUNING.REPAIR_LOGS_HEALTH / 3
+    inst.components.edible.hungervalue = TUNING.CALORIES_TINY / 3
     inst.components.edible:SetOnEatenFn(oneaten)
 
     MakeSmallBurnable(inst, TUNING.MED_BURNTIME)
@@ -61,7 +63,7 @@ local function fn()
 
     inst:AddComponent("repairer")
     inst.components.repairer.repairmaterial = MATERIALS.WOOD
-    inst.components.repairer.healthrepairvalue = TUNING.REPAIR_LOGS_HEALTH*3
+    inst.components.repairer.healthrepairvalue = TUNING.REPAIR_LOGS_HEALTH * 3
 
     inst:ListenForEvent("onignite", onignite)
 

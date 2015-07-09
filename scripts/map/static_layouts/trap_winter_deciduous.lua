@@ -113,7 +113,7 @@ return {
         },
         {
           name = "",
-          type = "deciduoustree_normal",
+          type = "deciduoustree",
           shape = "rectangle",
           x = 100,
           y = 169,
@@ -124,7 +124,7 @@ return {
         },
         {
           name = "",
-          type = "deciduoustree_tall",
+          type = "deciduoustree",
           shape = "rectangle",
           x = 472,
           y = 117,
@@ -135,7 +135,7 @@ return {
         },
         {
           name = "",
-          type = "deciduoustree_tall",
+          type = "deciduoustree",
           shape = "rectangle",
           x = 265,
           y = 486,

@@ -812,6 +812,7 @@ local function RemapComponentActions()
     end
 end
 RemapComponentActions()
+assert(#ACTION_COMPONENT_NAMES <= 255, "Increase actioncomponents network data size.")
 
 local MOD_COMPONENT_ACTIONS = {}
 local MOD_ACTION_COMPONENT_NAMES = {}

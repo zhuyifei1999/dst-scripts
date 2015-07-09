@@ -14,9 +14,6 @@ local function OnUse(inst, target, cooling, radius)
         end
         if v.components.temperature then
             -- cool off yourself and any other nearby players
-            if v.components.temperature:GetCurrent() + coolingAmount <= 0 then
-                coolingAmount = -v.components.temperature:GetCurrent() + 5
-            end
             v.components.temperature:DoDelta(coolingAmount)
         end
     end

@@ -7,55 +7,75 @@ local assets =
 local prefabs =
 {
     "acorn",
-    "twigs"
+    "twigs",
 }
 
 local brain = require("brains/birchnutdrakebrain")
 
 local function RetargetFn(inst)
-	if inst.sg:HasStateTag("hidden") then return end
-    return FindEntity(inst, inst.range and inst.range or TUNING.DECID_MONSTER_TARGET_DIST*1.5, function(guy)
-        return inst.components.combat:CanTarget(guy) and not guy:HasTag("wall") and not guy:HasTag("birchnutdrake")
-    end)
+    return not inst.sg:HasStateTag("hidden")
+        and FindEntity(
+                inst,
+                inst.range or TUNING.DECID_MONSTER_TARGET_DIST * 1.5,
+                function(guy)
+                    return inst.components.combat:CanTarget(guy)
+                end,
+                { "_combat" }, --See entityreplica.lua (re: "_combat" tag)
+                { "wall", "birchnutdrake", "INLIMBO" }
+            )
+        or nil
 end
 
 local function KeepTargetFn(inst, target)
-	if inst.sg:HasStateTag("exit") then return false end
-	if inst.sg:HasStateTag("hidden") then return true end
-    if target then
-        return distsq(inst:GetPosition(), target:GetPosition()) < 20*20
-        and not target.components.health:IsDead()
-        and inst.components.combat:CanTarget(target)
-    end
+    return not inst.sg:HasStateTag("exit")
+        and (inst.sg:HasStateTag("hidden")
+            or (target ~= nil and
+                not target.components.health:IsDead() and
+                inst.components.combat:CanTarget(target) and
+                inst:IsNear(target, 20)
+                )
+            )
+end
+
+local function CanShareTarget(dude)
+    return dude:HasTag("birchnutdrake") and not dude.components.health:IsDead()
 end
 
 local function OnAttacked(inst, data)
     inst.components.combat:SetTarget(data.attacker)
-	inst.components.combat:ShareTarget(data.attacker, 15, function(dude)
-	        return dude:HasTag("birchnutdrake") and not dude.components.health:IsDead()
-		end, 10)
+    inst.components.combat:ShareTarget(data.attacker, 15, CanShareTarget, 10)
 end
 
 local function OnLostTarget(inst)
-	if not inst.sg:HasStateTag("hidden") and inst:GetTimeAlive() > 5 then
-		inst.sg:GoToState("exit")
-	end
+    if not inst.sg:HasStateTag("hidden") and inst:GetTimeAlive() > 5 then
+        inst.sg:GoToState("exit")
+    end
 end
 
 local function Exit(inst)
-	if not inst.sg:HasStateTag("hidden") then
-		inst.sg:GoToState("exit")
-	end
+    if not inst.sg:HasStateTag("hidden") then
+        inst.sg:GoToState("exit")
+    end
 end
 
 local function Enter(inst)
-	if not inst.sg:HasStateTag("hidden") then
-		inst.sg:GoToState("enter")
-	end
+    if not inst.sg:HasStateTag("hidden") then
+        inst.sg:GoToState("enter")
+    end
 end
 
 local function SleepTest()
     return false
+end
+
+local function OnDeath(inst, data, immediate)
+    if inst.components.burnable ~= nil and inst.components.burnable:IsBurning() then
+        if immediate then
+            inst.components.burnable:Extinguish()
+        else
+            inst:DoTaskInTime(.5, OnDeath, nil, true)
+        end
+    end
 end
 
 local function fn()
@@ -76,6 +96,7 @@ local function fn()
     inst.AnimState:SetBuild("treedrake_build")
     inst.AnimState:PlayAnimation("enter")
 
+    inst:AddTag("beaverchewable")
     inst:AddTag("birchnutdrake")
     inst:AddTag("monster")
     inst:AddTag("scarytoprey")
@@ -106,7 +127,7 @@ local function fn()
     inst:ListenForEvent("attacked", OnAttacked)
     inst:DoTaskInTime(5, inst.ListenForEvent, "losttarget", OnLostTarget)
 
-	inst:AddComponent("health")
+    inst:AddComponent("health")
     inst.components.health:SetMaxHealth(50)
 
     inst:AddComponent("sleeper")
@@ -114,30 +135,22 @@ local function fn()
 
     inst:AddComponent("knownlocations")
 
-	inst:SetStateGraph("SGbirchnutdrake")
-	inst:SetBrain(brain)
+    inst:SetStateGraph("SGbirchnutdrake")
+    inst:SetBrain(brain)
 
-	MakeSmallBurnableCharacter(inst, "treedrake_root", Vector3(0,-1,.1))
-	inst.components.burnable:SetBurnTime(10)
-	inst.components.health.fire_damage_scale = 2
-	inst:ListenForEvent("death", function(inst)
-		if inst.components.burnable and inst.components.burnable:IsBurning() then
-			inst:DoTaskInTime(.5, function(inst)
-				if inst.components.burnable and inst.components.burnable:IsBurning() then
-					inst.components.burnable:Extinguish()
-				end
-			end)
-		end
-	end)
-    inst.components.propagator.flashpoint = 5 + math.random()*3
-	MakeSmallFreezableCharacter(inst)
+    MakeSmallBurnableCharacter(inst, "treedrake_root", Vector3(0, -1, .1))
+    inst.components.burnable:SetBurnTime(10)
+    inst.components.health.fire_damage_scale = 2
+    inst:ListenForEvent("death", OnDeath)
+    inst.components.propagator.flashpoint = 5 + math.random() * 3
+    MakeSmallFreezableCharacter(inst)
 
-	inst.Exit = Exit
-	inst.Enter = Enter
+    inst.Exit = Exit
+    inst.Enter = Enter
 
-	-- Enter(inst)
+    -- Enter(inst)
 
-	return inst
+    return inst
 end
 
 return Prefab("birchnutdrake", fn, assets, prefabs)

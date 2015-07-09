@@ -173,6 +173,7 @@ local function fn()
     inst.AnimState:PlayAnimation("idle")
 
     inst:AddTag("structure")
+    inst:AddTag("chewable") -- by werebeaver
     inst:AddTag("catcoonden")
 
     MakeSnowCoveredPristine(inst)
@@ -206,8 +207,8 @@ local function fn()
 
     ---------------------
     inst:AddComponent("lootdropper")
-    for i,v in pairs(loots) do
-        inst.components.lootdropper:AddRandomLoot(v[1], v[2])
+    for i, v in ipairs(loots) do
+        inst.components.lootdropper:AddRandomLoot(unpack(v))
     end
     inst.components.lootdropper.numrandomloot = 4
 

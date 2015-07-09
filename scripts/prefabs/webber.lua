@@ -24,6 +24,9 @@ local function common_postinit(inst)
     inst:AddTag("spiderwhisperer")
     inst:AddTag("monster")
     inst:AddTag(UPGRADETYPES.SPIDER.."_upgradeuser")
+
+    --bearded (from beard component) added to pristine state for optimization
+    inst:AddTag("bearded")
 end
 
 --tune the beard economy...

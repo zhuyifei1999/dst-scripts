@@ -96,7 +96,7 @@ local function ShowState(inst, phase, fromwork)
 
     --[[if nclock and nclock:IsNightmare() then
         suffix = "_night"
-        inst.AnimState:SetBloomEffectHandle( "shaders/anim.ksh" )
+        inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
         if not fromwork then
             DoFx(inst)
         end
@@ -123,7 +123,7 @@ local function ShowState(inst, phase, fromwork)
     end
 end
 
-local function OnWork(inst, worked, workleft)
+local function OnWorked(inst, worked, workleft)
     if workleft <= 0 then
         inst.SoundEmitter:KillSound("hoverloop")
         inst.SoundEmitter:PlaySound("dontstarve/wilson/rock_break")
@@ -170,6 +170,7 @@ local function commonfn(small)
     inst.MiniMapEntity:SetIcon("statue_ruins.png")
 
     inst:AddTag("structure")
+    inst.entity:AddTag("statue")
 
     --Sneak these into pristine state for optimization
     inst:AddTag("_named")
@@ -195,7 +196,7 @@ local function commonfn(small)
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.MINE)
     inst.components.workable:SetWorkLeft(TUNING.MARBLEPILLAR_MINE)
-    inst.components.workable:SetOnWorkCallback(OnWork)
+    inst.components.workable:SetOnWorkCallback(OnWorked)
 
     inst:AddComponent("fader")
 

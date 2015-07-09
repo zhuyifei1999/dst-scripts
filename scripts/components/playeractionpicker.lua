@@ -2,6 +2,8 @@ local PlayerActionPicker = Class(function(self, inst)
     self.inst = inst
     self.map = TheWorld.Map
     self.containers = {}
+    self.leftclickoverride = nil
+    self.rightclickoverride = nil
 end)
 
 function PlayerActionPicker:RegisterContainer(container)
@@ -67,6 +69,7 @@ function PlayerActionPicker:GetSceneActions(useitem, right)
 
     if #sorted_acts == 0 and
         useitem ~= self.inst and
+        (self.inst.CanExamine == nil or self.inst:CanExamine()) and
         useitem:HasTag("inspectable") and
         (self.inst.sg == nil or self.inst.sg:HasStateTag("moving") or self.inst.sg:HasStateTag("idle")) and
         (self.inst:HasTag("moving") or self.inst:HasTag("idle")) then
@@ -133,7 +136,10 @@ end
 
 function PlayerActionPicker:GetLeftClickActions(position, target)
     if self.leftclickoverride ~= nil then
-        return self.leftclickoverride(self.inst, target, position)
+        local actions, usedefault = self.leftclickoverride(self.inst, target, position)
+        if not usedefault or (actions ~= nil and #actions > 0) then
+            return actions or {}
+        end
     end
 
     local actions = nil
@@ -190,7 +196,10 @@ end
 
 function PlayerActionPicker:GetRightClickActions(position, target)
     if self.rightclickoverride ~= nil then
-        return self.rightclickoverride(self.inst, target, position)
+        local actions, usedefault = self.rightclickoverride(self.inst, target, position)
+        if not usedefault or (actions ~= nil and #actions > 0) then
+            return actions or {}
+        end
     end
 
     local actions = nil
@@ -259,8 +268,10 @@ function PlayerActionPicker:DoGetMouseActions(position, target)
         end
     end
 
-    local lmb = self:GetLeftClickActions(position, target)[1]
-    local rmb = self:GetRightClickActions(position, target)[1]
+    local leftActions = self:GetLeftClickActions(position, target)
+    local rightActions = self:GetRightClickActions(position, target)
+    local lmb = leftActions and leftActions[1]
+    local rmb = rightActions and rightActions[1]
 
     return lmb, rmb ~= nil and (lmb == nil or lmb.action ~= rmb.action) and rmb or nil
 end

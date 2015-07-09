@@ -6,6 +6,7 @@ return {
 			AWAKEBEEFALO = "I don't think she'd like that.",
 			GENERIC = "You can't shave what's not hair.",
 			NOBITS = "It's already shorn, eh?",
+            REFUSE = "I like my beard.",
 		},
 		STORE =
 		{
@@ -914,6 +915,7 @@ return {
 		PIGTORCH = "How did they do that without thumbs?",
 		PINECONE = "I should grow it and then chop it down!",
         PINECONE_SAPLING = "Here comes a tree!",
+        LUMPY_SAPLING = "Shucks, I'm gonna have to chop it again.",
 		
 		PITCHFORK = "This really isn't my style.",
 		PLANTMEAT = "That's gross!",

@@ -9,6 +9,11 @@ local prefabs =
     "rottenegg",
 }
 
+local cooked_prefabs =
+{
+    "spoiled_food",
+}
+
 local function commonfn(anim, cookable)
     local inst = CreateEntity()
 
@@ -76,7 +81,7 @@ local function defaultfn()
     inst.components.edible.sanityvalue = 0
     inst.components.edible.hungervalue = TUNING.CALORIES_TINY
     inst.components.perishable:SetPerishTime(TUNING.PERISH_MED)
-    
+
     return inst
 end
 
@@ -103,11 +108,12 @@ local function rottenfn()
     inst.entity:AddNetwork()
 
     MakeInventoryPhysics(inst)
-    
+
     inst.AnimState:SetBank("birdegg")
     inst.AnimState:SetBuild("bird_eggs")
     inst.AnimState:PlayAnimation("rotten")
 
+    inst:AddTag("icebox_valid")
     inst:AddTag("cattoy")
     MakeDragonflyBait(inst, 3)
 
@@ -142,5 +148,5 @@ local function rottenfn()
 end
 
 return Prefab("common/inventory/bird_egg", defaultfn, assets, prefabs),
-        Prefab("common/inventory/bird_egg_cooked", cookedfn, assets),
-        Prefab("common/inventory/rottenegg", rottenfn, assets)
+    Prefab("common/inventory/bird_egg_cooked", cookedfn, assets, cooked_prefabs),
+    Prefab("common/inventory/rottenegg", rottenfn, assets)

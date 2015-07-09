@@ -1,6 +1,14 @@
 local START_DRAG_TIME = (1/30)*8
 local BUTTON_REPEAT_COOLDOWN = 0.5
 
+local function OnPlayerActivated(inst)
+    inst.components.playercontroller:Activate()
+end
+
+local function OnPlayerDeactivated(inst)
+    inst.components.playercontroller:Deactivate()
+end
+
 local PlayerController = Class(function(self, inst)
     self.inst = inst
 
@@ -31,6 +39,7 @@ local PlayerController = Class(function(self, inst)
     self.controller_target = nil
     self.controller_target_age = math.huge
     self.controller_attack_target = nil
+    self.controller_attack_target_ally_cd = nil
     --self.controller_attack_target_age = math.huge
 
     self.reticule = nil
@@ -42,21 +51,26 @@ local PlayerController = Class(function(self, inst)
     self.RMBaction = nil
 
     self.handler = nil
+    self.actionbuttonoverride = nil
 
     if self.ismastersim then
+        self.is_map_enabled = true
+        self.can_use_map = true
         self.classified = inst.player_classified
         self.inst:StartUpdatingComponent(self)
     elseif self.classified == nil and inst.player_classified ~= nil then
         self:AttachClassified(inst.player_classified)
     end
 
-    inst:ListenForEvent("playeractivated", function() self:Activate() end)
-    inst:ListenForEvent("playerdeactivated", function() self:Deactivate() end)
+    inst:ListenForEvent("playeractivated", OnPlayerActivated)
+    inst:ListenForEvent("playerdeactivated", OnPlayerDeactivated)
 end)
 
 --------------------------------------------------------------------------
 
 function PlayerController:OnRemoveFromEntity()
+    self.inst:RemoveEventCallback("playeractivated", OnPlayerActivated)
+    self.inst:RemoveEventCallback("playerdeactivated", OnPlayerDeactivated)
     self:Deactivate()
     if self.classified ~= nil then
         if self.ismastersim then
@@ -195,7 +209,15 @@ end
 
 function PlayerController:EnableMapControls(val)
     if self.ismastersim then
-        self.classified:EnableMapControls(val)
+        self.is_map_enabled = val == true
+        self.classified:EnableMapControls(val and self.can_use_map)
+    end
+end
+
+function PlayerController:SetCanUseMap(val)
+    if self.ismastersim then
+        self.can_use_map = val == true
+        self.classified:EnableMapControls(val and self.is_map_enabled)
     end
 end
 
@@ -377,6 +399,16 @@ function PlayerController:CanLocomote()
             self.inst.entity:CanPredictMovement())
 end
 
+function PlayerController:IsBusy()
+    if self.ismastersim then
+        return self.inst.sg:HasStateTag("busy")
+    else
+        return self.inst:HasTag("busy")
+            or (self.inst.sg ~= nil and self.inst.sg:HasStateTag("busy"))
+            or (self.classified ~= nil and self.classified.pausepredictionframes:value() > 0)
+    end
+end
+
 --------------------------------------------------------------------------
 
 function PlayerController:GetCursorInventoryObject()
@@ -493,7 +525,7 @@ function PlayerController:OnRemoteControllerActionButtonDeploy(invobject, positi
 
         self.remote_controls[CONTROL_CONTROLLER_ACTION] = not isreleased and 0 or nil
 
-        if invobject.components.inventoryitem ~= nil and invobject.components.inventoryitem.owner == self.inst then
+        if invobject.components.inventoryitem ~= nil and invobject.components.inventoryitem:GetGrandOwner() == self.inst then
             --Must match placer:GetDeployAction(), with an additional distance = 1 parameter
             self:DoAction(BufferedAction(self.inst, nil, ACTIONS.DEPLOY, invobject, position, nil, 1))
         --else
@@ -863,21 +895,23 @@ function PlayerController:GetAttackTarget(force_attack, force_target, isretarget
         rad = rad + 6
     end
 
-    local tool =
-        self.inst.replica.inventory ~= nil and
-        self.inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) or nil
-
-    local has_weapon =
-        tool ~= nil and
-        tool.replica.inventoryitem ~= nil and
-        tool.replica.inventoryitem:IsWeapon()
+    --Beaver teeth counts as having a weapon
+    local has_weapon = self.inst:HasTag("beaver")
+    if not has_weapon then
+        local inventory = self.inst.replica.inventory
+        local tool = inventory ~= nil and inventory:GetEquippedItem(EQUIPSLOTS.HANDS) or nil
+        if tool ~= nil then
+            local inventoryitem = tool.replica.inventoryitem
+            has_weapon = inventoryitem ~= nil and inventoryitem:IsWeapon()
+        end
+    end
 
     local reach = self.inst.Physics:GetRadius() + rad + 0.1
 
     if force_target ~= nil then
         return ValidateAttackTarget(combat, force_target, force_attack, x, z, has_weapon, reach) and force_target or nil
     end
-    
+
     --To deal with entity collision boxes we need to pad the radius.
     --Only include combat targets for auto-targetting, not light/extinguish
     --See entityreplica.lua (re: "_combat" tag)
@@ -1020,29 +1054,23 @@ for i, v in ipairs(TARGET_EXCLUDE_TAGS) do
 end
 
 function PlayerController:GetActionButtonAction(force_target)
-    --HACK: V2C, change this to a flag, and move the actual logic in here, it's just the beaver ...
-    if self.actionbuttonoverride ~= nil then
-        return self.actionbuttonoverride(self.inst)
-    end
-
     --Don't want to spam the action button before the server actually starts the buffered action
     --Also check if playercontroller is enabled
-    if (not self.ismastersim and (self.remote_controls[CONTROL_ACTION] or 0) > 0) or not self:IsEnabled() then
-        return
-    end
-
-    if not (self:IsDoingOrWorking()
-            or (force_target ~= nil
-                and (force_target:HasTag("INLIMBO") or
-                    force_target:HasTag("NOCLICK")))) then
+    --Also check if force_target is still valid
+    if (not self.ismastersim and (self.remote_controls[CONTROL_ACTION] or 0) > 0) or
+        not self:IsEnabled() or
+        (force_target ~= nil and (not force_target.entity:IsVisible() or force_target:HasTag("INLIMBO") or force_target:HasTag("NOCLICK"))) then
         --"DECOR" should never change, should be safe to skip that check
-        local force_target_distsq
-        if force_target ~= nil then
-            if not force_target.entity:IsVisible() then
-                return
-            end
-            force_target_distsq = self.inst:GetDistanceSqToInst(force_target)
+        return
+
+    elseif self.actionbuttonoverride ~= nil then
+        local buffaction, usedefault = self.actionbuttonoverride(self.inst, force_target)
+        if not usedefault or buffaction ~= nil then
+            return buffaction
         end
+
+    elseif not self:IsDoingOrWorking() then
+        local force_target_distsq = force_target ~= nil and self.inst:GetDistanceSqToInst(force_target) or nil
 
         if self.inst:HasTag("playerghost") then
             --haunt
@@ -1307,6 +1335,7 @@ function PlayerController:OnUpdate(dt)
             self.LMBaction, self.RMBaction = nil, nil
             self.controller_target = nil
             self.controller_attack_target = nil
+            self.controller_attack_target_ally_cd = nil
             if self.highlight_guy ~= nil and self.highlight_guy:IsValid() and self.highlight_guy.components.highlight ~= nil then
                 self.highlight_guy.components.highlight:UnHighlight()
             end
@@ -1323,13 +1352,7 @@ function PlayerController:OnUpdate(dt)
             self:RemoteStopAllControls()
 
             --Other than HUD blocking, we would've been enabled otherwise
-            --NOTE: self.classified is guaranteed to be non nil since we passed
-            --      all the other IsEnabled checks for ishudblocking to be true
-            if ishudblocking and
-                self.inst.sg ~= nil and
-                not (self.inst:HasTag("busy") or
-                    self.inst.sg:HasStateTag("busy") or
-                    self.classified.pausepredictionframes:value() > 0) then
+            if ishudblocking and not self:IsBusy() then
                 self:DoPredictWalking(dt)
             end
         end
@@ -1373,6 +1396,7 @@ function PlayerController:OnUpdate(dt)
         else
             self.controller_target = nil
             self.controller_attack_target = nil
+            self.controller_attack_target_ally_cd = nil
             self.LMBaction, self.RMBaction = self.inst.components.playeractionpicker:DoGetMouseActions()
             --If an action has a target, highlight the target.
             --If an action has no target and no pos, then it should
@@ -1518,12 +1542,7 @@ function PlayerController:OnUpdate(dt)
         self.controller_attack_override = nil
     end
     --NOTE: isbusy is used further below as well
-    local isbusy = self.inst:HasTag("busy")
-    if not (isbusy or self.ismastersim) then
-        isbusy =
-            (self.inst.sg ~= nil and self.inst.sg:HasStateTag("busy")) or
-            (self.classified ~= nil and self.classified.pausepredictionframes:value() > 0)
-    end
+    local isbusy = self:IsBusy()
     if not isbusy then
         if not self:DoPredictWalking(dt) then
             if not self:DoDragWalking(dt) then
@@ -1619,11 +1638,16 @@ end
 local function UpdateControllerAttackTarget(self, dt, x, y, z, dirx, dirz)
     if self.inst:HasTag("playerghost") then
         self.controller_attack_target = nil
+        self.controller_attack_target_ally_cd = nil
         return
     end
 
+    local combat = self.inst.replica.combat
+
+    self.controller_attack_target_ally_cd = math.max(0, (self.controller_attack_target_ally_cd or 1) - dt)
+
     if self.controller_attack_target ~= nil and
-        not (self.inst.replica.combat:CanTarget(self.controller_attack_target) and
+        not (combat:CanTarget(self.controller_attack_target) and
             CanEntitySeeTarget(self.inst, self.controller_attack_target)) then
         self.controller_attack_target = nil
         --it went invalid, but we're not resetting the age yet
@@ -1636,7 +1660,7 @@ local function UpdateControllerAttackTarget(self, dt, x, y, z, dirx, dirz)
     --end
 
     local min_rad = 4
-    local max_rad = math.max(min_rad, self.inst.replica.combat:GetAttackRangeWithWeapon()) + 3
+    local max_rad = math.max(min_rad, combat:GetAttackRangeWithWeapon()) + 3
     local min_rad_sq = min_rad * min_rad
     local max_rad_sq = max_rad * max_rad
 
@@ -1650,44 +1674,50 @@ local function UpdateControllerAttackTarget(self, dt, x, y, z, dirx, dirz)
 
     local target = nil
     local target_score = 0
+    local target_isally = true
     local preferred_target =
         TheInput:IsControlPressed(CONTROL_CONTROLLER_ATTACK) and
         self.controller_attack_target or
-        self.inst.replica.combat:GetTarget() or
+        combat:GetTarget() or
         nil
 
     for i, v in ipairs(nearby_ents) do
-        if v ~= self.inst and
-            (v ~= self.controller_attack_target or i == 1) and
-            self.inst.replica.combat:CanTarget(v) then
-            --Check distance including y value
-            local x1, y1, z1 = v.Transform:GetWorldPosition()
-            local dx, dy, dz = x1 - x, y1 - y, z1 - z
-            local dsq = dx * dx + dy * dy + dz * dz
+        if v ~= self.inst and (v ~= self.controller_attack_target or i == 1) then
+            local isally = combat:IsAlly(v)
+            if not (isally and
+                    self.controller_attack_target_ally_cd > 0 and
+                    v ~= preferred_target) and
+                combat:CanTarget(v) then
+                --Check distance including y value
+                local x1, y1, z1 = v.Transform:GetWorldPosition()
+                local dx, dy, dz = x1 - x, y1 - y, z1 - z
+                local dsq = dx * dx + dy * dy + dz * dz
 
-            if dsq < max_rad_sq and CanEntitySeePoint(self.inst, x1, y1, z1) then
-                local dist = dsq > 0 and math.sqrt(dsq) or 0
-                local dot = dist > 0 and dx / dist * dirx + dz / dist * dirz or 0
-                if dot > 0 or dist < min_rad then
-                    local score = dot + 1 - .5 * dsq / max_rad_sq
+                if dsq < max_rad_sq and CanEntitySeePoint(self.inst, x1, y1, z1) then
+                    local dist = dsq > 0 and math.sqrt(dsq) or 0
+                    local dot = dist > 0 and dx / dist * dirx + dz / dist * dirz or 0
+                    if dot > 0 or dist < min_rad then
+                        local score = dot + 1 - .5 * dsq / max_rad_sq
 
-                    if self.inst.replica.combat:IsAlly(v) then
-                        score = score * .25
-                    elseif v:HasTag("monster") then
-                        score = score * 4
-                    end
+                        if isally then
+                            score = score * .25
+                        elseif v:HasTag("monster") then
+                            score = score * 4
+                        end
 
-                    if v.replica.combat:GetTarget() == self.inst then
-                        score = score * 6
-                    end
+                        if v.replica.combat:GetTarget() == self.inst then
+                            score = score * 6
+                        end
 
-                    if v == preferred_target then
-                        score = score * 10
-                    end
+                        if v == preferred_target then
+                            score = score * 10
+                        end
 
-                    if score > target_score then
-                        target = v
-                        target_score = score
+                        if score > target_score then
+                            target = v
+                            target_score = score
+                            target_isally = isally
+                        end
                     end
                 end
             end
@@ -1701,11 +1731,17 @@ local function UpdateControllerAttackTarget(self, dt, x, y, z, dirx, dirz)
         self.controller_target.replica.health ~= nil and
         not self.controller_target.replica.health:IsDead() then
         target = self.controller_target
+        target_isally = false
     end
 
     if target ~= self.controller_attack_target then
         self.controller_attack_target = target
         --self.controller_attack_target_age = 0
+    end
+
+    if not target_isally then
+        --reset ally targeting cooldown
+        self.controller_attack_target_ally_cd = nil
     end
 end
 
@@ -1760,6 +1796,7 @@ local function UpdateControllerInteractionTarget(self, dt, x, y, z, dirx, dirz)
 
     local target = nil
     local target_score = 0
+    local canexamine = self.inst.CanExamine == nil or self.inst:CanExamine()
 
     for i, v in ipairs(nearby_ents) do
         --Only handle controller_target if it's the one we added at the front
@@ -1797,7 +1834,7 @@ local function UpdateControllerInteractionTarget(self, dt, x, y, z, dirx, dirz)
 
                 if score <= target_score then
                     --skip
-                elseif v:HasTag("inspectable") then
+                elseif canexamine and v:HasTag("inspectable") then
                     target = v
                     target_score = score
                 else
@@ -2178,10 +2215,12 @@ end
 function PlayerController:DoAction(buffaction)
     --Check if the action is actually valid.
     --Cached LMB/RMB actions can become invalid.
+    --Also check if we're busy.
     if buffaction == nil or
         (buffaction.invobject ~= nil and not buffaction.invobject:IsValid()) or
         (buffaction.target ~= nil and not buffaction.target:IsValid()) or
-        (buffaction.doer ~= nil and not buffaction.doer:IsValid()) then
+        (buffaction.doer ~= nil and not buffaction.doer:IsValid()) or
+        self:IsBusy() then
         return
     end
 
@@ -2269,7 +2308,7 @@ function PlayerController:OnLeftClick(down)
     end
 
     local act = self:GetLeftMouseAction() or BufferedAction(self.inst, nil, ACTIONS.WALKTO, nil, TheInput:GetWorldPosition())
-    if act.action == ACTIONS.WALKTO then
+     if act.action == ACTIONS.WALKTO then
         if act.target == nil and TheInput:GetWorldEntityUnderMouse() == nil then
             self.startdragtime = GetTime()
         end

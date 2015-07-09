@@ -236,6 +236,8 @@ local function fn()
     inst.islighton = net_bool(inst.GUID, "statueglommer.islighton", "lightdirty")
     inst.lighttask = nil
 
+    inst.entity:AddTag("statue")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -247,7 +249,7 @@ local function fn()
     inst:AddComponent("inspectable")
     inst.components.inspectable.getstatus = getstatus
 
-    inst:AddComponent("timer")  
+    inst:AddComponent("timer")
     inst:AddComponent("leader")
     inst.components.leader.onremovefollower = OnLoseChild
 

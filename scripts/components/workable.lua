@@ -56,10 +56,6 @@ function Workable:GetDebugString()
         .." workable: "..tostring(self.workable)
 end
 
-function Workable:AddStage(amount)
-    table.insert(self.stages, amount)
-end
-
 function Workable:SetWorkAction(act)
     self.action = act
 end
@@ -80,13 +76,12 @@ function Workable:SetWorkable(able)
 end
 
 function Workable:SetWorkLeft(work)
-    if not self.workable then self.workable = true end
-    work = work or 10
-    work = (work <= 0 and 1) or work
-    if self.maxwork > 0 then
-        work = (work > self.maxwork and self.maxwork) or work
-    end
-    self.workleft = work
+    self.workable = true
+    self.workleft = self.maxwork > 0 and math.clamp(work or 10, 1, self.maxwork) or math.max(1, work or 10)
+end
+
+function Workable:CanBeWorked()
+    return self.workable and self.workleft > 0
 end
 
 function Workable:SetOnLoadFn(fn)
@@ -96,20 +91,16 @@ function Workable:SetOnLoadFn(fn)
 end
 
 function Workable:SetMaxWork(work)
-    work = work or 10
-    work = (work <= 0 and 1) or work
-    self.maxwork = work
+    self.maxwork = math.max(1, work or 10)
 end
 
 function Workable:OnSave()
-    if self.savestate then
-        return
-        {
-            maxwork = self.maxwork,
-            workleft = self.workleft
-        }
-    end
-    return {}
+    return self.savestate
+        and {
+                maxwork = self.maxwork,
+                workleft = self.workleft,
+            }
+        or {}
 end
 
 function Workable:OnLoad(data)
@@ -125,10 +116,10 @@ function Workable:WorkedBy(worker, numworks)
     self.workleft = self.workleft - numworks
     self.lastworktime = GetTime()
 
-    worker:PushEvent("working", {target = self.inst})
-    self.inst:PushEvent("worked", {worker = worker, workleft = self.workleft})
-    
-    if self.onwork then
+    worker:PushEvent("working", { target = self.inst })
+    self.inst:PushEvent("worked", { worker = worker, workleft = self.workleft })
+
+    if self.onwork ~= nil then
         self.onwork(self.inst, worker, self.workleft)
     end
 

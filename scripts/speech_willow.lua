@@ -939,6 +939,7 @@ return {
 		PIGTORCH = "These pigs sure know how to have a good time.",
 		PINECONE = "Hey there, tree seed.",
         PINECONE_SAPLING = "You'll be a real tree soon.",
+        LUMPY_SAPLING = "I should burn this before it reaches full ugliness.",
 		PITCHFORK = "Three times the pointiness.",
 		PLANTMEAT = "Eww, it's all slimy.",
 		PLANTMEAT_COOKED = "Fire makes everything better.",

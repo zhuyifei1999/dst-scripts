@@ -906,6 +906,7 @@ return {
 		PIGTORCH = "How is fire made?",
 		PINECONE = "I could crush this tree-seed with my hands!",
         PINECONE_SAPLING = "It will be tree soon.",
+        LUMPY_SAPLING = "It pushed right up from the dirt!",
 		PITCHFORK = "Reminds me of childhood.",
 		PLANTMEAT = "What is this? Meat for baby man?",
 		PLANTMEAT_COOKED = "Is slightly better now.",

@@ -47,20 +47,25 @@ local events=
 }
 
 local function destroystuff(inst)
-    local pt = inst:GetPosition()
-    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, 3)
-    for k,v in pairs(ents) do
-        if v and v.components.workable and v.components.workable.workleft > 0 then
-            SpawnPrefab("collapse_small").Transform:SetPosition(v:GetPosition():Get())        
-            v.components.workable:WorkedBy(inst, 2)
-            --v.components.workable:Destroy(inst)
+    local x, y, z = inst.Transform:GetWorldPosition()
+    local ents = TheSim:FindEntities(x, y, z, 3, nil, { "INLIMBO" })
+    for i, v in ipairs(ents) do
+        if v:IsValid() then
+            if v.components.workable ~= nil and v.components.workable:CanBeWorked() then
+                SpawnPrefab("collapse_small").Transform:SetPosition(v.Transform:GetWorldPosition())
+                v.components.workable:WorkedBy(inst, 2)
+                --v.components.workable:Destroy(inst)
+            end
+            --might not be valid after work!
+            if v ~= inst.WINDSTAFF_CASTER and
+                v:IsValid() and
+                v.components.health ~= nil and
+                not v.components.health:IsDead() and
+                v.components.combat ~= nil then
+                v.components.combat:GetAttacked(inst, TUNING.TORNADO_DAMAGE, nil, "wind")
+                v.components.combat:SuggestTarget(inst.WINDSTAFF_CASTER)
+            end
         end
-
-        if v and v.components.health and not v.components.health:IsDead() 
-        and v ~= inst.WINDSTAFF_CASTER and v.components.combat then
-        	v.components.combat:GetAttacked(inst, TUNING.TORNADO_DAMAGE)
-        	v.components.combat:SuggestTarget(inst.WINDSTAFF_CASTER)
-    	end
     end
 end
 

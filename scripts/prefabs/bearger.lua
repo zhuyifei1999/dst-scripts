@@ -1,3 +1,5 @@
+--V2C: TODO: ... u know what this needs.... - _-""
+
 local assets =
 {
 	Asset("ANIM", "anim/bearger_build.zip"),
@@ -116,53 +118,50 @@ local function OnAttacked(inst, data)
 	inst.components.combat:SetTarget(data.attacker)
 end
 
+local function OnDestroyOther(inst, other)
+    if other:IsValid() and other.components.workable ~= nil and other.components.workable:CanBeWorked() then
+        SpawnPrefab("collapse_small").Transform:SetPosition(other.Transform:GetWorldPosition())
+        other.components.lootdropper:SetLoot({})
+        other.components.workable:Destroy(inst)
+    end
+end
+
 local function OnCollide(inst, other)
-
-	local v1 = Vector3(inst.Physics:GetVelocity())
-	if v1:LengthSq() < 1 then return end
-
-	inst:DoTaskInTime(2*FRAMES, function()
-		if other and other.components.workable and other.components.workable.workleft > 0 then
-			SpawnPrefab("collapse_small").Transform:SetPosition(other:GetPosition():Get())
-			other.components.lootdropper:SetLoot({})
-			other.components.workable:Destroy(inst)
-		end
-	end)
+    if other ~= nil and
+        other:IsValid() and
+        other.components.workable ~= nil and
+        other.components.workable:CanBeWorked() and
+        Vector3(inst.Physics:GetVelocity()):LengthSq() >= 1 then
+        inst:DoTaskInTime(2 * FRAMES, OnDestroyOther, other)
+    end
 end
 
 local function WorkEntities(inst)
-	local pt = inst:GetPosition()
-	local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, 5, nil, {"insect"})
-	local heading_angle = -(inst.Transform:GetRotation())
-	local dir = Vector3(math.cos(heading_angle*DEGREES),0, math.sin(heading_angle*DEGREES))
+    local pt = inst:GetPosition()
+    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, 5, nil, { "insect", "INLIMBO" })
+    local heading_angle = inst.Transform:GetRotation()
+    local dir = Vector3(math.cos(heading_angle * DEGREES), 0, -math.sin(heading_angle * DEGREES))
 
-	for k,v in pairs(ents) do
-		if v and v.components.workable then
-			local hp = v:GetPosition()
-			local offset = (hp - pt):GetNormalized()
-			local dot = offset:Dot(dir)
-			if dot > .3 then
-				v.components.workable:Destroy(inst)
-			end
-		end
-	end
+    for i, v in ipairs(ents) do
+        if v:IsValid() and v.components.workable ~= nil then
+            local offset = (v:GetPosition() - pt):GetNormalized()
+            if offset:Dot(dir) > .3 then
+                v.components.workable:Destroy(inst)
+            end
+        end
+    end
 end
 
 local function LaunchItem(inst, target, item)
-	if item.Physics then
+    if item.Physics ~= nil then
+        local x, y, z = item.Transform:GetWorldPosition()
+        item.Physics:Teleport(x, .1, z)
 
-		local x, y, z = item:GetPosition():Get()
-		y = .1
-		item.Physics:Teleport(x,y,z)
-
-		local hp = target:GetPosition()
-		local pt = inst:GetPosition()
-		local vel = (hp - pt):GetNormalized()
-		local speed = 5 + (math.random() * 2)
-		local angle = math.atan2(vel.z, vel.x) + (math.random() * 20 - 10) * DEGREES
-		item.Physics:SetVel(math.cos(angle) * speed, 10, math.sin(angle) * speed)
-
-	end
+        local vel = (target:GetPosition() - inst:GetPosition()):GetNormalized()
+        local speed = 5 + math.random() * 2
+        local angle = math.atan2(vel.z, vel.x) + (math.random() * 20 - 10) * DEGREES
+        item.Physics:SetVel(math.cos(angle) * speed, 10, -math.sin(angle) * speed)
+    end
 end
 
 local function OnGroundPound(inst)

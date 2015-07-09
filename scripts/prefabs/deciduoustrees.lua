@@ -438,11 +438,12 @@ local growth_stages =
 }
 
 local function chop_tree(inst, chopper, chops)
-    
-    if chopper and chopper.components.beaverness and chopper.components.beaverness:IsBeaver() then
-        inst.SoundEmitter:PlaySound("dontstarve/characters/woodie/beaver_chop_tree")          
-    else
-        inst.SoundEmitter:PlaySound("dontstarve/wilson/use_axe_tree")          
+    if chopper == nil or not chopper:HasTag("playerghost") then
+        inst.SoundEmitter:PlaySound(
+            chopper ~= nil and chopper:HasTag("beaver") and
+            "dontstarve/characters/woodie/beaver_chop_tree" or
+            "dontstarve/wilson/use_axe_tree"
+        )
     end
 
     SpawnLeafFX(inst, nil, true)
@@ -482,7 +483,7 @@ local function delayed_start_monster(inst)
     inst:StartMonster()
 end
 
-local function chop_down_tree(inst, chopper)
+local function make_stump(inst)
     inst:RemoveComponent("burnable")
     MakeSmallBurnable(inst)
     inst:RemoveComponent("propagator")
@@ -499,6 +500,32 @@ local function chop_down_tree(inst, chopper)
         inst.monster_stop_task:Cancel()
         inst.monster_stop_task = nil
     end
+    if inst.leaveschangetask ~= nil then
+        inst.leaveschangetask:Cancel()
+        inst.leaveschangetask = nil
+    end
+    if inst.leaveschangetask ~= nil then
+        inst.leaveschangetask:Cancel()
+        inst.leaveschangetask = nil
+    end
+
+    RemovePhysicsColliders(inst)
+
+    inst:AddComponent("workable")
+    inst.components.workable:SetWorkAction(ACTIONS.DIG)
+    inst.components.workable:SetOnFinishCallback(dig_up_stump)
+    inst.components.workable:SetWorkLeft(1)
+
+    if inst.components.growable ~= nil then
+        inst.components.growable:StopGrowing()
+    end
+
+    if inst.components.timer and not inst.components.timer:TimerExists("decay") then
+        inst.components.timer:StartTimer("decay", GetRandomWithVariance(TUNING.DECIDUOUS_REGROWTH.DEAD_DECAY_TIME, TUNING.DECIDUOUS_REGROWTH.DEAD_DECAY_TIME*0.5))
+    end
+end
+
+local function chop_down_tree(inst, chopper)
 
     local days_survived = TheWorld.state.cycles
     if not inst.monster and inst.leaf_state ~= "barren" and inst.components.growable ~= nil and inst.components.growable.stage == 3 and days_survived >= TUNING.DECID_MONSTER_MIN_DAY then
@@ -560,11 +587,6 @@ local function chop_down_tree(inst, chopper)
         inst:RemoveComponent("combat")
     end
 
-    if inst.leaveschangetask ~= nil then
-        inst.leaveschangetask:Cancel()
-        inst.leaveschangetask = nil
-    end
-
     inst.SoundEmitter:PlaySound("dontstarve/forest/treefall")
 
     local pt = Vector3(inst.Transform:GetWorldPosition())
@@ -588,22 +610,9 @@ local function chop_down_tree(inst, chopper)
 
     inst:DoTaskInTime(.4, chop_down_tree_shake)
 
-    RemovePhysicsColliders(inst)
     inst.AnimState:PushAnimation(inst.anims.stump)
 
-    if inst.leaveschangetask ~= nil then
-        inst.leaveschangetask:Cancel()
-        inst.leaveschangetask = nil
-    end
-
-    inst:AddComponent("workable")
-    inst.components.workable:SetWorkAction(ACTIONS.DIG)
-    inst.components.workable:SetOnFinishCallback(dig_up_stump)
-    inst.components.workable:SetWorkLeft(1)
-
-    if inst.components.growable ~= nil then
-        inst.components.growable:StopGrowing()
-    end
+    make_stump(inst)
 end
 
 local function chop_down_burnt_tree(inst, chopper)
@@ -665,9 +674,9 @@ local function onburntchanges(inst)
     end)
 end
 
-local function OnBurnt(inst, imm)
+local function OnBurnt(inst, immediate)
     inst:AddTag("burnt")
-    if imm then
+    if immediate then
         if inst.monster then
             inst.monster = false
             if inst.components.deciduoustreeupdater then 
@@ -698,6 +707,11 @@ local function OnBurnt(inst, imm)
             end
         end)
     end    
+
+    if inst.components.timer and not inst.components.timer:TimerExists("decay") then
+        inst.components.timer:StartTimer("decay", GetRandomWithVariance(TUNING.DECIDUOUS_REGROWTH.DEAD_DECAY_TIME, TUNING.DECIDUOUS_REGROWTH.DEAD_DECAY_TIME*0.5))
+    end
+
     inst.AnimState:SetRayTestOnBB(true)
 end
 
@@ -1036,10 +1050,6 @@ local function onload(inst, data)
         if data.burnt then
             inst._wasonfire = true--OnEntityWake will handle it actually doing burnt logic
         elseif data.stump then
-            while inst:HasTag("shelter") do inst:RemoveTag("shelter") end
-            while inst:HasTag("cattoyairborne") do inst:RemoveTag("cattoyairborne") end
-            inst:RemoveComponent("burnable")
-            if not inst:HasTag("stump") then inst:AddTag("stump") end
             if data.monster then
                 inst.AnimState:SetBank("tree_leaf_monster")
                 if GetBuild(inst).leavesbuild then
@@ -1056,16 +1066,7 @@ local function onload(inst, data)
             end
             inst.AnimState:PlayAnimation(inst.anims.stump)
 
-            MakeSmallBurnable(inst)
-            inst:RemoveComponent("workable")
-            inst:RemoveComponent("propagator")
-            inst:RemoveComponent("growable")
-            RemovePhysicsColliders(inst)
-            
-            inst:AddComponent("workable")
-            inst.components.workable:SetWorkAction(ACTIONS.DIG)
-            inst.components.workable:SetOnFinishCallback(dig_up_stump)
-            inst.components.workable:SetWorkLeft(1)
+            make_stump(inst)
         end
     end
 
@@ -1217,6 +1218,7 @@ local function makefn(build, stage, data)
         inst:AddTag("workable")
         inst:AddTag("cattoyairborne")
         inst:AddTag("noattack")
+        inst:AddTag("deciduoustree")
 
         inst.build = build
         inst.AnimState:SetBank("tree_leaf")
@@ -1259,6 +1261,11 @@ local function makefn(build, stage, data)
         inst.components.burnable:SetOnExtinguishFn(onextinguish)
 
         MakeMediumPropagator(inst)
+
+        inst:AddComponent("plantregrowth")
+        inst.components.plantregrowth:SetRegrowthRate(TUNING.DECIDUOUS_REGROWTH.OFFSPRING_TIME)
+        inst.components.plantregrowth:SetProduct("acorn_sapling")
+        inst.components.plantregrowth:SetSearchTag("deciduoustree")
 
         inst:AddComponent("inspectable")
         inst.components.inspectable.getstatus = inspect_tree

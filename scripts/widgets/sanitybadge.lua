@@ -2,42 +2,45 @@ local Badge = require "widgets/badge"
 local UIAnim = require "widgets/uianim"
 
 local SanityBadge = Class(Badge, function(self, owner)
-	Badge._ctor(self, "sanity", owner)
-	
-	self.sanityarrow = self.underNumber:AddChild(UIAnim())
-	self.sanityarrow:GetAnimState():SetBank("sanity_arrow")
-	self.sanityarrow:GetAnimState():SetBuild("sanity_arrow")
-	self.sanityarrow:GetAnimState():PlayAnimation("neutral")
-	self.sanityarrow:SetClickable(false)
+    Badge._ctor(self, "sanity", owner)
+    
+    self.sanityarrow = self.underNumber:AddChild(UIAnim())
+    self.sanityarrow:GetAnimState():SetBank("sanity_arrow")
+    self.sanityarrow:GetAnimState():SetBuild("sanity_arrow")
+    self.sanityarrow:GetAnimState():PlayAnimation("neutral")
+    self.sanityarrow:SetClickable(false)
 
-	self.topperanim = self.underNumber:AddChild(UIAnim())
-	self.topperanim:GetAnimState():SetBank("effigy_topper")
-	self.topperanim:GetAnimState():SetBuild("effigy_topper")
-	self.topperanim:GetAnimState():PlayAnimation("anim")
-	self.topperanim:SetClickable(false)
+    self.topperanim = self.underNumber:AddChild(UIAnim())
+    self.topperanim:GetAnimState():SetBank("effigy_topper")
+    self.topperanim:GetAnimState():SetBuild("effigy_topper")
+    self.topperanim:GetAnimState():PlayAnimation("anim")
+    self.topperanim:SetClickable(false)
 
-	self.ghostanim = self.underNumber:AddChild(UIAnim())
-	self.ghostanim:GetAnimState():SetBank("sanity_ghost")
-	self.ghostanim:GetAnimState():SetBuild("sanity_ghost")
-	self.ghostanim:GetAnimState():PlayAnimation("deactivate")
-	self.ghostanim:Hide()
-	self.ghostanim:SetClickable(false)
+    --Hide the original frame since it is now overlapped by the topperanim
+    self.anim:GetAnimState():Hide("frame")
 
-	self.val = 100
-	self.max = 100
-	self.penaltypercent = 0
-	self.ghost = false
+    self.ghostanim = self.underNumber:AddChild(UIAnim())
+    self.ghostanim:GetAnimState():SetBank("sanity_ghost")
+    self.ghostanim:GetAnimState():SetBuild("sanity_ghost")
+    self.ghostanim:GetAnimState():PlayAnimation("deactivate")
+    self.ghostanim:Hide()
+    self.ghostanim:SetClickable(false)
 
-	self:StartUpdating()
+    self.val = 100
+    self.max = 100
+    self.penaltypercent = 0
+    self.ghost = false
+
+    self:StartUpdating()
 end)
 
 function SanityBadge:SetPercent(val, max, penaltypercent)
-	self.val = val
-	self.max = max
-	Badge.SetPercent(self, self.val, self.max)
+    self.val = val
+    self.max = max
+    Badge.SetPercent(self, self.val, self.max)
 
-	self.penaltypercent = penaltypercent or 0
-	self.topperanim:GetAnimState():SetPercent("anim", self.penaltypercent)
+    self.penaltypercent = penaltypercent or 0
+    self.topperanim:GetAnimState():SetPercent("anim", self.penaltypercent)
 end
 
 local RATE_SCALE_ANIM =
@@ -80,10 +83,10 @@ function SanityBadge:OnUpdate(dt)
         ghost = sanity:IsGhostDrain()
     end
 
-	if self.arrowdir ~= anim then
-		self.arrowdir = anim
-		self.sanityarrow:GetAnimState():PlayAnimation(anim, true)
-	end
+    if self.arrowdir ~= anim then
+        self.arrowdir = anim
+        self.sanityarrow:GetAnimState():PlayAnimation(anim, true)
+    end
 
     if self.ghost ~= ghost then
         self.ghost = ghost

@@ -49,34 +49,27 @@ local TargetIndicator = Class(Widget, function(self, owner, target)
 
     self.icon = self.root:AddChild(Widget("target"))
 
-    self.isGhost = target:HasTag("playerghost")
-    self.isCharacterState1 = target:HasTag("chr_state_1")
-    self.isCharacterState2 = target:HasTag("chr_state_2")
+    self.userflags = target.Network ~= nil and target.Network:GetUserFlags() or 0
+    self.isGhost = checkbit(self.userflags, USERFLAGS.IS_GHOST)
+    self.isCharacterState1 = checkbit(self.userflags, USERFLAGS.CHARACTER_STATE_1)
+    self.isCharacterState2 = checkbit(self.userflags, USERFLAGS.CHARACTER_STATE_2)
 
-	self.is_mod_character = false
-	if target and target.prefab then
-		self.is_mod_character = table.contains(MODCHARACTERLIST, target.prefab)
-	end
-	
+    self.is_mod_character = target ~= nil and target.prefab ~= nil and table.contains(MODCHARACTERLIST, target.prefab)
     self.target = target
     self.colour = nil
-    
-    self.headbg = self.icon:AddChild(Image(DEFAULT_ATLAS, "avatar_bg.tex"))
-    if self.isGhost then
-        self.headbg:SetTexture(DEFAULT_ATLAS, "avatar_ghost_bg.tex")
-    end
-	self.head = self.icon:AddChild(Image( self:GetAvatarAtlas(), self:GetAvatar(), DEFAULT_AVATAR))
+
+    self.headbg = self.icon:AddChild(Image(DEFAULT_ATLAS, self.isGhost and "avatar_ghost_bg.tex" or "avatar_bg.tex"))
+    self.head = self.icon:AddChild(Image(self:GetAvatarAtlas(), self:GetAvatar(), DEFAULT_AVATAR))
     self.headframe = self.icon:AddChild(Image(DEFAULT_ATLAS, "avatar_frame_white.tex"))
-    
+
     self.icon:SetScale(.8)
 
     self.arrow = self.root:AddChild(Image("images/ui.xml", "scroll_arrow.tex"))
     self.arrow:SetScale(.5)
 
-
     self.name = target:GetDisplayName()
     self.name_label = self.icon:AddChild(Text(UIFONT, 45, self.name))
-    self.name_label:SetPosition(0,80,0)
+    self.name_label:SetPosition(0, 80, 0)
     self.name_label:Hide()
 
     self:Hide()
@@ -110,19 +103,18 @@ function TargetIndicator:GetTargetIndicatorAlpha(dist)
 end
 
 function TargetIndicator:OnUpdate()
-
     -- figure out how far away they are and scale accordingly
     -- then grab the new position of the target and update the HUD elt's pos accordingly
     -- #srosen the kill on this is rough: it just pops in/out. is there a way to make it fadeout on kill without managing it manually (that could get messy, but is possible)?
 
-    if self.isGhost ~= self.target:HasTag("playerghost") then
-        self.isGhost = self.target:HasTag("playerghost")
-        if self.isGhost then
-            self.headbg:SetTexture("images/avatars.xml", "avatar_ghost_bg.tex")
-        else
-			self.headbg:SetTexture("images/avatars.xml", "avatar_bg.tex")
-        end
-        self.head = self.icon:AddChild(Image( self:GetAvatarAtlas(), self:GetAvatar(), DEFAULT_AVATAR))
+    local userflags = self.target.Network ~= nil and self.target.Network:GetUserFlags() or 0
+    if self.userflags ~= userflags then
+        self.userflags = userflags
+        self.isGhost = checkbit(userflags, USERFLAGS.IS_GHOST)
+        self.isCharacterState1 = checkbit(userflags, USERFLAGS.CHARACTER_STATE_1)
+        self.isCharacterState2 = checkbit(userflags, USERFLAGS.CHARACTER_STATE_2)
+        self.headbg:SetTexture(DEFAULT_ATLAS, self.isGhost and "avatar_ghost_bg.tex" or "avatar_bg.tex")
+        self.head:SetTexture(self:GetAvatarAtlas(), self:GetAvatar(), DEFAULT_AVATAR)
     end
 
     local dist = self.owner:GetDistanceSqToInst(self.target)
@@ -134,7 +126,7 @@ function TargetIndicator:OnUpdate()
     self.headframe:SetTint(self.colour[1], self.colour[2], self.colour[3], alpha)
     self.arrow:SetTint(self.colour[1], self.colour[2], self.colour[3], alpha)
     self.name_label:SetColour(self.colour[1], self.colour[2], self.colour[3], alpha)
-    
+
     if dist < TUNING.MIN_INDICATOR_RANGE then
         dist = TUNING.MIN_INDICATOR_RANGE
     elseif dist > TUNING.MAX_INDICATOR_RANGE then
@@ -143,9 +135,8 @@ function TargetIndicator:OnUpdate()
     local scale = Remap(dist, TUNING.MIN_INDICATOR_RANGE, TUNING.MAX_INDICATOR_RANGE, 1, MIN_SCALE)
     self:SetScale(scale)
 
-    local x,y,z = self.target.Transform:GetWorldPosition()
+    local x, y, z = self.target.Transform:GetWorldPosition()
     self:UpdatePosition(x, z)
-
 end
 
 local function GetXCoord(angle, width)
@@ -154,7 +145,7 @@ local function GetXCoord(angle, width)
     elseif angle <= 0 and angle >= -90 then -- right side
         return width
     else -- middle somewhere
-        if angle < 0 then 
+        if angle < 0 then
             angle = -angle - 90
         end
         local pctX = 1 - (angle / 90)
@@ -168,7 +159,7 @@ local function GetYCoord(angle, height)
     elseif angle >= 0 and angle <= 90 then -- bottom side
         return 0
     else -- middle somewhere
-        if angle < 0 then 
+        if angle < 0 then
             angle = -angle
         end
         if angle > 90 then
@@ -180,14 +171,13 @@ local function GetYCoord(angle, height)
 end
 
 function TargetIndicator:UpdatePosition(targX, targZ)
-
     local angleToTarget = self.owner:GetAngleToPoint(targX, 0, targZ)
     local downVector = TheCamera:GetDownVec()
     local downAngle = -math.atan2(downVector.z, downVector.x) / DEGREES
     local indicatorAngle = (angleToTarget - downAngle) + 45
     while indicatorAngle > 180 do indicatorAngle = indicatorAngle - 360 end
     while indicatorAngle < -180 do indicatorAngle = indicatorAngle + 360 end
-    
+
     local scale = self:GetScale()
     local w = 0
     local h = 0
@@ -247,53 +237,32 @@ function TargetIndicator:PositionLabel()
 end
 
 function TargetIndicator:GetAvatarAtlas()
-	if self.is_mod_character then
-		local location = MOD_AVATAR_LOCATIONS["Default"]
-		if MOD_AVATAR_LOCATIONS[self.target.prefab] ~= nil then
-			location = MOD_AVATAR_LOCATIONS[self.target.prefab]
-		end
-		
-		local starting = "avatar_"	
-		if self.isGhost then
-			starting = starting .. "ghost_"
-		end
-		
-		local ending = ""
-		if self.isCharacterState1 then
-			ending = "_1"
-		end		
-		if self.isCharacterState2 then
-			ending = "_2"
-		end
-		
-		return location .. starting .. self.target.prefab .. ending .. ".xml"
-	end
-	return DEFAULT_ATLAS
+    if self.is_mod_character then
+        local location = MOD_AVATAR_LOCATIONS["Default"]
+        if MOD_AVATAR_LOCATIONS[self.target.prefab] ~= nil then
+            location = MOD_AVATAR_LOCATIONS[self.target.prefab]
+        end
+
+        local starting = self.isGhost and "avatar_ghost_" or "avatar_"
+        local ending =
+            (self.isCharacterState1 and "_1" or "")..
+            (self.isCharacterState2 and "_2" or "")
+
+        return location..starting..self.target.prefab..ending..".xml"
+    end
+    return DEFAULT_ATLAS
 end
 
-function TargetIndicator:GetAvatar()	
-	if self.is_mod_character then
-		local starting = "avatar_"
-		if self.isGhost then
-			starting = starting .. "ghost_"
-		end
-		
-		local ending = ""
-		if self.isCharacterState1 then
-			ending = "_1"
-		end		
-		if self.isCharacterState2 then
-			ending = "_2"
-		end
-		
-		return starting .. self.target.prefab .. ending .. ".tex"
-	end
-	
-    if self.isGhost then
-        return "avatar_ghost_"..(self.target.prefab ~= "" and self.target.prefab or "unknown")..".tex"
-    else
-        return "avatar_"..(self.target.prefab ~= "" and self.target.prefab or "unknown")..".tex"
-    end
+function TargetIndicator:GetAvatar()
+    local starting = self.isGhost and "avatar_ghost_" or "avatar_"
+    local ending =
+        (self.isCharacterState1 and "_1" or "")..
+        (self.isCharacterState2 and "_2" or "")
+
+    return self.target.prefab ~= nil
+        and self.target.prefab ~= ""
+        and (starting..self.target.prefab..ending..".tex")
+        or (starting.."unknown.tex")
 end
 
 return TargetIndicator

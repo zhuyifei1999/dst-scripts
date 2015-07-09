@@ -147,7 +147,6 @@ return
         build = "tree_leaf_fx_green",
         anim = "chop",
         sound = "dontstarve_DLC001/fall/leaf_rustle",
-        dlc = true,
     },
     {
         name = "red_leaves_chop",
@@ -155,7 +154,6 @@ return
         build = "tree_leaf_fx_red",
         anim = "chop",
         sound = "dontstarve_DLC001/fall/leaf_rustle",
-        dlc = true,
     },
     {
         name = "orange_leaves_chop",
@@ -163,7 +161,6 @@ return
         build = "tree_leaf_fx_orange",
         anim = "chop",
         sound = "dontstarve_DLC001/fall/leaf_rustle",
-        dlc = true,
     },
     {
         name = "yellow_leaves_chop",
@@ -171,7 +168,6 @@ return
         build = "tree_leaf_fx_yellow",
         anim = "chop",
         sound = "dontstarve_DLC001/fall/leaf_rustle",
-        dlc = true,
     },
     {
         name = "purple_leaves_chop",
@@ -179,7 +175,6 @@ return
         build = "tree_monster_fx",
         anim = "chop",
         sound = "dontstarve_DLC001/fall/leaf_rustle",
-        dlc = true,
     },
     {
         name = "green_leaves",
@@ -187,7 +182,6 @@ return
         build = "tree_leaf_fx_green",
         anim = "fall",
         sound = "dontstarve_DLC001/fall/leaf_rustle",
-        dlc = true,
     },
     {
         name = "red_leaves",
@@ -195,7 +189,6 @@ return
         build = "tree_leaf_fx_red",
         anim = "fall",
         sound = "dontstarve_DLC001/fall/leaf_rustle",
-        dlc = true,
     },
     {
         name = "orange_leaves",
@@ -203,7 +196,6 @@ return
         build = "tree_leaf_fx_orange",
         anim = "fall",
         sound = "dontstarve_DLC001/fall/leaf_rustle",
-        dlc = true,
     },
     {
         name = "yellow_leaves",
@@ -211,7 +203,6 @@ return
         build = "tree_leaf_fx_yellow",
         anim = "fall",
         sound = "dontstarve_DLC001/fall/leaf_rustle",
-        dlc = true,
     },
     {
         name = "purple_leaves",
@@ -219,7 +210,6 @@ return
         build = "tree_monster_fx",
         anim = "fall",
         sound = "dontstarve_DLC001/fall/leaf_rustle",
-        dlc = true,
     },
     {
         name = "dr_warm_loop_1",
@@ -274,7 +264,6 @@ return
         description = function(inst, viewer)
                         return GetString(viewer, "DESCRIBE", { "MOLE", "UNDERGROUND" })
                     end,
-        dlc = true,
     },
     {
         name = "sparklefx",
@@ -342,14 +331,12 @@ return
         bank = "splash",
         build = "splash_snow",
         anim = "idle",
-        dlc = true,
     },
     {
         name = "icespike_fx_1",
         bank = "deerclops_icespike",
         build = "deerclops_icespike",
         anim = "spike1",
-        dlc = true,
         sound = "dontstarve/creatures/deerclops/ice_small",
     },
     {
@@ -358,7 +345,6 @@ return
         build = "deerclops_icespike",
         anim = "spike2",
         sound = "dontstarve/creatures/deerclops/ice_small",
-        dlc = true,
     },
     {
         name = "icespike_fx_3",
@@ -366,7 +352,6 @@ return
         build = "deerclops_icespike",
         anim = "spike3",
         sound = "dontstarve/creatures/deerclops/ice_small",
-        dlc = true,
     },
     {
         name = "icespike_fx_4",
@@ -374,7 +359,6 @@ return
         build = "deerclops_icespike",
         anim = "spike4",
         sound = "dontstarve/creatures/deerclops/ice_small",
-        dlc = true,
     },
     {
         name = "shock_fx",
@@ -389,14 +373,12 @@ return
         build = "bearger_ground_fx",
         sound = "dontstarve_DLC001/creatures/bearger/dustpoof",
         anim = "idle",
-        dlc = true,
     },
     {
         name = "firesplash_fx",
         bank = "dragonfly_ground_fx",
         build = "dragonfly_ground_fx",
         anim = "idle",
-        dlc = true,
         bloom = true,
     },
     {
@@ -404,7 +386,6 @@ return
         bank = "dragonfly_fx",
         build = "dragonfly_fx",
         anim = "taunt",
-        dlc = true,
         bloom = true,
     },
     {
@@ -412,7 +393,6 @@ return
         bank = "dragonfly_fx",
         build = "dragonfly_fx",
         anim = "atk",
-        dlc = true,
         bloom = true,
     },
     {
@@ -421,7 +401,6 @@ return
         build = "dragonfly_fx",
         anim = "vomit",
         twofaced = true,
-        dlc = true,
         bloom = true,
     },
     {
@@ -431,6 +410,23 @@ return
         anim = "wathgrithr_spirit",
         sound = "dontstarve_DLC001/characters/wathgrithr/valhalla",
         sounddelay = .2,
-        dlc = true,
+    },
+    {
+        name = "lucy_ground_transform_fx",
+        bank = "lucy_axe_fx",
+        build = "axe_transform_fx",
+        anim = "transform_ground",
+    },
+    {
+        name = "lucy_transform_fx",
+        bank = "lucy_axe_fx",
+        build = "axe_transform_fx",
+        anim = "transform_chop",
+    },
+    {
+        name = "werebeaver_transform_fx",
+        bank = "werebeaver_fx",
+        build = "werebeaver_fx",
+        anim = "transform_back",
     },
 }

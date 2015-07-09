@@ -83,7 +83,7 @@ function Health:GetPenaltyPercent()
     if self.inst.components.health ~= nil then
         return self.inst.components.health:GetPenaltyPercent()
     elseif self.classified ~= nil then
-        return self.classified.healthpenalty:value() / self.classified.maxhealth:value()
+        return math.min(self.classified.healthpenalty:value(), self.classified.maxhealth:value() - 1) / self.classified.maxhealth:value()
     else
         return 0
     end
@@ -93,7 +93,7 @@ function Health:IsHurt()
     if self.inst.components.health ~= nil then
         return self.inst.components.health:IsHurt()
     elseif self.classified ~= nil then
-        return self.classified.currenthealth:value() < self.classified.maxhealth:value() - self.classified.healthpenalty:value()
+        return self.classified.currenthealth:value() < math.max(1, self.classified.maxhealth:value() - self.classified.healthpenalty:value())
     else
         return false
     end

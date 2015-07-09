@@ -105,6 +105,12 @@ local prefabs =
     "lava_pond",
     "scorchedground",
     "lavae_egg",
+    "terrorbeak",
+    "crawlinghorror",
+    "creepyeyes",
+    "shadowskittish",
+    "shadowwatcher",
+    "shadowhand",
 }
 
 local function fn()
@@ -136,7 +142,7 @@ local function fn()
 
     if inst.ismastersim then
         --Spawners
-    	inst:AddComponent("flowerspawner")
+        --inst:AddComponent("flowerspawner")
         inst:AddComponent("birdspawner")
         inst:AddComponent("butterflyspawner")
         inst:AddComponent("hounded")
@@ -154,6 +160,8 @@ local function fn()
         inst:AddComponent("wildfires")
         inst:AddComponent("worldwind")
         inst:AddComponent("forestresourcespawner")
+        inst:AddComponent("regrowthmanager")
+        inst:AddComponent("desolationspawner")
         if METRICS_ENABLED then
             inst:AddComponent("worldoverseer")
         end

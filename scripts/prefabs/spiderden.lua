@@ -13,8 +13,45 @@ local assets =
     Asset("SOUND", "sound/spider.fsb"),
 }
 
+local ANIM_DATA =
+{
+    SMALL =
+    {
+        hit = "cocoon_small_hit",
+        idle = "cocoon_small",
+        init = "grow_sac_to_small",
+        freeze = "frozen_small",
+        thaw = "frozen_loop_pst_small",
+    },
+
+    MEDIUM =
+    {
+        hit = "cocoon_medium_hit",
+        idle = "cocoon_medium",
+        init = "grow_small_to_medium",
+        freeze = "frozen_medium",
+        thaw = "frozen_loop_pst_medium",
+    },
+
+    LARGE =
+    {
+        hit = "cocoon_large_hit",
+        idle = "cocoon_large",
+        init = "grow_medium_to_large",
+        freeze = "frozen_large",
+        thaw = "frozen_loop_pst_large",
+    },
+}
+
+local LOOT_DATA =
+{
+    SMALL = { "silk", "silk" },
+    MEDIUM = { "silk", "silk", "silk", "silk" },
+    LARGE = { "silk", "silk", "silk", "silk", "silk", "silk", "spidereggsack" },
+}
+
 local function SetStage(inst, stage)
-    if stage <= 3 and inst.components.childspawner then -- if childspawner doesn't exist, then this den is burning down
+    if stage <= 3 and inst.components.childspawner ~= nil then -- if childspawner doesn't exist, then this den is burning down
         inst.SoundEmitter:PlaySound("dontstarve/creatures/spider/spiderLair_grow")
         inst.components.childspawner:SetMaxChildren(math.floor(SpringCombatMod(TUNING.SPIDERDEN_SPIDERS[stage])))
         inst.components.childspawner:SetMaxEmergencyChildren(TUNING.SPIDERDEN_EMERGENCY_WARRIORS[stage])
@@ -30,22 +67,16 @@ local function SetStage(inst, stage)
 end
 
 local function SetSmall(inst)
-    inst.anims = {
-        hit="cocoon_small_hit", 
-        idle="cocoon_small", 
-        init="grow_sac_to_small", 
-        freeze="frozen_small", 
-        thaw="frozen_loop_pst_small",
-    }
+    inst.anims = ANIM_DATA.SMALL
     SetStage(inst, 1)
-    inst.components.lootdropper:SetLoot({ "silk","silk"})
+    inst.components.lootdropper:SetLoot(LOOT_DATA.SMALL)
 
-    if inst.components.burnable then
+    if inst.components.burnable ~= nil then
         inst.components.burnable:SetFXLevel(3)
         inst.components.burnable:SetBurnTime(20)
     end
 
-    if inst.components.freezable then
+    if inst.components.freezable ~= nil then
         inst.components.freezable:SetShatterFXLevel(3)
         inst.components.freezable:SetResistance(2)
     end
@@ -54,22 +85,16 @@ local function SetSmall(inst)
 end
 
 local function SetMedium(inst)
-    inst.anims = {
-        hit="cocoon_medium_hit", 
-        idle="cocoon_medium", 
-        init="grow_small_to_medium", 
-        freeze="frozen_medium", 
-        thaw="frozen_loop_pst_medium",
-    }
+    inst.anims = ANIM_DATA.MEDIUM
     SetStage(inst, 2)
-    inst.components.lootdropper:SetLoot({ "silk","silk","silk","silk"})
+    inst.components.lootdropper:SetLoot(LOOT_DATA.MEDIUM)
 
-    if inst.components.burnable then
+    if inst.components.burnable ~= nil then
         inst.components.burnable:SetFXLevel(3)
         inst.components.burnable:SetBurnTime(20)
     end
 
-    if inst.components.freezable then
+    if inst.components.freezable ~= nil then
         inst.components.freezable:SetShatterFXLevel(4)
         inst.components.freezable:SetResistance(3)
     end
@@ -78,22 +103,16 @@ local function SetMedium(inst)
 end
 
 local function SetLarge(inst)
-    inst.anims = {
-        hit="cocoon_large_hit", 
-        idle="cocoon_large", 
-        init="grow_medium_to_large", 
-        freeze="frozen_large", 
-        thaw="frozen_loop_pst_large",
-    }
+    inst.anims = ANIM_DATA.LARGE
     SetStage(inst, 3)
-    inst.components.lootdropper:SetLoot({ "silk","silk","silk","silk","silk","silk", "spidereggsack"})
+    inst.components.lootdropper:SetLoot(LOOT_DATA.LARGE)
 
-    if inst.components.burnable then
+    if inst.components.burnable ~= nil then
         inst.components.burnable:SetFXLevel(4)
         inst.components.burnable:SetBurnTime(30)
     end
 
-    if inst.components.freezable then
+    if inst.components.freezable ~= nil then
         inst.components.freezable:SetShatterFXLevel(5)
         inst.components.freezable:SetResistance(4)
     end
@@ -161,7 +180,7 @@ end
 
 local function OnKilled(inst)
     inst.AnimState:PlayAnimation("cocoon_dead")
-    if inst.components.childspawner then
+    if inst.components.childspawner ~= nil then
         inst.components.childspawner:ReleaseAllChildren()
     end
     inst.Physics:ClearCollisionMask()
@@ -169,7 +188,7 @@ local function OnKilled(inst)
     inst.SoundEmitter:KillSound("loop")
 
     inst.SoundEmitter:PlaySound("dontstarve/creatures/spider/spiderLair_destroy")
-    inst.components.lootdropper:DropLoot(Vector3(inst.Transform:GetWorldPosition()))
+    inst.components.lootdropper:DropLoot(inst:GetPosition())
 end
 
 local function IsDefender(child)
@@ -181,22 +200,17 @@ local function SpawnDefenders(inst, attacker)
         inst.SoundEmitter:PlaySound("dontstarve/creatures/spider/spiderLair_hit")
         inst.AnimState:PlayAnimation(inst.anims.hit)
         inst.AnimState:PushAnimation(inst.anims.idle)
-        if inst.components.childspawner then
-
-            local max_release_per_stage = {2, 4, 6}
-            local num_to_release = math.min( max_release_per_stage[inst.data.stage] or 1, inst.components.childspawner.childreninside)
+        if inst.components.childspawner ~= nil then
+            local max_release_per_stage = { 2, 4, 6 }
+            local num_to_release = math.min(max_release_per_stage[inst.data.stage] or 1, inst.components.childspawner.childreninside)
             local num_warriors = math.min(num_to_release, TUNING.SPIDERDEN_WARRIORS[inst.data.stage])
-            num_to_release = math.floor( SpringCombatMod(num_to_release) )
-            num_warriors = math.floor( SpringCombatMod(num_warriors) )
+            num_to_release = math.floor(SpringCombatMod(num_to_release))
+            num_warriors = math.floor(SpringCombatMod(num_warriors))
             num_warriors = num_warriors - inst.components.childspawner:CountChildrenOutside(IsDefender)
-            for k = 1,num_to_release do
-                if k <= num_warriors then
-                    inst.components.childspawner.childname = "spider_warrior"
-                else
-                    inst.components.childspawner.childname = "spider"
-                end
+            for k = 1, num_to_release do
+                inst.components.childspawner.childname = k <= num_warriors and "spider_warrior" or "spider"
                 local spider = inst.components.childspawner:SpawnChild()
-                if spider and attacker and spider.components.combat then
+                if spider ~= nil and attacker ~= nil and spider.components.combat ~= nil then
                     spider.components.combat:SetTarget(attacker)
                     spider.components.combat:BlankOutAttacks(1.5 + math.random() * 2)
                 end
@@ -204,11 +218,10 @@ local function SpawnDefenders(inst, attacker)
             inst.components.childspawner.childname = "spider"
 
             local emergencyspider = inst.components.childspawner:TrySpawnEmergencyChild()
-            if emergencyspider then
+            if emergencyspider ~= nil then
                 emergencyspider.components.combat:SetTarget(attacker)
                 emergencyspider.components.combat:BlankOutAttacks(1.5 + math.random() * 2)
             end
-
         end
     end
 end
@@ -218,16 +231,16 @@ local function IsInvestigator(child)
 end
 
 local function SpawnInvestigators(inst, data)
-    if not inst.components.health:IsDead() and not (inst.components.freezable and inst.components.freezable:IsFrozen()) then
+    if not inst.components.health:IsDead() and not (inst.components.freezable ~= nil and inst.components.freezable:IsFrozen()) then
         inst.AnimState:PlayAnimation(inst.anims.hit)
         inst.AnimState:PushAnimation(inst.anims.idle)
-        if inst.components.childspawner then
-            local max_release_per_stage = {1, 2, 3}
-            local num_to_release = math.min( max_release_per_stage[inst.data.stage] or 1, inst.components.childspawner.childreninside)
-            num_to_release = math.floor( SpringCombatMod(num_to_release) )
+        if inst.components.childspawner ~= nil then
+            local max_release_per_stage = { 1, 2, 3 }
+            local num_to_release = math.min(max_release_per_stage[inst.data.stage] or 1, inst.components.childspawner.childreninside)
+            num_to_release = math.floor(SpringCombatMod(num_to_release))
             local num_investigators = inst.components.childspawner:CountChildrenOutside(IsInvestigator)
             num_to_release = num_to_release - num_investigators
-            local targetpos = data ~= nil and data.target ~= nil and Vector3(data.target.Transform:GetWorldPosition()) or nil
+            local targetpos = data ~= nil and data.target ~= nil and data.target:GetPosition() or nil
             for k = 1, num_to_release do
                 local spider = inst.components.childspawner:SpawnChild()
                 if spider ~= nil and targetpos ~= nil then
@@ -239,22 +252,21 @@ local function SpawnInvestigators(inst, data)
 end
 
 local function StartSpawning(inst)
-    if inst.components.childspawner then
-        local frozen = (inst.components.freezable and inst.components.freezable:IsFrozen())
-        if not frozen and not TheWorld.state.isday then
+    if inst.components.childspawner ~= nil then
+        if not (inst.components.freezable ~= nil and inst.components.freezable:IsFrozen()) and not TheWorld.state.isday then
             inst.components.childspawner:StartSpawning()
         end
     end
 end
 
 local function StopSpawning(inst)
-    if inst.components.childspawner then
+    if inst.components.childspawner ~= nil then
         inst.components.childspawner:StopSpawning()
     end
 end
 
 local function OnIgnite(inst)
-    if inst.components.childspawner then
+    if inst.components.childspawner ~= nil then
         SpawnDefenders(inst)
         inst:RemoveComponent("childspawner")
     end
@@ -270,7 +282,7 @@ local function OnFreeze(inst)
 
     StopSpawning(inst)
 
-    if inst.components.growable then
+    if inst.components.growable ~= nil then
         inst.components.growable:Pause()
     end
 end
@@ -290,21 +302,21 @@ local function OnUnFreeze(inst)
 
     StartSpawning(inst)
 
-    if inst.components.growable then
+    if inst.components.growable ~= nil then
         inst.components.growable:Resume()
     end
 end
 
 local function GetSmallGrowTime(inst)
-    return TUNING.SPIDERDEN_GROW_TIME[1] + math.random()*TUNING.SPIDERDEN_GROW_TIME[1]
+    return TUNING.SPIDERDEN_GROW_TIME[1] * (1 + math.random())
 end
 
 local function GetMedGrowTime(inst)
-    return TUNING.SPIDERDEN_GROW_TIME[2]+ math.random()*TUNING.SPIDERDEN_GROW_TIME[2]
+    return TUNING.SPIDERDEN_GROW_TIME[2] * (1 + math.random())
 end
 
 local function GetLargeGrowTime(inst)
-    return TUNING.SPIDERDEN_GROW_TIME[3]+ math.random()*TUNING.SPIDERDEN_GROW_TIME[3]
+    return TUNING.SPIDERDEN_GROW_TIME[3] * (1 + math.random())
 end
 
 local function OnEntityWake(inst)
@@ -323,6 +335,11 @@ local function OnIsDay(inst, isday)
     end
 end
 
+local function OnInit(inst)
+    inst:WatchWorldState("isday", OnIsDay)
+    OnIsDay(inst, TheWorld.state.isday)
+end
+
 local function OnStageAdvance(inst)
    inst.components.growable:DoGrowth()
    return true
@@ -333,13 +350,43 @@ local function OnUpgrade(inst)
    inst.AnimState:PushAnimation(inst.anims.idle)
 end
 
-
-local growth_stages = {
-    {name="small", time = GetSmallGrowTime, fn = SetSmall },
-    {name="med", time = GetMedGrowTime , fn = SetMedium },
-    {name="large", time = GetLargeGrowTime, fn = SetLarge},
-    {name="queen", fn = AttemptMakeQueen}
+local growth_stages =
+{
+    { name = "small",   time = GetSmallGrowTime,    fn = SetSmall           },
+    { name = "med",     time = GetMedGrowTime,      fn = SetMedium          },
+    { name = "large",   time = GetLargeGrowTime,    fn = SetLarge           },
+    { name = "queen",                               fn = AttemptMakeQueen   },
 }
+
+local function CanTarget(guy)
+    return not guy.components.health:IsDead()
+end
+
+local function OnHaunt(inst)
+    if math.random() <= TUNING.HAUNT_CHANCE_HALF then
+        local target = FindEntity(
+            inst,
+            25,
+            CanTarget,
+            { "_combat", "_health" }, --see entityreplica.lua
+            { "playerghost", "spider", "INLIMBO" }
+        )
+        if target ~= nil then
+            SpawnDefenders(inst, target)
+            inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
+            return true
+        end
+    end
+
+    if inst.data.stage == 3 and
+        math.random() <= TUNING.HAUNT_CHANCE_RARE and
+        AttemptMakeQueen(inst) then
+        inst.components.hauntable.hauntvalue = TUNING.HAUNT_LARGE
+        return true
+    end
+
+    return false
+end
 
 local function MakeSpiderDenFn(den_level)
     return function()
@@ -361,6 +408,7 @@ local function MakeSpiderDenFn(den_level)
         inst.AnimState:PlayAnimation("cocoon_small", true)
 
         inst:AddTag("structure")
+        inst:AddTag("chewable") -- by werebeaver
         inst:AddTag("hostile")
         inst:AddTag("spiderden")
         inst:AddTag("hive")
@@ -411,7 +459,7 @@ local function MakeSpiderDenFn(den_level)
         inst:ListenForEvent("unfreeze", OnUnFreeze)
         -------------------
 
-        inst:WatchWorldState("isday", OnIsDay)
+        inst:DoTaskInTime(0, OnInit)
 
         -------------------
 
@@ -446,29 +494,7 @@ local function MakeSpiderDenFn(den_level)
 
         inst:AddComponent("hauntable")
         inst.components.hauntable.cooldown = TUNING.HAUNT_COOLDOWN_MEDIUM
-        inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
-            local ret = false
-
-            if math.random() < TUNING.HAUNT_CHANCE_HALF then
-                local target = FindEntity(inst, 25, nil,
-                    { "_combat", "_health" }, --see entityreplica.lua
-                    { "playerghost", "spider" })
-                if target ~= nil then
-                    SpawnDefenders(inst, target)
-                    inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
-                    ret = true
-                end
-            end
-
-            if inst.data.stage == 3 and
-                math.random() <= TUNING.HAUNT_CHANCE_RARE and
-                AttemptMakeQueen(inst) then
-                inst.components.hauntable.hauntvalue = TUNING.HAUNT_LARGE
-                ret = true
-            end
-
-            return ret
-        end)
+        inst.components.hauntable:SetOnHauntFn(OnHaunt)
 
         MakeSnowCovered(inst)
 

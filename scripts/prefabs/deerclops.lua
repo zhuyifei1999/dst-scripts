@@ -128,23 +128,18 @@ local function OnDead(inst)
 end
 
 local function oncollapse(inst, other)
-    if other and other.components.workable ~= nil and other.components.workable.workleft > 0 then
-        SpawnPrefab("collapse_small").Transform:SetPosition(other:GetPosition():Get())
+    if other:IsValid() and other.components.workable ~= nil and other.components.workable:CanBeWorked() then
+        SpawnPrefab("collapse_small").Transform:SetPosition(other.Transform:GetWorldPosition())
         other.components.workable:Destroy(inst)
     end
 end
 
 local function oncollide(inst, other)
-    if other == nil or not (other:HasTag("tree") or other:HasTag("boulder")) then
-        return
+    if other ~= nil and
+        (other:HasTag("tree") or other:HasTag("boulder")) and --HasTag implies IsValid
+        Vector3(inst.Physics:GetVelocity()):LengthSq() >= 1 then
+        inst:DoTaskInTime(2 * FRAMES, oncollapse, other)
     end
-
-    local v1 = Vector3(inst.Physics:GetVelocity())
-    if v1:LengthSq() < 1 then
-        return
-    end
-
-    inst:DoTaskInTime(2*FRAMES, oncollapse, other)
 end
 
 local function OnNewTarget(inst, data)

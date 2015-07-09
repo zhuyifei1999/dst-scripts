@@ -156,12 +156,67 @@ AddGameDebugKey(KEY_R, function()
 end)
 
 AddGameDebugKey(KEY_F4, function()
-    if TheInput:IsKeyDown(KEY_CTRL) then 
-        TheWorld:PushEvent("ms_forceprecipitation", false)
-    else
-        TheWorld:PushEvent("ms_forceprecipitation", true)
+    -- Spawn a ready-made base!
+    local pos = TheInput:GetWorldPosition()
+    local topleft = Vector3(pos.x - 15, 0, pos.z - 15)
+    local bottomright = Vector3(pos.x + 15, 0, pos.z + 15)
+    local width = bottomright-topleft
+    for i=0,width.x do
+        if i < width.x/2-1 or i > width.x/2+1 then
+            local wall = SpawnPrefab("wall_stone")
+            wall.Transform:SetPosition(topleft.x + i, 0, topleft.z)
+            wall = SpawnPrefab("wall_stone")
+            wall.Transform:SetPosition(bottomright.x - i, 0, bottomright.z)
+        end
     end
-    return true
+    for i=0,width.z do
+        if i < width.z/2-1 or i > width.z/2+1 then
+            local wall = SpawnPrefab("wall_wood")
+            wall.Transform:SetPosition(topleft.x, 0, topleft.z + i)
+            wall = SpawnPrefab("wall_hay")
+            wall.Transform:SetPosition(bottomright.x, 0, bottomright.z - i)
+        end
+    end
+
+    local items = {
+        "treasurechest",
+        "treasurechest",
+        "treasurechest",
+        "researchlab",
+        "researchlab",
+        "researchlab2",
+        "firepit",
+        "slow_farmplot",
+        "slow_farmplot",
+        "slow_farmplot",
+        "fast_farmplot",
+        "fast_farmplot",
+        "fast_farmplot",
+        "pighouse",
+        "birdcage",
+        "glommer",
+        "firesuppressor",
+    }
+    for i,v in ipairs(items) do
+        local pos = topleft + Vector3(width.x*math.random(), 0, width.z*math.random())
+        SpawnPrefab(items[i]).Transform:SetPosition(pos.x, pos.y, pos.z)
+    end
+    local group_items = {
+        "grass",
+        "berrybush",
+        "sapling",
+        "evergreen",
+        "evergreen",
+    }
+    for i,v in ipairs(group_items) do
+        local pos = topleft + Vector3(width.x*math.random(), 0, width.z*math.random())
+        for z=-2,2 do
+            for x=-2,2 do
+                local sub_pos = Vector3(pos.x + x, 0, pos.z + z)
+                SpawnPrefab(group_items[i]).Transform:SetPosition(sub_pos.x, sub_pos.y, sub_pos.z)
+            end
+        end
+    end
 end)
 
 AddGameDebugKey(KEY_F5, function()
@@ -183,7 +238,7 @@ end)
 
 AddGameDebugKey(KEY_F12, function()
     local positions = {}
-    for i = 1, 500 do
+    for i = 1, 100 do
         local s = i/32.0--(num/2) -- 32.0
         local a = math.sqrt(s*512.0)
         local b = math.sqrt(s)
@@ -195,7 +250,7 @@ AddGameDebugKey(KEY_F12, function()
     for i = 1, #positions do
         local sp = pos + (positions[i] * 1.2)
         DebugKeyPlayer():DoTaskInTime(delay, function() 
-            local prefab = SpawnPrefab("houndstooth")
+            local prefab = SpawnPrefab("carrot_planted")
             prefab.Transform:SetPosition(sp:Get())
         end)
         --delay = delay + 0.03
@@ -234,6 +289,15 @@ AddGameDebugKey(KEY_F7, function()
                         end
                     end
                     nextpoint()
+                elseif TheInput:IsKeyDown(KEY_ALT) then
+                    print("densities")
+                    if TheWorld.generated.densities[TheWorld.topology.ids[i]] == nil then
+                        print("\t<none>")
+                    else
+                        for k,v in pairs(TheWorld.generated.densities[TheWorld.topology.ids[i]]) do
+                            print("\t",k,v)
+                        end
+                    end
                 end
                 print("\\********************/")
             end
@@ -349,7 +413,12 @@ end)
 
 
 AddGameDebugKey(KEY_F11, function()
-    --GetNightmareClock():NextPhase()
+    for k,v in pairs(Ents) do
+        if v.prefab == "carrot_planted" then
+            v.components.pickable:Pick()
+        end
+    end
+
     return true
 end)
 

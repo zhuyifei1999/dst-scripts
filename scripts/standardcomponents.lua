@@ -601,7 +601,7 @@ function MakeHauntableWork(inst, chance, cooldown, haunt_value)
     inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
         chance = chance or TUNING.HAUNT_CHANCE_OFTEN
         if math.random() <= chance then
-            if inst.components.workable and inst.components.workable.workleft > 0 then
+            if inst.components.workable ~= nil and inst.components.workable:CanBeWorked() then
                 inst.components.hauntable.hauntvalue = haunt_value or TUNING.HAUNT_SMALL
                 inst.components.workable:WorkedBy(haunter, 1)
                 return true
@@ -619,7 +619,7 @@ function MakeHauntableWorkAndIgnite(inst, work_chance, ignite_chance, cooldown, 
 
         work_chance = work_chance or TUNING.HAUNT_CHANCE_OFTEN
         if math.random() <= work_chance then
-            if inst.components.workable and inst.components.workable.workleft > 0 then
+            if inst.components.workable ~= nil and inst.components.workable:CanBeWorked() then
                 inst.components.hauntable.hauntvalue = work_haunt_value or TUNING.HAUNT_SMALL
                 inst.components.workable:WorkedBy(haunter, 1)
                 ret = true

@@ -39,7 +39,7 @@ local Health = Class(function(self, inst)
     self.minhealth = 0
     self.currenthealth = self.maxhealth
     self.invincible = false
-    
+
     self.vulnerabletoheatdamage = true
     self.takingfiredamage = false
     self.takingfiredamagetime = 0
@@ -78,11 +78,11 @@ function Health:SetInvincible(val)
 end
 
 function Health:OnSave()
-    return 
+    return
     {
         health = self.currenthealth,
         numrevives = self.numrevives > 0 and self.numrevives or nil,
-        penalty = self.numrevives <= 0 and self.penalty > 0 and self.penalty or nil
+        penalty = self.numrevives <= 0 and self.penalty > 0 and self.penalty or nil,
     }
 end
 
@@ -204,7 +204,7 @@ function Health:StopRegen()
 end
 
 function Health:GetPenaltyPercent()
-    return (self.penalty*TUNING.EFFIGY_HEALTH_PENALTY)/ self.maxhealth
+    return 1 - self:GetMaxWithPenalty() / self.maxhealth
 end
 
 function Health:GetPercent()
@@ -216,7 +216,7 @@ function Health:IsInvincible()
 end
 
 function Health:GetDebugString()
-    local s = string.format("%2.2f / %2.2f", self.currenthealth, self.maxhealth - self.penalty*TUNING.EFFIGY_HEALTH_PENALTY)
+    local s = string.format("%2.2f / %2.2f", self.currenthealth, self:GetMaxWithPenalty())
     if self.regen then
         s = s .. string.format(", regen %.2f every %.2fs", self.regen.amount, self.regen.period)
     end
@@ -237,11 +237,11 @@ function Health:SetMinHealth(amount)
 end
 
 function Health:IsHurt()
-    return self.currenthealth < (self.maxhealth - self.penalty*TUNING.EFFIGY_HEALTH_PENALTY)
+    return self.currenthealth < self:GetMaxWithPenalty()
 end
 
 function Health:GetMaxWithPenalty()
-    return self.maxhealth - self.penalty * TUNING.EFFIGY_HEALTH_PENALTY
+    return math.max(1, self.maxhealth - self.penalty * TUNING.EFFIGY_HEALTH_PENALTY)
 end
 
 function Health:Kill()

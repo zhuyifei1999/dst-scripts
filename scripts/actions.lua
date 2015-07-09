@@ -15,7 +15,6 @@ Action = Class(function(self, priority, instant, rmb, distance, ghost_valid, gho
     self.priority = priority or 0
     self.fn = function() return false end
     self.strfn = nil
-    self.testfn = nil -- Don't use this for multiplayer
     self.instant = instant or false
     self.rmb = rmb or nil
     self.distance = distance or nil
@@ -135,18 +134,15 @@ ACTION_MOD_IDS = {} --This will be filled in when mods add actions via AddAction
 
 ACTIONS.EAT.fn = function(act)
     local obj = act.target or act.invobject
-    if act.doer.components.eater and obj and obj.components.edible then
-        return act.doer.components.eater:Eat(obj) 
+    if obj ~= nil and obj.components.edible ~= nil and act.doer.components.eater ~= nil then
+        return act.doer.components.eater:Eat(obj)
     end
 end
 
 ACTIONS.STEAL.fn = function(act)
-    local obj = act.target
-    local attack = false
-    if act.attack then attack = act.attack end    
-
-    if (obj.components.inventoryitem and obj.components.inventoryitem:IsHeld()) then
-        return act.doer.components.thief:StealItem(obj.components.inventoryitem.owner, obj, attack)
+    local owner = act.target.components.inventoryitem ~= nil and act.target.components.inventoryitem.owner or nil
+    if owner ~= nil then
+        return act.doer.components.thief:StealItem(owner, act.target, act.attack == true)
     end
 end
 
@@ -177,18 +173,18 @@ ACTIONS.MAKEBALLOON.fn = function(act)
 end
 
 ACTIONS.EQUIP.fn = function(act)
-    if act.doer.components.inventory then
+    if act.doer.components.inventory ~= nil then
         return act.doer.components.inventory:Equip(act.invobject)
     end
 end
 
 ACTIONS.UNEQUIP.fn = function(act)
-    if act.doer.components.inventory and act.invobject and act.invobject.components.inventoryitem.cangoincontainer then
-		act.doer.components.inventory:GiveItem(act.invobject)
-    	--return act.doer.components.inventory:Unequip(act.invobject)
-    	return true
-    elseif act.doer.components.inventory and act.invobject and not act.invobject.components.inventoryitem.cangoincontainer then
-        act.doer.components.inventory:DropItem(act.invobject, true, true)
+    if act.invobject ~= nil and act.doer.components.inventory ~= nil then
+        if act.invobject.components.inventoryitem.cangoincontainer then
+            act.doer.components.inventory:GiveItem(act.invobject)
+        else
+            act.doer.components.inventory:DropItem(act.invobject, true, true)
+        end
         return true
     end
 end
@@ -203,7 +199,7 @@ ACTIONS.PICKUP.fn = function(act)
             (act.target.components.burnable ~= nil and act.target.components.burnable:IsBurning()) or
             (act.target.components.projectile ~= nil and act.target.components.projectile:IsThrown())) then
 
-        act.doer:PushEvent("onpickup", {item = act.target})
+        act.doer:PushEvent("onpickupitem", { item = act.target })
 
         --special case for trying to carry two backpacks
         if not act.target.components.inventoryitem.cangoincontainer and act.target.components.equippable and act.doer.components.inventory:GetEquippedItem(act.target.components.equippable.equipslot) then
@@ -224,20 +220,26 @@ ACTIONS.PICKUP.fn = function(act)
         else
             act.doer.components.inventory:GiveItem(act.target, nil, act.target:GetPosition())
         end
-        return true 
+        return true
     end
 end
 
 ACTIONS.REPAIR.fn = function(act)
-	if act.target and act.target.components.repairable and act.invobject and act.invobject.components.repairer then
-		return act.target.components.repairable:Repair(act.doer, act.invobject)
-	end
+    if act.target ~= nil and
+        act.invobject ~= nil and 
+        act.target.components.repairable ~= nil and
+        act.invobject.components.repairer ~= nil then
+        return act.target.components.repairable:Repair(act.doer, act.invobject)
+    end
 end
 
 ACTIONS.SEW.fn = function(act)
-	if act.target and act.target.components.fueled and act.invobject and act.invobject.components.sewing then
-		return act.invobject.components.sewing:DoSewing(act.target, act.doer)
-	end
+    if act.target ~= nil and
+        act.invobject ~= nil and
+        act.target.components.fueled ~= nil and
+        act.invobject.components.sewing ~= nil then
+        return act.invobject.components.sewing:DoSewing(act.target, act.doer)
+    end
 end
 
 ACTIONS.RUMMAGE.fn = function(act)
@@ -246,14 +248,14 @@ ACTIONS.RUMMAGE.fn = function(act)
     if targ ~= nil and targ.components.container ~= nil then
         if targ.components.container:IsOpenedBy(act.doer) then
             targ.components.container:Close()
-            act.doer:PushEvent("closecontainer", {container=targ})
+            act.doer:PushEvent("closecontainer", { container = targ })
             return true
         elseif targ.components.container:IsOpen() then
             return false, "INUSE"
         elseif targ.components.container.canbeopened then
             --Silent fail for opening containers in the dark
             if CanEntitySeeTarget(act.doer, targ) then
-                act.doer:PushEvent("opencontainer", {container=targ})
+                act.doer:PushEvent("opencontainer", { container = targ })
                 targ.components.container:Open(act.doer)
             end
             return true
@@ -263,10 +265,11 @@ end
 
 ACTIONS.RUMMAGE.strfn = function(act)
     local targ = act.target or act.invobject
-
-    if targ ~= nil and targ.replica.container ~= nil and targ.replica.container:IsOpenedBy(act.doer) then
-        return "CLOSE"
-    end
+    return targ ~= nil
+        and targ.replica.container ~= nil
+        and targ.replica.container:IsOpenedBy(act.doer)
+        and "CLOSE"
+        or nil
 end
 
 ACTIONS.DROP.fn = function(act)
@@ -284,13 +287,10 @@ end
 
 ACTIONS.DROP.strfn = function(act)
     if act.invobject ~= nil and not act.invobject:HasActionComponent("deployable") then
-        if act.invobject:HasTag("trap") then
-            return "SETTRAP"
-        elseif act.invobject:HasTag("mine") then
-            return "SETMINE"
-        elseif act.invobject.prefab == "pumpkin_lantern" then
-            return "PLACELANTERN"
-        end
+        return (act.invobject:HasTag("trap") and "SETTRAP")
+            or (act.invobject:HasTag("mine") and "SETMINE")
+            or (act.invobject.prefab == "pumpkin_lantern" and "PLACELANTERN")
+            or nil
     end
 end
 
@@ -313,7 +313,10 @@ end
 
 ACTIONS.READ.fn = function(act)
     local targ = act.target or act.invobject
-    if targ and targ.components.book and act.doer and act.doer.components.reader then
+    if targ ~= nil and
+        act.doer ~= nil and
+        targ.components.book ~= nil and
+        act.doer.components.reader ~= nil then
         return act.doer.components.reader:Read(targ)
     end
 end
@@ -335,22 +338,22 @@ end
 
 ACTIONS.BAIT.fn = function(act)
     if act.target.components.trap then
-	    act.target.components.trap:SetBait(act.doer.components.inventory:RemoveItem(act.invobject))
-	    return true
-	end
+        act.target.components.trap:SetBait(act.doer.components.inventory:RemoveItem(act.invobject))
+        return true
+    end
 end
 
 ACTIONS.DEPLOY.fn = function(act)
     if act.invobject and act.invobject.components.deployable and act.invobject.components.deployable:CanDeploy(act.pos) then
         local obj = (act.doer.components.inventory and act.doer.components.inventory:RemoveItem(act.invobject)) or 
         (act.doer.components.container and act.doer.components.container:RemoveItem(act.invobject))
-	    if obj then
-			if obj.components.deployable:Deploy(act.pos, act.doer) then
-				return true
+        if obj then
+            if obj.components.deployable:Deploy(act.pos, act.doer) then
+                return true
             else
                 act.doer.components.inventory:GiveItem(obj)
-			end
-		end
+            end
+        end
     end
 end
 
@@ -402,8 +405,8 @@ end
 
 ACTIONS.CHECKTRAP.fn = function(act)
     if act.target.components.trap then
-	    act.target.components.trap:Harvest(act.doer)
-	    return true
+        act.target.components.trap:Harvest(act.doer)
+        return true
     end
 end
 
@@ -428,19 +431,19 @@ ACTIONS.FERTILIZE.fn = function(act)
         local obj = act.invobject
 
         if act.target.components.crop:Fertilize(obj, act.doer) then
-			return true
-		else
-			return false
-		end
+            return true
+        else
+            return false
+        end
     elseif act.target.components.grower and act.target.components.grower:IsEmpty() and act.invobject and act.invobject.components.fertilizer then
-		local obj = act.invobject
+        local obj = act.invobject
         act.target.components.grower:Fertilize(obj, act.doer)
         return true
-	elseif act.target.components.pickable and act.target.components.pickable:CanBeFertilized() and act.invobject and act.invobject.components.fertilizer then
-		local obj = act.invobject
+    elseif act.target.components.pickable and act.target.components.pickable:CanBeFertilized() and act.invobject and act.invobject.components.fertilizer then
+        local obj = act.invobject
         act.target.components.pickable:Fertilize(obj, act.doer)
-		return true		
-	end
+        return true     
+    end
 end
 
 
@@ -799,15 +802,16 @@ ACTIONS.FEEDPLAYER.fn = function(act)
                 food:RemoveFromScene()
                 food.components.inventoryitem:HibernateLivingItem()
                 food.persists = false
-                if food.components.edible.foodtype == FOODTYPE.MEAT then
-                    act.target.sg:GoToState("eat", food, true)
-                else
-                    act.target.sg:GoToState("quickeat", food, true)
-                end
+                act.target.sg:GoToState(
+                    (act.target:HasTag("beaver") and "beavereat") or
+                    (food.components.edible.foodtype == FOODTYPE.MEAT and "eat") or
+                    "quickeat",
+                    food
+                )
                 return true
             end
         else
-            act.target:PushEvent("wonteatfood", {food=act.invobject})
+            act.target:PushEvent("wonteatfood", { food = act.invobject })
             return true -- the action still "succeeded", there's just no result on this end
         end
     end
@@ -815,96 +819,88 @@ end
 
 ACTIONS.GIVE.strfn = function(act)
     local targ = act.target or act.invobject
-    
-    if targ ~= nil and targ:HasTag("altar") then
-        if targ.state:value() then
-            return "READY"
-        else
-            return "NOTREADY"
-        end
-    end
+    return targ ~= nil
+        and targ:HasTag("altar")
+        and (targ.state:value() and "READY" or "NOTREADY")
+        or nil
 end
 
 ACTIONS.STORE.fn = function(act)
-    if act.target.components.container and act.invobject.components.inventoryitem and act.doer.components.inventory then
-        
+    if act.target.components.container ~= nil and act.invobject.components.inventoryitem ~= nil and act.doer.components.inventory ~= nil then
         if act.target.components.container:IsOpen() and not act.target.components.container:IsOpenedBy(act.doer) then
             return false, "INUSE"
+        elseif not act.target.components.container:CanTakeItemInSlot(act.invobject) then
+            return false, "NOTALLOWED"
         end
 
-        if not act.target.components.container:CanTakeItemInSlot(act.invobject) then
-			return false, "NOTALLOWED"
-        end
+        local item = act.invobject.components.inventoryitem:RemoveFromOwner(act.target.components.container.acceptsstacks)
+        if item ~= nil then
+            if act.target.components.inventoryitem == nil then
+                act.target.components.container:Open(act.doer)
+            end
 
-		local item = act.invobject.components.inventoryitem:RemoveFromOwner(act.target.components.container.acceptsstacks)
-        if item then
-			if not act.target.components.inventoryitem then
-				act.target.components.container:Open(act.doer)
-			end
-			
-            if not act.target.components.container:GiveItem(item,nil,nil,false) then
+            if not act.target.components.container:GiveItem(item, nil, nil, false) then
                 if TheInput:ControllerAttached() then
-				    act.doer.components.inventory:GiveItem(item)
+                    act.doer.components.inventory:GiveItem(item)
                 else
                     act.doer.components.inventory:GiveActiveItem(item)
                 end
-				return false
+                return false
             end
-				return true
-            
+            return true
         end
-    elseif act.target.components.occupiable and act.invobject and act.invobject.components.occupier and act.target.components.occupiable:CanOccupy(act.invobject) then
-		local item = act.invobject.components.inventoryitem:RemoveFromOwner()
-		return act.target.components.occupiable:Occupy(item)
+    elseif act.invobject ~= nil and
+        act.invobject.components.occupier ~= nil and
+        act.target.components.occupiable ~= nil and
+        act.target.components.occupiable:CanOccupy(act.invobject) then
+        return act.target.components.occupiable:Occupy(act.invobject.components.inventoryitem:RemoveFromOwner())
     end
 end
 
 ACTIONS.STORE.strfn = function(act)
     if act.target ~= nil then
-        if act.target.prefab == "cookpot" then
-            return "COOK"
-        elseif act.target.prefab == "birdcage" then
-            return "IMPRISON"
-        end
+        return (act.target.prefab == "cookpot" and "COOK")
+            or (act.target.prefab == "birdcage" and "IMPRISON")
+            or nil
     end
 end
 
 ACTIONS.BUILD.fn = function(act)
     if act.doer.components.builder then
-	    if act.doer.components.builder:DoBuild(act.recipe, act.pos, act.rotation) then
-	        return true
-	    end
-	end
+        if act.doer.components.builder:DoBuild(act.recipe, act.pos, act.rotation) then
+            return true
+        end
+    end
 end
 
 ACTIONS.PLANT.fn = function(act)
     if act.doer.components.inventory then
-	    local seed = act.doer.components.inventory:RemoveItem(act.invobject)
-	    if seed then
-	        if act.target.components.grower:PlantItem(seed) then
-	            return true
-	        else
-	            act.doer.components.inventory:GiveItem(seed)
-	        end
-	    end
+        local seed = act.doer.components.inventory:RemoveItem(act.invobject)
+        if seed then
+            if act.target.components.grower:PlantItem(seed) then
+                return true
+            else
+                act.doer.components.inventory:GiveItem(seed)
+            end
+        end
    end
 end
 
 ACTIONS.HARVEST.fn = function(act)
     if act.target.components.crop then
-    	return act.target.components.crop:Harvest(act.doer)
+        return act.target.components.crop:Harvest(act.doer)
     elseif act.target.components.harvestable then
         return act.target.components.harvestable:Harvest(act.doer)
     elseif act.target.components.stewer then
-		return act.target.components.stewer:Harvest(act.doer)
+        return act.target.components.stewer:Harvest(act.doer)
     elseif act.target.components.dryer then
-		return act.target.components.dryer:Harvest(act.doer)
+        return act.target.components.dryer:Harvest(act.doer)
     elseif act.target.components.occupiable and act.target.components.occupiable:IsOccupied() then
-		local item =act.target.components.occupiable:Harvest(act.doer)
-		if item then
-			act.doer.components.inventory:GiveItem(item)
-			return true
-		end
+        local item =act.target.components.occupiable:Harvest(act.doer)
+        if item then
+            act.doer.components.inventory:GiveItem(item)
+            return true
+        end
     end
 end
 
@@ -918,34 +914,32 @@ ACTIONS.HARVEST.strfn = function(act)
 end
 
 ACTIONS.LIGHT.fn = function(act)
-    if act.invobject and act.invobject.components.lighter then
-		act.invobject.components.lighter:Light(act.target)
-		return true
+    if act.invobject ~= nil and act.invobject.components.lighter ~= nil then
+        act.invobject.components.lighter:Light(act.target)
+        return true
     end
 end
 
 ACTIONS.SLEEPIN.fn = function(act)
-
-	local bag = nil
-	if act.target and act.target.components.sleepingbag then bag = act.target end
-	if act.invobject and act.invobject.components.sleepingbag then bag = act.invobject end
-	
-	if bag and act.doer then
-		bag.components.sleepingbag:DoSleep(act.doer)
-		return true
-	end
-	
+    if act.doer ~= nil then
+        local bag =
+            (act.invobject ~= nil and act.invobject.components.sleepingbag ~= nil and act.invobject) or
+            (act.target ~= nil and act.target.components.sleepingbag ~= nil and act.target) or
+            nil
+        if bag ~= nil then
+            bag.components.sleepingbag:DoSleep(act.doer)
+            return true
+        end
+    end
 end
 
 ACTIONS.SHAVE.fn = function(act)
-    
-    if act.invobject and act.invobject.components.shaver then
+    if act.invobject ~= nil and act.invobject.components.shaver ~= nil then
         local shavee = act.target or act.doer
-        if shavee and shavee.components.beard then
+        if shavee ~= nil and shavee.components.beard ~= nil then
             return shavee.components.beard:Shave(act.doer, act.invobject)
         end
     end
-    
 end
 
 ACTIONS.PLAY.fn = function(act)
@@ -955,25 +949,24 @@ ACTIONS.PLAY.fn = function(act)
 end
 
 ACTIONS.POLLINATE.fn = function(act)
-    if act.doer.components.pollinator then
-		if act.target then
-			return act.doer.components.pollinator:Pollinate(act.target)
-		else
-			return act.doer.components.pollinator:CreateFlower()
-		end
+    if act.doer.components.pollinator ~= nil then
+        if act.target ~= nil then
+            return act.doer.components.pollinator:Pollinate(act.target)
+        else
+            return act.doer.components.pollinator:CreateFlower()
+        end
     end
 end
 
 ACTIONS.TERRAFORM.fn = function(act)
-	if act.invobject and act.invobject.components.terraformer then
-		return act.invobject.components.terraformer:Terraform(act.pos)
-	end
+    if act.invobject ~= nil and act.invobject.components.terraformer ~= nil then
+        return act.invobject.components.terraformer:Terraform(act.pos)
+    end
 end
 
 ACTIONS.EXTINGUISH.fn = function(act)
-    if act.target.components.burnable
-       and act.target.components.burnable:IsBurning() then
-        if act.target.components.fueled and not act.target.components.fueled:IsEmpty() then
+    if act.target.components.burnable ~= nil and act.target.components.burnable:IsBurning() then
+        if act.target.components.fueled ~= nil and not act.target.components.fueled:IsEmpty() then
             act.target.components.fueled:ChangeSection(-1)
         else
             act.target.components.burnable:Extinguish()
@@ -983,37 +976,38 @@ ACTIONS.EXTINGUISH.fn = function(act)
 end
 
 ACTIONS.LAYEGG.fn = function(act)
-    if act.target.components.pickable and not act.target.components.pickable.canbepicked then
-		return act.target.components.pickable:Regen()
+    if act.target.components.pickable ~= nil and not act.target.components.pickable.canbepicked then
+        return act.target.components.pickable:Regen()
     end
 end
 
 ACTIONS.INVESTIGATE.fn = function(act)
-    local investigatePos = act.doer.components.knownlocations and act.doer.components.knownlocations:GetLocation("investigate")
-    if investigatePos then
+    local investigatePos = act.doer.components.knownlocations ~= nil and act.doer.components.knownlocations:GetLocation("investigate") or nil
+    if investigatePos ~= nil then
         act.doer.components.knownlocations:RememberLocation("investigate", nil)
         --try to get a nearby target
-        if act.doer.components.combat then
+        if act.doer.components.combat ~= nil then
             act.doer.components.combat:TryRetarget()
         end
-		return true
+        return true
     end
 end
-
 
 ACTIONS.GOHOME.fn = function(act)
     --this is gross. make it better later.
     if act.doer.force_onwenthome_message then
         act.doer:PushEvent("onwenthome")
     end
-    if act.target and act.target.components.spawner then
-        return act.target.components.spawner:GoHome(act.doer)
-    elseif act.target and act.target.components.childspawner then
-        return act.target.components.childspawner:GoHome(act.doer)
-    elseif act.pos or act.target then
-        if act.target then
-            act.target:PushEvent("onwenthome", {doer = act.doer})
+    if act.target ~= nil then
+        if act.target.components.spawner ~= nil then
+            return act.target.components.spawner:GoHome(act.doer)
+        elseif act.target.components.childspawner ~= nil then
+            return act.target.components.childspawner:GoHome(act.doer)
         end
+        act.target:PushEvent("onwenthome", { doer = act.doer })
+        act.doer:Remove()
+        return true
+    elseif act.pos ~= nil then
         act.doer:Remove()
         return true
     end
@@ -1024,21 +1018,21 @@ ACTIONS.JUMPIN.strfn = function(act)
 end
 
 ACTIONS.JUMPIN.fn = function(act)
-    if act.target.components.teleporter then
-	    act.target.components.teleporter:Activate(act.doer)
-	    return true
-	end
+    if act.target.components.teleporter ~= nil then
+        act.target.components.teleporter:Activate(act.doer)
+        return true
+    end
 end
 
 ACTIONS.RESETMINE.fn = function(act)
-    if act.target.components.mine then
-	    act.target.components.mine:Reset()
-	    return true
-	end
+    if act.target.components.mine ~= nil then
+        act.target.components.mine:Reset()
+        return true
+    end
 end
 
 ACTIONS.ACTIVATE.fn = function(act)
-    if act.target.components.activatable then
+    if act.target.components.activatable ~= nil then
         act.target.components.activatable:DoActivate(act.doer)
         return true
     end
@@ -1098,7 +1092,7 @@ end
 ACTIONS.HEAL.fn = function(act)
     if act.invobject and act.invobject.components.healer then
         local target = act.target or act.doer
-    	return act.invobject.components.healer:Heal(target)
+        return act.invobject.components.healer:Heal(target)
     elseif act.invobject and act.invobject.components.maxhealer then
         local target = act.target or act.doer
         return act.invobject.components.maxhealer:Heal(target)
@@ -1205,17 +1199,17 @@ ACTIONS.COMBINESTACK.fn = function(act)
 end
 
 ACTIONS.TRAVEL.fn = function(act)
-	if act.target and act.target.travel_action_fn then
-		act.target.travel_action_fn(act.doer)
-		return true
-	end
+    if act.target and act.target.travel_action_fn then
+        act.target.travel_action_fn(act.doer)
+        return true
+    end
 end
 
 ACTIONS.UNPIN.fn = function(act)
     if act.doer ~= act.target and act.target.components.pinnable and act.target.components.pinnable:IsStuck() then
         act.target:PushEvent("unpinned")
         return true
-	end
+    end
 end
 
 ACTIONS.STEALMOLEBAIT.fn = function(act)
@@ -1351,16 +1345,16 @@ end
 
 --[[ACTIONS.OPEN_SHOP.fn = function(act)
     if act.target.components.shop then
-		local trigger = json.encode({shop={title=act.target.components.shop.title,
-										   name=act.target.components.shop.name, 
-										   id=act.target.entity:GetGUID(),
-										   tab=act.target.components.shop.tab,
-										   filter=act.doer.components.builder.recipes,
+        local trigger = json.encode({shop={title=act.target.components.shop.title,
+                                           name=act.target.components.shop.name, 
+                                           id=act.target.entity:GetGUID(),
+                                           tab=act.target.components.shop.tab,
+                                           filter=act.doer.components.builder.recipes,
                                            gold=act.doer.profile:GetGold(),
-										   }
-									})
-		TheSim:SendUITrigger(trigger)
-		TheSim:SetTimeScale(0)
+                                           }
+                                    })
+        TheSim:SendUITrigger(trigger)
+        TheSim:SetTimeScale(0)
         return true
     end
 end

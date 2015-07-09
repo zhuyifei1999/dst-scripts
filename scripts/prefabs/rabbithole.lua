@@ -23,6 +23,9 @@ local function dig_up(inst)
     if inst.components.spawner:IsOccupied() then
         inst.components.lootdropper:SpawnLootPrefab("rabbit")
     end
+
+    TheWorld:PushEvent("beginregrowth", inst)
+
     inst:Remove()
 end
 

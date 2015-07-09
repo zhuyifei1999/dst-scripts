@@ -1,41 +1,87 @@
+local function OnEnterDark(inst)
+    inst.components.grue:RemoveImmunity("light")
+end
+
+local function OnEnterLight(inst)
+    inst.components.grue:AddImmunity("light")
+end
+
+local function OnNightVision(inst, nightvision)
+    if nightvision then
+        inst.components.grue:AddImmunity("nightvision")
+    else
+        inst.components.grue:RemoveImmunity("nightvision")
+    end
+end
+
+local function OnInvincibleToggle(inst, data)
+    if data.invincible then
+        inst.components.grue:AddImmunity("invincible")
+    else
+        inst.components.grue:RemoveImmunity("invincible")
+    end
+end
+
+local function OnDeath(inst)
+    inst.components.grue:Stop()
+end
+
+local function OnRespawned(inst)
+    inst.components.grue:Start()
+end
+
+local function OnInit(inst, self)
+    self.inittask = nil
+    inst:ListenForEvent("enterdark", OnEnterDark)
+    inst:ListenForEvent("enterlight", OnEnterLight)
+    inst:ListenForEvent("nightvision", OnNightVision)
+    inst:ListenForEvent("invincibletoggle", OnInvincibleToggle)
+    inst:ListenForEvent("death", OnDeath)
+    inst:ListenForEvent("ms_respawnedfromghost", OnRespawned)
+    self:Start()
+end
+
 local Grue = Class(function(self, inst)
     self.inst = inst
+
     self.soundevent = nil
     self.warndelay = 1
-    self.sleeping = false
-    
-    inst:ListenForEvent("enterdark", 
-        function(inst, data) 
-            self:Start()
-        end)
+    self.started = false
+    self.immunity = {}
 
-    inst:ListenForEvent("enterlight", 
-        function(inst, data) 
-            self:Stop()
-        end)
-
-    inst:ListenForEvent("invincibletoggle",
-        function(inst, data) 
-            if self:CheckForStart() then
-                self:Start()
-            end
-        end)
-
-    self.inst:DoTaskInTime(0, function()   
-        if self:CheckForStart() then
-            self:Start()
-        end
-    end)
+    self.inittask = inst:DoTaskInTime(0, OnInit, self)
 end)
 
+function Grue:OnRemoveFromEntity()
+    self:Stop()
+    if self.inittask ~= nil then
+        self.inittask:Cancel()
+        self.inittask = nil
+    else
+        inst:RemoveEventCallback("enterdark", OnEnterDark)
+        inst:RemoveEventCallback("enterlight", OnEnterLight)
+        inst:RemoveEventCallback("nightvision", OnNightVision)
+        inst:RemoveEventCallback("invincibletoggle", OnInvincibleToggle)
+        inst:RemoveEventCallback("death", OnDeath)
+        inst:RemoveEventCallback("ms_respawnedfromghost", OnRespawned)
+    end
+end
+
+--V2C: Leave CheckForStart() as a public member function for backward mod compatibility
 function Grue:CheckForStart()
-    return not self.inst.components.health:IsInvincible() and not self.inst.LightWatcher:IsInLight() and not self.inst.components.health:IsDead()
+    return not (self.inst.components.health:IsInvincible() or
+                self.inst.LightWatcher:IsInLight() or
+                self.inst.components.health:IsDead() or
+                CanEntitySeeInDark(self.inst))
 end
 
 function Grue:Start()
-    self.inst:StartUpdatingComponent(self) 
-    self.nextHitTime = 5+math.random()*5
-    self.nextSoundTime = self.nextHitTime* (.4 + math.random()*.4)
+    if not self.started and self:CheckForStart() then
+        self.started = true
+        self.inst:StartUpdatingComponent(self) 
+        self.nextHitTime = 5 + math.random() * 5
+        self.nextSoundTime = self.nextHitTime* (.4 + math.random() * .4)
+    end
 end
 
 function Grue:SetSounds(warn, attack)
@@ -43,55 +89,64 @@ function Grue:SetSounds(warn, attack)
     self.soundattack = attack
 end
 
-
 function Grue:Stop()
-    self.inst:StopUpdatingComponent(self) 
-end
-
-function Grue:SetSleeping(asleep)
-    self.sleeping = asleep
-end
-
-function Grue:OnUpdate(dt)
-    if not self.sleeping then
-        if self.inst.components.health:IsDead() or self.inst.components.health:IsInvincible() then
-            self:Stop()
-            return
-        end
-        
-        if self.nextHitTime and self.nextHitTime > 0 then
-            self.nextHitTime = self.nextHitTime - dt
-        end
-        
-        if self.nextSoundTime and self.nextSoundTime > 0 then
-            self.nextSoundTime = self.nextSoundTime - dt
-            
-            if self.nextSoundTime <= 0 then
-                if self.soundwarn then
-                    self.inst.SoundEmitter:PlaySound(self.soundwarn)
-                end
-                self.inst:DoTaskInTime(self.warndelay, function() self.inst:PushEvent("heargrue") end)
-            end
-            
-        end
-        
-        if self.nextHitTime and self.nextHitTime <= 0 then
-        
-            self.nextHitTime = self.nextHitTime - dt
-            self.nextSoundTime = self.nextSoundTime - dt
-            self.inst.components.combat:GetAttacked(nil, TUNING.GRUEDAMAGE)
-    		self.inst.components.sanity:DoDelta(-TUNING.SANITY_MEDLARGE)
-            
-            self.nextHitTime = 5+math.random()*6
-            self.nextSoundTime = self.nextHitTime* (.4 + math.random()*.4)
-            if self.soundattack then
-                self.inst.SoundEmitter:PlaySound(self.soundattack)
-            end
-            
-            self.inst:PushEvent("attackedbygrue")
-        end
+    if self.started then
+        self.started = false
+        self.inst:StopUpdatingComponent(self)
     end
 end
 
+function Grue:AddImmunity(source)
+    self.immunity[source or self] = true
+    self:Stop()
+end
+
+function Grue:RemoveImmunity(source)
+    self.immunity[source or self] = nil
+    if next(self.immunity) == nil then
+        self:Start()
+    end
+end
+
+--Deprecated; kept around for mod backward compatibility
+function Grue:SetSleeping(asleep)
+    if asleep then
+        self:AddImmunity("sleeping")
+    else
+        self:RemoveImmunity("sleeping")
+    end
+end
+
+function Grue:OnUpdate(dt)
+    if self.nextHitTime ~= nil and self.nextHitTime > 0 then
+        self.nextHitTime = self.nextHitTime - dt
+    end
+
+    if self.nextSoundTime ~= nil and self.nextSoundTime > 0 then
+        self.nextSoundTime = self.nextSoundTime - dt
+
+        if self.nextSoundTime <= 0 then
+            if self.soundwarn ~= nil then
+                self.inst.SoundEmitter:PlaySound(self.soundwarn)
+            end
+            self.inst:DoTaskInTime(self.warndelay, self.inst.PushEvent, "heargrue")
+        end
+    end
+
+    if self.nextHitTime ~= nil and self.nextHitTime <= 0 then
+        self.nextHitTime = self.nextHitTime - dt
+        self.nextSoundTime = self.nextSoundTime - dt
+        self.inst.components.combat:GetAttacked(nil, TUNING.GRUEDAMAGE, nil, "darkness")
+        self.inst.components.sanity:DoDelta(-TUNING.SANITY_MEDLARGE)
+
+        self.nextHitTime = 5 + math.random() * 6
+        self.nextSoundTime = self.nextHitTime * (.4 + math.random() * .4)
+        if self.soundattack ~= nil then
+            self.inst.SoundEmitter:PlaySound(self.soundattack)
+        end
+
+        self.inst:PushEvent("attackedbygrue")
+    end
+end
 
 return Grue

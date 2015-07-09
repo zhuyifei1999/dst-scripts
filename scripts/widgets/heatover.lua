@@ -27,20 +27,16 @@ local HeatOver = Class(Widget, function(self, owner)
     self.effectFrequency_target = 0.0
     self.effectSpeed = 0.0
     --self.effectSpeed_target = 0.0
-	self:Show()
 	self:StartUpdating()
     
-    self.inst:ListenForEvent("temperaturedelta", function(inst, data) self:OnHeatChange() end, self.owner)
+    self.inst:ListenForEvent("temperaturedelta", function() self:OnHeatChange() end, self.owner)
 end)
 
 function HeatOver:OnHeatChange()
-
-    --if 0 then
-	
 	local temp = self.owner.components.temperature ~= nil
         and self.owner.components.temperature:GetCurrent()
         or (self.owner.player_classified ~= nil and
-            self.owner.player_classified.currenttemperature or 30)
+            self.owner.player_classified.currenttemperature or TUNING.STARTING_TEMP)
 
 	local num_steps = 4
 		
@@ -117,7 +113,6 @@ function HeatOver:OnHeatChange()
 		--self.effectSpeed_target = distortion_speed[self.laststep]
 		self:StartUpdating()
 	end
-	--end
 end
 
 function HeatOver:OnUpdate(dt)

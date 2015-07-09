@@ -73,6 +73,7 @@ local PHASE_BLEND_TIMES =
 }
 
 local SEASON_BLEND_TIME = 10
+local DEFAULT_BLEND_TIME = .25
 
 --------------------------------------------------------------------------
 --[[ Member variables ]]
@@ -84,10 +85,13 @@ self.inst = inst
 --Private
 local _iscave = inst:HasTag("cave")
 local _phase = "day"
+local _fullmoonphase = nil
+local _season = "autumn"
 local _ambientcctable = _iscave and CAVE_COLOURCUBES or SEASON_COLOURCUBES.autumn
 local _ambientcc = { _ambientcctable.day, _ambientcctable.day }
 local _insanitycc = { INSANITY_COLOURCUBES.day, INSANITY_COLOURCUBES.day }
 local _overridecc = nil
+local _overridecctable = nil
 local _remainingblendtime = 0
 local _totalblendtime = 0
 local _fxtime = 0
@@ -99,9 +103,13 @@ local _colourmodifier = nil
 --[[ Private member functions ]]
 --------------------------------------------------------------------------
 
+local function GetCCPhase()
+    return _phase == "night" and _fullmoonphase or _phase
+end
+
 local function Blend(time)
-    local ambientcctarget = _ambientcctable[_phase] or IDENTITY_COLOURCUBE
-    local insanitycctarget = INSANITY_COLOURCUBES[_phase] or IDENTITY_COLOURCUBE
+    local ambientcctarget = _ambientcctable[GetCCPhase()] or IDENTITY_COLOURCUBE
+    local insanitycctarget = INSANITY_COLOURCUBES[GetCCPhase()] or IDENTITY_COLOURCUBE
 
     if _overridecc ~= nil then
         _ambientcc[2] = ambientcctarget
@@ -144,6 +152,11 @@ local function Blend(time)
     end
 end
 
+local function UpdateAmbientCCTable(blendtime)
+    _ambientcctable = _overridecctable or (_iscave and CAVE_COLOURCUBES or SEASON_COLOURCUBES[_season]) or SEASON_COLOURCUBES.autumn
+    Blend(blendtime)
+end
+
 --------------------------------------------------------------------------
 --[[ Private event handlers ]]
 --------------------------------------------------------------------------
@@ -155,44 +168,63 @@ local function OnSanityDelta(player, data)
     _fxspeed = easing.outQuad(1 - data.newpercent, 0, .2, 1)
 end
 
+local function OnOverrideCCTable(player, cctable)
+    _overridecctable = cctable
+    UpdateAmbientCCTable(DEFAULT_BLEND_TIME)
+end
+
 local function OnPlayerActivated(inst, player)
     if _activatedplayer == player then
         return
     elseif _activatedplayer ~= nil and _activatedplayer.entity:IsValid() then
         inst:RemoveEventCallback("sanitydelta", OnSanityDelta, _activatedplayer)
+        inst:RemoveEventCallback("ccoverrides", OnOverrideCCTable, player)
     end
     _activatedplayer = player
     inst:ListenForEvent("sanitydelta", OnSanityDelta, player)
+    inst:ListenForEvent("ccoverrides", OnOverrideCCTable, player)
     if player.replica.sanity ~= nil then
         OnSanityDelta(player, { newpercent = player.replica.sanity:GetPercent() })
     end
+    OnOverrideCCTable(player, player.components.playervision ~= nil and player.components.playervision:GetCCTable() or nil)
 end
 
 local function OnPlayerDeactivated(inst, player)
     inst:RemoveEventCallback("sanitydelta", OnSanityDelta, player)
+    inst:RemoveEventCallback("ccoverrides", OnOverrideCCTable, player)
     OnSanityDelta(player, { newpercent = 1 })
+    OnOverrideCCTable(player, nil)
     if player == _activatedplayer then
         _activatedplayer = nil
     end
 end
 
 local function OnPhaseChanged(inst, phase)
-    if TheWorld.state.isfullmoon then
-        phase = "full_moon"
-    end
     if _phase ~= phase then
         _phase = phase
 
-        local blendtime = PHASE_BLEND_TIMES[phase]
-        if blendtime then
+        local blendtime = PHASE_BLEND_TIMES[GetCCPhase()]
+        if blendtime ~= nil then
+            Blend(blendtime)
+        end
+    end
+end
+
+local function OnMoonPhaseChanged(inst, moonphase)
+    moonphase = moonphase == "full" and "full_moon" or nil
+    if _fullmoonphase ~= moonphase then
+        _fullmoonphase = moonphase
+
+        local blendtime = PHASE_BLEND_TIMES[GetCCPhase()]
+        if blendtime ~= nil then
             Blend(blendtime)
         end
     end
 end
 
 local OnSeasonTick = not _iscave and function(inst, data)
-    _ambientcctable = SEASON_COLOURCUBES[data.season] or _ambientcctable
-    Blend(SEASON_BLEND_TIME)
+    _season = data.season
+    UpdateAmbientCCTable(SEASON_BLEND_TIME)
 end or nil
 
 local function OnOverrideColourCube(inst, cc)
@@ -212,13 +244,9 @@ end
 
 local function OnOverrideColourModifier(inst, mod)
     if _colourmodifier ~= mod then
-        if mod then
-            PostProcessor:SetColourModifier(mod)
-        else
-            PostProcessor:SetColourModifier(1.0)
-        end
+        _colourmodifier = mod
+        PostProcessor:SetColourModifier(mod or 1)
     end
-    _colourmodifier = mod
 end
 
 --------------------------------------------------------------------------
@@ -237,6 +265,7 @@ PostProcessor:SetDistortionRadii(0.5, 0.685)
 inst:ListenForEvent("playeractivated", OnPlayerActivated)
 inst:ListenForEvent("playerdeactivated", OnPlayerDeactivated)
 inst:ListenForEvent("phasechanged", OnPhaseChanged)
+inst:ListenForEvent("moonphasechanged", OnMoonPhaseChanged)
 if not _iscave then
     inst:ListenForEvent("seasontick", OnSeasonTick)
 end

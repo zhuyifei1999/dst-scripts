@@ -58,8 +58,7 @@ local function OnHaunt(inst, haunter)
         ret = true
     end
     if inst.components.workable ~= nil and
-        inst.components.workable.workleft > 0 and
-        ints.components.workable.workable and
+        inst.components.workable:CanBeWorked() and
         math.random() <= TUNING.HAUNT_CHANCE_HALF then
         inst.components.workable:WorkedBy(haunter, 1)
         inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
@@ -107,7 +106,7 @@ local function fn()
     inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
     inst.components.workable:SetWorkLeft(4)
     inst.components.workable:SetOnFinishCallback(onhammered)
-    inst.components.workable:SetOnWorkCallback(onhit)    
+    inst.components.workable:SetOnWorkCallback(onhit)
 
     -------------------------
     inst:AddComponent("fueled")

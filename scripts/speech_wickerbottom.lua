@@ -530,6 +530,7 @@ return
 		KRAMPUS_SACK = "It seems bigger inside than out.",
         PINECONE = "Conifer seeds encased in a mature strobilus.",
         PINECONE_SAPLING = "Conifer seeds approaching maturity.",
+        LUMPY_SAPLING = "Perhaps this species is surculose.",
         ARMORWOOD = "Crude plate mail cobbled together from log sections.",
 		ARMOR_SANITY = "Protective shroud which transfers attacks to another dimension.",
         ASH =

@@ -241,46 +241,57 @@ end
 
 function c_sethealth(n)
     local player = ConsoleCommandPlayer()
-    if player ~= nil and not player:HasTag("playerghost") then
+    if player ~= nil and player.components.health ~= nil and not player:HasTag("playerghost") then
         SuUsed("c_sethealth", true)
         player.components.health:SetPercent(n)
     end
 end
+
 function c_setminhealth(n)
     local player = ConsoleCommandPlayer()
-    if player ~= nil and not player:HasTag("playerghost") then
+    if player ~= nil and player.components.health ~= nil and not player:HasTag("playerghost") then
         SuUsed("c_minhealth", true)
         player.components.health:SetMinHealth(n)
     end
 end
+
 function c_setsanity(n)
     local player = ConsoleCommandPlayer()
-    if player ~= nil and not player:HasTag("playerghost") then
+    if player ~= nil and player.components.sanity ~= nil and not player:HasTag("playerghost") then
         SuUsed("c_setsanity", true)
         player.components.sanity:SetPercent(n)
     end
 end
+
 function c_sethunger(n)
     local player = ConsoleCommandPlayer()
-    if player ~= nil and not player:HasTag("playerghost") then
+    if player ~= nil and player.components.hunger ~= nil and not player:HasTag("playerghost") then
         SuUsed("c_sethunger", true)
-        ConsoleCommandPlayer().components.hunger:SetPercent(n)
+        player.components.hunger:SetPercent(n)
+    end
+end
+
+function c_setbeaverness(n)
+    local player = ConsoleCommandPlayer()
+    if player ~= nil and player.components.beaverness ~= nil and not player:HasTag("playerghost") then
+        SuUsed("c_setbeaverness", true)
+        player.components.beaverness:SetPercent(n)
     end
 end
 
 function c_setmoisture(n)
     local player = ConsoleCommandPlayer()
-    if player ~= nil and not player:HasTag("playerghost") then
+    if player ~= nil and player.components.moisture ~= nil and not player:HasTag("playerghost") then
         SuUsed("c_setmoisture", true)
-        ConsoleCommandPlayer().components.moisture:SetPercent(n)
+        player.components.moisture:SetPercent(n)
     end
 end
 
 function c_settemperature(n)
     local player = ConsoleCommandPlayer()
-    if player ~= nil and not player:HasTag("playerghost") then
+    if player ~= nil and player.components.temperature ~= nil and not player:HasTag("playerghost") then
         SuUsed("c_settemperature", true)
-        ConsoleCommandPlayer().components.temperature:SetTemperature(n)
+        player.components.temperature:SetTemperature(n)
     end
 end
 
@@ -341,8 +352,10 @@ end
 
 function c_teleport(x, y, z, inst)
     inst = inst or ConsoleCommandPlayer()
-    inst.Transform:SetPosition(x, y, z)
-    SuUsed("c_teleport", true)
+    if inst then
+        inst.Transform:SetPosition(x, y, z)
+        SuUsed("c_teleport", true)
+    end
 end
 
 function c_move(inst)
@@ -416,7 +429,12 @@ function c_findnext(prefab, radius, inst)
     if not found then
         found = reallowest
     end
-    lastfound = found.GUID
+    if not found then
+        print("Could not find any objects matching '"..prefab.."'.")
+        lastfound = -1
+    else
+        lastfound = found.GUID
+    end
     return found
 end
 
@@ -828,3 +846,16 @@ function c_cancelmaintaintasks(player)
         player.debug_maintainmoisturetask = nil
     end
 end
+
+function c_removeallwithtags(...)
+        
+    for k,ent in pairs(Ents) do
+        for i,tag in ipairs(arg) do
+            if ent:HasTag(tag) then
+                ent:Remove()
+                break
+            end
+        end
+    end
+end
+

@@ -890,6 +890,7 @@ return {
 		PIGTORCH = "Great. Now they have fire.",
 		PINECONE = "A more outdoorsy type might be able to make something of this.",
         PINECONE_SAPLING = "Huh, it seems to belong in the ground.",
+        LUMPY_SAPLING = "Where did this appear from?",
 		PITCHFORK = "The tool of choice for perfectionists.",
 		PLANTMEAT = "A feeble attempt to trick the weaker minded.",
 		PLANTMEAT_COOKED = "The heat has made this a suitable meal.",

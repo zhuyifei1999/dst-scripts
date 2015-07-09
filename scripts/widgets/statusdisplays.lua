@@ -2,6 +2,7 @@ local Widget = require "widgets/widget"
 local SanityBadge = require "widgets/sanitybadge"
 local HealthBadge = require "widgets/healthbadge"
 local HungerBadge = require "widgets/hungerbadge"
+local BeaverBadge = require "widgets/beaverbadge"
 local MoistureMeter = require "widgets/moisturemeter"
 
 local function OnSetPlayerMode(inst, self)
@@ -30,6 +31,12 @@ local function OnSetPlayerMode(inst, self)
         self.inst:ListenForEvent("moisturedelta", self.onmoisturedelta, self.owner)
         self:SetMoisturePercent(self.owner:GetMoisture())
     end
+
+    if self.beaverness ~= nil and self.onbeavernessdelta == nil then
+        self.onbeavernessdelta = function(owner, data) self:BeavernessDelta(data) end
+        self.inst:ListenForEvent("beavernessdelta", self.onbeavernessdelta, self.owner)
+        self:SetBeavernessPercent(self.owner:GetBeaverness())
+    end
 end
 
 local function OnSetGhostMode(inst, self)
@@ -54,30 +61,91 @@ local function OnSetGhostMode(inst, self)
         self.inst:RemoveEventCallback("moisturedelta", self.onmoisturedelta, self.owner)
         self.onmoisturedelta = nil
     end
+
+    if self.onbeavernessdelta ~= nil then
+        self.inst:RemoveEventCallback("beavernessdelta", self.onbeavernessdelta, self.owner)
+        self.onbeavernessdelta = nil
+    end
 end
 
 local StatusDisplays = Class(Widget, function(self, owner)
     Widget._ctor(self, "Status")
     self.owner = owner
 
+    self.beaverness = nil
+    self.onbeavernessdelta = nil
+
     self.brain = self:AddChild(SanityBadge(owner))
-    self.brain:SetPosition(0,-40,0)
+    self.brain:SetPosition(0, -40, 0)
+    self.onsanitydelta = nil
 
     self.stomach = self:AddChild(HungerBadge(owner))
-    self.stomach:SetPosition(-40,20,0)
+    self.stomach:SetPosition(-40, 20, 0)
+    self.onhungerdelta = nil
 
     self.heart = self:AddChild(HealthBadge(owner))
-    self.heart:SetPosition(40,20,0)
+    self.heart:SetPosition(40, 20, 0)
+    self.onhealthdelta = nil
 
     self.moisturemeter = self:AddChild(MoistureMeter(owner))
-    self.moisturemeter:SetPosition(0,-115,0)
+    self.moisturemeter:SetPosition(0, -115, 0)
+    self.onmoisturedelta = nil
 
     self.modetask = nil
+    self.isghostmode = true --force the initial SetGhostMode call to be dirty
     self:SetGhostMode(false)
+
+    if owner:HasTag("beaverness") then
+        self:AddBeaverness()
+    end
 end)
 
+function StatusDisplays:AddBeaverness()
+    if self.beaverness == nil then
+        self.beaverness = self:AddChild(BeaverBadge(self.owner))
+        self.beaverness:SetPosition(-80, -40, 0)
+
+        if self.isghostmode then
+            self.beaverness:Hide()
+        elseif self.modetask == nil and self.onbeavernessdelta == nil then
+            self.onbeavernessdelta = function(owner, data) self:BeavernessDelta(data) end
+            self.inst:ListenForEvent("beavernessdelta", self.onbeavernessdelta, self.owner)
+            self:SetBeavernessPercent(self.owner:GetBeaverness())
+        end
+    end
+end
+
+function StatusDisplays:RemoveBeaverness()
+    if self.beaverness ~= nil then
+        if self.onbeavernessdelta ~= nil then
+            self.inst:RemoveEventCallback("beavernessdelta", self.onbeavernessdelta, self.owner)
+            self.onbeavernessdelta = nil
+        end
+
+        self:SetBeaverMode(false)
+        self.beaverness:Kill()
+        self.beaverness = nil
+    end
+end
+
+function StatusDisplays:SetBeaverMode(beavermode)
+    if self.isghostmode or self.beaverness == nil then
+        return
+    elseif beavermode then
+        self.stomach:Hide()
+        self.beaverness:SetPosition(-40, 20, 0)
+    else
+        self.stomach:Show()
+        self.beaverness:SetPosition(-80, -40, 0)
+    end
+end
+
 function StatusDisplays:SetGhostMode(ghostmode)
-    if ghostmode then
+    if not self.isghostmode == not ghostmode then --force boolean
+        return
+    elseif ghostmode then
+        self.isghostmode = true
+
         self.heart:Hide()
         self.stomach:Hide()
         self.brain:Hide()
@@ -86,11 +154,22 @@ function StatusDisplays:SetGhostMode(ghostmode)
         self.heart:StopWarning()
         self.stomach:StopWarning()
         self.brain:StopWarning()
+
+        if self.beaverness ~= nil then
+            self.beaverness:Hide()
+            self.beaverness:StopWarning()
+        end
     else
+        self.isghostmode = nil
+
         self.heart:Show()
         self.stomach:Show()
         self.brain:Show()
         self.moisturemeter:Show()
+
+        if self.beaverness ~= nil then
+            self.beaverness:Show()
+        end
     end
 
     if self.modetask ~= nil then
@@ -144,7 +223,7 @@ function StatusDisplays:HungerDelta(data)
             TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/hunger_down")
             self.stomach:PulseRed()
         end
-    end	
+    end
 end
 
 function StatusDisplays:SetSanityPercent(pct)
@@ -167,6 +246,24 @@ function StatusDisplays:SanityDelta(data)
         elseif data.newpercent < data.oldpercent then
             self.brain:PulseRed()
             TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/sanity_down")
+        end
+    end
+end
+
+function StatusDisplays:SetBeavernessPercent(pct)
+    self.beaverness:SetPercent(pct)
+end
+
+function StatusDisplays:BeavernessDelta(data)
+    self:SetBeavernessPercent(data.newpercent)
+
+    if not data.overtime then
+        if data.newpercent > data.oldpercent then
+            self.beaverness:PulseGreen()
+            TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/health_up")
+        elseif data.newpercent < data.oldpercent then
+            TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/health_down")
+            self.beaverness:PulseRed()
         end
     end
 end

@@ -16,6 +16,14 @@ local function Disappear(inst)
     end
 end
 
+local function OnInit(inst)
+    if inst.LightWatcher:IsInLight() then
+        inst:Remove()
+    else
+        inst.entity:Show()
+    end
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -42,7 +50,22 @@ local function fn()
     inst.AnimState:SetSortOrder(3)
     inst.AnimState:SetMultColour(1, 1, 1, 0.5)
 
-    inst.deathtask = inst:DoTaskInTime(5 + 10 * math.random(), Disappear)
+    inst.entity:Hide()
+
+    if ThePlayer == nil or CanEntitySeeInDark(ThePlayer) then
+        inst:DoTaskInTime(0, inst.Remove)
+    else
+        --Delay light check until entity has been positioned
+        inst:DoTaskInTime(0, OnInit)
+
+        inst:ListenForEvent("nightvision", function(player, nightvision)
+            if nightvision then
+                inst:Remove()
+            end
+        end, ThePlayer)
+
+        inst.deathtask = inst:DoTaskInTime(5 + 10 * math.random(), Disappear)
+    end
 
     return inst
 end

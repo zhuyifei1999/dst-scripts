@@ -50,6 +50,8 @@ local Sanity = Class(function(self, inst)
 
     self.ghost_drain_mult = 0
 
+    self.custom_rate_fn = nil
+
     self._oldissane = self:IsSane()
     self._oldpercent = self:GetPercent()
 
@@ -248,9 +250,8 @@ end
 
 function Sanity:Recalc(dt)
     local total_dapperness = self.dapperness or 0
-    local mitigates_rain = false
-    for k,v in pairs (self.inst.components.inventory.equipslots) do
-        if v.components.equippable then
+    for k, v in pairs(self.inst.components.inventory.equipslots) do
+        if v.components.equippable ~= nil then
             total_dapperness = total_dapperness + v.components.equippable:GetDapperness(self.inst)
         end
     end
@@ -261,49 +262,34 @@ function Sanity:Recalc(dt)
 
     local moisture_delta = easing.inSine(self.inst.components.moisture:GetMoisture(), 0, TUNING.MOISTURE_SANITY_PENALTY_MAX, self.inst.components.moisture:GetMaxMoisture())
     
-    local light_delta = 0
-    local lightval = self.inst.LightWatcher:GetLightValue()
-    
-    local day = TheWorld.state.isday and not TheWorld:HasTag("cave")
-
-    if day then
+    local light_delta
+    if TheWorld.state.isday and not TheWorld:HasTag("cave") then
         light_delta = TUNING.SANITY_DAY_GAIN
     else
-        local highval = TUNING.SANITY_HIGH_LIGHT
-        local lowval = TUNING.SANITY_LOW_LIGHT
-
-        if lightval > highval then
-            light_delta =  TUNING.SANITY_NIGHT_LIGHT
-        elseif lightval < lowval then
-            light_delta = TUNING.SANITY_NIGHT_DARK
-        else
-            light_delta = TUNING.SANITY_NIGHT_MID
-        end
-
-        light_delta = light_delta*self.night_drain_mult
+        local lightval = CanEntitySeeInDark(self.inst) and .9 or self.inst.LightWatcher:GetLightValue()
+        light_delta =
+            (   (lightval > TUNING.SANITY_HIGH_LIGHT and TUNING.SANITY_NIGHT_LIGHT) or
+                (lightval < TUNING.SANITY_LOW_LIGHT and TUNING.SANITY_NIGHT_DARK) or
+                TUNING.SANITY_NIGHT_MID
+            ) * self.night_drain_mult
     end
 
     local aura_delta = 0
-    local x,y,z = self.inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x,y,z, TUNING.SANITY_EFFECT_RANGE, nil, {"FX", "NOCLICK", "DECOR","INLIMBO"} )
-    for k,v in pairs(ents) do 
-        if v.components.sanityaura and v ~= self.inst then
-            local distsq = self.inst:GetDistanceSqToInst(v)
-            local aura_val = v.components.sanityaura:GetAura(self.inst)/math.max(1, distsq)
-            if aura_val < 0 then
-                aura_val = aura_val * self.neg_aura_mult
-            end
-
-            aura_delta = aura_delta + aura_val
+    local x, y, z = self.inst.Transform:GetWorldPosition()
+    local ents = TheSim:FindEntities(x, y, z, TUNING.SANITY_EFFECT_RANGE, nil, { "FX", "NOCLICK", "DECOR","INLIMBO" })
+    for i, v in ipairs(ents) do 
+        if v.components.sanityaura ~= nil and v ~= self.inst then
+            local aura_val = v.components.sanityaura:GetAura(self.inst) / math.max(1, self.inst:GetDistanceSqToInst(v))
+            aura_delta = aura_delta + (aura_val < 0 and aura_val * self.neg_aura_mult or aura_val)
         end
     end
 
     self:RecalcGhostDrain()
     local ghost_delta = TUNING.SANITY_GHOST_PLAYER_DRAIN * self.ghost_drain_mult
 
-    self.rate = (dapper_delta + moisture_delta + light_delta + aura_delta + ghost_delta)  
-    
-    if self.custom_rate_fn then
+    self.rate = dapper_delta + moisture_delta + light_delta + aura_delta + ghost_delta
+
+    if self.custom_rate_fn ~= nil then
         self.rate = self.rate + self.custom_rate_fn(self.inst)
     end
 

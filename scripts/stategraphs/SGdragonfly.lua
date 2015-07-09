@@ -347,14 +347,14 @@ local states=
 		tags = {"busy"},
 
 		onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+            inst.Physics:Stop()
 
 			if inst.enraged then
 				inst.sg:GoToState("idle")
+            else
+                inst.AnimState:PlayAnimation("fire_on")
 			end
-
-			inst.components.locomotor:StopMoving()
-			inst.Physics:Stop()
-			inst.AnimState:PlayAnimation("fire_on")
 		end,
 
 		events=
@@ -377,14 +377,14 @@ local states=
 		tags = {"busy"},
 
 		onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+            inst.Physics:Stop()
 
 			if not inst.enraged then
 				inst.sg:GoToState("idle")
+            else
+                inst.AnimState:PlayAnimation("fire_off")
 			end
-
-			inst.components.locomotor:StopMoving()
-			inst.Physics:Stop()
-			inst.AnimState:PlayAnimation("fire_off")
 		end,
 
 		events=

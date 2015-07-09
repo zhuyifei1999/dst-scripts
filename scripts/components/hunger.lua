@@ -6,6 +6,10 @@ local function oncurrent(self, current)
     self.inst.replica.hunger:SetCurrent(current)
 end
 
+local function OnTaskTick(inst, self, period)
+    self:DoDec(period)
+end
+
 local Hunger = Class(function(self, inst)
     self.inst = inst
     self.max = 100
@@ -16,10 +20,10 @@ local Hunger = Class(function(self, inst)
     
     self.burning = true
     --100% burn rate. Currently used only by belt of hunger, will have to change unequip if use in something else
-    self.burnrate = 1 
+    self.burnrate = 1
 
     local period = 1
-    self.task = self.inst:DoPeriodicTask(1, function() self:DoDec(period) end)
+    self.inst:DoPeriodicTask(period, OnTaskTick, nil, self, period)
 end,
 nil,
 {
@@ -28,13 +32,11 @@ nil,
 })
 
 function Hunger:OnSave()
-    if self.current ~= self.max then
-        return {hunger = self.current}
-    end
+    return self.current ~= self.max and { hunger = self.current } or nil
 end
 
 function Hunger:OnLoad(data)
-    if data.hunger then
+    if data.hunger ~= nil and self.current ~= data.hunger then
         self.current = data.hunger
         self:DoDelta(0)
     end
@@ -52,6 +54,10 @@ function Hunger:Resume()
     self.burning = true
 end
 
+function Hunger:IsPaused()
+    return self.burning
+end
+
 function Hunger:GetDebugString()
     return string.format("%2.2f / %2.2f", self.current, self.max)
 end
@@ -61,13 +67,12 @@ function Hunger:SetMax(amount)
     self.current = amount
 end
 
-function Hunger:IsStarving() 
+function Hunger:IsStarving()
     return self.current <= 0
 end
 
 function Hunger:DoDelta(delta, overtime, ignore_invincible)
-    
-    if self.redirect then
+    if self.redirect ~= nil then
         self.redirect(self.inst, delta, overtime)
         return
     end
@@ -77,18 +82,22 @@ function Hunger:DoDelta(delta, overtime, ignore_invincible)
     end 
 
     local old = self.current
-    self.current = math.min(math.max(self.current + delta, 0), self.max)
-    
-    self.inst:PushEvent("hungerdelta", {oldpercent = old/self.max, newpercent = self.current/self.max, overtime = overtime})
+    self.current = math.clamp(self.current + delta, 0, self.max)
 
-    if old > 0 and self.current <= 0 then
-        self.inst:PushEvent("startstarving")
-        ProfileStatsSet("started_starving", true)
-    elseif old <= 0 and self.current > 0 then
-        self.inst:PushEvent("stopstarving")
-        ProfileStatsSet("stopped_starving", true)
+    self.inst:PushEvent("hungerdelta", { oldpercent = old / self.max, newpercent = self.current / self.max, overtime = overtime })
+
+    --push starving event if beaverness value isn't currently starving
+    if not (self.inst.components.beaverness ~= nil and self.inst.components.beaverness:IsStarving()) then
+        if old > 0 then
+            if self.current <= 0 then
+                self.inst:PushEvent("startstarving")
+                ProfileStatsSet("started_starving", true)
+            end
+        elseif self.current > 0 then
+            self.inst:PushEvent("stopstarving")
+            ProfileStatsSet("stopped_starving", true)
+        end
     end
-    
 end
 
 function Hunger:GetPercent()
@@ -97,31 +106,31 @@ end
 
 function Hunger:SetPercent(p, overtime)
     local old = self.current
-    self.current  = p*self.max
-    self.inst:PushEvent("hungerdelta", {oldpercent = old/self.max, newpercent = p, overtime = overtime})
+    self.current  = p * self.max
+    self.inst:PushEvent("hungerdelta", { oldpercent = old / self.max, newpercent = p, overtime = overtime })
 
-    if old > 0 and self.current <= 0 then
-        self.inst:PushEvent("startstarving")
-        ProfileStatsSet("started_starving", true)
-    elseif old <= 0 and self.current > 0 then
-        self.inst:PushEvent("stopstarving")
-        ProfileStatsSet("stopped_starving", true)
+    --push starving event if beaverness value isn't currently starving
+    if not (self.inst.components.beaverness ~= nil and self.inst.components.beaverness:IsStarving()) then
+        if old > 0 then
+            if self.current <= 0 then
+                self.inst:PushEvent("startstarving")
+                ProfileStatsSet("started_starving", true)
+            end
+        elseif self.current > 0 then
+            self.inst:PushEvent("stopstarving")
+            ProfileStatsSet("stopped_starving", true)
+        end
     end
-
 end
 
 function Hunger:DoDec(dt, ignore_damage)
-    
     local old = self.current
-    
-    if self.burning then
-        if self.current <= 0 then
-            if not ignore_damage then
-                self.inst.components.health:DoDelta(-self.hurtrate*dt, true, "hunger") --  ich haber hunger
-            end
-        else
-            self:DoDelta(self.burnrate*(-self.hungerrate*dt), true)
 
+    if self.burning then
+        if self.current > 0 then
+            self:DoDelta(-self.hungerrate * dt * self.burnrate, true)
+        elseif not ignore_damage then
+            self.inst.components.health:DoDelta(-self.hurtrate * dt, true, "hunger") --  ich haber hunger
         end
     end
 end

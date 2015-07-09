@@ -1,4 +1,3 @@
-
 BufferedAction = Class(function(self, doer, target, action, invobject, pos, recipe, distance, forced, rotation)
     self.doer = doer
     self.target = target
@@ -18,32 +17,19 @@ BufferedAction = Class(function(self, doer, target, action, invobject, pos, reci
 end)
 
 function BufferedAction:Do()
-    if self:IsValid() then
-        
-        local success, reason = self.action.fn(self)
-        if success then
-            if self.invobject and self.invobject:IsValid() then
-                self.invobject:OnUsedAsItem(self.action)
-            end
-            self:Succeed()
-            
-        else
-            self:Fail()
-        end
-        
-        return success, reason
+    if not self:IsValid() then
+        return false
     end
-end
-
-function BufferedAction:TestForStart()
-    if self:IsValid() then
-        if self.action.testfn then
-            local pass, reason = self.action.testfn(self)
-            return pass, reason
-        else
-            return true
+    local success, reason = self.action.fn(self)
+    if success then
+        if self.invobject ~= nil and self.invobject:IsValid() then
+            self.invobject:OnUsedAsItem(self.action)
         end
+        self:Succeed()
+    else
+        self:Fail()
     end
+    return success, reason
 end
 
 function BufferedAction:IsValid()
@@ -54,28 +40,21 @@ function BufferedAction:IsValid()
            (self.validfn == nil or self.validfn())
 end
 
-function BufferedAction:GetActionString()
-    if self.doer and self.doer.ActionStringOverride then
-        local str = self.doer.ActionStringOverride(self.doer, self)
-        if str then
-            return str
-        end
-    end
+--V2C: TestForStart can return "reason" as a second return value (but we don't in DST)
+BufferedAction.TestForStart = BufferedAction.IsValid
 
-    return GetActionString(self.action.id, self.action.strfn ~= nil and self.action.strfn(self) or nil)
+function BufferedAction:GetActionString()
+    return self.doer ~= nil
+        and self.doer.ActionStringOverride ~= nil
+        and self.doer:ActionStringOverride(self)
+        or GetActionString(self.action.id, self.action.strfn ~= nil and self.action.strfn(self) or nil)
+        or nil
 end
 
 function BufferedAction:__tostring()
-    local str= self:GetActionString() .. " " .. tostring(self.target)
-    
-    if self.invobject then
-        str = str.." With Inv:" .. tostring(self.invobject)
-    end
-    
-    if self.recipe then
-        str = str .. " Recipe:" ..self.recipe
-    end
-    return str
+    return (self:GetActionString().." "..tostring(self.target))
+        ..(self.invobject ~= nil and (" With Inv: "..tostring(self.invobject)) or "")
+        ..(self.recipe ~= nil and (" Recipe: "..self.recipe) or "")
 end
 
 function BufferedAction:AddFailAction(fn)
@@ -87,20 +66,17 @@ function BufferedAction:AddSuccessAction(fn)
 end
 
 function BufferedAction:Succeed()
-    for k,v in pairs(self.onsuccess) do
+    for k, v in pairs(self.onsuccess) do
         v()
     end
-    
     self.onsuccess = {}
     self.onfail = {}
-    
 end
 
 function BufferedAction:Fail()
     for k,v in pairs(self.onfail) do
         v()
     end
-    
     self.onsuccess = {}
     self.onfail = {}
 end

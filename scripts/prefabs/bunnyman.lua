@@ -63,15 +63,18 @@ local function OnGetItemFromPlayer(inst, giver, item)
     --I eat food
     if item.components.edible ~= nil then
         if item.prefab == "carrot" or item.prefab == "carrot_cooked" then
-            if inst.components.combat.target == giver then
+            if inst.components.combat:TargetIs(giver) then
                 inst.components.combat:SetTarget(nil)
             elseif giver.components.leader ~= nil then
                 inst.SoundEmitter:PlaySound("dontstarve/common/makeFriend")
                 giver.components.leader:AddFollower(inst)
-                inst.components.follower:AddLoyaltyTime(TUNING.RABBIT_CARROT_LOYALTY)
+                inst.components.follower:AddLoyaltyTime(
+                    giver:HasTag("polite")
+                    and TUNING.RABBIT_CARROT_LOYALTY + TUNING.RABBIT_POLITENESS_LOYALTY_BONUS
+                    or TUNING.RABBIT_CARROT_LOYALTY
+                )
             end
         end
-
         if inst.components.sleeper:IsAsleep() then
             inst.components.sleeper:WakeUp()
         end
@@ -83,7 +86,6 @@ local function OnGetItemFromPlayer(inst, giver, item)
         if current ~= nil then
             inst.components.inventory:DropItem(current)
         end
-
         inst.components.inventory:Equip(item)
         inst.AnimState:Show("hat")
     end
@@ -97,10 +99,8 @@ local function OnRefuseItem(inst, item)
 end
 
 local function OnAttacked(inst, data)
-    --print(inst, "OnAttacked")
-    local attacker = data.attacker
-    inst.components.combat:SetTarget(attacker)
-    inst.components.combat:ShareTarget(attacker, SHARE_TARGET_DIST, function(dude) return dude.prefab == inst.prefab end, MAX_TARGET_SHARES)
+    inst.components.combat:SetTarget(data.attacker)
+    inst.components.combat:ShareTarget(data.attacker, SHARE_TARGET_DIST, function(dude) return dude.prefab == inst.prefab end, MAX_TARGET_SHARES)
 end
 
 local function OnNewTarget(inst, data)
@@ -126,7 +126,7 @@ local function NormalRetargetFn(inst)
 end
 
 local function NormalKeepTargetFn(inst, target)
-    return inst.components.combat:CanTarget(target) and not (target.sg ~= nil and target.sg:HasStateTag("hiding"))
+    return not (target.sg ~= nil and target.sg:HasStateTag("hiding")) and inst.components.combat:CanTarget(target)
 end
 
 local function giveupstring()
@@ -176,7 +176,7 @@ local function fn()
     inst.DynamicShadow:SetSize(1.5, .75)
     inst.Transform:SetFourFaced()
     local s = 1.25
-    inst.Transform:SetScale(s,s,s)
+    inst.Transform:SetScale(s, s, s)
 
     inst:AddTag("character")
     inst:AddTag("pig")
@@ -237,11 +237,12 @@ local function fn()
     ------------------------------------------
 
     inst:AddComponent("inventory")
-    
+
     ------------------------------------------
 
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetLootSetupFn(LootSetupFunction)
+    LootSetupFunction(inst.components.lootdropper)
 
     ------------------------------------------
 
@@ -250,7 +251,7 @@ local function fn()
     inst.components.talker.ontalk = ontalk
     inst.components.talker.fontsize = 24
     inst.components.talker.font = TALKINGFONT
-    inst.components.talker.offset = Vector3(0,-500,0)
+    inst.components.talker.offset = Vector3(0, -500, 0)
 
     ------------------------------------------
 
@@ -291,11 +292,6 @@ local function fn()
 
     inst.components.locomotor.runspeed = TUNING.BUNNYMAN_RUN_SPEED
     inst.components.locomotor.walkspeed = TUNING.BUNNYMAN_WALK_SPEED
-
-    inst.components.lootdropper:SetLoot({"carrot","carrot"})
-    inst.components.lootdropper:AddRandomLoot("meat",3)
-    inst.components.lootdropper:AddRandomLoot("manrabbit_tail",1)
-    inst.components.lootdropper.numrandomloot = 1
 
     inst.components.health:SetMaxHealth(TUNING.BUNNYMAN_HEALTH)
 

@@ -43,6 +43,7 @@ local Combat = Class(function(self, inst)
     self.target = nil
     self.panic_thresh = nil
     self.forcefacing = true
+    self.bonusdamagefn = nil
 end,
 nil,
 {
@@ -63,7 +64,7 @@ function Combat:SetAttackPeriod(period)
 end
 
 function Combat:TargetIs(target)
-    return self.target and self.target == target
+    return target ~= nil and self.target == target
 end
 
 function Combat:InCooldown()
@@ -370,84 +371,63 @@ function Combat:SetHurtSound(sound)
 end
 
 function Combat:GetAttacked(attacker, damage, weapon, stimuli)
-	self.lastwasattackedtime = GetTime()
+    self.lastwasattackedtime = GetTime()
 
     --print ("ATTACKED", self.inst, attacker, damage)
     local blocked = false
--- KAJ: TODO: Metrics related. disabled until we know what to do
---    local player = GetPlayer()
-    local init_damage = damage
 
     self.lastattacker = attacker
-    if self.inst.components.health and damage then   
-        if self.inst.components.inventory then
-            damage = self.inst.components.inventory:ApplyDamage(damage, attacker)
-        end
--- KAJ: TODO: Metrics related. disabled until we know what to do
---        if METRICS_ENABLED and GetPlayer() == self.inst then
---            local prefab = (attacker and (attacker.prefab or attacker.inst.prefab)) or "NIL"
---            ProfileStatsAdd("hitsby_"..prefab,math.floor(damage))
---            FightStat_AttackedBy(attacker,damage,init_damage-damage)
---        end
-        if damage > 0 and self.inst.components.health:IsInvincible() == false then
-            self.inst.components.health:DoDelta(-damage, nil, attacker and attacker.prefab or "NIL", nil, attacker)
-            if self.inst.components.health:IsDead() then
-				if attacker ~= nil then
-					attacker:PushEvent("killed", {victim = self.inst})
-				end
 
--- KAJ: TODO: Metrics related. disabled until we know what to do
---                if METRICS_ENABLED and attacker and attacker == GetPlayer() then
---                    ProfileStatsAdd("kill_"..self.inst.prefab)
---                    FightStat_AddKill(self.inst,damage,weapon)
---                end
---                if METRICS_ENABLED and attacker and attacker.components.follower and attacker.components.follower.leader == GetPlayer() then
---                    ProfileStatsAdd("kill_by_minion"..self.inst.prefab)
---                    FightStat_AddKillByFollower(self.inst,damage,weapon)
---                end
---                if METRICS_ENABLED and attacker and attacker.components.mine then
---                    ProfileStatsAdd("kill_by_trap_"..self.inst.prefab)
---                    FightStat_AddKillByMine(self.inst,damage)
---                end
-                
+    if self.inst.components.health ~= nil and damage ~= nil then
+        if self.inst.components.inventory ~= nil then
+            damage = self.inst.components.inventory:ApplyDamage(damage, attacker, weapon)
+        end
+        if damage > 0 and not self.inst.components.health:IsInvincible() then
+            --Bonus damage only applies after unabsorbed damage gets through your armor
+            if attacker ~= nil and attacker.components.combat ~= nil and attacker.components.combat.bonusdamagefn ~= nil then
+                damage = damage + attacker.components.combat.bonusdamagefn(attacker, self.inst, damage, weapon) or 0
+            end
+            self.inst.components.health:DoDelta(-damage, nil, attacker ~= nil and attacker.prefab or "NIL", nil, attacker)
+            if self.inst.components.health:IsDead() then
+                if attacker ~= nil then
+                    attacker:PushEvent("killed", { victim = self.inst })
+                end
                 if self.onkilledbyother ~= nil then
-					self.onkilledbyother(self.inst, attacker)
+                    self.onkilledbyother(self.inst, attacker)
                 end
             end
         else
             blocked = true
         end
     end
-    
 
-    if self.inst.SoundEmitter then
+    if self.inst.SoundEmitter ~= nil then
         local hitsound = self:GetImpactSound(self.inst, weapon)
-        if hitsound then
+        if hitsound ~= nil then
             self.inst.SoundEmitter:PlaySound(hitsound)
-            --print (hitsound)
         end
-        if self.hurtsound then
+        if self.hurtsound ~= nil then
             self.inst.SoundEmitter:PlaySound(self.hurtsound)
         end
     end
-    
+
     if not blocked then
-        self.inst:PushEvent("attacked", {attacker = attacker, damage = damage, weapon = weapon, stimuli = stimuli})
-    
-        if self.onhitfn then
+        self.inst:PushEvent("attacked", { attacker = attacker, damage = damage, weapon = weapon, stimuli = stimuli })
+
+        if self.onhitfn ~= nil then
             self.onhitfn(self.inst, attacker, damage)
         end
-        
-        if attacker then
-            attacker:PushEvent("onhitother", {target = self.inst, damage = damage, stimuli = stimuli})
-            if attacker.components.combat and attacker.components.combat.onhitotherfn then
+
+        if attacker ~= nil then
+            attacker:PushEvent("onhitother", { target = self.inst, damage = damage, stimuli = stimuli })
+            if attacker.components.combat ~= nil and attacker.components.combat.onhitotherfn ~= nil then
                 attacker.components.combat.onhitotherfn(attacker, self.inst, damage, stimuli)
             end
         end
     else
-        self.inst:PushEvent("blocked", {attacker = attacker})
+        self.inst:PushEvent("blocked", { attacker = attacker })
     end
-    
+
     return not blocked
 end
 
@@ -602,44 +582,35 @@ function Combat:GetWeapon()
 end
 
 function Combat:GetLastAttackedTime()
-	return self.lastwasattackedtime
+    return self.lastwasattackedtime
 end
 
 function Combat:CalcDamage(target, weapon, multiplier)
-
     if target:HasTag("alwaysblock") then
         return 0
     end
-	local multiplier = multiplier or 1
-    if self.damagemultiplier then multiplier = multiplier * self.damagemultiplier end
-	local bonus = self.damagebonus or 0
-    if weapon then
-        local weapondamage = 0
-        if weapon.components.weapon.variedmodefn then
-            local d = weapon.components.weapon.variedmodefn(weapon)
-            weapondamage = d.damage        
+    multiplier = (multiplier or 1) * (self.damagemultiplier or 1)
+    local bonus = self.damagebonus or 0
+    if weapon ~= nil then
+        local weapondamage
+        if weapon.components.weapon.variedmodefn ~= nil then
+            weapondamage = weapon.components.weapon.variedmodefn(weapon).damage or 0
         else
-            weapondamage = weapon.components.weapon.damage
+            weapondamage = weapon.components.weapon.damage or 0
         end
-        if not weapondamage then weapondamage = 0 end
 
-        if target and target:HasTag("player") and self.inst:HasTag("player") then
-            return weapondamage*multiplier*self.pvp_damagemod + bonus
-        else
-            return weapondamage*multiplier + bonus
-        end
-    end
-    
-    if target and target:HasTag("player") then
-        if self.inst:HasTag("player") then
-            return self.defaultdamage * self.playerdamagepercent * self.pvp_damagemod * multiplier + bonus
-        else
-		    return self.defaultdamage * self.playerdamagepercent * multiplier + bonus
-        end
+        return target ~= nil
+            and target:HasTag("player")
+            and self.inst:HasTag("player")
+            and weapondamage * multiplier * self.pvp_damagemod + bonus
+            or weapondamage * multiplier + bonus
     end
 
-    
-    return self.defaultdamage * multiplier + bonus
+    return (target == nil or not target:HasTag("player"))
+        and self.defaultdamage * multiplier + bonus
+        or (self.inst:HasTag("player") and
+            self.defaultdamage * self.playerdamagepercent * self.pvp_damagemod * multiplier + bonus or
+            self.defaultdamage * self.playerdamagepercent * multiplier + bonus)
 end
 
 function Combat:GetAttackRange()
@@ -699,67 +670,58 @@ function Combat:CanHitTarget(target, weapon)
 end
 
 function Combat:DoAttack(target_override, weapon, projectile, stimuli, instancemult)
-    
     local targ = target_override or self.target
     local weapon = weapon or self:GetWeapon()
-    
-    if self:CanHitTarget(targ, weapon) then
 
-        self.inst:PushEvent("onattackother", {target = targ, weapon = weapon, projectile = projectile, stimuli = stimuli})
-        if weapon and weapon.components.projectile and not projectile then
+    if not self:CanHitTarget(targ, weapon) then
+        self.inst:PushEvent("onmissother", { target = targ, weapon = weapon })
+        if self.areahitrange ~= nil then
+            self:DoAreaAttack(projectile or self.inst, self.areahitrange, weapon, nil, stimuli)
+        end
+        return
+    end
+
+    self.inst:PushEvent("onattackother", { target = targ, weapon = weapon, projectile = projectile, stimuli = stimuli })
+
+    if weapon ~= nil and projectile == nil then
+        if weapon.components.projectile ~= nil then
             local projectile = self.inst.components.inventory:DropItem(weapon, false)
-            if projectile then
+            if projectile ~= nil then
                 projectile.components.projectile:Throw(self.inst, targ)
             end
-        elseif weapon and weapon.components.complexprojectile and not projectile then
+            return
+
+        elseif weapon.components.complexprojectile ~= nil then
             local projectile = self.inst.components.inventory:DropItem(weapon, false)
-            if projectile then
+            if projectile ~= nil then
                 projectile.components.complexprojectile:Launch(targ:GetPosition(), self.inst)
             end
-        elseif weapon and weapon.components.weapon:CanRangedAttack() and not projectile then
-            weapon.components.weapon:LaunchProjectile(self.inst, targ)
-        else
-            local mult = 1
-            if stimuli == "electric" or (weapon and weapon.components.weapon and weapon.components.weapon.stimuli == "electric") then
-                if not targ:HasTag("electricdamageimmune") and (not targ.components.inventory or (targ.components.inventory and not targ.components.inventory:IsInsulated())) then
-                    mult = TUNING.ELECTRIC_DAMAGE_MULT
-                    if targ.components.moisture then
-                        mult = mult + (TUNING.ELECTRIC_WET_DAMAGE_MULT * targ.components.moisture:GetMoisturePercent())
-                    elseif targ:GetIsWet() then
-                        mult = mult + TUNING.ELECTRIC_WET_DAMAGE_MULT 
-                    end
-                end
-            end
-            local damage = self:CalcDamage(targ, weapon, mult)
-            if instancemult then damage = damage * instancemult end
-            if targ.components.combat then targ.components.combat:GetAttacked(self.inst, damage, weapon, stimuli) end
+            return
 
---  KAJ: TODO: Metrics related. disabled until we know what to do
---            if METRICS_ENABLED and self.inst:HasTag( "player" ) then
---                ProfileStatsAdd("hitson_"..targ.prefab,math.floor(damage))
---                FightStat_Attack(targ,weapon,projectile,damage)
---            end
---            if METRICS_ENABLED and self.inst.components.follower
---					and self.inst.components.follower.leader == GetPlayer() then
---                FightStat_AttackByFollower(targ,weapon,projectile,damage)
---            end
-            
-            if weapon then
-                weapon.components.weapon:OnAttack(self.inst, targ, projectile)
-            end
-            if self.areahitrange then
-                self:DoAreaAttack(targ, self.areahitrange, weapon, nil, stimuli)
-            end
-            self.lastdoattacktime = GetTime()
-        end
-    else
-        self.inst:PushEvent("onmissother", {target = targ, weapon = weapon})
-        if self.areahitrange then
-            local epicentre = projectile or self.inst
-            self:DoAreaAttack(epicentre, self.areahitrange, weapon, nil, stimuli)
+        elseif weapon.components.weapon:CanRangedAttack() then
+            weapon.components.weapon:LaunchProjectile(self.inst, targ)
+            return
         end
     end
 
+    if targ.components.combat ~= nil then
+        local mult =
+            (stimuli == "electric" or
+            (weapon ~= nil and weapon.components.weapon ~= nil and weapon.components.weapon.stimuli == "electric"))
+            and not (targ:HasTag("electricdamageimmune") or
+                    (targ.components.inventory ~= nil and targ.components.inventory:IsInsulated()))
+            and TUNING.ELECTRIC_DAMAGE_MULT + TUNING.ELECTRIC_WET_DAMAGE_MULT * (targ.components.moisture ~= nil and targ.components.moisture:GetMoisturePercent() or (targ:GetIsWet() and 1 or 0))
+            or 1
+        targ.components.combat:GetAttacked(self.inst, self:CalcDamage(targ, weapon, mult) * (instancemult or 1), weapon, stimuli)
+    end
+
+    if weapon ~= nil then
+        weapon.components.weapon:OnAttack(self.inst, targ, projectile)
+    end
+    if self.areahitrange ~= nil then
+        self:DoAreaAttack(targ, self.areahitrange, weapon, nil, stimuli)
+    end
+    self.lastdoattacktime = GetTime()
 end
 
 function Combat:DoAreaAttack(target, range, weapon, validfn, stimuli)

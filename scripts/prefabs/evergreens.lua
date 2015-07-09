@@ -16,7 +16,7 @@ local prefabs =
     "charcoal",
     "leif",
     "leif_sparse",
-    "pine_needles"
+    "pine_needles_chop",
 }
 
 local builds =
@@ -24,6 +24,8 @@ local builds =
 	normal = {
 		file="evergreen_new",
 		prefab_name="evergreen",
+        regrowth_product="pinecone_sapling",
+        regrowth_tuning=TUNING.EVERGREEN_REGROWTH,
 		normal_loot = {"log", "log", "pinecone"},
 		short_loot = {"log"},
 		tall_loot = {"log", "log", "log", "pinecone", "pinecone"},
@@ -33,6 +35,8 @@ local builds =
 	sparse = {
 		file="evergreen_new_2",
 		prefab_name="evergreen_sparse",
+        regrowth_product="lumpy_sapling",
+        regrowth_tuning=TUNING.EVERGREEN_SPARSE_REGROWTH,
 		normal_loot = {"log","log"},
 		short_loot = {"log"},
 		tall_loot = {"log", "log","log"},
@@ -106,7 +110,7 @@ local function GetBuild(inst)
 end
 
 local burnt_highlight_override = {.5,.5,.5}
-local function OnBurnt(inst, imm)
+local function OnBurnt(inst, immediate)
 	
 	local function changes()
 	    if inst.components.burnable then
@@ -131,7 +135,7 @@ local function OnBurnt(inst, imm)
 		end
 	end
 		
-	if imm then
+	if immediate then
 		changes()
 	else
 		inst:DoTaskInTime( 0.5, changes)
@@ -139,6 +143,10 @@ local function OnBurnt(inst, imm)
 	inst.AnimState:PlayAnimation(inst.anims.burnt, true)
     inst.AnimState:SetRayTestOnBB(true)
     inst:AddTag("burnt")
+
+    if inst.components.timer and not inst.components.timer:TimerExists("decay") then
+        inst.components.timer:StartTimer("decay", GetRandomWithVariance(GetBuild(inst).regrowth_tuning.DEAD_DECAY_TIME, GetBuild(inst).regrowth_tuning.DEAD_DECAY_TIME*0.5))
+    end
 
     inst.highlight_override = burnt_highlight_override
 end
@@ -238,7 +246,7 @@ end
 
 local function GrowOld(inst)
     inst.AnimState:PlayAnimation("grow_tall_to_old")
-    inst.SoundEmitter:PlaySound("dontstarve/forest/treeWilt")          
+    inst.SoundEmitter:PlaySound("dontstarve/forest/treeWilt")
     PushSway(inst)
 end
 
@@ -258,15 +266,13 @@ local growth_stages =
     {name="old", time = function(inst) return GetRandomWithVariance(TUNING.EVERGREEN_GROW_TIME[4].base, TUNING.EVERGREEN_GROW_TIME[4].random) end, fn = function(inst) SetOld(inst) end, growfn = function(inst) GrowOld(inst) end },
 }
 
-
 local function chop_tree(inst, chopper, chops)
-    
-    if not chopper or (chopper and not chopper:HasTag("playerghost")) then
-        if chopper and chopper.components.beaverness and chopper.components.beaverness:IsBeaver() then
-    		inst.SoundEmitter:PlaySound("dontstarve/characters/woodie/beaver_chop_tree")          
-    	else
-    		inst.SoundEmitter:PlaySound("dontstarve/wilson/use_axe_tree")          
-    	end
+    if chopper == nil or not chopper:HasTag("playerghost") then
+        inst.SoundEmitter:PlaySound(
+            chopper ~= nil and chopper:HasTag("beaver") and
+            "dontstarve/characters/woodie/beaver_chop_tree" or
+            "dontstarve/wilson/use_axe_tree"
+        )
     end
 
     local x, y, z = inst.Transform:GetWorldPosition()
@@ -323,7 +329,7 @@ local function spawn_leif(target)
     leif.Transform:SetPosition(target.Transform:GetWorldPosition())
 end
 
-local function chop_down_tree(inst, chopper)
+local function make_stump(inst)
     inst:RemoveComponent("burnable")
     MakeSmallBurnable(inst)
 	MakeDragonflyBait(inst, 1)
@@ -333,6 +339,25 @@ local function chop_down_tree(inst, chopper)
     inst:RemoveTag("shelter")
     inst:RemoveComponent("hauntable")
     MakeHauntableIgnite(inst)
+
+    RemovePhysicsColliders(inst)
+    
+    inst:AddTag("stump")
+    if inst.components.growable then
+        inst.components.growable:StopGrowing()
+    end
+	
+	inst:AddComponent("workable")
+    inst.components.workable:SetWorkAction(ACTIONS.DIG)
+    inst.components.workable:SetOnFinishCallback(dig_up_stump)
+    inst.components.workable:SetWorkLeft(1)
+
+    if inst.components.timer and not inst.components.timer:TimerExists("decay") then
+        inst.components.timer:StartTimer("decay", GetRandomWithVariance(GetBuild(inst).regrowth_tuning.DEAD_DECAY_TIME, GetBuild(inst).regrowth_tuning.DEAD_DECAY_TIME*0.5))
+    end
+end
+
+local function chop_down_tree(inst, chopper)
     inst.SoundEmitter:PlaySound("dontstarve/forest/treefall")
     local pt = Vector3(inst.Transform:GetWorldPosition())
     local hispos = Vector3(chopper.Transform:GetWorldPosition())
@@ -348,19 +373,9 @@ local function chop_down_tree(inst, chopper)
     end
 
     inst:DoTaskInTime(.4, chop_down_tree_shake)
-    
-    RemovePhysicsColliders(inst)
+
+    make_stump(inst)
     inst.AnimState:PushAnimation(inst.anims.stump)
-	
-	inst:AddComponent("workable")
-    inst.components.workable:SetWorkAction(ACTIONS.DIG)
-    inst.components.workable:SetOnFinishCallback(dig_up_stump)
-    inst.components.workable:SetWorkLeft(1)
-    
-    inst:AddTag("stump")
-    if inst.components.growable then
-        inst.components.growable:StopGrowing()
-    end
 
     inst:AddTag("NOCLICK")
     inst:DoTaskInTime(2, inst.RemoveTag, "NOCLICK")
@@ -445,24 +460,8 @@ local function onload(inst, data)
         if data.burnt then
             OnBurnt(inst, true)
         elseif data.stump then
-            inst:RemoveComponent("burnable")
-            MakeSmallBurnable(inst)
-			MakeDragonflyBait(inst, 1)
-            inst:RemoveComponent("workable")
-            inst:RemoveComponent("propagator")
-            MakeSmallPropagator(inst)
-            inst:RemoveComponent("growable")
-            inst:RemoveComponent("hauntable")
-            MakeHauntableIgnite(inst)
-            RemovePhysicsColliders(inst)
+            make_stump(inst)
             inst.AnimState:PlayAnimation(inst.anims.stump)
-            inst:AddTag("stump")
-            inst:RemoveTag("shelter")
-            
-    		inst:AddComponent("workable")
-    	    inst.components.workable:SetWorkAction(ACTIONS.DIG)
-    	    inst.components.workable:SetOnFinishCallback(dig_up_stump)
-    	    inst.components.workable:SetWorkLeft(1)
         end
 
         inst.burntcone = data.burntcone
@@ -515,6 +514,29 @@ local function OnEntityWake(inst)
 
 end
 
+local function OnTimerDone(inst, data)
+    if data.name == "decay" then
+        -- before we disappear, clean up any crap left on the ground -- too
+        -- many objects is as bad for server health as too few!
+        local x,y,z = inst.Transform:GetWorldPosition()
+        local ents = TheSim:FindEntities(x,y,z,6)
+        local leftone = false
+        for k,ent in pairs(ents) do
+            if ent.prefab == "log"
+                or ent.prefab == "pinecone"
+                or ent.prefab == "charcoal" then
+                if leftone then
+                    ent:Remove()
+                else
+                    leftone = true
+                end
+            end
+        end
+
+        inst:Remove()
+    end
+end
+
 local function tree(name, build, stage, data)
     local function fn()
         local inst = CreateEntity()
@@ -543,6 +565,7 @@ local function tree(name, build, stage, data)
         inst.AnimState:SetBank("evergreen_short")
 
         inst:SetPrefabName(GetBuild(inst).prefab_name)
+        inst:AddTag(GetBuild(inst).prefab_name) -- used by regrowth
 
         MakeDragonflyBait(inst, 1)
         MakeSnowCoveredPristine(inst)
@@ -589,6 +612,16 @@ local function tree(name, build, stage, data)
         inst.components.growable:StartGrowing()
 
         inst.growfromseed = handler_growfromseed
+
+        ---------------------        
+        inst:AddComponent("plantregrowth")
+        inst.components.plantregrowth:SetRegrowthRate(GetBuild(inst).regrowth_tuning.OFFSPRING_TIME)
+        inst.components.plantregrowth:SetProduct(GetBuild(inst).regrowth_product)
+        inst.components.plantregrowth:SetSearchTag(GetBuild(inst).prefab_name)
+
+        ---------------------        
+        inst:AddComponent("timer")
+        inst:ListenForEvent("timerdone", OnTimerDone)
 
         ---------------------        
         --PushSway(inst)

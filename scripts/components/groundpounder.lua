@@ -58,8 +58,7 @@ function GroundPounder:DestroyPoints(points, breakobjects, dodamage)
                             -- Don't net any insects when we do work
                             if self.destroyer and
                                 v2.components.workable ~= nil and
-                                v2.components.workable.workleft > 0 and
-                                v2.components.workable.workable and
+                                v2.components.workable:CanBeWorked() and
                                 v2.components.workable.action ~= ACTIONS.NET then
                                 v2.components.workable:Destroy(self.inst)
                             end
@@ -123,8 +122,7 @@ function GroundPounder:GroundPound_Offscreen(position)
             if v:GetDistanceSqToPoint(position:Get()) < breakobjectsRadiusSQ then
                 if self.destroyer and
                     v.components.workable ~= nil and
-                    v.components.workable.workleft > 0 and
-                    v.components.workable.workable and
+                    v.components.workable:CanBeWorked() and
                     v.components.workable.action ~= ACTIONS.NET then
                     v.components.workable:Destroy(self.inst)
                 end

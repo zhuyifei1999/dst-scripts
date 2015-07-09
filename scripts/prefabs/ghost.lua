@@ -18,7 +18,7 @@ local function fn()
 
     MakeGhostPhysics(inst, .5, .5)
 
-    inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+    inst.AnimState:SetBloomEffectHandle("shaders/anim_bloom_ghost.ksh")
     inst.AnimState:SetLightOverride(TUNING.GHOST_LIGHT_OVERRIDE)
 
     inst.Light:SetIntensity(.6)

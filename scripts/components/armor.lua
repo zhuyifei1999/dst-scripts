@@ -1,9 +1,11 @@
 local function PercentChanged(inst, data)
-    if inst.components.armor
-       and data.percent and data.percent <= 0
-       and inst.components.inventoryitem and inst.components.inventoryitem.owner then
-        inst.components.inventoryitem.owner:PushEvent("armorbroke", {armor = inst})
-        --ProfileStatsSet("armor_broke_" .. inst.prefab, true)
+    if inst.components.armor ~= nil and
+        data.percent ~= nil and
+        data.percent <= 0 and
+        inst.components.inventoryitem ~= nil and
+        inst.components.inventoryitem.owner ~= nil then
+        inst.components.inventoryitem.owner:PushEvent("armorbroke", { armor = inst })
+        --ProfileStatsSet("armor_broke_"..inst.prefab, true)
     end
 end
 
@@ -12,12 +14,13 @@ local Armor = Class(function(self, inst)
     self.condition = 100
     self.maxcondition = 100
     self.tags = nil
+    self.weakness = nil
     self.inst:ListenForEvent("percentusedchange", PercentChanged)
 end)
 
 function Armor:InitCondition(amount, absorb_percent)
     self.condition = amount
-	self.absorb_percent = absorb_percent
+    self.absorb_percent = absorb_percent
     self.maxcondition = amount
 end
 
@@ -25,9 +28,27 @@ function Armor:GetPercent(amount)
     return self.condition / self.maxcondition
 end
 
-
 function Armor:SetTags(tags)
     self.tags = tags
+end
+
+function Armor:AddWeakness(tag, bonus_damage)
+    if bonus_damage <= 0 then
+        self:RemoveWeakness(tag)
+    elseif self.weakness == nil then
+        self.weakness = { tag = bonus_damage }
+    else
+        self.weakness[tag] = bonus_damage
+    end
+end
+
+function Armor:RemoveWeakness(tag)
+    if self.weakness ~= nil then
+        self.weakness[tag] = nil
+        if next(self.weakness) == nil then
+            self.weakness = nil
+        end
+    end
 end
 
 function Armor:SetAbsorption(absorb_percent)
@@ -39,64 +60,69 @@ function Armor:SetPercent(amount)
 end
 
 function Armor:SetCondition(amount)
-    self.condition = math.min( amount, self.maxcondition )
-    self.inst:PushEvent("percentusedchange", {percent = self:GetPercent()})   
-    
+    self.condition = math.min(amount, self.maxcondition)
+    self.inst:PushEvent("percentusedchange", { percent = self:GetPercent() })
+
     if self.condition <= 0 then
         self.condition = 0
-        ProfileStatsSet("armor_broke_" .. self.inst.prefab, true)
+        ProfileStatsSet("armor_broke_"..self.inst.prefab, true)
         ProfileStatsSet("armor", self.inst.prefab)
-        
+
         if METRICS_ENABLED then
-			FightStat_BrokenArmor(self.inst.prefab)
-		end
-		
-        if self.onfinished then
+            FightStat_BrokenArmor(self.inst.prefab)
+        end
+
+        if self.onfinished ~= nil then
             self.onfinished()
         end
-        
+
         self.inst:Remove()
     end
 end
 
 function Armor:OnSave()
-    if self.condition ~= self.maxcondition then
-        return {condition = self.condition}
-    end
+    return self.condition ~= self.maxcondition and { condition = self.condition } or nil
 end
 
 function Armor:OnLoad(data)
-    if data.condition then
+    if data.condition ~= nil then
         self:SetCondition(data.condition)
     end
 end
 
 function Armor:CanResist(attacker, weapon)
-    if attacker and self.tags then
-	    for k,v in pairs(self.tags) do
-		    if attacker:HasTag(v) then
-			    return true
-		    end
-		    if weapon and weapon:HasTag(v) then
-			    return true
-		    end
-	    end
-	    return false
-	else
-	    return self.tags == nil
-	end
+    if self.tags == nil then
+        return true
+    elseif attacker ~= nil then
+        for i, v in ipairs(self.tags) do
+            if attacker:HasTag(v) or (weapon ~= nil and weapon:HasTag(v)) then
+                return true
+            end
+        end
+    end
+    return false
 end
 
 function Armor:GetAbsorption(attacker, weapon)
-    if self:CanResist(attacker, weapon) then
-        return self.absorb_percent
+    return self:CanResist(attacker, weapon) and self.absorb_percent or nil
+end
+
+function Armor:GetBonusDamage(attacker, weapon)
+    if self.weakness == nil or attacker == nil then
+        return 0
     end
-    return nil
+    local damage = 0
+    for k, v in pairs(self.weakness) do
+        if (attacker:HasTag(k) or (weapon ~= nil and weapon:HasTag(k))) and v > damage then
+            damage = v
+        end
+    end
+    return damage
 end
 
 function Armor:TakeDamage(damage_amount)
     self:SetCondition(self.condition - damage_amount)
-    if self.ontakedamage then
+    if self.ontakedamage ~= nil then
         self.ontakedamage(self.inst, damage_amount)
     end
 end

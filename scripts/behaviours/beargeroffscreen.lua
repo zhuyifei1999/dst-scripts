@@ -78,7 +78,7 @@ function BeargerOffScreen:WorkEntitiesAlongLine(x1,y1,x2,y2,r)
 	local ents = GetEntitiesAlongLine(x1,y1,x2,y2,r,nil,nil,{"running","tree"})
 	ApplyToEntities(ents, 
 			function(ent)
-				if ent.components.workable and ent.components.workable.workleft > 0 then
+				if ent.components.workable ~= nil and ent.components.workable:CanBeWorked() then
 					ent.components.lootdropper:SetLoot({})
 					ent.components.workable:Destroy(self.inst)
 				end

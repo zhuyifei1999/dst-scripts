@@ -13,72 +13,63 @@ local brain = require "brains/rockybrain"
 
 local colours =
 {
-    {1,1,1},
-    --{174/255,158/255,151/255},
-    {167/255,180/255,180/255},
-    {159/255,163/255,146/255}
+    { 1, 1, 1, 1 },
+    --{ 174/255, 158/255, 151/255, 1 },
+    { 167/255, 180/255, 180/255, 1 },
+    { 159/255, 163/255, 146/255, 1 },
 }
 
-
 local function ShouldSleep(inst)
-
-    return inst.components.sleeper:GetTimeAwake() > TUNING.TOTAL_DAY_TIME*2
-    --return false
+    return inst.components.sleeper:GetTimeAwake() > TUNING.TOTAL_DAY_TIME * 2
 end
 
 local function ShouldWake(inst)
-    return inst.components.sleeper:GetTimeAsleep() > TUNING.TOTAL_DAY_TIME*.5
+    return inst.components.sleeper:GetTimeAsleep() > TUNING.TOTAL_DAY_TIME * .5
 end
 
 local function OnAttacked(inst, data)
-
-    local attacker = data.attacker
-    inst.components.combat:SetTarget(attacker)
-    inst.components.combat:ShareTarget(attacker, 20, function(dude) return dude.prefab == inst.prefab end, 2)
-
+    inst.components.combat:SetTarget(data.attacker)
+    inst.components.combat:ShareTarget(data.attacker, 20, function(dude) return dude.prefab == inst.prefab end, 2)
 end
 
 local function grow(inst, dt)
-
     if inst.components.scaler.scale < TUNING.ROCKY_MAX_SCALE then
-        local new_scale = math.min(inst.components.scaler.scale + TUNING.ROCKY_GROW_RATE*dt, TUNING.ROCKY_MAX_SCALE)
+        local new_scale = math.min(inst.components.scaler.scale + TUNING.ROCKY_GROW_RATE * dt, TUNING.ROCKY_MAX_SCALE)
         inst.components.scaler:SetScale(new_scale)
-    else
-        if inst.growtask then
-            inst.growtask:Cancel()
-            inst.growtask = nil
-        end
+    elseif inst.growtask ~= nil then
+        inst.growtask:Cancel()
+        inst.growtask = nil
     end
 end
 
 local function applyscale(inst, scale)
-    print(scale)
-    inst.components.combat:SetDefaultDamage(TUNING.ROCKY_DAMAGE*scale)
+    inst.components.combat:SetDefaultDamage(TUNING.ROCKY_DAMAGE * scale)
     local percent = inst.components.health:GetPercent()
-    inst.components.health:SetMaxHealth(TUNING.ROCKY_HEALTH*scale)
+    inst.components.health:SetMaxHealth(TUNING.ROCKY_HEALTH * scale)
     inst.components.health:SetPercent(percent)
-    --MakeCharacterPhysics(inst, 200*scale, 1*scale)
-    inst.components.locomotor.walkspeed = TUNING.ROCKY_WALK_SPEED*(1/scale)
+    --MakeCharacterPhysics(inst, 200 * scale, scale)
+    inst.components.locomotor.walkspeed = TUNING.ROCKY_WALK_SPEED / scale
 end
 
 local function ShouldAcceptItem(inst, item)
-    if item.components.edible and item.components.edible.foodtype == FOODTYPE.ELEMENTAL then
-        return true
-    end
+    return item.components.edible ~= nil and item.components.edible.foodtype == FOODTYPE.ELEMENTAL
 end
 
 local function OnGetItemFromPlayer(inst, giver, item)
-    if item.components.edible and item.components.edible.foodtype == FOODTYPE.ELEMENTAL then
-        if inst.components.combat.target and inst.components.combat.target == giver then
+    if item.components.edible ~= nil and item.components.edible.foodtype == FOODTYPE.ELEMENTAL then
+        if inst.components.combat:TargetIs(giver) then
             inst.components.combat:SetTarget(nil)
-        elseif giver.components.leader then
+        elseif giver.components.leader ~= nil then
             inst.SoundEmitter:PlaySound("dontstarve/common/makeFriend")
             giver.components.leader:AddFollower(inst)
-            inst.components.follower:AddLoyaltyTime(TUNING.ROCKY_LOYALTY)
+            inst.components.follower:AddLoyaltyTime(
+                giver:HasTag("polite")
+                and TUNING.ROCKY_LOYALTY + TUNING.ROCKY_POLITENESS_LOYALTY_BONUS
+                or TUNING.ROCKY_LOYALTY
+            )
             inst.sg:GoToState("rocklick")
         end
     end
-
     if inst.components.sleeper:IsAsleep() then
         inst.components.sleeper:WakeUp()
     end
@@ -91,17 +82,34 @@ local function OnRefuseItem(inst, item)
     inst:PushEvent("refuseitem")
 end
 
-local loot = {"rocks", "rocks", "meat", "flint", "flint"}
+local loot = { "rocks", "rocks", "meat", "flint", "flint" }
 
 local function onsave(inst, data)
     data.colour = inst.colour_idx
 end
 
 local function onload(inst, data)
-    if data and data.colour and data.colour > 0 and data.colour <= #colours then
-        inst.colour_idx = data.colour
-        inst.AnimState:SetMultColour(colours[inst.colour_idx][1], colours[inst.colour_idx][2], colours[inst.colour_idx][3], 1)
+    if data ~= nil and data.colour ~= nil then
+        local colour = colours[data.colour]
+        if colour ~= nil then
+            inst.colour_idx = data.colour
+            inst.AnimState:SetMultColour(unpack(colour))
+        end
     end
+end
+
+local function CustomOnHaunt(inst, haunter)
+    if math.random() <= TUNING.HAUNT_CHANCE_OCCASIONAL then
+        grow(inst, 500)
+        inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
+        if inst.growtask ~= nil then
+            inst.growtask:Cancel()
+            local dt = 60 + math.random() * 10
+            inst.growtask = inst:DoPeriodicTask(dt, grow, nil, dt)
+        end
+        return true
+    end
+    return false
 end
 
 local function fn()
@@ -136,10 +144,8 @@ local function fn()
         return inst
     end
 
-    --orange(186/255,158/255,139/255,1), blue(159/255,185/255,187/255,1), green(163/255,181/255,128/255,1)
-
     inst.colour_idx = math.random(#colours)
-    inst.AnimState:SetMultColour(colours[inst.colour_idx][1],colours[inst.colour_idx][2],colours[inst.colour_idx][3],1)
+    inst.AnimState:SetMultColour(unpack(colours[inst.colour_idx]))
 
     inst:AddComponent("combat")
     inst.components.combat:SetAttackPeriod(3)
@@ -186,19 +192,7 @@ local function fn()
     inst.components.trader.deleteitemonaccept = false
     
     MakeHauntablePanic(inst)
-    AddHauntableCustomReaction(inst, function(inst, haunter)
-        if math.random() <= TUNING.HAUNT_CHANCE_OCCASIONAL then
-            grow(inst, 500)
-            inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
-            if inst.growtask then
-                inst.growtask:Cancel()
-                local dt = 60+math.random()*10
-                inst.growtask = inst:DoPeriodicTask(dt, grow, nil, dt)
-            end
-            return true
-        end
-        return false
-    end, true, false, true)
+    AddHauntableCustomReaction(inst, CustomOnHaunt, true, false, true)
 
     inst:SetBrain(brain)
     inst:SetStateGraph("SGrocky")
@@ -207,7 +201,7 @@ local function fn()
 
     local start_scale = math.random(TUNING.ROCKY_MIN_SCALE, TUNING.ROCKY_MAX_SCALE)
     inst.components.scaler:SetScale(start_scale)
-    local dt = 60+math.random()*10
+    local dt = 60 + math.random() * 10
     inst.growtask = inst:DoPeriodicTask(dt, grow, nil, dt)
     inst.components.scaler:SetScale(TUNING.ROCKY_MIN_SCALE)
 

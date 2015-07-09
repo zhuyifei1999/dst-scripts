@@ -102,11 +102,11 @@ function Eater:GetEdibleTags()
     return tags
 end
 
-function Eater:Eat(food, force)
+function Eater:Eat(food)
     -- This used to be CanEat. The reason for two checks is to that special diet characters (e.g.
     -- wigfrid) can TRY to eat all foods (they get the actions for it) but upon actually put it in 
     -- their mouth, they bail and "spit it out" so to speak.
-    if self:PrefersToEat(food) or (force and self:CanEat(food)) then
+    if self:PrefersToEat(food) then
         if self.inst.components.health ~= nil and
             (food.components.edible.healthvalue > 0 or
             (food.components.edible.healthvalue < 0 and self:DoFoodEffects(food))) then
@@ -123,6 +123,10 @@ function Eater:Eat(food, force)
             self.inst.components.sanity:DoDelta(food.components.edible:GetSanity(self.inst))
         end
 
+        if self.inst.components.beaverness ~= nil and food.components.edible.woodiness ~= nil then
+            self.inst.components.beaverness:DoDelta(food.components.edible:GetWoodiness(self.inst))
+        end
+
         self.inst:PushEvent("oneat", { food = food })
         if self.oneatfn ~= nil then
             self.oneatfn(self.inst, food)
@@ -132,15 +136,15 @@ function Eater:Eat(food, force)
             food.components.edible:OnEaten(self.inst)
         end
 
-        if not self.eatwholestack and food.components.stackable ~= nil and food.components.stackable:IsStack() then
-            food.components.stackable:Get():Remove()
-        else
-            food:Remove()
+        if food:IsValid() then --might get removed in OnEaten...
+            if not self.eatwholestack and food.components.stackable ~= nil then
+                food.components.stackable:Get():Remove()
+            else
+                food:Remove()
+            end
         end
 
         self.lasteattime = GetTime()
-
-        self.inst:PushEvent("oneatsomething", { food = food })
 
         return true
     end

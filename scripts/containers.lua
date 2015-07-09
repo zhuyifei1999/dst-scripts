@@ -174,10 +174,6 @@ for y = 2, 0, -1 do
 end
 
 function params.icebox.itemtestfn(container, item, slot)
-    if item.prefab == "spoiled_food" then
-        return true
-    end
-
     if item:HasTag("icebox_valid") then
         return true
     end

@@ -111,7 +111,7 @@ local function fn()
     inst.AnimState:SetBank("ghost")
     inst.AnimState:SetBuild("ghost_wendy_build")
     inst.AnimState:PlayAnimation("idle", true)
-    inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+    inst.AnimState:SetBloomEffectHandle("shaders/anim_bloom_ghost.ksh")
     inst.AnimState:SetLightOverride(TUNING.GHOST_LIGHT_OVERRIDE)
     --inst.AnimState:SetMultColour(1, 1, 1, .6)
 
