@@ -1,5 +1,5 @@
-
-local pinsymbols = {
+local pinsymbols =
+{
     "swap_goo6",
     "swap_goo5",
     "swap_goo4",
@@ -8,18 +8,16 @@ local pinsymbols = {
     "swap_goo1",
 }
 
-local splashprefabs = {
+local splashprefabs =
+{
     "spat_splash_fx_melted",
     "spat_splash_fx_low",
     "spat_splash_fx_med",
     "spat_splash_fx_full",
 }
 
-local function WearOff(inst)
-    local pinnable = inst.components.pinnable
-    if pinnable then
-        pinnable:UpdateStuckStatus()
-    end
+local function WearOff(inst, self)
+    self:UpdateStuckStatus()
 end
 
 local function OnStuckChanged(self, stuck)
@@ -32,16 +30,14 @@ end
 
 local function OnUnpinned(inst)
     local pinnable = inst.components.pinnable
-    if pinnable then
-        if pinnable:IsStuck() then
+    if pinnable ~= nil and pinnable:IsStuck() then
             pinnable:Unstick()
         end
-    end
 end
 
 local function OnAttacked(inst)
     local pinnable = inst.components.pinnable
-    if pinnable and pinnable:IsStuck() then
+    if pinnable ~= nil and pinnable:IsStuck() then
         pinnable.attacks_since_pinned = pinnable.attacks_since_pinned + 1
         -- print("attacks since pinned", pinnable.attacks_since_pinned)
         pinnable:SpawnShatterFX()
@@ -51,18 +47,18 @@ end
 
 local function OnDied(inst)
     local pinnable = inst.components.pinnable
-    if pinnable then
-        if pinnable.wearofftask then
+    if pinnable ~= nil and pinnable.wearofftask ~= nil then
             pinnable.wearofftask:Cancel()
             pinnable.wearofftask = nil
         end
-    end
 end
 
 -----------------------------------------------------------------------------------------------------
 
 local Pinnable = Class(function(self, inst)
     self.inst = inst
+
+    self.canbepinned = true
     self.stuck = false
     self.wearofftime = TUNING.PINNABLE_WEAR_OFF_TIME
     self.attacks_since_pinned = 0
@@ -71,12 +67,10 @@ local Pinnable = Class(function(self, inst)
 
     self.fxlevel = 1
     self.fxdata = {}
-    
+
     self.inst:ListenForEvent("unpinned", OnUnpinned)
     self.inst:ListenForEvent("attacked", OnAttacked)
     self.inst:ListenForEvent("playerdied", OnDied)
-
-    self.inst:AddTag("pinnable")
 end,
 nil,
 {
@@ -91,46 +85,46 @@ function Pinnable:SpawnShatterFX(ratio)
     local ratio = self:RemainingRatio()
     local index = math.clamp(math.floor(#splashprefabs*ratio)+1, 1, #splashprefabs)
     local fx = SpawnPrefab(splashprefabs[index])
-    if fx then
+    if fx ~= nil then
         self.inst:AddChild(fx)
     end
 end
 
-function Pinnable:IsStuck( )
+function Pinnable:IsStuck()
     return self.stuck
 end
 
 function Pinnable:IsValidPinTarget()
-    return not self.stuck and (GetTime() > self.last_unstuck_time + TUNING.PINNABLE_RECOVERY_LEEWAY)
+    return self.canbepinned and not self.stuck and (GetTime() > self.last_unstuck_time + TUNING.PINNABLE_RECOVERY_LEEWAY)
 end
 
 function Pinnable:StartWearingOff(wearofftime)
-    if self.wearofftask then
+    if self.wearofftask ~= nil then
         self.wearofftask:Cancel()
         self.wearofftask = nil
     end
     local mintime = wearofftime < 1 and wearofftime or 1
-    self.wearofftask = self.inst:DoTaskInTime(mintime, WearOff)
+    self.wearofftask = self.inst:DoTaskInTime(mintime, WearOff, self)
 end
 
 function Pinnable:Stick()
-    if self.inst.entity:IsVisible() and not (self.inst.components.health and self.inst.components.health:IsDead()) then
+    if self.canbepinned and self.inst.entity:IsVisible() and (self.inst.components.health == nil or not self.inst.components.health:IsDead()) then
         local prevState = self.stuck
         self.stuck = true
 
-        if self.inst.brain then
+        if self.inst.brain ~= nil then
             self.inst.brain:Stop()
         end
-        
-        if self.inst.components.combat then
+
+        if self.inst.components.combat ~= nil then
             self.inst.components.combat:SetTarget(nil)
         end
-        
-        if self.inst.components.locomotor then
+
+        if self.inst.components.locomotor ~= nil then
             self.inst.components.locomotor:Stop()
         end
 
-        if self.stuck ~= prevState then 
+        if self.stuck ~= prevState then
             self.attacks_since_pinned = 0
             self.last_stuck_time = GetTime()
             self:UpdateStuckStatus()
@@ -162,17 +156,16 @@ function Pinnable:RemainingRatio()
 end
 
 function Pinnable:Unstick()
-    if (not self.inst.components.health or not self.inst.components.health:IsDead()) and self:IsStuck() then
-
+    if (self.inst.components.health == nil or not self.inst.components.health:IsDead()) and self:IsStuck() then
         self.stuck = false
-        
+
         self:SpawnShatterFX()
-        
-        if self.inst.brain then
+
+        if self.inst.brain ~= nil then
             self.inst.brain:Start()
         end
 
-        if self.wearofftask then
+        if self.wearofftask ~= nil then
             self.wearofftask:Cancel()
             self.wearofftask = nil
         end
@@ -183,10 +176,6 @@ function Pinnable:Unstick()
 
         self.inst:PushEvent("onunpin")
     end
-end
-
-function Pinnable:OnRemoveFromEntity()
-    self.inst:RemoveTag("pinnable") 
 end
 
 return Pinnable

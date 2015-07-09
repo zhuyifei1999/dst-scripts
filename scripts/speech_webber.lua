@@ -864,6 +864,7 @@ return {
 		PIGTORCH = "If only we could get closer.",
 		PINECONE = "It's bursting with life.",
         PINECONE_SAPLING = "Grow, grow!",
+        LUMPY_SAPLING = "Weird little plant.",
 		PITCHFORK = "A good tool to play in the dirt.",
 		PLANTMEAT = "It's all squishy.",
 		PLANTMEAT_COOKED = "It smells kind of rotten.",

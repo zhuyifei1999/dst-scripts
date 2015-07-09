@@ -90,7 +90,7 @@ local function fn()
     inst:AddComponent("edible")
     inst.components.edible.hungervalue = TUNING.CALORIES_TINY
     inst.components.edible.healthvalue = TUNING.HEALING_TINY
-    inst.components.edible.foodtype = "RAW"
+    inst.components.edible.foodtype = FOODTYPE.RAW
 
     inst:AddComponent("stackable")
 	inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM

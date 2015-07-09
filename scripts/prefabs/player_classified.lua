@@ -54,6 +54,15 @@ local function OnSanityDelta(parent, data)
 	end
 end
 
+local function OnBeavernessDelta(parent, data)
+    if data.overtime then
+        parent.player_classified.isbeavernesspulse:set_local(false)
+    else
+        --Force dirty, we just want to trigger an event on the client
+        SetDirty(parent.player_classified.isbeavernesspulse, true)
+    end
+end
+
 local function OnAttacked(parent, data)
     parent.player_classified.attackedpulseevent:push()
     parent.player_classified.isattackedbydanger:set(data ~= nil
@@ -177,12 +186,15 @@ local function OnHungerDirty(inst)
     if inst._parent ~= nil then
         local percent = inst.currenthunger:value() / inst.maxhunger:value()
         inst._parent:PushEvent("hungerdelta", { oldpercent = inst._oldhungerpercent, newpercent = percent, overtime = not inst.ishungerpulse:value() })
-        if inst._oldhungerpercent > 0 then
-            if percent <= 0 then
-                inst._parent:PushEvent("startstarving")
+        --push starving event if beaverness value isn't currently starving
+        if inst._oldbeavernesspercent > 0 then
+            if inst._oldhungerpercent > 0 then
+                if percent <= 0 then
+                    inst._parent:PushEvent("startstarving")
+                end
+            elseif percent > 0 then
+                inst._parent:PushEvent("stopstarving")
             end
-        elseif percent > 0 then
-            inst._parent:PushEvent("stopstarving")
         end
         inst._oldhungerpercent = percent
     else
@@ -202,6 +214,27 @@ local function OnSanityDirty(inst)
         inst._oldsanitypercent = 1
     end
     inst.issanitypulse:set_local(false)
+end
+
+local function OnBeavernessDirty(inst)
+    if inst._parent ~= nil then
+        local percent = inst.currentbeaverness:value() * .01
+        inst._parent:PushEvent("beavernessdelta", { oldpercent = inst._oldbeavernesspercent, newpercent = percent, overtime = not inst.isbeavernesspulse:value() })
+        --push starving event if hunger value isn't currently starving
+        if inst._oldhungerpercent > 0 then
+            if inst._oldbeavernesspercent > 0 then
+                if percent <= 0 then
+                    inst._parent:PushEvent("startstarving")
+                end
+            elseif percent > 0 then
+                inst._parent:PushEvent("stopstarving")
+            end
+        end
+        inst._oldbeavernesspercent = percent
+    else
+        inst._oldbeavernesspercent = 1
+    end
+    inst.isbeavernesspulse:set_local(false)
 end
 
 local function OnMoistureDirty(inst)
@@ -358,8 +391,11 @@ local function OnRepairEvent(inst)
 end
 
 local function OnGhostModeDirty(inst)
-    if inst._parent ~= nil and inst._parent.HUD ~= nil then
-        inst._parent:SetGhostMode(inst.isghostmode:value())
+    if inst._parent ~= nil then
+        inst._parent.components.playervision:SetGhostVision(inst.isghostmode:value())
+        if inst._parent.HUD ~= nil then
+            inst._parent:SetGhostMode(inst.isghostmode:value())
+        end
     end
 end
 
@@ -372,12 +408,12 @@ local function OnPlayerHUDDirty(inst)
         end
 
         if inst.ismapcontrolsvisible:value() then
-            inst._parent.HUD.controls.mapcontrols.minimapBtn:Show()
+            inst._parent.HUD.controls.mapcontrols:ShowMapButton()
         else
             if inst._parent.HUD:IsMapScreenOpen() then
                 TheFrontEnd:PopScreen()
             end
-            inst._parent.HUD.controls.mapcontrols.minimapBtn:Hide()
+            inst._parent.HUD.controls.mapcontrols:HideMapButton()
         end
     end
 end
@@ -472,6 +508,7 @@ local function RegisterNetListeners(inst)
         inst:ListenForEvent("healthdelta", OnHealthDelta, inst._parent)
         inst:ListenForEvent("hungerdelta", OnHungerDelta, inst._parent)
         inst:ListenForEvent("sanitydelta", OnSanityDelta, inst._parent)
+        inst:ListenForEvent("beavernessdelta", OnBeavernessDelta, inst._parent)
         inst:ListenForEvent("attacked", OnAttacked, inst._parent)
         inst:ListenForEvent("builditem", OnBuildSuccess, inst._parent)
         inst:ListenForEvent("buildstructure", OnBuildSuccess, inst._parent)
@@ -490,6 +527,7 @@ local function RegisterNetListeners(inst)
         inst:ListenForEvent("combat.attackedpulse", OnAttackedPulseEvent)
         inst:ListenForEvent("hungerdirty", OnHungerDirty)
         inst:ListenForEvent("sanitydirty", OnSanityDirty)
+        inst:ListenForEvent("beavernessdirty", OnBeavernessDirty)
         inst:ListenForEvent("temperaturedirty", OnTemperatureDirty)
         inst:ListenForEvent("moisturedirty", OnMoistureDirty)
         inst:ListenForEvent("techtreesdirty", OnTechTreesDirty)
@@ -559,6 +597,11 @@ local function fn()
     inst.sanityratescale = net_tinybyte(inst.GUID, "sanity.ratescale")
     inst.issanitypulse = net_bool(inst.GUID, "sanity.dodeltaovertime")
     inst.issanityghostdrain = net_bool(inst.GUID, "sanity.ghostdrain")
+
+    --Beaverness variables
+    inst._oldbeavernesspercent = 1
+    inst.currentbeaverness = net_byte(inst.GUID, "beaverness.current", "beavernessdirty")
+    inst.isbeavernesspulse = net_bool(inst.GUID, "beaverness.dodeltaovertime")
 
     --Temperature variables
     inst._oldtemperature = TUNING.STARTING_TEMP

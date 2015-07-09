@@ -176,8 +176,8 @@ end
 --[[ Private event handlers ]]
 --------------------------------------------------------------------------
 
-local function OnIsNight(inst)
-    if inst.state.isnight and not inst.state.isfullmoon then
+local function OnIsNight()
+    if inst.state.isnight and not (inst.state.isfullmoon or CanEntitySeeInDark(_player)) then
         Start(true)
     else
         Stop(true)
@@ -185,18 +185,24 @@ local function OnIsNight(inst)
 end
 
 local function OnPlayerActivated(inst, player)
-    if _player == nil then
-        inst:WatchWorldState("isnight", OnIsNight)
-        inst:WatchWorldState("isfullmoon", OnIsNight)
+    if _player ~= player then
+        if _player == nil then
+            inst:WatchWorldState("isnight", OnIsNight)
+            inst:WatchWorldState("isfullmoon", OnIsNight)
+            Start(false)
+        else
+            inst:RemoveEventCallback("nightvision", OnIsNight, _player)
+        end
+        inst:ListenForEvent("nightvision", OnIsNight, player)
+        _player = player
         OnIsNight(inst)
-        Start(false)
     end
-    _player = player
 end
 
 local function OnPlayerDeactivated(inst, player)
     if _player == player then
         _player = nil
+        inst:RemoveEventCallback("nightvision", OnIsNight, player)
         inst:StopWatchingWorldState("isnight", OnIsNight)
         inst:StopWatchingWorldState("isfullmoon", OnIsNight)
         Stop()

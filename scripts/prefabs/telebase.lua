@@ -74,7 +74,7 @@ end
 local function OnGemChange(inst)
 	if validteleporttarget(inst) then
 		for k,v in pairs(inst.components.objectspawner.objects) do
-    		v.AnimState:SetBloomEffectHandle( "shaders/anim.ksh" )
+    		v.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
 		end
 	else
 		for k,v in pairs(inst.components.objectspawner.objects) do

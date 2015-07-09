@@ -35,7 +35,7 @@ STRINGS=
     {
         wilson = "\"I will conquer it all with the power of my MIND!\"",
         willow = "\"Things are so much prettier when they burn.\"",
-        woodie = "\"That's nice tree, eh?\"",
+        woodie = "\"That's a nice tree, eh?\"",
         wendy ="\"Abigail? Come back! I'm not done playing with you.\"",
         wolfgang = "\"I am mighty! No one is mightier!\"",
         wx78 = "\"EMPATHY MODULE NOT RESPONDING\"",
@@ -573,6 +573,7 @@ STRINGS=
         BEEFALOWOOL = "Beefalo Wool",
         PINECONE = "Pine Cone",
         PINECONE_SAPLING = "Evergreen Sapling",
+        LUMPY_SAPLING = "Lumpy Sapling",
         SPIDEREGGSACK = "Spider Eggs",
         CHARCOAL = "Charcoal",
         ASH = "Ashes",
@@ -1716,6 +1717,8 @@ STRINGS.UI =
             "Elizabeth Gordon",
             "Nana Fujino",
             "Toni Zhang",
+            "Quentin Proust",
+            "Hugo Moraleida",
         },
 
         ALTGAMES = 
@@ -1754,7 +1757,7 @@ STRINGS.UI =
                 "Katri Luotonen",
             }           
         },
-        THANKS = "And a very special thanks to all our supporters who braved the challenge of the \"Early-Access Beta\".\nYou are too numerous to name - our amazing moderators, the wonderful artists, musicians, live streamers,\nto all who made a Let's Play video and everybody who chimed in to let us know exactly what you think.\nYour encouragement, passion and support has been amazing.\n\nDon't Starve is truly a better game because of all of you.",
+        THANKS = "And a very special thanks to all our supporters who braved the challenge of the \"Early-Access Beta\".\nYou are too numerous to name - our amazing moderators, the wonderful artists, musicians, live streamers,\nto all who made a Let's Play video and everybody who chimed in to let us know exactly what you think.\nYour encouragement, passion and support has been amazing.\n\nDon't Starve Together is truly a better game because of all of you.",
 
         FMOD = "FMOD Sound System,\nCopyright Firelight Technologies",
 
@@ -2211,6 +2214,7 @@ STRINGS.UI =
             SERVER_MODS_WORKSHOP_FAILURE = "Disconnected Due To Missing Mods",
             SERVER_MODS_WORKSHOP_ACCESS_DENIED = "Disconnected Due To Missing Mods",
             ID_DST_SLOT_RESERVATION = "Slot Reserved",
+            ID_DST_SERVER_IS_CLAN_ONLY = "Private Group",
         },
         BODY =
         {   
@@ -2251,7 +2255,8 @@ STRINGS.UI =
             SERVER_MODS_WORKSHOP_FAILURE = "You failed to download the required mods from the Steam Workshop. Please try again.",
             SERVER_MODS_WORKSHOP_ACCESS_DENIED = "You failed to download the required mods from the Steam Workshop because one or more are not visible to you.",
             ID_DST_SLOT_RESERVATION = "Unable to join the server. The only unused slots are reserved. Try again later once one of these miscreants has been consumed by the gaping maw that is this game.",
-		},
+		    ID_DST_SERVER_IS_CLAN_ONLY = "You have to be part of this server's steam group to join it!",
+        },
 		OK = "OK",
     },
     
@@ -2482,7 +2487,8 @@ STRINGS.UI =
         HASPASSWORD = "Password Protected:",
         HASPASSWORD_DETAIL = "Password Protected",
         GAMEMODE = "Game Mode:",
-        FRIENDSONLY = "Friend-Hosted:",
+        FRIENDSONLY = "Friends:",
+        CLANONLY = "Steam Group:",
         HASPVP = "PvP:",
         HASPVP_DETAIL = "PvP",
         ISDEDICATED = "Dedicated Server",
@@ -2499,6 +2505,8 @@ STRINGS.UI =
         ANY = "Any",
         YES = "Yes",
         NO = "No",
+        MINE = "Mine",
+        PRIVATE = "Private",
         ONLINE = "Online",
         LAN = "LAN",
         DEDICATED = "Dedicated",
@@ -2518,7 +2526,10 @@ STRINGS.UI =
         MOD_WARNING_BODY = "This server has mods enabled. Klei is not able to help you should issues arise while playing on a modded server. Continue?",
         PASSWORD_ICON_HOVER = "Passworded",
         DEDICATED_ICON_HOVER = "Dedicated",
-        FRIEND_ICON_HOVER = "Friend-Hosted",
+        FRIEND_ICON_HOVER = "Friends Playing",
+        FRIEND_SERVER_ICON_HOVER = "Friend-Hosted",
+        CLAN_OPEN_ICON_HOVER = "Group Server",
+        CLAN_CLOSED_ICON_HOVER = "Private Group Server",
         PVP_ICON_HOVER = "PvP",
         MODS_ICON_HOVER = "Modded",
         FILTER_RESET = "Reset Filters",
@@ -3381,13 +3392,13 @@ STRINGS.CHARACTERS =
 
 STRINGS.LUCY =
 {
-    equipped=
+    equipped =
     {
         "Let's chop some trees!",
         "Nice day for a walk!",
         "We make a good team!",
         "There must be some trees around here somewhere.",
-        "Woodie! Chop some trees!",
+        "Hey! Chop some trees!",
         "All work and no play makes me want to chop some trees.",
         "Chop chop chop. Heh.",
     },
@@ -3400,6 +3411,17 @@ STRINGS.LUCY =
         "What if I get stolen?!",
     },
 
+    on_haunt = 
+    {
+    	"Ouch, that hurts.", 
+    	"ooOOoooOO to you too.", 
+    	"Now I'm a HAUNTED axe.",
+    	"I'm not scared of you, ghost!",
+    	"Boo who?",
+    	"I'm white as a sheet.",
+    	"You're looking boo-tiful today.",
+	},
+
     in_container =
     {
         "It's dark in here!",
@@ -3408,20 +3430,31 @@ STRINGS.LUCY =
         "I hate it in here.",
     },
 
+    --Removed strings that refer to owner as "Woodie"
     other_owner =
     {
-        "You're not Woodie!",
+        "I don't know you.",
         "Put me down!",
+        "Help! I'm being kidnapped",
+        "Stranger danger!",
     },
 
-    on_pickedup=
+    on_pickedup =
     {
-        "You came back!",
         "I missed you so much!",
         "Did you miss me?",
+        "Together again!",
     },
 
-    on_dropped=
+    on_woodie_pickedup_other =
+    {
+        "You two-timer!",
+        "But I'M your one and only Lucy!",
+        "You can't have two Lucys!",
+        "You can't have him! He's mine!"
+	},
+
+    on_dropped =
     {
         "You'll come back, right?",
         "What did I say?",
@@ -3430,7 +3463,7 @@ STRINGS.LUCY =
         "Don't forget about me!",
     },
 
-    on_chopped=
+    on_chopped =
     {
         "Woooooo!",
         "Yeah!",
@@ -3443,28 +3476,35 @@ STRINGS.LUCY =
         "Nice swing!",
         "Too easy!",
     },
-    beaver_up_early=
+
+    -- Adjusted text since beaverness meter now drains continuously, and can be raised by eating wood.
+    beaver_down_early =
     {
         "Are you OK?",
-        "You look distracted, Woodie.",
-        "It's just a tree! Calm down!",
+        "You look distracted.",
+        "Calm down! Maybe you need to chew on a twig or something.",
+        "Chewing some wood will help you focus",
+        --"It's just a tree! Calm down!",
     },
-    beaver_up_mid=
+    beaver_down_mid =
     {
-        "Woodie? Can you hear me?",
-        "You might want to slow down a bit.",
-        "Careful, you're getting yourself worked up!",
-        "Don't chop too fast. You know what will happen!",
+        "Hello? Can you hear me?",
+        "Woodie! Remember to eat your twigs!",
+        --"You might want to slow down a bit.",
+        --"Careful, you're getting yourself worked up!",
+        --"Don't chop too fast. You know what will happen!",
+        "You might want to eat a log.",
+        "You know what happens if you don't eat enough wood!",
     },
-    beaver_up_late=
+    beaver_down_late =
     {
-        "Woodie! Be careful!",
-        "It's starting!",
-        "You're not looking so good!",
-        "Your teeth are growing!",
+        "No! Don't chop any more!",
+        "The transformation is starting!",
+        "One more chop and you're in trouble!",
+        "You're about to change!",
         "Watch out! You're going to turn!",
     },
-    beaver_down_washigh=
+    beaver_up_waslow =
     {
         "That was a close one!",
         "I think we'll be alright.",
@@ -3473,25 +3513,24 @@ STRINGS.LUCY =
         "It's back in the lodge. Phew!",
     },
 
-    transform_beaver=
+    transform_beaver =
     {
         "Oh no!",
         "It happened again!",
         "The curse!",
         "I warned you!",
-        "Woodie!",
+        --"Woodie!",
     },
-    transform_woodie=
+    transform_woodie =
     {
         "You're back!",
-        "Quick! Pick me up!",
+        --"Quick! Pick me up!", --Inventory isn't dropped in DST
         "Are you OK?",
         "Don't let that happen again!",
         "Everything is going to be fine. Just focus!",
-    }
-
+    },
 }
-    
+
 STRINGS.VOTING = 
 {
     KICK = 

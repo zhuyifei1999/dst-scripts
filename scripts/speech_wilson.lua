@@ -1014,6 +1014,7 @@ return {
 		PIGTORCH = "Sure looks cozy.",
 		PINECONE = "I can hear a tiny tree inside it, trying to get out.",
         PINECONE_SAPLING = "It'll be a tree soon!",
+        LUMPY_SAPLING = "How did this tree even reproduce?",
 		PITCHFORK = "Maxwell might be looking for this.",
 		PLANTMEAT = "That doesn't look very appealing.",
 		PLANTMEAT_COOKED = "At least it's warm now.",

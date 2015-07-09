@@ -87,7 +87,7 @@ function self:InitializeNest(nest)
 end
 
 function self:InitializeNests()
-	print("MooseSpawner - InitializeNests")
+	--print("MooseSpawner - InitializeNests")
 	local nests = FindNests()
 	local num_to_spawn = math.ceil(#nests * _moosedensity)
 	_seasonalnests = PickSome(num_to_spawn, nests)

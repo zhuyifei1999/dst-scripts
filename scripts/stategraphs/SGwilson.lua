@@ -70,10 +70,10 @@ end
 
 local function SetSleeperSleepState(inst)
     if inst.components.grue ~= nil then
-        inst.components.grue:SetSleeping(true)
+        inst.components.grue:AddImmunity("sleeping")
     end
     if inst.components.talker ~= nil then
-        inst.components.talker:IgnoreAll()
+        inst.components.talker:IgnoreAll("sleeping")
     end
     if inst.components.firebug ~= nil then
         inst.components.firebug:Disable()
@@ -90,13 +90,10 @@ end
 
 local function SetSleeperAwakeState(inst)
     if inst.components.grue ~= nil then
-        inst.components.grue:SetSleeping(false)
-        if inst.components.grue:CheckForStart() then
-            inst.components.grue:Start()
-        end
+        inst.components.grue:RemoveImmunity("sleeping")
     end
     if inst.components.talker ~= nil then
-        inst.components.talker:StopIgnoringAll()
+        inst.components.talker:StopIgnoringAll("sleeping")
     end
     if inst.components.firebug ~= nil then
         inst.components.firebug:Enable()
@@ -128,54 +125,56 @@ local actionhandlers =
 {
     ActionHandler(ACTIONS.CHOP,
         function(inst)
-            if not inst.sg:HasStateTag("prechop") then
-                if inst.sg:HasStateTag("chopping") then
-                    return "chop"
-                else
-                    return "chop_start"
-                end
+            if inst:HasTag("beaver") then
+                return not inst.sg:HasStateTag("gnawing") and "gnaw" or nil
             end
+            return not inst.sg:HasStateTag("prechop")
+                and (inst.sg:HasStateTag("chopping") and
+                    "chop" or
+                    "chop_start")
+                or nil
         end),
     ActionHandler(ACTIONS.MINE,
         function(inst)
-            if not inst.sg:HasStateTag("premine") then
-                if inst.sg:HasStateTag("mining") then
-                    return "mine"
-                else
-                    return "mine_start"
-                end
+            if inst:HasTag("beaver") then
+                return not inst.sg:HasStateTag("gnawing") and "gnaw" or nil
             end
+            return not inst.sg:HasStateTag("premine")
+                and (inst.sg:HasStateTag("mining") and
+                    "mine" or
+                    "mine_start")
+                or nil
         end),
     ActionHandler(ACTIONS.HAMMER,
         function(inst)
-            if not inst.sg:HasStateTag("prehammer") then
-                if inst.sg:HasStateTag("hammering") then
-                    return "hammer"
-                else
-                    return "hammer_start"
-                end
+            if inst:HasTag("beaver") then
+                return not inst.sg:HasStateTag("gnawing") and "gnaw" or nil
             end
+            return not inst.sg:HasStateTag("prehammer")
+                and (inst.sg:HasStateTag("hammering") and
+                    "hammer" or
+                    "hammer_start")
+                or nil
         end),
     ActionHandler(ACTIONS.TERRAFORM, "terraform"),
     ActionHandler(ACTIONS.DIG,
         function(inst)
-            if not inst.sg:HasStateTag("predig") then
-                if inst.sg:HasStateTag("digging") then
-                    return "dig"
-                else
-                    return "dig_start"
-                end
-            end 
+            if inst:HasTag("beaver") then
+                return not inst.sg:HasStateTag("gnawing") and "gnaw" or nil
+            end
+            return not inst.sg:HasStateTag("predig")
+                and (inst.sg:HasStateTag("digging") and
+                    "dig" or
+                    "dig_start")
+                or nil
         end),
     ActionHandler(ACTIONS.NET,
         function(inst)
-            if not inst.sg:HasStateTag("prenet") then 
-                if inst.sg:HasStateTag("netting") then
-                    return "bugnet"
-                else
-                    return "bugnet_start"
-                end
-            end
+            return not inst.sg:HasStateTag("prenet")
+                and (inst.sg:HasStateTag("netting") and
+                    "bugnet" or
+                    "bugnet_start")
+                or nil
         end),
     ActionHandler(ACTIONS.FISH, "fishing_pre"),
 
@@ -190,7 +189,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.ADDFUEL, "doshortaction"),
     ActionHandler(ACTIONS.ADDWETFUEL, "doshortaction"),
     ActionHandler(ACTIONS.REPAIR, "dolongaction"),
-    
+
     ActionHandler(ACTIONS.READ, "book"),
 
     ActionHandler(ACTIONS.MAKEBALLOON, "makeballoon"),
@@ -199,31 +198,27 @@ local actionhandlers =
     ActionHandler(ACTIONS.DROP, "doshortaction"),
     ActionHandler(ACTIONS.MURDER, "dolongaction"),
     ActionHandler(ACTIONS.UPGRADE, "dolongaction"),
-    ActionHandler(ACTIONS.ACTIVATE, 
+    ActionHandler(ACTIONS.ACTIVATE,
         function(inst, action)
-            if action.target.components.activatable then
-                if action.target.components.activatable.quickaction then
-                    return "doshortaction"
-                else
-                    return "dolongaction"
-                end
-            end
+            return action.target.components.activatable ~= nil
+                and (action.target.components.activatable.quickaction and
+                    "doshortaction" or
+                    "dolongaction")
+                or nil
         end),
-    ActionHandler(ACTIONS.PICK, 
+    ActionHandler(ACTIONS.PICK,
         function(inst, action)
-            if action.target.components.pickable then
-                if action.target.components.pickable.quickpick then
-                    return "doshortaction"
-                else
-                    return "dolongaction"
-                end
-            end
+            return action.target.components.pickable ~= nil
+                and (action.target.components.pickable.quickpick and
+                    "doshortaction" or
+                    "dolongaction")
+                or nil
         end),
-        
-    ActionHandler(ACTIONS.SLEEPIN, 
+
+    ActionHandler(ACTIONS.SLEEPIN,
         function(inst, action)
-            if action.invobject then
-                if action.invobject.onuse then
+            if action.invobject ~= nil then
+                if action.invobject.onuse ~= nil then
                     action.invobject.onuse(inst)
                 end
                 return "bedroll"
@@ -233,7 +228,7 @@ local actionhandlers =
         end),
 
     ActionHandler(ACTIONS.TAKEITEM, "dolongaction"),
-    
+
     ActionHandler(ACTIONS.BUILD, "dolongaction"),
     ActionHandler(ACTIONS.SHAVE, "shave"),
     ActionHandler(ACTIONS.COOK, "dolongaction"),
@@ -246,26 +241,21 @@ local actionhandlers =
     ActionHandler(ACTIONS.SEW, "dolongaction"),
     ActionHandler(ACTIONS.TEACH, "dolongaction"),
     ActionHandler(ACTIONS.RESETMINE, "dolongaction"),
-    ActionHandler(ACTIONS.EAT, 
+    ActionHandler(ACTIONS.EAT,
         function(inst, action)
             if inst.sg:HasStateTag("busy") then
-                return nil
+                return
             end
             local obj = action.target or action.invobject
-            if not (obj and obj.components.edible) then
-                return nil
+            if obj == nil or obj.components.edible == nil then
+                return
+            elseif not inst.components.eater:PrefersToEat(obj) then
+                inst:PushEvent("wonteatfood", { food = obj })
+                return
             end
-            
-            if inst.components.eater:PrefersToEat(obj) then
-                if obj.components.edible.foodtype == FOODTYPE.MEAT then
-                    return "eat"
-                else
-                    return "quickeat"
-                end
-            else
-                inst:PushEvent("wonteatfood", {food=obj})
-                return nil
-            end
+            return (inst:HasTag("beaver") and "beavereat")
+                or (obj.components.edible.foodtype == FOODTYPE.MEAT and "eat")
+                or "quickeat"
         end),
     ActionHandler(ACTIONS.GIVE, "give"),
     ActionHandler(ACTIONS.GIVETOPLAYER, "give"),
@@ -275,21 +265,18 @@ local actionhandlers =
     ActionHandler(ACTIONS.HARVEST, "dolongaction"),
     ActionHandler(ACTIONS.PLAY,
         function(inst, action)
-            if action.invobject then
-                if action.invobject:HasTag("flute") then
-                    return "play_flute"
-                elseif action.invobject:HasTag("horn") then
-                    return "play_horn"
-                elseif action.invobject:HasTag("bell") then
-                    return "play_bell"
-                end
+            if action.invobject ~= nil then
+                return (action.invobject:HasTag("flute") and "play_flute")
+                    or (action.invobject:HasTag("horn") and "play_horn")
+                    or (action.invobject:HasTag("bell") and "play_bell")
+                    or nil
             end
         end),
     ActionHandler(ACTIONS.FAN, "use_fan"),
     ActionHandler(ACTIONS.JUMPIN, "jumpin"),
     ActionHandler(ACTIONS.DRY, "doshortaction"),
-    ActionHandler(ACTIONS.CASTSPELL, 
-        function(inst, action) 
+    ActionHandler(ACTIONS.CASTSPELL,
+        function(inst, action)
             return action.invobject.components.spellcaster.castingstate or "castspell"
         end),
     ActionHandler(ACTIONS.BLINK, "quicktele"),
@@ -300,13 +287,10 @@ local actionhandlers =
             inst.sg.mem.localchainattack = not action.forced or nil
             if not inst.components.health:IsDead() and not inst.sg:HasStateTag("attack") then
                 local weapon = inst.components.combat ~= nil and inst.components.combat:GetWeapon() or nil
-                if weapon ~= nil and weapon:HasTag("blowdart") then
-                    return "blowdart"
-                elseif weapon ~= nil and weapon:HasTag("thrown") then
-                    return "throw"
-                else
-                    return "attack"
-                end
+                return (weapon == nil and "attack")
+                    or (weapon:HasTag("blowdart") and "blowdart")
+                    or (weapon:HasTag("thrown") and "throw")
+                    or "attack"
             end
         end),
     ActionHandler(ACTIONS.TOSS, "throw"),
@@ -335,14 +319,6 @@ local events =
             inst.sg:GoToState("run_start")
         elseif data.force_idle_state and not (is_moving or should_move or inst.sg:HasStateTag("idle")) then
             inst.sg:GoToState("idle")
-        end
-    end),
-    
-    EventHandler("transform_werebeaver", function(inst, data)
-        if inst.components.beaverness then
-            inst:SetCameraDistance(14)
-            inst.sg:GoToState("werebeaver")
-
         end
     end),
 
@@ -379,6 +355,8 @@ local events =
                 inst.sg:GoToState("shell_hit")
             elseif inst:HasTag("pinned") then
                 inst.sg:GoToState("pinned_hit")
+            elseif data.stimuli == "darkness" then
+                inst.sg:GoToState("hit_darkness")
             elseif data.stimuli == "electric" and not inst.components.inventory:IsInsulated() then
                 inst.sg:GoToState("electrocute")
             else
@@ -395,29 +373,22 @@ local events =
     end),
 
     EventHandler("equip", function(inst, data)
-        if inst.sg:HasStateTag("idle") then
-            if data.eslot == EQUIPSLOTS.HANDS then
-                inst.sg:GoToState("item_out")
-            else
-                inst.sg:GoToState("item_hat")
-            end
+        if inst.sg:HasStateTag("idle") and not inst:HasTag("beaver") then
+            inst.sg:GoToState(data.eslot == EQUIPSLOTS.HANDS and "item_out" or "item_hat")
         end
     end),
-    
+
     EventHandler("unequip", function(inst, data)
         if inst.sg:HasStateTag("idle") then
-            if data.eslot == EQUIPSLOTS.HANDS then
-                if data.slip then
-                    inst.sg:GoToState("tool_slip")
-                else
-                    inst.sg:GoToState("item_in")
-                end
-            else
-                inst.sg:GoToState("item_hat")
-            end
+            inst.sg:GoToState(
+                (inst:HasTag("beaver") and "item_in") or
+                (data.eslot ~= EQUIPSLOTS.HANDS and "item_hat") or
+                (data.slip and "tool_slip") or
+                "item_in"
+            )
         end
     end),
-    
+
     EventHandler("death", function(inst)
         if inst.sleepingbag ~= nil and (inst.sg:HasStateTag("bedroll") or inst.sg:HasStateTag("tent")) then -- wakeup on death to "consume" sleeping bag first
             inst.sleepingbag.components.sleepingbag:DoWakeUp()
@@ -428,18 +399,16 @@ local events =
             inst.components.playercontroller:Enable(false)
         end
         inst.sg:GoToState("death")
-        inst.SoundEmitter:PlaySound("dontstarve/wilson/death")    
-        
+        inst.SoundEmitter:PlaySound("dontstarve/wilson/death")
+
         if not inst:HasTag("mime") then
             inst.SoundEmitter:PlaySound((inst.talker_path_override or "dontstarve/characters/")..(inst.soundsname or inst.prefab).."/death_voice")
         end
-        
-        if inst.components.inventory ~= nil then
-            if HUMAN_MEAT_ENABLED then
-                inst.components.inventory:GiveItem(SpawnPrefab("humanmeat")) -- Drop some player meat!
-            end
-            inst.components.inventory:DropEverything(true)
+
+        if HUMAN_MEAT_ENABLED then
+            inst.components.inventory:GiveItem(SpawnPrefab("humanmeat")) -- Drop some player meat!
         end
+        inst.components.inventory:DropEverything(true)
     end),
 
     EventHandler("ontalk", function(inst, data)
@@ -460,12 +429,29 @@ local events =
     EventHandler("powerdown",
         function(inst)
             inst.sg:GoToState("powerdown")
-        end),        
-       
+        end),
+
+    EventHandler("transform_werebeaver",
+        function(inst, data)
+            if inst.TransformBeaver ~= nil and not inst:HasTag("beaver") then
+                inst.components.inventory:DropEquipped(true)
+                inst.components.inventory:Close()
+                inst:PushEvent("ms_closepopups")
+                inst.sg:GoToState("transform_werebeaver")
+            end
+        end),
+
+    EventHandler("transform_person",
+        function(inst, data)
+            if inst.TransformBeaver ~= nil and inst:HasTag("beaver") then
+                inst.sg:GoToState("transform_person")
+            end
+        end),
+
     EventHandler("toolbroke",
         function(inst, data)
             inst.sg:GoToState("toolbroke", data.tool)
-        end),        
+        end),
 
     EventHandler("umbrellaranout",
         function(inst, data)
@@ -530,7 +516,7 @@ local events =
         end),
     EventHandler("emote",
         function(inst, data)
-            if not (inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("nopredict") or inst.sg:HasStateTag("sleeping")) then
+            if not (inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("nopredict") or inst.sg:HasStateTag("sleeping") or inst:HasTag("beaver")) then
                 inst.sg:GoToState("emote", data)
             end
         end),
@@ -629,10 +615,6 @@ local states =
             end
         end,
 
-        onexit = function(inst)
-            inst.components.health:SetInvincible(false)
-        end,
-
         events =
         {
             EventHandler("animover", function(inst)
@@ -641,6 +623,10 @@ local states =
                 end
             end),
         },
+
+        onexit = function(inst)
+            inst.components.health:SetInvincible(false)
+        end,
     },
 
     State{
@@ -657,10 +643,6 @@ local states =
             end
         end,
 
-        onexit = function(inst)
-            inst.components.health:SetInvincible(false)
-        end,
-
         events =
         {
             EventHandler("animover", function(inst)
@@ -669,6 +651,96 @@ local states =
                 end
             end),
         },
+
+        onexit = function(inst)
+            inst.components.health:SetInvincible(false)
+        end,
+    },
+
+    State{
+        name = "transform_werebeaver",
+        tags = { "busy", "pausepredict", "transform", "nomorph" },
+
+        onenter = function(inst)
+            inst:SetCameraDistance(14)
+            inst.Physics:Stop()
+            inst.AnimState:PlayAnimation("transform_pre")
+            inst.components.health:SetInvincible(true)
+
+            if inst.components.playercontroller ~= nil then
+                inst.components.playercontroller:RemotePausePrediction()
+                inst.components.playercontroller:Enable(false)
+            end
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    if inst.TransformBeaver == nil or inst:HasTag("beaver") then
+                        inst.sg:GoToState("idle")
+                    else
+                        inst:TransformBeaver(true)
+                        inst.AnimState:PlayAnimation("transform_pst")
+                        SpawnPrefab("werebeaver_transform_fx").Transform:SetPosition(inst.Transform:GetWorldPosition())
+                        inst.components.health:SetInvincible(false)
+                        inst:SetCameraDistance()
+                    end
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            inst.components.health:SetInvincible(false)
+            inst:SetCameraDistance()
+            if inst.components.playercontroller ~= nil then
+                inst.components.playercontroller:Enable(true)
+            end
+        end,
+    },
+
+    State{
+        name = "transform_person",
+        tags = { "busy", "pausepredict", "transform", "nomorph" },
+
+        onenter = function(inst)
+            inst:SetCameraDistance(14)
+            inst.Physics:Stop()
+            inst.AnimState:PlayAnimation("transform_pre")
+            inst.components.health:SetInvincible(true)
+
+            if inst.components.playercontroller ~= nil then
+                inst.components.playercontroller:RemotePausePrediction()
+                inst.components.playercontroller:Enable(false)
+            end
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    if inst.TransformBeaver ~= nil and inst:HasTag("beaver") then
+                        inst:TransformBeaver(false)
+                        inst.AnimState:PlayAnimation("transform_pst")
+                        SpawnPrefab("werebeaver_transform_fx").Transform:SetPosition(inst.Transform:GetWorldPosition())
+                        inst.components.health:SetInvincible(false)
+                        inst.components.inventory:Open()
+                        inst:SetCameraDistance()
+                    else
+                        inst.sg:GoToState("idle")
+                    end
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            inst.components.health:SetInvincible(false)
+            inst.components.inventory:Open()
+            inst:SetCameraDistance()
+            if inst.components.playercontroller ~= nil then
+                inst.components.playercontroller:Enable(true)
+            end
+        end,
     },
 
     State{
@@ -787,10 +859,11 @@ local states =
             for k, v in pairs(statue_symbols) do
                 inst.AnimState:ClearOverrideSymbol(v)
             end
-        
+
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:Enable(true)
             end
+
             inst.components.health:SetInvincible(false)
             inst:ShowHUD(true)
             inst:SetCameraDistance()
@@ -845,28 +918,24 @@ local states =
             inst.components.locomotor:Stop()
             inst.components.locomotor:Clear()
 
-            local equippedArmor = inst.components.inventory and inst.components.inventory:GetEquippedItem(EQUIPSLOTS.BODY)
-
-            -- if equippedArmor and equippedArmor:HasTag("shell") then
-            --     inst.sg:GoToState("shell_enter")
-            --     return
-            -- end
-            
-    --         local equippedHat = inst.components.inventory and inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HEAD)
-    --         if equippedHat and equippedHat:HasTag("hide") then
-                -- inst.sg:GoToState("hide")
-                -- return
-    --         end
-
-            if equippedArmor and equippedArmor:HasTag("band") then
+            local equippedArmor = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.BODY)
+            if equippedArmor ~= nil and equippedArmor:HasTag("band") then
                 inst.sg:GoToState("enter_onemanband")
                 return
             end
 
             local anims = {}
-            local anim = "idle_loop"
-            
-            if not inst.components.sanity:IsSane() then
+            local dofunny = true
+
+            if inst:HasTag("beaver") then
+                if inst:HasTag("groggy") then
+                    table.insert(anims, "idle_groggy_pre")
+                    table.insert(anims, "idle_groggy")
+                else
+                    table.insert(anims, "idle_loop")
+                end
+                dofunny = false
+            elseif not inst.components.sanity:IsSane() then
                 table.insert(anims, "idle_sanity_pre")
                 table.insert(anims, "idle_sanity_loop")
             elseif inst.components.temperature:IsFreezing() then
@@ -875,6 +944,7 @@ local states =
             elseif inst.components.temperature:IsOverheating() then
                 table.insert(anims, "idle_hot_pre")
                 table.insert(anims, "idle_hot_loop")
+                dofunny = false
             elseif inst:HasTag("groggy") then
                 table.insert(anims, "idle_groggy_pre")
                 table.insert(anims, "idle_groggy")
@@ -883,25 +953,24 @@ local states =
             end
 
             if pushanim then
-                for k,v in pairs (anims) do
+                for k, v in pairs(anims) do
                     inst.AnimState:PushAnimation(v, k == #anims)
                 end
             else
                 inst.AnimState:PlayAnimation(anims[1], #anims == 1)
-                for k,v in pairs (anims) do
+                for k, v in pairs(anims) do
                     if k > 1 then
                         inst.AnimState:PushAnimation(v, k == #anims)
                     end
                 end
             end
 
-            inst.sg:SetTimeout(math.random()*4+2)
+            if dofunny then
+                inst.sg:SetTimeout(math.random() * 4 + 2)
+            end
         end,
 
         ontimeout = function(inst)
-            if inst.components.temperature:GetCurrent() > 70 then
-                return
-            end
             inst.sg:GoToState("funnyidle")
         end,
     },
@@ -949,10 +1018,10 @@ local states =
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
-            inst.AnimState:PlayAnimation(inst.prefab == "woodie" and "woodie_chop_pre" or "chop_pre")
+            inst.AnimState:PlayAnimation(inst:HasTag("woodcutter") and "woodie_chop_pre" or "chop_pre")
         end,
 
-        events=
+        events =
         {
             EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
             EventHandler("animover", function(inst)
@@ -962,81 +1031,98 @@ local states =
             end),
         },
     },
-    
+
     State{
         name = "chop",
         tags = { "prechop", "chopping", "working" },
 
         onenter = function(inst)
             inst.sg.statemem.action = inst:GetBufferedAction()
-            inst.AnimState:PlayAnimation(inst.prefab == "woodie" and "woodie_chop_loop" or "chop_loop")            
+            inst.sg.statemem.iswoodcutter = inst:HasTag("woodcutter")
+            inst.AnimState:PlayAnimation(inst.sg.statemem.iswoodcutter and "woodie_chop_loop" or "chop_loop")
         end,
-        
+
         timeline =
         {
-            TimeEvent(2*FRAMES, function(inst) 
-                if inst.prefab == "woodie" then
+            ----------------------------------------------
+            --Woodcutter chop
+
+            TimeEvent(2 * FRAMES, function(inst) 
+                if inst.sg.statemem.iswoodcutter then
                     inst:PerformBufferedAction() 
                 end
             end),
 
-            TimeEvent(5*FRAMES, function(inst)
-                if inst.prefab == "woodie" then
+            TimeEvent(5 * FRAMES, function(inst)
+                if inst.sg.statemem.iswoodcutter then
                     inst.sg:RemoveStateTag("prechop")
                 end
             end),
 
-            TimeEvent(10*FRAMES, function(inst)
-                if inst.prefab == "woodie" and
+            TimeEvent(10 * FRAMES, function(inst)
+                if inst.sg.statemem.iswoodcutter and
                     inst.components.playercontroller ~= nil and
                     inst.components.playercontroller:IsAnyOfControlsPressed(
                         CONTROL_PRIMARY,
                         CONTROL_ACTION,
                         CONTROL_CONTROLLER_ACTION) and
-                    inst.sg.statemem.action and 
-                    inst.sg.statemem.action:IsValid() and 
-                    inst.sg.statemem.action.target and 
-                    inst.sg.statemem.action.target:IsActionValid(inst.sg.statemem.action.action) and 
-                    inst.sg.statemem.action.target.components.workable then
-                        inst:ClearBufferedAction()
-                        inst:PushBufferedAction(inst.sg.statemem.action)
+                    inst.sg.statemem.action ~= nil and
+                    inst.sg.statemem.action:IsValid() and
+                    inst.sg.statemem.action.target ~= nil and
+                    inst.sg.statemem.action.target.components.workable ~= nil and
+                    inst.sg.statemem.action.target.components.workable:CanBeWorked() and
+                    inst.sg.statemem.action.target:IsActionValid(inst.sg.statemem.action.action) then
+                    inst:ClearBufferedAction()
+                    inst:PushBufferedAction(inst.sg.statemem.action)
                 end
             end),
 
-            TimeEvent(5*FRAMES, function(inst) 
-                if inst.prefab ~= "woodie" then
-                    inst:PerformBufferedAction() 
+            TimeEvent(12 * FRAMES, function(inst)
+                if inst.sg.statemem.iswoodcutter then
+                    inst.sg:RemoveStateTag("chopping")
                 end
             end),
 
-            TimeEvent(9*FRAMES, function(inst)
-                if inst.prefab ~= "woodie" then
+            ----------------------------------------------
+            --Normal chop
+
+            TimeEvent(5 * FRAMES, function(inst)
+                if not inst.sg.statemem.iswoodcutter then
+                    inst:PerformBufferedAction()
+                end
+            end),
+
+            TimeEvent(9 * FRAMES, function(inst)
+                if not inst.sg.statemem.iswoodcutter then
                     inst.sg:RemoveStateTag("prechop")
                 end
             end),
-            
-            TimeEvent(14*FRAMES, function(inst)
-                if inst.prefab ~= "woodie" and
+
+            TimeEvent(14 * FRAMES, function(inst)
+                if not inst.sg.statemem.iswoodcutter and
                     inst.components.playercontroller ~= nil and
                     inst.components.playercontroller:IsAnyOfControlsPressed(
                         CONTROL_PRIMARY,
                         CONTROL_ACTION,
                         CONTROL_CONTROLLER_ACTION) and
-                    inst.sg.statemem.action and 
-                    inst.sg.statemem.action:IsValid() and 
-                    inst.sg.statemem.action.target and 
-                    inst.sg.statemem.action.target:IsActionValid(inst.sg.statemem.action.action) and 
-                    inst.sg.statemem.action.target.components.workable then
-                        inst:ClearBufferedAction()
-                        inst:PushBufferedAction(inst.sg.statemem.action)
+                    inst.sg.statemem.action ~= nil and
+                    inst.sg.statemem.action:IsValid() and
+                    inst.sg.statemem.action.target ~= nil and
+                    inst.sg.statemem.action.target.components.workable ~= nil and
+                    inst.sg.statemem.action.target.components.workable:CanBeWorked() and
+                    inst.sg.statemem.action.target:IsActionValid(inst.sg.statemem.action.action) then
+                    inst:ClearBufferedAction()
+                    inst:PushBufferedAction(inst.sg.statemem.action)
                 end
             end),
 
-            TimeEvent(16*FRAMES, function(inst) 
-                inst.sg:RemoveStateTag("chopping")
+            TimeEvent(16 * FRAMES, function(inst) 
+                if not inst.sg.statemem.iswoodcutter then
+                    inst.sg:RemoveStateTag("chopping")
+                end
             end),
         },
-        
+
         events =
         {
             EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
@@ -1046,7 +1132,7 @@ local states =
                     inst.sg:GoToState("idle")
                 end
             end),
-        },        
+        },
     },
 
     State{
@@ -1080,33 +1166,34 @@ local states =
 
         timeline =
         {
-            TimeEvent(9*FRAMES, function(inst) 
-                if inst.sg.statemem.action and inst.sg.statemem.action.target and inst.sg.statemem.action.target:IsValid() and inst.sg.statemem.action.target.Transform then
-                    SpawnPrefab("mining_fx").Transform:SetPosition(inst.sg.statemem.action.target.Transform:GetWorldPosition())
-                end
-                inst:PerformBufferedAction() 
-                inst.sg:RemoveStateTag("premine")
-                if not inst:HasTag("playerghost") then
-                    if inst.sg.statemem.action and inst.sg.statemem.action.target and inst.sg.statemem.action.target.prefab == "rock_ice" then
-                        inst.SoundEmitter:PlaySound("dontstarve_DLC001/common/iceboulder_hit")
-                    else
-                        inst.SoundEmitter:PlaySound("dontstarve/wilson/use_pick_rock")
+            TimeEvent(9 * FRAMES, function(inst)
+                if inst.sg.statemem.action ~= nil then
+                    local target = inst.sg.statemem.action.target
+                    if target ~= nil and target:IsValid() then
+                        if target.Transform ~= nil then
+                            SpawnPrefab("mining_fx").Transform:SetPosition(target.Transform:GetWorldPosition())
+                        end
+                        inst.SoundEmitter:PlaySound(target:HasTag("frozen") and "dontstarve_DLC001/common/iceboulder_hit" or "dontstarve/wilson/use_pick_rock")
                     end
                 end
+                inst:PerformBufferedAction()
+                inst.sg:RemoveStateTag("premine")
             end),
             
-            TimeEvent(14*FRAMES, function(inst)
+            TimeEvent(14 * FRAMES, function(inst)
                 if inst.components.playercontroller ~= nil and
                     inst.components.playercontroller:IsAnyOfControlsPressed(
                         CONTROL_PRIMARY,
                         CONTROL_ACTION,
-                        CONTROL_CONTROLLER_ACTION) and 
-                    inst.sg.statemem.action and 
-                    inst.sg.statemem.action.target and 
-                    inst.sg.statemem.action.target:IsActionValid(inst.sg.statemem.action.action) and 
-                    inst.sg.statemem.action.target.components.workable then
-                        inst:ClearBufferedAction()
-                        inst:PushBufferedAction(inst.sg.statemem.action)
+                        CONTROL_CONTROLLER_ACTION) and
+                    inst.sg.statemem.action ~= nil and
+                    inst.sg.statemem.action:IsValid() and
+                    inst.sg.statemem.action.target ~= nil and
+                    inst.sg.statemem.action.target.components.workable ~= nil and
+                    inst.sg.statemem.action.target.components.workable:CanBeWorked() and
+                    inst.sg.statemem.action.target:IsActionValid(inst.sg.statemem.action.action) then
+                    inst:ClearBufferedAction()
+                    inst:PushBufferedAction(inst.sg.statemem.action)
                 end
             end),
         },
@@ -1116,11 +1203,11 @@ local states =
             EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
-                    inst.AnimState:PlayAnimation("pickaxe_pst") 
+                    inst.AnimState:PlayAnimation("pickaxe_pst")
                     inst.sg:GoToState("idle", true)
                 end
             end),
-        },        
+        },
     },
 
     State{
@@ -1154,25 +1241,26 @@ local states =
 
         timeline =
         {
-            TimeEvent(9*FRAMES, function(inst) 
-                inst:PerformBufferedAction() 
-                inst.sg:RemoveStateTag("prehammer") 
+            TimeEvent(9 * FRAMES, function(inst)
+                inst:PerformBufferedAction()
+                inst.sg:RemoveStateTag("prehammer")
                 inst.SoundEmitter:PlaySound("dontstarve/wilson/hit")
             end),
-            
-            TimeEvent(14*FRAMES, function(inst)
-            
+
+            TimeEvent(14 * FRAMES, function(inst)
                 if inst.components.playercontroller ~= nil and
                     inst.components.playercontroller:IsAnyOfControlsPressed(
                         CONTROL_SECONDARY,
                         CONTROL_ACTION,
-                        CONTROL_CONTROLLER_ALTACTION) and 
-                    inst.sg.statemem.action and 
-                    inst.sg.statemem.action.target and 
-                    inst.sg.statemem.action.target:IsActionValid(inst.sg.statemem.action.action, true) and 
-                    inst.sg.statemem.action.target.components.workable then
-                        inst:ClearBufferedAction()
-                        inst:PushBufferedAction(inst.sg.statemem.action)
+                        CONTROL_CONTROLLER_ALTACTION) and
+                    inst.sg.statemem.action ~= nil and
+                    inst.sg.statemem.action:IsValid() and
+                    inst.sg.statemem.action.target ~= nil and
+                    inst.sg.statemem.action.target.components.workable ~= nil and
+                    inst.sg.statemem.action.target.components.workable:CanBeWorked() and
+                    inst.sg.statemem.action.target:IsActionValid(inst.sg.statemem.action.action, true) then
+                    inst:ClearBufferedAction()
+                    inst:PushBufferedAction(inst.sg.statemem.action)
                 end
             end),
         },
@@ -1182,11 +1270,86 @@ local states =
             EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
-                    inst.AnimState:PlayAnimation("pickaxe_pst") 
+                    inst.AnimState:PlayAnimation("pickaxe_pst")
                     inst.sg:GoToState("idle", true)
                 end
             end),
-        },   
+        },
+    },
+
+    State{
+        name = "gnaw",
+        tags = { "gnawing", "working" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.sg.statemem.action = inst:GetBufferedAction()
+            inst.AnimState:PlayAnimation("atk_pre")
+            inst.AnimState:PushAnimation("atk", false)
+            inst.SoundEmitter:PlaySound("dontstarve/wilson/attack_whoosh")
+        end,
+
+        timeline =
+        {
+            TimeEvent(6 * FRAMES, function(inst)
+                if inst.sg.statemem.action ~= nil then
+                    local target = inst.sg.statemem.action.target
+                    if target ~= nil and target:IsValid() then
+                        if inst.sg.statemem.action.action == ACTIONS.MINE then
+                            SpawnPrefab("mining_fx").Transform:SetPosition(target.Transform:GetWorldPosition())
+                            inst.SoundEmitter:PlaySound(target:HasTag("frozen") and "dontstarve_DLC001/common/iceboulder_hit" or "dontstarve/wilson/use_pick_rock")
+                        elseif inst.sg.statemem.action.action == ACTIONS.HAMMER then
+                            inst.SoundEmitter:PlaySound("dontstarve/wilson/hit")
+                        elseif inst.sg.statemem.action.action == ACTIONS.DIG then
+                            SpawnPrefab("shovel_dirt").Transform:SetPosition(target.Transform:GetWorldPosition())
+                        end
+                    end
+                end
+                inst:PerformBufferedAction()
+            end),
+
+            TimeEvent(7 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("gnawing")
+            end),
+            
+            TimeEvent(8 * FRAMES, function(inst)
+                if inst.sg.statemem.action == nil or
+                    inst.sg.statemem.action.action == nil or
+                    inst.components.playercontroller == nil then
+                    return
+                end
+                local rmb = inst.sg.statemem.action.action == ACTIONS.HAMMER
+                if rmb then
+                    if not inst.components.playercontroller:IsAnyOfControlsPressed(
+                            CONTROL_SECONDARY,
+                            CONTROL_CONTROLLER_ALTACTION) then
+                        return
+                    end
+                elseif not inst.components.playercontroller:IsAnyOfControlsPressed(
+                            CONTROL_PRIMARY,
+                            CONTROL_ACTION,
+                            CONTROL_CONTROLLER_ACTION) then
+                    return
+                end
+                if inst.sg.statemem.action:IsValid() and
+                    inst.sg.statemem.action.target ~= nil and
+                    inst.sg.statemem.action.target.components.workable ~= nil and
+                    inst.sg.statemem.action.target.components.workable:CanBeWorked() and
+                    inst.sg.statemem.action.target.components.workable:GetWorkAction() == inst.sg.statemem.action.action then
+                    inst:ClearBufferedAction()
+                    inst:PushBufferedAction(inst.sg.statemem.action)
+                end
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },        
     },
 
     State{
@@ -1376,29 +1539,26 @@ local states =
 
         timeline =
         {
-            TimeEvent(15*FRAMES, function(inst) 
---[[                if inst.sg.statemem.action and inst.sg.statemem.action.target then
-                    SpawnPrefab("shovel_dirt").Transform:SetPosition(inst.sg.statemem.action.target.Transform:GetWorldPosition())
-                end
---]]                
+            TimeEvent(15 * FRAMES, function(inst)
                 inst:PerformBufferedAction() 
                 inst.sg:RemoveStateTag("predig") 
                 inst.SoundEmitter:PlaySound("dontstarve/wilson/dig")
-                
             end),
 
-            TimeEvent(35*FRAMES, function(inst)
+            TimeEvent(35 * FRAMES, function(inst)
                 if inst.components.playercontroller ~= nil and
                     inst.components.playercontroller:IsAnyOfControlsPressed(
                         CONTROL_SECONDARY,
                         CONTROL_ACTION,
-                        CONTROL_CONTROLLER_ACTION) and 
-                    inst.sg.statemem.action and 
-                    inst.sg.statemem.action.target and 
-                    inst.sg.statemem.action.target:IsActionValid(inst.sg.statemem.action.action, true) and
-                    inst.sg.statemem.action.target.components.workable then
-                        inst:ClearBufferedAction()
-                        inst:PushBufferedAction(inst.sg.statemem.action)
+                        CONTROL_CONTROLLER_ACTION) and
+                    inst.sg.statemem.action ~= nil and
+                    inst.sg.statemem.action:IsValid() and
+                    inst.sg.statemem.action.target ~= nil and
+                    inst.sg.statemem.action.target.components.workable ~= nil and
+                    inst.sg.statemem.action.target.components.workable:CanBeWorked() and
+                    inst.sg.statemem.action.target:IsActionValid(inst.sg.statemem.action.action, true) then
+                    inst:ClearBufferedAction()
+                    inst:PushBufferedAction(inst.sg.statemem.action)
                 end
             end),
         },
@@ -1459,8 +1619,8 @@ local states =
                     inst.sg:GoToState("idle")
                 end
             end),
-        },        
-    },       
+        },
+    },
 
     State{
         name = "fishing_pre",
@@ -1472,7 +1632,7 @@ local states =
             inst.AnimState:PushAnimation("fishing_cast", false)
         end,
 
-        timeline = 
+        timeline =
         {
             TimeEvent(13*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/common/fishingpole_cast") end),
             TimeEvent(15*FRAMES, function(inst) inst:PerformBufferedAction() end),
@@ -1548,7 +1708,7 @@ local states =
             inst.sg:GoToState("fishing", "bite_light_pst")
         end,
 
-        events = 
+        events =
         {
             EventHandler("fishingstrain", function(inst) inst.sg:GoToState("fishing_strain") end),
         },
@@ -1556,7 +1716,7 @@ local states =
         onexit = function(inst)
             inst.SoundEmitter:KillSound("splash")
         end,
-    }, 
+    },
 
     State{
         name = "fishing_strain",
@@ -1585,7 +1745,7 @@ local states =
             inst.SoundEmitter:KillSound("strain")
         end,
     },
-    
+
     State{
         name = "catchfish",
         tags = { "fishing", "catchfish", "busy" },
@@ -1668,14 +1828,13 @@ local states =
         name = "eat",
         tags = { "busy" },
 
-        onenter = function(inst, feed, force)
+        onenter = function(inst, feed)
             inst.components.locomotor:Stop()
 
             if feed ~= nil then
                 inst.components.locomotor:Clear()
                 inst:ClearBufferedAction()
                 inst.sg.statemem.feed = feed
-                inst.sg.statemem.forcefeed = force
                 inst.sg:AddStateTag("pausepredict")
                 if inst.components.playercontroller ~= nil then
                     inst.components.playercontroller:RemotePausePrediction()
@@ -1692,6 +1851,7 @@ local states =
             
             inst.AnimState:PlayAnimation("eat_pre")
             inst.AnimState:PushAnimation("eat", false)
+
             inst.components.hunger:Pause()
         end,
 
@@ -1699,7 +1859,7 @@ local states =
         {
             TimeEvent(28 * FRAMES, function(inst)
                 if inst.sg.statemem.feed ~= nil then
-                    inst.components.eater:Eat(inst.sg.statemem.feed, inst.sg.statemem.forcefeed)
+                    inst.components.eater:Eat(inst.sg.statemem.feed)
                 else
                     inst:PerformBufferedAction() 
                 end
@@ -1730,9 +1890,6 @@ local states =
             if inst.sg.statemem.feed ~= nil and inst.sg.statemem.feed:IsValid() then
                 inst.sg.statemem.feed:Remove()
             end
-            if inst.sg.statemem.forcefeed ~= nil and inst.sg.statemem.forcefeed:IsValid() then
-                inst.sg.statemem.forcefeed:Remove()
-            end
         end,
     },
 
@@ -1740,14 +1897,13 @@ local states =
         name = "quickeat",
         tags = { "busy" },
 
-        onenter = function(inst, feed, force)
+        onenter = function(inst, feed)
             inst.components.locomotor:Stop()
 
             if feed ~= nil then
                 inst.components.locomotor:Clear()
                 inst:ClearBufferedAction()
                 inst.sg.statemem.feed = feed
-                inst.sg.statemem.forcefeed = force
                 inst.sg:AddStateTag("pausepredict")
                 if inst.components.playercontroller ~= nil then
                     inst.components.playercontroller:RemotePausePrediction()
@@ -1764,16 +1920,17 @@ local states =
 
             inst.AnimState:PlayAnimation("quick_eat_pre")
             inst.AnimState:PushAnimation("quick_eat", false)
+
             inst.components.hunger:Pause()
         end,
 
         timeline =
         {
-            TimeEvent(12 * FRAMES, function(inst) 
+            TimeEvent(12 * FRAMES, function(inst)
                 if inst.sg.statemem.feed ~= nil then
-                    inst.components.eater:Eat(inst.sg.statemem.feed, inst.sg.statemem.forcefeed)
+                    inst.components.eater:Eat(inst.sg.statemem.feed)
                 else
-                    inst:PerformBufferedAction() 
+                    inst:PerformBufferedAction()
                 end
                 inst.sg:RemoveStateTag("busy")
                 inst.sg:RemoveStateTag("pausepredict")
@@ -1790,13 +1947,63 @@ local states =
         },
 
         onexit = function(inst)
-            inst.SoundEmitter:KillSound("eating")    
+            inst.SoundEmitter:KillSound("eating")
             inst.components.hunger:Resume()
             if inst.sg.statemem.feed ~= nil and inst.sg.statemem.feed:IsValid() then
                 inst.sg.statemem.feed:Remove()
             end
-            if inst.sg.statemem.forcefeed ~= nil and inst.sg.statemem.forcefeed:IsValid() then
-                inst.sg.statemem.forcefeed:Remove()
+        end,
+    },
+
+    State{
+        name = "beavereat",
+        tags = { "busy" },
+
+        onenter = function(inst, feed)
+            inst.components.locomotor:Stop()
+
+            if feed ~= nil then
+                inst.components.locomotor:Clear()
+                inst:ClearBufferedAction()
+                inst.sg.statemem.feed = feed
+                inst.sg:AddStateTag("pausepredict")
+                if inst.components.playercontroller ~= nil then
+                    inst.components.playercontroller:RemotePausePrediction()
+                end
+            end
+
+            inst.SoundEmitter:PlaySound("dontstarve/characters/woodie/eat_beaver")
+
+            inst.AnimState:PlayAnimation("eat_pre")
+            inst.AnimState:PushAnimation("eat", false)
+        end,
+
+        timeline =
+        {
+            TimeEvent(9 * FRAMES, function(inst)
+                if inst.sg.statemem.feed ~= nil then
+                    inst.components.eater:Eat(inst.sg.statemem.feed)
+                else
+                    inst:PerformBufferedAction()
+                end
+            end),
+            TimeEvent(12 * FRAMES, function(inst)
+                inst.sg:GoToState("idle", true)
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animqueueover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            if inst.sg.statemem.feed ~= nil and inst.sg.statemem.feed:IsValid() then
+                inst.sg.statemem.feed:Remove()
             end
         end,
     },
@@ -2470,6 +2677,10 @@ local states =
                 inst:ClearBufferedAction()
                 inst.sg:GoToState("catch")
             end),
+            EventHandler("cancelcatch", function(inst)
+                inst:ClearBufferedAction()
+                inst.sg:GoToState("idle")
+            end),
         },
     },
 
@@ -2527,6 +2738,12 @@ local states =
                 inst.AnimState:PushAnimation("atk", false)
                 inst.SoundEmitter:PlaySound("dontstarve/wilson/attack_weapon", nil, nil, true)
                 cooldown = math.max(cooldown, 13 * FRAMES)
+            elseif inst:HasTag("beaver") then
+                inst.sg.statemem.isbeaver = true
+                inst.AnimState:PlayAnimation("atk_pre")
+                inst.AnimState:PushAnimation("atk", false)
+                inst.SoundEmitter:PlaySound("dontstarve/wilson/attack_whoosh", nil, nil, true)
+                cooldown = math.max(cooldown, 13 * FRAMES)
             else
                 inst.AnimState:PlayAnimation("punch")
                 inst.SoundEmitter:PlaySound("dontstarve/wilson/attack_whoosh", nil, nil, true)
@@ -2546,9 +2763,17 @@ local states =
 
         timeline =
         {
+            TimeEvent(6 * FRAMES, function(inst)
+                if inst.sg.statemem.isbeaver then
+                    inst:PerformBufferedAction()
+                    inst.sg:RemoveStateTag("abouttoattack")
+                end
+            end),
             TimeEvent(8 * FRAMES, function(inst)
-                inst:PerformBufferedAction()
-                inst.sg:RemoveStateTag("abouttoattack")
+                if not inst.sg.statemem.isbeaver then
+                    inst:PerformBufferedAction()
+                    inst.sg:RemoveStateTag("abouttoattack")
+                end
             end),
         },
 
@@ -2769,6 +2994,7 @@ local states =
                 or (IsNearDanger(inst) and "ANNOUNCE_NODANGERSLEEP")
                 -- you can still sleep if your hunger will bottom out, but not absolutely
                 or (inst.components.hunger.current < TUNING.CALORIES_MED and "ANNOUNCE_NOHUNGERSLEEP")
+                or (inst.components.beaverness ~= nil and inst.components.beaverness:IsStarving() and "ANNOUNCE_NOHUNGERSLEEP")
                 or nil
 
             if failreason ~= nil then
@@ -2859,6 +3085,7 @@ local states =
                 or (IsNearDanger(inst) and "ANNOUNCE_NODANGERSLEEP")
                 -- you can still sleep if your hunger will bottom out, but not absolutely
                 or (inst.components.hunger.current < TUNING.CALORIES_MED and "ANNOUNCE_NOHUNGERSLEEP")
+                or (inst.components.beaverness ~= nil and inst.components.beaverness:IsStarving() and "ANNOUNCE_NOHUNGERSLEEP")
                 or nil
 
             if failreason ~= nil then
@@ -2939,7 +3166,8 @@ local states =
             inst.components.locomotor:Stop()
             inst:ClearBufferedAction()
 
-            inst.AnimState:PlayAnimation(inst:HasTag("insomniac") and "insomniac_dozy" or "dozy")
+            inst.sg.statemem.isinsomniac = inst:HasTag("insomniac")
+            inst.AnimState:PlayAnimation(inst.sg.statemem.isinsomniac and "insomniac_dozy" or "dozy")
 
             SetSleeperSleepState(inst)
 
@@ -2977,7 +3205,7 @@ local states =
                         inst.sg.statemem.iswaking = true
                         inst.sg:GoToState("wakeup")
                     else
-                        inst.AnimState:PlayAnimation(inst:HasTag("insomniac") and "insomniac_sleep_loop" or "sleep_loop", true)
+                        inst.AnimState:PlayAnimation(inst.sg.statemem.isinsomniac and "insomniac_sleep_loop" or "sleep_loop", true)
                         inst.sg:AddStateTag("sleeping")
                     end
                 end
@@ -3012,6 +3240,34 @@ local states =
                 inst.components.playercontroller:RemotePausePrediction(stun_frames)
             end
             inst.sg:SetTimeout(stun_frames * FRAMES)
+        end,
+
+        ontimeout = function(inst)
+            inst.sg:GoToState("idle", true)
+        end,
+    },
+
+    State{
+        name = "hit_darkness",
+        tags = { "busy", "pausepredict" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst:ClearBufferedAction()
+
+            --V2C: Moved to pristine state in player_common
+            --     since we never clear these extra symbols
+            --inst.AnimState:AddOverrideBuild("player_hit_darkness")
+            inst.AnimState:PlayAnimation("hit_darkness")
+
+            inst.SoundEmitter:PlaySound("dontstarve/wilson/hit")
+            DoHurtSound(inst)
+
+            if inst.components.playercontroller ~= nil then
+                inst.components.playercontroller:RemotePausePrediction()
+            end
+
+            inst.sg:SetTimeout(24 * FRAMES)
         end,
 
         ontimeout = function(inst)
@@ -3218,7 +3474,7 @@ local states =
 
             SerializeUserSession(inst)
         end,
-    },    
+    },
 
     State{
         name = "portal_rez",
@@ -3294,9 +3550,7 @@ local states =
             inst.components.locomotor:Clear()
             inst:ClearBufferedAction()
 
-            local fx = SpawnPrefab("ghost_transform_overlay_fx")
-            fx.entity:SetParent(inst.entity)
-            fx:ListenForEvent("onremove", function() fx:Remove() end, inst)
+            SpawnPrefab("ghost_transform_overlay_fx").entity:SetParent(inst.entity)
 
             inst.SoundEmitter:PlaySound("dontstarve/ghost/ghost_get_bloodpump")
             inst.AnimState:PlayAnimation("shudder")
@@ -3311,9 +3565,14 @@ local states =
         {
             TimeEvent(88 * FRAMES, function(inst)
                 inst.DynamicShadow:Enable(true)
-                inst.AnimState:SetBank("wilson")
-                inst.AnimState:SetBuild(inst.skin_name or inst.prefab)
-                inst.AnimState:PlayAnimation("transform_end", false)
+                if inst:HasTag("beaver") then
+                    inst.AnimState:SetBank("werebeaver")
+                    inst.AnimState:SetBuild("werebeaver_build")
+                else
+                    inst.AnimState:SetBank("wilson")
+                    inst.AnimState:SetBuild(inst.skin_name or inst.prefab)
+                end
+                inst.AnimState:PlayAnimation("transform_end")
                 inst.SoundEmitter:PlaySound("dontstarve/ghost/ghost_use_bloodpump")
             end),
             TimeEvent(96 * FRAMES, function(inst) 
@@ -3322,8 +3581,8 @@ local states =
                 inst.AnimState:Hide("HAT")
                 inst.AnimState:Hide("HatFX")
             end),
-        },        
-      
+        },
+
         events =
         {
             EventHandler("animqueueover", function(inst)
@@ -3336,8 +3595,13 @@ local states =
         onexit = function(inst)
             --In case of interruptions
             inst.DynamicShadow:Enable(true)
-            inst.AnimState:SetBank("wilson")
-            inst.AnimState:SetBuild(inst.skin_name or inst.prefab)
+            if inst:HasTag("beaver") then
+                inst.AnimState:SetBank("werebeaver")
+                inst.AnimState:SetBuild("werebeaver_build")
+            else
+                inst.AnimState:SetBank("wilson")
+                inst.AnimState:SetBuild(inst.skin_name or inst.prefab)
+            end
             inst.AnimState:ClearBloomEffectHandle()
             inst.AnimState:SetLightOverride(0)
             inst.AnimState:Hide("HAT")
@@ -3347,6 +3611,7 @@ local states =
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:Enable(true)
             end
+
             inst:ShowHUD(true)
             inst:SetCameraDistance()
 
@@ -3501,42 +3766,6 @@ local states =
                 end
                 inst.stafffx = nil
             end
-        end,
-    },
-
-    State{
-        name = "werebeaver",
-        tags = { "busy", "nopredict" },
-
-        onenter = function(inst)
-            inst.components.beaverness.doing_transform = true
-            inst.Physics:Stop() 
-            if inst.components.playercontroller ~= nil then
-                inst.components.playercontroller:Enable(false)
-            end
-            inst.AnimState:PlayAnimation("transform_pre")
-            inst.components.health:SetInvincible(true)
-        end,
-
-        events =
-        {
-            EventHandler("animover", function(inst)
-                if inst.AnimState:AnimDone() then
-                   inst.components.beaverness.makebeaver(inst)
-                    inst.sg:GoToState("transform_pst")
-                end
-            end),
-        },
-
-        onexit = function(inst)
-            if not inst.components.beaverness:IsBeaver() then
-                inst.components.beaverness.makebeaver(inst)
-            end
-            inst.components.health:SetInvincible(false)
-            if inst.components.playercontroller ~= nil then
-                inst.components.playercontroller:Enable(true)
-            end
-            inst.components.beaverness.doing_transform = false
         end,
     },
 
@@ -3982,8 +4211,6 @@ local states =
             inst.components.locomotor:Stop()
             inst:ClearBufferedAction()
 
-            inst.AnimState:PlayAnimation("yawn")
-
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:RemotePausePrediction()
             end
@@ -3998,6 +4225,8 @@ local states =
                 inst.sg.statemem.knockoutduration = data.knockoutduration
                 inst.components.grogginess:AddGrogginess(data.grogginess, data.knockoutduration)
             end
+
+            inst.AnimState:PlayAnimation("yawn")
         end,
 
         timeline =

@@ -46,6 +46,13 @@ local function itemfn()
     inst.components.perishable:StartPerishing()
     inst.components.perishable.onperishreplacement = "spoiled_food"
 
+    inst:AddComponent("fuel")
+    inst.components.fuel.fuelvalue = TUNING.LARGE_FUEL * 1.33
+    inst.components.fuel.fueltype = FUELTYPE.WORMLIGHT
+
+    inst:AddComponent("stackable")
+    inst.components.stackable.maxsize = TUNING.STACK_SIZE_LARGEITEM
+
     local light = inst.entity:AddLight()
     light:SetFalloff(0.7)
     light:SetIntensity(.5)

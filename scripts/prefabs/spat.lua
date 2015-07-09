@@ -60,21 +60,25 @@ local sounds =
 }
 
 local function Retarget(inst)
-    return FindEntity(inst, TUNING.SPAT_TARGET_DIST, function(guy)
-        return inst.components.combat:CanTarget(guy)
-    end,
-    nil,
-    nil,
-    {"player","monster"})
+    return FindEntity(
+        inst,
+        TUNING.SPAT_TARGET_DIST,
+        function(guy)
+            return inst.components.combat:CanTarget(guy)
+        end,
+        nil,
+        nil,
+        { "player", "monster" }
+    )
 end
 
 local function KeepTarget(inst, target)
-    return distsq(Vector3(target.Transform:GetWorldPosition()), Vector3(inst.Transform:GetWorldPosition())) < TUNING.SPAT_CHASE_DIST * TUNING.SPAT_CHASE_DIST
+    return target:IsNear(inst, TUNING.SPAT_CHASE_DIST)
 end
 
 local function OnAttacked(inst, data)
     local target = inst.components.combat.target
-    if target and target.components.pinnable and target.components.pinnable:IsStuck() then
+    if target ~= nil and target.components.pinnable ~= nil and target.components.pinnable:IsStuck() then
         -- if we've goo'd someone, stay attacking them!
         return
     end
@@ -82,38 +86,8 @@ local function OnAttacked(inst, data)
     inst.components.combat:SetTarget(data.attacker)
 end
 
-local function GetStatus(inst)
-    if inst.components.beard and inst.components.beard.bits == 0 then
-        return "NAKED"
-    end
-end
-
-local function OnResetBeard(inst)
-    inst.sg:GoToState("shaved")
-end
-
-local function CanShaveTest(inst)
-    if inst.components.sleeper:IsAsleep() then
-        return true
-    else
-        return false, "AWAKEBEEFALO"
-    end
-end
-
-local function OnShaved(inst)
-    if inst.components.beard.bits == 0 then
-        inst.AnimState:SetBuild("beefalo_shaved_build")
-    end
-end
-
-local function OnHairGrowth(inst)
-    if inst.components.beard.bits == 0 then
-        inst.hairGrowthPending = true
-    end
-end
-
 local function EquipWeapons(inst)
-    if inst.components.inventory and not inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) then
+    if inst.components.inventory ~= nil and not inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) then
         local snotbomb = CreateEntity()
         snotbomb.name = "Snotbomb"
         --[[Non-networked entity]]
@@ -149,6 +123,11 @@ local function EquipWeapons(inst)
     end
 end
 
+local function CustomOnHaunt(inst)
+    inst.components.periodicspawner:TrySpawn()
+    return true
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -179,20 +158,6 @@ local function fn()
 
     inst.sounds = sounds
 
-    local hair_growth_days = 3
-
---[[ SHAVING
-    inst:AddComponent("beard")
-    -- assume the beefalo has already grown its hair
-    inst.components.beard.bits = 3
-    inst.components.beard.daysgrowth = hair_growth_days + 1 
-    inst.components.beard.onreset = OnResetBeard
-    inst.components.beard.canshavetest = CanShaveTest
-    inst.components.beard.prize = "beefalowool"
-    inst.components.beard:AddCallback(0, OnShaved)
-    inst.components.beard:AddCallback(hair_growth_days, OnHairGrowth)
-]]
-
     inst:AddComponent("eater")
     inst.components.eater:SetDiet({ FOODTYPE.VEGGIE }, { FOODTYPE.VEGGIE })
 
@@ -212,8 +177,6 @@ local function fn()
     inst.components.lootdropper:SetChanceLootTable('spat')    
 
     inst:AddComponent("inspectable")
-    -- SHAVING
-    -- inst.components.inspectable.getstatus = GetStatus
 
     inst:ListenForEvent("attacked", OnAttacked)
 
@@ -235,10 +198,7 @@ local function fn()
     inst.components.sleeper:SetResistance(3)
 
     MakeHauntablePanic(inst)
-    AddHauntableCustomReaction(inst, function(inst, haunter)
-        inst.components.periodicspawner:TrySpawn()
-        return true
-    end, true, false, true)
+    AddHauntableCustomReaction(inst, CustomOnHaunt, true, false, true)
 
     inst:SetBrain(brain)
     inst:SetStateGraph("SGspat")
@@ -251,47 +211,42 @@ end
 
 local function OnProjectileHit(inst, attacker, other)
     inst.SoundEmitter:PlaySound(sounds.spit_hit)
-    local x,y,z = inst:GetPosition():Get()
-    SpawnPrefab("spat_splat_fx").Transform:SetPosition(x,0,z)
+    local x, y, z = inst.Transform:GetWorldPosition()
+    SpawnPrefab("spat_splat_fx").Transform:SetPosition(x, 0, z)
 
-    local attacker = inst.components.complexprojectile.attacker
-    local owningweapon = inst.components.complexprojectile.owningweapon
+    -- stick whatever got actually hit by the projectile
+    -- otherwise stick our target, if he was in splash radius
+    if other == nil then
+        other = attacker.components.combat.target
+        if other ~= nil and not (other:IsValid() and other:IsNear(inst, TUNING.SPAT_PHLEGM_RADIUS)) then
+            other = nil
+        end
+    end
 
-    if other then
-        -- stick whatever got actually hit by the projectile
-        attacker.components.combat:DoAttack(other, owningweapon, inst)
-        if other.components.pinnable then
+    if other ~= nil and other:IsValid() then
+        attacker.components.combat:DoAttack(other, inst.components.complexprojectile.owningweapon, inst)
+        if other.components.pinnable ~= nil then
             other.components.pinnable:Stick()
         end
-
-    else
-        -- otherwise stick our target, if he was in splash radius
-        local x,y,z = inst.Transform:GetWorldPosition()
-        local ents = TheSim:FindEntities(x,y,z, TUNING.SPAT_PHLEGM_RADIUS)
-        for i,ent in ipairs(ents) do
-            if ent == attacker.components.combat.target then
-                attacker.components.combat:DoAttack(ent, owningweapon, inst)
-                if ent.components.pinnable then
-                    ent.components.pinnable:Stick()
-                end
-            end
-        end
-
     end
+
     inst:Remove()
 end
 
 local function oncollide(inst, other)
-    OnProjectileHit(inst)
+    local attacker = inst.components.complexprojectile.attacker
+
+    OnProjectileHit(inst, attacker)
     
     -- If there is a physics collision, try to do some damage to that thing.
     -- This is so you can't hide forever behind walls etc.
 
-    local attacker = inst.components.complexprojectile.attacker
-    local owningweapon = inst.components.complexprojectile.owningweapon
-    if other and other ~= attacker.components.combat.target and other.components.combat then
-        attacker.components.combat:DoAttack(other, owningweapon, inst)
-        if other.components.pinnable then
+    if other ~= nil and
+        other:IsValid() and
+        other.components.combat ~= nil and
+        not attacker.components.combat:TargetIs(other) then
+        attacker.components.combat:DoAttack(other, inst.components.complexprojectile.owningweapon, inst)
+        if other.components.pinnable ~= nil then
             other.components.pinnable:Stick()
         end
     end
@@ -334,7 +289,7 @@ local function projectilefn()
     inst:AddComponent("complexprojectile")
     inst.components.complexprojectile:SetOnHit(OnProjectileHit)
     inst.components.complexprojectile:SetHorizontalSpeed(30)
-    inst.components.complexprojectile:SetLaunchOffset({x=3,y=2,z=0})
+    inst.components.complexprojectile:SetLaunchOffset(Vector3(3, 2, 0))
     inst.components.complexprojectile.usehigharc = false
 
     return inst

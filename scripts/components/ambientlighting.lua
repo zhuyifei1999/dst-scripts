@@ -8,15 +8,38 @@ return Class(function(self, inst)
 --[[ Constants ]]
 --------------------------------------------------------------------------
 
-local PHASE_COLOURS =
-{
-    day = { colour = Point(255 / 255, 230 / 255, 158 / 255), time = 4 },
-    dusk = { colour = Point(100 / 255, 100 / 255, 100 / 255), time = 6 },
-    night = { colour = Point(0 / 255, 0 / 255, 0 / 255), time = 8 },
-}
+local NORMAL_COLOURS = {
+    PHASE_COLOURS =
+    {
+        default = {
+            day = { colour = Point(255 / 255, 230 / 255, 158 / 255), time = 4 },
+            dusk = { colour = Point(150 / 255, 150 / 255, 150 / 255), time = 6 },
+            night = { colour = Point(0 / 255, 0 / 255, 0 / 255), time = 8 },
+        },
+        spring = {
+            day = { colour = Point(255 / 255, 244 / 255, 213 / 255), time = 4 },
+            dusk = { colour = Point(171 / 255, 146 / 255, 147 / 255), time = 6 },
+            night = { colour = Point(0 / 255, 0 / 255, 0 / 255), time = 8 },
+        },
+    },
 
-local FULL_MOON_COLOUR = { colour = Point(84 / 255, 122 / 255, 156 / 255), time = 8 }
-local CAVE_COLOUR = { colour = Point(0 / 255, 0 / 255, 0 / 255), time = 2 }
+    FULL_MOON_COLOUR = { colour = Point(84 / 255, 122 / 255, 156 / 255), time = 8 },
+    CAVE_COLOUR = { colour = Point(0 / 255, 0 / 255, 0 / 255), time = 2 },
+}
+    
+local NIGHTVISION_COLOURS = {
+    PHASE_COLOURS =
+    {
+        default = {
+            day = { colour = Point(200 / 255, 200 / 255, 200 / 255), time = 4 },
+            dusk = { colour = Point(120 / 255, 120 / 255, 120 / 255), time = 6 },
+            night = { colour = Point(200 / 255, 200 / 255, 200 / 255), time = 8 },
+        },
+    },
+
+    FULL_MOON_COLOUR = { colour = Point(200 / 255, 200 / 255, 200 / 255), time = 8 },
+    CAVE_COLOUR = { colour = Point(200 / 255, 200 / 255, 200 / 255), time = 2 },
+}
 
 --------------------------------------------------------------------------
 --[[ Member variables ]]
@@ -27,16 +50,35 @@ self.inst = inst
 
 --Private
 local _iscave = inst:HasTag("cave")
+local _season = "autumn"
+local _phase = "day"
 local _updating = false
-local _remainingtimeinlerp = 0
-local _totaltimeinlerp = 0
-local _lerpfromcolour = Point()
-local _lerptocolour = Point()
-local _currentcolour = _iscave and Point(CAVE_COLOUR.colour:Get()) or Point(PHASE_COLOURS.day.colour:Get())
-local _lightpercent = 1
+local _realcolour = {
+    remainingtimeinlerp = 0,
+    totaltimeinlerp = 0,
+    lerpfromcolour = Point(),
+    lerptocolour = Point(),
+    currentcolourset = NORMAL_COLOURS,
+    currentcolour = _iscave and Point(CAVE_COLOUR.colour:Get()) or Point(NORMAL_COLOURS.PHASE_COLOURS.default.day.colour:Get()),
+    currentoverridecolour = _iscave and Point(CAVE_COLOUR.colour:Get()) or Point(NORMAL_COLOURS.PHASE_COLOURS.default.day.colour:Get()),
+    lightpercent = 1,
+}
+local _overridecolour = {
+    remainingtimeinlerp = 0,
+    totaltimeinlerp = 0,
+    lerpfromcolour = Point(),
+    lerptocolour = Point(),
+    currentcolourset = NORMAL_COLOURS,
+    currentcolour = _iscave and Point(CAVE_COLOUR.colour:Get()) or Point(NORMAL_COLOURS.PHASE_COLOURS.default.day.colour:Get()),
+    currentoverridecolour = _iscave and Point(CAVE_COLOUR.colour:Get()) or Point(NORMAL_COLOURS.PHASE_COLOURS.default.day.colour:Get()),
+    lightpercent = 1,
+}
 local _flash = false
 local _flashtime = 0
 local _flashintensity = 1
+local _flashcolour = Point(0,0,0)
+local _activatedplayer = nil --cached for activation/deactivation only, NOT for logic use
+local _nightvision = false -- This is whether or not the active player is wearing a mole hat
 
 --------------------------------------------------------------------------
 --[[ Private member functions ]]
@@ -61,44 +103,63 @@ local function Stop()
 end
 
 local function PushCurrentColour()
-    TheSim:SetAmbientColour(_currentcolour.x * _lightpercent, _currentcolour.y * _lightpercent, _currentcolour.z * _lightpercent)
+	if _flash then
+		TheSim:SetAmbientColour(_flashcolour.x, _flashcolour.y, _flashcolour.z)
+		TheSim:SetVisualAmbientColour(_flashcolour.x, _flashcolour.y, _flashcolour.z)
+	else
+		TheSim:SetAmbientColour(_realcolour.currentcolour.x * _realcolour.lightpercent, _realcolour.currentcolour.y * _realcolour.lightpercent, _realcolour.currentcolour.z * _realcolour.lightpercent)
+		TheSim:SetVisualAmbientColour(_overridecolour.currentcolour.x * _overridecolour.lightpercent, _overridecolour.currentcolour.y * _overridecolour.lightpercent, _overridecolour.currentcolour.z * _overridecolour.lightpercent)
+	end
 end
+
+local function ComputeTargetColour(targetsettings, timeoverride)
+    local col = _iscave and targetsettings.currentcolourset.CAVE_COLOUR
+                or TheWorld.state.isfullmoon and targetsettings.currentcolourset.FULL_MOON_COLOUR
+                or targetsettings.currentcolourset.PHASE_COLOURS[_season] and targetsettings.currentcolourset.PHASE_COLOURS[_season][_phase]
+                or targetsettings.currentcolourset.PHASE_COLOURS.default[_phase]
+    if col == nil then
+        return
+    end
+
+    targetsettings.remainingtimeinlerp = col.colour ~= targetsettings.currentcolour and timeoverride or col.time or 0
+    if targetsettings.remainingtimeinlerp > 0 then
+        targetsettings.totaltimeinlerp = targetsettings.remainingtimeinlerp
+        SetColour(targetsettings.lerpfromcolour, targetsettings.currentcolour)
+        SetColour(targetsettings.lerptocolour, col.colour)
+    else
+        SetColour(targetsettings.currentcolour, col.colour)
+    end
+
+    -- Trigger at least one update so the cubes can refresh
+    Start()
+end
+
 
 --------------------------------------------------------------------------
 --[[ Private event handlers ]]
 --------------------------------------------------------------------------
 
 local function OnPhaseChanged(src, phase)
-    local col = _iscave and CAVE_COLOUR
-                or TheWorld.state.isfullmoon and FULL_MOON_COLOUR
-                or PHASE_COLOURS[phase]
-    if col == nil then
-        return
-    end
+    _phase = phase
 
-    _remainingtimeinlerp = col.colour ~= _currentcolour and col.time or 0
-    if _remainingtimeinlerp > 0 then
-        _totaltimeinlerp = _remainingtimeinlerp
-        SetColour(_lerpfromcolour, _currentcolour)
-        SetColour(_lerptocolour, col.colour)
-        if not _flash then
-            PushCurrentColour()
-        end
-        Start()
-    elseif not _flash then
-        SetColour(_currentcolour, col.colour)
-        PushCurrentColour()
-        Stop()
-    else
-        SetColour(_currentcolour, col.colour)
-    end
+    ComputeTargetColour(_realcolour)
+    ComputeTargetColour(_overridecolour)
+    PushCurrentColour()
 end
 
 local function OnWeatherTick(src, data)
-    _lightpercent = data.light
+    _realcolour.lightpercent = data.light
+    _overridecolour.lightpercent = data.light
     if not _flash then
         PushCurrentColour()
     end
+end
+
+local function OnNightVision(player, enabled)
+    _nightvision = enabled
+    _overridecolour.currentcolourset = enabled and NIGHTVISION_COLOURS or NORMAL_COLOURS
+    ComputeTargetColour(_overridecolour, 0.25)
+    PushCurrentColour()
 end
 
 local function OnScreenFlash(src, intensity)
@@ -107,6 +168,29 @@ local function OnScreenFlash(src, intensity)
     _flashintensity = intensity
     Start()
 end
+
+local function OnPlayerDeactivated(inst, player)
+    inst:RemoveEventCallback("nightvision", OnNightVision, player)
+    OnNightVision(player, false)
+    if player == _activatedplayer then
+        _activatedplayer = nil
+    end
+end
+
+local function OnPlayerActivated(inst, player)
+    if _activatedplayer == player then
+        return
+    elseif _activatedplayer ~= nil and _activatedplayer.entity:IsValid() then
+        OnPlayerDeactivated(_activatedplayer)
+    end
+    _activatedplayer = player
+    inst:ListenForEvent("nightvision", OnNightVision, player)
+    OnNightVision(player, CanEntitySeeInDark(player))
+end
+
+local OnSeasonTick = not _iscave and function(inst, data)
+    _season = data.season
+end or nil
 
 --------------------------------------------------------------------------
 --[[ Initialization ]]
@@ -118,59 +202,80 @@ PushCurrentColour()
 inst:ListenForEvent("phasechanged", OnPhaseChanged)
 inst:ListenForEvent("weathertick", OnWeatherTick)
 inst:ListenForEvent("screenflash", OnScreenFlash)
+if not _iscave then
+    inst:ListenForEvent("seasontick", OnSeasonTick)
+end
+
+inst:ListenForEvent("playeractivated", OnPlayerActivated)
+inst:ListenForEvent("playerdeactivated", OnPlayerDeactivated)
 
 --------------------------------------------------------------------------
 --[[ Update ]]
 --------------------------------------------------------------------------
 
-function self:OnUpdate(dt)
-    if _remainingtimeinlerp > 0 then
-        _remainingtimeinlerp = _remainingtimeinlerp - dt
-        if _remainingtimeinlerp > 0 then
-            local frompercent = _remainingtimeinlerp / _totaltimeinlerp
+local function DoUpdate(dt, targetsettings)
+    if targetsettings.remainingtimeinlerp > 0 then
+        targetsettings.remainingtimeinlerp = targetsettings.remainingtimeinlerp - dt
+        if targetsettings.remainingtimeinlerp > 0 then
+            local frompercent = targetsettings.remainingtimeinlerp / targetsettings.totaltimeinlerp
             local topercent = 1 - frompercent
-            _currentcolour.x = _lerpfromcolour.x * frompercent + _lerptocolour.x * topercent
-            _currentcolour.y = _lerpfromcolour.y * frompercent + _lerptocolour.y * topercent
-            _currentcolour.z = _lerpfromcolour.z * frompercent + _lerptocolour.z * topercent
-            if not _flash then
-                PushCurrentColour()
-            end
-        elseif not _flash then
-            SetColour(_currentcolour, _lerptocolour)
-            PushCurrentColour()
-            Stop()
+            targetsettings.currentcolour.x = targetsettings.lerpfromcolour.x * frompercent + targetsettings.lerptocolour.x * topercent
+            targetsettings.currentcolour.y = targetsettings.lerpfromcolour.y * frompercent + targetsettings.lerptocolour.y * topercent
+            targetsettings.currentcolour.z = targetsettings.lerpfromcolour.z * frompercent + targetsettings.lerptocolour.z * topercent
+            return true
         else
-            SetColour(_currentcolour, _lerptocolour)
+            SetColour(targetsettings.currentcolour, targetsettings.lerptocolour)
+            return false
         end
     end
+    return false
+end
+
+local function DoUpdateFlash(dt)
     if _flash then
         _flashtime = _flashtime + dt
         if _flashtime < 3 / 60 then
-            TheSim:SetAmbientColour(0, 0, 0)
+            _flashcolour = Point(0, 0, 0)
+            return true
         elseif _flashtime < 7 / 60 then
-            TheSim:SetAmbientColour(_flashintensity, _flashintensity, _flashintensity)
+            _flashcolour = Point(_flashintensity, _flashintensity, _flashintensity)
+            return true
         elseif _flashtime < 9 / 60 then
-            TheSim:SetAmbientColour(0, 0, 0)
+            _flashcolour = Point(0, 0, 0)
+            return true
         elseif _flashtime < 17 / 60 then
-            TheSim:SetAmbientColour(_flashintensity, _flashintensity, _flashintensity)
+            _flashcolour = Point(_flashintensity, _flashintensity, _flashintensity)
+            return true
         elseif _flashtime < 107 / 60 then
-            local k = (.5 + (_flashtime * 60 - 17) / 180) * _lightpercent
-            TheSim:SetAmbientColour(_currentcolour.x * k, _currentcolour.y * k, _currentcolour.z * k)
+            local k = (.5 + (_flashtime * 60 - 17) / 180) * _overridecolour.lightpercent
+            _flashcolour = Point(_overridecolour.currentcolour.x * k, _overridecolour.currentcolour.y * k, _overridecolour.currentcolour.z * k)
+            return true
         else
             _flash = false
-            PushCurrentColour()
-            if _remainingtimeinlerp <= 0 then
-                Stop()
-            end
+            return false
         end
+    end
+    return false
+end
+
+function self:OnUpdate(dt)
+    local continue = false
+    continue = DoUpdate(dt, _realcolour) or continue
+    continue = DoUpdate(dt, _overridecolour) or continue
+    continue = DoUpdateFlash(dt) or continue
+    PushCurrentColour()
+    if not continue then
+        Stop()
     end
 end
 
 function self:LongUpdate(dt)
     if _updating then
-        SetColour(_currentcolour, _lerptocolour)
         _flash = false
-        _remainingtimeinlerp = 0
+        SetColour(_realcolour.currentcolour, _realcolour.lerptocolour)
+        SetColour(_overridecolour.currentcolour, _overridecolour.lerptocolour)
+        _realcolour.remainingtimeinlerp = 0
+        _overridecolour.remainingtimeinlerp = 0
         PushCurrentColour()
         Stop()
     end

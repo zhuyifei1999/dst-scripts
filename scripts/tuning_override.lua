@@ -617,4 +617,15 @@ return
         TheWorld:PushEvent("overridecolourcube", "images/colour_cubes/"..data..".tex")
     end,
 
+    regrowth = function(difficulty)
+        local tuning_vars = {
+            veryslow = { REGROWTH_TIME_MULTIPLIER = .15 },
+            slow     = { REGROWTH_TIME_MULTIPLIER = .33 },
+            default  = { REGROWTH_TIME_MULTIPLIER = 1 },
+            fast     = { REGROWTH_TIME_MULTIPLIER = 3 },
+            veryfast = { REGROWTH_TIME_MULTIPLIER = 7 },
+        }
+        OverrideTuningVariables(tuning_vars[difficulty])
+    end,
+
 }

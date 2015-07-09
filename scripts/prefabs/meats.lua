@@ -437,7 +437,7 @@ local function batwing_cooked()
 end
 
 local function plantmeat()
-    local inst = common("plant_meat", "plant_meat", "raw", nil, { product = "plantmeat_cooked" })
+    local inst = common("plant_meat", "plant_meat", "raw", nil, nil, { product = "plantmeat_cooked" })
 
     if not TheWorld.ismastersim then
         return inst

@@ -864,6 +864,7 @@ return {
 		PIGTORCH = "Do these pigs worship Loge?",
 		PINECONE = "This baby tree is well protected by spiky armour.",
         PINECONE_SAPLING = "It has shed its armour. Grow, baby tree!",
+        LUMPY_SAPLING = "I guess these trees aren't just props.",
 		PITCHFORK = "A weapon for farmers.",
 		PLANTMEAT = "I suppose it's close enough.",
 		PLANTMEAT_COOKED = "Still green, but it'll do.",

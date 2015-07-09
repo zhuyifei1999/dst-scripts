@@ -82,13 +82,11 @@ end
 
 local function destroystuff(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, 5)
-    local heading_angle = -inst.Transform:GetRotation()
+    local ents = TheSim:FindEntities(x, y, z, 5, nil, { "INLIMBO" })
     for i, v in ipairs(ents) do
         if v:IsValid() and
             v.components.workable ~= nil and
-            v.components.workable.workleft > 0 and
-            v.components.workable.workable and
+            v.components.workable:CanBeWorked() and
             v.components.workable.action ~= ACTIONS.NET then
             SpawnPrefab("collapse_small").Transform:SetPosition(v.Transform:GetWorldPosition())
             v.components.workable:Destroy(inst)

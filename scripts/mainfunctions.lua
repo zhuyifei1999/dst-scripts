@@ -571,6 +571,7 @@ function SaveGame(isshutdown, cb)
         save.map.nav = ground.Map:GetNavStringEncode()
         save.map.width, save.map.height = ground.Map:GetSize()
         save.map.topology = ground.topology
+        save.map.generated = ground.generated
         save.map.persistdata, new_refs = ground:GetPersistData()
         save.meta = ground.meta
         save.map.hideminimap = ground.hideminimap

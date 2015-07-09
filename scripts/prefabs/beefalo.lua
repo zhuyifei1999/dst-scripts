@@ -41,65 +41,63 @@ local sounds =
 }
 
 local function OnEnterMood(inst)
-    if inst.components.beard and inst.components.beard.bits > 0 then
+    if inst.components.beard ~= nil and inst.components.beard.bits > 0 then
         inst.AnimState:SetBuild("beefalo_heat_build")
         inst:AddTag("scarytoprey")
     end
 end
 
 local function OnLeaveMood(inst)
-    if inst.components.beard and inst.components.beard.bits > 0 then
+    if inst.components.beard ~= nil and inst.components.beard.bits > 0 then
         inst.AnimState:SetBuild("beefalo_build")
         inst:RemoveTag("scarytoprey")
     end
 end
 
 local function Retarget(inst)
-    if inst.components.herdmember
-       and inst.components.herdmember:GetHerd()
-       and inst.components.herdmember:GetHerd().components.mood
-       and inst.components.herdmember:GetHerd().components.mood:IsInMood() then
-        return FindEntity(inst, TUNING.BEEFALO_TARGET_DIST, function(guy)
-            return inst.components.combat:CanTarget(guy)
-        end,
-        nil,
-        {"beefalo", "wall"}
-        )
-    end
+    local herd = inst.components.herdmember ~= nil and inst.components.herdmember:GetHerd() or nil
+    return herd ~= nil
+        and herd.components.mood ~= nil
+        and herd.components.mood:IsInMood()
+        and FindEntity(
+                inst,
+                TUNING.BEEFALO_TARGET_DIST,
+                function(guy)
+                    inst.components.combat:CanTarget(guy)
+                end,
+                { "_combat" }, --See entityreplica.lua (re: "_combat" tag)
+                { "beefalo", "wall", "INLIMBO" }
+            )
+        or nil
 end
 
 local function KeepTarget(inst, target)
-    if inst.components.herdmember
-       and inst.components.herdmember:GetHerd()
-       and inst.components.herdmember:GetHerd().components.mood
-       and inst.components.herdmember:GetHerd().components.mood:IsInMood() then
-        local herd = inst.components.herdmember and inst.components.herdmember:GetHerd()
-        if herd and herd.components.mood and herd.components.mood:IsInMood() then
-            return distsq(Vector3(herd.Transform:GetWorldPosition() ), Vector3(inst.Transform:GetWorldPosition() ) ) < TUNING.BEEFALO_CHASE_DIST*TUNING.BEEFALO_CHASE_DIST
-        end
-    end
-    return true
+    local herd = inst.components.herdmember ~= nil and inst.components.herdmember:GetHerd() or nil
+    return herd == nil
+        or herd.components.mood == nil
+        or not herd.components.mood:IsInMood()
+        or inst:IsNear(herd, TUNING.BEEFALO_CHASE_DIST)
 end
 
 local function OnNewTarget(inst, data)
-    if inst.components.follower and data and data.target and data.target == inst.components.follower.leader then
+    if data ~= nil and data.target ~= nil and inst.components.follower ~= nil and data.target == inst.components.follower.leader then
         inst.components.follower:SetLeader(nil)
     end
 end
 
+local function CanShareTarget(dude)
+    return dude:HasTag("beefalo") and not (dude.components.health:IsDead() or dude:HasTag("player"))
+end
+
 local function OnAttacked(inst, data)
     inst.components.combat:SetTarget(data.attacker)
-    inst.components.combat:ShareTarget(data.attacker, 30,function(dude)
-        return dude:HasTag("beefalo") and not dude:HasTag("player") and not dude.components.health:IsDead()
-    end, 5)
+    inst.components.combat:ShareTarget(data.attacker, 30, CanShareTarget, 5)
 end
 
 local function GetStatus(inst)
-    if inst.components.follower.leader ~= nil then
-        return "FOLLOWER"
-    elseif inst.components.beard and inst.components.beard.bits == 0 then
-        return "NAKED"
-    end
+    return (inst.components.follower.leader ~= nil and "FOLLOWER")
+        or (inst.components.beard ~= nil and inst.components.beard.bits == 0 and "NAKED")
+        or nil
 end
 
 local function OnResetBeard(inst)
@@ -126,6 +124,11 @@ local function OnHairGrowth(inst)
     end
 end
 
+local function CustomOnHaunt(inst)
+    inst.components.periodicspawner:TrySpawn()
+    return true
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -148,6 +151,9 @@ local function fn()
     inst:AddTag("animal")
     inst:AddTag("largecreature")
 
+    --bearded (from beard component) added to pristine state for optimization
+    inst:AddTag("bearded")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -161,7 +167,7 @@ local function fn()
     inst:AddComponent("beard")
     -- assume the beefalo has already grown its hair
     inst.components.beard.bits = 3
-    inst.components.beard.daysgrowth = hair_growth_days + 1 
+    inst.components.beard.daysgrowth = hair_growth_days + 1
     inst.components.beard.onreset = OnResetBeard
     inst.components.beard.canshavetest = CanShaveTest
     inst.components.beard.prize = "beefalowool"
@@ -181,7 +187,7 @@ local function fn()
     inst.components.health:SetMaxHealth(TUNING.BEEFALO_HEALTH)
 
     inst:AddComponent("lootdropper")
-    inst.components.lootdropper:SetChanceLootTable('beefalo')    
+    inst.components.lootdropper:SetChanceLootTable('beefalo')
 
     inst:AddComponent("inspectable")
     inst.components.inspectable.getstatus = GetStatus
@@ -216,10 +222,7 @@ local function fn()
     inst.components.sleeper:SetResistance(3)
 
     MakeHauntablePanic(inst)
-    AddHauntableCustomReaction(inst, function(inst, haunter)
-        inst.components.periodicspawner:TrySpawn()
-        return true
-    end, true, false, true)
+    AddHauntableCustomReaction(inst, CustomOnHaunt, true, false, true)
 
     inst:SetBrain(brain)
     inst:SetStateGraph("SGBeefalo")

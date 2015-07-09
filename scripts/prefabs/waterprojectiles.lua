@@ -88,7 +88,7 @@ local function snowball_fn()
 
     inst.components.complexprojectile:SetHorizontalSpeed(15)
     inst.components.complexprojectile:SetGravity(-25)
-    inst.components.complexprojectile:SetLaunchOffset({ x = 0, y = 2.5, z = 0 })
+    inst.components.complexprojectile:SetLaunchOffset(Vector3(0, 2.5, 0))
     inst.components.complexprojectile:SetOnHit(OnHitSnow)
 
     inst.components.wateryprotection.extinguishheatpercent = TUNING.FIRESUPPRESSOR_EXTINGUISH_HEAT_PERCENT
@@ -156,7 +156,7 @@ local function waterballoon_fn()
 
     inst.components.complexprojectile:SetHorizontalSpeed(15)
     inst.components.complexprojectile:SetGravity(-35)
-    inst.components.complexprojectile:SetLaunchOffset({ x = 0.25, y = 1.0, z = 0 })
+    inst.components.complexprojectile:SetLaunchOffset(Vector3(.25, 1, 0))
     inst.components.complexprojectile:SetOnLaunch(onthrown)
     inst.components.complexprojectile:SetOnHit(OnHitWater)
 

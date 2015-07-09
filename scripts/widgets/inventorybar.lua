@@ -320,8 +320,8 @@ function Inv:OnUpdate(dt)
     end
 
     self:UpdateCursor()
-    
-    if self.shown and not self.owner:HasTag("beaver") then
+
+    if self.shown then
         --this is intentionally unaware of focus
         if self.repeat_time <= 0 then
             if TheInput:IsControlPressed(CONTROL_INVENTORY_LEFT) or (self.open and TheInput:IsControlPressed(CONTROL_MOVE_LEFT)) then

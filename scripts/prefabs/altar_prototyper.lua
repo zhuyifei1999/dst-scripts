@@ -91,8 +91,8 @@ local actions =
         spider_hider        = { cnt = 2, },
         spider_spitter      = { cnt = 2, },
         stafflight          = { cnt = 1, },
-        health_plus         = { cnt = 0, health=25, },
-        health_minus        = { cnt = 0, health=-10, },
+        health_plus         = { cnt = 0, health = 25, },
+        health_minus        = { cnt = 0, health = -10, },
     }
 
 local function PlayerSpawnCritter(player, critter, pos)
@@ -112,56 +112,56 @@ local function SpawnCritter(critter, pos, player)
 end
 
 local function SpawnAt(inst, prefab)
-    local pos = Vector3(inst.Transform:GetWorldPosition())
-    local offset, check_angle, deflected = FindWalkableOffset(pos, math.random()*2*PI, 4 , 8, true, false) -- try to avoid walls
-    
-    if offset then
-        return SpawnPrefab(prefab).Transform:SetPosition((pos+offset):Get())
+    local pos = inst:GetPosition()
+    local offset, check_angle, deflected = FindWalkableOffset(pos, math.random() * 2 * PI, 4 , 8, true, false) -- try to avoid walls
+    if offset ~= nil then
+        return SpawnPrefab(prefab).Transform:SetPosition((pos + offset):Get())
     end
 end
 
 local function DoRandomThing(inst, pos, count, target)
-
     count = count or 1
-    pos = pos or Vector3(inst.Transform:GetWorldPosition())
+    pos = pos or inst:GetPosition()
 
-    for doit=1, count do
+    for doit = 1, count do
         local item = weighted_random_choice(spawns)
 
         local doaction = actions[item]
 
-        local cnt = (doaction and doaction.cnt) or 1
-        local sanity = (doaction and doaction.sanity) or 0
-        local health = (doaction and doaction.health) or 0
-        local func = (doaction and doaction.callback) or nil
-        local radius = (doaction and doaction.radius) or 4
+        local cnt = doaction ~= nil and doaction.cnt or 1
+        local sanity = doaction ~= nil and doaction.sanity or 0
+        local health = doaction ~= nil and doaction.health or 0
+        local func = doaction ~= nil and doaction.callback or nil
+        local radius = doaction ~= nil and doaction.radius or 4
 
         local player = target
 
-        if doaction and doaction.var then
-            cnt = GetRandomWithVariance(cnt,doaction.var)
-            if cnt < 0 then cnt = 0 end
+        if doaction ~= nil and doaction.var ~= nil then
+            cnt = math.max(0, GetRandomWithVariance(cnt, doaction.var))
         end
 
-        if cnt == 0 and func then
-            func(inst,item,doaction)
+        if cnt == 0 and func ~= nil then
+            func(inst, item, doaction)
         end
 
-        for i=1,cnt do
-            local offset, check_angle, deflected = FindWalkableOffset(pos, math.random()*2*PI, radius , 8, true, false) -- try to avoid walls
-            if offset then
-                if func then
-                    func(inst,item,doaction)
+        for i = 1, cnt do
+            local offset, check_angle, deflected = FindWalkableOffset(pos, math.random() * 2 * PI, radius , 8, true, false) -- try to avoid walls
+            if offset ~= nil then
+                if func ~= nil then
+                    func(inst, item, doaction)
                 elseif item == "trinket" then
-                    SpawnCritter("trinket_"..tostring(math.random(NUM_TRINKETS)), pos+offset, player)
+                    SpawnCritter("trinket_"..tostring(math.random(NUM_TRINKETS)), pos + offset, player)
                 else
-                    SpawnCritter(item, pos+offset, player)
+                    SpawnCritter(item, pos + offset, player)
                 end
             end
         end
 
         if health ~= 0 then
-            if (player.components.health.currenthealth - health) <= 0 then
+            if player.components.health.currenthealth <= health then
+                --V2C: is this rly?
+                --     it means a health_plus will end up killing you
+                --     if you only have 5 hp
                 health = player.components.health.currenthealth - 10
             end
             player.components.health:DoDelta(health, false, "altar")
@@ -174,8 +174,7 @@ local function DoRandomThing(inst, pos, count, target)
 end
 
 local function ShowState(inst)
-
-    local anim =  "idle"
+    local anim = "idle"
     local loop = false
 
     if not inst.state:value() then
@@ -200,7 +199,7 @@ local function SetState(inst, state)
         inst.components.prototyper.trees = TUNING.PROTOTYPER_TREES.ANCIENTALTAR_HIGH
         --inst:SetPrefabName("ancient_altar")
     else        
-	    inst.components.prototyper.trees = TUNING.PROTOTYPER_TREES.ANCIENTALTAR_LOW
+        inst.components.prototyper.trees = TUNING.PROTOTYPER_TREES.ANCIENTALTAR_LOW
         --inst:SetPrefabName("ancient_altar_broken")
     end
 
@@ -208,21 +207,17 @@ local function SetState(inst, state)
 end
 
 local function OnRepaired(inst, doer, repair_item)
-	if inst.components.workable.workleft < MAXHITS then
-	    inst.AnimState:PlayAnimation("hit_broken")
+    if inst.components.workable.workleft < MAXHITS then
+        inst.AnimState:PlayAnimation("hit_broken")
         ShowState(inst)
         inst.SoundEmitter:PlaySound("dontstarve/common/ancienttable_repair")
     elseif inst.components.workable.workleft >= MAXHITS then -- Repaired
-		inst.components.workable:SetWorkLeft(MAXHITS) -- don't need to repair more
-	    local pt = Vector3(inst.Transform:GetWorldPosition())
+        inst.components.workable:SetWorkLeft(MAXHITS) -- don't need to repair more
+        local pt = inst:GetPosition()
         TheWorld:PushEvent("ms_sendlightningstrike", pt)
-	    SpawnPrefab("collapse_big").Transform:SetPosition(pt:Get())
+        SpawnPrefab("collapse_big").Transform:SetPosition(pt:Get())
 
-        local anim =  "hit"
-        if not inst.state:value() then
-            anim = anim..BROKEN
-        end
-	    inst.AnimState:PlayAnimation(anim)
+        inst.AnimState:PlayAnimation(inst.state:value() and "hit" or ("hit"..BROKEN))
         inst.SoundEmitter:PlaySound("dontstarve/common/ancienttable_activate")
         SetState(inst, true)
     end
@@ -232,17 +227,18 @@ local function OnRepaired(inst, doer, repair_item)
 end
 
 local function OnHammered(inst, worker)
-	inst.components.lootdropper:SetLoot({"thulecite", "thulecite"})
+    inst.components.lootdropper:SetLoot({ "thulecite", "thulecite" })
     inst.components.lootdropper:AddChanceLoot("nightmarefuel", 0.5)
     inst.components.lootdropper:AddChanceLoot("trinket_6", 0.5)
     inst.components.lootdropper:AddChanceLoot("rocks", 0.5)
-	inst.components.lootdropper:DropLoot()
-	local pt = inst:GetPosition()--Vector3(inst.Transform:GetWorldPosition())
+    inst.components.lootdropper:DropLoot()
+
+    local pt = inst:GetPosition()
     TheWorld:PushEvent("ms_sendlightningstrike", pt)
     DoRandomThing(inst, pt, nil, worker)
-	SpawnPrefab("collapse_small").Transform:SetPosition(pt:Get())
-	inst.SoundEmitter:PlaySound("dontstarve/common/destroy_stone")
-	inst:Remove()
+    SpawnPrefab("collapse_small").Transform:SetPosition(pt:Get())
+    inst.SoundEmitter:PlaySound("dontstarve/common/destroy_stone")
+    inst:Remove()
 end
 
 local function OnLoadWork(inst, data)
@@ -255,12 +251,10 @@ local function OnLoadWork(inst, data)
 end
 
 local function OnLoad(inst, data)
-    if not data then
+    if data == nil then
         return
     end
-
     inst.state:set((inst.components.workable ~= nil and inst.components.workable.workleft >= MAXHITS) or data.state == true)
-
     SetState(inst, inst.state:value())
 end
 
@@ -270,20 +264,19 @@ end
 
 local function OnWorked(inst, worker, workLeft)
     if workLeft < MAXHITS then
-        local pos = Vector3(inst.Transform:GetWorldPosition())
-	    inst.AnimState:PlayAnimation("hit_broken")
+        local pos = inst:GetPosition()
+        inst.AnimState:PlayAnimation("hit_broken")
         if workLeft == MAXHITS - 1 then
             TheWorld:PushEvent("ms_sendlightningstrike", pos)
         end
         DoRandomThing(inst, pos, nil, worker)
         SetState(inst, false)
-
     else
-        local anim =  "hit"
+        local anim = "hit"
         if not inst.state:value() then
             anim = anim..BROKEN
         end
-	    inst.AnimState:PlayAnimation(anim)
+        inst.AnimState:PlayAnimation(inst.state:value() and "hit" or ("hit"..BROKEN))
     end
 end
 
@@ -295,7 +288,7 @@ Repaired: Shows high level Ancient
 
 local function turnlightoff(inst, light)
     inst.SoundEmitter:KillSound("idlesound")
-    if light then
+    if light ~= nil then
         light:Enable(false)
     end
 end
@@ -304,7 +297,9 @@ end
 local function OnTurnOn(inst)
     inst.components.prototyper.on = true  -- prototyper doesn't set this until after this function is called!!
     ShowState(inst)
-    inst.SoundEmitter:PlaySound("dontstarve/common/ancienttable_LP","idlesound")
+    if not inst.SoundEmitter:PlayingSound("idlesound") then
+        inst.SoundEmitter:PlaySound("dontstarve/common/ancienttable_LP", "idlesound")
+    end
     
     inst.Light:Enable(true)
     inst.components.lighttweener:StartTween(nil, 3, nil, nil, nil, 0.5) 
@@ -317,10 +312,7 @@ local function OnTurnOff(inst)
 end
 
 local function GetStatus(inst)
-    if not inst.state:value() then
-        return "BROKEN"
-    end
-    return "WORKING"
+    return inst.state:value() and "WORKING" or "BROKEN"
 end
 
 local function DisplayNameFn(inst)
@@ -328,7 +320,12 @@ local function DisplayNameFn(inst)
 end
 
 local function DoOnAct(inst, soundprefix)
-    inst.SoundEmitter:KillSound("sound")
+    if inst._activecount > 1 then
+        inst._activecount = inst._activecount - 1
+    else
+        inst._activecount = 0
+        inst.SoundEmitter:KillSound("sound")
+    end
     inst.SoundEmitter:PlaySound("dontstarve/common/researchmachine_"..soundprefix.."_ding", "sound")
     if inst.components.workable.workleft < MAXHITS then
         SpawnPrefab("sanity_lower").Transform:SetPosition(inst.Transform:GetWorldPosition())
@@ -345,15 +342,18 @@ local function CreateAltar(name, state, soundprefix, techtree)
             inst.AnimState:PushAnimation("idle_full")
             inst.AnimState:PushAnimation("proximity_loop", true)
         end
-        inst.SoundEmitter:PlaySound("dontstarve/common/ancienttable_craft", "sound")
+        if not inst.SoundEmitter:PlayingSound("sound") then
+            inst.SoundEmitter:PlaySound("dontstarve/common/ancienttable_craft", "sound")
+        end
+        inst._activecount = inst._activecount + 1
         inst:DoTaskInTime(1.5, DoOnAct, soundprefix)
     end
 
-	local function InitFn()
-		local inst = CreateEntity()
+    local function InitFn()
+        local inst = CreateEntity()
 
-		inst.entity:AddTransform()
-		inst.entity:AddAnimState()
+        inst.entity:AddTransform()
+        inst.entity:AddAnimState()
         inst.entity:AddMiniMapEntity()
         inst.entity:AddSoundEmitter()
         inst.entity:AddLight()
@@ -392,32 +392,34 @@ local function CreateAltar(name, state, soundprefix, techtree)
             return inst
         end
 
+        inst._activecount = 0
+
         inst.OnSave = OnSave
         inst.OnLoad = OnLoad
 
-		inst:AddComponent("inspectable")
+        inst:AddComponent("inspectable")
         inst.components.inspectable.getstatus = GetStatus
 
-		inst:AddComponent("prototyper")
-		inst.components.prototyper.onturnon = OnTurnOn
-		inst.components.prototyper.onturnoff = OnTurnOff
-		inst.components.prototyper.trees = techtree
-		inst.components.prototyper.onactivate = OnActivate
+        inst:AddComponent("prototyper")
+        inst.components.prototyper.onturnon = OnTurnOn
+        inst.components.prototyper.onturnoff = OnTurnOff
+        inst.components.prototyper.trees = techtree
+        inst.components.prototyper.onactivate = OnActivate
 
-		inst:AddComponent("repairable")
-		inst.components.repairable.repairmaterial = MATERIALS.THULECITE
-		inst.components.repairable.onrepaired = OnRepaired
+        inst:AddComponent("repairable")
+        inst.components.repairable.repairmaterial = MATERIALS.THULECITE
+        inst.components.repairable.onrepaired = OnRepaired
 
-		inst:AddComponent("lootdropper")
+        inst:AddComponent("lootdropper")
 
-		inst:AddComponent("workable")
-		inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
-		inst.components.workable:SetWorkLeft(MAXHITS)
-		inst.components.workable:SetMaxWork(MAXHITS)
-		inst.components.workable:SetOnFinishCallback(OnHammered)
-		inst.components.workable:SetOnWorkCallback(OnWorked)		
-		inst.components.workable.savestate = true
-		inst.components.workable:SetOnLoadFn(OnLoadWork)
+        inst:AddComponent("workable")
+        inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
+        inst.components.workable:SetWorkLeft(MAXHITS)
+        inst.components.workable:SetMaxWork(MAXHITS)
+        inst.components.workable:SetOnFinishCallback(OnHammered)
+        inst.components.workable:SetOnWorkCallback(OnWorked)
+        inst.components.workable.savestate = true
+        inst.components.workable:SetOnLoadFn(OnLoadWork)
 
         inst:AddComponent("lighttweener")
         inst.components.lighttweener:StartTween(inst.Light, 1, .9, 0.9, { 255/255, 255/255, 255/255 }, 0, turnlightoff)
@@ -428,11 +430,11 @@ local function CreateAltar(name, state, soundprefix, techtree)
 
         ShowState(inst)
 
-		return inst
-	end
+        return inst
+    end
 
-	return Prefab("common/objects/"..name, InitFn, assets, prefabs)
+    return Prefab("common/objects/"..name, InitFn, assets, prefabs)
 end
 
 return CreateAltar("ancient_altar", true, 2, TUNING.PROTOTYPER_TREES.ANCIENTALTAR_HIGH),
-       CreateAltar("ancient_altar_broken", false, 1, TUNING.PROTOTYPER_TREES.ANCIENTALTAR_LOW)
+    CreateAltar("ancient_altar_broken", false, 1, TUNING.PROTOTYPER_TREES.ANCIENTALTAR_LOW)

@@ -94,7 +94,7 @@ local function updatestate(inst)
         end
     else
         if inst._chargestate == 3 then
-            inst.AnimState:SetBloomEffectHandle("")
+            inst.AnimState:ClearBloomEffectHandle()
             deactivate(inst)
         end
         if inst._playerlink ~= nil and inst.components.cooldown:GetTimeToCharged() < TUNING.TOTAL_DAY_TIME then

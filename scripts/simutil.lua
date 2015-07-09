@@ -238,10 +238,20 @@ function FindWalkableOffset(position, start_angle, radius, attempts, check_los, 
 	return FindValidPositionByFan(start_angle, radius, attempts, test)
 end
 
+function CanEntitySeeInDark(inst)
+    if inst == nil or not inst:IsValid() then
+        return false
+    elseif inst.components.playervision ~= nil then
+        --component available on clients as well,
+        --but only accurate for your local player
+        return inst.components.playervision:HasNightVision()
+    end
+    local inventory = inst.replica.inventory
+    return inventory ~= nil and inventory:EquipHasTag("nightvision")
+end
+
 function CanEntitySeePoint(inst, x, y, z)
-    return TheSim:GetLightAtPoint(x, y, z) > TUNING.DARK_CUTOFF
-        or (inst ~= nil and inst:HasTag("nightvision"))
-    --NOTE: HasTag naturally checks IsValid already
+    return TheSim:GetLightAtPoint(x, y, z) > TUNING.DARK_CUTOFF or CanEntitySeeInDark(inst)
 end
 
 function CanEntitySeeTarget(inst, target)

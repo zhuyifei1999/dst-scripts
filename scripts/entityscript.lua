@@ -80,12 +80,12 @@ local function OnActionComponentsDirty(inst)
 end
 
 local function OnModActionComponentsDirty(inst, modname)
-	if inst.modactioncomponents == nil then
-		inst.modactioncomponents = {}
-	end
-	if inst.modactioncomponents[modname] == nil then
-		inst.modactioncomponents[modname] = {}
-	end
+    if inst.modactioncomponents == nil then
+        inst.modactioncomponents = {}
+    end
+    if inst.modactioncomponents[modname] == nil then
+        inst.modactioncomponents[modname] = {}
+    end
     inst.modactioncomponents[modname] = inst.actionreplica.modactioncomponents[modname]:value()
 end
 
@@ -167,16 +167,16 @@ function Entity:AddNetwork()
     local inst = Ents[guid]
     inst.actionreplica =
     {
-        actioncomponents = net_smallbytearray(guid, "actioncomponents", "actioncomponentsdirty"),
+        actioncomponents = net_bytearray(guid, "actioncomponents", "actioncomponentsdirty"),
         inherentactions = net_bytearray(guid, "inherentactions", "inherentactionsdirty"),
         inherentsceneaction = net_byte(guid, "inherentsceneaction", "inherentsceneactiondirty"),
         inherentscenealtaction = net_byte(guid, "inherentscenealtaction", "inherentscenealtactiondirty"),
-        
+
         modactioncomponents = {}
     }
     
     for _,modname in pairs(ModManager:GetServerModsNames()) do
-    	inst.actionreplica.modactioncomponents[modname] = net_smallbytearray(guid, "modactioncomponents"..modname, "modactioncomponentsdirty"..modname)
+        inst.actionreplica.modactioncomponents[modname] = net_smallbytearray(guid, "modactioncomponents"..modname, "modactioncomponentsdirty"..modname)
     end
         
         
@@ -187,8 +187,8 @@ function Entity:AddNetwork()
         inst:ListenForEvent("inherentscenealtactiondirty", OnInherentSceneAltActionDirty)
         
         for _,modname in pairs(ModManager:GetServerModsNames()) do
-			inst:ListenForEvent("modactioncomponentsdirty"..modname, function(inst) OnModActionComponentsDirty(inst,modname) end)
-		end
+            inst:ListenForEvent("modactioncomponentsdirty"..modname, function(inst) OnModActionComponentsDirty(inst,modname) end)
+        end
     end
 end
 
@@ -289,14 +289,14 @@ function EntityScript:RemoveFromScene()
     self.entity:AddTag("INLIMBO")
     self.entity:SetInLimbo(true)
     self.inlimbo = true
-	self.entity:Hide()
-	
-	self:StopBrain()
-	
-	if self.sg then
-	    self.sg:Stop()
-	end
-	if self.Physics then
+    self.entity:Hide()
+    
+    self:StopBrain()
+    
+    if self.sg then
+        self.sg:Stop()
+    end
+    if self.Physics then
         self.Physics:SetActive(false)
     end
     if self.Light and self.Light:GetDisableOnSceneRemoval() then
@@ -319,10 +319,10 @@ function EntityScript:ReturnToScene()
     self.entity:RemoveTag("INLIMBO")
     self.entity:SetInLimbo(false)
     self.inlimbo = false
-	self.entity:Show()
+    self.entity:Show()
     if self.Physics then
         self.Physics:SetActive(true)
-	end
+    end
     if self.Light then
         self.Light:Enable(true)
     end
@@ -338,9 +338,9 @@ function EntityScript:ReturnToScene()
     
     self:RestartBrain()
     
-	if self.sg then
-	    self.sg:Start()
-	end
+    if self.sg then
+        self.sg:Start()
+    end
     self:PushEvent("exitlimbo")
 end
 
@@ -371,8 +371,8 @@ function EntityScript:GetTimeAlive()
 end
 
 function EntityScript:StartUpdatingComponent(cmp)
-	if not self:IsValid() then
-		return
+    if not self:IsValid() then
+        return
     end
     
     if not self.updatecomponents then
@@ -385,13 +385,13 @@ function EntityScript:StartUpdatingComponent(cmp)
         StopUpdatingComponents[cmp] = nil
     end
     
-	local cmpname = nil
-	for k,v in pairs(self.components) do
-		if v == cmp then
-			cmpname = k
-			break
-		end
-	end
+    local cmpname = nil
+    for k,v in pairs(self.components) do
+        if v == cmp then
+            cmpname = k
+            break
+        end
+    end
     self.updatecomponents[cmp] = cmpname or "component"
 end
 
@@ -421,8 +421,8 @@ function EntityScript:StopUpdatingComponent_Deferred(cmp)
 end
 
 function EntityScript:StartWallUpdatingComponent(cmp)
-	if not self:IsValid() then
-		return
+    if not self:IsValid() then
+        return
     end
     
     if not self.wallupdatecomponents then
@@ -430,13 +430,13 @@ function EntityScript:StartWallUpdatingComponent(cmp)
         NewWallUpdatingEnts[self.GUID] = self
     end
 
-	local cmpname = nil
-	for k,v in pairs(self.components) do
-		if v == cmp then
-			cmpname = k
-			break
-		end
-	end
+    local cmpname = nil
+    for k,v in pairs(self.components) do
+        if v == cmp then
+            cmpname = k
+            break
+        end
+    end
 
     self.wallupdatecomponents[cmp] = cmpname or "component"
 end
@@ -464,12 +464,12 @@ end
 
 
 function EntityScript:GetComponentName(cmp)
-	for k,v in pairs(self.components) do
-		if v == cmp then
-			return k
-		end
-	end
-	return "component"
+    for k,v in pairs(self.components) do
+        if v == cmp then
+            return k
+        end
+    end
+    return "component"
 end
 
 function EntityScript:AddTag(tag)
@@ -499,7 +499,7 @@ require("componentactions")
 --         EntityScript:IsActionValid(action, right)
 
 function EntityScript:AddComponent(name)
-	local lower_name = string.lower(name)
+    local lower_name = string.lower(name)
     if self.lower_components_shadow[lower_name] ~= nil then
         print("component "..name.." already exists! "..debugstack_oneline(3))
     end
@@ -525,11 +525,11 @@ end
 function EntityScript:RemoveComponent(name)
     local cmp = self.components[name]
     if cmp then
-		self:StopUpdatingComponent(cmp)
-		self:StopWallUpdatingComponent(cmp)
+        self:StopUpdatingComponent(cmp)
+        self:StopWallUpdatingComponent(cmp)
         self.components[name] = nil
-		self.lower_components_shadow[string.lower(name)] = nil
-		
+        self.lower_components_shadow[string.lower(name)] = nil
+        
         if cmp.OnRemoveFromEntity then
             cmp:OnRemoveFromEntity()
         end
@@ -600,26 +600,26 @@ end
 
 function EntityScript:SpawnChild(name)
     if self.prefabs then
-		assert(self.prefabs, "no prefabs registered for this entity ".. name)
-		local prefab = self.prefabs[name]
-		assert(prefab, "Could not spawn unknown child type "..name)
-		local inst = SpawnPrefab(prefab)
-		assert(inst, "Could not spawn prefab "..name.." "..prefab)
-	    self:AddChild(inst)
-	    return inst
-	else
-		local inst = SpawnPrefab(name)
-	    self:AddChild(inst)
-	    return inst
-	end
+        assert(self.prefabs, "no prefabs registered for this entity ".. name)
+        local prefab = self.prefabs[name]
+        assert(prefab, "Could not spawn unknown child type "..name)
+        local inst = SpawnPrefab(prefab)
+        assert(inst, "Could not spawn prefab "..name.." "..prefab)
+        self:AddChild(inst)
+        return inst
+    else
+        local inst = SpawnPrefab(name)
+        self:AddChild(inst)
+        return inst
+    end
     
 end
 
 function EntityScript:RemoveChild(child)
     child.parent = nil
     if self.children then
-		self.children[child] = nil
-	end		
+        self.children[child] = nil
+    end
     child.entity:SetParent(nil)
 end
 
@@ -630,7 +630,7 @@ function EntityScript:AddChild(child)
 
     child.parent = self
     if not self.children then
-		self.children = {}
+        self.children = {}
     end
     
     self.children[child] = true
@@ -639,7 +639,7 @@ function EntityScript:AddChild(child)
 end
 
 function EntityScript:GetBrainString()
-	local str = {}
+    local str = {}
     
     if self.brain then
         table.insert(str, "BRAIN:\n")
@@ -647,7 +647,7 @@ function EntityScript:GetBrainString()
         table.insert(str, "--------\n")
     end
     
-	return table.concat(str, "")
+    return table.concat(str, "")
 end
 
 function EntityScript:GetDebugString()
@@ -759,38 +759,38 @@ function EntityScript:RunScript(name)
 end
 
 function EntityScript:RestartBrain()
-	self:StopBrain()
-	if self.brainfn then
-		--if type(self.brainfn) ~= "table" then print(self, self.brainfn) end
-		self.brain = self.brainfn()
-		if self.brain then
-	        self.brain.inst = self
-			self.brain:Start()
-		end
-	end
+    self:StopBrain()
+    if self.brainfn then
+        --if type(self.brainfn) ~= "table" then print(self, self.brainfn) end
+        self.brain = self.brainfn()
+        if self.brain then
+            self.brain.inst = self
+            self.brain:Start()
+        end
+    end
 end
 
 function EntityScript:StopBrain()
     if self.brain then
         self.brain:Stop()
     end
-	self.brain = nil
+    self.brain = nil
 end
 
 
 function EntityScript:SetBrain(brainfn)
-	if TheNet:GetIsMasterSimulation() then
-		self.brainfn = brainfn
-		if self.brain then
-			self:RestartBrain()
-		end
-	end
+    if TheNet:GetIsMasterSimulation() then
+        self.brainfn = brainfn
+        if self.brain then
+            self:RestartBrain()
+        end
+    end
 end
 
 function EntityScript:SetStateGraph(name)
-	if self.sg then
-		SGManager:RemoveInstance(self.sg)
-	end
+    if self.sg then
+        SGManager:RemoveInstance(self.sg)
+    end
     local sg = LoadStateGraph(name)
     assert(sg)
     if sg then
@@ -802,10 +802,10 @@ function EntityScript:SetStateGraph(name)
 end
 
 function EntityScript:ClearStateGraph()
-	if self.sg then
-		SGManager:RemoveInstance(self.sg)
-		self.sg = nil
-	end
+    if self.sg then
+        SGManager:RemoveInstance(self.sg)
+        self.sg = nil
+    end
 end
 
 local function AddListener(t, event, inst, fn)
@@ -831,16 +831,16 @@ function EntityScript:ListenForEvent(event, fn, source)
     source = source or self
     
     if not source.event_listeners then
-		source.event_listeners = {}
-	end
+        source.event_listeners = {}
+    end
 
     AddListener(source.event_listeners, event, self, fn)
 
 
     if not self.event_listening then
-		self.event_listening = {}
+        self.event_listening = {}
     end
-	
+    
     AddListener(self.event_listening, event, source, fn)
 
 end
@@ -880,7 +880,7 @@ function EntityScript:RemoveAllEventCallbacks()
 
     --tell others that we are no longer listening for them
     if self.event_listening then
-		for event, sources  in pairs(self.event_listening) do
+        for event, sources  in pairs(self.event_listening) do
             for source, fns in pairs(sources) do
                 if source.event_listeners then
                     local listeners = source.event_listeners[event]
@@ -889,24 +889,24 @@ function EntityScript:RemoveAllEventCallbacks()
                     end
                 end
             end
-		end
-		self.event_listening = nil
-	end    
+        end
+        self.event_listening = nil
+    end    
     
     --tell others who are listening to us to stop
     if self.event_listeners then
-		for event, listeners in pairs(self.event_listeners) do
-			for listener, fns in pairs(listeners) do
-				if listener.event_listening then
+        for event, listeners in pairs(self.event_listeners) do
+            for listener, fns in pairs(listeners) do
+                if listener.event_listening then
                     local sources = listener.event_listening[event]
                     if sources then
                         sources[self] = nil
                     end
-				end
-			end
-		end
-	    self.event_listeners = nil
-	end
+                end
+            end
+        end
+        self.event_listeners = nil
+    end
 end
 
 function EntityScript:WatchWorldState(var, fn)
@@ -930,22 +930,22 @@ function EntityScript:StopAllWatchingWorldStates()
 end
 
 function EntityScript:PushEvent(event, data)
-	if self.event_listeners then
-		local listeners = self.event_listeners[event]
-		if listeners then
-			for entity, fns in pairs(listeners) do
-				for i,fn in ipairs(fns) do
-					fn(self, data)
-				end
-			end
-		end
-	end
+    if self.event_listeners then
+        local listeners = self.event_listeners[event]
+        if listeners then
+            for entity, fns in pairs(listeners) do
+                for i,fn in ipairs(fns) do
+                    fn(self, data)
+                end
+            end
+        end
+    end
 
     if self.sg then
         if self.sg:IsListeningForEvent(event) then
             if SGManager:OnPushEvent(self.sg) then
-				self.sg:PushEvent(event, data)
-			end
+                self.sg:PushEvent(event, data)
+            end
         end
     end
     
@@ -1033,29 +1033,29 @@ end
 
 function EntityScript:CancelAllPendingTasks()
     if self.pendingtasks then
-		for k,v in pairs(self.pendingtasks) do
-	        k:Cancel()
-	    end
-	    self.pendingtasks = nil
-	end
+        for k,v in pairs(self.pendingtasks) do
+            k:Cancel()
+        end
+        self.pendingtasks = nil
+    end
 end
 
 local function task_finish(task, success, inst)
-	--print ("TASK DONE", task, success, inst)
-	if inst and inst.pendingtasks and inst.pendingtasks[task] then
-		inst.pendingtasks[task] = nil
-	else
-		print ("   NOT FOUND")
-	end
+    --print ("TASK DONE", task, success, inst)
+    if inst and inst.pendingtasks and inst.pendingtasks[task] then
+        inst.pendingtasks[task] = nil
+    else
+        print ("   NOT FOUND")
+    end
 end
 
 function EntityScript:DoPeriodicTask(time, fn, initialdelay, ...)
 
-	--print ("DO PERIODIC", time, self)
+    --print ("DO PERIODIC", time, self)
     local per = scheduler:ExecutePeriodic(time, fn, nil, initialdelay, self.GUID, self, ...)
 
     if not self.pendingtasks then
-		self.pendingtasks = {}
+        self.pendingtasks = {}
     end
     
     self.pendingtasks[per] = true
@@ -1064,9 +1064,9 @@ function EntityScript:DoPeriodicTask(time, fn, initialdelay, ...)
 end
 
 function EntityScript:DoTaskInTime(time, fn, ...)
-	--print ("DO TASK IN TIME", time, self)
+    --print ("DO TASK IN TIME", time, self)
     if not self.pendingtasks then
-		self.pendingtasks = {}
+        self.pendingtasks = {}
     end
     
     local per = scheduler:ExecuteInTime(time, fn, self.GUID, self, ...)
@@ -1103,7 +1103,7 @@ function EntityScript:ClearBufferedAction()
 end
 
 function EntityScript:InterruptBufferedAction()
-	self:ClearBufferedAction()
+    self:ClearBufferedAction()
 end
 
 function EntityScript:PreviewBufferedAction(bufferedaction)
@@ -1141,46 +1141,42 @@ function EntityScript:PerformPreviewBufferedAction()
 end
 
 function EntityScript:PushBufferedAction(bufferedaction)
+    if bufferedaction ~= nil and
+        self.bufferedaction ~= nil and
+        bufferedaction.target == self.bufferedaction.target and
+        bufferedaction.action == self.bufferedaction.action and
+        bufferedaction.inv_obj == self.bufferedaction.inv_obj and
+        not (self.sg ~= nil and self.sg:HasStateTag("idle")) then
+        return
+    end
 
-	local dupe = bufferedaction and self.bufferedaction
-	            and bufferedaction.target == self.bufferedaction.target
-	            and bufferedaction.action == self.bufferedaction.action
-	            and bufferedaction.inv_obj == self.bufferedaction.inv_obj
-	            and not (self.sg and self.sg:HasStateTag("idle"))
-	            
-	if dupe then
-		return
-	end
-
-    if self.bufferedaction then
+    if self.bufferedaction ~= nil then
         self.bufferedaction:Fail()
         self.bufferedaction = nil
     end
-    
+
     local success, reason = bufferedaction:TestForStart()
     if not success then
-        self:PushEvent("actionfailed", {action = bufferedaction, reason = reason})
+        self:PushEvent("actionfailed", { action = bufferedaction, reason = reason })
         return
     end
-    
+
     --walkto is kind of a nil action - the locomotor will have put us at the destination by now if we get to here
     if bufferedaction.action == ACTIONS.WALKTO then
         self:PushEvent("performaction", { action = self.bufferedaction })
         bufferedaction:Succeed()
         self.bufferedaction = nil
     elseif bufferedaction.action.instant then
-        if bufferedaction.target and bufferedaction.target.Transform and (not self.sg or self.sg:HasStateTag("canrotate")) then
+        if bufferedaction.target ~= nil and bufferedaction.target.Transform ~= nil and (self.sg == nil or self.sg:HasStateTag("canrotate")) then
             self:FacePoint(bufferedaction.target.Transform:GetWorldPosition())
         end
-        
         self:PushEvent("performaction", { action = self.bufferedaction })
         bufferedaction:Do()
         self.bufferedaction = nil
-        
     else
         self.bufferedaction = bufferedaction
-        if not self.sg then
-            self:PushEvent("startaction", {action = bufferedaction})
+        if self.sg == nil then
+            self:PushEvent("startaction", { action = bufferedaction })
         elseif not self.sg:StartAction(bufferedaction) then
             self:PushEvent("performaction", { action = self.bufferedaction })
             self.bufferedaction:Fail()
@@ -1235,7 +1231,7 @@ function EntityScript:Remove()
         self.parent:RemoveChild(self)
     end
 
-	OnRemoveEntity(self.GUID)
+    OnRemoveEntity(self.GUID)
 
     self:PushEvent("onremove")
 
@@ -1270,14 +1266,14 @@ function EntityScript:Remove()
     NewWallUpdatingEnts[self.GUID] = nil
 
     if self.children then
-		for k,v in pairs(self.children) do
-			k.parent = nil
-			k:Remove()
-		end
-	end
+        for k,v in pairs(self.children) do
+            k.parent = nil
+            k:Remove()
+        end
+    end
 
     if self.OnRemoveEntity then
-		self:OnRemoveEntity()
+        self:OnRemoveEntity()
     end
     self.persists = false
     self.entity:Retire()
@@ -1328,19 +1324,19 @@ function EntityScript:CanDoAction(action)
 end
 
 function EntityScript:IsOnValidGround()
-	local tile = self:GetCurrentTileType()
-	return tile ~= nil and tile ~= GROUND.IMPASSABLE
+    local tile = self:GetCurrentTileType()
+    return tile ~= nil and tile ~= GROUND.IMPASSABLE
 end
 
 function EntityScript:GetCurrentTileType()
     local map = TheWorld.Map
-	local ptx, pty, ptz = self.Transform:GetWorldPosition()
-	local tilecenter_x, tilecenter_y, tilecenter_z  = map:GetTileCenterPoint(ptx, 0, ptz)
-	local tx, ty = map:GetTileCoordsAtPoint(ptx, 0, ptz)
-	local actual_tile = map:GetTile(tx, ty)
-	
-	if actual_tile ~= nil and tilecenter_x ~= nil and tilecenter_z ~= nil then
-		if actual_tile == GROUND.IMPASSABLE then
+    local ptx, pty, ptz = self.Transform:GetWorldPosition()
+    local tilecenter_x, tilecenter_y, tilecenter_z  = map:GetTileCenterPoint(ptx, 0, ptz)
+    local tx, ty = map:GetTileCoordsAtPoint(ptx, 0, ptz)
+    local actual_tile = map:GetTile(tx, ty)
+    
+    if actual_tile ~= nil and tilecenter_x ~= nil and tilecenter_z ~= nil then
+        if actual_tile == GROUND.IMPASSABLE then
             local xpercent = (tilecenter_x - ptx) / TILE_SCALE + .5
             local ypercent = (tilecenter_z - ptz) / TILE_SCALE + .5
 
@@ -1352,22 +1348,22 @@ function EntityScript:GetCurrentTileType()
             local x_off = 0
             local y_off = 0
 
-			for x = x_min, x_max do
-				for y = y_min, y_max do
-					local tile = map:GetTile(tx + x, ty + y)
-					if tile > actual_tile then
-						actual_tile = tile
-						x_off = x
-						y_off = y
-					end
-				end
-			end
-		end
+            for x = x_min, x_max do
+                for y = y_min, y_max do
+                    local tile = map:GetTile(tx + x, ty + y)
+                    if tile > actual_tile then
+                        actual_tile = tile
+                        x_off = x
+                        y_off = y
+                    end
+                end
+            end
+        end
 
-		return actual_tile, GetTileInfo(actual_tile)	
-	end		
+        return actual_tile, GetTileInfo(actual_tile)
+    end
 
-	--print (string.format("(%d+%d, %d+%d), (%2.2f, %2.2f), %d", tx, x_off, ty, y_off, xpercent, ypercent, actual_tile))
+    --print (string.format("(%d+%d, %d+%d), (%2.2f, %2.2f), %d", tx, x_off, ty, y_off, xpercent, ypercent, actual_tile))
 end
 
 function EntityScript:GetPersistData()
@@ -1377,23 +1373,23 @@ function EntityScript:GetPersistData()
         if v.OnSave then
             local t, refs = v:OnSave()
             if type(t) == "table" then
-				if t and next(t) and not data then
-					data = {}
-				end
-				if t and data then
-					data[k] = t
-				end
-			end
-			
-			if refs then
-				if not references then
-					references = {}
-				end
-				for k,v in pairs(refs) do
-					
-					table.insert(references, v)
-				end
-			end
+                if t and next(t) and not data then
+                    data = {}
+                end
+                if t and data then
+                    data[k] = t
+                end
+            end
+            
+            if refs then
+                if not references then
+                    references = {}
+                end
+                for k,v in pairs(refs) do
+                    
+                    table.insert(references, v)
+                end
+            end
         end
     end
     
@@ -1417,7 +1413,7 @@ function EntityScript:GetPersistData()
     end
 
     if (data and next(data)) or references then
-		return data, references
+        return data, references
     end
 end
 
@@ -1494,22 +1490,20 @@ function EntityScript:SetInherentSceneAction(action)
 end
 
 function EntityScript:SetInherentSceneAltAction(action)
-	self.inherentscenealtaction = action
+    self.inherentscenealtaction = action
     if self.actionreplica.inherentscenealtaction ~= nil then
         self.actionreplica.inherentscenealtaction:set(SerializeAction(action))
     end
 end
 
 function EntityScript:LongUpdate(dt)
+    if self.OnLongUpdate ~= nil then
+        self:OnLongUpdate(dt)
+    end
 
-	if self.OnLongUpdate then
-		self:OnLongUpdate(dt)
-	end
-
-	for k,v in pairs(self.components) do
-		if v.LongUpdate then
-			v:LongUpdate(dt)
-		end
-	end
-
+    for k, v in pairs(self.components) do
+        if v.LongUpdate ~= nil then
+            v:LongUpdate(dt)
+        end
+    end
 end

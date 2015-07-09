@@ -10,6 +10,7 @@ local assets =
 	
 	Asset("SHADER", "shaders/anim_bloom.ksh"),
 	Asset("SHADER", "shaders/wall_bloom.ksh"),
+    Asset("SHADER", "shaders/anim_bloom_ghost.ksh"),
 	Asset("SHADER", "shaders/road.ksh"),
 
 	Asset("IMAGE", "images/shadow.tex"),

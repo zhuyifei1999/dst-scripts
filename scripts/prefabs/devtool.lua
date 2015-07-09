@@ -26,11 +26,11 @@ local function onequipgold(inst, owner)
     owner.AnimState:Hide("ARM_normal") 
     inst.Light:Enable(true)
     inst.task = inst:DoPeriodicTask(0.25, function()
-        if owner.components.health then
+        if owner.components.health ~= nil then
             owner.components.health:DoDelta(500)
         end
 
-        if owner.components.hunger then
+        if owner.components.hunger ~= nil then
             owner.components.hunger:DoDelta(500)
         end
     end)
@@ -82,6 +82,8 @@ local function fn()
     inst:AddTag("sharp")
 
     if BRANCH == "dev" then
+        inst:AddTag("prototyper")
+
         --HASHEATER (from heater component) added to pristine state for optimization
         inst:AddTag("HASHEATER")
 
@@ -125,7 +127,6 @@ local function fn()
 
         inst:AddComponent("prototyper")
         inst.components.prototyper.trees = {SCIENCE = 100, MAGIC = 100, ANCIENT = 100}
-        inst:AddTag("prototyper")
 
         inst:AddComponent("equippable")
         inst.components.equippable:SetOnEquip( onequipgold )  

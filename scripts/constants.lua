@@ -268,7 +268,7 @@ ROG_CHARACTERLIST =
 
 DST_CHARACTERLIST =
 {
-    "wilson", "willow", "wolfgang", "wendy", "wx78", "wickerbottom", "wes", "wathgrithr", "webber",
+    "wilson", "willow", "wolfgang", "wendy", "wx78", "wickerbottom", "woodie", "wes", "wathgrithr", "webber",
 }
 
 MAINSCREEN_CHAR_1 = "corner_dude"
@@ -825,11 +825,11 @@ FUELTYPE =
     USAGE = "USAGE",
     MAGIC = "MAGIC",
     CAVE = "CAVE",
-    SPIDERHAT = "SPIDERHAT",
     NIGHTMARE = "NIGHTMARE",
     ONEMANBAND = "ONEMANBAND",
     PIGTORCH = "PIGTORCH",
     CHEMICAL = "CHEMICAL",
+    WORMLIGHT = "WORMLIGHT",
 }
 
 OCCUPANTTYPE =
@@ -867,6 +867,19 @@ FOODGROUP =
             FOODTYPE.GENERIC,
         },
     },
+    WOODIE = 
+    {
+    	name = "WOODIE",
+    	types =
+        {
+            FOODTYPE.MEAT,
+            FOODTYPE.VEGGIE,
+            FOODTYPE.INSECT,
+            FOODTYPE.SEEDS,
+            FOODTYPE.GENERIC,
+            FOODTYPE.WOOD,
+        },
+	},
     BERRIES_AND_SEEDS =
     {
         name = "BERRIES_AND_SEEDS",

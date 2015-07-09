@@ -24,21 +24,6 @@ local function onwake(inst, sleeper, nostatechange)
 
     inst:StopWatchingWorldState("phase", wakeuptest)
 
-    --Wake up sleeper components
-    if sleeper.components.grue ~= nil then
-        sleeper.components.grue:SetSleeping(false)
-        if sleeper.components.grue:CheckForStart() then
-            sleeper.components.grue:Start()
-        end
-    end
-    if sleeper.components.talker ~= nil then
-        sleeper.components.talker:StopIgnoringAll()
-    end
-    if sleeper.components.firebug ~= nil then
-        sleeper.components.firebug:Enable()
-    end
-    --
-
     if not nostatechange then
         if sleeper.sg:HasStateTag("bedroll") then
             sleeper.sg.statemem.iswaking = true
@@ -56,11 +41,11 @@ local function onwake(inst, sleeper, nostatechange)
 end
 
 local function onsleeptick(inst, sleeper)
-    local isstarving = false
+    local isstarving = sleeper.components.beaverness ~= nil and sleeper.components.beaverness:IsStarving()
 
     if sleeper.components.hunger ~= nil then
         sleeper.components.hunger:DoDelta(TUNING.SLEEP_HUNGER_PER_TICK, true, true)
-        isstarving = (sleeper.components.hunger.current <= 0)
+        isstarving = sleeper.components.hunger:IsStarving()
     end
 
     if sleeper.components.sanity ~= nil and sleeper.components.sanity:GetPercentWithPenalty() < 1 then
@@ -87,18 +72,6 @@ end
 local function onsleep(inst, sleeper)
     -- check if we're in an invalid period (i.e. daytime). if so: wakeup
     inst:WatchWorldState("phase", wakeuptest)
-
-    --Put sleeper components to sleep
-    if sleeper.components.grue ~= nil then
-        sleeper.components.grue:SetSleeping(true)
-    end
-    if sleeper.components.talker ~= nil then
-        sleeper.components.talker:IgnoreAll()
-    end
-    if sleeper.components.firebug ~= nil then
-        sleeper.components.firebug:Disable()
-    end
-    --
 
     if inst.sleeptask ~= nil then
         inst.sleeptask:Cancel()
@@ -141,11 +114,11 @@ local function common_fn(bank, build)
     inst:AddComponent("fuel")
     inst.components.fuel.fuelvalue = TUNING.LARGE_FUEL
 
-	MakeSmallBurnable(inst, TUNING.LONG_BURNABLE)
+    MakeSmallBurnable(inst, TUNING.LONG_BURNABLE)
     MakeSmallPropagator(inst)
-    
+
     inst:AddComponent("sleepingbag")
-	inst.components.sleepingbag.onsleep = onsleep
+    inst.components.sleepingbag.onsleep = onsleep
     inst.components.sleepingbag.onwake = onwake
 
     MakeHauntableLaunchAndIgnite(inst)
@@ -192,4 +165,4 @@ local function bedroll_furry()
 end
 
 return Prefab("common/inventory/bedroll_straw", bedroll_straw, straw_assets),
-        Prefab("common/inventory/bedroll_furry", bedroll_furry, furry_assets)
+    Prefab("common/inventory/bedroll_furry", bedroll_furry, furry_assets)

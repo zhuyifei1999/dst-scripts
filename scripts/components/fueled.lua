@@ -7,7 +7,7 @@ local function onfueltype(self, fueltype, old_fueltype)
     if fueltype == self.secondaryfueltype then
         return
     elseif fueltype == FUELTYPE.USAGE then
-        if self.currentfuel < self.maxfuel then
+        if self.currentfuel < self.maxfuel and not self.no_sewing then
             self.inst:AddTag("needssewing")
         end
     elseif fueltype ~= nil and self.accepting then
@@ -22,7 +22,7 @@ local function onsecondaryfueltype(self, fueltype, old_fueltype)
     if fueltype == self.fueltype then
         return
     elseif fueltype == FUELTYPE.USAGE then
-        if self.currentfuel < self.maxfuel then
+        if self.currentfuel < self.maxfuel and not self.no_sewing then
             self.inst:AddTag("needssewing")
         end
     elseif fueltype ~= nil and self.accepting then
@@ -30,16 +30,26 @@ local function onsecondaryfueltype(self, fueltype, old_fueltype)
     end
 end
 
+local function onno_sewing(self, no_sewing)
+    if (self.fueltype == FUELTYPE.USAGE or self.secondaryfueltype == FUELTYPE.USAGE) and self.currentfuel < self.maxfuel then
+        if no_sewing then
+            self.inst:RemoveTag("needssewing")
+        else
+            self.inst:AddTag("needssewing")
+        end
+    end
+end
+
 local function onaccepting(self, accepting)
     if self.fueltype ~= nil and self.fueltype ~= FUELTYPE.USAGE then
-        if self.accepting then
+        if accepting then
             self.inst:AddTag(self.fueltype.."_fueled")
         else
             self.inst:RemoveTag(self.fueltype.."_fueled")
         end
     end
     if self.secondaryfueltype ~= nil and self.secondaryfueltype ~= self.fueltype and self.secondaryfueltype ~= FUELTYPE.USAGE then
-        if self.accepting then
+        if accepting then
             self.inst:AddTag(self.secondaryfueltype.."_fueled")
         else
             self.inst:RemoveTag(self.secondaryfueltype.."_fueled")
@@ -47,9 +57,9 @@ local function onaccepting(self, accepting)
     end
 end
 
-local function onfuelpercent(self)
-    if self.fueltype == FUELTYPE.USAGE or self.secondaryfueltype == FUELTYPE.USAGE then
-        if self.currentfuel < self.maxfuel then
+local function onmaxfuel(self, maxfuel)
+    if (self.fueltype == FUELTYPE.USAGE or self.secondaryfueltype == FUELTYPE.USAGE) and not self.no_sewing then
+        if self.currentfuel < maxfuel then
             self.inst:AddTag("needssewing")
         else
             self.inst:RemoveTag("needssewing")
@@ -63,7 +73,7 @@ local function oncurrentfuel(self, currentfuel)
     else
         self.inst:RemoveTag("fueldepleted")
     end
-    onfuelpercent(self)
+    onmaxfuel(self, self.maxfuel)
 end
 
 local Fueled = Class(function(self, inst)
@@ -73,7 +83,8 @@ local Fueled = Class(function(self, inst)
     self.maxfuel = 0
     self.currentfuel = 0
     self.rate = 1
-    
+
+    self.no_sewing = nil --V2C: HACK COLON RIGHT PARANTHESIS, I mean, what choice do I have if I don't want to break mods -_ -
     self.accepting = false
     self.fueltype = FUELTYPE.BURNABLE
     self.secondaryfueltype = nil
@@ -88,7 +99,8 @@ nil,
     fueltype = onfueltype,
     secondaryfueltype = onsecondaryfueltype,
     accepting = onaccepting,
-    maxfuel = onfuelpercent,
+    no_sewing = onno_sewing,
+    maxfuel = onmaxfuel,
     currentfuel = oncurrentfuel,
 })
 

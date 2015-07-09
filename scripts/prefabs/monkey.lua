@@ -368,7 +368,7 @@ local function fn()
 
     inst.listenfn = function(listento, data) OnMonkeyDeath(inst, data) end
 
-    inst:ListenForEvent("onpickup", onpickup)
+    inst:ListenForEvent("onpickupitem", onpickup)
     inst:ListenForEvent("attacked", OnAttacked)
 
     inst:ListenForEvent("calmstart", function() DoFx(inst) SetNormalMonkey(inst) end, TheWorld)

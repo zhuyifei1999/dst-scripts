@@ -94,39 +94,37 @@ local function OnAttacked(inst, data)
     inst.components.combat:ShareTarget(attacker, SHARE_TARGET_DIST, function(dude) return dude:HasTag("chess") end, MAX_TARGET_SHARES)
 end
 
+local function onsmashother(inst, other)
+    if not other:IsValid() then
+        return
+    elseif other.components.health ~= nil and not other.components.health:IsDead() then
+        if other:HasTag("smashable") then
+            --other.Physics:SetCollides(false)
+            other.components.health:Kill()
+        else
+            SpawnPrefab("collapse_small").Transform:SetPosition(other.Transform:GetWorldPosition())
+            inst.SoundEmitter:PlaySound("dontstarve/creatures/rook/explo") 
+            inst.components.combat:DoAttack(other)
+        end
+    elseif other.components.workable ~= nil and other.components.workable:CanBeWorked() then
+        SpawnPrefab("collapse_small").Transform:SetPosition(other.Transform:GetWorldPosition())
+        other.components.workable:Destroy(inst)
+    end
+end
+
 local function oncollide(inst, other)
-    local v1 = Vector3(inst.Physics:GetVelocity())
-
-    --if inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("hit") then
-    --    return
-    --end
-
-    if other:HasTag("player") then
+    if other == nil or
+        not other:IsValid() or
+        other:HasTag("player") or
+        Vector3(inst.Physics:GetVelocity()):LengthSq() < 42 then
         return
     end
-    if v1:LengthSq() < 42 then return end
 
-    -- dprint("speed: ", math.sqrt(v1:LengthSq()))
     for i, v in ipairs(AllPlayers) do
         v:ShakeCamera(CAMERASHAKE.SIDE, .5, .05, .1, inst, 40)
     end
 
-    inst:DoTaskInTime(2*FRAMES, function()   
-            if  (other and other:HasTag("smashable")) then
-                --other.Physics:SetCollides(false)
-                other.components.health:Kill()
-            elseif other and other.components.health and other.components.health:GetPercent() >= 0 then
-                dprint("----------------HIT!:",other, other.components.health and other.components.health:GetPercent())
-                SpawnPrefab("collapse_small").Transform:SetPosition(other:GetPosition():Get())
-                inst.SoundEmitter:PlaySound("dontstarve/creatures/rook/explo") 
-                inst.components.combat:DoAttack(other)
-                dprint("_____After HIT")
-            elseif other and other.components.workable and other.components.workable.workleft > 0 then
-                SpawnPrefab("collapse_small").Transform:SetPosition(other:GetPosition():Get())
-                other.components.workable:Destroy(inst)
-            end
-    end)
-
+    inst:DoTaskInTime(2 * FRAMES, onsmashother, other)
 end
 
 local function spawnchest(inst)

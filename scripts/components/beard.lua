@@ -8,71 +8,91 @@ local function OnDayComplete(self)
     end
 end
 
+local function OnRespawn(inst)
+    inst.components.beard:Reset()
+end
+
 local Beard = Class(function(self, inst)
     self.inst = inst
+
+    --V2C: Recommended to explicitly add tag to prefab pristine state
     inst:AddTag("bearded")
+
     self.daysgrowth = 0
     self.callbacks = {}
     self.prize = nil
     self.bits = 0
     self.insulation_factor = 1
-        
-    self:WatchWorldState("cycles", OnDayComplete)
-    
-    self.inst:ListenForEvent("respawn", function(inst) self:Reset() end)    
+    self.pause = nil
+    self.onreset = nil
+
+    inst:ListenForEvent("respawn", OnRespawn)
+
+    self.isgrowing = nil --force dirty for initial EnableGrowth call
+    self:EnableGrowth(true)
 end)
 
 function Beard:OnRemoveFromEntity()
+    self:EnableGrowth(false)
     self.inst:RemoveTag("bearded")
+    self.inst:RemoveEventCallback("respawn", OnRespawn)
+end
+
+function Beard:EnableGrowth(enable)
+    if enable then
+        if not self.isgrowing then
+            self.isgrowing = true
+            self:WatchWorldState("cycles", OnDayComplete)
+        end
+    elseif self.isgrowing then
+        self.isgrowing = nil
+        self:StopWatchingWorldState("cycles", OnDayComplete)
+    end
 end
 
 function Beard:GetInsulation()
-	return self.bits * TUNING.INSULATION_PER_BEARD_BIT * self.insulation_factor
+    return self.bits * TUNING.INSULATION_PER_BEARD_BIT * self.insulation_factor
 end
 
 function Beard:ShouldTryToShave(who, whithwhat)
     if self.bits == 0 then
         return false, "NOBITS"
-    end
-
-    if self.canshavetest ~= nil then
+    elseif self.canshavetest ~= nil then
         local pass, reason = self.canshavetest(self.inst)
         if not pass then
             return false, reason
         end
     end
-
     return true
 end
 
 function Beard:Shave(who, withwhat)
-    if self.canshavetest ~= nil then
+    if self.bits == 0 then
+        return false, "NOBITS"
+    elseif self.canshavetest ~= nil then
         local pass, reason = self.canshavetest(self.inst)
         if not pass then
             return false, reason
         end
     end
-    if self.bits == 0 then
-        return false, "NOBITS"
-    end
-    if self.prize then
-        for k=1,self.bits do
+
+    if self.prize ~= nil then
+        for k = 1 , self.bits do
             local bit = SpawnPrefab(self.prize)
-            local x,y,z = self.inst.Transform:GetWorldPosition()
-            y = y + 2
-            bit.Transform:SetPosition(x,y,z)
-            local speed = 1+ math.random()
-            local angle = math.random()*360
-            bit.Physics:SetVel(speed*math.cos(angle), 2+math.random()*3, speed*math.sin(angle))
+            local x, y, z = self.inst.Transform:GetWorldPosition()
+            bit.Transform:SetPosition(x, y + 2, z)
+            local speed = 1 + math.random()
+            local angle = math.random() * 2 * PI
+            bit.Physics:SetVel(speed * math.cos(angle), 2 + math.random() * 3, speed * math.sin(angle))
         end
         self:Reset()
     end
-    
-    if who == self.inst and who.components.sanity then
-		who.components.sanity:DoDelta(TUNING.SANITY_SMALL)
+
+    if who == self.inst and who.components.sanity ~= nil then
+        who.components.sanity:DoDelta(TUNING.SANITY_SMALL)
     end
-    
-    return true    
+
+    return true
 end
 
 function Beard:AddCallback(day, cb)
@@ -99,10 +119,10 @@ function Beard:OnLoad(data)
     -- because there is an unknowable delay between the day callback and actually
     -- growing more hair, we need to store how much hair we _actually_ had on quit
     -- to determing the current beefalo state.
-    if data.bits then
+    if data.bits ~= nil then
         self.bits = data.bits
     end
-    if data.growth then
+    if data.growth ~= nil then
         self.daysgrowth = data.growth
     end
     for k = 0, self.daysgrowth do
@@ -114,7 +134,7 @@ function Beard:OnLoad(data)
 end
 
 function Beard:GetDebugString()
-    local nextevent = 999
+    local nextevent = math.huge
     for k, v in pairs(self.callbacks) do
         if k >= self.daysgrowth and k < nextevent then
             nextevent = k

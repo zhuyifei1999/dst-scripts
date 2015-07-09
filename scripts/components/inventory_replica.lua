@@ -159,6 +159,18 @@ function Inventory:IgnoresCanGoInContainer()
     end
 end
 
+function Inventory:EquipHasTag(tag)
+    if self.inst.components.inventory ~= nil then
+        return self.inst.components.inventory:EquipHasTag(tag)
+    elseif self.classified ~= nil then
+        for k, v in pairs(self.classified:GetEquips()) do
+            if v:HasTag(tag) then
+                return true
+            end
+        end
+    end
+end
+
 function Inventory:IsVisible()
     if self.inst.components.inventory ~= nil then
         return self.inst.components.inventory.isvisible

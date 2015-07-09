@@ -27,6 +27,8 @@ local function onpickedfn(inst, picker)
         picker.components.sanity:DoDelta(TUNING.SANITY_TINY)
     end
 
+    TheWorld:PushEvent("beginregrowth", inst)
+
     inst:Remove()
 end
 

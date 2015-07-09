@@ -1,172 +1,237 @@
--- KAJ: TODO MP_TALK - there's a lot of Say() in here
--- KAJ: TODO Strings assume woodie
+local TALK_TO_OWNER_DISTANCE = 15
+
+local function OnAxePossessedByPlayer(inst, player)
+    inst.components.sentientaxe:SetOwner(player)
+end
+
+local function OnAxeRejectedOwner(inst, owner)
+    inst.components.sentientaxe:Say(STRINGS.LUCY.other_owner)
+end
+
+local function OnAxeRejectedOtherAxe(inst, other)
+    inst.components.sentientaxe:Say(STRINGS.LUCY.on_woodie_pickedup_other)
+    if other.components.sentientaxe.say_task ~= nil then
+        other.components.sentientaxe.say_task:Cancel()
+        other.components.sentientaxe.say_task = nil
+    end
+end
 
 local SentientAxe = Class(function(self, inst)
     self.inst = inst
-    self.time_to_convo = 10
-
-    self.inst:ListenForEvent("equipped", function(_, data) self:OnEquipped(data.owner) end)
-	self.inst:ListenForEvent("onpickup", function(_, data) self:OnPickedUp(data.owner) end)
-
-    local dt = 5
-    self.inst:DoPeriodicTask(dt, function() self:OnUpdate(dt) end)
+    self.owner = nil
+    self.convo_task = nil
+    self.say_task = nil
     self.warnlevel = 0
+    self.waslow = false
 
-	self.OnDroppedClosure = function() self:OnDropped() end
-	self.OnFinishedWorkClosure = function(_,data) self:OnFinishedWork(data.target, data.action) end
-	self.OnBeaverDeltaClosure = function(_, data) self:OnBeaverDelta(data.oldpercent, data.newpercent) end
-	self.OnBecomeBeaverClosure = function(_, data) self:OnBecomeBeaver() end
-	self.OnBecomeHumanClosure = function(_, data) self:OnBecomeHuman() end
+    self._onfinishedwork = function(owner, data) self:OnFinishedWork(data.target, data.action) end
+    self._onbeavernessdelta = function(owner, data) self:OnBeavernessDelta(data.oldpercent, data.newpercent) end
+    self._onstartbeaver = function() self:OnBecomeBeaver() end
+    self._onstopbeaver = function() self:OnBecomeHuman() end
+
+    inst:ListenForEvent("axepossessedbyplayer", OnAxePossessedByPlayer)
+    inst:ListenForEvent("axerejectedowner", OnAxeRejectedOwner)
+    inst:ListenForEvent("axerejectedotheraxe", OnAxeRejectedOtherAxe)
 end)
 
-function SentientAxe:SetOwner(owner)
-	if owner then
-		if owner ~= self.owner then
-		    self.inst:ListenForEvent("ondropped", self.OnDroppedClosure)
-		    self.inst:ListenForEvent("finishedwork", self.OnFinishedWorkClosure, owner)
-		    self.inst:ListenForEvent("beavernessdelta", self.OnBeaverDeltaClosure, owner)
-		    self.inst:ListenForEvent("beaverstart", self.OnBecomeBeaverClosure, owner)
-		    self.inst:ListenForEvent("beaverend", self.OnBecomeHumanClosure, owner)
-		end
-	else
-		if self.owner then
-			-- remove owner specific listeners
-		    self.inst:RemoveEventCallback("ondropped", self.OnDroppedClosure)
-		    self.inst:RemoveEventCallback("finishedwork", self.OnFinishedWorkClosure, self.owner)
-		    self.inst:RemoveEventCallback("beavernessdelta", self.OnBeaverDeltaClosure, self.owner)
-		    self.inst:RemoveEventCallback("beaverstart", self.OnBecomeBeaverClosure, self.owner)
-    		self.inst:RemoveEventCallback("beaverend", self.OnBecomeHumanClosure, self.owner)
-		end
-	end
-	self.owner = owner
+local function toground(inst)
+    inst.components.sentientaxe:Say(STRINGS.LUCY.on_dropped, nil, 2 * FRAMES)
 end
 
-function SentientAxe:OnPickedUp(owner)
-	self:SetOwner(owner)
+local function onequipped(inst, data)
+    local self = inst.components.sentientaxe
+    if self.owner ~= nil and self.owner == data.owner then
+        self:Say(STRINGS.LUCY.on_pickedup)
+    end
+end
+
+function SentientAxe:SetOwner(owner)
+    if self.owner ~= owner then
+        if self.say_task ~= nil then
+            self.say_task:Cancel()
+            self.say_task = nil
+        end
+        if self.convo_task ~= nil then
+            self.convo_task:Cancel()
+            self.convo_task = nil
+        end
+        if self.owner ~= nil then
+            self.inst:RemoveEventCallback("ondropped", toground)
+            self.inst:RemoveEventCallback("equipped", onequipped)
+            self.inst:RemoveEventCallback("finishedwork", self._onfinishedwork, self.owner)
+            self.inst:RemoveEventCallback("beavernessdelta", self._onbeavernessdelta, self.owner)
+            self.inst:RemoveEventCallback("startbeaver", self._onstartbeaver, self.owner)
+            self.inst:RemoveEventCallback("stopbeaver", self._onstopbeaver, self.owner)
+        end
+        self.owner = owner
+        self.warnlevel = 0
+        self.waslow = false
+        if owner ~= nil then
+            self.inst:ListenForEvent("ondropped", toground)
+            self.inst:ListenForEvent("equipped", onequipped)
+            self.inst:ListenForEvent("finishedwork", self._onfinishedwork, owner)
+            self.inst:ListenForEvent("beavernessdelta", self._onbeavernessdelta, owner)
+            self.inst:ListenForEvent("startbeaver", self._onstartbeaver, owner)
+            self.inst:ListenForEvent("stopbeaver", self._onstopbeaver, owner)
+            if self.inst.components.equippable:IsEquipped() then
+                self:Say(STRINGS.LUCY.on_pickedup)
+            end
+            self:ScheduleConversation()
+        end
+    end
 end
 
 function SentientAxe:OnFinishedWork(target, action)
-        self:Say(STRINGS.LUCY.on_chopped)
-    if action == ACTIONS.CHOP and 
-        self.inst.components.inventoryitem.owner and self.inst.components.inventoryitem.owner:HasTag("player") and 
+    if self.owner ~= nil and
+        action == ACTIONS.CHOP and
         self.inst.components.equippable:IsEquipped() and
-        (self.owner.components.beaverness and self.owner.components.beaverness:GetPercent() < .25) then
+        self.owner.components.beaverness ~= nil and
+        self.owner.components.beaverness:GetPercent() > .7 then
         self:Say(STRINGS.LUCY.on_chopped)
     end
 end
 
-function SentientAxe:OnBeaverDelta(old, new)
-	-- KAJ: TODO: MP_LOGIC - What does this do if we don't have an owner? Should it pick the nearest player? Last owner?
-	if not self.owner then
-		return
-	end
-    
-    if self.owner.components.beaverness:IsBeaver() then return end
+local beaverness_thresholds = {
+    {
+        val = 0.74,
+        up_strings = STRINGS.LUCY.beaver_up_waslow,
+        needs_low = true, -- this will only trigger if low had been latched to true
+        low = false, -- latch low to false
+    },
+    {
+        val = 0.5833,
+        down_strings = STRINGS.LUCY.beaver_down_early,
+        down_audio = "dontstarve/characters/woodie/lucy_warn_1",
+    },
+    {
+        val = 0.4167,
+        down_strings = STRINGS.LUCY.beaver_down_mid,
+        down_audio = "dontstarve/characters/woodie/lucy_warn_2",
+        low = true, -- latch low to true
+    },
+    {
+        val = .30,
+        down_strings = STRINGS.LUCY.beaver_down_late,
+        down_audio = "dontstarve/characters/woodie/lucy_warn_3",
+    },
+}
 
-    if new > old then
-        if new > .33 and old <= .33 and self.warnlevel < 1 then
-            self:Say(STRINGS.LUCY.beaver_up_early)     
-            self.warnlevel = 1
-        elseif new > .66 and old <= .66 and self.warnlevel < 2 then
-            self:Say(STRINGS.LUCY.beaver_up_mid)     
-            self.warnlevel = 2
-        elseif new > .9 and old <= .9 and self.warnlevel < 3 then
-            self:Say(STRINGS.LUCY.beaver_up_late)
-            self.warnlevel = 3   
-            self.washigh = true  
-        end
-
+function SentientAxe:OnBeavernessDelta(old, new)
+    if not self.inst.components.inventoryitem:IsHeld() then
+        return
     else
-        if self.warnlevel == 3 and new < .66 then
-            self.warnlevel = 2
-        elseif self.warnlevel == 2 and new < .33 then
-            self.warnlevel = 1
-        end
+        for i,threshold in ipairs(beaverness_thresholds) do
 
-        if new <= 0 and old > 0 then
-            if self.washigh then
-                
-                local warn_sounds = {"dontstarve/characters/woodie/lucy_warn_1","dontstarve/characters/woodie/lucy_warn_2","dontstarve/characters/woodie/lucy_warn_3"}
-				-- KAJ: TODO: MP_TALK
-                self:Say(STRINGS.LUCY.beaver_down_washigh, warn_sounds[self.warnlevel])     
-                self.warnlevel = 0
-                self.washigh = false
+            if threshold.down_strings and old >= threshold.val and new < threshold.val then
+                self:Say(threshold.down_strings, threshold.down_audio, FRAMES)
+                if threshold.low ~= nil then
+                    self.waslow = threshold.low
+                end
+                break
             end
-        end            
+
+            if threshold.up_strings and old <= threshold.val and new > threshold.val then
+                if not threshold.needs_low or self.waslow then
+                    self:Say(threshold.up_strings, threshold.up_audio, FRAMES)
+                end
+                if threshold.low ~= nil then
+                    self.waslow = threshold.low
+                end
+                break
+            end
+
+        end
     end
 end
 
 function SentientAxe:OnBecomeHuman()
-    self:Say(STRINGS.LUCY.transform_woodie)
+    if self.owner ~= nil and self.owner:IsNear(self.inst, TALK_TO_OWNER_DISTANCE) then
+        self:Say(STRINGS.LUCY.transform_woodie)
+    elseif self.say_task ~= nil then
+        self.say_task:Cancel()
+        self.say_task = nil
+    end
 end
 
 function SentientAxe:OnBecomeBeaver()
-    self:Say(STRINGS.LUCY.transform_beaver, "dontstarve/characters/woodie/lucy_transform")
-end
-
-function SentientAxe:OnDropped()
-	assert(self.owner)
-	if self.owner then
-	    if self.owner.components.beaverness and self.owner.components.beaverness:IsBeaver() then
-    	    self:Say(STRINGS.LUCY.transform_beaver)
-	    else	
-    	    self:Say(STRINGS.LUCY.on_dropped)
-	    end
-		self:SetOwner(nil)
-	end
-end
-
-function SentientAxe:OnEquipped(picked_up_by)
-	self:SetOwner(picked_up_by)
-    if picked_up_by:HasTag("player") then
-        self:Say(STRINGS.LUCY.on_pickedup) 
+    if self.owner ~= nil and self.owner:IsNear(self.inst, TALK_TO_OWNER_DISTANCE) then
+        self:Say(STRINGS.LUCY.transform_beaver, "dontstarve/characters/woodie/lucy_transform")
+    elseif self.say_task ~= nil then
+        self.say_task:Cancel()
+        self.say_task = nil
     end
 end
 
-function SentientAxe:OnUpdate(dt)
-    self.time_to_convo = self.time_to_convo - dt
-    if self.time_to_convo <= 0 then
-        self:MakeConversation()
+local function OnSay(inst, self, list, sound_override)
+    self.say_task = nil
+    --Use ShouldMakeConversation check for delayed speech
+    if self:ShouldMakeConversation() then
+        self:Say(list, sound_override)
     end
 end
 
-function SentientAxe:Say(list, sound_override)
-    self.sound_override = sound_override
-    self.inst.components.talker:Say(list[math.random(#list)])
-    self.time_to_convo = math.random(60, 120)
+function SentientAxe:Say(list, sound_override, delay)
+    if self.say_task ~= nil then
+        self.say_task:Cancel()
+        self.say_task = nil
+    end
+    if delay ~= nil then
+        self.say_task = self.inst:DoTaskInTime(delay, OnSay, self, list, sound_override)
+        return
+    end
+
+    if self.inst.lucy_classified ~= nil then
+        self.inst.lucy_classified:Say(list, math.random(#list), sound_override)
+    end
+    if self.owner ~= nil then
+        self:ScheduleConversation(60 + math.random() * 60)
+    end
 end
 
+local function OnMakeConvo(inst, self)
+    self.convo_task = nil
+    self:MakeConversation()
+end
+
+function SentientAxe:ShouldMakeConversation()
+    return self.owner ~= nil
+        and not (self.owner.components.health ~= nil and
+                self.owner.components.health:IsDead())
+        and not (self.owner.sg:HasStateTag("transform") or
+                self.owner:HasTag("beaver") or
+                self.owner:HasTag("playerghost"))
+end
+
+function SentientAxe:ScheduleConversation(delay)
+    if self.convo_task ~= nil then
+        self.convo_task:Cancel()
+    end
+    self.convo_task = self.inst:DoTaskInTime(delay or 10 + math.random() * 5, OnMakeConvo, self)
+end
 
 function SentientAxe:MakeConversation()
-    
-    local grand_owner = self.inst.components.inventoryitem:GetGrandOwner()
+    if self.owner == nil then
+        return
+    elseif not self:ShouldMakeConversation() then
+        self:ScheduleConversation()
+        return
+    end
+
     local owner = self.inst.components.inventoryitem.owner
-
-    local quiplist = nil
-    if owner and owner:HasTag("player") then
-        if self.inst.components.equippable:IsEquipped() then
-            --currently equipped
-            quiplist = STRINGS.LUCY.equipped
-        else
-            --in player inventory
-        end
-    elseif owner == nil then
+    if owner == nil then
         --on the ground
-        quiplist = STRINGS.LUCY.on_ground
-    elseif grand_owner and grand_owner ~= owner and grand_owner:HasTag("player")  then
-        --in a backpack
-        quiplist = STRINGS.LUCY.in_container
-    elseif owner and owner.components.container then
-        --in a container
-        quiplist = STRINGS.LUCY.in_container
-    else
-        --owned by someone else
-        quiplist = STRINGS.LUCY.other_owner
+        if self.owner:IsNear(self.inst, TALK_TO_OWNER_DISTANCE) then
+            self:Say(STRINGS.LUCY.on_ground)
+        end
+    elseif self.inst.components.equippable:IsEquipped() then
+        --equipped
+        self:Say(STRINGS.LUCY.equipped)
+    elseif owner.components.inventoryitem ~= nil and owner.components.inventoryitem.owner == self.owner then
+        --in backpack
+        self:Say(STRINGS.LUCY.in_container)
     end
 
-    if quiplist then
-        self:Say(quiplist)
-    end
+    self:ScheduleConversation()
 end
 
 return SentientAxe

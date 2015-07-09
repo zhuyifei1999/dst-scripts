@@ -84,9 +84,13 @@ function debuglocals (level)
         return table.concat(t, "\n")
 end
 
-function dumptable(obj, indent, recurse_levels)
+function dumptable(obj, indent, recurse_levels, visit_table)
+    if visit_table == nil then
+        visit_table = {}
+    end
+
 	indent = indent or 1
-	local i_recurse_levels = recurse_levels or 10
+	local i_recurse_levels = recurse_levels or 5
     if obj then
 		local dent = ""
 		if indent then
@@ -96,10 +100,22 @@ function dumptable(obj, indent, recurse_levels)
     		print(obj)
     		return
     	end
+        if type(obj) == "table" then
+            if visit_table[obj] ~= nil then
+                print(dent.."(Already visited",obj,"-- skipping.)")
+                return
+            else
+                visit_table[obj] = true
+            end
+        end
         for k,v in pairs(obj) do
             if type(v) == "table" and i_recurse_levels>0 then
-                print(dent.."K: ",k)
-                dumptable(v, indent+1, i_recurse_levels-1)
+                if v.entity and v.entity:GetGUID() then
+                    print(dent.."K: ",k," V", v, "(Entity -- skipping.)")
+                else
+                    print(dent.."K: ",k," V", v)
+                    dumptable(v, indent+1, i_recurse_levels-1, visit_table)
+                end
             else
                 print(dent.."K: ",k," V: ",v)
             end

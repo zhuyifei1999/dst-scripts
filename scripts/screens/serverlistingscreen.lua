@@ -516,6 +516,8 @@ function ServerListingScreen:ClearServerList()
         v.CHAR_ICON_BG:Hide()
         v.CHAR_ICON:Hide()
         v.FRIEND_ICON:Hide()
+        v.CLAN_OPEN_ICON:Hide()
+        v.CLAN_CLOSED_ICON:Hide()
         v.HAS_PASSWORD_ICON:Hide()
         v.DEDICATED_ICON:Hide()
         v.PVP_ICON:Hide()
@@ -647,6 +649,8 @@ function ServerListingScreen:MakeServerListWidgets()
         row.DETAILS = row.cursor:AddChild(Widget("detail_icons"))
         row.DETAILS:SetPosition(column_offsets.DETAILS-231, -1, 0)
 
+        local details_x = -44
+
         row.CHAR_ICON_BG = row.DETAILS:AddChild(Image("images/saveslot_portraits.xml", "background.tex"))
         row.CHAR_ICON_BG:SetScale(.22, .22, 1)    
         row.CHAR_ICON = row.DETAILS:AddChild(Image())
@@ -657,55 +661,80 @@ function ServerListingScreen:MakeServerListWidgets()
         row.CHAR_ICON.label:Hide()
         row.CHAR_ICON.OnGainFocus = function() row.CHAR_ICON.label:Show() end
         row.CHAR_ICON.OnLoseFocus = function() row.CHAR_ICON.label:Hide() end
-        row.CHAR_ICON_BG:SetPosition(-31,1)
-        row.CHAR_ICON:SetPosition(-31,1)
+        row.CHAR_ICON_BG:SetPosition(details_x,1)
+        row.CHAR_ICON:SetPosition(details_x,1)
         row.CHAR_ICON_BG:Hide()
         row.CHAR_ICON:Hide()
+        details_x = details_x + 27
 
         row.FRIEND_ICON = row.DETAILS:AddChild(Image("images/servericons.xml", "icons_friends.tex"))
-        row.FRIEND_ICON:SetPosition(99,1)
+        row.FRIEND_ICON:SetPosition(details_x,1)
         row.FRIEND_ICON.label = row.FRIEND_ICON:AddChild(Text(UIFONT, 23, STRINGS.UI.SERVERLISTINGSCREEN.FRIEND_ICON_HOVER)) 
         row.FRIEND_ICON.label:SetPosition(3,22,0)
         row.FRIEND_ICON.label:Hide()
         row.FRIEND_ICON.OnGainFocus = function() row.FRIEND_ICON.label:Show() end
         row.FRIEND_ICON.OnLoseFocus = function() row.FRIEND_ICON.label:Hide() end
         row.FRIEND_ICON:Hide()
+        details_x = details_x + 26
         
-        row.HAS_PASSWORD_ICON = row.DETAILS:AddChild(Image("images/servericons.xml", "icon_lock.tex"))
-        row.HAS_PASSWORD_ICON:SetPosition(73,1)
-        row.HAS_PASSWORD_ICON.label = row.HAS_PASSWORD_ICON:AddChild(Text(UIFONT, 23, STRINGS.UI.SERVERLISTINGSCREEN.PASSWORD_ICON_HOVER))
-        row.HAS_PASSWORD_ICON.label:SetPosition(3,22,0)
-        row.HAS_PASSWORD_ICON.label:Hide()
-        row.HAS_PASSWORD_ICON.OnGainFocus = function() row.HAS_PASSWORD_ICON.label:Show() end
-        row.HAS_PASSWORD_ICON.OnLoseFocus = function() row.HAS_PASSWORD_ICON.label:Hide() end
-        row.HAS_PASSWORD_ICON:Hide()
-
-        row.DEDICATED_ICON = row.DETAILS:AddChild(Image("images/servericons.xml", "icon_server.tex"))
-        row.DEDICATED_ICON:SetPosition(47,1)
-        row.DEDICATED_ICON.label = row.DEDICATED_ICON:AddChild(Text(UIFONT, 23, STRINGS.UI.SERVERLISTINGSCREEN.DEDICATED_ICON_HOVER))
-        row.DEDICATED_ICON.label:SetPosition(3,22,0)
-        row.DEDICATED_ICON.label:Hide()
-        row.DEDICATED_ICON.OnGainFocus = function() row.DEDICATED_ICON.label:Show() end
-        row.DEDICATED_ICON.OnLoseFocus = function() row.DEDICATED_ICON.label:Hide() end
-        row.DEDICATED_ICON:Hide()
+        row.CLAN_OPEN_ICON = row.DETAILS:AddChild(Image("images/servericons.xml", "icon_group_open.tex"))
+        row.CLAN_OPEN_ICON:SetPosition(details_x,1)
+        row.CLAN_OPEN_ICON.label = row.CLAN_OPEN_ICON:AddChild(Text(UIFONT, 23, STRINGS.UI.SERVERLISTINGSCREEN.CLAN_OPEN_ICON_HOVER)) 
+        row.CLAN_OPEN_ICON.label:SetPosition(3,22,0)
+        row.CLAN_OPEN_ICON.label:Hide()
+        row.CLAN_OPEN_ICON.OnGainFocus = function() row.CLAN_OPEN_ICON.label:Show() end
+        row.CLAN_OPEN_ICON.OnLoseFocus = function() row.CLAN_OPEN_ICON.label:Hide() end
+        row.CLAN_OPEN_ICON:Hide()
+        
+        row.CLAN_CLOSED_ICON = row.DETAILS:AddChild(Image("images/servericons.xml", "icon_group_closed.tex"))
+        row.CLAN_CLOSED_ICON:SetPosition(details_x,1)
+        row.CLAN_CLOSED_ICON.label = row.CLAN_CLOSED_ICON:AddChild(Text(UIFONT, 23, STRINGS.UI.SERVERLISTINGSCREEN.CLAN_CLOSED_ICON_HOVER)) 
+        row.CLAN_CLOSED_ICON.label:SetPosition(3,22,0)
+        row.CLAN_CLOSED_ICON.label:Hide()
+        row.CLAN_CLOSED_ICON.OnGainFocus = function() row.CLAN_CLOSED_ICON.label:Show() end
+        row.CLAN_CLOSED_ICON.OnLoseFocus = function() row.CLAN_CLOSED_ICON.label:Hide() end
+        row.CLAN_CLOSED_ICON:Hide()
+        details_x = details_x + 26
         
         row.PVP_ICON = row.DETAILS:AddChild(Image("images/servericons.xml", "icon_PvP.tex"))
-        row.PVP_ICON:SetPosition(-5,1)
+        row.PVP_ICON:SetPosition(details_x,1)
         row.PVP_ICON.label = row.PVP_ICON:AddChild(Text(UIFONT, 23, STRINGS.UI.SERVERLISTINGSCREEN.PVP_ICON_HOVER))
         row.PVP_ICON.label:SetPosition(3,22,0)
         row.PVP_ICON.label:Hide()
         row.PVP_ICON.OnGainFocus = function() row.PVP_ICON.label:Show() end
         row.PVP_ICON.OnLoseFocus = function() row.PVP_ICON.label:Hide() end
         row.PVP_ICON:Hide()
+        details_x = details_x + 26
     
         row.MODS_ENABLED_ICON = row.DETAILS:AddChild(Image("images/servericons.xml", "icon_modserver.tex"))
-        row.MODS_ENABLED_ICON:SetPosition(21,1)
+        row.MODS_ENABLED_ICON:SetPosition(details_x,1)
         row.MODS_ENABLED_ICON.label = row.MODS_ENABLED_ICON:AddChild(Text(UIFONT, 23, STRINGS.UI.SERVERLISTINGSCREEN.MODS_ICON_HOVER))
         row.MODS_ENABLED_ICON.label:SetPosition(3,22,0)
         row.MODS_ENABLED_ICON.label:Hide()
         row.MODS_ENABLED_ICON.OnGainFocus = function() row.MODS_ENABLED_ICON.label:Show() end
         row.MODS_ENABLED_ICON.OnLoseFocus = function() row.MODS_ENABLED_ICON.label:Hide() end
         row.MODS_ENABLED_ICON:Hide()
+        details_x = details_x + 26
+        
+        row.DEDICATED_ICON = row.DETAILS:AddChild(Image("images/servericons.xml", "icon_server.tex"))
+        row.DEDICATED_ICON:SetPosition(details_x,1)
+        row.DEDICATED_ICON.label = row.DEDICATED_ICON:AddChild(Text(UIFONT, 23, STRINGS.UI.SERVERLISTINGSCREEN.DEDICATED_ICON_HOVER))
+        row.DEDICATED_ICON.label:SetPosition(3,22,0)
+        row.DEDICATED_ICON.label:Hide()
+        row.DEDICATED_ICON.OnGainFocus = function() row.DEDICATED_ICON.label:Show() end
+        row.DEDICATED_ICON.OnLoseFocus = function() row.DEDICATED_ICON.label:Hide() end
+        row.DEDICATED_ICON:Hide()
+        details_x = details_x + 26
+
+        row.HAS_PASSWORD_ICON = row.DETAILS:AddChild(Image("images/servericons.xml", "icon_lock.tex"))
+        row.HAS_PASSWORD_ICON:SetPosition(details_x,1)
+        row.HAS_PASSWORD_ICON.label = row.HAS_PASSWORD_ICON:AddChild(Text(UIFONT, 23, STRINGS.UI.SERVERLISTINGSCREEN.PASSWORD_ICON_HOVER))
+        row.HAS_PASSWORD_ICON.label:SetPosition(3,22,0)
+        row.HAS_PASSWORD_ICON.label:Hide()
+        row.HAS_PASSWORD_ICON.OnGainFocus = function() row.HAS_PASSWORD_ICON.label:Show() end
+        row.HAS_PASSWORD_ICON.OnLoseFocus = function() row.HAS_PASSWORD_ICON.label:Hide() end
+        row.HAS_PASSWORD_ICON:Hide()
+        details_x = details_x + 26
 
         row.PLAYERS = row:AddChild(Text(BUTTONFONT, font_size))
         row.PLAYERS:SetHAlign(ANCHOR_MIDDLE)
@@ -737,6 +766,8 @@ function ServerListingScreen:MakeServerListWidgets()
             widget.CHAR_ICON:Hide()
             widget.CHAR_ICON_BG:Hide()
             widget.FRIEND_ICON:Hide()
+            widget.CLAN_OPEN_ICON:Hide()
+            widget.CLAN_CLOSED_ICON:Hide()
             widget.HAS_PASSWORD_ICON:Hide()
             widget.DEDICATED_ICON:Hide()
             widget.PVP_ICON:Hide()
@@ -782,10 +813,22 @@ function ServerListingScreen:MakeServerListWidgets()
                 widget.CHAR_ICON:Hide()
             end
             
-            if serverdata.friend then 
+            if serverdata.friend_playing then 
                 widget.FRIEND_ICON:Show()
             else
                 widget.FRIEND_ICON:Hide()
+            end
+            if serverdata.clan_server and serverdata.belongs_to_clan then
+                if serverdata.clan_only then
+                    widget.CLAN_OPEN_ICON:Hide()
+                    widget.CLAN_CLOSED_ICON:Show()
+                else
+                    widget.CLAN_OPEN_ICON:Show()
+                    widget.CLAN_CLOSED_ICON:Hide()
+                end
+            else
+                widget.CLAN_OPEN_ICON:Hide()
+                widget.CLAN_CLOSED_ICON:Hide()
             end
             if serverdata.has_password then 
                 widget.HAS_PASSWORD_ICON:Show()
@@ -927,6 +970,16 @@ function ServerListingScreen:DoSorting()
     -- ("Server 5" < "Server 50" < "Server 6" is current result for Name)
     if self.viewed_servers then
         table.sort(self.viewed_servers, function(a,b)
+            if a.friend_playing and not b.friend_playing then
+                return true
+            elseif not a.friend_playing and b.friend_playing then
+                return false
+            end
+            if a.belongs_to_clan and not b.belongs_to_clan then
+                return true
+            elseif not a.belongs_to_clan and b.belongs_to_clan then
+                return false
+            end
             if self.sort_ascending then
                 if self.sort_column == "NAME" then
                     return string.lower(a.name) < string.lower(b.name)
@@ -1019,6 +1072,13 @@ function ServerListingScreen:IsValidWithFilters(server)
     -- Filter our friends only servers that are not our friend
     if server.friends_only and not server.friend then
         valid = false
+        self.unjoinable_servers = self.unjoinable_servers + 1
+    end
+
+    -- Filter servers that we aren't allowed to join.
+    if server.clan_only and not server.belongs_to_clan then
+        valid = false
+        self.unjoinable_servers = self.unjoinable_servers + 1
     end
 	 
     -- Filter out unjoinable servers, if we are online
@@ -1053,7 +1113,9 @@ function ServerListingScreen:IsValidWithFilters(server)
                 or (v.name == "MINOPENSLOTS" and v.spinner:GetSelectedData() ~= "ANY" and server.max_players - server.current_players < v.spinner:GetSelectedData())
                 or (v.name == "ISFULL" and (server.current_players >= server.max_players and v.spinner:GetSelectedData() == false))
                 or (v.name == "ISEMPTY" and (server.current_players <= 0 and v.spinner:GetSelectedData() == false))
-                or (v.name == "FRIENDSONLY" and v.spinner:GetSelectedData() ~= "ANY" and v.spinner:GetSelectedData() ~= server.friend )
+                or (v.name == "FRIENDSONLY" and v.spinner:GetSelectedData() ~= "ANY" and v.spinner:GetSelectedData() ~= server.friend_playing )
+                or (v.name == "CLANONLY" and v.spinner:GetSelectedData() ~= "ANY" and not server.belongs_to_clan )
+                or (v.name == "CLANONLY" and v.spinner:GetSelectedData() == "PRIVATE" and not server.clan_only )
                 or (v.name == "SEASON" and v.spinner:GetSelectedData() ~= "ANY" and v.spinner:GetSelectedData() ~= server.season )
                 or (v.name == "VERSIONCHECK" and v.spinner:GetSelectedData() and version_mismatch )
                 or (v.name == "ISDEDICATED" and v.spinner:GetSelectedData() ~= "ANY" and server.dedicated ~= v.spinner:GetSelectedData())
@@ -1152,7 +1214,11 @@ function ServerListingScreen:DoFiltering()
                         port=v.port, 
                         row=v.row, 
                         version=v.version,
-                        friend=v.friend, 
+                        friend=v.friend,
+                        friend_playing=v.friend_playing, 
+                        clan_server = v.clan_server,
+                        clan_only = v.clan_only,
+                        belongs_to_clan=v.belongs_to_clan, 
                         actualindex=i,
                         mods_enabled = v.mods_enabled,
                         tags = v.tags,
@@ -1311,7 +1377,8 @@ end
 function ServerListingScreen:MakeFiltersPanel(filter_data)
     local any_on_off = {{ text = STRINGS.UI.SERVERLISTINGSCREEN.ANY, data = "ANY" }, { text = STRINGS.UI.SERVERLISTINGSCREEN.ON, data = true }, { text = STRINGS.UI.SERVERLISTINGSCREEN.OFF, data = false }}
     local any_no_yes = {{ text = STRINGS.UI.SERVERLISTINGSCREEN.ANY, data = "ANY" }, { text = STRINGS.UI.SERVERLISTINGSCREEN.NO, data = false }, { text = STRINGS.UI.SERVERLISTINGSCREEN.YES, data = true }}
-    local any_yes_no = {{ text = STRINGS.UI.SERVERLISTINGSCREEN.ANY, data = "ANY" }, { text = STRINGS.UI.SERVERLISTINGSCREEN.YES, data = true }, { text = STRINGS.UI.   SERVERLISTINGSCREEN.NO, data = false }}
+    local any_yes_no = {{ text = STRINGS.UI.SERVERLISTINGSCREEN.ANY, data = "ANY" }, { text = STRINGS.UI.SERVERLISTINGSCREEN.YES, data = true }, { text = STRINGS.UI.SERVERLISTINGSCREEN.NO, data = false }}
+    local any_mine_private = {{ text = STRINGS.UI.SERVERLISTINGSCREEN.ANY, data = "ANY" }, { text = STRINGS.UI.SERVERLISTINGSCREEN.MINE, data = "MINE" }, { text = STRINGS.UI.SERVERLISTINGSCREEN.PRIVATE, data = "PRIVATE" }}
     local yes_no = {{ text = STRINGS.UI.SERVERLISTINGSCREEN.YES, data = true }, { text = STRINGS.UI.SERVERLISTINGSCREEN.NO, data = false }}
     local no_yes = {{ text = STRINGS.UI.SERVERLISTINGSCREEN.NO, data = false }, { text = STRINGS.UI.SERVERLISTINGSCREEN.YES, data = true }}
     local any_dedicated_hosted = {{ text = STRINGS.UI.SERVERLISTINGSCREEN.ANY, data = "ANY" }, { text = STRINGS.UI.SERVERLISTINGSCREEN.DEDICATED, data = true }, { text = STRINGS.UI.SERVERLISTINGSCREEN.HOSTED, data = false }}
@@ -1367,6 +1434,7 @@ function ServerListingScreen:MakeFiltersPanel(filter_data)
     table.insert(self.filters, CreateSpinner( self, "HASCHARACTER", STRINGS.UI.SERVERLISTINGSCREEN.HASCHARACTER, any_yes_no, false )) --#srosen disabled until we can get perf better on this
     table.insert(self.filters, CreateSpinner( self, "ISFULL", STRINGS.UI.SERVERLISTINGSCREEN.ISFULL, yes_no, false ))
     table.insert(self.filters, CreateSpinner( self, "FRIENDSONLY", STRINGS.UI.SERVERLISTINGSCREEN.FRIENDSONLY, any_yes_no, false ))
+    table.insert(self.filters, CreateSpinner( self, "CLANONLY", STRINGS.UI.SERVERLISTINGSCREEN.CLANONLY, any_mine_private, false ))
     table.insert(self.filters, CreateSpinner( self, "SEASON", STRINGS.UI.SERVERLISTINGSCREEN.SEASONFILTER, seasons, false ))
     table.insert(self.filters, CreateSpinner( self, "ISDEDICATED", STRINGS.UI.SERVERLISTINGSCREEN.SERVERTYPE, any_dedicated_hosted, false ))
     table.insert(self.filters, CreateSpinner( self, "HASPASSWORD", STRINGS.UI.SERVERLISTINGSCREEN.HASPASSWORD, any_no_yes, false ))

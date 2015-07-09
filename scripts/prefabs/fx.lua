@@ -66,7 +66,7 @@ local function MakeFx(t)
 
         if t.bloom then
             inst.bloom = true
-            inst.AnimState:SetBloomEffectHandle( "shaders/anim.ksh" )
+            inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
          end
 
         if not t.nameoverride and not t.description then
@@ -121,7 +121,7 @@ end
 local prefs = {}
 local fx = require("fx")
 
-for k,v in pairs(fx) do
+for k, v in pairs(fx) do
     table.insert(prefs, MakeFx(v))
 end
 

@@ -13,7 +13,7 @@ local prefabs =
     "boneshard",
 }
 
-SetSharedLootTable( 'hound_mound',
+SetSharedLootTable('hound_mound',
 {
     {'houndstooth', 1.00},
     {'houndstooth', 1.00},
@@ -27,59 +27,82 @@ SetSharedLootTable( 'hound_mound',
 local function GetSpecialHoundChance()
     local day = TheWorld.state.cycles
     local chance = 0
-    for k,v in ipairs(TUNING.HOUND_SPECIAL_CHANCE) do
-        if day > v.minday then
-            chance = v.chance
-        elseif day <= v.minday then
+    for k, v in ipairs(TUNING.HOUND_SPECIAL_CHANCE) do
+        if day <= v.minday then
             return chance
         end
+        chance = v.chance
     end
     return chance
 end
 
 local function SpawnGuardHound(inst, attacker)
-    local prefab = "hound"
-    if math.random() < GetSpecialHoundChance() then
-        if TheWorld.state.iswinter or TheWorld.state.isspring then
-            prefab = "icehound"
-        else
-            prefab = "firehound"
-        end
-    end
+    local prefab =
+        (math.random() >= GetSpecialHoundChance() and "hound") or
+        (TheWorld.state.iswinter or TheWorld.state.isspring and "icehound") or
+        "firehound"
     local defender = inst.components.childspawner:SpawnChild(attacker, prefab)
-    if defender and attacker and defender.components.combat then
+    if defender ~= nil and attacker ~= nil and defender.components.combat ~= nil then
         defender.components.combat:SetTarget(attacker)
-        defender.components.combat:BlankOutAttacks(1.5 + math.random()*2)
+        defender.components.combat:BlankOutAttacks(1.5 + math.random() * 2)
     end
 end
 
 local function SpawnGuards(inst)
-    if not inst.components.health:IsDead() and inst.components.childspawner then
+    if not inst.components.health:IsDead() and inst.components.childspawner ~= nil then
         local num_to_release = math.min(3, inst.components.childspawner.childreninside)
-        for k = 1,num_to_release do
+        for k = 1, num_to_release do
             SpawnGuardHound(inst)
         end
     end
 end
 
 local function SpawnAllGuards(inst, attacker)
-    if not inst.components.health:IsDead() and inst.components.childspawner then
+    if not inst.components.health:IsDead() and inst.components.childspawner ~= nil then
         inst.AnimState:PlayAnimation("hit")
         inst.AnimState:PushAnimation("idle", false)
         local num_to_release = inst.components.childspawner.childreninside
-        for k = 1,num_to_release do
+        for k = 1, num_to_release do
             SpawnGuardHound(inst)
         end
     end
 end
 
 local function OnKilled(inst)
-    if inst.components.childspawner then
+    if inst.components.childspawner ~= nil then
         inst.components.childspawner:ReleaseAllChildren()
     end
     inst.AnimState:PlayAnimation("death", false)
     inst.SoundEmitter:KillSound("loop")
-    inst.components.lootdropper:DropLoot(Vector3(inst.Transform:GetWorldPosition()))
+    inst.components.lootdropper:DropLoot(inst:GetPosition())
+end
+
+local function OnIsSummer(inst, issummer)
+    inst.components.childspawner:SetRareChild("firehound", issummer and 0.2 or 0)
+end
+
+local function OnHaunt(inst, haunter)
+    if inst.components.childspawner == nil or
+        not inst.components.childspawner:CanSpawn() or
+        math.random() > TUNING.HAUNT_CHANCE_HALF then
+        return false
+    end
+
+    local target = FindEntity(
+        inst,
+        25,
+        function(guy)
+            return inst.components.combat:CanTarget(guy)
+        end,
+        { "_combat" }, --See entityreplica.lua (re: "_combat" tag)
+        { "wall", "playerghost", "houndmound", "hound", "houndfriend", "INLIMBO" }
+    )
+
+    if target ~= nil then
+        SpawnAllGuards(inst, target)
+        return true
+    end
+    return false
 end
 
 local function OnEntityWake(inst)
@@ -109,6 +132,7 @@ local function fn()
     inst.AnimState:PlayAnimation("idle")
 
     inst:AddTag("structure")
+    inst:AddTag("chewable") -- by werebeaver
     inst:AddTag("houndmound")
 
     MakeSnowCoveredPristine(inst)
@@ -131,15 +155,8 @@ local function fn()
     inst.components.childspawner:SetSpawnPeriod(TUNING.HOUNDMOUND_RELEASE_TIME)
     inst.components.childspawner:SetMaxChildren(math.random(TUNING.HOUNDMOUND_HOUNDS_MIN, TUNING.HOUNDMOUND_HOUNDS_MAX))
 
-    local function SetFireHounds()
-        if TheWorld.state.issummer then 
-            inst.components.childspawner:SetRareChild("firehound", 0.2)
-        else
-            inst.components.childspawner:SetRareChild("firehound", 0)
-        end
-    end
-
-    inst:WatchWorldState("issummer", SetFireHounds)
+    inst:WatchWorldState("issummer", OnIsSummer)
+    OnIsSummer(inst, TheWorld.state.issummer)
 
     ---------------------
     inst:AddComponent("lootdropper")
@@ -150,25 +167,7 @@ local function fn()
 
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetHauntValue(TUNING.HAUNT_SMALL)
-    inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
-        if not inst.components.childspawner or not inst.components.childspawner:CanSpawn() then 
-            return false 
-        end
-
-        local target = FindEntity(inst, 25, function(guy) 
-            return inst.components.combat:CanTarget(guy)
-        end,
-        nil,
-        {"wall","playerghost","houndmound","hound","houndfriend"}
-        )
-        
-
-        if target and math.random() <= TUNING.HAUNT_CHANCE_HALF then
-            SpawnAllGuards(inst, target)
-            return true
-        end
-        return false
-    end)
+    inst.components.hauntable:SetOnHauntFn(OnHaunt)
 
     ---------------------
     inst:AddComponent("inspectable")

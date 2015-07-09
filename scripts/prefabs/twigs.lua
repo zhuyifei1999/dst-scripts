@@ -39,8 +39,10 @@ local function fn()
     inst:AddComponent("edible")
     inst.components.edible.foodtype = FOODTYPE.WOOD
     inst.components.edible.woodiness = 5
+    inst.components.edible.healthvalue = 0
+    inst.components.edible.hungervalue = 0
 
-    ---------------------        
+    ---------------------
     MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
     MakeSmallPropagator(inst)
     MakeHauntableLaunchAndIgnite(inst)

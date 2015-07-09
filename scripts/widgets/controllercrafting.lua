@@ -65,9 +65,11 @@ function ControllerCrafting:GetTabs()
 end
 
 function ControllerCrafting:Close(fn)
-	ControllerCrafting._base.Close(self, fn)
-	TheFrontEnd:LockFocus(false)
-	self:StopUpdating()
+    ControllerCrafting._base.Close(self, fn)
+    self:StopUpdating()
+    --V2C: focus hacks because this is not a proper screen
+    TheFrontEnd:LockFocus(false)
+    TheFrontEnd:ClearFocus()
 end
 
 function ControllerCrafting:Open(fn)

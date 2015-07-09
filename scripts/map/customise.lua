@@ -220,6 +220,7 @@ local GROUP = {
 							-- ["cave_entrance"] = {value = "default", enable = false, spinner = nil, image = "caves.tex", desc = yesno_descriptions, order = 10},
 							["frograin"] = {value = "default", enable = false, spinner = nil, image = "frog_rain.tex", desc = freqency_descriptions, order = 13}, 
 							["wildfires"] = {value = "default", enable = false, spinner = nil, image = "smoke.tex", desc = freqency_descriptions, order = 14}, 
+							["regrowth"] = {value = "default", enable = false, spinner = nil, image = "regrowth.tex", desc = speed_descriptions, order = 17}, 
 						}
 					},
 }

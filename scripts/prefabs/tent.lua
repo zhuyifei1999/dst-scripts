@@ -11,7 +11,7 @@ local siestahut_assets =
 }
 
 local function onhammered(inst, worker)
-    if inst:HasTag("fire") and inst.components.burnable then 
+    if inst.components.burnable ~= nil and inst.components.burnable:IsBurning() then
         inst.components.burnable:Extinguish()
     end
     inst.components.lootdropper:DropLoot()
@@ -21,7 +21,7 @@ local function onhammered(inst, worker)
 end
 
 local function onhit(inst, worker)
-    if not inst:HasTag("burnt") then 
+    if not inst:HasTag("burnt") then
         inst.AnimState:PlayAnimation("hit")
         inst.AnimState:PushAnimation("idle", true)
     end
@@ -35,7 +35,7 @@ local function onfinishedsound(inst)
 end
 
 local function onfinished(inst)
-    if not inst:HasTag("burnt") then 
+    if not inst:HasTag("burnt") then
         inst.AnimState:PlayAnimation("destroy")
         inst:ListenForEvent("animover", inst.Remove)
         inst.SoundEmitter:PlaySound("dontstarve/common/tent_dis_pre")
@@ -85,11 +85,11 @@ local function onwake(inst, sleeper, nostatechange)
 end
 
 local function onsleeptick(inst, sleeper)
-    local isstarving = false
+    local isstarving = sleeper.components.beaverness ~= nil and sleeper.components.beaverness:IsStarving()
 
     if sleeper.components.hunger ~= nil then
         sleeper.components.hunger:DoDelta(inst.hunger_tick, true, true)
-        isstarving = (sleeper.components.hunger.current <= 0)
+        isstarving = sleeper.components.hunger:IsStarving()
     end
 
     if sleeper.components.sanity ~= nil and sleeper.components.sanity:GetPercentWithPenalty() < 1 then
@@ -152,7 +152,7 @@ local function common_fn(bank, build, icon, tag)
 
     MakeObstaclePhysics(inst, 1)
 
-    inst:AddTag("tent")    
+    inst:AddTag("tent")
     inst:AddTag("structure")
     if tag ~= nil then
         inst:AddTag(tag)

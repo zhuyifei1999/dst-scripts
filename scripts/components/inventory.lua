@@ -166,61 +166,61 @@ function Inventory:OnLoad(data, newents)
 end
 
 function Inventory:DropActiveItem()
-    if self.activeitem then
+    if self.activeitem ~= nil then
         self:DropItem(self.activeitem)
         self:SetActiveItem(nil)
     end
-
 end
 
 function Inventory:IsWearingArmor()
-    for k,v in pairs(self.equipslots) do
-        if v.components.armor then
+    for k, v in pairs(self.equipslots) do
+        if v.components.armor ~= nil then
             return true
         end
     end
 end
 
 function Inventory:ArmorHasTag(tag)
-    for k,v in pairs(self.equipslots) do
-        if v.components.armor and v:HasTag(tag) then
+    for k, v in pairs(self.equipslots) do
+        if v.components.armor ~= nil and v:HasTag(tag) then
+            return true
+        end
+    end
+end
+
+function Inventory:EquipHasTag(tag)
+    for k, v in pairs(self.equipslots) do
+        if v:HasTag(tag) then
             return true
         end
     end
 end
 
 function Inventory:ApplyDamage(damage, attacker, weapon)
-    --check resistance
-    for k,v in pairs(self.equipslots) do
-        if v.components.resistance and v.components.resistance:HasResistance(attacker, weapon) then
-            return 0
-        end
-    end
-    --check specialised armor
+    --check resistance and specialised armor
     local absorbers = {}
-    for k,v in pairs(self.equipslots) do
-        if v.components.armor then
-            local absorption = v.components.armor:GetAbsorption(attacker, weapon)
-            if absorption then
-                table.insert(absorbers, {armor=v.components.armor, amount=absorption})
-            end
+    for k, v in pairs(self.equipslots) do
+        if v.components.resistance ~= nil and v.components.resistance:HasResistance(attacker, weapon) then
+            return 0
+        elseif v.components.armor ~= nil then
+            absorbers[v.components.armor] = v.components.armor:GetAbsorption(attacker, weapon)
         end
     end
 
-    -- print("Incoming damage",damage)
+    -- print("Incoming damage", damage)
 
     local absorbed_percent = 0
     local total_absorption = 0
-    for i,a in ipairs(absorbers) do
-        -- print("\t",a.armor.inst,"absorbs",a.amount)
-        absorbed_percent = math.max(a.amount, absorbed_percent)
-        total_absorption = total_absorption + a.amount
+    for armor, amt in pairs(absorbers) do
+        -- print("\t", armor.inst, "absorbs", amt)
+        absorbed_percent = math.max(amt, absorbed_percent)
+        total_absorption = total_absorption + amt
     end
 
     local absorbed_damage = damage * absorbed_percent
     local leftover_damage = damage - absorbed_damage
 
-    -- print("\tabsorbed%",absorbed_percent,"total_absorption",total_absorption,"absorbed_damage",absorbed_damage,"leftover_damage",leftover_damage)
+    -- print("\tabsorbed%", absorbed_percent, "total_absorption", total_absorption, "absorbed_damage", absorbed_damage, "leftover_damage", leftover_damage)
 
     if total_absorption > 0 then
         if METRICS_ENABLED then
@@ -228,13 +228,10 @@ function Inventory:ApplyDamage(damage, attacker, weapon)
         end
         ProfileStatsAdd("armor_absorb", absorbed_damage)
 
-        for i,a in ipairs(absorbers) do
-            local absorbed_ratio = a.amount / total_absorption
-            a.armor:TakeDamage(absorbed_damage * absorbed_ratio)
+        for armor, amt in pairs(absorbers) do
+            armor:TakeDamage(absorbed_damage * amt / total_absorption + armor:GetBonusDamage(attacker, weapon))
         end
     end
-
-
 
     return leftover_damage
 end
@@ -1040,24 +1037,32 @@ function Inventory:DropEverythingWithTag(tag)
 end
 
 function Inventory:DropEverything(ondeath, keepequip)
-    if self.activeitem then
+    if self.activeitem ~= nil then
         self:DropItem(self.activeitem)
         self:SetActiveItem(nil)
     end
-    
-    for k = 1,self.maxslots do
+
+    for k = 1, self.maxslots do
         local v = self.itemslots[k]
-        if v then
+        if v ~= nil then
             self:DropItem(v, true, true)
         end
     end
-    
+
     if not keepequip then
-        for k,v in pairs(self.equipslots) do
-            if not ondeath or not v.components.inventoryitem.keepondeath then
+        for k, v in pairs(self.equipslots) do
+            if not (ondeath and v.components.inventoryitem.keepondeath) then
                 self:DropItem(v, true, true)
             end
-        end    
+        end
+    end
+end
+
+function Inventory:DropEquipped(keepBackpack)
+    for k, v in pairs(self.equipslots) do
+        if not (keepBackpack and v:HasTag("backpack")) then
+            self:DropItem(v, true, true)
+        end
     end
 end
 

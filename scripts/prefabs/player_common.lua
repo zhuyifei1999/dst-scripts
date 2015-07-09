@@ -8,17 +8,14 @@ local screen_fade_time = .4
 local DEFAULT_PLAYER_COLOUR = { 1, 1, 1, 1 }
 
 local function giveupstring(combat, target)
-    local str = ""
-    if target and target:HasTag("prey") then
-        str = GetString(combat.inst, "COMBAT_QUIT", "prey")
-    else
-        str = GetString(combat.inst, "COMBAT_QUIT")
-    end
-    return str
+    return GetString(combat.inst, "COMBAT_QUIT", target ~= nil and target:HasTag("prey") and "prey" or nil)
 end
 
-local function CanExamine(inst)
-    return not inst:HasTag("beaver")
+local function battlecrystring(combat, target)
+    return target ~= nil
+        and target:IsValid()
+        and GetString(combat.inst, "BATTLECRY", target:HasTag("prey") and "PREY" or target.prefab)
+        or nil
 end
 
 local function GetStatus(inst, viewer)
@@ -26,15 +23,11 @@ local function GetStatus(inst, viewer)
     -- we might also want other flags for other behaviors
     -- #v2c might want to consider rules for resetting status before implementing
     -- the save, since that is currently the only way to reset your status
-    if inst:HasTag("playerghost") then
-        return "GHOST"
-    elseif inst.hasRevivedPlayer then
-        return "REVIVER"
-    elseif inst.hasKilledPlayer then
-        return "MURDERER"
-    elseif inst.hasAttackedPlayer then
-        return "ATTACKER"
-    end
+    return (inst:HasTag("playerghost") and "GHOST")
+        or (inst.hasRevivedPlayer and "REVIVER")
+        or (inst.hasKilledPlayer and "MURDERER")
+        or (inst.hasAttackedPlayer and "ATTACKER")
+        or nil
 end
 
 local function GetDescription(inst, viewer)
@@ -448,7 +441,6 @@ local function SetGhostMode(inst, isghost)
         return
     end
     TheWorld.minimap.MiniMap:EnablePlayerMinimapUpdate(not isghost)
-    TheWorld:PushEvent("overridecolourcube", isghost and "images/colour_cubes/ghost_cc.tex" or nil)
     TheWorld:PushEvent("enabledynamicmusic", not isghost)
     inst.HUD.controls.status:SetGhostMode(isghost)
     if isghost then
@@ -539,6 +531,8 @@ local function OnRemoveEntity(inst)
             if inst.ghostenabled then
                 inst.Network:RemoveUserFlag(USERFLAGS.IS_GHOST)
             end
+            inst.Network:RemoveUserFlag(USERFLAGS.CHARACTER_STATE_1)
+            inst.Network:RemoveUserFlag(USERFLAGS.CHARACTER_STATE_2)
         else
             inst.player_classified._parent = nil
             inst:RemoveEventCallback("onremove", inst.ondetachclassified, inst.player_classified)
@@ -827,7 +821,7 @@ local function OnMakePlayerGhost( inst, data )
 
     inst.AnimState:SetBank("ghost")
     inst.AnimState:SetBuild(inst.ghostbuild or ("ghost_"..inst.prefab.."_build"))
-    inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+    inst.AnimState:SetBloomEffectHandle("shaders/anim_bloom_ghost.ksh")
     inst.AnimState:SetLightOverride(TUNING.GHOST_LIGHT_OVERRIDE)
     if inst:HasTag("ghostwithhat") then
         inst.AnimState:Show("HAT")
@@ -905,7 +899,7 @@ local function OnSave(inst, data)
         inst:_OnSave(data)
     end
 end
-        
+
 local function OnLoad(inst, data)
     --If this character is being loaded then it isn't a new spawn
     inst.OnNewSpawn = nil
@@ -1168,6 +1162,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_one_man_band.zip"),
         Asset("ANIM", "anim/player_slurtle_armor.zip"),
         Asset("ANIM", "anim/player_staff.zip"),
+        Asset("ANIM", "anim/player_hit_darkness.zip"),
 
         Asset("ANIM", "anim/player_frozen.zip"),
         Asset("ANIM", "anim/player_shock.zip"),
@@ -1198,42 +1193,42 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/eel01.zip"),
 
         Asset("IMAGE", "images/colour_cubes/ghost_cc.tex"),
+        Asset("IMAGE", "images/colour_cubes/mole_vision_on_cc.tex"),
+        Asset("IMAGE", "images/colour_cubes/mole_vision_off_cc.tex"),
     }
 
     local prefabs =
     {
-        "beardhair",
         "brokentool",
-        "abigail",
-        "terrorbeak",
-        "crawlinghorror",
-        "creepyeyes",
-        "shadowskittish",
-        "shadowwatcher",
-        "shadowhand",
         "frostbreath",
-        "book_birds",
-        "book_tentacles",
-        "book_gardening",
-        "book_sleep",
-        "book_brimstone",
-        "pine_needles",
         "reticule",
-        "shovel_dirt",
         "mining_fx",
         "die_fx",
         "ghost_transform_overlay_fx",
     }
 
-    if starting_inventory ~= nil then
-        for i, v in ipairs(starting_inventory) do
-            table.insert(prefabs, v)
+    if starting_inventory ~= nil or customprefabs ~= nil then
+        local prefabs_cache = {}
+        for i, v in ipairs(prefabs) do
+            prefabs_cache[v] = true
         end
-    end
 
-    if customprefabs ~= nil then
-        for i, v in ipairs(customprefabs) do
-            table.insert(prefabs, v)
+        if starting_inventory ~= nil then
+            for i, v in ipairs(starting_inventory) do
+                if not prefabs_cache[v] then
+                    table.insert(prefabs, v)
+                    prefabs_cache[v] = true
+                end
+            end
+        end
+
+        if customprefabs ~= nil then
+            for i, v in ipairs(customprefabs) do
+                if not prefabs_cache[v] then
+                    table.insert(prefabs, v)
+                    prefabs_cache[v] = true
+                end
+            end
         end
     end
 
@@ -1275,8 +1270,11 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.AnimState:OverrideSymbol("fx_liquid", "wilson_fx", "fx_liquid")
         inst.AnimState:OverrideSymbol("shadow_hands", "shadow_hands", "shadow_hands")
 
+        --Additional effects symbols for hit_darkness animation
+        inst.AnimState:AddOverrideBuild("player_hit_darkness")
+
         inst.DynamicShadow:SetSize(1.3, .6)
-        
+
         inst.MiniMapEntity:SetIcon(name..".png")
         inst.MiniMapEntity:SetPriority(10)
         inst.MiniMapEntity:SetCanUseCache(false)
@@ -1301,7 +1299,8 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.AttachClassified = AttachClassified
         inst.DetachClassified = DetachClassified
         inst.OnRemoveEntity = OnRemoveEntity
-        inst.CanExamine = CanExamine -- Needs to be on client as well for actions
+        inst.CanExamine = nil -- Can be overridden; Needs to be on client as well for actions
+        inst.ActionStringOverride = nil -- Can be overridden; Needs to be on client as well for actions
         inst.GetTemperature = GetTemperature -- Didn't want to make temperature a networked component
         inst.IsFreezing = IsFreezing -- Didn't want to make temperature a networked component
         inst.IsOverheating = IsOverheating -- Didn't want to make temperature a networked component
@@ -1315,13 +1314,15 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
 
         inst.foleysound = nil --Characters may override this in common_postinit
         inst.playercolour = DEFAULT_PLAYER_COLOUR --Default player colour used in case it doesn't get set properly
-        inst.ghostenabled = GetGhostEnabled( TheNet:GetServerGameMode() )
+        inst.ghostenabled = GetGhostEnabled(TheNet:GetServerGameMode())
 
         inst.jointask = inst:DoTaskInTime(0, OnPlayerJoined)
         inst:ListenForEvent("setowner", OnSetOwner)
 
         -- V2C: also TODO implement talker properly after PAX
         inst:AddComponent("talker")
+
+        inst:AddComponent("playervision")
 
         if common_postinit ~= nil then
             common_postinit(inst)
@@ -1361,6 +1362,8 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         if inst.ghostenabled then
             inst.Network:RemoveUserFlag(USERFLAGS.IS_GHOST)
         end
+        inst.Network:RemoveUserFlag(USERFLAGS.CHARACTER_STATE_1)
+        inst.Network:RemoveUserFlag(USERFLAGS.CHARACTER_STATE_2)
 
         inst.player_classified = SpawnPrefab("player_classified")
         inst.player_classified.entity:SetParent(inst.entity)
@@ -1381,22 +1384,11 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst:AddComponent("combat")
         inst.components.combat:SetDefaultDamage(TUNING.UNARMED_DAMAGE)
         inst.components.combat.GetGiveUpString = giveupstring
+        inst.components.combat.GetBattleCryString = battlecrystring
         inst.components.combat.hiteffectsymbol = "torso"
         inst.components.combat.pvp_damagemod = TUNING.PVP_DAMAGE_MOD -- players shouldn't hurt other players very much
         inst.components.combat:SetAttackPeriod(TUNING.WILSON_ATTACK_PERIOD)
         inst.components.combat:SetRange(2)
-
-        function inst.components.combat:GetBattleCryString(target)
-            --print("GetBattleCryString", inst.prefab, target.prefab)
-            if target and target:IsValid() then
-                if target:HasTag("prey") then -- generic for little animals: frog, rabbit
-                    --print("   prey")
-                    return GetString(inst, "BATTLECRY", "PREY") 
-                else
-                    return GetString(inst, "BATTLECRY", target.prefab)
-                end            
-            end
-        end
 
         MakeMediumBurnableCharacter(inst, "torso")
         inst.components.burnable:SetBurnTime(TUNING.PLAYER_BURN_TIME)

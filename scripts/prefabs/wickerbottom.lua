@@ -9,6 +9,15 @@ local assets =
     Asset("ANIM", "anim/player_knockedout_wickerbottom.zip"),
 }
 
+local prefabs =
+{
+    "book_birds",
+    "book_tentacles",
+    "book_gardening",
+    "book_sleep",
+    "book_brimstone",
+}
+
 local start_inv =
 {
     "papyrus",
@@ -33,4 +42,4 @@ local function master_postinit(inst)
     inst.components.builder.science_bonus = 1
 end
 
-return MakePlayerCharacter("wickerbottom", nil, assets, common_postinit, master_postinit, start_inv)
+return MakePlayerCharacter("wickerbottom", prefabs, assets, common_postinit, master_postinit, start_inv)

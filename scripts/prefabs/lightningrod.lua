@@ -23,7 +23,7 @@ local function onhit(inst, worker)
 end
 
 local function discharge(inst)
-    inst.AnimState:SetBloomEffectHandle("")
+    inst.AnimState:ClearBloomEffectHandle()
     inst.charged = false
     inst.chargeleft = nil
     inst.Light:Enable(false)

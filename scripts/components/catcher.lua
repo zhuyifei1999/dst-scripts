@@ -8,6 +8,7 @@ end
 
 local Catcher = Class(function(self, inst)
     self.inst = inst
+    self.enabled = true
     self.actiondistance = 12
     self.catchdistance = 2
     self.canact = false
@@ -20,6 +21,16 @@ nil,
 
 function Catcher:OnRemoveFromEntity()
     self.inst:RemoveTag("cancatch")
+end
+
+function Catcher:SetEnabled(enable)
+    self.enabled = enable
+    if not enable then
+        self.canact = false
+        if self.inst.sg:HasStateTag("readytocatch") then
+            self.inst:PushEvent("cancelcatch")
+        end
+    end
 end
 
 ---this is the distance at which the action to catch the projectile appears
@@ -55,26 +66,30 @@ function Catcher:OnUpdate()
         return
     end
 
-    local isreadytocatch = self.inst.sg:HasStateTag("readytocatch")
-    self.canact = false
+    --Use local variable so we don't trigger self.canact setter unneccessarily
+    local canact = false
 
     for k, v in pairs(self.watchlist) do
         if not k:IsValid() or k.components.projectile == nil or not k.components.projectile:IsThrown() then
             self:StopWatching(k)
-        elseif isreadytocatch then
+        elseif not self.enabled then
+            --skip
+        elseif self.inst.sg:HasStateTag("readytocatch") then
             local distsq = k:GetDistanceSqToInst(self.inst)
             if distsq <= self.catchdistance * self.catchdistance then
                 self.inst:PushEvent("catch", { projectile = k })
                 k:PushEvent("caught", { catcher = self.inst })
                 k.components.projectile:Catch(self.inst)
                 self:StopWatching(k)
-            elseif not self.canact and distsq < self.actiondistance * self.actiondistance then
-                self.canact = true
+            elseif not canact and distsq < self.actiondistance * self.actiondistance then
+                canact = true
             end
-        elseif not self.canact and k:IsNear(self.inst, self.actiondistance) then
-            self.canact = true
+        elseif not canact and k:IsNear(self.inst, self.actiondistance) then
+            canact = true
         end
     end
+
+    self.canact = canact
 end
 
 return Catcher

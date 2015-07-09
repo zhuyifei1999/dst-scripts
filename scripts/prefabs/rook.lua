@@ -109,7 +109,7 @@ local function onothercollide(inst, other)
     elseif other:HasTag("smashable") then
         --other.Physics:SetCollides(false)
         other.components.health:Kill()
-    elseif other.components.workable ~= nil and other.components.workable.workleft > 0 then
+    elseif other.components.workable ~= nil and other.components.workable:CanBeWorked() then
         SpawnPrefab("collapse_small").Transform:SetPosition(other.Transform:GetWorldPosition())
         other.components.workable:Destroy(inst)
     elseif not inst.recentlycharged[other] and other.components.health ~= nil and not other.components.health:IsDead() then

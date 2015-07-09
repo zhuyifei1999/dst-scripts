@@ -21,15 +21,15 @@ local function OnEntitySleep(inst)
 end
 
 local function StartSpawning(inst)
-    if inst.components.childspawner 
+    if inst.components.childspawner ~= nil
         and not TheWorld.state.iswinter
-        and not (inst.components.freezable and inst.components.freezable:IsFrozen()) then
+        and not (inst.components.freezable ~= nil and inst.components.freezable:IsFrozen()) then
         inst.components.childspawner:StartSpawning()
     end
 end
 
 local function StopSpawning(inst)
-    if inst.components.childspawner then
+    if inst.components.childspawner ~= nil then
         inst.components.childspawner:StopSpawning()
     end
 end
@@ -43,7 +43,7 @@ local function OnIsDay(inst, isday)
 end
 
 local function OnIgnite(inst)
-    if inst.components.childspawner then
+    if inst.components.childspawner ~= nil then
         inst.components.childspawner:ReleaseAllChildren()
         inst:RemoveComponent("childspawner")
     end
@@ -52,7 +52,6 @@ local function OnIgnite(inst)
 end
 
 local function OnFreeze(inst)
-    print(inst, "OnFreeze")
     inst.SoundEmitter:PlaySound("dontstarve/common/freezecreature")
     inst.AnimState:PlayAnimation("frozen", true)
     inst.AnimState:OverrideSymbol("swap_frozen", "frozen", "frozen")
@@ -61,14 +60,12 @@ local function OnFreeze(inst)
 end
 
 local function OnThaw(inst)
-    print(inst, "OnThaw")
     inst.AnimState:PlayAnimation("frozen_loop_pst", true)
     inst.SoundEmitter:PlaySound("dontstarve/common/freezethaw", "thawing")
     inst.AnimState:OverrideSymbol("swap_frozen", "frozen", "frozen")
 end
 
 local function OnUnFreeze(inst)
-    print(inst, "OnUnFreeze")
     inst.AnimState:PlayAnimation("cocoon_small", true)
     inst.SoundEmitter:KillSound("thawing")
     inst.AnimState:ClearOverrideSymbol("swap_frozen")
@@ -80,15 +77,15 @@ local function OnKilled(inst)
     inst:RemoveComponent("childspawner")
     inst.AnimState:PlayAnimation("cocoon_dead", true)
     inst.Physics:ClearCollisionMask()
-    
+
     inst.SoundEmitter:KillSound("loop")
-    
+
     inst.SoundEmitter:PlaySound("dontstarve/bee/beehive_destroy")
-    inst.components.lootdropper:DropLoot(Vector3(inst.Transform:GetWorldPosition()))
+    inst.components.lootdropper:DropLoot(inst:GetPosition())
 end
 
 local function OnHit(inst, attacker, damage) 
-    if inst.components.childspawner then
+    if inst.components.childspawner ~= nil then
         inst.components.childspawner:ReleaseAllChildren(attacker, "killerbee")
     end
     if not inst.components.health:IsDead() then
@@ -99,7 +96,7 @@ local function OnHit(inst, attacker, damage)
 end
 
 local function SeasonalSpawnChanges(inst, season)
-    if inst.components.childspawner then
+    if inst.components.childspawner ~= nil then
         if season == SEASONS.SPRING then
             inst.components.childspawner:SetRegenPeriod(TUNING.BEEBOX_REGEN_TIME / TUNING.SPRING_COMBAT_MOD)
             inst.components.childspawner:SetSpawnPeriod(TUNING.BEEBOX_RELEASE_TIME / TUNING.SPRING_COMBAT_MOD)
@@ -110,6 +107,36 @@ local function SeasonalSpawnChanges(inst, season)
             inst.components.childspawner:SetMaxChildren(TUNING.BEEBOX_BEES)
         end
     end
+end
+
+local function OnHaunt(inst)
+    if inst.components.childspawner == nil or
+        not inst.components.childspawner:CanSpawn() or
+        math.random() > TUNING.HAUNT_CHANCE_HALF then
+        return false
+    end
+
+    local target = FindEntity(
+        inst,
+        25,
+        function(guy)
+            return inst.components.combat:CanTarget(guy)
+        end,
+        { "_combat" }, --See entityreplica.lua (re: "_combat" tag)
+        { "insect", "playerghost", "INLIMBO" },
+        { "character", "animal", "monster" }
+    )
+
+    if target ~= nil then
+        OnHit(inst, target)
+        return true
+    end
+    return false
+end
+
+local function OnInit(inst)
+    inst:WatchWorldState("isday", OnIsDay)
+    OnIsDay(inst, TheWorld.state.isday)
 end
 
 local function fn()
@@ -130,6 +157,7 @@ local function fn()
     inst.AnimState:PlayAnimation("cocoon_small", true)
 
     inst:AddTag("structure")
+    inst:AddTag("chewable") -- by werebeaver
     inst:AddTag("hive")
     inst:AddTag("beehive")
 
@@ -146,8 +174,8 @@ local function fn()
     inst.components.health:SetMaxHealth(200)
 
     -------------------
-	inst:AddComponent("childspawner")
-	inst.components.childspawner.childname = "bee"
+    inst:AddComponent("childspawner")
+    inst.components.childspawner.childname = "bee"
     SeasonalSpawnChanges(inst, TheWorld.state.season)
     inst:WatchWorldState("season", SeasonalSpawnChanges)
     inst.components.childspawner.emergencychildname = "bee"
@@ -155,29 +183,24 @@ local function fn()
     inst.components.childspawner:SetMaxEmergencyChildren(TUNING.BEEHIVE_EMERGENCY_BEES)
     inst.components.childspawner:SetEmergencyRadius(TUNING.BEEHIVE_EMERGENCY_RADIUS)
 
-    inst:DoTaskInTime(0, function()
-        if TheWorld.state.isday then
-            StartSpawning(inst)
-        end
-    end)
-    inst:WatchWorldState("isday", OnIsDay)
+    inst:DoTaskInTime(0, OnInit)
 
-    ---------------------  
+    ---------------------
     inst:AddComponent("lootdropper")
-    inst.components.lootdropper:SetLoot({"honey","honey","honey","honeycomb"})
-    ---------------------  
+    inst.components.lootdropper:SetLoot({ "honey", "honey", "honey", "honeycomb" })
+    ---------------------
 
-    ---------------------        
+    ---------------------
     MakeLargeBurnable(inst)
     inst.components.burnable:SetOnIgniteFn(OnIgnite)
-    -------------------
+    ---------------------
 
     ---------------------
     MakeMediumFreezableCharacter(inst)
     inst:ListenForEvent("freeze", OnFreeze)
     inst:ListenForEvent("onthaw", OnThaw)
     inst:ListenForEvent("unfreeze", OnUnFreeze)
-    -------------------
+    ---------------------
 
     inst:AddComponent("combat")
     inst.components.combat:SetOnHit(OnHit)
@@ -189,26 +212,7 @@ local function fn()
 
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetHauntValue(TUNING.HAUNT_SMALL)
-    inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
-        if not inst.components.childspawner or not inst.components.childspawner:CanSpawn() then 
-            return false 
-        end
-
-        local target = FindEntity(inst, 25, function(guy)
-            return inst.components.combat:CanTarget(guy)
-        end,
-        nil,
-        {"insect","playerghost"},
-        {"character","animal","monster"}
-        )
-
-        if target and math.random() <= TUNING.HAUNT_CHANCE_HALF then
-            OnHit(inst, target)
-            return true
-        end
-
-        return false
-    end)
+    inst.components.hauntable:SetOnHauntFn(OnHaunt)
 
     ---------------------
 

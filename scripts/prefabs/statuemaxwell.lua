@@ -15,6 +15,23 @@ SetSharedLootTable('statue_maxwell',
     { 'marble', 0.33 },
 })
 
+local function OnWork(inst, worker, workleft)
+    if workleft <= 0 then
+        inst.SoundEmitter:PlaySound("dontstarve/wilson/rock_break")
+        inst.components.lootdropper:DropLoot(inst:GetPosition())
+        inst:Remove()
+    elseif workleft < TUNING.MARBLEPILLAR_MINE / 3 then
+        inst.AnimState:PlayAnimation("hit_low")
+        inst.AnimState:PushAnimation("idle_low")
+    elseif workleft < TUNING.MARBLEPILLAR_MINE * 2 / 3 then
+        inst.AnimState:PlayAnimation("hit_med")
+        inst.AnimState:PushAnimation("idle_med")
+    else
+        inst.AnimState:PlayAnimation("hit_full")
+        inst.AnimState:PushAnimation("idle_full")
+    end
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -25,6 +42,7 @@ local function fn()
     inst.entity:AddNetwork()
 
     inst:AddTag("maxwell")
+    inst.entity:AddTag("statue")
 
     MakeObstaclePhysics(inst, 0.66)
 
@@ -48,26 +66,7 @@ local function fn()
     --TODO: Custom variables for mining speed/cost
     inst.components.workable:SetWorkAction(ACTIONS.MINE)
     inst.components.workable:SetWorkLeft(TUNING.MARBLEPILLAR_MINE)
-    inst.components.workable:SetOnWorkCallback(          
-        function(inst, worker, workleft)
-            local pt = Point(inst.Transform:GetWorldPosition())
-            if workleft <= 0 then
-                inst.SoundEmitter:PlaySound("dontstarve/wilson/rock_break")
-                inst.components.lootdropper:DropLoot(pt)
-                inst:Remove()
-            else                
-                if workleft < TUNING.MARBLEPILLAR_MINE*(1/3) then
-                    inst.AnimState:PlayAnimation("hit_low")
-                    inst.AnimState:PushAnimation("idle_low")
-                elseif workleft < TUNING.MARBLEPILLAR_MINE*(2/3) then
-                    inst.AnimState:PlayAnimation("hit_med")
-                    inst.AnimState:PushAnimation("idle_med")
-                else
-                    inst.AnimState:PlayAnimation("hit_full")
-                    inst.AnimState:PushAnimation("idle_full")
-                end
-            end
-        end)
+    inst.components.workable:SetOnWorkCallback(OnWork)
 
     MakeHauntableWork(inst)
 

@@ -325,7 +325,7 @@ function Controls:OnUpdate(dt)
 				table.insert(cmds, TheInput:GetLocalizedControl(controller_id, CONTROL_CONTROLLER_ATTACK) .. " " .. STRINGS.UI.HUD.ATTACK)
 				attack_shown = true
 			end
-			if self.owner:CanExamine() then
+			if self.owner.CanExamine == nil or self.owner:CanExamine() then
 				table.insert(cmds, TheInput:GetLocalizedControl(controller_id, CONTROL_INSPECT) .. " " .. STRINGS.UI.HUD.INSPECT)
 			end
 			if l ~= nil then
@@ -440,6 +440,21 @@ function Controls:HighlightActionItem(itemIndex, itemInActions)
 	else
 		self.playeractionhint_itemhighlight:Hide()
 	end
+end
+
+function Controls:ShowMap()
+    if self.owner ~= nil and self.owner.HUD ~= nil and not self.owner.HUD:IsMapScreenOpen() then
+        if self.owner.HUD:IsStatusScreenOpen() then
+            TheFrontEnd:PopScreen()
+        end
+        TheFrontEnd:PushScreen(MapScreen(self.owner))
+    end
+end
+
+function Controls:HideMap()
+    if self.owner ~= nil and self.owner.HUD ~= nil and self.owner.HUD:IsMapScreenOpen() then
+        TheFrontEnd:PopScreen()
+    end
 end
 
 function Controls:ToggleMap()

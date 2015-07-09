@@ -17,38 +17,35 @@ local function plant(inst, growtime)
     inst:Remove()
 end
 
-local function ondeploy(inst, pt)
+local function ondeploy(inst, pt, deployer)
     inst = inst.components.stackable:Get()
     inst.Physics:Teleport(pt:Get())
     local timeToGrow = GetRandomWithVariance(TUNING.PINECONE_GROWTIME.base, TUNING.PINECONE_GROWTIME.random)
     plant(inst, timeToGrow)
 
     --tell any nearby leifs to chill out
-    local ents = TheSim:FindEntities(pt.x,pt.y,pt.z, TUNING.LEIF_PINECONE_CHILL_RADIUS, {"leif"})
+    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, TUNING.LEIF_PINECONE_CHILL_RADIUS, { "leif" })
 
     local played_sound = false
-    for k,v in pairs(ents) do
-        local chill_chance = TUNING.LEIF_PINECONE_CHILL_CHANCE_FAR
-        if distsq(pt, Vector3(v.Transform:GetWorldPosition())) < TUNING.LEIF_PINECONE_CHILL_CLOSE_RADIUS*TUNING.LEIF_PINECONE_CHILL_CLOSE_RADIUS then
-            chill_chance = TUNING.LEIF_PINECONE_CHILL_CHANCE_CLOSE
-        end
+    for i, v in ipairs(ents) do
+        local chill_chance =
+            v:GetDistanceSqToPoint(pt:Get()) < TUNING.LEIF_PINECONE_CHILL_CLOSE_RADIUS * TUNING.LEIF_PINECONE_CHILL_CLOSE_RADIUS and
+            TUNING.LEIF_PINECONE_CHILL_CHANCE_CLOSE or
+            TUNING.LEIF_PINECONE_CHILL_CHANCE_FAR
 
         if math.random() < chill_chance then
-            if v.components.sleeper then
+            if v.components.sleeper ~= nil then
                 v.components.sleeper:GoToSleep(1000)
             end
-        else
-            if not played_sound then
-                v.SoundEmitter:PlaySound("dontstarve/creatures/leif/taunt_VO")
-                played_sound = true
-            end
+        elseif not played_sound then
+            v.SoundEmitter:PlaySound("dontstarve/creatures/leif/taunt_VO")
+            played_sound = true
         end
     end
 end
 
 local function OnLoad(inst, data)
-    dumptable(data)
-    if data and data.growtime then
+    if data ~= nil and data.growtime ~= nil then
         plant(inst, data.growtime)
     end
 end
@@ -75,10 +72,6 @@ local function fn()
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst:AddComponent("edible")
-    inst.components.edible.foodtype = FOODTYPE.WOOD
-    inst.components.edible.woodiness = 2
 
     inst:AddComponent("tradable")
 

@@ -359,13 +359,13 @@ function LocoMotor:PushAction(bufferedaction, run, try_instant)
     self.throttle = 1
     local success, reason = bufferedaction:TestForStart()
     if not success then
-        self.inst:PushEvent("actionfailed", {action = bufferedaction, reason = reason})
+        self.inst:PushEvent("actionfailed", { action = bufferedaction, reason = reason })
         return
     end
 
     self:Clear()
     if bufferedaction.action == ACTIONS.WALKTO then
-        if bufferedaction.target then
+        if bufferedaction.target ~= nil then
             self:GoToEntity(bufferedaction.target, bufferedaction, run)
         elseif bufferedaction.pos then
             self:GoToPoint(bufferedaction.pos, bufferedaction, run)
@@ -391,9 +391,9 @@ function LocoMotor:PushAction(bufferedaction, run, try_instant)
         end
     elseif bufferedaction.action.instant then
         self.inst:PushBufferedAction(bufferedaction)
-    elseif bufferedaction.target then
+    elseif bufferedaction.target ~= nil then
         self:GoToEntity(bufferedaction.target, bufferedaction, run)
-    elseif bufferedaction.pos then
+    elseif bufferedaction.pos ~= nil then
         self:GoToPoint(bufferedaction.pos, bufferedaction, run)
     else
         self.inst:PushBufferedAction(bufferedaction)

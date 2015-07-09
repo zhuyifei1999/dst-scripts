@@ -227,6 +227,7 @@ PREFABFILES = {
   "lockedwes",
   "log",
   "lucy",
+  "lucy_classified",
   "lureplant",
   "lureplant_bulb",
   "magicprototyper",

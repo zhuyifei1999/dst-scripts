@@ -3,7 +3,7 @@ local MakePlayerCharacter = require("prefabs/player_common")
 local assets =
 {
     Asset("ANIM", "anim/wilson.zip"),
-	Asset("ANIM", "anim/beard.zip"),
+    Asset("ANIM", "anim/beard.zip"),
 
     Asset("ANIM", "anim/ghost_wilson_build.zip"),
 }
@@ -15,6 +15,9 @@ local prefabs =
 
 local function common_postinit(inst)
     inst:AddTag("ghostwithhat")
+
+    --bearded (from beard component) added to pristine state for optimization
+    inst:AddTag("bearded")
 end
 
 local function OnResetBeard(inst)

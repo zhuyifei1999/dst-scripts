@@ -1,3 +1,5 @@
+require "map/terrain"
+
 function Map:IsPassableAtPoint(x, y, z)
     local tile = self:GetTileAtPoint(x, y, z)
     return tile ~= GROUND.IMPASSABLE and
@@ -82,6 +84,24 @@ function Map:CanDeployWallAtPoint(pt, inst)
     end
     return true
 end
+
+function Map:CanPlacePrefabFilteredAtPoint(x, y, z, prefab)
+    local tile = self:GetTileAtPoint(x, y, z)
+    if tile == GROUND.INVALID or tile == GROUND.IMPASSABLE then
+        return false
+    end
+
+    if terrain.filter[prefab] ~= nil then
+        for i,v in ipairs(terrain.filter[prefab]) do
+            if tile == v then
+                -- can't grow on this terrain
+                return false
+            end
+        end
+    end
+    return true
+end
+    
 
 --Ported from legacy "stupid finalling hack because it's too late to change stuff"
 --V2C: is it because we rly should be using Physics radius, but

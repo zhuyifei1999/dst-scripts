@@ -19,7 +19,7 @@ local IceOver = Class(Widget, function(self, owner)
     self.alpha_min = 1
     self.alpha_min_target = 1
     
-    self.inst:ListenForEvent("temperaturedelta", function(inst, data) self:OnIceChange() end, self.owner)
+    self.inst:ListenForEvent("temperaturedelta", function() self:OnIceChange() end, self.owner)
 end)
 
 
@@ -28,7 +28,7 @@ function IceOver:OnIceChange()
 	local temp = self.owner.components.temperature ~= nil
         and self.owner.components.temperature:GetCurrent()
         or (self.owner.player_classified ~= nil and
-            self.owner.player_classified.currenttemperature or 30)
+            self.owner.player_classified.currenttemperature or TUNING.STARTING_TEMP)
 
 	local num_steps = 4
 

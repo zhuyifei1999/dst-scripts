@@ -296,6 +296,7 @@ function PopulateWorld(savedata, profile)
 
         world.hideminimap = savedata.map.hideminimap
         world.topology = savedata.map.topology
+        world.generated = savedata.map.generated
         world.meta = savedata.meta
         assert(savedata.map.topology.ids, "[MALFORMED SAVE DATA] Map missing topology information. This save file is too old, and is missing neccessary information.")
 
@@ -541,6 +542,10 @@ local function DoInitGame(savedata, profile)
 	assert(savedata.map.topology.nodes, "Topology nodes are missing from savedata on load")
 	assert(savedata.map.topology.level_type, "Topology level type is missing from savedata on load")
 	assert(savedata.map.topology.overrides, "Topology overrides is missing from savedata on load")
+
+    -- #deleteme: gjans: New data added to worldgen 2015/06/23, uncomment this assert in September or something
+	--assert(savedata.map.generated, "Original generation data missing from savedata on load")
+	--assert(savedata.map.generated.densities, "Generated prefab densities missing from savedata on load")
 
 	assert(savedata.ents, "Entites missing from savedata on load")
 	

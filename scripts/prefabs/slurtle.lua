@@ -65,8 +65,8 @@ local function OnExplodeFn(inst)
     SpawnPrefab("explode_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
 end
 
-local function OnEatElement(inst, data)    
-    local value = data.food.components.edible.hungervalue
+local function OnEatElement(inst, food)
+    local value = food.components.edible.hungervalue
     inst.stomach = inst.stomach + value
     if inst.stomach >= SPAWN_SLIME_VALUE then
         local stacksize = 0
@@ -79,7 +79,6 @@ local function OnEatElement(inst, data)
         slime.components.stackable:SetStackSize(stacksize or 1)
     end
 end
-
 
 local function commonfn()
 	local inst = CreateEntity()
@@ -104,6 +103,7 @@ local function commonfn()
 
     inst:AddComponent("eater")
     inst.components.eater:SetDiet({ FOODTYPE.ELEMENTAL }, { FOODTYPE.ELEMENTAL })
+    inst.components.eater:SetOnEatFn(OnEatElement)
 
     inst:AddComponent("combat")
     inst.components.combat.hiteffectsymbol = "shell"
@@ -139,11 +139,8 @@ local function commonfn()
     inst.components.explosive:SetOnExplodeFn(OnExplodeFn)
     inst.components.explosive:SetOnIgniteFn(OnIgniteFn)
 
-    inst:ListenForEvent("oneatsomething", function(inst, data) OnEatElement(inst, data) end)
-
     inst:ListenForEvent("ifnotchanceloot", function() inst.SoundEmitter:PlaySound("dontstarve/creatures/slurtle/shatter") end)
-    
-    
+
     return inst
 end
 

@@ -18,6 +18,8 @@ local function fn()
 
     MakeDragonflyBait(inst, 3)
 
+    inst:AddTag("icebox_valid")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

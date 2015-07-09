@@ -875,16 +875,10 @@ function self:OnUpdate(dt)
             preciprate_sound = preciprate_sound - .4
         else
             StopTreeRainSound()
-            local hasumbrella = false
-            for k, v in pairs(_activatedplayer.replica.inventory:GetEquips()) do
-                if v:HasTag("umbrella") then
-                    hasumbrella = true
-                    preciprate_sound = preciprate_sound - .4
-                    StartUmbrellaRainSound()
-                    break
-                end
-            end
-            if not hasumbrella then
+            if _activatedplayer.replica.inventory:EquipHasTag("umbrella") then
+                preciprate_sound = preciprate_sound - .4
+                StartUmbrellaRainSound()
+            else
                 StopUmbrellaRainSound()
             end
         end

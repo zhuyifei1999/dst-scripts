@@ -69,12 +69,12 @@ local function makestump(inst, instant)
 end
 
 local function onworked(inst, chopper, workleft)
-    if not chopper or (chopper and not chopper:HasTag("playerghost")) then
-        if chopper and chopper.components.beaverness and chopper.components.beaverness:IsBeaver() then
-            inst.SoundEmitter:PlaySound("dontstarve/characters/woodie/beaver_chop_tree")
-        else
-            inst.SoundEmitter:PlaySound("dontstarve/wilson/use_axe_tree")    
-        end
+    if chopper == nil or not chopper:HasTag("playerghost") then
+        inst.SoundEmitter:PlaySound(
+            chopper ~= nil and chopper:HasTag("beaver") and
+            "dontstarve/characters/woodie/beaver_chop_tree" or
+            "dontstarve/wilson/use_axe_tree"
+        )
     end
     inst.SoundEmitter:PlaySound("dontstarve/creatures/leif/livingtree_hit")
     inst.AnimState:PlayAnimation("chop")

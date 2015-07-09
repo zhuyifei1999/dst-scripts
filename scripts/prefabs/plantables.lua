@@ -1,7 +1,6 @@
 require "prefabutil"
 
 local function make_plantable(data)
-
     local assets =
     {
         Asset("ANIM", "anim/"..data.name..".zip"),
@@ -65,29 +64,43 @@ local function make_plantable(data)
             inst.components.deployable:SetDeploySpacing(DEPLOYSPACING.MEDIUM)
         end
 
-        inst:AddComponent("edible")
-        inst.components.edible.foodtype = FOODTYPE.WOOD
-        inst.components.edible.woodiness = 10
-
-        ---------------------  
+        ---------------------
         return inst
     end
 
     return Prefab("common/objects/dug_"..data.name, fn, assets)
 end
 
-local plantables = 
+local plantables =
 {
-    {name="berrybush", anim="idle_dead"},
-    {name="berrybush2", bank = "berrybush", inspectoverride = "dug_berrybush", anim = "idle_dead"},
-    {name="sapling", mediumspacing=true},
-    {name="grass", build="grass1", mediumspacing=true},
-    {name="marsh_bush", mediumspacing=true},
+    {
+        name = "berrybush",
+        anim = "idle_dead"
+    },
+    {
+        name = "berrybush2",
+        bank = "berrybush",
+        anim = "idle_dead",
+        inspectoverride = "dug_berrybush",
+    },
+    {
+        name = "sapling",
+        mediumspacing = true
+    },
+    {
+        name = "grass",
+        build = "grass1",
+        mediumspacing = true
+    },
+    {
+        name = "marsh_bush",
+        mediumspacing = true
+    },
     --"reeds",
 }
 
-local prefabs= {}
-for k,v in pairs(plantables) do
+local prefabs = {}
+for i, v in ipairs(plantables) do
     table.insert(prefabs, make_plantable(v))
     table.insert(prefabs, MakePlacer("common/dug_"..v.name.."_placer", v.bank or v.name, v.build or v.name, v.anim or "idle"))
 end

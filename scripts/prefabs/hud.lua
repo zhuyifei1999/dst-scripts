@@ -1,12 +1,12 @@
 local assets =
 {
-	 --In-game only
+    --In-game only
     Asset("ATLAS", "images/hud.xml"),
     Asset("IMAGE", "images/hud.tex"),
-    
+
     Asset("ATLAS", "images/fx.xml"),
     Asset("IMAGE", "images/fx.tex"),
-    
+
     Asset("ATLAS", "images/fx2.xml"),
     Asset("IMAGE", "images/fx2.tex"),
 
@@ -34,29 +34,26 @@ local assets =
     Asset("ANIM", "anim/compass_bg.zip"),
     Asset("ANIM", "anim/compass_needle.zip"),
     Asset("ANIM", "anim/compass_hud.zip"),
-    
+
     Asset("ANIM", "anim/saving.zip"),
     Asset("ANIM", "anim/vig.zip"),
     Asset("ANIM", "anim/fire_over.zip"),
-    Asset("ANIM", "anim/clouds_ol.zip"),   
-    Asset("ANIM", "anim/progressbar.zip"),   
-    
+    Asset("ANIM", "anim/clouds_ol.zip"),
+    Asset("ANIM", "anim/progressbar.zip"),
+
     Asset("ATLAS", "images/avatars.xml"),
     Asset("IMAGE", "images/avatars.tex"),
-    
+
     Asset("ATLAS", "images/inventoryimages.xml"),
-    Asset("IMAGE", "images/inventoryimages.tex"),    
+    Asset("IMAGE", "images/inventoryimages.tex"),
 
-    Asset("ANIM", "anim/wet_meter_player.zip"), 
+    Asset("ANIM", "anim/wet_meter_player.zip"),
     Asset("ANIM", "anim/wet_meter.zip"),
-
-    Asset("ANIM", "anim/hunger_ghost.zip"),
-    Asset("ANIM", "anim/health_ghost.zip"),
 }
 
 local prefabs =
 {
-	"minimap",
+    "minimap",
     "gridplacer",
 }
 

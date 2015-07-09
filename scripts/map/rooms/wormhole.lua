@@ -101,9 +101,7 @@ AddRoom("GrassySinkhole", {
 					                    grass = 1,
 										sapling = 1,
 										rocks = 3,
-										deciduoustree_normal = 1,
-										deciduoustree_short = 5,
-										deciduoustree_tall = 1,
+										deciduoustree = 7,
 					                }
 					            }
 					})

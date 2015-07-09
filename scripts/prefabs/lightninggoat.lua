@@ -96,18 +96,17 @@ end
 
 local function setcharged(inst, instant)
     inst:AddTag("charged")
-    inst.components.lootdropper:SetChanceLootTable('chargedlightninggoat') 
+    inst.components.lootdropper:SetChanceLootTable('chargedlightninggoat')
     inst.AnimState:SetBuild("lightning_goat_shocked_build")
     inst.AnimState:Show("fx") 
     if not instant then
         inst.sg:GoToState("shocked")
     end
-    inst.AnimState:SetBloomEffectHandle( "shaders/anim.ksh" )
+    inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
     inst.charged = true
     inst.chargeleft = 3
     inst.Light:Enable(true)
     inst:WatchWorldState("cycles", ReduceCharges)
-    
 end
 
 local function OnAttacked(inst, data)

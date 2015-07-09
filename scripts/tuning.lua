@@ -158,7 +158,8 @@ function Tune(overrides)
 	    FISHINGROD_DAMAGE = wilson_attack*.125,
 	    UMBRELLA_DAMAGE = wilson_attack*.5,
 	    CANE_DAMAGE = wilson_attack*.5,
-	    BEAVER_DAMAGE = wilson_attack*1.5,
+	    BEAVER_DAMAGE = wilson_attack*.8,
+	    BEAVER_WOOD_DAMAGE = wilson_attack*.5, -- extra damage to wood things
 	    MULTITOOL_DAMAGE = wilson_attack*.9,
 	    RUINS_BAT_DAMAGE = wilson_attack * 1.75,
 	    NIGHTSTICK_DAMAGE = wilson_attack*.85, -- Due to the damage being electric, it will get multiplied by 1.5 against any mob
@@ -166,7 +167,6 @@ function Tune(overrides)
 
 		CANE_SPEED_MULT = 1.25,
 		PIGGYBACK_SPEED_MULT = 0.9,
-
 
 	    TORCH_ATTACK_IGNITE_PERCENT = 1,
 
@@ -181,6 +181,7 @@ function Tune(overrides)
 	    PIG_ATTACK_PERIOD = 3,
 	    PIG_TARGET_DIST = 16,
 	    PIG_LOYALTY_MAXTIME = 2.5*total_day_time,
+	    PIG_LOYALTY_POLITENESS_MAXTIME_BONUS = .5*total_day_time,
 	    PIG_LOYALTY_PER_HUNGER = total_day_time/25,
 	    PIG_MIN_POOP_PERIOD = seg_time * .5,
 
@@ -342,7 +343,7 @@ function Tune(overrides)
 	    GHOST_DAMAGE = wilson_health*0.1,
 	    GHOST_DMG_PERIOD = 1.2,
 	    GHOST_DMG_PLAYER_PERCENT = 1,
-        GHOST_LIGHT_OVERRIDE = .1,
+        GHOST_LIGHT_OVERRIDE = .5,
 
 	    ABIGAIL_SPEED = 5,
 	    ABIGAIL_HEALTH = wilson_health*4,
@@ -1031,7 +1032,19 @@ function Tune(overrides)
 	    SANITY_MEDLARGE = 20,
 	    SANITY_LARGE = 33,
 	    SANITY_HUGE = 50,
-	    
+
+	    BEAVER_SANITY_PENALTY = -1.5,
+	    BEAVER_DRAIN_TIME = 5*total_day_time, -- time it takes the log meter to drain to transform threshold
+        BEAVER_FULLMOON_DRAIN_MULTIPLIER = 5*8,
+        BEAVER_GNAW_GAIN = 1,
+        WOODIE_CHOP_DRAIN = -1.5,
+        WOODIE_PLANT_TREE_GAIN = 5,
+        WOODIE_TRANSFORM_TO_HUMAN = 0.99, -- because .99000001 shows as 100 in the HUD
+        WOODIE_TRANSFORM_TO_BEAVER = 0.25,
+
+	    LUCY_REVERT_TIME = 90, -- seconds
+	    LUCY_BITE_DAMAGE = 5, -- amount of damage done to non-woodies who equip lucy
+
 		PERISH_ONE_DAY = 1*total_day_time*perish_warp,
 		PERISH_TWO_DAY = 2*total_day_time*perish_warp,
 		PERISH_SUPERFAST = 3*total_day_time*perish_warp,
@@ -1272,6 +1285,7 @@ function Tune(overrides)
 
 		
 		RABBIT_CARROT_LOYALTY = seg_time*8,
+		RABBIT_POLITENESS_LOYALTY_BONUS = seg_time * 4,
 	    BUNNYMAN_DAMAGE = 40,
 	    BEARDLORD_DAMAGE = 60,
 	    BUNNYMAN_HEALTH = 200,
@@ -1296,6 +1310,7 @@ function Tune(overrides)
 		ROCKY_MIN_SCALE = .75,
 		ROCKY_GROW_RATE = (1.2-.75) / (total_day_time*40),
 		ROCKY_LOYALTY = seg_time*6,
+		ROCKY_POLITENESS_LOYALTY_BONUS = seg_time * 2,
 		ROCKY_ABSORB = 0.95,
 		ROCKY_REGEN_AMOUNT = 10,
 		ROCKY_REGEN_PERIOD = 1,
@@ -1714,6 +1729,30 @@ function Tune(overrides)
 	    WARG_TARGETRANGE = 10,
 	    WARG_NEARBY_PLAYERS_DIST = 30,
 	    WARG_BASE_HOUND_AMOUNT = 2,
+
+        CARROT_REGROWTH_TIME = day_time * 20,
+        FLOWER_REGROWTH_TIME = 30,
+        RABBITHOLE_REGROWTH_TIME = total_day_time * 5,
+
+        EVERGREEN_REGROWTH = {
+            OFFSPRING_TIME = total_day_time * 5,
+            DESOLATION_RESPAWN_TIME = total_day_time * 50,
+            DEAD_DECAY_TIME = total_day_time * 30,
+        },
+
+        EVERGREEN_SPARSE_REGROWTH = {
+            OFFSPRING_TIME = total_day_time * 8,
+            DESOLATION_RESPAWN_TIME = total_day_time * 50,
+            DEAD_DECAY_TIME = total_day_time * 30,
+        },
+
+        DECIDUOUS_REGROWTH = {
+            OFFSPRING_TIME = total_day_time * 3,
+            DESOLATION_RESPAWN_TIME = total_day_time * 50,
+            DEAD_DECAY_TIME = total_day_time * 30,
+        },
+
+        REGROWTH_TIME_MULTIPLIER = 1,
 
 		VOTE_KICK_DURATION = 5*60,       -- vote duration in seconds, default to 5 minutes
 		VOTE_KICK_BAN_DURATION = 30*60,  -- base duration of a vote kick ban, will be multiplied by the number of times banned

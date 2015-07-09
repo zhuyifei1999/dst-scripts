@@ -173,7 +173,6 @@ local nesting_ground_assets =
 }
 
 local function ontimerdone(inst, data)
-    print("ON TIMER DONE")
     if data.name == "CallMoose" then
         --If this happens then the nesting location was asleep for the entire waiting period.
         --Put down a moose and pre-lay an egg.
@@ -182,7 +181,7 @@ local function ontimerdone(inst, data)
 end
 
 local function spawnmoose(inst)
-    print(string.format("mooseIncoming = %s", tostring(inst.mooseIncoming)))
+    --print(string.format("mooseIncoming = %s", tostring(inst.mooseIncoming)))
     if inst.mooseIncoming then
         TheWorld.components.moosespawner:DoSoftSpawn(inst)
     end
