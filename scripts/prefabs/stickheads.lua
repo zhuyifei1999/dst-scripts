@@ -83,7 +83,7 @@ end
 local function OnHaunt(inst, haunter)
     if math.random() <= TUNING.HAUNT_CHANCE_OCCASIONAL and
         inst.components.workable ~= nil and
-        inst.components.workable.workable:CanBeWorked() then
+        inst.components.workable:CanBeWorked() then
         inst.components.workable:WorkedBy(haunter, 1)
         inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
         return true
