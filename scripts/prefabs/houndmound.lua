@@ -39,7 +39,7 @@ end
 local function SpawnGuardHound(inst, attacker)
     local prefab =
         (math.random() >= GetSpecialHoundChance() and "hound") or
-        (TheWorld.state.iswinter or TheWorld.state.isspring and "icehound") or
+        ((TheWorld.state.iswinter or TheWorld.state.isspring) and "icehound") or
         "firehound"
     local defender = inst.components.childspawner:SpawnChild(attacker, prefab)
     if defender ~= nil and attacker ~= nil and defender.components.combat ~= nil then

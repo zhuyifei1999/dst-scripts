@@ -26,7 +26,7 @@ local function GetFaceTargetFn(inst)
 end
 
 local function KeepFaceTargetFn(inst, target)
-    return not target:HasTarget("notarget") and inst:IsNear(target, KEEP_FACE_DIST)
+    return not target:HasTag("notarget") and inst:IsNear(target, KEEP_FACE_DIST)
 end
 
 local function CanPickup(item)
