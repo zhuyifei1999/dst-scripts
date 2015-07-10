@@ -1033,6 +1033,7 @@ function Tune(overrides)
 	    SANITY_LARGE = 33,
 	    SANITY_HUGE = 50,
 
+        BEAVER_ABSORPTION = .25,
 	    BEAVER_SANITY_PENALTY = -1.5,
 	    BEAVER_DRAIN_TIME = 5*total_day_time, -- time it takes the log meter to drain to transform threshold
         BEAVER_FULLMOON_DRAIN_MULTIPLIER = 5*8,

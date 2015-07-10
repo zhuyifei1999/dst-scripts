@@ -39,6 +39,8 @@ local Moisture = Class(function(self, inst)
     self.maxMoistureRate = .75
     self.minMoistureRate = 0
 
+    self.inherentWaterproofness = 0
+
     self.optimalDryingTemp = 50
 
     self.rate = 0 --rate at which moisture is trying to change
@@ -154,6 +156,10 @@ function Moisture:SetPercent(per)
     self:DoDelta(delta)
 end
 
+function Moisture:SetInherentWaterproofness(waterproofness)
+    self.inherentWaterproofness = waterproofness
+end
+
 function Moisture:GetSegs()
     local num = self.moisture / self.maxmoisture * self.numSegs
     local full = math.max(0, math.ceil(num - 1))
@@ -176,6 +182,8 @@ function Moisture:GetMoistureRate()
         ) +
         (   self.inst.components.inventory ~= nil and
             self.inst.components.inventory:GetWaterproofness() or 0
+        ) +
+        (   self.inherentWaterproofness or 0
         )
     if waterproofmult >= 1 then
         return 0

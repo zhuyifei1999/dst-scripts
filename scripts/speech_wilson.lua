@@ -1354,10 +1354,10 @@ return {
 		LIFEINJECTOR = "Booooost!",
 		SKELETON_PLAYER =
 		{
-			MALE = "%s must've died preforming an important experiment with %s.",
-			FEMALE = "%s must've died preforming an important experiment with %s.",
-			ROBOT = "%s must've died preforming an important experiment with %s.",
-			DEFAULT = "%s must've died preforming an important experiment with %s.",
+			MALE = "%s must've died performing an important experiment with %s.",
+			FEMALE = "%s must've died performing an important experiment with %s.",
+			ROBOT = "%s must've died performing an important experiment with %s.",
+			DEFAULT = "%s must've died performing an important experiment with %s.",
 		},
 		HUMANMEAT = "Flesh is flesh. Where do I draw the line?",
 		HUMANMEAT_COOKED = "Cooked nice and pink, but still morally gray.",

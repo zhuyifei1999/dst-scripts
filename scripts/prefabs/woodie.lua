@@ -405,12 +405,14 @@ local function onbecamehuman(inst)
     inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED
     inst.components.combat:SetDefaultDamage(TUNING.UNARMED_DAMAGE)
     inst.components.combat.bonusdamagefn = nil
+    inst.components.health:SetAbsorptionAmount(0)
     inst.components.sanity.custom_rate_fn = nil
     inst.components.eater:SetDiet({ FOODGROUP.WOODIE }, { FOODGROUP.WOODIE })
     inst.components.pinnable.canbepinned = true
     inst.components.hunger:Resume()
     inst.components.temperature.inherentinsulation = 0
     inst.components.temperature.inherentsummerinsulation = 0
+    inst.components.moisture:SetInherentWaterproofness(0)
     inst.components.talker:StopIgnoringAll("becamebeaver")
     inst.components.catcher:SetEnabled(true)
 
@@ -447,12 +449,14 @@ local function onbecamebeaver(inst)
     inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED * 1.1
     inst.components.combat:SetDefaultDamage(TUNING.BEAVER_DAMAGE)
     inst.components.combat.bonusdamagefn = beaverbonusdamagefn
+    inst.components.health:SetAbsorptionAmount(TUNING.BEAVER_ABSORPTION)
     inst.components.sanity.custom_rate_fn = beaversanityfn
     inst.components.eater:SetDiet(BEAVER_DIET, BEAVER_DIET)
     inst.components.pinnable.canbepinned = false
     inst.components.hunger:Pause()
     inst.components.temperature.inherentinsulation = TUNING.INSULATION_LARGE
     inst.components.temperature.inherentsummerinsulation = TUNING.INSULATION_LARGE
+    inst.components.moisture:SetInherentWaterproofness(TUNING.WATERPROOFNESS_LARGE)
     inst.components.talker:IgnoreAll("becamebeaver")
     inst.components.catcher:SetEnabled(false)
 
