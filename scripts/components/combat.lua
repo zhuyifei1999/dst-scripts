@@ -475,23 +475,25 @@ function Combat:GetImpactSound(target, weapon)
             )..weaponmod
 
     else
+        local tgttype =
+            ((target:HasTag("hive") or target:HasTag("eyeturret") or target:HasTag("houndmound")) and "hive_") or
+            (target:HasTag("ghost") and "ghost_") or
+            ((target:HasTag("insect") or target:HasTag("spider")) and "insect_") or
+            ((target:HasTag("chess") or target:HasTag("mech")) and "mech_") or
+            (target:HasTag("mound") and "mound_") or
+            (target:HasTag("shadow") and "shadow_") or
+            (target:HasTag("tree") and "tree_") or
+            (target:HasTag("veggie") and "vegetable_") or
+            (target:HasTag("shell") and "shell_") or
+            (target:HasTag("rocky") and "stone_") or
+            nil
         return
             hitsound..(
-                ((target:HasTag("hive") or target:HasTag("eyeturret") or target:HasTag("houndmound")) and "hive_") or
-                (target:HasTag("ghost") and "ghost_") or
-                ((target:HasTag("insect") or target:HasTag("spider")) and "insect_") or
-                ((target:HasTag("chess") or target:HasTag("mech")) and "mech_") or
-                (target:HasTag("mound") and "mound_") or
-                (target:HasTag("shadow") and "shadow_") or
-                (target:HasTag("tree") and "tree_") or
-                (target:HasTag("veggie") and "vegetable_") or
-                (target:HasTag("shell") and "shell_") or
-                (target:HasTag("rocky") and "stone_") or
-                "flesh_"
+                tgttype or "flesh_"
             )..(
                 ((target:HasTag("smallcreature") or target:HasTag("small")) and "sml_") or
                 ((target:HasTag("largecreature") or target:HasTag("epic") or target:HasTag("large")) and "lrg_") or
-                (target:GetIsWet() and "wet_") or
+                (tgttype == nil and target:GetIsWet() and "wet_") or
                 "med_"
             )..weaponmod
     end

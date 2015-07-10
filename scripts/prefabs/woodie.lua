@@ -301,7 +301,7 @@ local function onworked(inst, data)
             inst.components.beaverness:DoDelta(TUNING.WOODIE_CHOP_DRAIN, true)
 
             local equipitem = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-            if equipitem.prefab == "axe" or equipitem.prefab == "goldenaxe" then
+            if equipitem ~= nil and (equipitem.prefab == "axe" or equipitem.prefab == "goldenaxe") then
                 local itemuses = equipitem.components.finiteuses ~= nil and equipitem.components.finiteuses:GetUses() or nil
                 if itemuses == nil or itemuses > 0 then
                     --Don't make Lucy if we already have one
