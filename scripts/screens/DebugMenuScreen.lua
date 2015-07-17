@@ -50,13 +50,13 @@ function DebugMenuScreen:OnBecomeActive()
 	local main_options = {}
 
 
-	local map = TheWorld.minimap
+	local map = TheWorld and TheWorld.minimap or nil
 	local god = false
 
 
 	local craft_menus = {}
 	for k,v in pairs(AllRecipes) do
-        if IsRecipeValid(v.name) then
+        if IsRecipeValid(v.name) and v.tab then -- no tab for pighead/mermhead (things that aren't buidlable but need to behave like recipes)
     		craft_menus[v.tab] = craft_menus[v.tab] or {}
     		table.insert(craft_menus[v.tab], menus.DoAction(v.name, function() for kk,vv in pairs(v.ingredients) do c_give(vv.type, vv.amount) end end))
         end

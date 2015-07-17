@@ -1,3 +1,13 @@
+local function DoTalkSound(inst)
+    if inst.talksoundoverride ~= nil then
+        inst.SoundEmitter:PlaySound(inst.talksoundoverride, "talk")
+        return true
+    elseif not inst:HasTag("mime") then
+        inst.SoundEmitter:PlaySound((inst.talker_path_override or "dontstarve/characters/")..(inst.soundsname or inst.prefab).."/ghost_LP", "talk")
+        return true
+    end
+end
+
 local actionhandlers =
 {
     ActionHandler(ACTIONS.HAUNT, "haunt_pre"),
@@ -252,14 +262,7 @@ local states =
             if not (noanim or inst.AnimState:IsCurrentAnimation("idle")) then
                 inst.AnimState:PlayAnimation("idle", true)
             end
-
-            if inst.talksoundoverride ~= nil then
-                inst.SoundEmitter:PlaySound(inst.talksoundoverride, "talk")
-            else
-                local sound_name = inst.soundsname or inst.prefab
-                inst.SoundEmitter:PlaySound("dontstarve/characters/"..sound_name.."/ghost_LP", "talk")
-            end
-
+            DoTalkSound(inst)
             inst.sg:SetTimeout(1.5 + math.random() * .5)
         end,
         
@@ -288,11 +291,7 @@ local states =
             if not inst.AnimState:IsCurrentAnimation("idle") then
                 inst.AnimState:PlayAnimation("idle", true)
             end
-
-            if inst.talksoundoverride ~= nil then
-                inst.SoundEmitter:PlaySound(inst.talksoundoverride, "talk")
-            end
-
+            DoTalkSound(inst)
             inst.sg:SetTimeout(1.5 + math.random() * .5)
         end,
         

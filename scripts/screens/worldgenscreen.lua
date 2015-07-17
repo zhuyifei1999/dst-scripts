@@ -5,6 +5,7 @@ local Text = require "widgets/text"
 local Image = require "widgets/image"
 local UIAnim = require "widgets/uianim"
 local Widget = require "widgets/widget"
+local TEMPLATES = require "widgets/templates"
 
 local MIN_GEN_TIME = 9.5
 
@@ -13,14 +14,9 @@ local WorldGenScreen = Class(Screen, function(self, profile, cb, world_gen_optio
     self.profile = profile
     self.log = true
 
-    self.bg = self:AddChild(Image("images/bg_rog_portal.xml", "bg.tex"))
-    TintBackground(self.bg)
-   	
-    self.bg:SetVRegPoint(ANCHOR_MIDDLE)
-    self.bg:SetHRegPoint(ANCHOR_MIDDLE)
-    self.bg:SetVAnchor(ANCHOR_MIDDLE)
-    self.bg:SetHAnchor(ANCHOR_MIDDLE)
-    self.bg:SetScaleMode(SCALEMODE_FILLSCREEN)
+    self.bg = self:AddChild(TEMPLATES.BackgroundSpiral())
+
+    self.vignette = self:AddChild(TEMPLATES.BackgroundVignette())
 
     self.bottom_root = self:AddChild(Widget("root"))
     self.bottom_root:SetVAnchor(ANCHOR_BOTTOM)
@@ -53,6 +49,7 @@ local WorldGenScreen = Class(Screen, function(self, profile, cb, world_gen_optio
     
     self.worldgentext = self.center_root:AddChild(Text(TITLEFONT, 100))
     self.worldgentext:SetPosition(0, 200, 0)
+    self.worldgentext:SetColour(PORTAL_TEXT_COLOUR[1], PORTAL_TEXT_COLOUR[2], PORTAL_TEXT_COLOUR[3], PORTAL_TEXT_COLOUR[4])
     
     if world_gen_options and world_gen_options.level_type == "cave" then
 	    self.bg:SetTint(unpack(BGCOLOURS.PURPLE))
@@ -69,13 +66,7 @@ local WorldGenScreen = Class(Screen, function(self, profile, cb, world_gen_optio
 
     self.flavourtext= self.center_root:AddChild(Text(UIFONT, 40))
     self.flavourtext:SetPosition(0, 100, 0)
-
-    self.fg = self.center_root:AddChild(Image("images/fg_trees.xml", "trees.tex"))
-    self.fg:SetVRegPoint(ANCHOR_MIDDLE)
-    self.fg:SetHRegPoint(ANCHOR_MIDDLE)
-    self.fg:SetVAnchor(ANCHOR_MIDDLE)
-    self.fg:SetHAnchor(ANCHOR_MIDDLE)
-    self.fg:SetScaleMode(SCALEMODE_FILLSCREEN)
+    self.flavourtext:SetColour(PORTAL_TEXT_COLOUR[1], PORTAL_TEXT_COLOUR[2], PORTAL_TEXT_COLOUR[3], PORTAL_TEXT_COLOUR[4])
 
 	Settings.save_slot = Settings.save_slot or 1
 	local gen_parameters = {}
@@ -136,8 +127,8 @@ local WorldGenScreen = Class(Screen, function(self, profile, cb, world_gen_optio
 		
 	self.total_time = 0
 	self.cb = cb
-	TheFrontEnd:DoFadeIn(2)
-    
+	local time = 1
+	TheFrontEnd:Fade(true, time, nil, nil, nil, "white")
     
 	self.verbs = shuffleArray(STRINGS.UI.WORLDGEN.VERBS)
 	self.nouns = shuffleArray(STRINGS.UI.WORLDGEN.NOUNS)
@@ -178,10 +169,9 @@ function WorldGenScreen:OnUpdate(dt)
 				self.cb(self.worlddata)
 			elseif self.total_time > MIN_GEN_TIME and self.cb then
 				self.done = false
-				
 				TheFrontEnd:Fade(false, 1, function() 
 					self.cb(self.worlddata)
-					end)
+				end, nil, nil, "white")
 			end
 		end
 	end

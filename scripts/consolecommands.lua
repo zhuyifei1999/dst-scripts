@@ -36,19 +36,19 @@ end
 -- To send a one time announcement:   c_announce(msg)
 -- To repeat a periodic announcement: c_announce(msg, interval)
 -- To cancel a periodic announcement: c_announce()
-function c_announce(msg, interval)
+function c_announce(msg, interval, category)
     if msg == nil then
         if TheWorld.__announcementtask ~= nil then
             TheWorld.__announcementtask:Cancel()
             TheWorld.__announcementtask = nil
         end
     elseif interval == nil then
-        TheNet:Announce(msg)
+        TheNet:Announce(msg, nil, nil, category)
     else
         if TheWorld.__announcementtask ~= nil then
             TheWorld.__announcementtask:Cancel()
         end
-        TheWorld.__announcementtask = TheWorld:DoPeriodicTask(interval, function() TheNet:Announce(msg) end, 0)
+        TheWorld.__announcementtask = TheWorld:DoPeriodicTask(interval, function() TheNet:Announce(msg, nil, nil, category) end, 0)
     end
 end
 
@@ -728,6 +728,10 @@ end
 function c_skip(num)
     num = num or 1
     LongUpdate(TUNING.TOTAL_DAY_TIME * num)
+end
+
+function c_togglevotekick()
+	TheWorld.net.components.voter:ToggleVoteKick()
 end
 
 function c_groundtype()

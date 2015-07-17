@@ -223,7 +223,7 @@ function Voting:StartPlayerKickVote(victim_id, voter_id)
     -- only start the vote if the voter and victim are still present
     if voter_inst and victim_inst then
         local announcement = string.format(STRINGS.VOTING.KICK.START, voter_inst.name, victim_inst.name)    
-        TheNet:Announce(announcement, victim_inst.entity)
+        TheNet:Announce(announcement, victim_inst.entity, nil, "vote")
     
         -- broadcase the start of the vote
         TheNet:StartVote(VOTING_KICK, victim_id, voter_id, VOTING_YES)
@@ -243,7 +243,7 @@ function Voting:ExpirePlayerKickVote(victim_id)
         -- only announce if the player is still around. he may have left...
         if victim_inst then
             local announcement = string.format(STRINGS.VOTING.KICK.FAILURE, victim_inst.name)
-            TheNet:Announce(announcement, victim_inst.entity)
+            TheNet:Announce(announcement, victim_inst.entity, nil, "vote")
         end
         
         -- end the vote
@@ -272,7 +272,7 @@ function Voting:RegisterPlayerKickVote(victim_id, voter_id, num_votes)
         -- only announce if the player is still around. he may have left...
         if victim_inst then
             local announcement = string.format(STRINGS.VOTING.KICK.SUCCESS, victim_inst.name)
-            TheNet:Announce(announcement, victim_inst.entity)
+            TheNet:Announce(announcement, victim_inst.entity, nil, "vote")
         end
                 
         -- record the kick and escalate penalties as necessary

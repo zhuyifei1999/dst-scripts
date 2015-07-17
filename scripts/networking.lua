@@ -1,5 +1,9 @@
 local InputDialogScreen = require "screens/inputdialog"
 local PopupDialogScreen = require "screens/popupdialog"
+local Widget = require "widgets/widget"
+local ImageButton = require "widgets/imagebutton"
+local Text = require "widgets/text"
+local ConnectingToGamePopup = require "screens/connectingtogamepopup"
 
 local emotes = require("emotes")
 
@@ -26,9 +30,9 @@ function Networking_SlashCmd(guid, cmd)
     end
 end
 
-function Networking_Announcement(message, colour)
+function Networking_Announcement(message, colour, announce_type)
     if ThePlayer ~= nil and ThePlayer.HUD ~= nil then
-        ThePlayer.HUD.eventannouncer:ShowNewAnnouncement(message, colour)
+        ThePlayer.HUD.eventannouncer:ShowNewAnnouncement(message, colour, announce_type)
     end
 end
 
@@ -37,8 +41,12 @@ function Networking_Say(guid, userid, name, prefab, message, colour, whisper)
     if entity ~= nil and entity.components.talker ~= nil then
         entity.components.talker:Say(entity:HasTag("mime") and "" or message, nil, nil, nil, true, colour)
     end
+    local screen = TheFrontEnd:GetActiveScreen()
+    if screen and screen.name == "LobbyScreen" then 
+    	screen.chatqueue:OnMessageReceived(userid, name, prefab, message, colour, whisper)
+    end
     local hud = ThePlayer ~= nil and ThePlayer.HUD or nil
-    if hud ~= nil
+    if hud ~= nil 
         and (not whisper
             or (entity ~= nil
                 and (hud:HasTargetIndicator(entity) or
@@ -169,7 +177,6 @@ function DownloadMods( server_listing )
 	end
 	
 	print("DownloadMods and temp disable")
-	KnownModIndex:ClearAllTempModFlags() --clear all old temp mod flags when connecting incase someone killed the process before disconnecting
 	
 	KnownModIndex:UpdateModInfo()
 	for _,mod_name in pairs(KnownModIndex:GetServerModNames()) do
@@ -266,15 +273,13 @@ function DownloadMods( server_listing )
 end
 
 function JoinServer( server_listing, optional_password_override )
-		
-	local function start_client( password )
-		local start_worked = TheNet:StartClient( server_listing.ip, server_listing.port, server_listing.guid, password )
+
+	local function start_client( password )	
+        local start_worked = TheNet:StartClient( server_listing.ip, server_listing.port, server_listing.guid, password )
 		if start_worked then
 			DisableAllDLC()
 		end
-		ShowCancelTip()
-		ShowLoading()
-		TheFrontEnd:Fade(false, 1)
+		TheFrontEnd:PushScreen(ConnectingToGamePopup())
 	end
 	
 	local function after_mod_warning(pop_screen)
@@ -283,28 +288,27 @@ function JoinServer( server_listing, optional_password_override )
 		end
 
 		if server_listing.has_password and (optional_password_override == "" or optional_password_override == nil) then
-			TheFrontEnd:Fade(true, 0)
 			local password_prompt_screen
 			password_prompt_screen = InputDialogScreen( STRINGS.UI.SERVERLISTINGSCREEN.PASSWORDREQUIRED, 
 											{
+                                                {
+                                                    text = STRINGS.UI.SERVERLISTINGSCREEN.OK,
+                                                    cb = function()
+                                                    	TheFrontEnd:PopScreen()
+                                                        start_client( password_prompt_screen:GetActualString() )
+                                                    end
+                                                },
                                                 {
                                                     text = STRINGS.UI.SERVERLISTINGSCREEN.CANCEL,
                                                     cb = function()
                                                         TheFrontEnd:PopScreen()
                                                     end
                                                 },
-                                                {
-                                                    text = STRINGS.UI.SERVERLISTINGSCREEN.OK,
-                                                    cb = function()
-                                                        start_client( password_prompt_screen:GetActualString() )
-                                                        TheFrontEnd:PopScreen()
-                                                    end
-                                                },
                                             },
 										true )
 			password_prompt_screen.edit_text.OnTextEntered = function()
-				start_client( password_prompt_screen:GetActualString() ) 
 				TheFrontEnd:PopScreen()
+				start_client( password_prompt_screen:GetActualString() ) 
 			end
 			if not Profile:GetShowPasswordEnabled() then
 				password_prompt_screen.edit_text:SetPassword(true)
@@ -317,14 +321,63 @@ function JoinServer( server_listing, optional_password_override )
 		end
 	end
 	
-	if server_listing.mods_enabled then
-		--let the user know the warning about mods
-		local mod_warning = PopupDialogScreen(STRINGS.UI.SERVERLISTINGSCREEN.MOD_WARNING_TITLE, STRINGS.UI.SERVERLISTINGSCREEN.MOD_WARNING_BODY,
-			{
-				{text=STRINGS.UI.SERVERLISTINGSCREEN.OK, cb = function() after_mod_warning( true ) end},
-				{text=STRINGS.UI.SERVERLISTINGSCREEN.CANCEL, cb = function() TheFrontEnd:PopScreen() end}
-			}
-		)
+	if server_listing.mods_enabled and Profile:ShouldWarnModsEnabled() then
+
+		local checkbox_parent = Widget("checkbox_parent")
+		local checkbox = checkbox_parent:AddChild(ImageButton("images/ui.xml", "checkbox_off.tex", "checkbox_off_highlight.tex", "checkbox_off_disabled.tex", nil, nil, {1,1}, {0,0}))
+        local text = checkbox_parent:AddChild(Text(NEWFONT, 40, STRINGS.UI.SERVERLISTINGSCREEN.SHOW_MOD_WARNING))
+        local textW, textH = text:GetRegionSize()
+        local imageW, imageH = checkbox:GetSize()
+		text:SetVAlign(ANCHOR_LEFT)
+    	text:SetColour(0,0,0,1)
+        local checkbox_x = -textW/2 - (imageW*2) 
+        local region = 600
+        checkbox:SetPosition(checkbox_x, 0)
+        text:SetRegionSize(region,50)
+        text:SetPosition(checkbox_x + textW/2 + imageW/1.5, 0)
+        local bg = checkbox_parent:AddChild(Image("images/ui.xml", "single_option_bg.tex"))
+        bg:MoveToBack()
+        bg:SetClickable(false)
+        bg:ScaleToSize(textW + imageW + 40, 50)
+        bg:SetPosition(-75,2)
+        checkbox_parent.do_warning = true
+        checkbox_parent.focus_forward = checkbox
+        checkbox:SetOnClick(function()
+        	checkbox_parent.do_warning = not checkbox_parent.do_warning
+        	if checkbox_parent.do_warning then
+        		checkbox:SetTextures("images/ui.xml", "checkbox_off.tex", "checkbox_off_highlight.tex", "checkbox_off_disabled.tex", nil, nil, {1,1}, {0,0})
+        	else
+        		checkbox:SetTextures("images/ui.xml", "checkbox_on.tex", "checkbox_on_highlight.tex", "checkbox_on_disabled.tex", nil, nil, {1,1}, {0,0})
+        	end
+        end)
+        local menuitems = 
+        {
+            {widget=checkbox_parent, offset=Vector3(250,70,0)},
+            {text=STRINGS.UI.SERVERLISTINGSCREEN.CONTINUE, 
+            	cb = function() 
+            		Profile:SetWarnModsEnabled(checkbox_parent.do_warning)
+            		after_mod_warning( true ) 
+            	end, offset=Vector3(-90,0,0)},
+			{text=STRINGS.UI.SERVERLISTINGSCREEN.CANCEL, 
+				cb = function() 
+					TheFrontEnd:PopScreen() 
+				end, offset=Vector3(-90,0,0)}
+        }
+
+        --let the user know the warning about mods
+		local mod_warning = PopupDialogScreen(STRINGS.UI.SERVERLISTINGSCREEN.MOD_WARNING_TITLE, STRINGS.UI.SERVERLISTINGSCREEN.MOD_WARNING_BODY, menuitems)
+        mod_warning.menu.items[1]:SetFocusChangeDir(MOVE_DOWN, mod_warning.menu.items[2])
+        mod_warning.menu.items[1]:SetFocusChangeDir(MOVE_RIGHT, nil)
+        mod_warning.menu.items[2]:SetFocusChangeDir(MOVE_LEFT, nil)
+        mod_warning.menu.items[2]:SetFocusChangeDir(MOVE_RIGHT, mod_warning.menu.items[3])
+        mod_warning.menu.items[2]:SetFocusChangeDir(MOVE_UP, mod_warning.menu.items[1])
+        mod_warning.menu.items[3]:SetFocusChangeDir(MOVE_LEFT, mod_warning.menu.items[2])
+        mod_warning.menu.items[3]:SetFocusChangeDir(MOVE_UP, mod_warning.menu.items[1])
+
+        mod_warning.menu.items[2]:SetScale(.7)
+        mod_warning.menu.items[3]:SetScale(.7)
+        mod_warning.text:SetPosition(5, 10, 0)
+
 		TheFrontEnd:PushScreen( mod_warning )
 	else
 		after_mod_warning( false )
@@ -413,7 +466,23 @@ function WorldResetFromSim()
     end
 end
 
-local function BuildTagsStringDedicated()
+function UpdateServerTagsString()
+	local tagsTable = {}
+    
+    table.insert(tagsTable, TheNet:GetServerGameMode())
+    
+    if TheNet:GetPVPEnabled() then
+        table.insert(tagsTable, "pvp")
+    end
+    
+    if TheNet:GetFriendsOnlyServer() then
+        table.insert(tagsTable, "friendsonly")
+    end
+    
+	TheNet:SetServerTags(BuildTagsStringCommon(tagsTable))
+end
+
+function BuildTagsStringDedicated()
     if not TheNet:IsDedicated() then return nil end
     
     local tagsTable = {}
@@ -449,6 +518,6 @@ function StartDedicatedServer()
 	end
 end
 	
-function JoinServerFilter(user_id)
+function JoinServerFilter()
 	return true
 end

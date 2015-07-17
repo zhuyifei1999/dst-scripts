@@ -409,13 +409,21 @@ local RPC_HANDLERS =
         end
     end,
 
-    SetWriteableText= function(player, writeableinst, text)
+    SetWriteableText = function(player, writeableinst, text)
         -- Todo: Test if the player is authorized to write on this object
         local writeable = writeableinst and  writeableinst.components.writeable
         if writeable then
             writeable:SetText(text)
             writeable:EndWriting()
         end
+    end,
+    
+    StartVote = function(player, command, parameters)
+        TheWorld.net.components.voter:StartVote(player, command, parameters)
+    end,
+    
+    Vote = function(player, option_index)
+        TheWorld.net.components.voter:ReceivedVote(player, option_index)
     end,
 }
 

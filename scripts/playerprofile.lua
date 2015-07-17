@@ -29,6 +29,7 @@ PlayerProfile = Class(function(self)
         self.persistdata.screenshake = true
         self.persistdata.warneddifficultyrog = false
         self.persistdata.controller_popup = false
+        self.persistdata.warn_mods_enabled = true
 	end
 
     self.dirty = true
@@ -54,6 +55,7 @@ function PlayerProfile:Reset()
         self.persistdata.screenshake = true
         self.persistdata.warneddifficultyrog = false
         self.persistdata.controller_popup = false
+        self.persistdata.warn_mods_enabled = true
 	end
 
     --self.persistdata.starts = 0 -- save starts?
@@ -80,6 +82,7 @@ function PlayerProfile:SoftReset()
         self.persistdata.screenshake = true
         self.persistdata.warneddifficultyrog = false
         self.persistdata.controller_popup = false
+        self.persistdata.warn_mods_enabled = true
 	end
     -- and apply these values
     local str = json.encode(self.persistdata)
@@ -630,6 +633,31 @@ function PlayerProfile:ShowedControllerPopup()
 		TheSim:SetSetting("misc", "controller_popup", tostring(true)) 
 	else
 		self:SetValue("controller_popup", true)
+		self.dirty = true
+	end
+end
+
+function PlayerProfile:ShouldWarnModsEnabled()
+    if USE_SETTINGS_FILE then
+ 		if TheSim:GetSetting("misc", "warn_mods_enabled") ~= nil then
+			return TheSim:GetSetting("misc", "warn_mods_enabled") == "true"
+		else
+			return true -- Default to true this value hasn't been created yet
+		end
+	else
+		if self:GetValue("warn_mods_enabled") ~= nil then
+			return self:GetValue("warn_mods_enabled")
+		else
+			return true -- Default to true this value hasn't been created yet
+		end
+	end
+end
+
+function PlayerProfile:SetWarnModsEnabled(do_warning)
+ 	if USE_SETTINGS_FILE then
+		TheSim:SetSetting("misc", "warn_mods_enabled", tostring(do_warning)) 
+	else
+		self:SetValue("warn_mods_enabled", do_warning)
 		self.dirty = true
 	end
 end

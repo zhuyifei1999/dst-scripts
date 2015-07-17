@@ -6,11 +6,20 @@ local assets =
     Asset("SOUND", "sound/sanity.fsb"),
     Asset("SOUND", "sound/amb_stream.fsb"),
     Asset("SHADER", "shaders/uifade.ksh"),
-    Asset("ATLAS", "images/selectscreen_portraits.xml"), -- we need all these frontend assets in the world prefab so we can show the character select screen from the death screen
-    Asset("IMAGE", "images/selectscreen_portraits.tex"),
+    -- Asset("ATLAS", "images/selectscreen_portraits.xml"), -- Not currently used, but likely to come back
+    -- Asset("IMAGE", "images/selectscreen_portraits.tex"), -- Not currently used, but likely to come back
     Asset("ATLAS", "bigportraits/locked.xml"),
     Asset("IMAGE", "bigportraits/locked.tex"),
-    Asset("ANIM", "anim/portrait_frame.zip"),
+    Asset("ATLAS", "bigportraits/random.xml"),
+    Asset("IMAGE", "bigportraits/random.tex"),
+    -- Asset("ANIM", "anim/portrait_frame.zip"), -- Not currently used, but likely to come back
+    Asset("ANIM", "anim/spiral_bg.zip"),
+
+    Asset("ATLAS", "images/lobbybannertop.xml"),
+    Asset("IMAGE", "images/lobbybannertop.tex"),
+
+    Asset("ATLAS", "images/lobbybannerbottom.xml"),
+    Asset("IMAGE", "images/lobbybannerbottom.tex"),
 }
 
 -- Add all the characters by name
@@ -164,12 +173,27 @@ local function OnRemoveEntity(inst)
 end
 
 local function OnUpdateServerListing(inst)
+    local player_table = {}
+    for i, v in ipairs(TheNet:GetClientTable() or {}) do
+        table.insert(player_table, {
+            playerage = v.playerage,
+            name = v.name,
+            admin = v.admin,
+            userflags = v.userflags,
+            performance = v.performance,
+            steamid = v.steamid,
+            prefab = v.prefab,
+            colour = v.colour,
+        })
+    end
+
     SaveServerListingGameData({
         season = inst.state.season,
         day = inst.state.cycles + 1,
         daysleftinseason = inst.state.remainingdaysinseason,
         dayselapsedinseason = inst.state.elapseddaysinseason,
         worldgenoptions = SaveGameIndex:GetSlotGenOptions() or {},
+        players = player_table,
     })
     TheNet:SetSeason( inst.state.season )
 end
@@ -258,7 +282,7 @@ local function fn()
 
         --Give the game a couple of seconds to finish init and then
         --start periodically updating our listing every few minutes
-        inst:DoPeriodicTask(5 * 60, OnUpdateServerListing, 2)
+        inst:DoPeriodicTask(1 * 60, OnUpdateServerListing, 2)
     end
 
     return inst

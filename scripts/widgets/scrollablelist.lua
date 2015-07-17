@@ -13,8 +13,8 @@ local arrow_button_size = 40
 local DRAG_SCROLL_X_THRESHOLD = 150
 
 -- ScrollableList expects a table of pre-constructed items to be handed in as the "items" param OR
--- for the "items" table to be a normalized table of data where each table entry is the data that will be handed as the parameters to the supplied function for "constructor"
-local ScrollableList = Class(Widget, function(self, items, listwidth, listheight, itemheight, itempadding, constructor, updatefn, widgetstoupdate, widgetXOffset, always_show_static, starting_offset, yInit)
+-- for the "items" table to be a normalized table of data where each table entry is the data that will be handed as the parameters to the supplied function for "updatefn"
+local ScrollableList = Class(Widget, function(self, items, listwidth, listheight, itemheight, itempadding, updatefn, widgetstoupdate, widgetXOffset, always_show_static, starting_offset, yInit)
     Widget._ctor(self, "ScrollBar")
     self.height = listheight
     self.width = listwidth
@@ -26,12 +26,11 @@ local ScrollableList = Class(Widget, function(self, items, listwidth, listheight
     self.x_offset = widgetXOffset or 0
     self.yInitial = yInit or 0
     self.always_show_static_widgets = always_show_static or false
+    self.focused_index = 1
+    self.focus_children = true
 
     self.items = items
-    if constructor then
-    	self.constructor = constructor
-    	self.constructed_widgets = {}
-    elseif updatefn and widgetstoupdate then
+    if updatefn and widgetstoupdate then
     	self.updatefn = updatefn
     	self.static_widgets = widgetstoupdate
     else
@@ -48,7 +47,7 @@ local ScrollableList = Class(Widget, function(self, items, listwidth, listheight
 	-- self.widget_bg:SetTint(1,1,1,0)
 	-- self.widget_bg:ScaleToSize(self.width, self.height)
 
-	self.up_button = self:AddChild(ImageButton("images/ui.xml", "arrow_scrollbar_up.tex", "arrow_scrollbar_up.tex", "arrow_scrollbar_up.tex"))
+	self.up_button = self:AddChild(ImageButton("images/ui.xml", "arrow_scrollbar_up.tex", "arrow_scrollbar_up.tex", "arrow_scrollbar_up.tex", nil, nil, {1,1}, {0,0}))
 	-- self.up_button:SetScale(.4)
     self.up_button:SetPosition(self.width/2, self.height/2-10, 0)
     self.up_button:SetWhileDown( function() 
@@ -62,7 +61,7 @@ local ScrollableList = Class(Widget, function(self, items, listwidth, listheight
     end)
     -- self.up_button:StartUpdating()
 
-	self.down_button = self:AddChild(ImageButton("images/ui.xml", "arrow_scrollbar_down.tex", "arrow_scrollbar_down.tex", "arrow_scrollbar_down.tex"))
+	self.down_button = self:AddChild(ImageButton("images/ui.xml", "arrow_scrollbar_down.tex", "arrow_scrollbar_down.tex", "arrow_scrollbar_down.tex", nil, nil, {1,1}, {0,0}))
 	-- self.down_button:SetScale(.4)
     self.down_button:SetPosition(self.width/2, -self.height/2+10, 0)
     self.down_button:SetWhileDown( function() 
@@ -80,7 +79,7 @@ local ScrollableList = Class(Widget, function(self, items, listwidth, listheight
     self.scroll_bar_line:ScaleToSize( 11, self.height - arrow_button_size - 20)
     self.scroll_bar_line:SetPosition(self.width/2, 0)
 
-    self.scroll_bar = self:AddChild(ImageButton("images/ui.xml", "1percent_clickbox.tex", "1percent_clickbox.tex", "1percent_clickbox.tex"))
+    self.scroll_bar = self:AddChild(ImageButton("images/ui.xml", "1percent_clickbox.tex", "1percent_clickbox.tex", "1percent_clickbox.tex", nil, nil, {1,1}, {0,0}))
 	self.scroll_bar.image:ScaleToSize( 32, self.height - arrow_button_size - 20)
 	self.scroll_bar.image:SetTint(1,1,1,0)
 	self.scroll_bar.scale_on_focus = false
@@ -101,17 +100,13 @@ local ScrollableList = Class(Widget, function(self, items, listwidth, listheight
 		end
 	end )
 
-	self.position_marker = self:AddChild(ImageButton("images/ui.xml", "scrollbarbox.tex", "scrollbarbox.tex", "scrollbarbox.tex"))
-	-- self.position_marker:SetScale(1,.1)
+	self.position_marker = self:AddChild(ImageButton("images/ui.xml", "scrollbarbox.tex", "scrollbarbox.tex", "scrollbarbox.tex", nil, nil, {1,1}, {0,0}))
 	self.position_marker.scale_on_focus = false
 	self.position_marker.move_on_click = false
 	self.position_marker:SetPosition(self.width/2, self.height/2 - arrow_button_size, 0)
 	self.position_marker:SetOnDown( function() 
 		self.do_dragging = true
-		-- print(TheFrontEnd.lasty)
-		-- print(self.position_marker:GetWorldPosition().y)
-		self.y_adjustment = 0--self.position_marker:GetWorldPosition().y - TheFrontEnd.lasty
-		-- print(self.y_adjustment)
+		self.y_adjustment = 0
 	end)
     self.position_marker:SetWhileDown( function() 
     	if self.do_dragging then
@@ -143,18 +138,18 @@ local ScrollableList = Class(Widget, function(self, items, listwidth, listheight
     self:RefreshView()
 end)
 
-function ScrollableList:OnControl(control, down)
+function ScrollableList:OnControl(control, down, force)
     if ScrollableList._base.OnControl(self, control, down) then return true end
 
-    if down and self.focus and self.scroll_bar:IsVisible() then
+    if down and ((self.focus and self.scroll_bar:IsVisible()) or force) then
         if control == CONTROL_SCROLLBACK then
             if self:Scroll(-scroll_per_click, true) then
-                TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+                TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover")
             end
             return true
         elseif control == CONTROL_SCROLLFWD then
             if self:Scroll(scroll_per_click, true) then
-                TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+                TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover")
             end
             return true
         end
@@ -204,12 +199,6 @@ function ScrollableList:RefreshView(movemarker)
 	local showing = false
 	local nextYPos = self.height/2 - (arrow_button_size * .5) + self.yInitial
 
-	if self.constructor and not self.updatefn and not self.static_widgets then 
-		for i,v in pairs(self.constructed_widgets) do
-			v:Kill() 
-		end
-		self.constructed_widgets = {}
-	end
 	local numShown = 0
 	for i,v in ipairs(self.items) do
 		if i < self.view_offset+1 then
@@ -219,16 +208,12 @@ function ScrollableList:RefreshView(movemarker)
 		end
 
 		if showing then
-			if self.constructor then
-				local widg = self:AddChild(self.constructor(v, i))
-				if widg then
-					self.constructed_widgets[i] = widg
-					widg:SetPosition(-self.width/2 + self.x_offset, nextYPos)
+			if self.updatefn and self.static_widgets then
+				if self.static_widgets[i - self.view_offset] then
+					-- if i - self.view_offset > #self.static_widgets then break end -- just in case we get into a bad spot
+					self.updatefn(self.static_widgets[i - self.view_offset], v, i)
+					self.static_widgets[i - self.view_offset]:SetPosition(-self.width/2 + self.x_offset, nextYPos)
 				end
-			elseif self.updatefn and self.static_widgets then
-				-- if i - self.view_offset > #self.static_widgets then break end -- just in case we get into a bad spot
-				self.updatefn(self.static_widgets[i - self.view_offset], v, i)
-				self.static_widgets[i - self.view_offset]:SetPosition(-self.width/2 + self.x_offset, nextYPos)
 			else
 				v:SetPosition(-self.width/2 + self.x_offset, nextYPos)
 				v:Show()
@@ -242,8 +227,7 @@ function ScrollableList:RefreshView(movemarker)
 				showing = false
 			end
 		else
-			--#srosen this is just for pre-made widgets for focus-changing when we scroll. need to do constructed and static/updated
-			if not self.constructor and not self.updatefn and not self.static_widgets then
+			if not self.updatefn and not self.static_widgets then
 				if v.focus then
 					if i < self.view_offset+1 then
 						self.items[self.view_offset+1]:SetFocus()
@@ -254,6 +238,12 @@ function ScrollableList:RefreshView(movemarker)
 					end
 				end
 				v:Hide()
+			elseif self.updatefn and self.static_widgets then --#srosen controller scrolling is a little wonky here: focus is getting placed on weird things (update & constructed)
+				if self.focused_index < self.view_offset+1 then
+					self.focused_index = self.view_offset+1
+				elseif self.focused_index > self.view_offset+self.widgets_per_view then
+					self.focused_index = self.view_offset+self.widgets_per_view
+				end
 			end
 		end
 	end
@@ -307,7 +297,10 @@ function ScrollableList:RefreshView(movemarker)
 	end
 end
 
-function ScrollableList:LayOutStaticWidgets(yInitial)
+-- skip fixup is for when there's a widget that is already adding the scroll list help text and control stuff for the update style (i.e. ListCursor)
+-- focus children should be false when it's just an information list (i.e. the morge) and there's nothing interactable in the list
+-- if set to false, then we keep the focus on the scroll list so that it can handle the scroll input properly
+function ScrollableList:LayOutStaticWidgets(yInitial, skipFixUp, focusChildren)
 	if self.static_widgets then
 		local showing = false
 		self.yInitial = yInitial or 0
@@ -317,6 +310,33 @@ function ScrollableList:LayOutStaticWidgets(yInitial)
 		for i,v in ipairs(self.static_widgets) do					
 			v:SetPosition(-self.width/2 + self.x_offset, nextYPos)
 			nextYPos = nextYPos - self.item_height - self.item_padding
+
+			if not skipFixUp then
+				local helptextFn = v.GetHelpText
+				v.GetHelpText = function()
+					local controller_id = TheInput:GetControllerID()
+				    local t = {}
+				    if self.scroll_bar and self.scroll_bar:IsVisible() then
+				        table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_SCROLLBACK, false, false).."/"..TheInput:GetLocalizedControl(controller_id, CONTROL_SCROLLFWD, false, false).. " " .. STRINGS.UI.HELP.SCROLL)   
+				    end
+					if helptextFn then 
+						table.insert(t, helptextFn())
+					end
+				    return table.concat(t, "  ")
+				end
+
+				local gainfocusFn = v.OnGainFocus
+				v.OnGainFocus = function()
+					gainfocusFn(v)
+					self.focused_index = i
+				end
+
+				v:SetParentScrollList(self)
+			end
+		end
+
+		if focusChildren ~= nil then
+			self.focus_children = focusChildren
 		end
 	end
 end
@@ -402,18 +422,17 @@ function ScrollableList:SetListItemHeight(ht)
 end
 
 function ScrollableList:SetList(list, keepitems)
-	if self.constructor then
-		for k,v in pairs(self.constructed_widgets) do
-			v:KillAllChildren()
-			v:Kill()
-		end
-	elseif not self.updatefn and not self.static_widgets and not keepitems then
+	if not self.updatefn and not self.static_widgets and not keepitems then
 		for k,v in pairs(self.items) do
 			v:KillAllChildren()
 			v:Kill()
 		end
+
+		for i,v in pairs(list) do
+	    	self:AddChild(v)
+	    end
 	end
-	self.items = {}
+
 	self.items = list
 	
 	self:Scroll(0, true) --scroll by 0 to update the position to match the new list size
@@ -426,11 +445,7 @@ function ScrollableList:SetList(list, keepitems)
 end
 
 function ScrollableList:Clear()
-	if self.constructor then
-		for k,v in pairs(self.constructed_widgets) do
-			v:Kill()
-		end
-	elseif not self.updatefn and not self.static_widgets then
+	if not self.updatefn and not self.static_widgets then
 		for k,v in pairs(self.items) do
 			v:Kill()
 		end
@@ -446,18 +461,25 @@ end
 
 function ScrollableList:OnGainFocus()
 	ScrollableList._base.OnGainFocus(self)
-	
-	self.focused_index = 1
+
+	local index = 1
 	-- Static table of widgets that we show and hide
-	if self.items and not self.constructor and not self.updatefn and not self.static_widgets then
+	if self.items and not self.updatefn and not self.static_widgets then
 		for i,v in ipairs(self.items) do
 			if v.focus then
-				self.focused_index = i
+				index = i
+				break
+			end
+		end
+	elseif self.updatefn and self.static_widgets then
+		for i,v in ipairs(self.static_widgets) do
+			if v.focus then
+				index = self.view_offset+i
 				break
 			end
 		end
 	end
-	-- #srosen still need to do focus hookups and nav for constructed widgets and updated widgets
+	self.focused_index = index
 end
 
 function ScrollableList:OnLoseFocus()
@@ -465,15 +487,21 @@ function ScrollableList:OnLoseFocus()
 
 	self.focused_index = 1
 	-- Static table of widgets that we show and hide
-	if self.items and not self.constructor and not self.updatefn and not self.static_widgets then
+	if self.items and not self.updatefn and not self.static_widgets then
 		for i,v in ipairs(self.items) do
 			if v.focus then
 				self.focused_index = i
 				break
 			end
 		end
+	elseif self.updatefn and self.static_widgets then
+		for i,v in ipairs(self.static_widgets) do
+			if v.focus then
+				self.focused_index = self.view_offset+i
+				break
+			end
+		end
 	end
-	-- #srosen still need to do focus hookups and nav for constructed widgets and updated widgets
 end
 
 function ScrollableList:SetFocus(index)
@@ -486,14 +514,13 @@ function ScrollableList:SetFocus(index)
 		end
 	end
 
-	if self.constructor then
-		if self.constructed_widgets[index] and self.constructed_widgets[index].SetFocus then
-			self.constructed_widgets[index]:SetFocus()
-			self.focused_index = index
-		end
-	elseif self.updatefn and self.static_widgets then
+	if self.updatefn and self.static_widgets then
 		if self.static_widgets[index] and self.static_widgets[index].SetFocus then
-			self.static_widgets[index]:SetFocus()
+			if self.focus_children then 
+				self.static_widgets[index]:SetFocus() 
+			else
+				self.bg:SetFocus()
+			end
 			self.focused_index = index
 		end
 	else
@@ -507,7 +534,7 @@ end
 function ScrollableList:DoFocusHookups()
 
 	-- Static table of widgets that we show and hide
-	if self.items and not self.constructor and not self.updatefn and not self.static_widgets then
+	if self.items and not self.updatefn and not self.static_widgets then
 		for k,v in ipairs(self.items) do
 			if k > 1 then
 				self.items[k]:SetFocusChangeDir(MOVE_UP, self.items[k-1])
@@ -517,16 +544,25 @@ function ScrollableList:DoFocusHookups()
 				self.items[k]:SetFocusChangeDir(MOVE_DOWN, self.items[k+1])
 			end
 		end
-	end
-	-- #srosen still need to do focus hookups and nav for constructed widgets and updated widgets
+	elseif self.updatefn and self.static_widgets then
+		for k,v in ipairs(self.static_widgets) do
+			if k > 1 then
+				self.static_widgets[k]:SetFocusChangeDir(MOVE_UP, self.static_widgets[k-1])
+			end
 
+			if k < #self.static_widgets then
+				self.static_widgets[k]:SetFocusChangeDir(MOVE_DOWN, self.static_widgets[k+1])
+			end
+		end
+	end
 end
 
 function ScrollableList:OnFocusMove(dir, down)
 	if ScrollableList._base.OnFocusMove(self,dir,down) then return true end
+
 	if down then
 		-- Static table of widgets that we show and hide
-		if self.items and not self.constructor and not self.updatefn and not self.static_widgets then
+		if self.items and not self.updatefn and not self.static_widgets then
 
 			for i,v in ipairs(self.items) do
 				if v.focus then
@@ -538,98 +574,61 @@ function ScrollableList:OnFocusMove(dir, down)
 			if dir == MOVE_UP and self.focused_index > 1 then
 				if self.focused_index and self.focused_index <= self.view_offset+1 then
 					self:Scroll(-1, true)
-					TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+					TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover")
 					self.items[self.view_offset+1]:SetFocus()
+					self.focused_index = self.focused_index - 1
 				end
-				self.focused_index = self.focused_index - 1
 				return true
 			elseif dir == MOVE_DOWN and self.focused_index < #self.items then
 				if self.focused_index and self.focused_index >= self.view_offset+self.widgets_per_view then
-					self:Scroll(1, true)	
-					TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+					self:Scroll(1, true)
+					TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover")
 					self.items[self.view_offset+self.widgets_per_view]:SetFocus()
+					self.focused_index = self.focused_index + 1
 				end
-				self.focused_index = self.focused_index + 1
+				return true
+			end
+
+		elseif self.updatefn and self.static_widgets then
+
+			for i,v in ipairs(self.static_widgets) do
+				if v.focus then
+					self.focused_index = i
+					break
+				end
+			end
+
+			if dir == MOVE_UP and self.focused_index == 1 and self.view_offset > 0 then
+				self:Scroll(-1, true)
+				TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover")
+				self.static_widgets[1]:SetFocus()
+				self.focused_index = self.focused_index - 1 + self.view_offset
+				return true
+			elseif dir == MOVE_DOWN and self.focused_index == #self.static_widgets and ((self.view_offset + #self.static_widgets) < #self.items) then
+				self:Scroll(1, true)
+				TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover")
+				self.static_widgets[#self.static_widgets]:SetFocus()
+				self.focused_index = self.focused_index + 1 + self.view_offset
 				return true
 			end
 		end
-		-- #srosen still need to do focus hookups and nav for constructed widgets and updated widgets
 	end
 	return false
 end
-
--- function ScrollableList:SetVRegPoint(valign)
--- 	local pos = Vector3(0,0,0) -- ANCHOR_TOP
--- 	if valign == ANCHOR_MIDDLE then
--- 		pos = Vector3(0, (#self.items-1)*-0.5, 0)
--- 	elseif valign == ANCHOR_BOTTOM then
--- 		pos = Vector3(0, (#self.items-1)*-1, 0)
--- 	end
-
--- 	for i,v in ipairs(self.items) do
--- 		self.items[i]:SetVAlign(valign)
--- 		self.items[i]:SetPosition(pos)
--- 		pos.y = pos.y + self.offset
--- 	end
--- end
-
--- function ScrollableList:SetHRegPoint(halign)
--- 	local pos = Vector3(0,0,0) -- ANCHOR_LEFT
--- 	if halign == ANCHOR_MIDDLE then
--- 		pos = Vector3(self.offset*(#self.items-1)*-0.5, 0,  0)
--- 	elseif halign == ANCHOR_RIGHT then
--- 		pos = Vector3(self.offset*(#self.items-1)*-1, 0, 0)
--- 	end
-
--- 	for i,v in ipairs(self.items) do
--- 		local width, height = self.items[i].image:GetSize()
--- 		self.items[i]:SetPosition(pos)
--- 		--if halign == ANCHOR_MIDDLE then
--- 			--local b_pos = pos + Vector3(-width*0.5, 0, 0)
--- 			--self.items[i]:SetPosition(b_pos)
--- 		--elseif halign == ANCHOR_RIGHT then
--- 			--local b_pos = pos + Vector3(-width, 0, 0)
--- 			--self.items[i]:SetPosition(b_pos)
--- 		--else
--- 			--self.items[i]:SetPosition(pos)
--- 		--end
--- 		pos.x = pos.x + self.offset
--- 	end
--- end
-
--- function ScrollableList:EditItem(num, text, cb)
-
--- 	if self.items[num] then
--- 		local i = self.items[num]
-
--- 		if text then
--- 			i:SetText(text)
--- 		end
-
--- 		if cb then
--- 			i:SetOnClick(cb)
--- 		end
-
--- 	end
-
--- end
-
--- function ScrollableList:GetItem()
-
--- end
-
--- function ScrollableList:RemoveItem()
-
--- end
 
 function ScrollableList:GetHelpText()
 	local controller_id = TheInput:GetControllerID()
 	local t = {}
 	if self.scroll_bar and self.scroll_bar:IsVisible() then
-		table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_SCROLLBACK, false, false) .. " " .. STRINGS.UI.HELP.SCROLL_UP)	
-	    table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_SCROLLFWD, false, false) .. " " .. STRINGS.UI.HELP.SCROLL_DOWN)	
+		table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_SCROLLBACK, false, false).."/"..TheInput:GetLocalizedControl(controller_id, CONTROL_SCROLLFWD, false, false).. " " .. STRINGS.UI.HELP.SCROLL)
 	end
 	return table.concat(t, "  ")
+end
+
+function ScrollableList:ScrollToEnd()
+	if self.scroll_bar and self.scroll_bar:IsVisible() then
+		self:Scroll(self:GetNumberOfItems(), true)
+	end
 end
 
 return ScrollableList

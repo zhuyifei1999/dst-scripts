@@ -747,7 +747,7 @@ function CheckControllers()
             scheduler:ExecuteInTime(0.05, function() Check_Mods() end)            
         end
         
-        local popup = BigPopupDialogScreen(STRINGS.UI.MAINSCREEN.CONTROLLER_DETECTED_HEADER, STRINGS.UI.MAINSCREEN.CONTROLLER_DETECTED_BODY,
+        local popup = PopupDialogScreen(STRINGS.UI.MAINSCREEN.CONTROLLER_DETECTED_HEADER, STRINGS.UI.MAINSCREEN.CONTROLLER_DETECTED_BODY,
             {
                 {text=STRINGS.UI.MAINSCREEN.ENABLECONTROLLER, cb = enableControllers},
                 {text=STRINGS.UI.MAINSCREEN.DISABLECONTROLLER, cb = disableControllers}  
@@ -798,9 +798,47 @@ function GlobalInit()
 	FirstStartupForNetworking = true
 end
 
-function LoadMapFile( map_name )
-    DisableAllDLC()
-	StartNextInstance({reset_action = RESET_ACTION.LOAD_FILE, save_name=map_name})
+-- This is for joining a game: once we're done downloading the map, we load it and simreset
+function LoadMapFile(map_name)
+    if InGamePlay() then
+        -- Must be a synchronous load if we're in any game play state (including lobby screen)
+        DisableAllDLC()
+        StartNextInstance({ reset_action = RESET_ACTION.LOAD_FILE, save_name = map_name })
+        return
+    end
+
+    local screen = TheFrontEnd:GetActiveScreen()
+    while screen ~= nil and not (screen.bg ~= nil and screen.bg.anim_root ~= nil and screen.bg.anim_root.portal ~= nil) do
+        -- Check if we're on a screen with a portal anim
+        -- If we're not, then pop the current screen and try again with the next screen down
+        TheFrontEnd:PopScreen()
+        screen = TheFrontEnd:GetActiveScreen()
+    end
+
+    if screen == nil then
+        -- If there are no more screens, just do a generic fade
+        TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
+            DisableAllDLC()
+            StartNextInstance({ reset_action = RESET_ACTION.LOAD_FILE, save_name = map_name })
+        end, nil, nil, "white")
+        return
+    end
+
+    -- If we have access to a portal, then start the animation fanciness!
+    TheFrontEnd:Fade(true, SCREEN_FADE_TIME * 4, nil, nil, nil, "alpha")
+
+    screen:Disable()
+    screen.inst:DoTaskInTime(SCREEN_FADE_TIME, function(inst)
+        screen.bg.anim_root.portal:GetAnimState():PlayAnimation("portal_blackout", false)
+        TheFrontEnd:GetSound():PlaySound("dontstarve/together_FE/portal_flash")
+
+        inst:DoTaskInTime(1.5, function() 
+            TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
+                DisableAllDLC()
+                StartNextInstance({ reset_action = RESET_ACTION.LOAD_FILE, save_name = map_name })
+            end, nil, nil, "white")
+        end)
+    end)
 end
 
 function JapaneseOnPS4()
@@ -818,6 +856,8 @@ function StartNextInstance(in_params, send_stats)
 	
 	local params = in_params or {}
 	params.last_reset_action = Settings.reset_action
+
+    params.load_screen_image = global_loading_widget.image_random
 
 	if send_stats then
 		SendAccumulatedProfileStats()
@@ -979,6 +1019,7 @@ end
 
 --DoRestart helper
 local function postsavefn()
+	PlayerHistory:UpdateHistoryFromClientTable()
     TheNet:Disconnect()
     EnableAllMenuDLC()
     StartNextInstance()
@@ -1007,7 +1048,6 @@ function DoRestart(save)
     if not PerformingRestart then
         PerformingRestart = true
         ShowLoading()
-        KnownModIndex:ClearAllTempModFlags()
         TheFrontEnd:Fade(false, 1, save and savefn or postsavefn)
     end
 end
@@ -1018,7 +1058,7 @@ function OnPlayerLeave(player_guid, expected)
     if TheWorld.ismastersim and player_guid ~= nil then
 		local player = Ents[player_guid]
 		if player ~= nil then
-			TheNet:Announce(player:GetDisplayName().." "..STRINGS.UI.NOTIFICATION.LEFTGAME, player.entity, true)
+			TheNet:Announce(player:GetDisplayName().." "..STRINGS.UI.NOTIFICATION.LEFTGAME, player.entity, true, "leave_game")
             --Save must happen when the player is actually removed
             --This is currently handled in playerspawner listening to ms_playerdespawn
             TheWorld:PushEvent("ms_playerdisconnected", {player=player, wasExpected=expected})
@@ -1051,8 +1091,10 @@ function OnNetworkDisconnect( message, should_reset, force_immediate_reset, deta
 	    return
 	end
 
-	--When we disconnect we need to remove any temp mods flags we set for this server
-	KnownModIndex:ClearAllTempModFlags()
+    local screen = TheFrontEnd:GetActiveScreen()
+    if screen and screen.name == "ConnectingToGamePopup" then
+        TheFrontEnd:PopScreen()
+    end
 	
 	--If we plan to serialize a user session, we should do it now.  It will be too late later.
 	if ThePlayer ~= nil then
@@ -1174,7 +1216,7 @@ local function OnUserPickedCharacter(char, skin)
         TheNet:SendSpawnRequestToServer(char, skin)
     end
 
-    TheFrontEnd:Fade(false, 1, doSpawn)
+    TheFrontEnd:Fade(false, 1, doSpawn, nil, nil, "white")
 end
 
 function ResumeRequestLoadComplete(success)
@@ -1183,7 +1225,7 @@ function ResumeRequestLoadComplete(success)
     if not success then
         TheNet:DeleteUserSession(TheNet:GetUserID())
         TheFrontEnd:PushScreen(LobbyScreen(Profile, OnUserPickedCharacter, false))
-        TheFrontEnd:Fade(true, 1)
+        TheFrontEnd:Fade(true, 1, nil, nil, nil, "white")
         TheWorld:PushEvent("entercharacterselect")
     end
 end
@@ -1282,6 +1324,11 @@ function BuildTagsStringCommon(tagsTable)
     for i,mod_tag in pairs( KnownModIndex:GetEnabledModTags() ) do
         table.insert(tagsTable, mod_tag)
     end
+    -- Vote command tags
+    if TheSim:GetSetting("misc", "vote_kick_enabled") == "true" then
+		table.insert(tagsTable, "vote kick")
+    end
+    
     -- Concat & return the string
     return table.concat(tagsTable, ", ")
 end

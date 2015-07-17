@@ -24,10 +24,21 @@ local Crafting = Class(Widget, function(self, owner, num_slots)
     self:AddChild(self.craftslots)
 
     --buttons
-    self.downbutton = self:AddChild(ImageButton(HUD_ATLAS, "craft_end_normal.tex", "craft_end_normal_mouseover.tex", "craft_end_normal_disabled.tex"))
-    self.upbutton = self:AddChild(ImageButton(HUD_ATLAS, "craft_end_normal.tex", "craft_end_normal_mouseover.tex", "craft_end_normal_disabled.tex"))
+    self.downbutton = self:AddChild(ImageButton(HUD_ATLAS, "craft_end_normal.tex", "craft_end_normal_mouseover.tex", "craft_end_normal_disabled.tex", nil, nil, {1,1}, {0,0}))
+    self.upbutton = self:AddChild(ImageButton(HUD_ATLAS, "craft_end_normal.tex", "craft_end_normal_mouseover.tex", "craft_end_normal_disabled.tex", nil, nil, {1,1}, {0,0}))
+    local but_w, but_h = self.downbutton:GetSize()
+    self.but_w = but_w
+    self.but_h = but_h
+    self.downbutton.scale_on_focus = false
+    self.upbutton.scale_on_focus = false
     self.downbutton:SetOnClick(function() self:ScrollDown() end)
     self.upbutton:SetOnClick(function() self:ScrollUp() end)
+
+    self.downconnector = self:AddChild(Image(HUD_ATLAS, "craft_sep_h.tex"))
+    self.upconnector = self:AddChild(Image(HUD_ATLAS, "craft_sep_h.tex"))
+
+    self.downendcapbg = self:AddChild(Image(HUD_ATLAS, "craft_sep.tex"))
+    self.upendcapbg = self:AddChild(Image(HUD_ATLAS, "craft_sep.tex"))
 
 	-- start slightly scrolled down
     self.idx = -1
@@ -54,17 +65,41 @@ function Crafting:SetOrientation(horizontal)
         self.craftslots.slots[k]:SetPosition( slotpos.x,slotpos.y,slotpos.z )
     end
 
-    local but_w, but_h = self.downbutton:GetSize()
-
     if horizontal then
         self.downbutton:SetRotation(90)
-        self.downbutton:SetPosition(-self.bg.length/2 - but_w/2 + slot_w/2,0,0)
         self.upbutton:SetRotation(-90)
-        self.upbutton:SetPosition(self.bg.length/2 + but_w/2 - slot_w/2,0,0)
+
+        self.downbutton:SetPosition(-self.bg.length/2 - self.but_w/2 + slot_w/2,0,0)
+        self.upbutton:SetPosition(self.bg.length/2 + self.but_w/2 - slot_w/2,0,0)
+
+        self.downconnector:Hide()
+        self.upconnector:Hide()
+        self.downendcapbg:Hide()
+        self.upendcapbg:Hide()
     else
-        self.upbutton:SetPosition(0, - self.bg.length/2 - but_h/2 + slot_h/2,0)
         self.downbutton:SetScale(Vector3(1, -1, 1))
-        self.downbutton:SetPosition(0, self.bg.length/2 + but_h/2 - slot_h/2,0)
+        if self.valid_recipes and #self.valid_recipes <= self.max_slots then
+            self.downbutton:SetPosition(0, self.bg.length/2 + self.but_h/1.35 - slot_h/2 - 23,0)
+            self.upbutton:SetPosition(0, -self.bg.length/2 - self.but_h/1.35 + slot_h/2 + 23,0)
+
+            self.downconnector:SetPosition(-68, self.bg.length/2 + self.but_h/1.5 - slot_h/2 - 23,0)
+            self.upconnector:SetPosition(-68, -self.bg.length/2 - self.but_h/1.5 + slot_h/2 + 23,0)
+            
+            self.downendcapbg:SetPosition(0, self.bg.length/2 + self.but_h/2 - slot_h/2 - 23)
+            self.upendcapbg:SetPosition(0, -self.bg.length/2 - self.but_h/2 + slot_h/2 + 23)
+
+            self.downendcapbg:Show()
+            self.upendcapbg:Show()
+        else
+            self.downbutton:SetPosition(0, self.bg.length/2 + self.but_h/2 - slot_h/2,0)
+            self.upbutton:SetPosition(0, - self.bg.length/2 - self.but_h/2 + slot_h/2,0)
+
+            self.downconnector:SetPosition(-68, self.bg.length/2 + self.but_h/2 - slot_h/2 - 23,0)
+            self.upconnector:SetPosition(-68, - self.bg.length/2 - self.but_h/2 + slot_h/2 + 23,0)
+            
+            self.downendcapbg:Hide()
+            self.upendcapbg:Hide()
+        end
     end
 end
 
@@ -96,22 +131,28 @@ local function SortByKey(a, b)
 end
 
 function Crafting:Resize(num_recipes)
-    if self.num_recipes == num_recipes then return end
+    if self.num_recipes ~= num_recipes then
+        self.num_recipes = num_recipes
+        self.current_slots = math.min(num_recipes, self.max_slots)
+        self.craftslots:SetNumSlots(self.current_slots)
+        self:SetOrientation(false)
+    end
 
-    self.num_recipes = num_recipes
+    if #self.valid_recipes <= self.max_slots then
+        self.downbutton:SetTextures(HUD_ATLAS, "craft_end_short.tex", "craft_end_short.tex", "craft_end_short.tex", nil, nil, {1,1}, {0,0})-- self.downbutton:Hide()
+        self.upbutton:SetTextures(HUD_ATLAS, "craft_end_short.tex", "craft_end_short.tex", "craft_end_short.tex", nil, nil, {1,1}, {0,0})-- self.upbutton:Hide()
 
-    self.current_slots = math.min(num_recipes, self.max_slots)
+        self.downbutton.o_pos = nil
+        self.upbutton.o_pos = nil
 
-    self.craftslots:SetNumSlots(self.current_slots)
-
-    self:SetOrientation(false)
-
-    if num_recipes <= self.max_slots then
-        self.upbutton:Hide()
-        self.downbutton:Hide()
+        self.upconnector:SetScale(1.7,.7)
+        self.downconnector:SetScale(1.7,.7)
     else
-        self.upbutton:Show()
-        self.downbutton:Show()
+        self.downbutton:SetTextures(HUD_ATLAS, "craft_end_normal.tex", "craft_end_normal_mouseover.tex", "craft_end_normal_disabled.tex", nil, nil, {1,1}, {0,0})-- self.downbutton:Show()
+        self.upbutton:SetTextures(HUD_ATLAS, "craft_end_normal.tex", "craft_end_normal_mouseover.tex", "craft_end_normal_disabled.tex", nil, nil, {1,1}, {0,0})-- self.upbutton:Show()
+
+        self.upconnector:SetScale(1,1)
+        self.downconnector:SetScale(1,1)
     end
 end
 
@@ -138,7 +179,7 @@ function Crafting:UpdateRecipes()
 
         local num = math.min(self.max_slots, #self.valid_recipes) --How many recipe slots we're going to need
 
-        self:Resize(#self.valid_recipes)
+        self:Resize(num)
         self.craftslots:Clear()
 
         local default_idx = -1 --By default, the recipe starts in the top slot.
@@ -160,13 +201,13 @@ function Crafting:UpdateRecipes()
 
         -- #### It should be noted that downbutton goes "up" and up button goes "down"! ####
 
-        if self.idx >= 0 then
+        if self.idx >= 0 and #self.valid_recipes > self.max_slots then
             self.downbutton:Enable()
         else
             self.downbutton:Disable()
         end
 
-        if #self.valid_recipes < self.idx + self.current_slots then  
+        if #self.valid_recipes < self.idx + self.current_slots or #self.valid_recipes <= self.max_slots then  
             self.upbutton:Disable()
         else
             self.upbutton:Enable()

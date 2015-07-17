@@ -1008,7 +1008,14 @@ return {
 		SHOVEL = "Dig a hole. Plant a tree!",
 		SILK = "Spiders give me the willies.",
 		SKELETON = "Sorry, friend.",
-		SKELETON_PLAYER = "That's just downright unnerving.",
+		--SKELETON_PLAYER = "That's just downright unnerving.",
+		SKELETON_PLAYER =
+		{
+			MALE = "Poor %s. %s got him, eh?",
+			FEMALE = "Poor %s. %s got her, eh?",
+			ROBOT = "Poor %s. Killed by %s, eh?",
+			DEFAULT = "Poor %s. I should watch out for %s, eh?",
+		},
 		SKULLCHEST = "That's scary!",
 		SMALLBIRD =
 		{

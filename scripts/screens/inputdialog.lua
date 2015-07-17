@@ -7,6 +7,7 @@ local Image = require "widgets/image"
 local UIAnim = require "widgets/uianim"
 local Widget = require "widgets/widget"
 local TextEdit = require "widgets/textedit"
+local TEMPLATES = require "widgets/templates"
 
 local VALID_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 local STRING_MAX_LENGTH = 254 -- http://tools.ietf.org/html/rfc5321#section-4.5.3.1
@@ -51,35 +52,43 @@ local InputDialogScreen = Class(Screen, function(self, title, buttons, modal, st
     end
 
 	--throw up the background
-    self.bg = self.proot:AddChild(Image("images/fepanels_dst.xml", "small_panel.tex"))
-    self.bg:SetVRegPoint(ANCHOR_MIDDLE)
-    self.bg:SetHRegPoint(ANCHOR_MIDDLE)
-    local bg_x = math.max(1.2, 0.45 * #buttons )
-	self.bg:SetScale(bg_x,1.2,1.2)
+    self.bg = self.proot:AddChild(TEMPLATES.CurlyWindow(130, 100, .8, .8, 54, -32))
+    self.bg.fill = self.proot:AddChild(Image("images/fepanel_fills.xml", "panel_fill_tiny.tex"))
+    self.bg.fill:SetScale(.78, .48)
+    self.bg.fill:SetPosition(8, 12)
 
 	--title	
     self.title = self.proot:AddChild(Text(BUTTONFONT, 50))
-    self.title:SetPosition(0, 70, 0)
+    self.title:SetPosition(0, 50, 0)
     self.title:SetColour(0,0,0,1)
     self.title:SetString(title)
 
+    local whitebar = self.proot:AddChild(Image("images/ui.xml", "single_option_bg.tex"))
+    whitebar:ScaleToSize( 470, 50 )
+    whitebar:SetPosition(8, -20, 0)
+
     self.edit_text_bg = self.proot:AddChild( Image() )
-    self.edit_text_bg:SetTexture( "images/textboxes.xml", "textbox_long.tex" )
-    self.edit_text_bg:SetPosition( 0, 5, 0 )
-    self.edit_text_bg:ScaleToSize( 500, 40 )
+    self.edit_text_bg:SetTexture( "images/textboxes.xml", "textbox2_grey.tex" )
+    self.edit_text_bg:SetPosition( 8, -20, 0 )
+    self.edit_text_bg:ScaleToSize( 460, 40 )
 	
-	self.edit_text = self.proot:AddChild( TextEdit( BODYTEXTFONT, 25, "" ) )
-	self.edit_text:SetPosition( 0, 5, 0 )
-	self.edit_text:SetRegionSize( 450, 40 )
+	self.edit_text = self.proot:AddChild( TextEdit( NEWFONT, 25, "" ) )
+	self.edit_text:SetPosition( 10, -20, 0 )
+	self.edit_text:SetRegionSize( 430, 40 )
 	self.edit_text:SetHAlign(ANCHOR_LEFT)
-	self.edit_text:SetFocusedImage( self.edit_text_bg, "images/textboxes.xml", "textbox_long_over.tex", "textbox_long.tex" )
+	self.edit_text:SetFocusedImage( self.edit_text_bg, "images/textboxes.xml", "textbox2_grey.tex", "textbox2_gold.tex", "textbox2_gold_greyfill.tex" )
 	self.edit_text:SetTextLengthLimit( STRING_MAX_LENGTH )
 	self.edit_text:SetCharacterFilter( VALID_CHARS )
+    self.edit_text:SetForceEdit(true)
 	
     local spacing = 200
 
 	self.menu = self.proot:AddChild(Menu(buttons, spacing, true))
-	self.menu:SetPosition(-(spacing*(#buttons-1))/2, -70, 0) 
+	self.menu:SetPosition(-(spacing*(#buttons-1))/2, -95, 0) 
+    for i,v in pairs(self.menu.items) do
+        v:SetScale(.7)
+        v.image:SetScale(.6, .8)
+    end
 	self.default_focus = self.edit_text
 end)
 
@@ -133,8 +142,8 @@ function InputDialogScreen:OnControl(control, down)
     --end
 
     if control == CONTROL_CANCEL and not down then
-        if #self.buttons > 1 and self.buttons[1] then
-            self.buttons[1].cb()
+        if #self.buttons > 1 and self.buttons[2] then
+            self.buttons[2].cb()
             return true
         end
     end

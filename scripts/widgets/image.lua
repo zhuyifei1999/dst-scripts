@@ -7,6 +7,8 @@ Image = Class(Widget, function(self, atlas, tex, default_tex)
     
     assert( ( atlas == nil and tex == nil ) or ( atlas ~= nil and tex ~= nil ) )
 
+    self.tint = {1,1,1,1}
+
     if atlas and tex then
 		self:SetTexture(atlas, tex, default_tex)
     end
@@ -65,6 +67,14 @@ end
 
 function Image:SetTint(r,g,b,a)
     self.inst.ImageWidget:SetTint(r,g,b,a)
+    self.tint = {r, g, b, a}
+end
+
+function Image:SetFadeAlpha(a, skipChildren)
+	if not self.can_fade_alpha then return end
+	
+    self:SetTint(self.tint[1], self.tint[2], self.tint[3], self.tint[4] * a)
+    Widget.SetFadeAlpha( self, a, skipChildren )
 end
 
 function Image:SetVRegPoint(anchor)

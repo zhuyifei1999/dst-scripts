@@ -31,7 +31,7 @@ local LOWDSP =
 }
 
 local SUMMER_FREQUENCIES = { 100, 250, 500, 750, 1000 }
-local SUMMER_THRESHOLDS = {65, 70, 75, 80}
+local SUMMER_THRESHOLDS = { 65, 70, 75, 80 }
 
 --------------------------------------------------------------------------
 --[[ Member variables ]]
@@ -81,7 +81,7 @@ local function SortByCount(a, b)
     return a.count > b.count
 end
 
-local function RefreshDSP(src, duration)
+local function RefreshDSP(duration)
     local lowdsp = {}
     local highdsp = {}
     duration = duration or 0
@@ -192,31 +192,6 @@ local function OnTemperatureChange(sender, data)
     end
 end
 
-local function StartPlayerListeners(player)
-    inst:ListenForEvent("temperaturedelta", OnTemperatureChange, player)
-end
-
-local function StopPlayerListeners(player)
-    inst:RemoveEventCallback("temperaturedelta", OnTemperatureChange, player)
-end
-
-local function OnPlayerActivated(inst, player)
-    if _activatedplayer == player then
-        return
-    elseif _activatedplayer ~= nil and _activatedplayer.entity:IsValid() then
-        StopPlayerListeners(_activatedplayer)
-    end
-    _activatedplayer = player
-    StartPlayerListeners(player)
-end
-
-local function OnPlayerDeactivated(inst, player)
-    StopPlayerListeners(player)
-    if player == _activatedplayer then
-        _activatedplayer = nil
-    end
-end
-
 local function OnPushDSP(src, data)
     if data.lowdsp then
         table.insert(_dsplowstack, data.lowdsp)
@@ -248,12 +223,55 @@ local function OnPopDSP(src, data)
     end
 end
 
+local function StartPlayerListeners(player)
+    inst:ListenForEvent("temperaturedelta", OnTemperatureChange, player)
+    inst:ListenForEvent("seasontick", OnUpdateSeasonDSP)
+    UpdateSeasonDSP(TheWorld.state.season, 0)
+end
+
+local function StopPlayerListeners(player)
+    inst:RemoveEventCallback("temperaturedelta", OnTemperatureChange, player)
+    inst:RemoveEventCallback("seasontick", OnUpdateSeasonDSP)
+    for i = #_dsplowstack, 2, -1 do
+        table.remove(_dsplowstack, i)
+    end
+    for i = #_dsphighstack, 2, -1 do
+        table.remove(_dsphighstack, i)
+    end
+    for k, v in pairs(_defaultlowdsp) do
+        _defaultlowdsp[k] = nil
+    end
+    for k, v in pairs(_defaulthighdsp) do
+        _defaulthighdsp[k] = nil
+    end
+    RefreshDSP(2)
+end
+
+local function OnPlayerActivated(inst, player)
+    if _activatedplayer == player then
+        return
+    elseif _activatedplayer ~= nil and _activatedplayer.entity:IsValid() then
+        StopPlayerListeners(_activatedplayer)
+    end
+    _activatedplayer = player
+    StartPlayerListeners(player)
+end
+
+local function OnPlayerDeactivated(inst, player)
+    StopPlayerListeners(player)
+    if player == _activatedplayer then
+        _activatedplayer = nil
+    end
+end
+
 --------------------------------------------------------------------------
 --[[ Initialization ]]
 --------------------------------------------------------------------------
 
 --Register events
-inst:ListenForEvent("seasontick", OnUpdateSeasonDSP)
+--V2C: push/pop should move into player listeners, but can't until we
+--     refactor slurper dsp the same way we refactored nightvision as
+--     a property of the equipment
 inst:ListenForEvent("pushdsp", OnPushDSP)
 inst:ListenForEvent("popdsp", OnPopDSP)
 inst:ListenForEvent("playeractivated", OnPlayerActivated)
@@ -261,21 +279,6 @@ inst:ListenForEvent("playerdeactivated", OnPlayerDeactivated)
 
 -- This puts our own default DSP elements on the bottom of the stack
 OnPushDSP(inst, { lowdsp = _defaultlowdsp, highdsp = _defaulthighdsp, duration = 0 })
-
---------------------------------------------------------------------------
---[[ Post initialization ]]
---------------------------------------------------------------------------
-
-function self:OnPostInit()
-    UpdateSeasonDSP(TheWorld.state.season, 0)
-end
-
---------------------------------------------------------------------------
---[[ Update ]]
---------------------------------------------------------------------------
-
--- function self:OnUpdate(dt)
--- end
 
 --------------------------------------------------------------------------
 --[[ Debug ]]

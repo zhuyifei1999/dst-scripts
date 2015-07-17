@@ -6,6 +6,7 @@ local Image = require "widgets/image"
 local ConsoleScreen = require "screens/consolescreen"
 local DebugMenuScreen = require "screens/DebugMenuScreen"
 local PopupDialogScreen = require "screens/popupdialog"
+local TEMPLATES = require "widgets/templates"
 
 require "constants"
 
@@ -60,6 +61,34 @@ FrontEnd = Class(function(self, name)
 	self.topblackoverlay:SetClickable(false)
 	self.topblackoverlay:Hide()
 
+	self.whiteoverlay = Image("images/global.xml", "square.tex")
+    self.whiteoverlay:SetVRegPoint(ANCHOR_MIDDLE)
+    self.whiteoverlay:SetHRegPoint(ANCHOR_MIDDLE)
+    self.whiteoverlay:SetVAnchor(ANCHOR_MIDDLE)
+    self.whiteoverlay:SetHAnchor(ANCHOR_MIDDLE)
+    self.whiteoverlay:SetScaleMode(SCALEMODE_FILLSCREEN)
+    self.whiteoverlay:SetTint(FADE_WHITE_COLOUR[1], FADE_WHITE_COLOUR[2], FADE_WHITE_COLOUR[3], 0)
+	self.whiteoverlay:SetClickable(false)
+	self.whiteoverlay:Hide()
+
+	self.vigoverlay = TEMPLATES.BackgroundVignette()
+	self.vigoverlay:SetClickable(false)
+	self.vigoverlay:Hide()	
+
+    self.topwhiteoverlay = Image("images/global.xml", "square.tex")
+    self.topwhiteoverlay:SetVRegPoint(ANCHOR_MIDDLE)
+    self.topwhiteoverlay:SetHRegPoint(ANCHOR_MIDDLE)
+    self.topwhiteoverlay:SetVAnchor(ANCHOR_MIDDLE)
+    self.topwhiteoverlay:SetHAnchor(ANCHOR_MIDDLE)
+    self.topwhiteoverlay:SetScaleMode(SCALEMODE_FILLSCREEN)
+    self.topwhiteoverlay:SetTint(FADE_WHITE_COLOUR[1], FADE_WHITE_COLOUR[2], FADE_WHITE_COLOUR[3], 0)
+	self.topwhiteoverlay:SetClickable(false)
+	self.topwhiteoverlay:Hide()
+
+	self.topvigoverlay = TEMPLATES.BackgroundVignette()
+	self.topvigoverlay:SetClickable(false)
+	self.topvigoverlay:Hide()	
+
 	self.helptext = self.overlayroot:AddChild(Widget("HelpText"))
 	self.helptext:SetScaleMode(SCALEMODE_FIXEDPROPORTIONAL)
     self.helptext:SetHAnchor(ANCHOR_MIDDLE)
@@ -78,11 +107,15 @@ FrontEnd = Class(function(self, name)
     --self.helptexttext:SetHAnchor(ANCHOR_MIDDLE)
 	self.helptexttext:SetRegionSize(RESOLUTION_X*.9, help_height)
 	self.helptexttext:SetPosition(0, -5)
-	self.helptexttext:SetHAlign(ANCHOR_RIGHT)
+	self.helptexttext:SetHAlign(ANCHOR_LEFT)
 	self.helptexttext:SetVAlign(ANCHOR_TOP)
 
 	self.overlayroot:AddChild(self.topblackoverlay)
+	self.overlayroot:AddChild(self.topwhiteoverlay)
+	self.overlayroot:AddChild(self.topvigoverlay)
 	self.screenroot:AddChild(self.blackoverlay)
+	self.screenroot:AddChild(self.whiteoverlay)
+	self.screenroot:AddChild(self.vigoverlay)
 	
     self.alpha = 0.0
     
@@ -165,12 +198,18 @@ end
 
 function FrontEnd:HideTopFade()
 	self.topblackoverlay:Hide()
+	self.topblackoverlay:Hide()
 	self.topFadeHidden = true
 end
 
 function FrontEnd:ShowTopFade()
 	self.topFadeHidden = false
-	self.topblackoverlay:Show()
+	if self.fade_type == "white" then
+		self.topwhiteoverlay:Show()
+		self.topvigoverlay:Show()
+	elseif self.fade_type == "black" then
+		self.topblackoverlay:Show()
+	end
 end
 
 function FrontEnd:GetFocusWidget()
@@ -195,13 +234,15 @@ function FrontEnd:GetIntermediateFocusWidgets()
 end
 
 function FrontEnd:GetHelpText()
+
 	local t = {}
-	
+
 	local widget = self:GetFocusWidget()
-	if widget and widget.GetHelpText then
-		local str = widget:GetHelpText()
+
+	if #self.screenstack > 0 and self.screenstack[#self.screenstack] ~= widget then
+		local str = self.screenstack[#self.screenstack]:GetHelpText()
 		if str ~= "" then
-			table.insert(t, widget:GetHelpText())
+			table.insert(t, str)
 		end
 	end
 
@@ -217,13 +258,12 @@ function FrontEnd:GetHelpText()
 		end
 	end
 
-	if #self.screenstack > 0 and self.screenstack[#self.screenstack] ~= widget then
-		local str = self.screenstack[#self.screenstack]:GetHelpText()
+	if widget and widget.GetHelpText then
+		local str = widget:GetHelpText()
 		if str ~= "" then
-			table.insert(t, str)
+			table.insert(t, widget:GetHelpText())
 		end
 	end
-
 
 	return table.concat(t, "  ")
 end
@@ -391,17 +431,52 @@ function FrontEnd:SetFadeLevel(alpha)
 	if alpha <= 0 then
 		if self.blackoverlay then
 			self.blackoverlay:Hide()
+			self.whiteoverlay:Hide()
+			self.vigoverlay:Hide()
 		end
 		if self.topblackoverlay then
 			self.topblackoverlay:Hide()
+			self.topwhiteoverlay:Hide()
+			self.topvigoverlay:Hide()
+		end
+		if self.fade_type == "alpha" then
+			local screen = self:GetActiveScreen()
+			if screen and screen.children then
+				for k,v in pairs(screen.children) do
+					if v and v.can_fade_alpha then
+						v:Hide()
+					end
+				end
+			end
 		end
 	else
-		self.blackoverlay:Show()
-		self.blackoverlay:SetTint(0,0,0,alpha)
-		if (not self.topFadeHidden) then
-			self.topblackoverlay:Show()
+		if self.fade_type == "white" then
+			self.whiteoverlay:Show()
+			self.whiteoverlay:SetTint(FADE_WHITE_COLOUR[1], FADE_WHITE_COLOUR[2], FADE_WHITE_COLOUR[3], alpha)
+			self.vigoverlay:Show()
+			self.vigoverlay:SetTint(1,1,1, alpha)
+			if (not self.topFadeHidden) then
+				self.topwhiteoverlay:Show()
+				self.topvigoverlay:Show()
+			end
+			self.topwhiteoverlay:SetTint(FADE_WHITE_COLOUR[1], FADE_WHITE_COLOUR[2], FADE_WHITE_COLOUR[3], alpha)
+			self.topvigoverlay:SetTint(1,1,1,alpha)
+		elseif self.fade_type == "alpha" then
+			local screen = self:GetActiveScreen()
+			if screen and screen.children then
+				for k,v in pairs(screen.children) do
+					v:SetFadeAlpha(alpha)
+					v:SetClickable(false)
+				end
+			end
+		elseif self.fade_type == "black" then
+			self.blackoverlay:Show()
+			self.blackoverlay:SetTint(0,0,0,alpha)
+			if (not self.topFadeHidden) then
+				self.topblackoverlay:Show()
+			end
+			self.topblackoverlay:SetTint(0,0,0,alpha)
 		end
-		self.topblackoverlay:SetTint(0,0,0,alpha)
 	end
 end
 
@@ -671,18 +746,26 @@ function FrontEnd:DoFadeIn(time_to_take)
 	self:Fade(true, time_to_take)	
 end
 
-function FrontEnd:Fade(in_or_out, time_to_take, cb, fade_delay_time, delayovercb)
-	
+-- **CAUTION** about using the "alpha" fade: it leaves your screen's widgets at alpha 0 when it's finished AND makes all children of the screen not clickable
+-- It generally leaves the screen in bad state: don't use lightly for screens that will be returned to (ex: we only use it leading into a sim reset)
+-- Fixup after using an "alpha" fade would include making the appropriate children of the screen clickable and setting alphas appropriately
+function FrontEnd:Fade(in_or_out, time_to_take, cb, fade_delay_time, delayovercb, fadeType)
 	self.fadedir = in_or_out
 	self.total_fade_time = time_to_take
 	self.fadecb = cb
 	self.fade_time = 0
+	self.fade_type = fadeType or "black"
 	if in_or_out then
 		self:SetFadeLevel(1)
 	else
 		-- starting a fade out, make the top fade visible again
 		-- this place it can actually be out of sync with the backfade, so make it full trans
-		self.topblackoverlay:SetTint(0,0,0,0)
+		if self.fade_type == "white" then
+			self.topwhiteoverlay:SetTint(FADE_WHITE_COLOUR[1], FADE_WHITE_COLOUR[2], FADE_WHITE_COLOUR[3], 0)
+			self.topvigoverlay:SetTint(1,1,1,0)
+		elseif self.fade_type == "black" then
+			self.topblackoverlay:SetTint(0,0,0,0)
+		end
 		self:ShowTopFade()
 	end
 	self.fade_delay_time = fade_delay_time
@@ -756,18 +839,18 @@ end
 
 function FrontEnd:SetForceProcessTextInput(takeText, widget)
 	if takeText and widget then
-		self.forceProcessText = true
 		-- Tell whatever the previous widget was to quit it
 		if self.textProcessorWidget then
 			self.textProcessorWidget:OnStopForceProcessTextInput()
 		end
 		self.textProcessorWidget = widget
+		self.forceProcessText = true
 	elseif widget == nil or widget == self.textProcessorWidget then
-		self.forceProcessText = false
 		if self.textProcessorWidget then
 			self.textProcessorWidget:OnStopForceProcessTextInput()
 		end
 		self.textProcessorWidget = nil
+		self.forceProcessText = false
 	end
 end
 
@@ -809,6 +892,8 @@ function FrontEnd:DisplayError(screen)
 		self.overlayroot:Hide()
 		self.consoletext:Hide()
 		self.blackoverlay:Hide()
+		self.whiteoverlay:Hide()
+		self.vigoverlay:Hide()
 		self.title:Hide()
 		self.subtitle:Hide()
 		
@@ -1002,7 +1087,7 @@ function FrontEnd:GetIsOfflineMode()
 	return self.offline
 end
 
-function FrontEnd:FindLengthForTruncatedString(str, font, size, maxwidth)
+function FrontEnd:FindLengthForTruncatedString(str, font, size, maxwidth, suffix)
     if str and maxwidth and font and size then
         local tempStr = Text(font, size, str)
 
@@ -1021,22 +1106,31 @@ function FrontEnd:FindLengthForTruncatedString(str, font, size, maxwidth)
     end
 end
 
-function FrontEnd:GetTruncatedString(str, font, size, maxwidth, maxchars, ellipses)
+function FrontEnd:GetTruncatedString(str, font, size, maxwidth, maxchars, suffix)
 	if str and font and size and (maxwidth or maxchars) then
 		local ret = str
 		local tempStr = Text(font, size, str)
 
-		ellipses = ellipses and "..." or ""
+		if suffix then
+			if type(suffix) == "string" then
+				suffix = suffix
+			else
+				suffix = suffix and "..." or ""
+			end
+		else
+			suffix = ""
+		end
+
 	    if maxchars ~= nil and str:len() > maxchars then
 	        str = str:sub(1, maxchars)
-	        tempStr:SetString(str..ellipses)
+	        tempStr:SetString(str..suffix)
 	    else
 	        tempStr:SetString(str)
 	    end
 	    if maxwidth ~= nil then
 	        while tempStr:GetRegionSize() > maxwidth do
 	            str = str:sub(1, str:len() - 1)
-	            tempStr:SetString(str..ellipses)
+	            tempStr:SetString(str..suffix)
 	        end
 	    end
 
@@ -1047,4 +1141,81 @@ function FrontEnd:GetTruncatedString(str, font, size, maxwidth, maxchars, ellips
 	else
 		return "ERROR: NEED STRING, FONT AND SIZE TO GET TRUNCATED STRING"
 	end
+end
+
+-- Takes string, font, fontsize, and width of the textbox
+-- Returns a list of lines less than the width of the textbox.
+-- Will split the line at whitespace characters where possible. If it finds a word that is 
+-- longer than the available space, it will be split into the biggest pieces that fit.
+-- If two widths are provided, the first one is used for the first line, and the second 
+-- one for subsequent lines.
+function FrontEnd:SplitTextStringIntoLines(str, font, size, maxwidth1, maxwidth2)
+	-- trim function based on one here: http://lua-users.org/wiki/StringTrim
+	-- (removes whitespace at start and end of string)
+	local function trim(str)
+  		return str:gsub("^%s*(.-)%s*$", "%1")
+	end
+
+	if str and font and size and maxwidth1 then 
+		local lines = {}
+		local words = str:split(" \n\t\v\r\f") -- split function is defined in util.lua. 
+		local tempText = Text(font, size, "")
+
+		--print("str is ", str)
+
+		local lineNumber = 1
+		local maxwidth = maxwidth1
+		lines[1] = ""
+		for k,word in pairs(words) do 
+			--print("--word: ", word)
+			tempText:SetString(trim(lines[lineNumber].." "..word) )
+
+			if lineNumber > 1 and maxwidth2 then 
+				maxwidth = maxwidth2
+			end
+
+			if tempText:GetRegionSize() > maxwidth then 
+				if lines[lineNumber] ~= "" then 
+					lineNumber = lineNumber + 1
+				end
+
+				lines[lineNumber] = trim(word)
+
+				tempText:SetString(lines[lineNumber])
+				while tempText:GetRegionSize() > maxwidth do 
+					local length = lines[lineNumber]:len()
+					local tempstr = ""
+					for i=1,length do
+						tempstr = string.sub(lines[lineNumber], 1, i)
+						tempText:SetString(tempstr)
+
+						if lineNumber > 1 and maxwidth2 then 
+							maxwidth = maxwidth2
+						end
+
+						-- Check for words that are longer than a line. If one is found, then split it 
+						-- into pieces that fit even though there aren't any spaces.
+						if tempText:GetRegionSize() > maxwidth then 
+							local head = string.sub(lines[lineNumber], 1, i-1)
+							local tail = string.sub(lines[lineNumber], i, length)
+
+							lines[lineNumber] = head
+							lineNumber = lineNumber + 1
+							lines[lineNumber] = tail
+							break
+						end
+					end
+				end
+				
+			else
+				lines[lineNumber] = trim(lines[lineNumber].." "..word)
+			end
+		end
+
+		tempText:Kill()
+
+		return lines
+	end
+	print("Bad parameters!")
+	return nil
 end

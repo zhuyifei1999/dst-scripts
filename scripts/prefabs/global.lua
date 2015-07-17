@@ -7,9 +7,10 @@ local assets =
     Asset("IMAGE", "images/global.tex"),
     Asset("IMAGE", "images/visited.tex"),
     Asset("ANIM", "anim/scroll_arrow.zip"),
+
+    Asset("ANIM", "anim/corner_dude.zip"),
 	
 	Asset("SHADER", "shaders/anim_bloom.ksh"),
-	Asset("SHADER", "shaders/wall_bloom.ksh"),
     Asset("SHADER", "shaders/anim_bloom_ghost.ksh"),
 	Asset("SHADER", "shaders/road.ksh"),
 
@@ -17,21 +18,68 @@ local assets =
 	Asset("IMAGE", "images/erosion.tex"),
 	Asset("IMAGE", "images/circle.tex"),
 	Asset("IMAGE", "images/square.tex"),
-	
+
     Asset("ATLAS", "images/fepanels.xml"),
     Asset("IMAGE", "images/fepanels.tex"),
 
-    Asset("ATLAS", "images/fepanels_dst.xml"),
-    Asset("IMAGE", "images/fepanels_dst.tex"),
+    Asset("ATLAS", "images/options.xml"),
+    Asset("IMAGE", "images/options.tex"),
+    Asset("ATLAS", "images/options_bg.xml"),
+    Asset("IMAGE", "images/options_bg.tex"),
+
+	Asset("ATLAS", "images/frontend.xml"),
+	Asset("IMAGE", "images/frontend.tex"),
+
+    Asset("ATLAS", "images/frontscreen.xml"),
+    Asset("IMAGE", "images/frontscreen.tex"),
 
     Asset("ATLAS", "images/fg_trees.xml"),
     Asset("IMAGE", "images/fg_trees.tex"),
 
-    Asset("ATLAS", "images/DST_SplashPage_Shield.xml"),
-    Asset("IMAGE", "images/DST_SplashPage_Shield.tex"),
-
     Asset("ATLAS", "images/bg_plain.xml"),
     Asset("IMAGE", "images/bg_plain.tex"),
+
+    Asset("ATLAS", "images/bg_spiral.xml"),
+    Asset("IMAGE", "images/bg_spiral.tex"),
+    Asset("ATLAS", "images/bg_spiral_fill1.xml"),
+    Asset("IMAGE", "images/bg_spiral_fill1.tex"),
+    Asset("ATLAS", "images/bg_spiral_fill2.xml"),
+    Asset("IMAGE", "images/bg_spiral_fill2.tex"),
+    Asset("ATLAS", "images/bg_spiral_fill3.xml"),
+    Asset("IMAGE", "images/bg_spiral_fill3.tex"),
+    Asset("ATLAS", "images/bg_spiral_fill4.xml"),
+    Asset("IMAGE", "images/bg_spiral_fill4.tex"),
+    Asset("ATLAS", "images/bg_spiral_fill5.xml"),
+    Asset("IMAGE", "images/bg_spiral_fill5.tex"),
+    Asset("ATLAS", "images/bg_vignette.xml"),
+    Asset("IMAGE", "images/bg_vignette.tex"),
+    Asset("ATLAS", "images/bg_spiral_anim.xml"),
+    Asset("IMAGE", "images/bg_spiral_anim.tex"),
+    Asset("ATLAS", "images/bg_spiral_anim_overlay.xml"),
+    Asset("IMAGE", "images/bg_spiral_anim_overlay.tex"),
+
+    Asset("ATLAS", "images/lobbyscreen.xml"),
+    Asset("Image", "images/lobbyscreen.tex"),
+
+    Asset("ATLAS", "images/fepanel_fills.xml"),
+    Asset("IMAGE", "images/fepanel_fills.tex"),
+
+    Asset("ATLAS", "images/bg_animated_portal.xml"),
+    Asset("IMAGE", "images/bg_animated_portal.tex"),
+
+    Asset("ATLAS", "images/fg_animated_portal.xml"),
+    Asset("IMAGE", "images/fg_animated_portal.tex"),
+
+    Asset("ATLAS", "images/fg_dirt_layer.xml"),
+    Asset("IMAGE", "images/fg_dirt_layer.tex"),
+
+    Asset("ANIM", "anim/portal_scene.zip"),
+    Asset("ANIM", "anim/portal_scene_steamfxbg.zip"),
+    Asset("ANIM", "anim/portal_scene_inside.zip"),
+    Asset("ANIM", "anim/portal_scene_steamfxeast.zip"),
+    Asset("ANIM", "anim/portal_scene_steamfxwest.zip"),
+    Asset("ANIM", "anim/portal_scene_steamfxsouth.zip"),
+    Asset("ANIM", "anim/cloud_build.zip"),
 	
 	--Asset("IMAGE", "images/river_bed.tex"),
 	--Asset("IMAGE", "images/water_river.tex"),
@@ -91,8 +139,6 @@ local assets =
     Asset("IMAGE", "images/textboxes.tex"),
     Asset("ATLAS", "images/serverbrowser.xml"),
     Asset("IMAGE", "images/serverbrowser.tex"),
-    Asset("ATLAS", "images/servericons.xml"),
-    Asset("IMAGE", "images/servericons.tex"),
     Asset("ATLAS", "images/scoreboard.xml"),
     Asset("IMAGE", "images/scoreboard.tex"),
     Asset("ANIM", "anim/generating_world.zip"),
@@ -101,14 +147,14 @@ local assets =
     Asset("ANIM", "anim/saving_indicator.zip"),
     
     --oft-used panel bgs
-    Asset("ATLAS", "images/globalpanels.xml"),
-    Asset("IMAGE", "images/globalpanels.tex"),
-
     Asset("ATLAS", "images/globalpanels2.xml"),
     Asset("IMAGE", "images/globalpanels2.tex"),
 
-    Asset("ATLAS", "images/bg_rog_portal.xml"),
-    Asset("IMAGE", "images/bg_rog_portal.tex"),
+    Asset("ATLAS", "images/button_icons.xml"),
+    Asset("IMAGE", "images/button_icons.tex"),
+
+    Asset("ATLAS", "images/avatars.xml"),
+    Asset("IMAGE", "images/avatars.tex"),  
 }
 
 

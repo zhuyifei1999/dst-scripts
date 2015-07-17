@@ -106,6 +106,24 @@ local TRANSLATE_AND_OVERRIDE = { --These are entities that should be translated 
 	["flowers"] =			{"flower", "flower_evil"},
 }
 
+local START_LOCATION_DATA = {
+	["default"] =
+		{
+			start_setpeice = "DefaultStart",		
+			start_node = "Clearing",
+		},
+	["plus"] = 
+		{
+			start_setpeice = "DefaultPlusStart",	
+			start_node = {"DeepForest", "Forest", "SpiderForest", "Plain", "Rocky", "Marsh"},
+		},
+	["darkness"] = 
+		{
+			start_setpeice = "DarknessStart",	
+			start_node = {"DeepForest", "Forest"},	
+		},
+}
+
 local customise = require("map/customise")
 local function TranslateWorldGenChoices(gen_params)
 	if gen_params == nil or GetTableSize(gen_params.finaltweak) == 0 then
@@ -207,15 +225,24 @@ local function GenerateVoro(prefab, map_width, map_height, tasks, world_gen_choi
 	story_gen_params.level_type = level_type
 	
 	if current_gen_params.finaltweak ~=nil and current_gen_params.finaltweak["misc"] ~= nil then
-		if  current_gen_params.finaltweak["misc"]["start_setpeice"] ~= nil then
-			story_gen_params.start_setpeice = current_gen_params.finaltweak["misc"]["start_setpeice"]
-			current_gen_params.finaltweak["misc"]["start_setpeice"] = nil
+		if  current_gen_params.finaltweak["misc"]["start_location"] ~= nil then
+			local start_loc = START_LOCATION_DATA[current_gen_params.finaltweak["misc"]["start_location"]]
+			story_gen_params.start_setpeice = type(start_loc.start_setpeice) == "table" and start_loc.start_setpeice[math.random(#start_loc.start_setpeice)] or start_loc.start_setpeice
+			story_gen_params.start_node = type(start_loc.start_node) == "table" and start_loc.start_node[math.random(#start_loc.start_node)] or start_loc.start_node
+
+			current_gen_params.finaltweak["misc"]["start_location"] = nil
+		else
+			local start_loc = START_LOCATION_DATA["default"]
+			story_gen_params.start_setpeice = type(start_loc.start_setpeice) == "table" and start_loc.start_setpeice[math.random(#start_loc.start_setpeice)] or start_loc.start_setpeice
+			story_gen_params.start_node = type(start_loc.start_node) == "table" and start_loc.start_node[math.random(#start_loc.start_node)] or start_loc.start_node
+
+			current_gen_params.finaltweak["misc"]["start_location"] = nil
 		end
 
-		if  current_gen_params.finaltweak["misc"]["start_node"] ~= nil then
-			story_gen_params.start_node = current_gen_params.finaltweak["misc"]["start_node"]
-			current_gen_params.finaltweak["misc"]["start_node"] = nil
-		end
+		-- if  current_gen_params.finaltweak["misc"]["start_node"] ~= nil then
+		-- 	story_gen_params.start_node = current_gen_params.finaltweak["misc"]["start_node"]
+		-- 	current_gen_params.finaltweak["misc"]["start_node"] = nil
+		-- end
 		
 		if  current_gen_params.finaltweak["misc"]["islands"] ~= nil then
 			local percent = {always=1, never=0,default=0.2, sometimes=0.1, often=0.8}
@@ -256,13 +283,22 @@ local function GenerateVoro(prefab, map_width, map_height, tasks, world_gen_choi
    
 	local min_size = 350
 	if current_gen_params.finaltweak ~= nil and current_gen_params.finaltweak["misc"] ~= nil and current_gen_params.finaltweak["misc"]["world_size"] ~= nil then
-		local sizes ={
-			["tiny"] = 1,
-			["default"] = 350,
-			["medium"] = 400,
-			["large"] = 425,
-			["huge"] = 450,
+		local sizes
+		if PLATFORM == "PS4" then
+			sizes = {
+				["default"] = 350,
+				["medium"] = 400,
+				["large"] = 425,
 			}
+		else
+			sizes = {
+				["tiny"] = 1,
+				["small"] = 350,
+				["medium"] = 400,
+				["default"] = 425,
+				["huge"] = 450,
+			}
+		end
 			
 		min_size = sizes[current_gen_params.finaltweak["misc"]["world_size"]]
 		--print("New size:", min_size, current_gen_params.finaltweak["misc"]["world_size"])
@@ -617,4 +653,6 @@ return {
     Generate = GenerateVoro,
 	TRANSLATE_TO_PREFABS = TRANSLATE_TO_PREFABS,
 	MULTIPLY = MULTIPLY,
+	START_LOCATION_DATA = START_LOCATION_DATA,
+	TRANSLATE_AND_OVERRIDE = TRANSLATE_AND_OVERRIDE,
 }

@@ -8,12 +8,12 @@ LEVELTYPE = {
 	CUSTOM = 6,
 }
 
+require("map/tasks")
 
 Level = Class( function(self, data)
 	self.id = data.id or "UNKNOWN_ID"
 	self.name = data.name or ""
 	self.desc = data.desc or ""
-	self.tasks = data.tasks or {}
 	self.overrides = data.overrides or {}
 	self.substitutes = data.substitutes or {}
 	self.override_triggers = data.override_triggers
@@ -78,25 +78,27 @@ function Level:GetOverridesForTasks(tasklist)
 	return tasklist
 end
 
-function Level:GetTasksForLevel(sampletasks)
+function Level:GetTasksForLevel(sampletasks, current_gen_params)
 	--print("Getting tasks for level:", self.name)
 	local tasklist = {}
-	for i=1,#self.tasks do
-		self:EnqueueATask(tasklist, self.tasks[i], sampletasks)
+	local task_group = tasks.GetGenTasks(current_gen_params.finaltweak.misc and current_gen_params.finaltweak.misc["task_set"] or "default")
+	self.tasks = task_group.tasks
+	for i=1,#task_group.tasks do
+		self:EnqueueATask(tasklist, task_group.tasks[i], sampletasks)
 	end
 
-	if self.numoptionaltasks and self.numoptionaltasks > 0 then
-		local shuffletasknames = shuffleArray(self.optionaltasks)
-		local numtoadd = self.numoptionaltasks
+	if task_group.numoptionaltasks and task_group.numoptionaltasks > 0 then
+		local shuffletasknames = shuffleArray(task_group.optionaltasks)
+		local numtoadd = task_group.numoptionaltasks
 		local i = 1
-		while numtoadd > 0 and i <= #self.optionaltasks do
-			if type(self.optionaltasks[i]) == "table" then
-				for i,taskname in ipairs(self.optionaltasks[i]) do
+		while numtoadd > 0 and i <= #task_group.optionaltasks do
+			if type(task_group.optionaltasks[i]) == "table" then
+				for i,taskname in ipairs(task_group.optionaltasks[i]) do
 					self:EnqueueATask(tasklist, taskname, sampletasks)
 					numtoadd = numtoadd - 1
 				end
 			else
-				self:EnqueueATask(tasklist, self.optionaltasks[i], sampletasks)
+				self:EnqueueATask(tasklist, task_group.optionaltasks[i], sampletasks)
 				numtoadd = numtoadd - 1
 			end
 			i = i + 1
@@ -119,7 +121,7 @@ function Level:GetTasksForLevel(sampletasks)
 		table.insert(tasklist[idx].random_set_pieces, set_piece)
 	end
 
-	for name, choicedata in pairs(self.set_pieces) do
+	for name, choicedata in pairs(task_group.set_pieces) do
 		local found = false
 		local idx = {}
 		for i, task in ipairs(tasklist) do

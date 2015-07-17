@@ -4,53 +4,27 @@ local assets =
 
     Asset("ANIM", "anim/credits.zip"),
     Asset("ANIM", "anim/credits2.zip"),
-
-    Asset("ATLAS", "bigportraits/locked.xml"),
-    Asset("IMAGE", "bigportraits/locked.tex"),
     
     Asset("IMAGE", "images/customisation.tex" ),
     Asset("ATLAS", "images/customisation.xml" ),
     
-	Asset("ATLAS", "images/selectscreen_portraits.xml"),
-	Asset("IMAGE", "images/selectscreen_portraits.tex"),
+    -- Asset("ANIM", "anim/portrait_frame.zip"), -- Not currently used, but likely to come back
 
-    Asset("ANIM", "anim/portrait_frame.zip"),
+    Asset("ANIM", "anim/build_status.zip"), 
 
-    Asset("ANIM", "anim/build_status.zip"),
-	Asset("ANIM", "anim/corner_dude.zip"),
-    Asset("ANIM", "anim/savetile.zip"),    
-    Asset("ANIM", "anim/savetile_small.zip"),
-    
-    Asset("ATLAS", "images/avatars.xml"),
-    Asset("IMAGE", "images/avatars.tex"),
+    -- Asset("ANIM", "anim/animated_title.zip"), -- Not currently used, but likely to come back
+    -- Asset("ANIM", "anim/animated_title2.zip"), -- Not currently used, but likely to come back
+    -- Asset("ANIM", "anim/title_fire.zip"), -- Not currently used, but likely to come back
 
-    Asset("ATLAS", "images/lobbyscreen.xml"),
-    Asset("IMAGE", "images/lobbyscreen.tex"),
+    Asset("ATLAS", "images/bg_color.xml"),
+    Asset("IMAGE", "images/bg_color.tex"),
 
-    Asset("ATLAS", "images/bg_logo.xml"),
-    Asset("IMAGE", "images/bg_logo.tex"),
+    Asset("ATLAS", "images/servericons.xml"),
+    Asset("IMAGE", "images/servericons.tex"),
 
-    Asset("ATLAS", "images/bg_rog_logo_1.xml"),
-    Asset("IMAGE", "images/bg_rog_logo_1.tex"),
-
-    Asset("ATLAS", "images/bg_rog_logo_2.xml"),
-    Asset("IMAGE", "images/bg_rog_logo_2.tex"),
-
-    Asset("ATLAS", "images/bg_rog_logo_3.xml"),
-    Asset("IMAGE", "images/bg_rog_logo_3.tex"),
-
-    Asset("ATLAS", "images/bg_rog_logo_4.xml"),
-    Asset("IMAGE", "images/bg_rog_logo_4.tex"),
-
-    Asset("ATLAS", "images/historyscreen.xml"),
-    Asset("IMAGE", "images/historyscreen.tex"),
-    
 	--character portraits
 	Asset("ATLAS", "images/saveslot_portraits.xml"),
     Asset("IMAGE", "images/saveslot_portraits.tex"),
-
-    -- update spinner
-    Asset("ANIM", "anim/researchlab.zip"),
 }
 
 if PLATFORM == "PS4" then
@@ -58,8 +32,6 @@ if PLATFORM == "PS4" then
     table.insert(assets, Asset("IMAGE", "images/ps4.tex"))
     table.insert(assets, Asset("ATLAS", "images/ps4_controllers.xml"))
     table.insert(assets, Asset("IMAGE", "images/ps4_controllers.tex"))
-    table.insert(assets, Asset("ANIM", "anim/animated_title.zip"))
-    table.insert(assets, Asset("ANIM", "anim/title_fire.zip"))
 end
 
 
@@ -68,8 +40,8 @@ local charlist = GetActiveCharacterList and GetActiveCharacterList() or DST_CHAR
 for i,char in ipairs(charlist) do
 	table.insert(assets, Asset("ATLAS", "bigportraits/"..char..".xml"))
 	table.insert(assets, Asset("IMAGE", "bigportraits/"..char..".tex"))
-	--table.insert(assets, Asset("IMAGE", "images/selectscreen_portraits/"..char..".tex"))
-	--table.insert(assets, Asset("IMAGE", "images/selectscreen_portraits/"..char.."_silho.tex"))
+	--table.insert(assets, Asset("IMAGE", "images/selectscreen_portraits/"..char..".tex")) -- Not currently used, but likely to come back
+	--table.insert(assets, Asset("IMAGE", "images/selectscreen_portraits/"..char.."_silho.tex")) -- Not currently used, but likely to come back
 end
 
 -- Pick some random stuff to show on the puppets on the main screen (and only load the assets that we need)

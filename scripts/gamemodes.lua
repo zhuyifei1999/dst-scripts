@@ -3,29 +3,56 @@ DEFAULT_GAME_MODE = "survival" --only used when we can't actually find the game 
 
 GAME_MODES =
 {
-	survival	= { text = STRINGS.UI.GAMEMODES.SURVIVAL,	hover_text = STRINGS.UI.GAMEMODES.SURVIVAL_TOOLTIP,		mod_game_mode = false,	spawn_mode = "fixed",	resource_renewal = false, ghost_sanity_drain = true,	ghost_enabled = true,	portal_rez = false,	reset_time = { time = 120, loadingtime = 180 },	invalid_recipes = {} },
-	wilderness	= { text = STRINGS.UI.GAMEMODES.WILDERNESS,	hover_text = STRINGS.UI.GAMEMODES.WILDERNESS_TOOLTIP,	mod_game_mode = false,	spawn_mode = "scatter", resource_renewal = true,  ghost_sanity_drain = false,	ghost_enabled = false,	portal_rez = false,	reset_time = nil,								invalid_recipes = { "lifeinjector", "resurrectionstatue", "reviver" } },
-	endless		= { text = STRINGS.UI.GAMEMODES.ENDLESS,	hover_text = STRINGS.UI.GAMEMODES.ENDLESS_TOOLTIP,		mod_game_mode = false,	spawn_mode = "fixed",	resource_renewal = true,  ghost_sanity_drain = false,	ghost_enabled = true,	portal_rez = true,	reset_time = nil,								invalid_recipes = {} },
+	survival	= { text = STRINGS.UI.GAMEMODES.SURVIVAL,	description = STRINGS.UI.GAMEMODES.SURVIVAL_DESCRIPTION,	mod_game_mode = false,	spawn_mode = "fixed",	resource_renewal = false, ghost_sanity_drain = true,	ghost_enabled = true,	portal_rez = false,	reset_time = { time = 120, loadingtime = 180 },	invalid_recipes = {} },
+	wilderness	= { text = STRINGS.UI.GAMEMODES.WILDERNESS,	description = STRINGS.UI.GAMEMODES.WILDERNESS_DESCRIPTION,	mod_game_mode = false,	spawn_mode = "scatter", resource_renewal = true,  ghost_sanity_drain = false,	ghost_enabled = false,	portal_rez = false,	reset_time = nil,								invalid_recipes = { "lifeinjector", "resurrectionstatue", "reviver" } },
+	endless		= { text = STRINGS.UI.GAMEMODES.ENDLESS,	description = STRINGS.UI.GAMEMODES.ENDLESS_DESCRIPTION,		mod_game_mode = false,	spawn_mode = "fixed",	resource_renewal = true,  ghost_sanity_drain = false,	ghost_enabled = true,	portal_rez = true,	reset_time = nil,								invalid_recipes = {} },
 }
 
 
 
 function AddGameMode( game_mode, game_mode_text )
-	GAME_MODES[game_mode] = { text = game_mode_text, hover_text = "", mod_game_mode = true, spawn_mode = "fixed", resource_renewal = false, ghost_sanity_drain = false, ghost_enabled = true, portal_rez = false, reset_time = nil, invalid_recipes = {} } 
+	GAME_MODES[game_mode] = { text = game_mode_text, description = "", mod_game_mode = true, spawn_mode = "fixed", resource_renewal = false, ghost_sanity_drain = false, ghost_enabled = true, portal_rez = false, reset_time = nil, invalid_recipes = {} } 
 	return GAME_MODES[game_mode]
 end
 
-function GetGameModesSpinnerData()
+function GetGameModesSpinnerData( enabled_mods )
 	local spinner_data = {}
 	for k,v in pairs( GAME_MODES ) do
 		table.insert( spinner_data, { text = v.text or "blank", data = k } )
 	end
+	
+	if enabled_mods ~= nil then 
+		--add game modes from mods
+		for modname,_ in pairs(enabled_mods) do
+			local modinfo = KnownModIndex:GetModInfo(modname)
+			if modinfo and modinfo.game_modes then
+				for game_mode,mode_text in pairs(modinfo.game_modes) do	
+					table.insert( spinner_data, { text = mode_text or "blank", data = game_mode } )
+				end
+			end
+		end
+	end
+
+	local function mode_cmp(a,b)
+		if a.text == STRINGS.UI.GAMEMODES.SURVIVAL then
+			return true
+		elseif a.text == STRINGS.UI.GAMEMODES.WILDERNESS and b.text ~= STRINGS.UI.GAMEMODES.SURVIVAL then
+			return true
+		elseif a.text == STRINGS.UI.GAMEMODES.ENDLESS and b.text ~= STRINGS.UI.GAMEMODES.SURVIVAL and b.text ~= STRINGS.UI.GAMEMODES.WILDERNESS then
+			return true
+		else
+			return false
+		end
+	end
+
+	table.sort(spinner_data, mode_cmp)
+
 	return spinner_data
 end
 
 function GetGameModeString( game_mode )
 	if game_mode == "" then
-		return ""
+		return STRINGS.UI.GAMEMODES.UNKNOWN
 	else
 		if GAME_MODES[game_mode] then
 			return GAME_MODES[game_mode].text
@@ -34,12 +61,21 @@ function GetGameModeString( game_mode )
 	end
 end
 
+-- For backwards compatibility
 function GetGameModeHoverTextString( game_mode )
+	return GetGameModeDescriptionString( game_mode )
+end
+
+function GetGameModeDescriptionString( game_mode )
 	if game_mode == "" then
 		return ""
 	else
 		if GAME_MODES[game_mode] then
-			return GAME_MODES[game_mode].hover_text
+			if GAME_MODES[game_mode].hover_text then
+				return GAME_MODES[game_mode].hover_text
+			else
+				return GAME_MODES[game_mode].description
+			end
 		end
 		return ""
 	end

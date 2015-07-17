@@ -12,6 +12,7 @@ require "map/terrain"
 --[[ Constants ]]
 --------------------------------------------------------------------------
 
+local UPDATE_PERIOD = 29 -- less likely to update on the same frame as others
 local BASE_RADIUS = 20
 local EXCLUDE_RADIUS = 3
 local JITTER_RADIUS = 20
@@ -142,7 +143,7 @@ end
 --Register events
 inst:ListenForEvent("beginregrowth", OnBeginRegrowth, TheWorld)
 
-inst:StartUpdatingComponent(self)
+inst:DoPeriodicTask(UPDATE_PERIOD, function() self:LongUpdate(UPDATE_PERIOD) end)
 
 self:SetRegrowthForType("carrot_planted", TUNING.CARROT_REGROWTH_TIME, "carrot_planted",
     function()
@@ -165,7 +166,7 @@ self:SetRegrowthForType("rabbithole", TUNING.RABBITHOLE_REGROWTH_TIME, "rabbitho
 --------------------------------------------------------------------------
 
 
-function self:OnUpdate(dt)
+function self:LongUpdate(dt)
 
     for k,list in pairs(_lists) do
         local prefabtimemult = _regrowthvalues[k].timemult()

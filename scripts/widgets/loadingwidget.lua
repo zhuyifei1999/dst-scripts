@@ -1,11 +1,21 @@
 local Widget = require "widgets/widget"
 local Text = require "widgets/text"
+local TEMPLATES = require "widgets/templates"
 
-local LoadingWidget = Class(Widget, function(self)
+local images = {
+	{atlas="images/bg_spiral_fill1.xml", tex="bg_image1.tex"},
+	{atlas="images/bg_spiral_fill2.xml", tex="bg_image2.tex"},
+	{atlas="images/bg_spiral_fill3.xml", tex="bg_image3.tex"},
+	{atlas="images/bg_spiral_fill4.xml", tex="bg_image4.tex"},
+	{atlas="images/bg_spiral_fill5.xml", tex="bg_image5.tex"},
+}
+
+local LoadingWidget = Class(Widget, function(self, imageRand)
 	Widget._ctor(self, "LoadingWidget")
 	self.initialized = false
 	self.forceShowNextFrame = false
 	self.is_enabled = false
+	self.image_random = imageRand or math.random()
     self:Hide()
 	self:StartUpdating()
 end)
@@ -27,23 +37,32 @@ function LoadingWidget:KeepAlive( auto_increment )
 
 	local just_initialized = false
 	if self.initialized == false then
-		local background_widget = self:AddChild(Image("images/bg_rog_portal.xml", "bg.tex"))
-		background_widget:SetScaleMode(SCALEMODE_FILLSCREEN)
-		background_widget:SetVAnchor(ANCHOR_MIDDLE)
-   		background_widget:SetHAnchor(ANCHOR_MIDDLE)
+		local background_widget = self:AddChild(TEMPLATES.BackgroundSpiral())
 
-		-- local r = math.random()
-	 --    if r < .25 then
-	 --        local background_widget = self:AddChild(Image("images/bg_rog_logo_1.xml", "bg.tex"))
-	 --    elseif r < .5 then
-	 --        local background_widget = self:AddChild(Image("images/bg_rog_logo_2.xml", "bg.tex"))
-	 --    elseif r < .75 then
-	 --        local background_widget = self:AddChild(Image("images/bg_rog_logo_3.xml", "bg.tex"))
-	 --    else
-	 --        local background_widget = self:AddChild(Image("images/bg_rog_logo_4.xml", "bg.tex"))
-	 --    end
+   		local vignette = self:AddChild(TEMPLATES.BackgroundVignette())
 
-		local local_loading_widget = self:AddChild(Text(UIFONT, 33))
+   		local atlas = "images/bg_spiral_fill1.xml"
+   		local tex = "bg_image1.tex"
+   		for i,v in ipairs(images) do
+   			v.thresh = (1/#images)*i
+   		end
+   		local idx = 1
+   		while self.image_random >= images[idx].thresh do
+   			idx = idx + 1
+   			atlas = images[idx].atlas
+   			tex = images[idx].tex
+   		end
+
+   		local image = self:AddChild(Image(atlas, tex))
+   		image:SetScaleMode(SCALEMODE_FILLSCREEN)
+		image:SetVAnchor(ANCHOR_MIDDLE)
+   		image:SetHAnchor(ANCHOR_MIDDLE)
+
+   		self.active_image = image
+   		self.bg = background_widget
+   		self.vig = vignette
+
+		local local_loading_widget = self:AddChild(Text(UIFONT, 40))
 		local_loading_widget:SetPosition(115, 60)
 		local_loading_widget:SetRegionSize( 130, 44 )
 		local_loading_widget:SetHAlign(ANCHOR_LEFT)
@@ -68,7 +87,10 @@ function LoadingWidget:KeepAlive( auto_increment )
 			    self.cached_fade_level = 1.0
 		    end
 		    
-		    self.loading_widget:SetColour(1,1,1,self.cached_fade_level*self.cached_fade_level)
+		    self.loading_widget:SetColour(243/255, 244/255, 243/255, self.cached_fade_level*self.cached_fade_level)
+		    self.bg:SetTint(FRONTEND_PORTAL_COLOUR[1], FRONTEND_PORTAL_COLOUR[2], FRONTEND_PORTAL_COLOUR[3],self.cached_fade_level*self.cached_fade_level)
+		    self.active_image:SetTint(1,1,1,self.cached_fade_level*self.cached_fade_level)
+		    self.vig:SetTint(1,1,1,self.cached_fade_level*self.cached_fade_level)
 		    
 		    local time = GetTime()
 		    local time_delta = time - self.step_time 

@@ -6,8 +6,9 @@ local Text = require "widgets/text"
 local Image = require "widgets/image"
 local UIAnim = require "widgets/uianim"
 local Widget = require "widgets/widget"
+local TEMPLATES = require "widgets/templates"
 
-local PopupDialogScreen = Class(Screen, function(self, title, text, buttons)
+local PopupDialogScreen = Class(Screen, function(self, title, text, buttons, scale_bg, spacing_override)
 	Screen._ctor(self, "PopupDialogScreen")
 
 	--darken everything behind the dialog
@@ -26,34 +27,34 @@ local PopupDialogScreen = Class(Screen, function(self, title, text, buttons)
     self.proot:SetScaleMode(SCALEMODE_PROPORTIONAL)
 
 	--throw up the background
-    self.bg = self.proot:AddChild(Image("images/fepanels_dst.xml", "small_panel.tex"))
-    self.bg:SetVRegPoint(ANCHOR_MIDDLE)
-    self.bg:SetHRegPoint(ANCHOR_MIDDLE)
-	self.bg:SetScale(1.2,1.2,1.2)
-	
-	if #buttons >2 then
-		self.bg:SetScale(2,1.2,1.2)
-	end
+    self.bg = self.proot:AddChild(TEMPLATES.CurlyWindow(130, 150, 1, 1, 68, -40))
+    self.bg.fill = self.proot:AddChild(Image("images/fepanel_fills.xml", "panel_fill_tiny.tex"))
+    self.bg.fill:SetScale(.92, .68)
+    self.bg.fill:SetPosition(8, 12)
 	
 	--title	
     self.title = self.proot:AddChild(Text(BUTTONFONT, 50))
-    self.title:SetPosition(0, 75, 0)
+    self.title:SetPosition(5, 88, 0)
     self.title:SetString(title)
     self.title:SetColour(0,0,0,1)
 
 	--text
-    self.text = self.proot:AddChild(Text(BUTTONFONT, 28))
+    self.text = self.proot:AddChild(Text(NEWFONT, 28))
 
-    self.text:SetPosition(0, 5, 0)
+    self.text:SetPosition(5, -15, 0)
     self.text:SetString(text)
-    self.text:EnableWordWrap(true)
-    self.text:SetRegionSize(500, 80)
     self.text:SetColour(0,0,0,1)
+    self.text:EnableWordWrap(true)
+    self.text:SetRegionSize(500, 160)
+    self.text:SetVAlign(ANCHOR_MIDDLE)
   
-    local spacing = 200
+    local spacing = spacing_override or 200
 
 	self.menu = self.proot:AddChild(Menu(buttons, spacing, true))
-	self.menu:SetPosition(-(spacing*(#buttons-1))/2, -80, 0) 
+	self.menu:SetPosition(-(spacing*(#buttons-1))/2, -127, 0) 
+    for i,v in pairs(self.menu.items) do
+        v:SetScale(.7)
+    end
 	self.buttons = buttons
 	self.default_focus = self.menu
 end)
@@ -72,6 +73,7 @@ function PopupDialogScreen:OnControl(control, down)
     if control == CONTROL_CANCEL and not down then    
         if #self.buttons > 1 and self.buttons[#self.buttons] then
             self.buttons[#self.buttons].cb()
+            TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
             return true
         end
     end

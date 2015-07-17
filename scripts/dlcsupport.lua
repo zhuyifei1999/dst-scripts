@@ -99,7 +99,6 @@ function InitDLC(index)
 end
 
 function GetOfficialCharacterList()
-    -- #srosen we handle DST char list separately (for now, anyhow)
     return DST_CHARACTERLIST    
 end
 

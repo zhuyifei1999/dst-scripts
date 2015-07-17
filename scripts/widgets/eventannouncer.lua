@@ -5,11 +5,20 @@ ANNOUNCEMENT_LIFETIME = 7
 ANNOUNCEMENT_FADE_TIME = 2
 ANNOUNCEMENT_QUEUE_SIZE = 10
 
+local function getIconX(w)
+    if w then
+        return -w/2 - 20
+    else
+        return -20
+    end
+end
+
 local EventAnnouncer = Class(Widget, function(self, owner)
     Widget._ctor(self, "EventAnnouncer")
     self.messages = {}
     self.timestamp = {}
     self.colours = {}
+    self.icons = {}
     
     self.message_font = UIFONT
     self.message_size = 30
@@ -18,10 +27,19 @@ local EventAnnouncer = Class(Widget, function(self, owner)
         local message_widget = self:AddChild(Text(self.message_font, self.message_size))
         message_widget:SetVAlign(ANCHOR_TOP)
         message_widget:SetHAlign(ANCHOR_MIDDLE)
-        message_widget:SetPosition(0, -15 - (i * (self.message_size+1)))
-        message_widget:SetRegionSize(1100, (self.message_size+2) )
+        message_widget:SetPosition(0, -15 - (i * (self.message_size+2)))
+        -- message_widget:SetRegionSize(1100, (self.message_size+2) )
         message_widget:SetString("")
-        self.messages[i] = message_widget   
+        self.messages[i] = message_widget
+        
+        self.icons[i] = self:AddChild(Image())
+        self.icons[i].bg = self.icons[i]:AddChild(Image("images/button_icons.xml", "circle.tex"))
+        self.icons[i].bg:MoveToBack()
+        self.icons[i].bg:SetPosition(0,-40)
+        self.icons[i].bg:SetScale(8.5)
+        local w,h = self.messages[i]:GetRegionSize()
+        self.icons[i]:SetPosition(getIconX(w), -10 - (i * (self.message_size+2)))
+        self.icons[i]:SetScale(.09)
         
         self.timestamp[i] = 0
         self.colours[i] = {1,1,1}
@@ -46,6 +64,8 @@ function EventAnnouncer:DoShuffleUp(i)
         self.messages[i]:SetString("")
         self.messages[i]:SetColour(1,1,1,1)
         self.colours[i] = {1,1,1}
+        self.icons[i]:Hide()
+        self.icons[i].bg:Hide()
         return
     else
         self.timestamp[i] = self.timestamp[i+1]
@@ -54,6 +74,15 @@ function EventAnnouncer:DoShuffleUp(i)
         local clr = self.colours[i+1]
         self.colours[i] = {clr[1], clr[2], clr[3]}
         self.messages[i]:SetColour(clr[1], clr[2], clr[3], alpha_fade)
+
+        self.icons[i]:SetTexture(self.icons[i+1].atlas, self.icons[i+1].texture)
+        local w,h = self.messages[i]:GetRegionSize()
+        local pos = self.icons[i]:GetPosition()
+        self.icons[i]:SetPosition(getIconX(w), pos.y)
+        self.icons[i]:Show()
+        self.icons[i]:SetTint(1,1,1,alpha_fade)
+        self.icons[i].bg:Show()
+        self.icons[i].bg:SetTint(1,1,1,alpha_fade)
 
         self:DoShuffleUp(i+1)
     end
@@ -72,6 +101,8 @@ function EventAnnouncer:OnUpdate()
                 local alpha_fade = self:GetEventAlpha( current_time, announce_time )
                 local clr = self.colours[i]
                 self.messages[i]:SetColour(clr[1],clr[2],clr[3],alpha_fade)
+                self.icons[i]:SetTint(1,1,1,alpha_fade)
+                self.icons[i].bg:SetTint(1,1,1,alpha_fade)
                 if alpha_fade <= 0.0 then
                     -- Get out of here!
                     self.timestamp[i] = 0.0
@@ -85,8 +116,12 @@ function EventAnnouncer:OnUpdate()
     end
 end
 
-function EventAnnouncer:ShowNewAnnouncement(announcement, colour)
+function EventAnnouncer:ShowNewAnnouncement(announcement, colour, announce_type)
     if not announcement then return end
+
+    if not announce_type or announce_type == "" then
+        announce_type = "default"
+    end
 
     -- Shuffle upwards
     if self.timestamp[1] <= 0 then
@@ -116,6 +151,15 @@ function EventAnnouncer:ShowNewAnnouncement(announcement, colour)
     
     -- Add our new entry
     self.messages[index]:SetString(announcement)
+    local icon_info = ANNOUNCEMENT_ICONS[announce_type]
+    self.icons[index]:SetTexture(icon_info.atlas or "images/button_icons.xml", icon_info.texture or "announcement.tex")
+    local w,h = self.messages[index]:GetRegionSize()
+    local pos = self.icons[index]:GetPosition()
+    self.icons[index]:SetPosition(getIconX(w), pos.y)
+    self.icons[index]:Show()
+    self.icons[index]:SetTint(1,1,1,1)
+    self.icons[index].bg:Show()
+    self.icons[index].bg:SetTint(1,1,1,1)
     self.timestamp[index] = GetTime()
     if not colour then
         colour = {1,1,1}

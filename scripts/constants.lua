@@ -57,21 +57,21 @@ CONTROL_INSPECT = 3
 CONTROL_ACTION = 4
 
 -- player movement controls
-CONTROL_MOVE_UP = 5
-CONTROL_MOVE_DOWN = 6
-CONTROL_MOVE_LEFT = 7
-CONTROL_MOVE_RIGHT = 8
+CONTROL_MOVE_UP = 5  -- left joystick up
+CONTROL_MOVE_DOWN = 6 -- left joystick down
+CONTROL_MOVE_LEFT = 7 -- left joystick left
+CONTROL_MOVE_RIGHT = 8 -- left joystick right
 
 -- view controls
-CONTROL_ZOOM_IN = 9
-CONTROL_ZOOM_OUT = 10
-CONTROL_ROTATE_LEFT = 11
-CONTROL_ROTATE_RIGHT = 12
+CONTROL_ZOOM_IN = 9      -- left trigger
+CONTROL_ZOOM_OUT = 10    -- right trigger
+CONTROL_ROTATE_LEFT = 11  -- left shoulder
+CONTROL_ROTATE_RIGHT = 12 -- right shoulder
 
 
 -- player movement controls
-CONTROL_PAUSE = 13
-CONTROL_MAP = 14
+CONTROL_PAUSE = 13  -- start
+CONTROL_MAP = 14 
 CONTROL_INV_1 = 15
 CONTROL_INV_2 = 16
 CONTROL_INV_3 = 17
@@ -83,15 +83,15 @@ CONTROL_INV_8 = 22
 CONTROL_INV_9 = 23
 CONTROL_INV_10 = 24
 
-CONTROL_FOCUS_UP = 25
-CONTROL_FOCUS_DOWN = 26
-CONTROL_FOCUS_LEFT = 27
-CONTROL_FOCUS_RIGHT = 28
+CONTROL_FOCUS_UP = 25  -- d-pad up
+CONTROL_FOCUS_DOWN = 26  -- d-pad down
+CONTROL_FOCUS_LEFT = 27 -- d-pad left
+CONTROL_FOCUS_RIGHT = 28 -- d-pad right
 
-CONTROL_ACCEPT = 29
-CONTROL_CANCEL = 30
-CONTROL_SCROLLBACK = 31
-CONTROL_SCROLLFWD = 32
+CONTROL_ACCEPT = 29  -- A
+CONTROL_CANCEL = 30 -- B
+CONTROL_SCROLLBACK = 31  -- left shoulder
+CONTROL_SCROLLFWD = 32   -- right shoulder
 
 CONTROL_PREVVALUE = 33
 CONTROL_NEXTVALUE = 34
@@ -108,16 +108,16 @@ CONTROL_OPEN_DEBUG_CONSOLE = 42
 CONTROL_TOGGLE_LOG = 43
 CONTROL_TOGGLE_DEBUGRENDER = 44
 
-CONTROL_OPEN_INVENTORY = 45
-CONTROL_OPEN_CRAFTING = 46
-CONTROL_INVENTORY_LEFT = 47
-CONTROL_INVENTORY_RIGHT = 48
-CONTROL_INVENTORY_UP = 49
-CONTROL_INVENTORY_DOWN = 50
-CONTROL_INVENTORY_EXAMINE = 51
-CONTROL_INVENTORY_USEONSELF = 52
-CONTROL_INVENTORY_USEONSCENE = 53
-CONTROL_INVENTORY_DROP = 54
+CONTROL_OPEN_INVENTORY = 45  -- right trigger
+CONTROL_OPEN_CRAFTING = 46   -- left trigger
+CONTROL_INVENTORY_LEFT = 47 -- right joystick left
+CONTROL_INVENTORY_RIGHT = 48 -- right joystick right
+CONTROL_INVENTORY_UP = 49 --  right joystick up
+CONTROL_INVENTORY_DOWN = 50 -- right joystick down
+CONTROL_INVENTORY_EXAMINE = 51 -- d-pad up
+CONTROL_INVENTORY_USEONSELF = 52 -- d-pad right
+CONTROL_INVENTORY_USEONSCENE = 53 -- d-pad left
+CONTROL_INVENTORY_DROP = 54 -- d-pad down
 CONTROL_PUTSTACK = 55
 CONTROL_CONTROLLER_ATTACK = 56
 CONTROL_CONTROLLER_ACTION = 57
@@ -135,10 +135,10 @@ CONTROL_TOGGLE_SLASH_COMMAND = 65
 CONTROL_TOGGLE_PLAYER_STATUS = 66
 CONTROL_SHOW_PLAYER_STATUS = 67
 
-CONTROL_MENU_MISC_1 = 68
-CONTROL_MENU_MISC_2 = 69
-CONTROL_MENU_MISC_3 = 70
-CONTROL_MENU_MISC_4 = 71
+CONTROL_MENU_MISC_1 = 68  -- X
+CONTROL_MENU_MISC_2 = 69  -- Y
+CONTROL_MENU_MISC_3 = 70  -- L
+CONTROL_MENU_MISC_4 = 71  -- R
 
 CONTROL_CUSTOM_START = 100
 
@@ -292,7 +292,7 @@ MAINSCREEN_TORSO_2 = ""
 
 MAINSCREEN_HAT_LIST = 
 {
-	"", "", "", "", "hat_top", "hat_beefalo", "hat_football", "hat_winter", "hat_spider", "hat_bee",
+	"", "", "", "", "hat_top", "hat_beefalo", "hat_football", "hat_winter", "hat_spider",
 }
 
 MAINSCREEN_HAT_1 = ""
@@ -736,6 +736,28 @@ MAX_CHAT_NAME_LENGTH = 13
 WET_TEXT_COLOUR = RGB(149, 191, 242)
 NORMAL_TEXT_COLOUR = RGB(255, 255, 255)
 
+FRONTEND_PORTAL_COLOUR = {245/255, 232/255, 204/255, 255/255}
+FRONTEND_TREE_COLOUR = {208/255, 196/255, 187/255, 255/255}
+FRONTEND_CHARACTER_CLOSE_COLOUR = {235/255, 225/255, 212/255, 255/255}
+FRONTEND_CHARACTER_FAR_COLOUR = {201/255, 191/255, 163/255, 255/255}
+FRONTEND_SMOKE_COLOUR = {245/255, 232/255, 204/255, 153/255}
+FRONTEND_TITLE_COLOUR = {235/255, 225/255, 212/255, 255/255}
+PORTAL_TEXT_COLOUR = {243/255, 244/255, 243/255, 255/255}
+FADE_WHITE_COLOUR = {237/255, 224/255, 189/255, 255/255}
+
+ANNOUNCEMENT_ICONS =
+{
+	default={atlas="images/button_icons.xml", texture="announcement.tex"},
+	afk_start={atlas="images/button_icons.xml", texture="AFKstart.tex"},
+	afk_stop={atlas="images/button_icons.xml", texture="AFKstop.tex"},
+	death={atlas="images/button_icons.xml", texture="death.tex"},
+	resurrect={atlas="images/button_icons.xml", texture="resurrect.tex"},
+	join_game={atlas="images/button_icons.xml", texture="join.tex"},
+	leave_game={atlas="images/button_icons.xml", texture="leave.tex"},
+	item_drop={atlas="images/button_icons.xml", texture="item_drop.tex"},
+	vote={atlas="images/button_icons.xml", texture="vote.tex"}, --#srosen vote2 also avail, though I prefer vote
+}
+
 ROAD_STRIPS = 
 {
 	CORNERS = 0,
@@ -757,8 +779,7 @@ RESET_ACTION =
 	LOAD_FRONTEND = 0,
 	LOAD_SLOT = 1,
 	LOAD_FILE = 2,
-	DO_DEMO = 3,
-	MODS_SCREEN_PUSH = 4,
+	DO_DEMO = 3
 }
 
 HUD_ATLAS = "images/hud.xml"
@@ -969,8 +990,11 @@ HUMAN_MEAT_ENABLED = false
 SCREEN_FADE_TIME = .25
 BACK_BUTTON_X = 60
 BACK_BUTTON_Y = 60
+DOUBLE_CLICK_TIMEOUT = .5
 
 GOLD = {202/255, 174/255, 118/255, 255/255}
+GREY = {.57, .57, .57, 1}
+BLACK = {.1, .1, .1, 1}
 
 --Bit flags, currently supports up to 8
 --Server may use these for things that clients need to know about

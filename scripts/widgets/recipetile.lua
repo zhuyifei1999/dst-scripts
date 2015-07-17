@@ -26,11 +26,14 @@ function RecipeTile:SetRecipe(recipe)
 end
 
 function RecipeTile:SetCanBuild(canbuild)
-    if canbuild then
+    --[[if canbuild then
+        self.img:SetTexture(self.recipe.atlas, self.recipe.image)
         self.img:SetTint(1,1,1,1)
+    elseif self.recipe and self.recipe.lockedatlas then
+        self.img:SetTexture(self.recipe.lockedatlas, self.recipe.lockedimage)
     else
         self.img:SetTint(0,0,0,1)
-    end
+    end]]
 end
 
 return RecipeTile

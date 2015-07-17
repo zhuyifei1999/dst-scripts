@@ -5,12 +5,13 @@ local Spinner = require "widgets/spinner"
 local Text = require "widgets/text"
 local Button = require "widgets/button"
 
-local Menu = Class(Widget, function(self, menuitems, offset, horizontal, style)
+local Menu = Class(Widget, function(self, menuitems, offset, horizontal, style, wrap)
     Widget._ctor(self, "MENU")
     self.offset = offset
     self.style = style
     self.items = {}
     self.horizontal = horizontal
+    self.wrap_focus = wrap
 
     if menuitems ~= nil then
         self.controller_id = TheInput:ControllerAttached() and TheInput:GetControllerID() or nil
@@ -68,8 +69,8 @@ function Menu:DoFocusHookups()
     for k,v in ipairs(self.items) do
         if k > 1 then
             self.items[k]:SetFocusChangeDir(back, self.items[k-1])
-        end     
-        
+        end
+
         if k < #self.items then
             self.items[k]:SetFocusChangeDir(fwd, self.items[k+1])
         end
@@ -155,24 +156,21 @@ function Menu:AddItem(text, cb, offset, style, size, control)
     end
 
     local button
-    if style == "large" then
-        button = self:AddChild(ImageButton("images/ui.xml", "button_large.tex", "button_large_over.tex", "button_large_disabled.tex", "button_large_onclick.tex"))
-        button.text:SetPosition(-3,0)
-    elseif style == "long" then
-        button = self:AddChild(ImageButton("images/ui.xml", "button_long.tex", "button_long_over.tex", "button_long_disabled.tex"))
-    elseif style == "small" then
-        button = self:AddChild(ImageButton("images/ui.xml", "button_small.tex", "button_small_over.tex", "button_small_disabled.tex"))
+    if style == "small" then
+        button = self:AddChild(ImageButton("images/ui.xml", "button_small.tex", "button_small_over.tex", "button_small_disabled.tex", nil, nil, {1,1}, {0,0}))
         button.image:SetScale(1.1)
         button.text:SetPosition(2,-2)
+        button:SetFont(BUTTONFONT)
     elseif style == "none" then
         button = self:AddChild(Button())
+        button:SetFont(BUTTONFONT)
     else
         button = self:AddChild(ImageButton())
+        button:SetFont(NEWFONT)
     end
     button:SetPosition(pos)
     button.text:SetColour(0,0,0,1)
     button:SetOnClick(cb)
-    button:SetFont(BUTTONFONT)
     if size == nil then
         size = self.textSize
             or (JapaneseOnPS4() and 40 * .8)

@@ -5,6 +5,8 @@ local Placer = Class(function(self, inst)
     self.radius = 1
     self.selected_pos = nil
     self.inst:AddTag("NOCLICK")
+    self.oncanbuild = nil
+    self.oncannotbuild = nil
 end)
 
 function Placer:SetBuilder(builder, recipe, invobject)
@@ -55,7 +57,13 @@ function Placer:OnUpdate(dt)
     --self.inst.AnimState:SetMultColour(0, 0, 0, .5)
 
     if self.can_build then
-        self.inst.AnimState:SetAddColour(.25, .75, .25, 0)
+        if self.oncanbuild ~= nil then
+            self.oncanbuild(self.inst)
+        else
+            self.inst.AnimState:SetAddColour(.25, .75, .25, 0)
+        end
+    elseif self.oncannotbuild ~= nil then
+        self.oncannotbuild(self.inst)
     else
         self.inst.AnimState:SetAddColour(.75, .25, .25, 0)
     end

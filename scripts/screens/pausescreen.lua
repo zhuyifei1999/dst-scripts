@@ -7,17 +7,13 @@ local Image = require "widgets/image"
 local UIAnim = require "widgets/uianim"
 local Widget = require "widgets/widget"
 local PopupDialogScreen = require "screens/popupdialog"
-local ControlsScreen = nil
+local TEMPLATES = require "widgets/templates"
 local OptionsScreen = nil
 if PLATFORM == "PS4" then
-    ControlsScreen = require "screens/controlsscreen_ps4"
     OptionsScreen = require "screens/optionsscreen_ps4"
 else
-    ControlsScreen = require "screens/controlsscreen"
     OptionsScreen = require "screens/optionsscreen"
 end
-
-local screen_fade_time = .25
 
 local PauseScreen = Class(Screen, function(self)
 	Screen._ctor(self, "PauseScreen")
@@ -41,14 +37,14 @@ local PauseScreen = Class(Screen, function(self)
     self.proot:SetScaleMode(SCALEMODE_PROPORTIONAL)
 
 	--throw up the background
-    self.bg = self.proot:AddChild(Image("images/fepanels_dst.xml", "small_panel.tex"))
-    self.bg:SetVRegPoint(ANCHOR_MIDDLE)
-    self.bg:SetHRegPoint(ANCHOR_MIDDLE)
-	self.bg:SetScale(1.5,1.2,1.2)
+	self.bg = self.proot:AddChild(TEMPLATES.CurlyWindow(70, 50, 1, 1, 68, -40))
+    self.bg.fill = self.proot:AddChild(Image("images/fepanel_fills.xml", "panel_fill_tiny.tex"))
+	self.bg.fill:SetScale(.82, .4)
+	self.bg.fill:SetPosition(8, 12)
 	
 	--title	
     self.title = self.proot:AddChild(Text(BUTTONFONT, 50))
-    self.title:SetPosition(0, 70, 0)
+    self.title:SetPosition(5, 35, 0)
     self.title:SetString(STRINGS.UI.PAUSEMENU.DST_TITLE)
     self.title:SetColour(0,0,0,1)
 
@@ -62,7 +58,6 @@ local PauseScreen = Class(Screen, function(self)
 	--[[
 	--jcheng: disable afk for now
 	local buttons = {}
-	table.insert(buttons, {text=STRINGS.UI.PAUSEMENU.CONTROLS, cb=function() TheFrontEnd:PushScreen( ControlsScreen(true)) end })    	    
     table.insert(buttons, {text=STRINGS.UI.PAUSEMENU.OPTIONS, cb=function() TheFrontEnd:PushScreen( OptionsScreen(true))	end })
 
     local buttons2 = {}
@@ -70,7 +65,6 @@ local PauseScreen = Class(Screen, function(self)
     table.insert(buttons2, {text=STRINGS.UI.PAUSEMENU.AFK, cb=function() self:goafk() end})
     table.insert(buttons2, {text=quit_button_text, cb=function() self:doconfirmquit() end})
     
-    --#srosen now that there are separate menus, we probably need focus hookups here for controller support
 	self.menu = self.proot:AddChild(Menu(buttons2, button_w, true)) 
 	self.menu:SetPosition(-(button_w*(#buttons2-1))/2, 0, 0) 
 
@@ -80,22 +74,19 @@ local PauseScreen = Class(Screen, function(self)
 
 	local buttons = {}
 	table.insert(buttons, {text=STRINGS.UI.PAUSEMENU.CONTINUE, cb=function() self:unpause() end })
-	table.insert(buttons, {text=STRINGS.UI.PAUSEMENU.CONTROLS, cb=function() 
-		TheFrontEnd:Fade(false, screen_fade_time, function()
-			TheFrontEnd:PushScreen( ControlsScreen(true)) 
-			TheFrontEnd:Fade(true, screen_fade_time)
-		end)
-	end })    	    
-    table.insert(buttons, {text=STRINGS.UI.PAUSEMENU.OPTIONS, cb=function() 
-    	TheFrontEnd:Fade(false, screen_fade_time, function()
+	table.insert(buttons, {text=STRINGS.UI.PAUSEMENU.OPTIONS, cb=function() 
+    	TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
 			TheFrontEnd:PushScreen( OptionsScreen(true))	
-			TheFrontEnd:Fade(true, screen_fade_time)
+			TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
 		end)
     end })
     table.insert(buttons, {text=quit_button_text, cb=function() self:doconfirmquit()	end})
     
 	self.menu = self.proot:AddChild(Menu(buttons, button_w, true))
-	self.menu:SetPosition(-(button_w*(#buttons-1))/2, -45, 0) 
+	self.menu:SetPosition(10-(button_w*(#buttons-1))/2, -25, 0) 
+	for i,v in pairs(self.menu.items) do
+		v:SetScale(.7)
+	end
 
     if JapaneseOnPS4() then
 		self.menu:SetTextSize(30)
@@ -166,6 +157,7 @@ function PauseScreen:OnControl(control, down)
 		TheFrontEnd:PopScreen() 
 		SetPause(false)
 		TheWorld:PushEvent("continuefrompause")
+		TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
 		return true
 	end
 

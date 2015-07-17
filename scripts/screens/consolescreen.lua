@@ -278,6 +278,9 @@ function ConsoleScreen:DoInit()
 	self.console_remote_execute_region_width, text_height = self.console_remote_execute:GetRegionSize()
 	self.console_remote_execute:SetRegionSize( edit_width, label_height )
 	self.console_edit = self.root:AddChild( TextEdit( DEFAULTFONT, fontsize, "" ) )
+	self.console_edit.edit_text_color = {1,1,1,1}
+	self.console_edit.idle_text_color = {1,1,1,1}
+	self.console_edit:SetEditCursorColour(1,1,1,1) 
 	self.console_edit:SetPosition( -4,0,0)
 	self.console_edit:SetRegionSize( edit_width, label_height )
 	self.console_edit:SetHAlign(ANCHOR_LEFT)

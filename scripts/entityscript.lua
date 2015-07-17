@@ -501,7 +501,7 @@ require("componentactions")
 function EntityScript:AddComponent(name)
     local lower_name = string.lower(name)
     if self.lower_components_shadow[lower_name] ~= nil then
-        print("component "..name.." already exists! "..debugstack_oneline(3))
+		print("component "..name.." already exists!"..debugstack_oneline(3))
     end
     
     local cmp = LoadComponent(name)

@@ -444,12 +444,15 @@ end
 
 local function OnPlayerFadeDirty(inst)
     if inst._parent ~= nil and inst._parent.HUD ~= nil then
-        if inst.fadetime:value() > 0 then
-            TheFrontEnd:Fade(inst.isfadein:value(), inst.fadetime:value() / 10)
+        local iswhite = inst.fadetime:value() >= 32
+        local time = iswhite and inst.fadetime:value() - 32 or inst.fadetime:value()
+        if time > 0 then
+            TheFrontEnd:Fade(inst.isfadein:value(), time / 10, nil, nil, nil, iswhite and "white" or "black")
             if inst.isfadein:value() then
                 TheWorld.GroundCreep:FastForward()
             end
         else
+            TheFrontEnd.fade_type = iswhite and "white" or "black"
             TheFrontEnd:SetFadeLevel(inst.isfadein:value() and 0 or 1)
         end
     end

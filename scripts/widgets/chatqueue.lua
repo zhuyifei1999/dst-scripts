@@ -109,7 +109,7 @@ end
 
 function ChatQueue:OnMessageReceived(userid, name, prefab, message, colour, whisper)
 	-- Early out if this player is muted
-	if self.owner.mutedPlayers ~= nil and self.owner.mutedPlayers[userid] then
+	if TheFrontEnd.mutedPlayers ~= nil and TheFrontEnd.mutedPlayers[userid] then
 		return
 	end
 

@@ -6,52 +6,36 @@ local Text = require "widgets/text"
 local OnlineStatus = Class(Widget, function(self)
     Widget._ctor(self, "OnlineStatus")
 
-    self.labelshadow = self:AddChild(Text(BUTTONFONT, 37))
-    self.labelshadow:SetRegionSize( 300, 50 )
-    self.labelshadow:SetPosition( -122, 55, 0 ) 
-    self.labelshadow:SetColour(.1,.1,.1,1)
-    self.labelshadow:SetString(STRINGS.UI.MAINSCREEN.STEAM)
+    self.fixed_root = self:AddChild(Widget("root"))
+    self.fixed_root:SetVAnchor(ANCHOR_MIDDLE)
+    self.fixed_root:SetHAnchor(ANCHOR_MIDDLE)
+    self.fixed_root:SetScaleMode(SCALEMODE_PROPORTIONAL)
 
-    self.textshadow = self:AddChild(Text(BUTTONFONT, 37))
-    self.textshadow:SetRegionSize( 300, 50 )
-    self.textshadow:SetPosition( -57, 55, 0 )
+    self.textshadow = self.fixed_root:AddChild(Text(NEWFONT_OUTLINE, 35))
     self.textshadow:SetColour(.1,.1,.1,1)
-    self.textshadow:SetString(STRINGS.UI.MAINSCREEN.STEAM)
 
-    self.label = self:AddChild(Text(BUTTONFONT, 37))
-    self.label:SetRegionSize( 300, 50 )
-    self.label:SetPosition( -125, 58, 0 ) 
+    self.label = self.fixed_root:AddChild(Text(NEWFONT_OUTLINE, 35, STRINGS.UI.MAINSCREEN.STEAM))
     self.label:SetColour(1,1,1,1)
-    self.label:SetString(STRINGS.UI.MAINSCREEN.STEAM)
+    self.label:Hide()
 
-    self.text = self:AddChild(Text(BUTTONFONT, 37))
-    self.text:SetRegionSize( 300, 50 )
-    self.text:SetPosition( -60, 58, 0 )
-    
+    self.text = self.fixed_root:AddChild(Text(NEWFONT_OUTLINE, 35))
+
+    local w,h = self.label:GetRegionSize()
+    local shadow_offset = 2
+
+    self.text:SetPosition( RESOLUTION_X*.4 + w-27, RESOLUTION_Y*.5 - BACK_BUTTON_Y*.66 )
+    self.textshadow:SetPosition( RESOLUTION_X*.4 + shadow_offset + w-27, RESOLUTION_Y*.5 - BACK_BUTTON_Y*.66 + shadow_offset )
 
     self:StartUpdating()
 end)
 
 function OnlineStatus:OnUpdate()
-    if TheFrontEnd:GetIsOfflineMode() then
-        self.labelshadow:Hide()
-        self.label:Hide()
+    if TheFrontEnd:GetIsOfflineMode() or not TheSim:IsSteamLoggedOn() then
         self.text:SetString(STRINGS.UI.MAINSCREEN.STEAM_OFFLINE)
         self.textshadow:SetString(STRINGS.UI.MAINSCREEN.STEAM_OFFLINE)
         self.text:SetColour(242/255, 99/255, 99/255, 255/255)
-    else
-        self.online = TheSim:IsSteamLoggedOn()
-        self.labelshadow:Show()
-        self.label:Show()
-        if self.online then
-            self.text:SetString(STRINGS.UI.MAINSCREEN.STEAM_ONLINE)
-            self.textshadow:SetString(STRINGS.UI.MAINSCREEN.STEAM_ONLINE)
-            self.text:SetColour(59/255, 242/255, 99/255, 255/255)
-        else
-            self.text:SetString(STRINGS.UI.MAINSCREEN.STEAM_OFFLINE)
-            self.textshadow:SetString(STRINGS.UI.MAINSCREEN.STEAM_OFFLINE)
-            self.text:SetColour(242/255, 99/255, 99/255, 255/255)
-        end
+        self.text:Show()
+        self.textshadow:Show()
     end
 end
 

@@ -1,12 +1,20 @@
 local Widget = require "widgets/widget"
 
-local Text = Class(Widget, function(self, font, size, text)
+local Text = Class(Widget, function(self, font, size, text, colour)
     Widget._ctor(self, "Text")
    
     self.inst.entity:AddTextWidget()
     
     self.inst.TextWidget:SetFont(font)
+    self.font = font
     self.inst.TextWidget:SetSize(size)
+    self.size = size
+
+    if colour then
+        self:SetColour(colour)
+    else
+        self.colour = {0,0,0,1}
+    end
 
 	if text then
 		self:SetString( text )
@@ -21,13 +29,22 @@ end
 function Text:SetColour(r,g,b,a)
     if type(r) == "number" then
         self.inst.TextWidget:SetColour(r, g, b, a)
+        self.colour = {r, g, b, a}
     else
         self.inst.TextWidget:SetColour(r[1], r[2], r[3], r[4])
+        self.colour = r
     end
 end
 
 function Text:SetHorizontalSqueeze( squeeze )
     self.inst.TextWidget:SetHorizontalSqueeze(squeeze)
+end
+
+function Text:SetFadeAlpha(a, skipChildren)
+    if not self.can_fade_alpha then return end
+    
+    self:SetColour(self.colour[1], self.colour[2], self.colour[3], self.colour[4] * a)
+    Widget.SetFadeAlpha( self, a, skipChildren )
 end
 
 function Text:SetAlpha(a)
@@ -36,10 +53,12 @@ end
 
 function Text:SetFont(font)
     self.inst.TextWidget:SetFont(font)
+    self.font = font
 end
 
 function Text:SetSize(sz)
     self.inst.TextWidget:SetSize(sz)
+    self.size = sz
 end
 
 function Text:SetRegionSize(w,h)
@@ -77,7 +96,11 @@ end
 --  3) Use that number as an estimate for maxchars, or round up
 --     a little just in case dots aren't the smallest character
 function Text:SetTruncatedString(str, maxwidth, maxchars, ellipses)
-    ellipses = ellipses or "..."
+    if type(ellipses) == "string" then
+        ellipses = ellipses
+    else
+        ellipses = ellipses and "..." or ""
+    end
     if maxchars ~= nil and str:len() > maxchars then
         str = str:sub(1, maxchars)
         self.inst.TextWidget:SetString(str..ellipses)
@@ -88,28 +111,6 @@ function Text:SetTruncatedString(str, maxwidth, maxchars, ellipses)
         while self.inst.TextWidget:GetRegionSize() > maxwidth do
             str = str:sub(1, str:len() - 1)
             self.inst.TextWidget:SetString(str..ellipses)
-        end
-    end
-end
-
-function Text:SetHoverText(text)
-    if text then
-        if not self.hover then
-            local ImageButton = require "widgets/imagebutton"
-            self.hover = self:AddChild(ImageButton("images/ui.xml", "blank.tex", "blank.tex", "blank.tex"))
-            self.hover.image:ScaleToSize(self:GetRegionSize())
-            self.hovertext = self:AddChild(Text(BODYTEXTFONT, 28, text))
-            self.hovertext:SetPosition(3,35)
-            self.hovertext:MoveToFront()
-            self.hovertext:Hide()
-            self.hover.OnGainFocus = function()
-                self.hovertext:Show()
-            end
-            self.hover.OnLoseFocus = function()
-                self.hovertext:Hide()
-            end
-        else
-            self.hovertext:SetString(text)
         end
     end
 end

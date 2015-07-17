@@ -15,15 +15,17 @@ local PlayerBadge = Class(Widget, function(self, prefab, colour, ishost, userfla
     self.icon = self.root:AddChild(Widget("target"))
     self.icon:SetScale(.8)
 
-    self.is_mod_character = false
-    if not table.contains(DST_CHARACTERLIST, prefab) and not table.contains(MODCHARACTERLIST, prefab) then
-        self.prefabname = ""
-    else
+    if table.contains(DST_CHARACTERLIST, prefab) then
         self.prefabname = prefab
-        if table.contains(MODCHARACTERLIST, prefab) then
-            self.is_mod_character = true
-        end
+        self.is_mod_character = false
+    elseif table.contains(MODCHARACTERLIST, prefab) then
+        self.prefabname = prefab
+        self.is_mod_character = true
+    else
+        self.prefabname = ""
+        self.is_mod_character = (prefab ~= nil and #prefab > 0)
     end
+
     self.ishost = ishost
     self.userflags = userflags
 
@@ -33,19 +35,26 @@ local PlayerBadge = Class(Widget, function(self, prefab, colour, ishost, userfla
     self.headframe:SetTint(unpack(colour))
 end)
 
-function PlayerBadge:Set(prefab, colour, userflags)
+function PlayerBadge:Set(prefab, colour, ishost, userflags)
     self.headframe:SetTint(unpack(colour))
 
     local dirty = false
+
+    if self.ishost ~= ishost then
+        self.ishost = ishost
+        dirty = true
+    end
+
     if self.prefabname ~= prefab then
-        self.is_mod_character = false
-        if not table.contains(DST_CHARACTERLIST, prefab) and not table.contains(MODCHARACTERLIST, prefab) then
-            self.prefabname = ""
-        else
+        if table.contains(DST_CHARACTERLIST, prefab) then
             self.prefabname = prefab
-            if table.contains(MODCHARACTERLIST, prefab) then
-                self.is_mod_character = true
-            end
+            self.is_mod_character = false
+        elseif table.contains(MODCHARACTERLIST, prefab) then
+            self.prefabname = prefab
+            self.is_mod_character = true
+        else
+            self.prefabname = ""
+            self.is_mod_character = (prefab ~= nil and #prefab > 0)
         end
         dirty = true
     end
@@ -76,14 +85,14 @@ function PlayerBadge:IsCharacterState2()
 end
 
 function PlayerBadge:GetBG()
-    return (self.ishost and self.prefabname == "" and "avatar_bg.tex")
+    return (self.ishost and self.prefabname == "" and TheNet:GetServerIsDedicated() and "avatar_bg.tex")
         or (self:IsAFK() and "avatar_bg.tex")
         or (self:IsGhost() and "avatar_ghost_bg.tex")
         or "avatar_bg.tex"
 end
 
 function PlayerBadge:GetAvatarAtlas()
-    if self.is_mod_character and not self:IsAFK() then
+    if self.is_mod_character and not (self.prefabname == "" or self:IsAFK()) then
         local location = MOD_AVATAR_LOCATIONS["Default"]
         if MOD_AVATAR_LOCATIONS[self.prefabname] ~= nil then
             location = MOD_AVATAR_LOCATIONS[self.prefabname]
@@ -100,8 +109,10 @@ function PlayerBadge:GetAvatarAtlas()
 end
 
 function PlayerBadge:GetAvatar()
-    if self.ishost and self.prefabname == "" then
+    if self.ishost and self.prefabname == "" and TheNet:GetServerIsDedicated() then
         return "avatar_server.tex"
+    elseif self.prefabname == "" then
+        return self.is_mod_character and "avatar_mod.tex" or "avatar_unknown.tex"
     elseif self:IsAFK() then
         return "avatar_afk.tex"
     end

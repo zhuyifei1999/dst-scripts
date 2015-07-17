@@ -1153,7 +1153,6 @@ return {
 		SILK = "It comes from a spider's butt.",
 		SKELETON = "Better him than me.",
 		SCORCHED_SKELETON = "Spooky.",
-		SKELETON_PLAYER = "Better him than... wait a minute!",
 		SKULLCHEST = "I'm not sure if I want to open it.",
 		SMALLBIRD =
 		{

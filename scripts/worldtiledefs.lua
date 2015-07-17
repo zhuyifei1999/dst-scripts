@@ -1,5 +1,7 @@
 require "constants"
 
+-- Update terrain.lua to keep GROUND definitions in sync
+
 local GROUND_PROPERTIES = {
 	{ GROUND.ROAD,		 { name = "cobblestone",noise_texture = "images/square.tex",								runsound="dontstarve/movement/run_dirt",		walksound="dontstarve/movement/walk_dirt",		snowsound="dontstarve/movement/run_ice", 	mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0	} },
 	{ GROUND.MARSH,		 { name = "marsh",		noise_texture = "levels/textures/Ground_noise_marsh.tex",			runsound="dontstarve/movement/run_marsh",		walksound="dontstarve/movement/walk_marsh",		snowsound="dontstarve/movement/run_ice", 	mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0	} },

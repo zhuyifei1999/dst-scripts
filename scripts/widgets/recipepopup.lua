@@ -27,6 +27,9 @@ local RecipePopup = Class(Widget, function(self, horizontal)
 		self.bg:SetPosition(210,16,0)
     end
     self.bg:SetTexture(hud_atlas, img)
+
+    self.bg.light_box = self.bg:AddChild(Image(hud_atlas, "craftingsubmenu_litevertical.tex"))
+    self.bg.light_box:SetPosition(30, -22)
     
     --
     
@@ -34,17 +37,17 @@ local RecipePopup = Class(Widget, function(self, horizontal)
     self.contents:SetPosition(-75,0,0)
     
     if JapaneseOnPS4() then
-        self.name = self.contents:AddChild(Text(UIFONT, 42 * 0.8))
+        self.name = self.contents:AddChild(Text(UIFONT, 40 * 0.8))
     else
-        self.name = self.contents:AddChild(Text(UIFONT, 42))
+        self.name = self.contents:AddChild(Text(UIFONT, 40))
 	end
     self.name:SetPosition(320, 142, 0)
     self.name:SetHAlign(ANCHOR_MIDDLE)
     if JapaneseOnPS4() then
-        self.name:SetRegionSize(64*3+20,90)
+        self.name:SetRegionSize(64*3+30,90)
         self.name:EnableWordWrap(true)
     else
-        self.name:SetRegionSize(64*3+20,70)
+        self.name:SetRegionSize(64*3+30,70)
     end
 
     if JapaneseOnPS4() then
@@ -60,8 +63,9 @@ local RecipePopup = Class(Widget, function(self, horizontal)
     
     self.ing = {}
     
-    self.button = self.contents:AddChild(ImageButton(UI_ATLAS, "button.tex", "button_over.tex", "button_disabled.tex"))
+    self.button = self.contents:AddChild(ImageButton())
     self.button:SetScale(.7,.7,.7)
+    self.button.image:SetScale(.45, .7)
     self.button:SetOnClick(function() if not DoRecipeClick(self.owner, self.recipe) then self.owner.HUD.controls.crafttabs:Close() end end)
     
     
@@ -235,9 +239,6 @@ function RecipePopup:Refresh()
 				self.teaser:SetString(STRINGS.UI.CRAFTING.NEEDSTUFF)
 			end
 		else
-            self.button.image_normal = "button.tex"
-            self.button.image:SetTexture(UI_ATLAS, self.button.image_normal)
-
 			self.button:Show()
 			self.button:SetPosition(315, -105, 0)
 			self.button:SetScale(1,1,1)

@@ -17,6 +17,7 @@ local Widget = Class(function(self, name)
     self.shown = true
     self.focus = false
     self.focus_target = false
+    self.can_fade_alpha = true
 
     self.focus_flow = {}
     self.focus_flow_args = {}
@@ -75,6 +76,10 @@ function Widget:OnFocusMove(dir, down)
         end
     end
 
+    if self.parent_scroll_list then
+        return self.parent_scroll_list:OnFocusMove(dir, down)
+    end
+
     return false
 end
 
@@ -115,7 +120,15 @@ function Widget:OnControl(control, down)
         if v.focus and v:OnControl(control, down) then return true end
     end 
 
+    if self.parent_scroll_list and (control == CONTROL_SCROLLBACK or control == CONTROL_SCROLLFWD) then
+        return self.parent_scroll_list:OnControl(control, down, true)
+    end
+
     return false
+end
+
+function Widget:SetParentScrollList(list)
+    self.parent_scroll_list = list
 end
 
 function Widget:IsEditing()
@@ -375,6 +388,25 @@ end
     end
 end--]]
 
+function Widget:SetFadeAlpha(alpha, skipChildren)
+    if not self.can_fade_alpha then return end
+
+    if not skipChildren and self.children then
+        for k,v in pairs(self.children) do
+            v:SetFadeAlpha(alpha, skipChildren)
+        end
+    end
+end
+
+function Widget:SetCanFadeAlpha(fade, skipChildren)
+    self.can_fade_alpha = fade
+
+    if not skipChildren and self.children then
+        for k,v in pairs(self.children) do
+            v:SetCanFadeAlpha(fade, skipChildren)
+        end
+    end
+end
 
 function Widget:SetClickable(val)
     self.inst.entity:SetClickable(val)
@@ -498,7 +530,11 @@ end
 
 function Widget:SetFocus()
     --print ("SET FOCUS, ", self)
-    if self.focus_forward then
+    if self.focus_forward and type(self.focus_forward) == "function" then
+        local widg = self.focus_forward()
+        widg:SetFocus()
+        return
+    elseif self.focus_forward then
         self.focus_forward:SetFocus()
         return
     end
@@ -530,7 +566,7 @@ function Widget:GetStr(indent)
     local indent_str = string.rep("\t",indent)
 
     local str = {}
-    table.insert(str, string.format("%s%s%s%s\n", indent_str, tostring(self), self.focus and " (FOCUS) " or "", self.enable and " (ENABLE) " or "" ))
+    table.insert(str, string.format("%s%s%s%s\n", indent_str, tostring(self), self.focus and " (FOCUS) " or "", self.enabled and " (ENABLE) " or "" ))
     
     for k,v in pairs(self.children) do
         table.insert(str, v:GetStr(indent + 1))
@@ -542,6 +578,77 @@ end
 
 function Widget:__tostring()
     return tostring(self.name)
+end
+
+function Widget:SetHoverText(text, params)
+	if text and text ~= "" then
+		if not self.hovertext then
+			local ImageButton = require "widgets/imagebutton"
+			local Text = require "widgets/text"
+			
+			if params == nil then
+				params = {}
+			end
+			
+            if not self.hovertext then
+			    self.hovertext = self:AddChild(Text(params.font or NEWFONT_OUTLINE, params.size or 28, text))
+                self.hovertext:SetClickable(false)
+            else
+                self.hovertext:SetString(text)
+            end
+
+			self.hovertext:SetPosition(params.offset_x or 0, params.offset_y or 26)
+			if params.colour then self.hovertext:SetColour(params.colour) end
+			self.hovertext:MoveToFront()
+			self.hovertext:Hide()
+
+            if params.bg == nil or params.bg == true then
+                self.hovertext.bg = self:AddChild(Image(params.bg_atlas or "images/frontend.xml", params.bg_texture or "scribble_black.tex"))
+                self.hovertext.bg:SetPosition(params.offset_x or 0, params.offset_y or 26)
+                local w, h = self.hovertext:GetRegionSize()
+                self.hovertext.bg:SetTint(1,1,1,.8)
+                self.hovertext.bg:SetSize(w*1.3, h*1.8)
+                self.hovertext.bg:MoveToBack()
+                self.hovertext.bg:Hide()
+                self.hovertext.bg:SetClickable(false)
+            end
+			
+			local hover_parent = self.text or self
+			if hover_parent.GetString ~= nil and hover_parent:GetString() ~= "" then
+				self.hover = hover_parent:AddChild(ImageButton("images/ui.xml", "blank.tex", "blank.tex", "blank.tex", nil, nil, {1,1}, {0,0}))
+				self.hover.image:ScaleToSize(hover_parent:GetRegionSize())
+				
+				self.hover.OnGainFocus = function()
+					self.hovertext:Show()
+                    if self.hovertext.bg then self.hovertext.bg:Show() end
+				end
+				self.hover.OnLoseFocus = function()
+					self.hovertext:Hide()
+                    if self.hovertext.bg then self.hovertext.bg:Hide() end
+				end
+			else
+				local _OnGainFocus = self.OnGainFocus
+				local _OnLoseFocus = self.OnLoseFocus
+				
+				self.OnGainFocus = function()
+					self.hovertext:Show()
+                    if self.hovertext.bg then self.hovertext.bg:Show() end
+					_OnGainFocus( self )
+				end
+				self.OnLoseFocus = function()
+					self.hovertext:Hide()
+                    if self.hovertext.bg then self.hovertext.bg:Hide() end
+					_OnLoseFocus( self )
+				end
+			end
+		else
+			self.hovertext:SetString(text)
+            if self.hovertext.bg then
+                local w, h = self.hovertext:GetRegionSize()
+                self.hovertext.bg:SetSize(w*1.3, h*1.8)
+            end
+		end
+	end
 end
 
 return Widget

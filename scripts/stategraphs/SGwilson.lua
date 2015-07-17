@@ -2043,7 +2043,6 @@ local states =
         end,
 
         ontimeout = function(inst)
-            inst.SoundEmitter:KillSound("talk")
             inst.sg:GoToState("idle")
         end,
 

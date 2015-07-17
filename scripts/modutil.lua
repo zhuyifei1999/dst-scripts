@@ -154,6 +154,12 @@ local function InsertPostInitFunctions(env, isworldgen)
 		require("map/levels")
 		AddLevel(...)
 	end
+	env.AddTaskSet = function(...)
+		arg = {...}
+		initprint("AddTaskSet", arg[1])
+		require("map/tasks")
+		AddTaskSet(...)
+	end
 	env.AddTask = function(...)
 		arg = {...}
 		initprint("AddTask", arg[1])

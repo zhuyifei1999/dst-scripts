@@ -108,7 +108,7 @@ local function getitem(player, amulet, item, destroy)
 
     if destroy then
         if amulet == item then
-            return --#srosen Probably don't want the amulet to destroy itself, also maybe that's great?
+            return -- don't want the amulet to destroy itself
         end
         item:Remove()
     else

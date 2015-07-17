@@ -33,7 +33,7 @@ local spinner_lean_images = {
 	arrow_right_disabled = "arrow_right_disabled.tex",
 	arrow_right_down = "arrow2_right_down.tex",
 	bg_middle = "blank.tex",
-	bg_middle_focus = "box_2.tex",
+	bg_middle_focus = "spinner_focus.tex",
 	bg_middle_changing = "blank.tex",
 	bg_end = "blank.tex",
 	bg_end_focus = "blank.tex",
@@ -42,7 +42,7 @@ local spinner_lean_images = {
 
 local spinner_atlas = "images/ui.xml"
 local spinfont = { font = BUTTONFONT, size = 30 }
-local spinfontlean = { font = BUTTONFONT, size = 30 }
+local spinfontlean = { font = NEWFONT, size = 30 }
 local default_width = 200
 local default_height = 64
 
@@ -79,18 +79,18 @@ local Spinner = Class(Widget, function( self, options, width, height, textinfo, 
 
     if lean then
     	self.background = self:AddChild( Image(atlas, textures.bg_middle_focus) )
-    	local x = width and (spinnerfocusscalex or 1) or .77
-    	local y = height and (spinnerfocusscaley or 1) or .83
+    	local x = width and (spinnerfocusscalex or 1) or .76
+    	local y = height and (spinnerfocusscaley or 1) or .7
     	self.background:ScaleToSize(self.width*x, self.height*y)
     	self.background:SetPosition(0,1)
     	self.background:SetTint(1,1,1,0)
-    	self.leftimage = self:AddChild( ImageButton(atlas, textures.arrow_left_normal, textures.arrow_left_over, textures.arrow_left_disabled, textures.arrow_left_down) )
-    	self.rightimage = self:AddChild( ImageButton(atlas, textures.arrow_right_normal, textures.arrow_right_over, textures.arrow_right_disabled, textures.arrow_right_down) )
+    	self.leftimage = self:AddChild( ImageButton(atlas, textures.arrow_left_normal, textures.arrow_left_over, textures.arrow_left_disabled, textures.arrow_left_down, nil,{1,1}, {0,0}) )
+    	self.rightimage = self:AddChild( ImageButton(atlas, textures.arrow_right_normal, textures.arrow_right_over, textures.arrow_right_disabled, textures.arrow_right_down, nil,{1,1}, {0,0}) )
     else
     	self.background = self:AddChild(ThreeSlice(atlas, textures.bg_end, textures.bg_middle))
     	self.background:Flow(self.width, self.height, true)
-	    self.leftimage = self:AddChild( ImageButton(atlas, textures.arrow_normal, textures.arrow_over, textures.arrow_disabled, textures.arrow_down) )
-    	self.rightimage = self:AddChild( ImageButton(atlas, textures.arrow_normal, textures.arrow_over, textures.arrow_disabled, textures.arrow_down) )
+	    self.leftimage = self:AddChild( ImageButton(atlas, textures.arrow_normal, textures.arrow_over, textures.arrow_disabled, textures.arrow_down, nil,{1,1}, {0,0}) )
+    	self.rightimage = self:AddChild( ImageButton(atlas, textures.arrow_normal, textures.arrow_over, textures.arrow_disabled, textures.arrow_down, nil,{1,1}, {0,0}) )
 	end
     self.leftimage.silent = true
     self.rightimage.silent = true
@@ -163,27 +163,6 @@ end
 function Spinner:OnGainFocus()
 	Spinner._base.OnGainFocus(self)
 	self:UpdateBG()
-end
-
-function Spinner:SetHoverText(text)
-	if text then
-		if not self.hover then
-			self.hover = self.text:AddChild(ImageButton("images/ui.xml", "blank.tex", "blank.tex", "blank.tex"))
-			self.hover.image:ScaleToSize(self.text:GetRegionSize())
-			self.hovertext = self:AddChild(Text(BODYTEXTFONT, 28, text))
-			self.hovertext:SetPosition(3,35)
-			self.hovertext:MoveToFront()
-			self.hovertext:Hide()
-			self.hover.OnGainFocus = function()
-				self.hovertext:Show()
-			end
-			self.hover.OnLoseFocus = function()
-				self.hovertext:Hide()
-			end
-		else
-			self.hovertext:SetString(text)
-		end
-	end
 end
 
 function Spinner:GetHelpText()

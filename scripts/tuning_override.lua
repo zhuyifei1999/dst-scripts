@@ -298,7 +298,11 @@ return
     season_start = function(difficulty)
 		if difficulty == "random" then
 			difficulty = GetRandomItem({"winter","spring","summer","autumn"})
-		end
+		elseif difficulty == "autumnorspring" then
+            difficulty = GetRandomItem({"spring","autumn"})
+        elseif difficulty == "winterorsummer" then
+            difficulty = GetRandomItem({"winter","summer"})
+        end
 
         if difficulty == "winter" then
             TheWorld:PushEvent("ms_setseason", "winter")

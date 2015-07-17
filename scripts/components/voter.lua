@@ -30,14 +30,14 @@ function KickVoteProcessResult( option_data, vote_result, total_votes )
 	votes_required = math.max( votes_required, 1 ) --must have atleast 1 vote
 	if vote_result.vote_count >= votes_required and vote_result.value == true then
 		TheNet:Kick(option_data.kick_userid)
-		TheNet:Announce( "Vote kick passed: Kicking " .. option_data.player_name )
+		TheNet:Announce( "Vote kick passed: Kicking " .. option_data.player_name, nil, nil, "vote" )
 	else
 		VOTE_KICK_SQUELCH_TABLE[option_data.vote_caller_userid] = VOTE_KICK_SQUELCH_TIME
 		_Voter:UpdateSquelchTable()
 		if vote_result.value == true then
-			TheNet:Announce( "Vote kick failed. " .. string.format("Received %d vote%s of the required %d", vote_result.vote_count, (vote_result.vote_count == 1 and "" or "s"), math.ceil(votes_required)) .. "." )
+			TheNet:Announce( "Vote kick failed. " .. string.format("Received %d vote%s of the required %d", vote_result.vote_count, (vote_result.vote_count == 1 and "" or "s"), math.ceil(votes_required)) .. ".", nil, nil, "vote" )
 		else
-			TheNet:Announce( "Vote kick failed." )	
+			TheNet:Announce( "Vote kick failed.", nil, nil, "vote" )	
 		end
 	end
 end
