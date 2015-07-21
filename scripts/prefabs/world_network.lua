@@ -46,7 +46,6 @@ local function fn()
     inst:AddComponent("weather")
     inst:AddComponent("seasons")
     inst:AddComponent("worldreset")
-    --inst:AddComponent("voting")
     inst:AddComponent("voter")
 
     inst.PostInit = PostInit

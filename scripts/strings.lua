@@ -2320,14 +2320,9 @@ STRINGS.UI =
         KICK = "Kick",
         VOTEKICK = "Vote to Kick",
         VOTEACTIVE = "Vote In Progress",
-        ALREADYVOTED = "Vote: Yes",
         BAN = "Ban",
         ADMIN = "Admin",
         VIEWPROFILE = "View Profile",
-        VOTEKICKREPEAT_TITLE = "Can't Start Vote",
-        VOTEKICKREPEAT_BODY = "You already initiated a vote to kick this player and cannot do so again.",
-        VOTEKICKCONFIRM_TITLE = "Vote to Kick",
-        VOTEKICKCONFIRM_BODY = "Are you sure you want to vote to kick",
         KICKCONFIRM_TITLE = "Kick",
         KICKCONFIRM_BODY = "Are you sure you want to kick",
         BANCONFIRM_TITLE = "Ban",
@@ -3698,16 +3693,6 @@ STRINGS.LUCY =
         "Are you OK?",
         "Don't let that happen again!",
         "Everything is going to be fine. Just focus!",
-    },
-}
-
-STRINGS.VOTING = 
-{
-    KICK = 
-    {
-        START = "%s has started a vote to kick %s",
-        SUCCESS = "Vote to kick %s has succeeded",
-        FAILURE = "Vote to kick %s failed",
     },
 }
 

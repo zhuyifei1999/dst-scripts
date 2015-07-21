@@ -428,30 +428,6 @@ function GetAvailablePlayerColours()
     return colours, DEFAULT_PLAYER_COLOUR
 end
 
-function Networking_ReceiveVote(id, poll, voter, choice, numVotes)
-    if TheWorld.net then
-        TheWorld.net.components.voting:ReceiveVote(id, poll, voter, choice, numVotes)
-    end
-end
-
-function Networking_NotifyVoteStart(id, poll, voter, choice)
-    if TheWorld.net then
-        TheWorld.net.components.voting:NotifyVoteStart(id, poll, voter, choice)
-    end
-end
-
-function Networking_NotifyVoteEnd(id, poll)
-    if TheWorld.net then
-        TheWorld.net.components.voting:NotifyVoteEnd(id, poll)
-    end
-end
-
-function Networking_NotifyVoteCast(id, poll, voter, choice, numVotes)
-    if TheWorld.net then
-        TheWorld.net.components.voting:NotifyVoteCast(id, poll, voter, choice, numVotes)
-    end
-end
-
 function WorldResetFromSim()
 	print( "received reset request in WorldResetFromSim")
     if TheWorld ~= nil and TheWorld.ismastersim then

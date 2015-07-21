@@ -1755,9 +1755,6 @@ function Tune(overrides)
 
         REGROWTH_TIME_MULTIPLIER = 1,
 
-		VOTE_KICK_DURATION = 5*60,       -- vote duration in seconds, default to 5 minutes
-		VOTE_KICK_BAN_DURATION = 30*60,  -- base duration of a vote kick ban, will be multiplied by the number of times banned
-
         TALLBIRD_ATTACK_AGGRO_TIMEOUT = 2,
         TENTACLE_ATTACK_AGGRO_TIMEOUT = 2,
 
