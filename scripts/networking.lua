@@ -428,12 +428,6 @@ function GetAvailablePlayerColours()
     return colours, DEFAULT_PLAYER_COLOUR
 end
 
-function SaveServerListingGameData( data )
-	local encoded_data = DataDumper( data, nil, false )
-	TheNet:SetGameData( encoded_data )
-	return true
-end
-
 function Networking_ReceiveVote(id, poll, voter, choice, numVotes)
     if TheWorld.net then
         TheWorld.net.components.voting:ReceiveVote(id, poll, voter, choice, numVotes)

@@ -143,8 +143,27 @@ local prefabs =
     "bearger",
     "dragonfly",
 
-    "cactus"
+    "cactus",
 }
+
+local function DoGameDataChanged(inst)
+    inst.game_data_task = nil
+
+    local game_data =
+    {
+        day = inst.state.cycles + 1,
+        daysleftinseason = inst.state.remainingdaysinseason,
+        dayselapsedinseason = inst.state.elapseddaysinseason,
+    }
+    TheNet:SetGameData(DataDumper(game_data, nil, false))
+    TheNet:SetSeason(inst.state.season)
+end
+
+local function OnGameDataChanged(inst)
+    if inst.game_data_task == nil then
+        inst.game_data_task = inst:DoTaskInTime(0, DoGameDataChanged)
+    end
+end
 
 local function PostInit(inst)
     if inst.net then
@@ -159,6 +178,13 @@ local function PostInit(inst)
         end
     end
 
+    if inst.ismastersim then
+        inst:WatchWorldState("season", OnGameDataChanged)
+        inst:WatchWorldState("cycles", OnGameDataChanged)
+        inst:WatchWorldState("remainingdaysinseason", OnGameDataChanged)
+        inst:WatchWorldState("elapseddaysinseason", OnGameDataChanged)
+        OnGameDataChanged(inst)
+    end
 end
 
 local function OnRemoveEntity(inst)
@@ -170,32 +196,6 @@ local function OnRemoveEntity(inst)
     assert(TheFocalPoint ~= nil)
     TheFocalPoint:Remove()
     TheFocalPoint = nil
-end
-
-local function OnUpdateServerListing(inst)
-    local player_table = {}
-    for i, v in ipairs(TheNet:GetClientTable() or {}) do
-        table.insert(player_table, {
-            playerage = v.playerage,
-            name = v.name,
-            admin = v.admin,
-            userflags = v.userflags,
-            performance = v.performance,
-            steamid = v.steamid,
-            prefab = v.prefab,
-            colour = v.colour,
-        })
-    end
-
-    SaveServerListingGameData({
-        season = inst.state.season,
-        day = inst.state.cycles + 1,
-        daysleftinseason = inst.state.remainingdaysinseason,
-        dayselapsedinseason = inst.state.elapseddaysinseason,
-        worldgenoptions = SaveGameIndex:GetSlotGenOptions() or {},
-        players = player_table,
-    })
-    TheNet:SetSeason( inst.state.season )
 end
 
 local function fn()
@@ -280,9 +280,11 @@ local function fn()
     if inst.ismastersim then
         inst:AddComponent("playerspawner")
 
-        --Give the game a couple of seconds to finish init and then
-        --start periodically updating our listing every few minutes
-        inst:DoPeriodicTask(1 * 60, OnUpdateServerListing, 2)
+        --Cache static world gen data for server listing
+        local worldgen_data = SaveGameIndex:GetSlotGenOptions()
+        TheNet:SetWorldGenData(worldgen_data ~= nil and DataDumper(worldgen_data, nil, false) or "")
+
+        inst.game_data_task = nil
     end
 
     return inst

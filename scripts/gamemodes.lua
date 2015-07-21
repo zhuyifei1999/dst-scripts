@@ -11,23 +11,25 @@ GAME_MODES =
 
 
 function AddGameMode( game_mode, game_mode_text )
-	GAME_MODES[game_mode] = { text = game_mode_text, description = "", mod_game_mode = true, spawn_mode = "fixed", resource_renewal = false, ghost_sanity_drain = false, ghost_enabled = true, portal_rez = false, reset_time = nil, invalid_recipes = {} } 
+	GAME_MODES[game_mode] = { modded_mode = true, text = game_mode_text, description = "", mod_game_mode = true, spawn_mode = "fixed", resource_renewal = false, ghost_sanity_drain = false, ghost_enabled = true, portal_rez = false, reset_time = nil, invalid_recipes = {} } 
 	return GAME_MODES[game_mode]
 end
 
 function GetGameModesSpinnerData( enabled_mods )
 	local spinner_data = {}
 	for k,v in pairs( GAME_MODES ) do
-		table.insert( spinner_data, { text = v.text or "blank", data = k } )
+		if not v.modded_mode then
+			table.insert( spinner_data, { text = v.text or "blank", data = k } )
+		end
 	end
 	
 	if enabled_mods ~= nil then 
 		--add game modes from mods
-		for modname,_ in pairs(enabled_mods) do
+		for _,modname in pairs(enabled_mods) do
 			local modinfo = KnownModIndex:GetModInfo(modname)
 			if modinfo and modinfo.game_modes then
-				for game_mode,mode_text in pairs(modinfo.game_modes) do	
-					table.insert( spinner_data, { text = mode_text or "blank", data = game_mode } )
+				for _,game_mode in pairs(modinfo.game_modes) do	
+					table.insert( spinner_data, { text = game_mode.label or "blank", data = game_mode.name } )
 				end
 			end
 		end

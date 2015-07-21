@@ -154,12 +154,18 @@ function ServerCreationScreen:UpdateTitle(slotnum, fromTextEntered)
     -- may also want to update the string used on the nav button...
 end
 
+function ServerCreationScreen:UpdateModeSpinner(slotnum)
+    self.server_settings_tab:UpdateModeSpinner(slotnum)
+end
+
 function ServerCreationScreen:UpdateTabs(slotnum, prevslot, fromDelete)
+	self.server_settings_tab:SavePrevSlot(prevslot) --needs to happen before mods_tab:SetSaveSlot so that we don't lose the current game mode selection when the next slot's mods are applied
+
+    self.mods_tab:SetSaveSlot(slotnum, fromDelete) --needs to happen before server_settings_tab:UpdateDetails
+    
     self.server_settings_tab:UpdateDetails(slotnum, prevslot, fromDelete)
 
     self.world_tab:UpdateSlot(slotnum, prevslot, fromDelete)
-
-    self.mods_tab:SetSaveSlot(slotnum, fromDelete)
 
     self.snapshot_tab:SetSaveSlot(slotnum, prevslot, fromDelete)
 

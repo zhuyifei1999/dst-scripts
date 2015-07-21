@@ -102,10 +102,9 @@ local ServerSettingsTab = Class(Widget, function(self, slotdata, servercreations
     self.server_pw.textbox:SetFocusedImage( self.server_pw.textbox_bg, "images/textboxes.xml", "textbox2_grey.tex", "textbox2_gold.tex", "textbox2_gold_greyfill.tex" )
     self.server_pw.textbox:SetTextLengthLimit( STRING_MAX_LENGTH )
     self.server_pw.textbox:SetCharacterFilter( VALID_PASSWORD_CHARS )
-    
-    -- if not Profile:GetShowPasswordEnabled() then
-        -- self.server_pw.textbox:SetPassword(true)
-    -- end
+    if not Profile:GetShowPasswordEnabled() then
+        self.server_pw.textbox:SetPassword(true)
+    end
     self.server_pw.OnGainFocus = function(self)
         Widget.OnGainFocus(self)
         screen.server_pw.textbox:OnGainFocus()
@@ -209,7 +208,7 @@ local ServerSettingsTab = Class(Widget, function(self, slotdata, servercreations
     self.game_mode.label:SetPosition( -self.game_mode.label:GetRegionSize()/2 + label_x, 0, 0 )
     self.game_mode.label:SetHAlign( ANCHOR_RIGHT )
     self.game_mode.label:SetColour(0,0,0,1)
-    self.game_mode.spinner = self.game_mode:AddChild(Spinner( GetGameModesSpinnerData(SaveGameIndex:GetEnabledMods(self.saveslot)),210,64,{font=NEWFONT, size=font_size},nil,nil,nil,true,nil,nil, spinner_scale_x, spinner_scale_y ))
+    self.game_mode.spinner = self.game_mode:AddChild(Spinner( GetGameModesSpinnerData(ModManager:GetEnabledServerModNames()),210,64,{font=NEWFONT, size=font_size},nil,nil,nil,true,nil,nil, spinner_scale_x, spinner_scale_y ))
     self.game_mode.spinner:SetPosition( spinner_x, spinner_y, 0 )
     self.game_mode.spinner:SetTextColour(0,0,0,1)
     self.game_mode.focus_forward = self.game_mode.spinner
@@ -345,41 +344,48 @@ function ServerSettingsTab:OnControl(control, down)
     end
 end
 
+function ServerSettingsTab:UpdateModeSpinner(slotnum)
+    local selected = self.game_mode.spinner:GetSelectedData()
+    self.game_mode.spinner:SetOptions( GetGameModesSpinnerData( ModManager:GetEnabledServerModNames() ) )
+    self.game_mode.spinner:SetSelected(selected)
+end
+
+function ServerSettingsTab:SavePrevSlot(prevslot)
+	if prevslot and prevslot > 0 then
+		-- remember what was typed/set
+		self.slotdata[prevslot] =
+		{
+			pvp = self.pvp.spinner:GetSelectedData(),
+			game_mode = self.game_mode.spinner:GetSelectedData(),
+			friends_only = self.friends_only.spinner:GetSelectedData(),
+			online_mode = self.online_mode.spinner:GetSelectedData(),
+			max_players = self.max_players.spinner:GetSelectedData(),
+			server_name = self.server_name.textbox:GetString(),
+			server_pw = self.server_pw.textbox:GetLineEditString(),
+			server_desc = self.server_desc.textbox:GetString(),
+		}
+	end
+end
 
 function ServerSettingsTab:UpdateDetails(slotnum, prevslot, fromDelete)
-    
-    self.game_mode.spinner:SetOptions( GetGameModesSpinnerData( SaveGameIndex:GetEnabledMods(slotnum) ) )
-    
+    self.game_mode.spinner:SetOptions( GetGameModesSpinnerData( ModManager:GetEnabledServerModNames() ) )
+
     -- No save data
     if slotnum < 0 or SaveGameIndex:IsSlotEmpty(slotnum) then
         -- no slot, so hide all the details and set all the text boxes back to their defaults
         if prevslot and prevslot > 0 then
-            -- Remember what was typed/set
-            self.slotdata[prevslot] =
-            {
-                pvp = self.pvp.spinner:GetSelectedData(),
-                game_mode = self.game_mode.spinner:GetSelectedData(),
-                friends_only = self.friends_only.spinner:GetSelectedData(),
-                online_mode = self.online_mode.spinner:GetSelectedData(),-- and TheNet:IsOnlineMode(),
-                max_players = self.max_players.spinner:GetSelectedData(),
-                server_name = self.server_name.textbox:GetString(),
-                server_pw = self.server_pw.textbox:GetLineEditString(),
-                server_desc = self.server_desc.textbox:GetString(),
-            }
-            
-            
             -- Duplicate prevslot's data into our new slot if it was also a blank slot
             if not fromDelete and SaveGameIndex:IsSlotEmpty(prevslot) then
                 self.slotdata[slotnum] =
                 {
-                    pvp = self.pvp.spinner:GetSelectedData(),
-                    game_mode = self.game_mode.spinner:GetSelectedData(),
-                    friends_only = self.friends_only.spinner:GetSelectedData(),
-                    online_mode = self.online_mode.spinner:GetSelectedData(),-- and TheNet:IsOnlineMode(),
-                    max_players = self.max_players.spinner:GetSelectedData(),
-                    server_name = self.server_name.textbox:GetString(),
-                    server_pw = self.server_pw.textbox:GetLineEditString(),
-                    server_desc = self.server_desc.textbox:GetString(),
+                    pvp = self.slotdata[prevslot].pvp,
+                    game_mode = self.slotdata[prevslot].game_mode,
+                    friends_only = self.slotdata[prevslot].friends_only,
+                    online_mode = self.slotdata[prevslot].online_mode,
+                    max_players = self.slotdata[prevslot].max_players,
+                    server_name = self.slotdata[prevslot].server_name,
+                    server_pw = self.slotdata[prevslot].server_pw,
+                    server_desc = self.slotdata[prevslot].server_desc,
                 }
             end
         end
@@ -396,7 +402,7 @@ function ServerSettingsTab:UpdateDetails(slotnum, prevslot, fromDelete)
         local online = true
         if self.slotdata[slotnum] ~= nil and self.slotdata[slotnum].online_mode ~= nil then
             online = self.slotdata[slotnum].online_mode
-        end 
+        end
         self.game_mode.spinner:SetSelected(self.slotdata[slotnum] and self.slotdata[slotnum].game_mode or DEFAULT_GAME_MODE )
         self.pvp.spinner:SetSelected(pvp)
         self.max_players.spinner:SetSelected(self.slotdata[slotnum] and self.slotdata[slotnum].max_players or TUNING.MAX_SERVER_SIZE)
@@ -419,21 +425,6 @@ function ServerSettingsTab:UpdateDetails(slotnum, prevslot, fromDelete)
         self.game_mode.spinner:Enable()
 		
     else -- Save data
-        if prevslot and prevslot > 0 then
-            -- remember what was typed/set
-            self.slotdata[prevslot] =
-            {
-                pvp = self.pvp.spinner:GetSelectedData(),
-                game_mode = self.game_mode.spinner:GetSelectedData(),
-                friends_only = self.friends_only.spinner:GetSelectedData(),
-                online_mode = self.online_mode.spinner:GetSelectedData(),
-                max_players = self.max_players.spinner:GetSelectedData(),
-                server_name = self.server_name.textbox:GetString(),
-                server_pw = self.server_pw.textbox:GetLineEditString(),
-                server_desc = self.server_desc.textbox:GetString(),
-            }
-        end
-            
         -- world = 1, -- world (i.e. teleportato) doesn't exist yet, but leaving this here as a reminder
         -- waiting on hooks for char details
         
@@ -450,7 +441,7 @@ function ServerSettingsTab:UpdateDetails(slotnum, prevslot, fromDelete)
                 online = self.slotdata[slotnum].online_mode
             else
                 online = server_data.online_mode
-            end 
+            end
             self.game_mode.spinner:SetSelected(self.slotdata[slotnum] and self.slotdata[slotnum].game_mode or (server_data.game_mode ~= nil and server_data.game_mode or DEFAULT_GAME_MODE ))
             self.pvp.spinner:SetSelected(pvp)
 

@@ -354,21 +354,68 @@ function ServerListingScreen:ViewServerTags()
 end
 
 function ServerListingScreen:ViewServerWorld()
-    if self.selected_server ~= nil and self.selected_server.data then
-        local success, data = RunInSandboxSafe(self.selected_server.data)
-        if success and data then
-            TheFrontEnd:PushScreen(ViewCustomizationModalScreen(Profile, data.worldgenoptions, false, false))
-        end
+    local worldgenoptions = self:ProcessServerWorldGenData()
+    if worldgenoptions ~= nil then
+        TheFrontEnd:PushScreen(ViewCustomizationModalScreen(Profile, worldgenoptions, false, false))
     end
 end
 
 function ServerListingScreen:ViewServerPlayers() 
-    if self.selected_server ~= nil and self.selected_server.data then
-        local success, data = RunInSandboxSafe(self.selected_server.data)
-        if success and data then
-            TheFrontEnd:PushScreen(ViewPlayersModalScreen(data.players, self.selected_server.max_players, self.selected_server.dedicated))
+    local players = self:ProcessServerPlayersData()
+    if players ~= nil then
+        TheFrontEnd:PushScreen(ViewPlayersModalScreen(players, self.selected_server.max_players))
+    end
+end
+
+function ServerListingScreen:ProcessServerGameData()
+    if self.selected_server == nil then
+        return
+    elseif self.selected_server._processed_game_data == nil
+        and self.selected_server.game_data ~= nil
+        and #self.selected_server.game_data > 0 then
+        local success, data = RunInSandboxSafe(self.selected_server.game_data)
+        if success and data ~= nil then
+            self.selected_server._processed_game_data = data
         end
     end
+    return self.selected_server._processed_game_data
+end
+
+function ServerListingScreen:ProcessServerWorldGenData()
+    if self.selected_server == nil then
+        return
+    elseif self.selected_server._processed_world_gen_data == nil
+        and self.selected_server.world_gen_data ~= nil
+        and #self.selected_server.world_gen_data > 0 then
+        local success, data = RunInSandboxSafe(self.selected_server.world_gen_data)
+        if success and data ~= nil then
+            self.selected_server._processed_world_gen_data = data
+        end
+    end
+    return self.selected_server._processed_world_gen_data
+end
+
+function ServerListingScreen:ProcessServerPlayersData()
+    if self.selected_server == nil then
+        return
+    elseif self.selected_server._processed_players_data == nil
+        and self.selected_server.players_data ~= nil
+        and #self.selected_server.players_data > 0 then
+        local success, data = RunInSandboxSafe(self.selected_server.players_data)
+        if success and data ~= nil then
+            for i, v in ipairs(data) do
+                if v.colour ~= nil then
+                    local colourstr = "00000"..v.colour
+                    local r = tonumber(colourstr:sub(-6, -5), 16) / 255
+                    local g = tonumber(colourstr:sub(-4, -3), 16) / 255
+                    local b = tonumber(colourstr:sub(-2), 16) / 255
+                    v.colour = { r, g, b, 1 }
+                end
+            end
+            self.selected_server._processed_players_data = data
+        end
+    end
+    return self.selected_server._processed_players_data
 end
 
 local function CompareTable(table_a, table_b)
@@ -482,54 +529,40 @@ function ServerListingScreen:UpdateServerData( selected_index_actual )
             self.viewtags_button:Select()
         end
 
-        local seasondesc = self.selected_server.season and STRINGS.UI.SERVERLISTINGSCREEN.SEASONS[string.upper(self.selected_server.season)] or STRINGS.UI.SERVERLISTINGSCREEN.UNKNOWN_SEASON
-        self.season_description.text:SetString(seasondesc)
+        local gamedata = self:ProcessServerGameData()
+        local day = gamedata ~= nil and gamedata.day or STRINGS.UI.SERVERLISTINGSCREEN.UNKNOWN
+        self.day_description.text:SetString(STRINGS.UI.SERVERLISTINGSCREEN.DAYDESC..day)
 
+        local seasondesc = self.selected_server.season ~= nil and STRINGS.UI.SERVERLISTINGSCREEN.SEASONS[string.upper(self.selected_server.season)] or nil
+        if seasondesc ~= nil and
+            gamedata ~= nil and
+            gamedata.daysleftinseason ~= nil and
+            gamedata.dayselapsedinseason ~= nil then
 
-        local success, data = RunInSandboxSafe(self.selected_server.data)
-        if success and data then
-            if data.worldgenoptions then
-                self.viewworld_button:Unselect()
-                self.viewworld_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.VIEWWORLD)
-            else
-                self.viewworld_button:Select()
-                if self.selected_server.has_details then
-                    self.viewworld_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.WORLD_UNKNOWN)
-                else
-                    self.viewworld_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.WORLD_LOADING)
-                end
+            if gamedata.daysleftinseason * 3 <= gamedata.dayselapsedinseason then
+                seasondesc = STRINGS.UI.SERVERLISTINGSCREEN.LATE_SEASON_1..seasondesc..STRINGS.UI.SERVERLISTINGSCREEN.LATE_SEASON_2
+            elseif gamedata.dayselapsedinseason * 3 <= gamedata.daysleftinseason then
+                seasondesc = STRINGS.UI.SERVERLISTINGSCREEN.EARLY_SEASON_1..seasondesc..STRINGS.UI.SERVERLISTINGSCREEN.EARLY_SEASON_2
             end
+        end
+        self.season_description.text:SetString(seasondesc or STRINGS.UI.SERVERLISTINGSCREEN.UNKNOWN_SEASON)
 
-            if data.players then
-                self.viewplayers_button:Unselect()
-                self.viewplayers_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.VIEWPLAYERS)
-            else
-                self.viewplayers_button:Select()
-                if self.selected_server.has_details then
-                    self.viewplayers_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.PLAYERS_UNKNOWN)
-                else
-                    self.viewplayers_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.PLAYERS_LOADING)
-                end
-            end
-
-            local phasename = ""--data and data.clockphase and STRINGS.UI.SERVERLISTINGSCREEN.PHASES[string.upper(data.clockphase)] or STRINGS.UI.SERVERLISTINGSCREEN.UNKNOWN_PHASE
-            local day = data and data.day or STRINGS.UI.SERVERLISTINGSCREEN.UNKNOWN
-            self.day_description.text:SetString(phasename..STRINGS.UI.SERVERLISTINGSCREEN.DAYDESC..day)
-
-            -- self.detail_scroll_list:SetList(self.detail_panel_widgets, true)
+        local worldgenoptions = self:ProcessServerWorldGenData()
+        if worldgenoptions ~= nil then
+            self.viewworld_button:Unselect()
+            self.viewworld_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.VIEWWORLD)
         else
             self.viewworld_button:Select()
-            self.viewworld_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.WORLD_UNKNOWN)
+            self.viewworld_button:SetHoverText(self.selected_server.has_details and STRINGS.UI.SERVERLISTINGSCREEN.WORLD_UNKNOWN or STRINGS.UI.SERVERLISTINGSCREEN.WORLD_LOADING)
+        end
+
+        local players = self:ProcessServerPlayersData()
+        if players ~= nil then
+            self.viewplayers_button:Unselect()
+            self.viewplayers_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.VIEWPLAYERS)
+        else
             self.viewplayers_button:Select()
-            self.viewplayers_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.PLAYERS_UNKNOWN)
-            self.season_description.text:SetString(STRINGS.UI.SERVERLISTINGSCREEN.UNKNOWN_SEASON)
-            self.day_description.text:SetString(STRINGS.UI.SERVERLISTINGSCREEN.DAYDESC..STRINGS.UI.SERVERLISTINGSCREEN.UNKNOWN)
-            while self.detail_panel_widgets[self.first_player_row] do
-                local row = table.remove(self.detail_panel_widgets, self.first_player_row)
-                row:KillAllChildren()
-                row:Kill()
-            end
-            -- self.detail_scroll_list:SetList(self.detail_panel_widgets, true)
+            self.viewplayers_button:SetHoverText(self.selected_server.has_details and STRINGS.UI.SERVERLISTINGSCREEN.PLAYERS_UNKNOWN or STRINGS.UI.SERVERLISTINGSCREEN.PLAYERS_LOADING)
         end
 
         self.join_button:Enable()
@@ -1823,7 +1856,6 @@ function ServerListingScreen:MakeDetailPanel(right_col)
         dedicated_server,
         has_password,
     }
-    self.first_player_row = #self.detail_panel_widgets + 1
 
     self.server_details_parent = self.server_detail_panel:AddChild(Widget("servdetails"))
     self.server_details_parent:SetPosition(detail_x-230,-120)
@@ -1942,7 +1974,7 @@ function ServerListingScreen:OnControl(control, down)
     if not down then
         if control == CONTROL_CANCEL then 
             if TheFrontEnd:GetFadeLevel() > 0 then 
-                TheNet:Disconnect()
+                TheNet:Disconnect(false)
                 HideCancelTip()
                 TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
             else

@@ -11,21 +11,13 @@ local TEMPLATES = require "widgets/templates"
 
 local ScrollableList = require "widgets/scrollablelist"
 
-local ViewPlayersModalScreen = Class(Screen, function(self, players, maxPlayers, isDedicated)
+local ViewPlayersModalScreen = Class(Screen, function(self, players, maxPlayers)
     Widget._ctor(self, "ViewPlayersModalScreen")
 
-    --remove dedicate host from player list
-    if isDedicated and players ~= nil then
-        for i, v in ipairs(players) do
-            if v.performance ~= nil then
-                table.remove(players, i)
-                break
-            end
-        end
-    end
-    
+    --Note: assumes players data excludes dedicated host
+
     self.players = players or {}
-    --self.max_players = maxPlayers or "?"
+    self.max_players = maxPlayers or "?"
 
     self.black = self:AddChild(Image("images/global.xml", "square.tex"))
     self.black:SetVRegPoint(ANCHOR_MIDDLE)
@@ -74,7 +66,6 @@ local ViewPlayersModalScreen = Class(Screen, function(self, players, maxPlayers,
     self.upper_horizontal_line:SetScale(.95)
     self.upper_horizontal_line:SetPosition(7,129)
 
---[[--don't show player count because this data is not updated as often as the listing's player count
     self.players_number = self.panel_root:AddChild(Text(NEWFONT, 25, "x/y"))
     self.players_number:SetPosition(90,145) 
     self.players_number:SetRegionSize(100,30)
@@ -83,7 +74,7 @@ local ViewPlayersModalScreen = Class(Screen, function(self, players, maxPlayers,
 
     self.numPlayers = #self.players
     self.players_number:SetString(self.numPlayers.."/"..self.max_players)
-]]
+
     local function listingConstructor(v, i)
 
         local playerListing =  Widget("playerListing")
@@ -105,7 +96,7 @@ local ViewPlayersModalScreen = Class(Screen, function(self, players, maxPlayers,
         playerListing.characterBadge:SetScale(.45)
         playerListing.characterBadge:SetPosition(badge_x,0,0)
 
-        playerListing.adminBadge = playerListing:AddChild(ImageButton("images/avatars.xml", "avatar_admin.tex", "avatar_admin.tex", "avatar_admin.tex", nil, nil, {1,1}, {0,0}))
+        --[[playerListing.adminBadge = playerListing:AddChild(ImageButton("images/avatars.xml", "avatar_admin.tex", "avatar_admin.tex", "avatar_admin.tex", nil, nil, {1,1}, {0,0}))
         playerListing.adminBadge:Disable()
         playerListing.adminBadge:SetPosition(badge_x-13,-10,0) 
         playerListing.adminBadge.image:SetScale(.175)
@@ -113,26 +104,18 @@ local ViewPlayersModalScreen = Class(Screen, function(self, players, maxPlayers,
         playerListing.adminBadge:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.ADMIN, { font = NEWFONT_OUTLINE, size = 24, offset_x = 0, offset_y = 30, colour = {1,1,1,1}})
         if not v.admin then
             playerListing.adminBadge:Hide()
-        end
-
-        local colours = nil --GetAvailablePlayerColours()
+        end]]
 
         playerListing.name = playerListing:AddChild(Text(TALKINGFONT, 26, displayName))
         playerListing.name:SetPosition(-22,-3,0)
         playerListing.name:SetRegionSize(125, 30)
         playerListing.name:SetHAlign(ANCHOR_LEFT)
+        playerListing.name:SetColour(unpack(v.colour or DEFAULT_PLAYER_COLOUR))
 
-        -- Testing only
-        if colours then 
-            playerListing.name:SetColour(unpack(colours[math.random(#colours)])) 
-        else
-            playerListing.name:SetColour(unpack(v.colour or DEFAULT_PLAYER_COLOUR))
-        end
-
-        local agestring = v.playerage ~= nil and v.playerage > 0 and (STRINGS.UI.PLAYERSTATUSSCREEN.AGE_PREFIX..tostring(v.playerage)) or ""
+        --[[local agestring = v.playerage ~= nil and v.playerage > 0 and (STRINGS.UI.PLAYERSTATUSSCREEN.AGE_PREFIX..tostring(v.playerage)) or ""
         playerListing.age = playerListing:AddChild(Text(NEWFONT_OUTLINE, 25, agestring))
         playerListing.age:SetPosition(80,0,0)
-        playerListing.age:SetHAlign(ANCHOR_MIDDLE)
+        playerListing.age:SetHAlign(ANCHOR_MIDDLE)]]
 
         local scale = .6
 
@@ -163,7 +146,11 @@ local ViewPlayersModalScreen = Class(Screen, function(self, players, maxPlayers,
         -- Skipping check for hiding my own profile button
         -- Shouldn't see this screen if i'm in game unless I just D/C and listings haven't updated
         -- Also, my offline ID won't match my online ID as well
-        playerListing.focus_forward = playerListing.viewprofile
+        if v.steamid ~= nil then
+            playerListing.focus_forward = playerListing.viewprofile
+        else
+            playerListing.viewprofile:Hide()
+        end
 
         playerListing.OnGainFocus = function()
             -- playerListing.name:SetSize(43)
@@ -189,7 +176,7 @@ local ViewPlayersModalScreen = Class(Screen, function(self, players, maxPlayers,
     self.scroll_list = self.list_root:AddChild(ScrollableList(self.player_widgets, 180, 300, 30, 10, nil, nil, nil, nil, nil, 10))
     self.scroll_list:SetPosition(-20,-10)
 
-    if not self.players or #self.players == 0 then
+    if #self.players == 0 then
         self.scroll_list:Hide()
         self.empty_server_text = self.panel_root:AddChild(Text(NEWFONT, 30, STRINGS.UI.PLAYERSTATUSSCREEN.EMPTY_SERVER))     
         self.empty_server_text:SetColour(0,0,0,1)

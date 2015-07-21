@@ -97,7 +97,10 @@ end
 
 function ConnectingToGamePopup:OnCancel()
     self:Disable()
-    TheNet:Disconnect() -- This might be problematic for when in-game?
+
+    -- V2C: what was the following comment for??
+    -- "This might be problematic for when in-game?"
+    TheNet:Disconnect(false)
 	TheFrontEnd:PopScreen()
 end
 

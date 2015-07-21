@@ -279,6 +279,7 @@ function ModsTab:CreateDetailPanel()
 		self.modlinkbutton:Unselect()
     end
 
+    self.mainmenu:MoveToFront()
 end
 
 function ModsTab:StartWorkshopUpdate()
@@ -744,6 +745,7 @@ function ModsTab:OnConfirmEnable(restart, modname)
         }))
     end
 
+    self.servercreationscreen:UpdateModeSpinner(self.slotnum)
     self.servercreationscreen:UpdateButtons(self.slotnum)
     self.servercreationscreen:MakeDirty()
 
@@ -915,10 +917,10 @@ function ModsTab:ShowModDetails(idx, client_mod)
             widgetTable[idx].status:SetColour(59/255, 222/255, 99/255, 1)
         end
     elseif modStatus == "DISABLED_ERROR" then
-        self.detailwarning:SetColour(150/255, 100/255, 35/255, 1) --(242/255, 99/255, 99/255, 1)--0.9,0.3,0.3,1)
+        self.detailwarning:SetColour(242/255, 99/255, 99/255, 1) --(242/255, 99/255, 99/255, 1)--0.9,0.3,0.3,1)
         self.detailwarning:SetString(STRINGS.UI.MODSSCREEN.DISABLED_ERROR)
         if widgetTable then 
-            widgetTable[idx].status:SetColour(150/255, 100/255, 35/255, 1)
+            widgetTable[idx].status:SetColour(242/255, 99/255, 99/255, 1)
             widgetTable[idx].status:SetString(STRINGS.UI.MODSSCREEN.STATUS.DISABLED_ERROR)
         end
     elseif modStatus == "DISABLED_MANUAL" then

@@ -367,6 +367,18 @@ function ModIndex:LoadModInfo(modname)
 		info.icon = nil
 	end
 	
+	--Add game modes
+	if info.game_modes then
+		for _,mode in pairs(info.game_modes) do
+			local gm = AddGameMode(mode.name, mode.label)
+			if mode.settings then
+				for option,value in pairs(mode.settings) do
+					gm[option] = value
+				end
+			end
+		end
+	end
+	
 	return info
 end
 
