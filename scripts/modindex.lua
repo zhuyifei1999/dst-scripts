@@ -371,6 +371,7 @@ function ModIndex:LoadModInfo(modname)
 	if info.game_modes then
 		for _,mode in pairs(info.game_modes) do
 			local gm = AddGameMode(mode.name, mode.label)
+			gm.description = mode.description or ""
 			if mode.settings then
 				for option,value in pairs(mode.settings) do
 					gm[option] = value

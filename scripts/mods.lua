@@ -615,7 +615,7 @@ function ModWrangler:SetPostEnv()
 																			SimReset()
 																		end)
 																	end},
-						{text=STRINGS.UI.MAINSCREEN.MODFORUMS, nopop=true, cb = function() VisitURL("http://forums.kleientertainment.com/index.php?/forum/26-dont-starve-mods-and-tools/") end }
+						{text=STRINGS.UI.MAINSCREEN.MODFORUMS, nopop=true, cb = function() VisitURL("http://forums.kleientertainment.com/forum/79-dont-starve-together-beta-mods-and-tools/") end }
 					}))
 		end
 	elseif KnownModIndex:WasLoadBad() then
