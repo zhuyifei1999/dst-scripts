@@ -96,9 +96,7 @@ end
 --  3) Use that number as an estimate for maxchars, or round up
 --     a little just in case dots aren't the smallest character
 function Text:SetTruncatedString(str, maxwidth, maxchars, ellipses)
-    if type(ellipses) == "string" then
-        ellipses = ellipses
-    else
+    if type(ellipses) ~= "string" then
         ellipses = ellipses and "..." or ""
     end
     if maxchars ~= nil and str:len() > maxchars then

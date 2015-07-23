@@ -106,11 +106,11 @@ local ViewPlayersModalScreen = Class(Screen, function(self, players, maxPlayers)
             playerListing.adminBadge:Hide()
         end]]
 
-        playerListing.name = playerListing:AddChild(Text(TALKINGFONT, 26, displayName))
-        playerListing.name:SetPosition(-22,-3,0)
-        playerListing.name:SetRegionSize(125, 30)
-        playerListing.name:SetHAlign(ANCHOR_LEFT)
+        playerListing.name = playerListing:AddChild(Text(TALKINGFONT, 26))
         playerListing.name:SetColour(unpack(v.colour or DEFAULT_PLAYER_COLOUR))
+        playerListing.name:SetTruncatedString(displayName, 210, 44, true)
+        local w, h = playerListing.name:GetRegionSize()
+        playerListing.name:SetPosition(w * .5 - 85, -3, 0)
 
         --[[local agestring = v.playerage ~= nil and v.playerage > 0 and (STRINGS.UI.PLAYERSTATUSSCREEN.AGE_PREFIX..tostring(v.playerage)) or ""
         playerListing.age = playerListing:AddChild(Text(NEWFONT_OUTLINE, 25, agestring))

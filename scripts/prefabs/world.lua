@@ -183,7 +183,7 @@ local function PostInit(inst)
         inst:WatchWorldState("cycles", OnGameDataChanged)
         inst:WatchWorldState("remainingdaysinseason", OnGameDataChanged)
         inst:WatchWorldState("elapseddaysinseason", OnGameDataChanged)
-        OnGameDataChanged(inst)
+        DoGameDataChanged(inst)
     end
 end
 

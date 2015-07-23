@@ -228,10 +228,17 @@ local function listingConstructor(v, i, parent)
 
 	local colours = nil --GetAvailablePlayerColours()
 
-	playerListing.name = playerListing:AddChild(Text(TALKINGFONT, 25, displayName))
-	playerListing.name:SetPosition(-4+nudge_x,-2.5,0)
-	playerListing.name:SetRegionSize(95, 30)
-	playerListing.name:SetHAlign(ANCHOR_LEFT)
+    playerListing.name = playerListing:AddChild(Text(TALKINGFONT, 25))
+    playerListing.name._align =
+    {
+        maxwidth = 100,
+        maxchars = 22,
+        x = -52 + nudge_x,
+        y = -2.5,
+    }
+    playerListing.name:SetTruncatedString(displayName, playerListing.name._align.maxwidth, playerListing.name._align.maxchars, true)
+    local w, h = playerListing.name:GetRegionSize()
+    playerListing.name:SetPosition(playerListing.name._align.x + w * .5, playerListing.name._align.y, 0)
 
 	-- Testing only
 	if colours then 
@@ -388,7 +395,9 @@ local function UpdatePlayerListing(widget, data, index)
 	else
 		widget.name:SetColour(unpack(not empty and data.colour or DEFAULT_PLAYER_COLOUR))
 	end
-	widget.name:SetString(displayName)
+    widget.name:SetTruncatedString(displayName, widget.name._align.maxwidth, widget.name._align.maxchars, true)
+    local w, h = widget.name:GetRegionSize()
+    widget.name:SetPosition(widget.name._align.x + w * .5, widget.name._align.y, 0)
 
 	local owner = TheNet:GetUserID()
 	local scale = .6

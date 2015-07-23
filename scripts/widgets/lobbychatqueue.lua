@@ -19,17 +19,9 @@ local function message_constructor(data)
 	group.bg:SetPosition(8, 0)
 
 	local user_widget = group:AddChild(Text(data.chat_font, data.chat_size-3))
-	user_widget:SetPosition(-25,-3) 
-	user_widget:SetTruncatedString(data.username..":", username_width, nil, ":")
-	
-	local temp = Text(data.chat_font, data.chat_size-3, data.username..":")
-	local w1, h1 = temp:GetRegionSize()
-	temp:Kill()
-	local w2, h2 = user_widget:GetRegionSize()
-	local user_name_width = w1 < w2 and w1 or w2
-
-	user_widget:SetRegionSize( username_width, (data.chat_size) )
-	user_widget:SetHAlign(ANCHOR_LEFT)
+    user_widget:SetTruncatedString(data.username..":", username_width, 25, "..:")
+    local user_name_width, h = user_widget:GetRegionSize()
+    user_widget:SetPosition(user_name_width * .5 - 85, -3) 
 	user_widget:SetColour(unpack(data.colour))
 	group.user_widget = user_widget
 
@@ -121,21 +113,14 @@ function LobbyChatQueue:OnMessageReceived(userid, name, prefab, message, colour)
 		return
 	end
 
-	-- Process Chat username
-	local username = self:GetDisplayName(name, prefab)
-	
-	if string.len(username) > MAX_CHAT_NAME_LENGTH then
-		username = string.sub(username,1,MAX_CHAT_NAME_LENGTH)
-	end
-
-	local item = {}
-	item.message = message
-	item.chat_font = self.chat_font
-	item.chat_size = self.chat_size
-	item.colour = colour
-	item.username = username
-
-	self.list_items[#self.list_items+1] = item
+	self.list_items[#self.list_items + 1] =
+    {
+        message = message,
+        chat_font = self.chat_font,
+        chat_size = self.chat_size,
+        colour = colour,
+        username = self:GetDisplayName(name, prefab),
+    }
 
 	local startidx = math.max(1, (#self.list_items - MAX_MESSAGES) + 1) -- older messages are dropped
 	local list_widgets = {}

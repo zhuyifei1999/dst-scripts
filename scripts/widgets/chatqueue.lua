@@ -115,7 +115,7 @@ function ChatQueue:OnMessageReceived(userid, name, prefab, message, colour, whis
 
 	-- Process Chat username
 	local username = self:GetDisplayName(name, prefab)
-	
+
 	-- Shuffle upwards
 	local x,y
 	for i = 1,CHAT_QUEUE_SIZE-1 do
@@ -154,10 +154,7 @@ function ChatQueue:OnMessageReceived(userid, name, prefab, message, colour, whis
 	end
 	-- Add our new entry
 	self.messages[CHAT_QUEUE_SIZE]:SetString(message)
-	if string.len(username) > MAX_CHAT_NAME_LENGTH then
-		username = string.sub(username,1,MAX_CHAT_NAME_LENGTH)
-	end
-	self.users[CHAT_QUEUE_SIZE]:SetString(username..":")
+    self.users[CHAT_QUEUE_SIZE]:SetTruncatedString(username..":", 140, 25, "..:")
 	x,y = self.users[CHAT_QUEUE_SIZE]:GetRegionSize()
 	self.users[CHAT_QUEUE_SIZE]:SetPosition(-330 - x/2, -400 - CHAT_QUEUE_SIZE * (self.chat_size+2))
 	if whisper then

@@ -103,7 +103,9 @@ function PlayerStatusScreen:OnUpdate(dt)
                 for i,v in pairs(self.player_widgets) do
                     for j,k in ipairs(ClientObjs) do
                         if v.userid == k.userid and v.ishost == (k.performance ~= nil) then
-                            v.name:SetString(self:GetDisplayName(k))
+                            v.name:SetTruncatedString(self:GetDisplayName(k), v.name._align.maxwidth, v.name._align.maxchars, true)
+                            local w, h = v.name:GetRegionSize()
+                            v.name:SetPosition(v.name._align.x + w * .5, 0, 0)
 
                             v.characterBadge:Set(k.prefab or "", k.colour or DEFAULT_PLAYER_COLOUR, v.ishost, k.userflags or 0)
 
@@ -173,7 +175,7 @@ function PlayerStatusScreen:DoInit()
 		self.servertitle = self.root:AddChild(Text(UIFONT,45))
 		self.servertitle:SetColour(1,1,1,1)
 		if serverNameStr ~= "" then
-			self.servertitle:SetTruncatedString(serverNameStr, 800, nil, true)
+			self.servertitle:SetTruncatedString(serverNameStr, 800, 100, true)
 		else
 			self.servertitle:SetString(serverNameStr)
 		end
@@ -210,7 +212,7 @@ function PlayerStatusScreen:DoInit()
 		self.serverdesc = self.root:AddChild(Text(UIFONT,30))
 		self.serverdesc:SetColour(1,1,1,1)
 		if serverDescStr ~= "" then
-			self.serverdesc:SetTruncatedString(serverDescStr, 800, nil, true)
+            self.serverdesc:SetTruncatedString(serverDescStr, 800, 150, true)
 		else
 			self.serverdesc:SetString(serverDescStr)
 		end
@@ -242,7 +244,7 @@ function PlayerStatusScreen:DoInit()
 		self.servermods = self.root:AddChild(Text(UIFONT,25))
 		self.servermods:SetPosition(20,-250,0)
 		self.servermods:SetColour(1,1,1,1)
-		self.servermods:SetTruncatedString(STRINGS.UI.PLAYERSTATUSSCREEN.MODSLISTPRE.." "..modsStr, 650, nil, true)
+        self.servermods:SetTruncatedString(STRINGS.UI.PLAYERSTATUSSCREEN.MODSLISTPRE.." "..modsStr, 650, 146, true)
 
 		self.bg:SetScale(.95,.95)
 		self.bg:SetPosition(0,-10)
@@ -337,9 +339,15 @@ function PlayerStatusScreen:DoInit()
 		end
 
 		playerListing.name = playerListing:AddChild(Text(UIFONT, 35, displayName))
-		playerListing.name:SetPosition(-178,0,0)
-		playerListing.name:SetRegionSize(215,40)
-		playerListing.name:SetHAlign(ANCHOR_LEFT)
+        playerListing.name._align =
+        {
+            maxwidth = 215,
+            maxchars = 36,
+            x = -286,
+        }
+        playerListing.name:SetTruncatedString(displayName, playerListing.name._align.maxwidth, playerListing.name._align.maxchars, true)
+        local w, h = playerListing.name:GetRegionSize()
+        playerListing.name:SetPosition(playerListing.name._align.x + w * .5, 0, 0)
 		playerListing.name:SetColour(unpack(v.colour or DEFAULT_PLAYER_COLOUR))
 
 		local agestring = v.playerage ~= nil and v.playerage > 0 and (STRINGS.UI.PLAYERSTATUSSCREEN.AGE_PREFIX..tostring(v.playerage)) or ""
@@ -654,7 +662,9 @@ function PlayerStatusScreen:DoInit()
 				playerListing.number:SetString(i)
 			end
 
-			playerListing.name:SetString(displayName)
+			playerListing.name:SetTruncatedString(displayName, playerListing.name._align.maxwidth, playerListing.name._align.maxchars, true)
+            local w, h = playerListing.name:GetRegionSize()
+            playerListing.name:SetPosition(playerListing.name._align.x + w * .5, 0, 0)
 			playerListing.name:SetColour(unpack(v.colour or DEFAULT_PLAYER_COLOUR))
 
 			local agestring = v.playerage ~= nil and v.playerage > 0 and (STRINGS.UI.PLAYERSTATUSSCREEN.AGE_PREFIX..tostring(v.playerage)) or ""

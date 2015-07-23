@@ -644,14 +644,13 @@ TEMPLATES = {
         opt.configurable_image:SetClickable(false)
         opt.configurable_image:Hide()
 
-	    opt.name = opt:AddChild(Text(NEWFONT, 30))
+        opt.name = opt:AddChild(Text(NEWFONT, 30))
         local nameStr = (modinfo and modinfo.name) and modinfo.name or modname
-        opt.name:SetTruncatedString(nameStr, 235, nil, true)
-		opt.name:SetVAlign(ANCHOR_MIDDLE)
-		opt.name:SetHAlign(ANCHOR_LEFT)
+        opt.name:SetTruncatedString(nameStr, 235, 51, true)
+        local w, h = opt.name:GetRegionSize()
+        opt.name:SetPosition(w * .5 - 75, 17, 0)
+        opt.name:SetVAlign(ANCHOR_MIDDLE)
         opt.name:SetColour(0,0,0,1)
-		opt.name:SetPosition(42, 17, 0)
-		opt.name:SetRegionSize( 235, 50 )
 
 		opt.status = opt:AddChild(Text(BODYTEXTFONT, 23))
 		opt.status:SetVAlign(ANCHOR_MIDDLE)

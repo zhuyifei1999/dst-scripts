@@ -72,10 +72,9 @@ local TextListPopupDialogScreen = Class(Screen, function(self, title, str, body,
     for i,v in ipairs(liststrings) do
         local widg = Widget("str"..i)
         local strWidg = widg:AddChild(Text(NEWFONT, 25, "", {0,0,0,1}))
-        strWidg:SetTruncatedString(v, 285, nil, true)
-        strWidg:SetRegionSize(285,50)
-        strWidg:SetHAlign(ANCHOR_LEFT)
-        strWidg:SetPosition(165,0)
+        strWidg:SetTruncatedString(v, 285, 75, true)
+        local w, h = strWidg:GetRegionSize()
+        strWidg:SetPosition(23 + w * .5, 0, 0)
         table.insert(self.listwidgets, widg)
     end
 

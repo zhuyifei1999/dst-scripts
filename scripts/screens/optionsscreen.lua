@@ -1189,7 +1189,7 @@ function OptionsScreen:DoInit()
 	--------------
 	--------------
 
-	local button_x = 200 -- x coord of the right column
+	local button_x = 177 -- x coord of the right column
 	local keyboard = true
     self.kb_controlwidgets = {}
     self.controller_controlwidgets = {}
@@ -1198,15 +1198,15 @@ function OptionsScreen:DoInit()
         if all_controls[i] and all_controls[i].keyboard then
 
             local group = Widget("control"..i)
-            group:SetScale(0.90,0.75,0.75)
+            group:SetScale(1,1,0.75)
 
             group.control = all_controls[i]
             group.controlName = all_controls[i].name
     		group.controlId = all_controls[i].keyboard
     		
     		group.bg = group:AddChild(Image("images/ui.xml", "single_option_bg.tex"))
-    		group.bg:SetPosition(-130, 3, 0)
-    		group.bg:SetScale(1.67, 1, 1)
+    	    group.bg:SetPosition(-115, 3, 0)
+            group.bg:SetScale(1.5, 1, 1)
 
     		group.changed_image = group:AddChild(Image("images/ui.xml", "option_highlight.tex"))
     		-- group.changed_image:SetTint(unpack(BGCOLOURS.GREY))
@@ -1224,17 +1224,17 @@ function OptionsScreen:DoInit()
     		    group.changed_image:Hide()
     		end
 
-            group.label = group:AddChild(Text(NEWFONT, 40))
+            group.label = group:AddChild(Text(NEWFONT, 28))
             local ctrlString = STRINGS.UI.CONTROLSSCREEN.CONTROLS[group.controlName+1]
             group.label:SetString(ctrlString)
             group.label:SetHAlign(ANCHOR_LEFT)
             group.label:SetColour(0,0,0,1)
             group.label:SetRegionSize( 500, 50 )
-            group.label:SetPosition(-200,5,0)
+            group.label:SetPosition(-146,5,0)
             group.label:SetClickable(false)
     		
     		group.button_kb = group:AddChild(ImageButton("images/ui.xml", "blank.tex", "spinner_focus.tex", nil, nil, nil, {1,1}, {0,0}))
-    		group.button_kb:ForceImageSize(215, 48)
+    		group.button_kb:ForceImageSize(198, 48)
 
     		group.button_kb:SetTextColour(0,0,0,1)
             group.button_kb:SetFont(NEWFONT)
@@ -1269,15 +1269,15 @@ function OptionsScreen:DoInit()
         if all_controls[i] and all_controls[i].controller then
 
             local group = Widget("control"..i)
-            group:SetScale(0.90,0.75,0.75)
+            group:SetScale(1,1,0.75)
 
             group.control = all_controls[i]
             group.controlName = all_controls[i].name
             group.controlId = all_controls[i].controller
             
             group.bg = group:AddChild(Image("images/ui.xml", "single_option_bg.tex"))
-            group.bg:SetPosition(-130, 3, 0)
-            group.bg:SetScale(1.67, 1, 1)
+            group.bg:SetPosition(-115, 3, 0)
+            group.bg:SetScale(1.5, 1, 1)
 
             group.changed_image = group:AddChild(Image("images/ui.xml", "option_highlight.tex"))
             -- group.changed_image:SetTint(unpack(BGCOLOURS.GREY))
@@ -1296,17 +1296,17 @@ function OptionsScreen:DoInit()
                 group.changed_image:Hide()
             end
 
-            group.label = group:AddChild(Text(NEWFONT, 40))
+            group.label = group:AddChild(Text(NEWFONT, 28))
             local ctrlString = STRINGS.UI.CONTROLSSCREEN.CONTROLS[group.controlName+1]
             group.label:SetString(ctrlString)
             group.label:SetHAlign(ANCHOR_LEFT)
             group.label:SetColour(0,0,0,1)
             group.label:SetRegionSize( 500, 50 )
-            group.label:SetPosition(-200,5,0)
+            group.label:SetPosition(-146,5,0)
             group.label:SetClickable(false)
             
             group.button_controller = group:AddChild(ImageButton("images/ui.xml", "blank.tex", "spinner_focus.tex", nil, nil, nil, {1,1}, {0,0}))
-            group.button_controller:ForceImageSize(215, 48)
+            group.button_controller:ForceImageSize(198, 48)
 
             group.button_controller.text:SetColour(0,0,0,1)
             group.button_controller:SetFont(NEWFONT)

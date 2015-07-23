@@ -24,12 +24,13 @@ local TopModsPanel = Class(Widget, function(self, servercreationscreen)
     self.topmodsgreybg = self.topmods_panel:AddChild( Image( "images/frontend.xml", "submenu_greybox.tex") )
     self.topmodsgreybg:SetScale(.6, .8, 1)
     self.topmodsgreybg:SetPosition(40, 0)
+	self.topmodsgreybg:SetTint(0.7,0.7,0.7,1)
 
     self.morebutton = self.topmods_panel:AddChild(TEMPLATES.Button(STRINGS.UI.MODSSCREEN.MOREMODS, function() self:MoreWorkshopMods() end))
     self.morebutton:SetPosition(Vector3(45,-230,0))
     self.morebutton:SetScale(.56)
   
-    local region_size = 170
+    local region_size = 160
 
     self.title = self.topmods_panel:AddChild(Text(TITLEFONT, 36))
     self.title:SetPosition(Vector3(40,170,0))
@@ -41,10 +42,11 @@ local TopModsPanel = Class(Widget, function(self, servercreationscreen)
     local yoffset = 120
     for i = 1, 5 do
         local modlink = self.topmods_panel:AddChild(TextButton("images/ui.xml", "blank.tex","blank.tex","blank.tex","blank.tex"))
-        modlink:SetPosition(Vector3(40,yoffset,0))
+        modlink:SetPosition(Vector3(45,yoffset,0))
         modlink:SetText(STRINGS.UI.MODSSCREEN.LOADING.."...")
         modlink.text:SetRegionSize(region_size, 70)
-        modlink:SetFont(NEWFONT)
+        modlink:SetTextSize(28)
+	    modlink:SetFont(UIFONT)
         modlink:SetTextColour(0.9,0.8,0.6,1)
         modlink:SetTextFocusColour(1,1,1,1)
         table.insert(self.modlinks, modlink)
@@ -52,7 +54,7 @@ local TopModsPanel = Class(Widget, function(self, servercreationscreen)
     end 
     
     self.featuredtitle = self.topmods_panel:AddChild(Text(TITLEFONT, 36))
-    self.featuredtitle:SetPosition(Vector3(40,-120,0))
+    self.featuredtitle:SetPosition(Vector3(45,-120,0))
     self.featuredtitle:SetString(STRINGS.UI.MODSSCREEN.FEATUREDMOD)
     self.featuredtitle:SetRegionSize( region_size, 70 )
 
@@ -64,7 +66,8 @@ local TopModsPanel = Class(Widget, function(self, servercreationscreen)
     self.featuredbutton:SetPosition(Vector3(40,-170,0))
     self.featuredbutton:SetText(STRINGS.UI.MODSSCREEN.LOADING.."...")
     self.featuredbutton.text:SetRegionSize(region_size, 70)
-    self.featuredbutton:SetFont(NEWFONT)
+    self.featuredbutton:SetFont(UIFONT)
+	self.featuredbutton:SetTextSize(28)
     self.featuredbutton:SetTextColour(0.9,0.8,0.6,1)
     self.featuredbutton:SetTextFocusColour(1,1,1,1)
 
@@ -147,8 +150,9 @@ function TopModsPanel:OnStatsQueried( result, isSuccessful, resultCode )
     print( dumptable(result) )
     print( isSuccessful )
     print( resultCode )
-    
-    if TheFrontEnd.screenstack[#TheFrontEnd.screenstack] ~= self then
+ 
+ 
+    if TheFrontEnd.screenstack[#TheFrontEnd.screenstack] ~= self.servercreationscreen then
         return
     end
 

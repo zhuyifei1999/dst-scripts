@@ -231,7 +231,7 @@ local replace = {
 			}
 
 POPULATING = false
-function PopulateWorld(savedata, profile)
+local function PopulateWorld(savedata, profile)
     POPULATING = true
     TheSystemService:SetStalling(true)
 	Print(VERBOSITY.DEBUG, "PopulateWorld")
@@ -784,9 +784,6 @@ local function DoGenerateWorld(saveslot)
 			local success, world_table = RunInSandbox(savedata)
 			if success then
 				LoadAssets("BACKEND")
-
-                -- This is a brand new save file, so set it's version to current
-                world_table.meta.saveversion = require("savefileupgrades").VERSION
 				DoInitGame(world_table, Profile)
 			end
 		end
