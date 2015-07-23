@@ -43,6 +43,10 @@ function Placer:OnUpdate(dt)
     elseif self.snap_to_meters then
         local x, y, z = ThePlayer.entity:LocalToWorldSpace(1, 0, 0)
         self.inst.Transform:SetPosition(math.floor(x) + .5, 0, math.floor(z) + .5)
+    elseif self.onground then
+        --V2C: this will keep ground orientation accurate and smooth,
+        --     but unfortunately position will be choppy compared to parenting
+        self.inst.Transform:SetPosition(ThePlayer.entity:LocalToWorldSpace(1, 0, 0))
     elseif self.inst.parent == nil then
         ThePlayer:AddChild(self.inst)
         self.inst.Transform:SetPosition(1, 0, 0)
