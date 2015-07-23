@@ -63,7 +63,7 @@ local function Retarget(inst)
                 inst,
                 TUNING.BEEFALO_TARGET_DIST,
                 function(guy)
-                    inst.components.combat:CanTarget(guy)
+                    return inst.components.combat:CanTarget(guy)
                 end,
                 { "_combat" }, --See entityreplica.lua (re: "_combat" tag)
                 { "beefalo", "wall", "INLIMBO" }

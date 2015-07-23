@@ -745,11 +745,47 @@ local function DoActualRez(inst, source)
     inst:PushEvent("ms_respawnedfromghost")
 end
 
-local function DoMoveToRezSource(inst, source)
+local function DoRezDelay(inst, source, delay)
+    if not source:IsValid() or source:IsInLimbo() then
+        --Revert OnRespawnFromGhost state
+        inst:ShowHUD(true)
+        if inst.components.playercontroller ~= nil then
+            inst.components.playercontroller:Enable(true)
+        end
+        inst.rezsource = nil
+        --Revert DoMoveToRezSource state
+        inst:Show()
+        inst.Light:Enable(true)
+        inst:SetCameraDistance()
+        inst.sg:GoToState("haunt")
+        --
+    elseif delay == nil or delay <= 0 then
+        DoActualRez(inst, source)
+    elseif delay > .35 then
+        inst:DoTaskInTime(.35, DoRezDelay, source, delay - .35)
+    else
+        inst:DoTaskInTime(delay, DoRezDelay, source)
+    end
+end
+
+local function DoMoveToRezSource(inst, source, delay)
+    if not source:IsValid() or source:IsInLimbo() then
+        --Revert OnRespawnFromGhost state
+        inst:ShowHUD(true)
+        if inst.components.playercontroller ~= nil then
+            inst.components.playercontroller:Enable(true)
+        end
+        inst.rezsource = nil
+        --
+        return
+    end
+
     inst:Hide()
     inst.Light:Enable(false)
     inst.Physics:Teleport(source.Transform:GetWorldPosition())
     inst:SetCameraDistance(24)
+
+    DoRezDelay(inst, source, delay)
 end
 
 local function OnRespawnFromGhost(inst, data)
@@ -763,7 +799,9 @@ local function OnRespawnFromGhost(inst, data)
     if inst.components.playercontroller ~= nil then
         inst.components.playercontroller:Enable(false)
     end
-    if inst.components.talker then inst.components.talker:ShutUp() end
+    if inst.components.talker ~= nil then
+        inst.components.talker:ShutUp()
+    end
     inst.sg:AddStateTag("busy")
 
     if data ~= nil and data.source ~= nil and
@@ -771,8 +809,7 @@ local function OnRespawnFromGhost(inst, data)
         data.source.prefab == "resurrectionstatue" or
         data.source.prefab == "resurrectionstone" or
         data.source.prefab == "multiplayer_portal") then
-        inst:DoTaskInTime(9 * FRAMES, DoMoveToRezSource, data.source)
-        inst:DoTaskInTime(60 * FRAMES, DoActualRez, data.source)
+        inst:DoTaskInTime(9 * FRAMES, DoMoveToRezSource, data.source, --[[60-9]] 51 * FRAMES)
     else
         inst:DoTaskInTime(0, DoActualRez)
     end

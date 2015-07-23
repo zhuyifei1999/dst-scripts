@@ -100,61 +100,38 @@ local function onunequip_green(inst, owner)
 end
 
 ---ORANGE
-local function getitem(player, amulet, item, destroy)
-    --Amulet will only ever pick up items one at a time. Even from stacks.
-    local fx = SpawnPrefab("small_puff")
-    fx.Transform:SetPosition(item.Transform:GetWorldPosition())
-    fx.Transform:SetScale(0.5, 0.5, 0.5)
+local function pickup(inst, owner)
+    if owner == nil or owner.components.inventory == nil then
+        return
+    end
+    local x, y, z = owner.Transform:GetWorldPosition()
+    local ents = TheSim:FindEntities(x, y, z, TUNING.ORANGEAMULET_RANGE, { "_inventoryitem" }, { "INLIMBO", "catchable", "fire" })
+    for i, v in ipairs(ents) do
+        if v.components.inventoryitem ~= nil and
+            v.components.inventoryitem.canbepickedup and
+            v.components.inventoryitem.cangoincontainer and
+            not v.components.inventoryitem:IsHeld() and
+            owner.components.inventory:CanAcceptCount(v, 1) > 0 then
 
-    if destroy then
-        if amulet == item then
-            return -- don't want the amulet to destroy itself
-        end
-        item:Remove()
-    else
-        amulet.components.finiteuses:Use(1)
-        
-        if item.components.stackable then
-            item = item.components.stackable:Get()
-        end
-        
-        if item.components.trap and item.components.trap:IsSprung() then
-            item.components.trap:Harvest(player)
+            --Amulet will only ever pick up items one at a time. Even from stacks.
+            local fx = SpawnPrefab("small_puff")
+            fx.Transform:SetPosition(v.Transform:GetWorldPosition())
+            fx.Transform:SetScale(.5, .5, .5)
+
+            inst.components.finiteuses:Use(1)
+
+            if v.components.stackable ~= nil then
+                v = v.components.stackable:Get()
+            end
+
+            if v.components.trap ~= nil and v.components.trap:IsSprung() then
+                v.components.trap:Harvest(owner)
+            else
+                owner.components.inventory:GiveItem(v)
+            end
             return
         end
-        
-        player.components.inventory:GiveItem(item)
     end
-end
-
-local function pickup(inst, owner, destroy)
-    local pt = owner:GetPosition()
-    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, TUNING.ORANGEAMULET_RANGE)
-
-    for k,v in pairs(ents) do
-        if v.components.inventoryitem and v.components.inventoryitem.canbepickedup and v.components.inventoryitem.cangoincontainer and not
-            v.components.inventoryitem:IsHeld() then
-
-            if not owner.components.inventory:IsFull() then
-                --Your inventory isn't full, you can pick something up.
-                getitem(owner, inst, v, destroy)
-                if not destroy then return end
-
-            elseif v.components.stackable then
-                --Your inventory is full, but the item you're trying to pick up stacks. Check for an exsisting stack.
-                --An acceptable stack should: Be of the same item type, not be full already and not be in the "active item" slot of inventory.
-                local stack = owner.components.inventory:FindItem(function(item) return (item.prefab == v.prefab and not item.components.stackable:IsFull()
-                    and item ~= owner.components.inventory.activeitem) end)
-                if stack then
-                    getitem(owner, inst, v, destroy)
-                    if not destroy then return end
-                end
-            elseif destroy then
-                getitem(owner, inst, v, destroy)
-            end
-        end
-    end
-    
 end
 
 local function onequip_orange(inst, owner)
@@ -372,12 +349,6 @@ local function orange()
     inst.components.finiteuses:SetUses(TUNING.ORANGEAMULET_USES)
 
     MakeHauntableLaunch(inst)
-    AddHauntableCustomReaction(inst, function(inst, haunter)
-        if math.random() <= TUNING.HAUNT_CHANCE_OCCASIONAL then
-            pickup(inst, haunter, true)
-            inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
-        end
-    end, true, nil, true)
 
     return inst
 end

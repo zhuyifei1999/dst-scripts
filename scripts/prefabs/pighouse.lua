@@ -118,14 +118,16 @@ local function onvacate(inst, child)
 end
 
 local function onhammered(inst, worker)
-    if inst:HasTag("fire") and inst.components.burnable then
+    if inst.components.burnable ~= nil and inst.components.burnable:IsBurning() then
         inst.components.burnable:Extinguish()
     end
-    if inst.doortask then
+    if inst.doortask ~= nil then
         inst.doortask:Cancel()
         inst.doortask = nil
     end
-    if inst.components.spawner then inst.components.spawner:ReleaseChild() end
+    if inst.components.spawner ~= nil and inst.components.spawner:IsOccupied() then
+        inst.components.spawner:ReleaseChild()
+    end
     inst.components.lootdropper:DropLoot()
     SpawnPrefab("collapse_big").Transform:SetPosition(inst.Transform:GetWorldPosition())
     inst.SoundEmitter:PlaySound("dontstarve/common/destroy_wood")
@@ -140,6 +142,7 @@ local function onhit(inst, worker)
 end
 
 local function onstartdaydoortask(inst)
+    inst.doortask = nil
     inst.components.spawner:ReleaseChild()
 end
 
@@ -148,9 +151,8 @@ local function OnStartDay(inst)
     if not inst:HasTag("burnt") then 
         if inst.components.spawner:IsOccupied() then
             LightsOff(inst)
-            if inst.doortask then
+            if inst.doortask ~= nil then
                 inst.doortask:Cancel()
-                inst.doortask = nil
             end
             inst.doortask = inst:DoTaskInTime(1 + math.random() * 2, onstartdaydoortask)
         end
@@ -170,7 +172,7 @@ local function onburntup(inst)
 end
 
 local function onignite(inst)
-    if inst.components.spawner then
+    if inst.components.spawner ~= nil and inst.components.spawner:IsOccupied() then
         inst.components.spawner:ReleaseChild()
     end
 end

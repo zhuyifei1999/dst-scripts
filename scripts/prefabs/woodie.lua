@@ -20,6 +20,7 @@ local assets =
     Asset("ANIM", "anim/werebeaver_build.zip"),
     Asset("ANIM", "anim/werebeaver_basic.zip"),
     Asset("ANIM", "anim/werebeaver_groggy.zip"),
+    Asset("ANIM", "anim/werebeaver_dance.zip"),
     Asset("ANIM", "anim/player_revive_to_werebeaver.zip"),
     Asset("ANIM", "anim/player_amulet_resurrect_werebeaver.zip"),
     Asset("ANIM", "anim/player_rebirth_werebeaver.zip"),

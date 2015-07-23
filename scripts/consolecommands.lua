@@ -160,7 +160,14 @@ end
 
 -- Return a listing of currently active players
 function c_listplayers()
-    print( dumptable( TheNet:GetClientTable() ) )
+    local isdedicated = TheNet:GetServerIsDedicated()
+    local index = 1
+    for i, v in ipairs(TheNet:GetClientTable()) do
+        if not isdedicated or v.performance == nil then
+            print(string.format("%s[%d] %s <%s>", v.admin and "*" or " ", index, v.name, v.prefab))
+            index = index + 1
+        end
+    end
 end
 
 -- Return a listing of AllPlayers table

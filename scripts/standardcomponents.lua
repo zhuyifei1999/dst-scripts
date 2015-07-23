@@ -87,8 +87,10 @@ function DefaultBurntStructureFn(inst)
         inst.components.grower:Reset("fire")
         inst:RemoveComponent("grower")
     end
-    if inst.components.spawner then
-        if inst:GetTimeAlive() > 5 then inst.components.spawner:ReleaseChild() end
+    if inst.components.spawner ~= nil then
+        if inst:GetTimeAlive() > 5 and inst.components.spawner:IsOccupied() then
+            inst.components.spawner:ReleaseChild()
+        end
         inst:RemoveComponent("spawner")
     end
     if inst.components.prototyper then

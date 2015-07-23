@@ -309,8 +309,10 @@ function PlayerStatusScreen:DoInit()
 
 
 		playerListing.number = playerListing:AddChild(Text(UIFONT, 35))
+		local visible_index = i
 		if TheNet:GetServerIsDedicated() then
 			playerListing.number:SetString(i-1)
+			visible_index = i-1
             if i <= 1 then
                 playerListing.number:Hide()
             end
@@ -491,9 +493,11 @@ function PlayerStatusScreen:DoInit()
 					playerListing.kick:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.KICK)
 				elseif Voter and Voter:IsVoteActive() then
 	        		playerListing.kick:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.VOTEACTIVE)
-	        	else
-	        		playerListing.kick:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.VOTEKICK)
-	        	end
+	        	elseif Voter:IsUserSquelched(self.owner.userid) then
+					playerListing.kick:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.VOTEKICKSQUELCHED)				
+				else
+					playerListing.kick:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.VOTEKICK)
+				end
 	            TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover")
 	            playerListing.kick.image:SetScale(1.1)
 	        end
@@ -572,16 +576,20 @@ function PlayerStatusScreen:DoInit()
 			playerListing.kick:SetPosition(190,3,0)
 			playerListing.kick:Show()
 			
-			playerListing.kick:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.VOTEKICK)
+			if Voter:IsUserSquelched(self.owner.userid) then
+				playerListing.kick:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.VOTEKICKSQUELCHED)				
+			else
+				playerListing.kick:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.VOTEKICK)
+			end
 
 			playerListing.kick:SetOnClick(
 				function()
 					if Voter and not Voter:IsVoteActive() and not Voter:IsUserSquelched(self.owner.userid) then
-						Voter:StartVote( self.owner, "kick", i ) --ThePlayer instead of self.owner?
+						Voter:StartVote( self.owner, "kick", visible_index ) --ThePlayer instead of self.owner?
 					end
 				end)
 
-			if empty or (not Voter or (Voter and not Voter:IsVoteKickEnabled())) then
+			if empty or (not Voter) or (Voter and not Voter:IsVoteKickEnabled()) or self.owner.userid == v.userid then
 			    playerListing.kick:Hide()
 			elseif Voter then
 				if Voter:IsVoteActive() or Voter:IsUserSquelched(self.owner.userid) then						--print("### disable kick button")
@@ -632,9 +640,11 @@ function PlayerStatusScreen:DoInit()
 		    else
 		    	playerListing.adminBadge:Hide()
 			end
-
+			
+			local visible_index = i
 			if TheNet:GetServerIsDedicated() then
 				playerListing.number:SetString(i-1)
+				visible_index = i-1
                 if i > 1 then
                     playerListing.number:Show()
                 else
@@ -803,11 +813,11 @@ function PlayerStatusScreen:DoInit()
 				playerListing.kick:SetOnClick(
 					function()
 						if Voter and not Voter:IsVoteActive() and not Voter:IsUserSquelched(self.owner.userid) then
-							Voter:StartVote( self.owner, "kick", i ) --ThePlayer instead of self.owner?
+							Voter:StartVote( self.owner, "kick", visible_index ) --ThePlayer instead of self.owner?
 						end
 					end)
 
-				if not Voter or (Voter and not Voter:IsVoteKickEnabled()) then
+				if not Voter or (Voter and not Voter:IsVoteKickEnabled()) or self.owner.userid == v.userid then
 				    playerListing.kick:Hide()
 				elseif Voter then
 					if Voter:IsVoteActive() or Voter:IsUserSquelched(self.owner.userid) then						--print("### disable kick button")

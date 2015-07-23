@@ -516,7 +516,10 @@ local events =
         end),
     EventHandler("emote",
         function(inst, data)
-            if not (inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("nopredict") or inst.sg:HasStateTag("sleeping") or inst:HasTag("beaver")) then
+            if not (inst.sg:HasStateTag("busy") or
+                    inst.sg:HasStateTag("nopredict") or
+                    inst.sg:HasStateTag("sleeping"))
+                and (data.beaver or not inst:HasTag("beaver")) then
                 inst.sg:GoToState("emote", data)
             end
         end),

@@ -984,17 +984,43 @@ function Tune(overrides)
 	    MANDRAKE_SLEEP_RANGE = 15,
 	    MANDRAKE_SLEEP_RANGE_COOKED = 25,
 	    KNOCKOUT_SLEEP_TIME = 30,
-	    
-	    GOLD_VALUES=
-	    {
-	        MEAT = 1,
-	        RAREMEAT = 5,
-	        TRINKETS=
-	        {
-	            4,6,4,5,4,5,4,8,7,2,5,8,5,3,3,3,3,3,3,3,3,3,3,3,3,9
-	        }
-	    },
-	
+
+        GOLD_VALUES =
+        {
+            MEAT = 1,
+            RAREMEAT = 5,
+            TRINKETS =
+            {
+                4, --[1] Melty Marbles
+                6, --[2] Fake Kazoo
+                4, --[3] Gord's Knot
+                5, --[4] Gnome
+                4, --[5] Tiny Rocketship
+                5, --[6] Frazzled Wires
+                4, --[7] Ball and Cup
+                8, --[8] Hardened Rubber Bung
+                7, --[9] Mismatched Buttons
+                2, --[10] Second-hand Dentures
+                5, --[11] Lying Robot
+                8, --[12] Dessicated Tentacle
+                5, --[13] Gnomette
+                3, --[14] Leaky Teacup
+                4, --[15] White Bishop
+                4, --[16] Black Bishop
+                2, --[17] Bent Spork
+                6, --[18] Toy Trojan Horse
+                6, --[19] Unbalanced Top
+                7, --[20] Back Scratcher
+                5, --[21] Beaten Beater
+                4, --[22] Ball of Twine
+                3, --[23] Shoe Horn
+                8, --[24] Lucky Cat Jar
+                2, --[25] Air Unfreshener
+                9, --[26] Potato Cup
+                4, --[27] Wire Hanger
+            },
+        },
+
 		RESEARCH_COST_CHEAP = 30,
 		RESEARCH_COST_MEDIUM = 100,
 		RESEARCH_COST_EXPENSIVE = 200,

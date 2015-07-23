@@ -45,6 +45,10 @@ local prefabs =
     "collapse_small",
 }
 
+for k = 1, NUM_TRINKETS do
+    table.insert(prefabs, "trinket_"..tostring(k))
+end
+
 local spawns =
     {
         armormarble         = 0.5,

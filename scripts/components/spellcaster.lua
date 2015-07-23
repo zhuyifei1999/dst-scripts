@@ -91,15 +91,14 @@ function SpellCaster:CastSpell(target, pos)
 end
 
 function SpellCaster:CanCast(doer, target, pos)
-    if target == nil and pos == nil then
-        return self.inst:HasTag("castfrominventory")
-    end
-
     if target == nil then
+        if pos == nil then
+            return self.inst:HasTag("castfrominventory")
+        end
         return self.inst:HasTag("castonpoint") and TheWorld.Map:IsAboveGroundAtPoint(pos:Get())
-    end
-
-    if self.inst:HasTag("castontargets") then
+    elseif target:IsInLimbo() then
+        return false
+    elseif self.inst:HasTag("castontargets") then
         return true
     end
 
