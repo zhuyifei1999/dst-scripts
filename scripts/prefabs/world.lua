@@ -281,8 +281,8 @@ local function fn()
         inst:AddComponent("playerspawner")
 
         --Cache static world gen data for server listing
-        local worldgen_data = SaveGameIndex:GetSlotGenOptions()
-        TheNet:SetWorldGenData(worldgen_data ~= nil and DataDumper(worldgen_data, nil, false) or "")
+        local worldgen_data = SaveGameIndex:GetSlotGenOptions() or {}
+        TheNet:SetWorldGenData(DataDumper(worldgen_data, nil, false))
 
         inst.game_data_task = nil
     end
