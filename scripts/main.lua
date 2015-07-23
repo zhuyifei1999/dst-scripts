@@ -101,12 +101,12 @@ AddPrintLogger(function(...) TheSim:LuaPrint(...) end)
 
 require("config")
 
+require("vector3")
 require("mainfunctions")
 require("preloadsounds")
 
 require("mods")
 require("json")
-require("vector3")
 require("tuning")
 require("languages/language")
 require("strings")
@@ -286,6 +286,9 @@ local function ModSafeStartup()
 	MapLayerManager = TheGlobalInstance.entity:AddMapLayerManager()
 
 end
+
+SetInstanceParameters(json_settings)
+
 if not MODS_ENABLED then
 	-- No mods in nacl, and the below functions are async in nacl
 	-- so they break because Main returns before ModSafeStartup has run.

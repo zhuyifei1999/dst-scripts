@@ -1,6 +1,6 @@
 local assets =
 {
-    --In-game only
+	 --In-game only
     Asset("ATLAS", "images/hud.xml"),
     Asset("IMAGE", "images/hud.tex"),
 
@@ -47,13 +47,16 @@ local assets =
     Asset("ATLAS", "images/inventoryimages.xml"),
     Asset("IMAGE", "images/inventoryimages.tex"),
 
-    Asset("ANIM", "anim/wet_meter_player.zip"),
+    --Asset("ATLAS", "images/inventoryimages_inverse.xml"),
+    --Asset("IMAGE", "images/inventoryimages_inverse.tex"), 
+
+    Asset("ANIM", "anim/wet_meter_player.zip"), 
     Asset("ANIM", "anim/wet_meter.zip"),
 }
 
 local prefabs =
 {
-    "minimap",
+	"minimap",
     "gridplacer",
 }
 

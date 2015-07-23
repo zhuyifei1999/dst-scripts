@@ -19,10 +19,6 @@ local function battlecrystring(combat, target)
 end
 
 local function GetStatus(inst, viewer)
-    -- #srosen will need to save these flags so that this data doesn't disappear on DC
-    -- we might also want other flags for other behaviors
-    -- #v2c might want to consider rules for resetting status before implementing
-    -- the save, since that is currently the only way to reset your status
     return (inst:HasTag("playerghost") and "GHOST")
         or (inst.hasRevivedPlayer and "REVIVER")
         or (inst.hasKilledPlayer and "MURDERER")
@@ -369,7 +365,7 @@ local function OnPlayerJoined(inst)
     TheWorld:PushEvent("playerentered", inst)
     if TheWorld.ismastersim then
         TheWorld:PushEvent("ms_playerjoined", inst)
-        TheNet:Announce(inst:GetDisplayName().." "..STRINGS.UI.NOTIFICATION.JOINEDGAME, inst.entity, true)
+        TheNet:Announce(inst:GetDisplayName().." "..STRINGS.UI.NOTIFICATION.JOINEDGAME, inst.entity, true, "join_game")
     end
 end
 
@@ -475,6 +471,7 @@ local function OnSetOwner(inst)
     inst.name = inst.Network:GetClientName()
     inst.userid = inst.Network:GetUserID()
     inst.playercolour = inst.Network:GetPlayerColour()
+    TheNet:SetIsClientInWorld(inst.userid, true)
     if TheWorld.ismastersim then
         inst.player_classified.Network:SetClassifiedTarget(inst)
         inst.components.inspectable.getspecialdescription = GetDescription
@@ -561,6 +558,8 @@ local function OnRemoveEntity(inst)
         RemoveActivePlayerComponents(inst)
         DeactivatePlayer(inst)
     end
+
+    TheNet:SetIsClientInWorld(inst.userid, false)
 end
 
 --------------------------------------------------------------------------
@@ -588,7 +587,7 @@ local function RemoveDeadPlayer(inst, spawnskeleton)
 end
 
 local function FadeOutDeadPlayer(inst, spawnskeleton)
-    inst:ScreenFade(false, screen_fade_time)
+    inst:ScreenFade(false, screen_fade_time, true)
     inst:DoTaskInTime(screen_fade_time * 1.25, RemoveDeadPlayer, spawnskeleton)
 end
 
@@ -623,7 +622,7 @@ local function OnPlayerDeath(inst, data)
 
             local announcement_string = GetNewDeathAnnouncementString(inst, inst.deathcause, inst.deathpkname)
             if announcement_string ~= "" then
-               TheNet:Announce(announcement_string, inst.entity)
+               TheNet:Announce(announcement_string, inst.entity, false, "death")
             end
         end
         --Early delete in case client disconnects before removal timeout
@@ -738,7 +737,7 @@ local function DoActualRez(inst, source)
     if inst.rezsource ~= nil then
         local announcement_string = GetNewRezAnnouncementString(inst, inst.rezsource)
         if announcement_string ~= "" then
-            TheNet:Announce(announcement_string, inst.entity)
+            TheNet:Announce(announcement_string, inst.entity, nil, "resurrect")
         end
         inst.rezsource = nil
     end
@@ -746,11 +745,47 @@ local function DoActualRez(inst, source)
     inst:PushEvent("ms_respawnedfromghost")
 end
 
-local function DoMoveToRezSource(inst, source)
+local function DoRezDelay(inst, source, delay)
+    if not source:IsValid() or source:IsInLimbo() then
+        --Revert OnRespawnFromGhost state
+        inst:ShowHUD(true)
+        if inst.components.playercontroller ~= nil then
+            inst.components.playercontroller:Enable(true)
+        end
+        inst.rezsource = nil
+        --Revert DoMoveToRezSource state
+        inst:Show()
+        inst.Light:Enable(true)
+        inst:SetCameraDistance()
+        inst.sg:GoToState("haunt")
+        --
+    elseif delay == nil or delay <= 0 then
+        DoActualRez(inst, source)
+    elseif delay > .35 then
+        inst:DoTaskInTime(.35, DoRezDelay, source, delay - .35)
+    else
+        inst:DoTaskInTime(delay, DoRezDelay, source)
+    end
+end
+
+local function DoMoveToRezSource(inst, source, delay)
+    if not source:IsValid() or source:IsInLimbo() then
+        --Revert OnRespawnFromGhost state
+        inst:ShowHUD(true)
+        if inst.components.playercontroller ~= nil then
+            inst.components.playercontroller:Enable(true)
+        end
+        inst.rezsource = nil
+        --
+        return
+    end
+
     inst:Hide()
     inst.Light:Enable(false)
     inst.Physics:Teleport(source.Transform:GetWorldPosition())
     inst:SetCameraDistance(24)
+
+    DoRezDelay(inst, source, delay)
 end
 
 local function OnRespawnFromGhost(inst, data)
@@ -764,7 +799,9 @@ local function OnRespawnFromGhost(inst, data)
     if inst.components.playercontroller ~= nil then
         inst.components.playercontroller:Enable(false)
     end
-    if inst.components.talker then inst.components.talker:ShutUp() end
+    if inst.components.talker ~= nil then
+        inst.components.talker:ShutUp()
+    end
     inst.sg:AddStateTag("busy")
 
     if data ~= nil and data.source ~= nil and
@@ -772,8 +809,7 @@ local function OnRespawnFromGhost(inst, data)
         data.source.prefab == "resurrectionstatue" or
         data.source.prefab == "resurrectionstone" or
         data.source.prefab == "multiplayer_portal") then
-        inst:DoTaskInTime(9 * FRAMES, DoMoveToRezSource, data.source)
-        inst:DoTaskInTime(60 * FRAMES, DoActualRez, data.source)
+        inst:DoTaskInTime(9 * FRAMES, DoMoveToRezSource, data.source, --[[60-9]] 51 * FRAMES)
     else
         inst:DoTaskInTime(0, DoActualRez)
     end
@@ -812,7 +848,7 @@ local function OnMakePlayerGhost( inst, data )
     else
         local announcement_string = GetNewDeathAnnouncementString(inst, inst.deathcause, inst.deathpkname)
         if announcement_string ~= "" then
-           TheNet:Announce(announcement_string, inst.entity)
+           TheNet:Announce(announcement_string, inst.entity, false, "death" )
         end
 
         -- Death FX
@@ -1080,10 +1116,12 @@ local function ShakeCamera(inst, mode, duration, speed, scale, source, maxDist)
     end
 end
 
-local function ScreenFade(inst, isfadein, time)
+local function ScreenFade(inst, isfadein, time, iswhite)
     if TheWorld.ismastersim then
+        --truncate to half of net_smallbyte, so we can include iswhite flag
+        time = time ~= nil and math.min(31, math.floor(time * 10 + .5)) or 0
+        inst.player_classified.fadetime:set(iswhite and time + 32 or time)
         inst.player_classified.isfadein:set(isfadein)
-        inst.player_classified.fadetime:set(time and math.floor(time * 10 + .5) or 0)
     end
 end
 

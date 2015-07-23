@@ -100,6 +100,26 @@ local StatusDisplays = Class(Widget, function(self, owner)
     end
 end)
 
+function StatusDisplays:ShowStatusNumbers()
+    self.brain.num:Show()
+    self.stomach.num:Show()
+    self.heart.num:Show()
+    self.moisturemeter.num:Show()
+    if self.beaverness ~= nil then
+        self.beaverness.num:Show()
+    end
+end
+
+function StatusDisplays:HideStatusNumbers()
+    self.brain.num:Hide()
+    self.stomach.num:Hide()
+    self.heart.num:Hide()
+    self.moisturemeter.num:Hide()
+    if self.beaverness ~= nil then
+        self.beaverness.num:Hide()
+    end
+end
+
 function StatusDisplays:AddBeaverness()
     if self.beaverness == nil then
         self.beaverness = self:AddChild(BeaverBadge(self.owner))

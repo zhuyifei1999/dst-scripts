@@ -6,11 +6,20 @@ local assets =
     Asset("SOUND", "sound/sanity.fsb"),
     Asset("SOUND", "sound/amb_stream.fsb"),
     Asset("SHADER", "shaders/uifade.ksh"),
-    Asset("ATLAS", "images/selectscreen_portraits.xml"), -- we need all these frontend assets in the world prefab so we can show the character select screen from the death screen
-    Asset("IMAGE", "images/selectscreen_portraits.tex"),
+    -- Asset("ATLAS", "images/selectscreen_portraits.xml"), -- Not currently used, but likely to come back
+    -- Asset("IMAGE", "images/selectscreen_portraits.tex"), -- Not currently used, but likely to come back
     Asset("ATLAS", "bigportraits/locked.xml"),
     Asset("IMAGE", "bigportraits/locked.tex"),
-    Asset("ANIM", "anim/portrait_frame.zip"),
+    Asset("ATLAS", "bigportraits/random.xml"),
+    Asset("IMAGE", "bigportraits/random.tex"),
+    -- Asset("ANIM", "anim/portrait_frame.zip"), -- Not currently used, but likely to come back
+    Asset("ANIM", "anim/spiral_bg.zip"),
+
+    Asset("ATLAS", "images/lobbybannertop.xml"),
+    Asset("IMAGE", "images/lobbybannertop.tex"),
+
+    Asset("ATLAS", "images/lobbybannerbottom.xml"),
+    Asset("IMAGE", "images/lobbybannerbottom.tex"),
 }
 
 -- Add all the characters by name
@@ -134,8 +143,27 @@ local prefabs =
     "bearger",
     "dragonfly",
 
-    "cactus"
+    "cactus",
 }
+
+local function DoGameDataChanged(inst)
+    inst.game_data_task = nil
+
+    local game_data =
+    {
+        day = inst.state.cycles + 1,
+        daysleftinseason = inst.state.remainingdaysinseason,
+        dayselapsedinseason = inst.state.elapseddaysinseason,
+    }
+    TheNet:SetGameData(DataDumper(game_data, nil, false))
+    TheNet:SetSeason(inst.state.season)
+end
+
+local function OnGameDataChanged(inst)
+    if inst.game_data_task == nil then
+        inst.game_data_task = inst:DoTaskInTime(0, DoGameDataChanged)
+    end
+end
 
 local function PostInit(inst)
     if inst.net then
@@ -150,6 +178,13 @@ local function PostInit(inst)
         end
     end
 
+    if inst.ismastersim then
+        inst:WatchWorldState("season", OnGameDataChanged)
+        inst:WatchWorldState("cycles", OnGameDataChanged)
+        inst:WatchWorldState("remainingdaysinseason", OnGameDataChanged)
+        inst:WatchWorldState("elapseddaysinseason", OnGameDataChanged)
+        DoGameDataChanged(inst)
+    end
 end
 
 local function OnRemoveEntity(inst)
@@ -161,17 +196,6 @@ local function OnRemoveEntity(inst)
     assert(TheFocalPoint ~= nil)
     TheFocalPoint:Remove()
     TheFocalPoint = nil
-end
-
-local function OnUpdateServerListing(inst)
-    SaveServerListingGameData({
-        season = inst.state.season,
-        day = inst.state.cycles + 1,
-        daysleftinseason = inst.state.remainingdaysinseason,
-        dayselapsedinseason = inst.state.elapseddaysinseason,
-        worldgenoptions = SaveGameIndex:GetSlotGenOptions() or {},
-    })
-    TheNet:SetSeason( inst.state.season )
 end
 
 local function fn()
@@ -256,9 +280,11 @@ local function fn()
     if inst.ismastersim then
         inst:AddComponent("playerspawner")
 
-        --Give the game a couple of seconds to finish init and then
-        --start periodically updating our listing every few minutes
-        inst:DoPeriodicTask(5 * 60, OnUpdateServerListing, 2)
+        --Cache static world gen data for server listing
+        local worldgen_data = SaveGameIndex:GetSlotGenOptions() or {}
+        TheNet:SetWorldGenData(DataDumper(worldgen_data, nil, false))
+
+        inst.game_data_task = nil
     end
 
     return inst

@@ -97,12 +97,30 @@ function ChatInputScreen:Run()
         --Process slash commands:
         --Clients may process any local slash commands
         --here first instead of sending to the server.
-
-        --Check emotes (remote command; must be sent to server)
-        local cmd--[[, params]] = emotes.translate(chat_string)
-        if cmd ~= nil then
-            TheNet:SendSlashCmdToServer(cmd)
-        end
+	
+		if string.sub(chat_string, 2, 5) == "vote" then
+			local command_start = TrimString( chat_string:sub(7) )	
+			--print("command_start is [" .. command_start .. "]")
+			
+			local command = nil
+			local parameters = ""
+			if command_start:find(" ") ~= nil then
+				command = command_start:sub( 0, command_start:find(" ")-1 )
+				parameters = TrimString( string.sub(command_start, command:len()+1) )
+			else
+				command = command_start;
+			end
+			--print("command is [" .. command .. "]")
+			--print("parameters is [".. parameters.. "]")
+			
+			TheWorld.net.components.voter:StartVote( ThePlayer, command, parameters )
+		else
+			--Check emotes (remote command; must be sent to server)
+			local cmd--[[, params]] = emotes.translate(chat_string)
+			if cmd ~= nil then
+				TheNet:SendSlashCmdToServer(cmd)
+			end
+		end
     else
         --Default to sending regular chat
         TheNet:Say(chat_string, self.whisper)
@@ -174,7 +192,10 @@ function ChatInputScreen:DoInit()
 	self.chat_type:SetColour(0.6,0.6,0.6,1)
 	
 	self.chat_edit = self.root:AddChild( TextEdit( TALKINGFONT, fontsize, "" ) )--DEFAULTFONT, fontsize, "" ) )
-	self.chat_edit:SetPosition( 0,0,0)
+	self.chat_edit.edit_text_color = {1,1,1,1}
+	self.chat_edit.idle_text_color = {1,1,1,1}
+	self.chat_edit:SetEditCursorColour(1,1,1,1) 
+	self.chat_edit:SetPosition( 0,0,0 )
 	self.chat_edit:SetRegionSize( edit_width, label_height )
 	self.chat_edit:SetHAlign(ANCHOR_LEFT)
 

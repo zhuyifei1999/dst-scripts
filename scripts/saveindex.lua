@@ -14,6 +14,7 @@ local function NewSlotData()
         world = {},
         server = {},
         session_id = nil,
+        enabled_mods = {},
     }
 end
 
@@ -21,6 +22,7 @@ local function ResetSlotData(data)
     data.world = {}
     data.server = {}
     data.session_id = nil
+    data.enabled_mods = {}
 end
 
 local function GetWorldgenOverride(cb)
@@ -87,6 +89,8 @@ function SaveIndex:Load(callback)
                         v.world = v2.world or v.world
                         v.server = v2.server or v.server
                         v.session_id = v2.session_id or v.session_id
+                        v.enabled_mods = v2.enabled_mods or v.enabled_mods
+
                     end
                 end
                 print ("loaded "..filename)
@@ -221,9 +225,6 @@ function SaveIndex:StartSurvivalMode(saveslot, customoptions, serverdata, onsave
 	self.current_slot = saveslot
 
     local slot = self.data.slots[saveslot]
-
-    ResetSlotData(slot)
-
     slot.session_id = TheNet:GetSessionIdentifier()
     slot.world.day = 1
     slot.world.options = customoptions
@@ -275,6 +276,15 @@ function SaveIndex:GetSlotGenOptions(slot)
     return self.data.slots[slot or self.current_slot].world.options
 end
 
+function SaveIndex:GetSlotMods(slot)
+    slot = slot or self.current_slot
+    if slot and self.data.slots[slot] and self.data.slots[slot].enabled_mods then
+        return self.data.slots[slot].enabled_mods
+    else
+        return {}
+    end
+end
+
 function SaveIndex:GetSlotSession(slot)
     return self.data.slots[slot or self.current_slot].session_id
 end
@@ -304,4 +314,43 @@ function SaveIndex:LoadSlotCharacter(slot)
         end
     end
     return character
+end
+
+function SaveIndex:LoadServerEnabledModsFromSlot(slot)
+	local enabled_mods = self.data.slots[slot or self.current_slot].enabled_mods
+	ModManager:DisableAllServerMods()
+	for modname,config_data in pairs(enabled_mods) do
+		KnownModIndex:Enable(modname)
+		for option_name,value in pairs(config_data) do
+			KnownModIndex:SetConfigurationOption( modname, option_name, value )
+		end
+		KnownModIndex:SaveHostConfiguration(modname)
+	end
+end
+
+function SaveIndex:SetServerEnabledMods(slot)
+	--Save enabled server mods to the save index
+	local server_enabled_mods = ModManager:GetEnabledServerModNames()
+	
+	local enabled_mods = {}
+	for _,modname in pairs(server_enabled_mods) do
+		local config_data = {}
+		local force_local_options = true
+		local config = KnownModIndex:LoadModConfigurationOptions(modname, false)
+		if config and type(config) == "table" then
+			for i,v in pairs(config) do
+		  		if v.saved ~= nil then
+					config_data[v.name] = v.saved 
+				else 
+					config_data[v.name] = v.default
+				end
+			end
+		end
+		enabled_mods[modname] = config_data
+	end
+    self.data.slots[slot or self.current_slot].enabled_mods = enabled_mods
+end
+
+function SaveIndex:GetEnabledMods(slot)
+	return self.data.slots[slot or self.current_slot].enabled_mods
 end

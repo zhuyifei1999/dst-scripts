@@ -6,10 +6,9 @@ local Text = require "widgets/text"
 local Image = require "widgets/image"
 local Widget = require "widgets/widget"
 local Menu = require "widgets/menu"
+local TEMPLATES = require "widgets/templates"
 
 local ServerListingScreen = require "screens/serverlistingscreen"
-
-local screen_fade_time = .25
 
 local NoAuthenticationPopupDialogScreen = Class(Screen, function(self, legitCopy, failedEmail)
 	Screen._ctor(self, "NoAuthenticationPopupDialogScreen")
@@ -30,18 +29,14 @@ local NoAuthenticationPopupDialogScreen = Class(Screen, function(self, legitCopy
     self.proot:SetScaleMode(SCALEMODE_PROPORTIONAL)
 
 	--throw up the background
-    self.bg = self.proot:AddChild(Image("images/fepanels_dst.xml", "wide_panel.tex"))
-    self.bg:SetVRegPoint(ANCHOR_MIDDLE)
-    self.bg:SetHRegPoint(ANCHOR_MIDDLE)
-	self.bg:SetScale(.8,1.1,1)
-	
-	--if #buttons >2 then
-	--	self.bg:SetScale(2,1.2,1.2)
-	--end
+    self.bg = self.proot:AddChild(TEMPLATES.CurlyWindow(55, 150, 1, 1, 67, -40))
+    self.bg.fill = self.proot:AddChild(Image("images/fepanel_fills.xml", "panel_fill_tiny.tex"))
+    self.bg.fill:SetScale(.8, .68)
+    self.bg.fill:SetPosition(8, 12)
 	
 	--title	
     self.title = self.proot:AddChild(Text(BUTTONFONT, 50))
-    self.title:SetPosition(0, 135, 0)
+    self.title:SetPosition(8, 90, 0)
     
     if legitCopy then
         if failedEmail then
@@ -61,7 +56,7 @@ local NoAuthenticationPopupDialogScreen = Class(Screen, function(self, legitCopy
        self.text = self.proot:AddChild(Text(BUTTONFONT, 30))
     end
 
-    self.text:SetPosition(0, 35, 0)
+    self.text:SetPosition(8, 15, 0)
     
     if JapaneseOnPS4() then
         self.text:SetRegionSize(500, 100)
@@ -71,8 +66,8 @@ local NoAuthenticationPopupDialogScreen = Class(Screen, function(self, legitCopy
 
     if legitCopy then
         if failedEmail then
-            self.text:SetRegionSize(600, 200)    
-            self.text:SetPosition(0, 42, 0)
+            self.text:SetRegionSize(500, 200)    
+            self.text:SetPosition(8, 0, 0)
             self.text:SetString(STRINGS.UI.NOAUTHENTICATIONSCREEN.BODY_FAILEDEMAIL)
         else
             self.text:SetString(STRINGS.UI.NOAUTHENTICATIONSCREEN.BODY)
@@ -90,10 +85,10 @@ local NoAuthenticationPopupDialogScreen = Class(Screen, function(self, legitCopy
        self.text2 = self.proot:AddChild(Text(BUTTONFONT, 23))
     end
 
-    self.text2:SetPosition(0, -45, 0)
+    self.text2:SetPosition(8, -55, 0)
     if legitCopy then
         if failedEmail then
-            self.text2:SetPosition(0, -55, 0)
+            self.text2:SetPosition(8, -82, 0)
             self.text2:SetString(STRINGS.UI.NOAUTHENTICATIONSCREEN.BODY2_FAILEDEMAIL)
         else
             self.text2:SetString(STRINGS.UI.NOAUTHENTICATIONSCREEN.BODY2)
@@ -113,7 +108,7 @@ local NoAuthenticationPopupDialogScreen = Class(Screen, function(self, legitCopy
 	local spacing = button_w + space_between
 	
 	
-    local spacing = 200
+    local spacing = 250
 
     local go_button_text = STRINGS.UI.NOAUTHENTICATIONSCREEN.CREATEBUTTON
     if failedEmail then
@@ -141,7 +136,8 @@ local NoAuthenticationPopupDialogScreen = Class(Screen, function(self, legitCopy
         }
     end
 	self.menu = self.proot:AddChild(Menu(buttons, spacing, true))
-	self.menu:SetPosition(-(spacing*(#buttons-1))/2, -140, 0) 
+	self.menu:SetPosition(-(spacing*(#buttons-1))/2 + 30, -130, 0) 
+    self.menu:SetScale(.8)
 	self.buttons = buttons
     if not failedEmail then
         self.menu.items[1]:SetTextSize(36)
@@ -165,6 +161,12 @@ end
 function NoAuthenticationPopupDialogScreen:OnControl(control, down)
     if NoAuthenticationPopupDialogScreen._base.OnControl(self,control, down) then 
         return true 
+    end
+
+    if control == CONTROL_CANCEL and not down then    
+        self:Disable()
+        TheFrontEnd:PopScreen()
+        return true
     end
 end
 

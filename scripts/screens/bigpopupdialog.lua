@@ -6,6 +6,7 @@ local Text = require "widgets/text"
 local Image = require "widgets/image"
 local Widget = require "widgets/widget"
 local Menu = require "widgets/menu"
+local TEMPLATES = require "widgets/templates"
 
 
 local BigPopupDialogScreen = Class(Screen, function(self, title, text, buttons, timeout)
@@ -27,15 +28,11 @@ local BigPopupDialogScreen = Class(Screen, function(self, title, text, buttons, 
     self.proot:SetScaleMode(SCALEMODE_PROPORTIONAL)
 
 	--throw up the background
-    self.bg = self.proot:AddChild(Image("images/fepanels_dst.xml", "wide_panel.tex"))
-    self.bg:SetVRegPoint(ANCHOR_MIDDLE)
-    self.bg:SetHRegPoint(ANCHOR_MIDDLE)
-	self.bg:SetScale(1,1.1,1)
-	
-	--if #buttons >2 then
-	--	self.bg:SetScale(2,1.2,1.2)
-	--end
-	
+    self.bg = self.proot:AddChild(TEMPLATES.CurlyWindow(130, 150, 1, 1, 68, -40))
+    self.bg.fill = self.proot:AddChild(Image("images/fepanel_fills.xml", "panel_fill_tiny.tex"))
+    self.bg.fill:SetScale(.92, .68)
+    self.bg.fill:SetPosition(8, 12)
+    
 	--title	
     self.title = self.proot:AddChild(Text(BUTTONFONT, 50))
     self.title:SetPosition(0, 135, 0)
@@ -44,9 +41,9 @@ local BigPopupDialogScreen = Class(Screen, function(self, title, text, buttons, 
 
 	--text
     if JapaneseOnPS4() then
-       self.text = self.proot:AddChild(Text(BUTTONFONT, 28))
+       self.text = self.proot:AddChild(Text(NEWFONT, 28))
     else
-       self.text = self.proot:AddChild(Text(BUTTONFONT, 30))
+       self.text = self.proot:AddChild(Text(NEWFONT, 30))
     end
 
     self.text:SetPosition(0, 5, 0)

@@ -167,19 +167,34 @@ function ModWrangler:GetEnabledModNames()
 	return self.enabledmods
 end
 
-function ModWrangler:GetEnabledServerModNames()
-	local server_mods = {}
-	for k,mod_name in pairs(ModManager:GetEnabledModNames()) do
+function ModWrangler:GetEnabledServerModTags()
+	local tags = {}
+	for k,mod_name in pairs(self.GetEnabledServerModNames()) do
 		local modinfo = KnownModIndex:GetModInfo(mod_name)
-		if modinfo ~= nil then
-			if not modinfo.client_only_mod then
-				table.insert(server_mods, mod_name)
-			end
-		else
-			table.insert(server_mods, mod_name)
+			if modinfo ~= nil and modinfo.server_filter_tags ~= nil then
+				for i,tag in pairs(modinfo.server_filter_tags) do
+					table.insert(tags, tag)
+				end
 		end
 	end
-	
+	return tags	
+end
+
+function ModWrangler:GetEnabledServerModNames()
+	local server_mods = {}
+	local mod_names = KnownModIndex:GetServerModNames()
+	for _,modname in pairs(mod_names) do
+		if KnownModIndex:IsModEnabled(modname) or KnownModIndex:IsModForceEnabled(modname) then
+			local modinfo = KnownModIndex:GetModInfo(modname)
+			if modinfo ~= nil then
+				if not modinfo.client_only_mod then
+					table.insert(server_mods, modname)
+				end
+			else
+				table.insert(server_mods, modname)
+			end
+		end
+	end
 	return server_mods
 end
 
@@ -301,6 +316,18 @@ function ModWrangler:LoadServerModsFile()
 	TheNet:DownloadServerMods()
 end
 
+function ModWrangler:DisableAllServerMods()
+	local mod_names = KnownModIndex:GetServerModNames()
+	for _,modname in pairs(mod_names) do
+		KnownModIndex:Disable(modname)
+	end
+	KnownModIndex:Save()
+end
+
+local function IsInFrontEnd()
+	return Settings.reset_action == nil or Settings.reset_action == RESET_ACTION.LOAD_FRONTEND
+end
+
 function ModWrangler:LoadMods(worldgen)	
 	if not MODS_ENABLED then
 		return
@@ -314,6 +341,13 @@ function ModWrangler:LoadMods(worldgen)
 
 	local mod_overrides = {}
 	if not worldgen then
+		
+		if IsInFrontEnd() then
+			--print("~~~~~~~~~~~~~~~~~~ Disable server mods and clear temp mod flags ~~~~~~~~~~~~~~~~~~ ")
+			KnownModIndex:ClearAllTempModFlags() --clear all old temp mod flags when the game starts incase someone killed the process before disconnecting
+			self:DisableAllServerMods()
+		end
+		
 		--print( "### LoadMods for game ###" )
 		KnownModIndex:UpdateModInfo()
 		mod_overrides = KnownModIndex:LoadModOverides()
@@ -328,7 +362,7 @@ function ModWrangler:LoadMods(worldgen)
 
 			if self.worldgen == false then
 				-- Make sure we load the config data before the mod (but not during worldgen)
-				KnownModIndex:LoadModConfigurationOptions(modname)
+				KnownModIndex:LoadModConfigurationOptions(modname, not TheNet:GetIsServer())
 				KnownModIndex:ApplyConfigOptionOverrides(mod_overrides)
 			end
 
@@ -507,7 +541,6 @@ function ModWrangler:SetPostEnv()
 
 	local modnames = ""
 	local newmodnames = ""
-	local oldmodnames = ""
 	local failedmodnames = ""
 	local forcemodnames = ""
 
@@ -518,13 +551,6 @@ function ModWrangler:SetPostEnv()
 			if KnownModIndex:IsModNewlyBad(mod.modname) then
 				modprint("@NEWLYBAD")
 				failedmodnames = failedmodnames.."\""..KnownModIndex:GetModFancyName(mod.modname).."\" "
-			elseif KnownModIndex:IsModNewlyOld(mod.modname) and KnownModIndex:WasModEnabled(mod.modname) then
-					modprint("@NEWLYOLD")
-					oldmodnames = oldmodnames.."\""..KnownModIndex:GetModFancyName(mod.modname).."\" "
-				--elseif KnownModIndex:IsModNew(mod.modname) then
-					--print("@NEW")
-					--newmodnames = newmodnames.."\""..KnownModIndex:GetModFancyName(mod.modname).."\" "
-				--end
 			elseif KnownModIndex:IsModForceEnabled(mod.modname) then
 				modprint("@FORCEENABLED")
 				mod.TheFrontEnd = TheFrontEnd
@@ -556,15 +582,8 @@ function ModWrangler:SetPostEnv()
 	end
 
 	--print("\n\n---END MOD INFO SCREEN---\n\n")
-	if oldmodnames ~= "" then
-		moddetail = moddetail.. STRINGS.UI.MAINSCREEN.OLDMODS.." "..oldmodnames.."\n"
-	end
 	if failedmodnames ~= "" then
 		moddetail = moddetail.. STRINGS.UI.MAINSCREEN.FAILEDMODS.." "..failedmodnames.."\n"
-	end
-
-	if oldmodnames ~= "" or failedmodnames ~= "" then
-		moddetail = moddetail..STRINGS.UI.MAINSCREEN.OLDORFAILEDMODS.."\n\n"
 	end
 
 	if newmodnames ~= "" then
@@ -580,9 +599,9 @@ function ModWrangler:SetPostEnv()
 		moddetail = moddetail.. STRINGS.UI.MAINSCREEN.FORCEMODDETAIL.." "..forcemodnames.."\n\n"
 	end
 
-	if (modnames ~= "" or newmodnames ~= "" or oldmodnames ~= "" or failedmodnames ~= "" or forcemodnames ~= "")  and TheSim:ShouldWarnModsLoaded() then
+	if (modnames ~= "" or newmodnames ~= "" or failedmodnames ~= "" or forcemodnames ~= "")  and TheSim:ShouldWarnModsLoaded() then
 	--if (#self.enabledmods > 0)  and TheSim:ShouldWarnModsLoaded() then
-		if not DISABLE_MOD_WARNING then
+		if not DISABLE_MOD_WARNING and IsInFrontEnd() then
 			TheFrontEnd:PushScreen(
 				ScriptErrorScreen(
 					STRINGS.UI.MAINSCREEN.MODTITLE, 
@@ -596,7 +615,7 @@ function ModWrangler:SetPostEnv()
 																			SimReset()
 																		end)
 																	end},
-						{text=STRINGS.UI.MAINSCREEN.MODFORUMS, nopop=true, cb = function() VisitURL("http://forums.kleientertainment.com/index.php?/forum/26-dont-starve-mods-and-tools/") end }
+						{text=STRINGS.UI.MAINSCREEN.MODFORUMS, nopop=true, cb = function() VisitURL("http://forums.kleientertainment.com/forum/79-dont-starve-together-beta-mods-and-tools/") end }
 					}))
 		end
 	elseif KnownModIndex:WasLoadBad() then
@@ -665,6 +684,19 @@ function ModWrangler:GetPostInitData(type, id)
 		end
 	end
 	return moddata
+end
+
+function ModWrangler:GetVoteCommands()
+	local commands = {}
+	for i,modname in ipairs(self.enabledmods) do
+		local mod = self:GetMod(modname)
+		if mod.vote_commands then
+			for command_name,command in pairs(mod.vote_commands) do
+				commands[command_name] = command
+			end
+		end
+	end
+	return commands
 end
 
 function ModVersionOutOfDate( mod_name )

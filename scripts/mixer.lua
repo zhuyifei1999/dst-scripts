@@ -137,33 +137,33 @@ end
 
 local top_val = 25000
 local bottom_val = 0
-local low_pass_category_suffix = "_low"
-local high_pass_category_suffix = "_high"
 
 function Mixer:UpdateFilters(dt)
     -- First update the filters
     for k,v in pairs(self.lowpassfilters) do
-        if v and v.totaltime and v.currenttime and v.totaltime > 0 and v.currenttime < v.totaltime then
+        if v and v.totaltime and v.currenttime and v.totaltime > 0 then
             v.currenttime = v.currenttime + dt
-            v.freq = easing.linear(v.currenttime, v.startfreq, v.endfreq - v.startfreq, v.totaltime)
-            TheSim:SetLowPassFilter(k..low_pass_category_suffix, v.freq)    
-        end
-        -- Clamp
-        if v.currenttime and v.totaltime and v.totaltime > 0 and v.currenttime >= v.totaltime and v.freq and v.endfreq and v.freq ~= v.endfreq then
-            v.freq = v.endfreq
-            TheSim:SetLowPassFilter(k..low_pass_category_suffix, v.freq)    
+            if v.currenttime < v.totaltime then
+                v.freq = easing.linear(v.currenttime, v.startfreq, v.endfreq - v.startfreq, v.totaltime)
+                TheSim:SetLowPassFilter(k, v.freq)    
+            elseif v.currenttime >= v.totaltime and v.freq and v.endfreq and v.freq ~= v.endfreq then
+                -- Clamp
+                v.freq = v.endfreq
+                TheSim:SetLowPassFilter(k, v.freq)    
+            end
         end
     end
     for k,v in pairs(self.highpassfilters) do
-        if v and v.totaltime and v.currenttime and v.totaltime > 0 and v.currenttime < v.totaltime then
+        if v and v.totaltime and v.currenttime and v.totaltime > 0 then
             v.currenttime = v.currenttime + dt
-            v.freq = easing.linear(v.currenttime, v.startfreq, v.endfreq - v.startfreq, v.totaltime)
-            TheSim:SetHighPassFilter(k..high_pass_category_suffix, v.freq)
-        end
-        -- Clamp
-        if v.currenttime and v.totaltime and v.totaltime > 0 and v.currenttime >= v.totaltime and v.freq and v.endfreq and v.freq ~= v.endfreq then
-            v.freq = v.endfreq
-            TheSim:SetHighPassFilter(k..high_pass_category_suffix, v.freq)
+            if v.currenttime < v.totaltime then
+                v.freq = easing.linear(v.currenttime, v.startfreq, v.endfreq - v.startfreq, v.totaltime)
+                TheSim:SetHighPassFilter(k, v.freq)
+            elseif v.currenttime >= v.totaltime and v.freq and v.endfreq and v.freq ~= v.endfreq then
+                -- Clamp
+                v.freq = v.endfreq
+                TheSim:SetHighPassFilter(k, v.freq)
+            end
         end
     end
 
@@ -221,7 +221,7 @@ function Mixer:SetLowPassFilter(category, cutoff, timetotake)
 	
 	if timetotake <= 0 then
 		freq_entry.freq = cutoff
-		TheSim:SetLowPassFilter(category..low_pass_category_suffix, cutoff)
+		TheSim:SetLowPassFilter(category, cutoff)
 	end
 end
 
@@ -238,7 +238,7 @@ function Mixer:SetHighPassFilter(category, cutoff, timetotake)
     
     if timetotake <= 0 then
         freq_entry.freq = cutoff
-        TheSim:SetHighPassFilter(category..high_pass_category_suffix, cutoff)
+        TheSim:SetHighPassFilter(category, cutoff)
     end 
 end
 

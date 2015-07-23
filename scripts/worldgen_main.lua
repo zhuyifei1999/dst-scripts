@@ -62,6 +62,7 @@ require("util")
 require("prefabs")
 require("profiler")
 require("dumper")
+local savefileupgrades = require("savefileupgrades")
 
 require("mods")
 require("modindex")
@@ -515,6 +516,7 @@ function GenerateNew(debug, parameters)
 
 	parameters.world_gen_choices.finaltweak = OverrideTweaks(level, parameters.world_gen_choices)	
 	local level_area_triggers = level.override_triggers or nil
+	local choose_tasks = level:GetTasksForLevel(tasks.sampletasks, parameters.world_gen_choices)
 	AddSetPeices(level, parameters.world_gen_choices)
 
 	local id = level.id
@@ -531,7 +533,6 @@ function GenerateNew(debug, parameters)
 		prefab = parameters.world_gen_choices.finaltweak.misc.location or "forest"
 	end
 
-	local choose_tasks = level:GetTasksForLevel(tasks.sampletasks)
 	if debug == true then
 	 	 choose_tasks = tasks.oneofeverything
 	end
@@ -604,7 +605,8 @@ function GenerateNew(debug, parameters)
 						build_time = APP_BUILD_TIME,
 						seed = SEED,
 						level_id = id or "survival",
-						session_identifier = WorldSim:GenerateSessionIdentifier()
+						session_identifier = WorldSim:GenerateSessionIdentifier(),
+                        saveversion = savefileupgrades.VERSION,
 					}
 
 	CheckMapSaveData(savedata)

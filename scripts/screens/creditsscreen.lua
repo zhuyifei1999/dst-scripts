@@ -6,10 +6,9 @@ local Text = require "widgets/text"
 local Image = require "widgets/image"
 local UIAnim = require "widgets/uianim"
 local Widget = require "widgets/widget"
+local TEMPLATES = require "widgets/templates"
 
 local num_name_page_types = 5
-
-local screen_fade_time = .25
 
 local internal_names =
 {
@@ -81,6 +80,11 @@ local CreditsScreen = Class(Screen, function(self)
     self.bottom_root:SetVAnchor(ANCHOR_BOTTOM)
     self.bottom_root:SetHAnchor(ANCHOR_MIDDLE)
     self.bottom_root:SetScaleMode(SCALEMODE_PROPORTIONAL)
+
+    self.back_button_root = self:AddChild(Widget("root"))
+    self.back_button_root:SetVAnchor(ANCHOR_MIDDLE)
+    self.back_button_root:SetHAnchor(ANCHOR_MIDDLE)
+    self.back_button_root:SetScaleMode(SCALEMODE_PROPORTIONAL)
     
     self.worldanim = self.bottom_root:AddChild(UIAnim())
     self.worldanim:GetAnimState():SetBuild("credits")
@@ -89,7 +93,7 @@ local CreditsScreen = Class(Screen, function(self)
 
     self.flavourtext = self.center_root:AddChild(Text(TITLEFONT, 70))
     self.flavourtext2 = self.center_root:AddChild(Text(TITLEFONT, 70))
-    self.thankyoutext = self.center_root:AddChild(Text(BODYTEXTFONT, 40))
+    self.thankyoutext = self.center_root:AddChild(Text(NEWFONT, 40))
     self.thankyoutext:SetString(STRINGS.UI.CREDITS.THANKS)
     self.thankyoutext:Hide()
 
@@ -131,27 +135,14 @@ local CreditsScreen = Class(Screen, function(self)
         local right_pos_x = -150
         local left_pos_x = 150
 
-        self.OK_button = self:AddChild(ImageButton("images/ui.xml", "button_large.tex", "button_large_over.tex", "button_large_disabled.tex", "button_large_onclick.tex"))
-        self.OK_button:SetScale(.8,.8,.8)
-        self.OK_button:SetText(STRINGS.UI.MAINSCREEN.BACK)
-        self.OK_button.text:SetPosition(-3,0)
-        self.OK_button:SetOnClick( function() 
+        self.OK_button = self.back_button_root:AddChild(TEMPLATES.BackButton(function() 
             self.OK_button:Disable()
             self:Disable()
-            TheFrontEnd:Fade(false, screen_fade_time, function()
+            TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
                 TheFrontEnd:PopScreen()
-                TheFrontEnd:Fade(true, screen_fade_time)
+                TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
             end) 
-        end )
-        self.OK_button:SetHAnchor(ANCHOR_LEFT)
-        self.OK_button:SetVAnchor(ANCHOR_BOTTOM)
-        
-        local yPos = 110
-        if PLATFORM == "PS4" then
-    		-- Safe Zone, move this up a bit, the default position is kind of low
-            yPos = 110
-        end
-        self.OK_button:SetPosition(left_pos_x, yPos, 0)
+        end , STRINGS.UI.MAINSCREEN.BACK))
 
         if PLATFORM ~= "PS4" then
             self.FB_button = self:AddChild(ImageButton())
@@ -207,9 +198,10 @@ function CreditsScreen:OnControl(control, down)
     if not down and control == CONTROL_CANCEL then
         if self.OK_button then self.OK_button:Disable() end
         self:Disable()
-        TheFrontEnd:Fade(false, screen_fade_time, function()
+        TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+        TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
             TheFrontEnd:PopScreen()
-            TheFrontEnd:Fade(true, screen_fade_time)
+            TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
         end) 
         return true
     end

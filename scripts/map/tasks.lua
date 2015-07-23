@@ -9,6 +9,89 @@ local blockersets = require("map/blockersets")
 
 SIZE_VARIATION = 3
 
+-------------------------------
+-------------------------------
+-- TASK GROUPS FOR WORLD GEN --
+-------------------------------
+-------------------------------
+
+local taskgrouplist = {}
+function AddTaskSet(name, data)
+	taskgrouplist[name] = data
+end
+
+local function GetGenTasks(name)
+	return taskgrouplist[name]
+end
+
+AddTaskSet("default", {
+		tasks = {
+			"Make a pick",
+			"Dig that rock",
+			"Great Plains",
+			"Squeltch",
+			"Beeeees!",
+			"Speak to the king",
+			"Forest hunters",
+			"Badlands",
+		},
+		numoptionaltasks = 4,
+		optionaltasks = {
+			"Befriend the pigs",
+			"For a nice walk",
+			"Kill the spiders",
+			"Killer bees!",
+			"Make a Beehat",
+			"The hunters",
+			"Magic meadow",
+			"Frogs and bugs",
+			"Oasis",
+			"Mole Colony Deciduous",
+			"Mole Colony Rocks",
+			"MooseBreedingTask",
+		},
+		set_pieces = {
+			["ResurrectionStone"] = { count = 2, tasks={"Make a pick", "Dig that rock", "Great Plains", "Squeltch", "Beeeees!", "Speak to the king", "Forest hunters", "Badlands" } },
+			["WormholeGrass"] = { count = 8, tasks={"Make a pick", "Dig that rock", "Great Plains", "Squeltch", "Beeeees!", "Speak to the king", "Forest hunters", "Befriend the pigs", "For a nice walk", "Kill the spiders", "Killer bees!", "Make a Beehat", "The hunters", "Magic meadow", "Frogs and bugs", "Badlands"} },
+			["MooseNest"] = { count = 9, tasks={"Make a pick", "Beeeees!", "Speak to the king", "Forest hunters", "Befriend the pigs", "For a nice walk", "Make a Beehat", "Magic meadow", "Frogs and bugs"} },
+			["DragonflyArena"] = { count=  1, tasks={"Badlands"}},
+		},
+	})
+
+AddTaskSet("classic", {
+		tasks = {
+			"Make a pick",
+			"Dig that rock",
+			"Great Plains",
+			"Squeltch",
+			"Beeeees!",
+			"Speak to the king classic",
+			"Forest hunters",
+		},
+		numoptionaltasks = 4,
+		optionaltasks = {
+			"Befriend the pigs",
+			"For a nice walk",
+			"Kill the spiders",
+			"Killer bees!",
+			"Make a Beehat",
+			"The hunters",
+			"Magic meadow",
+			"Frogs and bugs",
+		},
+		set_pieces = {
+			["ResurrectionStone"] = { count=2, tasks={"Make a pick", "Dig that rock", "Great Plains", "Squeltch", "Beeeees!", "Speak to the king", "Forest hunters" } },
+			["WormholeGrass"] = { count=8, tasks={"Make a pick", "Dig that rock", "Great Plains", "Squeltch", "Beeeees!", "Speak to the king", "Forest hunters", "Befriend the pigs", "For a nice walk", "Kill the spiders", "Killer bees!", "Make a Beehat", "The hunters", "Magic meadow", "Frogs and bugs" } },
+		},
+	})
+
+
+------------------
+------------------
+-- SINGLE TASKS --
+------------------
+------------------
+
 local tasklist = {}
 function AddTask(name, data)
 	table.insert(tasklist, Task(name, data))
@@ -1074,4 +1157,5 @@ tasks = {
 	sampletasks = tasklist,
 	oneofeverything = everything_sample,
 	GetTaskByName = GetTaskByName,
+	GetGenTasks = GetGenTasks,
 }

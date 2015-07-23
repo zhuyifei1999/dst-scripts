@@ -108,23 +108,33 @@ function Eater:Eat(food)
     -- their mouth, they bail and "spit it out" so to speak.
     if self:PrefersToEat(food) then
         if self.inst.components.health ~= nil and
-            (food.components.edible.healthvalue > 0 or
-            (food.components.edible.healthvalue < 0 and self:DoFoodEffects(food))) then
-            self.inst.components.health:DoDelta(food.components.edible:GetHealth(self.inst), nil, food.prefab)
+            (food.components.edible.healthvalue >= 0 or self:DoFoodEffects(food)) then
+            local delta = food.components.edible:GetHealth(self.inst)
+            if delta ~= 0 then
+                self.inst.components.health:DoDelta(delta, nil, food.prefab)
+            end
         end
 
         if self.inst.components.hunger ~= nil then
-            self.inst.components.hunger:DoDelta(food.components.edible:GetHunger(self.inst))
+            local delta = food.components.edible:GetHunger(self.inst)
+            if delta ~= 0 then
+                self.inst.components.hunger:DoDelta(delta)
+            end
         end
 
         if self.inst.components.sanity ~= nil and
-            (food.components.edible.sanityvalue > 0 or
-            (food.components.edible.sanityvalue < 0 and self:DoFoodEffects(food))) then
-            self.inst.components.sanity:DoDelta(food.components.edible:GetSanity(self.inst))
+            (food.components.edible.sanityvalue >= 0 or self:DoFoodEffects(food)) then
+            local delta = food.components.edible:GetSanity(self.inst)
+            if delta ~= 0 then
+                self.inst.components.sanity:DoDelta(delta)
+            end
         end
 
-        if self.inst.components.beaverness ~= nil and food.components.edible.woodiness ~= nil then
-            self.inst.components.beaverness:DoDelta(food.components.edible:GetWoodiness(self.inst))
+        if self.inst.components.beaverness ~= nil then
+            local delta = food.components.edible:GetWoodiness(self.inst)
+            if delta ~= 0 then
+                self.inst.components.beaverness:DoDelta(delta)
+            end
         end
 
         self.inst:PushEvent("oneat", { food = food })

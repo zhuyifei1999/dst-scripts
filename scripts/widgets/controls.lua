@@ -20,6 +20,7 @@ local StatusDisplays = require "widgets/statusdisplays"
 local ChatQueue = require "widgets/chatqueue"
 local Desync = require "widgets/desync"
 local WorldResetTimer = require "widgets/worldresettimer"
+local VoteDialog = require "widgets/votedialog"
 
 local easing = require("easing")
 
@@ -141,27 +142,24 @@ local Controls = Class(Widget, function(self, owner)
         self.desync:SetMaxPropUpscale(MAX_HUD_SCALE)
     end
 
+    self.votedialog = self:AddChild(VoteDialog())
+
     self:SetHUDSize()
 
-	self:StartUpdating()
+    self:StartUpdating()
 end)
 
 function Controls:ShowStatusNumbers()
-	self.status.brain.num:Show()
-	self.status.stomach.num:Show()
-	self.status.heart.num:Show()
+    self.status:ShowStatusNumbers()
 end
 
 function Controls:HideStatusNumbers()
-	self.status.brain.num:Hide()
-	self.status.stomach.num:Hide()
-	self.status.heart.num:Hide()
+    self.status:HideStatusNumbers()
 end
 
 function Controls:SetDark(val)
 	if val then self.blackoverlay:Show() else self.blackoverlay:Hide() end
 end
-
 
 function Controls:MakeScalingNodes()
 

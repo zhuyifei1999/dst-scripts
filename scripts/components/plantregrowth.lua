@@ -1,5 +1,4 @@
---V2C: This component is for extending inventoryitem
---     component, and should not be used on its own.
+local UPDATE_PERIOD = 31 -- less likely to update on the same frame as others
 
 local UpdateBuckets = nil
 local UpdateTask = nil
@@ -41,7 +40,7 @@ local function RegisterUpdate(self)
 
     if UpdateBuckets == nil then
         assert(UpdateTask == nil)
-        UpdateTask = TheWorld:DoPeriodicTask(FRAMES, DoUpdate)
+        UpdateTask = TheWorld:DoPeriodicTask(UPDATE_PERIOD, DoUpdate)
         self._bucket = { self }
         UpdateBuckets = { self._bucket }
         CurrentBucket = 1

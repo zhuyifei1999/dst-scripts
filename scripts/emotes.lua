@@ -37,7 +37,7 @@ local EMOTES =
     ["/celebrate"] =        "/joy",
     ["/celebration"] =      "/joy",
 
-    ["/dance"] =            { anim = { "emoteXL_pre_dance0", "emoteXL_loop_dance0" }, loop = true, fx = false },
+    ["/dance"] =            { anim = { "emoteXL_pre_dance0", "emoteXL_loop_dance0" }, loop = true, fx = false, beaver = true },
 
     ["/bonesaw"] =          { anim = "emoteXL_bonesaw" },
     ["/ready"] =            "/bonesaw",

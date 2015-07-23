@@ -8,11 +8,19 @@ local VOTE_KICK_SQUELCH_TABLE = {}
 function KickVoteInitOptions( player, parameters_string )
 	local index = tonumber(parameters_string)
 	local ClientObjs = TheNet:GetClientTable()
+	if TheNet:IsDedicated() then
+		index = index + 1
+	end
 	if index == nil or index > #ClientObjs or index < 1 or VOTE_KICK_SQUELCH_TABLE[player.userid] ~= nil then
 		return false,nil
 	else
 		if ClientObjs[index].admin then
 			print("Can't vote kick an admin", index, ClientObjs[index].userid, player.userid)
+			return false,nil
+		end
+		
+		if player.userid == ClientObjs[index].userid then
+			print("Can't vote kick yourself", player.userid)
 			return false,nil
 		end
 		
@@ -30,14 +38,14 @@ function KickVoteProcessResult( option_data, vote_result, total_votes )
 	votes_required = math.max( votes_required, 1 ) --must have atleast 1 vote
 	if vote_result.vote_count >= votes_required and vote_result.value == true then
 		TheNet:Kick(option_data.kick_userid)
-		TheNet:Announce( "Vote kick passed: Kicking " .. option_data.player_name )
+		TheNet:Announce( "Vote kick passed: Kicking " .. option_data.player_name, nil, nil, "vote" )
 	else
 		VOTE_KICK_SQUELCH_TABLE[option_data.vote_caller_userid] = VOTE_KICK_SQUELCH_TIME
 		_Voter:UpdateSquelchTable()
 		if vote_result.value == true then
-			TheNet:Announce( "Vote kick failed. " .. string.format("Received %d vote%s of the required %d", vote_result.vote_count, (vote_result.vote_count == 1 and "" or "s"), math.ceil(votes_required)) .. "." )
+			TheNet:Announce( "Vote kick failed. " .. string.format("Received %d vote%s of the required %d", vote_result.vote_count, (vote_result.vote_count == 1 and "" or "s"), math.ceil(votes_required)) .. ".", nil, nil, "vote" )
 		else
-			TheNet:Announce( "Vote kick failed." )	
+			TheNet:Announce( "Vote kick failed.", nil, nil, "vote" )	
 		end
 	end
 end
@@ -92,10 +100,11 @@ function Voter:ReadNetVars()
 end
 function Voter:OnShowDialogDirty()
 	self.show_dialog = self.net_show_dialog:value()
-	if self.show_dialog then 
+	if self.show_dialog then
 		self:ReadNetVars()
 		TheWorld:PushEvent("showvotedialog")
 		self.vote_timer = self.vote_timer_start
+		self.inst:StartUpdatingComponent(self)
 	else
 		TheWorld:PushEvent("hidevotedialog")
 	end
@@ -199,9 +208,13 @@ function Voter:ReceivedVoteInternal( player, option_index )
 			local ClientObjs = TheNet:GetClientTable()
 			local pending_vote = false
 			for _,client in pairs(ClientObjs) do
-				if not table.contains( self.vote_options.voters, client.userid ) then
-					pending_vote = true
-					break
+				local this_user_is_dedicated_server = client.performance ~= nil and TheNet:GetServerIsDedicated()
+				if not this_user_is_dedicated_server then
+					if not table.contains( self.vote_options.voters, client.userid ) then
+						print("pending vote", client.userid)
+						pending_vote = true
+						break
+					end
 				end
 			end			
 			if not pending_vote then			
@@ -272,6 +285,10 @@ function Voter:OnUpdate(dt)
 	
 	if TheWorld.ismastersim then
 		self:ServerOnUpdate(dt)
+	else
+		if not self:IsVoteActive() then
+			self.inst:StopUpdatingComponent(self)
+		end
 	end
 end
 
@@ -299,6 +316,8 @@ end
 
 
 function Voter:ServerOnUpdate(dt)
+	self.net_vote_timer_start:set_local( self.vote_timer ) --ensure players who join late, get the right start time
+
 	for k,v in pairs(VOTE_KICK_SQUELCH_TABLE) do
 		VOTE_KICK_SQUELCH_TABLE[k] = v - dt
 		if VOTE_KICK_SQUELCH_TABLE[k] < 0 then

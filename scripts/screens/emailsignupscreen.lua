@@ -10,6 +10,7 @@ local Spinner = require "widgets/spinner"
 local NumericSpinner = require "widgets/numericspinner"
 local TextEdit = require "widgets/textedit"
 local Widget = require "widgets/widget"
+local TEMPLATES = require "widgets/templates"
 
 local PopupDialogScreen = require "screens/popupdialog"
 
@@ -27,6 +28,12 @@ end)
 
 function EmailSignupScreen:OnControl(control, down)
 	if EmailSignupScreen._base.OnControl(self, control, down) then return true end
+
+	-- Force these damn things to gobble controls if they're editing (stupid missing focus/hover distinction)
+    if (self.email_edit and self.email_edit.editing) or (TheInput:ControllerAttached() and self.email_edit.focus and control == CONTROL_ACCEPT) then
+        self.email_edit:OnControl(control, down)
+        return true
+    end
 
 	if not down and control == CONTROL_CANCEL then
 		self:Close()
@@ -191,97 +198,118 @@ function EmailSignupScreen:DoInit()
     
 
 	--throw up the background
-    self.bg = self.root:AddChild(Image("images/globalpanels.xml", "small_dialog.tex"))
-    self.bg:SetVRegPoint(ANCHOR_MIDDLE)
-    self.bg:SetHRegPoint(ANCHOR_MIDDLE)
-	self.bg:SetScale(1.6, 2, 1)    
+    self.bg = self.root:AddChild(TEMPLATES.CurlyWindow(130, 150, 1, 1, 68, -40))
+    self.bg.fill = self.root:AddChild(Image("images/fepanel_fills.xml", "panel_fill_tiny.tex"))
+	self.bg.fill:SetScale(.92, .68)
+	self.bg.fill:SetPosition(8, 12)
+
+	local nudgeY = -10
 
     local title_size = 300
-    local title_offset = 120
+    local title_offset = 100
 
-    self.title = self.root:AddChild(Text(TITLEFONT, 50))
-
+    self.title = self.root:AddChild(Text(BUTTONFONT, 45))
+    self.title:SetColour(0,0,0,1)
     self.title:SetString(STRINGS.UI.EMAILSCREEN.TITLE)
     self.title:SetHAlign(ANCHOR_MIDDLE)
     self.title:SetVAlign(ANCHOR_MIDDLE)
 	--self.title:SetRegionSize( title_size, 50 )
-    self.title:SetPosition(0, title_offset, 0)
+    self.title:SetPosition(5, title_offset+nudgeY, 0)
 
 
 	local label_width = 200
-	local label_height = 50
-	local label_offset = 275
+	local label_height = 40
+	local label_offset = 155
 
 	local space_between = 30
-	local height_offset = 60
+	local height_offset = 48
 
 	local email_fontsize = 30
 
-	
-	self.email_label = self.root:AddChild( Text( BODYTEXTFONT, email_fontsize, STRINGS.UI.EMAILSCREEN.EMAIL ) )
-	self.email_label:SetPosition( -(label_width * .5 + label_offset), height_offset, 0 )
-	self.email_label:SetRegionSize( label_width, label_height )
-	self.email_label:SetHAlign(ANCHOR_RIGHT)
-
-	self.bday_label = self.root:AddChild( Text( BODYTEXTFONT, email_fontsize, STRINGS.UI.EMAILSCREEN.BIRTHDAY ) )
-	self.bday_label:SetPosition( -(label_width * .5 + label_offset), 0, 0 )
-	self.bday_label:SetRegionSize( label_width, label_height )
-	self.bday_label:SetHAlign(ANCHOR_RIGHT)
-
-	local edit_width = 550
+	local edit_width = 315
 	local edit_bg_padding = 60
 	
-	self.bday_message = self.root:AddChild( Text( BODYTEXTFONT, 24,  STRINGS.UI.EMAILSCREEN.BIRTHDAYREASON ) )
-	self.bday_message:SetPosition( 0, -height_offset, 0 )
+	self.bday_message = self.root:AddChild( Text( NEWFONT, 24,  STRINGS.UI.EMAILSCREEN.BIRTHDAYREASON ) )
+	self.bday_message:SetColour(0,0,0,1)
+	self.bday_message:SetPosition( 5, -height_offset-10+nudgeY, 0 )
 	self.bday_message:SetRegionSize( 700, label_height * 2 )
 	self.bday_message:EnableWordWrap(true)
 	--self.bday_message:SetHAlign(ANCHOR_LEFT)
 
+	local whitebar1 = self.root:AddChild(Image("images/ui.xml", "single_option_bg.tex"))
+	local whitebar2 = self.root:AddChild(Image("images/ui.xml", "single_option_bg.tex"))
+    whitebar1:SetSize(edit_width + edit_bg_padding * 3 + 20, label_height * 1.2)
+    whitebar2:SetSize(edit_width + edit_bg_padding * 3 + 20, label_height * 1.2)
+    whitebar1:SetPosition(5, height_offset+2+nudgeY, 0)
+    whitebar2:SetPosition(5, -3+nudgeY, 0)
 
-    self.edit_bg = self.root:AddChild( Image() )
-	self.edit_bg:SetTexture( "images/textboxes.xml", "textbox_long.tex" )
-	self.edit_bg:SetPosition( (edit_width * .5) - label_offset + space_between, height_offset, 0 )
-	self.edit_bg:ScaleToSize( edit_width + edit_bg_padding, label_height )
+    self.email_label = self.root:AddChild( Text( NEWFONT, email_fontsize, STRINGS.UI.EMAILSCREEN.EMAIL ) )
+    self.email_label:SetColour(0,0,0,1)
+	self.email_label:SetPosition( -(label_width * .5 + label_offset), height_offset+nudgeY, 0 )
+	self.email_label:SetRegionSize( label_width, label_height )
+	self.email_label:SetHAlign(ANCHOR_RIGHT)
 
-	self.email_edit = self.root:AddChild( TextEdit( BODYTEXTFONT, email_fontsize, "" ) )
-	self.email_edit:SetPosition( (edit_width * .5) - label_offset + space_between, height_offset, 0 )
+	self.bday_label = self.root:AddChild( Text( NEWFONT, email_fontsize, STRINGS.UI.EMAILSCREEN.BIRTHDAY ) )
+	self.bday_label:SetColour(0,0,0,1)
+	self.bday_label:SetPosition( -(label_width * .5 + label_offset), -5+nudgeY, 0 )
+	self.bday_label:SetRegionSize( label_width, label_height )
+	self.bday_label:SetHAlign(ANCHOR_RIGHT)
+
+	self.email_edit_widg = self.proot:AddChild(Widget("emailedit"))
+	self.email_edit_widg:SetPosition( (edit_width * .5) - label_offset + space_between, height_offset+nudgeY )
+
+	self.email_edit_bg = self.email_edit_widg:AddChild( Image() )
+    self.email_edit_bg:SetTexture( "images/textboxes.xml", "textbox2_grey.tex" )
+    self.email_edit_bg:ScaleToSize( edit_width + edit_bg_padding, label_height )
+	
+	self.email_edit = self.email_edit_widg:AddChild( TextEdit( NEWFONT, 25, "" ) )
 	self.email_edit:SetRegionSize( edit_width, label_height )
 	self.email_edit:SetHAlign(ANCHOR_LEFT)
-	self.email_edit:SetFocusedImage( self.edit_bg, "images/textboxes.xml", "textbox_long_over.tex", "textbox_long.tex" )
-	self.email_edit:SetTextLengthLimit(EMAIL_MAX_LENGTH)
+	self.email_edit:SetFocusedImage( self.email_edit_bg, "images/textboxes.xml", "textbox2_grey.tex", "textbox2_gold.tex", "textbox2_gold_greyfill.tex" )
+	self.email_edit:SetTextLengthLimit( EMAIL_MAX_LENGTH )
 	self.email_edit:SetCharacterFilter( EMAIL_VALID_CHARS )
+	self.email_edit:SetForceEdit(true)
 
-	local text_font = BODYTEXTFONT
-
+	self.email_edit_widg.focus_forward = self.email_edit
 
 	local months = {
-		{ text = STRINGS.UI.EMAILSCREEN.JAN},
-		{ text = STRINGS.UI.EMAILSCREEN.FEB},
-		{ text = STRINGS.UI.EMAILSCREEN.MAR},
-		{ text = STRINGS.UI.EMAILSCREEN.APR},
-		{ text = STRINGS.UI.EMAILSCREEN.MAY},
-		{ text = STRINGS.UI.EMAILSCREEN.JUN},
-		{ text = STRINGS.UI.EMAILSCREEN.JUL},
-		{ text = STRINGS.UI.EMAILSCREEN.AUG},
-		{ text = STRINGS.UI.EMAILSCREEN.SEP},
-		{ text = STRINGS.UI.EMAILSCREEN.OCT},
-		{ text = STRINGS.UI.EMAILSCREEN.NOV},
-		{ text = STRINGS.UI.EMAILSCREEN.DEC},
-	}
-
-	--self.monthSpinner = Spinner( months, 100, 50, { font = text_font, size = email_fontsize}, UI_ATLAS, spinner_images, 0.5, false )
-	--self.daySpinner = NumericSpinner( 1, 31, 50, 50, { font = text_font, size = email_fontsize }, UI_ATLAS, spinner_images, 0.5, true )
-	--self.yearSpinner = NumericSpinner( self.minYear, self.maxYear, 100, 50, { font = text_font, size = email_fontsize }, UI_ATLAS, spinner_images, 0.5, true )
+		{ text = STRINGS.UI.EMAILSCREEN.JAN, days = 31},
+		{ text = STRINGS.UI.EMAILSCREEN.FEB, days = 29},
+		{ text = STRINGS.UI.EMAILSCREEN.MAR, days = 31},
+		{ text = STRINGS.UI.EMAILSCREEN.APR, days = 30},
+		{ text = STRINGS.UI.EMAILSCREEN.MAY, days = 31},
+		{ text = STRINGS.UI.EMAILSCREEN.JUN, days = 30},
+		{ text = STRINGS.UI.EMAILSCREEN.JUL, days = 31},
+		{ text = STRINGS.UI.EMAILSCREEN.AUG, days = 31},
+		{ text = STRINGS.UI.EMAILSCREEN.SEP, days = 30},
+		{ text = STRINGS.UI.EMAILSCREEN.OCT, days = 31},
+		{ text = STRINGS.UI.EMAILSCREEN.NOV, days = 30},
+		{ text = STRINGS.UI.EMAILSCREEN.DEC, days = 31},
+	}	
 
 	self.spinners = self.root:AddChild(Widget("spinners"))
 	
-	self.monthSpinner = self.spinners:AddChild(Spinner( months))
-	self.daySpinner = self.spinners:AddChild(NumericSpinner( 1, 31))
-	self.yearSpinner = self.spinners:AddChild(NumericSpinner( self.minYear, self.maxYear ))
+	self.monthSpinner = self.spinners:AddChild(Spinner( months, 185, 64, nil, nil, nil, nil, true, nil, nil, .7, .7 ))
+	self.monthSpinner.OnChanged = 
+		function( _, data )
+			local monthName = self.monthSpinner:GetSelectedText()
+			local maxDay = 31
+			for i,v in pairs(months) do
+				if monthName == v.text then
+					maxDay = v.days
+				end
+			end
+			self.daySpinner.max = maxDay
+			if self.daySpinner:GetSelectedIndex() > self.daySpinner.max then
+				self.daySpinner:SetSelectedIndex(self.daySpinner.max)
+			end
+		end
+	self.daySpinner = self.spinners:AddChild(NumericSpinner( 1, 31, 185, 64, nil, nil, nil, nil, true, nil, nil, .7, .7 ))
+	self.yearSpinner = self.spinners:AddChild(NumericSpinner( self.minYear, self.maxYear, 185, 64, nil, nil, nil, nil, true, nil, nil, .7, .7 ))
 
-	self.spinners:SetPosition(30,0,0)
-	self.monthSpinner:SetPosition(-200, 0, 0)
-	self.yearSpinner:SetPosition(200, 0, 0)
+	self.spinners:SetPosition(48,-5+nudgeY,0)
+	self.monthSpinner:SetPosition(-140, 0, 0)
+	self.yearSpinner:SetPosition(140, 0, 0)
 
 	self.monthSpinner:SetTextColour(0,0,0,1)
 	self.daySpinner:SetTextColour(0,0,0,1)
@@ -322,8 +350,22 @@ function EmailSignupScreen:DoInit()
 		{ text = STRINGS.UI.EMAILSCREEN.CANCEL, cb = function() self:Close() end },
 	}
 
-	self.menu = self.root:AddChild(Menu(menu_items, 200, true))
-	self.menu:SetPosition(-100, -130)
+	self.menu = self.root:AddChild(Menu(menu_items, 250, true))
+	self.menu:SetPosition(-100, -132)
+	self.menu:SetScale(.85)
+
+	self.menu:SetFocusChangeDir(MOVE_UP, self.monthSpinner)
+	self.monthSpinner:SetFocusChangeDir(MOVE_RIGHT, self.daySpinner)
+	self.daySpinner:SetFocusChangeDir(MOVE_RIGHT, self.yearSpinner)
+	self.yearSpinner:SetFocusChangeDir(MOVE_LEFT, self.daySpinner)
+	self.daySpinner:SetFocusChangeDir(MOVE_LEFT, self.monthSpinner)
+	self.monthSpinner:SetFocusChangeDir(MOVE_UP, self.email_edit_widg)
+	self.daySpinner:SetFocusChangeDir(MOVE_UP, self.email_edit_widg)
+	self.yearSpinner:SetFocusChangeDir(MOVE_UP, self.email_edit_widg)
+	self.monthSpinner:SetFocusChangeDir(MOVE_DOWN, self.menu)
+	self.daySpinner:SetFocusChangeDir(MOVE_DOWN, self.menu)
+	self.yearSpinner:SetFocusChangeDir(MOVE_DOWN, self.menu)
+	self.email_edit_widg:SetFocusChangeDir(MOVE_DOWN, self.monthSpinner)	
 
 	self.default_focus = self.menu
 

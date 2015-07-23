@@ -78,7 +78,7 @@ local ScriptErrorScreen = Class(Screen, function(self, title, text, buttons, tex
 	    local space_between = 20
 	    local spacing = button_w + space_between
 	
-	    self.menu = self.root:AddChild(Menu(buttons, 200, true))
+	    self.menu = self.root:AddChild(Menu(buttons, 250, true))
 	    self.menu:SetHRegPoint(ANCHOR_MIDDLE)
 	    self.menu:SetPosition(0, -250, 0)
 	    self.default_focus = self.menu

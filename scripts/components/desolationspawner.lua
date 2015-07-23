@@ -12,6 +12,7 @@ require "map/terrain"
 --[[ Constants ]]
 --------------------------------------------------------------------------
 
+local UPDATE_PERIOD = 11 -- less likely to update on the same frame as others
 local SEARCH_RADIUS = 50
 local BASE_RADIUS = 20
 local EXCLUDE_RADIUS = 3
@@ -38,7 +39,7 @@ local _areadata = {}
 --[[ Private member functions ]]
 --------------------------------------------------------------------------
 
-local function TestForRegrow(x, y, z, searchtag)
+local function TestForRegrow(x, y, z, prefab, searchtags)
 
     local ents = TheSim:FindEntities(x,y,z, EXCLUDE_RADIUS)
     if #ents > 0 then
@@ -46,25 +47,36 @@ local function TestForRegrow(x, y, z, searchtag)
         return false
     end
 
-    local ents = TheSim:FindEntities(x,y,z, SEARCH_RADIUS, {searchtag})
+    local ents = TheSim:FindEntities(x,y,z, BASE_RADIUS, nil, nil, { "structure", "wall" })
     if #ents > 0 then
+        -- Don't spawn inside bases
+        return false
+    end
+
+    local ents = TheSim:FindEntities(x,y,z, SEARCH_RADIUS, searchtags)
+    if #ents > 0 then
+        -- This ent is already "seeded", no need to desolation-spawn one.
+        return false
+    end
+
+    local tile = _map:GetTileAtPoint(x,y,z)
+    if tile == GROUND.IMPASSABLE or tile > GROUND.UNDERGROUND
+        or not _map:CanPlacePrefabFilteredAtPoint(x,y,z, prefab) then
+        -- Not ground we can grow on
         return false
     end
     return true
 end
 
-local function DoRegrowth(area, prefab, product, searchtag)
+local function DoRegrowth(area, prefab, product, searchtags)
     local points_x, points_y = _map:GetRandomPointsForSite(_world.topology.nodes[area].x, _world.topology.nodes[area].y, _world.topology.nodes[area].poly, 1)
-    if #points_x <= 0 or #points_y <= 0 then
-        return
-    end
     local x = points_x[1]
     local z = points_y[1]
     --local x = _world.topology.nodes[area].x
     --local z = _world.topology.nodes[area].y
 
     --if not IsAnyPlayerInRange(x,0,z, MIN_PLAYER_DISTANCE, nil) then
-        if TestForRegrow(x,0,z, searchtag) then
+        if TestForRegrow(x,0,z, product, searchtags) then
             local instance = SpawnPrefab(product)
             print("Making a",product," from ",prefab," for ",area)
             if instance ~= nil then
@@ -134,8 +146,8 @@ end
 --[[ Public member functions ]]
 --------------------------------------------------------------------------
 
-function self:SetSpawningForType(prefab, product, regrowtime, searchtag, timemult)
-    _replacementdata[prefab] = {product=product, regrowtime=regrowtime, searchtag=searchtag, timemult=timemult}
+function self:SetSpawningForType(prefab, product, regrowtime, searchtags, timemult)
+    _replacementdata[prefab] = {product=product, regrowtime=regrowtime, searchtags=searchtags, timemult=timemult}
     _internaltimes[prefab] = 0
     PopulateAreaData(prefab)
 end
@@ -148,15 +160,15 @@ end
 
 --Register events
 
-inst:StartUpdatingComponent(self)
+inst:DoPeriodicTask(UPDATE_PERIOD, function() self:LongUpdate(UPDATE_PERIOD) end)
 
-self:SetSpawningForType("evergreen", "pinecone_sapling", TUNING.EVERGREEN_REGROWTH.DESOLATION_RESPAWN_TIME, "evergreen", function()
+self:SetSpawningForType("evergreen", "pinecone_sapling", TUNING.EVERGREEN_REGROWTH.DESOLATION_RESPAWN_TIME, {"evergreen"}, function()
     return (_worldstate.issummer and 2) or (_worldstate.iswinter and 0) or 1
 end)
-self:SetSpawningForType("evergreen_sparse", "lumpy_sapling", TUNING.EVERGREEN_SPARSE_REGROWTH.DESOLATION_RESPAWN_TIME, "evergreen_sparse", function()
+self:SetSpawningForType("evergreen_sparse", "lumpy_sapling", TUNING.EVERGREEN_SPARSE_REGROWTH.DESOLATION_RESPAWN_TIME, {"evergreen_sparse"}, function()
     return 1
 end)
-self:SetSpawningForType("deciduoustree", "acorn_sapling", TUNING.DECIDUOUS_REGROWTH.DESOLATION_RESPAWN_TIME, "deciduoustree", function()
+self:SetSpawningForType("deciduoustree", "acorn_sapling", TUNING.DECIDUOUS_REGROWTH.DESOLATION_RESPAWN_TIME, {"deciduoustree"}, function()
     return (not _worldstate.isspring and 0) or 1
 end)
 
@@ -167,7 +179,7 @@ inst:DoTaskInTime(0, PopulateAreaDataFromReplacements)
 --------------------------------------------------------------------------
 
 
-function self:OnUpdate(dt)
+function self:LongUpdate(dt)
     for k, data in pairs(_replacementdata) do
         local prefabtimemult = _replacementdata[k].timemult and _replacementdata[k].timemult() or 1
         _internaltimes[k] = _internaltimes[k] + dt * TUNING.REGROWTH_TIME_MULTIPLIER * prefabtimemult
@@ -178,7 +190,9 @@ function self:OnUpdate(dt)
             if prefabdata.regrowtime <= _internaltimes[prefab] then
                 --print("time for",prefab,"in",area)
                 prefabdata.regrowtime = _internaltimes[prefab] + _replacementdata[prefab].regrowtime
-                DoRegrowth(area, prefab, _replacementdata[prefab].product, _replacementdata[prefab].searchtag)
+                DoRegrowth(area, prefab, _replacementdata[prefab].product, _replacementdata[prefab].searchtags)
+                --for performance, only DoRegrowth once per update
+                return
             end
         end
     end

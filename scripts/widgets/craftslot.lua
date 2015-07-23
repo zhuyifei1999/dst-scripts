@@ -21,6 +21,8 @@ local CraftSlot = Class(Widget, function(self, atlas, bgim, owner)
     self.tile = self:AddChild(RecipeTile(nil))
     self.fgimage = self:AddChild(Image("images/hud.xml", "craft_slot_locked.tex"))
     self.fgimage:Hide()
+    self.lightbulbimage = self:AddChild(Image("images/hud.xml", "craft_slot_prototype.tex"))
+    self.lightbulbimage:Hide()
 end)
 
 function CraftSlot:EnablePopup()
@@ -67,6 +69,7 @@ function CraftSlot:Clear()
     end
     
     self.fgimage:Hide()
+    self.lightbulbimage:Hide()
     self.bgimage:SetTexture(self.atlas, "craft_slot.tex")
     --self:HideRecipe()
 end
@@ -124,6 +127,9 @@ function CraftSlot:Refresh(recipename)
         self.tile:SetRecipe(self.recipe)
         self.tile:Show()
 
+        --#srosen erroneously showing inverted sometimes
+        local right_level = CanPrototypeRecipe(self.recipe.level, self.owner.replica.builder:GetTechTrees())
+
         if self.fgimage then
             if knows or recipe.nounlock then
                 if buffered then
@@ -131,9 +137,16 @@ function CraftSlot:Refresh(recipename)
                 else
                     self.bgimage:SetTexture(self.atlas, "craft_slot.tex")
                 end
-                self.fgimage:Hide()
+
+                if canbuild or buffered then
+                    self.fgimage:Hide()
+                else
+                    self.fgimage:Show()
+                    self.fgimage:SetTexture(self.atlas, "craft_slot_missing_mats.tex")
+                end
+                self.lightbulbimage:Hide()
+                self.fgimage:SetTint(1,1,1,1)
             else
-                local right_level = CanPrototypeRecipe(self.recipe.level, self.owner.replica.builder:GetTechTrees())
                 --print("Right_Level for: ", recipename, " ", right_level)
                 local show_highlight = false
                 
@@ -143,18 +156,34 @@ function CraftSlot:Refresh(recipename)
                 
                 if not right_level then
                     self.fgimage:SetTexture(hud_atlas, "craft_slot_locked_nextlevel.tex")
+                    self.lightbulbimage:Hide()
+                    self.fgimage:Show()
+                    if buffered then 
+                        self.bgimage:SetTexture(self.atlas, "craft_slot_place.tex") 
+                    else
+                        self.bgimage:SetTexture(self.atlas, "craft_slot.tex") 
+                    end
+                    self.fgimage:SetTint(.7,.7,.7,1)
                 elseif show_highlight then
-                    self.fgimage:SetTexture(hud_atlas, "craft_slot_locked_highlight.tex")
+                    self.bgimage:SetTexture(hud_atlas, "craft_slot_locked_highlight.tex")
+                    self.lightbulbimage:Show()
+                    self.fgimage:Hide()
+                    self.fgimage:SetTint(1,1,1,1)
                 else
-                    self.fgimage:SetTexture(hud_atlas, "craft_slot_locked.tex")
+                    self.fgimage:SetTexture(hud_atlas, "craft_slot_missing_mats.tex")
+                    self.lightbulbimage:Hide()
+                    self.fgimage:Show()
+                    if buffered then 
+                        self.bgimage:SetTexture(self.atlas, "craft_slot_place.tex") 
+                    else
+                        self.bgimage:SetTexture(self.atlas, "craft_slot.tex") 
+                    end
+                    self.fgimage:SetTint(1,1,1,1)
                 end
-                
-                self.fgimage:Show()
-                if not buffered then self.bgimage:SetTexture(self.atlas, "craft_slot.tex") end -- Make sure we clear out the place bg if it's a new tab
             end
         end
 
-        self.tile:SetCanBuild((buffered or canbuild )and (knows or recipe.nounlock))
+        self.tile:SetCanBuild((buffered or canbuild )and (knows or recipe.nounlock or right_level))
 
         if self.recipepopup then
             self.recipepopup:SetRecipe(self.recipe, self.owner)

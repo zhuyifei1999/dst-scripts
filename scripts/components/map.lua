@@ -30,12 +30,10 @@ function Map:CanPlantAtPoint(x, y, z)
     return tile ~= GROUND.ROCKY and
         tile ~= GROUND.ROAD and
         tile ~= GROUND.UNDERROCK and
-        tile ~= GROUND.WOODFLOOR and
-        tile ~= GROUND.CARPET and
-        tile ~= GROUND.CHECKER and
         tile < GROUND.UNDERGROUND and
         tile ~= GROUND.IMPASSABLE and
-        tile ~= GROUND.INVALID
+        tile ~= GROUND.INVALID and
+        not GROUND_FLOORING[tile]
 end
 
 local DEPLOY_IGNORE_TAGS = { "NOBLOCK", "player", "FX", "INLIMBO", "DECOR" }

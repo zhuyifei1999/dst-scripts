@@ -10,46 +10,14 @@ AddLevel(LEVELTYPE.SURVIVAL, {
 		name = STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELS[10],
 		desc = STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELDESC[10],
 		overrides = {
-			{"start_setpeice", 	"DefaultStart"},		
-			{"start_node",		"Clearing"},
-			{"season_start",	"autumn"},
-			{"world_size",		"large"},
+			-- {"start_setpeice", 	"DefaultStart"}, --deprecated, kept here for clarity	
+			-- {"start_node",		"Clearing"}, --deprecated, kept here for clarity	
+			-- {"start_location", 	"default"}, --don't need to specify default, kept here for clarity	
+			-- {"season_start",	"default"}, --don't need to specify default, kept here for clarity	
+			-- {"world_size",		"large"}, --large is now default, kept here for clarity	
 			{"cave_entrance",	"never"},
-		},
-		tasks = 
-		{
-			"Make a pick",
-			"Dig that rock",
-			"Great Plains",
-			"Squeltch",
-			"Beeeees!",
-			"Speak to the king",
-			"Forest hunters",
-			"Badlands",
-		},
-		numoptionaltasks = 4,
-		optionaltasks = 
-		{
-			"Befriend the pigs",
-			"For a nice walk",
-			"Kill the spiders",
-			"Killer bees!",
-			"Make a Beehat",
-			"The hunters",
-			"Magic meadow",
-			"Frogs and bugs",
-			"Oasis",
-			"Mole Colony Deciduous",
-			"Mole Colony Rocks",
-			"MooseBreedingTask",
-		},
-		set_pieces = {
-			["ResurrectionStone"] = { count = 2, tasks={"Make a pick", "Dig that rock", "Great Plains", "Squeltch", "Beeeees!", "Speak to the king", "Forest hunters", "Badlands" } },
-			["WormholeGrass"] = { count = 8, tasks={"Make a pick", "Dig that rock", "Great Plains", "Squeltch", "Beeeees!", "Speak to the king", "Forest hunters", "Befriend the pigs", "For a nice walk", "Kill the spiders", "Killer bees!", "Make a Beehat", "The hunters", "Magic meadow", "Frogs and bugs", "Badlands"} },
-			["MooseNest"] = { count = 9, tasks={"Make a pick", "Beeeees!", "Speak to the king", "Forest hunters", "Befriend the pigs", "For a nice walk", "Make a Beehat", "Magic meadow", "Frogs and bugs"} },
-			["DragonflyArena"] = { count=  1, tasks={"Badlands"}},
-		},
-		
+			-- {"task_set", 		"default"},	 --don't need to specify default, kept here for clarity	
+		},		
 		numrandom_set_pieces = 5,
 		random_set_pieces = 
 		{
@@ -84,11 +52,13 @@ AddLevel(LEVELTYPE.SURVIVAL, {
 		name = STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELS[11],
 		desc = STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELDESC[11],
 		overrides = {
-			{"start_setpeice", 	"DefaultStart"},		
-			{"start_node",		"Clearing"},
-			{"season_start",	"autumn"},
+			-- {"start_setpeice", 	"DefaultStart"},	--deprecated, kept here for clarity		
+			-- {"start_node",		"Clearing"}, --deprecated, kept here for clarity	
+			-- {"start_location", 	"default"} ,--don't need to specify default, kept here for clarity	
+			-- {"season_start",	"default"}, --don't need to specify default, kept here for clarity	
+			{"task_set", 		"classic"},
 
-			{"world_size",		"large"},
+			-- {"world_size",		"large"}, --large is now default, kept here for clarity	
 			{"cave_entrance",	"never"},
 
             {"spring",			"noseason"},
@@ -109,32 +79,7 @@ AddLevel(LEVELTYPE.SURVIVAL, {
 
             {"frograin",		"never"},
             {"wildfires",		"never"},
-		},
-		tasks = {
-				"Make a pick",
-				"Dig that rock",
-				"Great Plains",
-				"Squeltch",
-				"Beeeees!",
-				"Speak to the king classic",
-				"Forest hunters",
-		},
-		numoptionaltasks = 4,
-		optionaltasks = {
-				"Befriend the pigs",
-				"For a nice walk",
-				"Kill the spiders",
-				"Killer bees!",
-				"Make a Beehat",
-				"The hunters",
-				"Magic meadow",
-				"Frogs and bugs",
-		},
-		set_pieces = {
-			["ResurrectionStone"] = { count=2, tasks={"Make a pick", "Dig that rock", "Great Plains", "Squeltch", "Beeeees!", "Speak to the king", "Forest hunters" } },
-			["WormholeGrass"] = { count=8, tasks={"Make a pick", "Dig that rock", "Great Plains", "Squeltch", "Beeeees!", "Speak to the king", "Forest hunters", "Befriend the pigs", "For a nice walk", "Kill the spiders", "Killer bees!", "Make a Beehat", "The hunters", "Magic meadow", "Frogs and bugs" } },
-		},
-		
+		},		
 		numrandom_set_pieces = 5,
 		random_set_pieces = 
 		{
@@ -161,80 +106,6 @@ AddLevel(LEVELTYPE.SURVIVAL, {
 		ordered_story_setpieces = {
 		},
 		required_prefabs = {
-		},
-	})
-
-AddLevel(LEVELTYPE.SURVIVAL, { 
-		id="SURVIVAL_DEFAULT",
-		name=STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELS[1],
-		desc=STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELDESC[1],
-		overrides={
-				{"start_setpeice", 	"DefaultStart"},		
-				{"start_node",		"Clearing"},
-				{"world_size",		"large"},
-		},
-		tasks = {
-				"Make a pick",
-				"Dig that rock",
-				"Great Plains",
-				"Squeltch",
-				"Beeeees!",
-				"Speak to the king",
-				"Forest hunters",
-				"Badlands",
-		},
-		numoptionaltasks = 4,
-		optionaltasks = {
-				"Befriend the pigs",
-				"For a nice walk",
-				"Kill the spiders",
-				"Killer bees!",
-				"Make a Beehat",
-				"The hunters",
-				"Magic meadow",
-				"Frogs and bugs",
-				"Oasis",
-				"Mole Colony Deciduous",
-				"Mole Colony Rocks",
-		},
-		set_pieces = {
-			["ResurrectionStone"] = { count=2, tasks={"Make a pick", "Dig that rock", "Great Plains", "Squeltch", "Beeeees!", "Speak to the king", "Forest hunters", "Badlands" } },
-			["WormholeGrass"] = { count=8, tasks={"Make a pick", "Dig that rock", "Great Plains", "Squeltch", "Beeeees!", "Speak to the king", "Forest hunters", "Befriend the pigs", "For a nice walk", "Kill the spiders", "Killer bees!", "Make a Beehat", "The hunters", "Magic meadow", "Frogs and bugs", "Badlands" } },
-		},
-
-		numrandom_set_pieces = 5,
-		random_set_pieces = 
-		{
-			"Chessy_1",
-			"Chessy_2",
-			"Chessy_3",
-			"Chessy_4",
-			"Chessy_5",
-			"Chessy_6",
-			"ChessSpot1",
-			"ChessSpot2",
-			"ChessSpot3",
-			"Maxwell1",
-			"Maxwell2",
-			"Maxwell3",
-			"Maxwell4",
-			"Maxwell5",
-			"Maxwell6",
-			"Maxwell7",
-			"Warzone_1",
-			"Warzone_2",
-			"Warzone_3",
-		},
-		ordered_story_setpieces = {
-			"TeleportatoRingLayout",
-			"TeleportatoBoxLayout",
-			"TeleportatoCrankLayout",
-			"TeleportatoPotatoLayout",
-			"AdventurePortalLayout",
-			"TeleportatoBaseLayout",
-		},
-		required_prefabs = {
-			"teleportato_ring",  "teleportato_box",  "teleportato_crank", "teleportato_potato", "teleportato_base", "chester_eyebone", "adventure_portal"
 		},
 	})
 	
@@ -244,45 +115,15 @@ AddLevel(LEVELTYPE.SURVIVAL, {
 		name=STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELS[2],
 		desc= STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELDESC[2],
 		overrides={				
-				{"start_setpeice", 	"DefaultPlusStart"},	
-				{"start_node",		{"DeepForest", "Forest", "SpiderForest", "Plain", "Rocky", "Marsh"}},
+				-- {"start_setpeice", 	"DefaultPlusStart"},	 --deprecated, kept here for clarity		
+				-- {"start_node",		{"DeepForest", "Forest", "SpiderForest", "Plain", "Rocky", "Marsh"}}, --deprecated, kept here for clarity		
+				{"start_location", 	"plus"},
 				{"berrybush", 		"rare"},
 				{"carrot", 			"rare"},
 				{"rabbits", 		"rare"},
-				{"world_size",		"large"},				
+				-- {"world_size",		"large"}, --large is now default, kept here for clarity	
+				-- {"task_set", 		"default"},			--don't need to specify default, kept here for clarity		
 		},
-		tasks = {
-				"Make a pick",
-				"Dig that rock",
-				"Great Plains",
-				"Squeltch",
-				"Beeeees!",
-				"Speak to the king",
-				"Tentacle-Blocked The Deep Forest",
-				"Badlands",
-		},
-		numoptionaltasks = 4,
-		optionaltasks = {
-				"Forest hunters",
-				"Befriend the pigs",
-				"For a nice walk",
-				"Kill the spiders",
-				"Killer bees!",
-				"Make a Beehat",
-				"The hunters",
-				"Magic meadow",
-				"Hounded Greater Plains",
-				"Merms ahoy",
-				"Frogs and bugs",
-				"Oasis",
-				"Mole Colony Deciduous",
-				"Mole Colony Rocks",
-		},
-		set_pieces = {
-				["ResurrectionStone"] = { count=2, tasks={ "Speak to the king", "Forest hunters" } },
-				["WormholeGrass"] = { count=8, tasks={"Make a pick", "Dig that rock", "Great Plains", "Squeltch", "Beeeees!", "Speak to the king", "Forest hunters", "Befriend the pigs", "For a nice walk", "Kill the spiders", "Killer bees!", "Make a Beehat", "The hunters", "Magic meadow", "Frogs and bugs"} },
-		},
-
 		numrandom_set_pieces = 5,
 		random_set_pieces = 
 		{
@@ -325,47 +166,17 @@ AddLevel(LEVELTYPE.SURVIVAL, {
 		name=STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELS[2],
 		desc= STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELDESC[2],
 		overrides={				
-				{"start_setpeice", 	"DefaultPlusStart"},	
-				{"start_node",		{"DeepForest", "Forest", "SpiderForest", "Plain", "Rocky", "Marsh"}},
+				-- {"start_setpeice", 	"DefaultPlusStart"},	  --deprecated, kept here for clarity		
+				-- {"start_node",		{"DeepForest", "Forest", "SpiderForest", "Plain", "Rocky", "Marsh"}},  --deprecated, kept here for clarity		
+				{"start_location", 	"plus"},
 				{"boons", 			"often"},				
 				{"spiders", 		"often"},
 				{"berrybush", 		"rare"},
 				{"carrot", 			"rare"},
 				{"rabbits", 		"rare"},
-				{"world_size",		"large"},				
+				-- {"world_size",		"large"},	--large is now default, kept here for clarity	
+				-- {"task_set", 		"default"}, --don't need to specify default, kept here for clarity		
 		},
-		tasks = {
-				"Make a pick",
-				"Dig that rock",
-				"Great Plains",
-				"Squeltch",
-				"Beeeees!",
-				"Speak to the king",
-				"Tentacle-Blocked The Deep Forest",
-				"Badlands",
-		},
-		numoptionaltasks = 4,
-		optionaltasks = {
-				"Forest hunters",
-				"Befriend the pigs",
-				"For a nice walk",
-				"Kill the spiders",
-				"Killer bees!",
-				"Make a Beehat",
-				"The hunters",
-				"Magic meadow",
-				"Hounded Greater Plains",
-				"Merms ahoy",
-				"Frogs and bugs",
-				"Oasis",
-				"Mole Colony Deciduous",
-				"Mole Colony Rocks",
-		},
-		set_pieces = {
-				["ResurrectionStone"] = { count=2, tasks={ "Speak to the king", "Forest hunters" } },
-				["WormholeGrass"] = { count=8, tasks={"Make a pick", "Dig that rock", "Great Plains", "Squeltch", "Beeeees!", "Speak to the king", "Forest hunters", "Befriend the pigs", "For a nice walk", "Kill the spiders", "Killer bees!", "Make a Beehat", "The hunters", "Magic meadow", "Frogs and bugs"} },
-		},
-
 		numrandom_set_pieces = 5,
 		random_set_pieces = 
 		{
@@ -391,15 +202,15 @@ AddLevel(LEVELTYPE.SURVIVAL, {
 		},
 
 		ordered_story_setpieces = {
-			"TeleportatoRingLayout",
-			"TeleportatoBoxLayout",
-			"TeleportatoCrankLayout",
-			"TeleportatoPotatoLayout",
-			"AdventurePortalLayout",
-			"TeleportatoBaseLayout",
+			-- "TeleportatoRingLayout",
+			-- "TeleportatoBoxLayout",
+			-- "TeleportatoCrankLayout",
+			-- "TeleportatoPotatoLayout",
+			-- "AdventurePortalLayout",
+			-- "TeleportatoBaseLayout",
 		},
 		required_prefabs = {
-			"teleportato_ring",  "teleportato_box",  "teleportato_crank", "teleportato_potato", "teleportato_base", "chester_eyebone", "adventure_portal"
+			-- "teleportato_ring",  "teleportato_box",  "teleportato_crank", "teleportato_potato", "teleportato_base", "chester_eyebone", "adventure_portal"
 		},
 	})
 end
@@ -409,41 +220,13 @@ AddLevel(LEVELTYPE.SURVIVAL, {
 		name=STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELS[3],
 		desc= STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELDESC[3],
 		overrides={				
-				{"start_setpeice", 	"DarknessStart"},	
-				{"start_node",		{"DeepForest", "Forest"}},		
+				-- {"start_setpeice", 	"DarknessStart"},	 --deprecated, kept here for clarity		
+				-- {"start_node",		{"DeepForest", "Forest"}},	 --deprecated, kept here for clarity			
+				{"start_location",  "darkness"},
 				{"day", 			"onlynight"}, 
-				{"world_size",		"large"},
-		},
-		tasks = {
-				"Make a pick",
-				"Dig that rock",
-				"Great Plains",
-				"Squeltch",
-				"Beeeees!",
-				"Speak to the king",
-				"Forest hunters",
-				"Badlands",
-		},
-		numoptionaltasks = 4,
-		optionaltasks = {
-				"Forest hunters",
-				"Befriend the pigs",
-				"For a nice walk",
-				"Kill the spiders",
-				"Killer bees!",
-				"Make a Beehat",
-				"The hunters",
-				"Magic meadow",
-				"Frogs and bugs",
-				"Oasis",
-				"Mole Colony Deciduous",
-				"Mole Colony Rocks",
-		},
-		set_pieces = {
-				["ResurrectionStone"] = { count=2, tasks={ "Speak to the king", "Forest hunters" } },
-				["WormholeGrass"] = { count=8, tasks={"Make a pick", "Dig that rock", "Great Plains", "Squeltch", "Beeeees!", "Speak to the king", "Forest hunters", "Befriend the pigs", "For a nice walk", "Kill the spiders", "Killer bees!", "Make a Beehat", "The hunters", "Magic meadow", "Frogs and bugs"} },
-		},
-		
+				-- {"world_size",		"large"}, --large is now default, kept here for clarity	
+				-- {"task_set", 		"default"},  --don't need to specify default, kept here for clarity		
+		},		
 		numrandom_set_pieces = 5,
 		random_set_pieces = 
 		{

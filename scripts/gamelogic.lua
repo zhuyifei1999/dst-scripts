@@ -1,6 +1,7 @@
 require "mods"
 require "playerprofile"
 require "playerdeaths"
+require "playerhistory"
 require "saveindex"
 require "map/extents"
 require "perfutil"
@@ -23,7 +24,7 @@ end
 
 global_loading_widget = nil
 LoadingWidget = require "widgets/loadingwidget"
-global_loading_widget = LoadingWidget()
+global_loading_widget = LoadingWidget(Settings.load_screen_image)
 global_loading_widget:SetHAnchor(ANCHOR_LEFT)
 global_loading_widget:SetVAnchor(ANCHOR_BOTTOM)
 
@@ -58,11 +59,11 @@ function ForceAuthenticationDialog()
 	if not InGamePlay() then
 		local active_screen = TheFrontEnd:GetActiveScreen()
 		if active_screen ~= nil and active_screen.name == "MainScreen" then
-			active_screen:OnPlayMultiplayerButton()
+			active_screen:OnLoginButton(true)
 		elseif MainScreen then
 			local main_screen = MainScreen(Profile)
 			TheFrontEnd:ShowScreen( main_screen )
-			main_screen:OnPlayMultiplayerButton()
+			main_screen:OnLoginButton(true)
 		end
 	end
 end
@@ -230,7 +231,7 @@ local replace = {
 			}
 
 POPULATING = false
-function PopulateWorld(savedata, profile)
+local function PopulateWorld(savedata, profile)
     POPULATING = true
     TheSystemService:SetStalling(true)
 	Print(VERBOSITY.DEBUG, "PopulateWorld")
@@ -497,7 +498,7 @@ local function OnPlayerActivated(world)
         --Stay faded out
         ActivateWorld()
     else
-        TheFrontEnd:Fade(true, 1, ActivateWorld)
+        TheFrontEnd:Fade(true, 1, ActivateWorld, nil, nil, "white")
     end
 end
 
@@ -517,6 +518,7 @@ end
 local function OnPlayerDeactivated(world, player)
     TheFrontEnd:ClearScreens()
     TheFrontEnd:SetFadeLevel(1)
+    TheMixer:PopMix("normal")
     SetPause(true)
     SendResumeRequestToServer(world, 2)
 end
@@ -782,9 +784,6 @@ local function DoGenerateWorld(saveslot)
 			local success, world_table = RunInSandbox(savedata)
 			if success then
 				LoadAssets("BACKEND")
-
-                -- This is a brand new save file, so set it's version to current
-                world_table.meta.saveversion = require("savefileupgrades").VERSION
 				DoInitGame(world_table, Profile)
 			end
 		end
@@ -884,14 +883,6 @@ local function DoResetAction()
 			if MainScreen then
 				TheFrontEnd:ShowScreen(MainScreen(Profile))
 			end
-		elseif Settings.reset_action == RESET_ACTION.MODS_SCREEN_PUSH then
-			--print("Reset Action: MODS_SCREEN_PUSH")
-			LoadAssets("FRONTEND")
-			if MainScreen then
-				TheFrontEnd:ShowScreen(MainScreen(Profile))
-				TheFrontEnd:PushScreen(ModsScreen())
-				TheFrontEnd:Fade(true, screen_fade_time)
-			end
 		end
 	else
 		if PRINT_TEXTURE_INFO then
@@ -944,11 +935,13 @@ STATS_ENABLE = METRICS_ENABLED
 Profile = PlayerProfile()
 SaveGameIndex = SaveIndex()
 Morgue = PlayerDeaths()
+PlayerHistory = PlayerHistory()
 
 Print(VERBOSITY.DEBUG, "[Loading Morgue]")
 Morgue:Load( function(did_it_load) 
 	--print("Morgue loaded....[",did_it_load,"]")
 end )
+PlayerHistory:Load( function() end )
 
 Print(VERBOSITY.DEBUG, "[Loading profile and save index]")
 Profile:Load( function() 

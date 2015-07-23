@@ -1,15 +1,15 @@
 function MakePlacer(name, bank, build, anim, onground, snap, metersnap, scale, fixedcameraoffset, facing)
 
-	local function fn()
-		local inst = CreateEntity()
+    local function fn()
+        local inst = CreateEntity()
 
         --[[Non-networked entity]]
 
-		inst.entity:AddTransform()
-		inst.entity:AddAnimState()
-		inst.AnimState:SetBank(bank)
-		inst.AnimState:SetBuild(build)
-		inst.AnimState:PlayAnimation(anim, true)
+        inst.entity:AddTransform()
+        inst.entity:AddAnimState()
+        inst.AnimState:SetBank(bank)
+        inst.AnimState:SetBuild(build)
+        inst.AnimState:PlayAnimation(anim, true)
         inst.AnimState:SetLightOverride(1)
 
         if facing == "two" then
@@ -21,23 +21,24 @@ function MakePlacer(name, bank, build, anim, onground, snap, metersnap, scale, f
         elseif facing == "eight" then
             inst.Transform:SetEightFaced()
         end
-		
-		inst:AddComponent("placer")
-		inst.persists = false
-		inst.components.placer.snaptogrid = snap
-		inst.components.placer.snap_to_meters = metersnap
+
+        inst:AddComponent("placer")
+        inst.persists = false
+        inst.components.placer.snaptogrid = snap
+        inst.components.placer.snap_to_meters = metersnap
         inst.components.placer.fixedcameraoffset = fixedcameraoffset
-		
-		scale = scale or 1
+        inst.components.placer.onground = onground
 
-		inst.Transform:SetScale(scale, scale, scale)
+        scale = scale or 1
 
-		if onground then
-			inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
-		end
+        inst.Transform:SetScale(scale, scale, scale)
 
-		return inst
-	end
-	
-	return Prefab(name, fn)
+        if onground then
+            inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
+        end
+
+        return inst
+    end
+
+    return Prefab(name, fn)
 end

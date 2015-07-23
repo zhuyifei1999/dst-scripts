@@ -246,6 +246,7 @@ local function fn()
 	MakeLargePropagator(inst)
 	inst:ListenForEvent("onignite", onignite)
 
+    inst.OnSave = OnSave
 	inst.OnLoad = OnLoad
 	inst.OnEntitySleep = OnEntitySleep
 	inst.OnEntityWake = OnEntityWake

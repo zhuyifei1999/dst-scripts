@@ -14,38 +14,21 @@ local NIGHTVISION_COLOURCUBES =
     full_moon = "images/colour_cubes/mole_vision_off_cc.tex",
 }
 
-local function OnEquip(inst, data)
+local function OnEquipChanged(inst)
     local self = inst.components.playervision
-    if not self.nightvision and data.item:HasTag("nightvision") then
-        self.nightvision = true
+    if self.nightvision == not inst.replica.inventory:EquipHasTag("nightvision") then
+        self.nightvision = not self.nightvision
         if not self.forcenightvision then
             self:UpdateCCTable()
-            inst:PushEvent("nightvision", true)
-        end
-    end
-end
-
-local function OnUnequip(inst)
-    local self = inst.components.playervision
-    if self.nightvision and not inst.replica.inventory:EquipHasTag("nightvision") then
-        self.nightvision = false
-        if not self.forcenightvision then
-            self:UpdateCCTable()
-            inst:PushEvent("nightvision", false)
+            inst:PushEvent("nightvision", self.nightvision)
         end
     end
 end
 
 local function OnInit(inst, self)
-    inst:ListenForEvent("equip", OnEquip)
-    inst:ListenForEvent("unequip", OnUnequip)
-    if not self.nightvision and inst.replica.inventory:EquipHasTag("nightvision") then
-        self.nightvision = true
-        if not self.forcenightvision then
-            self:UpdateCCTable()
-            inst:PushEvent("nightvision", true)
-        end
-    end
+    inst:ListenForEvent("equip", OnEquipChanged)
+    inst:ListenForEvent("unequip", OnEquipChanged)
+    OnEquipChanged(inst)
 end
 
 local PlayerVision = Class(function(self, inst)

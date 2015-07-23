@@ -4,12 +4,12 @@ local Spinner = require "widgets/spinner"
 --
 -- For example, OnChanged gets called by Changed, the base function. Both get passed the newly selected item.
 
-local NumericSpinner = Class(Spinner, function( self, min, max, width, height, textinfo, atlas, textures, editable, lean)
+local NumericSpinner = Class(Spinner, function( self, min, max, width, height, textinfo, atlas, textures, editable, lean, textwidth, textheight, spinnerfocusscalex, spinnerfocusscaley)
 	-- min/max need to be set before calling base class ctor as it calls SetSelectedIndex, which results in them being used
 	-- aka. never call "virtual" functions during construction
 	self.min = min
 	self.max = max
-    Spinner._ctor( self, {}, width, height, textinfo, editable, atlas, textures, lean )
+    Spinner._ctor( self, {}, width, height, textinfo, editable, atlas, textures, lean, textwidth, textheight, spinnerfocusscalex, spinnerfocusscaley )
 
     if editable then
     	self.text:SetCharacterFilter( "0123456789" )

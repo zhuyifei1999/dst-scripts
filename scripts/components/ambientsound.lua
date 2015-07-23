@@ -197,10 +197,13 @@ function self:OnUpdate(dt)
 
     --Update the ambient mix based upon the player's surroundings
     --Only update if we've actually walked somewhere new
-    --HACK: V2C: use camera pos when there's no player
-    local playerpos = player ~= nil and Vector3(player.Transform:GetWorldPosition()) or Vector3(0, 0, 0)
-    if _lastplayerpos == nil or _lastplayerpos:DistSq(playerpos) >= 16 then
-        local x, y = _map:GetTileCoordsAtPoint(playerpos:Get())
+    if player == nil then
+        _lastplayerpos = nil
+        wavesvolume = math.max(0, wavesvolume - dt)
+    elseif _lastplayerpos == nil or player:GetDistanceSqToPoint(_lastplayerpos:Get()) >= 16 then
+        _lastplayerpos = player:GetPosition()
+
+        local x, y = _map:GetTileCoordsAtPoint(_lastplayerpos:Get())
         local wavecount = 0
         local soundmixcounters = {}
         local soundmix = {}
@@ -231,8 +234,6 @@ function self:OnUpdate(dt)
             end
         end
 
-        _lastplayerpos = playerpos
-
         --Sort by highest count and truncate soundmix to MAX_MIX_SOUNDS
         table.sort(soundmix, SortByCount)
         soundmix[MAX_MIX_SOUNDS + 1] = nil
@@ -246,8 +247,10 @@ function self:OnUpdate(dt)
         wavesvolume = _iscave and 0 or math.min(math.max(wavecount * WAVE_VOLUME_SCALE, 0), 1)
     end
 
-    --Night/dusk ambience is attenuated in the light
-    if _lightattenuation and player ~= nil and player.LightWatcher ~= nil then
+    if player == nil then
+        ambientvolume = math.max(0, ambientvolume - dt)
+    elseif _lightattenuation and player.LightWatcher ~= nil then
+        --Night/dusk ambience is attenuated in the light
         local lightval = player.LightWatcher:GetLightValue()
         local highlight = .9
         local lowlight = .2

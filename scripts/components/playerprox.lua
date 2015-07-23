@@ -1,7 +1,7 @@
 --[[
     PlayerProx component can run in four possible ways
     - Any player within distance, all players outside distance (PlayerProx.AnyPlayer)
-    - a specific player within and outside distance	(PlayerProx.SpecificPlayer)
+    - a specific player within and outside distance (PlayerProx.SpecificPlayer)
     - as soon as a player comes within range, start tracking that one for going out of distance and then relinquish tracking (PlayerProx.LockOnPlayer)
     - as soon as a player comes within range, start tracking that player and keep tracking that player (PlayerProx.LockAndKeepPlayer)
 --]]
@@ -156,20 +156,20 @@ PlayerProx.OnRemoveEntity = PlayerProx.Stop
 PlayerProx.OnRemoveFromEntity = PlayerProx.Stop
 
 function PlayerProx:SetTargetMode(mode, target, override)
-	if not override then
-		self.originaltargetmode = mode
-	end
-	self.targetmode = mode
-	self:SetTarget(target)
-	assert(self.targetmode ~= SpecificPlayer or self.target ~= nil)
-	self:Schedule()
+    if not override then
+        self.originaltargetmode = mode
+    end
+    self.targetmode = mode
+    self:SetTarget(target)
+    assert(self.targetmode ~= SpecificPlayer or self.target ~= nil)
+    self:Schedule()
 end
 
 function PlayerProx:SetTarget(target)
     --listen for playerexited instead of ms_playerleft because
     --this component may be used for client side prefabs
     if self.target ~= nil then
-        self.inst:RemoveEventListener("onremove", self._ontargetleft, self.target)
+        self.inst:RemoveEventCallback("onremove", self._ontargetleft, self.target)
     end
     self.target = target
     if target ~= nil then

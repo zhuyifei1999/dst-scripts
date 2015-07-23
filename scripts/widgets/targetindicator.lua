@@ -15,7 +15,7 @@ local ARROW_OFFSET = 65
 local TOP_EDGE_BUFFER = 20
 local BOTTOM_EDGE_BUFFER = 40
 local LEFT_EDGE_BUFFER = 67
-local RIGHT_EDGE_BUFFER = 80 --#srosen we still get overlap on the meters in top right.... need to special-case that area somehow (or just hand-wave it)
+local RIGHT_EDGE_BUFFER = 80
 
 local MIN_SCALE = .5
 local MIN_ALPHA = .35
@@ -105,7 +105,7 @@ end
 function TargetIndicator:OnUpdate()
     -- figure out how far away they are and scale accordingly
     -- then grab the new position of the target and update the HUD elt's pos accordingly
-    -- #srosen the kill on this is rough: it just pops in/out. is there a way to make it fadeout on kill without managing it manually (that could get messy, but is possible)?
+    -- kill on this is rough: it just pops in/out. would be nice if it faded in/out...
 
     local userflags = self.target.Network ~= nil and self.target.Network:GetUserFlags() or 0
     if self.userflags ~= userflags then
@@ -195,8 +195,6 @@ function TargetIndicator:UpdatePosition(targX, targZ)
     local x = GetXCoord(indicatorAngle, screenWidth)
     local y = GetYCoord(indicatorAngle, screenHeight)
 
-    -- #srosen this isn't quite doing the trick: as the widget gets scaled down, it floats closer and closer to the edge of the screen
-    -- probably just a matter of having a scaled buffer size (i.e. buffer increases as size gets smaller)
     if x <= LEFT_EDGE_BUFFER + (.5 * w * scale.x) then 
         x = LEFT_EDGE_BUFFER + (.5 * w * scale.x)
     elseif x >= screenWidth - RIGHT_EDGE_BUFFER - (.5 * w * scale.x) then

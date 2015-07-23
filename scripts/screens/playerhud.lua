@@ -133,7 +133,7 @@ end
 
 function PlayerHud:Hide()
     self.shown = false
-    self.root:Hide() --#srosen need an exception for the timer here (and to always force-hide it if the rest of the HUD is shown)
+    self.root:Hide()
 end
 
 function PlayerHud:Show()

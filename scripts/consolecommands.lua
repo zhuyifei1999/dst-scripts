@@ -36,19 +36,19 @@ end
 -- To send a one time announcement:   c_announce(msg)
 -- To repeat a periodic announcement: c_announce(msg, interval)
 -- To cancel a periodic announcement: c_announce()
-function c_announce(msg, interval)
+function c_announce(msg, interval, category)
     if msg == nil then
         if TheWorld.__announcementtask ~= nil then
             TheWorld.__announcementtask:Cancel()
             TheWorld.__announcementtask = nil
         end
     elseif interval == nil then
-        TheNet:Announce(msg)
+        TheNet:Announce(msg, nil, nil, category)
     else
         if TheWorld.__announcementtask ~= nil then
             TheWorld.__announcementtask:Cancel()
         end
-        TheWorld.__announcementtask = TheWorld:DoPeriodicTask(interval, function() TheNet:Announce(msg) end, 0)
+        TheWorld.__announcementtask = TheWorld:DoPeriodicTask(interval, function() TheNet:Announce(msg, nil, nil, category) end, 0)
     end
 end
 
@@ -160,7 +160,14 @@ end
 
 -- Return a listing of currently active players
 function c_listplayers()
-    print( dumptable( TheNet:GetClientTable() ) )
+    local isdedicated = TheNet:GetServerIsDedicated()
+    local index = 1
+    for i, v in ipairs(TheNet:GetClientTable()) do
+        if not isdedicated or v.performance == nil then
+            print(string.format("%s[%d] %s <%s>", v.admin and "*" or " ", index, v.name, v.prefab))
+            index = index + 1
+        end
+    end
 end
 
 -- Return a listing of AllPlayers table
@@ -728,6 +735,10 @@ end
 function c_skip(num)
     num = num or 1
     LongUpdate(TUNING.TOTAL_DAY_TIME * num)
+end
+
+function c_togglevotekick()
+	TheWorld.net.components.voter:ToggleVoteKick()
 end
 
 function c_groundtype()

@@ -50,8 +50,8 @@ local function sayfn(self, script, nobroadcast, colour)
     local player = ThePlayer
     if self.inst.userid ~= nil and
         player ~= nil and
-        player.mutedPlayers ~= nil and
-        player.mutedPlayers[self.inst.userid] then
+        TheFrontEnd.mutedPlayers ~= nil and
+        TheFrontEnd.mutedPlayers[self.inst.userid] then
         if self.widget ~= nil then
             self.widget:Kill()
             self.widget = nil
@@ -62,8 +62,6 @@ local function sayfn(self, script, nobroadcast, colour)
 
     if self.widget ~= nil then
         self.widget.symbol = self.symbol
-        --#srosen this was originally a hack for PAX, but this might be a totally acceptable way to do this...
-        --V2C: this turned out to be the better way now =)
         self.widget:SetOffset(self.inst:HasTag("playerghost") and PLAYERGHOST_OFFSET or self.offset or DEFAULT_OFFSET)
         self.widget:SetTarget(self.inst)
         if colour ~= nil then

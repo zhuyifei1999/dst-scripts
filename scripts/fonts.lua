@@ -2,8 +2,11 @@ DEFAULTFONT = "opensans"
 DIALOGFONT = "opensans"
 TITLEFONT = "bp100"
 UIFONT = "bp50"
-BUTTONFONT="buttonfont"
-NEWFONT="spirequal"
+BUTTONFONT = "buttonfont"
+NEWFONT = "spirequal"
+NEWFONT_SMALL = "spirequal_small"
+NEWFONT_OUTLINE = "spirequal_outline"
+NEWFONT_OUTLINE_SMALL = "spirequal_outline_small"
 NUMBERFONT = "stint-ucr"
 TALKINGFONT = "talkingfont"
 TALKINGFONT_WATHGRITHR = "talkingfont_wathgrithr"
@@ -37,4 +40,7 @@ FONTS = {
 	{ filename = "fonts/belisaplumilla100"..font_posfix..".zip", alias = "bp100" },	
 	{ filename = "fonts/buttonfont"..font_posfix..".zip", alias = "buttonfont" },	
 	{ filename = "fonts/spirequal"..font_posfix..".zip", alias = "spirequal" },	
+	{ filename = "fonts/spirequal_small"..font_posfix..".zip", alias = "spirequal_small" },	
+	{ filename = "fonts/spirequal_outline"..font_posfix..".zip", alias = "spirequal_outline" },
+	{ filename = "fonts/spirequal_outline_small"..font_posfix..".zip", alias = "spirequal_outline_small" },
 }

@@ -154,6 +154,12 @@ local function InsertPostInitFunctions(env, isworldgen)
 		require("map/levels")
 		AddLevel(...)
 	end
+	env.AddTaskSet = function(...)
+		arg = {...}
+		initprint("AddTaskSet", arg[1])
+		require("map/tasks")
+		AddTaskSet(...)
+	end
 	env.AddTask = function(...)
 		arg = {...}
 		initprint("AddTask", arg[1])
@@ -168,9 +174,21 @@ local function InsertPostInitFunctions(env, isworldgen)
 	end
 
 	env.AddGameMode = function(game_mode, game_mode_text)
-		initprint("AddGameMode", game_mode, game_mode_text)
-		require("gamemodes")
-		return AddGameMode(game_mode, game_mode_text)
+		print("Warning: AddGameMode has been removed.")
+		print("Game mode is now described in modinfo.lua with the following code")
+		print("game_modes =")
+		print("{")
+		print("\t{")
+		print("\t\tname = \"glutton\",")
+		print("\t\tlabel = \"Glutton\",")
+		print("\t\tsettings =")
+		print("\t\t{")
+		print("\t\t\tghost_sanity_drain = true,")
+		print("\t\t\tportal_rez = true")
+		print("\t\t\t--see other setting options in gamemodes.lua")
+		print("\t\t}")
+		print("\t}")
+		print("}")
 	end
 
 	env.GetModConfigData = function( optionname, get_local_config )

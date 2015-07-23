@@ -1,12 +1,8 @@
 local Widget = require "widgets/widget"
 local Text = require "widgets/text"
 
---#srosen this makes it not quite match the screen: ideally we are only coloring the highlight box outside of the text field
--- which would require splitting it into two images...
-local frame_color = {177/255.0,154/255.0,120/255.0, 1}
-
-local TextEdit = Class(Text, function(self, font, size, text)
-    Text._ctor(self, font, size, text)
+local TextEdit = Class(Text, function(self, font, size, text, colour)
+    Text._ctor(self, font, size, text, colour)
 
     self.inst.entity:AddTextEditWidget()
     self:SetString(text)
@@ -16,6 +12,17 @@ local TextEdit = Class(Text, function(self, font, size, text)
     self.force_edit = false
     self.pass_controls_to_screen = {}
 
+    self.idle_text_color = {0,0,0,1}
+    self.edit_text_color = {0,0,0,1}--{1,1,1,1}
+
+    self.idle_tint = {1,1,1,1}
+    self.hover_tint = {1,1,1,1}
+    self.selected_tint = {1,1,1,1}
+
+    self:SetColour(self.idle_text_color[1], self.idle_text_color[2], self.idle_text_color[3], self.idle_text_color[4])
+
+    --Default cursor colour is WHITE { 1, 1, 1, 1 }
+    self:SetEditCursorColour(0,0,0,1) 
 end)
 
 function TextEdit:SetForceEdit(force)
@@ -38,9 +45,14 @@ function TextEdit:SetEditing(editing)
 		TheInput:EnableDebugToggle(false)
 		--#srosen this is where we should push whatever text input widget we have for controllers
 		-- we probably don't want to set the focus and whatnot here if controller attached: 
-		-- it screws with textboxes that are child widgets in scroll lists
+		-- it screws with textboxes that are child widgets in scroll lists (and on the lobby screen)
+		-- instead, we should go into "edit mode" by pushing a modal screen, rather than giving this thing focus and gobbling input
 		if TheInput:ControllerAttached() then
 
+		end
+
+		if self.edit_text_color then
+			self:SetColour(self.edit_text_color[1], self.edit_text_color[2], self.edit_text_color[3], self.edit_text_color[4])
 		end
 
         if self.force_edit then
@@ -53,6 +65,10 @@ function TextEdit:SetEditing(editing)
 			self:DoHoverImage()
 		else
 			self:DoIdleImage()
+		end
+
+		if self.idle_text_color then
+			self:SetColour(self.idle_text_color[1], self.idle_text_color[2], self.idle_text_color[3], self.idle_text_color[4])
 		end
 
         if self.force_edit then
@@ -113,6 +129,8 @@ function TextEdit:OnRawKey(key, down)
 	
 	if self.editing then
 		if down then
+			self.inst.TextEditWidget:OnKeyDown(key)
+		else
 			if key == KEY_ENTER then
 				self:OnProcess()
 				return true
@@ -127,10 +145,12 @@ function TextEdit:OnRawKey(key, down)
 				end
 				-- self.nextTextEditWidget:OnControl(CONTROL_ACCEPT, false)
 			else
-				self.inst.TextEditWidget:OnKeyDown(key)
+				self.inst.TextEditWidget:OnKeyUp(key)
 			end
-		else
-			self.inst.TextEditWidget:OnKeyUp(key)
+		end
+
+		if self.OnTextInputted then
+			self.OnTextInputted()
 		end
 	end
 	
@@ -190,32 +210,33 @@ end
 
 function TextEdit:DoHoverImage()
 	if self.focusedtex then
-		self.focusimage:SetTexture(self.atlas, self.focusedtex)-- self.focusimage:SetTexture(self.atlas, self.focus and self.focusedtex or self.unfocusedtex)
-		self.focusimage:SetTint(frame_color[1], frame_color[2], frame_color[3], frame_color[4])
+		self.focusimage:SetTexture(self.atlas, self.focusedtex)
+		self.focusimage:SetTint(self.hover_tint[1],self.hover_tint[2],self.hover_tint[3],self.hover_tint[4])
 	end
 end
 
 function TextEdit:DoSelectedImage()
-	if self.focusedtex then
-		self.focusimage:SetTexture(self.atlas, self.focusedtex)-- self.focusimage:SetTexture(self.atlas, self.focus and self.focusedtex or self.unfocusedtex)
-		self.focusimage:SetTint(1,1,1,1)
+	if self.activetex then
+		self.focusimage:SetTexture(self.atlas, self.activetex)
+		self.focusimage:SetTint(self.selected_tint[1],self.selected_tint[2],self.selected_tint[3],self.selected_tint[4])
 	end
 end
 
 function TextEdit:DoIdleImage()
 	if self.unfocusedtex then
-		self.focusimage:SetTexture(self.atlas, self.unfocusedtex)-- self.focusimage:SetTexture(self.atlas, self.focus and self.focusedtex or self.unfocusedtex)
-		self.focusimage:SetTint(frame_color[1], frame_color[2], frame_color[3], frame_color[4])
+		self.focusimage:SetTexture(self.atlas, self.unfocusedtex)
+		self.focusimage:SetTint(self.idle_tint[1],self.idle_tint[2],self.idle_tint[3],self.idle_tint[4])
 	end
 end
 
-function TextEdit:SetFocusedImage(widget, atlas, focused, unfocused)
+function TextEdit:SetFocusedImage(widget, atlas, unfocused, hovered, active)
 	self.focusimage = widget
 	self.atlas = atlas
-	self.focusedtex = focused
+	self.focusedtex = hovered
 	self.unfocusedtex = unfocused
+	self.activetex = active
 
-	if self.focusedtex and self.unfocusedtex then
+	if self.focusedtex and self.unfocusedtex and self.activetex then
 		self.focusimage:SetTexture(self.atlas, self.focus and self.focusedtex or self.unfocusedtex)
 		if self.editing then
 			self:DoSelectedImage()
@@ -227,6 +248,43 @@ function TextEdit:SetFocusedImage(widget, atlas, focused, unfocused)
 	end
 
 end
+
+function TextEdit:SetIdleTextColour(r,g,b,a)
+    if type(r) == "number" then
+        self.idle_text_color = {r, g, b, a}
+    else
+        self.idle_text_color = r
+    end
+    if not self.editing then
+    	self:SetColour(self.idle_text_color[1], self.idle_text_color[2], self.idle_text_color[3], self.idle_text_color[4])
+    end
+end
+
+function TextEdit:SetEditTextColour(r,g,b,a)
+    if type(r) == "number" then
+        self.edit_text_color = {r, g, b, a}
+    else
+        self.edit_text_color = r
+    end
+    if self.editing then
+    	self:SetColour(self.edit_text_color[1], self.edit_text_color[2], self.edit_text_color[3], self.edit_text_color[4])
+    end
+end
+
+function TextEdit:SetEditCursorColour(r,g,b,a)
+    if type(r) == "number" then
+        self.inst.TextWidget:SetEditCursorColour(r, g, b, a)
+    else
+        self.inst.TextWidget:SetEditCursorColour(unpack(r))
+    end
+end
+
+-- function Text:SetFadeAlpha(a, doChildren)
+-- 	if not self.can_fade_alpha then return end
+	
+--     self:SetColour(self.colour[1], self.colour[2], self.colour[3], self.colour[4] * a)
+--     Widget.SetFadeAlpha( self, a, doChildren )
+-- end
 
 function TextEdit:SetTextLengthLimit(limit)
 	self.limit = limit

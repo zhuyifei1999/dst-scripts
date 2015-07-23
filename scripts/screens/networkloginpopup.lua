@@ -6,10 +6,9 @@ local Text = require "widgets/text"
 local Image = require "widgets/image"
 local Widget = require "widgets/widget"
 local Menu = require "widgets/menu"
+local TEMPLATES = require "widgets/templates"
 
-local screen_fade_time = .25
-
-local NetworkLoginPopup = Class(Screen, function(self, onLogin, onCancel)
+local NetworkLoginPopup = Class(Screen, function(self, onLogin, checkVersion, onCancel)
 	Screen._ctor(self, "NetworkLoginPopup")
 
 	--darken everything behind the dialog
@@ -28,10 +27,10 @@ local NetworkLoginPopup = Class(Screen, function(self, onLogin, onCancel)
     self.proot:SetScaleMode(SCALEMODE_PROPORTIONAL)
 
 	--throw up the background
-    self.bg = self.proot:AddChild(Image("images/fepanels_dst.xml", "small_panel.tex"))
-    self.bg:SetVRegPoint(ANCHOR_MIDDLE)
-    self.bg:SetHRegPoint(ANCHOR_MIDDLE)
-	self.bg:SetScale(0.75,0.75,0.75)
+	self.bg = self.proot:AddChild(TEMPLATES.CurlyWindow(30, 100, .7, .7, 47, -28))
+    self.bg.fill = self.proot:AddChild(Image("images/fepanel_fills.xml", "panel_fill_tiny.tex"))
+	self.bg.fill:SetScale(.54, .45)
+	self.bg.fill:SetPosition(6, 8)
 		
 	--title	
 	local title = ""
@@ -49,7 +48,7 @@ local NetworkLoginPopup = Class(Screen, function(self, onLogin, onCancel)
 	self.text:SetHAlign(ANCHOR_LEFT)
 	self.text:SetColour(0,0,0,1)
   
-    local spacing = 140
+    local spacing = 165
     local buttons = 
     {
         {text=STRINGS.UI.MAINSCREEN.PLAYOFFLINE, cb = function() 
@@ -60,9 +59,10 @@ local NetworkLoginPopup = Class(Screen, function(self, onLogin, onCancel)
         end},
     }
 	self.menu = self.proot:AddChild(Menu(buttons, spacing, true))
-	self.menu:SetPosition(-(spacing*(#buttons-1))/2, -70, 0) 
+	self.menu:SetPosition(-(spacing*(#buttons-1))/2 + 5, -93, 0) 
 	for i,v in pairs(self.menu.items) do
-		v:SetScale(.8)
+		v:SetScale(.7)
+		v.image:SetScale(.6, .8)
 	end
 	self.buttons = buttons
 	self.default_focus = self.menu
@@ -70,6 +70,7 @@ local NetworkLoginPopup = Class(Screen, function(self, onLogin, onCancel)
 	self.time = 0
 	self.progress = 0
 	self.onLogin = onLogin
+	self.checkVersion = checkVersion
 	self.onCancel = onCancel
 end)
 
@@ -107,7 +108,7 @@ function NetworkLoginPopup:OnControl(control, down)
 end
 
 function NetworkLoginPopup:OnLogin(forceOffline)
-	if not self.logged then
+	if forceOffline or (not self.logged and self.checkVersion() ~= "waiting") then
 		self.logged = true
 	    self:Disable()
 	    self:StopUpdating()

@@ -3,6 +3,7 @@ local Text = require "widgets/text"
 local ImageButton = require "widgets/imagebutton"
 local Image = require "widgets/image"
 local PlayerBadge = require "widgets/playerbadge"
+local TEMPLATES = require "widgets/templates"
 
 local openY = -30
 local closedY = -250
@@ -17,9 +18,10 @@ local WorldResetTimer = Class(Widget, function(self, owner)
 
     self.owner = owner
 
-    self.bg = self.root:AddChild(Image("images/fepanels_dst.xml", "wide_panel.tex"))
-    self.bg:SetScale(.7, 1, 1)
-    self.bg:SetPosition(0, 0)
+    self.bg = self.root:AddChild(TEMPLATES.CurlyWindow(245, 240, 1, 1, 68, -40))
+    self.bg.fill = self.root:AddChild(Image("images/fepanel_fills.xml", "panel_fill_tiny.tex"))
+    self.bg.fill:SetScale(1.1, .9)
+    self.bg.fill:SetPosition(8, 12)
 
 	local row2height = 75
 
@@ -41,11 +43,7 @@ local WorldResetTimer = Class(Widget, function(self, owner)
     self.survived_message:SetPosition(105, 0, 0)
 
     self.reset_hold_time = 0
-
-    -- self.line = self.root:AddChild(Image("images/ui.xml", "line_horizontal_4.tex")) -- #srosen this is real ugly, just looks blurry
-    -- self.line:SetPosition(0,110)
-    -- self.line:SetScale(.7,1)
-
+------
     if owner.Network:IsServerAdmin() then --for controller, don't show button, isntead show "Hold Start to Reset" string, if held for 1-2s, reset
         if TheInput:ControllerAttached() then
             local controller_id = TheInput:GetControllerID()
@@ -53,20 +51,17 @@ local WorldResetTimer = Class(Widget, function(self, owner)
             self.reset_text:SetPosition(260, row2height, 0)
             self.reset_text:SetColour(1,1,1,1)
 
-            self.bg:SetScale(.85, 1, 1)
             self.leftroot:SetPosition(-250, row2height)
             self.countdown_message:SetPosition(60, row2height)
         else
         	self.reset_button = self.root:AddChild(ImageButton())
-    	    self.reset_button:SetFont(BUTTONFONT)
     	    self.reset_button:SetOnClick(function() self:Reset() end)
     	    self.reset_button:SetText(STRINGS.UI.WORLDRESETDIALOG.RESET_BUTTON)
-    	    self.reset_button:SetPosition(260, row2height, 0)
+    	    self.reset_button:SetPosition(250, row2height, 0)
     	    self.reset_button:SetScale(.75)
 
-    	    self.bg:SetScale(.85, 1, 1)
-    	    self.leftroot:SetPosition(-250, row2height)
-    	    self.countdown_message:SetPosition(60, row2height)
+    	    self.leftroot:SetPosition(-270, row2height)
+    	    self.countdown_message:SetPosition(35, row2height)
 
     	    self.default_focus = self.reset_button
         end

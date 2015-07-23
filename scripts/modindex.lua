@@ -22,11 +22,9 @@ known_mods = {
 	[modname] = {
 		enabled = true,
 		disabled_bad = true,
-		disabled_old = true,
 		modinfo = {
 			version = "1.2",
 			api_version = 2,
-			old = true,
 			failed = false,
 		},
 	}
@@ -37,18 +35,21 @@ function ModIndex:GetModIndexName()
     return BRANCH ~= "dev" and "modindex" or ("modindex_"..BRANCH)
 end
 
-function ModIndex:GetModConfigurationPath(modname)
+function ModIndex:GetModConfigurationPath(modname, client_config)
 	if modname then
-		return mod_config_path..self:GetModConfigurationName(modname)
+		return mod_config_path..self:GetModConfigurationName(modname, client_config)
 	else
 		return mod_config_path
 	end
 end
 
-function ModIndex:GetModConfigurationName(modname)
+function ModIndex:GetModConfigurationName(modname, client_config)
 	local name = "modconfiguration_"..modname
 	if BRANCH ~= "release" then
 		name = name .. "_"..BRANCH
+	end
+	if not self:GetModInfo(modname).client_only_mod and client_config then
+		name = name .. "_CLIENT"
 	end
 	return name
 end
@@ -100,7 +101,7 @@ function ModIndex:GetModNames()
 	return names
 end
 
-function ModIndex:GetClientModNames()
+function ModIndex:GetClientModNames() --legacy can be removed once modtab is converted
 	local names = {}
 	for modname,_ in pairs(self.savedata.known_mods) do
 		if self:GetModInfo(modname).client_only_mod then
@@ -110,11 +111,31 @@ function ModIndex:GetClientModNames()
 	return names
 end
 
-function ModIndex:GetServerModNames()
+function ModIndex:GetServerModNames() --legacy can be removed once modtab is converted
 	local names = {}
 	for modname,_ in pairs(self.savedata.known_mods) do
 		if not self:GetModInfo(modname).client_only_mod then
 			table.insert(names, modname)
+		end
+	end
+	return names
+end
+
+function ModIndex:GetClientModNamesTable()
+	local names = {}
+	for known_modname,_ in pairs(self.savedata.known_mods) do
+		if self:GetModInfo(known_modname).client_only_mod then
+			table.insert(names, {modname = known_modname})
+		end
+	end
+	return names
+end
+
+function ModIndex:GetServerModNamesTable()
+	local names = {}
+	for known_modname,_ in pairs(self.savedata.known_mods) do
+		if not self:GetModInfo(known_modname).client_only_mod then
+			table.insert(names, {modname = known_modname})
 		end
 	end
 	return names
@@ -134,7 +155,6 @@ function ModIndex:Save(callback)
 		newdata.known_mods[name].temp_enabled = data.temp_enabled
 		newdata.known_mods[name].temp_disabled = data.temp_disabled
 		newdata.known_mods[name].disabled_bad = data.disabled_bad
-		newdata.known_mods[name].disabled_old = data.disabled_old
 		newdata.known_mods[name].disabled_incompatible_with_mode = data.disabled_incompatible_with_mode
 		newdata.known_mods[name].seen_api_version = MOD_API_VERSION
 		newdata.known_mods[name].modinfo = data.modinfo
@@ -256,6 +276,10 @@ function ResolveModname(modname)
 	return nil
 end
 
+function IsWorkshopMod(modname)
+	return modname:sub( 1, workshop_prefix:len() ) == workshop_prefix
+end
+
 function ModIndex:ApplyEnabledOverrides(mod_overrides)
 	if mod_overrides == nil then
 		print("Warning: modoverrides.lua is empty, or is failing to return a table.")
@@ -305,18 +329,11 @@ function ModIndex:ApplyConfigOptionOverrides(mod_overrides)
 	end
 end
 
-local function trimString( s )
-   return string.match( s, "^()%s*$" ) and "" or string.match( s, "^%s*(.*%S)" )
-end
 function ModIndex:LoadModInfo(modname)
 	modprint(string.format("Updating mod info for '%s'", modname))
 
 	local info = self:InitializeModInfo(modname)
-
-	if info.old and self:IsModNewlyOld(modname) then
-		modprint("  It's using an old api_version.")
-		self:DisableBecauseOld(modname)
-	elseif info.failed then
+	if info.failed then
 		modprint("  But there was an error loading it.")
 		self:DisableBecauseBad(modname)
 	else
@@ -329,8 +346,40 @@ function ModIndex:LoadModInfo(modname)
 		-- print(i,v)
 	end
 	
-	info.version = trimString(info.version or "")
+	info.version = TrimString(info.version or "")
 
+	if info.icon_atlas ~= nil and info.icon ~= nil and info.icon_atlas ~= "" and info.icon ~= "" then
+		local atlaspath = "../mods/"..modname.."/"..info.icon_atlas
+		local iconpath = string.gsub(atlaspath, "/[^/]*$", "") .. "/"..info.icon
+		if softresolvefilepath(atlaspath) and softresolvefilepath(iconpath) then
+			info.icon_atlas = atlaspath
+			info.iconpath = iconpath
+		else
+			-- This prevents malformed icon paths from crashing the game.
+			print(string.format("WARNING: icon paths for mod %s are not valid. Got icon_atlas=\"%s\" and icon=\"%s\".\nPlease ensure that these point to valid files in your mod folder, or else comment out those lines from your modinfo.lua.", ModInfoname(modname), info.icon_atlas, info.icon))
+			info.icon_atlas = nil
+			info.iconpath = nil
+			info.icon = nil
+		end
+	else
+		info.icon_atlas = nil
+		info.iconpath = nil
+		info.icon = nil
+	end
+	
+	--Add game modes
+	if info.game_modes then
+		for _,mode in pairs(info.game_modes) do
+			local gm = AddGameMode(mode.name, mode.label)
+			gm.description = mode.description or ""
+			if mode.settings then
+				for option,value in pairs(mode.settings) do
+					gm[option] = value
+				end
+			end
+		end
+	end
+	
 	return info
 end
 
@@ -344,7 +393,6 @@ function ModIndex:InitializeModInfo(modname)
 		env.failed = true
 	elseif not fn then
 		modinfo_message = modinfo_message.."No modinfo.lua, using defaults... "
-		env.old = true
 	else
 		local status, r = RunInEnvironment(fn,env)
 
@@ -355,16 +403,12 @@ function ModIndex:InitializeModInfo(modname)
 
 		if status == false then
 			print("Error loading mod: "..ModInfoname(modname).."!\n "..r.."\n")
-			--table.insert( self.failedmods, {name=modname,error=r} )
 			env.failed = true
 		elseif env.api_version == nil or env.api_version < MOD_API_VERSION then
-			local old = "Mod "..modname.." was built for an older version of the game and requires updating. (api_version is version "..tostring(env.api_version)..", game is version "..MOD_API_VERSION..".)"
 			modinfo_message = modinfo_message.."Old API! (mod: "..tostring(env.api_version).." game: "..MOD_API_VERSION..") "
-			env.old = true
 		elseif env.api_version > MOD_API_VERSION then
 			local old = "api_version for "..modname.." is in the future, please set to the current version. (api_version is version "..env.api_version..", game is version "..MOD_API_VERSION..".)"
 			print("Error loading mod: "..ModInfoname(modname).."!\n "..old.."\n")
-			--table.insert( self.failedmods, {name=modname,error=old} )
 			env.failed = true
 		else
 			local checkinfo = { "name", "description", "author", "version", "forumthread", "api_version", "dont_starve_compatible", "reign_of_giants_compatible", "configuration_options", "dst_compatible" }
@@ -454,9 +498,6 @@ function ModIndex:Load(callback)
 				local success, savedata = RunInSandboxSafe(str)
 				if success and string.len(str) > 0 and savedata ~= nil then
 					self.savedata = savedata
-					for k,info in pairs(self.savedata.known_mods) do
-						info.was_enabled = info.enabled
-					end
 					print ("loaded "..filename)
 		--print("\n\n---LOADING MOD INDEX---\n\n")
 		--dumptable(self.savedata)
@@ -519,11 +560,22 @@ function ModIndex:GetModConfigurationOptions(modname,force_local_options)
 	end
 end
 
+function ModIndex:SetConfigurationOption(modname, option_name, value)
+	local known_mod = self.savedata.known_mods[modname]
+	if known_mod and known_mod.modinfo and known_mod.modinfo.configuration_options then
+		for _,option in pairs(known_mod.modinfo.configuration_options) do
+			if option.name == option_name then
+				option.saved = value
+			end
+		end
+	end
+end
+
 -- Loads the actual file from disk
-function ModIndex:LoadModConfigurationOptions(modname)
+function ModIndex:LoadModConfigurationOptions(modname, client_config)
 	local known_mod = self.savedata.known_mods[modname]
 	-- Try to find saved config settings first
-	local filename = self:GetModConfigurationPath(modname)
+	local filename = self:GetModConfigurationPath(modname, client_config)
 	TheSim:GetPersistentString(filename,
         function(load_success, str)
         	if load_success == true then
@@ -552,19 +604,35 @@ function ModIndex:LoadModConfigurationOptions(modname)
 	return nil
 end
 
-function ModIndex:SaveConfigurationOptions(callback, modname, configdata)
+function ModIndex:SaveHostConfiguration(modname)
+	local known_mod = self.savedata.known_mods[modname]
+	if known_mod then
+		if known_mod.modinfo then
+			if known_mod.modinfo.configuration_options then
+				self:SaveConfigurationOptions(function() end, modname, known_mod.modinfo.configuration_options, false)
+			end
+		end
+	end
+end
+
+function ModIndex:SaveConfigurationOptions(callback, modname, configdata, client_config)
 	if PLATFORM == "PS4" or not configdata then
         return
     end
+    --print("### SaveConfigurationOptions ", modname)
+    --write to existing table
+    for _,v in pairs(configdata) do
+		self:SetConfigurationOption(modname, v.name, v.saved)
+	end
 
     -- Save it to disk
-    local name = self:GetModConfigurationPath(modname)
+    local name = self:GetModConfigurationPath(modname, client_config)
 	local data = DataDumper(configdata, nil, false)
 
 	local cb = function()
 		callback()
 		-- And reload it to make sure there's parity after it's been saved
-		self:LoadModConfigurationOptions(modname)
+		self:LoadModConfigurationOptions(modname, client_config)
 	end
 
     local insz, outsz = SavePersistentString(name, data, ENCODE_SAVES, cb)
@@ -605,12 +673,6 @@ end
 
 function ModIndex:IsModInitPrintEnabled()
 	return self.modsettings.initdebugprint
-end
-
--- Note: Installed means enabled + ran in this terminology
-function ModIndex:WasModEnabled(modname)
-	local known_mod = self.savedata.known_mods[modname]
-	return known_mod and known_mod.was_enabled
 end
 
 function ModIndex:Disable(modname)
@@ -672,14 +734,6 @@ function ModIndex:DisableBecauseBad(modname)
 	self.savedata.known_mods[modname].enabled = false
 end
 
-function ModIndex:DisableBecauseOld(modname)
-	if not self.savedata.known_mods[modname] then
-		self.savedata.known_mods[modname] = {}
-	end
-	self.savedata.known_mods[modname].disabled_old = true
-	self.savedata.known_mods[modname].enabled = false
-end
-
 function ModIndex:DisableBecauseIncompatibleWithMode(modname)
 	if not self.savedata.known_mods[modname] then
 		self.savedata.known_mods[modname] = {}
@@ -694,7 +748,6 @@ function ModIndex:Enable(modname)
 	end
 	self.savedata.known_mods[modname].enabled = true
 	self.savedata.known_mods[modname].disabled_bad = false
-	self.savedata.known_mods[modname].disabled_old = false
 	self.savedata.known_mods[modname].disabled_incompatible_with_mode = false
 end
 
@@ -704,7 +757,6 @@ function ModIndex:TempEnable(modname)
 	end
 	self.savedata.known_mods[modname].temp_enabled = true
 	self.savedata.known_mods[modname].disabled_bad = false
-	self.savedata.known_mods[modname].disabled_old = false
 	self.savedata.known_mods[modname].disabled_incompatible_with_mode = false
 end
 
@@ -736,16 +788,6 @@ function ModIndex:KnownAPIVersion(modname)
 	else
 		return known_mod.modinfo.api_version
 	end
-end
-
-function ModIndex:IsModNewlyOld(modname)
-	if self:KnownAPIVersion(modname) < MOD_API_VERSION and
-			self.savedata.known_mods[modname] and
-			self.savedata.known_mods[modname].seen_api_version and
-			self.savedata.known_mods[modname].seen_api_version < MOD_API_VERSION then
-		return true
-	end
-	return false
 end
 
 function ModIndex:IsModNew(modname)

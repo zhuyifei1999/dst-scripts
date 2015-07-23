@@ -11,6 +11,7 @@ levellist[LEVELTYPE.CUSTOM] = {}
 function AddLevel(type, data)
 	table.insert(levellist[type], Level(data))
 end
+--add a getter and setter for tasks (so it has default/plus/darkness mapped to the translation values and then world gen calls GetTasks("default"))
 
 require("map/levels/adventure")
 require("map/levels/caves")
