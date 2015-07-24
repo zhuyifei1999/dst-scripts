@@ -503,17 +503,6 @@ function GenerateNew(debug, parameters)
 		print("\n#######\n#\n# Special: Generating "..parameters.level_type.." mode "..level.name.." Level\n#\n#######\n")
 	end
 
-	local modfns = ModManager:GetPostInitFns("LevelPreInit", level.id)
-	for i,modfn in ipairs(modfns) do
-		print("Applying mod to level '"..level.id.."'")
-		modfn(level)
-	end
-	modfns = ModManager:GetPostInitFns("LevelPreInitAny")
-	for i,modfn in ipairs(modfns) do
-		print("Applying mod to current level")
-		modfn(level)
-	end
-
 	parameters.world_gen_choices.finaltweak = OverrideTweaks(level, parameters.world_gen_choices)	
 	local level_area_triggers = level.override_triggers or nil
 	local choose_tasks = level:GetTasksForLevel(tasks.sampletasks, parameters.world_gen_choices)

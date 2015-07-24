@@ -33,7 +33,10 @@ end
 
 local function CheckHatch(inst)
     --print("tallbirdegg - CheckHatch")
-    if inst.components.playerprox ~= nil and inst.components.playerprox:IsPlayerClose() and inst.components.hatchable.state == "hatch" then
+    if inst.components.playerprox ~= nil and
+        inst.components.playerprox:IsPlayerClose() and
+        inst.components.hatchable.state == "hatch" and
+        not inst.components.inventoryitem:IsHeld() then
         Hatch(inst)
     end
 end
@@ -60,16 +63,18 @@ local function OnPutInInventory(inst)
     inst.SoundEmitter:KillSound("uncomfy")
 end
 
+local function OnLoadPostPass(inst)
+    --V2C: in case of load order of hatchable and inventoryitem components
+    if inst.components.inventoryitem:IsHeld() then
+        OnPutInInventory(inst)
+    end
+end
+
 local function GetStatus(inst)
-    if inst.components.hatchable then
-        local state = inst.components.hatchable.state
-        if state == "uncomfy" then
-            if inst.components.hatchable.toohot then
-                return "HOT"
-            elseif inst.components.hatchable.toocold then
-                return "COLD"
-            end
-        end
+    if inst.components.hatchable ~= nil and inst.components.hatchable.state == "uncomfy" then
+        return (inst.components.hatchable.toohot and "HOT")
+            or (inst.components.hatchable.toocold and "COLD")
+            or nil
     end
 end
 
@@ -205,6 +210,8 @@ local function defaultfn(anim)
     inst.components.inspectable.getstatus = GetStatus
 
     MakeHauntableLaunch(inst)
+
+    inst.OnLoadPostPass = OnLoadPostPass
 
     return inst
 end

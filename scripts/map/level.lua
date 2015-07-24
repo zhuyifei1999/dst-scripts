@@ -82,23 +82,40 @@ function Level:GetTasksForLevel(sampletasks, current_gen_params)
 	--print("Getting tasks for level:", self.name)
 	local tasklist = {}
 	local task_group = tasks.GetGenTasks(current_gen_params.finaltweak.misc and current_gen_params.finaltweak.misc["task_set"] or "default")
-	self.tasks = task_group.tasks
-	for i=1,#task_group.tasks do
-		self:EnqueueATask(tasklist, task_group.tasks[i], sampletasks)
+	
+	for k, v in pairs(task_group) do
+		self[k] = v
 	end
 
-	if task_group.numoptionaltasks and task_group.numoptionaltasks > 0 then
-		local shuffletasknames = shuffleArray(task_group.optionaltasks)
-		local numtoadd = task_group.numoptionaltasks
+	for i=1,#self.tasks do
+		self:EnqueueATask(tasklist, self.tasks[i], sampletasks)
+	end
+
+	local modfns = ModManager:GetPostInitFns("LevelPreInit", self.id)
+	for i,modfn in ipairs(modfns) do
+		print("Applying mod to level '"..self.id.."'")
+		modfn(self)
+	end
+	modfns = ModManager:GetPostInitFns("LevelPreInitAny")
+	for i,modfn in ipairs(modfns) do
+		print("Applying mod to current level")
+		modfn(self)
+	end
+
+	self:ApplyModsToTasks(tasklist)
+
+	if self.numoptionaltasks and self.numoptionaltasks > 0 then
+		local shuffletasknames = shuffleArray(self.optionaltasks)
+		local numtoadd = self.numoptionaltasks
 		local i = 1
-		while numtoadd > 0 and i <= #task_group.optionaltasks do
-			if type(task_group.optionaltasks[i]) == "table" then
-				for i,taskname in ipairs(task_group.optionaltasks[i]) do
+		while numtoadd > 0 and i <= #self.optionaltasks do
+			if type(self.optionaltasks[i]) == "table" then
+				for i,taskname in ipairs(self.optionaltasks[i]) do
 					self:EnqueueATask(tasklist, taskname, sampletasks)
 					numtoadd = numtoadd - 1
 				end
 			else
-				self:EnqueueATask(tasklist, task_group.optionaltasks[i], sampletasks)
+				self:EnqueueATask(tasklist, self.optionaltasks[i], sampletasks)
 				numtoadd = numtoadd - 1
 			end
 			i = i + 1
@@ -110,7 +127,7 @@ function Level:GetTasksForLevel(sampletasks, current_gen_params)
 
 		--Get random set piece to put in task
 		local set_piece = self.random_set_pieces[math.random(#self.random_set_pieces)]
-		
+
 		--Get random task
 		local idx = math.random(#tasklist)
 
@@ -121,7 +138,7 @@ function Level:GetTasksForLevel(sampletasks, current_gen_params)
 		table.insert(tasklist[idx].random_set_pieces, set_piece)
 	end
 
-	for name, choicedata in pairs(task_group.set_pieces) do
+	for name, choicedata in pairs(self.set_pieces) do
 		local found = false
 		local idx = {}
 		for i, task in ipairs(tasklist) do
@@ -134,7 +151,7 @@ function Level:GetTasksForLevel(sampletasks, current_gen_params)
 
 		assert(choices, "Trying to add set piece '"..name.."' but no choices given.")
 
-		-- Only one layout per task, so we stop when we run out of tasks or 
+		-- Only one layout per task, so we stop when we run out of tasks or
 		while count > 0 and #choices > 0 do
 			local idx_choice_offset = math.random(#choices) - 1 -- we'll convert back to 1-index in a moment
 			-- To account for the fact that some of the choices might not exist in the level (i.e. option tasks) loop through them.
@@ -156,8 +173,6 @@ function Level:GetTasksForLevel(sampletasks, current_gen_params)
 		end
 	end
 
-	self:ApplyModsToTasks(tasklist)
-	
 	self:GetOverridesForTasks(tasklist)
 
 	return tasklist

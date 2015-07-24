@@ -84,10 +84,6 @@ local ModsTab = Class(Widget, function(self, slotnum, servercreationscreen)
     self.updateallbutton.out_of_date_image:Hide()
 
 	self.currentmodtype = "server"
-	self.modnames_client = {}
-	self.modnames_server = {}
-	self.modnames_client_dl = {}
-	self.modnames_server_dl = {}
 	
     self:StartWorkshopUpdate()
     self:SetModsList("server")   
@@ -376,19 +372,6 @@ function ModsTab:UpdateForWorkshop( force_refresh )
 		self.modnames_server_dl = curr_modnames_server_dl
 		
 		self:ReloadModInfoPrefabs()
-		
-		if #self.modnames_client == 0 
-			and #self.modnames_server == 0 
-			and #self.modnames_client_dl == 0
-			and #self.modnames_server_dl == 0 then
-			self.inst:DoTaskInTime(0.1, function()
-				TheFrontEnd:PushScreen(PopupDialogScreen(STRINGS.UI.MODSSCREEN.NO_MODS_TITLE, STRINGS.UI.MODSSCREEN.NO_MODS, 
-					{
-						{text=STRINGS.UI.MODSSCREEN.NO_MODS_OK, cb = function() self:MoreWorkshopMods() TheFrontEnd:PopScreen() end },
-						{text=STRINGS.UI.MODSSCREEN.CANCEL, cb = function() TheFrontEnd:PopScreen() end },
-					}))
-			end, self)
-		end
 		
 		--figure out the current selection after the refresh
 		local mod_index = 1

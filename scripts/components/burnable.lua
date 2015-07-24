@@ -103,7 +103,7 @@ end
 --- Set the level of any current or future burning effects
 function Burnable:SetFXLevel(level, percent)
     self.fxlevel = level
-    for k, v in pairs(self.fxchildren) do
+    for i, v in ipairs(self.fxchildren) do
         if v.components.firefx ~= nil then
             v.components.firefx:SetLevel(level)
             v.components.firefx:SetPercentInLevel(percent or 1)
@@ -113,7 +113,7 @@ end
 
 function Burnable:GetLargestLightRadius()
     local largestRadius = nil
-    for k, v in pairs(self.fxchildren) do
+    for i, v in ipairs(self.fxchildren) do
         if v.Light ~= nil and v.Light:IsEnabled() then
             local radius = v.Light:GetCalculatedRadius()
             if largestRadius == nil or radius > largestRadius then
@@ -370,14 +370,36 @@ function Burnable:SpawnFX(immediate)
 end
 
 function Burnable:KillFX()
-    for k, v in pairs(self.fxchildren) do
-        if v.components.firefx ~= nil and v.components.firefx:Extinguish() then
-            v:ListenForEvent("animover", v.Remove)  --remove once the pst animation has finished
+    for i = #self.fxchildren, 1, -1 do
+        local fx = self.fxchildren[i]
+        if fx.components.firefx ~= nil and fx.components.firefx:Extinguish() then
+            --remove once the pst animation has finished
+            --schedule it as well in case it goes asleep
+            fx:ListenForEvent("animover", fx.Remove)
+            fx:DoTaskInTime(fx.AnimState:GetCurrentAnimationLength() + FRAMES, fx.Remove)
         else
-            v:Remove()
+            fx:Remove()
         end
-        self.fxchildren[k] = nil
+        table.remove(self.fxchildren, i)
     end
+end
+
+function Burnable:HasEndothermicHeat()
+    for i, v in ipairs(self.fxchildren) do
+        if v.components.heater ~= nil and v.components.heater:IsEndothermic() then
+            return true
+        end
+    end
+    return false
+end
+
+function Burnable:HasExothermicHeat()
+    for i, v in ipairs(self.fxchildren) do
+        if v.components.heater ~= nil and v.components.heater:IsExothermic() then
+            return true
+        end
+    end
+    return false
 end
 
 function Burnable:OnRemoveFromEntity()
