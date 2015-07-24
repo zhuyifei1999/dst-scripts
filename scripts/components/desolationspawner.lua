@@ -70,6 +70,9 @@ end
 
 local function DoRegrowth(area, prefab, product, searchtags)
     local points_x, points_y = _map:GetRandomPointsForSite(_world.topology.nodes[area].x, _world.topology.nodes[area].y, _world.topology.nodes[area].poly, 1)
+    if #points_x < 1 or #points_y < 1 then
+        return
+    end
     local x = points_x[1]
     local z = points_y[1]
     --local x = _world.topology.nodes[area].x

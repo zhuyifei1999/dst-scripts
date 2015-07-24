@@ -147,10 +147,12 @@ local ModsScreen = Class(Screen, function(self)
 	self.cancelbutton = self.root:AddChild(TEMPLATES.BackButton(function() self:Cancel() end))
 		
 	self.currentmodtype = "client"
-	self.modnames_client = {}
-	self.modnames_server = {}
-	self.modnames_client_dl = {}
-	self.modnames_server_dl = {}
+    --Reminder to DON'T initialize these!
+	----self.modnames_client = {}
+	----self.modnames_server = {}
+	----self.modnames_client_dl = {}
+	----self.modnames_server_dl = {}
+    --
 	
 	self:StartWorkshopUpdate()
 
@@ -190,11 +192,6 @@ function ModsScreen:GenerateRandomPicks(num, numrange)
 end
 
 function ModsScreen:OnStatsQueried( result, isSuccessful, resultCode )	
-	print( "### OnStatsQueried ###" )
-	print( dumptable(result) )
-	print( isSuccessful )
-	print( resultCode )
-	
 	if TheFrontEnd.screenstack[#TheFrontEnd.screenstack] ~= self then
 		return
 	end
@@ -515,7 +512,6 @@ function ModsScreen:UpdateForWorkshop()
 			TheSim:UnlockModDir()
 			return
 		end
-		
 		--print("### Do UpdateForWorkshop refresh")
 		
 		self.modnames_client = curr_modnames_client
