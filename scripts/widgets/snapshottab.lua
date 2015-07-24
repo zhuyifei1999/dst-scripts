@@ -136,7 +136,7 @@ function SnapshotTab:MakeSnapshotsMenu()
                 widget.portraitroot:Hide()
             end
             
-            local day_text = string.format("%s %d", STRINGS.UI.SERVERADMINSCREEN.DAY, data.world_day)
+            local day_text = STRINGS.UI.SERVERADMINSCREEN.DAY.." "..tostring(data.world_day or STRINGS.UI.SERVERADMINSCREEN.UNKNOWN_DAY)
             widget.day:SetString(day_text)
             widget.day:SetPosition(character ~= nil and 40 or 0, 0, 0)
             widget.empty = false
@@ -169,7 +169,7 @@ function SnapshotTab:MakeSnapshotsMenu()
                 widget.portraitroot:Hide()
             end
             
-            local day_text = string.format("%s %d", STRINGS.UI.SERVERADMINSCREEN.DAY, data.world_day)
+            local day_text = STRINGS.UI.SERVERADMINSCREEN.DAY.." "..tostring(data.world_day or STRINGS.UI.SERVERADMINSCREEN.UNKNOWN_DAY)
             widget.day:SetString(day_text)
             widget.day:SetPosition(character ~= nil and 40 or 0, 0, 0)
             widget.empty = false
@@ -204,7 +204,7 @@ function SnapshotTab:OnClickSnapshot(snapshot_num)
     
     TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")   
     
-    local day_text = string.format("%s %d", STRINGS.UI.SERVERADMINSCREEN.DAY, self.snapshots[snapshot_num].world_day)
+    local day_text = STRINGS.UI.SERVERADMINSCREEN.DAY.." "..tostring(self.snapshots[snapshot_num].world_day or STRINGS.UI.SERVERADMINSCREEN.UNKNOWN_DAY)
     local header = string.format(STRINGS.UI.SERVERADMINSCREEN.RESTORE_SNAPSHOT_HEADER, day_text)
     local popup = PopupDialogScreen(header, STRINGS.UI.SERVERADMINSCREEN.RESTORE_SNAPSHOT_BODY, 
         {{text=STRINGS.UI.SERVERADMINSCREEN.YES, cb = function()    
@@ -220,7 +220,7 @@ function SnapshotTab:OnClickSnapshot(snapshot_num)
             if truncate_to_id ~= nil and truncate_to_id > 0 then
                 TheNet:TruncateSnapshots(self.session_id, truncate_to_id)
             end
-            SaveGameIndex:SetSlotDay(self.save_slot, self.snapshots[snapshot_num].world_day)
+            SaveGameIndex:SetSlotDay(self.save_slot, self.snapshots[snapshot_num].world_day or STRINGS.UI.SERVERADMINSCREEN.UNKNOWN_DAY)
             SaveGameIndex:Save(onSaved)
         end},
         {text=STRINGS.UI.SERVERADMINSCREEN.NO, cb = function() TheFrontEnd:PopScreen() end}  })
