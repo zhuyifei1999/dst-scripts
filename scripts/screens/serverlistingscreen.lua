@@ -608,6 +608,7 @@ end
 function ServerListingScreen:ClearServerList()
     for i,v in pairs (self.list_widgets) do
         v.NAME:SetString("")
+        v.NAME:SetPosition(v.NAME._align.x, v.NAME._align.y, 0)
         v.CHAR:Hide()
         v.FRIEND_ICON:Hide()
         v.CLAN_OPEN_ICON:Hide()
@@ -754,9 +755,14 @@ function ServerListingScreen:MakeServerListWidgets()
         row.NAME = row:AddChild(Text(NEWFONT, font_size))
         row.NAME:SetHAlign(ANCHOR_MIDDLE)
         row.NAME:SetString("")
-        row.NAME:SetPosition( column_offsets.NAME + 125, y_offset, 0 )
-        row.NAME:SetRegionSize( 300, 50 )
-        row.NAME:SetHAlign( ANCHOR_LEFT ) 
+        row.NAME._align =
+        {
+            maxwidth = 300,
+            maxchars = 80,
+            x = column_offsets.NAME - 25,
+            y = y_offset,
+        }
+        row.NAME:SetPosition(row.NAME._align.x, row.NAME._align.y, 0)
         
         row.DETAILS = row.cursor:AddChild(Widget("detail_icons"))
         row.DETAILS:SetPosition(column_offsets.DETAILS-200, -1, 0)
@@ -842,6 +848,7 @@ function ServerListingScreen:MakeServerListWidgets()
         if not serverdata then
             widget.index = -1
             widget.NAME:SetString("")
+            widget.NAME:SetPosition(widget.NAME._align.x, widget.NAME._align.y, 0)
             widget.PLAYERS:SetString("")
             widget.PING:SetString("")
             widget.CHAR:Hide()
@@ -871,9 +878,11 @@ function ServerListingScreen:MakeServerListWidgets()
 
             widget.cursor:Show()
             
-            widget.NAME:SetString(serverdata.name)
-            if dev_server then widget.NAME:SetColour(dev_color[1], dev_color[2], dev_color[3], dev_color[4])
-            elseif version_check_failed then widget.NAME:SetColour(mismatch_color[1], mismatch_color[2], mismatch_color[3], mismatch_color[4]) end
+            widget.NAME:SetTruncatedString(serverdata.name, widget.NAME._align.maxwidth, widget.NAME._align.maxchars, true)
+            local w, h = widget.NAME:GetRegionSize()
+            widget.NAME:SetPosition(widget.NAME._align.x + w * .5, widget.NAME._align.y, 0)
+            if dev_server then widget.NAME:SetColour(unpack(dev_color))
+            elseif version_check_failed then widget.NAME:SetColour(unpack(mismatch_color)) end
 
             self:ProcessPlayerData( serverdata.session )
 	    
@@ -936,15 +945,15 @@ function ServerListingScreen:MakeServerListWidgets()
             end
 
             widget.PLAYERS:SetString(serverdata.current_players .. "/" .. serverdata.max_players)
-            if dev_server then widget.PLAYERS:SetColour(dev_color[1], dev_color[2], dev_color[3], dev_color[4])
-            elseif version_check_failed then widget.PLAYERS:SetColour(mismatch_color[1], mismatch_color[2], mismatch_color[3], mismatch_color[4]) end
+            if dev_server then widget.PLAYERS:SetColour(unpack(dev_color))
+            elseif version_check_failed then widget.PLAYERS:SetColour(unpack(mismatch_color)) end
 
             widget.PING:SetString(serverdata.ping)  
             if serverdata.ping < 0 then
                 widget.PING:SetString("???")
             end
-            if dev_server then widget.PING:SetColour(dev_color[1], dev_color[2], dev_color[3], dev_color[4])
-            elseif version_check_failed then widget.PING:SetColour(mismatch_color[1], mismatch_color[2], mismatch_color[3], mismatch_color[4])  end 
+            if dev_server then widget.PING:SetColour(unpack(dev_color))
+            elseif version_check_failed then widget.PING:SetColour(unpack(mismatch_color)) end 
         end
     end
 
@@ -972,13 +981,13 @@ function ServerListingScreen:GuaranteeSelectedServerHighlighted()
         local version_check_failed = v.version and v.version ~= tonumber(APP_VERSION) or false
 		if v and v.index ~= -1 and v.index == self.selected_index_actual then
             if dev_server then 
-                v.NAME:SetColour(dev_color[1], dev_color[2], dev_color[3], dev_color[4]) 
-                v.PLAYERS:SetColour(dev_color[1], dev_color[2], dev_color[3], dev_color[4]) 
-                v.PING:SetColour(dev_color[1], dev_color[2], dev_color[3], dev_color[4])
+                v.NAME:SetColour(unpack(dev_color))
+                v.PLAYERS:SetColour(unpack(dev_color))
+                v.PING:SetColour(unpack(dev_color))
             elseif version_check_failed then 
-                v.NAME:SetColour(mismatch_color[1], mismatch_color[2], mismatch_color[3], mismatch_color[4])
-                v.PLAYERS:SetColour(mismatch_color[1], mismatch_color[2], mismatch_color[3], mismatch_color[4])
-                v.PING:SetColour(mismatch_color[1], mismatch_color[2], mismatch_color[3], mismatch_color[4]) 
+                v.NAME:SetColour(unpack(mismatch_color))
+                v.PLAYERS:SetColour(unpack(mismatch_color))
+                v.PING:SetColour(unpack(mismatch_color))
             else
                 v.NAME:SetFont(NEWFONT)
                 v.PLAYERS:SetFont(NEWFONT)
@@ -993,13 +1002,13 @@ function ServerListingScreen:GuaranteeSelectedServerHighlighted()
             v.PLAYERS:SetFont(NEWFONT)
             v.PING:SetFont(NEWFONT)
             if dev_server then 
-                v.NAME:SetColour(dev_color[1], dev_color[2], dev_color[3], dev_color[4]) 
-                v.PLAYERS:SetColour(dev_color[1], dev_color[2], dev_color[3], dev_color[4]) 
-                v.PING:SetColour(dev_color[1], dev_color[2], dev_color[3], dev_color[4])                
-            elseif version_check_failed then 
-                v.NAME:SetColour(mismatch_color[1], mismatch_color[2], mismatch_color[3], mismatch_color[4])
-                v.PLAYERS:SetColour(mismatch_color[1], mismatch_color[2], mismatch_color[3], mismatch_color[4])
-                v.PING:SetColour(mismatch_color[1], mismatch_color[2], mismatch_color[3], mismatch_color[4]) 
+                v.NAME:SetColour(unpack(dev_color))
+                v.PLAYERS:SetColour(unpack(dev_color))
+                v.PING:SetColour(unpack(dev_color))
+            elseif version_check_failed then
+                v.NAME:SetColour(unpack(mismatch_color))
+                v.PLAYERS:SetColour(unpack(mismatch_color))
+                v.PING:SetColour(unpack(mismatch_color))
             else
                 v.NAME:SetColour(0,0,0,1)
                 v.PLAYERS:SetColour(0,0,0,1)

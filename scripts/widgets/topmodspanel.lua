@@ -146,12 +146,6 @@ function TopModsPanel:GenerateRandomPicks(num, numrange)
 end
 
 function TopModsPanel:OnStatsQueried( result, isSuccessful, resultCode )  
-    print( "### OnStatsQueried ###" )
-    print( dumptable(result) )
-    print( isSuccessful )
-    print( resultCode )
- 
- 
     if TheFrontEnd.screenstack[#TheFrontEnd.screenstack] ~= self.servercreationscreen then
         return
     end

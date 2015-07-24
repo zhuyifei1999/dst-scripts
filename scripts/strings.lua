@@ -2768,12 +2768,13 @@ STRINGS.UI =
         UNKNOWN_DESCRIPTION = "We couldn't download the details of this game mode.",
     },
     
-    SERVERADMINSCREEN = 
+    SERVERADMINSCREEN =
     {
         BANNED_PLAYERS_HEADER = "Banned Players",
         PLAYER = "Player",
         DATE = "Date",
         DAY = "World Day",
+        UNKNOWN_DAY = "???",
         EMPTY_SLOT = "EMPTY",
         EMPTY_SLOT_TITLE = "Empty Slot",
         CLEAR_PLAYERS = "Unban\nAll",
