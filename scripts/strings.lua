@@ -3714,7 +3714,7 @@ STRINGS.MODS =
 {
 	VERSIONING =
 	{
-		OUT_OF_DATE = "The server mod \"%s\" is out of date. The server needs to get the latest version of the mod for users to be able to join.",
+		OUT_OF_DATE = "Mod \"%s\" is out of date. The server needs to get the latest version from the Steam Workshop so users can join.",
 	},
 }
 

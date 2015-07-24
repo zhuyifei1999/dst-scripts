@@ -246,7 +246,7 @@ function ModIndex:LoadModOverides()
 				if fn ~= nil then
 					local env = {}
 					local success, r = RunInEnvironment( fn, env )
-					if success then
+					if success and type(r)=="table" then
 						overrides = r
 					else
 						print("ERROR: Failed to run code from modoverrides.lua")					
@@ -329,6 +329,7 @@ function ModIndex:ApplyConfigOptionOverrides(mod_overrides)
 	end
 end
 
+local print_atlas_warning = true
 function ModIndex:LoadModInfo(modname)
 	modprint(string.format("Updating mod info for '%s'", modname))
 
@@ -356,7 +357,10 @@ function ModIndex:LoadModInfo(modname)
 			info.iconpath = iconpath
 		else
 			-- This prevents malformed icon paths from crashing the game.
-			print(string.format("WARNING: icon paths for mod %s are not valid. Got icon_atlas=\"%s\" and icon=\"%s\".\nPlease ensure that these point to valid files in your mod folder, or else comment out those lines from your modinfo.lua.", ModInfoname(modname), info.icon_atlas, info.icon))
+			if print_atlas_warning then
+				print(string.format("WARNING: icon paths for mod %s are not valid. Got icon_atlas=\"%s\" and icon=\"%s\".\nPlease ensure that these point to valid files in your mod folder, or else comment out those lines from your modinfo.lua.", ModInfoname(modname), info.icon_atlas, info.icon))
+				print_atlas_warning = false
+			end
 			info.icon_atlas = nil
 			info.iconpath = nil
 			info.icon = nil

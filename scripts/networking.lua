@@ -247,7 +247,12 @@ function DownloadMods( server_listing )
 								enable_server_mods()
 								TheNet:ServerModsDownloadCompleted(true, "", "")
 							else
-								local workshop_version = KnownModIndex:GetModInfo(mod_with_invalid_version.mod_name).version
+								local workshop_version = ""
+								if KnownModIndex:GetModInfo(mod_with_invalid_version.mod_name) ~= nil then
+									workshop_version = KnownModIndex:GetModInfo(mod_with_invalid_version.mod_name).version
+								else
+									print("ERROR: " .. (mod_with_invalid_version.mod_name or "") .. " has no modinfo, why???" )
+								end
 								if workshop_version == nil then
 									workshop_version = ""
 								end
