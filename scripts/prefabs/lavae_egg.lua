@@ -56,8 +56,27 @@ local function DropLoot(inst)
 end
 
 local function CheckHatch(inst)
-    if inst.components.playerprox ~= nil and inst.components.playerprox:IsPlayerClose() and inst.components.hatchable.state == "hatch" then
+    if inst.components.playerprox ~= nil and
+        inst.components.playerprox:IsPlayerClose() and
+        inst.components.hatchable.state == "hatch" and
+        not inst.components.inventoryitem:IsHeld() then
         StartSpawn(inst)
+    end
+end
+
+local function OnDropped(inst)
+    inst.components.hatchable:StartUpdating()
+    CheckHatch(inst)
+end
+
+local function OnPutInInventory(inst)
+    inst.components.hatchable:StopUpdating()
+end
+
+local function OnLoadPostPass(inst)
+    --V2C: in case of load order of hatchable and inventoryitem components
+    if inst.components.inventoryitem:IsHeld() then
+        OnPutInInventory(inst)
     end
 end
 
@@ -74,12 +93,10 @@ local function OnHatchState(inst, state)
         --Lavae egg can never be too hot
         if inst.components.hatchable.toocold then
             inst.AnimState:PlayAnimation("idle_cold", true)
-            inst.components.inventoryitem:ChangeImageName("lavae_egg_cold")
             inst.SoundEmitter:PlaySound("dontstarve/creatures/together/lavae/egg_shiver")
         end
     elseif state =="comfy" then
         inst.AnimState:PlayAnimation("happy", true)
-        inst.components.inventoryitem:ChangeImageName("lavae_egg_active")
     elseif state == "hatch" then
         CheckHatch(inst)
     elseif state == "dead" then
@@ -96,13 +113,9 @@ end
 
 local function describe(inst)
     local state = inst.components.hatchable.state
-    if state == "uncomfy" then
-        return "COLD"
-    elseif state == "comfy" then
-        return "COMFY"
-    else
-        return "GENERIC"
-    end
+    return (state == "uncomfy" and "COLD")
+        or (state == "comfy" and "COMFY")
+        or "GENERIC"
 end
 
 local function common_fn(anim)
@@ -139,7 +152,10 @@ local function common_fn(anim)
     inst.components.hatchable:SetHeaterPrefs(true, true, true)
     inst.components.hatchable:StartUpdating()
 
-    inst.SpawnLavae = StartSpawn
+    inst.components.inventoryitem:SetOnDroppedFn(OnDropped)
+    inst.components.inventoryitem:SetOnPutInInventoryFn(OnPutInInventory)
+
+    inst.OnLoadPostPass = OnLoadPostPass
 
     return inst
 end
@@ -150,8 +166,6 @@ local function default()
     if not TheWorld.ismastersim then
         return inst
     end
-    
-    inst.components.inventoryitem:ChangeImageName("lavae_egg_inactive")
 
     return inst
 end
@@ -164,8 +178,6 @@ local function cracked()
     end
 
     inst.components.hatchable.state = "comfy"
-
-    inst.components.inventoryitem:ChangeImageName("lavae_egg_active")
 
     inst:AddComponent("playerprox")
     inst.components.playerprox:SetDist(4, 6)

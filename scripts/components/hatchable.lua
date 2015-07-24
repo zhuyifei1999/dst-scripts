@@ -85,17 +85,16 @@ function Hatchable:GetHeaterPref(phase)
     return self.heater_prefs[TheWorld.state.phase]
 end
 
-function Hatchable:OnUpdate(dt)
-    --print("Hatchable:OnUpdate", self.state)
+local function IsExothermic(guy)
+    return guy.components.burnable ~= nil and guy.components.burnable:HasExothermicHeat()
+end
 
+function Hatchable:OnUpdate(dt)
     if self.delay then
         return
     end
 
-    local heater = FindEntity(self.inst, TUNING.HATCH_CAMPFIRE_RADIUS, nil, {"campfire", "fire"})
-
-    local has_heater = (heater ~= nil)
-
+    local has_heater = FindEntity(self.inst, TUNING.HATCH_CAMPFIRE_RADIUS, IsExothermic, { "campfire", "fire" }) ~= nil
     local wants_heater = self:GetHeaterPref()
 
     self.toohot = false
@@ -110,15 +109,15 @@ function Hatchable:OnUpdate(dt)
     end
 
     if self.state == "unhatched" then
-		if has_heater then
-			self.progress = self.progress + dt
-			if self.progress >= self.cracktime then
-				self.progress = 0
+        if has_heater then
+            self.progress = self.progress + dt
+            if self.progress >= self.cracktime then
+                self.progress = 0
                 self:OnState("crack")
-			end
-		else
-			self.progress = 0
-		end
+            end
+        else
+            self.progress = 0
+        end
         return
     end
 
@@ -135,7 +134,7 @@ function Hatchable:OnUpdate(dt)
         if self.discomfort <= 0 then
             self.progress = self.progress + dt
         end
-        
+
         if self.progress >= self.hatchtime then
             self:StopUpdating()
             self:OnState("hatch")
