@@ -1,4 +1,4 @@
---------------------------------------------------------------------------
+ --------------------------------------------------------------------------
 --[[ DSP class definition ]]
 --------------------------------------------------------------------------
 
@@ -21,11 +21,11 @@ local LOWDSP =
         ["set_music"] = 2000,
         --["set_ambience"] = 5000,
         --["set_sfx/HUD"] = 5000,
-        ["set_sfx/movement"] = 5000,
+        --["set_sfx/movement"] = 5000,
         ["set_sfx/creature"] = 5000,
         ["set_sfx/player"] = 5000,
         ["set_sfx/sfx"] = 5000,
-        --["set_sfx/voice"] = 5000,
+        ["set_sfx/voice"] = 5000,
         ["set_sfx/set_ambience"] = 5000,
     },
 }
@@ -48,7 +48,7 @@ local _dsplowstack = {}
 local _dsplowcomp = {}
 local _dsphighstack = {}
 local _dsphighcomp = {}
-local _summerlevel = 1
+local _summerlevel = nil
 local _activatedplayer = nil --cached for activation/deactivation only, NOT for logic use
 
 --------------------------------------------------------------------------
@@ -65,21 +65,17 @@ local HIGHDSP =
 {
     summer =
     {
-        ["set_music"] = 2000,
-        --["set_ambience"] = 500,
-        --["set_sfx/HUD"] = 500,
+        ["set_music"] = 500,
+        --["set_ambience"] = SUMMER_DSP,
+        --["set_sfx/HUD"] = SUMMER_DSP,
         ["set_sfx/movement"] = SUMMER_DSP,
         ["set_sfx/creature"] = SUMMER_DSP,
         ["set_sfx/player"] = SUMMER_DSP,
         ["set_sfx/sfx"] = SUMMER_DSP,
-        --["set_sfx/voice"] = 500,
+        --["set_sfx/voice"] = SUMMER_DSP,
         ["set_sfx/set_ambience"] = SUMMER_DSP,
     },
 }
-
-local function SortByCount(a, b)
-    return a.count > b.count
-end
 
 local function RefreshDSP(duration)
     local lowdsp = {}
@@ -172,16 +168,11 @@ end
 --[[ Private event handlers ]]
 --------------------------------------------------------------------------
 
-local function OnUpdateSeasonDSP(src, data)
-    UpdateSeasonDSP(data.season, 5)
-end
-
-local function OnTemperatureChange(sender, data)
-    local step = 1
-    for i,v in ipairs(SUMMER_THRESHOLDS) do
-        if data.new > v then
-            step = 1 + i
-        else
+local function OnWeatherTick(src, data)
+    local step = #SUMMER_FREQUENCIES
+    for i, v in ipairs(SUMMER_THRESHOLDS) do
+        if data.temperature <= v then
+            step = i
             break
         end
     end
@@ -192,7 +183,24 @@ local function OnTemperatureChange(sender, data)
     end
 end
 
-local function OnPushDSP(src, data)
+local function OnUpdateSeasonDSP(season, duration)
+    if season == SEASONS.SUMMER then
+        if _summerlevel == nil then
+            _summerlevel = 1
+            inst:ListenForEvent("weatherick", OnWeatherTick)
+        end
+    elseif _summerlevel ~= nil then
+        _summerlevel = nil
+        inst:RemoveEventCallback("weathertick", OnWeatherTick)
+    end
+    UpdateSeasonDSP(season, duration)
+end
+
+local function OnSeasonTick(inst, data)
+    OnUpdateSeasonDSP(data.season, 5)
+end
+
+local function OnPushDSP(inst, data)
     if data.lowdsp then
         table.insert(_dsplowstack, data.lowdsp)
     end
@@ -202,7 +210,7 @@ local function OnPushDSP(src, data)
     RefreshDSP(data.duration)
 end
 
-local function OnPopDSP(src, data)
+local function OnPopDSP(inst, data)
     if data.lowdsp then
         for i = #_dsplowstack, 1, -1 do
             if _dsplowstack[i] == data.lowdsp then
@@ -224,14 +232,16 @@ local function OnPopDSP(src, data)
 end
 
 local function StartPlayerListeners(player)
-    inst:ListenForEvent("temperaturedelta", OnTemperatureChange, player)
-    inst:ListenForEvent("seasontick", OnUpdateSeasonDSP)
-    UpdateSeasonDSP(TheWorld.state.season, 0)
+    inst:ListenForEvent("seasontick", OnSeasonTick)
+    OnUpdateSeasonDSP(TheWorld.state.season, 0)
 end
 
 local function StopPlayerListeners(player)
-    inst:RemoveEventCallback("temperaturedelta", OnTemperatureChange, player)
-    inst:RemoveEventCallback("seasontick", OnUpdateSeasonDSP)
+    inst:RemoveEventCallback("seasontick", OnSeasonTick)
+    if _summerlevel ~= nil then
+        _summerlevel = nil
+        inst:RemoveEventCallback("weathertick", OnWeatherTick)
+    end
     for i = #_dsplowstack, 2, -1 do
         table.remove(_dsplowstack, i)
     end

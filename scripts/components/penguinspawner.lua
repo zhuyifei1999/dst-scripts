@@ -226,7 +226,7 @@ local function EstablishColony(loc)
                 ground.Pathfinder:IsClear(loc.x, loc.y, loc.z,                    -- check for interposing water
                                          pos.x, pos.y, pos.z,
                                          {ignorewalls = false, ignorecreep = true}) then 
-                dprint("************* Found existing colony")
+                --dprint("************* Found existing colony")
                 return i
             end
         end
@@ -274,7 +274,7 @@ local function EstablishColony(loc)
                     end
                 end
                 placement_attempts = placement_attempts + 1
-                print(placement_attempts)
+                --dprint("placement_attempts:", placement_attempts)
                 if placement_attempts > 10 then break end
             end
             numattempts = numattempts - 1

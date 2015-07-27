@@ -471,8 +471,8 @@ local function OnSetOwner(inst)
     inst.name = inst.Network:GetClientName()
     inst.userid = inst.Network:GetUserID()
     inst.playercolour = inst.Network:GetPlayerColour()
-    TheNet:SetIsClientInWorld(inst.userid, true)
     if TheWorld.ismastersim then
+        TheNet:SetIsClientInWorld(inst.userid, true)
         inst.player_classified.Network:SetClassifiedTarget(inst)
         inst.components.inspectable.getspecialdescription = GetDescription
     end
@@ -547,6 +547,7 @@ local function OnRemoveEntity(inst)
     TheWorld:PushEvent("playerexited", inst)
     if TheWorld.ismastersim then
         TheWorld:PushEvent("ms_playerleft", inst)
+        TheNet:SetIsClientInWorld(inst.userid, false)
     end
 
     if inst.HUD ~= nil then
@@ -558,8 +559,6 @@ local function OnRemoveEntity(inst)
         RemoveActivePlayerComponents(inst)
         DeactivatePlayer(inst)
     end
-
-    TheNet:SetIsClientInWorld(inst.userid, false)
 end
 
 --------------------------------------------------------------------------

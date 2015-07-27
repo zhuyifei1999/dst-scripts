@@ -14,7 +14,9 @@ local function OnUse(inst, target, cooling, radius)
         end
         if v.components.temperature then
             -- cool off yourself and any other nearby players
-            v.components.temperature:DoDelta(coolingAmount)
+            local coolingRange = -(v.components.temperature:GetCurrent()-TUNING.FEATHERFAN_MINIMUM_TEMP)
+            local localCoolingAmount = math.clamp(coolingRange, coolingAmount, 0)
+            v.components.temperature:DoDelta(localCoolingAmount)
         end
     end
 end

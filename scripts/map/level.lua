@@ -86,11 +86,7 @@ function Level:GetTasksForLevel(sampletasks, current_gen_params)
 	for k, v in pairs(task_group) do
 		self[k] = v
 	end
-
-	for i=1,#self.tasks do
-		self:EnqueueATask(tasklist, self.tasks[i], sampletasks)
-	end
-
+	
 	local modfns = ModManager:GetPostInitFns("LevelPreInit", self.id)
 	for i,modfn in ipairs(modfns) do
 		print("Applying mod to level '"..self.id.."'")
@@ -101,7 +97,11 @@ function Level:GetTasksForLevel(sampletasks, current_gen_params)
 		print("Applying mod to current level")
 		modfn(self)
 	end
-
+	
+	for i=1,#self.tasks do
+		self:EnqueueATask(tasklist, self.tasks[i], sampletasks)
+	end
+	
 	self:ApplyModsToTasks(tasklist)
 
 	if self.numoptionaltasks and self.numoptionaltasks > 0 then
