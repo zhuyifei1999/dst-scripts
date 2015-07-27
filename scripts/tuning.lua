@@ -1627,6 +1627,7 @@ function Tune(overrides)
 	    FEATHERFAN_USES = 15,
 	    FEATHERFAN_COOLING = -50,
         FEATHERFAN_RADIUS = 7,
+        FEATHERFAN_MINIMUM_TEMP = 2.5,
 
 	    NO_BOSS_TIME = 26,  -- 1.5 seasons
 
