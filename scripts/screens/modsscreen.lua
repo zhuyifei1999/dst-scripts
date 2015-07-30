@@ -192,7 +192,7 @@ function ModsScreen:GenerateRandomPicks(num, numrange)
 end
 
 function ModsScreen:OnStatsQueried( result, isSuccessful, resultCode )	
-	if TheFrontEnd.screenstack[#TheFrontEnd.screenstack] ~= self then
+	if not (self.inst:IsValid() and self:IsVisible()) then
 		return
 	end
 

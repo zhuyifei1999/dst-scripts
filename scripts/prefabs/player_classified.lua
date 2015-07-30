@@ -584,13 +584,13 @@ local function fn()
     inst.healthpenalty = net_ushortint(inst.GUID, "health.penalty", "healthdirty")
     inst.istakingfiredamage = net_bool(inst.GUID, "health.takingfiredamage", "istakingfiredamagedirty")
     inst.issleephealing = net_bool(inst.GUID, "health.healthsleep")
-    inst.ishealthpulse = net_bool(inst.GUID, "health.dodeltaovertime")
+    inst.ishealthpulse = net_bool(inst.GUID, "health.dodeltaovertime", "healthdirty")
 
     --Hunger variables
     inst._oldhungerpercent = 1
     inst.currenthunger = net_ushortint(inst.GUID, "hunger.current", "hungerdirty")
     inst.maxhunger = net_ushortint(inst.GUID, "hunger.max", "hungerdirty")
-    inst.ishungerpulse = net_bool(inst.GUID, "hunger.dodeltaovertime")
+    inst.ishungerpulse = net_bool(inst.GUID, "hunger.dodeltaovertime", "hungerdirty")
 
     --Sanity variables
     inst._oldsanitypercent = 1
@@ -598,13 +598,13 @@ local function fn()
     inst.maxsanity = net_ushortint(inst.GUID, "sanity.max", "sanitydirty")
     inst.sanitypenalty = net_ushortint(inst.GUID, "sanity.penalty", "sanitydirty")
     inst.sanityratescale = net_tinybyte(inst.GUID, "sanity.ratescale")
-    inst.issanitypulse = net_bool(inst.GUID, "sanity.dodeltaovertime")
+    inst.issanitypulse = net_bool(inst.GUID, "sanity.dodeltaovertime", "sanitydirty")
     inst.issanityghostdrain = net_bool(inst.GUID, "sanity.ghostdrain")
 
     --Beaverness variables
     inst._oldbeavernesspercent = 1
     inst.currentbeaverness = net_byte(inst.GUID, "beaverness.current", "beavernessdirty")
-    inst.isbeavernesspulse = net_bool(inst.GUID, "beaverness.dodeltaovertime")
+    inst.isbeavernesspulse = net_bool(inst.GUID, "beaverness.dodeltaovertime", "beavernessdirty")
 
     --Temperature variables
     inst._oldtemperature = TUNING.STARTING_TEMP

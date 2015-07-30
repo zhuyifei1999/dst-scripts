@@ -73,6 +73,9 @@ local ServerCreationScreen = Class(Screen, function(self)
             end
         end
     end
+    if self.saveslot < 0 then
+		self.saveslot = 1 --if we have no empty slots and no last slot used, pick the first slot
+    end
 
     self.nav_bar = self.root:AddChild(TEMPLATES.NavBarWithScreenTitle(STRINGS.UI.SERVERCREATIONSCREEN.HOST_GAME, "tall"))
     --self.load_panel was prev thing

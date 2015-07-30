@@ -10,11 +10,7 @@ local Text = Class(Widget, function(self, font, size, text, colour)
     self.inst.TextWidget:SetSize(size)
     self.size = size
 
-    if colour then
-        self:SetColour(colour)
-    else
-        self.colour = {0,0,0,1}
-    end
+    self:SetColour(colour or { 1, 1, 1, 1 })
 
 	if text then
 		self:SetString( text )

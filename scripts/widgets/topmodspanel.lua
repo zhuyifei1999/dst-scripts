@@ -145,8 +145,8 @@ function TopModsPanel:GenerateRandomPicks(num, numrange)
     return picks
 end
 
-function TopModsPanel:OnStatsQueried( result, isSuccessful, resultCode )  
-    if TheFrontEnd.screenstack[#TheFrontEnd.screenstack] ~= self.servercreationscreen then
+function TopModsPanel:OnStatsQueried( result, isSuccessful, resultCode )
+    if not (self.inst:IsValid() and self:IsVisible()) then
         return
     end
 

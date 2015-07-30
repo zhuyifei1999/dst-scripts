@@ -58,8 +58,10 @@ end
 
 local function TestForRegrow(x, y, z, orig_tile)
 
-    if _map:GetTileAtPoint(x, y, z) ~= orig_tile then
+    if _map:GetTileAtPoint(x, y, z) ~= orig_tile or
+        (RoadManager ~= nil and RoadManager:IsOnRoad(x, 0, z)) then
         -- keep things in their biome (more or less)
+        -- try to avoid roads
         return false
     end
 
@@ -69,7 +71,7 @@ local function TestForRegrow(x, y, z, orig_tile)
         return false
     end
 
-    local ents = TheSim:FindEntities(x,y,z, BASE_RADIUS, {"structure"})
+    local ents = TheSim:FindEntities(x,y,z, BASE_RADIUS, nil, nil, { "structure", "wall" })
     if #ents > 0 then
         -- No regrowth around players and their bases
         return false
