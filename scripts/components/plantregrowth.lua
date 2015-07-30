@@ -169,19 +169,24 @@ local function GetFiveRadius(x, z, prefab)
 end
 
 local function GetSpawnPoint(from_pt, radius, prefab)
+    local map = TheWorld.Map
+    if map == nil then
+        return
+    end
     local theta = math.random() * 2 * PI
     local radius = math.random(radius/2, radius)
     local steps = 10
-    local ground = TheWorld
     local validpos = nil
     for i = 1, steps do
         local offset = Vector3(radius * math.cos( theta ), 0, -radius * math.sin( theta ))
         local try_pos = from_pt + offset
-        local tile = ground.Map:GetTileAtPoint(try_pos.x, try_pos.y, try_pos.z)
-        if not (ground.Map and tile == GROUND.IMPASSABLE or tile > GROUND.UNDERGROUND )
-            and ground.Map:CanPlacePrefabFilteredAtPoint(try_pos.x, try_pos.y, try_pos.z, prefab)
+        local tile = map:GetTileAtPoint(try_pos:Get())
+        if not (tile == GROUND.IMPASSABLE or tile > GROUND.UNDERGROUND)
+            and map:CanPlacePrefabFilteredAtPoint(try_pos.x, try_pos.y, try_pos.z, prefab)
+            and tile ~= GROUND.ROAD
+            and not (RoadManager ~= nil and RoadManager:IsOnRoad(try_pos.x, 0, try_pos.z))
             and #TheSim:FindEntities(try_pos.x, try_pos.y, try_pos.z, 3) <= 0 then
-			validpos = try_pos
+            validpos = try_pos
             break
         end
         theta = theta - (2 * PI / steps)

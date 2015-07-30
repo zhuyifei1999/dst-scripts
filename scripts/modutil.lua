@@ -446,8 +446,9 @@ local function InsertPostInitFunctions(env, isworldgen)
         initprint("SetModHUDFocus", focusid, hasfocus)
         if ThePlayer == nil or ThePlayer.HUD == nil then
             print("WARNING: SetModHUDFocus called when there is no active player HUD")
-        end
-        ThePlayer.HUD:SetModFocus(env.modname, focusid, hasfocus)
+        else
+			ThePlayer.HUD:SetModFocus(env.modname, focusid, hasfocus)
+		end
     end
   
     

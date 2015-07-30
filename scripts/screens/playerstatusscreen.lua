@@ -85,12 +85,29 @@ function PlayerStatusScreen:OnUpdate(dt)
     else
         self.time_to_refresh = REFRESH_INTERVAL
 
-        local ClientObjs = TheNet:GetClientTable()
+        local ClientObjs = TheNet:GetClientTable() or {}
 
-        if ClientObjs and #ClientObjs ~= self.numPlayers then
+        --rebuild if player count changed
+        local needs_rebuild = #ClientObjs ~= self.numPlayers
+
+        --rebuild if players changed even though count didn't change
+        if not needs_rebuild and self.scroll_list ~= nil then
+            for i, v in ipairs(ClientObjs) do
+                local listitem = self.scroll_list.items[i]
+                if listitem == nil or
+                    v.userid ~= listitem.userid or
+                    (v.performance ~= nil) ~= (listitem.performance ~= nil) then
+                    print( " *** REBUILD!!!!")
+                    needs_rebuild = true
+                    break
+                end
+            end
+        end
+
+        if needs_rebuild then
             -- We've either added or removed a player
             -- Kill everything and re-init
-            self:DoInit()
+            self:DoInit(ClientObjs)
         else
             if self.serverstate and self.serverage and self.serverage ~= TheWorld.state.cycles + 1 then
                 self.serverage = TheWorld.state.cycles + 1
@@ -99,7 +116,7 @@ function PlayerStatusScreen:OnUpdate(dt)
                 self.serverstate:SetString(modeStr)
             end
 
-            if self.scroll_list ~= nil and ClientObjs ~= nil then
+            if self.scroll_list ~= nil then
                 for i,v in pairs(self.player_widgets) do
                     for j,k in ipairs(ClientObjs) do
                         if v.userid == k.userid and v.ishost == (k.performance ~= nil) then
@@ -154,7 +171,7 @@ function PlayerStatusScreen:GetDisplayName(clientrecord)
     return clientrecord.name or ""
 end
 
-function PlayerStatusScreen:DoInit()
+function PlayerStatusScreen:DoInit(ClientObjs)
 
 	TheInput:EnableDebugToggle(false)
 
@@ -195,7 +212,9 @@ function PlayerStatusScreen:DoInit()
 	end
 
 	local Voter = TheWorld.net.components.voter
-	local ClientObjs = TheNet:GetClientTable() 
+    if ClientObjs == nil then
+        ClientObjs = TheNet:GetClientTable() or {}
+    end
 	self.numPlayers = #ClientObjs
 
 	if not self.players_number then 
