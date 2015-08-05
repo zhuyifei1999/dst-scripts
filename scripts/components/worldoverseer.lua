@@ -96,6 +96,8 @@ function WorldOverseer:DumpPlayerStats()
 	for i,stat in ipairs(playerstats) do
 		local sendstats = self:BuildContextTable(stat.player)
 		sendstats.play_t = RoundBiasedUp(stat.secondsplayed,2)
+        sendstats.character = stat.player and stat.player.prefab or nil
+        sendstats.session = self.inst.meta.session_identifier
 	
 		dprint("_________________________________________________________________Sending playtime heartbeat stats...")
 		ddump(sendstats)
@@ -110,6 +112,7 @@ function WorldOverseer:OnPlayerDeath(player, data)
 	local worldAge = self._cycles
 	local sendstats = self:BuildContextTable(player)
 	sendstats.playerdeath = {
+                                session = self.inst.meta.session_identifier,
 								playerage = RoundBiasedUp(age,2),
 								worldage = worldAge,
 								cause = data and data.cause or ""
@@ -128,17 +131,23 @@ function WorldOverseer:DumpSessionStats()
 	local hosting = TheNet:GetUserID()
 	local sendstats = self:BuildContextTable(hosting)
 	-- we don't have to send the host, as the sending user will be the host
+
+    local clients = TheNet:GetClientTable() or {}
+
 	sendstats.mpsession = {
-							worldage = self._cycles,
-							players = {},
-							characters = {},
-							private = TheNet:GetServerHasPassword(),
-							gamemode = TheNet:GetServerGameMode(),
+                            session = self.inst.meta.session_identifier,
+                            worldage = self._cycles,
+                            num_players = #clients,
+                            max_players = TheNet:GetServerMaxPlayers(),
+                            password = TheNet:GetServerHasPassword(),
+                            gamemode = TheNet:GetServerGameMode(),
+                            dedicated = TheNet:GetServerIsDedicated(),
+                            administrated = TheNet:GetServerHasPresentAdmin(),
+                            modded = TheNet:GetServerModsEnabled(),
+                            privacy = TheNet:GetServerFriendsOnly() and "FRIENDS" or "PUBLIC",
+                            offline = not TheNet:IsOnlineMode(),
+                            pvp = TheNet:GetServerPVP(),
 						}
-	for i,v in pairs(self._seenplayers) do
-		table.insert(sendstats.mpsession.players, i.userid.."@chester")
-		table.insert(sendstats.mpsession.characters, i.prefab or "None")
-	end
 	dprint("_________________________________________________________________Sending session heartbeat stats...")
 	ddump(sendstats)
 	dprint("_________________________________________________________________<END>")
