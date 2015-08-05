@@ -181,7 +181,7 @@ local function GetSpawnPoint(from_pt, radius, prefab)
         local offset = Vector3(radius * math.cos( theta ), 0, -radius * math.sin( theta ))
         local try_pos = from_pt + offset
         local tile = map:GetTileAtPoint(try_pos:Get())
-        if not (tile == GROUND.IMPASSABLE or tile > GROUND.UNDERGROUND)
+        if map:CanPlantAtPoint(try_pos:Get())
             and map:CanPlacePrefabFilteredAtPoint(try_pos.x, try_pos.y, try_pos.z, prefab)
             and tile ~= GROUND.ROAD
             and not (RoadManager ~= nil and RoadManager:IsOnRoad(try_pos.x, 0, try_pos.z))

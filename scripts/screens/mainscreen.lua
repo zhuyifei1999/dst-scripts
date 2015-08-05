@@ -234,7 +234,7 @@ function MainScreen:OnLoginButton( push_mp_main_screen )
         	TheFrontEnd:PopScreen()
         	TheNet:NotifyAuthenticationFailure()
         	OnNetworkDisconnect( "E_UPGRADE", true)
-        elseif (checkVersion() == "old" or checkVersion() == "error") and not DEBUG_MODE then
+        elseif checkVersion() == "old" and not DEBUG_MODE then
             TheFrontEnd:PopScreen()
             local confirm = PopupDialogScreen( STRINGS.UI.MAINSCREEN.VERSION_OUT_OF_DATE_TITLE, STRINGS.UI.MAINSCREEN.VERSION_OUT_OF_DATE_BODY, 
                         {
