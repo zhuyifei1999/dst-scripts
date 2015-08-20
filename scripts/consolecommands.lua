@@ -883,10 +883,15 @@ function c_netstats()
     end
 end
 
-function c_forcecrash()
+function c_forcecrash(unique)
+    local path = "a"
+    if unique then
+        path = string.random(10, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUV")
+    end
+
     if TheWorld then
-        TheWorld:DoTaskInTime(0,function() a.b = 0 end)
+        TheWorld:DoTaskInTime(0,function() _G[path].b = 0 end)
     elseif TheFrontEnd then
-        TheFrontEnd.screenroot.inst:DoTaskInTime(0,function() a.b = 0 end)
+        TheFrontEnd.screenroot.inst:DoTaskInTime(0,function() _G[path].b = 0 end)
     end
 end
