@@ -338,13 +338,15 @@ function Voter:ServerOnUpdate(dt)
 end
 
 function Voter:ToggleVoteKick()
-	local kick_enabled = not self.commands["kick"].enabled
-	self.commands["kick"].enabled = kick_enabled
-	TheSim:SetSetting("misc", "vote_kick_enabled", tostring(kick_enabled)) 
-	UpdateServerTagsString()
-	self.net_is_kick_enabled:set( kick_enabled )
-	
-	print("Vote kick is now ", kick_enabled)	
+    if TheWorld.ismastersim then
+        local kick_enabled = not self.commands["kick"].enabled
+        self.commands["kick"].enabled = kick_enabled
+        TheSim:SetSetting("misc", "vote_kick_enabled", tostring(kick_enabled)) 
+        UpdateServerTagsString()
+        self.net_is_kick_enabled:set( kick_enabled )
+
+        print("Vote kick is now ", kick_enabled)
+    end
 end
 
 return Voter

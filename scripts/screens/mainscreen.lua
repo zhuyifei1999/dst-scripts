@@ -298,9 +298,9 @@ function MainScreen:OnLoginButton( push_mp_main_screen )
         end
     end
 	
-	if TheSim:IsSteamLoggedOn() or account_manager:HasAuthToken() then
+	if TheSim:IsLoggedOn() or account_manager:HasAuthToken() then
 		if TheSim:GetUserHasLicenseForApp(DONT_STARVE_TOGETHER_APPID) then
-			account_manager:SteamLogin( "Client Login" )
+			account_manager:Login( "Client Login" )
 			TheFrontEnd:PushScreen(NetworkLoginPopup(onLogin, checkVersion, onCancel)) 
 		else
 			TheNet:NotifyAuthenticationFailure()

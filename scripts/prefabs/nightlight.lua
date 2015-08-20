@@ -57,13 +57,14 @@ local function OnHaunt(inst, haunter)
         inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
         ret = true
     end
-    if inst.components.workable ~= nil and
-        inst.components.workable:CanBeWorked() and
-        math.random() <= TUNING.HAUNT_CHANCE_HALF then
-        inst.components.workable:WorkedBy(haunter, 1)
-        inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
-        ret = true
-    end
+    --#HAUNTFIX
+    --if inst.components.workable ~= nil and
+        --inst.components.workable:CanBeWorked() and
+        --math.random() <= TUNING.HAUNT_CHANCE_HALF then
+        --inst.components.workable:WorkedBy(haunter, 1)
+        --inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
+        --ret = true
+    --end
     return ret
 end
 

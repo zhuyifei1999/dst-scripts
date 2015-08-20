@@ -30,7 +30,7 @@ local OnlineStatus = Class(Widget, function(self)
 end)
 
 function OnlineStatus:OnUpdate()
-    if TheFrontEnd:GetIsOfflineMode() or not TheSim:IsSteamLoggedOn() then
+    if TheFrontEnd:GetIsOfflineMode() or not TheSim:IsLoggedOn() then
         self.text:SetString(STRINGS.UI.MAINSCREEN.STEAM_OFFLINE)
         self.textshadow:SetString(STRINGS.UI.MAINSCREEN.STEAM_OFFLINE)
         self.text:SetColour(242/255, 99/255, 99/255, 255/255)

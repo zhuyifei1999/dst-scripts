@@ -115,7 +115,26 @@ AddGlobalDebugKey(KEY_F1, function()
         TheSim:TogglePerfGraph()
         return true
     else
-        TheWorld:PushEvent("ms_lightwildfireforplayer", ThePlayer)
+        local walls = {
+            "stone",
+            "wood",
+            "hay",
+            "ruins",
+            "moonrock",
+        }
+        local sx,sy,sz = ThePlayer.Transform:GetWorldPosition()
+        for i,mat in ipairs(walls) do
+            for j = 0,4 do
+                local wall = SpawnPrefab("wall_"..mat)
+                wall.Transform:SetPosition(sx + (i*6), sy, sz + j)
+                wall.components.health:SetPercent(j*0.25)
+            end
+            for j = 5,15 do
+                local wall = SpawnPrefab("wall_"..mat)
+                wall.Transform:SetPosition(sx + (i*6), sy, sz + j)
+                wall.components.health:SetPercent(j <= 11 and 1 or 0.5)
+            end
+        end
     end
 
 end)

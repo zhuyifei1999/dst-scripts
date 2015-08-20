@@ -125,11 +125,13 @@ end
 
 -- Permanently delete the game world, rengerates a new world afterwords
 function c_regenerateworld()
-    SaveGameIndex:DeleteSlot(
-        SaveGameIndex:GetCurrentSaveSlot(),
-        doreset,
-        true -- true causes world gen options to be preserved
-    )
+    if TheWorld ~= nil and TheWorld.ismastersim then
+        SaveGameIndex:DeleteSlot(
+            SaveGameIndex:GetCurrentSaveSlot(),
+            doreset,
+            true -- true causes world gen options to be preserved
+        )
+    end
 end 
 
 -- Remotely execute a lua string
@@ -140,7 +142,7 @@ end
 
 -- c_despawn helper
 local function dodespawn(player)
-    if TheWorld.ismastersim then
+    if TheWorld ~= nil and TheWorld.ismastersim then
         TheNet:Announce(player:GetDisplayName().." "..STRINGS.UI.NOTIFICATION.LEFTGAME, player.entity, true)
         --Delete must happen when the player is actually removed
         --This is currently handled in playerspawner listening to ms_playerdespawnanddelete
@@ -150,11 +152,13 @@ end
 
 -- Despawn a player, returning to character select screen
 function c_despawn(player)
-    player = player or ConsoleCommandPlayer()
-    if player ~= nil and player:IsValid() then
-        --Queue it because remote command may currently be overriding
-        --ThePlayer, which will get stomped during delete
-        player:DoTaskInTime(0, dodespawn)
+    if TheWorld ~= nil and TheWorld.ismastersim then
+        player = player or ConsoleCommandPlayer()
+        if player ~= nil and player:IsValid() then
+            --Queue it because remote command may currently be overriding
+            --ThePlayer, which will get stomped during delete
+            player:DoTaskInTime(0, dodespawn)
+        end
     end
 end
 
@@ -870,3 +874,19 @@ function c_removeallwithtags(...)
     end
 end
 
+function c_netstats()
+    local stats = TheNet:GetNetworkStatistics()
+    if not stats then print("No Netstats yet") end
+
+    for k,v in pairs(stats) do
+        print(k.." -> "..tostring(v))
+    end
+end
+
+function c_forcecrash()
+    if TheWorld then
+        TheWorld:DoTaskInTime(0,function() a.b = 0 end)
+    elseif TheFrontEnd then
+        TheFrontEnd.screenroot.inst:DoTaskInTime(0,function() a.b = 0 end)
+    end
+end

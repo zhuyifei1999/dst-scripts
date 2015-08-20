@@ -40,6 +40,17 @@ function Health:DetachClassified()
 end
 
 --------------------------------------------------------------------------
+--Client helpers
+
+local function GetPenaltyPercent_Client(self)
+    return self.classified.healthpenalty:value() / 200
+end
+
+local function MaxWithPenalty_Client(self)
+    return self.classified.maxhealth:value() * (1 - GetPenaltyPercent_Client(self))
+end
+
+--------------------------------------------------------------------------
 
 function Health:SetCurrent(current)
     if self.classified ~= nil then
@@ -55,7 +66,8 @@ end
 
 function Health:SetPenalty(penalty)
     if self.classified ~= nil then
-        self.classified:SetValue("healthpenalty", penalty * TUNING.EFFIGY_HEALTH_PENALTY)
+        assert(penalty >= 0 and penalty <= 1, "Player healthpenalty out of range: "..tostring(penalty))
+        self.classified.healthpenalty:set(math.floor(penalty * 200 + .5))
     end
 end
 
@@ -64,6 +76,16 @@ function Health:Max()
         return self.inst.components.health.maxhealth
     elseif self.classified ~= nil then
         return self.classified.maxhealth:value()
+    else
+        return 100
+    end
+end
+
+function Health:MaxWithPenalty()
+    if self.inst.components.health ~= nil then
+        return self.inst.components.health:GetMaxWithPenalty()
+    elseif self.classified ~= nil then
+        return MaxWithPenalty_Client(self)
     else
         return 100
     end
@@ -79,11 +101,21 @@ function Health:GetPercent()
     end
 end
 
+function Health:GetCurrent()
+    if self.inst.components.health ~= nil then
+        return self.inst.components.health.currenthealth
+    elseif self.classified ~= nil then
+        return self.classified.currenthealth:value()
+    else        
+        return 100
+    end
+end
+
 function Health:GetPenaltyPercent()
     if self.inst.components.health ~= nil then
         return self.inst.components.health:GetPenaltyPercent()
     elseif self.classified ~= nil then
-        return math.min(self.classified.healthpenalty:value(), self.classified.maxhealth:value() - 1) / self.classified.maxhealth:value()
+        return GetPenaltyPercent_Client(self)
     else
         return 0
     end
@@ -93,7 +125,7 @@ function Health:IsHurt()
     if self.inst.components.health ~= nil then
         return self.inst.components.health:IsHurt()
     elseif self.classified ~= nil then
-        return self.classified.currenthealth:value() < math.max(1, self.classified.maxhealth:value() - self.classified.healthpenalty:value())
+        return self.classified.currenthealth:value() < MaxWithPenalty_Client(self)
     else
         return false
     end

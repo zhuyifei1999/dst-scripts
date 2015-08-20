@@ -40,10 +40,13 @@ end
 
 function TextButton:Enable()
 	TextButton._base.Enable(self)
-    self.image:SetTexture(self.atlas, self.focus and self.image_focus or self.image_normal)
+
+    if self.atlas and (self.focus and self.image_focus or self.image_normal) then
+        self.image:SetTexture(self.atlas, self.focus and self.image_focus or self.image_normal)
+    end
 
     if self.image_focus == self.image_normal then
-        if self. focus then 
+        if self.focus then
             self.image:SetScale(1.2,1.2,1.2)
         else
             self.image:SetScale(1,1,1)
@@ -54,7 +57,9 @@ end
 
 function TextButton:Disable()
 	TextButton._base.Disable(self)
-	self.image:SetTexture(self.atlas, self.image_disabled)
+    if self.atlas and self.image_disabled then
+        self.image:SetTexture(self.atlas, self.image_disabled)
+    end
 end
 
 function TextButton:GetSize()

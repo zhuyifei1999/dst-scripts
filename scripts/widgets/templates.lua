@@ -1,10 +1,12 @@
 local Widget = require "widgets/widget"
 local Text = require "widgets/text"
+local TextEdit = require "widgets/textedit"
 local Button = require "widgets/button"
 local Image = require "widgets/image"
 local ImageButton = require "widgets/imagebutton"
 local NineSlice = require "widgets/nineslice"
 local UIAnim = require "widgets/uianim"
+local Spinner = require "widgets/spinner"
 
 local smoke_offset = -20
 
@@ -704,6 +706,79 @@ TEMPLATES = {
 		return opt
 	end,
 	
+	
+    -------------------
+    -------------------
+    -- Label Textbox --
+    -------------------
+    -------------------
+    -- Text box with a label beside it
+    LabelTextbox = function(labeltext, fieldtext, width_label, width_field, height, spacing, font, font_size, horiz_offset)
+        local textbox_font_ratio = 0.8
+        local offset = horiz_offset or 0
+        local total_width = width_label + width_field + spacing
+        local wdg = Widget("labeltextbox")
+        wdg.label = wdg:AddChild(Text(font or NEWFONT, font_size or 25))
+        wdg.label:SetString(labeltext)
+        wdg.label:SetHAlign(ANCHOR_RIGHT)
+        wdg.label:SetRegionSize(width_label,height)
+        wdg.label:SetPosition((-total_width/2)+(width_label/2)+offset,0)
+        wdg.label:SetColour(0,0,0,1)
+        wdg.textbox_bg = wdg:AddChild( Image("images/textboxes.xml", "textbox2_grey.tex") )
+        wdg.textbox_bg:SetPosition((total_width/2)-(width_field/2)+offset, 0)
+        wdg.textbox_bg:ScaleToSize(width_field, height)
+        wdg.textbox = wdg:AddChild(TextEdit( font or NEWFONT, (font_size or 25)*textbox_font_ratio, fieldtext, {0,0,0,1} ) )
+        wdg.textbox:SetForceEdit(true)
+        wdg.textbox:SetPosition((total_width/2)-(width_field/2)+offset, 0)
+        wdg.textbox:SetRegionSize(width_field-30, height) -- this needs to be slightly narrower than the BG because we don't have margins
+        wdg.textbox:SetHAlign(ANCHOR_LEFT)
+        wdg.textbox:SetFocusedImage( wdg.textbox_bg, "images/textboxes.xml", "textbox2_grey.tex", "textbox2_gold.tex", "textbox2_gold_greyfill.tex" )
+
+        wdg.OnGainFocus = function(self)
+            Widget.OnGainFocus(self)
+            self.textbox:OnGainFocus()
+        end
+        wdg.OnLoseFocus = function(self)
+            Widget.OnLoseFocus(self)
+            self.textbox:OnLoseFocus()
+        end
+        wdg.GetHelpText = function(self)
+            local controller_id = TheInput:GetControllerID()
+            local t = {}
+            if not self.textbox.editing and not self.textbox.focus then
+                table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT, false, false ) .. " " .. STRINGS.UI.HELP.CHANGE_TEXT)   
+            end
+            return table.concat(t, "  ")
+        end
+        global("TheWidget")
+        TheWidget = wdg
+
+        return wdg
+    end,
+
+    -------------------
+    -------------------
+    -- Label Spinner --
+    -------------------
+    -------------------
+    -- Spinner with a label beside it
+    LabelSpinner = function(labeltext, spinnerdata, width_label, width_spinner, height, spacing, font, font_size, horiz_offset)
+        local offset = horiz_offset or 0
+        local total_width = width_label + width_spinner + spacing
+        local wdg = Widget("labelspinner")
+        wdg.label = wdg:AddChild( Text(font or NEWFONT, font_size or 25, labeltext) )
+        wdg.label:SetPosition( (-total_width/2)+(width_label/2) + offset, 0 )
+        wdg.label:SetRegionSize( width_label, height )
+        wdg.label:SetHAlign( ANCHOR_RIGHT )
+        wdg.label:SetColour(0,0,0,1)
+        wdg.spinner = wdg:AddChild(Spinner(spinnerdata, width_spinner, height, {font = font or NEWFONT, size = font_size or 25}, nil, nil, nil, true, nil, nil, 1, 1))
+        wdg.spinner:SetPosition((total_width/2)-(width_spinner/2) + offset, 0)
+        wdg.spinner:SetTextColour(0,0,0,1)
+
+        wdg.focus_forward = wdg.spinner
+
+        return wdg
+    end,
 }
 
 return TEMPLATES

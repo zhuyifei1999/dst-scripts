@@ -66,7 +66,7 @@ local function chop_down_burnt_tree(inst, chopper)
     end
     inst.AnimState:PlayAnimation("burnt_chop")
     set_stump(inst)
-    inst.Physics:ClearCollisionMask()
+    RemovePhysicsColliders(inst)
     inst:ListenForEvent("animover", inst.Remove)
     inst.components.lootdropper:DropLoot()
 end

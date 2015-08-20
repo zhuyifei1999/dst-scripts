@@ -4,6 +4,8 @@ local HealthBadge = require "widgets/healthbadge"
 local HungerBadge = require "widgets/hungerbadge"
 local BeaverBadge = require "widgets/beaverbadge"
 local MoistureMeter = require "widgets/moisturemeter"
+local ResurrectButton = require "widgets/resurrectbutton"
+local UIAnim = require "widgets/uianim"
 
 local function OnSetPlayerMode(inst, self)
     self.modetask = nil
@@ -68,6 +70,23 @@ local function OnSetGhostMode(inst, self)
     end
 end
 
+local function UpdateRezButton(inst, self, enable)
+    self.rezbuttontask = nil
+    if enable then
+        self:EnableResurrect(true)
+    else
+        local was_button_visible = self.isghostmode and self.resurrectbutton:IsVisible()
+        self:EnableResurrect(false)
+        if was_button_visible and not self.resurrectbutton:IsVisible() then
+            self.resurrectbuttonfx:GetAnimState():PlayAnimation("break")
+            self.resurrectbuttonfx:Show()
+            if self.resurrectbuttonfx:IsVisible() then
+                TheFocalPoint.SoundEmitter:PlaySound(self.heart.effigybreaksound)
+            end
+        end
+    end
+end
+
 local StatusDisplays = Class(Widget, function(self, owner)
     Widget._ctor(self, "Status")
     self.owner = owner
@@ -85,12 +104,55 @@ local StatusDisplays = Class(Widget, function(self, owner)
 
     self.heart = self:AddChild(HealthBadge(owner))
     self.heart:SetPosition(40, 20, 0)
+    self.heart.effigybreaksound = "dontstarve/creatures/together/lavae/egg_deathcrack"
     self.onhealthdelta = nil
+    self.healthpenalty = 0
 
     self.moisturemeter = self:AddChild(MoistureMeter(owner))
     self.moisturemeter:SetPosition(0, -115, 0)
     self.onmoisturedelta = nil
 
+    self.resurrectbutton = self:AddChild(ResurrectButton(owner))
+    self.resurrectbutton:SetScale(.75, .75, .75)
+    self.resurrectbutton:SetTooltip(STRINGS.UI.HUD.ACTIVATE_RESURRECTION)
+
+    self.resurrectbuttonfx = self:AddChild(UIAnim())
+    self.resurrectbuttonfx:SetScale(.75, .75, .75)
+    self.resurrectbuttonfx:GetAnimState():SetBank("effigy_break")
+    self.resurrectbuttonfx:GetAnimState():SetBuild("effigy_button")
+    self.resurrectbuttonfx:Hide()
+    self.resurrectbuttonfx.inst:ListenForEvent("animover", function(inst) inst.widget:Hide() end)
+
+    --NOTE: Can't rely on order of getting and losing attunement,
+    --      especially in the same frame when switching effigies.
+
+    --Delay button updates so it doesn't draw focus from entity anims/fx
+    --Also helps flatten messages from the same frame to its final value
+    local rezbuttondelay = 15 * FRAMES
+
+    self.inst:ListenForEvent("gotnewattunement", function(owner, data)
+        --can safely assume we are attuned if we just "got" an attunement
+        if data.proxy:IsAttunableType("remoteresurrector") then
+            if self.rezbuttontask ~= nil then
+                self.rezbuttontask:Cancel()
+            end
+            self.rezbuttontask = not self.heart.effigy and self.inst:DoTaskInTime(rezbuttondelay, UpdateRezButton, self, true) or nil
+        end
+    end, owner)
+
+    self.inst:ListenForEvent("attunementlost", function(owner, data)
+        --cannot assume that we are no longer attuned
+        --to a type when we lose a single attunement!
+        if data.proxy:IsAttunableType("remoteresurrector") and
+            not (owner.components.attuner ~= nil and owner.components.attuner:HasAttunement("remoteresurrector")) then
+            if self.rezbuttontask ~= nil then
+                self.rezbuttontask:Cancel()
+            end
+            self.rezbuttontask = self.heart.effigy and self.inst:DoTaskInTime(rezbuttondelay, UpdateRezButton, self, false) or nil
+        end
+    end, owner)
+
+    self.rezbuttontask = nil
     self.modetask = nil
     self.isghostmode = true --force the initial SetGhostMode call to be dirty
     self:SetGhostMode(false)
@@ -192,6 +254,12 @@ function StatusDisplays:SetGhostMode(ghostmode)
         end
     end
 
+    if self.rezbuttontask ~= nil then
+        self.rezbuttontask:Cancel()
+        self.rezbuttontask = nil
+    end
+    self:EnableResurrect(self.owner.components.attuner ~= nil and self.owner.components.attuner:HasAttunement("remoteresurrector"))
+
     if self.modetask ~= nil then
         self.modetask:Cancel()
     end
@@ -199,7 +267,9 @@ function StatusDisplays:SetGhostMode(ghostmode)
 end
 
 function StatusDisplays:SetHealthPercent(pct)
-    self.heart:SetPercent(pct, self.owner.replica.health:Max(), self.owner.replica.health:GetPenaltyPercent()) 
+    local health = self.owner.replica.health
+    self.healthpenalty = health:GetPenaltyPercent()
+    self.heart:SetPercent(pct, health:Max(), self.healthpenalty)
 
     if pct <= .33 then
         self.heart:StartWarning()
@@ -209,16 +279,24 @@ function StatusDisplays:SetHealthPercent(pct)
 end
 
 function StatusDisplays:HealthDelta(data)
+    local oldpenalty = self.healthpenalty
     self:SetHealthPercent(data.newpercent)
 
-    if not data.overtime then
-        if data.newpercent > data.oldpercent then
-            self.heart:PulseGreen()
-            TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/health_up")
-        elseif data.newpercent < data.oldpercent then
-            TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/health_down")
-            self.heart:PulseRed()
-        end
+    --health penalty pulse takes priority
+    if oldpenalty > self.healthpenalty then
+        self.heart:PulseGreen()
+        TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/health_up")
+    elseif oldpenalty < self.healthpenalty then
+        self.heart:PulseRed()
+        TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/health_down")
+    elseif data.overtime then
+        --ignore pulse for healthdelta overtime
+    elseif data.newpercent > data.oldpercent then
+        self.heart:PulseGreen()
+        TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/health_up")
+    elseif data.newpercent < data.oldpercent then
+        self.heart:PulseRed()
+        TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/health_down")
     end
 end
 
@@ -294,6 +372,24 @@ end
 
 function StatusDisplays:MoistureDelta(data)
     self:SetMoisturePercent(data.new)
+end
+
+function StatusDisplays:GetResurrectButton()
+    return self.resurrectbutton:IsVisible() and self.resurrectbutton or nil
+end
+
+function StatusDisplays:EnableResurrect(enable)
+    if enable then
+        self.heart:ShowEffigy()
+        if self.isghostmode then
+            self.resurrectbutton:Show()
+        else
+            self.resurrectbutton:Hide()
+        end
+    else
+        self.heart:HideEffigy()
+        self.resurrectbutton:Hide()
+    end
 end
 
 return StatusDisplays

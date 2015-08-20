@@ -36,6 +36,8 @@ local function makerock(rocktype)
         inst.AnimState:SetBuild("scorched_rock")
         inst.AnimState:PlayAnimation("idle"..rocktype)
 
+        inst.name = STRINGS.NAMES.LAVA_POND_ROCK
+
         inst.entity:SetPristine()
 
         if not TheWorld.ismastersim then

@@ -392,6 +392,8 @@ local MorgueScreen = Class(Screen, function(self, in_game)
 	
 	self.list_widgets = {}
     self.morgue = Morgue:GetRows()
+
+    PlayerHistory:SortBackwards("sort_date")
     self.player_history = PlayerHistory:GetRows()
 
 
@@ -638,7 +640,7 @@ function MorgueScreen:BuildEncountersTab()
         table.insert(self.encounter_widgets, encounter_widget_constructor(self.player_history[i] or {name="", playerage="0", steamid="", server_name="", date="", prefab=""}, self.encountersrowsroot, self.obituary_button))
     end
 
-    self.encounters_scroll_list = self.encounterslistroot:AddChild(ScrollableList(self.player_history, 900, 420, row_height - 1, 1, encounter_widget_update, self.encounter_widgets, nil, nil, nil, 30))
+    self.encounters_scroll_list = self.encounterslistroot:AddChild(ScrollableList(self.player_history, 900, row_height * num_rows, row_height - 1, 1, encounter_widget_update, self.encounter_widgets, nil, nil, nil, 30))
     self.encounters_scroll_list:LayOutStaticWidgets(-25)
     self.encounters_scroll_list:SetPosition(-95, -35)
 end

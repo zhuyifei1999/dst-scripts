@@ -638,14 +638,16 @@ local function tree(name, build, stage, data)
                     ret = true
                 end
             end
-            if math.random() <= TUNING.HAUNT_CHANCE_VERYRARE then
-                if inst.components.burnable and not inst.components.burnable:IsBurning() then
-                    inst.components.burnable:Ignite()
-                    inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
-                    inst.components.hauntable.cooldown_on_successful_haunt = false
-                    ret = true
-                end
-            elseif math.random() <= TUNING.HAUNT_CHANCE_SUPERRARE then
+            --#HAUNTFIX
+            --if math.random() <= TUNING.HAUNT_CHANCE_VERYRARE then
+                --if inst.components.burnable and not inst.components.burnable:IsBurning() then
+                    --inst.components.burnable:Ignite()
+                    --inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
+                    --inst.components.hauntable.cooldown_on_successful_haunt = false
+                    --ret = true
+                --end
+            --else
+            if math.random() <= TUNING.HAUNT_CHANCE_SUPERRARE then
                 if inst.components.growable then
                     inst.leifscale = growth_stages[inst.components.growable.stage].leifscale or 1
                 else

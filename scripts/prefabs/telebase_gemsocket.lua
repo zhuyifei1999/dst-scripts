@@ -52,10 +52,11 @@ local function getstatus(inst)
 end
 
 local function onhaunt(inst)
-    if inst.components.trader ~= nil and not inst.components.trader.enabled and math.random() <= TUNING.HAUNT_CHANCE_RARE then
-        DestroyGem(inst)
-        return true
-    end
+    --#HAUNTFIX
+    --if inst.components.trader ~= nil and not inst.components.trader.enabled and math.random() <= TUNING.HAUNT_CHANCE_RARE then
+        --DestroyGem(inst)
+        --return true
+    --end
     return false
 end
 

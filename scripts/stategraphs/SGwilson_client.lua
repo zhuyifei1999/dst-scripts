@@ -154,6 +154,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.UNPIN, "doshortaction"),
     ActionHandler(ACTIONS.CATCH, "catch_pre"),
     ActionHandler(ACTIONS.WRITE, "doshortaction"),
+    ActionHandler(ACTIONS.ATTUNE, "dolongaction"),
 }
 
 local events =

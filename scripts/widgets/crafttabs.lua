@@ -15,7 +15,7 @@ local HINT_UPDATE_INTERVAL = 2.0 -- once per second
 local SCROLL_REPEAT_TIME = .15
 local MOUSE_SCROLL_REPEAT_TIME = 0
 
-local tab_bg = 
+local tab_bg =
 {
     normal = "tab_normal.tex",
     selected = "tab_selected.tex",
@@ -25,7 +25,6 @@ local tab_bg =
 }
 
 local CraftTabs = Class(Widget, function(self, owner, top_root)
-    
     Widget._ctor(self, "CraftTabs")
     self.owner = owner
 
@@ -37,7 +36,7 @@ local CraftTabs = Class(Widget, function(self, owner, top_root)
     self.craftroot:SetVAnchor(ANCHOR_TOP)
     self.craftroot:SetHAnchor(ANCHOR_MIDDLE)
     self.craftroot:SetScaleMode(SCALEMODE_PROPORTIONAL)
-    
+
     self.controllercrafting = self.craftroot:AddChild(ControllerCrafting(owner))
     --]]
 
@@ -52,11 +51,11 @@ local CraftTabs = Class(Widget, function(self, owner, top_root)
     self.crafting:SetScale(crafting_scale, crafting_scale, crafting_scale)
 
     self.bg = self:AddChild(Image("images/hud.xml", "craft_bg.tex"))      
-    
+
     self.bg_cover = self:AddChild(Image("images/hud.xml", "craft_bg_cover.tex"))
     self.bg_cover:SetPosition(-38, 0, 0)
     self.bg_cover:SetClickable(false)
-    
+
     self.tabs = self:AddChild(TabGroup())
     self.tabs:SetPosition(-16,0,0)
 
@@ -66,29 +65,29 @@ local CraftTabs = Class(Widget, function(self, owner, top_root)
     self.tabs.onhighlight = function() TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/recipe_ready") return .2 end
     self.tabs.onalthighlight = function() end
     self.tabs.onoverlay = function() TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/research_available") return .2 end
-    
+
     local tabnames = {}
     for k,v in pairs(RECIPETABS) do
         table.insert(tabnames, v)
     end
-    
+
     for k,v in pairs(CUSTOM_RECIPETABS) do
-		if v.owner_tag == nil or owner:HasTag( v.owner_tag ) then
-			table.insert(tabnames, v)
-		end
-	end
+        if v.owner_tag == nil or owner:HasTag( v.owner_tag ) then
+            table.insert(tabnames, v)
+        end
+    end
 
     table.sort(tabnames, function(a,b) return a.sort < b.sort end)
-    
+
     self.tab_order = {}
 
     self.tabs.spacing = 750/#tabnames
-    
+
     self.tabbyfilter = {}
     for k,v in ipairs(tabnames) do
         local tab = self.tabs:AddTab(STRINGS.TABS[v.str], resolvefilepath("images/hud.xml"), v.icon_atlas or resolvefilepath("images/hud.xml"),
         v.icon, tab_bg.normal, tab_bg.selected, tab_bg.highlight, tab_bg.bufferedhighlight, tab_bg.overlay,
-            
+
             function() --select fn
                 if not self.controllercraftingopen then
 
@@ -126,14 +125,49 @@ local CraftTabs = Class(Widget, function(self, owner, top_root)
         tab.icon_atlas = v.icon_atlas or resolvefilepath("images/hud.xml")
         tab.tabname = STRINGS.TABS[v.str]
         self.tabbyfilter[v] = tab
-        
+
         table.insert(self.tab_order, tab)
     end
-    
+
     local function UpdateRecipes()
         self:UpdateRecipes()
     end
 
+    local last_health_seg = nil
+    local last_health_penalty_seg = nil
+    local last_sanity_seg = nil
+    local last_sanity_penalty_seg = nil
+
+    local function UpdateRecipesForHealthIngredients(owner, data)
+        local health = owner.replica.health
+        if health ~= nil then
+            local current_seg = math.floor(math.ceil(data.newpercent * health:Max()) / CHARACTER_INGREDIENT_SEG)
+            local penalty_seg = math.floor(health:GetPenaltyPercent() / CHARACTER_INGREDIENT_SEG)
+            if current_seg ~= last_health_seg or
+                penalty_seg ~= last_health_penalty_seg then
+                last_health_seg = current_seg
+                last_health_penalty_seg = penalty_seg
+                self:UpdateRecipes()
+            end
+        end
+    end
+
+    local function UpdateRecipesForSanityIngredients(owner, data)
+        local sanity = owner.replica.sanity
+        if sanity ~= nil then
+            local current_seg = math.floor(math.ceil(data.newpercent * sanity:Max()) / CHARACTER_INGREDIENT_SEG)
+            local penalty_seg = math.floor(sanity:GetPenaltyPercent() / CHARACTER_INGREDIENT_SEG)
+            if current_seg ~= last_sanity_seg or
+                penalty_seg ~= last_sanity_penalty_seg then
+                last_sanity_seg = current_seg
+                last_sanity_penalty_seg = penalty_seg
+                self:UpdateRecipes()
+            end
+        end
+    end
+
+    self.inst:ListenForEvent("healthdelta", UpdateRecipesForHealthIngredients, self.owner)
+    self.inst:ListenForEvent("sanitydelta", UpdateRecipesForSanityIngredients, self.owner)
     self.inst:ListenForEvent("techtreechange", UpdateRecipes, self.owner)
     self.inst:ListenForEvent("itemget", UpdateRecipes, self.owner)
     self.inst:ListenForEvent("itemlose", UpdateRecipes, self.owner)
@@ -145,7 +179,7 @@ local CraftTabs = Class(Widget, function(self, owner, top_root)
     self:DoUpdateRecipes()
     self:SetScale(base_scale, base_scale, base_scale)
     self:StartUpdating()
-    
+
     self.openhint = self:AddChild(Text(UIFONT, 40))
     self.openhint:SetPosition(10+150, 430, 0)
     self.openhint:SetRegionSize(300, 45, 0)
@@ -155,7 +189,6 @@ local CraftTabs = Class(Widget, function(self, owner, top_root)
 
     self:Hide()
 end)
-
 
 function CraftTabs:Close()
     self.crafting:Close()
@@ -177,7 +210,7 @@ end
 
 function CraftTabs:OpenControllerCrafting()
     --self.parent:AddChild(self.controllercrafting)
-    
+
     if not self.controllercraftingopen then
         self:ScaleTo(base_scale, selected_scale, .15)
         --self.blackoverlay:Show()
@@ -188,7 +221,6 @@ function CraftTabs:OpenControllerCrafting()
 end
 
 function CraftTabs:OnUpdate(dt)
-    
     self.hint_update_check = self.hint_update_check - dt
     if 0 > self.hint_update_check then  
         if not TheInput:ControllerAttached() then
@@ -199,7 +231,7 @@ function CraftTabs:OnUpdate(dt)
         end
         self.hint_update_check = HINT_UPDATE_INTERVAL
     end
-    
+
     if self.crafting.open then
         local x = TheInput:GetScreenPosition().x
         local w,h = TheSim:GetScreenSize()
@@ -332,12 +364,12 @@ function CraftTabs:DoUpdateRecipes()
                         if buffered_build and has_researched then
                             tabs_to_alt_highlight[tab] = 1 + (tabs_to_alt_highlight[tab] or 0)
                         end
-                        
+
                         if can_build and has_researched then
                             tabs_to_alt_highlight[tab] = 0 -- Highlight takes precedence
                             tabs_to_highlight[tab] = 1 + (tabs_to_highlight[tab] or 0)
                         end
-                        
+
                         if can_research then
                             tabs_to_overlay[tab] = 1 + (tabs_to_overlay[tab] or 0)
                         end

@@ -130,9 +130,10 @@ local CustomizationTab = Class(Widget, function(self, profile, customoptions, al
     self.presetdesc:SetString(self.presets[1].desc)
     self.presetdesc:EnableWordWrap(true)
 
-    local w = 300
+    local spinner_width = 290
+    local spinner_height = nil -- use default height
     self.presetspinner = self.presetpanel:AddChild(Widget("presetspinner"))
-    self.presetspinner.spinner = self.presetspinner:AddChild(Spinner( self.presets, w, 50, {font=NEWFONT, size=22}, nil, nil, nil, true, w - 30)) 
+    self.presetspinner.spinner = self.presetspinner:AddChild(Spinner( self.presets, spinner_width, spinner_height, {font=NEWFONT, size=22}, nil, nil, nil, true))
     self.presetspinner.focus_forward = self.presetspinner.spinner
     self.presetspinner:SetPosition(0, 30, 0)
     self.presetspinner.spinner:SetTextColour(0,0,0,1)
@@ -535,9 +536,9 @@ function CustomizationTab:MakeOptionSpinners()
             image_parent:SetHoverText(STRINGS.UI.CUSTOMIZATIONSCREEN[string.upper(v.name)], { font = NEWFONT_OUTLINE, size = 22, offset_x = 0, offset_y = 47, colour = {1,1,1,1}})
         end
 
-        local spin_height = 50
-        local w = 235
-        local spinner = opt:AddChild(Spinner( spin_options, w, spin_height, {font=NEWFONT, size=22}, nil, nil, nil, true, 200, nil, .765, 1.35))
+        local spinner_width = 170
+        local spinner_height = nil -- default height
+        local spinner = opt:AddChild(Spinner( spin_options, spinner_width, spinner_height, {font=NEWFONT, size=22}, nil, nil, nil, true))
         spinner.background:SetPosition(0,1)
         spinner.bg = bg
         spinner:SetTextColour(0,0,0,1)

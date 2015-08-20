@@ -204,6 +204,7 @@ local function mosquito()
     inst.components.combat:SetDefaultDamage(TUNING.MOSQUITO_DAMAGE)
     inst.components.combat:SetAttackPeriod(TUNING.MOSQUITO_ATTACK_PERIOD)
     inst.components.combat:SetRetargetFunction(2, KillerRetarget)
+    inst.components.combat:SetPlayerStunlock(PLAYERSTUNLOCK.RARELY)
 
     inst.drinks = 1
     inst.maxdrinks = TUNING.MOSQUITO_MAX_DRINKS

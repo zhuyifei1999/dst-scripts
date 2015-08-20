@@ -78,6 +78,10 @@ local function OnBuildSuccess(parent)
     parent.player_classified.buildevent:push()
 end
 
+local function OnConsumeHealthCost(parent)
+    parent.player_classified.builderdamagedevent:push()
+end
+
 local function OnLearnRecipeSuccess(parent)
     parent.player_classified.learnrecipeevent:push()
 end
@@ -378,6 +382,12 @@ local function OnBuildEvent(inst)
     end
 end
 
+local function OnBuilderDamagedEvent(inst)
+    if inst._parent ~= nil and TheFocalPoint.entity:GetParent() == inst._parent then
+        inst._parent:PushEvent("damaged")
+    end
+end
+
 local function OnLearnRecipeEvent(inst)
     if inst._parent ~= nil and TheFocalPoint.entity:GetParent() == inst._parent then
         TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/get_gold")
@@ -515,6 +525,7 @@ local function RegisterNetListeners(inst)
         inst:ListenForEvent("attacked", OnAttacked, inst._parent)
         inst:ListenForEvent("builditem", OnBuildSuccess, inst._parent)
         inst:ListenForEvent("buildstructure", OnBuildSuccess, inst._parent)
+        inst:ListenForEvent("consumehealthcost", OnConsumeHealthCost, inst._parent)
         inst:ListenForEvent("learnrecipe", OnLearnRecipeSuccess, inst._parent)
         inst:ListenForEvent("repair", OnRepairSuccess, inst._parent)
         inst:ListenForEvent("performaction", OnPerformAction, inst._parent)
@@ -551,6 +562,7 @@ local function RegisterNetListeners(inst)
     end
 
     inst:ListenForEvent("builder.build", OnBuildEvent)
+    inst:ListenForEvent("builder.damaged", OnBuilderDamagedEvent)
     inst:ListenForEvent("builder.learnrecipe", OnLearnRecipeEvent)
     inst:ListenForEvent("repair.repair", OnRepairEvent)
     inst:ListenForEvent("playercameradirty", OnPlayerCameraDirty)
@@ -581,7 +593,7 @@ local function fn()
     inst._oldhealthpercent = 1
     inst.currenthealth = net_ushortint(inst.GUID, "health.currenthealth", "healthdirty")
     inst.maxhealth = net_ushortint(inst.GUID, "health.maxhealth", "healthdirty")
-    inst.healthpenalty = net_ushortint(inst.GUID, "health.penalty", "healthdirty")
+    inst.healthpenalty = net_byte(inst.GUID, "health.penalty", "healthdirty")
     inst.istakingfiredamage = net_bool(inst.GUID, "health.takingfiredamage", "istakingfiredamagedirty")
     inst.issleephealing = net_bool(inst.GUID, "health.healthsleep")
     inst.ishealthpulse = net_bool(inst.GUID, "health.dodeltaovertime", "healthdirty")
@@ -596,7 +608,7 @@ local function fn()
     inst._oldsanitypercent = 1
     inst.currentsanity = net_ushortint(inst.GUID, "sanity.current", "sanitydirty")
     inst.maxsanity = net_ushortint(inst.GUID, "sanity.max", "sanitydirty")
-    inst.sanitypenalty = net_ushortint(inst.GUID, "sanity.penalty", "sanitydirty")
+    inst.sanitypenalty = net_byte(inst.GUID, "sanity.penalty", "sanitydirty")
     inst.sanityratescale = net_tinybyte(inst.GUID, "sanity.ratescale")
     inst.issanitypulse = net_bool(inst.GUID, "sanity.dodeltaovertime", "sanitydirty")
     inst.issanityghostdrain = net_bool(inst.GUID, "sanity.ghostdrain")
@@ -650,6 +662,7 @@ local function fn()
 
     --Builder variables
     inst.buildevent = net_event(inst.GUID, "builder.build")
+    inst.builderdamagedevent = net_event(inst.GUID, "builder.damaged")
     inst.learnrecipeevent = net_event(inst.GUID, "builder.learnrecipe")
     inst.techtrees = deepcopy(TECH.NONE)
     inst.sciencebonus = net_tinybyte(inst.GUID, "builder.science_bonus")

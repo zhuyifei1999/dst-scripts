@@ -4,15 +4,15 @@ local Widget = Class(function(self, name)
     self.name = name or "widget"
     self.inst = CreateEntity()
     self.inst.widget = self
-    
+
     self.inst:AddTag("widget")
     self.inst:AddTag("UI")
     self.inst.entity:SetName(name)
     self.inst.entity:AddUITransform()
-	self.inst.entity:CallPrefabConstructionComplete()
-    
+    self.inst.entity:CallPrefabConstructionComplete()
+
     self.inst:AddComponent("uianim")
-    
+
     self.enabled = true
     self.shown = true
     self.focus = false
@@ -22,7 +22,6 @@ local Widget = Class(function(self, name)
     self.focus_flow = {}
     self.focus_flow_args = {}
 end)
-
 
 function Widget:IsDeepestFocus()
     if self.focus then
@@ -39,10 +38,8 @@ function Widget:OnMouseButton(button, down, x, y)
 
     for k,v in pairs (self.children) do
         if v.focus and v:OnMouseButton(button, down, x, y) then return true end
-    end 
-
+    end
 end
-
 
 function Widget:MoveToBack()
     self.inst.entity:MoveToBack()
@@ -53,25 +50,24 @@ function Widget:MoveToFront()
 end
 
 function Widget:OnFocusMove(dir, down)
-	--print ("OnFocusMove", self.name or "?", self.focus, dir, down)
+    --print ("OnFocusMove", self.name or "?", self.focus, dir, down)
     if not self.focus then return false end
 
     for k,v in pairs (self.children) do
         if v.focus and v:OnFocusMove(dir, down) then return true end
-    end 
+    end
 
     if down and self.focus_flow[dir] then
-		
-		local dest = self.focus_flow[dir]
+        local dest = self.focus_flow[dir]
         if dest and type(dest) == "function" then dest = dest() end
-        
+
         -- Can we pass the focus down the chain if we are disabled/hidden?
         if dest and dest:IsVisible() and dest.enabled then
-			if self.focus_flow_args[dir] then
-				dest:SetFocus(unpack(self.focus_flow_args[dir]))
-			else
-				dest:SetFocus()
-			end
+            if self.focus_flow_args[dir] then
+                dest:SetFocus(unpack(self.focus_flow_args[dir]))
+            else
+                dest:SetFocus()
+            end
             return true
         end
     end
@@ -84,13 +80,13 @@ function Widget:OnFocusMove(dir, down)
 end
 
 function Widget:IsVisible()
-	if not self.shown then return false end
+    if not self.shown then return false end
 
-	if self.parent then
-		return self.parent:IsVisible()
-	end
+    if self.parent then
+        return self.parent:IsVisible()
+    end
 
-	return true	
+    return true 
 end
 
 function Widget:OnRawKey(key, down)
@@ -101,7 +97,7 @@ function Widget:OnRawKey(key, down)
 end
 
 function Widget:OnTextInput(text)
-	--print ("text", self, text)
+    --print ("text", self, text)
     if not self.focus then return false end
     for k,v in pairs (self.children) do
         if v.focus and v:OnTextInput(text) then return true end
@@ -118,7 +114,7 @@ function Widget:OnControl(control, down)
 
     for k,v in pairs (self.children) do
         if v.focus and v:OnControl(control, down) then return true end
-    end 
+    end
 
     if self.parent_scroll_list and (control == CONTROL_SCROLLBACK or control == CONTROL_SCROLLFWD) then
         return self.parent_scroll_list:OnControl(control, down, true)
@@ -135,8 +131,6 @@ function Widget:IsEditing()
     --recursive check to see if anything has text edit focus
     if self.editing then
         return true
-    elseif not self.focus then
-        return false
     end
 
     for k, v in pairs(self.children) do
@@ -149,7 +143,6 @@ function Widget:IsEditing()
 end
 
 function Widget:ScaleTo(from, to, time, fn)
-    
     if not self.inst.components.uianim then
         self.inst:AddComponent("uianim")
     end
@@ -198,12 +191,12 @@ end
 
 function Widget:Enable()
     self.enabled = true
-	self:OnEnable()
+    self:OnEnable()
 end
 
 function Widget:Disable()
     self.enabled = false
-	self:OnDisable()
+    self:OnDisable()
 end
 
 function Widget:OnEnable()
@@ -243,18 +236,18 @@ end
 function Widget:Hide()
     self.inst.entity:Hide(false)
     self.shown = false
-	self:OnHide()
+    self:OnHide()
 end
 
 function Widget:Show()
     self.inst.entity:Show(false)
     self.shown = true
-	self:OnShow()
+    self:OnShow()
 end
 
 function Widget:Kill()
-	self:StopUpdating()	
-	self:KillAllChildren()
+    self:StopUpdating()
+    self:KillAllChildren()
     if self.parent then
         self.parent.children[self] = nil
     end
@@ -286,7 +279,7 @@ function Widget:SetPosition(pos, y, z)
         self.inst.UITransform:SetPosition(pos,y,z or 0)
     else
         if not self.inst:IsValid() then
-			print (debugstack())
+            print (debugstack())
         end
         self.inst.UITransform:SetPosition(pos.x,pos.y,pos.z)
     end
@@ -296,13 +289,12 @@ function Widget:SetRotation(angle)
     self.inst.UITransform:SetRotation(angle)
 end
 
-	
 function Widget:SetMaxPropUpscale(val)
-	self.inst.UITransform:SetMaxPropUpscale(val)
+    self.inst.UITransform:SetMaxPropUpscale(val)
 end
 
 function Widget:SetScaleMode(mode)
-	self.inst.UITransform:SetScaleMode(mode)
+    self.inst.UITransform:SetScaleMode(mode)
 end
 
 function Widget:SetScale(pos, y, z)
@@ -368,11 +360,11 @@ function Widget:GetTooltip()
 end
 
 function Widget:StartUpdating()
-	TheFrontEnd:StartUpdatingWidget(self)
+    TheFrontEnd:StartUpdatingWidget(self)
 end
 
 function Widget:StopUpdating()
-	TheFrontEnd:StopUpdatingWidget(self)
+    TheFrontEnd:StopUpdatingWidget(self)
 end
 
 --[[function Widget:Update(dt)
@@ -382,9 +374,9 @@ end
     end
 
     for k,v in pairs(self.children) do
-		if v.OnUpdate or #v.children > 0 then
-			v:Update(dt)        
-		end
+        if v.OnUpdate or #v.children > 0 then
+            v:Update(dt)        
+        end
     end
 end--]]
 
@@ -430,24 +422,20 @@ function Widget:StopFollowMouse()
     self.followhandler = nil
 end
 
-
 function Widget:GetScale()
+    local sx, sy, sz = self.inst.UITransform:GetScale()
 
-	local sx, sy, sz = self.inst.UITransform:GetScale()
+    if self.parent then
+        local scale = self.parent:GetScale()
+        sx = sx*scale.x
+        sy = sy*scale.y
+        sz = sz*scale.z
+    end
 
-	if self.parent then
-		local scale = self.parent:GetScale()
-		sx = sx*scale.x
-		sy = sy*scale.y
-		sz = sz*scale.z
-	end
-	
-	return Vector3(sx,sy,sz)
+    return Vector3(sx,sy,sz)
 end
 
-
 ---------------------------focus management
-
 
 function Widget:OnGainFocus()
 end
@@ -460,16 +448,15 @@ function Widget:ClearFocusDirs()
 end
 
 function Widget:SetFocusChangeDir(dir, widget, ...)
-    
     if not next(self.focus_flow) then
         self.next_in_tab_order = widget
     end
 
     self.focus_flow[dir] = widget
-    
+
     if ... then
-		self.focus_flow_args[dir] = {...}
-	end
+        self.focus_flow_args[dir] = {...}
+    end
 end
 
 function Widget:GetDeepestFocus()
@@ -502,11 +489,11 @@ function Widget:ClearFocus()
             self:OnLoseFocus()
         end
     for k,v in pairs(self.children) do
-            if v.focus then 
+            if v.focus then
                 v:ClearFocus()
             end
         end
-    end    
+    end
 end
 
 function Widget:SetFocusFromChild(from_child)
@@ -556,10 +543,7 @@ function Widget:SetFocus()
     end
 
     --print(debugstack())
-
 end
-
-
 
 function Widget:GetStr(indent)
     indent = indent or 0
@@ -567,7 +551,7 @@ function Widget:GetStr(indent)
 
     local str = {}
     table.insert(str, string.format("%s%s%s%s\n", indent_str, tostring(self), self.focus and " (FOCUS) " or "", self.enabled and " (ENABLE) " or "" ))
-    
+
     for k,v in pairs(self.children) do
         table.insert(str, v:GetStr(indent + 1))
     end
@@ -581,26 +565,26 @@ function Widget:__tostring()
 end
 
 function Widget:SetHoverText(text, params)
-	if text and text ~= "" then
-		if not self.hovertext then
-			local ImageButton = require "widgets/imagebutton"
-			local Text = require "widgets/text"
-			
-			if params == nil then
-				params = {}
-			end
-			
+    if text and text ~= "" then
+        if not self.hovertext then
+            local ImageButton = require "widgets/imagebutton"
+            local Text = require "widgets/text"
+
+            if params == nil then
+                params = {}
+            end
+
             if not self.hovertext then
-			    self.hovertext = self:AddChild(Text(params.font or NEWFONT_OUTLINE, params.size or 28, text))
+                self.hovertext = self:AddChild(Text(params.font or NEWFONT_OUTLINE, params.size or 28, text))
                 self.hovertext:SetClickable(false)
             else
                 self.hovertext:SetString(text)
             end
 
-			self.hovertext:SetPosition(params.offset_x or 0, params.offset_y or 26)
-			if params.colour then self.hovertext:SetColour(params.colour) end
-			self.hovertext:MoveToFront()
-			self.hovertext:Hide()
+            self.hovertext:SetPosition(params.offset_x or 0, params.offset_y or 26)
+            if params.colour then self.hovertext:SetColour(params.colour) end
+            self.hovertext:MoveToFront()
+            self.hovertext:Hide()
 
             if params.bg == nil or params.bg == true then
                 self.hovertext.bg = self:AddChild(Image(params.bg_atlas or "images/frontend.xml", params.bg_texture or "scribble_black.tex"))
@@ -612,43 +596,43 @@ function Widget:SetHoverText(text, params)
                 self.hovertext.bg:Hide()
                 self.hovertext.bg:SetClickable(false)
             end
-			
-			local hover_parent = self.text or self
-			if hover_parent.GetString ~= nil and hover_parent:GetString() ~= "" then
-				self.hover = hover_parent:AddChild(ImageButton("images/ui.xml", "blank.tex", "blank.tex", "blank.tex", nil, nil, {1,1}, {0,0}))
-				self.hover.image:ScaleToSize(hover_parent:GetRegionSize())
-				
-				self.hover.OnGainFocus = function()
-					self.hovertext:Show()
+
+            local hover_parent = self.text or self
+            if hover_parent.GetString ~= nil and hover_parent:GetString() ~= "" then
+                self.hover = hover_parent:AddChild(ImageButton("images/ui.xml", "blank.tex", "blank.tex", "blank.tex", nil, nil, {1,1}, {0,0}))
+                self.hover.image:ScaleToSize(hover_parent:GetRegionSize())
+
+                self.hover.OnGainFocus = function()
+                    self.hovertext:Show()
                     if self.hovertext.bg then self.hovertext.bg:Show() end
-				end
-				self.hover.OnLoseFocus = function()
-					self.hovertext:Hide()
+                end
+                self.hover.OnLoseFocus = function()
+                    self.hovertext:Hide()
                     if self.hovertext.bg then self.hovertext.bg:Hide() end
-				end
-			else
-				local _OnGainFocus = self.OnGainFocus
-				local _OnLoseFocus = self.OnLoseFocus
-				
-				self.OnGainFocus = function()
-					self.hovertext:Show()
+                end
+            else
+                local _OnGainFocus = self.OnGainFocus
+                local _OnLoseFocus = self.OnLoseFocus
+
+                self.OnGainFocus = function()
+                    self.hovertext:Show()
                     if self.hovertext.bg then self.hovertext.bg:Show() end
-					_OnGainFocus( self )
-				end
-				self.OnLoseFocus = function()
-					self.hovertext:Hide()
+                    _OnGainFocus( self )
+                end
+                self.OnLoseFocus = function()
+                    self.hovertext:Hide()
                     if self.hovertext.bg then self.hovertext.bg:Hide() end
-					_OnLoseFocus( self )
-				end
-			end
-		else
-			self.hovertext:SetString(text)
+                    _OnLoseFocus( self )
+                end
+            end
+        else
+            self.hovertext:SetString(text)
             if self.hovertext.bg then
                 local w, h = self.hovertext:GetRegionSize()
                 self.hovertext.bg:SetSize(w*1.3, h*1.8)
             end
-		end
-	end
+        end
+    end
 end
 
 return Widget

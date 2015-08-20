@@ -48,7 +48,11 @@ return {
         {
             GENERIC = "I can't do that.",
             INUSE = "There's only room for one scribbler.",
-        }
+        },
+        ATTUNE =
+        {
+            NOHEALTH = "I don't feel well enough.",
+        },
 	},
 	ACTIONFAIL_GENERIC = "I can't do that.",
 	ANNOUNCE_ADVENTUREFAIL = "That didn't go well. I'll have to try again.",

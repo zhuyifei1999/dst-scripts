@@ -289,7 +289,7 @@ function EmailSignupScreen:DoInit()
 
 	self.spinners = self.root:AddChild(Widget("spinners"))
 	
-	self.monthSpinner = self.spinners:AddChild(Spinner( months, 185, 64, nil, nil, nil, nil, true, nil, nil, .7, .7 ))
+	self.monthSpinner = self.spinners:AddChild(Spinner( months, 130, nil, nil, nil, nil, nil, true, nil, nil, .7, .7 ))
 	self.monthSpinner.OnChanged = 
 		function( _, data )
 			local monthName = self.monthSpinner:GetSelectedText()
@@ -304,8 +304,8 @@ function EmailSignupScreen:DoInit()
 				self.daySpinner:SetSelectedIndex(self.daySpinner.max)
 			end
 		end
-	self.daySpinner = self.spinners:AddChild(NumericSpinner( 1, 31, 185, 64, nil, nil, nil, nil, true, nil, nil, .7, .7 ))
-	self.yearSpinner = self.spinners:AddChild(NumericSpinner( self.minYear, self.maxYear, 185, 64, nil, nil, nil, nil, true, nil, nil, .7, .7 ))
+	self.daySpinner = self.spinners:AddChild(NumericSpinner( 1, 31, 130, nil, nil, nil, nil, nil, true, nil, nil, .7, .7 ))
+	self.yearSpinner = self.spinners:AddChild(NumericSpinner( self.minYear, self.maxYear, 130, nil, nil, nil, nil, nil, true, nil, nil, .7, .7 ))
 
 	self.spinners:SetPosition(48,-5+nudgeY,0)
 	self.monthSpinner:SetPosition(-140, 0, 0)

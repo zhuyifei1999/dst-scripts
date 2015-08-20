@@ -186,6 +186,13 @@ local COMPONENT_ACTIONS =
                 table.insert(actions, ACTIONS.WRITE)
             end
         end,
+
+        attunable = function(inst, doer, actions)
+            if doer.components.attuner ~= nil and --V2C: this is on clients too
+                not doer.components.attuner:IsAttunedTo(inst) then
+                table.insert(actions, ACTIONS.ATTUNE)
+            end
+        end,
     },
 
     USEITEM = --args: inst, doer, target, actions, right

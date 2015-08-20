@@ -26,7 +26,7 @@ local Beard = Class(function(self, inst)
     self.pause = nil
     self.onreset = nil
 
-    inst:ListenForEvent("respawn", OnRespawn)
+    inst:ListenForEvent("ms_respawnedfromghost", OnRespawn)
 
     self.isgrowing = nil --force dirty for initial EnableGrowth call
     self:EnableGrowth(true)
@@ -35,7 +35,7 @@ end)
 function Beard:OnRemoveFromEntity()
     self:EnableGrowth(false)
     self.inst:RemoveTag("bearded")
-    self.inst:RemoveEventCallback("respawn", OnRespawn)
+    self.inst:RemoveEventCallback("ms_respawnedfromghost", OnRespawn)
 end
 
 function Beard:EnableGrowth(enable)

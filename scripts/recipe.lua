@@ -1,11 +1,26 @@
 require "class"
 require "util"
 
-Ingredient = Class(function(self, type, amount, atlas)
-    self.type = type
+Ingredient = Class(function(self, ingredienttype, amount, atlas)
+    local is_character_ingredient = false
+    for k, v in pairs(CHARACTER_INGREDIENT) do
+        if ingredienttype == v then
+            is_character_ingredient = true
+            break
+        end
+    end
+    if is_character_ingredient then
+        --V2C: string solution due to inconsistent precision errors with math.floor
+        --local x = math.floor(amount)
+        local x = tostring(amount)
+        x = x:sub(x:find("^%-?%d+"))
+        x = tonumber(x:sub(x:len()))
+        --NOTE: if you changed CHARACTER_INGREDIENT_SEG, then update this assert
+        assert(x == 0 or x == 5, "Character ingredients must be multiples of "..tostring(CHARACTER_INGREDIENT_SEG))
+    end
+    self.type = ingredienttype
     self.amount = amount
-    self.atlas = (atlas and resolvefilepath(atlas))
-                    or resolvefilepath("images/inventoryimages.xml")
+    self.atlas = resolvefilepath(atlas or "images/inventoryimages.xml")
 end)
 
 local num = 0
@@ -13,13 +28,24 @@ AllRecipes = {}
 
 mod_protect_Recipe = false
 
-Recipe = Class(function(self, name, ingredients, tab, level, placer, min_spacing, nounlock, numtogive, builder_tag, atlas, image, lockedatlas, lockedimage)
+Recipe = Class(function(self, name, ingredients, tab, level, placer, min_spacing, nounlock, numtogive, builder_tag, atlas, image)
     if mod_protect_Recipe then
         print("Warning: Calling Recipe from a mod is now deprecated. Please call AddRecipe from your modmain.lua file.")
     end
 
     self.name          = name
-    self.ingredients   = ingredients
+
+    self.ingredients   = {}
+    self.character_ingredients = {}
+
+    for k,v in pairs(ingredients) do
+        if table.contains(CHARACTER_INGREDIENT, v.type) then
+            table.insert(self.character_ingredients, v)
+        else
+            table.insert(self.ingredients, v)
+        end
+    end
+
     self.product       = name
     self.tab           = tab
 
@@ -50,7 +76,7 @@ end)
 
 function Recipe:SetModRPCID()
     local rpc_id = smallhash(self.name)
-    
+
     for _,v in pairs(AllRecipes) do
         if v.rpc_id == rpc_id then
             print("ERROR:hash collision between recipe names ", self.name, " and ", v.name )

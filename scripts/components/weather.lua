@@ -917,9 +917,9 @@ function self:OnUpdate(dt)
     end
     SetWithPeriodicSync(_snowlevel, snowlevel, SNOW_LEVEL_SYNC_PERIOD, _ismastersim)
     if _snowlevel:value() > 0 and (temperature < 0 or _wetness:value() < 5) then
-        SetGroundOverlay(GROUND_OVERLAYS.snow, _snowlevel:value() * 3)
+        SetGroundOverlay(GROUND_OVERLAYS.snow, _snowlevel:value() * 3) -- snowlevel goes from 0-1
     else
-        SetGroundOverlay(GROUND_OVERLAYS.puddles, _wetness:value() * 3)
+        SetGroundOverlay(GROUND_OVERLAYS.puddles, _wetness:value() * 3 / 100) -- wetness goes from 0-100
     end
 
     --Update pollen

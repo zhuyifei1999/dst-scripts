@@ -931,6 +931,17 @@ FOODGROUP =
     },
 }
 
+CHARACTER_INGREDIENT =
+{
+	HEALTH = "decrease_health",
+	MAX_HEALTH = "half_health",
+	SANITY = "decrease_sanity",
+	MAX_SANITY = "half_sanity",
+}
+
+--Character ingredient amounts must be multiples of 5
+CHARACTER_INGREDIENT_SEG = 5
+
 CONTAINERTEST =
 {
     NONE = 0,
@@ -1037,6 +1048,25 @@ TWITCH =
     CHAT_CONNECTED = 0,
     CHAT_DISCONNECTED = 1,
     CHAT_CONNECT_FAILED = 2,
+}
+
+-- How does this creature apply stunlock to the player
+PLAYERSTUNLOCK =
+{
+    ALWAYS = 0,
+    OFTEN = 1,
+    SOMETIMES = 2,
+    RARELY = 3,
+    NEVER = 4,
+}
+
+-- Server pricacy options
+PRIVACY_TYPE =
+{
+    PUBLIC = 0,
+    FRIENDS = 1,
+    LOCAL = 2,
+    CLAN = 3,
 }
 
 -- This line is added as a test. Delete it if you see it.

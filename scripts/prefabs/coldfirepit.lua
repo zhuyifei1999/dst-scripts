@@ -70,12 +70,13 @@ local function OnHaunt(inst, haunter)
         inst.components.fueled:DoDelta(TUNING.MED_FUEL)
         inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
         return true
-    elseif math.random() <= TUNING.HAUNT_CHANCE_HALF and
-        inst.components.workable ~= nil and
-        inst.components.workable:CanBeWorked() then
-        inst.components.workable:WorkedBy(haunter, 1)
-        inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
-        return true
+    --#HAUNTFIX
+    --elseif math.random() <= TUNING.HAUNT_CHANCE_HALF and
+        --inst.components.workable ~= nil and
+        --inst.components.workable:CanBeWorked() then
+        --inst.components.workable:WorkedBy(haunter, 1)
+        --inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
+        --return true
     end
     return false
 end

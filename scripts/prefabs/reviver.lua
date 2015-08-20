@@ -23,32 +23,6 @@ local function onpickup(inst)
     end
 end
 
---The first pickup must be the maker
-local function onfirstpickup(inst, maker)
-    inst.components.inventoryitem:SetOnPickupFn(onpickup)
-    onpickup(inst)
-
-    maker.components.health:DoDelta(-TUNING.REVIVER_CRAFT_HEALTH_PENALTY, nil, nil, nil, nil, true)
-    maker.components.sanity:DoDelta(-TUNING.REVIVER_CRAFT_SANITY_PENALTY)
-
-    -- sound and anim reactions
-    if maker.components.combat.hurtsound ~= nil and maker.SoundEmitter ~= nil then
-        maker.SoundEmitter:PlaySound(maker.components.combat.hurtsound)
-    end
-
-    maker:PushEvent("damaged", {})
-end
-
-local function onload(inst)
-    inst.components.inventoryitem:SetOnPickupFn(onpickup)
-end
-
-local function oninit(inst)
-    --Most likely dynamically or debug spawned in, and not picked up
-    onload(inst) --removes pickup damage
-    ondropped(inst) --starts beating (should be on the ground)
-end
-
 local function fn()
     local inst = CreateEntity()
 
@@ -71,16 +45,15 @@ local function fn()
 
     inst:AddComponent("inventoryitem")
     inst.components.inventoryitem:SetOnDroppedFn(ondropped)
-    inst.components.inventoryitem:SetOnPickupFn(onfirstpickup)
+    inst.components.inventoryitem:SetOnPickupFn(onpickup)
 
     inst:AddComponent("inspectable")
     inst:AddComponent("tradable")
 
     MakeHauntableLaunch(inst)
 
-    inst.OnLoad = onload
-
-    inst.beattask = inst:DoTaskInTime(0, oninit)
+    inst.beattask = nil
+    ondropped(inst)
 
     return inst
 end

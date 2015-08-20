@@ -50,6 +50,17 @@ function Sanity:DetachClassified()
 end
 
 --------------------------------------------------------------------------
+--Client helpers
+
+local function GetPenaltyPercent_Client(self)
+    return self.classified.sanitypenalty:value() / 200
+end
+
+local function MaxWithPenalty_Client(self)
+    return self.classified.maxsanity:value() * (1 - GetPenaltyPercent_Client(self))
+end
+
+--------------------------------------------------------------------------
 
 function Sanity:SetCurrent(current)
     if self.classified ~= nil then
@@ -65,7 +76,8 @@ end
 
 function Sanity:SetPenalty(penalty)
     if self.classified ~= nil then
-        self.classified:SetValue("sanitypenalty", penalty)
+        assert(penalty >= 0 and penalty <= 1, "Player sanitypenalty out of range "..tostring(penalty))
+        self.classified.sanitypenalty:set(math.floor(penalty * 200 + .5))
     end
 end
 
@@ -74,6 +86,16 @@ function Sanity:Max()
         return self.inst.components.sanity.max
     elseif self.classified ~= nil then
         return self.classified.maxsanity:value()
+    else
+        return 100
+    end
+end
+
+function Sanity:MaxWithPenalty()
+    if self.inst.components.sanity ~= nil then
+        return self.inst.components.sanity:GetMaxWithPenalty()
+    elseif self.classified ~= nil then
+        return MaxWithPenalty_Client(self)
     else
         return 100
     end
@@ -89,11 +111,22 @@ function Sanity:GetPercent()
     end
 end
 
+function Sanity:GetCurrent()
+    if self.inst.components.sanity ~= nil then
+        return self.inst.components.sanity.current
+    elseif self.classified ~= nil then
+        return self.classified.currentsanity:value()
+    else
+        return 100
+    end
+end
+
+
 function Sanity:GetPercentWithPenalty()
     if self.inst.components.sanity ~= nil then
         return self.inst.components.sanity:GetPercentWithPenalty()
     elseif self.classified ~= nil then
-        return self.classified.currentsanity:value() / (self.classified.maxsanity:value() - self.classified.sanitypenalty:value())
+        return self.classified.currentsanity:value() / MaxWithPenalty_Client(self)
     else
         return 1
     end
@@ -103,7 +136,7 @@ function Sanity:GetPenaltyPercent()
     if self.inst.components.sanity ~= nil then
         return self.inst.components.sanity:GetPenaltyPercent()
     elseif self.classified ~= nil then
-        return self.classified.sanitypenalty:value() / self.classified.maxsanity:value()
+        return GetPenaltyPercent_Client(self)
     else
         return 0
     end

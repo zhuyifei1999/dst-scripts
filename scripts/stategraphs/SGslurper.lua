@@ -248,7 +248,7 @@ local states =
             if inst.components.locomotor then
                 inst.components.locomotor:StopMoving()
             end
-            inst.Physics:ClearCollisionMask()
+            RemovePhysicsColliders(inst)
         end,
 
         timeline = 

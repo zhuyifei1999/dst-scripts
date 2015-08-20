@@ -1182,13 +1182,14 @@ local function OnHaunt(inst, haunter)
         return true
     elseif inst:HasTag("burnt") then
         return false
-    elseif inst.components.burnable ~= nil and
-        not inst.components.burnable:IsBurning() and
-        math.random() <= TUNING.HAUNT_CHANCE_VERYRARE then
-        inst.components.burnable:Ignite()
-        inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
-        inst.components.hauntable.cooldown_on_successful_haunt = false
-        return true
+    --#HAUNTFIX
+    --elseif inst.components.burnable ~= nil and
+        --not inst.components.burnable:IsBurning() and
+        --math.random() <= TUNING.HAUNT_CHANCE_VERYRARE then
+        --inst.components.burnable:Ignite()
+        --inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
+        --inst.components.hauntable.cooldown_on_successful_haunt = false
+        --return true
     elseif not (isstump or inst.monster) and
         math.random() <= TUNING.HAUNT_CHANCE_SUPERRARE then
         inst:StartMonster(true)

@@ -18,6 +18,7 @@ PREFABFILES = {
   "armor_wood",
   "arrowsign",
   "ash",
+  "attunable_classified",
   "axe",
   "axe_pickaxe",
   "babybeefalo",

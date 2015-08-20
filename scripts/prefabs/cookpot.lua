@@ -222,13 +222,14 @@ local function fn()
 	inst:AddComponent("hauntable")
 	inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
 		local ret = false
-		if math.random() <= TUNING.HAUNT_CHANCE_OFTEN then
-			if inst.components.workable then
-                inst.components.workable:WorkedBy(haunter, 1)
-                inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
-                ret = true
-            end
-		end
+        --#HAUNTFIX
+		--if math.random() <= TUNING.HAUNT_CHANCE_OFTEN then
+			--if inst.components.workable then
+                --inst.components.workable:WorkedBy(haunter, 1)
+                --inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
+                --ret = true
+            --end
+		--end
 		if math.random() <= TUNING.HAUNT_CHANCE_ALWAYS then
 			if inst.components.stewer then 
 				if inst.components.stewer:IsCooking() and inst.components.stewer.product ~= "wetgoop" then

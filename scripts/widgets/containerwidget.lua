@@ -17,7 +17,7 @@ local ContainerWidget = Class(Widget, function(self, owner)
     self.slotsperrow = 3
    
     self.bganim = self:AddChild(UIAnim())
-	self.bgimage = self:AddChild(Image())
+    self.bgimage = self:AddChild(Image())
     self.isopen = false
 end)
 
@@ -26,75 +26,85 @@ function ContainerWidget:Open(container, doer)
 
     local widget = container.replica.container:GetWidget()
 
-	if widget.bgatlas ~= nil and widget.bgimage ~= nil then
-		self.bgimage:SetTexture(widget.bgatlas, widget.bgimage)
-	end
+    if widget.bgatlas ~= nil and widget.bgimage ~= nil then
+        self.bgimage:SetTexture(widget.bgatlas, widget.bgimage)
+    end
 
     if widget.animbank ~= nil then
-		self.bganim:GetAnimState():SetBank(widget.animbank)
-	end
+        self.bganim:GetAnimState():SetBank(widget.animbank)
+    end
 
     if widget.animbuild ~= nil then
-		self.bganim:GetAnimState():SetBuild(widget.animbuild)
+        self.bganim:GetAnimState():SetBuild(widget.animbuild)
     end
 
     if widget.pos ~= nil then
-		self:SetPosition(widget.pos)
-	end
+        self:SetPosition(widget.pos)
+    end
 
     if widget.buttoninfo ~= nil then
         if doer ~= nil and doer.components.playeractionpicker ~= nil then
             doer.components.playeractionpicker:RegisterContainer(container)
         end
 
-        if not TheInput:ControllerAttached() then
-            self.button = self:AddChild(ImageButton("images/ui.xml", "button_small.tex", "button_small_over.tex", "button_small_disabled.tex", nil, nil, {1,1}, {0,0}))
-            self.button.image:SetScale(1.07)
-            self.button.text:SetPosition(2,-2)
-            self.button:SetPosition(widget.buttoninfo.position)
-            self.button:SetText(widget.buttoninfo.text)
-            if widget.buttoninfo.fn ~= nil then
-                self.button:SetOnClick(function()
-                    if doer ~= nil then
-                        if doer:HasTag("busy") then
-                            --Ignore button click when doer is busy
+        self.button = self:AddChild(ImageButton("images/ui.xml", "button_small.tex", "button_small_over.tex", "button_small_disabled.tex", nil, nil, {1,1}, {0,0}))
+        self.button.image:SetScale(1.07)
+        self.button.text:SetPosition(2,-2)
+        self.button:SetPosition(widget.buttoninfo.position)
+        self.button:SetText(widget.buttoninfo.text)
+        if widget.buttoninfo.fn ~= nil then
+            self.button:SetOnClick(function()
+                if doer ~= nil then
+                    if doer:HasTag("busy") then
+                        --Ignore button click when doer is busy
+                        return
+                    elseif doer.components.playercontroller ~= nil then
+                        local iscontrolsenabled, ishudblocking = doer.components.playercontroller:IsEnabled()
+                        if not (iscontrolsenabled or ishudblocking) then
+                            --Ignore button click when controls are disabled
+                            --but not just because of the HUD blocking input
                             return
-                        elseif doer.components.playercontroller ~= nil then
-                            local iscontrolsenabled, ishudblocking = doer.components.playercontroller:IsEnabled()
-                            if not (iscontrolsenabled or ishudblocking) then
-                                --Ignore button click when controls are disabled
-                                --but not just because of the HUD blocking input
-                                return
-                            end
                         end
                     end
-                    widget.buttoninfo.fn(container, doer)
-                end)
-            end
-            self.button:SetFont(BUTTONFONT)
-            self.button:SetDisabledFont(BUTTONFONT)
-            self.button:SetTextSize(33)
-            self.button.text:SetVAlign(ANCHOR_MIDDLE)
-            self.button.text:SetColour(0, 0, 0, 1)
-
-            if widget.buttoninfo.validfn ~= nil then
-                if widget.buttoninfo.validfn(container) then
-                    self.button:Enable()
-                else
-                    self.button:Disable()
                 end
+                widget.buttoninfo.fn(container, doer)
+            end)
+        end
+        self.button:SetFont(BUTTONFONT)
+        self.button:SetDisabledFont(BUTTONFONT)
+        self.button:SetTextSize(33)
+        self.button.text:SetVAlign(ANCHOR_MIDDLE)
+        self.button.text:SetColour(0, 0, 0, 1)
+
+        if widget.buttoninfo.validfn ~= nil then
+            if widget.buttoninfo.validfn(container) then
+                self.button:Enable()
+            else
+                self.button:Disable()
             end
         end
+
+        if TheInput:ControllerAttached() then
+            self.button:Hide()
+        end
+
+        self.button.inst:ListenForEvent("continuefrompause", function()
+            if TheInput:ControllerAttached() then
+                self.button:Hide()
+            else
+                self.button:Show()
+            end
+        end, TheWorld)
     end
 
     self.isopen = true
     self:Show()
 
-	if self.bgimage.texture then
-		self.bgimage:Show()
-	else
-		self.bganim:GetAnimState():PlayAnimation("open")
-	end
+    if self.bgimage.texture then
+        self.bgimage:Show()
+    else
+        self.bganim:GetAnimState():PlayAnimation("open")
+    end
 
     self.onitemlosefn = function(inst, data) self:OnItemLose(data) end
     self.inst:ListenForEvent("itemlose", self.onitemlosefn, container)
@@ -105,16 +115,16 @@ function ContainerWidget:Open(container, doer)
     self.onrefreshfn = function(inst, data) self:Refresh() end
     self.inst:ListenForEvent("refresh", self.onrefreshfn, container)
 
-	for i, v in ipairs(widget.slotpos or {}) do
-		local slot = InvSlot(i, "images/hud.xml", "inv_slot.tex", self.owner, container.replica.container)
-		self.inv[i] = self:AddChild(slot)
+    for i, v in ipairs(widget.slotpos or {}) do
+        local slot = InvSlot(i, "images/hud.xml", "inv_slot.tex", self.owner, container.replica.container)
+        self.inv[i] = self:AddChild(slot)
 
-		slot:SetPosition(v)
+        slot:SetPosition(v)
 
-		if not container.replica.container:IsSideWidget() then
-			slot.side_align_tip = (widget.side_align_tip or 0) - v.x
-		end
-	end
+        if not container.replica.container:IsSideWidget() then
+            slot.side_align_tip = (widget.side_align_tip or 0) - v.x
+        end
+    end
 
     self.container = container
 
@@ -152,19 +162,19 @@ end
 
 function ContainerWidget:OnItemGet(data)
     if data.slot and self.inv[data.slot] then
-		local tile = ItemTile(data.item)
+        local tile = ItemTile(data.item)
         self.inv[data.slot]:SetTile(tile)
         tile:Hide()
         tile.ignore_stacksize_anim = data.ignore_stacksize_anim
 
         if data.src_pos ~= nil then
-			local dest_pos = self.inv[data.slot]:GetWorldPosition()
-			local im = Image(data.item.replica.inventoryitem:GetAtlas(), data.item.replica.inventoryitem:GetImage())
-			im:MoveTo(Vector3(TheSim:GetScreenPos(data.src_pos:Get())), dest_pos, .3, function() tile:Show() im:Kill() end)
+            local dest_pos = self.inv[data.slot]:GetWorldPosition()
+            local im = Image(data.item.replica.inventoryitem:GetAtlas(), data.item.replica.inventoryitem:GetImage())
+            im:MoveTo(Vector3(TheSim:GetScreenPos(data.src_pos:Get())), dest_pos, .3, function() tile:Show() im:Kill() end)
         else
-			tile:Show() 
+            tile:Show() 
         end
-	end
+    end
 
     if self.button ~= nil and self.container ~= nil then
         RefreshButton(self.inst, self)
@@ -173,10 +183,10 @@ function ContainerWidget:OnItemGet(data)
 end
 
 function ContainerWidget:OnItemLose(data)
-	local tileslot = self.inv[data.slot]
-	if tileslot then
-		tileslot:SetTile(nil)
-	end
+    local tileslot = self.inv[data.slot]
+    if tileslot then
+        tileslot:SetTile(nil)
+    end
 
     if self.button ~= nil and self.container ~= nil then
         RefreshButton(self.inst, self)
@@ -186,45 +196,45 @@ end
 
 function ContainerWidget:Close()
     if self.isopen then
-		if self.button ~= nil then
-			self.button:Kill()
-			self.button = nil
-		end
-		
-		if self.container ~= nil then
+        if self.button ~= nil then
+            self.button:Kill()
+            self.button = nil
+        end
+
+        if self.container ~= nil then
             if self.owner ~= nil and self.owner.components.playeractionpicker ~= nil then
                 self.owner.components.playeractionpicker:UnregisterContainer(self.container)
             end
-			if self.onitemlosefn ~= nil then
-				self.inst:RemoveEventCallback("itemlose", self.onitemlosefn, self.container)
-				self.onitemlosefn = nil
-			end
-			if self.onitemgetfn ~= nil then
-				self.inst:RemoveEventCallback("itemget", self.onitemgetfn, self.container)
-				self.onitemgetfn = nil
-			end
+            if self.onitemlosefn ~= nil then
+                self.inst:RemoveEventCallback("itemlose", self.onitemlosefn, self.container)
+                self.onitemlosefn = nil
+            end
+            if self.onitemgetfn ~= nil then
+                self.inst:RemoveEventCallback("itemget", self.onitemgetfn, self.container)
+                self.onitemgetfn = nil
+            end
             if self.onrefreshfn ~= nil then
                 self.inst:RemoveEventCallback("refresh", self.onrefreshfn, self.container)
                 self.onrefreshfn = nil
             end
-		end
+        end
 
-		for k,v in pairs(self.inv) do
-			v:Kill()
-		end
+        for k,v in pairs(self.inv) do
+            v:Kill()
+        end
 
-		self.container = nil
-		self.inv = {}
-		if self.bgimage.texture then
-			self.bgimage:Hide()
-		else
-			self.bganim:GetAnimState():PlayAnimation("close")
-		end
+        self.container = nil
+        self.inv = {}
+        if self.bgimage.texture then
+            self.bgimage:Hide()
+        else
+            self.bganim:GetAnimState():PlayAnimation("close")
+        end
 
-		self.isopen = false
+        self.isopen = false
 
-	    self.inst:DoTaskInTime(.3, function() self.should_close_widget = true end)
-	end
+        self.inst:DoTaskInTime(.3, function() self.should_close_widget = true end)
+    end
 end
 
 return ContainerWidget

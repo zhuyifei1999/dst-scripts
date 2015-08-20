@@ -1,7 +1,6 @@
 local Screen = require "widgets/screen"
 local AnimButton = require "widgets/animbutton"
 local ImageButton = require "widgets/imagebutton"
-local Spinner = require "widgets/spinner"
 local Text = require "widgets/text"
 local Image = require "widgets/image"
 local Widget = require "widgets/widget"

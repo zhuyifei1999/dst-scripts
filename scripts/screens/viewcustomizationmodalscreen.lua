@@ -252,9 +252,9 @@ function ViewCustomizationModalScreen:MakeOptionSpinners()
             image_parent:SetHoverText(STRINGS.UI.CUSTOMIZATIONSCREEN[string.upper(v.name)], { font = NEWFONT_OUTLINE, size = 22, offset_x = -85, offset_y = 47, colour = {1,1,1,1}})
         end
 
-		local spin_height = 50
-		local w = 235
-        local spinner = opt:AddChild(Spinner( spin_options, w, spin_height, {font=NEWFONT, size=22}, nil, nil, nil, true, 200, nil, .765, 1.35))
+		local spinner_width = 170
+		local spinner_height = nil -- use default height
+        local spinner = opt:AddChild(Spinner( spin_options, spinner_width, spinner_height, {font=NEWFONT, size=22}, nil, nil, nil, true, 200, nil, .765, 1.35))
         spinner.background:SetPosition(0,1)
 		spinner.bg = bg
 		spinner:SetTextColour(0,0,0,1)

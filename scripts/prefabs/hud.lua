@@ -23,10 +23,12 @@ local assets =
     Asset("ANIM", "anim/ui_board_5x3.zip"),
 
     Asset("ANIM", "anim/health.zip"),
+    Asset("ANIM", "anim/health_effigy.zip"),
     Asset("ANIM", "anim/sanity.zip"),
     Asset("ANIM", "anim/sanity_ghost.zip"),
     Asset("ANIM", "anim/sanity_arrow.zip"),
     Asset("ANIM", "anim/effigy_topper.zip"),
+    Asset("ANIM", "anim/effigy_button.zip"),
     Asset("ANIM", "anim/hunger.zip"),
     Asset("ANIM", "anim/beaver_meter.zip"),
     Asset("ANIM", "anim/hunger_health_pulse.zip"),
@@ -52,6 +54,8 @@ local assets =
 
     Asset("ANIM", "anim/wet_meter_player.zip"), 
     Asset("ANIM", "anim/wet_meter.zip"),
+
+    Asset("SOUND", "sound/together.fsb"),
 }
 
 local prefabs =

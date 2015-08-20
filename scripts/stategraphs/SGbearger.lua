@@ -392,7 +392,7 @@ local states=
 
 			if GoToStandState(inst, "bi") then
 				inst.AnimState:PlayAnimation("death")
-				inst.Physics:ClearCollisionMask()
+				RemovePhysicsColliders(inst)
 			end
 		end,
 

@@ -60,6 +60,10 @@ function Follower:GetDebugString()
 	return str
 end
 
+function Follower:GetLeader()
+	return self.leader
+end
+
 function Follower:StartLeashing()
     self.inst.portnearleader = function()    
     	if not self.leader or (self.leader and self.leader:IsAsleep()) then

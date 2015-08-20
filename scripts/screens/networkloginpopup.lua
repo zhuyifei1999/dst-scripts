@@ -52,7 +52,7 @@ local NetworkLoginPopup = Class(Screen, function(self, onLogin, checkVersion, on
     local buttons = 
     {
         {text=STRINGS.UI.MAINSCREEN.PLAYOFFLINE, cb = function() 
-            self:OnLogin(true)            
+            self:OnLogin(true)
         end},
 		{text=STRINGS.UI.NOAUTHENTICATIONSCREEN.CANCELBUTTON, cb = function() 
             self:OnCancel()            
@@ -112,12 +112,14 @@ function NetworkLoginPopup:OnLogin(forceOffline)
 		self.logged = true
 	    self:Disable()
 	    self:StopUpdating()
+	    if forceOffline then TheFrontEnd:GetAccountManager():CancelLogin() end
 	    self.onLogin(forceOffline)
 	end
 end
 
 function NetworkLoginPopup:OnCancel()
     self:Disable()
+	TheFrontEnd:GetAccountManager():CancelLogin()
 	TheFrontEnd:PopScreen()
 	self.onCancel()
 end

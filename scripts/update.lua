@@ -116,7 +116,7 @@ function WallUpdate(dt)
 			TheNet:Announce( "Let slip the dogs of war!", nil )
 		elseif SERVER_TERMINATION_TIMER <= 120 and original_time > 120 then
 			TheNet:Announce( "End times are almost here.", nil )
-		elseif SERVER_TERMINATION_TIMER <= 300 and original_time > 300 then
+		elseif SERVER_TERMINATION_TIMER <= 180 and original_time > 180 then
 			TheNet:Announce( "End times are coming.", nil )
 		end
 	end
