@@ -66,10 +66,13 @@ nil,
     canheal = oncanheal,
 })
 
-
 function Health:OnRemoveFromEntity()
     self:StopRegen()
     onpercent(self)
+end
+
+function Health:RecalculatePenalty()
+    --deprecated, keeping the function around so mods don't crash
 end
 
 function Health:SetInvincible(val)
