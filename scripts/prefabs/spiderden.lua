@@ -183,7 +183,7 @@ local function OnKilled(inst)
     if inst.components.childspawner ~= nil then
         inst.components.childspawner:ReleaseAllChildren()
     end
-    inst.Physics:ClearCollisionMask()
+    RemovePhysicsColliders(inst)
 
     inst.SoundEmitter:KillSound("loop")
 

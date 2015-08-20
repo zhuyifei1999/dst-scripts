@@ -30,16 +30,6 @@ local function onhammered(inst, worker)
     inst:Remove()
 end
 
-local function onhaunt(inst, haunter)
-    if not inst:HasTag("burnt") then
-        return true
-    end
-    if inst.components.workable ~= nil then
-        inst.components.workable:WorkedBy(haunter, 1)
-    end
-    return false
-end
-
 local function onburnt(inst)
     inst:AddTag("burnt")
     inst.components.burnable.canlight = false
@@ -50,7 +40,7 @@ local function onburnt(inst)
 end
 
 local function onhit(inst, worker)
-    if not inst:HasTag("burnt") then 
+    if not inst:HasTag("burnt") then
         inst.AnimState:PlayAnimation("hit")
         inst.AnimState:PushAnimation("idle")
     end
@@ -68,12 +58,58 @@ local function onload(inst, data)
     end
 end
 
+local function onattunecost(inst, player)
+    if player.components.health == nil or
+        math.ceil(player.components.health.currenthealth) < TUNING.EFFIGY_HEALTH_PENALTY then
+        --round up health to match UI display
+        return false, "NOHEALTH"
+    end
+    --Don't die from attunement!
+    local delta = math.min(math.max(0, player.components.health.currenthealth - 1), TUNING.EFFIGY_HEALTH_PENALTY)
+    player:PushEvent("consumehealthcost")
+    player.components.health:DoDelta(-delta, false, "statue_attune", true, inst, true)
+    return true
+end
+
+local function onlink(inst, player, isloading)
+    if not isloading then
+        inst.SoundEmitter:PlaySound("dontstarve/ghost/ghost_haunt")
+        inst.AnimState:PlayAnimation("attune_on")
+        inst.AnimState:PushAnimation("idle", false)
+    end
+end
+
+local function onunlink(inst, player, isloading)
+    if not (isloading or inst.AnimState:IsCurrentAnimation("attune_on")) then
+        inst.SoundEmitter:PlaySound("dontstarve/ghost/ghost_haunt")
+        inst.AnimState:PlayAnimation("attune_off")
+        inst.AnimState:PushAnimation("idle", false)
+    end
+end
+
+local function PlayAttuneSound(inst)
+    if inst.AnimState:IsCurrentAnimation("place") or inst.AnimState:IsCurrentAnimation("attune_on") then
+        inst.SoundEmitter:PlaySound("dontstarve/ghost/ghost_haunt")
+    end
+end
+
 local function onbuilt(inst, data)
+    --Hack to auto-link without triggering fx or paying the cost again
+    inst.components.attunable:SetOnAttuneCostFn(nil)
+    inst.components.attunable:SetOnLinkFn(nil)
+    inst.components.attunable:SetOnUnlinkFn(nil)
+
     inst.AnimState:PlayAnimation("place")
+    if inst.components.attunable:LinkToPlayer(data.builder) then
+        inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength(), PlayAttuneSound)
+        inst.AnimState:PushAnimation("attune_on")
+    end
     inst.AnimState:PushAnimation("idle", false)
-    --if data ~= nil and data.builder ~= nil and data.builder.components.health ~= nil then
-        --TODO: Hurt the builder like the Telltale Heart does?
-    --end
+
+    --End hack
+    inst.components.attunable:SetOnAttuneCostFn(onattunecost)
+    inst.components.attunable:SetOnLinkFn(onlink)
+    inst.components.attunable:SetOnUnlinkFn(onunlink)
 end
 
 local function fn()
@@ -107,6 +143,7 @@ local function fn()
     inst:AddComponent("inspectable")
 
     inst:AddComponent("lootdropper")
+
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
     inst.components.workable:SetWorkLeft(4)
@@ -121,12 +158,14 @@ local function fn()
     inst.components.burnable:SetOnBurntFn(onburnt)
     MakeLargePropagator(inst)
 
-    inst.OnSave = onsave 
+    inst.OnSave = onsave
     inst.OnLoad = onload
 
-    inst:AddComponent("hauntable")
-    inst.components.hauntable:SetHauntValue(TUNING.HAUNT_INSTANT_REZ)
-    inst.components.hauntable:SetOnHauntFn(onhaunt)
+    inst:AddComponent("attunable")
+    inst.components.attunable:SetAttunableTag("remoteresurrector")
+    inst.components.attunable:SetOnAttuneCostFn(onattunecost)
+    inst.components.attunable:SetOnLinkFn(onlink)
+    inst.components.attunable:SetOnUnlinkFn(onunlink)
 
     MakeSnowCovered(inst)
 

@@ -1279,6 +1279,49 @@ function PlayerController:RemoteInspectButton(action)
     SendRPCToServer(RPC.InspectButton, action.target)
 end
 
+function PlayerController:GetResurrectButtonAction()
+    return self.inst:HasTag("playerghost") and
+        (self.inst.sg == nil or self.inst.sg:HasStateTag("moving") or self.inst.sg:HasStateTag("idle")) and
+        (self.inst:HasTag("moving") or self.inst:HasTag("idle")) and
+        self.inst.components.attuner:HasAttunement("remoteresurrector") and
+        BufferedAction(self.inst, nil, ACTIONS.REMOTERESURRECT) or
+        nil
+end
+
+function PlayerController:DoResurrectButton()
+    if not self:IsEnabled() then
+        return
+    end
+    local buffaction = self:GetResurrectButtonAction()
+    if buffaction == nil then
+        return
+    elseif self.ismastersim then
+        self.locomotor:PushAction(buffaction, true)
+    elseif self.locomotor == nil then
+        self:RemoteResurrectButton(buffaction)
+    elseif self:CanLocomote() then
+        buffaction.preview_cb = function()
+            self:RemoteResurrectButton(buffaction)
+        end
+        self.locomotor:PreviewAction(buffaction, true)
+    end
+end
+
+function PlayerController:OnRemoteResurrectButton()
+    if self.ismastersim and self:IsEnabled() and self.handler == nil then
+        local buffaction = self:GetResurrectButtonAction()
+        if buffaction ~= nil then
+            self.locomotor:PushAction(buffaction, true)
+        --else
+            --print("Remote resurrect button action failed")
+        end
+    end
+end
+
+function PlayerController:RemoteResurrectButton()
+    SendRPCToServer(RPC.ResurrectButton)
+end
+
 function PlayerController:UsingMouse()
     return not TheInput:ControllerAttached()
 end
@@ -2308,7 +2351,7 @@ function PlayerController:OnLeftClick(down)
     end
 
     local act = self:GetLeftMouseAction() or BufferedAction(self.inst, nil, ACTIONS.WALKTO, nil, TheInput:GetWorldPosition())
-     if act.action == ACTIONS.WALKTO then
+    if act.action == ACTIONS.WALKTO then
         if act.target == nil and TheInput:GetWorldEntityUnderMouse() == nil then
             self.startdragtime = GetTime()
         end

@@ -1,6 +1,12 @@
 local Badge = require "widgets/badge"
 local UIAnim = require "widgets/uianim"
 
+local function OnGhostDeactivated(inst)
+    if inst.AnimState:IsCurrentAnimation("deactivate") then
+        inst.widget:Hide()
+    end
+end
+
 local SanityBadge = Class(Badge, function(self, owner)
     Badge._ctor(self, "sanity", owner)
     
@@ -25,6 +31,7 @@ local SanityBadge = Class(Badge, function(self, owner)
     self.ghostanim:GetAnimState():PlayAnimation("deactivate")
     self.ghostanim:Hide()
     self.ghostanim:SetClickable(false)
+    self.ghostanim.inst:ListenForEvent("animover", OnGhostDeactivated)
 
     self.val = 100
     self.max = 100

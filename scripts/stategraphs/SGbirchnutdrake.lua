@@ -135,7 +135,7 @@ local states =
 		timeline =
 		{
 			TimeEvent(15*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/decidous/drake_intoground") end),
-			TimeEvent(20*FRAMES, function(inst) inst.Physics:ClearCollisionMask() end),
+			TimeEvent(20*FRAMES, function(inst) RemovePhysicsColliders(inst) end),
 		},
 
 		events =
@@ -202,7 +202,7 @@ CommonStates.AddCombatStates(states,
 	deathtimeline =
 	{
 		TimeEvent(1*FRAMES, function(inst)
-			inst.Physics:ClearCollisionMask()
+			RemovePhysicsColliders(inst)
 			inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/decidous/drake_die")
 		end),
 	},

@@ -26,6 +26,8 @@ local PlayerHud = Class(Screen, function(self)
 
     self.under_root = self:AddChild(Widget("under_root"))
     self.root = self:AddChild(Widget("root"))
+
+    self.inst:ListenForEvent("continuefrompause", function() self:RefreshControllers() end, TheWorld)
 end)
 
 function PlayerHud:CreateOverlays(owner)
@@ -141,23 +143,34 @@ function PlayerHud:Show()
     self.root:Show()
 end
 
+function PlayerHud:GetFirstOpenContainerWidget()
+    local k, v = next(self.controls.containers)
+    return v
+end
+
+local function CloseContainerWidget(self, container, side)
+    for k, v in pairs(self.controls.containers) do
+        if v.container == container then
+            v:Close()
+        end
+    end
+end
+
 function PlayerHud:CloseContainer(container, side)
     if container == nil then
         return
     elseif side and TheInput:ControllerAttached() then
         self.controls.inv.rebuild_pending = true
     else
-        for k, v in pairs(self.controls.containers) do
-            if v.container == container then
-                v:Close()
-            end
-        end
+        CloseContainerWidget(self, container, side)
     end
 end
 
-function PlayerHud:GetFirstOpenContainerWidget()
-    local k, v = next(self.controls.containers)
-    return v
+local function OpenContainerWidget(self, container, side)
+    local containerwidget = ContainerWidget(self.owner)
+    self.controls[side and "containerroot_side" or "containerroot"]:AddChild(containerwidget)
+    containerwidget:Open(container, self.owner)
+    self.controls.containers[container] = containerwidget
 end
 
 function PlayerHud:OpenContainer(container, side)
@@ -166,10 +179,28 @@ function PlayerHud:OpenContainer(container, side)
     elseif side and TheInput:ControllerAttached() then
         self.controls.inv.rebuild_pending = true
     else
-        local containerwidget = ContainerWidget(self.owner)
-        self.controls[side and "containerroot_side" or "containerroot"]:AddChild(containerwidget)
-        containerwidget:Open(container, self.owner)
-        self.controls.containers[container] = containerwidget
+        OpenContainerWidget(self, container, side)
+    end
+end
+
+function PlayerHud:RefreshControllers()
+    local controller_mode = TheInput:ControllerAttached()
+    if self.controls.inv.controller_build ~= controller_mode then
+        self.controls.inv.rebuild_pending = true
+        local overflow = self.owner.replica.inventory:GetOverflowContainer()
+        if overflow == nil then
+            --switching to controller inv with no backpack
+            --don't animate out from the backpack position
+            self.controls.inv.rebuild_snapping = true
+        elseif controller_mode then
+            --switching to controller with backpack
+            --close mouse backpack container widget
+            CloseContainerWidget(self, overflow.inst, overflow:IsSideWidget())
+        elseif overflow:IsOpenedBy(self.owner) then
+            --switching to mouse with backpack
+            --reopen backpack if it was opened
+            OpenContainerWidget(self, overflow.inst, overflow:IsSideWidget())
+        end
     end
 end
 
@@ -398,6 +429,12 @@ function PlayerHud:OnControl(control, down)
         return true
     elseif self.owner == nil then
         return
+    end
+
+    --V2C: This kinda hax? Cuz we don't rly want to set focus to it I guess?
+    local resurrectbutton = self.controls.status:GetResurrectButton()
+    if resurrectbutton ~= nil and resurrectbutton:CheckControl(control, down) then
+        return true
     elseif not down then
         if control == CONTROL_MAP then
             self.controls:ToggleMap()

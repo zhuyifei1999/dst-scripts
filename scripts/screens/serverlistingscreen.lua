@@ -44,8 +44,10 @@ local column_offsets ={
         PING = 509,        
     }
 
-local dev_color = {80/255, 16/255, 158/255, 1}
-local mismatch_color = {130/255, 19/255, 19/255, 1}
+local dev_color = { 80/255, 16/255, 158/255, 1 }
+local mismatch_color = { 130/255, 19/255, 19/255, 1 }
+local offline_color = { 19/255, 67/255, 80/255, 1 }
+local normal_color = { 0, 0, 0, 1 }
 
 local font_size = 35
 if JapaneseOnPS4() then
@@ -137,7 +139,6 @@ local ServerListingScreen = Class(Screen, function(self, filters, cb, offlineMod
 
     self.selected_index_actual = -1
     self.selected_server = nil
-    self.selected_row = -1
     self.list_widgets = {}
     self.view_offset = 0
     self.viewed_servers = {}
@@ -170,7 +171,7 @@ local ServerListingScreen = Class(Screen, function(self, filters, cb, offlineMod
 
     self.servers_scroll_list:SetFocusChangeDir(MOVE_LEFT, function() return self.online_button end)
     self.filters_scroll_list:SetFocusChangeDir(MOVE_LEFT, function() return self.servers_scroll_list end)
-    self.server_details_parent:SetFocusChangeDir(MOVE_LEFT, function() return self.servers_scroll_list end)-- self.detail_scroll_list:SetFocusChangeDir(MOVE_LEFT, self.servers_scroll_list)
+    self.server_details_additional:SetFocusChangeDir(MOVE_LEFT, function() return self.servers_scroll_list end)-- self.detail_scroll_list:SetFocusChangeDir(MOVE_LEFT, self.servers_scroll_list)
 
     self.default_focus = self.online_button
 end)
@@ -197,14 +198,14 @@ function ServerListingScreen:UpdateServerInformation( show )
         self.details_servername:Show()
         self.details_serverdesc:Show()
         if self.selected_server ~= nil then
-            self.server_details_parent:Show()-- self.detail_scroll_list:Show()
+            self.server_details_additional:Show()-- self.detail_scroll_list:Show()
         end
 	else
         if self.filters_shown then
 		    self.details_servername:Hide()
             self.details_serverdesc:Hide()
         end
-        self.server_details_parent:Hide()-- self.detail_scroll_list:Hide()
+        self.server_details_additional:Hide()-- self.detail_scroll_list:Hide()
 	end
 end
 
@@ -213,19 +214,19 @@ function ServerListingScreen:ToggleShowFilters(forcehide)
         self.filters_shown = true
         self:UpdateServerInformation( false )
         self.filters_button:Disable()
-        if TheInput:ControllerAttached() and self.server_details_parent.focus then--self.detail_scroll_list.focus then
+        if TheInput:ControllerAttached() and self.server_details_additional.focus then--self.detail_scroll_list.focus then
             self.filters_scroll_list:SetFocus()
         end
         self.details_button:Enable()
         self.filters_scroll_list:Show()
-        self.server_details_parent:Hide()--self.detail_scroll_list:Hide()
+        self.server_details_additional:Hide()--self.detail_scroll_list:Hide()
     else
         self.filters_scroll_list:Hide()
         if self.selected_server ~= nil then 
-            self.server_details_parent:Show()--self.detail_scroll_list:Show() 
+            self.server_details_additional:Show()--self.detail_scroll_list:Show() 
         end
         if TheInput:ControllerAttached() and self.filters_scroll_list.focus then
-            self.server_details_parent:SetFocus()--self.detail_scroll_list:SetFocus()
+            self.server_details_additional:SetFocus()--self.detail_scroll_list:SetFocus()
         end
         self.filters_shown = false
         self.filters_button:Enable()
@@ -350,6 +351,12 @@ end
 function ServerListingScreen:ViewServerTags()
     if self.selected_server ~= nil and self.selected_server.tags then            
         TheFrontEnd:PushScreen(TextListPopupDialogScreen(STRINGS.UI.SERVERLISTINGSCREEN.TAGSTITLE, self.selected_server.tags))
+    end
+end
+
+function ServerListingScreen:ViewServerGroup()
+    if self.selected_server ~= nil and self.selected_server.clan_server then
+        TheNet:ViewSteamProfile(self.selected_server.steam_group_id)
     end
 end
 
@@ -500,20 +507,17 @@ function ServerListingScreen:UpdateServerData( selected_index_actual )
         SetChecked( self.checkbox_pvp, self.pvp_description, self.selected_server.pvp )
         SetChecked( self.checkbox_has_password, self.has_password_description, self.selected_server.has_password )
 
-        if self.selected_server.mods_enabled then
-            if self.page == "LAN" then
-                self.viewmods_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.VIEWMODS_LAN)
-                self.viewmods_button:Select()
-            else
-                self.viewmods_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.VIEWMODS)
-                self.viewmods_button:Unselect()
-            end
+        if not self.selected_server.mods_enabled then
+            self.viewmods_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.NOMODS)
+            self.viewmods_button:Select()
+        elseif self.selected_server.offline then
+            self.viewmods_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.VIEWMODS_LAN)
+            self.viewmods_button:Select()
+        elseif self.selected_server.has_details then
+            self.viewmods_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.VIEWMODS)
+            self.viewmods_button:Unselect()
         else
-            if self.selected_server.has_details then
-                self.viewmods_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.NOMODS)
-            else
-                self.viewmods_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.MODS_LOADING)
-            end
+            self.viewmods_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.MODS_LOADING)
             self.viewmods_button:Select()
         end
 
@@ -521,12 +525,26 @@ function ServerListingScreen:UpdateServerData( selected_index_actual )
             self.viewtags_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.VIEWTAGS)
             self.viewtags_button:Unselect()
         else
-            if self.selected_server.has_details then
+            --V2C: tags are always available in online tab without detailed info
+            if self.selected_server.has_details or self.online then
                 self.viewtags_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.NOTAGS)
             else
                 self.viewtags_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.TAGS_LOADING)
             end
             self.viewtags_button:Select()
+        end
+
+        if self.selected_server.clan_server then
+            self.viewgroup_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.VIEWGROUP)
+            self.viewgroup_button:Unselect()
+        else
+            --V2C: clan id is always available without detailed info
+            --if self.selected_server.has_details then
+                self.viewgroup_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.GROUP_NONE)
+            --else
+            --    self.viewgroup_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.GROUP_LOADING)
+            --end
+            self.viewgroup_button:Select()
         end
 
         local gamedata = self:ProcessServerGameData()
@@ -571,18 +589,19 @@ end
 
 function ServerListingScreen:ServerSelected(new_index)
     if new_index and self.viewed_servers and self.viewed_servers[new_index] ~= nil then
-		self.selected_index_actual = self.viewed_servers[new_index].actualindex
-		if self.selected_row ~= self.viewed_servers[new_index].row then
-			self.selected_row = self.viewed_servers[new_index].row
-			TheNet:DownloadServerDetails( self.viewed_servers[new_index].row )
-		end
-        self:UpdateServerData( self.selected_index_actual )
+        local server = self.viewed_servers[new_index]
+        if self.selected_index_actual ~= server.actualindex then
+            self.selected_index_actual = server.actualindex
+            if string.len(server.row) > 0 then
+                TheNet:DownloadServerDetails(server.row)
+            end
+        end
+        self:UpdateServerData(self.selected_index_actual)
         self:UpdateServerInformation(true)
     else
         self:UpdateServerInformation(false)
         self.selected_server = nil
         self.selected_index_actual = -1
-        self.selected_row = -1
         self.details_servername:SetString(STRINGS.UI.SERVERLISTINGSCREEN.NOSERVERSELECTED)
         self.details_serverdesc:SetString("")
         self.join_button:Disable()
@@ -611,6 +630,7 @@ function ServerListingScreen:ClearServerList()
         v.NAME:SetPosition(v.NAME._align.x, v.NAME._align.y, 0)
         v.CHAR:Hide()
         v.FRIEND_ICON:Hide()
+        v.CLAN_OTHER_ICON:Hide()
         v.CLAN_OPEN_ICON:Hide()
         v.CLAN_CLOSED_ICON:Hide()
         v.HAS_PASSWORD_ICON:Hide()
@@ -663,7 +683,7 @@ function ServerListingScreen:SearchForServers(online)
         TheNet:SearchServers()
     elseif self.page == "LAN" then -- otherwise just LAN
         self.servers_scroll_list.focused_index = 1
-        TheNet:SearchLANServers()
+        TheNet:SearchLANServers(self.offlinemode)
     end
     
 	self:StartPeriodicRefreshTask()
@@ -724,6 +744,12 @@ function ServerListingScreen:RefreshView(skipPoll)
 	self.servers_scroll_list:RefreshView()
     self:GuaranteeSelectedServerHighlighted()
     self:UpdateServerData( self.selected_index_actual )
+end
+
+function ServerListingScreen:SetRowColour(row_widget, colour)
+    row_widget.NAME:SetColour(unpack(colour))
+    row_widget.PLAYERS:SetColour(unpack(colour))
+    row_widget.PING:SetColour(unpack(colour))
 end
 
 function ServerListingScreen:MakeServerListWidgets()
@@ -804,12 +830,18 @@ function ServerListingScreen:MakeServerListWidgets()
         row.FRIEND_ICON:SetPosition(details_x,1)
         row.FRIEND_ICON:Hide()
         details_x = details_x + 26
-        
-        row.CLAN_OPEN_ICON = row.DETAILS:AddChild(TEMPLATES.ServerDetailIcon("images/servericons.xml", "group.tex", "blue", STRINGS.UI.SERVERLISTINGSCREEN.CLAN_OPEN_ICON_HOVER, nil, {0,0}, .075, .075))
+
+        row.CLAN_OTHER_ICON = row.DETAILS:AddChild(TEMPLATES.ServerDetailIcon("images/servericons.xml", "clan.tex", "beige", STRINGS.UI.SERVERLISTINGSCREEN.CLAN_OTHER_ICON_HOVER, nil, {0,0}, .075, .075))
+        row.CLAN_OTHER_ICON.img:SetTint(150/255, 150/255, 150/255, 255/255)
+        row.CLAN_OTHER_ICON:SetPosition(details_x,1)
+        row.CLAN_OTHER_ICON:Hide()
+
+        row.CLAN_OPEN_ICON = row.DETAILS:AddChild(TEMPLATES.ServerDetailIcon("images/servericons.xml", "clan.tex", "orange", STRINGS.UI.SERVERLISTINGSCREEN.CLAN_OPEN_ICON_HOVER, nil, {0,0}, .075, .075))
+        row.CLAN_OPEN_ICON.img:SetTint(238/255, 238/255, 99/255, 255/255)
         row.CLAN_OPEN_ICON:SetPosition(details_x,1)
         row.CLAN_OPEN_ICON:Hide()
-        
-        row.CLAN_CLOSED_ICON = row.DETAILS:AddChild(TEMPLATES.ServerDetailIcon("images/servericons.xml", "group.tex", "blue", STRINGS.UI.SERVERLISTINGSCREEN.CLAN_CLOSED_ICON_HOVER, nil, {0,0}, .075, .075))
+
+        row.CLAN_CLOSED_ICON = row.DETAILS:AddChild(TEMPLATES.ServerDetailIcon("images/servericons.xml", "clan.tex", "orange", STRINGS.UI.SERVERLISTINGSCREEN.CLAN_CLOSED_ICON_HOVER, nil, {0,0}, .075, .075))
         row.CLAN_CLOSED_ICON.img:SetTint(238/255, 99/255, 99/255, 255/255)
         row.CLAN_CLOSED_ICON:SetPosition(details_x,1)
         row.CLAN_CLOSED_ICON:Hide()
@@ -833,7 +865,7 @@ function ServerListingScreen:MakeServerListWidgets()
         row:SetFocusChangeDir(MOVE_RIGHT, function() 
             if self.filters_scroll_list:IsVisible() then
                 return self.filters_scroll_list
-            elseif self.server_details_parent:IsVisible() then--self.detail_scroll_list:IsVisible() then
+            elseif self.server_details_additional:IsVisible() then--self.detail_scroll_list:IsVisible() then
                 return self.viewworld_button
             end
         end)
@@ -853,6 +885,7 @@ function ServerListingScreen:MakeServerListWidgets()
             widget.PING:SetString("")
             widget.CHAR:Hide()
             widget.FRIEND_ICON:Hide()
+            widget.CLAN_OTHER_ICON:Hide()
             widget.CLAN_OPEN_ICON:Hide()
             widget.CLAN_CLOSED_ICON:Hide()
             widget.HAS_PASSWORD_ICON:Hide()
@@ -875,14 +908,13 @@ function ServerListingScreen:MakeServerListWidgets()
             widget.index = serverdata.actualindex --actual index is wrong
 
             widget.version = serverdata.version
+            widget.offline = serverdata.offline
 
             widget.cursor:Show()
             
             widget.NAME:SetTruncatedString(serverdata.name, widget.NAME._align.maxwidth, widget.NAME._align.maxchars, true)
             local w, h = widget.NAME:GetRegionSize()
             widget.NAME:SetPosition(widget.NAME._align.x + w * .5, widget.NAME._align.y, 0)
-            if dev_server then widget.NAME:SetColour(unpack(dev_color))
-            elseif version_check_failed then widget.NAME:SetColour(unpack(mismatch_color)) end
 
             self:ProcessPlayerData( serverdata.session )
 	    
@@ -911,15 +943,25 @@ function ServerListingScreen:MakeServerListWidgets()
             else
                 widget.FRIEND_ICON:Hide()
             end
-            if serverdata.clan_server and serverdata.belongs_to_clan then
-                if serverdata.clan_only then
-                    widget.CLAN_OPEN_ICON:Hide()
-                    widget.CLAN_CLOSED_ICON:Show()
+
+            if serverdata.clan_server then
+                if serverdata.belongs_to_clan then
+                    if serverdata.clan_only then
+                        widget.CLAN_OTHER_ICON:Hide()
+                        widget.CLAN_OPEN_ICON:Hide()
+                        widget.CLAN_CLOSED_ICON:Show()
+                    else
+                        widget.CLAN_OTHER_ICON:Hide()
+                        widget.CLAN_OPEN_ICON:Show()
+                        widget.CLAN_CLOSED_ICON:Hide()
+                    end
                 else
-                    widget.CLAN_OPEN_ICON:Show()
+                    widget.CLAN_OTHER_ICON:Show()
+                    widget.CLAN_OPEN_ICON:Hide()
                     widget.CLAN_CLOSED_ICON:Hide()
                 end
             else
+                widget.CLAN_OTHER_ICON:Hide()
                 widget.CLAN_OPEN_ICON:Hide()
                 widget.CLAN_CLOSED_ICON:Hide()
             end
@@ -945,15 +987,19 @@ function ServerListingScreen:MakeServerListWidgets()
             end
 
             widget.PLAYERS:SetString(serverdata.current_players .. "/" .. serverdata.max_players)
-            if dev_server then widget.PLAYERS:SetColour(unpack(dev_color))
-            elseif version_check_failed then widget.PLAYERS:SetColour(unpack(mismatch_color)) end
 
             widget.PING:SetString(serverdata.ping)  
             if serverdata.ping < 0 then
                 widget.PING:SetString("???")
             end
-            if dev_server then widget.PING:SetColour(unpack(dev_color))
-            elseif version_check_failed then widget.PING:SetColour(unpack(mismatch_color)) end 
+
+            if dev_server then
+                self:SetRowColour(widget, dev_color)
+            elseif version_check_failed then
+                self:SetRowColour(widget, mismatch_color)
+            else
+                self:SetRowColour(widget, serverdata.offline and offline_color or normal_color)
+            end
         end
     end
 
@@ -980,39 +1026,27 @@ function ServerListingScreen:GuaranteeSelectedServerHighlighted()
         local dev_server = v.version and v.version == -1 or false
         local version_check_failed = v.version and v.version ~= tonumber(APP_VERSION) or false
 		if v and v.index ~= -1 and v.index == self.selected_index_actual then
-            if dev_server then 
-                v.NAME:SetColour(unpack(dev_color))
-                v.PLAYERS:SetColour(unpack(dev_color))
-                v.PING:SetColour(unpack(dev_color))
+            if dev_server then
+                self:SetRowColour(v, dev_color)
             elseif version_check_failed then 
-                v.NAME:SetColour(unpack(mismatch_color))
-                v.PLAYERS:SetColour(unpack(mismatch_color))
-                v.PING:SetColour(unpack(mismatch_color))
+                self:SetRowColour(v, mismatch_color)
             else
+                self:SetRowColour(v, v.offline and offline_color or normal_color)
                 v.NAME:SetFont(NEWFONT)
                 v.PLAYERS:SetFont(NEWFONT)
                 v.PING:SetFont(NEWFONT)
-                v.NAME:SetColour(0,0,0,1)
-                v.PLAYERS:SetColour(0,0,0,1)
-                v.PING:SetColour(0,0,0,1)
             end
             v.cursor:SetSelected(true)
         else
             v.NAME:SetFont(NEWFONT)
             v.PLAYERS:SetFont(NEWFONT)
             v.PING:SetFont(NEWFONT)
-            if dev_server then 
-                v.NAME:SetColour(unpack(dev_color))
-                v.PLAYERS:SetColour(unpack(dev_color))
-                v.PING:SetColour(unpack(dev_color))
+            if dev_server then
+                self:SetRowColour(v, dev_color)
             elseif version_check_failed then
-                v.NAME:SetColour(unpack(mismatch_color))
-                v.PLAYERS:SetColour(unpack(mismatch_color))
-                v.PING:SetColour(unpack(mismatch_color))
+                self:SetRowColour(v, mismatch_color)
             else
-                v.NAME:SetColour(0,0,0,1)
-                v.PLAYERS:SetColour(0,0,0,1)
-                v.PING:SetColour(0,0,0,1)
+                self:SetRowColour(v, v.offline and offline_color or normal_color)
             end
             v.cursor:SetSelected(false)
         end
@@ -1229,13 +1263,15 @@ function ServerListingScreen:IsValidWithFilters(server)
     end
 	 
     -- Filter out unjoinable servers, if we are online
+    -- NOTE: steamroom is not available for dedicated servers
+    -- NOTE: client hosted servers can be joinable via punchthrough even if you can't ping it directly
     if valid and self.online and not server.steamroom and server.ping < 0 then
         valid = false
         self.unjoinable_servers = self.unjoinable_servers + 1
     end
     
-    -- If we are in offline mode, don't show non-lan servers
-    if valid and self.offlinemode and not server.lan then
+    -- If we are in offline mode, don't show online mode servers
+    if valid and self.offlinemode and not server.offline then
         valid = false
     end
 	 
@@ -1366,7 +1402,10 @@ function ServerListingScreen:DoFiltering(doneSearching)
                         friend_playing=v.friend_playing, 
                         clan_server = v.clan_server,
                         clan_only = v.clan_only,
-                        belongs_to_clan=v.belongs_to_clan, 
+                        belongs_to_clan=v.belongs_to_clan,
+                        lan_only = v.lan_only,
+                        offline = v.offline,
+                        steam_group_id = v.steam_group_id, 
                         actualindex=i,
                         mods_enabled = v.mods_enabled,
                         tags = v.tags,
@@ -1436,11 +1475,13 @@ local function CreateSpinner( self, name, text, spinnerOptions, numeric, onchang
     bg:SetPosition(66, 2, 0)
     bg:MoveToBack()
 
+    local spinner_width = 118
+    local spinner_height = 28
     group.spinner = nil
     if numeric then
-        group.spinner = group:AddChild(NumericSpinner(spinnerOptions.min, spinnerOptions.max, 190, 40, {font=NEWFONT, size=20}, nil, nil, nil, true, nil, nil, .63, .74))
+        group.spinner = group:AddChild(NumericSpinner(spinnerOptions.min, spinnerOptions.max, spinner_width, spinner_height, {font=NEWFONT, size=20}, nil, nil, nil, true, nil, nil))
     else
-        group.spinner = group:AddChild(Spinner(spinnerOptions, 190, 40, {font=NEWFONT, size=20}, nil, nil, nil, true, nil, nil, .63, .74))
+        group.spinner = group:AddChild(Spinner(spinnerOptions, spinner_width, spinner_height, {font=NEWFONT, size=20}, nil, nil, nil, true, nil, nil))
     end
     group.spinner:SetTextColour(0,0,0,1)
     group.spinner.changed_image = group.spinner:AddChild(Image("images/ui.xml", "option_highlight.tex"))
@@ -1619,7 +1660,7 @@ function ServerListingScreen:MakeFiltersPanel(filter_data)
     end
 end
 
-local function MakeImgButton(parent, xPos, yPos, text, onclick, style)
+local function MakeImgButton(parent, xPos, yPos, text, onclick, style, image)
     if not parent or not xPos or not yPos or not text or not onclick then return end
 
     local btn 
@@ -1632,8 +1673,8 @@ local function MakeImgButton(parent, xPos, yPos, text, onclick, style)
         btn.text:SetSize(24)
     elseif style == "nav" then
         btn = parent:AddChild(TEMPLATES.NavBarButton(yPos, text, onclick))
-    elseif style == "refresh" or style == "tags" or style == "mods" or style == "world" or style == "view_players" then
-        btn = parent:AddChild(TEMPLATES.IconButton("images/button_icons.xml", style..".tex", text, false, false, onclick))
+    elseif style == "icon" then
+        btn = parent:AddChild(TEMPLATES.IconButton("images/button_icons.xml", image..".tex", text, false, false, onclick))
     end
     
     btn:SetPosition(xPos, yPos)
@@ -1644,7 +1685,7 @@ local function MakeImgButton(parent, xPos, yPos, text, onclick, style)
         btn:SetOnClick(onclick)
     end
 
-    if style ~= "tags" and style ~= "mods" and style ~= "world" and style ~= "view_players" and style ~= "refresh" then
+    if style ~= "icon" then
         btn:SetText(text)
     end
     
@@ -1657,7 +1698,7 @@ local function MakeImgButton(parent, xPos, yPos, text, onclick, style)
 end
 
 function ServerListingScreen:MakeMenuButtons(left_col, right_col, nav_col)
-    self.refresh_button = MakeImgButton(self.server_list_titles, left_col-35, 51, STRINGS.UI.SERVERLISTINGSCREEN.REFRESH, function() self:SearchForServers() end, "refresh")
+    self.refresh_button = MakeImgButton(self.server_list_titles, left_col-35, 51, STRINGS.UI.SERVERLISTINGSCREEN.REFRESH, function() self:SearchForServers() end, "icon", "refresh")
     self.lan_button = MakeImgButton(self.nav_bar, 10, -23, STRINGS.UI.SERVERLISTINGSCREEN.LAN, function() self:SetTab("LAN") end, "nav")
     self.online_button = MakeImgButton(self.nav_bar, 10, 25, STRINGS.UI.SERVERLISTINGSCREEN.ONLINE, function() 
         if self.offlinemode then
@@ -1666,18 +1707,16 @@ function ServerListingScreen:MakeMenuButtons(left_col, right_col, nav_col)
                     STRINGS.UI.SERVERLISTINGSCREEN.OFFLINE_MODE_BODY, 
                     {{ text = STRINGS.UI.SERVERLISTINGSCREEN.OK, cb = function() TheFrontEnd:PopScreen() end }}))
         else
-            self:SetTab("online") 
+            self:SetTab("online")
         end
     end, "nav")
     self.join_button = MakeImgButton(self.server_detail_panel, -55, -RESOLUTION_Y*.5 + BACK_BUTTON_Y - 15, STRINGS.UI.SERVERLISTINGSCREEN.JOIN, function() self:Join() end, "large")
     local tab_height = 212
     self.filters_button = MakeImgButton(self.server_detail_panel, -132, tab_height, STRINGS.UI.SERVERLISTINGSCREEN.FILTERS, function() self:ToggleShowFilters() end, "tab")
     self.details_button = MakeImgButton(self.server_detail_panel, -1, tab_height, STRINGS.UI.SERVERLISTINGSCREEN.SERVERDETAILS, function() self:ToggleShowFilters() end, "tab")
-    
-    if not self.offlinemode then
-        self.refresh_button:Disable()
-        self.refresh_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.REFRESHING)
-    end
+
+    self.refresh_button:Disable()
+    self.refresh_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.REFRESHING)
     self.join_button:Disable()
 
     self.details_shown = false
@@ -1711,11 +1750,12 @@ function ServerListingScreen:MakeDetailPanel(right_col)
     
     local detail_x = -65
     local width = 240
+    local detail_y = 135
 
     self.details_servername = self.server_detail_panel:AddChild(Text(BUTTONFONT, 40))
     self.details_servername:SetHAlign(ANCHOR_MIDDLE)
     self.details_servername:SetVAlign(ANCHOR_TOP)
-    self.details_servername:SetPosition(detail_x, RESOLUTION_Y*0.16 + 10, 0)
+    self.details_servername:SetPosition(detail_x, detail_y, 0)
     self.details_servername:SetRegionSize( width, 90 )
     self.details_servername:SetString(STRINGS.UI.SERVERLISTINGSCREEN.NOSERVERSELECTED)
     self.details_servername:EnableWordWrap( true )
@@ -1724,44 +1764,67 @@ function ServerListingScreen:MakeDetailPanel(right_col)
     self.details_serverdesc = self.server_detail_panel:AddChild(Text(NEWFONT, 20))
     self.details_serverdesc:SetHAlign(ANCHOR_MIDDLE)
     self.details_serverdesc:SetVAlign(ANCHOR_TOP)
-    self.details_serverdesc:SetPosition(detail_x, 55, 0)
+    detail_y = detail_y - 85
+    self.details_serverdesc:SetPosition(detail_x, detail_y, 0)
     self.details_serverdesc:SetRegionSize( width, 70 )
     self.details_serverdesc:SetString("")
     self.details_serverdesc:EnableWordWrap( true )
     self.details_serverdesc:SetColour(0,0,0,1)
 
-    self.viewworld_button = MakeImgButton(self.server_detail_panel, -93, 6, STRINGS.UI.SERVERLISTINGSCREEN.WORLD_UNKNOWN, function() self:ViewServerWorld() end, "world")
+    -- Container for the majority of the details in this panel, so we can hide them
+    self.server_details_additional = self.server_detail_panel:AddChild(Widget("additionalservdetails"))
+    self.server_details_additional:SetPosition(0,0) -- so we can use positioning relative to the whole panel
+    self.server_details_additional.focus_forward = self.viewworld_button
+    self.server_details_additional:Hide()
+
+    self.viewworld_button = MakeImgButton(self.server_detail_panel, -56, 6, STRINGS.UI.SERVERLISTINGSCREEN.WORLD_UNKNOWN, function() self:ViewServerWorld() end, "icon", "world")
     self.viewworld_button:Select()
 
-    self.viewplayers_button = MakeImgButton(self.server_detail_panel, -36, 6, STRINGS.UI.SERVERLISTINGSCREEN.PLAYERS_UNKNOWN, function() self:ViewServerPlayers() end, "view_players")
-    self.viewplayers_button:Select()
-
-    self.viewmods_button = MakeImgButton(self.server_detail_panel, 20, 6, STRINGS.UI.SERVERLISTINGSCREEN.NOMODS, function() self:ViewServerMods() end, "mods")
+    self.viewmods_button = MakeImgButton(self.server_detail_panel, 0, 6, STRINGS.UI.SERVERLISTINGSCREEN.NOMODS, function() self:ViewServerMods() end, "icon", "mods")
     self.viewmods_button:Select()
 
-    self.viewtags_button = MakeImgButton(self.server_detail_panel, 77, 6, STRINGS.UI.SERVERLISTINGSCREEN.NOTAGS, function() self:ViewServerTags() end, "tags")
+    self.viewtags_button = MakeImgButton(self.server_detail_panel, 56, 6, STRINGS.UI.SERVERLISTINGSCREEN.NOTAGS, function() self:ViewServerTags() end, "icon", "tags")
     self.viewtags_button:Select()
 
+    self.viewplayers_button = MakeImgButton(self.server_detail_panel, -28, -46, STRINGS.UI.SERVERLISTINGSCREEN.PLAYERS_UNKNOWN, function() self:ViewServerPlayers() end, "icon", "view_players")
+    self.viewplayers_button:Select()
+
+    self.viewgroup_button = MakeImgButton(self.server_detail_panel, 28, -46, STRINGS.UI.SERVERLISTINGSCREEN.GROUP_NONE, function() self:ViewServerGroup() end, "icon", "clan")
+    self.viewgroup_button:Select()
+
     self.viewworld_button:SetScale(.9)
+    self.viewgroup_button:SetScale(.9)
     self.viewplayers_button:SetScale(.9)
     self.viewmods_button:SetScale(.9)
     self.viewtags_button:SetScale(.9)
 
-    local buttons = Widget("buttons")
+    local buttons = self.server_details_additional:AddChild(Widget("buttons"))
+    detail_y = detail_y - 70
+    buttons:SetPosition(detail_x, detail_y)
     buttons:AddChild(self.viewmods_button)
     buttons:AddChild(self.viewtags_button)
     buttons:AddChild(self.viewworld_button)
+    buttons:AddChild(self.viewgroup_button)
     buttons:AddChild(self.viewplayers_button)
-    buttons.focus_forward = self.viewtags_button
+    buttons.focus_forward = self.viewworld_button
     self.viewworld_button:SetFocusChangeDir(MOVE_LEFT, function() return self.servers_scroll_list end)
-    self.viewworld_button:SetFocusChangeDir(MOVE_RIGHT, function() return self.viewplayers_button end)
-    self.viewplayers_button:SetFocusChangeDir(MOVE_LEFT, function() return self.viewworld_button end)
-    self.viewplayers_button:SetFocusChangeDir(MOVE_RIGHT, function() return self.viewmods_button end)
-    self.viewmods_button:SetFocusChangeDir(MOVE_LEFT, function() return self.viewplayers_button end)
+    self.viewworld_button:SetFocusChangeDir(MOVE_RIGHT, function() return self.viewmods_button end)
+    self.viewworld_button:SetFocusChangeDir(MOVE_DOWN, function() return self.viewplayers_button end)
+    self.viewmods_button:SetFocusChangeDir(MOVE_LEFT, function() return self.viewworld_button end)
     self.viewmods_button:SetFocusChangeDir(MOVE_RIGHT, function() return self.viewtags_button end)
+    self.viewmods_button:SetFocusChangeDir(MOVE_DOWN, function() return self.viewplayers_button end)
     self.viewtags_button:SetFocusChangeDir(MOVE_LEFT, function() return self.viewmods_button end)
+    self.viewtags_button:SetFocusChangeDir(MOVE_DOWN, function() return self.viewgroup_button end)
 
-    self.game_mode_description = Widget("gamemodedesc")
+    self.viewplayers_button:SetFocusChangeDir(MOVE_LEFT, function() return self.servers_scroll_list end)
+    self.viewplayers_button:SetFocusChangeDir(MOVE_RIGHT, function() return self.viewgroup_button end)
+    self.viewplayers_button:SetFocusChangeDir(MOVE_UP, function() return self.viewworld_button end)
+    self.viewgroup_button:SetFocusChangeDir(MOVE_LEFT, function() return self.viewplayers_button end)
+    self.viewgroup_button:SetFocusChangeDir(MOVE_UP, function() return self.viewtags_button end)
+
+    self.game_mode_description = self.server_details_additional:AddChild(Widget("gamemodedesc"))
+    detail_y = detail_y - 88
+    self.game_mode_description:SetPosition(detail_x, detail_y)
     self.game_mode_description.text = self.game_mode_description:AddChild(Text(NEWFONT, 20))
     self.game_mode_description.text:SetString(STRINGS.UI.SERVERLISTINGSCREEN.SURVIVAL)
     self.game_mode_description.text:SetPosition(-10,0)
@@ -1786,16 +1849,36 @@ function ServerListingScreen:MakeDetailPanel(right_col)
     local w,h = self.game_mode_description.text:GetRegionSize()
     self.game_mode_description.info_button:SetPosition(w/2 + 7, -2)
     self.game_mode_description.info_button:SetScale(.4)
-    self.game_mode_description.info_button:SetFocusChangeDir(MOVE_UP, function() return self.viewworld_button end)
-    self.viewworld_button:SetFocusChangeDir(MOVE_DOWN, function() return self.game_mode_description.info_button end)
+    self.game_mode_description.info_button:SetFocusChangeDir(MOVE_UP, function() return self.viewplayers_button end)
     self.viewplayers_button:SetFocusChangeDir(MOVE_DOWN, function() return self.game_mode_description.info_button end)
-    self.viewmods_button:SetFocusChangeDir(MOVE_DOWN, function() return self.game_mode_description.info_button end)
-    self.viewtags_button:SetFocusChangeDir(MOVE_DOWN, function() return self.game_mode_description.info_button end)
+    self.viewgroup_button:SetFocusChangeDir(MOVE_DOWN, function() return self.game_mode_description.info_button end)
 
     local check_x = -90
     local label_x = 40
 
-    local has_password = Widget("pw")        
+    self.season_description = self.server_details_additional:AddChild(Widget("seasondesc"))
+    detail_y = detail_y - 30
+    self.season_description:SetPosition(detail_x, detail_y)
+    self.season_description.text = self.season_description:AddChild(Text(NEWFONT, 20))
+    self.season_description.text:SetPosition(-10,0)
+    self.season_description.text:SetHAlign(ANCHOR_MIDDLE)
+    self.season_description.text:SetRegionSize( 400, 50 )
+    self.season_description.text:SetString("???")
+    self.season_description.text:SetColour(0,0,0,1)
+
+    self.day_description = self.server_details_additional:AddChild(Widget("daydesc"))
+    detail_y = detail_y - 30
+    self.day_description:SetPosition(detail_x, detail_y)
+    self.day_description.text = self.day_description:AddChild(Text(NEWFONT, 20))
+    self.day_description.text:SetPosition(-10,0)
+    self.day_description.text:SetHAlign(ANCHOR_MIDDLE)
+    self.day_description.text:SetRegionSize( 400, 50 )
+    self.day_description.text:SetString("???")
+    self.day_description.text:SetColour(0,0,0,1)
+
+    local has_password = self.server_details_additional:AddChild(Widget("pw"))
+    detail_y = detail_y - 30
+    has_password:SetPosition(detail_x, detail_y)
     self.checkbox_has_password = has_password:AddChild(TEMPLATES.ServerDetailIcon("images/servericons.xml", "password.tex", "rust", "", nil, {-1,0}, .08, .073))
     self.checkbox_has_password:SetPosition(check_x, 0, 0)
     self.checkbox_has_password.off_image = self.checkbox_has_password:AddChild(Image("images/servericons.xml", "bg_grey.tex"))
@@ -1810,7 +1893,9 @@ function ServerListingScreen:MakeDetailPanel(right_col)
     self.has_password_description:SetColour(0,0,0,1)
     SetChecked( self.checkbox_has_password, self.has_password_description, false )
 
-    local dedicated_server = Widget("ded")
+    local dedicated_server = self.server_details_additional:AddChild(Widget("ded"))
+    detail_y = detail_y - 26
+    dedicated_server:SetPosition(detail_x, detail_y)
     self.checkbox_dedicated_server = dedicated_server:AddChild(TEMPLATES.ServerDetailIcon("images/servericons.xml", "dedicated.tex", "burnt", "", nil, {0,0}, .08, .073))
     self.checkbox_dedicated_server:SetPosition(check_x, 0, 0)
     self.checkbox_dedicated_server.off_image = self.checkbox_dedicated_server:AddChild(Image("images/servericons.xml", "bg_grey.tex"))
@@ -1825,7 +1910,9 @@ function ServerListingScreen:MakeDetailPanel(right_col)
     self.dedicated_server_description:SetColour(0,0,0,1)
     SetChecked( self.checkbox_dedicated_server, self.dedicated_server_description, false )
     
-    local pvp = Widget("pvp")
+    local pvp = self.server_details_additional:AddChild(Widget("pvp"))
+    detail_y = detail_y - 26
+    pvp:SetPosition(detail_x, detail_y)
     self.checkbox_pvp = pvp:AddChild(TEMPLATES.ServerDetailIcon("images/servericons.xml", "pvp.tex", "brown", "", nil, {0,0}, .075, .075))
     self.checkbox_pvp:SetPosition(check_x, 0, 0)
     self.checkbox_pvp.off_image = self.checkbox_pvp:AddChild(Image("images/servericons.xml", "bg_grey.tex"))
@@ -1840,40 +1927,6 @@ function ServerListingScreen:MakeDetailPanel(right_col)
     self.pvp_description:SetColour(0,0,0,1)
     SetChecked( self.checkbox_pvp, self.pvp_description, false )
 
-    self.season_description = Widget("seasondesc")
-    self.season_description.text = self.season_description:AddChild(Text(NEWFONT, 20))
-    self.season_description.text:SetPosition(-10,0)
-    self.season_description.text:SetHAlign(ANCHOR_MIDDLE)
-    self.season_description.text:SetRegionSize( 400, 50 )
-    self.season_description.text:SetString("???")
-    self.season_description.text:SetColour(0,0,0,1)
-
-    self.day_description = Widget("daydesc")
-    self.day_description.text = self.day_description:AddChild(Text(NEWFONT, 20))
-    self.day_description.text:SetPosition(-10,0)
-    self.day_description.text:SetHAlign(ANCHOR_MIDDLE)
-    self.day_description.text:SetRegionSize( 400, 50 )
-    self.day_description.text:SetString("???")
-    self.day_description.text:SetColour(0,0,0,1)
-
-    self.detail_panel_widgets = { 
-        buttons,
-        self.game_mode_description,
-        self.day_description,
-        self.season_description,
-        pvp,
-        dedicated_server,
-        has_password,
-    }
-
-    self.server_details_parent = self.server_detail_panel:AddChild(Widget("servdetails"))
-    self.server_details_parent:SetPosition(detail_x-230,-120)
-    self.server_details_parent.focus_forward = self.viewworld_button
-    for i,v in ipairs(self.detail_panel_widgets) do
-        self.server_details_parent:AddChild(v)
-        v:SetPosition(240, 125 - (33*i-1))
-    end
-    self.server_details_parent:Hide()
 end
 
 local function MakeHeader(self, parent, xPos, name, onclick)

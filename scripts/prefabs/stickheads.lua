@@ -81,13 +81,15 @@ local function OnFinishHaunt(inst)
 end
 
 local function OnHaunt(inst, haunter)
-    if math.random() <= TUNING.HAUNT_CHANCE_OCCASIONAL and
-        inst.components.workable ~= nil and
-        inst.components.workable:CanBeWorked() then
-        inst.components.workable:WorkedBy(haunter, 1)
-        inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
-        return true
-    elseif not (inst.awake or inst:HasTag("burnt")) then
+    --#HAUNTFIX
+    --if math.random() <= TUNING.HAUNT_CHANCE_OCCASIONAL and
+        --inst.components.workable ~= nil and
+        --inst.components.workable:CanBeWorked() then
+        --inst.components.workable:WorkedBy(haunter, 1)
+        --inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
+        --return true
+    --else
+    if not (inst.awake or inst:HasTag("burnt")) then
         inst.awake = true
         inst.AnimState:PlayAnimation("wake")
         inst.AnimState:PushAnimation("idle_awake")

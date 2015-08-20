@@ -297,6 +297,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.UNPIN, "doshortaction"),
     ActionHandler(ACTIONS.CATCH, "catch_pre"),
     ActionHandler(ACTIONS.WRITE, "doshortaction"),
+    ActionHandler(ACTIONS.ATTUNE, "dolongaction"),
 }
 
 local events =
@@ -334,6 +335,10 @@ local events =
         if not inst.components.health:IsDead() then
             if data.weapon ~= nil and data.weapon:HasTag("tranquilizer") and (inst.sg:HasStateTag("bedroll") or inst.sg:HasStateTag("knockout")) then
                 return --Do nothing
+            elseif inst.sg:HasStateTag("transform") then
+                -- don't interrupt transform
+                inst.SoundEmitter:PlaySound("dontstarve/wilson/hit")
+                DoHurtSound(inst)
             elseif inst.sg:HasStateTag("sleeping") then
                 inst.SoundEmitter:PlaySound("dontstarve/wilson/hit")
                 DoHurtSound(inst)
@@ -344,13 +349,6 @@ local events =
                     inst.sg.statemem.iswaking = true
                     inst.sg:GoToState("wakeup")
                 end
-            elseif data.attacker ~= nil and
-                data.attacker:HasTag("insect") and
-                not inst.sg:HasStateTag("idle") then
-                -- avoid stunlock when attacked by bees/mosquitos
-                -- don't go to full hit state, just play sounds
-                inst.SoundEmitter:PlaySound("dontstarve/wilson/hit")
-                DoHurtSound(inst)
             elseif inst.sg:HasStateTag("shell") then
                 inst.sg:GoToState("shell_hit")
             elseif inst:HasTag("pinned") then
@@ -360,13 +358,29 @@ local events =
             elseif data.stimuli == "electric" and not inst.components.inventory:IsInsulated() then
                 inst.sg:GoToState("electrocute")
             else
-                inst.sg:GoToState("hit")
+                local stunlock = data.attacker ~= nil and data.attacker.components.combat
+                        and data.attacker.components.combat.playerstunlock
+                local stunoffset = inst.laststuntime and GetTime() - inst.laststuntime or 999
+                if stunlock ~= nil
+                    and (stunlock == PLAYERSTUNLOCK.NEVER
+                         or (stunlock == PLAYERSTUNLOCK.RARELY and stunoffset < TUNING.STUNLOCK_TIMES.RARELY)
+                         or (stunlock == PLAYERSTUNLOCK.SOMETIMES and stunoffset < TUNING.STUNLOCK_TIMES.SOMETIMES)
+                         or (stunlock == PLAYERSTUNLOCK.OFTEN and stunoffset < TUNING.STUNLOCK_TIMES.OFTEN))
+                    and (not inst.sg:HasStateTag("idle") or inst.sg.timeinstate == 0) then -- gjans: we transition to idle for 1 frame after being hit, hence the timeinstate check
+
+                    -- don't go to full hit state, just play sounds
+                    inst.SoundEmitter:PlaySound("dontstarve/wilson/hit")
+                    DoHurtSound(inst)
+                else
+                    inst.laststuntime = GetTime()
+                    inst.sg:GoToState("hit")
+                end
             end
         end
     end),
 
-    -- Only for making telltale heart. Just go directly to hit.
-    EventHandler("damaged", function(inst, data)
+    --For crafting, attunement cost, etc... Just go directly to hit.
+    EventHandler("consumehealthcost", function(inst, data)
         if not inst.components.health:IsDead() then
             inst.sg:GoToState("hit")
         end
@@ -611,7 +625,6 @@ local states =
         onenter = function(inst)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("powerup")
-            inst.components.health:SetInvincible(true)
 
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:RemotePausePrediction()
@@ -626,10 +639,6 @@ local states =
                 end
             end),
         },
-
-        onexit = function(inst)
-            inst.components.health:SetInvincible(false)
-        end,
     },
 
     State{
@@ -639,7 +648,6 @@ local states =
         onenter = function(inst)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("powerdown")
-            inst.components.health:SetInvincible(true)
 
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:RemotePausePrediction()
@@ -654,10 +662,6 @@ local states =
                 end
             end),
         },
-
-        onexit = function(inst)
-            inst.components.health:SetInvincible(false)
-        end,
     },
 
     State{
@@ -668,7 +672,6 @@ local states =
             inst:SetCameraDistance(14)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("transform_pre")
-            inst.components.health:SetInvincible(true)
 
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:RemotePausePrediction()
@@ -686,15 +689,14 @@ local states =
                         inst:TransformBeaver(true)
                         inst.AnimState:PlayAnimation("transform_pst")
                         SpawnPrefab("werebeaver_transform_fx").Transform:SetPosition(inst.Transform:GetWorldPosition())
-                        inst.components.health:SetInvincible(false)
                         inst:SetCameraDistance()
+                        inst.sg:RemoveStateTag("transform")
                     end
                 end
             end),
         },
 
         onexit = function(inst)
-            inst.components.health:SetInvincible(false)
             inst:SetCameraDistance()
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:Enable(true)
@@ -710,7 +712,6 @@ local states =
             inst:SetCameraDistance(14)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("transform_pre")
-            inst.components.health:SetInvincible(true)
 
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:RemotePausePrediction()
@@ -726,9 +727,9 @@ local states =
                         inst:TransformBeaver(false)
                         inst.AnimState:PlayAnimation("transform_pst")
                         SpawnPrefab("werebeaver_transform_fx").Transform:SetPosition(inst.Transform:GetWorldPosition())
-                        inst.components.health:SetInvincible(false)
                         inst.components.inventory:Open()
                         inst:SetCameraDistance()
+                        inst.sg:RemoveStateTag("transform")
                     else
                         inst.sg:GoToState("idle")
                     end
@@ -737,7 +738,6 @@ local states =
         },
 
         onexit = function(inst)
-            inst.components.health:SetInvincible(false)
             inst.components.inventory:Open()
             inst:SetCameraDistance()
             if inst.components.playercontroller ~= nil then
@@ -3486,7 +3486,7 @@ local states =
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:Enable(false)
             end
-            inst.AnimState:PlayAnimation("idle", true)
+            inst.AnimState:PlayAnimation("idle_loop", true)
             inst:ShowHUD(false)
             inst:SetCameraDistance(14)
             inst.AnimState:SetMultColour(0, 0, 0, 1)

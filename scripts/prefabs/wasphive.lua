@@ -21,7 +21,7 @@ end
 local function OnKilled(inst)
     inst:RemoveComponent("childspawner")
     inst.AnimState:PlayAnimation("cocoon_dead", true)
-    inst.Physics:ClearCollisionMask()
+    RemovePhysicsColliders(inst)
 
     inst.SoundEmitter:KillSound("loop")
 

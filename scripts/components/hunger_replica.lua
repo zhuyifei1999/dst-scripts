@@ -68,6 +68,17 @@ function Hunger:GetPercent()
     end
 end
 
+function Hunger:GetCurrent()
+    if self.inst.components.hunger ~= nil then
+        return self.inst.components.hunger.current
+    elseif self.classified ~= nil then
+        return self.classified.currenthunger:value()
+    else
+        return 100
+    end
+end
+
+
 function Hunger:IsStarving()
     if self.inst.components.hunger ~= nil then
         return self.inst.components.hunger:IsStarving()

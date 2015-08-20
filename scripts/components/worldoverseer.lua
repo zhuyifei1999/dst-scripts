@@ -97,7 +97,7 @@ function WorldOverseer:DumpPlayerStats()
 		local sendstats = self:BuildContextTable(stat.player)
 		sendstats.play_t = RoundBiasedUp(stat.secondsplayed,2)
         sendstats.character = stat.player and stat.player.prefab or nil
-        sendstats.session = self.inst.meta.session_identifier
+        sendstats.save_id = self.inst.meta.session_identifier
 	
 		dprint("_________________________________________________________________Sending playtime heartbeat stats...")
 		ddump(sendstats)
@@ -112,7 +112,7 @@ function WorldOverseer:OnPlayerDeath(player, data)
 	local worldAge = self._cycles
 	local sendstats = self:BuildContextTable(player)
 	sendstats.playerdeath = {
-                                session = self.inst.meta.session_identifier,
+                                save_id = self.inst.meta.session_identifier,
 								playerage = RoundBiasedUp(age,2),
 								worldage = worldAge,
 								cause = data and data.cause or ""
@@ -134,8 +134,8 @@ function WorldOverseer:DumpSessionStats()
 
     local clients = TheNet:GetClientTable() or {}
 
-	sendstats.mpsession = {
-                            session = self.inst.meta.session_identifier,
+    sendstats.mpsession = {
+                            save_id = self.inst.meta.session_identifier,
                             worldage = self._cycles,
                             num_players = #clients,
                             max_players = TheNet:GetServerMaxPlayers(),
@@ -144,10 +144,18 @@ function WorldOverseer:DumpSessionStats()
                             dedicated = TheNet:GetServerIsDedicated(),
                             administrated = TheNet:GetServerHasPresentAdmin(),
                             modded = TheNet:GetServerModsEnabled(),
-                            privacy = TheNet:GetServerFriendsOnly() and "FRIENDS" or "PUBLIC",
+                            privacy = (TheNet:GetServerClanID() ~= "0" and "CLAN")
+                                    or (TheNet:GetServerLANOnly() and "LAN")
+                                    or (TheNet:GetServerFriendsOnly() and "FRIENDS")
+                                    or "PUBLIC",
                             offline = not TheNet:IsOnlineMode(),
                             pvp = TheNet:GetServerPVP(),
-						}
+                        }
+    if TheNet:GetServerClanID() ~= "0" then
+        sendstats.mpsession.clan_id = TheNet:GetServerClanID()
+        sendstats.mpsession.clan_only = TheNet:GetServerClanOnly()
+        --sendstats.clan_admins = TheNet:GetServerClanAdmins() -- not available in the handshake!
+    end
 	dprint("_________________________________________________________________Sending session heartbeat stats...")
 	ddump(sendstats)
 	dprint("_________________________________________________________________<END>")

@@ -113,15 +113,8 @@ local function OnGetItem(inst, giver, item)
         item:Remove()
         inst:PushEvent("respawnfromghost")
 
-        --giver.components.health.numrevives = giver.components.health.numrevives + 1
-        --giver.components.health:RecalculatePenalty(true)
-
-        inst.components.health.numrevives = inst.components.health.numrevives + .5
-        if inst.components.health.numrevives > 3 then
-            inst.components.health.numrevives = 3
-        end
-
-        inst.components.health:RecalculatePenalty(true)
+        inst.components.health:DeltaPenalty(TUNING.REVIVE_HEALTH_PENALTY)
+        giver.components.sanity:DoDelta(TUNING.REVIVE_OTHER_SANITY_BONUS)
     end
 end
 
@@ -171,6 +164,33 @@ local function OnStopFireDamage(inst)
     local frozenitems = inst.components.inventory:FindItems(FrozenItems)
     for i, v in ipairs(frozenitems) do
         v:PushEvent("stopfiremelt")
+    end
+end
+
+--NOTE: On server we always get before lose attunement when switching effigies.
+local function OnGotNewAttunement(inst, data)
+    --can safely assume we are attuned if we just "got" an attunement
+    if not inst._isrezattuned and
+        data.proxy:IsAttunableType("remoteresurrector") then
+        --NOTE: parenting automatically handles visibility
+        SpawnPrefab("attune_out_fx").entity:SetParent(inst.entity)
+        inst._isrezattuned = true
+    end
+end
+
+local function OnAttunementLost(inst, data)
+    --cannot assume that we are no longer attuned
+    --to a type when we lose a single attunement!
+    if inst._isrezattuned and
+        data.proxy:IsAttunableType("remoteresurrector") and
+        not inst.components.attuner:HasAttunement("remoteresurrector") then
+        --remoterezsource flag means we're currently performing remote resurrection,
+        --so we will lose attunement in the process, but we don't really want an fx!
+        if not inst.remoterezsource then
+            --NOTE: parenting automatically handles visibility
+            SpawnPrefab(inst:HasTag("playerghost") and "attune_ghost_in_fx" or "attune_in_fx").entity:SetParent(inst.entity)
+        end
+        inst._isrezattuned = false
     end
 end
 
@@ -366,6 +386,13 @@ local function OnPlayerJoined(inst)
     if TheWorld.ismastersim then
         TheWorld:PushEvent("ms_playerjoined", inst)
         TheNet:Announce(inst:GetDisplayName().." "..STRINGS.UI.NOTIFICATION.JOINEDGAME, inst.entity, true, "join_game")
+
+        --Register attuner server listeners here as "ms_playerjoined"
+        --will trigger relinking saved attunements, and we don't want
+        --to hit the callbacks to spawn fx for those
+        inst:ListenForEvent("gotnewattunement", OnGotNewAttunement)
+        inst:ListenForEvent("attunementlost", OnAttunementLost)
+        inst._isrezattuned = inst.components.attuner:HasAttunement("remoteresurrector")
     end
 end
 
@@ -683,18 +710,15 @@ local function DoActualRez(inst, source)
         elseif source.prefab == "resurrectionstatue" then
             inst.sg:GoToState("rebirth")
         elseif source.prefab == "multiplayer_portal" then
-            inst.components.health.numrevives = inst.components.health.numrevives + 1
-            if inst.components.health.numrevives > 3 then
-                inst.components.health.numrevives = 3
-            end
-            inst.components.health:RecalculatePenalty(true)
+            inst.components.health:DeltaPenalty(TUNING.PORTAL_HEALTH_PENALTY)
+
             source:PushEvent("rez_player")
             inst.sg:GoToState("portal_rez")
         end
     else -- Telltale Heart
         inst.sg:GoToState("reviver_rebirth")
     end
-
+ 
     --Default to electrocute light values
     inst.Light:SetIntensity(.8)
     inst.Light:SetRadius(.5)
@@ -720,9 +744,6 @@ local function DoActualRez(inst, source)
 
     inst.components.sheltered:Start()
 
-    --we disabled health penalty for PAX. I think I prefer it. If we like it, do it properly.
-    inst.components.health:RecalculatePenalty(true)
-
     --don't ignore sanity any more
     inst.components.sanity.ignore = false
 
@@ -741,6 +762,8 @@ local function DoActualRez(inst, source)
         inst.rezsource = nil
     end
 
+    inst.remoterezsource = nil
+
     inst:PushEvent("ms_respawnedfromghost")
 end
 
@@ -752,6 +775,7 @@ local function DoRezDelay(inst, source, delay)
             inst.components.playercontroller:Enable(true)
         end
         inst.rezsource = nil
+        inst.remoterezsource = nil
         --Revert DoMoveToRezSource state
         inst:Show()
         inst.Light:Enable(true)
@@ -775,6 +799,11 @@ local function DoMoveToRezSource(inst, source, delay)
             inst.components.playercontroller:Enable(true)
         end
         inst.rezsource = nil
+        inst.remoterezsource = nil
+        --Revert "remoteresurrect" state
+        if inst.sg.currentstate.name == "remoteresurrect" then
+            inst.sg:GoToState("haunt")
+        end
         --
         return
     end
@@ -783,6 +812,13 @@ local function DoMoveToRezSource(inst, source, delay)
     inst.Light:Enable(false)
     inst.Physics:Teleport(source.Transform:GetWorldPosition())
     inst:SetCameraDistance(24)
+    if inst.sg.currentstate.name == "remoteresurrect" then
+        inst:SnapCamera()
+    end
+    if inst.sg.statemem.faded then
+        inst.sg.statemem.faded = false
+        inst:ScreenFade(true, 1)
+    end
 
     DoRezDelay(inst, source, delay)
 end
@@ -803,13 +839,17 @@ local function OnRespawnFromGhost(inst, data)
     end
     inst.sg:AddStateTag("busy")
 
-    if data ~= nil and data.source ~= nil and
-        (data.source.prefab == "amulet" or
-        data.source.prefab == "resurrectionstatue" or
-        data.source.prefab == "resurrectionstone" or
-        data.source.prefab == "multiplayer_portal") then
+    if data == nil or data.source == nil then
+        inst:DoTaskInTime(0, DoActualRez)
+    elseif inst.sg.currentstate.name == "remoteresurrect" then
+        inst:DoTaskInTime(0, DoMoveToRezSource, data.source, 24 * FRAMES)
+    elseif data.source.prefab == "amulet"
+        or data.source.prefab == "resurrectionstone"
+        or data.source.prefab == "resurrectionstatue"
+        or data.source.prefab == "multiplayer_portal" then
         inst:DoTaskInTime(9 * FRAMES, DoMoveToRezSource, data.source, --[[60-9]] 51 * FRAMES)
     else
+        --unsupported rez source...
         inst:DoTaskInTime(0, DoActualRez)
     end
 
@@ -817,6 +857,12 @@ local function OnRespawnFromGhost(inst, data)
         (data ~= nil and data.source ~= nil and data.source.name) or
         (inst.reviver ~= nil and inst.reviver:GetDisplayName()) or
         STRINGS.NAMES.SHENANIGANS
+
+    inst.remoterezsource =
+        data ~= nil and
+        data.source ~= nil and
+        data.source.components.attunable ~= nil and
+        data.source.components.attunable:GetAttunableTag() == "remoteresurrector"
 end
 
 local function OnMakePlayerGhost( inst, data )
@@ -897,7 +943,8 @@ local function OnMakePlayerGhost( inst, data )
 
     inst.components.age:PauseAging()
 
-    inst.components.health:Respawn(TUNING.RESURRECT_HEALTH)
+    inst.components.health:SetCurrentHealth(TUNING.RESURRECT_HEALTH)
+    inst.components.health:ForceUpdateHUD()
     inst.components.health:SetInvincible(true) 
 
     inst.components.sanity:SetPercent(.5, true)
@@ -930,6 +977,16 @@ local function OnSave(inst, data)
     data.is_ghost = inst:HasTag("playerghost") or nil
     data.skin_name = inst.skin_name or nil
 
+    --V2C: UNFORTUNATLEY, the sleeping hacks still need to be
+    --     saved for snapshots or c_saves while sleeping
+    if inst._sleepinghandsitem ~= nil then
+        data.sleepinghandsitem = inst._sleepinghandsitem:GetSaveRecord()
+    end
+    if inst._sleepingactiveitem ~= nil then
+        data.sleepingactiveitem = inst._sleepingactiveitem:GetSaveRecord()
+    end
+    --
+
     if inst._OnSave ~= nil then
         inst:_OnSave(data)
     end
@@ -940,11 +997,32 @@ local function OnLoad(inst, data)
     inst.OnNewSpawn = nil
     inst._OnNewSpawn = nil
 
-    if data ~= nil and data.is_ghost then
-        OnMakePlayerGhost(inst, { loading = true })
-    end
+    if data ~= nil then
+        if data.is_ghost then
+            OnMakePlayerGhost(inst, { loading = true })
+        end
 
-    inst:OnSetSkin(data ~= nil and data.skin_name or nil)
+        inst:OnSetSkin(data.skin_name)
+
+        --V2C: Sleeping hacks from snapshots or c_saves while sleeping
+        if data.sleepinghandsitem ~= nil then
+            local item = SpawnSaveRecord(data.sleepinghandsitem)
+            if item ~= nil then
+                inst.components.inventory.silentfull = true
+                inst.components.inventory:Equip(item)
+                inst.components.inventory.silentfull = false
+            end
+        end
+        if data.sleepingactiveitem ~= nil then
+            local item = SpawnSaveRecord(data.sleepingactiveitem)
+            if item ~= nil then
+                inst.components.inventory.silentfull = true
+                inst.components.inventory:GiveItem(item)
+                inst.components.inventory.silentfull = false
+            end
+        end
+        --
+    end
 
     if inst._OnLoad ~= nil then
         inst:_OnLoad(data)
@@ -1222,6 +1300,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/emote_fx.zip"),
         Asset("ANIM", "anim/tears.zip"),
         Asset("ANIM", "anim/puff_spawning.zip"),
+        Asset("ANIM", "anim/attune_fx.zip"),
 
         Asset("ANIM", "anim/player_idles_groggy.zip"),
         Asset("ANIM", "anim/player_groggy.zip"),
@@ -1242,6 +1321,9 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         "mining_fx",
         "die_fx",
         "ghost_transform_overlay_fx",
+        "attune_out_fx",
+        "attune_in_fx",
+        "attune_ghost_in_fx",
     }
 
     if starting_inventory ~= nil or customprefabs ~= nil then
@@ -1360,6 +1442,8 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst:AddComponent("talker")
 
         inst:AddComponent("playervision")
+        inst:AddComponent("attuner")
+        --attuner server listeners are not registered until after "ms_playerjoined" has been pushed
 
         if common_postinit ~= nil then
             common_postinit(inst)
@@ -1497,7 +1581,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
 
         -------
         if METRICS_ENABLED then
-            inst:AddComponent("overseer") 
+            inst:AddComponent("overseer")
         end
         -------
 

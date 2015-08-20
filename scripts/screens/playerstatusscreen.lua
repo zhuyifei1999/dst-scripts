@@ -7,20 +7,29 @@ local ImageButton = require "widgets/imagebutton"
 local PlayerBadge = require "widgets/playerbadge"
 local PopupDialogScreen = require "screens/popupdialog"
 local ScrollableList = require "widgets/scrollablelist"
+local TEMPLATES = require "widgets/templates"
 
 local BAN_ENABLED = true
 
 local list_spacing = 82.5
 
-local RED = {242/255, 99/255, 99/255, 255/255}
-local YELLOW = {222/255, 222/255, 99/255, 255/255}
-local GREEN = {59/255, 242/255, 99/255, 255/255}
+local PERF_HOST_SCALE = { 1, 1, 1 }
+local PERF_HOST_UNKNOWN = "host_indicator.tex"
+local PERF_HOST_LEVELS =
+{
+    "host_indicator3.tex", --GOOD
+    "host_indicator2.tex", --OK
+    "host_indicator1.tex", --BAD
+}
 
-local GREEN_THRESHOLD = 100
-local YELLOW_THRESHOLD = 300
-
-local HOST_GREEN_THRESHOLD = 50 --game loop cycles/s
-local HOST_YELLOW_THRESHOLD = 30 --game loop cycles/s
+local PERF_CLIENT_SCALE = { .9, .9, .9 }
+local PERF_CLIENT_UNKNOWN = "performance_indicator.tex"
+local PERF_CLIENT_LEVELS =
+{
+    "performance_indicator3.tex", --GOOD
+    "performance_indicator2.tex", --OK
+    "performance_indicator1.tex", --BAD
+}
 
 local REFRESH_INTERVAL = .5
 
@@ -45,6 +54,14 @@ function PlayerStatusScreen:OnDestroy()
     self:Hide()
 end
 
+function PlayerStatusScreen:GetHelpText()
+    if self.server_group ~= "0" and TheInput:ControllerAttached() then
+        local controller_id = TheInput:GetControllerID()
+        return TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_2) .. STRINGS.UI.HELP.VIEWGROUP
+    end
+    return ""
+end
+
 function PlayerStatusScreen:OnControl(control, down)
     if not self:IsVisible() then
         return false
@@ -53,12 +70,16 @@ function PlayerStatusScreen:OnControl(control, down)
     elseif control == CONTROL_OPEN_DEBUG_MENU then
         --jcheng: don't allow debug menu stuff going on right now
         return true
-    elseif not down
-        and (control == CONTROL_SHOW_PLAYER_STATUS
+    elseif not down then
+        if (control == CONTROL_SHOW_PLAYER_STATUS
             or (control == CONTROL_TOGGLE_PLAYER_STATUS and
                 not TheInput:IsControlPressed(CONTROL_SHOW_PLAYER_STATUS))) then
-        self:Close()
-        return true
+            self:Close()
+            return true
+        elseif control == CONTROL_MENU_MISC_2 and self.server_group ~= "0" then
+            TheNet:ViewSteamProfile(self.server_group)
+            return true
+        end
     end
 end
 
@@ -133,31 +154,12 @@ function PlayerStatusScreen:OnUpdate(dt)
                                 v.age:SetString(agestring)
                             end
 
-                            if k.ping ~= nil then
-                                v.pingVal = k.ping
-                                v.ping:SetString(v.pingVal)
-                                if v.pingVal <= GREEN_THRESHOLD then
-                                    v.ping:SetColour(GREEN)
-                                elseif v.pingVal <= YELLOW_THRESHOLD then
-                                    v.ping:SetColour(YELLOW)
-                                else
-                                    v.ping:SetColour(RED)
-                                end
-                            elseif k.performance ~= nil then
-                                v.pingVal = k.performance
-                                if v.pingVal >= HOST_GREEN_THRESHOLD then
-                                    v.ping:SetString(STRINGS.UI.PLAYERSTATUSSCREEN.GOODHOST)
-                                    v.ping:SetColour(GREEN)
-                                elseif v.pingVal >= HOST_YELLOW_THRESHOLD then
-                                    v.ping:SetString(STRINGS.UI.PLAYERSTATUSSCREEN.OKHOST)
-                                    v.ping:SetColour(YELLOW)
-                                else
-                                    v.ping:SetString(STRINGS.UI.PLAYERSTATUSSCREEN.BADHOST)
-                                    v.ping:SetColour(RED)
-                                end
+                            if k.performance ~= nil then
+                                v.perf:SetTexture("images/scoreboard.xml", PERF_HOST_LEVELS[math.min(k.performance + 1, #PERF_HOST_LEVELS)])
+                            elseif k.netscore ~= nil then
+                                v.perf:SetTexture("images/scoreboard.xml", PERF_CLIENT_LEVELS[math.min(k.netscore + 1, #PERF_CLIENT_LEVELS)])
                             else
-                                v.pingVal = 0
-                                v.ping:SetString("")
+                                v.perf:SetTexture("images/scoreboard.xml", PERF_CLIENT_UNKNOWN)
                             end
                         end
                     end
@@ -191,25 +193,30 @@ function PlayerStatusScreen:DoInit(ClientObjs)
 	if not self.servertitle then
 		self.servertitle = self.root:AddChild(Text(UIFONT,45))
 		self.servertitle:SetColour(1,1,1,1)
-		if serverNameStr ~= "" then
-			self.servertitle:SetTruncatedString(serverNameStr, 800, 100, true)
-		else
-			self.servertitle:SetString(serverNameStr)
-		end
+    end
+    if serverNameStr ~= "" then
+        self.servertitle:SetTruncatedString(serverNameStr, 800, 100, true)
+    else
+        self.servertitle:SetString(serverNameStr)
 	end
 
 	if not self.serverstate then
-		self.serverage = TheWorld.state.cycles + 1
-		local modeStr = GetGameModeString(TheNet:GetServerGameMode()) ~= nil and GetGameModeString(TheNet:GetServerGameMode()).." - " or ""
-		modeStr = modeStr..STRINGS.UI.PLAYERSTATUSSCREEN.WORLD.." "..STRINGS.UI.PLAYERSTATUSSCREEN.AGE_PREFIX..self.serverage
-		self.serverstate = self.root:AddChild(Text(UIFONT,30, modeStr))
-		self.serverstate:SetColour(1,1,1,1)
-	else
-		self.serverage = TheWorld.state.cycles + 1
-		local modeStr = GetGameModeString(TheNet:GetServerGameMode()) ~= nil and GetGameModeString(TheNet:GetServerGameMode()).." - " or ""
-		modeStr = modeStr..STRINGS.UI.PLAYERSTATUSSCREEN.WORLD.." "..STRINGS.UI.PLAYERSTATUSSCREEN.AGE_PREFIX..self.serverage
-		self.serverstate:SetString(modeStr)
-	end
+		self.serverstate = self.root:AddChild(Text(UIFONT,30))
+        self.serverstate:SetColour(1,1,1,1)
+    end
+    self.serverage = TheWorld.state.cycles + 1
+    local modeStr = GetGameModeString(TheNet:GetServerGameMode()) ~= nil and GetGameModeString(TheNet:GetServerGameMode()).." - " or ""
+    modeStr = modeStr..STRINGS.UI.PLAYERSTATUSSCREEN.WORLD.." "..STRINGS.UI.PLAYERSTATUSSCREEN.AGE_PREFIX..self.serverage
+    self.serverstate:SetString(modeStr)
+
+    self.server_group = TheNet:GetServerClanID()
+    if self.server_group ~= "0" and not TheInput:ControllerAttached() then
+        if not self.viewgroup_button then
+            self.viewgroup_button = self.root:AddChild(ImageButton("images/scoreboard.xml", "clan_normal.tex", "clan_hover.tex", "clan.tex", "clan.tex", nil, {0.6,0.6}, {0,0}))
+            self.viewgroup_button:SetOnClick(function() TheNet:ViewSteamProfile(self.server_group) end)
+            self.viewgroup_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.VIEWGROUP, { font = NEWFONT_OUTLINE, size = 24, offset_x = 0, offset_y = 48, colour = {1,1,1,1}})
+        end
+    end
 
 	local Voter = TheWorld.net.components.voter
     if ClientObjs == nil then
@@ -244,6 +251,9 @@ function PlayerStatusScreen:DoInit(ClientObjs)
 	if serverDescStr == "" then
 		self.servertitle:SetPosition(0,215)
 		self.serverdesc:SetPosition(0,175)
+        if self.viewgroup_button and not TheInput:ControllerAttached() then
+            self.viewgroup_button:SetPosition(-328,200)
+        end
 		self.serverstate:SetPosition(0,175)
 		self.divider:SetPosition(0,155)
 	else
@@ -251,6 +261,9 @@ function PlayerStatusScreen:DoInit(ClientObjs)
 		self.servertitle:SetSize(40)
 		self.serverdesc:SetPosition(0,188)
 		self.serverdesc:SetSize(23)
+        if self.viewgroup_button and not TheInput:ControllerAttached() then
+            self.viewgroup_button:SetPosition(-328,208)
+        end
 		self.serverstate:SetPosition(0,163)
 		self.serverstate:SetSize(23)
 		self.players_number:SetPosition(303,160)
@@ -376,43 +389,22 @@ function PlayerStatusScreen:DoInit(ClientObjs)
 		
 		playerListing.ishost = v.performance ~= nil
 
-		local pingStr = ""
-		if v.ping ~= nil then
-    		pingStr = v.ping
-    		playerListing.pingVal = v.ping
-        elseif v.performance ~= nil then
-        	pingStr = v.performance
-            playerListing.pingVal = v.performance
-            if playerListing.pingVal >= HOST_GREEN_THRESHOLD then
-                pingStr = STRINGS.UI.PLAYERSTATUSSCREEN.GOODHOST
-            elseif playerListing.pingVal >= HOST_YELLOW_THRESHOLD then
-                pingStr = STRINGS.UI.PLAYERSTATUSSCREEN.OKHOST
-            else
-                pingStr = STRINGS.UI.PLAYERSTATUSSCREEN.BADHOST
-            end
+        local perf_img
+        local perf_scale
+        if v.performance ~= nil then
+            perf_img = PERF_HOST_LEVELS[math.min(v.performance + 1, #PERF_HOST_LEVELS)]
+            perf_scale = PERF_HOST_SCALE
         else
-            playerListing.pingVal = 0
-        end
-		playerListing.ping = playerListing:AddChild(Text(UIFONT, 35, pingStr))
-        playerListing.ping:SetPosition(300,0,0)
-        playerListing.ping:SetHAlign(ANCHOR_MIDDLE)
-        if v.ping ~= nil then
-    		if playerListing.pingVal <= GREEN_THRESHOLD then
-                playerListing.ping:SetColour(GREEN)
-            elseif playerListing.pingVal <= YELLOW_THRESHOLD then
-                playerListing.ping:SetColour(YELLOW)
+            if v.netscore ~= nil then
+                perf_img = PERF_CLIENT_LEVELS[math.min(v.netscore + 1, #PERF_CLIENT_LEVELS)]
             else
-                playerListing.ping:SetColour(RED)
+                perf_img = PERF_CLIENT_UNKNOWN
             end
-        elseif v.performance ~= nil then
-            if playerListing.pingVal >= HOST_GREEN_THRESHOLD then
-                playerListing.ping:SetColour(GREEN)
-            elseif playerListing.pingVal >= HOST_YELLOW_THRESHOLD then
-                playerListing.ping:SetColour(YELLOW)
-            else
-                playerListing.ping:SetColour(RED)
-            end
+            perf_scale = PERF_CLIENT_SCALE
         end
+		playerListing.perf = playerListing:AddChild(Image("images/scoreboard.xml", perf_img))
+        playerListing.perf:SetPosition(295, 4, 0)
+        playerListing.perf:SetScale(unpack(perf_scale))
 
         local server_has_admin = TheNet:GetServerHasPresentAdmin()
         local this_user_is_dedicated_server = empty ~= true and v.performance ~= nil and TheNet:GetServerIsDedicated()
@@ -691,31 +683,17 @@ function PlayerStatusScreen:DoInit(ClientObjs)
 			
 			playerListing.ishost = v.performance ~= nil
 
-	        if v.ping ~= nil then
-	    		playerListing.pingVal = v.ping
-	    		if playerListing.pingVal <= GREEN_THRESHOLD then
-	                playerListing.ping:SetColour(GREEN)
-	            elseif playerListing.pingVal <= YELLOW_THRESHOLD then
-	                playerListing.ping:SetColour(YELLOW)
-	            else
-	                playerListing.ping:SetColour(RED)
-	            end
-	            playerListing.ping:SetString(playerListing.pingVal)
-	        elseif v.performance ~= nil then
-	            playerListing.pingVal = v.performance
-	            if playerListing.pingVal >= HOST_GREEN_THRESHOLD then
-	                playerListing.ping:SetString(STRINGS.UI.PLAYERSTATUSSCREEN.GOODHOST)
-	                playerListing.ping:SetColour(GREEN)
-	            elseif playerListing.pingVal >= HOST_YELLOW_THRESHOLD then
-	                playerListing.ping:SetString(STRINGS.UI.PLAYERSTATUSSCREEN.OKHOST)
-	                playerListing.ping:SetColour(YELLOW)
-	            else
-	                playerListing.ping:SetString(STRINGS.UI.PLAYERSTATUSSCREEN.BADHOST)
-	                playerListing.ping:SetColour(RED)
-	            end
-	        else
-	            playerListing.pingVal = 0
-	        end
+            if v.performance ~= nil then
+                playerListing.perf:SetTexture("images/scoreboard.xml", PERF_HOST_LEVELS[math.min(v.performance + 1, #PERF_HOST_LEVELS)])
+                playerListing.perf:SetScale(unpack(PERF_HOST_SCALE))
+            else
+                if v.netscore ~= nil then
+                    playerListing.perf:SetTexture("images/scoreboard.xml", PERF_CLIENT_LEVELS[math.min(v.netscore + 1, #PERF_CLIENT_LEVELS)])
+                else
+                    playerListing.perf:SetTexture("images/scoreboard.xml", PERF_CLIENT_UNKNOWN)
+                end
+                playerListing.perf:SetScale(unpack(PERF_CLIENT_SCALE))
+            end
 
 	        local server_has_admin = TheNet:GetServerHasPresentAdmin()
 	        local this_user_is_dedicated_server = v.performance ~= nil and TheNet:GetServerIsDedicated()

@@ -6,7 +6,7 @@ local TabGroup = Class(Widget, function(self)
     Widget._ctor(self, "TabGroup")
     self.tabs = {}
     self.spacing = 70
-    self.offset = Vector3(0,-1,0)
+    self.offset = Vector3(0, -1, 0)
     self.hideoffset = Vector3(-64, 0, 0)
     self.selected = nil
     self.base_pos = {}
@@ -18,12 +18,12 @@ function TabGroup:GetNumTabs()
 end
 
 function TabGroup:HideTab(tab)
-	if self.shown[tab] then
-		if self.base_pos[tab] then
-			tab:MoveTo(self.base_pos[tab], (self.base_pos[tab] + self.hideoffset), .33)
-			self.shown[tab] = false
-		end
-	end
+    if self.shown[tab] then
+        if self.base_pos[tab] then
+            tab:MoveTo(self.base_pos[tab], (self.base_pos[tab] + self.hideoffset), .33)
+            self.shown[tab] = false
+        end
+    end
 end
 
 function TabGroup:GetFirstIdx()
@@ -61,7 +61,7 @@ function TabGroup:GetPrevIdx()
     while idx > 1 do
         idx = idx - 1
         local tab = self.tabs[idx]
-        
+
         if tab and self.shown[tab] then
             return idx
         end
@@ -70,49 +70,48 @@ function TabGroup:GetPrevIdx()
 end
 
 function TabGroup:GetCurrentIdx()
-	for k,v in pairs(self.tabs) do
-		if v.selected then
-			return k
-		end
-	end
+    for k,v in pairs(self.tabs) do
+        if v.selected then
+            return k
+        end
+    end
 end
 
 function TabGroup:ShowTab(tab)
-	if not self.shown[tab] then
-		if self.base_pos[tab] then
-			tab:MoveTo((self.base_pos[tab] + self.hideoffset), self.base_pos[tab], .33)
-			self.shown[tab] = true
-		end
-	end
+    if not self.shown[tab] then
+        if self.base_pos[tab] then
+            tab:MoveTo((self.base_pos[tab] + self.hideoffset), self.base_pos[tab], .33)
+            self.shown[tab] = true
+        end
+    end
 end
 
 function TabGroup:OpenTab(idx)
-	local tab = self.tabs[idx]
-	if tab then
-		if self.shown[tab] then
-			tab:Select()
+    local tab = self.tabs[idx]
+    if tab then
+        if self.shown[tab] then
+            tab:Select()
             return tab
-		end
-	end
+        end
+    end
 end
 
 function TabGroup:AddTab(name, atlas, icon_atlas, icon, imnorm, imselected, imhighlight, imalthighlight, imoverlay, highlightpos, onselect, ondeselect)
-
     local tab = self:AddChild(Tab(self, name, atlas, icon_atlas, icon, imnorm, imselected, imhighlight, imalthighlight, imoverlay, highlightpos, onselect, ondeselect))
     table.insert(self.tabs, tab)
-    
+
     local numtabs = #self.tabs
-    
+
     local scalar = -self.spacing*(numtabs-1)*.5
     local offset = self.offset*scalar
-    
+
     for k,v in ipairs(self.tabs) do
 
         v:SetPosition(offset.x, offset.y, offset.z)
         self.base_pos[v] = Vector3(offset.x, offset.y, offset.z)
         offset = offset + self.offset*self.spacing
     end
-    
+
     self.shown[tab] = true
     return tab
 end
@@ -125,7 +124,7 @@ function TabGroup:OnTabsChanged()
             break
         end
     end
-    
+
     if self.selected ~= selected then
         
         if self.selected and not selected then
@@ -135,7 +134,7 @@ function TabGroup:OnTabsChanged()
         else
             if self.onchange then self:onchange() end
         end
-        
+
         self.selected = selected
     end
 end
@@ -144,7 +143,7 @@ function TabGroup:DeselectAll()
     for k,v in ipairs(self.tabs) do
         v:Deselect()
     end
-    
+    self.selected = nil
 end
 
 return TabGroup

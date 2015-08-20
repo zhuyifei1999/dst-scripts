@@ -199,11 +199,15 @@ function BuildTagsStringHosting(creationScreen)
     if creationScreen.server_settings_tab:GetPVP() then
         table.insert(tagsTable, STRINGS.TAGS.PVP)
     end
-    
-    if creationScreen.server_settings_tab:GetFriendsOnly() then
+
+    if creationScreen.server_settings_tab:GetPrivacyType() == PRIVACY_TYPE.FRIENDS then
         table.insert(tagsTable, STRINGS.TAGS.FRIENDSONLY)
+    elseif creationScreen.server_settings_tab:GetPrivacyType() == PRIVACY_TYPE.CLAN then
+        table.insert(tagsTable, STRINGS.TAGS.CLAN)
+    elseif creationScreen.server_settings_tab:GetPrivacyType() == PRIVACY_TYPE.LOCAL then
+        table.insert(tagsTable, STRINGS.TAGS.LOCAL)
     end
-    
+
     return BuildTagsStringCommon(tagsTable)
 end
 
@@ -240,7 +244,7 @@ function ServerCreationScreen:DeleteSlot(slot, cb)
     TheFrontEnd:PushScreen(PopupDialogScreen(STRINGS.UI.SERVERCREATIONSCREEN.DELETE.." "..STRINGS.UI.SERVERCREATIONSCREEN.SLOT.." "..slot, STRINGS.UI.SERVERCREATIONSCREEN.SURE, menu_items ) )
 end
 
-function ServerCreationScreen:Create(validSeasons, warnedOffline, warnedDisabledMods, warnedOutOfDateMods)
+function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOutOfDateMods)
     local function onsaved()    
         StartNextInstance({reset_action=RESET_ACTION.LOAD_SLOT, save_slot = self.saveslot})
     end
@@ -273,71 +277,79 @@ function ServerCreationScreen:Create(validSeasons, warnedOffline, warnedDisabled
 			end
 		else
 			self.server_settings_tab:SetEditingTextboxes(false)
-			TheNet:SetDefaultServerName(self.server_settings_tab:GetServerName())
-			TheNet:SetDefaultServerPassword(self.server_settings_tab:GetPassword())
-			TheNet:SetDefaultServerDescription(self.server_settings_tab:GetServerDescription())
-			TheNet:SetDefaultGameMode(self.server_settings_tab:GetGameMode())
-			TheNet:SetDefaultMaxPlayers(self.server_settings_tab:GetMaxPlayers())
-			TheNet:SetDefaultPvpSetting(self.server_settings_tab:GetPVP())
-			TheNet:SetFriendsOnlyServer(self.server_settings_tab:GetFriendsOnly())
 
-			local start_in_online_mode = self.server_settings_tab:GetOnlineMode()
+            local serverdata = self.server_settings_tab:GetServerData()
+
+            TheNet:SetDefaultServerName(serverdata.name)
+            TheNet:SetDefaultServerPassword(serverdata.password)
+            TheNet:SetDefaultServerDescription(serverdata.description)
+            TheNet:SetDefaultGameMode(serverdata.game_mode)
+            TheNet:SetDefaultMaxPlayers(serverdata.max_players)
+            TheNet:SetDefaultPvpSetting(serverdata.pvp)
+            TheNet:SetDefaultFriendsOnlyServer(serverdata.privacy_type == PRIVACY_TYPE.FRIENDS)
+            TheNet:SetDefaultLANOnlyServer(serverdata.privacy_type == PRIVACY_TYPE.LOCAL)
+            if serverdata.privacy_type == PRIVACY_TYPE.CLAN then
+                TheNet:SetDefaultClanInfo(serverdata.clan.id, serverdata.clan.only, serverdata.clan.admin)
+            else
+                TheNet:SetDefaultClanInfo("0", false, false)
+            end
+
+			local start_in_online_mode = serverdata.online_mode
             if TheFrontEnd:GetIsOfflineMode() then
                 start_in_online_mode = false
             end
 			local server_started = TheNet:StartServer( start_in_online_mode )
 			if server_started == true then
 				self:Disable()
-				-- DisableAllDLC()
-				
-				local serverdata = 
-				{
-					name = self.server_settings_tab:GetServerName(),
-					password = self.server_settings_tab:GetPassword(),
-					description = self.server_settings_tab:GetServerDescription(),
-					game_mode = self.server_settings_tab:GetGameMode(),
-					maxplayers = self.server_settings_tab:GetMaxPlayers(),
-					pvp = self.server_settings_tab:GetPVP(),
-					friends_only = self.server_settings_tab:GetFriendsOnly(),
-					online_mode = self.server_settings_tab:GetOnlineMode(), 
-				}
 
-                 -- Get rid of screens until we have one with a portal
                 local screen = TheFrontEnd:GetActiveScreen()
-                if not (screen and screen.bg and screen.bg.anim_root and screen.bg.anim_root.portal) then
-                    -- If we're not, then pop the current screen and try again with the next screen down (recursive call)
+                while screen ~= nil and not (screen.bg ~= nil and screen.bg.anim_root ~= nil and screen.bg.anim_root.portal ~= nil) do
+                    -- Check if we're on a screen with a portal anim
+                    -- If we're not, then pop the current screen and try again with the next screen down
                     TheFrontEnd:PopScreen()
-                    onCreate()
+                    screen = TheFrontEnd:GetActiveScreen()
+                end
+
+                local function onFaded()
+                    -- Apply the mods
+                    self.mods_tab:Apply()
+
+                    -- Collect the tags we want and set the tags string now that we have our mods enabled
+                    TheNet:SetServerTags(BuildTagsStringHosting(self))
+
+                    if SaveGameIndex:IsSlotEmpty(self.saveslot) then
+                        SaveGameIndex:StartSurvivalMode(self.saveslot, self.world_tab:CollectOptions(), serverdata, onsaved)
+                    else
+                        SaveGameIndex:UpdateServerData(self.saveslot, serverdata, onsaved)
+                    end
+                end
+
+                if screen == nil then
+                    -- If there are no more screens, just do a generic fade
+                    TheFrontEnd:Fade(false, SCREEN_FADE_TIME, onFaded, nil, nil, "white")
                     return
                 end
 
-                TheFrontEnd:Fade(true, SCREEN_FADE_TIME*4, nil, nil, nil, "alpha")
+                -- If we have access to a portal, then start the animation fanciness!
+                TheFrontEnd:Fade(true, SCREEN_FADE_TIME * 4, nil, nil, nil, "alpha")
 
-                self.inst:DoTaskInTime(SCREEN_FADE_TIME, function() 
-                    self.bg.anim_root.portal:GetAnimState():PlayAnimation("portal_blackout", false)
+                screen:Disable()
+                screen.inst:DoTaskInTime(SCREEN_FADE_TIME, function(inst)
+                    screen.bg.anim_root.portal:GetAnimState():PlayAnimation("portal_blackout", false)
                     TheFrontEnd:GetSound():PlaySound("dontstarve/together_FE/portal_flash")
 
-                    self.inst:DoTaskInTime(1.5, function() 
-                        TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
-                            -- Apply the mods
-                            self.mods_tab:Apply()
-
-                            -- Collect the tags we want and set the tags string now that we have our mods enabled
-                            local tags = BuildTagsStringHosting(self)
-                            TheNet:SetServerTags(tags)
-
-                            if SaveGameIndex:IsSlotEmpty(self.saveslot) then
-                                SaveGameIndex:StartSurvivalMode(self.saveslot, self.world_tab:CollectOptions(), serverdata, onsaved) 
-                            else
-                                SaveGameIndex:UpdateServerData(self.saveslot, serverdata, onsaved)
-                            end
-                            TheFrontEnd:Fade(true, SCREEN_FADE_TIME, nil, nil, nil, "white")
-                        end, nil, nil, "white")
+                    inst:DoTaskInTime(1.5, function()
+                        TheFrontEnd:Fade(false, SCREEN_FADE_TIME, onFaded, nil, nil, "white")
                     end)
                 end)
-			end
-		end
-	end
+            end
+        end
+    end
+
+    if not self:ValidateSettings() then
+        -- popups are handled inside validate
+        return
+    end
 
     -- Build the list of mods that are newly disabled for this slot
     local disabledmods = {}
@@ -351,118 +363,131 @@ function ServerCreationScreen:Create(validSeasons, warnedOffline, warnedDisabled
         outofdatemods = self.mods_tab:GetOutOfDateEnabledMods()
     end
 
-    -- Check if our season settings are valid (i.e. at least one season has a duration)
-    if validSeasons or self.world_tab:VerifyValidSeasonSettings() then
-
-        -- Warn if they're starting an offline game that it will always be offline
-    	if warnedOffline ~= true and not self.server_settings_tab:GetOnlineMode() then
-    	    local offline_mode_body = ""
-    	    if not SaveGameIndex:IsSlotEmpty(self.saveslot) then
-    	        offline_mode_body = STRINGS.UI.SERVERCREATIONSCREEN.OFFLINEMODEBODYRESUME
-    	    else
-    	        offline_mode_body = STRINGS.UI.SERVERCREATIONSCREEN.OFFLINEMODEBODYCREATE
-    	    end
-    	    
-    		local confirm_offline_popup = PopupDialogScreen(STRINGS.UI.SERVERCREATIONSCREEN.OFFLINEMODETITLE, offline_mode_body,
-    		{
-    			{text=STRINGS.UI.SERVERCREATIONSCREEN.OK, cb = function()
-                    -- If player is okay with offline mode, go ahead
-                    TheFrontEnd:PopScreen()
-                    self:Create(true, true)
-                end},
-    			{text=STRINGS.UI.SERVERCREATIONSCREEN.CANCEL, cb = function()
-    				TheFrontEnd:PopScreen() 
-    			end}
-    		})
-            self.last_focus = TheFrontEnd:GetFocusWidget()
-    		TheFrontEnd:PushScreen(confirm_offline_popup)
-
-        -- Can't start an online game if we're offline
-    	elseif self.server_settings_tab:GetOnlineMode() and (not TheNet:IsOnlineMode() or TheFrontEnd:GetIsOfflineMode()) then
-    			local online_only_popup = PopupDialogScreen(STRINGS.UI.SERVERCREATIONSCREEN.ONLINEONYTITLE, STRINGS.UI.SERVERCREATIONSCREEN.ONLINEONLYBODY,
-    			{
-    				{text=STRINGS.UI.SERVERCREATIONSCREEN.OK, cb = function()
-    					TheFrontEnd:PopScreen() 
-    				end}
-    			})
-                self.last_focus = TheFrontEnd:GetFocusWidget()
-    			TheFrontEnd:PushScreen(online_only_popup)
-
-        -- Warn if starting a server with mods disabled that were previously enabled on that server
-        elseif warnedDisabledMods ~= true and #disabledmods > 0 then
-            local modnames = {}
-            for i,v in ipairs(disabledmods) do
-                table.insert(modnames, KnownModIndex:GetModFancyName(v) or v)
-            end
-
-            self.last_focus = TheFrontEnd:GetFocusWidget()
-            TheFrontEnd:PushScreen(TextListPopupDialogScreen(STRINGS.UI.SERVERCREATIONSCREEN.MODSDISABLEDWARNINGTITLE, 
-                                                            modnames, 
-                                                            STRINGS.UI.SERVERCREATIONSCREEN.MODSDISABLEDWARNINGBODY, 
-                                                            {
-                                                                {text=STRINGS.UI.SERVERCREATIONSCREEN.CONTINUE, 
-                                                                cb = function() 
-                                                                        TheFrontEnd:PopScreen()
-                                                                        self:Create(true, true, true)
-                                                                    end,
-                                                                controller_control=CONTROL_ACCEPT},
-                                                                {text=STRINGS.UI.SERVERCREATIONSCREEN.CANCEL, 
-                                                                cb = function() 
-                                                                    TheFrontEnd:PopScreen() 
-                                                                end,
-                                                                controller_control=CONTROL_CANCEL}  
-                                                            }))
-
-        -- Warn if starting a server with mods enabled that are currently out of date
-        elseif warnedOutOfDateMods ~= true and #outofdatemods > 0 then
-            local modnames = {}
-            for i,v in ipairs(outofdatemods) do
-                table.insert(modnames, KnownModIndex:GetModFancyName(v) or v)
-            end
-
-            self.last_focus = TheFrontEnd:GetFocusWidget()
-            local warning = TextListPopupDialogScreen(STRINGS.UI.SERVERCREATIONSCREEN.MODSOUTOFDATEWARNINGTITLE, 
-                                                            modnames, 
-                                                            STRINGS.UI.SERVERCREATIONSCREEN.MODSOUTOFDATEWARNINGBODY, 
-                                                            {
-                                                                {text=STRINGS.UI.SERVERCREATIONSCREEN.CONTINUE, 
-                                                                cb = function() 
-                                                                        TheFrontEnd:PopScreen()
-                                                                        self:Create(true, true, true, true)
-                                                                    end,
-                                                                controller_control=CONTROL_ACCEPT},
-                                                                {text=STRINGS.UI.MODSSCREEN.UPDATEALL, 
-                                                                cb = function() 
-                                                                        TheFrontEnd:PopScreen()
-                                                                        self.mods_tab:UpdateAllButton(true)
-                                                                        self:SetTab("mods")
-                                                                    end,
-                                                                controller_control=CONTROL_MENU_MISC_2},
-                                                                {text=STRINGS.UI.SERVERCREATIONSCREEN.CANCEL, 
-                                                                cb = function() 
-                                                                    TheFrontEnd:PopScreen() 
-                                                                end,
-                                                                controller_control=CONTROL_CANCEL}  
-                                                            },
-                                                            165)
-            if warning.menu then
-                for i,v in ipairs(warning.menu.items) do
-                    v.image:SetScale(.52, .7)
-                end
-                warning.menu:SetPosition(86 + -(200*(#warning.menu.items-1))/2, -203, 0) 
-            end
-            TheFrontEnd:PushScreen(warning)
-
-        -- We passed all our checks, go ahead and create
+    -- Warn if they're starting an offline game that it will always be offline
+    if warnedOffline ~= true and not self.server_settings_tab:GetOnlineMode() then
+        local offline_mode_body = ""
+        if not SaveGameIndex:IsSlotEmpty(self.saveslot) then
+            offline_mode_body = STRINGS.UI.SERVERCREATIONSCREEN.OFFLINEMODEBODYRESUME
         else
-            onCreate()
-    	end
-    else
-        -- If seasons invalid, show a warning
+            offline_mode_body = STRINGS.UI.SERVERCREATIONSCREEN.OFFLINEMODEBODYCREATE
+        end
+
+        local confirm_offline_popup = PopupDialogScreen(STRINGS.UI.SERVERCREATIONSCREEN.OFFLINEMODETITLE, offline_mode_body,
+                            {
+                                {text=STRINGS.UI.SERVERCREATIONSCREEN.OK, cb = function()
+                                    -- If player is okay with offline mode, go ahead
+                                    TheFrontEnd:PopScreen()
+                                    self:Create(true)
+                                end},
+                                {text=STRINGS.UI.SERVERCREATIONSCREEN.CANCEL, cb = function()
+                                    TheFrontEnd:PopScreen() 
+                                end}
+                            })
         self.last_focus = TheFrontEnd:GetFocusWidget()
-        TheFrontEnd:PushScreen(PopupDialogScreen(STRINGS.UI.CUSTOMIZATIONSCREEN.INVALIDSEASONCOMBO_TITLE, STRINGS.UI.CUSTOMIZATIONSCREEN.INVALIDSEASONCOMBO_BODY, 
-                    {{text=STRINGS.UI.CUSTOMIZATIONSCREEN.OKAY, cb = function() TheFrontEnd:PopScreen() end}}))
+        TheFrontEnd:PushScreen(confirm_offline_popup)
+
+    -- Can't start an online game if we're offline
+    elseif self.server_settings_tab:GetOnlineMode() and (not TheNet:IsOnlineMode() or TheFrontEnd:GetIsOfflineMode()) then
+        local online_only_popup = PopupDialogScreen(STRINGS.UI.SERVERCREATIONSCREEN.ONLINEONYTITLE, STRINGS.UI.SERVERCREATIONSCREEN.ONLINEONLYBODY,
+                            {
+                                {text=STRINGS.UI.SERVERCREATIONSCREEN.OK, cb = function()
+                                    TheFrontEnd:PopScreen() 
+                                end}
+                            })
+        self.last_focus = TheFrontEnd:GetFocusWidget()
+        TheFrontEnd:PushScreen(online_only_popup)
+
+    -- Warn if starting a server with mods disabled that were previously enabled on that server
+    elseif warnedDisabledMods ~= true and #disabledmods > 0 then
+        local modnames = {}
+        for i,v in ipairs(disabledmods) do
+            table.insert(modnames, KnownModIndex:GetModFancyName(v) or v)
+        end
+
+        self.last_focus = TheFrontEnd:GetFocusWidget()
+        TheFrontEnd:PushScreen(TextListPopupDialogScreen(STRINGS.UI.SERVERCREATIONSCREEN.MODSDISABLEDWARNINGTITLE,
+                            modnames,
+                            STRINGS.UI.SERVERCREATIONSCREEN.MODSDISABLEDWARNINGBODY, 
+                            {
+                                {text=STRINGS.UI.SERVERCREATIONSCREEN.CONTINUE, 
+                                cb = function()
+                                    TheFrontEnd:PopScreen()
+                                    self:Create(true, true)
+                                end,
+                                controller_control=CONTROL_ACCEPT},
+                                {text=STRINGS.UI.SERVERCREATIONSCREEN.CANCEL,
+                                cb = function()
+                                    TheFrontEnd:PopScreen()
+                                end,
+                                controller_control=CONTROL_CANCEL}
+                            }))
+
+    -- Warn if starting a server with mods enabled that are currently out of date
+    elseif warnedOutOfDateMods ~= true and #outofdatemods > 0 then
+        local modnames = {}
+        for i,v in ipairs(outofdatemods) do
+            table.insert(modnames, KnownModIndex:GetModFancyName(v) or v)
+        end
+
+        self.last_focus = TheFrontEnd:GetFocusWidget()
+        local warning = TextListPopupDialogScreen(STRINGS.UI.SERVERCREATIONSCREEN.MODSOUTOFDATEWARNINGTITLE,
+                            modnames,
+                            STRINGS.UI.SERVERCREATIONSCREEN.MODSOUTOFDATEWARNINGBODY,
+                            {
+                                {text=STRINGS.UI.SERVERCREATIONSCREEN.CONTINUE,
+                                cb = function()
+                                    TheFrontEnd:PopScreen()
+                                    self:Create(true, true, true)
+                                end,
+                                controller_control=CONTROL_ACCEPT},
+                                {text=STRINGS.UI.MODSSCREEN.UPDATEALL,
+                                cb = function()
+                                    TheFrontEnd:PopScreen()
+                                    self.mods_tab:UpdateAllButton(true)
+                                    self:SetTab("mods")
+                                end,
+                                controller_control=CONTROL_MENU_MISC_2},
+                                {text=STRINGS.UI.SERVERCREATIONSCREEN.CANCEL,
+                                cb = function()
+                                    TheFrontEnd:PopScreen()
+                                end,
+                                controller_control=CONTROL_CANCEL}
+                            },
+                            165)
+        if warning.menu then
+            for i,v in ipairs(warning.menu.items) do
+                v.image:SetScale(.52, .7)
+            end
+            warning.menu:SetPosition(86 + -(200*(#warning.menu.items-1))/2, -203, 0) 
+        end
+        TheFrontEnd:PushScreen(warning)
+
+    -- We passed all our checks, go ahead and create
+    else
+        onCreate()
     end
+end
+
+function ServerCreationScreen:ValidateSettings()
+    -- Check if our season settings are valid (i.e. at least one season has a duration)
+    self.last_focus = TheFrontEnd:GetFocusWidget()
+    if not self.world_tab:VerifyValidSeasonSettings() then
+        TheFrontEnd:PushScreen(PopupDialogScreen(STRINGS.UI.CUSTOMIZATIONSCREEN.INVALIDSEASONCOMBO_TITLE, STRINGS.UI.CUSTOMIZATIONSCREEN.INVALIDSEASONCOMBO_BODY,
+                    {{text=STRINGS.UI.CUSTOMIZATIONSCREEN.OKAY, cb = function() TheFrontEnd:PopScreen() self:SetTab("world") end}}))
+        return false
+    elseif not self.server_settings_tab:VerifyValidServerName() then
+        self.last_focus = TheFrontEnd:GetFocusWidget()
+        TheFrontEnd:PushScreen(PopupDialogScreen(STRINGS.UI.SERVERCREATIONSCREEN.INVALIDSERVERNAME_TITLE, STRINGS.UI.SERVERCREATIONSCREEN.INVALIDSERVERNAME_BODY,
+                    {{text=STRINGS.UI.CUSTOMIZATIONSCREEN.OKAY, cb = function() TheFrontEnd:PopScreen() self:SetTab("settings") end}}))
+        return false
+    elseif not self.server_settings_tab:VerifyValidClanSettings() then
+        self.last_focus = TheFrontEnd:GetFocusWidget()
+        TheFrontEnd:PushScreen(PopupDialogScreen(STRINGS.UI.SERVERCREATIONSCREEN.INVALIDCLANSETTINGS_TITLE, STRINGS.UI.SERVERCREATIONSCREEN.INVALIDCLANSETTINGS_BODY,
+                    {{text=STRINGS.UI.CUSTOMIZATIONSCREEN.OKAY, cb = function() TheFrontEnd:PopScreen() self:SetTab("settings") end}}))
+        return false
+    end
+
+    return true
 end
 
 function ServerCreationScreen:CheckForDisabledMods()

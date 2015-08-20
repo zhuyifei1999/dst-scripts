@@ -17,6 +17,7 @@ local actionhandlers =
             --dummy handler in case any attack controls came through network
             print("Player ghost ignored attack control")
         end),
+    ActionHandler(ACTIONS.REMOTERESURRECT, "remoteresurrect"),
 }
 
 local events =
@@ -123,6 +124,55 @@ local states =
                 end
             end),
         },
+    },
+
+    State
+    {
+        name = "remoteresurrect",
+        tags = { "doing", "busy" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("dissipate")
+            inst.SoundEmitter:PlaySound("dontstarve/ghost/ghost_haunt", nil, nil, true)
+            inst:ScreenFade(false, 2)
+            inst.sg.statemem.faded = true
+            inst.sg:SetTimeout(2)
+        end,
+
+        timeline =
+        {
+            TimeEvent(10 * FRAMES, function(inst)
+                inst.Light:Enable(false)
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst:Hide()
+                    inst.Light:Enable(false)
+                end
+            end),
+        },
+
+        ontimeout = function(inst)
+            if inst:PerformBufferedAction() then
+                inst.sg.statemem.isresurrecting = true
+            else
+                inst.sg:GoToState("haunt")
+            end
+        end,
+
+        onexit = function(inst)
+            --Cancelled
+            if inst.sg.statemem.faded then
+                inst:ScreenFade(true, .5)
+            end
+            inst:Show()
+            inst.Light:Enable(true)
+        end,
     },
 
     State

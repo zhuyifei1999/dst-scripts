@@ -76,8 +76,13 @@ local PauseScreen = Class(Screen, function(self)
 	table.insert(buttons, {text=STRINGS.UI.PAUSEMENU.CONTINUE, cb=function() self:unpause() end })
 	table.insert(buttons, {text=STRINGS.UI.PAUSEMENU.OPTIONS, cb=function() 
     	TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
-			TheFrontEnd:PushScreen( OptionsScreen(true))	
+			TheFrontEnd:PushScreen(OptionsScreen(true))	
 			TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
+            --Ensure last_focus is the options button since mouse can
+            --unfocus this button during the screen change, resulting
+            --in controllers having no focus when toggled on from the
+            --options screen
+            self.last_focus = self.menu.items[2]
 		end)
     end })
     table.insert(buttons, {text=quit_button_text, cb=function() self:doconfirmquit()	end})

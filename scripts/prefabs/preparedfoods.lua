@@ -61,14 +61,15 @@ local function MakePreparedFood(data)
         MakeSmallPropagator(inst)
         MakeHauntableLaunchAndPerish(inst)
         AddHauntableCustomReaction(inst, function(inst, haunter)
-            if math.random() <= TUNING.HAUNT_CHANCE_SUPERRARE then
-                if inst.components.burnable and not inst.components.burnable:IsBurning() then
-                    inst.components.burnable:Ignite()
-                    inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
-                    inst.components.hauntable.cooldown_on_successful_haunt = false
-                    return true
-                end
-            end
+            --#HAUNTFIX
+            --if math.random() <= TUNING.HAUNT_CHANCE_SUPERRARE then
+                --if inst.components.burnable and not inst.components.burnable:IsBurning() then
+                    --inst.components.burnable:Ignite()
+                    --inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
+                    --inst.components.hauntable.cooldown_on_successful_haunt = false
+                    --return true
+                --end
+            --end
             return false
         end, true, false, true)
         ---------------------        

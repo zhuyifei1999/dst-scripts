@@ -442,42 +442,36 @@ function WorldResetFromSim()
 end
 
 function UpdateServerTagsString()
-	local tagsTable = {}
-    
-    table.insert(tagsTable, TheNet:GetServerGameMode())
-    
-    if TheNet:GetPVPEnabled() then
-        table.insert(tagsTable, "pvp")
-    end
-    
-    if TheNet:GetFriendsOnlyServer() then
-        table.insert(tagsTable, "friendsonly")
-    end
-    
-	TheNet:SetServerTags(BuildTagsStringCommon(tagsTable))
-end
-
-function BuildTagsStringDedicated()
-    if not TheNet:IsDedicated() then return nil end
-    
     local tagsTable = {}
-    
-    table.insert(tagsTable, TheNet:GetDefaultGameMode())
-    
+
+    if TheNet:IsDedicated() then -- gjans: Not sure what the difference between these is
+        table.insert(tagsTable, TheNet:GetDefaultGameMode())
+    else
+        table.insert(tagsTable, TheNet:GetServerGameMode())
+    end
+
     if TheNet:GetDefaultPvpSetting() then
-        table.insert(tagsTable, "pvp")
+        table.insert(tagsTable, STRINGS.TAGS.PVP)
     end
-    
-    if TheNet:GetFriendsOnlyServer() then
-        table.insert(tagsTable, "friendsonly")
+
+    if TheNet:GetDefaultFriendsOnlyServer() then
+        table.insert(tagsTable, STRINGS.TAGS.FRIENDSONLY)
     end
-    
-    return BuildTagsStringCommon(tagsTable)
+
+    if TheNet:GetDefaultLANOnlyServer() then
+        table.insert(tagsTable, STRINGS.TAGS.LOCAL)
+    end
+
+    if TheNet:GetDefaultClanID() ~= "0" then
+        table.insert(tagsTable, STRINGS.TAGS.CLAN)
+    end
+
+    TheNet:SetServerTags(BuildTagsStringCommon(tagsTable))
 end
 
 function StartDedicatedServer()
 	print "Starting Dedicated Server Game"
-	local start_in_online_mode = not TheNet:IsDedicatedLanServer()
+	local start_in_online_mode = not TheNet:IsDedicatedOfflineServer()
 	local server_started = TheNet:StartServer( start_in_online_mode )
 	if server_started == true then
 		DisableAllDLC()
@@ -487,8 +481,7 @@ function StartDedicatedServer()
 			SaveGameIndex:SetCurrentIndex( server_save_slot )
 		end
         -- Collect the tags we want and set the tags string
-        local tags = BuildTagsStringDedicated()
-        TheNet:SetServerTags(tags)
+        UpdateServerTagsString()
 		StartNextInstance({reset_action = RESET_ACTION.LOAD_SLOT, save_slot=SaveGameIndex:GetCurrentSaveSlot()})
 	end
 end

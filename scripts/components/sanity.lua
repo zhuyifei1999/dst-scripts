@@ -48,6 +48,8 @@ local Sanity = Class(function(self, inst)
 
     self.penalty = 0
 
+    self.sanity_penalties = {}
+
     self.ghost_drain_mult = 0
 
     self.custom_rate_fn = nil
@@ -77,14 +79,27 @@ function Sanity:IsCrazy()
     return self.inducedinsanity or not self.sane
 end
 
+function Sanity:AddSanityPenalty(key, mod)
+    self.sanity_penalties[key] = mod
+    self:RecalculatePenalty()
+end
+
+function Sanity:RemoveSanityPenalty(key)
+    self.sanity_penalties[key] = nil
+    self:RecalculatePenalty()
+end
+
 function Sanity:RecalculatePenalty()
-    --V2C: HOLY CARP THIS IS NOT GOOD
-    self.penalty = 0
-    for k,v in pairs(Ents) do
-        if v.components.sanityaura and v.components.sanityaura.penalty then
-            self.penalty = self.penalty + v.components.sanityaura.penalty
-        end
+    local penalty = 0
+    
+    for k,v in pairs(self.sanity_penalties) do
+        penalty = penalty + v
     end
+
+    penalty = math.max(penalty, -self.max)
+
+    self.penalty = penalty
+
     self:DoDelta(0)
 end
 
@@ -93,15 +108,10 @@ function Sanity:OnSave()
     {
         current = self.current,
         sane = self.sane,
-        penalty = self.penalty > 0 and self.penalty or nil,
     }
 end
 
 function Sanity:OnLoad(data)
-    if data.penalty ~= nil then
-        self.penalty = data.penalty
-    end
-
     if data.sane ~= nil then
         self.sane = data.sane
     end
@@ -113,7 +123,7 @@ function Sanity:OnLoad(data)
 end
 
 function Sanity:GetPenaltyPercent()
-    return self.penalty / self.max
+    return self.penalty
 end
 
 function Sanity:GetPercent()
@@ -121,7 +131,7 @@ function Sanity:GetPercent()
 end
 
 function Sanity:GetPercentWithPenalty()
-    return self.inducedinsanity and 0 or self.current / (self.max - self.penalty)
+    return self.inducedinsanity and 0 or self.current / (self.max - (self.max * self.penalty))
 end
 
 function Sanity:SetPercent(per, overtime)
@@ -141,7 +151,7 @@ function Sanity:SetMax(amount)
 end
 
 function Sanity:GetMaxWithPenalty()
-    return self.max - self.penalty
+    return self.max - (self.max * self.penalty)
 end
 
 function Sanity:GetRateScale()
@@ -182,7 +192,7 @@ function Sanity:DoDelta(delta, overtime)
     end
 
     local oldpct_ignoresinduced = self.current / self.max
-    self.current = math.min(math.max(self.current + delta, 0), self.max - self.penalty)
+    self.current = math.min(math.max(self.current + delta, 0), self.max - (self.max * self.penalty))
     local newpct_ignoresinduced = self.current / self.max
 
     --due to inducedinsanity hack...
@@ -220,6 +230,7 @@ end
 
 function Sanity:OnUpdate(dt)
     if not (self.inst.components.health.invincible or
+            self.inst.sg:HasStateTag("sleeping") or --need this now because you are no longer invincible during sleep
             self.inst.is_teleporting or
             (self.ignore and self.redirect == nil)) then
         self:Recalc(dt)

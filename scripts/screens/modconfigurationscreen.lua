@@ -97,9 +97,9 @@ local ModConfigurationScreen = Class(Screen, function(self, modname, client_conf
 			
 			local opt = Widget("option"..idx)
 			
-			local spin_height = 50
-			local w = 220
-			opt.spinner = opt:AddChild(Spinner( spin_options, w, spin_height, {font=NEWFONT, size=25}, nil, nil, nil, true, nil, nil, .8))
+			local spinner_height = 40
+			local spinner_width = 170
+			opt.spinner = opt:AddChild(Spinner( spin_options, spinner_width, nil, {font=NEWFONT, size=25}, nil, nil, nil, true, nil, nil))
 			opt.spinner:SetTextColour(0,0,0,1)
 			local default_value = self.options[idx].value
 			if default_value == nil then default_value = self.options[idx].default end

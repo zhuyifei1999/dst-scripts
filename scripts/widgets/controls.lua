@@ -86,7 +86,8 @@ local Controls = Class(Widget, function(self, owner)
             self.chatqueue = self.sidepanel:AddChild(ChatQueue(self.owner))
         end
     end
-    
+
+
     -- Network global chat queue
     self.chat_queue_root = self:AddChild(Widget("chat_queue_root"))
     self.chat_queue_root:SetScaleMode(SCALEMODE_PROPORTIONAL)
@@ -106,9 +107,10 @@ local Controls = Class(Widget, function(self, owner)
 	self.mapcontrols = self.bottomright_root:AddChild(MapControls())
 	self.mapcontrols:SetPosition(-60,70,0)
 
-    if true or not IsGamePurchased() then
+	--set this to true, to enable the PAX demo timer
+    if false and not IsGamePurchased() then
 		self.demotimer = self.top_root:AddChild(DemoTimer(self.owner))
-		self.demotimer:SetPosition(320, -25, 0)
+		self.demotimer:SetPosition(0, 0, 0)
 	end
 	
     self.containerroot:SetHAnchor(ANCHOR_MIDDLE)
@@ -240,7 +242,7 @@ function Controls:OnUpdate(dt)
 	
 	if controller_mode then
 		self.mapcontrols:Hide()
-	else		
+	else
 		self.mapcontrols:Show()
 	end
 
@@ -251,7 +253,7 @@ function Controls:OnUpdate(dt)
 		end
 	end
     
-    if self.demotimer then
+    if false and self.demotimer then
 		if IsGamePurchased() then
 			self.demotimer:Kill()
 			self.demotimer = nil

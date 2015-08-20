@@ -263,15 +263,16 @@ local function mushcommonfn(data)
             inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
             ret = true
         end
-        if math.random() <= TUNING.HAUNT_CHANCE_VERYRARE then
-            if inst.components.burnable and not inst.components.burnable:IsBurning() and
-            inst.components.pickable and inst.components.pickable.canbepicked then
-                inst.components.burnable:Ignite()
-                inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
-                inst.components.hauntable.cooldown_on_successful_haunt = false
-                ret = true
-            end
-        end
+        --#HAUNTFIX
+        --if math.random() <= TUNING.HAUNT_CHANCE_VERYRARE then
+            --if inst.components.burnable and not inst.components.burnable:IsBurning() and
+            --inst.components.pickable and inst.components.pickable.canbepicked then
+                --inst.components.burnable:Ignite()
+                --inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
+                --inst.components.hauntable.cooldown_on_successful_haunt = false
+                --ret = true
+            --end
+        --end
         return ret
     end)
 

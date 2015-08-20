@@ -87,12 +87,13 @@ local function OnHaunt(inst, haunter)
         local x, y, z = inst.Transform:GetWorldPosition()
         local ents = TheSim:FindEntities(x, y, z, 5, { "canlight" }, { "fire", "burnt", "INLIMBO" })
         local didburn = false
-        for i, v in ipairs(ents) do
-            if v:IsValid() and not v:IsInLimbo() and v.components.burnable ~= nil then
-                v.components.burnable:Ignite()
-                didburn = true
-            end
-        end
+        --#HAUNTFIX
+        --for i, v in ipairs(ents) do
+            --if v:IsValid() and not v:IsInLimbo() and v.components.burnable ~= nil then
+                --v.components.burnable:Ignite()
+                --didburn = true
+            --end
+        --end
         if didburn then
             inst.components.hauntable.hauntvalue = TUNING.HAUNT_LARGE
             return true

@@ -43,90 +43,73 @@ local spinner_lean_images = {
 local spinner_atlas = "images/ui.xml"
 local spinfont = { font = BUTTONFONT, size = 30 }
 local spinfontlean = { font = NEWFONT, size = 30 }
-local default_width = 200
-local default_height = 64
+local default_width = 150
+local default_height = 40
 
-local default_text_width = 85
-local default_text_height = 64
-
-
-local Spinner = Class(Widget, function( self, options, width, height, textinfo, editable, atlas, textures, lean, textwidth, textheight, spinnerfocusscalex, spinnerfocusscaley )
+local Spinner = Class(Widget, function( self, options, width, height, textinfo, editable, atlas, textures, lean, textwidth, textheight)
     Widget._ctor(self, "SPINNER")
 
     
-	atlas = atlas or spinner_atlas
-	self.width = width or (lean and default_width + 10 or default_width)
-	self.height = height or default_height
-	
-	if lean then
-		textures = textures or spinner_lean_images
-		textinfo = textinfo or spinfontlean
-	else
-		textures = textures or spinner_images
-		textinfo = textinfo or spinfont
-	end
-	atlas = atlas or spinner_atlas
+    self.width = width or default_width
+    self.height = height or default_height
 
-	self.lean = lean
-	self.editable = editable or false
-	self.options = options
-	self.selectedIndex = 1
-	self.textsize = {width = textwidth or default_text_width, height = textheight or default_text_height}
+    self.lean = lean
 
-	self.textcolour = { 1, 1, 1, 1 }
-	
-	self.atlas = atlas
-
-    if lean then
-    	self.background = self:AddChild( Image(atlas, textures.bg_middle_focus) )
-    	local x = width and (spinnerfocusscalex or 1) or .76
-    	local y = height and (spinnerfocusscaley or 1) or .7
-    	self.background:ScaleToSize(self.width*x, self.height*y)
-    	self.background:SetPosition(0,1)
-    	self.background:SetTint(1,1,1,0)
-    	self.leftimage = self:AddChild( ImageButton(atlas, textures.arrow_left_normal, textures.arrow_left_over, textures.arrow_left_disabled, textures.arrow_left_down, nil,{1,1}, {0,0}) )
-    	self.rightimage = self:AddChild( ImageButton(atlas, textures.arrow_right_normal, textures.arrow_right_over, textures.arrow_right_disabled, textures.arrow_right_down, nil,{1,1}, {0,0}) )
+    self.atlas = atlas or spinner_atlas
+    if self.lean then
+        self.textures = textures or spinner_lean_images
+        self.textinfo = textinfo or spinfontlean
     else
-    	self.background = self:AddChild(ThreeSlice(atlas, textures.bg_end, textures.bg_middle))
+        self.textures = textures or spinner_images
+        self.textinfo = textinfo or spinfont
+    end
+
+    self.editable = editable or false
+    self.options = options
+    self.selectedIndex = 1
+    self.textsize = {width = textwidth or self.width, height = textheight or self.height}
+
+    self.arrow_scale = 1
+
+    self.textcolour = { 1, 1, 1, 1 }
+
+    if self.lean then
+    	self.background = self:AddChild( Image(self.atlas, self.textures.bg_middle_focus) )
+    	self.background:ScaleToSize(self.width, self.height)
+    	self.background:SetTint(1,1,1,0)
+    	self.leftimage = self:AddChild( ImageButton(self.atlas, self.textures.arrow_left_normal, self.textures.arrow_left_over, self.textures.arrow_left_disabled, self.textures.arrow_left_down, nil,{1,1}, {0,0}) )
+    	self.rightimage = self:AddChild( ImageButton(self.atlas, self.textures.arrow_right_normal, self.textures.arrow_right_over, self.textures.arrow_right_disabled, self.textures.arrow_right_down, nil,{1,1}, {0,0}) )
+    else
+    	self.background = self:AddChild(ThreeSlice(self.atlas, self.textures.bg_end, self.textures.bg_middle))
     	self.background:Flow(self.width, self.height, true)
-	    self.leftimage = self:AddChild( ImageButton(atlas, textures.arrow_normal, textures.arrow_over, textures.arrow_disabled, textures.arrow_down, nil,{1,1}, {0,0}) )
-    	self.rightimage = self:AddChild( ImageButton(atlas, textures.arrow_normal, textures.arrow_over, textures.arrow_disabled, textures.arrow_down, nil,{1,1}, {0,0}) )
+	    self.leftimage = self:AddChild( ImageButton(self.atlas, self.textures.arrow_normal, self.textures.arrow_over, self.textures.arrow_disabled, self.textures.arrow_down, nil,{1,1}, {0,0}) )
+    	self.rightimage = self:AddChild( ImageButton(self.atlas, self.textures.arrow_normal, self.textures.arrow_over, self.textures.arrow_disabled, self.textures.arrow_down, nil,{1,1}, {0,0}) )
 	end
     self.leftimage.silent = true
     self.rightimage.silent = true
 
-	local arrow_scale = 1
-
-	if atlas and textures then
-		self.textures = textures
-		local arrow_width, arrow_height = self.leftimage:GetSize()
-		arrow_scale = arrow_scale * self.height / arrow_height
-		if lean then
-			local lean_scale = .6
-			self.leftimage:SetScale( arrow_scale*lean_scale, arrow_scale*lean_scale, 1 )
-			self.rightimage:SetScale( arrow_scale*lean_scale, arrow_scale*lean_scale, 1 )
-		else
-			self.leftimage:SetScale( -arrow_scale, arrow_scale, 1 )
-			self.rightimage:SetScale( arrow_scale, arrow_scale, 1 )
-		end
-	end
+    self.arrow_scale = 1 -- used in other methods to get the actual arrow size
+    local arrow_width, arrow_height = self.leftimage:GetSize()
+    self.arrow_scale = self.height / arrow_height
+    self.leftimage:SetScale( self.arrow_scale, self.arrow_scale, 1 )
+    self.rightimage:SetScale( self.arrow_scale, self.arrow_scale, 1 )
 
 	self.fgimage = self:AddChild( Image() )
 
 	if editable then
-	    self.text = self:AddChild( TextEdit( textinfo.font, textinfo.size ) )
+	    self.text = self:AddChild( TextEdit( self.textinfo.font, self.textinfo.size ) )
 	else
-	    self.text = self:AddChild( Text( textinfo.font, textinfo.size ) )
+	    self.text = self:AddChild( Text( self.textinfo.font, self.textinfo.size ) )
 	end
-	if lean then
+	if self.lean then
 		self.text:SetPosition(2,0)
 	end
 
-	if lean then
+	if self.lean then
 		self:SetTextColour(1,1,1,1)
 	end
 
-	if lean then
+	if self.lean then
 		self.text:SetRegionSize( self.textsize.width, self.textsize.height )
 	end
     self.text:Show()
@@ -284,7 +267,7 @@ function Spinner:GetWidth()
 end
 
 function Spinner:Layout()
-	local w = self.rightimage:GetSize()
+	local w = self.rightimage:GetSize() * self.arrow_scale
 	self.rightimage:SetPosition( self.width/2 - w/2, 0, 0 )
 	self.leftimage:SetPosition( -self.width/2 + w/2, 0, 0 )
 end

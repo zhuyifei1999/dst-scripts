@@ -948,8 +948,8 @@ Profile:Load( function()
 	SaveGameIndex:Load( OnFilesLoaded )
 end )
 
---dont_load_save in profile
-if TheNet:IsDedicated() and not TheNet:GetIsServer() and TheNet:IsDedicatedLanServer() then
+--Online servers will call StartDedicatedServer after authentication
+if TheNet:IsDedicated() and not TheNet:GetIsServer() and TheNet:IsDedicatedOfflineServer() then
 	StartDedicatedServer()
 end
 

@@ -204,11 +204,7 @@ function SaveIndex:UpdateServerData(saveslot, serverdata, onsavedcb)
 
     local slotdata = self.data.slots[saveslot]
     if slotdata ~= nil and serverdata ~= nil then
-        for k, v in pairs(slotdata.server) do
-            if serverdata[k] ~= nil then
-                slotdata.server[k] = serverdata[k]
-            end
-        end
+        slotdata.server = deepcopy(serverdata)
     end
 
     self.data.last_used_slot = saveslot
@@ -228,17 +224,7 @@ function SaveIndex:StartSurvivalMode(saveslot, customoptions, serverdata, onsave
     slot.session_id = TheNet:GetSessionIdentifier()
     slot.world.day = 1
     slot.world.options = customoptions
-    slot.server =
-    {
-        game_mode = TheNet:GetDefaultGameMode() or "",
-        name = TheNet:GetDefaultServerName() or "",
-        password = "",
-        description = TheNet:GetDefaultServerDescription() or "",
-        maxplayers = TheNet:GetDefaultMaxPlayers() or 2,
-        friends_only = TheNet:GetFriendsOnlyServer() == true,
-        online_mode = TheNet:IsOnlineMode() == true,
-        pvp = TheNet:GetDefaultPvpSetting() == true,
-    }
+    slot.server = {}
 
     GetWorldgenOverride(function(overrideoptions)
         if overrideoptions then
@@ -300,7 +286,7 @@ function SaveIndex:LoadSlotCharacter(slot)
     local character = nil
     local slotdata = self.data.slots[slot or self.current_slot]
     if slotdata.session_id ~= nil then
-        local file = TheNet:GetUserSessionFile(slotdata.session_id, nil, slotdata.server.online_mode == true)
+        local file = TheNet:GetUserSessionFile(slotdata.session_id, nil, slotdata.server.online_mode ~= false)
         if file ~= nil then
             TheSim:GetPersistentString(file,
                 function(success, str)

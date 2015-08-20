@@ -118,6 +118,8 @@ ACTIONS =
     NUZZLE = Action(),
     WRITE = Action(),
     TAUNT = Action(0, nil, nil, 30),
+    ATTUNE = Action(),
+    REMOTERESURRECT = Action(0, false, false, nil, true, true),
 }
 
 ACTION_IDS = {}
@@ -1341,6 +1343,24 @@ ACTIONS.TAUNT.fn = function(act)
         act.target.components.combat:CanTarget(act.doer) then
         act.target.components.combat:SetTarget(act.doer)
         return true
+    end
+end
+
+ACTIONS.ATTUNE.fn = function(act)
+    if act.doer ~= nil and
+        act.target ~= nil and
+        act.target.components.attunable ~= nil then
+        return act.target.components.attunable:LinkToPlayer(act.doer)
+    end
+end
+
+ACTIONS.REMOTERESURRECT.fn = function(act)
+    if act.doer ~= nil and act.doer.components.attuner ~= nil and act.doer:HasTag("playerghost") then
+        local target = act.doer.components.attuner:GetAttunedTarget("remoteresurrector")
+        if target ~= nil then
+            act.doer:PushEvent("respawnfromghost", { source = target })
+            return true
+        end
     end
 end
 

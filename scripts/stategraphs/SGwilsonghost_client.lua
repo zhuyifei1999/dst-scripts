@@ -4,6 +4,7 @@ local actionhandlers =
 {
     ActionHandler(ACTIONS.HAUNT, "haunt_pre"),
     ActionHandler(ACTIONS.JUMPIN, "jumpin"),
+    ActionHandler(ACTIONS.REMOTERESURRECT, "remoteresurrect"),
 }
 
 local events =
@@ -86,6 +87,38 @@ local states =
 
     State
     {
+        name = "remoteresurrect",
+        tags = { "doing", "busy" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("dissipate")
+            inst.SoundEmitter:PlaySound("dontstarve/ghost/ghost_haunt", nil, nil, true)
+
+            inst:PerformPreviewBufferedAction()
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.AnimState:PlayAnimation("appear")
+                inst.sg:GoToState("idle", true)
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.AnimState:PlayAnimation("appear")
+            inst.sg:GoToState("idle", true)
+        end,
+    },
+
+    State
+    {
         name = "haunt_pre",
         tags = { "doing", "busy" },
 
@@ -104,7 +137,8 @@ local states =
                     inst.sg:GoToState("idle", "noanim")
                 end
             elseif inst.bufferedaction == nil then
-                inst.sg:GoToState("idle")
+                inst.AnimState:PlayAnimation("appear")
+                inst.sg:GoToState("idle", true)
             end
         end,
 

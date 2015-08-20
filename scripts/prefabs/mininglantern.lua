@@ -200,13 +200,14 @@ local function fn()
 
     MakeHauntableLaunch(inst)
     AddHauntableCustomReaction(inst, function(inst, haunter)
-        if math.random() <= TUNING.HAUNT_CHANCE_OFTEN then
-            if inst.components.fueled and not inst.components.fueled:IsEmpty() then
-                inst.components.fueled:MakeEmpty()
-                inst.components.hauntable.hauntvalue = TUNING.HAUNT_TINY
-                return true
-            end
-        end
+        --#HAUNTFIX
+        --if math.random() <= TUNING.HAUNT_CHANCE_OFTEN then
+            --if inst.components.fueled and not inst.components.fueled:IsEmpty() then
+                --inst.components.fueled:MakeEmpty()
+                --inst.components.hauntable.hauntvalue = TUNING.HAUNT_TINY
+                --return true
+            --end
+        --end
         return false
     end, true, false, true)
 

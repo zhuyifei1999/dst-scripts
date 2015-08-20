@@ -575,22 +575,23 @@ function MakeHauntableLaunchAndSmash(inst, launch_chance, smash_chance, speed, c
         if math.random() <= launch_chance then
             Launch(inst, haunter, speed or TUNING.LAUNCH_SPEED_SMALL)
             inst.components.hauntable.hauntvalue = launch_haunt_value or TUNING.HAUNT_TINY
-            smash_chance = smash_chance or TUNING.HAUNT_CHANCE_OCCASIONAL
-            if math.random() < smash_chance then
-                inst.components.hauntable.hauntvalue = smash_haunt_value or TUNING.HAUNT_SMALL
-                inst.smashtask = inst:DoPeriodicTask(.1, function(inst)
-                    local pt = Point(inst.Transform:GetWorldPosition())
-                    if pt.y <= .2 then
-                        inst.SoundEmitter:PlaySound("dontstarve/common/stone_drop")
-                        local pt = Vector3(inst.Transform:GetWorldPosition())
-                        local breaking = SpawnPrefab("ground_chunks_breaking") --spawn break effect
-                        breaking.Transform:SetPosition(pt.x, 0, pt.z)
-                        inst:Remove()
-                        inst.smashtask:Cancel()
-                        inst.smashtask = nil
-                    end
-                end)
-            end
+            --#HAUNTFIX
+            --smash_chance = smash_chance or TUNING.HAUNT_CHANCE_OCCASIONAL
+            --if math.random() < smash_chance then
+                --inst.components.hauntable.hauntvalue = smash_haunt_value or TUNING.HAUNT_SMALL
+                --inst.smashtask = inst:DoPeriodicTask(.1, function(inst)
+                    --local pt = Point(inst.Transform:GetWorldPosition())
+                    --if pt.y <= .2 then
+                        --inst.SoundEmitter:PlaySound("dontstarve/common/stone_drop")
+                        --local pt = Vector3(inst.Transform:GetWorldPosition())
+                        --local breaking = SpawnPrefab("ground_chunks_breaking") --spawn break effect
+                        --breaking.Transform:SetPosition(pt.x, 0, pt.z)
+                        --inst:Remove()
+                        --inst.smashtask:Cancel()
+                        --inst.smashtask = nil
+                    --end
+                --end)
+            --end
             return true
         end
         return false
@@ -601,14 +602,15 @@ function MakeHauntableWork(inst, chance, cooldown, haunt_value)
     if not inst.components.hauntable then inst:AddComponent("hauntable") end
     inst.components.hauntable.cooldown = cooldown or TUNING.HAUNT_COOLDOWN_SMALL
     inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
-        chance = chance or TUNING.HAUNT_CHANCE_OFTEN
-        if math.random() <= chance then
-            if inst.components.workable ~= nil and inst.components.workable:CanBeWorked() then
-                inst.components.hauntable.hauntvalue = haunt_value or TUNING.HAUNT_SMALL
-                inst.components.workable:WorkedBy(haunter, 1)
-                return true
-            end
-        end
+        --#HAUNTFIX
+        --chance = chance or TUNING.HAUNT_CHANCE_OFTEN
+        --if math.random() <= chance then
+            --if inst.components.workable ~= nil and inst.components.workable:CanBeWorked() then
+                --inst.components.hauntable.hauntvalue = haunt_value or TUNING.HAUNT_SMALL
+                --inst.components.workable:WorkedBy(haunter, 1)
+                --return true
+            --end
+        --end
         return false
     end)
 end
@@ -619,24 +621,26 @@ function MakeHauntableWorkAndIgnite(inst, work_chance, ignite_chance, cooldown, 
     inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
         local ret = false
 
-        work_chance = work_chance or TUNING.HAUNT_CHANCE_OFTEN
-        if math.random() <= work_chance then
-            if inst.components.workable ~= nil and inst.components.workable:CanBeWorked() then
-                inst.components.hauntable.hauntvalue = work_haunt_value or TUNING.HAUNT_SMALL
-                inst.components.workable:WorkedBy(haunter, 1)
-                ret = true
-            end
-        end
+        --#HAUNTFIX
+        --work_chance = work_chance or TUNING.HAUNT_CHANCE_OFTEN
+        --if math.random() <= work_chance then
+            --if inst.components.workable ~= nil and inst.components.workable:CanBeWorked() then
+                --inst.components.hauntable.hauntvalue = work_haunt_value or TUNING.HAUNT_SMALL
+                --inst.components.workable:WorkedBy(haunter, 1)
+                --ret = true
+            --end
+        --end
 
-        ignite_chance = ignite_chance or TUNING.HAUNT_CHANCE_SUPERRARE
-        if math.random() <= ignite_chance then
-            if inst.components.burnable and not inst.components.burnable:IsBurning() then
-                inst.components.burnable:Ignite()
-                inst.components.hauntable.hauntvalue = ignite_haunt_value or TUNING.HAUNT_MEDLARGE
-                inst.components.hauntable.cooldown_on_successful_haunt = false
-                ret = true
-            end
-        end
+        --#HAUNTFIX
+        --ignite_chance = ignite_chance or TUNING.HAUNT_CHANCE_SUPERRARE
+        --if math.random() <= ignite_chance then
+            --if inst.components.burnable and not inst.components.burnable:IsBurning() then
+                --inst.components.burnable:Ignite()
+                --inst.components.hauntable.hauntvalue = ignite_haunt_value or TUNING.HAUNT_MEDLARGE
+                --inst.components.hauntable.cooldown_on_successful_haunt = false
+                --ret = true
+            --end
+        --end
 
         return ret
     end)
@@ -663,15 +667,16 @@ function MakeHauntableIgnite(inst, chance, cooldown, haunt_value)
     if not inst.components.hauntable then inst:AddComponent("hauntable") end
     inst.components.hauntable.cooldown = cooldown or TUNING.HAUNT_COOLDOWN_MEDIUM
     inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
-        chance = chance or TUNING.HAUNT_CHANCE_VERYRARE
-        if math.random() <= chance then
-            if inst.components.burnable and not inst.components.burnable:IsBurning() then
-                inst.components.burnable:Ignite()
-                inst.components.hauntable.hauntvalue = haunt_value or TUNING.HAUNT_LARGE
-                inst.components.hauntable.cooldown_on_successful_haunt = false
-                return true
-            end
-        end
+        --#HAUNTFIX
+        --chance = chance or TUNING.HAUNT_CHANCE_VERYRARE
+        --if math.random() <= chance then
+            --if inst.components.burnable and not inst.components.burnable:IsBurning() then
+                --inst.components.burnable:Ignite()
+                --inst.components.hauntable.hauntvalue = haunt_value or TUNING.HAUNT_LARGE
+                --inst.components.hauntable.cooldown_on_successful_haunt = false
+                --return true
+            --end
+        --end
         return false
     end)
 end
@@ -684,15 +689,16 @@ function MakeHauntableLaunchAndIgnite(inst, launchchance, ignitechance, speed, c
         if math.random() <= launchchance then
             Launch(inst, haunter, speed or TUNING.LAUNCH_SPEED_SMALL)
             inst.components.hauntable.hauntvalue = launch_haunt_value or TUNING.HAUNT_TINY
-            ignitechance = ignitechance or TUNING.HAUNT_CHANCE_VERYRARE
-            if math.random() <= ignitechance then
-                if inst.components.burnable and not inst.components.burnable:IsBurning() then
-                    inst.components.burnable:Ignite()
-                    inst.components.hauntable.hauntvalue = ignite_haunt_value or TUNING.HAUNT_MEDIUM
-                    inst.components.hauntable.cooldown_on_successful_haunt = false
-                end
-            end
-            return true
+            --#HAUNTFIX
+            --ignitechance = ignitechance or TUNING.HAUNT_CHANCE_VERYRARE
+            --if math.random() <= ignitechance then
+                --if inst.components.burnable and not inst.components.burnable:IsBurning() then
+                    --inst.components.burnable:Ignite()
+                    --inst.components.hauntable.hauntvalue = ignite_haunt_value or TUNING.HAUNT_MEDIUM
+                    --inst.components.hauntable.cooldown_on_successful_haunt = false
+                --end
+            --end
+            --return true
         end
         return false
     end)
@@ -765,14 +771,15 @@ function MakeHauntablePerish(inst, perishpct, chance, cooldown, haunt_value)
     if not inst.components.hauntable then inst:AddComponent("hauntable") end
     inst.components.hauntable.cooldown = cooldown or TUNING.HAUNT_COOLDOWN_SMALL
     inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
-        chance = chance or TUNING.HAUNT_CHANCE_HALF
-        if math.random() <= chance then
-            if inst.components.perishable then
-                inst.components.perishable:ReducePercent(perishpct or .3)
-                inst.components.hauntable.hauntvalue = haunt_value or TUNING.HAUNT_MEDIUM
-                return true
-            end
-        end
+        --#HAUNTFIX
+        --chance = chance or TUNING.HAUNT_CHANCE_HALF
+        --if math.random() <= chance then
+            --if inst.components.perishable then
+                --inst.components.perishable:ReducePercent(perishpct or .3)
+                --inst.components.hauntable.hauntvalue = haunt_value or TUNING.HAUNT_MEDIUM
+                --return true
+            --end
+        --end
         return false
     end)
 end
@@ -785,14 +792,15 @@ function MakeHauntableLaunchAndPerish(inst, launchchance, perishchance, speed, p
             Launch(inst, haunter, speed or TUNING.LAUNCH_SPEED_SMALL)
             inst.components.hauntable.hauntvalue = launch_haunt_value or TUNING.HAUNT_TINY
             inst.components.hauntable.cooldown = cooldown or TUNING.HAUNT_COOLDOWN_SMALL
-            perishchance = perishchance or TUNING.HAUNT_CHANCE_OCCASIONAL
-            if math.random() <= perishchance then
-                if inst.components.perishable then
-                    inst.components.perishable:ReducePercent(perishpct or .3)
-                    inst.components.hauntable.hauntvalue = perish_haunt_value or TUNING.HAUNT_MEDIUM
-                    inst.components.hauntable.cooldown = cooldown or TUNING.HAUNT_COOLDOWN_MEDIUM
-                end
-            end
+            --#HAUNTFIX
+            --perishchance = perishchance or TUNING.HAUNT_CHANCE_OCCASIONAL
+            --if math.random() <= perishchance then
+                --if inst.components.perishable then
+                    --inst.components.perishable:ReducePercent(perishpct or .3)
+                    --inst.components.hauntable.hauntvalue = perish_haunt_value or TUNING.HAUNT_MEDIUM
+                    --inst.components.hauntable.cooldown = cooldown or TUNING.HAUNT_COOLDOWN_MEDIUM
+                --end
+            --end
             return true
         end
         return false
@@ -827,14 +835,15 @@ function MakeHauntablePanicAndIgnite(inst, panictime, panicchance, ignitechance,
             inst.components.hauntable.panic = true
             inst.components.hauntable.panictimer = panictime or TUNING.HAUNT_PANIC_TIME_SMALL
             inst.components.hauntable.hauntvalue = panic_haunt_value or TUNING.HAUNT_SMALL
-            ignitechance = ignitechance or TUNING.HAUNT_CHANCE_RARE
-            if math.random() <= ignitechance then
-                if inst.components.burnable and not inst.components.burnable:IsBurning() then
-                    inst.components.burnable:Ignite()
-                    inst.components.hauntable.hauntvalue = ignite_haunt_value or TUNING.HAUNT_MEDIUM
-                    inst.components.hauntable.cooldown = cooldown or TUNING.HAUNT_COOLDOWN_HUGE
-                end
-            end
+            --#HAUNTFIX
+            --ignitechance = ignitechance or TUNING.HAUNT_CHANCE_RARE
+            --if math.random() <= ignitechance then
+                --if inst.components.burnable and not inst.components.burnable:IsBurning() then
+                    --inst.components.burnable:Ignite()
+                    --inst.components.hauntable.hauntvalue = ignite_haunt_value or TUNING.HAUNT_MEDIUM
+                    --inst.components.hauntable.cooldown = cooldown or TUNING.HAUNT_COOLDOWN_HUGE
+                --end
+            --end
             return true
         end
         return false
@@ -898,28 +907,29 @@ function MakeHauntableDropFirstItem(inst, chance, cooldown, haunt_value)
     if not inst.components.hauntable then inst:AddComponent("hauntable") end
     inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
         inst.components.hauntable.cooldown = cooldown or TUNING.HAUNT_COOLDOWN_SMALL
-        chance = chance or TUNING.HAUNT_CHANCE_OCCASIONAL
-        if math.random() <= chance then
-            if inst.components.inventory then
-                local item = inst.components.inventory:FindItem(function(item) return not item:HasTag("nosteal") end)
-                if item then
-                    local direction = Vector3(haunter.Transform:GetWorldPosition()) - Vector3(inst.Transform:GetWorldPosition() )
-                    inst.components.inventory:DropItem(item, false, direction:GetNormalized())
-                    inst.components.hauntable.hauntvalue = haunt_value or TUNING.HAUNT_MEDIUM
-                    inst.components.hauntable.cooldown = cooldown or TUNING.HAUNT_COOLDOWN_MEDIUM
-                    return true
-                end
-            end
-            if inst.components.container then
-                local item = inst.components.container:FindItem(function(item) return not item:HasTag("nosteal") end)
-                if item then
-                    inst.components.container:DropItem(item)
-                    inst.components.hauntable.hauntvalue = haunt_value or TUNING.HAUNT_MEDIUM
-                    inst.components.hauntable.cooldown = cooldown or TUNING.HAUNT_COOLDOWN_MEDIUM
-                    return true
-                end
-            end
-        end
+        --#HAUNTFIX
+        --chance = chance or TUNING.HAUNT_CHANCE_OCCASIONAL
+        --if math.random() <= chance then
+            --if inst.components.inventory then
+                --local item = inst.components.inventory:FindItem(function(item) return not item:HasTag("nosteal") end)
+                --if item then
+                    --local direction = Vector3(haunter.Transform:GetWorldPosition()) - Vector3(inst.Transform:GetWorldPosition() )
+                    --inst.components.inventory:DropItem(item, false, direction:GetNormalized())
+                    --inst.components.hauntable.hauntvalue = haunt_value or TUNING.HAUNT_MEDIUM
+                    --inst.components.hauntable.cooldown = cooldown or TUNING.HAUNT_COOLDOWN_MEDIUM
+                    --return true
+                --end
+            --end
+            --if inst.components.container then
+                --local item = inst.components.container:FindItem(function(item) return not item:HasTag("nosteal") end)
+                --if item then
+                    --inst.components.container:DropItem(item)
+                    --inst.components.hauntable.hauntvalue = haunt_value or TUNING.HAUNT_MEDIUM
+                    --inst.components.hauntable.cooldown = cooldown or TUNING.HAUNT_COOLDOWN_MEDIUM
+                    --return true
+                --end
+            --end
+        --end
         return false
     end)
 end
@@ -932,28 +942,29 @@ function MakeHauntableLaunchAndDropFirstItem(inst, launchchance, dropchance, spe
             Launch(inst, haunter, speed or TUNING.LAUNCH_SPEED_SMALL)
             inst.components.hauntable.hauntvalue = launch_haunt_value or TUNING.HAUNT_TINY
             inst.components.hauntable.cooldown = cooldown or TUNING.HAUNT_COOLDOWN_SMALL
-            dropchance = dropchance or TUNING.HAUNT_CHANCE_OCCASIONAL
-            if math.random() <= dropchance then
-                if inst.components.inventory then
-                    local item = inst.components.inventory:FindItem(function(item) return not item:HasTag("nosteal") end)
-                    if item then
-                        local direction = Vector3(haunter.Transform:GetWorldPosition()) - Vector3(inst.Transform:GetWorldPosition() )
-                        inst.components.inventory:DropItem(item, false, direction:GetNormalized())
-                        inst.components.hauntable.hauntvalue = drop_haunt_value or TUNING.HAUNT_MEDIUM
-                        inst.components.hauntable.cooldown = cooldown or TUNING.HAUNT_COOLDOWN_MEDIUM
-                        return true
-                    end
-                end
-                if inst.components.container then
-                    local item = inst.components.container:FindItem(function(item) return not item:HasTag("nosteal") end)
-                    if item then
-                        inst.components.container:DropItem(item)
-                        inst.components.hauntable.hauntvalue = drop_haunt_value or TUNING.HAUNT_MEDIUM
-                        inst.components.hauntable.cooldown = cooldown or TUNING.HAUNT_COOLDOWN_MEDIUM
-                        return true
-                    end
-                end
-            end
+            --#HAUNTFIX
+            --dropchance = dropchance or TUNING.HAUNT_CHANCE_OCCASIONAL
+            --if math.random() <= dropchance then
+                --if inst.components.inventory then
+                    --local item = inst.components.inventory:FindItem(function(item) return not item:HasTag("nosteal") end)
+                    --if item then
+                        --local direction = Vector3(haunter.Transform:GetWorldPosition()) - Vector3(inst.Transform:GetWorldPosition() )
+                        --inst.components.inventory:DropItem(item, false, direction:GetNormalized())
+                        --inst.components.hauntable.hauntvalue = drop_haunt_value or TUNING.HAUNT_MEDIUM
+                        --inst.components.hauntable.cooldown = cooldown or TUNING.HAUNT_COOLDOWN_MEDIUM
+                        --return true
+                    --end
+                --end
+                --if inst.components.container then
+                    --local item = inst.components.container:FindItem(function(item) return not item:HasTag("nosteal") end)
+                    --if item then
+                        --inst.components.container:DropItem(item)
+                        --inst.components.hauntable.hauntvalue = drop_haunt_value or TUNING.HAUNT_MEDIUM
+                        --inst.components.hauntable.cooldown = cooldown or TUNING.HAUNT_COOLDOWN_MEDIUM
+                        --return true
+                    --end
+                --end
+            --end
             return true
         end
         return false
@@ -991,23 +1002,24 @@ function AddHauntableDropItemOrWork(inst)
 	inst.components.hauntable.cooldown = TUNING.HAUNT_COOLDOWN_SMALL
     inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
 		local ret = false
-		if math.random() <= TUNING.HAUNT_CHANCE_OCCASIONAL then
-			if inst.components.container then
-				local item = inst.components.container:FindItem(function(item) return not item:HasTag("nosteal") end)
-				if item then
-					inst.components.container:DropItem(item)
-					inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
-					ret = true
-				end
-			end
-		end
-		if math.random() <= TUNING.HAUNT_CHANCE_VERYRARE then
-			if inst.components.workable then
-				inst.components.workable:WorkedBy(haunter, 1)
-				inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
-				ret = true
-			end
-		end
+        --#HAUNTFIX
+		--if math.random() <= TUNING.HAUNT_CHANCE_OCCASIONAL then
+			--if inst.components.container then
+				--local item = inst.components.container:FindItem(function(item) return not item:HasTag("nosteal") end)
+				--if item then
+					--inst.components.container:DropItem(item)
+					--inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
+					--ret = true
+				--end
+			--end
+		--end
+		--if math.random() <= TUNING.HAUNT_CHANCE_VERYRARE then
+			--if inst.components.workable then
+				--inst.components.workable:WorkedBy(haunter, 1)
+				--inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
+				--ret = true
+			--end
+		--end
 		return ret
 	end)
 end

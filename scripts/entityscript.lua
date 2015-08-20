@@ -658,6 +658,9 @@ function EntityScript:GetDebugString()
     local str = {}
 
     table.insert(str, tostring(self))
+    if self:IsAsleep() then
+        table.insert(str, " <ASLEEP>")
+    end
     table.insert(str, string.format(" age %2.2f", self:GetTimeAlive()))
     table.insert(str, "\n")
 
@@ -670,7 +673,7 @@ function EntityScript:GetDebugString()
     end
 
     if self.debugstringfn then
-        table.insert(str, self.debugstringfn().."\n")
+        table.insert(str, "DebugString: "..self:debugstringfn().."\n")
     end
 
     table.insert(str, "-----------\n")
@@ -1463,23 +1466,6 @@ function EntityScript:GetAdjective()
     elseif self:HasTag("spoiled") then
         return self:HasTag("frozen") and STRINGS.UI.HUD.STALE_FROZEN or STRINGS.UI.HUD.SPOILED
     end
-end
-
-function EntityScript:SetProfile(profile)
-    self.profile = profile
-    if profile ~= nil then
-        for k, v in pairs(self.components) do
-            if v.OnSetProfile ~= nil then
-                v:OnSetProfile(profile)
-            end
-        end
-    end
-
-    if self.OnSetProfile ~= nil then
-        self:OnSetProfile(profile)
-    end
-
-    self:PushEvent("onsetprofile", {})
 end
 
 function EntityScript:SetInherentSceneAction(action)

@@ -19,7 +19,7 @@ local SnapshotTab = Class(Widget, function(self, save_slot, cb)
     self.cb = cb
     
     self.session_id = SaveGameIndex:GetSlotSession(save_slot)
-    self.online_mode = SaveGameIndex:GetSlotServerData(save_slot).online_mode
+    self.online_mode = SaveGameIndex:GetSlotServerData(save_slot).online_mode ~= false
     
     self.snapshots = nil
     self.slotsnaps = {}
@@ -285,7 +285,7 @@ function SnapshotTab:SetSaveSlot(save_slot, prev_slot, fromDelete)
     end
 
     self.session_id = SaveGameIndex:GetSlotSession(save_slot)
-    self.online_mode = SaveGameIndex:GetSlotServerData(save_slot).online_mode
+    self.online_mode = SaveGameIndex:GetSlotServerData(save_slot).online_mode ~= false
 
     self:ListSnapshots()
     self:RefreshSnapshots()

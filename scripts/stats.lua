@@ -90,7 +90,7 @@ function BuildContextTable()
 	sendstats.platform = PLATFORM
 
     if TheWorld and TheWorld.meta then
-        sendstats.session = TheWorld.meta.session_identifier
+        sendstats.save_id = TheWorld.meta.session_identifier
     end
 
 	return sendstats
@@ -264,6 +264,21 @@ function RecordSessionStartStats()
 	-- TODO: This should actually just write the specific start stats, and it will eventually
 	-- be rolled into the "quit" stats and sent off all at once.
 	local sendstats = BuildContextTable()
+	sendstats.Session = {
+		Loads = {
+			Mods = { 
+				mod = false,
+				list = {},
+				
+			},
+		}
+	}
+
+	for i,name in ipairs(ModManager:GetEnabledModNames()) do
+		sendstats.Session.Loads.Mods.mod = true
+		table.insert(sendstats.Session.Loads.Mods.list, name)
+	end
+
 
 	--[[if IsDLCInstalled(REIGN_OF_GIANTS) and not IsDLCEnabled(REIGN_OF_GIANTS) then
 		sendstats.Session.Loads.Mods.mod = true

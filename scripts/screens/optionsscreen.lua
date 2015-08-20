@@ -949,8 +949,8 @@ function OptionsScreen:DoInit()
 
 	local this = self
 
-	local spinner_width = 240
-	local spinner_height = 64
+	local spinner_width = 180
+	local spinner_height = nil -- use default
 	local spinner_scale_x = .76
 	local spinner_scale_y = .68
 	

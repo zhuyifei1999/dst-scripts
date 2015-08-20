@@ -233,6 +233,8 @@ STRINGS=
         UNPIN = "Unstick",
         TOSS = "Toss",
         WRITE = "Write on",
+        ATTUNE = "Attune",
+        REMOTERESURRECT = "Resurrect",
     },
 
     LMB              = "\255", --"ÿ",
@@ -1003,6 +1005,11 @@ STRINGS=
 
         BERNIE_INACTIVE = "Bernie",
         BERNIE_ACTIVE = "Bernie",
+
+        DECREASE_HEALTH = "Health",
+        HALF_HEALTH = "Maximum Health",
+        DECREASE_SANITY = "Sanity",
+        HALF_SANITY = "Maximum Sanity",
     },
 
     DIRECTIONS=
@@ -1672,7 +1679,8 @@ STRINGS.UI =
         CHANGE_TEXT = "Change Text",
         CHANGE_TAB = "Change Tab",
         SHOWCHAT = "Show the Chat Tab",
-        SHOWPLAYERS = "Show the Players Tab"
+        SHOWPLAYERS = "Show the Players Tab",
+        VIEWGROUP = "View Group Page",
     },
     CHARACTERSELECT=
     {
@@ -2074,6 +2082,7 @@ STRINGS.UI =
         AFK_TITLE = "Taking A Breather",
         AFK_BODY = "I get it. It's tough out there. Really. It is. You definitely shouldn't be embarrassed about this. You baby. Whenever you're ready to get back to actually playing the darn game, click below.",
         AFK_OK = "Return",
+        ACTIVATE_RESURRECTION = "Activate Meat Effigy",
     },
     
     ACCOUNT=
@@ -2249,7 +2258,8 @@ STRINGS.UI =
             SERVER_MODS_WORKSHOP_FAILURE = "Disconnected Due To Missing Mods",
             SERVER_MODS_WORKSHOP_ACCESS_DENIED = "Disconnected Due To Missing Mods",
             ID_DST_SLOT_RESERVATION = "Slot Reserved",
-            ID_DST_SERVER_IS_CLAN_ONLY = "Private Group",
+            ID_DST_SERVER_IS_CLAN_ONLY = "Not a member of the server's clan.",
+            ID_DST_SERVER_IS_LAN_ONLY = "Server only allows local connections.",
         },
         BODY =
         {   
@@ -2290,7 +2300,8 @@ STRINGS.UI =
             SERVER_MODS_WORKSHOP_FAILURE = "You failed to download the required mods from the Steam Workshop. Please try again.",
             SERVER_MODS_WORKSHOP_ACCESS_DENIED = "You failed to download the required mods from the Steam Workshop because one or more are not visible to you.",
             ID_DST_SLOT_RESERVATION = "Unable to join the server. The only unused slots are reserved. Try again later once one of these miscreants has been consumed by the gaping maw that is this game.",
-		    ID_DST_SERVER_IS_CLAN_ONLY = "You have to be part of this server's steam group to join it!",
+		    ID_DST_SERVER_IS_CLAN_ONLY = "You have to be part of this server's steam group to connect to it. You could try visiting their group page and asking nicely to join?",
+            ID_DST_SERVER_IS_LAN_ONLY = "This server only allows joining from the same local network. You could run a really long cable from your computer.. or the server owner could change their server settings.",
         },
 		OK = "OK",
     },
@@ -2344,9 +2355,6 @@ STRINGS.UI =
         OK = "Do it!",
         CANCEL = "Cancel",
         MODSLISTPRE = "Mods:",
-        GOODHOST = "Good Host",
-        OKHOST = "OK Host",
-        BADHOST = "Bad Host",
         SURVIVAL = "Survival",
         WILDERNESS = "Wilderness",
         ENDLESS = "Endless",
@@ -2628,7 +2636,7 @@ STRINGS.UI =
         MINE = "Mine",
         PRIVATE = "Private",
         ONLINE = "Online",
-        LAN = "LAN",
+        OFFLINE = "Offline",
         DEDICATED = "Dedicated",
         HOSTED = "Hosted",
         WILDERNESS = "Wilderness",
@@ -2650,8 +2658,9 @@ STRINGS.UI =
         DEDICATED_ICON_HOVER = "Dedicated",
         FRIEND_ICON_HOVER = "Friends Playing",
         FRIEND_SERVER_ICON_HOVER = "Friend-Hosted",
-        CLAN_OPEN_ICON_HOVER = "Group Server",
-        CLAN_CLOSED_ICON_HOVER = "Private Group Server",
+        CLAN_OTHER_ICON_HOVER = "Group Server",
+        CLAN_OPEN_ICON_HOVER = "Group Server (Your Group)",
+        CLAN_CLOSED_ICON_HOVER = "Private Group Server (Your Group)",
         PVP_ICON_HOVER = "PvP",
         MODS_ICON_HOVER = "Modded",
         FILTER_RESET = "Reset Filters",
@@ -2665,6 +2674,10 @@ STRINGS.UI =
         VIEWWORLD = "View World",
         PLAYERS_UNKNOWN = "Players Unknown",
         VIEWPLAYERS = "View Players",
+        GROUP_UNKNOWN = "Group Unknown",
+        GROUP_LOADING = "Group Loading...",
+        GROUP_NONE = "No group",
+        VIEWGROUP = "View Group Profile",
         SEASONS = 
             {
                 SUMMER = "Summer",
@@ -2701,6 +2714,7 @@ STRINGS.UI =
         SHOW_MOD_WARNING = "Do not show this again",
         CONTINUE = "Continue",
         CHANGE_SORT = "Change Sort",
+        LAN = "LAN",
     },
 
     SERVERCREATIONSCREEN =
@@ -2718,18 +2732,30 @@ STRINGS.UI =
         SERVERNAME = "Name:",
         SERVERPASSWORD = "Password:",
         SERVERDESC = "Description:",
-        FRIENDSONLY = "Friends Only:",
-        SERVERTYPE = "Server Type:",
+        PRIVACY = {
+            PUBLIC = "Public",
+            FRIENDS = "Friends Only",
+            LOCAL = "Local Only",
+            CLAN = "Steam Group",
+        },
+        CLANID = "Group ID:",
+        CLANONLY = "Members Only:",
+        CLAN_OPEN = "Open",
+        CLAN_CLOSED = "Members Only",
+        CLANADMIN = "Auto Group Admins:",
+        ONLINE_MODE = "Server Mode:",
         ON = "On",
         OFF = "Off",
+        NO = "No",
+        YES = "Yes",
         PVP = "PvP:",
         GAMEMODE = "Game Mode:",
         MAXPLAYERS = "Players:",
         ONLINEONYTITLE = "Online World",
         ONLINEONLYBODY = "You can only resume an online world when you have a connection to Steam and Klei. Please log in and try again.",
         OFFLINEMODETITLE = "Offline Mode",
-        OFFLINEMODEBODYCREATE = "Are you sure you want to create an offline world? Only users on your Local Area Network will be able to join this world.", 
-        OFFLINEMODEBODYRESUME = "You are resuming an offline world. Only users on your Local Area Network will be able to join this world.", 
+        OFFLINEMODEBODYCREATE = "Are you sure you want to create an offline world? This is a limited mode where only players on your Local Area Network can join.",
+        OFFLINEMODEBODYRESUME = "You are resuming an offline world. Only users on your Local Area Network will be able to join this world.",
         FULLSLOTSTITLE = "No Slots Available",
         FULLSLOTSBODY = "All of your server slots are currently full. You must either select a slot to load the world from or delete a slot to start a new world.",
         OK = "OK",
@@ -2752,6 +2778,10 @@ STRINGS.UI =
         CONTINUE = "Continue",
         CANCEL_TITLE = "Lose Changes?",
         CANCEL_BODY = "Do you want to abandon your changes?",
+        INVALIDSERVERNAME_TITLE = "Missing Server Name",
+        INVALIDSERVERNAME_BODY = "No one will be able to find you if you don't have a name!",
+        INVALIDCLANSETTINGS_TITLE = "Bad Group ID",
+        INVALIDCLANSETTINGS_BODY = "You have to specify a steam group you belong to! Go back and check that number.",
     },
     
     
@@ -3723,6 +3753,8 @@ STRINGS.TAGS =
 {
     PVP = "pvp",
     FRIENDSONLY = "friendsonly",
+    CLAN = "group",
+    LOCAL = "localonly",
 }
 
 

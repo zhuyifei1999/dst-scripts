@@ -94,6 +94,8 @@ local Inv = Class(Widget, function(self, owner)
     self.openhint:SetPosition(940, 70, 0)
     
     self.hint_update_check = HINT_UPDATE_INTERVAL
+
+    self.controller_build = nil
 end)
 
 function Inv:AddEquipSlot(slot, atlas, image, sortkey)
@@ -144,9 +146,11 @@ function Inv:Rebuild()
     self.equip = {}
     self.backpackinv = {}
 
+    self.controller_build = TheInput:ControllerAttached()
+
     local inventory = self.owner.replica.inventory
     local overflow = inventory:GetOverflowContainer()
-    local do_integrated_backpack = overflow ~= nil and TheInput:ControllerAttached()
+    local do_integrated_backpack = overflow ~= nil and self.controller_build
 
     local y = overflow ~= nil and ((W + YSEP) / 2) or 0
     local eslot_order = {}
@@ -247,7 +251,7 @@ function Inv:Rebuild()
         self.toprow:SetPosition(Vector3(0,0,0))
         self.bottomrow:SetPosition(0,0,0)
 
-        if TheInput:ControllerAttached() then
+        if self.controller_build and not self.rebuild_snapping then
             self.root:MoveTo(self.in_pos, self.out_pos, .2)
         else
             self.root:SetPosition(self.out_pos)
@@ -265,7 +269,8 @@ function Inv:Rebuild()
         self.cursor:MoveToFront()
     end
 
-    self.rebuild_pending = false
+    self.rebuild_pending = nil
+    self.rebuild_snapping = nil
 end
 
 function Inv:OnUpdate(dt)
@@ -285,7 +290,7 @@ function Inv:OnUpdate(dt)
     if ThePlayer.HUD ~= TheFrontEnd:GetActiveScreen() then return end
     if not ThePlayer.HUD.shown then return end
 
-    if self.rebuild_pending == true then
+    if self.rebuild_pending then
         self:Rebuild()
         self:Refresh()
     end

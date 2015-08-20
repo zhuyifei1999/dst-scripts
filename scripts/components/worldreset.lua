@@ -143,6 +143,7 @@ local function CancelCountdown()
         _updating = false
     end
     if _ismastersim then
+        TheNet:SetIsWorldResetting(false)
         _countdown:set(0)
         if _cancellable ~= nil then
             inst:RemoveEventCallback("ms_playerjoined", _cancellable, _world)
@@ -215,6 +216,7 @@ local OnPlayersLiveCheck = _ismastersim and function()
         end
         --everyone's a ghost, it's hopeless, sigh...
         --3 min bonus time if loading
+        TheNet:SetIsWorldResetting(true)
         local countdown = _cancellable ~= nil and _countdownloadingmax or _countdownmax
         _countdown:set(countdown < 255 and countdown or 255)
         _syncperiod = _countdown:value() > 10 and SYNC_PERIOD_SLOW or SYNC_PERIOD_FAST
@@ -278,9 +280,11 @@ end or nil
 --Register network variable sync events
 inst:ListenForEvent("countdowndirty", OnCountdownDirty)
 
---Register events
-inst:ListenForEvent("playeractivated", OnRefreshDialog, _world)
-inst:ListenForEvent("entercharacterselect", OnRefreshDialog, _world)
+if not (_ismastersim and TheNet:IsDedicated()) then
+    --Register events
+    inst:ListenForEvent("playeractivated", OnRefreshDialog, _world)
+    inst:ListenForEvent("entercharacterselect", OnRefreshDialog, _world)
+end
 
 if _ismastersim then
     --Initialize master simulation variables
@@ -293,6 +297,9 @@ if _ismastersim then
 
     --Register master simulation events
     inst:ListenForEvent("ms_setworldresettime", OnSetWorldResetTime, _world)
+
+    --Also reset this flag in case it's invalid
+    TheNet:SetIsWorldResetting(false)
 end
 
 --------------------------------------------------------------------------

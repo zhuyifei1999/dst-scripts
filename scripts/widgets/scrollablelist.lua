@@ -1,7 +1,6 @@
 local Widget = require "widgets/widget"
 local AnimButton = require "widgets/animbutton"
 local ImageButton = require "widgets/imagebutton"
-local Spinner = require "widgets/spinner"
 
 local scroll_per_click = 1
 local scroll_per_page = 5
@@ -130,7 +129,7 @@ local ScrollableList = Class(Widget, function(self, items, listwidth, listheight
     	self:MoveMarkerToNearestStep() 
     end)
 
-    self.position_marker:MoveToBack()
+    --self.position_marker:MoveToBack()
     self.scroll_bar_line:MoveToBack()
 
     self:DoFocusHookups()
@@ -423,12 +422,12 @@ end
 
 function ScrollableList:SetList(list, keepitems)
 	if not self.updatefn and not self.static_widgets and not keepitems then
-		for k,v in pairs(self.items) do
+		for k,v in ipairs(self.items) do
 			v:KillAllChildren()
 			v:Kill()
 		end
 
-		for i,v in pairs(list) do
+		for i,v in ipairs(list) do
 	    	self:AddChild(v)
 	    end
 	end
@@ -436,12 +435,52 @@ function ScrollableList:SetList(list, keepitems)
 	self.items = list
 	
 	self:Scroll(0, true) --scroll by 0 to update the position to match the new list size
-	
 	self:RecalculateStepSize()
-
 	self:DoFocusHookups()
-
 	self:RefreshView(true)
+end
+
+function ScrollableList:AddItem(item, before_widget)
+    self:RemoveItem(item) -- don't let an item be added in two positions!
+
+    if before_widget ~= nil then
+        local index = -1
+        for i,v in ipairs(self.items) do
+            if v == before_widget then
+                index = i
+                break
+            end
+        end
+        table.insert(self.items, index, item)
+        self:AddChild(item)
+    else
+        table.insert(self.items, item)
+        self:AddChild(item)
+    end
+
+    self:Scroll(0, true) --scroll by 0 to update the position to match the new list size
+    self:RecalculateStepSize()
+    self:DoFocusHookups()
+    self:RefreshView(true)
+end
+
+function ScrollableList:RemoveItem(item)
+    local index = -1
+    for i,v in ipairs(self.items) do
+        if v == item then
+            index = i
+            break
+        end
+    end
+
+    if index > -1 then
+        table.remove(self.items, index)
+
+        self:Scroll(0, true) --scroll by 0 to update the position to match the new list size
+        self:RecalculateStepSize()
+        self:DoFocusHookups()
+        self:RefreshView(true)
+    end
 end
 
 function ScrollableList:Clear()

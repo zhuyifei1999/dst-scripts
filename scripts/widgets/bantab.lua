@@ -8,7 +8,6 @@ local Text = require "widgets/text"
 local Image = require "widgets/image"
 local Widget = require "widgets/widget"
 local Menu = require "widgets/menu"
-local Spinner = require "widgets/spinner"
 local UIAnim = require "widgets/uianim"
 
 local ScrollableList = require "widgets/scrollablelist"

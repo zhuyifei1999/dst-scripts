@@ -48,6 +48,13 @@ local RPC_HANDLERS =
         end
     end,
 
+    ResurrectButton = function(player)
+        local playercontroller = player.components.playercontroller
+        if playercontroller ~= nil then
+            playercontroller:OnRemoteResurrectButton()
+        end
+    end,
+
     ControllerActionButton = function(player, action, target, isreleased, noforce, mod_name)
         local playercontroller = player.components.playercontroller
         if playercontroller ~= nil and action ~= nil and target ~= nil then
@@ -150,7 +157,7 @@ local RPC_HANDLERS =
             end
         end
     end,
-
+ 
     ReturnActiveItem = function(player)
         local inventory = player.components.inventory
         if inventory ~= nil then

@@ -429,4 +429,25 @@ return
         build = "werebeaver_fx",
         anim = "transform_back",
     },
+    {
+        name = "attune_out_fx",
+        bank = "attune_fx",
+        build = "attune_fx",
+        anim = "attune_out",
+        sound = "dontstarve/ghost/ghost_haunt",
+    },
+    {
+        name = "attune_in_fx",
+        bank = "attune_fx",
+        build = "attune_fx",
+        anim = "attune_in",
+        sound = "dontstarve/ghost/ghost_haunt",
+    },
+    {
+        name = "attune_ghost_in_fx",
+        bank = "attune_fx",
+        build = "attune_fx",
+        anim = "attune_ghost_in",
+        sound = "dontstarve/ghost/ghost_haunt",
+    },
 }

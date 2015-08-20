@@ -242,7 +242,58 @@ function Builder:RemoveIngredients(ingredients)
     self.inst:PushEvent("consumeingredients")
  end
 
-function Builder:OnSetProfile(profile)
+function Builder:RemoveCharacterIngredients(recname)
+    local recipe = AllRecipes[recname]
+    if recipe then
+        for k,v in pairs(recipe.character_ingredients) do
+            if v.type == CHARACTER_INGREDIENT.HEALTH then
+                --Don't die from crafting!
+                local delta = math.min(math.max(0, self.inst.components.health.currenthealth - 1), v.amount)
+                self.inst:PushEvent("consumehealthcost")
+                self.inst.components.health:DoDelta(-delta, false, "builder", true, nil, true)
+            elseif v.type == CHARACTER_INGREDIENT.MAX_HEALTH then
+                self.inst:PushEvent("consumehealthcost")
+                self.inst.components.health:DeltaPenalty(v.amount)
+            elseif v.type == CHARACTER_INGREDIENT.SANITY then
+                self.inst.components.sanity:DoDelta(-v.amount)
+            elseif v.type == CHARACTER_INGREDIENT.MAX_SANITY then
+                --[[
+                    Because we don't have any maxsanity restoring items we want to be more careful
+                    with how we remove max sanity. Because of that, this is not handled here.
+                    Removal of sanity is actually managed by the entity that is created.
+                    See maxwell's pet leash on spawn and pet on death functions for examples.
+                --]]
+            end
+        end
+    end
+    self.inst:PushEvent("consumeingredients")
+end
+
+function Builder:HasCharacterIngredient(ingredient)
+    if ingredient.type == CHARACTER_INGREDIENT.HEALTH then
+        if self.inst.components.health ~= nil then
+            --round up health to match UI display
+            local current = math.ceil(self.inst.components.health.currenthealth)
+            return current >= ingredient.amount, current
+        end
+    elseif ingredient.type == CHARACTER_INGREDIENT.MAX_HEALTH then
+        if self.inst.components.health ~= nil then
+            local penalty = self.inst.components.health:GetPenaltyPercent()
+            return penalty + ingredient.amount <= TUNING.MAXIMUM_HEALTH_PENALTY, 1 - penalty
+        end
+    elseif ingredient.type == CHARACTER_INGREDIENT.SANITY then
+        if self.inst.components.sanity ~= nil then
+            --round up sanity to match UI display
+            local current = math.ceil(self.inst.components.sanity.current)
+            return current >= ingredient.amount, current
+        end
+    elseif ingredient.type == CHARACTER_INGREDIENT.MAX_SANITY then
+        if self.inst.components.sanity ~= nil then
+            local penalty = self.inst.components.sanity:GetPenaltyPercent()
+            return penalty + ingredient.amount <= TUNING.MAXIMUM_SANITY_PENALTY, 1 - penalty
+        end
+    end
+    return false
 end
 
 function Builder:MakeRecipe(recipe, pt, rot, onsuccess)
@@ -272,6 +323,7 @@ function Builder:DoBuild(recname, pt, rotation)
             local materials = self:GetIngredients(recname)
             wetlevel = self:GetIngredientWetness(materials)
             self:RemoveIngredients(materials)
+            self:RemoveCharacterIngredients(recname)
         end
         self.inst:PushEvent("refreshcrafting")
 
@@ -363,9 +415,13 @@ function Builder:CanBuild(recname)
     elseif self.freebuildmode then
         return true
     end
-    for ik, iv in pairs(recipe.ingredients) do
-        local amt = math.max(1, RoundBiasedUp(iv.amount * self.ingredientmod))
-        if not self.inst.replica.inventory:Has(iv.type, amt) then
+    for i, v in ipairs(recipe.ingredients) do
+        if not self.inst.components.inventory:Has(v.type, math.max(1, RoundBiasedUp(v.amount * self.ingredientmod))) then
+            return false
+        end
+    end
+    for i, v in ipairs(recipe.character_ingredients) do
+        if not self:HasCharacterIngredient(v) then
             return false
         end
     end
@@ -424,6 +480,7 @@ function Builder:BufferBuild(recname)
         local materials = self:GetIngredients(recname)
         local wetlevel = self:GetIngredientWetness(materials)
         self:RemoveIngredients(materials)
+        self:RemoveCharacterIngredients(recname)
         self.buffered_builds[recname] = wetlevel
         self.inst.replica.builder:SetIsBuildBuffered(recname, true)
     end

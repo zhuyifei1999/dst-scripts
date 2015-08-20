@@ -103,7 +103,9 @@ local function OnLoad(inst, data)
 end
 
 local function OnHaunt(inst, haunter)
-    return spawnghost(inst, TUNING.HAUNT_CHANCE_HALF)
+    --#HAUNTFIX
+    --return spawnghost(inst, TUNING.HAUNT_CHANCE_HALF)
+    return true
 end
 
 local function fn()
@@ -116,6 +118,8 @@ local function fn()
     inst.AnimState:SetBank("gravestone")
     inst.AnimState:SetBuild("gravestones")
     inst.AnimState:PlayAnimation("gravedirt")
+
+    inst:AddTag("grave")
 
     inst.entity:SetPristine()
 

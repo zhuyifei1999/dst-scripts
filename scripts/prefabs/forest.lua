@@ -135,7 +135,7 @@ local function fn()
     if not TheNet:IsDedicated() then
         inst:AddComponent("dynamicmusic")
         inst:AddComponent("ambientsound")
-        inst:AddComponent("dsp")
+        --inst:AddComponent("dsp") --V2C: TOTARY BUSTED!
         inst:AddComponent("colourcube")
         inst:AddComponent("hallucinations")
     end

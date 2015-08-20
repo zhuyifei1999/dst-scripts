@@ -1,6 +1,12 @@
 local Badge = require "widgets/badge"
 local UIAnim = require "widgets/uianim"
 
+local function OnEffigyDeactivated(inst)
+    if inst.AnimState:IsCurrentAnimation("deactivate") then
+        inst.widget:Hide()
+    end
+end
+
 local HealthBadge = Class(Badge, function(self, owner)
     Badge._ctor(self, "health", owner)
 
@@ -18,9 +24,46 @@ local HealthBadge = Class(Badge, function(self, owner)
 
     --Hide the original frame since it is now overlapped by the topperanim
     self.anim:GetAnimState():Hide("frame")
-    
+
+    self.effigyanim = self.underNumber:AddChild(UIAnim())
+    self.effigyanim:GetAnimState():SetBank("health_effigy")
+    self.effigyanim:GetAnimState():SetBuild("health_effigy")
+    self.effigyanim:GetAnimState():PlayAnimation("deactivate")
+    self.effigyanim:Hide()
+    self.effigyanim:SetClickable(false)
+    self.effigyanim.inst:ListenForEvent("animover", OnEffigyDeactivated)
+    self.effigy = false
+    self.effigybreaksound = nil
+
     self:StartUpdating()
 end)
+
+function HealthBadge:ShowEffigy()
+    if not self.effigy then
+        self.effigy = true
+        self.effigyanim:GetAnimState():PlayAnimation("activate")
+        self.effigyanim:GetAnimState():PushAnimation("idle", false)
+        self.effigyanim:Show()
+    end
+end
+
+local function PlayEffigyBreakSound(inst, self)
+    inst.task = nil
+    if self:IsVisible() and inst.AnimState:IsCurrentAnimation("deactivate") then
+        TheFocalPoint.SoundEmitter:PlaySound(self.effigybreaksound)
+    end
+end
+
+function HealthBadge:HideEffigy()
+    if self.effigy then
+        self.effigy = false
+        self.effigyanim:GetAnimState():PlayAnimation("deactivate")
+        if self.effigyanim.inst.task ~= nil then
+            self.effigyanim.inst.task:Cancel()
+        end
+        self.effigyanim.inst.task = self.effigyanim.inst:DoTaskInTime(7 * FRAMES, PlayEffigyBreakSound, self)
+    end
+end
 
 function HealthBadge:SetPercent(val, max, penaltypercent)
     Badge.SetPercent(self, val, max)

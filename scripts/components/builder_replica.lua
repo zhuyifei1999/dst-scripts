@@ -157,6 +157,41 @@ function Builder:IsBuildBuffered(recipename)
     end
 end
 
+function Builder:HasCharacterIngredient(ingredient)
+    if self.inst.components.builder ~= nil then
+        return self.inst.components.builder:HasCharacterIngredient(ingredient)
+    elseif self.classified ~= nil then
+        if ingredient.type == CHARACTER_INGREDIENT.HEALTH then
+            local health = self.inst.replica.health
+            if health ~= nil then
+                --round up health to match UI display
+                local current = math.ceil(health:GetCurrent())
+                return current >= ingredient.amount, current
+            end
+        elseif ingredient.type == CHARACTER_INGREDIENT.MAX_HEALTH then
+            local health = self.inst.replica.health
+            if health ~= nil then
+                local penalty = health:GetPenaltyPercent()
+                return penalty + ingredient.amount <= TUNING.MAXIMUM_HEALTH_PENALTY, 1 - penalty
+            end
+        elseif ingredient.type == CHARACTER_INGREDIENT.SANITY then
+            local sanity = self.inst.replica.sanity
+            if sanity ~= nil then
+                --round up sanity to match UI display
+                local current = math.ceil(sanity:GetCurrent())
+                return current >= ingredient.amount, current
+            end
+        elseif ingredient.type == CHARACTER_INGREDIENT.MAX_SANITY then
+            local sanity = self.inst.replica.sanity
+            if sanity ~= nil then
+                local penalty = sanity:GetPenaltyPercent()
+                return penalty + ingredient.amount <= TUNING.MAXIMUM_SANITY_PENALTY, 1 - penalty
+            end
+        end
+    end
+    return false, 0
+end
+
 function Builder:KnowsRecipe(recipename)
     if self.inst.components.builder ~= nil then
         return self.inst.components.builder:KnowsRecipe(recipename)
@@ -185,8 +220,12 @@ function Builder:CanBuild(recipename)
             return true
         end
         for i, v in ipairs(recipe.ingredients) do
-            local amt = math.max(1, RoundBiasedUp(v.amount * self.classified.ingredientmod:value()))
-            if not self.inst.replica.inventory:Has(v.type, amt) then
+            if not self.inst.replica.inventory:Has(v.type, math.max(1, RoundBiasedUp(v.amount * self.classified.ingredientmod:value()))) then
+                return false
+            end
+        end
+        for i, v in ipairs(recipe.character_ingredients) do
+            if not self:HasCharacterIngredient(v) then
                 return false
             end
         end

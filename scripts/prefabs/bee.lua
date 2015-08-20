@@ -186,6 +186,7 @@ local function commonfn(build, tags)
     inst:AddComponent("health")
     inst:AddComponent("combat")
     inst.components.combat.hiteffectsymbol = "body"
+    inst.components.combat:SetPlayerStunlock(PLAYERSTUNLOCK.RARELY)
 
     ------------------
 

@@ -429,13 +429,6 @@ local function destroystructure(staff, target)
     end
 
     target:Remove()
-    
-    if target.components.resurrector and not target.components.resurrector.used then
-        local player = caster and caster:HasTag("player") and caster or nil
-        if player then
-            player.components.health:RecalculatePenalty()
-        end
-    end
 end
 
 ---------YELLOW STAFF-------------

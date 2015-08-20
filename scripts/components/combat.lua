@@ -44,6 +44,7 @@ local Combat = Class(function(self, inst)
     self.panic_thresh = nil
     self.forcefacing = true
     self.bonusdamagefn = nil
+    self.playerstunlock = PLAYERSTUNLOCK.NORMAL
 end,
 nil,
 {
@@ -85,6 +86,10 @@ end
 function Combat:SetRange(attack, hit)
     self.attackrange = attack
     self.hitrange = hit or self.attackrange
+end
+
+function Combat:SetPlayerStunlock(stunlock)
+    self.playerstunlock = stunlock
 end
 
 function Combat:SetAreaDamage(range, percent)

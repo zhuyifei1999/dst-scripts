@@ -27,27 +27,36 @@ local function clearobstacle(inst)
     inst._ispathfinding:set(false)
 end
 
-local function resolveanimtoplay(percent)
-    local anim_to_play = nil
-    if percent <= 0 then
-        anim_to_play = "0"
-    elseif percent <= .4 then
-        anim_to_play = "1_4"
-    elseif percent <= .5 then
-        anim_to_play = "1_2"
-    elseif percent < 1 then
-        anim_to_play = "3_4"
-    else
-        anim_to_play = "1"
+local anims = {
+    { threshold = 0, anim = "broken" },
+    { threshold = 0.4, anim = "onequarter" },
+    { threshold = 0.5, anim = "half" },
+    { threshold = 0.99, anim = "threequarter" },
+    { threshold = 1, anim = {"fullA", "fullB", "fullC"} },
+}
+
+local function resolveanimtoplay(inst, percent)
+    for i,v in ipairs(anims) do
+        if percent <= v.threshold then
+            if type(v.anim) == "table" then
+                -- get a stable animation, by basing it on world position
+                local x,y,z = inst.Transform:GetWorldPosition()
+                local x = math.floor(x)
+                local z = math.floor(z)
+                local t = ( ((x%4)*(x+3)%7) + ((z%4)*(z+3)%7) )% #v.anim + 1
+                return v.anim[t]
+            else
+                return v.anim
+            end
+        end
     end
-    return anim_to_play
 end
 
 local function onhealthchange(inst, old_percent, new_percent)
     if old_percent <= 0 and new_percent > 0 then makeobstacle(inst) end
     if old_percent > 0 and new_percent <= 0 then clearobstacle(inst) end
 
-    local anim_to_play = resolveanimtoplay(new_percent)
+    local anim_to_play = resolveanimtoplay(inst, new_percent)
     if new_percent > 0 then
         inst.AnimState:PlayAnimation(anim_to_play.."_hit")      
         inst.AnimState:PushAnimation(anim_to_play, false)       
@@ -180,7 +189,7 @@ function MakeWallType(data)
         end
 
         local healthpercent = inst.components.health:GetPercent()
-        local anim_to_play = resolveanimtoplay(healthpercent)
+        local anim_to_play = resolveanimtoplay(inst, healthpercent)
         if healthpercent > 0 then
             inst.AnimState:PlayAnimation(anim_to_play.."_hit")
             inst.AnimState:PushAnimation(anim_to_play, false)
@@ -202,6 +211,8 @@ function MakeWallType(data)
         inst.entity:AddSoundEmitter()
         inst.entity:AddNetwork()
 
+        inst.Transform:SetEightFaced()
+
         MakeObstaclePhysics(inst, .5)
         inst.Physics:SetDontRemoveOnSleep(true)
 
@@ -211,7 +222,7 @@ function MakeWallType(data)
 
         inst.AnimState:SetBank("wall")
         inst.AnimState:SetBuild("wall_"..data.name)
-        inst.AnimState:PlayAnimation("1_2", false)
+        inst.AnimState:PlayAnimation("fullA", false)
 
         for i, v in ipairs(data.tags) do
             inst:AddTag(v)
@@ -290,6 +301,10 @@ function MakeWallType(data)
 
         inst.OnLoad = onload
 
+        inst:DoTaskInTime(0, function()
+            inst.AnimState:PlayAnimation(resolveanimtoplay(inst, inst.components.health:GetPercent()))
+        end)
+
         MakeSnowCovered(inst)
 
         return inst
@@ -297,7 +312,7 @@ function MakeWallType(data)
 
     return Prefab("common/wall_"..data.name, fn, assets, prefabs),
            Prefab("common/wall_"..data.name.."_item", itemfn, assets, {"wall_"..data.name, "wall_"..data.name.."_item_placer", "collapse_small"}),
-           MakePlacer("common/wall_"..data.name.."_item_placer", "wall", "wall_"..data.name, "1_2", false, false, true)
+           MakePlacer("common/wall_"..data.name.."_item_placer", "wall", "wall_"..data.name, "half", false, false, true, nil, nil, "eight")
 end
 
 local wallprefabs = {}
