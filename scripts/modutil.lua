@@ -13,7 +13,7 @@ function GetModConfigData(optionname, modname, get_local_config)
 	assert(modname, "modname must be supplied manually if calling GetModConfigData from outside of modmain or modworldgenmain. Use ModIndex:GetModActualName(fancyname) function [fancyname is name string from modinfo].")
 	local force_local_options = false
 	if get_local_config ~= nil then force_local_options = get_local_config end
-	local config, temp_options = KnownModIndex:GetModConfigurationOptions(modname, force_local_options)
+	local config, temp_options = KnownModIndex:GetModConfigurationOptions_Internal(modname, force_local_options)
 	if config and type(config) == "table" then
 		if temp_options then
 			return config[optionname]
@@ -218,7 +218,10 @@ local function InsertPostInitFunctions(env, isworldgen)
 		AddClassPostConstruct(package, fn)
 	end
 
-
+	--env.AddTile = function( tile_name, texture_name, noise_texture, runsound, walksound, snowsound, mudsound, flashpoint_modifier )
+	--	AddTile( env.modname, tile_name, texture_name, noise_texture, runsound, walksound, snowsound, mudsound, flashpoint_modifier )
+	--end
+	
 	------------------------------------------------------------------------------
 	-- Everything above this point is available in Worldgen or Main.
 	-- Everything below is ONLY available in Main.

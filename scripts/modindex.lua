@@ -312,7 +312,7 @@ function ModIndex:ApplyConfigOptionOverrides(mod_overrides)
 				print( "applying configuration_options from modoverrides.lua to mod " .. actual_modname )
 				
 				local force_local_options = true
-				local config_options,_ = self:GetModConfigurationOptions(actual_modname,force_local_options)
+				local config_options,_ = self:GetModConfigurationOptions_Internal(actual_modname,force_local_options)
 
 				if config_options and type(config_options) == "table" then
 					for option,override in pairs(env.configuration_options) do
@@ -553,7 +553,8 @@ function ModIndex:UpdateConfigurationOptions(config_options, savedata)
 end
 
 -- Just returns the table itself, and a bool specifying if it's a temp or regular table
-function ModIndex:GetModConfigurationOptions(modname,force_local_options)
+-- In the frontend this function is not reliable without actually loading the mods from disk again due to the periodic updater.
+function ModIndex:GetModConfigurationOptions_Internal(modname,force_local_options)
 	local known_mod = self.savedata.known_mods[modname]
 	if known_mod then
 		if known_mod.temp_enabled and not force_local_options then
