@@ -107,7 +107,7 @@ function GetEnabledModsModInfoDetails()
 	return modinfo_details	
 end
 
-function GetEnabledModsConfigData()
+function GetEnabledServerModsConfigData()
 	local mods_config_data = {}
 	for k,mod_name in pairs(ModManager:GetEnabledServerModNames()) do
 
@@ -115,7 +115,7 @@ function GetEnabledModsConfigData()
 		if modinfo ~= nil and modinfo.all_clients_require_mod then
 			local config_data = {}
 			local force_local_options = true
-			local config,_ = KnownModIndex:GetModConfigurationOptions(mod_name,force_local_options)
+			local config = KnownModIndex:LoadModConfigurationOptions(mod_name, false)
 			if config and type(config) == "table" then
 				for i,v in pairs(config) do
 			  		if v.saved ~= nil then

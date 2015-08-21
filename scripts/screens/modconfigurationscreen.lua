@@ -107,11 +107,11 @@ local ModConfigurationScreen = Class(Screen, function(self, modname, client_conf
 			opt.spinner.OnChanged =
 				function( _, data )
 					self.options[idx].value = data
-					opt.spinner:SetHoverText( spin_options_hover[data] or "" )
+--					opt.spinner:SetHoverText( spin_options_hover[data] or "" )
 					self:MakeDirty()
 				end
 			opt.spinner:SetSelected(default_value)
-			opt.spinner:SetHoverText( spin_options_hover[default_value] or "" )
+--			opt.spinner:SetHoverText( spin_options_hover[default_value] or "" )
 			opt.spinner:SetPosition( 325, 0, 0 )
 
 			local label = opt.spinner:AddChild( Text( NEWFONT, 25, (self.options[idx].label or self.options[idx].name) .. ":" or STRINGS.UI.MODSSCREEN.UNKNOWN_MOD_CONFIG_SETTING..":" ) )
@@ -121,7 +121,7 @@ local ModConfigurationScreen = Class(Screen, function(self, modname, client_conf
 			label:SetHAlign( ANCHOR_RIGHT )
 			label:SetHoverText( self.options[idx].hover or "" )
 			if TheInput:ControllerAttached() then
-				opt:SetHoverText( self.options[idx].hover or "" )
+--				opt:SetHoverText( self.options[idx].hover or "" )
 			end
 
 			opt.spinner.OnGainFocus = function()
