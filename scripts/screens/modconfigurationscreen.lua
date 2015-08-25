@@ -99,7 +99,7 @@ local ModConfigurationScreen = Class(Screen, function(self, modname, client_conf
 			
 			local spinner_height = 40
 			local spinner_width = 170
-			opt.spinner = opt:AddChild(Spinner( spin_options, spinner_width, nil, {font=NEWFONT, size=25}, nil, nil, nil, true, nil, nil))
+			opt.spinner = opt:AddChild(Spinner( spin_options, spinner_width, nil, {font=NEWFONT, size=25}, nil, nil, nil, true, 100, nil))
 			opt.spinner:SetTextColour(0,0,0,1)
 			local default_value = self.options[idx].value
 			if default_value == nil then default_value = self.options[idx].default end
@@ -107,11 +107,11 @@ local ModConfigurationScreen = Class(Screen, function(self, modname, client_conf
 			opt.spinner.OnChanged =
 				function( _, data )
 					self.options[idx].value = data
---					opt.spinner:SetHoverText( spin_options_hover[data] or "" )
+					opt.spinner:SetHoverText( spin_options_hover[data] or "" )
 					self:MakeDirty()
 				end
 			opt.spinner:SetSelected(default_value)
---			opt.spinner:SetHoverText( spin_options_hover[default_value] or "" )
+			opt.spinner:SetHoverText( spin_options_hover[default_value] or "" )
 			opt.spinner:SetPosition( 325, 0, 0 )
 
 			local label = opt.spinner:AddChild( Text( NEWFONT, 25, (self.options[idx].label or self.options[idx].name) .. ":" or STRINGS.UI.MODSSCREEN.UNKNOWN_MOD_CONFIG_SETTING..":" ) )
@@ -121,7 +121,7 @@ local ModConfigurationScreen = Class(Screen, function(self, modname, client_conf
 			label:SetHAlign( ANCHOR_RIGHT )
 			label:SetHoverText( self.options[idx].hover or "" )
 			if TheInput:ControllerAttached() then
---				opt:SetHoverText( self.options[idx].hover or "" )
+				opt:SetHoverText( self.options[idx].hover or "" )
 			end
 
 			opt.spinner.OnGainFocus = function()
