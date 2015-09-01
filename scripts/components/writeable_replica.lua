@@ -84,6 +84,14 @@ function Writeable:BeginWriting(doer)
     end
 end
 
+function Writeable:Write(doer, text)
+    if self.inst.components.writeable ~= nil then
+        self.inst.components.writeable:Write(doer, text)
+    elseif self.classified ~= nil and doer == ThePlayer then
+        SendRPCToServer(RPC.SetWriteableText, self.inst, text)
+    end
+end
+
 function Writeable:EndWriting()
     if self.opentask ~= nil then
         self.opentask:Cancel()

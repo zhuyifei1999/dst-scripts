@@ -25,12 +25,11 @@ local function onaccept(inst, doer, widget)
         return
     end
 
-    if inst.components.writeable ~= nil then
-        inst.components.writeable:SetText(msg)
-        inst.components.writeable:EndWriting()
-    elseif inst.replica.writeable ~= nil and inst.replica.writeable.classified ~= nil then
-        SendRPCToServer(RPC.SetWriteableText, inst, msg)
+    local writeable = inst.replica.writeable
+    if writeable ~= nil then
+        writeable:Write(doer, msg)
     end
+
     if widget.config.acceptbtn.cb ~= nil then
         widget.config.acceptbtn.cb(inst, doer, widget)
     end
@@ -53,13 +52,12 @@ local function oncancel(inst, doer, widget)
     end
     --print("OnCancel",inst,doer,widget)
 
-    if inst.components.writeable ~= nil then
-        inst.components.writeable:SetText(nil)
-        inst.components.writeable:EndWriting()
-    elseif inst.replica.writeable and inst.replica.writeable.classified ~= nil then
-        SendRPCToServer(RPC.SetWriteableText, inst, nil)
+    local writeable = inst.replica.writeable
+    if writeable ~= nil then
+        writeable:Write(doer, nil)
     end
-    if widget.config.cancelbtn.cb then
+
+    if widget.config.cancelbtn.cb ~= nil then
         widget.config.cancelbtn.cb(inst, doer, widget)
     end
 

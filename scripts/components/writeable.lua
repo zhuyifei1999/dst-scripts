@@ -96,6 +96,13 @@ function Writeable:IsBeingWritten()
     return self.writer ~= nil
 end
 
+function Writeable:Write(doer, text)
+    if self.writer == doer and doer ~= nil then
+        self:SetText(text)
+        self:EndWriting()
+    end
+end
+
 function Writeable:EndWriting()
     if self.writer ~= nil then
         self.inst:StopUpdatingComponent(self)

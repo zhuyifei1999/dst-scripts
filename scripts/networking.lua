@@ -41,9 +41,11 @@ function Networking_Say(guid, userid, name, prefab, message, colour, whisper)
     if entity ~= nil and entity.components.talker ~= nil then
         entity.components.talker:Say(entity:HasTag("mime") and "" or message, nil, nil, nil, true, colour)
     end
-    local screen = TheFrontEnd:GetActiveScreen()
-    if screen and screen.name == "LobbyScreen" then 
-    	screen.chatqueue:OnMessageReceived(userid, name, prefab, message, colour, whisper)
+    if not whisper then
+        local screen = TheFrontEnd:GetActiveScreen()
+        if screen ~= nil and screen.name == "LobbyScreen" then
+            screen.chatqueue:OnMessageReceived(userid, name, prefab, message, colour, whisper)
+        end
     end
     local hud = ThePlayer ~= nil and ThePlayer.HUD or nil
     if hud ~= nil 

@@ -32,6 +32,7 @@ local PlayerController = Class(function(self, inst)
     self.draggingonground = false
     self.startdragtestpos = nil
     self.startdragtime = nil
+    self.isclientcontrollerattached = false
 
     self.mousetimeout = 10
     self.time_direct_walking = 0
@@ -129,6 +130,10 @@ local function OnUnequip(inst, data)
     end
 end
 
+local function OnContinueFromPause()
+    ThePlayer.components.playercontroller:ToggleController(TheInput:ControllerAttached())
+end
+
 local function OnReachDestination(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
     inst.components.playercontroller:RemotePredictWalking(x, z)
@@ -145,6 +150,7 @@ function PlayerController:Activate()
         --reset the remote controllers just in case there was some old data
         self:ResetRemoteController()
         self.predictionsent = false
+        self.isclientcontrollerattached = false
 
         local item = self.inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
         if self.reticule ~= nil then
@@ -158,6 +164,8 @@ function PlayerController:Activate()
         self.inst:ListenForEvent("buildstructure", OnBuild)
         self.inst:ListenForEvent("equip", OnEquip)
         self.inst:ListenForEvent("unequip", OnUnequip)
+        self.inst:ListenForEvent("continuefrompause", OnContinueFromPause, TheWorld)
+        OnContinueFromPause()
 
         if not self.ismastersim then
             self.inst:ListenForEvent("onreachdestination", OnReachDestination)
@@ -187,10 +195,12 @@ function PlayerController:Deactivate()
         --reset the remote controllers just in case there was some old data
         self:ResetRemoteController()
         self.predictionsent = false
+        self.isclientcontrollerattached = false
 
         self.inst:RemoveEventCallback("buildstructure", OnBuild)
         self.inst:RemoveEventCallback("equip", OnEquip)
         self.inst:RemoveEventCallback("unequip", OnUnequip)
+        self.inst:RemoveEventCallback("continuefrompause", OnContinueFromPause, TheWorld)
 
         if not self.ismastersim then
             self.inst:RemoveEventCallback("onreachdestination", OnReachDestination)
@@ -204,6 +214,17 @@ end
 function PlayerController:Enable(val)
     if self.ismastersim then
         self.classified.iscontrollerenabled:set(val)
+    end
+end
+
+function PlayerController:ToggleController(val)
+    if self.isclientcontrollerattached ~= val then
+        self.isclientcontrollerattached = val
+        if not self.ismastersim then
+            SendRPCToServer(RPC.ToggleController, val)
+        elseif val and self.inst.components.inventory ~= nil then
+            self.inst.components.inventory:ReturnActiveItem()
+        end
     end
 end
 

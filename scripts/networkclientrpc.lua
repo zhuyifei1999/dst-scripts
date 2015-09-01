@@ -416,15 +416,20 @@ local RPC_HANDLERS =
         end
     end,
 
-    SetWriteableText = function(player, writeableinst, text)
-        -- Todo: Test if the player is authorized to write on this object
-        local writeable = writeableinst and  writeableinst.components.writeable
-        if writeable then
-            writeable:SetText(text)
-            writeable:EndWriting()
+    SetWriteableText = function(player, target, text)
+        local writeable = target ~= nil and target.components.writeable or nil
+        if writeable ~= nil then
+            writeable:Write(player, text)
         end
     end,
-    
+
+    ToggleController = function(player, isattached)
+        local playercontroller = player.components.playercontroller
+        if playercontroller ~= nil then
+            playercontroller:ToggleController(isattached)
+        end
+    end,
+
     StartVote = function(player, command, parameters)
         TheWorld.net.components.voter:StartVote(player, command, parameters)
     end,
@@ -449,7 +454,6 @@ for k, v in pairs(RPC) do
     RPC_HANDLERS[v] = RPC_HANDLERS[k]
     RPC_HANDLERS[k] = nil
 end
-
 
 function SendRPCToServer(code, ...)
     assert(RPC_HANDLERS[code] ~= nil)

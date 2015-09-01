@@ -57,8 +57,8 @@ local function AppendTimer(key, timer)
 end
 
 local function TestForRegrow(x, y, z, orig_tile)
-
     if _map:GetTileAtPoint(x, y, z) ~= orig_tile or
+        not _map:CanPlantAtPoint(x, y, z) or
         (RoadManager ~= nil and RoadManager:IsOnRoad(x, 0, z)) then
         -- keep things in their biome (more or less)
         -- try to avoid roads

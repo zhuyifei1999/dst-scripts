@@ -705,14 +705,14 @@ function Inventory:GiveItem( inst, slot, src_pos )
         self.inst:PushEvent("inventoryfull", { item = inst })
     end
 
-    --can't hold it!    
-    if not self.activeitem and not TheInput:ControllerAttached() then
-        --print("not activeitem")
+    --can't hold it!
+    if self.activeitem == nil and
+        not (self.inst.components.playercontroller ~= nil and
+            self.inst.components.playercontroller.isclientcontrollerattached) then
         inst.components.inventoryitem:OnPutInInventory(self.inst)
         self:SetActiveItem(inst)
         return true
     else
-        --print("yes activeitem")
         self:DropItem(inst, true, true)
     end
 end

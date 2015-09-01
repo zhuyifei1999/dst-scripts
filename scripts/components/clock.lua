@@ -29,18 +29,24 @@ local MOON_PHASE_NAMES =
 local MOON_PHASES = table.invert(MOON_PHASE_NAMES)
 local MOON_PHASE_LENGTHS =
 {
-    new = 1,
-    quarter = 3,
-    half = 3,
-    threequarter = 3,
-    full = 1,
+    [MOON_PHASES.new] =             1,
+    [MOON_PHASES.quarter] =         3,
+    [MOON_PHASES.half] =            3,
+    [MOON_PHASES.threequarter] =    3,
+    [MOON_PHASES.full] =            1,
 }
-local MOON_PHASE_SLOTS = { }
-for i,v in ipairs(MOON_PHASE_NAMES) do
-    for x=1,MOON_PHASE_LENGTHS[v] do
-        table.insert(MOON_PHASE_SLOTS, v)
+local MOON_PHASE_CYCLE = {}
+for i = 1, #MOON_PHASE_NAMES do
+    for x = 1, MOON_PHASE_LENGTHS[i] do
+        table.insert(MOON_PHASE_CYCLE, i)
     end
 end
+for i = #MOON_PHASE_NAMES - 1, 2, -1 do
+    for x = 1, MOON_PHASE_LENGTHS[i] do
+        table.insert(MOON_PHASE_CYCLE, i)
+    end
+end
+MOON_PHASE_LENGTHS = nil
 
 --------------------------------------------------------------------------
 --[[ Member variables ]]
@@ -64,7 +70,7 @@ for i, v in ipairs(PHASE_NAMES) do
 end
 local _cycles = net_ushortint(inst.GUID, "clock._cycles", "cyclesdirty")
 local _phase = net_tinybyte(inst.GUID, "clock._phase", "phasedirty")
-local _moonphase = net_smallbyte(inst.GUID, "clock._moonphase", "moonphasedirty")
+local _moonphase = net_tinybyte(inst.GUID, "clock._moonphase", "moonphasedirty")
 local _totaltimeinphase = net_float(inst.GUID, "clock._totaltimeinphase")
 local _remainingtimeinphase = net_float(inst.GUID, "clock._remainingtimeinphase")
 
@@ -89,17 +95,11 @@ end
 
 local function CalculateMoonPhase(cycles)
     -- don't advance the moon until nighttime
-    if _phase:value() ~= PHASES.night then
+    if _phase:value() ~= PHASES.night and cycles > 0 then
         cycles = cycles - 1
     end
-    local n = #MOON_PHASE_SLOTS - 1
-    local idx = cycles % (2 * n)
-    
-    if idx >= n then
-        idx = n * 2 - idx
-    end
 
-    return idx + 1
+    return MOON_PHASE_CYCLE[cycles % #MOON_PHASE_CYCLE + 1]
 end
 
 --------------------------------------------------------------------------
@@ -225,10 +225,12 @@ function self:OnUpdate(dt)
                 _world:PushEvent("ms_cyclecomplete", _cycles:value())
             end
 
-            --Advance to next moon phase
-            local moonphase = CalculateMoonPhase(_cycles:value())
-            if moonphase ~= _moonphase:value() then
-                _moonphase:set(moonphase)
+            if _phase:value() == PHASES.night then
+                --Advance to next moon phase
+                local moonphase = CalculateMoonPhase(_cycles:value())
+                if moonphase ~= _moonphase:value() then
+                    _moonphase:set(moonphase)
+                end
             end
         end
 
@@ -256,7 +258,7 @@ function self:OnUpdate(dt)
     end
 
     if _moonphasedirty then
-        _world:PushEvent("moonphasechanged", MOON_PHASE_SLOTS[_moonphase:value()])
+        _world:PushEvent("moonphasechanged", MOON_PHASE_NAMES[_moonphase:value()])
         _moonphasedirty = false
     end
 
