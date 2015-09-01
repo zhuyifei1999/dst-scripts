@@ -649,9 +649,13 @@ local COMPONENT_ACTIONS =
         end,
 
         container = function(inst, doer, actions)
-            if not inst:HasTag("burnt") then 
-                if inst.replica.container:CanBeOpened() and doer.replica.inventory ~= nil and
-                    not (doer.HUD ~= nil and inst.replica.container:IsSideWidget() and TheInput:ControllerAttached()) then
+            if not inst:HasTag("burnt") then
+                local container = inst.replica.container
+                if container:CanBeOpened() and
+                    doer.replica.inventory ~= nil and
+                    not (container:IsSideWidget() and
+                        doer.components.playercontroller ~= nil and
+                        doer.components.playercontroller.isclientcontrollerattached) then
                     table.insert(actions, ACTIONS.RUMMAGE)
                 end
             end

@@ -60,7 +60,8 @@ local function DoPrefabRenew(x, z, ents, prefab, prefab_matches, max)
         local radius = math.random() * RENEW_RADIUS
         local x1 = x + radius * math.cos(theta)
         local z1 = z - radius * math.sin(theta)
-        if inst.Map:CanPlantAtPoint(x1, 0, z1) then
+        if inst.Map:CanPlantAtPoint(x1, 0, z1) and
+            not (RoadManager ~= nil and RoadManager:IsOnRoad(x1, 0, z1)) then
             SpawnPrefab(prefab).Transform:SetPosition(x1, 0, z1)
         end
     end

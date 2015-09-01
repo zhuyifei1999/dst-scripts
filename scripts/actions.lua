@@ -99,7 +99,7 @@ ACTIONS =
     CASTSPELL = Action(-1, false, true, 20),
     BLINK = Action(10, false, true, 36),
     COMBINESTACK = Action(),
-    TOGGLE_DEPLOY_MODE = Action(0, true),
+    TOGGLE_DEPLOY_MODE = Action(1, true),
     SUMMONGUARDIAN = Action(0, false, false, 5),
     LAVASPIT = Action(0, false, false, 2),
     SPAWN = Action(0, false, false, 5),
@@ -360,27 +360,14 @@ ACTIONS.DEPLOY.fn = function(act)
 end
 
 ACTIONS.DEPLOY.strfn = function(act)
-    if act.invobject ~= nil then
-        if act.invobject:HasTag("groundtile") then
-            return "GROUNDTILE"
-        elseif act.invobject:HasTag("wallbuilder") then
-            return "WALL"
-        elseif act.invobject:HasTag("eyeturret") then
-            return "TURRET"
-        end
-    end
+    return act.invobject ~= nil
+        and (   (act.invobject:HasTag("groundtile") and "GROUNDTILE") or
+                (act.invobject:HasTag("wallbuilder") and "WALL") or
+                (act.invobject:HasTag("eyeturret") and "TURRET")    )
+        or nil
 end
 
-
-ACTIONS.TOGGLE_DEPLOY_MODE.strfn = function(act)
-    if act.invobject and act.invobject:HasTag("groundtile") then
-        return "GROUNDTILE"
-    elseif act.invobject and act.invobject:HasTag("wallbuilder") then
-        return "WALL"
-    elseif act.invobject and act.invobject:HasTag("eyeturret") then
-        return "TURRET"
-    end
-end
+ACTIONS.TOGGLE_DEPLOY_MODE.strfn = ACTIONS.DEPLOY.strfn
 
 ACTIONS.SUMMONGUARDIAN.fn = function(act)
     if act.doer and act.target and act.target.components.guardian then
@@ -842,7 +829,8 @@ ACTIONS.STORE.fn = function(act)
             end
 
             if not act.target.components.container:GiveItem(item, nil, nil, false) then
-                if TheInput:ControllerAttached() then
+                if act.doer.components.playercontroller ~= nil and
+                    act.doer.components.playercontroller.isclientcontrollerattached then
                     act.doer.components.inventory:GiveItem(item)
                 else
                     act.doer.components.inventory:GiveActiveItem(item)
