@@ -1,3 +1,5 @@
+local MakeWorld = require("prefabs/world")
+
 local assets =
 {
     Asset("IMAGE", "images/colour_cubes/day05_cc.tex"),
@@ -32,7 +34,7 @@ local assets =
 
 local prefabs = 
 {
-    "world",
+    "forest_network",
     "adventure_portal",
     "resurrectionstone",
     "deerclops",
@@ -104,6 +106,7 @@ local prefabs =
     "lavae",
     "lava_pond",
     "scorchedground",
+    "scorched_skeleton",
     "lavae_egg",
     "terrorbeak",
     "crawlinghorror",
@@ -111,21 +114,53 @@ local prefabs =
     "shadowskittish",
     "shadowwatcher",
     "shadowhand",
+    "rubble",
 }
 
-local function fn()
-    local inst = SpawnPrefab("world")
-    inst.prefab = "forest"
+local houndspawn =
+{
+    base_prefab = "hound",
+    winter_prefab = "icehound",
+    summer_prefab = "firehound",
 
+    attack_levels =
+    {
+        intro   = { warnduration = function() return 120 end, numspawns = function() return 2 end },
+        light   = { warnduration = function() return 60 end, numspawns = function() return 2 + math.random(2) end },
+        med     = { warnduration = function() return 45 end, numspawns = function() return 3 + math.random(3) end },
+        heavy   = { warnduration = function() return 30 end, numspawns = function() return 4 + math.random(3) end },
+        crazy   = { warnduration = function() return 30 end, numspawns = function() return 6 + math.random(4) end },
+    },
+
+    attack_delays =
+    {
+        rare        = function() return TUNING.TOTAL_DAY_TIME * 6, math.random() * TUNING.TOTAL_DAY_TIME * 7 end,
+        occasional  = function() return TUNING.TOTAL_DAY_TIME * 4, math.random() * TUNING.TOTAL_DAY_TIME * 7 end,
+        frequent    = function() return TUNING.TOTAL_DAY_TIME * 3, math.random() * TUNING.TOTAL_DAY_TIME * 5 end,
+    },
+
+    warning_speech = "ANNOUNCE_HOUNDS",
+
+    --Key = time, Value = sound prefab
+    warning_sound_thresholds =
+    {
+        { time = 30, sound = "houndwarning_lvl4" },
+        { time = 60, sound = "houndwarning_lvl3" },
+        { time = 90, sound = "houndwarning_lvl2" },
+        { time = 500, sound = "houndwarning_lvl1" },
+    },
+}
+
+local function common_postinit(inst)
     --Add waves
-    local waves = inst.entity:AddWaveComponent()
-    waves:SetRegionSize(40, 20)
-    waves:SetRegionNumWaves(8)
-    waves:SetWaveTexture("images/wave.tex")
+    inst.entity:AddWaveComponent()
+    inst.WaveComponent:SetRegionSize(40, 20)
+    inst.WaveComponent:SetRegionNumWaves(8)
+    inst.WaveComponent:SetWaveTexture("images/wave.tex")
     --See source\game\components\WaveRegion.h
-    waves:SetWaveEffect("shaders/waves.ksh")
-    --waves:SetWaveEffect("shaders/texture.ksh")
-    waves:SetWaveSize(2048, 512)
+    inst.WaveComponent:SetWaveEffect("shaders/waves.ksh")
+    --inst.WaveComponent:SetWaveEffect("shaders/texture.ksh")
+    inst.WaveComponent:SetWaveSize(2048, 512)
 
     --Initialize lua components
     inst:AddComponent("ambientlighting")
@@ -135,42 +170,45 @@ local function fn()
     if not TheNet:IsDedicated() then
         inst:AddComponent("dynamicmusic")
         inst:AddComponent("ambientsound")
-        --inst:AddComponent("dsp") --V2C: TOTARY BUSTED!
+        inst:AddComponent("dsp")
         inst:AddComponent("colourcube")
         inst:AddComponent("hallucinations")
     end
-
-    if inst.ismastersim then
-        --Spawners
-        --inst:AddComponent("flowerspawner")
-        inst:AddComponent("birdspawner")
-        inst:AddComponent("butterflyspawner")
-        inst:AddComponent("hounded")
-        inst:AddComponent("worlddeciduoustreeupdater")
-        inst:AddComponent("kramped")
-        inst:AddComponent("frograin")
-        inst:AddComponent("penguinspawner")
-        inst:AddComponent("deerclopsspawner")
-        inst:AddComponent("beargerspawner")
-        inst:AddComponent("moosespawner")
-        inst:AddComponent("hunter")
-        inst:AddComponent("lureplantspawner")
-        inst:AddComponent("shadowcreaturespawner")
-        inst:AddComponent("shadowhandspawner")
-        inst:AddComponent("wildfires")
-        inst:AddComponent("worldwind")
-        inst:AddComponent("forestresourcespawner")
-        inst:AddComponent("regrowthmanager")
-        inst:AddComponent("desolationspawner")
-        if METRICS_ENABLED then
-            inst:AddComponent("worldoverseer")
-        end
-
-        --world health management
-        inst:AddComponent("skeletonsweeper")
-    end
-
-    return inst
 end
 
-return Prefab("forest", fn, assets, prefabs)
+local function master_postinit(inst)
+    --Spawners
+    --inst:AddComponent("flowerspawner")
+    inst:AddComponent("birdspawner")
+    inst:AddComponent("butterflyspawner")
+    inst:AddComponent("hounded")
+
+    inst.components.hounded:SetSpawnData(houndspawn)
+
+    inst:AddComponent("worlddeciduoustreeupdater")
+    inst:AddComponent("kramped")
+    inst:AddComponent("frograin")
+    inst:AddComponent("penguinspawner")
+    inst:AddComponent("deerclopsspawner")
+    inst:AddComponent("beargerspawner")
+    inst:AddComponent("moosespawner")
+    inst:AddComponent("hunter")
+    inst:AddComponent("lureplantspawner")
+    inst:AddComponent("shadowcreaturespawner")
+    inst:AddComponent("shadowhandspawner")
+    inst:AddComponent("wildfires")
+    inst:AddComponent("worldwind")
+    inst:AddComponent("forestresourcespawner")
+    inst:AddComponent("regrowthmanager")
+    inst:AddComponent("desolationspawner")
+
+    if METRICS_ENABLED then
+        inst:AddComponent("worldoverseer")
+    end
+
+    -- inst:AddComponent("periodicthreat")
+    -- local threats = require"periodicthreats"
+    -- inst.components.periodicthreat:AddThreat("WORM", threats["WORM"])
+end
+
+return MakeWorld("forest", prefabs, assets, common_postinit, master_postinit)

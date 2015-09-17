@@ -27,23 +27,26 @@ local function clearobstacle(inst)
     inst._ispathfinding:set(false)
 end
 
-local anims = {
+local anims =
+{
     { threshold = 0, anim = "broken" },
     { threshold = 0.4, anim = "onequarter" },
     { threshold = 0.5, anim = "half" },
     { threshold = 0.99, anim = "threequarter" },
-    { threshold = 1, anim = {"fullA", "fullB", "fullC"} },
+    { threshold = 1, anim = { "fullA", "fullB", "fullC" } },
 }
 
 local function resolveanimtoplay(inst, percent)
-    for i,v in ipairs(anims) do
+    for i, v in ipairs(anims) do
         if percent <= v.threshold then
             if type(v.anim) == "table" then
                 -- get a stable animation, by basing it on world position
-                local x,y,z = inst.Transform:GetWorldPosition()
+                local x, y, z = inst.Transform:GetWorldPosition()
                 local x = math.floor(x)
                 local z = math.floor(z)
-                local t = ( ((x%4)*(x+3)%7) + ((z%4)*(z+3)%7) )% #v.anim + 1
+                local q1 = #v.anim + 1
+                local q2 = #v.anim + 4
+                local t = ( ((x%q1)*(x+3)%q2) + ((z%q1)*(z+3)%q2) )% #v.anim + 1
                 return v.anim[t]
             else
                 return v.anim
@@ -53,23 +56,29 @@ local function resolveanimtoplay(inst, percent)
 end
 
 local function onhealthchange(inst, old_percent, new_percent)
-    if old_percent <= 0 and new_percent > 0 then makeobstacle(inst) end
-    if old_percent > 0 and new_percent <= 0 then clearobstacle(inst) end
-
     local anim_to_play = resolveanimtoplay(inst, new_percent)
     if new_percent > 0 then
-        inst.AnimState:PlayAnimation(anim_to_play.."_hit")      
-        inst.AnimState:PushAnimation(anim_to_play, false)       
+        if old_percent <= 0 then
+            makeobstacle(inst)
+        end
+        inst.AnimState:PlayAnimation(anim_to_play.."_hit")
+        inst.AnimState:PushAnimation(anim_to_play, false)
     else
-        inst.AnimState:PlayAnimation(anim_to_play)      
+        if old_percent > 0 then
+            clearobstacle(inst)
+        end
+        inst.AnimState:PlayAnimation(anim_to_play)
     end
 end
 
 local function onload(inst)
-    --print("walls - onload")
     if inst.components.health:IsDead() then
         clearobstacle(inst)
     end
+end
+
+local function oninit(inst)
+    inst.AnimState:PlayAnimation(resolveanimtoplay(inst, inst.components.health:GetPercent()))
 end
 
 local function onremove(inst)
@@ -78,11 +87,10 @@ local function onremove(inst)
 end
 
 function MakeWallType(data)
-
     local assets =
     {
         Asset("ANIM", "anim/wall.zip"),
-        Asset("ANIM", "anim/wall_".. data.name..".zip"),
+        Asset("ANIM", "anim/wall_"..data.name..".zip"),
     }
 
     local prefabs =
@@ -94,28 +102,33 @@ function MakeWallType(data)
         --inst.SoundEmitter:PlaySound("dontstarve/creatures/spider/spider_egg_sack")
         local wall = SpawnPrefab("wall_"..data.name) 
         if wall ~= nil then 
-            pt = Vector3(math.floor(pt.x) + .5, 0, math.floor(pt.z) + .5)
+            local x = math.floor(pt.x) + .5
+            local z = math.floor(pt.z) + .5
             wall.Physics:SetCollides(false)
-            wall.Physics:Teleport(pt:Get())
+            wall.Physics:Teleport(x, 0, z)
             wall.Physics:SetCollides(true)
             inst.components.stackable:Get():Remove()
 
-            TheWorld.Pathfinder:AddWall(pt:Get())
+            TheWorld.Pathfinder:AddWall(x, 0, z)
+
+            if data.buildsound ~= nil then
+                wall.SoundEmitter:PlaySound(data.buildsound)
+            end
         end
     end
 
     local function onhammered(inst, worker)
-        if data.maxloots and data.loot then
-            local num_loots = math.max(1, math.floor(data.maxloots*inst.components.health:GetPercent()))
-            for k = 1, num_loots do
+        if data.maxloots ~= nil and data.loot ~= nil then
+            local num_loots = math.max(1, math.floor(data.maxloots * inst.components.health:GetPercent()))
+            for i = 1, num_loots do
                 inst.components.lootdropper:SpawnLootPrefab(data.loot)
             end
         end
 
-        SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
-
-        if data.destroysound then
-            inst.SoundEmitter:PlaySound(data.destroysound)
+        local fx = SpawnPrefab("collapse_small")
+        fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+        if data.material ~= nil then
+            fx:SetMaterial(data.material)
         end
 
         inst:Remove()
@@ -150,24 +163,17 @@ function MakeWallType(data)
 
         inst:AddComponent("repairer")
 
-        if data.name == "ruins" then
-            inst.components.repairer.repairmaterial = MATERIALS.THULECITE
-        elseif data.name == "moonrock" then
-            inst.components.repairer.repairmaterial = MATERIALS.MOONROCK
-        else
-            inst.components.repairer.repairmaterial = data.name
-        end
-
-        if data.paintable then
-            --inst:AddComponent("paintable")
-        end
-
+        inst.components.repairer.repairmaterial = data.name == "ruin" and MATERIALS.THULECITE or data.name
         inst.components.repairer.healthrepairvalue = data.maxhealth / 6
+
+        --if data.paintable then
+            --inst:AddComponent("paintable")
+        --end
 
         if data.flammable then
             MakeSmallBurnable(inst, TUNING.MED_BURNTIME)
             MakeSmallPropagator(inst)
-            
+
             inst:AddComponent("fuel")
             inst.components.fuel.fuelvalue = TUNING.SMALL_FUEL
 
@@ -184,20 +190,20 @@ function MakeWallType(data)
     end
 
     local function onhit(inst)
-        if data.destroysound then
-            inst.SoundEmitter:PlaySound(data.destroysound)
+        if data.material ~= nil then
+            inst.SoundEmitter:PlaySound("dontstarve/common/destroy_"..data.material)
         end
 
         local healthpercent = inst.components.health:GetPercent()
-        local anim_to_play = resolveanimtoplay(inst, healthpercent)
         if healthpercent > 0 then
+            local anim_to_play = resolveanimtoplay(inst, healthpercent)
             inst.AnimState:PlayAnimation(anim_to_play.."_hit")
             inst.AnimState:PushAnimation(anim_to_play, false)
         end
     end
 
     local function onrepaired(inst)
-        if data.buildsound then
+        if data.buildsound ~= nil then
             inst.SoundEmitter:PlaySound(data.buildsound)
         end
         makeobstacle(inst)
@@ -219,6 +225,7 @@ function MakeWallType(data)
         --inst.Transform:SetScale(1.3,1.3,1.3)
 
         inst:AddTag("wall")
+        inst:AddTag("noauradamage")
 
         inst.AnimState:SetBank("wall")
         inst.AnimState:SetBuild("wall_"..data.name)
@@ -249,11 +256,7 @@ function MakeWallType(data)
         inst:AddComponent("lootdropper")
 
         inst:AddComponent("repairable")
-        if data.name == "ruins" then
-            inst.components.repairable.repairmaterial = MATERIALS.THULECITE
-        else
-            inst.components.repairable.repairmaterial = data.name
-        end
+        inst.components.repairable.repairmaterial = data.name == "ruins" and MATERIALS.THULECITE or data.name
         inst.components.repairable.onrepaired = onrepaired
 
         inst:AddComponent("combat")
@@ -265,10 +268,9 @@ function MakeWallType(data)
         inst.components.health.ondelta = onhealthchange
         inst.components.health.nofadeout = true
         inst.components.health.canheal = false
-        if data.name == "moonrock" then
+        if data.name == MATERIALS.MOONROCK then
             inst.components.health:SetAbsorptionAmountFromPlayer(TUNING.MOONROCKWALL_PLAYERDAMAGEMOD)
         end
-        inst:AddTag("noauradamage")
 
         if data.flammable then
             MakeMediumBurnable(inst)
@@ -277,23 +279,15 @@ function MakeWallType(data)
 
             --lame!
             if data.name == MATERIALS.WOOD then
-                inst.components.propagator.flashpoint = 30+math.random()*10         
+                inst.components.propagator.flashpoint = 30 + math.random() * 10
             end
         else
             inst.components.health.fire_damage_scale = 0
         end
 
-        if data.buildsound then
-            inst.SoundEmitter:PlaySound(data.buildsound)        
-        end
-
         inst:AddComponent("workable")
         inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
-        if data.name == "moonrock" then
-            inst.components.workable:SetWorkLeft(TUNING.MOONROCKWALL_WORK)
-        else
-            inst.components.workable:SetWorkLeft(3)
-        end
+        inst.components.workable:SetWorkLeft(data.name == MATERIALS.MOONROCK and TUNING.MOONROCKWALL_WORK or 3)
         inst.components.workable:SetOnFinishCallback(onhammered)
         inst.components.workable:SetOnWorkCallback(onhit) 
 
@@ -301,9 +295,7 @@ function MakeWallType(data)
 
         inst.OnLoad = onload
 
-        inst:DoTaskInTime(0, function()
-            inst.AnimState:PlayAnimation(resolveanimtoplay(inst, inst.components.health:GetPercent()))
-        end)
+        inst:DoTaskInTime(0, oninit)
 
         MakeSnowCovered(inst)
 
@@ -311,23 +303,24 @@ function MakeWallType(data)
     end
 
     return Prefab("common/wall_"..data.name, fn, assets, prefabs),
-           Prefab("common/wall_"..data.name.."_item", itemfn, assets, {"wall_"..data.name, "wall_"..data.name.."_item_placer", "collapse_small"}),
-           MakePlacer("common/wall_"..data.name.."_item_placer", "wall", "wall_"..data.name, "half", false, false, true, nil, nil, "eight")
+        Prefab("common/wall_"..data.name.."_item", itemfn, assets, { "wall_"..data.name, "wall_"..data.name.."_item_placer" }),
+        MakePlacer("common/wall_"..data.name.."_item_placer", "wall", "wall_"..data.name, "half", false, false, true, nil, nil, "eight")
 end
 
 local wallprefabs = {}
 
 --6 rock, 8 wood, 4 straw
 --NOTE: Stacksize is now set in the actual recipe for the item.
-local walldata = {
-            {name = MATERIALS.STONE, tags={"stone"}, loot = "rocks", maxloots = 2, maxhealth=TUNING.STONEWALL_HEALTH, paintable = true, buildsound="dontstarve/common/place_structure_stone", destroysound="dontstarve/common/destroy_stone"},
-            {name = MATERIALS.WOOD, tags={"wood"}, loot = "log", maxloots = 2, maxhealth=TUNING.WOODWALL_HEALTH, flammable = true, buildsound="dontstarve/common/place_structure_wood", destroysound="dontstarve/common/destroy_wood"},
-            {name = MATERIALS.HAY, tags={"grass"}, loot = "cutgrass", maxloots = 2, maxhealth=TUNING.HAYWALL_HEALTH, flammable = true, buildsound="dontstarve/common/place_structure_straw", destroysound="dontstarve/common/destroy_straw"},
-            {name = "ruins", tags={"stone", "ruins"}, loot = "thulecite_pieces", maxloots = 2, maxhealth=TUNING.RUINSWALL_HEALTH, buildsound="dontstarve/common/place_structure_stone", destroysound="dontstarve/common/destroy_stone"},
-            {name = "moonrock", tags={"stone", "moonrock"}, loot = "moonrocknugget", maxloots = 2, maxhealth=TUNING.MOONROCKWALL_HEALTH, paintable = true, buildsound="dontstarve/common/place_structure_stone", destroysound="dontstarve/common/destroy_stone"},
-        }
+local walldata =
+{
+    { name = MATERIALS.STONE,    material = "stone", tags = { "stone" },             loot = "rocks",            maxloots = 2, maxhealth = TUNING.STONEWALL_HEALTH,    paintable = true, buildsound = "dontstarve/common/place_structure_stone" },
+    { name = MATERIALS.WOOD,     material = "wood",  tags = { "wood" },              loot = "log",              maxloots = 2, maxhealth = TUNING.WOODWALL_HEALTH,     flammable = true, buildsound = "dontstarve/common/place_structure_wood"  },
+    { name = MATERIALS.HAY,      material = "straw", tags = { "grass" },             loot = "cutgrass",         maxloots = 2, maxhealth = TUNING.HAYWALL_HEALTH,      flammable = true, buildsound = "dontstarve/common/place_structure_straw" },
+    { name = "ruins",            material = "stone", tags = { "stone", "ruins" },    loot = "thulecite_pieces", maxloots = 2, maxhealth = TUNING.RUINSWALL_HEALTH,                      buildsound = "dontstarve/common/place_structure_stone" },
+    { name = MATERIALS.MOONROCK, material = "stone", tags = { "stone", "moonrock" }, loot = "moonrocknugget",   maxloots = 2, maxhealth = TUNING.MOONROCKWALL_HEALTH, paintable = true, buildsound = "dontstarve/common/place_structure_stone" },
+}
 
-for k,v in pairs(walldata) do
+for i, v in ipairs(walldata) do
     local wall, item, placer = MakeWallType(v)
     table.insert(wallprefabs, wall)
     table.insert(wallprefabs, item)

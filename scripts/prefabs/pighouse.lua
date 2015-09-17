@@ -13,7 +13,7 @@ local prefabs =
 }
 
 local function LightsOn(inst)
-    if not inst:HasTag("burnt") then 
+    if not inst:HasTag("burnt") then
         inst.Light:Enable(true)
         inst.AnimState:PlayAnimation("lit", true)
         inst.SoundEmitter:PlaySound("dontstarve/pig/pighut_lighton")
@@ -22,7 +22,7 @@ local function LightsOn(inst)
 end
 
 local function LightsOff(inst)
-    if not inst:HasTag("burnt") then 
+    if not inst:HasTag("burnt") then
         inst.Light:Enable(false)
         inst.AnimState:PlayAnimation("idle", true)
         inst.SoundEmitter:PlaySound("dontstarve/pig/pighut_lightoff")
@@ -31,42 +31,34 @@ local function LightsOff(inst)
 end
 
 local function onfar(inst)
-    if not inst:HasTag("burnt") then 
-        if inst.components.spawner:IsOccupied() then
-            LightsOn(inst)
-        end
+    if not inst:HasTag("burnt") and inst.components.spawner:IsOccupied() then
+        LightsOn(inst)
     end
 end
 
 local function getstatus(inst)
-    if inst:HasTag("burnt") then 
-        return "BURNT"
-    elseif inst.components.spawner and inst.components.spawner:IsOccupied() then
-        if inst.lightson then
-            return "FULL"
-        else
-            return "LIGHTSOUT"
-        end
-    end
+    return (inst:HasTag("burnt") and "BURNT")
+        or (inst.components.spawner ~= nil and
+            inst.components.spawner:IsOccupied() and
+            (inst.lightson and "FULL" or "LIGHTSOUT"))
+        or nil
 end
 
 local function onnear(inst)
-    if not inst:HasTag("burnt") then 
-        if inst.components.spawner:IsOccupied() then
-            LightsOff(inst)
-        end
+    if not inst:HasTag("burnt") and inst.components.spawner:IsOccupied() then
+        LightsOff(inst)
     end
 end
 
 local function onwere(child)
-    if child.parent and not child.parent:HasTag("burnt") then
+    if child.parent ~= nil and not child.parent:HasTag("burnt") then
         child.parent.SoundEmitter:KillSound("pigsound")
         child.parent.SoundEmitter:PlaySound("dontstarve/pig/werepig_in_hut", "pigsound")
     end
 end
 
 local function onnormal(child)
-    if child.parent and not child.parent:HasTag("burnt") then
+    if child.parent ~= nil and not child.parent:HasTag("burnt") then
         child.parent.SoundEmitter:KillSound("pigsound")
         child.parent.SoundEmitter:PlaySound("dontstarve/pig/pig_in_hut", "pigsound")
     end
@@ -96,21 +88,21 @@ local function onoccupied(inst, child)
 end
 
 local function onvacate(inst, child)
-    if not inst:HasTag("burnt") then 
-        if inst.doortask then
+    if not inst:HasTag("burnt") then
+        if inst.doortask ~= nil then
             inst.doortask:Cancel()
             inst.doortask = nil
         end
         inst.SoundEmitter:PlaySound("dontstarve/common/pighouse_door")
         inst.SoundEmitter:KillSound("pigsound")
-        
-        if child then
+
+        if child ~= nil then
             inst:RemoveEventCallback("transformwere", onwere, child)
             inst:RemoveEventCallback("transformnormal", onnormal, child)
-            if child.components.werebeast then
+            if child.components.werebeast ~= nil then
                 child.components.werebeast:ResetTriggers()
             end
-            if child.components.health then
+            if child.components.health ~= nil then
                 child.components.health:SetPercent(1)
             end
         end
@@ -129,8 +121,9 @@ local function onhammered(inst, worker)
         inst.components.spawner:ReleaseChild()
     end
     inst.components.lootdropper:DropLoot()
-    SpawnPrefab("collapse_big").Transform:SetPosition(inst.Transform:GetWorldPosition())
-    inst.SoundEmitter:PlaySound("dontstarve/common/destroy_wood")
+    local fx = SpawnPrefab("collapse_big")
+    fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+    fx:SetMaterial("wood")
     inst:Remove()
 end
 
@@ -148,14 +141,12 @@ end
 
 local function OnStartDay(inst)
     --print(inst, "OnStartDay")
-    if not inst:HasTag("burnt") then 
-        if inst.components.spawner:IsOccupied() then
-            LightsOff(inst)
-            if inst.doortask ~= nil then
-                inst.doortask:Cancel()
-            end
-            inst.doortask = inst:DoTaskInTime(1 + math.random() * 2, onstartdaydoortask)
+    if not inst:HasTag("burnt") and inst.components.spawner:IsOccupied() then
+        LightsOff(inst)
+        if inst.doortask ~= nil then
+            inst.doortask:Cancel()
         end
+        inst.doortask = inst:DoTaskInTime(1 + math.random() * 2, onstartdaydoortask)
     end
 end
 
@@ -178,13 +169,13 @@ local function onignite(inst)
 end
 
 local function onsave(inst, data)
-    if inst:HasTag("burnt") or inst:HasTag("fire") then
+    if inst:HasTag("burnt") or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
         data.burnt = true
     end
 end
 
 local function onload(inst, data)
-    if data and data.burnt then
+    if data ~= nil and data.burnt then
         inst.components.burnable.onburnt(inst)
     end
 end

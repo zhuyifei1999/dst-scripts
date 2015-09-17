@@ -10,20 +10,19 @@ prefabs =
     "collapse_small",
 }
 
-local names = {"piece1","piece2","piece3"}
+local names = { "piece1", "piece2", "piece3" }
 
-SetSharedLootTable( 'houndbone',
+SetSharedLootTable('houndbone',
 {
     {'boneshard',  1.00},
 })
-
 
 local function onsave(inst, data)
     data.anim = inst.animname
 end
 
 local function onload(inst, data)
-    if data and data.anim then
+    if data ~= nil and data.anim then
         inst.animname = data.anim
         inst.AnimState:PlayAnimation(inst.animname)
     end
@@ -31,8 +30,9 @@ end
 
 local function onhammered(inst, worker)
     inst.components.lootdropper:DropLoot()
-    SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
-    inst.SoundEmitter:PlaySound("dontstarve/common/destroy_wood")
+    local fx = SpawnPrefab("collapse_small")
+    fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+    fx:SetMaterial("wood")
     inst:Remove()
 end
 
@@ -78,8 +78,9 @@ local function fn()
     inst:AddComponent("inspectable")
     
     --MakeSnowCovered(inst)
-    inst.OnSave = onsave 
-    inst.OnLoad = onload 
+    inst.OnSave = onsave
+    inst.OnLoad = onload
+
     return inst
 end
 

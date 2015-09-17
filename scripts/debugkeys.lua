@@ -280,46 +280,86 @@ AddGameDebugKey(KEY_F7, function()
     local player = ConsoleCommandPlayer()
     if player then
         local x, y, z = player.Transform:GetWorldPosition()
-        for i, node in ipairs(TheWorld.topology.nodes) do
-            if TheSim:WorldPointInPoly(x, z, node.poly) then
-                print("/********************\\")
-                print("Standing in", i)
-                print("id", TheWorld.topology.ids[i])
-                print("type", node.type)
-                print("story depth", TheWorld.topology.story_depths[i])
-                print("area", node.area)
 
-                if TheInput:IsKeyDown(KEY_SHIFT) then
-                    c_teleport(node.cent[1], 0, node.cent[2], player)
-                    print("center", unpack(node.cent))
-                elseif TheInput:IsKeyDown(KEY_CTRL) then
-                    print("poly size", #node.poly)
-                    for _,v in ipairs(node.poly) do
-                        print("\t", unpack(v))
-                    end
-
-                    local idx = 1
-                    local nextpoint = nil
-                    nextpoint = function()
-                        c_teleport(node.poly[idx][1], 0, node.poly[idx][2], player)
-                        idx = idx + 1
-                        if idx <= #node.poly then
-                            player:DoTaskInTime(0.3, nextpoint)
+        if TheInput:IsKeyDown(KEY_SHIFT) and TheInput:IsKeyDown(KEY_CTRL) then
+            local idx = 0
+            local nidx = 1
+            local nextpoint = nil
+            nextpoint = function()
+                if TheWorld.topology.nodes[nidx] ~= nil then
+                    if idx == 0 then
+                        if TheWorld.topology.nodes[nidx].cent ~= nil then
+                            c_teleport(TheWorld.topology.nodes[nidx].cent[1], 0, TheWorld.topology.nodes[nidx].cent[2], player)
                         end
-                    end
-                    nextpoint()
-                elseif TheInput:IsKeyDown(KEY_ALT) then
-                    print("densities")
-                    if TheWorld.generated.densities[TheWorld.topology.ids[i]] == nil then
-                        print("\t<none>")
                     else
-                        for k,v in pairs(TheWorld.generated.densities[TheWorld.topology.ids[i]]) do
-                            print("\t",k,v)
+                        if TheWorld.topology.nodes[nidx].poly ~= nil then
+                            c_teleport(TheWorld.topology.nodes[nidx].poly[idx][1], 0, TheWorld.topology.nodes[nidx].poly[idx][2], player)
                         end
                     end
+                    idx = idx + 1
+                    if false then--idx <= #TheWorld.topology.nodes[nidx].poly then
+                        -- continue
+                        --nextpoint()
+                        player:DoTaskInTime(0.0, nextpoint)
+                    elseif nidx <= #TheWorld.topology.nodes then
+                        nidx = nidx + 1
+                        idx = 0
+                        --nextpoint()
+                        player:DoTaskInTime(0.0, nextpoint)
+                    end
+                else
+                    nidx = nidx + 1
+                    --nextpoint()
+                    player:DoTaskInTime(0.0, nextpoint)
                 end
-                print("\\********************/")
             end
+            nextpoint()
+        else
+
+            for i, node in ipairs(TheWorld.topology.nodes) do
+                if TheSim:WorldPointInPoly(x, z, node.poly) then
+                    print("/********************\\")
+                    print("Standing in", i)
+                    print("id", TheWorld.topology.ids[i])
+                    print("type", node.type)
+                    print("story depth", TheWorld.topology.story_depths[i])
+                    print("area", node.area)
+
+                    if TheInput:IsKeyDown(KEY_SHIFT) and TheInput:IsKeyDown(KEY_CTRL) then
+                        -- eat this, handled above
+                    elseif TheInput:IsKeyDown(KEY_SHIFT) then
+                        c_teleport(node.cent[1], 0, node.cent[2], player)
+                        print("center", unpack(node.cent))
+                    elseif TheInput:IsKeyDown(KEY_CTRL) then
+                        print("poly size", #node.poly)
+                        for _,v in ipairs(node.poly) do
+                            print("\t", unpack(v))
+                        end
+
+                        local idx = 1
+                        local nextpoint = nil
+                        nextpoint = function()
+                            c_teleport(node.poly[idx][1], 0, node.poly[idx][2], player)
+                            idx = idx + 1
+                            if idx <= #node.poly then
+                                player:DoTaskInTime(0.3, nextpoint)
+                            end
+                        end
+                        nextpoint()
+                    elseif TheInput:IsKeyDown(KEY_ALT) then
+                        print("densities")
+                        if TheWorld.generated.densities[TheWorld.topology.ids[i]] == nil then
+                            print("\t<none>")
+                        else
+                            for k,v in pairs(TheWorld.generated.densities[TheWorld.topology.ids[i]]) do
+                                print("\t",k,v)
+                            end
+                        end
+                    end
+                    print("\\********************/")
+                end
+            end
+
         end
     end
 end)
@@ -328,14 +368,14 @@ end)
 
 AddGameDebugKey(KEY_F8, function()
     --Spawns a lot of prefabs around you in rings.
-    local items = {"grass"} --Which items spawn. 
+    local items = {"light_flower"} --Which items spawn. 
     local player = DebugKeyPlayer()
     local pt = Vector3(player.Transform:GetWorldPosition())
     local theta = math.random() * 2 * PI
     local numrings = 10 --How many rings of stuff you spawn
     local radius = 5 --Initial distance from player
-    local radius_step_distance = 1 --How much the radius increases per ring.
-    local itemdensity = .1 --(X items per unit)
+    local radius_step_distance = 10 --How much the radius increases per ring.
+    local itemdensity = 0.1 --(X items per unit)
     local map = TheWorld.Map
     
     local finalRad = (radius + (radius_step_distance * numrings))
@@ -524,10 +564,29 @@ end)
 
 AddGameDebugKey(KEY_T, function()
     -- Moving Teleport to just plain T as I am getting a sore hand from CTRL-T - Alia
-    local MainCharacter = DebugKeyPlayer()
-    if MainCharacter then
-        MainCharacter.Physics:Teleport(TheInput:GetWorldPosition():Get())
-    end   
+    if TheInput:IsKeyDown(KEY_CTRL) then
+        local x,y,z = TheInput:GetWorldPosition():Get()
+        local w1 = SpawnPrefab("wormhole")
+        w1.Transform:SetPosition(x-10, y, z)
+        local w2 = SpawnPrefab("wormhole")
+        w2.Transform:SetPosition(x+10, y, z)
+
+        w1.components.teleporter:Target(w2)
+        w2.components.teleporter:Target(w1)
+
+        local t1 = SpawnPrefab("tentacle_pillar_hole")
+        t1.Transform:SetPosition(x-10, y, z+5)
+        local t2 = SpawnPrefab("tentacle_pillar")
+        t2.Transform:SetPosition(x+10, y, z+5)
+
+        t1.components.teleporter:Target(t2)
+        t2.components.teleporter:Target(t1)
+    else
+        local MainCharacter = DebugKeyPlayer()
+        if MainCharacter then
+            MainCharacter.Physics:Teleport(TheInput:GetWorldPosition():Get())
+        end
+    end
     return true
 end)
 
@@ -659,6 +718,10 @@ AddGameDebugKey(KEY_M, function()
     return true
 end)
 
+AddGameDebugKey(KEY_N, function()
+    c_gonext()
+end)
+
 AddGameDebugKey(KEY_S, function()
     if TheInput:IsKeyDown(KEY_CTRL) then
         TheWorld:PushEvent("save")
@@ -736,7 +799,7 @@ AddGameDebugKey(KEY_H, function()
     if TheInput:IsKeyDown(KEY_LCTRL) then
         ThePlayer.HUD:Toggle()
     elseif TheInput:IsKeyDown(KEY_ALT) then
-        TheWorld.components.hounded:ForceNextHoundWave()
+        TheWorld.components.hounded:ForceNextWave()
     end
 end)
 
@@ -758,7 +821,7 @@ AddGameDebugKey(KEY_I, function()
     if TheInput:IsKeyDown(KEY_SHIFT) and not TheInput:IsKeyDown(KEY_CTRL) then
         c_spawn("dragonfly")
     elseif TheInput:IsKeyDown(KEY_CTRL) and not TheInput:IsKeyDown(KEY_SHIFT) then
-        c_spawn("lavae")
+        c_spawn("light_flower"):TurnOn()
     elseif TheInput:IsKeyDown(KEY_CTRL) and TheInput:IsKeyDown(KEY_SHIFT) then
         local lavae = {}
         for k, v in pairs(Ents) do

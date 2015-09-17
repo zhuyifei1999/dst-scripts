@@ -38,9 +38,7 @@ local function onexplode(inst)
     local shakespeed = .02 * inst.size
     local shakescale = .5 * inst.size
     local shakemaxdist = 40 * inst.size
-    for i, v in ipairs(AllPlayers) do
-        v:ShakeCamera(CAMERASHAKE.FULL, shakeduration, shakespeed, shakescale, inst, shakemaxdist)
-    end
+    ShakeAllCameras(CAMERASHAKE.FULL, shakeduration, shakespeed, shakescale, inst, shakemaxdist)
 
     local x, y, z = inst.Transform:GetWorldPosition()
 

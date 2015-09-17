@@ -1,39 +1,60 @@
 local assets=
 {
 	Asset("ANIM", "anim/worm_light.zip"),
+	Asset("ANIM", "anim/worm_light_lesser.zip"),
 }
 
-local function item_oneaten(inst, eater)
-
+local function create_light(eater, lightprefab)
     if eater.wormlight then
         eater.wormlight.components.spell.lifetime = 0
         eater.wormlight.components.spell:ResumeSpell()
     else
-        local light = SpawnPrefab("wormlight_light")
+        local light = SpawnPrefab(lightprefab)
         light.components.spell:SetTarget(eater)
         if not light.components.spell.target then
             light:Remove()
+        else
+            light.components.spell:StartSpell()
         end
-        light.components.spell:StartSpell()
     end
+end
+
+local function item_oneaten(inst, eater)
+    create_light(eater, "wormlight_light")
+end
+
+local function lesseritem_oneaten(inst, eater)
+    create_light(eater, "wormlight_light_lesser")
 end
 
 local function itemfn()
 	local inst = CreateEntity()
 	inst.entity:AddTransform()
 	inst.entity:AddAnimState()
-    
+    inst.entity:AddNetwork()
+
     inst.AnimState:SetBank("worm_light")
     inst.AnimState:SetBuild("worm_light")
     inst.AnimState:PlayAnimation("idle")
-    MakeInventoryPhysics(inst)
-    
-    inst:AddComponent("inspectable")
-    
-    inst:AddComponent("inventoryitem")
 
+    local light = inst.entity:AddLight()
+    light:SetFalloff(0.7)
+    light:SetIntensity(.5)
+    light:SetRadius(0.5)
+    light:SetColour(169/255, 231/255, 245/255)
+    light:Enable(true)
+    inst.AnimState:SetBloomEffectHandle( "shaders/anim.ksh" )
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    MakeInventoryPhysics(inst)
+
+    inst:AddComponent("inspectable")
+    inst:AddComponent("inventoryitem")
     inst:AddComponent("tradable")
-    
+
     inst:AddComponent("edible")
     inst.components.edible.foodtype = FOODTYPE.VEGGIE
     inst.components.edible.healthvalue = TUNING.HEALING_MEDSMALL + TUNING.HEALING_SMALL
@@ -53,14 +74,27 @@ local function itemfn()
     inst:AddComponent("stackable")
     inst.components.stackable.maxsize = TUNING.STACK_SIZE_LARGEITEM
 
-    local light = inst.entity:AddLight()
-    light:SetFalloff(0.7)
-    light:SetIntensity(.5)
-    light:SetRadius(0.5)
-    light:SetColour(169/255, 231/255, 245/255)
-    light:Enable(true)
-    inst.AnimState:SetBloomEffectHandle( "shaders/anim.ksh" )
+    return inst
+end
 
+local function lesseritemfn()
+    local inst = itemfn()
+
+    inst.AnimState:SetBank("worm_light_lesser")
+    inst.AnimState:SetBuild("worm_light_lesser")
+    inst.AnimState:PlayAnimation("idle")
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.components.edible.foodtype = FOODTYPE.VEGGIE
+    inst.components.edible.healthvalue = TUNING.HEALING_SMALL
+    inst.components.edible.hungervalue = TUNING.CALORIES_SMALL
+    inst.components.edible.sanityvalue = -TUNING.SANITY_SMALL
+    inst.components.edible:SetOnEatenFn(lesseritem_oneaten)
+
+    inst.components.fuel.fuelvalue = TUNING.MED_FUEL
 
     return inst
 end
@@ -121,13 +155,20 @@ local function lightfn()
 
     local inst = CreateEntity()
     inst.entity:AddTransform()
+    inst.entity:AddNetwork()
 
-    inst:AddComponent("lighttweener")
     inst.light = inst.entity:AddLight()
     inst.light:Enable(true)
 
     inst:AddTag("FX")
     inst:AddTag("NOCLICK")
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst:AddComponent("lighttweener")
+
     local spell = inst:AddComponent("spell")
     inst.components.spell.spellname = "wormlight"
     inst.components.spell:SetVariables(light_variables)
@@ -142,5 +183,19 @@ local function lightfn()
     return inst
 end
 
-return Prefab( "common/inventory/wormlight", itemfn, assets),
-Prefab("common/inventory/wormlight_light", lightfn)
+local function lesserlightfn()
+    local inst = lightfn()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.components.spell.duration = TUNING.WORMLIGHT_DURATION * 0.25
+
+    return inst
+end
+
+return  Prefab("common/inventory/wormlight", itemfn, assets),
+        Prefab("common/inventory/wormlight_lesser", lesseritemfn, assets),
+        Prefab("common/inventory/wormlight_light", lightfn),
+        Prefab("common/inventory/wormlight_light_lesser", lesserlightfn)

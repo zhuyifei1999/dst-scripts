@@ -151,6 +151,7 @@ function Node:ConvertGround(spawnFn, entitiesOut, width, height, world_gen_choic
 
 	if self.data.terrain_contents.countstaticlayouts ~= nil then
 		for k,count in pairs(self.data.terrain_contents.countstaticlayouts) do
+            --print("STATIC LAYOUTS: adding a "..k.." to "..self.id)
 			if type(count) == "function" then
 				count = count()
 			end

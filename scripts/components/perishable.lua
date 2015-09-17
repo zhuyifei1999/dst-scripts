@@ -144,6 +144,15 @@ end
 function Perishable:SetPerishTime(time)
 	self.perishtime = time
 	self.perishremainingtime = time
+    if self.updatetask ~= nil then
+        self:StartPerishing()
+    end
+end
+
+function Perishable:SetNewMaxPerishTime(newtime)
+    local percent = self:GetPercent()
+    self.perishtime = newtime
+    self:SetPercent(percent)
 end
 
 function Perishable:SetOnPerishFn(fn)
@@ -165,6 +174,10 @@ function Perishable:SetPercent(percent)
 		self.perishremainingtime = percent*self.perishtime
 	    self.inst:PushEvent("perishchange", {percent = self.inst.components.perishable:GetPercent()})
 	end
+
+    if self.updatetask ~= nil then
+        self:StartPerishing()
+    end
 end
 
 function Perishable:ReducePercent(amount)
@@ -195,13 +208,8 @@ function Perishable:StartPerishing()
         self.updatetask = nil
     end
 
-    local dt = 10 + math.random()*FRAMES*8--math.max( 4, math.min( self.perishtime / 100, 10)) + ( math.random()* FRAMES * 8)
-
-    if dt > 0 then
-        self.updatetask = self.inst:DoPeriodicTask(dt, Update, math.random()*2, dt)
-    else
-        Update(self.inst, 0)
-    end
+    local dt = 10 + math.random()*FRAMES*8
+    self.updatetask = self.inst:DoPeriodicTask(dt, Update, math.random()*2, dt)
 end
 
 function Perishable:Perish()

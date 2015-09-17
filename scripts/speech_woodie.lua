@@ -430,6 +430,7 @@ return {
 		BATBAT = "A mouse with wings?",
 		BATWING="Gross!",
 		BATWING_COOKED="Gross! And tasty! So confusing!",
+        BATCAVE = "Full of the little critters!",
 		
 		BEDROLL_FURRY="I love camping.",
 		BUNNYMAN="He looks friendly enough.",
@@ -440,9 +441,25 @@ return {
 		LANTERN="High tech!",
 		LIGHTBULB="It looks chewy.",
 		MANRABBIT_TAIL="I feel sorry for him.",
-		MUSHTREE_TALL  ="I can't let that stand.",
-		MUSHTREE_MEDIUM="Maybe I should chop it.",
-		MUSHTREE_SMALL ="It's made of wood.",
+		MUSHTREE_TALL={
+            GENERIC = "I can't let that stand.",
+            BLOOM = "Chop it down before it spreads!",
+        },
+		MUSHTREE_MEDIUM={
+            GENERIC = "Maybe I should chop it.",
+            BLOOM = "I like the colour of this one.",
+        },
+		MUSHTREE_SMALL={
+            GENERIC = "It's made of wood.",
+            BLOOM = "Well I can't cut it down now...",
+        },
+        MUSHTREE_TALL_WEBBED = "This one needs pruning at least.",
+        SPORE_TALL = "Flying pinecones!",
+        SPORE_MEDIUM = "Flying pinecones!",
+        SPORE_SMALL = "Flying pinecones!",
+        SPORE_TALL_INV = "One day this might be a tree.",
+        SPORE_MEDIUM_INV = "One day this might be a tree.",
+        SPORE_SMALL_INV = "One day this might be a tree.",
 		SLURTLE="He's just misunderstood.",
 		SLURTLE_SHELLPIECES="I broke his home. I feel bad.",
 		SLURTLEHAT="This will keep my noggin safe.",
@@ -481,11 +498,9 @@ return {
 
 		
 		POWCAKE = "I like the ones made with real sugar better.",
-        CAVE_ENTRANCE = 
-        {
-            GENERIC="It's bunged up.",
-            OPEN = "It looks like Sudbury down there.",
-        },
+        CAVE_ENTRANCE = "It's bunged up.",
+        CAVE_ENTRANCE_RUINS = "It's bunged up.",
+        CAVE_ENTRANCE_OPEN = "It looks like Sudbury down there.",
         CAVE_EXIT = "There are probably trees up there.",
 		
 		MAXWELLPHONOGRAPH = "Better than most of the stuff on the radio.",
@@ -831,7 +846,6 @@ return {
 		},
 		LITTLE_WALRUS = "Why are they so far south?",
 		LIVINGLOG = "I am going to keep you, and call you Frank.",
-		LOCKEDWES = "Who's that hoser?",
 		LOG =
 		{
 			BURNING = "Oh no! The fruits of my labour!",

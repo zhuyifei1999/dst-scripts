@@ -2,8 +2,12 @@
 local function DoSpawn(inst)
     local spawner = inst.components.periodicspawner
     if spawner then
-		spawner.target_time = nil    
-		spawner:TrySpawn()
+        if spawner.task ~= nil then
+            spawner.task:Cancel()
+            spawner.task = nil
+        end
+        spawner.target_time = nil
+        spawner:TrySpawn()
         spawner:Start()
     end
 end
@@ -115,6 +119,10 @@ function PeriodicSpawner:Stop()
         self.task:Cancel()
         self.task = nil
     end
+end
+
+function PeriodicSpawner:ForceNextSpawn()
+    DoSpawn(self.inst)
 end
 
 --[[

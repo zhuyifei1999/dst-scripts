@@ -354,12 +354,14 @@ return {
 		LIVINGTREE = "Can it never die?",
 		ICESTAFF = "A staff to freeze.",
 		WORMLIGHT = "There's a slight humming coming from it.",
+        WORMLIGHT_LESSER = "Today, I got the worm's light.",
 		WORM =
 		{
 		    PLANT = "It seems out of place.",
 		    DIRT = "Is something there?",
 		    WORM = "It comes from the depths.",
 		},
+        WORMLIGHT_PLANT = "It seems out of place.",
 		EEL = "An eel.",
 		EEL_COOKED = "An eel that has been cooked.",
 		UNAGI = "It looks more appetizing this way.",
@@ -441,7 +443,6 @@ return {
 		CAVE_BANANA_TREE = "Poor plant, locked away from the sun.",
 		ROCKY = "What terrible sights they have seen.",
 
-
 		BLUEAMULET = "A familiar chilling embrace.",
 		PURPLEAMULET = "It's oozing.",
 		TELESTAFF = "I could escape if it were more powerful.",
@@ -454,6 +455,7 @@ return {
 		BATBAT = "An enchanted weapon. How exciting!",
 		BATWING="If only I could fly away.",
 		BATWING_COOKED="They once held such great potential.",
+        BATCAVE="They're just lurking in there...",
 		BEDROLL_FURRY="I will wrap myself in the fuzzy skins of the fallen.",
 		BUNNYMAN="What tormented inner lives they must have.",
 		FLOWER_CAVE="It looks fragile.",
@@ -463,9 +465,25 @@ return {
 		LANTERN="Light the way darkly.",
 		LIGHTBULB="It's slowly burning out.",
 		MANRABBIT_TAIL="It contains his fuzzy wuzzy essence.",
-		MUSHTREE_TALL  ="These are some strange trees.",
-		MUSHTREE_MEDIUM="It looks like a rotting hat.",
-		MUSHTREE_SMALL ="Do little gnomes live in these?",
+		MUSHTREE_TALL={
+            GENERIC = "These are some strange trees.",
+            BLOOM = "It's trying so hard to give.",
+        },
+		MUSHTREE_MEDIUM={
+            GENERIC = "It looks like a rotting hat.",
+            BLOOM = "All it's efforts fall on rocky soil.",
+        },
+		MUSHTREE_SMALL={
+            GENERIC = "Do little gnomes live in these?",
+            BLOOM = "It has a glowing presence.",
+        },
+        MUSHTREE_TALL_WEBBED = "This one is frail and scorned.",
+        SPORE_TALL = "Be free, little one!",
+        SPORE_MEDIUM = "Be free, little one!",
+        SPORE_SMALL = "Be free, little one!",
+        SPORE_TALL_INV = "So many have perished. But this one is safe.",
+        SPORE_MEDIUM_INV = "So many have perished. But this one is safe.",
+        SPORE_SMALL_INV = "So many have perished. But this one is safe.",
 		SLURTLE="It is mindlessly chasing after rocks.",
 		SLURTLE_SHELLPIECES="Pieces of broken slurtle dreams.",
 		SLURTLEHAT="I doubt it will help me more than it did for the original owner.",
@@ -502,11 +520,9 @@ return {
 		TURF_MUD="Some ground.",
 
 		POWCAKE = "I would have to be desperate.",		
-		CAVE_ENTRANCE = 
-		{
-			GENERIC="Someone is trying to keep the underground at bay.",
-			OPEN = "A great evil lurks beneath the surface.",
-		},
+		CAVE_ENTRANCE = "Someone is trying to keep the underground at bay.",
+		CAVE_ENTRANCE_RUINS = "Someone is trying to keep the underground at bay.",
+        CAVE_ENTRANCE_OPEN = "A great evil lurks beneath the surface.",
         CAVE_EXIT = "The surface beckons.",
 		BOOMERANG = "Death returns to the sender.",
 		MAXWELLPHONOGRAPH = "Shall we have a danse macabre?",
@@ -827,7 +843,6 @@ return {
 		},
 		LITTLE_WALRUS = "The cycle of violence continues.",
 		LIVINGLOG = "It is forever silently screaming.",
-		LOCKEDWES = "Trapped by Maxwell's statues, forever alive.",
 		LOG = "If trees could talk, they would scream at the sight of this.",
 		LUREPLANT = "It consumes all.",
 		LUREPLANTBULB = "Life goes on.",

@@ -1,17 +1,10 @@
-local function onattacked(inst,data )
+local function onattacked(inst, data)
 	if inst.components.follower.leader == data.attacker then
 		inst.components.follower:SetLeader(nil)
 	end
 end
 
 local function onleader(self, leader)
-
-	if leader then
-		self.inst:AddTag("following")
-	else
-		self.inst:RemoveTag("following")
-	end
-
     self.inst.replica.follower:SetLeader(leader)
 end
 

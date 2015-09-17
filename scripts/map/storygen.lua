@@ -61,6 +61,10 @@ Story = Class(function(self, id, tasks, terrain, gen_params, level)
 	self.terrain = terrain
 	
 	self.rootNode = Graph(id.."_root", {})
+    if gen_params.wormhole_prefab ~= nil then
+        self.rootNode.wormholeprefab = gen_params.wormhole_prefab
+    end
+
 	self.startNode = nil
 
 	self.map_tags = MapTags()
@@ -87,6 +91,11 @@ end
 
 function Story:GetRoom(roomname)
 	local newroom = deepcopy(self.terrain.rooms[roomname])
+    if newroom == nil then
+        return nil
+    end
+    newroom.name = roomname
+    newroom.type = newroom.type or NODE_TYPE.Default
 	self:ModRoom(roomname, newroom)
 	return newroom
 end
@@ -181,7 +190,7 @@ function Story:InsertAdditionalSetPieces()
 					return setpiece_data.restrict_to ~= "background" or room.data.type == "background"
 				end
 				local isnt_blank = function(room)
-					return room.data.type ~= "blank"
+					return room.data.type ~= "blank" and room.data.value ~= GROUND.IMPASSABLE
 				end
 
 				local choicekeys = shuffledKeys(task.nodes)
@@ -217,7 +226,7 @@ function Story:InsertAdditionalSetPieces()
 						return room.data.entrance ~= nil and room.data.entrance == true
 					end
 					local isnt_blank = function(room)
-						return room.data.type ~= "blank"
+						return room.data.type ~= NODE_TYPE.Blank
 					end
 
 					if not is_entrance(task.nodes[choicekey]) and isnt_blank(task.nodes[choicekey]) then
@@ -241,6 +250,182 @@ function Story:InsertAdditionalSetPieces()
 			end
 		end
 	end
+end
+
+function Story:RestrictNodesByKey(startParentNode, unusedTasks)
+	print("##############################RestrictNodesByKey")
+
+	local lastNode = startParentNode
+		
+	local usedTasks = {}
+	usedTasks[startParentNode.id] = startParentNode
+	startParentNode.story_depth = 0
+	local story_depth = 1
+	local currentNode = nil
+
+    local last_parent = 1 -- this is a desperate attempt to distribute the nodes better
+
+    local function FindAttachNodes(taskid, node, target_tasks)
+
+        local unlockingNodes = {}
+
+        for target_taskid, target_node in pairs(target_tasks) do
+
+            local locks = {}
+            for i,v in ipairs(self.tasks[taskid].locks) do
+                local lock = {keys=LOCKS_KEYS[v], unlocked = false}
+                locks[v] = lock
+            end
+
+            local availableKeys = {} --What are we allowed to connect to this task?
+
+            for i, v in ipairs(self.tasks[target_taskid].keys_given) do --Get the keys that the last area we generated gives
+                availableKeys[v] = {}
+                table.insert(availableKeys[v], target_node)
+            end
+
+            for lock, lockData in pairs(locks) do 						--For each lock:
+                for key, keyNodes in pairs(availableKeys) do 			--Do we have a key...
+                    for reqKeyIdx, reqKey in ipairs(lockData.keys) do 	--...for this lock?
+                        if reqKey == key then 							--If yes, get the nodes
+                            lockData.unlocked = true 					--Unlock the lock.
+                        end
+                    end
+                end
+            end
+
+            local unlocked = true
+            for lock, lockData in pairs(locks) do
+                if lockData.unlocked == false then
+                    unlocked = false
+                    break
+                end
+            end
+
+            if unlocked then
+                unlockingNodes[target_taskid] = target_node
+            else
+            end
+        end
+
+        return unlockingNodes
+    end
+
+    while GetTableSize(unusedTasks) > 0 do
+        local effectiveLastNode = lastNode
+        print_lockandkey_ex("\n\n_______Attempting new connection_______")
+
+        local candidateTasks = {}
+
+        print_lockandkey_ex("Gathering new batch:")
+
+        for taskid, node in pairs(unusedTasks) do
+            local unlockingNodes = FindAttachNodes(taskid, node, usedTasks)
+
+            if GetTableSize(unlockingNodes) > 0 then
+                print_lockandkey_ex(taskid, GetTableSize(unlockingNodes))
+                candidateTasks[taskid] = unlockingNodes
+            end
+        end
+
+        local function AppendNode(in_node, parents)
+
+            print_lockandkey_ex("#############Success! Making connection.#############")
+            print_lockandkey_ex(string.format("Trying to connect %s", in_node.id))
+            currentNode = in_node
+
+            local lowest = {i = 999, node = nil}
+            local highest = {i = -1, node = nil}
+            for id, node in pairs(parents) do
+                if node.story_depth >= highest.i then
+                    highest.i = node.story_depth
+                    highest.node = node
+                end
+                if node.story_depth < lowest.i then
+                    lowest.i = node.story_depth
+                    lowest.node = node
+                end
+            end
+
+            if self.gen_params.branching == nil or self.gen_params.branching == "default" then
+                last_parent = ((last_parent-1) % GetTableSize(parents)) + 1
+                local parent_i = 1
+                for k,v in pairs(parents) do
+                    if parent_i < last_parent then
+                        parent_i = parent_i + 1
+                    else
+                        last_parent = last_parent + 1
+                        effectiveLastNode = v
+                        break
+                    end
+                end
+                 print_lockandkey_ex("\tAttaching "..currentNode.id.." to next key", effectiveLastNode.id)
+            elseif self.gen_params.branching == "most" then
+                effectiveLastNode = lowest.node
+                 print_lockandkey_ex("\tAttaching "..currentNode.id.." to lowest key", effectiveLastNode.id)
+            elseif self.gen_params.branching == "least" then
+                effectiveLastNode = highest.node
+                 print_lockandkey_ex("\tAttaching "..currentNode.id.." to highest key", effectiveLastNode.id)
+            elseif self.gen_params.branching == "never" then
+                effectiveLastNode = lastNode
+                 print_lockandkey_ex("\tAttaching "..currentNode.id.." to end of chain", effectiveLastNode.id)
+            end
+
+            print_lockandkey_ex(string.format("Connected it to %s", effectiveLastNode.id))
+
+            currentNode.story_depth = story_depth
+            story_depth = story_depth + 1
+
+            local lastNodeExit = effectiveLastNode:GetRandomNode()
+            local currentNodeEntrance = currentNode:GetRandomNode()
+            if currentNode.entrancenode then
+                currentNodeEntrance = currentNode.entrancenode
+            end
+
+            assert(lastNodeExit)
+            assert(currentNodeEntrance)
+
+            if self.gen_params.island_percent ~= nil 
+                and self.gen_params.island_percent >= math.random()
+                and currentNodeEntrance.data.entrance == false then
+                self:SeperateStoryByBlanks(lastNodeExit, currentNodeEntrance)
+            else
+                self.rootNode:LockGraph(effectiveLastNode.id..'->'..currentNode.id, lastNodeExit, currentNodeEntrance, {type="none", key=self.tasks[currentNode.id].locks, node=nil})
+            end		
+
+            -- print_lockandkey_ex("\t\tAdding keys to keyring:")
+            -- for i,v in ipairs(self.tasks[currentNode.id].keys_given) do
+            -- 	if availableKeys[v] == nil then
+            -- 		availableKeys[v] = {}
+            -- 	end
+            -- 	table.insert(availableKeys[v], currentNode)
+            -- 	print_lockandkey_ex("\t\t",KEYS_ARRAY[v])
+            -- end
+
+            unusedTasks[currentNode.id] = nil
+            usedTasks[currentNode.id] = currentNode
+            lastNode = currentNode
+            currentNode = nil
+
+        end
+
+        if next(candidateTasks) == nil then
+            print_lockandkey_ex("We aint found nothin'!! Making a random connection :( -- ")
+            AppendNode( self:GetRandomNodeFromTasks(unusedTasks), usedTasks )
+        else
+            for taskid, unlockingNodes in pairs(candidateTasks) do
+                print_lockandkey_ex("PARENTS:")
+                for k,v in pairs(unlockingNodes) do
+                    print_lockandkey_ex("\t",k)
+                end
+                AppendNode( unusedTasks[taskid], unlockingNodes )
+            end
+        end
+
+
+    end
+
+	return lastNode:GetRandomNode()
 end
 
 function Story:LinkNodesByKeys(startParentNode, unusedTasks)
@@ -435,28 +620,54 @@ function Story:GenerateNodesFromTasks()
 	end
 
 	unusedTasks[startParentNode.id] = nil
-	
-    --print("Lock and Key")	
 
 	local finalNode = startParentNode
-	--if math.random()>0.8 then
-		--print("LinkNodesByLocks")	
-		--finalNode = self:LinkNodesByLocks(startParentNode, unusedTasks)
-	--else
-		print("LinkNodesByKeys")	
-		finalNode = self:LinkNodesByKeys(startParentNode, unusedTasks)
-	--end	
-	--print("Setting start node")	
-	
+    if self.gen_params.layout_mode
+        and string.upper(self.gen_params.layout_mode) == string.upper("RestrictNodesByKey") then
 
-	local randomStartNode = startParentNode:GetRandomNode()
+        print("RestrictNodesByKey")
+        finalNode = self:RestrictNodesByKey(startParentNode, unusedTasks)
+    else
+        print("LinkNodesByKeys")
+        finalNode = self:LinkNodesByKeys(startParentNode, unusedTasks)
+    end
+	
+    local randomStartTask = nil
+	local randomStartNode = nil
+    if self.level.valid_start_tasks ~= nil then
+        print("Finding valid start task...")
+        local validKeys = shuffleArray(deepcopy(self.level.valid_start_tasks))
+        local targetTask = nil
+        while targetTask == nil and #validKeys > 0 do
+            for id,task in pairs(self.rootNode:GetChildren()) do
+                if id == validKeys[1] then
+                    targetTask = task
+                    break
+                end
+            end
+            table.remove(validKeys, 1)
+        end
+        if targetTask ~= nil then
+            print("   ...picked ", targetTask.id)
+            randomStartTask = targetTask
+            randomStartNode = targetTask:GetRandomNode()
+        end
+    end
+
+    if randomStartNode == nil then
+        print("No valid start node, using first task.")
+        randomStartTask = startParentNode
+        randomStartNode = startParentNode:GetRandomNode()
+    end
 	
 	local start_node_data = {id="START"}
 
 	if self.gen_params.start_node ~= nil then
+		print("Has start node", self.gen_params.start_node)
 		start_node_data.data = self:GetRoom(self.gen_params.start_node)
 		start_node_data.data.terrain_contents = start_node_data.data.contents		
 	else
+		print("No start node!")
 		start_node_data.data = {
 								value = GROUND.GRASS,								
 								terrain_contents={
@@ -471,7 +682,7 @@ function Story:GenerateNodesFromTasks()
 							 }
 	end
 
-	start_node_data.data.type = "START"
+	start_node_data.data.name = "START"
 	start_node_data.data.colour = {r=0,g=1,b=1,a=.80}
 	
 	if self.gen_params.start_setpeice ~= nil then
@@ -483,10 +694,10 @@ function Story:GenerateNodesFromTasks()
 		end
 	end
 
-	self.startNode = startParentNode:AddNode(start_node_data)
+	self.startNode = randomStartTask:AddNode(start_node_data)
 											
 	--print("Story:GenerateNodesFromTasks adding start node link", self.startNode.id.." -> "..randomStartNode.id)
-	startParentNode:AddEdge({node1id=self.startNode.id, node2id=randomStartNode.id})	
+	randomStartTask:AddEdge({node1id=self.startNode.id, node2id=randomStartNode.id})	
 
 	-- form the map into a loop!
 	if self.gen_params.loop_percent ~= nil then
@@ -507,13 +718,13 @@ function Story:AddBGNodes(min_count, max_count)
 	local bg_idx = 0
 
 	for taskid, task in pairs(tasksnodes) do
-
 		local background_template = self:GetRoom(task.data.background)
-		assert(background_template, "Couldn't find room with name "..task.data.background)
+		assert(background_template, "Couldn't find room with name "..(task.data.background or "<nil>").." from "..task.id)
 		local blocker_blank_template = self:GetRoom(self.level.blocker_blank_room_name)
 		if blocker_blank_template == nil then
 			blocker_blank_template = {
-				type="blank",
+				type=NODE_TYPE.Blank,
+                name="blocker_blank",
 				tags = {"RoadPoison", "ForceDisconnected"},					 
 				colour={r=0.3,g=.8,b=.5,a=.50},
 				value = self.impassible_value
@@ -532,7 +743,7 @@ function Story:AddBGNodes(min_count, max_count)
 				for i=1,count do
 
 					local new_room = deepcopy(background_template)
-					new_room.id = nodeid..":BG_"..bg_idx
+					new_room.id = task.id..":BG_"..bg_idx..":"..new_room.name
 					new_room.task = task.id
 
 
@@ -544,7 +755,11 @@ function Story:AddBGNodes(min_count, max_count)
 					local newNode = task:AddNode({
 										id=new_room.id, 
 										data={
-												type="background",
+												type=(new_room.type == NODE_TYPE.Room and NODE_TYPE.BackgroundRoom)
+                                                    or (new_room.type == NODE_TYPE.Default and NODE_TYPE.Background)
+                                                    or new_room.type,
+                                                task = new_room.task,
+                                                name="background",
 												colour = new_room.colour,
 												value = new_room.value,
 												internal_type = new_room.internal_type,
@@ -575,7 +790,8 @@ function Story:AddBGNodes(min_count, max_count)
 					local blank_subnode = task:AddNode({
 											id=nodeid..":BLOCKER_BLANK_"..tostring(i), 
 											data={
-													type= new_room.type or "blank",
+													type= new_room.type or NODE_TYPE.Blank,
+                                                    task = new_room.task,
 													colour = new_room.colour,
 													value = new_room.value,
 													internal_type = new_room.internal_type,
@@ -602,7 +818,8 @@ function Story:SeperateStoryByBlanks(startnode, endnode )
 	local blank_subnode = blank_node:AddNode({
 											id="LOOP_BLANK_SUB "..tostring(self.loop_blanks), 
 											data={
-													type="blank",
+													type=NODE_TYPE.Blank,
+                                                    name="LOOP_BLANK_SUB",
 													tags = {"RoadPoison", "ForceDisconnected"},					 
 													colour={r=0.3,g=.8,b=.5,a=.50},
 													value = self.impassible_value
@@ -694,7 +911,6 @@ function Story:GenerateNodesFromTask(task, crossLinkFactor)
 			if new_room.contents.fn then					
 				new_room.contents.fn(new_room)
 			end
-			new_room.type = task.entrance_room
 			new_room.entrance = true
 			room_choices:push(new_room)
 		--else
@@ -717,7 +933,6 @@ function Story:GenerateNodesFromTask(task, crossLinkFactor)
 				if new_room.contents.fn then					
 					new_room.contents.fn(new_room)
 				end
-				new_room.type = room
 				room_choices:push(new_room)
 			end
 		end
@@ -726,7 +941,7 @@ function Story:GenerateNodesFromTask(task, crossLinkFactor)
 
 	local task_node = Graph(task.id, {parent=self.rootNode, default_bg=task.room_bg, colour = task.colour, background=task.background_room, set_pieces=task.set_pieces, random_set_pieces=task.random_set_pieces, maze_tiles=task.maze_tiles})
 	task_node.substitutes = task.substitutes
-	--print ("Adding Voronoi Child", self.rootNode.id, task.id, task.room_bg, task.room_bg, task.colour.r, task.colour.g, task.colour.b, task.colour.a )
+	--print ("Adding Voronoi Child", self.rootNode.id, task.id, task.backround_room, task.room_bg, task.colour.r, task.colour.g, task.colour.b, task.colour.a )
 
 	WorldSim:AddChild(self.rootNode.id, task.id, task.room_bg, task.colour.r, task.colour.g, task.colour.b, task.colour.a)
 	
@@ -737,18 +952,20 @@ function Story:GenerateNodesFromTask(task, crossLinkFactor)
 	--print("Story:GenerateNodesFromTask adding "..room_choices:getn().." rooms")
 	while room_choices:getn() > 0 do
 		local next_room = room_choices:pop()
-		next_room.id = task.id..":"..roomID..":"..next_room.type	-- TODO: add room names for special rooms
+		next_room.id = task.id..":"..roomID..":"..next_room.name	-- TODO: add room names for special rooms
 		next_room.task = task.id
 
 		self:RunTaskSubstitution(task, next_room.contents.distributeprefabs)
 		
 		-- TODO: Move this to 
 		local extra_contents, extra_tags = self:GetExtrasForRoom(next_room)
-		
+
 		newNode = task_node:AddNode({
 										id=next_room.id, 
 										data={
-												type= next_room.entrance and "blocker" or next_room.type, 
+												type = next_room.entrance and NODE_TYPE.Blocker or next_room.type, 
+                                                task = next_room.task,
+                                                name = next_room.name,
 												colour = next_room.colour,
 												value = next_room.value,
 												internal_type = next_room.internal_type,

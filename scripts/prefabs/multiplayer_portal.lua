@@ -52,11 +52,6 @@ local function fn()
     inst:AddComponent("inspectable")
     inst.components.inspectable:RecordViews()
 
-    -- inst:AddComponent("activatable")
- --    inst.components.activatable.OnActivate = OnActivate
- --    inst.components.activatable.inactive = true
-    -- inst.components.activatable.quickaction = true
-
     if GetPortalRez(gamemode) then
         inst:AddComponent("hauntable")
         inst.components.hauntable:SetHauntValue(TUNING.HAUNT_INSTANT_REZ)

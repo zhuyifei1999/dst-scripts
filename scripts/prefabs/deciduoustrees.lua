@@ -167,7 +167,10 @@ local function GetBuild(inst)
 end
 
 local function SpawnLeafFX(inst, waittime, chop)
-    if inst:HasTag("fire") or inst:HasTag("stump") or inst:HasTag("burnt") or inst:IsAsleep() then
+    if (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) or
+        inst:HasTag("stump") or
+        inst:HasTag("burnt") or
+        inst:IsAsleep() then
         return
     end
     if waittime then
@@ -246,7 +249,9 @@ local function Sway(inst, monster, monsterpost)
 end
 
 local function GrowLeavesFn(inst, monster, monsterout)
-    if inst:HasTag("stump") or inst:HasTag("burnt") or inst:HasTag("fire") then 
+    if (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) or
+        inst:HasTag("stump") or
+        inst:HasTag("burnt") then
         inst:RemoveEventCallback("animover", GrowLeavesFn)
         return
     end
@@ -282,12 +287,15 @@ local function GrowLeavesFn(inst, monster, monsterout)
         inst.AnimState:Show("mouseover")
     end
 
-    if not monster and not monsterout then Sway(inst) end
+    if monster ~= true and monsterout ~= true then
+        Sway(inst)
+    end
 end
 
 local function OnChangeLeaves(inst, monster, monsterout)
-    
-    if inst:HasTag("stump") or inst:HasTag("burnt") or inst:HasTag("fire") then 
+    if (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) or
+        inst:HasTag("stump") or
+        inst:HasTag("burnt") then
         inst.targetleaveschangetime = nil
         inst.leaveschangetask = nil
         return
@@ -473,9 +481,7 @@ end
 
 local function chop_down_tree_shake(inst)
     local sz = (inst.components.growable and inst.components.growable.stage > 2) and .5 or .25
-    for i, v in ipairs(AllPlayers) do
-        v:ShakeCamera(CAMERASHAKE.FULL, 0.25, 0.03, sz, inst, 6)
-    end
+    ShakeAllCameras(CAMERASHAKE.FULL, 0.25, 0.03, sz, inst, 6)
 end
 
 local function delayed_start_monster(inst)
@@ -896,7 +902,7 @@ local function onextinguish(inst)
 end
 
 local function OnEntitySleep(inst)
-    inst._wasonfire = inst._wasonfire or inst:HasTag("fire") or nil
+    inst._wasonfire = inst._wasonfire or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) or nil
     inst:RemoveComponent("burnable")
     inst:RemoveComponent("propagator")
     inst:RemoveComponent("inspectable")
@@ -904,7 +910,9 @@ local function OnEntitySleep(inst)
 end
 
 local function OnEntityWake(inst)
-    if not (inst._wasonfire or inst:HasTag("burnt") or inst:HasTag("fire")) then
+    if not (inst._wasonfire or
+            (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) or
+            inst:HasTag("burnt")) then
         if inst:HasTag("stump") then
             inst:RemoveComponent("burnable")
             MakeSmallBurnable(inst)
@@ -930,7 +938,10 @@ local function OnEntityWake(inst)
     end
 
     if inst.monster and inst.monster_start_time and inst.monster_duration and ((GetTime() - inst.monster_start_time) > inst.monster_duration) then
-        if not (inst._wasonfire or inst:HasTag("burnt") or inst:HasTag("fire") or inst:HasTag("stump")) then
+        if not (inst._wasonfire or
+                (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) or
+                inst:HasTag("burnt") or
+                inst:HasTag("stump")) then
             StopMonster(inst)
         else
             inst.monster = false
@@ -946,7 +957,9 @@ local function OnEntityWake(inst)
         end
     end
 
-    if (inst._wasonfire or inst:HasTag("fire")) and not inst:HasTag("burnt") then
+    if (inst._wasonfire or
+        (inst.components.burnable ~= nil and inst.components.burnable:IsBurning())) and
+        not inst:HasTag("burnt") then
         inst.sg:GoToState("empty")
         inst.AnimState:ClearOverrideSymbol("eye")
         inst.AnimState:ClearOverrideSymbol("mouth")
@@ -967,7 +980,7 @@ local function OnEntityWake(inst)
 end
 
 local function onsave(inst, data)
-    if inst:HasTag("burnt") or inst:HasTag("fire") then
+    if inst:HasTag("burnt") or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
         data.burnt = true
     end
 
@@ -991,12 +1004,8 @@ local function onsave(inst, data)
 end
 
 local function onload(inst, data)
-    if data then
-        if not data.build or builds[data.build] == nil then
-            inst.build = "normal"
-        else
-            inst.build = data.build            
-        end
+    if data ~= nil then
+        inst.build = data.build ~= nil and builds[data.build] ~= nil and data.build or "normal"
 
         inst.target_leaf_state = data.target_leaf_state
         inst.leaf_state = data.leaf_state

@@ -16,10 +16,6 @@ local Weapon = Class(function(self, inst)
     self.projectile = nil
     self.stimuli = nil
 
-    --Monkey uses these
-    self.modes = nil
-    self.variedmodefn = nil
-
     self.inst:AddTag("weapon")
 end,
 nil,
@@ -59,14 +55,6 @@ function Weapon:SetElectric()
 end
 
 function Weapon:CanRangedAttack()
-    if self.variedmodefn then
-        local mode = self.variedmodefn(self.inst)
-        if not mode.ranged then
-            --determined to use melee mode, return false.
-            return false
-        end
-    end
-
     return self.projectile ~= nil
 end
 

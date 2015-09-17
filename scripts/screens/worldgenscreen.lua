@@ -167,11 +167,11 @@ function WorldGenScreen:OnUpdate(dt)
 			if string.match(self.worlddata,"^error") then
 				self.done = false
 				self.cb(self.worlddata)
-			elseif self.total_time > MIN_GEN_TIME and self.cb then
+			elseif self.total_time > 0 --[[ MIN_GEN_TIME ]]and self.cb then
 				self.done = false
-				TheFrontEnd:Fade(false, 1, function() 
+				--TheFrontEnd:Fade(false, 1, function() 
 					self.cb(self.worlddata)
-				end, nil, nil, "white")
+				--end, nil, nil, "white")
 			end
 		end
 	end

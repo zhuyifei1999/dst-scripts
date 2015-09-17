@@ -178,33 +178,47 @@ local states=
 CommonStates.AddWalkStates(states,
 {
 	walktimeline = {
-		TimeEvent(0*FRAMES, PlayFootstep ),
-		TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/bunnyman/hop") end),
+		TimeEvent(0*FRAMES, function(inst)
+            inst.SoundEmitter:PlaySound("dontstarve/creatures/bunnyman/hop")
+        end),
+		TimeEvent(4*FRAMES, function(inst)
+            inst.components.locomotor:WalkForward()
+        end),
 		TimeEvent(12*FRAMES, PlayFootstep ),
-		TimeEvent(12*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/bunnyman/hop") end),
+		TimeEvent(12*FRAMES, function(inst)
+            inst.Physics:Stop()
+        end),
 	},
 },
 {
     startwalk = function(inst) return beardit(inst,"walk_pre") end,
     walk = function(inst) return beardit(inst,"walk_loop") end,
     stopwalk = function(inst) return beardit(inst,"walk_pst") end,
-}, function(inst) return not inst.beardlord end
+},
+function(inst) return not inst.beardlord end
 )
 
 CommonStates.AddRunStates(states,
 {
 	runtimeline = {
-		TimeEvent(0*FRAMES, PlayFootstep ),
-		TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/bunnyman/hop") end),
-		TimeEvent(10*FRAMES, PlayFootstep ),
-		TimeEvent(10*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/bunnyman/hop") end),
+		TimeEvent(0*FRAMES, function(inst)
+            inst.SoundEmitter:PlaySound("dontstarve/creatures/bunnyman/hop")
+        end),
+		TimeEvent(4*FRAMES, function(inst)
+            inst.components.locomotor:RunForward()
+        end),
+		TimeEvent(8*FRAMES, PlayFootstep ),
+		TimeEvent(8*FRAMES, function(inst)
+            inst.Physics:Stop()
+        end),
 	},
 },
 {
     startrun = function(inst) return beardit(inst,"run_pre") end,
     run = function(inst) return beardit(inst,"run_loop") end,
     stoprun = function(inst) return beardit(inst,"run_pst") end,
-}, function(inst) return not inst.beardlord end
+},
+function(inst) return not inst.beardlord end
 )
 
 CommonStates.AddSleepStates(states,

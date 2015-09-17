@@ -47,9 +47,7 @@ local function onstunfinishedfn(inst, data)
 end
 
 local function ShakeIfClose(inst)
-	for i, v in ipairs(AllPlayers) do
-		v:ShakeCamera(CAMERASHAKE.FULL, .7, .02, .3, inst, 40)
-	end
+    ShakeAllCameras(CAMERASHAKE.FULL, .7, .02, .3, inst, 40)
 end
 
 local function transform(inst, data)

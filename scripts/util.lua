@@ -122,6 +122,15 @@ function table.invert(t)
     return invt
 end
 
+function table.reverselookup(t, lookup_value)
+    for k,v in pairs(t) do
+        if v == lookup_value then
+            return k
+        end
+    end
+    return nil
+end
+
 -- only use on indexed tables!
 function GetFlattenedSparse(tab)
     local keys = {}
@@ -576,6 +585,23 @@ function GetTickForTime(target_time)
 	return math.floor( target_time/GetTickTime() )
 end
 
+function GetTimeForTick(target_tick)
+	return target_tick*GetTickTime()
+end
+
+function GetTaskRemaining(task)
+    return (task == nil and -1)
+        or (task:NextTime() == nil and -1)
+        or (task:NextTime() < GetTime() and -1)
+        or task:NextTime() - GetTime()
+end
+
+function GetTaskTime(task)
+    return (task == nil and -1)
+        or (task:NextTime() == nil and -1)
+        or (task:NextTime())
+end
+
 function shuffleArray(array)
     local arrayCount = #array
     for i = arrayCount, 2, -1 do
@@ -591,6 +617,15 @@ function shuffledKeys(dict)
 		table.insert(keys, k)
 	end
 	return shuffleArray(keys)
+end
+
+function sortedKeys(dict)
+    local keys = {}
+    for k,v in pairs(dict) do
+        table.insert(keys, k)
+    end
+    table.sort(keys)
+    return keys
 end
 
 function TrackedAssert(tracking_data, function_ptr, function_data)

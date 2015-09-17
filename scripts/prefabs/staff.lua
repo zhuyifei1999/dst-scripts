@@ -60,6 +60,23 @@ local function onlight(inst, target)
     end
 end
 
+local function onhauntred(inst, haunter)
+    if math.random() <= TUNING.HAUNT_CHANCE_RARE then
+        local x, y, z = inst.Transform:GetWorldPosition() 
+        local ents = TheSim:FindEntities(x, y, z, 6, { "canlight" }, { "fire", "burnt", "INLIMBO" })
+        if #ents > 0 then
+            for i, v in ipairs(ents) do
+                if v:IsValid() and not v:IsInLimbo() then
+                    onattack_red(inst, haunter, v, true) 
+                end
+            end
+            inst.components.hauntable.hauntvalue = TUNING.HAUNT_LARGE
+            return true
+        end
+    end
+    return false
+end
+
 ---------BLUE STAFF---------
 
 local function onattack_blue(inst, attacker, target, skipsanity)
@@ -91,6 +108,23 @@ local function onattack_blue(inst, attacker, target, skipsanity)
         target.components.freezable:AddColdness(1)
         target.components.freezable:SpawnShatterFX()
     end
+end
+
+local function onhauntblue(inst, haunter)
+    if math.random() <= TUNING.HAUNT_CHANCE_RARE then
+        local x, y, z = inst.Transform:GetWorldPosition() 
+        local ents = TheSim:FindEntities(x, y, z, 6, { "freezable" }, { "INLIMBO" })
+        if #ents > 0 then
+            for i, v in ipairs(ents) do
+                if v:IsValid() and not v:IsInLimbo() then
+                    onattack_blue(inst, haunter, v, true) 
+                end
+            end
+            inst.components.hauntable.hauntvalue = TUNING.HAUNT_LARGE
+            return true
+        end
+    end
+    return false
 end
 
 ---------PURPLE STAFF---------
@@ -129,9 +163,9 @@ local function teleport_thread(inst, caster, teletarget, loctarget)
 
     inst.components.finiteuses:Use(1)
 
-    if ground.topology.level_type == "cave" then
-        TheCamera:Shake("FULL", 0.3, 0.02, .5, 40)
-        ground.components.quaker:MiniQuake(3, 5, 1.5, teleportee)
+    if TheWorld:HasTag("cave") then
+        -- There's a roof over your head, magic lightning can't strike!
+        TheWorld:PushEvent("ms_miniquake", {rad=3, num=5, duration=1.5, target=teleportee})
         return
     end
 
@@ -245,6 +279,18 @@ local function teleport_func(inst, target)
     inst.task = inst:StartThread(function() teleport_thread(inst, caster, tar) end)
 end
 
+local function onhauntpurple(inst)
+    if math.random() <= TUNING.HAUNT_CHANCE_RARE then
+        local target = FindEntity(inst, 20, nil, { "locomotor" }, { "playerghost", "INLIMBO" })
+        if target ~= nil then
+            teleport_func(inst, target) 
+            inst.components.hauntable.hauntvalue = TUNING.HAUNT_LARGE
+            return true
+        end
+    end
+    return false
+end
+
 ---------ORANGE STAFF-----------
 
 local function onblink(staff, pos, caster)
@@ -265,6 +311,22 @@ local function blinkstaff_reticuletargetfn()
             return pt + pos
         end
     end
+end
+
+local function onhauntorange(inst)
+    if math.random() <= TUNING.HAUNT_CHANCE_OCCASIONAL then
+        local target = FindEntity(inst, 20, nil, { "locomotor" }, { "playerghost", "INLIMBO" })
+        if target ~= nil then
+            local pos = target:GetPosition()
+            local start_angle = math.random() * 2 * PI
+            local offset = FindWalkableOffset(pos, start_angle, math.random(8, 12), 60, false, true)
+            local pt = pos + offset
+            inst.components.blinkstaff:Blink(pt, target)
+            inst.components.hauntable.hauntvalue = TUNING.HAUNT_LARGE
+            return true
+        end
+    end
+    return false
 end
 
 -------GREEN STAFF-----------
@@ -431,6 +493,23 @@ local function destroystructure(staff, target)
     target:Remove()
 end
 
+local function HasRecipe(guy)
+    return guy.prefab ~= nil and AllRecipes[guy.prefab] ~= nil
+end
+
+local function onhauntgreen(inst)
+    if math.random() <= TUNING.HAUNT_CHANCE_RARE then
+        local target = FindEntity(inst, 20, HasRecipe, nil, { "INLIMBO" })
+        if target ~= nil then
+            destroystructure(inst, target) 
+            SpawnPrefab("collapse_small").Transform:SetPosition(target.Transform:GetWorldPosition())
+            inst.components.hauntable.hauntvalue = TUNING.HAUNT_LARGE
+            return true
+        end
+    end
+    return false
+end
+
 ---------YELLOW STAFF-------------
 
 local function createlight(staff, target, pos)
@@ -446,6 +525,19 @@ end
 
 local function yellow_reticuletargetfn()
     return Vector3(ThePlayer.entity:LocalToWorldSpace(5, 0, 0))
+end
+
+local function onhauntyellow(inst)
+    if math.random() <= TUNING.HAUNT_CHANCE_RARE then
+        local pos = inst:GetPosition()
+        local start_angle = math.random() * 2 * PI
+        local offset = FindWalkableOffset(pos, start_angle, math.random(3, 12), 60, false, true)
+        local pt = pos + offset
+        createlight(inst, nil, pt)
+        inst.components.hauntable.hauntvalue = TUNING.HAUNT_LARGE
+        return true
+    end
+    return false
 end
 
 ---------COMMON FUNCTIONS---------
@@ -520,23 +612,6 @@ end
 
 ---------COLOUR SPECIFIC CONSTRUCTIONS---------
 
-local function onhauntred(inst, haunter)
-    if math.random() <= TUNING.HAUNT_CHANCE_RARE then
-        local x, y, z = inst.Transform:GetWorldPosition() 
-        local ents = TheSim:FindEntities(x, y, z, 6, { "canlight" }, { "fire", "burnt", "INLIMBO" })
-        if #ents > 0 then
-            for i, v in ipairs(ents) do
-                if v:IsValid() and not v:IsInLimbo() then
-                    onattack_red(inst, haunter, v, true) 
-                end
-            end
-            inst.components.hauntable.hauntvalue = TUNING.HAUNT_LARGE
-            return true
-        end
-    end
-    return false
-end
-
 local function red()
     local inst = commonfn("red", { "firestaff", "rangedfireweapon", "rangedlighter" })
 
@@ -576,18 +651,7 @@ local function blue()
     inst.components.finiteuses:SetUses(TUNING.ICESTAFF_USES)
 
     MakeHauntableLaunch(inst)
-    AddHauntableCustomReaction(inst, function(inst, haunter)
-        local x,y,z = inst.Transform:GetWorldPosition() 
-        local freezables = TheSim:FindEntities(x, y, z, 6, {"freezable"})
-        if freezables and #freezables > 0 and math.random() <= TUNING.HAUNT_CHANCE_RARE then
-            for i,v in pairs(freezables) do
-                onattack_blue(inst, haunter, v, true) 
-            end
-            inst.components.hauntable.hauntvalue = TUNING.HAUNT_LARGE
-            return true
-        end
-        return false
-    end, true, false, true)
+    AddHauntableCustomReaction(inst, onhauntblue, true, false, true)
 
     return inst
 end
@@ -609,20 +673,7 @@ local function purple()
     inst.components.spellcaster.canonlyuseonlocomotors = true
 
     MakeHauntableLaunch(inst)
-    AddHauntableCustomReaction(inst, function(inst, haunter)
-        local target = FindEntity(inst, 20, function(guy)
-            return guy.components.locomotor ~= nil
-        end,
-        nil,
-        {"playerghost"}
-        )
-        if target and math.random() <= TUNING.HAUNT_CHANCE_RARE then
-            teleport_func(inst, target) 
-            inst.components.hauntable.hauntvalue = TUNING.HAUNT_LARGE
-            return true
-        end
-        return false
-    end, true, false, true)
+    AddHauntableCustomReaction(inst, onhauntpurple, true, false, true)
 
     return inst
 end
@@ -649,18 +700,7 @@ local function yellow()
     inst.components.finiteuses:SetUses(TUNING.YELLOWSTAFF_USES)
 
     MakeHauntableLaunch(inst)
-    AddHauntableCustomReaction(inst, function(inst, haunter)
-        if math.random() <= TUNING.HAUNT_CHANCE_RARE then
-            local pos = Vector3(inst.Transform:GetWorldPosition())
-            local start_angle = math.random()*2*PI
-            local offset = FindWalkableOffset(pos, start_angle, math.random(3,12), 60, false, true)
-            local pt = pos + offset
-            createlight(inst, nil, pt)
-            inst.components.hauntable.hauntvalue = TUNING.HAUNT_LARGE
-            return true
-        end
-        return false
-    end, true, false, true)
+    AddHauntableCustomReaction(inst, onhauntyellow, true, false, true)
 
     return inst
 end
@@ -682,18 +722,7 @@ local function green()
     inst.components.finiteuses:SetUses(TUNING.GREENSTAFF_USES)
 
     MakeHauntableLaunch(inst)
-    AddHauntableCustomReaction(inst, function(inst, haunter)
-        local target = FindEntity(inst, 20, function(guy)
-            return guy.prefab and AllRecipes[guy.prefab] ~= nil
-        end)
-        if target and math.random() <= TUNING.HAUNT_CHANCE_RARE then
-            destroystructure(inst, target) 
-            SpawnPrefab("collapse_small").Transform:SetPosition(target.Transform:GetWorldPosition())
-            inst.components.hauntable.hauntvalue = TUNING.HAUNT_LARGE
-            return true
-        end
-        return false
-    end, true, false, true)
+    AddHauntableCustomReaction(inst, onhauntgreen, true, false, true)
 
     return inst
 end
@@ -721,33 +750,14 @@ local function orange()
     inst.components.finiteuses:SetUses(TUNING.ORANGESTAFF_USES)
 
     MakeHauntableLaunch(inst)
-    AddHauntableCustomReaction(inst, function(inst, haunter)
-        local target = FindEntity(inst, 20, function(guy)
-            return guy.components.locomotor ~= nil
-        end,
-        nil,
-        {"playerghost"}
-        )
-
-        if target and math.random() <= TUNING.HAUNT_CHANCE_OCCASIONAL then
-            local pos = Vector3(target.Transform:GetWorldPosition())
-            local start_angle = math.random()*2*PI
-            local offset = FindWalkableOffset(pos, start_angle, math.random(8,12), 60, false, true)
-            local pt = pos + offset
-
-            inst.components.blinkstaff:Blink(pt, target)
-            inst.components.hauntable.hauntvalue = TUNING.HAUNT_LARGE
-            return true
-        end
-        return false
-    end, true, false, true)
+    AddHauntableCustomReaction(inst, onhauntorange, true, false, true)
 
     return inst
 end
 
 return Prefab("common/inventory/icestaff", blue, assets, prefabs),
-Prefab("common/inventory/firestaff", red, assets, prefabs),
-Prefab("common/inventory/telestaff", purple, assets, prefabs),
-Prefab("common/inventory/orangestaff", orange, assets, prefabs),
-Prefab("common/inventory/greenstaff", green, assets, prefabs),
-Prefab("common/inventory/yellowstaff", yellow, assets, prefabs)
+    Prefab("common/inventory/firestaff", red, assets, prefabs),
+    Prefab("common/inventory/telestaff", purple, assets, prefabs),
+    Prefab("common/inventory/orangestaff", orange, assets, prefabs),
+    Prefab("common/inventory/greenstaff", green, assets, prefabs),
+    Prefab("common/inventory/yellowstaff", yellow, assets, prefabs)

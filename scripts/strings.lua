@@ -234,6 +234,7 @@ STRINGS=
         TOSS = "Toss",
         WRITE = "Write on",
         ATTUNE = "Attune",
+        MIGRATE = "Travel via",
         REMOTERESURRECT = "Resurrect",
     },
 
@@ -306,6 +307,13 @@ STRINGS=
         MUSHTREE_TALL = "Blue Mushtree",
         MUSHTREE_MEDIUM = "Red Mushtree",
         MUSHTREE_SMALL = "Green Mushtree",
+        MUSHTREE_TALL_WEBBED = "Webbed Blue Mushtree",
+        SPORE_TALL = "Blue Spore",
+        SPORE_MEDIUM = "Red Spore",
+        SPORE_SMALL = "Green Spore",
+        SPORE_TALL_INV = "Blue Spore",
+        SPORE_MEDIUM_INV = "Red Spore",
+        SPORE_SMALL_INV = "Green Spore",
         SPIDER_HIDER="Cave Spider",
         SPIDER_SPITTER="Spitter",
         SEWING_KIT = "Sewing Kit",
@@ -368,12 +376,13 @@ STRINGS=
         DURIAN_COOKED = "Extra Smelly Durian",
         EGGPLANT_COOKED = "Braised Eggplant",
         BERRIES_COOKED = "Roasted Berries",
-        CAVE_ENTRANCE_CLOSED = "Plugged Sinkhole",
+        CAVE_ENTRANCE = "Plugged Sinkhole",
         CAVE_ENTRANCE_OPEN = "Sinkhole",
         CAVE_ENTRANCE_OPEN_CAVE = "Deeper",  
-        CAVE_ENTRANCE_CLOSED_CAVE = "Plugged Hole",
+        CAVE_ENTRANCE_RUINS = "Plugged Hole",
+        MIGRATION_PORTAL = "Migration Portal",
         RABBITHOUSE = "Rabbit Hutch",
-        CAVE_EXIT = "Rope",
+        CAVE_EXIT = "Stairs",
         UMBRELLA = "Umbrella",
         KRAMPUS_SACK = "Krampus Sack",
 
@@ -437,6 +446,7 @@ STRINGS=
         PETALS_EVIL = "Dark Petals",
         ADVENTURE_PORTAL = "Maxwell's Door",
         MULTIPLAYER_PORTAL = "Jury-Rigged Portal",
+        MIGRATION_PORTAL = "Friend-O-Matic Portal",
         POOP = "Manure",
         TORCH = "Torch",
         SEEDS = "Seeds",
@@ -802,7 +812,6 @@ STRINGS=
         MAXWELLTHRONE = "Nightmare Throne",
         MAXWELLLOCK = "Nightmare Lock",
 
-        LOCKEDWES = "Wes",
         TREASURECHEST_TRAP = "Treasure Chest",
         MEATRACK = "Drying Rack",
         BANDAGE = "Honey Poultice",
@@ -837,7 +846,10 @@ STRINGS=
         FLOWER_CAVE_TRIPLE = "Light Flower",
         LIGHTBULB = "Light Bulb",
         STALAGMITE = "Stalagmite",
+
         SPIDERHOLE = "Spilagmite",
+       -- SPIDERHOLE_ROCK = "Spilagmite",
+
         EYEPLANT = "Eye Plant",
         LUREPLANT = "Meat Bulb",
         LUREPLANTBULB = "Fleshy Bulb",
@@ -883,6 +895,9 @@ STRINGS=
         MINOTAURHORN = "Guardian's Horn",
         POND_ALGAE = "Algae",
         WORMLIGHT = "Glow Berry",
+        WORMLIGHT_LESSER = "Lesser Glow Berry",
+
+        WORMLIGHT_PLANT = "Mysterious Plant",
 
         WORM_PLANT = "Mysterious Plant",
         WORM_DIRT = "Dirt Mound",
@@ -1058,6 +1073,7 @@ STRINGS=
         ARMORMARBLE = "It's heavy, but it will protect you.",
         ARMOR_SANITY = "Protects your body, but not your mind.",
         SPEAR="Use the pointy end.",
+        CLAW_GLOVE="Gets rid of tough obstacles.",
         STRAWHAT = "Helps you stay cool and dry.",
         TOPHAT = "The classiest hat of all.",
         FLOWERHAT = "Something to soothe the nerves.",
@@ -1967,6 +1983,7 @@ STRINGS.UI =
         MOTDBUTTON = "Join Us",
         EXIT = "Exit",
         LOGOUT = "Log Out",
+        REDEEM = "Redeem",
         CREDITS = "Credits",
         UPDATENAME = "All's Well That Maxwell",
         DLC_UPDATENAME = "Where There's a Wilson...",
@@ -2216,7 +2233,7 @@ STRINGS.UI =
         },
         OK = "OK",
     },
-    
+
     NETWORKDISCONNECT =
     {
         TITLE =
@@ -2225,6 +2242,7 @@ STRINGS.UI =
             ID_NO_FREE_INCOMING_CONNECTIONS = "Server Full",
             ID_DST_NO_FREE_PLAYER_SLOTS = "Server Full",
             ID_CONNECTION_ATTEMPT_FAILED = "Server Not Responding",
+            ID_DST_DESTINATION_CONNECTION_ATTEMPT_FAILED = "Destination Not Responding",
             ID_INVALID_PASSWORD = "Bad Password",
             ID_CONNECTION_LOST = "Disconnected",
             ID_DISCONNECTION_NOTIFICATION = "Disconnected",
@@ -2258,6 +2276,7 @@ STRINGS.UI =
             SERVER_MODS_WORKSHOP_FAILURE = "Disconnected Due To Missing Mods",
             SERVER_MODS_WORKSHOP_ACCESS_DENIED = "Disconnected Due To Missing Mods",
             ID_DST_SLOT_RESERVATION = "Slot Reserved",
+            ID_DST_DESTINATION_SERVER_NOT_AVAILABLE = "Server not available",            ID_DST_SERVER_IS_CLAN_ONLY = "Private Group",
             ID_DST_SERVER_IS_CLAN_ONLY = "Not a member of the server's clan.",
             ID_DST_SERVER_IS_LAN_ONLY = "Server only allows local connections.",
         },
@@ -2267,6 +2286,7 @@ STRINGS.UI =
             ID_NO_FREE_INCOMING_CONNECTIONS = "The server is full. Try again later once one of these miscreants has been consumed by the gaping maw that is this game.",
             ID_DST_NO_FREE_PLAYER_SLOTS = "The server is full. Try again later once one of these miscreants has been consumed by the gaping maw that is this game.",
             ID_CONNECTION_ATTEMPT_FAILED = "The server is not responding.\nTry yelling louder?",
+            ID_DST_DESTINATION_CONNECTION_ATTEMPT_FAILED = "The destination is not responding.\nTry yelling louder?",
             ID_INVALID_PASSWORD = "The password you entered was incorrect.\nAre you sure you're welcome in there?",
             ID_CONNECTION_LOST = "You have lost connection to the server. Maybe it's for the best, you know? Then again, I'm just a dialog box--who am I to say?",
             ID_DISCONNECTION_NOTIFICATION = "You have been disconnected from the server. Bye bye!",
@@ -2302,7 +2322,8 @@ STRINGS.UI =
             ID_DST_SLOT_RESERVATION = "Unable to join the server. The only unused slots are reserved. Try again later once one of these miscreants has been consumed by the gaping maw that is this game.",
 		    ID_DST_SERVER_IS_CLAN_ONLY = "You have to be part of this server's steam group to connect to it. You could try visiting their group page and asking nicely to join?",
             ID_DST_SERVER_IS_LAN_ONLY = "This server only allows joining from the same local network. You could run a really long cable from your computer.. or the server owner could change their server settings.",
-        },
+            ID_DST_DESTINATION_SERVER_NOT_AVAILABLE = "The server you were playing on is not curently available. Try again later",
+		},
 		OK = "OK",
     },
     
@@ -2493,9 +2514,10 @@ STRINGS.UI =
                 "Island you an axe",        -- Island hopping
                 "Crazy Eddie",              -- Focus on sanity play
                 "Nighttime Antics",         -- Focus on nighttime play
-                "Together Forever",	    -- Multiplayer coop
-                "No Giants Here",     -- Nothing Reign Of Giants
-                },      
+                "Together Forever",	        -- Multiplayer coop
+                "No Giants Here",           -- Nothing Reign Of Giants
+                "The Caves",                 -- Caves content in DST
+        },
                 
         PRESETLEVELDESC = {
             "The standard Don't Starve experience.",
@@ -2509,6 +2531,13 @@ STRINGS.UI =
             "The standard Don't Starve Experience 9",
             "The multiplayer Don't Starve experience.",
             "Don't Starve Together with Reign of Giants turned off.",
+            "Delve into the caves... together!",
+        },
+
+        TASKSETNAMES = {
+            DEFAULT = "Together",
+            CLASSIC = "Classic",
+            CAVE_DEFAULT = "Underground",
         },
 
         CUSTOM_PRESET = "Custom Preset",
@@ -3552,12 +3581,10 @@ STRINGS.UI =
         YES ="Yes",
         NO = "No",
 
-        TOGETHERMAP = "Together",
-        CLASSICMAP = "Classic",
-
         DEFAULTSTART = "Default",
         PLUSSTART = "Plus",
         DARKSTART = "Dark",
+        CAVESTART = "Caves",
     },
     
     SAVELOAD = 
@@ -3877,4 +3904,17 @@ STRINGS.SIGNS =
 		"of Death",
 		"full of Bees",
 	},
+}
+
+STRINGS.SHARD =
+{
+    MIGRATION_FAILED =
+    {
+        -- This one should not be used, as the migration portal should be close if the destination is not ready or set
+        DST_SHARD_MIGRATION_DESTINATION_NOT_READY = "[WIP] Destination is not ready!",
+        -- If the destination server is full (We may close the portal?)
+        DST_SHARD_DESTINATION_FULL = "[WIP] Destination is full!",
+        -- If there were an error while sending the migration data, migration is cancelled
+        DST_SHARD_MIGRATION_CANCELLED = "[WIP] Migration cancelled",
+    }   
 }

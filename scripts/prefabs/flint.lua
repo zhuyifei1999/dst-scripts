@@ -29,6 +29,7 @@ local function fn()
 
     inst:AddTag("molebait")
     inst:AddTag("renewable")
+    inst:AddTag("quakedebris")
 
     inst.entity:SetPristine()
 

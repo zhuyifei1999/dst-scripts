@@ -14,6 +14,7 @@ self.inst = inst
 self.data = {}
 
 --Private
+local _iscave = inst:HasTag("cave")
 local _watchers = {}
 
 --------------------------------------------------------------------------
@@ -59,17 +60,25 @@ local function OnCyclesChanged(src, cycles)
     SetVariable("cycles", cycles)
 end
 
+local function OnCavePhaseChanged(src, phase)
+    SetVariable("cavephase", phase)
+    SetVariable("iscaveday", phase == "day", "caveday")
+    SetVariable("iscavedusk", phase == "dusk", "cavedusk")
+    SetVariable("iscavenight", phase == "night", "cavenight")
+end
+
 local function OnPhaseChanged(src, phase)
     SetVariable("phase", phase)
     SetVariable("isday", phase == "day", "day")
     SetVariable("isdusk", phase == "dusk", "dusk")
     SetVariable("isnight", phase == "night", "night")
-    SetVariable("isfullmoon", phase == "night" and self.data.moonphase == "full")
+    SetVariable("isfullmoon", phase == "night" and self.data.moonphase == "full", "fullmoon")
+    OnCavePhaseChanged(src, phase)
 end
 
 local function OnMoonPhaseChanged(src, moonphase)
     SetVariable("moonphase", moonphase)
-    SetVariable("isfullmoon", self.data.isnight and moonphase == "full")
+    SetVariable("isfullmoon", self.data.isnight and moonphase == "full", "fullmoon")
 end
 
 local function OnSeasonTick(src, data)
@@ -90,8 +99,11 @@ local function OnSeasonLengthsChanged(src, data)
     SetVariable("winterlength", data.winter)
 end
 
+local function OnTemperatureTick(src, temperature)
+    SetVariable("temperature", temperature)
+end
+
 local function OnWeatherTick(src, data)
-    SetVariable("temperature", data.temperature)
     SetVariable("moisture", data.moisture)
     SetVariable("pop", data.pop)
     SetVariable("precipitationrate", data.precipitationrate)
@@ -136,17 +148,25 @@ end
 self.data.time = 0
 self.data.timeinphase = 0
 self.data.cycles = 0
-self.data.phase = "day"
-self.data.isday = true
+self.data.phase = _iscave and "night" or "day"
+self.data.isday = not _iscave
 self.data.isdusk = false
-self.data.isnight = false
+self.data.isnight = _iscave
 self.data.moonphase = "new"
 self.data.isfullmoon = false
 
+--Cave clock
+self.data.cavephase = "day"
+self.data.iscaveday = true
+self.data.iscavedusk = false
+self.data.iscavenight = false
+
 inst:ListenForEvent("clocktick", OnClockTick)
 inst:ListenForEvent("cycleschanged", OnCyclesChanged)
-inst:ListenForEvent("phasechanged", OnPhaseChanged)
-inst:ListenForEvent("moonphasechanged", OnMoonPhaseChanged)
+inst:ListenForEvent("phasechanged", _iscave and OnCavePhaseChanged or OnPhaseChanged)
+if not _iscave then
+    inst:ListenForEvent("moonphasechanged", OnMoonPhaseChanged)
+end
 
 --Season
 self.data.season = "autumn"
@@ -178,6 +198,7 @@ self.data.snowlevel = 0
 self.data.wetness = 0
 self.data.iswet = false
 
+inst:ListenForEvent("temperaturetick", OnTemperatureTick)
 inst:ListenForEvent("weathertick", OnWeatherTick)
 inst:ListenForEvent("moistureceilchanged", OnMoistureCeilChanged)
 inst:ListenForEvent("precipitationchanged", OnPrecipitationChanged)
@@ -261,9 +282,10 @@ end
 --------------------------------------------------------------------------
 
 function self:Dump()
-	for k,v in pairs(self.data) do 
-		print(k, v)
-	end
+    local keys = sortedKeys(self.data)
+    for i,key in ipairs(keys) do
+        print(key, self.data[key])
+    end
 end
 
 --------------------------------------------------------------------------

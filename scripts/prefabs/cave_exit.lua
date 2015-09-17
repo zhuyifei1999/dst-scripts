@@ -2,48 +2,33 @@ local PopupDialogScreen = require "screens/popupdialog"
 
 local assets =
 {
-    Asset("ANIM", "anim/cave_exit_rope.zip"),
+    Asset("ANIM", "anim/cave_exit.zip"),
 }
 
-local function GetVerb()
-    return STRINGS.ACTIONS.ACTIVATE.CLIMB
+local function close(inst)
+    inst.AnimState:PlayAnimation("no_access", true)
 end
 
-local function onnear(inst)
-    inst.AnimState:PlayAnimation("down")
-    inst.AnimState:PushAnimation("idle_loop", true)
-    inst.SoundEmitter:PlaySound("dontstarve/cave/rope_down")
+local function open(inst)
+    inst.AnimState:PlayAnimation("open", true)
 end
 
-local function onfar(inst)
-    inst.AnimState:PlayAnimation("up")
-    inst.SoundEmitter:PlaySound("dontstarve/cave/rope_up")
+local function full(inst)
+    inst.AnimState:PlayAnimation("over_capacity", true)
 end
 
-local function OnActivate(inst)
-	SetPause(true)
-	local level = TheWorld.topology.level_number or 1
-	local function head_upwards()
-		SaveGameIndex:GetSaveFollowers(GetPlayer())
-
-		local function onsaved()
-		    SetPause(false)
-		    StartNextInstance({reset_action=RESET_ACTION.LOAD_SLOT, save_slot = SaveGameIndex:GetCurrentSaveSlot()}, true)
-		end
-
-		local cave_num =  SaveGameIndex:GetCurrentCaveNum()
-		if level == 1 then
-			SaveGameIndex:SaveCurrent(function() SaveGameIndex:LeaveCave(onsaved) end, false, "ascend", cave_num)
-		else
-			-- Ascend
-			local level = level - 1
-			
-			SaveGameIndex:SaveCurrent(function() SaveGameIndex:EnterCave(onsaved,nil, cave_num, level) end, false, "ascend", cave_num)
-		end
-	end
-	ThePlayer.HUD:Hide()
-	TheFrontEnd:Fade(false, 2, head_upwards)
+local function activate(inst)
+    -- nothing
 end
+
+local function GetStatus(inst)
+    if inst.components.worldmigrator:IsActive() then
+        return "OPEN"
+    elseif inst.components.worldmigrator:IsFull() then
+        return "FULL"
+    end
+end
+
 
 local function fn()
     local inst = CreateEntity()
@@ -52,21 +37,17 @@ local function fn()
     inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter() 
     inst.entity:AddMiniMapEntity()
+    inst.entity:AddNetwork()
 
-    --V2C: WARNING:
-    --This is not supported for DST, so there is no network
-    --component added yet! It just spawns it locally on the
-    --server and then removes it on the next frame.
-    inst.entity:Hide()
-    inst:DoTaskInTime(0, inst.Remove)
-    --
+    MakeObstaclePhysics(inst, 2)
 
     inst.MiniMapEntity:SetIcon("cave_open2.png")
 
-    inst.AnimState:SetBank("exitrope")
-    inst.AnimState:SetBuild("cave_exit_rope")
+    inst.AnimState:SetBank("cave_stairs")
+    inst.AnimState:SetBuild("cave_exit")
+    inst.AnimState:PlayAnimation("open")
 
-    inst.GetActivateVerb = GetVerb
+    inst:AddTag("sinkhole")
 
     inst.entity:SetPristine()
 
@@ -74,17 +55,15 @@ local function fn()
         return inst
     end
 
-    inst:AddComponent("playerprox")
-    inst.components.playerprox:SetDist(5,7)
-    inst.components.playerprox:SetOnPlayerFar(onfar)
-    inst.components.playerprox:SetOnPlayerNear(onnear)
-
     inst:AddComponent("inspectable")
 
-    inst:AddComponent("activatable")
-    inst.components.activatable.OnActivate = OnActivate
-    inst.components.activatable.inactive = true
-    inst.components.activatable.quickaction = true
+    inst.components.inspectable.getstatus = GetStatus
+
+    inst:AddComponent("worldmigrator")
+    inst:ListenForEvent("migration_available", open)
+    inst:ListenForEvent("migration_unavailable", close)
+    inst:ListenForEvent("migration_full", full)
+    inst:ListenForEvent("migration_activate", activate)
 
     return inst
 end

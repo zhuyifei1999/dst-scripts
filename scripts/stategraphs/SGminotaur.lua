@@ -278,9 +278,7 @@ CommonStates.AddWalkStates(states,
             end ),
             TimeEvent(20*FRAMES, function(inst)
                 inst.SoundEmitter:PlaySound("dontstarve/creatures/rook_minotaur/step")
-                for i, v in ipairs(AllPlayers) do
-                    v:ShakeCamera(CAMERA.VERTICAL, .5, .05, .1, inst, 40)
-                end
+                ShakeAllCameras(CAMERA.VERTICAL, .5, .05, .1, inst, 40)
                 inst.Physics:Stop()
             end ),
 	},

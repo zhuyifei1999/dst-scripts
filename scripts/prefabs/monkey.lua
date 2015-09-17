@@ -15,6 +15,7 @@ local prefabs =
 }
 
 local brain = require "brains/monkeybrain"
+local nightmarebrain = require "brains/nightmaremonkeybrain"
 
 local SLEEP_DIST_FROMHOME = 1
 local SLEEP_DIST_FROMTHREAT = 20
@@ -64,37 +65,36 @@ local function hasammo(inst)
     end
 end
 
-local function GetWeaponMode(weapon)
-    local inst = weapon.components.inventoryitem.owner
-    if hasammo(inst) and (inst.components.combat.target and inst.components.combat.target:HasTag("player")) then
-        return weapon.components.weapon.modes["RANGE"]
-    else
-        return weapon.components.weapon.modes["MELEE"]
-    end
-end
+local function EquipWeapons(inst)
+    if inst.components.inventory ~= nil and not inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) then
+        local thrower = CreateEntity()
+        thrower.name = "Thrower"
+        thrower.entity:AddTransform()
+        thrower:AddComponent("weapon")
+        thrower.components.weapon:SetDamage(TUNING.MONKEY_RANGED_DAMAGE)
+        thrower.components.weapon:SetRange(TUNING.MONKEY_RANGED_RANGE)
+        thrower.components.weapon:SetProjectile("monkeyprojectile")
+        thrower.components.weapon:SetOnProjectileLaunch(onthrow)
+        thrower:AddComponent("inventoryitem")
+        thrower.persists = false
+        thrower.components.inventoryitem:SetOnDroppedFn(thrower.Remove)
+        thrower:AddComponent("equippable")
+        inst.components.inventory:GiveItem(thrower)
+        inst.weaponitems.thrower = thrower
 
-local function MakeProjectileWeapon(inst)
-    if inst.components.inventory then
-        local weapon = CreateEntity()
-        weapon.entity:AddTransform()
-        MakeInventoryPhysics(weapon)
-        weapon:AddComponent("weapon")
-        weapon.components.weapon:SetDamage(1)
-        --weapon.components.weapon:SetRange(17)
-        weapon.components.weapon.modes =
-        {
-            RANGE = {damage = 0, ranged = true, attackrange = TUNING.MONKEY_RANGED_RANGE, hitrange = TUNING.MONKEY_RANGED_RANGE + 2},
-            MELEE = {damage = TUNING.MONKEY_MELEE_DAMAGE, ranged = false, attackrange = 0, hitrange = 1}
-        }
-        weapon.components.weapon.variedmodefn = GetWeaponMode
-        weapon.components.weapon:SetProjectile("monkeyprojectile")
-        weapon.components.weapon:SetOnProjectileLaunch(onthrow)
-        weapon:AddComponent("inventoryitem")
-        weapon.persists = false
-        weapon.components.inventoryitem:SetOnDroppedFn(function() WeaponDropped(weapon) end)
-        weapon:AddComponent("equippable")
-        inst.components.inventory:Equip(weapon)
-        return weapon
+        local hitter = CreateEntity()
+        hitter.name = "Hitter"
+        hitter.entity:AddTransform()
+        hitter:AddComponent("weapon")
+        hitter.components.weapon:SetDamage(TUNING.MONKEY_MELEE_DAMAGE)
+        hitter.components.weapon:SetRange(0)
+        hitter:AddComponent("inventoryitem")
+        hitter.persists = false
+        hitter.components.inventoryitem:SetOnDroppedFn(hitter.Remove)
+        hitter:AddComponent("equippable")
+        inst.components.inventory:GiveItem(hitter)
+        inst.weaponitems.hitter = hitter
+
     end
 end
 
@@ -203,7 +203,7 @@ local function OnMonkeyDeath(inst, data)
     end
 end
 
-local function onpickup(inst, data)
+local function OnPickup(inst, data)
     if data.item then
         if data.item.components.equippable and
         data.item.components.equippable.equipslot == EQUIPSLOTS.HEAD and not 
@@ -233,7 +233,6 @@ end
 
 local function SetNormalMonkey(inst)
     inst:RemoveTag("nightmare")
-    local brain = require "brains/monkeybrain"
     inst:SetBrain(brain)
     inst.AnimState:SetBuild("kiki_basic")
     inst.AnimState:SetMultColour(1,1,1,1)
@@ -250,13 +249,12 @@ end
 local function SetNightmareMonkey(inst)
     inst:AddTag("nightmare")
     inst.AnimState:SetMultColour(1,1,1,.6)
-    local brain = require "brains/nightmaremonkeybrain"
-    inst:SetBrain(brain)
+    inst:SetBrain(nightmarebrain)
     inst.AnimState:SetBuild("kiki_nightmare_skin")
     inst.soundtype = "_nightmare"
     inst.harassplayer = nil
     inst.curious = false
-    if inst.task then
+    if inst.task ~= nil then
         inst.task:Cancel()
         inst.task = nil
     end
@@ -283,6 +281,11 @@ local function OnLoad(inst, data)
     end]]
 end
 
+local function OnCustomHaunt(inst)
+    inst.components.periodicspawner:TrySpawn()
+    return true
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -302,6 +305,7 @@ local function fn()
     inst.AnimState:SetBuild("kiki_basic")
     inst.AnimState:PlayAnimation("idle_loop", true)
 
+    inst:AddTag("cavedweller")
     inst:AddTag("monkey")
 
     inst.entity:SetPristine()
@@ -354,7 +358,7 @@ local function fn()
     inst.components.eater:SetOnEatFn(oneat)
 
     inst:AddComponent("sleeper")
-    inst.components.sleeper:SetNocturnal()
+    inst.components.sleeper:SetNocturnal(true)
 
     inst:SetBrain(brain)
     inst:SetStateGraph("SGmonkey")
@@ -368,7 +372,7 @@ local function fn()
 
     inst.listenfn = function(listento, data) OnMonkeyDeath(inst, data) end
 
-    inst:ListenForEvent("onpickupitem", onpickup)
+    inst:ListenForEvent("onpickupitem", OnPickup)
     inst:ListenForEvent("attacked", OnAttacked)
 
     inst:ListenForEvent("calmstart", function() DoFx(inst) SetNormalMonkey(inst) end, TheWorld)
@@ -384,12 +388,10 @@ local function fn()
     end]]
 
     MakeHauntablePanic(inst)
-    AddHauntableCustomReaction(inst, function(inst, haunter)
-        inst.components.periodicspawner:TrySpawn()
-        return true
-    end, true, false, true)
+    AddHauntableCustomReaction(inst, OnCustomHaunt, true, false, true)
 
-    inst.weapon = MakeProjectileWeapon(inst)
+    inst.weaponitems = {}
+    EquipWeapons(inst)
 
     inst.harassplayer = nil
 

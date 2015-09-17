@@ -3,28 +3,28 @@ require "tuning"
 
 local assets =
 {
-	Asset("ANIM", "anim/farmplot.zip"),
+    Asset("ANIM", "anim/farmplot.zip"),
 }
 
 local prefabs =
 {
-	"plant_normal",
-	"farmrock",
-	"farmrocktall",
-	"farmrockflat",
-	"stick",
-	"stickleft",
-	"stickright",
-	"burntstick",
-	"burntstickleft",
-	"burntstickright",
-	"signleft",
-	"signright",
-	"fencepost",
-	"fencepostright",
-	"burntfencepost",
-	"burntfencepostright",
-	"collapse_small",
+    "plant_normal",
+    "farmrock",
+    "farmrocktall",
+    "farmrockflat",
+    "stick",
+    "stickleft",
+    "stickright",
+    "burntstick",
+    "burntstickleft",
+    "burntstickright",
+    "signleft",
+    "signright",
+    "fencepost",
+    "fencepostright",
+    "burntfencepost",
+    "burntfencepostright",
+    "collapse_small",
 }
 
 local back = -1
@@ -33,18 +33,19 @@ local left = 1.5
 local right = -1.5
 
 local function onhammered(inst, worker)
-	if inst:HasTag("fire") and inst.components.burnable then
-		inst.components.burnable:Extinguish()
-	end
-	if inst.components.grower then
+    if inst.components.burnable ~= nil and inst.components.burnable:IsBurning() then
+        inst.components.burnable:Extinguish()
+    end
+    if inst.components.grower ~= nil then
         inst.components.grower:Reset()
     end
-    if inst.components.lootdropper then
+    if inst.components.lootdropper ~= nil then
         inst.components.lootdropper:DropLoot()
     end
-	SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
-	inst:Remove()
-	inst.SoundEmitter:PlaySound("dontstarve/common/destroy_wood")
+    local fx = SpawnPrefab("collapse_small")
+    fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+    fx:SetMaterial("wood")
+    inst:Remove()
 end
 
 local function setfertilityfn(inst, fert_percent)
@@ -59,173 +60,174 @@ end
 
 local rates =
 {
-	TUNING.FARM1_GROW_BONUS,
-	TUNING.FARM2_GROW_BONUS,
-	TUNING.FARM3_GROW_BONUS,
+    TUNING.FARM1_GROW_BONUS,
+    TUNING.FARM2_GROW_BONUS,
+    TUNING.FARM3_GROW_BONUS,
 }
 
-local croppoints = {
-	{ Vector3(0,0,0) },
-	{ Vector3(0,0,0) },
-	{ Vector3(0,0,0) },
+local croppoints =
+{
+    { Vector3(0, 0, 0) },
+    { Vector3(0, 0, 0) },
+    { Vector3(0, 0, 0) },
 }
 
 local rock_front = 1
 
 local decor_defs =
 {
-	[1] = { { signright = { { -1.1, 0, 0.5 } } } },
+    [1] = { { signright = { { -1.1, 0, 0.5 } } } },
 
-	[2] = {	{ stick = {
-						{ left - 0.9, 0, back },
-						{ right, 0, front },
-					  }
-			},
-			{ stickleft = {
-						{ 0.0, 0, back },
-						{ left, 0, front },
-					  }
-			},
-			{ stickright = {
-						{ right + 0.9, 0, back },
-						{ left - 0.3, 0, back + 0.5 },
-						{ right + 0.3, 0, back + 0.5 },
-					  }
-			},
-			{ signleft = { { -1.0, 0, 0.5 } } }
-		  },
+    [2] = { { stick = {
+                        { left - 0.9, 0, back },
+                        { right, 0, front },
+                      }
+            },
+            { stickleft = {
+                        { 0.0, 0, back },
+                        { left, 0, front },
+                      }
+            },
+            { stickright = {
+                        { right + 0.9, 0, back },
+                        { left - 0.3, 0, back + 0.5 },
+                        { right + 0.3, 0, back + 0.5 },
+                      }
+            },
+            { signleft = { { -1.0, 0, 0.5 } } }
+          },
 
-	[3] = {	{ signleft = { { -1.0, 0, 0.5 } } },
+    [3] = { { signleft = { { -1.0, 0, 0.5 } } },
 
-			-- left side
-			{ farmrock = {
-					{ right + 3.0, 0, rock_front + 0.2 },
-					{ right + 3.05, 0, rock_front - 1.5 },
-				}
-			},
+            -- left side
+            { farmrock = {
+                    { right + 3.0, 0, rock_front + 0.2 },
+                    { right + 3.05, 0, rock_front - 1.5 },
+                }
+            },
 
-			{ farmrocktall = { { right + 3.07, 0, rock_front - 1.0 }, }	},
-			{ farmrockflat = { { right + 3.06, 0, rock_front - 0.4 }, }	},
+            { farmrocktall = { { right + 3.07, 0, rock_front - 1.0 }, } },
+            { farmrockflat = { { right + 3.06, 0, rock_front - 0.4 }, } },
 
-			-- right side
-			{ farmrock = { { left - 3.05, 0, rock_front - 1.0 }, } },
-			{ farmrocktall = { { left - 3.07, 0, rock_front - 1.5 }, } },
-			{ farmrockflat = { { left - 3.06, 0, rock_front - 0.4 }, } },
+            -- right side
+            { farmrock = { { left - 3.05, 0, rock_front - 1.0 }, } },
+            { farmrocktall = { { left - 3.07, 0, rock_front - 1.5 }, } },
+            { farmrockflat = { { left - 3.06, 0, rock_front - 0.4 }, } },
 
-			-- front row
-			{ farmrock = {
-					{ right + 1.1, 0, rock_front + 0.21 },
-					{ right + 2.4, 0, rock_front + 0.25 },
-				}
-			},
+            -- front row
+            { farmrock = {
+                    { right + 1.1, 0, rock_front + 0.21 },
+                    { right + 2.4, 0, rock_front + 0.25 },
+                }
+            },
 
-			{ farmrocktall = { { right + 0.5, 0, rock_front + 0.195 }, } },
-			
-			{ farmrockflat = {
-					{ right + 0.0, 0, rock_front - 0.0 },
-					{ right + 1.8, 0, rock_front + 0.22 },
-				}
-			},
+            { farmrocktall = { { right + 0.5, 0, rock_front + 0.195 }, } },
+            
+            { farmrockflat = {
+                    { right + 0.0, 0, rock_front - 0.0 },
+                    { right + 1.8, 0, rock_front + 0.22 },
+                }
+            },
 
-			-- back row
-			{ farmrockflat = {
-					
-					{ left - 1.3, 0, back - 0.19 },
-				}
-			},
+            -- back row
+            { farmrockflat = {
+                    
+                    { left - 1.3, 0, back - 0.19 },
+                }
+            },
 
-			{ farmrock = {
-					{ left - 0.5, 0, back - 0.21 },
-					{ left - 2.5, 0, back - 0.22 },
-				}
-			},
+            { farmrock = {
+                    { left - 0.5, 0, back - 0.21 },
+                    { left - 2.5, 0, back - 0.22 },
+                }
+            },
 
-			{ farmrocktall = {
-					{ left + 0.0, 0, back - 0.15 },
-					{ left - 3.0, 0, back - 0.20 },
-					{ left - 1.9, 0, back - 0.205 },
-				}
-			},
+            { farmrocktall = {
+                    { left + 0.0, 0, back - 0.15 },
+                    { left - 3.0, 0, back - 0.20 },
+                    { left - 1.9, 0, back - 0.205 },
+                }
+            },
 
-			{ fencepost = {
-					{ left - 1.0,  0, back + 0.15 },
-					{ right + 0.8, 0, back + 0.15 },
-					{ right + 0.3, 0, back + 0.15 },
-				},
-			},
+            { fencepost = {
+                    { left - 1.0,  0, back + 0.15 },
+                    { right + 0.8, 0, back + 0.15 },
+                    { right + 0.3, 0, back + 0.15 },
+                },
+            },
 
-			{ fencepostright = {
-					{ left - 0.5,  0, back + 0.15 },
-					{ 0,		   0, back + 0.15 },
-				},
-			},
-	  }
+            { fencepostright = {
+                    { left - 0.5,  0, back + 0.15 },
+                    { 0,           0, back + 0.15 },
+                },
+            },
+          },
 }
 
 local burntdecor_defs =
 {
-	[2] = {	
-			{ burntstick = {
-						{ left - 0.9, 0, back },
-						{ right, 0, front },
-					  }
-			},
-			{ burntstickleft = {
-						{ 0.0, 0, back },
-						{ left, 0, front },
-					  }
-			},
-			{ burntstickright = {
-						{ right + 0.9, 0, back },
-						--{ left - 0.3, 0, back + 0.5 },
-						--{ right + 0.3, 0, back + 0.5 },
-					  }
-			},
-		  },
+    [2] = { 
+            { burntstick = {
+                        { left - 0.9, 0, back },
+                        { right, 0, front },
+                      }
+            },
+            { burntstickleft = {
+                        { 0.0, 0, back },
+                        { left, 0, front },
+                      }
+            },
+            { burntstickright = {
+                        { right + 0.9, 0, back },
+                        --{ left - 0.3, 0, back + 0.5 },
+                        --{ right + 0.3, 0, back + 0.5 },
+                      }
+            },
+          },
 
-	[3] = {	-- back row
-			{ burntfencepost = {
-					--{ left - 1.0,  0, back + 0.15 },
-					{ right + 0.8, 0, back + 0.15 },
-					--{ right + 0.3, 0, back + 0.15 },
-				},
-			},
+    [3] = { -- back row
+            { burntfencepost = {
+                    --{ left - 1.0,  0, back + 0.15 },
+                    { right + 0.8, 0, back + 0.15 },
+                    --{ right + 0.3, 0, back + 0.15 },
+                },
+            },
 
-			{ burntfencepostright = {
-					{ left - 0.5,  0, back + 0.15 },
-					{ 0,		   0, back + 0.15 },
-				},
-			},
-	  }
+            { burntfencepostright = {
+                    { left - 0.5,  0, back + 0.15 },
+                    { 0,           0, back + 0.15 },
+                },
+            },
+          },
 }
 
 local function makeburnt(inst)
-	local burntdecor = {}
-	--print("level is ", inst.level)
-	for k, item_info in pairs( burntdecor_defs[ inst.components.grower.level ] ) do
-		for item_name, item_offsets in pairs( item_info ) do
-			for l, offset in pairs( item_offsets ) do
-				local item_inst = SpawnPrefab( item_name )
-				item_inst.entity:SetParent( inst.entity )
-				item_inst.Transform:SetPosition( offset[1], offset[2], offset[3] )
-				table.insert( burntdecor, item_inst )
-			end
-		end
-	end
-	for k, v in pairs(inst.decor) do
-		v:Remove()
-	end
-	inst.decor = burntdecor
+    local burntdecor = {}
+    --print("level is ", inst.level)
+    for k, item_info in pairs( burntdecor_defs[ inst.components.grower.level ] ) do
+        for item_name, item_offsets in pairs( item_info ) do
+            for l, offset in pairs( item_offsets ) do
+                local item_inst = SpawnPrefab( item_name )
+                item_inst.entity:SetParent( inst.entity )
+                item_inst.Transform:SetPosition( offset[1], offset[2], offset[3] )
+                table.insert( burntdecor, item_inst )
+            end
+        end
+    end
+    for k, v in pairs(inst.decor) do
+        v:Remove()
+    end
+    inst.decor = burntdecor
 end
 
 local function onsave(inst, data)
-    if inst:HasTag("burnt") or inst:HasTag("fire") then
+    if inst:HasTag("burnt") or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
         data.burnt = true
     end
 end
 
 local function onload(inst, data)
-    if data ~= nil and data.burnt ~= nil then
+    if data ~= nil and data.burnt then
         inst.components.burnable.onburnt(inst)
     end
 end
@@ -235,6 +237,18 @@ local function getstatus(inst)
         or (not inst.components.grower:IsFertile() and "NEEDSFERTILIZER")
         or (not inst.components.grower:IsEmpty() and "GROWING")
         or nil
+end
+
+local function OnHaunt(inst, haunter)
+    if inst.components.grower ~= nil and
+        inst.components.grower.cycles_left > 0 and
+        math.random() <= TUNING.HAUNT_CHANCE_ALWAYS then
+        inst.components.grower.cycles_left = math.max(0, inst.components.grower.cycles_left - 1)
+        setfertilityfn(inst, inst.components.grower.cycles_left / inst.components.grower.max_cycles_left)
+        inst.components.hauntable.hauntvalue = TUNING.HAUNT_COOLDOWN_TINY
+        return true
+    end
+    return false
 end
 
 local function plot(level)
@@ -303,28 +317,17 @@ local function plot(level)
 
         inst:AddComponent("hauntable")
         inst.components.hauntable.cooldown = TUNING.HAUNT_COOLDOWN_SMALL
-        inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
-            if math.random() <= TUNING.HAUNT_CHANCE_ALWAYS then
-                if inst.components.grower and inst.components.grower.cycles_left > 0 then
-                    inst.components.grower.cycles_left = inst.components.grower.cycles_left - 1
-                    if inst.components.grower.cycles_left < 0 then inst.components.grower.cycles_left = 0 end
-                    setfertilityfn(inst, inst.components.grower.cycles_left / inst.components.grower.max_cycles_left)
-                    inst.components.hauntable.hauntvalue = TUNING.HAUNT_COOLDOWN_TINY
-                    return true
-                end
-            end
-            return false
-        end)
+        inst.components.hauntable:SetOnHauntFn(OnHaunt)
 
-        local decor_items = decor_defs[ level ]
+        local decor_items = decor_defs[level]
 
-        for k, item_info in pairs( decor_items ) do
-            for item_name, item_offsets in pairs( item_info ) do
-                for l, offset in pairs( item_offsets ) do
-                    local item_inst = SpawnPrefab( item_name )
-                    item_inst.entity:SetParent( inst.entity )
-                    item_inst.Transform:SetPosition( offset[1], offset[2], offset[3] )
-                    table.insert( inst.decor, item_inst )
+        for k, item_info in pairs(decor_items) do
+            for item_name, item_offsets in pairs(item_info) do
+                for l, offset in pairs(item_offsets) do
+                    local item_inst = SpawnPrefab(item_name)
+                    item_inst.entity:SetParent(inst.entity)
+                    item_inst.Transform:SetPosition(unpack(offset))
+                    table.insert(inst.decor, item_inst)
                 end
             end
         end
@@ -334,7 +337,7 @@ local function plot(level)
 end
 
 return --Prefab("common/objects/farmplot",  plot(1), assets, prefabs),
-        Prefab("common/objects/slow_farmplot", plot(2), assets, prefabs),
-        Prefab("common/objects/fast_farmplot", plot(3), assets, prefabs),
-        MakePlacer("common/slow_farmplot_placer", "farmplot", "farmplot", "full", true, nil, nil, nil, 90),
-        MakePlacer("common/fast_farmplot_placer", "farmplot", "farmplot", "full", true, nil, nil, nil, 90)
+    Prefab("common/objects/slow_farmplot", plot(2), assets, prefabs),
+    Prefab("common/objects/fast_farmplot", plot(3), assets, prefabs),
+    MakePlacer("common/slow_farmplot_placer", "farmplot", "farmplot", "full", true, nil, nil, nil, 90),
+    MakePlacer("common/fast_farmplot_placer", "farmplot", "farmplot", "full", true, nil, nil, nil, 90)

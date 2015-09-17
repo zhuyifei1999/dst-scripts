@@ -13,7 +13,7 @@ AddRoom("LabyrinthGuarden", {
 
 AddRoom("BGLabyrinth", {
 					colour={r=0.3,g=0.2,b=0.1,a=0.3},
-					value = GROUND.CAVE_NOISE, 
+					value = GROUND.BRICK,
 					tags = {"Labyrinth"},
 					contents =  {
 					                distributepercent = .04,

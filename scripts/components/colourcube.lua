@@ -58,10 +58,7 @@ local SEASON_COLOURCUBES =
 
 local CAVE_COLOURCUBES =
 {
-    day = "images/colour_cubes/caves_default.tex",
-    dusk = "images/colour_cubes/caves_default.tex",
     night = "images/colour_cubes/caves_default.tex",
-    full_moon = "images/colour_cubes/caves_default.tex",
 }
 
 local PHASE_BLEND_TIMES =
@@ -84,12 +81,12 @@ self.inst = inst
 
 --Private
 local _iscave = inst:HasTag("cave")
-local _phase = "day"
+local _phase = _iscave and "night" or "day"
 local _fullmoonphase = nil
 local _season = "autumn"
 local _ambientcctable = _iscave and CAVE_COLOURCUBES or SEASON_COLOURCUBES.autumn
-local _ambientcc = { _ambientcctable.day, _ambientcctable.day }
-local _insanitycc = { INSANITY_COLOURCUBES.day, INSANITY_COLOURCUBES.day }
+local _ambientcc = { _ambientcctable[_phase], _ambientcctable[_phase] }
+local _insanitycc = { INSANITY_COLOURCUBES[_phase], INSANITY_COLOURCUBES[_phase] }
 local _overridecc = nil
 local _overridecctable = nil
 local _remainingblendtime = 0
@@ -104,7 +101,8 @@ local _colourmodifier = nil
 --------------------------------------------------------------------------
 
 local function GetCCPhase()
-    return _phase == "night" and _fullmoonphase or _phase
+    return (_iscave and "night")
+        or (_phase == "night" and _fullmoonphase or _phase)
 end
 
 local function Blend(time)

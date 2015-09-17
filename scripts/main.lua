@@ -135,6 +135,7 @@ require("frontend")
 require("netvars")
 require("networking")
 require("networkclientrpc")
+require("shardnetworking")
 
 if METRICS_ENABLED then
 require("overseer")

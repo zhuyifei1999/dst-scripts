@@ -1,5 +1,3 @@
-local brain = require "brains/spiderbrain"
-
 local assets =
 {
     Asset("ANIM", "anim/ds_spider_basic.zip"),
@@ -22,62 +20,57 @@ local prefabs =
     "silk",
 }
 
+local brain = require "brains/spiderbrain"
+
 local function ShouldAcceptItem(inst, item, giver)
-
-    if not giver:HasTag("spiderwhisperer") then
-        return false
-    end
-
-    if inst.components.eater:CanEat(item) then
-        return true
-    end
+    return giver:HasTag("spiderwhisperer") and inst.components.eater:CanEat(item)
 end
 
 function GetOtherSpiders(inst)
-    local x,y,z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x,y,z, 15,  {"spider"}, {"FX", "NOCLICK", "DECOR","INLIMBO", "following"})
-    return ents
+    local x, y, z = inst.Transform:GetWorldPosition()
+    return TheSim:FindEntities(x, y, z, 15,  { "spider" }, { "FX", "NOCLICK", "DECOR", "INLIMBO" })
 end
 
 local function OnGetItemFromPlayer(inst, giver, item)
     if inst.components.eater:CanEat(item) then  
 
         local playedfriendsfx = false
-        if inst.components.combat.target and inst.components.combat.target == giver then
+        if inst.components.combat.target == giver then
             inst.components.combat:SetTarget(nil)
-        elseif giver.components.leader then
+        elseif giver.components.leader ~= nil and
+            inst.components.follower ~= nil then
             inst.SoundEmitter:PlaySound("dontstarve/common/makeFriend")
             playedfriendsfx = true
             giver.components.leader:AddFollower(inst)
-            local loyaltyTime = item.components.edible:GetHunger() * TUNING.SPIDER_LOYALTY_PER_HUNGER
-            inst.components.follower:AddLoyaltyTime(loyaltyTime)
+            inst.components.follower:AddLoyaltyTime(item.components.edible:GetHunger() * TUNING.SPIDER_LOYALTY_PER_HUNGER)
         end
 
-        local spiders = GetOtherSpiders(inst)
-        local maxSpiders = 3
+        if giver.components.leader ~= nil then
+            local spiders = GetOtherSpiders(inst)
+            local maxSpiders = 3
 
-        for k,v in pairs(spiders) do
-            if maxSpiders < 0 then
-                break
-            end
-
-            if v.components.combat.target and v.components.combat.target == giver then
-                v.components.combat:SetTarget(nil)
-            elseif giver.components.leader then
-                if not playedfriendsfx then
-                    v.SoundEmitter:PlaySound("dontstarve/common/makeFriend")
-                    playedfriendsfx = true
+            for i, v in ipairs(spiders) do
+                if maxSpiders <= 0 then
+                    break
                 end
-                giver.components.leader:AddFollower(v)
-                local loyaltyTime = item.components.edible:GetHunger() * TUNING.SPIDER_LOYALTY_PER_HUNGER
-                if v.components.follower then
-                    v.components.follower:AddLoyaltyTime(loyaltyTime)
-                end
-            end
-            maxSpiders = maxSpiders - 1
 
-            if v.components.sleeper:IsAsleep() then
-                v.components.sleeper:WakeUp()
+                if v.components.combat.target == giver then
+                    v.components.combat:SetTarget(nil)
+                elseif giver.components.leader ~= nil and
+                    v.components.follower ~= nil and
+                    v.components.follower.leader == nil then
+                    if not playedfriendsfx then
+                        v.SoundEmitter:PlaySound("dontstarve/common/makeFriend")
+                        playedfriendsfx = true
+                    end
+                    giver.components.leader:AddFollower(v)
+                    v.components.follower:AddLoyaltyTime(item.components.edible:GetHunger() * TUNING.SPIDER_LOYALTY_PER_HUNGER)
+                end
+                maxSpiders = maxSpiders - 1
+
+                if v.components.sleeper:IsAsleep() then
+                    v.components.sleeper:WakeUp()
+                end
             end
         end
     end
@@ -91,79 +84,82 @@ local function OnRefuseItem(inst, item)
 end
 
 local function NormalRetarget(inst)
-    local targetDist = TUNING.SPIDER_TARGET_DIST
-    if inst.components.knownlocations:GetLocation("investigate") then
-        targetDist = TUNING.SPIDER_INVESTIGATETARGET_DIST
-    end
-    return FindEntity(inst, targetDist, 
-        function(guy) 
+    return FindEntity(
+        inst,
+        inst.components.knownlocations:GetLocation("investigate") ~= nil and TUNING.SPIDER_INVESTIGATETARGET_DIST or TUNING.SPIDER_TARGET_DIST,
+        function(guy)
             return inst.components.combat:CanTarget(guy)
-               and not (inst.components.follower and inst.components.follower.leader == guy)
-         end,
-         {"character"},
-         {"monster"}
+                and not (inst.components.follower ~= nil and inst.components.follower.leader == guy)
+        end,
+        { "character", "_combat" },
+        { "monster", "INLIMBO" }
+    )
+end
+
+local function FindWarriorTarget(inst, radius)
+    return FindEntity(
+        inst,
+        SpringCombatMod(radius),
+        function(guy)
+            return inst.components.combat:CanTarget(guy)
+                and not (inst.components.follower ~= nil and inst.components.follower.leader == guy)
+        end,
+        { "_combat" },
+        { "monster", "INLIMBO" },
+        { "character", "pig" }
     )
 end
 
 local function WarriorRetarget(inst)
-    return FindEntity(inst, SpringCombatMod(TUNING.SPIDER_WARRIOR_TARGET_DIST), function(guy)
-        return inst.components.combat:CanTarget(guy)
-               and not (inst.components.follower and inst.components.follower.leader == guy)
-    end,
-    nil,
-    {"monster"},
-    {"character","pig"}
-    )
-end
-
-local function FindWarriorTargets(guy)
-    return (guy:HasTag("character") or guy:HasTag("pig") and not guy:HasTag("monster"))
-               and inst.components.combat:CanTarget(guy)
-               and not (inst.components.follower and inst.components.follower.leader == guy)
+    return FindWarriorTarget(inst, TUNING.SPIDER_WARRIOR_TARGET_DIST)
 end
 
 local function keeptargetfn(inst, target)
-   return target
-          and target.components.combat
-          and target.components.health
-          and not target.components.health:IsDead()
-          and not (inst.components.follower and inst.components.follower.leader == target)
-          and not (inst.components.follower and inst.components.follower:IsLeaderSame(target))
+   return target ~= nil
+        and target.components.combat ~= nil
+        and target.components.health ~= nil
+        and not target.components.health:IsDead()
+        and not (inst.components.follower ~= nil and
+                (inst.components.follower.leader == target or inst.components.follower:IsLeaderSame(target)))
+end
+
+local function BasicWakeCheck(inst)
+    return (inst.components.combat ~= nil and inst.components.combat.target ~= nil)
+        or (inst.components.homeseeker ~= nil and inst.components.homeseeker:HasHome())
+        or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning())
+        or (inst.components.follower ~= nil and inst.components.follower.leader ~= nil)
 end
 
 local function ShouldSleep(inst)
-    return TheWorld.state.isday
-           and not (inst.components.combat and inst.components.combat.target)
-           and not (inst.components.homeseeker and inst.components.homeseeker:HasHome() )
-           and not (inst.components.burnable and inst.components.burnable:IsBurning() )
-           and not (inst.components.follower and inst.components.follower.leader)
+    return TheWorld.state.iscaveday and not BasicWakeCheck(inst)
 end
 
 local function ShouldWake(inst)
-    return TheWorld.state.isnight
-           or (inst.components.combat and inst.components.combat.target)
-           or (inst.components.homeseeker and inst.components.homeseeker:HasHome() )
-           or (inst.components.burnable and inst.components.burnable:IsBurning() )
-           or (inst.components.follower and inst.components.follower.leader)
-           or (inst:HasTag("spider_warrior") and FindEntity(inst, SpringCombatMod(TUNING.SPIDER_WARRIOR_WAKE_RADIUS), function(...) return FindWarriorTargets(inst, ...) end ))
+    return TheWorld.state.iscavenight
+        or BasicWakeCheck(inst)
+        or (inst:HasTag("spider_warrior") and
+            FindWarriorTarget(inst, TUNING.SPIDER_WARRIOR_WAKE_RADIUS) ~= nil)
 end
 
 local function DoReturn(inst)
-    if inst.components.homeseeker and inst.components.homeseeker.home and inst.components.homeseeker.home.components.childspawner
-        and not (inst.components.follower and inst.components.follower.leader) then
-        inst.components.homeseeker.home.components.childspawner:GoHome(inst)
+    local home = inst.components.homeseeker ~= nil and inst.components.homeseeker.home or nil
+    if home ~= nil and
+        home.components.childspawner ~= nil and
+        not (inst.components.follower ~= nil and
+            inst.components.follower.leader ~= nil) then
+        home.components.childspawner:GoHome(inst)
     end
 end
 
 local function OnEntitySleep(inst)
-    if TheWorld.state.isday then
+    if TheWorld.state.iscaveday then
         DoReturn(inst)
     end
 end
 
 local function SummonFriends(inst, attacker)
-    local den = GetClosestInstWithTag("spiderden",inst, SpringCombatMod(TUNING.SPIDER_SUMMON_WARRIORS_RADIUS))
-    if den and den.components.combat and den.components.combat.onhitfn then
+    local den = GetClosestInstWithTag("spiderden", inst, SpringCombatMod(TUNING.SPIDER_SUMMON_WARRIORS_RADIUS))
+    if den ~= nil and den.components.combat ~= nil and den.components.combat.onhitfn ~= nil then
         den.components.combat.onhitfn(den, attacker)
     end
 end
@@ -172,14 +168,14 @@ local function OnAttacked(inst, data)
     inst.components.combat:SetTarget(data.attacker)
     inst.components.combat:ShareTarget(data.attacker, 30, function(dude)
         return dude:HasTag("spider")
-               and not dude.components.health:IsDead()
-               and dude.components.follower
-               and dude.components.follower.leader == inst.components.follower.leader
+            and not dude.components.health:IsDead()
+            and dude.components.follower ~= nil
+            and dude.components.follower.leader == inst.components.follower.leader
     end, 10)
 end
 
-local function OnIsDay(inst, isday)
-    if not isday then
+local function OnIsCaveDay(inst, iscaveday)
+    if not iscaveday then
         inst.components.sleeper:WakeUp()
     elseif inst:IsAsleep() then
         DoReturn(inst)
@@ -205,6 +201,7 @@ local function create_common(build, tag)
     inst.DynamicShadow:SetSize(1.5, .5)
     inst.Transform:SetFourFaced()
 
+    inst:AddTag("cavedweller")
     inst:AddTag("monster")
     inst:AddTag("hostile")
     inst:AddTag("scarytoprey")
@@ -300,7 +297,8 @@ local function create_common(build, tag)
 
     inst:ListenForEvent("attacked", OnAttacked)
 
-    inst:WatchWorldState("isday", OnIsDay)
+    inst:WatchWorldState("iscaveday", OnIsCaveDay)
+    OnIsCaveDay(inst, TheWorld.state.iscaveday)
 
     return inst
 end
@@ -336,7 +334,7 @@ local function create_warrior()
     inst.components.health:SetMaxHealth(TUNING.SPIDER_WARRIOR_HEALTH)
 
     inst.components.combat:SetDefaultDamage(TUNING.SPIDER_WARRIOR_DAMAGE)
-    inst.components.combat:SetAttackPeriod(TUNING.SPIDER_WARRIOR_ATTACK_PERIOD + math.random()*2)
+    inst.components.combat:SetAttackPeriod(TUNING.SPIDER_WARRIOR_ATTACK_PERIOD + math.random() * 2)
     inst.components.combat:SetRange(TUNING.SPIDER_WARRIOR_ATTACK_RANGE, TUNING.SPIDER_WARRIOR_HIT_RANGE)
     inst.components.combat:SetRetargetFunction(2, WarriorRetarget)
 

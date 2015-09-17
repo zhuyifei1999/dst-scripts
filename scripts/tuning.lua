@@ -95,6 +95,7 @@ function Tune(overrides)
 	    PICKAXE_USES = 33,
 	    BUGNET_USES = 10,
 	    SPEAR_USES = 150,
+	    CLAW_GLOVE_USES = 200,
 	    WATHGRITHR_SPEAR_USES = 200,
 	    SPIKE_USES = 100,
 	    FISHINGROD_USES = 9,
@@ -146,6 +147,7 @@ function Tune(overrides)
 		HAMBAT_DAMAGE = wilson_attack*1.75,
 		HAMBAT_MIN_DAMAGE_MODIFIER = .5,
 	    SPEAR_DAMAGE = wilson_attack,
+        CLAW_GLOVE_DAMAGE = wilson_attack*1.5,
 	    WATHGRITHR_SPEAR_DAMAGE = wilson_attack * 1.25,
 	    AXE_DAMAGE = wilson_attack*.8,
 	    PICK_DAMAGE = wilson_attack*.8,
@@ -386,6 +388,8 @@ function Tune(overrides)
 	    MUSHTREE_CHOPS_SMALL = 10,
 	    MUSHTREE_CHOPS_MEDIUM = 10,
 	    MUSHTREE_CHOPS_TALL = 15,
+        MUSHTREE_WEBBED_SPIDER_RADIUS = 20,
+        MUSHTREE_WEBBED_MAX_PER_DEN = 6,
 	    
 	    ICE_MINE = 3,
 	    ROCKS_MINE = 6,
@@ -446,7 +450,13 @@ function Tune(overrides)
 	    BAT_ATTACK_PERIOD = 1,
 	    BAT_ATTACK_DIST = 1.5,
 	    BAT_WALK_SPEED = 8,
-	    BAT_TARGET_DIST = 12,
+	    BAT_TARGET_DIST = 8,
+        BAT_ESCAPE_TIME = 60,
+        BAT_ESCAPE_RADIUS = 40,
+
+        BATCAVE_REGEN_PERIOD = seg_time * 4,
+        BATCAVE_SPAWN_PERIOD = 20,
+        BATCAVE_MAX_CHILDREN = 4,
 
 	    SPIDER_HEALTH = 100,
 	    SPIDER_DAMAGE = 20,
@@ -586,7 +596,7 @@ function Tune(overrides)
 	    WORM_ATTACK_DIST = 3,
 	    WORM_HEALTH = 900,
 	    WORM_CHASE_TIME = 20,
-	    WORM_LURE_TIME = 20,
+	    WORM_LURE_TIME = 30,
 	    WORM_LURE_VARIANCE = 10,
 	    WORM_FOOD_DIST = 15,
 	    WORM_CHASE_DIST = 50,
@@ -596,7 +606,9 @@ function Tune(overrides)
 	    WORM_EATING_COOLDOWN = 30,
 
 	    WORMLIGHT_RADIUS = 3,
-	    WORMLIGHT_DURATION = 90,
+	    WORMLIGHT_DURATION = seg_time * 8,
+
+        WORMLIGHT_PLANT_REGROW_TIME = total_day_time*4,
 
 	    TENTACLE_DAMAGE = 34,
 	    TENTACLE_ATTACK_PERIOD = 2,
@@ -612,7 +624,7 @@ function Tune(overrides)
 	    TENTACLE_PILLAR_ARM_ATTACK_DIST = 3,
 	    TENTACLE_PILLAR_ARM_STOPATTACK_DIST = 5,
 	    TENTACLE_PILLAR_ARM_HEALTH = 20,
-	    TENTACLE_PILLAR_ARM_EMERGE_TIME = 200,
+	    TENTACLE_PILLAR_ARM_EMERGE_TIME = seg_time * 12,
 	    
 	    EYEPLANT_DAMAGE = 20,
 	    EYEPLANT_HEALTH = 30,
@@ -900,6 +912,8 @@ function Tune(overrides)
 	    MARSHBUSH_REGROW_TIME = total_day_time*4,
 	    CACTUS_REGROW_TIME = total_day_time*4,
 	    FLOWER_CAVE_REGROW_TIME = total_day_time*3,
+        FLOWER_CAVE_LIGHT_TIME = 90,
+        FLOWER_CAVE_RECHARGE_TIME = 110,
 	    LICHEN_REGROW_TIME = total_day_time*5,
 	    
 	    BERRY_REGROW_TIME = total_day_time*3,
@@ -1232,8 +1246,6 @@ function Tune(overrides)
 		PLAYER_FREEZE_WEAR_OFF_TIME = 3,
 		PLAYER_BURN_TIME = 5.3,
 		
-		CAVE_INSULATION_BONUS = seg_time*8,
-
 		DUSK_INSULATION_BONUS = seg_time*2,
 		NIGHT_INSULATION_BONUS = seg_time*4,
 
@@ -1262,7 +1274,8 @@ function Tune(overrides)
 		DAY_HEAT = 8,
 		NIGHT_COLD = -10,
 		CAVES_MOISTURE_MULT = 3,--6.5,
-		CAVES_TEMP = 0,--20,
+		CAVES_TEMP_MULT = 0.6,
+        CAVES_TEMP_LOCUS = 0,
 		SUMMER_RAIN_TEMP = -20,
 		STARTING_TEMP = 35,
 		OVERHEAT_TEMP = 70,
@@ -1798,7 +1811,10 @@ function Tune(overrides)
             OFTEN = 0.5,
             SOMETIMES = 1.0,
             RARELY = 1.5,
-        }
+        },
+
+        ANCIENT_ALTAR_COMPLETE_WORK = 1,
+        ANCIENT_ALTAR_BROKEN_WORK = 9,
     }
 end
 

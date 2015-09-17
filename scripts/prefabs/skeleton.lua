@@ -15,8 +15,6 @@ SetSharedLootTable('skeleton',
     {'boneshard',   1.00},
 })
 
-local animstates = { 1, 3, 4, 5, 6 } --not going to use the spear skeleton until anim to take spear is made
-
 local function getdesc(inst, viewer)
     if inst.char ~= nil and not viewer:HasTag("playerghost") then
         local mod = GetGenderStrings(inst.char)
@@ -62,10 +60,11 @@ local function SetSkeletonDescription(inst, char, playername, cause, pkname)
     inst.components.inspectable.getspecialdescription = getdesc
 end
 
-local function onhammered(inst, worker)
+local function onhammered(inst)
     inst.components.lootdropper:DropLoot()
-    SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
-    inst.SoundEmitter:PlaySound("dontstarve/common/destroy_wood")
+    local fx = SpawnPrefab("collapse_small")
+    fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+    fx:SetMaterial("rock")
     inst:Remove()
 end
 
@@ -87,7 +86,7 @@ local function onload(inst, data)
     if data ~= nil then
         if data.anim ~= nil then
             inst.animnum = data.anim
-            inst.AnimState:PlayAnimation("idle"..inst.animnum)
+            inst.AnimState:PlayAnimation("idle"..tostring(inst.animnum))
         end
         if data.char ~= nil and (data.cause ~= nil or data.pkname ~= nil) then
             inst.char = data.char
@@ -123,14 +122,15 @@ local function fn()
         return inst
     end
 
-    inst.animnum = animstates[math.random(#animstates)]
-    inst.AnimState:PlayAnimation("idle"..inst.animnum)
+    --not going to use the spear skeleton until anim to take spear is made
+    inst.animnum = math.random(6)
+    inst.AnimState:PlayAnimation("idle"..tostring(inst.animnum))
 
     inst:AddComponent("inspectable")
     inst.components.inspectable:RecordViews()
 
     inst:AddComponent("lootdropper")
-    inst.components.lootdropper:SetChanceLootTable('skeleton') 
+    inst.components.lootdropper:SetChanceLootTable('skeleton')
 
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.HAMMER)

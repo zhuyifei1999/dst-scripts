@@ -120,7 +120,6 @@ function Spell:StartSpell()
 	if not self.target then
 		return
 	end
-	print("startspell")
 	self.inst:StartUpdatingComponent(self)
 	self:OnStart()
 end

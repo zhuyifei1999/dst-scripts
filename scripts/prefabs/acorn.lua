@@ -1,10 +1,10 @@
 require "prefabutil"
 local assets =
 {
-Asset("ANIM", "anim/acorn.zip"),
+    Asset("ANIM", "anim/acorn.zip"),
 }
 
-local prefabs = 
+local prefabs =
 {
     "acorn_sapling",
     "acorn_cooked",
@@ -19,26 +19,29 @@ local function plant(inst, growtime)
     inst:Remove()
 end
 
-local function ondeploy (inst, pt)
+local function domonsterstop(ent)
+    ent.monster_stop_task = nil
+    ent:StopMonster()
+end
+
+local function ondeploy(inst, pt)
     inst = inst.components.stackable:Get()
-    inst.Transform:SetPosition(pt:Get() )
+    inst.Transform:SetPosition(pt:Get())
     local timeToGrow = GetRandomWithVariance(TUNING.ACORN_GROWTIME.base, TUNING.ACORN_GROWTIME.random)
-    plant(inst, timeToGrow)	
+    plant(inst, timeToGrow)
 
     -- Pacify a nearby monster tree
     local ent = FindEntity(inst, TUNING.DECID_MONSTER_ACORN_CHILL_RADIUS, nil, {"birchnut", "monster"}, {"stump", "burnt", "FX", "NOCLICK","DECOR","INLIMBO"})
-    if ent then
+    if ent ~= nil then
         if ent.monster_start_task ~= nil then
             ent.monster_start_task:Cancel()
             ent.monster_start_task = nil
         end
-        if ent.monster and not ent:HasTag("fire") and not ent:HasTag("stump") and not ent:HasTag("burnt") then
-            if not ent.monster_stop_task then
-                ent.monster_stop_task = ent:DoTaskInTime(math.random(0,3), function(ent) 
-                    ent:StopMonster() 
-                    ent.monster_stop_task = nil
-                end)
-            end
+        if ent.monster and
+            ent.monster_stop_task == nil and
+            not (ent.components.burnable ~= nil and ent.components.burnable:IsBurning()) and
+            not (ent:HasTag("stump") or ent:HasTag("burnt")) then
+            ent.monster_stop_task = ent:DoTaskInTime(math.random(0, 3), domonsterstop)
         end
     end
 end

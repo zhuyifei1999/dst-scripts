@@ -10,23 +10,22 @@ local prefabs =
     "collapse_small",
 }
 
-local names = {"f1","f2","f3","f4","f5","f6","f7","f8","f9","f10"}
-
 local function onsave(inst, data)
     data.anim = inst.animname
 end
 
 local function onload(inst, data)
-    if data and data.anim then
+    if data ~= nil and data.anim ~= nil then
         inst.animname = data.anim
         inst.AnimState:PlayAnimation(inst.animname)
     end
 end
 
-local function onhammered(inst, worker)
-    SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
+local function onhammered(inst)
+    local fx = SpawnPrefab("collapse_small")
+    fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+    fx:SetMaterial("pot")
     inst.components.lootdropper:DropLoot()
-    inst.SoundEmitter:PlaySound("dontstarve/common/destroy_pot")
     inst:Remove()
 end
 
@@ -42,13 +41,15 @@ local function fn()
     inst.AnimState:SetBuild("cave_ferns_potted")
     inst.AnimState:SetRayTestOnBB(true)
 
+    inst:AddTag("cavedweller")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.animname = names[math.random(#names)]
+    inst.animname = "f" + tostring(math.random(10))
     inst.AnimState:PlayAnimation(inst.animname)
 
     inst:AddComponent("inspectable")

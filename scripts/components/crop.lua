@@ -146,7 +146,9 @@ end
 function Crop:Harvest(harvester)
     if self.matured or self.inst:HasTag("withered") then
         local product = nil
-        if self.grower ~= nil and self.grower:HasTag("fire") or self.inst:HasTag("fire") then
+        if self.grower ~= nil and
+            (self.grower.components.burnable ~= nil and self.grower.components.burnable:IsBurning()) or
+            (self.inst.components.burnable ~= nil and self.inst.components.burnable:IsBurning()) then
             local temp = SpawnPrefab(self.product_prefab)
             product = SpawnPrefab(temp.components.cookable ~= nil and temp.components.cookable.product or "seeds_cooked")
             temp:Remove()

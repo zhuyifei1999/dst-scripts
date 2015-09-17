@@ -18,6 +18,7 @@ local actionhandlers =
             print("Player ghost ignored attack control")
         end),
     ActionHandler(ACTIONS.REMOTERESURRECT, "remoteresurrect"),
+    ActionHandler(ACTIONS.MIGRATE, "migrate"),
 }
 
 local events =
@@ -377,10 +378,7 @@ local states =
             -- this is just hacked in here to make the sound play BEFORE the player hits the wormhole
             TimeEvent(3 * FRAMES, function(inst)
                 if inst.bufferedaction ~= nil and inst.bufferedaction.target ~= nil then
-                    if inst.bufferedaction.target.SoundEmitter ~= nil then
-                        inst.bufferedaction.target.SoundEmitter:PlaySound("dontstarve/common/teleportworm/swallow")
-                    end
-                    inst:PushEvent("wormholetravel") --Event for playing local travel sound
+                    inst.bufferedaction.target:PushEvent("starttravelsound", inst)
                 end
             end),
         },
@@ -430,6 +428,46 @@ local states =
                 end
             end),
         },
+    },
+
+    State
+    {
+        name = "migrate",
+        tags = { "doing", "busy", "canrotate" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("dissipate")
+            inst.SoundEmitter:PlaySound("dontstarve/ghost/ghost_haunt", nil, nil, true)
+
+            inst.sg.statemem.action = inst.bufferedaction
+        end,
+
+        timeline =
+        {
+            -- this is just hacked in here to make the sound play BEFORE the player hits the wormhole
+            TimeEvent(3 * FRAMES, function(inst)
+                if inst.bufferedaction ~= nil and inst.bufferedaction.target ~= nil then
+                    inst.bufferedaction.target:PushEvent("starttravelsound", inst)
+                end
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() and
+                    not inst:PerformBufferedAction() then
+                    inst.sg:GoToState("jumpout")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            if inst.bufferedaction == inst.sg.statemem.action then
+                inst:ClearBufferedAction()
+            end
+        end,
     },
 }
 

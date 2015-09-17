@@ -191,6 +191,7 @@ function c_select(inst)
     if not inst then
         inst = ConsoleWorldEntityUnderMouse()
     end
+    print("Selected "..tostring(inst or "<nil>") )
     return SetDebugEntity(inst)
 end
 
@@ -409,10 +410,56 @@ function c_listtag(tag)
     end
 end
 
+local lastroom = -1
+function c_gotoroom(roomname, inst)
+    inst = inst or ConsoleCommandPlayer()
+
+    local found = nil
+    local foundid = nil
+    local reallowest = nil
+    local reallowestid = nil
+    local count = 0
+
+    print("Finding room containing",roomname)
+
+    roomname = string.lower(roomname)
+
+    for i, node in ipairs(TheWorld.topology.nodes) do
+        if string.lower(TheWorld.topology.ids[i]):find(roomname) then
+            if reallowest == nil then
+                reallowest = node
+                reallowestid = i
+            end
+            count = count + 1
+            if i > lastroom then
+                found = node
+                foundid = i
+                break
+            end
+        end
+    end
+
+    if found == nil and reallowest ~= nil then
+        found = reallowest
+        foundid = reallowestid
+    end
+
+    if found ~= nil then
+        print("Going to ", TheWorld.topology.ids[foundid], "("..count..")")
+        c_teleport(found.cent[1],0,found.cent[2],inst)
+        lastroom = foundid
+    else
+        print("Couldn't find a matching room.")
+    end
+end
+
 local lastfound = -1
+local lastprefab = nil
 function c_findnext(prefab, radius, inst)
     inst = inst or ConsoleCommandPlayer()
     radius = radius or 9001
+    prefab = prefab or lastprefab
+    lastprefab = prefab
 
     local trans = inst.Transform
     local found = nil
@@ -582,11 +629,13 @@ function c_counttagged(tag, noprint)
 end
 
 function c_countallprefabs()
+    local total = 0
     local counted = {}
     for k,v in pairs(Ents) do
         if v.prefab and not table.findfield(counted, v.prefab) then 
             local num = c_countprefabs(v.prefab, true)
             counted[v.prefab] = num
+            total = total + num
         end
     end
 
@@ -608,7 +657,7 @@ function c_countallprefabs()
         print(k, v)
     end
 
-    print("There are ", GetTableSize(counted), " different prefabs in the world.")
+    print("There are ", GetTableSize(counted), " different prefabs in the world, ", total, " in total.")
 end
 
 function c_speedmult(multiplier)
@@ -708,6 +757,26 @@ end
 function c_selectnext(name)
     c_select(c_findnext(name))
 end
+
+function c_selectnear(prefab, rad)
+    local player = ConsoleCommandPlayer()
+    local x,y,z = player.Transform:GetWorldPosition()
+    local ents = TheSim:FindEntities(x,y,z, rad or 30)
+    local closest = nil
+    local closeness = nil
+    for k,v in pairs(ents) do
+        if v.prefab == prefab then
+            if closest == nil or player:GetDistanceSqToInst(v) < closeness then
+                closest = v
+                closeness = player:GetDistanceSqToInst(v)
+            end
+        end
+    end
+    if closest then
+        c_select(closest)
+    end
+end
+
 
 function c_summondeerclops()
     local player = ConsoleCommandPlayer()
@@ -883,6 +952,14 @@ function c_netstats()
     end
 end
 
+function c_removeall(name)
+    for k,ent in pairs(Ents) do
+        if ent.prefab == name then
+            ent:Remove()
+        end
+    end
+end
+
 function c_forcecrash(unique)
     local path = "a"
     if unique then
@@ -894,4 +971,31 @@ function c_forcecrash(unique)
     elseif TheFrontEnd then
         TheFrontEnd.screenroot.inst:DoTaskInTime(0,function() _G[path].b = 0 end)
     end
+end
+
+function c_migrationportal(worldId, portalId)
+    local inst = c_spawn("migration_portal")
+    if portalId then
+        inst.components.worldmigrator:SetRecievedPortal( worldId, portalId )
+    else
+        inst.components.worldmigrator:SetDestinationWorld( worldId )
+    end
+end
+
+function c_goadventuring()
+	c_give("torch", 2)
+	c_give("minerhat")
+	c_give("axe")
+	c_give("pickaxe")
+	c_give("footballhat")
+	c_give("armorwood")
+	c_give("spear")
+end
+
+function c_sounddebug()
+    if not package.loaded["debugsounds"] then
+        require "debugsounds"
+    end
+    SOUNDDEBUG_ENABLED = true
+    TheSim:SetDebugRenderEnabled(true)
 end

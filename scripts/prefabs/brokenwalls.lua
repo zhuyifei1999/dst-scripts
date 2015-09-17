@@ -1,48 +1,44 @@
 require "prefabutil"
 
+local prefabs =
+{
+    "collapse_small",
+}
+
 function MakeWallType(data)
+    local assets =
+    {
+        Asset("ANIM", "anim/wall.zip"),
+        Asset("ANIM", "anim/wall_"..data.name..".zip"),
+    }
 
-	local function onhit(inst)
-		if data.destroysound then
-			inst.SoundEmitter:PlaySound(data.destroysound)		
-		end
-	end
+    local onhit = data.material ~= nil and function(inst)
+        inst.SoundEmitter:PlaySound("dontstarve/common/destroy_"..data.material)
+    end or nil
 
-	local function onhammered(inst, worker)
+    local function onhammered(inst, worker)
+        if data.maxloots ~= nil and data.loot ~= nil then
+            local num_loots = 1
+            for i = 1, num_loots do
+                inst.components.lootdropper:SpawnLootPrefab(data.loot)
+            end
+        end
 
-		if data.maxloots and data.loot then
-			local num_loots =  1 
-			for k = 1, num_loots do
-				inst.components.lootdropper:SpawnLootPrefab(data.loot)
-			end
-		end
+        local fx = SpawnPrefab("collapse_small")
+        fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+        if data.material ~= nil then
+            fx:SetMaterial(data.material)
+        end
 
-		SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
-		
-		if data.destroysound then
-			inst.SoundEmitter:PlaySound(data.destroysound)		
-		end
+        inst:Remove()
+    end
 
-		inst:Remove()
-	end
+    local function fn()
+        local inst = CreateEntity()
 
-	local assets =
-	{
-		Asset("ANIM", "anim/wall.zip"),
-		Asset("ANIM", "anim/wall_".. data.name..".zip"),
-	}
-
-	local prefabs = 
-	{
-		"collapse_small",
-	}
-
-	local function fn()
-		local inst = CreateEntity()
-
-		inst.entity:AddTransform()
-		inst.entity:AddAnimState()
-		inst.entity:AddSoundEmitter()
+        inst.entity:AddTransform()
+        inst.entity:AddAnimState()
+        inst.entity:AddSoundEmitter()
         inst.entity:AddNetwork()
 
         inst:AddTag("wall")
@@ -53,7 +49,7 @@ function MakeWallType(data)
 
         inst.AnimState:SetBank("wall")
         inst.AnimState:SetBuild("wall_"..data.name)
-        inst.AnimState:PlayAnimation("0", false)
+        inst.AnimState:PlayAnimation("broken", false)
 
         MakeSnowCoveredPristine(inst)
 
@@ -69,41 +65,38 @@ function MakeWallType(data)
         --Remove these tags so that they can be added properly when replicating components below
         inst:RemoveTag("_named")
 
-		inst:AddComponent("inspectable")
-		inst.components.inspectable.nameoverride = "wall_"..data.name
+        inst:AddComponent("inspectable")
+        inst.components.inspectable.nameoverride = "wall_"..data.name
 
-	    inst:AddComponent("named")
-	    inst.components.named:SetName(STRINGS.NAMES["WALL_RUINS"])		
+        inst:AddComponent("named")
+        inst.components.named:SetName(STRINGS.NAMES["WALL_RUINS"])      
 
-		inst:AddComponent("workable")
-		inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
-		inst.components.workable:SetWorkLeft(3)
-		inst.components.workable:SetOnFinishCallback(onhammered)
-		inst.components.workable:SetOnWorkCallback(onhit) 
+        inst:AddComponent("workable")
+        inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
+        inst.components.workable:SetWorkLeft(3)
+        inst.components.workable:SetOnFinishCallback(onhammered)
+        inst.components.workable:SetOnWorkCallback(onhit) 
 
-		MakeSnowCovered(inst)
+        MakeSnowCovered(inst)
 
-		return inst
-	end
+        return inst
+    end
 
-	return Prefab( "common/brokenwall_"..data.name, fn, assets, prefabs)
+    return Prefab("common/brokenwall_"..data.name, fn, assets, prefabs)
 end
-
-local wallprefabs = {}
 
 --6 rock, 8 wood, 4 straw
 --NOTE: Stacksize is now set in the actual recipe for the item.
 local walldata = 
 {
-	{name = "stone", tags={"stone"}, loot = "rocks", maxloots = 2, maxhealth=TUNING.STONEWALL_HEALTH, buildsound="dontstarve/common/place_structure_stone", destroysound="dontstarve/common/destroy_stone"},
-	{name = "wood", tags={"wood"}, loot = "log", maxloots = 2, maxhealth=TUNING.WOODWALL_HEALTH, flammable = true, buildsound="dontstarve/common/place_structure_wood", destroysound="dontstarve/common/destroy_wood"},
-	{name = "hay", tags={"grass"}, loot = "cutgrass", maxloots = 2, maxhealth=TUNING.HAYWALL_HEALTH, flammable = true, buildsound="dontstarve/common/place_structure_straw", destroysound="dontstarve/common/destroy_straw"},
-	{name = "ruins", tags={"stone"}, loot = nil, maxloots = 2, maxhealth=TUNING.STONEWALL_HEALTH, buildsound="dontstarve/common/place_structure_stone", destroysound="dontstarve/common/destroy_stone"},
+    { name = "stone", material = "stone", tags = { "stone" }, loot = "rocks",    maxloots = 2, maxhealth = TUNING.STONEWALL_HEALTH                   },
+    { name = "wood",  material = "wood",  tags = { "wood" },  loot = "log",      maxloots = 2, maxhealth = TUNING.WOODWALL_HEALTH,  flammable = true },
+    { name = "hay",   material = "straw", tags = { "grass" }, loot = "cutgrass", maxloots = 2, maxhealth = TUNING.HAYWALL_HEALTH,   flammable = true },
+    { name = "ruins", material = "stone", tags = { "stone" }, loot = nil,        maxloots = 2, maxhealth = TUNING.STONEWALL_HEALTH                   },
 }
 
-for k,v in pairs(walldata) do
-	local wall, item, placer = MakeWallType(v)
-	table.insert(wallprefabs, wall)
+local wallprefabs = {}
+for i, v in ipairs(walldata) do
+    table.insert(wallprefabs, MakeWallType(v))
 end
-
 return unpack(wallprefabs)

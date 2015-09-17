@@ -13,51 +13,42 @@ local function GetLayoutsForType( name )
 	local layouts = 
 		{
 			["SINGLE_NORTH"] = 	StaticLayout.Get("map/static_layouts/rooms/"..name.."/one",	{
-				areas = ruins_areas,
 				force_rotation = LAYOUT_ROTATION.NORTH}),
 			["SINGLE_EAST"] = 	StaticLayout.Get("map/static_layouts/rooms/"..name.."/one",	{
-				areas = ruins_areas,
 				force_rotation = LAYOUT_ROTATION.EAST}),
 			["L_NORTH"] = 		StaticLayout.Get("map/static_layouts/rooms/"..name.."/two", 	{
-				areas = ruins_areas,
 				force_rotation = LAYOUT_ROTATION.NORTH}),
 			["SINGLE_SOUTH"] = 	StaticLayout.Get("map/static_layouts/rooms/"..name.."/one",	{
-				areas = ruins_areas,
 				force_rotation = LAYOUT_ROTATION.SOUTH}),
 			["TUNNEL_NS"] = 	StaticLayout.Get("map/static_layouts/rooms/"..name.."/long", 	{
-				areas = ruins_areas,
 				force_rotation = LAYOUT_ROTATION.NORTH}),
 			["L_EAST"] = 		StaticLayout.Get("map/static_layouts/rooms/"..name.."/two",	{
-				areas = ruins_areas,
 				force_rotation = LAYOUT_ROTATION.EAST}),
 			["THREE_WAY_N"] = 	StaticLayout.Get("map/static_layouts/rooms/"..name.."/three", 	{
-				areas = ruins_areas,
 				force_rotation = LAYOUT_ROTATION.NORTH}),
 			["SINGLE_WEST"] = 	StaticLayout.Get("map/static_layouts/rooms/"..name.."/one",	{
-				areas = ruins_areas,
 				force_rotation = LAYOUT_ROTATION.WEST}),
 			["L_WEST"] = 		StaticLayout.Get("map/static_layouts/rooms/"..name.."/two",	{
-				areas = ruins_areas,
 				force_rotation = LAYOUT_ROTATION.WEST}),
 			["TUNNEL_EW"] = 	StaticLayout.Get("map/static_layouts/rooms/"..name.."/long",	{
-				areas = ruins_areas,
 				force_rotation = LAYOUT_ROTATION.EAST}),
 			["THREE_WAY_W"] = 	StaticLayout.Get("map/static_layouts/rooms/"..name.."/three",	{
-				areas = ruins_areas,
 				force_rotation = LAYOUT_ROTATION.WEST}),
 			["L_SOUTH"] = 		StaticLayout.Get("map/static_layouts/rooms/"..name.."/two",	{
-				areas = ruins_areas,
 				force_rotation = LAYOUT_ROTATION.SOUTH}),
 			["THREE_WAY_S"] = 	StaticLayout.Get("map/static_layouts/rooms/"..name.."/three",	{
-				areas = ruins_areas,
 				force_rotation = LAYOUT_ROTATION.SOUTH}),
 			["THREE_WAY_E"] = 	StaticLayout.Get("map/static_layouts/rooms/"..name.."/three",	{
-				areas = ruins_areas,
 				force_rotation = LAYOUT_ROTATION.EAST}),
 			["FOUR_WAY"] = 		StaticLayout.Get("map/static_layouts/rooms/"..name.."/four", 	{
-				areas = ruins_areas,
 				force_rotation = LAYOUT_ROTATION.NORTH}),
 		}
+
+    for k,v in pairs(layouts) do
+        v.start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED
+        v.fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED
+        v.areas = ruins_areas
+    end
 	return layouts
 end
 
@@ -76,5 +67,8 @@ return {
 			["room_residential"] = GetLayoutsForType("room_residential"), 
 			["room_residential_two"] = GetLayoutsForType("room_residential_two"),
 			["room_open"] = GetLayoutsForType("room_open"),
+			["pit_hallway_armoury"] = GetLayoutsForType("pit_hallway_armoury"),
+			["pit_room_armoury"] = GetLayoutsForType("pit_room_armoury"),
+			["pit_room_armoury_two"] = GetLayoutsForType("pit_room_armoury_two"),
 		},
 	}

@@ -448,6 +448,7 @@ NODE_TYPE =
 	Random = 3, 
 	Blocker = 4, 
 	Room = 5,
+    BackgroundRoom = 6,
 }
 
 -- See cell_data.h
@@ -777,7 +778,8 @@ RESET_ACTION =
 	LOAD_FRONTEND = 0,
 	LOAD_SLOT = 1,
 	LOAD_FILE = 2,
-	DO_DEMO = 3
+	DO_DEMO = 3,
+    JOIN_SERVER = 4
 }
 
 HUD_ATLAS = "images/hud.xml"
@@ -1050,6 +1052,15 @@ TWITCH =
     CHAT_CONNECT_FAILED = 2,
 }
 
+-- TeamAttacker orders
+ORDERS =
+{
+    NONE = 0,
+    HOLD = 1,
+    WARN = 2,
+    ATTACK = 3,
+}
+
 -- How does this creature apply stunlock to the player
 PLAYERSTUNLOCK =
 {
@@ -1060,6 +1071,25 @@ PLAYERSTUNLOCK =
     NEVER = 4,
 }
 
+-- Which wormhole?
+WORMHOLETYPE =
+{
+    WORM = 0,
+    TENTAPILLAR = 1,
+}
+
+REMOTESHARDSTATE =
+{
+    OFFLINE = 0,
+    READY = 1,
+}
+
+SHARDID =
+{
+    INVALID = "0",
+    MASTER = "1"
+}
+
 -- Server pricacy options
 PRIVACY_TYPE =
 {
@@ -1068,5 +1098,3 @@ PRIVACY_TYPE =
     LOCAL = 2,
     CLAN = 3,
 }
-
--- This line is added as a test. Delete it if you see it.

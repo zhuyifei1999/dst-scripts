@@ -391,6 +391,15 @@ function JoinServer( server_listing, optional_password_override )
 	end
 end
 
+function MigrateToServer(serverIp, serverPort, serverPassword)
+    StartNextInstance({
+        reset_action = RESET_ACTION.JOIN_SERVER, 
+        serverIp=serverIp,
+        serverPort=serverPort,
+        serverPassword=serverPassword,
+    })
+end
+
 function GetAvailablePlayerColours()
     -- -Return an ordered list of player colours, and a default colour.
     --

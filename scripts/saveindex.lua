@@ -34,8 +34,10 @@ local function GetWorldgenOverride(cb)
 				if success and string.len(str) > 0 then
 					if savedata ~= nil and savedata.override_enabled then
 						print("Loaded and applied world gen overrides from "..filename)
+                        local preset = savedata.preset
 						savedata.override_enabled = nil --remove this so the rest of the table can be interpreted as a tweak table
-						cb( savedata )
+                        savedata.preset = nil
+						cb( preset, savedata )
                         return
                     else
                         print("Found world gen overrides but not enabled.")
@@ -45,7 +47,7 @@ local function GetWorldgenOverride(cb)
 				end
 			end
             print("Not applying world gen overrides.")
-            cb( nil )
+            cb( nil, nil )
 		end)
 end
 
@@ -226,7 +228,13 @@ function SaveIndex:StartSurvivalMode(saveslot, customoptions, serverdata, onsave
     slot.world.options = customoptions
     slot.server = {}
 
-    GetWorldgenOverride(function(overrideoptions)
+    GetWorldgenOverride(function(preset, overrideoptions)
+        if preset then
+            if slot.world.options == nil then
+                slot.world.options = {}
+            end
+            slot.world.options.actualpreset = preset
+        end
         if overrideoptions then
             if slot.world.options == nil then
                 slot.world.options = {}

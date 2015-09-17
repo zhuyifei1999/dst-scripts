@@ -12,14 +12,15 @@ local function fn()
 
     inst.Label:SetFontSize(20)
     inst.Label:SetFont(DEFAULTFONT)
-    inst.Label:SetWorldOffset(0, 0, 0)
+    inst.Label:SetWorldOffset(0, .1, 0)
+    inst.Label:SetUIOffset(0, 0, 0)
     inst.Label:SetColour(.73, .05, .02)
     inst.Label:Enable(true)
 	
     inst.AnimState:SetBank("sound")
     inst.AnimState:SetBuild("sounddebug")
     inst.AnimState:PlayAnimation("idle")
-    inst.AnimState:SetFinalOffset(-1)
+    inst.AnimState:SetFinalOffset(1)
 
     inst:AddTag("FX")
     --[[Non-networked entity]]

@@ -4,7 +4,6 @@ local assets =
     Asset("ANIM", "anim/sign_arrow_panel.zip"),
 }
 
-
 local prefabs =
 {
     "collapse_small",
@@ -12,12 +11,13 @@ local prefabs =
 }
 
 local function onhammered(inst, worker)
-    if inst:HasTag("fire") and inst.components.burnable then
+    if inst.components.burnable ~= nil and inst.components.burnable:IsBurning() then
         inst.components.burnable:Extinguish()
     end
     inst.components.lootdropper:DropLoot()
-    SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
-    inst.SoundEmitter:PlaySound("dontstarve/common/destroy_wood")
+    local fx = SpawnPrefab("collapse_small")
+    fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+    fx:SetMaterial("wood")
     inst:Remove()
 end
 
@@ -29,13 +29,13 @@ local function onhit(inst, worker)
 end
 
 local function onsave(inst, data)
-    if inst:HasTag("burnt") or inst:HasTag("fire") then
+    if inst:HasTag("burnt") or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
         data.burnt = true
     end
 end
 
 local function onload(inst, data)
-    if data and data.burnt then
+    if data ~= nil and data.burnt then
         inst.components.burnable.onburnt(inst)
     end
 end
@@ -60,6 +60,8 @@ local function fn()
     inst.Transform:SetEightFaced()
 
     MakeSnowCoveredPristine(inst)
+
+    inst:AddTag("structure")
 
     --Sneak these into pristine state for optimization
     inst:AddTag("_writeable")
@@ -87,7 +89,6 @@ local function fn()
 
     inst:AddComponent("savedrotation")
 
-    inst:AddTag("structure")
     MakeSmallBurnable(inst, nil, nil, true)
     MakeSmallPropagator(inst)
     inst.OnSave = onsave

@@ -17,11 +17,16 @@ LOCKS_ARRAY =
 	"BASIC_COMBAT",
 	"ADVANCED_COMBAT",
 	"ONLYTIER1",
+	"TIER0",
 	"TIER1",
 	"TIER2",
 	"TIER3",
 	"TIER4",
 	"TIER5",
+	"TIER6",
+    "ANYTIER",
+    "INNERTIER",
+    "OUTERTIER",
 	"LIGHT",
 	"FUNGUS",
 	"CAVE",
@@ -32,7 +37,27 @@ LOCKS_ARRAY =
 	"BADLANDS",
 	"HOUNDS",
 	--"ADVANCED_COMBAT",
+
+    "ENTRANCE_INNER",
+    "ENTRANCE_OUTER",
+
+	"MUSHROOM",
+	"RABBIT",
+	"PASSAGE",
+    "AREA",
+	"CAVERN",
+	"SINKHOLE",
+	"BATS",
+
+	"EASY",
+	"MEDIUM",
+	"HARD",
+
+	"BLUE",
+	"RED",
+	"GREEN",
 }
+
 LOCKS = {}
 for i,v in ipairs(LOCKS_ARRAY) do
 	assert(LOCKS[v] == nil, "Lock "..v.." is defined twice!")
@@ -49,8 +74,8 @@ KEYS_ARRAY =
 	"STONE",
 	"WOOD",
 	"MEAT",
-	"PIGS",		
-	"FIRE",		
+	"PIGS",
+	"FIRE",
 	"POOP",
 	"WOOL",
 	"FARM",
@@ -70,6 +95,7 @@ KEYS_ARRAY =
 	"GEARS",
 	"CHESSMEN",
 	"TENTACLES",
+	"TIER0",
 	"TIER1",
 	"TIER2",
 	"TIER3",
@@ -84,6 +110,27 @@ KEYS_ARRAY =
 	"RUINS",
 	"SACRED",
 	"BADLANDS",
+
+    "ENTRANCE_INNER",
+    "ENTRANCE_OUTER",
+
+	"MUSHROOM",
+	"RABBIT",
+	"PASSAGE",
+    "AREA",
+	"CAVERN",
+	"SINKHOLE",
+	"BATS",
+
+	"EASY",
+	"MEDIUM",
+	"HARD",
+
+	"BLUE",
+	"RED",
+	"GREEN",
+
+
 }
 KEYS = {}
 for i,v in ipairs(KEYS_ARRAY) do
@@ -183,6 +230,11 @@ LOCKS_KEYS =
 	{
 		KEYS.TIER1,
 	},
+	[LOCKS.TIER0] = 
+	{
+		KEYS.TIER0,
+		KEYS.TIER1,
+	},
 	[LOCKS.TIER1] = 
 	{
 		KEYS.TIER1,
@@ -208,6 +260,35 @@ LOCKS_KEYS =
 		KEYS.TIER5,
 		KEYS.TIER6,
 	},
+    [LOCKS.ANYTIER] =
+    {
+        KEYS.TIER1,
+        KEYS.TIER2,
+        KEYS.TIER3,
+        KEYS.TIER4,
+        KEYS.TIER5,
+        KEYS.TIER6,
+    },
+    [LOCKS.INNERTIER] =
+    {
+        KEYS.TIER1,
+        KEYS.TIER2,
+        KEYS.TIER3,
+    },
+    [LOCKS.OUTERTIER] =
+    {
+        KEYS.TIER4,
+        KEYS.TIER5,
+        KEYS.TIER6,
+    },
+    [LOCKS.ENTRANCE_INNER] =
+    {
+        KEYS.ENTRANCE_INNER,
+    },
+    [LOCKS.ENTRANCE_OUTER] =
+    {
+        KEYS.ENTRANCE_OUTER,
+    },
 	
 	[LOCKS.LIGHT] = 
 	{
@@ -236,7 +317,72 @@ LOCKS_KEYS =
 	[LOCKS.SACRED] =
 	{
 		KEYS.SACRED
-	}
+	},
+
+	[LOCKS.MUSHROOM] =
+	{
+		KEYS.MUSHROOM
+	},
+
+	[LOCKS.RABBIT] =
+	{
+		KEYS.RABBIT
+	},
+	[LOCKS.SINKHOLE] =
+	{
+		KEYS.SINKHOLE
+	},
+	[LOCKS.BATS] =
+	{
+		KEYS.BATS
+	},
+
+	[LOCKS.PASSAGE] =
+	{
+		KEYS.PASSAGE
+	},
+
+	[LOCKS.AREA] =
+	{
+		KEYS.AREA
+	},
+
+	[LOCKS.CAVERN] =
+	{
+		KEYS.CAVERN
+	},
+
+
+	[LOCKS.EASY] =
+	{
+		KEYS.EASY
+	},
+
+	[LOCKS.MEDIUM] =
+	{
+		KEYS.MEDIUM
+	},
+
+	[LOCKS.HARD] =
+	{
+		KEYS.HARD
+	},
+
+	[LOCKS.BLUE] =
+	{
+		KEYS.BLUE
+	},
+
+	[LOCKS.RED] =
+	{
+		KEYS.RED
+	},
+
+	[LOCKS.GREEN] =
+	{
+		KEYS.GREEN
+	},
+
 }
 
 

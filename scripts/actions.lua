@@ -120,6 +120,7 @@ ACTIONS =
     TAUNT = Action(0, nil, nil, 30),
     ATTUNE = Action(),
     REMOTERESURRECT = Action(0, false, false, nil, true, true),
+    MIGRATE = Action(0, false, false, nil, true),
 }
 
 ACTION_IDS = {}
@@ -993,6 +994,8 @@ ACTIONS.GOHOME.fn = function(act)
             return act.target.components.spawner:GoHome(act.doer)
         elseif act.target.components.childspawner ~= nil then
             return act.target.components.childspawner:GoHome(act.doer)
+        elseif act.target.components.hideout ~= nil then
+            return act.target.components.hideout:GoHome(act.doer)
         end
         act.target:PushEvent("onwenthome", { doer = act.doer })
         act.doer:Remove()
@@ -1008,8 +1011,8 @@ ACTIONS.JUMPIN.strfn = function(act)
 end
 
 ACTIONS.JUMPIN.fn = function(act)
-    if act.target.components.teleporter ~= nil then
-        act.target.components.teleporter:Activate(act.doer)
+    if act.doer ~= nil and act.doer.sg ~= nil and act.doer.sg.currentstate.name == "jumpin_pre" then
+        act.doer.sg:GoToState("jumpin", { teleporter = act.target })
         return true
     end
 end
@@ -1340,6 +1343,14 @@ ACTIONS.ATTUNE.fn = function(act)
         act.target.components.attunable ~= nil then
         return act.target.components.attunable:LinkToPlayer(act.doer)
     end
+end
+
+ACTIONS.MIGRATE.fn = function(act)
+    --fail reasons: "NODESTINATION"
+    return act.doer ~= nil
+        and act.target ~= nil
+        and act.target.components.worldmigrator ~= nil
+        and act.target.components.worldmigrator:Activate(act.doer)
 end
 
 ACTIONS.REMOTERESURRECT.fn = function(act)

@@ -41,8 +41,8 @@ local function GoHomeAction(inst)
     local home = inst.components.homeseeker ~= nil and inst.components.homeseeker.home or nil
     return home ~= nil
         and home:IsValid()
-        and not (home:HasTag("fire") or
-                home:HasTag("burnt"))
+        and not (home.components.burnable ~= nil and home.components.burnable:IsBurning())
+        and not home:HasTag("burnt")
         and BufferedAction(inst, home, ACTIONS.GOHOME)
         or nil
 end

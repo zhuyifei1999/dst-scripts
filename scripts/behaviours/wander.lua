@@ -39,10 +39,18 @@ function Wander:Visit()
 		end
     
         if GetTime() > self.waittime then
-            self:PickNewDirection()
+            if not self.walking then
+                self:PickNewDirection()
+            else
+                self:HoldPosition()
+            end
         else
             if not self.walking then
 				self:Sleep(self.waittime - GetTime())
+            else
+                if not self.inst.components.locomotor:WantsToMoveForward() then
+                    self:HoldPosition()
+                end
             end
         end
     end
@@ -105,65 +113,59 @@ end
 
 function Wander:PickNewDirection()
 
-    self.walking = not self.walking
-
     self.far_from_home = self:IsFarFromHome()
-    
-    if self.walking then
-        
-        if self.far_from_home then
-        	--print("Far from home, going back")
-            --print(self.inst, Point(self.inst.Transform:GetWorldPosition()), "FAR FROM HOME", self:GetHomePos())
-            self.inst.components.locomotor:GoToPoint(self:GetHomePos())
-        else
-            local pt = Point(self.inst.Transform:GetWorldPosition())
-            local angle = (self.getdirectionFn and self.getdirectionFn(self.inst)) 
-           -- print("got angle ", angle) 
-            if not angle then 
-            	angle = math.random()*2*PI
-            	--print("no angle, picked", angle, self.setdirectionFn)
-            	if self.setdirectionFn then
-            		--print("set angle to ", angle) 
-            		self.setdirectionFn(self.inst, angle)
-            	end
-            end
 
-            local radius = 12
-            local attempts = 8
-            local offset, check_angle, deflected = FindWalkableOffset(pt, angle, radius, attempts, true, false) -- try to avoid walls
-            if not check_angle then
-                --print(self.inst, "no los wander, fallback to ignoring walls")
-                offset, check_angle, deflected = FindWalkableOffset(pt, angle, radius, attempts, true, true) -- if we can't avoid walls, at least avoid water
-            end
-            if check_angle then
-                angle = check_angle
-                if self.setdirectionFn then
-            		--print("(second case) reset angle to ", angle) 
-            		self.setdirectionFn(self.inst, angle)
-            	end
-            else
-                -- guess we don't have a better direction, just go whereever
-                --print(self.inst, "no walkdable wander, fall back to random")
-            end
-            --print(self.inst, pt, string.format("wander to %s @ %2.2f %s", tostring(offset), angle/DEGREES, deflected and "(deflected)" or ""))
-            if offset then
-                self.inst.components.locomotor:GoToPoint(self.inst:GetPosition() + offset)
-            else
-                self.inst.components.locomotor:WalkInDirection(angle/DEGREES)
+    self.walking = true
+    
+    if self.far_from_home then
+        --print("Far from home, going back")
+        --print(self.inst, Point(self.inst.Transform:GetWorldPosition()), "FAR FROM HOME", self:GetHomePos())
+        self.inst.components.locomotor:GoToPoint(self:GetHomePos())
+    else
+        local pt = Point(self.inst.Transform:GetWorldPosition())
+        local angle = (self.getdirectionFn and self.getdirectionFn(self.inst)) 
+       -- print("got angle ", angle) 
+        if not angle then 
+            angle = math.random()*2*PI
+            --print("no angle, picked", angle, self.setdirectionFn)
+            if self.setdirectionFn then
+                --print("set angle to ", angle) 
+                self.setdirectionFn(self.inst, angle)
             end
         end
-        
-        self:Wait(self.times.minwalktime+math.random()*self.times.randwalktime)
-    else
-        self.inst.components.locomotor:Stop()
-        
-        --if self.far_from_home then
-            --self:Wait(1+math.random())
-        --else
-            self:Wait(self.times.minwaittime+math.random()*self.times.randwaittime)
-        --end
+
+        local radius = 12
+        local attempts = 8
+        local offset, check_angle, deflected = FindWalkableOffset(pt, angle, radius, attempts, true, false) -- try to avoid walls
+        if not check_angle then
+            --print(self.inst, "no los wander, fallback to ignoring walls")
+            offset, check_angle, deflected = FindWalkableOffset(pt, angle, radius, attempts, true, true) -- if we can't avoid walls, at least avoid water
+        end
+        if check_angle then
+            angle = check_angle
+            if self.setdirectionFn then
+                --print("(second case) reset angle to ", angle) 
+                self.setdirectionFn(self.inst, angle)
+            end
+        else
+            -- guess we don't have a better direction, just go whereever
+            --print(self.inst, "no walkdable wander, fall back to random")
+        end
+        --print(self.inst, pt, string.format("wander to %s @ %2.2f %s", tostring(offset), angle/DEGREES, deflected and "(deflected)" or ""))
+        if offset then
+            self.inst.components.locomotor:GoToPoint(self.inst:GetPosition() + offset)
+        else
+            self.inst.components.locomotor:WalkInDirection(angle/DEGREES)
+        end
     end
     
+    self:Wait(self.times.minwalktime+math.random()*self.times.randwalktime)
+end
+
+function Wander:HoldPosition()
+    self.walking = false
+    self.inst.components.locomotor:Stop()
+    self:Wait(self.times.minwaittime+math.random()*self.times.randwaittime)
 end
 
 

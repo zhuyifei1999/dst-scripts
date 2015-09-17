@@ -100,8 +100,16 @@ function ConnectingToGamePopup:OnCancel()
 
     -- V2C: what was the following comment for??
     -- "This might be problematic for when in-game?"
+    -- V2C: Oh i see. =) this comment must have been
+    --      for shard migration.
     TheNet:Disconnect(false)
 	TheFrontEnd:PopScreen()
+
+    if TheFrontEnd:GetActiveScreen() == nil then
+        -- Still does not handle in-game, but
+        -- this one's for canceling migration
+        DoRestart(false)
+    end
 end
 
 return ConnectingToGamePopup

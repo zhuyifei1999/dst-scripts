@@ -17,9 +17,10 @@ local prefabs =
     "purplegem",
     "nightmarefuel",
     "collapse_small",
+    "thulecite",
 }
 
-local gemlist  =
+local gemlist =
 {
     "greengem",
     "redgem",
@@ -29,7 +30,7 @@ local gemlist  =
     "purplegem",
 }
 
-SetSharedLootTable( 'statue_ruins_no_gem',
+SetSharedLootTable('statue_ruins_no_gem',
 {
     {'thulecite',     1.00},
     {'nightmarefuel', 1.00},
@@ -42,7 +43,7 @@ local LIGHT_FALLOFF = 5
 local FADEIN_TIME = 10
 
 local function turnoff(inst, light)
-    if light then
+    if light ~= nil then
         light:Enable(false)
     end
 end
@@ -83,15 +84,11 @@ local function ShowState(inst, phase, fromwork)
     local suffix = ""
     local workleft = inst.components.workable.workleft
 
-    if inst.small then
+    if inst.small and not inst.SoundEmitter:PlayingSound("hoverloop") then
         inst.SoundEmitter:PlaySound("dontstarve/common/floating_statue_hum", "hoverloop")
-        if inst.gemmed then
-            inst.AnimState:OverrideSymbol("swap_gem", "statue_ruins_small_gem", inst.gemmed)
-        end
-    else
-        if inst.gemmed then
-            inst.AnimState:OverrideSymbol("swap_gem", "statue_ruins_gem", inst.gemmed)
-        end
+    end
+    if inst.gemmed then
+        inst.AnimState:OverrideSymbol("swap_gem", inst.small and "statue_ruins_small_gem" or "statue_ruins_gem", inst.gemmed)
     end
 
     --[[if nclock and nclock:IsNightmare() then
@@ -114,21 +111,20 @@ local function ShowState(inst, phase, fromwork)
         inst.phase = phase
     end
 
-    if workleft < TUNING.MARBLEPILLAR_MINE / 3 then
-        inst.AnimState:PlayAnimation("hit_low"..suffix, true)
-    elseif workleft < TUNING.MARBLEPILLAR_MINE * 2 / 3 then
-        inst.AnimState:PlayAnimation("hit_med"..suffix, true)
-    else
-        inst.AnimState:PlayAnimation("idle_full"..suffix, true)
-    end
+    inst.AnimState:PlayAnimation(
+        ((workleft < TUNING.MARBLEPILLAR_MINE / 3 and "hit_low") or
+        (workleft < TUNING.MARBLEPILLAR_MINE * 2 / 3 and "hit_med") or
+        "idle_full")..suffix,
+        true
+    )
 end
 
 local function OnWorked(inst, worked, workleft)
     if workleft <= 0 then
         inst.SoundEmitter:KillSound("hoverloop")
-        inst.SoundEmitter:PlaySound("dontstarve/wilson/rock_break")
         inst.components.lootdropper:DropLoot(inst:GetPosition())
-        SpawnAt("collapse_small", inst)
+        local fx = SpawnAt("collapse_small", inst)
+        fx:SetMaterial("rock")
 
         --[[local nclock = GetNightmareClock()
         if nclock and nclock:IsNightmare() then
@@ -169,6 +165,7 @@ local function commonfn(small)
 
     inst.MiniMapEntity:SetIcon("statue_ruins.png")
 
+    inst:AddTag("cavedweller")
     inst:AddTag("structure")
     inst.entity:AddTag("statue")
 
@@ -209,7 +206,7 @@ local function commonfn(small)
         inst:WatchWorldState("phase", ShowState)
     end]]
 
-    inst:DoTaskInTime(1 * FRAMES, ShowState)
+    inst:DoTaskInTime(0, ShowState)
 
     --fade_in(inst,0)
 
@@ -225,11 +222,7 @@ local function gem(small)
 
     inst.gemmed = GetRandomItem(gemlist)
 
-    if small then
-        inst.AnimState:OverrideSymbol("swap_gem", "statue_ruins_small_gem", inst.gemmed)
-    else
-        inst.AnimState:OverrideSymbol("swap_gem", "statue_ruins_gem", inst.gemmed)
-    end
+    inst.AnimState:OverrideSymbol("swap_gem", small and "statue_ruins_small_gem" or "statue_ruins_gem", inst.gemmed)
 
     inst.components.lootdropper:SetLoot({ "thulecite", inst.gemmed })
     inst.components.lootdropper:AddChanceLoot("thulecite", 0.05)

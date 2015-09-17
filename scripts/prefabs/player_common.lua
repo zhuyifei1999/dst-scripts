@@ -316,10 +316,12 @@ end
 
 local function AddActivePlayerComponents(inst)
     inst:AddComponent("playertargetindicator")
+    inst:AddComponent("playerhearing")
 end
 
 local function RemoveActivePlayerComponents(inst)
     inst:RemoveComponent("playertargetindicator")
+    inst:RemoveComponent("playerhearing")
 end
 
 local function ActivateHUD(inst)
@@ -977,6 +979,9 @@ local function OnSave(inst, data)
     data.is_ghost = inst:HasTag("playerghost") or nil
     data.skin_name = inst.skin_name or nil
 
+    --Shard stuff
+    data.migration = inst.migration
+
     --V2C: UNFORTUNATLEY, the sleeping hacks still need to be
     --     saved for snapshots or c_saves while sleeping
     if inst._sleepinghandsitem ~= nil then
@@ -1001,6 +1006,9 @@ local function OnLoad(inst, data)
         if data.is_ghost then
             OnMakePlayerGhost(inst, { loading = true })
         end
+
+        --Shard stuff
+        inst.migration = data.migration
 
         inst:OnSetSkin(data.skin_name)
 

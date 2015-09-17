@@ -12,21 +12,23 @@ local prefabs =
 }
 
 local function onhammered(inst, worker)
-    if inst:HasTag("fire") and inst.components.burnable ~= nil then
+    if inst.components.burnable ~= nil and inst.components.burnable:IsBurning() then
         inst.components.burnable:Extinguish()
     end
+    local fx
     if inst:HasTag("burnt") then
         if inst.components.lootdropper ~= nil then
             inst.components.lootdropper:SpawnLootPrefab("charcoal")
         end
-        SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
+        fx = SpawnPrefab("collapse_small")
     else
         if inst.components.lootdropper ~= nil then
             inst.components.lootdropper:DropLoot()
         end
-        SpawnPrefab("collapse_big").Transform:SetPosition(inst.Transform:GetWorldPosition())
+        fx = SpawnPrefab("collapse_big")
     end
-    inst.SoundEmitter:PlaySound("dontstarve/common/destroy_wood")
+    fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+    fx:SetMaterial("wood")
     inst:Remove()
 end
 
@@ -47,7 +49,7 @@ local function onhit(inst, worker)
 end
 
 local function onsave(inst, data)
-    if inst:HasTag("burnt") or inst:HasTag("fire") then
+    if inst:HasTag("burnt") or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
         data.burnt = true
     end
 end
@@ -73,7 +75,7 @@ end
 
 local function onlink(inst, player, isloading)
     if not isloading then
-        inst.SoundEmitter:PlaySound("dontstarve/ghost/ghost_haunt")
+        inst.SoundEmitter:PlaySound("dontstarve/cave/meat_effigy_attune_on")
         inst.AnimState:PlayAnimation("attune_on")
         inst.AnimState:PushAnimation("idle", false)
     end
@@ -81,7 +83,7 @@ end
 
 local function onunlink(inst, player, isloading)
     if not (isloading or inst.AnimState:IsCurrentAnimation("attune_on")) then
-        inst.SoundEmitter:PlaySound("dontstarve/ghost/ghost_haunt")
+        inst.SoundEmitter:PlaySound("dontstarve/cave/meat_effigy_attune_off")
         inst.AnimState:PlayAnimation("attune_off")
         inst.AnimState:PushAnimation("idle", false)
     end
@@ -89,7 +91,7 @@ end
 
 local function PlayAttuneSound(inst)
     if inst.AnimState:IsCurrentAnimation("place") or inst.AnimState:IsCurrentAnimation("attune_on") then
-        inst.SoundEmitter:PlaySound("dontstarve/ghost/ghost_haunt")
+        inst.SoundEmitter:PlaySound("dontstarve/cave/meat_effigy_attune_on")
     end
 end
 

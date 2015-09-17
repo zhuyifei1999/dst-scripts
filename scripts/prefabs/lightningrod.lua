@@ -12,9 +12,10 @@ local prefabs =
 
 local function onhammered(inst, worker)
     inst.components.lootdropper:DropLoot()
-    SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
+    local fx = SpawnPrefab("collapse_small")
+    fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+    fx:SetMaterial("metal")
     inst:Remove()
-    inst.SoundEmitter:PlaySound("dontstarve/common/destroy_wood")
 end
 
 local function onhit(inst, worker)
@@ -22,52 +23,54 @@ local function onhit(inst, worker)
     inst.AnimState:PushAnimation("idle", false)
 end
 
-local function discharge(inst)
-    inst.AnimState:ClearBloomEffectHandle()
-    inst.charged = false
-    inst.chargeleft = nil
-    inst.Light:Enable(false)
-    if inst.zaptask then
-        inst.zaptask:Cancel()
-        inst.zaptask = nil
-    end
-end
-
-local function dozap(inst)
-    if inst.zaptask then
-        inst.zaptask:Cancel()
-        inst.zaptask = nil
-    end
-    inst.SoundEmitter:PlaySound("dontstarve/common/lightningrod")
-
-    SpawnPrefab("lightning_rod_fx").Transform:SetPosition(inst.Transform:GetWorldPosition())
-
-    --PlayFX(Vector3(inst.Transform:GetWorldPosition()), "lightning_rod_fx", "lightning_rod_fx", "idle")
-    inst.zaptask = inst:DoTaskInTime(math.random(10, 40), dozap)
-end
-
 local function ondaycomplete(inst)
-    if inst.chargeleft then
-        dozap(inst)
+    dozap(inst)
+    if inst.chargeleft > 1 then
         inst.chargeleft = inst.chargeleft - 1
-        if inst.chargeleft <= 0 then
-            discharge(inst)
+    else
+        discharge(inst)
+    end
+end
+
+local function discharge(inst)
+    if inst.charged then
+        inst:StopWatchingWorldState("cycles", ondaycomplete)
+        inst.AnimState:ClearBloomEffectHandle()
+        inst.charged = false
+        inst.chargeleft = nil
+        inst.Light:Enable(false)
+        if inst.zaptask ~= nil then
+            inst.zaptask:Cancel()
+            inst.zaptask = nil
         end
     end
 end
 
-local function setcharged(inst)
+local function dozap(inst)
+    if inst.zaptask ~= nil then
+        inst.zaptask:Cancel()
+    end
+
+    inst.SoundEmitter:PlaySound("dontstarve/common/lightningrod")
+    SpawnPrefab("lightning_rod_fx").Transform:SetPosition(inst.Transform:GetWorldPosition())
+
+    inst.zaptask = inst:DoTaskInTime(math.random(10, 40), dozap)
+end
+
+local function setcharged(inst, charges)
+    if not inst.charged then
+        inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+        inst.Light:Enable(true)
+        inst:WatchWorldState("cycles", ondaycomplete)
+        inst.charged = true
+    end
+    inst.chargeleft = math.max(inst.chargeleft or 0, charges)
     dozap(inst)
-    inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
-    inst.Light:Enable(true)
-    inst.charged = true
-    inst.chargeleft = 3
-    inst:WatchWorldState("cycles", ondaycomplete)
 end
 
 local function onlightning(inst)
     onhit(inst)
-    setcharged(inst)
+    setcharged(inst, 3)
 end
 
 local function OnSave(inst, data)
@@ -78,16 +81,13 @@ local function OnSave(inst, data)
 end
 
 local function OnLoad(inst, data)
-    if data and data.charged and data.chargeleft then
-        setcharged(inst)
-        inst.chargeleft = data.chargeleft
+    if data ~= nil and data.charged and data.chargeleft ~= nil and data.chargeleft > 0 then
+        setcharged(inst, data.chargeleft)
     end
 end
 
 local function getstatus(inst)
-    if inst.charged then
-        return "CHARGED"
-    end
+    return inst.charged and "CHARGED" or nil
 end
 
 local function onbuilt(inst)

@@ -28,11 +28,11 @@ local Wisecracker = Class(function(self, inst)
 
     inst:StartUpdatingComponent(self)
 
-    if not TheWorld:HasTag("cave") or not data.newdusk then
-        inst:WatchWorldState("startdusk", function()
-            if inst.components.talker then inst.components.talker:Say(GetString(inst, "ANNOUNCE_DUSK")) end
-        end)
-    end
+    -- if not TheWorld:HasTag("cave") or not data.newdusk then
+    --     inst:WatchWorldState("startdusk", function()
+    --         if inst.components.talker then inst.components.talker:Say(GetString(inst, "ANNOUNCE_DUSK")) end
+    --     end)
+    -- end
 
     inst:ListenForEvent("itemranout", function(inst, data)
         inst.components.talker:Say(GetString(inst, data.announce))

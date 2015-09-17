@@ -301,9 +301,13 @@ local OptionsScreen = Class(Screen, function(self, in_game)
     self.controls_title:SetPosition(95,220)    
     self.controls_title:SetColour(0,0,0,1)
 
-    self.controls_lines = self.controlsroot:AddChild(Image("images/options.xml", "controls_grid.tex"))
-	self.controls_lines:SetScale(.70, .65)
-	self.controls_lines:SetPosition(90, -30)
+    self.controls_horizontal_line = self.controlsroot:AddChild(Image("images/ui.xml", "line_horizontal_5.tex"))
+	self.controls_horizontal_line:SetScale(.65, .65)
+	self.controls_horizontal_line:SetPosition(90, 135)
+
+	self.controls_vertical_line = self.controlsroot:AddChild(Image("images/ui.xml", "line_vertical_5.tex"))
+	self.controls_vertical_line:SetScale(.70, .63)
+	self.controls_vertical_line:SetPosition(265, -40)
 
 	-- NOTE: if we add more options, they should be made scrollable. Look at customization screen for an example.
 	self.grid = self.settingsroot:AddChild(Grid())
@@ -328,8 +332,8 @@ local OptionsScreen = Class(Screen, function(self, in_game)
 
 	self:LoadCurrentControls()
 
-	self.controls_lines:MoveToFront() -- show the lines on top of the white background 
-	self.controls_lines.enabled = false -- stop the image from capturing mouse input
+	self.controls_horizontal_line:MoveToFront()
+	self.controls_vertical_line:MoveToFront()
 
 	---------------------------------------------------
 

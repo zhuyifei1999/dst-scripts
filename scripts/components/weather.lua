@@ -11,30 +11,6 @@ return Class(function(self, inst)
 local easing = require("easing")
 
 --------------------------------------------------------------------------
---[[ Constants ]]
---------------------------------------------------------------------------
-
-local NOISE_SYNC_PERIOD = 30
-
---------------------------------------------------------------------------
---[[ Temperature constants ]]
---------------------------------------------------------------------------
-
-local TEMPERATURE_NOISE_SCALE = .025
-local TEMPERATURE_NOISE_MAG = 8
-
-local MIN_TEMPERATURE = -25
-local MAX_TEMPERATURE = 95 
-local WINTER_CROSSOVER_TEMPERATURE = 5
-local SUMMER_CROSSOVER_TEMPERATURE = 55
-
-local PHASE_TEMPERATURES =
-{
-    day = 5,
-    night = -6,
-}
-
---------------------------------------------------------------------------
 --[[ Precipitation constants ]]
 --------------------------------------------------------------------------
 
@@ -178,11 +154,6 @@ local LIGHTNING_MODES = table.invert(LIGHTNING_MODE_NAMES)
 --[[ Lighting (not LightNING) constants ]]
 --------------------------------------------------------------------------
 
-local SUMMER_BLOOM_BASE = 0.15   -- base amount of bloom applied during the day
-local SUMMER_BLOOM_TEMP_MODIFIER = 0.10 / TUNING.DAY_HEAT   -- amount that the daily temp. variation factors into the overall bloom
-local SUMMER_BLOOM_PERIOD_MIN = 5 -- min length of the bloom fluctuation period
-local SUMMER_BLOOM_PERIOD_MAX = 10 -- max length of the bloom fluctuation period
-
 local SEASON_DYNRANGE_DAY = {
     autumn = .4,
     winter = .05,
@@ -210,9 +181,8 @@ local _map = _world.Map
 local _ismastersim = _world.ismastersim
 local _activatedplayer = nil
 
---Temperature
-local _seasontemperature
-local _phasetemperature
+--Temperature cache
+local _temperature = TUNING.STARTING_TEMP
 
 --Precipiation
 local _rainsound = false
@@ -231,13 +201,6 @@ local _pollenfx = _hasfx and SpawnPrefab("pollen") or nil
 local _daylight = true
 local _season = "autumn"
 
-local _summerblooming = false
-local _summerbloom_modifier = 0
-local _summerbloom_current_time = 0
-local _summerbloom_time_to_new_modifier = 0
-local _summerbloom_ramp = 0
-local _summerbloom_ramp_time = 5
-
 --Master simulation
 local _moisturerateval
 local _moisturerateoffset
@@ -254,7 +217,6 @@ local _lightningtargets
 local _lightningexcludetags
 
 --Network
-local _noisetime = net_float(inst.GUID, "weather._noisetime")
 local _moisture = net_float(inst.GUID, "weather._moisture")
 local _moisturerate = net_float(inst.GUID, "weather._moisturerate")
 local _moistureceil = net_float(inst.GUID, "weather._moistureceil", "moistureceildirty")
@@ -355,22 +317,6 @@ local function SetWithPeriodicSync(netvar, val, period, ismastersim)
     end
 end
 
-local function CalculateSeasonTemperature(season, progress)
-    return (season == "winter" and math.sin(PI * progress) * (MIN_TEMPERATURE - WINTER_CROSSOVER_TEMPERATURE) + WINTER_CROSSOVER_TEMPERATURE)
-        or (season == "spring" and Lerp(WINTER_CROSSOVER_TEMPERATURE, SUMMER_CROSSOVER_TEMPERATURE, progress))
-        or (season == "summer" and math.sin(PI * progress) * (MAX_TEMPERATURE - SUMMER_CROSSOVER_TEMPERATURE) + SUMMER_CROSSOVER_TEMPERATURE)
-        or Lerp(SUMMER_CROSSOVER_TEMPERATURE, WINTER_CROSSOVER_TEMPERATURE, progress)
-end
-
-local function CalculatePhaseTemperature(phase, timeinphase)
-    return PHASE_TEMPERATURES[phase] ~= nil and PHASE_TEMPERATURES[phase] * math.sin(timeinphase * PI) or 0
-end
-
-local function CalculateTemperature()
-    local temperaturenoise = 2 * TEMPERATURE_NOISE_MAG * perlin(0, 0, _noisetime:value() * TEMPERATURE_NOISE_SCALE) - TEMPERATURE_NOISE_MAG
-    return temperaturenoise + _seasontemperature + _phasetemperature
-end
-
 local CalculateMoistureRate = _ismastersim and function()
     return _moisturerateval * _moistureratemultiplier + _moisturerateoffset
 end or nil
@@ -420,7 +366,7 @@ local function CalculatePOP()
         or 1
 end
 
-local function CalculateLight(temperature)
+local function CalculateLight()
     if _precipmode:value() == PRECIP_MODES.never then
         return 1
     end
@@ -438,49 +384,6 @@ local function CalculateLight(temperature)
     return p * dynrange + 1 - dynrange
 end
 
-local function CalculateSummerBloom(dt)
-    -- Update summer blooming
-    if _daylight and _season == "summer" then
-        _summerblooming = true
-        _summerbloom_ramp = math.min(_summerbloom_ramp + dt / _summerbloom_ramp_time, 1)
-    elseif _summerblooming then
-        -- turn off the bloom out of summer
-        _summerbloom_ramp = math.max(_summerbloom_ramp - dt / _summerbloom_ramp_time, 0)
-        -- print("Killing off the summer bloom",_season,_daylight and "day" or "night",_summerbloom_ramp)
-    else
-        return
-    end
-
-    _summerbloom_current_time = _summerbloom_current_time + dt
-
-    if _summerbloom_ramp <= 0 then
-        _summerblooming = false
-        _summerbloom_modifier = 0
-        _summerbloom_time_to_new_modifier = 0
-        _summerbloom_current_time = 0
-        -- print("Turning off the summer bloom")
-        return
-    end
-
-    if _summerbloom_time_to_new_modifier <= _summerbloom_current_time then
-        -- start up the next throb
-        local new_period = math.random(SUMMER_BLOOM_PERIOD_MIN, SUMMER_BLOOM_PERIOD_MAX)
-        _summerbloom_modifier = 2 * PI / new_period
-        _summerbloom_time_to_new_modifier = new_period
-        _summerbloom_current_time = 0
-        -- print("New Summer bloom phase",_summerbloom_time_to_new_modifier)
-    end
-    -- This is essentially a sine wave [sin(x - pi/2) = 1 - cos(x)] with amplitude 0 - 1, shifted to the left so that the magnitude is zero at time zero
-    -- The result is multiplied to a combination of a base intensity value and a time-of-day temperature dependant value
-    -- Finally we add this to the original intensity (1.0) so that we're always increasing the total intensity
-    return 1 + _summerbloom_ramp * (1 - .5 * math.cos(_summerbloom_current_time * _summerbloom_modifier)) * (SUMMER_BLOOM_BASE + SUMMER_BLOOM_TEMP_MODIFIER * _phasetemperature)
-end
-
-local function UpdateSummerBloom(dt)
-    local bloomval = CalculateSummerBloom(dt)
-    _world:PushEvent("overridecolourmodifier", bloomval)
-end
-
 local function CalculateWetnessRate(temperature, preciprate)
     return --Positive wetness rate when it's raining
         (_preciptype:value() == PRECIP_TYPES.rain and easing.inSine(preciprate, MIN_WETNESS_RATE, MAX_WETNESS_RATE, 1))
@@ -491,17 +394,15 @@ local function CalculateWetnessRate(temperature, preciprate)
                     .01, 1)
 end
 
-local function PushWeather(temperature, preciprate)
-    temperature = temperature or CalculateTemperature()
+local function PushWeather()
     local data =
     {
-        temperature = temperature,
         moisture = _moisture:value(),
         pop = CalculatePOP(),
-        precipitationrate = preciprate or CalculatePrecipitationRate(),
+        precipitationrate = CalculatePrecipitationRate(),
         snowlevel = _snowlevel:value(),
         wetness = _wetness:value(),
-        light = CalculateLight(temperature),
+        light = CalculateLight(),
     }
     _world:PushEvent("weathertick", data)
 end
@@ -511,7 +412,6 @@ end
 --------------------------------------------------------------------------
 
 local function OnSeasonTick(src, data)
-    _seasontemperature = CalculateSeasonTemperature(data.season, data.progress)
     _season = data.season
     _seasonprogress = data.progress
 
@@ -535,8 +435,8 @@ local function OnSeasonTick(src, data)
     end
 end
 
-local function OnClockTick(src, data)
-    _phasetemperature = CalculatePhaseTemperature(data.phase, data.timeinphase)
+local function OnTemperatureTick(src, temperature)
+    _temperature = temperature
 end
 
 local function OnPhaseChanged(src, phase)
@@ -677,11 +577,7 @@ end or nil
 --[[ Initialization ]]
 --------------------------------------------------------------------------
 
-_seasontemperature = CalculateSeasonTemperature(_season, .5)
-_phasetemperature = CalculatePhaseTemperature(_daylight and "day" or "dusk", 0)
-
 --Initialize network variables
-_noisetime:set(0)
 _moisture:set(0)
 _moisturerate:set(0)
 _moistureceil:set(0)
@@ -714,7 +610,7 @@ inst:ListenForEvent("wetdirty", function() _world:PushEvent("wetchanged", _wet:v
 
 --Register events
 inst:ListenForEvent("seasontick", OnSeasonTick, _world)
-inst:ListenForEvent("clocktick", OnClockTick, _world)
+inst:ListenForEvent("temperaturetick", OnTemperatureTick, _world)
 inst:ListenForEvent("phasechanged", OnPhaseChanged, _world)
 inst:ListenForEvent("playeractivated", OnPlayerActivated, _world)
 inst:ListenForEvent("playerdeactivated", OnPlayerDeactivated, _world)
@@ -810,15 +706,12 @@ end end
 --]]
 function self:OnUpdate(dt)
     --Update noise
-    SetWithPeriodicSync(_noisetime, _noisetime:value() + dt, NOISE_SYNC_PERIOD, _ismastersim)
-
-    local temperature = CalculateTemperature()
     local preciprate = CalculatePrecipitationRate()
 
     --Update moisture and toggle precipitation
     if _precipmode:value() == PRECIP_MODES.always then
         if _ismastersim and _preciptype:value() == PRECIP_TYPES.none then
-            StartPrecipitation(temperature)
+            StartPrecipitation(_temperature)
         end
     elseif _precipmode:value() == PRECIP_MODES.never then
         if _ismastersim and _preciptype:value() ~= PRECIP_TYPES.none then
@@ -841,7 +734,7 @@ function self:OnUpdate(dt)
         local moisture = _moisture:value() + _moisturerate:value() * dt
         if moisture >= _moistureceil:value() then
             if _ismastersim then
-                StartPrecipitation(temperature)
+                StartPrecipitation(_temperature)
             else
                 _moisture:set_local(math.max(_moistureceil:value() - .001, _moisture:value()))
             end
@@ -851,7 +744,7 @@ function self:OnUpdate(dt)
     end
 
     --Update wetness
-    local wetrate = CalculateWetnessRate(temperature, preciprate)
+    local wetrate = CalculateWetnessRate(_temperature, preciprate)
     SetWithPeriodicSync(_wetness, math.clamp(_wetness:value() + wetrate * dt, MIN_WETNESS, MAX_WETNESS), WETNESS_SYNC_PERIOD, _ismastersim)
     if _ismastersim then
         if _wet:value() then
@@ -910,13 +803,13 @@ function self:OnUpdate(dt)
     if _preciptype:value() == PRECIP_TYPES.snow then
         --Accumulate snow
         snowlevel = math.min(snowlevel + preciprate * dt * SNOW_ACCUM_RATE, 1)
-    elseif snowlevel > 0 and temperature > 0 then
+    elseif snowlevel > 0 and _temperature > 0 then
         --Melt snow
-        local meltrate = MIN_SNOW_MELT_RATE + SNOW_MELT_RATE * math.min(temperature / 20, 1)
+        local meltrate = MIN_SNOW_MELT_RATE + SNOW_MELT_RATE * math.min(_temperature / 20, 1)
         snowlevel = math.max(snowlevel - meltrate * dt, 0)
     end
     SetWithPeriodicSync(_snowlevel, snowlevel, SNOW_LEVEL_SYNC_PERIOD, _ismastersim)
-    if _snowlevel:value() > 0 and (temperature < 0 or _wetness:value() < 5) then
+    if _snowlevel:value() > 0 and (_temperature < 0 or _wetness:value() < 5) then
         SetGroundOverlay(GROUND_OVERLAYS.snow, _snowlevel:value() * 3) -- snowlevel goes from 0-1
     else
         SetGroundOverlay(GROUND_OVERLAYS.puddles, _wetness:value() * 3 / 100) -- wetness goes from 0-100
@@ -942,9 +835,9 @@ function self:OnUpdate(dt)
         _snowcovered:set(_groundoverlay == GROUND_OVERLAYS.snow and _snowlevel:value() >= SNOW_COVERED_THRESHOLD)
 
         --Switch precipitation type based on temperature
-        if temperature < _startsnowthreshold and _preciptype:value() == PRECIP_TYPES.rain then
+        if _temperature < _startsnowthreshold and _preciptype:value() == PRECIP_TYPES.rain then
             _preciptype:set(PRECIP_TYPES.snow)
-        elseif temperature > _stopsnowthreshold and _preciptype:value() == PRECIP_TYPES.snow then
+        elseif _temperature > _stopsnowthreshold and _preciptype:value() == PRECIP_TYPES.snow then
             _preciptype:set(PRECIP_TYPES.rain)
         end
 
@@ -976,9 +869,7 @@ function self:OnUpdate(dt)
         end
     end
 
-    UpdateSummerBloom(dt)
-
-    PushWeather(temperature, preciprate)
+    PushWeather()
 end
 
 self.LongUpdate = self.OnUpdate
@@ -990,11 +881,9 @@ self.LongUpdate = self.OnUpdate
 if _ismastersim then function self:OnSave()
     return
     {
+        temperature = _temperature,
         daylight = _daylight or nil,
         season = _season,
-        seasontemperature = _seasontemperature,
-        phasetemperature = _phasetemperature,
-        noisetime = _noisetime:value(),
         moisturerateval = _moisturerateval,
         moisturerateoffset = _moisturerateoffset,
         moistureratemultiplier = _moistureratemultiplier,
@@ -1021,11 +910,9 @@ if _ismastersim then function self:OnSave()
 end end
 
 if _ismastersim then function self:OnLoad(data)
+    _temperature = data.temperature or TUNING.STARTING_TEMP
     _daylight = data.daylight == true
     _season = data.season or "autumn"
-    _seasontemperature = data.seasontemperature or CalculateSeasonTemperature(_season, .5)
-    _phasetemperature = data.phasetemperature or CalculatePhaseTemperature(_daylight and "day" or "dusk", 0)
-    _noisetime:set(data.noisetime or 0)
     _moisturerateval = data.moisturerateval or 1
     _moisturerateoffset = data.moisturerateoffset or 0
     _moistureratemultiplier = data.moistureratemultiplier or 1
@@ -1057,12 +944,11 @@ end end
 --------------------------------------------------------------------------
 
 function self:GetDebugString()
-    local temperature = CalculateTemperature()
     local preciprate = CalculatePrecipitationRate()
-    local wetrate = CalculateWetnessRate(temperature, preciprate)
+    local wetrate = CalculateWetnessRate(_temperature, preciprate)
     local str =
     {
-        string.format("%2.2fC", temperature),
+        string.format("temperature:%2.2f",_temperature),
         string.format("moisture:%2.2f(%2.2f/%2.2f) + %2.2f", _moisture:value(), _moisturefloor:value(), _moistureceil:value(), _moisturerate:value()),
         string.format("preciprate:(%2.2f of %2.2f)", preciprate, _peakprecipitationrate:value()),
         string.format("snowlevel:%2.2f", _snowlevel:value()),

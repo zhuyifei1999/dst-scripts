@@ -15,7 +15,6 @@ local prefabs =
     "crow",
     "robin",
     "robin_winter",
-    "collapse_small",
     "guano",
 }
 

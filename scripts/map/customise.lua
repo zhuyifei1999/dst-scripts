@@ -1,3 +1,5 @@
+require ("map/tasks")
+
 local freqency_descriptions
 if PLATFORM ~= "PS4" then
 	freqency_descriptions = {
@@ -77,33 +79,11 @@ else
 	}
 end
 
-local map_descriptions = {
-	{ text = STRINGS.UI.SANDBOXMENU.TOGETHERMAP, data = "default"},
-	{ text = STRINGS.UI.SANDBOXMENU.CLASSICMAP, data = "classic"},
-}
-
 local start_descriptions = {
-	{ text = STRINGS.UI.SANDBOXMENU.DEFAULTSTART, 
-		data = "default"
-		-- {
-		-- 	start_setpeice = "DefaultStart",		
-		-- 	start_node = "Clearing",
-		-- }
-	},
-	{ text = STRINGS.UI.SANDBOXMENU.PLUSSTART, 
-		data = "plus"
-		-- {
-		-- 	start_setpeice = "DefaultPlusStart",	
-		-- 	start_node = {"DeepForest", "Forest", "SpiderForest", "Plain", "Rocky", "Marsh"},
-		-- }
-	},
-	{ text = STRINGS.UI.SANDBOXMENU.DARKSTART, 
-		data = "darkness"
-		-- {
-		-- 	start_setpeice = "DarknessStart",	
-		-- 	start_node = {"DeepForest", "Forest"},	
-		-- }
-	},	
+	{ text = STRINGS.UI.SANDBOXMENU.DEFAULTSTART, data = "default" },
+	{ text = STRINGS.UI.SANDBOXMENU.PLUSSTART, data = "plus" },
+	{ text = STRINGS.UI.SANDBOXMENU.DARKSTART, data = "darkness" },
+	{ text = STRINGS.UI.SANDBOXMENU.CAVESTART, data = "caves" },
 }
 
 local branching_descriptions = {
@@ -226,7 +206,7 @@ local GROUP = {
 						desc = nil,
 						enable = true,
 						items={
-							["task_set"] = {value = "default", enable = false, image = "world_map.tex", desc = map_descriptions, order = 1}, 
+							["task_set"] = {value = "default", enable = false, image = "world_map.tex", desc = tasks.GetGenTaskLists(), order = 1}, 
 							["start_location"] = {value = "default", enable = false, image = "world_start.tex", desc = start_descriptions, order = 2}, 
 							["world_size"] = {value = "default", enable = false, image = "world_size.tex", desc = size_descriptions, order = 3}, 
 							["branching"] = {value = "default", enable = false, image = "world_branching.tex", desc = branching_descriptions, order = 4}, 

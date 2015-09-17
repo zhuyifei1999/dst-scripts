@@ -36,9 +36,7 @@ function tentaclesfn(inst, reader)
 
                 tentacle.Transform:SetPosition(pos:Get())
 
-                for i, v in ipairs(AllPlayers) do
-                    v:ShakeCamera(CAMERASHAKE.FULL, .2, .02, .25, reader, 40)
-                end
+                ShakeAllCameras(CAMERASHAKE.FULL, .2, .02, .25, reader, 40)
 
                 --need a better effect
                 SpawnPrefab("splash_ocean").Transform:SetPosition(pos:Get())

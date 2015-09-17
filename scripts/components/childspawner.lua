@@ -384,12 +384,8 @@ function ChildSpawner:DoSpawnChild(target, prefab, radius)
 	if self.rarechild and math.random() < self.rarechildchance then
 		childtospawn = self.rarechild
 	end
-	
-	local child = nil
-	if TheNet:GetIsMasterSimulation() then
-		child = SpawnPrefab(childtospawn)
-    end
-    
+
+    local child = SpawnPrefab(childtospawn)
     if child ~= nil then
         
         child.Transform:SetPosition(pos:Get())

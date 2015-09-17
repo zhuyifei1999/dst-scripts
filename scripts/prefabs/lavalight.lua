@@ -4,11 +4,6 @@ local assets =
     Asset("SOUND", "sound/common.fsb"),
 }
 
-local prefabs =
-{
-    "collapse_small",
-}
-
 local heats = { 50, 65, 100 }
 
 local function GetHeatFn(inst)
@@ -72,4 +67,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/fx/lavalight", fn, assets, prefabs)
+return Prefab("common/fx/lavalight", fn, assets)

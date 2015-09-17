@@ -1,11 +1,11 @@
-local HOUND_SPAWN_DIST = 30 --hounded.lua::HOUND_SPAWN_DIST
+local SPAWN_DIST = 30 --hounded.lua::SPAWN_DIST
 
 local WARNING_LEVEL_DISTANCE =
 {
-    HOUND_SPAWN_DIST + 30,
-    HOUND_SPAWN_DIST + 20,
-    HOUND_SPAWN_DIST + 10,
-    HOUND_SPAWN_DIST,
+    SPAWN_DIST + 30,
+    SPAWN_DIST + 20,
+    SPAWN_DIST + 10,
+    SPAWN_DIST,
 }
 
 local function PlayWarningSound(proxy, radius)

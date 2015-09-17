@@ -132,10 +132,6 @@ local ExampleLayout =
 					},
 			}),
 
-		["WesUnlock"] = StaticLayout.Get("map/static_layouts/wes_unlock", {
-							fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN,
-						}),
-
 		["LivingTree"] = StaticLayout.Get("map/static_layouts/livingtree", {
 							
 						}),
@@ -234,7 +230,11 @@ local ExampleLayout =
 -- Start Nodes 
 --------------------------------------------------------------------------------
 		["DefaultStart"] = StaticLayout.Get("map/static_layouts/default_start"),
-		["CaveStart"] = StaticLayout.Get("map/static_layouts/cave_start"),
+		["CaveStart"] = StaticLayout.Get("map/static_layouts/cave_start", {
+            start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+            fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+            layout_position = LAYOUT_POSITION.CENTER,
+        }),
 		["RuinsStart"] = StaticLayout.Get("map/static_layouts/ruins_start"),
 		["RuinsStart2"] = StaticLayout.Get("map/static_layouts/ruins_start2"),
 		["CaveTestStart"] = StaticLayout.Get("map/static_layouts/cave_test_start"),
@@ -479,6 +479,7 @@ local ExampleLayout =
 				bones_area = {"houndbone"},
 			},
 		}),
+        ["TentaclePillar"] = StaticLayout.Get("map/static_layouts/tentacle_pillar"),
 		
 --------------------------------------------------------------------------------
 -- Eyebone 
@@ -539,12 +540,16 @@ local ExampleLayout =
 -- CAVES 
 --------------------------------------------------------------------------------
 
+	["CaveEntrance"] = StaticLayout.Get("map/static_layouts/cave_entrance"),
+	["CaveExit"] = StaticLayout.Get("map/static_layouts/cave_exit"),
 	["CaveBase"] = StaticLayout.Get("map/static_layouts/cave_base_1"),
 	["MushBase"] = StaticLayout.Get("map/static_layouts/cave_base_2"),
 	["SinkBase"] = StaticLayout.Get("map/static_layouts/cave_base_3"),
 	["RabbitTown"] = StaticLayout.Get("map/static_layouts/rabbittown"),
+	["RabbitHermit"] = StaticLayout.Get("map/static_layouts/rabbithermit"),
 	["CaveArtTest"] = StaticLayout.Get("map/static_layouts/cave_art_test_start"),
-	["RabbitCity"] = StaticLayout.Get("map/static_layouts/insane_rabbit_king",
+	["Mudlights"] = StaticLayout.Get("map/static_layouts/mudlights"),
+	["RabbitCity"] = StaticLayout.Get("map/static_layouts/rabbitcity",
 				{
 				start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
 				fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
@@ -558,6 +563,50 @@ local ExampleLayout =
 				layout_position = LAYOUT_POSITION.RANDOM,
 			}
 		),
+    ["EvergreenSinkhole"] = StaticLayout.Get("map/static_layouts/evergreensinkhole", {
+        areas = {
+            lights = {"cavelight", "cavelight"},
+            innertrees = function(area) return PickSomeWithDups(area*.5, {"evergreen"}) end,
+            outertrees = function(area) return PickSomeWithDups(area*.2, {"evergreen", "sapling"}) end,
+        },
+    }),
+    ["GrassySinkhole"] = StaticLayout.Get("map/static_layouts/grasssinkhole", {
+        areas = {
+            lights = {"cavelight", "cavelight"},
+            grassarea = function(area) return PickSomeWithDups(area*.4, {"grass"}) end,
+        },
+    }),
+    ["PondSinkhole"] = StaticLayout.Get("map/static_layouts/pondsinkhole", {
+        areas = {
+            lights = {"cavelight", "cavelight"},
+            pondarea = { "pond", "grass", "grass", "berrybush", "sapling", "sapling" },
+        },
+    }),
+    ["SlurtleEnclave"] = 
+    {
+        type = LAYOUT.CIRCLE_EDGE,
+        ground_types = {GROUND.CAVE},
+        ground =
+        {
+            {0, 0, 1, 1, 1, 1, 1, 0},
+            {0, 1, 1, 1, 1, 1, 1, 1},
+            {0, 1, 1, 1, 1, 1, 1, 1},
+            {0, 1, 1, 1, 1, 1, 1, 1},
+            {0, 1, 1, 1, 1, 1, 1, 1},
+            {0, 1, 1, 1, 1, 1, 1, 1},
+            {0, 1, 1, 1, 1, 1, 1, 1},
+            {0, 0, 1, 1, 1, 1, 1, 0},
+        },
+        defs =
+        {
+            hole = { "slurtlehole" },
+        },
+        count =
+        {
+            hole = 5,
+        },
+        scale = 1.9,
+    },
 	
 
 --------------------------------------------------------------------------------
@@ -582,11 +631,26 @@ local ExampleLayout =
 	
 	--SACRED GROUNDS
 
-	["AltarRoom"] = StaticLayout.Get("map/static_layouts/altar"),
-	["Barracks"] = StaticLayout.Get("map/static_layouts/barracks"),
-	["Barracks2"] = StaticLayout.Get("map/static_layouts/barracks_two"),
-	["Spiral"] = StaticLayout.Get("map/static_layouts/spiral"),
-	["BrokenAltar"] = StaticLayout.Get("map/static_layouts/brokenaltar"),
+	["AltarRoom"] = StaticLayout.Get("map/static_layouts/altar",{
+			start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+			fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+			layout_position = LAYOUT_POSITION.CENTER}),
+	["Barracks"] = StaticLayout.Get("map/static_layouts/barracks",{
+			start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+			fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+			layout_position = LAYOUT_POSITION.CENTER}),
+	["Barracks2"] = StaticLayout.Get("map/static_layouts/barracks_two",{
+			start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+			fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+			layout_position = LAYOUT_POSITION.CENTER}),
+	["Spiral"] = StaticLayout.Get("map/static_layouts/spiral",{
+			start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+			fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+			layout_position = LAYOUT_POSITION.CENTER}),
+	["BrokenAltar"] = StaticLayout.Get("map/static_layouts/brokenaltar",{
+			start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+			fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+			layout_position = LAYOUT_POSITION.CENTER}),
 
 	--
 
@@ -629,6 +693,8 @@ local ExampleLayout =
 			fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
 			layout_position = LAYOUT_POSITION.CENTER,
 	}),
+
+	["BlueMushyStart"] = StaticLayout.Get("map.static_layouts/blue_mushy_entrance"),
 
 }
 

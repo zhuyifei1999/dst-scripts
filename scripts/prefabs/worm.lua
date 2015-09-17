@@ -1,5 +1,5 @@
 --[[
-    The worm should wander around looking for fights until it finds a "home".    
+    The worm should wander around looking for fights until it finds a "home".
     A good home will look like a place with multiple other items that have the pickable
     component so the worm can set up a lure nearby.
 
@@ -33,7 +33,7 @@ local function retargetfn(inst)
         return
     end
 
-    return FindEntity(inst, TUNING.WORM_TARGET_DIST, function(guy) 
+    return FindEntity(inst, TUNING.WORM_TARGET_DIST, function(guy)
         if guy.components.health and not guy.components.health:IsDead() then
             return not (guy.prefab == inst.prefab)
         end
@@ -83,30 +83,20 @@ local function displaynamefn(inst)
         (inst:HasTag("dirt") and "WORM_DIRT" or "WORM")]
 end
 
+local function getstatus(inst)
+    return (inst:HasTag("lure") and "PLANT") or
+            (inst:HasTag("dirt") and "DIRT") or
+            "WORM"
+end
+
 local function areaislush(pos)
-    local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, 7)
-    local num_plants = 0
-    for k, v in pairs(ents) do
-        if v.components.pickable ~= nil then
-            if num_plants < 2 then
-                num_plants = num_plants + 1
-            else
-                --return true once we have found at least 3 plants
-                return true
-            end
-        end
-    end
-    return false
+    local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, 7, {"pickable"})
+    return #ents >= 3
 end
 
 local function notclaimed(inst, pos)
-    local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, 30)
-    for k, v in pairs(ents) do
-        if v ~= inst and v.prefab == inst.prefab then
-            return false
-        end
-    end
-    return true
+    local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, 30, {"worm"})
+    return #ents <= 1 --(This will always find yourself)
 end
 
 local function LookForHome(inst)
@@ -181,6 +171,7 @@ local function fn()
     inst:AddTag("monster")
     inst:AddTag("hostile")
     inst:AddTag("wet")
+    inst:AddTag("worm")
 
     inst.displaynamefn = displaynamefn  --Handles the changing names.
 
@@ -225,8 +216,12 @@ local function fn()
     inst.components.lighttweener:StartTween(inst.Light, 0, 0.8, 0.5, {1,1,1}, 0, function(inst, light) if light then light:Enable(false) end end)
 
     inst:AddComponent("knownlocations")
+
     inst:AddComponent("inventory")
+
     inst:AddComponent("inspectable")
+    inst.components.inspectable.getstatus = getstatus
+
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetLoot({"monstermeat", "monstermeat", "monstermeat", "monstermeat", "wormlight"})
 

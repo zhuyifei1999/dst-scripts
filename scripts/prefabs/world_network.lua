@@ -3,7 +3,7 @@ local function PostInit(inst)
     inst.entity:FlushLocalDirtyNetVars()
 
     for k, v in pairs(inst.components) do
-        if v.OnPostInit then
+        if v.OnPostInit ~= nil then
             v:OnPostInit()
         end
     end
@@ -28,32 +28,42 @@ local function DoPostInit(inst)
     PlayerHistory:StartListening()
 end
 
-local function fn()
-    local inst = CreateEntity()
-    
-    assert(TheWorld ~= nil and TheWorld.net == nil)
-    TheWorld.net = inst
+--------------------------------------------------------------------------
 
-    inst.entity:SetCanSleep(false)
-    inst.persists = false
+local function MakeWorldNetwork(name, custom_postinit)
+    local function fn()
+        local inst = CreateEntity()
+        
+        assert(TheWorld ~= nil and TheWorld.net == nil)
+        TheWorld.net = inst
 
-    inst.entity:AddNetwork()
-    inst:AddTag("CLASSIFIED")
-    inst.entity:SetPristine()
+        inst.entity:SetCanSleep(false)
+        inst.persists = false
 
-    inst:AddComponent("autosaver")
-    inst:AddComponent("clock")
-    inst:AddComponent("weather")
-    inst:AddComponent("seasons")
-    inst:AddComponent("worldreset")
-    inst:AddComponent("voter")
+        inst.entity:AddNetwork()
+        inst:AddTag("CLASSIFIED")
+        inst.entity:SetPristine()
 
-    inst.PostInit = PostInit
-    inst.OnRemoveEntity = OnRemoveEntity
+        inst:AddComponent("autosaver")
+        inst:AddComponent("clock")
+        inst:AddComponent("worldtemperature")
+        inst:AddComponent("seasons")
+        inst:AddComponent("worldreset")
+        inst:AddComponent("voter")
 
-    inst:DoTaskInTime(0, DoPostInit)
+        if custom_postinit ~= nil then
+            custom_postinit(inst)
+        end
 
-    return inst
+        inst.PostInit = PostInit
+        inst.OnRemoveEntity = OnRemoveEntity
+
+        inst:DoTaskInTime(0, DoPostInit)
+
+        return inst
+    end
+
+    return Prefab(name, fn)
 end
 
-return Prefab("world_network", fn)
+return MakeWorldNetwork

@@ -6,6 +6,7 @@ local Widget = require "widgets/widget"
 local Image = require "widgets/image"
 local Text = require "widgets/text"
 local UIAnim = require "widgets/uianim"
+local easing = require "easing"
 
 --------------------------------------------------------------------------
 --[[ Constants ]]
@@ -14,6 +15,8 @@ local UIAnim = require "widgets/uianim"
 local NUM_SEGS = 16
 local DAY_COLOUR = Vector3(254 / 255, 212 / 255, 86 / 255)
 local DUSK_COLOUR = Vector3(165 / 255, 91 / 255, 82 / 255)
+local CAVE_DAY_COLOUR = Vector3(174 / 255, 195 / 255, 108 / 255)
+local CAVE_DUSK_COLOUR = Vector3(113 / 255, 127 / 255, 108 / 255)
 local DARKEN_PERCENT = .75
 
 --------------------------------------------------------------------------
@@ -24,6 +27,9 @@ local UIClock = Class(Widget, function(self)
     Widget._ctor(self, "Clock")
 
     --Member variables
+    self._cave = TheWorld ~= nil and TheWorld:HasTag("cave")
+    self._caveopen = nil
+    self._lastsinkhole = nil --cache last known sinkhole for optimization
     self._moonanim = nil
     self._anim = nil
     self._face = nil
@@ -42,19 +48,17 @@ local UIClock = Class(Widget, function(self)
     self:SetScale(basescale, basescale, basescale)
     self:SetPosition(0, 0, 0)
 
-    local moonanimscale = 1
-    self._moonanim = self:AddChild(UIAnim())
-    self._moonanim:SetScale(moonanimscale, moonanimscale, moonanimscale)
-    self._moonanim:GetAnimState():SetBank("moon_phases_clock")
-    self._moonanim:GetAnimState():SetBuild("moon_phases_clock")
-    self._moonanim:GetAnimState():PlayAnimation("hidden")
+    if not self._cave then
+        self._moonanim = self:AddChild(UIAnim())
+        self._moonanim:GetAnimState():SetBank("moon_phases_clock")
+        self._moonanim:GetAnimState():SetBuild("moon_phases_clock")
+        self._moonanim:GetAnimState():PlayAnimation("hidden")
 
-    local animscale = 1
-    self._anim = self:AddChild(UIAnim())
-    self._anim:SetScale(animscale, animscale, animscale)
-    self._anim:GetAnimState():SetBank("clock01")
-    self._anim:GetAnimState():SetBuild("clock_transitions")
-    self._anim:GetAnimState():PlayAnimation("idle_day", true)
+        self._anim = self:AddChild(UIAnim())
+        self._anim:GetAnimState():SetBank("clock01")
+        self._anim:GetAnimState():SetBuild("clock_transitions")
+        self._anim:GetAnimState():PlayAnimation("idle_day", true)
+    end
 
     self._face = self:AddChild(Image("images/hud.xml", "clock_NIGHT.tex"))
     self._face:SetClickable(false)
@@ -70,11 +74,23 @@ local UIClock = Class(Widget, function(self)
         table.insert(self._segs, seg)
     end
 
-    self._rim = self:AddChild(Image("images/hud.xml", "clock_rim.tex"))
-    self._rim:SetClickable(false)
+    if self._cave then
+        self._rim = self:AddChild(UIAnim())
+        self._rim:GetAnimState():SetBank("clock01")
+        self._rim:GetAnimState():SetBuild("cave_clock")
+        self._rim:GetAnimState():PlayAnimation("on")
 
-    self._hands = self:AddChild(Image("images/hud.xml", "clock_hand.tex"))
-    self._hands:SetClickable(false)
+        self._hands = self:AddChild(Widget("clockhands"))
+        self._hands._img = self._hands:AddChild(Image("images/hud.xml", "clock_hand.tex"))
+        self._hands._img:SetClickable(false)
+        self._hands._animtime = nil
+    else
+        self._rim = self:AddChild(Image("images/hud.xml", "clock_rim.tex"))
+        self._rim:SetClickable(false)
+
+        self._hands = self:AddChild(Image("images/hud.xml", "clock_hand.tex"))
+        self._hands:SetClickable(false)
+    end
 
     self._text = self:AddChild(Text(BODYTEXTFONT, 33 / basescale))
     self._text:SetPosition(5, 0 / basescale, 0)
@@ -86,8 +102,10 @@ local UIClock = Class(Widget, function(self)
     --Register events
     self.inst:ListenForEvent("clocksegschanged", function(inst, data) self:OnClockSegsChanged(data) end, TheWorld)
     self.inst:ListenForEvent("cycleschanged", function(inst, data) self:OnCyclesChanged(data) end, TheWorld)
-    self.inst:ListenForEvent("phasechanged", function(inst, data) self:OnPhaseChanged(data) end, TheWorld)
-    self.inst:ListenForEvent("moonphasechanged", function(inst, data) self:OnMoonPhaseChanged(data) end, TheWorld)
+    if not self._cave then
+        self.inst:ListenForEvent("phasechanged", function(inst, data) self:OnPhaseChanged(data) end, TheWorld)
+        self.inst:ListenForEvent("moonphasechanged", function(inst, data) self:OnMoonPhaseChanged(data) end, TheWorld)
+    end
     self.inst:ListenForEvent("clocktick", function(inst, data) self:OnClockTick(data) end, TheWorld)
 end)
 
@@ -109,7 +127,7 @@ end
 
 function UIClock:UpdateWorldString()
     local cycles_lived = TheWorld.state.cycles + 1
-    local clock_str = STRINGS.UI.HUD.WORLD_CLOCKDAY.." ".. tostring(cycles_lived)
+    local clock_str = STRINGS.UI.HUD.WORLD_CLOCKDAY.." "..tostring(cycles_lived)
     self._text:SetString(clock_str)
     self._showingcycles = false
 end
@@ -130,6 +148,64 @@ function UIClock:ShowMoon()
     else
         self._moonanim:GetAnimState():PlayAnimation("idle", true)
     end
+end
+
+function UIClock:IsCaveClock()
+    return self._cave
+end
+
+local function CalculateLightRange(light, iscaveclockopen)
+    return light:GetCalculatedRadius() * math.sqrt(1 - light:GetFalloff()) + (iscaveclockopen and 1 or -1)
+end
+
+function UIClock:UpdateCaveClock(owner)
+    if self._lastsinkhole ~= nil and
+        self._lastsinkhole:IsValid() and
+        self._lastsinkhole.Light:IsEnabled() and
+        self._lastsinkhole:IsNear(owner, CalculateLightRange(self._lastsinkhole.Light, self._caveopen)) then
+        -- Still near last found sinkhole, can skip FineEntity =)
+        self:OpenCaveClock()
+        return
+    end
+
+    self._lastsinkhole = FindEntity(owner, 20, function(guy) return guy:IsNear(owner, CalculateLightRange(guy.Light, self._caveopen)) end, { "sinkhole", "lightsource" })
+
+    if self._lastsinkhole ~= nil then
+        self:OpenCaveClock()
+    else
+        self:CloseCaveClock()
+    end
+end
+
+function UIClock:OpenCaveClock()
+    if not self._cave or self._caveopen == true then
+        return
+    elseif self._caveopen == nil then
+        self._rim:GetAnimState():PlayAnimation("on")
+        self._hands._img:SetScale(1, 1, 1)
+        self._hands._img:Show()
+    else
+        self._rim:GetAnimState():PlayAnimation("open")
+        self._rim:GetAnimState():PushAnimation("on", false)
+        self._hands._animtime = 0
+        self:StartUpdating()
+    end
+    self._caveopen = true
+end
+
+function UIClock:CloseCaveClock()
+    if not self._cave or self._caveopen == false then
+        return
+    elseif self._caveopen == nil then
+        self._rim:GetAnimState():PlayAnimation("off")
+        self._hands._img:Hide()
+    else
+        self._rim:GetAnimState():PlayAnimation("close")
+        self._rim:GetAnimState():PushAnimation("off", false)
+        self._hands._animtime = 0
+        self:StartUpdating()
+    end
+    self._caveopen = false
 end
 
 --------------------------------------------------------------------------
@@ -163,9 +239,9 @@ function UIClock:OnClockSegsChanged(data)
 
             local color
             if k <= day then
-                color = DAY_COLOUR 
+                color = self._cave and CAVE_DAY_COLOUR or DAY_COLOUR 
             else
-                color = DUSK_COLOUR
+                color = self._cave and CAVE_DUSK_COLOUR or DUSK_COLOUR
             end
 
             if dark then
@@ -203,7 +279,7 @@ function UIClock:OnPhaseChanged(phase)
             self._anim:GetAnimState():PlayAnimation("idle_day", true)
         end
     elseif phase == "dusk" then
-         if self._phase ~= nil then
+        if self._phase ~= nil then
             self._anim:GetAnimState():PlayAnimation("trans_day_dusk")
             self._anim:GetAnimState():PushAnimation("idle_dusk", true)
         else
@@ -235,7 +311,7 @@ function UIClock:OnMoonPhaseChanged(moonphase)
 end
 
 function UIClock:OnClockTick(data)
-    if self._time ~= nil then
+    if not self._cave and self._time ~= nil then
         local prevseg = math.floor(self._time * NUM_SEGS)
         if prevseg < self._daysegs then
             local nextseg = math.floor(data.time * NUM_SEGS)
@@ -251,6 +327,52 @@ function UIClock:OnClockTick(data)
 
     if self._showingcycles then
         self:UpdateDayString()
+    end
+end
+
+--------------------------------------------------------------------------
+--[[ Update ]]
+--------------------------------------------------------------------------
+
+function UIClock:OnUpdate(dt)
+    local k = self._hands._animtime + dt * TheSim:GetTimeScale()
+    self._hands._animtime = k
+
+    if self._caveopen then
+        local wait_time = 10 * FRAMES
+        local grow_time = 5 * FRAMES
+        local shrink_time = 3 * FRAMES
+        if k >= wait_time then
+            k = k - wait_time
+            if k < grow_time then
+                local scale = easing.outQuad(k, 0, 1, grow_time)
+                self._hands._img:SetScale(scale, scale * 1.15, 1)
+            else
+                k = k - grow_time
+                if k < shrink_time then
+                    self._hands._img:SetScale(1, easing.inOutQuad(k, 1.1, -.1, shrink_time), 1)
+                else
+                    self._hands._img:SetScale(1, 1, 1)
+                    self._hands._animtime = nil
+                    self:StopUpdating()
+                end
+            end
+            self._hands._img:Show()
+        end
+    else
+        local wait_time = 3 * FRAMES
+        local shrink_time = 6 * FRAMES
+        if k >= wait_time then
+            k = k - wait_time
+            if k < shrink_time then
+                local scale = easing.inQuad(k, 1, -1, shrink_time)
+                self._hands._img:SetScale(scale, scale, 1)
+            else
+                self._hands._img:Hide()
+                self._hands._animtime = nil
+                self:StopUpdating()
+            end
+        end
     end
 end
 

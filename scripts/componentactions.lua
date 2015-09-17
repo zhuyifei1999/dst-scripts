@@ -181,6 +181,12 @@ local COMPONENT_ACTIONS =
             end 
         end,
 
+        worldmigrator = function(inst, doer, actions)
+            if inst:HasTag("migrator") then
+                table.insert(actions, ACTIONS.MIGRATE)
+            end
+        end,
+
         writeable = function(inst, doer, actions)
             if inst:HasTag("writeable") then
                 table.insert(actions, ACTIONS.WRITE)

@@ -22,6 +22,19 @@ local function GoHomeAction(inst)
     end
 end
 
+local function EscapeAction(inst)
+    if TheWorld.state.iscaveday then
+        return GoHomeAction(inst)
+    else -- wander up through a sinkhole at night
+        local x,y,z = inst.Transform:GetWorldPosition()
+        local exits = TheSim:FindEntities(x,0,z,TUNING.BAT_ESCAPE_RADIUS, {"batdestination"})
+        if exits[1] and (exits[1].components.childspawner or exits[1].components.hideout) then
+            local action = BufferedAction(inst, exits[1], ACTIONS.GOHOME)
+            return action
+        end
+    end
+end
+
 local function EatFoodAction(inst)
 
     local target = nil
@@ -61,16 +74,23 @@ end
 function BatBrain:OnStart()
     local root = PriorityNode(
     {
+        EventNode( self.inst, "panic", ParallelNode{
+            Panic(self.inst),
+            WaitNode(6.0),
+        }),
         WhileNode( function() return self.inst.components.hauntable and self.inst.components.hauntable.panic end, "PanicHaunted", Panic(self.inst)),
         WhileNode( function() return self.inst.components.health.takingfiredamage and not self.inst.components.teamattacker.inteam end, "OnFire", Panic(self.inst)),
         AttackWall(self.inst),
         ChaseAndAttack(self.inst, MAX_CHASE_TIME, MAX_CHASE_DIST),
         WhileNode(function() return TheWorld.state.isday end, "IsDay",
-            DoAction(self.inst, function() return GoHomeAction(self.inst) end ) ), 
-        WhileNode(function() return self.inst.components.teamattacker.teamleader == nil end, "No Leader Eat Action",
-            DoAction(self.inst, EatFoodAction)),
-        WhileNode(function() return self.inst.components.teamattacker.teamleader == nil end, "No Leader Wander Action", 
-            Wander(self.inst, function() return self.inst.components.knownlocations:GetLocation("home") end, 40)),
+            DoAction(self.inst, GoHomeAction) ),
+        WhileNode(function() return self.inst.components.teamattacker.teamleader == nil end, "No Leader", PriorityNode{
+            DoAction(self.inst, EatFoodAction),
+            MinPeriod(self.inst, TUNING.BAT_ESCAPE_TIME, false,
+                DoAction(self.inst, EscapeAction)
+            ),
+            Wander(self.inst, function() return self.inst.components.knownlocations:GetLocation("home") end, 40)
+        }),
 
 
     }, .25)

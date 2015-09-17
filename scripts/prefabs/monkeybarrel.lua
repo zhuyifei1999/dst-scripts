@@ -1,6 +1,6 @@
 local assets =
 {
-	Asset("ANIM", "anim/monkey_barrel.zip"),
+    Asset("ANIM", "anim/monkey_barrel.zip"),
     Asset("SOUND", "sound/monkey.fsb"),
 }
 
@@ -23,90 +23,144 @@ SetSharedLootTable( 'monkey_barrel',
 })
 
 local function shake(inst)
-    local anim = ((math.random() > .5) and "move1") or "move2"
-    inst.AnimState:PlayAnimation(anim)
+    inst.AnimState:PlayAnimation(math.random() > .5 and "move1" or "move2")
     inst.AnimState:PushAnimation("idle")
     inst.SoundEmitter:PlaySound("dontstarve/creatures/monkey/barrel_rattle")
 end
 
-local function onhammered(inst, worker)
-    inst.shake:Cancel()
-    inst.shake = nil
+local function enqueueShake(inst)
+    if inst.shake ~= nil then
+        inst.shake:Cancel()
+    end
+    inst.shake = inst:DoPeriodicTask(GetRandomWithVariance(10, 3), shake)
+end
+
+local function onhammered(inst)
+    if inst.shake ~= nil then
+        inst.shake:Cancel()
+        inst.shake = nil
+    end
     inst.components.lootdropper:DropLoot()
-    SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
-    inst.SoundEmitter:PlaySound("dontstarve/common/destroy_wood")
+    local fx = SpawnPrefab("collapse_small")
+    fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+    fx:SetMaterial("wood")
     inst:Remove()
 end
 
 local function onhit(inst, worker)
-    if inst.components.childspawner then
+    if inst.components.childspawner ~= nil then
         inst.components.childspawner:ReleaseAllChildren(worker)
     end
     inst.AnimState:PlayAnimation("hit")
     inst.AnimState:PushAnimation("idle", false)
 
-    inst.shake:Cancel()
-    inst.shake = nil
-    inst.shake = inst:DoPeriodicTask(GetRandomWithVariance(10, 3), shake)
+    enqueueShake(inst)
+end
+
+local function pushsafetospawn(inst)
+    inst.task = nil
+    inst:PushEvent("safetospawn")
 end
 
 local function ReturnChildren(inst)
-	for k,child in pairs(inst.components.childspawner.childrenoutside) do
-		if child.components.homeseeker then
-			child.components.homeseeker:GoHome()
-		end
-		child:PushEvent("gohome")
-	end
+    for k, child in pairs(inst.components.childspawner.childrenoutside) do
+        if child.components.homeseeker ~= nil then
+            child.components.homeseeker:GoHome()
+        end
+        child:PushEvent("gohome")
+    end
 
-    if not inst.task then
-        inst.task = inst:DoTaskInTime(math.random(60, 120), function() 
-            inst.task = nil 
-            inst:PushEvent("safetospawn")
-        end)
+    if inst.task == nil then
+        inst.task = inst:DoTaskInTime(math.random(60, 120), pushsafetospawn)
     end
 end
 
 local function OnIgniteFn(inst)
-	inst.AnimState:PlayAnimation("shake", true)
-    inst.shake:Cancel()
-    inst.shake = nil
-    if inst.components.childspawner then
+    inst.AnimState:PlayAnimation("shake", true)
+
+    if inst.shake ~= nil then
+        inst.shake:Cancel()
+        inst.shake = nil
+    end
+
+    if inst.components.childspawner ~= nil then
         inst.components.childspawner:ReleaseAllChildren()
         inst:RemoveComponent("childspawner")
     end
 end
 
 local function ongohome(inst, child)
-    if child.components.inventory then
+    if child.components.inventory ~= nil then
         child.components.inventory:DropEverything(false, true)
     end
 end
 
+local function onsafetospawn(inst)
+    if inst.components.childspawner ~= nil then
+        inst.components.childspawner:StartSpawning()
+    end
+end
+
+local function OnHaunt(inst)
+    if inst.components.childspawner == nil or
+        not inst.components.childspawner:CanSpawn() or
+        math.random() > TUNING.HAUNT_CHANCE_HALF then
+        return false
+    end
+
+    local target =
+        FindEntity(inst,
+            25,
+            nil,
+            { "_combat" },
+            { "playerghost", "INLIMBO" },
+            { "character", "monster" }
+        )
+
+    if target ~= nil then
+        onhit(inst, target)
+        return true
+    end
+
+    return false
+end
+
 local function fn()
-	local inst = CreateEntity()
-	local trans = inst.entity:AddTransform()
-	local anim = inst.entity:AddAnimState()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
-    MakeObstaclePhysics( inst, 1)
+    inst.entity:AddMiniMapEntity()
+    inst.entity:AddNetwork()
 
-    local minimap = inst.entity:AddMiniMapEntity()
-    minimap:SetIcon("monkey_barrel.png")
+    inst.MiniMapEntity:SetIcon("monkey_barrel.png")
 
-    anim:SetBank("barrel")
-    anim:SetBuild("monkey_barrel")
-    anim:PlayAnimation("idle", true)
+    MakeObstaclePhysics(inst, 1)
 
-	inst:AddComponent( "childspawner" )
-	inst.components.childspawner:SetRegenPeriod(120)
-	inst.components.childspawner:SetSpawnPeriod(30)
-	inst.components.childspawner:SetMaxChildren(math.random(3,4))
-	inst.components.childspawner:StartRegen()
-	inst.components.childspawner.childname = "monkey"
+    inst.AnimState:SetBank("barrel")
+    inst.AnimState:SetBuild("monkey_barrel")
+    inst.AnimState:PlayAnimation("idle", true)
+
+    inst:AddTag("cavedweller")
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst:AddComponent( "childspawner" )
+    inst.components.childspawner:SetRegenPeriod(120)
+    inst.components.childspawner:SetSpawnPeriod(30)
+    inst.components.childspawner:SetMaxChildren(math.random(3, 4))
+    inst.components.childspawner:StartRegen()
+    inst.components.childspawner.childname = "monkey"
     inst.components.childspawner:StartSpawning()
     inst.components.childspawner.ongohome = ongohome
     inst.components.childspawner:SetSpawnedFn(shake)
 
-	inst:AddComponent("lootdropper")
+    inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetChanceLootTable('monkey_barrel')
 
     inst:AddComponent("workable")
@@ -115,25 +169,20 @@ local function fn()
     inst.components.workable:SetOnFinishCallback(onhammered)
     inst.components.workable:SetOnWorkCallback(onhit)
 
-	inst:ListenForEvent("warnquake", function()  --Monkeys all return on a quake start
-        if inst.components.childspawner then
+    local function ondanger()
+        if inst.components.childspawner ~= nil then
             inst.components.childspawner:StopSpawning()
             ReturnChildren(inst) 
         end
-    end, TheWorld)
+    end
 
-    inst:ListenForEvent("monkeydanger", function()  --Monkeys all return on a quake start
-        if inst.components.childspawner then
-            inst.components.childspawner:StopSpawning()
-            ReturnChildren(inst) 
-        end
-    end)
+    --Monkeys all return on a quake start
+    inst:ListenForEvent("warnquake", ondanger, TheWorld)
 
-	inst:ListenForEvent("safetospawn", function() 
-        if inst.components.childspawner then
-    		inst.components.childspawner:StartSpawning()
-	    end		
-    end)
+    --Monkeys all return on danger
+    inst:ListenForEvent("monkeydanger", ondanger)
+
+    inst:ListenForEvent("safetospawn", onsafetospawn)
 
     inst:AddComponent("inspectable")
 
@@ -141,27 +190,11 @@ local function fn()
 
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetHauntValue(TUNING.HAUNT_SMALL)
-    inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
-        if not inst.components.childspawner or not inst.components.childspawner:CanSpawn() then 
-            return false 
-        end
+    inst.components.hauntable:SetOnHauntFn(OnHaunt)
 
-        local target = FindEntity(inst, 25, nil,
-        nil,
-        {"playerghost"},
-        {"character","monster"}
-        )
+    enqueueShake(inst)
 
-        if target and math.random() <= TUNING.HAUNT_CHANCE_HALF then
-            onhit(inst, target)
-            return true
-        end
-
-        return false
-    end)
-
-    inst.shake = inst:DoPeriodicTask(GetRandomWithVariance(10, 3), shake )
-	return inst
+    return inst
 end
 
-return Prefab( "cave/objects/monkeybarrel", fn, assets, prefabs) 
+return Prefab("cave/objects/monkeybarrel", fn, assets, prefabs)

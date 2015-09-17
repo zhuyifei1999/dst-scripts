@@ -354,7 +354,7 @@ end
 function MultiplayerMainScreen:Forums()
 	VisitURL("http://forums.kleientertainment.com/forum/73-dont-starve-together-beta/")
 end
-
+ 
 function MultiplayerMainScreen:Quit()
     self.last_focus_widget = TheFrontEnd:GetFocusWidget()
 	TheFrontEnd:PushScreen(PopupDialogScreen(STRINGS.UI.MAINSCREEN.ASKQUIT, STRINGS.UI.MAINSCREEN.ASKQUITDESC, {{text=STRINGS.UI.MAINSCREEN.YES, cb = function() RequestShutdown() end },{text=STRINGS.UI.MAINSCREEN.NO, cb = function() TheFrontEnd:PopScreen() end}  }))
@@ -391,6 +391,7 @@ function MultiplayerMainScreen:OnCreditsButton()
 		TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
 	end)
 end
+
 
 function MultiplayerMainScreen:OnHostButton()
 	SaveGameIndex:LoadServerEnabledModsFromSlot()
@@ -566,7 +567,7 @@ function MultiplayerMainScreen:MakeSubMenu()
         return btn
     end
 
-    local credits_button = TEMPLATES.IconButton("images/button_icons.xml", "credits.tex", STRINGS.UI.MAINSCREEN.CREDITS, false, true, function() self:OnCreditsButton() end, {font=NEWFONT_OUTLINE, focus_colour={1,1,1,1}})
+     local credits_button = TEMPLATES.IconButton("images/button_icons.xml", "credits.tex", STRINGS.UI.MAINSCREEN.CREDITS, false, true, function() self:OnCreditsButton() end, {font=NEWFONT_OUTLINE, focus_colour={1,1,1,1}})
     local forums_button = TEMPLATES.IconButton("images/button_icons.xml", "forums.tex", STRINGS.UI.MAINSCREEN.FORUM, false, true, function() self:Forums() end, {font=NEWFONT_OUTLINE, focus_colour={1,1,1,1}})
     local newsletter_button = TEMPLATES.IconButton("images/button_icons.xml", "newsletter.tex", STRINGS.UI.MAINSCREEN.NOTIFY, false, true, function() self:EmailSignup() end, {font=NEWFONT_OUTLINE, focus_colour={1,1,1,1}})
 

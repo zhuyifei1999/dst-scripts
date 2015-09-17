@@ -273,7 +273,7 @@ local actionhandlers =
             end
         end),
     ActionHandler(ACTIONS.FAN, "use_fan"),
-    ActionHandler(ACTIONS.JUMPIN, "jumpin"),
+    ActionHandler(ACTIONS.JUMPIN, "jumpin_pre"),
     ActionHandler(ACTIONS.DRY, "doshortaction"),
     ActionHandler(ACTIONS.CASTSPELL,
         function(inst, action)
@@ -298,6 +298,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.CATCH, "catch_pre"),
     ActionHandler(ACTIONS.WRITE, "doshortaction"),
     ActionHandler(ACTIONS.ATTUNE, "dolongaction"),
+    ActionHandler(ACTIONS.MIGRATE, "migrate"),
 }
 
 local events =
@@ -2128,7 +2129,6 @@ local states =
             if inst.bufferedaction == inst.sg.statemem.action then
                 inst:ClearBufferedAction()
             end
-            inst.sg.statemem.action = nil
         end,
     },
 
@@ -2176,7 +2176,6 @@ local states =
             if inst.bufferedaction == inst.sg.statemem.action then
                 inst:ClearBufferedAction()
             end
-            inst.sg.statemem.action = nil
         end,
     },
 
@@ -2221,7 +2220,6 @@ local states =
             if inst.bufferedaction == inst.sg.statemem.action then
                 inst:ClearBufferedAction()
             end
-            inst.sg.statemem.action = nil
         end,
     },
 
@@ -2722,7 +2720,7 @@ local states =
             inst.components.combat:StartAttack()
             inst.components.locomotor:Stop()
             local cooldown = inst.components.combat.min_attack_period + .5 * FRAMES
-            if equip ~= nil and equip.components.weapon ~= nil then
+            if equip ~= nil and equip.components.weapon ~= nil and not equip:HasTag('punch') then
                 inst.AnimState:PlayAnimation("atk_pre")
                 inst.AnimState:PushAnimation("atk", false)
                 if equip:HasTag("icestaff") then
@@ -3083,7 +3081,9 @@ local states =
                     and (TheWorld:HasTag("cave") and "ANNOUNCE_NONIGHTSIESTA_CAVE" or "ANNOUNCE_NONIGHTSIESTA")
                     or (TheWorld:HasTag("cave") and "ANNOUNCE_NODAYSLEEP_CAVE" or "ANNOUNCE_NODAYSLEEP"))
                 )
-                or (target:HasTag("fire") and "ANNOUNCE_NOSLEEPONFIRE")
+                or (target.components.burnable ~= nil and
+                    target.components.burnable:IsBurning() and
+                    "ANNOUNCE_NOSLEEPONFIRE")
                 or (IsNearDanger(inst) and "ANNOUNCE_NODANGERSLEEP")
                 -- you can still sleep if your hunger will bottom out, but not absolutely
                 or (inst.components.hunger.current < TUNING.CALORIES_MED and "ANNOUNCE_NOHUNGERSLEEP")
@@ -3622,33 +3622,90 @@ local states =
     },
 
     State{
-        name = "jumpin",
-        tags = { "doing", "busy", "canrotate", "nomorph" },
+        name = "jumpin_pre",
+        tags = { "doing", "busy", "canrotate" },
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
-            inst.AnimState:PlayAnimation("jump_pre")
-            inst.AnimState:PushAnimation("jump", false)
+            inst.AnimState:PlayAnimation("jump_pre", false)
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    if inst.bufferedaction ~= nil then
+                        inst:PerformBufferedAction()
+                    else
+                        inst.sg:GoToState("idle")
+                    end
+                end
+            end),
+        },
+    },
+
+    State{
+        name = "jumpin",
+        tags = { "doing", "busy", "canrotate", "nopredict", "nomorph" },
+
+        onenter = function(inst, data)
+            TemporarilyRemovePhysics(inst, 5.5)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("jump", false)
+
+            inst.sg.statemem.target = data.teleporter
+
+            local pos = data ~= nil and data.teleporter and data.teleporter:GetPosition() or nil
+
+            local MAX_JUMPIN_DIST = 3
+            local MAX_JUMPIN_DIST_SQ = MAX_JUMPIN_DIST*MAX_JUMPIN_DIST
+            local MAX_JUMPIN_SPEED = 6
+
+            local dist
+            if pos ~= nil then
+                inst:ForceFacePoint(pos:Get())
+                local distsq = inst:GetDistanceSqToPoint(pos:Get())
+                if distsq <= 0.25*0.25 then
+                    dist = 0
+                    inst.sg.statemem.speed = 0
+                elseif distsq >= MAX_JUMPIN_DIST_SQ then
+                    dist = MAX_JUMPIN_DIST
+                    inst.sg.statemem.speed = MAX_JUMPIN_SPEED
+                else
+                    dist = math.sqrt(distsq)
+                    inst.sg.statemem.speed = MAX_JUMPIN_SPEED * dist / MAX_JUMPIN_DIST
+                end
+            else
+                inst.sg.statemem.speed = 0
+                dist = 0
+            end
+
+            inst.Physics:SetMotorVel(inst.sg.statemem.speed * .5, 0, 0)
         end,
 
         timeline =
         {
+            TimeEvent(.5 * FRAMES, function(inst)
+                inst.Physics:SetMotorVel(inst.sg.statemem.speed * .75, 0, 0)
+            end),
+            TimeEvent(1 * FRAMES, function(inst)
+                inst.Physics:SetMotorVel(inst.sg.statemem.speed, 0, 0)
+            end),
             -- this is just hacked in here to make the sound play BEFORE the player hits the wormhole
-            TimeEvent(19 * FRAMES, function(inst)
-                if inst.bufferedaction ~= nil and inst.bufferedaction.target ~= nil then
-                    if inst.bufferedaction.target.SoundEmitter ~= nil then
-                        inst.bufferedaction.target.SoundEmitter:PlaySound("dontstarve/common/teleportworm/swallow")
-                    end
-                    inst:PushEvent("wormholetravel") --Event for playing local travel sound
+            TimeEvent(15 * FRAMES, function(inst)
+                inst.Physics:Stop()
+                if inst.sg.statemem.target ~= nil then
+                    inst.sg.statemem.target:PushEvent("starttravelsound", inst)
                 end
             end),
         },
 
         events =
         {
-            EventHandler("animqueueover", function(inst)
+            EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
-                    if inst:PerformBufferedAction() then
+                    if inst.sg.statemem.target ~= nil and inst.sg.statemem.target.components.teleporter ~= nil
+                        and inst.sg.statemem.target.components.teleporter:Activate(inst) then
                         inst.sg.statemem.isteleporting = true
                         inst.components.health:SetInvincible(true)
                         if inst.components.playercontroller ~= nil then
@@ -4257,6 +4314,35 @@ local states =
         end,
     },
 
+    State
+    {
+        name = "migrate",
+        tags = { "doing", "busy" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("pickup")
+
+            inst.sg.statemem.action = inst.bufferedaction
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() and
+                    not inst:PerformBufferedAction() then
+                    inst.AnimState:PlayAnimation("pickup_pst")
+                    inst.sg:GoToState("idle", true)
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            if inst.bufferedaction == inst.sg.statemem.action then
+                inst:ClearBufferedAction()
+            end
+        end,
+    },
 }
 
 return StateGraph("wilson", states, events, "idle", actionhandlers)

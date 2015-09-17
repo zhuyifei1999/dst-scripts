@@ -9,6 +9,12 @@ local assets =
 local prefabs =
 {
     "gears",
+    "collapse_small",
+}
+
+local prefabs_nightmare =
+{
+    "gears",
     "thulecite_pieces",
     "nightmarefuel",
     "collapse_small",
@@ -16,13 +22,13 @@ local prefabs =
 
 local brain = require "brains/rookbrain"
 
-SetSharedLootTable( 'rook',
+SetSharedLootTable('rook',
 {
     {'gears',  1.0},
     {'gears',  1.0},
 })
 
-SetSharedLootTable( 'rook_nightmare',
+SetSharedLootTable('rook_nightmare',
 {
     {'gears',            1.0},
     {'nightmarefuel',    0.6},
@@ -35,48 +41,51 @@ local MAX_CHASEAWAY_DIST_SQ = 40 * 40
 local MAX_TARGET_SHARES = 5
 local SHARE_TARGET_DIST = 40
 
-local function ShouldSleep(inst)
-    local homePos = inst.components.knownlocations:GetLocation("home")
-    return homePos ~= nil
-        and inst:GetDistanceSqToPoint(homePos:Get()) <= SLEEP_DIST_FROMHOME_SQ
-        and (inst.components.combat == nil or inst.components.combat.target == nil)
-        and (inst.components.burnable == nil or not inst.components.burnable:IsBurning())
-        and (inst.components.freezable == nil or not inst.components.freezable:IsFrozen())
-        and GetClosestInstWithTag("character", inst, SLEEP_DIST_FROMTHREAT) == nil
-end
-
-local function ShouldWake(inst)
-    local homePos = inst.components.knownlocations:GetLocation("home")
-    return (homePos ~= nil and
-            inst:GetDistanceSqToPoint(homePos:Get()) > SLEEP_DIST_FROMHOME_SQ)
-        or (inst.components.combat ~= nil and inst.components.combat.target ~= nil)
+local function BasicWakeCheck(inst)
+    return (inst.components.combat ~= nil and inst.components.combat.target ~= nil)
         or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning())
         or (inst.components.freezable ~= nil and inst.components.freezable:IsFrozen())
         or GetClosestInstWithTag("character", inst, SLEEP_DIST_FROMTHREAT) ~= nil
 end
 
+local function ShouldSleep(inst)
+    local homePos = inst.components.knownlocations:GetLocation("home")
+    return homePos ~= nil
+        and inst:GetDistanceSqToPoint(homePos:Get()) < SLEEP_DIST_FROMHOME_SQ
+        and not BasicWakeCheck(inst)
+end
+
+local function ShouldWake(inst)
+    local homePos = inst.components.knownlocations:GetLocation("home")
+    return (homePos ~= nil and
+            inst:GetDistanceSqToPoint(homePos:Get()) >= SLEEP_DIST_FROMHOME_SQ)
+        or BasicWakeCheck(inst)
+end
+
 local function Retarget(inst)
     local homePos = inst.components.knownlocations:GetLocation("home")
-    if (homePos ~= nil and inst:GetDistanceSqToPoint(homePos:Get()) > MAX_CHASEAWAY_DIST_SQ)
-        and (inst.components.follower == nil or inst.components.follower.leader == nil) then
-        --no leader, and i'm far from home
-        return
-    end
-    local myLeader = inst.components.follower ~= nil and inst.components.follower.leader or nil
-    return FindEntity(inst, TUNING.ROOK_TARGET_DIST,
-        function(guy)
-            if myLeader == guy then
-                return
-            end
-            local theirLeader = guy.components.follower ~= nil and guy.components.follower.leader or nil
-            return (myLeader == nil or myLeader ~= theirLeader) --check same leader
-                and (theirLeader ~= nil or not guy:HasTag("chess")) --can't hit other chess pieces unless they are following someone else
-                and inst.components.combat:CanTarget(guy)
-        end,
-        { "_combat", "_health" }, --see entityreplica.lua
-        { "INLIMBO" },
-        { "character", "monster" }
-    )
+    return not (homePos ~= nil and
+                inst:GetDistanceSqToPoint(homePos:Get()) >= TUNING.ROOK_TARGET_DIST * TUNING.ROOK_TARGET_DIST and
+                (inst.components.follower == nil or inst.components.follower.leader == nil))
+        and FindEntity(
+            inst,
+            TUNING.ROOK_TARGET_DIST,
+            function(guy)
+                local myLeader = inst.components.follower ~= nil and inst.components.follower.leader or nil
+                if myLeader == guy then
+                    return false
+                end
+                local theirLeader = guy.components.follower ~= nil and guy.components.follower.leader or nil
+                local bothFollowingSamePlayer = myLeader ~= nil and myLeader == theirLeader and myLeader:HasTag("player")
+                return not bothFollowingSamePlayer
+                    and not (guy:HasTag("chess") and theirLeader == nil)
+                    and inst.components.combat:CanTarget(guy)
+            end,
+            { "_combat" },
+            { "INLIMBO" },
+            { "character", "monster" }
+        )
+        or nil
 end
 
 local function KeepTarget(inst, target)
@@ -85,7 +94,7 @@ local function KeepTarget(inst, target)
         return true
     end
     local homePos = inst.components.knownlocations:GetLocation("home")
-    return homePos ~= nil and inst:GetDistanceSqToPoint(homePos:Get()) <= MAX_CHASEAWAY_DIST_SQ
+    return homePos ~= nil and inst:GetDistanceSqToPoint(homePos:Get()) < MAX_CHASEAWAY_DIST_SQ
 end
 
 local function IsChess(dude)
@@ -93,10 +102,12 @@ local function IsChess(dude)
 end
 
 local function OnAttacked(inst, data)
-    if data ~= nil and data.attacker ~= nil and not data.attacker:HasTag("chess") then
-        inst.components.combat:SetTarget(data.attacker)
-        inst.components.combat:ShareTarget(data.attacker, SHARE_TARGET_DIST, IsChess, MAX_TARGET_SHARES)
+    local attacker = data ~= nil and data.attacker or nil
+    if attacker ~= nil and attacker:HasTag("chess") then
+        return
     end
+    inst.components.combat:SetTarget(attacker)
+    inst.components.combat:ShareTarget(attacker, SHARE_TARGET_DIST, IsChess, MAX_TARGET_SHARES)
 end
 
 local function ClearRecentlyCharged(inst, other)
@@ -126,11 +137,7 @@ local function oncollide(inst, other)
         or Vector3(inst.Physics:GetVelocity()):LengthSq() < 42 then
         return
     end
-
-    for i, v in ipairs(AllPlayers) do
-        v:ShakeCamera(CAMERASHAKE.SIDE, .5, .05, .1, inst, 40)
-    end
-
+    ShakeAllCameras(CAMERASHAKE.SIDE, .5, .05, .1, inst, 40)
     inst:DoTaskInTime(2 * FRAMES, onothercollide, other)
 end
 
@@ -153,7 +160,7 @@ local function RememberKnownLocation(inst)
     inst.components.knownlocations:RememberLocation("home", inst:GetPosition())
 end
 
-local function common_fn(build)
+local function common_fn(build, tag)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -175,6 +182,10 @@ local function common_fn(build)
     inst:AddTag("hostile")
     inst:AddTag("chess")
     inst:AddTag("rook")
+
+    if tag ~= nil then
+        inst:AddTag(tag)
+    end
 
     inst.entity:SetPristine()
 
@@ -220,7 +231,7 @@ local function common_fn(build)
 
     MakeHauntablePanic(inst)
 
-    inst:DoTaskInTime(2*FRAMES, RememberKnownLocation)
+    inst:DoTaskInTime(0, RememberKnownLocation)
 
     MakeMediumBurnableCharacter(inst, "spring")
     MakeMediumFreezableCharacter(inst, "spring")
@@ -251,7 +262,7 @@ local function rook_fn()
 end
 
 local function rook_nightmare_fn()
-    local inst = common_fn("rook_nightmare")
+    local inst = common_fn("rook_nightmare", "cavedweller")
 
     if not TheWorld.ismastersim then
         return inst
@@ -268,4 +279,4 @@ local function rook_nightmare_fn()
 end
 
 return Prefab("chessboard/rook", rook_fn, assets, prefabs),
-    Prefab("cave/monsters/rook_nightmare", rook_nightmare_fn, assets, prefabs)
+    Prefab("cave/monsters/rook_nightmare", rook_nightmare_fn, assets, prefabs_nightmare)

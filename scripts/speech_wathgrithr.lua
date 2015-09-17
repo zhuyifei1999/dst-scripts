@@ -121,12 +121,14 @@ return {
 
 		WEBBERSKULL = "He fought with boldness, but his burial will not be that of a viking.",
 		WORMLIGHT = "Glowing treasure, I can't resist!",
+        WORMLIGHT_LESSER = "Glow! Glow with all your might!",
 		WORM =
 		{
 		    PLANT = "I smell a trap.",
 		    DIRT = "What's under that dirt?",
 		    WORM = "A snake beast from the depths!",
 		},
+        WORMLIGHT_PLANT = "I smell a trap.",
 		MOLE =
 		{
 			HELD = "A friend for my pocket.",
@@ -228,6 +230,7 @@ return {
 		BATBAT = "Wing spear!",
 		BATWING="Like the wings of my helm, only meatier.",
 		BATWING_COOKED="Cooked dark wing.",
+        BATCAVE = "They're hiding under the stage.",
 		BEDROLL_FURRY="A luxury fur bed!",
 		BUNNYMAN="I want to eat you.",
 		FLOWER_CAVE="And it lit up the night, upon the darkest hour.",
@@ -237,9 +240,25 @@ return {
 		LANTERN="A lantern for the darkness.",
 		LIGHTBULB="Glow!",
 		MANRABBIT_TAIL="Can I put it in my hair?",
-		MUSHTREE_TALL  ="What is this magic?",
-		MUSHTREE_MEDIUM="I do like its glow.",
-		MUSHTREE_SMALL ="I don't care for mushrooms.",
+		MUSHTREE_TALL={
+            GENERIC = "What is this magic?",
+            BLOOM = "An enthusastic performance!",
+        },
+		MUSHTREE_MEDIUM={
+            GENERIC = "I do like its glow.",
+            BLOOM = "What a great effect!",
+        },
+		MUSHTREE_SMALL={
+            GENERIC = "I don't care for mushrooms.",
+            BLOOM = "I'll fight along side you any time!",
+        },
+        MUSHTREE_TALL_WEBBED = "This mushroom needs to be retired.",
+        SPORE_TALL = "Light the set!.",
+        SPORE_MEDIUM = "Light the set!.",
+        SPORE_SMALL = "Light the set!.",
+        SPORE_TALL_INV = "I'll direct this light where I please.",
+        SPORE_MEDIUM_INV = "I'll direct this light where I please.",
+        SPORE_SMALL_INV = "I'll direct this light where I please.",
 		RABBITHOUSE=
 		{
 			GENERIC = "What am I to do with a carrot that big?",
@@ -281,11 +300,9 @@ return {
 		TURF_MUD="A piece of the battlefield.",
 
 		POWCAKE = "What in the name of the unicorn is this?",
-        CAVE_ENTRANCE = 
-        {
-            GENERIC="What treasures lie beneath?",
-            OPEN = "To the underworld!",
-        },
+        CAVE_ENTRANCE = "What treasures lie beneath?",
+        CAVE_ENTRANCE_RUINS = "What treasures lie beneath?",
+        CAVE_ENTRANCE_OPEN = "To the underworld!",
         CAVE_EXIT = "Back to open skies!",
 		MAXWELLPHONOGRAPH = "A mechanical songstress.",
 		BOOMERANG = "For flinging at foes!",
@@ -735,7 +752,6 @@ return {
 		GOATMILK = "This is powerful milk.",
 		LITTLE_WALRUS = "A spawn of the evil toothed seal.",
 		LIVINGLOG = "Burning this magic would seem a waste.",
-		LOCKEDWES = "I'll save you silent mortal!",
 		LOG =
 		{
 			BURNING = "Flaming log!",

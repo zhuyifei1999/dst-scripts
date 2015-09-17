@@ -271,9 +271,7 @@ CommonStates.AddRunStates = function(states, timelines, anims, softstop)
         onenter = function(inst)
             inst.components.locomotor:RunForward()
             local anim_to_play = get_loco_anim(inst, anims ~= nil and anims.run or nil, "run_loop")
-            if not inst.AnimState:IsCurrentAnimation(anim_to_play) then
-                inst.AnimState:PlayAnimation(anim_to_play, true)
-            end
+            inst.AnimState:PlayAnimation(anim_to_play, true)
             inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
         end,
 
@@ -348,9 +346,7 @@ CommonStates.AddWalkStates = function(states, timelines, anims, softstop)
         onenter = function(inst)
             inst.components.locomotor:WalkForward()
             local anim_to_play = get_loco_anim(inst, anims ~= nil and anims.walk or nil, "walk_loop")
-            if not inst.AnimState:IsCurrentAnimation(anim_to_play) then
-                inst.AnimState:PlayAnimation(anim_to_play, true)
-            end
+            inst.AnimState:PlayAnimation(anim_to_play, true)
             inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
         end,
 

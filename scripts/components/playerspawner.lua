@@ -76,17 +76,24 @@ local function GetNextSpawnPosition()
     return x, 0, z
 end
 
-local function PlayerRemove(player, deletesession, readytoremove)
+local function PlayerRemove(player, deletesession, migrationdata, readytoremove)
     if readytoremove then
         player:OnDespawn()
         if deletesession then
             DeleteUserSession(player)
         else
+            player.migration = migrationdata ~= nil and {
+                worldid = TheShard:GetShardId(),
+                portalid = migrationdata.portalid,
+            } or nil
             SerializeUserSession(player)
         end
         player:Remove()
+        if migrationdata ~= nil then
+            TheShard:StartMigration(migrationdata.player.userid, migrationdata.worldid)
+        end
     else
-        player:DoTaskInTime(0, PlayerRemove, deletesession, true)
+        player:DoTaskInTime(0, PlayerRemove, deletesession, migrationdata, true)
     end
 end
 
@@ -112,6 +119,10 @@ end
 
 local function OnPlayerDespawnAndDelete(inst, player)
     OnPlayerDespawn(inst, player, function(player) PlayerRemove(player, true) end)
+end
+
+local function OnPlayerDespawnAndMigrate(inst, data)
+    OnPlayerDespawn(inst, data.player, function(player) PlayerRemove(player, false, data) end)
 end
 
 local function OnSetSpawnMode(inst, mode)
@@ -146,25 +157,81 @@ local function OnRegisterSpawnPoint(inst, spawnpt)
     inst:ListenForEvent("onremove", UnregisterSpawnPoint, spawnpt)
 end
 
+local function UnregisterMigrationPortal(portal)
+    if portal == nil then return end
+    print("[SHARD] Unregistering portal ID #"..tostring(portal.components.worldmigrator.id))
+    RemoveByValue(ShardPortals, portal)
+end
+
+local function OnRegisterMigrationPortal(inst, portal)
+    assert(portal.components.worldmigrator ~= nil, "Tried registering a migration prefab that wasn't a migrator!")
+    print("[SHARD] Registering portal ID #"..tostring(portal.components.worldmigrator.id))
+
+    if portal == nil or table.contains(ShardPortals, portal) then return end
+
+    table.insert(ShardPortals, portal)
+    inst:ListenForEvent("onremove", UnregisterMigrationPortal, portal)
+end
+
+local function GetDestinationPortalLocation(player)
+    local portal = nil
+    if player.migration.worldid ~= nil and player.migration.portalid ~= nil then
+        for i, v in ipairs(ShardPortals) do
+            local worldmigrator = v.components.worldmigrator
+            if worldmigrator ~= nil and worldmigrator:IsDestinationForPortal(player.migration.worldid, player.migration.portalid) then
+                portal = v
+                break
+            end
+        end
+    end
+
+    if portal ~= nil then
+        print("[SHARD] Player will spawn close to portal #"..tostring(portal.components.worldmigrator.id))
+        local pos = portal:GetPosition()
+        local start_angle = math.random() * PI * 2
+        local rad = portal.Physics ~= nil and portal.Physics:GetRadius() + .5 or .5
+        local offset = FindWalkableOffset(pos, start_angle, rad, 8, false)
+        if offset ~= nil then
+            return pos.x + offset.x, 0, pos.z + offset.z
+        end
+        return pos.x, 0, pos.z
+    else
+        print("[SHARD] Player will spawn at default location")
+        return GetNextSpawnPosition()
+    end
+end
+
 --------------------------------------------------------------------------
 --[[ Initialization ]]
 --------------------------------------------------------------------------
 
 inst:ListenForEvent("ms_playerdespawn", OnPlayerDespawn)
 inst:ListenForEvent("ms_playerdespawnanddelete", OnPlayerDespawnAndDelete)
+inst:ListenForEvent("ms_playerdespawnandmigrate", OnPlayerDespawnAndMigrate)
 inst:ListenForEvent("ms_setspawnmode", OnSetSpawnMode)
 inst:ListenForEvent("ms_registerspawnpoint", OnRegisterSpawnPoint)
+inst:ListenForEvent("ms_registermigrationportal", OnRegisterMigrationPortal)
+
+--------------------------------------------------------------------------
 
 --------------------------------------------------------------------------
 --[[ Public member functions ]]
---------------------------------------------------------------------------
-
 function self:SpawnAtNextLocation(inst, player)
     local x, y, z = GetNextSpawnPosition()
     self:SpawnAtLocation(inst, player, x, y, z)
 end
  
 function self:SpawnAtLocation(inst, player, x, y, z, isloading)
+    -- if migrating, resolve map location
+    if player.migration ~= nil then
+        -- make sure we're not just back in our
+        -- origin world from a failed migration
+        if player.migration.worldid ~= TheShard:GetShardId() then
+            x, y, z = GetDestinationPortalLocation(player)
+        end
+        player.migration = nil
+    end
+
     print(string.format("[%s] SPAWNING PLAYER AT: (%2.2f, %2.2f, %2.2f)", isloading and "Load" or MODES[_mode], x, y, z))
     player.Physics:Teleport(x, y, z)
 

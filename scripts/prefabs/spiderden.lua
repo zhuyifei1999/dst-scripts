@@ -252,10 +252,11 @@ local function SpawnInvestigators(inst, data)
 end
 
 local function StartSpawning(inst)
-    if inst.components.childspawner ~= nil then
-        if not (inst.components.freezable ~= nil and inst.components.freezable:IsFrozen()) and not TheWorld.state.isday then
-            inst.components.childspawner:StartSpawning()
-        end
+    if inst.components.childspawner ~= nil and
+        not (inst.components.freezable ~= nil and
+            inst.components.freezable:IsFrozen()) and
+        not TheWorld.state.iscaveday then
+        inst.components.childspawner:StartSpawning()
     end
 end
 
@@ -327,8 +328,8 @@ local function OnEntitySleep(inst)
     inst.SoundEmitter:KillSound("loop")
 end
 
-local function OnIsDay(inst, isday)
-    if isday then
+local function OnIsCaveDay(inst, iscaveday)
+    if iscaveday then
         StopSpawning(inst)
     else
         StartSpawning(inst)
@@ -336,8 +337,8 @@ local function OnIsDay(inst, isday)
 end
 
 local function OnInit(inst)
-    inst:WatchWorldState("isday", OnIsDay)
-    OnIsDay(inst, TheWorld.state.isday)
+    inst:WatchWorldState("iscaveday", OnIsCaveDay)
+    OnIsCaveDay(inst, TheWorld.state.iscaveday)
 end
 
 local function OnStageAdvance(inst)
@@ -407,6 +408,7 @@ local function MakeSpiderDenFn(den_level)
         inst.AnimState:SetBuild("spider_cocoon")
         inst.AnimState:PlayAnimation("cocoon_small", true)
 
+        inst:AddTag("cavedweller")
         inst:AddTag("structure")
         inst:AddTag("chewable") -- by werebeaver
         inst:AddTag("hostile")

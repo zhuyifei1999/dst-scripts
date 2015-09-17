@@ -1,69 +1,65 @@
 
-
-function MakeSetpieceBlockerRoom(blocker_name)
-	return	{
-				colour={r=0.2,g=0.0,b=0.2,a=0.3},
-				value = GROUND.IMPASSABLE,
-				tags = {"ForceConnected", "RoadPoison"},
-				contents =  {
-								countstaticlayouts= {
-									[blocker_name]=1,
-								}, 
-							}
-			}
-end
-
 require ("map/room_functions")
 
 
 local rooms = {}
 function AddRoom(name, data)
 	--print("AddRoom "..name)
+    function data:__tostring()
+        return "Room: "..name
+    end
 	rooms[name] = data
 end
 
 -- "Special" rooms
 require("map/rooms/test")
-require("map/rooms/pigs")
-require("map/rooms/merms")
-require("map/rooms/chess")
-require("map/rooms/spider")
-require("map/rooms/walrus")
-require("map/rooms/wormhole")
-require("map/rooms/beefalo")
-require("map/rooms/graveyard")
-require("map/rooms/tallbird")
-require("map/rooms/bee")
-require("map/rooms/mandrake")
 
-require("map/rooms/caves")
-require("map/rooms/ruins")
+require("map/rooms/forest/pigs")
+require("map/rooms/forest/merms")
+require("map/rooms/forest/chess")
+require("map/rooms/forest/spider")
+require("map/rooms/forest/walrus")
+require("map/rooms/forest/wormhole")
+require("map/rooms/forest/beefalo")
+require("map/rooms/forest/graveyard")
+require("map/rooms/forest/tallbird")
+require("map/rooms/forest/bee")
+require("map/rooms/forest/mandrake")
+require("map/rooms/forest/giants")
 
-require("map/rooms/blockers")
-require("map/rooms/starts")
+require("map/rooms/cave/bats")
+require("map/rooms/cave/bluemush")
+require("map/rooms/cave/fungusnoise")
+require("map/rooms/cave/generic")
+require("map/rooms/cave/greenmush")
+require("map/rooms/cave/mud")
+require("map/rooms/cave/rabbits")
+require("map/rooms/cave/redmush")
+require("map/rooms/cave/rocky")
+require("map/rooms/cave/sinkhole")
+require("map/rooms/cave/spillagmites")
+require("map/rooms/cave/swamp")
+
+require("map/rooms/cave/ruins")
+
+-- ... adventure?
+require("map/rooms/forest/blockers")
+require("map/rooms/forest/starts")
 
 -- "Background" rooms
 
-require("map/rooms/terrain_dirt")
-require("map/rooms/terrain_forest")
-require("map/rooms/terrain_grass")
-require("map/rooms/terrain_impassable")
-require("map/rooms/terrain_marsh")
-require("map/rooms/terrain_noise")
-require("map/rooms/terrain_rocky")
-require("map/rooms/terrain_savanna")
+require("map/rooms/forest/terrain_dirt")
+require("map/rooms/forest/terrain_forest")
+require("map/rooms/forest/terrain_grass")
+require("map/rooms/forest/terrain_impassable")
+require("map/rooms/forest/terrain_marsh")
+require("map/rooms/forest/terrain_noise")
+require("map/rooms/forest/terrain_rocky")
+require("map/rooms/forest/terrain_savanna")
 
-require("map/rooms/terrain_sinkhole")
-require("map/rooms/terrain_fungus")
-require("map/rooms/terrain_cave")
-require("map/rooms/terrain_mazes")
+require("map/rooms/cave/terrain_mazes")
 
-
-require("map/rooms/DLCrooms")
-
---DST Stuff
-
-require("map/rooms/dst_rooms/giants")
+require("map/rooms/forest/DLCrooms")
 
 ------------------------------------------------------------------------------------
 -- EXIT ROOM -----------------------------------------------------------------------
@@ -81,5 +77,16 @@ AddRoom("Exit", {
 					            }
 					})
 
+
+------------------------------------------------------------------------------------
+-- BLANK ROOM ----------------------------------------------------------------------
+------------------------------------------------------------------------------------
+AddRoom("Blank", {
+					colour={r=0.0,g=0.0,b=0.0,a=0.1},
+					value = GROUND.IMPASSABLE, 
+                    type = NODE_TYPE.Blank,
+					contents =  {
+					            }
+					})
 
 return rooms

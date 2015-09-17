@@ -155,6 +155,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.CATCH, "catch_pre"),
     ActionHandler(ACTIONS.WRITE, "doshortaction"),
     ActionHandler(ACTIONS.ATTUNE, "dolongaction"),
+    ActionHandler(ACTIONS.MIGRATE, "migrate"),
 }
 
 local events =
@@ -1494,6 +1495,38 @@ local states =
             if inst.sg:HasStateTag("abouttoattack") and inst.replica.combat ~= nil then
                 inst.replica.combat:CancelAttack()
             end
+        end,
+    },
+
+    State
+    {
+        name = "migrate",
+        tags = { "doing", "busy" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("pickup")
+            inst.AnimState:PushAnimation("pickup_lag", false)
+
+            inst:PerformPreviewBufferedAction()
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.AnimState:PlayAnimation("pickup_pst")
+                inst.sg:GoToState("idle", true)
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.AnimState:PlayAnimation("pickup_pst")
+            inst.sg:GoToState("idle", true)
         end,
     },
 }

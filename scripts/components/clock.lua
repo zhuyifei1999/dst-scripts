@@ -10,7 +10,7 @@ return Class(function(self, inst)
 
 local NUM_SEGS = 16
 
-local PHASE_NAMES =
+local PHASE_NAMES = --keep in sync with shard_clock.lua NUM_PHASES
 {
     "day",
     "dusk",
@@ -58,6 +58,7 @@ self.inst = inst
 --Private
 local _world = TheWorld
 local _ismastersim = _world.ismastersim
+local _ismastershard = _world.ismastershard
 local _segsdirty = true
 local _cyclesdirty = true
 local _phasedirty = true
@@ -152,6 +153,18 @@ local OnNextCycle = _ismastersim and function()
     self:LongUpdate(0)
 end or nil
 
+local OnClockUpdate = _ismastersim and not _ismastershard and function(src, data)
+    for i, v in ipairs(_segs) do
+        v:set(data.segs[i])
+    end
+    _cycles:set(data.cycles)
+    _phase:set(data.phase)
+    _moonphase:set(data.moonphase)
+    _totaltimeinphase:set(data.totaltimeinphase)
+    _remainingtimeinphase:set(data.remainingtimeinphase)
+    self:LongUpdate(0)
+end or nil
+
 --------------------------------------------------------------------------
 --[[ Initialization ]]
 --------------------------------------------------------------------------
@@ -177,6 +190,11 @@ if _ismastersim then
     inst:ListenForEvent("ms_setphase", OnSetPhase, _world)
     inst:ListenForEvent("ms_nextphase", OnNextPhase, _world)
     inst:ListenForEvent("ms_nextcycle", OnNextCycle, _world)
+
+    if not _ismastershard then
+        --Register slave shard events
+        inst:ListenForEvent("slave_clockupdate", OnClockUpdate, _world)
+    end
 end
 
 inst:StartUpdatingComponent(self)
@@ -210,7 +228,7 @@ function self:OnUpdate(dt)
             remainingtimeinphase = numsegsinphase > 0 and nextseg / numsegsinphase * _totaltimeinphase:value() or 0
             _remainingtimeinphase:set_local(math.min(remainingtimeinphase + .001, _remainingtimeinphase:value()))
         end
-    elseif _ismastersim then
+    elseif _ismastershard then
         --Advance to next phase
         _remainingtimeinphase:set_local(0)
 
@@ -239,7 +257,7 @@ function self:OnUpdate(dt)
             return
         end
     else
-        --Client must wait at end of phase for a server sync
+        --Clients and slaves must wait at end of phase for a server sync
         _remainingtimeinphase:set_local(math.min(.001, _remainingtimeinphase:value()))
     end
 
@@ -278,6 +296,22 @@ function self:OnUpdate(dt)
         elapsedsegs = elapsedsegs + v:value()
     end
     _world:PushEvent("clocktick", { phase = PHASE_NAMES[_phase:value()], timeinphase = normtimeinphase, time = elapsedsegs / NUM_SEGS })
+
+    if _ismastershard then
+        local data =
+        {
+            segs = {},
+            cycles = _cycles:value(),
+            moonphase = _moonphase:value(),
+            phase = _phase:value(),
+            totaltimeinphase = _totaltimeinphase:value(),
+            remainingtimeinphase = _remainingtimeinphase:value(),
+        }
+        for i, v in ipairs(_segs) do
+            table.insert(data.segs, v:value())
+        end
+        _world:PushEvent("master_clockupdate", data)
+    end
 end
 
 self.LongUpdate = self.OnUpdate

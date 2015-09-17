@@ -21,7 +21,7 @@ local function SpawnHound(inst)
         local num = inst:NumHoundsToSpawn()
 		local pt = inst:GetPosition()
 		for i = 1, num do
-			local hound = hounded:SummonHound(pt)
+			local hound = hounded:SummonSpawn(pt)
 			if hound ~= nil then
 				hound.components.follower:SetLeader(inst)
 			end

@@ -41,13 +41,13 @@ local function fn()
     inst.animname = names[math.random(#names)]
     inst.AnimState:PlayAnimation(inst.animname)
 
-    inst:AddComponent("inspectable")   
+    inst:AddComponent("inspectable")
 
     inst:AddComponent("pickable")
     inst.components.pickable.picksound = "dontstarve/wilson/pickup_plants"
     inst.components.pickable:SetUp("foliage", 10)
     inst.components.pickable.onpickedfn = inst.Remove
-    inst.components.pickable.quickpick = true 
+    inst.components.pickable.quickpick = true
 
     MakeSmallBurnable(inst)
     MakeSmallPropagator(inst)
@@ -55,8 +55,8 @@ local function fn()
     MakeHauntableIgnite(inst)
 
     --------SaveLoad
-    inst.OnSave = onsave 
-    inst.OnLoad = onload 
+    inst.OnSave = onsave
+    inst.OnLoad = onload
 
     return inst
 end

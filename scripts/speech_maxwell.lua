@@ -339,12 +339,14 @@ return {
 		ICESTAFF = "Cool staff.",
 		WAXWELLJOURNAL = "I'm so sorry Charlie.",
 		WORMLIGHT = "What a neat trick.",
+		WORMLIGHT = "This one isn't very good.",
 		WORM =
 		{
 		    PLANT = "You aren't fooling me, plant.",
 		    DIRT = "Something stirs.",
 		    WORM = "Well that's new!",
 		},
+        WORMLIGHT_PLANT = "You aren't fooling me, plant.",
 		EEL = "They only exsist in the depths.",
 		EEL_COOKED = "It will have to do.",
 		UNAGI = "My compliments to the chef!",
@@ -424,6 +426,7 @@ return {
 		BATBAT = "Violence has never felt better.",
 		BATWING="I'm not eating that.",
 		BATWING_COOKED="I'm still not eating that.",
+        BATCAVE="Ugh. It stinks.",
 		BEDROLL_FURRY="At least they're good for something.",
 		BUNNYMAN="It reminds me of my old act.",
 		FLOWER_CAVE="It's so dark down here.",
@@ -433,9 +436,25 @@ return {
 		LANTERN="I hope this keeps Them away.",
 		LIGHTBULB="It will run out eventually.",
 		MANRABBIT_TAIL="Silly rabbit.",
-		MUSHTREE_TALL="It smells of rot and failure.",
-		MUSHTREE_MEDIUM="Where's Waldo?",
-		MUSHTREE_SMALL="Ugh, it smells bad.",
+		MUSHTREE_TALL={
+            GENERIC = "It smells of rot and failure.",
+            BLOOM = "It's spawning.",
+        },
+		MUSHTREE_MEDIUM={
+            GENERIC = "Where's Waldo?",
+            BLOOM = "I hope I'm not standing next to it when it goes off.",
+        },
+		MUSHTREE_SMALL={
+            GENERIC = "Ugh, it smells bad.",
+            BLOOM = "Oh fine, do what you like.",
+        },
+        MUSHTREE_TALL_WEBBED = "Could it get any less appealing?",
+        SPORE_TALL = "How can a seed be so cheerful?",
+        SPORE_MEDIUM = "How can a seed be so cheerful?",
+        SPORE_SMALL = "How can a seed be so cheerful?",
+        SPORE_TALL_INV = "I hope it doesn't stain my jacket.",
+        SPORE_MEDIUM_INV = "I hope it doesn't stain my jacket.",
+        SPORE_SMALL_INV = "I hope it doesn't stain my jacket.",
 		SLURTLE="I don't remember those...",
 		SLURTLE_SHELLPIECES="They don't fit back together.",
 		SLURTLEHAT="This will keep me standing, if I need to fight.",
@@ -455,11 +474,9 @@ return {
 		STALAGMITE_TALL_MED="Stalagmite. How dull.",
 
 		POWCAKE = "What foul product of science is this?",
-		CAVE_ENTRANCE = 
-		{
-			GENERIC="I plugged it a long time ago.",
-			OPEN = "That was not a good idea!",
-		},
+		CAVE_ENTRANCE = "I plugged it a long time ago.",
+		CAVE_ENTRANCE_RUINS = "Probably shouldn't venture any deeper.",
+        CAVE_ENTRANCE_OPEN = "That was not a good idea!",
         CAVE_EXIT = "Get me out of here!",
 
 		MAXWELLPHONOGRAPH = "That accursed thing!",
@@ -802,7 +819,6 @@ return {
 		},
 		LITTLE_WALRUS = "A chip off the old block.",
 		LIVINGLOG = "I like the noise they make when you burn them.",
-		LOCKEDWES = "He displeased me.",
 		LOG =
 		{
 			BURNING = "Well. That was fun while it lasted.",

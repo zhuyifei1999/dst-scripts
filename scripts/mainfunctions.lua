@@ -1,6 +1,5 @@
 local PopupDialogScreen = require "screens/popupdialog"
 local ScriptErrorScreen = require "screens/scripterrorscreen"
-local LobbyScreen = require "screens/lobbyscreen"
 local BigPopupDialogScreen = require "screens/bigpopupdialog"
 local WorldGenScreen = require "screens/worldgenscreen"
 
@@ -1100,8 +1099,11 @@ function OnNetworkDisconnect( message, should_reset, force_immediate_reset, deta
 	if ThePlayer ~= nil then
 		SerializeUserSession(ThePlayer)
 	end
-	
-	should_reset = should_reset and InGamePlay()
+
+    --Don't need to reset if we're in FE already
+    --NOTE: due to migration, we can be in neither gameplay nor FE
+    --      e.g. if there is no active screen
+    should_reset = should_reset and (InGamePlay() or TheFrontEnd:GetActiveScreen() == nil)
 	local function doquit( should_reset )
 		if should_reset == true then
 			DoRestart(false) --don't save again
@@ -1127,7 +1129,6 @@ function OnNetworkDisconnect( message, should_reset, force_immediate_reset, deta
 	if TheFrontEnd:GetFadeLevel() > 0 then --we're already fading
 		if TheFrontEnd.fadedir == false then
 			local cb = TheFrontEnd.fadecb
-			TheFrontEnd.fadecb = nil
 			TheFrontEnd.fadecb = function()
 				if cb then cb() end
 				TheFrontEnd:PushScreen( PopupDialogScreen(title, message, { {text=STRINGS.UI.NETWORKDISCONNECT.OK, cb = function() doquit( should_reset ) end}  }) )
@@ -1224,6 +1225,7 @@ function ResumeRequestLoadComplete(success)
     --activate and fade in once the user's player is downloaded
     if not success then
         TheNet:DeleteUserSession(TheNet:GetUserID())
+        local LobbyScreen = require "screens/lobbyscreen" 
         TheFrontEnd:PushScreen(LobbyScreen(Profile, OnUserPickedCharacter, false))
         TheFrontEnd:Fade(true, 1, nil, nil, nil, "white")
         TheWorld:PushEvent("entercharacterselect")

@@ -26,5 +26,8 @@ Task = Class(function(self, id, data)
 	self.make_loop = data.make_loop
 end)
 
+function Task:__tostring()
+    return "Task: "..self.id
+end
 
 

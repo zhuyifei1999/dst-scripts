@@ -160,7 +160,7 @@ function MosslingBrain:OnStart()
 	PriorityNode(
 	{
 		DoAction(self.inst, EatFoodAction),
-		MinPeriod(self.inst, math.random(4,6), eatnode),
+		MinPeriod(self.inst, math.random(4,6), true, eatnode),
 		Wander(self.inst, function() return self.inst.components.knownlocations:GetLocation("herd") end, 15),
 	},.25)
 

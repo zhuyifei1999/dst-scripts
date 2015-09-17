@@ -123,7 +123,8 @@ AddRoom("BGSacredGround", {
 
 AddRoom("Altar", {
 					colour={r=0.3,g=0.2,b=0.1,a=0.3},
-					value = GROUND.TILES, 
+					value = GROUND.IMPASSABLE, 
+					internal_type = NODE_INTERNAL_CONNECTION_TYPE.EdgeSite,
 					contents =  {
 									countstaticlayouts = 
 									{
@@ -154,7 +155,8 @@ AddRoom("Altar", {
 
 AddRoom("Barracks",{
 					colour={r=0.3,g=0.2,b=0.1,a=0.3},
-					value = GROUND.TILES, 
+					value = GROUND.IMPASSABLE, 
+					internal_type = NODE_INTERNAL_CONNECTION_TYPE.EdgeSite,
 					contents =  {
 									countstaticlayouts = 
 									{
@@ -187,7 +189,8 @@ AddRoom("Barracks",{
 
 AddRoom("Bishops",{
 					colour={r=0.3,g=0.2,b=0.1,a=0.3},
-					value = GROUND.TILES, 
+					value = GROUND.IMPASSABLE, 
+					internal_type = NODE_INTERNAL_CONNECTION_TYPE.EdgeSite,
 					contents =  {
 									countstaticlayouts = 
 									{
@@ -218,7 +221,8 @@ AddRoom("Bishops",{
 
 AddRoom("Spiral",{
 					colour={r=0.3,g=0.2,b=0.1,a=0.3},
-					value = GROUND.TILES, 
+					value = GROUND.IMPASSABLE, 
+					internal_type = NODE_INTERNAL_CONNECTION_TYPE.EdgeSite,
 					contents =  {
 									countstaticlayouts = 
 									{
@@ -249,7 +253,8 @@ AddRoom("Spiral",{
 
 AddRoom("BrokenAltar", {
 					colour={r=0.3,g=0.2,b=0.1,a=0.3},
-					value = GROUND.TILES, 
+					value = GROUND.IMPASSABLE, 
+					internal_type = NODE_INTERNAL_CONNECTION_TYPE.EdgeSite,
 					contents =  {
 									countstaticlayouts = 
 									{
@@ -407,7 +412,7 @@ AddRoom("LightWilds", {
 
 AddRoom("BGMilitary",  {	
 					colour={r=0.3,g=0.2,b=0.1,a=0.3},
-					value = GROUND.UNDERROCK, 
+					value = GROUND.WALL_ROCKY, 
 					tags = {"Maze"},
 					contents =  {
 									distributepercent = 0.05,
@@ -434,6 +439,12 @@ AddRoom("MilitaryEntrance", {
 					            }
 					})
 
+AddRoom("BridgeEntrance",{
+                    colour={r=0.0,g=0.2,b=0.2,a=0.3},
+                    value = GROUND.IMPASSABLE,
+                    tags = {"ForceConnected", "RoadPoison"},
+                    contents = {},
+                })
 
 ----"VILLAGE"
 
@@ -466,12 +477,12 @@ AddRoom("Vacant", {
 					contents =  {
 									countstaticlayouts =
 									{
-										["CornerWall"] = math.random(1,3),
-										["StraightWall"] = math.random(1,2),
-										["CornerWall2"] = math.random(1,2),
-										["StraightWall2"] = math.random(1,3),
+										["CornerWall"] = math.random(2,3),
+										["StraightWall"] = math.random(2,3),
+										["CornerWall2"] = math.random(2,3),
+										["StraightWall2"] = math.random(2,3),
 									},
-									distributepercent = 0.12,
+									distributepercent = 0.5,
 					                distributeprefabs= 
 					                {
 					                	lichen = .4,

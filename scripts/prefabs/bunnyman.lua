@@ -178,6 +178,7 @@ local function fn()
     local s = 1.25
     inst.Transform:SetScale(s, s, s)
 
+    inst:AddTag("cavedweller")
     inst:AddTag("character")
     inst:AddTag("pig")
     inst:AddTag("manrabbit")
@@ -205,8 +206,8 @@ local function fn()
     inst:RemoveTag("_named")
 
     inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
-    inst.components.locomotor.runspeed = TUNING.PIG_RUN_SPEED --5
-    inst.components.locomotor.walkspeed = TUNING.PIG_WALK_SPEED --3
+    inst.components.locomotor.runspeed = TUNING.PIG_RUN_SPEED * 2.2 -- account for them being stopped for part of their anim
+    inst.components.locomotor.walkspeed = TUNING.PIG_WALK_SPEED * 1.9 -- account for them being stopped for part of their anim
 
     ------------------------------------------
     inst:AddComponent("eater")

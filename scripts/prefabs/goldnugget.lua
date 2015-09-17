@@ -28,6 +28,7 @@ local function fn()
     inst.AnimState:PlayAnimation("idle", true)
 
     inst:AddTag("molebait")
+    inst:AddTag("quakedebris")
 
     inst.entity:SetPristine()
 

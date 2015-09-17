@@ -383,7 +383,11 @@ function ModWrangler:LoadMods(worldgen)
 	local function modPrioritySort(a,b)
 		local apriority = (a.modinfo and a.modinfo.priority) or 0
 		local bpriority = (b.modinfo and b.modinfo.priority) or 0
-		return apriority > bpriority
+		if apriority == bpriority then
+			return tostring(a.modinfo and a.modinfo.name) > tostring(b.modinfo and b.modinfo.name)
+		else
+			return apriority  > bpriority
+		end
 	end
 	table.sort(self.mods, modPrioritySort)
 

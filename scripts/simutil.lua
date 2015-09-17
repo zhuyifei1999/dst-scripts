@@ -160,6 +160,12 @@ function AnimateUIScale(item, total_time, start_scale, end_scale)
     end)
 end
 
+function ShakeAllCameras(mode, duration, speed, scale, source, maxDist)
+    for i, v in ipairs(AllPlayers) do
+        v:ShakeCamera(mode, duration, speed, scale, source, maxDist)
+    end
+end
+
 -- Use this function to fan out a search for a point that meets a condition.
 -- If your condition is basically "walkable ground" use FindWalkableOffset instead.
 -- test_fn takes a parameter "offset" which is check_angle*radius.
@@ -265,3 +271,14 @@ end
 function SpringCombatMod(amount)
     return TheWorld.state.isspring and amount * TUNING.SPRING_COMBAT_MOD or amount
 end
+
+function TemporarilyRemovePhysics(obj, time)
+    local origmask = obj.Physics:GetCollisionMask()
+    obj.Physics:ClearCollisionMask()
+    obj.Physics:CollidesWith(COLLISION.WORLD)
+    obj:DoTaskInTime(time, function(obj)
+        obj.Physics:ClearCollisionMask()
+        obj.Physics:SetCollisionMask(origmask)
+    end)
+end
+

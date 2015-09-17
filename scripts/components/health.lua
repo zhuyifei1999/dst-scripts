@@ -98,6 +98,9 @@ function Health:OnLoad(data)
         self:SetPenalty(data.penalty)
     end
 
+    if data.invincible ~= nil then 
+        self.invincible = data.invincible
+    end
     if data.health ~= nil then
         self:SetVal(data.health, "file_load")
         self:ForceUpdateHUD()

@@ -36,16 +36,15 @@ local SHARE_TARGET_DIST = 30
 local function Retarget(inst)
     if not inst.components.health:IsDead() and not inst.components.sleeper:IsAsleep() then
         local oldtarget = inst.components.combat.target
-
         local newtarget = FindEntity(inst, 10, 
             function(guy) 
                 return inst.components.combat:CanTarget(guy) 
             end,
-            {"character"},
-            {"monster"}
+            { "character", "_combat" },
+            { "monster", "INLIMBO" }
         )
 
-        if newtarget and newtarget ~= oldtarget then
+        if newtarget ~= nil and newtarget ~= oldtarget then
             inst.components.combat:SetTarget(newtarget)
         end
     end
@@ -117,6 +116,7 @@ local function fn()
     inst.DynamicShadow:SetSize(7, 3)
     inst.Transform:SetFourFaced()
 
+    inst:AddTag("cavedweller")
     inst:AddTag("monster")
     inst:AddTag("hostile")
     inst:AddTag("epic")

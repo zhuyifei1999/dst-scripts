@@ -1,3 +1,11 @@
+local function onteamtype(self, team, oldteam)
+    if oldteam ~= nil then
+        self.inst:RemoveTag("teamleader_"..oldteam)
+    end
+    if team ~= nil then
+        self.inst:AddTag("teamleader_"..team)
+    end
+end
 
 local TeamLeader = Class(function(self, inst )
 
@@ -21,24 +29,35 @@ local TeamLeader = Class(function(self, inst )
 
 	self.maxchasetime = 30
 	self.chasetime = 0
-		
-end)
+end,
+nil,
+{
+    team_type = onteamtype,
+})
 
-local function getteamsize(team)
+function TeamLeader:GetTeamSize()
 	local count = 0
-		for k,v in pairs(team) do
-			if v ~= nil and not v:HasTag("teamleader") then
+		for k,v in pairs(self.team) do
+			if v ~= nil and not v:HasTag("teamleader_"..self.team_type) then
 				count = count + 1
-			end
+            end
 		end
 	return count
 end
 
+function TeamLeader:SetUp(target, first_member)
+    self.threat = target
+    local teamattacker = first_member.components.teamattacker
+    if teamattacker then
+        self.team_type = teamattacker.team_type
+        self:NewTeammate(first_member)
+    end
+end
 
 function TeamLeader:OrganizeTeams()
 	local teams = {}
 	local x,y,z = self.inst.Transform:GetWorldPosition()
-	local ents = TheSim:FindEntities(x,y,z, self.searchradius)
+	local ents = TheSim:FindEntities(x,y,z, self.searchradius, {"teamleader_"..self.team_type})
 	local oldestteam = 0
 	for k,v in pairs(ents) do
 		if v.components.teamleader and v.components.teamleader.threat == self.threat then
@@ -75,15 +94,16 @@ function TeamLeader:OrganizeTeams()
 end
 
 function TeamLeader:IsTeamFull()
-	if self.team and getteamsize(self.team) >= self.max_team_size then return true end
+	if self.team and self:GetTeamSize() >= self.max_team_size then return true end
 end
 
 function TeamLeader:ValidMember(member)
 
-	if member:HasTag(self.team_type) and
-	   member.components.combat and not
-	   (member.components.health and member.components.health:IsDead()) and not
-	   member.components.teamattacker.inteam  then
+    if member:IsValid() and not member:IsInLimbo() and
+        member:HasTag("team_"..self.team_type) and
+        member.components.combat and not
+        (member.components.health and member.components.health:IsDead()) and not
+        member.components.teamattacker.inteam  then
 		return true
 	end
 end
@@ -103,7 +123,7 @@ function TeamLeader:DisbandTeam()
 end
 
 function TeamLeader:TeamSizeControl()
-	if getteamsize(self.team) > self.max_team_size then
+	if self:GetTeamSize() > self.max_team_size then
 		local teamcount = 0
         local team = {}
 		for k,v in pairs(self.team) do
@@ -126,7 +146,7 @@ function TeamLeader:NewTeammate(member)
 		member.attackedotherfn = function() 
 			self.chasetime = 0
 			member.components.combat.target = nil
-			member.components.teamattacker.orders = "HOLD"
+			member.components.teamattacker.orders = ORDERS.HOLD
 		end
 
 		self.team[member] = member
@@ -134,6 +154,7 @@ function TeamLeader:NewTeammate(member)
 		self.inst:ListenForEvent("attacked", member.attackedfn, member)
 		self.inst:ListenForEvent("onattackother", member.attackedotherfn, member)
 		self.inst:ListenForEvent("onremove", member.deathfn, member)
+		self.inst:ListenForEvent("onenterlimbo", member.deathfn, member)
 		member.components.teamattacker.teamleader = self
 		member.components.teamattacker.inteam = true
 	end
@@ -144,7 +165,7 @@ function TeamLeader:BroadcastDistress(member)
 
 	if member:IsValid() then
 		local x,y,z = member.Transform:GetWorldPosition()
-		local ents = TheSim:FindEntities(x,y,z, self.searchradius, { self.team_type } )  -- filter by tag?  { self.team_type }
+		local ents = TheSim:FindEntities(x,y,z, self.searchradius, { "team_"..self.team_type } )  -- filter by tag?  { self.team_type }
 		for k,v in pairs(ents) do
 			if v ~= member and self:ValidMember(v) then
 				self:NewTeammate(v)
@@ -168,7 +189,7 @@ function TeamLeader:OnLostTeammate(member)
 end
 
 function TeamLeader:CanAttack()
-	return getteamsize(self.team) >= self.min_team_size
+	return self:GetTeamSize() >= self.min_team_size
 end
 
 function TeamLeader:CenterLeader()
@@ -190,24 +211,23 @@ function TeamLeader:CenterLeader()
 end
 
 function TeamLeader:GetFormationPositions()
-		local target = self.threat
-		local team = self.team
-		local pt = Vector3(target.Transform:GetWorldPosition())
-		local theta = self.theta
-		local radius = self.radius
-		local steps = getteamsize(team)
+    local target = self.threat
+    local pt = Vector3(target.Transform:GetWorldPosition())
+    local theta = self.theta
+    local radius = self.radius
+    local steps = self:GetTeamSize()
 
-		for k,v in pairs(team) do
-			radius = self.radius
+    for k,v in pairs(self.team) do
+        radius = self.radius
 
-			if v.components.teamattacker.orders == "WARN" then
-				radius = self.radius - 1
-			end 
+        if v.components.teamattacker.orders == ORDERS.WARN then
+            radius = self.radius - 1
+        end 
 
-			local offset = Vector3(radius * math.cos(theta), 0, -radius * math.sin(theta))
-			v.components.teamattacker.formationpos = pt + offset
-			theta = theta - (2 * PI/steps)
-		end
+        local offset = Vector3(radius * math.cos(theta), 0, -radius * math.sin(theta))
+        v.components.teamattacker.formationpos = pt + offset
+        theta = theta - (2 * PI/steps)
+    end
 end
 
 function TeamLeader:GiveOrders(order, num)
@@ -232,7 +252,7 @@ function TeamLeader:GiveOrders(order, num)
 
 	for k,v in pairs(self.team) do
 		if v ~= nil and v.components.teamattacker.orders == nil then
-			v.components.teamattacker.orders = "HOLD"
+			v.components.teamattacker.orders = ORDERS.HOLD
 		end
 	end
 end
@@ -246,23 +266,18 @@ function TeamLeader:GiveOrdersToAllWithOrder(order, oldorder)
 end
 
 function TeamLeader:AllInState(state)
-	local b = true
-	for k,v in pairs(self.team) do
-		if v ~= nil and
-		   not ( self.chk_state and (v:HasTag("frozen") or v:HasTag("fire")) ) and
-           not (v.components.teamattacker.orders == nil or v.components.teamattacker.orders == state) then
-			b = false
-		end
-	end
-	return b
+    for k, v in pairs(self.team) do
+        if v ~= nil and
+            not (self.chk_state and (v:HasTag("frozen") or (v.components.burnable ~= nil and v.components.burnable:IsBurning()))) and
+            not (v.components.teamattacker.orders == nil or v.components.teamattacker.orders == state) then
+            return false
+        end
+    end
+    return true
 end
 
 function TeamLeader:IsTeamEmpty()
-	if not next(self.team) then
-        return true
-    else
-        return false
-    end
+    return next(self.team) == nil
 end
 
 function TeamLeader:SetNewThreat(threat)
@@ -327,13 +342,13 @@ function TeamLeader:OnUpdate(dt)
 
 		self:GetFormationPositions()
 
-		if self:AllInState("HOLD") then
+		if self:AllInState(ORDERS.HOLD) then
 			self.timebetweenattacks = self.timebetweenattacks - dt
 
 			if self.timebetweenattacks <= 0 then
 				self.timebetweenattacks = self.attackinterval
-				self:GiveOrders("WARN", self:NumberToAttack())
-				self.inst:DoTaskInTime(0.5, function() self:GiveOrdersToAllWithOrder("ATTACK", "WARN") end)
+				self:GiveOrders(ORDERS.WARN, self:NumberToAttack())
+				self.inst:DoTaskInTime(0.5, function() self:GiveOrdersToAllWithOrder(ORDERS.ATTACK, ORDERS.WARN) end)
             else
 			end
 		end

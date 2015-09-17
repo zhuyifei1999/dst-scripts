@@ -1,150 +1,7 @@
 local groundtiles = require "worldtiledefs"
 require "components/map" --extends Map component
 
-local assets =
-{
-    Asset("SOUND", "sound/sanity.fsb"),
-    Asset("SOUND", "sound/amb_stream.fsb"),
-    Asset("SHADER", "shaders/uifade.ksh"),
-    -- Asset("ATLAS", "images/selectscreen_portraits.xml"), -- Not currently used, but likely to come back
-    -- Asset("IMAGE", "images/selectscreen_portraits.tex"), -- Not currently used, but likely to come back
-    Asset("ATLAS", "bigportraits/locked.xml"),
-    Asset("IMAGE", "bigportraits/locked.tex"),
-    Asset("ATLAS", "bigportraits/random.xml"),
-    Asset("IMAGE", "bigportraits/random.tex"),
-    -- Asset("ANIM", "anim/portrait_frame.zip"), -- Not currently used, but likely to come back
-    Asset("ANIM", "anim/spiral_bg.zip"),
-
-    Asset("ATLAS", "images/lobbybannertop.xml"),
-    Asset("IMAGE", "images/lobbybannertop.tex"),
-
-    Asset("ATLAS", "images/lobbybannerbottom.xml"),
-    Asset("IMAGE", "images/lobbybannerbottom.tex"),
-}
-
--- Add all the characters by name
-local charlist = GetActiveCharacterList and GetActiveCharacterList() or DST_CHARACTERLIST
-for i, char in ipairs(charlist) do
-    table.insert(assets, Asset("ATLAS", "bigportraits/"..char..".xml"))
-    table.insert(assets, Asset("IMAGE", "bigportraits/"..char..".tex"))
-    --table.insert(assets, Asset("IMAGE", "images/selectscreen_portraits/"..char..".tex"))
-    --table.insert(assets, Asset("IMAGE", "images/selectscreen_portraits/"..char.."_silho.tex"))
-end
-
-for k, v in pairs(groundtiles.assets) do
-    table.insert(assets, v)
-end
-
-local prefabs =
-{
-    "minimap",
-    "evergreen",
-    "evergreen_normal",
-    "evergreen_short",
-    "evergreen_tall",
-    "evergreen_sparse",
-    "evergreen_sparse_normal",
-    "evergreen_sparse_short",
-    "evergreen_sparse_tall",
-    "evergreen_burnt",
-    "evergreen_stump",
-
-    "sapling",
-    "berrybush",
-    "berrybush2",
-    "grass",
-    "rock1",
-    "rock2",
-    "rock_flintless",
-    "rock_moon",
-
-    "tallbirdnest",
-    "hound",
-    "firehound",
-    "icehound",
-    "krampus",
-    "mound",
-
-    "pigman",
-    "pighouse",
-    "pigking",
-    "mandrake",
-    "chester",
-    "rook",
-    "bishop",
-    "knight",
-
-    "goldnugget",
-    "crow",
-    "robin",
-    "robin_winter",
-    "butterfly",
-    "flint",
-    "log",
-    "spiderden",
-    "spawnpoint",
-    "fireflies",
-
-    "turf_road",
-    "turf_rocky",
-    "turf_marsh",
-    "turf_savanna",
-    "turf_dirt",
-    "turf_forest",
-    "turf_grass",
-    "turf_cave",
-    "turf_fungus",
-    "turf_sinkhole",
-    "turf_underrock",
-    "turf_mud",
-
-    "skeleton",
-    "insanityrock",
-    "sanityrock",
-    "basalt",
-    "basalt_pillar",
-    "houndmound",
-    "houndbone",
-    "pigtorch",
-    "red_mushroom",
-    "green_mushroom",
-    "blue_mushroom",
-    "mermhouse",
-    "flower_evil",
-    "blueprint",
-    "lockedwes",
-    "wormhole_limited_1",
-    "diviningrod",
-    "diviningrodbase",
-    "splash_ocean",
-    "maxwell_smoke",
-    "chessjunk1",
-    "chessjunk2",
-    "chessjunk3",
-    "statue_transition_2",
-    "statue_transition",
-
-    "lightninggoat",
-    "smoke_plant",
-    "acorn",
-    "deciduoustree",
-    "deciduoustree_normal",
-    "deciduoustree_tall",
-    "deciduoustree_short",
-    "deciduoustree_burnt",
-    "deciduoustree_stump",
-    "buzzardspawner",
-
-    "glommer",
-    "statueglommer",
-
-    "moose",
-    "mossling",
-    "bearger",
-    "dragonfly",
-
-    "cactus",
-}
+--------------------------------------------------------------------------
 
 local function DoGameDataChanged(inst)
     inst.game_data_task = nil
@@ -166,14 +23,14 @@ local function OnGameDataChanged(inst)
 end
 
 local function PostInit(inst)
-    if inst.net then
+    if inst.net ~= nil then
         inst.net:PostInit()
     end
 
     inst:LongUpdate(0)
 
     for k, v in pairs(inst.components) do
-        if v.OnPostInit then
+        if v.OnPostInit ~= nil then
             v:OnPostInit()
         end
     end
@@ -198,96 +55,292 @@ local function OnRemoveEntity(inst)
     TheFocalPoint = nil
 end
 
-local function fn()
-    local inst = CreateEntity()
+--------------------------------------------------------------------------
 
-    assert(TheWorld == nil)
-    TheWorld = inst
-    inst.net = nil
+local function MakeWorld(name, customprefabs, customassets, common_postinit, master_postinit, tags)
+    local assets =
+    {
+        Asset("SOUND", "sound/sanity.fsb"),
+        Asset("SOUND", "sound/amb_stream.fsb"),
+        Asset("SHADER", "shaders/uifade.ksh"),
+        -- Asset("ATLAS", "images/selectscreen_portraits.xml"), -- Not currently used, but likely to come back
+        -- Asset("IMAGE", "images/selectscreen_portraits.tex"), -- Not currently used, but likely to come back
+        Asset("ATLAS", "bigportraits/locked.xml"),
+        Asset("IMAGE", "bigportraits/locked.tex"),
+        Asset("ATLAS", "bigportraits/random.xml"),
+        Asset("IMAGE", "bigportraits/random.tex"),
+        -- Asset("ANIM", "anim/portrait_frame.zip"), -- Not currently used, but likely to come back
+        Asset("ANIM", "anim/spiral_bg.zip"),
 
-    inst.ismastersim = TheNet:GetIsMasterSimulation()
+        Asset("ATLAS", "images/lobbybannertop.xml"),
+        Asset("IMAGE", "images/lobbybannertop.tex"),
 
-    inst:AddTag("NOCLICK")
-    inst:AddTag("CLASSIFIED")
-    --[[Non-networked entity]]
-    inst.entity:SetCanSleep(false)
-    inst.persists = false
+        Asset("ATLAS", "images/lobbybannerbottom.xml"),
+        Asset("IMAGE", "images/lobbybannerbottom.tex"),
+    }
 
-    --Add core components
-    inst.entity:AddTransform()
-    inst.entity:AddMap()
-    inst.entity:AddPathfinder()
-    inst.entity:AddGroundCreep()
-    inst.entity:AddSoundEmitter()
-
-    --Initialize map
-    for i, data in ipairs(groundtiles.ground) do
-        local tile_type, props = unpack(data)
-        local layer_name = props.name
-        local handle = MapLayerManager:CreateRenderLayer(
-            tile_type, --embedded map array value
-            resolvefilepath(GroundAtlas(layer_name)),
-            resolvefilepath(GroundImage(layer_name)),
-            resolvefilepath(props.noise_texture)
-        )
-        inst.Map:AddRenderLayer(handle)
-        --TODO: When this object is destroyed, these handles really should be freed. At this time,
-        --this is not an issue because the map lifetime matches the game lifetime but if this were
-        --to ever change, we would have to clean up properly or we leak memory.
+    -- Add all the characters by name
+    local charlist = GetActiveCharacterList and GetActiveCharacterList() or DST_CHARACTERLIST
+    for i, char in ipairs(charlist) do
+        table.insert(assets, Asset("ATLAS", "bigportraits/"..char..".xml"))
+        table.insert(assets, Asset("IMAGE", "bigportraits/"..char..".tex"))
+        --table.insert(assets, Asset("IMAGE", "images/selectscreen_portraits/"..char..".tex"))
+        --table.insert(assets, Asset("IMAGE", "images/selectscreen_portraits/"..char.."_silho.tex"))
     end
 
-    for i, data in ipairs(groundtiles.creep) do
-        local tile_type, props = unpack(data)
-        local handle = MapLayerManager:CreateRenderLayer(
-            tile_type,
-            resolvefilepath(GroundAtlas(props.name)),
-            resolvefilepath(GroundImage(props.name)),
-            resolvefilepath(props.noise_texture)
-        )
-        inst.GroundCreep:AddRenderLayer(handle)
+    for k, v in pairs(groundtiles.assets) do
+        table.insert(assets, v)
     end
 
-    local underground_layer = groundtiles.underground[1][2]
-    local underground_handle = MapLayerManager:CreateRenderLayer(
-        GROUND.UNDERGROUND,
-        resolvefilepath(GroundAtlas(underground_layer.name)),
-        resolvefilepath(GroundImage(underground_layer.name)),
-        resolvefilepath(underground_layer.noise_texture)
-    )
-    inst.Map:SetUndergroundRenderLayer(underground_handle)
+    local prefabs =
+    {
+        "minimap",
+        "evergreen",
+        "evergreen_normal",
+        "evergreen_short",
+        "evergreen_tall",
+        "evergreen_sparse",
+        "evergreen_sparse_normal",
+        "evergreen_sparse_short",
+        "evergreen_sparse_tall",
+        "evergreen_burnt",
+        "evergreen_stump",
 
-    inst.Map:SetImpassableType(GROUND.IMPASSABLE)
+        "sapling",
+        "berrybush",
+        "berrybush2",
+        "grass",
+        "rock1",
+        "rock2",
+        "rock_flintless",
+        "rock_moon",
 
-    --Initialize lua world state
-    inst:AddComponent("worldstate")
-    inst.state = inst.components.worldstate.data
+        "tallbirdnest",
+        "hound",
+        "firehound",
+        "icehound",
+        "krampus",
+        "mound",
 
-    --Initialize lua components
-    inst:AddComponent("groundcreep")
+        "pigman",
+        "pighouse",
+        "pigking",
+        "mandrake",
+        "chester",
+        "rook",
+        "bishop",
+        "knight",
 
-    --Public member functions
-    inst.PostInit = PostInit
-    inst.OnRemoveEntity = OnRemoveEntity
+        "goldnugget",
+        "crow",
+        "robin",
+        "robin_winter",
+        "butterfly",
+        "flint",
+        "log",
+        "spiderden",
+        "spawnpoint",
+        "fireflies",
 
-    --Initialize minimap
-    inst.minimap = SpawnPrefab("minimap")
+        "turf_road",
+        "turf_rocky",
+        "turf_marsh",
+        "turf_savanna",
+        "turf_dirt",
+        "turf_forest",
+        "turf_grass",
+        "turf_cave",
+        "turf_fungus",
+        "turf_sinkhole",
+        "turf_underrock",
+        "turf_mud",
 
-    --Initialize local focal point
-    assert(TheFocalPoint == nil)
-    TheFocalPoint = SpawnPrefab("focalpoint")
-    TheCamera:SetTarget(TheFocalPoint)
+        "skeleton",
+        "insanityrock",
+        "sanityrock",
+        "basalt",
+        "basalt_pillar",
+        "houndmound",
+        "houndbone",
+        "pigtorch",
+        "red_mushroom",
+        "green_mushroom",
+        "blue_mushroom",
+        "mermhouse",
+        "flower_evil",
+        "blueprint",
+        "wormhole_limited_1",
+        "diviningrod",
+        "diviningrodbase",
+        "splash_ocean",
+        "maxwell_smoke",
+        "chessjunk1",
+        "chessjunk2",
+        "chessjunk3",
+        "statue_transition_2",
+        "statue_transition",
 
-    if inst.ismastersim then
+        "lightninggoat",
+        "smoke_plant",
+        "acorn",
+        "deciduoustree",
+        "deciduoustree_normal",
+        "deciduoustree_tall",
+        "deciduoustree_short",
+        "deciduoustree_burnt",
+        "deciduoustree_stump",
+        "buzzardspawner",
+
+        "glommer",
+        "statueglommer",
+
+        "moose",
+        "mossling",
+        "bearger",
+        "dragonfly",
+
+        "cactus",
+
+        "migration_portal",
+        "shard_network",
+    }
+
+    if customprefabs ~= nil then
+        local prefabs_cache = {}
+        for i, v in ipairs(prefabs) do
+            prefabs_cache[v] = true
+        end
+
+        for i, v in ipairs(customprefabs) do
+            if not prefabs_cache[v] then
+                table.insert(prefabs, v)
+                prefabs_cache[v] = true
+            end
+        end
+    end
+
+    if customassets ~= nil then
+        for i, v in ipairs(customassets) do
+            table.insert(assets, v)
+        end
+    end
+
+    local function fn()
+        local inst = CreateEntity()
+
+        assert(TheWorld == nil)
+        TheWorld = inst
+        inst.net = nil
+        inst.shard = nil
+
+        inst.ismastersim = TheNet:GetIsMasterSimulation()
+        inst.ismastershard = inst.ismastersim and not TheShard:IsSlave()
+        --V2C: Masters is hard
+
+        inst:AddTag("NOCLICK")
+        inst:AddTag("CLASSIFIED")
+
+        if tags ~= nil then
+            for i, v in ipairs(tags) do
+                inst:AddTag(v)
+            end
+        end
+
+        --[[Non-networked entity]]
+        inst.entity:SetCanSleep(false)
+        inst.persists = false
+
+        --Add core components
+        inst.entity:AddTransform()
+        inst.entity:AddMap()
+        inst.entity:AddPathfinder()
+        inst.entity:AddGroundCreep()
+        inst.entity:AddSoundEmitter()
+
+        --Initialize map
+        for i, data in ipairs(groundtiles.ground) do
+            local tile_type, props = unpack(data)
+            local layer_name = props.name
+            local handle = MapLayerManager:CreateRenderLayer(
+                tile_type, --embedded map array value
+                resolvefilepath(GroundAtlas(layer_name)),
+                resolvefilepath(GroundImage(layer_name)),
+                resolvefilepath(props.noise_texture)
+            )
+            inst.Map:AddRenderLayer(handle)
+            --TODO: When this object is destroyed, these handles really should be freed. At this time,
+            --this is not an issue because the map lifetime matches the game lifetime but if this were
+            --to ever change, we would have to clean up properly or we leak memory.
+        end
+
+        for i, data in ipairs(groundtiles.creep) do
+            local tile_type, props = unpack(data)
+            local handle = MapLayerManager:CreateRenderLayer(
+                tile_type,
+                resolvefilepath(GroundAtlas(props.name)),
+                resolvefilepath(GroundImage(props.name)),
+                resolvefilepath(props.noise_texture)
+            )
+            inst.GroundCreep:AddRenderLayer(handle)
+        end
+
+        local underground_layer = groundtiles.underground[1][2]
+        local underground_handle = MapLayerManager:CreateRenderLayer(
+            GROUND.UNDERGROUND,
+            resolvefilepath(GroundAtlas(underground_layer.name)),
+            resolvefilepath(GroundImage(underground_layer.name)),
+            resolvefilepath(underground_layer.noise_texture)
+        )
+        inst.Map:SetUndergroundRenderLayer(underground_handle)
+
+        inst.Map:SetImpassableType(GROUND.IMPASSABLE)
+
+        --Initialize lua world state
+        inst:AddComponent("worldstate")
+        inst.state = inst.components.worldstate.data
+
+        --Initialize lua components
+        inst:AddComponent("groundcreep")
+
+        --Public member functions
+        inst.PostInit = PostInit
+        inst.OnRemoveEntity = OnRemoveEntity
+
+        --Initialize minimap
+        inst.minimap = SpawnPrefab("minimap")
+
+        --Initialize local focal point
+        assert(TheFocalPoint == nil)
+        TheFocalPoint = SpawnPrefab("focalpoint")
+        TheCamera:SetTarget(TheFocalPoint)
+
+        if common_postinit ~= nil then
+            common_postinit(inst)
+        end
+
+        if not inst.ismastersim then
+            return inst
+        end
+
         inst:AddComponent("playerspawner")
+
+        --World health management
+        inst:AddComponent("skeletonsweeper")
+
+        if master_postinit ~= nil then
+            master_postinit(inst)
+        end
 
         --Cache static world gen data for server listing
         local worldgen_data = SaveGameIndex:GetSlotGenOptions() or {}
         TheNet:SetWorldGenData(DataDumper(worldgen_data, nil, false))
 
         inst.game_data_task = nil
+
+        return inst
     end
 
-    return inst
+    return Prefab(name, fn, assets, prefabs)
 end
 
-return Prefab("world", fn, assets, prefabs, true)
+return MakeWorld

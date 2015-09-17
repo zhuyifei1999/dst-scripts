@@ -293,9 +293,7 @@ end
 
 local function chop_down_tree_shake(inst)
     local sz = inst.components.growable ~= nil and inst.components.growable.stage > 2 and .5 or .25
-    for i, v in ipairs(AllPlayers) do
-        v:ShakeCamera(CAMERASHAKE.FULL, .25, .03, sz, inst, 6)
-    end
+    ShakeAllCameras(CAMERASHAKE.FULL, .25, .03, sz, inst, 6)
 end
 
 local function find_leif_spawn_target(item) 
@@ -434,7 +432,7 @@ local function handler_growfromseed (inst)
 end
 
 local function onsave(inst, data)
-    if inst:HasTag("burnt") or inst:HasTag("fire") then
+    if inst:HasTag("burnt") or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
         data.burnt = true
     end
     
@@ -450,12 +448,8 @@ local function onsave(inst, data)
 end
         
 local function onload(inst, data)
-    if data then
-		if not data.build or builds[data.build] == nil then
-			inst.build = "normal"
-		else
-			inst.build = data.build
-		end
+    if data ~= nil then
+        inst.build = data.build ~= nil and builds[data.build] ~= nil and data.build or "normal"
 
         if data.burnt then
             OnBurnt(inst, true)
@@ -482,21 +476,20 @@ local function OnEntitySleep(inst)
 end
 
 local function OnEntityWake(inst)
-
-    if not inst:HasTag("burnt") and not inst:HasTag("fire") then
-        if not inst.components.burnable then
+    if not inst:HasTag("burnt") and not (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
+        if inst.components.burnable == nil then
             if inst:HasTag("stump") then
-                MakeSmallBurnable(inst) 
-				MakeDragonflyBait(inst, 1)
+                MakeSmallBurnable(inst)
+                MakeDragonflyBait(inst, 1)
             else
                 MakeLargeBurnable(inst, TUNING.TREE_BURN_TIME)
-				MakeDragonflyBait(inst, 1)
+                MakeDragonflyBait(inst, 1)
                 inst.components.burnable:SetFXLevel(5)
                 inst.components.burnable:SetOnBurntFn(tree_burnt)
             end
         end
 
-        if not inst.components.propagator then
+        if inst.components.propagator == nil then
             if inst:HasTag("stump") then
                 MakeSmallPropagator(inst)
             else
@@ -507,11 +500,10 @@ local function OnEntityWake(inst)
         tree_burnt(inst)
     end
 
-    if not inst.components.inspectable then
+    if inst.components.inspectable == nil then
         inst:AddComponent("inspectable")
         inst.components.inspectable.getstatus = inspect_tree
     end
-
 end
 
 local function OnTimerDone(inst, data)

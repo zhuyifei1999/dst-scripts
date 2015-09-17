@@ -297,7 +297,7 @@ for y = 2, 0, -1 do
     end
 end
 
-params.pandorachest = params.treasurechest
+params.pandoraschest = params.treasurechest
 params.skullchest = params.treasurechest
 params.minotaurchest = params.treasurechest
 

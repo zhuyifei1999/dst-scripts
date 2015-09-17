@@ -98,8 +98,8 @@ local function OnActionFailed(parent)
     SetDirty(parent.player_classified.isperformactionsuccess, false)
 end
 
-local function OnWormholeTravel(parent)
-    parent.player_classified.wormholetravelevent:push()
+local function OnWormholeTravel(parent, wormholetype)
+    SetDirty(parent.player_classified.wormholetravelevent, wormholetype)
 end
 
 local function AddMorgueRecord(inst)
@@ -470,7 +470,11 @@ end
 
 local function OnWormholeTravelEvent(inst)
     if inst._parent ~= nil and inst._parent.HUD ~= nil then
-        TheFocalPoint.SoundEmitter:PlaySound("dontstarve/common/teleportworm/travel")
+        if inst._parent.player_classified.wormholetravelevent:value() == WORMHOLETYPE.WORM then
+            TheFocalPoint.SoundEmitter:PlaySound("dontstarve/common/teleportworm/travel")
+        elseif inst._parent.player_classified.wormholetravelevent:value() == WORMHOLETYPE.TENTAPILLAR then
+            TheFocalPoint.SoundEmitter:PlaySound("dontstarve/cave/tentapiller_hole_travel")
+        end
     end
 end
 
@@ -568,7 +572,7 @@ local function RegisterNetListeners(inst)
     inst:ListenForEvent("playercameradirty", OnPlayerCameraDirty)
     inst:ListenForEvent("playercamerasnap", OnPlayerCameraSnap)
     inst:ListenForEvent("playerfadedirty", OnPlayerFadeDirty)
-    inst:ListenForEvent("frontend.wormholetravel", OnWormholeTravelEvent)
+    inst:ListenForEvent("wormholetraveldirty", OnWormholeTravelEvent)
     inst:ListenForEvent("morguedirty", OnMorgueDirty)
     OnGhostModeDirty(inst)
     OnPlayerHUDDirty(inst)
@@ -657,7 +661,7 @@ local function fn()
     inst.isfadein = net_bool(inst.GUID, "frontend.isfadein", "playerfadedirty")
     inst.fadetime = net_smallbyte(inst.GUID, "frontend.fadetime", "playerfadedirty")
     inst.screenflash = net_tinybyte(inst.GUID, "frontend.screenflash", "playerscreenflashdirty")
-    inst.wormholetravelevent = net_event(inst.GUID, "frontend.wormholetravel")
+    inst.wormholetravelevent = net_tinybyte(inst.GUID, "frontend.wormholetravel", "wormholetraveldirty")
     inst.isfadein:set(true)
 
     --Builder variables

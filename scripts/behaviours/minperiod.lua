@@ -1,8 +1,11 @@
-MinPeriod = Class(BehaviourNode, function(self, inst, minperiod, child)
+MinPeriod = Class(BehaviourNode, function(self, inst, minperiod, immediate, child)
     BehaviourNode._ctor(self, "MinPeriod", {child})
     
     self.inst = inst
     self.minperiod = minperiod
+    if not immediate then
+        self.lastsuccesstime = GetTime()
+    end
 end)
 
 

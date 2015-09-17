@@ -54,6 +54,7 @@ self.inst = inst
 --Private
 local _world = TheWorld
 local _ismastersim = _world.ismastersim
+local _ismastershard = _world.ismastershard
 
 --Master simulation
 local _mode
@@ -136,6 +137,10 @@ local GetModifiedSegs = _ismastersim and function(segs, mod)
 end or nil
 
 local PushSeasonClockSegs = _ismastersim and function()
+    if not _ismastershard then
+        return -- mastershard pushes its seg data to the clock, which pushes it to the slaves
+    end
+
     local p = 1 - (_totaldaysinseason:value() > 0 and _remainingdaysinseason:value() / _totaldaysinseason:value() or 0)
     local toseason = p < .5 and GetPrevSeason() or GetNextSeason()
     local tosegs = _segs[toseason]
@@ -212,6 +217,22 @@ local UpdateSeasonMode = _ismastersim and function()
 
 end or nil
 
+local PushMasterSeasonData = _ismastersim and _ismastershard and function()
+    local data =
+    {
+        season = _season:value(),
+        totaldaysinseason = _totaldaysinseason:value(),
+        remainingdaysinseason = _remainingdaysinseason:value(),
+        elapseddaysinseason = _elapseddaysinseason:value(),
+        endlessdaysinseason = _endlessdaysinseason:value(),
+        lengths = {}
+    }
+    for i,v in ipairs(_lengths) do
+        data.lengths[i] = v:value()
+    end
+    _world:PushEvent("master_seasonsupdate", data)
+end or nil
+
 --------------------------------------------------------------------------
 --[[ Private event handlers ]]
 --------------------------------------------------------------------------
@@ -225,6 +246,10 @@ local function OnSeasonDirty()
         remainingdaysinseason = _endlessdaysinseason:value() and ENDLESS_DAYS or _remainingdaysinseason:value(),
     }
     _world:PushEvent("seasontick", data)
+
+    if _ismastersim and _ismastershard then
+        PushMasterSeasonData()
+    end
 end
 
 local function OnLengthsDirty()
@@ -233,6 +258,10 @@ local function OnLengthsDirty()
         data[SEASON_NAMES[i]] = v:value()
     end
     _world:PushEvent("seasonlengthschanged", data)
+
+    if _ismastersim and _ismastershard then
+        PushMasterSeasonData()
+    end
 end
 
 local OnAdvanceSeason = _ismastersim and function()
@@ -334,7 +363,7 @@ local OnSetSeason = _ismastersim and function(src, season)
     PushSeasonClockSegs()
 end or nil
 
-local OnSetSeasonClockSegs = _ismastersim and function(src, segs)
+local OnSetSeasonClockSegs = _ismastersim and _ismastershard and function(src, segs)
     local default = nil
     for k, v in pairs(segs) do
         default = v
@@ -376,9 +405,20 @@ local OnSetSeasonLength = _ismastersim and function(src, data)
     end
 end or nil
 
-local OnSetSeasonSegModifier = _ismastersim and function(src, mod)
+local OnSetSeasonSegModifier = _ismastersim and _ismastershard and function(src, mod)
 	_segmod = mod
 	PushSeasonClockSegs()
+end or nil
+
+local OnSeasonsUpdate = _ismastersim and not _ismastershard and function(srd, data)
+    for i,v in ipairs(_lengths) do
+        v:set(data.lengths[i])
+    end
+    _season:set(data.season)
+    _totaldaysinseason:set(data.totaldaysinseason)
+    _remainingdaysinseason:set(data.remainingdaysinseason)
+    _elapseddaysinseason:set(data.elapseddaysinseason)
+    _endlessdaysinseason:set(data.endlessdaysinseason)
 end or nil
 
 --------------------------------------------------------------------------
@@ -420,6 +460,10 @@ if _ismastersim then
     inst:ListenForEvent("ms_setseasonlength", OnSetSeasonLength, _world)
     inst:ListenForEvent("ms_setseasonclocksegs", OnSetSeasonClockSegs, _world)
     inst:ListenForEvent("ms_setseasonsegmodifier", OnSetSeasonSegModifier, _world)
+    if not _ismastershard then
+        --Register slave shard events
+        inst:ListenForEvent("slave_seasonsupdate", OnSeasonsUpdate, _world)
+    end
 end
 
 

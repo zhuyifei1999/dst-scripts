@@ -25,7 +25,7 @@ local Sleeper = Class(function(self, inst)
     self.wearofftime = 10
     self.hibernate = false
     self.nocturnal = false
-    
+
     self.inst:ListenForEvent("onignite", onattacked)
     self.inst:ListenForEvent("firedamage", onattacked)
     self.inst:ListenForEvent("attacked", onattacked)
@@ -46,80 +46,73 @@ function Sleeper:SetDefaultTests()
 end
 
 function Sleeper:StopTesting()
-    if self.testtask then
+    if self.testtask ~= nil then
         self.testtask:Cancel()
-    end    
-    self.testtask = nil
-end
-
-function DefaultSleepTest(inst)
-
-    local near_home_dist = 40
-    local has_home_near = inst.components.homeseeker and 
-                     inst.components.homeseeker.home and 
-                     inst.components.homeseeker.home:IsValid() and
-                     inst:GetDistanceSqToInst(inst.components.homeseeker.home) < near_home_dist*near_home_dist
-
-    if not inst.components.sleeper.nocturnal then
-        return TheWorld.state.isnight
-        and not (inst.components.combat and inst.components.combat.target)
-        and not (inst.components.burnable and inst.components.burnable:IsBurning() )
-       and not (inst.components.freezable and inst.components.freezable:IsFrozen() )
-       and not (inst.components.teamattacker and inst.components.teamattacker.inteam)
-       and not has_home_near
-   else
-        return TheWorld.state.isday
-        and not (inst.components.combat and inst.components.combat.target)
-        and not (inst.components.burnable and inst.components.burnable:IsBurning() )
-       and not (inst.components.freezable and inst.components.freezable:IsFrozen() )
-       and not (inst.components.teamattacker and inst.components.teamattacker.inteam)
-       and not has_home_near
-   end
-end
-
-function DefaultWakeTest(inst)
-    if not inst.components.sleeper.nocturnal then
-        return TheWorld.state.isday
-        or (inst.components.combat and inst.components.combat.target)
-        or (inst.components.burnable and inst.components.burnable:IsBurning() )
-        or (inst.components.freezable and inst.components.freezable:IsFrozen() )
-        or (inst.components.teamattacker and inst.components.teamattacker.inteam)
-        or (inst.components.health and inst.components.health.takingfiredamage)
-    else
-        return not TheWorld.state.isday
-        or (inst.components.combat and inst.components.combat.target)
-        or (inst.components.burnable and inst.components.burnable:IsBurning() )
-        or (inst.components.freezable and inst.components.freezable:IsFrozen() )
-        or (inst.components.teamattacker and inst.components.teamattacker.inteam)
-        or (inst.components.health and inst.components.health.takingfiredamage)
-        
+        self.testtask = nil
     end
 end
 
+--cavedwellers perceive "cavephase" instead of "phase"
+--  i.e. cavephase is aware of the clock phase even when the
+--       sky can't be seen when underground, whereas regular
+--       phase is perceived as always night when underground
+
+function DefaultSleepTest(inst)
+    --not near home
+    --nocturnal sleeps in day, otherwise night
+    return not (inst.components.homeseeker ~= nil and
+                inst.components.homeseeker.home ~= nil and
+                inst.components.homeseeker.home:IsValid() and
+                inst:IsNear(inst.components.homeseeker.home, 40))
+        and TheWorld.state[
+                inst.components.sleeper.nocturnal and
+                (inst:HasTag("cavedweller") and "iscaveday" or "isday") or
+                (inst:HasTag("cavedweller") and "iscavenight" or "isnight")
+            ]
+        and not (inst.components.combat ~= nil and inst.components.combat.target ~= nil)
+        and not (inst.components.burnable ~= nil and inst.components.burnable:IsBurning())
+        and not (inst.components.freezable ~= nil and inst.components.freezable:IsFrozen())
+        and not (inst.components.teamattacker ~= nil and inst.components.teamattacker.inteam)
+        and not inst.sg:HasStateTag("busy")
+end
+
+function DefaultWakeTest(inst)
+    --nocturnal wakes once it's not day, otherwise wake when it's day
+    --cavedwellers perceive "cavephase" instead of "phase"
+    return TheWorld.state[
+                inst:HasTag("cavedweller") and "iscaveday" or "isday"
+            ] == not inst.components.sleeper.nocturnal
+        or (inst.components.combat ~= nil and inst.components.combat.target ~= nil)
+        or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning())
+        or (inst.components.freezable ~= nil and inst.components.freezable:IsFrozen())
+        or (inst.components.teamattacker ~= nil and inst.components.teamattacker.inteam)
+        or (inst.components.health ~= nil and inst.components.health.takingfiredamage)
+end
+
 function Sleeper:SetNocturnal(b)
-    self.nocturnal = b or true
+    self.nocturnal = b ~= false
 end
 
 local function ShouldSleep(inst)
     local sleeper = inst.components.sleeper
-    if sleeper then
-        sleeper.lasttesttime = GetTime()
-        if sleeper.sleeptestfn and sleeper.sleeptestfn(inst) then
-            sleeper:GoToSleep()
-        end
+    if sleeper == nil then
+        return
+    end
+    sleeper.lasttesttime = GetTime()
+    if sleeper.sleeptestfn ~= nil and sleeper.sleeptestfn(inst) then
+        sleeper:GoToSleep()
     end
 end
 
 local function ShouldWakeUp(inst)
-    local sleeper = inst.components.sleeper    
-    if sleeper and sleeper.hibernate then
-        sleeper:StopTesting()
+    local sleeper = inst.components.sleeper
+    if sleeper == nil then
         return
-    end
-
-    if sleeper then
+    elseif sleeper.hibernate then
+        sleeper:StopTesting()
+    else
         sleeper.lasttesttime = GetTime()
-        if sleeper.waketestfn and sleeper.waketestfn(inst) then
+        if sleeper.waketestfn ~= nil and sleeper.waketestfn(inst) then
             sleeper:WakeUp()
         end
     end
@@ -127,14 +120,15 @@ end
 
 local function WearOff(inst)
     local sleeper = inst.components.sleeper
-    if sleeper and sleeper.sleepiness > 0 then
+    if sleeper == nil then
+        return
+    elseif sleeper.sleepiness > 1 then
         sleeper.sleepiness = sleeper.sleepiness - 1
-        if sleeper.sleepiness <= 0 then
-            sleeper.sleepiness = 0
-            if sleeper.wearofftask then
-                sleeper.wearofftask:Cancel()
-                sleeper.wearofftask = nil
-            end
+    elseif sleeper.sleepiness > 0 then
+        sleeper.sleepiness = 0
+        if sleeper.wearofftask ~= nil then
+            sleeper.wearofftask:Cancel()
+            sleeper.wearofftask = nil
         end
     end
 end
@@ -171,10 +165,11 @@ function Sleeper:StartTesting(time)
     end
 end
 
-function Sleeper:IsAsleep( )
+function Sleeper:IsAsleep()
     return self.isasleep
 end
-function Sleeper:IsHibernating( )
+
+function Sleeper:IsHibernating()
     return self.hibernate
 end
 
@@ -184,97 +179,93 @@ function Sleeper:IsInDeepSleep()
 end
 
 function Sleeper:GetTimeAwake()
-    if self.isasleep then
-        return 0
-    else
-        return GetTime() - self.lasttransitiontime
-    end
+    return self.isasleep and 0 or GetTime() - self.lasttransitiontime
 end
 
 function Sleeper:GetTimeAsleep()
-    if self.isasleep then
-        return GetTime() - self.lasttransitiontime
-    else
-        return 0
-    end
+    return self.isasleep and GetTime() - self.lasttransitiontime or 0
 end
 
 function Sleeper:GetDebugString()
-    local str = string.format("%s for %2.2f / %2.2f Sleepy: %d/%d",
+    return string.format("%s for %2.2f / %2.2f Sleepy: %d/%d",
             self.isasleep and "SLEEPING" or "AWAKE",
             self.isasleep and self:GetTimeAsleep() or self:GetTimeAwake(),
             self.lasttesttime + self.testtime - GetTime(),
-            self.sleepiness, self.resistance)
-    return str
+            self.sleepiness,
+            self.resistance)
+end
+
+local function OnGoToSleep(inst, sleeptime)
+    if inst.components.sleeper ~= nil then
+        inst.components.sleeper:GoToSleep(sleeptime)
+    end
 end
 
 function Sleeper:AddSleepiness(sleepiness, sleeptime)
     self.sleepiness = self.sleepiness + sleepiness
-    if self.sleepiness > self.resistance or self.isasleep then
+    if self.isasleep or self.sleepiness > self.resistance then
         self:GoToSleep(sleeptime)
     elseif self.sleepiness == self.resistance then
-        self.inst:DoTaskInTime(self.resistance, function() self:GoToSleep(sleeptime) end )
+        self.inst:DoTaskInTime(self.resistance, OnGoToSleep, sleeptime)
     elseif self.wearofftask == nil then
         self.wearofftask = self.inst:DoPeriodicTask(self.wearofftime, WearOff)
     end
 end
 
 function Sleeper:GoToSleep(sleeptime)
-    if self.inst.entity:IsVisible() and not (self.inst.components.health and self.inst.components.health:IsDead()) then
+    if self.inst.entity:IsVisible() and not (self.inst.components.health ~= nil and self.inst.components.health:IsDead()) then
         local wasasleep = self.isasleep
         self.lasttransitiontime = GetTime()
         self.isasleep = true
-        if self.wearofftask then
+        if self.wearofftask ~= nil then
             self.wearofftask:Cancel()
             self.wearofftask = nil
         end
-            
-        if self.inst.brain then
+
+        if self.inst.brain ~= nil then
             self.inst.brain:Stop()
         end
-        
-        if self.inst.components.combat then
+
+        if self.inst.components.combat ~= nil then
             self.inst.components.combat:SetTarget(nil)
         end
-        
-        if self.inst.components.locomotor then
+
+        if self.inst.components.locomotor ~= nil then
             self.inst.components.locomotor:Stop()
         end
 
         if not wasasleep then
             self.inst:PushEvent("gotosleep")
         end
-        
+
         self:SetWakeTest(self.waketestfn, sleeptime)
     end
 end
 
 function Sleeper:SetTest(fn, time)
-    if self.testtask then
+    if self.testtask ~= nil then
         self.testtask:Cancel()
+        self.testtask = nil
     end
-    
-    self.testtask = nil
-        
-    if fn then
-        self.testtime = math.max(0, self.testperiod + (math.random()-0.5) )    --some randomness on testing times
+
+    if fn ~= nil then
+        --some randomness on testing times
+        self.testtime = math.max(0, self.testperiod + math.random() - .5)
         self.testtask = self.inst:DoPeriodicTask(self.testtime, fn, time)
     end
-        
 end
 
 function Sleeper:WakeUp()
     self.hibernate = false
-    if (not self.inst.components.health or not self.inst.components.health:IsDead()) and self.isasleep and not self.hibernate then
-
+    if self.isasleep and not self.hibernate and not (self.inst.components.health ~= nil and self.inst.components.health:IsDead()) then
         self.lasttransitiontime = GetTime()
         self.isasleep = false
         self.sleepiness = 0
-        
-        if self.inst.brain then
+
+        if self.inst.brain ~= nil then
             self.inst.brain:Start()
         end
-        
+
         self.inst:PushEvent("onwakeup")
         self:SetSleepTest(self.sleeptestfn)
     end

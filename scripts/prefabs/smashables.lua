@@ -12,7 +12,7 @@ local prefabs =
     "collapse_small",
 }
 
-SetSharedLootTable( 'smashables',
+SetSharedLootTable('smashables',
 {
     {'rocks',      0.80},
     {'cutstone',   0.10},
@@ -20,26 +20,28 @@ SetSharedLootTable( 'smashables',
 })
 
 local function makeassetlist(buildname)
-    return {
-        Asset("ANIM", "anim/"..buildname..".zip")
+    return
+    {
+        Asset("ANIM", "anim/"..buildname..".zip"),
     }
 end
 
 local function OnDeath(inst)
-    --play smash sound
-    inst.SoundEmitter:PlaySound(inst.smashsound or "dontstarve/common/destroy_pot")
-    SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
-    inst.AnimState:PlayAnimation("broken")
+    local fx = SpawnPrefab("collapse_small")
+    fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+    fx:SetMaterial(inst.smashsound or "pot")
+    --V2C: why play anim if we're removing?
+    --     or did u want to remove after anim ends?
+    --inst.AnimState:PlayAnimation("broken")
     inst.components.lootdropper:DropLoot()
     inst:Remove()
 end
 
-local function OnRepaired(inst)
+local function OnRepaired(inst, doer)
     if inst.components.health:GetPercent() >= 1 then
         inst.AnimState:PushAnimation("idle")
-        -- KAJ: TODO: should this affect all players in a certain range?
-        for i,v in ipairs(AllPlayers) do
-            v.components.sanity:DoDelta(TUNING.SANITY_MEDLARGE)
+        if doer.components.sanity ~= nil then
+            doer.components.sanity:DoDelta(TUNING.SANITY_MEDLARGE)
         end
         inst:RemoveComponent("repairable")
         inst.components.inspectable.nameoverride = "relic"
@@ -67,19 +69,15 @@ local function OnHit(inst)
 end
 
 local function OnLoad(inst, data)
-    if not data then
+    if data == nil then
         return
     end
     inst.rubble = data.rubble
     if not inst.rubble then
         inst.components.inspectable.nameoverride = "relic"
         inst.components.named:SetName(STRINGS.NAMES["RELIC"])
-        if inst.components.health:GetPercent() >= .5 then
-            inst.AnimState:PlayAnimation("idle")
-        else
-            inst.AnimState:PlayAnimation("broken")
-        end
-        if inst.components.repairable then
+        inst.AnimState:PlayAnimation(inst.components.health:GetPercent() >= .5 and "idle" or "broken")
+        if inst.components.repairable ~= nil then
             inst:RemoveComponent("repairable")
         end
     end
@@ -107,13 +105,9 @@ local function makefn(name, asset, smashsound, rubble, tag)
 
         inst.AnimState:SetBank(asset)
         inst.AnimState:SetBuild(asset)
+        inst.AnimState:PlayAnimation(rubble and "broken" or "idle")
 
-        if rubble then
-            inst.AnimState:PlayAnimation("broken")
-        else
-            inst.AnimState:PlayAnimation("idle")
-        end
-
+        inst:AddTag("cavedweller")
         inst:AddTag("smashable")
         inst:AddTag("object")
 
@@ -145,19 +139,14 @@ local function makefn(name, asset, smashsound, rubble, tag)
 
         inst:AddComponent("health")
         inst.components.health.canmurder = false
-        --inst.components.health.ondelta = HealthDelta
-        --inst.components.health:SetMinHealth(1)
+        inst.components.health:SetMaxHealth(GetRandomWithVariance(90, 20))
 
         inst:ListenForEvent("death", OnDeath)
 
-        inst.components.health:SetMaxHealth(GetRandomWithVariance(90,20))
-
-        -- inst:ListenForEvent("death", OnDeath)
-
         inst:AddComponent("lootdropper")
-        if not string.find(name,"bowl") and not string.find(name,"plate") then
-            if string.find(name,"vase") then
-                local trinket = GetRandomItem({"tinket_1","trinket_3","trinket_9","tinket_12","tinket_6"})
+        if not string.find(name, "bowl") and not string.find(name, "plate") then
+            if string.find(name, "vase") then
+                local trinket = GetRandomItem({ "tinket_1", "trinket_3", "trinket_9", "tinket_12", "tinket_6" })
                 inst.components.lootdropper:AddChanceLoot(trinket          , 0.10)
 
                 inst.components.lootdropper.numrandomloot = 1
@@ -211,9 +200,8 @@ local function makefn(name, asset, smashsound, rubble, tag)
         inst.components.workable:SetWorkAction(ACTIONS.MINE)
         inst.components.workable:SetOnWorkCallback(OnHit) 
 
-        if smashsound then
-            inst.smashsound = smashsound
-        end
+        inst.smashsound = smashsound
+
         return inst
     end
 end
@@ -226,12 +214,12 @@ local function rubble(name, assetname, sound, rubble)
     return Prefab("cave/objects/smashables/"..name, makefn(name, assetname, sound, rubble), makeassetlist(assetname), prefabs)
 end
 
-return  item("ruins_plate"),
-        item("ruins_bowl"),
-        item("ruins_chair", "dontstarve/wilson/rock_break"),
-        item("ruins_chipbowl"),
-        item("ruins_vase"),
-        item("ruins_table", "dontstarve/wilson/rock_break"),
-        rubble("ruins_rubble_table", "ruins_table", "dontstarve/wilson/rock_break", true, "stone"),
-        rubble("ruins_rubble_chair", "ruins_chair", "dontstarve/wilson/rock_break", true, "stone"),
-        rubble("ruins_rubble_vase",  "ruins_vase",  nil, true, "stone")
+return item("ruins_plate"),
+    item("ruins_bowl"),
+    item("ruins_chair", "rock"),
+    item("ruins_chipbowl"),
+    item("ruins_vase"),
+    item("ruins_table", "rock"),
+    rubble("ruins_rubble_table", "ruins_table", "rock", true),
+    rubble("ruins_rubble_chair", "ruins_chair", "rock", true),
+    rubble("ruins_rubble_vase", "ruins_vase",  nil, true)

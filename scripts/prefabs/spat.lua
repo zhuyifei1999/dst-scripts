@@ -98,7 +98,7 @@ local function EquipWeapons(inst)
         snotbomb.components.weapon:SetProjectile("spat_bomb")
         snotbomb:AddComponent("inventoryitem")
         snotbomb.persists = false
-        snotbomb.components.inventoryitem:SetOnDroppedFn(inst.Remove)
+        snotbomb.components.inventoryitem:SetOnDroppedFn(snotbomb.Remove)
         snotbomb:AddComponent("equippable")
         snotbomb:AddTag("snotbomb")
 
@@ -114,7 +114,7 @@ local function EquipWeapons(inst)
         meleeweapon.components.weapon:SetRange(TUNING.SPAT_MELEE_ATTACKRANGE)
         meleeweapon:AddComponent("inventoryitem")
         meleeweapon.persists = false
-        meleeweapon.components.inventoryitem:SetOnDroppedFn(inst.Remove)
+        meleeweapon.components.inventoryitem:SetOnDroppedFn(meleeweapon.Remove)
         meleeweapon:AddComponent("equippable")
         snotbomb:AddTag("meleeweapon")
 
