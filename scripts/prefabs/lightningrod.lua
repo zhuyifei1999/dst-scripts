@@ -23,14 +23,18 @@ local function onhit(inst, worker)
     inst.AnimState:PushAnimation("idle", false)
 end
 
-local function ondaycomplete(inst)
-    dozap(inst)
-    if inst.chargeleft > 1 then
-        inst.chargeleft = inst.chargeleft - 1
-    else
-        discharge(inst)
+local function dozap(inst)
+    if inst.zaptask ~= nil then
+        inst.zaptask:Cancel()
     end
+
+    inst.SoundEmitter:PlaySound("dontstarve/common/lightningrod")
+    SpawnPrefab("lightning_rod_fx").Transform:SetPosition(inst.Transform:GetWorldPosition())
+
+    inst.zaptask = inst:DoTaskInTime(math.random(10, 40), dozap)
 end
+
+local ondaycomplete
 
 local function discharge(inst)
     if inst.charged then
@@ -46,15 +50,13 @@ local function discharge(inst)
     end
 end
 
-local function dozap(inst)
-    if inst.zaptask ~= nil then
-        inst.zaptask:Cancel()
+local function ondaycomplete(inst)
+    dozap(inst)
+    if inst.chargeleft > 1 then
+        inst.chargeleft = inst.chargeleft - 1
+    else
+        discharge(inst)
     end
-
-    inst.SoundEmitter:PlaySound("dontstarve/common/lightningrod")
-    SpawnPrefab("lightning_rod_fx").Transform:SetPosition(inst.Transform:GetWorldPosition())
-
-    inst.zaptask = inst:DoTaskInTime(math.random(10, 40), dozap)
 end
 
 local function setcharged(inst, charges)

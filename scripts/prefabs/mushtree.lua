@@ -66,11 +66,16 @@ local function makestump(inst)
 	RemovePhysicsColliders(inst)
 	inst:AddTag("stump")
     inst:RemoveTag("shelter")
+    inst:RemoveComponent("propagator")
+    inst:RemoveComponent("burnable")
 	MakeSmallPropagator(inst)
 	MakeSmallBurnable(inst)
 	inst.components.burnable:SetOnBurntFn(stump_burnt)
+    inst.components.growable:StopGrowing()
+    inst.components.periodicspawner:Stop()
 
     inst.components.workable:SetWorkAction(ACTIONS.DIG)
+    inst.components.workable:SetOnWorkCallback(nil)
     inst.components.workable:SetOnFinishCallback(dig_up_stump)
 	inst.components.workable:SetWorkLeft(1)
 	inst.AnimState:PlayAnimation("idle_stump")
@@ -263,10 +268,12 @@ local function maketree(data)
     end
 
     local function onseasonchange(inst, season)
-        if season == data.season and inst.treestate ~= TREESTATES.BLOOM then
-            bloom_tree(inst)
-        elseif season ~= data.season and inst.treestate ~= TREESTATES.NORMAL then
-            normal_tree(inst)
+        if not inst:HasTag("burnt") and not inst:HasTag("stump") then
+            if season == data.season and inst.treestate ~= TREESTATES.BLOOM then
+                bloom_tree(inst)
+            elseif season ~= data.season and inst.treestate ~= TREESTATES.NORMAL then
+                normal_tree(inst)
+            end
         end
     end
 

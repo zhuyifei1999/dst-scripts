@@ -368,6 +368,14 @@ local function DeactivatePlayer(inst)
 
     if inst == ThePlayer then
         TheWorld.minimap.MiniMap:EnablePlayerMinimapUpdate(false)
+
+        -- For now, clients save their local minimap reveal cache
+        -- and we need to trigger this here as well as on network
+        -- disconnect.  On migration, we will hit this code first
+        -- whereas normally we will hit the one in disconnection.
+        if not TheWorld.ismastersim then
+            SerializeUserSession(inst)
+        end
     end
 
     inst:PushEvent("playerdeactivated")

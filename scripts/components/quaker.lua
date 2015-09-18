@@ -18,6 +18,9 @@ local QUAKESTATE = {
 
 local DENSITYRADIUS = 5 -- the minimum radius that can contain 3 debris (allows for some clumping)
 
+local SMASHABLE_TAGS = { "smashable", "quakedebris", "_combat" }
+local NON_SMASHABLE_TAGS = { "INLIMBO", "playerghost", "irreplaceable" }
+
 --------------------------------------------------------------------------
 --[[ Member variables ]]
 --------------------------------------------------------------------------
@@ -148,7 +151,8 @@ local function _GroundDetectionUpdate(inst)
             inst.shadow:Remove()
         end
 
-        local ents = TheSim:FindEntities(pt.x, 0, pt.z, 2, nil, nil, nil, {"smashable", "quakedebris"})
+        -- break stuff we land on
+        local ents = TheSim:FindEntities(pt.x, 0, pt.z, 2, nil, NON_SMASHABLE_TAGS, SMASHABLE_TAGS)
         for k,v in pairs(ents) do
             if v ~= inst and v.components.combat then  -- quakes shouldn't break the set dressing
                 v.components.combat:GetAttacked(inst, 20, nil)
@@ -171,7 +175,8 @@ local function _GroundDetectionUpdate(inst)
             inst.updatetask = nil
         end
 
-        local existingdebris = TheSim:FindEntities(pt.x, 0, pt.y, DENSITYRADIUS, nil, { "quakedebris" }) -- note this will always be at least one, for self
+        -- often break ourself as well
+        local existingdebris = TheSim:FindEntities(pt.x, 0, pt.y, DENSITYRADIUS, nil, { "quakedebris" }, { "INLIMBO" }) -- note this will always be at least one, for self
         if (#existingdebris > 1 or math.random() < 0.75)
             and not (inst.prefab == "mole" or inst.prefab == "rabbit") then
 

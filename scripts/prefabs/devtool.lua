@@ -126,7 +126,8 @@ local function fn()
         inst.components.tool:SetAction(ACTIONS.NET)
 
         inst:AddComponent("prototyper")
-        inst.components.prototyper.trees = {SCIENCE = 100, MAGIC = 100, ANCIENT = 100}
+        -- tech level net vars limited by net_tinybyte!
+        inst.components.prototyper.trees = { SCIENCE = 3, MAGIC = 3, ANCIENT = 3 }
 
         inst:AddComponent("equippable")
         inst.components.equippable:SetOnEquip( onequipgold )  

@@ -49,7 +49,7 @@ local function fn()
         return inst
     end
 
-    inst.animname = "f" + tostring(math.random(10))
+    inst.animname = "f" .. tostring(math.random(10))
     inst.AnimState:PlayAnimation(inst.animname)
 
     inst:AddComponent("inspectable")

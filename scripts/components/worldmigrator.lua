@@ -62,7 +62,7 @@ function WorldMigrator:ValidateAndPushEvents()
     if self.enabled == false then
         self._status = STATUS.INACTIVE
         self.inst:PushEvent("migration_unavailable")
-        print(string.format("Validating %d -- NOT ENABLED", self.id or -1))
+        print(string.format("Validating %d, which is disabled by prefab: status: %s world: %s available: %s", self.id or -1, table.reverselookup(STATUS, self._status), self.linkedWorld or "<nil>", tostring(self.linkedWorld and Shard_IsWorldAvailable(self.linkedWorld) or false)))
         return
     end
 
