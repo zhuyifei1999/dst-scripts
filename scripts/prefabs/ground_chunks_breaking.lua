@@ -13,6 +13,7 @@ local function PlayChunksAnim(proxy)
 
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
 
     inst.Transform:SetFromProxy(proxy.GUID)
 
@@ -20,6 +21,8 @@ local function PlayChunksAnim(proxy)
     inst.AnimState:SetBuild("ground_chunks_breaking")
     inst.AnimState:PlayAnimation("idle")
     inst.AnimState:SetFinalOffset(-1)
+
+    inst.SoundEmitter:PlaySound("dontstarve/common/stone_drop")
 
     inst:ListenForEvent("animover", inst.Remove)
 end

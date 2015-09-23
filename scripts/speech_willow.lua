@@ -478,7 +478,7 @@ return {
             BLOOM = "Ack! It stinks!",
         },
 		MUSHTREE_MEDIUM={
-            GENERIC = "Gross. It smells like leprechaun butt",
+            GENERIC = "Gross. It smells like leprechaun butt.",
             BLOOM = "It's spreading junk everywhere.",
         },
 		MUSHTREE_SMALL={

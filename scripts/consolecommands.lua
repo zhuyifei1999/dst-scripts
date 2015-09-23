@@ -999,3 +999,11 @@ function c_sounddebug()
     SOUNDDEBUG_ENABLED = true
     TheSim:SetDebugRenderEnabled(true)
 end
+
+function c_migrateto(worldId, portalId)
+	portalId = portalId or 1
+	TheWorld:PushEvent(
+		"ms_playerdespawnandmigrate", 
+		{ player = ConsoleCommandPlayer(), portalid = portalId, worldid = worldId }
+	)
+end

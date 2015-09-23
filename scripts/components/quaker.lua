@@ -4,8 +4,6 @@
 
 return Class(function(self, inst)
 
-assert(TheWorld.ismastersim, "Quaker component should not exist on client")
-
 --------------------------------------------------------------------------
 --[[ Constants ]]
 --------------------------------------------------------------------------
@@ -30,6 +28,8 @@ local NON_SMASHABLE_TAGS = { "INLIMBO", "playerghost", "irreplaceable" }
 self.inst = inst
 
 -- Private
+local _world = TheWorld
+local _ismastersim = _world.ismastersim
 local _state = nil
 local _debrispersecond = 1 -- how much junk falls
 local _mammalsremaining = 0
@@ -43,6 +43,9 @@ local _debris = {
 
 local _activeplayers = {}
 local _scheduleddrops = {}
+
+-- Network Variables
+local _intensity = net_float(inst.GUID, "quaker._intensity", "intensitydirty")
 
 --------------------------------------------------------------------------
 --[[ Private member functions ]]
@@ -126,7 +129,8 @@ local function PlayFallingSound(inst, volume)
         if tile and tileinfo then
             local x, y, z = inst.Transform:GetWorldPosition()
             local size_affix = "_small"
-            sound:PlaySound(tileinfo.walksound .. size_affix, nil, volume)
+            --gjans: This doesn't play on the client! Not sure why...
+            --sound:PlaySound(tileinfo.walksound .. size_affix, nil, volume)
         end
     end
 end
@@ -158,7 +162,6 @@ local function _GroundDetectionUpdate(inst)
                 v.components.combat:GetAttacked(inst, 20, nil)
             end
             if v ~= inst and v:HasTag("quakedebris") then
-                v.SoundEmitter:PlaySound("dontstarve/common/stone_drop")
                 local pt = Vector3(v.Transform:GetWorldPosition())
                 local breaking = SpawnPrefab("ground_chunks_breaking")
                 breaking.Transform:SetPosition(pt.x, 0, pt.z)
@@ -181,7 +184,6 @@ local function _GroundDetectionUpdate(inst)
             and not (inst.prefab == "mole" or inst.prefab == "rabbit") then
 
             --spawn break effect
-            inst.SoundEmitter:PlaySound("dontstarve/common/stone_drop")
             local pt = Vector3(inst.Transform:GetWorldPosition())
             local breaking = SpawnPrefab("ground_chunks_breaking")
             breaking.Transform:SetPosition(pt.x, 0, pt.z)
@@ -215,7 +217,7 @@ local function GetSpawnPoint(pt, rad)
 
     local result_offset = FindValidPositionByFan(theta, radius, 12, function(offset)
         local spawn_point = pt + offset
-        return TheWorld.Map:IsAboveGroundAtPoint(spawn_point:Get())
+        return _world.Map:IsAboveGroundAtPoint(spawn_point:Get())
     end)
 
     if result_offset then
@@ -289,7 +291,7 @@ EndQuake = function(inst, continue)
     print("ENDING QUAKE")
     CancelDrops()
 
-    inst.SoundEmitter:KillSound("earthquake")
+    _intensity:set(0)
     inst:PushEvent("endquake")
 
     if continue then
@@ -299,10 +301,7 @@ end
 
 local function StartQuake(inst, data, overridetime)
     print("STARTING QUAKE")
-    if not inst.SoundEmitter:PlayingSound("earthquake") then
-        inst.SoundEmitter:PlaySound("dontstarve/cave/earthquake", "earthquake")
-    end
-    inst.SoundEmitter:SetParameter("earthquake", "intensity", 1)
+    _intensity:set(1.0)
 
     _debrispersecond = type(data.debrispersecond) == "function" and data.debrispersecond() or data.debrispersecond
     _mammalsremaining = type(data.mammals) == "function" and data.mammals() or data.mammals
@@ -327,10 +326,11 @@ local function WarnQuake(inst, data, overridetime)
         inst:PushEvent("warnquake")
     end)
 
-    if not inst.SoundEmitter:PlayingSound("earthquake") then
-        inst.SoundEmitter:PlaySound("dontstarve/cave/earthquake", "earthquake")
+    if not _world.SoundEmitter:PlayingSound("earthquake") then
+        _world.SoundEmitter:PlaySound("dontstarve/cave/earthquake", "earthquake")
     end
-    inst.SoundEmitter:SetParameter("earthquake", "intensity", 0.08)
+    _world.SoundEmitter:SetParameter("earthquake", "intensity", 0.08)
+    _intensity:set(0.08)
 
     local warntime = overridetime or (type(data.warningtime) == "function" and data.warningtime()) or data.warningtime
     ShakeAllCameras(CAMERASHAKE.FULL, warntime + 3, .02, .2, nil, 40)
@@ -350,10 +350,22 @@ end
 --[[ Private event handlers ]]
 --------------------------------------------------------------------------
 
-local function OnMiniQuake(inst, data)
+local function OnIntensityDirty(inst)
+    if _intensity:value() > 0 then
+        if not _world.SoundEmitter:PlayingSound("earthquake") then
+            _world.SoundEmitter:PlaySound("dontstarve/cave/earthquake", "earthquake")
+        end
+        _world.SoundEmitter:SetParameter("earthquake", "intensity", 1)
+    elseif _world.SoundEmitter:PlayingSound("earthquake") then
+        _world.SoundEmitter:KillSound("earthquake")
+    end
+end
+
+local OnMiniQuake = _ismastersim and function(inst, data)
 
     inst.SoundEmitter:PlaySound("dontstarve/cave/earthquake", "miniearthquake")
     inst.SoundEmitter:SetParameter("miniearthquake", "intensity", 1)
+    _intensity:set(1.0)
 
     local char_pos = Vector3(data.target.Transform:GetWorldPosition())
 
@@ -374,20 +386,20 @@ local function OnMiniQuake(inst, data)
     ShakeAllCameras(CAMERASHAKE.FULL, data.duration, .02, .5, data.target, 40)
 
     inst:DoTaskInTime(data.duration, function() inst.SoundEmitter:KillSound("miniearthquake") end)
-end
+end or nil
 
 
-local OnExplosion = function(inst, data)
+local OnExplosion = _ismastersim and function(inst, data)
     if _state == QUAKESTATE.WAITING then
         SetNextQuake(_quakedata, _task:NextTime() - data.damage)
     elseif _state == QUAKESTATE.WARNING then
         WarnQuake(inst, _quakedata)
     end
-end
+end or nil
 
 -- Immediately start the current or a specified quake
 -- If a new quake type is forced, save current quake type and restore it once quake has finished
-local OnForceQuake = function(inst, data)
+local OnForceQuake = _ismastersim and function(inst, data)
     if _state == QUAKESTATE.QUAKING then return false end
 
     if data then
@@ -397,9 +409,9 @@ local OnForceQuake = function(inst, data)
     end
 
     return true
-end
+end or nil
 
-local function OnPlayerJoined(src, player)
+local OnPlayerJoined = _ismastersim and function (src, player)
     for i, v in ipairs(_activeplayers) do
         if v == player then
             return
@@ -409,9 +421,9 @@ local function OnPlayerJoined(src, player)
     if _state == QUAKESTATE.QUAKING then
         ScheduleDrop(player)
     end
-end
+end or nil
 
-local function OnPlayerLeft(src, player)
+local OnPlayerLeft = _ismastersim and function (src, player)
     for i, v in ipairs(_activeplayers) do
         if v == player then
             CancelDropForPlayer(player)
@@ -419,13 +431,15 @@ local function OnPlayerLeft(src, player)
             return
         end
     end
-end
+end or nil
 
 --------------------------------------------------------------------------
 --[[ Public member functions ]]
 --------------------------------------------------------------------------
 
 function self:SetQuakeData(data)
+    if not _ismastersim then return end
+
     _quakedata = data
     if _quakedata ~= nil then
         SetNextQuake(_quakedata)
@@ -435,6 +449,8 @@ function self:SetQuakeData(data)
 end
 
 function self:SetDebris(data)
+    if not _ismastersim then return end
+
     _debris = data
 end
 
@@ -442,14 +458,19 @@ end
 --[[ Initialization ]]
 --------------------------------------------------------------------------
 
+--Register network variable sync events
+inst:ListenForEvent("intensitydirty", OnIntensityDirty)
+
 --Register events
-inst:ListenForEvent("ms_playerjoined", OnPlayerJoined, TheWorld)
-inst:ListenForEvent("ms_playerleft", OnPlayerLeft, TheWorld)
+if _ismastersim then
+    inst:ListenForEvent("ms_playerjoined", OnPlayerJoined, _world)
+    inst:ListenForEvent("ms_playerleft", OnPlayerLeft, _world)
 
-inst:ListenForEvent("ms_miniquake", OnMiniQuake)
-inst:ListenForEvent("ms_forcequake", OnForceQuake)
+    inst:ListenForEvent("ms_miniquake", OnMiniQuake, _world)
+    inst:ListenForEvent("ms_forcequake", OnForceQuake, _world)
 
-inst:ListenForEvent("explosion", OnExplosion)
+    inst:ListenForEvent("explosion", OnExplosion, _world)
+end
 
 -- Default configuration
 self:SetDebris( {
@@ -498,16 +519,16 @@ end
 --[[ Save/Load ]]
 --------------------------------------------------------------------------
 
-function self:OnSave()
+if _ismastersim then function self:OnSave()
     return {
         time = GetTaskRemaining(_task),
         state = _state,
         debrispersecond = _debrispersecond,
         mammalsremaining = _mammalsremaining
     }
-end
+end end
 
-function self:OnLoad(data)
+if _ismastersim then function self:OnLoad(data)
     _debrispersecond = data.debrispersecond or 1
     _mammalsremaining = data.mammalsremaining or 0
 
@@ -519,23 +540,26 @@ function self:OnLoad(data)
     elseif _state == QUAKESTATE.QUAKING then
         StartQuake(inst, _quakedata, data.time)
     end
-end
+end end
 
 --------------------------------------------------------------------------
 --[[ Debug ]]
 --------------------------------------------------------------------------
 
 function self:GetDebugString()
-    if _state == QUAKESTATE.QUAKING then
-        return string.format("QUAKING. %2.2f debris/second: %2.2f mammals: %d",
-            GetTaskRemaining(_task), _debrispersecond, _mammalsremaining)
-    elseif _state == QUAKESTATE.WARNING then
-        return string.format("WARNING. %2.2f", GetTaskRemaining(_task))
-    elseif _state == QUAKESTATE.WAITING then
-        return string.format("WAITING. %2.2f", GetTaskRemaining(_task) )
-    else
-        return string.format("No data.")
+    local s = ""
+    if _ismastersim then
+        s = table.reverselookup(QUAKESTATE, _state)
+        s = s .. string.format(" %.2d", GetTaskRemaining(_task))
+        if _state == QUAKESTATE.QUAKING then
+            s = s .. string.format(" debris/second: %2.2f mammals: %d",
+                _debrispersecond, _mammalsremaining)
+        elseif _state == QUAKESTATE.WARNING then
+        elseif _state == QUAKESTATE.WAITING then
+        end
     end
+    s = s .. " intensity: " .. tostring(_intensity:value())
+    return s
 end
 
 --------------------------------------------------------------------------

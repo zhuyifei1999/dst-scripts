@@ -72,6 +72,10 @@ local function GetStatus(inst)
         or nil
 end
 
+local function activatebyother(inst)
+    OnWork(inst, nil, 0)
+end
+
 local function fn(bank, build, anim, minimap)
     local inst = CreateEntity()
 
@@ -114,6 +118,7 @@ local function closed_fn()
     inst.components.workable:SetOnWorkCallback(OnWork)
 
     inst.components.worldmigrator:SetEnabled(false)
+    inst:ListenForEvent("migration_activate_other", activatebyother)
 
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetLoot({ "rocks", "rocks", "flint", "flint", "flint" })
@@ -134,6 +139,7 @@ local function ruins_fn()
     inst.components.workable:SetOnWorkCallback(OnWork)
 
     inst.components.worldmigrator:SetEnabled(false)
+    inst:ListenForEvent("migration_activate_other", activatebyother)
 
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetLoot({ "thulecite", "thulecite_pieces", "thulecite_pieces" })

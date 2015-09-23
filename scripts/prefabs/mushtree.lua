@@ -336,6 +336,7 @@ local function maketree(data)
         inst.components.periodicspawner:SetPrefab(data.spore)
         inst.components.periodicspawner:SetOnSpawnFn(onspawnfn)
         inst.components.periodicspawner:Stop()
+        inst.components.periodicspawner:SetDensityInRange(20, 10)
 
         inst:AddComponent("growable")
         inst.components.growable.stages = growth_stages

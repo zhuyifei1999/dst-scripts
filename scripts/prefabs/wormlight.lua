@@ -27,7 +27,7 @@ local function lesseritem_oneaten(inst, eater)
     create_light(eater, "wormlight_light_lesser")
 end
 
-local function itemfn()
+local function itemfn(sim, fn, masterfn)
 	local inst = CreateEntity()
 	inst.entity:AddTransform()
 	inst.entity:AddAnimState()
@@ -44,6 +44,10 @@ local function itemfn()
     light:SetColour(169/255, 231/255, 245/255)
     light:Enable(true)
     inst.AnimState:SetBloomEffectHandle( "shaders/anim.ksh" )
+
+    if fn then
+        fn(inst)
+    end
 
     if not TheWorld.ismastersim then
         return inst
@@ -74,29 +78,31 @@ local function itemfn()
     inst:AddComponent("stackable")
     inst.components.stackable.maxsize = TUNING.STACK_SIZE_LARGEITEM
 
+    if masterfn then
+        masterfn(inst)
+    end
+
     return inst
 end
 
-local function lesseritemfn()
-    local inst = itemfn()
+local function lesseritemfn(sim)
+    return itemfn(sim, function(inst)
 
-    inst.AnimState:SetBank("worm_light_lesser")
-    inst.AnimState:SetBuild("worm_light_lesser")
-    inst.AnimState:PlayAnimation("idle")
+        inst.AnimState:SetBank("worm_light_lesser")
+        inst.AnimState:SetBuild("worm_light_lesser")
+        inst.AnimState:PlayAnimation("idle")
 
-    if not TheWorld.ismastersim then
-        return inst
-    end
+    end, function(inst)
 
-    inst.components.edible.foodtype = FOODTYPE.VEGGIE
-    inst.components.edible.healthvalue = TUNING.HEALING_SMALL
-    inst.components.edible.hungervalue = TUNING.CALORIES_SMALL
-    inst.components.edible.sanityvalue = -TUNING.SANITY_SMALL
-    inst.components.edible:SetOnEatenFn(lesseritem_oneaten)
+        inst.components.edible.foodtype = FOODTYPE.VEGGIE
+        inst.components.edible.healthvalue = TUNING.HEALING_SMALL
+        inst.components.edible.hungervalue = TUNING.CALORIES_SMALL
+        inst.components.edible.sanityvalue = -TUNING.SANITY_SMALL
+        inst.components.edible:SetOnEatenFn(lesseritem_oneaten)
 
-    inst.components.fuel.fuelvalue = TUNING.MED_FUEL
+        inst.components.fuel.fuelvalue = TUNING.MED_FUEL
 
-    return inst
+    end)
 end
 
 local function light_resume(inst, time)
@@ -120,12 +126,6 @@ local function light_onload(inst, data)
     end
 end
 
-local function light_spellfn(inst, target, variables)
-    if target then
-        inst.Transform:SetPosition(target:GetPosition():Get())
-    end
-end
-
 local function light_start(inst)
     local spell = inst.components.spell
     inst.components.lighttweener:StartTween(inst.light, spell.variables.radius, 0.8, 0.5, {169/255,231/255,245/255}, 0)
@@ -135,6 +135,8 @@ end
 local function light_ontarget(inst, target)
     if not target then return end
     target.wormlight = inst
+    target:AddChild(inst)
+    inst.Transform:SetPosition(0,0,0)
     target:AddTag(inst.components.spell.spellname)
     target.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
 end
@@ -143,6 +145,7 @@ local function light_onfinish(inst)
     if not inst.components.spell.target then
         return
     end
+    inst.components.spell.target:RemoveChild(inst)
     inst.components.spell.target.wormlight = nil
     inst.components.spell.target.AnimState:ClearBloomEffectHandle()
 end
@@ -151,7 +154,7 @@ local light_variables = {
     radius = TUNING.WORMLIGHT_RADIUS,
 }
 
-local function lightfn()
+local function lightfn(sim, fn, masterfn)
 
     local inst = CreateEntity()
     inst.entity:AddTransform()
@@ -162,6 +165,10 @@ local function lightfn()
 
     inst:AddTag("FX")
     inst:AddTag("NOCLICK")
+
+    if fn then
+        fn(inst)
+    end
 
     if not TheWorld.ismastersim then
         return inst
@@ -176,23 +183,22 @@ local function lightfn()
     inst.components.spell.ontargetfn = light_ontarget
     inst.components.spell.onstartfn = light_start
     inst.components.spell.onfinishfn = light_onfinish
-    inst.components.spell.fn = light_spellfn
     inst.components.spell.resumefn = light_resume
     inst.components.spell.removeonfinish = true
+
+    if masterfn then
+        masterfn(inst)
+    end
 
     return inst
 end
 
-local function lesserlightfn()
-    local inst = lightfn()
+local function lesserlightfn(sim)
+    return lightfn(sim, nil, function(inst)
 
-    if not TheWorld.ismastersim then
-        return inst
-    end
+        inst.components.spell.duration = TUNING.WORMLIGHT_DURATION * 0.25
 
-    inst.components.spell.duration = TUNING.WORMLIGHT_DURATION * 0.25
-
-    return inst
+    end)
 end
 
 return  Prefab("common/inventory/wormlight", itemfn, assets),

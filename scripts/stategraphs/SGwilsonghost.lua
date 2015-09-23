@@ -11,7 +11,7 @@ end
 local actionhandlers =
 {
     ActionHandler(ACTIONS.HAUNT, "haunt_pre"),
-    ActionHandler(ACTIONS.JUMPIN, "jumpin"),
+    ActionHandler(ACTIONS.JUMPIN, "jumpin_pre"),
     ActionHandler(ACTIONS.ATTACK,
         function()
             --dummy handler in case any attack controls came through network
@@ -362,43 +362,53 @@ local states =
         end,
     }, 
 
-    State
-    {
-        name = "jumpin",
+    State{
+        name = "jumpin_pre",
         tags = { "doing", "busy", "canrotate" },
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
-            inst.AnimState:PlayAnimation("dissipate")
+            inst.AnimState:PlayAnimation("dissipate", false)
             inst.SoundEmitter:PlaySound("dontstarve/ghost/ghost_haunt", nil, nil, true)
         end,
-
-        timeline =
-        {
-            -- this is just hacked in here to make the sound play BEFORE the player hits the wormhole
-            TimeEvent(3 * FRAMES, function(inst)
-                if inst.bufferedaction ~= nil and inst.bufferedaction.target ~= nil then
-                    inst.bufferedaction.target:PushEvent("starttravelsound", inst)
-                end
-            end),
-        },
 
         events =
         {
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
-                    if inst:PerformBufferedAction() then
-                        inst.sg.statemem.isteleporting = true
-                        if inst.components.playercontroller ~= nil then
-                            inst.components.playercontroller:Enable(false)
-                        end
-                        inst:Hide()
+                    if inst.bufferedaction ~= nil then
+                        inst:PerformBufferedAction()
                     else
-                        inst.sg:GoToState("jumpout")
+                        inst.sg:GoToState("idle")
                     end
                 end
             end),
         },
+    },
+
+    State
+    {
+        name = "jumpin",
+        tags = { "doing", "busy", "canrotate" },
+
+        onenter = function(inst, data)
+            inst.components.locomotor:Stop()
+            --inst.AnimState:PlayAnimation("dissipate")
+
+            inst.sg.statemem.target = data.teleporter
+
+            inst.sg.statemem.target:PushEvent("starttravelsound", inst)
+            if inst.sg.statemem.target ~= nil and inst.sg.statemem.target.components.teleporter ~= nil
+                and inst.sg.statemem.target.components.teleporter:Activate(inst) then
+                inst.sg.statemem.isteleporting = true
+                if inst.components.playercontroller ~= nil then
+                    inst.components.playercontroller:Enable(false)
+                end
+                inst:Hide()
+            else
+                inst.sg:GoToState("jumpout")
+            end
+        end,
 
         onexit = function(inst)
             if inst.sg.statemem.isteleporting then

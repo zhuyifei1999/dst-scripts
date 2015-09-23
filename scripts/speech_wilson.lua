@@ -265,7 +265,7 @@ return {
 		    DIRT = "Just looks like a pile of dirt.",
 		    WORM = "It's a worm!",
 		},
-        WORMLIGHT_PLANT = "Seems save to me.",
+        WORMLIGHT_PLANT = "Seems safe to me.",
 		MOLE =
 		{
 			HELD = "Nowhere left to dig, my friend.",

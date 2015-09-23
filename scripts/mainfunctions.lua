@@ -1103,7 +1103,9 @@ function OnNetworkDisconnect( message, should_reset, force_immediate_reset, deta
     --Don't need to reset if we're in FE already
     --NOTE: due to migration, we can be in neither gameplay nor FE
     --      e.g. if there is no active screen
-    should_reset = should_reset and (InGamePlay() or TheFrontEnd:GetActiveScreen() == nil)
+    --      INVALID_CLIENT_TOKEN is a special case; we want to
+    --      boot the user back to the main menu even if they're in the FE
+    should_reset = should_reset and (InGamePlay() or TheFrontEnd:GetActiveScreen() == nil or message == "INVALID_CLIENT_TOKEN")
 	local function doquit( should_reset )
 		if should_reset == true then
 			DoRestart(false) --don't save again

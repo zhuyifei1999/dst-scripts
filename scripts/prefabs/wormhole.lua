@@ -63,7 +63,7 @@ local function onnear(inst)
 end
 
 local function onfar(inst)
-    if inst.teleporting == nil and inst.sg:HasStateTag("open") then
+    if inst.components.teleporter.numteleporting == 0 and inst.sg:HasStateTag("open") then
         inst.sg:GoToState("closing")
     end
 end

@@ -418,7 +418,7 @@ return {
         },
 		MUSHTREE_MEDIUM={
             GENERIC = "SHINY RED",
-            BLOOM = "MY OLIFACTORY SENSORS ARE OVERWHELMED",
+            BLOOM = "MY OLFACTORY SENSORS ARE OVERWHELMED",
         },
 		MUSHTREE_SMALL={
             GENERIC = "SHINY GREEN",

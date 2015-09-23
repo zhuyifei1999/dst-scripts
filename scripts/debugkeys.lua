@@ -562,25 +562,33 @@ AddGameDebugKey(KEY_KP_MINUS, function()
     return true
 end)
 
+local wormholetarget = nil
+local tentaholetarget = nil
 AddGameDebugKey(KEY_T, function()
     -- Moving Teleport to just plain T as I am getting a sore hand from CTRL-T - Alia
     if TheInput:IsKeyDown(KEY_CTRL) then
         local x,y,z = TheInput:GetWorldPosition():Get()
         local w1 = SpawnPrefab("wormhole")
-        w1.Transform:SetPosition(x-10, y, z)
-        local w2 = SpawnPrefab("wormhole")
-        w2.Transform:SetPosition(x+10, y, z)
+        w1.Transform:SetPosition(x, y, z-3)
 
-        w1.components.teleporter:Target(w2)
-        w2.components.teleporter:Target(w1)
+        if wormholetarget ~= nil then
+            w1.components.teleporter:Target(wormholetarget)
+            wormholetarget.components.teleporter:Target(w1)
+            wormholetarget = nil
+        else
+            wormholetarget = w1
+        end
 
         local t1 = SpawnPrefab("tentacle_pillar_hole")
-        t1.Transform:SetPosition(x-10, y, z+5)
-        local t2 = SpawnPrefab("tentacle_pillar")
-        t2.Transform:SetPosition(x+10, y, z+5)
+        t1.Transform:SetPosition(x, y, z+3)
 
-        t1.components.teleporter:Target(t2)
-        t2.components.teleporter:Target(t1)
+        if tentaholetarget ~= nil then
+            t1.components.teleporter:Target(tentaholetarget)
+            tentaholetarget.components.teleporter:Target(t1)
+            tentaholetarget = nil
+        else
+            tentaholetarget = t1
+        end
     else
         local MainCharacter = DebugKeyPlayer()
         if MainCharacter then

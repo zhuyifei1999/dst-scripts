@@ -1,4 +1,6 @@
-require 'json'
+--------------------------------------------------------------------------
+--[[ Shard Networking ]]
+--------------------------------------------------------------------------
 
 ShardPortals = {}
 
@@ -41,4 +43,10 @@ function Shard_UpdatePortalState(inst)
         end
     end
     inst.components.worldmigrator:ValidateAndPushEvents()
+end
+
+--------------------------------------------------------------------------
+
+function Shard_UpdateMasterSessionId(session_id)
+    TheWorld:PushEvent("ms_newmastersessionid", session_id)
 end

@@ -84,7 +84,7 @@ local function fn()
     inst:AddTag("smallcreature")
     inst:AddTag("cattoyairborne")
     inst:AddTag("wildfireprotected")
-   
+
     inst.Transform:SetTwoFaced()
 
     inst.AnimState:SetBuild("butterfly_basic")
@@ -164,7 +164,6 @@ local function fn()
         inst:ListenForEvent("onremove", inst.butterflyspawner.StopTrackingFn)
         inst.butterflyspawner:StartTracking(inst)
     end
-    assert(inst.components.homeseeker)
 
     MakeFeedableSmallLivestock(inst, TUNING.BUTTERFLY_PERISH_TIME, OnPickedUp, OnDropped)
 

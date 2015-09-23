@@ -89,18 +89,18 @@ local wormspawn =
 
     attack_levels =
     {
-        intro   = { warnduration = function() return 120 end, numspawns = function() return 2 end },
-        light   = { warnduration = function() return 60 end, numspawns = function() return 2 + math.random(2) end },
-        med     = { warnduration = function() return 45 end, numspawns = function() return 3 + math.random(3) end },
-        heavy   = { warnduration = function() return 30 end, numspawns = function() return 4 + math.random(3) end },
-        crazy   = { warnduration = function() return 30 end, numspawns = function() return 6 + math.random(4) end },
+        intro   = { warnduration = function() return 120 end, numspawns = function() return 1 end },
+        light   = { warnduration = function() return 60 end, numspawns = function() return 1 + math.random(0,1) end },
+        med     = { warnduration = function() return 45 end, numspawns = function() return 1 + math.random(0,1) end },
+        heavy   = { warnduration = function() return 30 end, numspawns = function() return 2 + math.random(0,1) end },
+        crazy   = { warnduration = function() return 30 end, numspawns = function() return 3 + math.random(0,2) end },
     },
 
     attack_delays =
     {
-        rare        = function() return TUNING.TOTAL_DAY_TIME * 6, math.random() * TUNING.TOTAL_DAY_TIME * 7 end,
-        occasional  = function() return TUNING.TOTAL_DAY_TIME * 4, math.random() * TUNING.TOTAL_DAY_TIME * 7 end,
-        frequent    = function() return TUNING.TOTAL_DAY_TIME * 3, math.random() * TUNING.TOTAL_DAY_TIME * 5 end,
+        rare        = function() return TUNING.TOTAL_DAY_TIME * 10, math.random() * TUNING.TOTAL_DAY_TIME * 7 end,
+        occasional  = function() return TUNING.TOTAL_DAY_TIME * 8, math.random() * TUNING.TOTAL_DAY_TIME * 7 end,
+        frequent    = function() return TUNING.TOTAL_DAY_TIME * 6, math.random() * TUNING.TOTAL_DAY_TIME * 5 end,
     },
 
     warning_speech = "ANNOUNCE_WORMS",
@@ -141,8 +141,6 @@ local function master_postinit(inst)
     end
 
     --cave specifics
-    inst:AddComponent("quaker")
-
     inst:AddComponent("hounded")
     inst.components.hounded:SetSpawnData(wormspawn)
 

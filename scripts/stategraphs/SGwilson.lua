@@ -121,6 +121,23 @@ local function DoEmoteSound(inst, soundname)
     inst.SoundEmitter:PlaySound(soundname, "emotesound")
 end
 
+
+local function ToggleOffPhysics(inst)
+    inst.sg.statemem.isphysicstoggle = true
+    inst.Physics:ClearCollisionMask()
+    inst.Physics:CollidesWith(COLLISION.GROUND)
+end
+
+local function ToggleOnPhysics(inst)
+    inst.sg.statemem.isphysicstoggle = nil
+    inst.Physics:ClearCollisionMask()
+    inst.Physics:CollidesWith(COLLISION.WORLD)
+    inst.Physics:CollidesWith(COLLISION.OBSTACLES)
+    inst.Physics:CollidesWith(COLLISION.SMALLOBSTACLES)
+    inst.Physics:CollidesWith(COLLISION.CHARACTERS)
+    inst.Physics:CollidesWith(COLLISION.GIANTS)
+end
+
 local actionhandlers =
 {
     ActionHandler(ACTIONS.CHOP,
@@ -3649,7 +3666,7 @@ local states =
         tags = { "doing", "busy", "canrotate", "nopredict", "nomorph" },
 
         onenter = function(inst, data)
-            TemporarilyRemovePhysics(inst, 5.5)
+            ToggleOffPhysics(inst)
             inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation("jump", false)
 
@@ -3721,6 +3738,10 @@ local states =
         },
 
         onexit = function(inst)
+            if inst.sg.statemem.isphysicstoggle then
+                ToggleOnPhysics(inst)
+            end
+
             if inst.sg.statemem.isteleporting then
                 inst.components.health:SetInvincible(false)
                 if inst.components.playercontroller ~= nil then
@@ -3737,6 +3758,7 @@ local states =
         tags = { "doing", "busy", "canrotate", "nopredict", "nomorph" },
 
         onenter = function(inst)
+            ToggleOffPhysics(inst)
             inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation("jumpout")
 
@@ -3752,6 +3774,9 @@ local states =
                 inst.Physics:SetMotorVel(2, 0, 0)
             end),
             TimeEvent(15.2 * FRAMES, function(inst)
+                if inst.sg.statemem.isphysicstoggle then
+                    ToggleOnPhysics(inst)
+                end
                 inst.SoundEmitter:PlaySound("dontstarve/movement/bodyfall_dirt")
             end),
             TimeEvent(17 * FRAMES, function(inst)
@@ -3770,6 +3795,12 @@ local states =
                 end
             end),
         },
+
+        onexit = function(inst)
+            if inst.sg.statemem.isphysicstoggle then
+                ToggleOnPhysics(inst)
+            end
+        end,
     },
 
     State{

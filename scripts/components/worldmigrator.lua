@@ -129,6 +129,10 @@ function WorldMigrator:Activate(doer)
     return true
 end
 
+function WorldMigrator:ActivatedByOther()
+    self.inst:PushEvent("migration_activate_other")
+end
+
 function WorldMigrator:OnSave()
     return {
         id = self.id,

@@ -42,6 +42,9 @@ local function MakeWorldNetwork(name, custom_postinit)
 
         inst.entity:AddNetwork()
         inst:AddTag("CLASSIFIED")
+
+        inst:AddComponent("shardstate")
+
         inst.entity:SetPristine()
 
         inst:AddComponent("autosaver")

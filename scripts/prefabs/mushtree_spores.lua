@@ -123,6 +123,7 @@ local function makespore(data)
 	    inst.components.locomotor.walkspeed = 2
 
         inst:AddComponent("inventoryitem")
+        inst.components.inventoryitem.canbepickedup = false
 
         inst:AddComponent("workable")
         inst.components.workable:SetWorkAction(ACTIONS.NET)
