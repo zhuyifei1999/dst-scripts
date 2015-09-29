@@ -125,6 +125,7 @@ function Armor:TakeDamage(damage_amount)
     if self.ontakedamage ~= nil then
         self.ontakedamage(self.inst, damage_amount)
     end
+    self.inst:PushEvent("armordamaged", damage_amount)
 end
 
 return Armor

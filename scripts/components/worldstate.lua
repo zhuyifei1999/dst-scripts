@@ -81,6 +81,19 @@ local function OnMoonPhaseChanged(src, moonphase)
     SetVariable("isfullmoon", self.data.isnight and moonphase == "full", "fullmoon")
 end
 
+local function OnNightmareClockTick(src, data)
+    SetVariable("nightmaretime", data.time)
+    SetVariable("nightmaretimeinphase", data.timeinphase)
+end
+
+local function OnNightmarePhaseChanged(src, phase)
+    SetVariable("nightmarephase", phase)
+    SetVariable("isnightmarecalm", phase == "calm", "nightmarecalm")
+    SetVariable("isnightmarewarn", phase == "warn", "nightmarewarn")
+    SetVariable("isnightmarewild", phase == "wild", "nightmarewild")
+    SetVariable("isnightmaredawn", phase == "dawn", "nightmaredawn")
+end
+
 local function OnSeasonTick(src, data)
     SetVariable("season", data.season)
     SetVariable("isautumn", data.season == "autumn", "autumn")
@@ -167,6 +180,18 @@ inst:ListenForEvent("phasechanged", _iscave and OnCavePhaseChanged or OnPhaseCha
 if not _iscave then
     inst:ListenForEvent("moonphasechanged", OnMoonPhaseChanged)
 end
+
+--Nightmareclock
+self.data.nightmarephase = "none" -- note, this phase doesn't "exist", but if there is no nightmare clock, this is what you'll see.
+self.data.nightmaretime = 0
+self.data.nightmaretimeinphase = 0
+self.data.isnightmarecalm = false
+self.data.isnightmarewarn = false
+self.data.isnightmarewild = false
+self.data.isnightmaredawn = false
+
+inst:ListenForEvent("nightmareclocktick", OnNightmareClockTick)
+inst:ListenForEvent("nightmarephasechanged", OnNightmarePhaseChanged)
 
 --Season
 self.data.season = "autumn"
@@ -283,9 +308,11 @@ end
 
 function self:Dump()
     local keys = sortedKeys(self.data)
+    local t = {}
     for i,key in ipairs(keys) do
-        print(key, self.data[key])
+        t[i] = string.format("\t%s\t%s", key, tostring(self.data[key]))
     end
+    return table.concat(t, '\n')
 end
 
 --------------------------------------------------------------------------

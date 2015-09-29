@@ -743,9 +743,13 @@ end
 function c_dumpworldstate()
     print("")
     print("//======================== DUMPING WORLD STATE ========================\\\\")
-    TheWorld.components.worldstate:Dump()
+    print("\n"..TheWorld.components.worldstate:Dump())
     print("\\\\=====================================================================//")
     print("")
+end
+
+function c_worldstatedebug()
+    WORLDSTATEDEBUG_ENABLED = not WORLDSTATEDEBUG_ENABLED
 end
 
 function c_makeinvisible()
@@ -1006,4 +1010,15 @@ function c_migrateto(worldId, portalId)
 		"ms_playerdespawnandmigrate", 
 		{ player = ConsoleCommandPlayer(), portalid = portalId, worldid = worldId }
 	)
+end
+
+function c_repeatlastcommand()
+    local history = GetConsoleHistory()
+    if #history > 0 then
+        if history[#history] == "c_repeatlastcommand()" then
+            -- top command is this one, so we want the second last command
+            history[#history] = nil
+        end
+        ExecuteConsoleCommand(history[#history])
+    end
 end

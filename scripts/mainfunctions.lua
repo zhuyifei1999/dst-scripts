@@ -338,6 +338,8 @@ function GetExtendedDebugString()
 		return debug_entity:GetBrainString()
 	elseif SOUNDDEBUG_ENABLED then
 	    return GetSoundDebugString()
+    elseif WORLDSTATEDEBUG_ENABLED then
+        return TheWorld and TheWorld.components.worldstate and TheWorld.components.worldstate:Dump()
 	end
 	return ""
 end

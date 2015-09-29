@@ -28,7 +28,6 @@ local function fn()
     inst:AddComponent("inspectable")
 
     inst:AddComponent("inventoryitem")
-    inst.components.inventoryitem:ChangeImageName("algae")
 
     inst:AddComponent("edible")
     inst.components.edible.healthvalue = TUNING.HEALING_SMALL

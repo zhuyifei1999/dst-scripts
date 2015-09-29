@@ -18,6 +18,8 @@ local function fn(Sim)
     inst.entity:AddLight()
     inst.entity:AddNetwork()
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end

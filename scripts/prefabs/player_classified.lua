@@ -313,7 +313,7 @@ end
 local function BufferBuild(inst, recipename)
     local recipe = GetValidRecipe(recipename)
     local inventory = inst._parent ~= nil and inst._parent.replica.inventory ~= nil and inst._parent.replica.inventory.classified or nil
-    if recipe ~= nil and inventory ~= nil and inventory:RemoveIngredients(recipe, inst.ingredientmod:value()) then
+    if recipe ~= nil and inventory ~= nil and inventory:RemoveIngredients(recipe, INGREDIENT_MOD_LOOKUP[inst.ingredientmod:value()]) then
         inst._bufferedbuildspreview[recipename] = true
         if inst._parent ~= nil then
             inst._parent:PushEvent("refreshcrafting")
@@ -685,7 +685,7 @@ local function fn()
             inst.bufferedbuilds[k] = net_bool(inst.GUID, "builder.buffered_builds["..k.."]", "bufferedbuildsdirty")
         end
     end
-    inst.ingredientmod:set(1)
+    inst.ingredientmod:set(INGREDIENT_MOD[1])
     inst.sciencelevel:set(inst.techtrees.SCIENCE)
     inst.magiclevel:set(inst.techtrees.MAGIC)
     inst.ancientlevel:set(inst.techtrees.ANCIENT)

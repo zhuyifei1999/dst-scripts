@@ -85,7 +85,6 @@ local function OnIgniteFn(inst)
 
     if inst.components.childspawner ~= nil then
         inst.components.childspawner:ReleaseAllChildren()
-        inst:RemoveComponent("childspawner")
     end
 end
 

@@ -542,6 +542,14 @@ local function OnSetOwner(inst)
     end
 end
 
+local function OnChangeArea(inst, area)
+    if area.tags and table.contains(area.tags, "Nightmare") then
+        inst.components.playervision:SetNightmareVision(true)
+    else
+        inst.components.playervision:SetNightmareVision(false)
+    end
+end
+
 local function AttachClassified(inst, classified)
     inst.player_classified = classified
     inst.ondetachclassified = function() inst:DetachClassified() end
@@ -1458,6 +1466,8 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst:AddComponent("talker")
 
         inst:AddComponent("playervision")
+        inst:AddComponent("areaaware")
+        inst:ListenForEvent("changearea", OnChangeArea)
         inst:AddComponent("attuner")
         --attuner server listeners are not registered until after "ms_playerjoined" has been pushed
 
@@ -1594,6 +1604,8 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.components.grogginess:SetKnockOutTest(ShouldKnockout)
 
         inst:AddComponent("colourtweener")
+
+        inst:AddComponent("areaaware")
 
         -------
         if METRICS_ENABLED then

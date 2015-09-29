@@ -13,6 +13,10 @@ local function OnIgniteFn(inst)
     inst.SoundEmitter:PlaySound("dontstarve/common/blackpowder_fuse_LP", "hiss")
 end
 
+local function OnExtinguishFn(inst)
+    inst.SoundEmitter:KillSound("hiss")
+end
+
 local function OnExplodeFn(inst)
     inst.SoundEmitter:KillSound("hiss")
     inst.SoundEmitter:PlaySound("dontstarve/common/blackpowder_explo")
@@ -58,10 +62,11 @@ local function fn()
     --V2C: Remove default OnBurnt handler, as it conflicts with
     --explosive component's OnBurnt handler for removing itself
     inst.components.burnable:SetOnBurntFn(nil)
+    inst.components.burnable:SetOnIgniteFn(OnIgniteFn)
+    inst.components.burnable:SetOnExtinguishFn(OnExtinguishFn)
 
     inst:AddComponent("explosive")
     inst.components.explosive:SetOnExplodeFn(OnExplodeFn)
-    inst.components.explosive:SetOnIgniteFn(OnIgniteFn)
     inst.components.explosive.explosivedamage = TUNING.GUNPOWDER_DAMAGE
 
     inst:AddComponent("inventoryitem")

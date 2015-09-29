@@ -25,6 +25,14 @@ AddTaskSet("cave_default", {
         "CaveExitTask8",
         "CaveExitTask9",
         "CaveExitTask10",
+
+        -- ruins
+        "LichenLand",
+        "Residential",
+        "Military",
+        "Sacred",
+        "TheLabyrinth",
+        "SacredAltar",
     },
     numoptionaltasks = 8,
     optionaltasks = {
@@ -39,6 +47,15 @@ AddTaskSet("cave_default", {
         "RabbitCity",
         "SpiderLand",
         "RabbitSpiderWar",
+
+        --ruins
+        "MoreAltars",
+        "CaveJungle",
+        "SacredDanger",
+        "MilitaryPits",
+        "MuddySacred",
+        "Residential2",
+        "Residential3",
     },
     valid_start_tasks = {
         "CaveExitTask1",
@@ -53,10 +70,16 @@ AddTaskSet("cave_default", {
         "CaveExitTask10",
     },
     set_pieces = { -- if you add or remove tasks, don't forget to update this list!
-        ["TentaclePillar"] = { count = 10, tasks= {"CavesStart", "CavesAlternateStart", "BatCaves1", "BatCaves2", "FungalBatCave1", "FungalBatCave2", "FungalBatCave3", "TentacledCave1", "TentacledCave2", "LargeFungalComplex", "RedFungalComplex", "GreenFungalComplex", "BlueFungalComplex", "RabbitsAndFungs", "SingleBatCave1", "SingleBatCave2", "SingleBatCave3", "RedFungalPlain", "GreenFungalPlain", "BlueFungalPlain", "Cavern", "FungalRabbitCityPlain", "MiniLobsterPlain", "CaveBase1", "CaveBase2", "CaveBase3", "MushBase1", "MushBase2", "MushBase3", "SinkBase1", "SinkBase2", "SinkBase3", "RabbitTown1", "RabbitTown2", "RabbitTown3",} },
+        ["TentaclePillar"] = { count = 10, tasks= {
+            "MudWorld", "MudCave", "MudLights", "MudPit", "BigBatCave", "RockyLand", "RedForest", "GreenForest", "BlueForest", "SpillagmiteCaverns", "SwampySinkhole", "CaveSwamp", "UndergroundForest", "PleasantSinkhole", "FungalNoiseForest", "FungalNoiseMeadow", "BatCloister", "RabbitTown", "RabbitCity", "SpiderLand", "RabbitSpiderWar",
+        } },
     },
 })
 
+
+------------------------------------------------------------
+-- One of every room
+------------------------------------------------------------
 
 AddTask("CavesTEST", {
     locks = {},
@@ -150,7 +173,7 @@ AddTask("CavesTEST", {
 ------------------------------------------------------------
 -- Mud World
 AddTask("MudWorld", {
-    --locks={ LOCKS.CAVE, LOCKS.TIER1 },
+    locks={ LOCKS.NONE },
     keys_given={ KEYS.CAVE, KEYS.TIER1 },
     room_choices={
         ["LightPlantField"] = 2,

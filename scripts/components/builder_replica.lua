@@ -86,7 +86,7 @@ end
 
 function Builder:SetIngredientMod(ingredientmod)
     if self.classified ~= nil then
-        self.classified.ingredientmod:set(ingredientmod)
+        self.classified.ingredientmod:set(INGREDIENT_MOD[ingredientmod])
     end
 end
 
@@ -94,7 +94,7 @@ function Builder:IngredientMod()
     if self.inst.components.builder ~= nil then
         return self.inst.components.builder.ingredientmod
     elseif self.classified ~= nil then
-        return self.classified.ingredientmod:value()
+        return INGREDIENT_MOD_LOOKUP[self.classified.ingredientmod:value()]
     else
         return 1
     end
@@ -220,7 +220,7 @@ function Builder:CanBuild(recipename)
             return true
         end
         for i, v in ipairs(recipe.ingredients) do
-            if not self.inst.replica.inventory:Has(v.type, math.max(1, RoundBiasedUp(v.amount * self.classified.ingredientmod:value()))) then
+            if not self.inst.replica.inventory:Has(v.type, math.max(1, RoundBiasedUp(v.amount * self:IngredientMod()))) then
                 return false
             end
         end

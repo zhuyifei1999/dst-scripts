@@ -1,3 +1,5 @@
+require "util"
+
 PI = 3.14159
 DEGREES = PI/180
 RADIANS = 180/PI
@@ -943,6 +945,17 @@ CHARACTER_INGREDIENT =
 
 --Character ingredient amounts must be multiples of 5
 CHARACTER_INGREDIENT_SEG = 5
+
+-- IngredientMod must be one of the following values
+INGREDIENT_MOD_LOOKUP =
+{
+    [0] = 0,
+    [1] = 0.25,
+    [2] = 0.5,
+    [3] = 0.75,
+    [4] = 1.0,
+}
+INGREDIENT_MOD = table.invert(INGREDIENT_MOD_LOOKUP)
 
 CONTAINERTEST =
 {

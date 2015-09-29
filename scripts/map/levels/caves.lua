@@ -94,4 +94,5 @@ AddLevel(LEVELTYPE.SURVIVAL, {
         {"layout_mode",     "RestrictNodesByKey"},
         {"wormhole_prefab", "tentacle_pillar" },
 	},
+    background_node_range = {0,1},
 })

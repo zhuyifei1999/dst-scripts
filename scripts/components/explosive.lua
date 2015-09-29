@@ -5,22 +5,18 @@ local Explosive = Class(function(self,inst)
     self.buildingdamage = 10
     self.lightonexplode = true
     self.onexplodefn = nil
-    self.onignitefn = nil
 end)
 
 function Explosive:SetOnExplodeFn(fn)
     self.onexplodefn = fn
 end
 
-function Explosive:SetOnIgniteFn(fn)
-    self.onignitefn = fn
-end
-
 function Explosive:OnIgnite()
     DefaultBurnFn(self.inst)
-    if self.onignitefn ~= nil then
-        self.onignitefn(self.inst)
-    end
+end
+
+function Explosive:OnExtinguish()
+    DefaultExtinguishFn(self.inst)
 end
 
 function Explosive:OnBurnt()

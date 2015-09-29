@@ -65,6 +65,10 @@ local function OnIgniteFn(inst)
     inst.SoundEmitter:PlaySound("dontstarve/creatures/slurtle/rattle", "rattle")
 end
 
+local function OnExtinguishFn(inst)
+    inst.SoundEmitter:KillSound("rattle")
+end
+
 local function OnExplodeFn(inst)
     inst.SoundEmitter:KillSound("rattle")
     inst.SoundEmitter:PlaySound("dontstarve/creatures/slurtle/explode")
@@ -156,12 +160,13 @@ local function commonfn(bank, build, tag)
     inst.components.explosive.lightonexplode = false
 
     inst.components.explosive:SetOnExplodeFn(OnExplodeFn)
-    inst.components.explosive:SetOnIgniteFn(OnIgniteFn)
 
     inst:ListenForEvent("ifnotchanceloot", OnNotChanceLoot)
 
     MakeMediumFreezableCharacter(inst, "shell")
     MakeMediumBurnableCharacter(inst, "shell")
+    inst.components.burnable:SetOnIgniteFn(OnIgniteFn)
+    inst.components.burnable:SetOnExtinguishFn(OnExtinguishFn)
 
     inst.lastmeal = 0
     inst.stomach = 0

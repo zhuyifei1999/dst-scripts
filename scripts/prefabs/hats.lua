@@ -212,17 +212,31 @@ local function MakeHat(name)
         return inst
     end
 
+    local function ruinshat_fxanim(inst)
+        inst.fx.AnimState:PlayAnimation("hit")
+        inst.fx.AnimState:PushAnimation("idle_loop")
+    end
+
+    local function ruinshat_unproc(inst)
+        if inst:HasTag("forcefield") then
+            inst:RemoveEventCallback("armordamaged", ruinshat_fxanim)
+            inst.fx:kill_fx()
+            if inst:IsValid() then
+                inst:RemoveTag("forcefield")
+                inst.components.armor.ontakedamage = nil
+                inst.components.armor:SetAbsorption(TUNING.ARMOR_RUINSHAT_ABSORPTION)
+                inst:DoTaskInTime(TUNING.ARMOR_RUINSHAT_COOLDOWN, function() inst.active = false end)
+            end
+        end
+    end
+
     local function ruinshat_proc(inst, owner)
         inst:AddTag("forcefield")
         inst.components.armor:SetAbsorption(TUNING.FULL_ABSORPTION)
-        local fx = SpawnPrefab("forcefieldfx")
-        fx.entity:SetParent(owner.entity)
-        fx.Transform:SetPosition(0, 0.2, 0)
-        local fx_hitanim = function()
-            fx.AnimState:PlayAnimation("hit")
-            fx.AnimState:PushAnimation("idle_loop")
-        end
-        fx:ListenForEvent("blocked", fx_hitanim, owner)
+        inst.fx = SpawnPrefab("forcefieldfx")
+        inst.fx.entity:SetParent(owner.entity)
+        inst.fx.Transform:SetPosition(0, 0.2, 0)
+        inst:ListenForEvent("armordamaged", ruinshat_fxanim)
 
         inst.components.armor.ontakedamage = function(inst, damage_amount)
             if owner then
@@ -236,25 +250,18 @@ local function MakeHat(name)
 
         inst.active = true
 
-        owner:DoTaskInTime(--[[Duration]] TUNING.ARMOR_RUINSHAT_DURATION, function()
-            fx:RemoveEventCallback("blocked", fx_hitanim, owner)
-            fx.kill_fx(fx)
-            if inst:IsValid() then
-                inst:RemoveTag("forcefield")
-                inst.components.armor.ontakedamage = nil
-                inst.components.armor:SetAbsorption(TUNING.ARMOR_RUINSHAT_ABSORPTION)
-                owner:DoTaskInTime(--[[Cooldown]] TUNING.ARMOR_RUINSHAT_COOLDOWN, function() inst.active = false end)
-            end
-        end)
+        inst:DoTaskInTime(TUNING.ARMOR_RUINSHAT_DURATION, ruinshat_unproc)
     end
 
     local function tryproc(inst, owner)
-        if not inst.active and math.random() < --[[ Chance to proc ]] TUNING.ARMOR_RUINSHAT_PROC_CHANCE then
+        if not inst.active and math.random() < TUNING.ARMOR_RUINSHAT_PROC_CHANCE then
            ruinshat_proc(inst, owner)
         end
     end
 
     local function ruins_onunequip(inst, owner)
+        ruinshat_unproc(inst)
+
         owner.AnimState:ClearOverrideSymbol("swap_hat")
         
         owner.AnimState:Hide("HAT")

@@ -1116,6 +1116,20 @@ AddTask("Chessworld", {
 		colour={r=.05,g=.5,b=.05,a=1},
 	})
 
+------------------------------------------------------------
+-- GIANTS ROOMS
+------------------------------------------------------------
+
+AddTask("MooseBreedingTask", {
+		locks={LOCKS.TREES,LOCKS.TIER2},
+		keys_given={KEYS.PIGS,KEYS.WOOD,KEYS.MEAT,KEYS.TIER2},
+		room_choices={
+			["MooseGooseBreedingGrounds"] = 1,
+		},
+		room_bg=GROUND.GRASS,
+		background_room="BGGrass",
+		colour={r=1,g=0.7,b=1,a=1},
+})
 
 
 require("map/tasks/maxwell")
@@ -1126,8 +1140,6 @@ require("map/tasks/ruins")
 
 require("map/tasks/DLCtasks")
 
-require("map/tasks/dst_tasks")
-require("map/tasks/dst_cave_tasks")
 ------------------------------------------------------------
 -- TEST TASKS
 ------------------------------------------------------------

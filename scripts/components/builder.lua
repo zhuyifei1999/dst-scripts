@@ -11,6 +11,7 @@ local function onancientbonus(self, ancientbonus)
 end
 
 local function oningredientmod(self, ingredientmod)
+    assert(INGREDIENT_MOD[ingredientmod] ~= nil, "Ingredient mods restricted to certain values, see constants.lua INGREDIENT_MOD")
     self.inst.replica.builder:SetIngredientMod(ingredientmod)
 end
 

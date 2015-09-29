@@ -1520,14 +1520,14 @@ function Tune(overrides)
 	    EYETURRET_RANGE = 15,
 	    EYETURRET_ATTACK_PERIOD = 3,
 
-
-	    TRANSITIONTIME =
-	    {
-	    	CALM = 2,
-	    	WARN = 2,
-	    	NIGHTMARE = 2,
-	    	DAWN = 2,
-		},
+        NIGHTMARE_SEGS =
+        {
+            CALM = 12,
+            WARN = 3,
+            WILD = 5,
+            DAWN = 2,
+        },
+        NIGHTMARE_SEG_VARIATION = 3,
 
 		SHADOWWAXWELL_LIFETIME = total_day_time * 2.5,
 		SHADOWWAXWELL_SPEED = 6,

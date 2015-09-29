@@ -41,6 +41,8 @@ function MakeWallType(data)
         inst.entity:AddSoundEmitter()
         inst.entity:AddNetwork()
 
+        inst.Transform:SetEightFaced()
+
         inst:AddTag("wall")
 
         for k,v in ipairs(data.tags) do

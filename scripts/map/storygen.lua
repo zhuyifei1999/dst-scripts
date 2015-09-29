@@ -725,14 +725,18 @@ function Story:AddBGNodes(min_count, max_count)
 			blocker_blank_template = {
 				type=NODE_TYPE.Blank,
                 name="blocker_blank",
-				tags = {"RoadPoison", "ForceDisconnected"},					 
+				tags = {"RoadPoison", "ForceDisconnected"},
 				colour={r=0.3,g=.8,b=.5,a=.50},
 				value = self.impassible_value
 			}
+            ArrayUnion(blocker_blank_template.tags, task.data.room_tags)
 		end
 		
 
-		self:RunTaskSubstitution(task, background_template.contents.distributeprefabs)
+        if background_template.contents == nil then
+            background_template.contents = {}
+        end
+        self:RunTaskSubstitution(task, background_template.contents.distributeprefabs)
 
 		for nodeid,node in pairs(task:GetNodes(false)) do
 
@@ -763,7 +767,7 @@ function Story:AddBGNodes(min_count, max_count)
 												colour = new_room.colour,
 												value = new_room.value,
 												internal_type = new_room.internal_type,
-												tags = extra_tags,
+												tags = ArrayUnion(extra_tags, task.room_tags),
 												terrain_contents = new_room.contents,
 												terrain_contents_extra = extra_contents,
 												terrain_filter = self.terrain.filter,
@@ -795,7 +799,7 @@ function Story:AddBGNodes(min_count, max_count)
 													colour = new_room.colour,
 													value = new_room.value,
 													internal_type = new_room.internal_type,
-													tags = extra_tags,
+													tags = ArrayUnion(extra_tags, task.room_tags),
 													terrain_contents = new_room.contents,
 													terrain_contents_extra = extra_contents,
 													terrain_filter = self.terrain.filter,
@@ -939,7 +943,7 @@ function Story:GenerateNodesFromTask(task, crossLinkFactor)
 	end
 
 
-	local task_node = Graph(task.id, {parent=self.rootNode, default_bg=task.room_bg, colour = task.colour, background=task.background_room, set_pieces=task.set_pieces, random_set_pieces=task.random_set_pieces, maze_tiles=task.maze_tiles})
+	local task_node = Graph(task.id, {parent=self.rootNode, default_bg=task.room_bg, colour = task.colour, background=task.background_room, set_pieces=task.set_pieces, random_set_pieces=task.random_set_pieces, maze_tiles=task.maze_tiles, room_tags=task.room_tags})
 	task_node.substitutes = task.substitutes
 	--print ("Adding Voronoi Child", self.rootNode.id, task.id, task.backround_room, task.room_bg, task.colour.r, task.colour.g, task.colour.b, task.colour.a )
 
@@ -969,7 +973,7 @@ function Story:GenerateNodesFromTask(task, crossLinkFactor)
 												colour = next_room.colour,
 												value = next_room.value,
 												internal_type = next_room.internal_type,
-												tags = extra_tags,
+												tags = ArrayUnion(extra_tags, task.room_tags),
 												custom_tiles = next_room.custom_tiles,
 												custom_objects = next_room.custom_objects,
 												terrain_contents = next_room.contents,

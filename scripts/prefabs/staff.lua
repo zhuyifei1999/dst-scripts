@@ -251,6 +251,7 @@ local function teleport_func(inst, target)
     local tar = target or caster
     if not caster then caster = tar end
     local pt = tar:GetPosition()
+    -- Note! This returns closest first, so if you replace it, make sure you get the closest...
     local ents = TheSim:FindEntities(pt.x,pt.y,pt.z, 9000, {"telebase"})
 
     if #ents <= 0 then

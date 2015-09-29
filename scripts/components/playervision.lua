@@ -14,6 +14,23 @@ local NIGHTVISION_COLOURCUBES =
     full_moon = "images/colour_cubes/mole_vision_off_cc.tex",
 }
 
+local NIGHTMARE_COLORCUBES =
+{
+    calm = "images/colour_cubes/ruins_dark_cc.tex",
+    warn = "images/colour_cubes/ruins_dim_cc.tex",
+    wild = "images/colour_cubes/ruins_light_cc.tex",
+    dawn = "images/colour_cubes/ruins_dim_cc.tex",
+}
+
+local NIGHTMARE_PHASEFN =
+{
+    blendtime = 8,
+    events = { "nightmarephasechanged" }, -- note: actual (client-side) world component event, not worldstate
+    fn = function()
+        return TheWorld.state.nightmarephase
+    end,
+}
+
 local function OnEquipChanged(inst)
     local self = inst.components.playervision
     if self.nightvision == not inst.replica.inventory:EquipHasTag("nightvision") then
@@ -39,6 +56,7 @@ local PlayerVision = Class(function(self, inst)
     self.forcenightvision = false
     self.overridecctable = nil
     self.currentcctable = nil
+    self.currentccphasefn = nil
 
     inst:DoTaskInTime(0, OnInit, self)
 end)
@@ -47,26 +65,43 @@ function PlayerVision:HasNightVision()
     return self.nightvision or self.forcenightvision
 end
 
+function PlayerVision:GetCCPhaseFn()
+    return self.currentccphasefn
+end
+
 function PlayerVision:GetCCTable()
     return self.currentcctable
 end
 
 function PlayerVision:UpdateCCTable()
     local cctable =
-        (self.ghostvision and GHOSTVISION_COLOURCUBES) or
-        self.overridecctable or
-        ((self.nightvision or self.forcenightvision) and NIGHTVISION_COLOURCUBES) or
-        nil
+        (self.ghostvision and GHOSTVISION_COLOURCUBES)
+        or self.overridecctable
+        or ((self.nightvision or self.forcenightvision) and NIGHTVISION_COLOURCUBES)
+        or (self.nightmarevision and NIGHTMARE_COLORCUBES)
+        or nil
+
+    local ccphasefn = (self.nightmarevision and NIGHTMARE_PHASEFN)
+        or nil
 
     if cctable ~= self.currentcctable then
         self.currentcctable = cctable
+        self.currentccphasefn = ccphasefn
         self.inst:PushEvent("ccoverrides", cctable)
+        self.inst:PushEvent("ccphasefn", ccphasefn)
     end
 end
 
 function PlayerVision:SetGhostVision(enabled)
     if not self.ghostvision ~= not enabled then
         self.ghostvision = enabled == true
+        self:UpdateCCTable()
+    end
+end
+
+function PlayerVision:SetNightmareVision(enabled)
+    if not self.nightmarevision ~= not enabled then
+        self.nightmarevision = enabled == true
         self:UpdateCCTable()
     end
 end

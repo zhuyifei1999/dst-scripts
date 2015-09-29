@@ -269,7 +269,6 @@ end
 local function OnIgnite(inst)
     if inst.components.childspawner ~= nil then
         SpawnDefenders(inst)
-        inst:RemoveComponent("childspawner")
     end
     inst.SoundEmitter:KillSound("loop")
     DefaultBurnFn(inst)

@@ -116,8 +116,8 @@ end
 
 function table.invert(t)
     local invt = {}
-    for i, v in ipairs(t) do
-        invt[v] = i
+    for k, v in pairs(t) do
+        invt[v] = k
     end
     return invt
 end

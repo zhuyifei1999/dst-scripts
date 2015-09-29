@@ -85,10 +85,12 @@ local _phase = _iscave and "night" or "day"
 local _fullmoonphase = nil
 local _season = "autumn"
 local _ambientcctable = _iscave and CAVE_COLOURCUBES or SEASON_COLOURCUBES.autumn
+local _insanitycctable = INSANITY_COLOURCUBES
 local _ambientcc = { _ambientcctable[_phase], _ambientcctable[_phase] }
-local _insanitycc = { INSANITY_COLOURCUBES[_phase], INSANITY_COLOURCUBES[_phase] }
+local _insanitycc = { _insanitycctable[_phase], _insanitycctable[_phase] }
 local _overridecc = nil
 local _overridecctable = nil
+local _overridephase = nil
 local _remainingblendtime = 0
 local _totalblendtime = 0
 local _fxtime = 0
@@ -101,13 +103,19 @@ local _colourmodifier = nil
 --------------------------------------------------------------------------
 
 local function GetCCPhase()
+    return (_overridephase and _overridephase.fn and _overridephase.fn())
+        or (_iscave and "night")
+        or (_phase == "night" and _fullmoonphase or _phase)
+end
+
+local function GetInsanityPhase()
     return (_iscave and "night")
         or (_phase == "night" and _fullmoonphase or _phase)
 end
 
 local function Blend(time)
     local ambientcctarget = _ambientcctable[GetCCPhase()] or IDENTITY_COLOURCUBE
-    local insanitycctarget = INSANITY_COLOURCUBES[GetCCPhase()] or IDENTITY_COLOURCUBE
+    local insanitycctarget = _insanitycctable[GetInsanityPhase()] or IDENTITY_COLOURCUBE
 
     if _overridecc ~= nil then
         _ambientcc[2] = ambientcctarget
@@ -159,6 +167,11 @@ end
 --[[ Private event handlers ]]
 --------------------------------------------------------------------------
 
+local function OnOverridePhaseEvent(inst)
+    -- just naively force an update when an override event happens
+    UpdateAmbientCCTable(_overridephase and _overridephase.blendtime or DEFAULT_BLEND_TIME)
+end
+
 local function OnSanityDelta(player, data)
     local distortion = easing.outQuad(data.newpercent, 0, 1, 1)
     PostProcessor:SetColourCubeLerp(1, 1 - distortion)
@@ -168,7 +181,22 @@ end
 
 local function OnOverrideCCTable(player, cctable)
     _overridecctable = cctable
-    UpdateAmbientCCTable(DEFAULT_BLEND_TIME)
+    UpdateAmbientCCTable(_overridephase and _overridephase.blendtime or DEFAULT_BLEND_TIME)
+end
+
+local function OnOverrideCCPhaseFn(player, fn)
+    if _overridephase ~= nil then
+        for i,event in ipairs(_overridephase.events) do
+            inst:RemoveEventCallback(event, OnOverridePhaseEvent)
+        end
+    end
+    _overridephase = fn
+    if _overridephase ~= nil then
+        for i,event in ipairs(_overridephase.events) do
+            inst:ListenForEvent(event, OnOverridePhaseEvent)
+        end
+    end
+    UpdateAmbientCCTable(_overridephase and _overridephase.blendtime or DEFAULT_BLEND_TIME)
 end
 
 local function OnPlayerActivated(inst, player)
@@ -177,19 +205,23 @@ local function OnPlayerActivated(inst, player)
     elseif _activatedplayer ~= nil and _activatedplayer.entity:IsValid() then
         inst:RemoveEventCallback("sanitydelta", OnSanityDelta, _activatedplayer)
         inst:RemoveEventCallback("ccoverrides", OnOverrideCCTable, player)
+        inst:RemoveEventCallback("ccphasefn", OnOverrideCCPhaseFn, player)
     end
     _activatedplayer = player
     inst:ListenForEvent("sanitydelta", OnSanityDelta, player)
     inst:ListenForEvent("ccoverrides", OnOverrideCCTable, player)
+    inst:ListenForEvent("ccphasefn", OnOverrideCCPhaseFn, player)
     if player.replica.sanity ~= nil then
         OnSanityDelta(player, { newpercent = player.replica.sanity:GetPercent() })
     end
     OnOverrideCCTable(player, player.components.playervision ~= nil and player.components.playervision:GetCCTable() or nil)
+    OnOverrideCCPhaseFn(player, player.components.playervision ~= nil and player.components.playervision:GetCCPhaseFn() or nil)
 end
 
 local function OnPlayerDeactivated(inst, player)
     inst:RemoveEventCallback("sanitydelta", OnSanityDelta, player)
     inst:RemoveEventCallback("ccoverrides", OnOverrideCCTable, player)
+    inst:RemoveEventCallback("ccphasefn", OnOverrideCCPhaseFn, player)
     OnSanityDelta(player, { newpercent = 1 })
     OnOverrideCCTable(player, nil)
     if player == _activatedplayer then
@@ -233,6 +265,7 @@ local function OnOverrideColourCube(inst, cc)
             PostProcessor:SetColourCubeData(0, cc, cc)
             PostProcessor:SetColourCubeData(1, cc, cc)
             PostProcessor:SetColourCubeLerp(0, 1)
+            PostProcessor:SetColourCubeLerp(1, 0)
         else
             PostProcessor:SetColourCubeData(0, _ambientcc[2], _ambientcc[2])
             PostProcessor:SetColourCubeData(1, _insanitycc[2], _insanitycc[2])

@@ -146,8 +146,10 @@ AddGlobalDebugKey(KEY_R, function()
         else
             c_reset()
         end
-        return true
+    else
+        c_repeatlastcommand()
     end
+    return true
 end)
 
 AddGameDebugKey(KEY_F2, function()
@@ -466,7 +468,11 @@ AddGameDebugKey(KEY_F9, function()
 end)
 
 AddGameDebugKey(KEY_F10, function()
-    TheWorld:PushEvent("ms_nextphase")
+    if TheInput:IsKeyDown(KEY_SHIFT) then
+        TheWorld:PushEvent("ms_nextnightmarephase")
+    else
+        TheWorld:PushEvent("ms_nextphase")
+    end
     return true
 end)
 
@@ -844,6 +850,48 @@ AddGameDebugKey(KEY_I, function()
     end
 
     return true
+end)
+
+local GROUND_LOOKUP = table.invert(GROUND)
+
+AddGameDebugKey(KEY_0, function()
+    if TheInput:IsKeyDown(KEY_SHIFT) then
+        local pos = TheInput:GetWorldPosition()
+        local x, y = TheWorld.Map:GetTileCoordsAtPoint(pos:Get())
+        local original_tile = TheWorld.Map:GetTileAtPoint(pos:Get())
+        print("Original tile", GROUND_LOOKUP[original_tile])
+        local tile = original_tile+1
+        while GROUND_LOOKUP[tile] == nil do
+            if tile > 255 then
+                tile = 0
+            end
+            tile = tile + 1
+        end
+        print("Changing tile to "..GROUND_LOOKUP[tile])
+        TheWorld.Map:SetTile(x, y, tile)
+        TheWorld.Map:RebuildLayer(original_tile,x,y)
+        TheWorld.Map:RebuildLayer(tile,x,y)
+    end
+end)
+
+AddGameDebugKey(KEY_9, function()
+    if TheInput:IsKeyDown(KEY_SHIFT) then
+        local pos = TheInput:GetWorldPosition()
+        local x, y = TheWorld.Map:GetTileCoordsAtPoint(pos:Get())
+        local original_tile = TheWorld.Map:GetTileAtPoint(pos:Get())
+        print("Original tile", GROUND_LOOKUP[original_tile])
+        local tile = original_tile-1
+        while GROUND_LOOKUP[tile] == nil do
+            if tile < 1 then
+                tile = 255
+            end
+            tile = tile - 1
+        end
+        print("Changing tile to "..GROUND_LOOKUP[tile])
+        TheWorld.Map:SetTile(x, y, tile)
+        TheWorld.Map:RebuildLayer(original_tile,x,y)
+        TheWorld.Map:RebuildLayer(tile,x,y)
+    end
 end)
 
 -------------------------------------------MOUSE HANDLING

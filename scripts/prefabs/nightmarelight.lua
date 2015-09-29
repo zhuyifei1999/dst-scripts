@@ -1,6 +1,6 @@
     local assets =
 {
-	Asset("ANIM", "anim/rock_light.zip"),
+    Asset("ANIM", "anim/rock_light.zip"),
 }
 
 local prefabs =
@@ -16,6 +16,7 @@ local function ReturnChildren(inst)
 
         if child.components.lootdropper then
             child.components.lootdropper:SetLoot({})
+            child.components.lootdropper:SetChanceLootTable(nil)
         end
 
         if child.components.health then
@@ -25,7 +26,7 @@ local function ReturnChildren(inst)
 end
 
 local function turnoff(inst, light)
-    if light then
+    if light ~= nil then
         light:Enable(false)
     end
 end
@@ -38,7 +39,6 @@ local function spawnfx(inst)
     end
 end
 
-
 local states =
 {
     calm = function(inst, instant)
@@ -48,25 +48,25 @@ local states =
 
         inst.Light:Enable(true)
 
-        inst.components.lighttweener:StartTween(nil, 0, nil, nil, nil, (instant and 0) or 1, turnoff) 
-        
+        inst.components.lighttweener:StartTween(nil, 0, nil, nil, nil, (instant and 0) or 1, turnoff)
+
         if not instant then
-            inst.AnimState:PushAnimation("close_2") 
+            inst.AnimState:PushAnimation("close_2")
             inst.AnimState:PushAnimation("idle_closed")
 
-            inst.fx.AnimState:PushAnimation("close_2") 
+            inst.fx.AnimState:PushAnimation("close_2")
             inst.fx.AnimState:PushAnimation("idle_closed")
             inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_spawner_close")
         else
             inst.AnimState:PlayAnimation("idle_closed")
-            inst.fx.AnimState:PlayAnimation("idle_closed")            
+            inst.fx.AnimState:PlayAnimation("idle_closed")
         end
 
         if inst.components.childspawner then
             inst.components.childspawner:StopSpawning()
             inst.components.childspawner:StartRegen()
             ReturnChildren(inst)
-        end        
+        end
     end,
 
     warn = function(inst, instant)
@@ -75,13 +75,13 @@ local states =
 
         inst.components.lighttweener:StartTween(nil, 3, nil, nil, nil, (instant and 0) or  0.5)
 
-        inst.AnimState:PlayAnimation("open_1") 
+        inst.AnimState:PlayAnimation("open_1")
         inst.fx.AnimState:PlayAnimation("open_1")
         inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_spawner_open_warning")
         inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_spawner_warning_LP", "warnLP")
     end,
 
-    nightmare = function(inst, instant)
+    wild = function(inst, instant)
 
         inst.SoundEmitter:KillSound("warnLP")
         inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_spawner_open_LP", "nightmareLP")
@@ -105,7 +105,7 @@ local states =
         if inst.components.childspawner then
             inst.components.childspawner:StartSpawning()
             inst.components.childspawner:StopRegen()
-        end 
+        end
     end,
 
 
@@ -120,71 +120,62 @@ local states =
 
         inst.AnimState:PlayAnimation("close_1")
         inst.fx.AnimState:PlayAnimation("close_1")
-       
+
         inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_spawner_open")
 
         if inst.components.childspawner then
             inst.components.childspawner:StartSpawning()
             inst.components.childspawner:StopRegen()
-        end 
+        end
     end
 }
 
 
-local function onsave(inst, data)
-    if inst.rockstate then
-        data.rockstate = inst.rockstate
-    end
-end
-
-local function onload(inst, data)
-    if not data then
-        return
-    end
-    if data.rockstate then
-        inst.rockstate = data.rockstate        
-        spawnfx(inst)
-        states[inst.rockstate](inst, true)
-    end
-end
-
 local function getsanityaura(inst)
-    if inst.rockstate == "calm" then
-        return 0
-    elseif inst.rockstate == "warn" then
+    if TheWorld.state.isnightmarewild then
+        return -TUNING.SANITY_MED
+    elseif TheWorld.state.isnightmarewarn or TheWorld.state.isnightmaredawn then
         return -TUNING.SANITY_SMALL
     else
-        return -TUNING.SANITY_MED
+        return 0
     end
 end
 
-local function changestate(inst, data)
-    local statefn = states[data.newphase]
+local function changestate(inst, phase, instant)
+    local statefn = states[phase]
 
     if statefn then
-        spawnfx(inst)
-        inst.rockstate = data.newphase
-        inst:DoTaskInTime(math.random() * 2, statefn)
+        if instant then
+            statefn(inst, true)
+        else
+            inst:DoTaskInTime(math.random() * 2, statefn)
+        end
     end
 end
 
 local function fn()
 
-	local inst = CreateEntity()
-	local trans = inst.entity:AddTransform()
-	local anim = inst.entity:AddAnimState()
+    local inst = CreateEntity()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
-    
-    local minimap = inst.entity:AddMiniMapEntity()
-    minimap:SetIcon( "nightmarelight.png" )
+    inst.entity:AddMiniMapEntity()
+    inst.entity:AddNetwork()
+    inst.entity:AddLight()
 
-    inst.rockstate = "calm"
+    inst.MiniMapEntity:SetIcon( "nightmarelight.png" )
 
-    anim:SetBuild("rock_light")
-    anim:SetBank("rock_light")
-    anim:PlayAnimation("idle_closed",false)
-  
-    MakeObstaclePhysics(inst, 1) 
+    inst.AnimState:SetBuild("rock_light")
+    inst.AnimState:SetBank("rock_light")
+    inst.AnimState:PlayAnimation("idle_closed",false)
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    MakeObstaclePhysics(inst, 1)
 
     inst:AddComponent("sanityaura")
     inst.components.sanityaura.aurafn = getsanityaura
@@ -199,13 +190,13 @@ local function fn()
     inst:AddComponent("inspectable")
 
     inst:AddComponent("lighttweener")
-    local light = inst.entity:AddLight()
-    inst.components.lighttweener:StartTween(light, 1, .9, 0.9, {255/255,255/255,255/255}, 0, turnoff)
+    inst.components.lighttweener:StartTween(inst.Light, 1, .9, 0.9, {255/255,255/255,255/255}, 0, turnoff)
 
-    inst:ListenForEvent("phasechange", function(world, data) changestate(inst, data) end, TheWorld)
-
-    inst.OnSave = onsave
-    inst.OnLoad = onload
+    inst:WatchWorldState("nightmarephase", changestate)
+    inst:DoTaskInTime(0, function()
+        spawnfx(inst)
+        changestate(inst, TheWorld.state.nightmarephase, true)
+    end)
 
     return inst
 end

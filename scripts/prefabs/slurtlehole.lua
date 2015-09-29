@@ -71,8 +71,11 @@ local function OnIgniteFn(inst)
     inst.SoundEmitter:PlaySound("dontstarve/common/blackpowder_fuse_LP", "hiss")
     if inst.components.childspawner ~= nil then
         inst.components.childspawner:ReleaseAllChildren()
-        inst:RemoveComponent("childspawner")
     end
+end
+
+local function OnExtinguishFn(inst)
+    inst.SoundEmitter:KillSound("hiss")
 end
 
 local function OnExplodeFn(inst)
@@ -139,10 +142,11 @@ local function fn()
     --V2C: Remove default OnBurnt handler, as it conflicts with
     --explosive component's OnBurnt handler for removing itself
     inst.components.burnable:SetOnBurntFn(nil)
+    inst.components.burnable:SetOnIgniteFn(OnIgniteFn)
+    inst.components.burnable:SetOnExtinguishFn(OnExtinguishFn)
 
     inst:AddComponent("explosive")
     inst.components.explosive:SetOnExplodeFn(OnExplodeFn)
-    inst.components.explosive:SetOnIgniteFn(OnIgniteFn)
     inst.components.explosive.explosivedamage = 50
     inst.components.explosive.buildingdamage = 15
     inst.components.explosive.lightonexplode = false

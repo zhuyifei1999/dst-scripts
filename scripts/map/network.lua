@@ -34,8 +34,9 @@ Graph = Class(function(self, id, args)
     -- Search
     self.visited = false
     
-    self.data = {position={x=0,y=0},old_pos={x=0,y=0}, width=0, height=0, size=0, value= args.default_bg, background=args.background}--value=0.43
+    self.data = {position={x=0,y=0},old_pos={x=0,y=0}, width=0, height=0, size=0, value= args.default_bg, background=args.background}
 
+    self.room_tags = args.room_tags
 
     self.colour = args.colour or {r=1,g=0,b=0,a=1}
 
@@ -667,7 +668,7 @@ end
 
 function Graph:PopulateVoronoi(spawnFN, entities, width, height, world_gen_choices, prefabDensities)
 	local nodes = self:GetNodes(false)
-	print(self.id.." Populating "..GetTableSize(nodes).." nodes...")	
+	--print(self.id.." Populating "..GetTableSize(nodes).." nodes...")	
 	for k,node in pairs(nodes) do
 		node:PopulateVoronoi(spawnFN, entities, width, height, world_gen_choices, prefabDensities)
 		local perTerrain = false

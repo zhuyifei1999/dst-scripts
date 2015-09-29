@@ -32,6 +32,20 @@ local function OnAttacked(inst, data)
     end
 end
 
+local function ScheduleCleanup(inst)
+    inst:DoTaskInTime(math.random() * TUNING.NIGHTMARE_SEGS.DAWN * TUNING.SEG_TIME, function()
+        inst.components.lootdropper:SetLoot({})
+        inst.components.lootdropper:SetChanceLootTable(nil)
+        inst.components.health:Kill()
+    end)
+end
+
+local function OnNightmareDawn(inst, dawn)
+    if dawn then
+        ScheduleCleanup(inst)
+    end
+end
+
 local function MakeShadowCreature(data)
     local bank = data.bank 
     local build = data.build 
@@ -106,23 +120,8 @@ local function MakeShadowCreature(data)
         inst.components.lootdropper:SetChanceLootTable('nightmare_creature')
 
         inst:ListenForEvent("attacked", OnAttacked)
-        -- if GetNightmareClock() then
-        --     inst:ListenForEvent( "phasechange", 
-        --                         function (source,data)
-        --                             dprint("phase:",data.newphase)
-        --                             if data.newphase == "dawn" then
-        --                                 local dawntime = GetNightmareClock():GetDawnTime()
-        --                                 inst:DoTaskInTime(GetRandomWithVariance(dawntime/2,dawntime/3),
-        --                                                     function()
-        --                                                         -- otherwise we end up with a lot of piles of nightmareful
-        --                                                         inst.components.lootdropper:SetLoot({})
-        --                                                         inst.sg:GoToState("disappear")
-        --                                                     end)
-        --                             end
-        --                         end,
-        --                         TheWorld)
 
-        -- end
+        inst:WatchWorldState("isnightmaredawn", OnNightmareDawn)
 
         inst:AddComponent("knownlocations")
 

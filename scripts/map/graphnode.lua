@@ -61,7 +61,8 @@ function Node:SaveEncode(map)
 				type = self.data.type,
 				c = self.colour,
 				area = WorldSim:GetSiteArea(self.id),
-				}
+                tags = self.data.tags,
+            }
 	
 end
 

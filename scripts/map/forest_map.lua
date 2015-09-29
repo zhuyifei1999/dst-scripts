@@ -451,9 +451,9 @@ local function GenerateVoro(prefab, map_width, map_height, tasks, world_gen_choi
 			   		if types[idx] == 0 then	
 			   			--Spawning chests within the labyrinth.
 						local prefab = "pandoraschest"
-						local x = (xs[idx]+1.5 - map_width/2.0)*TILE_SCALE
+						local x = (xs[idx]+1.5 - map_width/2.0)*TILE_SCALE --gjans: note the +1.5 instead of +0.5... RunMaze points are in a strange position.
 						local y = (ys[idx]+1.5 - map_height/2.0)*TILE_SCALE
-						WorldSim:ReserveTile(xs[idx], ys[idx])
+						--WorldSim:ReserveTile(xs[idx], ys[idx]) --gjans: This reseves the wrong tile, something wrong with the points returned by RunMaze.
 						--print(task.." Labryth Point of Interest:",xs[idx], ys[idx], x, y)
 
 						if entities[prefab] == nil then
@@ -474,13 +474,12 @@ local function GenerateVoro(prefab, map_width, map_height, tasks, world_gen_choi
                 end
             end
 
-            -- And same story on all it's exits
+            -- And same story on all it's exits and non-maze internal nodes
             for i,node in ipairs(labyrinth_nodes) do
                 local real_node = nodes[node]
                 for id, edge in pairs(real_node.edges) do
-                    if edge.node1.data.task ~= edge.node2.data.task
-                        and edge.node1.data.type ~= NODE_TYPE.Blank and edge.node2.data.type ~= NODE_TYPE.Blank then
-
+                    if edge.node1.data.type ~= NODE_TYPE.Blank and edge.node2.data.type ~= NODE_TYPE.Blank
+                        and table.contains(topology_save.GlobalTags["Labyrinth"][task], edge.node1.id) ~= table.contains(topology_save.GlobalTags["Labyrinth"][task], edge.node2.id) then
                         WorldSim:DrawCellLine( edge.node1.id, edge.node2.id, NODE_INTERNAL_CONNECTION_TYPE.EdgeSite, GROUND.BRICK)
                     end
                 end

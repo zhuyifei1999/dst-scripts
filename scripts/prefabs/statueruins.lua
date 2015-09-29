@@ -64,14 +64,12 @@ local function DoFx(inst)
     end
 end
 
-local function fade_in(inst)
+local function fade_in(inst, rad)
     inst.Light:Enable(true)
-    --DoFx(inst)
-    inst.components.lighttweener:StartTween(nil, 3, nil, nil, nil, 0.5) 
+    inst.components.lighttweener:StartTween(nil, rad, nil, nil, nil, 0.5) 
 end
 
 local function fade_out(inst)
-    --DoFx(inst)
     inst.components.lighttweener:StartTween(nil, 0, nil, nil, nil, 1, turnoff) 
 end
 
@@ -80,7 +78,6 @@ local function ShowState(inst, phase, fromwork)
         return
     end
 
-    --local nclock = GetNightmareClock()
     local suffix = ""
     local workleft = inst.components.workable.workleft
 
@@ -91,24 +88,23 @@ local function ShowState(inst, phase, fromwork)
         inst.AnimState:OverrideSymbol("swap_gem", inst.small and "statue_ruins_small_gem" or "statue_ruins_gem", inst.gemmed)
     end
 
-    --[[if nclock and nclock:IsNightmare() then
-        suffix = "_night"
-        inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
-        if not fromwork then
-            DoFx(inst)
-        end
-    end]]
-
-    if phase ~= nil and inst.phase ~= phase and phase ~= "nightmare" then
+    if phase ~= nil then
         if phase == "warn" then
-            fade_in(inst)
-        elseif phase == "calm" then
-            fade_out(inst)
-        else
+            fade_in(inst, 2)
+        elseif phase == "wild" then
+            suffix = "_night"
+            fade_in(inst, 4)
+            inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+            DoFx(inst)
+        elseif phase == "dawn" then
+            fade_in(inst, 2)
             inst.AnimState:ClearBloomEffectHandle()
             DoFx(inst)
+        elseif phase == "calm" then
+            fade_out(inst)
         end
-        inst.phase = phase
+    elseif fromwork then
+        -- we don't actually have hit animations, we just play the animation
     end
 
     inst.AnimState:PlayAnimation(
@@ -126,8 +122,7 @@ local function OnWorked(inst, worked, workleft)
         local fx = SpawnAt("collapse_small", inst)
         fx:SetMaterial("rock")
 
-        --[[local nclock = GetNightmareClock()
-        if nclock and nclock:IsNightmare() then
+        if TheWorld.state.isnightmarewild then
             if math.random() <= 0.3 then
                 if math.random() <= 0.5 then
                     SpawnAt("crawlingnightmare", inst)
@@ -135,11 +130,29 @@ local function OnWorked(inst, worked, workleft)
                     SpawnAt("nightmarebeak", inst)
                 end
             end
-        end]]
+        end
 
         inst:Remove()
     else
         ShowState(inst, nil, true)
+    end
+end
+
+local function OnPhaseChanged(inst, phase, instant)
+    if instant then
+        ShowState(inst, phase)
+    else
+        inst:DoTaskInTime(math.random() * 2, ShowState, phase)
+    end
+end
+
+local function onsave(inst, data)
+    data.gem = inst.gemmed
+end
+
+local function onload(inst, data)
+    if data and data.gem then
+        inst.gemmed = data.gem
     end
 end
 
@@ -202,13 +215,13 @@ local function commonfn(small)
 
     inst:AddComponent("lootdropper")
 
-    --[[if GetNightmareClock() then
-        inst:WatchWorldState("phase", ShowState)
-    end]]
+    inst:WatchWorldState("nightmarephase", OnPhaseChanged)
+    inst:DoTaskInTime(0, function()
+        OnPhaseChanged(inst, TheWorld.state.nightmarephase, true)
+    end)
 
-    inst:DoTaskInTime(0, ShowState)
-
-    --fade_in(inst,0)
+    inst.OnSave = onsave
+    inst.OnLoad = onload
 
     return inst
 end

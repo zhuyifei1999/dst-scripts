@@ -20,6 +20,7 @@ local prefabs =
     "carrot",
 }
 
+
 local beardlordloot = { "beardhair", "beardhair", "monstermeat" }
 local regularloot = { "carrot", "carrot" }
 
@@ -36,11 +37,27 @@ local function ontalk(inst)
     inst.SoundEmitter:PlaySound("dontstarve/creatures/bunnyman/idle_med")
 end
 
+local function ClearBeardlord(inst)
+    inst.clearbeardlordtask = nil
+    inst.beardlord = nil
+end
+
+local function SetBeardLord(inst)
+    inst.beardlord = true
+    if inst.clearbeardlordtask ~= nil then
+        inst.clearbeardlordtask:Cancel()
+    end
+    inst:DoTaskInTime(5.0, ClearBeardlord)
+end
+
 local function CalcSanityAura(inst, observer)
+    if IsCrazyGuy(observer) then
+        SetBeardLord(inst)
+    end
     return (IsCrazyGuy(observer) and -TUNING.SANITYAURA_MED)
         or (inst.components.follower ~= nil and
             inst.components.follower.leader == observer and
-            -TUNING.SANITYAURA_SMALL)
+            TUNING.SANITYAURA_SMALL)
         or 0
 end
 
