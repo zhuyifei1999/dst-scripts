@@ -142,6 +142,7 @@ local function getsanityaura(inst)
 end
 
 local function changestate(inst, phase, instant)
+    spawnfx(inst)
     local statefn = states[phase]
 
     if statefn then
@@ -194,7 +195,6 @@ local function fn()
 
     inst:WatchWorldState("nightmarephase", changestate)
     inst:DoTaskInTime(0, function()
-        spawnfx(inst)
         changestate(inst, TheWorld.state.nightmarephase, true)
     end)
 

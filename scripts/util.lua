@@ -263,6 +263,24 @@ function ArrayUnion(...)
 	return ret
 end
 
+-- return only values found in all arrays
+function ArrayIntersection(...)
+	local ret = {}
+	for i,val in ipairs(arg[1]) do
+		local good = true
+		for i=2,#arg do
+			if not table.contains(arg[i], val) then
+				good = false
+				break
+			end
+		end
+		if good then
+			table.insert(ret, val)
+		end
+	end
+	return ret
+end
+
 -- merge two map-style tables, overwriting duplicate keys with the latter map's value
 function MergeMaps(...)
 	local ret = {}

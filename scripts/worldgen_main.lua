@@ -490,8 +490,9 @@ function GenerateNew(debug, parameters)
 
 	parameters.world_gen_choices.finaltweak = OverrideTweaks(level, parameters.world_gen_choices)	
 	local level_area_triggers = level.override_triggers or nil
-	local choose_tasks = level:GetTasksForLevel(tasks.sampletasks, parameters.world_gen_choices)
+	level:ChooseTasks(tasks.sampletasks, parameters.world_gen_choices)
 	AddSetPeices(level, parameters.world_gen_choices)
+    level:ChooseSetPieces(parameters.world_gen_choices)
 
 	local id = level.id
 	local override_level_string = level.override_level_string or false
@@ -502,6 +503,8 @@ function GenerateNew(debug, parameters)
 	if parameters.world_gen_choices.finaltweak and parameters.world_gen_choices.finaltweak.misc then
 		prefab = parameters.world_gen_choices.finaltweak.misc.location or "forest"
 	end
+
+    local choose_tasks = level:GetTasksForLevel()
 
 	if debug == true then
 	 	 choose_tasks = tasks.oneofeverything

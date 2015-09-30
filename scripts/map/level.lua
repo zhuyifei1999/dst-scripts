@@ -32,6 +32,8 @@ Level = Class( function(self, data)
 
 	self.numrandom_set_pieces = data.numrandom_set_pieces or 0
 	self.random_set_pieces = data.random_set_pieces or nil
+
+    self.chosen_tasks = nil
 end)
 
 function Level:ApplyModsToTasks(tasklist)
@@ -76,7 +78,11 @@ function Level:GetOverridesForTasks(tasklist)
 	return tasklist
 end
 
-function Level:GetTasksForLevel(sampletasks, current_gen_params)
+function Level:GetTasksForLevel()
+    return self.chosen_tasks
+end
+
+function Level:ChooseTasks(sampletasks, current_gen_params)
 	--print("Getting tasks for level:", self.name)
 	local tasklist = {}
 	local task_group = tasks.GetGenTasks(current_gen_params.finaltweak.misc and current_gen_params.finaltweak.misc["task_set"] or "default")
@@ -120,6 +126,14 @@ function Level:GetTasksForLevel(sampletasks, current_gen_params)
 		end
 	end
 
+	self:GetOverridesForTasks(tasklist)
+
+	self.chosen_tasks = tasklist
+end
+
+function Level:ChooseSetPieces(current_gen_params)
+    assert(self.chosen_tasks ~= nil, "Must call ChooseTasks before ChooseSetPieces")
+
 	for i = 1, self.numrandom_set_pieces do
 		--Add random setpiece each loop.
 
@@ -127,53 +141,45 @@ function Level:GetTasksForLevel(sampletasks, current_gen_params)
 		local set_piece = self.random_set_pieces[math.random(#self.random_set_pieces)]
 
 		--Get random task
-		local idx = math.random(#tasklist)
+		local idx = math.random(#self.chosen_tasks)
 
-		if tasklist[idx].random_set_pieces == nil then
-			tasklist[idx].random_set_pieces = {}
+		if self.chosen_tasks[idx].random_set_pieces == nil then
+			self.chosen_tasks[idx].random_set_pieces = {}
 		end
-		--print(set_piece,"added to",tasklist[idx].id)
-		table.insert(tasklist[idx].random_set_pieces, set_piece)
+		print(set_piece,"added to",self.chosen_tasks[idx].id)
+		table.insert(self.chosen_tasks[idx].random_set_pieces, set_piece)
 	end
 
 	for name, choicedata in pairs(self.set_pieces) do
+        --print("Adding",name, choicedata.count)
 		local found = false
 		local idx = {}
-		for i, task in ipairs(tasklist) do
+		for i, task in ipairs(self.chosen_tasks) do
 			idx[task.id] = i
 		end
+        local availabletasks = table.invert(idx)
 
-		-- Pick one of the choces and add it to that task
-		local choices = choicedata.tasks
+		-- Pick one of the choices and add it to that task
+		local choices = ArrayIntersection(choicedata.tasks, availabletasks)
 		local count = choicedata.count or 1
 
-		assert(choices, "Trying to add set piece '"..name.."' but no choices given.")
+		assert(choices and #choices > 0, "Trying to add set piece '"..name.."' but no choices given.")
 
 		-- Only one layout per task, so we stop when we run out of tasks or
 		while count > 0 and #choices > 0 do
-			local idx_choice_offset = math.random(#choices) - 1 -- we'll convert back to 1-index in a moment
-			-- To account for the fact that some of the choices might not exist in the level (i.e. option tasks) loop through them.
-			for i=1,#choices do
-				local idx_choice = ((idx_choice_offset + i)% #choices) + 1 -- convert back to 1-index
-				local choice = idx[choices[idx_choice]]
-				--print("choice", idx_choice, choice, #choices, choices[idx_choice], tasklist[choice])
-				if tasklist[choice] then
-					if tasklist[choice].set_pieces == nil then
-						tasklist[choice].set_pieces = {}
-					end
-					table.insert(tasklist[choice].set_pieces, {name=name, restrict_to=choicedata.restrict_to})
-					idx[choices[idx_choice]] = nil
-					table.remove(choices, choice)
-					break
-				end
-			end
-			count = count-1
+            local idx_choice = math.random(#choices)
+            local choice = idx[choices[idx_choice]]
+            if self.chosen_tasks[choice].set_pieces == nil then
+                self.chosen_tasks[choice].set_pieces = {}
+            end
+            --print("\tinserted in",self.chosen_tasks[choice])
+            table.insert(self.chosen_tasks[choice].set_pieces, {name=name, restrict_to=choicedata.restrict_to})
+
+            idx[choices[idx_choice]] = nil
+            table.remove(choices, idx_choice)
+            count = count-1
 		end
 	end
-
-	self:GetOverridesForTasks(tasklist)
-
-	return tasklist
 end
 
 function Level:EnqueueATask(tasklist, taskname, sampletasks)
