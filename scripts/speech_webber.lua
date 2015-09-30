@@ -1116,6 +1116,7 @@ return {
 		TENTACLESPIKE = "We could hit stuff with the pointy bits!",
 		TENTACLESPOTS = "Spotty!",
 		TENTACLE_PILLAR = "It's huge!",
+        TENTACLE_PILLAR_HOLE = "Oooh let's jump in!",
 		TENTACLE_PILLAR_ARM = ".",
 		TENTACLE_GARDEN = "It's huge!",
 		TOPHAT = "Like father used to wear.",

@@ -1103,6 +1103,7 @@ return {
 		TENTACLESPOTS = "These are better left unmentioned.",
 		TENTACLESPIKE = "Sharp, slimy and dangerous.",
         TENTACLE_PILLAR = "So this is what goes on down below.",
+        TENTACLE_PILLAR_HOLE = "It shall return, some day.",
         TENTACLE_PILLAR_ARM = "Babies!",
         TENTACLE_GARDEN = "This one is different.",
 		TOPHAT = "I shall cover my head.",

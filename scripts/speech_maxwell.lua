@@ -1082,6 +1082,7 @@ return {
 		TENTACLESPIKE = "Ugh. This is so revolting.",
 		TENTACLESPOTS = "This is how they reproduce.",
 		TENTACLE_PILLAR = "How deep does this go?",
+        TENTACLE_PILLAR_HOLE = "Ugh! How can it live down there?",
 		TENTACLE_GARDEN = "This one is odd.",
         TENTACLE_PILLAR_ARM = "Babies?",
 		TOPHAT = "Some fine haberdashery.",

@@ -19,9 +19,13 @@ end
 
 local function onnear(inst)
     if inst.components.childspawner.childreninside >= inst.components.childspawner.maxchildren then
-        while inst.components.childspawner:CanSpawn() do
+        local tries = 10
+        while inst.components.childspawner:CanSpawn() and tries > 0 do
             local bat = inst.components.childspawner:SpawnChild()
-            bat:DoTaskInTime(0, function() bat:PushEvent("panic") end)
+            if bat ~= nil then
+                bat:DoTaskInTime(0, function() bat:PushEvent("panic") end)
+            end
+            tries = tries - 1
         end
         inst.SoundEmitter:PlaySound("dontstarve/cave/bat_cave_explosion")
         inst.SoundEmitter:PlaySound("dontstarve/creatures/bat/taunt")

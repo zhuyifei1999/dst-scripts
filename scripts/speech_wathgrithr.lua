@@ -1125,6 +1125,7 @@ return {
 		TENTACLESPIKE = "Gooey, but dangerous. I like it.",
 		TENTACLESPOTS = "A tough hide.",
 		TENTACLE_PILLAR = "A towering tentacle foe.",
+        TENTACLE_PILLAR_HOLE = "The lair of my tallest foe!",
 		TENTACLE_PILLAR_ARM = "A gross grasping appendage.",
 		TENTACLE_GARDEN = "I will thrust my spear into that mass of tentacles!",
 		TOPHAT = "It doesn't match my costume.",

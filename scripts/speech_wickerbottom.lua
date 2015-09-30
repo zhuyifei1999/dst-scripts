@@ -527,6 +527,7 @@ return
         TENTACLESPIKE = "Never grab the pointy end.",
         TENTACLESPOTS = "Hmmm, reproductive organs.",
         TENTACLE_PILLAR = "There's more of it below than above!",
+        TENTACLE_PILLAR_HOLE = "It appears to be all connected somehow.",
         TENTACLE_PILLAR_ARM = "A tiny horror waiting in the mud.",
         TENTACLE_GARDEN = "I wonder how they breed?",
         BEEFALO =

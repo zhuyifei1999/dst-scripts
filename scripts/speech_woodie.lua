@@ -1109,6 +1109,7 @@ return {
 		TENTACLESPIKE = "It wobbles when you wave it.",
 		TENTACLESPOTS = "I'm blushing!",
 		TENTACLE_PILLAR = "It's so big!",
+        TENTACLE_PILLAR_HOLE = "Not even a stump left behind!",
 		TENTACLE_PILLAR_ARM = "Are those squid babies?",
 		TENTACLE_GARDEN = "I'm tired of these squids!",
 		TOPHAT = "It's too fancy.",

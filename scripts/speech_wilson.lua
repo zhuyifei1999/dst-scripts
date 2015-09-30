@@ -1285,6 +1285,7 @@ return {
 		TENTACLESPIKE = "It's pointy and slimy.",
 		TENTACLESPOTS = "I think these were its genitalia.",
 		TENTACLE_PILLAR = "A slimy pole.",
+        TENTACLE_PILLAR_HOLE = "Seems stinky, but worth exploring.",
 		TENTACLE_PILLAR_ARM = "Little slippery arms.",
 		TENTACLE_GARDEN = "Yet another slimy pole.",
 		TOPHAT = "What a nice hat.",

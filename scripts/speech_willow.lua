@@ -1134,6 +1134,7 @@ return {
 		TENTACLESPOTS = "Ewwwww.",
 		TENTACLESPIKE = "It's pointy and slimy.",
 		TENTACLE_PILLAR = "It's quivering.",
+        TENTACLE_PILLAR_HOLE = "What a smell! Light a match next time!",
 		TENTACLE_PILLAR_ARM = "Awwww, they want hugs!",
 		TENTACLE_GARDEN = "I hear little digging sounds.",
 		TOPHAT = "A top hat and a lighter, a perfect combination.",

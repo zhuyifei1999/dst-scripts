@@ -333,11 +333,10 @@ local function broken_onactivate(inst)
 end
 
 local function broken_onrepaired(inst, doer, repair_item)
-    if inst.components.workable.workleft < MAXHITS then
+    if inst.components.workable.workleft < inst.components.workable.maxwork then
         inst.AnimState:PlayAnimation("hit_broken")
         inst.SoundEmitter:PlaySound("dontstarve/common/ancienttable_repair")
-    elseif inst.components.workable.workleft >= MAXHITS then
-        inst.components.workable:SetWorkLeft(MAXHITS)
+    else
         local pos = inst:GetPosition()
         local altar = SpawnPrefab("ancient_altar")
         altar.Transform:SetPosition(pos:Get())
@@ -391,7 +390,7 @@ local function broken_fn()
 
     inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
     inst.components.workable:SetWorkLeft(1)
-    inst.components.workable:SetMaxWork(TUNING.ANCIENT_ALTAR_BROKEN_WORK)
+    inst.components.workable:SetMaxWork(TUNING.ANCIENT_ALTAR_BROKEN_WORK+1) -- the last point repairs it to a full altar
     inst.components.workable:SetOnFinishCallback(broken_onhammered)
     inst.components.workable:SetOnWorkCallback(broken_onworked)
     inst.components.workable.savestate = true

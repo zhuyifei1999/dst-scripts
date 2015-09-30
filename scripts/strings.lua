@@ -562,6 +562,7 @@ STRINGS=
         TENTACLESPIKE = "Tentacle Spike",
         TENTACLE = "Tentacle",
         TENTACLE_PILLAR = "Big Tentacle",
+        TENTACLE_PILLAR_HOLE = "Big Slimy Pit",
         TENTACLE_PILLAR_ARM = "Baby Tentacle",
         TENTACLE_GARDEN = "Big Tentacle",
         ROPE = "Rope",

@@ -22,7 +22,7 @@ SetSharedLootTable('nightmare_creature',
 })
 
 local function CanShareTargetWith(dude)
-    return dude:HasTag("shadowcreature") and not dude.components.health:IsDead()
+    return dude:HasTag("nightmarecreature") and not dude.components.health:IsDead()
 end
 
 local function OnAttacked(inst, data)
@@ -86,7 +86,7 @@ local function MakeShadowCreature(data)
         inst.AnimState:PlayAnimation("idle_loop")
         inst.AnimState:SetMultColour(1, 1, 1, 0.5)
 
-        inst:AddTag("shadowcreature")
+        inst:AddTag("nightmarecreature")
         inst:AddTag("monster")
         inst:AddTag("hostile")
         inst:AddTag("shadow")
