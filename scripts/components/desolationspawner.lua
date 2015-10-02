@@ -176,6 +176,15 @@ end)
 self:SetSpawningForType("deciduoustree", "acorn_sapling", TUNING.DECIDUOUS_REGROWTH.DESOLATION_RESPAWN_TIME, {"deciduoustree"}, function()
     return (not _worldstate.isspring and 0) or 1
 end)
+self:SetSpawningForType("mushtree_tall", "mushtree_tall", TUNING.MUSHTREE_REGROWTH.DESOLATION_RESPAWN_TIME, {"mushtree"}, function()
+    return (not _worldstate.iswinter and 0) or 1
+end)
+self:SetSpawningForType("mushtree_medium", "mushtree_medium", TUNING.MUSHTREE_REGROWTH.DESOLATION_RESPAWN_TIME, {"mushtree"}, function()
+    return (not _worldstate.issumer and 0) or 1
+end)
+self:SetSpawningForType("mushtree_small", "mushtree_small", TUNING.MUSHTREE_REGROWTH.DESOLATION_RESPAWN_TIME, {"mushtree"}, function()
+    return (not _worldstate.isspring and 0) or 1
+end)
 
 inst:DoTaskInTime(0, PopulateAreaDataFromReplacements)
 

@@ -91,6 +91,7 @@ PREFABFILES = {
   "chester",
   "chesterlight",
   "chester_eyebone",
+  "clockwork_common",
   "coldfire",
   "coldfirefire",
   "coldfirepit",

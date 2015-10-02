@@ -234,10 +234,11 @@ POPULATING = false
 local function PopulateWorld(savedata, profile)
     POPULATING = true
     TheSystemService:SetStalling(true)
-	Print(VERBOSITY.DEBUG, "PopulateWorld")
- 	Print(VERBOSITY.DEBUG,  "[Instantiating objects...]" )
+    Print(VERBOSITY.DEBUG, "PopulateWorld")
+    Print(VERBOSITY.DEBUG, "[Instantiating objects...]")
     if savedata ~= nil then
-		local world = SpawnPrefab(savedata.map.prefab)
+        local world = SpawnPrefab(savedata.map.prefab)
+        world.worldprefab = savedata.map.prefab
         assert(TheWorld == world)
         assert(ThePlayer == nil)
 
@@ -312,7 +313,7 @@ local function PopulateWorld(savedata, profile)
                     end
                 end
             end
-        end     
+        end
 
         if world.topology.level_number == 2 and world:HasTag("cave") then
             world:AddTag("ruin")

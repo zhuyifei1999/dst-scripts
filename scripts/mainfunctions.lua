@@ -64,6 +64,7 @@ end
 
 ---PREFABS AND ENTITY INSTANTIATION
 
+local modprefabinitfns = {}
 function RegisterPrefabs(...)
     for i, prefab in ipairs({...}) do
         --print ("Register " .. tostring(prefab))
@@ -74,7 +75,7 @@ function RegisterPrefabs(...)
 			TheSim:OnAssetPathResolve(asset.file, resolvedpath)			
 			asset.file = resolvedpath
 		end
-        prefab.modfns = ModManager:GetPostInitFns("PrefabPostInit", prefab.name)
+        modprefabinitfns[prefab.name] = ModManager:GetPostInitFns("PrefabPostInit", prefab.name)
         Prefabs[prefab.name] = prefab
         
 		TheSim:RegisterPrefab(prefab.name, prefab.assets, prefab.deps)
@@ -150,9 +151,12 @@ function SpawnPrefabFromSim(name)
 
             inst:SetPrefabName(inst.prefab or name)
 
-			for k,mod in pairs(prefab.modfns) do
-				mod(inst)
-			end
+            local modfns = modprefabinitfns[inst.prefab or name]
+            if modfns ~= nil then
+                for k,mod in pairs(modfns) do
+                    mod(inst)
+                end
+            end
 
             for k,prefabpostinitany in pairs(ModManager:GetPostInitFns("PrefabPostInitAny")) do
                 prefabpostinitany(inst)
@@ -567,7 +571,7 @@ function SaveGame(isshutdown, cb)
     local ground = TheWorld
     assert(ground ~= nil, "Cant save world without ground entity")
     if ground ~= nil then
-        save.map.prefab = ground.prefab
+        save.map.prefab = ground.worldprefab
         save.map.tiles = ground.Map:GetStringEncode()
         save.map.nav = ground.Map:GetNavStringEncode()
         save.map.width, save.map.height = ground.Map:GetSize()

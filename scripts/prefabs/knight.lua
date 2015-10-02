@@ -1,3 +1,5 @@
+local clockwork_common = require"prefabs/clockwork_common"
+
 local assets =
 {
     Asset("ANIM", "anim/knight.zip"),
@@ -33,81 +35,26 @@ SetSharedLootTable('knight_nightmare',
     {'thulecite_pieces',  0.5},
 })
 
-local SLEEP_DIST_FROMHOME_SQ = 1 * 1
-local SLEEP_DIST_FROMTHREAT = 20
-local MAX_CHASEAWAY_DIST = 40
-local MAX_CHASEAWAY_DIST_SQ = MAX_CHASEAWAY_DIST * MAX_CHASEAWAY_DIST
-local MAX_TARGET_SHARES = 5
-local SHARE_TARGET_DIST = 40
-
-local function BasicWakeCheck(inst)
-    return (inst.components.combat ~= nil and inst.components.combat.target ~= nil)
-        or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning())
-        or (inst.components.freezable ~= nil and inst.components.freezable:IsFrozen())
-        or GetClosestInstWithTag("character", inst, SLEEP_DIST_FROMTHREAT) ~= nil
-end
-
 local function ShouldSleep(inst)
-    local homePos = inst.components.knownlocations:GetLocation("home")
-    return homePos ~= nil
-        and inst:GetDistanceSqToPoint(homePos:Get()) < SLEEP_DIST_FROMHOME_SQ
-        and not BasicWakeCheck(inst)
+    return clockwork_common.ShouldSleep(inst)
 end
 
 local function ShouldWake(inst)
-    local homePos = inst.components.knownlocations:GetLocation("home")
-    return (homePos ~= nil and
-            inst:GetDistanceSqToPoint(homePos:Get()) >= SLEEP_DIST_FROMHOME_SQ)
-        or BasicWakeCheck(inst)
+    return clockwork_common.ShouldWake(inst)
 end
 
 local function Retarget(inst)
-    local homePos = inst.components.knownlocations:GetLocation("home")
-    return not (homePos ~= nil and
-                inst:GetDistanceSqToPoint(homePos:Get()) >= TUNING.KNIGHT_TARGET_DIST * TUNING.KNIGHT_TARGET_DIST and
-                (inst.components.follower == nil or inst.components.follower.leader == nil))
-        and FindEntity(
-            inst,
-            TUNING.KNIGHT_TARGET_DIST,
-            function(guy)
-                local myLeader = inst.components.follower ~= nil and inst.components.follower.leader or nil
-                if myLeader == guy then
-                    return false
-                end
-                local theirLeader = guy.components.follower ~= nil and guy.components.follower.leader or nil
-                local bothFollowingSamePlayer = myLeader ~= nil and myLeader == theirLeader and myLeader:HasTag("player")
-                return not bothFollowingSamePlayer
-                    and not (guy:HasTag("chess") and theirLeader == nil)
-                    and inst.components.combat:CanTarget(guy)
-            end,
-            { "_combat" },
-            { "INLIMBO" },
-            { "character", "monster" }
-        )
-        or nil
+    return clockwork_common.Retarget(inst, TUNING.KNIGHT_TARGET_DIST)
 end
 
 local function KeepTarget(inst, target)
-    if inst.components.follower ~= nil and inst.components.follower.leader ~= nil then
-        return true
-    end
-    local homePos = inst.components.knownlocations:GetLocation("home")
-    return homePos ~= nil and target:GetDistanceSqToPoint(homePos:Get()) < MAX_CHASEAWAY_DIST_SQ
-end
-
-local function IsChess(dude)
-    return dude:HasTag("chess")
+    return clockwork_common.KeepTarget(inst, target)
 end
 
 local function OnAttacked(inst, data)
-    local attacker = data ~= nil and data.attacker or nil
-    if attacker ~= nil and attacker:HasTag("chess") then
-        return
-    end
-    inst.components.combat:SetTarget(attacker)
-    inst.components.combat:ShareTarget(attacker, SHARE_TARGET_DIST, IsChess, MAX_TARGET_SHARES)
+    clockwork_common.OnAttacked(inst, data)
 end
- 
+
 local function RememberKnownLocation(inst)
     inst.components.knownlocations:RememberLocation("home", inst:GetPosition())
 end

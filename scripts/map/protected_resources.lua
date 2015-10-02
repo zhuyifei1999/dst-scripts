@@ -33,6 +33,32 @@ local Savanna = {
 	["pigguard_grass_easy"] = StaticLayout.Get("map/static_layouts/pigguard_grass_easy"), 	
 }
 
+local BlueFungal = {
+}
+
+local RedFungal = {
+}
+
+local GreenFungal = {
+}
+
+local Underrock = {
+}
+
+local Cave = {
+}
+
+local Mud = {
+    ["lures_and_worms"] = StaticLayout.Get("map/static_layouts/lures_and_worms", {
+        areas = {
+            lures = function() return JoinArrays(PickSome(10, {"wormlight_plant"}), PickSome(3, {"worm"})) end,
+        },
+    }),
+}
+
+local Sinkhole = {
+}
+
 local Any = {
 }
 
@@ -50,6 +76,13 @@ local ProtectedResources = {
 	[GROUND.GRASS] = Grasslands,
 	[GROUND.FOREST] = Forest,
 	[GROUND.MARSH] = Swamp,
+	[GROUND.FUNGUS] = BlueFungal,
+	[GROUND.FUNGUSRED] = RedFungal,
+	[GROUND.FUNGUSGREEN] = GreenFungal,
+	[GROUND.UNDERROCK] = Underrock,
+	[GROUND.CAVE] = Cave,
+	[GROUND.MUD] = Mud,
+	[GROUND.SINKHOLE] = Sinkhole,
 }
 
 

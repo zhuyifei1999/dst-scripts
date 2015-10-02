@@ -1,4 +1,4 @@
-local MakeWorld = require("prefabs/world")
+require("prefabs/world")
 
 local assets =
 {
@@ -38,7 +38,6 @@ local prefabs =
     "adventure_portal",
     "resurrectionstone",
     "deerclops",
-    "bearger",
     "gravestone",
     "flower",
     "animal_track",
@@ -59,7 +58,7 @@ local prefabs =
     "molehill",
     "carrot_planted",
     "tentacle",
-	"wormhole",
+    "wormhole",
     "cave_entrance",
     "teleportato_base",
     "teleportato_ring",
@@ -115,6 +114,10 @@ local prefabs =
     "shadowwatcher",
     "shadowhand",
     "rubble",
+    "moose",
+    "mossling",
+    "bearger",
+    "dragonfly",
 }
 
 local houndspawn =

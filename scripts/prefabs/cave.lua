@@ -1,4 +1,4 @@
-local MakeWorld = require("prefabs/world")
+require("prefabs/world")
 
 local prefabs =
 {
@@ -62,7 +62,6 @@ local prefabs =
     "fissure_lower",
     "slurper",
     "minotaur",
-    "monkeybarrel",
     "spider_dropper",
     "caverain",
 }
@@ -135,6 +134,14 @@ local function master_postinit(inst)
     --Spawners
     inst:AddComponent("shadowcreaturespawner")
     inst:AddComponent("shadowhandspawner")
+
+    --gameplay
+    inst:AddComponent("kramped")
+
+    --world management
+    inst:AddComponent("forestresourcespawner") -- a cave version of this would be nice, but it serves it's purpose...
+    inst:AddComponent("regrowthmanager")
+    inst:AddComponent("desolationspawner")
 
     if METRICS_ENABLED then
         inst:AddComponent("worldoverseer")

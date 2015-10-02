@@ -17,6 +17,15 @@ local TimeMultipliers = {
     ["deciduoustree"] = function()
         return (not TheWorld.state.isspring and 0) or 1
     end,
+    ["mushtree_tall"] = function()
+        return (not TheWorld.state.iswinter and 0) or 1
+    end,
+    ["mushtree_medium"] = function()
+        return (not TheWorld.state.issummer and 0) or 1
+    end,
+    ["mushtree_small"] = function()
+        return (not TheWorld.state.isspring and 0) or 1
+    end,
 }
 
 local function DoUpdate()

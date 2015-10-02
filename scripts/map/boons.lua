@@ -21,7 +21,7 @@ local Any = {
 	["GrassBoon"] = StaticLayout.Get("map/static_layouts/small_boon", {
 			areas = {
 				item_area = function() return PickSome(1, {"torch", "trap"}) end,							
-				resource_area = function() return PickSomeWithDups(math.random(3,5), {"grass"}) end,
+				resource_area = function() return PickSomeWithDups(math.random(3,5), {"cutgrass"}) end,
 				},
 		}),
 	["TwigsBoon"] = StaticLayout.Get("map/static_layouts/small_boon", {
@@ -37,38 +37,37 @@ local Any = {
 
 	["Level2WoodBoon"] = StaticLayout.Get("map/static_layouts/small_boon", {
 			areas = {
-				item_area = function() return PickSome(1, {"armorwood","axe"}) end,							
+				item_area = function() return PickSome(1, {"armorwood","axe"}) end,
 				resource_area = function() return PickSomeWithDups(math.random(3,5), {"boards"}) end,
 				},
 		}),
 	["Level2RockBoon"] = StaticLayout.Get("map/static_layouts/small_boon", {
 			areas = {
-				item_area = function() return PickSome(1, {"pickaxe","pickaxe","pickaxe","pickaxe","pickaxe","pickaxe","rock1", "rock2","gunpowder"}) end,							
+				item_area = function() return PickSome(1, {"pickaxe","pickaxe","pickaxe","pickaxe","pickaxe","pickaxe","rock1", "rock2","gunpowder"}) end,
 				resource_area = function() return PickSomeWithDups(math.random(3,5), {"cutstone"}) end,
 				},
 		}),
 	["Level2GrassBoon"] = StaticLayout.Get("map/static_layouts/small_boon", {
 			areas = {
-				item_area = function() return PickSome(1, {"torch", "trap"}) end,							
+				item_area = function() return PickSome(1, {"torch", "trap"}) end,
 				resource_area = function() return PickSomeWithDups(math.random(3,5), {"rope"}) end,
 				},
 		}),
 	["Level2TwigsBoon"] = StaticLayout.Get("map/static_layouts/small_boon", {
 			areas = {
-				item_area = function() return PickSome(1, {"armorgrass"}) end,							
+				item_area = function() return PickSome(1, {"armorgrass"}) end,
 				resource_area = function() return PickSomeWithDups(math.random(3,5), {"twigs"}) end,
 				},
 		}),
 	["MiscBoon"] = StaticLayout.Get("map/static_layouts/small_boon", {
 			areas = {
-				item_area = function() return PickSome(1, {"winterhat","tophat","bushhat","featherhat", "trunkvest_winter","trunkvest_summer", 
-															"cane","sweatervest"}) end,							
+                item_area = function() return PickSome(1, {"winterhat","tophat","bushhat","featherhat", "trunkvest_winter","trunkvest_summer", "cane","sweatervest"}) end,
 				resource_area = function() return nil end,
 				},
 		}),
 	["WeaponBoon"] = StaticLayout.Get("map/static_layouts/small_boon", {
 			areas = {
-				item_area = function() return PickSome(1, {"blowdart_sleep","blowdart_fire","blowdart_pipe","boomerang"}) end,							
+				item_area = function() return PickSome(1, {"blowdart_sleep","blowdart_fire","blowdart_pipe","boomerang"}) end,
 				resource_area = function() return nil end,
 				},
 		}),
@@ -81,7 +80,7 @@ local Rare = {
 
 	["Level4Boon"] = StaticLayout.Get("map/static_layouts/small_boon", {
 			areas = {
-				item_area = function() return PickSome(1, {"firestaff","icestaff", "armormarble","panflute","cane","hambat","nightsword","onemanband"}) end,							
+				item_area = function() return PickSome(1, {"firestaff","icestaff", "armormarble","panflute","cane","hambat","nightsword","onemanband"}) end,
 				resource_area = function() return nil end,
 				},
 		}),

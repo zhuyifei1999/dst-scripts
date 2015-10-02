@@ -6,11 +6,16 @@ local prefabs =
 {
 	"log",
 	"blue_cap",
+	"green_cap",
+	"red_cap",
     "charcoal",
 	"ash",
     "spore_tall",
     "spore_medium",
     "spore_small",
+    "mushtree_tall_stump",
+    "mushtree_medium_stump",
+    "mushtree_small_stump",
 }
 
 local TREESTATES =
@@ -62,6 +67,31 @@ local function onspawnfn(inst, spawn)
     spawn.components.knownlocations:RememberLocation("home", inst:GetPosition())
 end
 
+local function ontimerdone(inst, data)
+    if data.name == "decay" then
+        -- before we disappear, clean up any crap left on the ground -- too
+        -- many objects is as bad for server health as too few!
+        local x,y,z = inst.Transform:GetWorldPosition()
+        local ents = TheSim:FindEntities(x,y,z,6)
+        local leftone = false
+        for k,ent in pairs(ents) do
+            if ent.prefab == "log"
+                or ent.prefab == "blue_cap"
+                or ent.prefab == "red_cap"
+                or ent.prefab == "green_cap"
+                or ent.prefab == "charcoal" then
+                if leftone then
+                    ent:Remove()
+                else
+                    leftone = true
+                end
+            end
+        end
+
+        inst:Remove()
+    end
+end
+
 local function makestump(inst)
 	RemovePhysicsColliders(inst)
 	inst:AddTag("stump")
@@ -82,6 +112,11 @@ local function makestump(inst)
 	inst.AnimState:ClearBloomEffectHandle()
 
 	inst.Light:Enable(false)
+
+    if inst.components.timer and not inst.components.timer:TimerExists("decay") then
+        inst.components.timer:StartTimer("decay", GetRandomWithVariance(TUNING.MUSHTREE_REGROWTH.DEAD_DECAY_TIME, TUNING.MUSHTREE_REGROWTH.DEAD_DECAY_TIME*0.5))
+    end
+
 end
 
 local function workcallback(inst, worker, workleft)
@@ -226,7 +261,7 @@ local function onload(inst, data)
     end
 end
 
-local function maketree(data)
+local function maketree(name, data, state)
 
     local function bloom_tree(inst, instant)
         if not instant then
@@ -303,9 +338,13 @@ local function maketree(data)
         inst.Light:Enable(true)
 
         inst:AddTag("shelter")
+        inst:AddTag("mushtree")
+
         if data.webbable then
             inst:AddTag("webbable")
         end
+
+        inst:SetPrefabName(name)
 
         inst.entity:SetPristine()
 
@@ -345,6 +384,15 @@ local function maketree(data)
         inst.components.growable.growonly = true
         inst.components.growable:StartGrowing()
 
+        inst:AddComponent("plantregrowth")
+        inst.components.plantregrowth:SetRegrowthRate(TUNING.MUSHTREE_REGROWTH.OFFSPRING_TIME)
+        inst.components.plantregrowth:SetProduct(name)
+        inst.components.plantregrowth:SetSearchTag("mushtree")
+
+        inst:AddComponent("timer")
+        inst:ListenForEvent("timerdone", ontimerdone)
+
+
         --inst:AddComponent("transformer") this component isn't in DST yet.
 
         --inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
@@ -357,11 +405,23 @@ local function maketree(data)
         inst.OnLoad = onload
         inst:WatchWorldState("season", onseasonchange)
 
+        if state == "stump" then
+            makestump(inst)
+        end
+
         return inst
     end
     return fn
 end
 
-return Prefab("cave/objects/mushtree_tall", maketree(data.tall), { Asset("ANIM", "anim/mushroom_tree_tall.zip"), Asset("ANIM", "anim/mushroom_tree_tall_bloom.zip") }, prefabs),
-       Prefab("cave/objects/mushtree_medium", maketree(data.medium), { Asset("ANIM", "anim/mushroom_tree_med.zip"), Asset("ANIM", "anim/mushroom_tree_med_bloom.zip") }, prefabs),
-       Prefab("cave/objects/mushtree_small", maketree(data.small), { Asset("ANIM", "anim/mushroom_tree_small.zip"), Asset("ANIM", "anim/mushroom_tree_small_bloom.zip") }, prefabs)
+local treeprefabs = {}
+function treeset(name, data, build, bloombuild)
+    table.insert(treeprefabs, Prefab(name, maketree(name, data), { Asset("ANIM", build), Asset("ANIM", bloombuild) }, prefabs))
+    table.insert(treeprefabs, Prefab(name.."_stump", maketree(name, data, "stump"), { Asset("ANIM", build), Asset("ANIM", bloombuild) }, prefabs))
+end
+
+treeset("mushtree_tall", data.tall, "anim/mushroom_tree_tall.zip", "anim/mushroom_tree_tall_bloom.zip")
+treeset("mushtree_medium", data.medium, "anim/mushroom_tree_med.zip", "anim/mushroom_tree_med_bloom.zip")
+treeset("mushtree_small", data.small, "anim/mushroom_tree_small.zip", "anim/mushroom_tree_small_bloom.zip")
+
+return unpack(treeprefabs)

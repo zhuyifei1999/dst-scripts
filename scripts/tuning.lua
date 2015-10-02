@@ -1787,6 +1787,7 @@ function Tune(overrides)
         CARROT_REGROWTH_TIME = day_time * 20,
         FLOWER_REGROWTH_TIME = 30,
         RABBITHOLE_REGROWTH_TIME = total_day_time * 5,
+        FLOWER_CAVE_REGROWTH_TIME = total_day_time * 5,
 
         EVERGREEN_REGROWTH = {
             OFFSPRING_TIME = total_day_time * 5,
@@ -1801,6 +1802,12 @@ function Tune(overrides)
         },
 
         DECIDUOUS_REGROWTH = {
+            OFFSPRING_TIME = total_day_time * 3,
+            DESOLATION_RESPAWN_TIME = total_day_time * 50,
+            DEAD_DECAY_TIME = total_day_time * 30,
+        },
+
+        MUSHTREE_REGROWTH = {
             OFFSPRING_TIME = total_day_time * 3,
             DESOLATION_RESPAWN_TIME = total_day_time * 50,
             DEAD_DECAY_TIME = total_day_time * 30,

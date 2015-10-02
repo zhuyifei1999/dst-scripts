@@ -73,6 +73,9 @@ AddTaskSet("cave_default", {
         ["TentaclePillar"] = { count = 10, tasks= {
             "MudWorld", "MudCave", "MudLights", "MudPit", "BigBatCave", "RockyLand", "RedForest", "GreenForest", "BlueForest", "SpillagmiteCaverns", "SwampySinkhole", "CaveSwamp", "UndergroundForest", "PleasantSinkhole", "FungalNoiseForest", "FungalNoiseMeadow", "BatCloister", "RabbitTown", "RabbitCity", "SpiderLand", "RabbitSpiderWar",
         } },
+        ["ResurrectionStone"] = { count = 2, tasks={
+            "MudWorld", "MudCave", "MudLights", "MudPit", "BigBatCave", "RockyLand", "RedForest", "GreenForest", "BlueForest", "SpillagmiteCaverns", "SwampySinkhole", "CaveSwamp", "UndergroundForest", "PleasantSinkhole", "FungalNoiseForest", "FungalNoiseMeadow", "BatCloister", "RabbitTown", "RabbitCity", "SpiderLand", "RabbitSpiderWar",
+        } },
     },
 })
 
@@ -184,6 +187,7 @@ AddTask("MudWorld", {
         ["PitRoom"] = 2,
     },
     background_room="BGMud",
+    room_bg=GROUND.MUD,
     colour={r=0.6,g=0.4,b=0.0,a=0.9},
 })
 
@@ -197,6 +201,7 @@ AddTask("MudCave", {
         ["PitRoom"] = 2,
     },
     background_room="BGBatCaveRoom",
+    room_bg=GROUND.MUD,
     colour={r=0.7,g=0.5,b=0.0,a=0.9},
 })
 
@@ -209,6 +214,7 @@ AddTask("MudLights", {
         ["PitRoom"] = 2,
     },
     background_room="WormPlantField",
+    room_bg=GROUND.MUD,
     colour={r=0.7,g=0.5,b=0.0,a=0.9},
 })
 
@@ -220,6 +226,7 @@ AddTask("MudPit", {
         ["PitRoom"] = 4,
     },
     background_room="FernGully",
+    room_bg=GROUND.MUD,
     colour={r=0.6,g=0.4,b=0.0,a=0.9},
 })
 
@@ -237,6 +244,7 @@ AddTask("BigBatCave", {
         ["PitRoom"] = 4,
     },
     background_room="BGBatCaveRoom",
+    room_bg=GROUND.CAVE,
     colour={r=0.8,g=0.8,b=0.8,a=0.9},
 })
 
@@ -253,6 +261,7 @@ AddTask("RockyLand",{
         ["PitRoom"] = 2,
     },
     background_room="BGRockyRoom",
+    room_bg=GROUND.CAVE,
     colour={r=0.5,g=0.5,b=0.5,a=0.9},
 })
 
@@ -269,6 +278,7 @@ AddTask("RedForest",{
         ["PitRoom"] = 2,
     },
     background_room="BGRedMush",
+    room_bg=GROUND.FUNGUSRED,
     colour={r=1.0,g=0.5,b=0.5,a=0.9},
 })
 
@@ -286,6 +296,7 @@ AddTask("GreenForest",{
         ["PitRoom"] = 2,
     },
     background_room="BGGreenMush",
+    room_bg=GROUND.FUNGUSGREEN,
     colour={r=0.5,g=1.0,b=0.5,a=0.9},
 })
 
@@ -301,6 +312,7 @@ AddTask("BlueForest",{
         ["PitRoom"] = 2,
     },
     background_room="BGBlueMush",
+    room_bg=GROUND.FUNGUS,
     colour={r=0.5,g=0.5,b=1.0,a=0.9},
 })
 
@@ -320,6 +332,7 @@ AddTask("SpillagmiteCaverns",{
         ["PitRoom"] = 2,
     },
     background_room="BGSpillagmiteRoom",
+    room_bg=GROUND.UNDERROCK,
     colour={r=0.3,g=0.3,b=0.3,a=0.9},
 })
 
@@ -337,6 +350,7 @@ AddTask("SwampySinkhole",{
         ["PitRoom"] = 2,
     },
     background_room="BGSinkholeSwampRoom",
+    room_bg=GROUND.SWAMP,
     colour={r=0.6,g=0.1,b=0.7,a=0.9},
 })
 
@@ -350,6 +364,7 @@ AddTask("CaveSwamp",{
         ["PitRoom"] = 2,
     },
     background_room="BGSinkholeSwamp",
+    room_bg=GROUND.SWAMP,
     colour={r=0.7,g=0.1,b=0.6,a=0.9},
 })
 
@@ -364,6 +379,7 @@ AddTask("UndergroundForest",{
         ["PitRoom"] = 2,
     },
     background_room="BGSinkhole",
+    room_bg=GROUND.SINKHOLE,
     colour={r=0.0,g=0.3,b=0.0,a=0.9},
 })
 
@@ -378,11 +394,12 @@ AddTask("PleasantSinkhole",{
         ["PitRoom"] = 2,
     },
     background_room="BGSinkhole",
+    room_bg=GROUND.SINKHOLE,
     colour={r=0.0,g=0.5,b=0.0,a=0.9},
 })
 
 -- Soggy Sinkhole
-AddTask("PleasantSinkhole",{
+AddTask("SoggySinkhole",{
     locks={ LOCKS.CAVE, LOCKS.TIER3 },
     keys_given={ KEYS.CAVE, KEYS.SINKHOLE, KEYS.TIER4, KEYS.ENTRANCE_OUTER },
     room_choices={
@@ -392,6 +409,7 @@ AddTask("PleasantSinkhole",{
         ["PitRoom"] = 2,
     },
     background_room="BGSinkhole",
+    room_bg=GROUND.SINKHOLE,
     colour={r=0.0,g=0.5,b=0.0,a=0.9},
 })
 
@@ -407,6 +425,7 @@ AddTask("FungalNoiseForest",{
         ["PitRoom"] = 2,
     },
     background_room="FungusNoiseMeadow",
+    room_bg=GROUND.FUNGUS,
     colour={r=0.0,g=0.5,b=1.0,a=0.9},
 })
 
@@ -422,6 +441,7 @@ AddTask("FungalNoiseMeadow",{
         ["PitRoom"] = 2,
     },
     background_room="FungusNoiseMeadow",
+    room_bg=GROUND.FUNGUS,
     colour={r=0.0,g=0.5,b=0.8,a=0.9},
 })
 
@@ -433,6 +453,7 @@ AddTask("BatCloister",{
         ["PitRoom"] = 2,
     },
     background_room="BatCave",
+    room_bg=GROUND.CAVE,
     colour={r=0.7,g=0.7,b=0.7,a=0.9},
 })
 
@@ -447,6 +468,7 @@ AddTask("RabbitTown",{
         ["PitRoom"] = 2,
     },
     background_room="BGSinkhole",
+    room_bg=GROUND.SINKHOLE,
     colour={r=2.0,g=0.6,b=0.0,a=0.9},
 })
 
@@ -461,6 +483,7 @@ AddTask("RabbitCity",{
         ["PitRoom"] = 2,
     },
     background_room="BGSinkhole",
+    room_bg=GROUND.SINKHOLE,
     colour={r=1.0,g=0.8,b=0.2,a=0.9},
 })
 
@@ -475,6 +498,7 @@ AddTask("SpiderLand",{
         ["PitRoom"] = 2,
     },
     background_room="PitRoom",
+    room_bg=GROUND.SINKHOLE,
     colour={r=0.2,g=0.5,b=0.2,a=0.9},
 })
 
@@ -488,6 +512,7 @@ AddTask("RabbitSpiderWar",{
         ["PitRoom"] = 2,
     },
     background_room="SparseSinkholes",
+    room_bg=GROUND.SINKHOLE,
     colour={r=0.6,g=0.2,b=0.0,a=0.9},
 })
 
@@ -526,6 +551,7 @@ for i=1,10 do
             [startrooms[i]] = 1,
         },
         background_room="BGSinkhole",
+        room_bg=GROUND.SINKHOLE,
         colour={r=1,g=0,b=1,a=1},
     })
 end

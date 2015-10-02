@@ -44,14 +44,37 @@ local OnSeasonsUpdate = _ismastershard and function(src, data)
     for i, v in ipairs(_lengths) do
         if v:value() ~= data.lengths[i] then
             v:set(data.lengths[i])
+            dirty = true
         end
     end
 
-    _season:set(data.season)
-    _totaldaysinseason:set(data.totaldaysinseason)
-    _remainingdaysinseason:set(data.remainingdaysinseason)
-    _elapseddaysinseason:set(data.elapseddaysinseason)
-    _endlessdaysinseason:set(data.endlessdaysinseason)
+    if _season:value() ~= data.season then
+        _season:set(data.season)
+        dirty = true
+    end
+
+    if _totaldaysinseason:value() ~= data.totaldaysinseason then
+        _totaldaysinseason:set(data.totaldaysinseason)
+        dirty = true
+    end
+
+    if _remainingdaysinseason:value() ~= data.remainingdaysinseason then
+        _remainingdaysinseason:set(data.remainingdaysinseason)
+        dirty = true
+    end
+
+    if _elapseddaysinseason:value() ~= data.elapseddaysinseason then
+        _elapseddaysinseason:set(data.elapseddaysinseason)
+        dirty = true
+    end
+
+    if _endlessdaysinseason:value() ~= data.endlessdaysinseason then
+        _endlessdaysinseason:set(data.endlessdaysinseason)
+        dirty = true
+    end
+
+    if dirty then
+    end
 end or nil
 
 local OnSeasonsDirty = not _ismastershard and function()

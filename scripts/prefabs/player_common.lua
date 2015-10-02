@@ -1605,8 +1605,6 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
 
         inst:AddComponent("colourtweener")
 
-        inst:AddComponent("areaaware")
-
         -------
         if METRICS_ENABLED then
             inst:AddComponent("overseer")

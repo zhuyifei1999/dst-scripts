@@ -540,8 +540,16 @@ local ExampleLayout =
 -- CAVES 
 --------------------------------------------------------------------------------
 
-	["CaveEntrance"] = StaticLayout.Get("map/static_layouts/cave_entrance"),
-	["CaveExit"] = StaticLayout.Get("map/static_layouts/cave_exit"),
+    ["CaveEntrance"] = StaticLayout.Get("map/static_layouts/cave_entrance", {
+        start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+        fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+        layout_position = LAYOUT_POSITION.RANDOM,
+    }),
+    ["CaveExit"] = StaticLayout.Get("map/static_layouts/cave_exit", {
+        start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+        fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+        layout_position = LAYOUT_POSITION.RANDOM,
+    }),
 	["CaveBase"] = StaticLayout.Get("map/static_layouts/cave_base_1"),
 	["MushBase"] = StaticLayout.Get("map/static_layouts/cave_base_2"),
 	["SinkBase"] = StaticLayout.Get("map/static_layouts/cave_base_3"),
@@ -549,20 +557,16 @@ local ExampleLayout =
 	["RabbitHermit"] = StaticLayout.Get("map/static_layouts/rabbithermit"),
 	["CaveArtTest"] = StaticLayout.Get("map/static_layouts/cave_art_test_start"),
 	["Mudlights"] = StaticLayout.Get("map/static_layouts/mudlights"),
-	["RabbitCity"] = StaticLayout.Get("map/static_layouts/rabbitcity",
-				{
-				start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
-				fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
-				layout_position = LAYOUT_POSITION.RANDOM,
-			}
-		),
-	["TorchRabbitking"] = StaticLayout.Get("map/static_layouts/torch_rabbit_cave",
-				{
-				start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
-				fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
-				layout_position = LAYOUT_POSITION.RANDOM,
-			}
-		),
+    ["RabbitCity"] = StaticLayout.Get("map/static_layouts/rabbitcity", {
+        start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+        fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+        layout_position = LAYOUT_POSITION.RANDOM,
+    }),
+    ["TorchRabbitking"] = StaticLayout.Get("map/static_layouts/torch_rabbit_cave", {
+        start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+        fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+        layout_position = LAYOUT_POSITION.RANDOM,
+    }),
     ["EvergreenSinkhole"] = StaticLayout.Get("map/static_layouts/evergreensinkhole", {
         areas = {
             lights = {"cavelight", "cavelight"},

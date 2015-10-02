@@ -48,5 +48,7 @@ end
 --------------------------------------------------------------------------
 
 function Shard_UpdateMasterSessionId(session_id)
-    TheWorld:PushEvent("ms_newmastersessionid", session_id)
+    if TheWorld ~= nil then -- this will be nil if the connection happens during worldgen; it will be resent on game start
+        TheWorld:PushEvent("ms_newmastersessionid", session_id)
+    end
 end
