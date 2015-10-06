@@ -1022,6 +1022,13 @@ function InGamePlay()
 	return inGamePlay
 end
 
+function IsMigrating()
+    --Right now the only way to really tell if we are migrating is if we are neither in FE or in gameplay, which results in no screen...
+    --      e.g. if there is no active screen
+    --THIS SHOULD BE IMPROVED YARK YARK YARK
+    return TheFrontEnd:GetActiveScreen() == nil
+end
+
 --DoRestart helper
 local function postsavefn()
 	PlayerHistory:UpdateHistoryFromClientTable()
@@ -1108,10 +1115,9 @@ function OnNetworkDisconnect( message, should_reset, force_immediate_reset, deta
 
     --Don't need to reset if we're in FE already
     --NOTE: due to migration, we can be in neither gameplay nor FE
-    --      e.g. if there is no active screen
     --      INVALID_CLIENT_TOKEN is a special case; we want to
     --      boot the user back to the main menu even if they're in the FE
-    should_reset = should_reset and (InGamePlay() or TheFrontEnd:GetActiveScreen() == nil or message == "INVALID_CLIENT_TOKEN")
+    should_reset = should_reset and (InGamePlay() or IsMigrating() or message == "INVALID_CLIENT_TOKEN")
 	local function doquit( should_reset )
 		if should_reset == true then
 			DoRestart(false) --don't save again

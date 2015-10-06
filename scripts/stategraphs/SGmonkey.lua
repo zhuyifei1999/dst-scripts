@@ -214,8 +214,8 @@ CommonStates.AddSleepStates(states,
 
     sleeptimeline = 
     {
-    TimeEvent(1*FRAMES, function(inst) inst.components.combat:DoAttack()
-            inst.SoundEmitter:PlaySound("dontstarve/creatures/monkey"..inst.soundtype.."/sleep") end),
+    TimeEvent(1*FRAMES, function(inst)
+        inst.SoundEmitter:PlaySound("dontstarve/creatures/monkey"..inst.soundtype.."/sleep") end),
     },
 
     endtimeline =
@@ -227,9 +227,11 @@ CommonStates.AddSleepStates(states,
 CommonStates.AddCombatStates(states,
 {
     attacktimeline = 
-    {        
-        TimeEvent(17*FRAMES, function(inst) inst.components.combat:DoAttack()
-        inst.SoundEmitter:PlaySound("dontstarve/creatures/monkey"..inst.soundtype.."/attack") end),
+    {
+        TimeEvent(17*FRAMES, function(inst)
+            inst.components.combat:DoAttack()
+            inst.SoundEmitter:PlaySound("dontstarve/creatures/monkey"..inst.soundtype.."/attack")
+        end),
     },
 
     hittimeline =

@@ -97,7 +97,9 @@ local CustomizationTab = Class(Widget, function(self, profile, customoptions, al
     self.presets = {}
 
     for i, level in pairs(levels.sandbox_levels) do
-        table.insert(self.presets, {text=level.name, data=level.id, desc = level.desc, overrides = level.overrides})
+        if not level.hideinfrontend then
+            table.insert(self.presets, {text=level.name, data=level.id, desc = level.desc, overrides = level.overrides})
+        end
     end
 
     local profilepresets = Profile:GetWorldCustomizationPresets()

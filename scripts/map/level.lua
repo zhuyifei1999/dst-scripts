@@ -14,6 +14,7 @@ Level = Class( function(self, data)
 	self.id = data.id or "UNKNOWN_ID"
 	self.name = data.name or ""
 	self.desc = data.desc or ""
+    self.hideinfrontend = data.hideinfrontend
 	self.overrides = data.overrides or {}
 	self.substitutes = data.substitutes or {}
 	self.override_triggers = data.override_triggers

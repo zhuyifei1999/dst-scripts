@@ -83,7 +83,8 @@ local start_descriptions = {
 	{ text = STRINGS.UI.SANDBOXMENU.DEFAULTSTART, data = "default" },
 	{ text = STRINGS.UI.SANDBOXMENU.PLUSSTART, data = "plus" },
 	{ text = STRINGS.UI.SANDBOXMENU.DARKSTART, data = "darkness" },
-	{ text = STRINGS.UI.SANDBOXMENU.CAVESTART, data = "caves" },
+    --#TODOCAVES: disabled temporarily for main branch ~gjans
+	--{ text = STRINGS.UI.SANDBOXMENU.CAVESTART, data = "caves" },
 }
 
 local branching_descriptions = {
@@ -206,8 +207,8 @@ local GROUP = {
 						desc = nil,
 						enable = true,
 						items={
-							["task_set"] = {value = "default", enable = false, image = "world_map.tex", desc = tasks.GetGenTaskLists(), order = 1}, 
-							["start_location"] = {value = "default", enable = false, image = "world_start.tex", desc = start_descriptions, order = 2}, 
+                            ["task_set"] = {value = "default", enable = false, image = "world_map.tex", desc = tasks.GetGenTaskLists(), order = 1}, 
+                            ["start_location"] = {value = "default", enable = false, image = "world_start.tex", desc = start_descriptions, order = 2}, 
 							["world_size"] = {value = "default", enable = false, image = "world_size.tex", desc = size_descriptions, order = 3}, 
 							["branching"] = {value = "default", enable = false, image = "world_branching.tex", desc = branching_descriptions, order = 4}, 
 							["loop"] = {value = "default", enable = false, image = "world_loop.tex", desc = loop_descriptions, order = 5}, 

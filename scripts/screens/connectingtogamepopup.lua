@@ -105,7 +105,7 @@ function ConnectingToGamePopup:OnCancel()
     TheNet:Disconnect(false)
 	TheFrontEnd:PopScreen()
 
-    if TheFrontEnd:GetActiveScreen() == nil then
+    if IsMigrating() then
         -- Still does not handle in-game, but
         -- this one's for canceling migration
         DoRestart(false)

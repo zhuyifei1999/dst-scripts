@@ -3785,6 +3785,9 @@ STRINGS.TAGS =
     FRIENDSONLY = "friendsonly",
     CLAN = "group",
     LOCAL = "localonly",
+    --#TODOCAVES: This should be "multilevel" as the shards might not necessarily include a cave,
+    --but this will cover the common case at launch at least.
+    MULTISERVER = "caves",
 }
 
 

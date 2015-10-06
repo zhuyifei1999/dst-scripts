@@ -328,7 +328,7 @@ function JoinServer( server_listing, optional_password_override )
 		end
 	end
 	
-	if server_listing.mods_enabled and Profile:ShouldWarnModsEnabled() then
+	if not IsMigrating() and server_listing.mods_enabled and Profile:ShouldWarnModsEnabled() then
 
 		local checkbox_parent = Widget("checkbox_parent")
 		local checkbox = checkbox_parent:AddChild(ImageButton("images/ui.xml", "checkbox_off.tex", "checkbox_off_highlight.tex", "checkbox_off_disabled.tex", nil, nil, {1,1}, {0,0}))
@@ -475,6 +475,10 @@ function UpdateServerTagsString()
 
     if TheNet:GetDefaultClanID() ~= "0" then
         table.insert(tagsTable, STRINGS.TAGS.CLAN)
+    end
+
+    if TheShard:GetDefaultShardEnabled() then
+        table.insert(tagsTable, STRINGS.TAGS.MULTISERVER)
     end
 
     TheNet:SetServerTags(BuildTagsStringCommon(tagsTable))

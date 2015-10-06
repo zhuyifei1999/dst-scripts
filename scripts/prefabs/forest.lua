@@ -214,4 +214,4 @@ local function master_postinit(inst)
     -- inst.components.periodicthreat:AddThreat("WORM", threats["WORM"])
 end
 
-return MakeWorld("forest", prefabs, assets, common_postinit, master_postinit)
+return MakeWorld("forest", prefabs, assets, common_postinit, master_postinit, {"forest"})

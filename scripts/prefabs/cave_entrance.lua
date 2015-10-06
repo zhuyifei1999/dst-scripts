@@ -99,6 +99,17 @@ local function fn(bank, build, anim, minimap)
         return inst
     end
 
+    if not TheNet:GetServerIsDedicated() then
+        --#TODOCAVES: On self-hosted servers we'll make these "vanish" for now, but still generate them
+        --into the world so that they can magically appear in existing saves once self-hosted caves servers
+        --are working.
+        RemovePhysicsColliders(inst)
+        inst.AnimState:SetScale(0,0)
+        inst.MiniMapEntity:SetEnabled(false)
+        inst:AddTag("NOCLICK")
+        inst:AddTag("CLASSIFIED")
+    end
+
     inst:AddComponent("inspectable")
     inst:AddComponent("worldmigrator")
 

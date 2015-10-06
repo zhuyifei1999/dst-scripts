@@ -27,7 +27,9 @@ end
 local function GetGenTaskLists()
     local ret = {}
     for k,v in pairs(taskgrouplist) do
-        table.insert(ret, {text = v.name, data = k})
+        if not v.hideinfrontend then
+            table.insert(ret, {text = v.name, data = k})
+        end
     end
     return ret
 end
