@@ -47,18 +47,16 @@ function PlayerAvatarPopup:SetPlayer(player_name, data, include_steam_link)
     self.userid = data.userid
     self.target = data.inst
 
+    self.frame = self.proot:AddChild(TEMPLATES.CurlyWindow(100, 520, .6, .6, 39, -25))
+    self.frame:SetPosition(0, 20)
+
+    self.frame_bg = self.frame:AddChild(Image("images/serverbrowser.xml", "side_panel.tex"))
+    self.frame_bg:SetScale(-.87, 0.8)
+    self.frame_bg:SetPosition(5, 5)
+
     if character ~= "notselected" then 
-        
-        self.frame = self.proot:AddChild(TEMPLATES.CurlyWindow(100, 520, .6, .6, 39, -25))
-        self.frame:SetPosition(0, 20)
-
-        self.frame_bg = self.frame:AddChild(Image("images/serverbrowser.xml", "side_panel.tex"))
-        self.frame_bg:SetScale(-.87, 0.8)
-        self.frame_bg:SetPosition(5, 5)
-
         local left_column = -80
         local right_column = 80
-
 
         --title 
         self.title = self.proot:AddChild(Text(TALKINGFONT, 30))

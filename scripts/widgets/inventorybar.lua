@@ -196,7 +196,7 @@ function Inv:Rebuild()
         
     end
 
-    self.inspectcontrol = self.root:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "player_info.tex", STRINGS.UI.HUD.INSPECT_SELF, false, false, function() self.owner.HUD:InspectSelf() end))
+    self.inspectcontrol = self.root:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "player_info.tex", STRINGS.UI.HUD.INSPECT_SELF, false, false, function() self.owner.HUD:InspectSelf() end, {size = 40}))
     self.inspectcontrol:SetScale(1.25)
     self.inspectcontrol:SetPosition(total_w/2 - W/2, -5, 0)
    

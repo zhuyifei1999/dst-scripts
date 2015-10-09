@@ -96,7 +96,12 @@ function Wardrobe:EndChanging(doer)
 
         if doer.sg:HasStateTag("inwardrobe") and not doer.sg.statemem.isclosingwardrobe then
             doer.sg.statemem.isclosingwardrobe = true
-            doer.sg:GoToState("idle")
+            if doer.sg.statemem.isopeninggift then
+                doer.AnimState:PlayAnimation("gift_open_pst")
+                doer.sg:GoToState("idle", true)
+            else
+                doer.sg:GoToState("idle")
+            end
         end
 
         if next(self.changers) == nil then

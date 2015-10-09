@@ -2129,6 +2129,7 @@ local states =
         tags = { "inwardrobe", "busy", "pausepredict" },
 
         onenter = function(inst, isopeninggift)
+            inst.sg.statemem.isopeninggift = isopeninggift
             if not isopeninggift then
                 inst.components.locomotor:Stop()
                 inst.components.locomotor:Clear()
