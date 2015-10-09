@@ -43,7 +43,9 @@ function PlayerHistory:UpdateHistoryFromClientTable()
 					
 					local current_date = os.date("%b %d, %y")
 					local _sort_date = os.date("%Y%m%d")
-					local seen_state = { name = v.name, userid = v.userid, steamid = v.steamid, server_name = _server_name, prefab = v.prefab, playerage = v.playerage, date = current_date, sort_date = _sort_date }	
+					local seen_state = { name = v.name, userid = v.userid, steamid = v.steamid, server_name = _server_name, prefab = v.prefab, 
+										 playerage = v.playerage, date = current_date, sort_date = _sort_date, base_skin = v.base_skin, 
+										 body_skin = v.body_skin, hand_skin = v.hand_skin, legs_skin = v.legs_skin }	
 					if current_index == -1 then
 						self:DiscardDownToMaxForNew()
 						table.insert( self.persistdata, 1, seen_state )

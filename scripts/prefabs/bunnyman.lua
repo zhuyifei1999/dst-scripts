@@ -301,7 +301,8 @@ local function fn()
     inst:ListenForEvent("newcombattarget", OnNewTarget)
 
     inst.components.sleeper:SetResistance(2)
-    inst.components.sleeper.nocturnal = true
+    inst.components.sleeper.sleeptestfn = NocturnalSleepTest
+    inst.components.sleeper.waketestfn = NocturnalWakeTest
 
     inst.components.combat:SetDefaultDamage(TUNING.BUNNYMAN_DAMAGE)
     inst.components.combat:SetAttackPeriod(TUNING.BUNNYMAN_ATTACK_PERIOD)
@@ -323,4 +324,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/characters/bunnyman", fn, assets, prefabs)
+return Prefab("bunnyman", fn, assets, prefabs)

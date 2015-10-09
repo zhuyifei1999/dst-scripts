@@ -144,6 +144,6 @@ local function tinyfn(Sim)
     return fn(Sim, 0.2)
 end
 
-return Prefab( "common/cavelight", normalfn, assets),
-       Prefab( "common/cavelight_small", smallfn, assets),
-       Prefab( "common/cavelight_tiny", tinyfn, assets)
+return Prefab( "cavelight", normalfn, assets),
+       Prefab( "cavelight_small", smallfn, assets),
+       Prefab( "cavelight_tiny", tinyfn, assets)

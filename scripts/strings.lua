@@ -142,6 +142,7 @@ STRINGS=
         GOHOME = "Go Home",
         DIG = "Dig",
         SLEEPIN = "Sleep",
+        CHANGEIN = "Use",
         EQUIP = "Equip",
         TERRAFORM = "Dig",
         UNEQUIP = "Unequip",
@@ -231,6 +232,7 @@ STRINGS=
         UPGRADE = "Upgrade",
         HAUNT = "Haunt",
         UNPIN = "Unstick",
+
         TOSS = "Toss",
         WRITE = "Write on",
         ATTUNE = "Attune",
@@ -285,6 +287,7 @@ STRINGS=
     NAMES =
     {
         DEFAULT = "INVENTORY ITEM",
+        NONE = "Nothing",
 
         LUCY = "Lucy the Axe",
         BOOK_BIRDS = "Birds of the World",
@@ -535,6 +538,7 @@ STRINGS=
         SPIDER_WARRIOR = "Spider Warrior",
         TENT = "Tent",
         SIESTAHUT = "Siesta Lean-to",
+        WARDROBE = "Wardrobe",
         PIGTORCH = "Pig Torch",
         
         WILSON = "Wilson",
@@ -1221,6 +1225,8 @@ STRINGS=
         BEARGER_FUR = "Reconstituted furs.",
 
         BERNIE_INACTIVE = "A familiar face in this mad world.",
+
+        WARDROBE = "Change your look.",
     },
 
     -- MAXWELL_TEST = {"Say pal, you don't look so good.", "You better find something to eat before night comes!"},
@@ -1712,7 +1718,7 @@ STRINGS.UI =
         PLACE = "Place",
         BUILD = "Build",
         PROTOTYPE = "Prototype",
-        NEEDSTUFF = "Find ingredients to craft!",
+        NEEDSTUFF = "Find ingredients \nto craft!",
         BUILD = "Build",
         RESEARCH = "Research",
         NEEDSCIENCEMACHINE = "Use a science machine to build a prototype!",
@@ -1721,6 +1727,7 @@ STRINGS.UI =
         NEEDPRESTIHATITATOR = "Use a Prestihatitator to build a prototype!",
         NEEDSANCIENT_FOUR = "It seems that this altar is not fully functional!",
         CANTRESEARCH = "Some things are unknowable",
+        DEFAULT = "Classic",
     },
     
     CREDITS=
@@ -1765,6 +1772,7 @@ STRINGS.UI =
             "Toni Zhang",
             "Quentin Proust",
             "Hugo Moraleida",
+            "Kris Fortune",
         },
 
         ALTGAMES = 
@@ -1901,7 +1909,7 @@ STRINGS.UI =
         MODQUIT = "Disable Mods",
         MODFORUMS = "Mod Forums",
         MODSBADTITLE = "All Mods Disabled",
-        MODSBADLOAD = "The game did not start correctly last time. This was likely caused by a mod, so all mods have been disabled.\n\nYou can try re-enabling mods from the mod settings screen.",
+        MODSBADLOAD = "The game did not start correctly last time. This was likely caused by a mod, so all client mods have been disabled.\n\nYou can try re-enabling mods from the mod settings screen.",
         MODS = "Mods",
         SCRIPTERRORQUIT = "Exit Game",
         SCRIPTERRORMODWARNING = "This error may have occurred due to a mod you have enabled!\nYou have the following mods enabled:\n",
@@ -1952,6 +1960,7 @@ STRINGS.UI =
         BROWSE = "Browse Games",
         CREATE = "Host Game",
         GAMEWIZARD = "Game Wizard",
+        SKINS = "Collection",
         RATE = "Rate This Game",
         ACCOUNTINFO = "Account Info",
         VISITFORUM = "Visit Forum",
@@ -2040,6 +2049,7 @@ STRINGS.UI =
         TOOLTIP_BROWSE = "Browse the list of servers",
         TOOLTIP_HOST = "Start your own server",
         TOOLTIP_WIZARD = "Let us help you drill down the list of servers",
+        TOOLTIP_SKINS = "View and manage your items.",
         TOOLTIP_MODS = "Customize your game",
         TOOLTIP_HISTORY = "Revisit past lives and missed connections",
         TOOLTIP_OPTIONS = "Change your settings and controls",
@@ -2101,6 +2111,7 @@ STRINGS.UI =
         AFK_BODY = "I get it. It's tough out there. Really. It is. You definitely shouldn't be embarrassed about this. You baby. Whenever you're ready to get back to actually playing the darn game, click below.",
         AFK_OK = "Return",
         ACTIVATE_RESURRECTION = "Activate Meat Effigy",
+        INSPECT_SELF = "Inspect Self (i)",
     },
     
     ACCOUNT=
@@ -2154,6 +2165,19 @@ STRINGS.UI =
         HELP= "Help",
     },
     
+    PLAYER_AVATAR = 
+    {
+    	CLOSE = "Close",
+    	STEAM = "View Steam Profile",
+    	CHOOSING = "is choosing their character",
+	},
+
+	WARDROBE_POPUP = 
+	{
+		RESET = "Reset Outfit",
+		SET = "Confirm Outfit",
+		CANCEL = "Cancel",
+	},
     OPTIONS=
     {
         SETTINGS = "Settings",
@@ -2212,6 +2236,24 @@ STRINGS.UI =
         PRESS_CONTROLLER = "Press ",
         DISCONNECT_CONTROLLER = " to Disconnect",
         CONNECTING = "Connecting",
+        NEW_SKIN_ANNOUNCEMENT = "%s got a new skin: ",
+    },
+
+    ITEM_SCREEN =
+    {
+        ROG_POPUP_TITLE ="THANKS FOR PLAYING",
+        NORMAL_POPUP_TITLE = "received...",
+        NEW_SKIN = "You got a skin for %s!",
+        OK_BUTTON = "Close",
+        OPEN_BUTTON = "Open Now!",
+        OPENING = "Opening",
+        BACK = "Back", 
+        NEXT_ITEM = "Put it Away",
+        USE_NOW = "Use Now",
+        USE_LATER = "Use Later",
+        RECEIVED = "You Received",
+        ENABLED_TOAST_TOOLTIP = "Open",
+        DISABLED_TOAST_TOOLTIP = "This requires more science!",
     },
     
     POPUPDIALOG =
@@ -2371,7 +2413,7 @@ STRINGS.UI =
         VOTEACTIVE = "Vote In Progress",
         BAN = "Ban",
         ADMIN = "Admin",
-        VIEWPROFILE = "View Profile",
+        VIEWPROFILE = "View Player",
         KICKCONFIRM_TITLE = "Kick",
         KICKCONFIRM_BODY = "Are you sure you want to kick",
         BANCONFIRM_TITLE = "Ban",
@@ -2700,6 +2742,9 @@ STRINGS.UI =
         MODS_HIDDEN_LAN = "The mods list isn't visible over LAN.\nWhy don't you go over and ask your friend?",
         OFFLINE_MODE_TITLE = "Offline",
         OFFLINE_MODE_BODY = "You are not logged in and can't play in online games.\nTry playing over LAN or restarting the game to log in.",
+        OFFLINEWARNINGTITLE = "Offline World",
+        OFFLINEMODEBODYJOIN = "Are you sure you want to join an offline world? You will not be able to receive or use Collection Items in this world.",
+        
         CHAR_AGE_1 = "Day ",
         CHAR_AGE_2 = "",
         WORLD_UNKNOWN = "World Unknown",
@@ -2786,8 +2831,8 @@ STRINGS.UI =
         ONLINEONYTITLE = "Online World",
         ONLINEONLYBODY = "You can only resume an online world when you have a connection to Steam and Klei. Please log in and try again.",
         OFFLINEMODETITLE = "Offline Mode",
-        OFFLINEMODEBODYCREATE = "Are you sure you want to create an offline world? This is a limited mode where only players on your Local Area Network can join.",
-        OFFLINEMODEBODYRESUME = "You are resuming an offline world. Only users on your Local Area Network will be able to join this world.",
+        OFFLINEMODEBODYCREATE = "Are you sure you want to create an offline world? This is a limited mode where only players on your Local Area Network can join. Players will not be able to receive or use Collection Items in this world.",
+        OFFLINEMODEBODYRESUME = "You are resuming an offline world. Only users on your Local Area Network will be able to join this world. Players will not be able to receive or use Collection Items in this world.",
         FULLSLOTSTITLE = "No Slots Available",
         FULLSLOTSBODY = "All of your server slots are currently full. You must either select a slot to load the world from or delete a slot to start a new world.",
         OK = "OK",
@@ -2843,7 +2888,7 @@ STRINGS.UI =
         CLEAR_PLAYERS_HELPTEXT = "Unban All",
         UNDO_PLAYERS = "Undo All",        
         PLAYER_DETAILS = "View Details",
-        PLAYER_PROFILE = "View Profile",
+        --PLAYER_PROFILE = "View Profile",
         PLAYER_DELETE = "Unban",
         APPLY = "Apply",
         CANCEL = "Cancel",
@@ -2902,11 +2947,54 @@ STRINGS.UI =
         INVITE = "Invite",
         PLAYERLIST = "Players",
         CHAT = "Chat",
-        RANDOMCHAR = "Random",
+		RANDOMCHAR = "Random",        
+		PLAYER = "Player",
+		SKINS = "Skins",
+        SKINS_BASE = "BASE",
+        SKINS_BODY = "BODY", 
+        SKINS_LEGS = "LEGS",
+        SKINS_HANDS = "HANDS",
+        SKINS_RANDOM = "Random Item",
+        SKINS_PREVIOUS = "Previously Worn Item",
         RANDOMCHAR_BUTTONHINT = "Random Character",
         INVITE_FRIEND = "Invite Friend",
+        CUSTOMIZE = "Customize Your Character",
+        COMING = "Coming Soon!",
+        OFFLINE = "Not Available Offline",
     },
 	
+    SKINSSCREEN = 
+    {
+    	TITLE = "'s Collection",
+    	ALL = "All",
+    	CLOTHING = "Clothing",
+    	ITEMS = "Items",
+    	FILTERS = "Filters",
+    	NONE = "NONE",
+    	BASE = "BASE",
+    	BODY = "BODY",
+    	HAND = "HANDS",
+    	LEGS = "LEGS",
+    	FEET = "FEET",
+    	ITEM = "Craftables",
+    	COMMON = "Common", 
+    	CLASSY = "Classy", 
+    	SPIFFY = "Spiffy", 
+    	DISTINGUISHED = "Distinguished",
+    	ELEGANT = "Elegant",
+    	TIMELESS = "Timeless",
+    	LOYAL = "Loyal",
+    	SAVE = "Save Outfit",
+    	RESET = "Last Outfit",
+    	CLEAR = "Reset to Default",
+    	LOADOUT = "Loadout",
+    	SELECT = "Select",
+    	PICK = "Pick A Character",
+    	SORRY = "Sorry",
+    	OFFLINE = "Your collection is not available offline.",
+    	NEW = "NEW",
+	},
+
     MORGUESCREEN=
     {
         HISTORY = "History",
@@ -3014,6 +3102,7 @@ STRINGS.UI =
             "Menu Misc 2", --controller
             "Menu Misc 3", --controller
             "Menu Misc 4", --controller
+            "Inspect Self",
         },
 
         DEVICE_TITLE = "Controls",
@@ -3924,3 +4013,8 @@ STRINGS.SHARD =
         DST_SHARD_MIGRATION_CANCELLED = "[WIP] Migration cancelled",
     }   
 }
+
+----------------------------------------------------------------------------
+-- Include the names and descriptions of the clothing and craftable skins.
+----------------------------------------------------------------------------
+require "skins_strings"

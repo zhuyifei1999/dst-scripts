@@ -60,4 +60,4 @@ local function local_fn(proxy)
     return inst
 end
 
-return Prefab("common/fx/fan_wheel", local_fn, assets)
+return Prefab("fan_wheel", local_fn, assets)

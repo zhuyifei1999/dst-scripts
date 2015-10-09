@@ -358,7 +358,8 @@ local function fn()
     inst.components.eater:SetOnEatFn(oneat)
 
     inst:AddComponent("sleeper")
-    inst.components.sleeper:SetNocturnal(true)
+    inst.components.sleeper.sleeptestfn = NocturnalSleepTest
+    inst.components.sleeper.waketestfn = NocturnalWakeTest
 
     inst:SetBrain(brain)
     inst:SetStateGraph("SGmonkey")
@@ -401,4 +402,4 @@ local function fn()
     return inst
 end
 
-return Prefab("cave/monsters/monkey", fn, assets, prefabs)
+return Prefab("monkey", fn, assets, prefabs)

@@ -416,7 +416,7 @@ end
 
 local treeprefabs = {}
 function treeset(name, data, build, bloombuild)
-    table.insert(treeprefabs, Prefab(name, maketree(name, data), { Asset("ANIM", build), Asset("ANIM", bloombuild) }, prefabs))
+    table.insert(treeprefabs, Prefab(name, maketree(name, data), { Asset("ANIM", build), Asset("ANIM", bloombuild), Asset("MINIMAP_IMAGE", data.icon) }, prefabs))
     table.insert(treeprefabs, Prefab(name.."_stump", maketree(name, data, "stump"), { Asset("ANIM", build), Asset("ANIM", bloombuild) }, prefabs))
 end
 

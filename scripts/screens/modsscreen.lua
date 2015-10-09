@@ -1333,7 +1333,7 @@ function ModsScreen:LoadModInfoPrefabs(prefabtable)
 				Asset("ATLAS", info.icon_atlas),
 				Asset("IMAGE", info.iconpath),
 			}
-			local prefab = Prefab("modbaseprefabs/MODSCREEN_"..modname, nil, modinfoassets, nil)
+			local prefab = Prefab("MODSCREEN_"..modname, nil, modinfoassets, nil)
 			RegisterPrefabs( prefab )
 			table.insert(prefabtable, prefab.name)
 		end

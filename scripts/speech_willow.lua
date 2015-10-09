@@ -1192,6 +1192,11 @@ return {
 			GENERIC = "Why does everyone have a nicer house than me?",
 		},
 		WALRUS_TUSK = "Nom nom nom.",
+		WARDROBE = 
+		{
+			GENERIC = "I want to set it on fire.",
+			BURNT = "Aww, the fire burned out.",
+		},
 		WARG = "You're a big mean jerk!",
 		WASPHIVE = "I had better keep my distance.",
 		WETGOOP = "How did it go wrong?! I put it in fire and everything.",

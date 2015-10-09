@@ -79,6 +79,7 @@ local function fn()
     inst.entity:AddDynamicShadow()
     inst.entity:AddLight()
     inst.entity:AddNetwork()
+    inst.entity:AddLightWatcher()
 
     inst.DynamicShadow:SetSize(2, 1)
     inst.Transform:SetSixFaced()
@@ -165,4 +166,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/lavae_pet", fn, assets, prefabs)
+return Prefab("lavae_pet", fn, assets, prefabs)

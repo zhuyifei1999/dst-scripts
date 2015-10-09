@@ -55,6 +55,7 @@ local function fn()
     inst.entity:AddSoundEmitter()
     inst.entity:AddDynamicShadow()
     inst.entity:AddNetwork()
+    inst.entity:AddLightWatcher()
 
     MakeCharacterPhysics(inst, 10, .5)
 
@@ -114,4 +115,4 @@ local function fn()
     return inst
 end
 
-return Prefab("monsters/krampus", fn, assets, prefabs)
+return Prefab("krampus", fn, assets, prefabs)

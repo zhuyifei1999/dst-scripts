@@ -79,7 +79,7 @@ AddLevel(LEVELTYPE.SURVIVAL, {
 	name=STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELS[12],
 	desc= STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELDESC[12],
     --#TODOCAVES: disabled temporarily for main branch ~gjans
-    hideinfrontend=true,
+    hideinfrontend = BRANCH~="dev",
 
 	overrides={
         {"task_set",        "cave_default"},

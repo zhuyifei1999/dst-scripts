@@ -1,10 +1,12 @@
-local SEE_DIST = 30
-local SAFE_DIST = 5
+local CHECK_INTERVAL = 5
 
-FindLight = Class(BehaviourNode, function(self, inst)
+FindLight = Class(BehaviourNode, function(self, inst, see_dist, safe_dist)
     BehaviourNode._ctor(self, "FindLight")
     self.inst = inst
     self.targ = nil
+    self.see_dist = see_dist
+    self.safe_dist = safe_dist
+    self.lastchecktime = 0
 end)
 
 function FindLight:DBString()
@@ -18,17 +20,25 @@ function FindLight:Visit()
     end
 
     if self.status == RUNNING then
+        if GetTime() - self.lastchecktime > CHECK_INTERVAL then
+            self:PickTarget()
+        end
+
         if not (self.targ ~= nil and self.targ:IsValid() and self.targ:HasTag("lightsource")) then
             self.status = FAILED
-        elseif self.inst:IsNear(self.targ, SAFE_DIST) then
-            self.inst.components.locomotor:Stop()
-            self:Sleep(.5)
         else
-            self.inst.components.locomotor:RunInDirection(self.inst:GetAngleToPoint(self.targ.Transform:GetWorldPosition()))
+            local actual_safe_dist = type(self.safe_dist) == "function" and self.safe_dist(self.inst, self.targ) or self.safe_dist or 5
+            if self.inst:IsNear(self.targ, actual_safe_dist) then
+                self.status = SUCCESS
+                self.inst.components.locomotor:Stop()
+            else
+                self.inst.components.locomotor:GoToPoint(self.inst:GetPositionAdjacentTo(self.targ, actual_safe_dist * 0.98), nil, true)
+            end
         end
     end
 end
 
 function FindLight:PickTarget()
-    self.targ = GetClosestInstWithTag("lightsource", self.inst, SEE_DIST)
+    self.targ = GetClosestInstWithTag("lightsource", self.inst, self.see_dist)
+    self.lastchecktime = GetTime()
 end

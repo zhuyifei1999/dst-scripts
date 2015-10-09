@@ -102,6 +102,7 @@ local function fn()
     EmitterManager:AddEmitter(inst, nil, updateFunc)
 
     inst:AddTag("FX")
+    inst:AddTag("playerlight")
 
     inst.Light:Enable(true)
     inst.Light:SetIntensity(.75)
@@ -120,4 +121,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/fx/torchfire", fn, assets)
+return Prefab("torchfire", fn, assets)

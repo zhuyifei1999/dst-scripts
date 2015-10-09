@@ -281,6 +281,7 @@ local function create_common(inst, physicscylinder)
 
     inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
+    inst.entity:AddLightWatcher()
 
     MakeCharacterPhysics(inst, 10, .25)
 
@@ -493,5 +494,5 @@ local function create_teen_smallbird()
     return inst
 end
 
-return Prefab("common/smallbird", create_smallbird, assets, prefabs),
-    Prefab("common/teenbird", create_teen_smallbird, teen_assets)
+return Prefab("smallbird", create_smallbird, assets, prefabs),
+    Prefab("teenbird", create_teen_smallbird, teen_assets)

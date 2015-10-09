@@ -8,6 +8,7 @@ local prefabs =
 {
     "guano",
     "batwing",
+    "teamleader",
 }
 
 local brain = require "brains/batbrain"
@@ -126,7 +127,8 @@ local function fn()
 
     inst:AddComponent("sleeper")
     inst.components.sleeper:SetResistance(3)
-    inst.components.sleeper:SetNocturnal(true)
+    inst.components.sleeper.sleeptestfn = NocturnalSleepTest
+    inst.components.sleeper.waketestfn = NocturnalWakeTest
 
     inst:AddComponent("combat")
     inst.components.combat.hiteffectsymbol = "bat_body"
@@ -170,4 +172,4 @@ local function fn()
     return inst
 end
 
-return Prefab("cave/monsters/bat", fn, assets, prefabs)
+return Prefab("bat", fn, assets, prefabs)

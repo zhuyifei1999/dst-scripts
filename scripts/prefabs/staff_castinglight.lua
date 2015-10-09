@@ -93,4 +93,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/staff_castinglight", fn)
+return Prefab("staff_castinglight", fn)

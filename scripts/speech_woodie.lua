@@ -315,6 +315,11 @@ return {
 			GENERIC = "I like the look of that!",
 			BURNT = "I miss the old you.",
 		},
+		WARDROBE = 
+        {
+        	GENERIC = "It's hard to stay neat and tidy in the woods.",
+        	BURNT = "Not so useful now, eh?",
+    	},
 		WARG = "That thing could pull a sled by its lonesome.",
 		WATERMELON = "How can it be both water and melon?",
 		WATERMELON_COOKED = "I'm not sure about grilled fruit...",

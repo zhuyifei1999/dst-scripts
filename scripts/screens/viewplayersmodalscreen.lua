@@ -7,7 +7,6 @@ local Widget = require "widgets/widget"
 local HoverText = require "widgets/hoverer"
 local PlayerBadge = require "widgets/playerbadge"
 local TEMPLATES = require "widgets/templates"
-
 local ScrollableList = require "widgets/scrollablelist"
 
 local ViewPlayersModalScreen = Class(Screen, function(self, players, maxPlayers)
@@ -137,6 +136,7 @@ local ViewPlayersModalScreen = Class(Screen, function(self, players, maxPlayers)
         end
         playerListing.viewprofile:SetOnClick(
             function()
+            	--TheFrontEnd:PushScreen(PlayerAvatarPopupScreen(v.name, v))
                 if v.steamid then
                     TheNet:ViewSteamProfile(v.steamid)
                 end

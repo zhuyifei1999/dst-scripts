@@ -5,6 +5,7 @@ local assets =
     Asset("ANIM", "anim/bulb_plant_triple.zip"),
     Asset("ANIM", "anim/bulb_plant_springy.zip"),
     Asset("SOUND", "sound/common.fsb"),
+	Asset("MINIMAP_IMAGE", "bulb_plant"),
 }
 
 local prefabs =
@@ -338,6 +339,6 @@ local function triple()
     end)
 end
 
-return Prefab("cave/objects/flower_cave", single, assets, prefabs),
-    Prefab("cave/objects/flower_cave_double", double, assets, prefabs),
-    Prefab("cave/objects/flower_cave_triple", triple, assets, prefabs)
+return Prefab("flower_cave", single, assets, prefabs),
+    Prefab("flower_cave_double", double, assets, prefabs),
+    Prefab("flower_cave_triple", triple, assets, prefabs)

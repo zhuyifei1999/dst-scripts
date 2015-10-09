@@ -5,6 +5,8 @@ local assets =
     Asset("ANIM", "anim/beard_monster.zip"),
     Asset("ANIM", "anim/rabbit_winter_build.zip"),
     Asset("SOUND", "sound/rabbit.fsb"),
+	Asset("INV_IMAGE", "beard_monster" ),
+	Asset("INV_IMAGE", "rabbit_winter" ),
 }
 
 local prefabs =
@@ -232,6 +234,7 @@ local function fn()
     inst.entity:AddSoundEmitter()
     inst.entity:AddDynamicShadow()
     inst.entity:AddNetwork()
+    inst.entity:AddLightWatcher()
 
     MakeCharacterPhysics(inst, 1, 0.5)
 
@@ -342,4 +345,4 @@ local function fn()
     return inst
 end
 
-return Prefab("forest/animals/rabbit", fn, assets, prefabs)
+return Prefab("rabbit", fn, assets, prefabs)

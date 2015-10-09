@@ -21,6 +21,9 @@ local NetworkLoginPopup = require "screens/networkloginpopup"
 
 local OnlineStatus = require "widgets/onlinestatus"
 
+local UnopenedItemPopup = require "screens/unopeneditempopup"
+local ROGItemPopup = require "screens/rogitempopup"
+
 local rcol = RESOLUTION_X/2 -200
 local lcol = -RESOLUTION_X/2 + 280
 local title_x = 20
@@ -225,6 +228,8 @@ function MainScreen:OnLoginButton( push_mp_main_screen )
 	    local failed_email = account_manager:MustValidateEmail()
 	    local must_upgrade = account_manager:MustUpgradeClient()
 	    local communication_succeeded = account_manager:CommunicationSucceeded()
+	    local inventory_succeeded = TheInventory:HasDownloadedInventory()
+
         if is_banned then -- We are banned
         	TheFrontEnd:PopScreen()
 	        TheNet:NotifyAuthenticationFailure()
@@ -263,15 +268,40 @@ function MainScreen:OnLoginButton( push_mp_main_screen )
             end
             TheFrontEnd:PushScreen(confirm)
         elseif ( account_manager:HasAuthToken() and communication_succeeded ) or forceOffline then
-        	if not push_mp_main_screen then 
+        	if not push_mp_main_screen then
         		TheFrontEnd:PopScreen()
         	end
 			
         	TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
-		    	if push_mp_main_screen then 
+		    	if push_mp_main_screen then
 		    		TheFrontEnd:PopScreen()
 		    	end
-	            GoToMultiplayerMainMenu(forceOffline or false )
+
+                GoToMultiplayerMainMenu(forceOffline or false )
+
+                local rog_items = {}--"body_buttons_green_laurel", "body_buttons_pink_hibiscus" }
+                local uo_items = TheInventory:GetUnopenedItems()
+                local uo_items_filtered = {}
+				for _,item in pairs(uo_items) do
+					if Prefabs[string.lower(item.item_type)] ~= nil or CLOTHING[string.lower(item.item_type)] ~= nil then --make sure the item is actually in the game
+						table.insert( uo_items_filtered, item )
+					else
+						TheInventory:SetItemOpened(item.item_id)
+					end
+				end
+
+                if #rog_items > 0 then
+                    local rog_popup = ROGItemPopup(rog_items, function()
+                             if (#uo_items_filtered > 0) then
+                                TheFrontEnd:PushScreen(UnopenedItemPopup(uo_items_filtered))
+                             end
+                        end)
+                    TheFrontEnd:PushScreen(rog_popup)
+                elseif (#uo_items_filtered > 0) then
+                    TheFrontEnd:PushScreen(UnopenedItemPopup(uo_items_filtered))
+                end
+                TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
+
 	        end)
         elseif not communication_succeeded then  -- We could not communicate with our auth server or steam is down
             print ( "failed_communication" )
@@ -291,10 +321,12 @@ function MainScreen:OnLoginButton( push_mp_main_screen )
 								})
             TheFrontEnd:PushScreen(confirm)
             TheNet:NotifyAuthenticationFailure()
+        elseif not inventory_succeeded then
+            print ( "[Warning] Failed to download local inventory" )
         else -- We haven't created an account yet
-	    	TheFrontEnd:PopScreen()
+            TheFrontEnd:PopScreen()
             TheFrontEnd:PushScreen(NoAuthenticationPopupDialogScreen(true, failed_email))
-			TheNet:NotifyAuthenticationFailure()
+            TheNet:NotifyAuthenticationFailure()
         end
     end
 	

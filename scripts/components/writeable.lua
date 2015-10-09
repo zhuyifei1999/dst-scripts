@@ -82,7 +82,7 @@ function Writeable:BeginWriting(doer)
         self.inst:ListenForEvent("ms_closepopups", self.onclosepopups, doer)
         self.inst:ListenForEvent("onremove", self.onclosepopups, doer)
 
-        if self.writer.HUD ~= nil then
+        if doer.HUD ~= nil then
             self.screen = writeables.makescreen(self.inst, doer)
         end
     end
@@ -113,7 +113,7 @@ function Writeable:EndWriting()
         end
 
         self.inst:RemoveEventCallback("ms_closepopups", self.onclosepopups, self.writer)
-        self.inst:ListenForEvent("onremove", self.onclosepopups, self.writer)
+        self.inst:RemoveEventCallback("onremove", self.onclosepopups, self.writer)
         self.writer = nil
     elseif self.screen ~= nil then
         --Should not have screen and no writer, but just in case...

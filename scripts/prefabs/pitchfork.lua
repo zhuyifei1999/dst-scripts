@@ -97,5 +97,5 @@ end
     --return inst
 --end
 
-return Prefab("common/inventory/pitchfork", normal, assets)--,
-    --Prefab("common/inventory/goldenpitchfork", golden, assets)
+return Prefab("pitchfork", normal, assets)--,
+    --Prefab("goldenpitchfork", golden, assets)

@@ -24,7 +24,6 @@ local Sleeper = Class(function(self, inst)
     self.sleepiness = 0
     self.wearofftime = 10
     self.hibernate = false
-    self.nocturnal = false
 
     self.inst:ListenForEvent("onignite", onattacked)
     self.inst:ListenForEvent("firedamage", onattacked)
@@ -57,18 +56,11 @@ end
 --       sky can't be seen when underground, whereas regular
 --       phase is perceived as always night when underground
 
-function DefaultSleepTest(inst)
-    --not near home
-    --nocturnal sleeps in day, otherwise night
+function StandardSleepChecks(inst)
     return not (inst.components.homeseeker ~= nil and
                 inst.components.homeseeker.home ~= nil and
                 inst.components.homeseeker.home:IsValid() and
                 inst:IsNear(inst.components.homeseeker.home, 40))
-        and TheWorld.state[
-                inst.components.sleeper.nocturnal and
-                (inst:HasTag("cavedweller") and "iscaveday" or "isday") or
-                (inst:HasTag("cavedweller") and "iscavenight" or "isnight")
-            ]
         and not (inst.components.combat ~= nil and inst.components.combat.target ~= nil)
         and not (inst.components.burnable ~= nil and inst.components.burnable:IsBurning())
         and not (inst.components.freezable ~= nil and inst.components.freezable:IsFrozen())
@@ -76,21 +68,52 @@ function DefaultSleepTest(inst)
         and not inst.sg:HasStateTag("busy")
 end
 
-function DefaultWakeTest(inst)
-    --nocturnal wakes once it's not day, otherwise wake when it's day
-    --cavedwellers perceive "cavephase" instead of "phase"
-    return TheWorld.state[
-                inst:HasTag("cavedweller") and "iscaveday" or "isday"
-            ] == not inst.components.sleeper.nocturnal
-        or (inst.components.combat ~= nil and inst.components.combat.target ~= nil)
+function StandardWakeChecks(inst)
+    return (inst.components.combat ~= nil and inst.components.combat.target ~= nil)
         or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning())
         or (inst.components.freezable ~= nil and inst.components.freezable:IsFrozen())
         or (inst.components.teamattacker ~= nil and inst.components.teamattacker.inteam)
         or (inst.components.health ~= nil and inst.components.health.takingfiredamage)
 end
 
+function DefaultSleepTest(inst)
+    return StandardSleepChecks(inst)
+            -- sleep in the overworld at night
+        and (not TheWorld:HasTag("cave") and TheWorld.state.isnight
+            -- in caves, sleep at night if we have a lightwatcher and are in the dark
+            or (TheWorld:HasTag("cave") and inst.LightWatcher and (not inst.LightWatcher:IsInLight() or TheWorld.state.iscavenight)))
+end
+
+function DefaultWakeTest(inst)
+    return StandardWakeChecks(inst)
+        -- in caves, wake if it's day and we've got a light shining on us
+        or (TheWorld:HasTag("cave") and TheWorld.state.iscaveday and inst.LightWatcher and inst.LightWatcher:GetTimeInLight() > TUNING.CAVE_LIGHT_WAKE_TIME)
+        -- wake when it's day
+        or TheWorld.state.isday
+end
+
+function NocturnalSleepTest(inst)
+    --not near home
+    --nocturnal sleeps in day
+    return StandardSleepChecks(inst)
+        and TheWorld.state[(inst:HasTag("cavedweller") and "iscaveday" or "isday")]
+end
+
+function NocturnalWakeTest(inst)
+    --nocturnal wakes once it's not day
+    --cavedwellers perceive "cavephase" instead of "phase"
+    return StandardWakeChecks(inst)
+        or not TheWorld.state[inst:HasTag("cavedweller") and "iscaveday" or "isday"]
+end
+
 function Sleeper:SetNocturnal(b)
-    self.nocturnal = b ~= false
+    if b then
+        self.sleeptestfn = NocturnalSleepTest
+        self.waketestfn = NocturnalWakeTest
+    else
+        self.sleeptestfn = DefaultSleepTest
+        self.waketestfn = DefaultWakeTest
+    end
 end
 
 local function ShouldSleep(inst)

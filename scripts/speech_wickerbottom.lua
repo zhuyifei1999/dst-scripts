@@ -250,6 +250,11 @@ return
             GENERIC = "That offers some protection.",
             BURNT = "Fire was its weakness.",
         },
+        WARDROBE = 
+        {
+        	GENERIC = "This reminds me of a famous book.",
+        	BURNT = "It used to be a wardrobe.",
+    	},
         WARG = "That Canis will never be domesticated.",
         WATERMELON = "Citrullus lanatus.",
         WATERMELON_COOKED = "Beautifully grilled.",

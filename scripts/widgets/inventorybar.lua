@@ -9,6 +9,8 @@ local Text = require "widgets/text"
 local ThreeSlice = require "widgets/threeslice"
 local HudCompass = require "widgets/hudcompass"
 
+local TEMPLATES = require "widgets/templates"
+
 local HUD_ATLAS = "images/hud.xml"
 local W = 68
 local SEP = 12
@@ -48,11 +50,11 @@ local Inv = Class(Widget, function(self, owner)
     self.hudcompass:SetMaster()
 
     self.bg = self.root:AddChild(Image(HUD_ATLAS, "inventory_bg.tex"))
-    self.bg:SetScale(1.15,1,1)
+    self.bg:SetScale(1.20,1,1)
     --self.bg = self.root:AddChild(ThreeSlice(HUD_ATLAS, "inventory_corner.tex", "inventory_filler.tex"))
     
     self.bgcover = self.root:AddChild(Image(HUD_ATLAS, "inventory_bg_cover.tex"))
-    self.bgcover:SetScale(1.15,1,1)
+    self.bgcover:SetScale(1.20,1,1)
     
     self.hovertile = nil
     self.cursortile = nil
@@ -157,8 +159,9 @@ function Inv:Rebuild()
 
     local num_slots = inventory:GetNumSlots()
     local num_equip = #self.equipslotinfo
+    local num_buttons = 1
     local num_intersep = math.floor(num_slots / 5) + 1 
-    local total_w = (num_slots + num_equip)*(W) + (num_slots + num_equip - 2 - num_intersep) *(SEP) + INTERSEP*num_intersep
+    local total_w = (num_slots + num_equip + num_buttons)*(W) + (num_slots + num_equip + num_buttons - 2 - num_intersep) *(SEP) + INTERSEP*num_intersep
     
     for k, v in ipairs(self.equipslotinfo) do
         local slot = EquipSlot(v.slot, v.atlas, v.image, self.owner)
@@ -193,6 +196,10 @@ function Inv:Rebuild()
         
     end
 
+    self.inspectcontrol = self.root:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "player_info.tex", STRINGS.UI.HUD.INSPECT_SELF, false, false, function() self.owner.HUD:InspectSelf() end))
+    self.inspectcontrol:SetScale(1.25)
+    self.inspectcontrol:SetPosition(total_w/2 - W/2, -5, 0)
+   
     local hadbackpack = self.backpack ~= nil
     if hadbackpack then
         self.inst:RemoveEventCallback("itemget", BackpackGet, self.backpack)

@@ -2,6 +2,11 @@ local assets =
 {
     Asset("ANIM", "anim/cave_entrance.zip"),
     Asset("ANIM", "anim/ruins_entrance.zip"),
+	Asset("MINIMAP_IMAGE", "cave_closed"),
+	Asset("MINIMAP_IMAGE", "cave_open"),
+	Asset("MINIMAP_IMAGE", "cave_no_access"),
+	Asset("MINIMAP_IMAGE", "cave_overcapacity"),
+	Asset("MINIMAP_IMAGE", "ruins_closed"),
 }
 
 local prefabs =
@@ -99,7 +104,7 @@ local function fn(bank, build, anim, minimap)
         return inst
     end
 
-    if not TheNet:GetServerIsDedicated() then
+    if BRANCH ~= "dev" and not TheNet:GetServerIsDedicated() then
         --#TODOCAVES: On self-hosted servers we'll make these "vanish" for now, but still generate them
         --into the world so that they can magically appear in existing saves once self-hosted caves servers
         --are working.
@@ -192,6 +197,6 @@ local function open_fn()
     return inst
 end
 
-return Prefab("common/cave_entrance", closed_fn, assets, prefabs),
-    Prefab("common/cave_entrance_ruins", ruins_fn, assets, prefabs),
-    Prefab("common/cave_entrance_open", open_fn, assets, prefabs)
+return Prefab("cave_entrance", closed_fn, assets, prefabs),
+    Prefab("cave_entrance_ruins", ruins_fn, assets, prefabs),
+    Prefab("cave_entrance_open", open_fn, assets, prefabs)

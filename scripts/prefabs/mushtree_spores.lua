@@ -189,6 +189,6 @@ local function makespore(data)
 	return fn
 end
 
-return Prefab("cave/objects/spore_tall", makespore(data.tall), assets),
-    Prefab("cave/objects/spore_medium", makespore(data.medium), assets),
-    Prefab("cave/objects/spore_small", makespore(data.small), assets)
+return Prefab("spore_tall", makespore(data.tall), assets),
+    Prefab("spore_medium", makespore(data.medium), assets),
+    Prefab("spore_small", makespore(data.small), assets)

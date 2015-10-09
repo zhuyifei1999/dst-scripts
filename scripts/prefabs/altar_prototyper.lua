@@ -3,6 +3,7 @@ require "prefabutil"
 local assets =
 {
     Asset("ANIM", "anim/crafting_table.zip"),
+	Asset("MINIMAP_IMAGE", "tab_crafting_table"),
 }
 
 local prefabs =
@@ -202,6 +203,8 @@ local function common_fn(anim)
     inst:AddTag("altar")
     inst:AddTag("structure")
     inst:AddTag("stone")
+
+    --prototyper (from prototyper component) added to pristine state for optimization
     inst:AddTag("prototyper")
 
     inst:SetPrefabNameOverride("ancient_altar")

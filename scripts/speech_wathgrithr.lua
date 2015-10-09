@@ -958,7 +958,7 @@ return {
 		RESEARCHLAB3 = 
 		{
 			GENERIC = "A mystical thing.",
-			BURNT = "It's strange power did not protect it from fire.",
+			BURNT = "Its strange power did not protect it from fire.",
 		},
 		RESEARCHLAB4 = 
 		{
@@ -1204,6 +1204,11 @@ return {
 			GENERIC = "A proper winter camp.",
 		},
 		WALRUS_TUSK = "Rended from the mouth of the sea beast.",
+		WARDROBE = 
+        {
+        	GENERIC = "Ah, costumes to assist my performance.",
+        	BURNT = "No, my costumes!",
+    	},
 		WARG = "Is it you, Fenrir?",
 		WASPHIVE = "Bees of war!",
 		WATERMELON = "It makes a good sound when you hit it.",

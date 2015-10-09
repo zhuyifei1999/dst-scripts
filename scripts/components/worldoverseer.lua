@@ -24,17 +24,32 @@ end
 function WorldOverseer:RecordPlayerJoined(player)
 	local playerstats = self._seenplayers[player]
 	local time = GetTime()
+
+	local current_skins = player.components.skinner:GetClothing()
+	local items = {}
+	for k,v in pairs(current_skins) do
+		local item = {}
+		item.item_name = v
+		item.starttime = time
+		item.endtime = nil
+		table.insert(items, item)
+	end
+
 	if not playerstats then
 		self._seenplayers[player] = {
 									starttime = time,
 									secondsplayed = 0,
-									endtime = nil
+									endtime = nil,
+									worn_items = items,
+									crafted_items = {},
 								}
 	else
 		-- player was here before this timeframe
 		playerstats.secondsplayed = playerstats.endtime - playerstats.starttime
 		playerstats.starttime = time
 		playerstats.endtime = nil
+		playerstats.worn_items = items
+
 	end
 end
 
@@ -43,6 +58,13 @@ function WorldOverseer:RecordPlayerLeft(player)
 	local time = GetTime()
 	if playerstats then
 		playerstats.endtime = time
+
+		for k,v in pairs(playerstats.worn_items) do
+			if v.endtime == nil then
+				v.endtime = time
+			end
+		end
+
 	end
 end
 
@@ -70,7 +92,7 @@ function WorldOverseer:CalcPlayerStats()
 	local time = GetTime()
 	local secondsplayed = 0
 	local toRemove = {}
-	for player,playerstats in pairs(self._seenplayers) do
+	for player, playerstats in pairs(self._seenplayers) do
 		if playerstats.endtime then
 			-- player left
 			secondsplayed = playerstats.endtime - playerstats.starttime + playerstats.secondsplayed
@@ -81,7 +103,42 @@ function WorldOverseer:CalcPlayerStats()
 			playerstats.starttime = time
 			playerstats.secondsplayed = 0
 		end
-		result[#result+1] = {player = player, secondsplayed = secondsplayed}
+
+		-- Calculates the time for each individual skin, check if it's already contained on the list
+		-- if not, insert it, if so, append the time
+		local total_worn_items = {}
+		local totaltime = 0
+		for index, worn_item in pairs(playerstats.worn_items) do
+			if worn_item.endtime then
+				totaltime = worn_item.endtime - worn_item.starttime
+			else
+				totaltime = time - worn_item.starttime
+			end
+
+			if not table.containskey(total_worn_items, worn_item.item_name) then
+				total_worn_items[worn_item.item_name] = totaltime
+			else
+				total_worn_items[worn_item.item_name] = total_worn_items[worn_item.item_name] + totaltime
+			end
+		end
+
+		local total_crafted_items = {}
+		for index,crafted_item in pairs(playerstats.crafted_items) do
+			if not table.containskey(total_crafted_items, crafted_item) then
+				total_crafted_items[crafted_item] = 1
+			else
+				total_crafted_items[crafted_item] = total_crafted_items[crafted_item] + 1
+			end
+			playerstats.crafted_items[index] = nil
+		end
+
+		result[#result+1] = 
+		{
+			player = player, 
+			secondsplayed = secondsplayed, 
+			worn_items = total_worn_items, 
+			crafted_items = total_crafted_items
+		}
 	end
 	-- cleanup
 	for i,v in ipairs(toRemove) do
@@ -98,6 +155,8 @@ function WorldOverseer:DumpPlayerStats()
 		sendstats.play_t = RoundBiasedUp(stat.secondsplayed,2)
         sendstats.character = stat.player and stat.player.prefab or nil
         sendstats.save_id = self.inst.meta.session_identifier
+        sendstats.worn_items = stat.worn_items
+        sendstats.crafted_items = stat.crafted_items
 	
 		dprint("_________________________________________________________________Sending playtime heartbeat stats...")
 		ddump(sendstats)
@@ -122,6 +181,64 @@ function WorldOverseer:OnPlayerDeath(player, data)
 	dprint("_________________________________________________________________<END>")
 	local jsonstats = json.encode( sendstats )
 	TheSim:SendProfileStats( jsonstats )
+end
+
+function WorldOverseer:OnPlayerChangedSkin(player, data)
+	if not data then return end
+	if not data.new_skin then return end
+	if data.new_skin == data.old_skin then return end
+
+	local playerstats = self._seenplayers[player]
+	local time = GetTime()
+
+	for k,v in pairs(playerstats.worn_items) do
+		if v.item_name == data.old_skin and v.endtime == nil then
+			v.endtime = time
+			break
+		end
+	end
+
+	local item = {}
+	item.item_name = data.new_skin
+	item.starttime = time
+	item.endtime = nil
+	table.insert(playerstats.worn_items, item)
+end
+
+function WorldOverseer:OnItemCrafted(player, data)
+	if not data then return end
+	if not data.skin then return end
+
+	local playerstats = self._seenplayers[player]
+	table.insert (playerstats.crafted_items, data.skin)
+end
+
+function WorldOverseer:OnEquipSkinnedItem(player, data)
+	if not data then return end
+	
+	local playerstats = self._seenplayers[player]
+	local time = GetTime()
+
+	local item ={}
+	item.item_name = data
+	item.starttime = time
+	item.endtime = nil
+
+	table.insert(playerstats.worn_items, item)
+end
+
+function WorldOverseer:OnUnequipSkinnedItem(player, data)
+	if not data then return end
+
+	local playerstats = self._seenplayers[player]
+	local time = GetTime()
+
+	for k,v in pairs(playerstats.worn_items) do
+		if v.item_name == data and v.endtime == nil then
+			v.endtime = time
+			break
+		end
+	end
 end
 
 function WorldOverseer:GetSessionStats()
@@ -166,6 +283,11 @@ end
 function WorldOverseer:OnPlayerJoined(src,player)
 	self:RecordPlayerJoined(player)
 	self.inst:ListenForEvent("death", function(inst, data) self:OnPlayerDeath(inst, data) end, player)
+	self.inst:ListenForEvent("changeclothes", function (inst, data) self:OnPlayerChangedSkin(inst, data) end, player)
+	self.inst:ListenForEvent("buildstructure", function (inst, data) self:OnItemCrafted(inst, data) end, player)
+	self.inst:ListenForEvent("builditem", function (inst, data) self:OnItemCrafted(inst, data) end, player)
+	self.inst:ListenForEvent("equipskinneditem", function(inst, data) self:OnEquipSkinnedItem(inst, data) end, player)
+	self.inst:ListenForEvent("unequipskinneditem", function(inst, data) self:OnUnequipSkinnedItem(inst, data) end, player)
 end
 
 function WorldOverseer:OnPlayerLeft(src,player)
@@ -178,4 +300,3 @@ function WorldOverseer:Heartbeat(dt)
 end
 
 return WorldOverseer
-

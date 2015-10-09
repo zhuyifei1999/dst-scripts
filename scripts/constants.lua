@@ -142,6 +142,8 @@ CONTROL_MENU_MISC_2 = 69  -- Y
 CONTROL_MENU_MISC_3 = 70  -- L
 CONTROL_MENU_MISC_4 = 71  -- R
 
+CONTROL_INSPECT_SELF = 72
+
 CONTROL_CUSTOM_START = 100
 
 XBOX_CONTROLLER_ID = 17
@@ -256,6 +258,11 @@ GESTURE_ROTATE_LEFT = 902
 GESTURE_ROTATE_RIGHT = 903
 GESTURE_MAX = 904
 
+
+BACKEND_PREFABS = {"hud", "forest", "cave", "maxwell", "fire", "character_fire", "shatter"}
+FRONTEND_PREFABS = {"frontend"}
+RECIPE_PREFABS = {}
+
 --Legacy table, not for DST
 MAIN_CHARACTERLIST = 
 {
@@ -272,6 +279,9 @@ DST_CHARACTERLIST =
 {
     "wilson", "willow", "wolfgang", "wendy", "wx78", "wickerbottom", "woodie", "wes", "wathgrithr", "webber",
 }
+
+require("prefabskins")
+require("clothing")
 
 MAINSCREEN_CHAR_1 = "corner_dude"
 MAINSCREEN_CHAR_2 = "corner_dude"
@@ -1019,6 +1029,7 @@ DOUBLE_CLICK_TIMEOUT = .5
 GOLD = {202/255, 174/255, 118/255, 255/255}
 GREY = {.57, .57, .57, 1}
 BLACK = {.1, .1, .1, 1}
+BROWN = {97/255, 73/255, 46/255, 255/255}
 
 --Bit flags, currently supports up to 8
 --Server may use these for things that clients need to know about

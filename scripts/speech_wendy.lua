@@ -1162,6 +1162,11 @@ return {
 			GENERIC = "This home is not a happy one, I fear.",
 		},
 		WALRUS_TUSK = "I shall gnash thee.",
+		WARDROBE = 
+		{
+			GENERIC = "It reminds me of a story I used to read with Abigail.",
+			BURNT = "Now it doesn't remind me of anything.",
+		},
 		WARG = "A true bastion of evil.",
 		WASPHIVE = "They hide in their fortress of hate.",
 		WETGOOP = "A miserable mess, just like life.",

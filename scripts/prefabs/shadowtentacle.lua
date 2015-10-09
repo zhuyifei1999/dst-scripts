@@ -62,4 +62,4 @@ local function fn()
     return inst
 end
 
-return Prefab("cave/ruins/shadowtentacle", fn, assets)
+return Prefab("shadowtentacle", fn, assets)

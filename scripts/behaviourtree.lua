@@ -73,7 +73,10 @@ function BehaviourNode:GetTreeString(indent)
     local str = string.format("%s%s>%2.2f\n", indent, self:GetString(), self:GetTreeSleepTime() or 0)
     if self.children then
         for k, v in ipairs(self.children) do
-            str = str .. v:GetTreeString(indent .. "   >")
+            -- uncomment this to see only the "active" part of the tree. handy for pigbrain.
+            --if v.status == RUNNING or v.status == SUCCESS or v.lastresult == RUNNING or v.lastresult == SUCCESS then
+                str = str .. v:GetTreeString(indent .. "   >")
+            --end
         end
     end
     return str

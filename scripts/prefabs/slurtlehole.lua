@@ -1,6 +1,7 @@
 local assets =
 {
     Asset("ANIM", "anim/slurtle_mound.zip"),
+    Asset("MINIMAP_IMAGE", "slurtle_den"),
 }
 
 local prefabs =
@@ -157,4 +158,4 @@ local function fn()
     return inst
 end
 
-return Prefab("cave/objects/slurtlehole", fn, assets, prefabs) 
+return Prefab("slurtlehole", fn, assets, prefabs) 

@@ -81,6 +81,7 @@ local function fn()
     inst.entity:AddDynamicShadow()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
+    inst.entity:AddLightWatcher()
 
     inst.DynamicShadow:SetSize(2, .75)
     inst.Transform:SetFourFaced()
@@ -149,4 +150,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/creatures/glommer", fn, assets, prefabs)
+return Prefab("glommer", fn, assets, prefabs)

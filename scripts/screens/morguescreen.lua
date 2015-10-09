@@ -11,6 +11,7 @@ local OnlineStatus = require "widgets/onlinestatus"
 
 local ScrollableList = require "widgets/scrollablelist"
 
+
 local TEMPLATES = require "widgets/templates"
 
 
@@ -297,7 +298,13 @@ local function encounter_widget_constructor(data, parent, obit_button)
     group.PLAYER_AGE:SetString(data.playerage .. " " .. suffix)
     group.PLAYER_AGE:SetColour(0,0,0,1)
 
-    group.STEAM_ID = group:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "steam.tex", "", false, false, function() VisitURL("http://steamcommunity.com/profiles/"..data.steamid) end))
+    group.STEAM_ID = group:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "player_info.tex", STRINGS.UI.PLAYERSTATUSSCREEN.VIEWPROFILE, false, false, 
+    	function() 
+    		if data.steamid then 
+    			TheNet:ViewSteamProfile(data.steamid) 
+    		end 
+    		--TheFrontEnd:PushScreen(PlayerAvatarPopupScreen(data.name, data, true))
+    	end, {size = 50, offset_y = 65} ))
     --STEAM_ID:SetHAlign(ANCHOR_MIDDLE)
     group.STEAM_ID:SetPosition(column_offsets.STEAM_ID+8+slide_factor+18, -1, 0)
 	group.STEAM_ID:SetScale(.45)
@@ -360,7 +367,12 @@ local function encounter_widget_update(widget, data, index)
     else
         widget.STEAM_ID:MoveToFront()
         widget.STEAM_ID:Show()
-        widget.STEAM_ID:SetOnClick( function() VisitURL("http://steamcommunity.com/profiles/"..data.steamid) end )
+        widget.STEAM_ID:SetOnClick( function() 
+    		--TheFrontEnd:PushScreen(PlayerAvatarPopupScreen(data.name, data, true))
+    		if data.steamid then 
+    			TheNet:ViewSteamProfile(data.steamid) 
+    		end 
+    	end)
     end
 end
 
@@ -636,11 +648,20 @@ function MorgueScreen:BuildEncountersTab()
     self.encountersrowsroot:SetPosition(200,0)
 
     self.encounter_widgets = {}
-    for i=1,num_rows do
-        table.insert(self.encounter_widgets, encounter_widget_constructor(self.player_history[i] or {name="", playerage="0", steamid="", server_name="", date="", prefab=""}, self.encountersrowsroot, self.obituary_button))
+    self.encounter_items = {}
+    local playerIdx = 1
+    local count = 0
+
+    while count < num_rows do 
+    	if not self.player_history[playerIdx] or self.player_history[playerIdx].prefab ~= "" then 
+        	table.insert(self.encounter_widgets, encounter_widget_constructor(self.player_history[playerIdx] or {name="", playerage="0", steamid="", server_name="", date="", prefab=""}, self.encountersrowsroot, self.obituary_button))
+        	table.insert(self.encounter_items, self.player_history[playerIdx] or {name="", playerage="0", steamid="", server_name="", date="", prefab=""})
+        	count = count + 1
+        end
+        playerIdx = playerIdx + 1
     end
 
-    self.encounters_scroll_list = self.encounterslistroot:AddChild(ScrollableList(self.player_history, 900, row_height * num_rows, row_height - 1, 1, encounter_widget_update, self.encounter_widgets, nil, nil, nil, 30))
+    self.encounters_scroll_list = self.encounterslistroot:AddChild(ScrollableList(self.encounter_items, 900, row_height * num_rows, row_height - 1, 1, encounter_widget_update, self.encounter_widgets, nil, nil, nil, 30))
     self.encounters_scroll_list:LayOutStaticWidgets(-25)
     self.encounters_scroll_list:SetPosition(-95, -35)
 end

@@ -201,7 +201,7 @@ local function lesserlightfn(sim)
     end)
 end
 
-return  Prefab("common/inventory/wormlight", itemfn, assets),
-        Prefab("common/inventory/wormlight_lesser", lesseritemfn, assets),
-        Prefab("common/inventory/wormlight_light", lightfn),
-        Prefab("common/inventory/wormlight_light_lesser", lesserlightfn)
+return  Prefab("wormlight", itemfn, assets),
+        Prefab("wormlight_lesser", lesseritemfn, assets),
+        Prefab("wormlight_light", lightfn),
+        Prefab("wormlight_light_lesser", lesserlightfn)

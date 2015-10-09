@@ -30,7 +30,7 @@ end
 
 --------------------------------------------------------------------------
 
-local function MakeWorldNetwork(name, custom_postinit)
+local function MakeWorldNetwork(name, customprefabs, customassets, custom_postinit)
     local function fn()
         local inst = CreateEntity()
         
@@ -66,7 +66,7 @@ local function MakeWorldNetwork(name, custom_postinit)
         return inst
     end
 
-    return Prefab(name, fn)
+    return Prefab(name, fn, customassets, customprefabs)
 end
 
 return MakeWorldNetwork

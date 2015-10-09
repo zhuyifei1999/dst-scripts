@@ -29,6 +29,8 @@ local SEE_TREE_DIST = 15
 local SEE_TARGET_DIST = 20
 local SEE_FOOD_DIST = 10
 
+local COMFORT_LIGHT_LEVEL = 0.3
+
 local KEEP_CHOPPING_DIST = 10
 
 local RUN_AWAY_DIST = 5
@@ -173,6 +175,22 @@ local function GetNoLeaderHomePos(inst)
     return GetHomePos(inst)
 end
 
+local function GetNearestLightPos(inst)
+    local light = GetClosestInstWithTag("lightsource", inst, SEE_LIGHT_DIST)
+    if light then
+        return Vector3(light.Transform:GetWorldPosition())
+    end
+    return nil
+end
+
+local function GetNearestLightRadius(inst)
+    local light = GetClosestInstWithTag("lightsource", inst, SEE_LIGHT_DIST)
+    if light then
+        return light.Light:GetCalculatedRadius()
+    end
+    return 1
+end
+
 local function RescueLeaderAction(inst)
     return BufferedAction(inst, GetLeader(inst), ACTIONS.UNPIN)
 end
@@ -184,6 +202,14 @@ end
 local function KeepFaceTargetFn(inst, target)
     return inst.components.follower.leader == target
 end
+
+local function SafeLightDist(inst, target)
+    return (target:HasTag("player") or target:HasTag("playerlight")
+            or (target.inventoryitem and target.inventoryitem:GetGrandOwner() and target.inventoryitem:GetGrandOwner():HasTag("player")))
+        and 4
+        or target.Light:GetCalculatedRadius() / 3
+end
+
 
 local PigBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
@@ -225,8 +251,16 @@ function PigBrain:OnStart()
             RunAway(self.inst, "player", START_RUN_DIST, STOP_RUN_DIST, function(target) return ShouldRunAway(self.inst, target) end ),
             ChattyNode(self.inst, STRINGS.PIG_TALK_GO_HOME,
                 DoAction(self.inst, GoHomeAction, "go home", true )),
-            ChattyNode(self.inst, STRINGS.PIG_TALK_FIND_LIGHT,
-                FindLight(self.inst)),
+            ChattyNode(self.inst, STRINGS.PIG_TALK_FIND_LIGHT, PriorityNode{
+                    WhileNode(function() return self.inst.LightWatcher:GetLightValue() > COMFORT_LIGHT_LEVEL end, "IsInLight", -- wants slightly brighter light for this
+                        Wander(self.inst, GetNearestLightPos, GetNearestLightRadius, {
+                            minwalktime = 0.3,
+                            randwalktime = 0.5,
+                            minwaittime = 5,
+                            randwaittime = 5
+                        })),
+                    FindLight(self.inst, SEE_LIGHT_DIST, SafeLightDist),
+                }),
             ChattyNode(self.inst, STRINGS.PIG_TALK_PANIC,
                 Panic(self.inst)),
         },1)

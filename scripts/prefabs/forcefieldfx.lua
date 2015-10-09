@@ -40,4 +40,4 @@ local function fn(Sim)
     return inst
 end
 
-return Prefab("common/forcefieldfx", fn, assets)
+return Prefab("forcefieldfx", fn, assets)

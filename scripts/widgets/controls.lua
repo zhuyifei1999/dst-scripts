@@ -20,7 +20,9 @@ local StatusDisplays = require "widgets/statusdisplays"
 local ChatQueue = require "widgets/chatqueue"
 local Desync = require "widgets/desync"
 local WorldResetTimer = require "widgets/worldresettimer"
+local GiftItemToast = require "widgets/giftitemtoast"
 local VoteDialog = require "widgets/votedialog"
+local TEMPLATES = require "widgets/templates"
 
 local easing = require("easing")
 
@@ -65,6 +67,10 @@ local Controls = Class(Widget, function(self, owner)
     self.saving:SetHAnchor(ANCHOR_MIDDLE)
     self.saving:SetVAnchor(ANCHOR_TOP)
     self.saving:SetPosition(Vector3(200,0,0))
+
+    --self.item_notification_root = self.top_root:AddChild(Widget("top_root_root"))
+	self.item_notification = self.top_root:AddChild(GiftItemToast())
+	self.item_notification:SetPosition(-525, 150, 0)
 
     self.worldresettimer = self.bottom_root:AddChild(WorldResetTimer(self.owner))
     self.inv = self.bottom_root:AddChild(Inv(self.owner))

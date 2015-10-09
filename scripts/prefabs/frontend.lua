@@ -25,6 +25,17 @@ local assets =
 	--character portraits
 	Asset("ATLAS", "images/saveslot_portraits.xml"),
     Asset("IMAGE", "images/saveslot_portraits.tex"),
+
+    Asset("ATLAS", "bigportraits/unknownmod.xml"),
+    Asset("IMAGE", "bigportraits/unknownmod.tex"),
+
+    Asset("ANIM", "anim/mod_player_build.zip"),
+
+    Asset("ANIM", "anim/frames_comp.zip"),
+    Asset("ANIM", "anim/frame_skins.zip"),
+    Asset("ANIM", "anim/frame_bg.zip"),
+
+    Asset("ANIM", "anim/chest_bg.zip"),
 }
 
 if PLATFORM == "PS4" then
@@ -43,6 +54,7 @@ for i,char in ipairs(charlist) do
 	--table.insert(assets, Asset("IMAGE", "images/selectscreen_portraits/"..char..".tex")) -- Not currently used, but likely to come back
 	--table.insert(assets, Asset("IMAGE", "images/selectscreen_portraits/"..char.."_silho.tex")) -- Not currently used, but likely to come back
 end
+
 
 -- Pick some random stuff to show on the puppets on the main screen (and only load the assets that we need)
 local attempts = 0
@@ -105,9 +117,23 @@ for i,v in pairs(MAINSCREEN_HAT_LIST) do
     end
 end
 
+local prefabs = {}
+
+--Skins assets
+local clothing_assets = require("clothing_assets")
+for _,clothing_asset in pairs( clothing_assets ) do
+	table.insert( assets, clothing_asset )
+end
+for _,skins_prefabs in pairs(PREFAB_SKINS) do
+	for _,skin_prefab in pairs(skins_prefabs) do
+		table.insert( prefabs, skin_prefab )
+	end
+end
+
+
 --we don't actually instantiate this prefab. It's used for controlling asset loading
 local function fn(Sim)
     return CreateEntity()
 end
 
-return Prefab( "UI/interface/frontend", fn, assets) 
+return Prefab( "frontend", fn, assets, prefabs) 

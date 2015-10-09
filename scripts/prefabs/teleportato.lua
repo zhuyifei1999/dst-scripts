@@ -5,6 +5,7 @@ local assets =
     Asset("ANIM", "anim/teleportato.zip"),
     Asset("ANIM", "anim/teleportato_build.zip"),
     Asset("ANIM", "anim/teleportato_adventure_build.zip"),
+	Asset("MINIMAP_IMAGE", "teleportato"),
 }
 
 local prefabs =
@@ -281,4 +282,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/objects/teleportato_base", fn, assets, prefabs)
+return Prefab("teleportato_base", fn, assets, prefabs)

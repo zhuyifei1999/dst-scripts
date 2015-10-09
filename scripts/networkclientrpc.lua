@@ -157,7 +157,7 @@ local RPC_HANDLERS =
             end
         end
     end,
- 
+
     ReturnActiveItem = function(player)
         local inventory = player.components.inventory
         if inventory ~= nil then
@@ -370,24 +370,32 @@ local RPC_HANDLERS =
         end
     end,
 
-    MakeRecipeFromMenu = function(player, recipe)
+    MakeRecipeFromMenu = function(player, recipe, skin_index)
         local builder = player.components.builder
         if builder ~= nil then
             for k, v in pairs(AllRecipes) do
                 if v.rpc_id == recipe then
-                    builder:MakeRecipeFromMenu(v)
+					local skin = nil
+					if skin_index ~= -1 and PREFAB_SKINS[v.name] ~= nil then
+						skin = PREFAB_SKINS[v.name][skin_index]
+					end
+                    builder:MakeRecipeFromMenu(v, skin)
                     return
                 end
             end
         end
     end,
 
-    MakeRecipeAtPoint = function(player, recipe, x, z, rot)
+    MakeRecipeAtPoint = function(player, recipe, x, z, rot, skin_index)
         local builder = player.components.builder
         if builder ~= nil then
             for k, v in pairs(AllRecipes) do
                 if v.rpc_id == recipe then
-                    builder:MakeRecipeAtPoint(v, Vector3(x, 0, z), rot)
+					local skin = nil
+                    if skin_index ~= nil then
+                       skin = PREFAB_SKINS[v.name][skin_index]
+                    end
+                    builder:MakeRecipeAtPoint(v, Vector3(x, 0, z), rot, skin)
                     return
                 end
             end
@@ -433,9 +441,32 @@ local RPC_HANDLERS =
     StartVote = function(player, command, parameters)
         TheWorld.net.components.voter:StartVote(player, command, parameters)
     end,
-    
+
     Vote = function(player, option_index)
         TheWorld.net.components.voter:ReceivedVote(player, option_index)
+    end,
+
+    OpenGift = function(player)
+        local giftreceiver = player.components.giftreceiver
+        if giftreceiver ~= nil then
+            giftreceiver:OpenNextGift()
+        end
+    end,
+
+    DoneOpenGift = function(player, usewardrobe)
+        local giftreceiver = player.components.giftreceiver
+        if giftreceiver ~= nil then
+            giftreceiver:OnStopOpenGift(usewardrobe)
+        end
+    end,
+
+    CloseWardrobe = function(player, base_skin, body_skin, hand_skin, legs_skin)
+        player:PushEvent("ms_closewardrobe", {
+            base = base_skin,
+            body = body_skin,
+            hand = hand_skin,
+            legs = legs_skin,
+        })
     end,
 }
 

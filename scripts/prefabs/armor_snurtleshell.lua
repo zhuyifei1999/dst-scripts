@@ -109,4 +109,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/inventory/armorsnurtleshell", fn, assets)
+return Prefab("armorsnurtleshell", fn, assets)

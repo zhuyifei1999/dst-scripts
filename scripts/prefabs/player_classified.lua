@@ -371,6 +371,12 @@ local function OnPlayerScreenFlashDirty(inst)
     end
 end
 
+local function OnAttunedResurrectorDirty(inst)
+    if inst._parent ~= nil then
+        inst._parent:PushEvent("attunedresurrector", inst.attunedresurrector:value())
+    end
+end
+
 --------------------------------------------------------------------------
 --Common interface
 --------------------------------------------------------------------------
@@ -430,11 +436,64 @@ end
 
 local function OnPlayerCameraDirty(inst)
     if inst._parent ~= nil and inst._parent.HUD ~= nil then
-        if inst.cameradistance:value() > 0 then
+        if inst.iscamerazoomed:value() then
+            if inst._prevcameradistance == nil then
+                inst._prevcameradistance = TheCamera.distance
+                inst._prevcameradistancegain = TheCamera.distancegain
+                if inst._prevcameradistance > 18 then
+                    TheCamera:SetDistance(18)
+                    TheCamera.distancegain = 3
+                    TheCamera:SetControllable(false)
+                end
+            end
+        elseif inst._prevcameradistance ~= nil then
+            TheCamera:SetDistance(inst.cameradistance:value() > 0 and inst.cameradistance:value() or inst._prevcameradistance)
+            TheCamera.distancegain = inst._prevcameradistancegain
+            inst._prevcameradistance = nil
+            inst._prevcameradistancegain = nil
+            TheCamera:SetControllable(true)
+        elseif inst.cameradistance:value() > 0 then
             TheCamera:SetDistance(inst.cameradistance:value())
         else
             TheCamera:SetDefault()
         end
+    end
+end
+
+local function OnIsWardrobePopUpVisibleDirty(inst)
+    if inst._parent ~= nil and inst._parent.HUD ~= nil then
+        if not inst.iswardrobepopupvisible:value() then
+            inst._parent.HUD:CloseWardrobeScreen()
+        elseif not inst._parent.HUD:OpenWardrobeScreen() then
+            if not TheWorld.ismastersim then
+                SendRPCToServer(RPC.CloseWardrobe)
+            else
+                inst._parent:PushEvent("ms_closewardrobe")
+            end
+        end
+    end
+end
+
+local function OnIsGiftItemPopUpVisibleDirty(inst)
+    if inst._parent ~= nil and inst._parent.HUD ~= nil then
+        if not inst.isgiftitempopupvisible:value() then
+            inst._parent.HUD:CloseItemManagerScreen()
+        elseif not inst._parent.HUD:OpenItemManagerScreen() then
+            if not TheWorld.ismastersim then
+                SendRPCToServer(RPC.DoneOpenGift)
+            elseif inst._parent.components.giftreceiver ~= nil then
+                inst._parent.components.giftreceiver:OnStopOpenGift()
+            end
+        end
+    end
+end
+
+local function OnGiftsDirty(inst)
+    if inst._parent ~= nil and inst._parent.HUD ~= nil then
+        inst._parent:PushEvent("giftreceiverupdate", {
+            numitems = inst.hasgift:value() and 1 or 0,
+            active = inst.hasgiftmachine:value(),
+        })
     end
 end
 
@@ -517,6 +576,16 @@ local function EnableMapControls(inst, enable)
     OnPlayerHUDDirty(inst)
 end
 
+local function ShowWardrobePopUp(inst, show)
+    inst.iswardrobepopupvisible:set(show)
+    OnIsWardrobePopUpVisibleDirty(inst)
+end
+
+local function ShowGiftItemPopUp(inst, show)
+    inst.isgiftitempopupvisible:set(show)
+    OnIsGiftItemPopUpVisibleDirty(inst)
+end
+
 --------------------------------------------------------------------------
 
 local function RegisterNetListeners(inst)
@@ -557,6 +626,9 @@ local function RegisterNetListeners(inst)
         inst:ListenForEvent("playerhuddirty", OnPlayerHUDDirty)
         inst:ListenForEvent("playercamerashake", OnPlayerCameraShake)
         inst:ListenForEvent("playerscreenflashdirty", OnPlayerScreenFlashDirty)
+        inst:ListenForEvent("attunedresurrectordirty", OnAttunedResurrectorDirty)
+        inst:ListenForEvent("iswardrobepopupvisibledirty", OnIsWardrobePopUpVisibleDirty)
+        inst:ListenForEvent("isgiftitempopupvisibledirty", OnIsGiftItemPopUpVisibleDirty)
 
         OnIsTakingFireDamageDirty(inst)
         OnTemperatureDirty(inst)
@@ -569,14 +641,18 @@ local function RegisterNetListeners(inst)
     inst:ListenForEvent("builder.damaged", OnBuilderDamagedEvent)
     inst:ListenForEvent("builder.learnrecipe", OnLearnRecipeEvent)
     inst:ListenForEvent("repair.repair", OnRepairEvent)
+    inst:ListenForEvent("giftsdirty", OnGiftsDirty)
     inst:ListenForEvent("playercameradirty", OnPlayerCameraDirty)
     inst:ListenForEvent("playercamerasnap", OnPlayerCameraSnap)
     inst:ListenForEvent("playerfadedirty", OnPlayerFadeDirty)
     inst:ListenForEvent("wormholetraveldirty", OnWormholeTravelEvent)
     inst:ListenForEvent("morguedirty", OnMorgueDirty)
+    OnGiftsDirty(inst)
     OnGhostModeDirty(inst)
     OnPlayerHUDDirty(inst)
     OnPlayerCameraDirty(inst)
+    OnIsWardrobePopUpVisibleDirty(inst)
+    OnIsGiftItemPopUpVisibleDirty(inst)
 
     --Fade is initialized by OnPlayerActivated in gamelogic.lua
 end
@@ -651,6 +727,7 @@ local function fn()
 
     --Player camera variables
     inst.cameradistance = net_smallbyte(inst.GUID, "playercamera.distance", "playercameradirty")
+    inst.iscamerazoomed = net_bool(inst.GUID, "playercamera.iscamerazoomed", "playercameradirty")
     inst.camerasnap = net_bool(inst.GUID, "playercamera.snap", "playercamerasnap")
     inst.camerashakemode = net_tinybyte(inst.GUID, "playercamera.shakemode", "playercamerashake")
     inst.camerashaketime = net_byte(inst.GUID, "playercamera.shaketime")
@@ -692,6 +769,14 @@ local function fn()
 
     --Repair variables
     inst.repairevent = net_event(inst.GUID, "repair.repair")
+
+    --Wardrobe variables
+    inst.iswardrobepopupvisible = net_bool(inst.GUID, "wardrobe.iswardrobepopupvisible", "iswardrobepopupvisibledirty")
+
+    --GiftReceiver variables
+    inst.hasgift = net_bool(inst.GUID, "giftreceiver.hasgift", "giftsdirty")
+    inst.hasgiftmachine = net_bool(inst.GUID, "giftreceiver.hasgiftmachine", "giftsdirty")
+    inst.isgiftitempopupvisible = net_bool(inst.GUID, "giftreceiver.isgiftitempopupvisible", "isgiftitempopupvisibledirty")
 
     --Combat variables
     inst.lastcombattarget = net_entity(inst.GUID, "combat.lasttarget")
@@ -740,6 +825,8 @@ local function fn()
     inst.SetGhostMode = SetGhostMode
     inst.ShowActions = ShowActions
     inst.ShowHUD = ShowHUD
+    inst.ShowWardrobePopUp = ShowWardrobePopUp
+    inst.ShowGiftItemPopUp = ShowGiftItemPopUp
     inst.EnableMapControls = EnableMapControls
 
     inst.persists = false

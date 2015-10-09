@@ -134,4 +134,4 @@ local function fn()
     return inst
 end
 
-return Prefab("cave/monsters/tentacle_pillar_arm", fn, assets, prefabs)
+return Prefab("tentacle_pillar_arm", fn, assets, prefabs)

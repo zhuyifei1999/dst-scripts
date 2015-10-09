@@ -265,9 +265,21 @@ function EntityScript:GetSaveRecord()
         end
     end
     
+    if self.skinname then 
+    	record.skinname = self.skinname
+    end
+    if self.skin_build_name then
+        record.skin_build_name = self.skin_build_name
+    end
+    if self.skin_id then 
+    	record.skin_id = self.skin_id
+    end
+
     local references = nil
     record.data, references = self:GetPersistData()
     
+
+
     return record, references
 end
 
@@ -590,6 +602,14 @@ function EntityScript:GetIsWet()
         return replica:IsWet()
     end
     return self:HasTag("wet") or TheWorld.state.iswet
+end
+
+function EntityScript:GetSkinBuild()
+    return self.skin_build_name
+end
+
+function EntityScript:GetSkinName()
+    return self.skinname
 end
 
 function EntityScript:SetPrefabName(name)
@@ -974,6 +994,18 @@ function EntityScript:GetAngleToPoint(x, y, z)
     end    
     local x1, y1, z1 = self.Transform:GetWorldPosition()
     return math.atan2(z1 - z, x - x1) / DEGREES
+end
+
+function EntityScript:GetPositionAdjacentTo(target, distance)
+    if target == nil then
+        return nil
+    end
+    local p1 = Vector3(self.Transform:GetWorldPosition())
+    local p2 = Vector3(target.Transform:GetWorldPosition())
+    local offset = p1-p2
+    offset:Normalize()
+    offset = offset * distance
+    return (p2 + offset)
 end
 
 function EntityScript:ForceFacePoint(x, y, z)

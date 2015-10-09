@@ -7,7 +7,6 @@ local ImageButton = require "widgets/imagebutton"
 local PlayerBadge = require "widgets/playerbadge"
 local PopupDialogScreen = require "screens/popupdialog"
 local ScrollableList = require "widgets/scrollablelist"
-local TEMPLATES = require "widgets/templates"
 
 local BAN_ENABLED = true
 
@@ -415,7 +414,7 @@ function PlayerStatusScreen:DoInit(ClientObjs)
 		playerListing.viewprofile.scale_on_focus = false
 		local gainfocusfn = playerListing.viewprofile.OnGainFocus
 		playerListing.viewprofile.OnGainFocus =
-        function()
+        function()	
         	gainfocusfn(playerListing.viewprofile)
             TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover")
             playerListing.viewprofile:SetScale(1.1)
@@ -428,12 +427,11 @@ function PlayerStatusScreen:DoInit(ClientObjs)
         end
 		playerListing.viewprofile:SetOnClick(
 			function()
-				if v.steamid then
-					TheNet:ViewSteamProfile(v.steamid)
-				end
+                TheFrontEnd:PopScreen()
+                self.owner.HUD:TogglePlayerAvatarPopup(displayName, v, true)
 			end)
 
-		if empty or not (v.userid ~= self.owner.userid and not this_user_is_dedicated_server) then
+		if empty or this_user_is_dedicated_server then
 			playerListing.viewprofile:Hide()
 		end
 
@@ -700,12 +698,11 @@ function PlayerStatusScreen:DoInit(ClientObjs)
 
 			playerListing.viewprofile:SetOnClick(
 				function()
-					if v.steamid then
-						TheNet:ViewSteamProfile(v.steamid)
-					end
+                    TheFrontEnd:PopScreen()
+                    self.owner.HUD:TogglePlayerAvatarPopup(displayName, v, true)
 				end)
 
-			if (v.userid ~= self.owner.userid and not this_user_is_dedicated_server) then
+			if (not this_user_is_dedicated_server) then
 				playerListing.viewprofile:Show()
 			else
 				playerListing.viewprofile:Hide()

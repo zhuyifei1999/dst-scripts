@@ -265,4 +265,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/shadowmeteor", fn, assets, prefabs)
+return Prefab("shadowmeteor", fn, assets, prefabs)

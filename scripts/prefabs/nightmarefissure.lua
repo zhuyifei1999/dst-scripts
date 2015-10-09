@@ -225,5 +225,5 @@ local function lower()
 end
 
 
-return Prefab( "cave/objects/fissure", upper, assets, prefabs),
-       Prefab("cave/objects/fissure_lower", lower, assets, prefabs)
+return Prefab("fissure", upper, assets, prefabs),
+       Prefab("fissure_lower", lower, assets, prefabs)

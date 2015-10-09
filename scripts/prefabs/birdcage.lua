@@ -220,7 +220,7 @@ end
 local function ShouldSleep(inst)
     --Sleep during night, but not if you're very hungry.
     local bird = GetBird(inst)
-    return TheWorld.state.isnight and GetHunger(bird) >= 0.33
+    return DefaultSleepTest(bird) and GetHunger(bird) >= 0.33
 end
 
 local function GoToSleep(inst)
@@ -234,7 +234,7 @@ end
 local function ShouldWake(inst)
     --Wake during day or if you're very hungry.
     local bird = GetBird(inst)
-    return TheWorld.state.isday or GetHunger(bird) < 0.33
+    return DefaultWakeTest(bird) or GetHunger(bird) < 0.33
 end
 
 local function WakeUp(inst)
@@ -425,6 +425,7 @@ local function fn()
     inst.entity:AddSoundEmitter()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
+    inst.entity:AddLightWatcher()
 
     MakeObstaclePhysics(inst, .5)
 
@@ -497,5 +498,5 @@ local function fn()
     return inst
 end
 
-return Prefab("common/birdcage", fn, assets, prefabs),
-    MakePlacer("common/birdcage_placer", "birdcage", "bird_cage", "idle_empty")
+return Prefab("birdcage", fn, assets, prefabs),
+    MakePlacer("birdcage_placer", "birdcage", "bird_cage", "idle_empty")

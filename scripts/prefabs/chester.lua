@@ -20,7 +20,8 @@ local assets =
 local prefabs =
 {
     "chester_eyebone",
-    "chesterlight"
+    "chesterlight",
+    "chester_transform_fx",
 }
 
 local function ShouldWakeUp(inst)
@@ -195,6 +196,7 @@ local function create_chester()
     inst.entity:AddDynamicShadow()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
+    inst.entity:AddLightWatcher()
 
     MakeCharacterPhysics(inst, 75, .5)
     inst.Physics:SetCollisionGroup(COLLISION.CHARACTERS)
@@ -307,4 +309,4 @@ local function create_chester()
     return inst
 end
 
-return Prefab("common/chester", create_chester, assets, prefabs)
+return Prefab("chester", create_chester, assets, prefabs)

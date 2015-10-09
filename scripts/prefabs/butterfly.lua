@@ -170,5 +170,5 @@ local function fn()
     return inst
 end
 
-return Prefab("forest/common/butterfly", fn, assets, prefabs),
-    MakePlacer("common/butterfly_placer", "flowers", "flowers", "f1")
+return Prefab("butterfly", fn, assets, prefabs),
+    MakePlacer("butterfly_placer", "flowers", "flowers", "f1")

@@ -201,5 +201,5 @@ local function fn()
     return inst
 end
 
-return Prefab( "common/objects/nightmarelight", fn, assets, prefabs)
+return Prefab( "nightmarelight", fn, assets, prefabs)
 

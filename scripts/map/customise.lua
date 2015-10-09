@@ -86,6 +86,9 @@ local start_descriptions = {
     --#TODOCAVES: disabled temporarily for main branch ~gjans
 	--{ text = STRINGS.UI.SANDBOXMENU.CAVESTART, data = "caves" },
 }
+if BRANCH == "dev" then
+    table.insert(start_descriptions, { text = STRINGS.UI.SANDBOXMENU.CAVESTART, data = "caves" })
+end
 
 local branching_descriptions = {
 	{ text = STRINGS.UI.SANDBOXMENU.BRANCHINGNEVER, data = "never" },

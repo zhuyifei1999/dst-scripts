@@ -18,6 +18,10 @@ local InputDialogScreen = require "screens/inputdialog"
 local TargetIndicator = require "widgets/targetindicator"
 
 local EventAnnouncer = require "widgets/eventannouncer"
+local GiftItemPopUp = require "screens/giftitempopup"
+local WardrobePopupScreen = require "screens/wardrobepopup"
+local PlayerAvatarPopup = require "widgets/playeravatarpopup"
+
 
 local PlayerHud = Class(Screen, function(self)
     Screen._ctor(self, "HUD")
@@ -26,6 +30,10 @@ local PlayerHud = Class(Screen, function(self)
 
     self.under_root = self:AddChild(Widget("under_root"))
     self.root = self:AddChild(Widget("root"))
+
+    self.giftitempopup = nil
+    self.wardrobepopup = nil
+    self.playeravatarpopup = nil
 
     self.inst:ListenForEvent("continuefrompause", function() self:RefreshControllers() end, TheWorld)
 end)
@@ -68,6 +76,9 @@ function PlayerHud:CreateOverlays(owner)
 end
 
 function PlayerHud:OnDestroy()
+    --Hack for holding offset when transitioning from giftitempopup to wardrobepopup
+    TheCamera:PopScreenHOffset(self)
+
     if self.playerstatusscreen ~= nil then
         self.playerstatusscreen:Kill()
         self.playerstatusscreen = nil
@@ -183,6 +194,76 @@ function PlayerHud:OpenContainer(container, side)
     end
 end
 
+function PlayerHud:TogglePlayerAvatarPopup(player_name, data, include_steam_link)
+    if self.playeravatarpopup ~= nil then
+        if self.playeravatarpopup.started and
+            self.playeravatarpopup.inst:IsValid() then
+            self.playeravatarpopup:Close()
+            if player_name == nil or
+                data == nil or
+                self.playeravatarpopup.userid == data.userid or
+                self.owner.userid == data.userid then
+                self.playeravatarpopup = nil
+                return
+            end
+        end
+    end
+    self.playeravatarpopup = self.controls.topright_root:AddChild(PlayerAvatarPopup(self.owner, player_name, data, include_steam_link))
+end
+
+function PlayerHud:OpenItemManagerScreen()
+    --Hack for holding offset when transitioning from giftitempopup to wardrobepopup
+    TheCamera:PopScreenHOffset(self)
+
+    if self.giftitempopup ~= nil and self.giftitempopup.inst:IsValid() then
+        TheFrontEnd:PopScreen(self.giftitempopup)
+    end
+    local item = TheInventory:GetUnopenedItems()[1]
+    if item ~= nil then
+        self.giftitempopup = GiftItemPopUp(self.owner, { item.item_type }, { item.item_id })
+        TheFrontEnd:PushScreen(self.giftitempopup)
+        return true
+    else
+        return false
+    end
+end
+
+function PlayerHud:CloseItemManagerScreen()
+    --Hack for holding offset when transitioning from giftitempopup to wardrobepopup
+    TheCamera:PopScreenHOffset(self)
+
+    if self.giftitempopup ~= nil then
+        if self.giftitempopup.inst:IsValid() then
+            TheFrontEnd:PopScreen(self.giftitempopup)
+        end
+        self.giftitempopup = nil
+    end
+end
+
+function PlayerHud:OpenWardrobeScreen()
+    --Hack for holding offset when transitioning from giftitempopup to wardrobepopup
+    TheCamera:PopScreenHOffset(self)
+
+    if self.wardrobepopup ~= nil and self.wardrobepopup.inst:IsValid() then
+        TheFrontEnd:PopScreen(self.wardrobepopup)
+    end
+    self.wardrobepopup = WardrobePopupScreen(self.owner, Profile)
+    TheFrontEnd:PushScreen(self.wardrobepopup)
+    return true
+end
+
+function PlayerHud:CloseWardrobeScreen()
+    --Hack for holding offset when transitioning from giftitempopup to wardrobepopup
+    TheCamera:PopScreenHOffset(self)
+
+    if self.wardrobepopup ~= nil then
+        if self.wardrobepopup.inst:IsValid() then
+            TheFrontEnd:PopScreen(self.wardrobepopup)
+        end
+        self.wardrobepopup = nil
+    end
+end
+
 function PlayerHud:RefreshControllers()
     local controller_mode = TheInput:ControllerAttached()
     if self.controls.inv.controller_build ~= controller_mode then
@@ -222,7 +303,6 @@ function PlayerHud:CloseWriteableWidget()
         self.writeablescreen = nil
     end
 end
-
 function PlayerHud:GoSane()
     self.vig:GetAnimState():PlayAnimation("basic", true)
 end
@@ -311,6 +391,7 @@ function PlayerHud:OpenControllerInventory()
     self:CloseControllerCrafting()
     self:HideControllerCrafting()
     self.controls.inv:OpenControllerInventory()
+    self.controls.item_notification:ToggleController(false)
     self.controls:ShowStatusNumbers()
 
     self.owner.components.playercontroller:OnUpdate(0)
@@ -321,6 +402,7 @@ function PlayerHud:CloseControllerInventory()
     self.controls:HideStatusNumbers()
     self:ShowControllerCrafting()
     self.controls.inv:CloseControllerInventory()
+    self.controls.item_notification:ToggleController(true)
 end
 
 function PlayerHud:HasInputFocus()
@@ -390,6 +472,22 @@ function PlayerHud:IsStatusScreenOpen()
     return active_screen ~= nil and active_screen.name == "PlayerStatusScreen"
 end
 
+function PlayerHud:IsItemManagerScreenOpen()
+    local active_screen = TheFrontEnd:GetActiveScreen()
+    return active_screen ~= nil and active_screen.name == "GiftItemPopUp"
+end
+
+function PlayerHud:IsWardrobeScreenOpen()
+    local active_screen = TheFrontEnd:GetActiveScreen()
+    return active_screen ~= nil and active_screen.name == "WardrobePopupScreen"
+end
+
+function PlayerHud:IsPlayerAvatarPopUpOpen()
+    return self.playeravatarpopup ~= nil
+        and self.playeravatarpopup.started
+        and self.playeravatarpopup.inst:IsValid()
+end
+
 function PlayerHud:OpenControllerCrafting()
     TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/craft_open")
     TheFrontEnd:StopTrackingMouse()
@@ -402,6 +500,7 @@ function PlayerHud:CloseControllerCrafting()
     TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/craft_close")
     self.controls.crafttabs:CloseControllerCrafting()
     self.controls.inv:Enable()
+    self.controls.item_notification:ToggleController(false)
 end
 
 function PlayerHud:ShowPlayerStatusScreen()
@@ -413,10 +512,17 @@ function PlayerHud:ShowPlayerStatusScreen()
     self.playerstatusscreen:Show()
 end
 
-function PlayerHud:ShowGenericInputScreen(title, buttons)
-    local screen = InputDialogScreen(title, buttons, true)
-    TheFrontEnd:PushScreen(screen)
-    return screen
+function PlayerHud:InspectSelf()
+    if self:IsVisible() and
+        self.owner.components.playercontroller:IsEnabled() and
+        self.owner.components.playercontroller:GetControllerTarget() == nil then
+        local client_obj = TheNet:GetClientTableForUser(self.owner.userid)
+        if client_obj ~= nil then
+            --client_obj.inst = self.owner --don't track yourself
+            self:TogglePlayerAvatarPopup(client_obj.name, client_obj)
+            return true
+        end
+    end
 end
 
 function PlayerHud:OnControl(control, down)
@@ -426,6 +532,8 @@ function PlayerHud:OnControl(control, down)
         return
     elseif not down and control == CONTROL_PAUSE then
         TheFrontEnd:PushScreen(PauseScreen())
+        return true
+    elseif down and control == CONTROL_INSPECT_SELF and self:InspectSelf() then 
         return true
     elseif self.owner == nil then
         return
@@ -455,7 +563,9 @@ function PlayerHud:OnControl(control, down)
             return true
         end
     elseif control == CONTROL_SHOW_PLAYER_STATUS then
-        self:ShowPlayerStatusScreen()
+        if not self:IsPlayerAvatarPopUpOpen() or self.playeravatarpopup.settled then
+            self:ShowPlayerStatusScreen()
+        end
         return true
     elseif control == CONTROL_OPEN_CRAFTING then
         if self:IsControllerCraftingOpen() then

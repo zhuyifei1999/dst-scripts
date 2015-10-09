@@ -72,6 +72,7 @@ local function makebird(name, soundname)
         inst.entity:AddDynamicShadow()
         inst.entity:AddSoundEmitter()
         inst.entity:AddNetwork()
+        inst.entity:AddLightWatcher()
 
         --Initialize physics
         inst.Physics:SetCollisionGroup(COLLISION.CHARACTERS)
@@ -178,7 +179,7 @@ local function makebird(name, soundname)
         return inst
     end
     
-    return Prefab("forest/animals/"..name, fn, assets, prefabs)
+    return Prefab(name, fn, assets, prefabs)
 end
 
 return makebird("crow", "crow"),

@@ -280,7 +280,7 @@ function BanTab:MakePlayerList()
         local buttons = 
         {
             {widget=TEMPLATES.IconButton("images/button_icons.xml", "view_ban.tex", STRINGS.UI.SERVERADMINSCREEN.PLAYER_DETAILS, false, false, function() self:ShowPlayerDetails(index) end, {size=22/.85})},
-            {widget=TEMPLATES.IconButton("images/button_icons.xml", "steam.tex", STRINGS.UI.SERVERADMINSCREEN.PLAYER_PROFILE, false, false, function() self:ShowSteamProfile(index) end, {size=22/.85})},
+            {widget=TEMPLATES.IconButton("images/button_icons.xml", "player_info.tex", STRINGS.UI.PLAYERSTATUSSCREEN.VIEWPROFILE, false, false, function() self:ShowSteamProfile(index) end, {size=22/.85})},
             {widget=TEMPLATES.IconButton("images/button_icons.xml", "unban.tex", STRINGS.UI.SERVERADMINSCREEN.PLAYER_DELETE, false, false, function() self:PromptDeletePlayer(index) end, {size=22/.85})},
         }
         for i,v in pairs(buttons) do
@@ -432,6 +432,7 @@ end
 function BanTab:ShowSteamProfile(selected_player)
     if selected_player then
         if self.blacklist[selected_player] then
+        	--TheFrontEnd:PushScreen(PlayerAvatarPopupScreen(self.blacklist[selected_player].name, self.blacklist[selected_player]))
             TheNet:ViewSteamProfile(self.blacklist[selected_player].steamid)
         end
     end

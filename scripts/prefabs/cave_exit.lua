@@ -3,6 +3,7 @@ local PopupDialogScreen = require "screens/popupdialog"
 local assets =
 {
     Asset("ANIM", "anim/cave_exit.zip"),
+	Asset("MINIMAP_IMAGE", "cave_open2"),
 }
 
 local function close(inst)
@@ -55,7 +56,7 @@ local function fn()
         return inst
     end
 
-    if not TheNet:GetServerIsDedicated() then
+    if BRANCH ~= "dev" and not TheNet:GetServerIsDedicated() then
         --#TODOCAVES: On self-hosted servers we'll make these "vanish" for now, but still generate them
         --into the world so that they can magically appear in existing saves once self-hosted caves servers
         --are working.
@@ -79,4 +80,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/cave_exit", fn, assets)
+return Prefab("cave_exit", fn, assets)

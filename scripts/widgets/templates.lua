@@ -279,9 +279,9 @@ TEMPLATES = {
 
     -- Ornate black frame with paper texture fill (nine-slice)
     -- To be added as a child of the root
-    CenterPanel = function(x_scale, y_scale, skipPos, x_size, y_size, topCrownOffset, bottomCrownOffset)
-    	local xScale = x_scale or .725
-    	local yScale = y_scale or .69
+    CenterPanel = function(frame_x_scale, frame_y_scale, skipPos, x_size, y_size, topCrownOffset, bottomCrownOffset, bg_x_scale, bg_y_scale)
+    	frame_x_scale = frame_x_scale or 1
+    	frame_y_scale = frame_y_scale or 1
         local panel = Widget("panel")
 
         panel.frame = panel:AddChild(NineSlice("images/fepanels.xml",
@@ -291,12 +291,12 @@ TEMPLATES = {
         panel.frame:AddCrown("TopCap.tex", ANCHOR_MIDDLE, ANCHOR_TOP, 0, topCrownOffset or 68)
         panel.frame:AddCrown("BottomCap.tex", ANCHOR_MIDDLE, ANCHOR_BOTTOM, 0, bottomCrownOffset or -42)
         panel.frame:SetSize( x_size or 520, y_size or 475)
-        panel.frame:SetScale(x_scale or 1, y_scale or 1)
+        panel.frame:SetScale(frame_x_scale or 1, frame_y_scale or 1)
         panel.frame:SetPosition(0, 0) 
 
 		panel.bg = panel.frame:AddChild(Image("images/options_bg.xml", "options_panel_bg.tex"))
 		panel.bg:SetPosition(9, 13)
-        panel.bg:SetScale(xScale or 1, yScale or 1)
+        panel.bg:SetScale(bg_x_scale or .725, bg_y_scale or .69)
 
         if not skipPos then
             panel:SetPosition(37,-10)
@@ -337,7 +337,7 @@ TEMPLATES = {
     ----------------
 
     -- Makes the background for holding NavBarButtons and puts a screen title above it
-    -- To be added as a child of the root. Heights: "short" (2 buttons), "medium" (TBD buttons), "tall" (TBD buttons).
+    -- To be added as a child of the root. Heights: "short" (2 buttons), "medium" (3 buttons), "tall" (5 buttons).
     NavBarWithScreenTitle = function(title, height)
         local nav_bar = Widget("nav_bar")
         nav_bar:SetPosition(-RESOLUTION_X*.415, RESOLUTION_Y*.27)
@@ -345,6 +345,9 @@ TEMPLATES = {
         if not height or height == "short" then
             nav_bar.bg = nav_bar:AddChild(Image("images/frontend.xml", "nav_bg_short.tex"))
             nav_bar.bg:SetScale(.65, .7)
+        elseif height == "medium" then 
+        	nav_bar.bg = nav_bar:AddChild(Image("images/frontend.xml", "nav_bg_short.tex"))
+            nav_bar.bg:SetScale(.65, 1)
         elseif height == "tall" then
             nav_bar.bg = nav_bar:AddChild(Image("images/frontend.xml", "nav_bg_med.tex"))
             nav_bar.bg:SetScale(.65, .475)
@@ -561,7 +564,7 @@ TEMPLATES = {
             btn:SetTextColour(textinfo.colour or GOLD[1],GOLD[2],GOLD[3],GOLD[4])
             btn:SetTextFocusColour(textinfo.focus_colour or GOLD[1],GOLD[2],GOLD[3],GOLD[4])
         else
-            btn:SetHoverText(labelText, { font = textinfo.font or NEWFONT_OUTLINE, size = textinfo.size or 22, offset_x = -4, offset_y = 45, colour = textinfo.colour or {1,1,1,1}, bg = textinfo.bg })
+            btn:SetHoverText(labelText, { font = textinfo.font or NEWFONT_OUTLINE, size = textinfo.size or 22, offset_x = textinfo.offset_x or -4, offset_y = textinfo.offset_y or 45, colour = textinfo.colour or {1,1,1,1}, bg = textinfo.bg })
         end
 
         btn:SetOnClick(onclick)
@@ -599,6 +602,27 @@ TEMPLATES = {
 
 	    return btn
 	end,
+
+
+	------------
+    ------------
+    -- SmallBUTTON --
+    ------------
+    ------------
+    -- A button with configurable size. It defaults to smaller than Button.
+    SmallButton = function (text, fontsize, scale, cb)
+	    local btn = ImageButton()
+	    btn.image:SetScale(scale or .5)
+	    btn:SetFont(NEWFONT)
+	    btn:SetTextSize(fontsize or 26)
+	    btn:SetDisabledFont(NEWFONT)
+
+	    btn:SetText(text)
+	    btn:SetOnClick(cb)
+
+	    return btn
+	end,
+
 
 
 	-----------------

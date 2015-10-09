@@ -54,4 +54,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/explode_small", fn, assets)
+return Prefab("explode_small", fn, assets)

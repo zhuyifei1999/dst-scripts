@@ -4,6 +4,7 @@ local assets =
 {
     Asset("ANIM", "anim/eyeball_turret.zip"),
     Asset("ANIM", "anim/eyeball_turret_object.zip"),
+	Asset("MINIMAP_IMAGE", "eyeball_turret"),
 }
 
 local prefabs =
@@ -238,7 +239,7 @@ local function basefn()
     return inst
 end
 
-return Prefab("common/eyeturret", fn, assets, prefabs),
-    Prefab("common/eyeturret_item", itemfn, assets, prefabs),
-    MakePlacer("common/eyeturret_item_placer", "eyeball_turret", "eyeball_turret", "idle_place"),
-    Prefab("common/eyeturret_base", basefn, baseassets)
+return Prefab("eyeturret", fn, assets, prefabs),
+    Prefab("eyeturret_item", itemfn, assets, prefabs),
+    MakePlacer("eyeturret_item_placer", "eyeball_turret", "eyeball_turret", "idle_place"),
+    Prefab("eyeturret_base", basefn, baseassets)
