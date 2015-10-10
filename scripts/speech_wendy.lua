@@ -864,8 +864,8 @@ return {
 		MARSH_PLANT = "It's a plant.",
 		MARSH_TREE =
 		{
-			BURNING = "It's burning",
-			BURNT = "Black like my heart",
+			BURNING = "It's burning.",
+			BURNT = "Black like my heart.",
 			CHOPPED = "Its spikes were no protection.",
 			GENERIC = "A tree that knows only pain.",
 		},
@@ -1165,6 +1165,7 @@ return {
 		WARDROBE = 
 		{
 			GENERIC = "It reminds me of a story I used to read with Abigail.",
+            BURNING = "It's burning.",
 			BURNT = "Now it doesn't remind me of anything.",
 		},
 		WARG = "A true bastion of evil.",

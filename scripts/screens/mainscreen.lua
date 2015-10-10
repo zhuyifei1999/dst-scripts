@@ -21,7 +21,7 @@ local NetworkLoginPopup = require "screens/networkloginpopup"
 
 local OnlineStatus = require "widgets/onlinestatus"
 
-local UnopenedItemPopup = require "screens/unopeneditempopup"
+--local UnopenedItemPopup = require "screens/unopeneditempopup"
 local ROGItemPopup = require "screens/rogitempopup"
 
 local rcol = RESOLUTION_X/2 -200
@@ -279,26 +279,20 @@ function MainScreen:OnLoginButton( push_mp_main_screen )
 
                 GoToMultiplayerMainMenu(forceOffline or false )
 
-                local rog_items = {}--"body_buttons_green_laurel", "body_buttons_pink_hibiscus" }
+                -- In case we have given out token items that have no assets in the game
+                -- But still need to be marked as opened
                 local uo_items = TheInventory:GetUnopenedItems()
-                local uo_items_filtered = {}
-				for _,item in pairs(uo_items) do
-					if Prefabs[string.lower(item.item_type)] ~= nil or CLOTHING[string.lower(item.item_type)] ~= nil then --make sure the item is actually in the game
-						table.insert( uo_items_filtered, item )
-					else
-						TheInventory:SetItemOpened(item.item_id)
-					end
-				end
+                for _,item in pairs(uo_items) do
+                    if Prefabs[string.lower(item.item_type)] == nil and CLOTHING[string.lower(item.item_type)] == nil then
+                        TheInventory:SetItemOpened(item.item_id)
+                    end
+                end
+
+                local rog_items = {}--"body_buttons_green_laurel", "body_buttons_pink_hibiscus" }
 
                 if #rog_items > 0 then
-                    local rog_popup = ROGItemPopup(rog_items, function()
-                             if (#uo_items_filtered > 0) then
-                                TheFrontEnd:PushScreen(UnopenedItemPopup(uo_items_filtered))
-                             end
-                        end)
+                    local rog_popup = ROGItemPopup(rog_items)
                     TheFrontEnd:PushScreen(rog_popup)
-                elseif (#uo_items_filtered > 0) then
-                    TheFrontEnd:PushScreen(UnopenedItemPopup(uo_items_filtered))
                 end
                 TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
 

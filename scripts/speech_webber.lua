@@ -1206,6 +1206,7 @@ return {
 		WARDROBE = 
 		{
 			GENERIC = "We like playing hide-and-seek in wardrobes.",
+            BURNING = "Fire fire fire!",
 			BURNT = "We can't hide in there any more.",
 		},
 		WARG = "I don't think that puppy is very happy.",

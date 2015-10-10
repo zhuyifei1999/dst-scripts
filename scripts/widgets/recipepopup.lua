@@ -486,34 +486,18 @@ function RecipePopup:GetIndexForSkin(skin)
 end
 
 function RecipePopup:GetSkinsList()
-
-	local templist = TheInventory:GetFullInventory()
+	--Note(Peter): This could get a speed improvement by passing in self.recipe.name into a c-side inventory check, and then add the PREFAB_SKINS data to c-side
+	-- so that we don't have to walk the whole inventory for each prefab for each item_type in PREFAB_SKINS[self.recipe.name]
 	self.skins_list = {}
-	self.timestamp = 0
-
-	for k,v in ipairs(templist) do 
-		local type, item = GetTypeForItem(v.item_type)
-		if self.recipe and PREFAB_SKINS[self.recipe.name] then 
-			
-			if type == "item" and item ~= "backpack_mushy" then 
-				if table.contains(PREFAB_SKINS[self.recipe.name], item) then 
-					local data  = {}
-					data.type = type
-					data.item = item
-					data.timestamp = v.modified_time
-
-					local do_add = true
-					for k2,v2 in ipairs(self.skins_list) do 
-						if v2.item == data.item then 
-							do_add = false
-							v2.new_indicator = data.new_indicator or v2.new_indicator -- if either copy has the new tag, turn the new tag on
-						end
-					end
-
-					if do_add then 
-						table.insert(self.skins_list, data)
-					end
-				end
+	if self.recipe and PREFAB_SKINS[self.recipe.name] then
+		for _,item_type in pairs(PREFAB_SKINS[self.recipe.name]) do
+			local has_item, modified_time = TheInventory:CheckOwnershipGetLatest(item_type)
+			if has_item then
+				local data  = {}
+				data.type = type
+				data.item = item_type
+				data.timestamp = modified_time
+				table.insert(self.skins_list, data)
 			end
 		end
 	end

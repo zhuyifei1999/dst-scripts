@@ -12,12 +12,14 @@ local Wardrobe = Class(function(self, inst)
 
     self.changers = {}
     self.canuseaction = true
-    self.canbeshared = false
+    self.canbeshared = nil
     self.range = 3
     self.changeindelay = 0
     self.onchangeinfn = nil
     self.onopenfn = nil
     self.onclosefn = nil
+
+    self:SetCanBeShared(false)
 
     self.onclosewardrobe = function(doer, skins) -- yay closures ~gj -- yay ~v2c
         if self.changers[doer] and not self:ActivateChanging(doer, skins) then
@@ -35,9 +37,33 @@ function Wardrobe:SetCanUseAction(canuseaction)
     self.canuseaction = canuseaction
 end
 
+local function OnIgnite(inst)
+    local towarn = {}
+    for k, v in pairs(inst.components.wardrobe.changers) do
+        if k.sg ~= nil and k.sg.currentstate.name == "openwardrobe" then
+            table.insert(towarn, k)
+        end
+    end
+
+    inst.components.wardrobe:EndAllChanging()
+
+    for i, v in ipairs(towarn) do
+        if v.components.talker ~= nil then
+            v.components.talker:Say(GetString(inst, "ANNOUNCE_NOWARDROBEONFIRE"))
+        end
+    end
+end
+
 --Whether multiple people can use the wardrobe at once or not
 function Wardrobe:SetCanBeShared(canbeshared)
-    self.canbeshared = canbeshared
+    if self.canbeshared ~= (canbeshared == true) then
+        self.canbeshared = (canbeshared == true)
+        if self.canbeshared then
+            self.inst:RemoveEventCallback("onignite", OnIgnite)
+        else
+            self.inst:ListenForEvent("onignite", OnIgnite)
+        end
+    end
 end
 
 function Wardrobe:SetRange(range)
@@ -53,6 +79,8 @@ function Wardrobe:CanBeginChanging(doer)
         doer.sg == nil or
         (doer.sg:HasStateTag("busy") and doer.sg.currentstate.name ~= "opengift") then
         return false
+    elseif self.inst.burnable ~= nil and self.inst.burnable:IsBurning() then
+        return false, "BURNING"
     elseif not self.shareable and next(self.changers) ~= nil then
         return false, "INUSE"
     end
@@ -205,7 +233,12 @@ end
 
 --------------------------------------------------------------------------
 
-Wardrobe.OnRemoveFromEntity = Wardrobe.EndAllChanging
+function Wardrobe:OnRemoveFromEntity()
+    self:EndAllChanging()
+    self.inst:RemoveEventCallback("onignite", OnIgnite)
+    self.inst:RemoveTag("wardrobe")
+end
+
 Wardrobe.OnRemoveEntity = Wardrobe.EndAllChanging
 
 return Wardrobe

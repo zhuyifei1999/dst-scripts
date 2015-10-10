@@ -318,6 +318,7 @@ return {
 		WARDROBE = 
         {
         	GENERIC = "It's hard to stay neat and tidy in the woods.",
+            BURNING = "Fire makes me nervous.",
         	BURNT = "Not so useful now, eh?",
     	},
 		WARG = "That thing could pull a sled by its lonesome.",

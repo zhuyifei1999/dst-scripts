@@ -7,7 +7,7 @@ local UIAnimButton = require "widgets/uianimbutton"
 -- Where the toast is supposed to be when it's active
 local down_pos = -200
 local last_click_time = 0 -- V2C: s'ok to be static
-local TIMEOUT = 2
+local TIMEOUT = 1
 
 local function ClickButton()
     if not ThePlayer:HasTag("busy") then

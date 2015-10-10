@@ -1164,6 +1164,7 @@ return {
 		WARDROBE = 
 		{
 			GENERIC = "Box of clothes!",
+            BURNING = "Not good!",
 			BURNT = "Box all gone.",
 		},
 		WARG = "Big puppy!",

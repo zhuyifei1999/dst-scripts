@@ -7,7 +7,7 @@ local Widget = require "widgets/widget"
 local UIAnim = require "widgets/uianim"
 
 
-local UnopenedItemPopup = Class(Screen, function(self, items, onclose)
+local UnopenedItemPopup = Class(Screen, function(self, items)
     Screen._ctor(self, "UnopenedItemPopup")
 
     --darken everything behind the dialog
@@ -91,23 +91,6 @@ local UnopenedItemPopup = Class(Screen, function(self, items, onclose)
     self.close_btn:SetOnClick(function() self:GoAway() end)
     self.close_btn:Hide()
 
-    -- self.open_all_btn = self.proot:AddChild(ImageButton())
-    -- self.open_all_btn:SetFont(BUTTONFONT)
-    -- self.open_all_btn:SetText("Open all")
-    -- self.open_all_btn:SetPosition(0, 300, 0)
-    -- self.open_all_btn:SetScale(0.85)
-    -- self.open_all_btn:SetOnClick(
-    --     function() 
-    --     -- Uncomment this if you don't wanna open item by item.
-    --         for i=1,#self.items do
-    --             TheInventory:SetItemOpened( self.items[i].item_id ) -- Marks the items as opened on the backend        
-    --         end
-    --         TheFrontEnd:PopScreen(self)
-    --     end)
-
-
-
-    self.onclose = onclose -- On close is set on mainscreen.lua if we need to open the unopeneditempopup after we're done here
     self.items = items
     self.revealed_items = {}
     self.current_item = 1
@@ -131,10 +114,7 @@ function UnopenedItemPopup:OnUpdate(dt)
             self:SetSkinName()
         end
     -- We're closing the popup
-    elseif self.spawn_portal:GetAnimState():IsCurrentAnimation("skinless_loop_pst") and self.spawn_portal:GetAnimState():AnimDone() then
-        if self.onclose ~= nil then
-            self.onclose()
-        end
+    elseif self.spawn_portal:GetAnimState():IsCurrentAnimation("skin_out") and self.spawn_portal:GetAnimState():AnimDone() then
         TheFrontEnd:PopScreen(self)
     -- We just navigated to an unrevealed skin
     elseif self.spawn_portal:GetAnimState():IsCurrentAnimation("idle") and self.transitioning then
@@ -228,7 +208,6 @@ function UnopenedItemPopup:GoAway()
 	TheFrontEnd:GetSound():KillSound("gift_idle")
 	TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/player_receives_gift_animation_skinout")
     self.spawn_portal:GetAnimState():PlayAnimation("skin_out")
-    self.spawn_portal:GetAnimState():PushAnimation("skinless_loop_pst", false)
     
     self.banner:Hide()
     self.right_btn:Hide()
@@ -266,7 +245,7 @@ end
 
 function UnopenedItemPopup:OnControl(control, down)
     if UnopenedItemPopup._base.OnControl(self,control, down) then 
-        return true 
+        return true
     end
 end
 

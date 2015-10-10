@@ -123,6 +123,7 @@ function ValidateSpawnPrefabRequest(user_id, prefab_name, skin_base, clothing_bo
     if in_valid_char_list then
     	if skin_base == prefab_name.."_none" then
     		-- If default skin, we do not need to check
+    		validated_skin_base = skin_base
     	elseif TheInventory:CheckClientOwnership(user_id, skin_base) then
     		--check if the skin_base actually belongs to the prefab
 			if table.contains( PREFAB_SKINS[prefab_name], skin_base ) then

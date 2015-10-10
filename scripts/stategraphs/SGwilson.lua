@@ -1013,7 +1013,7 @@ local states =
                 inst.AnimState:PlayAnimation("idle_shiver_pre")
                 inst.AnimState:PushAnimation("idle_shiver_loop")
                 inst.AnimState:PushAnimation("idle_shiver_pst", false)
-            elseif inst.components.temperature:GetCurrent() > 60 then
+            elseif inst.components.temperature:GetCurrent() > (TUNING.OVERHEAT_TEMP - 10) then
                 inst.AnimState:PlayAnimation("idle_hot_pre")
                 inst.AnimState:PushAnimation("idle_hot_loop")
                 inst.AnimState:PushAnimation("idle_hot_pst", false)
@@ -2068,6 +2068,15 @@ local states =
             inst.components.locomotor:Clear()
             inst:ClearBufferedAction()
 
+            if IsNearDanger(inst) then
+                inst.sg.statemem.isdanger = true
+                inst.sg:GoToState("idle")
+                if inst.components.talker ~= nil then
+                    inst.components.talker:Say(GetString(inst, "ANNOUNCE_NODANGERGIFT"))
+                end
+                return
+            end
+
             inst.SoundEmitter:PlaySound("dontstarve/common/player_receives_gift")
             inst.AnimState:PlayAnimation("gift_pre")
             inst.AnimState:PushAnimation("giift_loop", true)
@@ -2099,6 +2108,13 @@ local states =
 
         events =
         {
+            EventHandler("firedamage", function(inst)
+                inst.AnimState:PlayAnimation("gift_open_pst")
+                inst.sg:GoToState("idle", true)
+                if inst.components.talker ~= nil then
+                    inst.components.talker:Say(GetString(inst, "ANNOUNCE_NODANGERGIFT"))
+                end
+            end),
             EventHandler("ms_doneopengift", function(inst, data)
                 if data.wardrobe == nil or
                     data.wardrobe.components.wardrobe == nil or
@@ -2112,7 +2128,9 @@ local states =
         },
 
         onexit = function(inst)
-            if not inst.sg.statemem.isopeningwardrobe then
+            if inst.sg.statemem.isdanger then
+                return
+            elseif not inst.sg.statemem.isopeningwardrobe then
                 if inst.components.playercontroller ~= nil then
                     inst.components.playercontroller:EnableMapControls(true)
                     inst.components.playercontroller:Enable(true)
@@ -2150,6 +2168,21 @@ local states =
             end
             inst:ShowWardrobePopUp(true)
         end,
+
+        events =
+        {
+            EventHandler("firedamage", function(inst)
+                if inst.sg.statemem.isopeninggift then
+                    inst.AnimState:PlayAnimation("gift_open_pst")
+                    inst.sg:GoToState("idle", true)
+                else
+                    inst.sg:GoToState("idle")
+                end
+                if inst.components.talker ~= nil then
+                    inst.components.talker:Say(GetString(inst, "ANNOUNCE_NOWARDROBEONFIRE"))
+                end
+            end),
+        },
 
         onexit = function(inst)
             inst:ShowWardrobePopUp(false)

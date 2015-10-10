@@ -7,7 +7,7 @@ local Widget = require "widgets/widget"
 local UIAnim = require "widgets/uianim"
 
 
-local ROGItemPopup = Class(Screen, function(self, items, onclose)
+local ROGItemPopup = Class(Screen, function(self, items)
     Screen._ctor(self, "ROGItemPopup")
 
     --darken everything behind the dialog
@@ -106,8 +106,6 @@ local ROGItemPopup = Class(Screen, function(self, items, onclose)
     self.close_btn:SetOnClick(function() self:GoAway() end)
     self.close_btn:Hide()
 
-
-    self.onclose = onclose -- On close is set on mainscreen.lua if we need to open the unopeneditempopup after we're done here
     self.items = items
     self.revealed_items = {}
     self.current_item = 1
@@ -131,10 +129,7 @@ function ROGItemPopup:OnUpdate(dt)
             TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/player_recieves_gift_idle", "gift_idle")
         end
     -- We're closing the popup
-    elseif self.spawn_portal:GetAnimState():IsCurrentAnimation("skinless_loop_pst") and self.spawn_portal:GetAnimState():AnimDone() then
-        if self.onclose ~= nil then
-            self.onclose()
-        end
+    elseif self.spawn_portal:GetAnimState():IsCurrentAnimation("skin_out") and self.spawn_portal:GetAnimState():AnimDone() then
         TheFrontEnd:PopScreen(self)
     -- We just navigated to an unrevealed skin
     elseif self.spawn_portal:GetAnimState():IsCurrentAnimation("idle") and self.transitioning then
@@ -227,7 +222,6 @@ function ROGItemPopup:GoAway()
 	TheFrontEnd:GetSound():KillSound("gift_idle")
 	TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/player_receives_gift_animation_skinout")
     self.spawn_portal:GetAnimState():PlayAnimation("skin_out")
-    self.spawn_portal:GetAnimState():PushAnimation("skinless_loop_pst", false)
     
     self.banner:Hide()
     self.right_btn:Hide()
