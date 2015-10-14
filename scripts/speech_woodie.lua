@@ -318,7 +318,7 @@ return {
 		WARDROBE = 
         {
         	GENERIC = "It's hard to stay neat and tidy in the woods.",
-            BURNING = "Fire makes me nervous.",
+            BURNING = "Wood is the best at burning.",
         	BURNT = "Not so useful now, eh?",
     	},
 		WARG = "That thing could pull a sled by its lonesome.",
@@ -334,7 +334,7 @@ return {
 		WORM =
 		{
 		    PLANT = "I know a plant when I see one. This'n an impostor!",
-		    DIRT = "Be wary the moving ground.",
+		    DIRT = "Be wary of the moving ground.",
 		    WORM = "WOOORM!",
 		},
 		EEL = "This should cook up nicely.",

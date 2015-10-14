@@ -253,7 +253,7 @@ return
         WARDROBE = 
         {
         	GENERIC = "This reminds me of a famous book.",
-            BURNING = "Combustion!",
+            BURNING = "Hmm, now it reminds me of a very different famous book.",
         	BURNT = "It used to be a wardrobe.",
     	},
         WARG = "That Canis will never be domesticated.",

@@ -1346,7 +1346,7 @@ ACTIONS.WRITE.fn = function(act)
         end
 
         --Silent fail for writing in the dark
-        if CanEntitySeeTarget(act.doer, targ) then
+        if CanEntitySeeTarget(act.doer, act.target) then
             act.target.components.writeable:BeginWriting(act.doer)
         end
         return true

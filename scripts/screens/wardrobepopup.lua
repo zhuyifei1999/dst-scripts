@@ -6,7 +6,7 @@ local TEMPLATES = require "widgets/templates"
 
 local SCREEN_OFFSET = -.285 * RESOLUTION_X
 
-local WardrobePopupScreen = Class(Screen, function(self, owner, profile, character, character_loadout_screen)
+local WardrobePopupScreen = Class(Screen, function(self, owner, profile, character, character_loadout_screen, recent_item_types, recent_item_ids)
 	Screen._ctor(self, "WardrobePopupScreen")
 
     self.owner = owner --can be nil in FE, otherwise should be ThePlayer in HUD
@@ -23,12 +23,27 @@ local WardrobePopupScreen = Class(Screen, function(self, owner, profile, charact
         self.black:SetTint(0,0,0,.75)
     end
 
+    --V2C: @liz
+    -- recent_item_types and recent_item_ids are both tables of
+    -- items that were just opened in the gift item popup.
+    --
+    -- Both params are nil if we did not come from GiftItemPopup.
+    --
+    -- They should be both in the same order, so recent_item_types[1]
+    -- corresponds to recent_item_ids[1].
+    -- (This is the exact same data that is passed into GiftItemPopup.)
+    --
+    -- Currently, it is safe to assume there will only be 1 item.
+    --
+    -- recent_item_ids is probably useless if we're only showing one
+    -- of each item type in the spinners, and you should just match
+    -- by recent_item_types[1].
+
 	self.proot = self:AddChild(Widget("ROOT"))
     self.proot:SetVAnchor(ANCHOR_MIDDLE)
     self.proot:SetHAnchor(ANCHOR_MIDDLE)
     --self.proot:SetPosition(-13,12,0)
     self.proot:SetScaleMode(SCALEMODE_PROPORTIONAL)
-
 
     self.root = self.proot:AddChild(Widget("root"))
     self.root:SetPosition(-RESOLUTION_X/2, -RESOLUTION_Y/2, 0)

@@ -1207,8 +1207,8 @@ return {
 		WARDROBE = 
         {
         	GENERIC = "Ah, costumes to assist my performance.",
-            BURNING = "It's ablaze!",
-        	BURNT = "No, my costumes!",
+            BURNING = "No, my costumes!",
+        	BURNT = "A good performance doesn't require costumes.",
     	},
 		WARG = "Is it you, Fenrir?",
 		WASPHIVE = "Bees of war!",

@@ -34,6 +34,8 @@ local PlayerHud = Class(Screen, function(self)
     self.giftitempopup = nil
     self.wardrobepopup = nil
     self.playeravatarpopup = nil
+    self.recentgifts = nil
+    self.recentgiftstask = nil
 
     self.inst:ListenForEvent("continuefrompause", function() self:RefreshControllers() end, TheWorld)
 end)
@@ -214,6 +216,7 @@ end
 function PlayerHud:OpenItemManagerScreen()
     --Hack for holding offset when transitioning from giftitempopup to wardrobepopup
     TheCamera:PopScreenHOffset(self)
+    self:ClearRecentGifts()
 
     if self.giftitempopup ~= nil and self.giftitempopup.inst:IsValid() then
         TheFrontEnd:PopScreen(self.giftitempopup)
@@ -228,9 +231,17 @@ function PlayerHud:OpenItemManagerScreen()
     end
 end
 
+local function OnClearRecentGifts(inst, self)
+    self.recentgiftstask = nil
+    self:ClearRecentGifts()
+end
+
 function PlayerHud:CloseItemManagerScreen()
     --Hack for holding offset when transitioning from giftitempopup to wardrobepopup
     TheCamera:PopScreenHOffset(self)
+    if self.recentgiftstask == nil then
+        self.recentgiftstask = self.inst:DoTaskInTime(0, OnClearRecentGifts, self)
+    end
 
     if self.giftitempopup ~= nil then
         if self.giftitempopup.inst:IsValid() then
@@ -247,7 +258,16 @@ function PlayerHud:OpenWardrobeScreen()
     if self.wardrobepopup ~= nil and self.wardrobepopup.inst:IsValid() then
         TheFrontEnd:PopScreen(self.wardrobepopup)
     end
-    self.wardrobepopup = WardrobePopupScreen(self.owner, Profile)
+    self.wardrobepopup =
+        WardrobePopupScreen(
+            self.owner,
+            Profile,
+            nil,
+            false,
+            self.recentgifts ~= nil and self.recentgifts.item_types or nil,
+            self.recentgifts ~= nil and self.recentgifts.item_ids or nil
+        )
+    self:ClearRecentGifts()
     TheFrontEnd:PushScreen(self.wardrobepopup)
     return true
 end
@@ -255,6 +275,7 @@ end
 function PlayerHud:CloseWardrobeScreen()
     --Hack for holding offset when transitioning from giftitempopup to wardrobepopup
     TheCamera:PopScreenHOffset(self)
+    self:ClearRecentGifts()
 
     if self.wardrobepopup ~= nil then
         if self.wardrobepopup.inst:IsValid() then
@@ -262,6 +283,24 @@ function PlayerHud:CloseWardrobeScreen()
         end
         self.wardrobepopup = nil
     end
+end
+
+--Helper for transferring data between screens when transitioning from giftitempopup to wardrobepopup
+function PlayerHud:SetRecentGifts(item_types, item_ids)
+    if self.recentgiftstask ~= nil then
+        self.recentgiftstask:Cancel()
+        self.recentgiftstask = nil
+    end
+    self.recentgifts = { item_types = item_types, item_ids = item_ids }
+end
+
+--Helper for transferring data between screens when transitioning from giftitempopup to wardrobepopup
+function PlayerHud:ClearRecentGifts()
+    if self.recentgiftstask ~= nil then
+        self.recentgiftstask:Cancel()
+        self.recentgiftstask = nil
+    end
+    self.recentgifts = nil
 end
 
 function PlayerHud:RefreshControllers()

@@ -114,6 +114,7 @@ end
 function GiftItemPopUp:ApplySkin()
     --Hack for holding offset when transitioning from giftitempopup to wardrobepopup
     TheCamera:PushScreenHOffset(self.owner.HUD, SCREEN_OFFSET)
+    self.owner.HUD:SetRecentGifts(self.item_types, self.item_ids)
 
     TheFrontEnd:PopScreen(self)
     if not TheWorld.ismastersim then

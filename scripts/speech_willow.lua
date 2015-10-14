@@ -1195,7 +1195,7 @@ return {
 		WARDROBE = 
 		{
 			GENERIC = "I want to set it on fire.",
-            BURNING = "YES! BURN!",
+            BURNING = "Yes! Burn!",
 			BURNT = "Aww, the fire burned out.",
 		},
 		WARG = "You're a big mean jerk!",

@@ -1165,7 +1165,7 @@ return {
 		WARDROBE = 
 		{
 			GENERIC = "It reminds me of a story I used to read with Abigail.",
-            BURNING = "It's burning.",
+            BURNING = "Soon it will be nothing but ashes",
 			BURNT = "Now it doesn't remind me of anything.",
 		},
 		WARG = "A true bastion of evil.",

@@ -79,9 +79,11 @@ function Wardrobe:CanBeginChanging(doer)
         doer.sg == nil or
         (doer.sg:HasStateTag("busy") and doer.sg.currentstate.name ~= "opengift") then
         return false
+    elseif self.shareable then
+        return true
     elseif self.inst.burnable ~= nil and self.inst.burnable:IsBurning() then
         return false, "BURNING"
-    elseif not self.shareable and next(self.changers) ~= nil then
+    elseif next(self.changers) ~= nil then
         return false, "INUSE"
     end
     return true
