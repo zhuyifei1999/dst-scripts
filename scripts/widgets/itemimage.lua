@@ -23,7 +23,7 @@ local ItemImage = Class(Widget, function(self, screen, type, name, timestamp, cl
     self.new_tag = self.frame:AddChild(Text(BODYTEXTFONT, 20, STRINGS.UI.SKINSSCREEN.NEW))
     self.new_tag.inst.UITransform:SetRotation(43)
     self.new_tag:SetPosition(41, 34)
-    self.new_tag:SetColour(GOLD)
+    self.new_tag:SetColour(WHITE)
 
     local collection_timestamp = self.screen.profile:GetCollectionTimestamp()
     --print(name, "Timestamp is ", timestamp, collection_timestamp)

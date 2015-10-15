@@ -48,7 +48,7 @@ local WardrobePopupScreen = Class(Screen, function(self, owner, profile, charact
     self.root = self.proot:AddChild(Widget("root"))
     self.root:SetPosition(-RESOLUTION_X/2, -RESOLUTION_Y/2, 0)
 
-    self.dressup = self.root:AddChild(DressupPanel(self, profile, nil, nil, character_loadout_screen))
+    self.dressup = self.root:AddChild(DressupPanel(self, profile, nil, nil, character_loadout_screen, recent_item_types, recent_item_ids))
     self.dressup:SetPosition(-250, 0)
     self.dressup:SetCurrentCharacter(character or owner.prefab)
 

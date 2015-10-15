@@ -54,20 +54,14 @@ local GiftItemPopUp = Class(Screen, function(self, owner, item_types, item_ids)
     local curl_scale = .6
 
     --title 
-    self.left_curl = self.proot:AddChild(Image("images/giftpopup.xml", "curly_360.tex"))
-    self.left_curl:SetScale(-curl_scale, curl_scale, curl_scale)
-    self.left_curl:SetPosition(-curl_pos-7, title_height, 0)
-
+    
     self.title = self.proot:AddChild(Text(UIFONT, 45))
     self.title:SetPosition(0, title_height - 15, 0)
     self.title:SetString(STRINGS.UI.ITEM_SCREEN.OPENING)
     self.title:SetColour(1,1,1,1)
     self.inst:DoTaskInTime(0.5, function() AnimateOpeningText(self) end)
 
-    self.right_curl = self.proot:AddChild(Image("images/giftpopup.xml", "curly_360.tex"))
-    self.right_curl:SetScale(curl_scale)
-    self.right_curl:SetPosition(curl_pos, title_height, 0)
-
+  
     -- banner
     self.banner = self.proot:AddChild(Image("images/giftpopup.xml", "banner.tex"))
     self.banner:SetPosition(0, -200, 0)

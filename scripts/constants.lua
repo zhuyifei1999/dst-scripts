@@ -1029,6 +1029,7 @@ DOUBLE_CLICK_TIMEOUT = .5
 GOLD = {202/255, 174/255, 118/255, 255/255}
 GREY = {.57, .57, .57, 1}
 BLACK = {.1, .1, .1, 1}
+WHITE = {1, 1, 1, 1}
 BROWN = {97/255, 73/255, 46/255, 255/255}
 
 --Bit flags, currently supports up to 8

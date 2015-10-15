@@ -11,7 +11,9 @@ local TEMPLATES = require "widgets/templates"
 -------------------------------------------------------------------------------------------------------
 -- onNextFn and onPrevFn are called when the base spinner is changed. They should be used to 
 -- update the portrait picture.
-local DressupPanel = Class(Widget, function(self, owner, profile, onNextFn, onPrevFn, useCollectionTime)
+
+-- See wardropepopup for definitions of recent_item_types and recent_item_ids
+local DressupPanel = Class(Widget, function(self, owner, profile, onNextFn, onPrevFn, useCollectionTime, recent_item_types, recent_item_ids)
     self.owner = owner
 
     Widget._ctor(self, "DressupPanel")
@@ -23,6 +25,8 @@ local DressupPanel = Class(Widget, function(self, owner, profile, onNextFn, onPr
     self:GetSkinsList()
 
     self.use_collection_time = useCollectionTime
+    self.recent_item_types = recent_item_types
+    -- ids can be ignored at least for now.
 
     self.onNextFn = onNextFn
     self.onPrevFn = onPrevFn
@@ -80,25 +84,25 @@ local DressupPanel = Class(Widget, function(self, owner, profile, onNextFn, onPr
 		
 		if TUNING.SKINS_BASE_ENABLED then 
 			self.upper_horizontal_line = self.dressup_frame:AddChild(Image("images/ui.xml", "line_horizontal_5.tex"))
-		    self.upper_horizontal_line:SetScale(.21, .5)
-		    self.upper_horizontal_line:SetPosition(20, 145, 0)
+		    self.upper_horizontal_line:SetScale(.19, .4)
+		    self.upper_horizontal_line:SetPosition(10, 145, 0)
 		end
 
 	    self.mid_horizontal_line1 = self.dressup_frame:AddChild(Image("images/ui.xml", "line_horizontal_5.tex"))
-	    self.mid_horizontal_line1:SetScale(.21, .5)
-	    self.mid_horizontal_line1:SetPosition(20, body_offset, 0)
+	    self.mid_horizontal_line1:SetScale(.19, .4)
+	    self.mid_horizontal_line1:SetPosition(10, body_offset, 0)
 
 	    self.mid_horizontal_line2 = self.dressup_frame:AddChild(Image("images/ui.xml", "line_horizontal_5.tex"))
-	    self.mid_horizontal_line2:SetScale(.21, .5)
-	    self.mid_horizontal_line2:SetPosition(20, body_offset-90, 0)
+	    self.mid_horizontal_line2:SetScale(.19, .4)
+	    self.mid_horizontal_line2:SetPosition(10, body_offset-90, 0)
 
 	    self.mid_horizontal_line3 = self.dressup_frame:AddChild(Image("images/ui.xml", "line_horizontal_5.tex"))
-	    self.mid_horizontal_line3:SetScale(.21, .5)
-	    self.mid_horizontal_line3:SetPosition(20, body_offset-180, 0)
+	    self.mid_horizontal_line3:SetScale(.19, .4)
+	    self.mid_horizontal_line3:SetPosition(10, body_offset-180, 0)
 
 	    self.lower_horizontal_line = self.dressup_frame:AddChild(Image("images/ui.xml", "line_horizontal_5.tex"))
-	    self.lower_horizontal_line:SetScale(.21, .5)
-	    self.lower_horizontal_line:SetPosition(20, body_offset-270, 0)
+	    self.lower_horizontal_line:SetScale(.19, .4)
+	    self.lower_horizontal_line:SetPosition(10, body_offset-270, 0)
 
 	    self.left_vertical_line = self.dressup_frame:AddChild(Image("images/ui.xml", "line_vertical_5.tex"))
 	    self.left_vertical_line:SetScale(.45, vert_scale)
@@ -109,6 +113,9 @@ local DressupPanel = Class(Widget, function(self, owner, profile, onNextFn, onPr
 	    self.right_vertical_line:SetPosition(120, -81, 0)
 
 	    if TUNING.SKINS_BASE_ENABLED then 
+	    	self.left_vertical_line:SetPosition(-100, 45-81, 0)
+	    	self.right_vertical_line:SetPosition(120, 45-81, 0)
+
 		    self.base_title = self.dressup_frame:AddChild(Text(NEWFONT, 20, STRINGS.UI.LOBBYSCREEN.SKINS_BASE))
 			self.base_title:SetColour(0, 0, 0, 1)
 			self.base_title:SetPosition(-110, 100)
@@ -383,14 +390,20 @@ function DressupPanel:UpdateSpinners()
 		self:EnableSpinners()
 	end
 
-	self:Reset()
+	self:Reset(true)
 
 end
 
 
-function DressupPanel:Reset()
+function DressupPanel:Reset(set_spinner_to_new_item)
 
 	local savedSkinsForCharacter = self.profile:GetSkinsForCharacter(self.currentcharacter)
+
+	-- self.owner is WardrobePopup, self.owner.owner is the player
+	local playerdata = self.owner.owner and TheNet:GetClientTableForUser(self.owner.owner.userid) or nil
+
+	local recent_item_type = self.recent_item_types and GetTypeForItem(self.recent_item_types[1]) or nil
+
 
 	--[[print("Updating spinners with ", self.currentcharacter)
 	for k,v in pairs(savedSkinsForCharacter) do 
@@ -400,7 +413,11 @@ function DressupPanel:Reset()
 	if self.base_spinner then 
 		self.base_spinner.spinner:SetOptions(self:GetSkinOptionsForSlot("base"))
 
-		if savedSkinsForCharacter.base and savedSkinsForCharacter.base ~= "" then 
+		if set_spinner_to_new_item and recent_item_type and recent_item_type == "base" then 
+			self.base_spinner.spinner:SetSelectedIndex(self.base_spinner:GetIndexForSkin(self.recent_item_types[1]))
+		elseif playerdata and playerdata.base_skin then 
+			self.base_spinner.spinner:SetSelectedIndex(self.base_spinner:GetIndexForSkin(playerdata.base_skin))
+		elseif savedSkinsForCharacter.base and savedSkinsForCharacter.base ~= "" then 
 			self.base_spinner.spinner:SetSelectedIndex(self.base_spinner:GetIndexForSkin(savedSkinsForCharacter.base))
 		else
 			self.base_spinner.spinner:SetSelectedIndex(1)
@@ -410,7 +427,11 @@ function DressupPanel:Reset()
 	if self.body_spinner then 
 		self.body_spinner.spinner:SetOptions(self:GetSkinOptionsForSlot("body"))
 
-		if savedSkinsForCharacter.body and savedSkinsForCharacter.body ~= "" then 
+		if set_spinner_to_new_item and recent_item_type and recent_item_type == "body" then 
+			self.body_spinner.spinner:SetSelectedIndex(self.body_spinner:GetIndexForSkin(self.recent_item_types[1]))
+		elseif playerdata and playerdata.body_skin then 
+			self.body_spinner.spinner:SetSelectedIndex(self.body_spinner:GetIndexForSkin(playerdata.body_skin))
+		elseif savedSkinsForCharacter.body and savedSkinsForCharacter.body ~= "" then 
 			self.body_spinner.spinner:SetSelectedIndex(self.body_spinner:GetIndexForSkin(savedSkinsForCharacter.body))
 		else
 			self.body_spinner.spinner:SetSelectedIndex(1)
@@ -420,7 +441,11 @@ function DressupPanel:Reset()
 	if self.hand_spinner then 
 		self.hand_spinner.spinner:SetOptions(self:GetSkinOptionsForSlot("hand"))
 
-		if savedSkinsForCharacter.hand and savedSkinsForCharacter.hand ~= "" then 
+		if set_spinner_to_new_item and recent_item_type and recent_item_type == "hand" then 
+			self.hand_spinner.spinner:SetSelectedIndex(self.hand_spinner:GetIndexForSkin(self.recent_item_types[1]))
+		elseif playerdata and playerdata.hand_skin then 
+			self.hand_spinner.spinner:SetSelectedIndex(self.hand_spinner:GetIndexForSkin(playerdata.hand_skin))
+		elseif  savedSkinsForCharacter.hand and savedSkinsForCharacter.hand ~= "" then 
 			self.hand_spinner.spinner:SetSelectedIndex(self.hand_spinner:GetIndexForSkin(savedSkinsForCharacter.hand))
 		else
 			self.hand_spinner.spinner:SetSelectedIndex(1)
@@ -430,7 +455,11 @@ function DressupPanel:Reset()
 	if self.legs_spinner then 
 		self.legs_spinner.spinner:SetOptions(self:GetSkinOptionsForSlot("legs"))
 
-		if savedSkinsForCharacter.legs and savedSkinsForCharacter.legs ~= "" then 
+		if set_spinner_to_new_item and recent_item_type and recent_item_type == "legs" then 
+			self.legs_spinner.spinner:SetSelectedIndex(self.legs_spinner:GetIndexForSkin(self.recent_item_types[1]))
+		elseif playerdata and playerdata.legs_skin then 
+			self.legs_spinner.spinner:SetSelectedIndex(self.legs_spinner:GetIndexForSkin(playerdata.legs_skin))
+		elseif savedSkinsForCharacter.legs and savedSkinsForCharacter.legs ~= "" then 
 			self.legs_spinner.spinner:SetSelectedIndex(self.legs_spinner:GetIndexForSkin(savedSkinsForCharacter.legs))
 		else
 			self.legs_spinner.spinner:SetSelectedIndex(1)
