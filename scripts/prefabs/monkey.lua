@@ -266,24 +266,49 @@ local function SetNightmareMonkey(inst)
     inst:RemoveEventCallback("entity_death", inst.listenfn, TheWorld)
 end
 
-local function OnSave(inst, data)
+local function TestNightmareArea(inst, area)
+    if (TheWorld.state.isnightmarewild or TheWorld.state.isnightmaredawn)
+        and inst.components.areaaware:CurrentlyInTag("Nightmare")
+        and not inst:HasTag("nightmare") then
+
+        DoFx(inst)
+        SetNightmareMonkey(inst)
+    elseif (not TheWorld.state.isnightmarewild and not TheWorld.state.isnightmaredawn)
+        and inst:HasTag("nightmare") then
+        DoFx(inst)
+        SetNormalMonkey(inst)
+    end
 end
 
-local function OnLoad(inst, data)
-    --[[if GetNightmareClock() then
-        local phase = GetNightmareClock():GetPhase()
+local function TestNightmarePhase(inst, phase)
+    if (phase == "wild" or phase == "dawn")
+        and inst.components.areaaware:CurrentlyInTag("Nightmare")
+        and not inst:HasTag("nightmare") then
 
-        if phase == "nightmare" or phase == "dawn" then
-            SetNightmareMonkey(inst)
-        else
-            SetNormalMonkey(inst)
-        end
-    end]]
+        DoFx(inst)
+        SetNightmareMonkey(inst)
+    elseif (phase ~= "wild" and phase ~= "dawn")
+        and inst:HasTag("nightmare") then
+        DoFx(inst)
+        SetNormalMonkey(inst)
+    end
 end
 
 local function OnCustomHaunt(inst)
     inst.components.periodicspawner:TrySpawn()
     return true
+end
+
+local function OnSave(inst)
+    if inst:HasTag("nightmare") then
+        return { nightmare = true }
+    end
+end
+
+local function OnLoad(inst, data)
+    if data and data.nightmare == true then
+        SetNightmareMonkey()
+    end
 end
 
 local function fn()
@@ -307,6 +332,7 @@ local function fn()
 
     inst:AddTag("cavedweller")
     inst:AddTag("monkey")
+    inst:AddTag("animal")
 
     inst.entity:SetPristine()
 
@@ -361,6 +387,8 @@ local function fn()
     inst.components.sleeper.sleeptestfn = NocturnalSleepTest
     inst.components.sleeper.waketestfn = NocturnalWakeTest
 
+    inst:AddComponent("areaaware")
+
     inst:SetBrain(brain)
     inst:SetStateGraph("SGmonkey")
 
@@ -376,17 +404,8 @@ local function fn()
     inst:ListenForEvent("onpickupitem", OnPickup)
     inst:ListenForEvent("attacked", OnAttacked)
 
-    inst:ListenForEvent("calmstart", function() DoFx(inst) SetNormalMonkey(inst) end, TheWorld)
-    inst:ListenForEvent("nightmarestart",function() DoFx(inst) SetNightmareMonkey(inst) end, TheWorld)
-
-    --[[if GetNightmareClock() then
-        local phase = GetNightmareClock():GetPhase()
-        if phase == "nightmare" or phase == "dawn" then
-            SetNightmareMonkey(inst)
-        else
-            SetNormalMonkey(inst)
-        end
-    end]]
+    inst:WatchWorldState("nightmarephase", TestNightmarePhase)
+    inst:ListenForEvent("changearea", TestNightmareArea)
 
     MakeHauntablePanic(inst)
     AddHauntableCustomReaction(inst, OnCustomHaunt, true, false, true)
@@ -394,10 +413,10 @@ local function fn()
     inst.weaponitems = {}
     EquipWeapons(inst)
 
-    inst.harassplayer = nil
-
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad
+
+    inst.harassplayer = nil
 
     return inst
 end

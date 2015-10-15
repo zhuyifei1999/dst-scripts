@@ -432,12 +432,16 @@ function JoinServer( server_listing, optional_password_override )
 	end
 end
 
-function MigrateToServer(serverIp, serverPort, serverPassword)
+function MigrateToServer(serverIp, serverPort, serverPassword, serverNetId)
+
+    serverNetId = serverNetId or 0
+
     StartNextInstance({
         reset_action = RESET_ACTION.JOIN_SERVER, 
         serverIp=serverIp,
         serverPort=serverPort,
         serverPassword=serverPassword,
+        serverNetId=serverNetId
     })
 end
 

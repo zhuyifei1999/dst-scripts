@@ -4,22 +4,22 @@ local Image = require "widgets/image"
 local ImageButton = require "widgets/imagebutton"
 local Spinner = require "widgets/spinner"
 local NumericSpinner = require "widgets/numericspinner"
-local ScrollableList = require "widgets/scrollablelist"
 local Grid = require "widgets/grid"
 local PopupDialogScreen = require "screens/popupdialog"
+local CustomizationList = require "widgets/customizationlist"
 local TEMPLATES = require "widgets/templates"
 
-local levels = require "map/levels"
-local customise = nil
-local options = {}
+local Customise = require "map/customise"
+local Levels = require "map/levels"
 
-local FORCE_SHOW_BG_IN_VIEW_MODE = true
+local DEFAULT_PRESETS = {
+    nil,
+    "DST_CAVE",
+}
 
-local per_side = 7
-
-local CustomizationTab = Class(Widget, function(self, profile, customoptions, allowEdit, slot, servercreationscreen)
+local CustomizationTab = Class(Widget, function(self, servercreationscreen)
     Widget._ctor(self, "CustomizationTab")
-  
+
     self.customization_page = self:AddChild(Widget("customization_page"))
 
     self.left_line = self.customization_page:AddChild(Image("images/ui.xml", "line_vertical_5.tex"))
@@ -31,60 +31,21 @@ local CustomizationTab = Class(Widget, function(self, profile, customoptions, al
     self.middle_line:SetPosition(-210, 2, 0)
 
     self.slotoptions = {}
-    self.slot = slot
+    self.slot = -1
+    self.currentmultilevel = 1
+    self.allowEdit = true
 
-    self.spinners = {}
-
-    self.profile = profile
-    self.defaults = customoptions
-
-    self.allowEdit = allowEdit
+    self.options = Customise.GetOptions()
 
     self.servercreationscreen = servercreationscreen
 
-    self.focused_column = 1
-
     -- Build the options menu so that the spinners are shown in an order that makes sense/in order of how impactful the changes are
-    if #options == 0 then
-        customise = require("map/customise")
 
-        options = {}
-
-        local groups = {}
-        for k,v in pairs(customise.GROUP) do
-            table.insert(groups,k)
-        end
-
-        table.sort(groups, function(a,b) return customise.GROUP[a].order < customise.GROUP[b].order end)
-
-        for i,groupname in ipairs(groups) do
-            local items = {}
-            local group = customise.GROUP[groupname]
-            for k,v in pairs(group.items) do
-                table.insert(items, k)
-            end
-
-            table.sort(items, function(a,b) return group.items[a].order < group.items[b].order end)
-
-            for ii,itemname in ipairs(items) do
-                local item = group.items[itemname]
-                table.insert(options, {name = itemname, image = item.image, options = item.desc or group.desc, default = item.value, group = groupname, grouplabel = group.text})
-            end
-        end
-    end
-    
-    if customoptions then
-        self.current_option_settings = deepcopy(customoptions)
-        self.current_option_settings.tweak = self.current_option_settings.tweak or {}
-        self.current_option_settings.preset = self.current_option_settings.preset or {}
-    else
-        self.current_option_settings = 
-        { 
-            preset = {},
-            tweak = {}
-        }
-    end
-    
+    self.current_option_settings =
+    {
+        { tweak = {} }
+        -- one level by default
+    }
 
 
     local left_col =-RESOLUTION_X*.25 - 50
@@ -92,11 +53,13 @@ local CustomizationTab = Class(Widget, function(self, profile, customoptions, al
 
         --set up the preset spinner
 
-    self.max_num_presets = 5
+    self.max_custom_presets = 5
 
     self.presets = {}
+    self.activepresets = {}
+    self.presetdirty = {}
 
-    for i, level in pairs(levels.sandbox_levels) do
+    for i, level in pairs(Levels.sandbox_levels) do
         if not level.hideinfrontend then
             table.insert(self.presets, {text=level.name, data=level.id, desc = level.desc, overrides = level.overrides})
         end
@@ -109,26 +72,19 @@ local CustomizationTab = Class(Widget, function(self, profile, customoptions, al
         end
     end
 
-    -- This was causing weirdness with adding a duplicate entry into the presetspinner, so I commented it out and now it's fixed... *shrug*
-    -- if self.defaults and self.defaults.presetdata then
-    --     table.insert(self.presets, 1, self.defaults.presetdata)
-    -- end
-    
     self.presetpanel = self.customization_page:AddChild(Widget("presetpanel"))
     self.presetpanel:SetPosition(left_col,15,0)
-    
+
     self.presettitle = self.presetpanel:AddChild(Text(BUTTONFONT, 40))
     self.presettitle:SetColour(0,0,0,1)
     self.presettitle:SetHAlign(ANCHOR_MIDDLE)
-    self.presettitle:SetPosition(5, 105, 0)
     self.presettitle:SetRegionSize( 400, 70 )
     self.presettitle:SetString(STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETTITLE)
 
     self.presetdesc = self.presetpanel:AddChild(Text(NEWFONT, 25))
     self.presetdesc:SetColour(0,0,0,1)
     self.presetdesc:SetHAlign(ANCHOR_MIDDLE)
-    self.presetdesc:SetPosition(0, -60, 0)
-    self.presetdesc:SetRegionSize( 300, 130 )
+    self.presetdesc:SetRegionSize( 300, 110 )
     self.presetdesc:SetString(self.presets[1].desc)
     self.presetdesc:EnableWordWrap(true)
 
@@ -137,7 +93,6 @@ local CustomizationTab = Class(Widget, function(self, profile, customoptions, al
     self.presetspinner = self.presetpanel:AddChild(Widget("presetspinner"))
     self.presetspinner.spinner = self.presetspinner:AddChild(Spinner( self.presets, spinner_width, spinner_height, {font=NEWFONT, size=22}, nil, nil, nil, true))
     self.presetspinner.focus_forward = self.presetspinner.spinner
-    self.presetspinner:SetPosition(0, 30, 0)
     self.presetspinner.spinner:SetTextColour(0,0,0,1)
     self.presetspinner.bg = self.presetspinner:AddChild(Image("images/ui.xml", "single_option_bg_large.tex"))
     self.presetspinner.bg:SetScale(.57,.46)
@@ -145,86 +100,77 @@ local CustomizationTab = Class(Widget, function(self, profile, customoptions, al
     self.presetspinner.bg:MoveToBack()
     self.presetspinner.bg:SetClickable(false)
     self.presetspinner.spinner.OnChanged =
-        function( _, data )
-            if self.presetdirty then
+        function( _, data, oldData )
+            if self.presetdirty[self.currentmultilevel] then
                 if self.servercreationscreen then self.servercreationscreen.last_focus = TheFrontEnd:GetFocusWidget() end
-                TheFrontEnd:PushScreen(PopupDialogScreen(STRINGS.UI.CUSTOMIZATIONSCREEN.LOSECHANGESTITLE, STRINGS.UI.CUSTOMIZATIONSCREEN.LOSECHANGESBODY, 
-                    {{text=STRINGS.UI.CUSTOMIZATIONSCREEN.YES, cb = function() 
-                        if self.current_option_settings then
-                            self.current_option_settings.tweak = {}
-                        end
-                        if self.slotoptions[self.slot] then
-                            self.slotoptions[self.slot].tweak = {}
-                        else
-                            self.slotoptions[self.slot] = {}
-                        end
-
-                        self:MakePresetClean() 
-                        TheFrontEnd:PopScreen()
-                    end},
-                    {text=STRINGS.UI.CUSTOMIZATIONSCREEN.NO, cb = function() self:MakePresetDirty() TheFrontEnd:PopScreen() end}  }))
+                TheFrontEnd:PushScreen(PopupDialogScreen(STRINGS.UI.CUSTOMIZATIONSCREEN.LOSECHANGESTITLE, STRINGS.UI.CUSTOMIZATIONSCREEN.LOSECHANGESBODY,
+                    {
+                        {text=STRINGS.UI.CUSTOMIZATIONSCREEN.YES, cb = function()
+                            self:ChangePresetForCurrentSlot(self.currentmultilevel, data, self.presetspinner.spinner:GetSelected().basepreset)
+                            TheFrontEnd:PopScreen()
+                        end},
+                        {text=STRINGS.UI.CUSTOMIZATIONSCREEN.NO, cb = function()
+                            self.presetspinner.spinner:SetSelected(oldData)
+                            self:RefreshSpinnerValues()
+                            self:RefreshTabValues() -- restore the "custom" text on the spinner
+                            TheFrontEnd:PopScreen()
+                        end}
+                    }))
             else
-                self:LoadPreset(data)
-                self.current_option_settings.tweak = {}             
+                self:ChangePresetForCurrentSlot(self.currentmultilevel, data, self.presetspinner.spinner:GetSelected().basepreset)
             end
             self.servercreationscreen:UpdateButtons(self.slot)
             self.servercreationscreen:MakeDirty()
         end
-    
-    if self.allowEdit == false then
-        self.presetspinner.spinner:Disable()
-        self.presetspinner.spinner:SetTextColour(0,0,0,1)
-    end
-    
-    --menu buttons
-    self.current_option_settingspanel = self.customization_page:AddChild(Widget("optionspanel"))
-    self.current_option_settingspanel:SetScale(.9)
-    self.current_option_settingspanel:SetPosition(right_col,20,0)
-    
+
     self.revertbutton = self.presetpanel:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "undo.tex", STRINGS.UI.CUSTOMIZATIONSCREEN.REVERTCHANGES, false, false, function() self:RevertChanges() end))
-    self.revertbutton:SetPosition(-35, -160, 0)
     self.revertbutton:Select()
 
     self.savepresetbutton = self.presetpanel:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "save.tex", STRINGS.UI.CUSTOMIZATIONSCREEN.SAVEPRESET, false, false, function() self:SavePreset() end))
-    self.savepresetbutton:SetPosition(40, -160, 0)
+
+
+    self.addmultileveltext = self.presetpanel:AddChild(Text(NEWFONT, 25))
+    self.addmultileveltext:SetColour(0,0,0,1)
+    self.addmultileveltext:SetHAlign(ANCHOR_RIGHT)
+    self.addmultileveltext:SetPosition(-15, -175, 0)
+    self.addmultileveltext:SetRegionSize( 220, 40 )
+    self.addmultileveltext:SetString("Multilevel")
+
+    self.addmultilevel = self.presetpanel:AddChild(ImageButton("images/ui.xml", "checkbox_off.tex", "checkbox_off_highlight.tex", "checkbox_off_disabled.tex", nil, nil, {1,1}, {0,0}))
+    self.addmultilevel:SetOnClick(function() self:ToggleMultilevel() end)
+    self.addmultilevel:SetPosition(120, -180, 0)
+
+    self.multileveltabs = self.presetpanel:AddChild(Widget("multileveltabs"))
+    self.multileveltabs:SetPosition(0, 140, 0)
+    self.multileveltabs:Hide()
+
+    self.multileveltabs_bg = self.multileveltabs:AddChild(Image("images/ui.xml", "black.tex"))
+    self.multileveltabs_bg:SetSize(320, 60)
+    self.multileveltabs_bg:SetPosition(0, 12)
+
+    self.multileveltabs.tabs = {}
+    self.level1tab = self.multileveltabs:AddChild(TEMPLATES.TabButton(-80, 0, "", function() self:SelectMultilevel(1) end, "small"))
+    self.level1tab:SetTextSize(24)
+    table.insert(self.multileveltabs.tabs, self.level1tab)
+
+    self.level2tab = self.multileveltabs:AddChild(TEMPLATES.TabButton(80, 0, "", function() self:SelectMultilevel(2) end, "small"))
+    self.level2tab:SetTextSize(24)
+    table.insert(self.multileveltabs.tabs, self.level2tab)
+
+    self:UpdateMultilevelUI()
 
     --add the custom options panel
-    
-    local preset = (self.defaults and (self.defaults.actualpreset or self.defaults.preset)) or self.presets[1].data
 
-    self:LoadPreset(preset)
+    self.current_option_settingspanel = self.customization_page:AddChild(Widget("optionspanel"))
+    self.current_option_settingspanel:SetScale(.9)
+    self.current_option_settingspanel:SetPosition(right_col,20,0)
 
-    if self.defaults and self.defaults.tweak and next(self.defaults.tweak) then
-        self:MakePresetDirty()
-    end
-
-    local clean = true
-    if self.current_option_settings and self.current_option_settings.tweak then
-        for i,v in pairs(self.current_option_settings.tweak) do
-            for m,n in pairs(v) do
-                if #self.current_option_settings.tweak[i][m] > 0 then
-                    clean = false
-                    break
-                end
-            end
-        end
-        if clean then
-            self:MakePresetClean()
-        end
-    end
-
-    if self.allowEdit == false then
-        -- Since we can't actually edit, act like the preset is clean but append "(Custom)" if it's not actually clean
-        self:MakePresetClean()
-        if not clean then
-            for k,v in pairs(self.presets) do
-                if self.preset.data == v.data then
-                    self.presetdesc:SetString(STRINGS.UI.CUSTOMIZATIONSCREEN.CUSTOMDESC)
-                    self.presetspinner.spinner:UpdateText(v.text .. " " .. STRINGS.UI.CUSTOMIZATIONSCREEN.CUSTOM)
-                end
-            end
-        end
-    end
+    self.customizationlist = self.current_option_settingspanel:AddChild(CustomizationList(self.options,
+        function(option, value)
+            self:SetTweak(option, value)
+            self:RefreshTabValues()
+        end))
+    self.customizationlist:SetPosition(-245, -24, 0)
 
     self:HookupFocusMoves()
 
@@ -233,20 +179,11 @@ local CustomizationTab = Class(Widget, function(self, profile, customoptions, al
 end)
 
 function CustomizationTab:GetValueForOption(option)
-    -- local overrides = {}
-    -- for k,v in pairs(self.presets) do
-    --  if self.preset == v.data then
-    --      for k,v in pairs(v.overrides) do
-    --          overrides[v[1]] = v[2]
-    --      end
-    --  end
-    -- end
-
-    for idx,v in ipairs(options) do
-        if (options[idx].name == option) then
-            local value = self.overrides[options[idx].name] or options[idx].default
-            if self.current_option_settings.tweak[options[idx].group] then
-                local possiblevalue = self.current_option_settings.tweak[options[idx].group][options[idx].name]
+    for idx,opt in ipairs(self.options) do
+        if (opt.name == option) then
+            local value = self.overrides[opt.name] or opt.default
+            if self.current_option_settings[self.currentmultilevel].tweak[opt.group] then
+                local possiblevalue = self.current_option_settings[self.currentmultilevel].tweak[opt.group][opt.name]
                 value = possiblevalue or value
             end
             return value
@@ -255,51 +192,115 @@ function CustomizationTab:GetValueForOption(option)
     return nil
 end
 
-function CustomizationTab:SetValueForOption(option, value) 
-    for idx,v in ipairs(options) do
-        if (options[idx].name == option) then
-            local spinner = self.spinners[idx]
-            spinner:SetSelected(value)
+function CustomizationTab:ToggleMultilevel()
+    if self.slotoptions[self.slot][2] ~= nil then
+        self:MakeSingleLevel()
+    else
+        self:MakeMultilevel()
+    end
+end
+
+function CustomizationTab:MakeMultilevel()
+    self.slotoptions[self.slot][2] = {
+        actualpreset = DEFAULT_PRESETS[2],
+        preset = DEFAULT_PRESETS[2],
+        tweak={},
+    }
+
+    self:UpdateMultilevelUI()
+    self:UpdateOptions(2)
+end
+
+function CustomizationTab:MakeSingleLevel()
+    self.slotoptions[self.slot][2] = nil
+    self.currentmultilevel = 1
+
+    self:UpdateMultilevelUI()
+    self:UpdateOptions(2)
+end
+
+function CustomizationTab:UpdateMultilevelUI()
+
+    if self.slotoptions[self.slot] ~= nil and self.slotoptions[self.slot][2] ~= nil then
+        self.presettitle:SetPosition(0, 85, 0)
+        self.presetdesc:SetPosition(0, -40, 0)
+        self.presetspinner:SetPosition(0, 35, 0)
+        self.revertbutton:SetPosition(-35, -125, 0)
+        self.savepresetbutton:SetPosition(40, -125, 0)
+
+        self.addmultilevel:SetTextures("images/ui.xml", "checkbox_on.tex", "checkbox_on_highlight.tex", "checkbox_on_disabled.tex", nil, nil, {1,1}, {0,0})
+        self.multileveltabs:Show()
+    else
+        self.presettitle:SetPosition(0, 105, 0)
+        self.presetdesc:SetPosition(0, -20, 0)
+        self.presetspinner:SetPosition(0, 55, 0)
+        self.revertbutton:SetPosition(-35, -115, 0)
+        self.savepresetbutton:SetPosition(40, -115, 0)
+
+        self.addmultilevel:SetTextures("images/ui.xml", "checkbox_off.tex", "checkbox_off_highlight.tex", "checkbox_off_disabled.tex", nil, nil, {1,1}, {0,0})
+        self.multileveltabs:Hide()
+    end
+
+    if self.allowEdit and BRANCH == "dev" then
+        self.addmultilevel:Enable()
+    else
+        self.addmultilevel:Disable()
+    end
+
+    for i,tab in ipairs(self.multileveltabs.tabs) do
+        if i == self.currentmultilevel then
+            tab:Disable()
+        else
+            tab:Enable()
         end
     end
-    
-    -- local overrides = {}
-    -- for k,v in pairs(self.presets) do
-    --  if self.preset == v.data then
-    --      for k,v in pairs(v.overrides) do
-    --          overrides[v[1]] = v[2]
-    --      end
-    --  end
-    -- end
+end
 
-    for idx,v in ipairs(options) do
-        if (options[idx].name == option) then
-            local default_value = self.overrides[options[idx].name] or options[idx].default
-            if value ~= default_value then 
-                if not self.current_option_settings.tweak[options[idx].group] then
-                    self.current_option_settings.tweak[options[idx].group] = {}
-                end
-                self.current_option_settings.tweak[options[idx].group][options[idx].name] = value
-                local bg = self.spinners[idx].bg
-                if (self.allowEdit ~= false or FORCE_SHOW_BG_IN_VIEW_MODE) and value ~= options[idx].default then
-                    bg:SetTint(.15,.15,.15,1) --bg:SetTint(.3,.3,.3,1)
-                else
-                    bg:SetTint(1,1,1,1)
+function CustomizationTab:SelectMultilevel(level)
+    self.currentmultilevel = level
+    self:RefreshSpinnerValues()
+    self:RefreshTabValues()
+    self:UpdateMultilevelUI()
+end
+
+function CustomizationTab:SetBGForSpinner(spinner)
+    local option = spinner.optionName
+    local value = spinner:GetSelectedData()
+
+    for idx,v in ipairs(self.options) do
+        if (self.options[idx].name == option) then
+
+            if value == v.default and self.overrides[option] == nil then
+                spinner.bg:SetTint(1,1,1,1)
+            elseif value == self.overrides[option] then
+                spinner.bg:SetTint(.6,.6,.6,1)
+            else
+                spinner.bg:SetTint(.15,.15,.15,1)
+            end
+        end
+    end
+end
+
+function CustomizationTab:SetTweak(option, value)
+
+    for idx,v in ipairs(self.options) do
+        if (self.options[idx].name == option) then
+            local group = self.options[idx].group
+
+            if (value == self.overrides[option] or
+                (value == v.default and self.overrides[option] == nil)) then
+
+                if self.current_option_settings[self.currentmultilevel].tweak[group] then
+                    self.current_option_settings[self.currentmultilevel].tweak[group][option] = nil
+                    if not next(self.current_option_settings[self.currentmultilevel].tweak[group]) then
+                        self.current_option_settings[self.currentmultilevel].tweak[group] = nil
+                    end
                 end
             else
-                if not self.current_option_settings.tweak[options[idx].group] then
-                    self.current_option_settings.tweak[options[idx].group] = {}
+                if not self.current_option_settings[self.currentmultilevel].tweak[group] then
+                    self.current_option_settings[self.currentmultilevel].tweak[group] = {}
                 end
-                self.current_option_settings.tweak[options[idx].group][options[idx].name] = nil
-                if not next(self.current_option_settings.tweak[options[idx].group]) then
-                    self.current_option_settings.tweak[options[idx].group] = nil
-                end
-                local bg = self.spinners[idx].bg
-                if value ~= options[idx].default then
-                    bg:SetTint(.15,.15,.15,1) --bg:SetTint(.3,.3,.3,1)
-                else
-                    bg:SetTint(1,1,1,1)
-                end             
+                self.current_option_settings[self.currentmultilevel].tweak[group][option] = value
             end
         end
     end
@@ -316,39 +317,11 @@ function CustomizationTab:VerifyValidSeasonSettings()
     return true
 end
 
-function CustomizationTab:MakePresetDirty()
-    if not self.presets then return end
-
-    self.presetdirty = true
-
-    if self.revertbutton then self.revertbutton:Unselect() end
-    
-    for k,v in pairs(self.presets) do
-        if self.preset.data == v.data then
-            self.presetdesc:SetString(STRINGS.UI.CUSTOMIZATIONSCREEN.CUSTOMDESC)
-            self.presetspinner.spinner:UpdateText(v.text .. " " .. STRINGS.UI.CUSTOMIZATIONSCREEN.CUSTOM)
-        end
-    end
-end
-
-function CustomizationTab:MakePresetClean()
-    if self.revertbutton then self.revertbutton:Select() end
-    self:LoadPreset(self.presetspinner.spinner:GetSelectedData())
-end
-
-function CustomizationTab:LoadPreset(preset)
+function CustomizationTab:LoadPreset(level, preset)
     for k,v in pairs(self.presets) do
         if preset == v.data then
-            self.presetdesc:SetString(v.desc)
-            self.presetspinner.spinner:SetSelectedIndex(k)
-            self.presetdirty = false
-            self.preset = v
-            self.current_option_settings.preset = v.data
-            if not self.optionwidgets then
-                self:MakeOptionSpinners()
-            else
-                self:RefreshOptions()
-            end
+            self.presetdirty[level] = false
+            self.activepresets[level] = deepcopy(v)
             return
         end
     end
@@ -361,30 +334,25 @@ function CustomizationTab:LoadPreset(preset)
     end
     print(table.concat(s,", "))
     print("Error: Tried loading preset "..preset.." but we don't have that!")
-    print(self.defaults and "Have default: "..(self.defaults.preset or "<nil>")..", "..(self.defaults.actualpreset or "<nil>")..", saved preset data: "..(self.defaults.presetdata and self.defaults.presetdata.data or "<nil>") or "No defaults found.")
 
-    self:LoadUnknownPreset()
+    self:LoadUnknownPreset(level)
 end
 
-function CustomizationTab:LoadUnknownPreset()
+function CustomizationTab:LoadUnknownPreset(level)
     -- Populate a "fake" empty preset so that the screen still functions in case the loaded preset is missing.
     -- This is super gross, I know. I apologize. ~gjans
     self.presetspinner.spinner:UpdateText(STRINGS.UI.CUSTOMIZATIONSCREEN.UNKNOWN_PRESET)
     self.presetdesc:SetString(STRINGS.UI.CUSTOMIZATIONSCREEN.UNKNOWN_PRESET_DESC)
     self.presetdirty = false
-    self.preset = {
+    self.activepresets[level] = {
         basepreset = "UNKNOWN_PRESET",
         data = "UNKNOWN_PRESET",
         overrides = {},
         text = STRINGS.UI.CUSTOMIZATIONSCREEN.UNKNOWN_PRESET,
         desc = STRINGS.UI.CUSTOMIZATIONSCREEN.UNKNOWN_PRESET_DESC,
     }
-    table.insert(self.presets, 1, self.preset)
-    if not self.optionwidgets then
-        self:MakeOptionSpinners()
-    else
-        self:RefreshOptions()
-    end
+
+    table.insert(self.presets, 1, self.activepresets[level])
 end
 
 function CustomizationTab:SavePreset()
@@ -395,31 +363,29 @@ function CustomizationTab:SavePreset()
         local presetdesc = STRINGS.UI.CUSTOMIZATIONSCREEN.CUSTOM_PRESET_DESC.." "..index..". "..STRINGS.UI.CUSTOMIZATIONSCREEN.CUSTOMDESC
 
         -- Add the preset to the preset spinner and make the preset the selected one
-        local base = self.presetspinner.spinner:GetSelectedIndex() <= #levels.sandbox_levels and self.presetspinner.spinner:GetSelected().data or self.presetspinner.spinner:GetSelected().basepreset
+        local base = self.presetspinner.spinner:GetSelectedIndex() <= #Levels.sandbox_levels and self.presetspinner.spinner:GetSelected().data or self.presetspinner.spinner:GetSelected().basepreset
         local preset = {text=presetname, data=presetid, desc=presetdesc, overrides=presetdata, basepreset=base}
-        self.presets[index + #levels.sandbox_levels] = preset
+        self.presets[index + #Levels.sandbox_levels] = preset
         self.presetspinner.spinner:SetOptions(self.presets)
-        self.presetspinner.spinner:SetSelectedIndex(index + #levels.sandbox_levels)
+        self.presetspinner.spinner:SetSelectedIndex(index + #Levels.sandbox_levels)
 
         -- And save it to the profile
         Profile:AddWorldCustomizationPreset(preset, index)
         Profile:Save()
 
-        -- We just created a new preset, so it can't be dirty
-        self.current_option_settings.tweak = {} 
-        self:MakePresetClean()
+        self:ChangePresetForCurrentSlot(self.currentmultilevel, preset.data, preset.basepreset)
         if self.servercreationscreen then self.servercreationscreen:UpdateButtons(self.slot) end
     end
 
     -- Grab the current data
     -- First, the current preset's values
     local newoverrides = {}
-    for i,override in ipairs(self.preset.overrides) do
+    for i,override in ipairs(self.activepresets[self.currentmultilevel].overrides) do
         table.insert(newoverrides, {override[1], override[2]})
     end
 
     -- Then, the current tweaks
-    for group,tweaks in pairs(self.current_option_settings.tweak) do
+    for group,tweaks in pairs(self.current_option_settings[self.currentmultilevel].tweak) do
         for tweakname, tweakvalue in pairs(tweaks) do
             local found = false
             for i,override in ipairs(newoverrides) do
@@ -442,9 +408,9 @@ function CustomizationTab:SavePreset()
     local presetnum = (Profile:GetWorldCustomizationPresets() and #Profile:GetWorldCustomizationPresets() or 0) + 1
 
     -- If we're at max num of presets, show a modal dialog asking which one to replace
-    if presetnum > self.max_num_presets then
+    if presetnum > self.max_custom_presets then
         local spinner_options = {}
-        for i=1,self.max_num_presets do
+        for i=1,self.max_custom_presets do
             table.insert(spinner_options, {text=tostring(i), data=i})
         end
         local overwrite_spinner = Spinner(spinner_options, 150, 64, nil, nil, nil, nil, true, nil, nil, .6, .7)
@@ -493,293 +459,91 @@ function CustomizationTab:SavePreset()
     end
 end
 
-function CustomizationTab:MakeOptionSpinners()
+function CustomizationTab:ChangePresetForCurrentSlot(level, preset, basepreset)
+    self.slotoptions[self.slot][level].actualpreset = preset
+    self.slotoptions[self.slot][level].preset = basepreset
+    self.slotoptions[self.slot][level].tweak = {}
+    self:UpdateOptions(level)
+    self.servercreationscreen:UpdateButtons(self.slot)
+end
 
+function CustomizationTab:RefreshSpinnerValues()
     --these are in kind of a weird format, so convert it to something useful...
     self.overrides = {}
     for k,v in pairs(self.presets) do
-        if self.preset.data == v.data then
+        if self.activepresets[self.currentmultilevel].data == v.data then
             for k,v in pairs(v.overrides) do
                 self.overrides[v[1]] = v[2]
             end
         end
     end
 
-    if self.defaults and self.defaults.tweak then
-        for k,v in pairs(self.defaults.tweak) do
-            for m,n in pairs(v) do
-                self.overrides[m] = n
-            end
-        end
-    end
+    self.customizationlist:SetPresetValues(self.overrides)
 
-    self.optionwidgets = {}
-
-    local function AddSpinnerToRow(self, v, index, row, side)
-        local spin_options = {} --{{text="default"..tostring(idx), data="default"},{text="2", data="2"}, }
-        for m,n in ipairs(v.options) do
-            table.insert(spin_options, {text=n.text, data=n.data})
-        end
-        
-        local opt = row:AddChild(Widget("option"))
-        
-        local bg = opt:AddChild(Image("images/ui.xml", "single_option_bg_large.tex"))
-        bg:SetScale(.4,.65)
-        bg:SetPosition(19,1)
-
-        local image_parent = opt:AddChild(Widget("imageparent"))
-        local image = image_parent:AddChild(Image(v.atlas or "images/customisation.xml", v.image))
-        
-        local imscale = .5
-        image:SetScale(imscale,imscale,imscale)
-        if TheInput:ControllerAttached() then
-            opt:SetHoverText(STRINGS.UI.CUSTOMIZATIONSCREEN[string.upper(v.name)], { font = NEWFONT_OUTLINE, size = 22, offset_x = -85, offset_y = 47, colour = {1,1,1,1}})
-        else
-            image_parent:SetHoverText(STRINGS.UI.CUSTOMIZATIONSCREEN[string.upper(v.name)], { font = NEWFONT_OUTLINE, size = 22, offset_x = 0, offset_y = 47, colour = {1,1,1,1}})
-        end
-
-        local spinner_width = 170
-        local spinner_height = nil -- default height
-        local spinner = opt:AddChild(Spinner( spin_options, spinner_width, spinner_height, {font=NEWFONT, size=22}, nil, nil, nil, true))
-        spinner.background:SetPosition(0,1)
-        spinner.bg = bg
-        spinner:SetTextColour(0,0,0,1)
-        local default_value = self.overrides[v.name] or v.default
-        opt.focus_forward = spinner
-        
-        spinner.OnChanged =
-            function( _, data )
-                local default_value = self.overrides[v.name] or v.default
-                if data ~= default_value then 
-                    if (self.allowEdit ~= false or FORCE_SHOW_BG_IN_VIEW_MODE) and data ~= v.default then
-                        bg:SetTint(.15,.15,.15,1) --bg:SetTint(.3,.3,.3,1)
-                    else
-                        bg:SetTint(1,1,1,1)
-                    end
-                    if not self.current_option_settings.tweak[v.group] then
-                        self.current_option_settings.tweak[v.group] = {}
-                    end
-                    self.current_option_settings.tweak[v.group][v.name] = data
-                else
-                    if data ~= v.default then
-                        bg:SetTint(.15,.15,.15,1) --bg:SetTint(.3,.3,.3,1)
-                    else
-                        bg:SetTint(1,1,1,1)
-                    end
-                    if not self.current_option_settings.tweak[v.group] then
-                        self.current_option_settings.tweak[v.group] = {}
-                    end
-                    self.current_option_settings.tweak[v.group][v.name] = nil
-                    if not next(self.current_option_settings.tweak[v.group]) then
-                        self.current_option_settings.tweak[v.group] = nil
-                    end
-                end
-                self:MakePresetDirty()
-                if self.servercreationscreen and self.servercreationscreen.UpdateButtons then 
-                    self.servercreationscreen:UpdateButtons() 
-                end
-                self.servercreationscreen:MakeDirty()
-            end
-            
-        if self.overrides[v.name] and self.overrides[v.name] ~= v.default then
-            spinner:SetSelected(self.overrides[v.name])
-            if self.allowEdit ~= false or FORCE_SHOW_BG_IN_VIEW_MODE then
-                bg:SetTint(.15,.15,.15,1) --bg:SetTint(.3,.3,.3,1)
-            end
-        else
-            spinner:SetSelected(default_value)
-            bg:SetTint(1,1,1,1)
-        end
-        
-        
-        spinner:SetPosition(35,0,0 )
-        image_parent:SetPosition(-85,0,0)
-        local spacing = 75
-        
-        table.insert(self.spinners, spinner)
-        if side == "left" then
-            spinner.column = "left"
-            spinner.OnGainFocus = function()
-                Spinner._base.OnGainFocus(self)
-                spinner:UpdateBG()
-                self.focused_column = 1
-            end
-            row:AddItem(opt, 1, 1)
-        elseif side == "right" then
-            spinner.column = "right"
-            spinner.OnGainFocus = function()
-                Spinner._base.OnGainFocus(self)
-                spinner:UpdateBG()
-                self.focused_column = 2
-            end
-            row:AddItem(opt, 2, 1)
-        end
-        spinner.idx = #self.spinners
-
-        if self.allowEdit == false then
-            spinner:Disable()
-            spinner:SetTextColour(0,0,0,1)
-        end
-    end
-
-    local i = 1
-    local lastgroup = nil
-    while i <= #options do
-        local rowWidget = Grid()
-        rowWidget:SetLooping(false, false)
-        rowWidget:InitSize(2, 1, 250, 0)
-        rowWidget.SetFocus = function()
-            local item = rowWidget:GetItemInSlot(self.focused_column, 1)
-            if item then
-                item:SetFocus()
-            else
-                item = rowWidget:GetItemInSlot(1, 1)
-                if item then
-                    item:SetFocus()
-                end
-            end
-        end
-
-        local v = options[i]
-
-        if v.group ~= lastgroup then
-            local labelParent = Widget("label")
-            local labelWidget = labelParent:AddChild(Text(BUTTONFONT,37))
-            labelWidget:SetHAlign(ANCHOR_MIDDLE)
-            labelWidget:SetPosition(136, 0)
-            labelWidget:SetString(v.grouplabel)
-            labelWidget:SetColour(0,0,0,1)
-            labelParent.focus_image = labelParent:AddChild(Image("images/ui.xml", "spinner_focus.tex"))
-            labelParent.focus_image:SetPosition(133, 3)
-            local w,h = labelWidget:GetRegionSize()
-            labelParent.focus_image:SetSize(w+50, h+15)
-            labelParent.OnGainFocus = function()
-                labelParent.focus_image:Show()
-            end
-            labelParent.OnLoseFocus = function()
-                labelParent.focus_image:Hide()
-            end
-            labelParent.focus_image:Hide()
-
-            table.insert(self.optionwidgets, labelParent)
-            lastgroup = v.group
-        end
-
-        AddSpinnerToRow(self, v, i, rowWidget, "left")
-
-
-        if options[i+1] and options[i+1].group == lastgroup then
-            local v = options[i+1]
-            AddSpinnerToRow(self, v, i+1, rowWidget, "right")
-            i = i + 2
-        else
-            i = i + 1
-        end
-
-        table.insert(self.optionwidgets, rowWidget)
-    end
-
-    self.current_option_settings_scroll_list = self.current_option_settingspanel:AddChild(ScrollableList(self.optionwidgets, 550, 400, 50, 20, nil, nil, 155))
-    self.current_option_settings_scroll_list:SetPosition(-245,-24)
-end
-
-function CustomizationTab:RefreshOptions()
-    --these are in kind of a weird format, so convert it to something useful...
-    self.overrides = {}
-    for k,v in pairs(self.presets) do
-        if self.preset.data == v.data then
-            for k,v in pairs(v.overrides) do
-                self.overrides[v[1]] = v[2]
-            end
-        end
-    end
-
-    if not self.allowEdit then
-        if self.defaults then
-            if self.defaults.presetdata and self.defaults.presetdata.overrides then
-                for i,override in ipairs(self.defaults.presetdata.overrides) do
-                    self.overrides[override[1]] = override[2]
-                end
-            end
-            if self.defaults.tweak then
-                for k,v in pairs(self.defaults.tweak) do
-                    for m,n in pairs(v) do
-                        self.overrides[m] = n
-                    end
-                end
-            end
-        end
-    end
-
-    if SaveGameIndex:IsSlotEmpty(self.slot) then
-        for i,v in ipairs(options) do 
-            self:SetValueForOption(v.name, self:GetValueForOption(v.name)) 
-        end
-    else
-        for i,v in ipairs(options) do 
-            if self.overrides[v.name] then
-                self:SetValueForOption(v.name, self.overrides[v.name])
-            else
-                self:SetValueForOption(v.name, v.default)
-            end
-        end
+    for i,v in ipairs(self.options) do
+        self.customizationlist:SetValueForOption(v.name, self:GetValueForOption(v.name))
     end
 end
 
-function CustomizationTab:UpdateOptions(options, allowEdit)
-    self.allowEdit = allowEdit
+function CustomizationTab:UpdateOptions(singlelevel)
 
-    self.defaults = options
+    if singlelevel == nil then
+        for i,leveldata in ipairs(self.slotoptions[self.slot]) do
 
-    if options then
-        self.current_option_settings = deepcopy(options)
-        self.current_option_settings.tweak = self.current_option_settings.tweak or {}
-        self.current_option_settings.preset = self.current_option_settings.preset or {}
+            self.current_option_settings[i] = deepcopy(leveldata)
+            if self.current_option_settings[i] ~= nil then
+                local preset = self.current_option_settings[i].actualpreset
+                    or self.current_option_settings[i].preset
+                    or self.presets[i].data
+                self:LoadPreset(i, preset)
+
+                self.current_option_settings[i].tweak = self.current_option_settings[i].tweak or {}
+            else
+                self.current_option_settings[i] = { tweak = {} }
+            end
+        end
     else
-        self.current_option_settings = 
-        { 
-            preset = {},
-            tweak = {}
-        }
+        self.current_option_settings[singlelevel] = deepcopy(self.slotoptions[self.slot][singlelevel])
+        if self.current_option_settings[singlelevel] ~= nil then
+            local preset = self.current_option_settings[singlelevel].actualpreset
+                or self.current_option_settings[singlelevel].preset
+                or self.presets[1].data
+            self:LoadPreset(singlelevel, preset)
+
+            self.current_option_settings[singlelevel].tweak = self.current_option_settings[singlelevel].tweak or {}
+        end
+        -- if it is nil, the level has been removed in the slotoptions. cool.
     end
 
-    local preset = (self.defaults and (self.defaults.actualpreset or self.defaults.preset)) or self.presets[1].data
+    self:RefreshSpinnerValues()
+    self:RefreshTabValues()
+end
 
-    self:LoadPreset(preset)
+function CustomizationTab:RefreshTabValues()
+    for i,presetdata in ipairs(self.activepresets) do
+        local clean = self:GetNumberOfTweaks(i) == 0
 
-    if self.defaults and self.defaults.tweak and next(self.defaults.tweak) then
-        self:MakePresetDirty()
-    end
+        self.multileveltabs.tabs[i]:SetText(self.activepresets[i].text .. (clean and "" or "*"))
 
-    local clean = true
-    if self.current_option_settings and self.current_option_settings.tweak then
-        for i,v in pairs(self.current_option_settings.tweak) do
-            for m,n in pairs(v) do
-                if #self.current_option_settings.tweak[i][m] > 0 then
-                    clean = false
-                    break
-                end
+        if i == self.currentmultilevel then
+            self.presetspinner.spinner:SetSelected(self.activepresets[i].data)
+            self.presetdesc:SetString(self.activepresets[i].desc)
+
+            if not clean then
+                self.presetdesc:SetString(STRINGS.UI.CUSTOMIZATIONSCREEN.CUSTOMDESC)
+                self.presetspinner.spinner:UpdateText(self.activepresets[i].text .. " " .. STRINGS.UI.CUSTOMIZATIONSCREEN.CUSTOM)
+            end
+
+            if not clean and self.allowEdit then
+                self.presetdirty[i] = true
+                self.revertbutton:Unselect()
+            else
+                self.presetdirty[i] = false
+                self.revertbutton:Select()
             end
         end
-        if clean then
-            self:MakePresetClean()
-        end
     end
 
-    if self.allowEdit == false then
-        -- Since we can't actually edit, act like the preset is clean but append "(Custom)" if it's not actually clean
-        self:MakePresetClean()
-        if not clean then
-            for k,v in pairs(self.presets) do
-                if self.preset.data == v.data then
-                    self.presetdesc:SetString(STRINGS.UI.CUSTOMIZATIONSCREEN.CUSTOMDESC)
-                    self.presetspinner.spinner:UpdateText(v.text .. " " .. STRINGS.UI.CUSTOMIZATIONSCREEN.CUSTOM)
-                end
-            end
-        end
-    end
-
-    -- Enable or disable based on allowEdit
     if self.allowEdit then
         self.presetspinner.spinner:Enable()
     else
@@ -787,103 +551,113 @@ function CustomizationTab:UpdateOptions(options, allowEdit)
         self.presetspinner.spinner:SetTextColour(0,0,0,1)
     end
 
-    for i,v in pairs(self.spinners) do
-        if self.allowEdit then
-            v:Enable()
-        else
-            v:Disable()
-            v:SetTextColour(0,0,0,1)
+    for i,dirty in ipairs(self.presetdirty) do
+        if dirty then
+            self.servercreationscreen:MakeDirty()
+            break
         end
     end
 
-    self:RefreshOptions()
+    if self.servercreationscreen and self.servercreationscreen.UpdateButtons then
+        self.servercreationscreen:UpdateButtons()
+    end
 end
 
 function CustomizationTab:CollectOptions()
-    -- Dump custom preset info into the tweak table because it's easier than rewriting the presets world gen code
-    self.current_option_settings.presetdata = deepcopy(self.preset)
-    self.current_option_settings.actualpreset = self.presetspinner.spinner:GetSelected().data
-    self.current_option_settings.preset = self.presetspinner.spinner:GetSelected().basepreset
+    local ret = deepcopy(self.current_option_settings)
+    for i,level in ipairs(self.current_option_settings) do
+        ret[i].presetdata = deepcopy(self.activepresets[i])
+    end
+    ret.supportsmultilevel = true
 
-    return self.current_option_settings
+    return ret
 end
 
 function CustomizationTab:UpdateSlot(slotnum, prevslot, delete)
     if not delete and (slotnum == prevslot or not slotnum or not prevslot) then return end
 
-    local editable = true   
+    self.allowEdit = true
+    self.slot = slotnum
+
+    -- Remember what was typed/set
+    if prevslot and prevslot > 0 then
+        self.slotoptions[prevslot] = deepcopy(self.current_option_settings)
+    end
 
     -- No save data
     if slotnum < 0 or SaveGameIndex:IsSlotEmpty(slotnum) then
         -- no slot, so hide all the details and set all the text boxes back to their defaults
-        if prevslot and prevslot > 0 then
-            -- Remember what was typed/set
-            self.slotoptions[prevslot] = deepcopy(self.current_option_settings)
+        if prevslot and prevslot > 0 and SaveGameIndex:IsSlotEmpty(prevslot) then
             -- Duplicate prevslot's data into our new slot if it was also a blank slot
-            if SaveGameIndex:IsSlotEmpty(prevslot) then
-                self.slotoptions[slotnum] = deepcopy(self.current_option_settings)
-            end
+            self.slotoptions[slotnum] = deepcopy(self.slotoptions[prevslot])
+        else
+            self.slotoptions[slotnum] = {
+                { tweak = {} }
+            }
         end
     else -- Save data
-        if prevslot and prevslot > 0 then
-            -- remember what was typed/set
-            self.slotoptions[prevslot] = deepcopy(self.current_option_settings)
-        end
-        
-            if slotnum > 0 and not SaveGameIndex:IsSlotEmpty(slotnum) then
-            self.slotoptions[slotnum] = SaveGameIndex:GetSlotGenOptions(slotnum)
-            editable = false
+        self.allowEdit = false
+
+        local genoptions = SaveGameIndex:GetSlotGenOptions(slotnum)
+        if genoptions.supportsmultilevel == true then
+            self.slotoptions[slotnum] = genoptions
+        elseif genoptions[1] ~= nil then -- #TODO this is just bad data from development, get rid of this
+            self.slotoptions[slotnum] = genoptions
+        else -- load legacy save index data 2015/10/14
+            self.slotoptions[slotnum] = {}
+            self.slotoptions[slotnum][1] = genoptions
         end
     end
 
-    self.slot = slotnum
-    self:UpdateOptions(self.slotoptions[slotnum], editable)
+    self.currentmultilevel = 1
+
+    self:UpdateOptions()
+    self:UpdateMultilevelUI()
+    self.customizationlist:SetEditable(self.allowEdit)
 end
 
-function CustomizationTab:GetNumberOfTweaks()
+function CustomizationTab:GetNumberOfTweaks(levelonly)
     local numTweaks = 0
-    if SaveGameIndex:IsSlotEmpty(self.slot) then
-        if self.current_option_settings and self.current_option_settings.tweak then
-            for i,v in pairs(self.current_option_settings.tweak) do
-                if v then
-                    for j,k in pairs(v) do
-                        numTweaks = numTweaks + 1
+
+    if self.current_option_settings then
+        for i, level in ipairs(self.current_option_settings) do
+            if levelonly == nil or i == levelonly then
+                if level.tweak then
+                    for i,v in pairs(level.tweak) do
+                        if v then
+                            for j,k in pairs(v) do
+                                numTweaks = numTweaks + 1
+                            end
+                        end
                     end
                 end
             end
-            return numTweaks
-        else
-            return 0
         end
-    else
-        local function IsPresetOverride(name, value)
-            local found  = false
-            if self.defaults and self.defaults.presetdata and self.defaults.presetdata.overrides then
-                for i,override in ipairs(self.defaults.presetdata.overrides) do
-                    if (name == override[1] and value == override[2]) then
-                        found = true
-                        break
-                    end
-                end
-            end
-            return found
-        end
-
-        for i,v in pairs(self.overrides) do
-            --#srosen HACK to prevent counting no-caves as a tweak until it's back in the customization options
-            if i ~= "cave_entrance" then
-                if not IsPresetOverride(i, v) then
-                    numTweaks = numTweaks + 1
-                end
-            end
-        end
-
         return numTweaks
+    else
+        return 0
     end
 end
 
 function CustomizationTab:GetPresetName()
-    return self.presetspinner.spinner:GetSelectedText()
+    if self.slotoptions[self.slot][2] ~= nil then
+        return "Multilevel World" -- #TODO: strings.lua
+    elseif self.slotoptions[self.slot][1].presetdata then
+        return self.slotoptions[self.slot][1].presetdata.text
+    elseif self.slotoptions[self.slot][1].actualpreset ~= nil then
+        for i,preset in ipairs(self.presets) do
+            if preset.data == self.slotoptions[self.slot][1].actualpreset then
+                return preset.text
+            end
+        end
+    elseif self.slotoptions[self.slot][1].preset ~= nil then
+        for i,preset in ipairs(self.presets) do
+            if preset.data == self.slotoptions[self.slot][1].preset then
+                return preset.text
+            end
+        end
+    end
+    return self.presets[1].text
 end
 
 function CustomizationTab:RevertChanges()
@@ -894,18 +668,17 @@ function CustomizationTab:RevertChanges()
             { 
                 text = STRINGS.UI.CUSTOMIZATIONSCREEN.YES, 
                 cb = function()
-                    if self.current_option_settings then
-                        self.current_option_settings.tweak = {}
-                    end
-                    if self.slotoptions[self.slot] then
-                        self.slotoptions[self.slot].tweak = {}
+                    if self.slotoptions[self.slot] and self.slotoptions[self.slot][self.currentmultilevel] then
+                        self.slotoptions[self.slot][self.currentmultilevel].tweak = {}
                     else
-                        self.slotoptions[self.slot] = {}
+                        if self.slotoptions[self.slot] == nil then
+                            self.slotoptions[self.slot] = {}
+                        end
+                        self.slotoptions[self.slot][self.currentmultilevel] = {
+                            tweak = {},
+                        }
                     end
-                    self:UpdateOptions(self.current_option_settings, self.allowEdit)
-                    if self.servercreationscreen and self.servercreationscreen.UpdateButtons then 
-                        self.servercreationscreen:UpdateButtons() 
-                    end
+                    self:UpdateOptions(self.currentmultilevel)
                     TheFrontEnd:PopScreen()
                 end
             },
@@ -921,50 +694,15 @@ function CustomizationTab:RevertChanges()
     )       
 end
 
-function CustomizationTab:PendingChanges()
-    if self.allowEdit == false then
-        return false
-    end
-
-    if not self.defaults then
-        return self.presetdirty or self.presetspinner.spinner:GetSelectedIndex() ~= 1
-    end
-    
-    if self.defaults.preset ~= self.current_option_settings.preset then return true end
-
-    local tables_to_compare = {}
-    for k,v in pairs(self.current_option_settings.tweak) do
-        tables_to_compare[k] = true
-    end
-
-    for k,v in pairs(self.defaults.tweak) do
-        tables_to_compare[k] = true
-    end
-
-    for k,v in pairs(tables_to_compare) do
-        local t1 = self.current_option_settings.tweak[k]
-        local t2 = self.defaults.tweak[k]
-
-        if not t1 or not t2 or not type(t1) == "table" or not type(t2) == "table" then return true end
-
-        for k,v in pairs(t1) do
-            if t2[k] ~= v then return true end
-        end
-        for k,v in pairs(t2) do
-            if t1[k] ~= v then return true end
-        end
-    end
-end 
-
 function CustomizationTab:HookupFocusMoves()
-    self.presetspinner:SetFocusChangeDir(MOVE_RIGHT, self.current_option_settings_scroll_list)
-    self.current_option_settings_scroll_list:SetFocusChangeDir(MOVE_LEFT, self.presetspinner)
+    self.presetspinner:SetFocusChangeDir(MOVE_RIGHT, self.customizationlist)
+    self.customizationlist:SetFocusChangeDir(MOVE_LEFT, self.presetspinner)
     self.presetspinner:SetFocusChangeDir(MOVE_DOWN, self.revertbutton)
     self.revertbutton:SetFocusChangeDir(MOVE_RIGHT, self.savepresetbutton)
     self.revertbutton:SetFocusChangeDir(MOVE_UP, self.presetspinner)
     self.savepresetbutton:SetFocusChangeDir(MOVE_LEFT, self.revertbutton)
     self.savepresetbutton:SetFocusChangeDir(MOVE_UP, self.presetspinner)
-    self.savepresetbutton:SetFocusChangeDir(MOVE_RIGHT, self.current_option_settings_scroll_list)
+    self.savepresetbutton:SetFocusChangeDir(MOVE_RIGHT, self.customizationlist)
     if self.servercreationscreen then 
         self.presetspinner:SetFocusChangeDir(MOVE_LEFT, self.servercreationscreen.save_slots[1]) 
         self.revertbutton:SetFocusChangeDir(MOVE_LEFT, self.servercreationscreen.save_slots[1])

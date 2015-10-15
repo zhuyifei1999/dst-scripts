@@ -215,7 +215,7 @@ end
 
 function WorldOverseer:OnEquipSkinnedItem(player, data)
 	if not data then return end
-	
+
 	local playerstats = self._seenplayers[player]
 	local time = GetTime()
 
@@ -281,6 +281,7 @@ function WorldOverseer:DumpSessionStats()
 end
 
 function WorldOverseer:OnPlayerJoined(src,player)
+
 	self:RecordPlayerJoined(player)
 	self.inst:ListenForEvent("death", function(inst, data) self:OnPlayerDeath(inst, data) end, player)
 	self.inst:ListenForEvent("changeclothes", function (inst, data) self:OnPlayerChangedSkin(inst, data) end, player)
@@ -288,6 +289,18 @@ function WorldOverseer:OnPlayerJoined(src,player)
 	self.inst:ListenForEvent("builditem", function (inst, data) self:OnItemCrafted(inst, data) end, player)
 	self.inst:ListenForEvent("equipskinneditem", function(inst, data) self:OnEquipSkinnedItem(inst, data) end, player)
 	self.inst:ListenForEvent("unequipskinneditem", function(inst, data) self:OnUnequipSkinnedItem(inst, data) end, player)
+
+	-- The initial clothing is set before the Overseer starts listening to the events
+	-- so we have to manually grab the items for the analytics
+	if player.components.skinner then
+		local initial_clothing = player.components.skinner:GetClothing()
+		for k,v in pairs(initial_clothing) do
+			if v and v ~= "" then
+				self:OnEquipSkinnedItem(player, v)
+			end
+		end
+	end
+
 end
 
 function WorldOverseer:OnPlayerLeft(src,player)

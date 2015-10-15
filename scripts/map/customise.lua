@@ -244,4 +244,32 @@ local function GetGroupForItem(target)
 	return "misc"
 end
 
-return {GetGroupForItem=GetGroupForItem, GROUP=GROUP, preset_descriptions=preset_descriptions}
+local function GetOptions()
+    local options = {}
+
+    local groups = {}
+    for k,v in pairs(GROUP) do
+        table.insert(groups,k)
+    end
+
+    table.sort(groups, function(a,b) return GROUP[a].order < GROUP[b].order end)
+
+    for i,groupname in ipairs(groups) do
+        local items = {}
+        local group = GROUP[groupname]
+        for k,v in pairs(group.items) do
+            table.insert(items, k)
+        end
+
+        table.sort(items, function(a,b) return group.items[a].order < group.items[b].order end)
+
+        for ii,itemname in ipairs(items) do
+            local item = group.items[itemname]
+            table.insert(options, {name = itemname, image = item.image, options = item.desc or group.desc, default = item.value, group = groupname, grouplabel = group.text})
+        end
+    end
+
+    return options
+end
+
+return {GetGroupForItem=GetGroupForItem, GROUP=GROUP, preset_descriptions=preset_descriptions, GetOptions=GetOptions}

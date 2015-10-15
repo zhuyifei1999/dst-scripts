@@ -55,7 +55,7 @@ local ModsScreen = Class(Screen, function(self)
 	-- top mods panel
 	self:CreateTopModsPanel()
 
-	self.optionspanel = self.root:AddChild(TEMPLATES.CenterPanel(.64, .68, false, 575, 510, 46, -29))
+	self.optionspanel = self.root:AddChild(TEMPLATES.CenterPanel(.64, .68, false, 575, 510, 46, -29, .64, .68, 5 ))
 	self.optionspanel:SetPosition(-18,-10)
 
 	self.optionschildren = self.optionspanel:AddChild(Widget("root"))

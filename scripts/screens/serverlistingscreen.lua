@@ -380,7 +380,7 @@ end
 function ServerListingScreen:ViewServerWorld()
     local worldgenoptions = self:ProcessServerWorldGenData()
     if worldgenoptions ~= nil then
-        TheFrontEnd:PushScreen(ViewCustomizationModalScreen(Profile, worldgenoptions, false, false))
+        TheFrontEnd:PushScreen(ViewCustomizationModalScreen(worldgenoptions))
     end
 end
 
@@ -1281,8 +1281,8 @@ function ServerListingScreen:IsValidWithFilters(server)
 	 
     -- Filter out unjoinable servers, if we are online
     -- NOTE: steamroom is not available for dedicated servers
-    -- NOTE: client hosted servers can be joinable via punchthrough even if you can't ping it directly
-    if valid and self.online and not server.steamroom and server.ping < 0 then
+    -- NOTE: Any server with a steam id can be joinable via punchthrough even if you can't ping it directly
+    if valid and self.online and not server.steamid and server.ping < 0 then
         valid = false
         self.unjoinable_servers = self.unjoinable_servers + 1
     end

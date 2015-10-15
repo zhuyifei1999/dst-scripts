@@ -181,8 +181,18 @@ function Skinner:SetSkinName(skin_name)
 	self:SetSkinMode()
 end
 
-function Skinner:_InternalSetClothing( type, name )	
-	self.clothing[type] = name	
+function Skinner:_InternalSetClothing( type, name )
+
+	if self.clothing[type] and self.clothing[type] ~= "" then
+		self.inst:PushEvent("unequipskinneditem", self.clothing[type])
+	end
+	
+	self.clothing[type] = name
+	
+	if name and name ~= "" then
+		self.inst:PushEvent("equipskinneditem", name)
+	end
+	
 	self:SetSkinMode()
 end
 

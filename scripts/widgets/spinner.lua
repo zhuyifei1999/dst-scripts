@@ -322,7 +322,7 @@ function Spinner:Next(noclicksound)
 		end
 		self:OnNext()
 		self:SetSelectedIndex(newSelection)
-		self:Changed()
+		self:Changed(oldSelection)
 	else
 		TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_negative")
 	end
@@ -347,7 +347,7 @@ function Spinner:Prev(noclicksound)
 		end
 		self:OnPrev()
 		self:SetSelectedIndex(newSelection)
-		self:Changed()
+		self:Changed(oldSelection)
 	else
 		TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_negative")
 	end
@@ -424,9 +424,9 @@ end
 function Spinner:OnPrev()
 end
 
-function Spinner:Changed()
+function Spinner:Changed(oldSelection)
 	if not self.updating then
-		self:OnChanged( self:GetSelectedData() )
+		self:OnChanged( self:GetSelectedData(), self.options[oldSelection] and self.options[oldSelection].data or nil)
 		self:UpdateState()
 	end
 end
@@ -435,9 +435,9 @@ function Spinner:SetOnChangedFn(fn)
 	self.onchangedfn = fn
 end
 
-function Spinner:OnChanged( selected )
+function Spinner:OnChanged( selected, old )
 	if self.onchangedfn then
-		self.onchangedfn(selected)
+		self.onchangedfn(selected, old)
 	end
 end
 

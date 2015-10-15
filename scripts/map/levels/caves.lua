@@ -85,7 +85,6 @@ AddLevel(LEVELTYPE.SURVIVAL, {
         {"task_set",        "cave_default"},
         {"start_location",  "caves"},
 
-		{"world_size", 		"large"},
 		--{"day", 			"onlynight"}, 
 		{"waves", 			"off"},
 		{"location",		"cave"},

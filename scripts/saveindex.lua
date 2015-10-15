@@ -229,17 +229,18 @@ function SaveIndex:StartSurvivalMode(saveslot, customoptions, serverdata, onsave
     slot.server = {}
 
     GetWorldgenOverride(function(preset, overrideoptions)
+        -- note: Always overrides layer 1, as that's what worldgen will generate
+        if slot.world.options == nil then
+            slot.world.options = {}
+        end
+        if slot.world.options[1] == nil then
+            slot.world.options[1] = {}
+        end
         if preset then
-            if slot.world.options == nil then
-                slot.world.options = {}
-            end
-            slot.world.options.actualpreset = preset
+            slot.world.options[1].actualpreset = preset
         end
         if overrideoptions then
-            if slot.world.options == nil then
-                slot.world.options = {}
-            end
-            slot.world.options.tweak = overrideoptions
+            slot.world.options[1].tweak = overrideoptions
         end
 
         self:UpdateServerData(saveslot, serverdata, onsavedcb)

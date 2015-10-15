@@ -279,7 +279,7 @@ TEMPLATES = {
 
     -- Ornate black frame with paper texture fill (nine-slice)
     -- To be added as a child of the root
-    CenterPanel = function(frame_x_scale, frame_y_scale, skipPos, x_size, y_size, topCrownOffset, bottomCrownOffset, bg_x_scale, bg_y_scale)
+    CenterPanel = function(frame_x_scale, frame_y_scale, skipPos, x_size, y_size, topCrownOffset, bottomCrownOffset, bg_x_scale, bg_y_scale, bg_x_pos, bg_y_pos )
     	frame_x_scale = frame_x_scale or 1
     	frame_y_scale = frame_y_scale or 1
         local panel = Widget("panel")
@@ -295,7 +295,7 @@ TEMPLATES = {
         panel.frame:SetPosition(0, 0) 
 
 		panel.bg = panel.frame:AddChild(Image("images/options_bg.xml", "options_panel_bg.tex"))
-		panel.bg:SetPosition(9, 13)
+		panel.bg:SetPosition( bg_x_pos or 9, bg_y_pos or 13)
         panel.bg:SetScale(bg_x_scale or .725, bg_y_scale or .69)
 
         if not skipPos then

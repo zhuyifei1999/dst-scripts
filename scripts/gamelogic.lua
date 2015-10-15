@@ -859,7 +859,7 @@ local function DoResetAction()
 				TheFrontEnd:ShowScreen(MainScreen(Profile))
 			end
 		elseif Settings.reset_action == RESET_ACTION.JOIN_SERVER then
-            local start_worked = TheNet:StartClient( Settings.serverIp, Settings.serverPort, nil, Settings.serverPassword )
+            local start_worked = TheNet:StartClient( Settings.serverIp, Settings.serverPort, nil, Settings.serverPassword, Settings.serverNetId )
             if not start_worked then
                 OnNetworkDisconnect("ID_DST_USER_CONNECTION_FAILED", true)
             end

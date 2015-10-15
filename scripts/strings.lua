@@ -2595,7 +2595,7 @@ STRINGS.UI =
         UNKNOWN_PRESET_DESC = "This game was started with some weird settings.",
         REVERTCHANGES = "Revert Changes",
 
-        MAP_TYPE = "World Gen: Biomes",            
+        TASK_SET = "World Gen: Biomes",            
         START_LOCATION = "World Gen: Spawn Area",
         WORLD_SIZE = "World Gen: Size",
         BRANCHING = "World Gen: Branches",

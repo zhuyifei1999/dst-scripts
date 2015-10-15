@@ -49,13 +49,11 @@ local GiftItemPopUp = Class(Screen, function(self, owner, item_types, item_ids)
     self.spawn_portal:GetAnimState():SetBank("gift_popup") -- top level symbol
     self.spawn_portal:SetScale(spawn_portal_scale)
 
-    local title_height = 145
-    local curl_pos = 110
-    local curl_scale = .6
-
+    local title_height = 152
+   
     --title 
     
-    self.title = self.proot:AddChild(Text(UIFONT, 45))
+    self.title = self.proot:AddChild(Text(UIFONT, 42))
     self.title:SetPosition(0, title_height - 15, 0)
     self.title:SetString(STRINGS.UI.ITEM_SCREEN.OPENING)
     self.title:SetColour(1,1,1,1)
@@ -75,13 +73,13 @@ local GiftItemPopUp = Class(Screen, function(self, owner, item_types, item_ids)
 
     --creates the buttons
     local button_w = 200
-    local space_between = 20
+    local space_between = 40
     local spacing = button_w + space_between
     local buttons = {{text = STRINGS.UI.ITEM_SCREEN.USE_LATER, cb = function() self:OnClose() end}, 
                      {text = STRINGS.UI.ITEM_SCREEN.USE_NOW, cb = function() self:ApplySkin() end}
                     }
     self.menu = self.proot:AddChild(Menu(buttons, spacing, true))
-    self.menu:SetPosition(25-(spacing*(#buttons-1))/2, -280, 0) 
+    self.menu:SetPosition(25-(spacing*(#buttons-1))/2, -290, 0) 
     self.menu:SetScale(0.8)
     self.menu:Hide()
 

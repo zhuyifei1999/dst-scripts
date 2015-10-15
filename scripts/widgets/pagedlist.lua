@@ -53,17 +53,17 @@ local PagedList = Class(Widget, function(self, items, itemwidth, itemheight, ite
 	end
 
 	if self.num_pages > 1 then 
-		self.left_button = self:AddChild(ImageButton("images/ui.xml", "arrow2_left.tex", "arrow2_left.tex", "arrow2_left.tex", nil, nil, {1,1}, {0,0}))
-	    self.left_button:SetPosition(-50, offset + self.item_padding + self.item_height/2, 0)
-	    self.left_button:SetScale(.33)
+		self.left_button = self:AddChild(ImageButton("images/lobbyscreen.xml", "DSTMenu_PlayerLobby_arrow_paper_L.tex", "DSTMenu_PlayerLobby_arrow_paperHL_L.tex", nil, nil, nil, {1,1}, {0,0}))
+	    self.left_button:SetPosition(-80, offset + .5*self.height - .5*self.item_padding + .5*self.item_height, 0)
+	    self.left_button:SetScale(.55)
 
 	    self.left_button:SetOnClick( function()
 	    	self:ChangePage(-1)
 	    end)
 	  
-		self.right_button = self:AddChild(ImageButton("images/ui.xml", "arrow2_right.tex", "arrow2_right.tex", "arrow2_right.tex", nil, nil, {1,1}, {0,0}))
-	    self.right_button:SetPosition(self.width+50, offset + self.item_padding + self.item_height/2, 0)
-	    self.right_button:SetScale(.33)
+		self.right_button = self:AddChild(ImageButton("images/lobbyscreen.xml", "DSTMenu_PlayerLobby_arrow_paper_R.tex", "DSTMenu_PlayerLobby_arrow_paperHL_R.tex", nil, nil, nil, {1,1}, {0,0}))
+	    self.right_button:SetPosition(self.width+78, offset + .5*self.height + .5*self.item_height - .5*self.item_padding, 0) --- self.item_padding/2, 0)
+	    self.right_button:SetScale(.55)
 	    self.right_button:SetOnClick( function()
 	    	self:ChangePage(1)
 	    end)

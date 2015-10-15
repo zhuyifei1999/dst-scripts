@@ -205,10 +205,8 @@ function PlayerDetailsPopup:GetHelpText()
 	return table.concat(t, "  ")
 end
 
-local BanTab = Class(Screen, function(self, save_slot, servercreationscreen)
+local BanTab = Class(Screen, function(self, servercreationscreen)
     Widget._ctor(self, "BanTab")
-
-	self.save_slot = save_slot
 
     self.servercreationscreen = servercreationscreen
     

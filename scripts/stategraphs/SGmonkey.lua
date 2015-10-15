@@ -81,12 +81,12 @@ local states =
             inst.SoundEmitter:PlaySound("dontstarve/wilson/make_trap", "make")
         end,
         onexit = function(inst)
-            inst:PerformBufferedAction()
             inst.SoundEmitter:KillSound("make")
         end,
         events=
         {
             EventHandler("animover", function (inst)
+                inst:PerformBufferedAction()
                 inst.sg:GoToState("idle")
             end),
         }

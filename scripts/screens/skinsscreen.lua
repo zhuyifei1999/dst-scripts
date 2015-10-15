@@ -535,7 +535,7 @@ function SkinsScreen:BuildInventoryList(skins_list)
 		self.page_list:SetList(self.inventory_lines)
 	end
 
-	self.inventory_list:SetPosition(15, 240)
+	self.inventory_list:SetPosition(-20, 240)
 
 end
 
