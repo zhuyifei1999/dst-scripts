@@ -599,9 +599,9 @@ function CustomizationTab:UpdateSlot(slotnum, prevslot, delete)
         self.allowEdit = false
 
         local genoptions = SaveGameIndex:GetSlotGenOptions(slotnum)
-        if genoptions.supportsmultilevel == true then
-            self.slotoptions[slotnum] = genoptions
-        elseif genoptions[1] ~= nil then -- #TODO this is just bad data from development, get rid of this
+        if genoptions == nil then
+            self.slotoptions[slotnum] = {{ tweak = {} }}
+        elseif genoptions.supportsmultilevel == true then
             self.slotoptions[slotnum] = genoptions
         else -- load legacy save index data 2015/10/14
             self.slotoptions[slotnum] = {}
