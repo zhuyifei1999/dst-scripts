@@ -85,7 +85,7 @@ local WorldGenScreen = Class(Screen, function(self, profile, cb, world_gen_optio
     -- but we always generate the first description (which will either be the master server
     -- options, or the options stomped in by worldgenoverride.lua -- see GetWorldgenOverride
     -- usage in saveindex.lua)
-    gen_parameters.world_gen_choices = world_gen_options.custom_options[1]
+    gen_parameters.world_gen_choices = world_gen_options.custom_options and world_gen_options.custom_options[1] or {}
 	
 	gen_parameters.current_level = world_gen_options.level_world
 

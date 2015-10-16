@@ -195,7 +195,7 @@ local function fn()
     ------------------------------------------
 
     inst:AddComponent("health")
-    inst.components.health:SetMaxHealth(350)
+    inst.components.health:SetMaxHealth(TUNING.LIGHTNING_GOAT_HEALTH)
 
     ------------------
 

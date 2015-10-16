@@ -280,14 +280,14 @@ function Tune(overrides)
 	    ROOK_TARGET_DIST = 12,
 	    
 	    MINOTAUR_DAMAGE = 100,
-	    MINOTAUR_HEALTH = 2500,
+	    MINOTAUR_HEALTH = 2500 * 4, -- harder for multiplayer
 	    MINOTAUR_ATTACK_PERIOD = 2,
 	    MINOTAUR_WALK_SPEED = 5,
 	    MINOTAUR_RUN_SPEED = 17,
 	    MINOTAUR_TARGET_DIST = 25,
 	    
 	    SLURTLE_DAMAGE = 25,
-	    SLURTLE_HEALTH = 600,
+	    SLURTLE_HEALTH = 600 * 2, -- harder for multiplayer
 	    SLURTLE_ATTACK_PERIOD = 4,
 	    SLURTLE_ATTACK_DIST = 2.5,
 	    SLURTLE_WALK_SPEED = 3,
@@ -304,6 +304,12 @@ function Tune(overrides)
 	    SNURTLE_SHELL_ABSORB = 0.8,
 	    SNURTLE_DAMAGE_UNTIL_SHIELD = 10,
 	    SNURTLE_EXPLODE_DAMAGE = 300,
+
+        SLURPER_WALKSPEED = 9,
+        SLURPER_HEALTH = 200,
+        SLURPER_DAMAGE = 30,
+        SLURPER_ATTACK_DIST = 8,
+        SLURPER_ATTACK_PERIOD = 5,
 	    
 	    LIGHTNING_DAMAGE = 10,
 
@@ -311,6 +317,7 @@ function Tune(overrides)
 	    ELECTRIC_DAMAGE_MULT = 1.5,
 
 	    LIGHTNING_GOAT_DAMAGE = 25,
+        LIGHTNING_GOAT_HEALTH = 350 * 2, -- harder for multiplayer
 	    LIGHTNING_GOAT_ATTACK_RANGE = 3,
 	    LIGHTNING_GOAT_ATTACK_PERIOD = 2,
 	    LIGHTNING_GOAT_WALK_SPEED = 4,
@@ -492,14 +499,14 @@ function Tune(overrides)
 	    SPIDER_WARRIOR_WALK_SPEED = 4,
 	    SPIDER_WARRIOR_RUN_SPEED = 5,
 
-	    SPIDER_HIDER_HEALTH = 150,
+	    SPIDER_HIDER_HEALTH = 150 * 1.5, -- harder for multiplayer
 	    SPIDER_HIDER_DAMAGE = 20,
 	    SPIDER_HIDER_ATTACK_PERIOD = 3,
 	    SPIDER_HIDER_WALK_SPEED = 3,
 	    SPIDER_HIDER_RUN_SPEED = 5,
 	    SPIDER_HIDER_SHELL_ABSORB = 0.75,
 
-	    SPIDER_SPITTER_HEALTH = 175,
+	    SPIDER_SPITTER_HEALTH = 175 * 2, -- harder for multiplayer
 	    SPIDER_SPITTER_DAMAGE_MELEE = 20,
 	    SPIDER_SPITTER_DAMAGE_RANGED = 20,
 	    SPIDER_SPITTER_ATTACK_PERIOD = 5,
@@ -625,7 +632,7 @@ function Tune(overrides)
 	    TENTACLE_STOPATTACK_DIST = 6,
 	    TENTACLE_HEALTH = 500,
 
-	    TENTACLE_PILLAR_HEALTH = 500,
+	    TENTACLE_PILLAR_HEALTH = 500 * 1.5, -- harder for multiplayer
         TENTACLE_PILLAR_ARMS = 12,   -- max spawned at a time
         TENTACLE_PILLAR_ARMS_TOTAL = 25,  -- max simultaneous arms
 	    TENTACLE_PILLAR_ARM_DAMAGE = 5,
@@ -1360,7 +1367,7 @@ function Tune(overrides)
 		ROCKY_SPAWN_VAR = 0,
 
 		ROCKY_DAMAGE = 75,	
-		ROCKY_HEALTH = 1500,
+		ROCKY_HEALTH = 1500 * 2, -- harder for multiplayer
 		ROCKY_WALK_SPEED = 2,
 		ROCKY_MAX_SCALE = 1.2,
 		ROCKY_MIN_SCALE = .75,
@@ -1637,7 +1644,7 @@ function Tune(overrides)
 		GLOMMERBELL_USES = 3,
 
 	    WARG_RUNSPEED = 5.5,
-	    WARG_HEALTH = 600,
+	    WARG_HEALTH = 600 * 3, --harder for multiplayer
 	    WARG_DAMAGE = 50,
 	    WARG_ATTACKPERIOD = 3,
 	    WARG_ATTACKRANGE = 5,

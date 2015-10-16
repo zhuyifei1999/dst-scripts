@@ -1282,7 +1282,8 @@ function ServerListingScreen:IsValidWithFilters(server)
     -- Filter out unjoinable servers, if we are online
     -- NOTE: steamroom is not available for dedicated servers
     -- NOTE: Any server with a steam id can be joinable via punchthrough even if you can't ping it directly
-    if valid and self.online and not server.steamid and server.ping < 0 then
+    -- NOTE: steamnat is now the flag to check
+    if valid and self.online and not server.steamnat and server.ping < 0 then
         valid = false
         self.unjoinable_servers = self.unjoinable_servers + 1
     end

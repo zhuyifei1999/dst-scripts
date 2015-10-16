@@ -1014,11 +1014,62 @@ function c_sounddebug()
 end
 
 function c_migrateto(worldId, portalId)
-	portalId = portalId or 1
-	TheWorld:PushEvent(
-		"ms_playerdespawnandmigrate", 
-		{ player = ConsoleCommandPlayer(), portalid = portalId, worldid = worldId }
-	)
+    portalId = portalId or 1
+    TheWorld:PushEvent(
+        "ms_playerdespawnandmigrate",
+        { player = ConsoleCommandPlayer(), portalid = portalId, worldid = worldId }
+    )
+end
+
+function c_debugshards()
+    local count = 0
+    print("Connected shards:")
+    for k,v in pairs(Shard_GetConnectedShards()) do
+        print("\t",k,v)
+        count = count + 1
+    end
+    print(count, "shards")
+    count = 0
+    print("Known portals:")
+    for i,v in ipairs(ShardPortals) do
+        print("\t",v,v.components.worldmigrator:GetDebugString())
+        count = count + 1
+    end
+    print(count, "known portals")
+    count = 0
+    print("Portal targets actually available:")
+    for i,v in ipairs(ShardPortals) do
+        print("\t",v,Shard_IsWorldAvailable(v.components.worldmigrator.linkedWorld))
+    end
+    print("Portals not known:")
+    local portals = {}
+    for k,v in pairs(Ents) do
+        if v.components and v.components.worldmigrator then
+            table.insert(portals, v)
+        end
+    end
+    for i,v in ipairs(portals) do
+        local found = false
+        for i2,v2 in ipairs(ShardPortals) do
+            if v == v2 then
+                found = true
+                break
+            end
+        end
+        if not found then
+            print("\t",v)
+            count = count + 1
+        end
+    end
+    print(count, "unknown portals")
+    count = 0
+end
+
+function c_reregisterportals()
+    local shards = Shard_GetConnectedShards()
+    for i,v in ipairs(ShardPortals) do
+        v.components.worldmigrator:SetDestinationWorld(next(shards))
+    end
 end
 
 function c_repeatlastcommand()

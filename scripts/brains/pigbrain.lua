@@ -253,12 +253,15 @@ function PigBrain:OnStart()
                 DoAction(self.inst, GoHomeAction, "go home", true )),
             ChattyNode(self.inst, STRINGS.PIG_TALK_FIND_LIGHT, PriorityNode{
                     WhileNode(function() return self.inst.LightWatcher:GetLightValue() > COMFORT_LIGHT_LEVEL end, "IsInLight", -- wants slightly brighter light for this
-                        Wander(self.inst, GetNearestLightPos, GetNearestLightRadius, {
-                            minwalktime = 0.3,
-                            randwalktime = 0.5,
-                            minwaittime = 5,
-                            randwaittime = 5
-                        })),
+                        PriorityNode{
+                            FailIfSuccessDecorator(FindLight(self.inst, SEE_LIGHT_DIST, GetNearestLightRadius)),
+                            Wander(self.inst, GetNearestLightPos, GetNearestLightRadius, {
+                                minwalktime = 0.6,
+                                randwalktime = 0.2,
+                                minwaittime = 5,
+                                randwaittime = 5
+                            })
+                        }),
                     FindLight(self.inst, SEE_LIGHT_DIST, SafeLightDist),
                 }),
             ChattyNode(self.inst, STRINGS.PIG_TALK_PANIC,

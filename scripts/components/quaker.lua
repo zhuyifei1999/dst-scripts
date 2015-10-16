@@ -391,7 +391,7 @@ end or nil
 
 local OnExplosion = _ismastersim and function(inst, data)
     if _state == QUAKESTATE.WAITING then
-        SetNextQuake(_quakedata, _task:NextTime() - data.damage)
+        SetNextQuake(_quakedata, GetTaskRemaining(_task) - data.damage)
     elseif _state == QUAKESTATE.WARNING then
         WarnQuake(inst, _quakedata)
     end
@@ -550,9 +550,9 @@ function self:GetDebugString()
     local s = ""
     if _ismastersim then
         s = table.reverselookup(QUAKESTATE, _state)
-        s = s .. string.format(" %.2d", GetTaskRemaining(_task))
+        s = s .. string.format(" %.2f", GetTaskRemaining(_task))
         if _state == QUAKESTATE.QUAKING then
-            s = s .. string.format(" debris/second: %2.2f mammals: %d",
+            s = s .. string.format(" debris/second: %.2f mammals: %d",
                 _debrispersecond, _mammalsremaining)
         elseif _state == QUAKESTATE.WARNING then
         elseif _state == QUAKESTATE.WAITING then

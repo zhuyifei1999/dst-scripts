@@ -212,18 +212,18 @@ local function fn()
     inst.components.locomotor:SetSlowMultiplier(1)
     inst.components.locomotor:SetTriggersCreep(false)
     inst.components.locomotor.pathcaps = { ignorecreep = false }
-    inst.components.locomotor.walkspeed = 9
+    inst.components.locomotor.walkspeed = TUNING.SLURPER_WALKSPEED
 
     inst:AddComponent("combat")
-    inst.components.combat:SetAttackPeriod(5)
-    inst.components.combat:SetRange(8)
+    inst.components.combat:SetAttackPeriod(TUNING.SLURPER_ATTACK_PERIOD)
+    inst.components.combat:SetRange(TUNING.SLURPER_ATTACK_DIST)
     inst.components.combat:SetKeepTargetFunction(KeepTarget)
-    inst.components.combat:SetDefaultDamage(30)
+    inst.components.combat:SetDefaultDamage(TUNING.SLURPER_DAMAGE)
     inst.components.combat:SetRetargetFunction(3, Retarget)
     inst:ListenForEvent("attacked", OnAttacked)
 
     inst:AddComponent("health")
-    inst.components.health:SetMaxHealth(200)
+    inst.components.health:SetMaxHealth(TUNING.SLURPER_HEALTH)
     inst.components.health.canmurder = false
 
     inst:AddComponent("lootdropper")

@@ -434,7 +434,7 @@ end
 
 function MigrateToServer(serverIp, serverPort, serverPassword, serverNetId)
 
-    serverNetId = serverNetId or 0
+    serverNetId = serverNetId or ""
 
     StartNextInstance({
         reset_action = RESET_ACTION.JOIN_SERVER, 

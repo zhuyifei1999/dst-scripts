@@ -45,6 +45,10 @@ function Shard_UpdatePortalState(inst)
     inst.components.worldmigrator:ValidateAndPushEvents()
 end
 
+function Shard_GetConnectedShards() -- useful for debugging
+    return deepcopy(ShardConnected)
+end
+
 --------------------------------------------------------------------------
 
 function Shard_UpdateMasterSessionId(session_id)

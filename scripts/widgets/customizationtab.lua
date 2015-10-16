@@ -343,7 +343,7 @@ function CustomizationTab:LoadUnknownPreset(level)
     -- This is super gross, I know. I apologize. ~gjans
     self.presetspinner.spinner:UpdateText(STRINGS.UI.CUSTOMIZATIONSCREEN.UNKNOWN_PRESET)
     self.presetdesc:SetString(STRINGS.UI.CUSTOMIZATIONSCREEN.UNKNOWN_PRESET_DESC)
-    self.presetdirty = false
+    self.presetdirty[level] = false
     self.activepresets[level] = {
         basepreset = "UNKNOWN_PRESET",
         data = "UNKNOWN_PRESET",

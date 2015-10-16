@@ -377,7 +377,22 @@ function FailIfRunningDecorator:Visit()
 		self.status = child.status
 	end
 end
+---------------------------------------------------------------------------------------
 
+-- Useful to make a prioritynode move to the next element whether a child succeeds or fails
+FailIfSuccessDecorator = Class(DecoratorNode, function(self, child)
+    DecoratorNode._ctor(self, "FailIfSuccess", child)
+end)
+
+function FailIfSuccessDecorator:Visit()
+	local child = self.children[1]
+	child:Visit()
+	if child.status == SUCCESS then
+		self.status = FAILED
+	else
+		self.status = child.status
+	end
+end
 ---------------------------------------------------------------------------------------
 
 
