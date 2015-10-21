@@ -261,15 +261,16 @@ function WorldOverseer:DumpSessionStats()
                             dedicated = TheNet:GetServerIsDedicated(),
                             administrated = TheNet:GetServerHasPresentAdmin(),
                             modded = TheNet:GetServerModsEnabled(),
-                            privacy = (TheNet:GetServerClanID() ~= "0" and "CLAN")
+                            privacy = (TheNet:GetServerClanID() ~= "" and "CLAN")
                                     or (TheNet:GetServerLANOnly() and "LAN")
                                     or (TheNet:GetServerFriendsOnly() and "FRIENDS")
                                     or "PUBLIC",
                             offline = not TheNet:IsOnlineMode(),
                             pvp = TheNet:GetServerPVP(),
                         }
-    if TheNet:GetServerClanID() ~= "0" then
-        sendstats.mpsession.clan_id = TheNet:GetServerClanID()
+    local clanid = TheNet:GetServerClanID()
+    if clanid ~= "" then
+        sendstats.mpsession.clan_id = clanid
         sendstats.mpsession.clan_only = TheNet:GetServerClanOnly()
         --sendstats.clan_admins = TheNet:GetServerClanAdmins() -- not available in the handshake!
     end

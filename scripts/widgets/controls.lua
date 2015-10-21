@@ -188,6 +188,12 @@ function Controls:MakeScalingNodes()
     self.topright_root:SetMaxPropUpscale(MAX_HUD_SCALE)
 
     
+	self.right_root = self:AddChild(Widget("right_root"))
+    self.right_root:SetScaleMode(SCALEMODE_PROPORTIONAL)
+    self.right_root:SetHAnchor(ANCHOR_RIGHT)
+    self.right_root:SetVAnchor(ANCHOR_MIDDLE)
+    self.right_root:SetMaxPropUpscale(MAX_HUD_SCALE)   
+
     self.bottomright_root = self:AddChild(Widget(""))
     self.bottomright_root:SetScaleMode(SCALEMODE_PROPORTIONAL)
     self.bottomright_root:SetHAnchor(ANCHOR_RIGHT)
@@ -207,6 +213,7 @@ function Controls:MakeScalingNodes()
 	self.bottom_root = self.bottom_root:AddChild(Widget("bottom_scale_root"))
 	self.top_root = self.top_root:AddChild(Widget("top_scale_root"))
 	self.left_root = self.left_root:AddChild(Widget("left_scale_root"))
+	self.right_root = self.right_root:AddChild(Widget("right_scale_root"))
 	self.bottomright_root = self.bottomright_root:AddChild(Widget("br_scale_root"))
 	--
 end
@@ -216,6 +223,7 @@ function Controls:SetHUDSize(  )
 	self.topright_root:SetScale(scale,scale,scale)
 	self.bottom_root:SetScale(scale,scale,scale)
 	self.top_root:SetScale(scale,scale,scale)
+	self.right_root:SetScale(scale, scale, scale)
 	self.bottomright_root:SetScale(scale,scale,scale)
 	self.left_root:SetScale(scale,scale,scale)
 	self.containerroot:SetScale(scale,scale,scale)

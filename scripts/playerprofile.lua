@@ -189,6 +189,22 @@ function PlayerProfile:GetDressupTimestamp()
 	return self.persistdata.lobby_timestamp or -10000
 end
 
+function PlayerProfile:SetRecipeTimestamp(recipe, time)
+	self.persistdata.recipe_timestamps = self.persistdata.recipetimestamps or {}
+
+	self.persistdata.recipe_timestamps[recipe] = time
+	self:Save()
+end
+
+function PlayerProfile:GetRecipeTimestamp(recipe)
+
+	if self.persistdata.recipe_timestamps then 
+		return self.persistdata.recipe_timestamps[recipe] or -10000
+	else 
+		return -10000
+	end
+end
+
 function PlayerProfile:IsSkinEquipped(name, type)
 
 	for character, data in pairs(self.persistdata.characterskins) do 

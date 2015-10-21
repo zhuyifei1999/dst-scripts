@@ -531,11 +531,11 @@ TEMPLATES = {
     -----------------
     -- For making a square button that has a custom icon on it and has a text label
     -- Text label offset can be specified, as well as whether or not it always shows
-    IconButton = function(iconAtlas, iconTexture, labelText, sideLabel, alwaysShowLabel, onclick, textinfo)
+    IconButton = function(iconAtlas, iconTexture, labelText, sideLabel, alwaysShowLabel, onclick, textinfo, defaultTexture)
         local btn = ImageButton("images/frontend.xml", "button_square.tex", "button_square_halfshadow.tex", "button_square_disabled.tex", "button_square_halfshadow.tex", "button_square_disabled.tex", {1,1}, {0,0})
         btn.image:SetScale(.7)
 
-        btn.icon = btn:AddChild(Image(iconAtlas, iconTexture))
+        btn.icon = btn:AddChild(Image(iconAtlas, iconTexture, defaultTexture))
         btn.icon:SetPosition(-5,4)
         btn.icon:SetScale(.16)
         btn.icon:SetClickable(false)

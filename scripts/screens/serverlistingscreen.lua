@@ -373,7 +373,7 @@ end
 
 function ServerListingScreen:ViewServerGroup()
     if self.selected_server ~= nil and self.selected_server.clan_server then
-        TheNet:ViewSteamProfile(self.selected_server.steam_group_id)
+        TheNet:ViewNetProfile(self.selected_server.net_group_id)
     end
 end
 
@@ -1423,7 +1423,7 @@ function ServerListingScreen:DoFiltering(doneSearching)
                         belongs_to_clan=v.belongs_to_clan,
                         lan_only = v.lan_only,
                         offline = v.offline,
-                        steam_group_id = v.steam_group_id, 
+                        net_group_id = v.net_group_id, 
                         actualindex=i,
                         mods_enabled = v.mods_enabled,
                         tags = v.tags,

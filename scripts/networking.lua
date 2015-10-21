@@ -518,7 +518,7 @@ function UpdateServerTagsString()
         table.insert(tagsTable, STRINGS.TAGS.LOCAL)
     end
 
-    if TheNet:GetDefaultClanID() ~= "0" then
+    if TheNet:GetDefaultClanID() ~= "" then
         table.insert(tagsTable, STRINGS.TAGS.CLAN)
     end
 

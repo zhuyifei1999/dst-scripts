@@ -24,6 +24,7 @@ end
 local WorldMigrator = Class(function(self, inst)
     self.inst = inst
 
+    self.auto = true
     self.enabled = true
     self._status = -1
 
@@ -39,7 +40,11 @@ nil,
     _status = onstatus,
 })
 
-function WorldMigrator:SetDestinationWorld(world)
+function WorldMigrator:SetDestinationWorld(world, permanent)
+    self.auto = true
+    if permanent ~= nil then
+        self.auto = not permanent
+    end
     self.linkedWorld = world
     self:ValidateAndPushEvents()
 end
@@ -62,7 +67,7 @@ function WorldMigrator:ValidateAndPushEvents()
     if self.enabled == false then
         self._status = STATUS.INACTIVE
         self.inst:PushEvent("migration_unavailable")
-        print(string.format("Validating %d, which is disabled by prefab: status: %s world: %s available: %s", self.id or -1, table.reverselookup(STATUS, self._status), self.linkedWorld or "<nil>", tostring(self.linkedWorld and Shard_IsWorldAvailable(self.linkedWorld) or false)))
+        print(string.format("Validating %s (disabled by prefab)", self:GetDebugString()))
         return
     end
 
@@ -76,7 +81,7 @@ function WorldMigrator:ValidateAndPushEvents()
         self._status = STATUS.INACTIVE
         self.inst:PushEvent("migration_unavailable")
     end
-    print(string.format("Validating %d: status: %s world: %s available: %s", self.id or -1, table.reverselookup(STATUS, self._status), self.linkedWorld or "<nil>", tostring(self.linkedWorld and Shard_IsWorldAvailable(self.linkedWorld) or false)))
+    print(string.format("Validating %s", self:GetDebugString()))
 end
 
 function WorldMigrator:IsBound()
@@ -138,6 +143,7 @@ function WorldMigrator:OnSave()
         id = self.id,
         linkedWorld = self.linkedWorld,
         recievedPortal = self.recievedPortal,
+        auto = self.auto,
     }
 end
 
@@ -147,10 +153,14 @@ function WorldMigrator:OnLoad(data)
     end
     self.linkedWorld = data.linkedWorld
     self.recievedPortal = data.recievedPortal
+    self.auto = true
+    if data.auto ~= nil then
+        self.auto = data.auto
+    end
 end
 
 function WorldMigrator:GetDebugString()
-    return string.format("ID %d: status: %s world: %s available: %s recieves: %d", self.id or -1, table.reverselookup(STATUS, self._status), self.linkedWorld or "<nil>", tostring(self.linkedWorld and Shard_IsWorldAvailable(self.linkedWorld) or false), self.recievedPortal or -1)
+    return string.format("ID %d: status: %s world: %s (%s) available: %s recieves: %d", self.id or -1, table.reverselookup(STATUS, self._status), self.linkedWorld or "<nil>", self.auto and "auto" or "manual", tostring(self.linkedWorld and Shard_IsWorldAvailable(self.linkedWorld) or false), self.recievedPortal or -1)
 end
 
 return WorldMigrator

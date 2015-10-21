@@ -456,7 +456,7 @@ end
 local lastfound = -1
 local lastprefab = nil
 function c_findnext(prefab, radius, inst)
-    inst = inst or ConsoleCommandPlayer()
+    inst = inst or ConsoleCommandPlayer() or TheWorld
     radius = radius or 9001
     prefab = prefab or lastprefab
     lastprefab = prefab

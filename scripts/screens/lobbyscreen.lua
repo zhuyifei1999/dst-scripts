@@ -289,12 +289,12 @@ local function listingConstructor(v, i, parent)
 		function()
 			-- Can't do this here because HUD doesn't exist yet. TODO: add the playeravatarpopup to frontend, or wrap it in a screen.
 			--ThePlayer.HUD:OpenPlayerAvatarPopup(displayName, v, true)
-			if v.steamid then
-				TheNet:ViewSteamProfile(v.steamid)
+			if v.netid ~= nil then
+				TheNet:ViewNetProfile(v.netid)
 			end
 		end)
 
-	if empty or v.userid == owner then
+	if empty or v.userid == owner or not TheNet:IsNetIDPlatformValid(v.netid) then
 		playerListing.viewprofile:Hide()
 	end
 
@@ -425,12 +425,12 @@ local function UpdatePlayerListing(widget, data, index)
 		function()
 			-- Can't do this here because HUD doesn't exist yet. TODO: add the playeravatarpopup to frontend, or wrap it in a screen.
 			--ThePlayer.HUD:OpenPlayerAvatarPopup(displayName, data, true)
-			if data.steamid then
-				TheNet:ViewSteamProfile(data.steamid)
+			if data.netid ~= nil then
+				TheNet:ViewNetProfile(data.netid)
 			end
 		end)
 
-	if empty or data.userid == owner then
+	if empty or data.userid == owner or not TheNet:IsNetIDPlatformValid(data.netid) then
 		widget.viewprofile:Hide()
 	else
 		widget.viewprofile:Show()
@@ -536,7 +536,7 @@ function LobbyScreen:BuildPlayerList(players)
 	end
 
 	if not TheInput:ControllerAttached() then 
-		self.invite_button = self.player_list:AddChild(TEMPLATES.Button(STRINGS.UI.LOBBYSCREEN.INVITE, function() TheNet:ViewSteamFriends() end))
+		self.invite_button = self.player_list:AddChild(TEMPLATES.Button(STRINGS.UI.LOBBYSCREEN.INVITE, function() TheNet:ViewNetFriends() end))
 		self.invite_button:SetPosition(45, -258)
 		self.invite_button:SetScale(.7)
 	end

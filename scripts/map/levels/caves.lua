@@ -92,4 +92,7 @@ AddLevel(LEVELTYPE.SURVIVAL, {
         {"wormhole_prefab", "tentacle_pillar" },
 	},
     background_node_range = {0,1},
+    required_prefabs = {
+        "multiplayer_portal",
+    },
 })

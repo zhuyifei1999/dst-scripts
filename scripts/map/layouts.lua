@@ -229,7 +229,11 @@ local ExampleLayout =
 --------------------------------------------------------------------------------
 -- Start Nodes 
 --------------------------------------------------------------------------------
-		["DefaultStart"] = StaticLayout.Get("map/static_layouts/default_start"),
+		["DefaultStart"] = StaticLayout.Get("map/static_layouts/default_start", {
+            start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+            fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+            layout_position = LAYOUT_POSITION.CENTER,
+        }),
 		["CaveStart"] = StaticLayout.Get("map/static_layouts/cave_start", {
             start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
             fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,

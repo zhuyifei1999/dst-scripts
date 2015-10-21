@@ -24,11 +24,14 @@ function Shard_UpdateWorldState(world_id, state)
     ShardConnected[world_id] = ready or nil
 
     for k, v in pairs(ShardPortals) do
-        if ready and v.components.worldmigrator.linkedWorld == nil then
+        if ready and (v.components.worldmigrator.linkedWorld == nil
+                    or v.components.worldmigrator.auto == true) then
             -- Bind unused portals to this new server, mm-mm!
             v.components.worldmigrator:SetDestinationWorld(world_id)
         elseif v.components.worldmigrator.linkedWorld == world_id then
             v.components.worldmigrator:ValidateAndPushEvents()
+        else
+            print(string.format("Skipping portal %d (different permanent world)", v.components.worldmigrator.id))
         end
     end  
 end

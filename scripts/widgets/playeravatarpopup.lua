@@ -18,7 +18,7 @@ for k, v in pairs(EQUIPSLOTS) do
 end
 slot = nil
 
-local PlayerAvatarPopup = Class(Widget, function(self, owner, player_name, data, include_steam_link)
+local PlayerAvatarPopup = Class(Widget, function(self, owner, player_name, data, show_net_profile)
     Widget._ctor(self, "PlayerAvatarPopupScreen")
 
     self.owner = owner
@@ -30,11 +30,11 @@ local PlayerAvatarPopup = Class(Widget, function(self, owner, player_name, data,
 
     self.proot = self:AddChild(Widget("ROOT"))
 
-    self:SetPlayer(player_name, data, include_steam_link)
+    self:SetPlayer(player_name, data, show_net_profile)
     self:Start()
 end)
 
-function PlayerAvatarPopup:SetPlayer(player_name, data, include_steam_link)
+function PlayerAvatarPopup:SetPlayer(player_name, data, show_net_profile)
     local character = data.prefab or data.character or "wilson"
     if character == "" then 
         character = "notselected"
@@ -132,10 +132,10 @@ function PlayerAvatarPopup:SetPlayer(player_name, data, include_steam_link)
         self.body_equip_image = self.proot:AddChild(self:GetEquipWidgetForSlot(EQUIPSLOTS.BODY, data.equip))
         self.body_equip_image:SetPosition(left_column, equip_offset-200)
 
-        if include_steam_link then 
-            self.steambutton = self.proot:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "steam.tex", "", false, false, function() if data.steamid then TheNet:ViewSteamProfile(data.steamid) end end ))
-            self.steambutton:SetScale(.5)
-            self.steambutton:SetPosition(right_column+50,115,0)
+        if show_net_profile and TheNet:IsNetIDPlatformValid(data.netid) then 
+            self.netprofilebutton = self.proot:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "steam.tex", "", false, false, function() if data.netid ~= nil then TheNet:ViewNetProfile(data.netid) end end ))
+            self.netprofilebutton:SetScale(.5)
+            self.netprofilebutton:SetPosition(right_column+50,115,0)
         end
     else
         self.proot:SetPosition(10, 0)
@@ -155,10 +155,10 @@ function PlayerAvatarPopup:SetPlayer(player_name, data, include_steam_link)
         self.text = self.proot:AddChild(Text(UIFONT, 25, STRINGS.UI.PLAYER_AVATAR.CHOOSING))
         self.text:SetColour(unpack(data.colour))
 
-        if include_steam_link then 
-            self.steambutton = self.proot:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "steam.tex", "", false, false, function() if data.steamid then TheNet:ViewSteamProfile(data.steamid) end end ))
-            self.steambutton:SetScale(.5)
-            self.steambutton:SetPosition(0,-75,0)
+        if show_net_profile and TheNet:IsNetIDPlatformValid(data.netid) then 
+            self.netprofilebutton = self.proot:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "steam.tex", "", false, false, function() if data.netid ~= nil then TheNet:ViewNetProfile(data.netid) end end ))
+            self.netprofilebutton:SetScale(.5)
+            self.netprofilebutton:SetPosition(0,-75,0)
         end
     end
 
@@ -191,8 +191,8 @@ function PlayerAvatarPopup:Start()
 
         local w, h = self.frame_bg:GetSize()
         
-        self.out_pos = Vector3(.5*w, -.55*h, 0)
-        self.in_pos = Vector3(-.9*w, -.55*h, 0)
+        self.out_pos = Vector3(.5*w, 0, 0)
+        self.in_pos = Vector3(-.95*w, 0, 0)
 
         self:MoveTo(self.out_pos, self.in_pos, .33, function() self.settled = true end)
     end

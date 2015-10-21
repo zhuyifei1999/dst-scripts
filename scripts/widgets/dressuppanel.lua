@@ -194,10 +194,15 @@ function DressupPanel:MakeSpinner(slot)
     	spinner_group.shadow:SetScale(.25)
     end
   
-    spinner_group.new_tag = spinner_group:AddChild(Text(BODYTEXTFONT, 20, STRINGS.UI.SKINSSCREEN.NEW))
-    --spinner_group.new_tag.inst.UITransform:SetRotation(43)
-    spinner_group.new_tag:SetPosition(-35, 25)
-    spinner_group.new_tag:SetColour(GOLD)
+    spinner_group.new_tag = spinner_group:AddChild(Image("images/ui.xml", "new_label.tex"))
+    spinner_group.new_tag:SetScale(.8)
+    spinner_group.new_tag:SetPosition(60, 63) 
+
+    spinner_group.new_label = spinner_group.new_tag:AddChild(Text(BODYTEXTFONT, 20, STRINGS.UI.SKINSSCREEN.NEW))
+    spinner_group.new_label.inst.UITransform:SetRotation(43)
+    spinner_group.new_label:SetPosition(1, 4)
+    spinner_group.new_label:SetColour(WHITE)
+
     spinner_group.new_tag:Hide()
 
 	spinner_group.slot = slot
@@ -229,8 +234,10 @@ function DressupPanel:MakeSpinner(slot)
 												  local which = spinner_group.spinner:GetSelectedIndex()
 												  if skin_options[which].new_indicator then 
 												  	spinner_group.new_tag:Show()
+												  	--print("Showing new tag", spinner_group.GetItem())
 												  else
 												  	spinner_group.new_tag:Hide()
+												  	--print("Hiding new_tag", spinner_group.GetItem())
 												  end
 												  self.inst:DoTaskInTime(0, function() self:SetPuppetSkins() end)
 										end)
@@ -250,8 +257,10 @@ function DressupPanel:MakeSpinner(slot)
 								local which = spinner_group.spinner:GetSelectedIndex()
 								if skin_options[which].new_indicator then 
 								  	spinner_group.new_tag:Show()
+								  	--print("Showing new tag", spinner_group.GetItem())
 								else
 								  	spinner_group.new_tag:Hide()
+								  	--print("Hiding new_tag", spinner_group.GetItem())
 								end
 								self.inst:DoTaskInTime(0, function() self:SetPuppetSkins() end)
 							end 
@@ -325,9 +334,10 @@ function DressupPanel:GetSkinOptionsForSlot(slot)
 		new_indicator = false,
 	})
 
+	--print("Building skin_options")
 	for which = 1, #self.skins_list do 
 		if self.skins_list[which].type == slot then 
-			--print(self.skins_list[which].item_id, "Got timestamp", self.skins_list[which].timestamp or "nil", dressup_timestamp)
+			--print(self.skins_list[which].item or "?", "Got timestamp", self.skins_list[which].timestamp or "nil", dressup_timestamp)
 			local new_indicator = not self.skins_list[which].timestamp or (self.skins_list[which].timestamp > dressup_timestamp)
 			image_name = self.skins_list[which].item
 			local rarity = GetRarityForItem(slot, image_name)
@@ -352,6 +362,7 @@ function DressupPanel:GetSkinOptionsForSlot(slot)
 			end
 		end
 	end
+	--print("done building skin options")
 	
 
 	return skin_options
@@ -473,8 +484,9 @@ function DressupPanel:Reset(set_spinner_to_new_item)
 end
 
 -- This is the full skins list, which is used to populate the spinners
--- (Duplicates are removed unless they are new.)
+-- (Duplicates are removed.)
 function DressupPanel:GetSkinsList()
+	--print("Getting skins list (full inventory)")
 
 	local templist = TheInventory:GetFullInventory()
 	self.skins_list = {}

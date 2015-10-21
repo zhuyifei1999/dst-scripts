@@ -137,15 +137,15 @@ local ViewPlayersModalScreen = Class(Screen, function(self, players, maxPlayers)
         playerListing.viewprofile:SetOnClick(
             function()
             	--TheFrontEnd:PushScreen(PlayerAvatarPopupScreen(v.name, v))
-                if v.steamid then
-                    TheNet:ViewSteamProfile(v.steamid)
+                if v.netid ~= nil then
+                    TheNet:ViewNetProfile(v.netid)
                 end
             end)
 
         -- Skipping check for hiding my own profile button
         -- Shouldn't see this screen if i'm in game unless I just D/C and listings haven't updated
         -- Also, my offline ID won't match my online ID as well
-        if v.steamid ~= nil then
+        if TheNet:IsNetIDPlatformValid(v.netid) then
             playerListing.focus_forward = playerListing.viewprofile
         else
             playerListing.viewprofile:Hide()

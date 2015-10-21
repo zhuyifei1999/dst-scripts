@@ -133,11 +133,14 @@ function RecipePopup:BuildWithSpinner(horizontal)
     end
     self.desc:EnableWordWrap(true)
 
+    -- create the background first so it displays under the lines
+    self.spinner_bg = self.lines:AddChild(Image("images/hud.xml", "crafting_submenu_texture.tex"))
+    self.spinner_bg:SetScale(1, 1.32, 1)
+    self.spinner_bg:SetPosition(317, -68)
 
-    self.lines.line_under_desc = self.lines:AddChild(Image("images/ui.xml", "line_horizontal_white.tex"))
+   	self.lines.line_under_desc = self.lines:AddChild(Image("images/ui.xml", "line_horizontal_white.tex"))
    	self.lines.line_under_desc:SetPosition(320, -15)
    	self.lines.line_under_desc:SetTint(unpack(BROWN))
-
 
     self.ing = {}
 
@@ -145,6 +148,7 @@ function RecipePopup:BuildWithSpinner(horizontal)
     self.button:SetOnClick(function()  if not DoRecipeClick(self.owner, self.recipe, self.skins_spinner.GetItem()) then 
 											self.owner.HUD.controls.crafttabs:Close() 
 										else
+											Profile:SetRecipeTimestamp(self.recipe.name, self.timestamp)
 											Profile:SetLastUsedSkinForItem(self.recipe.name, self.skins_spinner.GetItem())
 										end 
     						end)
@@ -157,11 +161,12 @@ function RecipePopup:BuildWithSpinner(horizontal)
     self.build_title = self.contents:AddChild(Text(BODYTEXTFONT, 33))
     self.build_title:SetPosition(330, -60, 0)
 
+
     self.skins_spinner = self.contents:AddChild(self:MakeSpinner())
     -- self.skins_spinner:SetScale(.3)
 	self.skins_spinner:SetPosition(307, -100)
 
-	if horizontal then 
+	if horizontal and TheInput:ControllerAttached() then 
 		-- Put symbols showing the controls for the spinner next to the spinner buttons
 		self.skins_spinner.spinner:AddControllerHints()
 	end
@@ -250,7 +255,12 @@ function RecipePopup:BuildNoSpinner(horizontal)
     self.button = self.contents:AddChild(ImageButton())
     self.button:SetScale(.7,.7,.7)
     self.button.image:SetScale(.45, .7)
-    self.button:SetOnClick(function() if not DoRecipeClick(self.owner, self.recipe) then self.owner.HUD.controls.crafttabs:Close() end end)
+    self.button:SetOnClick(function() 	if not DoRecipeClick(self.owner, self.recipe) then 
+    										self.owner.HUD.controls.crafttabs:Close() 
+    									else
+    										Profile:SetRecipeTimestamp(self.recipe.name, self.timestamp)
+    									end
+    								end)
 
     self.recipecost = self.contents:AddChild(Text(NUMBERFONT, 40))
     self.recipecost:SetHAlign(ANCHOR_LEFT)
@@ -486,6 +496,8 @@ function RecipePopup:GetIndexForSkin(skin)
 end
 
 function RecipePopup:GetSkinsList()
+	if not self.timestamp then self.timestamp = -10000 end
+
 	--Note(Peter): This could get a speed improvement by passing in self.recipe.name into a c-side inventory check, and then add the PREFAB_SKINS data to c-side
 	-- so that we don't have to walk the whole inventory for each prefab for each item_type in PREFAB_SKINS[self.recipe.name]
 	self.skins_list = {}
@@ -498,6 +510,10 @@ function RecipePopup:GetSkinsList()
 				data.item = item_type
 				data.timestamp = modified_time
 				table.insert(self.skins_list, data)
+
+				if data.timestamp > self.timestamp then 
+					self.timestamp = data.timestamp
+				end
 			end
 		end
 	end
@@ -517,6 +533,8 @@ function RecipePopup:GetSkinOptions()
 		image =  {"images/inventoryimages.xml", self.recipe.name..".tex", "default.tex"},
 	})
 
+	local recipe_timestamp = Profile:GetRecipeTimestamp(self.recipe.name)
+	--print(self.recipe.name, "Recipe timestamp is ", recipe_timestamp)
 	if self.skins_list and TheNet:IsOnlineMode() then 
 		for which = 1, #self.skins_list do 
 			local image_name = self.skins_list[which].item 
@@ -524,7 +542,7 @@ function RecipePopup:GetSkinOptions()
 			local rarity = GetRarityForItem("item", image_name)
 			local colour = rarity and SKIN_RARITY_COLORS[rarity] or SKIN_RARITY_COLORS["Common"]
 			local text_name = GetName(image_name) or SKIN_STRINGS.SKIN_NAMES["missing"]
-			local new_indicator = not self.skins_list[which].timestamp or (self.skins_list[which].timestamp > Profile:GetCollectionTimestamp())
+			local new_indicator = not self.skins_list[which].timestamp or (self.skins_list[which].timestamp > recipe_timestamp)
 
 			if image_name == "" then 
 				image_name = "default"
@@ -586,10 +604,16 @@ function RecipePopup:MakeSpinner()
 	spinner_group.spinner.background:ScaleToSize(spinner_width + 2, spinner_height)
 	spinner_group.spinner.background:SetPosition(0, 6)
 	
-	spinner_group.new_tag = spinner_group:AddChild(Text(BODYTEXTFONT, 20, STRINGS.UI.SKINSSCREEN.NEW))
-    spinner_group.new_tag:SetPosition(-45, 35) 
-    spinner_group.new_tag:SetColour(GOLD)
+    spinner_group.new_tag = spinner_group:AddChild(Image("images/ui.xml", "new_label.tex"))
+    spinner_group.new_tag:SetPosition(60, 60) 
+   
+    spinner_group.new_text = spinner_group.new_tag:AddChild(Text(BODYTEXTFONT, 20, STRINGS.UI.SKINSSCREEN.NEW))
+   	spinner_group.new_text.inst.UITransform:SetRotation(43)
+    spinner_group.new_text:SetPosition(0, 6) 
+    spinner_group.new_text:SetColour(WHITE)
+   
     spinner_group.new_tag:Hide()
+
 
     spinner_group.spinner:SetOnChangedFn(function()
 												  	local which = spinner_group.spinner:GetSelectedIndex()

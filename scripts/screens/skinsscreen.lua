@@ -425,17 +425,17 @@ function SkinsScreen:BuildDetailsPanel()
 	
     self.details_panel:SetPosition(-400, -0, 0)
 
+    self.details_panel.shadow = self.details_panel:AddChild(Image("images/frontscreen.xml", "char_shadow.tex"))
+	self.details_panel.shadow:SetPosition(0, 35)
+	self.details_panel.shadow:SetScale(.8)
+
 	self.details_panel.image = self.details_panel:AddChild(UIAnim()) 
 	self.details_panel.image:GetAnimState():SetBuild("frames_comp")
 	self.details_panel.image:GetAnimState():SetBank("fr")
 	self.details_panel.image:GetAnimState():PlayAnimation("icon")
 	self.details_panel.image:SetPosition(0, 125)
-	self.details_panel.image:SetScale(1.5)
-
-	self.details_panel.shadow = self.details_panel:AddChild(Image("images/frontscreen.xml", "char_shadow.tex"))
-	self.details_panel.shadow:SetPosition(0, 50)
-	self.details_panel.shadow:SetScale(.8)
-
+	self.details_panel.image:SetScale(1.65)
+	
 	self.details_panel.name = self.details_panel:AddChild(Text(TALKINGFONT, 30, "name", {0, 0, 0, 1}))
 	self.details_panel.name:SetPosition(0, -30)
 

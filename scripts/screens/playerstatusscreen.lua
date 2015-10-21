@@ -54,7 +54,7 @@ function PlayerStatusScreen:OnDestroy()
 end
 
 function PlayerStatusScreen:GetHelpText()
-    if self.server_group ~= "0" and TheInput:ControllerAttached() then
+    if self.server_group ~= "" and TheInput:ControllerAttached() then
         local controller_id = TheInput:GetControllerID()
         return TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_2) .. STRINGS.UI.HELP.VIEWGROUP
     end
@@ -75,8 +75,8 @@ function PlayerStatusScreen:OnControl(control, down)
                 not TheInput:IsControlPressed(CONTROL_SHOW_PLAYER_STATUS))) then
             self:Close()
             return true
-        elseif control == CONTROL_MENU_MISC_2 and self.server_group ~= "0" then
-            TheNet:ViewSteamProfile(self.server_group)
+        elseif control == CONTROL_MENU_MISC_2 and self.server_group ~= "" then
+            TheNet:ViewNetProfile(self.server_group)
             return true
         end
     end
@@ -209,10 +209,10 @@ function PlayerStatusScreen:DoInit(ClientObjs)
     self.serverstate:SetString(modeStr)
 
     self.server_group = TheNet:GetServerClanID()
-    if self.server_group ~= "0" and not TheInput:ControllerAttached() then
+    if self.server_group ~= "" and not TheInput:ControllerAttached() then
         if not self.viewgroup_button then
             self.viewgroup_button = self.root:AddChild(ImageButton("images/scoreboard.xml", "clan_normal.tex", "clan_hover.tex", "clan.tex", "clan.tex", nil, {0.6,0.6}, {0,0}))
-            self.viewgroup_button:SetOnClick(function() TheNet:ViewSteamProfile(self.server_group) end)
+            self.viewgroup_button:SetOnClick(function() TheNet:ViewNetProfile(self.server_group) end)
             self.viewgroup_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.VIEWGROUP, { font = NEWFONT_OUTLINE, size = 24, offset_x = 0, offset_y = 48, colour = {1,1,1,1}})
         end
     end

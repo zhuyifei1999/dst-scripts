@@ -40,7 +40,7 @@ else
         SERVER_NAME = 210,
         SEEN_DATE = 340,
         PLAYER_AGE = 415,
-        STEAM_ID = 520,
+        NET_ID = 520,
     }
 end
 
@@ -298,19 +298,19 @@ local function encounter_widget_constructor(data, parent, obit_button)
     group.PLAYER_AGE:SetString(data.playerage .. " " .. suffix)
     group.PLAYER_AGE:SetColour(0,0,0,1)
 
-    group.STEAM_ID = group:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "player_info.tex", STRINGS.UI.PLAYERSTATUSSCREEN.VIEWPROFILE, false, false, 
+    group.NET_ID = group:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "player_info.tex", STRINGS.UI.PLAYERSTATUSSCREEN.VIEWPROFILE, false, false, 
     	function() 
-    		if data.steamid then 
-    			TheNet:ViewSteamProfile(data.steamid) 
+    		if data.netid ~= nil then 
+    			TheNet:ViewNetProfile(data.netid) 
     		end 
     		--TheFrontEnd:PushScreen(PlayerAvatarPopupScreen(data.name, data, true))
     	end, {size = 50, offset_y = 65} ))
-    --STEAM_ID:SetHAlign(ANCHOR_MIDDLE)
-    group.STEAM_ID:SetPosition(column_offsets.STEAM_ID+8+slide_factor+18, -1, 0)
-	group.STEAM_ID:SetScale(.45)
-    group.STEAM_ID:SetHelpTextMessage(STRINGS.UI.PLAYERSTATUSSCREEN.VIEWPROFILE)
+    --NET_ID:SetHAlign(ANCHOR_MIDDLE)
+    group.NET_ID:SetPosition(column_offsets.NET_ID+8+slide_factor+18, -1, 0)
+	group.NET_ID:SetScale(.45)
+    group.NET_ID:SetHelpTextMessage(STRINGS.UI.PLAYERSTATUSSCREEN.VIEWPROFILE)
 
-    group.focus_forward = group.STEAM_ID
+    group.focus_forward = group.NET_ID
 
     group:SetFocusChangeDir(MOVE_LEFT, obit_button)
 
@@ -361,16 +361,15 @@ local function encounter_widget_update(widget, data, index)
         widget.PLAYER_AGE:SetString(data.playerage .. " " .. suffix)
     end
 
-    local steam = data.steamid or "none"
-    if steam == "none" then
-        widget.STEAM_ID:Hide()
+    if not TheNet:IsNetIDPlatformValid(data.netid) then
+        widget.NET_ID:Hide()
     else
-        widget.STEAM_ID:MoveToFront()
-        widget.STEAM_ID:Show()
-        widget.STEAM_ID:SetOnClick( function() 
+        widget.NET_ID:MoveToFront()
+        widget.NET_ID:Show()
+        widget.NET_ID:SetOnClick( function() 
     		--TheFrontEnd:PushScreen(PlayerAvatarPopupScreen(data.name, data, true))
-    		if data.steamid then 
-    			TheNet:ViewSteamProfile(data.steamid) 
+    		if data.netid ~= nil then 
+    			TheNet:ViewNetProfile(data.netid)
     		end 
     	end)
     end
@@ -631,13 +630,13 @@ function MorgueScreen:BuildEncountersTab()
 	    self.PLAYER_AGE:SetColour(0, 0, 0, 1)
         self.PLAYER_AGE:SetClickable(false)
 
-	    self.STEAM_ID = self.encounters_titles:AddChild(Text(NEWFONT, font_size))
-	    self.STEAM_ID:SetHAlign(ANCHOR_MIDDLE)
-	    self.STEAM_ID:SetPosition(column_offsets.STEAM_ID + 35 + 15, header_height, 0)
-	    self.STEAM_ID:SetRegionSize( 400, 30 )
-	    self.STEAM_ID:SetString(STRINGS.UI.MORGUESCREEN.STEAM_ID)
-	    self.STEAM_ID:SetColour(0, 0, 0, 1)
-        self.STEAM_ID:SetClickable(false)
+	    self.NET_ID = self.encounters_titles:AddChild(Text(NEWFONT, font_size))
+	    self.NET_ID:SetHAlign(ANCHOR_MIDDLE)
+	    self.NET_ID:SetPosition(column_offsets.NET_ID + 35 + 15, header_height, 0)
+	    self.NET_ID:SetRegionSize( 400, 30 )
+	    self.NET_ID:SetString(STRINGS.UI.MORGUESCREEN.NET_ID)
+	    self.NET_ID:SetColour(0, 0, 0, 1)
+        self.NET_ID:SetClickable(false)
 	end
 
 
@@ -654,8 +653,8 @@ function MorgueScreen:BuildEncountersTab()
 
     while count < num_rows do 
     	if not self.player_history[playerIdx] or self.player_history[playerIdx].prefab ~= "" then 
-        	table.insert(self.encounter_widgets, encounter_widget_constructor(self.player_history[playerIdx] or {name="", playerage="0", steamid="", server_name="", date="", prefab=""}, self.encountersrowsroot, self.obituary_button))
-        	table.insert(self.encounter_items, self.player_history[playerIdx] or {name="", playerage="0", steamid="", server_name="", date="", prefab=""})
+        	table.insert(self.encounter_widgets, encounter_widget_constructor(self.player_history[playerIdx] or {name="", playerage="0", netid="", server_name="", date="", prefab=""}, self.encountersrowsroot, self.obituary_button))
+        	table.insert(self.encounter_items, self.player_history[playerIdx] or {name="", playerage="0", netid="", server_name="", date="", prefab=""})
         	count = count + 1
         end
         playerIdx = playerIdx + 1

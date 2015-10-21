@@ -144,6 +144,8 @@ function WardrobePopupScreen:GetHelpText()
     end
 	return table.concat(t, "  ")
 	]]
+	
+	return ""
 end
 
 return WardrobePopupScreen

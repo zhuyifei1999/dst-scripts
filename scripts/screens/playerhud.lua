@@ -196,7 +196,7 @@ function PlayerHud:OpenContainer(container, side)
     end
 end
 
-function PlayerHud:TogglePlayerAvatarPopup(player_name, data, include_steam_link)
+function PlayerHud:TogglePlayerAvatarPopup(player_name, data, show_net_profile)
     if self.playeravatarpopup ~= nil then
         if self.playeravatarpopup.started and
             self.playeravatarpopup.inst:IsValid() then
@@ -210,7 +210,7 @@ function PlayerHud:TogglePlayerAvatarPopup(player_name, data, include_steam_link
             end
         end
     end
-    self.playeravatarpopup = self.controls.topright_root:AddChild(PlayerAvatarPopup(self.owner, player_name, data, include_steam_link))
+    self.playeravatarpopup = self.controls.right_root:AddChild(PlayerAvatarPopup(self.owner, player_name, data, show_net_profile))
 end
 
 function PlayerHud:OpenItemManagerScreen()

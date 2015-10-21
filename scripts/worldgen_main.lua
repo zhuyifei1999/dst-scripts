@@ -436,7 +436,8 @@ end
 function GenerateNew(debug, parameters)
     
 
-	--dumptable(parameters)
+    print("Generating world with these parameters:")
+    dumptable(parameters)
     --print("Generate New map",debug, parameters.gen_type, "type: "..parameters.level_type, parameters.current_level, parameters.world_gen_choices)
 	local Gen = require "map/forest_map"
 	

@@ -196,9 +196,13 @@ function Inv:Rebuild()
         
     end
 
-    self.inspectcontrol = self.root:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "player_info.tex", STRINGS.UI.HUD.INSPECT_SELF, false, false, function() self.owner.HUD:InspectSelf() end, {size = 40}))
+    local image_name = "self_inspect_"..self.owner.prefab..".tex" 
+
+    self.inspectcontrol = self.root:AddChild(TEMPLATES.IconButton("images/hud.xml", image_name, STRINGS.UI.HUD.INSPECT_SELF, false, false, function() self.owner.HUD:InspectSelf() end, {size = 40}, "self_inspect_mod.tex"))
+    self.inspectcontrol.icon:SetScale(.7)
+    self.inspectcontrol.icon:SetPosition(-5, 6)
     self.inspectcontrol:SetScale(1.25)
-    self.inspectcontrol:SetPosition(total_w/2 - W/2, -5, 0)
+    self.inspectcontrol:SetPosition(total_w/2 - W/2 + 5, -6, 0)
    
     local hadbackpack = self.backpack ~= nil
     if hadbackpack then

@@ -42,6 +42,7 @@ AddLevel(LEVELTYPE.SURVIVAL, {
 		ordered_story_setpieces = {
 		},
 		required_prefabs = {
+            "multiplayer_portal",
 		},
 	})
 
@@ -102,6 +103,7 @@ AddLevel(LEVELTYPE.SURVIVAL, {
 		ordered_story_setpieces = {
 		},
 		required_prefabs = {
+            "multiplayer_portal",
 		},
 	})
 
@@ -203,7 +205,7 @@ AddLevel(LEVELTYPE.SURVIVAL, {
 			-- "TeleportatoBaseLayout",
 		},
 		required_prefabs = {
-			-- "teleportato_ring",  "teleportato_box",  "teleportato_crank", "teleportato_potato", "teleportato_base", "chester_eyebone", "adventure_portal"
+            "multiplayer_portal",
 		},
 	})
 end
@@ -240,6 +242,9 @@ AddLevel(LEVELTYPE.SURVIVAL, {
 			"Warzone_1",
 			"Warzone_2",
 			"Warzone_3",
+		},
+		required_prefabs = {
+            "multiplayer_portal",
 		},
 	})
 
