@@ -1036,7 +1036,7 @@ return {
 		{
 			DEAD = "Another lost friend.",
 			GENERIC = "Spiders understand us.",
-			SLEEPING = "Wake up, friend!.",
+            SLEEPING = "Wake up, friend!",
 		},
 		SPIDERDEN = "Looks cozy in there.",
 		SPIDEREGGSACK = "A portable friendship pod!",

@@ -33,6 +33,16 @@ local function oncanheal(self, canheal)
     self.inst.replica.health:SetCanHeal(canheal)
 end
 
+local function oninvincible(self, invincible)
+    if CHEATS_ENABLED then -- use this to visualize godmode on the client
+        if invincible then
+            self.inst:AddTag("invincible")
+        else
+            self.inst:RemoveTag("invincible")
+        end
+    end
+end
+
 local Health = Class(function(self, inst)
     self.inst = inst
     self.maxhealth = 100
@@ -64,6 +74,7 @@ nil,
     penalty = onpenalty,
     canmurder = oncanmurder,
     canheal = oncanheal,
+    invincible = oninvincible,
 })
 
 function Health:OnRemoveFromEntity()

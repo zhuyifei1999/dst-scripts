@@ -141,7 +141,10 @@ end
 
 local function OnStartDay(inst)
     --print(inst, "OnStartDay")
-    if not inst:HasTag("burnt") and inst.components.spawner:IsOccupied() then
+    if not inst:HasTag("burnt")
+        and inst.components.spawner:IsOccupied()
+        and inst.LightWatcher:GetLightValue() > 0.8 then -- they have their own light! make sure it's brighter than that out.
+
         LightsOff(inst)
         if inst.doortask ~= nil then
             inst.doortask:Cancel()
@@ -182,7 +185,7 @@ end
 
 local function spawncheckday(inst)
     --print(inst, "spawn check day")
-    if TheWorld.state.isday then
+    if TheWorld.state.iscaveday then
         OnStartDay(inst)
     end
 end
@@ -196,6 +199,7 @@ local function fn()
     inst.entity:AddSoundEmitter()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
+    inst.entity:AddLightWatcher()
 
     MakeObstaclePhysics(inst, 1)
 
@@ -233,7 +237,7 @@ local function fn()
     inst.components.spawner.onoccupied = onoccupied
     inst.components.spawner.onvacate = onvacate
 
-    inst:WatchWorldState("startday", OnStartDay)
+    inst:WatchWorldState("startcaveday", OnStartDay)
 
     inst:AddComponent("playerprox")
     inst.components.playerprox:SetDist(10,13)

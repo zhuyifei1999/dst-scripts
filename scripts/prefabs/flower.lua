@@ -36,6 +36,19 @@ local function testfortransformonload(inst)
     return TheWorld.state.isfullmoon
 end
 
+local function DieInDarkness(inst)
+    local x,y,z = inst.Transform:GetWorldPosition()
+    if TheSim:GetLightAtPoint(x,0,z) < TUNING.FLOWER_WITHER_IN_CAVE_LIGHT then
+        inst:Remove()
+    end
+end
+
+local function OnIsDay(inst, isday)
+    if isday then
+        inst:DoTaskInTime(5.0 + math.random()*5.0, DieInDarkness)
+    end
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -77,6 +90,10 @@ local function fn()
 
     MakeSmallBurnable(inst)
     MakeSmallPropagator(inst)
+
+    if TheWorld:HasTag("cave") then
+        inst:WatchWorldState("iscaveday", OnIsDay)
+    end
 
     MakeHauntableChangePrefab(inst, "flower_evil")
 

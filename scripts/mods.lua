@@ -70,41 +70,19 @@ function GetModVersion(mod_name, mod_info_use)
 end
 
 function GetEnabledModsModInfoDetails()
-	local modinfo_details = {}
-	
-	for k,mod_name in pairs(ModManager:GetEnabledServerModNames()) do
-		local modinfo = KnownModIndex:GetModInfo(mod_name)
-		if modinfo ~= nil then
-		
-			table.insert(modinfo_details, mod_name)
-			
-			if modinfo.name ~= nil then
-				table.insert(modinfo_details, modinfo.name)
-			else
-				table.insert(modinfo_details, mod_name)
-			end
-			
-			if modinfo.version ~= nil then
-				table.insert(modinfo_details, modinfo.version)
-			else
-				table.insert(modinfo_details, "")
-			end
-			
-			if modinfo.all_clients_require_mod ~= nil then
-				table.insert(modinfo_details, modinfo.all_clients_require_mod)
-			else
-				table.insert(modinfo_details, false)
-			end
-			
-		else
-			table.insert(modinfo_details, mod_name)
-			table.insert(modinfo_details, mod_name)
-			table.insert(modinfo_details, "")
-			table.insert(modinfo_details, false)
-		end
-	end
-	
-	return modinfo_details	
+    local modinfo_details = {}
+
+    for k,mod_name in pairs(ModManager:GetEnabledServerModNames()) do
+        local modinfo = KnownModIndex:GetModInfo(mod_name)
+        table.insert(modinfo_details, {
+            name = mod_name,
+            info_name = modinfo ~= nil and modinfo.name or mod_name,
+            version = modinfo ~= nil and modinfo.version or "",
+            all_clients_require_mod = modinfo ~= nil and modinfo.all_clients_require_mod == true,
+        })
+    end
+
+    return modinfo_details
 end
 
 function GetEnabledServerModsConfigData()

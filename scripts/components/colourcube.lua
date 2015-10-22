@@ -181,22 +181,31 @@ end
 
 local function OnOverrideCCTable(player, cctable)
     _overridecctable = cctable
-    UpdateAmbientCCTable(_overridephase and _overridephase.blendtime or DEFAULT_BLEND_TIME)
+    UpdateAmbientCCTable(DEFAULT_BLEND_TIME)
 end
 
 local function OnOverrideCCPhaseFn(player, fn)
+    local blendtime = nil
     if _overridephase ~= nil then
+        if _overridephase.blendtime ~= nil then
+            blendtime = _overridephase.blendtime
+        end
         for i,event in ipairs(_overridephase.events) do
             inst:RemoveEventCallback(event, OnOverridePhaseEvent)
         end
     end
     _overridephase = fn
     if _overridephase ~= nil then
+        if _overridephase.blendtime ~= nil then
+            -- We take the shorter blendtime when transitioning between overrides
+            -- This makes the molehat always transition snappily
+            blendtime = blendtime ~= nil and math.min(blendtime, _overridephase.blendtime) or _overridephase.blendtime
+        end
         for i,event in ipairs(_overridephase.events) do
             inst:ListenForEvent(event, OnOverridePhaseEvent)
         end
     end
-    UpdateAmbientCCTable(_overridephase and _overridephase.blendtime or DEFAULT_BLEND_TIME)
+    UpdateAmbientCCTable(blendtime or DEFAULT_BLEND_TIME)
 end
 
 local function OnPlayerActivated(inst, player)
@@ -326,6 +335,20 @@ end
 
 function self:LongUpdate(dt)
     self:OnUpdate(_remainingblendtime)
+end
+
+--------------------------------------------------------------------------
+--[[ Debug ]]
+--------------------------------------------------------------------------
+
+function self:GetDebugString()
+    return string.format("override: %s overridefn: %s blendtime: %.2f\n\tambient: %s -> %s\n\tsanity: %s -> %s",
+        _overridecc ~= nil and "true" or "false",
+        _overridephase ~= nil and "true" or "false",
+        _remainingblendtime,
+        _ambientcc[1], _ambientcc[2],
+        _insanitycc[1], _insanitycc[2]
+    )
 end
 
 --------------------------------------------------------------------------

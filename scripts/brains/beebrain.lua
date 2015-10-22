@@ -29,7 +29,7 @@ function BeeBrain:OnStart()
             WhileNode( function() return self.inst.components.combat.target and self.inst.components.combat:InCooldown() end, "Dodge", RunAway(self.inst, function() return self.inst.components.combat.target end, RUN_AWAY_DIST, STOP_RUN_AWAY_DIST) ),
             
             --ChaseAndAttack(self.inst, beecommon.MAX_CHASE_TIME),
-            IfNode(function() return not TheWorld.state.isday end, "IsNight",
+            IfNode(function() return not TheWorld.state.iscaveday or not self.inst.LightWatcher:IsInLight() end, "IsNight",
                 DoAction(self.inst, function() return beecommon.GoHomeAction(self.inst) end, "go home", true )),
             IfNode(function() return self.inst.components.pollinator:HasCollectedEnough() end, "IsFullOfPollen",
                 DoAction(self.inst, function() return beecommon.GoHomeAction(self.inst) end, "go home", true )),

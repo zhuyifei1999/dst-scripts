@@ -618,7 +618,7 @@ return {
 		CATCOONDEN = 
 		{
 			GENERIC = "It's a den in a stump.",
-			EMPTY = "It's owner ran out of lives.",
+			EMPTY = "Its owner ran out of lives.",
 		},
 		CATCOONHAT = "Ears hat!",
 		COONTAIL = "I think it's still swishing.",
@@ -990,7 +990,7 @@ return {
 		MONSTERLASAGNA = "I cooked it myself!",
 		FLOWERSALAD = "A bowl of foliage.",
         ICECREAM = "I scream for ice cream!",
-        WATERMELONICLE = "Cryogenic watermlon.",
+        WATERMELONICLE = "Cryogenic watermelon.",
         TRAILMIX = "A healthy, natural snack.",
         HOTCHILI = "Five alarm!",
         GUACAMOLE = "Avogadro's favorite dish.",

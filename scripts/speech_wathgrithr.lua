@@ -1137,7 +1137,7 @@ return {
 		TREASURECHEST = 
 		{
 			GENERIC = "A place to store my helm and spear while I rest.",
-			BURNT = "It's walls were torn down by fire.",
+			BURNT = "Its walls were torn down by fire.",
 		},
 		TREASURECHEST_TRAP = "I am always ready.",
 		TREECLUMP = "A dead end! I must stand and fight.",

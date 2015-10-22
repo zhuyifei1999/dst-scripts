@@ -153,6 +153,7 @@ local function fn()
     ------------------
     inst:AddComponent("deployable")
     inst.components.deployable.ondeploy = OnDeploy
+    inst.components.deployable:SetDeployMode(DEPLOYMODE.PLANT)
 
     MakeHauntablePanicAndIgnite(inst)
 

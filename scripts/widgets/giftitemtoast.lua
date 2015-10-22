@@ -33,6 +33,14 @@ local GiftItemToast = Class(Widget, function(self)
 
     self.tab_gift:SetTooltip(STRINGS.UI.ITEM_SCREEN.DISABLED_TOAST_TOOLTIP)
     self.tab_gift:SetTooltipPos(0, -40, 0)
+    
+    if TheInput:ControllerAttached() then  
+    	local controller_id = TheInput:GetControllerID()
+    	self.controller_help = self.tab_gift:AddChild(Text(UIFONT, 30))
+    	self.controller_help:SetString(TheInput:GetLocalizedControl(controller_id, CONTROL_CONTROLLER_ALTACTION) .. " " .. STRINGS.UI.HUD.OPENGIFT)
+    	self.controller_help:SetPosition(0, -70, 0)
+    	self.controller_help:Hide()
+	end
 
     self.inst:ListenForEvent("giftreceiverupdate", function(player, data)
         self:OnToast(data.numitems)
@@ -57,6 +65,7 @@ local GiftItemToast = Class(Widget, function(self)
     self.controller_hide = false
     self.craft_hide = false
     self.opened = false
+    self.enabled = false
     last_click_time = 0
 end)
 
@@ -120,6 +129,16 @@ function GiftItemToast:OnToast(num)
     self:UpdateElements()
 end
 
+function GiftItemToast:OnControl(control, down)
+	if GiftItemToast._base.OnControl(self, control, down) then return true end
+
+	if control == CONTROL_CONTROLLER_ALTACTION and self.enabled then
+		if down then 
+			ClickButton()
+		end
+	end
+end
+
 function GiftItemToast:EnableClick()
     if self.numitems > 0 then
         self.tab_gift:Enable()
@@ -144,12 +163,20 @@ function GiftItemToast:OnClickEnabled()
 
     if self:IsVisible() then
         TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/skin_tab_active")
+        if TheInput:ControllerAttached() then 
+        	self.controller_help:Show()
+        end
+        self.enabled = true
     end
 end
 
 function GiftItemToast:DisableClick()
     self.tab_gift:Disable()
     self.tab_gift:SetTooltip(STRINGS.UI.ITEM_SCREEN.DISABLED_TOAST_TOOLTIP)
+    self.enabled = false
+    if self.controller_help then 
+    	self.controller_help:Hide()
+    end
 end
 
 return GiftItemToast

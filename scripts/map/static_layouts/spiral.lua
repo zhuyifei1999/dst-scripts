@@ -141,12 +141,12 @@ return {
         },
         {
           name = "",
-          type = "rubble",
+          type = "relics",
           shape = "rectangle",
-          x = 22,
-          y = 17,
-          width = 594,
-          height = 600,
+          x = 83,
+          y = 85,
+          width = 477,
+          height = 475,
           visible = true,
           properties = {}
         }

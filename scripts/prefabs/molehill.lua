@@ -37,7 +37,7 @@ local function stopspawning(inst)
 end
 
 local function onoccupied(inst)
-    if not TheWorld.state.isday then
+    if not TheWorld.state.iscaveday then
         startspawning(inst)
     end
 end
@@ -61,8 +61,8 @@ end
 
 local function OnInit(inst)
     inst.AdoptChild = nil
-    inst:WatchWorldState("isday", OnIsDay)
-    OnIsDay(inst, TheWorld.state.isday)
+    inst:WatchWorldState("iscaveday", OnIsDay)
+    OnIsDay(inst, TheWorld.state.iscaveday)
 end
 
 local function OnHaunt(inst)

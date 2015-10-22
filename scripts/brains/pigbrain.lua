@@ -250,20 +250,18 @@ function PigBrain:OnStart()
                 DoAction(self.inst, FindFoodAction )),
             RunAway(self.inst, "player", START_RUN_DIST, STOP_RUN_DIST, function(target) return ShouldRunAway(self.inst, target) end ),
             ChattyNode(self.inst, STRINGS.PIG_TALK_GO_HOME,
-                DoAction(self.inst, GoHomeAction, "go home", true )),
-            ChattyNode(self.inst, STRINGS.PIG_TALK_FIND_LIGHT, PriorityNode{
-                    WhileNode(function() return self.inst.LightWatcher:GetLightValue() > COMFORT_LIGHT_LEVEL end, "IsInLight", -- wants slightly brighter light for this
-                        PriorityNode{
-                            FailIfSuccessDecorator(FindLight(self.inst, SEE_LIGHT_DIST, GetNearestLightRadius)),
-                            Wander(self.inst, GetNearestLightPos, GetNearestLightRadius, {
-                                minwalktime = 0.6,
-                                randwalktime = 0.2,
-                                minwaittime = 5,
-                                randwaittime = 5
-                            })
-                        }),
-                    FindLight(self.inst, SEE_LIGHT_DIST, SafeLightDist),
-                }),
+                WhileNode( function() return not TheWorld.state.iscaveday or not self.inst.LightWatcher:IsInLight() end, "Cave nightness",
+                    DoAction(self.inst, GoHomeAction, "go home", true ))),
+            WhileNode(function() return TheWorld.state.isnight and self.inst.LightWatcher:GetLightValue() > COMFORT_LIGHT_LEVEL end, "IsInLight", -- wants slightly brighter light for this
+                Wander(self.inst, GetNearestLightPos, GetNearestLightRadius, {
+                    minwalktime = 0.6,
+                    randwalktime = 0.2,
+                    minwaittime = 5,
+                    randwaittime = 5
+                })
+            ),
+            ChattyNode(self.inst, STRINGS.PIG_TALK_FIND_LIGHT,
+                FindLight(self.inst, SEE_LIGHT_DIST, SafeLightDist)),
             ChattyNode(self.inst, STRINGS.PIG_TALK_PANIC,
                 Panic(self.inst)),
         },1)

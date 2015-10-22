@@ -11,6 +11,12 @@ return Class(function(self, inst)
 local easing = require("easing")
 
 --------------------------------------------------------------------------
+--[[ Constants ]]
+--------------------------------------------------------------------------
+
+local NOISE_SYNC_PERIOD = 30
+
+--------------------------------------------------------------------------
 --[[ Precipitation constants ]]
 --------------------------------------------------------------------------
 
@@ -158,6 +164,7 @@ local _moistureceilmultiplier
 local _moisturefloormultiplier
 
 --Network
+local _noisetime = net_float(inst.GUID, "weather._noisetime")
 local _moisture = net_float(inst.GUID, "weather._moisture")
 local _moisturerate = net_float(inst.GUID, "weather._moisturerate")
 local _moistureceil = net_float(inst.GUID, "weather._moistureceil", "moistureceildirty")
@@ -400,6 +407,7 @@ end or nil
 --------------------------------------------------------------------------
 
 --Initialize network variables
+_noisetime:set(0)
 _moisture:set(0)
 _moisturerate:set(0)
 _moistureceil:set(0)
@@ -484,6 +492,8 @@ end end
 --]]
 function self:OnUpdate(dt)
     --Update noise
+    SetWithPeriodicSync(_noisetime, _noisetime:value() + dt, NOISE_SYNC_PERIOD, _ismastersim)
+
     local preciprate = CalculatePrecipitationRate()
 
     --Update moisture and toggle precipitation
@@ -585,6 +595,7 @@ if _ismastersim then function self:OnSave()
         temperature = _temperature,
         daylight = _daylight or nil,
         season = _season,
+        noisetime = _noisetime:value(),
         moisturerateval = _moisturerateval,
         moisturerateoffset = _moisturerateoffset,
         moistureratemultiplier = _moistureratemultiplier,
@@ -606,6 +617,7 @@ if _ismastersim then function self:OnLoad(data)
     _temperature = data.temperature or TUNING.STARTING_TEMP
     _daylight = data.daylight == true
     _season = data.season or "autumn"
+    _noisetime:set(data.noisetime or 0)
     _moisturerateval = data.moisturerateval or 1
     _moisturerateoffset = data.moisturerateoffset or 0
     _moistureratemultiplier = data.moistureratemultiplier or 1

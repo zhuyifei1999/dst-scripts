@@ -13,6 +13,8 @@ local prefabs =
     "collapse_small",
 }
 
+FLOWER_TEST_RADIUS = 30
+
 local levels =
 {
     { amount=6, idle="honey3", hit="hit_honey3" },
@@ -21,22 +23,43 @@ local levels =
     { amount=0, idle="bees_loop", hit="hit_idle" },
 }
 
-local function OnIsDay(inst, isday)
-    if not isday then
-        if inst.components.harvestable ~= nil and inst.components.harvestable.growtime ~= nil then
-            inst.components.harvestable:StopGrowing()
-        end
-        if inst.components.childspawner ~= nil then
-            inst.components.childspawner:StopSpawning()
-        end
-    elseif not (TheWorld.state.iswinter or inst:HasTag("burnt")) then
-        if inst.components.harvestable ~= nil and inst.components.harvestable.growtime ~= nil then
-            inst.components.harvestable:StartGrowing()
-        end
-        if inst.components.childspawner ~= nil then
-            inst.components.childspawner:StartSpawning()
-        end
+local function Stop(inst)
+    if inst.components.harvestable ~= nil and inst.components.harvestable.growtime ~= nil then
+        inst.components.harvestable:StopGrowing()
     end
+    if inst.components.childspawner ~= nil then
+        inst.components.childspawner:StopSpawning()
+    end
+end
+
+local function Start(inst)
+    if inst.components.harvestable ~= nil and inst.components.harvestable.growtime ~= nil
+        and FindEntity(inst, FLOWER_TEST_RADIUS, nil, {"flower"}) ~= nil then
+        inst.components.harvestable:StartGrowing()
+    end
+    if inst.components.childspawner ~= nil then
+        inst.components.childspawner:StartSpawning()
+    end
+end
+
+local function OnIsCaveDay(inst, isday)
+    if not isday then
+        Stop(inst)
+    elseif not (TheWorld.state.iswinter or inst:HasTag("burnt"))
+        and inst.LightWatcher:IsInLight() then
+        Start(inst)
+    end
+end
+
+local function OnEnterLight(inst)
+    if not (TheWorld.state.iswinter or inst:HasTag("burnt"))
+        and TheWorld.state.iscaveday then
+        Start(inst)
+    end
+end
+
+local function OnEnterDark(inst)
+    Stop(inst)
 end
 
 local function onhammered(inst, worker)
@@ -108,7 +131,8 @@ local function OnSave(inst, data)
 end
 
 local function onsleep(inst)
-    if not inst:HasTag("burnt") and inst.components.harvestable ~= nil then
+    if not inst:HasTag("burnt") and inst.components.harvestable ~= nil
+        and FindEntity(inst, FLOWER_TEST_RADIUS, nil, {"flower"}) ~= nil then
         inst.components.harvestable:SetGrowTime(TUNING.BEEBOX_HONEY_TIME)
         inst.components.harvestable:StartGrowing()
     end
@@ -179,6 +203,7 @@ local function fn()
     inst.entity:AddSoundEmitter()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
+    inst.entity:AddLightWatcher()
 
     MakeObstaclePhysics(inst, .5)
 
@@ -216,7 +241,9 @@ local function fn()
         inst.components.childspawner:StartSpawning()
     end
 
-    inst:WatchWorldState("isday", OnIsDay)
+    inst:WatchWorldState("iscaveday", OnIsCaveDay)
+    inst:ListenForEvent("enterlight", OnEnterLight)
+    inst:ListenForEvent("enterdark", OnEnterDark)
 
     inst:AddComponent("inspectable")
     inst.components.inspectable.getstatus = GetStatus

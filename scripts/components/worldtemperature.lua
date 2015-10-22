@@ -47,14 +47,13 @@ self.inst = inst
 --Private
 local _world = TheWorld
 local _map = _world.Map
-local _iscave = _world:HasTag("cave")
 local _ismastersim = _world.ismastersim
 
 --Temperature
 local _seasontemperature
 local _phasetemperature
-local _globaltemperaturemult = _iscave and TUNING.CAVES_TEMP_MULT or 1
-local _globaltemperaturelocus = _iscave and TUNING.CAVES_TEMP_LOCUS or 0
+local _globaltemperaturemult = 1
+local _globaltemperaturelocus = 0
 
 --Light
 local _daylight = true
@@ -68,7 +67,7 @@ local _summerbloom_ramp = 0
 local _summerbloom_ramp_time = 5
 
 --Network
-local _noisetime = net_float(inst.GUID, "weather._noisetime")
+local _noisetime = net_float(inst.GUID, "worldtemperature._noisetime")
 
 --------------------------------------------------------------------------
 --[[ Private member functions ]]
@@ -179,6 +178,16 @@ local function OnPhaseChanged(src, phase)
 end
 
 --------------------------------------------------------------------------
+--[[ Public member functions ]]
+--------------------------------------------------------------------------
+
+function self:SetTemperatureMod(multiplier, locus)
+    _globaltemperaturemult = multiplier
+    _globaltemperaturelocus = locus
+    PushTemperature()
+end
+
+--------------------------------------------------------------------------
 --[[ Initialization ]]
 --------------------------------------------------------------------------
 
@@ -248,7 +257,7 @@ end end
 
 function self:GetDebugString()
     local temperature = CalculateTemperature()
-    return string.format("%2.2fC", temperature)
+    return string.format("%2.2fC mult: %.2f locus %.1f", temperature, _globaltemperaturemult, _globaltemperaturelocus)
 end
 
 --------------------------------------------------------------------------

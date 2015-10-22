@@ -658,10 +658,11 @@ local ExampleLayout =
 	["Spiral"] = StaticLayout.Get("map/static_layouts/spiral",{
 			start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
 			fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
-			layout_position = LAYOUT_POSITION.CENTER}),
+			layout_position = LAYOUT_POSITION.CENTER,
             areas={
-                rubble = function() return PickSomeWithDups(15, {"ruins_plate", "ruins_bowl", "ruins_chair", "ruins_chipbowl", "ruins_vase", "ruins_table", "ruins_rubble_table", "ruins_rubble_chair", "ruins_rubble_vase", "thulecite_pieces", "rocks"}) end
+                relics = function() return PickSomeWithDups(15, {"ruins_plate", "ruins_bowl", "ruins_chair", "ruins_chipbowl", "ruins_vase", "ruins_table", "ruins_rubble_table", "ruins_rubble_chair", "ruins_rubble_vase", "thulecite_pieces", "rocks"}) end
             },
+            }),
 	["BrokenAltar"] = StaticLayout.Get("map/static_layouts/brokenaltar",{
 			start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
 			fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,

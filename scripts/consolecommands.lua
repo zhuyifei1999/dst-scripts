@@ -936,15 +936,17 @@ function c_cancelmaintaintasks(player)
 end
 
 function c_removeallwithtags(...)
-        
+    local count = 0
     for k,ent in pairs(Ents) do
         for i,tag in ipairs(arg) do
             if ent:HasTag(tag) then
                 ent:Remove()
+                count = count + 1
                 break
             end
         end
     end
+    print("removed",count)
 end
 
 function c_netstats()
@@ -957,11 +959,14 @@ function c_netstats()
 end
 
 function c_removeall(name)
+    local count = 0
     for k,ent in pairs(Ents) do
         if ent.prefab == name then
             ent:Remove()
+            count = count + 1
         end
     end
+    print("removed",count)
 end
 
 function c_forcecrash(unique)

@@ -135,7 +135,7 @@ local function fn()
             inst.components.childspawner:StartSpawning()
             inst:DoTaskInTime(15, OnPostEndQuake)
         end
-    end, TheWorld)
+    end, TheWorld.net)
 
     inst:AddComponent("inspectable")
 

@@ -1123,7 +1123,7 @@ return
         },
         ORANGESTAFF = "Handy over small distances.",   --Teleports player.
         ROOK_NIGHTMARE = "It looks like it could break apart at any moment.",
-        RELIC = "A relic of an ancient civilization long dead the the ravages of time.",  --Fixed relic
+        RELIC = "A relic of an ancient civilization long dead through the ravages of time.",  --Fixed relic
         RUINS_RUBBLE = "With a little elbow grease this could be put into working order.",   --Broken relic
         RUINS_BAT = "I could hit things with this.",
         RUINSHAT = "A bit gaudy for my tastes, but it seems useful.",

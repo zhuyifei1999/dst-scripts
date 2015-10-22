@@ -1,6 +1,7 @@
 local Widget = require "widgets/widget"
 local Screen = require "widgets/screen"
 local Button = require "widgets/button"
+local Menu = require "widgets/menu"
 local DressupPanel = require "widgets/dressuppanel"
 local TEMPLATES = require "widgets/templates"
 
@@ -56,16 +57,17 @@ local WardrobePopupScreen = Class(Screen, function(self, owner, profile, charact
     self.heroportrait:SetScale(.75)
     self.heroportrait:SetPosition(475, 400)
     self:SetPortrait()
-    
-	self.cancelbutton = self.proot:AddChild(TEMPLATES.Button(STRINGS.UI.WARDROBE_POPUP.CANCEL, function() self:Cancel() end))
-	self.cancelbutton:SetPosition(-230, -280)
-	
-    self.resetbutton = self.proot:AddChild(TEMPLATES.Button(STRINGS.UI.WARDROBE_POPUP.RESET, function() self:Reset() end))
-	self.resetbutton:SetPosition(-5, -280)
 
-	self.setbutton = self.proot:AddChild(TEMPLATES.Button(STRINGS.UI.WARDROBE_POPUP.SET, function() self:Close() end))
-	self.setbutton:SetPosition(220, -280)		
-	
+    local spacing = 225
+    local buttons = {{text = STRINGS.UI.WARDROBE_POPUP.CANCEL, cb = function() self:Cancel() end}, 
+                     {text = STRINGS.UI.WARDROBE_POPUP.RESET, cb = function() self:Reset() end},
+                     {text = STRINGS.UI.WARDROBE_POPUP.SET, cb = function() self:Close() end},
+                    }
+    self.menu = self.proot:AddChild(Menu(buttons, spacing, true))
+    self.menu:SetPosition(-230, -280, 0) 
+   
+	self.default_focus = self.menu
+
     if owner ~= nil then
         TheCamera:PushScreenHOffset(self, SCREEN_OFFSET)
     end

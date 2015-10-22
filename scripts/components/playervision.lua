@@ -14,6 +14,13 @@ local NIGHTVISION_COLOURCUBES =
     full_moon = "images/colour_cubes/mole_vision_off_cc.tex",
 }
 
+local NIGHTVISION_PHASEFN =
+{
+    blendtime = 0.25,
+    events = {},
+    fn = nil,
+}
+
 local NIGHTMARE_COLORCUBES =
 {
     calm = "images/colour_cubes/ruins_dark_cc.tex",
@@ -81,7 +88,9 @@ function PlayerVision:UpdateCCTable()
         or (self.nightmarevision and NIGHTMARE_COLORCUBES)
         or nil
 
-    local ccphasefn = (self.nightmarevision and NIGHTMARE_PHASEFN)
+    local ccphasefn = 
+        (cctable == NIGHTVISION_COLOURCUBES and NIGHTVISION_PHASEFN)
+        or (cctable == NIGHTMARE_COLORCUBES and NIGHTMARE_PHASEFN)
         or nil
 
     if cctable ~= self.currentcctable then

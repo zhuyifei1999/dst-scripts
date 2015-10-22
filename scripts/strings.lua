@@ -1279,7 +1279,7 @@ STRINGS=
         {
             ONE = "Say, pal.",
             TWO = "You're really pushing your luck.",
-            THREE = "Turn back now, or I may have to resort to drastic mesaures.",
+            THREE = "Turn back now, or I may have to resort to drastic measures.",
         },
         TWOLANDS =
         {
@@ -2112,6 +2112,7 @@ STRINGS.UI =
         AFK_OK = "Return",
         ACTIVATE_RESURRECTION = "Activate Meat Effigy",
         INSPECT_SELF = "Inspect Self (i)",
+        OPENGIFT = "Activate",
     },
     
     ACCOUNT=
