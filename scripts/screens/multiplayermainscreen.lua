@@ -101,7 +101,7 @@ function MultiplayerMainScreen:DoInit( )
 	self.motd.motdimage = self.motd:AddChild(ImageButton( "images/global.xml", "square.tex", "square.tex", "square.tex" ))
     self.motd.motdimage:SetPosition(-2, -15, 0)
     self.motd.motdimage:SetFocusScale(1, 1, 1)
-    --self.motd.motdimage:SetScale( 1, 1 )
+    self.motd.motdimage:Hide()
     
     local gainfocusfn = self.motd.motdimage.OnGainFocus
     self.motd.motdimage.OnGainFocus =
@@ -126,7 +126,7 @@ function MultiplayerMainScreen:DoInit( )
 	self.motd.button:SetPosition(0,-160)
     self.motd.button:SetScale(.8*.9)
     self.motd.button:SetText(STRINGS.UI.MAINSCREEN.MOTDBUTTON)
-    self.motd.button:SetOnClick( function() VisitURL("http://forums.kleientertainment.com/index.php?/topic/28171-halloween-mod-challenge/") end )
+    self.motd.button:SetOnClick( function() VisitURL("http://store.kleientertainment.com/") end )
 	self.motd.motdtext:EnableWordWrap(true)  
 	
     self.fg.trees:Kill()
@@ -733,7 +733,7 @@ function MultiplayerMainScreen:SetMOTD(str, cache)
 	--print("decode:", status, motd)
 	if status and motd then
 	    if cache then
-	 		SavePersistentString("motd", str)
+	 		SavePersistentString("motd_image", str)
 	    end
 
 		local platform_motd = motd.dststeam
@@ -802,11 +802,11 @@ function MultiplayerMainScreen:OnCachedMOTDLoad(load_success, str)
 	if load_success and string.len(str) > 1 then
 		self:SetMOTD(str, false)
 	end
-	TheSim:QueryServer( "https://s3-us-west-2.amazonaws.com/kleifiles/external/ds_motd.json", function(...) self:OnMOTDQueryComplete(...) end, "GET" )
+	TheSim:QueryServer( "https://d21wmy1ql1e52r.cloudfront.net/ds_image_motd.json", function(...) self:OnMOTDQueryComplete(...) end, "GET" )
 end
 
 function MultiplayerMainScreen:UpdateMOTD()
-	TheSim:GetPersistentString("motd", function(...) self:OnCachedMOTDLoad(...) end)
+	TheSim:GetPersistentString("motd_image", function(...) self:OnCachedMOTDLoad(...) end)
 end
 
 function MultiplayerMainScreen:SetCountdown(str, cache)

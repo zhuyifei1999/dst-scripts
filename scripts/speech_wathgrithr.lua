@@ -639,6 +639,7 @@ return {
 		FISH_COOKED = "Joy!",
 		FLINT = "Vital for spear construction.",
 		FLOWER = "A flower from Freia.",
+        FLOWER_WITHERED = "Not enough time in the limelight.",
 		FLOWERHAT = "Flimsy for the fight, pretty for my head.",
 		FLOWER_EVIL = "Some evil plagues this flora.",
 		FOLIAGE = "A collection of ferns.",

@@ -1086,7 +1086,12 @@ function OnPlayerLeave(player_guid, expected)
     if TheWorld.ismastersim and player_guid ~= nil then
 		local player = Ents[player_guid]
 		if player ~= nil then
-			TheNet:Announce(player:GetDisplayName().." "..STRINGS.UI.NOTIFICATION.LEFTGAME, player.entity, true, "leave_game")
+            --V2C: #spawn #despawn
+            --     This was where we used to announce player left.
+            --     Now we announce it when you actually disconnect
+            --     but not during a shard migration disconnection.
+			--TheNet:Announce(player:GetDisplayName().." "..STRINGS.UI.NOTIFICATION.LEFTGAME, player.entity, true, "leave_game")
+
             --Save must happen when the player is actually removed
             --This is currently handled in playerspawner listening to ms_playerdespawn
             TheWorld:PushEvent("ms_playerdisconnected", {player=player, wasExpected=expected})

@@ -71,8 +71,7 @@ end
 
 local function OnExplodeFn(inst)
     inst.SoundEmitter:KillSound("rattle")
-    inst.SoundEmitter:PlaySound("dontstarve/creatures/slurtle/explode")
-    SpawnPrefab("explode_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
+    SpawnPrefab("explode_small_slurtle").Transform:SetPosition(inst.Transform:GetWorldPosition())
 end
 
 local function OnEatElement(inst, food)

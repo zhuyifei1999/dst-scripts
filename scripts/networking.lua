@@ -36,6 +36,14 @@ function Networking_Announcement(message, colour, announce_type)
     end
 end
 
+function Networking_JoinAnnouncement(name, colour)
+    Networking_Announcement(name.." "..STRINGS.UI.NOTIFICATION.JOINEDGAME, colour, "join_game")
+end
+
+function Networking_LeaveAnnouncement(name, colour)
+    Networking_Announcement(name.." "..STRINGS.UI.NOTIFICATION.LEFTGAME, colour, "leave_game")
+end
+
 function Networking_SkinAnnouncement(user_name, user_colour, skin_name)
 	if ThePlayer ~= nil and ThePlayer.HUD ~= nil then
         ThePlayer.HUD.eventannouncer:ShowSkinAnnouncement(user_name, user_colour, skin_name)
@@ -322,12 +330,19 @@ end
 
 function JoinServer( server_listing, optional_password_override )
 
-	local function start_client( password )	
-        local start_worked = TheNet:StartClient( server_listing.ip, server_listing.port, server_listing.guid, password )
+	local function send_response( password )	
+
+		-- Just pass the guid in here, the network manager should have this listing
+		local start_worked = TheNet:JoinServerResponse( false, server_listing.guid, password )
+
 		if start_worked then
 			DisableAllDLC()
 		end
 		TheFrontEnd:PushScreen(ConnectingToGamePopup())
+	end
+
+	local function on_cancelled()
+		TheNet:JoinServerResponse( true )
 	end
 	
 	local function after_mod_warning(pop_screen)
@@ -343,20 +358,21 @@ function JoinServer( server_listing, optional_password_override )
                                                     text = STRINGS.UI.SERVERLISTINGSCREEN.OK,
                                                     cb = function()
                                                     	TheFrontEnd:PopScreen()
-                                                        start_client( password_prompt_screen:GetActualString() )
+                                                        send_response( password_prompt_screen:GetActualString() )
                                                     end
                                                 },
                                                 {
                                                     text = STRINGS.UI.SERVERLISTINGSCREEN.CANCEL,
                                                     cb = function()
                                                         TheFrontEnd:PopScreen()
+														on_cancelled()
                                                     end
                                                 },
                                             },
 										true )
 			password_prompt_screen.edit_text.OnTextEntered = function()
 				TheFrontEnd:PopScreen()
-				start_client( password_prompt_screen:GetActualString() ) 
+				send_response( password_prompt_screen:GetActualString() ) 
 			end
 			if not Profile:GetShowPasswordEnabled() then
 				password_prompt_screen.edit_text:SetPassword(true)
@@ -365,7 +381,7 @@ function JoinServer( server_listing, optional_password_override )
 			password_prompt_screen.edit_text:SetForceEdit(true)
 			password_prompt_screen.edit_text:OnControl(CONTROL_ACCEPT, false)
 		else
-			start_client( optional_password_override or "" )
+			send_response( optional_password_override or "" )
 		end
 	end
 	
@@ -409,6 +425,7 @@ function JoinServer( server_listing, optional_password_override )
 			{text=STRINGS.UI.SERVERLISTINGSCREEN.CANCEL, 
 				cb = function() 
 					TheFrontEnd:PopScreen() 
+					on_cancelled()
 				end, offset=Vector3(-90,0,0)}
         }
 

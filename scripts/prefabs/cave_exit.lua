@@ -48,8 +48,6 @@ local function fn()
     inst.AnimState:SetBuild("cave_exit")
     inst.AnimState:PlayAnimation("open")
 
-    inst:AddTag("sinkhole")
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

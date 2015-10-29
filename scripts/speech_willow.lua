@@ -786,6 +786,7 @@ return {
 		FISH_COOKED = "Less slippery now that it's found fire.",
 		FLINT = "The poor man's fire-starter.",
 		FLOWER = "I don't have time to waste on flowers.",
+        FLOWER_WITHERED = "Looks like good kindling.",
 		FLOWERHAT = "A halo of flowers. Too bad it's not a burning halo of flowers.",
 		FLOWER_EVIL = "Ugh, that smells terrible.",
 		FOLIAGE = "Fuel for the fire.",

@@ -759,6 +759,7 @@ return {
 		FISH_COOKED = "Meat from water still make Wolfgang strong.",
 		FLINT = "Is rock, but pointy-er.",
 		FLOWER = "They are very pretty.",
+        FLOWER_WITHERED = "Aw, this one is sad.",
 		FLOWERHAT = "Is so pretty!",
 		FLOWER_EVIL = "Is not potato.",
 		FOLIAGE = "I killed the pretty plant.",

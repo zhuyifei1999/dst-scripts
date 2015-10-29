@@ -288,7 +288,7 @@ function BanTab:MakePlayerList()
         widget.MENU = widget:AddChild(Menu(buttons, 55, true))
         widget.MENU:SetPosition(20,y_offset-2)
 
-        if entry and not entry.empty then 
+        if entry and not entry.empty then
             if "" == entry.netprofilename then
                 widget.NAME:SetString(STRINGS.UI.SERVERADMINSCREEN.UNKNOWN_USER_NAME)
             else
@@ -436,21 +436,21 @@ function BanTab:PromptDeletePlayer(selected_player)
         else
             name = self.blacklist[selected_player].netprofilename
         end
-        local popup = PopupDialogScreen(STRINGS.UI.SERVERADMINSCREEN.DELETE_ENTRY_TITLE, STRINGS.UI.SERVERADMINSCREEN.DELETE_ENTRY_BODY..name..STRINGS.UI.SERVERADMINSCREEN.DELETE_ENTRY_BODY_2, 
-		    {{text=STRINGS.UI.SERVERADMINSCREEN.YES, cb = function() 			
+        local popup = PopupDialogScreen(STRINGS.UI.SERVERADMINSCREEN.DELETE_ENTRY_TITLE, STRINGS.UI.SERVERADMINSCREEN.DELETE_ENTRY_BODY..name..STRINGS.UI.SERVERADMINSCREEN.DELETE_ENTRY_BODY_2,
+		    {{text=STRINGS.UI.SERVERADMINSCREEN.YES, cb = function()
                 self:DeletePlayer(selected_player)
-                TheFrontEnd:PopScreen()		        
+                TheFrontEnd:PopScreen()
 		    end},
-		    {text=STRINGS.UI.SERVERADMINSCREEN.NO, cb = function() 
-                TheFrontEnd:PopScreen() 
+		    {text=STRINGS.UI.SERVERADMINSCREEN.NO, cb = function()
+                TheFrontEnd:PopScreen()
             end}})
-	    TheFrontEnd:PushScreen(popup)		
-    end	      
+	    TheFrontEnd:PushScreen(popup)
+    end
 end
 
 function BanTab:DeletePlayer(selected_player)
-    if selected_player then                
-        table.remove(self.blacklist, selected_player)    
+    if selected_player then
+        table.remove(self.blacklist, selected_player)
 
         local list = {}
         for i,v in pairs(self.blacklist) do
@@ -459,24 +459,24 @@ function BanTab:DeletePlayer(selected_player)
             end
         end
         TheNet:SetBlacklist(list)
-                
-        self:RefreshPlayers()        
-    end       
+
+        self:RefreshPlayers()
+    end
 end
 
 function BanTab:ClearPlayers()
     local popup = PopupDialogScreen(STRINGS.UI.SERVERADMINSCREEN.CLEAR_LIST_TITLE, STRINGS.UI.SERVERADMINSCREEN.CLEAR_LIST_BODY, 
-		{{text=STRINGS.UI.SERVERADMINSCREEN.YES, cb = function() 			
+		{{text=STRINGS.UI.SERVERADMINSCREEN.YES, cb = function()
             self.blacklist = {}
             TheNet:SetBlacklist(self.blacklist)
             self:RefreshPlayers()
 		    TheFrontEnd:PopScreen()
 		end},
 		{text=STRINGS.UI.SERVERADMINSCREEN.NO, cb = function() TheFrontEnd:PopScreen() end}  })
-	TheFrontEnd:PushScreen(popup)		
+	TheFrontEnd:PushScreen(popup)
 end
 
-function BanTab:MakeMenuButtons()    
+function BanTab:MakeMenuButtons()
     self.clear_button = self.ban_page:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "unbanall.tex", STRINGS.UI.SERVERADMINSCREEN.CLEAR_PLAYERS, true, false, function() self:ClearPlayers() end))
     self.clear_button:SetPosition(270, -155)
     if #self.blacklist == 0 then
@@ -525,7 +525,7 @@ function BanTab:GetHelpText()
     if not self.allEmpties then
         table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_INSPECT) .. " " .. STRINGS.UI.SERVERADMINSCREEN.CLEAR_PLAYERS_HELPTEXT)
     end
-    
+
     return table.concat(t, "  ")
 end
 

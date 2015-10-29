@@ -395,7 +395,11 @@ local function OnPlayerJoined(inst)
     TheWorld:PushEvent("playerentered", inst)
     if TheWorld.ismastersim then
         TheWorld:PushEvent("ms_playerjoined", inst)
-        TheNet:Announce(inst:GetDisplayName().." "..STRINGS.UI.NOTIFICATION.JOINEDGAME, inst.entity, true, "join_game")
+        --V2C: #spawn #despawn
+        --     This was where we used to announce player joined.
+        --     Now we announce as soon as you login to the lobby
+        --     and not when you connect during shard migrations.
+        --TheNet:Announce(inst:GetDisplayName().." "..STRINGS.UI.NOTIFICATION.JOINEDGAME, inst.entity, true, "join_game")
 
         --Register attuner server listeners here as "ms_playerjoined"
         --will trigger relinking saved attunements, and we don't want

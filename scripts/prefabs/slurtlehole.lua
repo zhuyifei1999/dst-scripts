@@ -81,8 +81,7 @@ end
 
 local function OnExplodeFn(inst)
     inst.SoundEmitter:KillSound("hiss")
-    inst.SoundEmitter:PlaySound("dontstarve/creatures/slurtle/mound_explode")
-    SpawnPrefab("explode_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
+    SpawnPrefab("explode_small_slurtlehole").Transform:SetPosition(inst.Transform:GetWorldPosition())
 end
 
 local function fn()

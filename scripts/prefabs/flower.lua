@@ -7,7 +7,10 @@ local prefabs =
 {
     "petals",
     "flower_evil",
+    "flower_withered",
 }
+
+local DAYLIGHT_SEARCH_RANGE = 30
 
 local names = {"f1","f2","f3","f4","f5","f6","f7","f8","f9","f10"}
 
@@ -38,12 +41,25 @@ end
 
 local function DieInDarkness(inst)
     local x,y,z = inst.Transform:GetWorldPosition()
-    if TheSim:GetLightAtPoint(x,0,z) < TUNING.FLOWER_WITHER_IN_CAVE_LIGHT then
+    local ents = TheSim:FindEntities(x,0,z, DAYLIGHT_SEARCH_RANGE, {"daylight"})
+    local wither = true
+    for k,v in pairs(ents) do
+        if v.Light then
+            local darkness_sq = v.Light:GetCalculatedRadius() * 0.7
+            darkness_sq = darkness_sq * darkness_sq
+            if inst:GetDistanceSqToInst(v) < darkness_sq then
+                wither = false
+                break
+            end
+        end
+    end
+    if wither then
+        local withered = SpawnPrefab("flower_withered").Transform:SetPosition(x,y,z)
         inst:Remove()
     end
 end
 
-local function OnIsDay(inst, isday)
+local function OnIsCaveDay(inst, isday)
     if isday then
         inst:DoTaskInTime(5.0 + math.random()*5.0, DieInDarkness)
     end
@@ -92,7 +108,7 @@ local function fn()
     MakeSmallPropagator(inst)
 
     if TheWorld:HasTag("cave") then
-        inst:WatchWorldState("iscaveday", OnIsDay)
+        inst:WatchWorldState("iscaveday", OnIsCaveDay)
     end
 
     MakeHauntableChangePrefab(inst, "flower_evil")

@@ -27,21 +27,21 @@ return {
         GIVE =
         {
             DEAD = "Maybe I'll just hold on to this.",
-            SLEEPING = "Too unconcious to care.",
+            SLEEPING = "Too unconscious to care.",
             BUSY = "I'll try again in a second.",
         },
         GIVETOPLAYER = 
         {
         	FULL = "Their pockets are too full!",
             DEAD = "Maybe I'll just hold on to this.",
-            SLEEPING = "Too unconcious to care.",
+            SLEEPING = "Too unconscious to care.",
             BUSY = "I'll try again in a second.",
     	},
     	GIVEALLTOPLAYER = 
         {
         	FULL = "Their pockets are too full!",
             DEAD = "Maybe I'll just hold on to this.",
-            SLEEPING = "Too unconcious to care.",
+            SLEEPING = "Too unconscious to care.",
             BUSY = "I'll try again in a second.",
     	},
         WRITE =
@@ -811,6 +811,7 @@ return {
 		FISH_COOKED = "Grilled to perfection.",
 		FLINT = "It's a very sharp rock.",
 		FLOWER = "It's pretty but it smells like a common labourer.",
+        FLOWER_WITHERED = "I don't think it got enough sun.",
 		FLOWERHAT = "It smells like prettiness.",
 		FLOWER_EVIL = "Augh! It's so evil!",
 		FOLIAGE = "Some leafy greens.",

@@ -105,6 +105,7 @@ local function fn(Sim, widthscale)
     inst.Transform:SetScale(2*widthscale, 2, 2*widthscale) -- Art is made small coz of flash weirdness, the giant stage was exporting strangely
 
     inst:AddTag("NOCLICK")
+    inst:AddTag("daylight")
     inst:AddTag("sinkhole")
     inst:AddTag("batdestination")
 

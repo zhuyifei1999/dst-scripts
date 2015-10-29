@@ -748,6 +748,7 @@ return {
 		FISH_COOKED = "I wish I had some chips.",
 		FLINT = "This could be an axe head.",
 		FLOWER = "That's nice.",
+        FLOWER_WITHERED = "Someone's got a brown thumb.",
 		FLOWERHAT = "I think it looks nice with my red hair.",
 		FLOWER_EVIL = "Something is wrong with that flower.",
 		FOLIAGE = "Looks like a salad.",

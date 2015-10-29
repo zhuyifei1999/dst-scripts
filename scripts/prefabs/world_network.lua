@@ -40,6 +40,7 @@ local function MakeWorldNetwork(name, customprefabs, customassets, custom_postin
         inst.entity:SetCanSleep(false)
         inst.persists = false
 
+        inst.entity:AddShardClient()
         inst.entity:AddNetwork()
         inst:AddTag("CLASSIFIED")
 

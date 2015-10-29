@@ -13,7 +13,7 @@ local prefabs =
 }
 
 local function LightsOn(inst)
-    if not inst:HasTag("burnt") then
+    if not inst:HasTag("burnt") and not inst.lightson then
         inst.Light:Enable(true)
         inst.AnimState:PlayAnimation("lit", true)
         inst.SoundEmitter:PlaySound("dontstarve/pig/pighut_lighton")
@@ -22,7 +22,7 @@ local function LightsOn(inst)
 end
 
 local function LightsOff(inst)
-    if not inst:HasTag("burnt") then
+    if not inst:HasTag("burnt") and inst.lightson then
         inst.Light:Enable(false)
         inst.AnimState:PlayAnimation("idle", true)
         inst.SoundEmitter:PlaySound("dontstarve/pig/pighut_lightoff")
@@ -136,20 +136,31 @@ end
 
 local function onstartdaydoortask(inst)
     inst.doortask = nil
-    inst.components.spawner:ReleaseChild()
+    if not inst:HasTag("burnt") then
+        inst.components.spawner:ReleaseChild()
+    end
+end
+
+local function onstartdaylighttask(inst)
+    if inst.LightWatcher:GetLightValue() > 0.8 then -- they have their own light! make sure it's brighter than that out.
+        LightsOff(inst)
+        inst.doortask = inst:DoTaskInTime(1 + math.random() * 2, onstartdaydoortask)
+    elseif TheWorld.state.iscaveday then
+        inst.doortask = inst:DoTaskInTime(1 + math.random() * 2, onstartdaylighttask)
+    else
+        inst.doortask = nil
+    end
 end
 
 local function OnStartDay(inst)
     --print(inst, "OnStartDay")
     if not inst:HasTag("burnt")
-        and inst.components.spawner:IsOccupied()
-        and inst.LightWatcher:GetLightValue() > 0.8 then -- they have their own light! make sure it's brighter than that out.
+        and inst.components.spawner:IsOccupied() then
 
-        LightsOff(inst)
         if inst.doortask ~= nil then
             inst.doortask:Cancel()
         end
-        inst.doortask = inst:DoTaskInTime(1 + math.random() * 2, onstartdaydoortask)
+        inst.doortask = inst:DoTaskInTime(1 + math.random() * 2, onstartdaylighttask)
     end
 end
 
@@ -187,6 +198,8 @@ local function spawncheckday(inst)
     --print(inst, "spawn check day")
     if TheWorld.state.iscaveday then
         OnStartDay(inst)
+    elseif inst.components.spawner and inst.components.spawner:IsOccupied() then
+        onoccupieddoortask(inst)
     end
 end
 

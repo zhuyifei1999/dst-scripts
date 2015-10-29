@@ -498,6 +498,7 @@ STRINGS=
         HEATROCK = "Thermal Stone",
         FLOWER = "Flower",
         FLOWER_EVIL = "Evil Flower",
+        FLOWER_WITHERED = "Withered Flower",
         FIREFLIES = "Fireflies",
         GHOST = "Ghost",
         GRASS = "Grass",
@@ -1986,11 +1987,11 @@ STRINGS.UI =
         LASTBUILDDAYS = "Last build %d days ago",
         NEXTBUILDIMMINENT = "Next build imminent!",
         NEXTUPDATEDAYS = "Next Update: %d days",
-        
-        MOTDTITLE = "Halloween Mod Challenge",
-        
-        MOTD = "If you want to participate in our Halloween Mod Challenge click the link below!",
-        MOTDBUTTON = "Join Us",
+
+        MOTDTITLE = "Klei Store",
+        MOTD = "Check out the latest items in the Klei Store!",
+        MOTDBUTTON = "Klei Store",
+
         EXIT = "Exit",
         LOGOUT = "Log Out",
         REDEEM = "Redeem",
@@ -3023,7 +3024,7 @@ STRINGS.UI =
          },    
         SEEN_DATE = "Date",
         PLAYER_AGE = "Age",
-        STEAM_ID = "Profile",
+        NET_ID = "Profile",
         DAY = "Day",
         DAYS = "Days",
     },

@@ -721,6 +721,7 @@ return {
 		FISH_COOKED = "It still stinks.",
 		FLINT = "Ow! I cut my finger!",
 		FLOWER = "I am filled with the irrational urge to stomp upon it.",
+        FLOWER_WITHERED = "It got what it deserved.",
 		FLOWERHAT = "Definitely not my style.",
 		FLOWER_EVIL = "I like that flower.",
 		FOLIAGE = "A meal fit for a peasant.",

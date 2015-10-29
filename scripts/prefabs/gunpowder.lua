@@ -19,8 +19,6 @@ end
 
 local function OnExplodeFn(inst)
     inst.SoundEmitter:KillSound("hiss")
-    inst.SoundEmitter:PlaySound("dontstarve/common/blackpowder_explo")
-
     SpawnPrefab("explode_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
 end
 

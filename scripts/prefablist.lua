@@ -151,6 +151,7 @@ PREFABFILES = {
   "flower",
   "flower_cave",
   "flower_evil",
+  "flower_withered",
   "focalpoint",
   "foliage",
   "forcefieldfx",

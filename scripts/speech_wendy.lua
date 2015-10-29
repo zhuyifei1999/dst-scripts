@@ -758,6 +758,7 @@ return {
 		FISH_COOKED = "A proper grilling puts a stop to the flopping.",
 		FLINT = "A tiny blade-like rock.",
 		FLOWER = "They are bright and cheery. Yuck.",
+        FLOWER_WITHERED = "This is everything's fate.",
 		FLOWERHAT = "But I am in mourning...",
 		FLOWER_EVIL = "At least they're better than the other flowers.",
 		FOLIAGE = "Lead me to the Aarnivalkea.",

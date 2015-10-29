@@ -22,7 +22,7 @@ local events=
         if not inst.components.health:IsDead() and not inst.sg:HasStateTag("busy") then
             --If you're not in melee range throw instead.
             --Maybe do some randomness to throw or not?
-            if inst:GetDistanceSqToInst(data.target) <= (TUNING.MONKEY_MELEE_RANGE * TUNING.MONKEY_MELEE_RANGE) + 1 then
+            if data.target and inst:GetDistanceSqToInst(data.target) <= (TUNING.MONKEY_MELEE_RANGE * TUNING.MONKEY_MELEE_RANGE) + 1 then
                 inst.sg:GoToState("attack", data.target)
             else
                 inst.sg:GoToState("throw", data.target)

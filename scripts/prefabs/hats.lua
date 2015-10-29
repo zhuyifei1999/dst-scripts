@@ -498,6 +498,8 @@ local function MakeHat(name)
 
     local function miner_custom_init(inst)
         inst.entity:AddSoundEmitter()
+        --waterproofer (from waterproofer component) added to pristine state for optimization
+        inst:AddTag("waterproofer")
     end
 
     local function miner_onremove(inst)
@@ -523,6 +525,9 @@ local function MakeHat(name)
         inst.components.fueled:SetDepletedFn(miner_perish)
         inst.components.fueled.ontakefuelfn = miner_takefuel
         inst.components.fueled.accepting = true
+
+        inst:AddComponent("waterproofer")
+        inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALL)
 
         inst._light = nil
         inst.OnRemoveEntity = miner_onremove

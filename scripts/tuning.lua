@@ -124,6 +124,7 @@ function Tune(overrides)
 	    
 		YELLOWAMULET_FUEL = total_day_time,
 		YELLOWSTAFF_USES = 20,
+        YELLOWSTAFF_STAR_DURATION = total_day_time * 3.5,
 
 		ORANGEAMULET_USES = 225,
 		ORANGEAMULET_RANGE = 4,
@@ -1271,6 +1272,7 @@ function Tune(overrides)
 		MIN_CROP_GROW_TEMP = 5,
 		--CROP_HEAT_BONUS = 1,
 		CROP_RAIN_BONUS = 3,
+        CROP_DARK_WITHER_TIME = total_day_time * 1.5,
 
 		WITHER_BUFFER_TIME = 15,
 		MIN_PLANT_WITHER_TEMP = 70,

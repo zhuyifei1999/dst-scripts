@@ -17,29 +17,9 @@ local function kill_light(inst)
     inst:DoTaskInTime(1, inst.Remove) --originally 0.6, padded for network
 end
 
-local function resumestar(inst, time)
-    if inst.death then
-        inst.death:Cancel()
-        inst.death = nil
-    end
-    inst.death = inst:DoTaskInTime(time, kill_light)
-    inst.timeleft = time
-end
-
-local function onsave(inst, data)
-    data.timealive = inst:GetTimeAlive()
-    data.init_time = inst.init_time
-end
-
-local function onload(inst, data)
-        if data.timealive and data.init_time then
-            inst.init_time = data.init_time
-            local timeleft = (inst.init_time or 120) - data.timealive
-            if timeleft > 0 then
-            resumestar(inst, timeleft)
-        else
-            kill_light(inst)
-        end
+local function ontimer(inst, data)
+    if data.name == "extinguish" then
+        kill_light(inst)
     end
 end
 
@@ -65,7 +45,7 @@ local function pulse_light(inst)
 
     --local s = GetSineVal(0.05, true, inst)
     local s = math.abs(math.sin(PI * (timealive + inst._pulseoffs) * 0.05))
-    local rad = Lerp(4, 5, s)
+    local rad = Lerp(11, 12, s)
     local intentsity = Lerp(0.8, 0.7, s)
     local falloff = Lerp(0.8, 0.7, s) 
     inst.Light:SetFalloff(falloff)
@@ -98,8 +78,11 @@ local function fn()
     inst.AnimState:SetBuild("star")
     inst.AnimState:PlayAnimation("appear")
     inst.AnimState:PushAnimation("idle_loop", true)
+    inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
 
     inst.SoundEmitter:PlaySound("dontstarve/common/staff_star_LP", "staff_star_loop")
+
+    inst:AddTag("daylight")
 
     --HASHEATER (from heater component) added to pristine state for optimization
     inst:AddTag("HASHEATER")
@@ -116,9 +99,6 @@ local function fn()
 
     inst._pulsetime:set(inst:GetTimeAlive())
     inst._lastpulsesync = inst._pulsetime:value()
-
-    inst.init_time = 120
-    inst.death = inst:DoTaskInTime(inst.init_time, kill_light)
 
     inst:AddComponent("inspectable")
 
@@ -144,8 +124,9 @@ local function fn()
         return true
     end)
 
-    inst.OnLoad = onload
-    inst.OnSave = onsave
+    inst:AddComponent("timer")
+    inst.components.timer:StartTimer("extinguish", TUNING.YELLOWSTAFF_STAR_DURATION)
+    inst:ListenForEvent("timerdone", ontimer)
 
     return inst
 end

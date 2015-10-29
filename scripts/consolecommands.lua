@@ -143,7 +143,12 @@ end
 -- c_despawn helper
 local function dodespawn(player)
     if TheWorld ~= nil and TheWorld.ismastersim then
-        TheNet:Announce(player:GetDisplayName().." "..STRINGS.UI.NOTIFICATION.LEFTGAME, player.entity, true)
+        --V2C: #spawn #despawn
+        --     This was where we used to announce player left.
+        --     Now we announce it when you actually disconnect
+        --     but not during a shard migration disconnection.
+        --TheNet:Announce(player:GetDisplayName().." "..STRINGS.UI.NOTIFICATION.LEFTGAME, player.entity, true, "leave_game")
+
         --Delete must happen when the player is actually removed
         --This is currently handled in playerspawner listening to ms_playerdespawnanddelete
         TheWorld:PushEvent("ms_playerdespawnanddelete", player)
@@ -708,7 +713,7 @@ function c_combatgear()
     give("spear")
 end
 
-function c_combatsimulator(prefab, count)
+function c_combatsimulator(prefab, count, force)
     count = count or 1
 
     local x,y,z = ConsoleWorldPosition():Get()
@@ -719,6 +724,18 @@ function c_combatsimulator(prefab, count)
         creature.Transform:SetPosition(x,y,z)
         if creature.components.knownlocations then
             creature.components.knownlocations:RememberLocation("home", {x=x,y=y,z=z})
+        end
+        if force then
+            local target = FindEntity(creature, 20, nil, {"_combat"})
+            if target then
+                creature.components.combat:SetTarget(target)
+            end
+            creature:ListenForEvent("droppedtarget", function()
+                local target = FindEntity(creature, 20, nil, {"_combat"})
+                if target then
+                    creature.components.combat:SetTarget(target)
+                end
+            end)
         end
     end
 

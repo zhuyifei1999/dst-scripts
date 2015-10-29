@@ -642,6 +642,7 @@ return {
 		FISH_COOKED = "Flaky and moist. Delicious.",
 		FLINT = "Oh, to feel a sharp edge against my skin.",
 		FLOWER = "We agree that flowers are nice.",
+        FLOWER_WITHERED = "Aww so sad!",
 		FLOWERHAT = "Colourful crown.",
 		FLOWER_EVIL = "This flower is decidedly not nice!",
 		FOLIAGE = "Soft and leafy.",

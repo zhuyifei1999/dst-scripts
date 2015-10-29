@@ -117,7 +117,6 @@ function PlayerStatusScreen:OnUpdate(dt)
                 if listitem == nil or
                     v.userid ~= listitem.userid or
                     (v.performance ~= nil) ~= (listitem.performance ~= nil) then
-                    print( " *** REBUILD!!!!")
                     needs_rebuild = true
                     break
                 end
@@ -702,7 +701,7 @@ function PlayerStatusScreen:DoInit(ClientObjs)
                     self.owner.HUD:TogglePlayerAvatarPopup(displayName, v, true)
 				end)
 
-			if (not this_user_is_dedicated_server) then
+			if not this_user_is_dedicated_server then
 				playerListing.viewprofile:Show()
 			else
 				playerListing.viewprofile:Hide()

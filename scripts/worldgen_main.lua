@@ -437,7 +437,12 @@ function GenerateNew(debug, parameters)
     
 
     print("Generating world with these parameters:")
-    dumptable(parameters)
+    print("level_type", tostring(parameters.level_type))
+    print("current_level", tostring(parameters.current_level))
+    print("customizationpresets:")
+    dumptable(parameters.profiledata.customizationpresets)
+    print("worldgen_choices:")
+    dumptable(parameters.world_gen_choices)
     --print("Generate New map",debug, parameters.gen_type, "type: "..parameters.level_type, parameters.current_level, parameters.world_gen_choices)
 	local Gen = require "map/forest_map"
 	
@@ -519,6 +524,11 @@ function GenerateNew(debug, parameters)
 	
 	local try = 1
 	local maxtries = 5
+
+    print("*****************************")
+    print("Final Worldgen Choices:")
+    dumptable(parameters.world_gen_choices)
+    print("*****************************")
 	
 	while savedata == nil do
 		savedata = Gen.Generate(prefab, max_map_width, max_map_height, choose_tasks, parameters.world_gen_choices, parameters.level_type, level)

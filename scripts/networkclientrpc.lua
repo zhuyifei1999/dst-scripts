@@ -526,20 +526,43 @@ function TickRPCQueue()
     RPC_Timeline = {}
 end
 
-MOD_RPC = {}
-MOD_RPC_HANDLERS = {}
-
-function AddModRPCHandler( namespace, name, fn ) 
-    if MOD_RPC[namespace] == nil then
-        MOD_RPC[namespace] = {}
-        MOD_RPC_HANDLERS[namespace] = {}
-    end
-
-    table.insert(MOD_RPC_HANDLERS[namespace], fn)
-    MOD_RPC[namespace][name] = {namespace=namespace, id=#MOD_RPC_HANDLERS[namespace]}
+local function __index_lower(t, k)
+    return rawget(t, string.lower(k))
 end
 
-function SendModRPCToServer( id_table, ...)
+local function __newindex_lower(t, k, v)
+    rawset(t, string.lower(k), v)
+end
+
+local function setmetadata( tab )
+    setmetatable(tab, { __index = __index_lower, __newindex = __newindex_lower })
+end
+
+MOD_RPC = {}
+MOD_RPC_HANDLERS = {}
+ 
+setmetadata(MOD_RPC)
+setmetadata(MOD_RPC_HANDLERS)
+
+function AddModRPCHandler( namespace, name, fn )
+	if MOD_RPC[namespace] == nil then
+		MOD_RPC[namespace] = {}
+		MOD_RPC_HANDLERS[namespace] = {}
+
+        setmetadata(MOD_RPC[namespace])
+        setmetadata(MOD_RPC_HANDLERS[namespace])
+	end
+	
+
+	table.insert(MOD_RPC_HANDLERS[namespace], fn)
+    MOD_RPC[namespace][name] = { namespace = namespace, id = #MOD_RPC_HANDLERS[namespace] }
+
+    setmetadata(MOD_RPC[namespace][name])
+	
+	setmetadata(MOD_RPC[namespace][name])
+end
+
+function SendModRPCToServer(id_table, ...)
     assert(id_table.namespace ~= nil and MOD_RPC_HANDLERS[id_table.namespace] ~= nil and MOD_RPC_HANDLERS[id_table.namespace][id_table.id] ~= nil)
     TheNet:SendModRPCToServer(id_table.namespace, id_table.id, ...)
 end
@@ -555,4 +578,8 @@ function HandleModRPC(sender, tick, namespace, code, data)
 	else
 		print("Invalid RPC namespace: ", namespace, code)
 	end
+end
+
+function GetModRPCHandler( namespace, name )
+	return MOD_RPC_HANDLERS[namespace][MOD_RPC[namespace][name].id]
 end

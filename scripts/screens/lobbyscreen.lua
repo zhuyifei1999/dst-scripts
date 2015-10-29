@@ -908,7 +908,7 @@ function LobbyScreen:DoFocusHookups()
 end
 
 
-function LobbyScreen:DoConfirmQuit() 	
+function LobbyScreen:DoConfirmQuit()
  	self.active = false
 	
 	local function doquit()

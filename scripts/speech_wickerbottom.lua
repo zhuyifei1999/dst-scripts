@@ -708,6 +708,7 @@ return
         PETALS = "I've made some potpourri.",
         PETALS_EVIL = "Interesting, these petals seem to have a mind of their own.",        
         FLOWER = "It's a wildflower. I'm unfamiliar with the species.",
+        FLOWER_WITHERED = "This flower lacks the essentials for growth.",
         FLOWER_EVIL = "It's not often one sees a flower with such a powerful aura.",
         GOLDENAXE = "The most malleable of metals, but let's see how this chops.",
         GOLDENPICKAXE = "The most malleable of metals, but let's see how this mines.",
