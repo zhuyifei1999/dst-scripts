@@ -21,11 +21,12 @@ local function DoPostInit(inst)
         --master sim would have already done a proper PostInit in loading
         TheWorld:PostInit()
     end
-    if not TheNet:IsDedicated() and ThePlayer == nil then
-        TheNet:SendResumeRequestToServer(TheNet:GetUserID())
+    if not TheNet:IsDedicated() then
+        if ThePlayer == nil then
+            TheNet:SendResumeRequestToServer(TheNet:GetUserID())
+        end
+        PlayerHistory:StartListening()
     end
-    
-    PlayerHistory:StartListening()
 end
 
 --------------------------------------------------------------------------

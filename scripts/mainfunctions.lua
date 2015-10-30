@@ -1047,7 +1047,11 @@ end
 
 --DoRestart helper
 local function postsavefn()
-	PlayerHistory:UpdateHistoryFromClientTable()
+    if PlayerHistory ~= nil and PlayerHistory.listening and AllPlayers ~= nil then
+        for i, v in ipairs(AllPlayers) do
+            PlayerHistory:UpdateHistoryOnExited(v)
+        end
+    end
     TheNet:Disconnect(true)
     EnableAllMenuDLC()
     StartNextInstance()
