@@ -40,7 +40,7 @@ function PlayerHistory:UpdateHistoryOnEntered(player)
         end
 
         local client = TheNet:GetClientTableForUser(player.userid)
-
+		
         local seen_state =
         {
             name = player.name,
@@ -48,7 +48,7 @@ function PlayerHistory:UpdateHistoryOnEntered(player)
             netid = client ~= nil and client.netid or "",
             server_name = TheNet:GetServerName(),
             prefab = player.prefab,
-            playerage = player.components.age:GetAgeInDays(),
+            playerage = 0,--player.components.age:GetAgeInDays(),
             date = os.date("%b %d, %y"),
             sort_date = os.date("%Y%m%d"),
         }
@@ -79,7 +79,7 @@ function PlayerHistory:UpdateHistoryOnExited(player)
                 --found this player in our data
                 v.date = os.date("%b %d, %y")
                 v.sort_date = os.date("%Y%m%d")
-                v.playerage = player.components.age:GetAgeInDays()
+                v.playerage = 0 --player.components.age:GetAgeInDays()
                 v.prefab = player.prefab
 
                 self.dirty = true
