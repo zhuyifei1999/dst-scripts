@@ -1,13 +1,12 @@
 PlayerHistory = Class(function(self)
     self.persistdata = {}
+    self.existing_map = {}
 
     self.task = nil
     self.dirty = false
     self.sort_function = function(a,b) return (a.days_survived or 1) > (b.days_survived or 1) end
 
     self.max_history = 40
-    self.persistdata = nil
-    self.existing_map = nil
 end)
 
 function PlayerHistory:StartListening()
@@ -26,9 +25,7 @@ end
 function PlayerHistory:DiscardDownToMaxForNew()
     self:SortBackwards("sort_date")
     for idx = #self.persistdata, self.max_history - 1, -1 do
-        if self.existing_map ~= nil then
-            self.existing_map[self.persistdata[idx].userid] = nil
-        end
+        self.existing_map[self.persistdata[idx].userid] = nil
         table.remove(self.persistdata, idx)
     end
 end
@@ -40,17 +37,6 @@ function PlayerHistory:UpdateHistoryFromClientTable()
         local server_name = TheNet:GetServerName()
         local current_date = os.date("%b %d, %y")
         local sort_date = os.date("%Y%m%d")
-
-        -- Create a map for existing user ids
-        -- NOTE: cannot map to index, because once we add new
-        --       records to the front, all these indices will
-        --       become invalid
-        if self.existing_map == nil then
-            self.existing_map = {}
-            for i, v in ipairs(self.persistdata) do
-                self.existing_map[v.userid] = v
-            end
-        end
 
         for i, v in ipairs(ClientObjs) do
             -- Skip yourself
@@ -110,7 +96,7 @@ function PlayerHistory:Sort(field, forwards)
                 return a[field] > b[field]
             end
         end
-        table.sort( self.persistdata, sort_function )
+        table.sort(self.persistdata, sort_function)
     end
 end
 
@@ -124,14 +110,11 @@ function PlayerHistory:GetSaveName()
     return BRANCH == "release" and "player_history" or "player_history_"..BRANCH
 end
 
-
 function PlayerHistory:Save(callback)
     if self.dirty then
         self:SortBackwards("sort_date")
         for idx = #self.persistdata, self.max_history, -1 do
-            if self.existing_map ~= nil then
-                self.existing_map[self.persistdata[idx].userid] = nil
-            end
+            self.existing_map[self.persistdata[idx].userid] = nil
             table.remove(self.persistdata, idx)
         end
         --print( "SAVING Player History", #self.persistdata )
@@ -144,23 +127,32 @@ end
 
 function PlayerHistory:Load(callback)
     TheSim:GetPersistentString(self:GetSaveName(),
-        function(load_success, str) 
+        function(load_success, str)
             -- Can ignore the successfulness cause we check the string
-            self:Set( str, callback )
+            self:Set(str, callback)
         end, false)
 end
 
 function PlayerHistory:Set(str, callback)
     if str == nil or string.len(str) == 0 then
-        print ("PlayerHistory could not load ".. self:GetSaveName())
+        print("PlayerHistory could not load "..self:GetSaveName())
         if callback then
             callback(false)
         end
     else
-        print ("PlayerHistory loaded ".. self:GetSaveName(), #str)
+        print("PlayerHistory loaded "..self:GetSaveName(), #str)
 
-        self.persistdata = TrackedAssert("TheSim:GetPersistentString player history",  json.decode, str)
-        self.existing_map = nil
+        self.persistdata = TrackedAssert("TheSim:GetPersistentString player history", json.decode, str)
+
+        -- Create a map for existing user ids
+        -- NOTE: cannot map to index, because once we add new
+        --       records to the front, all these indices will
+        --       become invalid
+        self.existing_map = {}
+        for i, v in ipairs(self.persistdata) do
+            self.existing_map[v.userid] = v
+        end
+
         self:SortBackwards("sort_date")
 
         -- self.totals = {days_survived = 0, deaths = 0}
