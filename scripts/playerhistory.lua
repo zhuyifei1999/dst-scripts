@@ -1,92 +1,95 @@
 PlayerHistory = Class(function(self)
     self.persistdata = {}
 
-    self.listening = false
+    self.task = nil
     self.dirty = false
-    self.sort_function =  function(a,b) return (a.days_survived or 1) > (b.days_survived or 1) end
+    self.sort_function = function(a,b) return (a.days_survived or 1) > (b.days_survived or 1) end
 
-    self.max_history = 100
+    self.max_history = 40
+    self.persistdata = nil
+    self.existing_map = nil
 end)
 
 function PlayerHistory:StartListening()
-    if not self.listening then
-        self.listening = true
-        TheWorld:ListenForEvent("playerentered", function(world, player) self:UpdateHistoryOnEntered(player) end)
-        TheWorld:ListenForEvent("playerexited", function(world, player) self:UpdateHistoryOnExited(player) end)
+    if self.task == nil then
+        self.task = TheWorld:DoPeriodicTask(60, function() self:UpdateHistoryFromClientTable() end)
     end
 end
 
 function PlayerHistory:Reset()
     self.persistdata = {}
+    self.existing_map = {}
     self.dirty = true
     self:Save()
 end
 
 function PlayerHistory:DiscardDownToMaxForNew()
     self:SortBackwards("sort_date")
-    while #self.persistdata > (self.max_history - 1) do
-        self.persistdata[#self.persistdata] = nil
+    for idx = #self.persistdata, self.max_history - 1, -1 do
+        if self.existing_map ~= nil then
+            self.existing_map[self.persistdata[idx].userid] = nil
+        end
+        table.remove(self.persistdata, idx)
     end
 end
 
-function PlayerHistory:UpdateHistoryOnEntered(player)
-    if ThePlayer ~= player then
-        local current_index = nil
-        for i, existing_v in ipairs(self.persistdata) do
-            if player.userid == existing_v.userid then
-                current_index = i
-                break
+function PlayerHistory:UpdateHistoryFromClientTable()
+    local ClientObjs = TheNet:GetClientTable()
+    if ClientObjs ~= nil and #ClientObjs > 0 then
+        local my_userid = TheNet:GetUserID()
+        local server_name = TheNet:GetServerName()
+        local current_date = os.date("%b %d, %y")
+        local sort_date = os.date("%Y%m%d")
+
+        -- Create a map for existing user ids
+        -- NOTE: cannot map to index, because once we add new
+        --       records to the front, all these indices will
+        --       become invalid
+        if self.existing_map == nil then
+            self.existing_map = {}
+            for i, v in ipairs(self.persistdata) do
+                self.existing_map[v.userid] = v
             end
         end
 
-        local client = TheNet:GetClientTableForUser(player.userid)
-		
-        local seen_state =
-        {
-            name = player.name,
-            userid = player.userid,
-            netid = client ~= nil and client.netid or "",
-            server_name = TheNet:GetServerName(),
-            prefab = player.prefab,
-            playerage = 0,--player.components.age:GetAgeInDays(),
-            date = os.date("%b %d, %y"),
-            sort_date = os.date("%Y%m%d"),
-        }
+        for i, v in ipairs(ClientObjs) do
+            -- Skip yourself
+            -- Skip dedicated server host
+            if v.userid ~= my_userid and not (v.performance ~= nil and TheNet:GetServerIsDedicated()) then
+                local seen_state =
+                {
+                    name = v.name,
+                    userid = v.userid,
+                    netid = v.netid,
+                    prefab = v.prefab,
+                    playerage = v.playerage,
+                    server_name = server_name,
+                    date = current_date,
+                    sort_date = sort_date,
+                    base_skin = v.base_skin,
+                    body_skin = v.body_skin,
+                    hand_skin = v.hand_skin,
+                    legs_skin = v.legs_skin,
+                }
 
-        if client ~= nil then
-            seen_state.base_skin = client.base_skin
-            seen_state.body_skin = client.body_skin
-            seen_state.hand_skin = client.hand_skin
-            seen_state.legs_skin = client.legs_skin
-        end
-
-        if current_index == nil then
-            self:DiscardDownToMaxForNew()
-            table.insert(self.persistdata, 1, seen_state)
-        else
-            self.persistdata[current_index] = seen_state
-        end
-
-        self.dirty = true
-        self:Save() --we could skip this, but we'd potentially lose data if someone kills the app without disconnecting
-    end
-end
-
-function PlayerHistory:UpdateHistoryOnExited(player)
-    if ThePlayer ~= player then
-        for i, v in ipairs(self.persistdata) do
-            if player.userid == v.userid then
-                --found this player in our data
-                v.date = os.date("%b %d, %y")
-                v.sort_date = os.date("%Y%m%d")
-                v.playerage = 0 --player.components.age:GetAgeInDays()
-                v.prefab = player.prefab
+                -- Replace existing record if found
+                -- Otherwise add new record to the front
+                local existing_record = self.existing_map[v.userid]
+                if existing_record ~= nil then
+                    for k2, v2 in pairs(seen_state) do
+                        existing_record[k2] = v2
+                    end
+                else
+                    self:DiscardDownToMaxForNew()
+                    table.insert(self.persistdata, 1, seen_state)
+                    self.existing_map[v.userid] = seen_state
+                end
 
                 self.dirty = true
-                self:Save()
-                return
             end
         end
+
+        self:Save()
     end
 end
 
@@ -124,18 +127,19 @@ end
 
 function PlayerHistory:Save(callback)
     if self.dirty then
-        self:Sort()
-        if #self.persistdata > 40 then
-            for idx = #self.persistdata, 40, -1 do
-                table.remove(self.persistdata, idx)
+        self:SortBackwards("sort_date")
+        for idx = #self.persistdata, self.max_history, -1 do
+            if self.existing_map ~= nil then
+                self.existing_map[self.persistdata[idx].userid] = nil
             end
+            table.remove(self.persistdata, idx)
         end
         --print( "SAVING Player History", #self.persistdata )
         local str = json.encode(self.persistdata)
         local insz, outsz = SavePersistentString(self:GetSaveName(), str, ENCODE_SAVES, callback)
     elseif callback ~= nil then
-            callback(true)
-        end
+        callback(true)
+    end
 end
 
 function PlayerHistory:Load(callback)
@@ -156,7 +160,8 @@ function PlayerHistory:Set(str, callback)
         print ("PlayerHistory loaded ".. self:GetSaveName(), #str)
 
         self.persistdata = TrackedAssert("TheSim:GetPersistentString player history",  json.decode, str)
-        self:Sort("sort_date", true)
+        self.existing_map = nil
+        self:SortBackwards("sort_date")
 
         -- self.totals = {days_survived = 0, deaths = 0}
         -- for i,v in ipairs(self.persistdata) do
@@ -164,7 +169,7 @@ function PlayerHistory:Set(str, callback)
         -- end
 
         self.dirty = false
-        if callback then
+        if callback ~= nil then
             callback(true)
         end
     end
