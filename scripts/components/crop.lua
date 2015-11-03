@@ -86,11 +86,11 @@ function Crop:Fertilize(fertilizer, doer)
     end
 end
 
-function Crop:DoGrow(dt)
+function Crop:DoGrow(dt, nowither)
     if not self.inst:HasTag("withered") then 
         self.inst.AnimState:SetPercent("grow", self.growthpercent)
 
-        local shouldgrow = not TheWorld.state.isnight
+        local shouldgrow = nowither or not TheWorld.state.isnight
         if not shouldgrow then
             local x,y,z = self.inst.Transform:GetWorldPosition()
             local ents = TheSim:FindEntities(x,0,z, DAYLIGHT_SEARCH_RANGE, {"daylight"})

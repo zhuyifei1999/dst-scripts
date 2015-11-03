@@ -143,7 +143,7 @@ function growfn(inst, reader)
         end
 
         if v.components.crop ~= nil then
-            v.components.crop:DoGrow(TUNING.TOTAL_DAY_TIME * 3)
+            v.components.crop:DoGrow(TUNING.TOTAL_DAY_TIME * 3, true)
         end
         
         if v.components.growable ~= nil and v:HasTag("tree") and not v:HasTag("stump") then

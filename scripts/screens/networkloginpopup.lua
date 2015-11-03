@@ -8,7 +8,7 @@ local Widget = require "widgets/widget"
 local Menu = require "widgets/menu"
 local TEMPLATES = require "widgets/templates"
 
-local NetworkLoginPopup = Class(Screen, function(self, onLogin, checkVersion, onCancel)
+local NetworkLoginPopup = Class(Screen, function(self, onLogin, checkVersion, onCancel, hideOfflineButton)
 	Screen._ctor(self, "NetworkLoginPopup")
 
 	--darken everything behind the dialog
@@ -49,15 +49,20 @@ local NetworkLoginPopup = Class(Screen, function(self, onLogin, checkVersion, on
 	self.text:SetColour(0,0,0,1)
   
     local spacing = 165
-    local buttons = 
-    {
-        {text=STRINGS.UI.MAINSCREEN.PLAYOFFLINE, cb = function() 
-            self:OnLogin(true)
-        end},
+    local buttons = {}
+
+	if hideOfflineButton == nil or not hideOfflineButton then
+		buttons[#buttons+1] = 
+			{text=STRINGS.UI.MAINSCREEN.PLAYOFFLINE, cb = function() 
+				self:OnLogin(true)
+			end}
+	end
+
+	buttons[#buttons+1] = 
 		{text=STRINGS.UI.NOAUTHENTICATIONSCREEN.CANCELBUTTON, cb = function() 
             self:OnCancel()            
-        end},
-    }
+        end}
+
 	self.menu = self.proot:AddChild(Menu(buttons, spacing, true))
 	self.menu:SetPosition(-(spacing*(#buttons-1))/2 + 5, -93, 0) 
 	for i,v in pairs(self.menu.items) do

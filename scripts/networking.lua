@@ -328,6 +328,13 @@ function DownloadMods( server_listing )
 	end
 end
 
+function ShowConnectingToGamePopup()
+	local active_screen = TheFrontEnd:GetActiveScreen()
+	if active_screen == nil or active_screen.name ~= "ConnectingToGamePopup" then
+		TheFrontEnd:PushScreen(ConnectingToGamePopup())
+	end
+end
+
 function JoinServer( server_listing, optional_password_override )
 
 	local function send_response( password )	
@@ -338,7 +345,7 @@ function JoinServer( server_listing, optional_password_override )
 		if start_worked then
 			DisableAllDLC()
 		end
-		TheFrontEnd:PushScreen(ConnectingToGamePopup())
+		ShowConnectingToGamePopup()
 	end
 
 	local function on_cancelled()

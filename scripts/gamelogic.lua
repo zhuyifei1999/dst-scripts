@@ -55,11 +55,11 @@ function ForceAuthenticationDialog()
 	if not InGamePlay() then
 		local active_screen = TheFrontEnd:GetActiveScreen()
 		if active_screen ~= nil and active_screen.name == "MainScreen" then
-			active_screen:OnLoginButton(true)
+			active_screen:OnLoginButton(false)
 		elseif MainScreen then
 			local main_screen = MainScreen(Profile)
 			TheFrontEnd:ShowScreen( main_screen )
-			main_screen:OnLoginButton(true)
+			main_screen:OnLoginButton(false)
 		end
 	end
 end

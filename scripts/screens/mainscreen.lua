@@ -187,6 +187,7 @@ end
 function MainScreen:OnLoginButton( push_mp_main_screen )	
 
     local account_manager = TheFrontEnd:GetAccountManager()
+	local hadPendingConnection = TheNet:HasPendingConnection()
 	
     local function GoToMultiplayerMainMenu( offline )		
 		TheFrontEnd:SetOfflineMode(offline)
@@ -229,7 +230,8 @@ function MainScreen:OnLoginButton( push_mp_main_screen )
 	    local must_upgrade = account_manager:MustUpgradeClient()
 	    local communication_succeeded = account_manager:CommunicationSucceeded()
 	    local inventory_succeeded = TheInventory:HasDownloadedInventory()
-
+		local has_auth_token = account_manager:HasAuthToken()
+		
         if is_banned then -- We are banned
         	TheFrontEnd:PopScreen()
 	        TheNet:NotifyAuthenticationFailure()
@@ -267,36 +269,40 @@ function MainScreen:OnLoginButton( push_mp_main_screen )
                 v.image:SetScale(.6, .7)
             end
             TheFrontEnd:PushScreen(confirm)
-        elseif ( account_manager:HasAuthToken() and communication_succeeded ) or forceOffline then
-        	if not push_mp_main_screen then
-        		TheFrontEnd:PopScreen()
-        	end
-			
-        	TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
-		    	if push_mp_main_screen then
-		    		TheFrontEnd:PopScreen()
-		    	end
-
-                GoToMultiplayerMainMenu(forceOffline or false )
-
-                -- In case we have given out token items that have no assets in the game
-                -- But still need to be marked as opened
-                local uo_items = TheInventory:GetUnopenedItems()
-                for _,item in pairs(uo_items) do
-                    if Prefabs[string.lower(item.item_type)] == nil and CLOTHING[string.lower(item.item_type)] == nil then
-                        TheInventory:SetItemOpened(item.item_id)
+        elseif ( has_auth_token and communication_succeeded ) or forceOffline then
+            if hadPendingConnection then
+                TheFrontEnd:PopScreen()
+            else
+                if not push_mp_main_screen then
+                    TheFrontEnd:PopScreen()
+                end
+            
+                TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
+                    if push_mp_main_screen then
+                        TheFrontEnd:PopScreen()
                     end
-                end
 
-                local rog_items = {}--"body_buttons_green_laurel", "body_buttons_pink_hibiscus" }
+                    GoToMultiplayerMainMenu(forceOffline or false )
 
-                if #rog_items > 0 then
-                    local rog_popup = ROGItemPopup(rog_items)
-                    TheFrontEnd:PushScreen(rog_popup)
-                end
-                TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
+                    -- In case we have given out token items that have no assets in the game
+                    -- But still need to be marked as opened
+                    local uo_items = TheInventory:GetUnopenedItems()
+                    for _,item in pairs(uo_items) do
+                        if Prefabs[string.lower(item.item_type)] == nil and CLOTHING[string.lower(item.item_type)] == nil then
+                            TheInventory:SetItemOpened(item.item_id)
+                        end
+                    end
 
-	        end)
+                    local rog_items = {}--"body_buttons_green_laurel", "body_buttons_pink_hibiscus" }
+
+                    if #rog_items > 0 then
+                        local rog_popup = ROGItemPopup(rog_items)
+                        TheFrontEnd:PushScreen(rog_popup)
+                    end
+                    TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
+
+                end)
+            end
         elseif not communication_succeeded then  -- We could not communicate with our auth server or steam is down
             print ( "failed_communication" )
             TheFrontEnd:PopScreen()
@@ -315,7 +321,7 @@ function MainScreen:OnLoginButton( push_mp_main_screen )
 								})
             TheFrontEnd:PushScreen(confirm)
             TheNet:NotifyAuthenticationFailure()
-        elseif not inventory_succeeded then
+        elseif (not inventory_succeeded and has_auth_token) then
             print ( "[Warning] Failed to download local inventory" )
         else -- We haven't created an account yet
             TheFrontEnd:PopScreen()
@@ -327,7 +333,7 @@ function MainScreen:OnLoginButton( push_mp_main_screen )
 	if TheSim:IsLoggedOn() or account_manager:HasAuthToken() then
 		if TheSim:GetUserHasLicenseForApp(DONT_STARVE_TOGETHER_APPID) then
 			account_manager:Login( "Client Login" )
-			TheFrontEnd:PushScreen(NetworkLoginPopup(onLogin, checkVersion, onCancel)) 
+			TheFrontEnd:PushScreen(NetworkLoginPopup(onLogin, checkVersion, onCancel, hadPendingConnection)) 
 		else
 			TheNet:NotifyAuthenticationFailure()
 			OnNetworkDisconnect( "APP_OWNERSHIP_CHECK_FAILED", false, false )
