@@ -16,6 +16,12 @@ local BeeBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
 end)
 
+local function IsHomeOnFire(inst)
+    return inst.components.homeseeker
+        and inst.components.homeseeker.home
+        and inst.components.homeseeker.home.components.burnable
+        and inst.components.homeseeker.home.components.burnable:IsBurning()
+end
 
 function BeeBrain:OnStart()
 
@@ -29,6 +35,7 @@ function BeeBrain:OnStart()
             WhileNode( function() return self.inst.components.combat.target and self.inst.components.combat:InCooldown() end, "Dodge", RunAway(self.inst, function() return self.inst.components.combat.target end, RUN_AWAY_DIST, STOP_RUN_AWAY_DIST) ),
             
             --ChaseAndAttack(self.inst, beecommon.MAX_CHASE_TIME),
+            WhileNode( function() return IsHomeOnFire(self.inst) end, "HomeOnFire", Panic(self.inst)),
             IfNode(function() return not TheWorld.state.iscaveday or not self.inst.LightWatcher:IsInLight() end, "IsNight",
                 DoAction(self.inst, function() return beecommon.GoHomeAction(self.inst) end, "go home", true )),
             IfNode(function() return self.inst.components.pollinator:HasCollectedEnough() end, "IsFullOfPollen",

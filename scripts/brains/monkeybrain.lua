@@ -263,7 +263,9 @@ local function KeepFaceTargetFn(inst, target)
 end
 
 local function GoHome(inst)
-    if inst.components.homeseeker and inst.components.homeseeker.home and inst.components.homeseeker.home:IsValid() then
+    local homeseeker = inst.components.homeseeker
+    if homeseeker and homeseeker.home and homeseeker.home:IsValid()
+        and (not homeseeker.home.components.burnable or not homeseeker.home.components.burnable:IsBurning()) then
         return BufferedAction(inst, inst.components.homeseeker.home, ACTIONS.GOHOME)
     end
 end

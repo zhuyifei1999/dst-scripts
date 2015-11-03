@@ -868,7 +868,7 @@ function c_searchprefabs(str)
         print("Found no prefabs matching "..str)
     elseif #res == 1 then
         print("Found a prefab called "..res[1].name)
-        return res[1]
+        return res[1].name
     else
         print("Found "..tostring(#res).." matches:")
         for i,v in ipairs(res) do

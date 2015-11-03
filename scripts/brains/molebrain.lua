@@ -36,7 +36,8 @@ end
 local function MakeNewHomeAction(inst)
     local angle = math.random(0,360)
     local offset = FindWalkableOffset(inst:GetPosition(), angle*DEGREES, math.random(5,15), 120, false, false)
-    return BufferedAction(inst, nil, ACTIONS.MAKEMOLEHILL, nil, inst:GetPosition() + offset)
+    return offset and BufferedAction(inst, nil, ACTIONS.MAKEMOLEHILL, nil, inst:GetPosition() + offset)
+        or nil
 end
 
 local function TakeBaitAction(inst)

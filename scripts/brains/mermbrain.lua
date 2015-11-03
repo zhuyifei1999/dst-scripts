@@ -66,6 +66,13 @@ local function ShouldGoHome(inst)
         or home.components.childspawner:CountChildrenOutside() > 1
 end
 
+local function IsHomeOnFire(inst)
+    return inst.components.homeseeker
+        and inst.components.homeseeker.home
+        and inst.components.homeseeker.home.components.burnable
+        and inst.components.homeseeker.home.components.burnable:IsBurning()
+end
+
 function MermBrain:OnStart()
     local root = PriorityNode(
     {
@@ -75,6 +82,7 @@ function MermBrain:OnStart()
             ChaseAndAttack(self.inst, SpringCombatMod(MAX_CHASE_TIME), SpringCombatMod(MAX_CHASE_DIST))),
         WhileNode(function() return self.inst.components.combat.target ~= nil and self.inst.components.combat:InCooldown() end, "Dodge",
             RunAway(self.inst, function() return self.inst.components.combat.target end, RUN_AWAY_DIST, STOP_RUN_AWAY_DIST)),
+        WhileNode( function() return IsHomeOnFire(self.inst) end, "HomeOnFire", Panic(self.inst)),
         WhileNode(function() return ShouldGoHome(self.inst) end, "ShouldGoHome",
             DoAction(self.inst, GoHomeAction, "Go Home", true)),
         DoAction(self.inst, EatFoodAction, "Eat Food"),
