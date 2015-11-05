@@ -80,6 +80,8 @@ local function common_fn(anim)
     inst:AddComponent("inspectable")
     inst.components.inspectable.nameoverride = "rubble"
 
+    MakeHauntableWork(inst)
+
     return inst
 end
 

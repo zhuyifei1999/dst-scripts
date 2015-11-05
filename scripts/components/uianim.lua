@@ -6,6 +6,11 @@ local UIAnim = Class(function(self, inst)
 end)
 
 function UIAnim:FinishCurrentScale()
+    if not self.inst or not self.inst:IsValid() then
+        -- sometimes the ent becomes invalid during a "finished" callback, but this gets run anyways.
+        return
+    end
+
     local sx, sy, sz = self.inst.UITransform:GetScale()
 
     local val = self.scale_dest

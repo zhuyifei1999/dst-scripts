@@ -261,6 +261,14 @@ local function onload(inst, data)
     end
 end
 
+local function CustomOnHaunt(inst, haunter)
+    if math.random() < TUNING.HAUNT_CHANCE_HALF then
+        inst.components.growable:DoGrowth()
+        return true
+    end
+    return false
+end
+
 local function maketree(name, data, state)
 
     local function bloom_tree(inst, instant)
@@ -392,6 +400,8 @@ local function maketree(name, data, state)
         inst:AddComponent("timer")
         inst:ListenForEvent("timerdone", ontimerdone)
 
+        MakeHauntableIgnite(inst)
+        AddHauntableCustomReaction(inst, CustomOnHaunt)
 
         --inst:AddComponent("transformer") this component isn't in DST yet.
 

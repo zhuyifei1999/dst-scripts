@@ -118,6 +118,23 @@ local function commonfn(anim, minimap_icon, tag, hascreep)
     return inst
 end
 
+local function CustomOnHaunt(inst, haunter)
+    if math.random() <= TUNING.HAUNT_CHANCE_HALF then
+        local target = FindEntity(
+            inst,
+            25,
+            CanTarget,
+            { "_combat", "_health" }, --see entityreplica.lua
+            { "playerghost", "spider", "INLIMBO" }
+        )
+        if target ~= nil then
+            spawner_onworked(inst, target)
+            inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
+            return true
+        end
+    end
+end
+
 local function spawnerfn()
     local inst = commonfn("full", "cavespider_den.png", "spiderden", true)
 
@@ -146,6 +163,9 @@ local function spawnerfn()
     inst:ListenForEvent("creepactivate", SpawnInvestigators)
     inst:ListenForEvent("startquake", function() ReturnChildren(inst) end, TheWorld)
 
+    MakeHauntableWork(inst)
+    AddHauntableCustomReaction(inst, CustomOnHaunt, false)
+
     return inst
 end
 
@@ -164,6 +184,8 @@ local function rockfn()
 
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetChanceLootTable('spider_hole')
+
+    MakeHauntableWork(inst)
 
     return inst
 end

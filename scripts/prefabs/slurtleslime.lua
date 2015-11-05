@@ -77,6 +77,8 @@ local function fn()
     inst.components.explosive.buildingdamage = 1
     inst.components.explosive.lightonexplode = false
 
+    MakeHauntableLaunchAndIgnite(inst)
+
     return inst
 end
 

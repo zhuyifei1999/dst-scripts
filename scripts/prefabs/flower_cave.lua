@@ -256,6 +256,8 @@ local function commonfn(fn, masterfn)
     inst.OnEntityWake = OnWake
     inst.debugstringfn = GetDebugString
 
+    MakeHauntableIgnite(inst)
+
     if masterfn then
         masterfn(inst)
     end

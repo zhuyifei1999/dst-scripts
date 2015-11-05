@@ -65,6 +65,14 @@ local function OnHit(inst, attacker, damage)
     end
 end
 
+local function CustomOnHaunt(inst, haunter)
+    if math.random() < TUNING.HAUNT_CHANCE_HALF then
+        inst.components.health:SetPercent(0)
+        return true
+    end
+    return false
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -124,6 +132,8 @@ local function fn()
     -- inst.components.lootdropper:SetLoot({"monstermeat", "monstermeat"})
     -- inst.components.lootdropper:AddChanceLoot("tentaclespike", 0.5)
     -- inst.components.lootdropper:AddChanceLoot("tentaclespots", 0.2)
+
+    AddHauntableCustomReaction(inst, CustomOnHaunt)
 
     inst.retracted = true
     inst.Emerge = Emerge

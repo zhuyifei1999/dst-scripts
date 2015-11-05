@@ -104,6 +104,8 @@ local function commonfn(anim)
 
     inst.components.workable:SetOnWorkCallback(workcallback)
 
+    MakeHauntableWork(inst)
+
     return inst
 end
 

@@ -65,6 +65,8 @@ local function fn()
 
     inst:AddComponent("lootdropper")
 
+    MakeHauntableWork(inst)
+
     --------SaveLoad
     inst.OnSave = onsave 
     inst.OnLoad = onload 

@@ -241,6 +241,8 @@ local function burnt_fn()
 	inst.components.workable:SetWorkLeft(1)
     inst.components.workable:SetOnFinishCallback(burnt_chopped)
 
+    MakeHauntableWorkAndIgnite(inst)
+
     inst.OnSave = burnt_onsave
     inst.OnLoad = burnt_onload
 

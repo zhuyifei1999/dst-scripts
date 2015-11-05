@@ -591,10 +591,11 @@ function DressupPanel:GetSkinsForGameStart()
 
 			skins = 
 			{
+
 				base = base_skin,
-				body = self.body_spinner.GetItem(),
 				hand = self.hand_spinner.GetItem(),
 				legs = self.legs_spinner.GetItem(),
+				body = self.body_spinner.GetItem(),
 			}
 			
 		else
@@ -636,15 +637,15 @@ function DressupPanel:SetPuppetSkins()
 	--print("Body item is ", self.body_spinner.GetItem())
 	--print("Gloves item is ", self.gloves_spinner.GetItem())
 	--print("Legs item is ", self.legs_spinner.GetItem())
-
-	if self.body_spinner.GetItem() ~= "" then
-		table.insert(clothing_names, self.body_spinner.GetItem())
-	end
+	
 	if self.hand_spinner.GetItem() ~= "" then
 		table.insert(clothing_names, self.hand_spinner.GetItem())
 	end
 	if self.legs_spinner.GetItem() ~= "" then
 		table.insert(clothing_names, self.legs_spinner.GetItem())
+	end
+	if self.body_spinner.GetItem() ~= "" then
+		table.insert(clothing_names, self.body_spinner.GetItem())
 	end
 	
 	self.puppet:SetSkins(self.currentcharacter, base_skin, clothing_names)

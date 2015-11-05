@@ -249,6 +249,8 @@ local function fn()
     MakeMediumBurnableCharacter(inst)
     MakeMediumFreezableCharacter(inst)
 
+    MakeHauntablePanic(inst)
+
     inst:SetBrain(brain)
     inst:SetStateGraph("SGslurper")
 

@@ -225,6 +225,8 @@ local function common_fn(anim)
 
     inst:AddComponent("workable")
 
+    MakeHauntableWork(inst)
+
     return inst
 end
 

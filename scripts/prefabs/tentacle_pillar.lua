@@ -275,6 +275,14 @@ local function OnDoneTeleporting(inst, obj)
     end
 end
 
+local function CustomOnHaunt(inst, haunter)
+    if math.random() < TUNING.HAUNT_CHANCE_RARE then
+        inst.components.health:SetPercent(0)
+        return true
+    end
+    return false
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -338,6 +346,8 @@ local function fn()
     inst:ListenForEvent("doneteleporting", OnDoneTeleporting)
 
     --------------------
+    
+    AddHauntableCustomReaction(inst, CustomOnHaunt)
 
     inst.OnEntitySleep = OnEntitySleep
     inst.OnEntityWake = OnEntityWake

@@ -31,6 +31,7 @@ local function fn()
 
     inst:AddComponent("shard_clock")
     inst:AddComponent("shard_seasons")
+    inst:AddComponent("shard_players")
 
     inst.OnRemoveEntity = OnRemoveEntity
 

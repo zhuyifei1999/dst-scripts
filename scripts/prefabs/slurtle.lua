@@ -97,6 +97,11 @@ local function OnInit(inst)
     inst.components.knownlocations:RememberLocation("home", inst:GetPosition())
 end
 
+local function CustomOnHaunt(inst)
+    inst.components.periodicspawner:TrySpawn()
+    return true
+end
+
 local function commonfn(bank, build, tag)
     local inst = CreateEntity()
 
@@ -166,6 +171,9 @@ local function commonfn(bank, build, tag)
     MakeMediumBurnableCharacter(inst, "shell")
     inst.components.burnable:SetOnIgniteFn(OnIgniteFn)
     inst.components.burnable:SetOnExtinguishFn(OnExtinguishFn)
+
+    MakeHauntablePanic(inst)
+    AddHauntableCustomReaction(inst, CustomOnHaunt, true, false, true)
 
     inst.lastmeal = 0
     inst.stomach = 0

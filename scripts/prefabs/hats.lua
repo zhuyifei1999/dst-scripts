@@ -334,6 +334,8 @@ local function MakeHat(name)
         inst.components.equippable:SetOnEquip(ruins_onequip)
         inst.components.equippable:SetOnUnequip(ruins_onunequip)
 
+        MakeHauntableLaunch(inst)
+
         return inst
     end
 

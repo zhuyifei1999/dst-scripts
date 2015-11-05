@@ -203,6 +203,8 @@ local function makefn(name, asset, smashsound, rubble, tag)
 
         inst.smashsound = smashsound
 
+        MakeHauntableWork(inst)
+
         return inst
     end
 end

@@ -309,6 +309,8 @@ local function create_common(bank, build, tag)
     inst:AddComponent("sanityaura")
     inst.components.sanityaura.aurafn = SanityAura
 
+    MakeHauntablePanic(inst)
+
     inst:SetBrain(brain)
 
     inst:ListenForEvent("attacked", OnAttacked)

@@ -172,6 +172,8 @@ local function makespore(data)
         inst.components.propagator.decayrate = 0.5
         inst.components.propagator.damages = false
 
+        MakeHauntablePerish(inst, .5)
+
         inst:ListenForEvent("onpickup", onpickup)
         inst:ListenForEvent("ondropped", ondropped)
 

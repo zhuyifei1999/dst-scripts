@@ -564,6 +564,8 @@ function RecipePopup:GetSkinOptions()
 		self.spinner_empty = true
 	end
 
+	print("Getting skin options")
+	dumptable(skin_options)
 	return skin_options
 end
 

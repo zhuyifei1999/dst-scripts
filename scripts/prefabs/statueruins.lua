@@ -221,6 +221,8 @@ local function commonfn(small)
         OnPhaseChanged(inst, TheWorld.state.nightmarephase, true)
     end)
 
+    MakeHauntableWork(inst)
+
     inst.OnSave = onsave
     inst.OnLoad = onload
 

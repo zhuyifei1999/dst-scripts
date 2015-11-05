@@ -151,6 +151,8 @@ local function fn()
     inst.components.explosive.buildingdamage = 15
     inst.components.explosive.lightonexplode = false
 
+    MakeHauntableIgnite(inst)
+
     inst.OnEntitySleep = OnEntitySleep
     inst.OnEntityWake = OnEntityWake
 

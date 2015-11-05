@@ -3,6 +3,9 @@
 PREFAB_SKINS = {
 	backpack = 
 	{
+		"backpack_basic_blue_catcoon",
+		"backpack_basic_green_olive",
+		"backpack_bat",
 		"backpack_beefalo",
 		"backpack_buckle_grey_pewter",
 		"backpack_buckle_navy_phthalo",

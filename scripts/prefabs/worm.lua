@@ -151,6 +151,28 @@ local function onattacked(inst, data)
     end
 end
 
+local function CustomOnHaunt(inst, haunter)
+    if inst:HasTag("lure") then
+        if math.random() < TUNING.HAUNT_CHANCE_ALWAYS then
+            inst.sg:GoToState("lure_exit")
+            return true
+        end
+    else
+        if inst.components.sleeper then -- Wake up, there's a ghost!
+            inst.components.sleeper:WakeUp()
+        end
+
+        chance = chance or TUNING.HAUNT_CHANCE_ALWAYS
+        if math.random() <= chance then
+            inst.components.hauntable.panic = true
+            inst.components.hauntable.panictimer = panictime or TUNING.HAUNT_PANIC_TIME_SMALL
+            inst.components.hauntable.hauntvalue = haunt_value or TUNING.HAUNT_SMALL
+            return true
+        end
+    end
+    return false
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -229,6 +251,8 @@ local function fn()
     inst.HomeTask = inst:DoPeriodicTask(3, LookForHome)
     inst.lastluretime = 0
     inst:ListenForEvent("attacked", onattacked)
+
+    AddHauntableCustomReaction(inst, CustomOnHaunt)
 
     inst:SetStateGraph("SGworm")
     inst:SetBrain(brain)
