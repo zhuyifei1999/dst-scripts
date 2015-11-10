@@ -11,10 +11,6 @@ return Class(function(self, inst)
 local SYNC_PERIOD_SLOW = 5
 local SYNC_PERIOD_FAST = 2
 
---If a world reset is triggered within this period of an alive
---player's d/c, that player can cancel the timer by rejoining.
-local DISCONNECT_GRACE_PERIOD = 10
-
 --------------------------------------------------------------------------
 --[[ Member variables ]]
 --------------------------------------------------------------------------
@@ -25,6 +21,7 @@ self.inst = inst
 --Private
 local _world = TheWorld
 local _ismastersim = _world.ismastersim
+local _ismastershard = _world.ismastershard
 local _updating = false
 local _shown = false
 local _resetting = false
@@ -35,10 +32,9 @@ local _dtoverride = 0
 --Master simulation
 local _countdownmax
 local _countdownloadingmax
-local _countdownskipped
 local _syncperiod
-local _cancellable
-local _recentplayers
+local _cancelwhenempty
+local _wasempty
 
 --Network
 local _countdown = net_byte(inst.GUID, "worldreset._countdown", "countdowndirty")
@@ -51,16 +47,19 @@ local function UpdateCountdown(time)
     _world:PushEvent("worldresettick", { time = time })
 end
 
-local OnSkipCountdown = _ismastersim and function()
-    _countdownskipped = true
+local OnWorldResetFromSim = _ismastershard and function()
+    if _updating then
+        inst:StopUpdatingComponent(self)
+        _updating = false
+    end
+    _resetting = true
 end or nil
 
 local function ShowResetDialog()
     if not _shown then
         _shown = true
-        if _ismastersim then
-            _countdownskipped = false
-            inst:ListenForEvent("ms_worldreset", OnSkipCountdown, _world)
+        if _ismastershard then
+            inst:ListenForEvent("ms_worldreset", OnWorldResetFromSim, _world)
         end
     end
     _world:PushEvent("showworldreset")
@@ -72,30 +71,18 @@ end
 local function HideResetDialog()
     if _shown then
         _shown = false
-        if _ismastersim then
-            _countdownskipped = false
-            inst:RemoveEventCallback("ms_worldreset", OnSkipCountdown, _world)
+        if _ismastershard then
+            inst:RemoveEventCallback("ms_worldreset", OnWorldResetFromSim, _world)
         end
     end
     _world:PushEvent("hideworldreset")
 end
 
-local DoReset = _ismastersim and function()
-    StartNextInstance({
-        reset_action = RESET_ACTION.LOAD_SLOT,
-        save_slot = SaveGameIndex:GetCurrentSaveSlot()
-    })
+local DoDeleteAndReset = _ismastershard and function()
+    TheNet:SendWorldResetRequestToServer()
 end or nil
 
-local DoDeleteAndReset = _ismastersim and function()
-    SaveGameIndex:DeleteSlot(
-        SaveGameIndex:GetCurrentSaveSlot(),
-        DoReset,
-        true -- true causes world gen options to be preserved
-    )
-end or nil
-
-local WorldReset = _ismastersim and function()
+local WorldReset = _ismastershard and function()
     if _resetting then
         return
     end
@@ -105,29 +92,6 @@ local WorldReset = _ismastersim and function()
     else
         TheFrontEnd:Fade(false, .25, DoDeleteAndReset)
     end
-end or nil
-
-local CheckRecentPlayers = _ismastersim and function()
-    if next(_recentplayers) == nil then
-        return false
-    end
-    local time = GetTime()
-    for k, v in pairs(_recentplayers) do
-        if v + DISCONNECT_GRACE_PERIOD < time then
-            _recentplayers[k] = nil
-        end
-    end
-    return next(_recentplayers) ~= nil
-end or nil
-
-local ClearRecentPlayers = _ismastersim and function()
-    if next(_recentplayers) ~= nil then
-        _recentplayers = {}
-    end
-end or nil
-
-local IsRecentPlayer = _ismastersim and function(userid)
-    return userid ~= nil and _recentplayers[userid] ~= nil
 end or nil
 
 --------------------------------------------------------------------------
@@ -142,14 +106,10 @@ local function CancelCountdown()
         inst:StopUpdatingComponent(self)
         _updating = false
     end
-    if _ismastersim then
+    if _ismastershard then
         TheNet:SetIsWorldResetting(false)
         _countdown:set(0)
-        if _cancellable ~= nil then
-            inst:RemoveEventCallback("ms_playerjoined", _cancellable, _world)
-            _cancellable = nil
-        end
-        ClearRecentPlayers()
+        _cancelwhenempty = false
     end
     _countdownf = nil
     _lastcountdown = nil
@@ -174,6 +134,9 @@ local function OnCountdownDirty()
     else
         CancelCountdown()
     end
+    if _ismastershard then
+        _world:PushEvent("master_worldresetupdate", { countdown = _countdown:value() })
+    end
 end
 
 local function OnRefreshDialog()
@@ -186,91 +149,50 @@ local function OnRefreshDialog()
     end
 end
 
-local OnPlayerJoined = _ismastersim and function(src, player)
-    if not player:HasTag("playerghost") then
-        CancelCountdown()
-    end
-end or nil
-
-local OnPlayerRejoined = _ismastersim and function(src, player)
-    if IsRecentPlayer(player.userid) and not player:HasTag("playerghost") then
-        CancelCountdown()
-    end
-end or nil
-
-local OnPlayersLiveCheck = _ismastersim and function()
+local OnPlayerCounts = _ismastershard and function(src, data)
     if _resetting then
         return
-    elseif #AllPlayers <= 0 then
-        if _cancellable ~= nil and TheNet:IsDedicated() then
+    elseif data.ghosts < data.total then
+        CancelCountdown()
+    elseif data.total <= 0 then
+        if _cancelwhenempty then
             CancelCountdown()
         end
     elseif _countdown:value() <= 0 then
-        _cancellable = OnPlayerJoined
-        for i, v in ipairs(AllPlayers) do
-            if not v:HasTag("playerghost") then
-                --someone is still alive!!!1
-                return
-            end
-            _cancellable = v.loading_ghost and _cancellable or nil
-        end
         --everyone's a ghost, it's hopeless, sigh...
         --3 min bonus time if loading
         TheNet:SetIsWorldResetting(true)
-        local countdown = _cancellable ~= nil and _countdownloadingmax or _countdownmax
+        local countdown = _wasempty and _countdownloadingmax or _countdownmax
         _countdown:set(countdown < 255 and countdown or 255)
         _syncperiod = _countdown:value() > 10 and SYNC_PERIOD_SLOW or SYNC_PERIOD_FAST
-        if _cancellable ~= nil then
-            --cancellable by other players joining in
-            ClearRecentPlayers()
-            inst:ListenForEvent("ms_playerjoined", _cancellable, _world)
-        elseif CheckRecentPlayers() then
-            --cancellable by recently disconnected player rejoining
-            _cancellable = OnPlayerRejoined
-            inst:ListenForEvent("ms_playerjoined", _cancellable, _world)
-        end
+        _cancelwhenempty = _wasempty and TheNet:IsDedicated()
     end
+    _wasempty = data.total <= 0
 end or nil
 
-local OnPlayerLeft = _ismastersim and function(src, player)
-    if _resetting then
-        return
-    elseif _countdown:value() <= 0 then
-        CheckRecentPlayers()
-    end
-    if player.userid ~= nil then
-        _recentplayers[player.userid] = _countdown:value() <= 0 and not player:HasTag("playerghost") and GetTime() or nil
-    end
-    OnPlayersLiveCheck()
-end or nil
-
-local OnPlayerSpawn = _ismastersim and function(src, player)
-    inst:ListenForEvent("ms_becameghost", OnPlayersLiveCheck, player)
-    inst:ListenForEvent("ms_respawnedfromghost", CancelCountdown, player)
-end or nil
-
-local OnSetWorldResetTime = _ismastersim and function(src, data)
+local OnSetWorldResetTime = _ismastershard and function(src, data)
     local wasenabled = _countdownmax > 0
     _countdownmax = data ~= nil and data.time or 0
     _countdownloadingmax = data ~= nil and data.loadingtime or _countdownmax
     if wasenabled ~= (_countdownmax > 0) then
         if wasenabled then
-            inst:RemoveEventCallback("ms_playerspawn", OnPlayerSpawn, _world)
-            inst:RemoveEventCallback("ms_playerleft", OnPlayerLeft, _world)
-            for i, v in ipairs(AllPlayers) do
-                inst:RemoveEventCallback("ms_becameghost", OnPlayersLiveCheck, v)
-                inst:RemoveEventCallback("ms_respawnedfromghost", CancelCountdown, v)
-            end
+            inst:RemoveEventCallback("ms_playercounts", OnPlayerCounts, _world)
             CancelCountdown()
+            _wasempty = true
         else
-            inst:ListenForEvent("ms_playerspawn", OnPlayerSpawn, _world)
-            inst:ListenForEvent("ms_playerleft", OnPlayerLeft, _world)
-            for i, v in ipairs(AllPlayers) do
-                OnPlayerSpawn(_world, v)
-            end
-            OnPlayersLiveCheck()
+            inst:ListenForEvent("ms_playercounts", OnPlayerCounts, _world)
+            OnPlayerCounts(_world,
+            {
+                total = _world.shard.components.shard_players:GetNumPlayers(),
+                ghosts = _world.shard.components.shard_players:GetNumGhosts(),
+                alive = _world.shard.components.shard_players:GetNumAlive(),
+            })
         end
     end
+end or nil
+
+local OnWorldResetUpdate = _ismastersim and not _ismastershard and function(src, data)
+    _countdown:set(data.countdown)
 end or nil
 
 --------------------------------------------------------------------------
@@ -287,16 +209,20 @@ if not (_ismastersim and TheNet:IsDedicated()) then
 end
 
 if _ismastersim then
-    --Initialize master simulation variables
-    _countdownmax = 0
-    _countdownloadingmax = 0
-    _countdownskipped = false
-    _syncperiod = SYNC_PERIOD_SLOW
-    _cancellable = nil
-    _recentplayers = {}
+    if _ismastershard then
+        --Initialize master simulation variables
+        _countdownmax = 0
+        _countdownloadingmax = 0
+        _syncperiod = SYNC_PERIOD_SLOW
+        _cancelwhenempty = false
+        _wasempty = true
 
-    --Register master simulation events
-    inst:ListenForEvent("ms_setworldresettime", OnSetWorldResetTime, _world)
+        --Register master simulation events
+        inst:ListenForEvent("ms_setworldresettime", OnSetWorldResetTime, _world)
+    else
+        --Register slave shard events
+        inst:ListenForEvent("slave_worldresetupdate", OnWorldResetUpdate, _world)
+    end
 
     --Also reset this flag in case it's invalid
     TheNet:SetIsWorldResetting(false)
@@ -333,7 +259,7 @@ function self:OnUpdate(dt)
 
     local newcountdown = math.floor(_countdownf)
     if _lastcountdown ~= newcountdown then
-        if _ismastersim and (newcountdown <= 0 or (newcountdown % _syncperiod) == 0) then
+        if _ismastershard and (newcountdown <= 0 or (newcountdown % _syncperiod) == 0) then
             _countdown:set(newcountdown > 0 and (newcountdown + 1) or 1)
         else
             _countdown:set_local(newcountdown + 1)
@@ -344,12 +270,12 @@ function self:OnUpdate(dt)
         end
     end
 
-    if _countdownskipped or _countdownf <= 0 then
+    if _countdownf <= 0 then
         if _updating then
             inst:StopUpdatingComponent(self)
             _updating = false
         end
-        if _ismastersim then
+        if _ismastershard then
             WorldReset()
         end
     end

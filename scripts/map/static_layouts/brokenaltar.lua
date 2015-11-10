@@ -251,39 +251,6 @@ return {
         },
         {
           name = "",
-          type = "rook_nightmare",
-          shape = "rectangle",
-          x = 413,
-          y = 123,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
-          type = "rook_nightmare",
-          shape = "rectangle",
-          x = 232,
-          y = 124,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
-          type = "rook_nightmare",
-          shape = "rectangle",
-          x = 264,
-          y = 178,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
           type = "chessjunk2",
           shape = "rectangle",
           x = 366,

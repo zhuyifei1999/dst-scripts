@@ -50,8 +50,8 @@ local function checkforcrowding(inst)
 end
 
 local function onpickup(inst)
-    --These last longer when held
-    inst.components.perishable:SetNewMaxPerishTime(TUNING.PERISH_SLOW)
+    --These last longer when held    
+    inst.components.perishable:SetLocalMultiplier( TUNING.SEG_TIME * 3/ TUNING.PERISH_SLOW )
     if inst.crowdingtask ~= nil then
         inst.crowdingtask:Cancel()
         inst.crowdingtask = nil
@@ -60,8 +60,7 @@ end
 
 local function ondropped(inst)
     --Disappears faster when floating
-    inst.components.perishable:SetNewMaxPerishTime(TUNING.SEG_TIME * 3)
-
+    inst.components.perishable:SetLocalMultiplier(1)
     if inst.components.workable ~= nil then
         inst.components.workable:SetWorkLeft(1)
     end

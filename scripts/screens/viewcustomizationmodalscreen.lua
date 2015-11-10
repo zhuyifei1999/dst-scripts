@@ -33,8 +33,6 @@ local ViewCustomizationModalScreen = Class(Screen, function(self, worldgenoption
             level.tweak = level.tweak or {}
         end
 
-        print("###############")
-        dumptable(self.current_option_settings)
     else
         print("ACK! Showing the customizationmodalscreen, but no input preset?")
     end
@@ -52,9 +50,6 @@ local ViewCustomizationModalScreen = Class(Screen, function(self, worldgenoption
 
     self.ismultilevel = self.current_option_settings[2] ~= nil
 
-        print("!!!###############")
-        dumptable(self.current_option_settings,0,5)
-	
     self.black = self:AddChild(Image("images/global.xml", "square.tex"))
     self.black:SetVRegPoint(ANCHOR_MIDDLE)
     self.black:SetHRegPoint(ANCHOR_MIDDLE)

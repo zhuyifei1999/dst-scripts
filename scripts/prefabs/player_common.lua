@@ -1033,8 +1033,6 @@ local function OnLoad(inst, data)
         --Shard stuff
         inst.migration = data.migration
 
-        inst:OnSetSkinAndClothing(data.skin_name)
-
         --V2C: Sleeping hacks from snapshots or c_saves while sleeping
         if data.sleepinghandsitem ~= nil then
             local item = SpawnSaveRecord(data.sleepinghandsitem)
@@ -1053,8 +1051,6 @@ local function OnLoad(inst, data)
             end
         end
         --
-    else
-        inst.components.skinner:SetSkinMode("normal_skin")
     end
 
     if inst._OnLoad ~= nil then
@@ -1141,25 +1137,6 @@ local function OnDespawn(inst)
     inst.components.locomotor:Clear()
 end
 
-local function OnSetSkinAndClothing(inst, skin_base, clothing_body, clothing_hand, clothing_legs)
-    local skinner = inst.components.skinner
-
-	skinner:SetClothing(clothing_body)
-	skinner:SetClothing(clothing_hand)
-	skinner:SetClothing(clothing_legs)
-	
-    if skin_base then
-        skinner:SetSkinName(skin_base)
-    end
-
-    if not inst:HasTag("playerghost") then
-        skinner:SetSkinMode("normal_skin")
-    end
-
-    if inst._OnSetSkin ~= nil then
-        inst:_OnSetSkin(skin_base, clothing_body, clothing_hands, clothing_legs)
-    end
-end
 
 --------------------------------------------------------------------------
 --HUD/Camera/FE interface
@@ -1729,11 +1706,9 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst._OnSave = inst.OnSave
         inst._OnLoad = inst.OnLoad
         inst._OnDespawn = inst.OnDespawn
-        inst._OnSetSkinAndClothing = inst.OnSetSkinAndClothing
         inst.OnSave = OnSave
         inst.OnLoad = OnLoad
         inst.OnDespawn = OnDespawn
-        inst.OnSetSkinAndClothing = OnSetSkinAndClothing
 
         if starting_inventory ~= nil and #starting_inventory > 0 then
             --Will be triggered from SpawnNewPlayerOnServerFromSim

@@ -24,22 +24,6 @@ local brain = require "brains/mermbrain"
 local MAX_TARGET_SHARES = 5
 local SHARE_TARGET_DIST = 40
 
-local function ShouldSleep(inst)
-    return TheWorld.state.isday
-           and not (inst.components.combat and inst.components.combat.target)
-           and not (inst.components.homeseeker and inst.components.homeseeker:HasHome() )
-           and not (inst.components.burnable and inst.components.burnable:IsBurning() )
-           and not (inst.components.freezable and inst.components.freezable:IsFrozen() )
-end
-
-local function ShouldWake(inst)
-    return not TheWorld.state.isday
-           or (inst.components.combat and inst.components.combat.target)
-           or (inst.components.homeseeker and inst.components.homeseeker:HasHome() )
-           or (inst.components.burnable and inst.components.burnable:IsBurning() )
-           or (inst.components.freezable and inst.components.freezable:IsFrozen() )
-end
-
 local function FindInvaderFn(guy)
     return guy:HasTag("character") and not guy:HasTag("merm")
 end
@@ -122,8 +106,7 @@ local function fn()
     inst.components.eater:SetDiet({ FOODTYPE.VEGGIE }, { FOODTYPE.VEGGIE })
 
     inst:AddComponent("sleeper")
-    inst.components.sleeper:SetWakeTest(ShouldWake)
-    inst.components.sleeper:SetSleepTest(ShouldSleep)
+    inst.components.sleeper:SetNocturnal(true)
 
     inst:AddComponent("health")
     inst:AddComponent("combat")

@@ -24,6 +24,8 @@ local Perishable = Class(function(self, inst)
     self.updatetask = nil
     self.dt = nil
     self.onperishreplacement = nil
+
+    self.localPerishMultiplyer = 1
 end,
 nil,
 {
@@ -87,6 +89,8 @@ local function Update(inst, dt)
 			modifier = modifier * TUNING.PERISH_SUMMER_MULT
 		end
 
+        modifier = modifier * inst.components.perishable.localPerishMultiplyer
+
 		modifier = modifier * TUNING.PERISH_GLOBAL_MULT
 		
 		local old_val = inst.components.perishable.perishremainingtime
@@ -149,6 +153,14 @@ function Perishable:SetPerishTime(time)
     end
 end
 
+function Perishable:SetLocalMultiplier(newMult)
+    self.localPerishMultiplyer = newMult
+end
+
+function Perishable:GetLocalMultiplier()
+    return self.localPerishMultiplyer
+end
+
 function Perishable:SetNewMaxPerishTime(newtime)
     local percent = self:GetPercent()
     self.perishtime = newtime
@@ -158,6 +170,7 @@ end
 function Perishable:SetOnPerishFn(fn)
 	self.perishfn = fn
 end
+
 
 function Perishable:GetPercent()
 	if self.perishremainingtime and self.perishtime and self.perishtime > 0 then

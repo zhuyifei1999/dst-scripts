@@ -61,6 +61,7 @@ local CustomizationTab = Class(Widget, function(self, servercreationscreen)
 
     for i, level in pairs(Levels.sandbox_levels) do
         if not level.hideinfrontend then
+            assert(level.id ~= nil, "Attempting to add an invalid level to the preset list. name: "..tostring(level.name))
             table.insert(self.presets, {text=level.name, data=level.id, desc = level.desc, overrides = level.overrides})
         end
     end
@@ -68,6 +69,7 @@ local CustomizationTab = Class(Widget, function(self, servercreationscreen)
     local profilepresets = Profile:GetWorldCustomizationPresets()
     if profilepresets then
         for i, level in pairs(profilepresets) do
+            assert(level.data ~= nil, "Attempting to add an invalid custom preset to the preset list. name: "..tostring(level.text))
             table.insert(self.presets, {text=level.text, data=level.data, desc = level.desc, overrides = level.overrides, basepreset=level.basepreset})
         end
     end

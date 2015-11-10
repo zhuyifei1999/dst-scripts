@@ -287,6 +287,7 @@ function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOu
 
             local serverdata = self.server_settings_tab:GetServerData()
 
+            TheNet:SetDefaultServerIntention(serverdata.intention)
             TheNet:SetDefaultServerName(serverdata.name)
             TheNet:SetDefaultServerPassword(serverdata.password)
             TheNet:SetDefaultServerDescription(serverdata.description)
@@ -802,7 +803,7 @@ function ServerCreationScreen:DoFocusHookUps()
 
         self.save_slots[i]:SetFocusChangeDir(MOVE_RIGHT, function()
             if self.active_tab == "settings" then
-                return self.server_settings_tab.scroll_list
+                return self.server_settings_tab
             elseif self.active_tab == "world" then
                 return self.world_tab.presetspinner
             elseif self.active_tab == "mods" then

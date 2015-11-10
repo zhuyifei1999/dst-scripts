@@ -164,9 +164,13 @@ end
 function SpawnNewPlayerOnServerFromSim(player_guid, skin_base, clothing_body, clothing_hand, clothing_legs)
     local player = Ents[player_guid]
     if player ~= nil then
-        if player.OnSetSkinAndClothing ~= nil then
-            player:OnSetSkinAndClothing(skin_base, clothing_body, clothing_hand, clothing_legs)
-        end
+    	local skinner = player.components.skinner
+		skinner:SetClothing(clothing_body)
+		skinner:SetClothing(clothing_hand)
+		skinner:SetClothing(clothing_legs)
+		skinner:SetSkinName(skin_base)
+		skinner:SetSkinMode("normal_skin")
+    
         if player.OnNewSpawn ~= nil then
             player:OnNewSpawn()
             player.OnNewSpawn = nil
@@ -513,11 +517,22 @@ function GetAvailablePlayerColours()
     return colours, DEFAULT_PLAYER_COLOUR
 end
 
+local function DoReset()
+    StartNextInstance({
+        reset_action = RESET_ACTION.LOAD_SLOT,
+        save_slot = SaveGameIndex:GetCurrentSaveSlot()
+    })
+end
+
 function WorldResetFromSim()
-	print( "received reset request in WorldResetFromSim")
     if TheWorld ~= nil and TheWorld.ismastersim then
-		print( "pushing ms_worldreset")
+        print("Received world reset request")
         TheWorld:PushEvent("ms_worldreset")
+        SaveGameIndex:DeleteSlot(
+            SaveGameIndex:GetCurrentSaveSlot(),
+            DoReset,
+            true -- true causes world gen options to be preserved
+        )
     end
 end
 

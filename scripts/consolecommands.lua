@@ -123,8 +123,10 @@ function c_reset(save)
     end
 end
 
--- Permanently delete the game world, rengerates a new world afterwords
-function c_regenerateworld()
+-- Permanently delete the game world, regenerates a new world afterwards
+-- NOTE: It is not recommended to use this instead of c_regenerateworld,
+--       unless you need to regenerate only one shard in a cluster
+function c_regenerateshard()
     if TheWorld ~= nil and TheWorld.ismastersim then
         SaveGameIndex:DeleteSlot(
             SaveGameIndex:GetCurrentSaveSlot(),
@@ -133,6 +135,14 @@ function c_regenerateworld()
         )
     end
 end 
+
+-- Permanently delete all game worlds in a server cluster, regenerates new worlds afterwards
+-- NOTE: This will not work properly for any shard that is offline or in a loading state
+function c_regenerateworld()
+    if TheWorld ~= nil and TheWorld.ismastersim then
+        TheNet:SendWorldResetRequestToServer()
+    end
+end
 
 -- Remotely execute a lua string
 function c_remote( fnstr )

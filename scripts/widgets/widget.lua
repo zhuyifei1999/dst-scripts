@@ -472,6 +472,14 @@ end
 function Widget:OnLoseFocus()
 end
 
+function Widget:SetOnGainFocus( fn )
+    self.ongainfocusfn = fn
+end
+
+function Widget:SetOnLoseFocus( fn )
+    self.onlosefocusfn = fn
+end
+
 function Widget:ClearFocusDirs()
     self.focus_flow = {}
 end
@@ -517,6 +525,9 @@ function Widget:ClearFocus()
         if self.OnLoseFocus then
             self:OnLoseFocus()
         end
+        if self.onlosefocusfn then
+            self.onlosefocusfn()
+        end
     for k,v in pairs(self.children) do
             if v.focus then
                 v:ClearFocus()
@@ -536,6 +547,10 @@ function Widget:SetFocusFromChild(from_child)
         self.focus = true
         if self.OnGainFocus then
             self:OnGainFocus()
+        end
+
+        if self.ongainfocusfn then
+            self.ongainfocusfn()
         end
 
         if self.parent then
@@ -560,6 +575,10 @@ function Widget:SetFocus()
 
         if self.OnGainFocus then
             self:OnGainFocus()
+        end
+
+        if self.ongainfocusfn then
+            self.ongainfocusfn()
         end
 
         if self.parent then

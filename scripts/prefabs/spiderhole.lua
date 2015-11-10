@@ -118,6 +118,10 @@ local function commonfn(anim, minimap_icon, tag, hascreep)
     return inst
 end
 
+local function CanTarget(guy)
+    return not guy.components.health:IsDead()
+end
+
 local function CustomOnHaunt(inst, haunter)
     if math.random() <= TUNING.HAUNT_CHANCE_HALF then
         local target = FindEntity(

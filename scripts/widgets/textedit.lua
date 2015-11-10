@@ -36,6 +36,8 @@ function TextEdit:SetString(str)
 end
 
 function TextEdit:SetEditing(editing)
+	--print("TextEdit:SetEditing:", self.editing, "->", editing, self.name, self:GetString())
+
 	if editing and not self.editing then
         self.editing = true
 
@@ -131,7 +133,8 @@ function TextEdit:OnRawKey(key, down)
 		if down then
 			self.inst.TextEditWidget:OnKeyDown(key)
 		else
-			if key == KEY_ENTER then
+			if key == KEY_ENTER and not self.focus then
+				-- this is a fail safe incase the mouse changes the focus widget while editing the text field. We could look into FrontEnd:LockFocus but some screens require focus to be soft (eg: lobbyscreen's chat)
 				self:OnProcess()
 				return true
 			elseif key == KEY_TAB and self.nextTextEditWidget then
@@ -176,9 +179,15 @@ function TextEdit:OnControl(control, down)
         return not self.pass_controls_to_screen[control]
     end
 
-    if not down and control == CONTROL_ACCEPT then
-        self:SetEditing(true)
-        return not self.pass_controls_to_screen[control]
+	if not down and control == CONTROL_ACCEPT then
+	    if not self.editing then
+			self:SetEditing(true)
+			return not self.pass_controls_to_screen[control]
+		else
+			-- Previously this was being done only in the OnRawKey, but that doesnt handle controllers very well, this does.
+			self:OnProcess()
+			return not self.pass_controls_to_screen[control]
+		end
     end
 end
 
@@ -188,7 +197,10 @@ function TextEdit:OnDestroy()
 end
 
 function TextEdit:OnFocusMove()
-	return true
+	-- Note: It would be nice to call OnProcces() here, but this gets called when pressing WASD so it wont work.
+
+	-- prevent the focus move while editing the text string
+	return self.editing
 end
 
 function TextEdit:OnGainFocus()

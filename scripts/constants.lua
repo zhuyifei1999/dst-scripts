@@ -1123,3 +1123,11 @@ PRIVACY_TYPE =
     LOCAL = 2,
     CLAN = 3,
 }
+
+INTENTIONS =
+{
+    SOCIAL = "social",
+    COOPERATIVE = "cooperative",
+    COMPETITIVE = "competitive",
+    MADNESS = "madness",
+}

@@ -398,27 +398,19 @@ TEMPLATES = {
         local w,h = btn.text:GetRegionSize()
         btn.bg:ScaleToSize(200, h+15)
 
-        local gainfocusfn = btn.OnGainFocus
-        btn.OnGainFocus = function()
-            gainfocusfn(btn)
+        btn:SetOnGainFocus(function()
             btn.focus_image:Show()
-        end
-        local losefocusfn = btn.OnLoseFocus
-        btn.OnLoseFocus = function()
-            losefocusfn(btn)
+        end)
+        btn:SetOnLoseFocus(function()
             btn.focus_image:Hide()
-        end
+        end)
 
-        local selectfn = btn.OnSelect
-        btn.OnSelect = function()
-            selectfn(btn)
+        btn:SetOnSelect(function()
             btn.active_page_image:Show()
-        end
-        local unselectfn = btn.OnUnselect
-        btn.OnUnselect = function()
-            unselectfn(btn)
+        end)
+        btn:SetOnUnSelect(function()
             btn.active_page_image:Hide()
-        end
+        end)
 
         btn:SetOnClick(onclick)
 
@@ -487,16 +479,12 @@ TEMPLATES = {
         local w,h = btn.text:GetRegionSize()
         btn.bg:ScaleToSize(w+15, h+15)
 
-        local cancelgainfocusfn = btn.OnGainFocus
-        local cancellosefocusfn = btn.OnLoseFocus
-        btn.OnGainFocus = function()
-            cancelgainfocusfn(btn)
+        btn:SetOnGainFocus(function()
             btn:SetScale(1.05)
-        end
-        btn.OnLoseFocus = function()
-            cancellosefocusfn(btn)
+        end)
+        btn:SetOnLoseFocus(function()
             btn:SetScale(1)
-        end
+        end)
 
         btn:SetOnClick(onclick)
 
@@ -569,18 +557,14 @@ TEMPLATES = {
 
         btn:SetOnClick(onclick)
 
-        local gainfocusfn = btn.OnGainFocus
-        btn.OnGainFocus = function()
-            gainfocusfn(btn)
+        btn:SetOnGainFocus(function()
             if btn:IsEnabled() and not btn:IsSelected() and TheFrontEnd:GetFadeLevel() <= 0 then
                 btn.highlight:Show()
             end
-        end
-        local losefocusfn = btn.OnLoseFocus
-        btn.OnLoseFocus = function()
-            losefocusfn(btn)
+        end)
+        btn:SetOnLoseFocus(function()
             btn.highlight:Hide()
-        end
+        end)
 
         return btn
     end,
@@ -800,6 +784,35 @@ TEMPLATES = {
         wdg.spinner:SetTextColour(0,0,0,1)
 
         wdg.focus_forward = wdg.spinner
+
+        return wdg
+    end,
+
+    ------------------
+    ------------------
+    -- Label Button --
+    ------------------
+    ------------------
+    -- Button with a label beside it
+    LabelButton = function(labeltext, buttontext, width_label, width_button, height, spacing, font, font_size, horiz_offset)
+        local offset = horiz_offset or 0
+        local total_width = width_label + width_button + spacing
+        local wdg = Widget("labelbutton")
+        wdg.label = wdg:AddChild( Text(font or NEWFONT, font_size or 25, labeltext) )
+        wdg.label:SetPosition( (-total_width/2)+(width_label/2) + offset, 0 )
+        wdg.label:SetRegionSize( width_label, height )
+        wdg.label:SetHAlign( ANCHOR_RIGHT )
+        wdg.label:SetColour(0,0,0,1)
+        wdg.button = wdg:AddChild(ImageButton("images/ui.xml", "in-window_button_sm_idle.tex", "in-window_button_sm_hl.tex", "in-window_button_sm_disabled.tex", "in-window_button_sm_hl_noshadow.tex", "in-window_button_sm_disabled.tex", {1, 1}, {0, 0}))
+        wdg.button.text:SetFont(font or NEWFONT)
+        wdg.button.text:SetSize(font_size or 25)
+        wdg.button:SetText(buttontext)
+        wdg.button.text:SetPosition(2,2)
+        wdg.button.text:SetColour(0,0,0,1)
+        wdg.button:ForceImageSize( width_button, height )
+        wdg.button:SetPosition((total_width/2)-(width_button/2) + offset, 0)
+
+        wdg.focus_forward = wdg.button
 
         return wdg
     end,

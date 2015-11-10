@@ -399,8 +399,7 @@ end
 local function onbecamehuman(inst)
     if inst.prefab ~= nil and inst.sg.currentstate.name ~= "reviver_rebirth" then
         inst.AnimState:SetBank("wilson")
-        inst.AnimState:SetBuild(inst.skin_name or inst.prefab)
-        inst.components.skinner:SetSkinMode()
+        inst.components.skinner:SetSkinMode("normal_skin")
     end
 
     inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED
@@ -443,7 +442,7 @@ local function onbecamebeaver(inst)
     if inst.sg.currentstate.name ~= "reviver_rebirth" then
         inst.components.skinner:ClearAllClothing(inst.AnimState)
         inst.AnimState:SetBank("werebeaver")
-        inst.AnimState:SetBuild("werebeaver_build")
+        inst.components.skinner:SetSkinMode("werebeaver_skin")
     end
 
     inst.hurtsoundoverride = "dontstarve/characters/woodie/hurt_beaver"

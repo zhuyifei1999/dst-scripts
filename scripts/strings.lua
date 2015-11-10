@@ -1389,7 +1389,7 @@ STRINGS=
             },
         },
     },
-    
+
     --ITEM DESCRIPTIONS
     DESCRIBE_NULL = "MISSING DESCRIPTION STRING",
 
@@ -1853,6 +1853,14 @@ STRINGS.UI =
             "food",     
         }
     },
+
+    INTENTION = {
+        SOCIAL = "Social",
+        COOPERATIVE = "Cooperative",
+        COMPETITIVE = "Competitive",
+        MADNESS = "Madness",
+    },
+
     CONSOLESCREEN=
     {
         REMOTEEXECUTE = "Remote:",
@@ -2675,6 +2683,7 @@ STRINGS.UI =
     SERVERLISTINGSCREEN =
     {
         SERVER_LIST_TITLE = "Servers",
+        SERVER_LIST_TITLE_INTENT = "%s Servers",
         DIRECTCONNECT = "Direct Connect",
         REFRESH = "Refresh",
         REFRESHING = "Refreshing...",
@@ -2799,6 +2808,15 @@ STRINGS.UI =
         CONTINUE = "Continue",
         CHANGE_SORT = "Change Sort",
         LAN = "LAN",
+        INTENTION_FILTER = "Playstyle:",
+        INTENTION_TITLE = "What's your playstyle?",
+        INTENTION_BUTTON = "Choose Playstyle",
+        INTENTION_DESC = {
+            SOCIAL = "You want to relax, make friends, and play for fun. Winning or losing isn't so important so long as everyone is having a good time.",
+            COOPERATIVE = "Teamwork is your guiding principal. It's not enough to not starve, you have to not starve Together!",
+            COMPETITIVE = "By playing harder, smarter, and better than your opponents, you will show them what you're made of.",
+            MADNESS = "Fighting, looting, filling the world with spiders... Who knows what you'll do next?",
+        }
     },
 
     SERVERCREATIONSCREEN =
@@ -2821,6 +2839,15 @@ STRINGS.UI =
             FRIENDS = "Friends Only",
             LOCAL = "Local Only",
             CLAN = "Steam Group",
+        },
+        INTENTION_LABEL = "Server Playstyle:",
+        INTENTION_TITLE = "What's your server's playstyle?",
+        INTENTION_BUTTON = "Set Intention",
+        INTENTION_DESC = {
+            SOCIAL = "This server is a place for friendly chatter, a relaxed playstyle, and getting to know people. Come on in!",
+            COOPERATIVE = "We're all trying to survive together. Here, we play our best and do what we can to tame this hostile world.",
+            COMPETITIVE = "This is where you'll find a fair fight. Everyone needs a place to prove who's the best at surviving, fighting, building, or whatever.",
+            MADNESS = "Anything goes on this server! Forests will be burned, food will be nommed, backs will be stabbed.",
         },
         CLANID = "Group ID:",
         CLANONLY = "Members Only:",

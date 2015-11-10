@@ -149,28 +149,6 @@ return {
         },
         {
           name = "",
-          type = "rook_nightmare",
-          shape = "rectangle",
-          x = 200,
-          y = 188,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
-          type = "rook_nightmare",
-          shape = "rectangle",
-          x = 587,
-          y = 589,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
           type = "wall_ruins",
           shape = "rectangle",
           x = 64,
@@ -590,39 +568,6 @@ return {
           properties = {
             ["data.health.percent"] = ".3"
           }
-        },
-        {
-          name = "",
-          type = "rook_nightmare",
-          shape = "rectangle",
-          x = 629,
-          y = 424,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
-          type = "rook_nightmare",
-          shape = "rectangle",
-          x = 368,
-          y = 325,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
-          type = "rook_nightmare",
-          shape = "rectangle",
-          x = 645,
-          y = 194,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {}
         },
         {
           name = "",

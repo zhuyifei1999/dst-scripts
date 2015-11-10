@@ -840,7 +840,7 @@ function LobbyScreen:OnControl(control, down)
     
     if LobbyScreen._base.OnControl(self, control, down) then return true end
 
-    if self.chatbox and ((self.chatbox.textbox and self.chatbox.textbox.editing) or (TheInput:ControllerAttached() and self.chatbox.focus and control == CONTROL_ACCEPT)) then
+    if self.chatbox and ((self.chatbox.textbox and self.chatbox.textbox.editing) or (self.chatbox.focus and control == CONTROL_ACCEPT)) then
         self.chatbox.textbox:OnControl(control, down)
         return true
     end

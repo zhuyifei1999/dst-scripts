@@ -95,7 +95,12 @@ local OnPlayerLeft = _ismastershard and function(src, player)
 end or nil
 
 local function OnPlayerCountsDirty()
-    print("Player counts: total="..tostring(_numPlayers:value()).." ghosts="..tostring(_numGhosts:value()))
+    _world:PushEvent("ms_playercounts",
+    {
+        total = _numPlayers:value(),
+        ghosts = _numGhosts:value(),
+        alive = _numPlayers:value() - _numGhosts:value(),
+    })
 end
 
 --------------------------------------------------------------------------
