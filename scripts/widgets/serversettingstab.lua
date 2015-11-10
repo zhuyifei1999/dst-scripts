@@ -508,6 +508,10 @@ function ServerSettingsTab:VerifyValidServerName()
     return self.server_name.textbox:GetString() ~= ""
 end
 
+function ServerSettingsTab:VerifyValidServerIntention()
+    return self.server_intention.button.data ~= nil
+end
+
 function ServerSettingsTab:SetEditingTextboxes(edit)
 	self.server_name.textbox:SetEditing(edit)
 	self.server_pw.textbox:SetEditing(edit)

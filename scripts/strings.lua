@@ -2893,6 +2893,8 @@ STRINGS.UI =
         INVALIDSERVERNAME_BODY = "No one will be able to find you if you don't have a name!",
         INVALIDCLANSETTINGS_TITLE = "Bad Group ID",
         INVALIDCLANSETTINGS_BODY = "You have to specify a steam group you belong to! Go back and check that number.",
+        INVALIDINTENTIONSETTINGS_TITLE = "Missing Server Intention",
+        INVALIDINTENTIONSETTINGS_BODY = "You forgot to choose a playstyle for your server!",
     },
     
     
