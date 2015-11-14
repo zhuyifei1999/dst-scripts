@@ -1130,4 +1130,5 @@ INTENTIONS =
     COOPERATIVE = "cooperative",
     COMPETITIVE = "competitive",
     MADNESS = "madness",
+    ANY = "any", -- for player use only, servers must have an intention
 }

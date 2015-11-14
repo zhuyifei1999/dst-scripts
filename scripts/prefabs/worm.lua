@@ -162,11 +162,11 @@ local function CustomOnHaunt(inst, haunter)
             inst.components.sleeper:WakeUp()
         end
 
-        chance = chance or TUNING.HAUNT_CHANCE_ALWAYS
+        local chance = TUNING.HAUNT_CHANCE_ALWAYS
         if math.random() <= chance then
             inst.components.hauntable.panic = true
-            inst.components.hauntable.panictimer = panictime or TUNING.HAUNT_PANIC_TIME_SMALL
-            inst.components.hauntable.hauntvalue = haunt_value or TUNING.HAUNT_SMALL
+            inst.components.hauntable.panictimer = TUNING.HAUNT_PANIC_TIME_SMALL
+            inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
             return true
         end
     end

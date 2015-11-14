@@ -156,6 +156,10 @@ local WriteableWidget = Class(Screen, function(self, owner, writeable, config)
     self:OverrideText( defaulttext )
     self.edit_text:OnControl(CONTROL_ACCEPT, false)
     --self.edit_text.OnTextEntered = function() onaccept(self.writeable, self.owner, self) end
+	self.edit_text:SetHelpTextApply("")
+	self.edit_text:SetHelpTextCancel("")
+	self.edit_text:SetHelpTextEdit("")
+    self.default_focus = self.edit_text
 
     if config.bgatlas ~= nil and config.bgimage ~= nil then
         self.bgimage:SetTexture(config.bgatlas, config.bgimage)
@@ -222,6 +226,7 @@ end
 
 function WriteableWidget:OverrideText(text)
     self.edit_text:SetString(text)
+    self.edit_text:SetFocus()
 end
 
 function WriteableWidget:GetText()

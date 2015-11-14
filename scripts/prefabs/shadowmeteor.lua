@@ -1,3 +1,5 @@
+require "regrowthutil"
+
 local assets =
 {
     Asset("ANIM", "anim/meteor.zip"),
@@ -25,6 +27,10 @@ for k, v in pairs(SMASHABLE_WORK_ACTIONS) do
     table.insert(SMASHABLE_TAGS, k.."_workable")
 end
 local NON_SMASHABLE_TAGS = { "INLIMBO", "playerghost" }
+
+local DENSITY = 0.1 -- the approximate density of rock prefabs in the rocky biomes
+local FIVERADIUS = CalculateFiveRadius(DENSITY)
+local EXCLUDE_RADIUS = 3
 
 local function onexplode(inst)
     inst.SoundEmitter:PlaySound("dontstarve/common/meteor_impact")
@@ -82,16 +88,16 @@ local function onexplode(inst)
                         if v.components.container ~= nil then
                             v.components.container:DropEverything()
                         end
-                        if v:HasTag("irreplaceable") then
-                            Launch(v, inst, TUNING.LAUNCH_SPEED_SMALL)
-                            launched[v] = true
-                        else
-                            inst.SoundEmitter:PlaySound("dontstarve/common/stone_drop")
-                            local x1, y1, z1 = v.Transform:GetWorldPosition()
-                            local breaking = SpawnPrefab("ground_chunks_breaking") --spawn break effect
-                            breaking.Transform:SetPosition(x1, 0, z1)
-                            v:Remove()
-                        end
+                    end
+                    -- Always smash things on the periphery so that we don't end up with a ring of flung loot
+                    if (inst.peripheral or math.random() <= TUNING.METEOR_SMASH_INVITEM_CHANCE)
+                        and not v:HasTag("irreplaceable")  then
+
+                        inst.SoundEmitter:PlaySound("dontstarve/common/stone_drop")
+                        local x1, y1, z1 = v.Transform:GetWorldPosition()
+                        local breaking = SpawnPrefab("ground_chunks_breaking") --spawn break effect
+                        breaking.Transform:SetPosition(x1, 0, z1)
+                        v:Remove()
                     else
                         Launch(v, inst, TUNING.LAUNCH_SPEED_SMALL)
                         launched[v] = true
@@ -103,10 +109,11 @@ local function onexplode(inst)
         for i, v in ipairs(inst.loot) do
             if math.random() <= v.chance then
                 local canspawn = true
-                if v.radius ~= nil then
-                    --Check if there's space to deploy rocks
-                    --Similar to CanDeployAtPoint check in map.lua
-                    local ents = TheSim:FindEntities(x, y, z, v.radius, nil, { "NOBLOCK", "FX" })
+                --Check if there's space to deploy rocks
+                --Similar to CanDeployAtPoint check in map.lua
+                local ents = TheSim:FindEntities(x, y, z, FIVERADIUS, {"boulder"})
+                if #ents < 5 then
+                    ents = TheSim:FindEntities(x, y, z, EXCLUDE_RADIUS, nil, { "NOBLOCK", "FX" })
                     for k, v in pairs(ents) do
                         if v ~= inst and
                             not launched[v] and
@@ -118,6 +125,8 @@ local function onexplode(inst)
                             break
                         end
                     end
+                else
+                    canspawn = false
                 end
                 if canspawn then
                     local drop = SpawnPrefab(v.prefab)
@@ -139,7 +148,7 @@ local function dostrike(inst)
     inst:DoTaskInTime(0.33, onexplode)
     inst:ListenForEvent("animover", inst.Remove)
     -- animover isn't triggered when the entity is asleep, so just in case
-    inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength() + FRAMES, inst.Remove)
+    inst:DoTaskInTime(3, inst.Remove)
 end
 
 local warntime = 1
@@ -155,6 +164,10 @@ local work =
     medium = 2,
     large = 20,
 }
+
+local function SetPeripheral(inst, peripheral)
+    inst.peripheral = peripheral
+end
 
 local function SetSize(inst, sz, mod)
     if inst.autosizetask ~= nil then
@@ -191,7 +204,10 @@ local function SetSize(inst, sz, mod)
         if rand <= TUNING.METEOR_CHANCE_BOULDERMOON * mod then
             inst.loot =
             {
-                { prefab = "rock_moon", chance = 1, radius = 1.5 },
+                {
+                    prefab = "rock_moon",
+                    chance = 1,
+                },
             }
         elseif rand <= TUNING.METEOR_CHANCE_BOULDERFLINTLESS * mod then
             rand = math.random() -- Randomize which flintless rock we use
@@ -203,13 +219,15 @@ local function SetSize(inst, sz, mod)
                         (rand <= .67 and "rock_flintless_med") or
                         "rock_flintless_low",
                     chance = 1,
-                    radius = 2,
                 },
             }
         else -- Don't check for chance or mod this one: we need to pick a boulder
             inst.loot =
             {
-                { prefab = "rock1", chance = 1, radius = 2 },
+                {
+                    prefab = "rock1",
+                    chance = 1,
+                },
             }
         end
     else -- "small" or other undefined
@@ -255,6 +273,7 @@ local function fn()
 
     inst.Transform:SetRotation(math.random(360))
     inst.SetSize = SetSize
+    inst.SetPeripheral = SetPeripheral
     inst.striketask = nil
 
     -- For spawning these things in ways other than from meteor showers (failsafe set a size after delay)

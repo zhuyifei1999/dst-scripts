@@ -16,7 +16,7 @@ local tile_width = 170 -- our target width
 local tile_scale = tile_width/TILEWIDTH
 local tile_spacing = 10
 
-local IntentionPicker = Class(Widget, function(self, titlestring, descriptionstrings)
+local IntentionPicker = Class(Widget, function(self, titlestring, descriptionstrings, allowany)
     Widget._ctor(self, "IntentionPicker")
 
     self.buttons = {}
@@ -67,6 +67,25 @@ local IntentionPicker = Class(Widget, function(self, titlestring, descriptionstr
     self.description:EnableWordWrap(true)
     self.description:SetHAlign(ANCHOR_MIDDLE)
     self.description:SetVAlign(ANCHOR_TOP)
+
+    if allowany then
+        self.anybutton = self:AddChild(ImageButton("images/ui.xml", "in-window_button_idle.tex", "in-window_button_hl.tex", "in-window_button_disabled.tex", "in-window_button_hl_noshadow.tex", "in-window_button_disabled.tex", {1, 1}, {0,0}))
+        self.anybutton:SetPosition(0, -385)
+        self.anybutton:SetText(STRINGS.UI.INTENTION.ANY)
+        self.anybutton:SetOnGainFocus(function()
+            self.description:SetString(descriptionstrings.ANY)
+        end)
+        self.anybutton:SetOnClick(function()
+            if self.cb then
+                self.cb(INTENTIONS.ANY)
+            end
+        end)
+
+        for i,v in ipairs(self.buttons) do
+            v:SetFocusChangeDir(MOVE_DOWN, self.anybutton)
+        end
+        self.anybutton:SetFocusChangeDir(MOVE_UP, self.buttons[2])
+    end
 
 end)
 

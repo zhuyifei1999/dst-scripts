@@ -21,6 +21,11 @@ local TextEdit = Class(Text, function(self, font, size, text, colour)
 
     self:SetColour(self.idle_text_color[1], self.idle_text_color[2], self.idle_text_color[3], self.idle_text_color[4])
 
+	-- Controller help text strings. You can hide a x_helptext by setting it to and empty string.
+	self.edit_helptext = STRINGS.UI.HELP.CHANGE_TEXT
+	self.cancel_helptext = STRINGS.UI.HELP.BACK
+	self.apply_helptext = STRINGS.UI.HELP.APPLY
+
     --Default cursor colour is WHITE { 1, 1, 1, 1 }
     self:SetEditCursorColour(0,0,0,1) 
 end)
@@ -82,7 +87,8 @@ function TextEdit:SetEditing(editing)
 end
 
 function TextEdit:OnMouseButton(button, down, x, y)
-	self:SetEditing(true)
+-- disabling this because it is conflicing with OnControl()
+--	self:SetEditing(true)
 end
 
 function TextEdit:OnTextInput(text)
@@ -123,7 +129,9 @@ function TextEdit:SetOnTabGoToTextEditWidget(texteditwidget)
 end
 
 function TextEdit:OnStopForceProcessTextInput()
-	self:SetEditing(false)
+	if self.editing then
+		self:SetEditing(false)
+	end
 end
 
 function TextEdit:OnRawKey(key, down)
@@ -326,6 +334,50 @@ end
 
 function TextEdit:EnableScrollEditWindow(enable)
     self.inst.TextEditWidget:EnableScrollEditWindow(enable)
+end
+
+function TextEdit:SetHelpTextEdit(str)
+	if str then
+		self.edit_helptext = str
+	end
+end
+
+function TextEdit:SetHelpTextCancel(str)
+	if str then
+		self.cancel_helptext = str
+	end
+end
+
+function TextEdit:SetHelpTextApply(str)
+	if str then
+		self.apply_helptext = str
+	end
+end
+
+function TextEdit:HasExclusiveHelpText()
+	-- When editing a TextEdit widget, hide the screen's help text
+	return self.editing
+end
+
+function TextEdit:GetHelpText()
+	local t = {}
+    local controller_id = TheInput:GetControllerID()
+    
+    if self:HasExclusiveHelpText() then
+		if self.cancel_helptext ~= "" then
+   			table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_CANCEL) .. " " .. self.cancel_helptext)
+   		end
+
+		if self.apply_helptext ~= "" then
+			table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT, false, false ) .. " " .. self.apply_helptext)	
+		end
+    else
+ 		if self.edit_helptext ~= "" then
+			table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT, false, false ) .. " " .. self.edit_helptext)
+		end
+	end
+	
+	return table.concat(t, "  ")
 end
 
 return TextEdit

@@ -577,6 +577,7 @@ function LobbyScreen:ToggleShowPlayers(val)
 		self.chat_button:Enable()
 
 		self.scroll_list:SetFocus()
+        self.chatbox.textbox:SetEditing(false)
 	else
 		self.active_tab = "chat"
 		self.player_list:Hide()
@@ -626,16 +627,22 @@ function LobbyScreen:MakeTextEntryBox(parent)
     chatbox.textbox:SetCharacterFilter( VALID_CHARS )
     chatbox.textbox:EnableWordWrap(false)
     chatbox.textbox:EnableScrollEditWindow(true)
+   	chatbox.textbox:SetHelpTextEdit(STRINGS.UI.LOBBYSCREEN.CHAT)
+   	chatbox.textbox:SetHelpTextApply(STRINGS.UI.LOBBYSCREEN.CHAT)
     chatbox.gobutton = chatbox:AddChild(ImageButton("images/lobbyscreen.xml", "button_send.tex", "button_send_over.tex", "button_send_down.tex", "button_send_down.tex", "button_send_down.tex", {1,1}, {0,0}))
     chatbox.gobutton:SetPosition(box_size - 59 + nudgex, 8 + nudgey)
     chatbox.gobutton:SetScale(.13)
     chatbox.gobutton.image:SetTint(.6,.6,.6,1)
-    chatbox.textbox.OnTextEntered = function()
-        TheNet:Say(self.chatbox.textbox:GetString(), false)
-        self.chatbox.textbox:SetString("")
-        self.chatbox.textbox:SetEditing(true)
-        TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/chat_send")
-    end
+	chatbox.textbox.OnTextEntered = function()
+		if self.chatbox.textbox:GetString() ~= "" then
+			TheNet:Say(self.chatbox.textbox:GetString(), false)
+			self.chatbox.textbox:SetString("")
+	        TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/chat_send")
+		end
+
+		self.chatbox.textbox:SetEditing(true)
+	end
+    
     chatbox.gobutton:SetOnClick( function() self.chatbox.textbox:OnTextEntered() end )
 
     chatbox:SetPosition(-64, -202)
@@ -840,11 +847,13 @@ function LobbyScreen:OnControl(control, down)
     
     if LobbyScreen._base.OnControl(self, control, down) then return true end
 
-    if self.chatbox and ((self.chatbox.textbox and self.chatbox.textbox.editing) or (self.chatbox.focus and control == CONTROL_ACCEPT)) then
-        self.chatbox.textbox:OnControl(control, down)
-        return true
-    end
-
+	if self.active_tab == "chat" then
+		if self.chatbox and ((self.chatbox.textbox and self.chatbox.textbox.editing) or (self.chatbox.focus and control == CONTROL_ACCEPT)) then
+			self.chatbox.textbox:OnControl(control, down)
+			return true
+		end
+	end
+	
     if not self.no_cancel and
     	not down and control == CONTROL_CANCEL then 
 		self:DoConfirmQuit()

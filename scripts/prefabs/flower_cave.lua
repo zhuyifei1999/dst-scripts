@@ -183,7 +183,7 @@ local function GetDebugString(inst)
     return string.format("State: %s", inst.light_state)
 end
 
-local function commonfn(fn, masterfn)
+local function commonfn(bank, build, masterfn)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -203,21 +203,22 @@ local function commonfn(fn, masterfn)
     inst.Light:SetColour(237/255, 237/255, 209/255)
     inst.Light:Enable(false)
 
-    inst.AnimState:SetTime(math.random() * 2)
-    local color = 0.75 + math.random() * 0.25
-    inst.AnimState:SetMultColour(color, color, color, 1)
+    inst.AnimState:SetBank(bank)
+    inst.AnimState:SetBuild(build)
+    inst.AnimState:PlayAnimation("off")
 
     inst.MiniMapEntity:SetIcon("bulb_plant.png")
-
-    if fn then
-        fn(inst)
-    end
 
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
+
+    inst.light_state = LIGHT_STATES.CHARGED
+
+    local color = 0.75 + math.random() * 0.25
+    inst.AnimState:SetMultColour(color, color, color, 1)
 
     inst:AddComponent("timer")
 
@@ -249,8 +250,6 @@ local function commonfn(fn, masterfn)
     inst:ListenForEvent("timerdone", ontimerdone)
     inst:ListenForEvent("enterlight", enterlight)
 
-    inst:SetLightState(LIGHT_STATES.CHARGED)
-
     inst.OnLoad = OnLoad
     inst.OnSave = OnSave
     inst.OnEntityWake = OnWake
@@ -258,7 +257,7 @@ local function commonfn(fn, masterfn)
 
     MakeHauntableIgnite(inst)
 
-    if masterfn then
+    if masterfn ~= nil then
         masterfn(inst)
     end
 
@@ -282,63 +281,55 @@ local function onload_single(inst,data)
 end
 
 local function single()
-    return commonfn(nil, function(inst)
-        inst.plantname = plantnames[math.random(1, #plantnames)]
-        inst.AnimState:SetBank("bulb_plant"..inst.plantname)
-        inst.AnimState:SetBuild("bulb_plant"..inst.plantname)
+    return commonfn(
+        "bulb_plant_single",
+        "bulb_plant_single",
+        function(inst)
 
-        inst.components.pickable:SetUp("lightbulb", TUNING.FLOWER_CAVE_REGROW_TIME)
+            inst.plantname = plantnames[math.random(1, #plantnames)]
+            inst.AnimState:SetBank("bulb_plant"..inst.plantname)
+            inst.AnimState:SetBuild("bulb_plant"..inst.plantname)
 
-        inst.light_falloff = 0.5
-        inst.light_intensity = 0.8
-        inst.light_radius = 3
+            inst.components.pickable:SetUp("lightbulb", TUNING.FLOWER_CAVE_REGROW_TIME)
 
-        inst.OnSave = onsave_single
-        inst.OnLoad = onload_single
+            inst.light_falloff = 0.5
+            inst.light_intensity = 0.8
+            inst.light_radius = 3
 
-        inst.AnimState:PlayAnimation("idle", true)
-        inst.AnimState:SetTime(math.random() * 2)
-    end)
+            inst.OnSave = onsave_single
+            inst.OnLoad = onload_single
+
+        end)
 end
 
 local function double()
-    return commonfn(function(inst)
+    return commonfn(
+        "bulb_plant_double",
+        "bulb_plant_double",
+        function(inst)
 
-        inst.AnimState:SetBank("bulb_plant_double")
-        inst.AnimState:SetBuild("bulb_plant_double")
+            inst.components.pickable:SetUp("lightbulb", TUNING.FLOWER_CAVE_REGROW_TIME * 1.5, 2)
 
-        inst.AnimState:PlayAnimation("idle", true)
-        inst.AnimState:SetTime(math.random() * 2)
+            inst.light_falloff = 0.5
+            inst.light_intensity = 0.8
+            inst.light_radius = 4.5
 
-    end, function(inst)
-
-        inst.components.pickable:SetUp("lightbulb", TUNING.FLOWER_CAVE_REGROW_TIME * 1.5, 2)
-
-        inst.light_falloff = 0.5
-        inst.light_intensity = 0.8
-        inst.light_radius = 4.5
-
-    end)
+        end)
 end
 
 local function triple()
-    return commonfn(function(inst)
+    return commonfn(
+        "bulb_plant_triple",
+        "bulb_plant_triple",
+        function(inst)
 
-        inst.AnimState:SetBank("bulb_plant_triple")
-        inst.AnimState:SetBuild("bulb_plant_triple")
+            inst.components.pickable:SetUp("lightbulb", TUNING.FLOWER_CAVE_REGROW_TIME * 2, 3)
 
-        inst.AnimState:PlayAnimation("idle", true)
-        inst.AnimState:SetTime(math.random() * 2)
+            inst.light_falloff = 0.5
+            inst.light_intensity = 0.8
+            inst.light_radius = 4.5
 
-    end, function(inst)
-
-        inst.components.pickable:SetUp("lightbulb", TUNING.FLOWER_CAVE_REGROW_TIME * 2, 3)
-
-        inst.light_falloff = 0.5
-        inst.light_intensity = 0.8
-        inst.light_radius = 4.5
-
-    end)
+        end)
 end
 
 return Prefab("flower_cave", single, assets, prefabs),

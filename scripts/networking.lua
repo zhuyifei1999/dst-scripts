@@ -261,8 +261,8 @@ function DownloadMods( server_listing )
 			end
 			
 			if mod.all_clients_require_mod then
-				if not KnownModIndex:DoesModExist( mod.mod_name, mod.version ) then
-					print("Failed to find mod "..mod.mod_name.." v:"..mod.version)
+				if not KnownModIndex:DoesModExist( mod.mod_name, mod.version, mod.version_compatible ) then
+					print("Failed to find mod "..mod.mod_name.." v:"..mod.version.."vc:"..mod.version_compatible )
 					
 					have_required_mods = false
 					local can_dl_mod = TheSim:QueueDownloadTempMod(mod.mod_name, mod.version)
@@ -291,7 +291,7 @@ function DownloadMods( server_listing )
 							KnownModIndex:UpdateModInfo() --Make sure we're verifying against the latest data in the mod folder
 							for k,mod in pairs(server_listing.mods_description) do
 								if mod.all_clients_require_mod then
-									if not KnownModIndex:DoesModExist( mod.mod_name, mod.version ) then
+									if not KnownModIndex:DoesModExist( mod.mod_name, mod.version, mod.version_compatible ) then
 										all_mods_good = false
 										mod_with_invalid_version = mod										
 									end

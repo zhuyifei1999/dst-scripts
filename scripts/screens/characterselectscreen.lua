@@ -4,6 +4,7 @@ local Text = require "widgets/text"
 local Button = require "widgets/button"
 local ImageButton = require "widgets/imagebutton"
 local WardrobePopupScreen = require "screens/wardrobepopup"
+local Menu = require "widgets/menu"
 local TEMPLATES = require "widgets/templates"
 
 local CharacterSelectScreen = Class(Screen, function(self, profile, character)
@@ -39,26 +40,28 @@ local CharacterSelectScreen = Class(Screen, function(self, profile, character)
     self:BuildCharactersList(character)
     self:SetPortrait(character)
 
-	self.closebutton = self.proot:AddChild(TEMPLATES.SmallButton(STRINGS.UI.PLAYER_AVATAR.CLOSE, 26, .5, function() self:Close() end))
-	self.closebutton:SetPosition(-80, -240)
+    local button_w = 160
+    local buttons = {}
+	table.insert(buttons, {text=STRINGS.UI.SKINSSCREEN.BACK, cb=function() self:Close() end })
+	table.insert(buttons, {text=STRINGS.UI.SKINSSCREEN.SELECT, cb=function() 
+						self:Close() 
+						TheFrontEnd:PushScreen(WardrobePopupScreen(nil, profile, self.herocharacter or character, true)) end
+						})
+    
+	self.menu = self.proot:AddChild(Menu(buttons, button_w, true))
+	self.menu:SetPosition(10-(button_w*(#buttons-1))/2, -285, 0) 
+	for i,v in pairs(self.menu.items) do
+		v:SetScale(.7)
+	end
 
-	self.selectbutton = self.proot:AddChild(TEMPLATES.SmallButton(STRINGS.UI.SKINSSCREEN.SELECT, 26, .5, function() self:Close() TheFrontEnd:PushScreen(WardrobePopupScreen(nil, profile, self.herocharacter or character, true)) end))
-	self.selectbutton:SetPosition(100, -240)
+    if JapaneseOnPS4() then
+		self.menu:SetTextSize(30)
+	end
+
+	TheInputProxy:SetCursorVisible(true)
+	self.default_focus = self.menu
 
 end)
-
-function CharacterSelectScreen:OnControl(control, down)
-    if CharacterSelectScreen._base.OnControl(self,control, down) then return true end
-    
-    --[[if control == CONTROL_CANCEL and not down then    
-        if #self.buttons > 1 and self.buttons[#self.buttons] then
-            self.buttons[#self.buttons].cb()
-            TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
-            return true
-        end
-    end]]
-end
-
 
 function CharacterSelectScreen:WrapIndex(index)
 	local new_index = index
@@ -157,14 +160,45 @@ function CharacterSelectScreen:Close()
 	TheFrontEnd:PopScreen(self)
 end
 
-function CharacterSelectScreen:GetHelpText()
-	--[[local controller_id = TheInput:GetControllerID()
-	local t = {}
-	if #self.buttons > 1 and self.buttons[#self.buttons] then
-        table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_CANCEL) .. " " .. STRINGS.UI.HELP.BACK)	
+
+function CharacterSelectScreen:OnControl(control, down)
+    
+    if CharacterSelectScreen._base.OnControl(self, control, down) then return true end
+
+    if not self.no_cancel and
+    	not down and control == CONTROL_CANCEL then 
+		self:Close()
+		return true 
     end
-	return table.concat(t, "  ")
-	]]
+
+    -- Use d-pad buttons for cycling players list
+    -- Add trigger buttons to switch tabs
+   	if not down then 
+	 	if control == CONTROL_FOCUS_LEFT then  -- d-pad left
+	    	self.characterIdx = self:WrapIndex( self.characterIdx - 1 )
+   			self:SetPortrait()
+			TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+			return true 
+		elseif control == CONTROL_FOCUS_RIGHT then -- d-pad right
+			self.characterIdx = self:WrapIndex( self.characterIdx + 1 )
+   			self:SetPortrait()
+			TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+			return true
+	    end
+	end
+end
+
+function CharacterSelectScreen:GetHelpText()
+	local controller_id = TheInput:GetControllerID()
+    local t = {}
+    
+    if not self.no_cancel then
+    	table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_CANCEL) .. " " .. STRINGS.UI.HELP.BACK)
+    end
+ 
+ 	table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_FOCUS_LEFT) .. "/" .. TheInput:GetLocalizedControl(controller_id, CONTROL_FOCUS_RIGHT) .." " .. STRINGS.UI.HELP.CHANGECHARACTER)
+   
+   	return table.concat(t, "  ")
 end
 
 return CharacterSelectScreen

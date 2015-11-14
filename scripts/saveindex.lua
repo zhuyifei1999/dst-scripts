@@ -32,6 +32,8 @@ local function GetWorldgenOverride(cb)
     		if load_success == true then
 				local success, savedata = RunInSandboxSafe(str)
 				if success and string.len(str) > 0 then
+                    print("Found a worldgen override file with these contents:")
+                    dumptable(savedata)
 					if savedata ~= nil and savedata.override_enabled then
 						print("Loaded and applied world gen overrides from "..filename)
                         local preset = savedata.preset

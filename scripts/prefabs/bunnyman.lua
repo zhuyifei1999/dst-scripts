@@ -83,7 +83,7 @@ local function OnGetItemFromPlayer(inst, giver, item)
             if inst.components.combat:TargetIs(giver) then
                 inst.components.combat:SetTarget(nil)
             elseif giver.components.leader ~= nil then
-                inst.SoundEmitter:PlaySound("dontstarve/common/makeFriend")
+                giver:PushEvent("makefriend")
                 giver.components.leader:AddFollower(inst)
                 inst.components.follower:AddLoyaltyTime(
                     giver:HasTag("polite")

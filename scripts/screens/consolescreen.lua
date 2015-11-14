@@ -298,7 +298,8 @@ function ConsoleScreen:DoInit()
 	self.console_edit:SetPosition( -4,0,0)
 	self.console_edit:SetRegionSize( edit_width, label_height )
 	self.console_edit:SetHAlign(ANCHOR_LEFT)
-
+	self.console_edit:SetHelpTextEdit("")
+	
 	self.console_edit.OnTextEntered = function() self:OnTextEntered() end
 	--self.console_edit:SetLeftMouseDown( function() self:SetFocus( self.console_edit ) end )
 	self.console_edit:SetFocusedImage(self.edit_bg, "images/textboxes.xml", "textbox_long_over.tex", "textbox_long.tex")

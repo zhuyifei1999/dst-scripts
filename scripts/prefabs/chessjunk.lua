@@ -47,11 +47,11 @@ local function SpawnScion(inst, friendly, causedbyplayer)
     SpawnAt("maxwell_smoke", inst)
 
     local it = SpawnAt(spawn, inst)
-    if it ~= nil then
+    if it ~= nil and player ~= nil then
         if not friendly and it.components.combat ~= nil then
             it.components.combat:SetTarget(player)
         elseif it.components.follower ~= nil then
-            it.SoundEmitter:PlaySound("dontstarve/common/makeFriend")
+            player:PushEvent("makefriend")
             it.components.follower:SetLeader(player)
         end
     end

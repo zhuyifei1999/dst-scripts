@@ -138,6 +138,13 @@ local function ToggleOnPhysics(inst)
     inst.Physics:CollidesWith(COLLISION.GIANTS)
 end
 
+local function GetUnequipState(inst, data)
+    return (inst:HasTag("beaver") and "item_in")
+        or (data.eslot ~= EQUIPSLOTS.HANDS and "item_hat")
+        or (data.slip and "tool_slip")
+        or "item_in"
+end
+
 local actionhandlers =
 {
     ActionHandler(ACTIONS.CHOP,
@@ -414,12 +421,7 @@ local events =
 
     EventHandler("unequip", function(inst, data)
         if inst.sg:HasStateTag("idle") then
-            inst.sg:GoToState(
-                (inst:HasTag("beaver") and "item_in") or
-                (data.eslot ~= EQUIPSLOTS.HANDS and "item_hat") or
-                (data.slip and "tool_slip") or
-                "item_in"
-            )
+            inst.sg:GoToState(GetUnequipState(inst, data))
         end
     end),
 
@@ -1427,6 +1429,12 @@ local states =
                     inst.SoundEmitter:KillSound("talk")
                 end
             end),
+            EventHandler("unequip", function(inst, data)
+                -- We need to handle this during the initial "busy" frames
+                if not inst.sg:HasStateTag("idle") then
+                    inst.sg:GoToState(GetUnequipState(inst, data))
+                end
+            end),
         },
 
         onexit = function(inst)
@@ -1440,69 +1448,152 @@ local states =
 
     State{
         name = "shell_enter",
-        tags = { "idle", "hiding", "shell", "nopredict", "nomorph" },
+        tags = { "hiding", "notalking", "shell", "nomorph", "busy", "nopredict" },
 
-        onenter = function(inst)            
+        onenter = function(inst)
             inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation("hideshell")
+
+            inst.sg:SetTimeout(23 * FRAMES)
         end,
 
         timeline =
         {
-            TimeEvent(6*FRAMES, function(inst)
-                inst.SoundEmitter:PlaySound("dontstarve/movement/foley/hideshell")    
+            TimeEvent(6 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/movement/foley/hideshell")
             end),
-        },        
+        },
 
         events =
         {
-            EventHandler("animover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("shell_idle")
+            EventHandler("ontalk", function(inst)
+                if inst.sg.statemem.talktask ~= nil then
+                    inst.sg.statemem.talktask:Cancel()
+                    inst.sg.statemem.talktask = nil
+                    inst.SoundEmitter:KillSound("talk")
+                end
+                if DoTalkSound(inst) then
+                    inst.sg.statemem.talktask =
+                        inst:DoTaskInTime(1.5 + math.random() * .5,
+                            function()
+                                inst.SoundEmitter:KillSound("talk")
+                                inst.sg.statemem.talktask = nil
+                            end)
                 end
             end),
+            EventHandler("donetalking", function(inst)
+                if inst.sg.statemem.talktalk ~= nil then
+                    inst.sg.statemem.talktask:Cancel()
+                    inst.sg.statemem.talktask = nil
+                    inst.SoundEmitter:KillSound("talk")
+                end
+            end),
+            EventHandler("unequip", function(inst, data)
+                -- We need to handle this because the default unequip
+                -- handler is ignored while we are in a "busy" state.
+                inst.sg:GoToState(GetUnequipState(inst, data))
+            end),
         },
+
+        ontimeout = function(inst)
+            --Transfer talk task to shell_idle state
+            local talktask = inst.sg.statemem.talktask
+            inst.sg.statemem.talktask = nil
+            inst.sg:GoToState("shell_idle", talktask)
+        end,
+
+        onexit = function(inst)
+            if inst.sg.statemem.talktask ~= nil then
+                inst.sg.statemem.talktask:Cancel()
+                inst.sg.statemem.talktask = nil
+                inst.SoundEmitter:KillSound("talk")
+            end
+        end,
     },
 
     State{
         name = "shell_idle",
-        tags = { "idle", "hiding", "shell", "nopredict", "nomorph" },
+        tags = { "hiding", "notalking", "shell", "nomorph", "idle" },
 
-        onenter = function(inst)
+        onenter = function(inst, talktask)
             inst.components.locomotor:Stop()
-            inst.AnimState:PlayAnimation("hideshell_idle", true)
+            inst.AnimState:PushAnimation("hideshell_idle", false)
+
+            --Transferred over from shell_idle so it doesn't cut off abrubtly
+            inst.sg.statemem.talktask = talktask
+        end,
+
+        events =
+        {
+            EventHandler("ontalk", function(inst)
+                inst.AnimState:PushAnimation("hitshell")
+                inst.AnimState:PushAnimation("hideshell_idle", false)
+
+                if inst.sg.statemem.talktask ~= nil then
+                    inst.sg.statemem.talktask:Cancel()
+                    inst.sg.statemem.talktask = nil
+                    inst.SoundEmitter:KillSound("talk")
+                end
+                if DoTalkSound(inst) then
+                    inst.sg.statemem.talktask =
+                        inst:DoTaskInTime(1.5 + math.random() * .5,
+                            function()
+                                inst.SoundEmitter:KillSound("talk")
+                                inst.sg.statemem.talktask = nil
+                            end)
+                end
+            end),
+            EventHandler("donetalking", function(inst)
+                if inst.sg.statemem.talktalk ~= nil then
+                    inst.sg.statemem.talktask:Cancel()
+                    inst.sg.statemem.talktask = nil
+                    inst.SoundEmitter:KillSound("talk")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            if inst.sg.statemem.talktask ~= nil then
+                inst.sg.statemem.talktask:Cancel()
+                inst.sg.statemem.talktask = nil
+                inst.SoundEmitter:KillSound("talk")
+            end
         end,
     },
 
     State{
         name = "shell_hit",
-        tags = { "busy", "hiding", "shell", "nopredict", "nomorph" },
+        tags = { "hiding", "shell", "nomorph", "busy", "pausepredict" },
 
         onenter = function(inst)
+            inst.components.locomotor:Stop()
             inst:ClearBufferedAction()
-            inst.SoundEmitter:PlaySound("dontstarve/wilson/hit")        
-            inst.AnimState:PlayAnimation("hitshell")
-            --local sound_name = inst.soundsname or inst.prefab
-            --local sound_event = "dontstarve/characters/"..sound_name.."/hurt"
-            --inst.SoundEmitter:PlaySound(sound_event)
-            inst.components.locomotor:Stop()         
-        end,
 
-        timeline =
-        {
-            TimeEvent(3*FRAMES, function(inst)
-                inst.sg:RemoveStateTag("busy")
-            end),
-        },
+            inst.AnimState:PlayAnimation("hitshell")
+
+            inst.SoundEmitter:PlaySound("dontstarve/wilson/hit")
+
+            local stun_frames = 3
+            if inst.components.playercontroller ~= nil then
+                --Specify min frames of pause since "busy" tag may be
+                --removed too fast for our network update interval.
+                inst.components.playercontroller:RemotePausePrediction(stun_frames)
+            end
+            inst.sg:SetTimeout(stun_frames * FRAMES)
+        end,
 
         events =
         {
-            EventHandler("animover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("shell_idle")
-                end
+            EventHandler("unequip", function(inst, data)
+                -- We need to handle this because the default unequip
+                -- handler is ignored while we are in a "busy" state.
+                inst.sg.statemem.unequipped = true
             end),
         },
+
+        ontimeout = function(inst)
+            inst.sg:GoToState(inst.sg.statemem.unequipped and "idle" or "shell_idle")
+        end,
     },
 
     State

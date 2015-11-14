@@ -807,7 +807,9 @@ local COMPONENT_ACTIONS =
         useableitem = function(inst, doer, actions)
             if not inst:HasTag("inuse") and
                 inst.replica.equippable ~= nil and
-                inst.replica.equippable:IsEquipped() then
+                inst.replica.equippable:IsEquipped() and
+                doer.replica.inventory ~= nil and
+                doer.replica.inventory:IsOpenedBy(doer) then
                 table.insert(actions, ACTIONS.USEITEM)
             end
         end,

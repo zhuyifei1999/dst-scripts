@@ -60,7 +60,7 @@ local function OnGetItemFromPlayer(inst, giver, item)
             if inst.components.combat:TargetIs(giver) then
                 inst.components.combat:SetTarget(nil)
             elseif giver.components.leader ~= nil and not inst:HasTag("guard") then
-                inst.SoundEmitter:PlaySound("dontstarve/common/makeFriend")
+                giver:PushEvent("makefriend")
                 giver.components.leader:AddFollower(inst)
                 inst.components.follower:AddLoyaltyTime(item.components.edible:GetHunger() * TUNING.PIG_LOYALTY_PER_HUNGER)
                 inst.components.follower.maxfollowtime =

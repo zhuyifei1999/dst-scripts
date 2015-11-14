@@ -1859,6 +1859,7 @@ STRINGS.UI =
         COOPERATIVE = "Cooperative",
         COMPETITIVE = "Competitive",
         MADNESS = "Madness",
+        ANY = "Any",
     },
 
     CONSOLESCREEN=
@@ -2459,6 +2460,8 @@ STRINGS.UI =
         WHISPER = "whisper:",
         SAY = "say:",
         WHISPER_DESIGNATOR = "[W]",
+        HELP_WHISPER = "Whisper",
+        HELP_SAY = "Say It",
     },
 
     MODSSCREEN = {
@@ -2816,6 +2819,7 @@ STRINGS.UI =
             COOPERATIVE = "Teamwork is your guiding principal. It's not enough to not starve, you have to not starve Together!",
             COMPETITIVE = "By playing harder, smarter, and better than your opponents, you will show them what you're made of.",
             MADNESS = "Fighting, looting, filling the world with spiders... Who knows what you'll do next?",
+            ANY = "You're flexible, you can adapt to whatever world you find yourself in."
         }
     },
 
@@ -3029,6 +3033,7 @@ STRINGS.UI =
     	SORRY = "Sorry",
     	OFFLINE = "Your collection is not available offline.",
     	NEW = "NEW",
+    	BACK = "Back",
 	},
 
     MORGUESCREEN=

@@ -207,7 +207,8 @@ function c_select(inst)
         inst = ConsoleWorldEntityUnderMouse()
     end
     print("Selected "..tostring(inst or "<nil>") )
-    return SetDebugEntity(inst)
+    SetDebugEntity(inst)
+    return inst
 end
 
 -- Print the (visual) tile under the cursor
@@ -472,7 +473,6 @@ local lastfound = -1
 local lastprefab = nil
 function c_findnext(prefab, radius, inst)
     inst = inst or ConsoleCommandPlayer() or TheWorld
-    radius = radius or 9001
     prefab = prefab or lastprefab
     lastprefab = prefab
 
@@ -481,31 +481,44 @@ function c_findnext(prefab, radius, inst)
     local foundlowestid = nil
     local reallowest = nil
     local reallowestid = nil
+    local reallowestidx = -1
 
     print("Finding a ",prefab)
 
     local x,y,z = trans:GetWorldPosition()
-    local ents = TheSim:FindEntities(x,y,z, radius)
+    local ents = {}
+    if radius == nil then
+        ents = Ents
+    else
+        -- note: this excludes CLASSIFIED
+        ents = TheSim:FindEntities(x,y,z, radius)
+    end
+    local total = 0
+    local idx = -1
     for k,v in pairs(ents) do
         if v ~= inst and v.prefab == prefab then
-            print(v.GUID,lastfound,foundlowestid )
+            total = total+1
             if v.GUID > lastfound and (foundlowestid == nil or v.GUID < foundlowestid) then
+                idx = total
                 found = v
                 foundlowestid = v.GUID
             end
             if not reallowestid or v.GUID < reallowestid then
                 reallowest = v
                 reallowestid = v.GUID
+                reallowestidx = total
             end
         end
     end
     if not found then
         found = reallowest
+        idx = reallowestidx
     end
     if not found then
         print("Could not find any objects matching '"..prefab.."'.")
         lastfound = -1
     else
+        print(string.format("Found %s (%d/%d)", found.GUID, idx, total ))
         lastfound = found.GUID
     end
     return found
@@ -786,7 +799,7 @@ function c_makeinvisible()
 end
 
 function c_selectnext(name)
-    c_select(c_findnext(name))
+    return c_select(c_findnext(name))
 end
 
 function c_selectnear(prefab, rad)

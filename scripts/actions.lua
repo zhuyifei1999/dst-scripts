@@ -1154,10 +1154,12 @@ ACTIONS.TURNOFF.fn = function(act)
 end
 
 ACTIONS.USEITEM.fn = function(act)
-    if act.invobject and act.invobject.components.useableitem then
-        if act.invobject.components.useableitem:CanInteract() then
-            act.invobject.components.useableitem:StartUsingItem()
-        end
+    if act.invobject ~= nil and
+        act.invobject.components.useableitem ~= nil and
+        act.invobject.components.useableitem:CanInteract() and
+        act.doer.components.inventory ~= nil and
+        act.doer.components.inventory:IsOpenedBy(act.doer) then
+        act.invobject.components.useableitem:StartUsingItem()
     end
 end
 
@@ -1170,21 +1172,14 @@ ACTIONS.TAKEITEM.fn = function(act)
 end
 
 ACTIONS.TAKEITEM.strfn = function(act)
-    local targ = act.target
-
-    if targ.prefab == "birdcage" then
-        return "BIRDCAGE"
-    else
-        return "GENERIC"  
-    end
+    return act.target.prefab == "birdcage" and "BIRDCAGE" or "GENERIC"
 end
 
 ACTIONS.CASTSPELL.strfn = function(act)
-    local targ = act.invobject
-    
-    if targ and targ.components.spellcaster then
-        return targ.components.spellcaster.actiontype
-    end
+    return act.invobject ~= nil
+        and act.invobject.components.spellcaster ~= nil
+        and act.invobject.components.spellcaster.actiontype
+        or nil
 end
 
 ACTIONS.CASTSPELL.fn = function(act)

@@ -1398,7 +1398,7 @@ function OptionsScreen:InitializeSpinners(first)
 
 	for i,v in ipairs(self.devices) do
 		if TheInputProxy:IsInputDeviceEnabled(v.data) then
-			self.deviceSpinner:SetSelectedIndex(v.data)
+			self.deviceSpinner:SetSelectedIndex(i)
 		end
 	end
 

@@ -8,48 +8,47 @@ local function OnBlocked(owner)
 end
 
 local function ProtectionLevels(inst, data)
-    local equippedArmor = inst.components.inventory and inst.components.inventory:GetEquippedItem(EQUIPSLOTS.BODY)
-    if data.statename == "shell_idle" or data.statename == "shell_hit" or data.statename == "shell_enter" then
+    local equippedArmor = inst.components.inventory ~= nil and inst.components.inventory:GetEquippedItem(EQUIPSLOTS.BODY) or nil
+    if equippedArmor ~= nil then
+        if inst.sg:HasStateTag("shell") then
         equippedArmor.components.armor:SetAbsorption(TUNING.FULL_ABSORPTION)
     else
         equippedArmor.components.armor:SetAbsorption(TUNING.ARMORSNURTLESHELL_ABSORPTION)
         equippedArmor.components.useableitem:StopUsingItem()
     end
-end
-
-local function shouldstopuse(inst, data)
-    local equippedArmor = inst.components.inventory and inst.components.inventory:GetEquippedItem(EQUIPSLOTS.BODY)
-    if equippedArmor and not (data.statename == "shell_idle" or data.statename == "shell_hit") then
-        equippedArmor.components.useableitem:StopUsingItem()
-        inst:RemoveEventCallback("newstate", shouldstopuse, inst)
-        if inst.task then
-            inst.task:Cancel()
-            inst.task = nil
         end
-    end
 end
 
 local function droptargets(inst)
-    local pt = inst:GetPosition()
-    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, 20)
+    inst.task = nil
 
-    for k,v in pairs(ents) do
-        if v.components.combat and v.components.combat.target and v.components.combat.target == inst then
+    local owner = inst.components.inventoryitem ~= nil and inst.components.inventoryitem.owner or nil
+    if owner ~= nil and owner.sg:HasStateTag("shell") then
+        local x, y, z = owner.Transform:GetWorldPosition()
+        local ents = TheSim:FindEntities(x, y, z, 20, { "_combat" })
+        for i, v in ipairs(ents) do
+            if v.components.combat ~= nil and v.components.combat.target == owner then
             v.components.combat:SetTarget(nil)
         end
     end
-
-   if inst.task then
-        inst.task:Cancel()
-        inst.task = nil
     end
 end
 
 local function onuse(inst)
     local owner = inst.components.inventoryitem.owner
-    if owner then
+    if owner ~= nil then
         owner.sg:GoToState("shell_enter")
+        if inst.task ~= nil then
+            inst.task:Cancel()
+        end
         inst.task = inst:DoTaskInTime(5, droptargets)
+    end
+end
+
+local function onstopuse(inst)
+    if inst.task ~= nil then
+        inst.task:Cancel()
+        inst.task = nil
     end
 end
 
@@ -63,7 +62,6 @@ local function onunequip(inst, owner)
     owner.AnimState:ClearOverrideSymbol("swap_body_tall")
     inst:RemoveEventCallback("blocked", OnBlocked, owner)
     inst:RemoveEventCallback("newstate", ProtectionLevels, owner)
-
 end
 
 local function fn()
@@ -103,6 +101,7 @@ local function fn()
 
     inst:AddComponent("useableitem")
     inst.components.useableitem:SetOnUseFn(onuse)
+    inst.components.useableitem:SetOnStopUseFn(onstopuse)
 
     MakeHauntableLaunch(inst)
 

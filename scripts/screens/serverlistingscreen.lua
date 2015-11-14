@@ -60,6 +60,13 @@ local STRING_MAX_LENGTH = 254 -- http://tools.ietf.org/html/rfc5321#section-4.5.
 
 local hover_text_params = { font = NEWFONT, size = 20, offset_x = -4, offset_y = 45, colour = {0,0,0,1} }
 
+local intention_images = {
+    [INTENTIONS.SOCIAL] = { big="social.tex", small="playstyle_social.tex" },
+    [INTENTIONS.COOPERATIVE] = { big="coop.tex", small="playstyle_coop.tex" },
+    [INTENTIONS.COMPETITIVE] = { big="competitive.tex", small="playstyle_competitive.tex" },
+    [INTENTIONS.MADNESS] = { big="madness.tex", small="playstyle_madness.tex" },
+}
+
 local ServerListingScreen = Class(Screen, function(self, filters, cb, offlineMode, session_mapping)
     Widget._ctor(self, "ServerListingScreen")
 
@@ -108,7 +115,7 @@ local ServerListingScreen = Class(Screen, function(self, filters, cb, offlineMod
     self.server_list_titles:SetPosition(column_offsets_x_pos, column_offsets_y_pos, 0)
 
 
-    self.intentions_overlay = self.server_list:AddChild(IntentionPicker( STRINGS.UI.SERVERLISTINGSCREEN.INTENTION_TITLE, STRINGS.UI.SERVERLISTINGSCREEN.INTENTION_DESC))
+    self.intentions_overlay = self.server_list:AddChild(IntentionPicker( STRINGS.UI.SERVERLISTINGSCREEN.INTENTION_TITLE, STRINGS.UI.SERVERLISTINGSCREEN.INTENTION_DESC, true))
     self.intentions_overlay:SetCallback(function(intention)
         self:SetServerIntention(intention)
     end)
@@ -583,7 +590,14 @@ function ServerListingScreen:UpdateServerData( selected_index_actual )
         end
         self.details_servername:SetString( nameString )
         self.details_serverdesc:SetString( self.selected_server.has_details and (self.selected_server.description ~= "" and self.selected_server.description or STRINGS.UI.SERVERLISTINGSCREEN.NO_DESC) or STRINGS.UI.SERVERLISTINGSCREEN.DESC_LOADING )
-        
+
+        if self.selected_server.intention ~= "" then
+            self.details_background:SetTexture("images/server_intentions.xml", intention_images[self.selected_server.intention].big)
+            self.details_background:Show()
+        else
+            self.details_background:Hide()
+        end
+
         self.game_mode_description.text:SetString( GetGameModeString( self.selected_server.mode ) )
         local w,h = self.game_mode_description.text:GetRegionSize()
         self.game_mode_description.info_button.o_pos = nil --wipe the o_pos in case it's been clicked and got set
@@ -741,7 +755,6 @@ function ServerListingScreen:SearchForServers()
     self:ServerSelected(nil)
     self.servers = {}
     self.viewed_servers = {}
-    self:RefreshView()
     self:ClearServerList()
     local num_servs = #self.servers-self.unjoinable_servers
     if num_servs < 0 then num_servs = 0 end
@@ -768,7 +781,7 @@ function ServerListingScreen:SearchForServers()
     if self.view_online and not self.offlinemode then -- search LAN and online if online
         self.servers_scroll_list.focused_index = 1
         TheNet:SearchServers()
-    elseif not self.view_online then -- otherwise just LAN
+    else -- otherwise just LAN
         self.servers_scroll_list.focused_index = 1
         TheNet:SearchLANServers(self.offlinemode)
     end
@@ -864,15 +877,19 @@ function ServerListingScreen:MakeServerListWidgets()
         row.cursor:SetOnDown(  function() self:OnStartClickServerInList(i)  end)
         row.cursor:SetOnClick( function() self:OnFinishClickServerInList(i) end)
         row.cursor:Hide()
+
+        row.INTENTION = row:AddChild(Image("images/servericons.xml", "playstyle_social.tex"))
+        row.INTENTION:SetPosition(column_offsets.NAME-18, y_offset)
+        row.INTENTION:SetScale(0.08, 0.08)
         
         row.NAME = row:AddChild(Text(NEWFONT, font_size))
         row.NAME:SetHAlign(ANCHOR_MIDDLE)
         row.NAME:SetString("")
         row.NAME._align =
         {
-            maxwidth = 300,
+            maxwidth = 275,
             maxchars = 80,
-            x = column_offsets.NAME - 25,
+            x = column_offsets.NAME,
             y = y_offset,
         }
         row.NAME:SetPosition(row.NAME._align.x, row.NAME._align.y, 0)
@@ -960,6 +977,7 @@ function ServerListingScreen:MakeServerListWidgets()
                 
         if not serverdata then
             widget.index = -1
+            widget.INTENTION:Hide()
             widget.NAME:SetString("")
             widget.NAME:SetPosition(widget.NAME._align.x, widget.NAME._align.y, 0)
             widget.PLAYERS:SetString("")
@@ -992,6 +1010,13 @@ function ServerListingScreen:MakeServerListWidgets()
             widget.offline = serverdata.offline
 
             widget.cursor:Show()
+
+            if serverdata.intention ~= nil and serverdata.intention ~= "" then
+                widget.INTENTION:Show()
+                widget.INTENTION:SetTexture("images/servericons.xml", intention_images[serverdata.intention].small)
+            else
+                widget.INTENTION:Hide()
+            end
             
             widget.NAME:SetTruncatedString(serverdata.name, widget.NAME._align.maxwidth, widget.NAME._align.maxchars, true)
             local w, h = widget.NAME:GetRegionSize()
@@ -1375,8 +1400,8 @@ function ServerListingScreen:IsValidWithFilters(server)
     -- Only show servers that match your intention
     -- But, don't filter this way if we've explicitly put in search terms
     -- Also, this only applies to the online tab
-    if self.view_online and #self.queryTokens == 0 then
-        local intention = Profile:GetValue("playerintention")
+    local intention = Profile:GetValue("playerintention")
+    if intention ~= INTENTIONS.ANY and self.view_online and #self.queryTokens == 0 then
         if intention == nil or intention ~= server.intention then
             return false
         end
@@ -1732,10 +1757,9 @@ function ServerListingScreen:MakeFiltersPanel(filter_data)
     searchbox:SetOnGainFocus(function() self.searchbox.textbox:OnGainFocus() end)
     searchbox:SetOnLoseFocus(function() self.searchbox.textbox:OnLoseFocus() end)
     searchbox.GetHelpText = function()
-        local controller_id = TheInput:GetControllerID()
         local t = {}
         if not self.searchbox.textbox.editing and not self.searchbox.textbox.focus then
-            table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT, false, false ) .. " " .. STRINGS.UI.HELP.CHANGE_TEXT)   
+			table.insert(t, self.searchbox.textbox:GetHelpText())
         end
         return table.concat(t, "  ")
     end
@@ -1780,16 +1804,8 @@ function ServerListingScreen:MakeFiltersPanel(filter_data)
     local item_height = 20
     local item_padding = (scroll_height - (item_height*#self.filters)) / (#self.filters-1)
 
-    if BRANCH == "dev" then
-        self.filters_scroll_list = self.server_detail_panel:AddChild(ScrollableList(self.filters, scroll_width, scroll_height, item_height, item_padding, nil, nil, 0))
-        self.filters_scroll_list:SetPosition(50,-35)
-    else
-        self.filters_scroll_list = self.server_detail_panel:AddChild(ScrollableList(self.filters, scroll_width, scroll_height, item_height, item_padding, nil, nil, 0))
-        self.filters_scroll_list:SetPosition(50,-45)
-    end
-
-    global 'tab'
-    tab = self.filters_scroll_list
+    self.filters_scroll_list = self.server_detail_panel:AddChild(ScrollableList(self.filters, scroll_width, scroll_height, item_height, item_padding, nil, nil, 0))
+    self.filters_scroll_list:SetPosition(50,-35)
 
     if filter_data then
         for i,v in pairs(filter_data) do
@@ -1902,6 +1918,12 @@ function ServerListingScreen:MakeDetailPanel(right_col)
     local width = 240
     local detail_y = 135
 
+    -- Container for the majority of the details in this panel, so we can hide them
+    self.server_details_additional = self.server_detail_panel:AddChild(Widget("additionalservdetails"))
+    self.server_details_additional:SetPosition(0,0) -- so we can use positioning relative to the whole panel
+    self.server_details_additional.focus_forward = self.viewworld_button
+    self.server_details_additional:Hide()
+
     self.details_servername = self.server_detail_panel:AddChild(Text(BUTTONFONT, 40))
     self.details_servername:SetHAlign(ANCHOR_MIDDLE)
     self.details_servername:SetVAlign(ANCHOR_TOP)
@@ -1921,11 +1943,14 @@ function ServerListingScreen:MakeDetailPanel(right_col)
     self.details_serverdesc:EnableWordWrap( true )
     self.details_serverdesc:SetColour(0,0,0,1)
 
-    -- Container for the majority of the details in this panel, so we can hide them
-    self.server_details_additional = self.server_detail_panel:AddChild(Widget("additionalservdetails"))
-    self.server_details_additional:SetPosition(0,0) -- so we can use positioning relative to the whole panel
-    self.server_details_additional.focus_forward = self.viewworld_button
-    self.server_details_additional:Hide()
+    self.details_background = self.server_details_additional:AddChild(Image("images/server_intentions.xml", "social.tex"))
+    self.details_background:SetPosition(detail_x, 100)
+    self.details_background:SetTint(1,1,1,0.2)
+    self.details_background:SetScale(0.8, 0.8)
+    --self.details_background:Hide()
+    
+    global'tab'
+    tab = self.details_background
 
     self.viewworld_button = MakeImgButton(self.server_detail_panel, -56, 6, STRINGS.UI.SERVERLISTINGSCREEN.WORLD_UNKNOWN, function() self:ViewServerWorld() end, "icon", "world")
     self.viewworld_button:Select()

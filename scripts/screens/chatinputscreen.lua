@@ -198,6 +198,12 @@ function ChatInputScreen:DoInit()
 	self.chat_edit:SetPosition( 0,0,0 )
 	self.chat_edit:SetRegionSize( edit_width, label_height )
 	self.chat_edit:SetHAlign(ANCHOR_LEFT)
+	self.chat_edit:SetHelpTextEdit("")
+	if self.whisper then
+		self.chat_edit:SetHelpTextApply(STRINGS.UI.CHATINPUTSCREEN.HELP_WHISPER)
+	else
+		self.chat_edit:SetHelpTextApply(STRINGS.UI.CHATINPUTSCREEN.HELP_SAY)
+	end
 
 	self.chat_edit.OnTextEntered = function() self:OnTextEntered() end
 	self.chat_edit:SetCharacterFilter(VALID_CHARS)

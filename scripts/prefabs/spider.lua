@@ -39,7 +39,7 @@ local function OnGetItemFromPlayer(inst, giver, item)
             inst.components.combat:SetTarget(nil)
         elseif giver.components.leader ~= nil and
             inst.components.follower ~= nil then
-            inst.SoundEmitter:PlaySound("dontstarve/common/makeFriend")
+            giver:PushEvent("makefriend")
             playedfriendsfx = true
             giver.components.leader:AddFollower(inst)
             inst.components.follower:AddLoyaltyTime(item.components.edible:GetHunger() * TUNING.SPIDER_LOYALTY_PER_HUNGER)
@@ -60,7 +60,7 @@ local function OnGetItemFromPlayer(inst, giver, item)
                     v.components.follower ~= nil and
                     v.components.follower.leader == nil then
                     if not playedfriendsfx then
-                        v.SoundEmitter:PlaySound("dontstarve/common/makeFriend")
+                        giver:PushEvent("makefriend")
                         playedfriendsfx = true
                     end
                     giver.components.leader:AddFollower(v)

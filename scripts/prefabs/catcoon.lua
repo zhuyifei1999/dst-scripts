@@ -256,21 +256,21 @@ local function ShouldAcceptItem(inst, item)
 end
 
 local function OnGetItemFromPlayer(inst, giver, item)
-	if inst.components.sleeper:IsAsleep() then
+    if inst.components.sleeper:IsAsleep() then
         inst.components.sleeper:WakeUp()
     end
-    if inst.components.combat.target and inst.components.combat.target == giver then
+    if inst.components.combat.target == giver then
         inst.components.combat:SetTarget(nil)
         inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/catcoon/pickup")
-    elseif giver.components.leader then
-    	inst.SoundEmitter:PlaySound("dontstarve/common/makeFriend")
-    	inst.last_hairball_time = GetTime()
-    	inst.hairball_friend_interval = math.random(2,4) -- Jumpstart the hairball timer (slot machine time!)
-		giver.components.leader:AddFollower(inst)
+    elseif giver.components.leader ~= nil then
+        giver:PushEvent("makefriend")
+        inst.last_hairball_time = GetTime()
+        inst.hairball_friend_interval = math.random(2,4) -- Jumpstart the hairball timer (slot machine time!)
+        giver.components.leader:AddFollower(inst)
         inst.components.follower:AddLoyaltyTime(TUNING.CATCOON_LOYALTY_PER_ITEM)
         if not inst.sg:HasStateTag("busy") then 
-        	inst:FacePoint(giver.Transform:GetWorldPosition())
-        	inst.sg:GoToState("pawground") 
+            inst:FacePoint(giver.Transform:GetWorldPosition())
+            inst.sg:GoToState("pawground") 
        	end
     end
     item:Remove()

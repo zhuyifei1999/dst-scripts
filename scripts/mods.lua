@@ -78,6 +78,7 @@ function GetEnabledModsModInfoDetails()
             name = mod_name,
             info_name = modinfo ~= nil and modinfo.name or mod_name,
             version = modinfo ~= nil and modinfo.version or "",
+            version_compatible = modinfo ~= nil and modinfo.version_compatible or (modinfo ~= nil and modinfo.version or ""),
             all_clients_require_mod = modinfo ~= nil and modinfo.all_clients_require_mod == true,
         })
     end

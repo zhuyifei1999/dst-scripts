@@ -1252,11 +1252,19 @@ local function makefn(build, stage, data)
             inst:AddTag("shelter")
         end
 
+        --Sneak these into pristine state for optimization
+        inst:AddTag("__combat")
+
         inst.entity:SetPristine()
 
         if not TheWorld.ismastersim then
             return inst
         end
+
+        --Remove these tags so that they can be added properly when replicating components below
+        inst:RemoveTag("__combat")
+
+        inst:PrereplicateComponent("combat")
 
         inst:SetStateGraph("SGdeciduoustree")
         inst.sg:GoToState("empty")
