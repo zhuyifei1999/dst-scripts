@@ -38,15 +38,33 @@ SetSharedLootTable('statue_ruins_no_gem',
     {'thulecite',     0.05},
 })
 
-local LIGHT_INTENSITY = .25
-local LIGHT_RADIUS = 2.5
-local LIGHT_FALLOFF = 5
-local FADEIN_TIME = 10
+local MAX_LIGHT_ON_FRAME = 15
+local MAX_LIGHT_OFF_FRAME = 30
 
-local function turnoff(inst, light)
-    if light ~= nil then
-        light:Enable(false)
+local function OnUpdateLight(inst, dframes)
+    local frame = inst._lightframe:value() + dframes
+    if frame >= inst._lightmaxframe then
+        inst._lightframe:set_local(inst._lightmaxframe)
+        inst._lighttask:Cancel()
+        inst._lighttask = nil
+    else
+        inst._lightframe:set_local(frame)
     end
+
+    local k = frame / inst._lightmaxframe
+    inst.Light:SetRadius(inst._lightradius1:value() * k + inst._lightradius0:value() * (1 - k))
+
+    if TheWorld.ismastersim then
+        inst.Light:Enable(inst._lightradius1:value() > 0 or frame < inst._lightmaxframe)
+    end
+end
+
+local function OnLightDirty(inst)
+    if inst._lighttask == nil then
+        inst._lighttask = inst:DoPeriodicTask(FRAMES, OnUpdateLight, nil, 1)
+    end
+    inst._lightmaxframe = inst._lightradius1:value() > 0 and MAX_LIGHT_ON_FRAME or MAX_LIGHT_OFF_FRAME
+    OnUpdateLight(inst, 0)
 end
 
 local function DoFx(inst)
@@ -65,13 +83,23 @@ local function DoFx(inst)
     end
 end
 
-local function fade_in(inst, rad)
-    inst.Light:Enable(true)
-    inst.components.lighttweener:StartTween(nil, rad, nil, nil, nil, 0.5) 
-end
-
-local function fade_out(inst)
-    inst.components.lighttweener:StartTween(nil, 0, nil, nil, nil, 1, turnoff) 
+local function fade_to(inst, rad)
+    rad = rad or 0
+    if inst._lightradius1:value() ~= rad then
+        local k = inst._lightframe:value() / inst._lightmaxframe
+        local radius = inst._lightradius1:value() * k + inst._lightradius0:value() * (1 - k)
+        local minradius0 = math.min(inst._lightradius0:value(), inst._lightradius1:value())
+        local maxradius0 = math.max(inst._lightradius0:value(), inst._lightradius1:value())
+        if radius > rad then
+            inst._lightradius0:set(radius > minradius0 and maxradius0 or minradius0)
+        else
+            inst._lightradius0:set(radius < maxradius0 and minradius0 or maxradius0)
+        end
+        local maxframe = rad > 0 and MAX_LIGHT_ON_FRAME or MAX_LIGHT_OFF_FRAME
+        inst._lightradius1:set(rad)
+        inst._lightframe:set(math.max(0, math.floor((radius - inst._lightradius0:value()) / (rad - inst._lightradius0:value()) * maxframe + .5)))
+        OnLightDirty(inst)
+    end
 end
 
 local function ShowState(inst, phase, fromwork)
@@ -91,18 +119,18 @@ local function ShowState(inst, phase, fromwork)
 
     if phase ~= nil then
         if phase == "warn" then
-            fade_in(inst, 2)
+            fade_to(inst, 2)
         elseif phase == "wild" then
             suffix = "_night"
-            fade_in(inst, 4)
+            fade_to(inst, 4)
             inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
             DoFx(inst)
         elseif phase == "dawn" then
-            fade_in(inst, 2)
+            fade_to(inst, 2)
             inst.AnimState:ClearBloomEffectHandle()
             DoFx(inst)
         elseif phase == "calm" then
-            fade_out(inst)
+            fade_to(inst, 0)
         end
     elseif fromwork then
         -- we don't actually have hit animations, we just play the animation
@@ -181,7 +209,21 @@ local function commonfn(small)
 
     inst:AddTag("cavedweller")
     inst:AddTag("structure")
-    inst.entity:AddTag("statue")
+    inst:AddTag("statue")
+
+    inst.Light:SetRadius(0)
+    inst.Light:SetIntensity(.9)
+    inst.Light:SetFalloff(.9)
+    inst.Light:SetColour(1, 1, 1)
+    inst.Light:Enable(false)
+    inst.Light:EnableClientModulation(true)
+
+    inst._lightframe = net_smallbyte(inst.GUID, "ruins_statue._lightframe", "lightdirty")
+    inst._lightradius0 = net_tinybyte(inst.GUID, "ruins_statue._lightradius0", "lightdirty")
+    inst._lightradius1 = net_tinybyte(inst.GUID, "ruins_statue._lightradius1", "lightdirty")
+    inst._lightmaxframe = MAX_LIGHT_OFF_FRAME
+    inst._lightframe:set(inst._lightmaxframe)
+    inst._lighttask = nil
 
     --Sneak these into pristine state for optimization
     inst:AddTag("_named")
@@ -189,6 +231,8 @@ local function commonfn(small)
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
+        inst:ListenForEvent("lightdirty", OnLightDirty)
+
         return inst
     end
 
@@ -196,8 +240,6 @@ local function commonfn(small)
     inst:RemoveTag("_named")
 
     inst.small = small
-    inst.fadeout = fade_out
-    inst.fadein = fade_in
 
     inst:AddComponent("inspectable")
     inst.components.inspectable.nameoverride = "ANCIENT_STATUE"
@@ -210,9 +252,6 @@ local function commonfn(small)
     inst.components.workable:SetOnWorkCallback(OnWorked)
 
     inst:AddComponent("fader")
-
-    inst:AddComponent("lighttweener")
-    inst.components.lighttweener:StartTween(inst.Light, 1, .9, 0.9, {255/255,255/255,255/255}, 0, turnoff)
 
     inst:AddComponent("lootdropper")
 

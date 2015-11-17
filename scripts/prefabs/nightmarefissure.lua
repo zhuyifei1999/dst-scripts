@@ -9,11 +9,57 @@ local prefabs =
     "nightmarebeak",
     "crawlingnightmare",
     "nightmarefissurefx",
-    "upper_nightmarefissurefx"
+    "upper_nightmarefissurefx",
 }
 
 local upperLightColour = {239/255, 194/255, 194/255}
 local lowerLightColour = {1,1,1}
+local MAX_LIGHT_ON_FRAME = 15
+local MAX_LIGHT_OFF_FRAME = 10
+
+local function OnUpdateLight(inst, dframes)
+    local frame = inst._lightframe:value() + dframes
+    if frame >= inst._lightmaxframe then
+        inst._lightframe:set_local(inst._lightmaxframe)
+        inst._lighttask:Cancel()
+        inst._lighttask = nil
+    else
+        inst._lightframe:set_local(frame)
+    end
+
+    local k = frame / inst._lightmaxframe
+    inst.Light:SetRadius(inst._lightradius1:value() * k + inst._lightradius0:value() * (1 - k))
+
+    if TheWorld.ismastersim then
+        inst.Light:Enable(inst._lightradius1:value() > 0 or frame < inst._lightmaxframe)
+    end
+end
+
+local function OnLightDirty(inst)
+    if inst._lighttask == nil then
+        inst._lighttask = inst:DoPeriodicTask(FRAMES, OnUpdateLight, nil, 1)
+    end
+    inst._lightmaxframe = inst._lightradius1:value() > 0 and MAX_LIGHT_ON_FRAME or MAX_LIGHT_OFF_FRAME
+    OnUpdateLight(inst, 0)
+end
+
+local function fade_to(inst, rad, instant)
+    if inst._lightradius1:value() ~= rad then
+        local k = inst._lightframe:value() / inst._lightmaxframe
+        local radius = inst._lightradius1:value() * k + inst._lightradius0:value() * (1 - k)
+        local minradius0 = math.min(inst._lightradius0:value(), inst._lightradius1:value())
+        local maxradius0 = math.max(inst._lightradius0:value(), inst._lightradius1:value())
+        if radius > rad then
+            inst._lightradius0:set(radius > minradius0 and maxradius0 or minradius0)
+        else
+            inst._lightradius0:set(radius < maxradius0 and minradius0 or maxradius0)
+        end
+        local maxframe = rad > 0 and MAX_LIGHT_ON_FRAME or MAX_LIGHT_OFF_FRAME
+        inst._lightradius1:set(rad)
+        inst._lightframe:set(instant and maxframe or math.max(0, math.floor((radius - inst._lightradius0:value()) / (rad - inst._lightradius0:value()) * maxframe + .5)))
+        OnLightDirty(inst)
+    end
+end
 
 local function returnchildren(inst)
     for k,child in pairs(inst.components.childspawner.childrenoutside) do
@@ -55,12 +101,6 @@ local function dofx(inst)
     end
 end
 
-local function turnoff(inst, light)
-    if light then
-        light:Enable(false)
-    end
-end
-
 local function spawnfx(inst)
     if inst.fx == nil then
         inst.fx = SpawnPrefab(inst.fxprefab)
@@ -76,8 +116,7 @@ local states =
 
         RemovePhysicsColliders(inst)
 
-        inst.Light:Enable(true)
-        inst.components.lighttweener:StartTween(nil, 0, nil, nil, nil, (instant and 0) or .33, turnoff)
+        fade_to(inst, 0, instant)
         if not instant then
             inst.AnimState:PushAnimation("close_2")
             inst.AnimState:PushAnimation("idle_closed")
@@ -97,8 +136,7 @@ local states =
     warn = function(inst, instant)
 
         ChangeToObstaclePhysics(inst)
-        inst.Light:Enable(true)
-        inst.components.lighttweener:StartTween(nil, 2, nil, nil, nil, (instant and 0) or  0.5)
+        fade_to(inst, 2, instant)
         inst.AnimState:PlayAnimation("open_1")
         inst.fx.AnimState:PlayAnimation("open_1")
         inst.SoundEmitter:KillSound("loop")
@@ -109,8 +147,7 @@ local states =
     wild = function(inst, instant)
 
         ChangeToObstaclePhysics(inst)
-        inst.Light:Enable(true)
-        inst.components.lighttweener:StartTween(nil, 5, nil, nil, nil, (instant and 0) or 0.5)
+        fade_to(inst, 5, instant)
         inst.SoundEmitter:KillSound("loop")
         inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_fissure_open")
         inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_fissure_open_LP", "loop")
@@ -134,8 +171,7 @@ local states =
 
     dawn = function(inst, instant)
         ChangeToObstaclePhysics(inst)
-        inst.Light:Enable(true)
-        inst.components.lighttweener:StartTween(nil, 2, nil, nil, nil, (instant and 0) or 0.5)
+        fade_to(inst, 2, instant)
         inst.SoundEmitter:KillSound("loop")
         inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_fissure_open")
         inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_fissure_open_LP", "loop")
@@ -174,8 +210,8 @@ local function getsanityaura(inst)
 end
 
 local function commonfn(type, lightcolour, fxprefab)
-
     local inst = CreateEntity()
+
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
@@ -189,21 +225,34 @@ local function commonfn(type, lightcolour, fxprefab)
     inst.AnimState:SetBank(type)
     inst.AnimState:PlayAnimation("idle_closed")
 
+    inst.Light:SetRadius(0)
+    inst.Light:SetIntensity(.9)
+    inst.Light:SetFalloff(.9)
+    inst.Light:SetColour(unpack(lightcolour))
+    inst.Light:Enable(false)
+    inst.Light:EnableClientModulation(true)
+
+    inst._lightframe = net_smallbyte(inst.GUID, "fissure._lightframe", "lightdirty")
+    inst._lightradius0 = net_tinybyte(inst.GUID, "fissure._lightradius0", "lightdirty")
+    inst._lightradius1 = net_tinybyte(inst.GUID, "fissure._lightradius1", "lightdirty")
+    inst._lightmaxframe = MAX_LIGHT_OFF_FRAME
+    inst._lightframe:set(inst._lightmaxframe)
+    inst._lighttask = nil
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
+        inst:ListenForEvent("lightdirty", OnLightDirty)
+
         return inst
     end
 
-    inst:AddComponent( "childspawner" )
+    inst:AddComponent("childspawner")
     inst.components.childspawner:SetRegenPeriod(5)
     inst.components.childspawner:SetSpawnPeriod(30)
     inst.components.childspawner:SetMaxChildren(1)
     inst.components.childspawner.childname = "crawlingnightmare"
     inst.components.childspawner:SetRareChild("nightmarebeak", 0.35)
-
-    inst:AddComponent("lighttweener")
-    inst.components.lighttweener:StartTween(inst.Light, 1, .9, 0.9, lightcolour, 0, turnoff)
 
     inst.fxprefab = fxprefab
 
@@ -215,7 +264,6 @@ local function commonfn(type, lightcolour, fxprefab)
     return inst
 end
 
-
 local function upper()
     return commonfn("nightmare_crack_upper", upperLightColour, "upper_nightmarefissurefx")
 end
@@ -223,7 +271,6 @@ end
 local function lower()
     return commonfn("nightmare_crack_ruins", lowerLightColour, "nightmarefissurefx")
 end
-
 
 return Prefab("fissure", upper, assets, prefabs),
        Prefab("fissure_lower", lower, assets, prefabs)

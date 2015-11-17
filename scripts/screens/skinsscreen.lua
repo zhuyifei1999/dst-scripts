@@ -69,8 +69,10 @@ local function line_constructor(screen, parent, num_pictures, data)
 
 		table.insert(widget.images, itemimage)
 
-		itemimage:SetFocusChangeDir(MOVE_LEFT, widget.images[#widget_images - 1])
-		widget.images[#widget_images-1]:SetFocusChangeDir(MOVE_RIGHT, itemimage)
+		if #widget.images > 1 then 
+			itemimage:SetFocusChangeDir(MOVE_LEFT, widget.images[#widget.images - 1])
+			widget.images[#widget.images-1]:SetFocusChangeDir(MOVE_RIGHT, itemimage)
+		end
 	end
 
 	widget.focus_forward = widget.images[1]
