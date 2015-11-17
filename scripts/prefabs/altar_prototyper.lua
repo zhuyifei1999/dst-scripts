@@ -103,6 +103,43 @@ local actions =
     stafflight          = { amt = 1, },
 }
 
+local MAX_LIGHT_ON_FRAME = 15
+local MAX_LIGHT_OFF_FRAME = 30
+
+local function OnUpdateLight(inst, dframes)
+    local frame = inst._lightframe:value() + dframes
+    if frame >= inst._lightmaxframe then
+        inst._lightframe:set_local(inst._lightmaxframe)
+        inst._lighttask:Cancel()
+        inst._lighttask = nil
+    else
+        inst._lightframe:set_local(frame)
+    end
+
+    local k = frame / inst._lightmaxframe
+
+    if inst._islighton:value() then
+        inst.Light:SetRadius(3 * k)
+    else
+        inst.Light:SetRadius(3 * (1 - k))
+    end
+
+    if TheWorld.ismastersim then
+        inst.Light:Enable(inst._islighton:value() or frame < inst._lightmaxframe)
+        if not inst._islighton:value() then
+            inst.SoundEmitter:KillSound("idlesound")
+        end
+    end
+end
+
+local function OnLightDirty(inst)
+    if inst._lighttask == nil then
+        inst._lighttask = inst:DoPeriodicTask(FRAMES, OnUpdateLight, nil, 1)
+    end
+    inst._lightmaxframe = inst._islighton:value() and MAX_LIGHT_ON_FRAME or MAX_LIGHT_OFF_FRAME
+    OnUpdateLight(inst, 0)
+end
+
 local function PlayerSpawnCritter(player, critter, pos)
     TheWorld:PushEvent("ms_sendlightningstrike", pos)
     SpawnPrefab("collapse_small").Transform:SetPosition(pos:Get())
@@ -167,14 +204,6 @@ local function DoRandomThing(inst, pos, count, target)
     end
 end
 
-local function turnlightoff(inst, light)
-    inst.SoundEmitter:KillSound("idlesound")
-    if light ~= nil then
-        light:Enable(false)
-    end
-end
-
-
 local function common_fn(anim)
     local inst = CreateEntity()
 
@@ -195,10 +224,11 @@ local function common_fn(anim)
     inst.AnimState:PlayAnimation(anim)
 
     inst.Light:Enable(false)
-    inst.Light:SetRadius(.6)
+    inst.Light:SetRadius(0)
     inst.Light:SetFalloff(1)
     inst.Light:SetIntensity(.5)
     inst.Light:SetColour(1, 1, 1)
+    inst.Light:EnableClientModulation(true)
 
     inst:AddTag("altar")
     inst:AddTag("structure")
@@ -209,9 +239,17 @@ local function common_fn(anim)
 
     inst:SetPrefabNameOverride("ancient_altar")
 
+    inst._lightframe = net_smallbyte(inst.GUID, "ancient_altar._lightframe", "lightdirty")
+    inst._islighton = net_bool(inst.GUID, "ancient_altar._islighton", "lightdirty")
+    inst._lightmaxframe = MAX_LIGHT_OFF_FRAME
+    inst._lightframe:set(inst._lightmaxframe)
+    inst._lighttask = nil
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
+        inst:ListenForEvent("lightdirty", OnLightDirty)
+
         return inst
     end
 
@@ -220,8 +258,6 @@ local function common_fn(anim)
     inst:AddComponent("inspectable")
 
     inst:AddComponent("prototyper")
-
-    inst:AddComponent("lighttweener")
 
     inst:AddComponent("workable")
 
@@ -235,13 +271,20 @@ local function complete_onturnon(inst)
     if not inst.SoundEmitter:PlayingSound("idlesound") then
         inst.SoundEmitter:PlaySound("dontstarve/common/ancienttable_LP", "idlesound")
     end
-    inst.Light:Enable(true)
-    inst.components.lighttweener:StartTween(inst.Light, 3, nil, nil, nil, 0.5)
+    if not inst._islighton:value() then
+        inst._islighton:set(true)
+        inst._lightframe:set(math.floor((1 - inst._lightframe:value() / MAX_LIGHT_OFF_FRAME) * MAX_LIGHT_ON_FRAME + .5))
+        OnLightDirty(inst)
+    end
 end
 
 local function complete_onturnoff(inst)
     inst.AnimState:PushAnimation("idle_full")
-    inst.components.lighttweener:StartTween(inst.Light, 0, nil, nil, nil, 1, turnlightoff)
+    if inst._islighton:value() then
+        inst._islighton:set(false)
+        inst._lightframe:set(math.floor((1 - inst._lightframe:value() / MAX_LIGHT_ON_FRAME) * MAX_LIGHT_OFF_FRAME + .5))
+        OnLightDirty(inst)
+    end
 end
 
 local function complete_doonact(inst)
@@ -304,12 +347,19 @@ local function broken_onturnon(inst)
     if not inst.SoundEmitter:PlayingSound("idlesound") then
         inst.SoundEmitter:PlaySound("dontstarve/common/ancienttable_LP", "idlesound")
     end
-    inst.Light:Enable(true)
-    inst.components.lighttweener:StartTween(inst.Light, 3, nil, nil, nil, 0.5)
+    if not inst._islighton:value() then
+        inst._islighton:set(true)
+        inst._lightframe:set(math.floor((1 - inst._lightframe:value() / MAX_LIGHT_OFF_FRAME) * MAX_LIGHT_ON_FRAME + .5))
+        OnLightDirty(inst)
+    end
 end
 
 local function broken_onturnoff(inst)
-    inst.components.lighttweener:StartTween(inst.Light, 0, nil, nil, nil, 1, turnlightoff)
+    if inst._islighton:value() then
+        inst._islighton:set(false)
+        inst._lightframe:set(math.floor((1 - inst._lightframe:value() / MAX_LIGHT_ON_FRAME) * MAX_LIGHT_OFF_FRAME + .5))
+        OnLightDirty(inst)
+    end
 end
 
 local function broken_doonact(inst)
@@ -404,4 +454,4 @@ local function broken_fn()
 end
 
 return Prefab("ancient_altar", complete_fn, assets, prefabs),
-Prefab("ancient_altar_broken", broken_fn, assets, prefabs)
+    Prefab("ancient_altar_broken", broken_fn, assets, prefabs)

@@ -23,7 +23,7 @@ local states =
         name = "idle",
         tags = {"idle", "canrotate"},
         onenter = function(inst, playanim)
-            inst.Light:Enable(true)
+            inst._light.Light:Enable(true)
             inst.Physics:Stop()
             if playanim then
                 inst.AnimState:PlayAnimation(playanim)
@@ -51,7 +51,7 @@ local states =
         onenter = function(inst, playanim)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("idle_rumble")
-            inst.SoundEmitter:PlaySound("dontstarve/creatures/slurper/rumble")
+            inst._light.SoundEmitter:PlaySound("dontstarve/creatures/slurper/rumble")
         end,
         events=
         {
@@ -72,9 +72,9 @@ local states =
        
         timeline = 
         {
-            TimeEvent(5*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/slurper/taunt") end),
-            TimeEvent(17*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/slurper/taunt") end),
-            TimeEvent(25*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/slurper/taunt") end),
+            TimeEvent(5*FRAMES, function(inst) inst._light.SoundEmitter:PlaySound("dontstarve/creatures/slurper/taunt") end),
+            TimeEvent(17*FRAMES, function(inst) inst._light.SoundEmitter:PlaySound("dontstarve/creatures/slurper/taunt") end),
+            TimeEvent(25*FRAMES, function(inst) inst._light.SoundEmitter:PlaySound("dontstarve/creatures/slurper/taunt") end),
         },
 
         events=
@@ -91,7 +91,7 @@ local states =
             inst.shouldburp = false
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("burp")
-            inst.SoundEmitter:PlaySound("dontstarve/creatures/slurper/burp")
+            inst._light.SoundEmitter:PlaySound("dontstarve/creatures/slurper/burp")
         end,
 
         events=
@@ -112,7 +112,7 @@ local states =
         {
             TimeEvent(8*FRAMES, function(inst) 
                 inst.Physics:SetMotorVelOverride(8,0,0)
-                inst.SoundEmitter:PlaySound("dontstarve/creatures/slurper/jump")
+                inst._light.SoundEmitter:PlaySound("dontstarve/creatures/slurper/jump")
              end),
 
             TimeEvent(23*FRAMES, function(inst) 
@@ -149,7 +149,7 @@ local states =
 
         onenter = function(inst, target)
             inst.AnimState:PlayAnimation("headslurpmiss")
-            inst.SoundEmitter:PlaySound("dontstarve/creatures/slurper/miss")
+            inst._light.SoundEmitter:PlaySound("dontstarve/creatures/slurper/miss")
 
         end,
 
@@ -182,15 +182,16 @@ local states =
         end,             
 
         onexit = function(inst)
-
+            inst._light.SoundEmitter:KillSound("roll_VO")
+            inst._light.SoundEmitter:KillSound("roll_dirt")
             inst.components.locomotor:Stop()
             inst.components.locomotor:EnableGroundSpeedMultiplier(true)
         end,
 
         timeline = {
             TimeEvent(20*FRAMES, function(inst)
-                inst.SoundEmitter:PlaySound("dontstarve/creatures/slurper/roll_VO", "roll_VO")
-                inst.SoundEmitter:PlaySound("dontstarve/creatures/slurper/roll_dirt", "roll_dirt")
+                inst._light.SoundEmitter:PlaySound("dontstarve/creatures/slurper/roll_VO", "roll_VO")
+                inst._light.SoundEmitter:PlaySound("dontstarve/creatures/slurper/roll_dirt", "roll_dirt")
                 inst.Physics:SetMotorVelOverride(20,0,0) 
             end),
 
@@ -206,8 +207,8 @@ local states =
                     end
                 end
 
-                inst.SoundEmitter:KillSound("roll_VO")
-                inst.SoundEmitter:KillSound("roll_dirt")
+                inst._light.SoundEmitter:KillSound("roll_VO")
+                inst._light.SoundEmitter:KillSound("roll_dirt")
                 inst.Physics:ClearMotorVelOverride()
                 inst.components.locomotor:Stop()
             end),
@@ -230,7 +231,7 @@ local states =
                 inst.components.locomotor:StopMoving()
             end
             inst.AnimState:PlayAnimation("hit")
-            inst.SoundEmitter:PlaySound("dontstarve/creatures/slurper/hurt")
+            inst._light.SoundEmitter:PlaySound("dontstarve/creatures/slurper/hurt")
         end,
       
         events =
@@ -253,9 +254,9 @@ local states =
 
         timeline = 
         {
-            TimeEvent(12*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/slurper/die") end),
+            TimeEvent(12*FRAMES, function(inst) inst._light.SoundEmitter:PlaySound("dontstarve/creatures/slurper/die") end),
             TimeEvent(60*FRAMES,function(inst) 
-                inst.SoundEmitter:PlaySound("dontstarve/creatures/slurper/pop")
+                inst._light.SoundEmitter:PlaySound("dontstarve/creatures/slurper/pop")
                 inst.components.lootdropper:DropLoot(Vector3(inst.Transform:GetWorldPosition())) 
             end),
         },
@@ -289,13 +290,13 @@ local states =
             onenter = function(inst) 
                 inst.components.locomotor:WalkForward()
                 inst.AnimState:PlayAnimation("roll_loop", true)
-                inst.SoundEmitter:PlaySound("dontstarve/creatures/slurper/roll_VO", "roll_VO")
-                inst.SoundEmitter:PlaySound("dontstarve/creatures/slurper/roll_dirt", "roll_dirt")
+                inst._light.SoundEmitter:PlaySound("dontstarve/creatures/slurper/roll_VO", "roll_VO")
+                inst._light.SoundEmitter:PlaySound("dontstarve/creatures/slurper/roll_dirt", "roll_dirt")
             end,
 
             onexit = function(inst)
-                inst.SoundEmitter:KillSound("roll_VO")
-                inst.SoundEmitter:KillSound("roll_dirt")
+                inst._light.SoundEmitter:KillSound("roll_VO")
+                inst._light.SoundEmitter:KillSound("roll_dirt")
             end,
 
             events=
@@ -327,17 +328,17 @@ CommonStates.AddSleepStates(states,
 {
     starttimeline = 
     { 
-        TimeEvent(7*FRAMES, function(inst) inst.Light:Enable(false) end),
+        TimeEvent(7*FRAMES, function(inst) inst._light.Light:Enable(false) end),
     },
 
     sleeptimeline = 
     {
-        TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/slurper/sleep") end),
+        TimeEvent(0*FRAMES, function(inst) inst._light.SoundEmitter:PlaySound("dontstarve/creatures/slurper/sleep") end),
     },
 
     endtimeline =
     {
-        TimeEvent(5*FRAMES, function(inst) inst.Light:Enable(true) end),
+        TimeEvent(5*FRAMES, function(inst) inst._light.Light:Enable(true) end),
     },
 })
 

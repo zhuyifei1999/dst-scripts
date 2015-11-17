@@ -363,7 +363,7 @@ function TextEdit:GetHelpText()
 	local t = {}
     local controller_id = TheInput:GetControllerID()
     
-    if self:HasExclusiveHelpText() then
+    if self.editing then
 		if self.cancel_helptext ~= "" then
    			table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_CANCEL) .. " " .. self.cancel_helptext)
    		end

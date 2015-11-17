@@ -54,11 +54,16 @@ function PlayerStatusScreen:OnDestroy()
 end
 
 function PlayerStatusScreen:GetHelpText()
-    if self.server_group ~= "" and TheInput:ControllerAttached() then
-        local controller_id = TheInput:GetControllerID()
-        return TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_2) .. STRINGS.UI.HELP.VIEWGROUP
-    end
-    return ""
+    local controller_id = TheInput:GetControllerID()
+    local t = {}
+
+	table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_TOGGLE_PLAYER_STATUS) .. " " .. STRINGS.UI.HELP.BACK)
+	
+	if self.server_group ~= "" then
+		table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_2) .. " " .. STRINGS.UI.HELP.VIEWGROUP)
+	end
+	
+    return table.concat(t, "  ")
 end
 
 function PlayerStatusScreen:OnControl(control, down)

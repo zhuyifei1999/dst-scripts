@@ -10,6 +10,7 @@ local assets =
 local prefabs =
 {
     "slurper_pelt",
+    "slurperlight",
 }
 
 SetSharedLootTable('slurper',
@@ -19,6 +20,57 @@ SetSharedLootTable('slurper',
     {'slurper_pelt', 0.5},
 })
 
+------------------------------------------------------------------------------
+local light_params =
+{
+    low =
+    {
+        radius = 1,
+        intensity = .5,
+        falloff = .7,
+    },
+    high =
+    {
+        radius = 3,
+        intensity = .8,
+        falloff = .4,
+    },
+}
+
+local MAX_LIGHT_FRAME = math.floor(2 / FRAMES + .5)
+
+local function OnUpdateLight(inst, dframes)
+    local done
+    if inst._lightlevel:value() then
+        local frame = inst._lightframe:value() + dframes
+        done = frame >= MAX_LIGHT_FRAME
+        inst._lightframe:set_local(done and MAX_LIGHT_FRAME or frame)
+    else
+        local frame = inst._lightframe:value() - dframes
+        done = frame <= 0
+        inst._lightframe:set_local(done and 0 or frame)
+    end
+
+    local k = inst._lightframe:value() / MAX_LIGHT_FRAME
+    local k1 = 1 - k
+    inst.Light:SetRadius(light_params.high.radius * k + light_params.low.radius * k1)
+    inst.Light:SetIntensity(light_params.high.intensity * k + light_params.low.intensity * k1)
+    inst.Light:SetFalloff(light_params.high.falloff * k + light_params.low.falloff * k1)
+
+    if done then
+        inst._lighttask:Cancel()
+        inst._lighttask = nil
+    end
+end
+
+local function OnLightDirty(inst)
+    if inst._lighttask == nil then
+        inst._lighttask = inst:DoPeriodicTask(FRAMES, OnUpdateLight, nil, 1)
+    end
+    OnUpdateLight(inst, 0)
+end
+
+------------------------------------------------------------------------------
 local function OnAttacked(inst, data)
     inst.components.combat:SetTarget(data.attacker)
 end
@@ -82,10 +134,12 @@ local function OnEquip(inst, owner)
         return
     end
 
-    inst.Light:Enable(true)
-    inst.components.lighttweener:StartTween(nil, 3, 0.8, 0.4, nil, 2)
+    inst._light.Light:Enable(true)
+    inst._light._lightlevel:set(true)
+    inst._light._lightframe:set(inst._light._lightframe:value())
+    OnLightDirty(inst._light)
 
-    inst.SoundEmitter:PlaySound("dontstarve/creatures/slurper/attach")
+    inst._light.SoundEmitter:PlaySound("dontstarve/creatures/slurper/attach")
 
     owner.AnimState:OverrideSymbol("swap_hat", "hat_slurper", "swap_hat")
     owner.AnimState:Show("HAT")
@@ -97,13 +151,15 @@ local function OnEquip(inst, owner)
         owner.AnimState:Hide("HEAD")
         owner.AnimState:Show("HEAD_HAT")
 
-        inst.SoundEmitter:PlaySound("dontstarve/creatures/slurper/headslurp", "player_slurp_loop")
+        inst._light.SoundEmitter:PlaySound("dontstarve/creatures/slurper/headslurp", "slurp_loop")
     else
-        inst.SoundEmitter:PlaySound("dontstarve/creatures/slurper/headslurp_creatures", "creature_slurp_loop")
+        inst._light.SoundEmitter:PlaySound("dontstarve/creatures/slurper/headslurp_creatures", "slurp_loop")
     end
 
     inst.shouldburp = true
     inst.cansleep = false
+
+    inst.onattach(owner)
 
     if inst.task ~= nil then
         inst.task:Cancel()
@@ -112,10 +168,12 @@ local function OnEquip(inst, owner)
 end
 
 local function OnUnequip(inst, owner)
-    inst.Light:Enable(true) 
-    inst.components.lighttweener:StartTween(nil, 1, 0.5, 0.7, nil, 2)
+    inst._light.Light:Enable(true) 
+    inst._light._lightlevel:set(false)
+    inst._light._lightframe:set(inst._light._lightframe:value())
+    OnLightDirty(inst._light)
 
-    inst.SoundEmitter:PlaySound("dontstarve/creatures/slurper/dettach")
+    inst._light.SoundEmitter:PlaySound("dontstarve/creatures/slurper/dettach")
 
     owner.AnimState:Hide("HAT")
     owner.AnimState:Hide("HAT_HAIR")
@@ -125,13 +183,12 @@ local function OnUnequip(inst, owner)
     if owner:HasTag("player") then
         owner.AnimState:Show("HEAD")
         owner.AnimState:Hide("HEAD_HAT")
-
-        inst.SoundEmitter:KillSound("player_slurp_loop")
-    else
-        inst.SoundEmitter:KillSound("creature_slurp_loop")
     end
+    inst._light.SoundEmitter:KillSound("slurp_loop")
 
     inst.components.knownlocations:RememberLocation("home", inst:GetPosition())
+
+    inst.ondetach(owner)
 
     if inst.task ~= nil then
         inst.task:Cancel()
@@ -167,6 +224,10 @@ local function OnInit(inst)
     inst.components.knownlocations:RememberLocation("home", inst:GetPosition())
 end
 
+local function OnRemoveEntity(inst)
+    inst._light:Remove()
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -174,7 +235,6 @@ local function fn()
     inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
     inst.entity:AddDynamicShadow()
-    inst.entity:AddLight()
     inst.entity:AddNetwork()
 
     inst.DynamicShadow:SetSize(2, 1.25)
@@ -195,6 +255,9 @@ local function fn()
     if not TheWorld.ismastersim then
         return inst
     end
+
+    inst._light = SpawnPrefab("slurperlight")
+    inst._light.entity:SetParent(inst.entity)
 
     inst:AddComponent("inspectable")
 
@@ -232,10 +295,6 @@ local function fn()
     -- inst.components.eater:SetDiet({ FOODTYPE.VEGGIE }, { FOODTYPE.VEGGIE })
     -- inst.components.eater:SetOnEatFn(oneat)
 
-    inst:AddComponent("lighttweener")
-    inst.components.lighttweener:StartTween(inst.Light, 1, 0.5, 0.7, { 237/255, 237/255, 209/255 }, 0)
-    inst.Light:Enable(true)
-
     inst:AddComponent("sleeper")
     inst.components.sleeper:SetSleepTest(SleepTest)
     inst.components.sleeper:SetWakeTest(WakeTest)
@@ -260,7 +319,61 @@ local function fn()
 
     inst:DoTaskInTime(0, OnInit)
 
+    inst.OnRemoveEntity = OnRemoveEntity
+
+    inst._owner = nil
+    inst.onattach = function(owner)
+        if inst._owner ~= nil then
+            inst:RemoveEventCallback("onremove", inst.ondetach, inst._owner)
+        end
+        inst:ListenForEvent("onremove", inst.ondetach, owner)
+        inst._light.entity:SetParent(owner.entity)
+        inst._owner = owner        
+    end
+    inst.ondetach = function()
+        if inst._owner ~= nil then
+            inst:RemoveEventCallback("onremove", inst.ondetach, inst._owner)
+            inst._light.entity:SetParent(inst.entity)
+            inst._owner = nil
+        end
+    end
+
     return inst
 end
 
-return Prefab("slurper", fn, assets, prefabs)
+local function lightfn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddLight()
+    inst.entity:AddSoundEmitter()
+    inst.entity:AddNetwork()
+
+    inst:AddTag("FX")
+
+    inst.Light:SetRadius(light_params.low.radius)
+    inst.Light:SetIntensity(light_params.low.intensity)
+    inst.Light:SetFalloff(light_params.low.falloff)
+    inst.Light:SetColour(237/255, 237/255, 209/255)
+    inst.Light:Enable(true)
+    inst.Light:EnableClientModulation(true)
+
+    inst._lightframe = net_smallbyte(inst.GUID, "slurperlight._lightframe", "lightdirty")
+    inst._lightlevel = net_bool(inst.GUID, "slurperlight._lightlevel", "lightdirty")
+    inst._lighttask = nil
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        inst:ListenForEvent("lightdirty", OnLightDirty)
+
+        return inst
+    end
+
+    inst.persists = false
+
+    return inst
+end
+
+return Prefab("slurper", fn, assets, prefabs),
+    Prefab("slurperlight", lightfn)

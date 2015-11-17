@@ -68,8 +68,8 @@ local all_controls =
     {name=CONTROL_ZOOM_OUT, keyboard=CONTROL_ZOOM_OUT, controller=CONTROL_ZOOM_OUT},
 
     -- communication
-    {name=CONTROL_TOGGLE_SAY, keyboard=CONTROL_TOGGLE_SAY, controller=nil},
-    {name=CONTROL_TOGGLE_WHISPER, keyboard=CONTROL_TOGGLE_WHISPER, controller=nil},
+    {name=CONTROL_TOGGLE_SAY, keyboard=CONTROL_TOGGLE_SAY, controller=CONTROL_TOGGLE_SAY},
+    {name=CONTROL_TOGGLE_WHISPER, keyboard=CONTROL_TOGGLE_WHISPER, controller=CONTROL_TOGGLE_WHISPER},
     {name=CONTROL_SHOW_PLAYER_STATUS, keyboard=CONTROL_SHOW_PLAYER_STATUS, controller=CONTROL_TOGGLE_PLAYER_STATUS},
     {name=CONTROL_PAUSE, keyboard=CONTROL_PAUSE, controller=CONTROL_PAUSE},
     {name=CONTROL_INSPECT_SELF, keyboard=CONTROL_INSPECT_SELF, controller=CONTROL_INSPECT_SELF},
@@ -670,7 +670,7 @@ function OptionsScreen:MapControlInputHandler(control, down)
 end
 
 function OptionsScreen:MapControl(deviceId, controlId)
-    --print("Mapping control [" .. controlIndex .. "] on device [" .. deviceId .. "]")
+    --print("Mapping control [" .. controlId .. "] on device [" .. deviceId .. "]")
     local controlIndex = controlId + 1      -- C++ control id is zero-based, we were passed a 1-based (lua) array index
     local loc_text = TheInput:GetLocalizedControl(deviceId, controlId, true)
     local default_text = string.format(STRINGS.UI.CONTROLSSCREEN.DEFAULT_CONTROL_TEXT, loc_text)
@@ -696,7 +696,12 @@ end
 function OptionsScreen:OnControlMapped(deviceId, controlId, inputId, hasChanged)
     if self.is_mapping then 
        -- print("Control [" .. controlId .. "] is now [" .. inputId .. "]", hasChanged, debugstack())
-        TheFrontEnd:PopScreen()
+
+        -- removes the "press a button to bind" popup screen. This is not needed when clearing a binding because there is no popup
+        if inputId ~= 0 then
+            TheFrontEnd:PopScreen()
+        end
+		
         TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
         for k, v in pairs(self.active_list.items) do
             if controlId == v.controlId then
@@ -1325,7 +1330,29 @@ function OptionsScreen:DoInit()
                     end
                 end 
             )
-            group.button_controller:SetHelpTextMessage(STRINGS.UI.CONTROLSSCREEN.CHANGEBIND)
+            group.button_controller.OnControl =  
+                function( _, control, down)
+					if group.button_controller._base.OnControl(group.button_controller, control, down) then return true end
+					
+					if not self.is_mapping and self.deviceSpinner:GetSelectedData() ~= 0 then
+						if not down and control == CONTROL_MENU_MISC_2 then
+							-- Unbind the game control
+  							self.is_mapping = true
+						    TheInputProxy:UnMapControl(self.deviceSpinner:GetSelectedData(), group.control.controller)
+	
+							return true
+						end
+					end
+                end 
+           group.button_controller.GetHelpText = 
+				function( self )
+					local controller_id = TheInput:GetControllerID()
+					local t = {}
+					table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_2, false, false ) .. " " .. STRINGS.UI.CONTROLSSCREEN.UNBIND)	
+					table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT, false, false ) .. " " .. STRINGS.UI.CONTROLSSCREEN.CHANGEBIND)	
+					return table.concat(t, "  ")
+				end
+
             group.button_controller:SetDisabledFont(NEWFONT)
             if group.control.controller then
                 group.button_controller:SetText(controllerDeviceId ~= nil and TheInput:GetLocalizedControl(controllerDeviceId, group.control.controller) or "")

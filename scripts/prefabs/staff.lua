@@ -192,7 +192,7 @@ local function teleport_thread(inst, caster, teletarget, loctarget)
         caster.components.sanity:DoDelta(-TUNING.SANITY_HUGE)
     end
 
-    ground:PushEvent("ms_forceprecipitation", true)
+    ground:PushEvent("ms_deltamoisture", TUNING.TELESTAFF_MOISTURE)
 
     local isplayer = teleportee:HasTag("player")
     if isplayer then

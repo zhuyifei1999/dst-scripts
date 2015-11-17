@@ -42,7 +42,11 @@ local CharacterSelectScreen = Class(Screen, function(self, profile, character)
 
     local button_w = 160
     local buttons = {}
-	table.insert(buttons, {text=STRINGS.UI.SKINSSCREEN.BACK, cb=function() self:Close() end })
+    
+    if not TheInput:ControllerAttached() then 
+		table.insert(buttons, {text=STRINGS.UI.SKINSSCREEN.BACK, cb=function() self:Close() end })
+	end
+	
 	table.insert(buttons, {text=STRINGS.UI.SKINSSCREEN.SELECT, cb=function() 
 						self:Close() 
 						TheFrontEnd:PushScreen(WardrobePopupScreen(nil, profile, self.herocharacter or character, true)) end
@@ -174,12 +178,12 @@ function CharacterSelectScreen:OnControl(control, down)
     -- Use d-pad buttons for cycling players list
     -- Add trigger buttons to switch tabs
    	if not down then 
-	 	if control == CONTROL_FOCUS_LEFT then  -- d-pad left
+	 	if control == CONTROL_PREVVALUE then  -- r-stick left
 	    	self.characterIdx = self:WrapIndex( self.characterIdx - 1 )
    			self:SetPortrait()
 			TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
 			return true 
-		elseif control == CONTROL_FOCUS_RIGHT then -- d-pad right
+		elseif control == CONTROL_NEXTVALUE then -- r-stick right
 			self.characterIdx = self:WrapIndex( self.characterIdx + 1 )
    			self:SetPortrait()
 			TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
@@ -196,7 +200,7 @@ function CharacterSelectScreen:GetHelpText()
     	table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_CANCEL) .. " " .. STRINGS.UI.HELP.BACK)
     end
  
- 	table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_FOCUS_LEFT) .. "/" .. TheInput:GetLocalizedControl(controller_id, CONTROL_FOCUS_RIGHT) .." " .. STRINGS.UI.HELP.CHANGECHARACTER)
+ 	table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_PREVVALUE) .. "/" .. TheInput:GetLocalizedControl(controller_id, CONTROL_NEXTVALUE) .." " .. STRINGS.UI.HELP.CHANGECHARACTER)
    
    	return table.concat(t, "  ")
 end

@@ -591,12 +591,12 @@ function ServerListingScreen:UpdateServerData( selected_index_actual )
         self.details_servername:SetString( nameString )
         self.details_serverdesc:SetString( self.selected_server.has_details and (self.selected_server.description ~= "" and self.selected_server.description or STRINGS.UI.SERVERLISTINGSCREEN.NO_DESC) or STRINGS.UI.SERVERLISTINGSCREEN.DESC_LOADING )
 
-        if self.selected_server.intention ~= "" then
-            self.details_background:SetTexture("images/server_intentions.xml", intention_images[self.selected_server.intention].big)
-            self.details_background:Show()
-        else
-            self.details_background:Hide()
-        end
+        --if self.selected_server.intention ~= "" then
+            --self.details_background:SetTexture("images/server_intentions.xml", intention_images[self.selected_server.intention].big)
+            --self.details_background:Show()
+        --else
+            --self.details_background:Hide()
+        --end
 
         self.game_mode_description.text:SetString( GetGameModeString( self.selected_server.mode ) )
         local w,h = self.game_mode_description.text:GetRegionSize()
@@ -1011,7 +1011,8 @@ function ServerListingScreen:MakeServerListWidgets()
 
             widget.cursor:Show()
 
-            if serverdata.intention ~= nil and serverdata.intention ~= "" then
+            -- TODO: right now checking for bad intention data here, but should probably write fallback data into serverdata earlier in the process. ~gjans
+            if serverdata.intention ~= nil and serverdata.intention ~= "" and intention_images[serverdata.intention] ~= nil then
                 widget.INTENTION:Show()
                 widget.INTENTION:SetTexture("images/servericons.xml", intention_images[serverdata.intention].small)
             else
@@ -1943,14 +1944,11 @@ function ServerListingScreen:MakeDetailPanel(right_col)
     self.details_serverdesc:EnableWordWrap( true )
     self.details_serverdesc:SetColour(0,0,0,1)
 
-    self.details_background = self.server_details_additional:AddChild(Image("images/server_intentions.xml", "social.tex"))
-    self.details_background:SetPosition(detail_x, 100)
-    self.details_background:SetTint(1,1,1,0.2)
-    self.details_background:SetScale(0.8, 0.8)
-    --self.details_background:Hide()
-    
-    global'tab'
-    tab = self.details_background
+    --self.details_background = self.server_details_additional:AddChild(Image("images/server_intentions.xml", "social.tex"))
+    --self.details_background:SetPosition(detail_x, 100)
+    --self.details_background:SetTint(1,1,1,0.2)
+    --self.details_background:SetScale(0.8, 0.8)
+    ----self.details_background:Hide()
 
     self.viewworld_button = MakeImgButton(self.server_detail_panel, -56, 6, STRINGS.UI.SERVERLISTINGSCREEN.WORLD_UNKNOWN, function() self:ViewServerWorld() end, "icon", "world")
     self.viewworld_button:Select()

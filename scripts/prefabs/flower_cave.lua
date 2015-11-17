@@ -27,6 +27,64 @@ local STATE_ANIMS =
     [LIGHT_STATES.RECHARGING] = { "drain", "withered" },
 }
 
+local LIGHT_MIN_TIME = 4
+local LIGHT_MAX_TIME = 8
+
+local function OnUpdateLight(inst, dframes)
+    local frame = inst._lightframe:value() + dframes
+    if frame >= inst._lightmaxframe then
+        inst._lightframe:set_local(inst._lightmaxframe)
+        inst._lighttask:Cancel()
+        inst._lighttask = nil
+    else
+        inst._lightframe:set_local(frame)
+    end
+
+    local k = frame / inst._lightmaxframe
+
+    if not inst._islighton:value() then
+        --radius:    light_params.radius    -> 0
+        --intensity: light_params.intensity -> 0
+        --falloff:   light_params.falloff   -> 1
+        inst.Light:SetRadius(inst.light_params.radius * (1 - k))
+        inst.Light:SetIntensity(inst.light_params.intensity * (1 - k))
+        inst.Light:SetFalloff(k + inst.light_params.falloff * (1 - k))
+    elseif k < .33 then
+        k = k / .33
+        --radius:    0 -> light_params.radius * 1.33
+        --intensity: 0 -> light_params.intensity
+        --falloff:   1 -> light_params.falloff * .8
+        inst.Light:SetRadius(inst.light_params.radius * 1.33 * k)
+        inst.Light:SetIntensity(inst.light_params.intensity * k)
+        inst.Light:SetFalloff(inst.light_params.falloff * .8 * k + 1 - k)
+    else
+        k = (k - .33) / .67
+        --radius:    light_params.radius * 1.33 -> light_params.radius
+        --intensity: light_params.intensity     -> light_params.intensity
+        --falloff:   light_params.falloff * .8  -> light_params.falloff
+        inst.Light:SetRadius(inst.light_params.radius * (k + 1.33 * (1 - k)))
+        inst.Light:SetIntensity(inst.light_params.intensity)
+        inst.Light:SetFalloff(inst.light_params.falloff * (k + .8 * (1 - k)))
+    end
+
+    if TheWorld.ismastersim then
+        inst.Light:Enable(inst._islighton:value() or frame < inst._lightmaxframe)
+    end
+end
+
+local function OnLightDirty(inst)
+    if inst._lighttask == nil then
+        inst._lighttask = inst:DoPeriodicTask(FRAMES, OnUpdateLight, nil, 1)
+    end
+    inst._lightmaxframe = math.floor((inst._lighttime:value() + LIGHT_MIN_TIME) / FRAMES + .5)
+    OnUpdateLight(inst, 0)
+end
+
+local function EndLight(inst)
+    inst._lightframe:set(inst._lightmaxframe)
+    OnLightDirty(inst)
+end
+
 local function SetLightState(inst, state)
     inst.AnimState:PlayAnimation(STATE_ANIMS[state][1])
     for i=2,#STATE_ANIMS[state] do
@@ -43,8 +101,8 @@ local function ForceOff(inst)
     if inst.light_state == LIGHT_STATES.ON then
         inst:SetLightState(LIGHT_STATES.RECHARGING)
     end
-    inst.components.lighttweener:EndTween()
-    inst.Light:Enable(false)
+    inst._islighton:set(false)
+    EndLight(inst)
 end
 
 local function ForceOn(inst)
@@ -53,20 +111,19 @@ local function ForceOn(inst)
     end
 
     inst:SetLightState(LIGHT_STATES.ON)
-
-    inst.components.lighttweener:EndTween()
-    inst.Light:Enable(true)
-    inst.Light:SetRadius(inst.light_radius)
-    inst.Light:SetIntensity(inst.light_intensity)
-    inst.Light:SetFalloff(inst.light_falloff)
+    inst._islighton:set(true)
+    EndLight(inst)
 end
 
 local function TurnOff(inst)
     --Light turns off and starts to charge.
-    local tween_time = math.random(4,8)
+    local tween_time = math.random(LIGHT_MIN_TIME, LIGHT_MAX_TIME)
     inst.components.timer:StartTimer("recharge", TUNING.FLOWER_CAVE_RECHARGE_TIME + tween_time)
     inst:SetLightState(LIGHT_STATES.RECHARGING)
-    inst.components.lighttweener:StartTween(inst.Light, 0, 0, 1, nil, tween_time, function() inst.Light:Enable(false) end)
+    inst._islighton:set(false)
+    inst._lightframe:set(0)
+    inst._lighttime:set(tween_time - LIGHT_MIN_TIME)
+    OnLightDirty(inst)
 end
 
 local function TurnOn(inst)
@@ -77,13 +134,14 @@ local function TurnOn(inst)
     --Turn turns on and starts to decharge
     if not inst:CanTurnOn() then return end
 
-    inst.Light:Enable(true)
     inst:SetLightState(LIGHT_STATES.ON)
-    local tween_time = math.random(4,8)
-    inst.components.lighttweener:StartTween(inst.Light, inst.light_radius * 1.33, inst.light_intensity, inst.light_falloff * 0.8, nil, tween_time * 0.33,
-    function()
-        inst.components.lighttweener:StartTween(inst.Light, inst.light_radius, inst.light_intensity, inst.light_falloff, nil, tween_time * 0.64)
-    end)
+
+    local tween_time = math.random(LIGHT_MIN_TIME, LIGHT_MAX_TIME)
+    inst._islighton:set(true)
+    inst._lightframe:set(0)
+    inst._lighttime:set(tween_time - LIGHT_MIN_TIME)
+    OnLightDirty(inst)
+
     inst.components.timer:StartTimer("turnoff", TUNING.FLOWER_CAVE_LIGHT_TIME + tween_time + (math.random() * 10))
 end
 
@@ -138,7 +196,6 @@ local function makeemptyfn(inst)
     inst.components.timer:StopTimer("turnoff")
     inst.components.timer:StopTimer("recharge")
 
-    inst.Light:Enable(false)
     inst.AnimState:PlayAnimation("picked")
 end
 
@@ -183,7 +240,7 @@ local function GetDebugString(inst)
     return string.format("State: %s", inst.light_state)
 end
 
-local function commonfn(bank, build, masterfn)
+local function commonfn(bank, build, light_params, masterfn)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -202,6 +259,7 @@ local function commonfn(bank, build, masterfn)
     inst.Light:SetRadius(0)
     inst.Light:SetColour(237/255, 237/255, 209/255)
     inst.Light:Enable(false)
+    inst.Light:EnableClientModulation(true)
 
     inst.AnimState:SetBank(bank)
     inst.AnimState:SetBuild(build)
@@ -209,9 +267,19 @@ local function commonfn(bank, build, masterfn)
 
     inst.MiniMapEntity:SetIcon("bulb_plant.png")
 
+    inst.light_params = light_params
+    inst._lighttime = net_tinybyte(inst.GUID, "flower_cave._lighttime", "lightdirty")
+    inst._lightframe = net_byte(inst.GUID, "flower_cave._lightframe", "lightdirty")
+    inst._islighton = net_bool(inst.GUID, "flower_cave._islighton", "lightdirty")
+    inst._lightmaxframe = math.floor(LIGHT_MIN_TIME / FRAMES + .5)
+    inst._lightframe:set(inst._lightmaxframe)
+    inst._lighttask = nil
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
+        inst:ListenForEvent("lightdirty", OnLightDirty)
+
         return inst
     end
 
@@ -233,8 +301,6 @@ local function commonfn(bank, build, masterfn)
 
     inst:AddComponent("lootdropper")
     inst:AddComponent("inspectable")
-
-    inst:AddComponent("lighttweener")
 
     ---------------------
     MakeMediumBurnable(inst)
@@ -264,7 +330,7 @@ local function commonfn(bank, build, masterfn)
     return inst
 end
 
-local plantnames = {"_single", "_springy"}
+local plantnames = { "_single", "_springy" }
 
 local function onsave_single(inst, data)
     OnSave(inst, data)
@@ -284,21 +350,20 @@ local function single()
     return commonfn(
         "bulb_plant_single",
         "bulb_plant_single",
+        {
+            falloff = .5,
+            intensity = .8,
+            radius = 3,
+        },
         function(inst)
-
             inst.plantname = plantnames[math.random(1, #plantnames)]
             inst.AnimState:SetBank("bulb_plant"..inst.plantname)
             inst.AnimState:SetBuild("bulb_plant"..inst.plantname)
 
             inst.components.pickable:SetUp("lightbulb", TUNING.FLOWER_CAVE_REGROW_TIME)
 
-            inst.light_falloff = 0.5
-            inst.light_intensity = 0.8
-            inst.light_radius = 3
-
             inst.OnSave = onsave_single
             inst.OnLoad = onload_single
-
         end)
 end
 
@@ -306,14 +371,13 @@ local function double()
     return commonfn(
         "bulb_plant_double",
         "bulb_plant_double",
+        {
+            falloff = .5,
+            intensity = .8,
+            radius = 4.5,
+        },
         function(inst)
-
             inst.components.pickable:SetUp("lightbulb", TUNING.FLOWER_CAVE_REGROW_TIME * 1.5, 2)
-
-            inst.light_falloff = 0.5
-            inst.light_intensity = 0.8
-            inst.light_radius = 4.5
-
         end)
 end
 
@@ -321,14 +385,13 @@ local function triple()
     return commonfn(
         "bulb_plant_triple",
         "bulb_plant_triple",
+        {
+            falloff = .5,
+            intensity = .8,
+            radius = 4.5,
+        },
         function(inst)
-
             inst.components.pickable:SetUp("lightbulb", TUNING.FLOWER_CAVE_REGROW_TIME * 2, 3)
-
-            inst.light_falloff = 0.5
-            inst.light_intensity = 0.8
-            inst.light_radius = 4.5
-
         end)
 end
 

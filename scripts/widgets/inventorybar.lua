@@ -612,7 +612,7 @@ end
 function Inv:GetDescriptionString(item)
     local str = nil
     local in_equip_slot = item and item.components.equippable and item.components.equippable:IsEquipped()
-    if item and item.components.inventoryitem then
+    if item and item.replica.inventoryitem then
         local adjective = item:GetAdjective()
         if adjective then
             str = adjective .. " " .. item:GetDisplayName()

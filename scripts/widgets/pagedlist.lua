@@ -69,7 +69,7 @@ local PagedList = Class(Widget, function(self, items, itemwidth, itemheight, ite
 	    end)
 	end
 
-	--self:DoFocusHookups()
+	self:DoFocusHookups()
 
     self:RefreshView()
 end)
@@ -102,16 +102,20 @@ function PagedList:EvaluateArrows()
 	if self.right_button then 
 		if self.page_number == self.num_pages then
 			self.right_button:Hide()
+			self.right_button:Disable()
 		else
 			self.right_button:Show()
+			self.right_button:Enable()
 		end
 	end
 
 	if self.left_button then 
 		if self.page_number == 1 then
 			self.left_button:Hide()
+			self.left_button:Disable()
 		else
 			self.left_button:Show()
+			self.left_button:Enable()
 		end
 	end
 end
@@ -135,7 +139,83 @@ function PagedList:RefreshView()
 
 	self:EvaluateArrows()
 
+	self.focused_widget = self:GetFocusedWidget() or nil
+	if self.focused_widget then 
+		self.focused_widget:ClearFocus()
+		self.focused_widget:SetFocus()
+	end
+
 end
+
+function PagedList:OnControl(control, down)
+	if PagedList._base.OnControl(self, control, down) then return true end
+
+end
+
+function PagedList:GetHelpText()
+	local controller_id = TheInput:GetControllerID()
+
+	local t = {}
+	if self.left_button and self.left_button:IsEnabled() then
+		table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_PREVVALUE, false, false) .. " " .. STRINGS.UI.HELP.PREVPAGE)
+	end
+
+	if self.right_button and self.right_button:IsEnabled() then
+		table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_NEXTVALUE, false, false) .. " " .. STRINGS.UI.HELP.NEXTPAGE)
+	end
+	
+	return table.concat(t, "  ")
+end
+
+
+function PagedList:DoFocusHookups()
+    
+    for k,v in ipairs(self.static_widgets) do
+        if k > 1 then
+            self.static_widgets[k]:SetFocusChangeDir(MOVE_UP, self.static_widgets[k-1])
+        end
+
+        if k < #self.items then
+            self.static_widgets[k]:SetFocusChangeDir(MOVE_DOWN, self.static_widgets[k+1])
+        end
+    end
+
+end
+
+function PagedList:GetFocusedWidget()
+	for i,v in ipairs(self.static_widgets) do
+		if v.focus then
+			self.focused_index = i
+			break
+		end
+	
+	end
+
+	return self.static_widgets[self.focused_index]
+end
+
+function PagedList:OnFocusMove(dir, down)
+	--print("**** PagedList got focus move", dir, down)
+	if PagedList._base.OnFocusMove(self,dir,down) then return true end
+
+	if down then
+		self:GetFocusedWidget() -- sets the focused_index
+
+		if dir == MOVE_UP and self.focused_index > 1 then
+			TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover")
+			self.static_widgets[self.focused_index -1]:SetFocus()
+			self.focused_index = self.focused_index - 1
+			return true
+		elseif dir == MOVE_DOWN and self.focused_index < #self.static_widgets then
+			TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover")
+			self.static_widgets[self.focused_index + 1]:SetFocus()
+			self.focused_index = self.focused_index + 1
+			return true
+		end
+	end
+
+end
+
 
 return PagedList
 

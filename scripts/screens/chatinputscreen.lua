@@ -35,11 +35,35 @@ function ChatInputScreen:OnBecomeInactive()
     end
 end
 
+function ChatInputScreen:GetHelpText()
+    local controller_id = TheInput:GetControllerID()
+    local t = {}
+
+	table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_CANCEL) .. " " .. STRINGS.UI.HELP.BACK)
+	
+	if self.whisper then
+		table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_2) .. " " .. STRINGS.UI.CHATINPUTSCREEN.HELP_SAY)
+	    table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT) .. " " .. STRINGS.UI.CHATINPUTSCREEN.HELP_WHISPER)
+	else
+	    table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_2) .. " " .. STRINGS.UI.CHATINPUTSCREEN.HELP_WHISPER)
+	    table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT) .. " " .. STRINGS.UI.CHATINPUTSCREEN.HELP_SAY)
+	end
+
+    return table.concat(t, "  ")
+end
+
 function ChatInputScreen:OnControl(control, down)
 	if self.runtask ~= nil or ChatInputScreen._base.OnControl(self, control, down) then return true end
 
 	--jcheng: don't allow debug menu stuff going on right now
 	if control == CONTROL_OPEN_DEBUG_CONSOLE then
+		return true
+	end
+	
+	-- For controllers, the misc_2 button will whisper if in say mode or say if in whisper mode. This is to allow the player to only bind one key to initiate chat mode.
+	if not down and control == CONTROL_MENU_MISC_2 then
+		self.whisper = not self.whisper
+		self:OnTextEntered()
 		return true
 	end
 
@@ -198,16 +222,17 @@ function ChatInputScreen:DoInit()
 	self.chat_edit:SetPosition( 0,0,0 )
 	self.chat_edit:SetRegionSize( edit_width, label_height )
 	self.chat_edit:SetHAlign(ANCHOR_LEFT)
+	
+	-- the screen will handle the help text
+	self.chat_edit:SetHelpTextApply("")
+	self.chat_edit:SetHelpTextCancel("")
 	self.chat_edit:SetHelpTextEdit("")
-	if self.whisper then
-		self.chat_edit:SetHelpTextApply(STRINGS.UI.CHATINPUTSCREEN.HELP_WHISPER)
-	else
-		self.chat_edit:SetHelpTextApply(STRINGS.UI.CHATINPUTSCREEN.HELP_SAY)
-	end
+	self.chat_edit.HasExclusiveHelpText = function() return false end
 
 	self.chat_edit.OnTextEntered = function() self:OnTextEntered() end
 	self.chat_edit:SetCharacterFilter(VALID_CHARS)
 	self.chat_edit:SetPassControlToScreen(CONTROL_CANCEL, true)
+	self.chat_edit:SetPassControlToScreen(CONTROL_MENU_MISC_2, true) -- toggle between say and whisper
 	self.chat_edit:SetTextLengthLimit(CHAT_INPUT_MAX_LENGTH)
 
 	self.chat_edit:SetString("")

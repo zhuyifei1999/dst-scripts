@@ -193,9 +193,10 @@ local ServerSettingsTab = Class(Widget, function(self, slotdata, servercreations
     }
     self.online_mode = TEMPLATES.LabelSpinner(STRINGS.UI.SERVERCREATIONSCREEN.ONLINE_MODE, online_options, narrow_label_width, narrow_input_width, label_height, space_between, NEWFONT, font_size, narrow_field_nudge)
     self.online_mode.spinner:SetOnChangedFn(function(data)
-        self:SetOnlineWidgets()
+        self:SetOnlineWidgets(data)
         self.servercreationscreen:MakeDirty()
     end)
+    self.online_mode.spinner:Disable() -- This is not user configurable
 
     self.page_widgets = 
     {
@@ -209,8 +210,8 @@ local ServerSettingsTab = Class(Widget, function(self, slotdata, servercreations
         --self.clan_admins,
         self.pvp,
         self.max_players,
-        self.online_mode,
         self.server_pw,
+        self.online_mode,
     }
     self.clan_widgets =
     {
@@ -239,19 +240,11 @@ local ServerSettingsTab = Class(Widget, function(self, slotdata, servercreations
 
     self.default_focus = self.scroll_list
     self.focus_forward = self.scroll_list
-
-    self:SetOnlineWidgets()
 end)
 
 function ServerSettingsTab:SetOnlineWidgets(online)
-    if not TheNet:IsOnlineMode() or TheFrontEnd:GetIsOfflineMode() then
-		self.online_mode.spinner:Disable()
-        self.online_mode.spinner:SetSelected(false)
-    else
-		self.online_mode.spinner:Enable()
-        if online ~= nil then
-            self.online_mode.spinner:SetSelected(online)
-        end
+    if online ~= nil then
+        self.online_mode.spinner:SetSelected(online)
     end
 
     if self.online_mode.spinner:GetSelectedData() == false then
@@ -375,10 +368,8 @@ function ServerSettingsTab:UpdateDetails(slotnum, prevslot, fromDelete)
         if self.slotdata[slotnum] ~= nil and self.slotdata[slotnum].pvp ~= nil then
             pvp = self.slotdata[slotnum].pvp
         end
-        local online = true
-        if self.slotdata[slotnum] ~= nil and self.slotdata[slotnum].online_mode ~= nil then
-            online = self.slotdata[slotnum].online_mode
-        end
+        local online = TheNet:IsOnlineMode() and not TheFrontEnd:GetIsOfflineMode()
+
         self.game_mode.spinner:SetSelected(self.slotdata[slotnum] and self.slotdata[slotnum].game_mode or DEFAULT_GAME_MODE )
         self.pvp.spinner:SetSelected(pvp)
         self.max_players.spinner:SetSelected(self.slotdata[slotnum] and self.slotdata[slotnum].max_players or TUNING.MAX_SERVER_SIZE)
@@ -393,9 +384,6 @@ function ServerSettingsTab:UpdateDetails(slotnum, prevslot, fromDelete)
 
         self.game_mode.spinner:Enable()
     else -- Save data
-        -- world = 1, -- world (i.e. teleportato) doesn't exist yet, but leaving this here as a reminder
-        -- waiting on hooks for char details
-        
         local server_data = SaveGameIndex:GetSlotServerData(slotnum)
         if server_data ~= nil then
             local pvp = false
@@ -404,16 +392,10 @@ function ServerSettingsTab:UpdateDetails(slotnum, prevslot, fromDelete)
             else
                 pvp = server_data.pvp
             end
-            local online = true
-            if self.slotdata[slotnum] ~= nil and self.slotdata[slotnum].online_mode ~= nil then
-                online = self.slotdata[slotnum].online_mode
-            else
-                online = server_data.online_mode
-            end
+
             self.game_mode.spinner:SetSelected(self.slotdata[slotnum] and self.slotdata[slotnum].game_mode or (server_data.game_mode ~= nil and server_data.game_mode or DEFAULT_GAME_MODE ))
             self.pvp.spinner:SetSelected(pvp)
 
-            self.online_mode.spinner:SetSelected(online)
             self.max_players.spinner:SetSelected(self.slotdata[slotnum] and self.slotdata[slotnum].max_players or server_data.maxplayers)
             self.server_name.textbox:SetString(self.slotdata[slotnum] and self.slotdata[slotnum].name or server_data.name)
             self.server_pw.textbox:SetString(self.slotdata[slotnum] and self.slotdata[slotnum].password or server_data.password)
@@ -428,14 +410,13 @@ function ServerSettingsTab:UpdateDetails(slotnum, prevslot, fromDelete)
             end
 
             self:SetServerIntention(self.slotdata[slotnum] and self.slotdata[slotnum].intention or server_data.intention)
+            self:SetOnlineWidgets(server_data.online_mode) -- always load from the server data
         else
             self:SetServerIntention(nil)
         end
 		
-        self:SetOnlineWidgets()
 
 		-- No editing online or game mode for servers that have already been created
-		self.online_mode.spinner:Disable()
         self.game_mode.spinner:Disable()
     end
 end

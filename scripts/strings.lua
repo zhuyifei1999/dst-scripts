@@ -1694,6 +1694,8 @@ STRINGS.UI =
         SELECT = "Select",
         BACK = "Back",
         CHANGECHARACTER = "Change Character",
+        PREVPAGE = "Previous Page",
+        NEXTPAGE = "Next Page",
         ROTATE_LEFT = "Rotate Left",
         ROTATE_RIGHT = "Rotate Right",
         ZOOM_IN = "Zoom In",
@@ -2461,7 +2463,7 @@ STRINGS.UI =
         SAY = "say:",
         WHISPER_DESIGNATOR = "[W]",
         HELP_WHISPER = "Whisper",
-        HELP_SAY = "Say It",
+        HELP_SAY = "Say",
     },
 
     MODSSCREEN = {
@@ -3157,6 +3159,7 @@ STRINGS.UI =
         CONTROL_SELECT = " -- Select new input -- ",
         DEFAULT_CONTROL_TEXT = "Default: %s",
         CHANGEBIND = "Change Bind",
+        UNBIND = "Unbind Action",
         APPLYTITLE = "Accept Changes",
         APPLYBODY = "Do you wish to accept these changes?",
         RESETTITLE = "Reset Binds",

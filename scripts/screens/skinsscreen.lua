@@ -23,8 +23,10 @@ local function line_constructor(screen, parent, num_pictures, data)
 	local widget = parent:AddChild(Widget("inventory-line"))
 	local offset = 0
 
+	widget.screen = screen
 	widget.images = {}
 
+	-- create itemimages for each data item
 	for k, item in ipairs(data.items) do 
 
 		local itemimage = widget:AddChild(ItemImage(screen, item.type, item.item, item.timestamp,
@@ -41,9 +43,15 @@ local function line_constructor(screen, parent, num_pictures, data)
 		itemimage:SetPosition(offset, -15, 0)
 		offset = offset + 80
 
+		if k > 1 then 
+			itemimage:SetFocusChangeDir(MOVE_LEFT, widget.images[k-1])
+			widget.images[k-1]:SetFocusChangeDir(MOVE_RIGHT, itemimage)
+		end
+   
 		table.insert(widget.images, itemimage)
 	end
 
+	-- if the line isn't full, fill in the rest of the line with empty itemimages
 	while #widget.images < num_pictures do
 		local itemimage = widget:AddChild(ItemImage(screen, "", "", 0,
 			function(type, item) 
@@ -60,8 +68,18 @@ local function line_constructor(screen, parent, num_pictures, data)
 		offset = offset + 80
 
 		table.insert(widget.images, itemimage)
+
+		itemimage:SetFocusChangeDir(MOVE_LEFT, widget.images[#widget_images - 1])
+		widget.images[#widget_images-1]:SetFocusChangeDir(MOVE_RIGHT, itemimage)
 	end
 
+	widget.focus_forward = widget.images[1]
+
+	-- When the itemimage gets focus, it tells the screen to set the focus_column so we can look it up here
+	widget.OnGainFocus = function() 
+		local focus_column = widget.screen.focus_column or 1
+		widget.images[focus_column]:SetFocus()
+	end
 
 	return widget
 end
@@ -112,7 +130,7 @@ local SkinsScreen = Class(Screen, function(self, profile, screen)
 
 	self.applied_filters = {} -- filters that are currently applied (groups to show)
 	 
-    --self.default_focus = self.play_button
+   	self.default_focus = self.page_list
 end)
 
 
@@ -155,12 +173,13 @@ function SkinsScreen:DoInit( )
     self.chest:SetScale(-.7, .7, .7)
     self.chest:SetPosition(100, -75)
 
-
-    self.loadout_button = self.fixed_root:AddChild(TEMPLATES.SmallButton(STRINGS.UI.SKINSSCREEN.LOADOUT, 40, .75, 
+    if not TheInput:ControllerAttached() then 
+   		self.loadout_button = self.fixed_root:AddChild(TEMPLATES.SmallButton(STRINGS.UI.SKINSSCREEN.LOADOUT, 40, .75, 
     					function()
     						TheFrontEnd:PushScreen(CharacterSelectScreen(self.profile, "wilson"))
     						end))
-   	self.loadout_button:SetPosition(475, -300)
+   		self.loadout_button:SetPosition(475, -300)
+   	end
 
     local collection_name = self.profile:GetCollectionName() or (TheNet:GetLocalUserName()..STRINGS.UI.SKINSSCREEN.TITLE)
     local VALID_CHARS = [[ abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,:;[]\@!#$%&()'*+-/=?^_{|}~"<>]]
@@ -200,13 +219,11 @@ function SkinsScreen:DoInit( )
     --self.num_items = self.fixed_root:AddChild(Text(BUTTONFONT, 20, STRINGS.UI.SKINSSCREEN.ITEMS..": "..#self.full_skins_list, {0, 0, 0, 1}))
     --self.num_items:SetPosition(-335, -RESOLUTION_Y*.5 + 50)
 
-    self.exit_button = self.fixed_root:AddChild(TEMPLATES.BackButton(function() self:Quit() end)) 
+    if not TheInput:ControllerAttached() then 
+    	self.exit_button = self.fixed_root:AddChild(TEMPLATES.BackButton(function() self:Quit() end)) 
 
-    self.exit_button:SetPosition(-RESOLUTION_X*.415, -RESOLUTION_Y*.505 + BACK_BUTTON_Y )
-  
-    if TheInput:ControllerAttached() then
-        self.exit_button:SetPosition(-RESOLUTION_X*.415, -RESOLUTION_Y*.505 + BACK_BUTTON_Y+25)
-    end
+    	self.exit_button:SetPosition(-RESOLUTION_X*.415, -RESOLUTION_Y*.505 + BACK_BUTTON_Y )
+  	end
 
     self.details_panel:Hide()
 
@@ -215,7 +232,19 @@ function SkinsScreen:DoInit( )
 
 end
 
-function SkinsScreen:OnRawKey( key, down )
+function SkinsScreen:SetFocusColumn( itemimage )
+
+	if self.page_list then 
+		local row_widget = self.page_list:GetFocusedWidget()
+
+		for i=1,#row_widget.images do 
+			if row_widget.images[i] == itemimage then 
+				self.focus_column = i
+			end
+		end
+	else 
+		self.focus_column = 1
+	end
 end
 
 function SkinsScreen:ClearFocus()
@@ -557,8 +586,12 @@ function SkinsScreen:OnBecomeActive()
 	elseif not self.popup then 
 		-- We don't have a saved popup, which means the game is online. Go ahead and activate it.
 	    SkinsScreen._base.OnBecomeActive(self)  
-	    self.exit_button:Enable()
-	    self.exit_button:SetFocus()
+
+	    if self.exit_button then 
+	    	self.exit_button:Enable()
+	    	self.exit_button:SetFocus()
+	    end
+
 	    self.leaving = nil
 
 	    -- Refresh the paged list to update the equipped stars (in case we're returning from the loadout screen)
@@ -611,5 +644,51 @@ function SkinsScreen:CopySkinsList(list)
 	return newList
 end
 
+
+
+function SkinsScreen:OnControl(control, down)
+    
+    if SkinsScreen._base.OnControl(self, control, down) then return true end
+
+    if not self.no_cancel and
+    	not down and control == CONTROL_CANCEL then 
+		self:Quit()
+		return true 
+    end
+
+    if  TheInput:ControllerAttached()  and 
+    	not down and control == CONTROL_PAUSE then
+    	TheFrontEnd:PushScreen(CharacterSelectScreen(self.profile, "wilson"))
+		return true
+    end
+
+    -- Use d-pad buttons for paging skins list
+   	if not down then 
+	 	if control == CONTROL_PREVVALUE then  -- r-stick left
+	    	self.page_list:ChangePage(-1)
+			TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+			return true 
+		elseif control == CONTROL_NEXTVALUE then -- r-stick right
+			self.page_list:ChangePage(1)
+			TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+			return true
+	    end
+	end
+end
+
+function SkinsScreen:GetHelpText()
+    local controller_id = TheInput:GetControllerID()
+    local t = {}
+    
+    if not self.no_cancel then
+    	table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_CANCEL) .. " " .. STRINGS.UI.SKINSSCREEN.BACK)
+    end
+   
+   	table.insert(t, self.page_list:GetHelpText())
+  	
+   	table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_PAUSE) .. " " .. STRINGS.UI.SKINSSCREEN.LOADOUT)
+   	
+    return table.concat(t, "  ")
+end
 
 return SkinsScreen

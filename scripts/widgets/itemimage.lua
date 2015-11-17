@@ -115,8 +115,8 @@ function ItemImage:OnGainFocus()
 		self.mouseonFn(self.type, self.name)
 	end
 
+	self.screen:SetFocusColumn(self)
 	TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover")
-	--print(self.name, "got focus")
 end
 
 function ItemImage:OnLoseFocus()
@@ -129,8 +129,6 @@ function ItemImage:OnLoseFocus()
 	if self.mouseoffFn then 
 		self.mouseoffFn(self.type, self.name)
 	end
-
-	--print(self.name, "lost focus")
 end
 
 

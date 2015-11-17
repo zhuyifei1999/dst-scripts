@@ -109,6 +109,7 @@ function Tune(overrides)
 	    ICESTAFF_USES = 20,
 	    FIRESTAFF_USES = 20,
 	    TELESTAFF_USES = 5,
+        TELESTAFF_MOISTURE = 500,
 	    HAMBAT_USES = 100,
 	    BATBAT_USES = 75,
 	    MULTITOOL_AXE_PICKAXE_USES = 400,

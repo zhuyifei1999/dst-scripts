@@ -237,55 +237,63 @@ local function MakeHat(name)
     end
 
     local function ruinshat_fxanim(inst)
-        inst.fx.AnimState:PlayAnimation("hit")
-        inst.fx.AnimState:PushAnimation("idle_loop")
+        inst._fx.AnimState:PlayAnimation("hit")
+        inst._fx.AnimState:PushAnimation("idle_loop")
+    end
+
+    local function ruinshat_oncooldown(inst)
+        inst._task = nil
     end
 
     local function ruinshat_unproc(inst)
         if inst:HasTag("forcefield") then
-            inst:RemoveEventCallback("armordamaged", ruinshat_fxanim)
-            inst.fx:kill_fx()
-            if inst:IsValid() then
-                inst:RemoveTag("forcefield")
-                inst.components.armor.ontakedamage = nil
-                inst.components.armor:SetAbsorption(TUNING.ARMOR_RUINSHAT_ABSORPTION)
-                inst:DoTaskInTime(TUNING.ARMOR_RUINSHAT_COOLDOWN, function() inst.active = false end)
+            inst:RemoveTag("forcefield")
+            if inst._fx ~= nil then
+                inst._fx:kill_fx()
+                inst._fx = nil
             end
+            inst:RemoveEventCallback("armordamaged", ruinshat_fxanim)
+
+            inst.components.armor:SetAbsorption(TUNING.ARMOR_RUINSHAT_ABSORPTION)
+            inst.components.armor.ontakedamage = nil
+
+            if inst._task ~= nil then
+                inst._task:Cancel()
+            end
+            inst._task = inst:DoTaskInTime(TUNING.ARMOR_RUINSHAT_COOLDOWN, ruinshat_oncooldown)
         end
     end
 
     local function ruinshat_proc(inst, owner)
         inst:AddTag("forcefield")
-        inst.components.armor:SetAbsorption(TUNING.FULL_ABSORPTION)
-        inst.fx = SpawnPrefab("forcefieldfx")
-        inst.fx.entity:SetParent(owner.entity)
-        inst.fx.Transform:SetPosition(0, 0.2, 0)
+        if inst._fx ~= nil then
+            inst._fx:kill_fx()
+        end
+        inst._fx = SpawnPrefab("forcefieldfx")
+        inst._fx.entity:SetParent(owner.entity)
+        inst._fx.Transform:SetPosition(0, 0.2, 0)
         inst:ListenForEvent("armordamaged", ruinshat_fxanim)
 
+        inst.components.armor:SetAbsorption(TUNING.FULL_ABSORPTION)
         inst.components.armor.ontakedamage = function(inst, damage_amount)
-            if owner then
-                local sanity = owner.components.sanity
-                if sanity then
-                    local unsaneness = damage_amount * TUNING.ARMOR_RUINSHAT_DMG_AS_SANITY
-                    sanity:DoDelta(-unsaneness, false)
-                end
+            if owner ~= nil and owner.components.sanity ~= nil then
+                owner.components.sanity:DoDelta(-damage_amount * TUNING.ARMOR_RUINSHAT_DMG_AS_SANITY, false)
             end
         end
 
-        inst.active = true
-
-        inst:DoTaskInTime(TUNING.ARMOR_RUINSHAT_DURATION, ruinshat_unproc)
+        if inst._task ~= nil then
+            inst._task:Cancel()
+        end
+        inst._task = inst:DoTaskInTime(TUNING.ARMOR_RUINSHAT_DURATION, ruinshat_unproc)
     end
 
     local function tryproc(inst, owner)
-        if not inst.active and math.random() < TUNING.ARMOR_RUINSHAT_PROC_CHANCE then
+        if inst._task == nil and math.random() < TUNING.ARMOR_RUINSHAT_PROC_CHANCE then
            ruinshat_proc(inst, owner)
         end
     end
 
     local function ruins_onunequip(inst, owner)
-        ruinshat_unproc(inst)
-
         owner.AnimState:ClearOverrideSymbol("swap_hat")
         
         owner.AnimState:Hide("HAT")
@@ -298,8 +306,7 @@ local function MakeHat(name)
             owner.AnimState:Hide("HEAD_HAT")
         end
 
-        owner:RemoveEventCallback("attacked", inst.procfn)
-
+        inst.ondetach()
     end
 
     local function ruins_onequip(inst, owner)
@@ -313,12 +320,19 @@ local function MakeHat(name)
         
         owner.AnimState:Show("HEAD")
         owner.AnimState:Hide("HEAD_HAT")
-        inst.procfn = function() tryproc(inst, owner) end
-        owner:ListenForEvent("attacked", inst.procfn)
+
+        inst.onattach(owner)
     end
 
     local function ruins_custom_init(inst)
         inst:AddTag("metal")
+    end
+
+    local function ruins_onremove(inst)
+        if inst._fx ~= nil then
+            inst._fx:kill_fx()
+            inst._fx = nil
+        end
     end
 
     local function ruins()
@@ -335,6 +349,32 @@ local function MakeHat(name)
         inst.components.equippable:SetOnUnequip(ruins_onunequip)
 
         MakeHauntableLaunch(inst)
+
+        inst.OnRemoveEntity = ruins_onremove
+
+        inst._fx = nil
+        inst._task = nil
+        inst._owner = nil
+        inst.procfn = function(owner) tryproc(inst, owner) end
+        inst.onattach = function(owner)
+            if inst._owner ~= nil then
+                inst:RemoveEventCallback("attacked", inst.procfn, inst._owner)
+                inst:RemoveEventCallback("onremove", inst.ondetach, inst._owner)
+            end
+            inst:ListenForEvent("attacked", inst.procfn, owner)
+            inst:ListenForEvent("onremove", inst.ondetach, owner)
+            inst._owner = owner
+            inst._fx = nil
+        end
+        inst.ondetach = function()
+            ruinshat_unproc(inst)
+            if inst._owner ~= nil then
+                inst:RemoveEventCallback("attacked", inst.procfn, inst._owner)
+                inst:RemoveEventCallback("onremove", inst.ondetach, inst._owner)
+                inst._owner = nil
+                inst._fx = nil
+            end
+        end
 
         return inst
     end
