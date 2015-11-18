@@ -4,7 +4,6 @@ local assets =
     Asset("ANIM", "anim/statue_ruins_small_gem.zip"),
     Asset("ANIM", "anim/statue_ruins.zip"),
     Asset("ANIM", "anim/statue_ruins_gem.zip"),
-	Asset("MINIMAP_IMAGE", "statue_ruins"),
 }
 
 local prefabs =
@@ -297,7 +296,7 @@ local function nogem(small)
     return inst
 end
 
-return Prefab("ruins_statue_head", function() return gem(true) end, assets, prefabs),
-    Prefab("ruins_statue_head_nogem", function() return nogem(true) end, assets, prefabs),
-    Prefab("ruins_statue_mage", function() return gem() end, assets, prefabs),
-    Prefab("ruins_statue_mage_nogem", function() return nogem() end, assets, prefabs)
+return Prefab("cave/objects/ruins_statue_head", function() return gem(true) end, assets, prefabs),
+    Prefab("cave/objects/ruins_statue_head_nogem", function() return nogem(true) end, assets, prefabs),
+    Prefab("cave/objects/ruins_statue_mage", function() return gem() end, assets, prefabs),
+    Prefab("cave/objects/ruins_statue_mage_nogem", function() return nogem() end, assets, prefabs)

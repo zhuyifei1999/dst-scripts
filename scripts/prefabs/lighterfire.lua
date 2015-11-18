@@ -117,4 +117,4 @@ local function fn()
     return inst
 end
 
-return Prefab("lighterfire", fn, assets)
+return Prefab("common/fx/lighterfire", fn, assets)

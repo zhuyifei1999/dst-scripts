@@ -55,4 +55,4 @@ local function fn()
     return inst
 end
 
-return Prefab("spoiled_food", fn, assets)
+return Prefab("common/spoiled_food", fn, assets)

@@ -257,6 +257,6 @@ local function tinyfn()
     return common_fn(.2)
 end
 
-return Prefab("cavelight", normalfn, assets),
-       Prefab("cavelight_small", smallfn, assets),
-       Prefab("cavelight_tiny", tinyfn, assets)
+return Prefab("common/cavelight", normalfn, assets),
+       Prefab("common/cavelight_small", smallfn, assets),
+       Prefab("common/cavelight_tiny", tinyfn, assets)

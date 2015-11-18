@@ -11,8 +11,7 @@ local prefabs =
 {
     "meat",
     "lightninggoathorn",
-    "goatmilk",
-    "lightninggoatherd",
+    "goatmilk"
 }
 
 local brain = require("brains/lightninggoatbrain")
@@ -257,4 +256,4 @@ local function fn()
     return inst
 end
 
-return Prefab("lightninggoat", fn, assets, prefabs)
+return Prefab("common/monsters/lightninggoat", fn, assets, prefabs)

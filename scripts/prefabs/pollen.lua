@@ -148,4 +148,4 @@ local function fn(Sim)
     return inst
 end
 
-return Prefab( "pollen", fn, assets) 
+return Prefab( "common/fx/pollen", fn, assets) 

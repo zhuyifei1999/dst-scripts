@@ -100,5 +100,5 @@ local function fn()
     return inst
 end
 
-return Prefab("pinecone", fn, assets, prefabs),
-    MakePlacer("pinecone_placer", "pinecone", "pinecone", "idle_planted")
+return Prefab("common/inventory/pinecone", fn, assets, prefabs),
+    MakePlacer("common/pinecone_placer", "pinecone", "pinecone", "idle_planted")

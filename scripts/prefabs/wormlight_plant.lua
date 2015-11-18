@@ -86,5 +86,5 @@ local function fn()
     return inst
 end
 
-return Prefab("wormlight_plant", fn, assets, prefabs)
+return Prefab("cave/objects/wormlight_plant", fn, assets, prefabs)
 

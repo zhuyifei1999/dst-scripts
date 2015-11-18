@@ -147,4 +147,4 @@ local function fn()
     return inst
 end
 
-return Prefab("onemanband", fn, assets)
+return Prefab("common/inventory/onemanband", fn, assets)

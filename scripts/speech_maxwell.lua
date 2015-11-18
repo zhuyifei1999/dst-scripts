@@ -326,12 +326,6 @@ return {
 			GENERIC = "Moderately tough, but flammable.",
 			BURNT = "Not tough, nor flammable.",
 		},
-		WARDROBE = 
-		{
-			GENERIC = "Fashion without function.",
-            BURNING = "Oops.",
-			BURNT = "I'm sufficiently dapper without it.",
-		},
 		WARG = "The alpha!",
 		WATERMELON = "It's mostly water. Fibrous, sweet water.",
 		WATERMELON_COOKED = "Grillermelon.",
