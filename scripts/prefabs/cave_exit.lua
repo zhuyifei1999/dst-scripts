@@ -1,5 +1,3 @@
-local PopupDialogScreen = require "screens/popupdialog"
-
 local assets =
 {
     Asset("ANIM", "anim/cave_exit.zip"),

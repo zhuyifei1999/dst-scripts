@@ -1015,6 +1015,11 @@ local function OnSave(inst, data)
     end
     --
 
+    --Special case entities, since save references do not apply to networked players
+    if inst.wormlight ~= nil then
+        data.wormlight = inst.wormlight:GetSaveRecord()
+    end
+
     if inst._OnSave ~= nil then
         inst:_OnSave(data)
     end
@@ -1051,6 +1056,21 @@ local function OnLoad(inst, data)
             end
         end
         --
+
+        --Special case entities, since save references do not apply to networked players
+        if data.wormlight ~= nil and inst.wormlight == nil then
+            local wormlight = SpawnSaveRecord(data.wormlight)
+            if wormlight ~= nil and wormlight.components.spell ~= nil then
+                wormlight.components.spell:SetTarget(inst)
+                if wormlight:IsValid() then
+                    if wormlight.components.spell.target == nil then
+                        wormlight:Remove()
+                    else
+                        wormlight.components.spell:ResumeSpell()
+                    end
+                end
+            end
+        end
     end
 
     if inst._OnLoad ~= nil then

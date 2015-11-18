@@ -150,8 +150,16 @@ local DressupPanel = Class(Widget, function(self, owner, profile, onNextFn, onPr
 		self.legs_spinner:SetPosition(0, body_offset-55-208)
 	end
 
+	self.default_focus = self.body_spinner.spinner
+	self.focus_forward = self.body_spinner.spinner
+	self:DoFocusHookups()
+
 end)
 
+function DressupPanel:ReverseFocus()
+	self.default_focus = self.legs_spinner.spinner
+	self.focus_forward = self.legs_spinner.spinner
+end
 
 function DressupPanel:MakeSpinner(slot)
 
@@ -167,7 +175,7 @@ function DressupPanel:MakeSpinner(slot)
 		arrow_right_disabled = "arrow_right_disabled.tex",
 		arrow_right_down = "arrow2_right_down.tex",
 		bg_middle = "blank.tex",
-		bg_middle_focus = "blank.tex", --"box_2.tex",
+		bg_middle_focus = "spinner_focus.tex", --"box_2.tex",
 		bg_middle_changing = "blank.tex",
 		bg_end = "blank.tex",
 		bg_end_focus = "blank.tex",
@@ -405,6 +413,25 @@ function DressupPanel:UpdateSpinners()
 
 end
 
+
+function DressupPanel:DoFocusHookups()
+    
+	if self.base_spinner and self.body_spinner then 
+        self.base_spinner:SetFocusChangeDir(MOVE_DOWN, self.body_spinner)
+        self.body_spinner:SetFocusChangeDir(MOVE_UP, self.base_spinner)
+    end
+
+    if self.body_spinner and self.hand_spinner then 
+        self.body_spinner:SetFocusChangeDir(MOVE_DOWN, self.hand_spinner)
+        self.hand_spinner:SetFocusChangeDir(MOVE_UP, self.body_spinner)
+    end
+
+    if self.hand_spinner and self.legs_spinner then 
+        self.hand_spinner:SetFocusChangeDir(MOVE_DOWN, self.legs_spinner)
+        self.legs_spinner:SetFocusChangeDir(MOVE_UP, self.hand_spinner)
+    end
+
+end
 
 function DressupPanel:Reset(set_spinner_to_new_item)
 

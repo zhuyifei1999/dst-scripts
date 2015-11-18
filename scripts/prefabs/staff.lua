@@ -145,32 +145,9 @@ local function getrandomposition(caster)
     end
 end
 
-local function teleport_thread(inst, caster, teletarget, loctarget)
-    local ground = TheWorld
-
-    local t_loc = nil
-    if loctarget then
-        t_loc = loctarget:GetPosition()
-    else
-        t_loc = getrandomposition(caster)
-    end
-
-    local teleportee = teletarget
-    local pt = teleportee:GetPosition()
-    if teleportee.components.locomotor then
-        teleportee.components.locomotor:StopMoving()
-    end
-
-    inst.components.finiteuses:Use(1)
-
-    if TheWorld:HasTag("cave") then
-        -- There's a roof over your head, magic lightning can't strike!
-        TheWorld:PushEvent("ms_miniquake", {rad=3, num=5, duration=1.5, target=teleportee})
-        return
-    end
-
-    if teleportee.components.health ~= nil then
-        teleportee.components.health:SetInvincible(true)
+local function teleport_end(teleportee, locpos, loctarget)
+    if loctarget ~= nil and loctarget:IsValid() and loctarget.onteleto ~= nil then
+        loctarget:onteleto()
     end
 
     --#v2c hacky way to prevent lightning from igniting us
@@ -178,66 +155,93 @@ local function teleport_thread(inst, caster, teletarget, loctarget)
     if preventburning then
         teleportee.components.burnable.burning = true
     end
-    ground:PushEvent("ms_sendlightningstrike", pt)
+    TheWorld:PushEvent("ms_sendlightningstrike", locpos)
     if preventburning then
         teleportee.components.burnable.burning = false
     end
 
-    teleportee:Hide()
-    if teleportee.DynamicShadow ~= nil then
-        teleportee.DynamicShadow:Enable(false)
+    if teleportee:HasTag("player") then
+        teleportee.sg.statemem.teleport_task = nil
+        teleportee.sg:GoToState(teleportee:HasTag("playerghost") and "appear" or "wakeup")
+        teleportee.SoundEmitter:PlaySound("dontstarve/common/staffteleport")
+    else
+        teleportee:Show()
+        if teleportee.DynamicShadow ~= nil then
+            teleportee.DynamicShadow:Enable(true)
+        end
+        if teleportee.components.health ~= nil then
+            teleportee.components.health:SetInvincible(false)
+        end
+    end
+end
+
+local function teleport_continue(teleportee, locpos, loctarget)
+    if teleportee.Physics ~= nil then
+        teleportee.Physics:Teleport(locpos.x, 0, locpos.z)
+    else
+        teleportee.Transform:SetPosition(locpos.x, 0, locpos.z)
     end
 
-    if caster and caster.components.sanity then
+    if teleportee:HasTag("player") then
+        teleportee:SnapCamera()
+        teleportee:ScreenFade(true, 1)
+        teleportee.sg.statemem.teleport_task = teleportee:DoTaskInTime(1, teleport_end, locpos, loctarget)
+    else
+        teleport_end(teleportee, locpos, loctarget)
+    end
+end
+
+local function teleport_start(teleportee, staff, caster, loctarget)
+    local ground = TheWorld
+
+    --V2C: Gotta do this RIGHT AWAY in case anything happens to loctarget or caster
+    local locpos = loctarget ~= nil and loctarget:GetPosition() or getrandomposition(caster)
+
+    if teleportee.components.locomotor ~= nil then
+        teleportee.components.locomotor:StopMoving()
+    end
+
+    staff.components.finiteuses:Use(1)
+
+    if ground:HasTag("cave") then
+        -- There's a roof over your head, magic lightning can't strike!
+        ground:PushEvent("ms_miniquake", { rad = 3, num = 5, duration = 1.5, target = teleportee })
+        return
+    end
+
+    local isplayer = teleportee:HasTag("player")
+    if isplayer then
+        teleportee.sg:GoToState("forcetele")
+    else
+        if teleportee.components.health ~= nil then
+            teleportee.components.health:SetInvincible(true)
+        end
+        if teleportee.DynamicShadow ~= nil then
+            teleportee.DynamicShadow:Enable(false)
+        end
+        teleportee:Hide()
+    end
+
+    --#v2c hacky way to prevent lightning from igniting us
+    local preventburning = teleportee.components.burnable ~= nil and not teleportee.components.burnable.burning
+    if preventburning then
+        teleportee.components.burnable.burning = true
+    end
+    ground:PushEvent("ms_sendlightningstrike", teleportee:GetPosition())
+    if preventburning then
+        teleportee.components.burnable.burning = false
+    end
+
+    if caster ~= nil and caster.components.sanity ~= nil then
         caster.components.sanity:DoDelta(-TUNING.SANITY_HUGE)
     end
 
     ground:PushEvent("ms_deltamoisture", TUNING.TELESTAFF_MOISTURE)
 
-    local isplayer = teleportee:HasTag("player")
     if isplayer then
-        teleportee.components.playercontroller:Enable(false)
-        teleportee:ScreenFade(false, 2)
-        Sleep(3)
-    end
-
-    if teleportee.Physics ~= nil then
-        teleportee.Physics:Teleport(t_loc.x, 0, t_loc.z)
+        teleportee.sg.statemem.teleport_task = teleportee:DoTaskInTime(3, teleport_continue, locpos, loctarget)
     else
-        teleportee.Transform:SetPosition(t_loc.x, 0, t_loc.z)
-    end
-
-    if isplayer then
-        teleportee:SnapCamera()
-        teleportee:ScreenFade(true, 1)
-        Sleep(1)
-        teleportee.components.playercontroller:Enable(true)
-    end
-    if loctarget and loctarget.onteleto then
-        loctarget.onteleto(loctarget)
-    end
-
-    --#v2c hacky way to prevent lightning from igniting us
-    preventburning = teleportee.components.burnable ~= nil and not teleportee.components.burnable.burning
-    if preventburning then
-        teleportee.components.burnable.burning = true
-    end
-    ground:PushEvent("ms_sendlightningstrike", t_loc)
-    if preventburning then
-        teleportee.components.burnable.burning = false
-    end
-
-    teleportee:Show()
-    if teleportee.DynamicShadow ~= nil then
-        teleportee.DynamicShadow:Enable(true)
-    end
-    if teleportee.components.health ~= nil then
-        teleportee.components.health:SetInvincible(false)
-    end
-
-    if isplayer then
-        teleportee.sg:GoToState("wakeup")
-        teleportee.SoundEmitter:PlaySound("dontstarve/common/staffteleport")
+        teleport_continue(teleportee, locpos, loctarget)
     end
 end
 
@@ -256,7 +260,7 @@ local function teleport_func(inst, target)
 
     if #ents <= 0 then
         --There's no bases, active or inactive. Teleport randomly.
-        inst.task = inst:StartThread(function() teleport_thread(inst, caster, tar) end)
+        teleport_start(tar, inst, caster)
         return
     end
 
@@ -272,12 +276,12 @@ local function teleport_func(inst, target)
     for i = 1, #targets do
         local teletarget = targets[i]
         if teletarget.base and teletarget.base.canteleto(teletarget.base) then
-            inst.task = inst:StartThread(function() teleport_thread(inst, caster, tar, teletarget.base) end)
+            teleport_start(tar, inst, caster, teletarget.base)
             return
         end
     end
 
-    inst.task = inst:StartThread(function() teleport_thread(inst, caster, tar) end)
+    teleport_start(tar, inst, caster)
 end
 
 local function onhauntpurple(inst)

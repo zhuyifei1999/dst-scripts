@@ -794,7 +794,9 @@ local states =
             inst.fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
 
             if not inst:HasTag("electricdamageimmune") then
-                inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+                if not inst:HasTag("wormlight") then
+                    inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+                end
                 inst.Light:Enable(true)
             end
 
@@ -815,7 +817,9 @@ local states =
                 if inst.fx ~= nil then
                     if not inst:HasTag("electricdamageimmune") then
                         inst.Light:Enable(false)
-                        inst.AnimState:ClearBloomEffectHandle()
+                        if not inst:HasTag("wormlight") then
+                            inst.AnimState:ClearBloomEffectHandle()
+                        end
                     end
                     inst.fx:Remove()
                     inst.fx = nil
@@ -837,7 +841,9 @@ local states =
             if inst.fx ~= nil then
                 if not inst:HasTag("electricdamageimmune") then
                     inst.Light:Enable(false)
-                    inst.AnimState:ClearBloomEffectHandle()
+                    if not inst:HasTag("wormlight") then
+                        inst.AnimState:ClearBloomEffectHandle()
+                    end
                 end
                 inst.fx:Remove()
                 inst.fx = nil
@@ -4182,10 +4188,17 @@ local states =
 
             --Spawn an effect on the player's location
             local staff = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+            local colour = staff ~= nil and staff.fxcolour or { 1, 1, 1 }
+            local x, y, z = inst.Transform:GetWorldPosition()
+
             inst.stafffx = SpawnPrefab("staffcastfx")
-            inst.stafffx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+            inst.stafffx.Transform:SetPosition(x, y, z)
             inst.stafffx.Transform:SetRotation(inst.Transform:GetRotation())
-            inst.stafffx:SetUp(staff.fxcolour or { 1, 1, 1 })
+            inst.stafffx:SetUp(colour)
+
+            local stafflight = SpawnPrefab("staff_castinglight")
+            stafflight.Transform:SetPosition(x, y, z)
+            stafflight:SetUp(colour, 1.9, .33)
         end,
 
         timeline = 
@@ -4193,13 +4206,10 @@ local states =
             TimeEvent(13*FRAMES, function(inst)
                 inst.SoundEmitter:PlaySound("dontstarve/wilson/use_gemstaff") 
             end),
-            TimeEvent(0*FRAMES, function(inst)
-                local staff = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-                local stafflight = SpawnPrefab("staff_castinglight")
-                stafflight.Transform:SetPosition(inst.Transform:GetWorldPosition())
-                stafflight:SetUp(staff.fxcolour or { 1, 1, 1 }, 1.9, .33)
+            TimeEvent(53*FRAMES, function(inst)
+                --V2C: NOTE! if we're teleporting ourself, we may be forced to exit state here!
+                inst:PerformBufferedAction()
             end),
-            TimeEvent(53*FRAMES, function(inst) inst:PerformBufferedAction() end),
         },
 
         events =
@@ -4248,6 +4258,48 @@ local states =
                 end
             end),
         },
+    },
+
+    State{
+        name = "forcetele",
+        tags = { "busy", "nopredict", "nomorph" },
+
+        onenter = function(inst)
+            if inst.components.freezable ~= nil and inst.components.freezable:IsFrozen() then
+                inst.components.freezable:Unfreeze()
+            end
+            if inst.components.pinnable ~= nil and inst.components.pinnable:IsStuck() then
+                inst.components.pinnable:Unstick()
+            end
+
+            inst.components.locomotor:Stop()
+            inst.components.health:SetInvincible(true)
+            inst.DynamicShadow:Enable(false)
+            inst:Hide()
+            inst:ScreenFade(false, 2)
+
+            if inst.components.playercontroller ~= nil then
+                inst.components.playercontroller:Enable(false)
+            end
+        end,
+
+        onexit = function(inst)
+            inst.components.health:SetInvincible(false)
+            inst.DynamicShadow:Enable(true)
+            inst:Show()
+
+            if inst.sg.statemem.teleport_task ~= nil then
+                -- Still have a running teleport_task
+                -- Interrupt!
+                inst.sg.statemem.teleport_task:Cancel()
+                inst.sg.statemem.teleport_task = nil
+                inst:ScreenFade(true, .5)
+            end
+
+            if inst.components.playercontroller ~= nil then
+                inst.components.playercontroller:Enable(true)
+            end
+        end,
     },
 
     State{

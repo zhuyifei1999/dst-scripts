@@ -15,6 +15,53 @@ local prefabs =
 
 local brain = require "brains/eyeturretbrain"
 
+local MAX_LIGHT_FRAME = 24
+
+local function OnUpdateLight(inst, dframes)
+    local frame = inst._lightframe:value() + dframes
+    if frame >= MAX_LIGHT_FRAME then
+        inst._lightframe:set_local(MAX_LIGHT_FRAME)
+        inst._lighttask:Cancel()
+        inst._lighttask = nil
+    else
+        inst._lightframe:set_local(frame)
+    end
+
+    if frame <= 20 then
+        local k = frame / 20
+        --radius:    0   -> 3.5
+        --intensity: .65 -> .9
+        --falloff:   .7  -> .9
+        inst.Light:SetRadius(3.5 * k)
+        inst.Light:SetIntensity(.9 * k + .65 * (1 - k))
+        inst.Light:SetFalloff(.9 * k + .7 * (1 - k))
+    else
+        local k = (frame - 20) / (MAX_LIGHT_FRAME - 20)
+        --radius:    3.5 -> 0
+        --intensity: .9  -> .65
+        --falloff:   .9  -> .7
+        inst.Light:SetRadius(3.5 * (1 - k))
+        inst.Light:SetIntensity(.65 * k + .9 * (1 - k))
+        inst.Light:SetFalloff(.7 * k + .9 * (1 - k))
+    end
+
+    if TheWorld.ismastersim then
+        inst.Light:Enable(frame < MAX_LIGHT_FRAME)
+    end
+end
+
+local function OnLightDirty(inst)
+    if inst._lighttask == nil then
+        inst._lighttask = inst:DoPeriodicTask(FRAMES, OnUpdateLight, nil, 1)
+    end
+    OnUpdateLight(inst, 0)
+end
+
+local function triggerlight(inst)
+    inst._lightframe:set(0)
+    OnLightDirty(inst)
+end
+
 local function retargetfn(inst)
     local playertargets = {}
     for i, v in ipairs(AllPlayers) do
@@ -83,16 +130,6 @@ local function ondeploy(inst, pt, deployer)
         turret.SoundEmitter:PlaySound("dontstarve/common/place_structure_stone")
         inst:Remove()
     end
-end
-
-local function lighttweencb(inst, light)
-    if light ~= nil then
-        light:Enable(false)
-    end
-end
-
-local function dotweenin(inst, l)
-    inst.components.lighttweener:StartTween(nil, 0, .65, .7, nil, 0.15, lighttweencb)
 end
 
 local function syncanim(inst, animname, loop)
@@ -165,9 +202,21 @@ local function fn()
     inst.AnimState:SetBuild("eyeball_turret")
     inst.AnimState:PlayAnimation("idle_loop")
 
+    inst.Light:SetRadius(0)
+    inst.Light:SetIntensity(.65)
+    inst.Light:SetFalloff(.7)
+    inst.Light:SetColour(251/255, 234/255, 234/255)
+    inst.Light:Enable(false)
+    inst.Light:EnableClientModulation(true)
+
+    inst._lightframe = net_smallbyte(inst.GUID, "eyeturret._lightframe", "lightdirty")
+    inst._lighttask = nil
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
+        inst:ListenForEvent("lightdirty", OnLightDirty)
+
         return inst
     end
 
@@ -188,10 +237,7 @@ local function fn()
     inst.components.combat:SetRetargetFunction(1, retargetfn)
     inst.components.combat:SetKeepTargetFunction(shouldKeepTarget)
 
-    inst:AddComponent("lighttweener")
-    inst.components.lighttweener:StartTween(inst.Light, 0, .65, .7, {251/255, 234/255, 234/255}, 0, lighttweencb)
-
-    inst.dotweenin = dotweenin
+    inst.triggerlight = triggerlight
 
     MakeLargeFreezableCharacter(inst)
 

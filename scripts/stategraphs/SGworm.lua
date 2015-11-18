@@ -161,7 +161,7 @@ local states=
         onenter = function(inst)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("atk_pre")
-            inst.components.lighttweener:StartTween(nil, 0, nil, nil, nil, .66, function(inst, light) if light then light:Enable(false) end end)
+            inst:turnofflight()
         end,
         
         events=
@@ -307,8 +307,7 @@ local states=
             inst.components.pickable.canbepicked = true
             ChangeToInventoryPhysics(inst)
 
-            inst.Light:Enable(true)
-            inst.components.lighttweener:StartTween(nil, 1.5, nil, nil, nil, .66)
+            inst:turnonlight()
         end,
         timeline=
         {           
@@ -359,8 +358,8 @@ local states=
             inst.SoundEmitter:KillAllSounds()
             inst.components.pickable.canbepicked = true
             ChangeToInventoryPhysics(inst)
-            
-            inst.components.lighttweener:StartTween(nil, 0, nil, nil, nil, .66, function(inst, light) if light then light:Enable(false) end end)
+
+            inst:turnofflight()
         end,
 
         onexit = function(inst)

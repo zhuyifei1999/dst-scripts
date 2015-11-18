@@ -26,6 +26,51 @@ local prefabs =
 
 local brain = require"brains/wormbrain"
 
+local MAX_LIGHT_FRAME = 20
+
+local function OnUpdateLight(inst, dframes)
+    local done
+    if inst._islighton:value() then
+        local frame = inst._lightframe:value() + dframes
+        done = frame >= MAX_LIGHT_FRAME
+        inst._lightframe:set_local(done and MAX_LIGHT_FRAME or frame)
+    else
+        local frame = inst._lightframe:value() - dframes
+        done = frame <= 0
+        inst._lightframe:set_local(done and 0 or frame)
+    end
+
+    inst.Light:SetRadius(1.5 * inst._lightframe:value() / MAX_LIGHT_FRAME)
+
+    if TheWorld.ismastersim then
+        inst.Light:Enable(inst._lightframe:value() > 0)
+    end
+
+    if done then
+        inst._lighttask:Cancel()
+        inst._lighttask = nil
+    end
+end
+
+local function OnLightDirty(inst)
+    if inst._lighttask == nil then
+        inst._lighttask = inst:DoPeriodicTask(FRAMES, OnUpdateLight, nil, 1)
+    end
+    OnUpdateLight(inst, 0)
+end
+
+local function turnonlight(inst)
+    inst._islighton:set(true)
+    inst._lightframe:set(inst._lightframe:value())
+    OnLightDirty(inst)
+end
+
+local function turnofflight(inst)
+    inst._islighton:set(false)
+    inst._lightframe:set(inst._lightframe:value())
+    OnLightDirty(inst)
+end
+
 local function retargetfn(inst)
 
     --Don't search for targets when you're luring. Targets will come to you.
@@ -188,18 +233,32 @@ local function fn()
 
     inst.AnimState:SetBank("worm")
     inst.AnimState:SetBuild("worm")
-    inst.AnimState:PlayAnimation("idle_loop")
+    inst.AnimState:PlayAnimation("idle_loop", true)
 
     inst:AddTag("monster")
     inst:AddTag("hostile")
     inst:AddTag("wet")
     inst:AddTag("worm")
+    inst:AddTag("cavedweller")
+
+    inst.Light:SetRadius(0)
+    inst.Light:SetIntensity(.8)
+    inst.Light:SetFalloff(.5)
+    inst.Light:SetColour(1, 1, 1)
+    inst.Light:Enable(false)
+    inst.Light:EnableClientModulation(true)
+
+    inst._lightframe = net_smallbyte(inst.GUID, "worm._lightframe", "lightdirty")
+    inst._islighton = net_bool(inst.GUID, "worm._islighton", "lightdirty")
+    inst._lighttask = nil
 
     inst.displaynamefn = displaynamefn  --Handles the changing names.
 
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
+        inst:ListenForEvent("lightdirty", OnLightDirty)
+
         return inst
     end
 
@@ -234,9 +293,6 @@ local function fn()
     inst.components.playerprox:SetOnPlayerNear(playernear)
     inst.components.playerprox:SetOnPlayerFar(playerfar)
 
-    inst:AddComponent("lighttweener")
-    inst.components.lighttweener:StartTween(inst.Light, 0, 0.8, 0.5, {1,1,1}, 0, function(inst, light) if light then light:Enable(false) end end)
-
     inst:AddComponent("knownlocations")
 
     inst:AddComponent("inventory")
@@ -253,6 +309,9 @@ local function fn()
     inst:ListenForEvent("attacked", onattacked)
 
     AddHauntableCustomReaction(inst, CustomOnHaunt)
+
+    inst.turnonlight = turnonlight
+    inst.turnofflight = turnofflight
 
     inst:SetStateGraph("SGworm")
     inst:SetBrain(brain)

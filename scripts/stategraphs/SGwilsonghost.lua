@@ -228,7 +228,7 @@ local states =
     {
         name = "hit",
         tags = { "busy", "pausepredict" },
-        
+
         onenter = function(inst)
             if inst.hurtsoundoverride ~= nil then
                 inst.SoundEmitter:PlaySound(hurtsoundoverride)
@@ -293,7 +293,7 @@ local states =
                 inst.components.playercontroller:RemotePausePrediction()
             end
         end,
-        
+
         events =
         {
             EventHandler("animover", function(inst)
@@ -308,7 +308,7 @@ local states =
     {
         name = "talk",
         tags = { "idle", "talking" },
-        
+
         onenter = function(inst, noanim)
             if not (noanim or inst.AnimState:IsCurrentAnimation("idle")) then
                 inst.AnimState:PlayAnimation("idle", true)
@@ -316,7 +316,7 @@ local states =
             DoTalkSound(inst)
             inst.sg:SetTimeout(1.5 + math.random() * .5)
         end,
-        
+
         ontimeout = function(inst)
             inst.sg:GoToState("idle")
         end,
@@ -331,13 +331,13 @@ local states =
         onexit = function(inst)
             inst.SoundEmitter:KillSound("talk")
         end,
-    }, 
-    
+    },
+
     State
     {
         name = "mime",
         tags = { "idle", "talking" },
-        
+
         onenter = function(inst)
             if not inst.AnimState:IsCurrentAnimation("idle") then
                 inst.AnimState:PlayAnimation("idle", true)
@@ -345,7 +345,7 @@ local states =
             DoTalkSound(inst)
             inst.sg:SetTimeout(1.5 + math.random() * .5)
         end,
-        
+
         ontimeout = function(inst)
             inst.sg:GoToState("idle")
         end,
@@ -360,7 +360,7 @@ local states =
         onexit = function(inst)
             inst.SoundEmitter:KillSound("talk")
         end,
-    }, 
+    },
 
     State{
         name = "jumpin_pre",
@@ -438,6 +438,40 @@ local states =
                 end
             end),
         },
+    },
+
+    State
+    {
+        name = "forcetele",
+        tags = { "busy", "nopredict" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.Light:Enable(false)
+            inst:Hide()
+            inst:ScreenFade(false, 2)
+
+            if inst.components.playercontroller ~= nil then
+                inst.components.playercontroller:Enable(false)
+            end
+        end,
+
+        onexit = function(inst)
+            inst.Light:Enable(true)
+            inst:Show()
+
+            if inst.sg.statemem.teleport_task ~= nil then
+                -- Still have a running teleport_task
+                -- Interrupt!
+                inst.sg.statemem.teleport_task:Cancel()
+                inst.sg.statemem.teleport_task = nil
+                inst:ScreenFade(true, .5)
+            end
+
+            if inst.components.playercontroller ~= nil then
+                inst.components.playercontroller:Enable(true)
+            end
+        end,
     },
 
     State

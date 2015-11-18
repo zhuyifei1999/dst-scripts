@@ -96,7 +96,9 @@ function SpellCaster:CanCast(doer, target, pos)
             return self.inst:HasTag("castfrominventory")
         end
         return self.inst:HasTag("castonpoint") and TheWorld.Map:IsAboveGroundAtPoint(pos:Get())
-    elseif target:IsInLimbo() then
+    elseif target:IsInLimbo()
+        or not target.entity:IsVisible()
+        or (target.sg ~= nil and target.sg:HasStateTag("death")) then
         return false
     elseif self.inst:HasTag("castontargets") then
         return true

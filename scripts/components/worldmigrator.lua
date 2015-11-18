@@ -160,7 +160,7 @@ function WorldMigrator:OnLoad(data)
 end
 
 function WorldMigrator:GetDebugString()
-    return string.format("ID %d: status: %s world: %s (%s) available: %s recieves: %d", self.id or -1, table.reverselookup(STATUS, self._status), self.linkedWorld or "<nil>", self.auto and "auto" or "manual", tostring(self.linkedWorld and Shard_IsWorldAvailable(self.linkedWorld) or false), self.recievedPortal or -1)
+    return string.format("ID %d: world: %s (%s) available: %s recieves: %d status: %s", self.id or -1, self.linkedWorld or "<nil>", self.auto and "auto" or "manual", tostring(self.linkedWorld and Shard_IsWorldAvailable(self.linkedWorld) or false), self.recievedPortal or -1, string.lower(tostring(table.reverselookup(STATUS, self._status))) )
 end
 
 return WorldMigrator

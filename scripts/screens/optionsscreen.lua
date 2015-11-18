@@ -535,6 +535,7 @@ end
 
 function OptionsScreen:RevertChanges()
 	self.working = deepcopy( self.options )
+	self:LoadCurrentControls()
 	self:Apply()
 	self:InitializeSpinners()
 	self:UpdateMenu()							
@@ -698,7 +699,7 @@ function OptionsScreen:OnControlMapped(deviceId, controlId, inputId, hasChanged)
        -- print("Control [" .. controlId .. "] is now [" .. inputId .. "]", hasChanged, debugstack())
 
         -- removes the "press a button to bind" popup screen. This is not needed when clearing a binding because there is no popup
-        if inputId ~= 0 then
+        if inputId ~= 0xFFFFFFFF then
             TheFrontEnd:PopScreen()
         end
 		

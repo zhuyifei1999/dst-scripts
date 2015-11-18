@@ -68,9 +68,14 @@ local WardrobePopupScreen = Class(Screen, function(self, owner, profile, charact
    
 	self.default_focus = self.menu
 
+	self.dressup:ReverseFocus()
+	self.menu.reverse = true
+
     if owner ~= nil then
         TheCamera:PushScreenHOffset(self, SCREEN_OFFSET)
     end
+
+    self:DoFocusHookups()
 end)
 
 function WardrobePopupScreen:OnDestroy()
@@ -80,16 +85,19 @@ function WardrobePopupScreen:OnDestroy()
     self._base.OnDestroy(self)
 end
 
+function WardrobePopupScreen:DoFocusHookups()
+	self.menu:SetFocusChangeDir(MOVE_UP, self.dressup)
+    self.dressup:SetFocusChangeDir(MOVE_DOWN, self.menu)
+end
+
 function WardrobePopupScreen:OnControl(control, down)
     if WardrobePopupScreen._base.OnControl(self,control, down) then return true end
     
-    --[[if control == CONTROL_CANCEL and not down then    
-        if #self.buttons > 1 and self.buttons[#self.buttons] then
-            self.buttons[#self.buttons].cb()
-            TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
-            return true
-        end
-    end]]
+    if control == CONTROL_CANCEL and not down then    
+        self:Cancel()
+        TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+        return true
+    end
 end
 
 function WardrobePopupScreen:Cancel()
@@ -139,15 +147,11 @@ function WardrobePopupScreen:SetPortrait()
 end
 
 function WardrobePopupScreen:GetHelpText()
-	--[[local controller_id = TheInput:GetControllerID()
+	local controller_id = TheInput:GetControllerID()
 	local t = {}
-	if #self.buttons > 1 and self.buttons[#self.buttons] then
-        table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_CANCEL) .. " " .. STRINGS.UI.HELP.BACK)	
-    end
+    table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_CANCEL) .. " " .. STRINGS.UI.HELP.CANCEL)
 	return table.concat(t, "  ")
-	]]
 	
-	return ""
 end
 
 return WardrobePopupScreen

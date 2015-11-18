@@ -43,34 +43,33 @@ local states=
             inst.components.lootdropper:DropLoot(Vector3(inst.Transform:GetWorldPosition()))            
         end,
 
-        timeline = 
+        timeline =
         {
             TimeEvent(17*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/eyeballturret/pop") end)
         },
-    },    
-        
+    },
+
     State{
         name = "hit",
         tags = {"hit"},
-        
+
         onenter = function(inst) inst:syncanim("hit") end,
-        
+
         events=
         {
             EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
-        },        
+        },
     },
 
     State
-    { 
+    {
         name = "attack",
         tags = {"attack", "canrotate"},
         onenter = function(inst)
-            inst.components.lighttweener:StartTween(nil, 0, .65, .7, nil, 0, function(inst, light) if light then light:Enable(true) end end)
-            inst.components.lighttweener:StartTween(nil, 3.5, .9, .9, nil, .66, inst.dotweenin)
+            inst:triggerlight()
             inst:syncanim("atk")
             inst.SoundEmitter:PlaySound("dontstarve/creatures/eyeballturret/charge")
-        end,        
+        end,
         timeline=
         {
             TimeEvent(22*FRAMES, function(inst) 
@@ -79,13 +78,12 @@ local states=
                 inst.SoundEmitter:PlaySound("dontstarve/creatures/eyeballturret/shoot")
             end),
         },
-        
+
         events=
         {
             EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
         },
-    },   
+    },
 }
-    
-return StateGraph("eyeturret", states, events, "idle")
 
+return StateGraph("eyeturret", states, events, "idle")

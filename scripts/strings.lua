@@ -1710,6 +1710,7 @@ STRINGS.UI =
         SHOWCHAT = "Show the Chat Tab",
         SHOWPLAYERS = "Show the Players Tab",
         VIEWGROUP = "View Group Page",
+        CANCEL = "Cancel",
     },
     CHARACTERSELECT=
     {

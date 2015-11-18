@@ -112,12 +112,12 @@ local LobbyScreen = Class(Screen, function(self, profile, cb, no_backbutton, def
     self.heroportrait:SetScale(.9)
     self.heroportrait:SetPosition(RESOLUTION_X/2, RESOLUTION_Y-300)
     
+    self.heroportrait:SetOnGainFocus(function() self.heroportrait:SetScale(.95) end)
+    self.heroportrait:SetOnLoseFocus(function() self.heroportrait:SetScale(.9) end)
 
     local adjust = 16
 
    	self:BuildCharacterDetailsBoxAndPanels()
-   	--self.dressup:GetClothingOptions()
- 	
 
  	self.players_button:MoveToFront()
 	self.chat_button:MoveToFront() 
@@ -143,7 +143,7 @@ local LobbyScreen = Class(Screen, function(self, profile, cb, no_backbutton, def
 
     self:BuildCharactersList(cb, default_character)
     
-    self.default_focus = self.scroll_list
+    self.default_focus = self.heroportrait
     self:DoFocusHookups()
 end)
 
@@ -177,22 +177,35 @@ function LobbyScreen:StopLobbyMusic()
     end
 end
 
-local function doButtonFocusHookups(playerListing)
-		
+local function doButtonFocusHookups(playerListing, nextWidget)
+	
+	local rightFocusMoveSet = false
+
 	if playerListing.mute:IsVisible() then
-		-- TODO: right should jump over to the dressup window once we enable it
 		playerListing.mute:SetFocusChangeDir(MOVE_LEFT, playerListing.viewprofile)
+		playerListing.mute:SetFocusChangeDir(MOVE_RIGHT, nextWidget)
+		rightFocusMoveSet = true
 		playerListing.focus_forward = playerListing.mute
 	end
 
 	if playerListing.viewprofile:IsVisible() then
-		playerListing.viewprofile:SetFocusChangeDir(MOVE_RIGHT, playerListing.mute)
+		if playerListing.mute:IsVisible() then 
+			playerListing.viewprofile:SetFocusChangeDir(MOVE_RIGHT, playerListing.mute)
+		else
+			playerListing.viewprofile:SetFocusChangeDir(MOVE_RIGHT, nextWidget)
+		end
+		rightFocusMoveSet = true
+
 		playerListing.focus_forward = playerListing.viewprofile
+	end
+
+	if not rightFocusMoveSet then 
+		playerListing:SetFocusChangeDir(MOVE_RIGHT, nextWidget)
 	end
 end
 
 
-local function listingConstructor(v, i, parent)
+local function listingConstructor(v, i, parent, nextWidget)
 
 	local playerListing =  parent:AddChild(Widget("playerListing"))
 	playerListing:SetPosition(5,0)
@@ -373,7 +386,7 @@ local function listingConstructor(v, i, parent)
 		playerListing.highlight:Hide()
 	end
 
-	doButtonFocusHookups(playerListing)
+	doButtonFocusHookups(playerListing, nextWidget)
 
 	return playerListing
 end
@@ -525,7 +538,7 @@ function LobbyScreen:BuildPlayerList(players)
 
 		self.player_widgets = {}
 		for i=1,9 do
-			table.insert(self.player_widgets, listingConstructor(players[i] or {}, i, self.row_root))
+			table.insert(self.player_widgets, listingConstructor(players[i] or {}, i, self.row_root, self.heroportrait))
 		end
 
 		self.scroll_list = self.list_root:AddChild(ScrollableList(players, 125, 330, 30, 7, UpdatePlayerListing, self.player_widgets, nil, nil, nil, -15))
@@ -587,7 +600,8 @@ function LobbyScreen:ToggleShowPlayers(val)
 		self.chatqueue:SetFocus()
 		self.chatqueue:ScrollToEnd()
 		self:UpdateMessageIndicator()
-        self.chatbox.textbox:SetEditing(true)
+        --self.chatbox.textbox:SetEditing(true)
+        self.chatbox.textbox:SetFocus(true)
 	end
 
 	self:DoFocusHookups()
@@ -645,6 +659,14 @@ function LobbyScreen:MakeTextEntryBox(parent)
     
     chatbox.gobutton:SetOnClick( function() self.chatbox.textbox:OnTextEntered() end )
 
+    -- If chatbox ends up focused, highlight the textbox so we can tell something is focused.
+    chatbox:SetOnGainFocus( function() chatbox.textbox:OnGainFocus() end )
+    chatbox:SetOnLoseFocus( function() chatbox.textbox:OnLoseFocus() end )
+
+    -- Moving right from either the chatbox or the textbox goes to the portrait
+    chatbox.textbox:SetFocusChangeDir(MOVE_RIGHT, self.heroportrait)
+    chatbox:SetFocusChangeDir(MOVE_RIGHT, self.heroportrait)
+
     chatbox:SetPosition(-64, -202)
     self.chatbox = chatbox
 end
@@ -670,7 +692,7 @@ function LobbyScreen:BuildChatWindow()
 
     self:MakeTextEntryBox(self.chat_pane)
 
-    self.chatqueue = self.chat_pane:AddChild(LobbyChatQueue(TheNet:GetUserID(), self.chatbox.textbox, function() self:UpdateMessageIndicator() end))
+    self.chatqueue = self.chat_pane:AddChild(LobbyChatQueue(TheNet:GetUserID(), self.chatbox.textbox, function() self:UpdateMessageIndicator() end), self.heroportrait)
     self.chatqueue:SetPosition(32,2) 
 
 	self.chat_pane:SetPosition(190,RESOLUTION_Y-280,0)
@@ -869,7 +891,7 @@ function LobbyScreen:OnControl(control, down)
 		return true
     end
 
-    -- Use d-pad buttons for cycling players list
+    -- Use right stick for cycling players list
     -- Add trigger buttons to switch tabs
    	if not down then 
 	 	if control == CONTROL_OPEN_CRAFTING or control == CONTROL_OPEN_INVENTORY then -- LT / RT
@@ -880,12 +902,12 @@ function LobbyScreen:OnControl(control, down)
 	 		end
 	 		TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
 	        return true 
-	    elseif control == CONTROL_FOCUS_LEFT then  -- d-pad left
+	    elseif self.heroportrait.focus and control == CONTROL_PREVVALUE then  -- r-stick left
 	    	self:Scroll(-1)
 			self:SelectPortrait()
 			TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
 			return true 
-		elseif control == CONTROL_FOCUS_RIGHT then -- d-pad right
+		elseif self.heroportrait.focus and control == CONTROL_NEXTVALUE then -- r-stick right
 			self:Scroll(1)
 			self:SelectPortrait()
 			TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
@@ -912,8 +934,18 @@ end
 
 function LobbyScreen:DoFocusHookups()
 
-	-- placeholder
+	if self.active_tab == "chat" then 
+		self.heroportrait:SetFocusChangeDir(MOVE_LEFT, self.chatbox)
+		self.chatqueue:SetFocusChangeDir(MOVE_RIGHT, self.heroportrait)
+	elseif self.active_tab == "players" then
+		self.heroportrait:SetFocusChangeDir(MOVE_LEFT, self.scroll_list)
+		-- player list sets its own focus 
+	end
 
+	if self.dressup then 
+		self.heroportrait:SetFocusChangeDir(MOVE_RIGHT, self.dressup)
+		self.dressup:SetFocusChangeDir(MOVE_LEFT, self.heroportrait)
+	end
 end
 
 
@@ -1051,9 +1083,11 @@ function LobbyScreen:GetHelpText()
     table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_OPEN_CRAFTING) .. "/".. TheInput:GetLocalizedControl(controller_id, CONTROL_OPEN_INVENTORY) .." " .. STRINGS.UI.HELP.CHANGE_TAB)
 
     table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_2) .. " " .. STRINGS.UI.LOBBYSCREEN.RANDOMCHAR)
-    
-  	table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_FOCUS_LEFT) .. "/" .. TheInput:GetLocalizedControl(controller_id, CONTROL_FOCUS_RIGHT) .." " .. STRINGS.UI.HELP.CHANGECHARACTER)
    
+   	if self.heroportrait.focus then  
+  		table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_PREVVALUE) .. "/" .. TheInput:GetLocalizedControl(controller_id, CONTROL_NEXTVALUE) .." " .. STRINGS.UI.HELP.CHANGECHARACTER)
+   	end
+
    	if self.can_accept then
    		table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_PAUSE) .. " " .. STRINGS.UI.LOBBYSCREEN.SELECT)
    	end
