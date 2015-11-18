@@ -246,19 +246,34 @@ function FrontEnd:GetHelpText()
 		end
 	end
 
+	-- Show the help text for secondary widgets, like scroll bars
 	local intermediate_widgets = self:GetIntermediateFocusWidgets()
 	if intermediate_widgets then
 		for i,v in ipairs(intermediate_widgets) do
 			if v and v ~= widget and v.GetHelpText then
 				local str = v:GetHelpText()
 				if str ~= "" then
-					table.insert(t, v:GetHelpText())
+					if v.HasExclusiveHelpText and v:HasExclusiveHelpText() then
+						-- Only use this widgets help text, clear all other help text
+						t = {}
+						table.insert(t, v:GetHelpText())
+						break
+					else
+						table.insert(t, v:GetHelpText())
+					end
 				end
 			end
 		end
 	end
 
+	
+	-- Show the help text for the focused widget
 	if widget and widget.GetHelpText then
+		if widget.HasExclusiveHelpText and widget:HasExclusiveHelpText() then
+			-- Only use this widgets help text, clear all other help text
+			t = {}
+		end
+		
 		local str = widget:GetHelpText()
 		if str ~= "" then
 			table.insert(t, widget:GetHelpText())
@@ -299,13 +314,22 @@ end
 
 function FrontEnd:OnControl(control, down)
 --	print ("FE:Oncontrol", control, down)
+
+	-- if there is a textedit that is currently editing, stop editing if the player clicks somewhere else
+	if TheFrontEnd.textProcessorWidget and not TheFrontEnd.textProcessorWidget.focus and control == CONTROL_PRIMARY and not down then
+        TheFrontEnd:SetForceProcessTextInput(false, TheFrontEnd.textProcessorWidget)
+	end
+
     if self:GetFadeLevel() > 0 then
         return true
     --handle focus moves
 
-    --map CONTROL_PRIMARY to CONTROL_ACCEPT for buttons
-    elseif #self.screenstack > 0 and self.screenstack[#self.screenstack]:OnControl(control == CONTROL_PRIMARY and CONTROL_ACCEPT or control, down) then
-        return true
+    -- map CONTROL_PRIMARY to CONTROL_ACCEPT for buttons
+    -- while editing a text box and hovering over something else, consume the accept button (the raw key handlers will deal with it).
+    elseif #self.screenstack > 0 and 
+    	not(TheFrontEnd.textProcessorWidget and not TheFrontEnd.textProcessorWidget.focus and control == CONTROL_ACCEPT) and
+    	self.screenstack[#self.screenstack]:OnControl(control == CONTROL_PRIMARY and CONTROL_ACCEPT or control, down) then
+    	return true
 
     elseif CONSOLE_ENABLED and not down and control == CONTROL_OPEN_DEBUG_CONSOLE then
         self:PushScreen(ConsoleScreen())

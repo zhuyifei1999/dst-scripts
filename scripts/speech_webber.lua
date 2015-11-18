@@ -124,12 +124,14 @@ return {
 
 		WEBBERSKULL = "How did this get here?",
 		WORMLIGHT = "It's gushing with light.",
+        WORMLIGHT_LESSER = "I dare you to eat it!",
 		WORM =
 		{
 		    PLANT = "What could possibly go wrong?",
 		    DIRT = "Some dirt, big whoop.",
 		    WORM = "Creepy crawly!",
 		},
+        WORMLIGHT_PLANT = "What could possibly go wrong?",
 		MOLE =
 		{
 			HELD = "Hello little guy.",
@@ -231,6 +233,7 @@ return {
 		BATBAT = "Flap that bat like you were born to do it.",
 		BATWING="This thing drives me batty.",
 		BATWING_COOKED="Tastes like chicken.",
+        BATCAVE="Oooh they're hiding in there!",
 		BEDROLL_FURRY="I miss being able to properly feel a nice bedroll.",
 		BUNNYMAN="Hop along, bunny.",
 		FLOWER_CAVE="Oooh, a glowing ball of flower!",
@@ -240,9 +243,25 @@ return {
 		LANTERN="We have captured the sun.",
 		LIGHTBULB="Bright and delicious.",
 		MANRABBIT_TAIL="We feel lucky, oh so lucky.",
-		MUSHTREE_TALL  ="How did it get so big?",
-		MUSHTREE_MEDIUM="It's upsettingly large.",
-		MUSHTREE_SMALL ="Bigger than a normal mushroom.",
+		MUSHTREE_TALL={
+            GENERIC = "How did it get so big?",
+            BLOOM = "It sounds so funny!",
+        },
+		MUSHTREE_MEDIUM={
+            GENERIC = "It's upsettingly large.",
+            BLOOM = "Hahah! Wow, it smells so bad!",
+        },
+		MUSHTREE_SMALL={
+            GENERIC = "Bigger than a normal mushroom.",
+            BLOOM = "It's all round and squishy now!",
+        },
+        MUSHTREE_TALL_WEBBED = "This one looks friendly!",
+        SPORE_TALL = "Catch it! Catch it!",
+        SPORE_MEDIUM = "Catch it! Catch it!",
+        SPORE_SMALL = "Catch it! Catch it!",
+        SPORE_TALL_INV = "If we stare at it we'll turn to stone!",
+        SPORE_MEDIUM_INV = "If we lick it we'll turn to wood!",
+        SPORE_SMALL_INV = "If we eat it we'll turn to water!",
 		RABBITHOUSE=
 		{
 			GENERIC = "Just like grandpa said, 'You live in what you eat.'",
@@ -284,11 +303,9 @@ return {
 		TURF_MUD="Some pretty average earth.",
 
 		POWCAKE = "Mum never let me have these.",
-        CAVE_ENTRANCE = 
-        {
-            GENERIC="It's plugged up.",
-            OPEN = "I can hear some spider friends down there.",
-        },
+        CAVE_ENTRANCE = "It's plugged up.",
+        CAVE_ENTRANCE_RUINS = "It's plugged up.",
+        CAVE_ENTRANCE_OPEN = "I can hear some spider friends down there.",
         CAVE_EXIT = "It leads back to the light.",
 		MAXWELLPHONOGRAPH = "It looks like grandpa's.",
 		BOOMERANG = "Boomerangarangarang!",
@@ -625,6 +642,7 @@ return {
 		FISH_COOKED = "Flaky and moist. Delicious.",
 		FLINT = "Oh, to feel a sharp edge against my skin.",
 		FLOWER = "We agree that flowers are nice.",
+        FLOWER_WITHERED = "Aww so sad!",
 		FLOWERHAT = "Colourful crown.",
 		FLOWER_EVIL = "This flower is decidedly not nice!",
 		FOLIAGE = "Soft and leafy.",
@@ -736,7 +754,6 @@ return {
 		GOATMILK = "A glass of milk with every supper.",
 		LITTLE_WALRUS = "He has anger in his eyes.",
 		LIVINGLOG = "This log has a face.",
-		LOCKEDWES = "Hello? Can you hear me?",
 		LOG =
 		{
 			BURNING = "So much for our arts and crafts!",
@@ -1020,7 +1037,7 @@ return {
 		{
 			DEAD = "Another lost friend.",
 			GENERIC = "Spiders understand us.",
-			SLEEPING = "Wake up, friend!.",
+            SLEEPING = "Wake up, friend!",
 		},
 		SPIDERDEN = "Looks cozy in there.",
 		SPIDEREGGSACK = "A portable friendship pod!",
@@ -1100,6 +1117,7 @@ return {
 		TENTACLESPIKE = "We could hit stuff with the pointy bits!",
 		TENTACLESPOTS = "Spotty!",
 		TENTACLE_PILLAR = "It's huge!",
+        TENTACLE_PILLAR_HOLE = "Oooh let's jump in!",
 		TENTACLE_PILLAR_ARM = ".",
 		TENTACLE_GARDEN = "It's huge!",
 		TOPHAT = "Like father used to wear.",

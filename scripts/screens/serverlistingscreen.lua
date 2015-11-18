@@ -7,6 +7,7 @@ local InputDialogScreen = require "screens/inputdialog"
 local PopupDialogScreen = require "screens/popupdialog"
 local TextListPopupDialogScreen = require "screens/textlistpopupdialog"
 local ListCursor = require "widgets/listcursor"
+local IntentionPicker = require "widgets/intentionpicker"
 local TEMPLATES = require "widgets/templates"
 
 local Text = require "widgets/text"
@@ -54,13 +55,22 @@ if JapaneseOnPS4() then
     font_size = 35 * 0.75;
 end
 
-local VALID_CHARS = [[ abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,:;[]\@!#$%&()'*+-/=?^_{|}~"]]
+local VALID_CHARS = [[ abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,:;[]\@!#$%&()'*+-/=?^_{|}~"]] --'
 local STRING_MAX_LENGTH = 254 -- http://tools.ietf.org/html/rfc5321#section-4.5.3.1
 
 local hover_text_params = { font = NEWFONT, size = 20, offset_x = -4, offset_y = 45, colour = {0,0,0,1} }
 
+local intention_images = {
+    [INTENTIONS.SOCIAL] = { big="social.tex", small="playstyle_social.tex" },
+    [INTENTIONS.COOPERATIVE] = { big="coop.tex", small="playstyle_coop.tex" },
+    [INTENTIONS.COMPETITIVE] = { big="competitive.tex", small="playstyle_competitive.tex" },
+    [INTENTIONS.MADNESS] = { big="madness.tex", small="playstyle_madness.tex" },
+}
+
 local ServerListingScreen = Class(Screen, function(self, filters, cb, offlineMode, session_mapping)
     Widget._ctor(self, "ServerListingScreen")
+
+    self.server_intention = {}
 
     self.bg = self:AddChild(TEMPLATES.AnimatedPortalBackground())
 
@@ -82,7 +92,7 @@ local ServerListingScreen = Class(Screen, function(self, filters, cb, offlineMod
     self.root:SetHAnchor(ANCHOR_MIDDLE)
     self.root:SetScaleMode(SCALEMODE_PROPORTIONAL)
 
-    self.online = true
+    self.view_online = true
 
     local nav_col = -RESOLUTION_X*.415
     local left_col = -RESOLUTION_X*.047
@@ -97,37 +107,49 @@ local ServerListingScreen = Class(Screen, function(self, filters, cb, offlineMod
     self.server_list = self.root:AddChild(Widget("server_list"))
     self.server_list:SetPosition(left_col,-15,0)    
 
-    self.server_list_grid = self.server_list:AddChild(Image("images/options_bg.xml", "options_panel_bg.tex"))
-    self.server_list_grid:SetScale(-.563,.66)
-    self.server_list_grid:SetPosition(0,-5)
+    self.server_list_background = self.server_list:AddChild(Image("images/options_bg.xml", "options_panel_bg.tex"))
+    self.server_list_background:SetScale(-.563,.66)
+    self.server_list_background:SetPosition(0,-5)
 
-    self.server_list_bgs = self.server_list:AddChild(Widget("server_list_rows"))
-    self.server_list_bgs:SetPosition(column_offsets_x_pos, -RESOLUTION_Y*0.075, 0)
+    self.server_list_titles = self.server_list:AddChild(Widget("server_list_titles"))
+    self.server_list_titles:SetPosition(column_offsets_x_pos, column_offsets_y_pos, 0)
+
+
+    self.intentions_overlay = self.server_list:AddChild(IntentionPicker( STRINGS.UI.SERVERLISTINGSCREEN.INTENTION_TITLE, STRINGS.UI.SERVERLISTINGSCREEN.INTENTION_DESC, true))
+    self.intentions_overlay:SetCallback(function(intention)
+        self:SetServerIntention(intention)
+    end)
+    self.intentions_overlay:SetPosition(0, 180)
+
+
+    self.table = self.server_list:AddChild(Widget("table container"))
+    self.table.titles = self.table:AddChild(Widget("table titles"))
+    self.table.titles:SetPosition(column_offsets_x_pos, column_offsets_y_pos, 0)
+
+    self.table.server_list_bgs = self.table:AddChild(Widget("server_list_rows"))
+    self.table.server_list_bgs:SetPosition(column_offsets_x_pos, -RESOLUTION_Y*0.075, 0)
 
     local vertical_line_y_offset = -35
     local slide = 280
-    self.upper_horizontal_line = self.server_list:AddChild(Image("images/ui.xml", "line_horizontal_5.tex"))
-    self.upper_horizontal_line:SetScale(.565, .66)
-    self.upper_horizontal_line:SetPosition(-20, column_offsets_y_pos+22, 0)
+    self.table.upper_horizontal_line = self.table:AddChild(Image("images/ui.xml", "line_horizontal_5.tex"))
+    self.table.upper_horizontal_line:SetScale(.565, .66)
+    self.table.upper_horizontal_line:SetPosition(-20, column_offsets_y_pos+22, 0)
 
-    self.lower_horizontal_line = self.server_list:AddChild(Image("images/ui.xml", "line_horizontal_5.tex"))
-    self.lower_horizontal_line:SetScale(.565, .66)
-    self.lower_horizontal_line:SetPosition(-20, column_offsets_y_pos-11, 0)
+    self.table.lower_horizontal_line = self.table:AddChild(Image("images/ui.xml", "line_horizontal_5.tex"))
+    self.table.lower_horizontal_line:SetScale(.565, .66)
+    self.table.lower_horizontal_line:SetPosition(-20, column_offsets_y_pos-11, 0)
 
-    self.first_column_end = self.server_list:AddChild(Image("images/ui.xml", "line_vertical_5.tex"))
-    self.first_column_end:SetScale(.66, .66)
-    self.first_column_end:SetPosition(column_offsets.DETAILS-slide-10,vertical_line_y_offset, 0)
+    self.table.first_column_end = self.table:AddChild(Image("images/ui.xml", "line_vertical_5.tex"))
+    self.table.first_column_end:SetScale(.66, .66)
+    self.table.first_column_end:SetPosition(column_offsets.DETAILS-slide-10,vertical_line_y_offset, 0)
 
-    self.second_column_end = self.server_list:AddChild(Image("images/ui.xml", "line_vertical_5.tex"))
-    self.second_column_end:SetScale(.66, .66)
-    self.second_column_end:SetPosition(column_offsets.PLAYERS-slide+1, vertical_line_y_offset, 0)
+    self.table.second_column_end = self.table:AddChild(Image("images/ui.xml", "line_vertical_5.tex"))
+    self.table.second_column_end:SetScale(.66, .66)
+    self.table.second_column_end:SetPosition(column_offsets.PLAYERS-slide+1, vertical_line_y_offset, 0)
 
-    self.third_column_end = self.server_list:AddChild(Image("images/ui.xml", "line_vertical_5.tex"))
-    self.third_column_end:SetScale(.66, .66)
-    self.third_column_end:SetPosition(column_offsets.PING-slide+15, vertical_line_y_offset, 0)
-   
-    self.server_list_titles = self.server_list:AddChild(Widget("server_list_titles"))
-    self.server_list_titles:SetPosition(column_offsets_x_pos, column_offsets_y_pos, 0)
+    self.table.third_column_end = self.table:AddChild(Image("images/ui.xml", "line_vertical_5.tex"))
+    self.table.third_column_end:SetScale(.66, .66)
+    self.table.third_column_end:SetPosition(column_offsets.PING-slide+15, vertical_line_y_offset, 0)
 
     self.nav_bar = self.root:AddChild(TEMPLATES.NavBarWithScreenTitle(STRINGS.UI.MAINSCREEN.BROWSE, "short"))
 
@@ -146,9 +168,9 @@ local ServerListingScreen = Class(Screen, function(self, filters, cb, offlineMod
     self.filters = {}
     self.sessions = {}
 
-    self.server_list_rows = self.server_list:AddChild(Widget("server_list_rows"))
-    self.server_list_rows:SetPosition(column_offsets_x_pos, -RESOLUTION_Y*0.075, 0)
-    -- self.server_list_rows:SetVAlign(ANCHOR_MIDDLE)
+    self.table.server_list_rows = self.table:AddChild(Widget("server_list_rows"))
+    self.table.server_list_rows:SetPosition(column_offsets_x_pos, -RESOLUTION_Y*0.075, 0)
+    -- self.table.server_list_rows:SetVAlign(ANCHOR_MIDDLE)
     self:MakeServerListWidgets()
 
     self:MakeDetailPanel(right_col)
@@ -161,6 +183,7 @@ local ServerListingScreen = Class(Screen, function(self, filters, cb, offlineMod
     
     self:UpdateServerInformation(false)
     self:ToggleShowFilters()
+    self:SetServerIntention(Profile:GetValue("playerintention"))
 
     if self.offlinemode then
         self:SetTab("LAN")
@@ -170,25 +193,83 @@ local ServerListingScreen = Class(Screen, function(self, filters, cb, offlineMod
     self:RefreshView(false)
 
     self.servers_scroll_list:SetFocusChangeDir(MOVE_LEFT, function() return self.online_button end)
-    self.filters_scroll_list:SetFocusChangeDir(MOVE_LEFT, function() return self.servers_scroll_list end)
-    self.server_details_additional:SetFocusChangeDir(MOVE_LEFT, function() return self.servers_scroll_list end)-- self.detail_scroll_list:SetFocusChangeDir(MOVE_LEFT, self.servers_scroll_list)
+    self.filters_scroll_list:SetFocusChangeDir(MOVE_LEFT, function() return self:CurrentCenterFocus() end, MOVE_LEFT)
+    self.server_details_additional:SetFocusChangeDir(MOVE_LEFT, function() return self:CurrentCenterFocus() end, MOVE_LEFT)
+
+    self.intentions_overlay:SetFocusChangeDir(MOVE_LEFT, function() return self.online_button end)
+    self.intentions_overlay:SetFocusChangeDir(MOVE_RIGHT, function() return self:CurrentRightFocus() end)
 
     self.default_focus = self.online_button
 end)
 
 function ServerListingScreen:SetTab(tab)
     if tab == "LAN" then
-        self.page = "LAN"
-        self:SearchForServers(false)
+        self.view_online = false
+        self:SearchForServers()
         self.lan_button:Select()
         self.online_button:Unselect()
+        self.server_intention.button:Select()
+        self.server_intention.button:SetText("")
     elseif tab == "online" then
-        self.page = "online"
-        self:SearchForServers(true)
+        self.view_online = true
+        self:SearchForServers()
         self.lan_button:Unselect()
         self.online_button:Select()
+        self.server_intention.button:Unselect()
+        if self.server_intention.data ~= nil then
+            self.server_intention.button:SetText(STRINGS.UI.INTENTION[string.upper(self.server_intention.data)])
+        end
+    end
+    self:ShowServerIntention()
+end
+
+function ServerListingScreen:SetServerIntention(intention)
+    self.server_intention.data = intention
+
+    if intention ~= nil then
+        self.title:SetString(string.format(STRINGS.UI.SERVERLISTINGSCREEN.SERVER_LIST_TITLE_INTENT, STRINGS.UI.INTENTION[string.upper(intention)]))
+        self.server_intention.button:SetText(STRINGS.UI.INTENTION[string.upper(intention)])
+        self.intentions_overlay:SetSelected(intention)
+    end
+
+    Profile:SetValue("playerintention", self.server_intention.data)
+
+    self:ShowServerIntention()
+
+    self:DoFiltering()
+end
+
+function ServerListingScreen:ShowServerIntention()
+    if self.view_online then
+        if self.server_intention.data == nil then
+            self.intentions_overlay:Show()
+            self.table:Hide()
+            self.server_list_titles:Hide()
+            self.title:SetString(STRINGS.UI.SERVERLISTINGSCREEN.SERVER_LIST_TITLE)
+            self.server_intention.button:Select()
+        else
+            self.intentions_overlay:Hide()
+            self.table:Show()
+            self.server_list_titles:Show()
+            --self.server_intention:Show()
+            self.title:SetString(string.format(STRINGS.UI.SERVERLISTINGSCREEN.SERVER_LIST_TITLE_INTENT, STRINGS.UI.INTENTION[string.upper(self.server_intention.data)]))
+            self.server_intention.button:Unselect()
+        end
+    else
+        self.intentions_overlay:Hide()
+        self.table:Show()
+        self.server_list_titles:Show()
+        --self.server_intention:Hide()
+        self.title:SetString(STRINGS.UI.SERVERLISTINGSCREEN.SERVER_LIST_TITLE)
+    end
+
+    if self.servers_scroll_list.focus and (self.server_intention.data == nil or not self.view_online) then
+        self.intentions_overlay:SetFocus()
+    elseif self.intentions_overlay.focus and self.server_intention.data ~= nil and self.view_online then
+        self.servers_scroll_list:SetFocus()
     end
 end
+
 
 function ServerListingScreen:UpdateServerInformation( show )
 	if show then
@@ -297,7 +378,7 @@ function ServerListingScreen:Report()
         TheNet:ReportListing(guid, InputDialogScreen:GetText())
         TheFrontEnd:PopScreen()
     end
-    report_dialog:SetValidChars([[ abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,[]@!()'*+-/?{}" ]])
+    report_dialog:SetValidChars([[ abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,[]@!()'*+-/?{}" ]]) --'
     TheFrontEnd:PushScreen(report_dialog)  
     report_dialog.edit_text:OnControl(CONTROL_ACCEPT, false)
 end
@@ -356,14 +437,14 @@ end
 
 function ServerListingScreen:ViewServerGroup()
     if self.selected_server ~= nil and self.selected_server.clan_server then
-        TheNet:ViewSteamProfile(self.selected_server.steam_group_id)
+        TheNet:ViewNetProfile(self.selected_server.net_group_id)
     end
 end
 
 function ServerListingScreen:ViewServerWorld()
     local worldgenoptions = self:ProcessServerWorldGenData()
     if worldgenoptions ~= nil then
-        TheFrontEnd:PushScreen(ViewCustomizationModalScreen(Profile, worldgenoptions, false, false))
+        TheFrontEnd:PushScreen(ViewCustomizationModalScreen(worldgenoptions))
     end
 end
 
@@ -492,7 +573,14 @@ function ServerListingScreen:UpdateServerData( selected_index_actual )
         end
         self.details_servername:SetString( nameString )
         self.details_serverdesc:SetString( self.selected_server.has_details and (self.selected_server.description ~= "" and self.selected_server.description or STRINGS.UI.SERVERLISTINGSCREEN.NO_DESC) or STRINGS.UI.SERVERLISTINGSCREEN.DESC_LOADING )
-        
+
+        --if self.selected_server.intention ~= "" then
+            --self.details_background:SetTexture("images/server_intentions.xml", intention_images[self.selected_server.intention].big)
+            --self.details_background:Show()
+        --else
+            --self.details_background:Hide()
+        --end
+
         self.game_mode_description.text:SetString( GetGameModeString( self.selected_server.mode ) )
         local w,h = self.game_mode_description.text:GetRegionSize()
         self.game_mode_description.info_button.o_pos = nil --wipe the o_pos in case it's been clicked and got set
@@ -526,7 +614,7 @@ function ServerListingScreen:UpdateServerData( selected_index_actual )
             self.viewtags_button:Unselect()
         else
             --V2C: tags are always available in online tab without detailed info
-            if self.selected_server.has_details or self.online then
+            if self.selected_server.has_details or self.view_online then
                 self.viewtags_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.NOTAGS)
             else
                 self.viewtags_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.TAGS_LOADING)
@@ -646,28 +734,23 @@ function ServerListingScreen:ClearServerList()
     end
 end
 
-function ServerListingScreen:SearchForServers(online)
+function ServerListingScreen:SearchForServers()
     self:ServerSelected(nil)
     self.servers = {}
     self.viewed_servers = {}
-    self:RefreshView()
     self:ClearServerList()
     local num_servs = #self.servers-self.unjoinable_servers
     if num_servs < 0 then num_servs = 0 end
     self.servers_scroll_list:SetList(self.viewed_servers)
-
-    if online ~= nil then
-        self.online = online
-    end
 
     if num_servs == 0 then
         self.server_count:SetString("("..STRINGS.UI.SERVERLISTINGSCREEN.SEARCHING_SERVERS..")")
     else
         self.server_count:SetString("("..#self.viewed_servers.." "..STRINGS.UI.SERVERLISTINGSCREEN.OUT_OF.." "..num_servs.." "..STRINGS.UI.SERVERLISTINGSCREEN.SHOWING..")")
     end
-    if self.page == "online" and self.offlinemode then
+    if self.view_online and self.offlinemode then
         self.server_count:SetString("("..STRINGS.UI.SERVERLISTINGSCREEN.NO_CONNECTION..")")
-    elseif not self.online then
+    elseif not self.view_online then
         self.server_count:SetString("("..STRINGS.UI.SERVERLISTINGSCREEN.LAN..")")
     end
     
@@ -678,10 +761,10 @@ function ServerListingScreen:SearchForServers(online)
         end
     end
 
-    if self.online and not self.offlinemode then -- search LAN and online if online
+    if self.view_online and not self.offlinemode then -- search LAN and online if online
         self.servers_scroll_list.focused_index = 1
         TheNet:SearchServers()
-    elseif self.page == "LAN" then -- otherwise just LAN
+    else -- otherwise just LAN
         self.servers_scroll_list.focused_index = 1
         TheNet:SearchLANServers(self.offlinemode)
     end
@@ -723,7 +806,7 @@ function ServerListingScreen:RefreshView(skipPoll)
         local num_servs = #self.servers-self.unjoinable_servers
         if num_servs < 0 then num_servs = 0 end
         self.server_count:SetString("("..#self.viewed_servers.." "..STRINGS.UI.SERVERLISTINGSCREEN.OUT_OF.." "..num_servs.." "..STRINGS.UI.SERVERLISTINGSCREEN.SHOWING..")")
-        if not self.online then
+        if not self.view_online then
             self.server_count:SetString("("..STRINGS.UI.SERVERLISTINGSCREEN.LAN..")")
         end
     end
@@ -757,13 +840,13 @@ function ServerListingScreen:MakeServerListWidgets()
 
     local bg_y_offset = -215
     for i=1, listings_per_view do        
-        local row = self.server_list_rows:AddChild(Widget("server_list_row"))
+        local row = self.table.server_list_rows:AddChild(Widget("server_list_row"))
 
         local font_size = font_size * .7
         local y_offset = 15
 
         if i%2 == 1 then
-            local bg = self.server_list_bgs:AddChild(Image("images/serverbrowser.xml", "whitebar.tex"))
+            local bg = self.table.server_list_bgs:AddChild(Image("images/serverbrowser.xml", "whitebar.tex"))
             bg:SetScale(.7,.7)
             bg:SetPosition( 213, bg_y_offset+(i*30)+y_offset-1, 0)
             bg:SetTint(1,1,1,.7)
@@ -777,15 +860,19 @@ function ServerListingScreen:MakeServerListWidgets()
         row.cursor:SetOnDown(  function() self:OnStartClickServerInList(i)  end)
         row.cursor:SetOnClick( function() self:OnFinishClickServerInList(i) end)
         row.cursor:Hide()
+
+        row.INTENTION = row:AddChild(Image("images/servericons.xml", "playstyle_social.tex"))
+        row.INTENTION:SetPosition(column_offsets.NAME-18, y_offset)
+        row.INTENTION:SetScale(0.08, 0.08)
         
         row.NAME = row:AddChild(Text(NEWFONT, font_size))
         row.NAME:SetHAlign(ANCHOR_MIDDLE)
         row.NAME:SetString("")
         row.NAME._align =
         {
-            maxwidth = 300,
+            maxwidth = 275,
             maxchars = 80,
-            x = column_offsets.NAME - 25,
+            x = column_offsets.NAME,
             y = y_offset,
         }
         row.NAME:SetPosition(row.NAME._align.x, row.NAME._align.y, 0)
@@ -862,13 +949,7 @@ function ServerListingScreen:MakeServerListWidgets()
 
         row.focus_forward = row.cursor
 
-        row:SetFocusChangeDir(MOVE_RIGHT, function() 
-            if self.filters_scroll_list:IsVisible() then
-                return self.filters_scroll_list
-            elseif self.server_details_additional:IsVisible() then--self.detail_scroll_list:IsVisible() then
-                return self.viewworld_button
-            end
-        end)
+        row:SetFocusChangeDir(MOVE_RIGHT, function() return self:CurrentRightFocus() end)
         row:SetFocusChangeDir(MOVE_LEFT, function() return self.online_button end)
 
         table.insert(self.list_widgets, row)--, id=i})    
@@ -879,6 +960,7 @@ function ServerListingScreen:MakeServerListWidgets()
                 
         if not serverdata then
             widget.index = -1
+            widget.INTENTION:Hide()
             widget.NAME:SetString("")
             widget.NAME:SetPosition(widget.NAME._align.x, widget.NAME._align.y, 0)
             widget.PLAYERS:SetString("")
@@ -911,6 +993,14 @@ function ServerListingScreen:MakeServerListWidgets()
             widget.offline = serverdata.offline
 
             widget.cursor:Show()
+
+            -- TODO: right now checking for bad intention data here, but should probably write fallback data into serverdata earlier in the process. ~gjans
+            if serverdata.intention ~= nil and serverdata.intention ~= "" and intention_images[serverdata.intention] ~= nil then
+                widget.INTENTION:Show()
+                widget.INTENTION:SetTexture("images/servericons.xml", intention_images[serverdata.intention].small)
+            else
+                widget.INTENTION:Hide()
+            end
             
             widget.NAME:SetTruncatedString(serverdata.name, widget.NAME._align.maxwidth, widget.NAME._align.maxchars, true)
             local w, h = widget.NAME:GetRegionSize()
@@ -1003,8 +1093,8 @@ function ServerListingScreen:MakeServerListWidgets()
         end
     end
 
-    self.servers_scroll_list = self.server_list_titles:AddChild(ScrollableList(self.viewed_servers, 320, 385, 20, 10, UpdateServerListWidget, self.list_widgets, 150, true))
-    self.servers_scroll_list:SetPosition(418, -207)
+    self.servers_scroll_list = self.table:AddChild(ScrollableList(self.viewed_servers, 320, 385, 20, 10, UpdateServerListWidget, self.list_widgets, 150, true))
+    self.servers_scroll_list:SetPosition(187,-45)
     self.servers_scroll_list:LayOutStaticWidgets(3, true)
     self.servers_scroll_list.onscrollcb = function()
         self:GuaranteeSelectedServerHighlighted()
@@ -1015,10 +1105,10 @@ function ServerListingScreen:MakeServerListWidgets()
         end
     end
 
-    self.first_column_end:MoveToFront()
-    self.second_column_end:MoveToFront()
-    self.third_column_end:MoveToFront()
-    self.server_list_rows:MoveToFront()
+    self.table.first_column_end:MoveToFront()
+    self.table.second_column_end:MoveToFront()
+    self.table.third_column_end:MoveToFront()
+    self.table.server_list_rows:MoveToFront()
 end
 
 function ServerListingScreen:GuaranteeSelectedServerHighlighted()
@@ -1246,74 +1336,89 @@ function ServerListingScreen:IsValidWithFilters(server)
         end
     end
 
-    if not server or type(server) ~= "table" then return end
+    if not server or type(server) ~= "table" then return false end
 
-    local valid = true
+    -- Do checks for unjoinable servers first so the count is accurate.
+    -- This means servers that you will never be able to join no matter
+    -- what filters or settings you choose.
 
     -- Filter our friends only servers that are not our friend
     if server.friends_only and not server.friend then
-        valid = false
         self.unjoinable_servers = self.unjoinable_servers + 1
+        return false
     end
 
     -- Filter servers that we aren't allowed to join.
     if server.clan_only and not server.belongs_to_clan then
-        valid = false
         self.unjoinable_servers = self.unjoinable_servers + 1
+        return false
     end
-	 
+
     -- Filter out unjoinable servers, if we are online
     -- NOTE: steamroom is not available for dedicated servers
-    -- NOTE: client hosted servers can be joinable via punchthrough even if you can't ping it directly
-    if valid and self.online and not server.steamroom and server.ping < 0 then
-        valid = false
+    -- NOTE: Any server with a steam id can be joinable via punchthrough even if you can't ping it directly
+    -- NOTE: steamnat is now the flag to check
+    if self.view_online and not server.steamnat and server.ping < 0 then
         self.unjoinable_servers = self.unjoinable_servers + 1
+        return false
     end
-    
+
     -- If we are in offline mode, don't show online mode servers
-    if valid and self.offlinemode and not server.offline then
-        valid = false
+    if self.offlinemode and not server.offline then
+        self.unjoinable_servers = self.unjoinable_servers + 1
+        return false
     end
-	 
+
+    -- Now do checks for servers you can potentially join, but are currently
+    -- being filtered due to your settings.
+
     -- Hide version mismatched servers on live builds
+    -- We don't count this towards unjoinable because you probably could
+    -- have joined them previously, and this keeps the count consistent.
     local version_mismatch = APP_VERSION ~= tostring(server.version)
     local dev_build = APP_VERSION == "-1" or BRANCH == "dev"
     if version_mismatch and not dev_build then
-        valid = false
+        return false
     end
-	
+
+    -- Only show servers that match your intention
+    -- But, don't filter this way if we've explicitly put in search terms
+    -- Also, this only applies to the online tab
+    local intention = Profile:GetValue("playerintention")
+    if intention ~= INTENTIONS.ANY and self.view_online and #self.queryTokens == 0 then
+        if intention == nil or intention ~= server.intention then
+            return false
+        end
+    end
+
     -- Check spinner validation
-    if valid then
-        for i,v in pairs(self.filters) do
-            -- First check with the spinners
-            if v and v.spinner then
-                if ((v.name == "HASPVP" and server.pvp ~= v.spinner:GetSelectedData() and v.spinner:GetSelectedData() ~= "ANY")
-                or (v.name == "GAMEMODE" and v.spinner:GetSelectedData() ~= "ANY" and gameModeInvalid(server.mode, v.spinner:GetSelectedData()))
-                or (v.name == "HASPASSWORD" and (v.spinner:GetSelectedData() ~= "ANY" and server.has_password ~= v.spinner:GetSelectedData()))
-                or (v.name == "MINCURRPLAYERS" and v.spinner:GetSelectedData() ~= "ANY" and (server.current_players < v.spinner:GetSelectedData()))
-                or (v.name == "MAXCURRPLAYERS" and v.spinner:GetSelectedData() ~= "ANY" and (server.current_players > v.spinner:GetSelectedData()))
-                or (v.name == "MAXSERVERSIZE" and v.spinner:GetSelectedData() ~= "ANY" and server.max_players > v.spinner:GetSelectedData())
-                or (v.name == "MINOPENSLOTS" and v.spinner:GetSelectedData() ~= "ANY" and server.max_players - server.current_players < v.spinner:GetSelectedData())
-                or (v.name == "ISFULL" and (server.current_players >= server.max_players and v.spinner:GetSelectedData() == false))
-                or (v.name == "ISEMPTY" and (server.current_players <= 0 and v.spinner:GetSelectedData() == false))
-                or (v.name == "FRIENDSONLY" and v.spinner:GetSelectedData() ~= "ANY" and v.spinner:GetSelectedData() ~= server.friend_playing )
-                or (v.name == "CLANONLY" and v.spinner:GetSelectedData() ~= "ANY" and not server.belongs_to_clan )
-                or (v.name == "CLANONLY" and v.spinner:GetSelectedData() == "PRIVATE" and not server.clan_only )
-                or (v.name == "SEASON" and v.spinner:GetSelectedData() ~= "ANY" and v.spinner:GetSelectedData() ~= server.season )
-                or (v.name == "VERSIONCHECK" and v.spinner:GetSelectedData() and version_mismatch )
-                or (v.name == "ISDEDICATED" and v.spinner:GetSelectedData() ~= "ANY" and server.dedicated ~= v.spinner:GetSelectedData())
-                or (v.name == "MODSENABLED" and v.spinner:GetSelectedData() ~= "ANY" and server.mods_enabled ~= v.spinner:GetSelectedData())
-                or (v.name == "HASCHARACTER" and v.spinner:GetSelectedData() ~= "ANY" and charInvalid(server.session, v.spinner:GetSelectedData()))) then
-    				valid = false
-    			end
-                --more stuff coming later (see server browser spec doc)
-                if not valid then break end
+    for i,v in pairs(self.filters) do
+        -- First check with the spinners
+        if v and v.spinner then
+            if ((v.name == "HASPVP" and server.pvp ~= v.spinner:GetSelectedData() and v.spinner:GetSelectedData() ~= "ANY")
+            or (v.name == "GAMEMODE" and v.spinner:GetSelectedData() ~= "ANY" and gameModeInvalid(server.mode, v.spinner:GetSelectedData()))
+            or (v.name == "HASPASSWORD" and (v.spinner:GetSelectedData() ~= "ANY" and server.has_password ~= v.spinner:GetSelectedData()))
+            or (v.name == "MINCURRPLAYERS" and v.spinner:GetSelectedData() ~= "ANY" and (server.current_players < v.spinner:GetSelectedData()))
+            or (v.name == "MAXCURRPLAYERS" and v.spinner:GetSelectedData() ~= "ANY" and (server.current_players > v.spinner:GetSelectedData()))
+            or (v.name == "MAXSERVERSIZE" and v.spinner:GetSelectedData() ~= "ANY" and server.max_players > v.spinner:GetSelectedData())
+            or (v.name == "MINOPENSLOTS" and v.spinner:GetSelectedData() ~= "ANY" and server.max_players - server.current_players < v.spinner:GetSelectedData())
+            or (v.name == "ISFULL" and (server.current_players >= server.max_players and v.spinner:GetSelectedData() == false))
+            or (v.name == "ISEMPTY" and (server.current_players <= 0 and v.spinner:GetSelectedData() == false))
+            or (v.name == "FRIENDSONLY" and v.spinner:GetSelectedData() ~= "ANY" and v.spinner:GetSelectedData() ~= server.friend_playing )
+            or (v.name == "CLANONLY" and v.spinner:GetSelectedData() ~= "ANY" and not server.belongs_to_clan )
+            or (v.name == "CLANONLY" and v.spinner:GetSelectedData() == "PRIVATE" and not server.clan_only )
+            or (v.name == "SEASON" and v.spinner:GetSelectedData() ~= "ANY" and v.spinner:GetSelectedData() ~= server.season )
+            or (v.name == "VERSIONCHECK" and v.spinner:GetSelectedData() and version_mismatch )
+            or (v.name == "ISDEDICATED" and v.spinner:GetSelectedData() ~= "ANY" and server.dedicated ~= v.spinner:GetSelectedData())
+            or (v.name == "MODSENABLED" and v.spinner:GetSelectedData() ~= "ANY" and server.mods_enabled ~= v.spinner:GetSelectedData())
+            or (v.name == "HASCHARACTER" and v.spinner:GetSelectedData() ~= "ANY" and charInvalid(server.session, v.spinner:GetSelectedData()))) then
+                return false
             end
         end
     end
 
     -- Then check with the search box (but only if it hasn't already been invalidated)
-    if valid and #self.queryTokens > 0 then
+    if #self.queryTokens > 0 then
         -- Then check if our servers' names and tags contain any of those tokens
         local searchMatch = true -- Assume match until we find a non-match
         for j,k in pairs(self.queryTokens) do
@@ -1324,11 +1429,11 @@ function ServerListingScreen:IsValidWithFilters(server)
         end
 
         if not searchMatch then
-            valid = false
+            return false
         end
     end
 
-    return valid
+    return true
 end
 
 function ServerListingScreen:ResetFilters()
@@ -1377,6 +1482,19 @@ function ServerListingScreen:DoFiltering(doneSearching)
         end
     end
 
+    -- Disable server intention button and change the title when we have query tokens
+    if self.view_online and self.server_intention.data ~= nil then
+        if #self.queryTokens > 0 then
+            self.server_intention.button:Select()
+            self.server_intention.button:SetText("")
+            self.title:SetTruncatedString(STRINGS.UI.SERVERLISTINGSCREEN.SEARCH.." "..self.searchbox.textbox:GetString(), 350, 60, true)
+        else
+            self.server_intention.button:Unselect()
+            self.server_intention.button:SetText(STRINGS.UI.INTENTION[string.upper(self.server_intention.data)])
+            self.title:SetString(string.format(STRINGS.UI.SERVERLISTINGSCREEN.SERVER_LIST_TITLE_INTENT, STRINGS.UI.INTENTION[string.upper(self.server_intention.data)]))
+        end
+    end
+
     local filtered_servers = {}
     if self.servers and #self.servers > 0 then
         for i,v in pairs(self.servers) do
@@ -1405,12 +1523,13 @@ function ServerListingScreen:DoFiltering(doneSearching)
                         belongs_to_clan=v.belongs_to_clan,
                         lan_only = v.lan_only,
                         offline = v.offline,
-                        steam_group_id = v.steam_group_id, 
+                        net_group_id = v.net_group_id, 
                         actualindex=i,
                         mods_enabled = v.mods_enabled,
                         tags = v.tags,
                         session = v.session,
                         has_details = v.has_details,
+                        intention = v.intention,
                         -- data = v.data,
                     })
             end
@@ -1433,7 +1552,7 @@ function ServerListingScreen:DoFiltering(doneSearching)
     else
         self.server_count:SetString("("..#self.viewed_servers.." "..STRINGS.UI.SERVERLISTINGSCREEN.OUT_OF.." "..num_servs.." "..STRINGS.UI.SERVERLISTINGSCREEN.SHOWING..")")
     end
-    if not self.online then
+    if not self.view_online then
         self.server_count:SetString("("..STRINGS.UI.SERVERLISTINGSCREEN.LAN..")")
     end
     self:DoSorting()
@@ -1460,33 +1579,67 @@ function ServerListingScreen:Cancel()
     end)
 end
 
-local function CreateSpinner( self, name, text, spinnerOptions, numeric, onchanged )
-    local spacing = 62
-    local label_width = 150
+local label_width = 130
+local widget_width = 118
+local height = 28
+local spacing = 3
+local total_width = label_width + widget_width + spacing
+local bg_width = spacing + total_width + spacing
+local bg_height = height + 2
+
+local function CreateButtonFilter( self, name, text, buttontext, onclick)
+
     local group = self.server_detail_panel:AddChild(Widget( "SpinnerGroup" ))
     group.label = group:AddChild( Text( NEWFONT, 20, text ) )
-    group.label:SetPosition( -3, 0, 0 )
-    group.label:SetRegionSize( label_width, 50 )
+    group.label:SetPosition( (-total_width/2)+(label_width/2), 0, 0 )
+    group.label:SetRegionSize( label_width, height )
     group.label:SetHAlign( ANCHOR_RIGHT )
     group.label:SetColour(0,0,0,1)
 
     local bg = group:AddChild(Image("images/ui.xml", "single_option_bg.tex"))
-    bg:SetSize(255, 30)
-    bg:SetPosition(66, 2, 0)
+    bg:SetSize(bg_width, bg_height)
     bg:MoveToBack()
 
-    local spinner_width = 118
-    local spinner_height = 28
+    group.button = group:AddChild(ImageButton("images/ui.xml", "in-window_button_sm_idle.tex", "in-window_button_sm_hl.tex", "in-window_button_sm_disabled.tex", "in-window_button_sm_hl_noshadow.tex", "in-window_button_sm_disabled.tex", {1, 1}, {0, 0}))
+    group.button.text:SetFont(NEWFONT)
+    group.button.text:SetSize(20)
+    group.button:SetText(buttontext)
+    group.button.text:SetPosition(2,2)
+    group.button.text:SetColour(0,0,0,1)
+    group.button:ForceImageSize( widget_width, height )
+    group.button:SetPosition((total_width/2)-(widget_width/2), 0)
+    group.button:SetOnClick(onclick)
+
+    group.name = name
+
+    group.focus_forward = group.button
+
+    return group
+end
+
+local function CreateSpinnerFilter( self, name, text, spinnerOptions, numeric, onchanged )
+
+    local group = self.server_detail_panel:AddChild(Widget( "SpinnerGroup" ))
+    group.label = group:AddChild( Text( NEWFONT, 20, text ) )
+    group.label:SetPosition( (-total_width/2)+(label_width/2), 0, 0 )
+    group.label:SetRegionSize( label_width, height )
+    group.label:SetHAlign( ANCHOR_RIGHT )
+    group.label:SetColour(0,0,0,1)
+
+    local bg = group:AddChild(Image("images/ui.xml", "single_option_bg.tex"))
+    bg:SetSize(bg_width, bg_height)
+    bg:MoveToBack()
+
     group.spinner = nil
     if numeric then
-        group.spinner = group:AddChild(NumericSpinner(spinnerOptions.min, spinnerOptions.max, spinner_width, spinner_height, {font=NEWFONT, size=20}, nil, nil, nil, true, nil, nil))
+        group.spinner = group:AddChild(NumericSpinner(spinnerOptions.min, spinnerOptions.max, widget_width, height, {font=NEWFONT, size=20}, nil, nil, nil, true, nil, nil))
     else
-        group.spinner = group:AddChild(Spinner(spinnerOptions, spinner_width, spinner_height, {font=NEWFONT, size=20}, nil, nil, nil, true, nil, nil))
+        group.spinner = group:AddChild(Spinner(spinnerOptions, widget_width, height, {font=NEWFONT, size=20}, nil, nil, nil, true, nil, nil))
     end
+    group.spinner:SetPosition( (total_width/2)-(widget_width/2), 0, 0 )
     group.spinner:SetTextColour(0,0,0,1)
     group.spinner.changed_image = group.spinner:AddChild(Image("images/ui.xml", "option_highlight.tex"))
-    group.spinner.changed_image:ScaleToSize(117,27)
-    group.spinner.changed_image:SetPosition(-1,1)
+    group.spinner.changed_image:ScaleToSize(widget_width, height)
     group.spinner.changed_image:SetClickable(false)
     group.spinner.changed_image:MoveToBack()
     group.spinner.changed_image:Hide()
@@ -1502,14 +1655,11 @@ local function CreateSpinner( self, name, text, spinnerOptions, numeric, onchang
                 onchanged(_,data)
             end
         end
-    group.spinner:SetPosition( 57 + label_width/2, 0, 0 )
 
     group.name = name
 
     --pass focus down to the spinner
     group.focus_forward = group.spinner
-
-    
 
     return group
 end
@@ -1542,103 +1692,104 @@ function ServerListingScreen:MakeFiltersPanel(filter_data)
         i = i - 1
     end
 
+    local reset_label_width = total_width * 0.6
+    local reset_button_width = 40 -- this doesn't actually set the width, just used for alignment
     local reset = self.server_detail_panel:AddChild(Widget("resetfilters"))
-    reset.button = reset:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "undo.tex", STRINGS.UI.SERVERLISTINGSCREEN.FILTER_RESET, true, false, function() self:ResetFilters() end))
-    reset.button:SetPosition(125,0)
-    reset.button:SetScale(.45)
-    reset.button.label:SetSize(20/.45)
-    reset.button.label:SetRegionSize(300,70)
-    reset.button.label:SetPosition(-210, 7)
     reset.bg = reset:AddChild(Image("images/ui.xml", "single_option_bg.tex"))
-    reset.bg:SetSize(255, 30)
-    reset.bg:SetPosition(66, 2, 0)
+    reset.bg:SetSize(bg_width, bg_height)
     reset.bg:MoveToBack()
     reset.bg:SetClickable(false)
+    reset.label = reset:AddChild(Text(NEWFONT, 20, STRINGS.UI.SERVERLISTINGSCREEN.FILTER_RESET))
+    reset.label:SetRegionSize(reset_label_width, height)
+    reset.label:SetPosition(-(total_width/2)+(reset_label_width/2), 0)
+    reset.label:SetHAlign(ANCHOR_RIGHT)
+    reset.label:SetColour(0,0,0,1)
+    reset.button = reset:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "undo.tex", nil, true, false, function() self:ResetFilters() end))
+    reset.button:SetPosition(-(total_width/2)+(reset_label_width)+(reset_button_width/2)+spacing,-2)
+    reset.button:SetScale(.45)
     reset.focus_forward = reset.button
 
+    local search_label_width = 55
+    local search_box_width = 155
+    local search_button_width = 30 -- this doesn't actually set the width, just used for alignment
     local searchbox = self.server_detail_panel:AddChild(Widget("searchbox"))
-    local nudgex = 75
-    local nudgey = 2
-    local bg = searchbox:AddChild(Image("images/ui.xml", "single_option_bg.tex"))
-    bg:SetSize(255, 30)
-    bg:SetPosition(66, nudgey, 0)
-    bg:MoveToBack()
-    searchbox.bg = searchbox:AddChild( Image("images/textboxes.xml", "textbox2_small_grey.tex") )
-    local box_size = 155
-    searchbox.bg:ScaleToSize( box_size, 28 )
+    searchbox.bg = searchbox:AddChild(Image("images/ui.xml", "single_option_bg.tex"))
+    searchbox.bg:SetSize(bg_width, bg_height)
+    searchbox.bg:MoveToBack()
+    searchbox.outline = searchbox:AddChild( Image("images/textboxes.xml", "textbox2_small_grey.tex") )
+    searchbox.label = searchbox:AddChild(Text(NEWFONT, 20, STRINGS.UI.SERVERLISTINGSCREEN.SEARCH))
+    searchbox.label:SetRegionSize( search_label_width, height )
+    searchbox.label:SetHAlign(ANCHOR_RIGHT)
+    searchbox.label:SetPosition(-(total_width/2)+(search_label_width/2), 0)
+    searchbox.label:SetColour(0,0,0,1)
+    searchbox.outline:ScaleToSize( search_box_width, height )
+    searchbox.outline:SetPosition(-(total_width/2)+search_label_width+spacing+(search_box_width/2), 0)
     searchbox.textbox = searchbox:AddChild(TextEdit( NEWFONT, 20, nil, {0,0,0,1} ) )
     searchbox.textbox:SetForceEdit(true)
-    searchbox.bg:SetPosition((box_size * .5) - 100 + 25 + nudgex, nudgey, 0)
-    searchbox.textbox:SetPosition((box_size * .5) - 100 + 26 + nudgex, nudgey, 0)
-    searchbox.textbox:SetRegionSize( box_size - 20, 35 )
+    searchbox.textbox:SetPosition(-(total_width/2)+search_label_width+spacing+(search_box_width/2), 0)
+    searchbox.textbox:SetRegionSize( search_box_width - 20, height )
     searchbox.textbox:SetHAlign(ANCHOR_LEFT)
-    searchbox.textbox:SetFocusedImage( searchbox.bg, "images/textboxes.xml", "textbox2_small_grey.tex", "textbox2_small_gold.tex", "textbox2_small_gold_greyfill.tex" )
+    searchbox.textbox:SetFocusedImage( searchbox.outline, "images/textboxes.xml", "textbox2_small_grey.tex", "textbox2_small_gold.tex", "textbox2_small_gold_greyfill.tex" )
     searchbox.textbox:SetTextLengthLimit( STRING_MAX_LENGTH )
     searchbox.textbox:SetCharacterFilter( VALID_CHARS )
-    searchbox.label = searchbox:AddChild(Text(NEWFONT, 20))
-    searchbox.label:SetString(STRINGS.UI.SERVERLISTINGSCREEN.SEARCH)
-    searchbox.label:SetRegionSize( 165, 50 )
-    searchbox.label:SetHAlign(ANCHOR_LEFT)
-    searchbox.label:SetPosition(-40 + nudgex, nudgey)
-    searchbox.label:SetColour(0,0,0,1)
     searchbox.gobutton = searchbox:AddChild(ImageButton("images/lobbyscreen.xml", "button_send.tex", "button_send_over.tex", "button_send_down.tex", "button_send_down.tex", "button_send_down.tex", {.15, .15}, {0,0}))
-    searchbox.gobutton:SetPosition(box_size - 62 + nudgex, nudgey)
+    searchbox.gobutton:SetPosition(-(total_width/2)+search_label_width+spacing+search_box_width+spacing+(search_button_width/2), 0)
     searchbox.gobutton:SetScale(.8)
     searchbox.gobutton.image:SetTint(.6,.6,.6,1)
     searchbox.textbox.OnTextEntered = function() self:DoFiltering() end
-    searchbox.gobutton:SetOnClick( function() self.searchbox.textbox:OnTextEntered() end )
-
-    self.searchbox = searchbox -- Need a ref to this for reasons
-
-    local screen = self
-    self.searchbox.OnGainFocus = function(self)
-        Widget.OnGainFocus(self)
-        screen.searchbox.textbox:OnGainFocus()
-    end
-    self.searchbox.OnLoseFocus = function(self)
-        Widget.OnLoseFocus(self)
-        screen.searchbox.textbox:OnLoseFocus()
-    end
-    self.searchbox.GetHelpText = function(self)
-        local controller_id = TheInput:GetControllerID()
+    searchbox.gobutton:SetOnClick(function() self.searchbox.textbox:OnTextEntered() end)
+    searchbox:SetOnGainFocus(function() self.searchbox.textbox:OnGainFocus() end)
+    searchbox:SetOnLoseFocus(function() self.searchbox.textbox:OnLoseFocus() end)
+    searchbox.GetHelpText = function()
         local t = {}
-        if not screen.searchbox.textbox.editing and not screen.searchbox.textbox.focus then
-            table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT, false, false ) .. " " .. STRINGS.UI.HELP.CHANGE_TEXT)   
+        if not self.searchbox.textbox.editing and not self.searchbox.textbox.focus then
+			table.insert(t, self.searchbox.textbox:GetHelpText())
         end
         return table.concat(t, "  ")
     end
 
+    self.searchbox = searchbox
+
+
+    local server_intention = CreateButtonFilter(self, nil, STRINGS.UI.SERVERLISTINGSCREEN.INTENTION_FILTER, nil, function(data)
+        self:SetServerIntention(nil)
+        self.intentions_overlay:SetFocus()
+    end)
+
+    self.server_intention = server_intention
+
     table.insert(self.filters, reset)
     table.insert(self.filters, searchbox)
-    table.insert(self.filters, CreateSpinner( self, "GAMEMODE", STRINGS.UI.SERVERLISTINGSCREEN.GAMEMODE, game_modes, false ))
-    table.insert(self.filters, CreateSpinner( self, "SEASON", STRINGS.UI.SERVERLISTINGSCREEN.SEASONFILTER, seasons, false ))
-    table.insert(self.filters, CreateSpinner( self, "HASPVP", STRINGS.UI.SERVERLISTINGSCREEN.HASPVP, any_on_off, false ))
-    table.insert(self.filters, CreateSpinner( self, "MODSENABLED", STRINGS.UI.SERVERLISTINGSCREEN.MODSENABLED, any_no_yes, false ))
-    table.insert(self.filters, CreateSpinner( self, "HASPASSWORD", STRINGS.UI.SERVERLISTINGSCREEN.HASPASSWORD, any_no_yes, false ))
-    table.insert(self.filters, CreateSpinner( self, "ISDEDICATED", STRINGS.UI.SERVERLISTINGSCREEN.SERVERTYPE, any_dedicated_hosted, false ))
-    table.insert(self.filters, CreateSpinner( self, "HASCHARACTER", STRINGS.UI.SERVERLISTINGSCREEN.HASCHARACTER, any_yes_no, false ))
-    table.insert(self.filters, CreateSpinner( self, "FRIENDSONLY", STRINGS.UI.SERVERLISTINGSCREEN.FRIENDSONLY, any_yes_no, false ))
-    table.insert(self.filters, CreateSpinner( self, "CLANONLY", STRINGS.UI.SERVERLISTINGSCREEN.CLANONLY, any_mine_private, false ))
-    -- table.insert(self.filters, CreateSpinner( "MINCURRPLAYERS", STRINGS.UI.SERVERLISTINGSCREEN.MINCURRPLAYERS, {min=0,max=4}, true ))
-    -- table.insert(self.filters, CreateSpinner( self, "MAXCURRPLAYERS", STRINGS.UI.SERVERLISTINGSCREEN.MAXCURRPLAYERS, players, false ))--STRINGS.UI.SERVERLISTINGSCREEN.MAXCURRPLAYERS, {min=0,max=4}, true ))
-    table.insert(self.filters, CreateSpinner( self, "ISFULL", STRINGS.UI.SERVERLISTINGSCREEN.ISFULL, yes_no, false ))
-    table.insert(self.filters, CreateSpinner( self, "MINOPENSLOTS", STRINGS.UI.SERVERLISTINGSCREEN.MINOPENSLOTS, player_slots, false ))
-    table.insert(self.filters, CreateSpinner( self, "ISEMPTY", STRINGS.UI.SERVERLISTINGSCREEN.ISEMPTY, yes_no, false ))
-    -- table.insert(self.filters, CreateSpinner( "MAXSERVERSIZE", STRINGS.UI.SERVERLISTINGSCREEN.MAXSERVERSIZE, {min=2,max=4}, true ))
+    table.insert(self.filters, self.server_intention)
+    table.insert(self.filters, CreateSpinnerFilter( self, "GAMEMODE", STRINGS.UI.SERVERLISTINGSCREEN.GAMEMODE, game_modes, false ))
+    table.insert(self.filters, CreateSpinnerFilter( self, "SEASON", STRINGS.UI.SERVERLISTINGSCREEN.SEASONFILTER, seasons, false ))
+    table.insert(self.filters, CreateSpinnerFilter( self, "HASPVP", STRINGS.UI.SERVERLISTINGSCREEN.HASPVP, any_on_off, false ))
+    table.insert(self.filters, CreateSpinnerFilter( self, "MODSENABLED", STRINGS.UI.SERVERLISTINGSCREEN.MODSENABLED, any_no_yes, false ))
+    table.insert(self.filters, CreateSpinnerFilter( self, "HASPASSWORD", STRINGS.UI.SERVERLISTINGSCREEN.HASPASSWORD, any_no_yes, false ))
+    table.insert(self.filters, CreateSpinnerFilter( self, "ISDEDICATED", STRINGS.UI.SERVERLISTINGSCREEN.SERVERTYPE, any_dedicated_hosted, false ))
+    table.insert(self.filters, CreateSpinnerFilter( self, "HASCHARACTER", STRINGS.UI.SERVERLISTINGSCREEN.HASCHARACTER, any_yes_no, false ))
+    table.insert(self.filters, CreateSpinnerFilter( self, "FRIENDSONLY", STRINGS.UI.SERVERLISTINGSCREEN.FRIENDSONLY, any_yes_no, false ))
+    table.insert(self.filters, CreateSpinnerFilter( self, "CLANONLY", STRINGS.UI.SERVERLISTINGSCREEN.CLANONLY, any_mine_private, false ))
+    -- table.insert(self.filters, CreateSpinnerFilter( "MINCURRPLAYERS", STRINGS.UI.SERVERLISTINGSCREEN.MINCURRPLAYERS, {min=0,max=4}, true ))
+    -- table.insert(self.filters, CreateSpinnerFilter( self, "MAXCURRPLAYERS", STRINGS.UI.SERVERLISTINGSCREEN.MAXCURRPLAYERS, players, false ))--STRINGS.UI.SERVERLISTINGSCREEN.MAXCURRPLAYERS, {min=0,max=4}, true ))
+    table.insert(self.filters, CreateSpinnerFilter( self, "ISFULL", STRINGS.UI.SERVERLISTINGSCREEN.ISFULL, yes_no, false ))
+    table.insert(self.filters, CreateSpinnerFilter( self, "MINOPENSLOTS", STRINGS.UI.SERVERLISTINGSCREEN.MINOPENSLOTS, player_slots, false ))
+    table.insert(self.filters, CreateSpinnerFilter( self, "ISEMPTY", STRINGS.UI.SERVERLISTINGSCREEN.ISEMPTY, yes_no, false ))
+    -- table.insert(self.filters, CreateSpinnerFilter( "MAXSERVERSIZE", STRINGS.UI.SERVERLISTINGSCREEN.MAXSERVERSIZE, {min=2,max=4}, true ))
     
-    if APP_VERSION == "-1" then
-        table.insert(self.filters, CreateSpinner( self, "VERSIONCHECK", STRINGS.UI.SERVERLISTINGSCREEN.VERSIONCHECK, no_yes, false ))
+    if BRANCH == "dev" then
+        table.insert(self.filters, CreateSpinnerFilter( self, "VERSIONCHECK", STRINGS.UI.SERVERLISTINGSCREEN.VERSIONCHECK, no_yes, false ))
     else
         TheNet:SetCheckVersionOnQuery( true )
     end
 
-    if APP_VERSION ~= "-1" then
-        self.filters_scroll_list = self.server_detail_panel:AddChild(ScrollableList(self.filters, 10, 440, 20, 13, nil, nil, 205))
-        self.filters_scroll_list:SetPosition(-332,-35)
-    else
-        self.filters_scroll_list = self.server_detail_panel:AddChild(ScrollableList(self.filters, 10, 470, 20, 11, nil, nil, 205))
-        self.filters_scroll_list:SetPosition(-332,-45)
-    end
+    local scroll_width = 230
+    local scroll_height = 460
+    local item_height = 20
+    local item_padding = (scroll_height - (item_height*#self.filters)) / (#self.filters-1)
+
+    self.filters_scroll_list = self.server_detail_panel:AddChild(ScrollableList(self.filters, scroll_width, scroll_height, item_height, item_padding, nil, nil, 0))
+    self.filters_scroll_list:SetPosition(50,-35)
 
     if filter_data then
         for i,v in pairs(filter_data) do
@@ -1661,9 +1812,8 @@ function ServerListingScreen:MakeFiltersPanel(filter_data)
 end
 
 local function MakeImgButton(parent, xPos, yPos, text, onclick, style, image)
-    if not parent or not xPos or not yPos or not text or not onclick then return end
 
-    local btn 
+    local btn
     if not style or style == "large" then
         btn = parent:AddChild(ImageButton())
         btn.image:SetScale(.7)
@@ -1698,7 +1848,7 @@ local function MakeImgButton(parent, xPos, yPos, text, onclick, style, image)
 end
 
 function ServerListingScreen:MakeMenuButtons(left_col, right_col, nav_col)
-    self.refresh_button = MakeImgButton(self.server_list_titles, left_col-35, 51, STRINGS.UI.SERVERLISTINGSCREEN.REFRESH, function() self:SearchForServers() end, "icon", "refresh")
+    self.refresh_button = MakeImgButton(self.server_list_titles, left_col-35, 55, STRINGS.UI.SERVERLISTINGSCREEN.REFRESH, function() self:SearchForServers() end, "icon", "refresh")
     self.lan_button = MakeImgButton(self.nav_bar, 10, -23, STRINGS.UI.SERVERLISTINGSCREEN.LAN, function() self:SetTab("LAN") end, "nav")
     self.online_button = MakeImgButton(self.nav_bar, 10, 25, STRINGS.UI.SERVERLISTINGSCREEN.ONLINE, function() 
         if self.offlinemode then
@@ -1727,8 +1877,8 @@ function ServerListingScreen:MakeMenuButtons(left_col, right_col, nav_col)
     self.online_button:SetFocusChangeDir(MOVE_DOWN, function() return self.lan_button end)
     self.lan_button:SetFocusChangeDir(MOVE_UP, function() return self.online_button end)
 
-    self.online_button:SetFocusChangeDir(MOVE_RIGHT, function() return self.servers_scroll_list end)
-    self.lan_button:SetFocusChangeDir(MOVE_RIGHT, function() return self.servers_scroll_list end)
+    self.online_button:SetFocusChangeDir(MOVE_RIGHT, function() return self:CurrentCenterFocus() end, MOVE_RIGHT)
+    self.lan_button:SetFocusChangeDir(MOVE_RIGHT, function() return self:CurrentCenterFocus() end, MOVE_RIGHT)
 
     if TheInput:ControllerAttached() then
         -- self.refresh_button:Hide()
@@ -1737,7 +1887,7 @@ function ServerListingScreen:MakeMenuButtons(left_col, right_col, nav_col)
     else
         self.lan_button:SetFocusChangeDir(MOVE_DOWN, function() return self.cancel_button end)
         self.cancel_button:SetFocusChangeDir(MOVE_UP, function() return self.lan_button end)
-        self.cancel_button:SetFocusChangeDir(MOVE_RIGHT, function() return self.servers_scroll_list end)
+        self.cancel_button:SetFocusChangeDir(MOVE_RIGHT, function() return self:CurrentCenterFocus() end, MOVE_RIGHT)
     end
 end
 
@@ -1751,6 +1901,12 @@ function ServerListingScreen:MakeDetailPanel(right_col)
     local detail_x = -65
     local width = 240
     local detail_y = 135
+
+    -- Container for the majority of the details in this panel, so we can hide them
+    self.server_details_additional = self.server_detail_panel:AddChild(Widget("additionalservdetails"))
+    self.server_details_additional:SetPosition(0,0) -- so we can use positioning relative to the whole panel
+    self.server_details_additional.focus_forward = self.viewworld_button
+    self.server_details_additional:Hide()
 
     self.details_servername = self.server_detail_panel:AddChild(Text(BUTTONFONT, 40))
     self.details_servername:SetHAlign(ANCHOR_MIDDLE)
@@ -1771,11 +1927,11 @@ function ServerListingScreen:MakeDetailPanel(right_col)
     self.details_serverdesc:EnableWordWrap( true )
     self.details_serverdesc:SetColour(0,0,0,1)
 
-    -- Container for the majority of the details in this panel, so we can hide them
-    self.server_details_additional = self.server_detail_panel:AddChild(Widget("additionalservdetails"))
-    self.server_details_additional:SetPosition(0,0) -- so we can use positioning relative to the whole panel
-    self.server_details_additional.focus_forward = self.viewworld_button
-    self.server_details_additional:Hide()
+    --self.details_background = self.server_details_additional:AddChild(Image("images/server_intentions.xml", "social.tex"))
+    --self.details_background:SetPosition(detail_x, 100)
+    --self.details_background:SetTint(1,1,1,0.2)
+    --self.details_background:SetScale(0.8, 0.8)
+    ----self.details_background:Hide()
 
     self.viewworld_button = MakeImgButton(self.server_detail_panel, -56, 6, STRINGS.UI.SERVERLISTINGSCREEN.WORLD_UNKNOWN, function() self:ViewServerWorld() end, "icon", "world")
     self.viewworld_button:Select()
@@ -1807,7 +1963,7 @@ function ServerListingScreen:MakeDetailPanel(right_col)
     buttons:AddChild(self.viewgroup_button)
     buttons:AddChild(self.viewplayers_button)
     buttons.focus_forward = self.viewworld_button
-    self.viewworld_button:SetFocusChangeDir(MOVE_LEFT, function() return self.servers_scroll_list end)
+    self.viewworld_button:SetFocusChangeDir(MOVE_LEFT, function() return self:CurrentCenterFocus() end, MOVE_LEFT)
     self.viewworld_button:SetFocusChangeDir(MOVE_RIGHT, function() return self.viewmods_button end)
     self.viewworld_button:SetFocusChangeDir(MOVE_DOWN, function() return self.viewplayers_button end)
     self.viewmods_button:SetFocusChangeDir(MOVE_LEFT, function() return self.viewworld_button end)
@@ -1816,7 +1972,7 @@ function ServerListingScreen:MakeDetailPanel(right_col)
     self.viewtags_button:SetFocusChangeDir(MOVE_LEFT, function() return self.viewmods_button end)
     self.viewtags_button:SetFocusChangeDir(MOVE_DOWN, function() return self.viewgroup_button end)
 
-    self.viewplayers_button:SetFocusChangeDir(MOVE_LEFT, function() return self.servers_scroll_list end)
+    self.viewplayers_button:SetFocusChangeDir(MOVE_LEFT, function() return self:CurrentCenterFocus() end, MOVE_LEFT)
     self.viewplayers_button:SetFocusChangeDir(MOVE_RIGHT, function() return self.viewgroup_button end)
     self.viewplayers_button:SetFocusChangeDir(MOVE_UP, function() return self.viewworld_button end)
     self.viewgroup_button:SetFocusChangeDir(MOVE_LEFT, function() return self.viewplayers_button end)
@@ -2004,7 +2160,7 @@ end
 function ServerListingScreen:MakeColumnHeaders()
     self.title = self.server_list_titles:AddChild(Text(BUTTONFONT, 45, STRINGS.UI.SERVERLISTINGSCREEN.SERVER_LIST_TITLE))
     self.title:SetColour(0,0,0,1)
-    self.title:SetPosition(column_offsets.DETAILS, 60)
+    self.title:SetPosition(column_offsets.DETAILS, 55)
 
     self.server_count = self.server_list_titles:AddChild(Text(NEWFONT, 25, "(0)"))
     self.server_count:SetColour(0,0,0,1)
@@ -2012,10 +2168,10 @@ function ServerListingScreen:MakeColumnHeaders()
     self.server_count:SetHAlign(ANCHOR_RIGHT)
     self.server_count:SetPosition(column_offsets.DETAILS+167, 53)    
 
-    self.NAME = MakeHeader(self, self.server_list_titles, column_offsets.NAME, STRINGS.UI.SERVERLISTINGSCREEN.NAME, function() self:SetSort("NAME") end)
-    self.DETAILS = MakeHeader(self, self.server_list_titles, column_offsets.DETAILS-13, STRINGS.UI.SERVERLISTINGSCREEN.DETAILS, function() self:SetSort("DETAILS") end)
-    self.PLAYERS = MakeHeader(self, self.server_list_titles, column_offsets.PLAYERS, STRINGS.UI.SERVERLISTINGSCREEN.PLAYERS, function() self:SetSort("PLAYERS") end)
-    self.PING = MakeHeader(self, self.server_list_titles, column_offsets.PING, STRINGS.UI.SERVERLISTINGSCREEN.PING, function() self:SetSort("PING") end)
+    self.NAME = MakeHeader(self, self.table.titles, column_offsets.NAME, STRINGS.UI.SERVERLISTINGSCREEN.NAME, function() self:SetSort("NAME") end)
+    self.DETAILS = MakeHeader(self, self.table.titles, column_offsets.DETAILS-13, STRINGS.UI.SERVERLISTINGSCREEN.DETAILS, function() self:SetSort("DETAILS") end)
+    self.PLAYERS = MakeHeader(self, self.table.titles, column_offsets.PLAYERS, STRINGS.UI.SERVERLISTINGSCREEN.PLAYERS, function() self:SetSort("PLAYERS") end)
+    self.PING = MakeHeader(self, self.table.titles, column_offsets.PING, STRINGS.UI.SERVERLISTINGSCREEN.PING, function() self:SetSort("PING") end)
 
     self.column_buttons = {
         NAME = self.NAME,
@@ -2028,7 +2184,7 @@ end
 function ServerListingScreen:OnControl(control, down)
     if ServerListingScreen._base.OnControl(self, control, down) then return true end
     
-    if self.searchbox and ((self.searchbox.textbox and self.searchbox.textbox.editing) or (TheInput:ControllerAttached() and self.searchbox.focus and control == CONTROL_ACCEPT)) then
+    if self.searchbox and ((self.searchbox.textbox and self.searchbox.textbox.editing) or (self.searchbox.focus and control == CONTROL_ACCEPT)) then
         self.searchbox.textbox:OnControl(control, down)
         return true
     end
@@ -2060,6 +2216,22 @@ function ServerListingScreen:OnControl(control, down)
         end
 
         return true
+    end
+end
+
+function ServerListingScreen:CurrentCenterFocus()
+    if (self.view_online and self.server_intention.data ~= nil) then
+        return self.servers_scroll_list
+    else
+        return self.intentions_overlay
+    end
+end
+
+function ServerListingScreen:CurrentRightFocus()
+    if self.filters_scroll_list:IsVisible() then
+        return self.filters_scroll_list
+    elseif self.server_details_additional:IsVisible() then
+        return self.viewworld_button
     end
 end
 

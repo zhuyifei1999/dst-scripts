@@ -25,50 +25,21 @@ local MAX_CHASEAWAY_DIST = 80
 local MAX_TARGET_SHARES = 5
 local SHARE_TARGET_DIST = 40
 
-local function ShouldSleep(inst)
-    local homePos = inst.components.knownlocations:GetLocation("home")
-    local myPos = Vector3(inst.Transform:GetWorldPosition() )
-    if not (homePos and distsq(homePos, myPos) <= SLEEP_DIST_FROMHOME*SLEEP_DIST_FROMHOME)
-       or (inst.components.combat and inst.components.combat.target)
-       or (inst.components.burnable and inst.components.burnable:IsBurning() )
-       or (inst.components.freezable and inst.components.freezable:IsFrozen() ) then
-        return false
-    end
-    local nearestEnt = GetClosestInstWithTag("character", inst, SLEEP_DIST_FROMTHREAT)
-    return nearestEnt == nil
-end
-
-local function ShouldWake(inst)
-    local homePos = inst.components.knownlocations:GetLocation("home")
-    local myPos = Vector3(inst.Transform:GetWorldPosition() )
-    if (homePos and distsq(homePos, myPos) > SLEEP_DIST_FROMHOME*SLEEP_DIST_FROMHOME)
-       or (inst.components.combat and inst.components.combat.target)
-       or (inst.components.burnable and inst.components.burnable:IsBurning() )
-       or (inst.components.freezable and inst.components.freezable:IsFrozen() ) then
-        return true
-    end
-    local nearestEnt = GetClosestInstWithTag("character", inst, SLEEP_DIST_FROMTHREAT)
-    return nearestEnt
-end
-
 local function MakeTeam(inst, attacker)
-        local leader = SpawnPrefab("teamleader")
-        leader:AddTag("bat")
-        leader.components.teamleader.threat = attacker
-        leader.components.teamleader.team_type = inst.components.teamattacker.team_type
-        leader.components.teamleader:NewTeammate(inst)
-        leader.components.teamleader:BroadcastDistress(inst)
+    local leader = SpawnPrefab("teamleader")
+    leader.components.teamleader:SetUp(attacker, inst)
+    leader.components.teamleader:BroadcastDistress(inst)
 end
 
 local function Retarget(inst)
     local ta = inst.components.teamattacker
 
-    local newtarget = FindEntity(inst, TUNING.BISHOP_TARGET_DIST, function(guy)
+    local newtarget = FindEntity(inst, TUNING.BAT_TARGET_DIST, function(guy)
             return inst.components.combat:CanTarget(guy)
-    end,
-    nil,
-    {"bat"},
-    {"character", "monster"}
+        end,
+        nil,
+        {"bat"},
+        {"character", "monster"}
     )
 
     if newtarget and not ta.inteam and not ta:SearchForTeam() then
@@ -81,8 +52,8 @@ local function Retarget(inst)
 end
 
 local function KeepTarget(inst, target)
-    if (inst.components.teamattacker.teamleader and not inst.components.teamattacker.teamleader:CanAttack()) or
-     inst.components.teamattacker.orders == "ATTACK" then
+    if (inst.components.teamattacker.inteam and not inst.components.teamattacker.teamleader:CanAttack())
+        or inst.components.teamattacker.orders == ORDERS.ATTACK then
         return true
     else
         return false
@@ -92,8 +63,8 @@ end
 local function OnAttacked(inst, data)
     if not inst.components.teamattacker.inteam and not inst.components.teamattacker:SearchForTeam() then
         MakeTeam(inst, data.attacker)
-    elseif inst.components.teamattacker.teamleader then    
-        inst.components.teamattacker.teamleader:BroadcastDistress()   --Ask for  help!
+    elseif inst.components.teamattacker.teamleader then
+        inst.components.teamattacker.teamleader:BroadcastDistress(inst)   --Ask for  help!
     end
 
     if inst.components.teamattacker.inteam and not inst.components.teamattacker.teamleader:CanAttack() then
@@ -101,10 +72,6 @@ local function OnAttacked(inst, data)
         inst.components.combat:SetTarget(attacker)
         inst.components.combat:ShareTarget(attacker, SHARE_TARGET_DIST, function(dude) return dude:HasTag("bat") end, MAX_TARGET_SHARES)
     end
-end
-
-local function OnWingDown(inst)
-    inst.SoundEmitter:PlaySound("dontstarve/creatures/bat/flap")
 end
 
 local function RememberLocation(inst)
@@ -131,6 +98,7 @@ local function fn()
     inst.AnimState:SetBank("bat")
     inst.AnimState:SetBuild("bat_basic")
 
+    inst:AddTag("cavedweller")
     inst:AddTag("monster")
     inst:AddTag("hostile")
     inst:AddTag("bat")
@@ -158,7 +126,8 @@ local function fn()
 
     inst:AddComponent("sleeper")
     inst.components.sleeper:SetResistance(3)
-    inst.components.sleeper:SetNocturnal(true)
+    inst.components.sleeper.sleeptestfn = NocturnalSleepTest
+    inst.components.sleeper.waketestfn = NocturnalWakeTest
 
     inst:AddComponent("combat")
     inst.components.combat.hiteffectsymbol = "bat_body"
@@ -185,11 +154,9 @@ local function fn()
     inst.components.periodicspawner:Start()
 
     inst:AddComponent("inspectable")
+
     inst:AddComponent("knownlocations")
-
     inst:DoTaskInTime(1*FRAMES, RememberLocation)
-
-    inst:ListenForEvent("wingdown", OnWingDown)
 
     MakeMediumBurnableCharacter(inst, "bat_body")
     MakeMediumFreezableCharacter(inst, "bat_body")

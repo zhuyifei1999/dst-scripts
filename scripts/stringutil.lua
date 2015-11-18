@@ -166,7 +166,7 @@ function GetDescription(inst, item, modifier)
         or (inst ~= nil and inst.prefab or nil)
 
     character = character ~= nil and string.upper(character) or nil
-    local itemname = item.components.inspectable.nameoverride or item.prefab or nil
+    local itemname = item.nameoverride or item.components.inspectable.nameoverride or item.prefab or nil
     itemname = itemname ~= nil and string.upper(itemname) or nil
 	if type(modifier) == "table" then
 		for i,v in ipairs(modifier) do

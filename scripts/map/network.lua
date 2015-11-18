@@ -34,8 +34,9 @@ Graph = Class(function(self, id, args)
     -- Search
     self.visited = false
     
-    self.data = {position={x=0,y=0},old_pos={x=0,y=0}, width=0, height=0, size=0, value= args.default_bg, background=args.background}--value=0.43
+    self.data = {position={x=0,y=0},old_pos={x=0,y=0}, width=0, height=0, size=0, value= args.default_bg, background=args.background}
 
+    self.room_tags = args.room_tags
 
     self.colour = args.colour or {r=1,g=0,b=0,a=1}
 
@@ -46,6 +47,7 @@ Graph = Class(function(self, id, args)
 	-- print("####New node!! ",self.id, self.maze_tiles)
 	-- dumptable(self.maze_tiles,1)
 	self.MIN_WORMHOLE_ID = 2300000
+    self.wormholeprefab = "wormhole"
 end)
 
 ------------------------------------------------------------------------------------------
@@ -815,8 +817,8 @@ function Graph:SwapOutWormholeMarkers(entities, width, height)
 		
 	if entities["wormhole_MARKER"] ~= nil then
 
-		if entities["wormhole"] == nil then
-			entities["wormhole"] = {}
+		if entities[self.wormholeprefab] == nil then
+			entities[self.wormholeprefab] = {}
 		end
 
 		local id = self.MIN_WORMHOLE_ID
@@ -834,8 +836,8 @@ function Graph:SwapOutWormholeMarkers(entities, width, height)
 					firstMarkerData["data"] = {teleporter={target=secondMarkerData["id"]}}
 					secondMarkerData["data"] = {teleporter={target=firstMarkerData["id"]}}
 
-					table.insert(entities["wormhole"], firstMarkerData)
-					table.insert(entities["wormhole"], secondMarkerData)
+					table.insert(entities[self.wormholeprefab], firstMarkerData)
+					table.insert(entities[self.wormholeprefab], secondMarkerData)
 
 					firstMarkerData = nil
 				end
@@ -860,8 +862,8 @@ function Graph:ApplyWormhole(entities, width, height, x1, y1, x2, y2)
 			
 		self.MIN_WORMHOLE_ID = self.MIN_WORMHOLE_ID + 2
 	
-		table.insert(entities["wormhole"], firstMarkerData)
-		table.insert(entities["wormhole"], secondMarkerData)
+		table.insert(entities[self.wormholeprefab], firstMarkerData)
+		table.insert(entities[self.wormholeprefab], secondMarkerData)
 	else
 		self.error = true
 		self.error_string = "ApplyWormhole nil wormhole"
@@ -869,8 +871,8 @@ function Graph:ApplyWormhole(entities, width, height, x1, y1, x2, y2)
 end
 
 function Graph:SwapWormholesAndRoadsExtra(entities, width, height)
-	if entities["wormhole"] == nil then
-		entities["wormhole"] = {}
+	if entities[self.wormholeprefab] == nil then
+		entities[self.wormholeprefab] = {}
 	end
 	--self:SwapWormholesAndRoads(entities, width, height)
 	
@@ -920,11 +922,11 @@ function Graph:ApplyPoisonTag()
 end
 
 function Graph:SwapWormholesAndRoads(entities, width, height)
-	if entities["wormhole"] == nil then
-		entities["wormhole"] = {}
+	if entities[self.wormholeprefab] == nil then
+		entities[self.wormholeprefab] = {}
 	end
 	
-	--print(self.id.."\tSwapWormholesAndRoads", #entities["wormhole"], self.MIN_WORMHOLE_ID)
+	--print(self.id.."\tSwapWormholesAndRoads", #entities[self.wormholeprefab], self.MIN_WORMHOLE_ID)
 
 	for k,edge in pairs(self.exit_edges) do
 		if edge.node1.id ~= "LOOP_BLANK_SUB" and edge.node2.id ~= "LOOP_BLANK_SUB" 
@@ -937,7 +939,7 @@ function Graph:SwapWormholesAndRoads(entities, width, height)
 	    end
 	end
 	
-	--print(self.id.."\tSwapWormholesAndRoads complete", #entities["wormhole"])
+	--print(self.id.."\tSwapWormholesAndRoads complete", #entities[self.wormholeprefab])
 	
 	local children = self:GetChildren()
 	for k,child in pairs(children) do

@@ -1,3 +1,5 @@
+require "regrowthutil"
+
 local UPDATE_PERIOD = 31 -- less likely to update on the same frame as others
 
 local UpdateBuckets = nil
@@ -15,6 +17,15 @@ local TimeMultipliers = {
         return 1
     end,
     ["deciduoustree"] = function()
+        return (not TheWorld.state.isspring and 0) or 1
+    end,
+    ["mushtree_tall"] = function()
+        return (not TheWorld.state.iswinter and 0) or 1
+    end,
+    ["mushtree_medium"] = function()
+        return (not TheWorld.state.issummer and 0) or 1
+    end,
+    ["mushtree_small"] = function()
         return (not TheWorld.state.isspring and 0) or 1
     end,
 }
@@ -130,42 +141,6 @@ end
 
 function PlantRegrowth:OnRemoveEntity()
     UnregisterUpdate(self)
-end
-
-local function GetFiveRadius(x, z, prefab)
-    local area = nil
-    for i, node in ipairs(TheWorld.topology.nodes) do
-        if TheSim:WorldPointInPoly(x, z, node.poly) then
-            area = i
-            break
-        end
-    end
-
-    if area == nil then
-        --print("ACK! We couldn't figure out what area we're in!")
-        return
-    end
-
-    if TheWorld.generated == nil then
-        -- Old save game, doesn't have original generation data. Abort!
-        return
-    end
-
-    if TheWorld.topology.ids[area] == nil or TheWorld.generated.densities[TheWorld.topology.ids[area]] == nil then
-        -- Probably some kind of special node like a blocker, doesn't have generated contents anyways.
-        return
-    end
-
-    local density = TheWorld.generated.densities[TheWorld.topology.ids[area]][prefab]
-    if density == nil then
-        -- we can't even regrow in this area! stop trying.
-        return
-    end
-
-    -- we don't want even density, clumping is allowed. For that reason, we
-    -- want to do density per 5 entities, rather than per 1 -- hence fiveradius
-    local searcharea = 2* 16 * 5 / density -- 16, because each tile from worldgen is 4x4 game units. 2* because it seems to work better...
-    return math.sqrt(searcharea/math.pi)
 end
 
 local function GetSpawnPoint(from_pt, radius, prefab)

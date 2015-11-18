@@ -226,9 +226,7 @@ CommonStates.AddWalkStates(states,
             TimeEvent(20*FRAMES, function(inst)
 		        inst.SoundEmitter:PlaySound(inst.effortsound)
                 inst.SoundEmitter:PlaySound(inst.soundpath .. "land")
-                for i, v in ipairs(AllPlayers) do
-                    v:ShakeCamera(CAMERASHAKE.VERTICAL, .5, .05, .1, inst, 40)
-                end
+                ShakeAllCameras(CAMERASHAKE.VERTICAL, .5, .05, .1, inst, 40)
                 inst.Physics:Stop()
             end ),
 	},

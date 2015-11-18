@@ -19,13 +19,12 @@ local mid_col = RESOLUTION_X*.07
 local left_col = -RESOLUTION_X*.3
 local right_col = RESOLUTION_X*.37
 
-local ModsTab = Class(Widget, function(self, slotnum, servercreationscreen)
+local ModsTab = Class(Widget, function(self, servercreationscreen)
     Widget._ctor(self, "ModsTab")
   
     self.mods_page = self:AddChild(Widget("mods_page"))
 
-    self.slotnum = slotnum
-    SaveGameIndex:LoadServerEnabledModsFromSlot( self.slotnum )
+    self.slotnum = -1
 
     self.servercreationscreen = servercreationscreen
 	

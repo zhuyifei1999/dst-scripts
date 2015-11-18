@@ -22,7 +22,7 @@ local events=
         if not inst.components.health:IsDead() and not inst.sg:HasStateTag("busy") then
             --If you're not in melee range throw instead.
             --Maybe do some randomness to throw or not?
-            if inst:GetDistanceSqToInst(data.target) <= (TUNING.MONKEY_MELEE_RANGE * TUNING.MONKEY_MELEE_RANGE) + 1 then
+            if data.target and inst:GetDistanceSqToInst(data.target) <= (TUNING.MONKEY_MELEE_RANGE * TUNING.MONKEY_MELEE_RANGE) + 1 then
                 inst.sg:GoToState("attack", data.target)
             else
                 inst.sg:GoToState("throw", data.target)
@@ -81,12 +81,12 @@ local states =
             inst.SoundEmitter:PlaySound("dontstarve/wilson/make_trap", "make")
         end,
         onexit = function(inst)
-            inst:PerformBufferedAction()
             inst.SoundEmitter:KillSound("make")
         end,
         events=
         {
             EventHandler("animover", function (inst)
+                inst:PerformBufferedAction()
                 inst.sg:GoToState("idle")
             end),
         }
@@ -214,8 +214,8 @@ CommonStates.AddSleepStates(states,
 
     sleeptimeline = 
     {
-    TimeEvent(1*FRAMES, function(inst) inst.components.combat:DoAttack()
-            inst.SoundEmitter:PlaySound("dontstarve/creatures/monkey"..inst.soundtype.."/sleep") end),
+    TimeEvent(1*FRAMES, function(inst)
+        inst.SoundEmitter:PlaySound("dontstarve/creatures/monkey"..inst.soundtype.."/sleep") end),
     },
 
     endtimeline =
@@ -227,9 +227,11 @@ CommonStates.AddSleepStates(states,
 CommonStates.AddCombatStates(states,
 {
     attacktimeline = 
-    {        
-        TimeEvent(17*FRAMES, function(inst) inst.components.combat:DoAttack()
-        inst.SoundEmitter:PlaySound("dontstarve/creatures/monkey"..inst.soundtype.."/attack") end),
+    {
+        TimeEvent(17*FRAMES, function(inst)
+            inst.components.combat:DoAttack()
+            inst.SoundEmitter:PlaySound("dontstarve/creatures/monkey"..inst.soundtype.."/attack")
+        end),
     },
 
     hittimeline =

@@ -181,6 +181,12 @@ local COMPONENT_ACTIONS =
             end 
         end,
 
+        worldmigrator = function(inst, doer, actions)
+            if inst:HasTag("migrator") then
+                table.insert(actions, ACTIONS.MIGRATE)
+            end
+        end,
+
         writeable = function(inst, doer, actions)
             if inst:HasTag("writeable") then
                 table.insert(actions, ACTIONS.WRITE)
@@ -794,7 +800,9 @@ local COMPONENT_ACTIONS =
         useableitem = function(inst, doer, actions)
             if not inst:HasTag("inuse") and
                 inst.replica.equippable ~= nil and
-                inst.replica.equippable:IsEquipped() then
+                inst.replica.equippable:IsEquipped() and
+                doer.replica.inventory ~= nil and
+                doer.replica.inventory:IsOpenedBy(doer) then
                 table.insert(actions, ACTIONS.USEITEM)
             end
         end,

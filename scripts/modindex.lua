@@ -860,17 +860,17 @@ function ModIndex:DoesModExistAnyVersion( modname )
 	end
 end
 
-function ModIndex:DoesModExist( modname, version )
+function ModIndex:DoesModExist( modname, desired_version, version_compatible )
 	local result = false
 	local modinfo = self:GetModInfo(modname)
 	if modinfo ~= nil then
-		if modinfo.version == version then
+		if desired_version >= modinfo.version and modinfo.version >= version_compatible then
 			result = true
 		else
 			result = false
 		end
 	end
-	print("Does "..modname.." v:"..version.. " exist? " .. tostring(result) )
+	print("Does "..modname.." vc:"..version_compatible.. " exist? " .. tostring(result) )
 	return result
 end
 

@@ -1,7 +1,3 @@
--- TODO
---      change gotoState to eventpush
---      move newcombat event handling to stategraph
---      unset persistant flag
 local assets =
 {
     Asset("ANIM", "anim/tentacle_arm.zip"),
@@ -22,30 +18,36 @@ local function retargetfn(inst)
         end
     end,
     {"_combat","_health"},-- see entityscript.lua
-    {"WORM_DANGER","prey"},
+    {"prey"},
     {"character","monster","animal"}
     )
 end
 
+local function Emerge(inst)
+    if inst.retracted == true then
+        inst.retracted = false
+        inst:PushEvent("emerge")
+    end
+end
+
+local function Retract(inst)
+    if inst.retracted == false then
+        inst.retracted = true
+        inst:PushEvent("retract")
+    end
+end
+
 local function onfar(inst)
-    inst:PushEvent("retract")
+    Retract(inst)
 end
 
 local function onnear(inst)
-    inst:PushEvent("emerge")
-    Dbg(inst,true,"ON NEAR - emerge")
-    --[[ Very bad practice to directly set a state from outside the statemachine!
-    if inst.sg:HasStateTag("idle")  and not inst.sg:HasStateTag("emerge")
-       and not inst.sg:HasStateTag("attack") and not inst.components.health:IsDead() then
-        inst.sg:GoToState("emerge")
-    end
-    --]]
+    Emerge(inst)
 end
 
 local function shouldKeepTarget(inst, target)
     if target and target:IsValid() and target.components.health and not target.components.health:IsDead() then
         local distsq = target:GetDistanceSqToInst(inst)
-        --dprint(TUNING.TENTACLE_PILLAR_ARM_STOPATTACK_DIST," shouldkeeptarget:",distsq<TUNING.TENTACLE_PILLAR_ARM_STOPATTACK_DIST*TUNING.TENTACLE_PILLAR_ARM_STOPATTACK_DIST)
         
         return distsq < TUNING.TENTACLE_PILLAR_ARM_STOPATTACK_DIST*TUNING.TENTACLE_PILLAR_ARM_STOPATTACK_DIST
     else
@@ -61,6 +63,14 @@ local function OnHit(inst, attacker, damage)
             inst.components.health:DoDelta(damage*.6, false, attacker)
         end
     end
+end
+
+local function CustomOnHaunt(inst, haunter)
+    if math.random() < TUNING.HAUNT_CHANCE_HALF then
+        inst.components.health:SetPercent(0)
+        return true
+    end
+    return false
 end
 
 local function fn()
@@ -86,7 +96,6 @@ local function fn()
     inst:AddTag("monster")
     inst:AddTag("hostile")
     inst:AddTag("wet")
-    inst:AddTag("WORM_DANGER")
 
     inst.entity:SetPristine()
 
@@ -106,11 +115,12 @@ local function fn()
     inst.components.combat:SetRetargetFunction(GetRandomWithVariance(1, 0.5), retargetfn)
     inst.components.combat:SetKeepTargetFunction(shouldKeepTarget)
     inst.components.combat:SetOnHit(OnHit)
+    inst.components.combat:SetPlayerStunlock(PLAYERSTUNLOCK.OFTEN)
 
     MakeLargeFreezableCharacter(inst)
 
     inst:AddComponent("playerprox")
-    inst.components.playerprox:SetDist(4, 15)
+    inst.components.playerprox:SetDist(6, 15)
     inst.components.playerprox:SetOnPlayerNear(onnear)
     inst.components.playerprox:SetOnPlayerFar(onfar)
 
@@ -122,6 +132,12 @@ local function fn()
     -- inst.components.lootdropper:SetLoot({"monstermeat", "monstermeat"})
     -- inst.components.lootdropper:AddChanceLoot("tentaclespike", 0.5)
     -- inst.components.lootdropper:AddChanceLoot("tentaclespots", 0.2)
+
+    AddHauntableCustomReaction(inst, CustomOnHaunt)
+
+    inst.retracted = true
+    inst.Emerge = Emerge
+    inst.Retract = Retract
 
     inst:SetStateGraph("SGtentacle_arm")
 

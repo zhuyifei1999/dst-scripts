@@ -5,12 +5,13 @@ local function onhammered(inst, worker)
         inst.components.burnable:Extinguish()
     end
     inst.components.lootdropper:DropLoot()
-    SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
-    inst.SoundEmitter:PlaySound("dontstarve/common/destroy_wood")
+    local fx = SpawnPrefab("collapse_small")
+    fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+    fx:SetMaterial("wood")
     inst:Remove()
 end
 
-local function onhit(inst, worker)
+local function onhit(inst)
     if not inst:HasTag("burnt") then
         inst.AnimState:PlayAnimation("hit")
         inst.AnimState:PushAnimation(inst.components.prototyper.on and "proximity_loop" or "idle", true)
@@ -35,13 +36,13 @@ local function onturnoff(inst)
 end
 
 local function onsave(inst, data)
-    if inst:HasTag("burnt") or inst:HasTag("fire") then
+    if inst:HasTag("burnt") or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
         data.burnt = true
     end
 end
 
 local function onload(inst, data)
-    if data ~= nil and data.burnt ~= nil then
+    if data ~= nil and data.burnt then
         inst.components.burnable.onburnt(inst)
     end
 end
@@ -134,7 +135,7 @@ local function createmachine(level, name, soundprefix, techtree)
         inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
         inst.components.workable:SetWorkLeft(4)
         inst.components.workable:SetOnFinishCallback(onhammered)
-        inst.components.workable:SetOnWorkCallback(onhit)       
+        inst.components.workable:SetOnWorkCallback(onhit)
         MakeSnowCovered(inst)
 
         MakeLargeBurnable(inst, nil, nil, true)

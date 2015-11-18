@@ -120,6 +120,7 @@ ACTIONS =
     TAUNT = Action(0, nil, nil, 30),
     ATTUNE = Action(),
     REMOTERESURRECT = Action(0, false, false, nil, true, true),
+    MIGRATE = Action(0, false, false, nil, true),
 }
 
 ACTION_IDS = {}
@@ -993,6 +994,8 @@ ACTIONS.GOHOME.fn = function(act)
             return act.target.components.spawner:GoHome(act.doer)
         elseif act.target.components.childspawner ~= nil then
             return act.target.components.childspawner:GoHome(act.doer)
+        elseif act.target.components.hideout ~= nil then
+            return act.target.components.hideout:GoHome(act.doer)
         end
         act.target:PushEvent("onwenthome", { doer = act.doer })
         act.doer:Remove()
@@ -1008,8 +1011,8 @@ ACTIONS.JUMPIN.strfn = function(act)
 end
 
 ACTIONS.JUMPIN.fn = function(act)
-    if act.target.components.teleporter ~= nil then
-        act.target.components.teleporter:Activate(act.doer)
+    if act.doer ~= nil and act.doer.sg ~= nil and act.doer.sg.currentstate.name == "jumpin_pre" then
+        act.doer.sg:GoToState("jumpin", { teleporter = act.target })
         return true
     end
 end
@@ -1130,10 +1133,12 @@ ACTIONS.TURNOFF.fn = function(act)
 end
 
 ACTIONS.USEITEM.fn = function(act)
-    if act.invobject and act.invobject.components.useableitem then
-        if act.invobject.components.useableitem:CanInteract() then
-            act.invobject.components.useableitem:StartUsingItem()
-        end
+    if act.invobject ~= nil and
+        act.invobject.components.useableitem ~= nil and
+        act.invobject.components.useableitem:CanInteract() and
+        act.doer.components.inventory ~= nil and
+        act.doer.components.inventory:IsOpenedBy(act.doer) then
+        act.invobject.components.useableitem:StartUsingItem()
     end
 end
 
@@ -1146,21 +1151,14 @@ ACTIONS.TAKEITEM.fn = function(act)
 end
 
 ACTIONS.TAKEITEM.strfn = function(act)
-    local targ = act.target
-
-    if targ.prefab == "birdcage" then
-        return "BIRDCAGE"
-    else
-        return "GENERIC"  
-    end
+    return act.target.prefab == "birdcage" and "BIRDCAGE" or "GENERIC"
 end
 
 ACTIONS.CASTSPELL.strfn = function(act)
-    local targ = act.invobject
-    
-    if targ and targ.components.spellcaster then
-        return targ.components.spellcaster.actiontype
-    end
+    return act.invobject ~= nil
+        and act.invobject.components.spellcaster ~= nil
+        and act.invobject.components.spellcaster.actiontype
+        or nil
 end
 
 ACTIONS.CASTSPELL.fn = function(act)
@@ -1340,6 +1338,14 @@ ACTIONS.ATTUNE.fn = function(act)
         act.target.components.attunable ~= nil then
         return act.target.components.attunable:LinkToPlayer(act.doer)
     end
+end
+
+ACTIONS.MIGRATE.fn = function(act)
+    --fail reasons: "NODESTINATION"
+    return act.doer ~= nil
+        and act.target ~= nil
+        and act.target.components.worldmigrator ~= nil
+        and act.target.components.worldmigrator:Activate(act.doer)
 end
 
 ACTIONS.REMOTERESURRECT.fn = function(act)

@@ -55,6 +55,7 @@ local function fn()
     inst.entity:AddSoundEmitter()
     inst.entity:AddDynamicShadow()
     inst.entity:AddNetwork()
+    inst.entity:AddLightWatcher()
 
     MakeCharacterPhysics(inst, 10, .5)
 

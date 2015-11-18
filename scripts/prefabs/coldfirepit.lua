@@ -12,11 +12,12 @@ local prefabs =
 }
 
 local function onhammered(inst, worker)
+    local x, y, z = inst.Transform:GetWorldPosition()
     inst.components.lootdropper:DropLoot()
-    local ash = SpawnPrefab("ash")
-    ash.Transform:SetPosition(inst.Transform:GetWorldPosition())
-    SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
-    inst.SoundEmitter:PlaySound("dontstarve/common/destroy_stone")
+    SpawnPrefab("ash").Transform:SetPosition(x, y, z)
+    local fx = SpawnPrefab("collapse_small")
+    fx.Transform:SetPosition(x, y, z)
+    fx:SetMaterial("stone")
     inst:Remove()
 end
 
@@ -134,7 +135,7 @@ local function fn()
     inst.components.fueled:SetUpdateFn(onupdatefueled)
     inst.components.fueled:SetSectionCallback(function(section)
         if section == 0 then
-            inst.components.burnable:Extinguish() 
+            inst.components.burnable:Extinguish()
         else
             if not inst.components.burnable:IsBurning() then
                 inst.components.burnable:Ignite()

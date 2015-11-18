@@ -15,57 +15,63 @@ local prefabs =
     "collapse_small",
 }
 
-local chests = {
-    treasure_chest = {
-        bank="chest",
-        build="treasure_chest",
+local chests =
+{
+    treasure_chest =
+    {
+        bank = "chest",
+        build = "treasure_chest",
     },
-    skull_chest = {
-        bank="skull_chest",
-        build="skull_chest",
+    skull_chest =
+    {
+        bank = "skull_chest",
+        build = "skull_chest",
     },
-    pandoras_chest = {
-        bank="pandoras_chest",
-        build="pandoras_chest",
+    pandoras_chest =
+    {
+        bank = "pandoras_chest",
+        build = "pandoras_chest",
     },
-    minotaur_chest = {
+    minotaur_chest =
+    {
         bank = "pandoras_chest_large",
         build = "pandoras_chest_large",
     },
 }
 
-local function onopen(inst) 
-    if not inst:HasTag("burnt") then 
-        inst.AnimState:PlayAnimation("open") 
+local function onopen(inst)
+    if not inst:HasTag("burnt") then
+        inst.AnimState:PlayAnimation("open")
         inst.SoundEmitter:PlaySound("dontstarve/wilson/chest_open")
     end
 end 
 
-local function onclose(inst) 
+local function onclose(inst)
     if not inst:HasTag("burnt") then
-        inst.AnimState:PlayAnimation("close") 
-        inst.SoundEmitter:PlaySound("dontstarve/wilson/chest_close")        
+        inst.AnimState:PlayAnimation("close")
+        inst.SoundEmitter:PlaySound("dontstarve/wilson/chest_close")
     end
-end 
+end
 
 local function onhammered(inst, worker)
-    if not inst:HasTag("fire") and inst.components.burnable then 
+    if inst.components.burnable ~= nil and inst.components.burnable:IsBurning() then
         inst.components.burnable:Extinguish()
     end
     inst.components.lootdropper:DropLoot()
-    if inst.components.container then 
+    if inst.components.container ~= nil then
         inst.components.container:DropEverything()
     end
-    SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
-    inst.SoundEmitter:PlaySound("dontstarve/common/destroy_wood")   
+    local fx = SpawnPrefab("collapse_small")
+    fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+    fx:SetMaterial("wood")
     inst:Remove()
 end
 
 local function onhit(inst, worker)
-    if not inst:HasTag("burnt") then 
+    if not inst:HasTag("burnt") then
         inst.AnimState:PlayAnimation("hit")
         inst.AnimState:PushAnimation("closed", false)
-        if inst.components.container then 
+        if inst.components.container ~= nil then
             inst.components.container:DropEverything()
             inst.components.container:Close()
         end
@@ -77,15 +83,14 @@ local function onbuilt(inst)
     inst.AnimState:PushAnimation("closed", false)
 end
 
-
 local function onsave(inst, data)
-    if inst:HasTag("burnt") or inst:HasTag("fire") then
+    if inst:HasTag("burnt") or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
         data.burnt = true
     end
 end
 
 local function onload(inst, data)
-    if data and data.burnt then
+    if data ~= nil and data.burnt then
         inst.components.burnable.onburnt(inst)
     end
 end

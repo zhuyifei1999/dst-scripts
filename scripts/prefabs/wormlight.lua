@@ -1,45 +1,87 @@
-local assets=
+local assets =
 {
-	Asset("ANIM", "anim/worm_light.zip"),
+    Asset("ANIM", "anim/worm_light.zip"),
 }
 
-local function item_oneaten(inst, eater)
+local lesserassets =
+{
+    Asset("ANIM", "anim/worm_light_lesser.zip"),
+}
 
-    if eater.wormlight then
-        eater.wormlight.components.spell.lifetime = 0
-        eater.wormlight.components.spell:ResumeSpell()
-    else
-        local light = SpawnPrefab("wormlight_light")
-        light.components.spell:SetTarget(eater)
-        if not light.components.spell.target then
-            light:Remove()
+local prefabs =
+{
+    "wormlight_light",
+}
+
+local lesserprefabs =
+{
+    "wormlight_light_lesser",
+}
+
+-----------------------------------------------------------------------
+
+local function create_light(eater, lightprefab)
+    if eater.wormlight ~= nil then
+        if eater.wormlight.prefab == lightprefab then
+            eater.wormlight.components.spell.lifetime = 0
+            eater.wormlight.components.spell:ResumeSpell()
+            return
+        else
+            eater.wormlight.components.spell:OnFinish()
         end
-        light.components.spell:StartSpell()
+    end
+
+    local light = SpawnPrefab(lightprefab)
+    light.components.spell:SetTarget(eater)
+    if light:IsValid() then
+        if light.components.spell.target == nil then
+            light:Remove()
+        else
+            light.components.spell:StartSpell()
+        end
     end
 end
 
-local function itemfn()
-	local inst = CreateEntity()
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-    
+local function item_oneaten(inst, eater)
+    create_light(eater, "wormlight_light")
+end
+
+local function lesseritem_oneaten(inst, eater)
+    create_light(eater, "wormlight_light_lesser")
+end
+
+local function item_commonfn(bank, build, masterfn)
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddLight()
+    inst.entity:AddNetwork()
+
     inst.AnimState:SetBank("worm_light")
     inst.AnimState:SetBuild("worm_light")
     inst.AnimState:PlayAnimation("idle")
-    MakeInventoryPhysics(inst)
-    
-    inst:AddComponent("inspectable")
-    
-    inst:AddComponent("inventoryitem")
+    inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
 
+    MakeInventoryPhysics(inst)
+
+    inst.Light:SetFalloff(0.7)
+    inst.Light:SetIntensity(.5)
+    inst.Light:SetRadius(0.5)
+    inst.Light:SetColour(169/255, 231/255, 245/255)
+    inst.Light:Enable(true)
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst:AddComponent("inspectable")
+    inst:AddComponent("inventoryitem")
     inst:AddComponent("tradable")
-    
+
     inst:AddComponent("edible")
-    inst.components.edible.foodtype = FOODTYPE.VEGGIE
-    inst.components.edible.healthvalue = TUNING.HEALING_MEDSMALL + TUNING.HEALING_SMALL
-    inst.components.edible.hungervalue = TUNING.CALORIES_MED
-    inst.components.edible.sanityvalue = -TUNING.SANITY_SMALL
-    inst.components.edible:SetOnEatenFn(item_oneaten)
 
     inst:AddComponent("perishable")
     inst.components.perishable:SetPerishTime(TUNING.PERISH_MED)
@@ -47,100 +89,222 @@ local function itemfn()
     inst.components.perishable.onperishreplacement = "spoiled_food"
 
     inst:AddComponent("fuel")
-    inst.components.fuel.fuelvalue = TUNING.LARGE_FUEL * 1.33
     inst.components.fuel.fueltype = FUELTYPE.WORMLIGHT
 
     inst:AddComponent("stackable")
     inst.components.stackable.maxsize = TUNING.STACK_SIZE_LARGEITEM
 
-    local light = inst.entity:AddLight()
-    light:SetFalloff(0.7)
-    light:SetIntensity(.5)
-    light:SetRadius(0.5)
-    light:SetColour(169/255, 231/255, 245/255)
-    light:Enable(true)
-    inst.AnimState:SetBloomEffectHandle( "shaders/anim.ksh" )
-
+    if masterfn ~= nil then
+        masterfn(inst)
+    end
 
     return inst
 end
 
+local function itemfn()
+    return item_commonfn(
+        "worm_light",
+        "worm_light",
+        function(inst)
+            inst.components.edible.foodtype = FOODTYPE.VEGGIE
+            inst.components.edible.healthvalue = TUNING.HEALING_MEDSMALL + TUNING.HEALING_SMALL
+            inst.components.edible.hungervalue = TUNING.CALORIES_MED
+            inst.components.edible.sanityvalue = -TUNING.SANITY_SMALL
+            inst.components.edible:SetOnEatenFn(item_oneaten)
+
+            inst.components.fuel.fuelvalue = TUNING.LARGE_FUEL * 1.33
+        end
+    )
+end
+
+local function lesseritemfn()
+    return item_commonfn(
+        "worm_light_lesser",
+        "worm_light_lesser",
+        function(inst)
+            inst.components.edible.foodtype = FOODTYPE.VEGGIE
+            inst.components.edible.healthvalue = TUNING.HEALING_SMALL
+            inst.components.edible.hungervalue = TUNING.CALORIES_SMALL
+            inst.components.edible.sanityvalue = -TUNING.SANITY_SMALL
+            inst.components.edible:SetOnEatenFn(lesseritem_oneaten)
+
+            inst.components.fuel.fuelvalue = TUNING.MED_FUEL
+        end
+    )
+end
+
+-----------------------------------------------------------------------
+
+local lightprefabs =
+{
+    "wormlight_light_fx",
+}
+
+local lesserlightprefabs =
+{
+    "wormlight_light_fx_lesser",
+}
+
 local function light_resume(inst, time)
-    local percent = time/inst.components.spell.duration
-    local var = inst.components.spell.variables
-    if percent and time > 0 then
-        --Snap light to value
-        inst.components.lighttweener:StartTween(inst.light, Lerp(0, var.radius, percent), 0.8, 0.5, {1,1,1}, 0)
-        --resume tween with time left
-        inst.components.lighttweener:StartTween(nil, 0, nil, nil, nil, time)
-    end
-end
-
-local function light_onsave(inst, data)
-    data.timealive = inst:GetTimeAlive()
-end
-
-local function light_onload(inst, data)
-    if data and data.timealive then
-        light_resume(inst, data.timealive)
-    end
-end
-
-local function light_spellfn(inst, target, variables)
-    if target then
-        inst.Transform:SetPosition(target:GetPosition():Get())
-    end
+    inst.fx:setprogress(1 - time / inst.components.spell.duration)
 end
 
 local function light_start(inst)
-    local spell = inst.components.spell
-    inst.components.lighttweener:StartTween(inst.light, spell.variables.radius, 0.8, 0.5, {169/255,231/255,245/255}, 0)
-    inst.components.lighttweener:StartTween(nil, 0, nil, nil, nil, spell.duration)
+    inst.fx:setprogress(0)
 end
 
 local function light_ontarget(inst, target)
-    if not target then return end
+    if target == nil or target:HasTag("playerghost") or target:HasTag("overcharge") then
+        inst:Remove()
+        return
+    end
+
+    local function forceremove()
+        inst.components.spell:OnFinish()
+    end
+
     target.wormlight = inst
+    inst.Follower:FollowSymbol(target.GUID, "", 0, 0, 0)
     target:AddTag(inst.components.spell.spellname)
-    target.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+    inst.fx.entity:SetParent(target.entity)
+    inst:ListenForEvent("onremove", forceremove, target)
+
+    if target:HasTag("player") then
+        inst:ListenForEvent("ms_becameghost", forceremove, target)
+        if target:HasTag("electricdamageimmune") then
+            inst:ListenForEvent("ms_overcharge", forceremove, target)
+        end
+        target.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+        inst.persists = false
+    else
+        target.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+        inst.persists = true
+    end
 end
 
 local function light_onfinish(inst)
-    if not inst.components.spell.target then
-        return
+    local target = inst.components.spell.target
+    if target ~= nil then
+        target.wormlight = nil
+        if not (target:HasTag("playerghost") or target:HasTag("overcharge")) then
+            target.AnimState:ClearBloomEffectHandle()
+        end
     end
-    inst.components.spell.target.wormlight = nil
-    inst.components.spell.target.AnimState:ClearBloomEffectHandle()
 end
 
-local light_variables = {
-    radius = TUNING.WORMLIGHT_RADIUS,
-}
+local function light_onremove(inst)
+    inst.fx:Remove()
+end
 
-local function lightfn()
-
+local function light_commonfn(duration, fxprefab)
     local inst = CreateEntity()
-    inst.entity:AddTransform()
 
-    inst:AddComponent("lighttweener")
-    inst.light = inst.entity:AddLight()
-    inst.light:Enable(true)
+    inst.entity:AddTransform()
+    inst.entity:AddFollower()
+    inst:Hide()
 
     inst:AddTag("FX")
     inst:AddTag("NOCLICK")
-    local spell = inst:AddComponent("spell")
+    --[[Non-networked entity]]
+
+    inst:AddComponent("spell")
     inst.components.spell.spellname = "wormlight"
-    inst.components.spell:SetVariables(light_variables)
-    inst.components.spell.duration = TUNING.WORMLIGHT_DURATION
+    inst.components.spell.duration = duration
     inst.components.spell.ontargetfn = light_ontarget
     inst.components.spell.onstartfn = light_start
     inst.components.spell.onfinishfn = light_onfinish
-    inst.components.spell.fn = light_spellfn
     inst.components.spell.resumefn = light_resume
     inst.components.spell.removeonfinish = true
+
+    inst.persists = false --until we get a target
+    inst.fx = SpawnPrefab(fxprefab)
+    inst.OnRemoveEntity = light_onremove
 
     return inst
 end
 
-return Prefab( "common/inventory/wormlight", itemfn, assets),
-Prefab("common/inventory/wormlight_light", lightfn)
+local function lightfn()
+    return light_commonfn(TUNING.WORMLIGHT_DURATION, "wormlight_light_fx")
+end
+
+local function lesserlightfn()
+    return light_commonfn(TUNING.WORMLIGHT_DURATION * .25, "wormlight_light_fx_lesser")
+end
+
+-----------------------------------------------------------------------
+
+local function OnUpdateLight(inst, dframes)
+    local frame = inst._lightframe:value() + dframes
+    if frame >= inst._lightmaxframe then
+        inst._lightframe:set_local(inst._lightmaxframe)
+        inst._lighttask:Cancel()
+        inst._lighttask = nil
+    else
+        inst._lightframe:set_local(frame)
+    end
+
+    inst.Light:SetRadius(TUNING.WORMLIGHT_RADIUS * (1 - inst._lightframe:value() / inst._lightmaxframe))
+end
+
+local function OnLightDirty(inst)
+    if inst._lighttask == nil then
+        inst._lighttask = inst:DoPeriodicTask(FRAMES, OnUpdateLight, nil, 1)
+    end
+    OnUpdateLight(inst, 0)
+end
+
+local function setprogress(inst, percent)
+    inst._lightframe:set(math.max(0, math.min(inst._lightmaxframe, math.floor(percent * inst._lightmaxframe + .5))))
+    OnLightDirty(inst)
+end
+
+local function lightfx_commonfn(duration)
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddLight()
+    inst.entity:AddNetwork()
+
+    inst:AddTag("FX")
+    inst:AddTag("NOCLICK")
+
+    inst.Light:SetRadius(0)
+    inst.Light:SetIntensity(.8)
+    inst.Light:SetFalloff(.5)
+    inst.Light:SetColour(169/255, 231/255, 245/255)
+    inst.Light:Enable(true)
+    inst.Light:EnableClientModulation(true)
+
+    inst._lightmaxframe = math.floor(duration / FRAMES + .5)
+    inst._lightframe = net_ushortint(inst.GUID, "wormlight_light_fx._lightframe", "lightdirty")
+    inst._lightframe:set(inst._lightmaxframe)
+    inst._lighttask = nil
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        inst:ListenForEvent("lightdirty", OnLightDirty)
+
+        return inst
+    end
+
+    inst.setprogress = setprogress
+    inst.persists = false
+
+    return inst
+end
+
+local function lightfxfn()
+    return lightfx_commonfn(TUNING.WORMLIGHT_DURATION)
+end
+
+local function lesserlightfxfn()
+    return lightfx_commonfn(TUNING.WORMLIGHT_DURATION * .25)
+end
+
+return  Prefab("common/inventory/wormlight", itemfn, assets, prefabs),
+        Prefab("common/inventory/wormlight_lesser", lesseritemfn, lesserassets, lesserprefabs),
+        Prefab("common/inventory/wormlight_light", lightfn, nil, lightprefabs),
+        Prefab("common/inventory/wormlight_light_lesser", lesserlightfn, nil, lesserlightprefabs),
+        Prefab("common/inventory/wormlight_light_fx", lightfxfn),
+        Prefab("common/inventory/wormlight_light_fx_lesser", lesserlightfxfn)

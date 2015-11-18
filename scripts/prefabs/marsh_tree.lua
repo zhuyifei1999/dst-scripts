@@ -87,17 +87,16 @@ local function OnBurnt(inst)
 end
 
 local function inspect_tree(inst)
-    if inst:HasTag("burnt") then
-        return "BURNT"
-    elseif inst:HasTag("stump") then
-        return "CHOPPED"
-    elseif inst.components.burnable and inst.components.burnable:IsBurning() then
-        return "BURNING"
-    end
+    return (inst:HasTag("burnt") and "BURNT")
+        or (inst:HasTag("stump") and "CHOPPED")
+        or (inst.components.burnable ~= nil and
+            inst.components.burnable:IsBurning() and
+            "BURNING")
+        or nil
 end
 
 local function onsave(inst, data)
-    if inst:HasTag("burnt") or inst:HasTag("fire") then
+    if inst:HasTag("burnt") or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
         data.burnt = true
     end
     if inst:HasTag("stump") then
@@ -106,7 +105,7 @@ local function onsave(inst, data)
 end
 
 local function onload(inst, data)
-    if data then
+    if data ~= nil then
         if data.burnt then
             OnBurnt(inst)
         elseif data.stump then
@@ -116,7 +115,9 @@ local function onload(inst, data)
             inst:RemoveComponent("propagator")
             inst:RemoveComponent("growable")
             inst:RemoveComponent("hauntable")
-            if not inst:HasTag("burnt") then MakeHauntableIgnite(inst) end
+            if not inst:HasTag("burnt") then
+                MakeHauntableIgnite(inst)
+            end
             RemovePhysicsColliders(inst)
             inst.AnimState:PlayAnimation("stump", false)
             inst:AddTag("stump")

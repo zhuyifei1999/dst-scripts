@@ -1,9 +1,9 @@
 -- WORM ATTACKS --
-local worm_waittime = function(data) 
+local worm_waittime = function(data)
     --The older the world, the more often the attacks.
     --Day 150+ gives the most often.
     local days = math.min(math.max(Lerp(12, 5, TheWorld.state.cycles / 150), 3), 10)
-    return (TUNING.TOTAL_DAY_TIME * 2) + (days * TUNING.TOTAL_DAY_TIME) 
+    return (TUNING.TOTAL_DAY_TIME * 2) + (days * TUNING.TOTAL_DAY_TIME)
 end
 
 local worm_warntime = function(data)
@@ -35,10 +35,10 @@ local worm_numtospawn = function(data)
     return RoundBiasedDown(math.min(math.max(Lerp(2, 6, TheWorld.state.cycles / 150), 2), 6))
 end
 
-local worm_onspawnfn = function(inst) 
+local worm_onspawnfn = function(inst)
 	-- KAJ: MP_LOGIC
 	if inst.components.combat then
-		inst.components.combat:SetTarget(ThePlayer) 
+		inst.components.combat:SetTarget(ThePlayer)
 	end
 
 	if inst.HomeTask then
@@ -63,7 +63,7 @@ local WORM = {
 	eventtimer = worm_eventtimer,
 
 	warnsound = "dontstarve/creatures/worm/distant",
-	onspawnfn = worm_onspawnfn, 
+	onspawnfn = worm_onspawnfn,
 	numtospawnfn = worm_numtospawn,
 	trackspawns = true,
 }

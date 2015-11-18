@@ -12,19 +12,11 @@ end
 local function onequip(inst, owner) 
     owner.AnimState:OverrideSymbol("swap_body", "armor_ruins", "swap_body")
     inst:ListenForEvent("blocked", OnBlocked, owner)
-
-    if inst.socket_onequip then
-        inst.socket_onequip(inst, owner)
-    end
 end
 
 local function onunequip(inst, owner) 
     owner.AnimState:ClearOverrideSymbol("swap_body")
     inst:RemoveEventCallback("blocked", OnBlocked, owner)
-
-    if inst.socket_onunequip then
-        inst.socket_onunequip(inst, owner)
-    end
 end
 
 local function fn()

@@ -23,7 +23,7 @@ local assets =
 }
 
 -- Add all the characters by name
-local charlist = GetActiveCharacterList and GetActiveCharacterList() or DST_CHARACTERLIST
+local charlist = GetActiveCharacterList ~= nil and GetActiveCharacterList() or DST_CHARACTERLIST
 for i, char in ipairs(charlist) do
     table.insert(assets, Asset("ATLAS", "bigportraits/"..char..".xml"))
     table.insert(assets, Asset("IMAGE", "bigportraits/"..char..".tex"))
@@ -112,7 +112,6 @@ local prefabs =
     "mermhouse",
     "flower_evil",
     "blueprint",
-    "lockedwes",
     "wormhole_limited_1",
     "diviningrod",
     "diviningrodbase",
@@ -138,13 +137,13 @@ local prefabs =
     "glommer",
     "statueglommer",
 
-    "moose",
-    "mossling",
-    "bearger",
-    "dragonfly",
-
     "cactus",
+
+    "migration_portal",
+    "shard_network",
 }
+
+--------------------------------------------------------------------------
 
 local function DoGameDataChanged(inst)
     inst.game_data_task = nil
@@ -166,14 +165,14 @@ local function OnGameDataChanged(inst)
 end
 
 local function PostInit(inst)
-    if inst.net then
+    if inst.net ~= nil then
         inst.net:PostInit()
     end
 
     inst:LongUpdate(0)
 
     for k, v in pairs(inst.components) do
-        if v.OnPostInit then
+        if v.OnPostInit ~= nil then
             v:OnPostInit()
         end
     end
@@ -198,96 +197,137 @@ local function OnRemoveEntity(inst)
     TheFocalPoint = nil
 end
 
-local function fn()
-    local inst = CreateEntity()
+--------------------------------------------------------------------------
 
-    assert(TheWorld == nil)
-    TheWorld = inst
-    inst.net = nil
-
-    inst.ismastersim = TheNet:GetIsMasterSimulation()
-
-    inst:AddTag("NOCLICK")
-    inst:AddTag("CLASSIFIED")
-    --[[Non-networked entity]]
-    inst.entity:SetCanSleep(false)
-    inst.persists = false
-
-    --Add core components
-    inst.entity:AddTransform()
-    inst.entity:AddMap()
-    inst.entity:AddPathfinder()
-    inst.entity:AddGroundCreep()
-    inst.entity:AddSoundEmitter()
-
-    --Initialize map
-    for i, data in ipairs(groundtiles.ground) do
-        local tile_type, props = unpack(data)
-        local layer_name = props.name
-        local handle = MapLayerManager:CreateRenderLayer(
-            tile_type, --embedded map array value
-            resolvefilepath(GroundAtlas(layer_name)),
-            resolvefilepath(GroundImage(layer_name)),
-            resolvefilepath(props.noise_texture)
-        )
-        inst.Map:AddRenderLayer(handle)
-        --TODO: When this object is destroyed, these handles really should be freed. At this time,
-        --this is not an issue because the map lifetime matches the game lifetime but if this were
-        --to ever change, we would have to clean up properly or we leak memory.
+function MakeWorld(name, customprefabs, customassets, common_postinit, master_postinit, tags)
+    local worldprefabs = {}
+    if name ~= "world" then
+        table.insert(worldprefabs, "world")
+    end
+    if customprefabs ~= nil then
+        for i, v in ipairs(customprefabs) do
+            table.insert(worldprefabs, v)
+        end
     end
 
-    for i, data in ipairs(groundtiles.creep) do
-        local tile_type, props = unpack(data)
-        local handle = MapLayerManager:CreateRenderLayer(
-            tile_type,
-            resolvefilepath(GroundAtlas(props.name)),
-            resolvefilepath(GroundImage(props.name)),
-            resolvefilepath(props.noise_texture)
+    local function fn()
+        local inst = CreateEntity()
+
+        assert(TheWorld == nil)
+        TheWorld = inst
+        inst.net = nil
+        inst.shard = nil
+
+        inst.ismastersim = TheNet:GetIsMasterSimulation()
+        inst.ismastershard = inst.ismastersim and not TheShard:IsSlave()
+        --V2C: Masters is hard
+
+        inst:AddTag("NOCLICK")
+        inst:AddTag("CLASSIFIED")
+
+        if tags ~= nil then
+            for i, v in ipairs(tags) do
+                inst:AddTag(v)
+            end
+        end
+
+        --[[Non-networked entity]]
+        inst.entity:SetCanSleep(false)
+        inst.persists = false
+
+        --Add core components
+        inst.entity:AddTransform()
+        inst.entity:AddMap()
+        inst.entity:AddPathfinder()
+        inst.entity:AddGroundCreep()
+        inst.entity:AddSoundEmitter()
+
+        --Initialize map
+        for i, data in ipairs(groundtiles.ground) do
+            local tile_type, props = unpack(data)
+            local layer_name = props.name
+            local handle = MapLayerManager:CreateRenderLayer(
+                tile_type, --embedded map array value
+                resolvefilepath(GroundAtlas(layer_name)),
+                resolvefilepath(GroundImage(layer_name)),
+                resolvefilepath(props.noise_texture)
+            )
+            inst.Map:AddRenderLayer(handle)
+            --TODO: When this object is destroyed, these handles really should be freed. At this time,
+            --this is not an issue because the map lifetime matches the game lifetime but if this were
+            --to ever change, we would have to clean up properly or we leak memory.
+        end
+
+        for i, data in ipairs(groundtiles.creep) do
+            local tile_type, props = unpack(data)
+            local handle = MapLayerManager:CreateRenderLayer(
+                tile_type,
+                resolvefilepath(GroundAtlas(props.name)),
+                resolvefilepath(GroundImage(props.name)),
+                resolvefilepath(props.noise_texture)
+            )
+            inst.GroundCreep:AddRenderLayer(handle)
+        end
+
+        local underground_layer = groundtiles.underground[1][2]
+        local underground_handle = MapLayerManager:CreateRenderLayer(
+            GROUND.UNDERGROUND,
+            resolvefilepath(GroundAtlas(underground_layer.name)),
+            resolvefilepath(GroundImage(underground_layer.name)),
+            resolvefilepath(underground_layer.noise_texture)
         )
-        inst.GroundCreep:AddRenderLayer(handle)
-    end
+        inst.Map:SetUndergroundRenderLayer(underground_handle)
 
-    local underground_layer = groundtiles.underground[1][2]
-    local underground_handle = MapLayerManager:CreateRenderLayer(
-        GROUND.UNDERGROUND,
-        resolvefilepath(GroundAtlas(underground_layer.name)),
-        resolvefilepath(GroundImage(underground_layer.name)),
-        resolvefilepath(underground_layer.noise_texture)
-    )
-    inst.Map:SetUndergroundRenderLayer(underground_handle)
+        inst.Map:SetImpassableType(GROUND.IMPASSABLE)
 
-    inst.Map:SetImpassableType(GROUND.IMPASSABLE)
+        --Initialize lua world state
+        inst:AddComponent("worldstate")
+        inst.state = inst.components.worldstate.data
 
-    --Initialize lua world state
-    inst:AddComponent("worldstate")
-    inst.state = inst.components.worldstate.data
+        --Initialize lua components
+        inst:AddComponent("groundcreep")
 
-    --Initialize lua components
-    inst:AddComponent("groundcreep")
+        --Public member functions
+        inst.PostInit = PostInit
+        inst.OnRemoveEntity = OnRemoveEntity
 
-    --Public member functions
-    inst.PostInit = PostInit
-    inst.OnRemoveEntity = OnRemoveEntity
+        --Initialize minimap
+        inst.minimap = SpawnPrefab("minimap")
 
-    --Initialize minimap
-    inst.minimap = SpawnPrefab("minimap")
+        --Initialize local focal point
+        assert(TheFocalPoint == nil)
+        TheFocalPoint = SpawnPrefab("focalpoint")
+        TheCamera:SetTarget(TheFocalPoint)
 
-    --Initialize local focal point
-    assert(TheFocalPoint == nil)
-    TheFocalPoint = SpawnPrefab("focalpoint")
-    TheCamera:SetTarget(TheFocalPoint)
+        if common_postinit ~= nil then
+            common_postinit(inst)
+        end
 
-    if inst.ismastersim then
+        inst:SetPrefabName("world") -- the actual prefab to load comes from gamelogic.lua, this is for postinitfns.
+
+        if not inst.ismastersim then
+            return inst
+        end
+
         inst:AddComponent("playerspawner")
+
+        --World health management
+        inst:AddComponent("skeletonsweeper")
+
+        if master_postinit ~= nil then
+            master_postinit(inst)
+        end
 
         --Cache static world gen data for server listing
         local worldgen_data = SaveGameIndex:GetSlotGenOptions() or {}
         TheNet:SetWorldGenData(DataDumper(worldgen_data, nil, false))
 
         inst.game_data_task = nil
+
+        return inst
     end
 
-    return inst
+    return Prefab(name, fn, customassets, worldprefabs)
 end
 
-return Prefab("world", fn, assets, prefabs, true)
+return MakeWorld("world", prefabs, assets)

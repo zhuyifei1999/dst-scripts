@@ -65,6 +65,9 @@ local function MakeTags()
 										tagdata["Chester_Eyebone"] = false
 										return "ITEM", "chester_eyebone"
 									end,
+            ["Nightmare"] = function(tagdata)
+                            return "TAG", "Nightmare"
+                        end,
 		}
 	return {Tag = map_tags, TagData = map_data }
 end

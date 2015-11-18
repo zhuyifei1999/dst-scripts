@@ -81,15 +81,11 @@ local WorldGenScreen = Class(Screen, function(self, profile, cb, world_gen_optio
 		gen_parameters.level_type = world_gen_options.level_type
 	end
 		
-	if world_gen_options.custom_options == nil then
-		gen_parameters.world_gen_choices = {
-			 		monsters = "default", animals = "default", resources = "default",
-	    			unprepared = "default", 
-	    			--prepared = "default", day = "default"
-    			}
-	else
-		gen_parameters.world_gen_choices = world_gen_options.custom_options
-	end
+    -- The saveindex may contain descriptions for multiple levels (e.g. for a shard master)
+    -- but we always generate the first description (which will either be the master server
+    -- options, or the options stomped in by worldgenoverride.lua -- see GetWorldgenOverride
+    -- usage in saveindex.lua)
+    gen_parameters.world_gen_choices = world_gen_options.custom_options and world_gen_options.custom_options[1] or {}
 	
 	gen_parameters.current_level = world_gen_options.level_world
 
@@ -167,11 +163,11 @@ function WorldGenScreen:OnUpdate(dt)
 			if string.match(self.worlddata,"^error") then
 				self.done = false
 				self.cb(self.worlddata)
-			elseif self.total_time > MIN_GEN_TIME and self.cb then
+			elseif self.total_time > 0 --[[ MIN_GEN_TIME ]]and self.cb then
 				self.done = false
-				TheFrontEnd:Fade(false, 1, function() 
+				--TheFrontEnd:Fade(false, 1, function() 
 					self.cb(self.worlddata)
-				end, nil, nil, "white")
+				--end, nil, nil, "white")
 			end
 		end
 	end

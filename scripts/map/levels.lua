@@ -3,8 +3,6 @@ require("map/level")
 
 local levellist = {}
 levellist[LEVELTYPE.SURVIVAL] = {}
-levellist[LEVELTYPE.CAVE] = {}
-levellist[LEVELTYPE.ADVENTURE] = {}
 levellist[LEVELTYPE.TEST] = {}
 levellist[LEVELTYPE.CUSTOM] = {}
 
@@ -13,9 +11,8 @@ function AddLevel(type, data)
 end
 --add a getter and setter for tasks (so it has default/plus/darkness mapped to the translation values and then world gen calls GetTasks("default"))
 
-require("map/levels/adventure")
-require("map/levels/caves")
 require("map/levels/survival")
+require("map/levels/caves")
 
 function GetTypeForLevelID(id)
 	if id == nil or id:lower() == "unknown" then
@@ -53,22 +50,11 @@ AddLevel(LEVELTYPE.TEST, {
 		},
 		tasks={
 			"CavesStart",
-			"CavesAlternateStart",
-			"FungalBatCave",
-			"BatCaves",
-			"TentacledCave",
-			"LargeFungalComplex",
-			"SingleBatCaveTask",
-			"RabbitsAndFungs",
-			"FungalPlain",
-			"Cavern",
+            "TheLabyrinth",
+            "SingleBatCave2",
 		},
-		numoptionaltasks = 1,
+		numoptionaltasks = 0,
 		optionaltasks = {
-			"CaveBase",
-			"MushBase",
-			"SinkBase",
-			"RabbitTown",
 		},
 		override_triggers = {
 			-- ["RuinsStart"] = {	
@@ -95,12 +81,10 @@ AddLevel(LEVELTYPE.TEST, {
 	})
 
 
-return { story_levels=levellist[LEVELTYPE.ADVENTURE],
+return {
 			sandbox_levels=levellist[LEVELTYPE.SURVIVAL],
-			cave_levels = levellist[LEVELTYPE.CAVE],
 			--free_level=levellist[LEVELTYPE.SURVIVAL][1],
 			test_level=levellist[LEVELTYPE.TEST][1],
 			custom_levels = levellist[LEVELTYPE.CUSTOM],
-			CAMPAIGN_LENGTH=CAMPAIGN_LENGTH,
 			GetTypeForLevelID = GetTypeForLevelID
 		}

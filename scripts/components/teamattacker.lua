@@ -1,3 +1,12 @@
+local function onteamtype(self, team, oldteam)
+    if oldteam ~= nil then
+        self.inst:RemoveTag("team_"..oldteam)
+    end
+    if team ~= nil then
+        self.inst:AddTag("team_"..team)
+    end
+end
+
 local TeamAttacker = Class(function(self, inst)
 	self.inst = inst
 	self.inteam = false
@@ -8,26 +17,23 @@ local TeamAttacker = Class(function(self, inst)
 	self.leashdistance = 70
 	self.inst:StartUpdatingComponent(self)
 	self.team_type = "monster"
-end)
+end,
+nil,
+{
+    team_type = onteamtype,
+})
 
 function TeamAttacker:GetDebugString()
 	local str = string.format("In Team %s, Current Orders: %s",
-		tostring(self.inteam), self.orders or "NONE")
+		tostring(self.inteam), self.orders and table.reverselookup(ORDERS, self.orders) or "NONE")
 	return str
 end
 
 function TeamAttacker:SearchForTeam()	
 	local pt = Vector3(self.inst.Transform:GetWorldPosition()) 
-	local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, self.searchradius)
-	local possibleleaders = {}
+	local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, self.searchradius, {"teamleader_"..self.team_type})
 
 	for k,v in pairs(ents) do
-        if v and v:HasTag(self.team_type) and v.components.teamleader then
-            possibleleaders[v] = v 
-        end
-    end
-
-    for k,v in pairs(possibleleaders) do
 		if not v.components.teamleader:IsTeamFull() then
 			v.components.teamleader:NewTeammate(self.inst)
 			return true
@@ -63,7 +69,7 @@ function TeamAttacker:OnUpdate(dt)
 	if self:ShouldGoHome() then self:LeaveTeam() end
 
 	if self.teamleader and self.teamleader:CanAttack() then --did you find a team?
-		if self.orders == "HOLD" or self.orders == nil then --if you don't have anything to do.. look menacing
+		if self.orders == ORDERS.HOLD or self.orders == nil then --if you don't have anything to do.. look menacing
 			self.inst.components.combat.target = nil			
 			if self.formationpos then
 				local destpos = self.formationpos
@@ -75,11 +81,11 @@ function TeamAttacker:OnUpdate(dt)
 				end
 
 				if self.inst.components.health.takingfiredamage then
-					self.orders = "ATTACK"
+					self.orders = ORDERS.ATTACK
 				end
 
 			end
-		elseif self.orders == "WARN" then
+		elseif self.orders == ORDERS.WARN then
 			self.inst.components.combat.target = nil			
 			if self.formationpos then
 				local destpos = self.formationpos
@@ -90,7 +96,7 @@ function TeamAttacker:OnUpdate(dt)
 					end
 				end
 			end
-		elseif self.orders == "ATTACK" then	--You have been told to attack. Get the target from your leader.
+		elseif self.orders == ORDERS.ATTACK then	--You have been told to attack. Get the target from your leader.
 			self.inst.components.combat:SuggestTarget(self.teamleader.threat)			
 		end
 	end

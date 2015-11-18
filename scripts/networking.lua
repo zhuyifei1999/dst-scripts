@@ -36,6 +36,14 @@ function Networking_Announcement(message, colour, announce_type)
     end
 end
 
+function Networking_JoinAnnouncement(name, colour)
+    Networking_Announcement(name.." "..STRINGS.UI.NOTIFICATION.JOINEDGAME, colour, "join_game")
+end
+
+function Networking_LeaveAnnouncement(name, colour)
+    Networking_Announcement(name.." "..STRINGS.UI.NOTIFICATION.LEFTGAME, colour, "leave_game")
+end
+
 function Networking_Say(guid, userid, name, prefab, message, colour, whisper)
     local entity = Ents[guid]
     if entity ~= nil and entity.components.talker ~= nil then
@@ -208,8 +216,8 @@ function DownloadMods( server_listing )
 			end
 			
 			if mod.all_clients_require_mod then
-				if not KnownModIndex:DoesModExist( mod.mod_name, mod.version ) then
-					print("Failed to find mod "..mod.mod_name.." v:"..mod.version)
+				if not KnownModIndex:DoesModExist( mod.mod_name, mod.version, mod.version_compatible ) then
+					print("Failed to find mod "..mod.mod_name.." v:"..mod.version.."vc:"..mod.version_compatible )
 					
 					have_required_mods = false
 					local can_dl_mod = TheSim:QueueDownloadTempMod(mod.mod_name, mod.version)
@@ -238,7 +246,7 @@ function DownloadMods( server_listing )
 							KnownModIndex:UpdateModInfo() --Make sure we're verifying against the latest data in the mod folder
 							for k,mod in pairs(server_listing.mods_description) do
 								if mod.all_clients_require_mod then
-									if not KnownModIndex:DoesModExist( mod.mod_name, mod.version ) then
+									if not KnownModIndex:DoesModExist( mod.mod_name, mod.version, mod.version_compatible ) then
 										all_mods_good = false
 										mod_with_invalid_version = mod										
 									end
@@ -279,14 +287,28 @@ function DownloadMods( server_listing )
 	end
 end
 
+function ShowConnectingToGamePopup()
+	local active_screen = TheFrontEnd:GetActiveScreen()
+	if active_screen == nil or active_screen.name ~= "ConnectingToGamePopup" then
+		TheFrontEnd:PushScreen(ConnectingToGamePopup())
+	end
+end
+
 function JoinServer( server_listing, optional_password_override )
 
-	local function start_client( password )	
-        local start_worked = TheNet:StartClient( server_listing.ip, server_listing.port, server_listing.guid, password )
+	local function send_response( password )	
+
+		-- Just pass the guid in here, the network manager should have this listing
+		local start_worked = TheNet:JoinServerResponse( false, server_listing.guid, password )
+
 		if start_worked then
 			DisableAllDLC()
 		end
-		TheFrontEnd:PushScreen(ConnectingToGamePopup())
+		ShowConnectingToGamePopup()
+	end
+
+	local function on_cancelled()
+		TheNet:JoinServerResponse( true )
 	end
 	
 	local function after_mod_warning(pop_screen)
@@ -302,20 +324,25 @@ function JoinServer( server_listing, optional_password_override )
                                                     text = STRINGS.UI.SERVERLISTINGSCREEN.OK,
                                                     cb = function()
                                                     	TheFrontEnd:PopScreen()
-                                                        start_client( password_prompt_screen:GetActualString() )
+                                                        send_response( password_prompt_screen:GetActualString() )
                                                     end
                                                 },
                                                 {
                                                     text = STRINGS.UI.SERVERLISTINGSCREEN.CANCEL,
                                                     cb = function()
                                                         TheFrontEnd:PopScreen()
+														on_cancelled()
                                                     end
                                                 },
                                             },
 										true )
 			password_prompt_screen.edit_text.OnTextEntered = function()
-				TheFrontEnd:PopScreen()
-				start_client( password_prompt_screen:GetActualString() ) 
+				if password_prompt_screen:GetActualString() ~= "" then
+					TheFrontEnd:PopScreen()
+					send_response( password_prompt_screen:GetActualString() ) 
+				else
+					password_prompt_screen.edit_text:SetEditing(true)
+				end
 			end
 			if not Profile:GetShowPasswordEnabled() then
 				password_prompt_screen.edit_text:SetPassword(true)
@@ -324,11 +351,11 @@ function JoinServer( server_listing, optional_password_override )
 			password_prompt_screen.edit_text:SetForceEdit(true)
 			password_prompt_screen.edit_text:OnControl(CONTROL_ACCEPT, false)
 		else
-			start_client( optional_password_override or "" )
+			send_response( optional_password_override or "" )
 		end
 	end
 	
-	if server_listing.mods_enabled and Profile:ShouldWarnModsEnabled() then
+	if not IsMigrating() and server_listing.mods_enabled and Profile:ShouldWarnModsEnabled() then
 
 		local checkbox_parent = Widget("checkbox_parent")
 		local checkbox = checkbox_parent:AddChild(ImageButton("images/ui.xml", "checkbox_off.tex", "checkbox_off_highlight.tex", "checkbox_off_disabled.tex", nil, nil, {1,1}, {0,0}))
@@ -368,6 +395,7 @@ function JoinServer( server_listing, optional_password_override )
 			{text=STRINGS.UI.SERVERLISTINGSCREEN.CANCEL, 
 				cb = function() 
 					TheFrontEnd:PopScreen() 
+					on_cancelled()
 				end, offset=Vector3(-90,0,0)}
         }
 
@@ -389,6 +417,19 @@ function JoinServer( server_listing, optional_password_override )
 	else
 		after_mod_warning( false )
 	end
+end
+
+function MigrateToServer(serverIp, serverPort, serverPassword, serverNetId)
+
+    serverNetId = serverNetId or ""
+
+    StartNextInstance({
+        reset_action = RESET_ACTION.JOIN_SERVER, 
+        serverIp=serverIp,
+        serverPort=serverPort,
+        serverPassword=serverPassword,
+        serverNetId=serverNetId
+    })
 end
 
 function GetAvailablePlayerColours()
@@ -435,11 +476,22 @@ function GetAvailablePlayerColours()
     return colours, DEFAULT_PLAYER_COLOUR
 end
 
+local function DoReset()
+    StartNextInstance({
+        reset_action = RESET_ACTION.LOAD_SLOT,
+        save_slot = SaveGameIndex:GetCurrentSaveSlot()
+    })
+end
+
 function WorldResetFromSim()
-	print( "received reset request in WorldResetFromSim")
     if TheWorld ~= nil and TheWorld.ismastersim then
-		print( "pushing ms_worldreset")
+        print("Received world reset request")
         TheWorld:PushEvent("ms_worldreset")
+        SaveGameIndex:DeleteSlot(
+            SaveGameIndex:GetCurrentSaveSlot(),
+            DoReset,
+            true -- true causes world gen options to be preserved
+        )
     end
 end
 
@@ -464,8 +516,12 @@ function UpdateServerTagsString()
         table.insert(tagsTable, STRINGS.TAGS.LOCAL)
     end
 
-    if TheNet:GetDefaultClanID() ~= "0" then
+    if TheNet:GetDefaultClanID() ~= "" then
         table.insert(tagsTable, STRINGS.TAGS.CLAN)
+    end
+
+    if TheShard:GetDefaultShardEnabled() then
+        table.insert(tagsTable, STRINGS.TAGS.MULTISERVER)
     end
 
     TheNet:SetServerTags(BuildTagsStringCommon(tagsTable))

@@ -1,116 +1,67 @@
+local clockwork_common = require"prefabs/clockwork_common"
+
 local assets =
 {
-	Asset("ANIM", "anim/bishop.zip"),
-	Asset("ANIM", "anim/bishop_build.zip"),
-	Asset("ANIM", "anim/bishop_nightmare.zip"),
-	Asset("SOUND", "sound/chess.fsb"),
+    Asset("ANIM", "anim/bishop.zip"),
+    Asset("ANIM", "anim/bishop_build.zip"),
+    Asset("ANIM", "anim/bishop_nightmare.zip"),
+    Asset("SOUND", "sound/chess.fsb"),
 }
 
 local prefabs =
 {
-	"gears",
+    "gears",
     "bishop_charge",
     "purplegem",
 }
 
+local prefabs_nightmare =
+{
+    "gears",
+    "bishop_charge",
+    "purplegem",
+    "nightmarefuel",
+    "thulecite_pieces",
+}
+
 local brain = require "brains/bishopbrain"
 
-SetSharedLootTable( 'bishop',
+SetSharedLootTable('bishop',
 {
     {'gears',       1.0},
     {'gears',       1.0},
     {'purplegem',   1.0},
 })
 
-SetSharedLootTable( 'bishop_nightmare',
+SetSharedLootTable('bishop_nightmare',
 {
     {'purplegem',         1.0},
     {'nightmarefuel',     0.6},
     {'thulecite_pieces',  0.5},
 })
 
-local SLEEP_DIST_FROMHOME = 1
-local SLEEP_DIST_FROMTHREAT = 20
-local MAX_CHASEAWAY_DIST = 40
-local MAX_TARGET_SHARES = 5
-local SHARE_TARGET_DIST = 40
-
 local function ShouldSleep(inst)
-    local homePos = inst.components.knownlocations:GetLocation("home")
-    local myPos = Vector3(inst.Transform:GetWorldPosition() )
-    if not (homePos and distsq(homePos, myPos) <= SLEEP_DIST_FROMHOME*SLEEP_DIST_FROMHOME)
-       or (inst.components.combat and inst.components.combat.target)
-       or (inst.components.burnable and inst.components.burnable:IsBurning() )
-       or (inst.components.freezable and inst.components.freezable:IsFrozen() ) then
-        return false
-    end
-    local nearestEnt = GetClosestInstWithTag("character", inst, SLEEP_DIST_FROMTHREAT)
-    return nearestEnt == nil
+    return clockwork_common.ShouldSleep(inst)
 end
 
 local function ShouldWake(inst)
-    local homePos = inst.components.knownlocations:GetLocation("home")
-    local myPos = Vector3(inst.Transform:GetWorldPosition() )
-    if (homePos and distsq(homePos, myPos) > SLEEP_DIST_FROMHOME*SLEEP_DIST_FROMHOME)
-       or (inst.components.combat and inst.components.combat.target)
-       or (inst.components.burnable and inst.components.burnable:IsBurning() )
-       or (inst.components.freezable and inst.components.freezable:IsFrozen() ) then
-        return true
-    end
-    local nearestEnt = GetClosestInstWithTag("character", inst, SLEEP_DIST_FROMTHREAT)
-    return nearestEnt
+    return clockwork_common.ShouldWake(inst)
 end
 
 local function Retarget(inst)
-    local homePos = inst.components.knownlocations:GetLocation("home")
-    local myPos = Vector3(inst.Transform:GetWorldPosition() )
-    if (homePos and distsq(homePos, myPos) > TUNING.BISHOP_TARGET_DIST*TUNING.BISHOP_TARGET_DIST) and not
-    (inst.components.follower and inst.components.follower.leader) then
-        return
-    end
-    
-    local newtarget = FindEntity(inst, TUNING.BISHOP_TARGET_DIST, function(guy)
-			local myLeader = inst.components.follower and inst.components.follower.leader
-			local theirLeader = guy.components.follower and guy.components.follower.leader
-			local bothFollowingSamePlayer = myLeader and (myLeader == theirLeader) and myLeader:HasTag("player")
-            return not (inst.components.follower and inst.components.follower.leader == guy)
-                   and not bothFollowingSamePlayer
-                   and not  (guy:HasTag("chess") and (guy.components.follower and not guy.components.follower.leader))
-                   and inst.components.combat:CanTarget(guy)
-    end,
-    nil,
-	nil,
-    {"character","monster"}
-    )
-    return newtarget
+    return clockwork_common.Retarget(inst, TUNING.BISHOP_TARGET_DIST)
 end
 
 local function KeepTarget(inst, target)
-
-    if (inst.components.follower and inst.components.follower.leader) then
-        return true
-    end
-
-    local homePos = inst.components.knownlocations:GetLocation("home")
-    local targetPos = Vector3(target.Transform:GetWorldPosition() )
-    return homePos and distsq(homePos, targetPos) < MAX_CHASEAWAY_DIST*MAX_CHASEAWAY_DIST
-end
-
-local function ShareTargetFn(dude)
-    return dude:HasTag("chess")
+    return clockwork_common.KeepTarget(inst, target)
 end
 
 local function OnAttacked(inst, data)
-    local attacker = data and data.attacker
-    if attacker and attacker:HasTag("chess") then
-        return
-    end
-    inst.components.combat:SetTarget(attacker)
-    inst.components.combat:ShareTarget(attacker, SHARE_TARGET_DIST, ShareTargetFn, MAX_TARGET_SHARES)
+    clockwork_common.OnAttacked(inst, data)
 end
 
 local function EquipWeapon(inst)
-    if inst.components.inventory and not inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) then
+    if inst.components.inventory ~= nil and not inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) then
         local weapon = CreateEntity()
         --[[Non-networked entity]]
         weapon.entity:AddTransform()
@@ -128,10 +79,10 @@ local function EquipWeapon(inst)
 end
 
 local function RememberKnownLocation(inst)
-    inst.components.knownlocations:RememberLocation("home", Vector3(inst.Transform:GetWorldPosition()))
+    inst.components.knownlocations:RememberLocation("home", inst:GetPosition())
 end
 
-local function common_fn(build)
+local function common_fn(build, tag)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -152,6 +103,10 @@ local function common_fn(build)
     inst:AddTag("hostile")
     inst:AddTag("chess")
     inst:AddTag("bishop")
+
+    if tag ~= nil then
+        inst:AddTag(tag)
+    end
 
     inst.entity:SetPristine()
 
@@ -189,8 +144,7 @@ local function common_fn(build)
     inst:AddComponent("inspectable")
     inst:AddComponent("knownlocations")
 
-    inst:DoTaskInTime(1*FRAMES, RememberKnownLocation)
-    inst:DoTaskInTime(1, EquipWeapon)
+    inst:DoTaskInTime(0, RememberKnownLocation)
 
     inst:AddComponent("follower")
 
@@ -200,6 +154,8 @@ local function common_fn(build)
     MakeHauntablePanic(inst)
 
     inst:ListenForEvent("attacked", OnAttacked)
+
+    EquipWeapon(inst)
 
     return inst
 end
@@ -220,7 +176,7 @@ local function bishop_fn()
 end
 
 local function bishop_nightmare_fn()
-    local inst = common_fn("bishop_nightmare")
+    local inst = common_fn("bishop_nightmare", "cavedweller")
 
     if not TheWorld.ismastersim then
         return inst
@@ -235,4 +191,4 @@ local function bishop_nightmare_fn()
 end
 
 return Prefab("chessboard/bishop", bishop_fn, assets, prefabs),
-       Prefab("cave/monsters/bishop_nightmare", bishop_nightmare_fn, assets, prefabs)
+    Prefab("cave/monsters/bishop_nightmare", bishop_nightmare_fn, assets, prefabs_nightmare)

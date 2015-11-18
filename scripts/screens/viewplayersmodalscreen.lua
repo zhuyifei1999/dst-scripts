@@ -7,7 +7,6 @@ local Widget = require "widgets/widget"
 local HoverText = require "widgets/hoverer"
 local PlayerBadge = require "widgets/playerbadge"
 local TEMPLATES = require "widgets/templates"
-
 local ScrollableList = require "widgets/scrollablelist"
 
 local ViewPlayersModalScreen = Class(Screen, function(self, players, maxPlayers)
@@ -137,15 +136,15 @@ local ViewPlayersModalScreen = Class(Screen, function(self, players, maxPlayers)
         end
         playerListing.viewprofile:SetOnClick(
             function()
-                if v.steamid then
-                    TheNet:ViewSteamProfile(v.steamid)
+                if v.netid ~= nil then
+                    TheNet:ViewNetProfile(v.netid)
                 end
             end)
 
         -- Skipping check for hiding my own profile button
         -- Shouldn't see this screen if i'm in game unless I just D/C and listings haven't updated
         -- Also, my offline ID won't match my online ID as well
-        if v.steamid ~= nil then
+        if TheNet:IsNetIDPlatformValid(v.netid) then
             playerListing.focus_forward = playerListing.viewprofile
         else
             playerListing.viewprofile:Hide()

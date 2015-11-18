@@ -20,6 +20,7 @@ local prefabs =
     "carrot",
 }
 
+
 local beardlordloot = { "beardhair", "beardhair", "monstermeat" }
 local regularloot = { "carrot", "carrot" }
 
@@ -36,11 +37,27 @@ local function ontalk(inst)
     inst.SoundEmitter:PlaySound("dontstarve/creatures/bunnyman/idle_med")
 end
 
+local function ClearBeardlord(inst)
+    inst.clearbeardlordtask = nil
+    inst.beardlord = nil
+end
+
+local function SetBeardLord(inst)
+    inst.beardlord = true
+    if inst.clearbeardlordtask ~= nil then
+        inst.clearbeardlordtask:Cancel()
+    end
+    inst:DoTaskInTime(5.0, ClearBeardlord)
+end
+
 local function CalcSanityAura(inst, observer)
+    if IsCrazyGuy(observer) then
+        SetBeardLord(inst)
+    end
     return (IsCrazyGuy(observer) and -TUNING.SANITYAURA_MED)
         or (inst.components.follower ~= nil and
             inst.components.follower.leader == observer and
-            -TUNING.SANITYAURA_SMALL)
+            TUNING.SANITYAURA_SMALL)
         or 0
 end
 
@@ -66,7 +83,7 @@ local function OnGetItemFromPlayer(inst, giver, item)
             if inst.components.combat:TargetIs(giver) then
                 inst.components.combat:SetTarget(nil)
             elseif giver.components.leader ~= nil then
-                inst.SoundEmitter:PlaySound("dontstarve/common/makeFriend")
+                giver:PushEvent("makefriend")
                 giver.components.leader:AddFollower(inst)
                 inst.components.follower:AddLoyaltyTime(
                     giver:HasTag("polite")
@@ -178,6 +195,7 @@ local function fn()
     local s = 1.25
     inst.Transform:SetScale(s, s, s)
 
+    inst:AddTag("cavedweller")
     inst:AddTag("character")
     inst:AddTag("pig")
     inst:AddTag("manrabbit")
@@ -205,8 +223,8 @@ local function fn()
     inst:RemoveTag("_named")
 
     inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
-    inst.components.locomotor.runspeed = TUNING.PIG_RUN_SPEED --5
-    inst.components.locomotor.walkspeed = TUNING.PIG_WALK_SPEED --3
+    inst.components.locomotor.runspeed = TUNING.PIG_RUN_SPEED * 2.2 -- account for them being stopped for part of their anim
+    inst.components.locomotor.walkspeed = TUNING.PIG_WALK_SPEED * 1.9 -- account for them being stopped for part of their anim
 
     ------------------------------------------
     inst:AddComponent("eater")
@@ -283,7 +301,8 @@ local function fn()
     inst:ListenForEvent("newcombattarget", OnNewTarget)
 
     inst.components.sleeper:SetResistance(2)
-    inst.components.sleeper.nocturnal = true
+    inst.components.sleeper.sleeptestfn = NocturnalSleepTest
+    inst.components.sleeper.waketestfn = NocturnalWakeTest
 
     inst.components.combat:SetDefaultDamage(TUNING.BUNNYMAN_DAMAGE)
     inst.components.combat:SetAttackPeriod(TUNING.BUNNYMAN_ATTACK_PERIOD)

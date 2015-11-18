@@ -81,6 +81,7 @@ local function fn()
     inst.entity:AddDynamicShadow()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
+    inst.entity:AddLightWatcher()
 
     inst.DynamicShadow:SetSize(2, .75)
     inst.Transform:SetFourFaced()

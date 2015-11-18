@@ -37,11 +37,12 @@ function Task:SetList(list)
 end
 
 -------------------------------
-Periodic = Class(function(self, fn, period, limit, id, ...)
+Periodic = Class(function(self, fn, period, limit, id, nexttick, ...)
     self.fn = fn
     self.id = id
     self.period = period
     self.limit = limit
+    self.nexttick = nexttick
     self.list = nil
     self.onfinish = nil
     
@@ -70,6 +71,11 @@ function Periodic:Cancel()
     
 	self.fn = nil
     self.arg = nil
+    self.nexttick = nil
+end
+
+function Periodic:NextTime()
+    return self.nexttick and GetTimeForTick(self.nexttick) or nil
 end
 
 function Periodic:Cleanup()
@@ -86,6 +92,7 @@ function Periodic:Cleanup()
     
     self.fn = nil
     self.arg = nil
+    self.nexttick = nil
 end
 
 function Periodic:__tostring()
@@ -195,9 +202,10 @@ function Scheduler:OnTick(tick)
                 end
                 
                 if not k.limit or k.limit > 0 then
-                    local list = self:GetListForTimeFromNow(k.period)
+                    local list, nexttick = self:GetListForTimeFromNow(k.period)
                     list[k] = true
                     k.list = list
+                    k.nexttick = nexttick
                 else
                     if k.onfinish and not already_dead then
 						if k.arg then
@@ -292,18 +300,18 @@ function Scheduler:GetListForTimeFromNow(dt)
     if wakeuptick <= nowtick then
         wakeuptick = nowtick+1
     end
-    
+
     local list = scheduler.attime[wakeuptick]
     if not list then
         list = {}
         scheduler.attime[wakeuptick] = list
     end
-    return list
+    return list, wakeuptick
 end
 
 function Scheduler:ExecutePeriodic(period, fn, limit, initialdelay, id, ...)
-    local periodic = Periodic(fn, period, limit, id, ...)
-    local list = self:GetListForTimeFromNow(initialdelay or period)
+    local list, nexttick = self:GetListForTimeFromNow(initialdelay or period)
+    local periodic = Periodic(fn, period, limit, id, nexttick, ...)
     list[periodic] = true
     periodic.list = list
     return periodic

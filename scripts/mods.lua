@@ -70,41 +70,20 @@ function GetModVersion(mod_name, mod_info_use)
 end
 
 function GetEnabledModsModInfoDetails()
-	local modinfo_details = {}
-	
-	for k,mod_name in pairs(ModManager:GetEnabledServerModNames()) do
-		local modinfo = KnownModIndex:GetModInfo(mod_name)
-		if modinfo ~= nil then
-		
-			table.insert(modinfo_details, mod_name)
-			
-			if modinfo.name ~= nil then
-				table.insert(modinfo_details, modinfo.name)
-			else
-				table.insert(modinfo_details, mod_name)
-			end
-			
-			if modinfo.version ~= nil then
-				table.insert(modinfo_details, modinfo.version)
-			else
-				table.insert(modinfo_details, "")
-			end
-			
-			if modinfo.all_clients_require_mod ~= nil then
-				table.insert(modinfo_details, modinfo.all_clients_require_mod)
-			else
-				table.insert(modinfo_details, false)
-			end
-			
-		else
-			table.insert(modinfo_details, mod_name)
-			table.insert(modinfo_details, mod_name)
-			table.insert(modinfo_details, "")
-			table.insert(modinfo_details, false)
-		end
-	end
-	
-	return modinfo_details	
+    local modinfo_details = {}
+
+    for k,mod_name in pairs(ModManager:GetEnabledServerModNames()) do
+        local modinfo = KnownModIndex:GetModInfo(mod_name)
+        table.insert(modinfo_details, {
+            name = mod_name,
+            info_name = modinfo ~= nil and modinfo.name or mod_name,
+            version = modinfo ~= nil and modinfo.version or "",
+            version_compatible = modinfo ~= nil and modinfo.version_compatible or (modinfo ~= nil and modinfo.version or ""),
+            all_clients_require_mod = modinfo ~= nil and modinfo.all_clients_require_mod == true,
+        })
+    end
+
+    return modinfo_details
 end
 
 function GetEnabledServerModsConfigData()
@@ -383,7 +362,11 @@ function ModWrangler:LoadMods(worldgen)
 	local function modPrioritySort(a,b)
 		local apriority = (a.modinfo and a.modinfo.priority) or 0
 		local bpriority = (b.modinfo and b.modinfo.priority) or 0
-		return apriority > bpriority
+		if apriority == bpriority then
+			return tostring(a.modinfo and a.modinfo.name) > tostring(b.modinfo and b.modinfo.name)
+		else
+			return apriority  > bpriority
+		end
 	end
 	table.sort(self.mods, modPrioritySort)
 
@@ -700,8 +683,9 @@ function ModWrangler:GetVoteCommands()
 end
 
 function ModVersionOutOfDate( mod_name )
-	print("Mod: " .. mod_name .. " is out of date and needs to be updated for new users to be able to join the server.")
-	TheNet:Announce( string.format( STRINGS.MODS.VERSIONING.OUT_OF_DATE, KnownModIndex:GetModFancyName(mod_name) ) )	
+    print("Mod: " .. mod_name .. " is out of date and needs to be updated for new users to be able to join the server.")
+    --5th param true -> local server only announcement
+    TheNet:Announce(string.format(STRINGS.MODS.VERSIONING.OUT_OF_DATE, KnownModIndex:GetModFancyName(mod_name)), nil, nil, nil, true)
 end
 
 function VerifyModVersions( mods_to_verify )

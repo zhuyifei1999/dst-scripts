@@ -1,366 +1,299 @@
---[[
-	The starting shell to the nightmare cycle for the ruins.
-	At the moment the code is near identical to the clock for the day/night cycle above ground.
-	Era times or segment numbers could change based on how insane the player is
-]]
+--------------------------------------------------------------------------
+--[[ Clock ]]
+--------------------------------------------------------------------------
+
+return Class(function(self, inst)
+
+--------------------------------------------------------------------------
+--[[ Constants ]]
+--------------------------------------------------------------------------
+
+local PHASE_NAMES =
+{
+    "calm",
+    "warn",
+    "wild",
+    "dawn",
+}
+local PHASES = table.invert(PHASE_NAMES)
+
+local SOUNDS =
+{
+    calm = {
+        sound = nil,
+        param = 0,
+    },
+    warn = {
+        sound = "dontstarve/cave/nightmare_warning",
+        param = 1,
+    },
+    wild = {
+        sound = "dontstarve/cave/nightmare_full",
+        param = 2,
+    },
+    dawn = {
+        sound = "dontstarve/cave/nightmare_end",
+        param = 1,
+    },
+}
+
+--------------------------------------------------------------------------
+--[[ Member variables ]]
+--------------------------------------------------------------------------
+
+--Public
+self.inst = inst
+
+--Private
+local _world = TheWorld
+local _ismastersim = _world.ismastersim
+local _phasedirty = true
+local _activatedplayer = nil
+
+--Network
+local _segs = {}
+for i, v in ipairs(PHASE_NAMES) do
+    _segs[i] = net_smallbyte(inst.GUID, "nightmareclock._segs."..v )
+end
+local _phase = net_tinybyte(inst.GUID, "nightmareclock._phase", "nightmarephasedirty")
+local _totaltimeinphase = net_float(inst.GUID, "nightmareclock._totaltimeinphase")
+local _remainingtimeinphase = net_float(inst.GUID, "nightmareclock._remainingtimeinphase")
+
+--------------------------------------------------------------------------
+--[[ Private member functions ]]
+--------------------------------------------------------------------------
+
+local function UpdateAmbientSounds()
+    if _activatedplayer == nil then
+        return
+    end
+
+    local phase = _activatedplayer.components.areaaware and _activatedplayer.components.areaaware:CurrentlyInTag("Nightmare") and PHASE_NAMES[_phase:value()] or "calm"
+
+    local param = SOUNDS[phase].param
+    if param > 0 and not _world.SoundEmitter:PlayingSound("nightmare_loop") then
+        _world.SoundEmitter:PlaySound("dontstarve/cave/nightmare", "nightmare_loop")
+    elseif param == 0 and _world.SoundEmitter:PlayingSound("nightmare_loop") then
+        _world.SoundEmitter:KillSound("nightmare_loop")
+    end
+
+    _world.SoundEmitter:SetParameter("nightmare_loop", "nightmare", param)
+end
+
+local function UpdateWorldSounds()
+    if _activatedplayer == nil then
+        return
+    end
+
+    local phase = _activatedplayer.components.areaaware and _activatedplayer.components.areaaware:CurrentlyInTag("Nightmare") and PHASE_NAMES[_phase:value()] or "calm"
+
+    local sound = SOUNDS[phase].sound
+    if sound ~= nil then
+        _world.SoundEmitter:PlaySound(sound)
+    end
+
+    UpdateAmbientSounds()
+end
+
+--------------------------------------------------------------------------
+--[[ Private event listeners ]]
+--------------------------------------------------------------------------
+
+local function OnPlayerAreaChanged(player, area)
+    UpdateAmbientSounds()
+end
+
+local function OnPlayerActivated(src, player)
+    _activatedplayer = player
+
+    _activatedplayer:ListenForEvent("changearea", OnPlayerAreaChanged)
+
+    _phasedirty = true
+end
+
+local function OnPlayerDeactivated(src, player)
+    if _activatedplayer == player then
+        _activatedplayer:RemoveEventCallback("changearea", OnPlayerAreaChanged)
+        _activatedplayer = nil
+    end
+end
 
 
+local function SetDefaultLengths()
+    for i,v in ipairs(_segs) do
+        v:set(TUNING.NIGHTMARE_SEGS[string.upper(PHASE_NAMES[i])] or 0)
+    end
+end
 
-local NightmareClock = Class(function(self, inst)
-	self.inst = inst
-	self.task = nil
-	--[[
-		Calm = Day
-		Warn = Dusk
-		Nightmare = Night
-		Dawn = Nightmare -> Calm
-	]]
-	self.calmsegs = 23
-	self.warnsegs = 5
-	self.nightmaresegs = 10
-	self.dawnsegs = 2
+local OnSetSegs = _ismastersim and function(src, lengths)
+    local normremaining = _totaltimeinphase:value() > 0 and (_remainingtimeinphase:value() / _totaltimeinphase:value()) or 1
 
-	self.totalsegs = 40
-	self.segtime = 15
+    if lengths then
+        local totalsegs = 0
+        for i, v in ipairs(_segs) do
+            v:set(lengths[PHASE_NAMES[i]] or 0)
+        end
+    else
+        SetDefaultLengths()
+    end
 
-	self.calmColour = Point(0, 0, 0)
-	self.warnColour = Point(0, 0, 0)
-	self.nightmareColour = Point(0, 0, 0)
-	self.dawnColour = Point(0, 0, 0)
+    local resulttime = _segs[_phase:value()]:value() * TUNING.SEG_TIME + math.random() * TUNING.NIGHTMARE_SEG_VARIATION * TUNING.SEG_TIME
+    _totaltimeinphase:set(resulttime)
+    _remainingtimeinphase:set(normremaining * _totaltimeinphase:value())
+end or nil
 
-	self.currentColour = self.calmColour
+local OnSetPhase = _ismastersim and function(src, phase)
+    phase = PHASES[phase]
+    if phase then
+        _phase:set(phase)
+        local resulttime = _segs[_phase:value()]:value() * TUNING.SEG_TIME + math.random() * TUNING.NIGHTMARE_SEG_VARIATION * TUNING.SEG_TIME
+        _totaltimeinphase:set(resulttime)
+        _remainingtimeinphase:set(_totaltimeinphase:value())
+    end
+    self:LongUpdate(0)
+end or nil
 
-	self.lerpToColour = self.calmColour
-	self.lerpFromColour = self.calmColour
+local OnNextPhase = _ismastersim and function()
+    _remainingtimeinphase:set(0)
+    self:LongUpdate(0)
+end or nil
 
-    self.lerptimeleft = 0
-    self.totallerptime = 0
-    self.override_timeLeftInEra = nil
+local OnNextCycle = _ismastersim and function()
+    _phase:set(#PHASE_NAMES)
+    _remainingtimeinphase:set(0)
+    self:LongUpdate(0)
+end or nil
 
-    self.inst:StartUpdatingComponent(self)
 
-	self.previous_phase = "dawn"
+--------------------------------------------------------------------------
+--[[ Initialization ]]
+--------------------------------------------------------------------------
 
-	self:StartCalm()
+--Initialize network variables
+SetDefaultLengths()
+_phase:set(PHASES.calm)
+_totaltimeinphase:set(_segs[_phase:value()]:value() * TUNING.SEG_TIME)
+_remainingtimeinphase:set(_totaltimeinphase:value())
+
+--Register network variable sync events
+inst:ListenForEvent("nightmarephasedirty", function() _phasedirty = true end)
+inst:ListenForEvent("playeractivated", OnPlayerActivated, _world)
+inst:ListenForEvent("playerdeactivated", OnPlayerDeactivated, _world)
+
+if _ismastersim then
+    --Register master simulation events
+    inst:ListenForEvent("ms_setnightmaresegs", OnSetSegs, _world)
+    inst:ListenForEvent("ms_setnightmarephase", OnSetPhase, _world)
+    inst:ListenForEvent("ms_nextnightmarephase", OnNextPhase, _world)
+    inst:ListenForEvent("ms_nextnightmarecycle", OnNextCycle, _world)
+end
+
+inst:StartUpdatingComponent(self)
+
+
+--------------------------------------------------------------------------
+--[[ Update ]]
+--------------------------------------------------------------------------
+
+function self:OnUpdate(dt)
+    local remainingtimeinphase = _remainingtimeinphase:value() - dt
+
+    if remainingtimeinphase > 0 then
+        --Advance time in current phase
+        --Server sync to client only when phase changes
+        _remainingtimeinphase:set_local(remainingtimeinphase)
+    elseif _ismastersim then
+        --Advance to next phase
+        _remainingtimeinphase:set_local(0)
+
+        while _remainingtimeinphase:value() <= 0 do
+            _phase:set((_phase:value() % #PHASE_NAMES) + 1)
+            local resulttime = _segs[_phase:value()]:value() * TUNING.SEG_TIME + math.random() * TUNING.NIGHTMARE_SEG_VARIATION * TUNING.SEG_TIME
+            _totaltimeinphase:set(resulttime)
+            _remainingtimeinphase:set(_totaltimeinphase:value())
+        end
+
+        if remainingtimeinphase < 0 then
+            self:OnUpdate(-remainingtimeinphase)
+            return
+        end
+    else
+        --Clients and slaves must wait at end of phase for a server sync
+        _remainingtimeinphase:set_local(math.min(.001, _remainingtimeinphase:value()))
+    end
+
+    if _phasedirty then
+        _world:PushEvent("nightmarephasechanged", PHASE_NAMES[_phase:value()])
+        UpdateWorldSounds()
+        _phasedirty = false
+    end
+
+    local elapsedtime = 0
+    local normtimeinphase = 0
+    for i, v in ipairs(_segs) do
+        if _phase:value() == i then
+            normtimeinphase = 1 - (_totaltimeinphase:value() > 0 and _remainingtimeinphase:value() / _totaltimeinphase:value() or 0)
+            elapsedtime = elapsedtime + v:value() * normtimeinphase * TUNING.SEG_TIME
+            break
+        end
+        elapsedtime = elapsedtime + v:value() * TUNING.SEG_TIME
+    end
+    _world:PushEvent("nightmareclocktick", { phase = PHASE_NAMES[_phase:value()], timeinphase = normtimeinphase, time = elapsedtime })
+end
+
+self.LongUpdate = self.OnUpdate
+
+--------------------------------------------------------------------------
+--[[ Save/Load ]]
+--------------------------------------------------------------------------
+
+if _ismastersim then function self:OnSave()
+    local data =
+    {
+        lengths = {},
+        phase = PHASE_NAMES[_phase:value()],
+        totaltimeinphase = _totaltimeinphase:value(),
+        remainingtimeinphase = _remainingtimeinphase:value(),
+    }
+
+    for i, v in ipairs(_segs) do
+        data.lengths[PHASE_NAMES[i]] = v:value()
+    end
+
+    return data
+end end
+
+if _ismastersim then function self:OnLoad(data)
+    for i, v in ipairs(_segs) do
+        v:set(data.lengths and data.lengths[PHASE_NAMES[i]] or 0)
+    end
+
+    if PHASES[data.phase] then
+        _phase:set(PHASES[data.phase])
+    else
+        for i, v in ipairs(_segs) do
+            if v:value() > 0 then
+                _phase:set(i)
+                break
+            end
+        end
+    end
+
+    _totaltimeinphase:set(data.totaltimeinphase or _segs[_phase:value()]:value() * TUNING.SEG_TIME)
+    _remainingtimeinphase:set(math.min(data.remainingtimeinphase or _totaltimeinphase:value(), _totaltimeinphase:value()))
+end end
+
+--------------------------------------------------------------------------
+--[[ Debug ]]
+--------------------------------------------------------------------------
+
+function self:GetDebugString()
+    return string.format("%s: %2.2f ", PHASE_NAMES[_phase:value()], _remainingtimeinphase:value())
+end
+
+
+--------------------------------------------------------------------------
+--[[ End ]]
+--------------------------------------------------------------------------
+
 end)
-
-function NightmareClock:RandomizeSegments()
-	local newCalm = math.random(19, 23)
-	local newNightmare = (self.calmsegs + self.nightmaresegs) - newCalm
-
-	local newWarn = math.random(4,6)
-	local newDawn = (self.warnsegs + self.dawnsegs) - newWarn
-
-	self:SetSegs(newCalm, newWarn, newNightmare, newDawn)
-end
-
-function NightmareClock:GetDebugString()
-    return string.format("%s: %2.2f ", self.phase, self:GetTimeLeftInEra())
-end
-
-function NightmareClock:GetTimeLeftInEra()
-	return self.timeLeftInEra
-end
-
-function NightmareClock:GetTimeInEra()
-    return self.totalEraTime - self.timeLeftInEra 
-end
-
-function NightmareClock:GetNormEraTime()
-    local ret = self.totalEraTime > 0 and (1 - self.timeLeftInEra / self.totalEraTime) or 1
-    return ret
-end
-
-function NightmareClock:SetNormEraTime(percent)
-	if self.phase == "calm" then
-		self.totalEraTime = self:GetCalmTime()
-	elseif self.phase == "warn" then
-		self.totalEraTime = self:GetWarnTime()
-	elseif self.phase == "nightmare" then
-		self.totalEraTime = self:GetNightmareTime()
-	else
-		self.totalEraTime = self:GetDawnTime()
-	end
-	
-	self.timeLeftInEra = (1-percent)*self.totalEraTime
-end
-
-function NightmareClock:GetNormTime()
-    
-    local ret = 0
-    if self.phase == "day" then
-		return (self.calmsegs / self.totalsegs)*self:GetNormEraTime()
-    elseif self.phase == "dusk" then
-		return (self.calmsegs / self.totalsegs) + (self.warnsegs / self.totalsegs)*self:GetNormEraTime()
-    elseif self.phase == "nightmare" then
-		return (self.calmsegs / self.totalsegs) + (self.warnsegs / self.totalsegs) + (self.nightmaresegs / self.totalsegs)*self:GetNormEraTime()
-    else
-		return (self.calmsegs / self.totalsegs) + (self.warnsegs / self.totalsegs) + (self.nightmaresegs / self.totalsegs) + (self.dawnsegs/ self.totalsegs)*self:GetNormEraTime()
-    end
-end
-
-function NightmareClock:SetSegs(calm, warn, nightmare, dawn)
-	assert(calm + warn + nightmare + dawn == self.totalsegs, "invalid number of time segs in NightmareClock:SetSegs")
-	
-	local norm_time = self:GetNormEraTime()
-	
-	self.calmsegs = calm
-	self.warnsegs = warn
-	self.nightmaresegs = nightmare
-	self.dawnsegs = dawn
-	
-	if self.phase == "calm" then
-		self.totalEraTime = self.calmsegs*self.segtime
-	elseif self.phase == "warn" then
-		self.totalEraTime = self.warnsegs*self.segtime
-	elseif self.phase == "nightmare" then
-		self.totalEraTime = self.nightmaresegs*self.segtime
-	else
-		self.totalEraTime = self.dawnsegs*self.segtime
-	end
-	
-	self:SetNormEraTime(norm_time)
-	self.inst:PushEvent("nightmaresegschanged")
-end
-
-function NightmareClock:OnSave()
-	return {
-	phase = self.phase,
-	normeratime = self:GetNormEraTime()
-	}
-end
-
-function NightmareClock:OnLoad(data)
-	if data.phase == "nightmare" then
-		self:StartNightmare(true)
-	elseif data.phase == "warn" then
-		self:StartWarn(true)
-	elseif data.phase == "calm" then
-		self:StartCalm(true)
-	else
-		self:StartDawn(true)
-	end
-
-	self.inst:PushEvent("phasechange", {oldphase = self.phase, newphase = self.phase})
-
-	local normeratime = data.normeratime or 0
-	self:SetNormEraTime(normeratime)
-
-end
-
-function NightmareClock:GetCalmTime()
-	return self.calmsegs*self.segtime
-end
-
-function NightmareClock:GetNightmareTime()
-	return self.nightmaresegs*self.segtime
-end
-
-function NightmareClock:GetWarnTime()
-	return self.warnsegs*self.segtime
-end
-
-function NightmareClock:GetDawnTime()
-	return self.dawnsegs * self.segtime
-end
-
-function NightmareClock:IsCalm()
-	return self.phase == "calm"
-end
-
-function NightmareClock:IsNightmare()
-	return self.phase == "nightmare"
-end
-
-function NightmareClock:IsWarn()
-	return self.phase == "warn"
-end
-
-function NightmareClock:IsDawn()
-	return self.phase == "dawn"
-end
-
-function NightmareClock:GetPhase()
-	return self.phase
-end
-
-function NightmareClock:GetNextPhase()
-	if self:IsCalm() then
-		return "warn"
-	elseif self:IsWarn() then
-		return "nightmare"
-	elseif self:IsNightmare() then
-		return "dawn"
-	else
-		return "calm"
-	end
-end
-
-function NightmareClock:GetPrevPhase()
-	if self:IsCalm() then
-		return "dawn"
-	elseif self:IsWarn() then
-		return "calm"
-	elseif self:IsNightmare() then
-		return "warn"
-	else
-		return "nightmare"
-	end
-end
-
-function NightmareClock:StartCalm(instant)
-
-
-
-	self.timeLeftInEra = self:GetCalmTime()
-	self.totalEraTime = self.timeLeftInEra
-    
-    if self.phase ~= self.previous_phase then
-        self.previous_phase = self.phase
-    	self:LerpAmbientColour(self.currentColour, self.calmColour, instant and 0 or TUNING.TRANSITIONTIME.CALM)
-	end
-	
-	self.phase = "calm"
-	self.inst:PushEvent(self.phase.."start", {phase = self.phase})
-end
-
-function NightmareClock:StartWarn(instant)
-	self.timeLeftInEra = self:GetWarnTime()
-	self.totalEraTime = self.timeLeftInEra
-    
-    if self.phase ~= self.previous_phase then
-        self.previous_phase = self.phase   
-    	self:LerpAmbientColour(self.currentColour, self.warnColour, instant and 0 or TUNING.TRANSITIONTIME.WARN)
-	end
-
-	self.phase = "warn"
-	self.inst:PushEvent(self.phase.."start", {phase = self.phase})
-end
-
-function NightmareClock:StartNightmare(instant)
-	self.timeLeftInEra = self:GetNightmareTime()
-	self.totalEraTime = self.timeLeftInEra
-
-    if self.phase ~= self.previous_phase then
-        self.previous_phase = self.phase   
-    	self:LerpAmbientColour(self.currentColour, self.nightmareColour, instant and 0 or TUNING.TRANSITIONTIME.NIGHTMARE)
-	end
-	
-	self.phase = "nightmare"
-	self.inst:PushEvent(self.phase.."start", {phase = self.phase})
-
-end
-
-function NightmareClock:StartDawn(instant)
-	self.timeLeftInEra = self:GetDawnTime()
-	self.totalEraTime = self.timeLeftInEra
-
-    if self.phase ~= self.previous_phase then
-        self.previous_phase = self.phase   
-    	self:LerpAmbientColour(self.currentColour, self.dawnColour, instant and 0 or TUNING.TRANSITIONTIME.DAWN)
-	end
-	
-	self.phase = "dawn"
-	self.inst:PushEvent(self.phase.."start", {phase = self.phase})
-
-end
-
-function NightmareClock:NextPhase()
-	local oldphase = self.phase
-	if self:IsCalm() then
-		self:StartWarn()
-	elseif self:IsWarn() then
-		self:StartNightmare()
-	elseif self:IsNightmare() then
-		self:StartDawn()
-	else
-		self:RandomizeSegments()
-		self:StartCalm()
-	end
-
-	self.inst:PushEvent("phasechange", {oldphase = oldphase, newphase = self.phase})
-end
-
-function NightmareClock:OnUpdate(dt)
-	self.timeLeftInEra = self.timeLeftInEra - dt
-
-	if self.override_timeLeftInEra ~= nil then
-		self.timeLeftInEra = self.override_timeLeftInEra
-	end
-	if self.timeLeftInEra <= 0 then
-		local time_left_over = -self.timeLeftInEra
-		self:NextPhase()
-
-		if time_left_over > 0 then
-			self:OnUpdate(time_left_over)
-			return
-		end
-	end
-
-    if self.lerptimeleft > 0 then
-        local percent = 1 - (self.lerptimeleft / self.totallerptime)
-        local r = percent*self.lerpToColour.x + (1 - percent)*self.lerpFromColour.x
-        local g = percent*self.lerpToColour.y + (1 - percent)*self.lerpFromColour.y
-        local b = percent*self.lerpToColour.z + (1 - percent)*self.lerpFromColour.z
-        self.currentColour = Point(r,g,b)
-        self.lerptimeleft = self.lerptimeleft - dt
-    end
-
-    if TheWorld:IsCave() and self.inst.topology.level_number == 2 then
-        TheSim:SetAmbientColour(self.currentColour.x, self.currentColour.y, self.currentColour.z )
-    end
-
-	self.inst:PushEvent("nightmareclocktick", {phase = self.phase, normalizedtime = self:GetNormTime()})
-
-end
-
-
-function NightmareClock:LerpAmbientColour(src, dest, time)
-	self.lerptimeleft = time
-	self.totallerptime = time
-
-    if time == 0 then
-		self.currentColour = dest
-    else
-		self.lerpFromColour = src
-		self.lerpToColour = dest
-	end
-
-    if not self.currentColour then
-		self.currentColour = src
-    end
-	--This will probably clash with the clock
-    if TheWorld:IsCave() and self.inst.topology and self.inst.topology.level_number == 2 then
-        TheSim:SetAmbientColour(self.currentColour.x, self.currentColour.y, self.currentColour.z )
-    end
-end
-
-function NightmareClock:LerpFactor()
-	if self.totallerptime == 0 then
-		return 1
-	else
-		return math.min( 1.0, 1.0 - self.lerptimeleft / self.totallerptime )
-	end
-end
-
-function NightmareClock:LongUpdate(dt)
-	self:OnUpdate(dt)
-
-	self.lerptimeleft = 0
-	if self:IsCalm() then
-		self.currentColour = self.calmColour
-	elseif self:IsWarn() then
-		self.currentColour = self.warnColour
-	elseif self:IsNightmare() then
-		self.currentColour = self.nightmareColour
-	else
-		self.currentColour = self.dawnColour
-	end
-
-	--This will probably clash with the clock
-    if TheWorld:IsCave() and self.inst.topology.level_number == 2 then
-        TheSim:SetAmbientColour(self.currentColour.x, self.currentColour.y, self.currentColour.z )
-    end
-end
-
-return NightmareClock

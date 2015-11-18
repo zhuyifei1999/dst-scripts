@@ -12,7 +12,6 @@ local assets =
 local function OnIgnite(inst)
     if inst.components.childspawner then
         inst.components.childspawner:ReleaseAllChildren(nil, "killerbee")
-        inst:RemoveComponent("childspawner")
     end
     inst.SoundEmitter:KillSound("loop")
     DefaultBurnFn(inst)

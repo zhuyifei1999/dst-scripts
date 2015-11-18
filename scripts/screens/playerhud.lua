@@ -262,28 +262,6 @@ function PlayerHud:SetMainCharacter(maincharacter)
             overflow:Open(maincharacter)
         end
 
-        if CHEATS_ENABLED then -- Just an indicator so we can tell if we're in godmode or not
-            self.inst:ListenForEvent("invincibletoggle", function(inst, data)
-                if data.invincible then
-                    if self.controls.godmodeindicator == nil then
-                        self.controls.godmodeindicator = self.controls.inv:AddChild(UIAnim())
-                        self.controls.godmodeindicator:GetAnimState():SetBank("pigman")
-                        self.controls.godmodeindicator:GetAnimState():SetBuild("pig_guard_build")
-                        self.controls.godmodeindicator:SetHAnchor(ANCHOR_LEFT)
-                        self.controls.godmodeindicator:SetVAnchor(ANCHOR_BOTTOM)
-                        self.controls.godmodeindicator:SetPosition(100, 50, 0)
-                        self.controls.godmodeindicator:SetScale(0.2, 0.2, 0.2)
-                        self.controls.godmodeindicator:GetAnimState():PlayAnimation("idle_happy")
-                        self.controls.godmodeindicator:GetAnimState():PushAnimation("idle_loop")
-                    end
-                elseif self.controls.godmodeindicator then
-                    self.controls.godmodeindicator:GetAnimState():PlayAnimation("death")
-                    local indicator = self.controls.godmodeindicator
-                    self.inst:DoTaskInTime(2, function() indicator:Kill() end)
-                    self.controls.godmodeindicator = nil
-                end
-            end, self.owner)
-        end
     end
 end
 
@@ -293,6 +271,27 @@ function PlayerHud:OnUpdate(dt)
             self.vig:Hide()
         else
             self.vig:Show()
+        end
+    end
+
+    if CHEATS_ENABLED and self.owner and self.controls then -- Just an indicator so we can tell if we're in godmode or not
+        if self.owner:HasTag("invincible") then
+            if self.controls.godmodeindicator == nil then
+                self.controls.godmodeindicator = self.controls.inv:AddChild(UIAnim())
+                self.controls.godmodeindicator:GetAnimState():SetBank("pigman")
+                self.controls.godmodeindicator:GetAnimState():SetBuild("pig_guard_build")
+                self.controls.godmodeindicator:SetHAnchor(ANCHOR_LEFT)
+                self.controls.godmodeindicator:SetVAnchor(ANCHOR_BOTTOM)
+                self.controls.godmodeindicator:SetPosition(100, 50, 0)
+                self.controls.godmodeindicator:SetScale(0.2, 0.2, 0.2)
+                self.controls.godmodeindicator:GetAnimState():PlayAnimation("idle_happy")
+                self.controls.godmodeindicator:GetAnimState():PushAnimation("idle_loop")
+            end
+        elseif self.controls.godmodeindicator then
+            self.controls.godmodeindicator:GetAnimState():PlayAnimation("death")
+            local indicator = self.controls.godmodeindicator
+            self.inst:DoTaskInTime(2, function() indicator:Kill() end)
+            self.controls.godmodeindicator = nil
         end
     end
 end

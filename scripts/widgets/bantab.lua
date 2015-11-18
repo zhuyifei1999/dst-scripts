@@ -107,10 +107,10 @@ local PlayerDetailsPopup = Class(Screen, function(self, entry, buttons)
     self.details_playername:SetPosition(30, title_height, 0)
     self.details_playername:SetColour(0,0,0,1)
     
-    if "" == entry.steamid then
-        self.details_playername:SetString(STRINGS.UI.SERVERADMINSCREEN.UNKNOWN_USER_NAME)   
+    if "" == entry.netprofilename then
+        self.details_playername:SetString(STRINGS.UI.SERVERADMINSCREEN.UNKNOWN_USER_NAME)
     else
-        self.details_playername:SetString(entry.steamname)   
+        self.details_playername:SetString(entry.netprofilename)
     end
     
     self.details_icon = self.details_panel:AddChild(Widget("target"))
@@ -205,10 +205,8 @@ function PlayerDetailsPopup:GetHelpText()
 	return table.concat(t, "  ")
 end
 
-local BanTab = Class(Screen, function(self, save_slot, servercreationscreen)
+local BanTab = Class(Screen, function(self, servercreationscreen)
     Widget._ctor(self, "BanTab")
-
-	self.save_slot = save_slot
 
     self.servercreationscreen = servercreationscreen
     
@@ -280,7 +278,7 @@ function BanTab:MakePlayerList()
         local buttons = 
         {
             {widget=TEMPLATES.IconButton("images/button_icons.xml", "view_ban.tex", STRINGS.UI.SERVERADMINSCREEN.PLAYER_DETAILS, false, false, function() self:ShowPlayerDetails(index) end, {size=22/.85})},
-            {widget=TEMPLATES.IconButton("images/button_icons.xml", "steam.tex", STRINGS.UI.SERVERADMINSCREEN.PLAYER_PROFILE, false, false, function() self:ShowSteamProfile(index) end, {size=22/.85})},
+            {widget=TEMPLATES.IconButton("images/button_icons.xml", "steam.tex", STRINGS.UI.SERVERADMINSCREEN.PLAYER_PROFILE, false, false, function() self:ShowNetProfile(index) end, {size=22/.85})},
             {widget=TEMPLATES.IconButton("images/button_icons.xml", "unban.tex", STRINGS.UI.SERVERADMINSCREEN.PLAYER_DELETE, false, false, function() self:PromptDeletePlayer(index) end, {size=22/.85})},
         }
         for i,v in pairs(buttons) do
@@ -290,27 +288,23 @@ function BanTab:MakePlayerList()
         widget.MENU = widget:AddChild(Menu(buttons, 55, true))
         widget.MENU:SetPosition(20,y_offset-2)
 
-        if entry and not entry.empty then 
-            if "" == entry.steamid then
-                if "" ~= entry.user_id then
-                    widget.NAME:SetString(entry.userid) 
-                else
-                    widget.NAME:SetString(STRINGS.UI.SERVERADMINSCREEN.UNKNOWN_USER_NAME)
-                end
+        if entry and not entry.empty then
+            if "" == entry.netprofilename then
+                widget.NAME:SetString(STRINGS.UI.SERVERADMINSCREEN.UNKNOWN_USER_NAME)
             else
-                widget.NAME:SetString(entry.steamname) 
-            end          
-            
+                widget.NAME:SetString(entry.netprofilename)
+            end
+
             if "" == entry.character and "" == entry.servername and "" == entry.serverdescription then
                 widget.MENU.items[1]:Select()
             end
-            -- no steam id means we can't show the profile
-            if "" == entry.steamid then
+            -- no net id means we can't show the profile
+            if not TheNet:IsNetIDPlatformValid(entry.netid) then
                 widget.MENU.items[2]:Select()
             end
 
-            widget.focus_forward = widget.MENU   
-        else                           
+            widget.focus_forward = widget.MENU
+        else
             widget.NAME:Hide()
             widget.EMPTY:Show()
 
@@ -325,20 +319,16 @@ function BanTab:MakePlayerList()
         if data and not data.empty then 
             widget.index = index
                     
-            if "" == data.steamid then
-                if "" ~= data.user_id then
-                    widget.NAME:SetString(data.userid) 
-                else
-                    widget.NAME:SetString(STRINGS.UI.SERVERADMINSCREEN.UNKNOWN_USER_NAME)
-                end
+            if "" == data.netprofilename then
+                widget.NAME:SetString(STRINGS.UI.SERVERADMINSCREEN.UNKNOWN_USER_NAME)
             else
-                widget.NAME:SetString(data.steamname) 
+                widget.NAME:SetString(data.netprofilename)
             end          
             widget.NAME:Show()
             widget.EMPTY:Hide()
             
             widget.MENU.items[1]:SetOnClick(function() self:ShowPlayerDetails(index) end)
-            widget.MENU.items[2]:SetOnClick(function() self:ShowSteamProfile(index) end)
+            widget.MENU.items[2]:SetOnClick(function() self:ShowNetProfile(index) end)
             widget.MENU.items[3]:SetOnClick(function() self:PromptDeletePlayer(index) end)
 
             if "" == data.character and "" == data.servername and "" == data.serverdescription then
@@ -346,8 +336,8 @@ function BanTab:MakePlayerList()
             else
                 widget.MENU.items[1]:Unselect()
             end
-            -- no steam id means we can't show the profile
-            if "" == data.steamid then
+            -- no net id means we can't show the profile
+            if not TheNet:IsNetIDPlatformValid(data.netid) then
                 widget.MENU.items[2]:Select()
             else
                 widget.MENU.items[2]:Unselect()
@@ -429,10 +419,10 @@ function BanTab:ShowPlayerDetails(selected_player)
     end
 end
 
-function BanTab:ShowSteamProfile(selected_player)
+function BanTab:ShowNetProfile(selected_player)
     if selected_player then
         if self.blacklist[selected_player] then
-            TheNet:ViewSteamProfile(self.blacklist[selected_player].steamid)
+            TheNet:ViewNetProfile(self.blacklist[selected_player].netid)
         end
     end
 end
@@ -440,26 +430,26 @@ end
 function BanTab:PromptDeletePlayer(selected_player)
     if selected_player then
         local name = ""
-        if "" == self.blacklist[selected_player].steamid then
+        if "" == self.blacklist[selected_player].netprofilename then
             name = STRINGS.UI.SERVERADMINSCREEN.UNKNOWN_USER_NAME
         else
-            name = self.blacklist[selected_player].steamname
+            name = self.blacklist[selected_player].netprofilename
         end
-        local popup = PopupDialogScreen(STRINGS.UI.SERVERADMINSCREEN.DELETE_ENTRY_TITLE, STRINGS.UI.SERVERADMINSCREEN.DELETE_ENTRY_BODY..name..STRINGS.UI.SERVERADMINSCREEN.DELETE_ENTRY_BODY_2, 
-		    {{text=STRINGS.UI.SERVERADMINSCREEN.YES, cb = function() 			
+        local popup = PopupDialogScreen(STRINGS.UI.SERVERADMINSCREEN.DELETE_ENTRY_TITLE, STRINGS.UI.SERVERADMINSCREEN.DELETE_ENTRY_BODY..name..STRINGS.UI.SERVERADMINSCREEN.DELETE_ENTRY_BODY_2,
+		    {{text=STRINGS.UI.SERVERADMINSCREEN.YES, cb = function()
                 self:DeletePlayer(selected_player)
-                TheFrontEnd:PopScreen()		        
+                TheFrontEnd:PopScreen()
 		    end},
-		    {text=STRINGS.UI.SERVERADMINSCREEN.NO, cb = function() 
-                TheFrontEnd:PopScreen() 
+		    {text=STRINGS.UI.SERVERADMINSCREEN.NO, cb = function()
+                TheFrontEnd:PopScreen()
             end}})
-	    TheFrontEnd:PushScreen(popup)		
-    end	      
+	    TheFrontEnd:PushScreen(popup)
+    end
 end
 
 function BanTab:DeletePlayer(selected_player)
-    if selected_player then                
-        table.remove(self.blacklist, selected_player)    
+    if selected_player then
+        table.remove(self.blacklist, selected_player)
 
         local list = {}
         for i,v in pairs(self.blacklist) do
@@ -468,24 +458,24 @@ function BanTab:DeletePlayer(selected_player)
             end
         end
         TheNet:SetBlacklist(list)
-                
-        self:RefreshPlayers()        
-    end       
+
+        self:RefreshPlayers()
+    end
 end
 
 function BanTab:ClearPlayers()
     local popup = PopupDialogScreen(STRINGS.UI.SERVERADMINSCREEN.CLEAR_LIST_TITLE, STRINGS.UI.SERVERADMINSCREEN.CLEAR_LIST_BODY, 
-		{{text=STRINGS.UI.SERVERADMINSCREEN.YES, cb = function() 			
+		{{text=STRINGS.UI.SERVERADMINSCREEN.YES, cb = function()
             self.blacklist = {}
             TheNet:SetBlacklist(self.blacklist)
             self:RefreshPlayers()
 		    TheFrontEnd:PopScreen()
 		end},
 		{text=STRINGS.UI.SERVERADMINSCREEN.NO, cb = function() TheFrontEnd:PopScreen() end}  })
-	TheFrontEnd:PushScreen(popup)		
+	TheFrontEnd:PushScreen(popup)
 end
 
-function BanTab:MakeMenuButtons()    
+function BanTab:MakeMenuButtons()
     self.clear_button = self.ban_page:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "unbanall.tex", STRINGS.UI.SERVERADMINSCREEN.CLEAR_PLAYERS, true, false, function() self:ClearPlayers() end))
     self.clear_button:SetPosition(270, -155)
     if #self.blacklist == 0 then
@@ -534,7 +524,7 @@ function BanTab:GetHelpText()
     if not self.allEmpties then
         table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_INSPECT) .. " " .. STRINGS.UI.SERVERADMINSCREEN.CLEAR_PLAYERS_HELPTEXT)
     end
-    
+
     return table.concat(t, "  ")
 end
 

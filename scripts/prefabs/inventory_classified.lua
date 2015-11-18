@@ -390,10 +390,10 @@ end
 local function PushNewActiveItem(inst, data, returncontainer, returnslot)
     local item = data ~= nil and data.item or nil
     if item ~= inst._activeitem then
+        inst._activeitem = item
         if inst._parent ~= nil then
             inst._parent:PushEvent("newactiveitem", data or {})
         end
-        inst._activeitem = item
         QueueRefresh(inst, TIMEOUT)
     end
     inst._returncontainer = returncontainer
@@ -402,75 +402,70 @@ end
 
 local function PushItemGet(inst, data, isreturning)
     if data ~= nil then
+        if inst._itemspreview == nil then
+            inst._itemspreview = inst:GetItems()
+        end
+        inst._itemspreview[data.slot] = data.item
         if inst._parent ~= nil then
             if not isreturning then
                 inst._parent:PushEvent("gotnewitem", data)
             end
             inst._parent:PushEvent("itemget", data)
         end
-        if inst._itemspreview == nil then
-            inst._itemspreview = inst:GetItems()
-        end
-        inst._itemspreview[data.slot] = data.item
         QueueRefresh(inst, TIMEOUT)
     end
 end
 
 local function PushItemLose(inst, data)
     if data ~= nil then
-        if inst._parent ~= nil then
-            inst._parent:PushEvent("itemlose", data)
-        end
         if inst._itemspreview == nil then
             inst._itemspreview = inst:GetItems()
         end
         inst._itemspreview[data.slot] = nil
+        if inst._parent ~= nil then
+            inst._parent:PushEvent("itemlose", data)
+        end
         QueueRefresh(inst, TIMEOUT)
     end
 end
 
 local function PushEquip(inst, data)
     if data ~= nil then
-        if inst._parent ~= nil then
-            inst._parent:PushEvent("equip", data)
-        end
         if inst._equipspreview == nil then
             inst._equipspreview = inst:GetEquips()
         end
         inst._equipspreview[data.eslot] = data.item
+        if inst._parent ~= nil then
+            inst._parent:PushEvent("equip", data)
+        end
         QueueRefresh(inst, TIMEOUT)
     end
 end
 
 local function PushUnequip(inst, data)
     if data ~= nil then
-        if inst._parent ~= nil then
-            inst._parent:PushEvent("unequip", data)
-        end
         if inst._equipspreview == nil then
             inst._equipspreview = inst:GetEquips()
         end
         inst._equipspreview[data.eslot] = nil
+        if inst._parent ~= nil then
+            inst._parent:PushEvent("unequip", data)
+        end
         QueueRefresh(inst, TIMEOUT)
     end
 end
 
 local function PushStackSize(inst, item, stacksize, animatestacksize, activestacksize, animateactivestacksize, selfonly, sounddata)
     if item ~= nil and item.replica.stackable ~= nil then
-        if sounddata ~= nil and inst._parent ~= nil then
-            --This is for moving items between containers
-            --Normally stack size previews have no sound
-            inst._parent:PushEvent("gotnewitem", sounddata)
-        end
         local oldstacksize = item.replica.stackable:StackSize()
-        item:PushEvent("stacksizepreview",
+        local data =
         {
             stacksize = stacksize,
             animatestacksize = animatestacksize,
             activestacksize = activestacksize,
             animateactivestacksize = animateactivestacksize,
             activecontainer = selfonly and inst._parent or nil,
-        })
+        }
         if (stacksize ~= nil and stacksize ~= oldstacksize) or
             (activestacksize ~= nil and activestacksize ~= oldstacksize) then
             if inst._itemspreview == nil then
@@ -490,6 +485,12 @@ local function PushStackSize(inst, item, stacksize, animatestacksize, activestac
             end
             QueueRefresh(inst, TIMEOUT)
         end
+        if sounddata ~= nil and inst._parent ~= nil then
+            --This is for moving items between containers
+            --Normally stack size previews have no sound
+            inst._parent:PushEvent("gotnewitem", sounddata)
+        end
+        item:PushEvent("stacksizepreview", data)
     end
 end
 

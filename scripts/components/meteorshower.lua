@@ -166,8 +166,9 @@ function MeteorShower:SpawnMeteor(mod)
             mod = 1
         end
 
-        --Randomize size
-        local rand = math.random()
+        --Randomize size, but only spawn small meteors on the periphery
+        local peripheral = radius > TUNING.METEOR_SHOWER_SPAWN_RADIUS - TUNING.METEOR_SHOWER_CLEANUP_BUFFER
+        local rand = not peripheral and math.random() or 1
         local cost = math.floor(1 / mod + .5)
         if rand <= TUNING.METEOR_LARGE_CHANCE * mod and (self.large_remaining == nil or self.large_remaining >= cost) then
             met:SetSize("large", mod)
@@ -182,6 +183,7 @@ function MeteorShower:SpawnMeteor(mod)
         else
             met:SetSize("small", mod)
         end
+        met:SetPeripheral(peripheral)
         return met
     end
 end
@@ -239,10 +241,12 @@ local function OnCooldown(inst, self)
     if inst:IsNearPlayer(TUNING.METEOR_SHOWER_SPAWN_RADIUS + 60) then
         self:StartShower()
     elseif self.retries_remaining > 0 then
+        -- delay the start just in case a player walks by, so they can witness it
         self.retries_remaining = self.retries_remaining - 1
         self.tasktotime = GetTime() + RETRY_INTERVAL
     else
-        self:StartCooldown()
+        -- just do it anyways.
+        self:StartShower()
     end
 end
 

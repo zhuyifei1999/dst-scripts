@@ -1,18 +1,18 @@
 local hiderassets =
 {
-	Asset("ANIM", "anim/ds_spider_basic.zip"),
-	Asset("ANIM", "anim/ds_spider_caves.zip"),
-	Asset("SOUND", "sound/spider.fsb"),
+    Asset("ANIM", "anim/ds_spider_basic.zip"),
+    Asset("ANIM", "anim/ds_spider_caves.zip"),
+    Asset("SOUND", "sound/spider.fsb"),
 }
 
 local spitterassets =
 {
-	Asset("ANIM", "anim/ds_spider_basic.zip"),
-	Asset("ANIM", "anim/ds_spider2_caves.zip"),
-	Asset("SOUND", "sound/spider.fsb"),
+    Asset("ANIM", "anim/ds_spider_basic.zip"),
+    Asset("ANIM", "anim/ds_spider2_caves.zip"),
+    Asset("SOUND", "sound/spider.fsb"),
 }
 
-local dropperassets = 
+local dropperassets =
 {
     Asset("ANIM", "anim/ds_spider_basic.zip"),
     Asset("ANIM", "anim/ds_spider_warrior.zip"),
@@ -22,64 +22,64 @@ local dropperassets =
 
 local prefabs =
 {
-	"spidergland",
-	"monstermeat",
-	"silk",
-	"spider_web_spit",
+    "spidergland",
+    "monstermeat",
+    "silk",
+    "spider_web_spit",
 }
 
-local function ShouldAcceptItem(inst, item, giver)
+local brain = require "brains/spiderbrain"
 
-    if not giver:HasTag("spiderwhisperer") then
-        return false
-    end
-    
-    if inst.components.eater:CanEat(item) then
-        return true
-    end
+local function ShouldAcceptItem(inst, item, giver)
+    return giver:HasTag("spiderwhisperer") and inst.components.eater:CanEat(item)
 end
 
 function GetOtherSpiders(inst)
-    local x,y,z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x,y,z, 15,  {"spider"}, {"FX", "NOCLICK", "DECOR","INLIMBO"})
-    return ents
+    local x, y, z = inst.Transform:GetWorldPosition()
+    return TheSim:FindEntities(x, y, z, 15,  { "spider" }, { "FX", "NOCLICK", "DECOR", "INLIMBO" })
 end
 
 local function OnGetItemFromPlayer(inst, giver, item)
-    if inst.components.eater:CanEat(item) then  
-
-        if inst.components.combat.target and inst.components.combat.target == giver then
+    if inst.components.eater:CanEat(item) then
+        local playedfriendsfx = false
+        if inst.components.combat.target == giver then
             inst.components.combat:SetTarget(nil)
-        elseif giver.components.leader then
-            inst.SoundEmitter:PlaySound("dontstarve/common/makeFriend")
+        elseif giver.components.leader ~= nil and
+            inst.components.follower ~= nil then
+            giver:PushEvent("makefriend")
+            playedfriendsfx = true
             giver.components.leader:AddFollower(inst)
-            local loyaltyTime = item.components.edible:GetHunger() * TUNING.SPIDER_LOYALTY_PER_HUNGER
-            inst.components.follower:AddLoyaltyTime(loyaltyTime)
+            inst.components.follower:AddLoyaltyTime(item.components.edible:GetHunger() * TUNING.SPIDER_LOYALTY_PER_HUNGER)
         end
 
-        local spiders = GetOtherSpiders(inst)
-        local maxSpiders = 3
+        if giver.components.leader ~= nil then
+            local spiders = GetOtherSpiders(inst)
+            local maxSpiders = 3
 
-        for k,v in pairs(spiders) do
-            if maxSpiders < 0 then
-                break
-            end
+            for i, v in ipairs(spiders) do
+                if maxSpiders <= 0 then
+                    break
+                end
 
-            if v.components.combat.target and v.components.combat.target == giver then
-                v.components.combat:SetTarget(nil)
-            elseif giver.components.leader then
-                v.SoundEmitter:PlaySound("dontstarve/common/makeFriend")
-                giver.components.leader:AddFollower(v)
-                local loyaltyTime = item.components.edible:GetHunger() * TUNING.SPIDER_LOYALTY_PER_HUNGER
-                v.components.follower:AddLoyaltyTime(loyaltyTime)
-            end
-            maxSpiders = maxSpiders - 1
+                if v.components.combat.target == giver then
+                    v.components.combat:SetTarget(nil)
+                elseif giver.components.leader ~= nil and
+                    v.components.follower ~= nil and
+                    v.components.follower.leader == nil then
+                    if not playedfriendsfx then
+                        giver:PushEvent("makefriend")
+                        playedfriendsfx = true
+                    end
+                    giver.components.leader:AddFollower(v)
+                    v.components.follower:AddLoyaltyTime(item.components.edible:GetHunger() * TUNING.SPIDER_LOYALTY_PER_HUNGER)
+                end
+                maxSpiders = maxSpiders - 1
 
-            if v.components.sleeper:IsAsleep() then
-                v.components.sleeper:WakeUp()
+                if v.components.sleeper:IsAsleep() then
+                    v.components.sleeper:WakeUp()
+                end
             end
         end
-        item:Remove()
     end
 end
 
@@ -90,58 +90,63 @@ local function OnRefuseItem(inst, item)
     end
 end
 
-
-local function Retarget(inst)
-    return FindEntity(inst, SpringCombatMod(TUNING.SPIDER_WARRIOR_TARGET_DIST), function(guy)
-		return inst.components.combat:CanTarget(guy)
-			and not (inst.components.follower and inst.components.follower.leader == guy)
-	end,
-	nil,
-	nil,
-	{"character","pig"}
-	)
+local function FindTarget(inst, radius)
+    return FindEntity(
+        inst,
+        SpringCombatMod(radius),
+        function(guy)
+            return inst.components.combat:CanTarget(guy)
+                and not (inst.components.follower ~= nil and inst.components.follower.leader == guy)
+        end,
+        { "_combat" },
+        { "INLIMBO" },
+        { "character", "pig" }
+    )
 end
 
-local function FindTargets(guy)
-    return (guy:HasTag("character") or guy:HasTag("pig"))
-       and inst.components.combat:CanTarget(guy)
-       and not (inst.components.follower and inst.components.follower.leader == guy)
+local function Retarget(inst)
+    return FindTarget(inst, TUNING.SPIDER_WARRIOR_TARGET_DIST)
 end
 
 local function keeptargetfn(inst, target)
-   return target
-          and target.components.combat
-          and target.components.health
-          and not target.components.health:IsDead()
-          and not (inst.components.follower and inst.components.follower.leader == target)
-          and not (inst.components.follower and inst.components.follower:IsLeaderSame(target))
+    return target ~= nil
+        and target.components.combat ~= nil
+        and target.components.health ~= nil
+        and not target.components.health:IsDead()
+        and not (inst.components.follower ~= nil and
+                (inst.components.follower.leader == target or inst.components.follower:IsLeaderSame(target)))
+end
+
+local function BasicWakeCheck(inst)
+    return (inst.components.combat ~= nil and inst.components.combat.target ~= nil)
+        or (inst.components.homeseeker ~= nil and inst.components.homeseeker:HasHome())
+        or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning())
+        or (inst.components.follower ~= nil and inst.components.follower.leader)
 end
 
 local function ShouldSleep(inst)
-    return TheWorld.state.isday
-           and not (inst.components.combat and inst.components.combat.target)
-           and not (inst.components.homeseeker and inst.components.homeseeker:HasHome() )
-           and not (inst.components.burnable and inst.components.burnable:IsBurning() )
-           and not (inst.components.follower and inst.components.follower.leader)
+    return TheWorld.state.iscaveday and not BasicWakeCheck(inst)
 end
 
 local function ShouldWake(inst)
-    return TheWorld.state.isnight
-           or (inst.components.combat and inst.components.combat.target)
-           or (inst.components.homeseeker and inst.components.homeseeker:HasHome() )
-           or (inst.components.burnable and inst.components.burnable:IsBurning() )
-           or (inst.components.follower and inst.components.follower.leader)
-           or (inst:HasTag("spider_warrior") and FindEntity(inst, TUNING.SPIDER_WARRIOR_WAKE_RADIUS, function(...) return FindTargets(inst, ...) end ))
+    return TheWorld.state.iscavenight
+        or BasicWakeCheck(inst)
+        or (inst:HasTag("spider_warrior") and
+            FindTarget(inst, TUNING.SPIDER_WARRIOR_WAKE_RADIUS) ~= nil)
 end
 
 local function DoReturn(inst)
-	if inst.components.homeseeker and inst.components.homeseeker.home and inst.components.homeseeker.home.components.childspawner then
-		inst.components.homeseeker.home.components.childspawner:GoHome(inst)
-	end
+    local home = inst.components.homeseeker ~= nil and inst.components.homeseeker.home or nil
+    if home ~= nil and
+        home.components.childspawner ~= nil and
+        not (inst.components.follower ~= nil and
+            inst.components.follower.leader ~= nil) then
+        home.components.childspawner:GoHome(inst)
+    end
 end
 
-local function OnIsDay(inst, isday)
-	if not isday then
+local function OnIsCaveDay(inst, iscaveday)
+    if not iscaveday then
         inst.components.sleeper:WakeUp()
     elseif inst:IsAsleep() then
         DoReturn(inst)
@@ -149,30 +154,26 @@ local function OnIsDay(inst, isday)
 end
 
 local function OnEntitySleep(inst)
-	if TheWorld.state.isday then
-		DoReturn(inst)
-	end
+    if TheWorld.state.iscaveday then
+        DoReturn(inst)
+    end
 end
 
 local function SummonFriends(inst, attacker)
-	local den = GetClosestInstWithTag("spiderden",inst, TUNING.SPIDER_SUMMON_WARRIORS_RADIUS)
-	if den and den.components.combat and den.components.combat.onhitfn then
-		den.components.combat.onhitfn(den, attacker)
-	end
+    local den = GetClosestInstWithTag("spiderden", inst, TUNING.SPIDER_SUMMON_WARRIORS_RADIUS)
+    if den ~= nil and den.components.combat ~= nil and den.components.combat.onhitfn ~= nil then
+        den.components.combat.onhitfn(den, attacker)
+    end
 end
 
 local function OnAttacked(inst, data)
     inst.components.combat:SetTarget(data.attacker)
     inst.components.combat:ShareTarget(data.attacker, 30, function(dude)
         return dude:HasTag("spider")
-               and not dude.components.health:IsDead()
-               and dude.components.follower
-               and dude.components.follower.leader == inst.components.follower.leader
+            and not dude.components.health:IsDead()
+            and dude.components.follower ~= nil
+            and dude.components.follower.leader == inst.components.follower.leader
     end, 10)
-end
-
-local function WeaponDropped(inst)
-    inst:Remove()
 end
 
 local function SanityAura(inst, observer)
@@ -180,17 +181,17 @@ local function SanityAura(inst, observer)
 end
 
 local function MakeWeapon(inst)
-    if inst.components.inventory then
+    if inst.components.inventory ~= nil then
         local weapon = CreateEntity()
         weapon.entity:AddTransform()
         MakeInventoryPhysics(weapon)
         weapon:AddComponent("weapon")
         weapon.components.weapon:SetDamage(TUNING.SPIDER_SPITTER_DAMAGE_RANGED)
-        weapon.components.weapon:SetRange(inst.components.combat.attackrange, inst.components.combat.attackrange+4)
+        weapon.components.weapon:SetRange(inst.components.combat.attackrange, inst.components.combat.attackrange + 4)
         weapon.components.weapon:SetProjectile("spider_web_spit")
         weapon:AddComponent("inventoryitem")
         weapon.persists = false
-        weapon.components.inventoryitem:SetOnDroppedFn(function() WeaponDropped(weapon) end)
+        weapon.components.inventoryitem:SetOnDroppedFn(weapon.Remove)
         weapon:AddComponent("equippable")
         inst.weapon = weapon
         inst.components.inventory:Equip(inst.weapon)
@@ -199,38 +200,39 @@ local function MakeWeapon(inst)
 end
 
 local function create_common(bank, build, tag)
-	local inst = CreateEntity()
-	
+    local inst = CreateEntity()
+
     inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
-	inst.entity:AddLightWatcher()
-	inst.entity:AddDynamicShadow()
-	inst.entity:AddNetwork()
-    
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
+    inst.entity:AddLightWatcher()
+    inst.entity:AddDynamicShadow()
+    inst.entity:AddNetwork()
+
     MakeCharacterPhysics(inst, 10, .5)
 
     inst.DynamicShadow:SetSize(1.5, .5)
     inst.Transform:SetFourFaced()
-    
+
     ----------
-    
+
+    inst:AddTag("cavedweller")
     inst:AddTag("monster")
     inst:AddTag("hostile")
-	inst:AddTag("scarytoprey")    
+    inst:AddTag("scarytoprey")    
     inst:AddTag("canbetrapped")    
     inst:AddTag("smallcreature")
     inst:AddTag("spider")
     if tag ~= nil then
         inst:AddTag(tag)
     end
-    
+
     inst.AnimState:SetBank(bank)
     inst.AnimState:SetBuild(build)
     inst.AnimState:PlayAnimation("idle")
-    
+
     inst.entity:SetPristine()
-    
+
     if not TheWorld.ismastersim then
         return inst
     end
@@ -238,64 +240,63 @@ local function create_common(bank, build, tag)
     ----------
     inst.OnEntitySleep = OnEntitySleep
 
-
--- locomotor must be constructed before the stategraph!
+    -- locomotor must be constructed before the stategraph!
     inst:AddComponent("locomotor")
-	inst.components.locomotor:SetSlowMultiplier( 1 )
-	inst.components.locomotor:SetTriggersCreep(false)
+    inst.components.locomotor:SetSlowMultiplier( 1 )
+    inst.components.locomotor:SetTriggersCreep(false)
     inst.components.locomotor.pathcaps = { ignorecreep = true }
-  
+
     inst:SetStateGraph("SGspider")
-    
+
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:AddRandomLoot("monstermeat", 1)
     inst.components.lootdropper:AddRandomLoot("silk", .5)
     inst.components.lootdropper:AddRandomLoot("spidergland", .5)
+    inst.components.lootdropper:AddRandomHauntedLoot("spidergland", 1)
+
     inst.components.lootdropper.numrandomloot = 1
-   
-    ---------------------        
+
+    ---------------------
     MakeMediumBurnableCharacter(inst, "body")
     MakeMediumFreezableCharacter(inst, "body")
     inst.components.burnable.flammability = TUNING.SPIDER_FLAMMABILITY
-    ---------------------       
-    
-    
+    ---------------------
+
     ------------------
     inst:AddComponent("health")
 
     ------------------
-    
+
     inst:AddComponent("combat")
     inst.components.combat.hiteffectsymbol = "body"
     inst.components.combat:SetKeepTargetFunction(keeptargetfn)
-	inst.components.combat:SetOnHit(SummonFriends)
+    inst.components.combat:SetOnHit(SummonFriends)
     inst.components.combat:SetHurtSound("dontstarve/creatures/cavespider/hit_response")
-     
+
     inst:AddComponent("follower")
     inst.components.follower.maxfollowtime = TUNING.TOTAL_DAY_TIME
-    
-    
+
     ------------------
-    
+
     inst:AddComponent("sleeper")
     inst.components.sleeper:SetResistance(2)
     inst.components.sleeper:SetSleepTest(ShouldSleep)
     inst.components.sleeper:SetWakeTest(ShouldWake)
     ------------------
-    
+
     inst:AddComponent("knownlocations")
 
     ------------------
-    
+
     inst:AddComponent("eater")
     inst.components.eater:SetDiet({ FOODTYPE.MEAT }, { FOODTYPE.MEAT })
     inst.components.eater:SetCanEatHorrible()
     inst.components.eater.strongstomach = true -- can eat monster meat!
-    
+
     ------------------
-    
+
     inst:AddComponent("inspectable")
-    
+
     ------------------
 
     inst:AddComponent("trader")
@@ -305,30 +306,29 @@ local function create_common(bank, build, tag)
 
     ------------------
 
-    
     inst:AddComponent("sanityaura")
     inst.components.sanityaura.aurafn = SanityAura
-    
-    
-    local brain = require "brains/spiderbrain"
+
+    MakeHauntablePanic(inst)
+
     inst:SetBrain(brain)
 
     inst:ListenForEvent("attacked", OnAttacked)
-    
-    inst:WatchWorldState("isday", OnIsDay)
+
+    inst:WatchWorldState("iscaveday", OnIsCaveDay)
+    OnIsCaveDay(inst, TheWorld.state.iscaveday)
 
     return inst
 end
 
 local function create_hider()
-    local inst = create_common("spider_hider","DS_spider_caves","spider_hider")
-    
+    local inst = create_common("spider_hider", "DS_spider_caves", "spider_hider")
+
     if not TheWorld.ismastersim then
         return inst
     end
 
     inst.components.health:SetMaxHealth(TUNING.SPIDER_HIDER_HEALTH)
-
 
     inst.components.combat:SetDefaultDamage(TUNING.SPIDER_HIDER_DAMAGE)
     inst.components.combat:SetAttackPeriod(TUNING.SPIDER_HIDER_ATTACK_PERIOD)
@@ -336,8 +336,8 @@ local function create_hider()
 
     inst.components.locomotor.walkspeed = TUNING.SPIDER_HIDER_WALK_SPEED
     inst.components.locomotor.runspeed = TUNING.SPIDER_HIDER_RUN_SPEED
-	
-	inst.components.sanityaura.aura = -TUNING.SANITYAURA_MED
+
+    inst.components.sanityaura.aura = -TUNING.SANITYAURA_MED
     return inst
 end
 
@@ -354,7 +354,7 @@ local function create_spitter()
     inst.components.health:SetMaxHealth(TUNING.SPIDER_SPITTER_HEALTH)
 
     inst.components.combat:SetDefaultDamage(TUNING.SPIDER_SPITTER_DAMAGE_MELEE)
-    inst.components.combat:SetAttackPeriod(TUNING.SPIDER_SPITTER_ATTACK_PERIOD + math.random()*2)
+    inst.components.combat:SetAttackPeriod(TUNING.SPIDER_SPITTER_ATTACK_PERIOD + math.random() * 2)
     inst.components.combat:SetRange(TUNING.SPIDER_SPITTER_ATTACK_RANGE, TUNING.SPIDER_SPITTER_HIT_RANGE)
     inst.components.combat:SetRetargetFunction(2, Retarget)
 
@@ -368,8 +368,8 @@ local function create_spitter()
 end
 
 local function create_dropper()
-    local inst = create_common("spider", "spider_white","spider_warrior")
-    
+    local inst = create_common("spider", "spider_white", "spider_warrior")
+
     if not TheWorld.ismastersim then
         return inst
     end
@@ -377,10 +377,10 @@ local function create_dropper()
     inst.components.health:SetMaxHealth(TUNING.SPIDER_WARRIOR_HEALTH)
 
     inst.components.combat:SetDefaultDamage(TUNING.SPIDER_WARRIOR_DAMAGE)
-    inst.components.combat:SetAttackPeriod(TUNING.SPIDER_WARRIOR_ATTACK_PERIOD + math.random()*2)
+    inst.components.combat:SetAttackPeriod(TUNING.SPIDER_WARRIOR_ATTACK_PERIOD + math.random() * 2)
     inst.components.combat:SetRange(TUNING.SPIDER_WARRIOR_ATTACK_RANGE, TUNING.SPIDER_WARRIOR_HIT_RANGE)
     inst.components.combat:SetRetargetFunction(2, Retarget)
-    
+
     inst.components.locomotor.walkspeed = TUNING.SPIDER_WARRIOR_WALK_SPEED
     inst.components.locomotor.runspeed = TUNING.SPIDER_WARRIOR_RUN_SPEED
 
@@ -390,5 +390,5 @@ local function create_dropper()
 end
 
 return Prefab("cave/monsters/spider_hider", create_hider, hiderassets, prefabs),
-Prefab("cave/monsters/spider_spitter", create_spitter, spitterassets, prefabs),
-Prefab("cave/monsters/spider_dropper", create_dropper, dropperassets, prefabs)
+    Prefab("cave/monsters/spider_spitter", create_spitter, spitterassets, prefabs),
+    Prefab("cave/monsters/spider_dropper", create_dropper, dropperassets, prefabs)

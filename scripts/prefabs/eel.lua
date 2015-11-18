@@ -78,6 +78,8 @@ local function commonfn(build, anim, loop, dryable, cookable)
 
     inst:AddComponent("inventoryitem")
 
+    MakeHauntableLaunchAndPerish(inst)
+
     inst:AddComponent("tradable")
     inst.components.tradable.goldvalue = TUNING.GOLD_VALUES.RAREMEAT
     inst.data = {}

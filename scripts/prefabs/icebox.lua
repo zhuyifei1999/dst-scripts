@@ -24,9 +24,9 @@ end
 local function onhammered(inst, worker)
     inst.components.lootdropper:DropLoot()
     inst.components.container:DropEverything()
-    SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
-    inst.SoundEmitter:PlaySound("dontstarve/common/destroy_metal")
-
+    local fx = SpawnPrefab("collapse_small")
+    fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+    fx:SetMaterial("metal")
     inst:Remove()
 end
 
@@ -90,4 +90,4 @@ local function fn()
 end
 
 return Prefab("common/icebox", fn, assets, prefabs),
-        MakePlacer("common/icebox_placer", "icebox", "ice_box", "closed")
+    MakePlacer("common/icebox_placer", "icebox", "ice_box", "closed")

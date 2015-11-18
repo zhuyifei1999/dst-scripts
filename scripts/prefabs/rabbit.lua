@@ -232,6 +232,7 @@ local function fn()
     inst.entity:AddSoundEmitter()
     inst.entity:AddDynamicShadow()
     inst.entity:AddNetwork()
+    inst.entity:AddLightWatcher()
 
     MakeCharacterPhysics(inst, 1, 0.5)
 

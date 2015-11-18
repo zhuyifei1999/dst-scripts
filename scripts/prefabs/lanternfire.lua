@@ -105,6 +105,8 @@ local function fn()
     end
 
     inst:AddTag("FX")
+    inst:AddTag("playerlight")
+
     inst.persists = false
 
     inst.Light:Enable(true)

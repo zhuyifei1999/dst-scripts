@@ -1,6 +1,5 @@
 local PopupDialogScreen = require "screens/popupdialog"
 local ScriptErrorScreen = require "screens/scripterrorscreen"
-local LobbyScreen = require "screens/lobbyscreen"
 local BigPopupDialogScreen = require "screens/bigpopupdialog"
 local WorldGenScreen = require "screens/worldgenscreen"
 
@@ -65,6 +64,7 @@ end
 
 ---PREFABS AND ENTITY INSTANTIATION
 
+local modprefabinitfns = {}
 function RegisterPrefabs(...)
     for i, prefab in ipairs({...}) do
         --print ("Register " .. tostring(prefab))
@@ -75,7 +75,7 @@ function RegisterPrefabs(...)
 			TheSim:OnAssetPathResolve(asset.file, resolvedpath)			
 			asset.file = resolvedpath
 		end
-        prefab.modfns = ModManager:GetPostInitFns("PrefabPostInit", prefab.name)
+        modprefabinitfns[prefab.name] = ModManager:GetPostInitFns("PrefabPostInit", prefab.name)
         Prefabs[prefab.name] = prefab
         
 		TheSim:RegisterPrefab(prefab.name, prefab.assets, prefab.deps)
@@ -151,9 +151,20 @@ function SpawnPrefabFromSim(name)
 
             inst:SetPrefabName(inst.prefab or name)
 
-			for k,mod in pairs(prefab.modfns) do
-				mod(inst)
-			end
+            local modfns = modprefabinitfns[inst.prefab or name]
+            if modfns ~= nil then
+                for k,mod in pairs(modfns) do
+                    mod(inst)
+                end
+            end
+            if inst.prefab ~= name then
+                modfns = modprefabinitfns[name]
+                if modfns ~= nil then
+                    for k,mod in pairs(modfns) do
+                        mod(inst)
+                    end
+                end
+            end
 
             for k,prefabpostinitany in pairs(ModManager:GetPostInitFns("PrefabPostInitAny")) do
                 prefabpostinitany(inst)
@@ -339,6 +350,8 @@ function GetExtendedDebugString()
 		return debug_entity:GetBrainString()
 	elseif SOUNDDEBUG_ENABLED then
 	    return GetSoundDebugString()
+    elseif WORLDSTATEDEBUG_ENABLED then
+        return TheWorld and TheWorld.components.worldstate and TheWorld.components.worldstate:Dump()
 	end
 	return ""
 end
@@ -566,7 +579,7 @@ function SaveGame(isshutdown, cb)
     local ground = TheWorld
     assert(ground ~= nil, "Cant save world without ground entity")
     if ground ~= nil then
-        save.map.prefab = ground.prefab
+        save.map.prefab = ground.worldprefab
         save.map.tiles = ground.Map:GetStringEncode()
         save.map.nav = ground.Map:GetNavStringEncode()
         save.map.width, save.map.height = ground.Map:GetSize()
@@ -1017,9 +1030,15 @@ function InGamePlay()
 	return inGamePlay
 end
 
+function IsMigrating()
+    --Right now the only way to really tell if we are migrating is if we are neither in FE or in gameplay, which results in no screen...
+    --      e.g. if there is no active screen
+    --THIS SHOULD BE IMPROVED YARK YARK YARK
+    return TheFrontEnd:GetActiveScreen() == nil
+end
+
 --DoRestart helper
 local function postsavefn()
-	PlayerHistory:UpdateHistoryFromClientTable()
     TheNet:Disconnect(true)
     EnableAllMenuDLC()
     StartNextInstance()
@@ -1058,7 +1077,12 @@ function OnPlayerLeave(player_guid, expected)
     if TheWorld.ismastersim and player_guid ~= nil then
 		local player = Ents[player_guid]
 		if player ~= nil then
-			TheNet:Announce(player:GetDisplayName().." "..STRINGS.UI.NOTIFICATION.LEFTGAME, player.entity, true, "leave_game")
+            --V2C: #spawn #despawn
+            --     This was where we used to announce player left.
+            --     Now we announce it when you actually disconnect
+            --     but not during a shard migration disconnection.
+			--TheNet:Announce(player:GetDisplayName().." "..STRINGS.UI.NOTIFICATION.LEFTGAME, player.entity, true, "leave_game")
+
             --Save must happen when the player is actually removed
             --This is currently handled in playerspawner listening to ms_playerdespawn
             TheWorld:PushEvent("ms_playerdisconnected", {player=player, wasExpected=expected})
@@ -1100,8 +1124,12 @@ function OnNetworkDisconnect( message, should_reset, force_immediate_reset, deta
 	if ThePlayer ~= nil then
 		SerializeUserSession(ThePlayer)
 	end
-	
-	should_reset = should_reset and InGamePlay()
+
+    --Don't need to reset if we're in FE already
+    --NOTE: due to migration, we can be in neither gameplay nor FE
+    --      INVALID_CLIENT_TOKEN is a special case; we want to
+    --      boot the user back to the main menu even if they're in the FE
+    should_reset = should_reset and (InGamePlay() or IsMigrating() or message == "INVALID_CLIENT_TOKEN")
 	local function doquit( should_reset )
 		if should_reset == true then
 			DoRestart(false) --don't save again
@@ -1127,7 +1155,6 @@ function OnNetworkDisconnect( message, should_reset, force_immediate_reset, deta
 	if TheFrontEnd:GetFadeLevel() > 0 then --we're already fading
 		if TheFrontEnd.fadedir == false then
 			local cb = TheFrontEnd.fadecb
-			TheFrontEnd.fadecb = nil
 			TheFrontEnd.fadecb = function()
 				if cb then cb() end
 				TheFrontEnd:PushScreen( PopupDialogScreen(title, message, { {text=STRINGS.UI.NETWORKDISCONNECT.OK, cb = function() doquit( should_reset ) end}  }) )
@@ -1224,6 +1251,7 @@ function ResumeRequestLoadComplete(success)
     --activate and fade in once the user's player is downloaded
     if not success then
         TheNet:DeleteUserSession(TheNet:GetUserID())
+        local LobbyScreen = require "screens/lobbyscreen" 
         TheFrontEnd:PushScreen(LobbyScreen(Profile, OnUserPickedCharacter, false))
         TheFrontEnd:Fade(true, 1, nil, nil, nil, "white")
         TheWorld:PushEvent("entercharacterselect")

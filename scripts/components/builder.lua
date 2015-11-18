@@ -11,6 +11,7 @@ local function onancientbonus(self, ancientbonus)
 end
 
 local function oningredientmod(self, ingredientmod)
+    assert(INGREDIENT_MOD[ingredientmod] ~= nil, "Ingredient mods restricted to certain values, see constants.lua INGREDIENT_MOD")
     self.inst.replica.builder:SetIngredientMod(ingredientmod)
 end
 
@@ -231,18 +232,15 @@ function Builder:GetIngredients(recname)
     end
 end
 
-function Builder:RemoveIngredients(ingredients)
+function Builder:RemoveIngredients(ingredients, recname)
     for item, ents in pairs(ingredients) do
         for k,v in pairs(ents) do
             for i = 1, v do
                 self.inst.components.inventory:RemoveItem(k, false):Remove()
             end
         end
-     end
-    self.inst:PushEvent("consumeingredients")
- end
+    end
 
-function Builder:RemoveCharacterIngredients(recname)
     local recipe = AllRecipes[recname]
     if recipe then
         for k,v in pairs(recipe.character_ingredients) do
@@ -322,8 +320,7 @@ function Builder:DoBuild(recname, pt, rotation)
         else
             local materials = self:GetIngredients(recname)
             wetlevel = self:GetIngredientWetness(materials)
-            self:RemoveIngredients(materials)
-            self:RemoveCharacterIngredients(recname)
+            self:RemoveIngredients(materials, recname)
         end
         self.inst:PushEvent("refreshcrafting")
 
@@ -479,8 +476,7 @@ function Builder:BufferBuild(recname)
         end
         local materials = self:GetIngredients(recname)
         local wetlevel = self:GetIngredientWetness(materials)
-        self:RemoveIngredients(materials)
-        self:RemoveCharacterIngredients(recname)
+        self:RemoveIngredients(materials, recname)
         self.buffered_builds[recname] = wetlevel
         self.inst.replica.builder:SetIsBuildBuffered(recname, true)
     end

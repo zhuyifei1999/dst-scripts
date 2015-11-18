@@ -20,7 +20,7 @@ function WargBrain:OnStart()
     PriorityNode(
     {
         WhileNode( function() return self.inst.components.health.takingfiredamage end, "OnFire", Panic(self.inst)),
-        MinPeriod(self.inst, TUNING.WARG_SUMMONPERIOD, 
+        MinPeriod(self.inst, TUNING.WARG_SUMMONPERIOD, true,
                     IfNode(function() return self:CanSpawnChild(self.inst) end, "needs follower", 
                         ActionNode(function() self.inst.sg:GoToState("howl") return SUCCESS end, "Summon Hound" ))),
         ChaseAndAttack(self.inst),

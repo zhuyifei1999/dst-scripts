@@ -2,8 +2,12 @@
 local function DoSpawn(inst)
     local spawner = inst.components.periodicspawner
     if spawner then
-		spawner.target_time = nil    
-		spawner:TrySpawn()
+        if spawner.task ~= nil then
+            spawner.task:Cancel()
+            spawner.task = nil
+        end
+        spawner.target_time = nil
+        spawner:TrySpawn()
         spawner:Start()
     end
 end
@@ -117,6 +121,10 @@ function PeriodicSpawner:Stop()
     end
 end
 
+function PeriodicSpawner:ForceNextSpawn()
+    DoSpawn(self.inst)
+end
+
 --[[
 function PeriodicSpawner:OnEntitySleep()
 	self:Stop()
@@ -145,7 +153,7 @@ function PeriodicSpawner:LongUpdate(dt)
 end
 
 function PeriodicSpawner:GetDebugString()
-    return string.format("Next Spawn: %s prefab:", self.target_time and tostring(self.target_time - GetTime()) or "never", self.prefab)
+    return string.format("Next Spawn: %s prefab: %s", self.target_time and tostring(self.target_time - GetTime()) or "never", self.prefab)
 end
 
 return PeriodicSpawner

@@ -316,10 +316,12 @@ end
 
 local function AddActivePlayerComponents(inst)
     inst:AddComponent("playertargetindicator")
+    inst:AddComponent("playerhearing")
 end
 
 local function RemoveActivePlayerComponents(inst)
     inst:RemoveComponent("playertargetindicator")
+    inst:RemoveComponent("playerhearing")
 end
 
 local function ActivateHUD(inst)
@@ -366,6 +368,14 @@ local function DeactivatePlayer(inst)
 
     if inst == ThePlayer then
         TheWorld.minimap.MiniMap:EnablePlayerMinimapUpdate(false)
+
+        -- For now, clients save their local minimap reveal cache
+        -- and we need to trigger this here as well as on network
+        -- disconnect.  On migration, we will hit this code first
+        -- whereas normally we will hit the one in disconnection.
+        if not TheWorld.ismastersim then
+            SerializeUserSession(inst)
+        end
     end
 
     inst:PushEvent("playerdeactivated")
@@ -385,7 +395,11 @@ local function OnPlayerJoined(inst)
     TheWorld:PushEvent("playerentered", inst)
     if TheWorld.ismastersim then
         TheWorld:PushEvent("ms_playerjoined", inst)
-        TheNet:Announce(inst:GetDisplayName().." "..STRINGS.UI.NOTIFICATION.JOINEDGAME, inst.entity, true, "join_game")
+        --V2C: #spawn #despawn
+        --     This was where we used to announce player joined.
+        --     Now we announce as soon as you login to the lobby
+        --     and not when you connect during shard migrations.
+        --TheNet:Announce(inst:GetDisplayName().." "..STRINGS.UI.NOTIFICATION.JOINEDGAME, inst.entity, true, "join_game")
 
         --Register attuner server listeners here as "ms_playerjoined"
         --will trigger relinking saved attunements, and we don't want
@@ -529,6 +543,14 @@ local function OnSetOwner(inst)
         RemoveActivePlayerComponents(inst)
         DeactivateHUD(inst)
         DeactivatePlayer(inst)
+    end
+end
+
+local function OnChangeArea(inst, area)
+    if area.tags and table.contains(area.tags, "Nightmare") then
+        inst.components.playervision:SetNightmareVision(true)
+    else
+        inst.components.playervision:SetNightmareVision(false)
     end
 end
 
@@ -977,6 +999,9 @@ local function OnSave(inst, data)
     data.is_ghost = inst:HasTag("playerghost") or nil
     data.skin_name = inst.skin_name or nil
 
+    --Shard stuff
+    data.migration = inst.migration
+
     --V2C: UNFORTUNATLEY, the sleeping hacks still need to be
     --     saved for snapshots or c_saves while sleeping
     if inst._sleepinghandsitem ~= nil then
@@ -986,6 +1011,11 @@ local function OnSave(inst, data)
         data.sleepingactiveitem = inst._sleepingactiveitem:GetSaveRecord()
     end
     --
+
+    --Special case entities, since save references do not apply to networked players
+    if inst.wormlight ~= nil then
+        data.wormlight = inst.wormlight:GetSaveRecord()
+    end
 
     if inst._OnSave ~= nil then
         inst:_OnSave(data)
@@ -1001,6 +1031,9 @@ local function OnLoad(inst, data)
         if data.is_ghost then
             OnMakePlayerGhost(inst, { loading = true })
         end
+
+        --Shard stuff
+        inst.migration = data.migration
 
         inst:OnSetSkin(data.skin_name)
 
@@ -1022,6 +1055,21 @@ local function OnLoad(inst, data)
             end
         end
         --
+
+        --Special case entities, since save references do not apply to networked players
+        if data.wormlight ~= nil and inst.wormlight == nil then
+            local wormlight = SpawnSaveRecord(data.wormlight)
+            if wormlight ~= nil and wormlight.components.spell ~= nil then
+                wormlight.components.spell:SetTarget(inst)
+                if wormlight:IsValid() then
+                    if wormlight.components.spell.target == nil then
+                        wormlight:Remove()
+                    else
+                        wormlight.components.spell:ResumeSpell()
+                    end
+                end
+            end
+        end
     end
 
     if inst._OnLoad ~= nil then
@@ -1442,6 +1490,8 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst:AddComponent("talker")
 
         inst:AddComponent("playervision")
+        inst:AddComponent("areaaware")
+        inst:ListenForEvent("changearea", OnChangeArea)
         inst:AddComponent("attuner")
         --attuner server listeners are not registered until after "ms_playerjoined" has been pushed
 

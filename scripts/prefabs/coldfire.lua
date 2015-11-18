@@ -12,15 +12,15 @@ local prefabs =
 }
 
 local function onhammered(inst, worker)
+    local x, y, z = inst.Transform:GetWorldPosition()
     inst.components.lootdropper:DropLoot()
-    local ash = SpawnPrefab("ash")
-    ash.Transform:SetPosition(inst.Transform:GetWorldPosition())
-    SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
+    SpawnPrefab("ash").Transform:SetPosition(x, y, z)
+    SpawnPrefab("collapse_small").Transform:SetPosition(x, y, z)
     inst:Remove()
 end
 
 local function onextinguish(inst)
-    if inst.components.fueled then
+    if inst.components.fueled ~= nil then
         inst.components.fueled:InitializeFuelLevel(0)
     end
 end
@@ -30,11 +30,11 @@ local function destroy(inst)
     local time_to_erode = 1
     local tick_time = TheSim:GetTickTime()
 
-    if inst.DynamicShadow then
+    if inst.DynamicShadow ~= nil then
         inst.DynamicShadow:Enable(false)
     end
 
-    inst:StartThread( function()
+    inst:StartThread(function()
         local ticks = 0
         while ticks * tick_time < time_to_wait do
             ticks = ticks + 1
@@ -44,7 +44,7 @@ local function destroy(inst)
         ticks = 0
         while ticks * tick_time < time_to_erode do
             local erode_amount = ticks * tick_time / time_to_erode
-            inst.AnimState:SetErosionParams( erode_amount, 0.1, 1.0 )
+            inst.AnimState:SetErosionParams(erode_amount, 0.1, 1.0 )
             ticks = ticks + 1
             Yield()
         end
@@ -58,14 +58,24 @@ local function onbuilt(inst)
     inst.SoundEmitter:PlaySound("dontstarve/common/fireAddFuel")
 end
 
+local SECTION_STATUS =
+{
+    [0] = "OUT",
+    [1] = "EMBERS",
+    [2] = "LOW",
+    [3] = "NORMAL",
+    [4] = "HIGH",
+}
 local function getstatus(inst)
-    local sec = inst.components.fueled:GetCurrentSection()
-    if sec == 0 then
-        return "OUT"
-    elseif sec <= 4 then
-        local t = { "EMBERS", "LOW", "NORMAL", "HIGH" }
-        return t[sec]
+    return SECTION_STATUS[inst.components.fueled:GetCurrentSection()]
+end
+
+local function OnHaunt(inst)
+    if inst.components.fueled ~= nil and math.random() <= TUNING.HAUNT_CHANCE_OCCASIONAL then
+        inst.components.fueled:DoDelta(TUNING.TINY_FUEL)
+        return true
     end
+    return false
 end
 
 local function fn()
@@ -118,12 +128,12 @@ local function fn()
 
     inst.components.fueled:SetUpdateFn(function()
         if TheWorld.state.israining then
-            inst.components.fueled.rate = 1 + TUNING.COLDFIRE_RAIN_RATE*TheWorld.state.precipitationrate
+            inst.components.fueled.rate = 1 + TUNING.COLDFIRE_RAIN_RATE * TheWorld.state.precipitationrate
         else
             inst.components.fueled.rate = 1
         end
 
-        if inst.components.burnable and inst.components.fueled then
+        if inst.components.burnable ~= nil and inst.components.fueled ~= nil then
             inst.components.burnable:SetFXLevel(inst.components.fueled:GetCurrentSection(), inst.components.fueled:GetSectionPercent())
         end
     end)
@@ -134,8 +144,7 @@ local function fn()
                 inst.components.burnable:Extinguish() 
                 inst.AnimState:PlayAnimation("dead") 
                 RemovePhysicsColliders(inst)             
-                local ash = SpawnPrefab("ash")
-                ash.Transform:SetPosition(inst.Transform:GetWorldPosition())
+                SpawnPrefab("ash").Transform:SetPosition(inst.Transform:GetWorldPosition())
                 -- if math.random() < .5 then
                 --     local gold = SpawnPrefab("goldnugget")
                 --     gold.Transform:SetPosition(inst.Transform:GetWorldPosition())
@@ -162,15 +171,7 @@ local function fn()
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetHauntValue(TUNING.HAUNT_SMALL)
     inst.components.hauntable.cooldown = TUNING.HAUNT_COOLDOWN_HUGE
-    inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
-        if math.random() <= TUNING.HAUNT_CHANCE_OCCASIONAL then
-            if inst.components.fueled then
-                inst.components.fueled:DoDelta(TUNING.TINY_FUEL)
-                return true
-            end
-        end
-        return false
-    end)
+    inst.components.hauntable:SetOnHauntFn(OnHaunt)
 
     inst:ListenForEvent("onbuilt", onbuilt)
 

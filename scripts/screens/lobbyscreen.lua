@@ -270,12 +270,12 @@ local function listingConstructor(v, i, parent)
     end
 	playerListing.viewprofile:SetOnClick(
 		function()
-			if v.steamid then
-				TheNet:ViewSteamProfile(v.steamid)
+			if v.netid ~= nil then
+				TheNet:ViewNetProfile(v.netid)
 			end
 		end)
 
-	if empty or v.userid == owner then
+	if empty or v.userid == owner or not TheNet:IsNetIDPlatformValid(v.netid) then
 		playerListing.viewprofile:Hide()
 	end
 
@@ -404,12 +404,12 @@ local function UpdatePlayerListing(widget, data, index)
 
 	widget.viewprofile:SetOnClick(
 		function()
-			if data.steamid then
-				TheNet:ViewSteamProfile(data.steamid)
+			if data.netid ~= nil then
+				TheNet:ViewNetProfile(data.netid)
 			end
 		end)
 
-	if empty or data.userid == owner then
+	if empty or data.userid == owner or not TheNet:IsNetIDPlatformValid(data.netid) then
 		widget.viewprofile:Hide()
 	else
 		widget.viewprofile:Show()
@@ -515,7 +515,7 @@ function LobbyScreen:BuildPlayerList(players)
 	end
 
 	if not TheInput:ControllerAttached() then 
-		self.invite_button = self.player_list:AddChild(TEMPLATES.Button(STRINGS.UI.LOBBYSCREEN.INVITE, function() TheNet:ViewSteamFriends() end))
+		self.invite_button = self.player_list:AddChild(TEMPLATES.Button(STRINGS.UI.LOBBYSCREEN.INVITE, function() TheNet:ViewNetFriends() end))
 		self.invite_button:SetPosition(45, -258)
 		self.invite_button:SetScale(.7)
 	end
@@ -556,6 +556,7 @@ function LobbyScreen:ToggleShowPlayers(val)
 		self.chat_button:Enable()
 
 		self.scroll_list:SetFocus()
+        self.chatbox.textbox:SetEditing(false)
 	else
 		self.active_tab = "chat"
 		self.player_list:Hide()
@@ -604,15 +605,22 @@ function LobbyScreen:MakeTextEntryBox(parent)
     chatbox.textbox:SetCharacterFilter( VALID_CHARS )
     chatbox.textbox:EnableWordWrap(false)
     chatbox.textbox:EnableScrollEditWindow(true)
+   	chatbox.textbox:SetHelpTextEdit(STRINGS.UI.LOBBYSCREEN.CHAT)
+   	chatbox.textbox:SetHelpTextApply(STRINGS.UI.LOBBYSCREEN.CHAT)
     chatbox.gobutton = chatbox:AddChild(ImageButton("images/lobbyscreen.xml", "button_send.tex", "button_send_over.tex", "button_send_down.tex", "button_send_down.tex", "button_send_down.tex", {1,1}, {0,0}))
     chatbox.gobutton:SetPosition(box_size - 59 + nudgex, 8 + nudgey)
     chatbox.gobutton:SetScale(.13)
     chatbox.gobutton.image:SetTint(.6,.6,.6,1)
-    chatbox.textbox.OnTextEntered = function()
-        TheNet:Say(self.chatbox.textbox:GetString(), false)
-        self.chatbox.textbox:SetString("")
-        self.chatbox.textbox:SetEditing(true)
-    end
+	chatbox.textbox.OnTextEntered = function()
+		if self.chatbox.textbox:GetString() ~= "" then
+			TheNet:Say(self.chatbox.textbox:GetString(), false)
+			self.chatbox.textbox:SetString("")
+	        TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/chat_send")
+		end
+
+		self.chatbox.textbox:SetEditing(true)
+	end
+    
     chatbox.gobutton:SetOnClick( function() self.chatbox.textbox:OnTextEntered() end )
 
     chatbox:SetPosition(-64, -202)
@@ -837,11 +845,13 @@ function LobbyScreen:OnControl(control, down)
     
     if LobbyScreen._base.OnControl(self, control, down) then return true end
 
-    if self.chatbox and ((self.chatbox.textbox and self.chatbox.textbox.editing) or (TheInput:ControllerAttached() and self.chatbox.focus and control == CONTROL_ACCEPT)) then
-        self.chatbox.textbox:OnControl(control, down)
-        return true
-    end
-
+	if self.active_tab == "chat" then
+		if self.chatbox and ((self.chatbox.textbox and self.chatbox.textbox.editing) or (self.chatbox.focus and control == CONTROL_ACCEPT)) then
+			self.chatbox.textbox:OnControl(control, down)
+			return true
+		end
+	end
+	
     if not self.no_cancel and
     	not down and control == CONTROL_CANCEL then 
 		self:DoConfirmQuit()
@@ -904,7 +914,7 @@ function LobbyScreen:DoFocusHookups()
 end
 
 
-function LobbyScreen:DoConfirmQuit() 
+function LobbyScreen:DoConfirmQuit()
  	self.active = false
 	
 	local function doquit()
@@ -964,10 +974,10 @@ function LobbyScreen:SelectPortrait()
 		self.currentcharacter = herocharacter
 		self.charactername:SetString(STRINGS.CHARACTER_TITLES[herocharacter] or "")
 		self.characterquote:SetString(STRINGS.CHARACTER_QUOTES[herocharacter] or "")
-		if herocharacter == "woodie" and TheNet:GetCountryCode() == "CA" then
-			self.characterdetails:SetString(STRINGS.CHARACTER_DESCRIPTIONS[herocharacter.."_canada"] or "")
-		elseif herocharacter == "woodie" and TheNet:GetCountryCode() == "US" then
-			self.characterdetails:SetString(STRINGS.CHARACTER_DESCRIPTIONS[herocharacter.."_us"] or "")
+			if herocharacter == "woodie" and TheNet:GetCountryCode() == "CA" then
+				self.characterdetails:SetString(STRINGS.CHARACTER_DESCRIPTIONS[herocharacter.."_canada"] or "")
+			elseif herocharacter == "woodie" and TheNet:GetCountryCode() == "US" then
+				self.characterdetails:SetString(STRINGS.CHARACTER_DESCRIPTIONS[herocharacter.."_us"] or "")
 		else
 			self.characterdetails:SetString(STRINGS.CHARACTER_DESCRIPTIONS[herocharacter] or "")
 		end

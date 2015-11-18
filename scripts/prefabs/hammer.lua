@@ -1,13 +1,7 @@
 local assets =
 {
-	Asset("ANIM", "anim/hammer.zip"),
-	Asset("ANIM", "anim/swap_hammer.zip"),
-}
-
-local prefabs =
-{
-	"collapse_small",
-	"collapse_big",
+    Asset("ANIM", "anim/hammer.zip"),
+    Asset("ANIM", "anim/swap_hammer.zip"),
 }
 
 local function onequip(inst, owner)
@@ -20,13 +14,13 @@ local function onunequip(inst, owner)
     owner.AnimState:Hide("ARM_carry")
     owner.AnimState:Show("ARM_normal")
 end
-    
-local function fn()
-	local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
+local function fn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
     MakeInventoryPhysics(inst)
@@ -36,7 +30,7 @@ local function fn()
     if not TheWorld.ismastersim then
         return inst
     end
-    
+
     inst.AnimState:SetBank("hammer")
     inst.AnimState:SetBuild("hammer")
     inst.AnimState:PlayAnimation("idle")
@@ -65,8 +59,8 @@ local function fn()
 
     inst.components.equippable:SetOnEquip(onequip)
     inst.components.equippable:SetOnUnequip(onunequip)
-    
+
     return inst
 end
 
-return Prefab("common/inventory/hammer", fn, assets, prefabs)
+return Prefab("common/inventory/hammer", fn, assets)

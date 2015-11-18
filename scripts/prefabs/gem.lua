@@ -27,6 +27,7 @@ local function buildgem(colour)
         inst.AnimState:PlayAnimation(colour.."gem_idle", true)
 
         inst:AddTag("molebait")
+        inst:AddTag("quakedebris")
 
         inst.entity:SetPristine()
 

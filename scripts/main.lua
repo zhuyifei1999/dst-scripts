@@ -7,6 +7,7 @@ MAIN = 1
 ENCODE_SAVES = BRANCH ~= "dev"
 CHEATS_ENABLED = BRANCH == "dev" or (PLATFORM == "PS4" and CONFIGURATION ~= "PRODUCTION")
 SOUNDDEBUG_ENABLED = false
+WORLDSTATEDEBUG_ENABLED = false
 ACCOMPLISHMENTS_ENABLED = PLATFORM == "PS4"
 --DEBUG_MENU_ENABLED = true
 DEBUG_MENU_ENABLED = BRANCH == "dev" or (PLATFORM == "PS4" and CONFIGURATION ~= "PRODUCTION")
@@ -135,6 +136,7 @@ require("frontend")
 require("netvars")
 require("networking")
 require("networkclientrpc")
+require("shardnetworking")
 
 if METRICS_ENABLED then
 require("overseer")

@@ -13,7 +13,7 @@ local LootDropper = Class(function(self, inst)
     self.trappable = true
 
 	self.lootfn = nil
-    
+
 end)
 
 LootTables = {}
@@ -109,7 +109,9 @@ function LootDropper:GenerateLoot()
     
     if self.chanceloot then
 		for k,v in pairs(self.chanceloot) do
-			if math.random() < v.chance then
+            if v.chance >= 1.0 then
+                table.insert(loots, v.prefab)
+            elseif math.random() < v.chance then
 				table.insert(loots, v.prefab)
 				self.droppingchanceloot = true
 			end
@@ -122,7 +124,9 @@ function LootDropper:GenerateLoot()
     		for i, entry in ipairs(loot_table) do
     			local prefab = entry[1]
     			local chance = entry[2]    			
-				if math.random() <= chance then
+                if chance >= 1.0 then
+                    table.insert(loots, prefab)
+                elseif math.random() <= chance then
 					table.insert(loots, prefab)
 					self.droppingchanceloot = true
 				end

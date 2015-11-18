@@ -1,5 +1,5 @@
-local function ontargetteleporter(self, targetteleporter)
-    if targetteleporter ~= nil then
+local function onavailable(self)
+    if self.targetTeleporter ~= nil and self.enabled == true then
         self.inst:AddTag("teleporter")
     else
         self.inst:RemoveTag("teleporter")
@@ -10,12 +10,15 @@ local Teleporter = Class(function(self, inst)
     self.inst = inst
     self.targetTeleporter = nil
     self.onActivate = nil
-    self.onActivateOther = nil
+    self.onActivateByOther = nil
     self.offset = 2
+    self.enabled = true
+    self.numteleporting = 0
 end,
 nil,
 {
-    targetTeleporter = ontargetteleporter,
+    targetTeleporter = onavailable,
+    enabled = onavailable,
 })
 
 function Teleporter:OnRemoveFromEntity()
@@ -23,19 +26,30 @@ function Teleporter:OnRemoveFromEntity()
 end
 
 function Teleporter:Activate(doer)
-    if self.targetTeleporter == nil then
-        return
+    if self.targetTeleporter == nil or not self.enabled then
+        return false
     end
 
     if self.onActivate ~= nil then
         self.onActivate(self.inst, doer)
     end
 
-    if self.onActivateOther ~= nil then
-        self.onActivateOther(self.inst, self.targetTeleporter, doer)
+    local targetTeleporter = self.targetTeleporter.components.teleporter
+    if targetTeleporter ~= nil
+        and targetTeleporter.onActivateByOther ~= nil then
+        targetTeleporter.onActivateByOther(self.targetTeleporter, self.inst, doer)
+        targetTeleporter.numteleporting = targetTeleporter.numteleporting + 1
     end
 
     self:Teleport(doer)
+
+    if self.targetTeleporter.components.teleporter ~= nil and doer.components.inventoryitem ~= nil then
+        self.targetTeleporter.components.teleporter:RecieveItem(doer)
+    end
+
+    if self.targetTeleporter.components.teleporter ~= nil and doer:HasTag("player") then
+        self.targetTeleporter.components.teleporter:RecievePlayer(doer)
+    end
 
     if doer.components.leader ~= nil then
         for follower, v in pairs(doer.components.leader.followers) do
@@ -65,6 +79,8 @@ function Teleporter:Activate(doer)
             end
         end
     end
+
+    return true
 end
 
 -- You probably don't want this, call Activate instead.
@@ -84,8 +100,82 @@ function Teleporter:Teleport(obj)
     end
 end
 
+function Teleporter:PushDoneTeleporting(obj)
+    self.inst:PushEvent("doneteleporting", obj)
+end
+
+local function onitemarrive(inst, item)
+    if not item:IsValid() then
+        return
+    end
+
+    local teleporter = inst.components.teleporter
+    teleporter.numteleporting = teleporter.numteleporting - 1
+    inst:RemoveChild(item)
+    item:ReturnToScene()
+
+    if item.Transform ~= nil then
+        local x, y, z = item.Transform:GetWorldPosition()
+        local angle = math.random() * 2 * PI
+        if item.Physics ~= nil then
+            item.Physics:Stop()
+            if item:IsAsleep() then
+                local radius = inst.Physics:GetRadius() + math.random() * 1.0
+                item.Physics:Teleport(
+                    x + math.cos(angle) * radius,
+                    0,
+                    z - math.sin(angle) * radius)
+            else
+                local bounce = item.components.inventoryitem ~= nil and not item.components.inventoryitem.nobounce
+                local speed = (bounce and 3 or 4) + math.random() * .5 + inst.Physics:GetRadius()
+                item.Physics:Teleport(x, 0, z)
+                item.Physics:SetVel(
+                    speed * math.cos(angle),
+                    bounce and speed * 3 or 0,
+                    speed * math.sin(angle))
+            end
+        else
+            local radius = 2 + math.random() * .5
+            item.Transform:SetPosition(
+                x + math.cos(angle) * radius,
+                0,
+                z - math.sin(angle) * radius)
+        end
+    end
+
+    teleporter:PushDoneTeleporting(item)
+end
+
+function Teleporter:RecieveItem(item)
+    item:RemoveFromScene()
+    TemporarilyRemovePhysics(item, 4.5)
+    self.inst:AddChild(item)
+    self.inst:DoTaskInTime(.5, onitemarrive, item)
+end
+
+local function oncameraarrive(inst, doer)
+    doer:SnapCamera()
+    doer:ScreenFade(true, 2)
+end
+
+local function ondoerarrive(inst, doer)
+    doer.sg:GoToState("jumpout")
+    inst.components.teleporter.numteleporting = inst.components.teleporter.numteleporting - 1
+    inst.components.teleporter:PushDoneTeleporting(doer)
+end
+
+function Teleporter:RecievePlayer(doer)
+    doer:ScreenFade(false)
+    self.inst:DoTaskInTime(3, oncameraarrive, doer)
+    self.inst:DoTaskInTime(4, ondoerarrive, doer)
+end
+
 function Teleporter:Target(otherTeleporter)
     self.targetTeleporter = otherTeleporter
+end
+
+function Teleporter:SetEnabled(enabled)
+    self.enabled = enabled
 end
 
 function Teleporter:OnSave()

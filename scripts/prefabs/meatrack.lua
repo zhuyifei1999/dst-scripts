@@ -34,22 +34,23 @@ local prefabs =
 }
 
 local function onhammered(inst, worker)
-    if inst:HasTag("fire") and inst.components.burnable then
+    if inst.components.burnable ~= nil and inst.components.burnable:IsBurning() then
         inst.components.burnable:Extinguish()
     end
     inst.components.lootdropper:DropLoot()
-    SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
+    local fx = SpawnPrefab("collapse_small")
+    fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+    fx:SetMaterial("wood")
     inst:Remove()
-    inst.SoundEmitter:PlaySound("dontstarve/common/destroy_wood")
 end
 
 local function onhit(inst, worker)
-    if not inst:HasTag("burnt") then 
-        if inst.components.dryer and inst.components.dryer:IsDrying() then
+    if not inst:HasTag("burnt") then
+        if inst.components.dryer ~= nil and inst.components.dryer:IsDrying() then
             inst.AnimState:PlayAnimation("hit_full")
             inst.AnimState:PushAnimation("drying_pre", false)
             inst.AnimState:PushAnimation("drying_loop", true)
-        elseif inst.components.dryer and inst.components.dryer:IsDone() then
+        elseif inst.components.dryer ~= nil and inst.components.dryer:IsDone() then
             inst.AnimState:PlayAnimation("hit_full")
             inst.AnimState:PushAnimation("idle_full", false)
         else
@@ -60,7 +61,7 @@ local function onhit(inst, worker)
 end
 
 local function getstatus(inst)
-    if inst:HasTag("burnt") then 
+    if inst:HasTag("burnt") then
         return "BURNT"
     elseif inst.components.dryer ~= nil then
         return (inst.components.dryer:IsDone() and "DONE")
@@ -100,13 +101,13 @@ local function onbuilt(inst)
 end
 
 local function onsave(inst, data)
-    if inst:HasTag("burnt") or inst:HasTag("fire") then
+    if inst:HasTag("burnt") or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
         data.burnt = true
     end
 end
 
 local function onload(inst, data)
-    if data and data.burnt then
+    if data ~= nil and data.burnt then
         inst.components.burnable.onburnt(inst)
     end
 end
@@ -153,7 +154,7 @@ local function fn()
     inst:AddComponent("inspectable")
 
     inst.components.inspectable.getstatus = getstatus
-    MakeSnowCovered(inst)   
+    MakeSnowCovered(inst)
     inst:ListenForEvent("onbuilt", onbuilt)
 
     MakeMediumBurnable(inst, nil, nil, true)

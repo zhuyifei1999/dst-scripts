@@ -19,8 +19,12 @@ local SlurtleBrain = Class(Brain, function(self, inst)
 end)
 
 local function GoHomeAction(inst)
-    if inst.components.homeseeker then
-        inst.components.homeseeker:GoHome()
+    local homeseeker = inst.components.homeseeker
+    if homeseeker
+        and homeseeker.home
+        and homeseeker.home:IsValid()
+        and (not homeseeker.home.components.burnable or not homeseeker.home.components.burnable:IsBurning()) then
+        return BufferedAction(inst, inst.components.homeseeker.home, ACTIONS.GOHOME)
     end
 end
 
@@ -135,7 +139,7 @@ function SlurtleBrain:OnStart()
         DoAction(self.inst, EatFoodAction),
         DoAction(self.inst, StealFoodAction),
         WhileNode(function() return ShouldGoHome(self.inst) end, "ShouldGoHome",
-        DoAction(self.inst, GoHomeAction, "Go Home", true )),   
+            DoAction(self.inst, GoHomeAction, "Go Home", true )),   
         Wander(self.inst, function() return self.inst.components.knownlocations:GetLocation("home") end, 40),
     }, .25)
     

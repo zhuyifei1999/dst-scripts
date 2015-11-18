@@ -10,17 +10,30 @@ local prefabs =
     "pigtorch_fuel",
     "pigguard",
     "collapse_small",
+
+    --loot
+    "log",
+    "poop",
 }
 
-local function onhammered(inst, worker)
+local loot =
+{
+    "log",
+    "log",
+    "log",
+    "poop",
+}
+
+local function onhammered(inst)
     inst.components.lootdropper:DropLoot()
-    SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
-    inst.SoundEmitter:PlaySound("dontstarve/common/destroy_wood")
+    local fx = SpawnPrefab("collapse_small")
+    fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+    fx:SetMaterial("wood")
     inst:Remove()
 end
 
 local function onhit(inst,worker)
-    if inst.components.spawner.child and inst.components.spawner.child.components.combat then
+    if inst.components.spawner.child ~= nil and inst.components.spawner.child.components.combat ~= nil then
         inst.components.spawner.child.components.combat:SuggestTarget(worker)
     end
     inst.AnimState:PlayAnimation("hit")
@@ -28,7 +41,7 @@ local function onhit(inst,worker)
 end
 
 local function onextinguish(inst)
-    if inst.components.fueled then
+    if inst.components.fueled ~= nil then
         inst.components.fueled:InitializeFuelLevel(0)
     end
 end
@@ -46,6 +59,16 @@ local function onisraining(inst, israining)
             inst.components.fueled.rate = 1
         end
     end
+end
+
+local function OnVacate(inst)
+    SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
+end
+
+local function OnHaunt(inst)
+    inst.components.fueled:TakeFuelItem(SpawnPrefab("pigtorch_fuel"))
+    inst.components.spawner:ReleaseChild()
+    return true
 end
 
 local function fn()
@@ -84,7 +107,7 @@ local function fn()
     inst.components.fueled.maxfuel = TUNING.PIGTORCH_FUEL_MAX
     inst.components.fueled:SetSections(3)
     inst.components.fueled.fueltype = FUELTYPE.PIGTORCH
-    inst.components.fueled:SetSectionCallback( function(section)
+    inst.components.fueled:SetSectionCallback(function(section)
         if section == 0 then
             inst.components.burnable:Extinguish()
         else
@@ -101,7 +124,7 @@ local function fn()
     onisraining(inst, TheWorld.state.israining)
 
     inst:AddComponent("lootdropper")
-    inst.components.lootdropper:SetLoot({"log", "log", "log", "poop"})
+    inst.components.lootdropper:SetLoot(loot)
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
     inst.components.workable:SetWorkLeft(4)
@@ -109,22 +132,15 @@ local function fn()
     inst.components.workable:SetOnWorkCallback(onhit)
 
     inst:AddComponent("spawner")
-    inst.components.spawner:Configure("pigguard", TUNING.TOTAL_DAY_TIME*4)
+    inst.components.spawner:Configure("pigguard", TUNING.TOTAL_DAY_TIME * 4)
     inst.components.spawner:SetOnlySpawnOffscreen(true)
-    --MakeSnowCovered(inst)
+    inst.components.spawner:SetOnVacateFn(OnVacate)
 
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetHauntValue(TUNING.HAUNT_SMALL)
-    inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
-        local fuel = SpawnPrefab("pigtorch_fuel")
-        if fuel then inst.components.fueled:TakeFuelItem(fuel) end
-        inst.components.spawner:ReleaseChild()
-        return true
-    end)
-    inst.components.spawner:SetOnVacateFn(function(inst, child)
-        local fx = SpawnPrefab("collapse_small")
-        fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
-    end)
+    inst.components.hauntable:SetOnHauntFn(OnHaunt)
+
+    --MakeSnowCovered(inst)
 
     return inst
 end

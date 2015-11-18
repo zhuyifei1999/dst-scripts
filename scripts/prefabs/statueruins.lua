@@ -17,9 +17,10 @@ local prefabs =
     "purplegem",
     "nightmarefuel",
     "collapse_small",
+    "thulecite",
 }
 
-local gemlist  =
+local gemlist =
 {
     "greengem",
     "redgem",
@@ -29,22 +30,40 @@ local gemlist  =
     "purplegem",
 }
 
-SetSharedLootTable( 'statue_ruins_no_gem',
+SetSharedLootTable('statue_ruins_no_gem',
 {
     {'thulecite',     1.00},
     {'nightmarefuel', 1.00},
     {'thulecite',     0.05},
 })
 
-local LIGHT_INTENSITY = .25
-local LIGHT_RADIUS = 2.5
-local LIGHT_FALLOFF = 5
-local FADEIN_TIME = 10
+local MAX_LIGHT_ON_FRAME = 15
+local MAX_LIGHT_OFF_FRAME = 30
 
-local function turnoff(inst, light)
-    if light then
-        light:Enable(false)
+local function OnUpdateLight(inst, dframes)
+    local frame = inst._lightframe:value() + dframes
+    if frame >= inst._lightmaxframe then
+        inst._lightframe:set_local(inst._lightmaxframe)
+        inst._lighttask:Cancel()
+        inst._lighttask = nil
+    else
+        inst._lightframe:set_local(frame)
     end
+
+    local k = frame / inst._lightmaxframe
+    inst.Light:SetRadius(inst._lightradius1:value() * k + inst._lightradius0:value() * (1 - k))
+
+    if TheWorld.ismastersim then
+        inst.Light:Enable(inst._lightradius1:value() > 0 or frame < inst._lightmaxframe)
+    end
+end
+
+local function OnLightDirty(inst)
+    if inst._lighttask == nil then
+        inst._lighttask = inst:DoPeriodicTask(FRAMES, OnUpdateLight, nil, 1)
+    end
+    inst._lightmaxframe = inst._lightradius1:value() > 0 and MAX_LIGHT_ON_FRAME or MAX_LIGHT_OFF_FRAME
+    OnUpdateLight(inst, 0)
 end
 
 local function DoFx(inst)
@@ -63,15 +82,23 @@ local function DoFx(inst)
     end
 end
 
-local function fade_in(inst)
-    inst.Light:Enable(true)
-    --DoFx(inst)
-    inst.components.lighttweener:StartTween(nil, 3, nil, nil, nil, 0.5) 
-end
-
-local function fade_out(inst)
-    --DoFx(inst)
-    inst.components.lighttweener:StartTween(nil, 0, nil, nil, nil, 1, turnoff) 
+local function fade_to(inst, rad)
+    rad = rad or 0
+    if inst._lightradius1:value() ~= rad then
+        local k = inst._lightframe:value() / inst._lightmaxframe
+        local radius = inst._lightradius1:value() * k + inst._lightradius0:value() * (1 - k)
+        local minradius0 = math.min(inst._lightradius0:value(), inst._lightradius1:value())
+        local maxradius0 = math.max(inst._lightradius0:value(), inst._lightradius1:value())
+        if radius > rad then
+            inst._lightradius0:set(radius > minradius0 and maxradius0 or minradius0)
+        else
+            inst._lightradius0:set(radius < maxradius0 and minradius0 or maxradius0)
+        end
+        local maxframe = rad > 0 and MAX_LIGHT_ON_FRAME or MAX_LIGHT_OFF_FRAME
+        inst._lightradius1:set(rad)
+        inst._lightframe:set(math.max(0, math.floor((radius - inst._lightradius0:value()) / (rad - inst._lightradius0:value()) * maxframe + .5)))
+        OnLightDirty(inst)
+    end
 end
 
 local function ShowState(inst, phase, fromwork)
@@ -79,59 +106,51 @@ local function ShowState(inst, phase, fromwork)
         return
     end
 
-    --local nclock = GetNightmareClock()
     local suffix = ""
     local workleft = inst.components.workable.workleft
 
-    if inst.small then
+    if inst.small and not inst.SoundEmitter:PlayingSound("hoverloop") then
         inst.SoundEmitter:PlaySound("dontstarve/common/floating_statue_hum", "hoverloop")
-        if inst.gemmed then
-            inst.AnimState:OverrideSymbol("swap_gem", "statue_ruins_small_gem", inst.gemmed)
-        end
-    else
-        if inst.gemmed then
-            inst.AnimState:OverrideSymbol("swap_gem", "statue_ruins_gem", inst.gemmed)
-        end
+    end
+    if inst.gemmed then
+        inst.AnimState:OverrideSymbol("swap_gem", inst.small and "statue_ruins_small_gem" or "statue_ruins_gem", inst.gemmed)
     end
 
-    --[[if nclock and nclock:IsNightmare() then
-        suffix = "_night"
-        inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
-        if not fromwork then
-            DoFx(inst)
-        end
-    end]]
-
-    if phase ~= nil and inst.phase ~= phase and phase ~= "nightmare" then
+    if phase ~= nil then
         if phase == "warn" then
-            fade_in(inst)
-        elseif phase == "calm" then
-            fade_out(inst)
-        else
+            fade_to(inst, 2)
+        elseif phase == "wild" then
+            suffix = "_night"
+            fade_to(inst, 4)
+            inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+            DoFx(inst)
+        elseif phase == "dawn" then
+            fade_to(inst, 2)
             inst.AnimState:ClearBloomEffectHandle()
             DoFx(inst)
+        elseif phase == "calm" then
+            fade_to(inst, 0)
         end
-        inst.phase = phase
+    elseif fromwork then
+        -- we don't actually have hit animations, we just play the animation
     end
 
-    if workleft < TUNING.MARBLEPILLAR_MINE / 3 then
-        inst.AnimState:PlayAnimation("hit_low"..suffix, true)
-    elseif workleft < TUNING.MARBLEPILLAR_MINE * 2 / 3 then
-        inst.AnimState:PlayAnimation("hit_med"..suffix, true)
-    else
-        inst.AnimState:PlayAnimation("idle_full"..suffix, true)
-    end
+    inst.AnimState:PlayAnimation(
+        ((workleft < TUNING.MARBLEPILLAR_MINE / 3 and "hit_low") or
+        (workleft < TUNING.MARBLEPILLAR_MINE * 2 / 3 and "hit_med") or
+        "idle_full")..suffix,
+        true
+    )
 end
 
 local function OnWorked(inst, worked, workleft)
     if workleft <= 0 then
         inst.SoundEmitter:KillSound("hoverloop")
-        inst.SoundEmitter:PlaySound("dontstarve/wilson/rock_break")
         inst.components.lootdropper:DropLoot(inst:GetPosition())
-        SpawnAt("collapse_small", inst)
+        local fx = SpawnAt("collapse_small", inst)
+        fx:SetMaterial("rock")
 
-        --[[local nclock = GetNightmareClock()
-        if nclock and nclock:IsNightmare() then
+        if TheWorld.state.isnightmarewild then
             if math.random() <= 0.3 then
                 if math.random() <= 0.5 then
                     SpawnAt("crawlingnightmare", inst)
@@ -139,11 +158,29 @@ local function OnWorked(inst, worked, workleft)
                     SpawnAt("nightmarebeak", inst)
                 end
             end
-        end]]
+        end
 
         inst:Remove()
     else
         ShowState(inst, nil, true)
+    end
+end
+
+local function OnPhaseChanged(inst, phase, instant)
+    if instant then
+        ShowState(inst, phase)
+    else
+        inst:DoTaskInTime(math.random() * 2, ShowState, phase)
+    end
+end
+
+local function onsave(inst, data)
+    data.gem = inst.gemmed
+end
+
+local function onload(inst, data)
+    if data and data.gem then
+        inst.gemmed = data.gem
     end
 end
 
@@ -169,8 +206,23 @@ local function commonfn(small)
 
     inst.MiniMapEntity:SetIcon("statue_ruins.png")
 
+    inst:AddTag("cavedweller")
     inst:AddTag("structure")
-    inst.entity:AddTag("statue")
+    inst:AddTag("statue")
+
+    inst.Light:SetRadius(0)
+    inst.Light:SetIntensity(.9)
+    inst.Light:SetFalloff(.9)
+    inst.Light:SetColour(1, 1, 1)
+    inst.Light:Enable(false)
+    inst.Light:EnableClientModulation(true)
+
+    inst._lightframe = net_smallbyte(inst.GUID, "ruins_statue._lightframe", "lightdirty")
+    inst._lightradius0 = net_tinybyte(inst.GUID, "ruins_statue._lightradius0", "lightdirty")
+    inst._lightradius1 = net_tinybyte(inst.GUID, "ruins_statue._lightradius1", "lightdirty")
+    inst._lightmaxframe = MAX_LIGHT_OFF_FRAME
+    inst._lightframe:set(inst._lightmaxframe)
+    inst._lighttask = nil
 
     --Sneak these into pristine state for optimization
     inst:AddTag("_named")
@@ -178,6 +230,8 @@ local function commonfn(small)
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
+        inst:ListenForEvent("lightdirty", OnLightDirty)
+
         return inst
     end
 
@@ -185,8 +239,6 @@ local function commonfn(small)
     inst:RemoveTag("_named")
 
     inst.small = small
-    inst.fadeout = fade_out
-    inst.fadein = fade_in
 
     inst:AddComponent("inspectable")
     inst.components.inspectable.nameoverride = "ANCIENT_STATUE"
@@ -200,18 +252,17 @@ local function commonfn(small)
 
     inst:AddComponent("fader")
 
-    inst:AddComponent("lighttweener")
-    inst.components.lighttweener:StartTween(inst.Light, 1, .9, 0.9, {255/255,255/255,255/255}, 0, turnoff)
-
     inst:AddComponent("lootdropper")
 
-    --[[if GetNightmareClock() then
-        inst:WatchWorldState("phase", ShowState)
-    end]]
+    inst:WatchWorldState("nightmarephase", OnPhaseChanged)
+    inst:DoTaskInTime(0, function()
+        OnPhaseChanged(inst, TheWorld.state.nightmarephase, true)
+    end)
 
-    inst:DoTaskInTime(1 * FRAMES, ShowState)
+    MakeHauntableWork(inst)
 
-    --fade_in(inst,0)
+    inst.OnSave = onsave
+    inst.OnLoad = onload
 
     return inst
 end
@@ -225,11 +276,7 @@ local function gem(small)
 
     inst.gemmed = GetRandomItem(gemlist)
 
-    if small then
-        inst.AnimState:OverrideSymbol("swap_gem", "statue_ruins_small_gem", inst.gemmed)
-    else
-        inst.AnimState:OverrideSymbol("swap_gem", "statue_ruins_gem", inst.gemmed)
-    end
+    inst.AnimState:OverrideSymbol("swap_gem", small and "statue_ruins_small_gem" or "statue_ruins_gem", inst.gemmed)
 
     inst.components.lootdropper:SetLoot({ "thulecite", inst.gemmed })
     inst.components.lootdropper:AddChanceLoot("thulecite", 0.05)

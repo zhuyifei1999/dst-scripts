@@ -12,35 +12,32 @@ local prefabs =
 }
 
 local function getstatus(inst)
-    if inst:HasTag("burnt") then 
-        return "BURNT"
-    elseif inst.components.spawner and inst.components.spawner:IsOccupied() then
-        if inst.lightson then
-            return "FULL"
-        end
-    end
+    return (inst:HasTag("burnt") and "BURNT")
+        or (inst.lightson and
+            inst.components.spawner ~= nil and
+            inst.components.spawner:IsOccupied() and
+            "FULL")
+        or nil
 end
 
-local function onoccupied(inst, child)
+--local function onoccupied(inst, child)
     --inst.SoundEmitter:PlaySound("dontstarve/pig/pig_in_hut", "pigsound")
     --inst.SoundEmitter:PlaySound("dontstarve/common/pighouse_door")
-end
+--end
 
 local function onvacate(inst, child)
     --inst.SoundEmitter:PlaySound("dontstarve/common/pighouse_door")
     --inst.SoundEmitter:KillSound("pigsound")
-    
-    if not inst:HasTag("burnt") then 
-        if child then
-            if child.components.health then
-                child.components.health:SetPercent(1)
-            end
-        end
+
+    if not inst:HasTag("burnt") and
+        child ~= nil and
+        child.components.health ~= nil then
+        child.components.health:SetPercent(1)
     end
 end
 
 local function onhammered(inst, worker)
-    if inst.components.burnable ~= nil and inst.components.burnable:IsBurning() then 
+    if inst.components.burnable ~= nil and inst.components.burnable:IsBurning() then
         inst.components.burnable:Extinguish()
     end
     if inst.doortask ~= nil then
@@ -51,8 +48,9 @@ local function onhammered(inst, worker)
         inst.components.spawner:ReleaseChild()
     end
     inst.components.lootdropper:DropLoot()
-    SpawnPrefab("collapse_big").Transform:SetPosition(inst.Transform:GetWorldPosition())
-    inst.SoundEmitter:PlaySound("dontstarve/common/destroy_wood")
+    local fx = SpawnPrefab("collapse_big")
+    fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+    fx:SetMaterial("wood")
     inst:Remove()
 end
 
@@ -63,38 +61,38 @@ local function onhit(inst, worker)
     end
 end
 
-local function onstopdaydoortask(inst)
+local function onstopcavedaydoortask(inst)
     inst.doortask = nil
     inst.components.spawner:ReleaseChild()
 end
 
-local function OnStopDay(inst)
-    --print(inst, "OnStopDay")
-    if not inst:HasTag("burnt") then 
+local function OnStopCaveDay(inst)
+    --print(inst, "OnStopCaveDay")
+    if not inst:HasTag("burnt") then
         if inst.components.spawner:IsOccupied() then
             if inst.doortask ~= nil then
                 inst.doortask:Cancel()
             end
-            inst.doortask = inst:DoTaskInTime(1 + math.random() * 2, onstopdaydoortask)
+            inst.doortask = inst:DoTaskInTime(1 + math.random() * 2, onstopcavedaydoortask)
         end
     end
 end
 
-local function SpawnCheckDay(inst)
-    --print(inst, "spawn check day")
-    if not TheWorld.state.isday then
-        OnStopDay(inst)
+local function SpawnCheckCaveDay(inst)
+    --print(inst, "spawn check cave day")
+    if not TheWorld.state.iscaveday then
+        OnStopCaveDay(inst)
     end
 end
 
 local function onsave(inst, data)
-    if inst:HasTag("burnt") or inst:HasTag("fire") then
+    if inst:HasTag("burnt") or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
         data.burnt = true
     end
 end
 
 local function onload(inst, data)
-    if data and data.burnt then
+    if data ~= nil and data.burnt then
         inst.components.burnable.onburnt(inst)
     end
 end
@@ -105,7 +103,7 @@ local function onbuilt(inst)
 end
 
 local function onburntup(inst)
-    if inst.doortask then
+    if inst.doortask ~= nil then
         inst.doortask:Cancel()
         inst.doortask = nil
     end
@@ -141,6 +139,7 @@ local function fn()
     inst.AnimState:SetBuild("rabbit_house")
     inst.AnimState:PlayAnimation("idle", true)
 
+    inst:AddTag("cavedweller")
     inst:AddTag("structure")
 
     MakeSnowCoveredPristine(inst)
@@ -160,10 +159,10 @@ local function fn()
 
     inst:AddComponent("spawner")
     inst.components.spawner:Configure("bunnyman", TUNING.TOTAL_DAY_TIME)
-    inst.components.spawner.onoccupied = onoccupied
+    --inst.components.spawner.onoccupied = onoccupied
     inst.components.spawner.onvacate = onvacate
 
-    inst:WatchWorldState("stopday", OnStopDay)
+    inst:WatchWorldState("stopcaveday", OnStopCaveDay)
 
     inst:AddComponent("inspectable")
 
@@ -180,7 +179,7 @@ local function fn()
     inst.OnLoad = onload
 
     inst:ListenForEvent("onbuilt", onbuilt)
-    inst:DoTaskInTime(math.random(), SpawnCheckDay)
+    inst:DoTaskInTime(math.random(), SpawnCheckCaveDay)
 
     MakeHauntableWork(inst)
 

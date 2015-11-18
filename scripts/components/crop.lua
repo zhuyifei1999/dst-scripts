@@ -1,3 +1,5 @@
+DAYLIGHT_SEARCH_RANGE = 30
+
 local function onmatured(self, matured)
     if matured then
         self.inst:AddTag("readyforharvest")
@@ -16,6 +18,7 @@ local Crop = Class(function(self, inst)
     self.task = nil
     self.matured = false
     self.onmatured = nil
+    self.cantgrowtime = 0
 end,
 nil,
 {
@@ -83,17 +86,40 @@ function Crop:Fertilize(fertilizer, doer)
     end
 end
 
-function Crop:DoGrow(dt)
+function Crop:DoGrow(dt, nowither)
     if not self.inst:HasTag("withered") then 
         self.inst.AnimState:SetPercent("grow", self.growthpercent)
 
-        if TheSim:GetLightAtPoint(self.inst.Transform:GetWorldPosition()) > TUNING.DARK_CUTOFF then
+        local shouldgrow = nowither or not TheWorld.state.isnight
+        if not shouldgrow then
+            local x,y,z = self.inst.Transform:GetWorldPosition()
+            local ents = TheSim:FindEntities(x,0,z, DAYLIGHT_SEARCH_RANGE, {"daylight"})
+            local wither = true
+            for k,v in pairs(ents) do
+                if v.Light then
+                    local darkness_sq = v.Light:GetCalculatedRadius() * 0.7
+                    darkness_sq = darkness_sq * darkness_sq
+                    if v:GetDistanceSqToPoint(x,y,z) < darkness_sq then
+                        shouldgrow = true
+                        break
+                    end
+                end
+            end
+        end
+        if shouldgrow then
             local temp_rate =
                 (TheWorld.state.temperature < TUNING.MIN_CROP_GROW_TEMP and 0) or
                 (TheWorld.state.israining and 1 + TUNING.CROP_RAIN_BONUS * TheWorld.state.precipitationrate) or
                 (TheWorld.state.isspring and 1 + TUNING.SPRING_GROWTH_MODIFIER / 3) or
                 1
             self.growthpercent = self.growthpercent + dt * self.rate * temp_rate
+            self.cantgrowtime = 0
+        else
+            self.cantgrowtime = self.cantgrowtime + dt
+            if self.cantgrowtime > TUNING.CROP_DARK_WITHER_TIME
+                and self.inst.components.witherable then
+                self.inst.components.witherable:ForceWither()
+            end
         end
 
         if self.growthpercent >= 1 then
@@ -108,10 +134,9 @@ function Crop:DoGrow(dt)
 end
 
 function Crop:GetDebugString()
-    return "["..tostring(self.product_prefab).."] "
-        ..(self.matured and
-            "DONE" or
-            string.format("%2.2f%% (done in %2.2f)", self.growthpercent, (1 - self.growthpercent) / self.rate))
+    return (self.inst:HasTag("withered") and "WITHERED")
+        or (self.matured and string.format("[%s] DONE", tostring(self.product_prefab)))
+        or string.format("[%s] %.2f%% (done in %.2f) darkwither: %.2f", tostring(self.product_prefab), self.growthpercent, (1 - self.growthpercent) / self.rate, TUNING.CROP_DARK_WITHER_TIME - self.cantgrowtime)
 end
 
 local function _DoGrow(inst, self, dt)
@@ -146,7 +171,9 @@ end
 function Crop:Harvest(harvester)
     if self.matured or self.inst:HasTag("withered") then
         local product = nil
-        if self.grower ~= nil and self.grower:HasTag("fire") or self.inst:HasTag("fire") then
+        if self.grower ~= nil and
+            (self.grower.components.burnable ~= nil and self.grower.components.burnable:IsBurning()) or
+            (self.inst.components.burnable ~= nil and self.inst.components.burnable:IsBurning()) then
             local temp = SpawnPrefab(self.product_prefab)
             product = SpawnPrefab(temp.components.cookable ~= nil and temp.components.cookable.product or "seeds_cooked")
             temp:Remove()

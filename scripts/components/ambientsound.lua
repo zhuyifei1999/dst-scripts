@@ -157,6 +157,14 @@ local function OnSeasonTick(src, data)
 end
 
 --------------------------------------------------------------------------
+--[[ Public Methods ]]
+--------------------------------------------------------------------------
+
+function self:SetReverbPreset(preset)
+    TheSim:SetReverbPreset(preset)
+end
+
+--------------------------------------------------------------------------
 --[[ Initialization ]]
 --------------------------------------------------------------------------
 
@@ -167,7 +175,7 @@ inst:ListenForEvent("seasontick", OnSeasonTick)
 inst:ListenForEvent("weathertick", OnWeatherTick)
 inst:ListenForEvent("precipitationchanged", OnPrecipitationChanged)
 
-TheSim:SetReverbPreset(_iscave and "cave" or "default")
+self:SetReverbPreset("default")
 
 inst.SoundEmitter:PlaySound(SANITY_SOUND, "SANITY")
 inst.SoundEmitter:SetParameter("SANITY", "sanity", _sanityparam)

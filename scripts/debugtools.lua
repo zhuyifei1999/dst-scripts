@@ -69,7 +69,8 @@ function debugstack(start, top, bottom)
 end
 
 function debugstack_oneline(linenum)
-    return formatinfo(getinfo(linenum))
+    local num = linenum or 3
+    return formatinfo(getinfo(num))
 end
 
 function debuglocals (level)

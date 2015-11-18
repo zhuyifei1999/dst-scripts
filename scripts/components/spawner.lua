@@ -216,6 +216,7 @@ end
 function Spawner:GoHome(child)
     if self.child == child and not self:IsOccupied() then
         self.inst:AddChild(child)
+        child.Transform:SetPosition(0,0,0)
         child:RemoveFromScene()
 
         if child.components.locomotor ~= nil then

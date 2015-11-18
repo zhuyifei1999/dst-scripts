@@ -25,6 +25,9 @@ function ConsoleScreen:OnBecomeActive()
 
 	self.console_edit:SetFocus()
 	self.console_edit:SetEditing(true)
+
+    self:ToggleRemoteExecute(true) -- if we are admin, start in remote mode
+
 	TheFrontEnd:LockFocus(true)
 end
 
@@ -44,6 +47,29 @@ function ConsoleScreen:OnControl(control, down)
 		self:Close()
 		return true
 	end
+end
+
+function ConsoleScreen:ToggleRemoteExecute(force)
+    local is_valid_time_to_use_remote = TheNet:GetIsClient() and TheNet:GetIsServerAdmin()
+    if is_valid_time_to_use_remote then
+        if force == nil then
+            if self.toggle_remote_execute then
+                self.console_remote_execute:Hide()
+            else
+                self.console_remote_execute:Show()
+            end
+            self.toggle_remote_execute = not self.toggle_remote_execute
+        elseif force == true then
+            self.console_remote_execute:Show()
+            self.toggle_remote_execute = true
+        elseif force == false then
+            self.console_remote_execute:Hide()
+            self.toggle_remote_execute = false
+        end
+    elseif self.toggle_remote_execute then
+        self.console_remote_execute:Hide()
+        self.toggle_remote_execute = false
+    end
 end
 
 function ConsoleScreen:OnRawKey(key, down)
@@ -76,18 +102,7 @@ function ConsoleScreen:OnRawKey(key, down)
 			end
 		end
 	elseif key == KEY_LCTRL or key == KEY_RCTRL then
-		local is_valid_time_to_use_remote = TheNet:GetIsClient() and TheNet:GetIsServerAdmin()
-		if is_valid_time_to_use_remote then
-			if self.toggle_remote_execute then
-				self.console_remote_execute:Hide()
-			else
-				self.console_remote_execute:Show()
-			end
-			self.toggle_remote_execute = not self.toggle_remote_execute
-		elseif self.toggle_remote_execute then
-			self.console_remote_execute:Hide()
-			self.toggle_remote_execute = false
-		end
+        self:ToggleRemoteExecute()
 	else
 		self.autocompletePrefix = nil
 		self.autocompleteObjName = ""
@@ -283,7 +298,8 @@ function ConsoleScreen:DoInit()
 	self.console_edit:SetPosition( -4,0,0)
 	self.console_edit:SetRegionSize( edit_width, label_height )
 	self.console_edit:SetHAlign(ANCHOR_LEFT)
-
+	self.console_edit:SetHelpTextEdit("")
+	
 	self.console_edit.OnTextEntered = function() self:OnTextEntered() end
 	--self.console_edit:SetLeftMouseDown( function() self:SetFocus( self.console_edit ) end )
 	self.console_edit:SetFocusedImage(self.edit_bg, "images/textboxes.xml", "textbox_long_over.tex", "textbox_long.tex")

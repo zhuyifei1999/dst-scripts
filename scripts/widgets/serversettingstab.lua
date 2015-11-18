@@ -7,6 +7,7 @@ local NumericSpinner = require "widgets/numericspinner"
 local TextEdit = require "widgets/textedit"
 local ScrollableList = require "widgets/scrollablelist"
 local RadioButtons = require "widgets/radiobuttons"
+local IntentionPicker = require "widgets/intentionpicker"
 local PopupDialogScreen = require "screens/popupdialog"
 local TEMPLATES = require "widgets/templates"
 
@@ -29,6 +30,23 @@ local VALID_PASSWORD_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWX
 local STRING_MAX_LENGTH = 254 -- http://tools.ietf.org/html/rfc5321#section-4.5.3.1
 local SERVER_NAME_MAX_LENGTH = 80
 
+local privacy_options = {
+    {text=STRINGS.UI.SERVERCREATIONSCREEN.PRIVACY.PUBLIC,    data=PRIVACY_TYPE.PUBLIC},
+    {text=STRINGS.UI.SERVERCREATIONSCREEN.PRIVACY.FRIENDS,   data=PRIVACY_TYPE.FRIENDS},
+    {text=STRINGS.UI.SERVERCREATIONSCREEN.PRIVACY.LOCAL,     data=PRIVACY_TYPE.LOCAL},
+    {text=STRINGS.UI.SERVERCREATIONSCREEN.PRIVACY.CLAN,      data=PRIVACY_TYPE.CLAN},
+}
+local privacy_buttons = {
+    width = 140,
+    height = label_height,
+    font = NEWFONT,
+    font_size = font_size,
+    image_scale = 0.7,
+    atlas = "images/ui.xml",
+    on_image = "radiobutton_on.tex",
+    off_image = "radiobutton_off.tex",
+}
+
 local ServerSettingsTab = Class(Widget, function(self, slotdata, servercreationscreen)
     Widget._ctor(self, "ServerSettingsTab")
 
@@ -41,6 +59,20 @@ local ServerSettingsTab = Class(Widget, function(self, slotdata, servercreations
     self.left_line = self.server_settings_page:AddChild(Image("images/ui.xml", "line_vertical_5.tex"))
     self.left_line:SetScale(1, .6)
     self.left_line:SetPosition(-530, 5, 0)
+
+    self.intentions_overlay = self:AddChild(IntentionPicker( STRINGS.UI.SERVERCREATIONSCREEN.INTENTION_TITLE, STRINGS.UI.SERVERCREATIONSCREEN.INTENTION_DESC))
+    self.intentions_overlay:SetCallback(function(intention)
+        self:SetServerIntention(intention)
+        self.servercreationscreen:MakeDirty()
+    end)
+    self.intentions_overlay:SetPosition(-115, 180)
+
+
+    self.server_intention = TEMPLATES.LabelButton(STRINGS.UI.SERVERCREATIONSCREEN.INTENTION_LABEL, "", narrow_label_width, narrow_input_width, label_height, space_between, NEWFONT, font_size, narrow_field_nudge)
+    self.server_intention.button:SetOnClick(function(data)
+        self:SetServerIntention(nil)
+        self.servercreationscreen:MakeDirty()
+    end)
 
     self.server_name = TEMPLATES.LabelTextbox(STRINGS.UI.SERVERCREATIONSCREEN.SERVERNAME, TheNet:GetDefaultServerName(), wide_label_width, wide_input_width, label_height, space_between, NEWFONT, font_size, wide_field_nudge)
     self.server_name.textbox:SetTextLengthLimit( SERVER_NAME_MAX_LENGTH )
@@ -91,22 +123,6 @@ local ServerSettingsTab = Class(Widget, function(self, slotdata, servercreations
         end  
     end)
 
-    local privacy_options = {
-        {text=STRINGS.UI.SERVERCREATIONSCREEN.PRIVACY.PUBLIC,    data=PRIVACY_TYPE.PUBLIC},
-        {text=STRINGS.UI.SERVERCREATIONSCREEN.PRIVACY.FRIENDS,   data=PRIVACY_TYPE.FRIENDS},
-        {text=STRINGS.UI.SERVERCREATIONSCREEN.PRIVACY.LOCAL,     data=PRIVACY_TYPE.LOCAL},
-        {text=STRINGS.UI.SERVERCREATIONSCREEN.PRIVACY.CLAN,      data=PRIVACY_TYPE.CLAN},
-    }
-    local privacy_buttons = {
-        width = 140,
-        height = label_height,
-        font = NEWFONT,
-        font_size = font_size,
-        image_scale = 0.7,
-        atlas = "images/ui.xml",
-        on_image = "radiobutton_on.tex",
-        off_image = "radiobutton_off.tex",
-    }
     self.privacy_type = Widget("Privacy Group")
     self.privacy_type.buttons = self.privacy_type:AddChild(RadioButtons(privacy_options, 580, 50, privacy_buttons, true))
     self.privacy_type.buttons:SetOnChangedFn(function(data)
@@ -177,12 +193,14 @@ local ServerSettingsTab = Class(Widget, function(self, slotdata, servercreations
     }
     self.online_mode = TEMPLATES.LabelSpinner(STRINGS.UI.SERVERCREATIONSCREEN.ONLINE_MODE, online_options, narrow_label_width, narrow_input_width, label_height, space_between, NEWFONT, font_size, narrow_field_nudge)
     self.online_mode.spinner:SetOnChangedFn(function(data)
-        self:SetOnlineWidgets()
+        self:SetOnlineWidgets(data)
         self.servercreationscreen:MakeDirty()
     end)
+    self.online_mode.spinner:Disable() -- This is not user configurable
 
     self.page_widgets = 
     {
+        self.server_intention,
         self.server_name,
         self.server_desc,
         self.privacy_type,
@@ -192,8 +210,8 @@ local ServerSettingsTab = Class(Widget, function(self, slotdata, servercreations
         --self.clan_admins,
         self.pvp,
         self.max_players,
-        self.online_mode,
         self.server_pw,
+        self.online_mode,
     }
     self.clan_widgets =
     {
@@ -218,21 +236,15 @@ local ServerSettingsTab = Class(Widget, function(self, slotdata, servercreations
     self.scroll_list = self.server_settings_page:AddChild(ScrollableList(self.page_widgets, 340, 360, 35, 10))
     self.scroll_list:SetPosition(20,0)
 
+    self.scroll_list:Hide()
+
     self.default_focus = self.scroll_list
     self.focus_forward = self.scroll_list
-
-    self:SetOnlineWidgets()
 end)
 
 function ServerSettingsTab:SetOnlineWidgets(online)
-    if not TheNet:IsOnlineMode() or TheFrontEnd:GetIsOfflineMode() then
-		self.online_mode.spinner:Disable()
-        self.online_mode.spinner:SetSelected(false)
-    else
-		self.online_mode.spinner:Enable()
-        if online ~= nil then
-            self.online_mode.spinner:SetSelected(online)
-        end
+    if online ~= nil then
+        self.online_mode.spinner:SetSelected(online)
     end
 
     if self.online_mode.spinner:GetSelectedData() == false then
@@ -275,13 +287,13 @@ function ServerSettingsTab:OnControl(control, down)
 
 
     -- Force these damn things to gobble controls if they're editing (stupid missing focus/hover distinction)
-    if (self.server_name.textbox and self.server_name.textbox.editing) or (TheInput:ControllerAttached() and self.server_name.focus and control == CONTROL_ACCEPT) then
+    if self.server_name.textbox and (self.server_name.textbox.editing or (self.server_name.focus and control == CONTROL_ACCEPT)) then
         self.server_name.textbox:OnControl(control, down)
         return true
-    elseif (self.server_pw.textbox and self.server_pw.textbox.editing) or (TheInput:ControllerAttached() and self.server_pw.focus and control == CONTROL_ACCEPT) then
+    elseif self.server_pw.textbox and (self.server_pw.textbox.editing or (self.server_pw.focus and control == CONTROL_ACCEPT)) then
         self.server_pw.textbox:OnControl(control, down)
         return true
-    elseif (self.server_desc.textbox and self.server_desc.textbox.editing) or (TheInput:ControllerAttached() and self.server_desc.focus and control == CONTROL_ACCEPT)  then
+    elseif self.server_desc.textbox and (self.server_desc.textbox.editing or (self.server_desc.focus and control == CONTROL_ACCEPT)) then
         self.server_desc.textbox:OnControl(control, down)
         return true
     end
@@ -298,6 +310,38 @@ function ServerSettingsTab:SavePrevSlot(prevslot)
 		-- remember what was typed/set
 		self.slotdata[prevslot] = self:GetServerData()
 	end
+end
+
+function ServerSettingsTab:SetServerIntention(intention)
+    self.server_intention.button.data = intention
+
+    if intention ~= nil then
+        self.server_intention.button:SetText(STRINGS.UI.INTENTION[string.upper(intention)])
+        self.intentions_overlay:SetSelected(intention)
+    end
+
+    self:ShowServerIntention(self.server_intention.button.data == nil)
+end
+
+function ServerSettingsTab:ShowServerIntention(show)
+    if show then
+        self.intentions_overlay:Show()
+        self.scroll_list:Hide()
+
+        self.default_focus = self.intentions_overlay
+        self.focus_forward = self.intentions_overlay
+
+    else
+        self.intentions_overlay:Hide()
+        self.scroll_list:Show()
+
+        self.default_focus = self.scroll_list
+        self.focus_forward = self.scroll_list
+    end
+
+    if self.focus then
+        self.default_focus:SetFocus()
+    end
 end
 
 function ServerSettingsTab:UpdateDetails(slotnum, prevslot, fromDelete)
@@ -324,10 +368,8 @@ function ServerSettingsTab:UpdateDetails(slotnum, prevslot, fromDelete)
         if self.slotdata[slotnum] ~= nil and self.slotdata[slotnum].pvp ~= nil then
             pvp = self.slotdata[slotnum].pvp
         end
-        local online = true
-        if self.slotdata[slotnum] ~= nil and self.slotdata[slotnum].online_mode ~= nil then
-            online = self.slotdata[slotnum].online_mode
-        end
+        local online = TheNet:IsOnlineMode() and not TheFrontEnd:GetIsOfflineMode()
+
         self.game_mode.spinner:SetSelected(self.slotdata[slotnum] and self.slotdata[slotnum].game_mode or DEFAULT_GAME_MODE )
         self.pvp.spinner:SetSelected(pvp)
         self.max_players.spinner:SetSelected(self.slotdata[slotnum] and self.slotdata[slotnum].max_players or TUNING.MAX_SERVER_SIZE)
@@ -336,14 +378,12 @@ function ServerSettingsTab:UpdateDetails(slotnum, prevslot, fromDelete)
         self.server_desc.textbox:SetString(self.slotdata[slotnum] and self.slotdata[slotnum].server_desc or "")
         self.privacy_type.buttons:SetSelected(self.slotdata[slotnum] and self.slotdata[slotnum].privacy_type or PRIVACY_TYPE.PUBLIC)
 
+        self:SetServerIntention(self.slotdata[slotnum] and self.slotdata[slotnum].intention or nil)
+
         self:SetOnlineWidgets(online)
 
         self.game_mode.spinner:Enable()
-		
     else -- Save data
-        -- world = 1, -- world (i.e. teleportato) doesn't exist yet, but leaving this here as a reminder
-        -- waiting on hooks for char details
-        
         local server_data = SaveGameIndex:GetSlotServerData(slotnum)
         if server_data ~= nil then
             local pvp = false
@@ -352,16 +392,10 @@ function ServerSettingsTab:UpdateDetails(slotnum, prevslot, fromDelete)
             else
                 pvp = server_data.pvp
             end
-            local online = true
-            if self.slotdata[slotnum] ~= nil and self.slotdata[slotnum].online_mode ~= nil then
-                online = self.slotdata[slotnum].online_mode
-            else
-                online = server_data.online_mode
-            end
+
             self.game_mode.spinner:SetSelected(self.slotdata[slotnum] and self.slotdata[slotnum].game_mode or (server_data.game_mode ~= nil and server_data.game_mode or DEFAULT_GAME_MODE ))
             self.pvp.spinner:SetSelected(pvp)
 
-            self.online_mode.spinner:SetSelected(online)
             self.max_players.spinner:SetSelected(self.slotdata[slotnum] and self.slotdata[slotnum].max_players or server_data.maxplayers)
             self.server_name.textbox:SetString(self.slotdata[slotnum] and self.slotdata[slotnum].name or server_data.name)
             self.server_pw.textbox:SetString(self.slotdata[slotnum] and self.slotdata[slotnum].password or server_data.password)
@@ -374,14 +408,21 @@ function ServerSettingsTab:UpdateDetails(slotnum, prevslot, fromDelete)
                 self.clan_only.spinner:SetSelected(claninfo and claninfo.only or false)
                 self.clan_admins.spinner:SetSelected(claninfo and claninfo.admins or false)
             end
+
+            self:SetServerIntention(self.slotdata[slotnum] and self.slotdata[slotnum].intention or server_data.intention)
+            self:SetOnlineWidgets(server_data.online_mode) -- always load from the server data
+        else
+            self:SetServerIntention(nil)
         end
 		
-        self:SetOnlineWidgets()
 
 		-- No editing online or game mode for servers that have already been created
-		self.online_mode.spinner:Disable()
         self.game_mode.spinner:Disable()
     end
+end
+
+function ServerSettingsTab:GetServerIntention()
+	return self.server_intention.button.data
 end
 
 function ServerSettingsTab:GetServerName()
@@ -426,6 +467,7 @@ end
 
 function ServerSettingsTab:GetServerData()
     return {
+        intention = self.server_intention.button.data,
         pvp = self.pvp.spinner:GetSelectedData(),
         game_mode = self:GetGameMode(),
         online_mode = self:GetOnlineMode(),
@@ -445,6 +487,10 @@ end
 
 function ServerSettingsTab:VerifyValidServerName()
     return self.server_name.textbox:GetString() ~= ""
+end
+
+function ServerSettingsTab:VerifyValidServerIntention()
+    return self.server_intention.button.data ~= nil
 end
 
 function ServerSettingsTab:SetEditingTextboxes(edit)

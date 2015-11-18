@@ -95,6 +95,7 @@ function Tune(overrides)
 	    PICKAXE_USES = 33,
 	    BUGNET_USES = 10,
 	    SPEAR_USES = 150,
+	    CLAW_GLOVE_USES = 200,
 	    WATHGRITHR_SPEAR_USES = 200,
 	    SPIKE_USES = 100,
 	    FISHINGROD_USES = 9,
@@ -105,6 +106,7 @@ function Tune(overrides)
 	    ICESTAFF_USES = 20,
 	    FIRESTAFF_USES = 20,
 	    TELESTAFF_USES = 5,
+        TELESTAFF_MOISTURE = 500,
 	    HAMBAT_USES = 100,
 	    BATBAT_USES = 75,
 	    MULTITOOL_AXE_PICKAXE_USES = 400,
@@ -120,6 +122,7 @@ function Tune(overrides)
 	    
 		YELLOWAMULET_FUEL = total_day_time,
 		YELLOWSTAFF_USES = 20,
+        YELLOWSTAFF_STAR_DURATION = total_day_time * 3.5,
 
 		ORANGEAMULET_USES = 225,
 		ORANGEAMULET_RANGE = 4,
@@ -146,6 +149,7 @@ function Tune(overrides)
 		HAMBAT_DAMAGE = wilson_attack*1.75,
 		HAMBAT_MIN_DAMAGE_MODIFIER = .5,
 	    SPEAR_DAMAGE = wilson_attack,
+        CLAW_GLOVE_DAMAGE = wilson_attack*1.5,
 	    WATHGRITHR_SPEAR_DAMAGE = wilson_attack * 1.25,
 	    AXE_DAMAGE = wilson_attack*.8,
 	    PICK_DAMAGE = wilson_attack*.8,
@@ -275,14 +279,14 @@ function Tune(overrides)
 	    ROOK_TARGET_DIST = 12,
 	    
 	    MINOTAUR_DAMAGE = 100,
-	    MINOTAUR_HEALTH = 2500,
+	    MINOTAUR_HEALTH = 2500 * 4, -- harder for multiplayer
 	    MINOTAUR_ATTACK_PERIOD = 2,
 	    MINOTAUR_WALK_SPEED = 5,
 	    MINOTAUR_RUN_SPEED = 17,
 	    MINOTAUR_TARGET_DIST = 25,
 	    
 	    SLURTLE_DAMAGE = 25,
-	    SLURTLE_HEALTH = 600,
+	    SLURTLE_HEALTH = 600 * 2, -- harder for multiplayer
 	    SLURTLE_ATTACK_PERIOD = 4,
 	    SLURTLE_ATTACK_DIST = 2.5,
 	    SLURTLE_WALK_SPEED = 3,
@@ -299,6 +303,12 @@ function Tune(overrides)
 	    SNURTLE_SHELL_ABSORB = 0.8,
 	    SNURTLE_DAMAGE_UNTIL_SHIELD = 10,
 	    SNURTLE_EXPLODE_DAMAGE = 300,
+
+        SLURPER_WALKSPEED = 9,
+        SLURPER_HEALTH = 200,
+        SLURPER_DAMAGE = 30,
+        SLURPER_ATTACK_DIST = 8,
+        SLURPER_ATTACK_PERIOD = 5,
 	    
 	    LIGHTNING_DAMAGE = 10,
 
@@ -306,6 +316,7 @@ function Tune(overrides)
 	    ELECTRIC_DAMAGE_MULT = 1.5,
 
 	    LIGHTNING_GOAT_DAMAGE = 25,
+        LIGHTNING_GOAT_HEALTH = 350 * 2, -- harder for multiplayer
 	    LIGHTNING_GOAT_ATTACK_RANGE = 3,
 	    LIGHTNING_GOAT_ATTACK_PERIOD = 2,
 	    LIGHTNING_GOAT_WALK_SPEED = 4,
@@ -386,6 +397,14 @@ function Tune(overrides)
 	    MUSHTREE_CHOPS_SMALL = 10,
 	    MUSHTREE_CHOPS_MEDIUM = 10,
 	    MUSHTREE_CHOPS_TALL = 15,
+        MUSHTREE_WEBBED_SPIDER_RADIUS = 20,
+        MUSHTREE_WEBBED_MAX_PER_DEN = 6,
+
+        MUSHSPORE_PERISH_TIME = seg_time * 3,
+        MUSHSPORE_MAX_DENSITY = 10,
+        MUSHSPORE_MAX_DENSITY_RAD = 20,
+        MUSHSPORE_DENSITY_CHECK_TIME = 15,
+        MUSHSPORE_DENSITY_CHECK_VAR = 15,
 	    
 	    ICE_MINE = 3,
 	    ROCKS_MINE = 6,
@@ -446,7 +465,13 @@ function Tune(overrides)
 	    BAT_ATTACK_PERIOD = 1,
 	    BAT_ATTACK_DIST = 1.5,
 	    BAT_WALK_SPEED = 8,
-	    BAT_TARGET_DIST = 12,
+	    BAT_TARGET_DIST = 8,
+        BAT_ESCAPE_TIME = 60,
+        BAT_ESCAPE_RADIUS = 40,
+
+        BATCAVE_REGEN_PERIOD = seg_time * 4,
+        BATCAVE_SPAWN_PERIOD = 20,
+        BATCAVE_MAX_CHILDREN = 4,
 
 	    SPIDER_HEALTH = 100,
 	    SPIDER_DAMAGE = 20,
@@ -473,14 +498,14 @@ function Tune(overrides)
 	    SPIDER_WARRIOR_WALK_SPEED = 4,
 	    SPIDER_WARRIOR_RUN_SPEED = 5,
 
-	    SPIDER_HIDER_HEALTH = 150,
+	    SPIDER_HIDER_HEALTH = 150 * 1.5, -- harder for multiplayer
 	    SPIDER_HIDER_DAMAGE = 20,
 	    SPIDER_HIDER_ATTACK_PERIOD = 3,
 	    SPIDER_HIDER_WALK_SPEED = 3,
 	    SPIDER_HIDER_RUN_SPEED = 5,
 	    SPIDER_HIDER_SHELL_ABSORB = 0.75,
 
-	    SPIDER_SPITTER_HEALTH = 175,
+	    SPIDER_SPITTER_HEALTH = 175 * 2, -- harder for multiplayer
 	    SPIDER_SPITTER_DAMAGE_MELEE = 20,
 	    SPIDER_SPITTER_DAMAGE_RANGED = 20,
 	    SPIDER_SPITTER_ATTACK_PERIOD = 5,
@@ -586,7 +611,7 @@ function Tune(overrides)
 	    WORM_ATTACK_DIST = 3,
 	    WORM_HEALTH = 900,
 	    WORM_CHASE_TIME = 20,
-	    WORM_LURE_TIME = 20,
+	    WORM_LURE_TIME = 30,
 	    WORM_LURE_VARIANCE = 10,
 	    WORM_FOOD_DIST = 15,
 	    WORM_CHASE_DIST = 50,
@@ -596,7 +621,9 @@ function Tune(overrides)
 	    WORM_EATING_COOLDOWN = 30,
 
 	    WORMLIGHT_RADIUS = 3,
-	    WORMLIGHT_DURATION = 90,
+	    WORMLIGHT_DURATION = seg_time * 8,
+
+        WORMLIGHT_PLANT_REGROW_TIME = total_day_time*4,
 
 	    TENTACLE_DAMAGE = 34,
 	    TENTACLE_ATTACK_PERIOD = 2,
@@ -604,7 +631,7 @@ function Tune(overrides)
 	    TENTACLE_STOPATTACK_DIST = 6,
 	    TENTACLE_HEALTH = 500,
 
-	    TENTACLE_PILLAR_HEALTH = 500,
+	    TENTACLE_PILLAR_HEALTH = 500 * 1.5, -- harder for multiplayer
         TENTACLE_PILLAR_ARMS = 12,   -- max spawned at a time
         TENTACLE_PILLAR_ARMS_TOTAL = 25,  -- max simultaneous arms
 	    TENTACLE_PILLAR_ARM_DAMAGE = 5,
@@ -612,7 +639,7 @@ function Tune(overrides)
 	    TENTACLE_PILLAR_ARM_ATTACK_DIST = 3,
 	    TENTACLE_PILLAR_ARM_STOPATTACK_DIST = 5,
 	    TENTACLE_PILLAR_ARM_HEALTH = 20,
-	    TENTACLE_PILLAR_ARM_EMERGE_TIME = 200,
+	    TENTACLE_PILLAR_ARM_EMERGE_TIME = seg_time * 12,
 	    
 	    EYEPLANT_DAMAGE = 20,
 	    EYEPLANT_HEALTH = 30,
@@ -900,6 +927,8 @@ function Tune(overrides)
 	    MARSHBUSH_REGROW_TIME = total_day_time*4,
 	    CACTUS_REGROW_TIME = total_day_time*4,
 	    FLOWER_CAVE_REGROW_TIME = total_day_time*3,
+        FLOWER_CAVE_LIGHT_TIME = 90,
+        FLOWER_CAVE_RECHARGE_TIME = 110,
 	    LICHEN_REGROW_TIME = total_day_time*5,
 	    
 	    BERRY_REGROW_TIME = total_day_time*3,
@@ -1232,8 +1261,6 @@ function Tune(overrides)
 		PLAYER_FREEZE_WEAR_OFF_TIME = 3,
 		PLAYER_BURN_TIME = 5.3,
 		
-		CAVE_INSULATION_BONUS = seg_time*8,
-
 		DUSK_INSULATION_BONUS = seg_time*2,
 		NIGHT_INSULATION_BONUS = seg_time*4,
 
@@ -1243,6 +1270,7 @@ function Tune(overrides)
 		MIN_CROP_GROW_TEMP = 5,
 		--CROP_HEAT_BONUS = 1,
 		CROP_RAIN_BONUS = 3,
+        CROP_DARK_WITHER_TIME = total_day_time * 1.5,
 
 		WITHER_BUFFER_TIME = 15,
 		MIN_PLANT_WITHER_TEMP = 70,
@@ -1262,7 +1290,8 @@ function Tune(overrides)
 		DAY_HEAT = 8,
 		NIGHT_COLD = -10,
 		CAVES_MOISTURE_MULT = 3,--6.5,
-		CAVES_TEMP = 0,--20,
+		CAVES_TEMP_MULT = 0.6,
+        CAVES_TEMP_LOCUS = 0,
 		SUMMER_RAIN_TEMP = -20,
 		STARTING_TEMP = 35,
 		OVERHEAT_TEMP = 70,
@@ -1338,7 +1367,7 @@ function Tune(overrides)
 		ROCKY_SPAWN_VAR = 0,
 
 		ROCKY_DAMAGE = 75,	
-		ROCKY_HEALTH = 1500,
+		ROCKY_HEALTH = 1500 * 2, -- harder for multiplayer
 		ROCKY_WALK_SPEED = 2,
 		ROCKY_MAX_SCALE = 1.2,
 		ROCKY_MIN_SCALE = .75,
@@ -1507,14 +1536,14 @@ function Tune(overrides)
 	    EYETURRET_RANGE = 15,
 	    EYETURRET_ATTACK_PERIOD = 3,
 
-
-	    TRANSITIONTIME =
-	    {
-	    	CALM = 2,
-	    	WARN = 2,
-	    	NIGHTMARE = 2,
-	    	DAWN = 2,
-		},
+        NIGHTMARE_SEGS =
+        {
+            CALM = 12,
+            WARN = 3,
+            WILD = 5,
+            DAWN = 2,
+        },
+        NIGHTMARE_SEG_VARIATION = 3,
 
 		SHADOWWAXWELL_LIFETIME = total_day_time * 2.5,
 		SHADOWWAXWELL_SPEED = 6,
@@ -1615,7 +1644,7 @@ function Tune(overrides)
 		GLOMMERBELL_USES = 3,
 
 	    WARG_RUNSPEED = 5.5,
-	    WARG_HEALTH = 600,
+	    WARG_HEALTH = 600 * 3, --harder for multiplayer
 	    WARG_DAMAGE = 50,
 	    WARG_ATTACKPERIOD = 3,
 	    WARG_ATTACKRANGE = 5,
@@ -1701,7 +1730,8 @@ function Tune(overrides)
 		METEOR_CHANCE_BOULDERFLINTLESS = .3,
 		METEOR_CHANCE_BOULDERMOON = .1,
 		
-		METEOR_SHOWER_SPAWN_RADIUS= 60,
+		METEOR_SHOWER_SPAWN_RADIUS = 60,
+		METEOR_SHOWER_CLEANUP_BUFFER = 10,
 
 		METEOR_SHOWER_OFFSCREEN_MOD = .5,
 
@@ -1767,7 +1797,9 @@ function Tune(overrides)
 
         CARROT_REGROWTH_TIME = day_time * 20,
         FLOWER_REGROWTH_TIME = 30,
+        FLOWER_WITHER_IN_CAVE_LIGHT = 0.05,
         RABBITHOLE_REGROWTH_TIME = total_day_time * 5,
+        FLOWER_CAVE_REGROWTH_TIME = total_day_time * 5,
 
         EVERGREEN_REGROWTH = {
             OFFSPRING_TIME = total_day_time * 5,
@@ -1787,6 +1819,12 @@ function Tune(overrides)
             DEAD_DECAY_TIME = total_day_time * 30,
         },
 
+        MUSHTREE_REGROWTH = {
+            OFFSPRING_TIME = total_day_time * 3,
+            DESOLATION_RESPAWN_TIME = total_day_time * 50,
+            DEAD_DECAY_TIME = total_day_time * 30,
+        },
+
         REGROWTH_TIME_MULTIPLIER = 1,
 
         TALLBIRD_ATTACK_AGGRO_TIMEOUT = 2,
@@ -1798,7 +1836,12 @@ function Tune(overrides)
             OFTEN = 0.5,
             SOMETIMES = 1.0,
             RARELY = 1.5,
-        }
+        },
+
+        ANCIENT_ALTAR_COMPLETE_WORK = 1,
+        ANCIENT_ALTAR_BROKEN_WORK = 9,
+
+        CAVE_LIGHT_WAKE_TIME = 4.0,
     }
 end
 

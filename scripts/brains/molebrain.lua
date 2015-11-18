@@ -16,34 +16,33 @@ local MoleBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
 end)
 
+local function HasHome(inst)
+    return inst.components.homeseeker
+        and inst.components.homeseeker.home
+        and inst.components.homeseeker.home:IsValid()
+    end
+
 local function GoHomeAction(inst)
-    if inst.components.homeseeker and 
-       inst.components.homeseeker.home and 
-       inst.components.homeseeker.home:IsValid() and
-	   inst.sg:HasStateTag("trapped") == false then
+    if HasHome(inst) and inst.sg:HasStateTag("trapped") == false then
         return BufferedAction(inst, inst.components.homeseeker.home, ACTIONS.GOHOME)
     end
 end
 
 local function ShouldMakeHome(inst)
-    local make_home = false
-    if not (inst.components.homeseeker and inst.components.homeseeker.home and inst.components.homeseeker.home:IsValid()) then
-        make_home = true
-    end
-    make_home = make_home and (inst.needs_home_time and (GetTime() - inst.needs_home_time > inst.make_home_delay))
-
-    return make_home
+    return not HasHome(inst)
+        and (inst.needs_home_time and (GetTime() - inst.needs_home_time > inst.make_home_delay))
 end
 
 local function MakeNewHomeAction(inst)
     local angle = math.random(0,360)
     local offset = FindWalkableOffset(inst:GetPosition(), angle*DEGREES, math.random(5,15), 120, false, false)
-    return BufferedAction(inst, nil, ACTIONS.MAKEMOLEHILL, nil, inst:GetPosition() + offset)
+    return offset and BufferedAction(inst, nil, ACTIONS.MAKEMOLEHILL, nil, inst:GetPosition() + offset)
+        or nil
 end
 
 local function TakeBaitAction(inst)
     -- Don't look for bait if just spawned, busy making a new home, or has full inventory
-    if inst:GetTimeAlive() < 3 or inst.sg:HasStateTag("busy") or inst.needs_home_time or (inst.components.inventory and inst.components.inventory:IsFull()) then
+    if inst:GetTimeAlive() < 3 or inst.sg:HasStateTag("busy") or ShouldMakeHome(inst) or (inst.components.inventory and inst.components.inventory:IsFull()) then
         return
     end
 
@@ -76,7 +75,7 @@ function MoleBrain:OnStart()
         EventNode(self.inst, "gohome", 
             DoAction(self.inst, GoHomeAction, "go home", false)),
         DoAction(self.inst, TakeBaitAction, "take bait", false),
-        WhileNode(function() return TheWorld.state.isday end, "IsDay",
+        WhileNode(function() return TheWorld.state.isday or (TheWorld.state.iscaveday and self.inst.LightWatcher:IsInLight()) end, "IsDay",
             DoAction(self.inst, GoHomeAction, "go home", false )),
         Wander(self.inst, function() return self.inst.components.knownlocations:GetLocation("home") end, MAX_WANDER_DIST),
     }, .25)

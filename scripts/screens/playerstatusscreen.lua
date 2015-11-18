@@ -55,11 +55,16 @@ function PlayerStatusScreen:OnDestroy()
 end
 
 function PlayerStatusScreen:GetHelpText()
-    if self.server_group ~= "0" and TheInput:ControllerAttached() then
-        local controller_id = TheInput:GetControllerID()
-        return TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_2) .. STRINGS.UI.HELP.VIEWGROUP
-    end
-    return ""
+    local controller_id = TheInput:GetControllerID()
+    local t = {}
+
+	table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_TOGGLE_PLAYER_STATUS) .. " " .. STRINGS.UI.HELP.BACK)
+	
+	if self.server_group ~= "" then
+		table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_2) .. " " .. STRINGS.UI.HELP.VIEWGROUP)
+	end
+	
+    return table.concat(t, "  ")
 end
 
 function PlayerStatusScreen:OnControl(control, down)
@@ -76,8 +81,8 @@ function PlayerStatusScreen:OnControl(control, down)
                 not TheInput:IsControlPressed(CONTROL_SHOW_PLAYER_STATUS))) then
             self:Close()
             return true
-        elseif control == CONTROL_MENU_MISC_2 and self.server_group ~= "0" then
-            TheNet:ViewSteamProfile(self.server_group)
+        elseif control == CONTROL_MENU_MISC_2 and self.server_group ~= "" then
+            TheNet:ViewNetProfile(self.server_group)
             return true
         end
     end
@@ -118,7 +123,6 @@ function PlayerStatusScreen:OnUpdate(dt)
                 if listitem == nil or
                     v.userid ~= listitem.userid or
                     (v.performance ~= nil) ~= (listitem.performance ~= nil) then
-                    print( " *** REBUILD!!!!")
                     needs_rebuild = true
                     break
                 end
@@ -210,10 +214,10 @@ function PlayerStatusScreen:DoInit(ClientObjs)
     self.serverstate:SetString(modeStr)
 
     self.server_group = TheNet:GetServerClanID()
-    if self.server_group ~= "0" and not TheInput:ControllerAttached() then
+    if self.server_group ~= "" and not TheInput:ControllerAttached() then
         if not self.viewgroup_button then
             self.viewgroup_button = self.root:AddChild(ImageButton("images/scoreboard.xml", "clan_normal.tex", "clan_hover.tex", "clan.tex", "clan.tex", nil, {0.6,0.6}, {0,0}))
-            self.viewgroup_button:SetOnClick(function() TheNet:ViewSteamProfile(self.server_group) end)
+            self.viewgroup_button:SetOnClick(function() TheNet:ViewNetProfile(self.server_group) end)
             self.viewgroup_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.VIEWGROUP, { font = NEWFONT_OUTLINE, size = 24, offset_x = 0, offset_y = 48, colour = {1,1,1,1}})
         end
     end
@@ -416,7 +420,7 @@ function PlayerStatusScreen:DoInit(ClientObjs)
 		local gainfocusfn = playerListing.viewprofile.OnGainFocus
 		playerListing.viewprofile.OnGainFocus =
         function()
-        	gainfocusfn(playerListing.viewprofile)
+            gainfocusfn(playerListing.viewprofile)
             TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover")
             playerListing.viewprofile:SetScale(1.1)
         end
@@ -428,12 +432,12 @@ function PlayerStatusScreen:DoInit(ClientObjs)
         end
 		playerListing.viewprofile:SetOnClick(
 			function()
-				if v.steamid then
-					TheNet:ViewSteamProfile(v.steamid)
+				if v.netid ~= nil then
+					TheNet:ViewNetProfile(v.netid)
 				end
 			end)
 
-		if empty or not (v.userid ~= self.owner.userid and not this_user_is_dedicated_server) then
+		if empty or this_user_is_dedicated_server then
 			playerListing.viewprofile:Hide()
 		end
 
@@ -700,12 +704,12 @@ function PlayerStatusScreen:DoInit(ClientObjs)
 
 			playerListing.viewprofile:SetOnClick(
 				function()
-					if v.steamid then
-						TheNet:ViewSteamProfile(v.steamid)
+					if v.netid ~= nil then
+						TheNet:ViewNetProfile(v.netid)
 					end
 				end)
 
-			if (v.userid ~= self.owner.userid and not this_user_is_dedicated_server) then
+			if not this_user_is_dedicated_server then
 				playerListing.viewprofile:Show()
 			else
 				playerListing.viewprofile:Hide()

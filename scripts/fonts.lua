@@ -12,6 +12,7 @@ TALKINGFONT = "talkingfont"
 TALKINGFONT_WATHGRITHR = "talkingfont_wathgrithr"
 SMALLNUMBERFONT = "stint-small"
 BODYTEXTFONT = "stint-ucr"
+CODEFONT = "ptmono"
 
 require "translator"
 
@@ -43,4 +44,5 @@ FONTS = {
 	{ filename = "fonts/spirequal_small"..font_posfix..".zip", alias = "spirequal_small" },	
 	{ filename = "fonts/spirequal_outline"..font_posfix..".zip", alias = "spirequal_outline" },
 	{ filename = "fonts/spirequal_outline_small"..font_posfix..".zip", alias = "spirequal_outline_small" },
+	{ filename = "fonts/ptmono32"..font_posfix..".zip", alias = "ptmono"},
 }

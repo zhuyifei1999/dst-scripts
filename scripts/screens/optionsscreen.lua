@@ -68,8 +68,8 @@ local all_controls =
     {name=CONTROL_ZOOM_OUT, keyboard=CONTROL_ZOOM_OUT, controller=CONTROL_ZOOM_OUT},
 
     -- communication
-    {name=CONTROL_TOGGLE_SAY, keyboard=CONTROL_TOGGLE_SAY, controller=nil},
-    {name=CONTROL_TOGGLE_WHISPER, keyboard=CONTROL_TOGGLE_WHISPER, controller=nil},
+    {name=CONTROL_TOGGLE_SAY, keyboard=CONTROL_TOGGLE_SAY, controller=CONTROL_TOGGLE_SAY},
+    {name=CONTROL_TOGGLE_WHISPER, keyboard=CONTROL_TOGGLE_WHISPER, controller=CONTROL_TOGGLE_WHISPER},
     {name=CONTROL_SHOW_PLAYER_STATUS, keyboard=CONTROL_SHOW_PLAYER_STATUS, controller=CONTROL_TOGGLE_PLAYER_STATUS},
     {name=CONTROL_PAUSE, keyboard=CONTROL_PAUSE, controller=CONTROL_PAUSE},
     
@@ -301,9 +301,13 @@ local OptionsScreen = Class(Screen, function(self, in_game)
     self.controls_title:SetPosition(95,220)    
     self.controls_title:SetColour(0,0,0,1)
 
-    self.controls_lines = self.controlsroot:AddChild(Image("images/options.xml", "controls_grid.tex"))
-	self.controls_lines:SetScale(.70, .65)
-	self.controls_lines:SetPosition(90, -30)
+    self.controls_horizontal_line = self.controlsroot:AddChild(Image("images/ui.xml", "line_horizontal_5.tex"))
+	self.controls_horizontal_line:SetScale(.65, .65)
+	self.controls_horizontal_line:SetPosition(90, 135)
+
+	self.controls_vertical_line = self.controlsroot:AddChild(Image("images/ui.xml", "line_vertical_5.tex"))
+	self.controls_vertical_line:SetScale(.70, .63)
+	self.controls_vertical_line:SetPosition(265, -40)
 
 	-- NOTE: if we add more options, they should be made scrollable. Look at customization screen for an example.
 	self.grid = self.settingsroot:AddChild(Grid())
@@ -328,8 +332,8 @@ local OptionsScreen = Class(Screen, function(self, in_game)
 
 	self:LoadCurrentControls()
 
-	self.controls_lines:MoveToFront() -- show the lines on top of the white background 
-	self.controls_lines.enabled = false -- stop the image from capturing mouse input
+	self.controls_horizontal_line:MoveToFront()
+	self.controls_vertical_line:MoveToFront()
 
 	---------------------------------------------------
 
@@ -530,6 +534,7 @@ end
 
 function OptionsScreen:RevertChanges()
 	self.working = deepcopy( self.options )
+	self:LoadCurrentControls()
 	self:Apply()
 	self:InitializeSpinners()
 	self:UpdateMenu()							
@@ -665,7 +670,7 @@ function OptionsScreen:MapControlInputHandler(control, down)
 end
 
 function OptionsScreen:MapControl(deviceId, controlId)
-    --print("Mapping control [" .. controlIndex .. "] on device [" .. deviceId .. "]")
+    --print("Mapping control [" .. controlId .. "] on device [" .. deviceId .. "]")
     local controlIndex = controlId + 1      -- C++ control id is zero-based, we were passed a 1-based (lua) array index
     local loc_text = TheInput:GetLocalizedControl(deviceId, controlId, true)
     local default_text = string.format(STRINGS.UI.CONTROLSSCREEN.DEFAULT_CONTROL_TEXT, loc_text)
@@ -691,7 +696,12 @@ end
 function OptionsScreen:OnControlMapped(deviceId, controlId, inputId, hasChanged)
     if self.is_mapping then 
        -- print("Control [" .. controlId .. "] is now [" .. inputId .. "]", hasChanged, debugstack())
-        TheFrontEnd:PopScreen()
+
+        -- removes the "press a button to bind" popup screen. This is not needed when clearing a binding because there is no popup
+        if inputId ~= 0xFFFFFFFF then
+            TheFrontEnd:PopScreen()
+        end
+		
         TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
         for k, v in pairs(self.active_list.items) do
             if controlId == v.controlId then
@@ -1320,7 +1330,29 @@ function OptionsScreen:DoInit()
                     end
                 end 
             )
-            group.button_controller:SetHelpTextMessage(STRINGS.UI.CONTROLSSCREEN.CHANGEBIND)
+            group.button_controller.OnControl =  
+                function( _, control, down)
+					if group.button_controller._base.OnControl(group.button_controller, control, down) then return true end
+					
+					if not self.is_mapping and self.deviceSpinner:GetSelectedData() ~= 0 then
+						if not down and control == CONTROL_MENU_MISC_2 then
+							-- Unbind the game control
+  							self.is_mapping = true
+						    TheInputProxy:UnMapControl(self.deviceSpinner:GetSelectedData(), group.control.controller)
+	
+							return true
+						end
+					end
+                end 
+           group.button_controller.GetHelpText = 
+				function( self )
+					local controller_id = TheInput:GetControllerID()
+					local t = {}
+					table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_2, false, false ) .. " " .. STRINGS.UI.CONTROLSSCREEN.UNBIND)	
+					table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT, false, false ) .. " " .. STRINGS.UI.CONTROLSSCREEN.CHANGEBIND)	
+					return table.concat(t, "  ")
+				end
+
             group.button_controller:SetDisabledFont(NEWFONT)
             if group.control.controller then
                 group.button_controller:SetText(controllerDeviceId ~= nil and TheInput:GetLocalizedControl(controllerDeviceId, group.control.controller) or "")
@@ -1393,7 +1425,7 @@ function OptionsScreen:InitializeSpinners(first)
 
 	for i,v in ipairs(self.devices) do
 		if TheInputProxy:IsInputDeviceEnabled(v.data) then
-			self.deviceSpinner:SetSelectedIndex(v.data)
+			self.deviceSpinner:SetSelectedIndex(i)
 		end
 	end
 

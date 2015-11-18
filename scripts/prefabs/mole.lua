@@ -107,14 +107,18 @@ local function getstatus(inst)
         or "ABOVEGROUND"
 end
 
+local function TestForMakeHome(inst)
+    if not (inst.components.homeseeker ~= nil and inst.components.homeseeker.home ~= nil and inst.components.homeseeker.home:IsValid()) then
+        inst.needs_home_time = GetTime()
+    end
+end
+
 local function ondrop(inst)
     inst.SoundEmitter:KillSound("move")
     inst.SoundEmitter:KillSound("sniff")
     inst.SoundEmitter:KillSound("stunned")
     inst.sg:GoToState("stunned", true)
-    if not (inst.components.homeseeker ~= nil and inst.components.homeseeker.home ~= nil and inst.components.homeseeker.home:IsValid()) and not TheWorld:HasTag("cave") then
-        inst.needs_home_time = GetTime()
-    end
+    TestForMakeHome(inst)
 end
 
 local function OnSleep(inst)
@@ -134,6 +138,7 @@ local function fn()
     inst.entity:AddSoundEmitter()
     --inst.entity:AddDynamicShadow()
     inst.entity:AddNetwork()
+    inst.entity:AddLightWatcher()
 
     --inst.DynamicShadow:SetSize(1, .75)
     inst.Transform:SetFourFaced()
@@ -219,6 +224,7 @@ local function fn()
     inst.components.inspectable.getstatus = getstatus
 
     inst:AddComponent("sleeper")
+    inst.components.sleeper:SetNocturnal(true)
 
     inst.SetUnderPhysics = SetUnderPhysics
     inst.SetAbovePhysics = SetAbovePhysics
@@ -237,6 +243,8 @@ local function fn()
     inst:ListenForEvent("onwenthome", OnWentHome)
 
     MakeFeedableSmallLivestock(inst, TUNING.TOTAL_DAY_TIME*2, onpickup, ondrop)
+
+    inst:DoTaskInTime(inst.make_home_delay, TestForMakeHome)
 
     AddHauntableCustomReaction(inst, function(inst, haunter)
         if math.random() < TUNING.HAUNT_CHANCE_OFTEN then

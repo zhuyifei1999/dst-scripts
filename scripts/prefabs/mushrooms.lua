@@ -74,7 +74,7 @@ local function close(inst)
 end
 
 local function onregenfn(inst)
-    if inst.data.open_time == TheWorld.state.phase then
+    if inst.data.open_time == TheWorld.state.cavephase then
         open(inst)
     end
 end
@@ -276,11 +276,11 @@ local function mushcommonfn(data)
         return ret
     end)
 
-    inst:WatchWorldState("is"..data.open_time, OnIsOpenPhase)
+    inst:WatchWorldState("iscave"..data.open_time, OnIsOpenPhase)
 
     inst:DoPeriodicTask(TUNING.SEG_TIME, checkregrow, TUNING.SEG_TIME + math.random()*TUNING.SEG_TIME)        
 
-    if data.open_time == TheWorld.state.phase then
+    if data.open_time == TheWorld.state.cavephase then
         inst.AnimState:PlayAnimation(data.animname)
         inst.components.pickable.caninteractwith = true
     else

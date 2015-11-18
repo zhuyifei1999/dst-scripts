@@ -212,44 +212,59 @@ local function MakeHat(name)
         return inst
     end
 
+    local function ruinshat_fxanim(inst)
+        inst._fx.AnimState:PlayAnimation("hit")
+        inst._fx.AnimState:PushAnimation("idle_loop")
+    end
+
+    local function ruinshat_oncooldown(inst)
+        inst._task = nil
+    end
+
+    local function ruinshat_unproc(inst)
+        if inst:HasTag("forcefield") then
+            inst:RemoveTag("forcefield")
+            if inst._fx ~= nil then
+                inst._fx:kill_fx()
+                inst._fx = nil
+            end
+            inst:RemoveEventCallback("armordamaged", ruinshat_fxanim)
+
+            inst.components.armor:SetAbsorption(TUNING.ARMOR_RUINSHAT_ABSORPTION)
+            inst.components.armor.ontakedamage = nil
+
+            if inst._task ~= nil then
+                inst._task:Cancel()
+            end
+            inst._task = inst:DoTaskInTime(TUNING.ARMOR_RUINSHAT_COOLDOWN, ruinshat_oncooldown)
+        end
+    end
+
     local function ruinshat_proc(inst, owner)
         inst:AddTag("forcefield")
+        if inst._fx ~= nil then
+            inst._fx:kill_fx()
+        end
+        inst._fx = SpawnPrefab("forcefieldfx")
+        inst._fx.entity:SetParent(owner.entity)
+        inst._fx.Transform:SetPosition(0, 0.2, 0)
+        inst:ListenForEvent("armordamaged", ruinshat_fxanim)
+
         inst.components.armor:SetAbsorption(TUNING.FULL_ABSORPTION)
-        local fx = SpawnPrefab("forcefieldfx")
-        fx.entity:SetParent(owner.entity)
-        fx.Transform:SetPosition(0, 0.2, 0)
-        local fx_hitanim = function()
-            fx.AnimState:PlayAnimation("hit")
-            fx.AnimState:PushAnimation("idle_loop")
-        end
-        fx:ListenForEvent("blocked", fx_hitanim, owner)
-
         inst.components.armor.ontakedamage = function(inst, damage_amount)
-            if owner then
-                local sanity = owner.components.sanity
-                if sanity then
-                    local unsaneness = damage_amount * TUNING.ARMOR_RUINSHAT_DMG_AS_SANITY
-                    sanity:DoDelta(-unsaneness, false)
-                end
+            if owner ~= nil and owner.components.sanity ~= nil then
+                owner.components.sanity:DoDelta(-damage_amount * TUNING.ARMOR_RUINSHAT_DMG_AS_SANITY, false)
             end
         end
 
-        inst.active = true
-
-        owner:DoTaskInTime(--[[Duration]] TUNING.ARMOR_RUINSHAT_DURATION, function()
-            fx:RemoveEventCallback("blocked", fx_hitanim, owner)
-            fx.kill_fx(fx)
-            if inst:IsValid() then
-                inst:RemoveTag("forcefield")
-                inst.components.armor.ontakedamage = nil
-                inst.components.armor:SetAbsorption(TUNING.ARMOR_RUINSHAT_ABSORPTION)
-                owner:DoTaskInTime(--[[Cooldown]] TUNING.ARMOR_RUINSHAT_COOLDOWN, function() inst.active = false end)
-            end
-        end)
+        if inst._task ~= nil then
+            inst._task:Cancel()
+        end
+        inst._task = inst:DoTaskInTime(TUNING.ARMOR_RUINSHAT_DURATION, ruinshat_unproc)
     end
 
     local function tryproc(inst, owner)
-        if not inst.active and math.random() < --[[ Chance to proc ]] TUNING.ARMOR_RUINSHAT_PROC_CHANCE then
+        if inst._task == nil and math.random() < TUNING.ARMOR_RUINSHAT_PROC_CHANCE then
            ruinshat_proc(inst, owner)
         end
     end
@@ -267,8 +282,7 @@ local function MakeHat(name)
             owner.AnimState:Hide("HEAD_HAT")
         end
 
-        owner:RemoveEventCallback("attacked", inst.procfn)
-
+        inst.ondetach()
     end
 
     local function ruins_onequip(inst, owner)
@@ -282,12 +296,19 @@ local function MakeHat(name)
         
         owner.AnimState:Show("HEAD")
         owner.AnimState:Hide("HEAD_HAT")
-        inst.procfn = function() tryproc(inst, owner) end
-        owner:ListenForEvent("attacked", inst.procfn)
+
+        inst.onattach(owner)
     end
 
     local function ruins_custom_init(inst)
         inst:AddTag("metal")
+    end
+
+    local function ruins_onremove(inst)
+        if inst._fx ~= nil then
+            inst._fx:kill_fx()
+            inst._fx = nil
+        end
     end
 
     local function ruins()
@@ -302,6 +323,34 @@ local function MakeHat(name)
 
         inst.components.equippable:SetOnEquip(ruins_onequip)
         inst.components.equippable:SetOnUnequip(ruins_onunequip)
+
+        MakeHauntableLaunch(inst)
+
+        inst.OnRemoveEntity = ruins_onremove
+
+        inst._fx = nil
+        inst._task = nil
+        inst._owner = nil
+        inst.procfn = function(owner) tryproc(inst, owner) end
+        inst.onattach = function(owner)
+            if inst._owner ~= nil then
+                inst:RemoveEventCallback("attacked", inst.procfn, inst._owner)
+                inst:RemoveEventCallback("onremove", inst.ondetach, inst._owner)
+            end
+            inst:ListenForEvent("attacked", inst.procfn, owner)
+            inst:ListenForEvent("onremove", inst.ondetach, owner)
+            inst._owner = owner
+            inst._fx = nil
+        end
+        inst.ondetach = function()
+            ruinshat_unproc(inst)
+            if inst._owner ~= nil then
+                inst:RemoveEventCallback("attacked", inst.procfn, inst._owner)
+                inst:RemoveEventCallback("onremove", inst.ondetach, inst._owner)
+                inst._owner = nil
+                inst._fx = nil
+            end
+        end
 
         return inst
     end
@@ -467,6 +516,8 @@ local function MakeHat(name)
 
     local function miner_custom_init(inst)
         inst.entity:AddSoundEmitter()
+        --waterproofer (from waterproofer component) added to pristine state for optimization
+        inst:AddTag("waterproofer")
     end
 
     local function miner_onremove(inst)
@@ -492,6 +543,9 @@ local function MakeHat(name)
         inst.components.fueled:SetDepletedFn(miner_perish)
         inst.components.fueled.ontakefuelfn = miner_takefuel
         inst.components.fueled.accepting = true
+
+        inst:AddComponent("waterproofer")
+        inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALL)
 
         inst._light = nil
         inst.OnRemoveEntity = miner_onremove

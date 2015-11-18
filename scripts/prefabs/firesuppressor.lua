@@ -163,14 +163,14 @@ local function CanInteract(inst)
 end
 
 local function onhammered(inst, worker)
-    if inst:HasTag("fire") and inst.components.burnable then
+    if inst.components.burnable ~= nil and inst.components.burnable:IsBurning() then
         inst.components.burnable:Extinguish()
     end
     inst.SoundEmitter:KillSound("firesuppressor_idle")
     inst.components.lootdropper:DropLoot()
-    SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
-    inst.SoundEmitter:PlaySound("dontstarve/common/destroy_wood")
-
+    local fx = SpawnPrefab("collapse_small")
+    fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+    fx:SetMaterial("metal")
     inst:Remove()
 end
 
@@ -200,7 +200,7 @@ local function OnRemoveEntity(inst)
 end
 
 local function onsave(inst, data)
-    if inst:HasTag("burnt") or inst:HasTag("fire") then
+    if inst:HasTag("burnt") or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
         data.burnt = true
     end
 end

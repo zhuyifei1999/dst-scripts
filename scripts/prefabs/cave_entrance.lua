@@ -1,84 +1,37 @@
 local assets =
 {
-	Asset("ANIM", "anim/cave_entrance.zip"),
-	Asset("ANIM", "anim/ruins_entrance.zip"),
-
+    Asset("ANIM", "anim/cave_entrance.zip"),
+    Asset("ANIM", "anim/ruins_entrance.zip"),
 }
 
 local prefabs =
 {
-	"bat",
-	"exitcavelight"
+    "bat",
 }
 
-local function GetVerb()
-	return STRINGS.ACTIONS.ACTIVATE.SPELUNK
+local function close(inst)
+    inst.AnimState:PlayAnimation("no_access", true)
 end
+
+local function open(inst)
+    inst.AnimState:PlayAnimation("open", true)
+end
+
+local function full(inst)
+    inst.AnimState:PlayAnimation("over_capacity", true)
+end
+
+--local function activate(inst)
+    -- nothing
+--end
 
 local function ReturnChildren(inst)
-	for k,child in pairs(inst.components.childspawner.childrenoutside) do
-		if child.components.homeseeker then
-			child.components.homeseeker:GoHome()
-		end
-		child:PushEvent("gohome")
-	end
-end
-
-local function OnActivate(inst)
-
-	if not IsGamePurchased() then return end
-
-    ProfileStatsSet("cave_entrance_used", true)
-
-	SetPause(true)
-
-	local function go_spelunking()
-		SaveGameIndex:GetSaveFollowers(GetPlayer())
-
-		local function onsaved()
-		    SetPause(false)
-		    StartNextInstance({reset_action=RESET_ACTION.LOAD_SLOT, save_slot = SaveGameIndex:GetCurrentSaveSlot()}, true)
-		end
-
-		local function doenter()
-			local level = 1
-			if TheWorld.prefab == "cave" then
-				level = (TheWorld.topology.level_number or 1 ) + 1
-			end
-			SaveGameIndex:SaveCurrent(function() SaveGameIndex:EnterCave(onsaved,nil, inst.cavenum, level) end, false, "descend", inst.cavenum)
-		end
-
-		if not inst.cavenum then
-			-- We need to make sure we only ever have one cave underground
-			-- this is because caves are verticle and dont have sub caves
-			if TheWorld.prefab == "cave"  then
-				inst.cavenum = SaveGameIndex:GetCurrentCaveNum()
-				doenter()
-			else
-				inst.cavenum = SaveGameIndex:GetNumCaves() + 1
-				SaveGameIndex:AddCave(nil, doenter)
-			end
-		else
-			doenter()
-		end
-	end
-	GetPlayer().HUD:Hide()
-
-	TheFrontEnd:Fade(false, 2, function()
-									go_spelunking()
-								end)
-end
-
-local function MakeRuins(inst)
-	inst.AnimState:SetBank("ruins_entrance")
-	inst.AnimState:SetBuild("ruins_entrance")
-
-	if inst.components.lootdropper then
-		inst.components.lootdropper:SetLoot({"thulecite", "thulecite_pieces", "thulecite_pieces"})
-	end
-
-	inst.MiniMapEntity:SetIcon("ruins_closed.png")
-
+    for k, child in pairs(inst.components.childspawner.childrenoutside) do
+        if child.components.homeseeker ~= nil then
+            child.components.homeseeker:GoHome()
+        end
+        child:PushEvent("gohome")
+    end
 end
 
 local function OnIsDay(inst, isday)
@@ -92,128 +45,53 @@ local function OnIsDay(inst, isday)
     end
 end
 
-local function Open(inst)
-
-    OnIsDay(inst, TheWorld.state.isday)
-    inst:WatchWorldState("isday", OnIsDay)
-
-    inst.AnimState:PlayAnimation("idle_open", true)
-    inst:RemoveComponent("workable")
-    
-    inst.open = true
-
-    inst.name = STRINGS.NAMES.CAVE_ENTRANCE_OPEN
-	--[[if SaveGameIndex:GetCurrentMode() == "cave" then
-        inst.name = STRINGS.NAMES.CAVE_ENTRANCE_OPEN_CAVE
-    end]]
-	inst:RemoveComponent("lootdropper")
-
-	inst.MiniMapEntity:SetIcon("cave_open.png")
-
-    --inst:AddTag("NOCLICK")
-    inst:DoTaskInTime(2, function() 
-
-		if IsGamePurchased() then
-			inst:AddComponent("activatable")
-		    inst.components.activatable.OnActivate = OnActivate
-		    inst.components.activatable.inactive = true
-			inst.components.activatable.quickaction = true
-		end
-
-	end)
-
-end      
-
 local function OnWork(inst, worker, workleft)
-	local pt = Point(inst.Transform:GetWorldPosition())
-	if workleft <= 0 then
-		inst.SoundEmitter:PlaySound("dontstarve/wilson/rock_break")
-		inst.components.lootdropper:DropLoot(pt)
+    local pt = inst:GetPosition()
+    if workleft <= 0 then
+        inst.SoundEmitter:PlaySound("dontstarve/wilson/rock_break")
+        inst.components.lootdropper:DropLoot(pt)
         ProfileStatsSet("cave_entrance_opened", true)
-		Open(inst)
-	else				
-		if workleft < TUNING.ROCKS_MINE*(1/3) then
-			inst.AnimState:PlayAnimation("low")
-		elseif workleft < TUNING.ROCKS_MINE*(2/3) then
-			inst.AnimState:PlayAnimation("med")
-		else
-			inst.AnimState:PlayAnimation("idle_closed")
-		end
-	end
-end
-
-
-local function Close(inst)
-
-	if inst.open then
-        inst:StopWatchingWorldState("isday", OnIsDay)
-	end
-	inst:RemoveComponent("activatable")
-    inst.AnimState:PlayAnimation("idle_closed", true)
-
-	inst:AddComponent("workable")
-	inst.components.workable:SetWorkAction(ACTIONS.MINE)
-	inst.components.workable:SetWorkLeft(TUNING.ROCKS_MINE)
-	inst.components.workable:SetOnWorkCallback(OnWork)
-	inst:AddComponent("lootdropper")
-	inst.components.lootdropper:SetLoot({"rocks", "rocks", "flint", "flint", "flint"})
-
-    inst.name = STRINGS.NAMES.CAVE_ENTRANCE_CLOSED
-	--[[if SaveGameIndex:GetCurrentMode() == "cave" then
-        inst.name = STRINGS.NAMES.CAVE_ENTRANCE_CLOSED_CAVE
-    end]]
-
-    inst.open = false
-end      
-
-
-local function onsave(inst, data)
-	data.cavenum = inst.cavenum
-	data.open = inst.open
-end           
-
-local function onload(inst, data)
-	inst.cavenum = data and data.cavenum 
-
-	if TheWorld:HasTag("cave") then
-		MakeRuins(inst)
-	end
-
-	if data and data.open then
-		Open(inst)
-	end
-end
-
-local function GetStatus(inst)
-    if inst.open then
-        return "OPEN"
+        local openinst = SpawnPrefab("cave_entrance_open")
+        openinst.Transform:SetPosition(pt:Get())
+        openinst.components.worldmigrator.id = inst.components.worldmigrator.id
+        openinst.components.worldmigrator.linkedWorld = inst.components.worldmigrator.linkedWorld
+        openinst.components.worldmigrator.recievedPortal = inst.components.worldmigrator.recievedPortal
+        inst:Remove()
+    else
+        inst.AnimState:PlayAnimation(
+            (workleft < TUNING.ROCKS_MINE / 3 and "low") or
+            (workleft < TUNING.ROCKS_MINE * 2 / 3 and "med") or
+            "idle_closed"
+        )
     end
 end
 
-local function fn()
+local function GetStatus(inst)
+    return (inst.components.worldmigrator:IsActive() and "OPEN")
+        or (inst.components.worldmigrator:IsFull() and "FULL")
+        or nil
+end
+
+local function activatebyother(inst)
+    OnWork(inst, nil, 0)
+end
+
+local function fn(bank, build, anim, minimap)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
     inst.entity:AddMiniMapEntity()
-
-    --V2C: WARNING:
-    --This is not supported for DST, so there is no network
-    --component added yet! It just spawns it locally on the
-    --server and then removes it on the next frame.
-    inst.entity:Hide()
-    inst:DoTaskInTime(0, inst.Remove)
-    --
+    inst.entity:AddNetwork()
 
     MakeObstaclePhysics(inst, 1)
 
-    inst.MiniMapEntity:SetIcon("cave_closed.png")
+    inst.MiniMapEntity:SetIcon(minimap)
 
-    inst.AnimState:SetBank("cave_entrance")
-    inst.AnimState:SetBuild("cave_entrance")
-
-    inst.GetActivateVerb = GetVerb
+    inst.AnimState:SetBank(bank)
+    inst.AnimState:SetBuild(build)
+    inst.AnimState:PlayAnimation(anim)
 
     inst.entity:SetPristine()
 
@@ -221,21 +99,99 @@ local function fn()
         return inst
     end
 
-    inst:AddComponent("inspectable")
-    inst.components.inspectable:RecordViews()
-    inst.components.inspectable.getstatus = GetStatus
+    if BRANCH ~= "dev" and not TheNet:GetServerIsDedicated() then
+        --#TODOCAVES: On self-hosted servers we'll make these "vanish" for now, but still generate them
+        --into the world so that they can magically appear in existing saves once self-hosted caves servers
+        --are working.
+        RemovePhysicsColliders(inst)
+        inst.AnimState:SetScale(0,0)
+        inst.MiniMapEntity:SetEnabled(false)
+        inst:AddTag("NOCLICK")
+        inst:AddTag("CLASSIFIED")
+    end
 
-    inst:AddComponent( "childspawner" )
+    inst:AddComponent("inspectable")
+    inst:AddComponent("worldmigrator")
+
+    return inst
+end
+
+local function closed_fn()
+    local inst = fn("cave_entrance", "cave_entrance", "idle_closed", "cave_closed.png")
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst:AddComponent("workable")
+    inst.components.workable:SetWorkAction(ACTIONS.MINE)
+    inst.components.workable:SetWorkLeft(TUNING.ROCKS_MINE)
+    inst.components.workable:SetOnWorkCallback(OnWork)
+
+    inst.components.worldmigrator:SetEnabled(false)
+    inst:ListenForEvent("migration_activate_other", activatebyother)
+
+    inst:AddComponent("lootdropper")
+    inst.components.lootdropper:SetLoot({ "rocks", "rocks", "flint", "flint", "flint" })
+
+    return inst
+end
+
+local function ruins_fn()
+    local inst = fn("ruins_entrance", "ruins_entrance", "idle_closed", "cave_closed.png")
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst:AddComponent("workable")
+    inst.components.workable:SetWorkAction(ACTIONS.MINE)
+    inst.components.workable:SetWorkLeft(TUNING.ROCKS_MINE)
+    inst.components.workable:SetOnWorkCallback(OnWork)
+
+    inst.components.worldmigrator:SetEnabled(false)
+    inst:ListenForEvent("migration_activate_other", activatebyother)
+
+    inst:AddComponent("lootdropper")
+    inst.components.lootdropper:SetLoot({ "thulecite", "thulecite_pieces", "thulecite_pieces" })
+
+    return inst
+end
+
+local function open_fn()
+    local inst = fn("cave_entrance", "cave_entrance", "no_access", "cave_open.png")
+
+    inst.AnimState:SetLayer(LAYER_BACKGROUND)
+    inst.AnimState:SetSortOrder(3)
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst:AddComponent("childspawner")
     inst.components.childspawner:SetRegenPeriod(60)
     inst.components.childspawner:SetSpawnPeriod(.1)
     inst.components.childspawner:SetMaxChildren(6)
     inst.components.childspawner.childname = "bat"
 
-    Close(inst)
-    inst.OnSave = onsave
-    inst.OnLoad = onload
+    inst.components.inspectable.getstatus = GetStatus
+
+    inst:ListenForEvent("migration_available", open)
+    inst:ListenForEvent("migration_unavailable", close)
+    inst:ListenForEvent("migration_full", full)
+    --inst:ListenForEvent("migration_activate", activate)
+
+    --Cave entrance is an overworld entity, so it
+    --should be aware of phase and not cavephase.
+    --Actually, it could make sense either way...
+    --Alternative: -add "cavedweller" tag
+    --             -watch iscaveday world state
+    OnIsDay(inst, TheWorld.state.isday)
+    inst:WatchWorldState("isday", OnIsDay)
 
     return inst
 end
 
-return Prefab("common/cave_entrance", fn, assets, prefabs)
+return Prefab("common/cave_entrance", closed_fn, assets, prefabs),
+    Prefab("common/cave_entrance_ruins", ruins_fn, assets, prefabs),
+    Prefab("common/cave_entrance_open", open_fn, assets, prefabs)

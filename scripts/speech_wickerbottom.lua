@@ -289,12 +289,14 @@ return
         LIVINGTREE = "This tree is special.",
         ICESTAFF = "Some kind of ice-throwing contraption.",
         WORMLIGHT = "It's softer than I would've thought.",
+        WORMLIGHT_LESSER = "This one is purely vegetable.",
         WORM =
         {
             PLANT = "Reminds me of the Anglerfish.",
             DIRT = "It would be best to stay away from that.",
             WORM = "Worm attack!",
         },
+        WORMLIGHT_PLANT = "Reminds me of the Anglerfish.",
         EEL = "It's an eel.",
         EEL_COOKED = "This eel has been cooked.",
         UNAGI = "A common way to prepare eel.",
@@ -354,6 +356,7 @@ return
         BAT="A flying mammal.",
         BATWING="Technically edible.",
         BATWING_COOKED="Technically edible.",
+        BATCAVE = "This nook is actually a dwelling.",
         BEDROLL_FURRY="I'm not sleeping on the ground.",
         BUNNYMAN="A sentient lagomorph.",
         FLOWER_CAVE="You could read by that light.",
@@ -363,9 +366,25 @@ return
         LANTERN="A refuelable light source.",
         LIGHTBULB="Is this animal or vegetable?",
         MANRABBIT_TAIL="They use their tails to balance.",
-        MUSHTREE_TALL  ="A tree with a fungal parasite.",
-        MUSHTREE_MEDIUM="A red variety of Mycena luxaeterna.",
-        MUSHTREE_SMALL ="My word! A huge Mycena silvaelucens.",
+        MUSHTREE_TALL={
+            GENERIC = "A tree with a fungal parasite.",
+            BLOOM = "Apparently it's the breeding season for this species.",
+        },
+        MUSHTREE_MEDIUM={
+            GENERIC = "A red variety of Mycena luxaeterna.",
+            BLOOM = "The smell is used to ward off predators.",
+        },
+        MUSHTREE_SMALL={
+            GENERIC = "My word! A huge Mycena silvaelucens.",
+            BLOOM = "The light is caused by a chemical reaction.",
+        },
+        MUSHTREE_TALL_WEBBED = "This relationship appears symbiotic.",
+        SPORE_TALL = "A carrier of genetic information.",
+        SPORE_MEDIUM = "A carrier of genetic information.",
+        SPORE_SMALL = "A carrier of genetic information.",
+        SPORE_TALL_INV = "I'm a carrier of a carrier of genetic information.",
+        SPORE_MEDIUM_INV = "I'm a carrier of a carrier of genetic information.",
+        SPORE_SMALL_INV = "I'm a carrier of a carrier of genetic information.",
         SLURTLE="A mineral-devouring gastropod.",
         SLURTLE_SHELLPIECES="Pieces of the broken.",
         SLURTLEHAT="It provides protection.",
@@ -412,11 +431,9 @@ return
         FOOTBALLHAT = "Protective gear for full-contact endeavors.",
 
         POWCAKE = "The crowning achievement of the agricultural-industrial complex.",
-        CAVE_ENTRANCE = 
-        {
-            GENERIC="The placement of that rock looks intentional.",
-            OPEN = "The subterranean world awaits.",
-        },
+        CAVE_ENTRANCE = "The placement of that rock looks intentional.",
+        CAVE_ENTRANCE_RUINS = "The passage has been obstructed.",
+        CAVE_ENTRANCE_OPEN = "The subterranean world awaits.",
         CAVE_EXIT = "Maybe I should go back up for some fresh air.",
 
 		BOOMERANG = "It is a flat aerofoil.",
@@ -510,6 +527,7 @@ return
         TENTACLESPIKE = "Never grab the pointy end.",
         TENTACLESPOTS = "Hmmm, reproductive organs.",
         TENTACLE_PILLAR = "There's more of it below than above!",
+        TENTACLE_PILLAR_HOLE = "It appears to be all connected somehow.",
         TENTACLE_PILLAR_ARM = "A tiny horror waiting in the mud.",
         TENTACLE_GARDEN = "I wonder how they breed?",
         BEEFALO =
@@ -552,7 +570,6 @@ return
         ROPE = "A short length of strong hemp rope.",
         LOG = "An axial section of tree trunk.",
         LIVINGLOG = "This log is special.",
-        LOCKEDWES = "Poor sod is being held here by those statues.",
         TWIGS = "Some small twigs.",
         CARROT = "Daucus carota. Edible, and delicious.",
         CARROT_COOKED = "Daucus carota, roasted to perfection.",
@@ -685,6 +702,7 @@ return
         PETALS = "I've made some potpourri.",
         PETALS_EVIL = "Interesting, these petals seem to have a mind of their own.",        
         FLOWER = "It's a wildflower. I'm unfamiliar with the species.",
+        FLOWER_WITHERED = "This flower lacks the essentials for growth.",
         FLOWER_EVIL = "It's not often one sees a flower with such a powerful aura.",
         GOLDENAXE = "The most malleable of metals, but let's see how this chops.",
         GOLDENPICKAXE = "The most malleable of metals, but let's see how this mines.",
@@ -1100,7 +1118,7 @@ return
         },
         ORANGESTAFF = "Handy over small distances.",   --Teleports player.
         ROOK_NIGHTMARE = "It looks like it could break apart at any moment.",
-        RELIC = "A relic of an ancient civilization long dead the the ravages of time.",  --Fixed relic
+        RELIC = "A relic of an ancient civilization long dead through the ravages of time.",  --Fixed relic
         RUINS_RUBBLE = "With a little elbow grease this could be put into working order.",   --Broken relic
         RUINS_BAT = "I could hit things with this.",
         RUINSHAT = "A bit gaudy for my tastes, but it seems useful.",

@@ -9,14 +9,15 @@ local prefabs =
     "collapse_small",
 }
 
-local function onhammered(inst, worker)
+local function onhammered(inst)
     inst.components.lootdropper:DropLoot()
-    SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
-    inst.SoundEmitter:PlaySound("dontstarve/common/destroy_metal")
+    local fx = SpawnPrefab("collapse_small")
+    fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+    fx:SetMaterial("stone")
     inst:Remove()
 end
 
-local function onhit(inst, worker)
+local function onhit(inst)
     inst.AnimState:PlayAnimation("hit")
     inst.AnimState:PushAnimation("idle")
 end
@@ -29,7 +30,7 @@ end
 
 local function CalcSanityAura(inst, observer)
     local lightRadius = inst.components.burnable ~= nil and inst.components.burnable:GetLargestLightRadius() or 0
-    return lightRadius > 0 and inst:GetDistanceSqToInst(observer) < .5 * lightRadius and -.05 or 0
+    return lightRadius > 0 and observer:IsNear(inst, .5 * lightRadius) and -.05 or 0
 end
 
 local function onbuilt(inst)
@@ -97,7 +98,7 @@ local function fn()
     inst:AddComponent("burnable")
     inst.components.burnable:AddBurnFX("nightlight_flame", Vector3(0, 0, 0), "fire_marker")
     inst:ListenForEvent("onextinguish", onextinguish)
-    
+
     inst:AddComponent("sanityaura")
     inst.components.sanityaura.aurafn = CalcSanityAura
 
@@ -120,7 +121,7 @@ local function fn()
 
     inst.components.fueled:SetSectionCallback(function(section)
         if section == 0 then
-            inst.components.burnable:Extinguish() 
+            inst.components.burnable:Extinguish()
         else
             if not inst.components.burnable:IsBurning() then
                 inst.components.burnable:Ignite()

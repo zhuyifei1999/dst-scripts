@@ -7,11 +7,13 @@ local assets =
 
 local prefabs =
 {
-	"bee",
+    "bee",
     "honey",
     "honeycomb",
     "collapse_small",
 }
+
+FLOWER_TEST_RADIUS = 30
 
 local levels =
 {
@@ -21,127 +23,144 @@ local levels =
     { amount=0, idle="bees_loop", hit="hit_idle" },
 }
 
-local function OnIsDay(inst, isday)
-    if not isday then
-        if inst.components.harvestable and inst.components.harvestable.growtime then
-            inst.components.harvestable:StopGrowing()
-        end
-        if inst.components.childspawner then
-            inst.components.childspawner:StopSpawning()
-        end
-    elseif not TheWorld.state.iswinter then
-    	if not inst:HasTag("burnt") then 
-	        if inst.components.harvestable and inst.components.harvestable.growtime then
-	            inst.components.harvestable:StartGrowing()
-	        end
-	        if inst.components.childspawner then
-	            inst.components.childspawner:StartSpawning()
-	        end
-	    end
+local function Stop(inst)
+    if inst.components.harvestable ~= nil and inst.components.harvestable.growtime ~= nil then
+        inst.components.harvestable:StopGrowing()
+    end
+    if inst.components.childspawner ~= nil then
+        inst.components.childspawner:StopSpawning()
     end
 end
 
+local function Start(inst)
+    if inst.components.harvestable ~= nil and inst.components.harvestable.growtime ~= nil
+        and FindEntity(inst, FLOWER_TEST_RADIUS, nil, {"flower"}) ~= nil then
+        inst.components.harvestable:StartGrowing()
+    end
+    if inst.components.childspawner ~= nil then
+        inst.components.childspawner:StartSpawning()
+    end
+end
+
+local function OnIsCaveDay(inst, isday)
+    if not isday then
+        Stop(inst)
+    elseif not (TheWorld.state.iswinter or inst:HasTag("burnt"))
+        and inst.LightWatcher:IsInLight() then
+        Start(inst)
+    end
+end
+
+local function OnEnterLight(inst)
+    if not (TheWorld.state.iswinter or inst:HasTag("burnt"))
+        and TheWorld.state.iscaveday then
+        Start(inst)
+    end
+end
+
+local function OnEnterDark(inst)
+    Stop(inst)
+end
+
 local function onhammered(inst, worker)
-	if inst:HasTag("fire") and inst.components.burnable then
-		inst.components.burnable:Extinguish()
-	end
-	inst.SoundEmitter:KillSound("loop")
-	inst.components.lootdropper:DropLoot()
-	SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
-	inst.SoundEmitter:PlaySound("dontstarve/common/destroy_wood")
-	inst:Remove()
+    if inst.components.burnable ~= nil and inst.components.burnable:IsBurning() then
+        inst.components.burnable:Extinguish()
+    end
+    inst.SoundEmitter:KillSound("loop")
+    inst.components.lootdropper:DropLoot()
+    local fx = SpawnPrefab("collapse_small")
+    fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+    fx:SetMaterial("wood")
+    inst:Remove()
 end
 
 local function onhit(inst, worker)
-	if not inst:HasTag("burnt") then 
-		inst.AnimState:PlayAnimation(inst.anims.hit)
-		inst.AnimState:PushAnimation(inst.anims.idle, false)
-	end
+    if not inst:HasTag("burnt") then
+        inst.AnimState:PlayAnimation(inst.anims.hit)
+        inst.AnimState:PushAnimation(inst.anims.idle, false)
+    end
 end
 
 local function setlevel(inst, level)
-	if not inst:HasTag("burnt") then 
-	    if not inst.anims then
-	        inst.anims = {idle = level.idle, hit = level.hit}
-	    else
-	        inst.anims.idle = level.idle
-	        inst.anims.hit = level.hit
-	    end
-	    inst.AnimState:PlayAnimation(inst.anims.idle)
-	end
+    if not inst:HasTag("burnt") then
+        if inst.anims == nil then
+            inst.anims = { idle = level.idle, hit = level.hit }
+        else
+            inst.anims.idle = level.idle
+            inst.anims.hit = level.hit
+        end
+        inst.AnimState:PlayAnimation(inst.anims.idle)
+    end
 end
 
 local function updatelevel(inst)
-	if not inst:HasTag("burnt") then 
-	    for k,v in pairs(levels) do
-	        if inst.components.harvestable.produce >= v.amount then
-	            setlevel(inst, v)
-	            break
-	        end
-	    end
-	end
+    if not inst:HasTag("burnt") then
+        for k, v in pairs(levels) do
+            if inst.components.harvestable.produce >= v.amount then
+                setlevel(inst, v)
+                break
+            end
+        end
+    end
 end
 
 local function onharvest(inst, picker)
-	--print(inst, "onharvest")
-	if not inst:HasTag("burnt") then 
-	    updatelevel(inst)
-		if inst.components.childspawner and not TheWorld.state.iswinter then
-		    inst.components.childspawner:ReleaseAllChildren(picker)
-		end
-	end
+    --print(inst, "onharvest")
+    if not inst:HasTag("burnt") then
+        updatelevel(inst)
+        if inst.components.childspawner ~= nil and not TheWorld.state.iswinter then
+            inst.components.childspawner:ReleaseAllChildren(picker)
+        end
+    end
 end
 
 local function onchildgoinghome(inst, data)
-	if not inst:HasTag("burnt") then 
-	    if data.child and data.child.components.pollinator and data.child.components.pollinator:HasCollectedEnough() then
-	        if inst.components.harvestable then
-	            inst.components.harvestable:Grow()
-	        end
-	    end
-	end
+    if not inst:HasTag("burnt") and
+        data.child ~= nil and
+        data.child.components.pollinator ~= nil and
+        data.child.components.pollinator:HasCollectedEnough() and
+        inst.components.harvestable ~= nil then
+        inst.components.harvestable:Grow()
+    end
 end
 
 local function OnSave(inst, data)
-	if inst:HasTag("burnt") or inst:HasTag("fire") then
+    if inst:HasTag("burnt") or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
         data.burnt = true
     end
 end
 
 local function onsleep(inst)
-	if not inst:HasTag("burnt") then 
-	    if inst.components.harvestable then
-	        inst.components.harvestable:SetGrowTime(TUNING.BEEBOX_HONEY_TIME)
-	        inst.components.harvestable:StartGrowing()
-	    end
-	end
+    if not inst:HasTag("burnt") and inst.components.harvestable ~= nil
+        and FindEntity(inst, FLOWER_TEST_RADIUS, nil, {"flower"}) ~= nil then
+        inst.components.harvestable:SetGrowTime(TUNING.BEEBOX_HONEY_TIME)
+        inst.components.harvestable:StartGrowing()
+    end
 end
 
 local function stopsleep(inst)
-	if not inst:HasTag("burnt") then 
-	    if inst.components.harvestable then
-	        inst.components.harvestable:SetGrowTime(nil)
-	        inst.components.harvestable:StopGrowing()
-	    end
-	end
+    if not inst:HasTag("burnt") and inst.components.harvestable ~= nil then
+        inst.components.harvestable:SetGrowTime(nil)
+        inst.components.harvestable:StopGrowing()
+    end
 end
 
 local function OnLoad(inst, data)
-	--print(inst, "OnLoad")
-	if data and data.burnt then
+    --print(inst, "OnLoad")
+    if data ~= nil and data.burnt then
         inst.components.burnable.onburnt(inst)
     else
-		updatelevel(inst)
-	end
+        updatelevel(inst)
+    end
 end
 
 local function onbuilt(inst)
-	inst.AnimState:PlayAnimation("place")
-	inst.AnimState:PushAnimation("idle", false)
+    inst.AnimState:PlayAnimation("place")
+    inst.AnimState:PushAnimation("idle", false)
 end
 
 local function onignite(inst)
-    if inst.components.childspawner then
+    if inst.components.childspawner ~= nil then
         inst.components.childspawner:ReleaseAllChildren()
         inst.components.childspawner:StopSpawning()
     end
@@ -152,13 +171,14 @@ local function OnEntityWake(inst)
 end
 
 local function OnEntitySleep(inst)
-	inst.SoundEmitter:KillSound("loop")
+    inst.SoundEmitter:KillSound("loop")
 end
 
 local function GetStatus(inst)
-    if inst.components.harvestable and inst.components.harvestable:CanBeHarvested() then
-        return "READY"
-    end
+    return inst.components.harvestable ~= nil
+        and inst.components.harvestable:CanBeHarvested()
+        and "READY"
+        or nil
 end
 
 local function SeasonalSpawnChanges(inst, season)
@@ -176,13 +196,14 @@ local function SeasonalSpawnChanges(inst, season)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
-	inst.entity:AddMiniMapEntity()
+    inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
+    inst.entity:AddLightWatcher()
 
     MakeObstaclePhysics(inst, .5)
 
@@ -210,49 +231,51 @@ local function fn()
     inst.components.harvestable:SetUp("honey", 6, nil, onharvest, updatelevel)
     inst:ListenForEvent("childgoinghome", onchildgoinghome)
     -------------------
-    
-	inst:AddComponent("childspawner")
-	inst.components.childspawner.childname = "bee"
+
+    inst:AddComponent("childspawner")
+    inst.components.childspawner.childname = "bee"
     SeasonalSpawnChanges(inst, TheWorld.state.season)
     inst:WatchWorldState("season", SeasonalSpawnChanges)
-    
-	if TheWorld.state.isday and not TheWorld.state.iswinter then
-		inst.components.childspawner:StartSpawning()
-	end
 
-    inst:WatchWorldState("isday", OnIsDay)
+    if TheWorld.state.isday and not TheWorld.state.iswinter then
+        inst.components.childspawner:StartSpawning()
+    end
+
+    inst:WatchWorldState("iscaveday", OnIsCaveDay)
+    inst:ListenForEvent("enterlight", OnEnterLight)
+    inst:ListenForEvent("enterdark", OnEnterDark)
 
     inst:AddComponent("inspectable")
     inst.components.inspectable.getstatus = GetStatus
-    
+
     inst:AddComponent("lootdropper")
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
     inst.components.workable:SetWorkLeft(4)
-	inst.components.workable:SetOnFinishCallback(onhammered)
-	inst.components.workable:SetOnWorkCallback(onhit)
-	
-	inst:ListenForEvent("entitysleep", onsleep)
-	inst:ListenForEvent("entitywake", stopsleep)
-	
+    inst.components.workable:SetOnFinishCallback(onhammered)
+    inst.components.workable:SetOnWorkCallback(onhit)
+
+    inst:ListenForEvent("entitysleep", onsleep)
+    inst:ListenForEvent("entitywake", stopsleep)
+
     updatelevel(inst)
 
     MakeHauntableWork(inst)
-    
-	MakeSnowCovered(inst)
-	inst:ListenForEvent("onbuilt", onbuilt)
 
-	MakeMediumBurnable(inst, nil, nil, true)
-	MakeLargePropagator(inst)
-	inst:ListenForEvent("onignite", onignite)
+    MakeSnowCovered(inst)
+    inst:ListenForEvent("onbuilt", onbuilt)
+
+    MakeMediumBurnable(inst, nil, nil, true)
+    MakeLargePropagator(inst)
+    inst:ListenForEvent("onignite", onignite)
 
     inst.OnSave = OnSave
-	inst.OnLoad = OnLoad
-	inst.OnEntitySleep = OnEntitySleep
-	inst.OnEntityWake = OnEntityWake
+    inst.OnLoad = OnLoad
+    inst.OnEntitySleep = OnEntitySleep
+    inst.OnEntityWake = OnEntityWake
 
-	return inst
+    return inst
 end
 
 return Prefab("common/objects/beebox", fn, assets, prefabs),
-	   MakePlacer("common/beebox_placer", "bee_box", "bee_box", "idle")
+    MakePlacer("common/beebox_placer", "bee_box", "bee_box", "idle")

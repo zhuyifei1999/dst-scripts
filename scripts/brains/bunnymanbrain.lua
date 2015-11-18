@@ -31,6 +31,8 @@ local SEE_TREE_DIST = 15
 local SEE_TARGET_DIST = 20
 local SEE_FOOD_DIST = 10
 
+local SEE_BURNING_HOME_DIST_SQ = 20*20
+
 local KEEP_CHOPPING_DIST = 10
 
 local RUN_AWAY_DIST = 5
@@ -77,13 +79,12 @@ local function FindFoodAction(inst)
     end
 end
 
-
 local function HasValidHome(inst)
-    return inst.components.homeseeker and 
-       inst.components.homeseeker.home and 
-       not inst.components.homeseeker.home:HasTag("fire") and
-       not inst.components.homeseeker.home:HasTag("burnt") and
-       inst.components.homeseeker.home:IsValid()
+    local home = inst.components.homeseeker ~= nil and inst.components.homeseeker.home or nil
+    return home ~= nil
+        and home:IsValid()
+        and not (home.components.burnable ~= nil and home.components.burnable:IsBurning())
+        and not home:HasTag("burnt")
 end
 
 local function GoHomeAction(inst)
@@ -92,6 +93,14 @@ local function GoHomeAction(inst)
         not inst.components.combat.target then
             return BufferedAction(inst, inst.components.homeseeker.home, ACTIONS.GOHOME)
     end
+end
+
+local function IsHomeOnFire(inst)
+    return inst.components.homeseeker
+        and inst.components.homeseeker.home
+        and inst.components.homeseeker.home.components.burnable
+        and inst.components.homeseeker.home.components.burnable:IsBurning()
+        and inst:GetDistanceSqToInst(inst.components.homeseeker.home) < SEE_BURNING_HOME_DIST_SQ
 end
 
 local function GetLeader(inst)
@@ -121,15 +130,19 @@ function BunnymanBrain:OnStart()
         {
             WhileNode( function() return self.inst.components.hauntable and self.inst.components.hauntable.panic end, "PanicHaunted", Panic(self.inst)),
             WhileNode(function() return self.inst.components.health.takingfiredamage end, "OnFire",
-                Panic(self.inst)),
+                ChattyNode(self.inst, STRINGS.RABBIT_PANICFIRE,
+                    Panic(self.inst))),
             WhileNode(function() return self.inst.components.health:GetPercent() < TUNING.BUNNYMAN_PANIC_THRESH end, "LowHealth",
 				ChattyNode(self.inst, STRINGS.RABBIT_RETREAT,
 					RunAway(self.inst, "scarytoprey", SEE_PLAYER_DIST, STOP_RUN_DIST))),
             ChaseAndAttack(self.inst, MAX_CHASE_TIME, MAX_CHASE_DIST),
+            WhileNode(function() return IsHomeOnFire(self.inst) end, "OnFire",
+				ChattyNode(self.inst, STRINGS.RABBIT_PANICHOUSEFIRE,
+					Panic(self.inst))),
             FaceEntity(self.inst, GetTraderFn, KeepTraderFn),            
             DoAction(self.inst, FindFoodAction ),
             Follow(self.inst, GetLeader, MIN_FOLLOW_DIST, TARGET_FOLLOW_DIST, MAX_FOLLOW_DIST),
-            WhileNode( function() return not self.inst.beardlord and TheWorld.state.isday end, "IsDay",
+            WhileNode( function() return not self.inst.beardlord and TheWorld.state.iscaveday end, "IsDay",
                         DoAction(self.inst, GoHomeAction, "go home", true ), 1),
             Leash(self.inst, GetNoLeaderHomePos, LEASH_MAX_DIST, LEASH_RETURN_DIST),
             Wander(self.inst, GetNoLeaderHomePos, MAX_WANDER_DIST)

@@ -36,8 +36,8 @@ local IngredientUI = Class(Widget, function(self, atlas, image, quantity, on_han
         end
         self.quant:SetPosition(7,-32, 0)
         if not table.contains(CHARACTER_INGREDIENT, recipe_type) then
-            if owner and owner.components.builder then
-                quantity = RoundBiasedUp(quantity * owner.components.builder.ingredientmod)
+            if owner and owner.replica.builder then
+                quantity = RoundBiasedUp(quantity * owner.replica.builder:IngredientMod())
             end
             self.quant:SetString(string.format("%d/%d", on_hand,quantity))
         else

@@ -103,11 +103,6 @@ end
 
 function InventoryItem:SetOwner(owner)
     owner = owner ~= nil and owner.components.container ~= nil and owner.components.container.opener or owner
-    assert(owner == nil or
-        not owner:HasTag("player") or
-        self.inst.components.weapon == nil or
-        self.inst.components.weapon.variedmodefn == nil,
-        "Players cannot access varied mode weapons")
     if self.inst.Network ~= nil then
         self.inst.Network:SetClassifiedTarget(owner)
     end
@@ -243,9 +238,7 @@ end
 
 function InventoryItem:AttackRange()
     if self.inst.components.weapon ~= nil then
-        return self.inst.components.weapon.variedmodefn ~= nil and
-            (self.inst.components.weapon.variedmodefn(self.inst).attackrange or 0) or
-            self.inst.components.weapon.attackrange or 0
+        return self.inst.components.weapon.attackrange or 0
     elseif self.classified ~= nil then
         return math.max(0, self.classified.attackrange:value())
     else

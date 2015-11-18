@@ -92,7 +92,7 @@ function SpiderBrain:OnStart()
             IfNode(function() return self.inst.components.follower.leader ~= nil end, "HasLeader",
 				FaceEntity(self.inst, GetFaceTargetFn, KeepFaceTargetFn )),            
             DoAction(self.inst, function() return InvestigateAction(self.inst) end ),
-            WhileNode(function() return TheWorld.state.isday end, "IsDay",
+            WhileNode(function() return TheWorld.state.iscaveday end, "IsDay",
                     DoAction(self.inst, function() return GoHomeAction(self.inst) end ) ),
             FaceEntity(self.inst, GetTraderFn, KeepTraderFn),
             Wander(self.inst, function() return self.inst.components.knownlocations:GetLocation("home") end, MAX_WANDER_DIST)            

@@ -21,6 +21,11 @@ local TextEdit = Class(Text, function(self, font, size, text, colour)
 
     self:SetColour(self.idle_text_color[1], self.idle_text_color[2], self.idle_text_color[3], self.idle_text_color[4])
 
+	-- Controller help text strings. You can hide a x_helptext by setting it to and empty string.
+	self.edit_helptext = STRINGS.UI.HELP.CHANGE_TEXT
+	self.cancel_helptext = STRINGS.UI.HELP.BACK
+	self.apply_helptext = STRINGS.UI.HELP.APPLY
+
     --Default cursor colour is WHITE { 1, 1, 1, 1 }
     self:SetEditCursorColour(0,0,0,1) 
 end)
@@ -36,6 +41,8 @@ function TextEdit:SetString(str)
 end
 
 function TextEdit:SetEditing(editing)
+	--print("TextEdit:SetEditing:", self.editing, "->", editing, self.name, self:GetString())
+
 	if editing and not self.editing then
         self.editing = true
 
@@ -80,7 +87,8 @@ function TextEdit:SetEditing(editing)
 end
 
 function TextEdit:OnMouseButton(button, down, x, y)
-	self:SetEditing(true)
+-- disabling this because it is conflicing with OnControl()
+--	self:SetEditing(true)
 end
 
 function TextEdit:OnTextInput(text)
@@ -121,7 +129,9 @@ function TextEdit:SetOnTabGoToTextEditWidget(texteditwidget)
 end
 
 function TextEdit:OnStopForceProcessTextInput()
-	self:SetEditing(false)
+	if self.editing then
+		self:SetEditing(false)
+	end
 end
 
 function TextEdit:OnRawKey(key, down)
@@ -131,7 +141,8 @@ function TextEdit:OnRawKey(key, down)
 		if down then
 			self.inst.TextEditWidget:OnKeyDown(key)
 		else
-			if key == KEY_ENTER then
+			if key == KEY_ENTER and not self.focus then
+				-- this is a fail safe incase the mouse changes the focus widget while editing the text field. We could look into FrontEnd:LockFocus but some screens require focus to be soft (eg: lobbyscreen's chat)
 				self:OnProcess()
 				return true
 			elseif key == KEY_TAB and self.nextTextEditWidget then
@@ -176,9 +187,15 @@ function TextEdit:OnControl(control, down)
         return not self.pass_controls_to_screen[control]
     end
 
-    if not down and control == CONTROL_ACCEPT then
-        self:SetEditing(true)
-        return not self.pass_controls_to_screen[control]
+	if not down and control == CONTROL_ACCEPT then
+	    if not self.editing then
+			self:SetEditing(true)
+			return not self.pass_controls_to_screen[control]
+		else
+			-- Previously this was being done only in the OnRawKey, but that doesnt handle controllers very well, this does.
+			self:OnProcess()
+			return not self.pass_controls_to_screen[control]
+		end
     end
 end
 
@@ -188,7 +205,10 @@ function TextEdit:OnDestroy()
 end
 
 function TextEdit:OnFocusMove()
-	return true
+	-- Note: It would be nice to call OnProcces() here, but this gets called when pressing WASD so it wont work.
+
+	-- prevent the focus move while editing the text string
+	return self.editing
 end
 
 function TextEdit:OnGainFocus()
@@ -314,6 +334,50 @@ end
 
 function TextEdit:EnableScrollEditWindow(enable)
     self.inst.TextEditWidget:EnableScrollEditWindow(enable)
+end
+
+function TextEdit:SetHelpTextEdit(str)
+	if str then
+		self.edit_helptext = str
+	end
+end
+
+function TextEdit:SetHelpTextCancel(str)
+	if str then
+		self.cancel_helptext = str
+	end
+end
+
+function TextEdit:SetHelpTextApply(str)
+	if str then
+		self.apply_helptext = str
+	end
+end
+
+function TextEdit:HasExclusiveHelpText()
+	-- When editing a TextEdit widget, hide the screen's help text
+	return self.editing
+end
+
+function TextEdit:GetHelpText()
+	local t = {}
+    local controller_id = TheInput:GetControllerID()
+    
+    if self.editing then
+		if self.cancel_helptext ~= "" then
+   			table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_CANCEL) .. " " .. self.cancel_helptext)
+   		end
+
+		if self.apply_helptext ~= "" then
+			table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT, false, false ) .. " " .. self.apply_helptext)	
+		end
+    else
+ 		if self.edit_helptext ~= "" then
+			table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT, false, false ) .. " " .. self.edit_helptext)
+		end
+	end
+	
+	return table.concat(t, "  ")
 end
 
 return TextEdit

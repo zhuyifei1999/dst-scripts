@@ -245,18 +245,10 @@ function Sanity:OnUpdate(dt)
 end
 
 function Sanity:RecalcGhostDrain()
-    local num = 0
-    if GetGhostSanityDrain(TheNet:GetServerGameMode()) then
-        for i, v in ipairs(AllPlayers) do
-            if v:HasTag("playerghost") then
-                num = num + 1
-                if num >= TUNING.MAX_SANITY_GHOST_PLAYER_DRAIN_MULT then
-                    break
-                end
-            end
-        end
-    end
-    self.ghost_drain_mult = num
+    self.ghost_drain_mult =
+        GetGhostSanityDrain(TheNet:GetServerGameMode())
+        and math.min(TheWorld.shard.components.shard_players:GetNumGhosts(), TUNING.MAX_SANITY_GHOST_PLAYER_DRAIN_MULT)
+        or 0
 end
 
 function Sanity:Recalc(dt)

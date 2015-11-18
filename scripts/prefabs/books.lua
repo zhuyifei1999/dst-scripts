@@ -36,9 +36,7 @@ function tentaclesfn(inst, reader)
 
                 tentacle.Transform:SetPosition(pos:Get())
 
-                for i, v in ipairs(AllPlayers) do
-                    v:ShakeCamera(CAMERASHAKE.FULL, .2, .02, .25, reader, 40)
-                end
+                ShakeAllCameras(CAMERASHAKE.FULL, .2, .02, .25, reader, 40)
 
                 --need a better effect
                 SpawnPrefab("splash_ocean").Transform:SetPosition(pos:Get())
@@ -145,7 +143,7 @@ function growfn(inst, reader)
         end
 
         if v.components.crop ~= nil then
-            v.components.crop:DoGrow(TUNING.TOTAL_DAY_TIME * 3)
+            v.components.crop:DoGrow(TUNING.TOTAL_DAY_TIME * 3, true)
         end
         
         if v.components.growable ~= nil and v:HasTag("tree") and not v:HasTag("stump") then

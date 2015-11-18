@@ -32,10 +32,14 @@ local function GetWorldgenOverride(cb)
     		if load_success == true then
 				local success, savedata = RunInSandboxSafe(str)
 				if success and string.len(str) > 0 then
+                    print("Found a worldgen override file with these contents:")
+                    dumptable(savedata)
 					if savedata ~= nil and savedata.override_enabled then
 						print("Loaded and applied world gen overrides from "..filename)
+                        local preset = savedata.preset
 						savedata.override_enabled = nil --remove this so the rest of the table can be interpreted as a tweak table
-						cb( savedata )
+                        savedata.preset = nil
+						cb( preset, savedata )
                         return
                     else
                         print("Found world gen overrides but not enabled.")
@@ -45,7 +49,7 @@ local function GetWorldgenOverride(cb)
 				end
 			end
             print("Not applying world gen overrides.")
-            cb( nil )
+            cb( nil, nil )
 		end)
 end
 
@@ -226,12 +230,19 @@ function SaveIndex:StartSurvivalMode(saveslot, customoptions, serverdata, onsave
     slot.world.options = customoptions
     slot.server = {}
 
-    GetWorldgenOverride(function(overrideoptions)
+    GetWorldgenOverride(function(preset, overrideoptions)
+        -- note: Always overrides layer 1, as that's what worldgen will generate
+        if slot.world.options == nil then
+            slot.world.options = {}
+        end
+        if slot.world.options[1] == nil then
+            slot.world.options[1] = {}
+        end
+        if preset then
+            slot.world.options[1].actualpreset = preset
+        end
         if overrideoptions then
-            if slot.world.options == nil then
-                slot.world.options = {}
-            end
-            slot.world.options.tweak = overrideoptions
+            slot.world.options[1].tweak = overrideoptions
         end
 
         self:UpdateServerData(saveslot, serverdata, onsavedcb)

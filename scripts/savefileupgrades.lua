@@ -81,7 +81,6 @@ local t = {
                                 cactus="never"
                             },
                             misc={
-                                cave_entrance="never",
                                 spring="noseason",
                                 world_size="large",
                                 wildfires="never",

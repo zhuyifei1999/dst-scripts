@@ -64,18 +64,7 @@ local ServerCreationScreen = Class(Screen, function(self)
 
     self.dirty = false
 
-    self.saveslot = SaveGameIndex:GetLastUsedSlot()
-    if self.saveslot < 0 or SaveGameIndex:IsSlotEmpty(self.saveslot) then
-        for k = 1, NUM_DST_SAVE_SLOTS do
-            if SaveGameIndex:IsSlotEmpty(k) then
-                self.saveslot = k
-                break
-            end
-        end
-    end
-    if self.saveslot < 0 then
-		self.saveslot = 1 --if we have no empty slots and no last slot used, pick the first slot
-    end
+    self.saveslot = -1
 
     self.nav_bar = self.root:AddChild(TEMPLATES.NavBarWithScreenTitle(STRINGS.UI.SERVERCREATIONSCREEN.HOST_GAME, "tall"))
     --self.load_panel was prev thing
@@ -86,14 +75,13 @@ local ServerCreationScreen = Class(Screen, function(self)
 
     self:RefreshNavButtons()
 
+    self:MakeButtons()
+
     -- Set up all the tabs and the buttons to nav
     self:MakeSettingsTab()
     self:MakeWorldTab()
     self:MakeModsTab()
     self:MakeSnapshotTab()
-
-    self:MakeButtons()
-
     self:MakeBansTab()
 
     self:HideAllTabs()
@@ -124,7 +112,20 @@ local ServerCreationScreen = Class(Screen, function(self)
 
     self:DoFocusHookUps()
 
-    self:OnClickSlot(self.saveslot, true) --This also sets the tab to be server settings when "true" is passed
+    local startingsaveslot = SaveGameIndex:GetLastUsedSlot()
+    if startingsaveslot < 0 or SaveGameIndex:IsSlotEmpty(startingsaveslot) then
+        for k = 1, NUM_DST_SAVE_SLOTS do
+            if SaveGameIndex:IsSlotEmpty(k) then
+                startingsaveslot = k
+                break
+            end
+        end
+    end
+    if startingsaveslot < 0 then
+        startingsaveslot = 1 --if we have no empty slots and no last slot used, pick the first slot
+    end
+
+    self:OnClickSlot(startingsaveslot, true) --This also sets the tab to be server settings when "true" is passed
 end)
 
 function ServerCreationScreen:OnBecomeActive()
@@ -276,10 +277,17 @@ function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOu
 				TheFrontEnd:PushScreen( popup )
 			end
 		else
+            --#TODO gjans qproust -- this is where we will diverge between a hosted game and
+            --spawning a local dedicated server process
+            -- 1) Write a worldgenoverride.lua for each server that contains the settings
+            -- 2) The server browser will need to compose it's worldgen data from the shards, because
+            --    the master server will no longer know the configuration the slaves were created with.
+
 			self.server_settings_tab:SetEditingTextboxes(false)
 
             local serverdata = self.server_settings_tab:GetServerData()
 
+            TheNet:SetDefaultServerIntention(serverdata.intention)
             TheNet:SetDefaultServerName(serverdata.name)
             TheNet:SetDefaultServerPassword(serverdata.password)
             TheNet:SetDefaultServerDescription(serverdata.description)
@@ -485,6 +493,11 @@ function ServerCreationScreen:ValidateSettings()
         TheFrontEnd:PushScreen(PopupDialogScreen(STRINGS.UI.SERVERCREATIONSCREEN.INVALIDCLANSETTINGS_TITLE, STRINGS.UI.SERVERCREATIONSCREEN.INVALIDCLANSETTINGS_BODY,
                     {{text=STRINGS.UI.CUSTOMIZATIONSCREEN.OKAY, cb = function() TheFrontEnd:PopScreen() self:SetTab("settings") end}}))
         return false
+    elseif not self.server_settings_tab:VerifyValidServerIntention() then
+        self.last_focus = TheFrontEnd:GetFocusWidget()
+        TheFrontEnd:PushScreen(PopupDialogScreen(STRINGS.UI.SERVERCREATIONSCREEN.INVALIDINTENTIONSETTINGS_TITLE, STRINGS.UI.SERVERCREATIONSCREEN.INVALIDINTENTIONSETTINGS_BODY,
+                    {{text=STRINGS.UI.CUSTOMIZATIONSCREEN.OKAY, cb = function() TheFrontEnd:PopScreen() self:SetTab("settings") end}}))
+        return false
     end
 
     return true
@@ -681,19 +694,12 @@ function ServerCreationScreen:MakeSettingsTab()
 end
 
 function ServerCreationScreen:MakeWorldTab()
-    local customoptions = {}
-    local editable = true
-    if self.saveslot > 0 and not SaveGameIndex:IsSlotEmpty(self.saveslot) then
-        customoptions = SaveGameIndex:GetSlotGenOptions(self.saveslot)
-        editable = false
-    end
-
-    self.world_tab = self.detail_panel:AddChild(CustomizationTab(Profile, customoptions, editable, self.saveslot, self))
+    self.world_tab = self.detail_panel:AddChild(CustomizationTab(self))
     self.world_tab:SetPosition(-30,-80)
 end
 
 function ServerCreationScreen:MakeModsTab()
-    self.mods_tab = self.detail_panel:AddChild(ModsTab(self.saveslot, self))
+    self.mods_tab = self.detail_panel:AddChild(ModsTab(self))
     self.top_mods_panel = self.detail_panel_frame_parent:AddChild(TopModsPanel(self))
     self.top_mods_panel:SetPosition(300,-30)
     self.top_mods_panel:MoveToBack()
@@ -710,12 +716,12 @@ function ServerCreationScreen:MakeSnapshotTab()
         self:OnClickSlot(self.saveslot)
     end
 
-    self.snapshot_tab = self.detail_panel:AddChild(SnapshotTab(self.saveslot, cb))
+    self.snapshot_tab = self.detail_panel:AddChild(SnapshotTab(cb))
     self.snapshot_tab:SetPosition(-30,-80)
 end
 
 function ServerCreationScreen:MakeBansTab()
-    self.bans_tab = self.detail_panel:AddChild(BanTab(self.saveslot, self))
+    self.bans_tab = self.detail_panel:AddChild(BanTab(self))
     self.bans_tab:SetPosition(-30,-80)
 end
 
@@ -743,8 +749,8 @@ function ServerCreationScreen:MakeButtons()
     --720 total space, divided by 4 for 180 btween each button (might want to turn into a calculation for fiddling/spacing)
     local tab_height = 232
     self.settings_button = self.detail_panel:AddChild(TEMPLATES.TabButton(-502, tab_height, STRINGS.UI.SERVERCREATIONSCREEN.SERVERSETTINGS, function() self:SetTab("settings") end, "small"))
-    self.configure_world_button = self.detail_panel:AddChild(TEMPLATES.TabButton(-323, tab_height, STRINGS.UI.SERVERCREATIONSCREEN.WORLD.." ("..self.world_tab:GetNumberOfTweaks()..")", function() self:SetTab("world") end, "small"))
-    self.mods_button = self.detail_panel:AddChild(TEMPLATES.TabButton(-144, tab_height, STRINGS.UI.MAINSCREEN.MODS.." ("..self.mods_tab:GetNumberOfModsEnabled()..")", function() self:SetTab("mods") end, "small"))
+    self.configure_world_button = self.detail_panel:AddChild(TEMPLATES.TabButton(-323, tab_height, STRINGS.UI.SERVERCREATIONSCREEN.WORLD, function() self:SetTab("world") end, "small"))
+    self.mods_button = self.detail_panel:AddChild(TEMPLATES.TabButton(-144, tab_height, STRINGS.UI.MAINSCREEN.MODS, function() self:SetTab("mods") end, "small"))
     self.snapshot_button = self.detail_panel:AddChild(TEMPLATES.TabButton(35, tab_height, STRINGS.UI.SERVERCREATIONSCREEN.SNAPSHOTS, function() self:SetTab("snapshot") end, "small"))
     self.ban_admin_button = self.detail_panel:AddChild(TEMPLATES.TabButton(214, tab_height, STRINGS.UI.SERVERCREATIONSCREEN.BANS, function() self:SetTab("bans") end, "small"))
 
@@ -780,8 +786,6 @@ function ServerCreationScreen:MakeButtons()
         self.create_button:Hide()
         self.delete_button:Hide()
     end
-    
-    self:UpdateTabs(self.saveslot)
 end
 
 function ServerCreationScreen:DoFocusHookUps()
@@ -804,7 +808,7 @@ function ServerCreationScreen:DoFocusHookUps()
 
         self.save_slots[i]:SetFocusChangeDir(MOVE_RIGHT, function()
             if self.active_tab == "settings" then
-                return self.server_settings_tab.scroll_list
+                return self.server_settings_tab
             elseif self.active_tab == "world" then
                 return self.world_tab.presetspinner
             elseif self.active_tab == "mods" then

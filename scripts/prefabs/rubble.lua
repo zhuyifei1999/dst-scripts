@@ -19,16 +19,17 @@ local prefabs =
 
 local function workcallback(inst, worker, workleft)
     if workleft <= 0 then
-        inst.SoundEmitter:PlaySound("dontstarve/wilson/rock_break")
+        local fx = SpawnPrefab("collapse_small")
+        fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+        fx:SetMaterial("rock")
         inst.components.lootdropper:DropLoot()
-        SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
         inst:Remove()
-    elseif workleft < TUNING.ROCKS_MINE / 3 then
-        inst.AnimState:PlayAnimation("low")
-    elseif workleft < TUNING.ROCKS_MINE * 2 / 3 then
-        inst.AnimState:PlayAnimation("med")
     else
-        inst.AnimState:PlayAnimation("full")
+        inst.AnimState:PlayAnimation(
+            (workleft < TUNING.ROCKS_MINE / 3 and "low") or
+            (workleft < TUNING.ROCKS_MINE * 2 / 3 and "med") or
+            "full"
+        )
     end
 end
 
@@ -47,10 +48,9 @@ local function common_fn(anim)
     inst.AnimState:SetBuild("ruins_rubble")
     inst.AnimState:PlayAnimation(anim)
 
+    inst:AddTag("cavedweller")
+
     --inst.MiniMapEntity:SetIcon("rock.png")
-
-    MakeSnowCoveredPristine(inst)
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -75,11 +75,12 @@ local function common_fn(anim)
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.MINE)
 
-    inst.components.workable:SetOnWorkCallback(workcallback)         
+    inst.components.workable:SetOnWorkCallback(workcallback)
 
     inst:AddComponent("inspectable")
     inst.components.inspectable.nameoverride = "rubble"
-    MakeSnowCovered(inst)
+
+    MakeHauntableWork(inst)
 
     return inst
 end
@@ -91,7 +92,7 @@ local function rubble_fn()
         return inst
     end
 
-    inst.components.workable:SetWorkLeft(TUNING.ROCKS_MINE) 
+    inst.components.workable:SetWorkLeft(TUNING.ROCKS_MINE)
 
     return inst
 end
@@ -103,7 +104,7 @@ local function rubble_med_fn()
         return inst
     end
 
-    inst.components.workable:SetWorkLeft(TUNING.ROCKS_MINE) 
+    inst.components.workable:SetWorkLeft(TUNING.ROCKS_MINE)
     inst.components.workable:WorkedBy(inst, TUNING.ROCKS_MINE * 0.34)
 
     return inst
@@ -116,7 +117,7 @@ local function rubble_low_fn()
         return inst
     end
 
-    inst.components.workable:SetWorkLeft(TUNING.ROCKS_MINE) 
+    inst.components.workable:SetWorkLeft(TUNING.ROCKS_MINE)
     inst.components.workable:WorkedBy(inst, TUNING.ROCKS_MINE * 0.67)
 
     return inst

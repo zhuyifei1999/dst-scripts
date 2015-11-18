@@ -120,15 +120,11 @@ local events=
 }
 
 local function ShakeIfClose(inst)
-	for i, v in ipairs(AllPlayers) do
-		v:ShakeCamera(CAMERASHAKE.FULL, .7, .02, .3, inst, 40)
-	end
+    ShakeAllCameras(CAMERASHAKE.FULL, .7, .02, .3, inst, 40)
 end
 
 local function ShakeIfClose_Footstep(inst)
-	for i, v in ipairs(AllPlayers) do
-		v:ShakeCamera(CAMERASHAKE.FULL, .35, .02, 1.25, inst, 40)
-	end
+    ShakeAllCameras(CAMERASHAKE.FULL, .35, .02, 1.25, inst, 40)
 end
 
 local function DoFootstep(inst)

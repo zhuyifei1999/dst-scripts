@@ -24,7 +24,11 @@ Task = Class(function(self, id, data)
 	self.maze_tiles = data.maze_tiles
 	self.crosslink_factor = data.crosslink_factor
 	self.make_loop = data.make_loop
+    self.room_tags = data.room_tags
 end)
 
+function Task:__tostring()
+    return "Task: "..self.id
+end
 
 

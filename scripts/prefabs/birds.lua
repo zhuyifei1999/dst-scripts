@@ -72,6 +72,7 @@ local function makebird(name, soundname)
         inst.entity:AddDynamicShadow()
         inst.entity:AddSoundEmitter()
         inst.entity:AddNetwork()
+        inst.entity:AddLightWatcher()
 
         --Initialize physics
         inst.Physics:SetCollisionGroup(COLLISION.CHARACTERS)

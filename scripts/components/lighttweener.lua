@@ -23,16 +23,12 @@ local LightTweener = Class(function(self, inst)
 
 	self.tweening = false
 
-	self.inst:ListenForEvent("lighttweener_start", function() self.tweening = true end)
-	self.inst:ListenForEvent("lighttweener_end ", function() self.tweening = false end)
-
 end)
 
 function LightTweener:EndTween()
 	--Set all values to final values
 
 	if not self.light then
-		print("No light set in LightTweener. Stopping from EndTween().")
 		return
 	end
 
@@ -53,7 +49,6 @@ function LightTweener:EndTween()
 	end
 
 	self.inst:StopUpdatingComponent(self)
-	self.inst:PushEvent("lighttweener_end")
 	self.tweening = false
 	
 	if self.callback then
@@ -98,7 +93,7 @@ function LightTweener:StartTween(light, rad, intensity, falloff, colour, time, c
 
 	self.time = time
 	self.timepassed = 0
-	self.inst:PushEvent("lighttweener_start")	
+    self.tweening = true
 
 	if self.time > 0 then
 		self.inst:StartUpdatingComponent(self)

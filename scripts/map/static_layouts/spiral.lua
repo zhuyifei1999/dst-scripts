@@ -94,6 +94,61 @@ return {
           height = 0,
           visible = true,
           properties = {}
+        },
+        {
+          name = "",
+          type = "pillar_ruins",
+          shape = "rectangle",
+          x = 66,
+          y = 65,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "pillar_ruins",
+          shape = "rectangle",
+          x = 576,
+          y = 62,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "pillar_ruins",
+          shape = "rectangle",
+          x = 577,
+          y = 574,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "pillar_ruins",
+          shape = "rectangle",
+          x = 64,
+          y = 576,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "relics",
+          shape = "rectangle",
+          x = 83,
+          y = 85,
+          width = 477,
+          height = 475,
+          visible = true,
+          properties = {}
         }
       }
     }

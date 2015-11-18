@@ -29,6 +29,10 @@ local SEE_TREE_DIST = 15
 local SEE_TARGET_DIST = 20
 local SEE_FOOD_DIST = 10
 
+local SEE_BURNING_HOME_DIST_SQ = 20*20
+
+local COMFORT_LIGHT_LEVEL = 0.3
+
 local KEEP_CHOPPING_DIST = 10
 
 local RUN_AWAY_DIST = 5
@@ -143,11 +147,11 @@ local function FindTreeToChopAction(inst)
 end
 
 local function HasValidHome(inst)
-    return inst.components.homeseeker and 
-       inst.components.homeseeker.home and 
-       not inst.components.homeseeker.home:HasTag("fire") and
-       not inst.components.homeseeker.home:HasTag("burnt") and
-       inst.components.homeseeker.home:IsValid()
+    local home = inst.components.homeseeker ~= nil and inst.components.homeseeker.home or nil
+    return home ~= nil
+        and home:IsValid()
+        and not (home.components.burnable ~= nil and home.components.burnable:IsBurning())
+        and not home:HasTag("burnt")
 end
 
 local function GoHomeAction(inst)
@@ -173,6 +177,22 @@ local function GetNoLeaderHomePos(inst)
     return GetHomePos(inst)
 end
 
+local function GetNearestLightPos(inst)
+    local light = GetClosestInstWithTag("lightsource", inst, SEE_LIGHT_DIST)
+    if light then
+        return Vector3(light.Transform:GetWorldPosition())
+    end
+    return nil
+end
+
+local function GetNearestLightRadius(inst)
+    local light = GetClosestInstWithTag("lightsource", inst, SEE_LIGHT_DIST)
+    if light then
+        return light.Light:GetCalculatedRadius()
+    end
+    return 1
+end
+
 local function RescueLeaderAction(inst)
     return BufferedAction(inst, GetLeader(inst), ACTIONS.UNPIN)
 end
@@ -184,6 +204,23 @@ end
 local function KeepFaceTargetFn(inst, target)
     return inst.components.follower.leader == target
 end
+
+local function SafeLightDist(inst, target)
+    return (target:HasTag("player") or target:HasTag("playerlight")
+            or (target.inventoryitem and target.inventoryitem:GetGrandOwner() and target.inventoryitem:GetGrandOwner():HasTag("player")))
+        and 4
+        or target.Light:GetCalculatedRadius() / 3
+end
+
+local function IsHomeOnFire(inst)
+    return inst.components.homeseeker
+        and inst.components.homeseeker.home
+        and inst.components.homeseeker.home.components.burnable
+        and inst.components.homeseeker.home.components.burnable:IsBurning()
+        and inst:GetDistanceSqToInst(inst.components.homeseeker.home) < SEE_BURNING_HOME_DIST_SQ
+end
+
+
 
 local PigBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
@@ -224,9 +261,18 @@ function PigBrain:OnStart()
                 DoAction(self.inst, FindFoodAction )),
             RunAway(self.inst, "player", START_RUN_DIST, STOP_RUN_DIST, function(target) return ShouldRunAway(self.inst, target) end ),
             ChattyNode(self.inst, STRINGS.PIG_TALK_GO_HOME,
-                DoAction(self.inst, GoHomeAction, "go home", true )),
+                WhileNode( function() return not TheWorld.state.iscaveday or not self.inst.LightWatcher:IsInLight() end, "Cave nightness",
+                    DoAction(self.inst, GoHomeAction, "go home", true ))),
+            WhileNode(function() return TheWorld.state.isnight and self.inst.LightWatcher:GetLightValue() > COMFORT_LIGHT_LEVEL end, "IsInLight", -- wants slightly brighter light for this
+                Wander(self.inst, GetNearestLightPos, GetNearestLightRadius, {
+                    minwalktime = 0.6,
+                    randwalktime = 0.2,
+                    minwaittime = 5,
+                    randwaittime = 5
+                })
+            ),
             ChattyNode(self.inst, STRINGS.PIG_TALK_FIND_LIGHT,
-                FindLight(self.inst)),
+                FindLight(self.inst, SEE_LIGHT_DIST, SafeLightDist)),
             ChattyNode(self.inst, STRINGS.PIG_TALK_PANIC,
                 Panic(self.inst)),
         },1)
@@ -250,6 +296,9 @@ function PigBrain:OnStart()
             ChattyNode(self.inst, STRINGS.PIG_TALK_FIGHT,
                 WhileNode( function() return self.inst.components.combat.target and self.inst.components.combat:InCooldown() end, "Dodge",
                     RunAway(self.inst, function() return self.inst.components.combat.target end, RUN_AWAY_DIST, STOP_RUN_AWAY_DIST) )),
+            WhileNode(function() return IsHomeOnFire(self.inst) end, "OnFire",
+				ChattyNode(self.inst, STRINGS.PIG_TALK_PANICHOUSEFIRE,
+					Panic(self.inst))),
             RunAway(self.inst, function(guy) return guy:HasTag("pig") and guy.components.combat and guy.components.combat.target == self.inst end, RUN_AWAY_DIST, STOP_RUN_AWAY_DIST ),
             ChattyNode(self.inst, STRINGS.PIG_TALK_ATTEMPT_TRADE,
                 FaceEntity(self.inst, GetTraderFn, KeepTraderFn)),            

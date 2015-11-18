@@ -10,17 +10,23 @@ local assets =
 
 local prefabs =
 {
-    "lavaspit",
-    "dragon_scales",
     "firesplash_fx",
     "tauntfire_fx",
     "attackfire_fx",
     "vomitfire_fx",
     "firering_fx",
-    "collapse_small",
-    "scorchedground",
-    "lava_pond",
-    "scorched_skeleton",
+
+    --loot:
+    "dragon_scales",
+    "lavae_egg",
+    "meat",
+    "goldnugget",
+    "redgem",
+    "bluegem",
+    "purplegem",
+    "orangegem",
+    "yellowgem",
+    "greengem",
 }
 
 SetSharedLootTable( 'dragonfly',

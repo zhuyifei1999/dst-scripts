@@ -13,6 +13,7 @@ local assets =
     Asset("ANIM", "anim/clock_transitions.zip"),
     Asset("ANIM", "anim/moon_phases_clock.zip"),
     Asset("ANIM", "anim/moon_phases.zip"),
+    Asset("ANIM", "anim/cave_clock.zip"),
 
     Asset("ANIM", "anim/ui_chest_3x3.zip"),
     Asset("ANIM", "anim/ui_backpack_2x4.zip"),

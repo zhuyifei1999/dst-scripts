@@ -30,6 +30,7 @@ local function fn()
     inst.AnimState:SetBuild("rocks")
 
     inst:AddTag("molebait")
+    inst:AddTag("quakedebris")
 
     inst.entity:SetPristine()
 

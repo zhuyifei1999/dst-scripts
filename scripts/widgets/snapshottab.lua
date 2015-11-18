@@ -6,7 +6,7 @@ local UIAnim = require "widgets/uianim"
 
 local ScrollableList = require "widgets/scrollablelist"
 
-local SnapshotTab = Class(Widget, function(self, save_slot, cb)
+local SnapshotTab = Class(Widget, function(self, cb)
     Widget._ctor(self, "SnapshotTab")
   
     self.snapshot_page = self:AddChild(Widget("snapshot_page"))
@@ -15,11 +15,8 @@ local SnapshotTab = Class(Widget, function(self, save_slot, cb)
     self.left_line:SetScale(1, .6)
     self.left_line:SetPosition(-530, 5, 0)
 
-    self.save_slot = save_slot
+    self.save_slot = -1
     self.cb = cb
-    
-    self.session_id = SaveGameIndex:GetSlotSession(save_slot)
-    self.online_mode = SaveGameIndex:GetSlotServerData(save_slot).online_mode ~= false
     
     self.snapshots = nil
     self.slotsnaps = {}

@@ -22,13 +22,27 @@ SetSharedLootTable('nightmare_creature',
 })
 
 local function CanShareTargetWith(dude)
-    return dude:HasTag("shadowcreature") and not dude.components.health:IsDead()
+    return dude:HasTag("nightmarecreature") and not dude.components.health:IsDead()
 end
 
 local function OnAttacked(inst, data)
     if data.attacker ~= nil then
         inst.components.combat:SetTarget(data.attacker)
         inst.components.combat:ShareTarget(data.attacker, 30, CanShareTargetWith, 1)
+    end
+end
+
+local function ScheduleCleanup(inst)
+    inst:DoTaskInTime(math.random() * TUNING.NIGHTMARE_SEGS.DAWN * TUNING.SEG_TIME, function()
+        inst.components.lootdropper:SetLoot({})
+        inst.components.lootdropper:SetChanceLootTable(nil)
+        inst.components.health:Kill()
+    end)
+end
+
+local function OnNightmareDawn(inst, dawn)
+    if dawn then
+        ScheduleCleanup(inst)
     end
 end
 
@@ -72,7 +86,7 @@ local function MakeShadowCreature(data)
         inst.AnimState:PlayAnimation("idle_loop")
         inst.AnimState:SetMultColour(1, 1, 1, 0.5)
 
-        inst:AddTag("shadowcreature")
+        inst:AddTag("nightmarecreature")
         inst:AddTag("monster")
         inst:AddTag("hostile")
         inst:AddTag("shadow")
@@ -106,23 +120,8 @@ local function MakeShadowCreature(data)
         inst.components.lootdropper:SetChanceLootTable('nightmare_creature')
 
         inst:ListenForEvent("attacked", OnAttacked)
-        -- if GetNightmareClock() then
-        --     inst:ListenForEvent( "phasechange", 
-        --                         function (source,data)
-        --                             dprint("phase:",data.newphase)
-        --                             if data.newphase == "dawn" then
-        --                                 local dawntime = GetNightmareClock():GetDawnTime()
-        --                                 inst:DoTaskInTime(GetRandomWithVariance(dawntime/2,dawntime/3),
-        --                                                     function()
-        --                                                         -- otherwise we end up with a lot of piles of nightmareful
-        --                                                         inst.components.lootdropper:SetLoot({})
-        --                                                         inst.sg:GoToState("disappear")
-        --                                                     end)
-        --                             end
-        --                         end,
-        --                         TheWorld)
 
-        -- end
+        inst:WatchWorldState("isnightmaredawn", OnNightmareDawn)
 
         inst:AddComponent("knownlocations")
 

@@ -5,73 +5,55 @@ local assets =
 
 local states =
 {
-    calm = function(inst)
-        inst.AnimState:PlayAnimation("idle_1")
-        inst.components.inventoryitem:ChangeImageName("nightmare_timepiece")        
-    end,
-
-    warn = function(inst)
-        inst.AnimState:PlayAnimation("idle_3")
-        inst.components.inventoryitem:ChangeImageName("nightmare_timepiece_nightmare")
-    end,
-
-    nightmare = function(inst)
-        inst.AnimState:PlayAnimation("idle_3")
-        inst.components.inventoryitem:ChangeImageName("nightmare_timepiece_nightmare")    
-    end,
-
-    dawn = function(inst)
-        inst.AnimState:PlayAnimation("idle_1")
-        inst.components.inventoryitem:ChangeImageName("nightmare_timepiece")    
-    end,
+    calm = {
+        anim = "idle_1",
+        inventory = "nightmare_timepiece",
+    },
+    warn = {
+        anim = "idle_2",
+        inventory = "nightmare_timepiece_warn",
+    },
+    wild = {
+        anim = "idle_3",
+        inventory = "nightmare_timepiece_nightmare",
+    },
+    dawn = {
+        anim = "idle_1",
+        inventory = "nightmare_timepiece",
+    },
 }
 
 local function GetStatus(inst)
-    --[[local nclock = GetNightmareClock()
-    if nclock then
-        if nclock:IsNightmare() then
-            local percent = nclock:GetNormEraTime()
-            if percent < 0.33 then
-                return "WAXING"
-                --Phase just started.
-            elseif percent >= 0.33 and percent < 0.66 then
-                return "STEADY"
-                --Phase in middle.
-            else
-                return "WANING"
-                --Phase ending soon.
-            end
-        elseif nclock:IsWarn() then
-            return "WARN"
-        elseif nclock:IsCalm() then
-            return "CALM"
+    if TheWorld.state.isnightmarewild then
+        local percent = TheWorld.state.nightmaretimeinphase
+        if percent < 0.33 then
+            return "WAXING"
+            --Phase just started.
+        elseif percent >= 0.33 and percent < 0.66 then
+            return "STEADY"
+            --Phase in middle.
         else
-            return "DAWN"
+            return "WANING"
+            --Phase ending soon.
         end
-    end]]
+    elseif TheWorld.state.isnightmarewarn then
+        return "WARN"
+    elseif TheWorld.state.isnightmarecalm then
+        return "CALM"
+    elseif TheWorld.state.isnightmaredawn then
+        return "DAWN"
+    end
 
     return "NOMAGIC"
 end
 
-local function phasechange(inst, data)
-    local statefn = states[data.newphase]
-
-    if statefn then
-        inst.timestate = data.newphase
-        inst:DoTaskInTime(math.random() * 2, statefn)
-    end
-end
-
-local function onsave(inst, data)
-    if inst.timestate then
-        data.timestate = inst.timestate
-    end
-end
-
-local function onload(inst, data)
-    if data and data.timestate then
-        inst.timestate = data.timestate
-        states[inst.timestate](inst, true)
+local function OnPhaseChanged(inst, phase)
+    if states[phase] then
+        inst.AnimState:PlayAnimation(states[phase].anim)
+        inst.components.inventoryitem:ChangeImageName(states[phase].inventory)
+    else
+        inst.AnimState:PlayAnimation(states["calm"].anim)
+        inst.components.inventoryitem:ChangeImageName(states["calm"].inventory)
     end
 end
 
@@ -101,13 +83,10 @@ local function fn()
 
     MakeHauntableLaunch(inst)
 
-    --[[if GetNightmareClock() then
-        inst:ListenForEvent("phasechange", function(world, data) phasechange(inst, data) end, TheWorld)
-        phasechange(inst, {newphase = GetNightmareClock():GetPhase()})
-    end]]
-
-    inst.OnSave = onsave
-    inst.OnLoad = onload
+    inst:WatchWorldState("nightmarephase", OnPhaseChanged)
+    inst:DoTaskInTime(0, function()
+        OnPhaseChanged(inst, TheWorld.state.nightmarephase)
+    end)
 
     return inst
 end

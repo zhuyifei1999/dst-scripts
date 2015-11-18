@@ -59,11 +59,11 @@ function ForceAuthenticationDialog()
 	if not InGamePlay() then
 		local active_screen = TheFrontEnd:GetActiveScreen()
 		if active_screen ~= nil and active_screen.name == "MainScreen" then
-			active_screen:OnLoginButton(true)
+			active_screen:OnLoginButton(false)
 		elseif MainScreen then
 			local main_screen = MainScreen(Profile)
 			TheFrontEnd:ShowScreen( main_screen )
-			main_screen:OnLoginButton(true)
+			main_screen:OnLoginButton(false)
 		end
 	end
 end
@@ -234,10 +234,11 @@ POPULATING = false
 local function PopulateWorld(savedata, profile)
     POPULATING = true
     TheSystemService:SetStalling(true)
-	Print(VERBOSITY.DEBUG, "PopulateWorld")
- 	Print(VERBOSITY.DEBUG,  "[Instantiating objects...]" )
+    Print(VERBOSITY.DEBUG, "PopulateWorld")
+    Print(VERBOSITY.DEBUG, "[Instantiating objects...]")
     if savedata ~= nil then
-		local world = SpawnPrefab(savedata.map.prefab)
+        local world = SpawnPrefab(savedata.map.prefab)
+        world.worldprefab = savedata.map.prefab
         assert(TheWorld == world)
         assert(ThePlayer == nil)
 
@@ -312,13 +313,6 @@ local function PopulateWorld(savedata, profile)
                     end
                 end
             end
-        end     
-
-        if world.topology.level_number ~= nil then
-            local levels = require("map/levels")
-            if levels.story_levels[world.topology.level_number] ~= nil then
-                profile:UnlockWorldGen("preset", levels.story_levels[world.topology.level_number].name)
-            end
         end
 
         if world.topology.level_number == 2 and world:HasTag("cave") then
@@ -363,7 +357,8 @@ local function PopulateWorld(savedata, profile)
         end
 
         if world.ismastersim then
-            SpawnPrefab("world_network")
+            SpawnPrefab(savedata.map.prefab.."_network")
+            SpawnPrefab("shard_network")
 
             if savedata.world_network ~= nil and savedata.world_network.persistdata ~= nil then
                 world.net:SetPersistData(savedata.world_network.persistdata)
@@ -638,7 +633,7 @@ local function DoInitGame(savedata, profile)
 
     PopulateWorld(savedata, profile)
 
-    if Profile.persistdata.debug_world  == 1 then
+    if true --[[ Profile.persistdata.debug_world  == 1]] then
     	if savedata.map.topology == nil then
     		Print(VERBOSITY.ERROR, "OI! Where is my topology info!")
     	else
@@ -695,22 +690,6 @@ local function DoInitGame(savedata, profile)
 
 	    if savedata.map.hideminimap ~= nil then
 	        TheWorld.minimap:DoTaskInTime(0, function(inst) inst.MiniMap:ContinuouslyClearRevealedAreas(savedata.map.hideminimap) end)
-	    end
-	    if savedata.map.teleportaction ~= nil then
-	        local teleportato = TheSim:FindFirstEntityWithTag("teleportato")
-	        if teleportato then
-	        	local pickPosition = function() 
-	        		local portpositions = GetRandomInstWithTag("teleportlocation", teleportato, 1000)
-	        		if portpositions then
-	        			return Vector3(portpositions.Transform:GetWorldPosition())
-	        		else
-	        			return Vector3(savedata.playerinfo.x, savedata.playerinfo.y or 0, savedata.playerinfo.z)
-	        		end
-	        	end
-	            teleportato.action = savedata.map.teleportaction
-	            teleportato.maxwell = savedata.map.teleportmaxwell
-	            teleportato.teleportpos = pickPosition()
-	        end
 	    end
 	end
 
@@ -883,7 +862,12 @@ local function DoResetAction()
 			if MainScreen then
 				TheFrontEnd:ShowScreen(MainScreen(Profile))
 			end
-		end
+		elseif Settings.reset_action == RESET_ACTION.JOIN_SERVER then
+            local start_worked = TheNet:StartClient( Settings.serverIp, Settings.serverPort, nil, Settings.serverPassword, Settings.serverNetId )
+            if not start_worked then
+                OnNetworkDisconnect("ID_DST_USER_CONNECTION_FAILED", true)
+            end
+        end
 	else
 		if PRINT_TEXTURE_INFO then
 			SaveGameIndex:DeleteSlot(1,
@@ -900,9 +884,7 @@ local function DoResetAction()
 			end
 		end
 	end
-	
 end
-
 
 local function OnUpdatePurchaseStateComplete()
 	print("OnUpdatePurchaseStateComplete")

@@ -59,8 +59,8 @@ local _realcolour = {
     lerpfromcolour = Point(),
     lerptocolour = Point(),
     currentcolourset = NORMAL_COLOURS,
-    currentcolour = _iscave and Point(CAVE_COLOUR.colour:Get()) or Point(NORMAL_COLOURS.PHASE_COLOURS.default.day.colour:Get()),
-    currentoverridecolour = _iscave and Point(CAVE_COLOUR.colour:Get()) or Point(NORMAL_COLOURS.PHASE_COLOURS.default.day.colour:Get()),
+    currentcolour = _iscave and Point(NORMAL_COLOURS.CAVE_COLOUR.colour:Get()) or Point(NORMAL_COLOURS.PHASE_COLOURS.default.day.colour:Get()),
+    currentoverridecolour = _iscave and Point(NORMAL_COLOURS.CAVE_COLOUR.colour:Get()) or Point(NORMAL_COLOURS.PHASE_COLOURS.default.day.colour:Get()),
     lightpercent = 1,
 }
 local _overridecolour = {
@@ -69,8 +69,8 @@ local _overridecolour = {
     lerpfromcolour = Point(),
     lerptocolour = Point(),
     currentcolourset = NORMAL_COLOURS,
-    currentcolour = _iscave and Point(CAVE_COLOUR.colour:Get()) or Point(NORMAL_COLOURS.PHASE_COLOURS.default.day.colour:Get()),
-    currentoverridecolour = _iscave and Point(CAVE_COLOUR.colour:Get()) or Point(NORMAL_COLOURS.PHASE_COLOURS.default.day.colour:Get()),
+    currentcolour = _iscave and Point(NORMAL_COLOURS.CAVE_COLOUR.colour:Get()) or Point(NORMAL_COLOURS.PHASE_COLOURS.default.day.colour:Get()),
+    currentoverridecolour = _iscave and Point(NORMAL_COLOURS.CAVE_COLOUR.colour:Get()) or Point(NORMAL_COLOURS.PHASE_COLOURS.default.day.colour:Get()),
     lightpercent = 1,
 }
 local _flash = false

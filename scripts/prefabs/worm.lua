@@ -1,5 +1,5 @@
 --[[
-    The worm should wander around looking for fights until it finds a "home".    
+    The worm should wander around looking for fights until it finds a "home".
     A good home will look like a place with multiple other items that have the pickable
     component so the worm can set up a lure nearby.
 
@@ -26,6 +26,51 @@ local prefabs =
 
 local brain = require"brains/wormbrain"
 
+local MAX_LIGHT_FRAME = 20
+
+local function OnUpdateLight(inst, dframes)
+    local done
+    if inst._islighton:value() then
+        local frame = inst._lightframe:value() + dframes
+        done = frame >= MAX_LIGHT_FRAME
+        inst._lightframe:set_local(done and MAX_LIGHT_FRAME or frame)
+    else
+        local frame = inst._lightframe:value() - dframes
+        done = frame <= 0
+        inst._lightframe:set_local(done and 0 or frame)
+    end
+
+    inst.Light:SetRadius(1.5 * inst._lightframe:value() / MAX_LIGHT_FRAME)
+
+    if TheWorld.ismastersim then
+        inst.Light:Enable(inst._lightframe:value() > 0)
+    end
+
+    if done then
+        inst._lighttask:Cancel()
+        inst._lighttask = nil
+    end
+end
+
+local function OnLightDirty(inst)
+    if inst._lighttask == nil then
+        inst._lighttask = inst:DoPeriodicTask(FRAMES, OnUpdateLight, nil, 1)
+    end
+    OnUpdateLight(inst, 0)
+end
+
+local function turnonlight(inst)
+    inst._islighton:set(true)
+    inst._lightframe:set(inst._lightframe:value())
+    OnLightDirty(inst)
+end
+
+local function turnofflight(inst)
+    inst._islighton:set(false)
+    inst._lightframe:set(inst._lightframe:value())
+    OnLightDirty(inst)
+end
+
 local function retargetfn(inst)
 
     --Don't search for targets when you're luring. Targets will come to you.
@@ -33,7 +78,7 @@ local function retargetfn(inst)
         return
     end
 
-    return FindEntity(inst, TUNING.WORM_TARGET_DIST, function(guy) 
+    return FindEntity(inst, TUNING.WORM_TARGET_DIST, function(guy)
         if guy.components.health and not guy.components.health:IsDead() then
             return not (guy.prefab == inst.prefab)
         end
@@ -83,30 +128,20 @@ local function displaynamefn(inst)
         (inst:HasTag("dirt") and "WORM_DIRT" or "WORM")]
 end
 
+local function getstatus(inst)
+    return (inst:HasTag("lure") and "PLANT") or
+            (inst:HasTag("dirt") and "DIRT") or
+            "WORM"
+end
+
 local function areaislush(pos)
-    local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, 7)
-    local num_plants = 0
-    for k, v in pairs(ents) do
-        if v.components.pickable ~= nil then
-            if num_plants < 2 then
-                num_plants = num_plants + 1
-            else
-                --return true once we have found at least 3 plants
-                return true
-            end
-        end
-    end
-    return false
+    local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, 7, {"pickable"})
+    return #ents >= 3
 end
 
 local function notclaimed(inst, pos)
-    local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, 30)
-    for k, v in pairs(ents) do
-        if v ~= inst and v.prefab == inst.prefab then
-            return false
-        end
-    end
-    return true
+    local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, 30, {"worm"})
+    return #ents <= 1 --(This will always find yourself)
 end
 
 local function LookForHome(inst)
@@ -161,6 +196,28 @@ local function onattacked(inst, data)
     end
 end
 
+local function CustomOnHaunt(inst, haunter)
+    if inst:HasTag("lure") then
+        if math.random() < TUNING.HAUNT_CHANCE_ALWAYS then
+            inst.sg:GoToState("lure_exit")
+            return true
+        end
+    else
+        if inst.components.sleeper then -- Wake up, there's a ghost!
+            inst.components.sleeper:WakeUp()
+        end
+
+        local chance = TUNING.HAUNT_CHANCE_ALWAYS
+        if math.random() <= chance then
+            inst.components.hauntable.panic = true
+            inst.components.hauntable.panictimer = TUNING.HAUNT_PANIC_TIME_SMALL
+            inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
+            return true
+        end
+    end
+    return false
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -176,17 +233,32 @@ local function fn()
 
     inst.AnimState:SetBank("worm")
     inst.AnimState:SetBuild("worm")
-    inst.AnimState:PlayAnimation("idle_loop")
+    inst.AnimState:PlayAnimation("idle_loop", true)
 
     inst:AddTag("monster")
     inst:AddTag("hostile")
     inst:AddTag("wet")
+    inst:AddTag("worm")
+    inst:AddTag("cavedweller")
+
+    inst.Light:SetRadius(0)
+    inst.Light:SetIntensity(.8)
+    inst.Light:SetFalloff(.5)
+    inst.Light:SetColour(1, 1, 1)
+    inst.Light:Enable(false)
+    inst.Light:EnableClientModulation(true)
+
+    inst._lightframe = net_smallbyte(inst.GUID, "worm._lightframe", "lightdirty")
+    inst._islighton = net_bool(inst.GUID, "worm._islighton", "lightdirty")
+    inst._lighttask = nil
 
     inst.displaynamefn = displaynamefn  --Handles the changing names.
 
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
+        inst:ListenForEvent("lightdirty", OnLightDirty)
+
         return inst
     end
 
@@ -221,12 +293,13 @@ local function fn()
     inst.components.playerprox:SetOnPlayerNear(playernear)
     inst.components.playerprox:SetOnPlayerFar(playerfar)
 
-    inst:AddComponent("lighttweener")
-    inst.components.lighttweener:StartTween(inst.Light, 0, 0.8, 0.5, {1,1,1}, 0, function(inst, light) if light then light:Enable(false) end end)
-
     inst:AddComponent("knownlocations")
+
     inst:AddComponent("inventory")
+
     inst:AddComponent("inspectable")
+    inst.components.inspectable.getstatus = getstatus
+
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetLoot({"monstermeat", "monstermeat", "monstermeat", "monstermeat", "wormlight"})
 
@@ -234,6 +307,11 @@ local function fn()
     inst.HomeTask = inst:DoPeriodicTask(3, LookForHome)
     inst.lastluretime = 0
     inst:ListenForEvent("attacked", onattacked)
+
+    AddHauntableCustomReaction(inst, CustomOnHaunt)
+
+    inst.turnonlight = turnonlight
+    inst.turnofflight = turnofflight
 
     inst:SetStateGraph("SGworm")
     inst:SetBrain(brain)

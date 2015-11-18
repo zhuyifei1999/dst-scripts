@@ -123,8 +123,10 @@ function c_reset(save)
     end
 end
 
--- Permanently delete the game world, rengerates a new world afterwords
-function c_regenerateworld()
+-- Permanently delete the game world, regenerates a new world afterwards
+-- NOTE: It is not recommended to use this instead of c_regenerateworld,
+--       unless you need to regenerate only one shard in a cluster
+function c_regenerateshard()
     if TheWorld ~= nil and TheWorld.ismastersim then
         SaveGameIndex:DeleteSlot(
             SaveGameIndex:GetCurrentSaveSlot(),
@@ -133,6 +135,14 @@ function c_regenerateworld()
         )
     end
 end 
+
+-- Permanently delete all game worlds in a server cluster, regenerates new worlds afterwards
+-- NOTE: This will not work properly for any shard that is offline or in a loading state
+function c_regenerateworld()
+    if TheWorld ~= nil and TheWorld.ismastersim then
+        TheNet:SendWorldResetRequestToServer()
+    end
+end
 
 -- Remotely execute a lua string
 function c_remote( fnstr )
@@ -143,7 +153,12 @@ end
 -- c_despawn helper
 local function dodespawn(player)
     if TheWorld ~= nil and TheWorld.ismastersim then
-        TheNet:Announce(player:GetDisplayName().." "..STRINGS.UI.NOTIFICATION.LEFTGAME, player.entity, true)
+        --V2C: #spawn #despawn
+        --     This was where we used to announce player left.
+        --     Now we announce it when you actually disconnect
+        --     but not during a shard migration disconnection.
+        --TheNet:Announce(player:GetDisplayName().." "..STRINGS.UI.NOTIFICATION.LEFTGAME, player.entity, true, "leave_game")
+
         --Delete must happen when the player is actually removed
         --This is currently handled in playerspawner listening to ms_playerdespawnanddelete
         TheWorld:PushEvent("ms_playerdespawnanddelete", player)
@@ -191,7 +206,9 @@ function c_select(inst)
     if not inst then
         inst = ConsoleWorldEntityUnderMouse()
     end
-    return SetDebugEntity(inst)
+    print("Selected "..tostring(inst or "<nil>") )
+    SetDebugEntity(inst)
+    return inst
 end
 
 -- Print the (visual) tile under the cursor
@@ -409,41 +426,99 @@ function c_listtag(tag)
     end
 end
 
-local lastfound = -1
-function c_findnext(prefab, radius, inst)
+local lastroom = -1
+function c_gotoroom(roomname, inst)
     inst = inst or ConsoleCommandPlayer()
-    radius = radius or 9001
+
+    local found = nil
+    local foundid = nil
+    local reallowest = nil
+    local reallowestid = nil
+    local count = 0
+
+    print("Finding room containing",roomname)
+
+    roomname = string.lower(roomname)
+
+    for i, node in ipairs(TheWorld.topology.nodes) do
+        if string.lower(TheWorld.topology.ids[i]):find(roomname) then
+            if reallowest == nil then
+                reallowest = node
+                reallowestid = i
+            end
+            count = count + 1
+            if i > lastroom then
+                found = node
+                foundid = i
+                break
+            end
+        end
+    end
+
+    if found == nil and reallowest ~= nil then
+        found = reallowest
+        foundid = reallowestid
+    end
+
+    if found ~= nil then
+        print("Going to ", TheWorld.topology.ids[foundid], "("..count..")")
+        c_teleport(found.cent[1],0,found.cent[2],inst)
+        lastroom = foundid
+    else
+        print("Couldn't find a matching room.")
+    end
+end
+
+local lastfound = -1
+local lastprefab = nil
+function c_findnext(prefab, radius, inst)
+    inst = inst or ConsoleCommandPlayer() or TheWorld
+    prefab = prefab or lastprefab
+    lastprefab = prefab
 
     local trans = inst.Transform
     local found = nil
     local foundlowestid = nil
     local reallowest = nil
     local reallowestid = nil
+    local reallowestidx = -1
 
     print("Finding a ",prefab)
 
     local x,y,z = trans:GetWorldPosition()
-    local ents = TheSim:FindEntities(x,y,z, radius)
+    local ents = {}
+    if radius == nil then
+        ents = Ents
+    else
+        -- note: this excludes CLASSIFIED
+        ents = TheSim:FindEntities(x,y,z, radius)
+    end
+    local total = 0
+    local idx = -1
     for k,v in pairs(ents) do
         if v ~= inst and v.prefab == prefab then
-            print(v.GUID,lastfound,foundlowestid )
+            total = total+1
             if v.GUID > lastfound and (foundlowestid == nil or v.GUID < foundlowestid) then
+                idx = total
                 found = v
                 foundlowestid = v.GUID
             end
             if not reallowestid or v.GUID < reallowestid then
                 reallowest = v
                 reallowestid = v.GUID
+                reallowestidx = total
             end
         end
     end
     if not found then
         found = reallowest
+        idx = reallowestidx
     end
     if not found then
         print("Could not find any objects matching '"..prefab.."'.")
         lastfound = -1
     else
+        print(string.format("Found %s (%d/%d)", found.GUID, idx, total ))
         lastfound = found.GUID
     end
     return found
@@ -582,11 +657,13 @@ function c_counttagged(tag, noprint)
 end
 
 function c_countallprefabs()
+    local total = 0
     local counted = {}
     for k,v in pairs(Ents) do
         if v.prefab and not table.findfield(counted, v.prefab) then 
             local num = c_countprefabs(v.prefab, true)
             counted[v.prefab] = num
+            total = total + num
         end
     end
 
@@ -608,7 +685,7 @@ function c_countallprefabs()
         print(k, v)
     end
 
-    print("There are ", GetTableSize(counted), " different prefabs in the world.")
+    print("There are ", GetTableSize(counted), " different prefabs in the world, ", total, " in total.")
 end
 
 function c_speedmult(multiplier)
@@ -659,7 +736,7 @@ function c_combatgear()
     give("spear")
 end
 
-function c_combatsimulator(prefab, count)
+function c_combatsimulator(prefab, count, force)
     count = count or 1
 
     local x,y,z = ConsoleWorldPosition():Get()
@@ -670,6 +747,18 @@ function c_combatsimulator(prefab, count)
         creature.Transform:SetPosition(x,y,z)
         if creature.components.knownlocations then
             creature.components.knownlocations:RememberLocation("home", {x=x,y=y,z=z})
+        end
+        if force then
+            local target = FindEntity(creature, 20, nil, {"_combat"})
+            if target then
+                creature.components.combat:SetTarget(target)
+            end
+            creature:ListenForEvent("droppedtarget", function()
+                local target = FindEntity(creature, 20, nil, {"_combat"})
+                if target then
+                    creature.components.combat:SetTarget(target)
+                end
+            end)
         end
     end
 
@@ -694,9 +783,13 @@ end
 function c_dumpworldstate()
     print("")
     print("//======================== DUMPING WORLD STATE ========================\\\\")
-    TheWorld.components.worldstate:Dump()
+    print("\n"..TheWorld.components.worldstate:Dump())
     print("\\\\=====================================================================//")
     print("")
+end
+
+function c_worldstatedebug()
+    WORLDSTATEDEBUG_ENABLED = not WORLDSTATEDEBUG_ENABLED
 end
 
 function c_makeinvisible()
@@ -706,8 +799,28 @@ function c_makeinvisible()
 end
 
 function c_selectnext(name)
-    c_select(c_findnext(name))
+    return c_select(c_findnext(name))
 end
+
+function c_selectnear(prefab, rad)
+    local player = ConsoleCommandPlayer()
+    local x,y,z = player.Transform:GetWorldPosition()
+    local ents = TheSim:FindEntities(x,y,z, rad or 30)
+    local closest = nil
+    local closeness = nil
+    for k,v in pairs(ents) do
+        if v.prefab == prefab then
+            if closest == nil or player:GetDistanceSqToInst(v) < closeness then
+                closest = v
+                closeness = player:GetDistanceSqToInst(v)
+            end
+        end
+    end
+    if closest then
+        c_select(closest)
+    end
+end
+
 
 function c_summondeerclops()
     local player = ConsoleCommandPlayer()
@@ -778,7 +891,7 @@ function c_searchprefabs(str)
         print("Found no prefabs matching "..str)
     elseif #res == 1 then
         print("Found a prefab called "..res[1].name)
-        return res[1]
+        return res[1].name
     else
         print("Found "..tostring(#res).." matches:")
         for i,v in ipairs(res) do
@@ -863,15 +976,17 @@ function c_cancelmaintaintasks(player)
 end
 
 function c_removeallwithtags(...)
-        
+    local count = 0
     for k,ent in pairs(Ents) do
         for i,tag in ipairs(arg) do
             if ent:HasTag(tag) then
                 ent:Remove()
+                count = count + 1
                 break
             end
         end
     end
+    print("removed",count)
 end
 
 function c_netstats()
@@ -881,6 +996,17 @@ function c_netstats()
     for k,v in pairs(stats) do
         print(k.." -> "..tostring(v))
     end
+end
+
+function c_removeall(name)
+    local count = 0
+    for k,ent in pairs(Ents) do
+        if ent.prefab == name then
+            ent:Remove()
+            count = count + 1
+        end
+    end
+    print("removed",count)
 end
 
 function c_forcecrash(unique)
@@ -893,5 +1019,102 @@ function c_forcecrash(unique)
         TheWorld:DoTaskInTime(0,function() _G[path].b = 0 end)
     elseif TheFrontEnd then
         TheFrontEnd.screenroot.inst:DoTaskInTime(0,function() _G[path].b = 0 end)
+    end
+end
+
+function c_migrationportal(worldId, portalId)
+    local inst = c_spawn("migration_portal")
+    if portalId then
+        inst.components.worldmigrator:SetRecievedPortal( worldId, portalId )
+    else
+        inst.components.worldmigrator:SetDestinationWorld( worldId )
+    end
+end
+
+function c_goadventuring()
+	c_give("torch", 2)
+	c_give("minerhat")
+	c_give("axe")
+	c_give("pickaxe")
+	c_give("footballhat")
+	c_give("armorwood")
+	c_give("spear")
+end
+
+function c_sounddebug()
+    if not package.loaded["debugsounds"] then
+        require "debugsounds"
+    end
+    SOUNDDEBUG_ENABLED = true
+    TheSim:SetDebugRenderEnabled(true)
+end
+
+function c_migrateto(worldId, portalId)
+    portalId = portalId or 1
+    TheWorld:PushEvent(
+        "ms_playerdespawnandmigrate",
+        { player = ConsoleCommandPlayer(), portalid = portalId, worldid = worldId }
+    )
+end
+
+function c_debugshards()
+    local count = 0
+    print("Connected shards:")
+    for k,v in pairs(Shard_GetConnectedShards()) do
+        print("\t",k,v)
+        count = count + 1
+    end
+    print(count, "shards")
+    count = 0
+    print("Known portals:")
+    for i,v in ipairs(ShardPortals) do
+        print("\t",v,v.components.worldmigrator:GetDebugString())
+        count = count + 1
+    end
+    print(count, "known portals")
+    count = 0
+    print("Portal targets actually available:")
+    for i,v in ipairs(ShardPortals) do
+        print("\t",v,Shard_IsWorldAvailable(v.components.worldmigrator.linkedWorld))
+    end
+    print("Portals not known:")
+    local portals = {}
+    for k,v in pairs(Ents) do
+        if v.components and v.components.worldmigrator then
+            table.insert(portals, v)
+        end
+    end
+    for i,v in ipairs(portals) do
+        local found = false
+        for i2,v2 in ipairs(ShardPortals) do
+            if v == v2 then
+                found = true
+                break
+            end
+        end
+        if not found then
+            print("\t",v)
+            count = count + 1
+        end
+    end
+    print(count, "unknown portals")
+    count = 0
+end
+
+function c_reregisterportals()
+    local shards = Shard_GetConnectedShards()
+    for i,v in ipairs(ShardPortals) do
+        v.components.worldmigrator:SetDestinationWorld(next(shards))
+    end
+end
+
+function c_repeatlastcommand()
+    local history = GetConsoleHistory()
+    if #history > 0 then
+        if history[#history] == "c_repeatlastcommand()" then
+            -- top command is this one, so we want the second last command
+            history[#history] = nil
+        end
+        ExecuteConsoleCommand(history[#history])
     end
 end

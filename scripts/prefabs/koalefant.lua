@@ -25,11 +25,13 @@ local WAKE_TO_RUN_DISTANCE = 10
 local SLEEP_NEAR_ENEMY_DISTANCE = 14
 
 local function ShouldWakeUp(inst)
-    return DefaultWakeTest(inst) or inst:IsNear(ThePlayer, WAKE_TO_RUN_DISTANCE)
+    local x, y, z = inst.Transform:GetWorldPosition()
+    return DefaultWakeTest(inst) or IsAnyPlayerInRange(x, y, z, WAKE_TO_RUN_DISTANCE)
 end
 
 local function ShouldSleep(inst)
-    return DefaultSleepTest(inst) and not inst:IsNear(ThePlayer, SLEEP_NEAR_ENEMY_DISTANCE)
+    local x, y, z = inst.Transform:GetWorldPosition()
+    return DefaultSleepTest(inst) and not IsAnyPlayerInRange(x, y, z, SLEEP_NEAR_ENEMY_DISTANCE)
 end
 
 local function KeepTarget(inst, target)

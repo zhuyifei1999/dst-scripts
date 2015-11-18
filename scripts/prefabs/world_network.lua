@@ -3,7 +3,7 @@ local function PostInit(inst)
     inst.entity:FlushLocalDirtyNetVars()
 
     for k, v in pairs(inst.components) do
-        if v.OnPostInit then
+        if v.OnPostInit ~= nil then
             v:OnPostInit()
         end
     end
@@ -21,39 +21,54 @@ local function DoPostInit(inst)
         --master sim would have already done a proper PostInit in loading
         TheWorld:PostInit()
     end
-    if not TheNet:IsDedicated() and ThePlayer == nil then
-        TheNet:SendResumeRequestToServer(TheNet:GetUserID())
+    if not TheNet:IsDedicated() then
+        if ThePlayer == nil then
+            TheNet:SendResumeRequestToServer(TheNet:GetUserID())
+        end
+        PlayerHistory:StartListening()
     end
-    
-    PlayerHistory:StartListening()
 end
 
-local function fn()
-    local inst = CreateEntity()
-    
-    assert(TheWorld ~= nil and TheWorld.net == nil)
-    TheWorld.net = inst
+--------------------------------------------------------------------------
 
-    inst.entity:SetCanSleep(false)
-    inst.persists = false
+local function MakeWorldNetwork(name, custom_postinit)
+    local function fn()
+        local inst = CreateEntity()
+        
+        assert(TheWorld ~= nil and TheWorld.net == nil)
+        TheWorld.net = inst
 
-    inst.entity:AddNetwork()
-    inst:AddTag("CLASSIFIED")
-    inst.entity:SetPristine()
+        inst.entity:SetCanSleep(false)
+        inst.persists = false
 
-    inst:AddComponent("autosaver")
-    inst:AddComponent("clock")
-    inst:AddComponent("weather")
-    inst:AddComponent("seasons")
-    inst:AddComponent("worldreset")
-    inst:AddComponent("voter")
+        inst.entity:AddShardClient()
+        inst.entity:AddNetwork()
+        inst:AddTag("CLASSIFIED")
 
-    inst.PostInit = PostInit
-    inst.OnRemoveEntity = OnRemoveEntity
+        inst:AddComponent("shardstate")
 
-    inst:DoTaskInTime(0, DoPostInit)
+        inst.entity:SetPristine()
 
-    return inst
+        inst:AddComponent("autosaver")
+        inst:AddComponent("clock")
+        inst:AddComponent("worldtemperature")
+        inst:AddComponent("seasons")
+        inst:AddComponent("worldreset")
+        inst:AddComponent("voter")
+
+        if custom_postinit ~= nil then
+            custom_postinit(inst)
+        end
+
+        inst.PostInit = PostInit
+        inst.OnRemoveEntity = OnRemoveEntity
+
+        inst:DoTaskInTime(0, DoPostInit)
+
+        return inst
+    end
+
+    return Prefab(name, fn)
 end
 
-return Prefab("world_network", fn)
+return MakeWorldNetwork

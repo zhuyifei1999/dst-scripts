@@ -79,6 +79,9 @@ local Controls = Class(Widget, function(self, owner)
     self.status:SetPosition(0,-110,0)
     
     self.clock = self.sidepanel:AddChild(UIClock(self.owner))
+    if self.clock:IsCaveClock() then
+        self.clock.inst:DoPeriodicTask(.5, function() self.clock:UpdateCaveClock(self.owner) end, 0)
+    end
 
     local twitch_options = TheFrontEnd:GetTwitchOptions()
     if twitch_options ~= nil and twitch_options:SupportedByPlatform() then
@@ -86,7 +89,6 @@ local Controls = Class(Widget, function(self, owner)
             self.chatqueue = self.sidepanel:AddChild(ChatQueue(self.owner))
         end
     end
-
 
     -- Network global chat queue
     self.chat_queue_root = self:AddChild(Widget("chat_queue_root"))
@@ -96,11 +98,6 @@ local Controls = Class(Widget, function(self, owner)
     self.chat_queue_root = self.chat_queue_root:AddChild(Widget(""))
     self.chat_queue_root:SetPosition(-90,765,0)
     self.networkchatqueue = self.chat_queue_root:AddChild(ChatQueue(self.owner))
-
-    if TheWorld and TheWorld:HasTag("cave") then
-    	self.clock:Hide()
-    	self.status:SetPosition(-10,-20,0)
-    end
 
 	self.containers = {}
 

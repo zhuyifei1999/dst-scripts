@@ -540,7 +540,7 @@ function EntityScript:RemoveComponent(name)
 end
 
 function EntityScript:GetDisplayName()
-    local name = self.displaynamefn ~= nil and self:displaynamefn() or self.name
+    local name = (self.displaynamefn ~= nil and self:displaynamefn()) or (self.nameoverride and STRINGS.NAMES[string.upper(self.nameoverride)]) or self.name
 
     if self:HasTag("player") then
         --No adjectives for players
@@ -596,6 +596,12 @@ function EntityScript:SetPrefabName(name)
     self.prefab = name
     self.entity:SetPrefabName(name)
     self.name = self.name or (STRINGS.NAMES[string.upper(self.prefab)] or "MISSING NAME")
+end
+
+function EntityScript:SetPrefabNameOverride(nameoverride)
+    --Changes what description and name will show for the prefab without actually overriding the prefab itself.
+    --nameoverride should be the prefab that you wish to use for name and description. (IE: "spiderhole_rock" uses "spiderhole")
+    self.nameoverride = nameoverride
 end
 
 function EntityScript:SpawnChild(name)
@@ -750,10 +756,8 @@ function EntityScript:KillTasks()
     KillThreadsWithID(self.GUID)
 end
 
-
-function EntityScript:StartThread( fn )
-    local thread = StartThread(fn, self.GUID)
-    return thread
+function EntityScript:StartThread(fn)
+    return StartThread(fn, self.GUID)
 end
 
 function EntityScript:RunScript(name)
@@ -763,10 +767,10 @@ end
 
 function EntityScript:RestartBrain()
     self:StopBrain()
-    if self.brainfn then
+    if self.brainfn ~= nil then
         --if type(self.brainfn) ~= "table" then print(self, self.brainfn) end
         self.brain = self.brainfn()
-        if self.brain then
+        if self.brain ~= nil then
             self.brain.inst = self
             self.brain:Start()
         end
@@ -774,29 +778,26 @@ function EntityScript:RestartBrain()
 end
 
 function EntityScript:StopBrain()
-    if self.brain then
+    if self.brain ~= nil then
         self.brain:Stop()
+        self.brain = nil
     end
-    self.brain = nil
 end
 
-
 function EntityScript:SetBrain(brainfn)
-    if TheNet:GetIsMasterSimulation() then
-        self.brainfn = brainfn
-        if self.brain then
-            self:RestartBrain()
-        end
+    self.brainfn = brainfn
+    if self.brain ~= nil then
+        self:RestartBrain()
     end
 end
 
 function EntityScript:SetStateGraph(name)
-    if self.sg then
+    if self.sg ~= nil then
         SGManager:RemoveInstance(self.sg)
     end
     local sg = LoadStateGraph(name)
-    assert(sg)
-    if sg then
+    assert(sg ~= nil)
+    if sg ~= nil then
         self.sg = StateGraphInstance(sg, self)
         SGManager:AddInstance(self.sg)
         self.sg:GoToState(self.sg.sg.defaultstate)
@@ -805,7 +806,7 @@ function EntityScript:SetStateGraph(name)
 end
 
 function EntityScript:ClearStateGraph()
-    if self.sg then
+    if self.sg ~= nil then
         SGManager:RemoveInstance(self.sg)
         self.sg = nil
     end
@@ -973,6 +974,18 @@ function EntityScript:GetAngleToPoint(x, y, z)
     end    
     local x1, y1, z1 = self.Transform:GetWorldPosition()
     return math.atan2(z1 - z, x - x1) / DEGREES
+end
+
+function EntityScript:GetPositionAdjacentTo(target, distance)
+    if target == nil then
+        return nil
+    end
+    local p1 = Vector3(self.Transform:GetWorldPosition())
+    local p2 = Vector3(target.Transform:GetWorldPosition())
+    local offset = p1-p2
+    offset:Normalize()
+    offset = offset * distance
+    return (p2 + offset)
 end
 
 function EntityScript:ForceFacePoint(x, y, z)

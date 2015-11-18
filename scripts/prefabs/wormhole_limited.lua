@@ -96,9 +96,9 @@ local function OnActivate(inst, doer)
     end
 end
 
-local function OnActivateOther(inst, other, doer)
-    if not other.sg:HasStateTag("open") then
-        other.sg:GoToState("opening")
+local function OnActivateByOther(inst, source, doer)
+    if not inst.sg:HasStateTag("open") then
+        inst.sg:GoToState("opening")
     end
 end
 
@@ -215,7 +215,7 @@ local function makewormhole(uses)
 
         inst:AddComponent("teleporter")
         inst.components.teleporter.onActivate = OnActivate
-        inst.components.teleporter.onActivateOther = OnActivateOther
+        inst.components.teleporter.onActivateByOther = OnActivateByOther
         inst.components.teleporter.offset = 0
 
         inst:AddComponent("inventory")

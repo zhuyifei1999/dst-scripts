@@ -155,43 +155,38 @@ function ScrollableList:OnControl(control, down, force)
     end
 end
 
-function ScrollableList:Scroll(amt, movemarker) 
-	-- Do Scroll on list
-	local didScrolling = true
-	if self.view_offset <= 0 and amt < 0 then
-		didScrolling = false
-	elseif self.view_offset >= self.max_step and amt > 0 then
-		didScrolling = false
-	end
+function ScrollableList:Scroll(amt, movemarker)
+    local prev = self.view_offset
 
+    -- Do Scroll on list
+    self.view_offset = self.view_offset + amt
+    if self.view_offset < 0 or self.max_step <= 0 then
+        self.view_offset = 0
+    elseif self.view_offset > self.max_step then
+        self.view_offset = self.max_step
+    end
 
-	self.view_offset = self.view_offset + amt
-	if self.view_offset < 0 then
-		self.view_offset = 0
-	end
-	if self.view_offset > self.max_step and self.max_step > 0 then
-		self.view_offset = self.max_step
-	end
+    local didScrolling = self.view_offset ~= prev
 
-	-- Move the marker
-	if movemarker then
-		local marker = self.position_marker:GetPosition()
-		local newY = (self.height/2 - arrow_button_size) - (self.view_offset * self.step_size)
-		if newY < -self.height/2 + arrow_button_size then
-			newY = -self.height/2 + arrow_button_size
-		elseif newY > self.height/2 - arrow_button_size then
-			newY = self.height/2 - arrow_button_size
-		end
-		self.position_marker:SetPosition(marker.x, newY)
-	end
+    -- Move the marker
+    if movemarker then
+        local marker = self.position_marker:GetPosition()
+        local newY = (self.height/2 - arrow_button_size) - (self.view_offset * self.step_size)
+        if newY < -self.height/2 + arrow_button_size then
+            newY = -self.height/2 + arrow_button_size
+        elseif newY > self.height/2 - arrow_button_size then
+            newY = self.height/2 - arrow_button_size
+        end
+        self.position_marker:SetPosition(marker.x, newY)
+    end
 
-	-- Refresh the view
-	self:RefreshView()
+    -- Refresh the view
+    self:RefreshView()
 
-	if self.onscrollcb then
-		self.onscrollcb()
-	end
-	return didScrolling
+    if self.onscrollcb ~= nil then
+        self.onscrollcb()
+    end
+    return didScrolling
 end
 
 function ScrollableList:RefreshView(movemarker)

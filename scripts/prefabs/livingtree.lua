@@ -82,9 +82,7 @@ local function onworked(inst, chopper, workleft)
 end
 
 local function ShakeCamera(inst)
-    for i, v in ipairs(AllPlayers) do
-        v:ShakeCamera(CAMERASHAKE.FULL, .25, .03, .5, inst, 6)
-    end
+    ShakeAllCameras(CAMERASHAKE.FULL, .25, .03, .5, inst, 6)
 end
 
 local function onworkfinish(inst, chopper)
@@ -113,18 +111,20 @@ local function onsave(inst, data)
         data.stump = true
     end
 
-    if inst:HasTag("burnt") or inst:HasTag("fire") then
+    if inst:HasTag("burnt") or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
         data.burnt = true
     end
 end
 
 local function onload(inst, data)
-    if data and data.stump then
-        makestump(inst, true)
-    end
+    if data ~= nil then
+        if data.stump then
+            makestump(inst, true)
+        end
 
-    if data and data.burnt then
-        OnBurnt(inst)
+        if data.burnt then
+            OnBurnt(inst)
+        end
     end
 end
 

@@ -281,6 +281,7 @@ local function create_common(inst, physicscylinder)
 
     inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
+    inst.entity:AddLightWatcher()
 
     MakeCharacterPhysics(inst, 10, .25)
 

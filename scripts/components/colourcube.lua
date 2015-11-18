@@ -58,10 +58,7 @@ local SEASON_COLOURCUBES =
 
 local CAVE_COLOURCUBES =
 {
-    day = "images/colour_cubes/caves_default.tex",
-    dusk = "images/colour_cubes/caves_default.tex",
     night = "images/colour_cubes/caves_default.tex",
-    full_moon = "images/colour_cubes/caves_default.tex",
 }
 
 local PHASE_BLEND_TIMES =
@@ -84,14 +81,16 @@ self.inst = inst
 
 --Private
 local _iscave = inst:HasTag("cave")
-local _phase = "day"
+local _phase = _iscave and "night" or "day"
 local _fullmoonphase = nil
 local _season = "autumn"
 local _ambientcctable = _iscave and CAVE_COLOURCUBES or SEASON_COLOURCUBES.autumn
-local _ambientcc = { _ambientcctable.day, _ambientcctable.day }
-local _insanitycc = { INSANITY_COLOURCUBES.day, INSANITY_COLOURCUBES.day }
+local _insanitycctable = INSANITY_COLOURCUBES
+local _ambientcc = { _ambientcctable[_phase], _ambientcctable[_phase] }
+local _insanitycc = { _insanitycctable[_phase], _insanitycctable[_phase] }
 local _overridecc = nil
 local _overridecctable = nil
+local _overridephase = nil
 local _remainingblendtime = 0
 local _totalblendtime = 0
 local _fxtime = 0
@@ -104,12 +103,19 @@ local _colourmodifier = nil
 --------------------------------------------------------------------------
 
 local function GetCCPhase()
-    return _phase == "night" and _fullmoonphase or _phase
+    return (_overridephase and _overridephase.fn and _overridephase.fn())
+        or (_iscave and "night")
+        or (_phase == "night" and _fullmoonphase or _phase)
+end
+
+local function GetInsanityPhase()
+    return (_iscave and "night")
+        or (_phase == "night" and _fullmoonphase or _phase)
 end
 
 local function Blend(time)
     local ambientcctarget = _ambientcctable[GetCCPhase()] or IDENTITY_COLOURCUBE
-    local insanitycctarget = INSANITY_COLOURCUBES[GetCCPhase()] or IDENTITY_COLOURCUBE
+    local insanitycctarget = _insanitycctable[GetInsanityPhase()] or IDENTITY_COLOURCUBE
 
     if _overridecc ~= nil then
         _ambientcc[2] = ambientcctarget
@@ -161,6 +167,11 @@ end
 --[[ Private event handlers ]]
 --------------------------------------------------------------------------
 
+local function OnOverridePhaseEvent(inst)
+    -- just naively force an update when an override event happens
+    UpdateAmbientCCTable(_overridephase and _overridephase.blendtime or DEFAULT_BLEND_TIME)
+end
+
 local function OnSanityDelta(player, data)
     local distortion = easing.outQuad(data.newpercent, 0, 1, 1)
     PostProcessor:SetColourCubeLerp(1, 1 - distortion)
@@ -173,25 +184,53 @@ local function OnOverrideCCTable(player, cctable)
     UpdateAmbientCCTable(DEFAULT_BLEND_TIME)
 end
 
+local function OnOverrideCCPhaseFn(player, fn)
+    local blendtime = nil
+    if _overridephase ~= nil then
+        if _overridephase.blendtime ~= nil then
+            blendtime = _overridephase.blendtime
+        end
+        for i,event in ipairs(_overridephase.events) do
+            inst:RemoveEventCallback(event, OnOverridePhaseEvent)
+        end
+    end
+    _overridephase = fn
+    if _overridephase ~= nil then
+        if _overridephase.blendtime ~= nil then
+            -- We take the shorter blendtime when transitioning between overrides
+            -- This makes the molehat always transition snappily
+            blendtime = blendtime ~= nil and math.min(blendtime, _overridephase.blendtime) or _overridephase.blendtime
+        end
+        for i,event in ipairs(_overridephase.events) do
+            inst:ListenForEvent(event, OnOverridePhaseEvent)
+        end
+    end
+    UpdateAmbientCCTable(blendtime or DEFAULT_BLEND_TIME)
+end
+
 local function OnPlayerActivated(inst, player)
     if _activatedplayer == player then
         return
     elseif _activatedplayer ~= nil and _activatedplayer.entity:IsValid() then
         inst:RemoveEventCallback("sanitydelta", OnSanityDelta, _activatedplayer)
         inst:RemoveEventCallback("ccoverrides", OnOverrideCCTable, player)
+        inst:RemoveEventCallback("ccphasefn", OnOverrideCCPhaseFn, player)
     end
     _activatedplayer = player
     inst:ListenForEvent("sanitydelta", OnSanityDelta, player)
     inst:ListenForEvent("ccoverrides", OnOverrideCCTable, player)
+    inst:ListenForEvent("ccphasefn", OnOverrideCCPhaseFn, player)
     if player.replica.sanity ~= nil then
         OnSanityDelta(player, { newpercent = player.replica.sanity:GetPercent() })
     end
     OnOverrideCCTable(player, player.components.playervision ~= nil and player.components.playervision:GetCCTable() or nil)
+    OnOverrideCCPhaseFn(player, player.components.playervision ~= nil and player.components.playervision:GetCCPhaseFn() or nil)
 end
 
 local function OnPlayerDeactivated(inst, player)
     inst:RemoveEventCallback("sanitydelta", OnSanityDelta, player)
     inst:RemoveEventCallback("ccoverrides", OnOverrideCCTable, player)
+    inst:RemoveEventCallback("ccphasefn", OnOverrideCCPhaseFn, player)
     OnSanityDelta(player, { newpercent = 1 })
     OnOverrideCCTable(player, nil)
     if player == _activatedplayer then
@@ -235,6 +274,7 @@ local function OnOverrideColourCube(inst, cc)
             PostProcessor:SetColourCubeData(0, cc, cc)
             PostProcessor:SetColourCubeData(1, cc, cc)
             PostProcessor:SetColourCubeLerp(0, 1)
+            PostProcessor:SetColourCubeLerp(1, 0)
         else
             PostProcessor:SetColourCubeData(0, _ambientcc[2], _ambientcc[2])
             PostProcessor:SetColourCubeData(1, _insanitycc[2], _insanitycc[2])
@@ -295,6 +335,20 @@ end
 
 function self:LongUpdate(dt)
     self:OnUpdate(_remainingblendtime)
+end
+
+--------------------------------------------------------------------------
+--[[ Debug ]]
+--------------------------------------------------------------------------
+
+function self:GetDebugString()
+    return string.format("override: %s overridefn: %s blendtime: %.2f\n\tambient: %s -> %s\n\tsanity: %s -> %s",
+        _overridecc ~= nil and "true" or "false",
+        _overridephase ~= nil and "true" or "false",
+        _remainingblendtime,
+        _ambientcc[1], _ambientcc[2],
+        _insanitycc[1], _insanitycc[2]
+    )
 end
 
 --------------------------------------------------------------------------

@@ -83,3 +83,22 @@ local MyTestTileSetFunction_data = 	{
 	}
 PlaceLightBeam = {GeneratorFunction = MyTestTileSetFunction, DefaultArgs = MyTestTileSetFunction_data}
 
+
+function MakeSetpieceBlockerRoom(blocker_name)
+	return	{
+				colour={r=0.2,g=0.0,b=0.2,a=0.3},
+				value = GROUND.IMPASSABLE,
+				tags = {"ForceConnected", "RoadPoison"},
+				contents =  {
+								countstaticlayouts= {
+									[blocker_name]=1,
+								}, 
+							}
+			}
+end
+
+function Roomify(data)
+    local out = deepcopy(data)
+    out.type = NODE_TYPE.Room
+    return out
+end

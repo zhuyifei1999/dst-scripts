@@ -22,6 +22,9 @@ local assets =
     Asset("ATLAS", "images/servericons.xml"),
     Asset("IMAGE", "images/servericons.tex"),
 
+    Asset("ATLAS", "images/server_intentions.xml"),
+    Asset("IMAGE", "images/server_intentions.tex"),
+
 	--character portraits
 	Asset("ATLAS", "images/saveslot_portraits.xml"),
     Asset("IMAGE", "images/saveslot_portraits.tex"),

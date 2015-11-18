@@ -1,7 +1,7 @@
 package.path = package.path .. ";scripts/?.lua"
 
 --local BAD_CONNECT = 219000 -- 
---SEED = 372000 -- Force roads test level 3
+--SEED = 1434760235 -- Force roads test level 3
 if SEED == nil then
 	SEED = os.time()
 end
@@ -39,6 +39,7 @@ if TheSim then
 end
 
 
+require("stacktrace")
 
 require("simutil")
 
@@ -253,11 +254,6 @@ function CheckMapSaveData(savedata)
     assert(savedata.map.height, "Map height missing from savedata on generate")
 	assert(savedata.map.topology, "Map topology missing from savedata on generate")
         
-	assert(savedata.playerinfo, "Playerinfo missing from savedata on generate")
-	assert(savedata.playerinfo.x, "Playerinfo.x missing from savedata on generate")
-	assert(savedata.playerinfo.y, "Playerinfo.y missing from savedata on generate")
-	assert(savedata.playerinfo.z, "Playerinfo.z missing from savedata on generate")
-
 	assert(savedata.ents, "Entites missing from savedata on generate")
 end
 
@@ -437,18 +433,16 @@ local function AddSetPeices(level, gen_params)
 
 end
 
-local function FixWesUnlock(level, progress, profile)
-	local should_wes = profile and profile.unlocked_characters["wes"] ~= true and progress == 3
-	if not should_wes then
-		print("No wes allowed on this level!")
-		level.set_pieces["WesUnlock"] = nil
-	else
-		print("Wes setpiece allowed in this level.")
-	end
-end
-
 function GenerateNew(debug, parameters)
     
+
+    print("Generating world with these parameters:")
+    print("level_type", tostring(parameters.level_type))
+    print("current_level", tostring(parameters.current_level))
+    print("customizationpresets:")
+    dumptable(parameters.profiledata.customizationpresets)
+    print("worldgen_choices:")
+    dumptable(parameters.world_gen_choices)
     --print("Generate New map",debug, parameters.gen_type, "type: "..parameters.level_type, parameters.current_level, parameters.world_gen_choices)
 	local Gen = require "map/forest_map"
 	
@@ -459,27 +453,24 @@ function GenerateNew(debug, parameters)
 
 	if parameters.level_type and string.upper(parameters.level_type) == "CAVE" then
 		
+		print("\n#######\n#\n# Generating CAVE Mode Level\n#\n#######\n")
+
 		if parameters.current_level == nil or parameters.current_level > #levels.cave_levels then
 			parameters.current_level = 1
 		end
 
 		level = levels.cave_levels[parameters.current_level]
 
-	elseif parameters.level_type and string.upper(parameters.level_type) == "ADVENTURE" then
-		level = levels.story_levels[parameters.current_level]
-
-		-- makes the levels loop when we are pushing testing branches
-		--if parameters.adventure_progress == levels.CAMPAIGN_LENGTH then
-		--	level.teleportaction = "restart"
-		--end
-
-		FixWesUnlock(level, parameters.adventure_progress, parameters.profiledata)
-		print("\n#######\n#\n# Generating "..level.name.."("..parameters.current_level..")".."\n#\n#######\n")
 	elseif parameters.level_type and string.upper(parameters.level_type) == "TEST" then
 		print("\n#######\n#\n# Generating TEST Mode Level\n#\n#######\n")
 	elseif parameters.level_type and string.upper(parameters.level_type) == "SURVIVAL" then
+		print("\n#######\n#\n# Generating SURVIVAL Mode Level\n#\n#######\n")
 		if parameters.world_gen_choices.preset == nil then
-			parameters.world_gen_choices.preset = "SURVIVAL_TOGETHER"
+			if parameters.world_gen_choices.actualpreset == nil then
+				parameters.world_gen_choices.preset = "SURVIVAL_TOGETHER"
+			else
+				parameters.world_gen_choices.preset =  parameters.world_gen_choices.actualpreset
+			end
 		end
 		print("WORLDGEN PRESET: ",parameters.world_gen_choices.preset)
 		for i,v in ipairs(levels.sandbox_levels) do
@@ -488,7 +479,7 @@ function GenerateNew(debug, parameters)
 				break
 			end
 		end
-		
+
 		print("WORLDGEN LEVEL ID: ", parameters.world_gen_choices.level_id )
 		if parameters.world_gen_choices.level_id == nil or parameters.world_gen_choices.level_id > #levels.sandbox_levels then
 			parameters.world_gen_choices.level_id = 1
@@ -496,7 +487,7 @@ function GenerateNew(debug, parameters)
 		
 		level = levels.sandbox_levels[parameters.world_gen_choices.level_id]
 
-		print("\n#######\n#\n# Generating Normal Mode "..level.name.." Level\n#\n#######\n")
+		print("\n#######\n#\n# Generating Normal Mode "..level.name.." Level "..level.id.."\n#\n#######\n")
 	else
 		-- Probably got here from a mod, up to the mod to tell us what to load.
 		level = levels.custom_levels[parameters.world_gen_choices.level_id]
@@ -505,22 +496,21 @@ function GenerateNew(debug, parameters)
 
 	parameters.world_gen_choices.finaltweak = OverrideTweaks(level, parameters.world_gen_choices)	
 	local level_area_triggers = level.override_triggers or nil
-	local choose_tasks = level:GetTasksForLevel(tasks.sampletasks, parameters.world_gen_choices)
+	level:ChooseTasks(tasks.sampletasks, parameters.world_gen_choices)
 	AddSetPeices(level, parameters.world_gen_choices)
+    level:ChooseSetPieces(parameters.world_gen_choices)
 
 	local id = level.id
 	local override_level_string = level.override_level_string or false
 	local name = level.name or "ERROR"
 	local hideminimap = level.hideminimap or false
 
-	local teleportaction = level.teleportaction or false
-	local teleportmaxwell = level.teleportmaxwell or nil
-	local nomaxwell = level.nomaxwell or false
-
 	local prefab = "forest"
 	if parameters.world_gen_choices.finaltweak and parameters.world_gen_choices.finaltweak.misc then
 		prefab = parameters.world_gen_choices.finaltweak.misc.location or "forest"
 	end
+
+    local choose_tasks = level:GetTasksForLevel()
 
 	if debug == true then
 	 	 choose_tasks = tasks.oneofeverything
@@ -534,17 +524,24 @@ function GenerateNew(debug, parameters)
 	
 	local try = 1
 	local maxtries = 5
+
+    print("*****************************")
+    print("Final Worldgen Choices:")
+    dumptable(parameters.world_gen_choices)
+    print("*****************************")
 	
 	while savedata == nil do
 		savedata = Gen.Generate(prefab, max_map_width, max_map_height, choose_tasks, parameters.world_gen_choices, parameters.level_type, level)
 		
 		if savedata == nil then
-			print("An error occured during world gen we will retry! [",try," of ",maxtries,"]")
+			if try >= maxtries then
+                print("An error occured during world and we give up! [was ",try," of ",maxtries,"]")
+				return nil
+            else
+                print("An error occured during world gen we will retry! [was ",try," of ",maxtries,"]")
+			end
 			try = try + 1
 			
-			if try >= maxtries then
-				return nil
-			end
 			--assert(try <= maxtries, "Maximum world gen retries reached!")
 			collectgarbage("collect")
 			WorldSim:ResetAll()
@@ -554,20 +551,13 @@ function GenerateNew(debug, parameters)
 	end
 	
 	
-	savedata.map.prefab = "forest" 
-	
-	if parameters.level_type == "cave" then
-		savedata.map.prefab = "cave" 
-	end
+    savedata.map.prefab = prefab
 		
 	savedata.map.topology.level_type = parameters.level_type
 	savedata.map.topology.level_number = parameters.current_level or 1
 	savedata.map.override_level_string = override_level_string
 	savedata.map.name = name
-	savedata.map.nomaxwell = nomaxwell
 	savedata.map.hideminimap = hideminimap
-	savedata.map.teleportaction = teleportaction
-	savedata.map.teleportmaxwell = teleportmaxwell
 
 	--Record mod information
 	ModManager:SetModRecords(savedata.mods or {})
@@ -601,18 +591,18 @@ function GenerateNew(debug, parameters)
 	CheckMapSaveData(savedata)
 		
 	-- Clear out scaffolding :)
-	for i=#savedata.map.topology.ids,1, -1 do
-		local name = savedata.map.topology.ids[i]
-		if string.find(name, "LOOP_BLANK_SUB") ~= nil  then
-			table.remove(savedata.map.topology.ids, i)
-			table.remove(savedata.map.topology.nodes, i)
-			for eid=#savedata.map.topology.edges,1,-1 do
-				if savedata.map.topology.edges[eid].n1 == i or savedata.map.topology.edges[eid].n2 == i then
-					table.remove(savedata.map.topology.edges, eid)
-				end
-			end
-		end
-	end		
+	-- for i=#savedata.map.topology.ids,1, -1 do
+	-- 	local name = savedata.map.topology.ids[i]
+	-- 	if string.find(name, "LOOP_BLANK_SUB") ~= nil  then
+	-- 		table.remove(savedata.map.topology.ids, i)
+	-- 		table.remove(savedata.map.topology.nodes, i)
+	-- 		for eid=#savedata.map.topology.edges,1,-1 do
+	-- 			if savedata.map.topology.edges[eid].n1 == i or savedata.map.topology.edges[eid].n2 == i then
+	-- 				table.remove(savedata.map.topology.edges, eid)
+	-- 			end
+	-- 		end
+	-- 	end
+	-- end		
 	
 	print("Generation complete")
 
@@ -625,7 +615,7 @@ local function LoadParametersAndGenerate(debug)
 	local parameters = nil
 	if GEN_PARAMETERS == "" then
 		print("WARNING: No parameters found, using defaults. This should only happen from the test harness!")
-		parameters = { level_type="adventure", current_level=5, adventure_progress=3, profiledata={unlocked_characters={wes=true}} }
+		parameters = { level_type="survival", current_level=5, adventure_progress=3, profiledata={unlocked_characters={wes=true}} }
 	else
 		parameters = json.decode(GEN_PARAMETERS)
 	end

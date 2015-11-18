@@ -263,8 +263,16 @@ local function KeepFaceTargetFn(inst, target)
 end
 
 local function GoHome(inst)
-    if inst.components.homeseeker and inst.components.homeseeker.home and inst.components.homeseeker.home:IsValid() then
+    local homeseeker = inst.components.homeseeker
+    if homeseeker and homeseeker.home and homeseeker.home:IsValid()
+        and (not homeseeker.home.components.burnable or not homeseeker.home.components.burnable:IsBurning()) then
         return BufferedAction(inst, inst.components.homeseeker.home, ACTIONS.GOHOME)
+    end
+end
+
+local function EquipWeapon(inst, weapon)
+    if not weapon.components.equippable:IsEquipped() then
+        inst.components.inventory:Equip(weapon)
     end
 end
 
@@ -281,8 +289,11 @@ function MonkeyBrain:OnStart()
 
         --In combat (with the player)... Should only ever use poop throwing.
         RunAway(self.inst, "character", RUN_AWAY_DIST, STOP_RUN_AWAY_DIST, function(hunter) return ShouldRunFn(self.inst, hunter) end),
-        WhileNode(function() return self.inst.components.combat.target and self.inst.components.combat.target:HasTag("player") and self.inst.HasAmmo(self.inst) end, "Attack Player", 
-            ChaseAndAttack(self.inst, MAX_CHASE_TIME, MAX_CHASE_DIST)),
+        WhileNode(function() return self.inst.components.combat.target and self.inst.components.combat.target:HasTag("player") and self.inst.HasAmmo(self.inst) end, "Attack Player",
+            SequenceNode({
+                ActionNode(function() EquipWeapon(self.inst, self.inst.weaponitems.thrower) end, "Equip thrower"),
+                ChaseAndAttack(self.inst, MAX_CHASE_TIME, MAX_CHASE_DIST),
+            })),
         --Pick up poop to throw
         WhileNode(function() return self.inst.components.combat.target and self.inst.components.combat.target:HasTag("player") and not self.inst.HasAmmo(self.inst) end, "Pick Up Poop", 
             DoAction(self.inst, GetPoop)),
@@ -299,7 +310,10 @@ function MonkeyBrain:OnStart()
 
         --In combat with everything else
         WhileNode(function() return self.inst.components.combat.target ~= nil and not self.inst.components.combat.target:HasTag("player") end, "Attack NPC", --For everything else
-            ChaseAndAttack(self.inst, MAX_CHASE_TIME, MAX_CHASE_DIST)),
+            SequenceNode({
+                ActionNode(function() EquipWeapon(self.inst, self.inst.weaponitems.hitter) end, "Equip hitter"),
+                ChaseAndAttack(self.inst, MAX_CHASE_TIME, MAX_CHASE_DIST),
+            })),
 
         
         --Following

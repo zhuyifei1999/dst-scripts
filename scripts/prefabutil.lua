@@ -39,6 +39,5 @@ function MakePlacer(name, bank, build, anim, onground, snap, metersnap, scale, f
 
         return inst
     end
-
     return Prefab(name, fn)
 end

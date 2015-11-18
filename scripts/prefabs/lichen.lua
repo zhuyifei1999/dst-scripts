@@ -57,19 +57,13 @@ local function fn()
 	inst.components.pickable.onpickedfn = onpickedfn
     inst.components.pickable.makeemptyfn = makeemptyfn
 
-    inst.components.pickable.SetRegenTime = 120
-
     inst:AddComponent("inspectable")
 
-    ---------------------        
-    inst:AddComponent("fuel")
-    inst.components.fuel.fuelvalue = TUNING.SMALL_FUEL
 
-	MakeSmallBurnable(inst, TUNING.SMALL_FUEL)
+    MakeSmallBurnable(inst)
     MakeSmallPropagator(inst)
-	MakeNoGrowInWinter(inst)    
+    MakeNoGrowInWinter(inst)
     MakeHauntableIgnite(inst)
-    ---------------------   
 
     return inst
 end

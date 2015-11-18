@@ -84,6 +84,10 @@ function Button:OnGainFocus()
     	if self.text then self.text:SetColour(self.textfocuscolour[1],self.textfocuscolour[2],self.textfocuscolour[3],self.textfocuscolour[4]) end
 		TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover")
 	end
+
+    if self.ongainfocus then
+        self.ongainfocus(self:IsEnabled())
+    end
 end
 
 function Button:OnLoseFocus()
@@ -95,6 +99,10 @@ function Button:OnLoseFocus()
 		self:SetPosition(self.o_pos)
 	end
 	self.down = false
+
+    if self.onlosefocus then
+        self.onlosefocus(self:IsEnabled())
+    end
 end
 
 function Button:OnEnable()
@@ -129,6 +137,9 @@ end
 -- This is roughly equivalent to OnDisable
 function Button:OnSelect()
 	self.text:SetColour(self.textselectedcolour)
+    if self.onselect then
+        self.onselect()
+    end
 end
 
 -- This is roughly equivalent to OnEnable
@@ -144,6 +155,9 @@ function Button:OnUnselect()
 	else
 		self:OnDisable()
 	end
+    if self.onunselect then
+        self.onunselect()
+    end
 end
 
 function Button:IsSelected()
@@ -152,6 +166,14 @@ end
 
 function Button:SetOnClick( fn )
     self.onclick = fn
+end
+
+function Button:SetOnSelect( fn )
+    self.onselect = fn
+end
+
+function Button:SetOnUnSelect( fn )
+    self.onunselect = fn
 end
 
 function Button:SetOnDown( fn )

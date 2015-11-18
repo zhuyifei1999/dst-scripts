@@ -1,12 +1,16 @@
-local cave_prefabs =
+require("prefabs/world")
+
+local prefabs =
 {
-    "world",
+    "cave_network",
     "cave_exit",
     "slurtle",
     "snurtle",
     "slurtlehole",
     "warningshadow",
     "cavelight",
+    "cavelight_small",
+    "cavelight_tiny",
     "flower_cave",
     "ancient_altar",
     "ancient_altar_broken",
@@ -16,11 +20,11 @@ local cave_prefabs =
     "mushtree_tall",
     "mushtree_medium",
     "mushtree_small",
+    "mushtree_tall_webbed",
     "cave_banana_tree",
     "spiderhole",
     "ground_chunks_breaking",
     "tentacle_pillar",
-    "tentacle_pillar_arm",
     "batcave",
     "rockyherd",
     "cave_fern",
@@ -49,15 +53,17 @@ local cave_prefabs =
     "pillar_ruins",
     "pillar_algae",
     "pillar_cave",
+    "pillar_cave_rock",
+    "pillar_cave_flintless",
     "pillar_stalactite",
     "worm",
+    "wormlight_plant",
     "fissure",
     "fissure_lower",
     "slurper",
     "minotaur",
-    "monkeybarrel",
     "spider_dropper",
-
+    "caverain",
 }
 
 local assets =
@@ -74,45 +80,82 @@ local assets =
     Asset("IMAGE", "images/colour_cubes/sinkhole_cc.tex"),
 }
 
-local function fn()
-    --V2C: WARNING:
-    --This is not supported for DST, so there is no network
-    --component added yet! It just spawns it locally on the
-    --server and then removes it on the next frame.
-    if true then
-        local inst = CreateEntity()
-        inst.entity:Hide()
-        inst:DoTaskInTime(0, inst.Remove)
-        return inst
-    end
-    --    
+local wormspawn =
+{
+    base_prefab = "worm",
+    winter_prefab = "worm",
+    summer_prefab = "worm",
 
-    local inst = SpawnPrefab("world")
-    inst:AddTag("cave")
-    inst.prefab = "cave"
+    attack_levels =
+    {
+        intro   = { warnduration = function() return 120 end, numspawns = function() return 1 end },
+        light   = { warnduration = function() return 60 end, numspawns = function() return 1 + math.random(0,1) end },
+        med     = { warnduration = function() return 45 end, numspawns = function() return 1 + math.random(0,1) end },
+        heavy   = { warnduration = function() return 30 end, numspawns = function() return 2 + math.random(0,1) end },
+        crazy   = { warnduration = function() return 30 end, numspawns = function() return 3 + math.random(0,2) end },
+    },
+
+    attack_delays =
+    {
+        rare        = function() return TUNING.TOTAL_DAY_TIME * 10, math.random() * TUNING.TOTAL_DAY_TIME * 7 end,
+        occasional  = function() return TUNING.TOTAL_DAY_TIME * 8, math.random() * TUNING.TOTAL_DAY_TIME * 7 end,
+        frequent    = function() return TUNING.TOTAL_DAY_TIME * 6, math.random() * TUNING.TOTAL_DAY_TIME * 5 end,
+    },
+
+    warning_speech = "ANNOUNCE_WORMS",
+
+    --Key = time, Value = sound prefab
+    warning_sound_thresholds =
+    {
+        { time = 30, sound = "wormwarning_lvl4" },
+        { time = 60, sound = "wormwarning_lvl3" },
+        { time = 90, sound = "wormwarning_lvl2" },
+        { time = 500, sound = "wormwarning_lvl1" },
+    },
+}
+
+local function common_postinit(inst)
+    --Initialize lua components
+    inst:AddComponent("ambientlighting")
+
+    --Dedicated server does not require these components
+    --NOTE: ambient lighting is required by light watchers
+    if not TheNet:IsDedicated() then
+        inst:AddComponent("dynamicmusic")
+        inst:AddComponent("ambientsound")
+        inst.components.ambientsound:SetReverbPreset("cave")
+        inst:AddComponent("dsp")
+        inst:AddComponent("colourcube")
+        inst:AddComponent("hallucinations")
+    end
+end
+
+local function master_postinit(inst)
+    --Spawners
+    inst:AddComponent("shadowcreaturespawner")
+    inst:AddComponent("shadowhandspawner")
+
+    --gameplay
+    inst:AddComponent("kramped")
+
+    --world management
+    inst:AddComponent("forestresourcespawner") -- a cave version of this would be nice, but it serves it's purpose...
+    inst:AddComponent("regrowthmanager")
+    inst:AddComponent("desolationspawner")
+
+    if METRICS_ENABLED then
+        inst:AddComponent("worldoverseer")
+    end
 
     --cave specifics
-    inst:AddComponent("clock")
-    inst:AddComponent("quaker")
-    inst:AddComponent("seasons")
-    inst.components.seasons:SetCaves()
-    inst:AddComponent("colourcubemanager")
+    inst:AddComponent("hounded")
+    inst.components.hounded:SetSpawnData(wormspawn)
 
-    inst:AddComponent("periodicthreat")
-    local threats = require("periodicthreats")
-    inst.components.periodicthreat:AddThreat("WORM", threats["WORM"])
-
-    --add waves
-    --local waves = inst.entity:AddWaveComponent()
-    --[[waves:SetRegionSize( 32, 16 )
-    waves:SetRegionNumWaves( 6 )
-    waves:SetWaveTexture( "images/wave.tex" )
-    waves:SetWaveEffect( "shaders/texture.ksh" )
-    waves:SetWaveSize( 2048, 512 )--]]
-
-    inst.components.ambientsoundmixer:SetReverbPreset("cave")
+    -- inst:AddComponent("periodicthreat")
+    -- local threats = require("periodicthreats")
+    -- inst.components.periodicthreat:AddThreat("WORM", threats["WORM"])
 
     return inst
 end
 
-return Prefab("cave", fn, assets, cave_prefabs)
+return MakeWorld("cave", prefabs, assets, common_postinit, master_postinit, { "cave" })

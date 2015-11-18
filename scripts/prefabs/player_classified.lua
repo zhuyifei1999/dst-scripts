@@ -98,8 +98,12 @@ local function OnActionFailed(parent)
     SetDirty(parent.player_classified.isperformactionsuccess, false)
 end
 
-local function OnWormholeTravel(parent)
-    parent.player_classified.wormholetravelevent:push()
+local function OnWormholeTravel(parent, wormholetype)
+    SetDirty(parent.player_classified.wormholetravelevent, wormholetype)
+end
+
+local function OnMakeFriend(parent)
+    parent.player_classified.makefriendevent:push()
 end
 
 local function AddMorgueRecord(inst)
@@ -161,13 +165,19 @@ end
 
 local function OnHealthDirty(inst)
     if inst._parent ~= nil then
-        local percent = inst.currenthealth:value() / inst.maxhealth:value()
-        inst._parent:PushEvent("healthdelta", { oldpercent = inst._oldhealthpercent, newpercent = percent, overtime = not inst.ishealthpulse:value() })
-        inst._oldhealthpercent = percent
+        local data =
+        {
+            oldpercent = inst._oldhealthpercent,
+            newpercent = inst.currenthealth:value() / inst.maxhealth:value(),
+            overtime = not inst.ishealthpulse:value(),
+        }
+        inst._oldhealthpercent = data.newpercent
+        inst.ishealthpulse:set_local(false)
+        inst._parent:PushEvent("healthdelta", data)
     else
         inst._oldhealthpercent = 1
+        inst.ishealthpulse:set_local(false)
     end
-    inst.ishealthpulse:set_local(false)
 end
 
 local function OnIsTakingFireDamageDirty(inst)
@@ -188,11 +198,20 @@ end
 
 local function OnHungerDirty(inst)
     if inst._parent ~= nil then
+        local oldpercent = inst._oldhungerpercent
         local percent = inst.currenthunger:value() / inst.maxhunger:value()
-        inst._parent:PushEvent("hungerdelta", { oldpercent = inst._oldhungerpercent, newpercent = percent, overtime = not inst.ishungerpulse:value() })
+        local data =
+        {
+            oldpercent = oldpercent,
+            newpercent = percent,
+            overtime = not inst.ishungerpulse:value(),
+        }
+        inst._oldhungerpercent = percent
+        inst.ishungerpulse:set_local(false)
+        inst._parent:PushEvent("hungerdelta", data)
         --push starving event if beaverness value isn't currently starving
         if inst._oldbeavernesspercent > 0 then
-            if inst._oldhungerpercent > 0 then
+            if oldpercent > 0 then
                 if percent <= 0 then
                     inst._parent:PushEvent("startstarving")
                 end
@@ -200,33 +219,47 @@ local function OnHungerDirty(inst)
                 inst._parent:PushEvent("stopstarving")
             end
         end
-        inst._oldhungerpercent = percent
     else
         inst._oldhungerpercent = 1
+        inst.ishungerpulse:set_local(false)
     end
-    inst.ishungerpulse:set_local(false)
 end
 
 local function OnSanityDirty(inst)
     if inst._parent ~= nil then
-        local percent = inst.currentsanity:value() / inst.maxsanity:value()
-        inst._parent:PushEvent("sanitydelta", { oldpercent = inst._oldsanitypercent, newpercent = percent, overtime = not inst.issanitypulse:value() })
-        inst._oldsanitypercent = percent
+        local data =
+        {
+            oldpercent = inst._oldsanitypercent,
+            newpercent = inst.currentsanity:value() / inst.maxsanity:value(),
+            overtime = not inst.issanitypulse:value(),
+        }
+        inst._oldsanitypercent = data.newpercent
+        inst.issanitypulse:set_local(false)
+        inst._parent:PushEvent("sanitydelta", data)
 
         inst._parent:DoTaskInTime(0, UpdateAnimOverrideSanity)
     else
         inst._oldsanitypercent = 1
+        inst.issanitypulse:set_local(false)
     end
-    inst.issanitypulse:set_local(false)
 end
 
 local function OnBeavernessDirty(inst)
     if inst._parent ~= nil then
+        local oldpercent = inst._oldbeavernesspercent
         local percent = inst.currentbeaverness:value() * .01
-        inst._parent:PushEvent("beavernessdelta", { oldpercent = inst._oldbeavernesspercent, newpercent = percent, overtime = not inst.isbeavernesspulse:value() })
+        local data =
+        {
+            oldpercent = oldpercent,
+            newpercent = percent,
+            overtime = not inst.isbeavernesspulse:value(),
+        }
+        inst._oldbeavernesspercent = percent
+        inst.isbeavernesspulse:set_local(false)
+        inst._parent:PushEvent("beavernessdelta", data)
         --push starving event if hunger value isn't currently starving
         if inst._oldhungerpercent > 0 then
-            if inst._oldbeavernesspercent > 0 then
+            if oldpercent > 0 then
                 if percent <= 0 then
                     inst._parent:PushEvent("startstarving")
                 end
@@ -234,17 +267,21 @@ local function OnBeavernessDirty(inst)
                 inst._parent:PushEvent("stopstarving")
             end
         end
-        inst._oldbeavernesspercent = percent
     else
         inst._oldbeavernesspercent = 1
+        inst.isbeavernesspulse:set_local(false)
     end
-    inst.isbeavernesspulse:set_local(false)
 end
 
 local function OnMoistureDirty(inst)
     if inst._parent ~= nil then
-        inst._parent:PushEvent("moisturedelta", { old = inst._oldmoisture, new = inst.moisture:value() })
-        inst._oldmoisture = inst.moisture:value()
+        local data =
+        {
+            old = inst._oldmoisture,
+            new = inst.moisture:value(),
+        }
+        inst._oldmoisture = data.new
+        inst._parent:PushEvent("moisturedelta", data)
     else
         inst._oldmoisture = 0
     end
@@ -255,15 +292,22 @@ local function OnTemperatureDirty(inst)
     if inst._parent == nil then
         inst._oldtemperature = TUNING.STARTING_TEMP
     elseif inst._oldtemperature ~= inst.currenttemperature then
-        if inst._oldtemperature < 0 then
-            if inst.currenttemperature >= 0 then
+        local oldtemperature = inst._oldtemperature
+        local temperature = inst.currenttemperature
+        local data =
+        {
+            last = oldtemperature,
+            new = temperature,
+        }
+        inst._oldtemperature = temperature
+        if oldtemperature < 0 then
+            if temperature >= 0 then
                 inst._parent:PushEvent("stopfreezing")
             end
-        elseif inst.currenttemperature < 0 then
+        elseif temperature < 0 then
             inst._parent:PushEvent("startfreezing")
         end
-        inst._parent:PushEvent("temperaturedelta", { last = inst._oldtemperature, new = inst.currenttemperature })
-        inst._oldtemperature = inst.currenttemperature
+        inst._parent:PushEvent("temperaturedelta", data)
     end
 end
 
@@ -313,7 +357,7 @@ end
 local function BufferBuild(inst, recipename)
     local recipe = GetValidRecipe(recipename)
     local inventory = inst._parent ~= nil and inst._parent.replica.inventory ~= nil and inst._parent.replica.inventory.classified or nil
-    if recipe ~= nil and inventory ~= nil and inventory:RemoveIngredients(recipe, inst.ingredientmod:value()) then
+    if recipe ~= nil and inventory ~= nil and inventory:RemoveIngredients(recipe, INGREDIENT_MOD_LOOKUP[inst.ingredientmod:value()]) then
         inst._bufferedbuildspreview[recipename] = true
         if inst._parent ~= nil then
             inst._parent:PushEvent("refreshcrafting")
@@ -468,9 +512,19 @@ local function OnPlayerFadeDirty(inst)
     end
 end
 
-local function OnWormholeTravelEvent(inst)
+local function OnWormholeTravelDirty(inst)
     if inst._parent ~= nil and inst._parent.HUD ~= nil then
-        TheFocalPoint.SoundEmitter:PlaySound("dontstarve/common/teleportworm/travel")
+        if inst._parent.player_classified.wormholetravelevent:value() == WORMHOLETYPE.WORM then
+            TheFocalPoint.SoundEmitter:PlaySound("dontstarve/common/teleportworm/travel")
+        elseif inst._parent.player_classified.wormholetravelevent:value() == WORMHOLETYPE.TENTAPILLAR then
+            TheFocalPoint.SoundEmitter:PlaySound("dontstarve/cave/tentapiller_hole_travel")
+        end
+    end
+end
+
+local function OnMakeFriendEvent(inst)
+    if inst._parent ~= nil and TheFocalPoint.entity:GetParent() == inst._parent then
+        TheFocalPoint.SoundEmitter:PlaySound("dontstarve/common/makeFriend")
     end
 end
 
@@ -531,6 +585,7 @@ local function RegisterNetListeners(inst)
         inst:ListenForEvent("performaction", OnPerformAction, inst._parent)
         inst:ListenForEvent("actionfailed", OnActionFailed, inst._parent)
         inst:ListenForEvent("wormholetravel", OnWormholeTravel, inst._parent)
+        inst:ListenForEvent("makefriend", OnMakeFriend, inst._parent)
     else
         inst.ishealthpulse:set_local(false)
         inst.ishungerpulse:set_local(false)
@@ -557,6 +612,11 @@ local function RegisterNetListeners(inst)
         OnIsTakingFireDamageDirty(inst)
         OnTemperatureDirty(inst)
         if inst._parent ~= nil then
+            inst._oldhealthpercent = inst.maxhealth:value() > 0 and inst.currenthealth:value() / inst.maxhealth:value() or 0
+            inst._oldhungerpercent = inst.maxhunger:value() > 0 and inst.currenthunger:value() / inst.maxhunger:value() or 0
+            inst._oldsanitypercent = inst.maxsanity:value() > 0 and inst.currentsanity:value() / inst.maxsanity:value() or 0
+            inst._oldbeavernesspercent = inst.currentbeaverness:value() * .01
+            inst._oldmoisture = inst.moisture:value()
             UpdateAnimOverrideSanity(inst._parent)
         end
     end
@@ -568,7 +628,8 @@ local function RegisterNetListeners(inst)
     inst:ListenForEvent("playercameradirty", OnPlayerCameraDirty)
     inst:ListenForEvent("playercamerasnap", OnPlayerCameraSnap)
     inst:ListenForEvent("playerfadedirty", OnPlayerFadeDirty)
-    inst:ListenForEvent("frontend.wormholetravel", OnWormholeTravelEvent)
+    inst:ListenForEvent("wormholetraveldirty", OnWormholeTravelDirty)
+    inst:ListenForEvent("leader.makefriend", OnMakeFriendEvent)
     inst:ListenForEvent("morguedirty", OnMorgueDirty)
     OnGhostModeDirty(inst)
     OnPlayerHUDDirty(inst)
@@ -597,12 +658,16 @@ local function fn()
     inst.istakingfiredamage = net_bool(inst.GUID, "health.takingfiredamage", "istakingfiredamagedirty")
     inst.issleephealing = net_bool(inst.GUID, "health.healthsleep")
     inst.ishealthpulse = net_bool(inst.GUID, "health.dodeltaovertime", "healthdirty")
+    inst.currenthealth:set(100)
+    inst.maxhealth:set(100)
 
     --Hunger variables
     inst._oldhungerpercent = 1
     inst.currenthunger = net_ushortint(inst.GUID, "hunger.current", "hungerdirty")
     inst.maxhunger = net_ushortint(inst.GUID, "hunger.max", "hungerdirty")
     inst.ishungerpulse = net_bool(inst.GUID, "hunger.dodeltaovertime", "hungerdirty")
+    inst.currenthunger:set(100)
+    inst.maxhunger:set(100)
 
     --Sanity variables
     inst._oldsanitypercent = 1
@@ -612,11 +677,14 @@ local function fn()
     inst.sanityratescale = net_tinybyte(inst.GUID, "sanity.ratescale")
     inst.issanitypulse = net_bool(inst.GUID, "sanity.dodeltaovertime", "sanitydirty")
     inst.issanityghostdrain = net_bool(inst.GUID, "sanity.ghostdrain")
+    inst.currentsanity:set(100)
+    inst.maxsanity:set(100)
 
     --Beaverness variables
     inst._oldbeavernesspercent = 1
     inst.currentbeaverness = net_byte(inst.GUID, "beaverness.current", "beavernessdirty")
     inst.isbeavernesspulse = net_bool(inst.GUID, "beaverness.dodeltaovertime", "beavernessdirty")
+    inst.currentbeaverness:set(100)
 
     --Temperature variables
     inst._oldtemperature = TUNING.STARTING_TEMP
@@ -657,7 +725,7 @@ local function fn()
     inst.isfadein = net_bool(inst.GUID, "frontend.isfadein", "playerfadedirty")
     inst.fadetime = net_smallbyte(inst.GUID, "frontend.fadetime", "playerfadedirty")
     inst.screenflash = net_tinybyte(inst.GUID, "frontend.screenflash", "playerscreenflashdirty")
-    inst.wormholetravelevent = net_event(inst.GUID, "frontend.wormholetravel")
+    inst.wormholetravelevent = net_tinybyte(inst.GUID, "frontend.wormholetravel", "wormholetraveldirty")
     inst.isfadein:set(true)
 
     --Builder variables
@@ -681,7 +749,7 @@ local function fn()
             inst.bufferedbuilds[k] = net_bool(inst.GUID, "builder.buffered_builds["..k.."]", "bufferedbuildsdirty")
         end
     end
-    inst.ingredientmod:set(1)
+    inst.ingredientmod:set(INGREDIENT_MOD[1])
     inst.sciencelevel:set(inst.techtrees.SCIENCE)
     inst.magiclevel:set(inst.techtrees.MAGIC)
     inst.ancientlevel:set(inst.techtrees.ANCIENT)
@@ -697,6 +765,9 @@ local function fn()
     inst.isattackedbydanger = net_bool(inst.GUID, "combat.isattackedbydanger")
     inst.canattack:set(true)
     inst.minattackperiod:set(4)
+
+    --Leader variables
+    inst.makefriendevent = net_event(inst.GUID, "leader.makefriend")
 
     --Stategraph variables
     inst.isperformactionsuccess = net_bool(inst.GUID, "sg.isperformactionsuccess", "isperformactionsuccessdirty")

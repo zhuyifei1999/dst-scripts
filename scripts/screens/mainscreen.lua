@@ -184,6 +184,7 @@ end
 function MainScreen:OnLoginButton( push_mp_main_screen )	
 
     local account_manager = TheFrontEnd:GetAccountManager()
+	local hadPendingConnection = TheNet:HasPendingConnection()
 	
     local function GoToMultiplayerMainMenu( offline )		
 		TheFrontEnd:SetOfflineMode(offline)
@@ -263,16 +264,20 @@ function MainScreen:OnLoginButton( push_mp_main_screen )
             end
             TheFrontEnd:PushScreen(confirm)
         elseif ( account_manager:HasAuthToken() and communication_succeeded ) or forceOffline then
-        	if not push_mp_main_screen then 
-        		TheFrontEnd:PopScreen()
-        	end
+			if hadPendingConnection then
+				TheFrontEnd:PopScreen()
+			else
+				if not push_mp_main_screen then 
+					TheFrontEnd:PopScreen()
+				end
 			
-        	TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
-		    	if push_mp_main_screen then 
-		    		TheFrontEnd:PopScreen()
-		    	end
-	            GoToMultiplayerMainMenu(forceOffline or false )
-	        end)
+				TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
+					if push_mp_main_screen then 
+						TheFrontEnd:PopScreen()
+					end
+					GoToMultiplayerMainMenu(forceOffline or false )
+				end)
+			end
         elseif not communication_succeeded then  -- We could not communicate with our auth server or steam is down
             print ( "failed_communication" )
             TheFrontEnd:PopScreen()
@@ -301,7 +306,7 @@ function MainScreen:OnLoginButton( push_mp_main_screen )
 	if TheSim:IsLoggedOn() or account_manager:HasAuthToken() then
 		if TheSim:GetUserHasLicenseForApp(DONT_STARVE_TOGETHER_APPID) then
 			account_manager:Login( "Client Login" )
-			TheFrontEnd:PushScreen(NetworkLoginPopup(onLogin, checkVersion, onCancel)) 
+			TheFrontEnd:PushScreen(NetworkLoginPopup(onLogin, checkVersion, onCancel, hadPendingConnection)) 
 		else
 			TheNet:NotifyAuthenticationFailure()
 			OnNetworkDisconnect( "APP_OWNERSHIP_CHECK_FAILED", false, false )

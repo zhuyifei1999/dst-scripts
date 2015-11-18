@@ -24,6 +24,8 @@ local Perishable = Class(function(self, inst)
     self.updatetask = nil
     self.dt = nil
     self.onperishreplacement = nil
+
+    self.localPerishMultiplyer = 1
 end,
 nil,
 {
@@ -87,6 +89,8 @@ local function Update(inst, dt)
 			modifier = modifier * TUNING.PERISH_SUMMER_MULT
 		end
 
+        modifier = modifier * inst.components.perishable.localPerishMultiplyer
+
 		modifier = modifier * TUNING.PERISH_GLOBAL_MULT
 		
 		local old_val = inst.components.perishable.perishremainingtime
@@ -144,11 +148,29 @@ end
 function Perishable:SetPerishTime(time)
 	self.perishtime = time
 	self.perishremainingtime = time
+    if self.updatetask ~= nil then
+        self:StartPerishing()
+    end
+end
+
+function Perishable:SetLocalMultiplier(newMult)
+    self.localPerishMultiplyer = newMult
+end
+
+function Perishable:GetLocalMultiplier()
+    return self.localPerishMultiplyer
+end
+
+function Perishable:SetNewMaxPerishTime(newtime)
+    local percent = self:GetPercent()
+    self.perishtime = newtime
+    self:SetPercent(percent)
 end
 
 function Perishable:SetOnPerishFn(fn)
 	self.perishfn = fn
 end
+
 
 function Perishable:GetPercent()
 	if self.perishremainingtime and self.perishtime and self.perishtime > 0 then
@@ -165,6 +187,10 @@ function Perishable:SetPercent(percent)
 		self.perishremainingtime = percent*self.perishtime
 	    self.inst:PushEvent("perishchange", {percent = self.inst.components.perishable:GetPercent()})
 	end
+
+    if self.updatetask ~= nil then
+        self:StartPerishing()
+    end
 end
 
 function Perishable:ReducePercent(amount)
@@ -195,13 +221,8 @@ function Perishable:StartPerishing()
         self.updatetask = nil
     end
 
-    local dt = 10 + math.random()*FRAMES*8--math.max( 4, math.min( self.perishtime / 100, 10)) + ( math.random()* FRAMES * 8)
-
-    if dt > 0 then
-        self.updatetask = self.inst:DoPeriodicTask(dt, Update, math.random()*2, dt)
-    else
-        Update(self.inst, 0)
-    end
+    local dt = 10 + math.random()*FRAMES*8
+    self.updatetask = self.inst:DoPeriodicTask(dt, Update, math.random()*2, dt)
 end
 
 function Perishable:Perish()

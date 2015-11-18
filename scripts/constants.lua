@@ -1,3 +1,5 @@
+require "util"
+
 PI = 3.14159
 DEGREES = PI/180
 RADIANS = 180/PI
@@ -448,6 +450,7 @@ NODE_TYPE =
 	Random = 3, 
 	Blocker = 4, 
 	Room = 5,
+    BackgroundRoom = 6,
 }
 
 -- See cell_data.h
@@ -777,7 +780,8 @@ RESET_ACTION =
 	LOAD_FRONTEND = 0,
 	LOAD_SLOT = 1,
 	LOAD_FILE = 2,
-	DO_DEMO = 3
+	DO_DEMO = 3,
+    JOIN_SERVER = 4
 }
 
 HUD_ATLAS = "images/hud.xml"
@@ -942,6 +946,17 @@ CHARACTER_INGREDIENT =
 --Character ingredient amounts must be multiples of 5
 CHARACTER_INGREDIENT_SEG = 5
 
+-- IngredientMod must be one of the following values
+INGREDIENT_MOD_LOOKUP =
+{
+    [0] = 0,
+    [1] = 0.25,
+    [2] = 0.5,
+    [3] = 0.75,
+    [4] = 1.0,
+}
+INGREDIENT_MOD = table.invert(INGREDIENT_MOD_LOOKUP)
+
 CONTAINERTEST =
 {
     NONE = 0,
@@ -1050,6 +1065,15 @@ TWITCH =
     CHAT_CONNECT_FAILED = 2,
 }
 
+-- TeamAttacker orders
+ORDERS =
+{
+    NONE = 0,
+    HOLD = 1,
+    WARN = 2,
+    ATTACK = 3,
+}
+
 -- How does this creature apply stunlock to the player
 PLAYERSTUNLOCK =
 {
@@ -1058,6 +1082,25 @@ PLAYERSTUNLOCK =
     SOMETIMES = 2,
     RARELY = 3,
     NEVER = 4,
+}
+
+-- Which wormhole?
+WORMHOLETYPE =
+{
+    WORM = 0,
+    TENTAPILLAR = 1,
+}
+
+REMOTESHARDSTATE =
+{
+    OFFLINE = 0,
+    READY = 1,
+}
+
+SHARDID =
+{
+    INVALID = "0",
+    MASTER = "1"
 }
 
 -- Server pricacy options
@@ -1069,4 +1112,11 @@ PRIVACY_TYPE =
     CLAN = 3,
 }
 
--- This line is added as a test. Delete it if you see it.
+INTENTIONS =
+{
+    SOCIAL = "social",
+    COOPERATIVE = "cooperative",
+    COMPETITIVE = "competitive",
+    MADNESS = "madness",
+    ANY = "any", -- for player use only, servers must have an intention
+}

@@ -39,7 +39,7 @@ else
         SERVER_NAME = 210,
         SEEN_DATE = 340,
         PLAYER_AGE = 415,
-        STEAM_ID = 520,
+        NET_ID = 520,
     }
 end
 
@@ -297,13 +297,13 @@ local function encounter_widget_constructor(data, parent, obit_button)
     group.PLAYER_AGE:SetString(data.playerage .. " " .. suffix)
     group.PLAYER_AGE:SetColour(0,0,0,1)
 
-    group.STEAM_ID = group:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "steam.tex", "", false, false, function() VisitURL("http://steamcommunity.com/profiles/"..data.steamid) end))
-    --STEAM_ID:SetHAlign(ANCHOR_MIDDLE)
-    group.STEAM_ID:SetPosition(column_offsets.STEAM_ID+8+slide_factor+18, -1, 0)
-	group.STEAM_ID:SetScale(.45)
-    group.STEAM_ID:SetHelpTextMessage(STRINGS.UI.PLAYERSTATUSSCREEN.VIEWPROFILE)
+    group.NET_ID = group:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "steam.tex", "", false, false, function() VisitURL("http://steamcommunity.com/profiles/"..data.netid) end))
+    --NET_ID:SetHAlign(ANCHOR_MIDDLE)
+    group.NET_ID:SetPosition(column_offsets.NET_ID+8+slide_factor+18, -1, 0)
+    group.NET_ID:SetScale(.45)
+    group.NET_ID:SetHelpTextMessage(STRINGS.UI.PLAYERSTATUSSCREEN.VIEWPROFILE)
 
-    group.focus_forward = group.STEAM_ID
+    group.focus_forward = group.NET_ID
 
     group:SetFocusChangeDir(MOVE_LEFT, obit_button)
 
@@ -354,13 +354,12 @@ local function encounter_widget_update(widget, data, index)
         widget.PLAYER_AGE:SetString(data.playerage .. " " .. suffix)
     end
 
-    local steam = data.steamid or "none"
-    if steam == "none" then
-        widget.STEAM_ID:Hide()
+    if not TheNet:IsNetIDPlatformValid(data.netid) then
+        widget.NET_ID:Hide()
     else
-        widget.STEAM_ID:MoveToFront()
-        widget.STEAM_ID:Show()
-        widget.STEAM_ID:SetOnClick( function() VisitURL("http://steamcommunity.com/profiles/"..data.steamid) end )
+        widget.NET_ID:MoveToFront()
+        widget.NET_ID:Show()
+        widget.NET_ID:SetOnClick( function() VisitURL("http://steamcommunity.com/profiles/"..data.netid) end )
     end
 end
 
@@ -619,13 +618,13 @@ function MorgueScreen:BuildEncountersTab()
 	    self.PLAYER_AGE:SetColour(0, 0, 0, 1)
         self.PLAYER_AGE:SetClickable(false)
 
-	    self.STEAM_ID = self.encounters_titles:AddChild(Text(NEWFONT, font_size))
-	    self.STEAM_ID:SetHAlign(ANCHOR_MIDDLE)
-	    self.STEAM_ID:SetPosition(column_offsets.STEAM_ID + 35 + 15, header_height, 0)
-	    self.STEAM_ID:SetRegionSize( 400, 30 )
-	    self.STEAM_ID:SetString(STRINGS.UI.MORGUESCREEN.STEAM_ID)
-	    self.STEAM_ID:SetColour(0, 0, 0, 1)
-        self.STEAM_ID:SetClickable(false)
+	    self.NET_ID = self.encounters_titles:AddChild(Text(NEWFONT, font_size))
+	    self.NET_ID:SetHAlign(ANCHOR_MIDDLE)
+	    self.NET_ID:SetPosition(column_offsets.NET_ID + 35 + 15, header_height, 0)
+	    self.NET_ID:SetRegionSize( 400, 30 )
+	    self.NET_ID:SetString(STRINGS.UI.MORGUESCREEN.NET_ID)
+	    self.NET_ID:SetColour(0, 0, 0, 1)
+        self.NET_ID:SetClickable(false)
 	end
 
 
@@ -637,7 +636,7 @@ function MorgueScreen:BuildEncountersTab()
 
     self.encounter_widgets = {}
     for i=1,num_rows do
-        table.insert(self.encounter_widgets, encounter_widget_constructor(self.player_history[i] or {name="", playerage="0", steamid="", server_name="", date="", prefab=""}, self.encountersrowsroot, self.obituary_button))
+        table.insert(self.encounter_widgets, encounter_widget_constructor(self.player_history[i] or {name="", playerage="0", netid="", server_name="", date="", prefab=""}, self.encountersrowsroot, self.obituary_button))
     end
 
     self.encounters_scroll_list = self.encounterslistroot:AddChild(ScrollableList(self.player_history, 900, row_height * num_rows, row_height - 1, 1, encounter_widget_update, self.encounter_widgets, nil, nil, nil, 30))

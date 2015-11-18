@@ -89,7 +89,7 @@ function KrampusBrain:OnStart()
         ChaseAndAttack(self.inst, 100),
 		IfNode( function() return self.inst.components.inventory:NumItems() >= self.greed and not self.inst.sg:HasStateTag("busy") end, "donestealing",
 			ActionNode(function() self.inst.sg:GoToState("exit") return SUCCESS end, "leave" )),
-		MinPeriod(self.inst, 10, 
+		MinPeriod(self.inst, 10, true,
 			stealnode),
 
         RunAway(self.inst, "player", MIN_RUNAWAY, MAX_RUNAWAY),

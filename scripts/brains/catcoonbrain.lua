@@ -52,11 +52,11 @@ local function PlayAction(inst)
 end
 
 local function HasValidHome(inst)
-    return inst.components.homeseeker and 
-       inst.components.homeseeker.home and 
-       not inst.components.homeseeker.home:HasTag("fire") and
-       not inst.components.homeseeker.home:HasTag("burnt") and
-       inst.components.homeseeker.home:IsValid()
+    local home = inst.components.homeseeker ~= nil and inst.components.homeseeker.home or nil
+    return home ~= nil
+        and home:IsValid()
+        and not (home.components.burnable ~= nil and home.components.burnable:IsBurning())
+        and not home:HasTag("burnt")
 end
 
 local function GetNoLeaderHomePos(inst)

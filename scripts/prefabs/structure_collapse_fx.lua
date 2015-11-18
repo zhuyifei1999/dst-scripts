@@ -3,6 +3,22 @@ local assets =
     Asset("ANIM", "anim/structure_collapse_fx.zip"),
 }
 
+local MATERIAL_NAMES =
+{
+    "wood",
+    "metal",
+    "stone",
+    "straw",
+    "pot",
+}
+local MATERIALS = table.invert(MATERIAL_NAMES)
+
+local MATERIAL_SOUND_MAP =
+{
+    rock = "dontstarve/wilson/rock_break",
+    --default: "dontstarve/common/destroy_"..material
+}
+
 local function playfx(proxy, anim)
     local inst = CreateEntity()
 
@@ -24,7 +40,16 @@ local function playfx(proxy, anim)
 
     inst.SoundEmitter:PlaySound("dontstarve/common/destroy_smoke")
 
+    local material = MATERIAL_NAMES[proxy.material:value()]
+    if material ~= nil then
+        inst.SoundEmitter:PlaySound(MATERIAL_SOUND_MAP[material] or ("dontstarve/common/destroy_"..material))
+    end
+
     inst:ListenForEvent("animover", inst.Remove)
+end
+
+local function SetMaterial(inst, material)
+    inst.material:set(MATERIALS[material] or 0)
 end
 
 local function makefn(anim)
@@ -44,11 +69,15 @@ local function makefn(anim)
             inst:DoTaskInTime(0, playfx, anim)
         end
 
+        inst.material = net_tinybyte(inst.GUID, "collapse_fx.material")
+
         inst.entity:SetPristine()
 
         if not TheWorld.ismastersim then
             return inst
         end
+
+        inst.SetMaterial = SetMaterial
 
         inst.persists = false
         inst:DoTaskInTime(1, inst.Remove)

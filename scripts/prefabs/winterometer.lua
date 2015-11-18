@@ -1,15 +1,18 @@
 require "prefabutil"
 
+local assets =
+{
+    Asset("ANIM", "anim/winter_meter.zip"),
+}
+
+local prefabs =
+{
+    "collapse_small",
+}
+
 local function DoCheckTemp(inst)
     if not inst:HasTag("burnt") then
-        if inst.task == nil then
-            inst.task = inst:DoPeriodicTask(1, CheckTemp)
-        end
-        local high_temp = TUNING.OVERHEAT_TEMP
-        local low_temp = 0
-        local temp = math.clamp(TheWorld.state.temperature, low_temp, high_temp)
-        local percent = (temp - low_temp) / (high_temp - low_temp)
-        inst.AnimState:SetPercent("meter", 1 - percent)
+        inst.AnimState:SetPercent("meter", 1 - math.clamp(TheWorld.state.temperature, 0, TUNING.OVERHEAT_TEMP) / TUNING.OVERHEAT_TEMP)
     end
 end
 
@@ -20,18 +23,19 @@ local function StartCheckTemp(inst)
 end
 
 local function onhammered(inst, worker)
-    if inst:HasTag("fire") and inst.components.burnable then 
+    if inst.components.burnable ~= nil and inst.components.burnable:IsBurning() then 
         inst.components.burnable:Extinguish()
     end
     inst.components.lootdropper:DropLoot()
-    SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
-    inst.SoundEmitter:PlaySound("dontstarve/common/destroy_wood")
+    local fx = SpawnPrefab("collapse_small")
+    fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+    fx:SetMaterial("wood")
     inst:Remove()
 end
 
-local function onhit(inst, worker)
+local function onhit(inst)
     if not inst:HasTag("burnt") then 
-        if inst.task then
+        if inst.task ~= nil then
             inst.task:Cancel()
             inst.task = nil
         end
@@ -41,7 +45,7 @@ local function onhit(inst, worker)
 end
 
 local function onbuilt(inst)
-    if inst.task then
+    if inst.task ~= nil then
         inst.task:Cancel()
         inst.task = nil
     end
@@ -49,31 +53,21 @@ local function onbuilt(inst)
     --the global animover handler will restart the check task
 end
 
-local assets = 
-{
-    Asset("ANIM", "anim/winter_meter.zip"),
-}
-
-local prefabs =
-{
-    "collapse_small",
-}
-
 local function makeburnt(inst)
-    if inst.task then
+    if inst.task ~= nil then
         inst.task:Cancel()
         inst.task = nil
     end
 end
 
 local function onsave(inst, data)
-    if inst:HasTag("burnt") or inst:HasTag("fire") then
+    if inst:HasTag("burnt") or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
         data.burnt = true
     end
 end
 
 local function onload(inst, data)
-    if data and data.burnt then
+    if data ~= nil and data.burnt then
         inst.components.burnable.onburnt(inst)
     end
 end
@@ -94,6 +88,8 @@ local function fn()
     inst.AnimState:SetBank("winter_meter")
     inst.AnimState:SetBuild("winter_meter")
     inst.AnimState:SetPercent("meter", 0)
+
+    inst:AddTag("structure")
 
     MakeSnowCoveredPristine(inst)
 
@@ -116,11 +112,12 @@ local function fn()
     inst:ListenForEvent("onbuilt", onbuilt)
     inst:ListenForEvent("animover", StartCheckTemp)
 
-    inst:AddTag("structure")
     MakeSmallBurnable(inst, nil, nil, true)
     MakeSmallPropagator(inst)
+
     inst.OnSave = onsave
     inst.OnLoad = onload
+
     inst:ListenForEvent("burntup", makeburnt)
 
     StartCheckTemp(inst)

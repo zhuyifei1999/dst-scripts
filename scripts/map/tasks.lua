@@ -16,15 +16,26 @@ SIZE_VARIATION = 3
 -------------------------------
 
 local taskgrouplist = {}
-function AddTaskSet(name, data)
-	taskgrouplist[name] = data
+function AddTaskSet(id, data)
+	taskgrouplist[id] = data
 end
 
-local function GetGenTasks(name)
-	return taskgrouplist[name]
+local function GetGenTasks(id)
+	return taskgrouplist[id]
+end
+ 
+local function GetGenTaskLists()
+    local ret = {}
+    for k,v in pairs(taskgrouplist) do
+        if not v.hideinfrontend then
+            table.insert(ret, {text = v.name, data = k})
+        end
+    end
+    return ret
 end
 
 AddTaskSet("default", {
+		name = STRINGS.UI.CUSTOMIZATIONSCREEN.TASKSETNAMES.DEFAULT,
 		tasks = {
 			"Make a pick",
 			"Dig that rock",
@@ -35,7 +46,7 @@ AddTaskSet("default", {
 			"Forest hunters",
 			"Badlands",
 		},
-		numoptionaltasks = 4,
+		numoptionaltasks = 6,
 		optionaltasks = {
 			"Befriend the pigs",
 			"For a nice walk",
@@ -50,15 +61,20 @@ AddTaskSet("default", {
 			"Mole Colony Rocks",
 			"MooseBreedingTask",
 		},
+        valid_start_tasks = {
+            "Make a pick",
+        },
 		set_pieces = {
 			["ResurrectionStone"] = { count = 2, tasks={"Make a pick", "Dig that rock", "Great Plains", "Squeltch", "Beeeees!", "Speak to the king", "Forest hunters", "Badlands" } },
 			["WormholeGrass"] = { count = 8, tasks={"Make a pick", "Dig that rock", "Great Plains", "Squeltch", "Beeeees!", "Speak to the king", "Forest hunters", "Befriend the pigs", "For a nice walk", "Kill the spiders", "Killer bees!", "Make a Beehat", "The hunters", "Magic meadow", "Frogs and bugs", "Badlands"} },
 			["MooseNest"] = { count = 9, tasks={"Make a pick", "Beeeees!", "Speak to the king", "Forest hunters", "Befriend the pigs", "For a nice walk", "Make a Beehat", "Magic meadow", "Frogs and bugs"} },
 			["DragonflyArena"] = { count=  1, tasks={"Badlands"}},
+			["CaveEntrance"] = { count = 10, tasks={"Make a pick", "Dig that rock", "Great Plains", "Squeltch", "Beeeees!", "Speak to the king", "Forest hunters", "Befriend the pigs", "For a nice walk", "Kill the spiders", "Killer bees!", "Make a Beehat", "The hunters", "Magic meadow", "Frogs and bugs", "Badlands"} },
 		},
 	})
 
 AddTaskSet("classic", {
+		name = STRINGS.UI.CUSTOMIZATIONSCREEN.TASKSETNAMES.CLASSIC,
 		tasks = {
 			"Make a pick",
 			"Dig that rock",
@@ -79,6 +95,9 @@ AddTaskSet("classic", {
 			"Magic meadow",
 			"Frogs and bugs",
 		},
+        valid_start_tasks = {
+            "Make a pick",
+        },
 		set_pieces = {
 			["ResurrectionStone"] = { count=2, tasks={"Make a pick", "Dig that rock", "Great Plains", "Squeltch", "Beeeees!", "Speak to the king", "Forest hunters" } },
 			["WormholeGrass"] = { count=8, tasks={"Make a pick", "Dig that rock", "Great Plains", "Squeltch", "Beeeees!", "Speak to the king", "Forest hunters", "Befriend the pigs", "For a nice walk", "Kill the spiders", "Killer bees!", "Make a Beehat", "The hunters", "Magic meadow", "Frogs and bugs" } },
@@ -359,7 +378,6 @@ AddTask("Dig that rock", {
 		keys_given={KEYS.TRINKETS,KEYS.STONE,KEYS.WOOD,KEYS.TIER1},
 		room_choices={
 			["Graveyard"] = 1,
-			["Sinkhole"] = 1,
 			["Rocky"] = 1 + math.random(SIZE_VARIATION), 
 			["Forest"] = math.random(SIZE_VARIATION), 
 			["Clearing"] = math.random(SIZE_VARIATION)
@@ -395,7 +413,6 @@ AddTask("The Deep Forest", {
 			["Marsh"] = math.random(SIZE_VARIATION), 
 			["DeepForest"] = 1+math.random(SIZE_VARIATION), 
 			["Clearing"] = 1,
-			["Sinkhole"] = 1
 		}, 
 		room_bg=GROUND.FOREST,
 		background_room="BGDeepForest",
@@ -541,7 +558,6 @@ AddTask("The Pigs are back in town", {
 		keys_given={KEYS.PIGS,KEYS.GOLD,KEYS.TIER3},
 		room_choices={
 			["PigKingdom"] = 1,
-			["GrassySinkhole"] = 1,
 			["MagicalDeciduous"] = 1,
 			["DeepDeciduous"] = 3 + math.random(SIZE_VARIATION), 
 		}, 
@@ -554,7 +570,6 @@ AddTask("The Pigs are back in town", {
 		keys_given={KEYS.PIGS,KEYS.GOLD,KEYS.TIER3},
 		room_choices={
 			["PigKingdom"] = 1,
-			["Sinkhole"] = 1,
 			--["Wormhole"] = 1,
 			["DeepForest"] = 3 + math.random(SIZE_VARIATION), 
 		}, 
@@ -695,7 +710,6 @@ AddTask("Squeltch", {
 		locks={LOCKS.SPIDERDENS,LOCKS.TIER2},
 		keys_given={KEYS.MEAT,KEYS.SILK,KEYS.SPIDERS,KEYS.TIER3},
 		room_choices={
-			["Sinkhole"] = 1,
 			["Marsh"] = 5+math.random(SIZE_VARIATION), 
 			--["Forest"] = math.random(SIZE_VARIATION), 
 			--["DeepForest"] = 1+math.random(SIZE_VARIATION),
@@ -1104,6 +1118,20 @@ AddTask("Chessworld", {
 		colour={r=.05,g=.5,b=.05,a=1},
 	})
 
+------------------------------------------------------------
+-- GIANTS ROOMS
+------------------------------------------------------------
+
+AddTask("MooseBreedingTask", {
+		locks={LOCKS.TREES,LOCKS.TIER2},
+		keys_given={KEYS.PIGS,KEYS.WOOD,KEYS.MEAT,KEYS.TIER2},
+		room_choices={
+			["MooseGooseBreedingGrounds"] = 1,
+		},
+		room_bg=GROUND.GRASS,
+		background_room="BGGrass",
+		colour={r=1,g=0.7,b=1,a=1},
+})
 
 
 require("map/tasks/maxwell")
@@ -1114,7 +1142,6 @@ require("map/tasks/ruins")
 
 require("map/tasks/DLCtasks")
 
-require("map/tasks/dst_tasks")
 ------------------------------------------------------------
 -- TEST TASKS
 ------------------------------------------------------------
@@ -1158,4 +1185,5 @@ tasks = {
 	oneofeverything = everything_sample,
 	GetTaskByName = GetTaskByName,
 	GetGenTasks = GetGenTasks,
+    GetGenTaskLists = GetGenTaskLists,
 }

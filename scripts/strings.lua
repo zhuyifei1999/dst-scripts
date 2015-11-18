@@ -231,9 +231,11 @@ STRINGS=
         UPGRADE = "Upgrade",
         HAUNT = "Haunt",
         UNPIN = "Unstick",
+
         TOSS = "Toss",
         WRITE = "Write on",
         ATTUNE = "Attune",
+        MIGRATE = "Travel via",
         REMOTERESURRECT = "Resurrect",
     },
 
@@ -306,6 +308,13 @@ STRINGS=
         MUSHTREE_TALL = "Blue Mushtree",
         MUSHTREE_MEDIUM = "Red Mushtree",
         MUSHTREE_SMALL = "Green Mushtree",
+        MUSHTREE_TALL_WEBBED = "Webbed Blue Mushtree",
+        SPORE_TALL = "Blue Spore",
+        SPORE_MEDIUM = "Red Spore",
+        SPORE_SMALL = "Green Spore",
+        SPORE_TALL_INV = "Blue Spore",
+        SPORE_MEDIUM_INV = "Red Spore",
+        SPORE_SMALL_INV = "Green Spore",
         SPIDER_HIDER="Cave Spider",
         SPIDER_SPITTER="Spitter",
         SEWING_KIT = "Sewing Kit",
@@ -368,12 +377,13 @@ STRINGS=
         DURIAN_COOKED = "Extra Smelly Durian",
         EGGPLANT_COOKED = "Braised Eggplant",
         BERRIES_COOKED = "Roasted Berries",
-        CAVE_ENTRANCE_CLOSED = "Plugged Sinkhole",
+        CAVE_ENTRANCE = "Plugged Sinkhole",
         CAVE_ENTRANCE_OPEN = "Sinkhole",
         CAVE_ENTRANCE_OPEN_CAVE = "Deeper",  
-        CAVE_ENTRANCE_CLOSED_CAVE = "Plugged Hole",
+        CAVE_ENTRANCE_RUINS = "Plugged Hole",
+        MIGRATION_PORTAL = "Migration Portal",
         RABBITHOUSE = "Rabbit Hutch",
-        CAVE_EXIT = "Rope",
+        CAVE_EXIT = "Stairs",
         UMBRELLA = "Umbrella",
         KRAMPUS_SACK = "Krampus Sack",
 
@@ -437,6 +447,7 @@ STRINGS=
         PETALS_EVIL = "Dark Petals",
         ADVENTURE_PORTAL = "Maxwell's Door",
         MULTIPLAYER_PORTAL = "Jury-Rigged Portal",
+        MIGRATION_PORTAL = "Friend-O-Matic Portal",
         POOP = "Manure",
         TORCH = "Torch",
         SEEDS = "Seeds",
@@ -485,6 +496,7 @@ STRINGS=
         HEATROCK = "Thermal Stone",
         FLOWER = "Flower",
         FLOWER_EVIL = "Evil Flower",
+        FLOWER_WITHERED = "Withered Flower",
         FIREFLIES = "Fireflies",
         GHOST = "Ghost",
         GRASS = "Grass",
@@ -552,6 +564,7 @@ STRINGS=
         TENTACLESPIKE = "Tentacle Spike",
         TENTACLE = "Tentacle",
         TENTACLE_PILLAR = "Big Tentacle",
+        TENTACLE_PILLAR_HOLE = "Big Slimy Pit",
         TENTACLE_PILLAR_ARM = "Baby Tentacle",
         TENTACLE_GARDEN = "Big Tentacle",
         ROPE = "Rope",
@@ -802,7 +815,6 @@ STRINGS=
         MAXWELLTHRONE = "Nightmare Throne",
         MAXWELLLOCK = "Nightmare Lock",
 
-        LOCKEDWES = "Wes",
         TREASURECHEST_TRAP = "Treasure Chest",
         MEATRACK = "Drying Rack",
         BANDAGE = "Honey Poultice",
@@ -837,7 +849,10 @@ STRINGS=
         FLOWER_CAVE_TRIPLE = "Light Flower",
         LIGHTBULB = "Light Bulb",
         STALAGMITE = "Stalagmite",
+
         SPIDERHOLE = "Spilagmite",
+       -- SPIDERHOLE_ROCK = "Spilagmite",
+
         EYEPLANT = "Eye Plant",
         LUREPLANT = "Meat Bulb",
         LUREPLANTBULB = "Fleshy Bulb",
@@ -883,6 +898,9 @@ STRINGS=
         MINOTAURHORN = "Guardian's Horn",
         POND_ALGAE = "Algae",
         WORMLIGHT = "Glow Berry",
+        WORMLIGHT_LESSER = "Lesser Glow Berry",
+
+        WORMLIGHT_PLANT = "Mysterious Plant",
 
         WORM_PLANT = "Mysterious Plant",
         WORM_DIRT = "Dirt Mound",
@@ -1058,6 +1076,7 @@ STRINGS=
         ARMORMARBLE = "It's heavy, but it will protect you.",
         ARMOR_SANITY = "Protects your body, but not your mind.",
         SPEAR="Use the pointy end.",
+        CLAW_GLOVE="Gets rid of tough obstacles.",
         STRAWHAT = "Helps you stay cool and dry.",
         TOPHAT = "The classiest hat of all.",
         FLOWERHAT = "Something to soothe the nerves.",
@@ -1256,7 +1275,7 @@ STRINGS=
         {
             ONE = "Say, pal.",
             TWO = "You're really pushing your luck.",
-            THREE = "Turn back now, or I may have to resort to drastic mesaures.",
+            THREE = "Turn back now, or I may have to resort to drastic measures.",
         },
         TWOLANDS =
         {
@@ -1365,7 +1384,7 @@ STRINGS=
             },
         },
     },
-    
+
     --ITEM DESCRIPTIONS
     DESCRIBE_NULL = "MISSING DESCRIPTION STRING",
 
@@ -1380,6 +1399,7 @@ STRINGS=
     PIG_TALK_ATTEMPT_TRADE = {"WHAT YOU GOT?", "BETTER BE GOOD."},
     PIG_TALK_PANIC = {"NOOOOO!", "TOO DARK! TOO DARK!", "AAAAAAAAAH!!"},
     PIG_TALK_PANICFIRE = {"HOT HOT HOT!", "OWWWWW!", "IT BURNS!"},
+    PIG_TALK_PANICHOUSEFIRE = {"HOUSE BURNS!", "MY STUFF!", "AAAH! FIRE!", "PANIC!"},
     PIG_TALK_PANICHAUNT = {"SPOOKY!", "AAAAH!!", "A GHOST! A GHOST!"},
     PIG_TALK_FIND_MEAT = {"ME HUNGRY!", "YUM!", "I EAT FOOD!", "TIME FOR FOOD!"},
     PIG_TALK_EAT_MEAT = {"NOM NOM NOM", "YUM!"},
@@ -1395,6 +1415,8 @@ STRINGS=
     RABBIT_MEAT_BATTLECRY = {"MEAT!", "UNCLEAN!", "MURDERER!", "REVENGE!", "MONSTER!"},
     RABBIT_GIVEUP = {"DONE.", "LATER."},
     RABBIT_RETREAT = {"AWAY!", "HURT!", "HOME!", "RUN!"},
+    RABBIT_PANICFIRE = {"EEEH!", "OOH!", "AAAH!"},
+    RABBIT_PANICHOUSEFIRE = {"HOME!", "FIRE!", "BURNING!"},
 
     EPITAPHS =
     {
@@ -1748,6 +1770,7 @@ STRINGS.UI =
             "Toni Zhang",
             "Quentin Proust",
             "Hugo Moraleida",
+            "Kris Fortune",
         },
 
         ALTGAMES = 
@@ -1824,6 +1847,15 @@ STRINGS.UI =
             "food",     
         }
     },
+
+    INTENTION = {
+        SOCIAL = "Social",
+        COOPERATIVE = "Cooperative",
+        COMPETITIVE = "Competitive",
+        MADNESS = "Madness",
+        ANY = "Any",
+    },
+
     CONSOLESCREEN=
     {
         REMOTEEXECUTE = "Remote:",
@@ -1884,7 +1916,7 @@ STRINGS.UI =
         MODQUIT = "Disable Mods",
         MODFORUMS = "Mod Forums",
         MODSBADTITLE = "All Mods Disabled",
-        MODSBADLOAD = "The game did not start correctly last time. This was likely caused by a mod, so all mods have been disabled.\n\nYou can try re-enabling mods from the mod settings screen.",
+        MODSBADLOAD = "The game did not start correctly last time. This was likely caused by a mod, so all client mods have been disabled.\n\nYou can try re-enabling mods from the mod settings screen.",
         MODS = "Mods",
         SCRIPTERRORQUIT = "Exit Game",
         SCRIPTERRORMODWARNING = "This error may have occurred due to a mod you have enabled!\nYou have the following mods enabled:\n",
@@ -1960,13 +1992,14 @@ STRINGS.UI =
         LASTBUILDDAYS = "Last build %d days ago",
         NEXTBUILDIMMINENT = "Next build imminent!",
         NEXTUPDATEDAYS = "Next Update: %d days",
-        
-        MOTDTITLE = "Halloween Mod Challenge",
-        
-        MOTD = "If you want to participate in our Halloween Mod Challenge click the link below!",
-        MOTDBUTTON = "Join Us",
+
+        MOTDTITLE = "Klei Store",
+        MOTD = "Check out the latest items in the Klei Store!",
+        MOTDBUTTON = "Klei Store",
+
         EXIT = "Exit",
         LOGOUT = "Log Out",
+        REDEEM = "Redeem",
         CREDITS = "Credits",
         UPDATENAME = "All's Well That Maxwell",
         DLC_UPDATENAME = "Where There's a Wilson...",
@@ -2216,7 +2249,7 @@ STRINGS.UI =
         },
         OK = "OK",
     },
-    
+
     NETWORKDISCONNECT =
     {
         TITLE =
@@ -2225,6 +2258,7 @@ STRINGS.UI =
             ID_NO_FREE_INCOMING_CONNECTIONS = "Server Full",
             ID_DST_NO_FREE_PLAYER_SLOTS = "Server Full",
             ID_CONNECTION_ATTEMPT_FAILED = "Server Not Responding",
+            ID_DST_DESTINATION_CONNECTION_ATTEMPT_FAILED = "Destination Not Responding",
             ID_INVALID_PASSWORD = "Bad Password",
             ID_CONNECTION_LOST = "Disconnected",
             ID_DISCONNECTION_NOTIFICATION = "Disconnected",
@@ -2233,6 +2267,7 @@ STRINGS.UI =
             ID_CONNECTION_BANNED = "Banned",
             ID_DST_USER_BANNED   = "Banned",
             ID_DST_USER_KICKED   = "Kicked",
+            ID_DST_IDLE_TIMEOUT = "Disconnected",
             ID_DST_INCOMING_CONNECTIONS_DISABLED = "Failed To Connect",
             FAILED_TO_AUTOJOIN_LAN = "LAN Join Failed",
             ID_DST_INITIALIZATION_FAILED = "Networking Failed To Start",
@@ -2247,6 +2282,7 @@ STRINGS.UI =
             ID_DST_INCOMPATIBLE_PROTOCOL_VERSION = "Version Mismatch",
             FORCE_DISCONNECTION         = "Force Disconnection",
             INVALID_GAME_SESSION_TOKEN = "Could Not Connect",
+            INVALID_CLIENT_TOKEN = "Invalid Client Token", 
             ID_DST_GAME_SESSION_AUTH_FAILED = "Authentication Failed",
             E_BANNED = "Account Banned",
             E_UPGRADE = "Version Out of Date",
@@ -2258,6 +2294,7 @@ STRINGS.UI =
             SERVER_MODS_WORKSHOP_FAILURE = "Disconnected Due To Missing Mods",
             SERVER_MODS_WORKSHOP_ACCESS_DENIED = "Disconnected Due To Missing Mods",
             ID_DST_SLOT_RESERVATION = "Slot Reserved",
+            ID_DST_DESTINATION_SERVER_NOT_AVAILABLE = "Server not available",            ID_DST_SERVER_IS_CLAN_ONLY = "Private Group",
             ID_DST_SERVER_IS_CLAN_ONLY = "Not a member of the server's clan.",
             ID_DST_SERVER_IS_LAN_ONLY = "Server only allows local connections.",
         },
@@ -2267,6 +2304,7 @@ STRINGS.UI =
             ID_NO_FREE_INCOMING_CONNECTIONS = "The server is full. Try again later once one of these miscreants has been consumed by the gaping maw that is this game.",
             ID_DST_NO_FREE_PLAYER_SLOTS = "The server is full. Try again later once one of these miscreants has been consumed by the gaping maw that is this game.",
             ID_CONNECTION_ATTEMPT_FAILED = "The server is not responding.\nTry yelling louder?",
+            ID_DST_DESTINATION_CONNECTION_ATTEMPT_FAILED = "The destination is not responding.\nTry yelling louder?",
             ID_INVALID_PASSWORD = "The password you entered was incorrect.\nAre you sure you're welcome in there?",
             ID_CONNECTION_LOST = "You have lost connection to the server. Maybe it's for the best, you know? Then again, I'm just a dialog box--who am I to say?",
             ID_DISCONNECTION_NOTIFICATION = "You have been disconnected from the server. Bye bye!",
@@ -2275,6 +2313,7 @@ STRINGS.UI =
             ID_CONNECTION_BANNED = "You have been banned from this server. B-A-N-N-E-D. I'm not sure how much clearer I can be...",
             ID_DST_USER_BANNED   = "You have been banned from this server. B-A-N-N-E-D. I'm not sure how much clearer I can be...",
             ID_DST_USER_KICKED = "You have been kicked from this server. Are you miffed? Yes, you're likely miffed.",
+            ID_DST_IDLE_TIMEOUT = "You have lost connection to the server. Maybe it's for the best, you know? Then again, I'm just a dialog box--who am I to say?",
             ID_DST_INCOMING_CONNECTIONS_DISABLED = "The server is temporarily not accepting new connections.  Please wait a moment before trying again.",
             FAILED_TO_AUTOJOIN_LAN = "Unable to join a LAN server.\nAre you sure it exists?",
             ID_DST_INITIALIZATION_FAILED = "Networking did not initialize properly. Don't get discouraged! Give it another whirl, yeah?",
@@ -2290,6 +2329,7 @@ STRINGS.UI =
             FORCE_DISCONNECTION         = "The connection has been forcibly closed by the engine. Vrooom vroom.",
             E_BANNED = "Your account has been banned for violating the terms of use. This is no laughing matter.",
             E_UPGRADE = "A new version is available. Please update Don't Starve Together.",
+            INVALID_CLIENT_TOKEN = "Hmmm, the token error. If this keeps happening, let us know in the forums. In the meantime, try again and it just might work.",
             INVALID_GAME_SESSION_TOKEN = "Unable to reach the Klei server. That thing is sort of the gatekeeper to this whole 'online game' business. Try again?",
             ID_DST_GAME_SESSION_AUTH_FAILED = "Something fishy is going on... either we couldn't reach the Klei server or you're not who you say you are.",
             ID_DST_USER_CONNECTION_FAILED = "We tried really hard to get you connected, but something went awry.",
@@ -2302,7 +2342,8 @@ STRINGS.UI =
             ID_DST_SLOT_RESERVATION = "Unable to join the server. The only unused slots are reserved. Try again later once one of these miscreants has been consumed by the gaping maw that is this game.",
 		    ID_DST_SERVER_IS_CLAN_ONLY = "You have to be part of this server's steam group to connect to it. You could try visiting their group page and asking nicely to join?",
             ID_DST_SERVER_IS_LAN_ONLY = "This server only allows joining from the same local network. You could run a really long cable from your computer.. or the server owner could change their server settings.",
-        },
+            ID_DST_DESTINATION_SERVER_NOT_AVAILABLE = "The server you were playing on is not curently available. Try again later",
+		},
 		OK = "OK",
     },
     
@@ -2378,6 +2419,8 @@ STRINGS.UI =
         WHISPER = "whisper:",
         SAY = "say:",
         WHISPER_DESIGNATOR = "[W]",
+        HELP_WHISPER = "Whisper",
+        HELP_SAY = "Say",
     },
 
     MODSSCREEN = {
@@ -2493,9 +2536,10 @@ STRINGS.UI =
                 "Island you an axe",        -- Island hopping
                 "Crazy Eddie",              -- Focus on sanity play
                 "Nighttime Antics",         -- Focus on nighttime play
-                "Together Forever",	    -- Multiplayer coop
-                "No Giants Here",     -- Nothing Reign Of Giants
-                },      
+                "Together Forever",	        -- Multiplayer coop
+                "No Giants Here",           -- Nothing Reign Of Giants
+                "The Caves",                 -- Caves content in DST
+        },
                 
         PRESETLEVELDESC = {
             "The standard Don't Starve experience.",
@@ -2509,6 +2553,13 @@ STRINGS.UI =
             "The standard Don't Starve Experience 9",
             "The multiplayer Don't Starve experience.",
             "Don't Starve Together with Reign of Giants turned off.",
+            "Delve into the caves... together!",
+        },
+
+        TASKSETNAMES = {
+            DEFAULT = "Together",
+            CLASSIC = "Classic",
+            CAVE_DEFAULT = "Underground",
         },
 
         CUSTOM_PRESET = "Custom Preset",
@@ -2521,7 +2572,7 @@ STRINGS.UI =
         UNKNOWN_PRESET_DESC = "This game was started with some weird settings.",
         REVERTCHANGES = "Revert Changes",
 
-        MAP_TYPE = "World Gen: Biomes",            
+        TASK_SET = "World Gen: Biomes",            
         START_LOCATION = "World Gen: Spawn Area",
         WORLD_SIZE = "World Gen: Size",
         BRANCHING = "World Gen: Branches",
@@ -2594,6 +2645,7 @@ STRINGS.UI =
     SERVERLISTINGSCREEN =
     {
         SERVER_LIST_TITLE = "Servers",
+        SERVER_LIST_TITLE_INTENT = "%s Servers",
         DIRECTCONNECT = "Direct Connect",
         REFRESH = "Refresh",
         REFRESHING = "Refreshing...",
@@ -2715,6 +2767,16 @@ STRINGS.UI =
         CONTINUE = "Continue",
         CHANGE_SORT = "Change Sort",
         LAN = "LAN",
+        INTENTION_FILTER = "Playstyle:",
+        INTENTION_TITLE = "What's your playstyle?",
+        INTENTION_BUTTON = "Choose Playstyle",
+        INTENTION_DESC = {
+            SOCIAL = "You want to relax, make friends, and play for fun. Winning or losing isn't so important so long as everyone is having a good time.",
+            COOPERATIVE = "Teamwork is your guiding principal. It's not enough to not starve, you have to not starve Together!",
+            COMPETITIVE = "By playing harder, smarter, and better than your opponents, you will show them what you're made of.",
+            MADNESS = "Fighting, looting, filling the world with spiders... Who knows what you'll do next?",
+            ANY = "You're flexible, you can adapt to whatever world you find yourself in."
+        }
     },
 
     SERVERCREATIONSCREEN =
@@ -2737,6 +2799,15 @@ STRINGS.UI =
             FRIENDS = "Friends Only",
             LOCAL = "Local Only",
             CLAN = "Steam Group",
+        },
+        INTENTION_LABEL = "Server Playstyle:",
+        INTENTION_TITLE = "What's your server's playstyle?",
+        INTENTION_BUTTON = "Set Intention",
+        INTENTION_DESC = {
+            SOCIAL = "This server is a place for friendly chatter, a relaxed playstyle, and getting to know people. Come on in!",
+            COOPERATIVE = "We're all trying to survive together. Here, we play our best and do what we can to tame this hostile world.",
+            COMPETITIVE = "This is where you'll find a fair fight. Everyone needs a place to prove who's the best at surviving, fighting, building, or whatever.",
+            MADNESS = "Anything goes on this server! Forests will be burned, food will be nommed, backs will be stabbed.",
         },
         CLANID = "Group ID:",
         CLANONLY = "Members Only:",
@@ -2782,6 +2853,8 @@ STRINGS.UI =
         INVALIDSERVERNAME_BODY = "No one will be able to find you if you don't have a name!",
         INVALIDCLANSETTINGS_TITLE = "Bad Group ID",
         INVALIDCLANSETTINGS_BODY = "You have to specify a steam group you belong to! Go back and check that number.",
+        INVALIDINTENTIONSETTINGS_TITLE = "Missing Server Intention",
+        INVALIDINTENTIONSETTINGS_BODY = "You forgot to choose a playstyle for your server!",
     },
     
     
@@ -2900,7 +2973,7 @@ STRINGS.UI =
          },    
         SEEN_DATE = "Date",
         PLAYER_AGE = "Age",
-        STEAM_ID = "Profile",
+        NET_ID = "Profile",
         DAY = "Day",
         DAYS = "Days",
     },
@@ -2995,6 +3068,7 @@ STRINGS.UI =
         CONTROL_SELECT = " -- Select new input -- ",
         DEFAULT_CONTROL_TEXT = "Default: %s",
         CHANGEBIND = "Change Bind",
+        UNBIND = "Unbind Action",
         APPLYTITLE = "Accept Changes",
         APPLYBODY = "Do you wish to accept these changes?",
         RESETTITLE = "Reset Binds",
@@ -3552,12 +3626,10 @@ STRINGS.UI =
         YES ="Yes",
         NO = "No",
 
-        TOGETHERMAP = "Together",
-        CLASSICMAP = "Classic",
-
         DEFAULTSTART = "Default",
         PLUSSTART = "Plus",
         DARKSTART = "Dark",
+        CAVESTART = "Caves",
     },
     
     SAVELOAD = 
@@ -3755,6 +3827,9 @@ STRINGS.TAGS =
     FRIENDSONLY = "friendsonly",
     CLAN = "group",
     LOCAL = "localonly",
+    --#TODOCAVES: This should be "multilevel" as the shards might not necessarily include a cave,
+    --but this will cover the common case at launch at least.
+    MULTISERVER = "caves",
 }
 
 
@@ -3877,4 +3952,17 @@ STRINGS.SIGNS =
 		"of Death",
 		"full of Bees",
 	},
+}
+
+STRINGS.SHARD =
+{
+    MIGRATION_FAILED =
+    {
+        -- This one should not be used, as the migration portal should be close if the destination is not ready or set
+        DST_SHARD_MIGRATION_DESTINATION_NOT_READY = "[WIP] Destination is not ready!",
+        -- If the destination server is full (We may close the portal?)
+        DST_SHARD_DESTINATION_FULL = "[WIP] Destination is full!",
+        -- If there were an error while sending the migration data, migration is cancelled
+        DST_SHARD_MIGRATION_CANCELLED = "[WIP] Migration cancelled",
+    }   
 }

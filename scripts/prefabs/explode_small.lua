@@ -3,55 +3,76 @@ local assets =
     Asset("ANIM", "anim/explode.zip")
 }
 
-local function PlayExplodeAnim(proxy)
-    local inst = CreateEntity()
+local function MakeExplosion(data)
+    local function PlayExplodeAnim(proxy)
+        local inst = CreateEntity()
 
-    inst:AddTag("FX")
-    --[[Non-networked entity]]
-    inst.entity:SetCanSleep(false)
-    inst.persists = false
+        inst:AddTag("FX")
+        --[[Non-networked entity]]
+        inst.entity:SetCanSleep(false)
+        inst.persists = false
 
-    inst.entity:AddTransform()
-    inst.entity:AddAnimState()
+        inst.entity:AddTransform()
+        inst.entity:AddAnimState()
+        inst.entity:AddSoundEmitter()
 
-    inst.Transform:SetFromProxy(proxy.GUID)
+        inst.Transform:SetFromProxy(proxy.GUID)
 
-    inst.AnimState:SetBank("explode")
-    inst.AnimState:SetBuild("explode")
-    inst.AnimState:PlayAnimation("small")
-    inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
-    inst.AnimState:SetLightOverride(1)
+        inst.AnimState:SetBank("explode")
+        inst.AnimState:SetBuild("explode")
+        inst.AnimState:PlayAnimation("small")
+        inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+        inst.AnimState:SetLightOverride(1)
 
-    inst:ListenForEvent("animover", inst.Remove)
-end
+        inst.SoundEmitter:PlaySound("dontstarve/common/blackpowder_explo")
+        if data ~= nil and data.sound ~= nil then
+            inst.SoundEmitter:PlaySound(data.sound)
+        end
 
-local function fn()
-	local inst = CreateEntity()
-
-	inst.entity:AddTransform()
-    inst.entity:AddNetwork()
-
-    --Dedicated server does not need to spawn the local fx
-    if not TheNet:IsDedicated() then
-        --Delay one frame so that we are positioned properly before starting the effect
-        --or in case we are about to be removed
-        inst:DoTaskInTime(0, PlayExplodeAnim)
+        inst:ListenForEvent("animover", inst.Remove)
     end
 
-    inst.Transform:SetFourFaced()
+    local function fn()
+        local inst = CreateEntity()
 
-    inst:AddTag("FX")
+        inst.entity:AddTransform()
+        inst.entity:AddNetwork()
 
-    inst.entity:SetPristine()
+        --Dedicated server does not need to spawn the local fx
+        if not TheNet:IsDedicated() then
+            --Delay one frame so that we are positioned properly before starting the effect
+            --or in case we are about to be removed
+            inst:DoTaskInTime(0, PlayExplodeAnim)
+        end
 
-    if not TheWorld.ismastersim then
+        inst.Transform:SetFourFaced()
+
+        inst:AddTag("FX")
+
+        inst.entity:SetPristine()
+
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        inst.persists = false
+        inst:DoTaskInTime(1, inst.Remove)
+
         return inst
     end
 
-    inst.persists = false
-    inst:DoTaskInTime(1, inst.Remove)
-
-    return inst
+    return fn
 end
 
-return Prefab("common/explode_small", fn, assets)
+local extras = {
+    slurtle = {
+        sound = "dontstarve/creatures/slurtle/explode",
+    },
+    slurtlehole = {
+        sound = "dontstarve/creatures/slurtle/mound_explode",
+    },
+}
+
+return Prefab("common/explode_small", MakeExplosion(), assets),
+        Prefab("common/explode_small_slurtle", MakeExplosion(extras.slurtle), assets),
+        Prefab("common/explode_small_slurtlehole", MakeExplosion(extras.slurtlehole), assets)

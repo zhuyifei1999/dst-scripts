@@ -27,21 +27,21 @@ return {
         GIVE =
         {
             DEAD = "Maybe I'll just hold on to this.",
-            SLEEPING = "Too unconcious to care.",
+            SLEEPING = "Too unconscious to care.",
             BUSY = "I'll try again in a second.",
         },
         GIVETOPLAYER = 
         {
         	FULL = "Their pockets are too full!",
             DEAD = "Maybe I'll just hold on to this.",
-            SLEEPING = "Too unconcious to care.",
+            SLEEPING = "Too unconscious to care.",
             BUSY = "I'll try again in a second.",
     	},
     	GIVEALLTOPLAYER = 
         {
         	FULL = "Their pockets are too full!",
             DEAD = "Maybe I'll just hold on to this.",
-            SLEEPING = "Too unconcious to care.",
+            SLEEPING = "Too unconscious to care.",
             BUSY = "I'll try again in a second.",
     	},
         WRITE =
@@ -79,6 +79,7 @@ return {
 	ANNOUNCE_FREEDOM = "I'm free! I'm finally free!",
 	ANNOUNCE_HIGHRESEARCH = "I feel so smart now!",
 	ANNOUNCE_HOUNDS = "Did you hear that?",
+	ANNOUNCE_WORMS = "Did you feel that?",
 	ANNOUNCE_HUNGRY = "I'm so hungry!",
 	ANNOUNCE_HUNT_BEAST_NEARBY = "This track is fresh, the beast must be nearby.",
 	ANNOUNCE_HUNT_LOST_TRAIL = "The trail ends here.",
@@ -235,6 +236,11 @@ return {
 			GHOST = "Wes could use a heart.",
 		},
 		MULTIPLAYER_PORTAL = "It's rickety, but it appears to function. After a fashion...",
+        MIGRATION_PORTAL = {
+            GENERIC = "If I had any friends, this could take me to them.",
+            OPEN = "If I step through, will I still be me?",
+            FULL = "It seems to be popular over there.",
+        },
 		GLOMMER = "It's cute, in a gross kind of way.",
 		GLOMMERFLOWER = 
 		{
@@ -252,12 +258,14 @@ return {
 
 		WEBBERSKULL = "Poor little guy. He deserves a proper funeral.",
 		WORMLIGHT = "Looks delicious.",
+		WORMLIGHT_LESSER = "Kinda wrinkled.",
 		WORM =
 		{
 		    PLANT = "Seems safe to me.",
 		    DIRT = "Just looks like a pile of dirt.",
 		    WORM = "It's a worm!",
 		},
+        WORMLIGHT_PLANT = "Seems safe to me.",
 		MOLE =
 		{
 			HELD = "Nowhere left to dig, my friend.",
@@ -285,13 +293,13 @@ return {
 		RUINSHAT = "Fit for a king. Or me.",
 		NIGHTMARE_TIMEPIECE =
 		{
-		CALM = "All is well.",
-		WARN = "Getting pretty magical around here.",
-		WAXING = "I think it's becoming more concentrated!",
-		STEADY = "It seems to be staying steady.",
-		WANING = "Feels like it's receding.",
-		DAWN = "The nightmare is almost gone!",
-		NOMAGIC = "There's no magic around here.",
+            CALM = "All is well.",
+            WARN = "Getting pretty magical around here.",
+            WAXING = "I think it's becoming more concentrated!",
+            STEADY = "It seems to be staying steady.",
+            WANING = "Feels like it's receding.",
+            DAWN = "The nightmare is almost gone!",
+            NOMAGIC = "There's no magic around here.",
 		},
 		BISHOP_NIGHTMARE = "It's falling apart!",
 		ROOK_NIGHTMARE = "Terrifying!",
@@ -372,6 +380,7 @@ return {
 		BATBAT = "I wonder if I could fly with two of these.",
 		BATWING="I hate these things, even when they're dead.",
 		BATWING_COOKED="At least it's not coming back.",
+        BATCAVE = "I don't want to wake them.",
 		BEDROLL_FURRY="It's so warm and comfy.",
 		BUNNYMAN="I am filled with an irresitable urge to do science.",
 		FLOWER_CAVE="Science makes it glow.",
@@ -381,9 +390,25 @@ return {
 		LANTERN="A more civilized light.",
 		LIGHTBULB="It's strangely tasty looking.",
 		MANRABBIT_TAIL="I just like holding it.",
-		MUSHTREE_TALL  ="That mushroom got too big for its own good.",
-		MUSHTREE_MEDIUM="These used to grow in my bathroom.",
-		MUSHTREE_SMALL ="A magic mushroom?",
+		MUSHTREE_TALL = {
+            GENERIC = "That mushroom got too big for its own good.",
+            BLOOM = "You can't tell by looking, but it's smelly.",
+        },
+		MUSHTREE_MEDIUM = {
+            GENERIC = "These used to grow in my bathroom.",
+            BLOOM = "I'm mildly offended by this.",
+        },
+		MUSHTREE_SMALL = {
+            GENERIC = "A magic mushroom?",
+            BLOOM = "It's trying to reproduce.",
+        },
+        MUSHTREE_TALL_WEBBED = "The spiders thought this one was important.",
+        SPORE_TALL = "It's just drifting around.",
+        SPORE_MEDIUM = "It's just drifting around.",
+        SPORE_SMALL = "It's just drifting around.",
+        SPORE_TALL_INV = "I'll keep a little light in my pocket.",
+        SPORE_MEDIUM_INV = "I'll keep a little light in my pocket.",
+        SPORE_SMALL_INV = "I'll keep a little light in my pocket.",
 		RABBITHOUSE=
 		{
 			GENERIC = "That's not a real carrot.",
@@ -429,12 +454,18 @@ return {
 		TURF_BADLANDS = "Yet another ground type.",
 
 		POWCAKE = "I don't know if I'm hungry enough.",
-        CAVE_ENTRANCE = 
-        {
-            GENERIC="I wonder if I could move that rock.",
+        CAVE_ENTRANCE = "I wonder if I could move that rock.",
+        CAVE_ENTRANCE_RUINS = "It's probably hiding something.",
+        CAVE_ENTRANCE_OPEN = {
+            GENERIC = "The earth itself rejects me!",
             OPEN = "I bet there's all sorts of things to discover down there.",
+            FULL = "I'll have to wait until someone leaves.",
         },
-        CAVE_EXIT = "I've had enough discovery for now.",
+        CAVE_EXIT = {
+            GENERIC = "I'll just stay down here, I suppose.",
+            OPEN = "I've had enough discovery for now.",
+            FULL = "The surface is too crowded!",
+        },
 		MAXWELLPHONOGRAPH = "So that's where the music was coming from.",
 		BOOMERANG = "Aerodynamical!",
 		PIGGUARD = "He doesn't look as friendly as the others.",
@@ -579,7 +610,7 @@ return {
 		CATCOONDEN = 
 		{
 			GENERIC = "It's a den in a stump.",
-			EMPTY = "It's owner ran out of lives.",
+			EMPTY = "Its owner ran out of lives.",
 		},
 		CATCOONHAT = "Ears hat!",
 		COONTAIL = "I think it's still swishing.",
@@ -772,6 +803,7 @@ return {
 		FISH_COOKED = "Grilled to perfection.",
 		FLINT = "It's a very sharp rock.",
 		FLOWER = "It's pretty but it smells like a common labourer.",
+        FLOWER_WITHERED = "I don't think it got enough sun.",
 		FLOWERHAT = "It smells like prettiness.",
 		FLOWER_EVIL = "Augh! It's so evil!",
 		FOLIAGE = "Some leafy greens.",
@@ -885,7 +917,6 @@ return {
 		GOATMILK = "It's buzzing with tastiness!",
 		LITTLE_WALRUS = "He won't be cute and cuddly forever.",
 		LIVINGLOG = "It looks worried.",
-		LOCKEDWES = "Maxwell's statues are trapping him.",
 		LOG =
 		{
 			BURNING = "That's some hot wood!",
@@ -952,7 +983,7 @@ return {
 		MONSTERLASAGNA = "I cooked it myself!",
 		FLOWERSALAD = "A bowl of foliage.",
         ICECREAM = "I scream for ice cream!",
-        WATERMELONICLE = "Cryogenic watermlon.",
+        WATERMELONICLE = "Cryogenic watermelon.",
         TRAILMIX = "A healthy, natural snack.",
         HOTCHILI = "Five alarm!",
         GUACAMOLE = "Avogadro's favorite dish.",
@@ -1255,6 +1286,7 @@ return {
 		TENTACLESPIKE = "It's pointy and slimy.",
 		TENTACLESPOTS = "I think these were its genitalia.",
 		TENTACLE_PILLAR = "A slimy pole.",
+        TENTACLE_PILLAR_HOLE = "Seems stinky, but worth exploring.",
 		TENTACLE_PILLAR_ARM = "Little slippery arms.",
 		TENTACLE_GARDEN = "Yet another slimy pole.",
 		TOPHAT = "What a nice hat.",

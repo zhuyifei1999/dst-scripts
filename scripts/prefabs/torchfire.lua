@@ -102,6 +102,7 @@ local function fn()
     EmitterManager:AddEmitter(inst, nil, updateFunc)
 
     inst:AddTag("FX")
+    inst:AddTag("playerlight")
 
     inst.Light:Enable(true)
     inst.Light:SetIntensity(.75)

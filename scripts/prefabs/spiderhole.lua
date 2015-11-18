@@ -1,15 +1,21 @@
 local assets =
 {
-    Asset("ANIM", "anim/spider_mound.zip")
+    Asset("ANIM", "anim/spider_mound.zip"),
 }
 
 local prefabs =
 {
     "spider_hider",
     "spider_spitter",
+
+    --loot
+    "rocks",
+    "silk",
+    "spidergland",
+    "silk",
 }
 
-SetSharedLootTable( 'spider_hole',
+SetSharedLootTable('spider_hole',
 {
     {'rocks',       1.00},
     {'rocks',       1.00},
@@ -19,9 +25,9 @@ SetSharedLootTable( 'spider_hole',
 })
 
 local function ReturnChildren(inst)
-    if inst.components.childspawner then
-        for k,child in pairs(inst.components.childspawner.childrenoutside) do
-            if child.components.homeseeker then
+    if inst.components.childspawner ~= nil then
+        for k, child in pairs(inst.components.childspawner.childrenoutside) do
+            if child.components.homeseeker ~= nil then
                 child.components.homeseeker:GoHome()
             end
             child:PushEvent("gohome")
@@ -29,37 +35,20 @@ local function ReturnChildren(inst)
     end
 end
 
-local function workcallback(inst, worker, workleft)
+local function rock_onworked(inst, worker, workleft)
     if workleft <= 0 then
         inst.SoundEmitter:PlaySound("dontstarve/wilson/rock_break")
-        inst.components.lootdropper:DropLoot(Point(inst.Transform:GetWorldPosition()))
+        inst.components.lootdropper:DropLoot(inst:GetPosition())
         inst:Remove()
-    elseif workleft <= TUNING.SPILAGMITE_ROCK * 0.5 then
-        inst.AnimState:PlayAnimation("low")
     else
-        inst.AnimState:PlayAnimation("med")
+        inst.AnimState:PlayAnimation(workleft <= TUNING.SPILAGMITE_ROCK * 0.5 and "low" or "med")
     end
 end
 
 local function GoToBrokenState(inst)
-    inst.broken = true
-
-    inst.SoundEmitter:PlaySound("dontstarve/wilson/rock_break")
-
-    inst.AnimState:PushAnimation("med")
-    inst:RemoveTag("spiderden")
-
-    if inst.components.childspawner then 
-        inst.components.childspawner:StopSpawning()
-        inst:RemoveComponent("childspawner") 
-    end
-
-    if inst.creep then
-        inst.creep:SetRadius(0)
-    end
-
-    inst.components.workable:SetOnWorkCallback(workcallback)
-    inst.components.workable:SetWorkLeft(TUNING.SPILAGMITE_ROCK)
+    --Remove myself, spawn a rock version in my place.
+    SpawnPrefab("spiderhole_rock").Transform:SetPosition(inst.Transform:GetWorldPosition())
+    inst:Remove()
 end
 
 local function IsInvestigator(child)
@@ -67,62 +56,27 @@ local function IsInvestigator(child)
 end
 
 local function SpawnInvestigators(inst, data)
-    if not inst.components.health:IsDead() then
-        if inst.components.childspawner then
-            local num_to_release = math.min(2, inst.components.childspawner.childreninside)
-            local num_investigators = inst.components.childspawner:CountChildrenOutside(IsInvestigator)
-            num_to_release = num_to_release - num_investigators
-            local targetpos = data ~= nil and data.target ~= nil and Vector3(data.target.Transform:GetWorldPosition()) or nil
-            for k = 1, num_to_release do
-                local spider = inst.components.childspawner:SpawnChild()
-                if spider ~= nil and targetpos ~= nil then
-                    spider.components.knownlocations:RememberLocation("investigate", targetpos)
-                end
+    if not inst.components.health:IsDead() and inst.components.childspawner ~= nil then
+        local num_to_release = math.min(2, inst.components.childspawner.childreninside)
+        local num_investigators = inst.components.childspawner:CountChildrenOutside(IsInvestigator)
+        num_to_release = num_to_release - num_investigators
+        local targetpos = data ~= nil and data.target ~= nil and data.target:GetPosition() or nil
+        for k = 1, num_to_release do
+            local spider = inst.components.childspawner:SpawnChild()
+            if spider ~= nil and targetpos ~= nil then
+                spider.components.knownlocations:RememberLocation("investigate", targetpos)
             end
         end
     end
 end
 
-local function MakeSpiderSpawner(inst)
-    inst:AddComponent("childspawner")
-    inst.components.childspawner:SetRegenPeriod(120)
-    inst.components.childspawner:SetSpawnPeriod(240)
-    inst.components.childspawner:SetMaxChildren(math.random(2, 3))
-    inst.components.childspawner:StartRegen()
-    inst.components.childspawner.childname = "spider_hider"
-    inst.components.childspawner:SetRareChild("spider_spitter", 0.33)
-    inst.components.childspawner:StartSpawning()
-    inst:ListenForEvent("startquake", function() ReturnChildren(inst) end, TheWorld)
-
-    inst.creep = inst.entity:AddGroundCreepEntity()
-    inst.creep:SetRadius(5)
-    inst:ListenForEvent("creepactivate", SpawnInvestigators)
-end
-
-local function onsave(inst, data)
-    data.broken = inst.broken
-end
-
-local function onload(inst, data)
-    if data then
-        inst.broken = data.broken
-        if inst.broken then 
-            GoToBrokenState(inst)
-        else
-            MakeSpiderSpawner(inst)
-        end
-    else
-        MakeSpiderSpawner(inst)
-    end
-end
-
-local function onworked(inst, worker, workleft)
+local function spawner_onworked(inst, worker, workleft)
     if inst.components.childspawner ~= nil then
         inst.components.childspawner:ReleaseAllChildren(worker)
     end
 end
 
-local function fn()
+local function commonfn(anim, minimap_icon, tag, hascreep)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -131,15 +85,25 @@ local function fn()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
 
-    MakeObstaclePhysics(inst, 2)
+    if hascreep then
+        inst.entity:AddGroundCreepEntity()
+        inst.GroundCreepEntity:SetRadius(5)
+    end
 
-    inst.MiniMapEntity:SetIcon("cavespider_den.png")
+    MakeObstaclePhysics(inst, 2)
 
     inst.AnimState:SetBank("spider_mound")
     inst.AnimState:SetBuild("spider_mound")
-    inst.AnimState:PlayAnimation("full")
+    inst.AnimState:PlayAnimation(anim)
 
-    inst:AddTag("spiderden")
+    if minimap_icon ~= nil then
+        inst.MiniMapEntity:SetIcon(minimap_icon)
+    end
+
+    inst:AddTag("cavedweller")
+    if tag ~= nil then
+        inst:AddTag(tag)
+    end
 
     inst.entity:SetPristine()
 
@@ -148,24 +112,86 @@ local function fn()
     end
 
     inst:AddComponent("inspectable")
+    inst:AddComponent("workable")
+
+    return inst
+end
+
+local function CanTarget(guy)
+    return not guy.components.health:IsDead()
+end
+
+local function CustomOnHaunt(inst, haunter)
+    if math.random() <= TUNING.HAUNT_CHANCE_HALF then
+        local target = FindEntity(
+            inst,
+            25,
+            CanTarget,
+            { "_combat", "_health" }, --see entityreplica.lua
+            { "playerghost", "spider", "INLIMBO" }
+        )
+        if target ~= nil then
+            spawner_onworked(inst, target)
+            inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
+            return true
+        end
+    end
+end
+
+local function spawnerfn()
+    local inst = commonfn("full", "cavespider_den.png", "spiderden", true)
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
     inst:AddComponent("health")
 
-    --For the first 1/3 of work done, this functions as a child spawner.
-    --After the rock has been mined down to the 2nd level the rock is no longer a child spawner
-    --and the call backs are changed within the "GoToBrokenState" function
-    inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.MINE)
     inst.components.workable:SetWorkLeft(TUNING.SPILAGMITE_SPAWNER)
-    inst.components.workable:SetOnWorkCallback(onworked)
+    inst.components.workable:SetOnWorkCallback(spawner_onworked)
     inst.components.workable:SetOnFinishCallback(GoToBrokenState)
+
+    inst:AddComponent("childspawner")
+    inst.components.childspawner:SetRegenPeriod(120)
+    inst.components.childspawner:SetSpawnPeriod(240)
+    inst.components.childspawner:SetMaxChildren(math.random(2, 3))
+    inst.components.childspawner:StartRegen()
+    inst.components.childspawner.childname = "spider_hider"
+    inst.components.childspawner:SetRareChild("spider_spitter", 0.33)
+    inst.components.childspawner.emergencychildname = "spider_spitter"
+    inst.components.childspawner.emergencychildrenperplayer = 1
+    inst.components.childspawner:StartSpawning()
+
+    inst:ListenForEvent("creepactivate", SpawnInvestigators)
+    inst:ListenForEvent("startquake", function() ReturnChildren(inst) end, TheWorld)
+
+    MakeHauntableWork(inst)
+    AddHauntableCustomReaction(inst, CustomOnHaunt, false)
+
+    return inst
+end
+
+local function rockfn()
+    local inst = commonfn("med")
+
+    inst:SetPrefabNameOverride("spiderhole")
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.components.workable:SetWorkAction(ACTIONS.MINE)
+    inst.components.workable:SetOnWorkCallback(rock_onworked)
+    inst.components.workable:SetWorkLeft(TUNING.SPILAGMITE_ROCK)
 
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetChanceLootTable('spider_hole')
 
-    inst.broken = false
-    inst.OnSave = onsave
-    inst.OnLoad = onload
+    MakeHauntableWork(inst)
+
     return inst
 end
 
-return Prefab("cave/objects/spiderhole", fn, assets, prefabs)
+return Prefab("cave/objects/spiderhole", spawnerfn, assets, prefabs),
+    Prefab("cave/objects/spiderhole_rock", rockfn, assets, prefabs)

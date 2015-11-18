@@ -599,12 +599,7 @@ function Combat:CalcDamage(target, weapon, multiplier)
     multiplier = (multiplier or 1) * (self.damagemultiplier or 1)
     local bonus = self.damagebonus or 0
     if weapon ~= nil then
-        local weapondamage
-        if weapon.components.weapon.variedmodefn ~= nil then
-            weapondamage = weapon.components.weapon.variedmodefn(weapon).damage or 0
-        else
-            weapondamage = weapon.components.weapon.damage or 0
-        end
+        local weapondamage = weapon.components.weapon.damage or 0
 
         return target ~= nil
             and target:HasTag("player")
@@ -623,7 +618,6 @@ end
 function Combat:GetAttackRange()
     local weapon = self:GetWeapon()
     return (weapon == nil and self.attackrange)
-        or (weapon.components.weapon.variedmodefn ~= nil and self.attackrange + weapon.components.weapon.variedmodefn(weapon).attackrange)
         or (weapon.components.weapon.attackrange ~= nil and self.attackrange + weapon.components.weapon.attackrange)
         or self.attackrange
 end
@@ -637,7 +631,6 @@ end
 function Combat:GetHitRange()
     local weapon = self:GetWeapon()
     return (weapon == nil and self.hitrange)
-        or (weapon.components.weapon.variedmodefn ~= nil and self.hitrange + weaponrange.components.weapon.variedmodefn(weapon).hitrange)
         or (weapon.components.weapon.hitrange ~= nil and self.hitrange + weapon.components.weapon.hitrange)
         or self.hitrange
 end
@@ -657,7 +650,7 @@ function Combat:CanHitTarget(target, weapon)
 
         local specialcase_target =
             weapon ~= nil
-            and ((weapon:HasTag("extinguisher") and (target:HasTag("smolder") or target:HasTag("fire"))) or
+            and ((weapon:HasTag("extinguisher") and target.components.burnable ~= nil and (target.components.burnable:IsSmoldering() or target.components.burnable:IsBurning())) or
                 (weapon:HasTag("rangedlighter") and target:HasTag("canlight")))
 
         if specialcase_target or 

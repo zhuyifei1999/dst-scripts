@@ -13,16 +13,18 @@ local function makefn(name, collide)
         inst.entity:AddNetwork()
 
         if collide then
-            MakeObstaclePhysics(inst, 2.75)
-        end
-
-        if not TheWorld.ismastersim then
-            return inst
+            MakeObstaclePhysics(inst, 2.35)
         end
 
         inst.AnimState:SetBank(name)
         inst.AnimState:SetBuild(name)
         inst.AnimState:PlayAnimation("idle", true)
+
+        inst.entity:SetPristine()
+
+        if not TheWorld.ismastersim then
+            return inst
+        end
 
         return inst
     end
@@ -32,4 +34,9 @@ local function pillar(name, collide)
     return Prefab("cave/objects/"..name, makefn(name, collide), makeassetlist(name))
 end
 
-return pillar("pillar_ruins", true), pillar("pillar_algae", true), pillar("pillar_cave", true), pillar("pillar_stalactite")
+return pillar("pillar_ruins", true),
+       pillar("pillar_algae", true),
+       pillar("pillar_cave", true),
+       pillar("pillar_cave_flintless", true),
+       pillar("pillar_cave_rock", true),
+       pillar("pillar_stalactite")

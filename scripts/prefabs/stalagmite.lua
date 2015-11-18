@@ -73,8 +73,7 @@ local function commonfn(anim)
     inst.AnimState:SetBuild("rock_stalagmite")
     inst.AnimState:PlayAnimation(anim)
 
-    --Sneak these into pristine state for optimization
-    inst:AddTag("_named")
+    inst:SetPrefabNameOverride("stalagmite")
 
     inst.entity:SetPristine()
 
@@ -82,25 +81,20 @@ local function commonfn(anim)
         return inst
     end
 
-    --Remove these tags so that they can be added properly when replicating components below
-    inst:RemoveTag("_named")
-
     local color = 0.5 + math.random() * 0.5
     inst.AnimState:SetMultColour(color, color, color, 1)
 
-    inst:AddComponent("lootdropper") 
+    inst:AddComponent("lootdropper")
 
     inst:AddComponent("inspectable")
-    inst.components.inspectable.nameoverride = "stalagmite"
-
-    inst:AddComponent("named")
-    inst.components.named:SetName(STRINGS.NAMES["STALAGMITE"])
 
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.MINE)
     inst.components.workable:SetWorkLeft(TUNING.ROCKS_MINE)
 
     inst.components.workable:SetOnWorkCallback(workcallback)
+
+    MakeHauntableWork(inst)
 
     return inst
 end

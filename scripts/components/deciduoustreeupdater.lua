@@ -132,7 +132,11 @@ function DeciduousTreeUpdater:OnUpdate(dt)
             self.inst.monster_start_task:Cancel()
             self.inst.monster_start_task = nil
         end
-        if self.inst.monster and not self.inst:HasTag("fire") and not self.inst:HasTag("stump") and not self.inst:HasTag("burnt") then
+        if self.inst.monster and
+            not (self.inst.components.burnable ~= nil and
+                self.inst.components.burnable:IsBurning()) and
+            not self.inst:HasTag("stump") and
+            not self.inst:HasTag("burnt") then
             if not self.inst.monster_stop_task or self.inst.monster_stop_task == nil then
 	            self.inst.monster_stop_task = self.inst:DoTaskInTime(math.random(0,2), function(inst) 
 	                inst:StopMonster() 

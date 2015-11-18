@@ -1,3 +1,5 @@
+require ("map/tasks")
+
 local freqency_descriptions
 if PLATFORM ~= "PS4" then
 	freqency_descriptions = {
@@ -77,34 +79,16 @@ else
 	}
 end
 
-local map_descriptions = {
-	{ text = STRINGS.UI.SANDBOXMENU.TOGETHERMAP, data = "default"},
-	{ text = STRINGS.UI.SANDBOXMENU.CLASSICMAP, data = "classic"},
-}
-
 local start_descriptions = {
-	{ text = STRINGS.UI.SANDBOXMENU.DEFAULTSTART, 
-		data = "default"
-		-- {
-		-- 	start_setpeice = "DefaultStart",		
-		-- 	start_node = "Clearing",
-		-- }
-	},
-	{ text = STRINGS.UI.SANDBOXMENU.PLUSSTART, 
-		data = "plus"
-		-- {
-		-- 	start_setpeice = "DefaultPlusStart",	
-		-- 	start_node = {"DeepForest", "Forest", "SpiderForest", "Plain", "Rocky", "Marsh"},
-		-- }
-	},
-	{ text = STRINGS.UI.SANDBOXMENU.DARKSTART, 
-		data = "darkness"
-		-- {
-		-- 	start_setpeice = "DarknessStart",	
-		-- 	start_node = {"DeepForest", "Forest"},	
-		-- }
-	},	
+	{ text = STRINGS.UI.SANDBOXMENU.DEFAULTSTART, data = "default" },
+	{ text = STRINGS.UI.SANDBOXMENU.PLUSSTART, data = "plus" },
+	{ text = STRINGS.UI.SANDBOXMENU.DARKSTART, data = "darkness" },
+    --#TODOCAVES: disabled temporarily for main branch ~gjans
+	--{ text = STRINGS.UI.SANDBOXMENU.CAVESTART, data = "caves" },
 }
+if BRANCH == "dev" then
+    table.insert(start_descriptions, { text = STRINGS.UI.SANDBOXMENU.CAVESTART, data = "caves" })
+end
 
 local branching_descriptions = {
 	{ text = STRINGS.UI.SANDBOXMENU.BRANCHINGNEVER, data = "never" },
@@ -226,8 +210,8 @@ local GROUP = {
 						desc = nil,
 						enable = true,
 						items={
-							["task_set"] = {value = "default", enable = false, image = "world_map.tex", desc = map_descriptions, order = 1}, 
-							["start_location"] = {value = "default", enable = false, image = "world_start.tex", desc = start_descriptions, order = 2}, 
+                            ["task_set"] = {value = "default", enable = false, image = "world_map.tex", desc = tasks.GetGenTaskLists(), order = 1}, 
+                            ["start_location"] = {value = "default", enable = false, image = "world_start.tex", desc = start_descriptions, order = 2}, 
 							["world_size"] = {value = "default", enable = false, image = "world_size.tex", desc = size_descriptions, order = 3}, 
 							["branching"] = {value = "default", enable = false, image = "world_branching.tex", desc = branching_descriptions, order = 4}, 
 							["loop"] = {value = "default", enable = false, image = "world_loop.tex", desc = loop_descriptions, order = 5}, 
@@ -260,4 +244,32 @@ local function GetGroupForItem(target)
 	return "misc"
 end
 
-return {GetGroupForItem=GetGroupForItem, GROUP=GROUP, preset_descriptions=preset_descriptions}
+local function GetOptions()
+    local options = {}
+
+    local groups = {}
+    for k,v in pairs(GROUP) do
+        table.insert(groups,k)
+    end
+
+    table.sort(groups, function(a,b) return GROUP[a].order < GROUP[b].order end)
+
+    for i,groupname in ipairs(groups) do
+        local items = {}
+        local group = GROUP[groupname]
+        for k,v in pairs(group.items) do
+            table.insert(items, k)
+        end
+
+        table.sort(items, function(a,b) return group.items[a].order < group.items[b].order end)
+
+        for ii,itemname in ipairs(items) do
+            local item = group.items[itemname]
+            table.insert(options, {name = itemname, image = item.image, options = item.desc or group.desc, default = item.value, group = groupname, grouplabel = group.text})
+        end
+    end
+
+    return options
+end
+
+return {GetGroupForItem=GetGroupForItem, GROUP=GROUP, preset_descriptions=preset_descriptions, GetOptions=GetOptions}

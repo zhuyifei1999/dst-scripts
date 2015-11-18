@@ -43,6 +43,49 @@ local Savanna = {
 	["skeleton_hunter"] = StaticLayout.Get("map/static_layouts/skeleton_hunter"),
 }
 
+local BlueFungal = {
+    ["skeleton_mushjack"] = StaticLayout.Get("map/static_layouts/skeleton_mushjack", {
+        areas = {
+            stumps = function() return { "mushtree_tall_stump", "mushtree_tall_stump", "mushtree_tall_stump",  } end,
+        },
+    }),
+}
+
+local RedFungal = {
+    ["skeleton_mushjack"] = StaticLayout.Get("map/static_layouts/skeleton_mushjack", {
+        areas = {
+            stumps = function() return { "mushtree_medium_stump", "mushtree_medium_stump", "mushtree_medium_stump",  } end,
+        },
+    }),
+}
+
+local GreenFungal = {
+    ["skeleton_mushjack"] = StaticLayout.Get("map/static_layouts/skeleton_mushjack", {
+        areas = {
+            stumps = function() return { "mushtree_small_stump", "mushtree_small_stump", "mushtree_small_stump",  } end,
+        },
+    }),
+}
+
+local Underrock = {
+	["skeleton_miner"] = StaticLayout.Get("map/static_layouts/skeleton_miner"),
+}
+
+local Cave = {
+	["skeleton_miner"] = StaticLayout.Get("map/static_layouts/skeleton_miner"),
+	["skeleton_batfight"] = StaticLayout.Get("map/static_layouts/skeleton_batfight"),
+}
+
+local Mud = {
+	["skeleton_lightfarmer"] = StaticLayout.Get("map/static_layouts/skeleton_lightfarmer"),
+}
+
+local Sinkhole = {
+	["skeleton_lumberjack"] = StaticLayout.Get("map/static_layouts/skeleton_lumberjack"),
+	["skeleton_entomologist"] = StaticLayout.Get("map/static_layouts/skeleton_entomologist"),
+	["skeleton_farmer"] = StaticLayout.Get("map/static_layouts/skeleton_farmer"),
+}
+
 local Any = {
 --------------------------------------------------------------------------------
 -- Professions
@@ -75,6 +118,13 @@ local SandboxModePointsofInterest = {
 	[GROUND.GRASS] = Grasslands,
 	[GROUND.FOREST] = Forest,
 	[GROUND.MARSH] = Swamp,
+	[GROUND.FUNGUS] = BlueFungal,
+	[GROUND.FUNGUSRED] = RedFungal,
+	[GROUND.FUNGUSGREEN] = GreenFungal,
+	[GROUND.UNDERROCK] = Underrock,
+	[GROUND.CAVE] = Cave,
+	[GROUND.MUD] = Mud,
+	[GROUND.SINKHOLE] = Sinkhole,
 }
 
 

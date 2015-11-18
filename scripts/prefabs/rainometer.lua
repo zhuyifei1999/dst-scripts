@@ -1,31 +1,30 @@
 require "prefabutil"
 
 local function onhammered(inst, worker)
-    if inst:HasTag("fire") and inst.components.burnable then 
+    if inst.components.burnable ~= nil and inst.components.burnable:IsBurning() then 
         inst.components.burnable:Extinguish()
     end
     inst.components.lootdropper:DropLoot()
-    SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
-    inst.SoundEmitter:PlaySound("dontstarve/common/destroy_wood")
+    local fx = SpawnPrefab("collapse_small")
+    fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+    fx:SetMaterial("wood")
     inst:Remove()
 end
 
 local function DoCheckRain(inst)
-    if not inst:HasTag("burnt") then 
+    if not inst:HasTag("burnt") then
         inst.AnimState:SetPercent("meter", TheWorld.state.pop)
     end
 end
 
 local function StartCheckRain(inst)
-    if not inst:HasTag("burnt") then 
-        if inst.task == nil then
-            inst.task = inst:DoPeriodicTask(1, DoCheckRain, 0)
-        end
+    if inst.task == nil and not inst:HasTag("burnt") then
+        inst.task = inst:DoPeriodicTask(1, DoCheckRain, 0)
     end
 end
 
-local function onhit(inst, worker)
-    if inst.task then
+local function onhit(inst)
+    if inst.task ~= nil then
         inst.task:Cancel()
         inst.task = nil
     end
@@ -44,7 +43,7 @@ local prefabs =
 }
 
 local function onbuilt(inst)
-    if inst.task then
+    if inst.task ~= nil then
         inst.task:Cancel()
         inst.task = nil
     end
@@ -53,20 +52,20 @@ local function onbuilt(inst)
 end
 
 local function makeburnt(inst)
-    if inst.task then
+    if inst.task ~= nil then
         inst.task:Cancel()
         inst.task = nil
     end
 end
 
 local function onsave(inst, data)
-    if inst:HasTag("burnt") or inst:HasTag("fire") then
+    if inst:HasTag("burnt") or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
         data.burnt = true
     end
 end
 
 local function onload(inst, data)
-    if data and data.burnt then
+    if data ~= nil and data.burnt then
         inst.components.burnable.onburnt(inst)
     end
 end

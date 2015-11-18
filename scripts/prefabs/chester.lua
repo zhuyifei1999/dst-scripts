@@ -195,6 +195,7 @@ local function create_chester()
     inst.entity:AddDynamicShadow()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
+    inst.entity:AddLightWatcher()
 
     MakeCharacterPhysics(inst, 75, .5)
     inst.Physics:SetCollisionGroup(COLLISION.CHARACTERS)

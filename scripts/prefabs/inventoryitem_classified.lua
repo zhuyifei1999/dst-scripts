@@ -24,8 +24,9 @@ end
 
 local function SerializePercentUsed(inst, percent)
     if percent ~= nil then
+        local zero = percent == 0
         percent = math.floor(percent * 100 + .5)
-        inst.percentused:set(percent <= 1 and 1 or (percent >= 100 and 100 or percent))
+        inst.percentused:set(zero and 0 or (percent <= 1 and 1 or (percent >= 100 and 100 or percent)))
     else
         inst.percentused:set(255)
     end

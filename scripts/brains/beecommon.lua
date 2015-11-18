@@ -36,11 +36,13 @@ local function OnWorked(inst, data)
 end
 
 local function GoHomeAction(inst)
-    if inst.components.homeseeker and 
-       inst.components.homeseeker.home and 
-       inst.components.homeseeker.home:IsValid() and 
-       inst.components.homeseeker.home.components.childspawner then 
-        return BufferedAction(inst, inst.components.homeseeker.home, ACTIONS.GOHOME)
+    local homeseeker = inst.components.homeseeker
+    if homeseeker
+        and homeseeker.home
+        and homeseeker.home:IsValid()
+        and homeseeker.home.components.childspawner
+        and (not homeseeker.home.components.burnable or not homeseeker.home.components.burnable:IsBurning()) then
+        return BufferedAction(inst, homeseeker.home, ACTIONS.GOHOME)
     end
 end
 

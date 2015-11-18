@@ -37,8 +37,9 @@ local function onhammered(inst)
     end
     local x, y, z = inst.Transform:GetWorldPosition()
     inst.components.lootdropper:DropLoot(Vector3(x, y, z))
-    SpawnPrefab("collapse_small").Transform:SetPosition(x, y, z)
-    inst.SoundEmitter:PlaySound("dontstarve/common/destroy_wood")
+    local fx = SpawnPrefab("collapse_small")
+    fx.Transform:SetPosition(x, y, z)
+    fx:SetMaterial("wood")
     inst:Remove()
 end
 
