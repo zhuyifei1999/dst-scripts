@@ -942,7 +942,7 @@ function LobbyScreen:DoFocusHookups()
 		-- player list sets its own focus 
 	end
 
-	if self.dressup then 
+	if self.dressup and TheNet:IsOnlineMode() then 
 		self.heroportrait:SetFocusChangeDir(MOVE_RIGHT, self.dressup)
 		self.dressup:SetFocusChangeDir(MOVE_LEFT, self.heroportrait)
 	end

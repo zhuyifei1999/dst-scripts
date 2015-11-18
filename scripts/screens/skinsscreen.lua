@@ -49,6 +49,8 @@ local function line_constructor(screen, parent, num_pictures, data)
 		end
    
 		table.insert(widget.images, itemimage)
+
+		-- FOR TESTING ONLY break
 	end
 
 	-- if the line isn't full, fill in the rest of the line with empty itemimages
@@ -109,6 +111,7 @@ local function updateWidget(widget, data, index, screen)
 
 		offset = offset + 100
 		widget.images[i]:Show()
+		-- FOR TESTING ONLY break 
 	end
 
 	if #data < #widget.images then 

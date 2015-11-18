@@ -382,8 +382,12 @@ function JoinServer( server_listing, optional_password_override )
                                             },
 										true )
 			password_prompt_screen.edit_text.OnTextEntered = function()
-				TheFrontEnd:PopScreen()
-				send_response( password_prompt_screen:GetActualString() ) 
+				if password_prompt_screen:GetActualString() ~= "" then
+					TheFrontEnd:PopScreen()
+					send_response( password_prompt_screen:GetActualString() ) 
+				else
+					password_prompt_screen.edit_text:SetEditing(true)
+				end
 			end
 			if not Profile:GetShowPasswordEnabled() then
 				password_prompt_screen.edit_text:SetPassword(true)

@@ -148,10 +148,11 @@ local DressupPanel = Class(Widget, function(self, owner, profile, onNextFn, onPr
 
 		self.legs_spinner = self.dressup:AddChild(self:MakeSpinner("legs"))
 		self.legs_spinner:SetPosition(0, body_offset-55-208)
+
+		self.default_focus = self.body_spinner.spinner
+		self.focus_forward = self.body_spinner.spinner
 	end
 
-	self.default_focus = self.body_spinner.spinner
-	self.focus_forward = self.body_spinner.spinner
 	self:DoFocusHookups()
 
 end)
