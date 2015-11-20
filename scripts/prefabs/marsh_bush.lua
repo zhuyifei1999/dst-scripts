@@ -14,17 +14,17 @@ local function ontransplantfn(inst)
 end
 
 local function dig_up(inst, chopper)
-    if inst.components.pickable and inst.components.pickable:CanBePicked() then
+    if inst.components.pickable ~= nil and inst.components.pickable:CanBePicked() then
         inst.components.lootdropper:SpawnLootPrefab("twigs")
     end
-    inst:Remove()
     inst.components.lootdropper:SpawnLootPrefab("dug_marsh_bush")
+    inst:Remove()
 end
 
 local function onpickedfn(inst, picker)
     inst.AnimState:PlayAnimation("picking")
     inst.AnimState:PushAnimation("picked", false)
-    if picker.components.combat then
+    if picker.components.combat ~= nil then
         picker.components.combat:GetAttacked(inst, TUNING.MARSHBUSH_DAMAGE)
         picker:PushEvent("thorns")
     end
@@ -89,20 +89,33 @@ local function fn()
 end
 
 local function burnt_fn()
-    local inst = fn()
+    local inst = CreateEntity()
 
-    inst:RemoveComponent("burnable")
-    inst:RemoveComponent("propagator")
-    inst:RemoveComponent("hauntable")
-    inst:RemoveComponent("workable")
-    inst:RemoveComponent("pickable")
-    inst:RemoveComponent("lootdropper")
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddNetwork()
 
+    inst.AnimState:SetBuild("marsh_bush")
+    inst.AnimState:SetBank("marsh_bush")
     inst.AnimState:PlayAnimation("burnt")
+
+    inst:AddTag("thorny")
     inst:AddTag("burnt")
+    MakeDragonflyBait(inst, 1)
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    local color = 0.5 + math.random() * 0.5
+    inst.AnimState:SetMultColour(color, color, color, 1)
+
+    inst:AddComponent("inspectable")
 
     return inst
 end
 
 return Prefab("marsh/objects/marsh_bush", fn, assets, prefabs),
-Prefab("marsh/objects/burnt_marsh_bush", burnt_fn, assets, prefabs)
+    Prefab("marsh/objects/burnt_marsh_bush", burnt_fn, assets, prefabs)

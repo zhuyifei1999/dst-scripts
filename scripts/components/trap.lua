@@ -266,27 +266,34 @@ end
 
 function Trap:Harvest(doer)
     if self.issprung then
+        --Cache these because trap may become invalid in callbacks
+        local pos = self.inst:GetPosition()
+        local timeintrap = self.inst.components.timer ~= nil and self.inst.components.timer:GetTimeElapsed("foodspoil") or 0
+
         self.inst:PushEvent("harvesttrap")
         if self.onharvest ~= nil then
             self.onharvest(self.inst)
         end
+        --WARNING: May have become invalid now!
 
         if self.lootprefabs ~= nil and doer.components.inventory ~= nil then
-            local timeintrap = self.inst.components.timer:GetTimeElapsed("foodspoil") or 0
             for i, v in ipairs(self.lootprefabs) do
                 local loot = SpawnPrefab(v)
                 if loot ~= nil then
-                    doer.components.inventory:GiveItem(loot, nil, self.inst:GetPosition())
+                    doer.components.inventory:GiveItem(loot, nil, pos)
                     if loot.components.perishable ~= nil then
                         loot.components.perishable:LongUpdate(timeintrap)
                     end
                 end
             end
         end
-        self:Reset()
 
-        if self.inst.components.finiteuses ~= nil and self.inst.components.finiteuses:GetUses() > 0 then
-            doer.components.inventory:GiveItem(self.inst, nil, self.inst:GetPosition())
+        if self.inst:IsValid() then
+            self:Reset()
+
+            if self.inst.components.finiteuses ~= nil and self.inst.components.finiteuses:GetUses() > 0 then
+                doer.components.inventory:GiveItem(self.inst, nil, pos)
+            end
         end
     end
 end
