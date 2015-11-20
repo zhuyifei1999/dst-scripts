@@ -550,9 +550,9 @@ function SaveGame(isshutdown, cb)
             record.prefab = nil
 
             if new_references ~= nil then
-                references[v.GUID] = true
-                for k, v in pairs(new_references) do
-                    references[v] = true
+                references[v.GUID] = v
+                for k1, v1 in pairs(new_references) do
+                    references[v1] = v
                 end
             end
 
@@ -591,7 +591,7 @@ function SaveGame(isshutdown, cb)
 
         if new_refs ~= nil then
             for k, v in pairs(new_refs) do
-                references[v] = true
+                references[v] = ground
             end
         end
 
@@ -603,7 +603,7 @@ function SaveGame(isshutdown, cb)
 
             if new_refs ~= nil then
                 for k, v in pairs(new_refs) do
-                    references[v] = true
+                    references[v] = world_network
                 end
             end
         end
@@ -626,7 +626,7 @@ function SaveGame(isshutdown, cb)
         if saved_ents[k] ~= nil then
             saved_ents[k].id = k
         else
-            print ("Can't find", k, Ents[k])
+            print("Missing reference:", v, "->", k, Ents[k])
         end
     end
 

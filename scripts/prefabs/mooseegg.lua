@@ -187,12 +187,12 @@ local function spawnmoose(inst)
     end
 end
 
-local function nest_onsave(inst)
-    return {mooseIncoming = inst.mooseIncoming}
+local function nest_onsave(inst, data)
+    data.mooseIncoming = inst.mooseIncoming
 end
 
-local function nest_onload(data)
-    if data.mooseIncoming then
+local function nest_onload(inst, data)
+    if data ~= nil and data.mooseIncoming ~= nil then
         inst.mooseIncoming = data.mooseIncoming
     end
 end

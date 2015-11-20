@@ -339,7 +339,7 @@ return {
 		ICESTAFF = "Cool staff.",
 		WAXWELLJOURNAL = "I'm so sorry Charlie.",
 		WORMLIGHT = "What a neat trick.",
-		WORMLIGHT = "This one isn't very good.",
+		WORMLIGHT_LESSER = "This one isn't very good.",
 		WORM =
 		{
 		    PLANT = "You aren't fooling me, plant.",

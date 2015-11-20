@@ -470,13 +470,9 @@ local function chop_tree(inst, chopper, chops)
     end
 end
 
-local function dig_up_stump(inst, chopper)
+local function dig_up_stump(inst)
+    inst.components.lootdropper:SpawnLootPrefab(inst.monster and "livinglog" or "log")
     inst:Remove()
-    if inst.monster then
-        inst.components.lootdropper:SpawnLootPrefab("livinglog")
-    else
-        inst.components.lootdropper:SpawnLootPrefab("log")
-    end
 end
 
 local function chop_down_tree_shake(inst)
@@ -623,11 +619,11 @@ end
 
 local function chop_down_burnt_tree(inst, chopper)
     inst:RemoveComponent("workable")
-    inst.SoundEmitter:PlaySound("dontstarve/forest/treeCrumble")          
-    inst.SoundEmitter:PlaySound("dontstarve/wilson/use_axe_tree")          
+    inst.SoundEmitter:PlaySound("dontstarve/forest/treeCrumble")
+    inst.SoundEmitter:PlaySound("dontstarve/wilson/use_axe_tree")
     inst.AnimState:PlayAnimation(inst.anims.chop_burnt)
     RemovePhysicsColliders(inst)
-    inst:ListenForEvent("animover", function() inst:Remove() end)
+    inst:ListenForEvent("animover", inst.Remove)
     inst.components.lootdropper:SpawnLootPrefab("charcoal")
     inst.components.lootdropper:DropLoot()
     if inst.acorntask then
