@@ -265,9 +265,21 @@ function EntityScript:GetSaveRecord()
         end
     end
     
+    if self.skinname then 
+    	record.skinname = self.skinname
+    end
+    if self.skin_build_name then
+        record.skin_build_name = self.skin_build_name
+    end
+    if self.skin_id then 
+    	record.skin_id = self.skin_id
+    end
+
     local references = nil
     record.data, references = self:GetPersistData()
     
+
+
     return record, references
 end
 
@@ -590,6 +602,14 @@ function EntityScript:GetIsWet()
         return replica:IsWet()
     end
     return self:HasTag("wet") or TheWorld.state.iswet
+end
+
+function EntityScript:GetSkinBuild()
+    return self.skin_build_name
+end
+
+function EntityScript:GetSkinName()
+    return self.skinname
 end
 
 function EntityScript:SetPrefabName(name)
@@ -959,6 +979,10 @@ function EntityScript:PushEvent(event, data)
 end
 
 function EntityScript:GetPosition()
+    --#V2C #TODO remove this after we've fixed most of the bugs
+    --           since it's expensive to assert in something as
+    --           common as :GetPosition()
+    assert(self:IsValid())
     return Point(self.Transform:GetWorldPosition())
 end
 

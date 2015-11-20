@@ -152,5 +152,5 @@ local function pigskin()
     return inst
 end
 
-return Prefab("common/inventory/umbrella", pigskin, assets),
-    Prefab("common/inventory/grass_umbrella", grass, assets)
+return Prefab("umbrella", pigskin, assets),
+    Prefab("grass_umbrella", grass, assets)

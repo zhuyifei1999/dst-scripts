@@ -452,7 +452,7 @@ function PlayerController:DoControllerActionButton()
             self.placer.components.placer.can_build and
             self.inst.replica.builder ~= nil and
             not self.inst.replica.builder:IsBusy() then
-            self.inst.replica.builder:MakeRecipeAtPoint(self.placer_recipe, self.placer:GetPosition(), self.placer:GetRotation())
+            self.inst.replica.builder:MakeRecipeAtPoint(self.placer_recipe, self.placer:GetPosition(), self.placer:GetRotation(), self.placer_recipe_skin)
             self:CancelPlacement()
         end
         return
@@ -837,6 +837,7 @@ function PlayerController:CancelPlacement()
         self.placer = nil
     end
     self.placer_recipe = nil
+    self.placer_recipe_skin = nil
 end
 
 function PlayerController:CancelDeployPlacement()
@@ -847,13 +848,20 @@ function PlayerController:CancelDeployPlacement()
     end
 end
 
-function PlayerController:StartBuildPlacementMode(recipe)
+function PlayerController:StartBuildPlacementMode(recipe, skin)
     self.placer_recipe = recipe
+    self.placer_recipe_skin = skin
     if self.placer then
         self.placer:Remove()
         self.placer = nil
     end
-    self.placer = SpawnPrefab(recipe.placer)
+
+    if skin ~= nil then
+        self.placer = SpawnPrefab(recipe.placer, skin, nil, self.inst.userid)
+    else
+        self.placer = SpawnPrefab(recipe.placer)
+    end
+    
     self.placer.components.placer:SetBuilder(self.inst, recipe)
     self.placer.components.placer.testfn = function(pt)
         return self.inst.replica.builder ~= nil and
@@ -1213,7 +1221,7 @@ function PlayerController:DoActionButton()
         self.inst.replica.builder ~= nil and
         not self.inst.replica.builder:IsBusy() then
         --do the placement
-        self.inst.replica.builder:MakeRecipeAtPoint(self.placer_recipe, self.placer:GetPosition(), self.placer:GetRotation())
+        self.inst.replica.builder:MakeRecipeAtPoint(self.placer_recipe, self.placer:GetPosition(), self.placer:GetRotation(), self.placer_recipe_skin)
     end
 
     --Still need to let the server know our action button is down
@@ -1270,7 +1278,7 @@ function PlayerController:DoInspectButton()
     if not self:IsEnabled() then
         return
     end
-    local buffaction = self:GetInspectButtonAction(self:GetControllerTarget() or TheInput:GetWorldEntityUnderMouse())
+    local buffaction = TheInput:ControllerAttached() and (self:GetInspectButtonAction(self:GetControllerTarget() or TheInput:GetWorldEntityUnderMouse())) or nil
     if buffaction == nil then
         return
     elseif self.ismastersim then
@@ -2365,7 +2373,7 @@ function PlayerController:OnLeftClick(down)
         if self.placer.components.placer.can_build and
             self.inst.replica.builder ~= nil and
             not self.inst.replica.builder:IsBusy() then
-            self.inst.replica.builder:MakeRecipeAtPoint(self.placer_recipe, TheInput:GetWorldPosition(), self.placer:GetRotation())
+            self.inst.replica.builder:MakeRecipeAtPoint(self.placer_recipe, TheInput:GetWorldPosition(), self.placer:GetRotation(), self.placer_recipe_skin)
             self:CancelPlacement()
         end
         return
@@ -2383,6 +2391,15 @@ function PlayerController:OnLeftClick(down)
             end
         elseif self.inst:HasTag("attack") then
             return
+        end
+    elseif act.action == ACTIONS.LOOKAT
+        and act.target ~= nil
+        and act.target:HasTag("player")
+        and self.inst.HUD ~= nil then
+        local client_obj = TheNet:GetClientTableForUser(act.target.userid)
+        if client_obj ~= nil then
+            client_obj.inst = act.target
+            self.inst.HUD:TogglePlayerAvatarPopup(client_obj.name, client_obj)
         end
     end
 
@@ -2686,30 +2703,42 @@ function PlayerController:RemoteDropItemFromInvTile(item)
     end
 end
 
-function PlayerController:RemoteMakeRecipeFromMenu(recipe)
+function PlayerController:RemoteMakeRecipeFromMenu(recipe, skin)
     if not self.ismastersim then
+		local skin_index = -1
+		if PREFAB_SKINS_IDS[recipe.name] ~= nil and skin ~= nil then
+			skin_index = PREFAB_SKINS_IDS[recipe.name][skin]
+		end
         if self.locomotor == nil then
-            SendRPCToServer(RPC.MakeRecipeFromMenu, recipe.rpc_id)
-       elseif self:CanLocomote() then
+            SendRPCToServer(RPC.MakeRecipeFromMenu, recipe.rpc_id, skin_index)
+		elseif self:CanLocomote() then
             self.locomotor:Stop()
             local buffaction = BufferedAction(self.inst, nil, ACTIONS.BUILD, nil, nil, recipe.name, 1)
             buffaction.preview_cb = function()
-                SendRPCToServer(RPC.MakeRecipeFromMenu, recipe.rpc_id)
+                SendRPCToServer(RPC.MakeRecipeFromMenu, recipe.rpc_id, skin_index)
             end
             self.locomotor:PreviewAction(buffaction, true)
         end
     end
 end
 
-function PlayerController:RemoteMakeRecipeAtPoint(recipe, pt, rot)
+function PlayerController:RemoteMakeRecipeAtPoint(recipe, pt, rot, skin)
     if not self.ismastersim then
+
+        --if not skin then print ("############# SKIN IS NIL") return end
+
+		local skin_index = nil
+        if skin ~= nil then 
+           skin_index = PREFAB_SKINS_IDS[recipe.name][skin]
+        end
+
         if self.locomotor == nil then
-            SendRPCToServer(RPC.MakeRecipeAtPoint, recipe.rpc_id, pt.x, pt.z, rot)
+            SendRPCToServer(RPC.MakeRecipeAtPoint, recipe.rpc_id, pt.x, pt.z, rot, skin_index)
         elseif self:CanLocomote() then
             self.locomotor:Stop()
             local buffaction = BufferedAction(self.inst, nil, ACTIONS.BUILD, nil, pt, recipe.name, 1, nil, rot)
             buffaction.preview_cb = function()
-                SendRPCToServer(RPC.MakeRecipeAtPoint, recipe.rpc_id, pt.x, pt.z, rot)
+                SendRPCToServer(RPC.MakeRecipeAtPoint, recipe.rpc_id, pt.x, pt.z, rot, skin_index)
             end
             self.locomotor:PreviewAction(buffaction, true)
         end

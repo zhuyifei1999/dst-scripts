@@ -39,4 +39,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/inventory/beardhair", fn, assets)
+return Prefab("beardhair", fn, assets)

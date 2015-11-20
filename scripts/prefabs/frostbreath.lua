@@ -115,4 +115,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/fx/frostbreath", fn, assets)
+return Prefab("frostbreath", fn, assets)

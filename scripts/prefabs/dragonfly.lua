@@ -191,8 +191,8 @@ end
 local function DoDespawn(inst)
     --Schedule new spawn time
     --Called at the time the dragonfly actually leaves the world.
-    local home = inst.components.homeseeker.home
-    if home then
+    local home = inst.components.homeseeker ~= nil and inst.components.homeseeker.home or nil
+    if home ~= nil then
         home.components.childspawner:GoHome(inst)
         home.components.childspawner:StartSpawning()
     else
@@ -409,7 +409,6 @@ local function fn()
     inst:AddComponent("stunnable")
     inst:AddComponent("healthtrigger")
     inst:AddComponent("rampingspawner")
-    inst:AddComponent("homeseeker") --V2C: #TODO: this is incorrect, homeseeker should be added/removed by childspawner, solve dragonfly specific problem with a LoadPostPass instead
     inst:AddComponent("moisture")
     inst:SetStateGraph("SGdragonfly")
     inst:SetBrain(brain)
@@ -501,4 +500,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/monsters/dragonfly", fn, assets, prefabs)
+return Prefab("dragonfly", fn, assets, prefabs)

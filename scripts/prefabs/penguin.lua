@@ -11,6 +11,7 @@ local prefabs =
     "drumstick",
     "feather_crow",
     "bird_egg",
+    "teamleader",
 }
 
 local brain = require "brains/penguinbrain"
@@ -356,4 +357,4 @@ local function fn()
     return inst
 end
 
-return Prefab("forest/animals/penguin", fn, assets, prefabs)
+return Prefab("penguin", fn, assets, prefabs)

@@ -42,4 +42,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/inventory/pigskin", fn, assets)
+return Prefab("pigskin", fn, assets)

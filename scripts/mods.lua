@@ -78,7 +78,7 @@ function GetEnabledModsModInfoDetails()
             name = mod_name,
             info_name = modinfo ~= nil and modinfo.name or mod_name,
             version = modinfo ~= nil and modinfo.version or "",
-            version_compatible = modinfo ~= nil and modinfo.version_compatible or (modinfo ~= nil and modinfo.version or ""),
+            version_compatible = modinfo ~= nil and modinfo.version_compatible or "",
             all_clients_require_mod = modinfo ~= nil and modinfo.all_clients_require_mod == true,
         })
     end
@@ -501,7 +501,7 @@ function ModWrangler:RegisterPrefabs()
 
 		print("Mod: "..ModInfoname(mod.modname), "  Registering default mod prefab")
 
-		RegisterPrefabs( Prefab("modbaseprefabs/MOD_"..mod.modname, nil, mod.Assets, prefabnames) )
+		RegisterPrefabs( Prefab("MOD_"..mod.modname, nil, mod.Assets, prefabnames) )
 
 		local modname = "MOD_"..mod.modname
 		TheSim:LoadPrefabs({modname})
@@ -680,6 +680,21 @@ function ModWrangler:GetVoteCommands()
 		end
 	end
 	return commands
+end
+
+function ModWrangler:IsModCharacterClothingSymbolExcluded( name, symbol )
+	local commands = {}
+	for i,modname in ipairs(self.enabledmods) do
+		local mod = self:GetMod(modname)
+		if mod.clothing_exclude and mod.clothing_exclude[name] then
+			for _,excluded_sym in pairs(mod.clothing_exclude[name]) do
+				if excluded_sym == symbol then
+					return true
+				end
+			end
+		end
+	end
+	return false
 end
 
 function ModVersionOutOfDate( mod_name )

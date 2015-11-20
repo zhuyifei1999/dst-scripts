@@ -115,7 +115,7 @@ local function MakeFx(t)
         return inst
     end
 
-    return Prefab("common/"..t.name, fn, assets)
+    return Prefab(t.name, fn, assets)
 end
 
 local prefs = {}

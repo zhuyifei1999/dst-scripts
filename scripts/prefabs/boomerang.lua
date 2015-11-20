@@ -135,4 +135,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/inventory/boomerang", fn, assets)
+return Prefab("boomerang", fn, assets)

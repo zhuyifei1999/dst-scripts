@@ -750,7 +750,7 @@ function Combat:CanBeAttacked(attacker)
 end
 
 function Combat:OnSave()
-    if self.target ~= nil then
+    if self.target ~= nil and not (self.inst:HasTag("player") or self.target:HasTag("player")) then
         return { target = self.target.GUID }, { self.target.GUID }
     end
 end

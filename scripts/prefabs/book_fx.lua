@@ -108,5 +108,5 @@ local function waxwell_book_fn()
     return inst
 end
 
-return Prefab("common/book_fx", book_fn, assets),
-    Prefab("common/waxwell_book_fx", waxwell_book_fn, assets)
+return Prefab("book_fx", book_fn, assets),
+    Prefab("waxwell_book_fx", waxwell_book_fn, assets)

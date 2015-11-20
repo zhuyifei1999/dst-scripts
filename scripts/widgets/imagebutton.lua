@@ -16,7 +16,7 @@ local ImageButton = Class(Button, function(self, atlas, normal, focus, disabled,
 
     self.focus_scale = {1.2, 1.2, 1.2}
     self.normal_scale = {1, 1, 1}
-    
+
     -- self.image:SetTexture(self.atlas, self.image_normal)
 end)
 
@@ -83,10 +83,15 @@ function ImageButton:OnGainFocus()
     	if self.size_x and self.size_y then 
     		self.image:ScaleToSize(self.size_x, self.size_y)
     	end
+
 	end
 
     if self.image_focus == self.image_normal and self.scale_on_focus and self.focus_scale then
         self.image:SetScale(self.focus_scale[1], self.focus_scale[2], self.focus_scale[3])
+
+        if self.imagefocuscolour then
+            self.image:SetTint(self.imagefocuscolour[1], self.imagefocuscolour[2], self.imagefocuscolour[3], self.imagefocuscolour[4])
+        end
     end
 
 end
@@ -102,6 +107,10 @@ function ImageButton:OnLoseFocus()
     	if self.size_x and self.size_y then 
     		self.image:ScaleToSize(self.size_x, self.size_y)
     	end
+
+        if self.imagenormalcolour then
+            self.image:SetTint(self.imagenormalcolour[1], self.imagenormalcolour[2], self.imagenormalcolour[3], self.imagenormalcolour[4])
+        end
 	end
 
     if self.image_focus == self.image_normal and self.scale_on_focus and self.normal_scale then
@@ -166,6 +175,10 @@ end
 function ImageButton:OnDisable()
 	ImageButton._base.OnDisable(self)
 	self.image:SetTexture(self.atlas, self.image_disabled)
+
+    if self.imagedisabledcolour then
+        self.image:SetTint(self.imagedisabledcolour[1], self.imagedisabledcolour[2], self.imagedisabledcolour[3], self.imagedisabledcolour[4])
+    end
 	if self.size_x and self.size_y then 
 		self.image:ScaleToSize(self.size_x, self.size_y)
 	end
@@ -181,6 +194,9 @@ end
 function ImageButton:OnSelect()
     ImageButton._base.OnSelect(self)
     self.image:SetTexture(self.atlas, self.image_selected)
+    if self.imageselectedcolour then
+        self.image:SetTint(self.imageselectedcolour[1], self.imageselectedcolour[2], self.imageselectedcolour[3], self.imageselectedcolour[4])
+    end
 end
 
 -- This is roughly equivalent to OnEnable--it's what happens when canceling the Selected state. An unselected button will behave normally.
@@ -218,6 +234,54 @@ function ImageButton:SetNormalScale(scaleX, scaleY, scaleZ)
 
     if not self.focus and self.scale_on_focus then
         self.image:SetScale(self.normal_scale[1], self.normal_scale[2], self.normal_scale[3])
+    end
+end
+
+function ImageButton:SetImageNormalColour(r,g,b,a)
+    if type(r) == "number" then
+        self.imagenormalcolour = {r, g, b, a}
+    else
+        self.imagenormalcolour = r
+    end
+    
+    if self:IsEnabled() and not self.focus and not self.selected then
+        self.image:SetTint(self.imagenormalcolour[1], self.imagenormalcolour[2], self.imagenormalcolour[3], self.imagenormalcolour[4])
+    end
+end
+
+function ImageButton:SetImageFocusColour(r,g,b,a)
+    if type(r) == "number" then
+        self.imagefocuscolour = {r,g,b,a}
+    else
+        self.imagefocuscolour = r
+    end
+    
+    if self.focus and not self.selected then
+        self.image:SetTint(self.imagefocuscolour[1], self.imagefocuscolour[2], self.imagefocuscolour[3], self.imagefocuscolour[4])
+    end
+end
+
+function ImageButton:SetImageDisabledColour(r,g,b,a)
+    if type(r) == "number" then
+        self.imagedisabledcolour = {r,g,b,a}
+    else
+        self.imagedisabledcolour = r
+    end
+    
+    if not self:IsEnabled() then
+        self.image:SetTint(self.imagedisabledcolour[1], self.imagedisabledcolour[2], self.imagedisabledcolour[3], self.imagedisabledcolour[4])
+    end
+end
+
+function ImageButton:SetImageSelectedColour(r,g,b,a)
+    if type(r) == "number" then
+        self.imageselectedcolour = {r,g,b,a}
+    else
+        self.imageselectedcolour = r
+    end
+    
+    if self.selected then
+        self.image:SetTint(self.imageselectedcolour[1], self.imageselectedcolour[2], self.imageselectedcolour[3], self.imageselectedcolour[4])
     end
 end
 

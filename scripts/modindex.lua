@@ -348,7 +348,8 @@ function ModIndex:LoadModInfo(modname)
 	end
 	
 	info.version = TrimString(info.version or "")
-
+	info.version_compatible = info.version_compatible or info.version
+	
 	if info.icon_atlas ~= nil and info.icon ~= nil and info.icon_atlas ~= "" and info.icon ~= "" then
 		local atlaspath = "../mods/"..modname.."/"..info.icon_atlas
 		local iconpath = string.gsub(atlaspath, "/[^/]*$", "") .. "/"..info.icon
@@ -860,18 +861,29 @@ function ModIndex:DoesModExistAnyVersion( modname )
 	end
 end
 
-function ModIndex:DoesModExist( modname, desired_version, version_compatible )
-	local result = false
-	local modinfo = self:GetModInfo(modname)
-	if modinfo ~= nil then
-		if desired_version >= modinfo.version and modinfo.version >= version_compatible then
-			result = true
-		else
-			result = false
+function ModIndex:DoesModExist( modname, server_version, server_version_compatible )
+	if server_version_compatible == nil then
+		--no compatible flag, so we want to do an exact version check
+		local modinfo = self:GetModInfo(modname)
+		if modinfo ~= nil then
+			return server_version == modinfo.version
 		end
+		print("Mod "..modname.." v:"..server_version.." doesn't exist in mod dir ")
+		return false
+	else
+		local modinfo = self:GetModInfo(modname)
+		if modinfo ~= nil then
+			if server_version >= modinfo.version then
+				--server is ahead or equal version, check if client is compatible with server
+				return modinfo.version >= server_version_compatible
+			else
+				--client is ahead, check if server is compatible with client
+				return server_version >= modinfo.version_compatible
+			end
+		end
+		print("Mod "..modname.." v:"..server_version.." vc:"..server_version_compatible.." doesn't exist in mod dir ")
+		return false
 	end
-	print("Does "..modname.." vc:"..version_compatible.. " exist? " .. tostring(result) )
-	return result
 end
 
 function ModIndex:GetEnabledModTags()

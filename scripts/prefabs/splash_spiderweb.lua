@@ -48,4 +48,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/fx/splash_spiderweb", fn, assets)
+return Prefab("splash_spiderweb", fn, assets)

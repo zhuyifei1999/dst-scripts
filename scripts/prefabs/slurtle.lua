@@ -238,5 +238,5 @@ local function makesnurtle()
     return inst
 end
 
-return Prefab("cave/slurtle", makeslurtle, assets, prefabs),
-    Prefab("cave/snurtle", makesnurtle, assets, prefabs)
+return Prefab("slurtle", makeslurtle, assets, prefabs),
+    Prefab("snurtle", makesnurtle, assets, prefabs)

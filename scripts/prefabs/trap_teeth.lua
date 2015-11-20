@@ -2,6 +2,7 @@ local assets =
 {
     Asset("ANIM", "anim/trap_teeth.zip"),
     Asset("ANIM", "anim/trap_teeth_maxwell.zip"),
+	Asset("MINIMAP_IMAGE", "toothtrap"),
 }
 
 local function onfinished_normal(inst)
@@ -185,6 +186,6 @@ local function MakeTeethTrapMaxwell()
     return inst
 end
 
-return Prefab("common/inventory/trap_teeth", MakeTeethTrapNormal, assets),
-    MakePlacer("common/trap_teeth_placer", "trap_teeth", "trap_teeth", "idle"),
-    Prefab("common/inventory/trap_teeth_maxwell", MakeTeethTrapMaxwell, assets)
+return Prefab("trap_teeth", MakeTeethTrapNormal, assets),
+    MakePlacer("trap_teeth_placer", "trap_teeth", "trap_teeth", "idle"),
+    Prefab("trap_teeth_maxwell", MakeTeethTrapMaxwell, assets)

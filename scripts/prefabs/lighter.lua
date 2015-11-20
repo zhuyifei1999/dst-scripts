@@ -197,4 +197,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/lighter", fn, assets, prefabs)
+return Prefab("lighter", fn, assets, prefabs)

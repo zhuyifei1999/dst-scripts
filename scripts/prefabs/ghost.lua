@@ -77,4 +77,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/monsters/ghost", fn, assets)
+return Prefab("ghost", fn, assets)

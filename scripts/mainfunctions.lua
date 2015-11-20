@@ -69,11 +69,14 @@ function RegisterPrefabs(...)
     for i, prefab in ipairs({...}) do
         --print ("Register " .. tostring(prefab))
 		-- allow mod-relative asset paths
+			
 		for i,asset in ipairs(prefab.assets) do
-			local resolvedpath = resolvefilepath(asset.file)
-			assert(resolvedpath, "Could not find "..asset.file.." required by "..prefab.name)
-			TheSim:OnAssetPathResolve(asset.file, resolvedpath)			
-			asset.file = resolvedpath
+			if asset.type ~= "INV_IMAGE" and asset.type ~= "MINIMAP_IMAGE" then
+				local resolvedpath = resolvefilepath(asset.file)
+				assert(resolvedpath, "Could not find "..asset.file.." required by "..prefab.name)
+				TheSim:OnAssetPathResolve(asset.file, resolvedpath)			
+				asset.file = resolvedpath
+			end
 		end
         modprefabinitfns[prefab.name] = ModManager:GetPostInitFns("PrefabPostInit", prefab.name)
         Prefabs[prefab.name] = prefab
@@ -187,17 +190,16 @@ local renames =
     feather = "feather_crow",
 }
 
-function SpawnPrefab(name)	
+function SpawnPrefab(name, skin, skin_id, creator)	
     name = string.sub(name, string.find(name, "[^/]*$"))      
     name = renames[name] or name
-    local guid = TheSim:SpawnPrefab(name)
+    local guid = TheSim:SpawnPrefab(name, skin, skin_id, creator)
     return Ents[guid]
 end
 
 function SpawnSaveRecord(saved, newents)
-    --print(string.format("SpawnSaveRecord [%s, %s, %s]", tostring(saved.id), tostring(saved.prefab), tostring(saved.data)))
-    
-    local inst = SpawnPrefab(saved.prefab)
+    --print(string.format("~~~~~~~~~~~~~~~~~~~~~SpawnSaveRecord [%s, %s, %s]", tostring(saved.id), tostring(saved.prefab), tostring(saved.data)))
+    local inst = SpawnPrefab(saved.prefab, saved.skinname, saved.skin_id)
     
     if inst then
 		inst.Transform:SetPosition(saved.x or 0, saved.y or 0, saved.z or 0)
@@ -205,6 +207,7 @@ function SpawnSaveRecord(saved, newents)
 	        --print(string.format("SpawnSaveRecord [%s, %s] FAILED - entity invalid", tostring(saved.id), saved.prefab))
 			return nil
 		end
+
         if newents then
             
             --this is kind of weird, but we can't use non-saved ids because they might collide
@@ -294,6 +297,11 @@ function PushEntityEvent(guid, event, data)
     if inst then
         inst:PushEvent(event, data)
     end
+end
+
+function GetEntityDisplayName(guid)
+    local inst = Ents[guid]
+    return inst ~= nil and inst:GetDisplayName() or ""
 end
 
 ------TIME FUNCTIONS
@@ -550,9 +558,9 @@ function SaveGame(isshutdown, cb)
             record.prefab = nil
 
             if new_references ~= nil then
-                references[v.GUID] = true
-                for k, v in pairs(new_references) do
-                    references[v] = true
+                references[v.GUID] = v
+                for k1, v1 in pairs(new_references) do
+                    references[v1] = v
                 end
             end
 
@@ -591,7 +599,7 @@ function SaveGame(isshutdown, cb)
 
         if new_refs ~= nil then
             for k, v in pairs(new_refs) do
-                references[v] = true
+                references[v] = ground
             end
         end
 
@@ -603,7 +611,7 @@ function SaveGame(isshutdown, cb)
 
             if new_refs ~= nil then
                 for k, v in pairs(new_refs) do
-                    references[v] = true
+                    references[v] = world_network
                 end
             end
         end
@@ -626,7 +634,7 @@ function SaveGame(isshutdown, cb)
         if saved_ents[k] ~= nil then
             saved_ents[k].id = k
         else
-            print ("Can't find", k, Ents[k])
+            print("Missing reference:", v, "->", k, Ents[k])
         end
     end
 
@@ -1237,14 +1245,29 @@ function OnFocusGained()
 	end
 end
 
-local function OnUserPickedCharacter(char, skin)
+local function OnUserPickedCharacter(char, skin_base, clothing_body, clothing_hand, clothing_legs)
     local function doSpawn()
         TheFrontEnd:PopScreen()
-        TheNet:SendSpawnRequestToServer(char, skin)
+        TheNet:SendSpawnRequestToServer(char, skin_base, clothing_body, clothing_hand, clothing_legs)
     end
 
     TheFrontEnd:Fade(false, 1, doSpawn, nil, nil, "white")
 end
+-- TEMP DEBUG DIABU
+Debug_Select = OnUserPickedCharacter
+
+Debug_DieRevive = function()
+    ConsoleCommandPlayer().components.health:SetPercent(0)
+    ConsoleCommandPlayer():DoTaskInTime(2, function()
+        ConsoleCommandPlayer():PushEvent("respawnfromghost")
+        ConsoleCommandPlayer().components.hunger:SetPercent(1)
+        ConsoleCommandPlayer().components.health:SetPercent(1)
+        ConsoleCommandPlayer().components.sanity:SetPercent(1)
+    end)
+end
+
+
+-- 
 
 function ResumeRequestLoadComplete(success)
     --If successful then don't do anything, game will automatically

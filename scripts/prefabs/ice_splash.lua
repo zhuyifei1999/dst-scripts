@@ -25,4 +25,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/fx/ice_splash", fn, assets)
+return Prefab("ice_splash", fn, assets)

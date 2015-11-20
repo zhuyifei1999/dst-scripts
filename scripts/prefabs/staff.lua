@@ -760,9 +760,9 @@ local function orange()
     return inst
 end
 
-return Prefab("common/inventory/icestaff", blue, assets, prefabs),
-    Prefab("common/inventory/firestaff", red, assets, prefabs),
-    Prefab("common/inventory/telestaff", purple, assets, prefabs),
-    Prefab("common/inventory/orangestaff", orange, assets, prefabs),
-    Prefab("common/inventory/greenstaff", green, assets, prefabs),
-    Prefab("common/inventory/yellowstaff", yellow, assets, prefabs)
+return Prefab("icestaff", blue, assets, prefabs),
+    Prefab("firestaff", red, assets, prefabs),
+    Prefab("telestaff", purple, assets, prefabs),
+    Prefab("orangestaff", orange, assets, prefabs),
+    Prefab("greenstaff", green, assets, prefabs),
+    Prefab("yellowstaff", yellow, assets, prefabs)

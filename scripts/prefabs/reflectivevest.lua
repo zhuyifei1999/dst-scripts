@@ -64,4 +64,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/inventory/reflectivevest", fn, assets)
+return Prefab("reflectivevest", fn, assets)
