@@ -1,7 +1,6 @@
 local assets =
 {
     Asset("ANIM", "anim/statue_maxwell.zip"),
-	Asset("MINIMAP_IMAGE", "statue"),
 }
 
 local prefabs =
@@ -74,4 +73,4 @@ local function fn()
     return inst
 end
 
-return Prefab("statuemaxwell", fn, assets, prefabs)
+return Prefab("forest/objects/statuemaxwell", fn, assets, prefabs)

@@ -55,4 +55,4 @@ local function fn()
     return inst
 end
 
-return Prefab("foliage", fn, assets)
+return Prefab("common/inventory/foliage", fn, assets)

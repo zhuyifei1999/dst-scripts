@@ -144,7 +144,7 @@ end
 local t = {}
 for monster, params in pairs(monster_params) do
     for level = 1, #params.levels do
-        table.insert(t, Prefab(monster.."warning_lvl"..level, makewarning(params, level)))
+        table.insert(t, Prefab("common/monsters/"..monster.."warning_lvl"..level, makewarning(params, level)))
     end
 end
 return unpack(t)

@@ -67,4 +67,4 @@ local function fn()
     return inst
 end
 
-return Prefab("multitool_axe_pickaxe", fn, assets)
+return Prefab("common/inventory/multitool_axe_pickaxe", fn, assets)

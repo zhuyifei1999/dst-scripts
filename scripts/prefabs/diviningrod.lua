@@ -188,4 +188,4 @@ local function fn()
     return inst
 end
 
-return Prefab("diviningrod", fn, assets, prefabs)
+return Prefab("common/inventory/diviningrod", fn, assets, prefabs)

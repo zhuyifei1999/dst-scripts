@@ -259,4 +259,4 @@ local function fn()
     return inst
 end
 
-return Prefab("deerclops", fn, assets, prefabs)
+return Prefab("common/monsters/deerclops", fn, assets, prefabs)

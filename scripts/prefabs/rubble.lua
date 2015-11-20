@@ -123,6 +123,6 @@ local function rubble_low_fn()
     return inst
 end
 
-return Prefab("rubble", rubble_fn, assets, prefabs),
-    Prefab("rubble_med", rubble_med_fn, assets, prefabs),
-    Prefab("rubble_low", rubble_low_fn, assets, prefabs)
+return Prefab("cave/objects/rocks/rubble", rubble_fn, assets, prefabs),
+    Prefab("forest/objects/rocks/rubble_med", rubble_med_fn, assets, prefabs),
+    Prefab("forest/objects/rocks/rubble_low", rubble_low_fn, assets, prefabs)

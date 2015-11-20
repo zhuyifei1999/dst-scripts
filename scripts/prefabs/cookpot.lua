@@ -258,5 +258,5 @@ local function fn()
     return inst
 end
 
-return Prefab("cookpot", fn, assets, prefabs),
-    MakePlacer("cookpot_placer", "cook_pot", "cook_pot", "idle_empty")
+return Prefab("common/cookpot", fn, assets, prefabs),
+    MakePlacer("common/cookpot_placer", "cook_pot", "cook_pot", "idle_empty")

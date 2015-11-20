@@ -204,15 +204,11 @@ function TextEdit:OnDestroy()
 	TheInput:EnableDebugToggle(true)
 end
 
-function TextEdit:OnFocusMove(dir, down)
-
+function TextEdit:OnFocusMove()
 	-- Note: It would be nice to call OnProcces() here, but this gets called when pressing WASD so it wont work.
 
 	-- prevent the focus move while editing the text string
-	if self.editing then return true end
-
-	-- otherwise, allow focus to move as normal
-	return TextEdit._base.OnFocusMove(self, dir, down)
+	return self.editing
 end
 
 function TextEdit:OnGainFocus()

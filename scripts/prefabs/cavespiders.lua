@@ -389,6 +389,6 @@ local function create_dropper()
     return inst
 end
 
-return Prefab("spider_hider", create_hider, hiderassets, prefabs),
-    Prefab("spider_spitter", create_spitter, spitterassets, prefabs),
-    Prefab("spider_dropper", create_dropper, dropperassets, prefabs)
+return Prefab("cave/monsters/spider_hider", create_hider, hiderassets, prefabs),
+    Prefab("cave/monsters/spider_spitter", create_spitter, spitterassets, prefabs),
+    Prefab("cave/monsters/spider_dropper", create_dropper, dropperassets, prefabs)

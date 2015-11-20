@@ -218,4 +218,4 @@ local function fn()
     return inst
 end
 
-return Prefab("mossling", fn, assets, prefabs)
+return Prefab("common/monsters/mossling", fn, assets, prefabs)

@@ -1,7 +1,6 @@
 local assets =
 {
     Asset("ANIM", "anim/penguin_ice.zip"),
-	Asset("MINIMAP_IMAGE", "penguin"),
 }
 
 local SNOW_THRESH = 0.10
@@ -134,4 +133,4 @@ local function fn()
     return inst
 end
 
-return Prefab("penguin_ice", fn, assets)
+return Prefab("forest/objects/penguin_ice", fn, assets)

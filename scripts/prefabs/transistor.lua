@@ -33,4 +33,4 @@ local function fn()
     return inst
 end
 
-return Prefab("transistor", fn, assets)
+return Prefab("common/inventory/transistor", fn, assets)

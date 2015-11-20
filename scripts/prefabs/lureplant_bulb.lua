@@ -59,5 +59,5 @@ local function fn()
     return inst
 end
 
-return Prefab("lureplantbulb", fn, assets),
-    MakePlacer("lureplantbulb_placer", "eyeplant_trap", "eyeplant_trap", "idle_hidden")
+return Prefab("common/inventory/lureplantbulb", fn, assets),
+    MakePlacer("common/lureplantbulb_placer", "eyeplant_trap", "eyeplant_trap", "idle_hidden")

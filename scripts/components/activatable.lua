@@ -31,14 +31,6 @@ function Activatable:OnRemoveFromEntity()
     self.inst:RemoveTag("quickactivation")
 end
 
-function Activatable:CanActivate(doer)
-    if self.CanActivateFn then
-        return self.CanActivateFn(self.inst, doer)
-    end
-
-    return true
-end
-
 function Activatable:DoActivate(doer)
 	if self.OnActivate ~= nil then
         self.inactive = false

@@ -1,7 +1,6 @@
 local assets =
 {
-    Asset("ANIM", "anim/maxwell_torch.zip"),
-	Asset("MINIMAP_IMAGE", "maxwelltorch"),
+    Asset("ANIM", "anim/maxwell_torch.zip")
 }
 
 local prefabs =
@@ -105,5 +104,5 @@ local function spotlight()
     return inst
 end
 
-return Prefab( "maxwelllight", spotlight, assets, prefabs),
-    Prefab("maxwelllight_area", arealight, assets, prefabs)
+return Prefab( "common/objects/maxwelllight", spotlight, assets, prefabs),
+    Prefab("common/objects/maxwelllight_area", arealight, assets, prefabs)

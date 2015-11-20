@@ -43,4 +43,4 @@ local function fn()
     return inst
 end
 
-return Prefab("fertilizer", fn, assets)
+return Prefab("inventory/fertilizer", fn, assets)
