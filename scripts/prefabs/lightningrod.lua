@@ -2,6 +2,7 @@ local assets =
 {
     Asset("ANIM", "anim/lightning_rod.zip"),
     Asset("ANIM", "anim/lightning_rod_fx.zip"),
+	Asset("MINIMAP_IMAGE", "lightningrod"),
 }
 
 local prefabs =
@@ -153,5 +154,5 @@ local function fn()
     return inst
 end
 
-return Prefab("common/objects/lightning_rod", fn, assets, prefabs),
-    MakePlacer("common/lightning_rod_placer", "lightning_rod", "lightning_rod", "idle")
+return Prefab("lightning_rod", fn, assets, prefabs),
+    MakePlacer("lightning_rod_placer", "lightning_rod", "lightning_rod", "idle")

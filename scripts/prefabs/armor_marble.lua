@@ -59,4 +59,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/inventory/armormarble", fn, assets)
+return Prefab("armormarble", fn, assets)

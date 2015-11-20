@@ -243,6 +243,6 @@ local function pondcave()
     return inst
 end
 
-return Prefab("marsh/objects/pond", pondfrog, assets, prefabs),
-    Prefab("marsh/objects/pond_mos", pondmos, assets, prefabs),
-    Prefab("marsh/objects/pond_cave", pondcave, assets, prefabs)
+return Prefab("pond", pondfrog, assets, prefabs),
+    Prefab("pond_mos", pondmos, assets, prefabs),
+    Prefab("pond_cave", pondcave, assets, prefabs)

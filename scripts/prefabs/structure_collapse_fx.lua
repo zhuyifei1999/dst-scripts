@@ -86,5 +86,5 @@ local function makefn(anim)
     end
 end
 
-return Prefab("fx/collapse_big", makefn("collapse_large"), assets),
-    Prefab("fx/collapse_small", makefn("collapse_small"), assets)
+return Prefab("collapse_big", makefn("collapse_large"), assets),
+    Prefab("collapse_small", makefn("collapse_small"), assets)

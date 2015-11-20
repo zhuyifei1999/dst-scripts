@@ -324,4 +324,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/characters/bunnyman", fn, assets, prefabs)
+return Prefab("bunnyman", fn, assets, prefabs)

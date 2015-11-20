@@ -149,4 +149,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/inventory/nightstick", fn, assets, prefabs)
+return Prefab("nightstick", fn, assets, prefabs)

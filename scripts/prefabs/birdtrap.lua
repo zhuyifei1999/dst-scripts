@@ -120,4 +120,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/inventory/birdtrap", fn, assets, prefabs)
+return Prefab("birdtrap", fn, assets, prefabs)

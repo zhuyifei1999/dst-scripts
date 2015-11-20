@@ -178,5 +178,5 @@ local function fn()
     return inst
 end
 
-return Prefab("common/objects/coldfire", fn, assets, prefabs),
-    MakePlacer("common/coldfire_placer", "coldfire", "coldfire", "preview")
+return Prefab("coldfire", fn, assets, prefabs),
+    MakePlacer("coldfire_placer", "coldfire", "coldfire", "preview")

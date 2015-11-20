@@ -143,8 +143,9 @@ local COMPONENT_ACTIONS =
         end,
         --]]
 
+
         sleepingbag = function(inst, doer, actions)
-            if doer:HasTag("player") and not doer:HasTag("insomniac") and not inst:HasTag("hassleeper") then
+        	if doer:HasTag("player") and not doer:HasTag("insomniac") and not inst:HasTag("hassleeper") then
                 table.insert(actions, ACTIONS.SLEEPIN)
             end
         end,
@@ -184,6 +185,12 @@ local COMPONENT_ACTIONS =
         worldmigrator = function(inst, doer, actions)
             if inst:HasTag("migrator") then
                 table.insert(actions, ACTIONS.MIGRATE)
+            end
+        end,
+
+        wardrobe = function(inst, doer, actions)
+            if inst:HasTag("wardrobe") and not inst:HasTag("fire") then
+                table.insert(actions, ACTIONS.CHANGEIN)
             end
         end,
 
@@ -406,7 +413,7 @@ local COMPONENT_ACTIONS =
         end,
 
         sleepingbag = function(inst, doer, target, actions)
-            if doer == target and doer:HasTag("player") and not doer:HasTag("insomniac") and not inst:HasTag("hassleeper") then
+           if doer == target and doer:HasTag("player") and not doer:HasTag("insomniac") and not inst:HasTag("hassleeper") then
                 table.insert(actions, ACTIONS.SLEEPIN)
             end
         end,

@@ -67,4 +67,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/fx/lavalight", fn, assets)
+return Prefab("lavalight", fn, assets)

@@ -15,6 +15,9 @@ local assets =
     -- Asset("ANIM", "anim/portrait_frame.zip"), -- Not currently used, but likely to come back
     Asset("ANIM", "anim/spiral_bg.zip"),
 
+        Asset("ANIM", "anim/frames_comp.zip"),
+    	Asset("ANIM", "anim/frame_skins.zip"),
+
     Asset("ATLAS", "images/lobbybannertop.xml"),
     Asset("IMAGE", "images/lobbybannertop.tex"),
 
@@ -82,7 +85,6 @@ local prefabs =
     "flint",
     "log",
     "spiderden",
-    "spawnpoint",
     "fireflies",
 
     "turf_road",
@@ -139,8 +141,24 @@ local prefabs =
 
     "cactus",
 
+    "spawnlight_multiplayer",
+    "spawnpoint_multiplayer",
+    --"spawn_fx_huge",
+    --"spawn_fx_large",
+    "spawn_fx_medium",
+    "spawn_fx_small",
+    "spawn_fx_tiny",
+
     "migration_portal",
     "shard_network",
+
+    "focalpoint",
+
+    -- Common classified prefabs
+    "attunable_classified",
+    "inventoryitem_classified",
+    "writeable_classified",
+    "container_classified",
 }
 
 --------------------------------------------------------------------------

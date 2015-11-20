@@ -34,4 +34,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/inventory/stinger", fn, assets)
+return Prefab("stinger", fn, assets)
