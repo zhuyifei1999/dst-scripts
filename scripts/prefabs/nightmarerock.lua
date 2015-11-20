@@ -3,6 +3,7 @@ local assets =
 {
     Asset("ANIM", "anim/blocker_sanity.zip"),
     Asset("ANIM", "anim/blocker_sanity_fx.zip"),
+	Asset("MINIMAP_IMAGE", "obelisk"),
 }
 
 local prefabs =
@@ -274,5 +275,5 @@ local function sanityrock()
     return inst
 end
 
-return Prefab("forest/objects/rocks/insanityrock", insanityrock, assets, prefabs),
-       Prefab("forest/objects/rocks/sanityrock", sanityrock, assets, prefabs)
+return Prefab("insanityrock", insanityrock, assets, prefabs),
+       Prefab("sanityrock", sanityrock, assets, prefabs)

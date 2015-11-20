@@ -85,6 +85,7 @@ local function PlayerRemove(player, deletesession, migrationdata, readytoremove)
             player.migration = migrationdata ~= nil and {
                 worldid = TheShard:GetShardId(),
                 portalid = migrationdata.portalid,
+                sessionid = TheWorld.meta.session_identifier,
             } or nil
             SerializeUserSession(player)
         end
@@ -187,11 +188,15 @@ local function GetDestinationPortalLocation(player)
 
     if portal ~= nil then
         print("[SHARD] Player will spawn close to portal #"..tostring(portal.components.worldmigrator.id))
-        portal.components.worldmigrator:ActivatedByOther()
         local pos = portal:GetPosition()
         local start_angle = math.random() * PI * 2
         local rad = portal.Physics ~= nil and portal.Physics:GetRadius() + .5 or .5
         local offset = FindWalkableOffset(pos, start_angle, rad, 8, false)
+
+        --V2C: Do this after caching physical values, since it might remove itself
+        --     and spawn in a new "opened" version, making "portal" invalid.
+        portal.components.worldmigrator:ActivatedByOther()
+
         if offset ~= nil then
             return pos.x + offset.x, 0, pos.z + offset.z
         end

@@ -2,6 +2,7 @@ local assets =
 {
     Asset("ANIM", "anim/sign_arrow_post.zip"),
     Asset("ANIM", "anim/sign_arrow_panel.zip"),
+	Asset("MINIMAP_IMAGE", "sign"),
 }
 
 local prefabs =
@@ -136,7 +137,7 @@ local function panelfn()
     return inst
 end
 
-return Prefab("common/objects/arrowsign_post", fn, assets, prefabs),
-        MakePlacer("common/arrowsign_post_placer", "sign_arrow_post", "sign_arrow_post", "idle", nil, nil, nil, nil, -90, "eight"),
-        Prefab("common/objects/arrowsign_panel", panelfn, assets, prefabs),
-        MakePlacer("common/arrowsign_panel_placer", "sign_arrow_panel", "sign_arrow_panel", "idle", nil, nil, nil, nil, -90, "eight")
+return Prefab("arrowsign_post", fn, assets, prefabs),
+        MakePlacer("arrowsign_post_placer", "sign_arrow_post", "sign_arrow_post", "idle", nil, nil, nil, nil, -90, "eight"),
+        Prefab("arrowsign_panel", panelfn, assets, prefabs),
+        MakePlacer("arrowsign_panel_placer", "sign_arrow_panel", "sign_arrow_panel", "idle", nil, nil, nil, nil, -90, "eight")

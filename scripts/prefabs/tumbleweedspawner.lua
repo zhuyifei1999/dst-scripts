@@ -48,4 +48,4 @@ local function fn()
 	return inst
 end
 
-return Prefab( "badlands/objects/tumbleweedspawner", fn, assets, prefabs)
+return Prefab( "tumbleweedspawner", fn, assets, prefabs)

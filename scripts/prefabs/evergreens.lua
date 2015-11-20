@@ -6,6 +6,7 @@ local assets =
     Asset("ANIM", "anim/evergreen_short_normal.zip"),
     Asset("ANIM", "anim/dust_fx.zip"),
     Asset("SOUND", "sound/forest.fsb"),
+	Asset("MINIMAP_IMAGE", "evergreen_lumpy"),
 }
 
 local prefabs =
@@ -686,7 +687,7 @@ local function tree(name, build, stage, data)
         return inst
     end
 
-    return Prefab("forest/objects/trees/"..name, fn, assets, prefabs)
+    return Prefab(name, fn, assets, prefabs)
 end
 
 return tree("evergreen", "normal", 0),

@@ -119,4 +119,4 @@ local function fn()
     return inst
 end
 
-return Prefab("cave/eyeplant", fn, assets)
+return Prefab("eyeplant", fn, assets)

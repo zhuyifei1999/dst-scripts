@@ -3,10 +3,13 @@ local assets =
 {
     Asset("ANIM", "anim/bernie.zip"),
     Asset("ANIM", "anim/bernie_build.zip"),
+	Asset("INV_IMAGE", "bernie_dead" ),
+	Asset("INV_IMAGE", "bernie_inactive" ),
 }
 
 local prefabs =
 {
+    "bernie_active",
     "beardhair",
     "beefalowool",
     "silk",
@@ -281,4 +284,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/bernie_inactive", fn, assets, prefabs)
+return Prefab("bernie_inactive", fn, assets, prefabs)

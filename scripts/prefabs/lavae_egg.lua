@@ -186,5 +186,5 @@ local function cracked()
     return inst
 end
 
-return Prefab("common/inventory/lavae_egg", default, assets, prefabs),
-    Prefab("common/inventory/lavae_egg_cracked", cracked, assets, prefabs)
+return Prefab("lavae_egg", default, assets, prefabs),
+    Prefab("lavae_egg_cracked", cracked, assets, prefabs)

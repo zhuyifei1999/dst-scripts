@@ -20,7 +20,9 @@ local StatusDisplays = require "widgets/statusdisplays"
 local ChatQueue = require "widgets/chatqueue"
 local Desync = require "widgets/desync"
 local WorldResetTimer = require "widgets/worldresettimer"
+local GiftItemToast = require "widgets/giftitemtoast"
 local VoteDialog = require "widgets/votedialog"
+local TEMPLATES = require "widgets/templates"
 
 local easing = require("easing")
 
@@ -65,6 +67,10 @@ local Controls = Class(Widget, function(self, owner)
     self.saving:SetHAnchor(ANCHOR_MIDDLE)
     self.saving:SetVAnchor(ANCHOR_TOP)
     self.saving:SetPosition(Vector3(200,0,0))
+
+    --self.item_notification_root = self.top_root:AddChild(Widget("top_root_root"))
+	self.item_notification = self.top_root:AddChild(GiftItemToast())
+	self.item_notification:SetPosition(-525, 150, 0)
 
     self.worldresettimer = self.bottom_root:AddChild(WorldResetTimer(self.owner))
     self.inv = self.bottom_root:AddChild(Inv(self.owner))
@@ -182,6 +188,12 @@ function Controls:MakeScalingNodes()
     self.topright_root:SetMaxPropUpscale(MAX_HUD_SCALE)
 
     
+	self.right_root = self:AddChild(Widget("right_root"))
+    self.right_root:SetScaleMode(SCALEMODE_PROPORTIONAL)
+    self.right_root:SetHAnchor(ANCHOR_RIGHT)
+    self.right_root:SetVAnchor(ANCHOR_MIDDLE)
+    self.right_root:SetMaxPropUpscale(MAX_HUD_SCALE)   
+
     self.bottomright_root = self:AddChild(Widget(""))
     self.bottomright_root:SetScaleMode(SCALEMODE_PROPORTIONAL)
     self.bottomright_root:SetHAnchor(ANCHOR_RIGHT)
@@ -201,6 +213,7 @@ function Controls:MakeScalingNodes()
 	self.bottom_root = self.bottom_root:AddChild(Widget("bottom_scale_root"))
 	self.top_root = self.top_root:AddChild(Widget("top_scale_root"))
 	self.left_root = self.left_root:AddChild(Widget("left_scale_root"))
+	self.right_root = self.right_root:AddChild(Widget("right_scale_root"))
 	self.bottomright_root = self.bottomright_root:AddChild(Widget("br_scale_root"))
 	--
 end
@@ -210,6 +223,7 @@ function Controls:SetHUDSize(  )
 	self.topright_root:SetScale(scale,scale,scale)
 	self.bottom_root:SetScale(scale,scale,scale)
 	self.top_root:SetScale(scale,scale,scale)
+	self.right_root:SetScale(scale, scale, scale)
 	self.bottomright_root:SetScale(scale,scale,scale)
 	self.left_root:SetScale(scale,scale,scale)
 	self.containerroot:SetScale(scale,scale,scale)

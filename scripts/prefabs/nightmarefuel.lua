@@ -37,4 +37,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/inventory/nightmarefuel", fn, assets)
+return Prefab("nightmarefuel", fn, assets)

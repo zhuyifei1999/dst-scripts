@@ -3,6 +3,7 @@ local assets =
     Asset("ANIM", "anim/teleporter_worm.zip"),
     Asset("ANIM", "anim/teleporter_sickworm_build.zip"),
     Asset("SOUND", "sound/common.fsb"),
+	Asset("MINIMAP_IMAGE", "wormhole_sick"),
 }
 
 local function onsave(inst, data)
@@ -232,7 +233,7 @@ local function makewormhole(uses)
         return inst
     end
 
-    return Prefab("common/wormhole_limited_"..uses, fn, assets)
+    return Prefab("wormhole_limited_"..uses, fn, assets)
 end
 
 return makewormhole(1)

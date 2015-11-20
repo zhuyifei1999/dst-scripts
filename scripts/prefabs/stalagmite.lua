@@ -1,6 +1,7 @@
 local stalagmite_assets =
 {
     Asset("ANIM", "anim/rock_stalagmite.zip"),
+	Asset("MINIMAP_IMAGE", "stalagmite"), --shared with other numbered prefabs
 }
 
 local prefabs =
@@ -137,7 +138,7 @@ local function lowrock()
     return inst
 end
 
-return Prefab("cave/objects/stalagmite_full", fullrock, stalagmite_assets, prefabs),
-    Prefab("cave/objects/stalagmite_med", medrock, stalagmite_assets, prefabs),
-    Prefab("cave/objects/stalagmite_low", lowrock, stalagmite_assets, prefabs),
-    Prefab("cave/objects/stalagmite", fullrock, stalagmite_assets, prefabs)
+return Prefab("stalagmite_full", fullrock, stalagmite_assets, prefabs),
+    Prefab("stalagmite_med", medrock, stalagmite_assets, prefabs),
+    Prefab("stalagmite_low", lowrock, stalagmite_assets, prefabs),
+    Prefab("stalagmite", fullrock, stalagmite_assets, prefabs)
