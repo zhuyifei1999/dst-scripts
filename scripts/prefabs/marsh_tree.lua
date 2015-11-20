@@ -39,8 +39,8 @@ local function set_stump(inst)
 end
 
 local function dig_up_stump(inst, chopper)
-    inst:Remove()
     inst.components.lootdropper:SpawnLootPrefab("log")
+    inst:Remove()
 end
 
 local function chop_down_tree(inst, chopper)

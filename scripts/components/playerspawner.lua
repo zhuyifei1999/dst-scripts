@@ -214,6 +214,16 @@ inst:ListenForEvent("ms_registerspawnpoint", OnRegisterSpawnPoint)
 inst:ListenForEvent("ms_registermigrationportal", OnRegisterMigrationPortal)
 
 --------------------------------------------------------------------------
+--[[ Deinitialization ]]
+--------------------------------------------------------------------------
+
+function self:OnRemoveEntity()
+    while #ShardPortals > 0 do
+        table.remove(ShardPortals)
+    end
+end
+
+--------------------------------------------------------------------------
 
 --------------------------------------------------------------------------
 --[[ Public member functions ]]
