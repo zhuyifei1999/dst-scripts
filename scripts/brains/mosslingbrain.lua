@@ -170,7 +170,7 @@ function MosslingBrain:OnStart()
 		RunAway(self.inst, "scarytoprey", 6, 10, function(target) return true end, false),
 		Leash(self.inst,
 			function()
-				if self.inst:HasGuardian() then
+				if self.inst:HasGuardian() and self.inst.components.herdmember.herd.components.guardian.guardian:IsValid() then
 					return self.inst.components.herdmember.herd.components.guardian.guardian:GetPosition()
 				end
 			end, 5, 6),

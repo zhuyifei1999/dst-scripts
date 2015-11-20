@@ -4,9 +4,9 @@ local assets =
 }
 
 local function OnHitIce(inst, owner, target)
-    if not target:HasTag("freezable") then
+    if target:IsValid() and not target:HasTag("freezable") then
         local fx = SpawnPrefab("shatter")
-        fx.Transform:SetPosition(target:GetPosition():Get())
+        fx.Transform:SetPosition(target.Transform:GetWorldPosition())
         fx.components.shatterfx:SetLevel(2)
     end
 

@@ -76,7 +76,7 @@ local function activatebyother(inst)
     OnWork(inst, nil, 0)
 end
 
-local function fn(bank, build, anim, minimap)
+local function fn(bank, build, anim, minimap, isbackground)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -92,6 +92,10 @@ local function fn(bank, build, anim, minimap)
     inst.AnimState:SetBank(bank)
     inst.AnimState:SetBuild(build)
     inst.AnimState:PlayAnimation(anim)
+    if isbackground then
+        inst.AnimState:SetLayer(LAYER_BACKGROUND)
+        inst.AnimState:SetSortOrder(3)
+    end
 
     inst.entity:SetPristine()
 
@@ -117,7 +121,7 @@ local function fn(bank, build, anim, minimap)
 end
 
 local function closed_fn()
-    local inst = fn("cave_entrance", "cave_entrance", "idle_closed", "cave_closed.png")
+    local inst = fn("cave_entrance", "cave_entrance", "idle_closed", "cave_closed.png", false)
 
     if not TheWorld.ismastersim then
         return inst
@@ -138,7 +142,7 @@ local function closed_fn()
 end
 
 local function ruins_fn()
-    local inst = fn("ruins_entrance", "ruins_entrance", "idle_closed", "cave_closed.png")
+    local inst = fn("ruins_entrance", "ruins_entrance", "idle_closed", "cave_closed.png", false)
 
     if not TheWorld.ismastersim then
         return inst
@@ -159,10 +163,7 @@ local function ruins_fn()
 end
 
 local function open_fn()
-    local inst = fn("cave_entrance", "cave_entrance", "no_access", "cave_open.png")
-
-    inst.AnimState:SetLayer(LAYER_BACKGROUND)
-    inst.AnimState:SetSortOrder(3)
+    local inst = fn("cave_entrance", "cave_entrance", "no_access", "cave_open.png", true)
 
     if not TheWorld.ismastersim then
         return inst
