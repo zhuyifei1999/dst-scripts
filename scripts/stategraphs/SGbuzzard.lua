@@ -219,16 +219,18 @@ local states=
         timeline =
         {                
             TimeEvent(15*FRAMES, function(inst) 
-                if inst.sg.statemem.target then
-                    inst:FacePoint(inst.sg.statemem.target:GetPosition()) 
+                if inst.sg.statemem.target ~= nil and inst.sg.statemem.target:IsValid() then
+                    inst:FacePoint(inst.sg.statemem.target.Transform:GetWorldPosition())
                 end
             end),
             TimeEvent(27*FRAMES, function(inst)
                 inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/buzzard/attack")
                 local target = inst.sg.statemem.target
-                if target and inst:GetPosition():Dist(target:GetPosition()) < TUNING.BUZZARD_ATTACK_RANGE and
-                inst.components.combat:CanAttack(target) then
-                    target.components.health:Kill() 
+                if target ~= nil and
+                    target:IsValid() and
+                    inst:IsNear(target, TUNING.BUZZARD_ATTACK_RANGE) and
+                    inst.components.combat:CanAttack(target) then
+                    target.components.health:Kill()
                 end
             end)
         },

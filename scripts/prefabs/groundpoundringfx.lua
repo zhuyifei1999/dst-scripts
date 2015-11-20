@@ -55,4 +55,4 @@ local function fn()
     return inst
 end
 
-return Prefab("groundpoundring_fx", fn, assets) 
+return Prefab("common/fx/groundpoundring_fx", fn, assets) 

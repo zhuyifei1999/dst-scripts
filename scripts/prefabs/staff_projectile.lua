@@ -4,9 +4,9 @@ local assets =
 }
 
 local function OnHitIce(inst, owner, target)
-    if not target:HasTag("freezable") then
+    if target:IsValid() and not target:HasTag("freezable") then
         local fx = SpawnPrefab("shatter")
-        fx.Transform:SetPosition(target:GetPosition():Get())
+        fx.Transform:SetPosition(target.Transform:GetWorldPosition())
         fx.components.shatterfx:SetLevel(2)
     end
 
@@ -61,5 +61,5 @@ local function fire()
     return common("fire_spin_loop", "shaders/anim.ksh")
 end
 
-return Prefab("ice_projectile", ice, assets), 
-    Prefab("fire_projectile", fire, assets)
+return Prefab("common/inventory/ice_projectile", ice, assets), 
+    Prefab("common/inventory/fire_projectile", fire, assets)

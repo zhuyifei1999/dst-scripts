@@ -1,7 +1,6 @@
 local assets =
 {
     Asset("ANIM", "anim/sign_home.zip"),
-	Asset("MINIMAP_IMAGE", "sign"),
 }
 
 local prefabs =
@@ -92,5 +91,5 @@ local function fn()
     return inst
 end
 
-return Prefab("homesign", fn, assets, prefabs),
-    MakePlacer("homesign_placer", "sign_home", "sign_home", "idle")
+return Prefab("common/objects/homesign", fn, assets, prefabs),
+    MakePlacer("common/homesign_placer", "sign_home", "sign_home", "idle")

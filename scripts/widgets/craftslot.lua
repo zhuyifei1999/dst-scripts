@@ -47,15 +47,7 @@ function CraftSlot:OnControl(control, down)
         if self.owner and self.recipe then
             if self.recipepopup and not self.recipepopup.focus then 
                 TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
-
-                local skin = (self.recipepopup.skins_spinner and self.recipepopup.skins_spinner.GetItem()) or nil
-            
-                if not DoRecipeClick(self.owner, self.recipe, skin ) then 
-                	self:Close() 
-               	elseif self.recipepopup.skins_spinner then 
-               		Profile:SetLastUsedSkinForItem(self.recipe.name, self.recipepopup.skins_spinner.GetItem())
-               	end
-
+                if not DoRecipeClick(self.owner, self.recipe) then self:Close() end
                 return true
             end
         end
@@ -70,7 +62,6 @@ end
 function CraftSlot:Clear()
     self.recipename = nil
     self.recipe = nil
-    self.recipe_skins = {}
     self.canbuild = false
     
     if self.tile then
@@ -130,11 +121,8 @@ function CraftSlot:Refresh(recipename)
     local do_pulse = self.recipename == recipename and not self.canbuild and canbuild
     self.recipename = recipename
     self.recipe = recipe
-    self.recipe_skins = {}
     
     if self.recipe then
-		self.recipe_skins = Profile:GetSkinsForPrefab(self.recipe.name)
-
         self.canbuild = canbuild
         self.tile:SetRecipe(self.recipe)
         self.tile:Show()

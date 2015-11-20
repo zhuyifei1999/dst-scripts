@@ -175,5 +175,5 @@ local function create_mermhead()
     return inst
 end
 
-return Prefab("pighead", create_pighead, pig_assets, pig_prefabs),
-    Prefab("mermhead", create_mermhead, merm_assets, merm_prefabs)
+return Prefab("forest/objects/pighead", create_pighead, pig_assets, pig_prefabs),
+    Prefab("forest/objects/mermhead", create_mermhead, merm_assets, merm_prefabs)

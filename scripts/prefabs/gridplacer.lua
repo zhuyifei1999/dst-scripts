@@ -28,4 +28,4 @@ local function fn()
     return inst
 end
 
-return Prefab("gridplacer", fn, assets)
+return Prefab("common/gridplacer", fn, assets)

@@ -2,7 +2,6 @@ local assets =
 {
 	Asset("ANIM", "anim/buzzard_shadow.zip"),
 	Asset("ANIM", "anim/buzzard_build.zip"),
-	Asset("MINIMAP_IMAGE", "buzzard"),
 }
 
 local prefabs =
@@ -249,5 +248,5 @@ local function circlingbuzzardfn()
 	return inst
 end
 
-return Prefab("buzzardspawner", fn, assets, prefabs),
-    Prefab("circlingbuzzard", circlingbuzzardfn, assets, prefabs)
+return Prefab("badlands/objects/buzzardspawner", fn, assets, prefabs),
+    Prefab("badlands/objects/circlingbuzzard", circlingbuzzardfn, assets, prefabs)

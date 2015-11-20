@@ -84,4 +84,4 @@ local function fn()
     return inst
 end
 
-return Prefab( "hambat", fn, assets) 
+return Prefab( "common/inventory/hambat", fn, assets) 

@@ -154,5 +154,5 @@ local function sparse_fn()
     return common_fn("leif_lumpy_build")
 end
 
-return Prefab("leif", normal_fn, assets, prefabs),
-    Prefab("leif_sparse", sparse_fn, assets, prefabs)
+return Prefab("common/leif", normal_fn, assets, prefabs),
+    Prefab("common/leif_sparse", sparse_fn, assets, prefabs)

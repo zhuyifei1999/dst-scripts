@@ -3,7 +3,6 @@ local assets =
     Asset("ANIM", "anim/lantern.zip"),
     Asset("ANIM", "anim/swap_lantern.zip"),
     Asset("SOUND", "sound/wilson.fsb"),
-    Asset("INV_IMAGE", "lantern_lit"),
 }
 
 local function fuelupdate(inst)
@@ -220,5 +219,5 @@ local function fn()
     return inst
 end
 
-return Prefab("lantern", fn, assets),
-    Prefab("lanternlight", lanternlightfn)
+return Prefab("common/inventory/lantern", fn, assets),
+    Prefab("common/inventory/lanternlight", lanternlightfn)

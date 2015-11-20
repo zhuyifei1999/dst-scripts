@@ -87,7 +87,7 @@ function InventoryItem:GetImage()
     return self.classified ~= nil and
         self.classified.image:value() ~= 0 and
         self.classified.image:value() or
-        self.inst.prefab..".tex"
+        (self.inst.prefab..".tex")
 end
 
 function InventoryItem:SetAtlas(atlasname)

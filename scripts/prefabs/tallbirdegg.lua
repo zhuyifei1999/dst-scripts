@@ -262,6 +262,6 @@ local function cookedfn()
     return inst
 end
 
-return Prefab("tallbirdegg", normalfn, assets, prefabs),
-    Prefab("tallbirdegg_cracked", crackedfn, assets),
-    Prefab("tallbirdegg_cooked", cookedfn, assets)
+return Prefab("common/inventory/tallbirdegg", normalfn, assets, prefabs),
+    Prefab("common/inventory/tallbirdegg_cracked", crackedfn, assets),
+    Prefab("common/inventory/tallbirdegg_cooked", cookedfn, assets)

@@ -234,5 +234,5 @@ local function create_arm()
     return inst
 end
 
-return Prefab("shadowhand", create_hand, assets, prefabs),
-    Prefab("shadowhand_arm", create_arm, assets)
+return Prefab("common/shadowhand", create_hand, assets, prefabs),
+    Prefab("common/shadowhand_arm", create_arm, assets)

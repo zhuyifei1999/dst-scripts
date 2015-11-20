@@ -9,8 +9,6 @@ local Text = require "widgets/text"
 local ThreeSlice = require "widgets/threeslice"
 local HudCompass = require "widgets/hudcompass"
 
-local TEMPLATES = require "widgets/templates"
-
 local HUD_ATLAS = "images/hud.xml"
 local W = 68
 local SEP = 12
@@ -50,11 +48,12 @@ local Inv = Class(Widget, function(self, owner)
     self.hudcompass:SetMaster()
 
     self.bg = self.root:AddChild(Image(HUD_ATLAS, "inventory_bg.tex"))
-
+    self.bg:SetScale(1.15,1,1)
     --self.bg = self.root:AddChild(ThreeSlice(HUD_ATLAS, "inventory_corner.tex", "inventory_filler.tex"))
     
     self.bgcover = self.root:AddChild(Image(HUD_ATLAS, "inventory_bg_cover.tex"))
-
+    self.bgcover:SetScale(1.15,1,1)
+    
     self.hovertile = nil
     self.cursortile = nil
 
@@ -158,18 +157,16 @@ function Inv:Rebuild()
 
     local num_slots = inventory:GetNumSlots()
     local num_equip = #self.equipslotinfo
-    local num_buttons = self.controller_build and 0 or 1
-    local num_slotintersep = math.ceil(num_slots / 5)
-    local num_equipintersep = num_buttons > 0 and 1 or 0
-    local total_w = (num_slots + num_equip + num_buttons) * W + (num_slots + num_equip + num_buttons - num_slotintersep - num_equipintersep - 1) * SEP + (num_slotintersep + num_equipintersep) * INTERSEP
-
-    local x = (W - total_w) * .5 + num_slots * W + (num_slots - num_slotintersep) * SEP + num_slotintersep * INTERSEP
+    local num_intersep = math.floor(num_slots / 5) + 1 
+    local total_w = (num_slots + num_equip)*(W) + (num_slots + num_equip - 2 - num_intersep) *(SEP) + INTERSEP*num_intersep
+    
     for k, v in ipairs(self.equipslotinfo) do
         local slot = EquipSlot(v.slot, v.atlas, v.image, self.owner)
         self.equip[v.slot] = self.toprow:AddChild(slot)
-        slot:SetPosition(x, 0, 0)
+        local x = -total_w/2 + (num_slots)*(W)+num_intersep*(INTERSEP - SEP) + (num_slots-1)*SEP + INTERSEP + W*(k-1) + SEP*(k-1)
+        slot:SetPosition(x,0,0)
         table.insert(eslot_order, slot)
-
+        
         local item = inventory:GetEquippedItem(v.slot)
         if item ~= nil then
             slot:SetTile(ItemTile(item))
@@ -178,44 +175,22 @@ function Inv:Rebuild()
         if v.slot == EQUIPSLOTS.HANDS then
             self.hudcompass:SetPosition(x, do_integrated_backpack and 80 or 40, 0)
         end
+    end    
 
-        x = x + W + SEP
-    end
-
-    x = (W - total_w) * .5
     for k = 1, num_slots do
         local slot = InvSlot(k, HUD_ATLAS, "inv_slot.tex", self.owner, self.owner.replica.inventory)
         self.inv[k] = self.toprow:AddChild(slot)
-        slot:SetPosition(x, 0, 0)
-        slot.top_align_tip = W * .5 + YSEP
+        local interseps = math.floor((k-1) / 5)
+        local x = -total_w/2 + W/2 + interseps*(INTERSEP - SEP) + (k-1)*W + (k-1)*SEP
+        slot:SetPosition(x,0,0)
+        
+        slot.top_align_tip = W*0.5 + YSEP
 
         local item = inventory:GetItemInSlot(k)
         if item ~= nil then
             slot:SetTile(ItemTile(item))
         end
-
-        x = x + W + (k % 5 == 0 and INTERSEP or SEP)
-    end
-
-    local image_name = "self_inspect_"..self.owner.prefab..".tex" 
-
-    if not self.controller_build then
-        self.bg:SetScale(1.22, 1, 1)
-        self.bgcover:SetScale(1.22, 1, 1)
-
-        self.inspectcontrol = self.root:AddChild(TEMPLATES.IconButton("images/hud.xml", image_name, STRINGS.UI.HUD.INSPECT_SELF, false, false, function() self.owner.HUD:InspectSelf() end, {size = 40}, "self_inspect_mod.tex"))
-        self.inspectcontrol.icon:SetScale(.7)
-        self.inspectcontrol.icon:SetPosition(-4, 6)
-        self.inspectcontrol:SetScale(1.25)
-        self.inspectcontrol:SetPosition((total_w - W) * .5 + 3, -6, 0)
-    else
-        self.bg:SetScale(1.15, 1, 1)
-        self.bgcover:SetScale(1.15, 1, 1)
-
-        if self.inspectcontrol ~= nil then
-            self.inspectcontrol:Kill()
-            self.inspectcontrol = nil
-        end
+        
     end
 
     local hadbackpack = self.backpack ~= nil
@@ -244,12 +219,12 @@ function Inv:Rebuild()
                 slot:SetPosition(x,0,0)
                 x = x + W + SEP
             end
-
+            
             local item = overflow:GetItemInSlot(k)
             if item ~= nil then
                 slot:SetTile(ItemTile(item))
             end
-
+            
         end
         
         self.backpack = overflow.inst

@@ -11,4 +11,4 @@ local function fn()
     return inst
 end
 
-return Prefab("meteorspawner", fn)
+return Prefab("common/objects/meteorspawner", fn)

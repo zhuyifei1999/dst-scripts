@@ -130,4 +130,4 @@ local function fn()
     return inst
 end
 
-return Prefab("pigking", fn, assets, prefabs)
+return Prefab("common/objects/pigking", fn, assets, prefabs)

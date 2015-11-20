@@ -32,5 +32,5 @@ local function fn(bank, build)
     end
 end
 
-return Prefab("marsh_plant", fn("marsh_plant", "marsh_plant"), assets),
-    Prefab("pond_algae", fn("pond_rock", "pond_plant_cave"), assets)
+return Prefab("marsh/objects/marsh_plant", fn("marsh_plant", "marsh_plant"), assets),
+    Prefab("cave/objects/pond_algae", fn("pond_rock", "pond_plant_cave"), assets)

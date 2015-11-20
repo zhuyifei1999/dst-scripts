@@ -120,4 +120,4 @@ local function fn()
     return inst
 end
 
-return Prefab("balloons_empty", fn, assets, prefabs)
+return Prefab("common/balloons_empty", fn, assets, prefabs)

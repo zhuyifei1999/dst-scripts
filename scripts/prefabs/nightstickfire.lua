@@ -36,4 +36,4 @@ local function fn()
     return inst
 end
 
-return Prefab("nightstickfire", fn, nil, prefabs)
+return Prefab("common/fx/nightstickfire", fn, nil, prefabs)

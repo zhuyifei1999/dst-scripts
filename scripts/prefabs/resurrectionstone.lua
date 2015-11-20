@@ -1,7 +1,6 @@
 local assets =
 {
     Asset("ANIM", "anim/resurrection_stone.zip"),
-    Asset("MINIMAP_IMAGE", "resurrection_stone"),
 }
 
 local prefabs =
@@ -86,4 +85,4 @@ local function fn()
     return inst
 end
 
-return Prefab("resurrectionstone", fn, assets, prefabs)
+return Prefab("forest/objects/resurrectionstone", fn, assets, prefabs)
