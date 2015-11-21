@@ -2220,10 +2220,10 @@ function ServerListingScreen:OnControl(control, down)
 end
 
 function ServerListingScreen:CurrentCenterFocus()
-    if (self.view_online and self.server_intention.data ~= nil) then
-        return self.servers_scroll_list
-    else
+    if self.view_online and self.server_intention.data == nil then
         return self.intentions_overlay
+    else
+        return self.servers_scroll_list
     end
 end
 

@@ -14,7 +14,6 @@ local ViewCustomizationModalScreen = Class(Screen, function(self, worldgenoption
     Widget._ctor(self, "ViewCustomizationModalScreen")
 
     self.currentmultilevel = 1
-    self.options = Customise.GetOptions()
     self.presets = {}
 
     for i, level in pairs(Levels.sandbox_levels) do
@@ -123,13 +122,6 @@ local ViewCustomizationModalScreen = Class(Screen, function(self, worldgenoption
 	end
 
 
-    self.customizationlist = self.optionspanel:AddChild(CustomizationList(self.options, false))
-    self.customizationlist:SetPosition(-3, -40, 0)
-    self.customizationlist:SetScale(.85)
-    self.customizationlist:SetEditable(false)
-
-    self.default_focus = self.customizationlist
-
     self:RefreshSpinnerValues()
 end)
 
@@ -164,6 +156,17 @@ function ViewCustomizationModalScreen:UpdateMultilevelUI()
 end
 
 function ViewCustomizationModalScreen:RefreshSpinnerValues()
+    local location = self.current_option_settings[self.currentmultilevel].location or "forest"
+    --print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+    --dumptable(self.current_option_settings[self.currentmultilevel])
+    self.options = Customise.GetOptions(location)
+    self.customizationlist = self.optionspanel:AddChild(CustomizationList(location, self.options, nil))
+    self.customizationlist:SetPosition(-3, -40, 0)
+    self.customizationlist:SetScale(.85)
+    self.customizationlist:SetEditable(false)
+
+    self.default_focus = self.customizationlist
+
     for i,v in ipairs(self.options) do
         self.customizationlist:SetValueForOption(v.name, self:GetValueForOption(v.name))
     end
