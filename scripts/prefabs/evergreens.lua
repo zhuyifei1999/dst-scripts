@@ -6,7 +6,6 @@ local assets =
     Asset("ANIM", "anim/evergreen_short_normal.zip"),
     Asset("ANIM", "anim/dust_fx.zip"),
     Asset("SOUND", "sound/forest.fsb"),
-	Asset("MINIMAP_IMAGE", "evergreen_lumpy"),
 }
 
 local prefabs =
@@ -298,10 +297,8 @@ local function chop_down_tree_shake(inst)
 end
 
 local function find_leif_spawn_target(item) 
-    if item.components.growable ~= nil and item.components.growable.stage <= 3 and not item:HasTag("birchnut") then
-        return item:HasTag("tree") and not item:HasTag("stump") and not item:HasTag("burnt") and not item.noleif
-    end
-    return false
+    return item.components.growable ~= nil and item.components.growable.stage <= 3 and item:HasTag("evergreens")
+        and item:HasTag("tree") and not item:HasTag("stump") and not item:HasTag("burnt") and not item.noleif
 end
 
 local function spawn_leif(target) 
@@ -550,6 +547,7 @@ local function tree(name, build, stage, data)
         inst.MiniMapEntity:SetPriority(-1)
 
         inst:AddTag("tree")
+        inst:AddTag("evergreens")
         inst:AddTag("workable")
         inst:AddTag("shelter")
 
@@ -687,7 +685,7 @@ local function tree(name, build, stage, data)
         return inst
     end
 
-    return Prefab(name, fn, assets, prefabs)
+    return Prefab("forest/objects/trees/"..name, fn, assets, prefabs)
 end
 
 return tree("evergreen", "normal", 0),

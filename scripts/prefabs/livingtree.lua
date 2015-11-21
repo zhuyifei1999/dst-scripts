@@ -46,9 +46,9 @@ local function OnBurnt(inst)
     inst:AddTag("burnt")
 end
 
-local function ondug(inst, worker)
-    inst:Remove()
+local function ondug(inst)
     inst.components.lootdropper:SpawnLootPrefab("livinglog")
+    inst:Remove()
 end
 
 local function makestump(inst, instant)
@@ -181,4 +181,4 @@ local function fn()
     return inst
 end
 
-return Prefab("livingtree", fn, assets, prefabs)
+return Prefab("common/livingtree", fn, assets, prefabs)

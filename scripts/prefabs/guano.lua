@@ -93,4 +93,4 @@ local function fn()
     return inst
 end
 
-return Prefab("guano", fn, assets, prefabs)
+return Prefab("common/inventory/guano", fn, assets, prefabs)

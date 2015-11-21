@@ -114,4 +114,4 @@ local function fn()
     return inst
 end
 
-return Prefab("plant_normal", fn, assets, prefabs)
+return Prefab("common/objects/plant_normal", fn, assets, prefabs)

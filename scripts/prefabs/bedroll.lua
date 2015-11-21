@@ -164,5 +164,5 @@ local function bedroll_furry()
     return inst
 end
 
-return Prefab("bedroll_straw", bedroll_straw, straw_assets),
-    Prefab("bedroll_furry", bedroll_furry, furry_assets)
+return Prefab("common/inventory/bedroll_straw", bedroll_straw, straw_assets),
+    Prefab("common/inventory/bedroll_furry", bedroll_furry, furry_assets)

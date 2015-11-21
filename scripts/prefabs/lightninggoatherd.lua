@@ -49,4 +49,4 @@ local function fn(Sim)
     return inst
 end
 
-return Prefab( "lightninggoatherd", fn, assets, prefabs) 
+return Prefab( "forest/animals/lightninggoatherd", fn, assets, prefabs) 

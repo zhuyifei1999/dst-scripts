@@ -7,20 +7,7 @@ local assets =
 }
 
 local function onequip(inst, owner)
-	local skin_build = inst:GetSkinBuild()
-	if skin_build ~= nil then
-        
-        local skin_name = inst:GetSkinName()
-        if skin_name ~= nil then
-            owner:PushEvent("equipskinneditem", skin_name)
-        else
-            owner:PushEvent("equipskinneditem", skin_build)
-        end
-
-		owner.AnimState:OverrideItemSkinSymbol("swap_object", skin_build, "swap_axe", inst.GUID, "swap_axe" )
-	else
-		owner.AnimState:OverrideSymbol("swap_object", "swap_axe", "swap_axe")
-	end
+    owner.AnimState:OverrideSymbol("swap_object", "swap_axe", "swap_axe")
     owner.AnimState:Show("ARM_carry")
     owner.AnimState:Hide("ARM_normal")
 end
@@ -28,15 +15,6 @@ end
 local function onunequip(inst, owner)
     owner.AnimState:Hide("ARM_carry")
     owner.AnimState:Show("ARM_normal")
-    local skin_build = inst:GetSkinBuild()
-    if skin_build ~= nil then
-        local skin_name = inst:GetSkinName()
-        if skin_name ~= nil then
-            owner:PushEvent("unequipskinneditem", skin_name)
-        else
-            owner:PushEvent("unequipskinneditem", skin_build)
-        end
-    end
 end
 
 local function common_fn(bank, build)
@@ -114,5 +92,5 @@ local function golden()
     return inst
 end
 
-return Prefab("axe", normal, assets),
-        Prefab("goldenaxe", golden, assets)
+return Prefab("common/inventory/axe", normal, assets),
+        Prefab("common/inventory/goldenaxe", golden, assets)

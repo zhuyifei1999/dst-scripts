@@ -78,4 +78,4 @@ local function fn(Sim)
     return inst
 end
 
-return Prefab("diviningrodstart", fn, assets)
+return Prefab("common/diviningrodstart", fn, assets)

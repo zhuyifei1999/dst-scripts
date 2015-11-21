@@ -46,7 +46,7 @@ local function makeMarbleTree(animnumber)
     if animnumber > 0 then
         name = name.."_"..tostring(animnumber)
     end
-    local prefabname = name
+    local prefabname = "forest/objects/"..name
 
     local function fn()
         local inst = CreateEntity()

@@ -61,4 +61,4 @@ local function fn()
     return inst
 end
 
-return Prefab("thunder_close", fn)
+return Prefab("common/fx/thunder_close", fn)

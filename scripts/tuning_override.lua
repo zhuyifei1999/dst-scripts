@@ -386,6 +386,20 @@ return
         end
 	end,
 
+	earthquakes = function(difficulty)
+        if difficulty == "never" then
+            TheWorld:PushEvent("ms_quakefrequencymultiplier", -1)
+        elseif difficulty == "rare" then
+            TheWorld:PushEvent("ms_quakefrequencymultiplier", 0.3)
+        elseif difficulty == "default" then
+            TheWorld:PushEvent("ms_quakefrequencymultiplier", 1)
+        elseif difficulty == "often" then
+            TheWorld:PushEvent("ms_quakefrequencymultiplier", 3)
+        elseif difficulty == "always" then
+            TheWorld:PushEvent("ms_quakefrequencymultiplier", 10)
+        end
+	end,
+
     creepyeyes = function(difficulty)
         local tuning_vars =
         {

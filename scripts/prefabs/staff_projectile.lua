@@ -61,5 +61,5 @@ local function fire()
     return common("fire_spin_loop", "shaders/anim.ksh")
 end
 
-return Prefab("ice_projectile", ice, assets), 
-    Prefab("fire_projectile", fire, assets)
+return Prefab("common/inventory/ice_projectile", ice, assets), 
+    Prefab("common/inventory/fire_projectile", fire, assets)

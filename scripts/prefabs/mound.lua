@@ -157,4 +157,4 @@ local function fn()
     return inst
 end
 
-return Prefab("mound", fn, assets, prefabs)
+return Prefab("common/objects/mound", fn, assets, prefabs)

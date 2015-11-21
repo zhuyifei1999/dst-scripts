@@ -38,4 +38,4 @@ local function fn()
     return inst
 end
 
-return Prefab("phlegm", fn, assets)
+return Prefab("common/inventory/phlegm", fn, assets)

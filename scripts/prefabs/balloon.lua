@@ -203,4 +203,4 @@ local function fn()
     return inst
 end
 
-return Prefab("balloon", fn, assets)
+return Prefab("common/balloon", fn, assets)

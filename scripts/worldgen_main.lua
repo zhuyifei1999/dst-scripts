@@ -74,8 +74,8 @@ if moddata then
 	ModManager:LoadMods(true)
 end
 
-require("map/tasks")
 local customise = require("map/customise")
+local tasks = require("map/tasks")
 
 print ("running worldgen_main.lua\n")
 
@@ -505,10 +505,7 @@ function GenerateNew(debug, parameters)
 	local name = level.name or "ERROR"
 	local hideminimap = level.hideminimap or false
 
-	local prefab = "forest"
-	if parameters.world_gen_choices.finaltweak and parameters.world_gen_choices.finaltweak.misc then
-		prefab = parameters.world_gen_choices.finaltweak.misc.location or "forest"
-	end
+	local prefab = level.location or "forest"
 
     local choose_tasks = level:GetTasksForLevel()
 

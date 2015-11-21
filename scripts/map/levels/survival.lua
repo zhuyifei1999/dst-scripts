@@ -9,11 +9,11 @@ AddLevel(LEVELTYPE.SURVIVAL, {
 		id = "SURVIVAL_TOGETHER",
 		name = STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELS[10],
 		desc = STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELDESC[10],
+        location = "forest",
 		overrides = {
 			-- {"start_location", 	"default"}, --don't need to specify default, kept here for clarity	
 			-- {"season_start",	"default"}, --don't need to specify default, kept here for clarity	
 			-- {"world_size",		"large"}, --large is now default, kept here for clarity	
-			--{"cave_entrance",	"never"},
 			-- {"task_set", 		"default"},	 --don't need to specify default, kept here for clarity	
 		},		
 		numrandom_set_pieces = 5,
@@ -50,13 +50,12 @@ AddLevel(LEVELTYPE.SURVIVAL, {
 		id = "SURVIVAL_TOGETHER_CLASSIC",
 		name = STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELS[11],
 		desc = STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELDESC[11],
+        location = "forest",
 		overrides = {
 			-- {"start_location", 	"default"} ,--don't need to specify default, kept here for clarity	
 			-- {"season_start",	"default"}, --don't need to specify default, kept here for clarity	
 			{"task_set", 		"classic"},
-
 			-- {"world_size",		"large"}, --large is now default, kept here for clarity	
-			--{"cave_entrance",	"never"},
 
             {"spring",			"noseason"},
             {"summer",			"noseason"},
@@ -113,6 +112,7 @@ AddLevel(LEVELTYPE.SURVIVAL, {
 		id="SURVIVAL_DEFAULT_PLUS",
 		name=STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELS[2],
 		desc= STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELDESC[2],
+        location = "forest",
 		overrides={				
 				{"start_location", 	"plus"},
 				{"berrybush", 		"rare"},
@@ -162,6 +162,7 @@ AddLevel(LEVELTYPE.SURVIVAL, {
 		id="SURVIVAL_DEFAULT_PLUS",
 		name=STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELS[2],
 		desc= STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELDESC[2],
+        location = "forest",
 		overrides={				
 				{"start_location", 	"plus"},
 				{"boons", 			"often"},				
@@ -214,6 +215,7 @@ AddLevel(LEVELTYPE.SURVIVAL, {
 		id="COMPLETE_DARKNESS",
 		name=STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELS[3],
 		desc= STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELDESC[3],
+        location = "forest",
 		overrides={				
 				{"start_location",  "darkness"},
 				{"day", 			"onlynight"}, 

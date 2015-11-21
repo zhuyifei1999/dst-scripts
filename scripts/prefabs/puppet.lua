@@ -58,7 +58,7 @@ local prefabs = {}
 for i, name in ipairs(DST_CHARACTERLIST) do
     if name ~= "unknown" and
         name ~= "waxwell" then
-        table.insert(prefabs, Prefab("puppet_"..name, createpuppet(name), createassets(name))) 
+        table.insert(prefabs, Prefab("characters/puppet_"..name, createpuppet(name), createassets(name))) 
     end
 end
 return unpack(prefabs)

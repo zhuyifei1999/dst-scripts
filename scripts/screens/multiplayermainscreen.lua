@@ -21,7 +21,6 @@ local OptionsScreen = require "screens/optionsscreen"
 local MorgueScreen = require "screens/morguescreen"
 local ServerListingScreen = require "screens/serverlistingscreen"
 local ServerCreationScreen = require "screens/servercreationscreen"
-local SkinsScreen = require "screens/skinsscreen"
 
 local TEMPLATES = require "widgets/templates"
 
@@ -34,7 +33,7 @@ local bottom_offset = 60
 
 local titleX = lcol-35
 local menuX = lcol-30
-local menuY = -240 -- Use -265 when the "game wizard" option is added
+local menuY = -220
 
 SHOW_DST_DEBUG_HOST_JOIN = false
 SHOW_DEBUG_UNLOCK_RESET = false
@@ -78,15 +77,15 @@ function MultiplayerMainScreen:DoInit( )
 
 	self.motd = self.right_col:AddChild(Widget("motd"))
 	self.motd:SetScale(.9,.9,.9)
-	self.motd:SetPosition(-30, RESOLUTION_Y/2-250, 0)
-	self.motdbg = self.motd:AddChild( TEMPLATES.CurlyWindow(0, 153, .56, 1, 67, -42))
-    self.motdbg:SetPosition(-8, -30)
-    self.motdbg.fill = self.motd:AddChild(Image("images/fepanel_fills.xml", "panel_fill_tiny.tex"))
-    self.motdbg.fill:SetScale(-.405, -.7)
-    self.motdbg.fill:SetPosition(-3, -18)
+	self.motd:SetPosition(-20, RESOLUTION_Y/2-250, 0)
+	self.motdbg = self.motd:AddChild( TEMPLATES.CurlyWindow(10, 200, .6, .6, 40, -25))
+    self.motdbg:SetPosition(-10, 0)
+    self.motdbg.fill = self.motd:AddChild(Image("images/serverbrowser.xml", "side_panel.tex"))
+    self.motdbg.fill:SetScale(-.67, .35)
+    self.motdbg.fill:SetPosition(-2, 5)
 	self.motd.motdtitle = self.motd:AddChild(Text(BUTTONFONT, 43))
     self.motd.motdtitle:SetColour(0,0,0,1)
-    self.motd.motdtitle:SetPosition(0, 70, 0)
+    self.motd.motdtitle:SetPosition(0, 90, 0)
 	self.motd.motdtitle:SetRegionSize( 350, 60)
 	self.motd.motdtitle:SetString(STRINGS.UI.MAINSCREEN.MOTDTITLE)
 
@@ -94,41 +93,13 @@ function MultiplayerMainScreen:DoInit( )
     self.motd.motdtext:SetColour(0,0,0,1)
     self.motd.motdtext:SetHAlign(ANCHOR_MIDDLE)
     self.motd.motdtext:SetVAlign(ANCHOR_MIDDLE)
-    self.motd.motdtext:SetPosition(0, -40, 0)
-	self.motd.motdtext:SetRegionSize(240, 260)
+    self.motd.motdtext:SetPosition(0, -20, 0)
+	self.motd.motdtext:SetRegionSize( 250, 160)
 	self.motd.motdtext:SetString(STRINGS.UI.MAINSCREEN.MOTD)
 	
-	self.motd.motdimage = self.motd:AddChild(ImageButton( "images/global.xml", "square.tex", "square.tex", "square.tex" ))
-    self.motd.motdimage:SetPosition(-2, -15, 0)
-    self.motd.motdimage:SetFocusScale(1, 1, 1)
-    self.motd.motdimage:Hide()
-    
-    local gainfocusfn = self.motd.motdimage.OnGainFocus
-    self.motd.motdimage.OnGainFocus =
-		function()
-    		gainfocusfn(self.motd.motdimage)
-			self.motd:SetScale(0.93,0.93,0.93)
-		end
-    local losefocusfn = self.motd.motdimage.OnLoseFocus
-	self.motd.motdimage.OnLoseFocus =
-		function()
-    		losefocusfn(self.motd.motdimage)
-			self.motd:SetScale(.9,.9,.9)
-		end
-	self.motd.motdimage:SetOnClick(
-		function()
-			self.motd.button.onclick()
-		end)
-		
-		
-    
-    self.motd.button = self.motd:AddChild(ImageButton())
-	self.motd.button:SetPosition(0,-160)
-    self.motd.button:SetScale(.8*.9)
-    self.motd.button:SetText(STRINGS.UI.MAINSCREEN.MOTDBUTTON)
-    self.motd.button:SetOnClick( function() VisitURL("http://store.kleientertainment.com/") end )
-	self.motd.motdtext:EnableWordWrap(true)  
-	
+	self.motd.motdimage = self.motd:AddChild(Image( "images/global.xml", "square.tex" ))
+    self.motd.motdimage:SetPosition(-3, -15, 0)
+
     self.fg.trees:Kill()
     self.fg.trees = self.fixed_root:AddChild(TEMPLATES.ForegroundTrees())
 	
@@ -267,6 +238,12 @@ function MultiplayerMainScreen:DoInit( )
         self.updatename:SetPosition(36,-(RESOLUTION_Y*.5)+56,0)
     end
 
+    self.motd.button = self.fixed_root:AddChild(ImageButton())
+	self.motd.button:SetPosition(rcol-20,RESOLUTION_Y/2-373)
+    self.motd.button:SetScale(.8*.9)
+    self.motd.button:SetText(STRINGS.UI.MAINSCREEN.MOTDBUTTON)
+    self.motd.button:SetOnClick( function() VisitURL("http://forums.kleientertainment.com/index.php?/topic/28171-halloween-mod-challenge/") end )
+	self.motd.motdtext:EnableWordWrap(true)  
 
     self:MakeMainMenu()
 	self:MakeSubMenu()
@@ -315,16 +292,6 @@ end
 
 function MultiplayerMainScreen:OnGameWizardButton()
     -- needs implementation...
-end
-
-function MultiplayerMainScreen:OnSkinsButton()
-	self.last_focus_widget = TheFrontEnd:GetFocusWidget()
-    self.menu:Disable()
-    self.leaving = true
-    TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
-        TheFrontEnd:PushScreen(SkinsScreen(Profile))
-        TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
-    end)
 end
 
 function MultiplayerMainScreen:OnBrowseServersButton()	
@@ -504,8 +471,7 @@ function MultiplayerMainScreen:MakeMainMenu()
 	
     local browse_button = MakeMainMenuButton(STRINGS.UI.MAINSCREEN.BROWSE, function() self:OnBrowseServersButton() end, STRINGS.UI.MAINSCREEN.TOOLTIP_BROWSE)
     local host_button = MakeMainMenuButton(STRINGS.UI.MAINSCREEN.CREATE, function() self:OnCreateServerButton() end, STRINGS.UI.MAINSCREEN.TOOLTIP_HOST)
-    --local wizard_button = MakeMainMenuButton(STRINGS.UI.MAINSCREEN.GAMEWIZARD, function() self:OnGameWizardButton() end, STRINGS.UI.MAINSCREEN.TOOLTIP_WIZARD)
-    local skins_button = MakeMainMenuButton(STRINGS.UI.MAINSCREEN.SKINS, function() self:OnSkinsButton() end, STRINGS.UI.MAINSCREEN.TOOLTIP_SKINS)
+    -- local wizard_button = MakeMainMenuButton(STRINGS.UI.MAINSCREEN.GAMEWIZARD, function() self:OnGameWizardButton() end, STRINGS.UI.MAINSCREEN.TOOLTIP_WIZARD)
     local history_button = MakeMainMenuButton(STRINGS.UI.MORGUESCREEN.HISTORY, function() self:OnHistoryButton() end, STRINGS.UI.MAINSCREEN.TOOLTIP_HISTORY)
     local options_button = MakeMainMenuButton(STRINGS.UI.MAINSCREEN.OPTIONS, function() self:Settings() end, STRINGS.UI.MAINSCREEN.TOOLTIP_OPTIONS)
     local quit_button = MakeMainMenuButton(STRINGS.UI.MAINSCREEN.QUIT, function() self:Quit() end, STRINGS.UI.MAINSCREEN.TOOLTIP_QUIT)
@@ -517,8 +483,7 @@ function MultiplayerMainScreen:MakeMainMenu()
             {widget = mods_button},
             {widget = history_button},
             {widget = options_button},
-            --{widget = wizard_button},   
-            {widget = skins_button},        
+            -- {widget = wizard_button},
             {widget = host_button},
             {widget = browse_button},
         }
@@ -527,8 +492,7 @@ function MultiplayerMainScreen:MakeMainMenu()
             {widget = quit_button},
             {widget = history_button},
             {widget = options_button},
-            --{widget = wizard_button},
-            {widget = skins_button},
+            -- {widget = wizard_button},
             {widget = host_button},
             {widget = browse_button},
         }
@@ -721,7 +685,7 @@ end
 
 function MultiplayerMainScreen:OnGetMOTDImageQueryComplete( is_successful )
 	if is_successful then
-		self.motd.motdimage:SetTextures( "images/motd.xml", "motd.tex", "motd.tex", "motd.tex", "motd.tex", "motd.tex" )
+		self.motd.motdimage:SetTexture( "images/motd.xml", "motd.tex" )
 		self.motd.motdimage:Show()
 	end	
 end
@@ -733,11 +697,13 @@ function MultiplayerMainScreen:SetMOTD(str, cache)
 	--print("decode:", status, motd)
 	if status and motd then
 	    if cache then
-	 		SavePersistentString("motd_image", str)
+	 		SavePersistentString("motd", str)
 	    end
 
 		local platform_motd = motd.dststeam
 		--Uncomment these to test Image MOTD
+		-- platform_motd.image_url = "http://forums.kleientertainment.com/public/DST/motd.tex"
+		-- platform_motd.motd_body = ""
 		
 		--print("platform_motd")
 		--dumptable(platform_motd)
@@ -746,11 +712,8 @@ function MultiplayerMainScreen:SetMOTD(str, cache)
 		    self.motd:Show()
 		    if platform_motd.motd_title and string.len(platform_motd.motd_title) > 0 and
 			    	platform_motd.motd_body and string.len(platform_motd.motd_body) > 0 then
-			    
-			    self.motdbg.fill:Show()
-			    self.motd.motdtitle:Show()
+
 				self.motd.motdtitle:SetString(platform_motd.motd_title)
-				self.motd.motdtext:Show()
 				self.motd.motdtext:SetString(platform_motd.motd_body)
 				self.motd.motdimage:Hide()
 
@@ -761,26 +724,17 @@ function MultiplayerMainScreen:SetMOTD(str, cache)
 				else
 					self.motd.button:Hide()
 				end
-		    elseif platform_motd.image_url and string.len(platform_motd.image_url) > 0 then
+		    elseif platform_motd.motd_title and string.len(platform_motd.motd_title) > 0 and
+			    	platform_motd.image_url and string.len(platform_motd.image_url) > 0 then
 
-			    self.motdbg.fill:Hide()
-				self.motd.motdtitle:Hide()
+				self.motd.motdtitle:SetString(platform_motd.motd_title)
 				self.motd.motdtext:Hide()
 				
 				local use_disk_file = not cache
 				if use_disk_file then
 					self.motd.motdimage:Hide()
 				end
-				
-				if platform_motd.link_title and string.len(platform_motd.link_title) > 0 and
-				    	platform_motd.link_url and string.len(platform_motd.link_url) > 0 then
-				    self.motd.button:SetText(platform_motd.link_title)
-				    self.motd.button:SetOnClick( function() VisitURL(platform_motd.link_url) end )
-				else
-					self.motd.button:Hide()
-				end
-				
-				TheSim:GetMOTDImage( platform_motd.image_url, use_disk_file, platform_motd.image_version or "", function(...) self:OnGetMOTDImageQueryComplete(...) end )
+				TheSim:GetMOTDImage( platform_motd.image_url, use_disk_file, function(...) self:OnGetMOTDImageQueryComplete(...) end )
 		    else
 				self.motd:Hide()
 		    end
@@ -802,11 +756,11 @@ function MultiplayerMainScreen:OnCachedMOTDLoad(load_success, str)
 	if load_success and string.len(str) > 1 then
 		self:SetMOTD(str, false)
 	end
-	TheSim:QueryServer( "https://d21wmy1ql1e52r.cloudfront.net/ds_image_motd.json", function(...) self:OnMOTDQueryComplete(...) end, "GET" )
+	TheSim:QueryServer( "https://s3-us-west-2.amazonaws.com/kleifiles/external/ds_motd.json", function(...) self:OnMOTDQueryComplete(...) end, "GET" )
 end
 
 function MultiplayerMainScreen:UpdateMOTD()
-	TheSim:GetPersistentString("motd_image", function(...) self:OnCachedMOTDLoad(...) end)
+	TheSim:GetPersistentString("motd", function(...) self:OnCachedMOTDLoad(...) end)
 end
 
 function MultiplayerMainScreen:SetCountdown(str, cache)

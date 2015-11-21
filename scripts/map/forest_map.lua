@@ -1,3 +1,4 @@
+local startlocations = require"map/startlocations"
 
 local SKIP_GEN_CHECKS = false
 
@@ -64,14 +65,14 @@ local MULTIPLY = {
 
 	
 local TRANSLATE_TO_PREFABS = {
-	["spiders"] = 			{"spiderden"},
+	["spiders"] = 			{"spiderden", "dropperweb", "spiderhole"},
 	["tentacles"] = 		{"tentacle"},
 	["tallbirds"] = 		{"tallbirdnest"},
 	["pigs"] = 				{"pighouse"},
 	["rabbits"] = 			{"rabbithole"},
 	["moles"] =				{"molehill"},
 	["beefalo"] = 			{"beefalo"},
-	["ponds"] = 			{"pond", "pond_mos"},
+	["ponds"] = 			{"pond", "pond_mos", "pond_cave"},
 	["bees"] = 				{"beehive", "bee"},
 	["grass"] = 			{"grass"},
 	["rock"] = 				{"rocks", "rock1", "rock2", "rock_flintless"}, 
@@ -100,44 +101,25 @@ local TRANSLATE_TO_PREFABS = {
 	["houndmound"] = 		{"houndmound"},
 	["chess"] = 			{"knight", "bishop", "rook"},
 	["walrus"] = 			{"walrus_camp"},
+    ["mushtree"] =          {"mushtree_tall", "mushtree_medium", "mushtree_small"},
+    ["bats"] =              {"batcave"},
+    ["fissure"] =           {"fissure", "fissure_lower"},
+    ["fern"] =              {"cave_fern"},
+    ["flower_cave"] =       {"flower_cave", "flower_cave_double", "flower_cave_triple"},
+    ["slurper"] =           {"slurper"},
+    ["cavelight"] =         {"cavelight", "cavelight_small", "cavelight_tiny"},
+    ["bunnymen"] =          {"rabbithouse"},
+    ["wormlights"] =        {"wormlight_plant"},
+    ["worms"] =             {"worm"},
+    ["slurtles"] =          {"slurtlehole"},
+    ["rocky"] =             {"rocky"},
+    ["lichen"] =            {"lichen"},
+    ["banana"] =            {"cave_banana_tree"},
+    ["monkey"] =            {"monkeybarrel"},
 }
 
 local TRANSLATE_AND_OVERRIDE = { --These are entities that should be translated to prefabs for world gen but also have a postinit override to do
 	["flowers"] =			{"flower", "flower_evil"},
-}
-
-local START_LOCATION_DATA = {
-	["default"] =
-		{
-			start_setpeice = "DefaultStart",		
-			start_node = "Clearing",
-		},
-	["plus"] = 
-		{
-			start_setpeice = "DefaultPlusStart",	
-			start_node = {"DeepForest", "Forest", "SpiderForest", "Plain", "Rocky", "Marsh"},
-		},
-	["darkness"] = 
-		{
-			start_setpeice = "DarknessStart",	
-			start_node = {"DeepForest", "Forest"},	
-		},
-	["caves"] =
-		{
-			start_setpeice = "CaveStart",	
-            start_node = {
-                "RabbitArea",
-                "RabbitTown",
-                "RabbitSinkhole",
-                "SpiderIncursion",
-                "SinkholeForest",
-                "SinkholeCopses",
-                "SinkholeOasis",
-                "GrasslandSinkhole",
-                "GreenMushSinkhole",
-                "GreenMushRabbits",
-            },
-		},
 }
 
 local customise = require("map/customise")
@@ -246,7 +228,7 @@ local function GenerateVoro(prefab, map_width, map_height, tasks, world_gen_choi
             current_gen_params.finaltweak["misc"]["start_location"] = "default"
         end
 		if current_gen_params.finaltweak["misc"]["start_location"] ~= nil then
-            local start_loc = START_LOCATION_DATA[current_gen_params.finaltweak["misc"]["start_location"]]
+            local start_loc = startlocations.GetStartLocation( current_gen_params.finaltweak["misc"]["start_location"] )
             story_gen_params.start_setpeice = type(start_loc.start_setpeice) == "table" and start_loc.start_setpeice[math.random(#start_loc.start_setpeice)] or start_loc.start_setpeice
             story_gen_params.start_node = type(start_loc.start_node) == "table" and start_loc.start_node[math.random(#start_loc.start_node)] or start_loc.start_node
             current_gen_params.finaltweak["misc"]["start_location"] = nil
@@ -672,6 +654,5 @@ return {
     Generate = GenerateVoro,
 	TRANSLATE_TO_PREFABS = TRANSLATE_TO_PREFABS,
 	MULTIPLY = MULTIPLY,
-	START_LOCATION_DATA = START_LOCATION_DATA,
 	TRANSLATE_AND_OVERRIDE = TRANSLATE_AND_OVERRIDE,
 }

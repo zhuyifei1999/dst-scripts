@@ -74,7 +74,7 @@ local function message_constructor(data)
 end
 
 	
-local LobbyChatQueue = Class(Widget, function(self, owner, chatbox, onReceiveNewMessage, nextWidget)
+local LobbyChatQueue = Class(Widget, function(self, owner, chatbox, onReceiveNewMessage)
 	Widget._ctor(self, "LobbyChatQueue")
 
 	self.owner = owner
@@ -87,9 +87,7 @@ local LobbyChatQueue = Class(Widget, function(self, owner, chatbox, onReceiveNew
 	self.chatbox = chatbox
 
 	self.new_message_fn = onReceiveNewMessage
-
-	self.nextWidget = nextWidget
-
+	
 	self:StartUpdating()
 end)
 
@@ -146,19 +144,7 @@ function LobbyChatQueue:OnMessageReceived(userid, name, prefab, message, colour)
 	if self.new_message_fn then
 		self.new_message_fn()
 	end
-
-	self:DoFocusHookups()
 end 
-
-function LobbyChatQueue:DoFocusHookups()
-	if self.scroll_list then 
-		self.default_focus = self.scroll_list
-		self.scroll_list:SetFocusChangeDir(MOVE_RIGHT, self.nextWidget)
-	else
-		self:SetFocusChangeDir(MOVE_RIGHT, self.nextWidget)
-	end
-
-end
 
 function LobbyChatQueue:ScrollToEnd()
 	if self.scroll_list then

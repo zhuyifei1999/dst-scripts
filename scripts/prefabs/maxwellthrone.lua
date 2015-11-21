@@ -257,4 +257,4 @@ local function fn(Sim)
     return inst
 end
 
-return Prefab( "maxwellthrone", fn, assets, prefabs) 
+return Prefab( "common/characters/maxwellthrone", fn, assets, prefabs) 
