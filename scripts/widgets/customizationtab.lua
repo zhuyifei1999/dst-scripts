@@ -35,8 +35,6 @@ local CustomizationTab = Class(Widget, function(self, servercreationscreen)
     self.currentmultilevel = 1
     self.allowEdit = true
 
-    self.options = Customise.GetOptions()
-
     self.servercreationscreen = servercreationscreen
 
     -- Build the options menu so that the spinners are shown in an order that makes sense/in order of how impactful the changes are
@@ -62,7 +60,7 @@ local CustomizationTab = Class(Widget, function(self, servercreationscreen)
     for i, level in pairs(Levels.sandbox_levels) do
         if not level.hideinfrontend then
             assert(level.id ~= nil, "Attempting to add an invalid level to the preset list. name: "..tostring(level.name))
-            table.insert(self.presets, {text=level.name, data=level.id, desc = level.desc, overrides = level.overrides})
+            table.insert(self.presets, {text=level.name, data=level.id, desc = level.desc, overrides = level.overrides, location=level.location})
         end
     end
 
@@ -70,7 +68,7 @@ local CustomizationTab = Class(Widget, function(self, servercreationscreen)
     if profilepresets then
         for i, level in pairs(profilepresets) do
             assert(level.data ~= nil, "Attempting to add an invalid custom preset to the preset list. name: "..tostring(level.text))
-            table.insert(self.presets, {text=level.text, data=level.data, desc = level.desc, overrides = level.overrides, basepreset=level.basepreset})
+            table.insert(self.presets, {text=level.text, data=level.data, desc = level.desc, overrides = level.overrides, basepreset=level.basepreset, location=level.location})
         end
     end
 
@@ -167,13 +165,6 @@ local CustomizationTab = Class(Widget, function(self, servercreationscreen)
     self.current_option_settingspanel:SetScale(.9)
     self.current_option_settingspanel:SetPosition(right_col,20,0)
 
-    self.customizationlist = self.current_option_settingspanel:AddChild(CustomizationList(self.options,
-        function(option, value)
-            self:SetTweak(option, value)
-            self:RefreshTabValues()
-        end))
-    self.customizationlist:SetPosition(-245, -24, 0)
-
     self:HookupFocusMoves()
 
     self.default_focus = self.presetspinner
@@ -265,24 +256,6 @@ function CustomizationTab:SelectMultilevel(level)
     self:UpdateMultilevelUI()
 end
 
-function CustomizationTab:SetBGForSpinner(spinner)
-    local option = spinner.optionName
-    local value = spinner:GetSelectedData()
-
-    for idx,v in ipairs(self.options) do
-        if (self.options[idx].name == option) then
-
-            if value == v.default and self.overrides[option] == nil then
-                spinner.bg:SetTint(1,1,1,1)
-            elseif value == self.overrides[option] then
-                spinner.bg:SetTint(.6,.6,.6,1)
-            else
-                spinner.bg:SetTint(.15,.15,.15,1)
-            end
-        end
-    end
-end
-
 function CustomizationTab:SetTweak(option, value)
 
     for idx,v in ipairs(self.options) do
@@ -366,7 +339,8 @@ function CustomizationTab:SavePreset()
 
         -- Add the preset to the preset spinner and make the preset the selected one
         local base = self.presetspinner.spinner:GetSelectedIndex() <= #Levels.sandbox_levels and self.presetspinner.spinner:GetSelected().data or self.presetspinner.spinner:GetSelected().basepreset
-        local preset = {text=presetname, data=presetid, desc=presetdesc, overrides=presetdata, basepreset=base}
+        local location = self.presetspinner.spinner:GetSelected().location
+        local preset = {text=presetname, data=presetid, desc=presetdesc, overrides=presetdata, basepreset=base, location=location}
         self.presets[index + #Levels.sandbox_levels] = preset
         self.presetspinner.spinner:SetOptions(self.presets)
         self.presetspinner.spinner:SetSelectedIndex(index + #Levels.sandbox_levels)
@@ -466,6 +440,7 @@ function CustomizationTab:ChangePresetForCurrentSlot(level, preset, basepreset)
     self.slotoptions[self.slot][level].preset = basepreset
     self.slotoptions[self.slot][level].tweak = {}
     self:UpdateOptions(level)
+
     self.servercreationscreen:UpdateButtons(self.slot)
 end
 
@@ -479,6 +454,20 @@ function CustomizationTab:RefreshSpinnerValues()
             end
         end
     end
+
+    local location = self.activepresets[self.currentmultilevel].location or "forest"
+    self.options = Customise.GetOptions(location)
+    if self.customizationlist ~= nil then
+        self.customizationlist:Kill()
+    end
+    self.customizationlist = self.current_option_settingspanel:AddChild(CustomizationList(location, self.options,
+        function(option, value)
+            self:SetTweak(option, value)
+            self:RefreshTabValues()
+        end))
+    self.customizationlist:SetPosition(-245, -24, 0)
+
+    self:HookupFocusMoves()
 
     self.customizationlist:SetPresetValues(self.overrides)
 
@@ -698,7 +687,9 @@ end
 
 function CustomizationTab:HookupFocusMoves()
     self.presetspinner:SetFocusChangeDir(MOVE_RIGHT, self.customizationlist)
-    self.customizationlist:SetFocusChangeDir(MOVE_LEFT, self.presetspinner)
+    if self.customizationlist ~= nil then
+        self.customizationlist:SetFocusChangeDir(MOVE_LEFT, self.presetspinner)
+    end
     self.presetspinner:SetFocusChangeDir(MOVE_DOWN, self.revertbutton)
     self.revertbutton:SetFocusChangeDir(MOVE_RIGHT, self.savepresetbutton)
     self.revertbutton:SetFocusChangeDir(MOVE_UP, self.presetspinner)

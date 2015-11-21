@@ -12,9 +12,10 @@ local TEMPLATES = require "widgets/templates"
 local levels = require "map/levels"
 local customise = nil
 
-local CustomizationList = Class(Widget, function(self, options, spinnerCB)
+local CustomizationList = Class(Widget, function(self, location, options, spinnerCB)
     Widget._ctor(self, "CustomizationList")
 
+    self.location = location
     self.options = options
     self.allowEdit = true
     self.spinnerCB = spinnerCB
@@ -126,7 +127,9 @@ function CustomizationList:MakeOptionSpinners()
             local labelWidget = labelParent:AddChild(Text(BUTTONFONT,37))
             labelWidget:SetHAlign(ANCHOR_MIDDLE)
             labelWidget:SetPosition(136, 0)
-            labelWidget:SetString(v.grouplabel)
+            labelWidget:SetString(string.format("%s %s",
+                    STRINGS.UI.SANDBOXMENU.LOCATION[string.upper(self.location)] or STRINGS.UI.SANDBOXMENU.LOCATION.UNKNOWN,
+                    v.grouplabel))
             labelWidget:SetColour(0,0,0,1)
             labelParent.focus_image = labelParent:AddChild(Image("images/ui.xml", "spinner_focus.tex"))
             labelParent.focus_image:SetPosition(133, 3)

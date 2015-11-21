@@ -2640,6 +2640,22 @@ STRINGS.UI =
         DEERCLOPS = "Deerclops",
         GOOSEMOOSE = "???",
         DRAGONFLY = "Dragonfly",
+        BATS = "Bats",
+        FISSURE = "Nightmare Fissures",
+        WORMS = "Cave Worms",
+        SLURPER = "Slurpers",
+        BUNNYMEN = "Bunnymen",
+        SLURTLES = "Slurtles and Snurtles",
+        ROCKY = "Rocky",
+        MONKEY = "Monkies",
+        MUSHTREE = "Mushroom Trees",
+        FERN = "Cave Ferns",
+        FLOWER_CAVE = "Light Flowers",
+        WORMLIGHTS = "Glow Berries",
+        BANANA = "Cave Bananas",
+        LICHEN = "Lichen",
+        EARTHQUAKES = "Earthquakes",
+        CAVELIGHT = "Sinkhole Lights",
     },
     
     SERVERLISTINGSCREEN =
@@ -3533,6 +3549,12 @@ STRINGS.UI =
 
         GENERATE = "OK",
         MAINMENU = "Cancel",
+
+        LOCATION = {
+            FOREST = "Forest",
+            CAVE = "Cave",
+            UNKNOWN = "Some",
+        },
         
         CHOICEMONSTERS = "Monsters",
         CHOICEANIMALS = "Animals",

@@ -1,3 +1,4 @@
+local tasks = require("map/tasks")
 
 LEVELTYPE = {
 	SURVIVAL = 1,
@@ -8,12 +9,11 @@ LEVELTYPE = {
 	CUSTOM = 6,
 }
 
-require("map/tasks")
-
 Level = Class( function(self, data)
 	self.id = data.id or "UNKNOWN_ID"
 	self.name = data.name or ""
 	self.desc = data.desc or ""
+    self.location = data.location or "forest"
     self.hideinfrontend = data.hideinfrontend
 	self.overrides = data.overrides or {}
 	self.substitutes = data.substitutes or {}

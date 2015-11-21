@@ -165,7 +165,7 @@ function MainScreen:DoInit( )
 
 	-- self:UpdateMOTD()
 	self:UpdateCurrentVersion()
-	self:UpdateCountdown()
+	--self:UpdateCountdown()
 
 	self.filter_settings = nil
 

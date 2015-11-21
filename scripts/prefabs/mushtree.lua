@@ -2,61 +2,35 @@
     Prefabs for 3 different mushtrees
 --]]
 
-local prefabs =
-{
-	"log",
-	"blue_cap",
-	"green_cap",
-	"red_cap",
-    "charcoal",
-	"ash",
-    "spore_tall",
-    "spore_medium",
-    "spore_small",
-    "mushtree_tall_stump",
-    "mushtree_medium_stump",
-    "mushtree_small_stump",
-}
-
 local TREESTATES =
 {
     BLOOMING = "bloom",
     NORMAL = "normal",
 }
 
-local function onburntanimover(inst)
+local function tree_burnt(inst)
     inst.components.lootdropper:SpawnLootPrefab("ash")
     if math.random() < 0.5 then
         inst.components.lootdropper:SpawnLootPrefab("charcoal")
     end
+    SpawnPrefab(inst.prefab..(inst.treestate == TREESTATES.BLOOMING and "_bloom_burntfx" or "_burntfx")).Transform:SetPosition(inst.Transform:GetWorldPosition())
     inst:Remove()
 end
 
-local function tree_burnt(inst)
-	inst.persists = false
-	inst.AnimState:PlayAnimation("chop_burnt")
-	inst.SoundEmitter:PlaySound("dontstarve/forest/treeCrumble")
-	inst:ListenForEvent("animover", onburntanimover)
-end
-
 local function stump_burnt(inst)
-	inst.components.lootdropper:SpawnLootPrefab("ash")
-	inst:Remove()
+    inst.components.lootdropper:SpawnLootPrefab("ash")
+    inst:Remove()
 end
 
 local function dig_up_stump(inst)
-	inst.components.lootdropper:SpawnLootPrefab("log")
-	inst:Remove()
+    inst.components.lootdropper:SpawnLootPrefab("log")
+    inst:Remove()
 end
 
 local function inspect_tree(inst)
-    if inst:HasTag("burnt") then
-        return "BURNT"
-    elseif inst:HasTag("stump") then
-        return "CHOPPED"
-    elseif inst.treestate == TREESTATES.BLOOMING then
-        return "BLOOM"
-    end
+    return (inst:HasTag("stump") and "CHOPPED")
+        or (inst.treestate == TREESTATES.BLOOMING and "BLOOM")
+        or nil
 end
 
 local function onspawnfn(inst, spawn)
@@ -93,25 +67,25 @@ local function ontimerdone(inst, data)
 end
 
 local function makestump(inst)
-	RemovePhysicsColliders(inst)
-	inst:AddTag("stump")
+    RemovePhysicsColliders(inst)
+    inst:AddTag("stump")
     inst:RemoveTag("shelter")
     inst:RemoveComponent("propagator")
     inst:RemoveComponent("burnable")
-	MakeSmallPropagator(inst)
-	MakeSmallBurnable(inst)
-	inst.components.burnable:SetOnBurntFn(stump_burnt)
+    MakeSmallPropagator(inst)
+    MakeSmallBurnable(inst)
+    inst.components.burnable:SetOnBurntFn(stump_burnt)
     inst.components.growable:StopGrowing()
     inst.components.periodicspawner:Stop()
 
     inst.components.workable:SetWorkAction(ACTIONS.DIG)
     inst.components.workable:SetOnWorkCallback(nil)
     inst.components.workable:SetOnFinishCallback(dig_up_stump)
-	inst.components.workable:SetWorkLeft(1)
-	inst.AnimState:PlayAnimation("idle_stump")
-	inst.AnimState:ClearBloomEffectHandle()
+    inst.components.workable:SetWorkLeft(1)
+    inst.AnimState:PlayAnimation("idle_stump")
+    inst.AnimState:ClearBloomEffectHandle()
 
-	inst.Light:Enable(false)
+    inst.Light:Enable(false)
 
     if inst.components.timer and not inst.components.timer:TimerExists("decay") then
         inst.components.timer:StartTimer("decay", GetRandomWithVariance(TUNING.MUSHTREE_REGROWTH.DEAD_DECAY_TIME, TUNING.MUSHTREE_REGROWTH.DEAD_DECAY_TIME*0.5))
@@ -123,19 +97,19 @@ local function workcallback(inst, worker, workleft)
     if not worker or (worker and not worker:HasTag("playerghost")) then
         inst.SoundEmitter:PlaySound("dontstarve/wilson/use_axe_mushroom")
     end
-	if workleft <= 0 then
-		inst.SoundEmitter:PlaySound("dontstarve/forest/treefall")
-		makestump(inst)
+    if workleft <= 0 then
+        inst.SoundEmitter:PlaySound("dontstarve/forest/treefall")
+        makestump(inst)
 
         inst.AnimState:PlayAnimation("fall")
 
-		inst.components.lootdropper:DropLoot(inst:GetPosition())
-		inst.AnimState:PushAnimation("idle_stump")
+        inst.components.lootdropper:DropLoot(inst:GetPosition())
+        inst.AnimState:PushAnimation("idle_stump")
 
-	else
-		inst.AnimState:PlayAnimation("chop")
-		inst.AnimState:PushAnimation("idle_loop", true)
-	end
+    else
+        inst.AnimState:PlayAnimation("chop")
+        inst.AnimState:PushAnimation("idle_loop", true)
+    end
 end
 
 local function DoGrow(inst, tostage, targetscale)
@@ -186,7 +160,6 @@ local growth_stages =
     {name="tall", time = function(inst) return GetRandomWithVariance(TUNING.EVERGREEN_GROW_TIME[3].base, TUNING.EVERGREEN_GROW_TIME[3].random) end, fn = function(inst) SetTall(inst) end, growfn = function(inst) GrowTall(inst) end, leifscale=1.25 },
 }
 
-
 local data =
 {
     small =
@@ -232,14 +205,8 @@ local data =
 }
 
 local function onsave(inst, data)
-    if inst:HasTag("burnt") or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
-        data.burnt = true
-    end
-
-    if inst:HasTag("stump") then
-        data.stump = true
-    end
-
+    data.burnt = inst.components.burnable ~= nil and inst.components.burnable:IsBurning() or nil
+    data.stump = inst:HasTag("stump") or nil
     data.treestate = inst.treestate
 end
 
@@ -247,12 +214,12 @@ local function onload(inst, data)
     if data ~= nil then
         if data.burnt then
             if data.stump then
-            	stump_burnt(inst)
+                stump_burnt(inst)
             else
-            	tree_burnt(inst)
+                tree_burnt(inst)
             end
         elseif data.stump then
-        	makestump(inst)
+            makestump(inst)
         elseif data.treestate == TREESTATES.NORMAL then
             inst:Normal(true)
         elseif data.treestate == TREESTATES.BLOOMING then
@@ -267,6 +234,44 @@ local function CustomOnHaunt(inst, haunter)
         return true
     end
     return false
+end
+
+--V2C: Not using an fx proxy because this was originally meant to be an
+--     animated death state of the original entity so it would probably
+--     look more consistent this way.
+--     BTW this was done so that the burnt state can immediately remove
+--     the original entity rather than creating edge case bugs while it
+--     was still interactable during the crumbling animation.
+local function makeburntfx(name, data, bloom)
+    return function()
+        local inst = CreateEntity()
+
+        inst.entity:AddTransform()
+        inst.entity:AddAnimState()
+        inst.entity:AddSoundEmitter()
+        inst.entity:AddNetwork()
+
+        inst.AnimState:SetBuild(bloom and data.bloom_build or data.build)
+        inst.AnimState:SetBank(data.bank)
+        inst.AnimState:PlayAnimation("chop_burnt")
+
+        inst.SoundEmitter:PlaySound("dontstarve/forest/treeCrumble")
+
+        inst:AddTag("FX")
+
+        inst.entity:SetPristine()
+
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        inst.persists = false
+        inst:ListenForEvent("animover", inst.Remove)
+        -- In case we're off screen and animation is asleep
+        inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength() + FRAMES, inst.Remove)
+
+        return inst
+    end
 end
 
 local function maketree(name, data, state)
@@ -311,7 +316,7 @@ local function maketree(name, data, state)
     end
 
     local function onseasonchange(inst, season)
-        if not inst:HasTag("burnt") and not inst:HasTag("stump") then
+        if not inst:HasTag("stump") then
             if season == data.season and inst.treestate ~= TREESTATES.BLOOM then
                 bloom_tree(inst)
             elseif season ~= data.season and inst.treestate ~= TREESTATES.NORMAL then
@@ -320,7 +325,7 @@ local function maketree(name, data, state)
         end
     end
 
-    local function fn()
+    return function()
         local inst = CreateEntity()
 
         inst.entity:AddTransform()
@@ -335,7 +340,6 @@ local function maketree(name, data, state)
         inst.AnimState:SetBuild(data.build)
         inst.AnimState:SetBank(data.bank)
         inst.AnimState:PlayAnimation("idle_loop", true)
-        inst.AnimState:SetTime(math.random() * 2)
 
         inst.MiniMapEntity:SetIcon(data.icon)
 
@@ -347,6 +351,8 @@ local function maketree(name, data, state)
 
         inst:AddTag("shelter")
         inst:AddTag("mushtree")
+        inst:AddTag("cavedweller")
+        inst:AddTag("tree")
 
         if data.webbable then
             inst:AddTag("webbable")
@@ -362,6 +368,7 @@ local function maketree(name, data, state)
 
         local color = 0.5 + math.random() * 0.5
         inst.AnimState:SetMultColour(color, color, color, 1)
+        inst.AnimState:SetTime(math.random() * 2)
 
         MakeMediumPropagator(inst)
         MakeLargeBurnable(inst)
@@ -421,13 +428,32 @@ local function maketree(name, data, state)
 
         return inst
     end
-    return fn
 end
 
 local treeprefabs = {}
 function treeset(name, data, build, bloombuild)
-    table.insert(treeprefabs, Prefab(name, maketree(name, data), { Asset("ANIM", build), Asset("ANIM", bloombuild) }, prefabs))
-    table.insert(treeprefabs, Prefab(name.."_stump", maketree(name, data, "stump"), { Asset("ANIM", build), Asset("ANIM", bloombuild) }, prefabs))
+    local buildasset = Asset("ANIM", build)
+    local bloombuildasset = Asset("ANIM", bloombuild)
+    local assets = { buildasset, bloombuildasset }
+
+    local prefabs =
+    {
+        "log",
+        "blue_cap",
+        "green_cap",
+        "red_cap",
+        "charcoal",
+        "ash",
+        data.spore,
+        name.."_stump",
+        name.."_burntfx",
+        name.."_bloom_burntfx",
+    }
+
+    table.insert(treeprefabs, Prefab(name, maketree(name, data), assets, prefabs))
+    table.insert(treeprefabs, Prefab(name.."_stump", maketree(name, data, "stump"), assets, prefabs))
+    table.insert(treeprefabs, Prefab(name.."_burntfx", makeburntfx(name, data, false), { buildasset }))
+    table.insert(treeprefabs, Prefab(name.."_bloom_burntfx", makeburntfx(name, data, true), { bloombuildasset }))
 end
 
 treeset("mushtree_tall", data.tall, "anim/mushroom_tree_tall.zip", "anim/mushroom_tree_tall_bloom.zip")

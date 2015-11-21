@@ -17,6 +17,7 @@ SIZE_VARIATION = 3
 
 local taskgrouplist = {}
 function AddTaskSet(id, data)
+    data.location = data.location or "forest"
 	taskgrouplist[id] = data
 end
 
@@ -24,10 +25,10 @@ local function GetGenTasks(id)
 	return taskgrouplist[id]
 end
  
-local function GetGenTaskLists()
+local function GetGenTaskLists(world)
     local ret = {}
     for k,v in pairs(taskgrouplist) do
-        if not v.hideinfrontend then
+        if not v.hideinfrontend and world == nil or v.location == world then
             table.insert(ret, {text = v.name, data = k})
         end
     end
@@ -36,6 +37,7 @@ end
 
 AddTaskSet("default", {
 		name = STRINGS.UI.CUSTOMIZATIONSCREEN.TASKSETNAMES.DEFAULT,
+        location = "forest",
 		tasks = {
 			"Make a pick",
 			"Dig that rock",
@@ -75,6 +77,7 @@ AddTaskSet("default", {
 
 AddTaskSet("classic", {
 		name = STRINGS.UI.CUSTOMIZATIONSCREEN.TASKSETNAMES.CLASSIC,
+        location = "forest",
 		tasks = {
 			"Make a pick",
 			"Dig that rock",
@@ -1180,7 +1183,7 @@ AddTask("TEST_EMPTY", {
 	})
 
 
-tasks = {
+return {
 	sampletasks = tasklist,
 	oneofeverything = everything_sample,
 	GetTaskByName = GetTaskByName,

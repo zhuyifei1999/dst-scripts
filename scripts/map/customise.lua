@@ -1,4 +1,5 @@
-require ("map/tasks")
+local tasks = require ("map/tasks")
+local startlocations = require ("map/startlocations")
 
 local freqency_descriptions
 if PLATFORM ~= "PS4" then
@@ -16,6 +17,11 @@ else
 		{ text = STRINGS.UI.SANDBOXMENU.SLIDEDEFAULT, data = "default" }
 	}
 end
+
+--local location_descriptions = {
+    --{ text = STRINGS.UI.SANDBOXMENU.LOCATIONFOREST, data = "forest" },
+    --{ text = STRINGS.UI.SANDBOXMENU.LOCATIONCAVE, data = "cave" },
+--}
 
 local speed_descriptions = {
 	{ text = STRINGS.UI.SANDBOXMENU.SLIDEVERYSLOW, data = "veryslow" },
@@ -79,17 +85,6 @@ else
 	}
 end
 
-local start_descriptions = {
-	{ text = STRINGS.UI.SANDBOXMENU.DEFAULTSTART, data = "default" },
-	{ text = STRINGS.UI.SANDBOXMENU.PLUSSTART, data = "plus" },
-	{ text = STRINGS.UI.SANDBOXMENU.DARKSTART, data = "darkness" },
-    --#TODOCAVES: disabled temporarily for main branch ~gjans
-	--{ text = STRINGS.UI.SANDBOXMENU.CAVESTART, data = "caves" },
-}
-if BRANCH == "dev" then
-    table.insert(start_descriptions, { text = STRINGS.UI.SANDBOXMENU.CAVESTART, data = "caves" })
-end
-
 local branching_descriptions = {
 	{ text = STRINGS.UI.SANDBOXMENU.BRANCHINGNEVER, data = "never" },
 	{ text = STRINGS.UI.SANDBOXMENU.BRANCHINGLEAST, data = "least" },
@@ -129,20 +124,23 @@ local GROUP = {
 						enable = false,
 						items={
 							["spiders"] = {value = "default", enable = false, image = "spiders.tex", order = 1}, 
-							["hounds"] = {value = "default", enable = false, image = "hounds.tex", order = 2}, 
-							["houndmound"] = {value = "default", enable = false, image = "houndmound.tex", order = 3},
-							["merm"] = {value = "default", enable = false, image = "merms.tex", order = 4}, 
+							["hounds"] = {value = "default", enable = false, image = "hounds.tex", order = 2, world={"forest"}}, 
+							["houndmound"] = {value = "default", enable = false, image = "houndmound.tex", order = 3, world={"forest"}},
+							["merm"] = {value = "default", enable = false, image = "merms.tex", order = 4, world={"forest"}}, 
 							["tentacles"] = {value = "default", enable = false, image = "tentacles.tex", order = 5}, 
 							["chess"] = {value = "default", enable = false, image = "chess_monsters.tex", order = 6}, 
-							["lureplants"] = {value = "default", enable = false, image = "lureplant.tex", order = 7},
-							["walrus"] = {value = "default", enable = false, image = "mactusk.tex", order = 8},  
+							["lureplants"] = {value = "default", enable = false, image = "lureplant.tex", order = 7, world={"forest"}},
+							["walrus"] = {value = "default", enable = false, image = "mactusk.tex", order = 8, world={"forest"}},  
 							["liefs"] = {value = "default", enable = false, image = "liefs.tex", order = 9}, 
-							["deciduousmonster"] = {value = "default", enable = false, image = "deciduouspoison.tex", order = 10},
-							["krampus"] = {value = "default", enable = false, image = "krampus.tex", order = 11},
-							["bearger"] = {value = "default", enable = false, image = "bearger.tex", order = 12},
-							["deerclops"] = {value = "default", enable = false, image = "deerclops.tex", order = 13},
-							["goosemoose"] = {value = "default", enable = false, image = "goosemoose.tex", order = 14},
-							["dragonfly"] = {value = "default", enable = false, image = "dragonfly.tex", order = 15},
+							["deciduousmonster"] = {value = "default", enable = false, image = "deciduouspoison.tex", order = 10, world={"forest"}},
+							["krampus"] = {value = "default", enable = false, image = "krampus.tex", order = 11, world={"forest"}},
+							["bearger"] = {value = "default", enable = false, image = "bearger.tex", order = 12, world={"forest"}},
+							["deerclops"] = {value = "default", enable = false, image = "deerclops.tex", order = 13, world={"forest"}},
+							["goosemoose"] = {value = "default", enable = false, image = "goosemoose.tex", order = 14, world={"forest"}},
+							["dragonfly"] = {value = "default", enable = false, image = "dragonfly.tex", order = 15, world={"forest"}},
+							["bats"] = {value = "default", enable = false, image = "bats.tex", order = 16, world={"cave"}},
+							["fissure"] = {value = "default", enable = false, image = "fissure.tex", order = 17, world={"cave"}},
+							["worms"] = {value = "default", enable = false, image = "worms.tex", order = 18, world={"cave"}},
 						}
 					},
 	["animals"] =  	{	-- These guys live and let live
@@ -152,24 +150,29 @@ local GROUP = {
 						enable = false,
 						items={
 							-- ["mandrake"] = {value = "default", enable = false, image = "mandrake.tex", order = 1},
-							["rabbits"] = {value = "default", enable = false, image = "rabbits.tex", order = 2},
-							["moles"] = {value = "default", enable = false, image = "mole.tex", order = 3},
-							["butterfly"] = {value = "default", enable = false, image = "butterfly.tex", order = 4},  
-							["birds"] = {value = "default", enable = false, image = "birds.tex", order = 5},
-							["buzzard"] = {value = "default", enable = false, image = "buzzard.tex", order = 6}, 
-							["catcoon"] = {value = "default", enable = false, image = "catcoon.tex", order = 7}, 
-							["perd"] = {value = "default", enable = false, image = "perd.tex", order = 8}, 
-							["pigs"] = {value = "default", enable = false, image = "pigs.tex", order = 9}, 
-							["lightninggoat"] = {value = "default", enable = false, image = "lightning_goat.tex", order = 10}, 
-							["beefalo"] = {value = "default", enable = false, image = "beefalo.tex", order = 11}, 
-							["beefaloheat"] = {value = "default", enable = false, image = "beefaloheat.tex", order = 12},
-							["hunt"] = {value = "default", enable = false, image = "tracks.tex", order = 13},  
-							["alternatehunt"] = {value = "default", enable = false, image = "alternatehunt.tex", order = 14},  
-							["penguins"] = {value = "default", enable = false, image = "pengull.tex", order = 15},
-							["frogs"] = {value = "default", enable = false, image = "ponds.tex", order = 16}, 
-							["bees"] = {value = "default", enable = false, image = "beehive.tex", order = 17}, 
-							["angrybees"] = {value = "default", enable = false, image = "wasphive.tex", order = 18}, 
-							["tallbirds"] = {value = "default", enable = false, image = "tallbirds.tex", order = 19},  
+							["rabbits"] = {value = "default", enable = false, image = "rabbits.tex", order = 2, world={"forest"}},
+							["moles"] = {value = "default", enable = false, image = "mole.tex", order = 3, world={"forest"}},
+							["butterfly"] = {value = "default", enable = false, image = "butterfly.tex", order = 4, world={"forest"}},  
+							["birds"] = {value = "default", enable = false, image = "birds.tex", order = 5, world={"forest"}},
+							["buzzard"] = {value = "default", enable = false, image = "buzzard.tex", order = 6, world={"forest"}}, 
+							["catcoon"] = {value = "default", enable = false, image = "catcoon.tex", order = 7, world={"forest"}}, 
+							["perd"] = {value = "default", enable = false, image = "perd.tex", order = 8, world={"forest"}}, 
+							["pigs"] = {value = "default", enable = false, image = "pigs.tex", order = 9, world={"forest"}}, 
+							["lightninggoat"] = {value = "default", enable = false, image = "lightning_goat.tex", order = 10, world={"forest"}}, 
+							["beefalo"] = {value = "default", enable = false, image = "beefalo.tex", order = 11, world={"forest"}}, 
+							["beefaloheat"] = {value = "default", enable = false, image = "beefaloheat.tex", order = 12, world={"forest"}},
+							["hunt"] = {value = "default", enable = false, image = "tracks.tex", order = 13, world={"forest"}},  
+							["alternatehunt"] = {value = "default", enable = false, image = "alternatehunt.tex", order = 14, world={"forest"}},  
+							["penguins"] = {value = "default", enable = false, image = "pengull.tex", order = 15, world={"forest"}},
+							["frogs"] = {value = "default", enable = false, image = "ponds.tex", order = 16, world={"forest"}}, 
+							["bees"] = {value = "default", enable = false, image = "beehive.tex", order = 17, world={"forest"}}, 
+							["angrybees"] = {value = "default", enable = false, image = "wasphive.tex", order = 18, world={"forest"}}, 
+							["tallbirds"] = {value = "default", enable = false, image = "tallbirds.tex", order = 19, world={"forest"}},  
+							["slurper"] = {value = "default", enable = false, image = "slurper.tex", order = 20, world={"cave"}},
+							["bunnymen"] = {value = "default", enable = false, image = "bunnymen.tex", order = 21, world={"cave"}},
+							["slurtles"] = {value = "default", enable = false, image = "slurtles.tex", order = 22, world={"cave"}},
+							["rocky"] = {value = "default", enable = false, image = "rocky.tex", order = 23, world={"cave"}},
+							["monkey"] = {value = "default", enable = false, image = "monkey.tex", order = 24, world={"cave"}},
 						}
 					},
 	["resources"] = {
@@ -178,18 +181,22 @@ local GROUP = {
 						desc = freqency_descriptions,
 						enable = false,
 						items={
-							["flowers"] = {value = "default", enable = false, image = "flowers.tex", order = 1},
+							["flowers"] = {value = "default", enable = false, image = "flowers.tex", order = 1, world={"forest"}},
 							["grass"] = {value = "default", enable = false, image = "grass.tex", order = 2}, 
 							["sapling"] = {value = "default", enable = false, image = "sapling.tex", order = 3}, 
 							["marshbush"] = {value = "default", enable = false, image = "marsh_bush.tex", order = 4}, 
-							["tumbleweed"] = {value = "default", enable = false, image = "tumbleweeds.tex", order = 5}, 
+							["tumbleweed"] = {value = "default", enable = false, image = "tumbleweeds.tex", order = 5, world={"forest"}}, 
 							["reeds"] = {value = "default", enable = false, image = "reeds.tex", order = 6}, 
 							["trees"] = {value = "default", enable = false, image = "trees.tex", order = 7}, 
 							["flint"] = {value = "default", enable = false, image = "flint.tex", order = 8},
 							["rock"] = {value = "default", enable = false, image = "rock.tex", order = 9}, 
-							["rock_ice"] = {value = "default", enable = false, image = "iceboulder.tex", order = 10}, 
-							["meteorspawner"] = {value = "default", enable = false, image = "burntground.tex", order = 11}, 
-							["meteorshowers"] = {value = "default", enable = false, image = "meteor.tex", order = 12}, 
+							["rock_ice"] = {value = "default", enable = false, image = "iceboulder.tex", order = 10, world={"forest"}}, 
+							["meteorspawner"] = {value = "default", enable = false, image = "burntground.tex", order = 11, world={"forest"}}, 
+							["meteorshowers"] = {value = "default", enable = false, image = "meteor.tex", order = 12, world={"forest"}}, 
+							["mushtree"] = {value = "default", enable = false, image = "mushtree.tex", order = 13, world={"cave"}},
+							["fern"] = {value = "default", enable = false, image = "fern.tex", order = 14, world={"cave"}},
+							["flower_cave"] = {value = "default", enable = false, image = "flower_cave.tex", order = 15, world={"cave"}},
+							["wormlights"] = {value = "default", enable = false, image = "wormlights.tex", order = 16, world={"cave"}},
 						}
 					},
 	["unprepared"] ={
@@ -199,9 +206,11 @@ local GROUP = {
 						enable = true,
 						items={
 							["berrybush"] = {value = "default", enable = true, image = "berrybush.tex", order = 1}, 
-							["carrot"] = {value = "default", enable = true, image = "carrot.tex", order = 2}, 
+							["carrot"] = {value = "default", enable = true, image = "carrot.tex", order = 2, world={"forest"}}, 
 							["mushroom"] = {value = "default", enable = false, image = "mushrooms.tex", order = 3}, 
-							["cactus"] = {value = "default", enable = false, image = "cactus.tex", order = 4}, 
+							["cactus"] = {value = "default", enable = false, image = "cactus.tex", order = 4, world={"forest"}}, 
+							["banana"] = {value = "default", enable = false, image = "banana.tex", order = 5, world={"cave"}},
+							["lichen"] = {value = "default", enable = false, image = "lichen.tex", order = 6, world={"cave"}},
 						}
 					},
 	["misc"] =		{
@@ -210,8 +219,9 @@ local GROUP = {
 						desc = nil,
 						enable = true,
 						items={
-                            ["task_set"] = {value = "default", enable = false, image = "world_map.tex", desc = tasks.GetGenTaskLists(), order = 1}, 
-                            ["start_location"] = {value = "default", enable = false, image = "world_start.tex", desc = start_descriptions, order = 2}, 
+                            --["location"] = {value = "forest", enable = false, image = "world_map.tex", desc = location_descriptions, order = 0}, 
+                            ["task_set"] = {value = "default", enable = false, image = "world_map.tex", desc = tasks.GetGenTaskLists, order = 1}, 
+                            ["start_location"] = {value = "default", enable = false, image = "world_start.tex", desc = startlocations.GetGenStartLocations, order = 2}, 
 							["world_size"] = {value = "default", enable = false, image = "world_size.tex", desc = size_descriptions, order = 3}, 
 							["branching"] = {value = "default", enable = false, image = "world_branching.tex", desc = branching_descriptions, order = 4}, 
 							["loop"] = {value = "default", enable = false, image = "world_loop.tex", desc = loop_descriptions, order = 5}, 
@@ -221,14 +231,15 @@ local GROUP = {
 							["summer"] = {value = "default", enable = true, image = "summer.tex", desc = season_length_descriptions, order = 9},
 							["season_start"] = {value = "default", enable = false, image = "season_start.tex", desc = season_start_descriptions, order = 10}, 
 							["day"] = {value = "default", enable = false, image = "day.tex", desc = day_descriptions, order = 11}, 
-							-- ["cave_entrance"] = {value = "default", enable = false, image = "caves.tex", desc = yesno_descriptions, order = 12},
 							["weather"] = {value = "default", enable = false, image = "rain.tex", desc = freqency_descriptions, order = 13}, 
-							["lightning"] = {value = "default", enable = false, image = "lightning.tex", desc = freqency_descriptions, order = 14}, 
-							["frograin"] = {value = "default", enable = false, image = "frog_rain.tex", desc = freqency_descriptions, order = 15}, 
-							["wildfires"] = {value = "default", enable = false, image = "smoke.tex", desc = freqency_descriptions, order = 16}, 
+							["lightning"] = {value = "default", enable = false, image = "lightning.tex", desc = freqency_descriptions, order = 14, world={"forest"}}, 
+							["earthquakes"] = {value = "default", enable = false, image = "earthquakes.tex", desc = freqency_descriptions, order = 14, world={"cave"}}, 
+							["frograin"] = {value = "default", enable = false, image = "frog_rain.tex", desc = freqency_descriptions, order = 15, world={"forest"}}, 
+							["wildfires"] = {value = "default", enable = false, image = "smoke.tex", desc = freqency_descriptions, order = 16, world={"forest"}}, 
 							["touchstone"] = {value = "default", enable = false, image = "resurrection.tex", desc = freqency_descriptions, order = 17}, 
 							["boons"] = {value = "default", enable = false, image = "skeletons.tex", desc = freqency_descriptions, order = 18}, 
 							["regrowth"] = {value = "default", enable = false, image = "regrowth.tex", desc = speed_descriptions, order = 17}, 
+							["cavelight"] = {value = "default", enable = false, image = "cavelight.tex", desc = speed_descriptions, order = 18, world={"cave"}},
 						}
 					},
 }
@@ -244,7 +255,7 @@ local function GetGroupForItem(target)
 	return "misc"
 end
 
-local function GetOptions()
+local function GetOptions(world)
     local options = {}
 
     local groups = {}
@@ -258,14 +269,17 @@ local function GetOptions()
         local items = {}
         local group = GROUP[groupname]
         for k,v in pairs(group.items) do
-            table.insert(items, k)
+            if world == nil or v.world == nil or table.contains(v.world, world) then
+                table.insert(items, k)
+            end
         end
 
         table.sort(items, function(a,b) return group.items[a].order < group.items[b].order end)
 
         for ii,itemname in ipairs(items) do
             local item = group.items[itemname]
-            table.insert(options, {name = itemname, image = item.image, options = item.desc or group.desc, default = item.value, group = groupname, grouplabel = group.text})
+            local values = item.desc and (type(item.desc)=="function" and item.desc(world) or item.desc) or group.desc
+            table.insert(options, {name = itemname, image = item.image, options = values, default = item.value, group = groupname, grouplabel = group.text})
         end
     end
 

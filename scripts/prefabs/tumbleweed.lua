@@ -115,9 +115,7 @@ local function startmoving(inst)
 end
 
 local function onpickup(inst, picker)
-    if inst.owner and inst.owner.components.childspawner then 
-        inst:PushEvent("pickedup")
-    end
+    inst:PushEvent("pickedup")
 
     local item = nil
     for i, v in ipairs(inst.loot) do

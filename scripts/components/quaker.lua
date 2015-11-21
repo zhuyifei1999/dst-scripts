@@ -34,6 +34,7 @@ local _state = nil
 local _debrispersecond = 1 -- how much junk falls
 local _mammalsremaining = 0
 local _task = nil
+local _frequencymultiplier = 1
 
 local _quakedata = nil -- populated through configuration
 
@@ -341,7 +342,7 @@ end
 -- Was forward declared
 SetNextQuake = function(data, overridetime)
     print("BEGINNING QUAKE")
-    local nexttime = overridetime or (type(data.nextquake) == "function" and data.nextquake()) or data.nextquake
+    local nexttime = overridetime or (type(data.nextquake) == "function" and data.nextquake()*_frequencymultiplier) or data.nextquake*_frequencymultiplier
     UpdateTask(nexttime, WarnQuake, data)
     _state = QUAKESTATE.WAITING
 end
@@ -433,6 +434,15 @@ local OnPlayerLeft = _ismastersim and function (src, player)
     end
 end or nil
 
+local OnFrequencyMultiplier = _ismastersim and function (src, multiplier)
+    _frequencymultiplier = multiplier
+    if _frequencymultiplier > 0 and _quakedata ~= nil then
+        SetNextQuake(_quakedata)
+    else
+        ClearTask()
+    end
+end or nil
+
 --------------------------------------------------------------------------
 --[[ Public member functions ]]
 --------------------------------------------------------------------------
@@ -441,7 +451,7 @@ function self:SetQuakeData(data)
     if not _ismastersim then return end
 
     _quakedata = data
-    if _quakedata ~= nil then
+    if _quakedata ~= nil and _frequencymultiplier > 0 then
         SetNextQuake(_quakedata)
     else
         ClearTask()
@@ -468,6 +478,8 @@ if _ismastersim then
 
     inst:ListenForEvent("ms_miniquake", OnMiniQuake, _world)
     inst:ListenForEvent("ms_forcequake", OnForceQuake, _world)
+
+    inst:ListenForEvent("ms_quakefrequencymultiplier", OnFrequencyMultiplier, _world)
 
     inst:ListenForEvent("explosion", OnExplosion, _world)
 end
