@@ -299,14 +299,12 @@ local function OnCustomHaunt(inst)
     return true
 end
 
-local function OnSave(inst)
-    if inst:HasTag("nightmare") then
-        return { nightmare = true }
-    end
+local function OnSave(inst, data)
+    data.nightmare = inst:HasTag("nightmare") or nil
 end
 
 local function OnLoad(inst, data)
-    if data and data.nightmare == true then
+    if data ~= nil and data.nightmare then
         SetNightmareMonkey()
     end
 end

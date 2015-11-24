@@ -43,6 +43,7 @@ AddLevel(LEVELTYPE.SURVIVAL, {
 		},
 		required_prefabs = {
             "multiplayer_portal",
+            "pigking",
 		},
 	})
 
@@ -103,6 +104,7 @@ AddLevel(LEVELTYPE.SURVIVAL, {
 		},
 		required_prefabs = {
             "multiplayer_portal",
+            "pigking",
 		},
 	})
 
@@ -207,6 +209,7 @@ AddLevel(LEVELTYPE.SURVIVAL, {
 		},
 		required_prefabs = {
             "multiplayer_portal",
+            "pigking",
 		},
 	})
 end
@@ -247,6 +250,7 @@ AddLevel(LEVELTYPE.SURVIVAL, {
 		},
 		required_prefabs = {
             "multiplayer_portal",
+            "pigking",
 		},
 	})
 

@@ -146,6 +146,7 @@ local states =
                     if inst.components.lootdropper then
                         inst.components.lootdropper:DropLoot()
                     end
+                    inst:PushEvent("detachchild")
                     inst:Remove()
                 end
             end)

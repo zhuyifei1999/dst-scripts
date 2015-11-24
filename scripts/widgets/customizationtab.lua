@@ -341,9 +341,10 @@ function CustomizationTab:SavePreset()
         local base = self.presetspinner.spinner:GetSelectedIndex() <= #Levels.sandbox_levels and self.presetspinner.spinner:GetSelected().data or self.presetspinner.spinner:GetSelected().basepreset
         local location = self.presetspinner.spinner:GetSelected().location
         local preset = {text=presetname, data=presetid, desc=presetdesc, overrides=presetdata, basepreset=base, location=location}
-        self.presets[index + #Levels.sandbox_levels] = preset
+        -- just throw this to the end of the presets list for now
+        self.presets[#self.presets + 1] = preset
         self.presetspinner.spinner:SetOptions(self.presets)
-        self.presetspinner.spinner:SetSelectedIndex(index + #Levels.sandbox_levels)
+        self.presetspinner.spinner:SetSelectedIndex(#self.presets)
 
         -- And save it to the profile
         Profile:AddWorldCustomizationPreset(preset, index)

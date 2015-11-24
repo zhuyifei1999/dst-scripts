@@ -289,7 +289,7 @@ end
 
 -- was forward declared
 EndQuake = function(inst, continue)
-    print("ENDING QUAKE")
+    --print("ENDING QUAKE")
     CancelDrops()
 
     _intensity:set(0)
@@ -301,7 +301,7 @@ EndQuake = function(inst, continue)
 end
 
 local function StartQuake(inst, data, overridetime)
-    print("STARTING QUAKE")
+    --print("STARTING QUAKE")
     _intensity:set(1.0)
 
     _debrispersecond = type(data.debrispersecond) == "function" and data.debrispersecond() or data.debrispersecond
@@ -319,7 +319,7 @@ local function StartQuake(inst, data, overridetime)
 end
 
 local function WarnQuake(inst, data, overridetime)
-    print("WARNING QUAKE")
+    --print("WARNING QUAKE")
     inst:DoTaskInTime(1, function()
         for i, v in ipairs(_activeplayers) do
             v:DoTaskInTime(math.random() * 2, _DoWarningSpeech)
@@ -341,7 +341,7 @@ end
 
 -- Was forward declared
 SetNextQuake = function(data, overridetime)
-    print("BEGINNING QUAKE")
+    --print("RESCHEDULE QUAKE")
     local nexttime = overridetime or (type(data.nextquake) == "function" and data.nextquake()*_frequencymultiplier) or data.nextquake*_frequencymultiplier
     UpdateTask(nexttime, WarnQuake, data)
     _state = QUAKESTATE.WAITING

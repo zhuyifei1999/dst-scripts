@@ -164,7 +164,11 @@ local ExampleLayout =
 						},
 		["PigTown"] = StaticLayout.Get("map/static_layouts/pigtown"),
 		["InsanePighouse"] = StaticLayout.Get("map/static_layouts/insane_pig"),
-		["DefaultPigking"] = StaticLayout.Get("map/static_layouts/default_pigking"),
+		["DefaultPigking"] = StaticLayout.Get("map/static_layouts/default_pigking", {
+			start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+			fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+			layout_position = LAYOUT_POSITION.CENTER
+        }),
 		["TorchPigking"] = StaticLayout.Get("map/static_layouts/torch_pigking"),
 		["FisherPig"] = 
 						{

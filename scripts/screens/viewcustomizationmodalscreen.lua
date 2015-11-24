@@ -14,11 +14,10 @@ local ViewCustomizationModalScreen = Class(Screen, function(self, worldgenoption
     Widget._ctor(self, "ViewCustomizationModalScreen")
 
     self.currentmultilevel = 1
-    self.options = Customise.GetOptions()
     self.presets = {}
 
     for i, level in pairs(Levels.sandbox_levels) do
-        table.insert(self.presets, {text=level.name, data=level.id, desc = level.desc, overrides = level.overrides})
+        table.insert(self.presets, {text=level.name, data=level.id, desc = level.desc, overrides = level.overrides, location = level.location})
     end
 
     if worldgenoptions then
@@ -38,14 +37,24 @@ local ViewCustomizationModalScreen = Class(Screen, function(self, worldgenoption
     end
 
     -- Populate the settings with preset data.
-    -- Note: this tries "preset" before "actualpreset" becuase the "actualpreset" is usually a custom preset and so won't be present/accurate on a remote machine
+    -- Note: this tries "actualpreset" before "preset". "actualpreset" may be a custom preset and so won't be present/accurate on a remote machine
     if self.current_option_settings[1].presetdata == nil then
-        local preset = self.current_option_settings[1].preset or self.current_option_settings[1].actualpreset or self.presets[1].data
-        self:LoadPresetData(1, preset)
+        if self:FindPresetData(self.current_option_settings[1].actualpreset) ~= nil then
+            self:LoadPresetData(1, self.current_option_settings[1].actualpreset)
+        elseif self:FindPresetData(self.current_option_settings[1].preset) ~= nil then
+            self:LoadPresetData(1, self.current_option_settings[1].preset)
+        else
+            self:LoadPresetData(1, self.presets[1].data)
+        end
     end
     if self.current_option_settings[2] ~= nil and self.current_option_settings[2].presetdata == nil then
-        local preset = self.current_option_settings[2].preset or self.current_option_settings[2].actualpreset or self.presets[1].data
-        self:LoadPresetData(2, preset)
+        if self:FindPresetData(self.current_option_settings[2].actualpreset) ~= nil then
+            self:LoadPresetData(2, self.current_option_settings[2].actualpreset)
+        elseif self:FindPresetData(self.current_option_settings[2].preset) ~= nil then
+            self:LoadPresetData(2, self.current_option_settings[2].preset)
+        else
+            self:LoadPresetData(2, self.presets[2].data)
+        end
     end
 
     self.ismultilevel = self.current_option_settings[2] ~= nil
@@ -123,28 +132,23 @@ local ViewCustomizationModalScreen = Class(Screen, function(self, worldgenoption
 	end
 
 
-    self.customizationlist = self.optionspanel:AddChild(CustomizationList(self.options, false))
-    self.customizationlist:SetPosition(-3, -40, 0)
-    self.customizationlist:SetScale(.85)
-    self.customizationlist:SetEditable(false)
-
-    self.default_focus = self.customizationlist
-
     self:RefreshSpinnerValues()
 end)
+
+function ViewCustomizationModalScreen:FindPresetData(preset_id)
+    local preset = nil
+    for k,v in pairs(self.presets) do
+        if v.data == preset_id then
+            return v
+        end
+    end
+    return nil
+end
 
 function ViewCustomizationModalScreen:LoadPresetData(level, preset_id)
     assert(self.current_option_settings[level].presetdata == nil, "Trying to load presetdata but it already exists!")
 
-    local preset = nil
-    for k,v in pairs(self.presets) do
-        if v.data == preset_id then
-            preset = v
-            break
-        end
-    end
-
-    self.current_option_settings[level].presetdata = preset
+    self.current_option_settings[level].presetdata = self:FindPresetData(preset_id)
 end
 
 function ViewCustomizationModalScreen:SelectMultilevel(level)
@@ -164,6 +168,15 @@ function ViewCustomizationModalScreen:UpdateMultilevelUI()
 end
 
 function ViewCustomizationModalScreen:RefreshSpinnerValues()
+    local location = self.current_option_settings[self.currentmultilevel].presetdata.location or "forest"
+    self.options = Customise.GetOptions(location)
+    self.customizationlist = self.optionspanel:AddChild(CustomizationList(location, self.options, nil))
+    self.customizationlist:SetPosition(-3, -40, 0)
+    self.customizationlist:SetScale(.85)
+    self.customizationlist:SetEditable(false)
+
+    self.default_focus = self.customizationlist
+
     for i,v in ipairs(self.options) do
         self.customizationlist:SetValueForOption(v.name, self:GetValueForOption(v.name))
     end

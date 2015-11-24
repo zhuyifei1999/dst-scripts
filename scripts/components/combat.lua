@@ -750,7 +750,10 @@ function Combat:CanBeAttacked(attacker)
 end
 
 function Combat:OnSave()
-    if self.target ~= nil and not (self.inst:HasTag("player") or self.target:HasTag("player")) then
+    if self.target ~= nil and
+        self.target:IsValid() and --This is possible because invalid targets may be released by brain polling rather than events
+        not (self.inst:HasTag("player") or
+            self.target:HasTag("player")) then
         return { target = self.target.GUID }, { self.target.GUID }
     end
 end

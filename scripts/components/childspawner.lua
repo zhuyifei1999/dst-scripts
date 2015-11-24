@@ -322,14 +322,14 @@ function ChildSpawner:OnLoad(data)
 end
 
 function ChildSpawner:DoTakeOwnership(child)
-    if child.components.knownlocations then
-        child.components.knownlocations:RememberLocation("home", Vector3(self.inst.Transform:GetWorldPosition()))
+    if child.components.knownlocations ~= nil then
+        child.components.knownlocations:RememberLocation("home", self.inst:GetPosition())
     end
     child:AddComponent("homeseeker")
     child.components.homeseeker:SetHome(self.inst)
-	self.inst:ListenForEvent( "ontrapped", function() self:OnChildKilled( child ) end, child )
-    self.inst:ListenForEvent( "death", function() self:OnChildKilled( child ) end, child )
-	self.inst:ListenForEvent( "pickedup", function() self:OnChildKilled( child ) end, child )
+    self.inst:ListenForEvent("ontrapped", function() self:OnChildKilled(child) end, child)
+    self.inst:ListenForEvent("death", function() self:OnChildKilled(child) end, child)
+    self.inst:ListenForEvent("detachchild", function() self:OnChildKilled(child) end, child)
 end
 
 function ChildSpawner:TakeOwnership(child)
