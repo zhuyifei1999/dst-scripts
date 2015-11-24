@@ -122,5 +122,5 @@ local function fn()
     return inst
 end
 
-return Prefab("rainometer", fn, assets, prefabs),
-    MakePlacer("rainometer_placer", "rain_meter", "rain_meter", "idle")
+return Prefab("common/objects/rainometer", fn, assets, prefabs),
+    MakePlacer("common/rainometer_placer", "rain_meter", "rain_meter", "idle")

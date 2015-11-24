@@ -2,67 +2,38 @@
 
 local Prototyper = Class(function(self, inst)
     self.inst = inst
-
-    --V2C: Recommended to explicitly add tag to prefab pristine state
-    inst:AddTag("prototyper")
-
-    self.trees =
-    {
-        SCIENCE = 0,
-        MAGIC = 0,
-        ANCIENT = 0,
-    }
-
-    self.on = false
-    self.onturnon = nil
-    self.onturnoff = nil
-    self.doers = {}
-
-    self.onremovedoer = function(doer) self:TurnOff(doer) end
+	self.active = false
+	self.trees = {
+		SCIENCE = 0,
+		MAGIC = 0,
+		ANCIENT = 0,
+	}
+	self.on = false
 end)
 
-function Prototyper:OnRemoveFromEntity()
-    self.inst:RemoveTag("prototyper")
-    for k, v in pairs(self.doers) do
-        self.inst:RemoveEventCallback("onremove", self.onremovedoer, k)
-    end
-    self.doers = nil
+function Prototyper:TurnOn()
+	if not self.on and self.onturnon then
+		self.onturnon(self.inst)
+		self.on = true
+	end
 end
 
-function Prototyper:TurnOn(doer)
-    if not self.doers[doer] then
-        self.doers[doer] = true
-        self.inst:ListenForEvent("onremove", self.onremovedoer, doer)
-        if not self.on then
-            if self.onturnon ~= nil then
-                self.onturnon(self.inst)
-            end
-            self.on = true
-        end
-    end
-end
-
-function Prototyper:TurnOff(doer)
-    if self.doers[doer] then
-        self.doers[doer] = nil
-        self.inst:RemoveEventCallback("onremove", self.onremovedoer, doer)
-        if next(self.doers) == nil and self.on then
-            if self.onturnoff ~= nil then
-                self.onturnoff(self.inst)
-            end
-            self.on = false
-        end
-    end
+function Prototyper:TurnOff()
+	if self.on and self.onturnoff then
+		self.onturnoff(self.inst)
+		self.on = false
+	end
 end
 
 function Prototyper:GetTechTrees()
-    return deepcopy(self.trees)
+	return deepcopy(self.trees)
+
 end
 
-function Prototyper:Activate(doer)
-    if self.onactivate ~= nil then
-        self.onactivate(self.inst, doer)
-    end
+function Prototyper:Activate()
+	if self.onactivate then
+		self.onactivate(self.inst)
+	end
 end
 
 return Prototyper

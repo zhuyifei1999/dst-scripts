@@ -13,12 +13,6 @@ local assets =
 	Asset("SOUND", "sound/mandrake.fsb"),
 }
 
-local prefabs =
-{
-    "mandrake",
-    "mandrake_planted",
-}
-
 local function replant(inst)
 	--turn into "mandrake_planted"
 	local pos = inst:GetPosition()
@@ -109,4 +103,4 @@ local function fn()
 	return inst
 end
 
-return Prefab("mandrake_active", fn, assets, prefabs)
+return Prefab("common/mandrake_active", fn, assets)

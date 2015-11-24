@@ -56,4 +56,4 @@ local function fn()
     return inst
 end
 
-return Prefab("furtuft", fn, assets)
+return Prefab("common/inventory/furtuft", fn, assets)

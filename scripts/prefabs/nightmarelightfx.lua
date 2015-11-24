@@ -32,6 +32,6 @@ local function Make(bank)
     end
 end
 
-return Prefab("nightmarelightfx", Make("rock_light_fx"), assets),
-    Prefab("nightmarefissurefx", Make("nightmare_crack_ruins_fx"), assets),
-    Prefab("upper_nightmarefissurefx", Make("nightmare_crack_upper_fx"), assets)
+return Prefab("common/nightmarelightfx", Make("rock_light_fx"), assets),
+    Prefab("common/nightmarefissurefx", Make("nightmare_crack_ruins_fx"), assets),
+    Prefab("common/upper_nightmarefissurefx", Make("nightmare_crack_upper_fx"), assets)

@@ -203,7 +203,7 @@ function MakeBook(name, usefn, bookuses)
         return inst
     end
 
-    return Prefab(name, fn, assets, prefabs)
+    return Prefab("common/"..name, fn, assets, prefabs)
 end
 
 return MakeBook("book_sleep", sleepfn, 5),

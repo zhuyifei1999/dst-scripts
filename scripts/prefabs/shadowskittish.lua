@@ -40,4 +40,4 @@ local function fn()
     return inst
 end
 
-return Prefab("shadowskittish", fn, assets)
+return Prefab("common/shadowskittish", fn, assets)

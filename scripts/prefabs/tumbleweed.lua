@@ -492,5 +492,5 @@ local function fn()
     return inst
 end
 
-return Prefab("tumbleweed", fn, assets, prefabs),
+return Prefab("badlands/objects/tumbleweed", fn, assets, prefabs),
     Prefab("tumbleweedbreakfx", burntfxfn, assets)

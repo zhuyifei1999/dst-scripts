@@ -47,7 +47,7 @@ local function makefeather(name)
 
         return inst
     end
-    return Prefab( assetname, fn, assets)
+    return Prefab( "common/inventory/"..assetname, fn, assets)
 end
 
 return makefeather("crow"),

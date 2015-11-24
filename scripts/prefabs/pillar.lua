@@ -31,7 +31,7 @@ local function makefn(name, collide)
 end
 
 local function pillar(name, collide)
-    return Prefab(name, makefn(name, collide), makeassetlist(name))
+    return Prefab("cave/objects/"..name, makefn(name, collide), makeassetlist(name))
 end
 
 return pillar("pillar_ruins", true),

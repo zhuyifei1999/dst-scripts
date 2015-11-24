@@ -195,4 +195,4 @@ local function fn()
     return inst
 end
 
-return Prefab("mermhouse", fn, assets, prefabs)
+return Prefab("common/objects/mermhouse", fn, assets, prefabs)

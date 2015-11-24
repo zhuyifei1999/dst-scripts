@@ -77,4 +77,4 @@ local function fn()
     return inst
 end
 
-return Prefab("gunpowder", fn, assets, prefabs)
+return Prefab("common/inventory/gunpowder", fn, assets, prefabs)

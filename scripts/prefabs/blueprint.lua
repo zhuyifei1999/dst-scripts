@@ -3,7 +3,6 @@ require "recipes"
 local assets =
 {
     Asset("ANIM", "anim/blueprint.zip"),
-    Asset("INV_IMAGE", "blueprint"),
 }
 
 local function onload(inst, data)
@@ -209,11 +208,11 @@ end
 
 local prefabs = {}
 
-table.insert(prefabs, Prefab("blueprint", MakeAnyBlueprint, assets))
+table.insert(prefabs, Prefab("common/blueprints/blueprint", MakeAnyBlueprint, assets))
 for k,v in pairs(RECIPETABS) do
-    table.insert(prefabs, Prefab(string.lower(v.str or "NONAME").."_blueprint", MakeSpecificBlueprint(v), assets))
+    table.insert(prefabs, Prefab("common/blueprints/"..string.lower(v.str or "NONAME").."_blueprint", MakeSpecificBlueprint(v), assets))
 end
 for k,v in pairs(AllRecipes) do
-    table.insert(prefabs, Prefab(string.lower(k or "NONAME").."_blueprint", MakeAnySpecificBlueprint(k), assets))
+    table.insert(prefabs, Prefab("common/blueprints/"..string.lower(k or "NONAME").."_blueprint", MakeAnySpecificBlueprint(k), assets))
 end
 return unpack(prefabs)

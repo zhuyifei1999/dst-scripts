@@ -4,13 +4,6 @@ local assets =
     Asset("ANIM", "anim/chester_eyebone_build.zip"),
     Asset("ANIM", "anim/chester_eyebone_snow_build.zip"),
     Asset("ANIM", "anim/chester_eyebone_shadow_build.zip"),
-	Asset("INV_IMAGE", "chester_eyebone" ),
-	Asset("INV_IMAGE", "chester_eyebone_closed" ),
-	Asset("INV_IMAGE", "chester_eyebone_closed_shadow" ),
-	Asset("INV_IMAGE", "chester_eyebone_closed_snow" ),
-	Asset("INV_IMAGE", "chester_eyebone_shadow" ),
-	Asset("INV_IMAGE", "chester_eyebone_snow" ),
-	Asset("MINIMAP_IMAGE", "treasure_chest"), --for debugging
 }
 
 local SPAWN_DIST = 30
@@ -203,7 +196,7 @@ local function fn()
 
     --so I can find the thing while testing
     --inst.entity:AddMiniMapEntity()
-    --inst.MiniMapEntity:SetIcon("treasure_chest.png")
+    --inst.MiniMapEntity:SetIcon("treasure.png")
 
     MakeInventoryPhysics(inst)
 
@@ -251,4 +244,4 @@ local function fn()
     return inst
 end
 
-return Prefab("chester_eyebone", fn, assets)
+return Prefab("common/inventory/chester_eyebone", fn, assets)

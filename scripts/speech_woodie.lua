@@ -315,12 +315,6 @@ return {
 			GENERIC = "I like the look of that!",
 			BURNT = "I miss the old you.",
 		},
-		WARDROBE = 
-        {
-        	GENERIC = "It's hard to stay neat and tidy in the woods.",
-            BURNING = "Wood is the best at burning.",
-        	BURNT = "Not so useful now, eh?",
-    	},
 		WARG = "That thing could pull a sled by its lonesome.",
 		WATERMELON = "How can it be both water and melon?",
 		WATERMELON_COOKED = "I'm not sure about grilled fruit...",
@@ -334,7 +328,7 @@ return {
 		WORM =
 		{
 		    PLANT = "I know a plant when I see one. This'n an impostor!",
-		    DIRT = "Be wary of the moving ground.",
+		    DIRT = "Be wary the moving ground.",
 		    WORM = "WOOORM!",
 		},
 		EEL = "This should cook up nicely.",

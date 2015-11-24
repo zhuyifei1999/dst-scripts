@@ -147,4 +147,4 @@ local function fn()
     return inst
 end
 
-return Prefab("shadowwaxwell", fn, assets)
+return Prefab("common/shadowwaxwell", fn, assets)

@@ -62,8 +62,6 @@ SoundEmitter.PlaySound = function(emitter, event, name, volume, ...)
                 end
             end
         end
-    else
-    	print("Playing non-entity sound", event, name, volume)
     end
     
     playsound(emitter, event, name, volume, ...)

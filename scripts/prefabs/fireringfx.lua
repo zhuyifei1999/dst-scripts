@@ -57,4 +57,4 @@ local function fn()
     return inst
 end
 
-return Prefab("firering_fx", fn, assets)
+return Prefab("common/fx/firering_fx", fn, assets)
