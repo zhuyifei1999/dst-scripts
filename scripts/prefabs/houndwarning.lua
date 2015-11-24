@@ -57,6 +57,6 @@ end
 
 local t = {}
 for level, distance in ipairs(WARNING_LEVEL_DISTANCE) do
-    table.insert(t, Prefab("common/fx/houndwarning_lvl"..level, makewarning(distance)))
+    table.insert(t, Prefab("houndwarning_lvl"..level, makewarning(distance)))
 end
 return unpack(t)

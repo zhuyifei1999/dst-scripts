@@ -23,6 +23,7 @@ local function makeassetlist(buildname)
     return
     {
         Asset("ANIM", "anim/"..buildname..".zip"),
+		Asset("MINIMAP_IMAGE", "relic"),
     }
 end
 
@@ -209,11 +210,11 @@ local function makefn(name, asset, smashsound, rubble, tag)
 end
 
 local function item(name, sound)
-    return Prefab("cave/objects/smashables/"..name, makefn(name, name, sound, false), makeassetlist(name), prefabs)
+    return Prefab(name, makefn(name, name, sound, false), makeassetlist(name), prefabs)
 end
 
 local function rubble(name, assetname, sound, rubble)
-    return Prefab("cave/objects/smashables/"..name, makefn(name, assetname, sound, rubble), makeassetlist(assetname), prefabs)
+    return Prefab(name, makefn(name, assetname, sound, rubble), makeassetlist(assetname), prefabs)
 end
 
 return item("ruins_plate"),

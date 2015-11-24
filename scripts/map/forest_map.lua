@@ -65,14 +65,16 @@ local MULTIPLY = {
 
 	
 local TRANSLATE_TO_PREFABS = {
-	["spiders"] = 			{"spiderden", "dropperweb", "spiderhole"},
+	["spiders"] = 			{"spiderden"},
+	["cave_spiders"] = 		{"spiderden", "dropperweb", "spiderhole"},
 	["tentacles"] = 		{"tentacle"},
 	["tallbirds"] = 		{"tallbirdnest"},
 	["pigs"] = 				{"pighouse"},
 	["rabbits"] = 			{"rabbithole"},
 	["moles"] =				{"molehill"},
 	["beefalo"] = 			{"beefalo"},
-	["ponds"] = 			{"pond", "pond_mos", "pond_cave"},
+	["ponds"] = 			{"pond", "pond_mos"},
+	["cave_ponds"] = 		{"pond", "pond_cave"},
 	["bees"] = 				{"beehive", "bee"},
 	["grass"] = 			{"grass"},
 	["rock"] = 				{"rocks", "rock1", "rock2", "rock_flintless"}, 

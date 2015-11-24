@@ -73,4 +73,4 @@ local function fn()
     return inst
 end
 
-return Prefab("forest/objects/reeds", fn, assets, prefabs)
+return Prefab("reeds", fn, assets, prefabs)

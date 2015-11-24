@@ -13,6 +13,7 @@ local assets =
 {
     Asset("ANIM", "anim/tentacle_pillar.zip"),
     Asset("SOUND", "sound/tentacle.fsb"),
+	Asset("MINIMAP_IMAGE", "tentapillar"),
 }
 
 SetSharedLootTable("tentacle_pillar",
@@ -357,4 +358,4 @@ local function fn()
 
     return inst
 end
-return Prefab("cave/monsters/tentacle_pillar", fn, assets, prefabs)
+return Prefab("tentacle_pillar", fn, assets, prefabs)

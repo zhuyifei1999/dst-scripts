@@ -1,6 +1,7 @@
 local assets =
 {
     Asset("ANIM", "anim/lava_tile.zip"),
+	Asset("MINIMAP_IMAGE", "pond_lava"),
 }
 
 local prefabs =
@@ -48,7 +49,7 @@ local function makerock(rocktype)
 
         return inst
     end
-    return Prefab("object/lava_pond_rock"..rocktype, fn, rock_assets)
+    return Prefab("lava_pond_rock"..rocktype, fn, rock_assets)
 end
 
 local function SpawnRocks(inst)
@@ -163,7 +164,7 @@ local function fn()
     return inst
 end
 
-local prefabs = { Prefab("object/lava_pond", fn, assets, prefabs) }
+local prefabs = { Prefab("lava_pond", fn, assets, prefabs) }
 for i, v in ipairs(rocktypes) do
     table.insert(prefabs, makerock(v))
 end

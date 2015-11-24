@@ -1,6 +1,7 @@
 local assets =
 {
     Asset("ANIM", "anim/cave_exit.zip"),
+	Asset("MINIMAP_IMAGE", "cave_open2"),
 }
 
 local function close(inst)
@@ -75,4 +76,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/cave_exit", fn, assets)
+return Prefab("cave_exit", fn, assets)

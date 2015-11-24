@@ -140,4 +140,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/wormhole", fn, assets)
+return Prefab("wormhole", fn, assets)

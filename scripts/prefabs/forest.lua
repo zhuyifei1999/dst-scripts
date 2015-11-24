@@ -2,6 +2,8 @@ require("prefabs/world")
 
 local assets =
 {
+    Asset("SCRIPT", "scripts/prefabs/world.lua"),
+
     Asset("IMAGE", "images/colour_cubes/day05_cc.tex"),
     Asset("IMAGE", "images/colour_cubes/dusk03_cc.tex"),
     Asset("IMAGE", "images/colour_cubes/night03_cc.tex"),
@@ -114,11 +116,29 @@ local prefabs =
     "shadowwatcher",
     "shadowhand",
     "rubble",
+    "tumbleweedspawner",
+    "meteorspawner",
+
+    "dragonfly_spawner",
     "moose",
     "mossling",
     "bearger",
     "dragonfly",
 }
+
+local monsters =
+{
+    { "hound", 4 },
+    { "deerclops", 4 },
+    { "bearger", 4 },
+    { "krampus", 3 },
+}
+for i, v in ipairs(monsters) do
+    for level = 1, v[2] do
+        table.insert(prefabs, v[1].."warning_lvl"..tostring(level))
+    end
+end
+monsters = nil
 
 local houndspawn =
 {

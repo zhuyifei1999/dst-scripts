@@ -444,6 +444,7 @@ local function MakeMushroom(data)
     local prefabs =
     {
         data.pickloot,
+        data.pickloot.."_cooked",
     }
 
     local function mushfn()
@@ -458,9 +459,9 @@ local function MakeMushroom(data)
         return cookedcommonfn(data)
     end
 
-    return Prefab("forest/objects/"..data.name, mushfn, mushassets, prefabs),
-           Prefab("common/inventory/"..data.pickloot, capfn, capassets),
-           Prefab("common/inventory/"..data.pickloot.."_cooked", cookedfn, cookedassets)
+    return Prefab(data.name, mushfn, mushassets, prefabs),
+           Prefab(data.pickloot, capfn, capassets),
+           Prefab(data.pickloot.."_cooked", cookedfn, cookedassets)
 end
 
 local data = {

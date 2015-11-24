@@ -208,14 +208,25 @@ function ControllerCrafting:Refresh()
 end
 
 function ControllerCrafting:OnControl(control, down)
+  
+  	if control == CONTROL_NEXTVALUE or control == CONTROL_PREVVALUE then
+    	if self.recipepopup then 
+    		self.recipepopup:OnControl(control, down)
+    	end
+    end
+
     if down or not self.open then
         return
     elseif control == CONTROL_ACCEPT or control == CONTROL_ACTION then
         if self.accept_down then
             self.accept_down = false --this was held down when we were opened, so we want to ignore it
         else
-            if not DoRecipeClick(self.owner, self.selected_recipe_by_tab_idx[self.tabidx], true) then
+        	local skin = (self.recipepopup.skins_spinner and self.recipepopup.skins_spinner.GetItem()) or nil
+
+            if not DoRecipeClick(self.owner, self.selected_recipe_by_tab_idx[self.tabidx], skin) then
                 self.owner.HUD:CloseControllerCrafting()
+            elseif self.recipepopup.skins_spinner then 
+               		Profile:SetLastUsedSkinForItem(self.selected_recipe_by_tab_idx[self.tabidx].name, self.recipepopup.skins_spinner.GetItem())
             end
             if not self.control_held then
                 self.owner.HUD:CloseControllerCrafting()

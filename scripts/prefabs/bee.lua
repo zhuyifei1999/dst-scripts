@@ -43,10 +43,7 @@ local killersounds =
 }
 
 local function OnWorked(inst, worker)
-    local owner = inst.components.homeseeker ~= nil and inst.components.homeseeker.home or nil
-    if owner ~= nil and owner.components.childspawner ~= nil then
-        owner.components.childspawner:OnChildKilled(inst)
-    end
+    inst:PushEvent("detachchild")
     if worker.components.inventory ~= nil then
         if METRICS_ENABLED then
             FightStat_Caught(inst)
@@ -283,5 +280,5 @@ local function killerbee()
     return inst
 end 
 
-return Prefab("forest/monsters/bee", workerbee, assets, prefabs),
-        Prefab("forest/monsters/killerbee", killerbee, assets, prefabs)
+return Prefab("bee", workerbee, assets, prefabs),
+        Prefab("killerbee", killerbee, assets, prefabs)

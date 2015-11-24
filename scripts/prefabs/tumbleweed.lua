@@ -12,6 +12,8 @@ local assets =
 
 local prefabs =
 {
+    "tumbleweedbreakfx",
+    "ash",
     "cutgrass",
     "twigs",
     "petals",
@@ -111,30 +113,30 @@ local function startmoving(inst)
         end)
     end)
     inst.components.blowinwind:Start()
-    inst:RemoveEventCallback("animover", startmoving, inst)
+    inst:RemoveEventCallback("animover", startmoving)
 end
 
 local function onpickup(inst, picker)
-    inst:PushEvent("pickedup")
+    local x, y, z = inst.Transform:GetWorldPosition()
+
+    inst:PushEvent("detachchild")
 
     local item = nil
     for i, v in ipairs(inst.loot) do
         item = SpawnPrefab(v)
-        item.Transform:SetPosition(inst.Transform:GetWorldPosition())
-        if item.components.inventoryitem and item.components.inventoryitem.ondropfn then
+        item.Transform:SetPosition(x, y, z)
+        if item.components.inventoryitem ~= nil and item.components.inventoryitem.ondropfn ~= nil then
             item.components.inventoryitem.ondropfn(item)
         end
-        if inst.lootaggro[i] and item.components.combat and picker ~= nil then
-            if not (item:HasTag("spider") and (picker:HasTag("spiderwhisperer") or picker:HasTag("monsdter"))) then
+        if inst.lootaggro[i] and item.components.combat ~= nil and picker ~= nil then
+            if not (item:HasTag("spider") and (picker:HasTag("spiderwhisperer") or picker:HasTag("monster"))) then
                 item.components.combat:SuggestTarget(picker)
             end
         end
     end
 
-    inst:RemoveEventCallback("animover", startmoving, inst)
-    inst.AnimState:PlayAnimation("break")
-    inst.DynamicShadow:Enable(false)
-    inst:ListenForEvent("animover", function(inst) inst:Remove() end)
+    SpawnPrefab("tumbleweedbreakfx").Transform:SetPosition(x, y, z)
+    inst:Remove()
     return true --This makes the inventoryitem component not actually give the tumbleweed to the player
 end
 
@@ -240,23 +242,30 @@ local function DoDirectionChange(inst, data)
 end
 
 local function spawnash(inst)
+    local x, y, z = inst.Transform:GetWorldPosition()
+
     local ash = SpawnPrefab("ash")
-    ash.Transform:SetPosition(inst.Transform:GetWorldPosition())
+    ash.Transform:SetPosition(x, y, z)
 
     if inst.components.stackable ~= nil then
         ash.components.stackable.stacksize = math.min(ash.components.stackable.maxsize, inst.components.stackable.stacksize)
     end
 
+    inst:PushEvent("detachchild")
+    SpawnPrefab("tumbleweedbreakfx").Transform:SetPosition(x, y, z)
     inst:Remove()
 end
 
 local function onburnt(inst)
+    inst:PushEvent("detachchild")
+    inst:AddTag("burnt")
+
     inst.components.pickable.canbepicked = false
     inst.components.propagator:StopSpreading()
 
     inst.Physics:Stop()
     inst.components.blowinwind:Stop()
-    inst:RemoveEventCallback("animover", startmoving, inst)
+    inst:RemoveEventCallback("animover", startmoving)
 
     if inst.bouncepretask then
         inst.bouncepretask:Cancel()
@@ -291,6 +300,16 @@ local function onburnt(inst)
     end)
 
     inst:DoTaskInTime(1.2, spawnash)
+end
+
+local function OnSave(inst, data)
+    data.burnt = inst.components.burnable ~= nil and inst.components.burnable:IsBurning() or inst:HasTag("burnt") or nil
+end
+
+local function OnLoad(inst, data)
+    if data ~= nil and data.burnt then
+        onburnt(inst)
+    end
 end
 
 local function CancelRunningTasks(inst)
@@ -330,7 +349,7 @@ end
 local function OnLongAction(inst)
     inst.Physics:Stop()
     inst.components.blowinwind:Stop()
-    inst:RemoveEventCallback("animover", startmoving, inst)
+    inst:RemoveEventCallback("animover", startmoving)
 
     CancelRunningTasks(inst)
 
@@ -351,6 +370,35 @@ local function OnLongAction(inst)
             inst:ListenForEvent("animover", startmoving)
         end
     end)
+end
+
+local function burntfxfn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddNetwork()
+
+    inst.Transform:SetFourFaced()
+
+    inst.AnimState:SetBuild("tumbleweed")
+    inst.AnimState:SetBank("tumbleweed")
+    inst.AnimState:PlayAnimation("break")
+
+    inst:AddTag("FX")
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.persists = false
+    inst:ListenForEvent("animover", inst.Remove)
+    -- In case we're off screen and animation is asleep
+    inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength() + FRAMES, inst.Remove)
+
+    return inst
 end
 
 local function fn()
@@ -429,6 +477,8 @@ local function fn()
 
     inst.OnEntityWake = OnEntityWake
     inst.OnEntitySleep = CancelRunningTasks
+    inst.OnSave = OnSave
+    inst.OnLoad = OnLoad
 
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
@@ -442,4 +492,5 @@ local function fn()
     return inst
 end
 
-return Prefab( "badlands/objects/tumbleweed", fn, assets, prefabs)
+return Prefab("tumbleweed", fn, assets, prefabs),
+    Prefab("tumbleweedbreakfx", burntfxfn, assets)

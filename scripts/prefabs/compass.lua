@@ -140,4 +140,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/inventory/compass", fn, assets)
+return Prefab("compass", fn, assets)

@@ -27,11 +27,16 @@ local LOOTS =
 }
 
 local function ReturnChildren(inst)
-    for k,child in pairs(inst.components.childspawner.childrenoutside) do
-        if child:IsAsleep() then
-            child:Remove()
+    local toremove = {}
+    for k, v in pairs(inst.components.childspawner.childrenoutside) do
+        table.insert(toremove, v)
+    end
+    for i, v in ipairs(toremove) do
+        if v:IsAsleep() then
+            v:PushEvent("detachchild")
+            v:Remove()
         else
-            child.components.health:Kill()
+            v.components.health:Kill()
         end
     end
 end
@@ -72,8 +77,8 @@ local function onfinishcallback(inst, worker)
     end
 end
 
-local function onfullmoon(inst)
-    if TheWorld.state.isfullmoon then
+local function onfullmoon(inst, isfullmoon)
+    if isfullmoon then
         inst.components.childspawner:StartSpawning()
         inst.components.childspawner:StopRegen()
     else
@@ -84,7 +89,7 @@ local function onfullmoon(inst)
 end
 
 local function GetStatus(inst)
-    if not inst.components.workable then            
+    if not inst.components.workable then
         return "DUG"
     end
 end
@@ -106,6 +111,11 @@ local function OnHaunt(inst, haunter)
     --#HAUNTFIX
     --return spawnghost(inst, TUNING.HAUNT_CHANCE_HALF)
     return true
+end
+
+local function oninit(inst)
+    inst:WatchWorldState("isfullmoon", onfullmoon)
+    onfullmoon(inst, TheWorld.state.isfullmoon)
 end
 
 local function fn()
@@ -148,8 +158,7 @@ local function fn()
     inst.components.childspawner:SetMaxChildren(1)
     inst.components.childspawner:SetSpawnPeriod(10, 3)
 
-    inst:WatchWorldState("isfullmoon", onfullmoon)
-    inst:DoTaskInTime(0, onfullmoon)
+    inst:DoTaskInTime(0, oninit)
 
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad
@@ -157,4 +166,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/objects/mound", fn, assets, prefabs)
+return Prefab("mound", fn, assets, prefabs)

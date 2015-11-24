@@ -127,4 +127,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/monsters/buzzard", fn, assets, prefabs)
+return Prefab("buzzard", fn, assets, prefabs)

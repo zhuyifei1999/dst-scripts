@@ -82,7 +82,9 @@ end)
 function NetworkLoginPopup:OnUpdate( dt )
 	local account_manager = TheFrontEnd:GetAccountManager()
 	local isWaiting = account_manager:IsWaitingForResponse() 
-	if not isWaiting then
+	local isDownloadingInventory = TheInventory:IsDownloadingInventory()
+	
+	if not isWaiting and not isDownloadingInventory then
 	    self:OnLogin()
 	end
 	

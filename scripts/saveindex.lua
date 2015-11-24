@@ -95,8 +95,15 @@ function SaveIndex:Load(callback)
                         v.session_id = v2.session_id or v.session_id
                         v.enabled_mods = v2.enabled_mods or v.enabled_mods
 
+                        -- FIXME: this upgrades custom data to multilevel. Can remove this at some point. Added 23/11/2015 ~gjans
+                        if v.world and v.world.options and v.world.options.supportsmultilevel ~= true then
+                            local data = v.world.options
+                            v.world.options = { supportsmultilevel = true }
+                            v.world.options[1] = data
+                        end
                     end
                 end
+
                 print ("loaded "..filename)
             else
                 print ("Could not load "..filename)
@@ -230,10 +237,21 @@ function SaveIndex:StartSurvivalMode(saveslot, customoptions, serverdata, onsave
     slot.world.options = customoptions
     slot.server = {}
 
+    if slot.world.options == nil then
+        slot.world.options = { supportsmultilevel = true }
+    end
+
+    -- FIXME: this upgrades custom data to multilevel. Can remove this at some point. Added 23/11/2015 ~gjans
+    if slot.world.options.supportsmultilevel ~= true then
+        local data = slot.world.options
+        slot.world.options = { supportsmultilevel = true }
+        slot.world.options[1] = data
+    end
+
     GetWorldgenOverride(function(preset, overrideoptions)
         -- note: Always overrides layer 1, as that's what worldgen will generate
         if slot.world.options == nil then
-            slot.world.options = {}
+            slot.world.options = { supportsmultilevel = true }
         end
         if slot.world.options[1] == nil then
             slot.world.options[1] = {}

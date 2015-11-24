@@ -2,6 +2,7 @@ local assets =
 {
     Asset("ANIM", "anim/trap.zip"),
     Asset("SOUND", "sound/common.fsb"),
+	Asset("MINIMAP_IMAGE", "rabbittrap"),
 }
 
 local sounds =
@@ -63,4 +64,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/inventory/trap", fn, assets)
+return Prefab("trap", fn, assets)
