@@ -305,7 +305,7 @@ end
 
 local function OnLoad(inst, data)
     if data ~= nil and data.nightmare then
-        SetNightmareMonkey()
+        SetNightmareMonkey(inst)
     end
 end
 

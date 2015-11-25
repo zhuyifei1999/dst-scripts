@@ -191,6 +191,10 @@ local function EatFoodAction(inst)
 
 end
 
+local function OnLootingCooldown(inst)
+    inst.canlootchests = true
+end
+
 local function AnnoyLeader(inst)
     if inst.sg:HasStateTag("busy") then
         return
@@ -198,46 +202,46 @@ local function AnnoyLeader(inst)
     local player = inst.harassplayer -- You will only ever harass the player.
     local p_pt = player:GetPosition()
     local m_pt = inst:GetPosition()
-    local ents = TheSim:FindEntities(m_pt.x, m_pt.y, m_pt.z, 30)
+    local ents = TheSim:FindEntities(m_pt.x, m_pt.y, m_pt.z, 30,
+        nil,
+        { "INLIMBO", "catchable", "fire", "irreplaceable" },
+        { "_inventoryitem", "_container" })
 
     --Can we hassle the player by taking items from stuff he has killed or worked?
-    for k,v in pairs(ents) do
-        if v.components.inventoryitem and v.components.inventoryitem.canbepickedup and not v.components.inventoryitem:IsHeld() and v:GetTimeAlive() < 5 then
+    for i, v in ipairs(ents) do
+        if v.components.inventoryitem ~= nil and v.components.inventoryitem.canbepickedup and not v.components.inventoryitem:IsHeld() and v:GetTimeAlive() < 5 then
             return BufferedAction(inst, v, ACTIONS.PICKUP)
         end
     end
 
     --Can we hassle our leader by taking the items he wants?
     local ba = player:GetBufferedAction()
-    if ba and ba.action.id == "PICKUP" then
+    if ba ~= nil and ba.action.id == "PICKUP" then
         --The player wants to pick something up. Am I closer than the player?
         local tar = ba.target
-
-        local t_pt = tar:GetPosition()
-
-        if not tar.components.inventoryitem.owner and distsq(p_pt, t_pt) > distsq(m_pt, t_pt) then
-            --I'm closer to the item than the player! Lets go get it!
-            return BufferedAction(inst, tar, ACTIONS.PICKUP)
+        if tar ~= nil and tar:IsValid() and tar.components.inventoryitem ~= nil and not tar.components.inventoryitem:IsHeld() then
+            local t_pt = tar:GetPosition()
+            if distsq(p_pt, t_pt) > distsq(m_pt, t_pt) then
+                --I'm closer to the item than the player! Lets go get it!
+                return BufferedAction(inst, tar, ACTIONS.PICKUP)
+            end
         end
     end
 
-    ---Can we hassle our leader by toying with his chests?
-    if inst.canlootchests == nil then
-        inst.canlootchests = true
-    end
-
-    if inst.canlootchests then
+    --Can we hassle our leader by toying with his chests?
+    --Default to true when originally nil
+    if inst.canlootchests ~= false then
         local items = {}
-        for k,v in pairs(ents) do
+        for i, v in ipairs(ents) do
             local cont = v.components.container
-            if cont then
-                local v_pt = v:GetPosition()
-                if distsq(v_pt, p_pt) < 15*15 then
-                    for k = 1, cont.numslots do
-                        local item = cont.slots[k]
-                        if item then
-                            table.insert(items, item)
-                        end
+            if cont ~= nil and
+                cont.canbeopened and
+                not cont:IsOpen() and
+                v:GetDistanceSqToPoint(p_pt) < 225--[[15 * 15]] then
+                for k = 1, cont.numslots do
+                    local item = cont.slots[k]
+                    if item ~= nil then
+                        table.insert(items, item)
                     end
                 end
             end
@@ -245,10 +249,18 @@ local function AnnoyLeader(inst)
 
         if #items > 0 then
             inst.canlootchests = false
-            inst:DoTaskInTime(math.random(15, 30), function() inst.canlootchests = true end)
-            local item = items[math.random(1, #items)]
+            inst:DoTaskInTime(math.random(15, 30), OnLootingCooldown)
+            local item = items[math.random(#items)]
             local act = BufferedAction(inst, item, ACTIONS.STEAL)
-            act.validfn = function() return (item.components.inventoryitem and item.components.inventoryitem:IsHeld()) end
+            act.validfn = function()
+                if item.components.inventoryitem ~= nil then
+                    local owner = item.components.inventoryitem.owner
+                    if owner ~= nil and not (owner.components.burnable ~= nil and owner.components.burnable:IsBurning()) then
+                        local cont = owner.components.container
+                        return cont ~= nil and cont.canbeopened and not cont:IsOpen()
+                    end
+                end
+            end
             return act
         end
     end

@@ -88,6 +88,7 @@ function Inventory:DetachClassified()
         self.inst.HUD.controls.inv:Hide()
         self.inst.HUD.controls.containerroot_side:Hide()
         self.inst:PushEvent("newactiveitem", {})
+        self.inst:PushEvent("inventoryclosed")
     end
 end
 

@@ -1,41 +1,35 @@
-local assets =
-{
-	--Asset("ANIM", "anim/arrow_indicator.zip"),
-}
-
 local prefabs = 
 {
     "lightninggoat",
 }
 
 local function CanSpawn(inst)
-    return inst.components.herd and not inst.components.herd:IsFull()
+    return inst.components.herd ~= nil and not inst.components.herd:IsFull()
 end
 
 local function OnSpawned(inst, newent)
-    if inst.components.herd then
+    if inst.components.herd ~= nil then
         inst.components.herd:AddMember(newent)
     end
 end
 
-local function OnEmpty(inst)
-    inst:Remove()
-end
-   
-local function fn(Sim)
-	local inst = CreateEntity()
-	local trans = inst.entity:AddTransform()
-	
-    inst:AddTag("herd")
+local function fn()
+    local inst = CreateEntity()
 
-    -- Herds are non-networked.
-    
+    inst.entity:AddTransform()
+    --[[Non-networked entity]]
+
+    inst:AddTag("herd")
+    --V2C: Don't use CLASSIFIED because herds use FindEntities on "herd" tag
+    inst:AddTag("NOBLOCK")
+    inst:AddTag("NOCLICK")
+
     inst:AddComponent("herd")
     inst.components.herd:SetMemberTag("lightninggoat")
     inst.components.herd:SetGatherRange(40)
     inst.components.herd:SetUpdateRange(20)
-    inst.components.herd:SetOnEmptyFn(OnEmpty)
-    
+    inst.components.herd:SetOnEmptyFn(inst.Remove)
+
     inst:AddComponent("periodicspawner")
     inst.components.periodicspawner:SetRandomTimes(TUNING.LIGHTNING_GOAT_MATING_SEASON_BABYDELAY, TUNING.LIGHTNING_GOAT_MATING_SEASON_BABYDELAY_VARIANCE)
     inst.components.periodicspawner:SetPrefab("lightninggoat")
@@ -45,8 +39,7 @@ local function fn(Sim)
     inst.components.periodicspawner:SetOnlySpawnOffscreen(true)
     inst.components.periodicspawner:Start()
 
-    
     return inst
 end
 
-return Prefab( "forest/animals/lightninggoatherd", fn, assets, prefabs) 
+return Prefab("forest/animals/lightninggoatherd", fn, nil, prefabs) 

@@ -12,6 +12,7 @@ local assets =
 
 local prefabs =
 {
+    "splash_ocean",
     "tumbleweedbreakfx",
     "ash",
     "cutgrass",
@@ -74,31 +75,8 @@ end
 
 local function CheckGround(inst)
     if not inst:IsOnValidGround() then
-        local fx = SpawnPrefab("splash_ocean")
-        local pos = inst:GetPosition()
-        fx.Transform:SetPosition(pos.x, pos.y, pos.z)
-        -- Shut down all the possible tasks
-        if inst.bouncepretask then
-            inst.bouncepretask:Cancel()
-            inst.bouncepretask = nil
-        end
-        if inst.bouncetask then
-            inst.bouncetask:Cancel()
-            inst.bouncetask = nil
-        end
-        if inst.restartmovementtask then
-            inst.restartmovementtask:Cancel()
-            inst.restartmovementtask = nil
-        end
-        if inst.bouncepst1 then
-            inst.bouncepst1:Cancel()
-            inst.bouncepst1 = nil
-        end
-        if inst.bouncepst2 then
-            inst.bouncepst2:Cancel()
-            inst.bouncepst2 = nil
-        end
-        -- And remove the tumbleweed
+        SpawnPrefab("splash_ocean").Transform:SetPosition(inst.Transform:GetWorldPosition())
+        inst:PushEvent("detachchild")
         inst:Remove()
     end
 end

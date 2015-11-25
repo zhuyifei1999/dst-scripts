@@ -71,6 +71,12 @@ local HudCompass = Class(Widget, function(self, owner, isattached)
             self:CloseCompass()
         end
     end, self.owner)
+    --Client only event, because when inventory is closed, we will stop
+    --getting "equip" and "unequip" events, but we can also assume that
+    --our inventory is emptied.
+    self.inst:ListenForEvent("inventoryclosed", function()
+        self:CloseCompass()
+    end, self.owner)
 
     self.isopen = false
     self.istransitioning = false

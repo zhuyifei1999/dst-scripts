@@ -93,25 +93,20 @@ local function OnAttackOther(inst, data)
 end
 
 local function GetReturnPos(inst)
+    local x, y, z = inst.Transform:GetWorldPosition()
     local rad = 2
-    local pos = inst:GetPosition()
-    --print("GetReturnPos", inst, pos)
-    local angle = math.random()*2*PI
-    pos = pos + Point(rad*math.cos(angle), 0, -rad*math.sin(angle))
-    --print("    ", pos)
-    return pos:Get()
+    local angle = math.random() * 2 * PI
+    return x + rad * math.cos(angle), y, z - rad * math.sin(angle)
 end
 
 local function DoReturn(inst)
     --print("DoReturn", inst)
-    if inst.components.homeseeker and inst.components.homeseeker:HasHome()  then
+    if inst.components.homeseeker ~= nil and inst.components.homeseeker:HasHome() then
         if inst:HasTag("pet_hound") then
             if inst.components.homeseeker.home:IsAsleep() and not inst:IsNear(inst.components.homeseeker.home, HOME_TELEPORT_DIST) then
-                local x, y, z = GetReturnPos(inst.components.homeseeker.home)
-                inst.Physics:Teleport(x, y, z)
-                --print("hound warped home", x, y, z)
+                inst.Physics:Teleport(GetReturnPos(inst.components.homeseeker.home))
             end
-        elseif inst.components.homeseeker.home.components.childspawner then
+        elseif inst.components.homeseeker.home.components.childspawner ~= nil then
             inst.components.homeseeker.home.components.childspawner:GoHome(inst)
         end
     end
@@ -131,16 +126,22 @@ local function OnStopDay(inst)
     end
 end
 
+local function OnSpawnedFromHaunt(inst)
+    if inst.components.hauntable ~= nil then
+        inst.components.hauntable:Panic()
+    end
+end
+
 local function OnSave(inst, data)
-    data.ispet = inst:HasTag("pet_hound")
+    data.ispet = inst:HasTag("pet_hound") or nil
     --print("OnSave", inst, data.ispet)
 end
 
 local function OnLoad(inst, data)
     --print("OnLoad", inst, data.ispet)
-    if data and data.ispet then
+    if data ~= nil and data.ispet then
         inst:AddTag("pet_hound")
-        if inst.sg then
+        if inst.sg ~= nil then
             inst.sg:GoToState("idle")
         end
     end
@@ -215,12 +216,8 @@ local function fncommon(build)
     inst.components.sleeper:SetWakeTest(ShouldWakeUp)
     inst:ListenForEvent("newcombattarget", OnNewTarget)
 
-    MakeHauntableChangePrefab(inst, {"firehound", "icehound"})
-    inst:ListenForEvent("spawnedfromhaunt", function(inst)
-        if inst.components.hauntable then
-            inst.components.hauntable:Panic()
-        end
-    end)
+    MakeHauntableChangePrefab(inst, { "firehound", "icehound" })
+    inst:ListenForEvent("spawnedfromhaunt", OnSpawnedFromHaunt)
 
     inst:WatchWorldState("stopday", OnStopDay)
     inst.OnEntitySleep = OnEntitySleep

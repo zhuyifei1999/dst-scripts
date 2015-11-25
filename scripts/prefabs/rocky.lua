@@ -132,6 +132,9 @@ local function fn()
     --trader (from trader component) added to pristine state for optimization
     inst:AddTag("trader")
 
+    --herdmember (from herdmember component) added to pristine state for optimization
+    inst:AddTag("herdmember")
+
     inst.AnimState:SetBank("rocky")
     inst.AnimState:SetBuild("rocky")
     inst.AnimState:PlayAnimation("idle_loop", true)

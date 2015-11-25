@@ -154,6 +154,9 @@ local function fn()
     --bearded (from beard component) added to pristine state for optimization
     inst:AddTag("bearded")
 
+    --herdmember (from herdmember component) added to pristine state for optimization
+    inst:AddTag("herdmember")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

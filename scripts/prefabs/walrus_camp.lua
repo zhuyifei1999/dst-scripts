@@ -131,9 +131,7 @@ local function OnMemberKilled(inst, member, data)
 end
 
 local OnMemberNewTarget -- forward declaration
-
 local DespaenedFromHaunt
-
 
 local function TrackMember(inst, member)
     --print("TrackMember", inst, member)
@@ -158,8 +156,6 @@ DespawnedFromHaunt = function(inst, oldchild, data)
         UpdateCampOccupied(inst)
     end
 end
-
-
 
 local function SpawnMember(inst, prefab)
     --print("SpawnMember", inst, prefab)
@@ -209,8 +205,8 @@ local function OnWentHome(inst, data)
 end
 
 local function SpawnHuntingParty(inst, target, houndsonly)
-	-- defer setting the transforms to prevent all kinds of events happening
-	-- during set-up of the party
+    -- defer setting the transforms to prevent all kinds of events happening
+    -- during set-up of the party
     local transformsToSet = {}
     local leader = GetMember(inst, "walrus")
     if not houndsonly and not leader and CanSpawn(inst, "walrus") then
@@ -227,7 +223,7 @@ local function SpawnHuntingParty(inst, target, houndsonly)
         transformsToSet[#transformsToSet + 1] = {inst = companion, x=x, y=y,z=z }
         --print("spawn", companion)
     end
-  
+
     if companion and leader then
         companion.components.follower:SetLeader(leader)
     end
@@ -265,9 +261,9 @@ local function SpawnHuntingParty(inst, target, houndsonly)
         end
     end
 
-	for i,v in ipairs(transformsToSet) do
-		v.inst.Transform:SetPosition(v.x, v.y, v.z)
-	end
+    for i,v in ipairs(transformsToSet) do
+        v.inst.Transform:SetPosition(v.x, v.y, v.z)
+    end
 end
 
 local function CheckSpawnHuntingParty(inst, target, houndsonly)
@@ -289,9 +285,9 @@ end
 local function OnEntitySleep(inst)
     --print("OnEntitySleep", inst)
     if not POPULATING then
-	    UpdateCampOccupied(inst)
-	    CheckSpawnHuntingParty(inst, nil, not TheWorld.state.isday)
-	end
+        UpdateCampOccupied(inst)
+        CheckSpawnHuntingParty(inst, nil, not TheWorld.state.isday)
+    end
 end
 
 local function OnEntityWake(inst)
@@ -344,7 +340,7 @@ local function OnSave(inst, data)
     return data.children
 
 end
-        
+
 local function OnLoad(inst, data)
 
     --print("OnLoad", inst, GetTime())
@@ -374,7 +370,7 @@ local function OnLoadPostPass(inst, newents, data)
         for k,v in pairs(data.children) do
             local child = newents[v]
             if child then
-                print("Child Name: ", child.entity.prefab)
+                --print("Child Name: ", child.entity.prefab)
                 child = child.entity
                 --print("    ", child.prefab)
                 TrackMember(inst, child)
@@ -385,10 +381,10 @@ local function OnLoadPostPass(inst, newents, data)
 end
 
 local function create()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddSoundEmitter()
     inst.entity:AddLight()
@@ -403,11 +399,11 @@ local function create()
     inst.AnimState:SetBank("walrus_house")
     inst.AnimState:SetBuild("walrus_house")
 
-	inst.MiniMapEntity:SetIcon("igloo.png")
-	
+    inst.MiniMapEntity:SetIcon("igloo.png")
+
     inst.data = { children = {} }
 
-	--inst:AddTag("tent")    
+    --inst:AddTag("tent")    
 
     inst:AddComponent("inspectable")
     inst.components.inspectable.getstatus = GetStatus
@@ -431,7 +427,7 @@ local function create()
     inst.OnEntitySleep = OnEntitySleep
     inst.OnEntityWake = OnEntityWake
 
-	SetOccupied(inst, TheWorld.state.iswinter)
+    SetOccupied(inst, TheWorld.state.iswinter)
 
     inst:WatchWorldState("iswinter", OnIsWinter)
 

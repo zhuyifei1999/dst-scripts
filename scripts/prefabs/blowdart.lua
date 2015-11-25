@@ -102,6 +102,11 @@ local function sleepthrown(inst)
 end
 
 local function sleepattack(inst, attacker, target)
+    if not target:IsValid() then
+        --target killed or removed in combat damage phase
+        return
+    end
+
     target.SoundEmitter:PlaySound("dontstarve/wilson/blowdart_impact_sleep")
 
     if target.components.sleeper ~= nil then
@@ -150,6 +155,11 @@ local function firethrown(inst)
 end
 
 local function fireattack(inst, attacker, target)
+    if not target:IsValid() then
+        --target killed or removed in combat damage phase
+        return
+    end
+
     target.SoundEmitter:PlaySound("dontstarve/wilson/blowdart_impact_fire")
     target:PushEvent("attacked", {attacker = attacker, damage = 0})
     if target.components.burnable then

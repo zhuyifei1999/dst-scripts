@@ -122,6 +122,9 @@ local function fn()
     inst:AddTag("baby")
     inst:AddTag("animal")
 
+    --herdmember (from herdmember component) added to pristine state for optimization
+    inst:AddTag("herdmember")
+
     MakeCharacterPhysics(inst, 100, .75)
 
     inst.entity:SetPristine()

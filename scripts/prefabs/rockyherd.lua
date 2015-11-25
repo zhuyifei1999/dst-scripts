@@ -1,8 +1,3 @@
-local assets =
-{
-    --Asset("ANIM", "anim/arrow_indicator.zip"),
-}
-
 local prefabs =
 {
     "rocky",
@@ -11,59 +6,46 @@ local prefabs =
 local function CanSpawn(inst)
     -- Note that there are other conditions inside periodic spawner governing this as well.
     
-    if not inst.components.herd then
+    if inst.components.herd == nil or inst.components.herd:IsFull() then
         return false
     end
 
-    if inst.components.herd:IsFull() then
-        return false
-    end
-
-    local x,y,z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x,y,z, inst.components.herd.gatherrange, inst.components.herd.membertag and {inst.components.herd.membertag} or nil )
-    return #ents < TUNING.ROCKYHERD_MAX_IN_RANGE
+    local x, y, z = inst.Transform:GetWorldPosition()
+    return #TheSim:FindEntities(x, y, z, inst.components.herd.gatherrange, { "herdmember", inst.components.herd.membertag }) < TUNING.ROCKYHERD_MAX_IN_RANGE
 end
 
 local function OnSpawned(inst, newent)
-    if inst.components.herd then
+    if inst.components.herd ~= nil then
         inst.components.herd:AddMember(newent)
         newent.components.scaler:SetScale(TUNING.ROCKY_MIN_SCALE)
     end
 end
 
-local function OnFull(inst)
+--local function OnFull(inst)
     --TODO: mark some beefalo for death
-end
+--end
 
 local function SeasonalSpawningChanges(inst, season)
-    if season == SEASONS.SPRING then
-        inst.components.periodicspawner:SetRandomTimes(TUNING.ROCKY_SPAWN_DELAY * TUNING.SPRING_GROWTH_MODIFIER, TUNING.ROCKY_SPAWN_VAR)
-    else
-        inst.components.periodicspawner:SetRandomTimes(TUNING.ROCKY_SPAWN_DELAY, TUNING.ROCKY_SPAWN_VAR)
-    end
+    inst.components.periodicspawner:SetRandomTimes(season == SEASONS.SPRING and TUNING.ROCKY_SPAWN_DELAY * TUNING.SPRING_GROWTH_MODIFIER or TUNING.ROCKY_SPAWN_DELAY, TUNING.ROCKY_SPAWN_VAR)
 end
 
 local function fn()
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
-    --[[
-    inst.entity:AddAnimState()
-    inst.entity:AddNetwork()
-
-    if not TheWorld.ismastersim then
-        return inst
-    end
-    --]]
     --[[Non-networked entity]]
 
     inst:AddTag("herd")
+    --V2C: Don't use CLASSIFIED because herds use FindEntities on "herd" tag
+    inst:AddTag("NOBLOCK")
+    inst:AddTag("NOCLICK")
+
     inst:AddComponent("herd")
     inst.components.herd:SetMemberTag("rocky")
     inst.components.herd:SetGatherRange(TUNING.ROCKYHERD_RANGE)
     inst.components.herd:SetUpdateRange(20)
     inst.components.herd:SetOnEmptyFn(inst.Remove)
-    inst.components.herd:SetOnFullFn(OnFull)
+    --inst.components.herd:SetOnFullFn(OnFull)
     inst.components.herd.maxsize = 6
 
     inst:AddComponent("periodicspawner")
@@ -79,4 +61,4 @@ local function fn()
     return inst
 end
 
-return Prefab("cave/rockyherd", fn, assets, prefabs)
+return Prefab("cave/rockyherd", fn, nil, prefabs)
