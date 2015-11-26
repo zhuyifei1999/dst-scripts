@@ -123,4 +123,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/objects/molehill", fn, assets, prefabs)
+return Prefab("molehill", fn, assets, prefabs)

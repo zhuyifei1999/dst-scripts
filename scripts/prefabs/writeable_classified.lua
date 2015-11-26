@@ -1,12 +1,4 @@
 --------------------------------------------------------------------------
---Common interface
---------------------------------------------------------------------------
-
---------------------------------------------------------------------------
---Server interface
---------------------------------------------------------------------------
-
---------------------------------------------------------------------------
 --Client interface
 --------------------------------------------------------------------------
 
@@ -29,18 +21,6 @@ local function OnEntityReplicated(inst)
 end
 
 --------------------------------------------------------------------------
---Client sync event handlers that translate and dispatch local UI messages
---------------------------------------------------------------------------
-
---local function RegisterNetListeners(inst)
---end
-
---------------------------------------------------------------------------
---Client preview actions while waiting for RPC response from server
---------------------------------------------------------------------------
-
-
---------------------------------------------------------------------------
 
 local function fn()
     local inst = CreateEntity()
@@ -58,8 +38,6 @@ local function fn()
         --Client interface
         inst.OnEntityReplicated = OnEntityReplicated
 
-        --Delay net listeners until after initial values are deserialized
-        --inst:DoTaskInTime(0, RegisterNetListeners)
         return inst
     end
 

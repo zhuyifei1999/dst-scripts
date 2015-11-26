@@ -295,5 +295,5 @@ local function projectilefn()
     return inst
 end
 
-return Prefab("forest/animals/spat", fn, assets, prefabs),
-    Prefab("common/projectiles/spat_bomb", projectilefn, projectile_assets, projectile_prefabs)
+return Prefab("spat", fn, assets, prefabs),
+    Prefab("spat_bomb", projectilefn, projectile_assets, projectile_prefabs)

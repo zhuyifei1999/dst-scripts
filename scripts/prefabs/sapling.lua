@@ -112,4 +112,4 @@ local function fn()
     return inst
 end
 
-return Prefab("forest/objects/sapling", fn, assets, prefabs)
+return Prefab("sapling", fn, assets, prefabs)

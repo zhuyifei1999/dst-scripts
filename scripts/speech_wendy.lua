@@ -865,8 +865,8 @@ return {
 		MARSH_PLANT = "It's a plant.",
 		MARSH_TREE =
 		{
-			BURNING = "It's burning",
-			BURNT = "Black like my heart",
+			BURNING = "It's burning.",
+			BURNT = "Black like my heart.",
 			CHOPPED = "Its spikes were no protection.",
 			GENERIC = "A tree that knows only pain.",
 		},
@@ -1163,6 +1163,12 @@ return {
 			GENERIC = "This home is not a happy one, I fear.",
 		},
 		WALRUS_TUSK = "I shall gnash thee.",
+		WARDROBE = 
+		{
+			GENERIC = "It reminds me of a story I used to read with Abigail.",
+            BURNING = "Soon it will be nothing but ashes",
+			BURNT = "Now it doesn't remind me of anything.",
+		},
 		WARG = "A true bastion of evil.",
 		WASPHIVE = "They hide in their fortress of hate.",
 		WETGOOP = "A miserable mess, just like life.",

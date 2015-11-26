@@ -1,6 +1,7 @@
 local rock_ice_assets =
 {
     Asset("ANIM", "anim/ice_boulder.zip"),
+    Asset("MINIMAP_IMAGE", "iceboulder"),
 }
 
 local prefabs =
@@ -295,4 +296,4 @@ local function rock_ice_fn()
     return inst
 end
 
-return Prefab("forest/objects/rocks/rock_ice", rock_ice_fn, rock_ice_assets, prefabs)
+return Prefab("rock_ice", rock_ice_fn, rock_ice_assets, prefabs)

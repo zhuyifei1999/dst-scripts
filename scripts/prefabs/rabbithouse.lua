@@ -4,6 +4,7 @@ require "recipes"
 local assets =
 {
     Asset("ANIM", "anim/rabbit_house.zip"),
+    Asset("MINIMAP_IMAGE", "rabbit_house"),
 }
 
 local prefabs =
@@ -186,5 +187,5 @@ local function fn()
     return inst
 end
 
-return Prefab("common/objects/rabbithouse", fn, assets, prefabs),
-    MakePlacer("common/rabbithouse_placer", "rabbithouse", "rabbit_house", "idle")
+return Prefab("rabbithouse", fn, assets, prefabs),
+    MakePlacer("rabbithouse_placer", "rabbithouse", "rabbit_house", "idle")

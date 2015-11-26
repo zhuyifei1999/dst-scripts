@@ -122,13 +122,13 @@ local function lesseritemfn()
         "worm_light_lesser",
         "worm_light_lesser",
         function(inst)
-            inst.components.edible.foodtype = FOODTYPE.VEGGIE
-            inst.components.edible.healthvalue = TUNING.HEALING_SMALL
-            inst.components.edible.hungervalue = TUNING.CALORIES_SMALL
-            inst.components.edible.sanityvalue = -TUNING.SANITY_SMALL
-            inst.components.edible:SetOnEatenFn(lesseritem_oneaten)
+        inst.components.edible.foodtype = FOODTYPE.VEGGIE
+        inst.components.edible.healthvalue = TUNING.HEALING_SMALL
+        inst.components.edible.hungervalue = TUNING.CALORIES_SMALL
+        inst.components.edible.sanityvalue = -TUNING.SANITY_SMALL
+        inst.components.edible:SetOnEatenFn(lesseritem_oneaten)
 
-            inst.components.fuel.fuelvalue = TUNING.MED_FUEL
+        inst.components.fuel.fuelvalue = TUNING.MED_FUEL
         end
     )
 end
@@ -174,7 +174,7 @@ local function light_ontarget(inst, target)
         if target:HasTag("electricdamageimmune") then
             inst:ListenForEvent("ms_overcharge", forceremove, target)
         end
-        target.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+    target.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
         inst.persists = false
     else
         target.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
@@ -188,7 +188,7 @@ local function light_onfinish(inst)
         target.wormlight = nil
         if not (target:HasTag("playerghost") or target:HasTag("overcharge")) then
             target.AnimState:ClearBloomEffectHandle()
-        end
+    end
     end
 end
 
@@ -302,9 +302,9 @@ local function lesserlightfxfn()
     return lightfx_commonfn(TUNING.WORMLIGHT_DURATION * .25)
 end
 
-return  Prefab("common/inventory/wormlight", itemfn, assets, prefabs),
-        Prefab("common/inventory/wormlight_lesser", lesseritemfn, lesserassets, lesserprefabs),
-        Prefab("common/inventory/wormlight_light", lightfn, nil, lightprefabs),
-        Prefab("common/inventory/wormlight_light_lesser", lesserlightfn, nil, lesserlightprefabs),
-        Prefab("common/inventory/wormlight_light_fx", lightfxfn),
-        Prefab("common/inventory/wormlight_light_fx_lesser", lesserlightfxfn)
+return  Prefab("wormlight", itemfn, assets, prefabs),
+        Prefab("wormlight_lesser", lesseritemfn, lesserassets, lesserprefabs),
+        Prefab("wormlight_light", lightfn, nil, lightprefabs),
+        Prefab("wormlight_light_lesser", lesserlightfn, nil, lesserlightprefabs),
+        Prefab("wormlight_light_fx", lightfxfn),
+        Prefab("wormlight_light_fx_lesser", lesserlightfxfn)

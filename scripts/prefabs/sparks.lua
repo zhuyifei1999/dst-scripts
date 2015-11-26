@@ -92,4 +92,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/sparks", fn, assets)
+return Prefab("sparks", fn, assets)

@@ -25,4 +25,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/willowfire", fn)
+return Prefab("willowfire", fn)

@@ -174,9 +174,9 @@ local function BeeMine(name, alignment, skin, spawnprefab, inventory)
 
         return inst
     end
-    return Prefab("common/inventory/"..name, fn, assets, prefabs)
+    return Prefab(name, fn, assets, prefabs)
 end
 
 return BeeMine("beemine", "player", "bee_mine", "bee", true),
-    MakePlacer("common/beemine_placer", "bee_mine", "bee_mine", "idle"),
+    MakePlacer("beemine_placer", "bee_mine", "bee_mine", "idle"),
     BeeMine("beemine_maxwell", "nobody", "bee_mine_maxwell", "mosquito", false)
