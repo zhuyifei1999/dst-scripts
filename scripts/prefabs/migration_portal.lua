@@ -2,7 +2,6 @@ local assets =
 {
     Asset("ANIM", "anim/portal_friends.zip"),
     Asset("SOUND", "sound/common.fsb"),
-	Asset("MINIMAP_IMAGE", "wormhole"),
 }
 
 local function close(inst)
@@ -66,4 +65,4 @@ local function fn()
     return inst
 end
 
-return Prefab("migration_portal", fn, assets)
+return Prefab("common/migration_portal", fn, assets)

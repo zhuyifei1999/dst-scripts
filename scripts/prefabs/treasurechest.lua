@@ -8,9 +8,6 @@ local assets =
     Asset("ANIM", "anim/pandoras_chest.zip"),
     Asset("ANIM", "anim/skull_chest.zip"),
     Asset("ANIM", "anim/pandoras_chest_large.zip"),
-	Asset("MINIMAP_IMAGE", "treasure_chest"),
-	Asset("MINIMAP_IMAGE", "minotaur_chest"),
-	Asset("MINIMAP_IMAGE", "pandoras_chest"),
 }
 
 local prefabs =
@@ -152,8 +149,8 @@ local function chest(style)
     end
 end
 
-return Prefab("treasurechest", chest("treasure_chest"), assets, prefabs),
-    MakePlacer("treasurechest_placer", "chest", "treasure_chest", "closed"),
-    Prefab("pandoraschest", chest("pandoras_chest"), assets, prefabs),
-    Prefab("skullchest", chest("skull_chest"), assets, prefabs),
-    Prefab("minotaurchest", chest("minotaur_chest"), assets, prefabs)
+return Prefab("common/treasurechest", chest("treasure_chest"), assets, prefabs),
+    MakePlacer("common/treasurechest_placer", "chest", "treasure_chest", "closed"),
+    Prefab("common/pandoraschest", chest("pandoras_chest"), assets, prefabs),
+    Prefab("common/skullchest", chest("skull_chest"), assets, prefabs),
+    Prefab("common/minotaurchest", chest("minotaur_chest"), assets, prefabs)

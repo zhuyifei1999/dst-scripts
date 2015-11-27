@@ -9,14 +9,10 @@ local Widget = require "widgets/widget"
 local PlayerBadge = require "widgets/playerbadge"
 local ScrollableList = require "widgets/scrollablelist"
 local LobbyChatQueue = require "widgets/lobbychatqueue"
-local Spinner = require "widgets/spinner"
-local DressupPanel = require "widgets/dressuppanel"
 
 local PopupDialogScreen = require "screens/popupdialog"
 
 local TEMPLATES = require "widgets/templates"
-
-local clothing = require "clothing"
 
 require("util")
 require("networking")
@@ -24,24 +20,6 @@ require("networking")
 local DEBUG_MODE = BRANCH == "dev"
 
 local REFRESH_INTERVAL = .5
-
-local function StartGame(this)
-	if this.startbutton then 
-		this.startbutton:Disable()
-	end
-
-	if this.dressup then 
-		this.dressup:OnClose()
-	end
-
-	if this.cb and this.dressup then
-		local skins = this.dressup:GetSkinsForGameStart()
-		--print("Starting game, character is ", this.currentcharacter or "nil", this.dressup.currentcharacter or "nil")
-		this.cb(this.dressup.currentcharacter, skins.base, skins.body, skins.hand, skins.legs) --parameters are base_prefab, skin_base, clothing_body, clothing_hand, then clothing_legs
-	end
-end
-
-
 
 local LobbyScreen = Class(Screen, function(self, profile, cb, no_backbutton, default_character, days_survived)
 	Screen._ctor(self, "LobbyScreen")
@@ -112,18 +90,25 @@ local LobbyScreen = Class(Screen, function(self, profile, cb, no_backbutton, def
     self.heroportrait:SetScale(.9)
     self.heroportrait:SetPosition(RESOLUTION_X/2, RESOLUTION_Y-300)
     
-    self.heroportrait:SetOnGainFocus(function() self.heroportrait:SetScale(.95) end)
-    self.heroportrait:SetOnLoseFocus(function() self.heroportrait:SetScale(.9) end)
-
     local adjust = 16
 
-   	self:BuildCharacterDetailsBoxAndPanels()
+ 	self:BuildCharacterDetailsBoxAndPanels()
 
  	self.players_button:MoveToFront()
 	self.chat_button:MoveToFront() 
   
     if not TheInput:ControllerAttached() then
-		self.startbutton = self.fixed_root:AddChild(TEMPLATES.Button(STRINGS.UI.LOBBYSCREEN.SELECT, function() StartGame(self) end))
+		self.startbutton = self.fixed_root:AddChild(TEMPLATES.Button(STRINGS.UI.LOBBYSCREEN.SELECT, 
+			function()
+				self.startbutton:Disable()
+				if self.cb then
+					if self.currentcharacter == "random" then 
+						local all_chars = ExceptionArrays(GetActiveCharacterList(), MODCHARACTEREXCEPTIONS_DST)
+						self.currentcharacter = all_chars[math.random(#all_chars)]
+					end
+					self.cb(self.currentcharacter, nil) --2nd parameter is skin
+				end
+			end))
 		self.startbutton:SetPosition(RESOLUTION_X - 245, 60, 0)
 
 		self.randomcharbutton = self.fixed_root:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "random.tex", STRINGS.UI.LOBBYSCREEN.RANDOMCHAR, false, false, function()
@@ -141,9 +126,9 @@ local LobbyScreen = Class(Screen, function(self, profile, cb, no_backbutton, def
 		end
 	end
 
-    self:BuildCharactersList(cb, default_character)
-    
-    self.default_focus = self.heroportrait
+    self:BuildCharactersList(cb, default_character) 
+
+    self.default_focus = self.scroll_list
     self:DoFocusHookups()
 end)
 
@@ -177,35 +162,22 @@ function LobbyScreen:StopLobbyMusic()
     end
 end
 
-local function doButtonFocusHookups(playerListing, nextWidget)
-	
-	local rightFocusMoveSet = false
-
+local function doButtonFocusHookups(playerListing)
+		
 	if playerListing.mute:IsVisible() then
+		-- TODO: right should jump over to the dressup window once we enable it
 		playerListing.mute:SetFocusChangeDir(MOVE_LEFT, playerListing.viewprofile)
-		playerListing.mute:SetFocusChangeDir(MOVE_RIGHT, nextWidget)
-		rightFocusMoveSet = true
 		playerListing.focus_forward = playerListing.mute
 	end
 
 	if playerListing.viewprofile:IsVisible() then
-		if playerListing.mute:IsVisible() then 
-			playerListing.viewprofile:SetFocusChangeDir(MOVE_RIGHT, playerListing.mute)
-		else
-			playerListing.viewprofile:SetFocusChangeDir(MOVE_RIGHT, nextWidget)
-		end
-		rightFocusMoveSet = true
-
+		playerListing.viewprofile:SetFocusChangeDir(MOVE_RIGHT, playerListing.mute)
 		playerListing.focus_forward = playerListing.viewprofile
-	end
-
-	if not rightFocusMoveSet then 
-		playerListing:SetFocusChangeDir(MOVE_RIGHT, nextWidget)
 	end
 end
 
 
-local function listingConstructor(v, i, parent, nextWidget)
+local function listingConstructor(v, i, parent)
 
 	local playerListing =  parent:AddChild(Widget("playerListing"))
 	playerListing:SetPosition(5,0)
@@ -239,8 +211,6 @@ local function listingConstructor(v, i, parent, nextWidget)
 		playerListing.characterBadge = playerListing:AddChild(PlayerBadge("", DEFAULT_PLAYER_COLOUR, false, 0))
 		playerListing.characterBadge:Hide()
 	else
-		--print("player data is ")
-		--dumptable(v)
 		playerListing.characterBadge = playerListing:AddChild(PlayerBadge(v.prefab or "", v.colour or DEFAULT_PLAYER_COLOUR, v.performance ~= nil, v.userflags or 0))
 	end
 	playerListing.characterBadge:SetScale(.45)
@@ -278,30 +248,28 @@ local function listingConstructor(v, i, parent, nextWidget)
 	end
 
 	local owner = TheNet:GetUserID()
-	local profile_scale = .6
+	local scale = .6
 	
 	playerListing.viewprofile = playerListing:AddChild(ImageButton("images/scoreboard.xml", "addfriend.tex", "addfriend.tex", "addfriend.tex", "addfriend.tex", nil, {1,1}, {0,0}))
 	playerListing.viewprofile:SetPosition(60+nudge_x,0,0)
 	playerListing.viewprofile.scale_on_focus = false
-	playerListing.viewprofile.image:SetScale(profile_scale)
+	playerListing.viewprofile.image:SetScale(scale)
 	playerListing.viewprofile:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.VIEWPROFILE, { font = NEWFONT_OUTLINE, size = 24, offset_x = 0, offset_y = 30, colour = {1,1,1,1}})
 	local gainfocusfn = playerListing.viewprofile.OnGainFocus
 	playerListing.viewprofile.OnGainFocus =
     function()
     	gainfocusfn(playerListing.viewprofile)
         TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover")
-        playerListing.viewprofile.image:SetScale(profile_scale + profile_scale*.05)
+        playerListing.viewprofile.image:SetScale(scale + .05)
     end
     local losefocusfn = playerListing.viewprofile.OnLoseFocus
 	playerListing.viewprofile.OnLoseFocus =
     function()
     	losefocusfn(playerListing.viewprofile)
-        playerListing.viewprofile.image:SetScale(profile_scale)
+        playerListing.viewprofile.image:SetScale(scale)
     end
 	playerListing.viewprofile:SetOnClick(
 		function()
-			-- Can't do this here because HUD doesn't exist yet. TODO: add the playeravatarpopup to frontend, or wrap it in a screen.
-			--ThePlayer.HUD:OpenPlayerAvatarPopup(displayName, v, true)
 			if v.netid ~= nil then
 				TheNet:ViewNetProfile(v.netid)
 			end
@@ -311,12 +279,11 @@ local function listingConstructor(v, i, parent, nextWidget)
 		playerListing.viewprofile:Hide()
 	end
 
-	local mute_scale = .6
 	playerListing.isMuted = TheFrontEnd.mutedPlayers ~= nil and TheFrontEnd.mutedPlayers[v.userid] and TheFrontEnd.mutedPlayers[v.userid] == true
 
 	playerListing.mute = playerListing:AddChild(ImageButton("images/scoreboard.xml", "chat.tex", "chat.tex", "chat.tex", "chat.tex", nil, {1,1}, {0,0}))
 	playerListing.mute:SetPosition(85+nudge_x,0,0)
-	playerListing.mute.image:SetScale(mute_scale)
+	playerListing.mute.image:SetScale(scale)
 	playerListing.mute.scale_on_focus = false
 	playerListing.mute:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.MUTE, { font = NEWFONT_OUTLINE, size = 24, offset_x = 0, offset_y = 30, colour = {1,1,1,1}})
 	local gainfocusfn = playerListing.mute.OnGainFocus
@@ -324,13 +291,13 @@ local function listingConstructor(v, i, parent, nextWidget)
         function()
         	gainfocusfn(playerListing.mute)
             TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover")
-            playerListing.mute.image:SetScale(mute_scale + .05)
+            playerListing.mute.image:SetScale(scale + .05)
         end
     local losefocusfn = playerListing.mute.OnLoseFocus
     playerListing.mute.OnLoseFocus =
         function()
         	losefocusfn(playerListing.mute)
-            playerListing.mute.image:SetScale(mute_scale)
+            playerListing.mute.image:SetScale(scale)
         end
     playerListing.mute:SetOnClick(
     	function()
@@ -386,7 +353,7 @@ local function listingConstructor(v, i, parent, nextWidget)
 		playerListing.highlight:Hide()
 	end
 
-	doButtonFocusHookups(playerListing, nextWidget)
+	doButtonFocusHookups(playerListing)
 
 	return playerListing
 end
@@ -433,11 +400,10 @@ local function UpdatePlayerListing(widget, data, index)
     widget.name:SetPosition(widget.name._align.x + w * .5, widget.name._align.y, 0)
 
 	local owner = TheNet:GetUserID()
-	
+	local scale = .6
+
 	widget.viewprofile:SetOnClick(
 		function()
-			-- Can't do this here because HUD doesn't exist yet. TODO: add the playeravatarpopup to frontend, or wrap it in a screen.
-			--ThePlayer.HUD:OpenPlayerAvatarPopup(displayName, data, true)
 			if data.netid ~= nil then
 				TheNet:ViewNetProfile(data.netid)
 			end
@@ -538,7 +504,7 @@ function LobbyScreen:BuildPlayerList(players)
 
 		self.player_widgets = {}
 		for i=1,9 do
-			table.insert(self.player_widgets, listingConstructor(players[i] or {}, i, self.row_root, self.heroportrait))
+			table.insert(self.player_widgets, listingConstructor(players[i] or {}, i, self.row_root))
 		end
 
 		self.scroll_list = self.list_root:AddChild(ScrollableList(players, 125, 330, 30, 7, UpdatePlayerListing, self.player_widgets, nil, nil, nil, -15))
@@ -557,7 +523,7 @@ end
 
 function LobbyScreen:BuildTabbedWindow()
 	self.tabbed_frame = self.fixed_root:AddChild(TEMPLATES.CurlyWindow(10, 400, .6, .6, 40, -25))
-    self.tabbed_frame:SetPosition(215,RESOLUTION_Y-310,0)
+    self.tabbed_frame:SetPosition(225,RESOLUTION_Y-310,0)
 
 	self.tabbed_bg = self.tabbed_frame:AddChild(Image("images/serverbrowser.xml", "side_panel.tex"))
 	self.tabbed_bg:SetScale(.66, .56)
@@ -600,8 +566,7 @@ function LobbyScreen:ToggleShowPlayers(val)
 		self.chatqueue:SetFocus()
 		self.chatqueue:ScrollToEnd()
 		self:UpdateMessageIndicator()
-        --self.chatbox.textbox:SetEditing(true)
-        self.chatbox.textbox:SetFocus(true)
+        self.chatbox.textbox:SetEditing(true)
 	end
 
 	self:DoFocusHookups()
@@ -610,7 +575,6 @@ end
 function LobbyScreen:UpdateMessageIndicator()
 	if self.active_tab ~= "chat" then
 		self.unread_count = self.unread_count + 1
-		TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/chat_receive")
 		self.message_indicator:Show()
 		self.message_indicator.count:SetString(self.unread_count)
 	else
@@ -659,14 +623,6 @@ function LobbyScreen:MakeTextEntryBox(parent)
     
     chatbox.gobutton:SetOnClick( function() self.chatbox.textbox:OnTextEntered() end )
 
-    -- If chatbox ends up focused, highlight the textbox so we can tell something is focused.
-    chatbox:SetOnGainFocus( function() chatbox.textbox:OnGainFocus() end )
-    chatbox:SetOnLoseFocus( function() chatbox.textbox:OnLoseFocus() end )
-
-    -- Moving right from either the chatbox or the textbox goes to the portrait
-    chatbox.textbox:SetFocusChangeDir(MOVE_RIGHT, self.heroportrait)
-    chatbox:SetFocusChangeDir(MOVE_RIGHT, self.heroportrait)
-
     chatbox:SetPosition(-64, -202)
     self.chatbox = chatbox
 end
@@ -692,10 +648,34 @@ function LobbyScreen:BuildChatWindow()
 
     self:MakeTextEntryBox(self.chat_pane)
 
-    self.chatqueue = self.chat_pane:AddChild(LobbyChatQueue(TheNet:GetUserID(), self.chatbox.textbox, function() self:UpdateMessageIndicator() end), self.heroportrait)
+    self.chatqueue = self.chat_pane:AddChild(LobbyChatQueue(TheNet:GetUserID(), self.chatbox.textbox, function() self:UpdateMessageIndicator() end))
     self.chatqueue:SetPosition(32,2) 
 
 	self.chat_pane:SetPosition(190,RESOLUTION_Y-280,0)
+end
+
+function LobbyScreen:BuildDressupWindow()
+	self.dressup = self.fixed_root:AddChild(Widget("dressup"))
+
+	self.dressup = self.fixed_root:AddChild(TEMPLATES.CurlyWindow(10, 450, .6, .6, 39, -25))
+    self.dressup:SetPosition(RESOLUTION_X - 250,RESOLUTION_Y-330,0)
+
+	self.dressup_bg = self.dressup:AddChild(Image("images/serverbrowser.xml", "side_panel.tex"))
+	self.dressup_bg:SetScale(-.66, -.7)
+	self.dressup_bg:SetPosition(5, 5)
+
+	self.dressup_hanger = self.dressup:AddChild(Image("images/lobbyscreen.xml", "customization_coming_image_all.tex"))
+	self.dressup_hanger:SetScale(.66, .7)
+
+	local text1 = self.dressup:AddChild(Text(TALKINGFONT, 30, "Customize Your Character"))
+	text1:SetPosition(10,150) 
+	text1:SetHAlign(ANCHOR_MIDDLE)
+	text1:SetColour(unpack(GREY))
+
+	local text2 = self.dressup:AddChild(Text(TALKINGFONT, 30, "Coming Soon!"))
+	text2:SetPosition(10,-100) 
+	text2:SetHAlign(ANCHOR_MIDDLE)
+	text2:SetColour(unpack(GREY))
 end
 
 function LobbyScreen:BuildCharacterDetailsBoxAndPanels()
@@ -707,20 +687,16 @@ function LobbyScreen:BuildCharacterDetailsBoxAndPanels()
 	-- Note: these windows must be built in between the two banner sections or the banner won't 
 	-- layer properly.
 	self:BuildTabbedWindow()
-    --self:BuildDressupWindow()
-    self.dressup = self.fixed_root:AddChild(DressupPanel(self, self.profile, function() self:SetPortraitImage(1) end, function() self:SetPortraitImage(-1) end))
+    self:BuildDressupWindow()
 
 	self.banner_front = self.fixed_root:AddChild(Image("images/lobbybannertop.xml", "banner_top.tex"))
 	self.banner_front:SetScale(.67, .72)
-	self.banner_front:SetClickable(false)
 
 	self.banner_frontleft = self.fixed_root:AddChild(Image("images/lobbybannertop.xml", "banner_topleft.tex"))
 	self.banner_frontleft:SetScale(.67)
-	self.banner_frontleft:SetClickable(false)
 
 	self.banner_frontright = self.fixed_root:AddChild(Image("images/lobbybannertop.xml", "banner_topright.tex"))
 	self.banner_frontright:SetScale(.67)
-	self.banner_frontright:SetClickable(false)
 
  
     self.biobox:SetPosition(RESOLUTION_X/2 - 20, RESOLUTION_Y/2 - 8)
@@ -785,9 +761,9 @@ function LobbyScreen:BuildCharactersList(cb, default_character)
 	
     self:SetOffset(-1)
     self:SelectPortrait(1)
-    self.cb = function(char, skin_base, clothing_body, clothing_hand, clothing_legs)
+    self.cb = function(char, skin)
         self:StopLobbyMusic()
-    	cb(char, skin_base, clothing_body, clothing_hand, clothing_legs)
+    	cb(char, skin)
     end
     
     self:SelectCharacter(default_character)
@@ -884,14 +860,13 @@ function LobbyScreen:OnControl(control, down)
 
     if  TheInput:ControllerAttached() and not TheFrontEnd.tracking_mouse and 
     	self.can_accept and not down and control == CONTROL_PAUSE then
-    	StartGame(self)
-		--if self.cb then
-		--	self.cb(self.currentcharacter, nil) --2nd parameter is skin
-		--end
+		if self.cb then
+			self.cb(self.currentcharacter, nil) --2nd parameter is skin
+		end
 		return true
     end
 
-    -- Use right stick for cycling players list
+    -- Use d-pad buttons for cycling players list
     -- Add trigger buttons to switch tabs
    	if not down then 
 	 	if control == CONTROL_OPEN_CRAFTING or control == CONTROL_OPEN_INVENTORY then -- LT / RT
@@ -902,12 +877,12 @@ function LobbyScreen:OnControl(control, down)
 	 		end
 	 		TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
 	        return true 
-	    elseif self.heroportrait.focus and control == CONTROL_PREVVALUE then  -- r-stick left
+	    elseif control == CONTROL_FOCUS_LEFT then  -- d-pad left
 	    	self:Scroll(-1)
 			self:SelectPortrait()
 			TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
 			return true 
-		elseif self.heroportrait.focus and control == CONTROL_NEXTVALUE then -- r-stick right
+		elseif control == CONTROL_FOCUS_RIGHT then -- d-pad right
 			self:Scroll(1)
 			self:SelectPortrait()
 			TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
@@ -934,18 +909,8 @@ end
 
 function LobbyScreen:DoFocusHookups()
 
-	if self.active_tab == "chat" then 
-		self.heroportrait:SetFocusChangeDir(MOVE_LEFT, self.chatbox)
-		self.chatqueue:SetFocusChangeDir(MOVE_RIGHT, self.heroportrait)
-	elseif self.active_tab == "players" then
-		self.heroportrait:SetFocusChangeDir(MOVE_LEFT, self.scroll_list)
-		-- player list sets its own focus 
-	end
+	-- placeholder
 
-	if self.dressup and TheNet:IsOnlineMode() then 
-		self.heroportrait:SetFocusChangeDir(MOVE_RIGHT, self.dressup)
-		self.dressup:SetFocusChangeDir(MOVE_LEFT, self.heroportrait)
-	end
 end
 
 
@@ -953,7 +918,6 @@ function LobbyScreen:DoConfirmQuit()
  	self.active = false
 	
 	local function doquit()
-		self.dressup:OnClose()
 		self.parent:Disable()
 		DoRestart(true)
 	end
@@ -991,23 +955,6 @@ end
 	end
 end]]
 
-
-
--- Dir should be +1 for right and -1 for left
-function LobbyScreen:SetPortraitImage(dir)
-
-	local which = self.dressup.base_spinner and (self.dressup.base_spinner.spinner:GetSelectedIndex() + dir) or 1
-	
-	if self.currentcharacter ~= "random" and self.dressup.currentcharacter_skins then
-		local name = self.dressup.currentcharacter_skins[which] 
-		self.heroportrait:SetTexture("bigportraits/"..self.currentcharacter..".xml", name..".tex")
-	else
-		self.heroportrait:SetTexture("bigportraits/"..self.currentcharacter..".xml", self.currentcharacter.."_none.tex")
-	end
-
-	self.dressup:UpdatePuppet()
-end
-
 function LobbyScreen:SelectPortrait()
 	local heroidx = self:GetCharacterIdxForPortrait(1) + 1
 	if heroidx < 1 then 
@@ -1022,39 +969,18 @@ function LobbyScreen:SelectPortrait()
 		local charlist = GetActiveCharacterList()
 		table.insert(charlist, "random")
 		if table.contains(charlist, herocharacter) then
-			local skin = "_none"
-
-			self.heroportrait:SetTexture("bigportraits/" .. herocharacter..".xml", herocharacter .. skin .. ".tex", herocharacter .. ".tex")
-		else
-			self.heroportrait:SetTexture("bigportraits/" .. herocharacter..".xml", herocharacter.. ".tex", herocharacter .. ".tex")
+			self.heroportrait:SetTexture("bigportraits/"..herocharacter..".xml", herocharacter..".tex")
 		end
-
-		--print("Current character set to ", herocharacter)
 		self.currentcharacter = herocharacter
-		self.dressup:SetCurrentCharacter(herocharacter)
-		
-		if self.charactername then 
-			self.charactername:SetString(STRINGS.CHARACTER_TITLES[herocharacter] or "")
-		end
-		if self.characterquote then 
-			self.characterquote:SetString(STRINGS.CHARACTER_QUOTES[herocharacter] or "")
-		end
-		if self.characterdetails then 
+		self.charactername:SetString(STRINGS.CHARACTER_TITLES[herocharacter] or "")
+		self.characterquote:SetString(STRINGS.CHARACTER_QUOTES[herocharacter] or "")
 			if herocharacter == "woodie" and TheNet:GetCountryCode() == "CA" then
 				self.characterdetails:SetString(STRINGS.CHARACTER_DESCRIPTIONS[herocharacter.."_canada"] or "")
 			elseif herocharacter == "woodie" and TheNet:GetCountryCode() == "US" then
 				self.characterdetails:SetString(STRINGS.CHARACTER_DESCRIPTIONS[herocharacter.."_us"] or "")
-			else
-				self.characterdetails:SetString(STRINGS.CHARACTER_DESCRIPTIONS[herocharacter] or "")
-			end
-
-			
+		else
+			self.characterdetails:SetString(STRINGS.CHARACTER_DESCRIPTIONS[herocharacter] or "")
 		end
-		--self.currentcharacter_skins = self.profile:GetSkinsForPrefab(herocharacter)
-
-
-		self.dressup:UpdateSpinners()
-		
 		self.can_accept = true
 		if self.startbutton ~= nil then
 			self.startbutton:Enable()
@@ -1083,11 +1009,9 @@ function LobbyScreen:GetHelpText()
     table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_OPEN_CRAFTING) .. "/".. TheInput:GetLocalizedControl(controller_id, CONTROL_OPEN_INVENTORY) .." " .. STRINGS.UI.HELP.CHANGE_TAB)
 
     table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_2) .. " " .. STRINGS.UI.LOBBYSCREEN.RANDOMCHAR)
+    
+  	table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_FOCUS_LEFT) .. "/" .. TheInput:GetLocalizedControl(controller_id, CONTROL_FOCUS_RIGHT) .." " .. STRINGS.UI.HELP.CHANGECHARACTER)
    
-   	if self.heroportrait.focus then  
-  		table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_PREVVALUE) .. "/" .. TheInput:GetLocalizedControl(controller_id, CONTROL_NEXTVALUE) .." " .. STRINGS.UI.HELP.CHANGECHARACTER)
-   	end
-
    	if self.can_accept then
    		table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_PAUSE) .. " " .. STRINGS.UI.LOBBYSCREEN.SELECT)
    	end
@@ -1146,11 +1070,5 @@ function LobbyScreen:OnUpdate(dt)
         end
     end
 end
-
-function LobbyScreen:UpdateSpinners()
-	self.dressup:UpdateSpinners()
-	self:SetPortraitImage(0)
-end
-
 
 return LobbyScreen

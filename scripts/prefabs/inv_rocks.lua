@@ -66,4 +66,4 @@ local function fn()
     return inst
 end
 
-return Prefab("rocks", fn, assets)
+return Prefab("common/inventory/rocks", fn, assets)

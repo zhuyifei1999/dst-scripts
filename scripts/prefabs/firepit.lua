@@ -116,8 +116,7 @@ local function fn()
     -----------------------
     inst:AddComponent("burnable")
     --inst.components.burnable:SetFXLevel(2)
-    print("Adding burnfx")
-    inst.components.burnable:AddBurnFX("campfirefire", Vector3(0, .6, 0))
+    inst.components.burnable:AddBurnFX("campfirefire", Vector3(0, .4, 0))
     inst:ListenForEvent("onextinguish", onextinguish)
 
     -------------------------
@@ -167,5 +166,5 @@ local function fn()
     return inst
 end
 
-return Prefab("firepit", fn, assets, prefabs),
-    MakePlacer("firepit_placer", "firepit", "firepit", "preview")
+return Prefab("common/objects/firepit", fn, assets, prefabs),
+    MakePlacer("common/firepit_placer", "firepit", "firepit", "preview")

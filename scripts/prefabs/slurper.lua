@@ -375,5 +375,5 @@ local function lightfn()
     return inst
 end
 
-return Prefab("slurper", fn, assets, prefabs),
-    Prefab("slurperlight", lightfn)
+return Prefab("cave/monsters/slurper", fn, assets, prefabs),
+    Prefab("cave/monsters/slurperlight", lightfn)

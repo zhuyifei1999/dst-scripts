@@ -59,7 +59,7 @@ local function buildgem(colour)
 
         return inst
     end
-    return Prefab(colour.."gem", fn, assets)
+    return Prefab("common/inventory/"..colour.."gem", fn, assets)
 end
 
 return buildgem("purple"),

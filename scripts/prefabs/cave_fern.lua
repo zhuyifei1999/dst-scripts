@@ -61,4 +61,4 @@ local function fn()
     return inst
 end
 
-return Prefab("cave_fern", fn, assets, prefabs)
+return Prefab("cave/objects/cave_fern", fn, assets, prefabs)

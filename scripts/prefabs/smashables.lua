@@ -23,7 +23,6 @@ local function makeassetlist(buildname)
     return
     {
         Asset("ANIM", "anim/"..buildname..".zip"),
-        Asset("MINIMAP_IMAGE", "relic"),
     }
 end
 
@@ -35,55 +34,80 @@ local function OnDeath(inst)
     inst:Remove()
 end
 
+local function OnHit(inst)
+    if inst.rubble then
+        inst.AnimState:PlayAnimation("repair")
+        inst.AnimState:PushAnimation("broken")
+    else
+        inst.AnimState:PlayAnimation("hit")
+        inst.AnimState:PushAnimation("idle")
+    end
+end
+
+local function MakeRelic(inst)
+    if inst.components.repairable ~= nil then
+        inst:RemoveComponent("repairable")
+    end
+    inst.components.inspectable.nameoverride = "relic"
+    inst.components.named:SetName(STRINGS.NAMES["RELIC"])
+    inst.AnimState:PushAnimation("idle")
+end
+
 local function OnRepaired(inst, doer)
     if inst.components.health:GetPercent() >= 1 then
-        inst.AnimState:PushAnimation("idle")
         if doer.components.sanity ~= nil then
-            doer.components.sanity:DoDelta(TUNING.SANITY_MEDLARGE)
+            doer.components.sanity:DoDelta(TUNING.SANITY_TINY)
         end
-        inst:RemoveComponent("repairable")
-        inst.components.inspectable.nameoverride = "relic"
-        inst.components.named:SetName(STRINGS.NAMES["RELIC"])
-        inst.components.health:SetPercent(1)
-        inst.rubble = false
+        if inst.rubble then
+            inst.rubble = false
+            inst.AnimState:PlayAnimation("hit")
+            MakeRelic(inst)
+        end
         inst.SoundEmitter:PlaySound("dontstarve/common/fixed_stonefurniture")
     else
         inst.SoundEmitter:PlaySound("dontstarve/common/repair_stonefurniture")
+        OnHit(inst)
+    end
+end
+
+local function MakeRubble(inst)
+    if inst.components.repairable == nil then
+        inst:AddComponent("repairable")
+        inst.components.repairable.repairmaterial = MATERIALS.STONE
+        inst.components.repairable.onrepaired = OnRepaired
+    end
+    inst.components.inspectable.nameoverride = "ruins_rubble"
+    inst.components.named:SetName(STRINGS.NAMES["RUINS_RUBBLE"])
+    inst.AnimState:PushAnimation("broken")
+end
+
+local function OnHealthDelta(inst, oldpct, newpct)
+    if not inst.rubble and newpct < .5 and newpct < oldpct then
+        inst.rubble = true
         inst.AnimState:PlayAnimation("repair")
-        inst.AnimState:PushAnimation("broken")
-    end
-end
-
--- local function HealthDelta(inst,old,new)
---     if inst.components.health.currenthealth <= 1 then
---         OnDeath(inst)
---     end
--- end
-
-local function OnHit(inst)
-    if not inst.rubble and inst.components.health:GetPercent() >= .5 then
-        inst.AnimState:PlayAnimation("hit")
-    end
-end
-
-local function OnLoad(inst, data)
-    if data == nil then
-        return
-    end
-    inst.rubble = data.rubble
-    if not inst.rubble then
-        inst.components.inspectable.nameoverride = "relic"
-        inst.components.named:SetName(STRINGS.NAMES["RELIC"])
-        inst.AnimState:PlayAnimation(inst.components.health:GetPercent() >= .5 and "idle" or "broken")
-        if inst.components.repairable ~= nil then
-            inst:RemoveComponent("repairable")
-        end
+        MakeRubble(inst)
     end
 end
 
 local function OnSave(inst, data)
-    if inst.rubble then
-        data.rubble = inst.rubble
+    data.rubble = inst.rubble or nil
+    data.maxhealth = inst.components.health.maxhealth
+end
+
+local function OnPreLoad(inst, data)
+    if data ~= nil then
+        if data.maxhealth ~= nil then
+            inst.components.health:SetMaxHealth(data.maxhealth)
+        end
+        if data.rubble then
+            if not inst.rubble then
+                inst.rubble = true
+                MakeRubble(inst)
+            end
+        elseif inst.rubble then
+            inst.rubble = false
+            MakeRelic(inst)
+        end
     end
 end
 
@@ -115,8 +139,7 @@ local function makefn(name, asset, smashsound, rubble)
 
         inst.entity:SetPristine()
 
-        local world = TheWorld
-        if not world.ismastersim then
+        if not TheWorld.ismastersim then
             return inst
         end
 
@@ -124,10 +147,9 @@ local function makefn(name, asset, smashsound, rubble)
         inst:RemoveTag("_named")
 
         inst.rubble = rubble
-        inst.rubbleName = name
 
-        inst.OnLoad = OnLoad
         inst.OnSave = OnSave
+        inst.OnPreLoad = OnPreLoad
 
         inst:AddComponent("combat")
         inst.components.combat.onhitfn = OnHit
@@ -136,6 +158,7 @@ local function makefn(name, asset, smashsound, rubble)
         inst.components.health.nofadeout = true
         inst.components.health.canmurder = false
         inst.components.health:SetMaxHealth(GetRandomWithVariance(90, 20))
+        inst.components.health.ondelta = OnHealthDelta
 
         inst:ListenForEvent("death", OnDeath)
 
@@ -154,7 +177,7 @@ local function makefn(name, asset, smashsound, rubble)
                 inst.components.lootdropper:AddRandomLoot("spider_hider"   , 0.05)
                 inst.components.lootdropper:AddRandomLoot("spider_spitter" , 0.05)
                 inst.components.lootdropper:AddRandomLoot("monkey"         , 0.05)
-                if world:HasTag("cave") and world.topology.level_number == 2 then  -- ruins
+                if TheWorld:HasTag("cave") and TheWorld.topology.level_number == 2 then  -- ruins
                     inst.components.lootdropper:AddChanceLoot("thulecite"  , 0.05)
                 end
             else
@@ -166,7 +189,7 @@ local function makefn(name, asset, smashsound, rubble)
                 inst.components.lootdropper:AddRandomLoot("yellowgem"     , 0.01)
                 inst.components.lootdropper:AddRandomLoot("orangegem"     , 0.01)
                 inst.components.lootdropper:AddRandomLoot("nightmarefuel" , 0.01)
-                if world:HasTag("cave") and world.topology.level_number == 2 then  -- ruins
+                if TheWorld:HasTag("cave") and TheWorld.topology.level_number == 2 then  -- ruins
                     inst.components.lootdropper:AddRandomLoot("thulecite" , 0.02)
                 end
             end
@@ -176,25 +199,12 @@ local function makefn(name, asset, smashsound, rubble)
         inst:AddComponent("named")
 
         if rubble then
+            MakeRubble(inst)
             inst.components.health:SetPercent(.2)
-            inst.components.inspectable.nameoverride = "ruins_rubble"
-            inst.components.named:SetName(STRINGS.NAMES["RUINS_RUBBLE"])
-
-            inst:AddComponent("repairable")
-            inst.components.repairable.repairmaterial = MATERIALS.STONE
-            inst.components.repairable.onrepaired = OnRepaired
         else
+            MakeRelic(inst)
             inst.components.health:SetPercent(.8)
-            inst.components.inspectable.nameoverride = "relic"
-            inst.components.named:SetName(STRINGS.NAMES["RELIC"])
         end
-
-        inst:AddComponent("workable")
-        inst.components.workable:SetWorkLeft(3)
-        inst.components.workable.savestate = true
-        inst.components.workable:SetOnFinishCallback(OnDeath)
-        inst.components.workable:SetWorkAction(ACTIONS.MINE)
-        inst.components.workable:SetOnWorkCallback(OnHit) 
 
         inst.smashsound = smashsound
 
@@ -205,11 +215,11 @@ local function makefn(name, asset, smashsound, rubble)
 end
 
 local function item(name, sound)
-    return Prefab(name, makefn(name, name, sound, false), makeassetlist(name), prefabs)
+    return Prefab("cave/objects/smashables/"..name, makefn(name, name, sound, false), makeassetlist(name), prefabs)
 end
 
 local function rubble(name, assetname, sound, rubble)
-    return Prefab(name, makefn(name, assetname, sound, rubble), makeassetlist(assetname), prefabs)
+    return Prefab("cave/objects/smashables/"..name, makefn(name, assetname, sound, true), makeassetlist(assetname), prefabs)
 end
 
 return item("ruins_plate"),
@@ -218,6 +228,6 @@ return item("ruins_plate"),
     item("ruins_chipbowl"),
     item("ruins_vase"),
     item("ruins_table", "rock"),
-    rubble("ruins_rubble_table", "ruins_table", "rock", true),
-    rubble("ruins_rubble_chair", "ruins_chair", "rock", true),
-    rubble("ruins_rubble_vase", "ruins_vase",  nil, true)
+    rubble("ruins_rubble_table", "ruins_table", "rock"),
+    rubble("ruins_rubble_chair", "ruins_chair", "rock"),
+    rubble("ruins_rubble_vase", "ruins_vase")

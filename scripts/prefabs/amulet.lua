@@ -388,9 +388,9 @@ local function yellow()
     return inst
 end
 
-return Prefab("amulet", red, assets),
-Prefab("blueamulet", blue, assets),
-Prefab("purpleamulet", purple, assets),
-Prefab("orangeamulet", orange, assets),
-Prefab("greenamulet", green, assets),
-Prefab("yellowamulet", yellow, assets)
+return Prefab("common/inventory/amulet", red, assets),
+Prefab("common/inventory/blueamulet", blue, assets),
+Prefab("common/inventory/purpleamulet", purple, assets),
+Prefab("common/inventory/orangeamulet", orange, assets),
+Prefab("common/inventory/greenamulet", green, assets),
+Prefab("common/inventory/yellowamulet", yellow, assets)

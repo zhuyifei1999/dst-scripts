@@ -151,7 +151,7 @@ local states=
     
     State{
         name = "glide",
-        tags = {"idle", "flying"},
+        tags = {"idle", "flight"},
         onenter= function(inst)
 			
             if not inst.AnimState:IsCurrentAnimation("glide") then
@@ -222,7 +222,7 @@ local states=
     
     State{
         name = "flyaway",
-        tags = {"flying", "busy"},
+        tags = {"flight", "busy"},
         onenter = function(inst)
             inst.Physics:Stop()
             inst.sg:SetTimeout(.1+math.random()*.2)

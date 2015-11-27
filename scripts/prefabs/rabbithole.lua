@@ -241,4 +241,4 @@ local function fn()
     return inst
 end
 
-return Prefab("rabbithole", fn, assets, prefabs)
+return Prefab("common/objects/rabbithole", fn, assets, prefabs)

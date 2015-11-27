@@ -181,4 +181,4 @@ local function fn()
     return inst
 end
 
-return Prefab("livingtree", fn, assets, prefabs)
+return Prefab("common/livingtree", fn, assets, prefabs)

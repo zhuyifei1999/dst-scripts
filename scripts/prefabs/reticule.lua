@@ -27,4 +27,4 @@ local function reticule()
     return inst
 end
 
-return Prefab("reticule", reticule, assets)
+return Prefab("common/reticule", reticule, assets)

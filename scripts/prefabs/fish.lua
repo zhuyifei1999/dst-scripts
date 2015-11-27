@@ -132,8 +132,8 @@ end
 
 local function fish(name, build)
     local raw, cooked = makefish(build)
-    return Prefab(name, raw, assets, prefabs),
-        Prefab(name.."_cooked", cooked, assets)
+    return Prefab("common/inventory/"..name, raw, assets, prefabs),
+        Prefab("common/inventory/"..name.."_cooked", cooked, assets)
 end
 
 return fish("fish", "fish01")

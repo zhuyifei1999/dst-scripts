@@ -73,5 +73,5 @@ local function fn(Sim)
     return inst
 end
 
-return Prefab( "mist", fn, assets) 
+return Prefab( "common/fx/mist", fn, assets) 
  

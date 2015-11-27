@@ -163,7 +163,7 @@ local states=
     
     State{
         name = "glide",
-        tags = {"idle", "flying", "busy"},
+        tags = {"idle", "flight", "busy"},
         onenter= function(inst)
             inst.AnimState:PlayAnimation("glide", true)
             inst.Physics:SetMotorVelOverride(0,-15,0)
@@ -217,7 +217,7 @@ local states=
         end,
 
         timeline =
-        {
+        {                
             TimeEvent(15*FRAMES, function(inst) 
                 if inst.sg.statemem.target ~= nil and inst.sg.statemem.target:IsValid() then
                     inst:FacePoint(inst.sg.statemem.target.Transform:GetWorldPosition())
@@ -235,7 +235,7 @@ local states=
             end)
         },
 
-        events =
+        events = 
         {
             EventHandler("animqueueover", function(inst) inst.sg:GoToState("idle") end)
         },
@@ -266,7 +266,7 @@ local states=
 
     State{
         name = "flyaway",
-        tags = {"flying", "busy", "canrotate"},
+        tags = {"flight", "busy", "canrotate"},
         onenter = function(inst)
             inst.Physics:Stop()
             inst.sg:SetTimeout(.1+math.random()*.2)

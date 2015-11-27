@@ -20,8 +20,7 @@ local assets =
 local prefabs =
 {
     "chester_eyebone",
-    "chesterlight",
-    "chester_transform_fx",
+    "chesterlight"
 }
 
 local function ShouldWakeUp(inst)
@@ -309,4 +308,4 @@ local function create_chester()
     return inst
 end
 
-return Prefab("chester", create_chester, assets, prefabs)
+return Prefab("common/chester", create_chester, assets, prefabs)

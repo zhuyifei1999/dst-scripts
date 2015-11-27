@@ -103,6 +103,7 @@ local function CancelCountdown()
         return
     end
     if _updating then
+        print("Stop world reset countdown")
         inst:StopUpdatingComponent(self)
         _updating = false
     end
@@ -121,6 +122,7 @@ local function OnCountdownDirty()
         return
     elseif _countdown:value() > 0 then
         if not _updating then
+            print("Start world reset countdown... "..tostring(_countdown:value()).." seconds...")
             inst:StartUpdatingComponent(self)
             _updating = true
             ShowResetDialog()

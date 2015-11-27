@@ -42,7 +42,7 @@ local events=
                                 local is_running = inst.sg:HasStateTag("running") or inst.sg:HasStateTag("runningattack")
 
                                 if is_attacking or is_busy then return end
-                                if inst.sg:HasStateTag("flying") then return end
+                                if inst.sg:HasStateTag("flight") then return end
 
                                 local should_move = inst.components.locomotor:WantsToMoveForward()
                                 local should_run = inst.components.locomotor:WantsToRun()
@@ -63,7 +63,7 @@ local events=
                                 end 
                             end),
     EventHandler("flyaway", function(inst) 
-        if not inst.components.health:IsDead() and not inst.sg:HasStateTag("flying") then 
+        if not inst.components.health:IsDead() and not inst.sg:HasStateTag("flight") then 
             inst.sg:GoToState("flyaway") 
         end 
     end),
@@ -450,7 +450,7 @@ local states=
         },
 
     State{ name = "flyaway",
-        tags = {"flying", "busy"},
+        tags = {"flight", "busy"},
         onenter = function(inst)
             inst.Physics:Stop()
             inst.Physics:ClearCollisionMask()

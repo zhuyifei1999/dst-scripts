@@ -155,4 +155,4 @@ local function fn()
     return inst
 end
 
-return Prefab("minifan", fn, assets, prefabs)
+return Prefab("common/inventory/minifan", fn, assets, prefabs)

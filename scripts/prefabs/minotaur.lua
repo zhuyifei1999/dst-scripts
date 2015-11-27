@@ -230,4 +230,4 @@ local function fn()
     return inst
 end
 
-return Prefab("minotaur", fn, assets, prefabs)
+return Prefab("cave/monsters/minotaur", fn, assets, prefabs)

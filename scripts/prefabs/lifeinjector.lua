@@ -36,4 +36,4 @@ local function fn()
     return inst
 end
 
-return Prefab("lifeinjector", fn, assets)
+return Prefab("common/inventory/lifeinjector", fn, assets)

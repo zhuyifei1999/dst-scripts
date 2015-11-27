@@ -11,7 +11,7 @@ This assumes the bird already has a build, inventory icon, sounds and a feather_
 local brain = require "brains/birdbrain"
 
 local function ShouldSleep(inst)
-    return DefaultSleepTest(inst) and not inst.sg:HasStateTag("flying")
+    return DefaultSleepTest(inst) and not inst.sg:HasStateTag("flight")
 end
 
 
@@ -179,7 +179,7 @@ local function makebird(name, soundname)
         return inst
     end
     
-    return Prefab(name, fn, assets, prefabs)
+    return Prefab("forest/animals/"..name, fn, assets, prefabs)
 end
 
 return makebird("crow", "crow"),

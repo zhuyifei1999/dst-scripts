@@ -104,70 +104,81 @@ function Teleporter:PushDoneTeleporting(obj)
     self.inst:PushEvent("doneteleporting", obj)
 end
 
-local function onitemarrive(inst, item)
-    if not item:IsValid() then
-        return
-    end
+local function onitemarrive(inst, self, item)
+    -- V2C: can reach here even if item goes invalid because
+    --      this is not a task or event handler on the item.
+    if item:IsValid() then
+        inst:RemoveChild(item)
+        item:ReturnToScene()
 
-    local teleporter = inst.components.teleporter
-    teleporter.numteleporting = teleporter.numteleporting - 1
-    inst:RemoveChild(item)
-    item:ReturnToScene()
-
-    if item.Transform ~= nil then
-        local x, y, z = item.Transform:GetWorldPosition()
-        local angle = math.random() * 2 * PI
-        if item.Physics ~= nil then
-            item.Physics:Stop()
-            if item:IsAsleep() then
-                local radius = inst.Physics:GetRadius() + math.random() * 1.0
-                item.Physics:Teleport(
+        if item.Transform ~= nil then
+            local x, y, z = item.Transform:GetWorldPosition()
+            local angle = math.random() * 2 * PI
+            if item.Physics ~= nil then
+                item.Physics:Stop()
+                if item:IsAsleep() then
+                    local radius = inst.Physics:GetRadius() + math.random() * 1.0
+                    item.Physics:Teleport(
+                        x + math.cos(angle) * radius,
+                        0,
+                        z - math.sin(angle) * radius)
+                else
+                    local bounce = item.components.inventoryitem ~= nil and not item.components.inventoryitem.nobounce
+                    local speed = (bounce and 3 or 4) + math.random() * .5 + inst.Physics:GetRadius()
+                    item.Physics:Teleport(x, 0, z)
+                    item.Physics:SetVel(
+                        speed * math.cos(angle),
+                        bounce and speed * 3 or 0,
+                        speed * math.sin(angle))
+                end
+            else
+                local radius = 2 + math.random() * .5
+                item.Transform:SetPosition(
                     x + math.cos(angle) * radius,
                     0,
                     z - math.sin(angle) * radius)
-            else
-                local bounce = item.components.inventoryitem ~= nil and not item.components.inventoryitem.nobounce
-                local speed = (bounce and 3 or 4) + math.random() * .5 + inst.Physics:GetRadius()
-                item.Physics:Teleport(x, 0, z)
-                item.Physics:SetVel(
-                    speed * math.cos(angle),
-                    bounce and speed * 3 or 0,
-                    speed * math.sin(angle))
             end
-        else
-            local radius = 2 + math.random() * .5
-            item.Transform:SetPosition(
-                x + math.cos(angle) * radius,
-                0,
-                z - math.sin(angle) * radius)
         end
+    else
+        item = nil
     end
 
-    teleporter:PushDoneTeleporting(item)
+    self.numteleporting = self.numteleporting - 1
+    self:PushDoneTeleporting(item)
 end
 
 function Teleporter:RecieveItem(item)
     item:RemoveFromScene()
     TemporarilyRemovePhysics(item, 4.5)
     self.inst:AddChild(item)
-    self.inst:DoTaskInTime(.5, onitemarrive, item)
+    self.inst:DoTaskInTime(.5, onitemarrive, self, item)
 end
 
 local function oncameraarrive(inst, doer)
-    doer:SnapCamera()
-    doer:ScreenFade(true, 2)
+    -- V2C: can reach here even if doer goes invalid because
+    --      this is not a task or event handler on the doer.
+    if doer:IsValid() then
+        doer:SnapCamera()
+        doer:ScreenFade(true, 2)
+    end
 end
 
-local function ondoerarrive(inst, doer)
-    doer.sg:GoToState("jumpout")
-    inst.components.teleporter.numteleporting = inst.components.teleporter.numteleporting - 1
-    inst.components.teleporter:PushDoneTeleporting(doer)
+local function ondoerarrive(inst, self, doer)
+    -- V2C: can reach here even if doer goes invalid because
+    --      this is not a task or event handler on the doer.
+    if doer:IsValid() then
+        doer.sg:GoToState("jumpout")
+    else
+        doer = nil
+    end
+    self.numteleporting = self.numteleporting - 1
+    self:PushDoneTeleporting(doer)
 end
 
 function Teleporter:RecievePlayer(doer)
     doer:ScreenFade(false)
     self.inst:DoTaskInTime(3, oncameraarrive, doer)
-    self.inst:DoTaskInTime(4, ondoerarrive, doer)
+    self.inst:DoTaskInTime(4, ondoerarrive, self, doer)
 end
 
 function Teleporter:Target(otherTeleporter)

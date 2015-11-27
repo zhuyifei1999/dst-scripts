@@ -35,7 +35,7 @@ ACTIONS =
     CHOP = Action(),
     ATTACK = Action(2, nil, nil, nil, nil, nil, true), -- No custom range check, attack already handles that
     EAT = Action(),
-    PICK = Action(),
+    PICK = Action(nil, nil, nil, nil, nil, nil, true, DefaultRangeCheck),
     PICKUP = Action(1),
     MINE = Action(),
     DIG = Action(nil, nil, true),
@@ -60,7 +60,6 @@ ACTIONS =
     HARVEST = Action(),
     GOHOME = Action(),
     SLEEPIN = Action(),
-    CHANGEIN = Action(-1),
     EQUIP = Action(0,true),
     UNEQUIP = Action(-2,true),
     --OPEN_SHOP = Action(),
@@ -115,7 +114,6 @@ ACTIONS =
     CATPLAYGROUND = Action(0, false, false, 1),
     CATPLAYAIR = Action(0, false, false, 2),
     FAN = Action(0, false, true),
-
     TOSS = Action(0, false, true, 8),
     NUZZLE = Action(),
     WRITE = Action(),
@@ -301,7 +299,6 @@ end
 
 ACTIONS.LOOKAT.fn = function(act)
     local targ = act.target or act.invobject
-
     if targ ~= nil and targ.components.inspectable ~= nil then
         local desc = targ.components.inspectable:GetDescription(act.doer)
         if desc ~= nil then
@@ -544,7 +541,7 @@ ACTIONS.DIG.fn = function(act)
 end
 
 ACTIONS.PICK.fn = function(act)
-    if act.target.components.pickable then
+    if act.target ~= nil and act.target.components.pickable ~= nil then
         act.target.components.pickable:Pick(act.doer)
         return true
     end
@@ -861,7 +858,7 @@ end
 
 ACTIONS.BUILD.fn = function(act)
     if act.doer.components.builder then
-        if act.doer.components.builder:DoBuild(act.recipe, act.pos, act.rotation, act.skin) then
+        if act.doer.components.builder:DoBuild(act.recipe, act.pos, act.rotation) then
             return true
         end
     end
@@ -924,24 +921,6 @@ ACTIONS.SLEEPIN.fn = function(act)
             bag.components.sleepingbag:DoSleep(act.doer)
             return true
         end
-    end
-end
-
-ACTIONS.CHANGEIN.fn = function(act)
-    if act.doer ~= nil and
-        act.target ~= nil and
-        act.target.components.wardrobe ~= nil then
-
-        local success, reason = act.target.components.wardrobe:CanBeginChanging(act.doer)
-        if not success then
-            return false, reason
-        end
-
-        --Silent fail for opening wardrobe in the dark
-        if CanEntitySeeTarget(act.doer, act.target) then
-            act.target.components.wardrobe:BeginChanging(act.doer)
-        end
-        return true
     end
 end
 
@@ -1046,7 +1025,7 @@ ACTIONS.RESETMINE.fn = function(act)
 end
 
 ACTIONS.ACTIVATE.fn = function(act)
-    if act.target.components.activatable ~= nil and act.target.components.activatable:CanActivate(act.doer) then
+    if act.target.components.activatable ~= nil then
         act.target.components.activatable:DoActivate(act.doer)
         return true
     end
@@ -1339,11 +1318,7 @@ ACTIONS.WRITE.fn = function(act)
         if act.target.components.writeable:IsBeingWritten() then
             return false, "INUSE"
         end
-
-        --Silent fail for writing in the dark
-        if CanEntitySeeTarget(act.doer, act.target) then
-            act.target.components.writeable:BeginWriting(act.doer)
-        end
+        act.target.components.writeable:BeginWriting(act.doer)
         return true
     end
 end

@@ -7,6 +7,7 @@ local ImageButton = require "widgets/imagebutton"
 local PlayerBadge = require "widgets/playerbadge"
 local PopupDialogScreen = require "screens/popupdialog"
 local ScrollableList = require "widgets/scrollablelist"
+local TEMPLATES = require "widgets/templates"
 
 local BAN_ENABLED = true
 
@@ -418,8 +419,8 @@ function PlayerStatusScreen:DoInit(ClientObjs)
 		playerListing.viewprofile.scale_on_focus = false
 		local gainfocusfn = playerListing.viewprofile.OnGainFocus
 		playerListing.viewprofile.OnGainFocus =
-        function()	
-        	gainfocusfn(playerListing.viewprofile)
+        function()
+            gainfocusfn(playerListing.viewprofile)
             TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover")
             playerListing.viewprofile:SetScale(1.1)
         end
@@ -431,8 +432,9 @@ function PlayerStatusScreen:DoInit(ClientObjs)
         end
 		playerListing.viewprofile:SetOnClick(
 			function()
-                TheFrontEnd:PopScreen()
-                self.owner.HUD:TogglePlayerAvatarPopup(displayName, v, true)
+				if v.netid ~= nil then
+					TheNet:ViewNetProfile(v.netid)
+				end
 			end)
 
 		if empty or this_user_is_dedicated_server then
@@ -702,8 +704,9 @@ function PlayerStatusScreen:DoInit(ClientObjs)
 
 			playerListing.viewprofile:SetOnClick(
 				function()
-                    TheFrontEnd:PopScreen()
-                    self.owner.HUD:TogglePlayerAvatarPopup(displayName, v, true)
+					if v.netid ~= nil then
+						TheNet:ViewNetProfile(v.netid)
+					end
 				end)
 
 			if not this_user_is_dedicated_server then

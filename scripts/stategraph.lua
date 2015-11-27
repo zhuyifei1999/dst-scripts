@@ -418,27 +418,28 @@ function StateGraphInstance:InNewState()
 	return self.laststate ~= self.currentstate
 end
 
+--List with the quotes so the code is more searchable as tags
 local SGTagsToEntTags =
 {
-    attack = true,
-    autopredict = true,
-    busy = true,
-    dirt = true,
-    doing = true,
-    fishing = true,
-    flying = true,
-    giving = true,
-    hiding = true,
-    idle = true,
-    invisible = true,
-    lure = true,
-    moving = true,
-    nibble = true,
-    noattack = true,
-    nopredict = true,
-    pausepredict = true,
-    sleeping = true,
-    working = true,
+    ["attack"] = true,
+    ["autopredict"] = true,
+    ["busy"] = true,
+    ["dirt"] = true,
+    ["doing"] = true,
+    ["fishing"] = true,
+    ["flight"] = true,
+    ["giving"] = true,
+    ["hiding"] = true,
+    ["idle"] = true,
+    ["invisible"] = true,
+    ["lure"] = true,
+    ["moving"] = true,
+    ["nibble"] = true,
+    ["noattack"] = true,
+    ["nopredict"] = true,
+    ["pausepredict"] = true,
+    ["sleeping"] = true,
+    ["working"] = true,
 }
 
 function StateGraphInstance:GoToState(statename, params)
