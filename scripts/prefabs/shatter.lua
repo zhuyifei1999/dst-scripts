@@ -82,4 +82,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/fx/shatter", fn, assets)
+return Prefab("shatter", fn, assets)

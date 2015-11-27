@@ -6,6 +6,7 @@ local assets =
     Asset("ANIM", "anim/knight_build.zip"),
     Asset("ANIM", "anim/knight_nightmare.zip"),
     Asset("SOUND", "sound/chess.fsb"),
+    Asset("SCRIPT", "scripts/prefabs/clockwork_common.lua"),
 }
 
 local prefabs =
@@ -160,5 +161,5 @@ local function nightmarefn()
     return inst
 end
 
-return Prefab("chessboard/knight", fn, assets, prefabs),
-    Prefab("cave/monsters/knight_nightmare", nightmarefn, assets, prefabs_nightmare)
+return Prefab("knight", fn, assets, prefabs),
+    Prefab("knight_nightmare", nightmarefn, assets, prefabs_nightmare)

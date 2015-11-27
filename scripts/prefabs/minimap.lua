@@ -104,5 +104,5 @@ local function fn()
 	return inst
 end
 
-return Prefab( "common/interface/hud/minimap", fn, assets) 
+return Prefab( "minimap", fn, assets) 
 

@@ -166,5 +166,5 @@ local function fn()
     return inst
 end
 
-return Prefab("common/objects/meatrack", fn, assets, prefabs ),
-    MakePlacer("common/meatrack_placer", "meat_rack", "meat_rack", "idle_empty")
+return Prefab("meatrack", fn, assets, prefabs ),
+    MakePlacer("meatrack_placer", "meat_rack", "meat_rack", "idle_empty")

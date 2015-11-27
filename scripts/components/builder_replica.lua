@@ -253,19 +253,19 @@ function Builder:CanBuildAtPoint(pt, recipe)
     return TheWorld.Map:CanDeployRecipeAtPoint(pt, recipe)
 end
 
-function Builder:MakeRecipeFromMenu(recipe)
+function Builder:MakeRecipeFromMenu(recipe, skin)
     if self.inst.components.builder ~= nil then
-        self.inst.components.builder:MakeRecipeFromMenu(recipe)
+        self.inst.components.builder:MakeRecipeFromMenu(recipe, skin)
     elseif self.inst.components.playercontroller ~= nil then
-        self.inst.components.playercontroller:RemoteMakeRecipeFromMenu(recipe)
+        self.inst.components.playercontroller:RemoteMakeRecipeFromMenu(recipe, skin)
     end
 end
 
-function Builder:MakeRecipeAtPoint(recipe, pt, rot)
+function Builder:MakeRecipeAtPoint(recipe, pt, rot, skin)
     if self.inst.components.builder ~= nil then
-        self.inst.components.builder:MakeRecipeAtPoint(recipe, pt, rot)
+        self.inst.components.builder:MakeRecipeAtPoint(recipe, pt, rot, skin)
     elseif self.inst.components.playercontroller ~= nil then
-        self.inst.components.playercontroller:RemoteMakeRecipeAtPoint(recipe, pt, rot)
+        self.inst.components.playercontroller:RemoteMakeRecipeAtPoint(recipe, pt, rot, skin)
     end
 end
 

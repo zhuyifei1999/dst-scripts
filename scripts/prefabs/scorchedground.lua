@@ -69,4 +69,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/objects/scorchedground", fn, assets)
+return Prefab("scorchedground", fn, assets)

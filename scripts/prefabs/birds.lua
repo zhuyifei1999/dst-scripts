@@ -179,7 +179,7 @@ local function makebird(name, soundname)
         return inst
     end
     
-    return Prefab("forest/animals/"..name, fn, assets, prefabs)
+    return Prefab(name, fn, assets, prefabs)
 end
 
 return makebird("crow", "crow"),

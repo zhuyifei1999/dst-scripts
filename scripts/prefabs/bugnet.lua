@@ -63,4 +63,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/inventory/bugnet", fn, assets)
+return Prefab("bugnet", fn, assets)

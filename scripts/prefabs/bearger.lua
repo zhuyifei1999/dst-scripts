@@ -506,4 +506,4 @@ local function fn()
 	return inst
 end
 
-return Prefab("common/monsters/bearger", fn, assets, prefabs)
+return Prefab("bearger", fn, assets, prefabs)

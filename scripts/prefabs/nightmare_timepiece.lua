@@ -23,6 +23,10 @@ local states =
     },
 }
 
+for k,v in pairs(states) do
+    table.insert( assets, Asset("INV_IMAGE", v.inventory) )
+end
+
 local function GetStatus(inst)
     if TheWorld.state.isnightmarewild then
         local percent = TheWorld.state.nightmaretimeinphase
@@ -91,4 +95,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/inventory/nightmare_timepiece", fn, assets)
+return Prefab("nightmare_timepiece", fn, assets)

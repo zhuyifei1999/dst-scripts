@@ -10,7 +10,7 @@ local assets =
 	Asset("ANIM", "anim/mandrake.zip"),
 }
 
-prefabs =
+local prefabs =
 {
 	"cookedmandrake",
 	"mandrake",
@@ -64,4 +64,4 @@ local function fn()
 	return inst
 end
 
-return Prefab("common/mandrake_planted", fn, assets)
+return Prefab("mandrake_planted", fn, assets, prefabs)

@@ -136,6 +136,7 @@ local ViewPlayersModalScreen = Class(Screen, function(self, players, maxPlayers)
         end
         playerListing.viewprofile:SetOnClick(
             function()
+            	--TheFrontEnd:PushScreen(PlayerAvatarPopupScreen(v.name, v))
                 if v.netid ~= nil then
                     TheNet:ViewNetProfile(v.netid)
                 end

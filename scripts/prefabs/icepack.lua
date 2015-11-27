@@ -81,4 +81,4 @@ local function fn()
     return inst
 end
 
-return Prefab("objects/icepack", fn, assets)
+return Prefab("icepack", fn, assets)

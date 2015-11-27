@@ -93,8 +93,11 @@ function DefaultBurntStructureFn(inst)
         end
         inst:RemoveComponent("spawner")
     end
-    if inst.components.prototyper then
+    if inst.components.prototyper ~= nil then
         inst:RemoveComponent("prototyper")
+    end
+    if inst.components.wardrobe ~= nil then
+        inst:RemoveComponent("wardrobe")
     end
     if inst.Light then
         inst.Light:Enable(false)
