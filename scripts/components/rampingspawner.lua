@@ -16,6 +16,13 @@ local RampingSpawner = Class(function(self, inst)
 
     self.spawning_on = false
     self.SpawnTask = nil
+
+    self._ondeathfn = function(spawn)
+        self:OnSpawnDeath(spawn)
+    end
+    self._onremovefn = function(spawn)
+        self:StopTrackingSpawn(spawn)
+    end
 end)
 
 function RampingSpawner:OnRemoveFromEntity()
@@ -28,10 +35,8 @@ end
 
 function RampingSpawner:StopTrackingSpawn(spawn)
     if self.spawns[spawn] then
-        self.inst:RemoveEventCallback("death", spawn.rampingspawner_ondeathfn, spawn)
-        self.inst:RemoveEventCallback("onremove", spawn.rampingspawner_onremovefn, spawn)
-        self.rampingspawner_ondeathfn = nil
-        self.rampingspawner_onremovefn = nil
+        self.inst:RemoveEventCallback("death", self._ondeathfn, spawn)
+        self.inst:RemoveEventCallback("onremove", self._onremovefn, spawn)
         self.spawns[spawn] = nil
         self.num_spawns = self.num_spawns - 1
     end
@@ -44,10 +49,8 @@ end
 
 function RampingSpawner:TrackSpawn(spawn)
     if not self.spawns[spawn] then
-        spawn.rampingspawner_ondeathfn = function() self:OnSpawnDeath(spawn) end
-        spawn.rampingspawner_onremovefn = function() self:StopTrackingSpawn(spawn) end
-        self.inst:ListenForEvent("death", spawn.rampingspawner_ondeathfn, spawn)
-        self.inst:ListenForEvent("onremove", spawn.rampingspawner_onremovefn, spawn)
+        self.inst:ListenForEvent("death", self._ondeathfn, spawn)
+        self.inst:ListenForEvent("onremove", self._onremovefn, spawn)
         self.spawns[spawn] = true
         self.num_spawns = self.num_spawns + 1
     end
@@ -80,6 +83,11 @@ function RampingSpawner:GetSpawnRot()
     return self.inst.Transform:GetRotation()
 end
 
+local function _OnSpawnTask(inst, self)
+    self.SpawnTask = nil
+    self:DoWave()
+end
+
 function RampingSpawner:SpawnEntity()
     local spawn = SpawnPrefab(self.spawn_prefab)
     
@@ -94,7 +102,7 @@ function RampingSpawner:SpawnEntity()
         if self.SpawnTask ~= nil then
             self.SpawnTask:Cancel()
         end
-        self.SpawnTask = self.inst:DoTaskInTime(self.wave_time, function() self:DoWave() end)
+        self.SpawnTask = self.inst:DoTaskInTime(self.wave_time, _OnSpawnTask, self)
     end
 end
 
@@ -103,18 +111,22 @@ function RampingSpawner:IsActive()
 end
 
 function RampingSpawner:Start()
-    if self:IsActive() then return end
+    if self:IsActive() then
+        return
+    end
     self:DoWave()
     self.spawning_on = true
 
-    if self.onstartfn then
+    if self.onstartfn ~= nil then
         self.onstartfn(self.inst)
     end
 
 end
 
 function RampingSpawner:Stop()
-    if not self:IsActive() then return end
+    if not self:IsActive() then
+        return
+    end
 
     self.spawning_on = false
     if self.SpawnTask ~= nil then
@@ -122,7 +134,7 @@ function RampingSpawner:Stop()
         self.SpawnTask = nil
     end
 
-    if self.onstopfn then
+    if self.onstopfn ~= nil then
         self.onstopfn(self.inst)
     end
 end

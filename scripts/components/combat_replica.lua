@@ -154,7 +154,7 @@ function Combat:CanAttack(target)
             return false
         end
 
-        local range = self:GetAttackRangeWithWeapon() + (target.Physics ~= nil and target.Physics:GetRadius() or 0)
+        local range = target.Physics ~= nil and target.Physics:GetRadius() + self:GetAttackRangeWithWeapon() or self:GetAttackRangeWithWeapon()
         local error_threshold = .5
         --account for position error due to prediction
         range = math.max(range - error_threshold, 0)
@@ -196,7 +196,7 @@ function Combat:CanHitTarget(target)
             if specialcase_target or
                 (target.replica.combat ~= nil and target.replica.combat:CanBeAttacked(self.inst)) then
 
-                local range = self:GetAttackRangeWithWeapon() + (target.Physics ~= nil and target.Physics:GetRadius() or 0)
+                local range = target.Physics ~= nil and target.Physics:GetRadius() + self:GetAttackRangeWithWeapon() or self:GetAttackRangeWithWeapon()
                 local error_threshold = .5
                 --account for position error due to prediction
                 range = math.max(range - error_threshold, 0)
@@ -277,7 +277,8 @@ function Combat:CanBeAttacked(attacker)
                 attacker:HasTag("birchnut")) then
             --Birchnut check
             return false
-        elseif not TheNet:GetPVPEnabled() and
+        elseif attacker ~= self.inst and
+            not TheNet:GetPVPEnabled() and
             attacker:HasTag("player") and
             self.inst:HasTag("player") then
             --PVP check

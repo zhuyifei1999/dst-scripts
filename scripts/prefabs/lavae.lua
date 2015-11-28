@@ -30,26 +30,24 @@ SetSharedLootTable( 'lavae_frozen',
 })
 
 local function OnCollide(inst, other)
-    if other ~= nil and other:IsValid() and other.components.burnable ~= nil 
-    and not other.components.fueled then
+    if other ~= nil and
+        other:IsValid() and
+        other.components.burnable ~= nil and
+        other.components.fueled == nil then
         other.components.burnable:Ignite(true, inst)
     end
 end
 
 local function RetargetFn(inst)
     local mother = inst.components.entitytracker:GetEntity("mother")
-    if mother and not inst.components.combat:HasTarget() then
+    if mother ~= nil and not inst.components.combat:HasTarget() then
         local group_targets = inst.components.grouptargeter:GetTargets()
         local targets = {}
-        for k,v in pairs(group_targets) do
+        for k, v in pairs(group_targets) do
             table.insert(targets, k)
         end
-
-        local target = GetClosest(mother, targets)
-        if target then
-            return target
-        end
-    elseif not inst.components.combat:HasTarget() or not mother then
+        return GetClosest(mother, targets)
+    elseif mother == nil or not inst.components.combat:HasTarget() then
         --Shouldn't be in the world. Leave.
         inst.reset = true
     end
@@ -57,37 +55,20 @@ end
 
 local function KeepTargetFn(inst, target)
     local mother = inst.components.entitytracker:GetEntity("mother")
-
-    if mother then
-        local distance = mother:GetPosition():Dist(target:GetPosition())
-        return distance <= 75
-    end
+    return mother ~= nil and mother:IsNear(target, 75)
 end
 
 local function LockTarget(inst, target)
     inst.components.combat:SetTarget(target)
 end
 
-local function OnTargetDeath(inst, data)
-    local new_target = inst.components.grouptargeter:SelectTarget()
-    if new_target then
-        inst.components.combat:SetTarget(new_target)
-    end
-end
-
 local function OnNewTarget(inst, data)
-    local old = data.oldtarget
-    if old and old.lavae_ontargetdeathfn then 
-        inst:RemoveEventCallback("death", old.lavae_ontargetdeathfn, old)
+    if data.oldtarget ~= nil then
+        inst:RemoveEventCallback("death", inst._ontargetdeath, data.oldtarget)
     end
-
-    local new = data.target
-    if new then
-        new.lavae_ontargetdeathfn = function() OnTargetDeath(inst) end
-        if new:HasTag("player") then
-            inst:ListenForEvent("death", new.lavae_ontargetdeathfn, new)
+    if data.target ~= nil and data.target:HasTag("player") then
+        inst:ListenForEvent("death", inst._ontargetdeath, data.target)
         end
-    end
 end
 
 local function OnEntitySleep(inst)
@@ -142,6 +123,13 @@ local function fn()
     inst:AddComponent("entitytracker")
     inst:SetStateGraph("SGlavae")
     inst:SetBrain(brain)
+
+    inst._ontargetdeath = function()
+        local new_target = inst.components.grouptargeter:SelectTarget()
+        if new_target ~= nil then
+            inst.components.combat:SetTarget(new_target)
+        end
+    end
 
     inst.components.health:SetMaxHealth(TUNING.LAVAE_HEALTH)
     inst.components.health.fire_damage_scale = 0

@@ -38,6 +38,9 @@ local function OnLoad(inst, data)
     if data.abigail ~= nil and inst.abigail == nil then
         local abigail = SpawnSaveRecord(data.abigail)
         if abigail ~= nil then
+            if inst.migrationpets ~= nil then
+                table.insert(inst.migrationpets, abigail)
+            end
             abigail.SoundEmitter:PlaySound("dontstarve/common/ghost_spawn")
             abigail:LinkToPlayer(inst)
         end

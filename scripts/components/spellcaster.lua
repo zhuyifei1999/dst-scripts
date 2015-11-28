@@ -45,8 +45,8 @@ local function oncancast(self)
 end
 
 local SpellCaster = Class(function(self, inst)
-	self.inst = inst
-	self.onspellcast = nil
+    self.inst = inst
+    self.onspellcast = nil
     self.canusefrominventory = false
     self.canuseontargets = false
     self.canonlyuseonrecipes = false
@@ -73,21 +73,21 @@ function SpellCaster:OnRemoveFromEntity()
 end
 
 function SpellCaster:SetSpellFn(fn)
-	self.spell = fn
+    self.spell = fn
 end
 
 function SpellCaster:SetOnSpellCastFn(fn)
-	self.onspellcast = fn
+    self.onspellcast = fn
 end
 
 function SpellCaster:CastSpell(target, pos)
-	if self.spell then
-		self.spell(self.inst, target, pos)
+    if self.spell ~= nil then
+        self.spell(self.inst, target, pos)
 
-		if self.onspellcast then
-			self.onspellcast(self.inst, target, pos)
-		end
-	end
+        if self.onspellcast ~= nil then
+            self.onspellcast(self.inst, target, pos)
+        end
+    end
 end
 
 function SpellCaster:CanCast(doer, target, pos)
@@ -98,7 +98,8 @@ function SpellCaster:CanCast(doer, target, pos)
         return self.inst:HasTag("castonpoint") and TheWorld.Map:IsAboveGroundAtPoint(pos:Get())
     elseif target:IsInLimbo()
         or not target.entity:IsVisible()
-        or (target.sg ~= nil and target.sg:HasStateTag("death")) then
+        or (target.components.health ~= nil and target.components.health:IsDead())
+        or (target.sg ~= nil and target.sg.currentstate.name == "death") then
         return false
     elseif self.inst:HasTag("castontargets") then
         return true

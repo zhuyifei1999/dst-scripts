@@ -19,9 +19,9 @@ local function OnDropped(inst)
     inst.AnimState:PlayAnimation("idle")
 end
 
-local function OnUnequip(inst, owner) 
-    owner.AnimState:Hide("ARM_carry") 
-    owner.AnimState:Show("ARM_normal") 
+local function OnUnequip(inst, owner)
+    owner.AnimState:Hide("ARM_carry")
+    owner.AnimState:Show("ARM_normal")
 end
 
 local function OnThrown(inst, owner, target)
@@ -32,20 +32,18 @@ local function OnThrown(inst, owner, target)
 end
 
 local function OnCaught(inst, catcher)
-    if catcher then
-        if catcher.components.inventory then
-            if inst.components.equippable and not catcher.components.inventory:GetEquippedItem(inst.components.equippable.equipslot) then
-                catcher.components.inventory:Equip(inst)
-            else
-                catcher.components.inventory:GiveItem(inst)
-            end
-            catcher:PushEvent("catch")
+    if catcher ~= nil and catcher.components.inventory ~= nil and catcher.components.inventory.isopen then
+        if inst.components.equippable ~= nil and not catcher.components.inventory:GetEquippedItem(inst.components.equippable.equipslot) then
+            catcher.components.inventory:Equip(inst)
+        else
+            catcher.components.inventory:GiveItem(inst)
         end
+        catcher:PushEvent("catch")
     end
 end
 
 local function ReturnToOwner(inst, owner)
-    if owner and not (inst.components.finiteuses and inst.components.finiteuses:GetUses() < 1) then
+    if owner ~= nil and not (inst.components.finiteuses ~= nil and inst.components.finiteuses:GetUses() < 1) then
         owner.SoundEmitter:PlaySound("dontstarve/wilson/boomerang_return")
         inst.components.projectile:Throw(owner, owner)
     end
@@ -58,9 +56,9 @@ local function OnHit(inst, owner, target)
         ReturnToOwner(inst, owner)
     end
     local impactfx = SpawnPrefab("impact")
-    if impactfx then
+    if impactfx ~= nil then
         local follower = impactfx.entity:AddFollower()
-        follower:FollowSymbol(target.GUID, target.components.combat.hiteffectsymbol, 0, 0, 0 )
+        follower:FollowSymbol(target.GUID, target.components.combat.hiteffectsymbol, 0, 0, 0)
         impactfx:FacePoint(inst.Transform:GetWorldPosition())
     end
 end
@@ -118,19 +116,6 @@ local function fn()
     inst.components.equippable:SetOnUnequip(OnUnequip)
 
     MakeHauntableLaunch(inst)
-    AddHauntableCustomReaction(inst, function(inst, haunter)
-        local target = FindEntity(inst, 25, nil,
-        {"_combat"}, -- see entityreplica.lua
-        {"playerghost"}
-        )
-
-        if target and math.random() <= TUNING.HAUNT_CHANCE_HALF then
-            inst.components.projectile:Throw(haunter, target, haunter)
-            inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
-            return true
-        end
-        return false
-    end, true, false, true)
 
     return inst
 end
