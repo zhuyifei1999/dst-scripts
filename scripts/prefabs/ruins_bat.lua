@@ -24,16 +24,22 @@ local summonchance = 0.2
 
 local function onattack(inst, owner, target)
     if math.random() < summonchance then
-        local pt = target:GetPosition()
-        local st_pt =  FindWalkableOffset(pt or owner:GetPosition(), math.random()*2*PI, 2, 3)
-        if st_pt then
+        local pt
+        if target ~= nil and target:IsValid() then
+            pt = target:GetPosition()
+        else
+            pt = owner:GetPosition()
+            target = nil
+        end
+        local offset = FindWalkableOffset(pt, math.random() * 2 * PI, 2, 3)
+        if offset ~= nil then
             inst.SoundEmitter:PlaySound("dontstarve/common/shadowTentacleAttack_1")
-            inst.SoundEmitter:PlaySound("dontstarve/common/shadowTentacleAttack_2")            
-            st_pt = st_pt + pt
-            local st = SpawnPrefab("shadowtentacle")
-            --print(st_pt:Get())
-            st.Transform:SetPosition(st_pt:Get())
-            st.components.combat:SetTarget(target)
+            inst.SoundEmitter:PlaySound("dontstarve/common/shadowTentacleAttack_2")
+            local tentacle = nil--SpawnPrefab("shadowtentacle")
+            if tentacle ~= nil then
+                tentacle.Transform:SetPosition(pt.x + offset.x, 0, pt.z + offset.z)
+                tentacle.components.combat:SetTarget(target)
+            end
         end
     end
 end

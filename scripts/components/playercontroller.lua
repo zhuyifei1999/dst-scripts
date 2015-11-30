@@ -130,6 +130,15 @@ local function OnUnequip(inst, data)
     end
 end
 
+local function OnInventoryClosed(inst)
+    --Reticule targeting items
+    local self = inst.components.playercontroller
+    if self.reticule ~= nil then
+        self.reticule:DestroyReticule()
+        self.reticule = nil
+    end
+end
+
 local function OnContinueFromPause()
     ThePlayer.components.playercontroller:ToggleController(TheInput:ControllerAttached())
 end
@@ -164,6 +173,12 @@ function PlayerController:Activate()
         self.inst:ListenForEvent("buildstructure", OnBuild)
         self.inst:ListenForEvent("equip", OnEquip)
         self.inst:ListenForEvent("unequip", OnUnequip)
+        if not TheWorld.ismastersim then
+            --Client only event, because when inventory is closed, we will stop
+            --getting "equip" and "unequip" events, but we can also assume that
+            --our inventory is emptied.
+            self.inst:ListenForEvent("inventoryclosed", OnInventoryClosed)
+        end
         self.inst:ListenForEvent("continuefrompause", OnContinueFromPause, TheWorld)
         OnContinueFromPause()
 
@@ -200,6 +215,9 @@ function PlayerController:Deactivate()
         self.inst:RemoveEventCallback("buildstructure", OnBuild)
         self.inst:RemoveEventCallback("equip", OnEquip)
         self.inst:RemoveEventCallback("unequip", OnUnequip)
+        if not TheWorld.ismastersim then
+            self.inst:RemoveEventCallback("inventoryclosed", OnInventoryClosed)
+        end
         self.inst:RemoveEventCallback("continuefrompause", OnContinueFromPause, TheWorld)
 
         if not self.ismastersim then

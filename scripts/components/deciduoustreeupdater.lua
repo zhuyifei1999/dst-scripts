@@ -162,14 +162,19 @@ function DeciduousTreeUpdater:OnUpdate(dt)
     			passdrake.Transform:SetPosition(xp + passoffset.x, yp + passoffset.y, zp + passoffset.z)
     			passdrake.range = TUNING.DECID_MONSTER_TARGET_DIST * 4
     			passdrake:DoTaskInTime(0, function(passdrake)
-    				if passdrake.components.combat then
-    					local targ = FindEntity(passdrake, TUNING.DECID_MONSTER_TARGET_DIST * 4, function(guy)
-				            return passdrake.components.combat and passdrake.components.combat:CanTarget(guy) and 
-				            	not guy:HasTag("flying") and (not guy.sg or (guy.sg and not guy.sg:HasStateTag("flying"))) and
-				            	not guy:HasTag("birchnutdrake") and not guy:HasTag("wall")
-				        end)
-        				passdrake.components.combat:SuggestTarget(targ)
-    				end
+                    if passdrake.components.combat ~= nil then
+                        passdrake.components.combat:SuggestTarget(
+                            FindEntity(
+                                passdrake,
+                                TUNING.DECID_MONSTER_TARGET_DIST * 4,
+                                function(guy)
+                                    return passdrake.components.combat:CanTarget(guy)
+                                end,
+                                { "_combat" }, --see entityreplica.lua
+                                { "flying", "birchnutdrake", "wall" }
+                            )
+                        )
+                    end
     			end)
     			self.passive_drakes_spawned = self.passive_drakes_spawned + 1
     		else
@@ -184,14 +189,19 @@ function DeciduousTreeUpdater:OnUpdate(dt)
 		if self.monsterTime > 0 then
 			self.monsterTime = self.monsterTime - dt
 		else
-	        self.monster_target = nil
-	        local targdist = TUNING.DECID_MONSTER_TARGET_DIST
-	        -- Look for nearby targets (anything not flying, a wall or a drake)
-	        self.monster_target = FindEntity(self.inst, targdist * 1.5, function(guy)
-	            return self.inst.components.combat and self.inst.components.combat:CanTarget(guy) and 
-	            	not guy:HasTag("flying") and (not guy.sg or (guy.sg and not guy.sg:HasStateTag("flying"))) and
-	            	not guy:HasTag("birchnutdrake") and not guy:HasTag("wall")
-	        end)
+            local targdist = TUNING.DECID_MONSTER_TARGET_DIST
+            -- Look for nearby targets (anything not flying, a wall or a drake)
+            self.monster_target =
+                self.inst.components.combat ~= nil and
+                FindEntity(
+                    self.inst,
+                    targdist * 1.5,
+                    function(guy)
+                        return self.inst.components.combat:CanTarget(guy)
+                    end,
+                    { "_combat" }, --see entityreplica.lua
+                    { "flying", "birchnutdrake", "wall" }
+                ) or nil
 
 	        if self.monster_target ~= nil and self.last_monster_target ~= nil and (GetTime() - self.last_attack_time) > TUNING.DECID_MONSTER_ATTACK_PERIOD then
 	        	-- Spawn a root spike and give it a target
@@ -199,9 +209,9 @@ function DeciduousTreeUpdater:OnUpdate(dt)
             	self.root = SpawnPrefab("deciduous_root")
 	            local rootpos = self.monster_target:GetPosition()
 	            local angle = self.inst:GetAngleToPoint(rootpos)*DEGREES
-	            if distsq(self.inst:GetPosition(), self.monster_target:GetPosition()) > (targdist*targdist) then
-	                rootpos = self.inst:GetPosition() + Vector3(math.cos(angle) * targdist, 0, -math.sin(angle) * targdist)
-	            end
+                if not self.inst:IsNear(self.monster_target, targdist) then
+                    rootpos = self.inst:GetPosition() + Vector3(math.cos(angle) * targdist, 0, -math.sin(angle) * targdist)
+                end
 
 	            local offset = Vector3(math.cos(angle) * 1.75, 0, -math.sin(angle) * 1.75)
 	            local x,y,z = self.inst.Transform:GetWorldPosition()

@@ -705,58 +705,67 @@ function MakeHauntableLaunchAndIgnite(inst, launchchance, ignitechance, speed, c
 end
 
 function MakeHauntableChangePrefab(inst, newprefab, chance, haunt_value, nofx)
-    if not newprefab then return end
-    if type(newprefab) == "table" then
-        newprefab = newprefab[math.random(#newprefab)]
+    if newprefab == nil then
+        return
+    elseif inst.components.hauntable == nil then
+        inst:AddComponent("hauntable")
     end
-
-    if not inst.components.hauntable then inst:AddComponent("hauntable") end
     inst.components.hauntable.cooldown_on_successful_haunt = false
     inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
-        chance = chance or TUNING.HAUNT_CHANCE_HALF
-        if math.random() <= chance then
+        if math.random() <= (chance or TUNING.HAUNT_CHANCE_HALF) then
+            local x, y, z = inst.Transform:GetWorldPosition()
             if not nofx then
-                local fx = SpawnPrefab("small_puff")
-                fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+                SpawnPrefab("small_puff").Transform:SetPosition(x, y, z)
             end
-            local new = SpawnPrefab(newprefab)
-            if new then
-                new.Transform:SetPosition(inst.Transform:GetWorldPosition())
-                new:PushEvent("spawnedfromhaunt", {haunter=haunter, oldPrefab=inst}) --#srosen need to circle back and make sure anything that gets change-prefab'd from a haunt gets haunt FX and cooldown appropriately
-                inst:PushEvent("despawnedfromhaunt", {haunter=haunter, newPrefab=new})
-            end                                                         -- also that any relevant data gets carried over (i.e. bees' home, etc)
+            local new = SpawnPrefab(type(newprefab) == "table" and newprefab[math.random(#newprefab)] or newprefab)
+            if new ~= nil then
+                new.Transform:SetPosition(x, y, z)
+                local home = inst.components.homeseeker ~= nil and inst.components.homeseeker.home or nil
+                inst:PushEvent("detachchild")
+                if home ~= nil and home.components.childspawner ~= nil then
+                    home.components.childspawner:TakeOwnership(new)
+                end
+                new:PushEvent("spawnedfromhaunt", { haunter = haunter, oldPrefab = inst })
+                inst:PushEvent("despawnedfromhaunt", { haunter = haunter, newPrefab = new })
+                inst.persists = false
+                inst:DoTaskInTime(0, inst.Remove)
+            end
             inst.components.hauntable.hauntvalue = haunt_value or TUNING.HAUNT_SMALL
-            inst:DoTaskInTime(0, function(inst) 
-                inst:Remove() 
-            end)
             return true
         end
         return false
     end)
-end 
+end
 
 function MakeHauntableLaunchOrChangePrefab(inst, launchchance, prefabchance, speed, cooldown, newprefab, prefab_haunt_value, launch_haunt_value, nofx)
-    if not newprefab then return end
-
-    if not inst.components.hauntable then inst:AddComponent("hauntable") end
+    if newprefab == nil then
+        return
+    elseif inst.components.hauntable == nil then
+        inst:AddComponent("hauntable")
+    end
     inst.components.hauntable.cooldown = cooldown or TUNING.HAUNT_COOLDOWN_SMALL
     inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
-        launchchance = launchchance or TUNING.HAUNT_CHANCE_ALWAYS
-        if math.random() <= launchchance then
-            prefabchance = prefabchance or TUNING.HAUNT_CHANCE_OCCASIONAL
-            if math.random() <= prefabchance then
+        if math.random() <= (launchchance or TUNING.HAUNT_CHANCE_ALWAYS) then
+            if math.random() <= (prefabchance or TUNING.HAUNT_CHANCE_OCCASIONAL) then
+                local x, y, z = inst.Transform:GetWorldPosition()
                 if not nofx then
                     local fx = SpawnPrefab("small_puff")
-                    fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+                    fx.Transform:SetPosition(x, y, z)
                 end
                 local new = SpawnPrefab(newprefab)
-                new.Transform:SetPosition(inst.Transform:GetWorldPosition())
-                new:PushEvent("spawnedfromhaunt", {haunter=haunter, oldPrefab=inst})
-                inst:PushEvent("despawnedfromhaunt", {haunter=haunter, newPrefab=new})
+                if new ~= nil then
+                    new.Transform:SetPosition(x, y, z)
+                    local home = inst.components.homeseeker ~= nil and inst.components.homeseeker.home or nil
+                    inst:PushEvent("detachchild")
+                    if home ~= nil and home.components.childspawner ~= nil then
+                        home.components.childspawner:TakeOwnership(new)
+                    end
+                    new:PushEvent("spawnedfromhaunt", { haunter = haunter, oldPrefab = inst })
+                    inst:PushEvent("despawnedfromhaunt", { haunter = haunter, newPrefab = new })
+                    inst.persists = false
+                    inst:DoTaskInTime(0, inst.Remove)
+                end
                 inst.components.hauntable.hauntvalue = prefab_haunt_value or TUNING.HAUNT_SMALL
-                inst:DoTaskInTime(0, function(inst) 
-                    inst:Remove() 
-                end)
             else
                 Launch(inst, haunter, speed or TUNING.LAUNCH_SPEED_SMALL)
                 inst.components.hauntable.hauntvalue = launch_haunt_value or TUNING.HAUNT_TINY
@@ -765,7 +774,7 @@ function MakeHauntableLaunchOrChangePrefab(inst, launchchance, prefabchance, spe
         end
         return false
     end)
-end 
+end
 
 function MakeHauntablePerish(inst, perishpct, chance, cooldown, haunt_value)
     if not inst.components.hauntable then inst:AddComponent("hauntable") end

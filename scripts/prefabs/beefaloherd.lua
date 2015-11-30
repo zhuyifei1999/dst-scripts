@@ -1,30 +1,25 @@
-local assets =
-{
-	--Asset("ANIM", "anim/arrow_indicator.zip"),
-}
-
 local prefabs =
 {
     "babybeefalo",
 }
 
 local function InMood(inst)
-    if inst.components.periodicspawner then
+    if inst.components.periodicspawner ~= nil then
         inst.components.periodicspawner:Start()
     end
-    if inst.components.herd then
-        for k,v in pairs(inst.components.herd.members) do
+    if inst.components.herd ~= nil then
+        for k, v in pairs(inst.components.herd.members) do
             k:PushEvent("entermood")
         end
     end
 end
 
 local function LeaveMood(inst)
-    if inst.components.periodicspawner then
+    if inst.components.periodicspawner ~= nil then
         inst.components.periodicspawner:Stop()
     end
-    if inst.components.herd then
-        for k,v in pairs(inst.components.herd.members) do
+    if inst.components.herd ~= nil then
+        for k, v in pairs(inst.components.herd.members) do
             k:PushEvent("leavemood")
         end
     end
@@ -32,76 +27,63 @@ local function LeaveMood(inst)
 end
 
 local function AddMember(inst, member)
-    if inst.components.mood then
-        if inst.components.mood:IsInMood() then
-            member:PushEvent("entermood")
-        else
-            member:PushEvent("leavemood")
-        end
+    if inst.components.mood ~= nil then
+        member:PushEvent(inst.components.mood:IsInMood() and "entermood" or "leavemood")
     end
 end
+
 local function CanSpawn(inst)
     -- Note that there are other conditions inside periodic spawner governing this as well.
 
-    if not inst.components.herd then
+    if inst.components.herd == nil or inst.components.herd:IsFull() then
         return false
     end
 
-    if inst.components.herd:IsFull() then
-        return false
-    end
-
-    local x,y,z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x,y,z, inst.components.herd.gatherrange, inst.components.herd.membertag and {inst.components.herd.membertag} or nil )
-    return #ents < TUNING.BEEFALOHERD_MAX_IN_RANGE
+    local x, y, z = inst.Transform:GetWorldPosition()
+    return #TheSim:FindEntities(x, y, z, inst.components.herd.gatherrange, { "herdmember", inst.components.herd.membertag }) < TUNING.BEEFALOHERD_MAX_IN_RANGE
 end
 
 local function OnSpawned(inst, newent)
-    if inst.components.herd then
+    if inst.components.herd ~= nil then
         inst.components.herd:AddMember(newent)
     end
 end
 
-local function OnFull(inst)
+--local function OnFull(inst)
     --TODO: mark some beefalo for death
+--end
+
+local function OnInit(inst)
+    inst.components.mood:ValidateMood()
 end
-   
+
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	--[[
-    inst.entity:AddAnimState()
-    inst.entity:AddNetwork()
-
-    if not TheWorld.ismastersim then
-        return inst
-    end
-    
-    inst.AnimState:SetBank("arrow_indicator")
-    inst.AnimState:SetBuild("arrow_indicator")
-    inst.AnimState:PlayAnimation("arrow_loop", true)
-    --]]
+    inst.entity:AddTransform()
     --[[Non-networked entity]]
 
     inst:AddTag("herd")
-    
+    --V2C: Don't use CLASSIFIED because herds use FindEntities on "herd" tag
+    inst:AddTag("NOBLOCK")
+    inst:AddTag("NOCLICK")
+
     inst:AddComponent("herd")
     inst.components.herd:SetMemberTag("beefalo")
     inst.components.herd:SetGatherRange(TUNING.BEEFALOHERD_RANGE)
     inst.components.herd:SetUpdateRange(20)
     inst.components.herd:SetOnEmptyFn(inst.Remove)
-    inst.components.herd:SetOnFullFn(OnFull)
+    --inst.components.herd:SetOnFullFn(OnFull)
     inst.components.herd:SetAddMemberFn(AddMember)
-    
+
     inst:AddComponent("mood")
     inst.components.mood:SetMoodTimeInDays(TUNING.BEEFALO_MATING_SEASON_LENGTH, TUNING.BEEFALO_MATING_SEASON_WAIT)
     inst.components.mood:SetMoodSeason(SEASONS.SPRING)
     inst.components.mood:SetInMoodFn(InMood)
     inst.components.mood:SetLeaveMoodFn(LeaveMood)
     inst.components.mood:CheckForMoodChange()
-    inst:DoTaskInTime(0, function() inst.components.mood:ValidateMood() end )
-    
+    inst:DoTaskInTime(0, OnInit)
+
     inst:AddComponent("periodicspawner")
     inst.components.periodicspawner:SetRandomTimes(TUNING.BEEFALO_MATING_SEASON_BABYDELAY, TUNING.BEEFALO_MATING_SEASON_BABYDELAY_VARIANCE)
     inst.components.periodicspawner:SetPrefab("babybeefalo")
@@ -109,8 +91,8 @@ local function fn()
     inst.components.periodicspawner:SetSpawnTestFn(CanSpawn)
     inst.components.periodicspawner:SetDensityInRange(20, 6)
     inst.components.periodicspawner:SetOnlySpawnOffscreen(true)
-    
+
     return inst
 end
 
-return Prefab("forest/animals/beefaloherd", fn, assets, prefabs)
+return Prefab("forest/animals/beefaloherd", fn, nil, prefabs)

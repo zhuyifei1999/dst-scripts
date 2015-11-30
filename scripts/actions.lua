@@ -35,7 +35,7 @@ ACTIONS =
     CHOP = Action(),
     ATTACK = Action(2, nil, nil, nil, nil, nil, true), -- No custom range check, attack already handles that
     EAT = Action(),
-    PICK = Action(),
+    PICK = Action(nil, nil, nil, nil, nil, nil, true, DefaultRangeCheck),
     PICKUP = Action(1),
     MINE = Action(),
     DIG = Action(nil, nil, true),
@@ -541,7 +541,7 @@ ACTIONS.DIG.fn = function(act)
 end
 
 ACTIONS.PICK.fn = function(act)
-    if act.target.components.pickable then
+    if act.target ~= nil and act.target.components.pickable ~= nil then
         act.target.components.pickable:Pick(act.doer)
         return true
     end

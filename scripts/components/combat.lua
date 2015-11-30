@@ -392,7 +392,8 @@ function Combat:GetAttacked(attacker, damage, weapon, stimuli)
             if attacker ~= nil and attacker.components.combat ~= nil and attacker.components.combat.bonusdamagefn ~= nil then
                 damage = damage + attacker.components.combat.bonusdamagefn(attacker, self.inst, damage, weapon) or 0
             end
-            self.inst.components.health:DoDelta(-damage, nil, attacker ~= nil and attacker.prefab or "NIL", nil, attacker)
+            local cause = attacker == self.inst and weapon or attacker
+            self.inst.components.health:DoDelta(-damage, nil, cause ~= nil and cause.prefab or "NIL", nil, cause)
             if self.inst.components.health:IsDead() then
                 if attacker ~= nil then
                     attacker:PushEvent("killed", { victim = self.inst })
@@ -624,20 +625,18 @@ end
 
 function Combat:CalcAttackRangeSq(target)
     target = target or self.target
-    local range = self:GetAttackRange() + (target.Physics ~= nil and target.Physics:GetRadius() or 0)
+    local range = target.Physics ~= nil and target.Physics:GetRadius() + self:GetAttackRange() or self:GetAttackRange()
     return range * range
 end
 
 function Combat:GetHitRange()
     local weapon = self:GetWeapon()
-    return (weapon == nil and self.hitrange)
-        or (weapon.components.weapon.hitrange ~= nil and self.hitrange + weapon.components.weapon.hitrange)
-        or self.hitrange
+    return weapon ~= nil and weapon.components.weapon.hitrange ~= nil and self.hitrange + weapon.components.weapon.hitrange or self.hitrange
 end
 
 function Combat:CalcHitRangeSq(target)
     target = target or self.target
-    local range = self:GetHitRange() + (target.Physics ~= nil and target.Physics:GetRadius() or 0)
+    local range = target.Physics ~= nil and target.Physics:GetRadius() + self:GetHitRange() or self:GetHitRange()
     return range * range
 end
 
@@ -661,7 +660,7 @@ function Combat:CanHitTarget(target, weapon)
             if distsq(targetpos, self.inst:GetPosition()) <= self:CalcHitRangeSq(target) then
                 return true
             elseif weapon ~= nil and weapon.components.projectile ~= nil then
-                local range = weapon.components.projectile.hitdist + (target.Physics ~= nil and target.Physics:GetRadius() or 0)
+                local range = target.Physics ~= nil and target.Physics:GetRadius() + weapon.components.projectile.hitdist or weapon.components.projectile.hitdist
                 -- V2C: this is 3D distsq
                 return distsq(targetpos, weapon:GetPosition()) <= range * range
             end

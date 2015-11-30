@@ -1,8 +1,8 @@
 local assets =
 {
-	Asset("ANIM", "anim/blow_dart.zip"),
-	Asset("ANIM", "anim/swap_blowdart.zip"),
-	Asset("ANIM", "anim/swap_blowdart_pipe.zip"),
+    Asset("ANIM", "anim/blow_dart.zip"),
+    Asset("ANIM", "anim/swap_blowdart.zip"),
+    Asset("ANIM", "anim/swap_blowdart_pipe.zip"),
 }
 
 local prefabs =
@@ -24,25 +24,25 @@ end
 
 local function onhit(inst, attacker, target)
     local impactfx = SpawnPrefab("impact")
-    if impactfx then
-	    local follower = impactfx.entity:AddFollower()
-	    follower:FollowSymbol(target.GUID, target.components.combat.hiteffectsymbol, 0, 0, 0 )
-		if attacker then
-	        impactfx:FacePoint(attacker.Transform:GetWorldPosition())
-		end
+    if impactfx ~= nil then
+        local follower = impactfx.entity:AddFollower()
+        follower:FollowSymbol(target.GUID, target.components.combat.hiteffectsymbol, 0, 0, 0)
+        if attacker ~= nil then
+            impactfx:FacePoint(attacker.Transform:GetWorldPosition())
+        end
     end
     inst:Remove()
 end
 
 local function onthrown(inst, data)
-    inst.AnimState:SetOrientation( ANIM_ORIENTATION.OnGround )
+    inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
 end
 
 local function common(anim, tags, removephysicscolliders)
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddNetwork()
 
     MakeInventoryPhysics(inst)
@@ -102,6 +102,11 @@ local function sleepthrown(inst)
 end
 
 local function sleepattack(inst, attacker, target)
+    if not target:IsValid() then
+        --target killed or removed in combat damage phase
+        return
+    end
+
     target.SoundEmitter:PlaySound("dontstarve/wilson/blowdart_impact_sleep")
 
     if target.components.sleeper ~= nil then
@@ -126,20 +131,6 @@ local function sleep()
     inst.components.weapon:SetOnAttack(sleepattack)
     inst.components.projectile:SetOnThrownFn(sleepthrown)
 
-    AddHauntableCustomReaction(inst, function(inst, haunter)
-        local target = FindEntity(inst, 25, nil,
-        {"sleeper"},
-        {"playerghost"}
-        )
-
-        if target and math.random() <= TUNING.HAUNT_CHANCE_HALF then
-            inst.components.projectile:Throw(haunter, target, haunter)
-            inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
-            return true
-        end
-        return false
-    end, true, false, true)
-   
     return inst
 end
 
@@ -150,6 +141,11 @@ local function firethrown(inst)
 end
 
 local function fireattack(inst, attacker, target)
+    if not target:IsValid() then
+        --target killed or removed in combat damage phase
+        return
+    end
+
     target.SoundEmitter:PlaySound("dontstarve/wilson/blowdart_impact_fire")
     target:PushEvent("attacked", {attacker = attacker, damage = 0})
     if target.components.burnable then
@@ -176,24 +172,6 @@ local function fire()
     inst.components.weapon:SetOnAttack(fireattack)
     inst.components.projectile:SetOnThrownFn(firethrown)
 
-    AddHauntableCustomReaction(inst, function(inst, haunter)
-        local target = FindEntity(inst, 25, function(guy)
-            return (guy.components.burnable or
-                    guy.components.freezable or
-                    guy.components.health)
-            end,
-        {"_combat"}, -- See entityreplica.lua
-        {"playerghost"}
-        )
-
-        if target and math.random() <= TUNING.HAUNT_CHANCE_HALF then
-            inst.components.projectile:Throw(haunter, target, haunter)
-            inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
-            return true
-        end
-        return false
-    end, true, false, true)
-    
     return inst
 end
 
@@ -220,20 +198,6 @@ local function pipe()
     inst.components.weapon:SetDamage(TUNING.PIPE_DART_DAMAGE)
     inst.components.projectile:SetOnThrownFn(pipethrown)
 
-    AddHauntableCustomReaction(inst, function(inst, haunter)
-        local target = FindEntity(inst, 25, nil,
-        {"_health"}, -- see entityreplica.lua
-        {"playerghost"}
-        )
-
-        if target and math.random() <= TUNING.HAUNT_CHANCE_HALF then
-            inst.components.projectile:Throw(haunter, target, haunter)
-            inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
-            return true
-        end
-        return false
-    end, true, false, true)
-    
     return inst
 end
 
@@ -252,7 +216,7 @@ local function walrus()
     inst.components.projectile:SetHoming(false)
     inst.components.projectile:SetOnMissFn(inst.Remove)
     inst.components.projectile:SetLaunchOffset(Vector3(3, 2, 0))
-    
+
     return inst
 end
 

@@ -46,7 +46,7 @@ end
 local function IsThreatened(inst)
     return not (inst.sg:HasStateTag("sleeping") or
                 inst.sg:HasStateTag("busy") or
-                inst.sg:HasStateTag("flying"))
+                inst.sg:HasStateTag("flight"))
         and FindThreat(inst, SEE_THREAT_DIST) ~= nil
 end
 
@@ -80,7 +80,7 @@ end
 function BuzzardBrain:OnStart()
     local root = PriorityNode(
     {
-        WhileNode(function() return not self.inst.sg:HasStateTag("flying") end, "Not Flying", 
+        WhileNode(function() return not self.inst.sg:HasStateTag("flight") end, "Not Flying", 
         PriorityNode{
             WhileNode(function() return self.inst.shouldGoAway end, "Go Away",
                 DoAction(self.inst, GoHome)),

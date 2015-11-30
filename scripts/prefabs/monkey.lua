@@ -23,46 +23,49 @@ local MAX_CHASEAWAY_DIST = 80
 local MAX_TARGET_SHARES = 5
 local SHARE_TARGET_DIST = 40
 
-SetSharedLootTable( 'monkey',
+SetSharedLootTable('monkey',
 {
     {'smallmeat',     1.0},
     {'cave_banana',   1.0},
     {'nightmarefuel', 0.5},
 })
 
-local function WeaponDropped(inst)
-    inst:Remove()
+local function SetHarassPlayer(inst, player)
+    if inst.harassplayer ~= player then
+        if inst.harassplayer ~= nil then
+            inst:RemoveEventCallback("onremove", inst._onharassplayerremoved, inst.harassplayer)
+            inst.harassplayer = nil
+        end
+        if player ~= nil then
+            inst:ListenForEvent("onremove", inst._onharassplayerremoved, player)
+            inst.harassplayer = player
+        end
+    end
+end
+
+local function IsPoop(item)
+    return item.prefab == "poop"
 end
 
 local function oneat(inst)
     --Monkey ate some food. Give him some poop!
-    if inst.components.inventory then
+    if inst.components.inventory ~= nil then
         local maxpoop = 3
-        local poopstack = inst.components.inventory:FindItem(function(item) return item.prefab == "poop" end )
-        if poopstack and poopstack.components.stackable.stacksize < maxpoop then
-            local newpoop = SpawnPrefab("poop")
-            inst.components.inventory:GiveItem(newpoop)
-        elseif not poopstack then
-            local newpoop = SpawnPrefab("poop")
-            inst.components.inventory:GiveItem(newpoop)
+        local poopstack = inst.components.inventory:FindItem(IsPoop)
+        if poopstack == nil or poopstack.components.stackable.stacksize < maxpoop then
+            inst.components.inventory:GiveItem(SpawnPrefab("poop"))
         end
     end
 end
 
 local function onthrow(weapon, inst)
-    if inst.components.inventory then
-        local poopstack = inst.components.inventory:FindItem(function(item) return item.prefab == "poop" end )
-        if poopstack then
-            inst.components.inventory:ConsumeByName("poop", 1)
-        end
+    if inst.components.inventory ~= nil and inst.components.inventory:FindItem(IsPoop) ~= nil then
+        inst.components.inventory:ConsumeByName("poop", 1)
     end
 end
 
 local function hasammo(inst)
-    if inst.components.inventory then
-        local poopstack = inst.components.inventory:FindItem(function(item) return item.prefab == "poop" end )
-        return poopstack ~= nil
-    end
+    return inst.components.inventory ~= nil and inst.components.inventory:FindItem(IsPoop) ~= nil
 end
 
 local function EquipWeapons(inst)
@@ -98,33 +101,37 @@ local function EquipWeapons(inst)
     end
 end
 
+local function _ForgetTarget(inst)
+    inst.components.combat:SetTarget(nil)
+end
+
 local function OnAttacked(inst, data)
     inst.components.combat:SetTarget(data.attacker)
-    inst.harassplayer = nil
-    if inst.task then
+    SetHarassPlayer(inst, nil)
+    if inst.task ~= nil then
         inst.task:Cancel()
-        inst.task = nil
     end
-    inst.task = inst:DoTaskInTime(math.random(55, 65), function() inst.components.combat:SetTarget(nil) end)    --Forget about target after a minute
+    inst.task = inst:DoTaskInTime(math.random(55, 65), _ForgetTarget) --Forget about target after a minute
 
-    local pt = inst:GetPosition()
-    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, 30, {"monkey"})  
-    for k,v in pairs(ents) do
+    local x, y, z = inst.Transform:GetWorldPosition()
+    local ents = TheSim:FindEntities(x, y, z, 30, { "monkey" })
+    for i, v in ipairs(ents) do
         if v ~= inst then
             v.components.combat:SuggestTarget(data.attacker)
-            v.harassplayer = nil
-
-            if v.task then
+            SetHarassPlayer(v, nil)
+            if v.task ~= nil then
                 v.task:Cancel()
-                v.task = nil
             end
-            v.task = v:DoTaskInTime(math.random(55, 65), function() v.components.combat:SetTarget(nil) end) --Forget about target after a minute
+            v.task = v:DoTaskInTime(math.random(55, 65), _ForgetTarget) --Forget about target after a minute
         end
     end
 end
 
-local function FindTargetOfInterest(inst)
+local function IsBanana(item)
+    return item.prefab == "cave_banana" or item.prefab == "cave_banana_cooked"
+end
 
+local function FindTargetOfInterest(inst)
     if not inst.curious then
         return 
     end
@@ -134,84 +141,71 @@ local function FindTargetOfInterest(inst)
         -- Get all players in range
         local targets = FindPlayersInRange(x, y, z, 25)
         -- randomly iterate over all players until we find one we're interested in.
-        for i = 1,#targets do
-            local randomtarget = math.random(1,#targets)
+        for i = 1, #targets do
+            local randomtarget = math.random(#targets)
             local target = targets[randomtarget]
             table.remove(targets, randomtarget)
-            if target.components.inventory then
-                local interest_chance = 0.15
-                local item = target.components.inventory:FindItem(function(item) return item.prefab == "cave_banana" or item.prefab == "cave_banana_cooked" end )
-
-                if item then
-                    -- He has bananas! Maybe we should start following...
-                    interest_chance = 0.6 
-                end
-                if math.random() < interest_chance then
-                    inst.harassplayer = target
-                    inst:DoTaskInTime(120, function() inst.harassplayer = nil end)
-                    return
-                end
+            --Higher chance to follow if he has bananas
+            if target.components.inventory ~= nil and math.random() < (target.components.inventory:FindItem(IsBanana) ~= nil and .6 or .15) then
+                SetHarassPlayer(inst, target)
+                inst:DoTaskInTime(120, SetHarassPlayer, nil)
+                return
             end
         end
     end
 end
 
 local function retargetfn(inst)
-    if inst:HasTag("nightmare") then
-        local newtarget = FindEntity(inst, 20, function(guy)
-                return inst.components.combat:CanTarget(guy)
-        end,
-        nil,
-        nil,
-        {"character","monster"})
-        return newtarget
-    end
+    return inst:HasTag("nightmare")
+        and FindEntity(
+                inst,
+                20,
+                function(guy)
+                    return inst.components.combat:CanTarget(guy)
+                end,
+                { "_combat" }, --see entityreplica.lua
+                { "playerghost" },
+                { "character", "monster" }
+            )
+        or nil
 end
 
-local function shouldKeepTarget(inst, target)
-    if inst:HasTag("nightmare") then
-        return true
-    end
-
-    return true
+local function shouldKeepTarget(inst)
+    return inst:HasTag("nightmare")
 end
 
-local function IsInCharacterList(name)
-    local characters = GetActiveCharacterList()
-
-    for k,v in pairs(characters) do
-        if name == v then
-            return true
-        end
+local function _DropAndGoHome(inst)
+    if inst.components.inventory ~= nil then
+        inst.components.inventory:DropEverything(false, true)
+    end
+    if inst.components.homeseeker ~= nil and inst.components.homeseeker.home ~= nil then
+        inst.components.homeseeker.home:PushEvent("monkeydanger")
     end
 end
 
 local function OnMonkeyDeath(inst, data)
-    if data.inst:HasTag("monkey") then  --A monkey died! 
-        if IsInCharacterList(data.cause) then   --And it was the player! Run home!
-            --Drop all items, go home
-            inst:DoTaskInTime(math.random(), function() 
-                if inst.components.inventory then
-                    inst.components.inventory:DropEverything(false, true)
-                end
-
-                if inst.components.homeseeker and inst.components.homeseeker.home then
-                    inst.components.homeseeker.home:PushEvent("monkeydanger")
-                end
-            end)
-        end
+    --A monkey was killed by a player! Run home!
+    if data.afflicter ~= nil and data.inst:HasTag("monkey") and data.afflicter:HasTag("player") then
+        --Drop all items, go home
+        inst:DoTaskInTime(math.random(), _DropAndGoHome)
     end
 end
 
 local function OnPickup(inst, data)
-    if data.item then
-        if data.item.components.equippable and
-        data.item.components.equippable.equipslot == EQUIPSLOTS.HEAD and not 
-        inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HEAD) then
-            --Ugly special case for how the PICKUP action works.
-            --Need to wait until PICKUP has called "GiveItem" before equipping item.
-            inst:DoTaskInTime(0.1, function() inst.components.inventory:Equip(data.item) end)       
-        end
+    local item = data.item
+    if item ~= nil and
+        item.components.equippable ~= nil and
+        item.components.equippable.equipslot == EQUIPSLOTS.HEAD and
+        not inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HEAD) then
+        --Ugly special case for how the PICKUP action works.
+        --Need to wait until PICKUP has called "GiveItem" before equipping item.
+        inst:DoTaskInTime(0, function()
+            if item:IsValid() and
+                item.components.inventoryitem ~= nil and
+                item.components.inventoryitem.owner == inst then
+                inst.components.inventory:Equip(item)
+            end
+        end)
     end
 end
 
@@ -235,34 +229,34 @@ local function SetNormalMonkey(inst)
     inst:RemoveTag("nightmare")
     inst:SetBrain(brain)
     inst.AnimState:SetBuild("kiki_basic")
-    inst.AnimState:SetMultColour(1,1,1,1)
+    inst.AnimState:SetMultColour(1, 1, 1, 1)
     inst.curious = true
     inst.soundtype = ""
-    inst.components.lootdropper:SetLoot({"smallmeat", "cave_banana"})
+    inst.components.lootdropper:SetLoot({ "smallmeat", "cave_banana" })
     inst.components.lootdropper.droppingchanceloot = false
 
     inst.components.combat:SetTarget(nil)
-    
+
     inst:ListenForEvent("entity_death", inst.listenfn, TheWorld)
 end
 
 local function SetNightmareMonkey(inst)
     inst:AddTag("nightmare")
-    inst.AnimState:SetMultColour(1,1,1,.6)
+    inst.AnimState:SetMultColour(1, 1, 1, .6)
     inst:SetBrain(nightmarebrain)
     inst.AnimState:SetBuild("kiki_nightmare_skin")
     inst.soundtype = "_nightmare"
-    inst.harassplayer = nil
+    SetHarassPlayer(inst, nil)
     inst.curious = false
     if inst.task ~= nil then
         inst.task:Cancel()
         inst.task = nil
     end
-    
+
     inst.components.lootdropper:SetLoot({"beardhair"})
     inst.components.lootdropper.droppingchanceloot = true
     inst.components.combat:SetTarget(nil)
-    
+
     inst:RemoveEventCallback("entity_death", inst.listenfn, TheWorld)
 end
 
@@ -305,7 +299,7 @@ end
 
 local function OnLoad(inst, data)
     if data ~= nil and data.nightmare then
-        SetNightmareMonkey()
+        SetNightmareMonkey(inst)
     end
 end
 
@@ -390,12 +384,14 @@ local function fn()
     inst:SetBrain(brain)
     inst:SetStateGraph("SGmonkey")
 
-    inst.FindTargetOfInterestTask = inst:DoPeriodicTask(10, FindTargetOfInterest)   --Find something to be interested in!
+    inst.FindTargetOfInterestTask = inst:DoPeriodicTask(10, FindTargetOfInterest) --Find something to be interested in!
 
     inst.HasAmmo = hasammo
     inst.curious = true
+    inst.harassplayer = nil
+    inst._onharassplayerremoved = function() inst.harassplayer = nil end
 
-    inst:AddComponent("knownlocations")    
+    inst:AddComponent("knownlocations")
 
     inst.listenfn = function(listento, data) OnMonkeyDeath(inst, data) end
 
@@ -413,8 +409,6 @@ local function fn()
 
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad
-
-    inst.harassplayer = nil
 
     return inst
 end

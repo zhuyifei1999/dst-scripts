@@ -264,7 +264,7 @@ local states=
 
 	State{
 		name = "glide",
-		tags = {"flying", "busy"},
+		tags = {"flight", "busy"},
 
 		onenter= function(inst)
 			inst.AnimState:PlayAnimation("glide", true)
@@ -306,7 +306,7 @@ local states=
 
 	State{
 		name = "flyaway",
-		tags = {"flying", "busy"},
+		tags = {"flight", "busy"},
 
 		onenter = function(inst)
 			inst.Physics:Stop()

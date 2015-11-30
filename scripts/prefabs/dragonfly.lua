@@ -67,12 +67,11 @@ SetSharedLootTable( 'dragonfly',
 })
 
 local function UpdateFreezeThreshold(inst)
-    local total =
+    inst.components.freezable:SetResistance(
         TUNING.DRAGONFLY_FREEZE_THRESHOLD +
         inst.freezable_extra_resist +
         (inst.enraged and TUNING.DRAGONFLY_ENRAGED_FREEZE_BONUS or 0)
-
-    inst.components.freezable:SetResistance(total)
+    )
 end
 
 local function TransformNormal(inst)
@@ -90,8 +89,14 @@ local function TransformNormal(inst)
     inst.Light:Enable(false)
 end
 
-local function TransformFire(inst)
+local function _OnRevert(inst)
+    inst.reverttask = nil
+    if inst.enraged then 
+        inst:PushEvent("transform", { transformstate = "normal" })
+    end
+end
 
+local function TransformFire(inst)
     inst.AnimState:SetBuild("dragonfly_fire_build")
     inst.enraged = true
     inst.can_ground_pound = true
@@ -108,19 +113,14 @@ local function TransformFire(inst)
 
     UpdateFreezeThreshold(inst)
 
-    if inst.reverttask then
+    if inst.reverttask ~= nil then
         inst.reverttask:Cancel()
-        inst.reverttask = nil
     end
-
-    inst.reverttask = inst:DoTaskInTime(TUNING.DRAGONFLY_ENRAGE_DURATION, 
-        function() if inst.enraged then 
-            inst:PushEvent("transform", {transformstate = "normal"})
-        end end)
+    inst.reverttask = inst:DoTaskInTime(TUNING.DRAGONFLY_ENRAGE_DURATION, _OnRevert)
 end
 
 local function IsFightingPlayers(inst)
-    return inst.components.combat.target and inst.components.combat.target:HasTag("player")
+    return inst.components.combat.target ~= nil and inst.components.combat.target:HasTag("player")
 end
 
 local function UpdatePlayerTargets(inst)
@@ -128,13 +128,13 @@ local function UpdatePlayerTargets(inst)
     local player_targets = FindPlayersInRange(pos.x, pos.y, pos.z, TUNING.DRAGONFLY_RESET_DIST, true)
     local current_targets = inst.components.grouptargeter:GetTargets()
 
-    for k,v in pairs(current_targets) do
+    for k, v in pairs(current_targets) do
         if not table.contains(player_targets, k) then
             inst.components.grouptargeter:RemoveTarget(k)
         end
     end
 
-    for k,v in pairs(player_targets) do
+    for k, v in pairs(player_targets) do
         if current_targets[v] == nil then
             inst.components.grouptargeter:AddTarget(v)
         end
@@ -145,7 +145,7 @@ local function TryGetNewTarget(inst)
     UpdatePlayerTargets(inst)
 
     local new_target = inst.components.grouptargeter:SelectTarget()
-    if new_target then
+    if new_target ~= nil then
         inst.components.combat:SetTarget(new_target)
     end
 end
@@ -153,7 +153,7 @@ end
 local function ResetLavae(inst)
     --Despawn all lavae
     local lavae = inst.components.rampingspawner.spawns
-    for k,v in pairs(lavae) do
+    for k, v in pairs(lavae) do
         k.components.combat:SetTarget(nil)
         k.components.locomotor:Clear()
         k.reset = true
@@ -161,6 +161,7 @@ local function ResetLavae(inst)
 end
 
 local function SoftReset(inst)
+    inst.SoftResetTask = nil
     --Double check for nearby players & combat targets before reseting.
     TryGetNewTarget(inst)
     if inst.components.combat:HasTarget() then
@@ -201,39 +202,32 @@ local function DoDespawn(inst)
 end
 
 local function TrySoftReset(inst)
-    if not inst.SoftResetTask then
+    if inst.SoftResetTask == nil then
         print(string.format("Dragonfly - Start soft reset task @ %2.2f", GetTime()))
         inst.SoftResetTask = inst:DoTaskInTime(10, SoftReset)
     end 
 end
 
 
-local function OnTargetDeath(inst)
-    inst:DoTaskInTime(2, function()
-        TryGetNewTarget(inst)
-        if not inst.components.combat.target and inst.components.grouptargeter.num_targets <= 0 then
-            TrySoftReset(inst)
-        end
-    end)
+local function OnTargetDeathTask(inst)
+    inst._ontargetdeathtask = nil
+    TryGetNewTarget(inst)
+    if inst.components.combat.target == nil and inst.components.grouptargeter.num_targets <= 0 then
+        TrySoftReset(inst)
+    end
 end
 
 local function OnNewTarget(inst, data)
-
-    if inst.SoftResetTask then
+    if inst.SoftResetTask ~= nil then
         print(string.format("Dragonfly - Cancel soft reset task @ %2.2f", GetTime()))
         inst.SoftResetTask:Cancel()
         inst.SoftResetTask = nil
     end
-
-    local old = data.oldtarget
-    if old and old.dragonfly_ondeathfn then 
-        inst:RemoveEventCallback("death", old.dragonfly_ondeathfn, old) 
+    if data.oldtarget ~= nil then 
+        inst:RemoveEventCallback("death", inst._ontargetdeath, data.oldtarget) 
     end
-
-    local new = data.target
-    if new then
-        new.dragonfly_ondeathfn = function() OnTargetDeath(inst) end
-        inst:ListenForEvent("death", new.dragonfly_ondeathfn, new)
+    if data.target ~= nil  then
+        inst:ListenForEvent("death", inst._ontargetdeath, data.target)
     end
 end
 
@@ -245,19 +239,25 @@ local function RetargetFn(inst)
         return inst.components.grouptargeter:TryGetNewTarget(), true
     else
         --Also needs to deal with other creatures in the world
-        return FindEntity(inst, TUNING.DRAGONFLY_AGGRO_DIST, function(guy)
-            return inst.components.combat:CanTarget(guy)
-        end, nil, { "prey", "smallcreature", "lavae" })
+        return FindEntity(
+            inst,
+            TUNING.DRAGONFLY_AGGRO_DIST,
+            function(guy)
+                return inst.components.combat:CanTarget(guy)
+            end,
+            { "_combat" }, --see entityreplica.lua
+            { "prey", "smallcreature", "lavae" }
+        )
     end
 end
-
 
 local function GetLavaePos(inst)
     local pos = inst:GetPosition()
     local facingangle = inst.Transform:GetRotation() * DEGREES
-    local offsetvec = Vector3(1.7 * math.cos(-facingangle), -0.3, 1.7 * math.sin(-facingangle))
-
-    return pos + offsetvec
+    pos.x = pos.x + 1.7 * math.cos(-facingangle)
+    pos.y = pos.y - .3
+    pos.z = pos.z + 1.7 * math.sin(-facingangle)
+    return pos
 end
 
 local function OnLavaeDeath(inst, data)
@@ -266,7 +266,7 @@ local function OnLavaeDeath(inst, data)
         --Blargh!
         inst.components.rampingspawner:Stop()
         inst.components.rampingspawner:Reset()
-        inst:PushEvent("transform", {transformstate = "fire"})
+        inst:PushEvent("transform", { transformstate = "fire" })
     end
 end
 
@@ -276,22 +276,18 @@ local function OnLavaeSpawn(inst, data)
     local lavae = data.newent
     local targets = {}
     local dragonfly_targets = inst.components.grouptargeter:GetTargets()
-    for k,v in pairs(dragonfly_targets) do
+    for k, v in pairs(dragonfly_targets) do
         table.insert(targets, k)
         lavae.components.grouptargeter.targets = dragonfly_targets --Use the exact target list that the dragonfly does.
     end
-    local target = GetClosest(lavae, targets)
-    if not target then
-        target = inst.components.grouptargeter:SelectTarget()
-    end
+    local target = GetClosest(lavae, targets) or inst.components.grouptargeter:SelectTarget()
     lavae.components.entitytracker:TrackEntity("mother", inst)
     lavae.LockTargetFn(lavae, target)
 end
 
 function OnMoistureDelta(inst, data)
-    local moisture = inst.components.moisture
     if inst.enraged then
-        local break_threshold = moisture.maxmoisture * 0.9
+        local break_threshold = inst.components.moisture.maxmoisture * 0.9
         if (data.old < break_threshold and data.new >= break_threshold) then
             TransformNormal(inst)
         end
@@ -308,7 +304,7 @@ end
 
 local function OnSave(inst, data)
     --Check if the dragonfly is in combat with players so we can reset.
-    data.playercombat = inst.playercombat
+    data.playercombat = inst.playercombat or nil
 end
 
 local function OnLoad(inst, data)
@@ -316,14 +312,6 @@ local function OnLoad(inst, data)
     if data.playercombat then
         inst:DoTaskInTime(1, Reset)
     end
-end
-
-local function OnFreeze(inst)
-    TransformNormal(inst)
-end
-
-local function OnSleep(inst)
-    TransformNormal(inst)
 end
 
 local function OnTimerDone(inst, data)
@@ -341,7 +329,7 @@ local function OnSpawnStop(inst)
 end
 
 local function OnAttacked(inst, data)
-    if data.attacker then
+    if data.attacker ~= nil then
         inst.components.combat:SuggestTarget(data.attacker)
     end
 end
@@ -349,6 +337,11 @@ end
 local function OnFreeze(inst)
     inst.freezable_extra_resist = inst.freezable_extra_resist + 2
     UpdateFreezeThreshold(inst)
+end
+
+local function OnHealthTrigger(inst)
+    inst:PushEvent("transform", { transformstate = "normal" })
+    inst.components.rampingspawner:Start() 
 end
 
 local function fn()
@@ -363,7 +356,7 @@ local function fn()
 
     inst.DynamicShadow:SetSize(6, 3.5)
     inst.Transform:SetSixFaced()
-    inst.Transform:SetScale(1.3,1.3,1.3)
+    inst.Transform:SetScale(1.3, 1.3, 1.3)
     MakeFlyingGiantCharacterPhysics(inst, 500, 1.4)
 
     inst.AnimState:SetBank("dragonfly")
@@ -424,14 +417,9 @@ local function fn()
     inst.components.stunnable.stun_resist = TUNING.DRAGONFLY_STUN_RESIST
     inst.components.stunnable.stun_cooldown = TUNING.DRAGONFLY_STUN_COOLDOWN
 
-    local start_spawning = function()
-        inst:PushEvent("transform", {transformstate = "normal"})
-        inst.components.rampingspawner:Start() 
-    end
-
-    inst.components.healthtrigger:AddTrigger(0.8, start_spawning)
-    inst.components.healthtrigger:AddTrigger(0.5, start_spawning)
-    inst.components.healthtrigger:AddTrigger(0.2, start_spawning)
+    inst.components.healthtrigger:AddTrigger(0.8, OnHealthTrigger)
+    inst.components.healthtrigger:AddTrigger(0.5, OnHealthTrigger)
+    inst.components.healthtrigger:AddTrigger(0.2, OnHealthTrigger)
 
     inst.components.health:SetMaxHealth(TUNING.DRAGONFLY_HEALTH)
     inst.components.health.destroytime = 5 --Take 5 seconds to be removed when killed
@@ -467,6 +455,13 @@ local function fn()
     inst.components.rampingspawner.onstopfn = OnSpawnStop
 
     -- Event Watching
+
+    inst._ontargetdeathtask = nil
+    inst._ontargetdeath = function()
+        if inst._ontargetdeathtask == nil then
+            inst._ontargetdeathtask = inst:DoTaskInTime(2, OnTargetDeathTask)
+        end
+    end
 
     inst:ListenForEvent("freeze", OnFreeze)
     inst:ListenForEvent("newcombattarget", OnNewTarget)

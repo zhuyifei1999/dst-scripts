@@ -10,7 +10,7 @@ local assets =
 }
 
 local function OnIgnite(inst)
-    if inst.components.childspawner then
+    if inst.components.childspawner ~= nil then
         inst.components.childspawner:ReleaseAllChildren(nil, "killerbee")
     end
     inst.SoundEmitter:KillSound("loop")
@@ -25,22 +25,22 @@ local function OnKilled(inst)
     inst.SoundEmitter:KillSound("loop")
 
     inst.SoundEmitter:PlaySound("dontstarve/bee/beehive_destroy") --replace with wasp
-    inst.components.lootdropper:DropLoot(Vector3(inst.Transform:GetWorldPosition())) --any loot drops?
+    inst.components.lootdropper:DropLoot(inst:GetPosition()) --any loot drops?
 end
 
 local function onnear(inst, target)
     --hive pop open? Maybe rustle to indicate danger?
     --more and more come out the closer you get to the nest?
-    if inst.components.childspawner then
+    if inst.components.childspawner ~= nil then
         inst.components.childspawner:ReleaseAllChildren(target, "killerbee")
     end
 end
 
-local function onfar()
-end
+--local function onfar()
+--end
 
 local function onhitbyplayer(inst, attacker, damage)
-    if inst.components.childspawner then
+    if inst.components.childspawner ~= nil then
         inst.components.childspawner:ReleaseAllChildren(attacker, "killerbee")
     end
     if not inst.components.health:IsDead() then
@@ -56,6 +56,31 @@ end
 
 local function OnEntitySleep(inst)
     inst.SoundEmitter:KillSound("loop")
+end
+
+local function OnHaunt(inst)
+    if inst.components.childspawner == nil or
+        not inst.components.childspawner:CanSpawn() or
+        math.random() > TUNING.HAUNT_CHANCE_HALF then
+        return false
+    end
+
+    local target = FindEntity(
+        inst,
+        25,
+        function(guy)
+            return inst.components.combat:CanTarget(guy)
+        end,
+        { "_combat" }, --See entityreplica.lua (re: "_combat" tag)
+        { "insect", "playerghost", "INLIMBO" },
+        { "character", "animal", "monster" }
+    )
+
+    if target ~= nil then
+        onhitbyplayer(inst, target)
+        return true
+    end
+    return false
 end
 
 local function fn()
@@ -102,13 +127,13 @@ local function fn()
 
     -------------------------
     inst:AddComponent("lootdropper")
-    inst.components.lootdropper:SetLoot({"honey","honey","honey","honeycomb"})
+    inst.components.lootdropper:SetLoot({ "honey", "honey", "honey", "honeycomb" })
     -------------------------
     MakeLargeBurnable(inst)
     inst.components.burnable:SetOnIgniteFn(OnIgnite)
     -------------------------
     inst:AddComponent("playerprox")
-    inst.components.playerprox:SetDist(10,13) --set specific values
+    inst.components.playerprox:SetDist(10, 13) --set specific values
     inst.components.playerprox:SetOnPlayerNear(onnear)
     inst.components.playerprox:Schedule()
     --inst.components.playerprox:SetOnPlayerFar(onfar)
@@ -127,26 +152,7 @@ local function fn()
 
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetHauntValue(TUNING.HAUNT_MEDIUM)
-    inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
-        if not inst.components.childspawner or not inst.components.childspawner:CanSpawn() then 
-            return false 
-        end
-
-        local target = FindEntity(inst, 25, function(guy)
-            return  inst.components.combat:CanTarget(guy)
-        end,
-        nil,
-        {"insect","playerghost"},
-        {"character","animal","monster"}
-        )
-
-        if target and math.random() <= TUNING.HAUNT_CHANCE_HALF then
-            onhitbyplayer(inst, target)
-            return true
-        end
-
-        return false
-    end)
+    inst.components.hauntable:SetOnHauntFn(OnHaunt)
 
     return inst
 end

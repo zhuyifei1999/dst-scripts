@@ -267,10 +267,8 @@ local function OnDoneTeleporting(inst, obj)
         end)
     end
 
-    if obj and obj:HasTag("player") then
-        obj:DoTaskInTime(1.0, function()
-            obj:PushEvent("wormholespit") -- for wisecracker
-        end)
+    if obj ~= nil and obj:HasTag("player") then
+        obj:DoTaskInTime(1, obj.PushEvent, "wormholespit") -- for wisecracker
     end
 end
 

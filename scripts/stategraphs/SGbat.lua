@@ -73,7 +73,7 @@ local states =
 
     State{
         name = "flyaway",
-        tags = {"flying", "busy"},
+        tags = {"flight", "busy"},
         onenter = function(inst)
             inst.Physics:Stop()
 
@@ -103,7 +103,7 @@ local states =
 
     State{
         name = "flyback",
-        tags = {"flying", "busy"},
+        tags = {"flight", "busy"},
         onenter = function(inst)
             inst.Physics:Stop()
 

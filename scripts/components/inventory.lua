@@ -134,31 +134,49 @@ function Inventory:IgnoresCanGoInContainer()
     return self.ignorescangoincontainer
 end
 
+local function CheckMigrationPets(inst, item)
+    if inst.migrationpets ~= nil then
+        if item.components.petleash ~= nil and item.components.petleash.pet ~= nil then
+            table.insert(inst.migrationpets, item.components.petleash.pet)
+        end
+        if item.components.container ~= nil then
+            for k, v in pairs(item.components.container.slots) do
+                if v ~= nil then
+                    CheckMigrationPets(inst, v)
+                end
+            end
+        end
+    end
+end
+
 function Inventory:OnLoad(data, newents)
     self.isloading = true
 
-    if data.items then
-        for k,v in pairs(data.items) do
-            local inst = SpawnSaveRecord(v, newents)
-            if inst then
-                self:GiveItem(inst, k)
+    if data.items ~= nil then
+        for k, v in pairs(data.items) do
+            local item = SpawnSaveRecord(v, newents)
+            if item ~= nil then
+                CheckMigrationPets(self.inst, item)
+                self:GiveItem(item, k)
             end
         end
     end
     
-    if data.equip then
-        for k,v in pairs(data.equip) do
-            local inst = SpawnSaveRecord(v, newents)
-            if inst then
-                self:Equip(inst)
+    if data.equip ~= nil then
+        for k, v in pairs(data.equip) do
+            local item = SpawnSaveRecord(v, newents)
+            if item ~= nil then
+                CheckMigrationPets(self.inst, item)
+                self:Equip(item)
             end
         end
     end
     
-    if data.activeitem then
-        local inst = SpawnSaveRecord(data.activeitem, newents)
-        if inst then
-            self:GiveItem(inst)
+    if data.activeitem ~= nil then
+        local item = SpawnSaveRecord(data.activeitem, newents)
+        if item ~= nil then
+            CheckMigrationPets(self.inst, item)
+            self:GiveItem(item)
         end
     end
 

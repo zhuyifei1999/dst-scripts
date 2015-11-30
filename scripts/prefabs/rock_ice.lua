@@ -14,13 +14,11 @@ local prefabs =
 
 local function SetLoot(inst, size)
     inst.components.lootdropper:SetLoot(nil)
-    if size == "short" then
-        inst.components.lootdropper:SetChanceLootTable('rock_ice_short')
-    elseif size == "medium" then
-        inst.components.lootdropper:SetChanceLootTable('rock_ice_medium')
-    else
-        inst.components.lootdropper:SetChanceLootTable('rock_ice_tall')
-    end
+    inst.components.lootdropper:SetChanceLootTable(
+        (size == "short" and "rock_ice_short") or
+        (size == "medium" and "rock_ice_medium") or
+        "rock_ice_tall"
+    )
 end
 
 local STAGES = {
@@ -54,7 +52,7 @@ local STAGES = {
 }
 
 local STAGE_INDICES = {}
-for i,v in ipairs(STAGES) do
+for i, v in ipairs(STAGES) do
     STAGE_INDICES[v.name] = i
 end
 
@@ -106,18 +104,17 @@ local function SetStage(inst, stage, source)
     if STAGES[targetstage].name == "empty" then inst.puddle.AnimState:PushAnimation("idle", true) end
     if source == "melt" then inst.splash.AnimState:PlayAnimation(STAGES[targetstage].animation) end
 
-    local workable = inst and inst.components.workable or nil
-    if workable then
+    if inst.components.workable ~= nil then
         if source == "work" then
-            local pt = Point(inst.Transform:GetWorldPosition())
-            for i=1,math.random(1,STAGES[currentstage].icecount) do
+            local pt = inst:GetPosition()
+            for i = 1, math.random(STAGES[currentstage].icecount) do
                 inst.components.lootdropper:SpawnLootPrefab("ice", pt)
             end
         end
         if STAGES[targetstage].work < 0 then
-            workable:SetWorkable(false)
+            inst.components.workable:SetWorkable(false)
         else
-            workable:SetWorkLeft(STAGES[targetstage].work)
+            inst.components.workable:SetWorkLeft(STAGES[targetstage].work)
         end
     end
 end
@@ -131,56 +128,72 @@ local function OnWorked(inst, worker, workleft)
     end
 end
 
-local function TryStageChange(inst)
-    if inst.components.workable and inst.components.workable.lastworktime and GetTime() - inst.components.workable.lastworktime < 10 then
+local function RescheduleTimer(inst)
+    if not inst.components.timer:TimerExists("rock_ice_change") then
         inst.components.timer:StartTimer("rock_ice_change", 30)
+    end
+end
+
+local function TryStageChange(inst)
+    if inst.components.workable ~= nil and
+        inst.components.workable.lastworktime ~= nil and
+        GetTime() - inst.components.workable.lastworktime < 10 then
+        --Reschedule if we recently worked it
+        --V2C: Can't StartTimer immediately, because we are in a handler
+        --     triggered by the same timer name that we want to restart.
+        inst:DoTaskInTime(0, RescheduleTimer)
+        return
     end
 
     local pct = TheWorld.state.seasonprogress
     if TheWorld.state.isspring then
-        if pct < inst.threshold1 then
-            SetStage(inst, "tall", "melt")
-        elseif pct < inst.threshold2 then
-            SetStage(inst, "medium", "melt")
-        elseif pct < inst.threshold3 then
-            SetStage(inst, "short", "melt")
-        else
+        SetStage(
+            inst,
+            (pct < inst.threshold1 and "tall") or
+            (pct < inst.threshold2 and "medium") or
+            (pct < inst.threshold3 and "short") or
+            "empty",
+            "melt"
+        )
+    elseif TheWorld.state.issummer then
+        --if pct > .1 then
             SetStage(inst, "empty", "melt")
-        end
-    elseif TheWorld.state.issummer then--and pct > .1 then
-        SetStage(inst, "empty", "melt")
+        --end
     elseif TheWorld.state.isautumn then
-        if pct < inst.threshold1 then
-            SetStage(inst, "empty", "grow")
-        elseif pct < inst.threshold2 then
-            SetStage(inst, "short", "grow")
-        elseif pct < inst.threshold3 then
-            SetStage(inst, "medium", "grow")
-        else
+        SetStage(
+            inst,
+            (pct < inst.threshold1 and "empty") or
+            (pct < inst.threshold2 and "short") or
+            (pct < inst.threshold3 and "medium") or
+            "tall",
+            "grow"
+        )
+    elseif TheWorld.state.iswinter then
+        --if pct > .1 then
             SetStage(inst, "tall", "grow")
-        end
-    elseif TheWorld.state.iswinter then--and pct > .1 then
-        SetStage(inst, "tall", "grow")
+        --end
     end
 end
 
 local function DayEnd(inst)
     if not inst.components.timer:TimerExists("rock_ice_change") then
-        inst.components.timer:StartTimer("rock_ice_change", math.random(TUNING.TOTAL_DAY_TIME, TUNING.TOTAL_DAY_TIME*3))
+        inst.components.timer:StartTimer("rock_ice_change", math.random(TUNING.TOTAL_DAY_TIME, TUNING.TOTAL_DAY_TIME * 3))
     end
 end
 
-local function StartFireMelt(inst)
-    if inst.firemelttask then return end
+local function _OnFireMelt(inst)
+    inst.firemelttask = nil
+    SetStage(inst, "empty", "melt")
+end
 
-    inst.firemelttask = inst:DoTaskInTime(4, function(inst)
-        SetStage(inst, "empty", "melt")
-        inst.firemelttask = nil
-    end)
+local function StartFireMelt(inst)
+    if inst.firemelttask == nil then
+        inst.firemelttask = inst:DoTaskInTime(4, _OnFireMelt)
+    end
 end
 
 local function StopFireMelt(inst)
-    if inst.firemelttask then 
+    if inst.firemelttask ~= nil then 
         inst.firemelttask:Cancel()
         inst.firemelttask = nil
     end
@@ -191,7 +204,7 @@ local function onsave(inst, data)
 end
 
 local function onload(inst, data)
-    if data and data.stage then
+    if data ~= nil and data.stage ~= nil then
         while inst.stage ~= data.stage do
             SetStage(inst, data.stage)
         end
@@ -202,6 +215,10 @@ local function ontimerdone(inst, data)
     if data.name == "rock_ice_change" then
         TryStageChange(inst)
     end
+end
+
+local function GetStatus(inst)
+    return inst.stage == "empty" and "MELTED" or nil
 end
 
 local function rock_ice_fn()
@@ -217,7 +234,7 @@ local function rock_ice_fn()
     inst.AnimState:SetBuild("ice_boulder")
 
     MakeObstaclePhysics(inst, 1)
-    
+
     inst.MiniMapEntity:SetIcon("iceboulder.png")
 
     inst:AddTag("frozen")
@@ -248,11 +265,7 @@ local function rock_ice_fn()
     inst.components.named:SetName(STRINGS.NAMES["ROCK_ICE"])
 
     inst:AddComponent("inspectable")
-    inst.components.inspectable.getstatus = function(inst, viewer)
-        if inst.stage == "empty" then
-            return "MELTED"
-        end
-    end
+    inst.components.inspectable.getstatus = GetStatus
 
     inst:AddComponent("timer")
     inst:ListenForEvent("timerdone", ontimerdone)

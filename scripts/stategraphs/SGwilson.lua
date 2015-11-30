@@ -232,7 +232,8 @@ local actionhandlers =
         end),
     ActionHandler(ACTIONS.PICK,
         function(inst, action)
-            return action.target.components.pickable ~= nil
+            return action.target ~= nil
+                and action.target.components.pickable ~= nil
                 and (action.target.components.pickable.quickpick and
                     "doshortaction" or
                     "dolongaction")

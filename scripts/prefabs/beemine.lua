@@ -13,25 +13,21 @@ local prefabs =
 
 local function SpawnBees(inst)
     inst.SoundEmitter:PlaySound("dontstarve/bee/beemine_explo")
-    local target = inst.components.mine and inst.components.mine:GetTarget()
-    if not target then
-        target = FindEntity(inst, 25, nil,
-        nil,
-        {"insect","playerghost"},
-        {"character","animal","monster"}
-        )
+    local target = inst.components.mine ~= nil and inst.components.mine:GetTarget() or nil
+    if target == nil or not target:IsValid() then
+        target = FindEntity(inst, 25, nil, nil,
+            { "insect", "playerghost" },
+            { "character", "animal", "monster" })
     end
-    if target and target:IsValid() then
+    if target ~= nil then
         for i = 1, TUNING.BEEMINE_BEES do
             local bee = SpawnPrefab(inst.beeprefab)
-            if bee then
-                local pos = Vector3(inst.Transform:GetWorldPosition() )
+            if bee ~= nil then
+                local x, y, z = inst.Transform:GetWorldPosition()
                 local dist = math.random()
-                local angle = math.random()*2*PI
-                pos.x = pos.x + dist*math.cos(angle)
-                pos.z = pos.z + dist*math.sin(angle)
-                bee.Physics:Teleport(pos:Get() )
-                if bee.components.combat then
+                local angle = math.random() * 2 * PI
+                bee.Physics:Teleport(x + dist * math.cos(angle), y, z + dist * math.sin(angle))
+                if bee.components.combat ~= nil then
                     bee.components.combat:SetTarget(target)
                 end
             end
@@ -51,7 +47,7 @@ local function OnExplode(inst)
     end
     inst.AnimState:PlayAnimation("explode")
     inst.SoundEmitter:PlaySound("dontstarve/bee/beemine_launch")
-    inst.spawntask = inst:DoTaskInTime(9*FRAMES, SpawnBees)
+    inst.spawntask = inst:DoTaskInTime(9 * FRAMES, SpawnBees)
     inst:ListenForEvent("animover", inst.Remove)
     if inst.components.inventoryitem ~= nil then
         inst.components.inventoryitem.canbepickedup = false
@@ -71,18 +67,18 @@ local function MineRattle(inst)
     inst.AnimState:PlayAnimation("hit")
     inst.AnimState:PushAnimation("idle")
     inst.SoundEmitter:PlaySound("dontstarve/bee/beemine_rattle")
-    if inst.rattletask then
-        inst.rattletask:Cancel()
-    end
     inst.rattletask = inst:DoTaskInTime(4 + math.random(), MineRattle)
 end
 
 local function StartRattling(inst)
+    if inst.rattletask ~= nil then
+        inst.rattletask:Cancel()
+    end
     inst.rattletask = inst:DoTaskInTime(1, MineRattle)
 end
 
 local function StopRattling(inst)
-    if inst.rattletask then
+    if inst.rattletask ~= nil then
         inst.rattletask:Cancel()
         inst.rattletask = nil
     end
@@ -110,6 +106,7 @@ local function OnHaunt(inst)
         return true
     end
     inst.components.hauntable.hauntvalue = TUNING.HAUNT_TINY
+    StopRattling(inst)
     MineRattle(inst)
     return true
 end

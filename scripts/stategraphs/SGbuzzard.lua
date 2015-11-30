@@ -163,7 +163,7 @@ local states=
     
     State{
         name = "glide",
-        tags = {"idle", "flying", "busy"},
+        tags = {"idle", "flight", "busy"},
         onenter= function(inst)
             inst.AnimState:PlayAnimation("glide", true)
             inst.Physics:SetMotorVelOverride(0,-15,0)
@@ -266,7 +266,7 @@ local states=
 
     State{
         name = "flyaway",
-        tags = {"flying", "busy", "canrotate"},
+        tags = {"flight", "busy", "canrotate"},
         onenter = function(inst)
             inst.Physics:Stop()
             inst.sg:SetTimeout(.1+math.random()*.2)

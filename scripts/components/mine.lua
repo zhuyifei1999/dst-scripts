@@ -1,25 +1,26 @@
-
-local mine_test_fn = function(dude, inst) return not (dude.components.health and dude.components.health:IsDead() and dude.components.combat:CanBeAttacked(inst)) end
-local mine_test_tags = {"monster", "character", "animal"}
+local mine_test_fn = function(dude, inst)
+    return not (dude.components.health ~= nil and
+                dude.components.health:IsDead())
+        and dude.components.combat:CanBeAttacked(inst)
+end
+local mine_test_tags = { "monster", "character", "animal" }
 -- See entityreplica.lua
-local mine_must_tags = {"_combat"}
+local mine_must_tags = { "_combat" }
 
-local function MineTest(inst)
-    local mine = inst.components.mine
-    
-    local notags = {"notraptrigger", "flying"}
-    if mine and mine.alignment then
-		table.insert(notags, mine.alignment)
-    end
-    
-    if mine and mine.radius then
-        
-        local target = FindEntity(inst, mine.radius, mine_test_fn, mine_must_tags, notags, mine_test_tags)
-        
-        if target then
-            mine:Explode(target)
+local function MineTest(inst, self)
+    if self.radius ~= nil then
+        local notags = { "notraptrigger", "flying", "playerghost" }
+        table.insert(notags, self.alignment)
+
+        local target = FindEntity(inst, self.radius, mine_test_fn, mine_must_tags, notags, mine_test_tags)
+        if target ~= nil then
+            self:Explode(target)
         end
     end
+end
+
+local function OnPutInInventory(inst)
+    inst.components.mine:Deactivate()
 end
 
 local function onissprung(self, onissprung)
@@ -32,17 +33,17 @@ end
 
 local Mine = Class(function(self, inst)
     self.inst = inst
-    
+
     self.radius = nil
     self.onexplode = nil
     self.onreset = nil
     self.onsetsprung = nil
     self.target = nil
     self.issprung = false
-	self.inactive = true
-	
-	self.alignment = "player"
-    self.inst:ListenForEvent("onputininventory", function(inst) self:Deactivate() end)
+    self.inactive = true
+    
+    self.alignment = "player"
+    self.inst:ListenForEvent("onputininventory", OnPutInInventory)
 end,
 nil,
 {
@@ -50,6 +51,8 @@ nil,
 })
 
 function Mine:OnRemoveFromEntity()
+    self:StopTesting()
+    self.inst:RemoveEventCallback("onputininventory", OnPutInInventory)
     self.inst:RemoveTag("minesprung")
 end
 
@@ -74,7 +77,7 @@ function Mine:SetOnDeactivateFn(fn)
 end
 
 function Mine:SetAlignment(alignment)
-	self.alignment = alignment
+    self.alignment = alignment
 end
 
 function Mine:SetReusable(reusable)
@@ -86,19 +89,21 @@ function Mine:Reset()
     self.target = nil
     self.issprung = false
     self.inactive = false
-    if self.onreset then
+    if self.onreset ~= nil then
         self.onreset(self.inst)
     end
     self:StartTesting()
 end
 
 function Mine:StartTesting()
-    self:StopTesting()
-    self.testtask = self.inst:DoPeriodicTask(1 + math.random(), MineTest, math.random(.9, 1))
+    if self.testtask ~= nil then
+        self.testtask:Cancel()
+    end
+    self.testtask = self.inst:DoPeriodicTask(1 + math.random(), MineTest, math.random(.9, 1), self)
 end
 
 function Mine:StopTesting()
-    if self.testtask then
+    if self.testtask ~= nil then
         self.testtask:Cancel()
         self.testtask = nil
     end
@@ -107,8 +112,8 @@ end
 function Mine:Deactivate()
     self:StopTesting()
     self.issprung = false
-	self.inactive = true    
-    if self.ondeactivate then
+    self.inactive = true    
+    if self.ondeactivate ~= nil then
         self.ondeactivate(self.inst)
     end
 end
@@ -121,38 +126,34 @@ function Mine:Explode(target)
     self:StopTesting()
     self.target = target
     self.issprung = true
-	self.inactive = false    
+    self.inactive = false    
     ProfileStatsAdd("trap_sprung_"..(target ~= nil and target.prefab or ""))
-    if self.onexplode then
+    if self.onexplode ~= nil then
         self.onexplode(self.inst, target)
     end
 end
 
 function Mine:OnSave()
-    if self.issprung then
-        return {sprung = true}
-    elseif self.inactive then
-		return {inactive = true}
-    end
+    return (self.issprung and { sprung = true })
+        or (self.inactive and { inactive = true })
+        or nil
 end
 
 function Mine:OnLoad(data)
     if data.sprung then
-		self.inactive = false
+        self.inactive = false
         self.issprung = true
         self:StopTesting()
-        if self.onsetsprung then
+        if self.onsetsprung ~= nil then
             self.onsetsprung(self.inst)
         end
     elseif data.inactive then
-		self:Deactivate()
+        self:Deactivate()
     else
-		self:Reset()
+        self:Reset()
     end
 end
 
-function Mine:OnRemoveEntity()
-    self:StopTesting()
-end
+Mine.OnRemoveEntity = Mine.StopTesting
 
 return Mine

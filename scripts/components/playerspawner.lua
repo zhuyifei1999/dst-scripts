@@ -243,8 +243,18 @@ function self:SpawnAtLocation(inst, player, x, y, z, isloading)
         -- origin world from a failed migration
         if player.migration.worldid ~= TheShard:GetShardId() then
             x, y, z = GetDestinationPortalLocation(player)
+            for i, v in ipairs(player.migrationpets) do
+                if v:IsValid() then
+                    if v.Physics ~= nil then
+                        v.Physics:Teleport(x, y, z)
+                    elseif v.Transform ~= nil then
+                        v.Transform:SetPosition(x, y, z)
+                    end
+                end
+            end
         end
         player.migration = nil
+        player.migrationpets = nil
     end
 
     print(string.format("[%s] SPAWNING PLAYER AT: (%2.2f, %2.2f, %2.2f)", isloading and "Load" or MODES[_mode], x, y, z))

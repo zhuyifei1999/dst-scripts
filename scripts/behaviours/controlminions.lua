@@ -37,7 +37,7 @@ local NO_TAGS =
     "eyeplant",
     "notarget",
     "nattack",
-    "flying",
+    "flight",
     "invisible",
     "catchable",
     "fire",

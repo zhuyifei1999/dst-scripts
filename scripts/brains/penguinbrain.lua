@@ -339,7 +339,7 @@ function PenguinBrain:OnStart()
     --]] 
     local root = PriorityNode(
     {
-        IfNode(function() return  self.inst.sg:HasStateTag("flying") end, "Flying",
+        IfNode(function() return  self.inst.sg:HasStateTag("flight") end, "Flying",
             ActionNode(function() return FlyAway(self.inst) end)),
         
         WhileNode( function() return self.inst.components.hauntable and self.inst.components.hauntable.panic end, "PanicHaunted", Panic(self.inst)),

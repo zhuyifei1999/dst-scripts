@@ -185,7 +185,7 @@ local states=
 
     State{
         name = "flyaway",
-        tags = {"flying", "busy"},
+        tags = {"flight", "busy"},
         onenter = function(inst)
             inst.Physics:Stop()   
 	        inst.DynamicShadow:Enable(false) 

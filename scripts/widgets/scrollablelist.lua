@@ -538,8 +538,9 @@ function ScrollableList:OnLoseFocus()
 	end
 end
 
-function ScrollableList:SetFocus(index)
-	if self.focused_index and not index then
+function ScrollableList:SetFocus()
+    local index = 1
+	if self.focused_index then
 		index = self.focused_index
 	else
 		index = index or (self.reverse and self.view_offset + self.widgets_per_view or self.view_offset+1)

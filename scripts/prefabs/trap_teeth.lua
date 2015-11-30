@@ -128,30 +128,33 @@ local function common_fn(bank, build, isinventoryitem)
 
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
-        if inst.components.mine then
-            if not inst.components.mine.inactive and not inst.components.mine.issprung then
-                if math.random() <= TUNING.HAUNT_CHANCE_HALF then
-                    inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
-                    local target = FindEntity(inst, TUNING.TRAP_TEETH_RADIUS*1.5, 
-                        function(dude, inst) 
-                            return not (dude.components.health and dude.components.health:IsDead() and dude.components.combat:CanBeAttacked(inst)) 
-                        end,
-                        {"_combat"}, -- see entityscript.lua
-                        {"notraptrigger", "flying", "playerghost"}, 
-                        {"monster", "character", "animal"}
-                    )
-                    inst.components.mine:Explode(target)
-                    return true
-                end
-            elseif not inst.components.mine.inactive and inst.components.mine.issprung then
+        if inst.components.mine ~= nil then
+            if inst.components.mine.inactive then
+                Launch(inst, haunter, TUNING.LAUNCH_SPEED_SMALL)
+                inst.components.hauntable.hauntvalue = TUNING.HAUNT_TINY
+                return true
+            elseif inst.components.mine.issprung then
                 if math.random() <= TUNING.HAUNT_CHANCE_OFTEN then
                     inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
                     inst.components.mine:Reset()
                     return true
                 end
-            elseif inst.components.mine.inactive then
-                Launch(inst, haunter, TUNING.LAUNCH_SPEED_SMALL)
-                inst.components.hauntable.hauntvalue = TUNING.HAUNT_TINY
+            elseif math.random() <= TUNING.HAUNT_CHANCE_HALF then
+                inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
+                inst.components.mine:Explode(
+                    FindEntity(
+                        inst,
+                        TUNING.TRAP_TEETH_RADIUS * 1.5,
+                        function(dude, inst)
+                            return not (dude.components.health ~= nil and
+                                        dude.components.health:IsDead())
+                                and dude.components.combat:CanBeAttacked(inst)
+                        end,
+                        { "_combat" }, -- see entityscript.lua
+                        { "notraptrigger", "flying", "playerghost" },
+                        { "monster", "character", "animal" }
+                    )
+                )
                 return true
             end
         end

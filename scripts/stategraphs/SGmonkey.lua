@@ -19,14 +19,15 @@ local events=
     CommonHandlers.OnDeath(),
     CommonHandlers.OnSleep(),
     EventHandler("doattack", function(inst, data)
-        if not inst.components.health:IsDead() and not inst.sg:HasStateTag("busy") then
+        if not (inst.components.health:IsDead() or inst.sg:HasStateTag("busy")) then
             --If you're not in melee range throw instead.
             --Maybe do some randomness to throw or not?
-            if data.target and inst:GetDistanceSqToInst(data.target) <= (TUNING.MONKEY_MELEE_RANGE * TUNING.MONKEY_MELEE_RANGE) + 1 then
-                inst.sg:GoToState("attack", data.target)
-            else
-                inst.sg:GoToState("throw", data.target)
-            end
+            --V2C: gdi. because sg events are queued, ALL data can possibly go invalid >_ <""
+            inst.sg:GoToState(
+                (not (data.target ~= nil and data.target:IsValid()) and "idle") or
+                (inst:GetDistanceSqToInst(data.target) <= TUNING.MONKEY_MELEE_RANGE * TUNING.MONKEY_MELEE_RANGE + 1 and "attack") or
+                "throw"
+            )
         end
     end),
 }

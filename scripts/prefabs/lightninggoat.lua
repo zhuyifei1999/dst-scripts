@@ -179,6 +179,9 @@ local function fn()
     inst:AddTag("animal")
     inst:AddTag("lightningrod")
 
+    --herdmember (from herdmember component) added to pristine state for optimization
+    inst:AddTag("herdmember")
+
     inst.Light:Enable(false)
     inst.Light:SetRadius(.85)
     inst.Light:SetFalloff(0.5)

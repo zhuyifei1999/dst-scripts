@@ -132,6 +132,9 @@ local function fn()
     inst:AddTag("mossling")
     inst:AddTag("animal")
 
+    --herdmember (from herdmember component) added to pristine state for optimization
+    inst:AddTag("herdmember")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

@@ -11,9 +11,14 @@ local prefabs =
     "ash",
 }
 
+local function OnSpawnFX(pet)
+    SpawnPrefab("small_puff").Transform:SetPosition(pet.Transform:GetWorldPosition())
+end
+
 local function OnSpawn(inst, pet)
     if not inst.nospawnfx then
-        SpawnPrefab("small_puff").Transform:SetPosition(pet.Transform:GetWorldPosition())
+        --Delayed in case we need to relocate for migration spawning
+        pet:DoTaskInTime(0, OnSpawnFX)
     end
     inst:ListenForEvent("onremove", inst.OnPetLost, pet)
 end

@@ -25,12 +25,8 @@ local function onattackfn(inst, data)
 end
 
 local function onsleepfn(inst)
-    if inst.components.health ~= nil and not inst.components.health:IsDead() and not inst.sg:HasStateTag("flying") then
-        if inst.sg:HasStateTag("sleeping") then
-            inst.sg:GoToState("sleeping")
-        else
-            inst.sg:GoToState("sleep")
-        end
+    if inst.components.health ~= nil and not inst.components.health:IsDead() and not inst.sg:HasStateTag("flight") then
+        inst.sg:GoToState(inst.sg:HasStateTag("sleeping") and "sleeping" or "sleep")
     end
 end
 
@@ -274,7 +270,7 @@ local states=
 
 	State{
 		name = "flyaway",
-		tags = {"flying", "busy"},
+		tags = {"flight", "busy"},
 
 		onenter = function(inst)
 			inst.Physics:Stop()
@@ -650,7 +646,7 @@ local states=
 
 	State{
 		name = "land",
-		tags = {"flying", "busy"},
+		tags = {"flight", "busy"},
 
 		onenter= function(inst)
 			inst.AnimState:PlayAnimation("walk_angry", true)

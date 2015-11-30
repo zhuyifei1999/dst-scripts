@@ -1022,6 +1022,16 @@ local function OnSave(inst, data)
     end
 end
 
+local function OnPreLoad(inst, data)
+    --Shard stuff
+    inst.migration = data ~= nil and data.migration or nil
+    inst.migrationpets = inst.migration ~= nil and {} or nil
+
+    if inst._OnPreLoad ~= nil then
+        inst:_OnPreLoad(data)
+    end
+end
+
 local function OnLoad(inst, data)
     --If this character is being loaded then it isn't a new spawn
     inst.OnNewSpawn = nil
@@ -1031,9 +1041,6 @@ local function OnLoad(inst, data)
         if data.is_ghost then
             OnMakePlayerGhost(inst, { loading = true })
         end
-
-        --Shard stuff
-        inst.migration = data.migration
 
         inst:OnSetSkin(data.skin_name)
 
@@ -1664,10 +1671,12 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.OnWakeUp = OnWakeUp
 
         inst._OnSave = inst.OnSave
+        inst._OnPreLoad = inst.OnPreLoad
         inst._OnLoad = inst.OnLoad
         inst._OnDespawn = inst.OnDespawn
         inst._OnSetSkin = inst.OnSetSkin
         inst.OnSave = OnSave
+        inst.OnPreLoad = OnPreLoad
         inst.OnLoad = OnLoad
         inst.OnDespawn = OnDespawn
         inst.OnSetSkin = OnSetSkin

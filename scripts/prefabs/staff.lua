@@ -16,46 +16,51 @@ local prefabs =
 ---------RED STAFF---------
 
 local function onattack_red(inst, attacker, target, skipsanity)
-
-    if target.components.burnable and not target.components.burnable:IsBurning() then
-        if target.components.freezable and target.components.freezable:IsFrozen() then           
-            target.components.freezable:Unfreeze()            
-        else            
-              if target.components.fueled and target:HasTag("campfire") and target:HasTag("structure") then
-                -- Rather than worrying about adding fuel cmp here, just spawn some fuel and immediately feed it to the fire
-                local fuel = SpawnPrefab("cutgrass")
-                if fuel then target.components.fueled:TakeFuelItem(fuel) end
-            else
-                target.components.burnable:Ignite(true)
-            end
-        end   
-    end
-
-    if target.components.freezable then
-        target.components.freezable:AddColdness(-1) --Does this break ice staff?
-        if target.components.freezable:IsFrozen() then
-            target.components.freezable:Unfreeze()            
-        end
-    end
-
-    if target.components.sleeper and target.components.sleeper:IsAsleep() then
-        target.components.sleeper:WakeUp()
-    end
-
-    if target.components.combat then
-        target.components.combat:SuggestTarget(attacker)
-    end
-
-    if attacker and attacker.components.sanity and not skipsanity then
+    if not skipsanity and attacker ~= nil and attacker.components.sanity ~= nil then
         attacker.components.sanity:DoDelta(-TUNING.SANITY_SUPERTINY)
     end
 
     attacker.SoundEmitter:PlaySound("dontstarve/wilson/fireball_explo")
-    target:PushEvent("attacked", {attacker = attacker, damage = 0})
+
+    if not target:IsValid() then
+        --target killed or removed in combat damage phase
+        return
+    end
+
+    if target.components.burnable ~= nil and not target.components.burnable:IsBurning() then
+        if target.components.freezable ~= nil and target.components.freezable:IsFrozen() then
+            target.components.freezable:Unfreeze()
+        elseif target.components.fueled ~= nil and target:HasTag("campfire") and target:HasTag("structure") then
+            -- Rather than worrying about adding fuel cmp here, just spawn some fuel and immediately feed it to the fire
+            local fuel = SpawnPrefab("cutgrass")
+            if fuel ~= nil then
+                target.components.fueled:TakeFuelItem(fuel)
+            end
+        else
+            target.components.burnable:Ignite(true)
+        end
+    end
+
+    if target.components.freezable ~= nil then
+        target.components.freezable:AddColdness(-1) --Does this break ice staff?
+        if target.components.freezable:IsFrozen() then
+            target.components.freezable:Unfreeze()
+        end
+    end
+
+    if target.components.sleeper ~= nil and target.components.sleeper:IsAsleep() then
+        target.components.sleeper:WakeUp()
+    end
+
+    if target.components.combat ~= nil then
+        target.components.combat:SuggestTarget(attacker)
+    end
+
+    target:PushEvent("attacked", { attacker = attacker, damage = 0 })
 end
 
 local function onlight(inst, target)
-    if inst.components.finiteuses then
+    if inst.components.finiteuses ~= nil then
         inst.components.finiteuses:Use(1)
     end
 end
@@ -80,15 +85,20 @@ end
 ---------BLUE STAFF---------
 
 local function onattack_blue(inst, attacker, target, skipsanity)
-    
-    if attacker and attacker.components.sanity and not skipsanity then
+    if not skipsanity and attacker ~= nil and attacker.components.sanity ~= nil then
         attacker.components.sanity:DoDelta(-TUNING.SANITY_SUPERTINY)
     end
-    
-    if target.components.sleeper and target.components.sleeper:IsAsleep() then
+
+    if not target:IsValid() then
+        --target killed or removed in combat damage phase
+        return
+    end
+
+    if target.components.sleeper ~= nil and target.components.sleeper:IsAsleep() then
         target.components.sleeper:WakeUp()
     end
-    if target.components.burnable then
+
+    if target.components.burnable ~= nil then
         if target.components.burnable:IsBurning() then
             target.components.burnable:Extinguish()
         elseif target.components.burnable:IsSmoldering() then
@@ -96,15 +106,15 @@ local function onattack_blue(inst, attacker, target, skipsanity)
         end
     end
 
-    if target.components.combat then
+    if target.components.combat ~= nil then
         target.components.combat:SuggestTarget(attacker)
     end
 
-    if target.sg and not target.sg:HasStateTag("frozen") then
-        target:PushEvent("attacked", {attacker = attacker, damage = 0})
+    if target.sg ~= nil and not target.sg:HasStateTag("frozen") then
+        target:PushEvent("attacked", { attacker = attacker, damage = 0 })
     end
 
-    if target.components.freezable then
+    if target.components.freezable ~= nil then
         target.components.freezable:AddColdness(1)
         target.components.freezable:SpawnShatterFX()
     end
