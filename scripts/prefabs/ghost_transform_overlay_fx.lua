@@ -81,4 +81,4 @@ local function fn()
     return inst
 end
 
-return Prefab("ghost_transform_overlay_fx", fn, assets)
+return Prefab("fx/ghost_transform_overlay_fx", fn, assets)

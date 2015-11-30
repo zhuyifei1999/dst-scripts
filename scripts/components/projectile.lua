@@ -171,10 +171,10 @@ function Projectile:OnEntitySleep()
 end
 
 function Projectile:OnEntityWake()
-    if self.dozeOffTask ~= nil then
-        self.dozeOffTask:Cancel()
-        self.dozeOffTask = nil
-    end
+	if self.dozeOffTask ~= nil then
+		self.dozeOffTask:Cancel()
+		self.dozeOffTask = nil
+	end
 end
 
 function Projectile:OnUpdate(dt)

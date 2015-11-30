@@ -1133,7 +1133,6 @@ function Inventory:Show()
         self.inst.HUD.controls.crafttabs:Show()
         self.inst.HUD.controls.inv:Show()
         self.inst.HUD.controls.containerroot_side:Show()
-        self.inst.HUD.controls.item_notification:ToggleCrafting(false)
     end
 
     self.isvisible = true
@@ -1150,7 +1149,6 @@ function Inventory:Open()
         self.inst.HUD.controls.crafttabs:Show()
         self.inst.HUD.controls.inv:Show()
         self.inst.HUD.controls.containerroot_side:Show()
-        self.inst.HUD.controls.item_notification:ToggleCrafting(false)
     end
 
     self.isopen = true
@@ -1189,7 +1187,6 @@ function Inventory:Hide()
         self.inst.HUD.controls.crafttabs:Hide()
         self.inst.HUD.controls.inv:Hide()
         self.inst.HUD.controls.containerroot_side:Hide()
-        self.inst.HUD.controls.item_notification:ToggleCrafting(true)
     end
 
     self.isvisible = false
@@ -1219,7 +1216,6 @@ function Inventory:Close(keepactiveitem)
         self.inst.HUD.controls.crafttabs:Hide()
         self.inst.HUD.controls.inv:Hide()
         self.inst.HUD.controls.containerroot_side:Hide()
-        self.inst.HUD.controls.item_notification:ToggleCrafting(true)
     end
 
     self.isopen = false

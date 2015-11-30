@@ -64,24 +64,10 @@ local prefabs =
     "minotaur",
     "spider_dropper",
     "caverain",
-    "dropperweb",
 }
-
-local monsters =
-{
-    "worm",
-}
-for i, v in ipairs(monsters) do
-    for level = 1, 4 do
-        table.insert(prefabs, v.."warning_lvl"..tostring(level))
-    end
-end
-monsters = nil
 
 local assets =
 {
-    Asset("SCRIPT", "scripts/prefabs/world.lua"),
-
     Asset("SOUND", "sound/cave_AMB.fsb"),
     Asset("SOUND", "sound/cave_mem.fsb"),
     Asset("IMAGE", "images/colour_cubes/caves_default.tex"),

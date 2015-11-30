@@ -1,7 +1,6 @@
 local rock_ice_assets =
 {
     Asset("ANIM", "anim/ice_boulder.zip"),
-    Asset("MINIMAP_IMAGE", "iceboulder"),
 }
 
 local prefabs =
@@ -173,7 +172,7 @@ local function TryStageChange(inst)
         --if pct > .1 then
             SetStage(inst, "tall", "grow")
         --end
-        end
+    end
 end
 
 local function DayEnd(inst)
@@ -184,7 +183,7 @@ end
 
 local function _OnFireMelt(inst)
     inst.firemelttask = nil
-        SetStage(inst, "empty", "melt")
+    SetStage(inst, "empty", "melt")
 end
 
 local function StartFireMelt(inst)
@@ -253,14 +252,14 @@ local function rock_ice_fn()
     --Remove these tags so that they can be added properly when replicating components below
     inst:RemoveTag("_named")
 
-    inst:AddComponent("lootdropper")
+    inst:AddComponent("lootdropper") 
     SetLoot(inst, "tall")
 
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.MINE)
     inst.components.workable:SetWorkLeft(TUNING.ICE_MINE)
 
-    inst.components.workable:SetOnWorkCallback(OnWorked)
+    inst.components.workable:SetOnWorkCallback( OnWorked )
 
     inst:AddComponent("named")
     inst.components.named:SetName(STRINGS.NAMES["ROCK_ICE"])
@@ -273,9 +272,9 @@ local function rock_ice_fn()
 
     inst.puddle = SpawnPrefab("ice_puddle")
     inst.splash = SpawnPrefab("ice_splash")
-    inst:AddChild(inst.puddle)
+    inst:AddChild(inst.puddle)    
     inst.puddle.Transform:SetPosition(0,0,0)
-    inst:AddChild(inst.splash)
+    inst:AddChild(inst.splash)    
     inst.splash.Transform:SetPosition(0,0,0)
 
     -- Make sure we start at a good height for starting in a season when it shouldn't start as full
@@ -309,4 +308,4 @@ local function rock_ice_fn()
     return inst
 end
 
-return Prefab("rock_ice", rock_ice_fn, rock_ice_assets, prefabs)
+return Prefab("forest/objects/rocks/rock_ice", rock_ice_fn, rock_ice_assets, prefabs)

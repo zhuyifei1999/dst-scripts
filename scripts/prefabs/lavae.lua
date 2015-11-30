@@ -68,7 +68,7 @@ local function OnNewTarget(inst, data)
     end
     if data.target ~= nil and data.target:HasTag("player") then
         inst:ListenForEvent("death", inst._ontargetdeath, data.target)
-        end
+    end
 end
 
 local function OnEntitySleep(inst)
@@ -154,4 +154,4 @@ local function fn()
     return inst
 end
 
-return Prefab("lavae", fn, assets, prefabs)
+return Prefab("common/monsters/lavae", fn, assets, prefabs)

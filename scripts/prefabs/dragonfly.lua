@@ -495,4 +495,4 @@ local function fn()
     return inst
 end
 
-return Prefab("dragonfly", fn, assets, prefabs)
+return Prefab("common/monsters/dragonfly", fn, assets, prefabs)

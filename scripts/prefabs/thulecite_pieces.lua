@@ -48,4 +48,4 @@ local function fn()
     return inst
 end
 
-return Prefab("thulecite_pieces", fn, assets)
+return Prefab("common/inventory/thulecite_pieces", fn, assets)

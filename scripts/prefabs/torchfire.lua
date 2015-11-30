@@ -121,4 +121,4 @@ local function fn()
     return inst
 end
 
-return Prefab("torchfire", fn, assets)
+return Prefab("common/fx/torchfire", fn, assets)

@@ -95,4 +95,4 @@ local function fn()
     return inst
 end
 
-return Prefab("meteorwarning", fn, assets)
+return Prefab("common/fx/meteorwarning", fn, assets)

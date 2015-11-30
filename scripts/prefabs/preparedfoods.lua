@@ -84,7 +84,7 @@ local function MakePreparedFood(data)
         return inst
     end
 
-    return Prefab(data.name, fn, assets, prefabs)
+    return Prefab("common/inventory/"..data.name, fn, assets, prefabs)
 end
 
 local prefs = {}

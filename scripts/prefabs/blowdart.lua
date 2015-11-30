@@ -220,7 +220,7 @@ local function walrus()
     return inst
 end
 
-return Prefab("blowdart_sleep", sleep, assets, prefabs),
-       Prefab("blowdart_fire", fire, assets, prefabs),
-       Prefab("blowdart_pipe", pipe, assets, prefabs),
-       Prefab("blowdart_walrus", walrus, assets, prefabs)
+return Prefab("common/inventory/blowdart_sleep", sleep, assets, prefabs),
+       Prefab("common/inventory/blowdart_fire", fire, assets, prefabs),
+       Prefab("common/inventory/blowdart_pipe", pipe, assets, prefabs),
+       Prefab("common/inventory/blowdart_walrus", walrus, assets, prefabs)

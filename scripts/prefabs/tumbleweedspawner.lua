@@ -18,11 +18,11 @@ local function fn()
     inst.components.childspawner:SetRegenPeriod(TUNING.TUMBLEWEED_REGEN_PERIOD)
     inst.components.childspawner.spawnoffscreen = true
     inst:DoTaskInTime(0, function(inst)
-        inst.components.childspawner:ReleaseAllChildren()
+        inst.components.childspawner:ReleaseAllChildren() 
         inst.components.childspawner:StartSpawning()
     end)
 
     return inst
 end
 
-return Prefab("tumbleweedspawner", fn, nil, prefabs)
+return Prefab("badlands/objects/tumbleweedspawner", fn, nil, prefabs)

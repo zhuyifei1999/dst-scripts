@@ -53,4 +53,4 @@ local function fn()
 	return inst
 end
 
-return Prefab("maxwellphonograph", fn, assets) 
+return Prefab("common/objects/maxwellphonograph", fn, assets) 

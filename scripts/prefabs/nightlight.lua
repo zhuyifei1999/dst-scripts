@@ -5,8 +5,8 @@ local assets =
 
 local prefabs =
 {
+    "campfirefire",
     "collapse_small",
-    "nightlight_flame",
 }
 
 local function onhammered(inst)
@@ -147,5 +147,5 @@ local function fn()
     return inst
 end
 
-return Prefab("nightlight", fn, assets, prefabs),
-    MakePlacer("nightlight_placer", "nightmare_torch", "nightmare_torch", "idle")
+return Prefab("common/objects/nightlight", fn, assets, prefabs),
+    MakePlacer("common/nightlight_placer", "nightmare_torch", "nightmare_torch", "idle")

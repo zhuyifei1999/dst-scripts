@@ -7,11 +7,6 @@ local assets =
     Asset("SOUND", "sound/together.fsb"),
 }
 
-local prefabs =
-{
-    "bernie_inactive",
-}
-
 local function refreshcontainer(container)
     for i = 1, container:GetNumSlots() do
         local item = container:GetItemInSlot(i)
@@ -143,4 +138,4 @@ local function fn()
     return inst
 end
 
-return Prefab("bernie_active", fn, assets, prefabs)
+return Prefab("common/bernie_active", fn, assets)

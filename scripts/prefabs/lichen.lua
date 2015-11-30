@@ -68,4 +68,4 @@ local function fn()
     return inst
 end
 
-return Prefab("lichen", fn, assets, prefabs)
+return Prefab("cave/objects/lichen", fn, assets, prefabs)

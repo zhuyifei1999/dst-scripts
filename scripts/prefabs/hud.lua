@@ -70,4 +70,4 @@ local function fn()
     return CreateEntity()
 end
 
-return Prefab("hud", fn, assets, prefabs, true)
+return Prefab("UI/interface/hud", fn, assets, prefabs, true)

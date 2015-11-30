@@ -160,5 +160,5 @@ local function fnplayer()
     return inst
 end
 
-return Prefab("skeleton", fn, assets, prefabs),
-    Prefab("skeleton_player", fnplayer, assets, prefabs)
+return Prefab("common/objects/skeleton", fn, assets, prefabs),
+    Prefab("common/objects/skeleton_player", fnplayer, assets, prefabs)

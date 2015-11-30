@@ -237,4 +237,4 @@ local function mosquito()
     return inst
 end
 
-return Prefab("mosquito", mosquito, assets, prefabs)
+return Prefab("forest/monsters/mosquito", mosquito, assets, prefabs)

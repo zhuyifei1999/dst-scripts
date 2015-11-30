@@ -6,11 +6,6 @@ local assets =
     Asset("ANIM", "anim/mandrake.zip"),
 }
 
-local prefabs =
-{
-    "mandrake_active",
-}
-
 local function onpickup(inst)
     inst.AnimState:PlayAnimation("object")
 end
@@ -127,5 +122,5 @@ local function cookedfn()
     return inst
 end
 
-return Prefab("mandrake", rawfn, assets, prefabs),
-    Prefab("cookedmandrake", cookedfn, assets)
+return Prefab("common/mandrake", rawfn, assets),
+    Prefab("common/cookedmandrake", cookedfn, assets)

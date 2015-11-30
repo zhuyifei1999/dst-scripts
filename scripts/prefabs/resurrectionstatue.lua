@@ -3,13 +3,11 @@ require "prefabutil"
 local assets =
 {
     Asset("ANIM", "anim/wilsonstatue.zip"),
-    Asset("MINIMAP_IMAGE", "resurrect"),
 }
 
 local prefabs =
 {
     "collapse_small",
-    "collapse_big",
     "charcoal",
 }
 
@@ -178,5 +176,5 @@ local function fn()
     return inst
 end
 
-return Prefab("resurrectionstatue", fn, assets, prefabs),
-    MakePlacer("resurrectionstatue_placer", "wilsonstatue", "wilsonstatue", "idle")
+return Prefab("common/objects/resurrectionstatue", fn, assets, prefabs),
+    MakePlacer("common/resurrectionstatue_placer", "wilsonstatue", "wilsonstatue", "idle")

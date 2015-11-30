@@ -121,10 +121,10 @@ CONTROL_INVENTORY_USEONSELF = 52 -- d-pad right
 CONTROL_INVENTORY_USEONSCENE = 53 -- d-pad left
 CONTROL_INVENTORY_DROP = 54 -- d-pad down
 CONTROL_PUTSTACK = 55
-CONTROL_CONTROLLER_ATTACK = 56 -- X on xbox controller
-CONTROL_CONTROLLER_ACTION = 57 -- A
-CONTROL_CONTROLLER_ALTACTION = 58 -- B
-CONTROL_USE_ITEM_ON_ITEM = 59 
+CONTROL_CONTROLLER_ATTACK = 56
+CONTROL_CONTROLLER_ACTION = 57
+CONTROL_CONTROLLER_ALTACTION = 58
+CONTROL_USE_ITEM_ON_ITEM = 59
 
 CONTROL_MAP_ZOOM_IN = 60
 CONTROL_MAP_ZOOM_OUT = 61
@@ -141,8 +141,6 @@ CONTROL_MENU_MISC_1 = 68  -- X
 CONTROL_MENU_MISC_2 = 69  -- Y
 CONTROL_MENU_MISC_3 = 70  -- L
 CONTROL_MENU_MISC_4 = 71  -- R
-
-CONTROL_INSPECT_SELF = 72 -- Y
 
 CONTROL_CUSTOM_START = 100
 
@@ -258,11 +256,6 @@ GESTURE_ROTATE_LEFT = 902
 GESTURE_ROTATE_RIGHT = 903
 GESTURE_MAX = 904
 
-
-BACKEND_PREFABS = {"hud", "forest", "cave", "maxwell", "fire", "character_fire", "shatter"}
-FRONTEND_PREFABS = {"frontend"}
-RECIPE_PREFABS = {}
-
 --Legacy table, not for DST
 MAIN_CHARACTERLIST = 
 {
@@ -279,9 +272,6 @@ DST_CHARACTERLIST =
 {
     "wilson", "willow", "wolfgang", "wendy", "wx78", "wickerbottom", "woodie", "wes", "wathgrithr", "webber",
 }
-
-require("prefabskins")
-require("clothing")
 
 MAINSCREEN_CHAR_1 = "corner_dude"
 MAINSCREEN_CHAR_2 = "corner_dude"
@@ -1029,8 +1019,6 @@ DOUBLE_CLICK_TIMEOUT = .5
 GOLD = {202/255, 174/255, 118/255, 255/255}
 GREY = {.57, .57, .57, 1}
 BLACK = {.1, .1, .1, 1}
-WHITE = {1, 1, 1, 1}
-BROWN = {97/255, 73/255, 46/255, 255/255}
 
 --Bit flags, currently supports up to 8
 --Server may use these for things that clients need to know about
