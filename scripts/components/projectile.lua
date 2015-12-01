@@ -200,6 +200,7 @@ function Projectile:OnUpdate(dt)
     elseif target ~= nil
         and target:IsValid()
         and not target:IsInLimbo()
+        and target.entity:IsVisible()
         and (target.sg == nil or
             not (target.sg:HasStateTag("flight") or
                 target.sg:HasStateTag("invisible"))) then
@@ -235,7 +236,11 @@ function Projectile:OnUpdate(dt)
 end
 
 function Projectile:OnSave()
-    if self:IsThrown() and not (self.owner:HasTag("player") or self.target:HasTag("player")) then
+    if self:IsThrown() and
+        self.owner ~= nil and self.target ~= nil and
+        self.owner:IsValid() and self.target:IsValid() and
+        self.owner.persists and self.target.persist and --Pets and such don't save normally, so references would not work on them
+        not (self.owner:HasTag("player") or self.target:HasTag("player")) then
         return { target = self.target.GUID, owner = self.owner.GUID }, { self.target.GUID, self.owner.GUID }
     end
 end

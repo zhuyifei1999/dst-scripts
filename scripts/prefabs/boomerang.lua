@@ -65,6 +65,14 @@ local function OnHit(inst, owner, target)
     end
 end
 
+local function OnMiss(inst, owner, target)
+    if owner == target then
+        OnDropped(inst)
+    else
+        ReturnToOwner(inst, owner)
+    end
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -107,7 +115,7 @@ local function fn()
     inst.components.projectile:SetCanCatch(true)
     inst.components.projectile:SetOnThrownFn(OnThrown)
     inst.components.projectile:SetOnHitFn(OnHit)
-    inst.components.projectile:SetOnMissFn(ReturnToOwner)
+    inst.components.projectile:SetOnMissFn(OnMiss)
     inst.components.projectile:SetOnCaughtFn(OnCaught)
 
     inst:AddComponent("inventoryitem")
