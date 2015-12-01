@@ -1162,6 +1162,12 @@ return {
 			GENERIC = "How do they all fit?",
 		},
 		WALRUS_TUSK = "Sea cow man tooth!",
+		WARDROBE = 
+		{
+			GENERIC = "Box of clothes!",
+            BURNING = "Box of fire!",
+			BURNT = "Box all gone.",
+		},
 		WARG = "Big puppy!",
 		WASPHIVE = "Mind says no. Muscles say yes!",
 		WETGOOP = "Wolfgang ruin food!",

@@ -253,9 +253,9 @@ local function MakeVeggie(name, has_seeds)
         return inst
     end
 
-    local base = Prefab("common/inventory/"..name, fn, assets, prefabs)
-    local cooked = Prefab("common/inventory/"..name.."_cooked", fn_cooked, assets_cooked)
-    local seeds = has_seeds and Prefab("common/inventory/"..name.."_seeds", fn_seeds, assets_seeds) or nil
+    local base = Prefab(name, fn, assets, prefabs)
+    local cooked = Prefab(name.."_cooked", fn_cooked, assets_cooked)
+    local seeds = has_seeds and Prefab(name.."_seeds", fn_seeds, assets_seeds) or nil
 
     return base, cooked, seeds
 end

@@ -1,4 +1,4 @@
-return
+local fx =
 {
     {
         name = "sanity_raise",
@@ -22,34 +22,12 @@ return
         sound = "dontstarve/common/deathpoof",
         tint = Vector3(90/255, 66/255, 41/255),
     },
-    {
+    --[[{
         name = "sparks_fx",
         bank = "sparks",
         build = "sparks",
         anim = { "sparks_1", "sparks_2", "sparks_3" },
-    },
-    {
-        name = "firework_fx",
-        bank = "firework",
-        build = "accomplishment_fireworks",
-        anim = "single_firework",
-        sound = "dontstarve/common/shrine/sadwork_fire",
-        sound2 = "dontstarve/common/shrine/sadwork_explo",
-        sounddelay2 = 26/30,
-        fn = function() TheWorld:PushEvent("screenflash", .65) end,
-        fntime = 26/30,
-    },
-    {
-        name = "multifirework_fx",
-        bank = "firework",
-        build = "accomplishment_fireworks",
-        anim = "multi_firework",
-        sound = "dontstarve/common/shrine/sadwork_fire",
-        sound2 = "dontstarve/common/shrine/firework_explo",
-        sounddelay2 = 26/30,
-        fn = function() TheWorld:PushEvent("screenflash", 1) end,
-        fntime = 26/30,
-    },
+    },]]
     {
         name = "lightning_rod_fx",
         bank = "lightning_rod_fx",
@@ -129,12 +107,12 @@ return
         build = "mining_fx",
         anim = "anim",
     },
-    {
+    --[[{
         name = "pine_needles",
         bank = "pine_needles",
         build = "pine_needles",
         anim = "fall",
-    },
+    },]]
     {
         name = "pine_needles_chop",
         bank = "pine_needles",
@@ -265,14 +243,14 @@ return
                         return GetString(viewer, "DESCRIBE", { "MOLE", "UNDERGROUND" })
                     end,
     },
-    {
+    --[[{
         name = "sparklefx",
         bank = "sparklefx",
         build = "sparklefx",
         anim = "sparkle",
         sound = "dontstarve/common/chest_positive",
         tintalpha = 0.6,
-    },
+    },]]
     {
         name = "chester_transform_fx",
         bank = "die_fx",
@@ -312,20 +290,20 @@ return
         anim = "medium",
         sound = "dontstarve/common/spawn/spawnportal_spawnplayer",
     },
-    {
+    --[[{
         name = "spawn_fx_large",
         bank = "spawn_fx",
         build = "puff_spawning",
         anim = "large",
         sound = "dontstarve/common/spawn/spawnportal_spawnplayer",
-    },
-    {
+    },]]
+    --[[{
         name = "spawn_fx_huge",
         bank = "spawn_fx",
         build = "puff_spawning",
         anim = "huge",
         sound = "dontstarve/common/spawn/spawnportal_spawnplayer",
-    },
+    },]]
     {
         name = "splash_snow_fx",
         bank = "splash",
@@ -451,3 +429,30 @@ return
         sound = "dontstarve/ghost/ghost_haunt",
     },
 }
+
+if ACCOMPLISHMENTS_ENABLED then
+    table.insert(fx, {
+        name = "firework_fx",
+        bank = "firework",
+        build = "accomplishment_fireworks",
+        anim = "single_firework",
+        sound = "dontstarve/common/shrine/sadwork_fire",
+        sound2 = "dontstarve/common/shrine/sadwork_explo",
+        sounddelay2 = 26/30,
+        fn = function() TheWorld:PushEvent("screenflash", .65) end,
+        fntime = 26/30,
+    })
+    table.insert(fx, {
+        name = "multifirework_fx",
+        bank = "firework",
+        build = "accomplishment_fireworks",
+        anim = "multi_firework",
+        sound = "dontstarve/common/shrine/sadwork_fire",
+        sound2 = "dontstarve/common/shrine/firework_explo",
+        sounddelay2 = 26/30,
+        fn = function() TheWorld:PushEvent("screenflash", 1) end,
+        fntime = 26/30,
+    })
+end
+
+return fx

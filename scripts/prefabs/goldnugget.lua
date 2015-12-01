@@ -54,4 +54,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/inventory/goldnugget", fn, assets)
+return Prefab("goldnugget", fn, assets)

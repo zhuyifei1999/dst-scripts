@@ -2,12 +2,16 @@ local assets =
 {
     Asset("ANIM", "anim/lucy_axe.zip"),
     Asset("ANIM", "anim/swap_lucy_axe.zip"),
+	Asset("MINIMAP_IMAGE", "lucy_axe"),
 }
 
 local prefabs =
 {
     "lucy_transform_fx",
     "lucy_ground_transform_fx",
+
+    -- Lucy specific classified prefabs
+    "lucy_classified",
 }
 
 --------------------------------------------------------------------------
@@ -198,4 +202,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/inventory/lucy", fn, assets, prefabs)
+return Prefab("lucy", fn, assets, prefabs)

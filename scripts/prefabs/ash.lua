@@ -101,4 +101,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/inventory/ash", fn, assets)
+return Prefab("ash", fn, assets)

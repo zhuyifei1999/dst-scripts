@@ -105,4 +105,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/fx/staffcastfx", fn, assets)
+return Prefab("staffcastfx", fn, assets)

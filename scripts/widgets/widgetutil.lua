@@ -19,7 +19,11 @@ function CanPrototypeRecipe(recipetree, buildertree)
     return true
 end
 
-function DoRecipeClick(owner, recipe)
+function DoRecipeClick(owner, recipe, skin)
+    if skin == recipe.name then
+        skin = nil
+    end
+
     if recipe ~= nil and owner ~= nil and owner.replica.builder ~= nil then
         if owner:HasTag("busy") or owner.replica.builder:IsBusy() then
             return true
@@ -49,14 +53,14 @@ function DoRecipeClick(owner, recipe)
                 --TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
                 --owner.HUD.controls.crafttabs.tabs:DeselectAll()
                 if recipe.placer == nil then
-                    owner.replica.builder:MakeRecipeFromMenu(recipe)
+                    owner.replica.builder:MakeRecipeFromMenu(recipe, skin)
                 elseif owner.components.playercontroller ~= nil then
-                    owner.components.playercontroller:StartBuildPlacementMode(recipe)
+                    owner.components.playercontroller:StartBuildPlacementMode(recipe, skin)
                 end
             elseif can_build then
                 --TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")           
                 if recipe.placer == nil then
-                    owner.replica.builder:MakeRecipeFromMenu(recipe)
+                    owner.replica.builder:MakeRecipeFromMenu(recipe, skin)
                     return true
                 elseif owner.components.playercontroller ~= nil then
                     --owner.HUD.controls.crafttabs.tabs:DeselectAll()
@@ -64,7 +68,7 @@ function DoRecipeClick(owner, recipe)
                     if not owner.replica.builder:IsBuildBuffered(recipe.name) then
                         return true
                     end
-                    owner.components.playercontroller:StartBuildPlacementMode(recipe)
+                    owner.components.playercontroller:StartBuildPlacementMode(recipe, skin)
                 end
             else
                 return true
@@ -73,13 +77,13 @@ function DoRecipeClick(owner, recipe)
             local tech_level = owner.replica.builder:GetTechTrees()
             if can_build and CanPrototypeRecipe(recipe.level, tech_level) then
                 if recipe.placer == nil then
-                    owner.replica.builder:MakeRecipeFromMenu(recipe)
+                    owner.replica.builder:MakeRecipeFromMenu(recipe, skin)
                 elseif owner.components.playercontroller ~= nil then
                     owner.replica.builder:BufferBuild(recipe.name)
                     if not owner.replica.builder:IsBuildBuffered(recipe.name) then
                         return true
                     end
-                    owner.components.playercontroller:StartBuildPlacementMode(recipe)
+                    owner.components.playercontroller:StartBuildPlacementMode(recipe, skin)
                     if owner.components.builder ~= nil then
                         owner.components.builder:ActivateCurrentResearchMachine()
                         owner.components.builder:UnlockRecipe(recipe.name)

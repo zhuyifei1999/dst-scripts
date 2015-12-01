@@ -46,8 +46,7 @@ function BatSpawner:GetSpawnPoint(pt)
 	-- we have to special case this one because birds can't land on creep
 	local result_offset = FindValidPositionByFan(theta, radius, 12, function(offset)
         local spawn_point = pt + offset
-        return ground.Map:IsPassableAtPoint(spawn_point:Get()) and
-           not ground.GroundCreep:OnCreep(spawn_point:Get()) then
+        return ground.Map:IsPassableAtPoint(spawn_point:Get()) and not ground.GroundCreep:OnCreep(spawn_point:Get())
     end)
 
 	if result_offset then

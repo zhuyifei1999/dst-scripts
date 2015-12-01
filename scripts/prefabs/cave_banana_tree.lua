@@ -249,6 +249,6 @@ local function burnt_fn()
 	return inst
 end
 
-return Prefab("cave/cave_banana_tree", tree_fn, assets, prefabs),
-Prefab("cave/cave_banana_burnt", burnt_fn, assets, prefabs),
-Prefab("cave/cave_banana_stump", stump_fn, assets, prefabs)
+return Prefab("cave_banana_tree", tree_fn, assets, prefabs),
+Prefab("cave_banana_burnt", burnt_fn, assets, prefabs),
+Prefab("cave_banana_stump", stump_fn, assets, prefabs)

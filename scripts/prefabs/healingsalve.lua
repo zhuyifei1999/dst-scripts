@@ -37,4 +37,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/inventory/healingsalve", fn, assets)
+return Prefab("healingsalve", fn, assets)

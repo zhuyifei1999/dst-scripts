@@ -1,6 +1,11 @@
 local assets =
 {
     Asset("ANIM", "anim/heat_rock.zip"),
+    Asset("INV_IMAGE", "heat_rock1"),
+    Asset("INV_IMAGE", "heat_rock2"),
+    Asset("INV_IMAGE", "heat_rock3"),
+    Asset("INV_IMAGE", "heat_rock4"),
+    Asset("INV_IMAGE", "heat_rock5"),
 }
 
 local function OnSave(inst, data)
@@ -232,5 +237,5 @@ local function lightfn()
     return inst
 end
 
-return Prefab("common/inventory/heatrock", fn, assets),
-    Prefab("common/inventory/heatrocklight", lightfn)
+return Prefab("heatrock", fn, assets),
+    Prefab("heatrocklight", lightfn)

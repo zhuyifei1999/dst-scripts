@@ -94,5 +94,5 @@ local function fn()
     return inst
 end
 
-return Prefab("common/dragonflychest", fn, assets),
-    MakePlacer("common/dragonflychest_placer", "dragonfly_chest", "dragonfly_chest", "closed")
+return Prefab("dragonflychest", fn, assets),
+    MakePlacer("dragonflychest_placer", "dragonfly_chest", "dragonfly_chest", "closed")
