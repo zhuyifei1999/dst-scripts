@@ -273,7 +273,7 @@ function MultiplayerMainScreen:DoInit( )
     self.onlinestatus = self.fg:AddChild(OnlineStatus())
 
 	self:UpdateMOTD()
-	self:UpdateCountdown()
+	--self:UpdateCountdown()
 
 	self.filter_settings = nil
 

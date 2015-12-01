@@ -40,16 +40,15 @@ end
 
 local function RetargetFn(inst)
     local mother = inst.components.entitytracker:GetEntity("mother")
-    if mother ~= nil and not inst.components.combat:HasTarget() then
-        local group_targets = inst.components.grouptargeter:GetTargets()
+    if mother == nil then
+        --Shouldn't be in the world. Leave.
+        inst.reset = true
+    elseif not inst.components.combat:HasTarget() and mother.components.grouptargeter ~= nil then
         local targets = {}
-        for k, v in pairs(group_targets) do
+        for k, v in pairs(mother.components.grouptargeter:GetTargets()) do
             table.insert(targets, k)
         end
         return GetClosest(mother, targets)
-    elseif mother == nil or not inst.components.combat:HasTarget() then
-        --Shouldn't be in the world. Leave.
-        inst.reset = true
     end
 end
 
@@ -118,14 +117,14 @@ local function fn()
     inst:AddComponent("lootdropper")
     inst:AddComponent("inspectable")
     inst:AddComponent("locomotor")
-    inst:AddComponent("grouptargeter")
     inst:AddComponent("homeseeker")
     inst:AddComponent("entitytracker")
     inst:SetStateGraph("SGlavae")
     inst:SetBrain(brain)
 
     inst._ontargetdeath = function()
-        local new_target = inst.components.grouptargeter:SelectTarget()
+        local mother = inst.components.entitytracker:GetEntity("mother")
+        local new_target = mother ~= nil and mother.components.grouptargeter ~= nil and mother.components.grouptargeter:SelectTarget() or nil
         if new_target ~= nil then
             inst.components.combat:SetTarget(new_target)
         end

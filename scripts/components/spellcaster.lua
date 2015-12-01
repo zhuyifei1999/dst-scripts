@@ -99,7 +99,11 @@ function SpellCaster:CanCast(doer, target, pos)
     elseif target:IsInLimbo()
         or not target.entity:IsVisible()
         or (target.components.health ~= nil and target.components.health:IsDead())
-        or (target.sg ~= nil and target.sg.currentstate.name == "death") then
+        or (target.sg ~= nil and (
+                target.sg.currentstate.name == "death" or
+                target.sg:HasStateTag("flight") or
+                target.sg:HasStateTag("invisible")
+            )) then
         return false
     elseif self.inst:HasTag("castontargets") then
         return true

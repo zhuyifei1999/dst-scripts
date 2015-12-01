@@ -121,15 +121,19 @@ local states =
             end),
 
             TimeEvent(24*FRAMES, function(inst)                 
+                --V2C: Need to revalidate target! Combat target could've
+                --     changed after all these frames and state changes!
                 local target = inst.components.combat.target
-                if inst and target then
-                    if inst:GetDistanceSqToInst(target) < 2*2 then
-                        local oldhat = target.components.inventory:GetEquippedItem(EQUIPSLOTS.HEAD)
-                        if oldhat then
-                            target.components.inventory:DropItem(oldhat)
-                        end
-                        target.components.inventory:Equip(inst)
-                    end                
+                if target ~= nil and
+                    target:IsValid() and
+                    inst:IsNear(target, 2) and
+                    inst.HatTest ~= nil and
+                    inst:HatTest(target) then
+                    local oldhat = target.components.inventory:GetEquippedItem(EQUIPSLOTS.HEAD)
+                    if oldhat ~= nil then
+                        target.components.inventory:DropItem(oldhat)
+                    end
+                    target.components.inventory:Equip(inst)
                 end 
             end),
         },
@@ -197,12 +201,11 @@ local states =
 
             TimeEvent(30*FRAMES, function(inst) 
                 local target = inst.components.combat.target
-                if inst and target then
-                    if inst:GetDistanceSqToInst(target) < 2*2 then
+                if target ~= nil and target:IsValid() then
+                    if inst:IsNear(target, 2) then
                         inst.components.combat:DoAttack(target)
                     end
-
-                    if inst.HatTest and inst.HatTest(inst, target) then
+                    if inst.HatTest ~= nil and inst:HatTest(target) then
                         inst.sg:GoToState("headslurp")
                     end
                 end

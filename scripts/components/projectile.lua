@@ -129,9 +129,13 @@ function Projectile:Catch(catcher)
 end
 
 function Projectile:Miss(target)
+    local attacker = self.owner
+    if self.owner.components.combat == nil and self.owner.components.weapon ~= nil and self.owner.components.inventoryitem ~= nil then
+        attacker = self.owner.components.inventoryitem.owner
+    end
     self:Stop()
     if self.onmiss ~= nil then
-        self.onmiss(self.inst, self.owner, target)
+        self.onmiss(self.inst, attacker, target)
     end
 end
 
@@ -153,7 +157,6 @@ function Projectile:Hit(target)
     if attacker ~= nil and attacker.components.combat ~= nil then
         attacker.components.combat:DoAttack(target, weapon, self.inst, self.stimuli)
     end
-
     if self.onhit ~= nil then
         self.onhit(self.inst, attacker, target)
     end
@@ -171,10 +174,10 @@ function Projectile:OnEntitySleep()
 end
 
 function Projectile:OnEntityWake()
-	if self.dozeOffTask ~= nil then
-		self.dozeOffTask:Cancel()
-		self.dozeOffTask = nil
-	end
+    if self.dozeOffTask ~= nil then
+        self.dozeOffTask:Cancel()
+        self.dozeOffTask = nil
+    end
 end
 
 function Projectile:OnUpdate(dt)
@@ -194,9 +197,12 @@ function Projectile:OnUpdate(dt)
                 self:Hit(target)
             end
         end
-    elseif target == nil or not target:IsValid() or target:IsInLimbo() then
-        self:Miss(target)
-    else
+    elseif target ~= nil
+        and target:IsValid()
+        and not target:IsInLimbo()
+        and (target.sg == nil or
+            not (target.sg:HasStateTag("flight") or
+                target.sg:HasStateTag("invisible"))) then
         local range = target.Physics ~= nil and target.Physics:GetRadius() + self.hitdist or self.hitdist
         -- V2C: this is 3D distsq (since combat range checks use 3D distsq as well)
         -- NOTE: used < here, whereas combat uses <=, just to give us tiny bit of room for error =)
@@ -211,6 +217,19 @@ function Projectile:OnUpdate(dt)
             else
                 self:Hit(target)
             end
+        end
+    elseif self.owner == nil or
+        not self.owner:IsValid() or
+        self.owner.components.combat == nil or
+        self.inst.components.weapon == nil or
+        self.inst.components.weapon.attackrange == nil then
+        -- Lost our target, e.g. bird flew away
+        self:Miss(target)
+    else
+        -- We have enough info to make our weapon fly to max distance before "missing"
+        local range = self.owner.components.combat.attackrange + self.inst.components.weapon.attackrange
+        if distsq(self.owner:GetPosition(), current) > range * range then
+            self:Miss(target)
         end
     end
 end

@@ -287,6 +287,11 @@ local function ModSafeStartup()
 	FontManager = TheGlobalInstance.entity:AddFontManager()
 	MapLayerManager = TheGlobalInstance.entity:AddMapLayerManager()
 
+    -- I think we've got everything we need by now...
+    if TheSim:GetNumLaunches() == 1 then
+        RecordGameStartStats()
+    end
+
 end
 
 SetInstanceParameters(json_settings)

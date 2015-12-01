@@ -912,8 +912,6 @@ local function OnFilesLoaded()
 	UpdateGamePurchasedState(OnUpdatePurchaseStateComplete)
 end
 
-STATS_ENABLE = METRICS_ENABLED
-
 Profile = PlayerProfile()
 SaveGameIndex = SaveIndex()
 Morgue = PlayerDeaths()

@@ -32,7 +32,6 @@ end)
 
 
 function MainScreen:DoInit( )
-	STATS_ENABLE = false
 	TheFrontEnd:GetGraphicsOptions():DisableStencil()
 	TheFrontEnd:GetGraphicsOptions():DisableLightMapComponent()
 	

@@ -1,6 +1,6 @@
 -- require "stats_schema"    -- for when we actually organize 
 
-STATS_ENABLE = false
+STATS_ENABLE = METRICS_ENABLED
 -- NOTE: There is also a call to 'anon/start' in dontstarve/main.cpp which has to be un/commented
 
 --- non-user-facing Tracking stats  ---
@@ -279,7 +279,6 @@ function RecordSessionStartStats()
 		table.insert(sendstats.Session.Loads.Mods.list, name)
 	end
 
-
 	--[[if IsDLCInstalled(REIGN_OF_GIANTS) and not IsDLCEnabled(REIGN_OF_GIANTS) then
 		sendstats.Session.Loads.Mods.mod = true
 		table.insert(sendstats.Session.Loads.Mods.list, "RoG-NotPlaying")
@@ -302,11 +301,35 @@ function RecordSessionStartStats()
     --GameStats.super = OnLoadGameInfo.super
     --OnLoadGameInfo.super = nil
 	
-	dprint("_________________++++++ Sending sessions start stats...\n")
-	ddump(sendstats)
+	--print("_________________++++++ Sending sessions start stats...\n")
+	--dumptable(sendstats)
 	local jsonstats = json.encode( sendstats )
 	TheSim:SendProfileStats( jsonstats )
 
+end
+
+function RecordGameStartStats()
+	if not STATS_ENABLE then
+		return
+	end
+
+	-- TODO: This should actually just write the specific start stats, and it will eventually
+	-- be rolled into the "quit" stats and sent off all at once.
+	local sendstats = BuildContextTable()
+    sendstats.startup = {}
+
+    local documents, savegames = TheSim:GetPersistentStorageTestResults()
+    if documents ~= nil or savegames ~= nil then
+        sendstats.startup.storage = {
+            documents = documents,
+            savegames = savegames,
+        }
+    end
+
+	--print("_________________++++++ Sending game start stats...\n")
+	--dumptable(sendstats)
+	local jsonstats = json.encode( sendstats )
+	TheSim:SendProfileStats( jsonstats )
 end
 
 -- value is optional, 1 if nil
