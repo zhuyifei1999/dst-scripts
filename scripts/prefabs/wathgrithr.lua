@@ -2,7 +2,8 @@ local MakePlayerCharacter = require "prefabs/player_common"
 
 local assets =
 {
-    Asset("SCRIPT", "scripts/prefabs/player_common.lua"),
+    Asset("ANIM", "anim/wathgrithr.zip"),
+    Asset("ANIM", "anim/ghost_wathgrithr_build.zip"),
     Asset("SOUND", "sound/wathgrithr.fsb"),
 }
 

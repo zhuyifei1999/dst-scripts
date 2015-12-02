@@ -101,4 +101,4 @@ local function fn()
     return inst
 end
 
-return Prefab("waxwelljournal", fn, assets, prefabs)
+return Prefab("common/waxwelljournal", fn, assets, prefabs)

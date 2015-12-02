@@ -346,5 +346,5 @@ local function create_warrior()
     return inst
 end
 
-return Prefab("spider", create_spider, assets, prefabs),
-    Prefab("spider_warrior", create_warrior, warrior_assets)
+return Prefab("forest/monsters/spider", create_spider, assets, prefabs),
+    Prefab("forest/monsters/spider_warrior", create_warrior, warrior_assets)

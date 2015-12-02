@@ -217,7 +217,7 @@ local states=
         end,
 
         timeline =
-        {
+        {                
             TimeEvent(15*FRAMES, function(inst) 
                 if inst.sg.statemem.target ~= nil and inst.sg.statemem.target:IsValid() then
                     inst:FacePoint(inst.sg.statemem.target.Transform:GetWorldPosition())
@@ -235,7 +235,7 @@ local states=
             end)
         },
 
-        events =
+        events = 
         {
             EventHandler("animqueueover", function(inst) inst.sg:GoToState("idle") end)
         },

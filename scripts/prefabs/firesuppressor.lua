@@ -393,4 +393,4 @@ end
 
 return Prefab("firesuppressor", fn, assets, prefabs),
     Prefab("firesuppressor_glow", glow_fn, glow_assets),
-    MakePlacer("firesuppressor_placer", "firefighter_placement", "firefighter_placement", "idle", true, nil, nil, 1.55)
+    MakePlacer("common/firesuppressor_placer", "firefighter_placement", "firefighter_placement", "idle", true, nil, nil, 1.55)

@@ -49,4 +49,4 @@ local function fn()
     return inst
 end
 
-return Prefab("nitre", fn, assets)
+return Prefab("common/inventory/nitre", fn, assets)

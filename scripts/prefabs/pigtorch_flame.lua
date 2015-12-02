@@ -41,4 +41,4 @@ local function fn()
     return inst
 end
 
-return Prefab("pigtorch_flame", fn, assets)
+return Prefab("common/fx/pigtorch_flame", fn, assets)

@@ -14,7 +14,7 @@ local starting_inv =
 
 local assets =
 {
-    Asset("SCRIPT", "scripts/prefabs/player_common.lua"),
+    Asset("ANIM", "anim/woodie.zip"),
     Asset("SOUND", "sound/woodie.fsb"),
 
     Asset("ANIM", "anim/werebeaver_build.zip"),
@@ -29,6 +29,7 @@ local assets =
     Asset("IMAGE", "images/woodie.tex"),
     Asset("IMAGE", "images/colour_cubes/beaver_vision_cc.tex"),
 
+    Asset("ANIM", "anim/ghost_woodie_build.zip"),
     Asset("ANIM", "anim/ghost_werebeaver_build.zip"),
 }
 
@@ -399,7 +400,7 @@ end
 local function onbecamehuman(inst)
     if inst.prefab ~= nil and inst.sg.currentstate.name ~= "reviver_rebirth" then
         inst.AnimState:SetBank("wilson")
-        inst.components.skinner:SetSkinMode("normal_skin")
+        inst.AnimState:SetBuild(inst.skin_name or inst.prefab)
     end
 
     inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED
@@ -440,9 +441,8 @@ end
 
 local function onbecamebeaver(inst)
     if inst.sg.currentstate.name ~= "reviver_rebirth" then
-        inst.components.skinner:ClearAllClothing(inst.AnimState)
         inst.AnimState:SetBank("werebeaver")
-        inst.components.skinner:SetSkinMode("werebeaver_skin")
+        inst.AnimState:SetBuild("werebeaver_build")
     end
 
     inst.hurtsoundoverride = "dontstarve/characters/woodie/hurt_beaver"
@@ -562,6 +562,12 @@ local function onsave(inst, data)
     data.isbeaver = inst.isbeavermode:value() or nil
 end
 
+local function onsetskin(inst)
+    if inst.isbeavermode:value() and not inst:HasTag("playerghost") then
+        inst.AnimState:SetBuild("werebeaver_build")
+    end
+end
+
 --------------------------------------------------------------------------
 
 local function common_postinit(inst)
@@ -615,6 +621,7 @@ local function master_postinit(inst)
     inst.OnSave = onsave
     inst.OnLoad = onload
     inst.OnPreLoad = onpreload
+    inst.OnSetSkin = onsetskin
 end
 
 return MakePlayerCharacter("woodie", prefabs, assets, common_postinit, master_postinit, starting_inv)

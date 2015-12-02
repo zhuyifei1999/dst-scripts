@@ -241,7 +241,7 @@ local function siestahut()
     return inst
 end
 
-return Prefab("tent", tent, tent_assets),
-    MakePlacer("tent_placer", "tent", "tent", "idle"),
-    Prefab("siestahut", siestahut, siestahut_assets),
-    MakePlacer("siestahut_placer", "siesta_canopy", "siesta_canopy", "idle")
+return Prefab("common/objects/tent", tent, tent_assets),
+    MakePlacer("common/tent_placer", "tent", "tent", "idle"),
+    Prefab("common/objects/siestahut", siestahut, siestahut_assets),
+    MakePlacer("common/siestahut_placer", "siesta_canopy", "siesta_canopy", "idle")

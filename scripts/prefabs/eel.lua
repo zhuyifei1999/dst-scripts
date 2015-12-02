@@ -132,8 +132,8 @@ end
 
 local function eel(name, build)
     local raw, cooked = makeeel(build)
-    return Prefab(name, raw, assets, prefabs),
-        Prefab(name.."_cooked", cooked, assets)
+    return Prefab("common/inventory/"..name, raw, assets, prefabs),
+        Prefab("common/inventory/"..name.."_cooked", cooked, assets)
 end
 
 return eel("eel", "eel01")

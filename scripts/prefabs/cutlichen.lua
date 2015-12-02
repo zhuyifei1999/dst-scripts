@@ -45,4 +45,4 @@ local function fn()
     return inst
 end
 
-return Prefab("cutlichen", fn, assets)
+return Prefab("common/inventory/cutlichen", fn, assets)

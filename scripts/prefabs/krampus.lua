@@ -115,4 +115,4 @@ local function fn()
     return inst
 end
 
-return Prefab("krampus", fn, assets, prefabs)
+return Prefab("monsters/krampus", fn, assets, prefabs)

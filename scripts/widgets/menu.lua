@@ -239,11 +239,4 @@ function Menu:EditItem(num, text, cb)
 
 end
 
-function Menu:DisableItem(num)
-	if self.items[num] then 
-		local i = self.items[num]
-		i:Disable()
-	end
-end
-
 return Menu

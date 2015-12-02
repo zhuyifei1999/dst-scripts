@@ -292,7 +292,7 @@ function ScrollableList:RefreshView(movemarker)
 end
 
 -- skip fixup is for when there's a widget that is already adding the scroll list help text and control stuff for the update style (i.e. ListCursor)
--- focus children should be false when it's just an information list (i.e. the morgue) and there's nothing interactable in the list
+-- focus children should be false when it's just an information list (i.e. the morge) and there's nothing interactable in the list
 -- if set to false, then we keep the focus on the scroll list so that it can handle the scroll input properly
 function ScrollableList:LayOutStaticWidgets(yInitial, skipFixUp, focusChildren)
 	if self.static_widgets then

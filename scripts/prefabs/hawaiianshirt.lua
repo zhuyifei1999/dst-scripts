@@ -56,4 +56,4 @@ local function create()
     return inst
 end
 
-return Prefab("hawaiianshirt", create, assets)
+return Prefab("common/inventory/hawaiianshirt", create, assets)

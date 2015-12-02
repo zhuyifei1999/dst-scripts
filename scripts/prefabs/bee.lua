@@ -280,5 +280,5 @@ local function killerbee()
     return inst
 end 
 
-return Prefab("bee", workerbee, assets, prefabs),
-        Prefab("killerbee", killerbee, assets, prefabs)
+return Prefab("forest/monsters/bee", workerbee, assets, prefabs),
+        Prefab("forest/monsters/killerbee", killerbee, assets, prefabs)

@@ -42,7 +42,7 @@ local ItemTile = Class(Widget, function(self, invitem)
     self.wetness:Hide()
     self.wetness:SetClickable(false)
 
-    self.image = self:AddChild(Image(invitem.replica.inventoryitem:GetAtlas(), invitem.replica.inventoryitem:GetImage(), "default.tex"))
+    self.image = self:AddChild(Image(invitem.replica.inventoryitem:GetAtlas(), invitem.replica.inventoryitem:GetImage()))
     --self.image:SetClickable(false)
 
     if self.item.prefab == "spoiled_food" or self:HasSpoilage() then
