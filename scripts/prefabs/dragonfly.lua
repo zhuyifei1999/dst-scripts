@@ -29,7 +29,7 @@ local prefabs =
     "greengem",
 }
 
-SetSharedLootTable( 'dragonfly',
+SetSharedLootTable('dragonfly',
 {
     {'dragon_scales',    1.00},
     {'lavae_egg',        0.33},
@@ -124,20 +124,26 @@ local function IsFightingPlayers(inst)
 end
 
 local function UpdatePlayerTargets(inst)
+    local toadd = {}
+    local toremove = {}
     local pos = inst.components.knownlocations:GetLocation("spawnpoint")
-    local player_targets = FindPlayersInRange(pos.x, pos.y, pos.z, TUNING.DRAGONFLY_RESET_DIST, true)
-    local current_targets = inst.components.grouptargeter:GetTargets()
 
-    for k, v in pairs(current_targets) do
-        if not table.contains(player_targets, k) then
-            inst.components.grouptargeter:RemoveTarget(k)
+    for k, v in pairs(inst.components.grouptargeter:GetTargets()) do
+        toremove[k] = true
+    end
+    for i, v in ipairs(FindPlayersInRange(pos.x, pos.y, pos.z, TUNING.DRAGONFLY_RESET_DIST, true)) do
+        if toremove[v] then
+            toremove[v] = nil
+        else
+            table.insert(toadd, v)
         end
     end
 
-    for k, v in pairs(player_targets) do
-        if current_targets[v] == nil then
-            inst.components.grouptargeter:AddTarget(v)
-        end
+    for k, v in pairs(toremove) do
+        inst.components.grouptargeter:RemoveTarget(k)
+    end
+    for i, v in ipairs(toadd) do
+        inst.components.grouptargeter:AddTarget(v)
     end
 end
 
@@ -275,10 +281,8 @@ local function OnLavaeSpawn(inst, data)
     --This allows players to pick a person to kite lavaes.
     local lavae = data.newent
     local targets = {}
-    local dragonfly_targets = inst.components.grouptargeter:GetTargets()
-    for k, v in pairs(dragonfly_targets) do
+    for k, v in pairs(inst.components.grouptargeter:GetTargets()) do
         table.insert(targets, k)
-        lavae.components.grouptargeter.targets = dragonfly_targets --Use the exact target list that the dragonfly does.
     end
     local target = GetClosest(lavae, targets) or inst.components.grouptargeter:SelectTarget()
     lavae.components.entitytracker:TrackEntity("mother", inst)

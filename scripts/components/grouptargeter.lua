@@ -29,30 +29,6 @@ function GroupTargeter:StopTracking(target)
     self.inst:RemoveEventCallback("onremove", self._ontargetremoved, target)
 end
 
-function GroupTargeter:RedistributeWeight(oldTotal, newTotal, target)
-    --print("RedistributeWeights...")
-    if newTotal > oldTotal then
-        local weighting = 0
-
-        for k, v in pairs(self.targets) do
-            local loss = oldTotal / newTotal
-            local prev = v
-            local new = v * loss
-            self.targets[k] = new
-            weighting = weighting + (prev - new)
-        end
-
-        self.targets[target] = weighting
-    elseif oldTotal > newTotal then
-        local targetThreat = self.targets[target]
-        self.targets[target] = nil
-        for k, v in pairs(self.targets) do
-            self.targets[k] = v + (targetThreat / newTotal)
-        end
-    end
-    --self:GetTotalWeight()
-end
-
 function GroupTargeter:GetTotalWeight() --For debug. This should only ever return 1.
     local totalWeight = 0
     for k, v in pairs(self.targets) do
@@ -63,7 +39,7 @@ end
 
 function GroupTargeter:OnPickTarget(target)
     --print("GOT NEW TARGET! -", target or "ERROR - DID NOT FIND TARGET")
-    
+
     if self.num_targets <= 1 then
         --[[ print("only 1 target - returning") ]]
         return
@@ -86,14 +62,18 @@ function GroupTargeter:AddTarget(target)
 
     self:StartTracking(target)
 
-    local oldNum = self.num_targets
-    self.num_targets = self.num_targets + 1
-    local newNum = self.num_targets
-
-    if oldNum == 0 then
+    if self.num_targets <= 0 then
+        self.num_targets = 1
         self.targets[target] = 1
     else
-        self:RedistributeWeight(oldNum, newNum, target)
+        self.num_targets = self.num_targets + 1
+        local loss = (self.num_targets - 1) / self.num_targets
+        local weighting = 0
+        for k, v in pairs(self.targets) do
+            self.targets[k] = v * loss
+            weighting = weighting + v - self.targets[k]
+        end
+        self.targets[target] = weighting
     end
 
     --print("Adding target", target, "with a weight of", self.targets[target])
@@ -107,16 +87,18 @@ function GroupTargeter:RemoveTarget(target)
 
     self:StopTracking(target)
 
-    local oldNum = self.num_targets
-    self.num_targets = self.num_targets - 1
-    local newNum = self.num_targets
-
-    if newNum == 0 then
+    if self.num_targets <= 1 then
+        self.num_targets = 0
         for k, v in pairs(self.targets) do
             self.targets[k] = nil
         end
     else
-        self:RedistributeWeight(oldNum, newNum, target)
+        self.num_targets = self.num_targets - 1
+        local targetThreat = self.targets[target]
+        self.targets[target] = nil
+        for k, v in pairs(self.targets) do
+            self.targets[k] = v + (targetThreat / self.num_targets)
+        end
     end
 end
 

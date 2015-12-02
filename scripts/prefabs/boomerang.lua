@@ -55,11 +55,21 @@ local function OnHit(inst, owner, target)
     else
         ReturnToOwner(inst, owner)
     end
-    local impactfx = SpawnPrefab("impact")
-    if impactfx ~= nil then
-        local follower = impactfx.entity:AddFollower()
-        follower:FollowSymbol(target.GUID, target.components.combat.hiteffectsymbol, 0, 0, 0)
-        impactfx:FacePoint(inst.Transform:GetWorldPosition())
+    if target ~= nil and target:IsValid() then
+        local impactfx = SpawnPrefab("impact")
+        if impactfx ~= nil then
+            local follower = impactfx.entity:AddFollower()
+            follower:FollowSymbol(target.GUID, target.components.combat.hiteffectsymbol, 0, 0, 0)
+            impactfx:FacePoint(inst.Transform:GetWorldPosition())
+        end
+    end
+end
+
+local function OnMiss(inst, owner, target)
+    if owner == target then
+        OnDropped(inst)
+    else
+        ReturnToOwner(inst, owner)
     end
 end
 
@@ -105,7 +115,7 @@ local function fn()
     inst.components.projectile:SetCanCatch(true)
     inst.components.projectile:SetOnThrownFn(OnThrown)
     inst.components.projectile:SetOnHitFn(OnHit)
-    inst.components.projectile:SetOnMissFn(ReturnToOwner)
+    inst.components.projectile:SetOnMissFn(OnMiss)
     inst.components.projectile:SetOnCaughtFn(OnCaught)
 
     inst:AddComponent("inventoryitem")

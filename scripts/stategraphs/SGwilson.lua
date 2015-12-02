@@ -3158,6 +3158,8 @@ local states =
                             inst.components.playercontroller:Enable(true)
                         end
                         inst.sg:AddStateTag("sleeping")
+                        inst.sg:AddStateTag("silentmorph")
+                        inst.sg:RemoveStateTag("nomorph")
                         inst.sg:RemoveStateTag("busy")
                         inst.AnimState:PlayAnimation("bedroll_sleep_loop", true)
                     else

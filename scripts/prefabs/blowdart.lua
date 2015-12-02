@@ -216,6 +216,9 @@ local function walrus()
     inst.components.projectile:SetHoming(false)
     inst.components.projectile:SetOnMissFn(inst.Remove)
     inst.components.projectile:SetLaunchOffset(Vector3(3, 2, 0))
+    --Increase hitdist (default=1) to account for launch offset height
+    --math.sqrt(1 * 1 + 2 * 2)
+    inst.components.projectile:SetHitDist(math.sqrt(5))
 
     return inst
 end

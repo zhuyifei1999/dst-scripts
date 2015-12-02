@@ -751,6 +751,7 @@ end
 function Combat:OnSave()
     if self.target ~= nil and
         self.target:IsValid() and --This is possible because invalid targets may be released by brain polling rather than events
+        self.target.persists and --Pets and such don't save normally, so references would not work on them
         not (self.inst:HasTag("player") or
             self.target:HasTag("player")) then
         return { target = self.target.GUID }, { self.target.GUID }

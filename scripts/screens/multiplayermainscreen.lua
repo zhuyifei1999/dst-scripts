@@ -234,6 +234,8 @@ function MultiplayerMainScreen:DoInit( )
     self.countdown:Hide()
     self.wilson:Hide()
     self.wilson2:Hide()
+    self.shadow1:Hide()
+    self.shadow2:Hide()
 
     self.fg.character_root:SetCanFadeAlpha(false)
 
@@ -273,7 +275,13 @@ function MultiplayerMainScreen:DoInit( )
     self.onlinestatus = self.fg:AddChild(OnlineStatus())
 
 	self:UpdateMOTD()
-	self:UpdateCountdown()
+	--self:UpdateCountdown()
+    --V2C: Show puppets because we're skipping UpdateCountdown
+    self.wilson:Show()
+    self.wilson2:Show()
+    self.shadow1:Show()
+    self.shadow2:Show()
+    ----------------------------------------------------------
 
 	self.filter_settings = nil
 
@@ -822,10 +830,14 @@ function MultiplayerMainScreen:SetCountdown(str, cache)
 		    self.countdown:Show()
 		    self.wilson:Hide()
 		    self.wilson2:Hide()
+            self.shadow1:Hide()
+            self.shadow2:Hide()
 	    else
 			self.countdown:Hide()
 		    self.wilson:Show()
 		    self.wilson2:Show()
+            self.shadow1:Show()
+            self.shadow2:Show()
 		end
 	end	
 end
