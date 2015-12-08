@@ -31,7 +31,7 @@ local WorldMigrator = Class(function(self, inst)
     self.id = nil
 
     self.linkedWorld = nil
-    self.recievedPortal = nil
+    self.receivedPortal = nil
 
     self.inst:DoTaskInTime(0, init, self)
 end,
@@ -54,12 +54,12 @@ function WorldMigrator:SetEnabled(t)
     self:ValidateAndPushEvents()
 end
 
-function WorldMigrator:SetRecievedPortal(fromworld, fromportal)
+function WorldMigrator:SetReceivedPortal(fromworld, fromportal)
     -- TODO: This needs to be part of a two-way process, so both ends of the portal link to each other
     -- (or IDs are handed down from the master or something, so that bi-directionality can be guaranteed)
     assert(self.linkedWorld == nil or self.linkedWorld == fromworld)
     self.linkedWorld = fromworld
-    self.recievedPortal = fromportal
+    self.receivedPortal = fromportal
     self:ValidateAndPushEvents()
 end
 
@@ -85,14 +85,14 @@ function WorldMigrator:ValidateAndPushEvents()
 end
 
 function WorldMigrator:IsBound()
-    return self.id ~= nil and self.linkedWorld ~= nil and self.recievedPortal ~= nil
+    return self.id ~= nil and self.linkedWorld ~= nil and self.receivedPortal ~= nil
 end
 
 function WorldMigrator:SetID(id)
     self.id = id
 
-    -- TEMP HACK! the recieved portal should be negotiated between servers
-    self.recievedPortal = id
+    -- TEMP HACK! the received portal should be negotiated between servers
+    self.receivedPortal = id
 
     if id >= nextPortalID then
         nextPortalID = id + 1
@@ -100,7 +100,7 @@ function WorldMigrator:SetID(id)
 end
 
 function WorldMigrator:IsDestinationForPortal(otherWorld, otherPortal)
-    return  self.linkedWorld == otherWorld and self.recievedPortal == otherPortal
+    return  self.linkedWorld == otherWorld and self.receivedPortal == otherPortal
 end
 
 function WorldMigrator:IsAvailableForLinking()
@@ -108,7 +108,7 @@ function WorldMigrator:IsAvailableForLinking()
 end
 
 function WorldMigrator:IsLinked()
-    return self.linkedWorld ~= nil and self.recievedPortal ~= nil
+    return self.linkedWorld ~= nil and self.receivedPortal ~= nil
 end
 
 function WorldMigrator:IsActive()
@@ -142,17 +142,17 @@ function WorldMigrator:OnSave()
     return {
         id = self.id,
         linkedWorld = self.linkedWorld,
-        recievedPortal = self.recievedPortal,
+        receivedPortal = self.receivedPortal,
         auto = self.auto,
     }
 end
 
 function WorldMigrator:OnLoad(data)
-    if data.id then
+    if data.id ~= nil then
         self:SetID(data.id)
     end
     self.linkedWorld = data.linkedWorld
-    self.recievedPortal = data.recievedPortal
+    self.receivedPortal = data.receivedPortal or data.recievedPortal --V2C: lol backward compatible
     self.auto = true
     if data.auto ~= nil then
         self.auto = data.auto
@@ -160,7 +160,7 @@ function WorldMigrator:OnLoad(data)
 end
 
 function WorldMigrator:GetDebugString()
-    return string.format("ID %d: world: %s (%s) available: %s recieves: %d status: %s", self.id or -1, self.linkedWorld or "<nil>", self.auto and "auto" or "manual", tostring(self.linkedWorld and Shard_IsWorldAvailable(self.linkedWorld) or false), self.recievedPortal or -1, string.lower(tostring(table.reverselookup(STATUS, self._status))) )
+    return string.format("ID %d: world: %s (%s) available: %s receives: %d status: %s", self.id or -1, self.linkedWorld or "<nil>", self.auto and "auto" or "manual", tostring(self.linkedWorld and Shard_IsWorldAvailable(self.linkedWorld) or false), self.receivedPortal or -1, string.lower(tostring(table.reverselookup(STATUS, self._status))) )
 end
 
 return WorldMigrator

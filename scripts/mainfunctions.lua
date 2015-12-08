@@ -1,5 +1,4 @@
 local PopupDialogScreen = require "screens/popupdialog"
-local ScriptErrorScreen = require "screens/scripterrorscreen"
 local BigPopupDialogScreen = require "screens/bigpopupdialog"
 local WorldGenScreen = require "screens/worldgenscreen"
 
@@ -686,6 +685,12 @@ function LoadFonts()
 	for k,v in pairs(FONTS) do
 		TheSim:LoadFont(v.filename, v.alias)
 	end
+
+	for k,v in pairs(FONTS) do
+		if v.fallback and v.fallback ~= "" then
+			TheSim:SetupFontFallbacks(v.alias, v.fallback)
+		end
+	end
 end
 
 function UnloadFonts()
@@ -790,10 +795,6 @@ function Check_Mods()
 	    KnownModIndex:EndStartupSequence(nil) -- no callback, this doesn't need to block and we don't need the results
 	end
 
-	--If we collected a non-fatal error during startup, display it now!
-	for i,err in ipairs(PendingErrors) do
-		DisplayError(err)
-	end
 end
 
 --------------------------
@@ -862,7 +863,6 @@ function JapaneseOnPS4()
 end
 
 function StartNextInstance(in_params, send_stats)
-
 	if TheNet:GetIsServer() then
 		NotifyLoadingState( LoadingStates.Loading )
 	end
@@ -958,17 +958,10 @@ function Shutdown()
 	TheSim:Quit()
 end
 
-PendingErrors = {}
-
 function DisplayError(error)
-	if not TheFrontEnd then
-		print("Error error! We tried displaying an error but TheFrontEnd isn't ready yet...")
-		table.insert(PendingErrors, error)
-		return
-	end
 
     SetPause(true,"DisplayError")
-    if TheFrontEnd:IsDisplayingError() then
+    if global_error_widget ~= nil then
         return nil
     end
 
@@ -982,8 +975,7 @@ function DisplayError(error)
             modnamesstr = modnamesstr.."\""..KnownModIndex:GetModFancyName(modname).."\" "
         end
 
-        TheFrontEnd:DisplayError(
-            ScriptErrorScreen(
+        SetGlobalErrorWidget(
                 STRINGS.UI.MAINSCREEN.MODFAILTITLE, 
                 error,
                 {
@@ -1000,10 +992,9 @@ function DisplayError(error)
                 ANCHOR_LEFT,
                 STRINGS.UI.MAINSCREEN.SCRIPTERRORMODWARNING..modnamesstr,
                 20
-                ))
+                )
     else
-        TheFrontEnd:DisplayError(
-            ScriptErrorScreen(
+        SetGlobalErrorWidget(
                 STRINGS.UI.MAINSCREEN.MODFAILTITLE, 
                 error,
                 {
@@ -1013,7 +1004,7 @@ function DisplayError(error)
                 ANCHOR_LEFT,
                 nil,
                 20
-                ))
+                )
     end
 end
 

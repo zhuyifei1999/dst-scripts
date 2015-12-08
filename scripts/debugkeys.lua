@@ -738,8 +738,8 @@ end)
 
 AddGameDebugKey(KEY_S, function()
     if TheInput:IsKeyDown(KEY_CTRL) then
-        TheWorld:PushEvent("save")
-        return true         
+        TheWorld:PushEvent("ms_save")
+        return true
     end
 end)
 

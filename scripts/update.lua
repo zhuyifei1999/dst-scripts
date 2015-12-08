@@ -90,7 +90,11 @@ function WallUpdate(dt)
 	TheSim:ProfilerPop()	
 
 	TheSim:ProfilerPush("fe")
-	TheFrontEnd:Update(dt)
+    if global_error_widget == nil then
+        TheFrontEnd:Update(dt)
+    else
+        global_error_widget:OnUpdate(dt)
+    end
 	TheSim:ProfilerPop()	
 	
 	--TheSim:ProfilerPop()

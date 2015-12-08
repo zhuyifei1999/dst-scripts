@@ -55,7 +55,7 @@ local function OnWork(inst, worker, workleft)
         openinst.Transform:SetPosition(pt:Get())
         openinst.components.worldmigrator.id = inst.components.worldmigrator.id
         openinst.components.worldmigrator.linkedWorld = inst.components.worldmigrator.linkedWorld
-        openinst.components.worldmigrator.recievedPortal = inst.components.worldmigrator.recievedPortal
+        openinst.components.worldmigrator.receivedPortal = inst.components.worldmigrator.receivedPortal
         inst:Remove()
     else
         inst.AnimState:PlayAnimation(

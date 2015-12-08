@@ -1,5 +1,4 @@
 require "class"
-local ScriptErrorScreen = require "screens/scripterrorscreen"
 require "modutil"
 require "prefabs"
 
@@ -440,8 +439,7 @@ function ModWrangler:DisplayBadMods()
 
 	if TheFrontEnd then
 		for k,badmod in ipairs(self.failedmods) do
-			TheFrontEnd:DisplayError(
-				ScriptErrorScreen(
+			SetGlobalErrorWidget(
 					STRINGS.UI.MAINSCREEN.MODFAILTITLE, 
 					STRINGS.UI.MAINSCREEN.MODFAILDETAIL.." "..KnownModIndex:GetModFancyName(badmod.name).."\n"..badmod.error.."\n",
 					{
@@ -458,7 +456,7 @@ function ModWrangler:DisplayBadMods()
 					ANCHOR_LEFT,
 					STRINGS.UI.MAINSCREEN.MODFAILDETAIL2,
 					20
-					))
+					)
 		end
 		self.failedmods = {}
 	end

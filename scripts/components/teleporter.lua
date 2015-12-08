@@ -44,11 +44,11 @@ function Teleporter:Activate(doer)
     self:Teleport(doer)
 
     if self.targetTeleporter.components.teleporter ~= nil and doer.components.inventoryitem ~= nil then
-        self.targetTeleporter.components.teleporter:RecieveItem(doer)
+        self.targetTeleporter.components.teleporter:ReceiveItem(doer)
     end
 
     if self.targetTeleporter.components.teleporter ~= nil and doer:HasTag("player") then
-        self.targetTeleporter.components.teleporter:RecievePlayer(doer)
+        self.targetTeleporter.components.teleporter:ReceivePlayer(doer)
     end
 
     if doer.components.leader ~= nil then
@@ -147,7 +147,7 @@ local function onitemarrive(inst, self, item)
     self:PushDoneTeleporting(item)
 end
 
-function Teleporter:RecieveItem(item)
+function Teleporter:ReceiveItem(item)
     item:RemoveFromScene()
     TemporarilyRemovePhysics(item, 4.5)
     self.inst:AddChild(item)
@@ -175,7 +175,7 @@ local function ondoerarrive(inst, self, doer)
     self:PushDoneTeleporting(doer)
 end
 
-function Teleporter:RecievePlayer(doer)
+function Teleporter:ReceivePlayer(doer)
     doer:ScreenFade(false)
     self.inst:DoTaskInTime(3, oncameraarrive, doer)
     self.inst:DoTaskInTime(4, ondoerarrive, self, doer)

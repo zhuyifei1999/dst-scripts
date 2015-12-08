@@ -1,4 +1,3 @@
-local Screen = require "widgets/screen"
 local Button = require "widgets/button"
 local AnimButton = require "widgets/animbutton"
 local Menu = require "widgets/menu"
@@ -7,10 +6,16 @@ local Image = require "widgets/image"
 local UIAnim = require "widgets/uianim"
 local Widget = require "widgets/widget"
 
-local ScriptErrorScreen = Class(Screen, function(self, title, text, buttons, texthalign, additionaltext, textsize, timeout)
-	Screen._ctor(self, "ScriptErrorScreen")
+local ScriptErrorWidget = Class(Widget, function(self, title, text, buttons, texthalign, additionaltext, textsize, timeout)
+	Widget._ctor(self, "ScriptErrorWidget")
+
+    self:SetHAnchor(ANCHOR_LEFT)
+    self:SetVAnchor(ANCHOR_BOTTOM)
 
     TheInputProxy:SetCursorVisible(true)
+
+	TheInput:AddGeneralControlHandler(function(control, down) print("CONTROL!") self:OnControl(control == CONTROL_PRIMARY and CONTROL_ACCEPT or control, down) end )
+	TheInput:AddMouseButtonHandler(function(button, down, x, y) print("MOUSE!") self:OnMouseButton(button, down, x, y) end )
 
 	--darken everything behind the dialog
 	self.black = self:AddChild(Image("images/global.xml", "square.tex"))
@@ -83,20 +88,30 @@ local ScriptErrorScreen = Class(Screen, function(self, title, text, buttons, tex
 	    self.menu:SetPosition(0, -250, 0)
 	    self.default_focus = self.menu
 	end
+
+	TheSim:SetUIRoot(self.inst.entity)
 end)
 
-function ScriptErrorScreen:HideAllOtherScreens()
-	-- workaround, a screen may actually be sitting on top of us without being pushed to the stack
-	-- in this case we want this screen to be visible at all times
-	for i,v in pairs(Ents) do
-		if v.widget and v.widget:is_a(Screen) and not v.widget:is_a(ScriptErrorScreen) and not TheFrontEnd:IsScreenInStack(v.widget) then
-			v:Hide()
-		end
-	end
+function ScriptErrorWidget:OnControl(control, down)
+    if ScriptErrorWidget._base.OnControl(self, control, down) then return true end
+
+    -- If the user does anything, close the game (or whatever that left-hand option is)
+    if control == CONTROL_ACCEPT then
+        dumptable(self.menu.items, 0, 1)
+        self.menu.items[1].onclick()
+    end
 end
 
-function ScriptErrorScreen:OnUpdate( dt )
-	self:HideAllOtherScreens()
+function ScriptErrorWidget:OnUpdate( dt )
+    local x,y = TheSim:GetPosition()
+    entitiesundermouse = TheSim:GetEntitiesAtScreenPoint(x, y, true)
+    local hover_inst = entitiesundermouse[1]
+    if hover_inst and hover_inst.widget then
+        hover_inst.widget:SetFocus()
+    else
+        self.menu:SetFocus(1)
+    end
+
 	if self.timeout then
 		self.timeout.timeout = self.timeout.timeout - dt
 		if self.timeout.timeout <= 0 then
@@ -106,4 +121,4 @@ function ScriptErrorScreen:OnUpdate( dt )
 	return true
 end
 
-return ScriptErrorScreen
+return ScriptErrorWidget

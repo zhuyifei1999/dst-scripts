@@ -24,6 +24,25 @@ local tab_bg =
     overlay = "tab_researchable.tex",
 }
 
+local function InitTabSoundsAfterFadein(inst, self)
+    if TheFrontEnd:GetFadeLevel() > .5 then
+        self.tabs.onopen = nil
+        self.tabs.onchange = nil
+        self.tabs.onclose = nil
+        self.tabs.onhighlight = function() return .2 end
+        --self.tabs.onalthighlight = nil
+        self.tabs.onoverlay = self.tabs.onhighlight
+        inst:DoTaskInTime(0, InitTabSoundsAfterFadein, self)
+    else
+        self.tabs.onopen = function() TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/craft_open") end
+        self.tabs.onchange = self.tabs.onopen
+        self.tabs.onclose = function() TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/craft_close") end
+        self.tabs.onhighlight = function() TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/recipe_ready") return .2 end
+        --self.tabs.onalthighlight = function() end
+        self.tabs.onoverlay = function() TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/research_available") return .2 end
+    end
+end
+
 local CraftTabs = Class(Widget, function(self, owner, top_root)
     Widget._ctor(self, "CraftTabs")
     self.owner = owner
@@ -50,7 +69,7 @@ local CraftTabs = Class(Widget, function(self, owner, top_root)
     self.crafting:Hide()
     self.crafting:SetScale(crafting_scale, crafting_scale, crafting_scale)
 
-    self.bg = self:AddChild(Image("images/hud.xml", "craft_bg.tex"))      
+    self.bg = self:AddChild(Image("images/hud.xml", "craft_bg.tex"))
 
     self.bg_cover = self:AddChild(Image("images/hud.xml", "craft_bg_cover.tex"))
     self.bg_cover:SetPosition(-38, 0, 0)
@@ -59,12 +78,7 @@ local CraftTabs = Class(Widget, function(self, owner, top_root)
     self.tabs = self:AddChild(TabGroup())
     self.tabs:SetPosition(-16,0,0)
 
-    self.tabs.onopen = function() TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/craft_open") end
-    self.tabs.onchange = function() TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/craft_open") end
-    self.tabs.onclose = function() TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/craft_close") end
-    self.tabs.onhighlight = function() TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/recipe_ready") return .2 end
-    self.tabs.onalthighlight = function() end
-    self.tabs.onoverlay = function() TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/research_available") return .2 end
+    InitTabSoundsAfterFadein(self.inst, self)
 
     local tabnames = {}
     for k,v in pairs(RECIPETABS) do
@@ -114,7 +128,7 @@ local CraftTabs = Class(Widget, function(self, owner, top_root)
                     self.crafting:SetFilter(advanced_filter)
                     self.crafting:Open()
                 end
-            end, 
+            end,
 
             function() --deselect fn
                 self.craft_idx_by_tab[k] = self.crafting.idx

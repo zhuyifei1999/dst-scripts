@@ -5,8 +5,7 @@ Input = Class(function(self)
     self.onkey = EventProcessor()     -- all keys, down and up, with key param
     self.onkeyup = EventProcessor()   -- specific key up, no parameters
     self.onkeydown = EventProcessor() -- specific key down, no parameters
-    self.onmouseup = EventProcessor()
-    self.onmousedown = EventProcessor()
+    self.onmousebutton = EventProcessor()
     
     self.position = EventProcessor()
     self.oncontrol = EventProcessor()
@@ -122,12 +121,8 @@ function Input:AddKeyHandler( fn )
     return self.onkey:AddEventHandler("onkey", fn)
 end
 
-function Input:AddMouseButtonHandler( button, down, fn)
-    if down then
-        return self.onmousedown:AddEventHandler(button, fn)
-    else
-        return self.onmouseup:AddEventHandler(button, fn)
-    end
+function Input:AddMouseButtonHandler( fn)
+    return self.onmousebutton:AddEventHandler("onmousebutton", fn)
 end
 
 function Input:AddMoveHandler( fn )
@@ -175,6 +170,7 @@ end
 function Input:OnMouseButton(button, down, x,y)
 	if self.mouse_enabled then
 		TheFrontEnd:OnMouseButton(button, down, x,y)
+        self.onmousebutton:HandleEvent("onmousebutton", button, down, x, y)
 	end
 end
 
