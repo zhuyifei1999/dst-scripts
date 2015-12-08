@@ -1,6 +1,7 @@
 local assets =
 {
     Asset("ANIM", "anim/mushroom_tree_webbed.zip"),
+    Asset("MINIMAP_IMAGE", "mushroom_tree_webbed"),
 }
 
 local prefabs =
@@ -154,5 +155,5 @@ local function fn()
     return inst
 end
 
-return Prefab("caves/objects/mushtree_tall_webbed", fn, assets, prefabs),
+return Prefab("mushtree_tall_webbed", fn, assets, prefabs),
     Prefab("mushtree_tall_webbed_burntfx", burntfxfn, assets)

@@ -279,5 +279,5 @@ local function fn()
     return inst
 end
 
-return Prefab("common/objects/pighouse", fn, assets, prefabs),
-    MakePlacer("common/pighouse_placer", "pig_house", "pig_house", "idle")
+return Prefab("pighouse", fn, assets, prefabs),
+    MakePlacer("pighouse_placer", "pig_house", "pig_house", "idle")

@@ -1,6 +1,7 @@
 local assets =
 {
     Asset("ANIM", "anim/spider_mound.zip"),
+	Asset("MINIMAP_IMAGE", "cavespider_den"),
 }
 
 local prefabs =
@@ -193,5 +194,5 @@ local function rockfn()
     return inst
 end
 
-return Prefab("cave/objects/spiderhole", spawnerfn, assets, prefabs),
-    Prefab("cave/objects/spiderhole_rock", rockfn, assets, prefabs)
+return Prefab("spiderhole", spawnerfn, assets, prefabs),
+    Prefab("spiderhole_rock", rockfn, assets, prefabs)

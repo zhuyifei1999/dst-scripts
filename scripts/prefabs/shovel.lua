@@ -94,5 +94,5 @@ local function golden()
     return inst
 end
 
-return Prefab("common/inventory/shovel", normal, assets),
-    Prefab("common/inventory/goldenshovel", golden, assets)
+return Prefab("shovel", normal, assets),
+    Prefab("goldenshovel", golden, assets)

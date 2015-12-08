@@ -52,4 +52,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/inventory/log", fn, assets)
+return Prefab("log", fn, assets)

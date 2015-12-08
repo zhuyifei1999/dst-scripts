@@ -131,4 +131,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/stafflight", fn, assets)
+return Prefab("stafflight", fn, assets)

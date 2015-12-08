@@ -96,6 +96,7 @@ function MakeWallType(data)
     local prefabs =
     {
         "collapse_small",
+        "brokenwall_"..data.name,
     }
 
     local function ondeploywall(inst, pt, deployer)
@@ -165,10 +166,6 @@ function MakeWallType(data)
 
         inst.components.repairer.repairmaterial = data.name == "ruin" and MATERIALS.THULECITE or data.name
         inst.components.repairer.healthrepairvalue = data.maxhealth / 6
-
-        --if data.paintable then
-            --inst:AddComponent("paintable")
-        --end
 
         if data.flammable then
             MakeSmallBurnable(inst, TUNING.MED_BURNTIME)
@@ -302,9 +299,9 @@ function MakeWallType(data)
         return inst
     end
 
-    return Prefab("common/wall_"..data.name, fn, assets, prefabs),
-        Prefab("common/wall_"..data.name.."_item", itemfn, assets, { "wall_"..data.name, "wall_"..data.name.."_item_placer" }),
-        MakePlacer("common/wall_"..data.name.."_item_placer", "wall", "wall_"..data.name, "half", false, false, true, nil, nil, "eight")
+    return Prefab("wall_"..data.name, fn, assets, prefabs),
+        Prefab("wall_"..data.name.."_item", itemfn, assets, { "wall_"..data.name, "wall_"..data.name.."_item_placer" }),
+        MakePlacer("wall_"..data.name.."_item_placer", "wall", "wall_"..data.name, "half", false, false, true, nil, nil, "eight")
 end
 
 local wallprefabs = {}
@@ -313,11 +310,11 @@ local wallprefabs = {}
 --NOTE: Stacksize is now set in the actual recipe for the item.
 local walldata =
 {
-    { name = MATERIALS.STONE,    material = "stone", tags = { "stone" },             loot = "rocks",            maxloots = 2, maxhealth = TUNING.STONEWALL_HEALTH,    paintable = true, buildsound = "dontstarve/common/place_structure_stone" },
+    { name = MATERIALS.STONE,    material = "stone", tags = { "stone" },             loot = "rocks",            maxloots = 2, maxhealth = TUNING.STONEWALL_HEALTH,                      buildsound = "dontstarve/common/place_structure_stone" },
     { name = MATERIALS.WOOD,     material = "wood",  tags = { "wood" },              loot = "log",              maxloots = 2, maxhealth = TUNING.WOODWALL_HEALTH,     flammable = true, buildsound = "dontstarve/common/place_structure_wood"  },
     { name = MATERIALS.HAY,      material = "straw", tags = { "grass" },             loot = "cutgrass",         maxloots = 2, maxhealth = TUNING.HAYWALL_HEALTH,      flammable = true, buildsound = "dontstarve/common/place_structure_straw" },
     { name = "ruins",            material = "stone", tags = { "stone", "ruins" },    loot = "thulecite_pieces", maxloots = 2, maxhealth = TUNING.RUINSWALL_HEALTH,                      buildsound = "dontstarve/common/place_structure_stone" },
-    { name = MATERIALS.MOONROCK, material = "stone", tags = { "stone", "moonrock" }, loot = "moonrocknugget",   maxloots = 2, maxhealth = TUNING.MOONROCKWALL_HEALTH, paintable = true, buildsound = "dontstarve/common/place_structure_stone" },
+    { name = MATERIALS.MOONROCK, material = "stone", tags = { "stone", "moonrock" }, loot = "moonrocknugget",   maxloots = 2, maxhealth = TUNING.MOONROCKWALL_HEALTH,                   buildsound = "dontstarve/common/place_structure_stone" },
 }
 
 for i, v in ipairs(walldata) do

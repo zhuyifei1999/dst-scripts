@@ -54,4 +54,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/fx/ground_chunks_breaking", fn, assets)
+return Prefab("ground_chunks_breaking", fn, assets)

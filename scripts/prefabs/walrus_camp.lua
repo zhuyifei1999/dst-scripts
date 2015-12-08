@@ -5,6 +5,7 @@ local assets =
     Asset("ANIM", "anim/walrus_house.zip"),
     Asset("ANIM", "anim/igloo_track.zip"),
     Asset("SOUND", "sound/pig.fsb"), -- light on/off sounds
+    Asset("MINIMAP_IMAGE", "igloo"),
 }
 
 local prefabs =
@@ -403,7 +404,7 @@ local function create()
 
     inst.data = { children = {} }
 
-    --inst:AddTag("tent")    
+    --inst:AddTag("tent")
 
     inst:AddComponent("inspectable")
     inst.components.inspectable.getstatus = GetStatus
@@ -434,4 +435,4 @@ local function create()
     return inst
 end
 
-return Prefab("common/objects/walrus_camp", create, assets, prefabs)
+return Prefab("walrus_camp", create, assets, prefabs)

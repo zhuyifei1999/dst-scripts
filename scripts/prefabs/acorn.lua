@@ -159,8 +159,8 @@ local function cooked()
     return inst
 end
 
-return Prefab( "common/inventory/acorn", fn, assets, prefabs),
-       Prefab("common/inventory/acorn_cooked", cooked, assets),
-	   MakePlacer( "common/acorn_placer", "acorn", "acorn", "idle_planted" ) 
+return Prefab( "acorn", fn, assets, prefabs),
+       Prefab("acorn_cooked", cooked, assets),
+	   MakePlacer( "acorn_placer", "acorn", "acorn", "idle_planted" ) 
 
 

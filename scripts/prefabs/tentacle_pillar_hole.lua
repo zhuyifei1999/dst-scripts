@@ -6,6 +6,7 @@ local assets =
 {
     Asset("ANIM", "anim/tentacle_pillar.zip"),
     Asset("SOUND", "sound/tentacle.fsb"),
+	Asset("MINIMAP_IMAGE", "tentapillar"),
 }
 
 local function PillarEmerge(inst)
@@ -173,4 +174,4 @@ local function fn()
     return inst
 end
 
-return Prefab("cave/monsters/tentacle_pillar_hole", fn, assets, prefabs)
+return Prefab("tentacle_pillar_hole", fn, assets, prefabs)

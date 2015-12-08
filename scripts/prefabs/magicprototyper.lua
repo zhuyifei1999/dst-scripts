@@ -12,9 +12,13 @@ local function onhammered(inst, worker)
 end
 
 local function onhit(inst, worker)
-    if not inst:HasTag("burnt") then 
+    if not inst:HasTag("burnt") then
         inst.AnimState:PlayAnimation("hit")
-        inst.AnimState:PushAnimation(inst.components.prototyper.on and "proximity_loop" or "idle", true)
+        if inst.components.prototyper.on then
+            inst.AnimState:PushAnimation("proximity_loop", true)
+        else
+            inst.AnimState:PushAnimation("idle", false)
+        end
     end
 end
 
@@ -55,9 +59,15 @@ end
 
 local function createmachine(level, name, soundprefix, sounddelay, techtree, mergeanims, onact)
     local function onturnon(inst)
-        if not inst:HasTag("burnt") then 
+        if inst._activetask == nil and not inst:HasTag("burnt") then 
             if mergeanims then
-                inst.AnimState:PlayAnimation("proximity_pre")
+                if inst.AnimState:IsCurrentAnimation("place") then
+                    inst.AnimState:PushAnimation("proximity_pre")
+                else
+                    inst.AnimState:PlayAnimation("proximity_pre")
+                end
+                inst.AnimState:PushAnimation("proximity_loop", true)
+            elseif inst.AnimState:IsCurrentAnimation("place") then
                 inst.AnimState:PushAnimation("proximity_loop", true)
             else
                 inst.AnimState:PlayAnimation("proximity_loop", true)
@@ -69,36 +79,45 @@ local function createmachine(level, name, soundprefix, sounddelay, techtree, mer
     end
 
     local function onturnoff(inst)
-        if not inst:HasTag("burnt") then 
+        if inst._activetask == nil and not inst:HasTag("burnt") then 
             if mergeanims then
                 inst.AnimState:PushAnimation("proximity_pst")
-                inst.AnimState:PushAnimation("idle", true)
-            else
-                inst.AnimState:PlayAnimation("idle", true)
             end
+            inst.AnimState:PushAnimation("idle", false)
             inst.SoundEmitter:KillSound("idlesound")
+        end
+    end
+
+    local function doneact(inst)
+        inst._activetask = nil
+        if not inst:HasTag("burnt") then
+            if inst.components.prototyper.on then
+                onturnon(inst)
+            else
+                onturnoff(inst)
+            end
         end
     end
 
     local function onactivate(inst)
         if not inst:HasTag("burnt") then 
             inst.AnimState:PlayAnimation("use")
-            inst.AnimState:PushAnimation("idle")
-            inst.AnimState:PushAnimation("proximity_loop", true)
+            inst.AnimState:PushAnimation("idle", false)
             if not inst.SoundEmitter:PlayingSound("sound") then
                 inst.SoundEmitter:PlaySound("dontstarve/common/researchmachine_"..soundprefix.."_run", "sound")
             end
             inst._activecount = inst._activecount + 1
             inst:DoTaskInTime(1.5, doonact, soundprefix, onact)
+            if inst._activetask ~= nil then
+                inst._activetask:Cancel()
+            end
+            inst._activetask = inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength() + 2 * FRAMES, doneact)
         end
     end
 
     local function onbuilt(inst)
-        inst.components.prototyper.on = true
         inst.AnimState:PlayAnimation("place")
-        inst.AnimState:PushAnimation("idle")
-        inst.AnimState:PushAnimation("proximity_loop", true)
-        inst.SoundEmitter:PlaySound("dontstarve/common/researchmachine_"..soundprefix.."_idle_LP", "idlesound")
+        inst.AnimState:PushAnimation("idle", false)
         inst:DoTaskInTime(sounddelay, onbuiltsound, soundprefix)
     end
 
@@ -130,6 +149,7 @@ local function createmachine(level, name, soundprefix, sounddelay, techtree, mer
         inst.AnimState:SetBuild(name)
         inst.AnimState:PlayAnimation("idle")
 
+        --prototyper (from prototyper component) added to pristine state for optimization
         inst:AddTag("prototyper")
         inst:AddTag("structure")
         inst:AddTag("level"..level)
@@ -143,6 +163,7 @@ local function createmachine(level, name, soundprefix, sounddelay, techtree, mer
         end
 
         inst._activecount = 0
+        inst._activetask = nil
 
         inst:AddComponent("inspectable")
         inst:AddComponent("prototyper")
@@ -172,11 +193,11 @@ local function createmachine(level, name, soundprefix, sounddelay, techtree, mer
 
         return inst
     end
-    return Prefab("common/objects/"..name, fn, assets, prefabs)
+    return Prefab(name, fn, assets, prefabs)
 end
 
 --Using old prefab names
 return createmachine(3, "researchlab3", "lvl3", 0.15, TUNING.PROTOTYPER_TREES.SHADOWMANIPULATOR, true),
     createmachine(4, "researchlab4", "lvl4", 0, TUNING.PROTOTYPER_TREES.PRESTIHATITATOR, false, spawnrabbits),
-    MakePlacer("common/researchlab3_placer", "researchlab3", "researchlab3", "idle"),
-    MakePlacer("common/researchlab4_placer", "researchlab4", "researchlab4", "idle")
+    MakePlacer("researchlab3_placer", "researchlab3", "researchlab3", "idle"),
+    MakePlacer("researchlab4_placer", "researchlab4", "researchlab4", "idle")

@@ -434,7 +434,12 @@ local treeprefabs = {}
 function treeset(name, data, build, bloombuild)
     local buildasset = Asset("ANIM", build)
     local bloombuildasset = Asset("ANIM", bloombuild)
-    local assets = { buildasset, bloombuildasset }
+    local assets =
+    {
+        buildasset,
+        bloombuildasset,
+        Asset("MINIMAP_IMAGE", data.icon),
+    }
 
     local prefabs =
     {

@@ -28,4 +28,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/fx/warningshadow", fn, assets)
+return Prefab("warningshadow", fn, assets)

@@ -11,12 +11,12 @@ local function ProtectionLevels(inst, data)
     local equippedArmor = inst.components.inventory ~= nil and inst.components.inventory:GetEquippedItem(EQUIPSLOTS.BODY) or nil
     if equippedArmor ~= nil then
         if inst.sg:HasStateTag("shell") then
-            equippedArmor.components.armor:SetAbsorption(TUNING.FULL_ABSORPTION)
-        else
-            equippedArmor.components.armor:SetAbsorption(TUNING.ARMORSNURTLESHELL_ABSORPTION)
-            equippedArmor.components.useableitem:StopUsingItem()
-        end
+        equippedArmor.components.armor:SetAbsorption(TUNING.FULL_ABSORPTION)
+    else
+        equippedArmor.components.armor:SetAbsorption(TUNING.ARMORSNURTLESHELL_ABSORPTION)
+        equippedArmor.components.useableitem:StopUsingItem()
     end
+        end
 end
 
 local function droptargets(inst)
@@ -28,9 +28,9 @@ local function droptargets(inst)
         local ents = TheSim:FindEntities(x, y, z, 20, { "_combat" })
         for i, v in ipairs(ents) do
             if v.components.combat ~= nil and v.components.combat.target == owner then
-                v.components.combat:SetTarget(nil)
-            end
+            v.components.combat:SetTarget(nil)
         end
+    end
     end
 end
 
@@ -108,4 +108,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/inventory/armorsnurtleshell", fn, assets)
+return Prefab("armorsnurtleshell", fn, assets)

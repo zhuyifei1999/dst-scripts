@@ -277,5 +277,5 @@ local function fn()
     return inst
 end
 
-return Prefab("common/objects/beebox", fn, assets, prefabs),
-    MakePlacer("common/beebox_placer", "bee_box", "bee_box", "idle")
+return Prefab("beebox", fn, assets, prefabs),
+    MakePlacer("beebox_placer", "bee_box", "bee_box", "idle")
