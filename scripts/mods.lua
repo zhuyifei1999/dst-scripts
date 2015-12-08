@@ -1,6 +1,7 @@
 require "class"
 require "modutil"
 require "prefabs"
+local ModWarningScreen = require "screens/modwarningscreen"
 
 MOD_API_VERSION = 10
 
@@ -584,7 +585,7 @@ function ModWrangler:SetPostEnv()
 	--if (#self.enabledmods > 0)  and TheSim:ShouldWarnModsLoaded() then
 		if not DISABLE_MOD_WARNING and IsInFrontEnd() then
 			TheFrontEnd:PushScreen(
-				ScriptErrorScreen(
+				ModWarningScreen(
 					STRINGS.UI.MAINSCREEN.MODTITLE, 
 					moddetail,
 					{
@@ -601,7 +602,7 @@ function ModWrangler:SetPostEnv()
 		end
 	elseif KnownModIndex:WasLoadBad() then
 		TheFrontEnd:PushScreen(
-			ScriptErrorScreen(
+			ModWarningScreen(
 				STRINGS.UI.MAINSCREEN.MODSBADTITLE, 
 				STRINGS.UI.MAINSCREEN.MODSBADLOAD,
 				{
