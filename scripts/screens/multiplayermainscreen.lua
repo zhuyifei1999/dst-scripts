@@ -666,7 +666,9 @@ function MultiplayerMainScreen:OnBecomeActive()
     self.leaving = nil
 
     --start a new query everytime we go back to the mainmenu
-	TheSim:StartWorkshopQuery()
+	if TheSim:IsLoggedOn() then
+		TheSim:StartWorkshopQuery()
+	end
 end
 
 

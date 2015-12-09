@@ -506,7 +506,9 @@ function ModsScreen:UpdateForWorkshop()
 
 		--If nothing has changed bail out and leave the ui alone
 		if not need_to_udpate then
-			TheSim:StartWorkshopQuery()
+			if TheSim:IsLoggedOn() then
+				TheSim:StartWorkshopQuery()
+			end
 			TheSim:UnlockModDir()
 			return
 		end

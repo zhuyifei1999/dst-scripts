@@ -78,9 +78,11 @@ end
 local function CanHatTarget(inst, target)
     if target == nil or
         target.components.inventory == nil or
-        not (target:HasTag("player") or
-            target:HasTag("manrabbit") or
-            target:HasTag("pig")) then
+        not (target.components.inventory.isopen or
+            target:HasTag("pig") or
+            target:HasTag("manrabbit")) then
+        --NOTE: open inventory implies player, so we can skip "player" tag check
+        --      closed inventory on player means they shouldn't be able to equip
         return false
     end
     local hat = target.components.inventory:GetEquippedItem(EQUIPSLOTS.HEAD)

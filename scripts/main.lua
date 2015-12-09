@@ -143,7 +143,6 @@ require("overseer")
 end
 
 require("fileutil")
-require("screens/scripterrorscreen")
 require("prefablist")
 require("standardcomponents")
 require("update")

@@ -105,6 +105,8 @@ local assets =
 	Asset("SHADER", "shaders/debug_tri.ksh"),
 	Asset("SHADER", "shaders/render_depth.ksh"),
 	Asset("SHADER", "shaders/font.ksh"),
+	Asset("SHADER", "shaders/font_packed.ksh"),
+	Asset("SHADER", "shaders/font_packed_outline.ksh"),
 	Asset("SHADER", "shaders/ground.ksh"),
     Asset("SHADER", "shaders/ground_overlay.ksh"),
 	Asset("SHADER", "shaders/ground_lights.ksh"),

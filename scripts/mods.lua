@@ -1,7 +1,7 @@
 require "class"
-local ScriptErrorScreen = require "screens/scripterrorscreen"
 require "modutil"
 require "prefabs"
+local ModWarningScreen = require "screens/modwarningscreen"
 
 MOD_API_VERSION = 10
 
@@ -284,12 +284,21 @@ function ModWrangler:LoadServerModsFile()
 	
 	local filename = "../mods/dedicated_server_mods_setup.lua"
 	local fn = kleiloadlua( filename )
-	if fn ~= nil then	
-		if type(fn)=="string" then
-			error("Error loading dedicated_server_mods_setup.lua:\n"..fn)
+	if fn ~= nil then
+		local mods_err_fn = function(err)
+			print("########################################################")
+			print("#ERROR: Failure to load dedicated_server_mods_setup.lua:", err)
+			print("#Shutting down")
+			print("########################################################")
+			Shutdown()
 		end
-		setfenv(fn, env)
-		fn()
+			
+		if type(fn)=="string" then
+			mods_err_fn(fn)
+		else
+			setfenv(fn, env)
+			xpcall( fn, mods_err_fn )
+		end
 	end
 	
 	TheNet:DownloadServerMods()
@@ -440,8 +449,7 @@ function ModWrangler:DisplayBadMods()
 
 	if TheFrontEnd then
 		for k,badmod in ipairs(self.failedmods) do
-			TheFrontEnd:DisplayError(
-				ScriptErrorScreen(
+			SetGlobalErrorWidget(
 					STRINGS.UI.MAINSCREEN.MODFAILTITLE, 
 					STRINGS.UI.MAINSCREEN.MODFAILDETAIL.." "..KnownModIndex:GetModFancyName(badmod.name).."\n"..badmod.error.."\n",
 					{
@@ -458,7 +466,7 @@ function ModWrangler:DisplayBadMods()
 					ANCHOR_LEFT,
 					STRINGS.UI.MAINSCREEN.MODFAILDETAIL2,
 					20
-					))
+					)
 		end
 		self.failedmods = {}
 	end
@@ -586,7 +594,7 @@ function ModWrangler:SetPostEnv()
 	--if (#self.enabledmods > 0)  and TheSim:ShouldWarnModsLoaded() then
 		if not DISABLE_MOD_WARNING and IsInFrontEnd() then
 			TheFrontEnd:PushScreen(
-				ScriptErrorScreen(
+				ModWarningScreen(
 					STRINGS.UI.MAINSCREEN.MODTITLE, 
 					moddetail,
 					{
@@ -603,7 +611,7 @@ function ModWrangler:SetPostEnv()
 		end
 	elseif KnownModIndex:WasLoadBad() then
 		TheFrontEnd:PushScreen(
-			ScriptErrorScreen(
+			ModWarningScreen(
 				STRINGS.UI.MAINSCREEN.MODSBADTITLE, 
 				STRINGS.UI.MAINSCREEN.MODSBADLOAD,
 				{

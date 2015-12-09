@@ -7,8 +7,8 @@ local Image = require "widgets/image"
 local UIAnim = require "widgets/uianim"
 local Widget = require "widgets/widget"
 
-local ScriptErrorScreen = Class(Screen, function(self, title, text, buttons, texthalign, additionaltext, textsize, timeout)
-	Screen._ctor(self, "ScriptErrorScreen")
+local ModWarningScreen = Class(Screen, function(self, title, text, buttons, texthalign, additionaltext, textsize)
+	Screen._ctor(self, "ModWarningScreen")
 
     TheInputProxy:SetCursorVisible(true)
 
@@ -72,7 +72,7 @@ local ScriptErrorScreen = Class(Screen, function(self, title, text, buttons, tex
 	self.version:SetPosition(110, 30, 0)
 	self.version:SetString("Rev. "..APP_VERSION.." "..PLATFORM)
 	
-	if PLATFORM ~= "PS4" then
+	if buttons then
 	    --create the menu itself
 	    local button_w = 200
 	    local space_between = 20
@@ -85,25 +85,4 @@ local ScriptErrorScreen = Class(Screen, function(self, title, text, buttons, tex
 	end
 end)
 
-function ScriptErrorScreen:HideAllOtherScreens()
-	-- workaround, a screen may actually be sitting on top of us without being pushed to the stack
-	-- in this case we want this screen to be visible at all times
-	for i,v in pairs(Ents) do
-		if v.widget and v.widget:is_a(Screen) and not v.widget:is_a(ScriptErrorScreen) and not TheFrontEnd:IsScreenInStack(v.widget) then
-			v:Hide()
-		end
-	end
-end
-
-function ScriptErrorScreen:OnUpdate( dt )
-	self:HideAllOtherScreens()
-	if self.timeout then
-		self.timeout.timeout = self.timeout.timeout - dt
-		if self.timeout.timeout <= 0 then
-			self.timeout.cb()
-		end
-	end
-	return true
-end
-
-return ScriptErrorScreen
+return ModWarningScreen

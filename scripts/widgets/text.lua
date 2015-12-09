@@ -95,15 +95,15 @@ function Text:SetTruncatedString(str, maxwidth, maxchars, ellipses)
     if type(ellipses) ~= "string" then
         ellipses = ellipses and "..." or ""
     end
-    if maxchars ~= nil and str:len() > maxchars then
-        str = str:sub(1, maxchars)
+    if maxchars ~= nil and utf8strlen(str) > maxchars then
+        str = utf8substr(str, 0, maxchars)
         self.inst.TextWidget:SetString(str..ellipses)
     else
         self.inst.TextWidget:SetString(str)
     end
     if maxwidth ~= nil then
         while self.inst.TextWidget:GetRegionSize() > maxwidth do
-            str = str:sub(1, str:len() - 1)
+            str = utf8substr(str, 0, utf8strlen(str) - 1)
             self.inst.TextWidget:SetString(str..ellipses)
         end
     end

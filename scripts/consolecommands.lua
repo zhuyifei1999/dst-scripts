@@ -59,67 +59,22 @@ local function doreset()
     })
 end
 
-
--- Roll back *count* number of saves (default 1)
+-- * Roll back *count* number of saves (default 1)
+-- * c_rollback() or c_rollback(1) will roll back to the
+--   last save file, if it's been longer than 30 seconds
+-- * c_rollback(0) is the same as c_reset()
 function c_rollback(count)
     if TheWorld ~= nil and TheWorld.ismastersim then
-        count = math.max(0, count or 1) + 1
-        TheNet:TruncateSnapshots(TheWorld.meta.session_identifier, -count)
-        doreset()
+        TheNet:SendWorldRollbackRequestToServer(count)
     end
 end
 
-function c_save()
-    if TheWorld ~= nil and TheWorld.ismastersim then
-        TheWorld:PushEvent("save")
-    end
-end
-
--- Spawn At Cursor and select the new ent
--- Has a gimpy short name so it's easier to type from the console
-function c_spawn(prefab, count)
-    count = count or 1
-    local inst = nil
-    for i = 1, count do
-        inst = DebugSpawn(prefab)
-        inst.Transform:SetPosition(ConsoleWorldPosition():Get())
-    end
-    SetDebugEntity(inst)
-    SuUsed("c_spawn_"..prefab , true)
-    return inst
-end
-
--- Shutdown the application, optionally close with out saving (saves by default)
-function c_shutdown(save)
-    print("c_shutdown", save)
-    if save == false or TheWorld == nil then
-        Shutdown()
-    elseif TheWorld.ismastersim then
-        for i, v in ipairs(AllPlayers) do
-            v:OnDespawn()
-        end
-        TheSystemService:EnableStorage(true)
-        SaveGameIndex:SaveCurrent(Shutdown, true)
-    else
-        SerializeUserSession(ThePlayer)
-        Shutdown()
-    end
-end
-
--- Restart the server, optionally save before restarting (does not save by default)
-function c_reset(save)
+-- Restart the server to the last save file (same as c_rollback(0))
+function c_reset()
     if not InGamePlay() then
         StartNextInstance()
     elseif TheWorld ~= nil and TheWorld.ismastersim then
-        if save then
-            for i, v in ipairs(AllPlayers) do
-                v:OnDespawn()
-            end
-            TheSystemService:EnableStorage(true)
-            SaveGameIndex:SaveCurrent(doreset, true)
-        else
-            doreset()
-        end
+        TheNet:SendWorldRollbackRequestToServer(0)
     end
 end
 
@@ -144,10 +99,47 @@ function c_regenerateworld()
     end
 end
 
+function c_save()
+    if TheWorld ~= nil and TheWorld.ismastersim then
+        TheWorld:PushEvent("ms_save")
+    end
+end
+
+-- Shutdown the application, optionally close with out saving (saves by default)
+function c_shutdown(save)
+    print("c_shutdown", save)
+    if save == false or TheWorld == nil then
+        Shutdown()
+    elseif TheWorld.ismastersim then
+        for i, v in ipairs(AllPlayers) do
+            v:OnDespawn()
+        end
+        TheSystemService:EnableStorage(true)
+        SaveGameIndex:SaveCurrent(Shutdown, true)
+    else
+        SerializeUserSession(ThePlayer)
+        Shutdown()
+    end
+end
+
 -- Remotely execute a lua string
 function c_remote( fnstr )
     local x, y, z = TheSim:ProjectScreenPos(TheSim:GetPosition())
     TheNet:SendRemoteExecute(fnstr, x, z)
+end
+
+-- Spawn At Cursor and select the new ent
+-- Has a gimpy short name so it's easier to type from the console
+function c_spawn(prefab, count)
+    count = count or 1
+    local inst = nil
+    for i = 1, count do
+        inst = DebugSpawn(prefab)
+        inst.Transform:SetPosition(ConsoleWorldPosition():Get())
+    end
+    SetDebugEntity(inst)
+    SuUsed("c_spawn_"..prefab , true)
+    return inst
 end
 
 -- c_despawn helper
@@ -1025,7 +1017,7 @@ end
 function c_migrationportal(worldId, portalId)
     local inst = c_spawn("migration_portal")
     if portalId then
-        inst.components.worldmigrator:SetRecievedPortal( worldId, portalId )
+        inst.components.worldmigrator:SetReceivedPortal( worldId, portalId )
     else
         inst.components.worldmigrator:SetDestinationWorld( worldId )
     end

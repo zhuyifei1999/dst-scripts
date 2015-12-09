@@ -101,7 +101,7 @@ FrontEnd = Class(function(self, name)
 	self.helptextbg:SetPosition(0, -help_height/2)
 --	self.helptextbg:SetClickable(false)
 	self.helptextbg:SetTint(0,0,0,.75)
-	
+
 	self.helptexttext = self.helptext:AddChild(Text(UIFONT, 30))
     --self.helptexttext:SetVAnchor(ANCHOR_BOTTOM)
     --self.helptexttext:SetHAnchor(ANCHOR_MIDDLE)
@@ -116,16 +116,16 @@ FrontEnd = Class(function(self, name)
 	self.screenroot:AddChild(self.blackoverlay)
 	self.screenroot:AddChild(self.whiteoverlay)
 	self.screenroot:AddChild(self.vigoverlay)
-	
-    self.alpha = 0.0
-    
+
+    self.alpha = 0
+
     self.title = Text(TITLEFONT, 100)
     self.title:SetPosition(0, -30, 0)
     self.title:Hide()
     self.title:SetVAnchor(ANCHOR_MIDDLE)
     self.title:SetHAnchor(ANCHOR_MIDDLE)
 	self.overlayroot:AddChild(self.title)
-	
+
     self.subtitle = Text(TITLEFONT, 70)
     self.subtitle:SetPosition(0, 70, 0)
     self.subtitle:Hide()
@@ -153,8 +153,6 @@ FrontEnd = Class(function(self, name)
 
 	TheInput:AddKeyHandler(function(key, down) self:OnRawKey(key, down) end )
 	TheInput:AddTextInputHandler(function(text) self:OnTextInput(text) end )
-
-	self.displayingerror = false
 
 	self.tracking_mouse = true
 	self.repeat_time = -1
@@ -320,8 +318,8 @@ function FrontEnd:OnControl(control, down)
         TheFrontEnd:SetForceProcessTextInput(false, TheFrontEnd.textProcessorWidget)
 	end
 
-    if self:GetFadeLevel() > 0 then
-        return true
+    if global_error_widget ~= nil or self:GetFadeLevel() > 0 then
+        return false
     --handle focus moves
 
     -- map CONTROL_PRIMARY to CONTROL_ACCEPT for buttons
@@ -450,104 +448,90 @@ function FrontEnd:GetAccountManager()
 end
 
 function FrontEnd:SetFadeLevel(alpha)
-	--print ("SET FADE LEVEL", alpha)
-	self.alpha = alpha
-	if alpha <= 0 then
-		if self.blackoverlay then
-			self.blackoverlay:Hide()
-			self.whiteoverlay:Hide()
-			self.vigoverlay:Hide()
-		end
-		if self.topblackoverlay then
-			self.topblackoverlay:Hide()
-			self.topwhiteoverlay:Hide()
-			self.topvigoverlay:Hide()
-		end
-		if self.fade_type == "alpha" then
-			local screen = self:GetActiveScreen()
-			if screen and screen.children then
-				for k,v in pairs(screen.children) do
-					if v and v.can_fade_alpha then
-						v:Hide()
-					end
-				end
-			end
-		end
-	else
-		if self.fade_type == "white" then
-			self.whiteoverlay:Show()
-			self.whiteoverlay:SetTint(FADE_WHITE_COLOUR[1], FADE_WHITE_COLOUR[2], FADE_WHITE_COLOUR[3], alpha)
-			self.vigoverlay:Show()
-			self.vigoverlay:SetTint(1,1,1, alpha)
-			if (not self.topFadeHidden) then
-				self.topwhiteoverlay:Show()
-				self.topvigoverlay:Show()
-			end
-			self.topwhiteoverlay:SetTint(FADE_WHITE_COLOUR[1], FADE_WHITE_COLOUR[2], FADE_WHITE_COLOUR[3], alpha)
-			self.topvigoverlay:SetTint(1,1,1,alpha)
-		elseif self.fade_type == "alpha" then
-			local screen = self:GetActiveScreen()
-			if screen and screen.children then
-				for k,v in pairs(screen.children) do
-					v:SetFadeAlpha(alpha)
-					v:SetClickable(false)
-				end
-			end
-		elseif self.fade_type == "black" then
-			self.blackoverlay:Show()
-			self.blackoverlay:SetTint(0,0,0,alpha)
-			if (not self.topFadeHidden) then
-				self.topblackoverlay:Show()
-			end
-			self.topblackoverlay:SetTint(0,0,0,alpha)
-		end
-	end
+    self.alpha = alpha
+    if alpha <= 0 then
+        if self.blackoverlay ~= nil then
+            self.blackoverlay:Hide()
+            self.whiteoverlay:Hide()
+            self.vigoverlay:Hide()
+        end
+        if self.topblackoverlay ~= nil then
+            self.topblackoverlay:Hide()
+            self.topwhiteoverlay:Hide()
+            self.topvigoverlay:Hide()
+        end
+        if self.fade_type == "alpha" then
+            local screen = self:GetActiveScreen()
+            if screen ~= nil and screen.children ~= nil then
+                for k, v in pairs(screen.children) do
+                    if v.can_fade_alpha then
+                        v:Hide()
+                    end
+                end
+            end
+        end
+    elseif self.fade_type == "white" then
+        self.whiteoverlay:Show()
+        self.whiteoverlay:SetTint(FADE_WHITE_COLOUR[1], FADE_WHITE_COLOUR[2], FADE_WHITE_COLOUR[3], alpha)
+        self.vigoverlay:Show()
+        self.vigoverlay:SetTint(1, 1, 1, alpha)
+        if not self.topFadeHidden then
+            self.topwhiteoverlay:Show()
+            self.topvigoverlay:Show()
+        end
+        self.topwhiteoverlay:SetTint(FADE_WHITE_COLOUR[1], FADE_WHITE_COLOUR[2], FADE_WHITE_COLOUR[3], alpha)
+        self.topvigoverlay:SetTint(1, 1, 1, alpha)
+    elseif self.fade_type == "alpha" then
+        local screen = self:GetActiveScreen()
+        if screen ~= nil and screen.children ~= nil then
+            for k, v in pairs(screen.children) do
+                v:SetFadeAlpha(alpha)
+                v:SetClickable(false)
+            end
+        end
+    elseif self.fade_type == "black" then
+        self.blackoverlay:Show()
+        self.blackoverlay:SetTint(0, 0, 0, alpha)
+        if not self.topFadeHidden then
+            self.topblackoverlay:Show()
+        end
+        self.topblackoverlay:SetTint(0, 0, 0, alpha)
+    end
 end
 
-function FrontEnd:GetFadeLevel(alpha)
-	return self.alpha
+function FrontEnd:GetFadeLevel()
+    return self.alpha
 end
 
 function FrontEnd:DoFadingUpdate(dt)
-	dt = math.min(dt, 1/30)
-	if self.fade_delay_time then
-		self.fade_delay_time = self.fade_delay_time - dt
-		if self.fade_delay_time <= 0 then
-			self.fade_delay_time = nil
-			if self.delayovercb then
-				self.delayovercb()
-				self.delayovercb = nil
-			end
-		end
-		return
-	elseif self.fadedir ~= nil then
-		self.fade_time = self.fade_time + dt
-		
-		local alpha = 0
-		if self.fadedir then
-			if self.total_fade_time == 0 then
-				alpha = 0
-			else
-				alpha = easing.inOutCubic(self.fade_time, 1, -1, self.total_fade_time)
-			end
-		else
-			if self.total_fade_time == 0 then
-				alpha = 1
-			else
-				alpha = easing.outCubic(self.fade_time, 0, 1, self.total_fade_time)
-			end
-		end
-		
-		self:SetFadeLevel(alpha)
-		if self.fade_time >= self.total_fade_time then
-			self.fadedir = nil
-			if self.fadecb then
-				local cb = self.fadecb
-				self.fadecb = nil
-				cb()
-			end
-		end
-	end
+    if self.fade_delay_time ~= nil then
+        self.fade_delay_time = self.fade_delay_time - math.min(dt, FRAMES)
+        if self.fade_delay_time <= 0 then
+            self.fade_delay_time = nil
+            if self.delayovercb ~= nil then
+                self.delayovercb()
+                self.delayovercb = nil
+            end
+        end
+    elseif self.fadedir ~= nil then
+        self.fade_time = self.fade_time + math.min(dt, FRAMES)
+        if self.fade_time < self.total_fade_time then
+            self:SetFadeLevel(
+                self.fadedir and
+                (self.total_fade_time <= 0 and 0 or easing.inOutCubic(self.fade_time, 1, -1, self.total_fade_time)) or
+                (self.total_fade_time <= 0 and 1 or easing.outCubic(self.fade_time, 0, 1, self.total_fade_time))
+            )
+        else
+            self.fade_time = self.total_fade_time
+            self:SetFadeLevel(self.fadedir and 0 or 1)
+            self.fadedir = nil
+            if self.fadecb ~= nil then
+                local cb = self.fadecb
+                self.fadecb = nil
+                cb()
+            end
+        end
+    end
 end
 
 function FrontEnd:UpdateConsoleOutput()
@@ -603,81 +587,85 @@ function FrontEnd:Update(dt)
 		self.screenstack[#self.screenstack]:OnUpdate(dt)
 	end	
 
-    --Spinner repeat
-    if not (TheInput:IsControlPressed(CONTROL_PREVVALUE) or
-            TheInput:IsControlPressed(CONTROL_NEXTVALUE)) then
-        self.spinner_repeat_time = -1
-    elseif self.spinner_repeat_time > dt then
-        self.spinner_repeat_time = self.spinner_repeat_time - dt
-    elseif self.spinner_repeat_time < 0 then
-        self.spinner_repeat_time = SPINNER_REPEAT_TIME > dt and SPINNER_REPEAT_TIME - dt or 0
-    elseif TheInput:IsControlPressed(CONTROL_PREVVALUE) then
-        self.spinner_repeat_time = SPINNER_REPEAT_TIME
-        self:OnControl(CONTROL_PREVVALUE, true)
-    else--if TheInput:IsControlPressed(CONTROL_NEXTVALUE) then
-        self.spinner_repeat_time = SPINNER_REPEAT_TIME
-        self:OnControl(CONTROL_NEXTVALUE, true)
-    end
+	if not(global_error_widget ~= nil or self:GetFadeLevel() > 0) then
 
-    --Scroll repeat
-    if not (TheInput:IsControlPressed(CONTROL_SCROLLBACK) or
-            TheInput:IsControlPressed(CONTROL_SCROLLFWD)) then
-        self.scroll_repeat_time = -1
-    elseif self.scroll_repeat_time > dt then
-        self.scroll_repeat_time = self.scroll_repeat_time - dt
-    elseif TheInput:IsControlPressed(CONTROL_SCROLLBACK) then
-        local repeat_time =
-            TheInput:GetControlIsMouseWheel(CONTROL_SCROLLBACK) and
-            MOUSE_SCROLL_REPEAT_TIME or
-            SCROLL_REPEAT_TIME
-        if self.scroll_repeat_time < 0 then
-            self.scroll_repeat_time = repeat_time > dt and repeat_time - dt or 0
-        else
-            self.scroll_repeat_time = repeat_time
-            self:OnControl(CONTROL_SCROLLBACK, true)
+        --Spinner repeat
+        if not (TheInput:IsControlPressed(CONTROL_PREVVALUE) or
+                TheInput:IsControlPressed(CONTROL_NEXTVALUE)) then
+            self.spinner_repeat_time = -1
+        elseif self.spinner_repeat_time > dt then
+            self.spinner_repeat_time = self.spinner_repeat_time - dt
+        elseif self.spinner_repeat_time < 0 then
+            self.spinner_repeat_time = SPINNER_REPEAT_TIME > dt and SPINNER_REPEAT_TIME - dt or 0
+        elseif TheInput:IsControlPressed(CONTROL_PREVVALUE) then
+            self.spinner_repeat_time = SPINNER_REPEAT_TIME
+            self:OnControl(CONTROL_PREVVALUE, true)
+        else--if TheInput:IsControlPressed(CONTROL_NEXTVALUE) then
+            self.spinner_repeat_time = SPINNER_REPEAT_TIME
+            self:OnControl(CONTROL_NEXTVALUE, true)
         end
-    else--if TheInput:IsControlPressed(CONTROL_SCROLLFWD) then
-        local repeat_time =
-            TheInput:GetControlIsMouseWheel(CONTROL_SCROLLFWD) and
-            MOUSE_SCROLL_REPEAT_TIME or
-            SCROLL_REPEAT_TIME
-        if self.scroll_repeat_time < 0 then
-            self.scroll_repeat_time = repeat_time > dt and repeat_time - dt or 0
-        else
-            self.scroll_repeat_time = repeat_time
-            self:OnControl(CONTROL_SCROLLFWD, true)
-        end
-    end
 
-    --Menu nav repeat
-    if self.repeat_time > dt then
-        self.repeat_time = self.repeat_time - dt
-    else
-        self.repeat_time = REPEAT_TIME
-        if TheInput:IsControlPressed(CONTROL_MOVE_LEFT) or TheInput:IsControlPressed(CONTROL_FOCUS_LEFT) then
-            self:OnFocusMove(MOVE_LEFT, true)
-        elseif TheInput:IsControlPressed(CONTROL_MOVE_RIGHT) or TheInput:IsControlPressed(CONTROL_FOCUS_RIGHT) then
-            self:OnFocusMove(MOVE_RIGHT, true)
-        elseif TheInput:IsControlPressed(CONTROL_MOVE_UP) or TheInput:IsControlPressed(CONTROL_FOCUS_UP) then
-            self:OnFocusMove(MOVE_UP, true)
-        elseif TheInput:IsControlPressed(CONTROL_MOVE_DOWN) or TheInput:IsControlPressed(CONTROL_FOCUS_DOWN) then
-            self:OnFocusMove(MOVE_DOWN, true)
-        else
-            self.repeat_time = 0
+        --Scroll repeat
+        if not (TheInput:IsControlPressed(CONTROL_SCROLLBACK) or
+                TheInput:IsControlPressed(CONTROL_SCROLLFWD)) then
+            self.scroll_repeat_time = -1
+        elseif self.scroll_repeat_time > dt then
+            self.scroll_repeat_time = self.scroll_repeat_time - dt
+        elseif TheInput:IsControlPressed(CONTROL_SCROLLBACK) then
+            local repeat_time =
+                TheInput:GetControlIsMouseWheel(CONTROL_SCROLLBACK) and
+                MOUSE_SCROLL_REPEAT_TIME or
+                SCROLL_REPEAT_TIME
+            if self.scroll_repeat_time < 0 then
+                self.scroll_repeat_time = repeat_time > dt and repeat_time - dt or 0
+            else
+                self.scroll_repeat_time = repeat_time
+                self:OnControl(CONTROL_SCROLLBACK, true)
+            end
+        else--if TheInput:IsControlPressed(CONTROL_SCROLLFWD) then
+            local repeat_time =
+                TheInput:GetControlIsMouseWheel(CONTROL_SCROLLFWD) and
+                MOUSE_SCROLL_REPEAT_TIME or
+                SCROLL_REPEAT_TIME
+            if self.scroll_repeat_time < 0 then
+                self.scroll_repeat_time = repeat_time > dt and repeat_time - dt or 0
+            else
+                self.scroll_repeat_time = repeat_time
+                self:OnControl(CONTROL_SCROLLFWD, true)
+            end
         end
-    end
 
-	if self.tracking_mouse and not self.focus_locked then
-		local entitiesundermouse = TheInput:GetAllEntitiesUnderMouse()
-		local hover_inst = entitiesundermouse[1]
-		if hover_inst and hover_inst.widget then
-			hover_inst.widget:SetFocus()
-		else
-			if #self.screenstack > 0 then
-				self.screenstack[#self.screenstack]:SetFocus()
-			end
-		end
-	end
+        --Menu nav repeat
+        if self.repeat_time > dt then
+            self.repeat_time = self.repeat_time - dt
+        else
+            self.repeat_time = REPEAT_TIME
+            if TheInput:IsControlPressed(CONTROL_MOVE_LEFT) or TheInput:IsControlPressed(CONTROL_FOCUS_LEFT) then
+                self:OnFocusMove(MOVE_LEFT, true)
+            elseif TheInput:IsControlPressed(CONTROL_MOVE_RIGHT) or TheInput:IsControlPressed(CONTROL_FOCUS_RIGHT) then
+                self:OnFocusMove(MOVE_RIGHT, true)
+            elseif TheInput:IsControlPressed(CONTROL_MOVE_UP) or TheInput:IsControlPressed(CONTROL_FOCUS_UP) then
+                self:OnFocusMove(MOVE_UP, true)
+            elseif TheInput:IsControlPressed(CONTROL_MOVE_DOWN) or TheInput:IsControlPressed(CONTROL_FOCUS_DOWN) then
+                self:OnFocusMove(MOVE_DOWN, true)
+            else
+                self.repeat_time = 0
+            end
+        end
+
+        if self.tracking_mouse and not self.focus_locked then
+            local entitiesundermouse = TheInput:GetAllEntitiesUnderMouse()
+            local hover_inst = entitiesundermouse[1]
+            if hover_inst and hover_inst.widget then
+                hover_inst.widget:SetFocus()
+            else
+                if #self.screenstack > 0 then
+                    self.screenstack[#self.screenstack]:SetFocus()
+                end
+            end
+        end
+
+    end
 	
 	TheSim:ProfilerPush("update widgets")
 	if not self.updating_widgets_alt then
@@ -723,26 +711,25 @@ function FrontEnd:PushScreen(screen)
 	
 	--self.tracking_mouse = false
 	--jcheng: don't allow any other screens to push if we're displaying an error
+    if global_error_widget ~= nil then return end
 	
-	if not TheFrontEnd:IsDisplayingError() then
-		Print(VERBOSITY.DEBUG, 'FrontEnd:PushScreen', screen.name)
-		if #self.screenstack > 0 then
-			self.screenstack[#self.screenstack]:OnBecomeInactive()
-		end
+    Print(VERBOSITY.DEBUG, 'FrontEnd:PushScreen', screen.name)
+    if #self.screenstack > 0 then
+        self.screenstack[#self.screenstack]:OnBecomeInactive()
+    end
 
-		self.screenroot:AddChild(screen)
-		table.insert(self.screenstack, screen)
-		
-		-- screen:Show()
-		if not self.tracking_mouse then
-			screen:SetDefaultFocus()
-		end
-		screen:OnBecomeActive()
-		self:Update(0)
+    self.screenroot:AddChild(screen)
+    table.insert(self.screenstack, screen)
+    
+    -- screen:Show()
+    if not self.tracking_mouse then
+        screen:SetDefaultFocus()
+    end
+    screen:OnBecomeActive()
+    self:Update(0)
 
-		--print("FOCUS IS", screen:GetDeepestFocus(), self.tracking_mouse)
-		--self:Fade(true, 2)
-	end
+    --print("FOCUS IS", screen:GetDeepestFocus(), self.tracking_mouse)
+    --self:Fade(true, 2)
 end
 
 function FrontEnd:ClearScreens()
@@ -880,8 +867,8 @@ end
 
 function FrontEnd:OnRawKey(key, down)
 --	print("FrontEnd:OnRawKey()", key, down)
-	if self:GetFadeLevel() > 0 then
-		return true
+	if global_error_widget ~= nil or self:GetFadeLevel() > 0 then
+		return false
 	end
 
 	local screen = self:GetActiveScreen()
@@ -897,6 +884,10 @@ function FrontEnd:OnRawKey(key, down)
 end
 
 function FrontEnd:OnTextInput(text)
+	if global_error_widget ~= nil or self:GetFadeLevel() > 0 then
+		return false
+	end
+
 --	print("FrontEnd:OnTextInput()", text)
 	local screen = self:GetActiveScreen()
     if screen then
@@ -905,23 +896,6 @@ function FrontEnd:OnTextInput(text)
 		else
 			screen:OnTextInput(text)
 		end
-	end
-end
-
-function FrontEnd:DisplayError(screen)
-	if self.displayingerror == false then
-	    print("SCRIPT ERROR! Showing error screen")
-		
-		self:ShowScreen(screen)
-		self.overlayroot:Hide()
-		self.consoletext:Hide()
-		self.blackoverlay:Hide()
-		self.whiteoverlay:Hide()
-		self.vigoverlay:Hide()
-		self.title:Hide()
-		self.subtitle:Hide()
-		
-		self.displayingerror = true
 	end
 end
 
@@ -942,11 +916,11 @@ function FrontEnd:GetHUDScale()
 	return scale
 end
 
-function FrontEnd:IsDisplayingError()
-	return self.displayingerror
-end
-
 function FrontEnd:OnMouseButton(button, down, x, y)
+	if global_error_widget ~= nil or self:GetFadeLevel() > 0 then
+		return false
+	end
+
 	self.tracking_mouse = true
 
 	if #self.screenstack > 0 then
@@ -959,6 +933,10 @@ function FrontEnd:OnMouseButton(button, down, x, y)
 end
 
 function FrontEnd:OnMouseMove(x,y)
+	if global_error_widget ~= nil or self:GetFadeLevel() > 0 then
+		return false
+	end
+
 
 	if self.lastx and self.lasty and self.lastx ~= x and self.lasty ~= y then
 		self.tracking_mouse = true

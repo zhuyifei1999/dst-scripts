@@ -495,6 +495,21 @@ function WorldResetFromSim()
     end
 end
 
+function WorldRollbackFromSim(count)
+    if TheWorld ~= nil and TheWorld.ismastershard then
+        print("Received world rollback request: count="..tostring(count))
+        if count > 0 then
+            if TheWorld.net == nil or
+                TheWorld.net.components.autosaver == nil or
+                GetTime() - TheWorld.net.components.autosaver:GetLastSaveTime() < 30 then
+                count = count + 1
+            end
+            TheNet:TruncateSnapshots(TheWorld.meta.session_identifier, -count)
+        end
+        DoReset()
+    end
+end
+
 function UpdateServerTagsString()
     local tagsTable = {}
 

@@ -45,6 +45,9 @@ local function fn()
     MakeSmallBurnable(inst)
     MakeSmallPropagator(inst)
 
+    inst:AddComponent("hauntable")
+    inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
+
     return inst
 end
 

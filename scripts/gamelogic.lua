@@ -28,6 +28,14 @@ global_loading_widget = LoadingWidget(Settings.load_screen_image)
 global_loading_widget:SetHAnchor(ANCHOR_LEFT)
 global_loading_widget:SetVAnchor(ANCHOR_BOTTOM)
 
+global_error_widget = nil
+ScriptErrorWidget = require "widgets/scripterrorwidget"
+function SetGlobalErrorWidget(...)
+    if global_error_widget == nil then -- only first error!
+        global_error_widget = ScriptErrorWidget(...)
+    end
+end
+
 cancel_tip = nil
 if not TheNet:IsDedicated() then
     CancelTip = require "widgets/canceltipwidget"
@@ -641,7 +649,7 @@ local function DoInitGame(savedata, profile)
      	end
     end
 
-	if not TheFrontEnd:IsDisplayingError() then
+	if global_error_widget == nil then
 	    --clear the player stats, so that it doesn't count items "acquired" from the save file
 	    GetProfileStats(true)
 

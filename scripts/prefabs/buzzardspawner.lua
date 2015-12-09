@@ -244,6 +244,15 @@ local function OnUpdateFade(inst, dframes)
         if inst._killed then
             --don't need to check ismastersim, _killed will never be set on clients
             inst:Remove()
+            return
+        end
+    end
+
+    if TheWorld.ismastersim then
+        if inst._fadeframe:value() > 0 then
+            inst:Show()
+        else
+            inst:Hide()
         end
     end
 end
@@ -287,7 +296,7 @@ local function DoFlap(inst)
 end
 
 local function KillShadow(inst)
-    if inst._fadeframe:value() > 0 then
+    if inst._fadeframe:value() > 0 and not inst:IsAsleep() then
         inst:StopWatchingWorldState("iswinter", CircleOnIsWinter)
         inst:StopWatchingWorldState("isnight", CircleOnIsNight)
         inst._killed = true

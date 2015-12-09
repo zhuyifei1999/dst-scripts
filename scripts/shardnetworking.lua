@@ -59,3 +59,9 @@ function Shard_UpdateMasterSessionId(session_id)
         TheWorld:PushEvent("ms_newmastersessionid", session_id)
     end
 end
+
+function Shard_WorldSave()
+    if TheWorld ~= nil and TheWorld.ismastershard then
+        TheWorld:PushEvent("ms_save")
+    end
+end
