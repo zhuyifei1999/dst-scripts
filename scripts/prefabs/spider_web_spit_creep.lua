@@ -17,4 +17,4 @@ local function fn()
 	return inst
 end
 
-return Prefab("common/spider_web_spit_creep", fn)
+return Prefab("spider_web_spit_creep", fn)

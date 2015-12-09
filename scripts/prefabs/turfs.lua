@@ -85,7 +85,7 @@ local function make_turf(data)
         return inst
     end
 
-    return Prefab("common/objects/turf_"..data.name, fn, assets, prefabs)
+    return Prefab("turf_"..data.name, fn, assets, prefabs)
 end
 
 local turfs =

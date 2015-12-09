@@ -330,7 +330,7 @@ local function fnfiredrop()
     return inst
 end
 
-return Prefab("monsters/hound", fndefault, assets, prefabs),
-        Prefab("monsters/firehound", fnfire, assets, prefabs),
-        Prefab("monsters/icehound", fncold, assets, prefabs),
-        Prefab("monsters/houndfire", fnfiredrop, assets, prefabs)
+return Prefab("hound", fndefault, assets, prefabs),
+        Prefab("firehound", fnfire, assets, prefabs),
+        Prefab("icehound", fncold, assets, prefabs),
+        Prefab("houndfire", fnfiredrop, assets, prefabs)

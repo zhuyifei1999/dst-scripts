@@ -220,4 +220,4 @@ local function fn()
     return inst
 end
 
-return Prefab("forest/monsters/tallbird", fn, assets, prefabs)
+return Prefab("tallbird", fn, assets, prefabs)

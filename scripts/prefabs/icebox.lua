@@ -89,5 +89,5 @@ local function fn()
     return inst
 end
 
-return Prefab("common/icebox", fn, assets, prefabs),
-    MakePlacer("common/icebox_placer", "icebox", "ice_box", "closed")
+return Prefab("icebox", fn, assets, prefabs),
+    MakePlacer("icebox_placer", "icebox", "ice_box", "closed")

@@ -123,6 +123,7 @@ require("scheduler")
 require("stategraph")
 require("behaviourtree")
 require("prefabs")
+require("prefabskin")
 require("entityscript")
 require("profiler")
 require("recipes")
@@ -155,6 +156,7 @@ require("reload")
 require("saveindex") -- Added by Altgames for Android focus lost handling
 require("worldtiledefs")
 require("gamemodes")
+require("skinsutils")
 
 if TheConfig:IsEnabled("force_netbookmode") then
 	TheSim:SetNetbookMode(true)
@@ -311,3 +313,15 @@ require "stacktrace"
 require "debughelpers"
 
 TheSystemService:SetStalling(false)
+
+
+--load the user's custom commands into the game
+local filename = "../customcommands.lua"
+TheSim:GetPersistentString( filename,
+	function(load_success, str)
+		if load_success == true then
+			local fn = loadstring(str)
+			local success, savedata = xpcall(fn, debug.traceback)
+		end
+	end
+)

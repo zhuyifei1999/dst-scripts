@@ -51,4 +51,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/inventory/butterflywings", fn, assets, prefabs)
+return Prefab("butterflywings", fn, assets, prefabs)

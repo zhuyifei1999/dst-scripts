@@ -166,5 +166,5 @@ local function pigtorch_fuel()
     return inst
 end
 
-return Prefab("forest/objects/pigtorch", fn, assets, prefabs),
-    Prefab("forest/object/pigtorch_fuel", pigtorch_fuel)
+return Prefab("pigtorch", fn, assets, prefabs),
+    Prefab("pigtorch_fuel", pigtorch_fuel)

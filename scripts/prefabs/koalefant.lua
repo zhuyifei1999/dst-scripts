@@ -143,5 +143,5 @@ local function create_winter()
     return inst
 end
 
-return Prefab("forest/animals/koalefant_summer", create_summer, assets, prefabs),
-    Prefab("forest/animals/koalefant_winter", create_winter, assets, prefabs)
+return Prefab("koalefant_summer", create_summer, assets, prefabs),
+    Prefab("koalefant_winter", create_winter, assets, prefabs)

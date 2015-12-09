@@ -23,4 +23,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/fx/raindrop", fn, assets)
+return Prefab("raindrop", fn, assets)

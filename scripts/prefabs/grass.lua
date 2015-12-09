@@ -132,7 +132,7 @@ local function grass(name, stage)
         return inst
     end
 
-    return Prefab("forest/objects/"..name, fn, assets, prefabs)
+    return Prefab(name, fn, assets, prefabs)
 end
 
 return grass("grass", 0),

@@ -321,6 +321,8 @@ local actionhandlers =
     ActionHandler(ACTIONS.TOSS, "throw"),
     ActionHandler(ACTIONS.UNPIN, "doshortaction"),
     ActionHandler(ACTIONS.CATCH, "catch_pre"),
+
+    ActionHandler(ACTIONS.CHANGEIN, "doshortaction"),
     ActionHandler(ACTIONS.WRITE, "doshortaction"),
     ActionHandler(ACTIONS.ATTUNE, "dolongaction"),
     ActionHandler(ACTIONS.MIGRATE, "migrate"),
@@ -574,6 +576,12 @@ local events =
         function(inst)
             if inst.components.health ~= nil and not inst.components.health:IsDead() then
                 inst.sg:GoToState("refuseeat")
+            end
+        end),
+    EventHandler("ms_opengift",
+        function(inst)
+            if not inst.sg:HasStateTag("busy") then
+                inst.sg:GoToState("opengift")
             end
         end),
 }
@@ -1014,7 +1022,7 @@ local states =
                 inst.AnimState:PlayAnimation("idle_shiver_pre")
                 inst.AnimState:PushAnimation("idle_shiver_loop")
                 inst.AnimState:PushAnimation("idle_shiver_pst", false)
-            elseif inst.components.temperature:GetCurrent() > 60 then
+            elseif inst.components.temperature:GetCurrent() > TUNING.OVERHEAT_TEMP - 10 then
                 inst.AnimState:PlayAnimation("idle_hot_pre")
                 inst.AnimState:PushAnimation("idle_hot_loop")
                 inst.AnimState:PushAnimation("idle_hot_pst", false)
@@ -2146,6 +2154,270 @@ local states =
 
         ontimeout = function(inst)
             inst.sg:GoToState("idle", true)
+        end,
+    },
+
+    State{
+        name = "opengift",
+        tags = { "busy", "pausepredict" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.components.locomotor:Clear()
+            inst:ClearBufferedAction()
+
+            if IsNearDanger(inst) then
+                inst.sg.statemem.isdanger = true
+                inst.sg:GoToState("idle")
+                if inst.components.talker ~= nil then
+                    inst.components.talker:Say(GetString(inst, "ANNOUNCE_NODANGERGIFT"))
+                end
+                return
+            end
+
+            inst.SoundEmitter:PlaySound("dontstarve/common/player_receives_gift")
+            inst.AnimState:PlayAnimation("gift_pre")
+            inst.AnimState:PushAnimation("giift_loop", true)
+            -- NOTE: the previously used ripping paper anim is called "giift_loop"
+
+            if inst.components.playercontroller ~= nil then
+                inst.components.playercontroller:RemotePausePrediction()
+                inst.components.playercontroller:EnableMapControls(false)
+                inst.components.playercontroller:Enable(false)
+            end
+            inst.components.inventory:Hide()
+            inst:PushEvent("ms_closepopups")
+            inst:ShowActions(false)
+            inst:ShowGiftItemPopUp(true)
+
+            if inst.components.giftreceiver ~= nil then
+                inst.components.giftreceiver:OnStartOpenGift()
+            end
+        end,
+
+        timeline =
+        {
+            -- Timing of the gift box opening animation on giftitempopup.lua
+            TimeEvent(155 * FRAMES, function(inst)
+                inst.AnimState:PlayAnimation("gift_open_pre")
+                inst.AnimState:PushAnimation("gift_open_loop", true)
+            end),
+        },
+
+        events =
+        {
+            EventHandler("firedamage", function(inst)
+                inst.AnimState:PlayAnimation("gift_open_pst")
+                inst.sg:GoToState("idle", true)
+                if inst.components.talker ~= nil then
+                    inst.components.talker:Say(GetString(inst, "ANNOUNCE_NODANGERGIFT"))
+                end
+            end),
+            EventHandler("ms_doneopengift", function(inst, data)
+                if data.wardrobe == nil or
+                    data.wardrobe.components.wardrobe == nil or
+                    not (data.wardrobe.components.wardrobe:CanBeginChanging(inst) and
+                        CanEntitySeeTarget(inst, data.wardrobe) and
+                        data.wardrobe.components.wardrobe:BeginChanging(inst)) then
+                    inst.AnimState:PlayAnimation("gift_open_pst")
+                    inst.sg:GoToState("idle", true)
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            if inst.sg.statemem.isdanger then
+                return
+            elseif not inst.sg.statemem.isopeningwardrobe then
+                if inst.components.playercontroller ~= nil then
+                    inst.components.playercontroller:EnableMapControls(true)
+                    inst.components.playercontroller:Enable(true)
+                end
+                inst.components.inventory:Show()
+                inst:ShowActions(true)
+            end
+            inst:ShowGiftItemPopUp(false)
+        end,
+    },
+
+    State{
+        name = "openwardrobe",
+        tags = { "inwardrobe", "busy", "pausepredict" },
+
+        onenter = function(inst, isopeninggift)
+            inst.sg.statemem.isopeninggift = isopeninggift
+            if not isopeninggift then
+                inst.components.locomotor:Stop()
+                inst.components.locomotor:Clear()
+                inst:ClearBufferedAction()
+
+                inst.AnimState:PushAnimation("idle_wardrobe1", true)
+
+                if inst.components.playercontroller ~= nil then
+                    inst.components.playercontroller:RemotePausePrediction()
+                    inst.components.playercontroller:EnableMapControls(false)
+                    inst.components.playercontroller:Enable(false)
+                end
+                inst.components.inventory:Hide()
+                inst:PushEvent("ms_closepopups")
+                inst:ShowActions(false)
+            elseif inst.components.playercontroller ~= nil then
+                inst.components.playercontroller:RemotePausePrediction()
+            end
+            inst:ShowWardrobePopUp(true)
+        end,
+
+        events =
+        {
+            EventHandler("firedamage", function(inst)
+                if inst.sg.statemem.isopeninggift then
+                    inst.AnimState:PlayAnimation("gift_open_pst")
+                    inst.sg:GoToState("idle", true)
+                else
+                    inst.sg:GoToState("idle")
+                end
+                if inst.components.talker ~= nil then
+                    inst.components.talker:Say(GetString(inst, "ANNOUNCE_NOWARDROBEONFIRE"))
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            inst:ShowWardrobePopUp(false)
+            if not inst.sg.statemem.ischanging then
+                if inst.components.playercontroller ~= nil then
+                    inst.components.playercontroller:EnableMapControls(true)
+                    inst.components.playercontroller:Enable(true)
+                end
+                inst.components.inventory:Show()
+                inst:ShowActions(true)
+                if not inst.sg.statemem.isclosingwardrobe then
+                    inst.sg.statemem.isclosingwardrobe = true
+                    inst:PushEvent("ms_closewardrobe")
+                end
+            end
+        end,
+    },
+
+    State{
+        name = "changeinwardrobe",
+        tags = { "inwardrobe", "busy", "nopredict", "silentmorph" },
+
+        onenter = function(inst, delay)
+            --This state is only valid as a substate of openwardrobe
+            inst:Hide()
+            inst.DynamicShadow:Enable(false)
+            inst.sg.statemem.isplayerhidden = true
+
+            inst.sg:SetTimeout(delay)
+        end,
+
+        ontimeout = function(inst)
+            inst.AnimState:PlayAnimation("jumpout_wardrobe")
+            inst:Show()
+            inst.DynamicShadow:Enable(true)
+            inst.sg.statemem.isplayerhidden = nil
+            inst.sg.statemem.task = inst:DoTaskInTime(4.5 * FRAMES, function()
+                inst.sg.statemem.task = nil
+                inst.SoundEmitter:PlaySound("dontstarve/movement/bodyfall_dirt")
+            end)
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if not inst.sg.statemem.isplayerhidden and inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            if inst.sg.statemem.task ~= nil then
+                inst.sg.statemem.task:Cancel()
+                inst.sg.statemem.task = nil
+            end
+            if inst.sg.statemem.isplayerhidden then
+                inst:Show()
+                inst.DynamicShadow:Enable(true)
+                inst.sg.statemem.isplayerhidden = nil
+            end
+            --Cleanup from openwardobe state
+            if inst.components.playercontroller ~= nil then
+                inst.components.playercontroller:EnableMapControls(true)
+                inst.components.playercontroller:Enable(true)
+            end
+            inst.components.inventory:Show()
+            inst:ShowActions(true)
+            if not inst.sg.statemem.isclosingwardrobe then
+                inst.sg.statemem.isclosingwardrobe = true
+                inst:PushEvent("ms_closewardrobe")
+            end
+        end,
+    },
+
+    State{
+        name = "changeoutsidewardrobe",
+        tags = { "busy", "pausepredict", "nomorph" },
+
+        onenter = function(inst, cb)
+            inst.sg.statemem.cb = cb
+
+            --This state is only valid as a substate of openwardrobe
+            inst.AnimState:OverrideSymbol("shadow_hands", "shadow_skinchangefx", "shadow_hands")
+            inst.AnimState:OverrideSymbol("shadow_ball", "shadow_skinchangefx", "shadow_ball")
+            inst.AnimState:OverrideSymbol("splode", "shadow_skinchangefx", "splode")
+
+            inst.AnimState:PlayAnimation("gift_pst", false)
+            inst.AnimState:PushAnimation("skin_change", false)
+
+            if inst.components.playercontroller ~= nil then
+                inst.components.playercontroller:RemotePausePrediction()
+            end
+        end,
+
+        timeline =
+        {
+            -- gift_pst plays first and it is 20 frames long
+            TimeEvent(20 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/HUD/Together_HUD/skin_change")
+            end),
+            -- frame 42 of skin_change is where the character is completely hidden
+            TimeEvent(62 * FRAMES, function(inst)
+                if inst.sg.statemem.cb ~= nil then
+                    inst.sg.statemem.cb()
+                    inst.sg.statemem.cb = nil
+                end
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animqueueover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            if inst.sg.statemem.cb ~= nil then
+                -- in case of interruption
+                inst.sg.statemem.cb()
+                inst.sg.statemem.cb = nil
+            end
+            inst.AnimState:OverrideSymbol("shadow_hands", "shadow_hands", "shadow_hands")
+            --Cleanup from openwardobe state
+            if inst.components.playercontroller ~= nil then
+                inst.components.playercontroller:EnableMapControls(true)
+                inst.components.playercontroller:Enable(true)
+            end
+            inst.components.inventory:Show()
+            inst:ShowActions(true)
+            if not inst.sg.statemem.isclosingwardrobe then
+                inst.sg.statemem.isclosingwardrobe = true
+                inst:PushEvent("ms_closewardrobe")
+            end
         end,
     },
 
@@ -3672,6 +3944,8 @@ local states =
             SpawnPrefab("ghost_transform_overlay_fx").entity:SetParent(inst.entity)
 
             inst.SoundEmitter:PlaySound("dontstarve/ghost/ghost_get_bloodpump")
+            inst.AnimState:SetBank("ghost")
+            inst.components.skinner:SetSkinMode("ghost_skin")
             inst.AnimState:PlayAnimation("shudder")
             inst.AnimState:PushAnimation("hit", false)
             inst.AnimState:PushAnimation("transform", false)
@@ -3689,7 +3963,7 @@ local states =
                     inst.AnimState:SetBuild("werebeaver_build")
                 else
                     inst.AnimState:SetBank("wilson")
-                    inst.AnimState:SetBuild(inst.skin_name or inst.prefab)
+                    inst.components.skinner:SetSkinMode("normal_skin")
                 end
                 inst.AnimState:PlayAnimation("transform_end")
                 inst.SoundEmitter:PlaySound("dontstarve/ghost/ghost_use_bloodpump")
@@ -3719,7 +3993,7 @@ local states =
                 inst.AnimState:SetBuild("werebeaver_build")
             else
                 inst.AnimState:SetBank("wilson")
-                inst.AnimState:SetBuild(inst.skin_name or inst.prefab)
+	            inst.components.skinner:SetSkinMode("normal_skin")
             end
             inst.AnimState:ClearBloomEffectHandle()
             inst.AnimState:SetLightOverride(0)
@@ -4085,7 +4359,13 @@ local states =
                     inst.sg.statemem.emotesoundtask = inst:DoTaskInTime(data.sounddelay, DoEmoteSound, data.sound)
                 end
             elseif data.sound ~= false then
-                inst.SoundEmitter:PlaySound((inst.talker_path_override or "dontstarve/characters/")..(inst.soundsname or inst.prefab).."/emote", "emotesound")
+                inst.SoundEmitter:PlaySound((inst.talker_path_override or "dontstarve/characters/")..(inst.soundsname or inst.prefab)..(data.soundoverride or "/emote"), "emotesound")
+            end
+
+            if data.zoom ~= nil then
+                inst.sg.statemem.iszoomed = true
+                inst:SetCameraZoomed(true)
+                inst:ShowHUD(false)
             end
 
             if inst.components.playercontroller ~= nil then
@@ -4119,6 +4399,10 @@ local states =
             if inst.sg.statemem.emotesoundtask ~= nil then
                 inst.sg.statemem.emotesoundtask:Cancel()
                 inst.sg.statemem.emotesoundtask = nil
+            end
+            if inst.sg.statemem.iszoomed then
+                inst:SetCameraZoomed(false)
+                inst:ShowHUD(true)
             end
         end,
     },

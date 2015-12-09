@@ -85,6 +85,7 @@ local function PlayerRemove(player, deletesession, migrationdata, readytoremove)
             player.migration = migrationdata ~= nil and {
                 worldid = TheShard:GetShardId(),
                 portalid = migrationdata.portalid,
+                sessionid = TheWorld.meta.session_identifier,
             } or nil
             SerializeUserSession(player)
         end

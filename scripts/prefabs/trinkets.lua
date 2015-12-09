@@ -42,7 +42,7 @@ local function MakeTrinket(num)
         return inst
     end
 
-    return Prefab("common/inventory/trinket_"..tostring(num), fn, assets)
+    return Prefab("trinket_"..tostring(num), fn, assets)
 end
 
 local ret = {}

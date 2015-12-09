@@ -14,8 +14,11 @@ local HoverText = Class(Widget, function(self, owner)
     self.isFE = false
     self:SetClickable(false)
     --self:MakeNonClickable()
+
+    self.default_text_pos = Vector3(0, 40, 0)
     self.text = self:AddChild(Text(UIFONT, 30))
-    self.text:SetPosition(0, 40, 0)
+    self.text:SetPosition(self.default_text_pos)
+
     self.secondarytext = self:AddChild(Text(UIFONT, 30))
     self.secondarytext:SetPosition(0, -30, 0)
     self:FollowMouseConstrained()
@@ -44,11 +47,26 @@ function HoverText:OnUpdate()
     local colour = nil
     if self.isFE == false then 
         str = self.owner.HUD.controls:GetTooltip() or self.owner.components.playercontroller:GetHoverTextOverride()
+        
+        local tooltip_pos = self.owner.HUD.controls:GetTooltipPos()
+        if tooltip_pos then
+            self.text:SetPosition(tooltip_pos)
+        else
+            self.text:SetPosition(self.default_text_pos)
+        end
+
+
         if self.owner.HUD.controls:GetTooltip() then
             colour = self.owner.HUD.controls:GetTooltipColour()
         end
     else
         str = self.owner:GetTooltip()
+        tooltip_pos = self.owner:GetTooltipPos()
+        if tooltip_pos then
+            self.text:SetPosition(tooltip_pos)
+        else
+            self.text:SetPosition(self.default_text_pos)
+        end
     end
 
     local secondarystr = nil
