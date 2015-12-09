@@ -113,6 +113,6 @@ local function create_cooked()
     return inst
 end
 
-return Prefab("trunk_summer", create_summer, assets, prefabs),
-    Prefab("trunk_winter", create_winter, assets, prefabs),
-    Prefab("trunk_cooked", create_cooked, assets)
+return Prefab("common/inventory/trunk_summer", create_summer, assets, prefabs),
+    Prefab("common/inventory/trunk_winter", create_winter, assets, prefabs),
+    Prefab("common/inventory/trunk_cooked", create_cooked, assets)

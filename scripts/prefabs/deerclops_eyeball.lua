@@ -40,4 +40,4 @@ local function fn()
     return inst
 end
 
-return Prefab("deerclops_eyeball", fn, assets)
+return Prefab("common/inventory/deerclops_eyeball", fn, assets)

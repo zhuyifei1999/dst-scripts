@@ -1,6 +1,6 @@
 local assets =
 {
-    Asset("PKGREF", "sound/dontstarve.fev"),
+	Asset("PKGREF", "sound/dontstarve.fev"),
 	Asset("SOUNDPACKAGE", "sound/dontstarve_DLC001.fev"),
 
     Asset("ATLAS", "images/global.xml"),
@@ -63,11 +63,6 @@ local assets =
 
     Asset("ATLAS", "images/fepanel_fills.xml"),
     Asset("IMAGE", "images/fepanel_fills.tex"),
-
-    Asset("ATLAS", "images/rog_item_popup_1.xml"),
-    Asset("IMAGE", "images/rog_item_popup_1.tex"),
-    Asset("ATLAS", "images/rog_item_popup_2.xml"),
-    Asset("IMAGE", "images/rog_item_popup_2.tex"),
 
     Asset("ATLAS", "images/bg_animated_portal.xml"),
     Asset("IMAGE", "images/bg_animated_portal.tex"),
@@ -152,10 +147,6 @@ local assets =
     Asset("ANIM", "anim/generating_cave.zip"),
     Asset("ANIM", "anim/creepy_hands.zip"),    
     Asset("ANIM", "anim/saving_indicator.zip"),
-
-    Asset("ANIM", "anim/skingift_popup.zip"),
-    Asset("ATLAS", "images/giftpopup.xml"),
-    Asset("IMAGE", "images/giftpopup.tex"),
     
     --oft-used panel bgs
     Asset("ATLAS", "images/globalpanels2.xml"),
@@ -165,15 +156,7 @@ local assets =
     Asset("IMAGE", "images/button_icons.tex"),
 
     Asset("ATLAS", "images/avatars.xml"),
-    Asset("IMAGE", "images/avatars.tex"),
-    Asset("ANIM", "anim/tab_gift.zip"),
-
-    Asset("ANIM", "anim/body_default1.zip"),
-    Asset("ANIM", "anim/hand_default1.zip"),
-    Asset("ANIM", "anim/legs_default1.zip"),
-
-    Asset("ANIM", "anim/previous_skin.zip"),
-    Asset("ANIM", "anim/random_skin.zip"),
+    Asset("IMAGE", "images/avatars.tex"),  
 }
 
 
@@ -186,4 +169,4 @@ local function fn(Sim)
     return nil
 end
 
-return Prefab( "global", fn, assets ) 
+return Prefab( "common/global", fn, assets ) 

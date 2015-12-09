@@ -6,7 +6,6 @@ require "saveindex"
 require "map/extents"
 require "perfutil"
 require "maputil"
-require "constants"
 
 -- globals
 chestfunctions = require("scenarios/chestfunctions")
@@ -58,6 +57,11 @@ LOADED_CHARACTER = nil
 
 TheSim:SetRenderPassDefaultEffect( RENDERPASS.BLOOM, "shaders/anim_bloom.ksh" )
 TheSim:SetErosionTexture( "images/erosion.tex" )
+
+BACKEND_PREFABS = {"hud", "forest", "cave", "maxwell", "fire", "character_fire", "shatter"}
+FRONTEND_PREFABS = {"frontend"}
+RECIPE_PREFABS = {}
+
 
 function ForceAuthenticationDialog()
 	if not InGamePlay() then

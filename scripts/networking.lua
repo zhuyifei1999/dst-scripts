@@ -44,12 +44,6 @@ function Networking_LeaveAnnouncement(name, colour)
     Networking_Announcement(name.." "..STRINGS.UI.NOTIFICATION.LEFTGAME, colour, "leave_game")
 end
 
-function Networking_SkinAnnouncement(user_name, user_colour, skin_name)
-	if ThePlayer ~= nil and ThePlayer.HUD ~= nil then
-        ThePlayer.HUD.eventannouncer:ShowSkinAnnouncement(user_name, user_colour, skin_name)
-    end
-end
-
 function Networking_Say(guid, userid, name, prefab, message, colour, whisper)
     local entity = Ents[guid]
     if entity ~= nil and entity.components.talker ~= nil then
@@ -105,72 +99,33 @@ function OnTwitchChatStatusUpdate(status)
     end
 end
 
-function ValidateRecipeSkinRequest(user_id, prefab_name, skin)
-	local validated_skin = nil
-	if skin ~= nil and skin ~= "" and TheInventory:CheckClientOwnership(user_id, skin) then
-		if table.contains( PREFAB_SKINS[prefab_name], skin ) then
-			validated_skin = skin
-		end
-    end    
-    return validated_skin
-end
-
-function ValidateSpawnPrefabRequest(user_id, prefab_name, skin_base, clothing_body, clothing_hand, clothing_legs)
+function ValidateSpawnPrefabRequest(prefab_name, skin_name)
     
     local in_mod_char_list = table.contains(MODCHARACTERLIST, prefab_name)
-
     local valid_chars = ExceptionArrays(DST_CHARACTERLIST, MODCHARACTEREXCEPTIONS_DST)
-    local in_valid_char_list = table.contains(valid_chars, prefab_name)
+    local on_valid_char_list = table.contains(valid_chars, prefab_name)
     
-    local validated_prefab = prefab_name
-    local validated_skin_base = nil
-    local validated_clothing_body = nil
-    local validated_clothing_hand = nil
-    local validated_clothing_legs = nil
+    --TODO: validate skin_name!
+    --      second return value is the skin_name if it is valid,
+    --      or nil for no skin
     
-    if in_valid_char_list then
-    	if skin_base == prefab_name.."_none" then
-    		-- If default skin, we do not need to check
-    		validated_skin_base = skin_base
-    	elseif TheInventory:CheckClientOwnership(user_id, skin_base) then
-    		--check if the skin_base actually belongs to the prefab
-			if table.contains( PREFAB_SKINS[prefab_name], skin_base ) then
-				validated_skin_base = skin_base
-			end
-        end
+    if on_valid_char_list then
+        return prefab_name, skin_name
     elseif in_mod_char_list then
-		--if mod character, don't use a skin
+        return prefab_name, nil
     elseif table.getn(valid_chars) > 0 then
-		validated_prefab = valid_chars[1]
+		return valid_chars[1], nil
     else
-        validated_prefab = DST_CHARACTERLIST[1]
+        return DST_CHARACTERLIST[1], nil
     end
-    
-	if clothing_body ~= "" and TheInventory:CheckClientOwnership(user_id, clothing_body) then
-		validated_clothing_body = clothing_body 
-    end
-    
-	if clothing_hand ~= "" and TheInventory:CheckClientOwnership(user_id, clothing_hand) then
-		validated_clothing_hand = clothing_hand 
-    end
-    
-	if clothing_legs ~= "" and TheInventory:CheckClientOwnership(user_id, clothing_legs) then
-		validated_clothing_legs = clothing_legs 
-    end
-    
-    return validated_prefab, validated_skin_base, validated_clothing_body, validated_clothing_hand, validated_clothing_legs
 end
 
-function SpawnNewPlayerOnServerFromSim(player_guid, skin_base, clothing_body, clothing_hand, clothing_legs)
+function SpawnNewPlayerOnServerFromSim(player_guid, skin_name)
     local player = Ents[player_guid]
     if player ~= nil then
-    	local skinner = player.components.skinner
-		skinner:SetClothing(clothing_body)
-		skinner:SetClothing(clothing_hand)
-		skinner:SetClothing(clothing_legs)
-		skinner:SetSkinName(skin_base)
-		skinner:SetSkinMode("normal_skin")
-    
+        if player.OnSetSkin ~= nil then
+            player:OnSetSkin(skin_name)
+        end
         if player.OnNewSpawn ~= nil then
             player:OnNewSpawn()
             player.OnNewSpawn = nil

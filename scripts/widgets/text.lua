@@ -21,6 +21,7 @@ function Text:__tostring()
     return string.format("%s - %s", self.name, self.string or "")
 end
 
+
 function Text:SetColour(r,g,b,a)
     if type(r) == "number" then
         self.inst.TextWidget:SetColour(r, g, b, a)
@@ -29,11 +30,6 @@ function Text:SetColour(r,g,b,a)
         self.inst.TextWidget:SetColour(r[1], r[2], r[3], r[4])
         self.colour = r
     end
-end
-
-function  Text:GetColour()
-    local current_colour = { self.colour[1], self.colour[2], self.colour[3], self.colour[4]}
-    return current_colour
 end
 
 function Text:SetHorizontalSqueeze( squeeze )

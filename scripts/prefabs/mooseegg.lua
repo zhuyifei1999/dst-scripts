@@ -229,5 +229,5 @@ local function nesting_ground_fn()
     return inst
 end
 
-return Prefab( "mooseegg", fn, assets, prefabs),
-    Prefab("moose_nesting_ground", nesting_ground_fn, nesting_ground_assets)
+return Prefab( "common/objects/mooseegg", fn, assets, prefabs),
+    Prefab("common/objects/moose_nesting_ground", nesting_ground_fn, nesting_ground_assets)

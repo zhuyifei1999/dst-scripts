@@ -11,9 +11,7 @@ local FollowCamera = Class(function(self, inst)
     self.inst = inst
     self.target = nil
     self.currentpos = Vector3(0, 0, 0)
-    self.currentscreenxoffset = 0
     self.distance = 30
-    self.screenoffsetstack = {}
     self:SetDefault()
     self:Snap()
     self.time_since_zoom = nil
@@ -100,20 +98,6 @@ function FollowCamera:SetOffset(offset)
     self.targetoffset.x, self.targetoffset.y, self.targetoffset.z = offset:Get()
 end
 
-function FollowCamera:PushScreenHOffset(ref, xoffset)
-    self:PopScreenHOffset(ref)
-    table.insert(self.screenoffsetstack, 1, { ref = ref, xoffset = xoffset })
-end
-
-function FollowCamera:PopScreenHOffset(ref)
-    for i, v in ipairs(self.screenoffsetstack) do
-        if v.ref == ref then
-            table.remove(self.screenoffsetstack, i)
-            return
-        end
-    end
-end
-
 function FollowCamera:GetDistance()
     return self.distancetarget
 end
@@ -143,30 +127,15 @@ function FollowCamera:Apply()
     local pitch = self.pitch * DEGREES
     local heading = self.heading * DEGREES
     local cos_pitch = math.cos(pitch)
-    local cos_heading = math.cos(heading)
-    local sin_heading = math.sin(heading)
-    local dx = -cos_pitch * cos_heading
+    local dx = -cos_pitch * math.cos(heading)
     local dy = -math.sin(pitch)
-    local dz = -cos_pitch * sin_heading
-
-    --screen horizontal offset
-    local xoffs, zoffs = 0, 0
-    if self.currentscreenxoffset ~= 0 then
-        --FOV is relative to screen height
-        --hoffs is in units of screen heights
-        --convert hoffs to xoffs and zoffs in world space
-        local hoffs = 2 * self.currentscreenxoffset / RESOLUTION_Y
-        local magic_number = 1.03 -- plz... halp.. if u can figure out what this rly should be
-        local screen_heights = math.tan(self.fov * .5 * DEGREES) * self.distance * magic_number
-        xoffs = -hoffs * sin_heading * screen_heights
-        zoffs = hoffs * cos_heading * screen_heights
-    end
+    local dz = -cos_pitch * math.sin(heading)
 
     --pos
     TheSim:SetCameraPos(
-        self.currentpos.x - dx * self.distance + xoffs,
+        self.currentpos.x - dx * self.distance,
         self.currentpos.y - dy * self.distance,
-        self.currentpos.z - dz * self.distance + zoffs
+        self.currentpos.z - dz * self.distance
     )
     TheSim:SetCameraDir(dx, dy, dz)
 
@@ -243,7 +212,6 @@ function FollowCamera:Snap()
         self.targetpos.x, self.targetpos.y, self.targetpos.z = self.targetoffset:Get()
     end
 
-    self.currentscreenxoffset = #self.screenoffsetstack > 0 and self.screenoffsetstack[1].xoffset or 0
     self.currentpos.x, self.currentpos.y, self.currentpos.z = self.targetpos:Get()
     self.heading = self.headingtarget
     self.distance = self.distancetarget
@@ -294,23 +262,6 @@ function FollowCamera:Update(dt)
         self.currentpos.z = lerp(self.currentpos.z, self.targetpos.z, pangain)
     end
 
-    local screenxoffset = 0
-    while #self.screenoffsetstack > 0 do
-        if self.screenoffsetstack[1].ref.inst:IsValid() then
-            screenxoffset = self.screenoffsetstack[1].xoffset
-            break
-        end
-        table.remove(self.screenoffsetstack, 1)
-    end
-    if screenxoffset ~= 0 then
-        self.currentscreenxoffset = lerp(self.currentscreenxoffset, screenxoffset, pangain)
-    elseif self.currentscreenxoffset ~= 0 then
-        self.currentscreenxoffset = lerp(self.currentscreenxoffset, 0, pangain)
-        if math.abs(self.currentscreenxoffset) < .01 then
-            self.currentscreenxoffset = 0
-        end
-    end
-
     if self.shake ~= nil then
         local shakeOffset = self.shake:Update(dt)
         if shakeOffset ~= nil then
@@ -341,7 +292,7 @@ function FollowCamera:Update(dt)
         math.abs(self.distance - self.distancetarget) > .01 and
         lerp(self.distance, self.distancetarget, dt * self.distancegain) or
         self.distancetarget
-
+    
     self.pitch = lerp(self.mindistpitch, self.maxdistpitch, (self.distance - self.mindist) / (self.maxdist - self.mindist))
 
     self:onupdatefn(dt)

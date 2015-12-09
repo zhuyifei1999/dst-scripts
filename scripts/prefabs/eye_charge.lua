@@ -96,5 +96,5 @@ local function hit_fn()
     return inst
 end
 
-return Prefab("eye_charge", fn, assets),
-    Prefab("eye_charge_hit", hit_fn)
+return Prefab("common/inventory/eye_charge", fn, assets),
+    Prefab("common/inventory/eye_charge_hit", hit_fn)

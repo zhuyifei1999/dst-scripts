@@ -233,4 +233,4 @@ local function fn()
     return inst
 end
 
-return Prefab("catcoonden", fn, assets, prefabs)
+return Prefab("forest/monsters/catcoonden", fn, assets, prefabs)

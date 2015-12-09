@@ -21,9 +21,6 @@ local NetworkLoginPopup = require "screens/networkloginpopup"
 
 local OnlineStatus = require "widgets/onlinestatus"
 
---local UnopenedItemPopup = require "screens/unopeneditempopup"
-local ROGItemPopup = require "screens/rogitempopup"
-
 local rcol = RESOLUTION_X/2 -200
 local lcol = -RESOLUTION_X/2 + 280
 local title_x = 20
@@ -228,9 +225,6 @@ function MainScreen:OnLoginButton( push_mp_main_screen )
 	    local failed_email = account_manager:MustValidateEmail()
 	    local must_upgrade = account_manager:MustUpgradeClient()
 	    local communication_succeeded = account_manager:CommunicationSucceeded()
-	    local inventory_succeeded = TheInventory:HasDownloadedInventory()
-		local has_auth_token = account_manager:HasAuthToken()
-		
         if is_banned then -- We are banned
         	TheFrontEnd:PopScreen()
 	        TheNet:NotifyAuthenticationFailure()
@@ -268,40 +262,21 @@ function MainScreen:OnLoginButton( push_mp_main_screen )
                 v.image:SetScale(.6, .7)
             end
             TheFrontEnd:PushScreen(confirm)
-        elseif ( has_auth_token and communication_succeeded ) or forceOffline then
-            if hadPendingConnection then
-                TheFrontEnd:PopScreen()
-            else
-                if not push_mp_main_screen then
-                    TheFrontEnd:PopScreen()
-                end
-            
-                TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
-                    if push_mp_main_screen then
-                        TheFrontEnd:PopScreen()
-                    end
-
-                    GoToMultiplayerMainMenu(forceOffline or false )
-
-                    -- In case we have given out token items that have no assets in the game
-                    -- But still need to be marked as opened
-                    local uo_items = TheInventory:GetUnopenedItems()
-                    for _,item in pairs(uo_items) do
-                        if Prefabs[string.lower(item.item_type)] == nil and CLOTHING[string.lower(item.item_type)] == nil then
-                            TheInventory:SetItemOpened(item.item_id)
-                        end
-                    end
-
-                    local rog_items = {}--"body_buttons_green_laurel", "body_buttons_pink_hibiscus" }
-
-                    if #rog_items > 0 then
-                        local rog_popup = ROGItemPopup(rog_items)
-                        TheFrontEnd:PushScreen(rog_popup)
-                    end
-                    TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
-
-                end)
-            end
+        elseif ( account_manager:HasAuthToken() and communication_succeeded ) or forceOffline then
+			if hadPendingConnection then
+				TheFrontEnd:PopScreen()
+			else
+				if not push_mp_main_screen then 
+					TheFrontEnd:PopScreen()
+				end
+			
+				TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
+					if push_mp_main_screen then 
+						TheFrontEnd:PopScreen()
+					end
+					GoToMultiplayerMainMenu(forceOffline or false )
+				end)
+			end
         elseif not communication_succeeded then  -- We could not communicate with our auth server or steam is down
             print ( "failed_communication" )
             TheFrontEnd:PopScreen()
@@ -320,12 +295,10 @@ function MainScreen:OnLoginButton( push_mp_main_screen )
 								})
             TheFrontEnd:PushScreen(confirm)
             TheNet:NotifyAuthenticationFailure()
-        elseif (not inventory_succeeded and has_auth_token) then
-            print ( "[Warning] Failed to download local inventory" )
         else -- We haven't created an account yet
-            TheFrontEnd:PopScreen()
+	    	TheFrontEnd:PopScreen()
             TheFrontEnd:PushScreen(NoAuthenticationPopupDialogScreen(true, failed_email))
-            TheNet:NotifyAuthenticationFailure()
+			TheNet:NotifyAuthenticationFailure()
         end
     end
 	

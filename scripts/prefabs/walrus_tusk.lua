@@ -35,4 +35,4 @@ local function fn()
     return inst
 end
 
-return Prefab("walrus_tusk", fn, assets)
+return Prefab("common/inventory/walrus_tusk", fn, assets)

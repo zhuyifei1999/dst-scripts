@@ -92,4 +92,4 @@ local function fn()
     return inst
 end
 
-return Prefab("ruins_bat", fn, assets, prefabs)
+return Prefab("common/inventory/ruins_bat", fn, assets, prefabs)

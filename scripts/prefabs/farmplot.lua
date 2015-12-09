@@ -4,9 +4,6 @@ require "tuning"
 local assets =
 {
     Asset("ANIM", "anim/farmplot.zip"),
-	Asset("MINIMAP_IMAGE", "farm1"),
-	Asset("MINIMAP_IMAGE", "farm2"),
-	Asset("MINIMAP_IMAGE", "farm3"),
 }
 
 local prefabs =
@@ -339,8 +336,8 @@ local function plot(level)
     end
 end
 
-return --Prefab("farmplot",  plot(1), assets, prefabs),
-    Prefab("slow_farmplot", plot(2), assets, prefabs),
-    Prefab("fast_farmplot", plot(3), assets, prefabs),
-    MakePlacer("slow_farmplot_placer", "farmplot", "farmplot", "full", true, nil, nil, nil, 90),
-    MakePlacer("fast_farmplot_placer", "farmplot", "farmplot", "full", true, nil, nil, nil, 90)
+return --Prefab("common/objects/farmplot",  plot(1), assets, prefabs),
+    Prefab("common/objects/slow_farmplot", plot(2), assets, prefabs),
+    Prefab("common/objects/fast_farmplot", plot(3), assets, prefabs),
+    MakePlacer("common/slow_farmplot_placer", "farmplot", "farmplot", "full", true, nil, nil, nil, 90),
+    MakePlacer("common/fast_farmplot_placer", "farmplot", "farmplot", "full", true, nil, nil, nil, 90)

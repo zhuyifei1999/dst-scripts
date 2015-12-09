@@ -11,7 +11,6 @@ local assets =
 {
     Asset("ANIM", "anim/spider_cocoon.zip"),
     Asset("SOUND", "sound/spider.fsb"),
-	Asset("MINIMAP_IMAGE", "spiderden"), --shared with spiderden2 and 3
 }
 
 local ANIM_DATA =
@@ -506,6 +505,6 @@ local function MakeSpiderDenFn(den_level)
     end
 end
 
-return Prefab("spiderden", MakeSpiderDenFn(1), assets, prefabs),
-    Prefab("spiderden_2", MakeSpiderDenFn(2), assets, prefabs),
-    Prefab("spiderden_3", MakeSpiderDenFn(3), assets, prefabs)
+return Prefab("forest/monsters/spiderden", MakeSpiderDenFn(1), assets, prefabs),
+    Prefab("forest/monsters/spiderden_2", MakeSpiderDenFn(2), assets, prefabs),
+    Prefab("forest/monsters/spiderden_3", MakeSpiderDenFn(3), assets, prefabs)

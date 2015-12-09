@@ -1,13 +1,11 @@
 local rock1_assets =
 {
     Asset("ANIM", "anim/rock.zip"),
-    Asset("MINIMAP_IMAGE", "rock"),
 }
 
 local rock2_assets =
 {
     Asset("ANIM", "anim/rock2.zip"),
-    Asset("MINIMAP_IMAGE", "rock"),
 }
 
 local rock_flintless_assets =
@@ -222,9 +220,9 @@ local function rock_moon()
     return inst
 end
 
-return Prefab("rock1", rock1_fn, rock1_assets, prefabs),
-    Prefab("rock2", rock2_fn, rock2_assets, prefabs),
-    Prefab("rock_flintless", rock_flintless_fn, rock_flintless_assets, prefabs),
-    Prefab("rock_flintless_med", rock_flintless_med, rock_flintless_assets, prefabs),
-    Prefab("rock_flintless_low", rock_flintless_low, rock_flintless_assets, prefabs),
-    Prefab("rock_moon", rock_moon, rock_moon_assets, prefabs)
+return Prefab("forest/objects/rocks/rock1", rock1_fn, rock1_assets, prefabs),
+    Prefab("forest/objects/rocks/rock2", rock2_fn, rock2_assets, prefabs),
+    Prefab("forest/objects/rocks/rock_flintless", rock_flintless_fn, rock_flintless_assets, prefabs),
+    Prefab("forest/objects/rocks/rock_flintless_med", rock_flintless_med, rock_flintless_assets, prefabs),
+    Prefab("forest/objects/rocks/rock_flintless_low", rock_flintless_low, rock_flintless_assets, prefabs),
+    Prefab("forest/objects/rocks/rock_moon", rock_moon, rock_moon_assets, prefabs)

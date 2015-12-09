@@ -9,7 +9,6 @@ local prefabs =
 {
     "character_fire",
     "explode_small",
-    "lavalight",
 }    
 
 local MAXWORK = 6
@@ -218,4 +217,4 @@ local function fn()
     return inst
 end
 
-return Prefab( "rock_light", fn, assets, prefabs)
+return Prefab( "common/objects/rock_light", fn, assets, prefabs)

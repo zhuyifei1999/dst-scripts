@@ -58,4 +58,4 @@ local function fn()
     return inst
 end
 
-return Prefab("reviver", fn, assets)
+return Prefab("common/reviver", fn, assets)
