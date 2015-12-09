@@ -147,6 +147,6 @@ local function rottenfn()
     return inst
 end
 
-return Prefab("bird_egg", defaultfn, assets, prefabs),
-    Prefab("bird_egg_cooked", cookedfn, assets, cooked_prefabs),
-    Prefab("rottenegg", rottenfn, assets)
+return Prefab("common/inventory/bird_egg", defaultfn, assets, prefabs),
+    Prefab("common/inventory/bird_egg_cooked", cookedfn, assets, cooked_prefabs),
+    Prefab("common/inventory/rottenegg", rottenfn, assets)

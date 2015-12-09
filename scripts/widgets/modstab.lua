@@ -358,7 +358,9 @@ function ModsTab:UpdateForWorkshop( force_refresh )
 		
 		--If nothing has changed bail out and leave the ui alone
 		if not need_to_udpate then
-			TheSim:StartWorkshopQuery()
+			if TheSim:IsLoggedOn() then
+				TheSim:StartWorkshopQuery()
+			end
 			TheSim:UnlockModDir()
 			return
 		end
@@ -935,7 +937,7 @@ function ModsTab:LoadModInfoPrefabs(prefabtable)
 				Asset("ATLAS", info.icon_atlas),
 				Asset("IMAGE", info.iconpath),
 			}
-			local prefab = Prefab("MODSCREEN_"..modname, nil, modinfoassets, nil)
+			local prefab = Prefab("modbaseprefabs/MODSCREEN_"..modname, nil, modinfoassets, nil)
 			RegisterPrefabs( prefab )
 			table.insert(prefabtable, prefab.name)
 		end

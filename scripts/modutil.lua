@@ -463,19 +463,6 @@ local function InsertPostInitFunctions(env, isworldgen)
 	    end
 		env.vote_commands[command_name] = { InitOptionsFn = init_options_fn, ProcessResultFn = process_result_fn, Timeout = vote_timeout or 15 }
 	end
-	
-	env.ExcludeClothingSymbolForModCharacter = function(name, symbol)
-        initprint("ExcludeClothingSymbolForModCharacter", name, symbol)
-
-		if env.clothing_exclude == nil then
-	        env.clothing_exclude = {}
-	    end
-	    if env.clothing_exclude[name] == nil then
-			env.clothing_exclude[name] = {}
-	    end
-	    table.insert( env.clothing_exclude[name], symbol )
-    end
-    
 end
 
 return {

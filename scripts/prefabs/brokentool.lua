@@ -44,4 +44,4 @@ local function fn()
     return inst
 end
 
-return Prefab("brokentool", fn, assets)
+return Prefab("common/inventory/brokentool", fn, assets)

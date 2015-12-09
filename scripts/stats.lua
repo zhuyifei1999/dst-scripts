@@ -318,14 +318,6 @@ function RecordGameStartStats()
 	local sendstats = BuildContextTable()
     sendstats.startup = {}
 
-    local documents, savegames = TheSim:GetPersistentStorageTestResults()
-    if documents ~= nil or savegames ~= nil then
-        sendstats.startup.storage = {
-            documents = documents,
-            savegames = savegames,
-        }
-    end
-
 	--print("_________________++++++ Sending game start stats...\n")
 	--dumptable(sendstats)
 	local jsonstats = json.encode( sendstats )

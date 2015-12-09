@@ -42,4 +42,4 @@ local function fn()
     return inst
 end
 
-return Prefab("nightlight_flame", fn, assets)
+return Prefab("common/fx/nightlight_flame", fn, assets)

@@ -284,12 +284,21 @@ function ModWrangler:LoadServerModsFile()
 	
 	local filename = "../mods/dedicated_server_mods_setup.lua"
 	local fn = kleiloadlua( filename )
-	if fn ~= nil then	
-		if type(fn)=="string" then
-			error("Error loading dedicated_server_mods_setup.lua:\n"..fn)
+	if fn ~= nil then
+		local mods_err_fn = function(err)
+			print("########################################################")
+			print("#ERROR: Failure to load dedicated_server_mods_setup.lua:", err)
+			print("#Shutting down")
+			print("########################################################")
+			Shutdown()
 		end
-		setfenv(fn, env)
-		fn()
+			
+		if type(fn)=="string" then
+			mods_err_fn(fn)
+		else
+			setfenv(fn, env)
+			xpcall( fn, mods_err_fn )
+		end
 	end
 	
 	TheNet:DownloadServerMods()
@@ -500,7 +509,7 @@ function ModWrangler:RegisterPrefabs()
 
 		print("Mod: "..ModInfoname(mod.modname), "  Registering default mod prefab")
 
-		RegisterPrefabs( Prefab("MOD_"..mod.modname, nil, mod.Assets, prefabnames) )
+		RegisterPrefabs( Prefab("modbaseprefabs/MOD_"..mod.modname, nil, mod.Assets, prefabnames) )
 
 		local modname = "MOD_"..mod.modname
 		TheSim:LoadPrefabs({modname})
@@ -679,21 +688,6 @@ function ModWrangler:GetVoteCommands()
 		end
 	end
 	return commands
-end
-
-function ModWrangler:IsModCharacterClothingSymbolExcluded( name, symbol )
-	local commands = {}
-	for i,modname in ipairs(self.enabledmods) do
-		local mod = self:GetMod(modname)
-		if mod.clothing_exclude and mod.clothing_exclude[name] then
-			for _,excluded_sym in pairs(mod.clothing_exclude[name]) do
-				if excluded_sym == symbol then
-					return true
-				end
-			end
-		end
-	end
-	return false
 end
 
 function ModVersionOutOfDate( mod_name )

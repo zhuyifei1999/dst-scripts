@@ -83,4 +83,4 @@ local function fn()
     return inst
 end
 
-return Prefab("forcefieldfx", fn, assets)
+return Prefab("common/forcefieldfx", fn, assets)

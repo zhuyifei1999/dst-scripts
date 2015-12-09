@@ -44,4 +44,4 @@ local function fn()
     return inst
 end
 
-return Prefab("papyrus", fn, assets)
+return Prefab("common/inventory/papyrus", fn, assets)

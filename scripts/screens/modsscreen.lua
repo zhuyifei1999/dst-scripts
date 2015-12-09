@@ -55,7 +55,7 @@ local ModsScreen = Class(Screen, function(self)
 	-- top mods panel
 	self:CreateTopModsPanel()
 
-	self.optionspanel = self.root:AddChild(TEMPLATES.CenterPanel(.64, .68, false, 575, 510, 46, -29, .64, .68, 5 ))
+	self.optionspanel = self.root:AddChild(TEMPLATES.CenterPanel(.64, .68, false, 575, 510, 46, -29))
 	self.optionspanel:SetPosition(-18,-10)
 
 	self.optionschildren = self.optionspanel:AddChild(Widget("root"))
@@ -506,7 +506,9 @@ function ModsScreen:UpdateForWorkshop()
 
 		--If nothing has changed bail out and leave the ui alone
 		if not need_to_udpate then
-			TheSim:StartWorkshopQuery()
+			if TheSim:IsLoggedOn() then
+				TheSim:StartWorkshopQuery()
+			end
 			TheSim:UnlockModDir()
 			return
 		end
@@ -1333,7 +1335,7 @@ function ModsScreen:LoadModInfoPrefabs(prefabtable)
 				Asset("ATLAS", info.icon_atlas),
 				Asset("IMAGE", info.iconpath),
 			}
-			local prefab = Prefab("MODSCREEN_"..modname, nil, modinfoassets, nil)
+			local prefab = Prefab("modbaseprefabs/MODSCREEN_"..modname, nil, modinfoassets, nil)
 			RegisterPrefabs( prefab )
 			table.insert(prefabtable, prefab.name)
 		end

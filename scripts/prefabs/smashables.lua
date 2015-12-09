@@ -23,7 +23,6 @@ local function makeassetlist(buildname)
     return
     {
         Asset("ANIM", "anim/"..buildname..".zip"),
-        Asset("MINIMAP_IMAGE", "relic"),
     }
 end
 
@@ -42,15 +41,15 @@ local function OnHit(inst)
     else
         inst.AnimState:PlayAnimation("hit")
         inst.AnimState:PushAnimation("idle")
-        end
+    end
 end
 
 local function MakeRelic(inst)
     if inst.components.repairable ~= nil then
         inst:RemoveComponent("repairable")
     end
-        inst.components.inspectable.nameoverride = "relic"
-        inst.components.named:SetName(STRINGS.NAMES["RELIC"])
+    inst.components.inspectable.nameoverride = "relic"
+    inst.components.named:SetName(STRINGS.NAMES["RELIC"])
     inst.AnimState:PushAnimation("idle")
 end
 
@@ -60,7 +59,7 @@ local function OnRepaired(inst, doer)
             doer.components.sanity:DoDelta(TUNING.SANITY_TINY)
         end
         if inst.rubble then
-        inst.rubble = false
+            inst.rubble = false
             inst.AnimState:PlayAnimation("hit")
             MakeRelic(inst)
         end
@@ -99,16 +98,16 @@ local function OnPreLoad(inst, data)
     if data ~= nil then
         if data.maxhealth ~= nil then
             inst.components.health:SetMaxHealth(data.maxhealth)
-    end
+        end
         if data.rubble then
-    if not inst.rubble then
+            if not inst.rubble then
                 inst.rubble = true
                 MakeRubble(inst)
-        end
+            end
         elseif inst.rubble then
             inst.rubble = false
             MakeRelic(inst)
-    end
+        end
     end
 end
 
@@ -216,11 +215,11 @@ local function makefn(name, asset, smashsound, rubble)
 end
 
 local function item(name, sound)
-    return Prefab(name, makefn(name, name, sound, false), makeassetlist(name), prefabs)
+    return Prefab("cave/objects/smashables/"..name, makefn(name, name, sound, false), makeassetlist(name), prefabs)
 end
 
 local function rubble(name, assetname, sound, rubble)
-    return Prefab(name, makefn(name, assetname, sound, true), makeassetlist(assetname), prefabs)
+    return Prefab("cave/objects/smashables/"..name, makefn(name, assetname, sound, true), makeassetlist(assetname), prefabs)
 end
 
 return item("ruins_plate"),

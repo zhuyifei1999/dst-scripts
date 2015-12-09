@@ -2,7 +2,6 @@ local assets =
 {
     Asset("ANIM", "anim/hound_base.zip"),
     Asset("SOUND", "sound/hound.fsb"),
-	Asset("MINIMAP_IMAGE", "hound_mound"),
 }
 
 local prefabs =
@@ -179,4 +178,4 @@ local function fn()
     return inst
 end
 
-return Prefab("houndmound", fn, assets, prefabs)
+return Prefab("forest/monsters/houndmound", fn, assets, prefabs)

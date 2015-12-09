@@ -1204,12 +1204,6 @@ return {
 			GENERIC = "Maybe they'll invite us in?",
 		},
 		WALRUS_TUSK = "Maybe we can use it for arts and crafts.",
-		WARDROBE = 
-		{
-			GENERIC = "We like playing hide-and-seek in wardrobes.",
-            BURNING = "Fire fire fire!",
-			BURNT = "We can't hide in there any more.",
-		},
 		WARG = "I don't think that puppy is very happy.",
 		WASPHIVE = "Sounds like anger!",
 		WATERMELON = "Looks tasty!",

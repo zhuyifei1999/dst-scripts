@@ -103,4 +103,4 @@ local function fn()
     return inst
 end
 
-return Prefab("gemsocket", fn, assets)
+return Prefab("forest/objects/telebase/gemsocket", fn, assets)

@@ -74,4 +74,4 @@ local function fn()
     return inst
 end
 
-return Prefab("lavae_move_fx", fn, assets)
+return Prefab("common/fx/lavae_move_fx", fn, assets)

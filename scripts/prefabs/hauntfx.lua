@@ -117,4 +117,4 @@ local function fn()
     return inst
 end
 
-return Prefab("hauntfx", fn, assets)
+return Prefab("common/fx/hauntfx", fn, assets)

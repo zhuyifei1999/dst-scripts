@@ -21,6 +21,7 @@ function Text:__tostring()
     return string.format("%s - %s", self.name, self.string or "")
 end
 
+
 function Text:SetColour(r,g,b,a)
     if type(r) == "number" then
         self.inst.TextWidget:SetColour(r, g, b, a)
@@ -29,11 +30,6 @@ function Text:SetColour(r,g,b,a)
         self.inst.TextWidget:SetColour(r[1], r[2], r[3], r[4])
         self.colour = r
     end
-end
-
-function  Text:GetColour()
-    local current_colour = { self.colour[1], self.colour[2], self.colour[3], self.colour[4]}
-    return current_colour
 end
 
 function Text:SetHorizontalSqueeze( squeeze )
@@ -99,15 +95,15 @@ function Text:SetTruncatedString(str, maxwidth, maxchars, ellipses)
     if type(ellipses) ~= "string" then
         ellipses = ellipses and "..." or ""
     end
-    if maxchars ~= nil and str:len() > maxchars then
-        str = str:sub(1, maxchars)
+    if maxchars ~= nil and utf8strlen(str) > maxchars then
+        str = utf8substr(0, maxchars)
         self.inst.TextWidget:SetString(str..ellipses)
     else
         self.inst.TextWidget:SetString(str)
     end
     if maxwidth ~= nil then
         while self.inst.TextWidget:GetRegionSize() > maxwidth do
-            str = str:sub(1, str:len() - 1)
+            str = utf8substr(str, 0, utf8strlen(str) - 1)
             self.inst.TextWidget:SetString(str..ellipses)
         end
     end

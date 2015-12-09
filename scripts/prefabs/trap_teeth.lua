@@ -2,7 +2,6 @@ local assets =
 {
     Asset("ANIM", "anim/trap_teeth.zip"),
     Asset("ANIM", "anim/trap_teeth_maxwell.zip"),
-	Asset("MINIMAP_IMAGE", "toothtrap"),
 }
 
 local function onfinished_normal(inst)
@@ -133,7 +132,7 @@ local function common_fn(bank, build, isinventoryitem)
             if inst.components.mine.inactive then
                 Launch(inst, haunter, TUNING.LAUNCH_SPEED_SMALL)
                 inst.components.hauntable.hauntvalue = TUNING.HAUNT_TINY
-                    return true
+                return true
             elseif inst.components.mine.issprung then
                 if math.random() <= TUNING.HAUNT_CHANCE_OFTEN then
                     inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
@@ -189,6 +188,6 @@ local function MakeTeethTrapMaxwell()
     return inst
 end
 
-return Prefab("trap_teeth", MakeTeethTrapNormal, assets),
-    MakePlacer("trap_teeth_placer", "trap_teeth", "trap_teeth", "idle"),
-    Prefab("trap_teeth_maxwell", MakeTeethTrapMaxwell, assets)
+return Prefab("common/inventory/trap_teeth", MakeTeethTrapNormal, assets),
+    MakePlacer("common/trap_teeth_placer", "trap_teeth", "trap_teeth", "idle"),
+    Prefab("common/inventory/trap_teeth_maxwell", MakeTeethTrapMaxwell, assets)

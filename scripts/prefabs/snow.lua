@@ -108,4 +108,4 @@ local function fn()
     return inst
 end
 
-return Prefab("snow", fn, assets)
+return Prefab("common/fx/snow", fn, assets)

@@ -150,4 +150,4 @@ local function fn()
     return inst
 end
 
-return Prefab("glommer", fn, assets, prefabs)
+return Prefab("common/creatures/glommer", fn, assets, prefabs)
