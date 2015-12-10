@@ -58,4 +58,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/inventory/flint", fn, assets)
+return Prefab("flint", fn, assets)

@@ -83,23 +83,32 @@ function SpawnAt(prefab, loc, scale, offset)
 end
 
 function string:split(sep)
-        local sep, fields = sep or ":", {}
-        local pattern = string.format("([^%s]+)", sep)
-        self:gsub(pattern, function(c) fields[#fields+1] = c end)
-        return fields
+    local sep, fields = sep or ":", {}
+    local pattern = string.format("([^%s]+)", sep)
+    self:gsub(pattern, function(c) fields[#fields+1] = c end)
+    return fields
 end
 
 function table.contains(table, element)
-  if table == nil then
-        return false
-  end
-  
-  for _, value in pairs(table) do
-    if value == element then
-      return true
+    if table == nil then return false end
+    
+    for _, value in pairs(table) do
+        if value == element then
+          return true
+        end
     end
-  end
-  return false
+    return false
+end
+
+function table.containskey(table, key)
+    if table == nil then return false end
+
+    for k, value in pairs (table) do
+        if k == key then
+            return true
+        end
+    end
+    return false
 end
 
 -- only for indexed tables!
@@ -415,18 +424,19 @@ local memoizedFilePaths = {}
 
 -- look in package loaders to find the file from the root directories
 -- this will look first in the mods and then in the data directory
-function resolvefilepath( filepath )
+function resolvefilepath( filepath, force_path_search )
     if memoizedFilePaths[filepath] then
         return memoizedFilePaths[filepath]
     end
-    local resolved = softresolvefilepath(filepath)
+    local resolved = softresolvefilepath(filepath, force_path_search)
     assert(resolved ~= nil, "Could not find an asset matching "..filepath.." in any of the search paths.")
     memoizedFilePaths[filepath] = resolved
    return resolved
 end
 
-function softresolvefilepath(filepath)
-	if PLATFORM == "NACL" or PLATFORM == "PS4" then
+function softresolvefilepath(filepath, force_path_search)
+    force_path_search = force_path_search or false
+	if PLATFORM == "PS4" and not force_path_search then
 		return filepath -- it's already absolute, so just send it back
 	end
 
@@ -1120,4 +1130,22 @@ function string.random(Length, CharSet)
       return table.concat(Result)
    end
 end
+
+
+-- Returns the 0 - 255 color of a hex code
+function HexToRGB(hex)
+    hex = hex:gsub("#","")
+    return tonumber("0x"..hex:sub(1,2)), tonumber("0x"..hex:sub(3,4)), tonumber("0x"..hex:sub(5,6))
+end
+
+-- Returns the 0.0 - 1.0 color from r, g, b parameters
+function RGBToPercentColor(r, g, b)
+    return r/255, g/255, b/255
+end
+
+-- Returns the 0.0 - 1.0 color from a hex parameter
+function HexToPercentColor(hex)
+    return RGBToPercentColor(HexToRGB(hex))
+end
+
 

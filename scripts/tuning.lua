@@ -44,6 +44,9 @@ function Tune(overrides)
 		DUSK_SEGS_DEFAULT = dusk_segs, 
 		NIGHT_SEGS_DEFAULT = night_segs,
 		
+		TOAST_FALLBACK_TIME = 1440,
+		ITEM_DROP_TIME = seg_time, -- time to wait after start of night before activating
+
 		STACK_SIZE_LARGEITEM = 10,
 		STACK_SIZE_MEDITEM = 20,
 		STACK_SIZE_SMALLITEM = 40,

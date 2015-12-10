@@ -163,5 +163,5 @@ local function commonfn()
     return inst
 end
 
-return Prefab("common/inventory/telebase", commonfn, assets, prefabs),
-    MakePlacer("common/telebase_placer", "staff_purple_base_ground", "staff_purple_base_ground", "idle")
+return Prefab("telebase", commonfn, assets, prefabs),
+    MakePlacer("telebase_placer", "staff_purple_base_ground", "staff_purple_base_ground", "idle")

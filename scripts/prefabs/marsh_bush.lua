@@ -1,6 +1,7 @@
 local assets =
 {
     Asset("ANIM", "anim/marsh_bush.zip"),
+	--Asset("MINIMAP_IMAGE", "thorns_marsh"),    
 }
 
 local prefabs =
@@ -106,7 +107,7 @@ local function burnt_fn()
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
-        return inst
+    return inst
     end
 
     local color = 0.5 + math.random() * 0.5
@@ -117,5 +118,5 @@ local function burnt_fn()
     return inst
 end
 
-return Prefab("marsh/objects/marsh_bush", fn, assets, prefabs),
-    Prefab("marsh/objects/burnt_marsh_bush", burnt_fn, assets, prefabs)
+return Prefab("marsh_bush", fn, assets, prefabs),
+    Prefab("burnt_marsh_bush", burnt_fn, assets, prefabs)

@@ -11,7 +11,8 @@ local assets =
     Asset("ANIM", "anim/tree_leaf_yellow_build.zip"), --autumn leaves build
     Asset("ANIM", "anim/tree_leaf_poison_build.zip"), --poison leaves build
     Asset("ANIM", "anim/dust_fx.zip"),
-    Asset("SOUND", "sound/forest.fsb"),
+    Asset("SOUND", "sound/forest.fsb"),    
+	Asset("MINIMAP_IMAGE", "tree_leaf"),
 }
 
 local prefabs =
@@ -1369,7 +1370,7 @@ local function makefn(build, stage, data)
 end
 
 local function tree(name, build, stage, data)
-    return Prefab("forest/objects/trees/"..name, makefn(build, stage, data), assets, prefabs)
+    return Prefab(name, makefn(build, stage, data), assets, prefabs)
 end
 
 return tree("deciduoustree", "normal", 0),

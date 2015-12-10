@@ -136,7 +136,7 @@ local function MakeShadowCreature(data)
         return inst
     end
 
-    return Prefab("monsters/"..data.name, fn, assets, prefabs)
+    return Prefab(data.name, fn, assets, prefabs)
 end
 
 local data =

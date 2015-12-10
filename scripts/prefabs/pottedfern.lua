@@ -74,5 +74,5 @@ local function fn()
     return inst
 end
 
-return Prefab("cave/objects/pottedfern", fn, assets, prefabs),
-    MakePlacer("common/pottedfern_placer", "ferns_potted", "cave_ferns_potted", "f1")
+return Prefab("pottedfern", fn, assets, prefabs),
+    MakePlacer("pottedfern_placer", "ferns_potted", "cave_ferns_potted", "f1")

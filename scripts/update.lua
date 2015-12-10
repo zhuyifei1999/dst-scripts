@@ -30,7 +30,7 @@ local function SpawnEndHounds()
 	local numhounds = math.random(1,3)
 	for i,v in ipairs(AllPlayers) do
 		for k = 1, numhounds do
-			TheWorld.components.hounded:ForceReleaseHound(v)
+			TheWorld.components.hounded:ForceReleaseSpawn(v)
 		end
 	end
 end

@@ -98,4 +98,4 @@ local function create()
     return inst
 end
 
-return Prefab("forest/objects/dirtpile", create, assets, prefabs)
+return Prefab("dirtpile", create, assets, prefabs)

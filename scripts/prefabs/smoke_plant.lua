@@ -41,4 +41,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/fx/smoke_plant", fn, assets)
+return Prefab("smoke_plant", fn, assets)

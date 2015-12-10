@@ -153,6 +153,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.TOSS, "throw"),
     ActionHandler(ACTIONS.UNPIN, "doshortaction"),
     ActionHandler(ACTIONS.CATCH, "catch_pre"),
+    ActionHandler(ACTIONS.CHANGEIN, "doshortaction"),
     ActionHandler(ACTIONS.WRITE, "doshortaction"),
     ActionHandler(ACTIONS.ATTUNE, "dolongaction"),
     ActionHandler(ACTIONS.MIGRATE, "migrate"),

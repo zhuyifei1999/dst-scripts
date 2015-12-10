@@ -1,7 +1,15 @@
+local assets =
+{
+	Asset("MINIMAP_IMAGE", "whitespider_den"),
+}
+
 local prefabs =
 {
     "spider_dropper",
 }
+
+
+
 
 local function SpawnInvestigators(inst, data)
     if inst.components.childspawner ~= nil then
@@ -81,4 +89,4 @@ local function fn()
     return inst
 end
 
-return Prefab("cave/objects/dropperweb", fn, nil, prefabs)
+return Prefab("dropperweb", fn, assets, prefabs)

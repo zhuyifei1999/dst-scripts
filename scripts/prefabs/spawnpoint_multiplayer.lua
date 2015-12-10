@@ -23,5 +23,5 @@ local function master_fn()
     return common_fn(true)
 end
 
-return Prefab("common/spawnpoint_multiplayer", multiplayer_fn),
-    Prefab("common/spawnpoint_master", master_fn)
+return Prefab("spawnpoint_multiplayer", multiplayer_fn),
+    Prefab("spawnpoint_master", master_fn)

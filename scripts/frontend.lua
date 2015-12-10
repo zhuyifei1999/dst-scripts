@@ -239,7 +239,7 @@ function FrontEnd:GetHelpText()
 
 	if #self.screenstack > 0 and self.screenstack[#self.screenstack] ~= widget then
 		local str = self.screenstack[#self.screenstack]:GetHelpText()
-		if str ~= "" then
+		if str and str ~= "" then
 			table.insert(t, str)
 		end
 	end
@@ -250,7 +250,7 @@ function FrontEnd:GetHelpText()
 		for i,v in ipairs(intermediate_widgets) do
 			if v and v ~= widget and v.GetHelpText then
 				local str = v:GetHelpText()
-				if str ~= "" then
+				if str and str ~= "" then
 					if v.HasExclusiveHelpText and v:HasExclusiveHelpText() then
 						-- Only use this widgets help text, clear all other help text
 						t = {}
@@ -273,7 +273,7 @@ function FrontEnd:GetHelpText()
 		end
 		
 		local str = widget:GetHelpText()
-		if str ~= "" then
+		if str and str ~= "" then
 			table.insert(t, widget:GetHelpText())
 		end
 	end
@@ -1087,25 +1087,6 @@ end
 
 function FrontEnd:GetIsOfflineMode()
 	return self.offline
-end
-
-function FrontEnd:FindLengthForTruncatedString(str, font, size, maxwidth, suffix)
-    if str and maxwidth and font and size then
-        local tempStr = Text(font, size, str)
-
-        local len = str:len()
-        while tempStr:GetRegionSize() > maxwidth do
-            str = str:sub(1, str:len() - 1)
-            tempStr:SetString(str)
-        end
-        len = str:len()
-
-        tempStr:Kill()
-
-        return len
-    else
-        return str and str:len() or 1
-    end
 end
 
 function FrontEnd:GetTruncatedString(str, font, size, maxwidth, maxchars, suffix)

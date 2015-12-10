@@ -5,16 +5,35 @@ local UIAnim = Class(function(self, inst)
     self.inst = inst
 end)
 
+function UIAnim:FinishCurrentScale()
+    if not self.inst or not self.inst:IsValid() then
+        -- sometimes the ent becomes invalid during a "finished" callback, but this gets run anyways.
+        return
+    end
+
+    local sx, sy, sz = self.inst.UITransform:GetScale()
+
+    local val = self.scale_dest
+    self.scale_t = nil
+    
+    if self.scale_whendone then
+        self.scale_whendone()
+        self.scale_whendone = nil
+    end
+
+    self.inst.UITransform:SetScale(sx >= 0 and val or -val, sy >= 0 and val or -val, sz >= 0 and val or -val)
+end
 
 function UIAnim:ScaleTo(start, dest, duration, whendone)
+    if self.scale_t then
+        self:FinishCurrentScale()
+    end
+
     self.scale_start = start
     self.scale_dest = dest
     self.scale_duration = duration
     self.scale_t = 0
 
-    if self.scale_whendone then
-		self.scale_whendone()
-    end
     self.scale_whendone = whendone
     self.inst:StartWallUpdatingComponent(self)
 end
@@ -51,17 +70,10 @@ function UIAnim:OnWallUpdate(dt)
 			self.scale_t = self.scale_t + dt
 			if self.scale_t < self.scale_duration then
 				val = easing.outCubic( self.scale_t, self.scale_start, self.scale_dest - self.scale_start, self.scale_duration)
-			else
-				val = self.scale_dest
-				self.scale_t = nil
-				
-				if self.scale_whendone then
-					self.scale_whendone()
-					self.scale_whendone = nil
-				end
-				
-			end
-			self.inst.UITransform:SetScale(sx >= 0 and val or -val, sy >= 0 and val or -val, sz >= 0 and val or -val)
+			    self.inst.UITransform:SetScale(sx >= 0 and val or -val, sy >= 0 and val or -val, sz >= 0 and val or -val)
+            else
+                self:FinishCurrentScale()
+            end
 		end
     end
 

@@ -81,4 +81,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/objects/burntground", fn, assets)
+return Prefab("burntground", fn, assets)

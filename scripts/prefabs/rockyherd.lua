@@ -61,4 +61,4 @@ local function fn()
     return inst
 end
 
-return Prefab("cave/rockyherd", fn, nil, prefabs)
+return Prefab("rockyherd", fn, nil, prefabs)

@@ -93,5 +93,5 @@ local function hit_fn()
     return inst
 end
 
-return Prefab("common/inventory/bishop_charge", fn, assets),
-    Prefab("common/inventory/bishop_charge_hit", hit_fn)
+return Prefab("bishop_charge", fn, assets),
+    Prefab("bishop_charge_hit", hit_fn)

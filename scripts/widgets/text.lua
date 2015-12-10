@@ -21,7 +21,6 @@ function Text:__tostring()
     return string.format("%s - %s", self.name, self.string or "")
 end
 
-
 function Text:SetColour(r,g,b,a)
     if type(r) == "number" then
         self.inst.TextWidget:SetColour(r, g, b, a)
@@ -30,6 +29,11 @@ function Text:SetColour(r,g,b,a)
         self.inst.TextWidget:SetColour(r[1], r[2], r[3], r[4])
         self.colour = r
     end
+end
+
+function  Text:GetColour()
+    local current_colour = { self.colour[1], self.colour[2], self.colour[3], self.colour[4]}
+    return current_colour
 end
 
 function Text:SetHorizontalSqueeze( squeeze )
@@ -105,6 +109,35 @@ function Text:SetTruncatedString(str, maxwidth, maxchars, ellipses)
         while self.inst.TextWidget:GetRegionSize() > maxwidth do
             str = utf8substr(str, 0, utf8strlen(str) - 1)
             self.inst.TextWidget:SetString(str..ellipses)
+        end
+    end
+end
+
+function Text:SetMultilineTruncatedString(str, maxlines, maxwidth, maxcharsperline, ellipses)
+    if maxlines <= 1 then
+        self:SetTruncatedString(str, maxwidth, maxcharsperline, ellipses)
+    else
+        self:SetTruncatedString(str, maxwidth, maxcharsperline, false)
+        local line = self:GetString()
+        if #line < #str then
+            if str:byte(#line + 1) ~= 32 then
+                for i = #line, 1, -1 do
+                    if line:byte(i) == 32 then
+                        line = line:sub(1, i)
+                        break
+                    end
+                end
+                str = str:sub(#line + 1)
+            else
+                str = str:sub(#line + 2)
+                while #str > 0 and str:byte(1) == 32 do
+                    str = str:sub(2)
+                end
+            end
+            if #str > 0 then
+                self:SetMultilineTruncatedString(str, maxlines - 1, maxwidth, maxcharsperline, ellipses)
+                self:SetString(line.."\n"..self:GetString())
+            end
         end
     end
 end
