@@ -714,6 +714,7 @@ function Start()
 
     CheckControllers()
 
+    assert(TheSim:CanWriteConfigurationDirectory(), "Unable to write to config directory. Please make sure you have permissions for your Klei save folder.")
 end
 
 function CheckControllers()

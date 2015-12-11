@@ -231,10 +231,11 @@ local states=
                     inst.components.growable:SetStage(inst.components.growable:GetNextStage() )
                 elseif inst.components.beard then
                     local herd = inst.components.herdmember and inst.components.herdmember:GetHerd()
+                    inst.AnimState:SetBuild("beefalo_build")
                     if herd and herd.components.mood and herd.components.mood:IsInMood() then
-                        inst.AnimState:SetBuild("beefalo_heat_build") 
+                        inst.AnimState:Show("HEAT")
                     else
-                        inst.AnimState:SetBuild("beefalo_build") 
+                        inst.AnimState:Hide("HEAT")
                     end
                     inst.components.beard.bits = 3
                 end

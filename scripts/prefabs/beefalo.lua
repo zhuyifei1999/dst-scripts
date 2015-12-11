@@ -42,14 +42,14 @@ local sounds =
 
 local function OnEnterMood(inst)
     if inst.components.beard ~= nil and inst.components.beard.bits > 0 then
-        inst.AnimState:SetBuild("beefalo_heat_build")
+        inst.AnimState:Show("HEAT")
         inst:AddTag("scarytoprey")
     end
 end
 
 local function OnLeaveMood(inst)
     if inst.components.beard ~= nil and inst.components.beard.bits > 0 then
-        inst.AnimState:SetBuild("beefalo_build")
+        inst.AnimState:Hide("HEAT")
         inst:RemoveTag("scarytoprey")
     end
 end
