@@ -536,43 +536,27 @@ local function CompareTable(table_a, table_b)
   
 end
 
-function ServerListingScreen:UpdateServerData( selected_index_actual )
-    local sel_serv = TheNet:GetServerListingFromActualIndex( selected_index_actual ) 
+function ServerListingScreen:UpdateServerData(selected_index_actual)
+    local sel_serv = TheNet:GetServerListingFromActualIndex(selected_index_actual)
     if sel_serv and CompareTable(sel_serv, self.selected_server) == false then
         self.selected_server = sel_serv
         self.selected_index_actual = selected_index_actual
 
-        --A bunch of gross string processing so that servers with a single token that is wider than 240 still show a server name
-        local nameString = self.selected_server.name
-        -- Check if the server's name is long enough that we need to even do this
-        local truncLen = TheFrontEnd:FindLengthForTruncatedString(nameString, self.details_servername.font, self.details_servername.size, 240)
-        if truncLen < nameString:len() then
-            local i = 1
-            local spaceInd = truncLen
+        self.details_servername:SetMultilineTruncatedString(
+            self.selected_server.name,
+            2,
+            self.details_servername._align.maxwidth,
+            self.details_servername._align.maxchars,
+            true
+        )
 
-            -- Find the last space in the part of the string that fits on the first line
-            -- This is a natural breakpoint for splitting the string
-            while i < truncLen do
-                if nameString:sub(i, i) == " " then
-                    spaceInd = i
-                end
-                i = i+1
-            end
-
-            -- Grab the back half of the string and shorten it as necessary
-            local nameString2 = nameString:sub(spaceInd+1)
-            nameString2 = TheFrontEnd:GetTruncatedString(nameString2, self.details_servername.font, self.details_servername.size, 240, nil, true)
-
-            if nameString:sub(spaceInd,spaceInd) == " " then
-                -- If we found a natural break point, don't insert a newline
-                nameString = nameString:sub(1, spaceInd)..nameString2
-            else
-                -- But if we didn't, we need to insert a newline so that it renders at all
-                nameString = nameString:sub(1, spaceInd).."\n"..nameString2
-            end
-        end
-        self.details_servername:SetString( nameString )
-        self.details_serverdesc:SetString( self.selected_server.has_details and (self.selected_server.description ~= "" and self.selected_server.description or STRINGS.UI.SERVERLISTINGSCREEN.NO_DESC) or STRINGS.UI.SERVERLISTINGSCREEN.DESC_LOADING )
+        self.details_serverdesc:SetMultilineTruncatedString(
+            self.selected_server.has_details and (self.selected_server.description ~= "" and self.selected_server.description or STRINGS.UI.SERVERLISTINGSCREEN.NO_DESC) or STRINGS.UI.SERVERLISTINGSCREEN.DESC_LOADING,
+            3,
+            self.details_serverdesc._align.maxwidth,
+            self.details_serverdesc._align.maxchars,
+            true
+        )
 
         --if self.selected_server.intention ~= "" then
             --self.details_background:SetTexture("images/server_intentions.xml", intention_images[self.selected_server.intention].big)
@@ -1912,20 +1896,26 @@ function ServerListingScreen:MakeDetailPanel(right_col)
     self.details_servername:SetHAlign(ANCHOR_MIDDLE)
     self.details_servername:SetVAlign(ANCHOR_TOP)
     self.details_servername:SetPosition(detail_x, detail_y, 0)
-    self.details_servername:SetRegionSize( width, 90 )
-    self.details_servername:SetString(STRINGS.UI.SERVERLISTINGSCREEN.NOSERVERSELECTED)
-    self.details_servername:EnableWordWrap( true )
-    self.details_servername:SetColour(0,0,0,1)
+    self.details_servername:SetColour(0, 0, 0, 1)
+    self.details_servername._align =
+    {
+        maxwidth = width,
+        maxchars = 45,
+    }
+    self.details_servername:SetMultilineTruncatedString(STRINGS.UI.SERVERLISTINGSCREEN.NOSERVERSELECTED, 2, self.details_servername._align.maxwidth, self.details_servername._align.maxchars, true)
 
     self.details_serverdesc = self.server_detail_panel:AddChild(Text(NEWFONT, 20))
     self.details_serverdesc:SetHAlign(ANCHOR_MIDDLE)
     self.details_serverdesc:SetVAlign(ANCHOR_TOP)
     detail_y = detail_y - 85
     self.details_serverdesc:SetPosition(detail_x, detail_y, 0)
-    self.details_serverdesc:SetRegionSize( width, 70 )
+    self.details_serverdesc:SetColour(0, 0, 0, 1)
+    self.details_serverdesc._align =
+    {
+        maxwidth = width,
+        maxchars = 55,
+    }
     self.details_serverdesc:SetString("")
-    self.details_serverdesc:EnableWordWrap( true )
-    self.details_serverdesc:SetColour(0,0,0,1)
 
     --self.details_background = self.server_details_additional:AddChild(Image("images/server_intentions.xml", "social.tex"))
     --self.details_background:SetPosition(detail_x, 100)

@@ -1089,25 +1089,6 @@ function FrontEnd:GetIsOfflineMode()
 	return self.offline
 end
 
-function FrontEnd:FindLengthForTruncatedString(str, font, size, maxwidth, suffix)
-    if str and maxwidth and font and size then
-        local tempStr = Text(font, size, str)
-
-        local len = str:len()
-        while tempStr:GetRegionSize() > maxwidth do
-            str = str:sub(1, str:len() - 1)
-            tempStr:SetString(str)
-        end
-        len = str:len()
-
-        tempStr:Kill()
-
-        return len
-    else
-        return str and str:len() or 1
-    end
-end
-
 function FrontEnd:GetTruncatedString(str, font, size, maxwidth, maxchars, suffix)
 	if str and font and size and (maxwidth or maxchars) then
 		local ret = str

@@ -109,6 +109,35 @@ function Text:SetTruncatedString(str, maxwidth, maxchars, ellipses)
     end
 end
 
+function Text:SetMultilineTruncatedString(str, maxlines, maxwidth, maxcharsperline, ellipses)
+    if maxlines <= 1 then
+        self:SetTruncatedString(str, maxwidth, maxcharsperline, ellipses)
+    else
+        self:SetTruncatedString(str, maxwidth, maxcharsperline, false)
+        local line = self:GetString()
+        if #line < #str then
+            if str:byte(#line + 1) ~= 32 then
+                for i = #line, 1, -1 do
+                    if line:byte(i) == 32 then
+                        line = line:sub(1, i)
+                        break
+                    end
+                end
+                str = str:sub(#line + 1)
+            else
+                str = str:sub(#line + 2)
+                while #str > 0 and str:byte(1) == 32 do
+                    str = str:sub(2)
+                end
+            end
+            if #str > 0 then
+                self:SetMultilineTruncatedString(str, maxlines - 1, maxwidth, maxcharsperline, ellipses)
+                self:SetString(line.."\n"..self:GetString())
+            end
+        end
+    end
+end
+
 function Text:SetVAlign(anchor)
     self.inst.TextWidget:SetVAnchor(anchor)
 end
