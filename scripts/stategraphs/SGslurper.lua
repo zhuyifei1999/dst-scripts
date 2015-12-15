@@ -108,19 +108,19 @@ local states =
             inst.AnimState:PlayAnimation("headslurp")
         end,
 
-        timeline =
+        timeline = 
         {
-            TimeEvent(8*FRAMES, function(inst)
+            TimeEvent(8*FRAMES, function(inst) 
                 inst.Physics:SetMotorVelOverride(8,0,0)
                 inst._light.SoundEmitter:PlaySound("dontstarve/creatures/slurper/jump")
              end),
 
-            TimeEvent(23*FRAMES, function(inst)
+            TimeEvent(23*FRAMES, function(inst) 
                 inst.Physics:ClearMotorVelOverride()
                 inst.components.locomotor:Stop()
             end),
 
-            TimeEvent(24*FRAMES, function(inst)
+            TimeEvent(24*FRAMES, function(inst)                 
                 --V2C: Need to revalidate target! Combat target could've
                 --     changed after all these frames and state changes!
                 local target = inst.components.combat.target
@@ -134,7 +134,7 @@ local states =
                         target.components.inventory:DropItem(oldhat)
                     end
                     target.components.inventory:Equip(inst)
-                end
+                end 
             end),
         },
 

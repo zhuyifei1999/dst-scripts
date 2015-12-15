@@ -84,18 +84,17 @@ function MakeWallType(data)
         return inst
     end
 
-    return Prefab("brokenwall_"..data.name, fn, assets, prefabs)
+    return Prefab("common/brokenwall_"..data.name, fn, assets, prefabs)
 end
 
 --6 rock, 8 wood, 4 straw
 --NOTE: Stacksize is now set in the actual recipe for the item.
 local walldata = 
 {
-    { name = MATERIALS.STONE,    material = "stone", tags = { "stone" },             loot = "rocks",            maxloots = 2, maxhealth = TUNING.STONEWALL_HEALTH    },
-    { name = MATERIALS.WOOD,     material = "wood",  tags = { "wood" },              loot = "log",              maxloots = 2, maxhealth = TUNING.WOODWALL_HEALTH     },
-    { name = MATERIALS.HAY,      material = "straw", tags = { "grass" },             loot = "cutgrass",         maxloots = 2, maxhealth = TUNING.HAYWALL_HEALTH      },
-    { name = "ruins",            material = "stone", tags = { "stone", "ruins" },                               maxloots = 2, maxhealth = TUNING.RUINSWALL_HEALTH    },
-    { name = MATERIALS.MOONROCK, material = "stone", tags = { "stone", "moonrock" },                            maxloots = 2, maxhealth = TUNING.MOONROCKWALL_HEALTH },
+    { name = "stone", material = "stone", tags = { "stone" }, loot = "rocks",    maxloots = 2, maxhealth = TUNING.STONEWALL_HEALTH                   },
+    { name = "wood",  material = "wood",  tags = { "wood" },  loot = "log",      maxloots = 2, maxhealth = TUNING.WOODWALL_HEALTH,  flammable = true },
+    { name = "hay",   material = "straw", tags = { "grass" }, loot = "cutgrass", maxloots = 2, maxhealth = TUNING.HAYWALL_HEALTH,   flammable = true },
+    { name = "ruins", material = "stone", tags = { "stone" }, loot = nil,        maxloots = 2, maxhealth = TUNING.STONEWALL_HEALTH                   },
 }
 
 local wallprefabs = {}

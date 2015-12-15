@@ -42,4 +42,4 @@ local function fn()
     return inst
 end
 
-return Prefab("lightninggoatherd", fn, nil, prefabs)
+return Prefab("forest/animals/lightninggoatherd", fn, nil, prefabs) 

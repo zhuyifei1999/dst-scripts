@@ -4,7 +4,7 @@ PlayerHistory = Class(function(self)
 
     self.task = nil
     self.dirty = false
-    self.sort_function = function(a, b) return (a.days_survived or 1) > (b.days_survived or 1) end
+    self.sort_function = function(a,b) return (a.days_survived or 1) > (b.days_survived or 1) end
 
     self.max_history = 40
 end)
@@ -25,7 +25,7 @@ end
 function PlayerHistory:DiscardDownToMaxForNew()
     self:SortBackwards("sort_date")
     for idx = #self.persistdata, self.max_history - 1, -1 do
-            self.existing_map[self.persistdata[idx].userid] = nil
+        self.existing_map[self.persistdata[idx].userid] = nil
         table.remove(self.persistdata, idx)
     end
 end
@@ -52,11 +52,6 @@ function PlayerHistory:UpdateHistoryFromClientTable()
                     server_name = server_name,
                     date = current_date,
                     sort_date = sort_date,
-                    base_skin = v.base_skin,
-                    body_skin = v.body_skin,
-                    hand_skin = v.hand_skin,
-                    legs_skin = v.legs_skin,
-                    feet_skin = v.feet_skin,
                 }
 
                 -- Replace existing record if found
@@ -97,7 +92,7 @@ function PlayerHistory:Sort(field, forwards)
                 return a[field] > b[field]
             end
         end
-        table.sort(self.persistdata, sort_function)
+        table.sort( self.persistdata, sort_function )
     end
 end
 
@@ -111,11 +106,12 @@ function PlayerHistory:GetSaveName()
     return BRANCH == "release" and "player_history" or "player_history_"..BRANCH
 end
 
+
 function PlayerHistory:Save(callback)
     if self.dirty then
         self:SortBackwards("sort_date")
         for idx = #self.persistdata, self.max_history, -1 do
-                self.existing_map[self.persistdata[idx].userid] = nil
+            self.existing_map[self.persistdata[idx].userid] = nil
             table.remove(self.persistdata, idx)
         end
         --print( "SAVING Player History", #self.persistdata )
@@ -128,22 +124,22 @@ end
 
 function PlayerHistory:Load(callback)
     TheSim:GetPersistentString(self:GetSaveName(),
-        function(load_success, str)
+        function(load_success, str) 
             -- Can ignore the successfulness cause we check the string
-            self:Set(str, callback)
+            self:Set( str, callback )
         end, false)
 end
 
 function PlayerHistory:Set(str, callback)
     if str == nil or string.len(str) == 0 then
-        print("PlayerHistory could not load "..self:GetSaveName())
-        if callback ~= nil then
+        print ("PlayerHistory could not load ".. self:GetSaveName())
+        if callback then
             callback(false)
         end
     else
-        print("PlayerHistory loaded "..self:GetSaveName(), #str)
+        print ("PlayerHistory loaded ".. self:GetSaveName(), #str)
 
-        self.persistdata = TrackedAssert("TheSim:GetPersistentString player history", json.decode, str)
+        self.persistdata = TrackedAssert("TheSim:GetPersistentString player history",  json.decode, str)
 
         -- Create a map for existing user ids
         -- NOTE: cannot map to index, because once we add new

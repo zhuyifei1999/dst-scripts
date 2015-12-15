@@ -61,4 +61,4 @@ local function fn()
     return inst
 end
 
-return Prefab("animal_track", fn, assets)
+return Prefab("forest/objects/animal_track", fn, assets)

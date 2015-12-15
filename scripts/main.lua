@@ -123,7 +123,6 @@ require("scheduler")
 require("stategraph")
 require("behaviourtree")
 require("prefabs")
-require("prefabskin")
 require("entityscript")
 require("profiler")
 require("recipes")
@@ -156,10 +155,15 @@ require("reload")
 require("saveindex") -- Added by Altgames for Android focus lost handling
 require("worldtiledefs")
 require("gamemodes")
-require("skinsutils")
 
 if TheConfig:IsEnabled("force_netbookmode") then
 	TheSim:SetNetbookMode(true)
+end
+
+
+--debug key init
+if CHEATS_ENABLED then
+	require "debugkeys"
 end
 
 
@@ -200,6 +204,8 @@ TheGlobalInstance = nil
 
 global("TheCamera")
 TheCamera = nil
+global("SplatManager")
+SplatManager = nil
 global("ShadowManager")
 ShadowManager = nil
 global("RoadManager")
@@ -266,6 +272,7 @@ local function ModSafeStartup()
 		GlobalInit()
 	end
 
+	SplatManager = TheGlobalInstance.entity:AddSplatManager()
 	ShadowManager = TheGlobalInstance.entity:AddShadowManager()
 	ShadowManager:SetTexture( "images/shadow.tex" )
 	RoadManager = TheGlobalInstance.entity:AddRoadManager()
@@ -303,24 +310,4 @@ end
 require "stacktrace"
 require "debughelpers"
 
-require "consolecommands"
-
---debug key init
-if CHEATS_ENABLED then
-    require "debugcommands"
-    require "debugkeys"
-end
-
 TheSystemService:SetStalling(false)
-
-
---load the user's custom commands into the game
-local filename = "../customcommands.lua"
-TheSim:GetPersistentString( filename,
-	function(load_success, str)
-		if load_success == true then
-			local fn = loadstring(str)
-			local success, savedata = xpcall(fn, debug.traceback)
-		end
-	end
-)

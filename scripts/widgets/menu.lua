@@ -35,20 +35,6 @@ function Menu:GetNumberOfItems()
     return #self.items
 end
 
-function Menu:GetSize()
-
-	if self.items[1].GetSize then
-
-		local w, h = self.items[1]:GetSize()
-		local height = #self.items * h + self.offset * #self.items
-
-		return w, height
-	end
-
-	return nil, nil
-end 
-
-
 function Menu:SetFocus(index)
     index = index or (self.reverse and -1 or 1)
     if index < 0 then
@@ -251,13 +237,6 @@ function Menu:EditItem(num, text, cb)
 
     end
 
-end
-
-function Menu:DisableItem(num)
-	if self.items[num] then 
-		local i = self.items[num]
-		i:Disable()
-	end
 end
 
 return Menu

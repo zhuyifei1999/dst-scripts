@@ -21,7 +21,6 @@ local OptionsScreen = require "screens/optionsscreen"
 local MorgueScreen = require "screens/morguescreen"
 local ServerListingScreen = require "screens/serverlistingscreen"
 local ServerCreationScreen = require "screens/servercreationscreen"
-local SkinsScreen = require "screens/skinsscreen"
 
 local TEMPLATES = require "widgets/templates"
 
@@ -34,7 +33,7 @@ local bottom_offset = 60
 
 local titleX = lcol-35
 local menuX = lcol-30
-local menuY = -240 -- Use -265 when the "game wizard" option is added
+local menuY = -220
 
 SHOW_DST_DEBUG_HOST_JOIN = false
 SHOW_DEBUG_UNLOCK_RESET = false
@@ -325,16 +324,6 @@ function MultiplayerMainScreen:OnGameWizardButton()
     -- needs implementation...
 end
 
-function MultiplayerMainScreen:OnSkinsButton()
-	self.last_focus_widget = TheFrontEnd:GetFocusWidget()
-    self.menu:Disable()
-    self.leaving = true
-    TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
-        TheFrontEnd:PushScreen(SkinsScreen(Profile))
-        TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
-    end)
-end
-
 function MultiplayerMainScreen:OnBrowseServersButton()	
 
     local function cb(filters)
@@ -512,8 +501,7 @@ function MultiplayerMainScreen:MakeMainMenu()
 	
     local browse_button = MakeMainMenuButton(STRINGS.UI.MAINSCREEN.BROWSE, function() self:OnBrowseServersButton() end, STRINGS.UI.MAINSCREEN.TOOLTIP_BROWSE)
     local host_button = MakeMainMenuButton(STRINGS.UI.MAINSCREEN.CREATE, function() self:OnCreateServerButton() end, STRINGS.UI.MAINSCREEN.TOOLTIP_HOST)
-    --local wizard_button = MakeMainMenuButton(STRINGS.UI.MAINSCREEN.GAMEWIZARD, function() self:OnGameWizardButton() end, STRINGS.UI.MAINSCREEN.TOOLTIP_WIZARD)
-    local skins_button = MakeMainMenuButton(STRINGS.UI.MAINSCREEN.SKINS, function() self:OnSkinsButton() end, STRINGS.UI.MAINSCREEN.TOOLTIP_SKINS)
+    -- local wizard_button = MakeMainMenuButton(STRINGS.UI.MAINSCREEN.GAMEWIZARD, function() self:OnGameWizardButton() end, STRINGS.UI.MAINSCREEN.TOOLTIP_WIZARD)
     local history_button = MakeMainMenuButton(STRINGS.UI.MORGUESCREEN.HISTORY, function() self:OnHistoryButton() end, STRINGS.UI.MAINSCREEN.TOOLTIP_HISTORY)
     local options_button = MakeMainMenuButton(STRINGS.UI.MAINSCREEN.OPTIONS, function() self:Settings() end, STRINGS.UI.MAINSCREEN.TOOLTIP_OPTIONS)
     local quit_button = MakeMainMenuButton(STRINGS.UI.MAINSCREEN.QUIT, function() self:Quit() end, STRINGS.UI.MAINSCREEN.TOOLTIP_QUIT)
@@ -525,8 +513,7 @@ function MultiplayerMainScreen:MakeMainMenu()
             {widget = mods_button},
             {widget = history_button},
             {widget = options_button},
-            --{widget = wizard_button},   
-            {widget = skins_button},        
+            -- {widget = wizard_button},
             {widget = host_button},
             {widget = browse_button},
         }
@@ -535,8 +522,7 @@ function MultiplayerMainScreen:MakeMainMenu()
             {widget = quit_button},
             {widget = history_button},
             {widget = options_button},
-            --{widget = wizard_button},
-            {widget = skins_button},
+            -- {widget = wizard_button},
             {widget = host_button},
             {widget = browse_button},
         }
@@ -813,7 +799,6 @@ function MultiplayerMainScreen:OnCachedMOTDLoad(load_success, str)
 		self:SetMOTD(str, false)
 	end
 	TheSim:QueryServer( "https://d21wmy1ql1e52r.cloudfront.net/ds_image_motd.json", function(...) self:OnMOTDQueryComplete(...) end, "GET" )
-	--TheSim:QueryServer( "https://s3-us-west-2.amazonaws.com/kleifiles/external/ds_image_motd.json", function(...) self:OnMOTDQueryComplete(...) end, "GET" )
 end
 
 function MultiplayerMainScreen:UpdateMOTD()

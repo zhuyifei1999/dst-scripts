@@ -75,7 +75,7 @@ local ScriptErrorWidget = Class(Widget, function(self, title, text, buttons, tex
     self.version:SetPosition(110, 30, 0)
     self.version:SetString("Rev. "..APP_VERSION.." "..PLATFORM)
 
-    if buttons ~= nil then
+    if PLATFORM ~= "PS4" then
         --create the menu itself
         local button_w = 200
         local space_between = 20

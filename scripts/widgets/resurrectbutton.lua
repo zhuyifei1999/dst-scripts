@@ -6,7 +6,6 @@ local Text = require "widgets/text"
 local ResurrectButton = Class(Widget, function(self, owner)
     Widget._ctor(self, "Resurrect Button")
     self.owner = owner
-    self.hud_focus = owner.HUD.focus
 
     self.button = self:AddChild(ImageButton("images/hud.xml", "effigy_button.tex", "effigy_button_mouseover.tex", "effigy_button.tex"))
     self.button:SetOnClick(function() self:DoResurrect() end)
@@ -22,11 +21,6 @@ local ResurrectButton = Class(Widget, function(self, owner)
     end, TheWorld)
 end)
 
-function ResurrectButton:ToggleHUDFocus(focus)
-    self.hud_focus = focus
-    self:OnShow()
-end
-
 function ResurrectButton:SetScale(pos, y, z)
     ResurrectButton._base.SetScale(self, pos, y, z)
     if type(pos) == "number" then
@@ -37,8 +31,8 @@ function ResurrectButton:SetScale(pos, y, z)
 end
 
 function ResurrectButton:OnShow()
-    if self.hud_focus and TheInput:ControllerAttached() then
-        self.text:SetString(TheInput:GetLocalizedControl(TheInput:GetControllerID(), CONTROL_CONTROLLER_ATTACK).." "..STRINGS.ACTIONS.REMOTERESURRECT)
+    if TheInput:ControllerAttached() then
+        self.text:SetString(TheInput:GetLocalizedControl(TheInput:GetControllerID(), CONTROL_MENU_MISC_1).." "..STRINGS.ACTIONS.REMOTERESURRECT)
         self.text:Show()
     else
         self.text:Hide()
@@ -47,7 +41,7 @@ end
 
 --Called from PlayerHud:OnControl
 function ResurrectButton:CheckControl(control, down)
-    if self.shown and down and control == CONTROL_CONTROLLER_ATTACK then
+    if self.shown and down and control == CONTROL_MENU_MISC_1 then
         self:DoResurrect()
         return true
     end

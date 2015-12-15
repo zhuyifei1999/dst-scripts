@@ -88,4 +88,4 @@ local function fn()
     return inst
 end
 
-return Prefab("chesterlight", fn, assets)
+return Prefab("fx/chesterlight", fn, assets)

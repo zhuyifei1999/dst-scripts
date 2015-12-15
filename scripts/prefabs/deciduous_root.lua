@@ -87,4 +87,4 @@ local function fn()
     return inst
 end
 
-return Prefab("deciduous_root", fn, assets)
+return Prefab("forest/objects/trees/deciduous_root", fn, assets)

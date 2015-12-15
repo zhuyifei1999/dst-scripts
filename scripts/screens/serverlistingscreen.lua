@@ -336,35 +336,18 @@ local function tchelper(first, rest)
   return first:upper()..rest:lower()
 end
 
-function ServerListingScreen:Join(warnedOffline)
+function ServerListingScreen:Join()
 	if self.selected_server ~= nil then
-		if not warnedOffline and self.selected_server.offline then 
-			local confirm_offline_popup = PopupDialogScreen(STRINGS.UI.SERVERLISTINGSCREEN.OFFLINEWARNINGTITLE, STRINGS.UI.SERVERLISTINGSCREEN.OFFLINEMODEBODYJOIN,
-	                            {
-	                                {text=STRINGS.UI.SERVERLISTINGSCREEN.OK, cb = function()
-	                                    -- If player is okay with offline mode, go ahead
-	                                    TheFrontEnd:PopScreen()
-	                                    self:Join(true)
-	                                end},
-	                                {text=STRINGS.UI.SERVERLISTINGSCREEN.CANCEL, cb = function()
-	                                    TheFrontEnd:PopScreen() 
-	                                end}
-	                            })
-	        self.last_focus = TheFrontEnd:GetFocusWidget()
-	        TheFrontEnd:PushScreen(confirm_offline_popup)
-	    else
-
-	        local filters = {}
-	        for i,v in pairs(self.filters) do
-	            if v.spinner then 
-	                table.insert(filters, {name=v.name, data=v.spinner:GetSelectedData()})
-	            elseif v.textbox then
-	                table.insert(filters, {name="search", data=v.textbox:GetString()})
-	            end
-	        end
-	        Profile:SaveFilters(filters)
-			JoinServer( self.selected_server )
-		end	
+        local filters = {}
+        for i,v in pairs(self.filters) do
+            if v.spinner then 
+                table.insert(filters, {name=v.name, data=v.spinner:GetSelectedData()})
+            elseif v.textbox then
+                table.insert(filters, {name="search", data=v.textbox:GetString()})
+            end
+        end
+        Profile:SaveFilters(filters)
+		JoinServer( self.selected_server )	
 	else
 		assert(false, "Invalid server selection")
 	end
@@ -786,7 +769,7 @@ function ServerListingScreen:OnFinishClickServerInList(index)
     if self.viewed_servers and self.viewed_servers[index] ~= nil and self.viewed_servers[index].actualindex == self.selected_index_actual then
         -- If we're clicking on the same server as the last click, check for double-click Join
         if self.last_server_click_time and GetTime() - self.last_server_click_time <= DOUBLE_CLICK_TIMEOUT then
-            self:Join(false)
+            self:Join()
             return
         end
     end
@@ -1861,7 +1844,7 @@ function ServerListingScreen:MakeMenuButtons(left_col, right_col, nav_col)
             self:SetTab("online")
         end
     end, "nav")
-    self.join_button = MakeImgButton(self.server_detail_panel, -55, -RESOLUTION_Y*.5 + BACK_BUTTON_Y - 15, STRINGS.UI.SERVERLISTINGSCREEN.JOIN, function() self:Join(false) end, "large")
+    self.join_button = MakeImgButton(self.server_detail_panel, -55, -RESOLUTION_Y*.5 + BACK_BUTTON_Y - 15, STRINGS.UI.SERVERLISTINGSCREEN.JOIN, function() self:Join() end, "large")
     local tab_height = 212
     self.filters_button = MakeImgButton(self.server_detail_panel, -132, tab_height, STRINGS.UI.SERVERLISTINGSCREEN.FILTERS, function() self:ToggleShowFilters() end, "tab")
     self.details_button = MakeImgButton(self.server_detail_panel, -1, tab_height, STRINGS.UI.SERVERLISTINGSCREEN.SERVERDETAILS, function() self:ToggleShowFilters() end, "tab")
@@ -2207,7 +2190,7 @@ function ServerListingScreen:OnControl(control, down)
                 TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
             end
         elseif control == CONTROL_PAUSE and self.selected_server and TheInput:ControllerAttached() and not TheFrontEnd.tracking_mouse then
-            self:Join(false)
+            self:Join()
             TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
         elseif control == CONTROL_OPEN_CRAFTING or control == CONTROL_OPEN_INVENTORY then
             self:ToggleShowFilters()

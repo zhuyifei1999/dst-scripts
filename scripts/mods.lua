@@ -237,7 +237,7 @@ function CreateEnvironment(modname, isworldgen)
 		tostring = tostring,
 		Class = Class,
 		GLOBAL = _G,
-		MODROOT = MODS_ROOT..modname.."/",
+		MODROOT = "../mods/"..modname.."/",
 	}
 
 	if isworldgen == false then
@@ -282,7 +282,7 @@ function ModWrangler:LoadServerModsFile()
 	
 	TheNet:BeginServerModSetup()
 	
-	local filename = MODS_ROOT.."dedicated_server_mods_setup.lua"
+	local filename = "../mods/dedicated_server_mods_setup.lua"
 	local fn = kleiloadlua( filename )
 	if fn ~= nil then
 		local mods_err_fn = function(err)
@@ -381,7 +381,7 @@ function ModWrangler:LoadMods(worldgen)
 
 	for i,mod in ipairs(self.mods) do
 		table.insert(self.enabledmods, mod.modname)
-		package.path = MODS_ROOT..mod.modname.."\\scripts\\?.lua;"..package.path
+		package.path = "..\\mods\\"..mod.modname.."\\scripts\\?.lua;"..package.path
 		self:InitializeModMain(mod.modname, mod, "modworldgenmain.lua")
 		if not self.worldgen then 
 			-- worldgen has to always run (for customization screen) but modmain can be
@@ -396,7 +396,7 @@ function ModWrangler:InitializeModMain(modname, env, mainfile)
 
 	print("Mod: "..ModInfoname(modname), "Loading "..mainfile)
 
-	local fn = kleiloadlua(MODS_ROOT..modname.."/"..mainfile)
+	local fn = kleiloadlua("../mods/"..modname.."/"..mainfile)
 	if type(fn) == "string" then
 		print("Mod: "..ModInfoname(modname), "  Error loading mod!\n"..fn.."\n")
 		table.insert( self.failedmods, {name=modname,error=fn} )
@@ -509,10 +509,7 @@ function ModWrangler:RegisterPrefabs()
 
 		print("Mod: "..ModInfoname(mod.modname), "  Registering default mod prefab")
 
-        if PLATFORM == "PS4" then
-            package.path = MODS_ROOT..mod.modname..package.path
-        end            
-		RegisterPrefabs( Prefab("MOD_"..mod.modname, nil, mod.Assets, prefabnames, true) )
+		RegisterPrefabs( Prefab("modbaseprefabs/MOD_"..mod.modname, nil, mod.Assets, prefabnames) )
 
 		local modname = "MOD_"..mod.modname
 		TheSim:LoadPrefabs({modname})
@@ -691,21 +688,6 @@ function ModWrangler:GetVoteCommands()
 		end
 	end
 	return commands
-end
-
-function ModWrangler:IsModCharacterClothingSymbolExcluded( name, symbol )
-	local commands = {}
-	for i,modname in ipairs(self.enabledmods) do
-		local mod = self:GetMod(modname)
-		if mod.clothing_exclude and mod.clothing_exclude[name] then
-			for _,excluded_sym in pairs(mod.clothing_exclude[name]) do
-				if excluded_sym == symbol then
-					return true
-				end
-			end
-		end
-	end
-	return false
 end
 
 function ModVersionOutOfDate( mod_name )

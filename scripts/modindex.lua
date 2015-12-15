@@ -351,7 +351,7 @@ function ModIndex:LoadModInfo(modname)
 	info.version_compatible = info.version_compatible or info.version
 	
 	if info.icon_atlas ~= nil and info.icon ~= nil and info.icon_atlas ~= "" and info.icon ~= "" then
-		local atlaspath = MODS_ROOT..modname.."/"..info.icon_atlas
+		local atlaspath = "../mods/"..modname.."/"..info.icon_atlas
 		local iconpath = string.gsub(atlaspath, "/[^/]*$", "") .. "/"..info.icon
 		if softresolvefilepath(atlaspath) and softresolvefilepath(iconpath) then
 			info.icon_atlas = atlaspath
@@ -390,7 +390,7 @@ end
 
 function ModIndex:InitializeModInfo(modname)
 	local env = {}
-	local fn = kleiloadlua(MODS_ROOT..modname.."/modinfo.lua")
+	local fn = kleiloadlua("../mods/"..modname.."/modinfo.lua")
 	local modinfo_message = ""
 	if type(fn) == "string" then
 		print("Error loading mod: "..ModInfoname(modname).."!\n "..fn.."\n")
@@ -842,7 +842,7 @@ function ModIndex:UpdateModSettings()
 		EnableModDebugPrint = EnableModDebugPrint,
 	}
 
-	local filename = MODS_ROOT.."modsettings.lua"
+	local filename = "../mods/modsettings.lua"
 	local fn = kleiloadlua( filename )
 	assert(fn, "could not load modsettings: "..filename)
 	if type(fn)=="string" then

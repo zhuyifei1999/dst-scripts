@@ -1,107 +1,121 @@
 local Text = require "widgets/text"
-local ImageButton = require "widgets/imagebutton"
 local Widget = require "widgets/widget"
-local SkinAnnouncement = require "widgets/skinannouncement"
-local AnnouncementWidget = require "widgets/announcementwidget"
 
 ANNOUNCEMENT_LIFETIME = 7
 ANNOUNCEMENT_FADE_TIME = 2
 ANNOUNCEMENT_QUEUE_SIZE = 10
 
--- TODO: refactor this thing, it's kinda messy since we added clickable announcements.
+local function getIconX(w)
+    if w then
+        return -w/2 - 20
+    else
+        return -20
+    end
+end
+
 local EventAnnouncer = Class(Widget, function(self, owner)
     Widget._ctor(self, "EventAnnouncer")
-    self.regular_announcements = {}
-    self.skin_announcements = {}
-    self.active_announcements = {}
+    self.messages = {}
+    self.timestamp = {}
+    self.colours = {}
+    self.icons = {}
     
     self.message_font = UIFONT
     self.message_size = 30
 
     for i = 1,ANNOUNCEMENT_QUEUE_SIZE do
-        -- Normal announcements
-        local message_widget = self:AddChild(AnnouncementWidget(self.message_font, self.message_size))
-        
-        message_widget.text:SetVAlign(ANCHOR_TOP)
-        message_widget.text:SetHAlign(ANCHOR_MIDDLE)
+        local message_widget = self:AddChild(Text(self.message_font, self.message_size))
+        message_widget:SetVAlign(ANCHOR_TOP)
+        message_widget:SetHAlign(ANCHOR_MIDDLE)
         message_widget:SetPosition(0, -15 - (i * (self.message_size+2)))
+        -- message_widget:SetRegionSize(1100, (self.message_size+2) )
+        message_widget:SetString("")
+        self.messages[i] = message_widget
         
-        message_widget:ClearText()
-        message_widget:Hide()
-        self.regular_announcements[i] = message_widget
+        self.icons[i] = self:AddChild(Image())
+        self.icons[i].bg = self.icons[i]:AddChild(Image("images/button_icons.xml", "circle.tex"))
+        self.icons[i].bg:MoveToBack()
+        self.icons[i].bg:SetPosition(0,-40)
+        self.icons[i].bg:SetScale(8.5)
+        local w,h = self.messages[i]:GetRegionSize()
+        self.icons[i]:SetPosition(getIconX(w), -10 - (i * (self.message_size+2)))
+        self.icons[i]:SetScale(.09)
         
-        -- Clickable skin announcements
-        local skin_announcement = self:AddChild(SkinAnnouncement(self.message_font, self.message_size))
-        
-        skin_announcement.skin_txt:SetVAlign(ANCHOR_TOP)
-        skin_announcement.skin_txt:SetHAlign(ANCHOR_MIDDLE)
-        skin_announcement:SetPosition(0, -15 - (i * (self.message_size+2)))
-
-        skin_announcement:ClearText()
-        skin_announcement:Hide()
-        self.skin_announcements[i] = skin_announcement
+        self.timestamp[i] = 0
+        self.colours[i] = {1,1,1}
     end 
 end)
 
--- Move things up here
+function EventAnnouncer:GetEventAlpha( current_time, announce_time )
+    local time_past_expiring = current_time - ( announce_time + ANNOUNCEMENT_LIFETIME ) 
+    if time_past_expiring > 0.0 then
+        if time_past_expiring < ANNOUNCEMENT_FADE_TIME then
+            local alpha_fade = ( ANNOUNCEMENT_FADE_TIME - time_past_expiring ) / ANNOUNCEMENT_FADE_TIME
+            return alpha_fade
+        end
+        return 0.0
+    end
+    return 1.0          
+end
+
 function EventAnnouncer:DoShuffleUp(i)
-    if i > ANNOUNCEMENT_QUEUE_SIZE or not self.active_announcements[i] then
-        return 
-    end
-
-    if not self.active_announcements[i +1] then
-        self.active_announcements[i]:Hide()
-        self.active_announcements[i] = nil
-        if #self.active_announcements <= 0 then
-            self:StopUpdating()
-        end
+    if not self.timestamp[i+1] or self.timestamp[i+1] <= 0 then
+        self.timestamp[i] = 0
+        self.messages[i]:SetString("")
+        self.messages[i]:SetColour(1,1,1,1)
+        self.colours[i] = {1,1,1}
+        self.icons[i]:Hide()
+        self.icons[i].bg:Hide()
         return
-    end
+    else
+        self.timestamp[i] = self.timestamp[i+1]
+        self.messages[i]:SetString(self.messages[i+1]:GetString())
+        local alpha_fade = self:GetEventAlpha( GetTime(), self.timestamp[i] )
+        local clr = self.colours[i+1]
+        self.colours[i] = {clr[1], clr[2], clr[3]}
+        self.messages[i]:SetColour(clr[1], clr[2], clr[3], alpha_fade)
 
-    if self.active_announcements[i].skin_announcement and not self.active_announcements[i+1].skin_announcement then
-        self.active_announcements[i]:Hide()
-        self.active_announcements[i] = self.regular_announcements[i]
-    elseif not self.active_announcements[i].skin_announcement and self.active_announcements[i+1].skin_announcement then
-        self.active_announcements[i]:Hide()
-        self.active_announcements[i] = self.skin_announcements[i]
-    end
+        self.icons[i]:SetTexture(self.icons[i+1].atlas, self.icons[i+1].texture)
+        local w,h = self.messages[i]:GetRegionSize()
+        local pos = self.icons[i]:GetPosition()
+        self.icons[i]:SetPosition(getIconX(w), pos.y)
+        self.icons[i]:Show()
+        self.icons[i]:SetTint(1,1,1,alpha_fade)
+        self.icons[i].bg:Show()
+        self.icons[i].bg:SetTint(1,1,1,alpha_fade)
 
-    self.active_announcements[i]:CopyInfo(self.active_announcements[i+1])
-    self:DoShuffleUp(i+1)
-
-end
-
--- Only called when #self.active_announcements > 0
-function EventAnnouncer:OnUpdate()
-    for i=1,#self.active_announcements do
-        --.shown for immediate visibility instead of inherited
-        if not self.active_announcements[i].shown then
-            self:DoShuffleUp(i)
-            break
-        end
+        self:DoShuffleUp(i+1)
     end
 end
 
+function EventAnnouncer:OnUpdate() 
 
-local function GetIndex( self )
-    -- Find the next spot
-    local index = -1
-    while index == -1 do
-        for i = 1,ANNOUNCEMENT_QUEUE_SIZE do
-            if not self.active_announcements[i] then
-                index = i
-                break
+    local current_time = GetTime()
+    
+    for i = 1,ANNOUNCEMENT_QUEUE_SIZE do
+        local announce_time = self.timestamp[i]
+            
+        if announce_time > 0.0 then
+            local time_past_expiring = current_time - ( announce_time + ANNOUNCEMENT_LIFETIME ) 
+            if time_past_expiring > 0.0 then
+                local alpha_fade = self:GetEventAlpha( current_time, announce_time )
+                local clr = self.colours[i]
+                self.messages[i]:SetColour(clr[1],clr[2],clr[3],alpha_fade)
+                self.icons[i]:SetTint(1,1,1,alpha_fade)
+                self.icons[i].bg:SetTint(1,1,1,alpha_fade)
+                if alpha_fade <= 0.0 then
+                    -- Get out of here!
+                    self.timestamp[i] = 0.0
+                    self:DoShuffleUp(i)
+                end
+            else
+                -- No need to keep processing, nothing else past this point will be expired or fading
+                return
             end
         end
-        -- If we have no more empty spots we force things to move up
-        if index == -1 then
-            self:DoShuffleUp(1)
-        end
     end
-    return index
 end
 
--- Shows a regular non clickable announcement
 function EventAnnouncer:ShowNewAnnouncement(announcement, colour, announce_type)
     if not announcement then return end
 
@@ -109,28 +123,49 @@ function EventAnnouncer:ShowNewAnnouncement(announcement, colour, announce_type)
         announce_type = "default"
     end
 
-    local index = GetIndex( self )
-    
-    if not colour then
-        colour = {1,1,1,1}
+    -- Shuffle upwards
+    if self.timestamp[1] <= 0 then
+        self:DoShuffleUp(1)
     end
 
+    --Guarantee that we're fully shuffled
+    for i,v in ipairs(self.timestamp) do
+        if v <= 0 then
+            self:DoShuffleUp(i)
+        end
+    end
+
+    -- Find the next spot
+    local index = -1
+    while index == -1 do
+		for i = 1,ANNOUNCEMENT_QUEUE_SIZE-1 do
+			if self.timestamp[i] <= 0 then
+				index = i
+				break
+			end
+		end
+		if index == -1 then
+			self:DoShuffleUp(1)
+		end
+	end
+    
     -- Add our new entry
-    self.regular_announcements[index]:SetAnnouncement(announcement, announce_type, colour, ANNOUNCEMENT_LIFETIME, ANNOUNCEMENT_FADE_TIME)
-    self.active_announcements[index] = self.regular_announcements[index]
-    self:StartUpdating()
-end
-
--- Shows a clickable skin announcement
-function EventAnnouncer:ShowSkinAnnouncement(user_name, user_colour, skin_name)
-    if user_name == nil or user_colour == nil or user_name == nil then
-        return
+    self.messages[index]:SetString(announcement)
+    local icon_info = ANNOUNCEMENT_ICONS[announce_type]
+    self.icons[index]:SetTexture(icon_info.atlas or "images/button_icons.xml", icon_info.texture or "announcement.tex")
+    local w,h = self.messages[index]:GetRegionSize()
+    local pos = self.icons[index]:GetPosition()
+    self.icons[index]:SetPosition(getIconX(w), pos.y)
+    self.icons[index]:Show()
+    self.icons[index]:SetTint(1,1,1,1)
+    self.icons[index].bg:Show()
+    self.icons[index].bg:SetTint(1,1,1,1)
+    self.timestamp[index] = GetTime()
+    if not colour then
+        colour = {1,1,1}
     end
-    
-    local index = GetIndex(self)
-
-    self.skin_announcements[index]:SetSkinAnnouncementInfo(user_name, user_colour, skin_name, 1, ANNOUNCEMENT_LIFETIME, ANNOUNCEMENT_FADE_TIME)
-    self.active_announcements[index] = self.skin_announcements[index]
+    self.messages[index]:SetColour(colour[1],colour[2],colour[3],1)
+    self.colours[index] = colour
 
     self:StartUpdating()
 end
@@ -167,31 +202,31 @@ function GetNewDeathAnnouncementString(theDead, source, pkname)
         end
 
         if not theDead.ghostenabled then
-            message = message.."."
-        else
-            local gender = GetGenderStrings(theDead.prefab)
-            if STRINGS.UI.HUD["DEATH_ANNOUNCEMENT_2_"..gender] then
-                message = message..STRINGS.UI.HUD["DEATH_ANNOUNCEMENT_2_"..gender]
-            else
-                message = message..STRINGS.UI.HUD.DEATH_ANNOUNCEMENT_2_DEFAULT
-            end
-        end
+			message = message.."."
+		else
+			local gender = GetGenderStrings(theDead.prefab)
+			if STRINGS.UI.HUD["DEATH_ANNOUNCEMENT_2_"..gender] then
+				message = message..STRINGS.UI.HUD["DEATH_ANNOUNCEMENT_2_"..gender]
+			else
+				message = message..STRINGS.UI.HUD.DEATH_ANNOUNCEMENT_2_DEFAULT
+			end
+		end
     else
         local gender = GetGenderStrings(theDead.prefab)
-        if STRINGS.UI.HUD["GHOST_DEATH_ANNOUNCEMENT_"..gender] then
-            message = theDead:GetDisplayName().." "..STRINGS.UI.HUD["GHOST_DEATH_ANNOUNCEMENT_"..gender]
-        else
-            message = theDead:GetDisplayName().." "..STRINGS.UI.HUD.GHOST_DEATH_ANNOUNCEMENT_DEFAULT
-        end
+		if STRINGS.UI.HUD["GHOST_DEATH_ANNOUNCEMENT_"..gender] then
+			message = theDead:GetDisplayName().." "..STRINGS.UI.HUD["GHOST_DEATH_ANNOUNCEMENT_"..gender]
+		else
+			message = theDead:GetDisplayName().." "..STRINGS.UI.HUD.GHOST_DEATH_ANNOUNCEMENT_DEFAULT
+		end
     end
 
-    return message
+	return message
 end
 
 function GetNewRezAnnouncementString(theRezzed, source)
     if not theRezzed or not source then return "" end
     local message = theRezzed:GetDisplayName().." "..STRINGS.UI.HUD.REZ_ANNOUNCEMENT.." "..source.."."
-    return message
+	return message
 end
 
 return EventAnnouncer

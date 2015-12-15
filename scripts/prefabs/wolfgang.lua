@@ -3,9 +3,13 @@ local MakePlayerCharacter = require("prefabs/player_common")
 
 local assets =
 {
-    Asset("SCRIPT", "scripts/prefabs/player_common.lua"),
+    Asset("ANIM", "anim/wolfgang.zip"),
+    Asset("ANIM", "anim/wolfgang_skinny.zip"),
+    Asset("ANIM", "anim/wolfgang_mighty.zip"),
     Asset("ANIM", "anim/player_wolfgang.zip"),
 	Asset("SOUND", "sound/wolfgang.fsb"),
+
+    Asset("ANIM", "anim/ghost_wolfgang_build.zip"), 
 }
 
 local function applymightiness(inst)
@@ -49,7 +53,7 @@ local function becomewimpy(inst, silent)
         return
     end
 
-    inst.components.skinner:SetSkinMode("wimpy_skin", "wolfgang_skinny")
+    inst.AnimState:SetBuild("wolfgang_skinny")
 
     if not silent then
         inst.sg:PushEvent("powerdown")
@@ -67,7 +71,7 @@ local function becomenormal(inst, silent)
         return
     end
 
-    inst.components.skinner:SetSkinMode("normal_skin", "wolfgang")
+    inst.AnimState:SetBuild("wolfgang")
 
     if not silent then
         if inst.strength == "mighty" then
@@ -91,7 +95,7 @@ local function becomemighty(inst, silent)
         return
     end
 
-    inst.components.skinner:SetSkinMode("mighty_skin", "wolfgang_mighty")
+    inst.AnimState:SetBuild("wolfgang_mighty")
 
     if not silent then
         inst.components.talker:Say(GetString(inst, "ANNOUNCE_NORMALTOMIGHTY"))

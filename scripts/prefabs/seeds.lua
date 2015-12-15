@@ -117,5 +117,5 @@ local function cooked()
     return inst
 end
 
-return Prefab("seeds", raw, assets, prefabs),
-    Prefab("seeds_cooked", cooked, assets)
+return Prefab("common/inventory/seeds", raw, assets, prefabs),
+    Prefab("common/inventory/seeds_cooked", cooked, assets)

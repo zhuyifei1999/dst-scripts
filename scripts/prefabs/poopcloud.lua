@@ -51,4 +51,4 @@ local function fn()
     return inst
 end
 
-return Prefab("poopcloud", fn, assets)
+return Prefab("common/fx/poopcloud", fn, assets)

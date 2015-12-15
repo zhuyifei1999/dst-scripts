@@ -9,9 +9,16 @@ local function message_constructor(data)
 
 	local group = Widget("item-lobbychat")
 
+	local bg_size_x = 200
+	local bg_size_y = data.chat_size+4
+
 	local username_width = 120
 
-	local user_widget = group:AddChild(Text(data.chat_font, data.chat_size-5))
+	group.bg = group:AddChild(Image("images/ui.xml", "single_option_bg.tex"))
+	group.bg:SetSize(bg_size_x, bg_size_y)
+	group.bg:SetPosition(8, 0)
+
+	local user_widget = group:AddChild(Text(data.chat_font, data.chat_size-3))
     user_widget:SetTruncatedString(data.username..":", username_width, 25, "..:")
     local user_name_width, h = user_widget:GetRegionSize()
     user_widget:SetPosition(user_name_width * .5 - 85, -3) 
@@ -20,8 +27,8 @@ local function message_constructor(data)
 
 	--print("user is ", data.username, unpack(data.colour))
 
-	local shortwidth = 180-user_name_width
-	local longwidth = 180
+	local shortwidth = 190-user_name_width
+	local longwidth = 190
 
 	group.messages = {}
 	local text = data.message
@@ -29,6 +36,12 @@ local function message_constructor(data)
 
 	for i = 1,#lines do 
 		local line = lines[i]
+
+		if not group.bg then 
+			group.bg = group:AddChild(Image("images/ui.xml", "single_option_bg.tex"))
+			group.bg:SetSize(bg_size_x, bg_size_y)
+			group.bg:SetPosition(8, 0)
+		end
 
 		local width = longwidth
 		local xpos = 10
@@ -61,7 +74,7 @@ local function message_constructor(data)
 end
 
 	
-local LobbyChatQueue = Class(Widget, function(self, owner, chatbox, onReceiveNewMessage, nextWidget)
+local LobbyChatQueue = Class(Widget, function(self, owner, chatbox, onReceiveNewMessage)
 	Widget._ctor(self, "LobbyChatQueue")
 
 	self.owner = owner
@@ -69,14 +82,12 @@ local LobbyChatQueue = Class(Widget, function(self, owner, chatbox, onReceiveNew
 	self.list_items = {}
 	
 	self.chat_font = TALKINGFONT
-	self.chat_size = 22
+	self.chat_size = 28
 
 	self.chatbox = chatbox
 
 	self.new_message_fn = onReceiveNewMessage
-
-	self.nextWidget = nextWidget
-
+	
 	self:StartUpdating()
 end)
 
@@ -123,8 +134,8 @@ function LobbyChatQueue:OnMessageReceived(userid, name, prefab, message, colour)
 	end
 
 	if not self.scroll_list then
-		self.scroll_list = self:AddChild(ScrollableList(list_widgets, 115, 245, 20, 12, nil, nil, nil, nil, nil, 15))
-    	self.scroll_list:SetPosition(52, -2)
+		self.scroll_list = self:AddChild(ScrollableList(list_widgets, 130, 305, 20, 12, nil, nil, nil, nil, nil, 15))
+    	self.scroll_list:SetPosition(52, -32)
 	else
 		self.scroll_list:SetList(list_widgets)
 		self.scroll_list:ScrollToEnd()
@@ -133,19 +144,7 @@ function LobbyChatQueue:OnMessageReceived(userid, name, prefab, message, colour)
 	if self.new_message_fn then
 		self.new_message_fn()
 	end
-
-	self:DoFocusHookups()
 end 
-
-function LobbyChatQueue:DoFocusHookups()
-	if self.scroll_list then 
-		self.default_focus = self.scroll_list
-		self.scroll_list:SetFocusChangeDir(MOVE_RIGHT, self.nextWidget)
-	else
-		self:SetFocusChangeDir(MOVE_RIGHT, self.nextWidget)
-	end
-
-end
 
 function LobbyChatQueue:ScrollToEnd()
 	if self.scroll_list then

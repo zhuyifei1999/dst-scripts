@@ -42,14 +42,14 @@ local sounds =
 
 local function OnEnterMood(inst)
     if inst.components.beard ~= nil and inst.components.beard.bits > 0 then
-        inst.AnimState:Show("HEAT")
+        inst.AnimState:SetBuild("beefalo_heat_build")
         inst:AddTag("scarytoprey")
     end
 end
 
 local function OnLeaveMood(inst)
     if inst.components.beard ~= nil and inst.components.beard.bits > 0 then
-        inst.AnimState:Hide("HEAT")
+        inst.AnimState:SetBuild("beefalo_build")
         inst:RemoveTag("scarytoprey")
     end
 end
@@ -232,4 +232,4 @@ local function fn()
     return inst
 end
 
-return Prefab("beefalo", fn, assets, prefabs)
+return Prefab("forest/animals/beefalo", fn, assets, prefabs)

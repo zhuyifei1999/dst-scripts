@@ -49,12 +49,6 @@ return {
             GENERIC = "I can't do that.",
             INUSE = "There's only room for one scribbler.",
         },
-        CHANGEIN =
-        {
-            GENERIC = "I can't do that.",
-            BURNING = "It's too dangerous right now!",
-            INUSE = "It can only handle one style change at a time.",
-        },
         ATTUNE =
         {
             NOHEALTH = "I don't feel well enough.",
@@ -94,8 +88,6 @@ return {
 	ANNOUNCE_KNOCKEDOUT = "Ugh, my head!",
 	ANNOUNCE_LOWRESEARCH = "I didn't learn very much from that.",
 	ANNOUNCE_MOSQUITOS = "Aaah! Bug off!",
-    ANNOUNCE_NOWARDROBEONFIRE = "It's too dangerous right now!",
-    ANNOUNCE_NODANGERGIFT = "It's too dangerous right now!",
 	ANNOUNCE_NODANGERSLEEP = "It's too dangerous right now!",
 	ANNOUNCE_NODAYSLEEP = "It's too bright out.",
 	ANNOUNCE_NODAYSLEEP_CAVE = "I'm not tired.",
@@ -1387,12 +1379,6 @@ return {
 			GENERIC = "It looks warm and cozy inside.",
 		},
 		WALRUS_TUSK = "I'm sure I'll find a use for it eventually.",
-		WARDROBE = 
-		{
-			GENERIC = "Maybe I can be even more handsome!",
-            BURNING = "That's burning fast!",
-			BURNT = "So long, style.",
-		},
 		WARG = "You might be something to reckon with, big dog.",
 		WASPHIVE = "I think those bees are mad.",
 		WATERMELON = "Sticky sweet.",

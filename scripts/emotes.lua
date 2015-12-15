@@ -2,7 +2,6 @@ local EMOTES =
 {
     ["/wave"] =             { anim = { "emoteXL_waving1", "emoteXL_waving2" }, randomanim = true },
     ["/waves"] =            "/wave",
-    ["/hi"] = 				"/wave",
 
     ["/bye"] =              { anim = { "emoteXL_waving4", "emoteXL_waving3" }, randomanim = true },
     ["/goaway"] =           "/bye",
@@ -55,10 +54,6 @@ local EMOTES =
     ["/smooch"] =           "/kiss",
     ["/mwa"] =              "/kiss",
     ["/mwah"] =             "/kiss",
-
-    ["/pose"] = 			{ anim = "emote_strikepose", zoom = true, soundoverride = "/pose"},
-    ["/strut"] = 			"/pose",
-    ["/strikepose"] = 		"/pose",
 }
 
 for k, v in pairs(EMOTES) do

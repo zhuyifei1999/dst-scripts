@@ -590,6 +590,38 @@ function c_simphase(phase)
     TheWorld:PushEvent("phasechange", {newphase = phase})
 end
 
+function c_anim(animname, loop)
+    if GetDebugEntity() then
+        GetDebugEntity().AnimState:PlayAnimation(animname, loop or false)
+    else
+        print("No DebugEntity selected")
+    end
+end
+
+function c_light(c1, c2, c3)
+    TheSim:SetAmbientColour(c1, c2 or c1, c3 or c1)
+end
+
+function c_spawn_ds(prefab, scenario)
+    local inst = c_spawn(prefab)
+    if not inst then
+        print("Need to select an entity to apply the scenario to.")
+        return
+    end
+
+    if inst.components.scenariorunner then
+        inst.components.scenariorunner:ClearScenario()
+    end
+
+    -- force reload the script -- this is for testing after all!
+    package.loaded["scenarios/"..scenario] = nil
+
+    inst:AddComponent("scenariorunner")
+    inst.components.scenariorunner:SetScript(scenario)
+    inst.components.scenariorunner:Run()
+end
+
+
 function c_countprefabs(prefab, noprint)
     local count = 0
     for k,v in pairs(Ents) do
@@ -652,6 +684,78 @@ function c_speedmult(multiplier)
     local inst = ConsoleCommandPlayer()
     if inst ~= nil then
         inst.components.locomotor:SetExternalSpeedMultiplier(inst, "c_speedmult", multiplier)
+    end
+end
+
+function c_testruins()
+    ConsoleCommandPlayer().components.builder:UnlockRecipesForTech({SCIENCE = 2, MAGIC = 2})
+    c_give("log", 20)
+    c_give("flint", 20)
+    c_give("twigs", 20)
+    c_give("cutgrass", 20)
+    c_give("lightbulb", 5)
+    c_give("healingsalve", 5)
+    c_give("batbat")
+    c_give("icestaff")
+    c_give("firestaff")
+    c_give("tentaclespike")
+    c_give("slurtlehat")
+    c_give("armorwood")
+    c_give("minerhat")
+    c_give("lantern")
+    c_give("backpack")
+end
+
+
+function c_teststate(state)
+    c_sel().sg:GoToState(state)
+end
+
+function c_combatgear()
+    local function give(prefab)
+        if ConsoleCommandPlayer() then
+            local inst = DebugSpawn(prefab)
+            if inst then
+                print("giving ",inst)
+                ConsoleCommandPlayer().components.inventory:GiveItem(inst)
+                ConsoleCommandPlayer().components.inventory:Equip(inst)
+                SuUsed("c_give_" .. inst.prefab)
+            end
+        end
+    end
+    give("armorwood")
+    give("footballhat")
+    give("spear")
+end
+
+function c_combatsimulator(prefab, count, force)
+    count = count or 1
+
+    local x,y,z = ConsoleWorldPosition():Get()
+    local MakeBattle = nil
+    MakeBattle = function()
+        local creature = DebugSpawn(prefab)
+        creature:ListenForEvent("onremove", MakeBattle)
+        creature.Transform:SetPosition(x,y,z)
+        if creature.components.knownlocations then
+            creature.components.knownlocations:RememberLocation("home", {x=x,y=y,z=z})
+        end
+        if force then
+            local target = FindEntity(creature, 20, nil, {"_combat"})
+            if target then
+                creature.components.combat:SetTarget(target)
+            end
+            creature:ListenForEvent("droppedtarget", function()
+                local target = FindEntity(creature, 20, nil, {"_combat"})
+                if target then
+                    creature.components.combat:SetTarget(target)
+                end
+            end)
+        end
+    end
+
+    for i=1,count do
+        MakeBattle()
     end
 end
 
@@ -920,22 +1024,13 @@ function c_migrationportal(worldId, portalId)
 end
 
 function c_goadventuring()
-    c_give("lantern")
-    c_give("minerhat")
-    c_give("axe")
-    c_give("pickaxe")
-    c_give("footballhat")
-    c_give("armorwood")
-    c_give("spear")
-    c_give("carrot_cooked", 10)
-    c_give("berries_cooked", 10)
-    c_give("smallmeat_dried", 5)
-    c_give("flowerhat")
-    c_give("cutgrass", 20)
-    c_give("twigs", 20)
-    c_give("log", 20)
-    c_give("flint", 20)
-    c_spawn("backpack")
+	c_give("torch", 2)
+	c_give("minerhat")
+	c_give("axe")
+	c_give("pickaxe")
+	c_give("footballhat")
+	c_give("armorwood")
+	c_give("spear")
 end
 
 function c_sounddebug()

@@ -14,7 +14,6 @@ BufferedAction = Class(function(self, doer, target, action, invobject, pos, reci
     self.distance = distance or action.distance 
     self.forced = forced
     self.autoequipped = nil --true if invobject should've been auto-equipped
-    self.skin = nil
 end)
 
 function BufferedAction:Do()

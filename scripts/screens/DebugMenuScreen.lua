@@ -1,4 +1,5 @@
 require "util"
+require "consolecommands"
 
 local Screen = require "widgets/screen"
 local Button = require "widgets/button"

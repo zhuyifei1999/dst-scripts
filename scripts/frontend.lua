@@ -239,7 +239,7 @@ function FrontEnd:GetHelpText()
 
 	if #self.screenstack > 0 and self.screenstack[#self.screenstack] ~= widget then
 		local str = self.screenstack[#self.screenstack]:GetHelpText()
-		if str and str ~= "" then
+		if str ~= "" then
 			table.insert(t, str)
 		end
 	end
@@ -250,7 +250,7 @@ function FrontEnd:GetHelpText()
 		for i,v in ipairs(intermediate_widgets) do
 			if v and v ~= widget and v.GetHelpText then
 				local str = v:GetHelpText()
-				if str and str ~= "" then
+				if str ~= "" then
 					if v.HasExclusiveHelpText and v:HasExclusiveHelpText() then
 						-- Only use this widgets help text, clear all other help text
 						t = {}
@@ -273,7 +273,7 @@ function FrontEnd:GetHelpText()
 		end
 		
 		local str = widget:GetHelpText()
-		if str and str ~= "" then
+		if str ~= "" then
 			table.insert(t, widget:GetHelpText())
 		end
 	end
