@@ -1,6 +1,10 @@
 return {
 	ACTIONFAIL =
 	{
+        BUILD =
+        {
+            MOUNTED = "Not as tall as a moose, but still too high to place that.",
+        },
 		SHAVE =
 		{
 			AWAKEBEEFALO = "I don't think she'd like that.",
@@ -13,6 +17,10 @@ return {
 			GENERIC = "It's already packed tighter than a Toronto streetcar.",
 			NOTALLOWED = "That's not allowed, eh?",
 		},
+        MOUNT =
+        {
+            INUSE = "Maybe I can find caribou to ride instead.",
+        },
 	},
 	ACTIONFAIL_GENERIC = "Sorry, I can't do that.",
 	ANNOUNCE_ADVENTUREFAIL = "Oh well. I gave it a good try.",
@@ -315,6 +323,12 @@ return {
 			GENERIC = "I like the look of that!",
 			BURNT = "I miss the old you.",
 		},
+		WARDROBE = 
+        {
+        	GENERIC = "It's hard to stay neat and tidy in the woods.",
+            BURNING = "Wood is the best at burning.",
+        	BURNT = "Not so useful now, eh?",
+    	},
 		WARG = "That thing could pull a sled by its lonesome.",
 		WATERMELON = "How can it be both water and melon?",
 		WATERMELON_COOKED = "I'm not sure about grilled fruit...",
@@ -328,7 +342,7 @@ return {
 		WORM =
 		{
 		    PLANT = "I know a plant when I see one. This'n an impostor!",
-		    DIRT = "Be wary the moving ground.",
+		    DIRT = "Be wary of the moving ground.",
 		    WORM = "WOOORM!",
 		},
 		EEL = "This should cook up nicely.",
@@ -547,6 +561,11 @@ return {
 			GENERIC = "He smells like a sod house.",
 			NAKED = "Cheer up, eh?",
 			SLEEPING = "He's catching some zeds.",
+            --Domesticated states:
+            DOMESTICATED = "I like this one's attitude.",
+            ORNERY = "Why so glum, chum?",
+            RIDER = "I'm sorry, want to go for a ride?",
+            PUDGY = "You're almost as big as a moose!",
 		},
 		BEEFALOHAT = "Now I'm the king of the beefalo!",
 		BEEFALOWOOL = "It feels like my beard.",
@@ -1005,6 +1024,8 @@ return {
         ROOK = "Hmm.. does the rook move in a straight line? I forget.",
 		ROPE = "Good for holding stuff to other stuff.",
 		ROTTENEGG = "One less bird. Good.",
+        SADDLE_BASIC = "Yep, that'll get us there.",
+        SADDLE_WAR = "Makes me feel like a Mountie.",
 		SANITYROCK =
 		{
 			ACTIVE = "Something is off about that rock, eh?",
@@ -1184,6 +1205,7 @@ return {
 		WARG = "That thing could pull a sled by its lonesome.",
 		WASPHIVE = "Why are those bees so angry?",
 		WETGOOP = "Better than some things I've eaten!",
+        WHIP = "I hope I don't hurt the little critters with this.",
 		WINTERHAT = "It's a nice toque, eh?",
 		WORMHOLE =
 		{

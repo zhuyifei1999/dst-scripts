@@ -1,12 +1,20 @@
 return {
 	ACTIONFAIL =
 	{
+        BUILD =
+        {
+            MOUNTED = "Hair-cow is too tall. I can't reach.",
+        },
 		SHAVE =
 		{
 			AWAKEBEEFALO = "I will wait until he is not looking.",
 			GENERIC = "That cannot be shaved.",
 			NOBITS = "I cannot shave when there are no hairs.",
 		},
+        MOUNT =
+        {
+            INUSE = "Hair-cow is occupied by another.",
+        },
 	},
 	ACTIONFAIL_GENERIC = "I am not mighty enough to do that.",
 	
@@ -551,6 +559,11 @@ return {
 			GENERIC = "Is hair-cow thing!",
 			NAKED = "Hair-cow has no more hair.",
 			SLEEPING = "Hair-cow is sleeping.",
+            --Domesticated states:
+            DOMESTICATED = "Hair-cow so fluffy and nice!",
+            ORNERY = "Wooee you are feisty!",
+            RIDER = "Like I'm back in cavalry!",
+            PUDGY = "A critter after own heart!",
 		},
 		BEEFALOHAT = "Is good hat!",
 		BEEFALOWOOL = "I make clothes of hair-cow.",
@@ -1002,6 +1015,8 @@ return {
         ROOK = "This one jumps the queen!",
 		ROPE = "Strong! Like me!",
 		ROTTENEGG = "Stinky!",
+        SADDLE_BASIC = "Just need creature mighty enough to hold me!",
+        SADDLE_WAR = "I will ride like king!",
 		SANITYROCK =
 		{
 			ACTIVE = "Is beautiful!",
@@ -1162,9 +1177,16 @@ return {
 			GENERIC = "How do they all fit?",
 		},
 		WALRUS_TUSK = "Sea cow man tooth!",
+		WARDROBE = 
+		{
+			GENERIC = "Box of clothes!",
+            BURNING = "Box of fire!",
+			BURNT = "Box all gone.",
+		},
 		WARG = "Big puppy!",
 		WASPHIVE = "Mind says no. Muscles say yes!",
 		WETGOOP = "Wolfgang ruin food!",
+        WHIP = "Good to floss teeth with.",
 		WINTERHAT = "It make ears happy in cold!",
 		WORMHOLE =
 		{

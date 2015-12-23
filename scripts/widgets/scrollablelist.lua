@@ -13,8 +13,10 @@ local DRAG_SCROLL_X_THRESHOLD = 150
 
 -- ScrollableList expects a table of pre-constructed items to be handed in as the "items" param OR
 -- for the "items" table to be a normalized table of data where each table entry is the data that will be handed as the parameters to the supplied function for "updatefn"
-local ScrollableList = Class(Widget, function(self, items, listwidth, listheight, itemheight, itempadding, updatefn, widgetstoupdate, widgetXOffset, always_show_static, starting_offset, yInit)
+local ScrollableList = Class(Widget, function(self, items, listwidth, listheight, itemheight, itempadding, updatefn, widgetstoupdate, widgetXOffset, always_show_static, starting_offset, yInit, bar_width_scale_factor)
     Widget._ctor(self, "ScrollBar")
+    bar_width_scale_factor = bar_width_scale_factor or 1
+
     self.height = listheight
     self.width = listwidth
     self.bg = self:AddChild(Image("images/ui.xml", "blank.tex")) -- so that we have focus whenever the mouse is over this thing
@@ -46,7 +48,9 @@ local ScrollableList = Class(Widget, function(self, items, listwidth, listheight
 	-- self.widget_bg:SetTint(1,1,1,0)
 	-- self.widget_bg:ScaleToSize(self.width, self.height)
 
-	self.up_button = self:AddChild(ImageButton("images/ui.xml", "arrow_scrollbar_up.tex", "arrow_scrollbar_up.tex", "arrow_scrollbar_up.tex", nil, nil, {1,1}, {0,0}))
+	self.scroll_bar_container = self:AddChild(Widget("scroll-bar-container"))
+
+	self.up_button = self.scroll_bar_container:AddChild(ImageButton("images/ui.xml", "arrow_scrollbar_up.tex", "arrow_scrollbar_up.tex", "arrow_scrollbar_up.tex", nil, nil, {1,1}, {0,0}))
 	-- self.up_button:SetScale(.4)
     self.up_button:SetPosition(self.width/2, self.height/2-10, 0)
     self.up_button:SetWhileDown( function() 
@@ -60,7 +64,8 @@ local ScrollableList = Class(Widget, function(self, items, listwidth, listheight
     end)
     -- self.up_button:StartUpdating()
 
-	self.down_button = self:AddChild(ImageButton("images/ui.xml", "arrow_scrollbar_down.tex", "arrow_scrollbar_down.tex", "arrow_scrollbar_down.tex", nil, nil, {1,1}, {0,0}))
+    
+	self.down_button = self.scroll_bar_container:AddChild(ImageButton("images/ui.xml", "arrow_scrollbar_down.tex", "arrow_scrollbar_down.tex", "arrow_scrollbar_down.tex", nil, nil, {1,1}, {0,0}))
 	-- self.down_button:SetScale(.4)
     self.down_button:SetPosition(self.width/2, -self.height/2+10, 0)
     self.down_button:SetWhileDown( function() 
@@ -74,11 +79,11 @@ local ScrollableList = Class(Widget, function(self, items, listwidth, listheight
     end)
     -- self.down_button:StartUpdating()
 
-    self.scroll_bar_line = self:AddChild(Image("images/ui.xml", "scrollbarline.tex"))
-    self.scroll_bar_line:ScaleToSize( 11, self.height - arrow_button_size - 20)
+    self.scroll_bar_line = self.scroll_bar_container:AddChild(Image("images/ui.xml", "scrollbarline.tex"))
+    self.scroll_bar_line:ScaleToSize( 11*bar_width_scale_factor, self.height - arrow_button_size - 20)
     self.scroll_bar_line:SetPosition(self.width/2, 0)
 
-    self.scroll_bar = self:AddChild(ImageButton("images/ui.xml", "1percent_clickbox.tex", "1percent_clickbox.tex", "1percent_clickbox.tex", nil, nil, {1,1}, {0,0}))
+    self.scroll_bar = self.scroll_bar_container:AddChild(ImageButton("images/ui.xml", "1percent_clickbox.tex", "1percent_clickbox.tex", "1percent_clickbox.tex", nil, nil, {1,1}, {0,0}))
 	self.scroll_bar.image:ScaleToSize( 32, self.height - arrow_button_size - 20)
 	self.scroll_bar.image:SetTint(1,1,1,0)
 	self.scroll_bar.scale_on_focus = false
@@ -99,10 +104,11 @@ local ScrollableList = Class(Widget, function(self, items, listwidth, listheight
 		end
 	end )
 
-	self.position_marker = self:AddChild(ImageButton("images/ui.xml", "scrollbarbox.tex", "scrollbarbox.tex", "scrollbarbox.tex", nil, nil, {1,1}, {0,0}))
+	self.position_marker = self.scroll_bar_container:AddChild(ImageButton("images/ui.xml", "scrollbarbox.tex", "scrollbarbox.tex", "scrollbarbox.tex", nil, nil, {1,1}, {0,0}))
 	self.position_marker.scale_on_focus = false
 	self.position_marker.move_on_click = false
 	self.position_marker:SetPosition(self.width/2, self.height/2 - arrow_button_size, 0)
+	self.position_marker:SetScale(bar_width_scale_factor, bar_width_scale_factor, 1)
 	self.position_marker:SetOnDown( function() 
 		self.do_dragging = true
 		self.y_adjustment = 0
@@ -292,7 +298,7 @@ function ScrollableList:RefreshView(movemarker)
 end
 
 -- skip fixup is for when there's a widget that is already adding the scroll list help text and control stuff for the update style (i.e. ListCursor)
--- focus children should be false when it's just an information list (i.e. the morge) and there's nothing interactable in the list
+-- focus children should be false when it's just an information list (i.e. the morgue) and there's nothing interactable in the list
 -- if set to false, then we keep the focus on the scroll list so that it can handle the scroll input properly
 function ScrollableList:LayOutStaticWidgets(yInitial, skipFixUp, focusChildren)
 	if self.static_widgets then

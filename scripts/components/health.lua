@@ -280,26 +280,6 @@ function Health:IsDead()
     return self.currenthealth <= 0
 end
 
-local function destroy(inst)
-    local time_to_erode = 1
-    local tick_time = TheSim:GetTickTime()
-
-    if inst.DynamicShadow ~= nil then
-        inst.DynamicShadow:Enable(false)
-    end
-
-    inst:StartThread(function()
-        local ticks = 0
-        while ticks * tick_time < time_to_erode do
-            local erode_amount = ticks * tick_time / time_to_erode
-            inst.AnimState:SetErosionParams(erode_amount, 0.1, 1.0)
-            ticks = ticks + 1
-            Yield()
-        end
-        inst:Remove()
-    end)
-end
-
 function Health:SetPercent(percent, overtime, cause)
     self:SetVal(self.maxhealth * percent, cause)
     self:DoDelta(0, overtime, cause, true, nil, true)
@@ -334,15 +314,16 @@ function Health:SetVal(val, cause, afflicter)
         if not self.nofadeout then
             self.inst:AddTag("NOCLICK")
             self.inst.persists = false
-            self.inst:DoTaskInTime(self.destroytime or 2, destroy)
+            self.inst:DoTaskInTime(self.destroytime or 2, ErodeAway)
         end
     end
 end
 
 function Health:DoDelta(amount, overtime, cause, ignore_invincible, afflicter, ignore_absorb)
     if self.redirect ~= nil then
-        self.redirect(self.inst, amount, overtime, cause)
-        return
+        if self.redirect(self.inst, amount, overtime, cause) then
+            return
+        end
     end
 
     if not ignore_invincible and (self.invincible or self.inst.is_teleporting == true) then

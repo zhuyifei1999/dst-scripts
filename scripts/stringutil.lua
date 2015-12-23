@@ -96,6 +96,27 @@ local function CraftOooh() -- Ghost speech!
     end
     return str..ooohpunc()
 end
+
+local function Umlautify(string)
+    if not Profile:IsWathgrithrFontEnabled() then
+        return string
+    end
+
+    local ret = ""
+    local last = false
+    for i = 1, #string do
+        local c = string:sub(i,i)
+        if not last and (c == "o" or c == "O") then
+            ret = ret .. ((c == "o" and "ö") or (c == "O" and "Ö") or c)
+            last = true
+        else
+            ret = ret .. c
+            last = false
+        end
+    end
+    return ret
+end
+
 ---------------------------------------------------------
 
 local wilton_sayings =
@@ -121,6 +142,17 @@ function GetSpecialCharacterString(character)
         or (character == "ghost" and CraftOooh())
         or (character == "wilton" and wilton_sayings[math.random(#wilton_sayings)])
         or nil
+end
+
+function GetSpecialCharacterPostProcess(character, string)
+    if character == nil then
+        return string
+    end
+
+    character = string.lower(character)
+
+    return (character == "wathgrithr" and Umlautify(string))
+            or string
 end
 
 -- When calling GetString, must pass actual instance of entity if it might be used when ghost

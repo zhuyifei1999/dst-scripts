@@ -81,19 +81,24 @@ function Combat:GetAttackRangeWithWeapon()
     if self.inst.components.combat ~= nil then
         return self.inst.components.combat:GetAttackRange()
     end
-    if self.inst.replica.inventory ~= nil then
-        local item = self.inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-        if item ~= nil and item.replica.inventoryitem ~= nil then
-            return self._attackrange:value() + item.replica.inventoryitem:AttackRange()
-        end
-    end
-    return self._attackrange:value()
+    local weapon = self:GetWeapon()
+    return weapon ~= nil
+        and self._attackrange:value() + weapon.replica.inventoryitem:AttackRange()
+        or self._attackrange:value()
 end
 
 function Combat:GetWeapon()
-    if self.inst.replica.inventory ~= nil then
+    if self.inst.components.combat ~= nil then
+        return self.inst.components.combat:GetWeapon()
+    elseif self.inst.replica.inventory ~= nil then
         local item = self.inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-        return item ~= nil and item:HasTag("weapon") and item or nil
+        if item ~= nil and item:HasTag("weapon") then
+            if item:HasTag("projectile") then
+                return item
+            end
+            local rider = self.inst.replica.rider
+            return not (rider ~= nil and rider:IsRiding()) and item or nil
+        end
     end
 end
 

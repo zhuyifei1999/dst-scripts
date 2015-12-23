@@ -53,7 +53,7 @@ nil,
 
 function Builder:ActivateCurrentResearchMachine()
     if self.current_prototyper ~= nil and self.current_prototyper.components.prototyper ~= nil then
-        self.current_prototyper.components.prototyper:Activate()
+        self.current_prototyper.components.prototyper:Activate(self.inst)
     end
 end
 
@@ -125,19 +125,31 @@ function Builder:EvaluateTechTrees()
     self.current_prototyper = nil
 
     local prototyper_active = false
-    for k,v in pairs(ents) do
-        if v.components.prototyper then
+    for i, v in ipairs(ents) do
+        if v.components.prototyper ~= nil then
             if not prototyper_active then
                 --activate the first machine in the list. This will be the one you're closest to.
-                v.components.prototyper:TurnOn()
+                v.components.prototyper:TurnOn(self.inst)
                 self.accessible_tech_trees = v.components.prototyper:GetTechTrees()
                 prototyper_active = true
                 self.current_prototyper = v
             else
                 --you've already activated a machine. Turn all the other machines off.
-                v.components.prototyper:TurnOff()
+                v.components.prototyper:TurnOff(self.inst)
             end
         end
+    end
+
+    --V2C: Hacking giftreceiver logic in here so we do
+    --     not have to duplicate the same search logic
+    if self.inst.components.giftreceiver ~= nil then
+        self.inst.components.giftreceiver:SetGiftMachine(
+            self.current_prototyper ~= nil and
+            self.current_prototyper:HasTag("giftmachine") and
+            CanEntitySeeTarget(self.inst, self.current_prototyper) and
+            self.inst.components.inventory.isopen and --ignores .isvisible, as long as it's .isopen
+            self.current_prototyper or
+            nil)
     end
 
     --add any character specific bonuses to your current tech levels.
@@ -152,7 +164,7 @@ function Builder:EvaluateTechTrees()
     end
 
     local trees_changed = false
-    
+
     for k,v in pairs(old_accessible_tech_trees) do
         if v ~= self.accessible_tech_trees[k] then 
             trees_changed = true
@@ -168,8 +180,11 @@ function Builder:EvaluateTechTrees()
         end
     end
 
-    if old_prototyper and old_prototyper.components.prototyper and old_prototyper.entity:IsValid() and old_prototyper ~= self.current_prototyper then
-        old_prototyper.components.prototyper:TurnOff()
+    if old_prototyper ~= nil and
+        old_prototyper ~= self.current_prototyper and
+        old_prototyper.components.prototyper ~= nil and
+        old_prototyper.entity:IsValid() then
+        old_prototyper.components.prototyper:TurnOff(self.inst)
     end
 
     if trees_changed then
@@ -294,12 +309,13 @@ function Builder:HasCharacterIngredient(ingredient)
     return false
 end
 
-function Builder:MakeRecipe(recipe, pt, rot, onsuccess)
+function Builder:MakeRecipe(recipe, pt, rot, skin, onsuccess)
     if recipe ~= nil then
         self.inst:PushEvent("makerecipe", { recipe = recipe })
         if self:IsBuildBuffered(recipe.name) or self:CanBuild(recipe.name) then
             self.inst.components.locomotor:Stop()
             local buffaction = BufferedAction(self.inst, nil, ACTIONS.BUILD, nil, pt or self.inst:GetPosition(), recipe.name, 1, nil, rot)
+			buffaction.skin = skin
             if onsuccess ~= nil then
                 buffaction:AddSuccessAction(onsuccess)
             end
@@ -310,9 +326,15 @@ function Builder:MakeRecipe(recipe, pt, rot, onsuccess)
     return false
 end
 
-function Builder:DoBuild(recname, pt, rotation)
+function Builder:DoBuild(recname, pt, rotation, skin)
     local recipe = GetValidRecipe(recname)
     if recipe ~= nil and (self:IsBuildBuffered(recname) or self:CanBuild(recname)) then
+        if recipe.placer ~= nil and
+            self.inst.components.rider ~= nil and
+            self.inst.components.rider:IsRiding() then
+            return false, "MOUNTED"
+        end
+
         local wetlevel = self.buffered_builds[recname]
         if wetlevel ~= nil then
             self.buffered_builds[recname] = nil
@@ -324,8 +346,9 @@ function Builder:DoBuild(recname, pt, rotation)
         end
         self.inst:PushEvent("refreshcrafting")
 
-        local prod = SpawnPrefab(recipe.product)
+        local prod = SpawnPrefab(recipe.product, skin, nil, self.inst.userid)
         if prod ~= nil then
+            
             pt = pt or Point(self.inst.Transform:GetWorldPosition())
 
             if wetlevel > 0 and prod.components.inventoryitem ~= nil then
@@ -335,7 +358,7 @@ function Builder:DoBuild(recname, pt, rotation)
             if prod.components.inventoryitem ~= nil then
                 if self.inst.components.inventory ~= nil then
                     --self.inst.components.inventory:GiveItem(prod)
-                    self.inst:PushEvent("builditem", { item = prod, recipe = recipe })
+                    self.inst:PushEvent("builditem", { item = prod, recipe = recipe, skin = skin })
                     ProfileStatsAdd("build_"..prod.prefab)
 
                     if prod.components.equippable ~= nil and not self.inst.components.inventory:GetEquippedItem(prod.components.equippable.equipslot) then
@@ -378,7 +401,7 @@ function Builder:DoBuild(recname, pt, rotation)
                 --V2C: or 0 check added for backward compatibility with mods that
                 --     have not been updated to support placement rotation yet
                 prod.Transform:SetRotation(rotation or 0)
-                self.inst:PushEvent("buildstructure", { item = prod, recipe = recipe })
+                self.inst:PushEvent("buildstructure", { item = prod, recipe = recipe, skin = skin })
                 prod:PushEvent("onbuilt", { builder = self.inst })
                 ProfileStatsAdd("build_"..prod.prefab)
 
@@ -437,16 +460,18 @@ end
 --RPC handlers
 --------------------------------------------------------------------------
 
-function Builder:MakeRecipeFromMenu(recipe)
+function Builder:MakeRecipeFromMenu(recipe, skin)
+	local validated_skin = ValidateRecipeSkinRequest( self.inst.userid, recipe.name, skin )
+	
     if recipe.placer == nil then
         if self:KnowsRecipe(recipe.name) then
             if self:IsBuildBuffered(recipe.name) or self:CanBuild(recipe.name) then
-                self:MakeRecipe(recipe)
+                self:MakeRecipe(recipe, nil, nil, validated_skin)
             end
         elseif CanPrototypeRecipe(recipe.level, self.accessible_tech_trees) and
             self:CanLearn(recipe.name) and
             self:CanBuild(recipe.name) then
-            self:MakeRecipe(recipe, nil, nil, function()
+            self:MakeRecipe(recipe, nil, nil, validated_skin, function()
                 self:ActivateCurrentResearchMachine()
                 self:UnlockRecipe(recipe.name)
             end)
@@ -454,12 +479,12 @@ function Builder:MakeRecipeFromMenu(recipe)
     end
 end
 
-function Builder:MakeRecipeAtPoint(recipe, pt, rot)
+function Builder:MakeRecipeAtPoint(recipe, pt, rot, skin)
     if recipe.placer ~= nil and
         self:KnowsRecipe(recipe.name) and
         self:IsBuildBuffered(recipe.name) and
         TheWorld.Map:CanDeployRecipeAtPoint(pt, recipe) then
-        self:MakeRecipe(recipe, pt, rot)
+        self:MakeRecipe(recipe, pt, rot, skin)
     end
 end
 

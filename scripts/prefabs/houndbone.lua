@@ -84,4 +84,4 @@ local function fn()
     return inst
 end
 
-return Prefab("forest/monsters/houndbone", fn, assets, prefabs)
+return Prefab("houndbone", fn, assets, prefabs)

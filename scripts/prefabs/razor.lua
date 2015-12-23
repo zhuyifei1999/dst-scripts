@@ -31,4 +31,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/inventory/razor", fn, assets)
+return Prefab("razor", fn, assets)

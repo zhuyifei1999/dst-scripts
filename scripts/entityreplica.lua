@@ -16,6 +16,7 @@ local REPLICATABLE_COMPONENTS =
     inventoryitem = true,
     moisture = true,
     named = true,
+    rider = true,
     sanity = true,
     sheltered = true,
     stackable = true,

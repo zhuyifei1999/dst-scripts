@@ -537,8 +537,9 @@ function Container:OnUpdate(dt)
         self.inst:StopUpdatingComponent(self)
     elseif not (self.inst.components.inventoryitem ~= nil and
                 self.inst.components.inventoryitem:IsHeldBy(self.opener))
-        and not (self.opener:IsNear(self.inst, 3) and
-                CanEntitySeeTarget(self.opener, self.inst)) then
+        and ((self.opener.components.rider ~= nil and self.opener.components.rider:IsRiding())
+            or not (self.opener:IsNear(self.inst, 3) and
+                    CanEntitySeeTarget(self.opener, self.inst))) then
         self:Close()
     end
 end

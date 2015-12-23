@@ -30,10 +30,10 @@ local function fn()
     inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
 
     inst:AddComponent("edible")
-    inst.components.edible.foodtype = FOODTYPE.WOOD
+    inst.components.edible.foodtype = FOODTYPE.ROUGHAGE
     inst.components.edible.woodiness = 1
-    inst.components.edible.healthvalue = 0
-    inst.components.edible.hungervalue = 0
+    inst.components.edible.healthvalue = TUNING.HEALING_TINY
+    inst.components.edible.hungervalue = TUNING.CALORIES_TINY/2
 
     inst:AddComponent("inspectable")
     inst:AddComponent("tradable")
@@ -53,4 +53,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/inventory/cutgrass", fn, assets)
+return Prefab("cutgrass", fn, assets)

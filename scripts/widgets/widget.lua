@@ -331,6 +331,17 @@ function Widget:SetTooltip(str)
     self.tooltip = str
 end
 
+function Widget:SetTooltipPos(pos, pos_y, pos_z)
+    if type(pos) == "number" then
+        self.inst.tooltip_pos = {x=pos, y=pos_y, z=pos_z}
+    else
+        if not self.inst:IsValid() then
+            print (debugstack())
+        end
+        self.inst.tooltip_pos = pos
+    end
+end
+
 function Widget:SetTooltipColour(r,g,b,a)
     self.tooltipcolour = {r, g, b, a}
 end
@@ -357,6 +368,20 @@ function Widget:GetTooltip()
         end
         return self.tooltip
     end
+end
+
+function Widget:GetTooltipPos()
+   if self.focus then
+        for k,v in pairs(self.children) do
+            local t_pos = k:GetTooltipPos()
+            if t_pos then
+                return t_pos
+            end
+        end
+        if self.inst.tooltip_pos then
+            return self.inst.tooltip_pos
+        end
+    end 
 end
 
 function Widget:StartUpdating()
@@ -433,6 +458,10 @@ function Widget:GetScale()
     end
 
     return Vector3(sx,sy,sz)
+end
+
+function Widget:GetLooseScale()
+    return self.inst.UITransform:GetScale()
 end
 
 ---------------------------focus management
@@ -596,6 +625,15 @@ function Widget:SetHoverText(text, params)
             if not self.hovertext then
                 self.hovertext = self:AddChild(Text(params.font or NEWFONT_OUTLINE, params.size or 28, text))
                 self.hovertext:SetClickable(false)
+
+                if params.region_h ~= nil or params.region_w ~= nil then 
+                	self.hovertext:SetRegionSize(params.region_w or 1000, params.region_h or 40)
+                end
+
+                if params.wordwrap ~= nil then 
+                	--print("Enabling word wrap", params.wordwrap)
+                	self.hovertext:EnableWordWrap(params.wordwrap)
+                end
             else
                 self.hovertext:SetString(text)
             end

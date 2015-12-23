@@ -5,14 +5,38 @@ local assets =
 }
 
 local function onequip(inst, owner)
-    owner.AnimState:OverrideSymbol("swap_body", "swap_backpack", "backpack")
-    owner.AnimState:OverrideSymbol("swap_body", "swap_backpack", "swap_body")
+	local skin_build = inst:GetSkinBuild()
+	if skin_build ~= nil then
+        
+        local skin_name = inst:GetSkinName()
+        if skin_name ~= nil then
+            owner:PushEvent("equipskinneditem", skin_name)
+        else
+            owner:PushEvent("equipskinneditem", skin_build)
+        end
+
+		owner.AnimState:OverrideItemSkinSymbol("backpack", skin_build, "backpack", inst.GUID, "swap_backpack" )
+		owner.AnimState:OverrideItemSkinSymbol("swap_body", skin_build, "swap_body", inst.GUID, "swap_backpack" )
+	else
+		owner.AnimState:OverrideSymbol("backpack", "swap_backpack", "backpack")
+		owner.AnimState:OverrideSymbol("swap_body", "swap_backpack", "swap_body")
+	end
+    
     if inst.components.container ~= nil then
         inst.components.container:Open(owner)
     end
 end
 
 local function onunequip(inst, owner)
+    local skin_build = inst:GetSkinBuild()
+    if skin_build ~= nil then
+        local skin_name = inst:GetSkinName()
+        if skin_name ~= nil then
+            owner:PushEvent("unequipskinneditem", skin_name)
+        else
+            owner:PushEvent("unequipskinneditem", skin_build)
+        end
+    end
     owner.AnimState:ClearOverrideSymbol("swap_body")
     owner.AnimState:ClearOverrideSymbol("backpack")
     if inst.components.container ~= nil then
@@ -96,4 +120,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/inventory/backpack", fn, assets)
+return Prefab("backpack", fn, assets)

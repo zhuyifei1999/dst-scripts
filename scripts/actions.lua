@@ -1,5 +1,6 @@
 require "class"
 require "bufferedaction"
+require "debugtools"
 
 local function DefaultRangeCheck(doer, target)
     if target == nil then
@@ -11,116 +12,134 @@ local function DefaultRangeCheck(doer, target)
     return dst <= 16
 end
 
-Action = Class(function(self, priority, instant, rmb, distance, ghost_valid, ghost_exclusive, canforce, rangecheckfn)
-    self.priority = priority or 0
+--Positional parameters have been deprecated, pass in a table instead.
+Action = Class(function(self, data, instant, rmb, distance, ghost_valid, ghost_exclusive, canforce, rangecheckfn)
+    if data == nil then
+        data = {}
+    end
+    if type(data) ~= "table" then
+        --#TODO: get rid of the positional parameters all together, this warning here is for mods that may be using the old interface.
+        print("WARNING: Positional Action parameters are deprecated. Please pass action a table instead.")
+        print(string.format("Action defined at %s", debugstack_oneline(4)))
+        local priority = data
+        data = {priority=priority, instant=instant, rmb=rmb, ghost_valid=ghost_valid, ghost_exclusive=ghost_exclusive, canforce=canforce, rangecheckfn=rangecheckfn}
+    end
+
+    self.priority = data.priority or 0
     self.fn = function() return false end
     self.strfn = nil
-    self.instant = instant or false
-    self.rmb = rmb or nil
-    self.distance = distance or nil
-    self.ghost_valid = ghost_valid or false
-    self.ghost_exclusive = ghost_exclusive or false
+    self.instant = data.instant or false
+    self.rmb = data.rmb or nil -- note! This actually only does something for tools, everything tests 'right' in componentactions
+    self.distance = data.distance or nil
+    self.ghost_valid = data.ghost_valid or false
+    self.ghost_exclusive = data.ghost_exclusive or false
+    self.mount_valid = data.mount_valid or false
     if self.ghost_exclusive then self.ghost_valid = true end -- If it's ghost-exclusive, then it must be ghost-valid
-    self.canforce = canforce or nil
-    self.rangecheckfn = self.canforce ~= nil and rangecheckfn or nil
+    self.canforce = data.canforce or nil
+    self.rangecheckfn = self.canforce ~= nil and data.rangecheckfn or nil
     self.mod_name = nil
 end)
 
 ACTIONS =
 {
     REPAIR = Action(),
-    READ = Action(),
-    DROP = Action(-1),
+    READ = Action({ mount_valid=true }),
+    DROP = Action({ priority=-1, mount_valid=true }),
     TRAVEL = Action(),
     CHOP = Action(),
-    ATTACK = Action(2, nil, nil, nil, nil, nil, true), -- No custom range check, attack already handles that
-    EAT = Action(),
-    PICK = Action(nil, nil, nil, nil, nil, nil, true, DefaultRangeCheck),
-    PICKUP = Action(1),
+    ATTACK = Action({ priority=2, canforce=true, mount_valid=true }), -- No custom range check, attack already handles that
+    EAT = Action({ mount_valid=true }),
+    PICK = Action({ canforce=true, rangecheckfn=DefaultRangeCheck }),
+    PICKUP = Action({ priority=1 }),
     MINE = Action(),
-    DIG = Action(nil, nil, true),
-    GIVE = Action(nil, nil, nil, nil, nil, nil, true, DefaultRangeCheck),
-    GIVETOPLAYER = Action(3, nil, nil, nil, nil, nil, true, DefaultRangeCheck),
-    GIVEALLTOPLAYER = Action(3, nil, nil, nil, nil, nil, true, DefaultRangeCheck),
-    FEEDPLAYER = Action(3, nil, true, nil, nil, nil, true, DefaultRangeCheck),
-    COOK = Action(1),
+    DIG = Action({ rmb=true }),
+    GIVE = Action({ canforce=true, rangecheckfn=DefaultRangeCheck }),
+    GIVETOPLAYER = Action({ priority=3, canforce=true, rangecheckfn=DefaultRangeCheck }),
+    GIVEALLTOPLAYER = Action({ priority=3, canforce=true, rangecheckfn=DefaultRangeCheck }),
+    FEEDPLAYER = Action({ priority=3, rmb=true, canforce=true, rangecheckfn=DefaultRangeCheck }),
+    COOK = Action({ priority=1 }),
     FILL = Action(),
     DRY = Action(),
     ADDFUEL = Action(),
     ADDWETFUEL = Action(),
-    LIGHT = Action(-4),
-    EXTINGUISH = Action(0),
-    LOOKAT = Action(-3, true, nil, nil, true),
-    TALKTO = Action(3, true),
-    WALKTO = Action(-4, nil, nil, nil, true),
+    LIGHT = Action({ priority=-4 }),
+    EXTINGUISH = Action({ priority=0 }),
+    LOOKAT = Action({ priority=-3, instant=true, ghost_valid=true, mount_valid=true }),
+    TALKTO = Action({ priority=3, instant=true, mount_valid=true }),
+    WALKTO = Action({ priority=-4, ghost_valid=true, mount_valid=true }),
     BAIT = Action(),
-    CHECKTRAP = Action(2),
-    BUILD = Action(),
+    CHECKTRAP = Action({ priority=2 }),
+    BUILD = Action({ mount_valid=true }),
     PLANT = Action(),
     HARVEST = Action(),
     GOHOME = Action(),
     SLEEPIN = Action(),
-    EQUIP = Action(0,true),
-    UNEQUIP = Action(-2,true),
+    CHANGEIN = Action({ priority=-1 }),
+    EQUIP = Action({ priority=0,instant=true, mount_valid=true }),
+    UNEQUIP = Action({ priority=-2,instant=true, mount_valid=true }),
     --OPEN_SHOP = Action(),
-    SHAVE = Action(),
+    SHAVE = Action({ mount_valid=true }),
     STORE = Action(),
-    RUMMAGE = Action(-1),
+    RUMMAGE = Action({ priority=-1, mount_valid=true }),
     DEPLOY = Action(),
-    PLAY = Action(),
+    PLAY = Action({ mount_valid=true }),
     CREATE = Action(),
     JOIN = Action(),
-    NET = Action(3, nil, nil, nil, nil, nil, true, DefaultRangeCheck),
-    CATCH = Action(3, nil, nil, math.huge),
+    NET = Action({ priority=3, canforce=true, rangecheckfn=DefaultRangeCheck, mount_valid=true }),
+    CATCH = Action({ priority=3, distance=math.huge, mount_valid=true }),
     FISH = Action(),
-    REEL = Action(0, true),
+    REEL = Action({ instant=true }),
     POLLINATE = Action(),
     FERTILIZE = Action(),
-    SMOTHER = Action(1),
-    MANUALEXTINGUISH = Action(1),
+    SMOTHER = Action({ priority=1 }),
+    MANUALEXTINGUISH = Action({ priority=1 }),
     LAYEGG = Action(),
-    HAMMER = Action(3),
+    HAMMER = Action({ priority=3 }),
     TERRAFORM = Action(),
-    JUMPIN = Action(0, nil, nil, nil, true),
-    RESETMINE = Action(3),
+    JUMPIN = Action({ ghost_valid=true }),
+    RESETMINE = Action({ priority=3 }),
     ACTIVATE = Action(),
-    MURDER = Action(0),
-    HEAL = Action(),
+    MURDER = Action({ priority=0, mount_valid=true }),
+    HEAL = Action({ mount_valid=true }),
     INVESTIGATE = Action(),
     UNLOCK = Action(),
     TEACH = Action(),
-    TURNON = Action(2),
-    TURNOFF = Action(2),
-    SEW = Action(),
+    TURNON = Action({ priority=2 }),
+    TURNOFF = Action({ priority=2 }),
+    SEW = Action({ mount_valid=true }),
     STEAL = Action(),
-    USEITEM = Action(1, true),
+    USEITEM = Action({ priority=1, instant=true }),
     TAKEITEM = Action(),
-    MAKEBALLOON = Action(),
-    CASTSPELL = Action(-1, false, true, 20),
-    BLINK = Action(10, false, true, 36),
-    COMBINESTACK = Action(),
-    TOGGLE_DEPLOY_MODE = Action(1, true),
-    SUMMONGUARDIAN = Action(0, false, false, 5),
-    LAVASPIT = Action(0, false, false, 2),
-    SPAWN = Action(0, false, false, 5),
-    HAUNT = Action(0, false, false, 2, true, true, true, DefaultRangeCheck),
+    MAKEBALLOON = Action({ mount_valid=true }),
+    CASTSPELL = Action({ priority=-1, rmb=true, distance=20, mount_valid=true }),
+    BLINK = Action({ priority=10, rmb=true, distance=36, mount_valid=true }),
+    COMBINESTACK = Action({ mount_valid=true }),
+    TOGGLE_DEPLOY_MODE = Action({ priority=1, instant=true }),
+    SUMMONGUARDIAN = Action({ rmb=false, distance=5 }),
+    LAVASPIT = Action({ rmb=false, distance=2 }),
+    SPAWN = Action({ rmb=false, distance=5 }),
+    HAUNT = Action({ rmb=false, distance=2, ghost_valid=true, ghost_exclusive=true, canforce=true, rangecheckfn=DefaultRangeCheck }),
     UNPIN = Action(),
-    STEALMOLEBAIT = Action(0, false, false, .75),
-    MAKEMOLEHILL = Action(4, false, false, 0),
-    MOLEPEEK = Action(0, false, false, 1),
-    FEED = Action(0, false, true),
-    UPGRADE = Action(0, false, true),
-    HAIRBALL = Action(0, false, false, 3),
-    CATPLAYGROUND = Action(0, false, false, 1),
-    CATPLAYAIR = Action(0, false, false, 2),
-    FAN = Action(0, false, true),
-    TOSS = Action(0, false, true, 8),
+    STEALMOLEBAIT = Action({ rmb=false, distance=.75 }),
+    MAKEMOLEHILL = Action({ priority=4, rmb=false, distance=0 }),
+    MOLEPEEK = Action({ rmb=false, distance=1 }),
+    FEED = Action({ rmb=true }),
+    UPGRADE = Action({ rmb=true }),
+    HAIRBALL = Action({ rmb=false, distance=3 }),
+    CATPLAYGROUND = Action({ rmb=false, distance=1 }),
+    CATPLAYAIR = Action({ rmb=false, distance=2 }),
+    FAN = Action({ rmb=true, mount_valid=true }),
+
+    TOSS = Action({ rmb=true, distance=8, mount_valid=true }),
     NUZZLE = Action(),
     WRITE = Action(),
-    TAUNT = Action(0, nil, nil, 30),
+    TAUNT = Action({ distance=30 }),
     ATTUNE = Action(),
-    REMOTERESURRECT = Action(0, false, false, nil, true, true),
-    MIGRATE = Action(0, false, false, nil, true),
+    REMOTERESURRECT = Action({ rmb=false, ghost_valid=true, ghost_exclusive=true }),
+    MIGRATE = Action({ rmb=false, ghost_valid=true }),
+    MOUNT = Action({ priority=1, rmb=true }),
+    DISMOUNT = Action({ priority=1, instant=true, rmb=true, mount_valid=true }),
+    SADDLE = Action({ priority=1 }),
 }
 
 ACTION_IDS = {}
@@ -299,6 +318,7 @@ end
 
 ACTIONS.LOOKAT.fn = function(act)
     local targ = act.target or act.invobject
+
     if targ ~= nil and targ.components.inspectable ~= nil then
         local desc = targ.components.inspectable:GetDescription(act.doer)
         if desc ~= nil then
@@ -553,25 +573,27 @@ ACTIONS.ATTACK.fn = function(act)
 end
 
 ACTIONS.ATTACK.strfn = function(act)
-    local targ = act.target
-    local weapon = act.invobject
+    if act.target ~= nil then
+        --act.invobject is weapon
+        if act.invobject ~= nil then
+            if act.invobject:HasTag("extinguisher")
+                and (act.target:HasTag("smolder") or
+                    act.target:HasTag("fire")) then
+                return "RANGEDSMOTHER"
+            elseif act.invobject:HasTag("rangedlighter")
+                and act.target:HasTag("canlight")
+                and not act.target:HasTag("fire")
+                and not act.target:HasTag("burnt") then
+                return "RANGEDLIGHT"
+            elseif act.target:HasTag("mole")
+                and act.invobject:HasTag("hammer") then
+                return "WHACK"
+            end
+        end
 
-    if targ and weapon
-        and weapon:HasTag("extinguisher")
-        and (targ:HasTag("smolder") or targ:HasTag("fire")) then
-        return "RANGEDSMOTHER"
-    elseif targ and weapon
-        and weapon:HasTag("rangedlighter")
-        and targ:HasTag("canlight")
-        and not targ:HasTag("fire")
-        and not targ:HasTag("burnt") then
-        return "RANGEDLIGHT"
-    elseif targ and weapon
-        and targ:HasTag("mole")
-        and weapon:HasTag("hammer") then
-        return "WHACK"
-    elseif targ and targ:HasTag("smashable") then
-        return "SMASHABLE"
+        if act.target:HasTag("smashable") then
+            return "SMASHABLE"
+        end
     end
 end
 
@@ -857,10 +879,8 @@ ACTIONS.STORE.strfn = function(act)
 end
 
 ACTIONS.BUILD.fn = function(act)
-    if act.doer.components.builder then
-        if act.doer.components.builder:DoBuild(act.recipe, act.pos, act.rotation) then
-            return true
-        end
+    if act.doer.components.builder ~= nil then
+        return act.doer.components.builder:DoBuild(act.recipe, act.pos, act.rotation, act.skin)
     end
 end
 
@@ -921,6 +941,24 @@ ACTIONS.SLEEPIN.fn = function(act)
             bag.components.sleepingbag:DoSleep(act.doer)
             return true
         end
+    end
+end
+
+ACTIONS.CHANGEIN.fn = function(act)
+    if act.doer ~= nil and
+        act.target ~= nil and
+        act.target.components.wardrobe ~= nil then
+
+        local success, reason = act.target.components.wardrobe:CanBeginChanging(act.doer)
+        if not success then
+            return false, reason
+        end
+
+        --Silent fail for opening wardrobe in the dark
+        if CanEntitySeeTarget(act.doer, act.target) then
+            act.target.components.wardrobe:BeginChanging(act.doer)
+        end
+        return true
     end
 end
 
@@ -1025,7 +1063,7 @@ ACTIONS.RESETMINE.fn = function(act)
 end
 
 ACTIONS.ACTIVATE.fn = function(act)
-    if act.target.components.activatable ~= nil then
+    if act.target.components.activatable ~= nil and act.target.components.activatable:CanActivate(act.doer) then
         act.target.components.activatable:DoActivate(act.doer)
         return true
     end
@@ -1318,7 +1356,11 @@ ACTIONS.WRITE.fn = function(act)
         if act.target.components.writeable:IsBeingWritten() then
             return false, "INUSE"
         end
-        act.target.components.writeable:BeginWriting(act.doer)
+
+        --Silent fail for writing in the dark
+        if CanEntitySeeTarget(act.doer, act.target) then
+            act.target.components.writeable:BeginWriting(act.doer)
+        end
         return true
     end
 end
@@ -1358,19 +1400,37 @@ ACTIONS.REMOTERESURRECT.fn = function(act)
     end
 end
 
---[[ACTIONS.OPEN_SHOP.fn = function(act)
-    if act.target.components.shop then
-        local trigger = json.encode({shop={title=act.target.components.shop.title,
-                                           name=act.target.components.shop.name, 
-                                           id=act.target.entity:GetGUID(),
-                                           tab=act.target.components.shop.tab,
-                                           filter=act.doer.components.builder.recipes,
-                                           gold=act.doer.profile:GetGold(),
-                                           }
-                                    })
-        TheSim:SendUITrigger(trigger)
-        TheSim:SetTimeScale(0)
+ACTIONS.MOUNT.fn = function(act)
+    if act.target.components.combat ~= nil and act.target.components.combat:HasTarget() then
+        return false, "TARGETINCOMBAT"
+    elseif act.target.components.rideable == nil
+        or not act.target.components.rideable.canride
+        or (act.target.components.health ~= nil and
+            act.target.components.health:IsDead()) then
+        return false
+    elseif act.target.components.rideable:IsBeingRidden() then
+        return false, "INUSE"
+    end
+    act.doer:PushEvent("mount", { target = act.target })
+    act.doer.components.rider:Mount(act.target)
+    return true
+end
+
+ACTIONS.DISMOUNT.fn = function(act)
+    if act.doer == act.target and act.doer.components.rider ~= nil and act.doer.components.rider:IsRiding() then
+        act.doer.components.rider:Dismount()
         return true
     end
 end
---]]
+
+ACTIONS.SADDLE.fn = function(act)
+    if act.target.components.combat ~= nil and act.target.components.combat:HasTarget() then
+        return false, "TARGETINCOMBAT"
+    elseif act.target.components.rideable ~= nil then
+        --V2C: currently, rideable component implies saddleable always
+        act.doer:PushEvent("saddle", { target = act.target })
+        act.doer.components.inventory:RemoveItem(act.invobject)
+        act.target.components.rideable:SetSaddle(act.doer, act.invobject)
+        return true
+    end
+end

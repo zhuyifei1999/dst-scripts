@@ -442,6 +442,9 @@ local SGTagsToEntTags =
     ["working"] = true,
 }
 
+function StateGraphInstance:HasState(statename)
+    return self.sg.states[statename] ~= nil
+end
 function StateGraphInstance:GoToState(statename, params)
     local state = self.sg.states[statename]
     

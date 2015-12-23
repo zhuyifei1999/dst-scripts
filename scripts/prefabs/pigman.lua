@@ -580,5 +580,5 @@ local function guard()
     return inst
 end
 
-return Prefab("common/characters/pigman", normal, assets, prefabs),
-    Prefab("common/character/pigguard", guard, assets, prefabs)
+return Prefab("pigman", normal, assets, prefabs),
+    Prefab("pigguard", guard, assets, prefabs)

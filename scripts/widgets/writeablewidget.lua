@@ -6,8 +6,6 @@ local Menu = require "widgets/menu"
 local UIAnim = require "widgets/uianim"
 local ImageButton = require "widgets/imagebutton"
 
-local VALID_CHARS = [[ abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,:;[]\@!#$%&()'*+-/=?^_{|}~"<>]]
---local VALID_CHARS = " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,[]@!()'*+-/?{}\""
 local STRING_MAX_LENGTH = 100 -- http://tools.ietf.org/html/rfc5321#section-4.5.3.1
 
 local function onaccept(inst, doer, widget)
@@ -113,7 +111,6 @@ local WriteableWidget = Class(Screen, function(self, owner, writeable, config)
     self.edit_text:SetHAlign(ANCHOR_LEFT)
     --self.edit_text:SetFocusedImage(self.edit_text_bg, "images/textboxes.xml", "textbox_long_over.tex", "textbox_long.tex")
     self.edit_text:SetTextLengthLimit(STRING_MAX_LENGTH)
-    self.edit_text:SetCharacterFilter(VALID_CHARS)
     self.edit_text:EnableWordWrap(true)
     self.edit_text:EnableScrollEditWindow(false)
 

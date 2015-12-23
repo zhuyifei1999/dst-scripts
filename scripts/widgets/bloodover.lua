@@ -22,7 +22,23 @@ local BloodOver =  Class(Widget, function(self, owner)
     self.time_since_pulse = 0 
     self.pulse_period = 1
 
-    self.inst:DoTaskInTime(0, function() self:UpdateState() end)
+    local function _Flash() self:Flash() end
+    local function _UpdateState() self:UpdateState() end
+
+    self.inst:ListenForEvent("badaura", _Flash, owner)
+    self.inst:ListenForEvent("attacked", function(owner, data)
+        if not data.redirected then
+            self:Flash()
+        end
+    end, owner)
+    self.inst:ListenForEvent("damaged", _Flash, owner) -- same as attacked, but for non-combat situations like making a telltale heart
+    self.inst:ListenForEvent("startstarving", _UpdateState, owner)
+    self.inst:ListenForEvent("stopstarving", _UpdateState, owner)
+    self.inst:ListenForEvent("startfreezing", _UpdateState, owner)
+    self.inst:ListenForEvent("stopfreezing", _UpdateState, owner)
+    self.inst:ListenForEvent("startoverheating", _UpdateState, owner)
+    self.inst:ListenForEvent("stopoverheating", _UpdateState, owner)
+    self.inst:DoTaskInTime(0, _UpdateState)
 end)
 
 function BloodOver:UpdateState()

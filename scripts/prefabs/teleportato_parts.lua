@@ -3,6 +3,10 @@ local assets =
     Asset("ANIM", "anim/teleportato_parts.zip"),
     Asset("ANIM", "anim/teleportato_parts_build.zip"),
     Asset("ANIM", "anim/teleportato_adventure_parts_build.zip"),
+	Asset("INV_IMAGE", "teleportato_box_adv" ),
+	Asset("INV_IMAGE", "teleportato_crank_adv" ),
+	Asset("INV_IMAGE", "teleportato_potato_adv" ),
+	Asset("INV_IMAGE", "teleportato_ring_adv" ),
 }
 
 local function makefn(name, frame)
@@ -42,7 +46,7 @@ local function makefn(name, frame)
 end
 
 local function TeleportatoPart(name, frame)
-    return Prefab("common/inventory/"..name, makefn(name, frame), assets)
+    return Prefab(name, makefn(name, frame), assets)
 end
 
 return TeleportatoPart("teleportato_ring", "ring"),

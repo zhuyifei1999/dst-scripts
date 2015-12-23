@@ -8,6 +8,7 @@ local prefabs =
 {
     "guano",
     "batwing",
+    "teamleader",
 }
 
 local brain = require "brains/batbrain"
@@ -171,4 +172,4 @@ local function fn()
     return inst
 end
 
-return Prefab("cave/monsters/bat", fn, assets, prefabs)
+return Prefab("bat", fn, assets, prefabs)

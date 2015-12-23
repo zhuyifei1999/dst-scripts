@@ -9,7 +9,6 @@ local Widget = require "widgets/widget"
 local TextEdit = require "widgets/textedit"
 local TEMPLATES = require "widgets/templates"
 
-local VALID_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 local STRING_MAX_LENGTH = 254 -- http://tools.ietf.org/html/rfc5321#section-4.5.3.1
 
 local InputDialogString = ""
@@ -78,7 +77,6 @@ local InputDialogScreen = Class(Screen, function(self, title, buttons, modal, st
 	self.edit_text:SetHAlign(ANCHOR_LEFT)
 	self.edit_text:SetFocusedImage( self.edit_text_bg, "images/textboxes.xml", "textbox2_grey.tex", "textbox2_gold.tex", "textbox2_gold_greyfill.tex" )
 	self.edit_text:SetTextLengthLimit( STRING_MAX_LENGTH )
-	self.edit_text:SetCharacterFilter( VALID_CHARS )
     self.edit_text:SetForceEdit(true)
 	
     local spacing = 200

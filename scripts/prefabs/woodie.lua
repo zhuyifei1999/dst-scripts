@@ -14,7 +14,7 @@ local starting_inv =
 
 local assets =
 {
-    Asset("ANIM", "anim/woodie.zip"),
+    Asset("SCRIPT", "scripts/prefabs/player_common.lua"),
     Asset("SOUND", "sound/woodie.fsb"),
 
     Asset("ANIM", "anim/werebeaver_build.zip"),
@@ -29,7 +29,6 @@ local assets =
     Asset("IMAGE", "images/woodie.tex"),
     Asset("IMAGE", "images/colour_cubes/beaver_vision_cc.tex"),
 
-    Asset("ANIM", "anim/ghost_woodie_build.zip"),
     Asset("ANIM", "anim/ghost_werebeaver_build.zip"),
 }
 
@@ -46,6 +45,7 @@ local BEAVERVISION_COLOURCUBES =
 local BEAVER_DIET =
 {
     FOODTYPE.WOOD,
+    FOODTYPE.ROUGHAGE,
 }
 
 local BEAVER_LMB_ACTIONS =
@@ -400,7 +400,7 @@ end
 local function onbecamehuman(inst)
     if inst.prefab ~= nil and inst.sg.currentstate.name ~= "reviver_rebirth" then
         inst.AnimState:SetBank("wilson")
-        inst.AnimState:SetBuild(inst.skin_name or inst.prefab)
+        inst.components.skinner:SetSkinMode("normal_skin")
     end
 
     inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED
@@ -409,6 +409,7 @@ local function onbecamehuman(inst)
     inst.components.health:SetAbsorptionAmount(0)
     inst.components.sanity.custom_rate_fn = nil
     inst.components.eater:SetDiet({ FOODGROUP.WOODIE }, { FOODGROUP.WOODIE })
+    inst.components.eater:SetAbsorptionModifiers(1,1,1)
     inst.components.pinnable.canbepinned = true
     inst.components.hunger:Resume()
     inst.components.temperature.inherentinsulation = 0
@@ -441,8 +442,9 @@ end
 
 local function onbecamebeaver(inst)
     if inst.sg.currentstate.name ~= "reviver_rebirth" then
+        inst.components.skinner:ClearAllClothing(inst.AnimState)
         inst.AnimState:SetBank("werebeaver")
-        inst.AnimState:SetBuild("werebeaver_build")
+        inst.components.skinner:SetSkinMode("werebeaver_skin")
     end
 
     inst.hurtsoundoverride = "dontstarve/characters/woodie/hurt_beaver"
@@ -453,6 +455,7 @@ local function onbecamebeaver(inst)
     inst.components.health:SetAbsorptionAmount(TUNING.BEAVER_ABSORPTION)
     inst.components.sanity.custom_rate_fn = beaversanityfn
     inst.components.eater:SetDiet(BEAVER_DIET, BEAVER_DIET)
+    inst.components.eater:SetAbsorptionModifiers(0,0,0)
     inst.components.pinnable.canbepinned = false
     inst.components.hunger:Pause()
     inst.components.temperature.inherentinsulation = TUNING.INSULATION_LARGE
@@ -562,12 +565,6 @@ local function onsave(inst, data)
     data.isbeaver = inst.isbeavermode:value() or nil
 end
 
-local function onsetskin(inst)
-    if inst.isbeavermode:value() and not inst:HasTag("playerghost") then
-        inst.AnimState:SetBuild("werebeaver_build")
-    end
-end
-
 --------------------------------------------------------------------------
 
 local function common_postinit(inst)
@@ -621,7 +618,6 @@ local function master_postinit(inst)
     inst.OnSave = onsave
     inst.OnLoad = onload
     inst.OnPreLoad = onpreload
-    inst.OnSetSkin = onsetskin
 end
 
 return MakePlayerCharacter("woodie", prefabs, assets, common_postinit, master_postinit, starting_inv)

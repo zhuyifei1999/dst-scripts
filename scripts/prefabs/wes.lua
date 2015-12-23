@@ -2,10 +2,9 @@ local MakePlayerCharacter = require("prefabs/player_common")
 
 local assets =
 {
-    Asset("ANIM", "anim/wes.zip"),
+    Asset("SCRIPT", "scripts/prefabs/player_common.lua"),
+    Asset("ANIM", "anim/player_mount_wes.zip"),
     Asset("ANIM", "anim/player_mime.zip"),
-
-    Asset("ANIM", "anim/ghost_wes_build.zip"),
 }
 
 local prefabs =

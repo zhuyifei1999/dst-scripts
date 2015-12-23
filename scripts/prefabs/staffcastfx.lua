@@ -19,7 +19,7 @@ local function UintToRGBA(c)
     return r, g, c - g * 256, 1
 end
 
-local function PlayCastAnim(proxy)
+local function PlayCastAnim(proxy, anim)
     local inst = CreateEntity()
 
     inst:AddTag("FX")
@@ -34,7 +34,7 @@ local function PlayCastAnim(proxy)
 
     inst.AnimState:SetBank("staff_fx")
     inst.AnimState:SetBuild("staff")
-    inst.AnimState:PlayAnimation("staff")
+    inst.AnimState:PlayAnimation(anim)
     inst.AnimState:SetMultColour(UintToRGBA(proxy._colour:value()))
 
     inst:ListenForEvent("animover", inst.Remove)
@@ -62,7 +62,7 @@ local function OnSetUpDirty(inst)
 
     --Delay one frame so that all setup params are synced
     --or in case we are about to be removed
-    inst:DoTaskInTime(0, PlayCastAnim)
+    inst:DoTaskInTime(0, PlayCastAnim, inst.anim)
     inst._complete = true
 end
 
@@ -76,33 +76,38 @@ local function Disable(inst)
     end
 end
 
-local function fn()
-    local inst = CreateEntity()
+local function MakeStaffFX(anim)
+    return function()
+        local inst = CreateEntity()
 
-    inst.entity:AddTransform()
-    inst.entity:AddNetwork()
+        inst.entity:AddTransform()
+        inst.entity:AddNetwork()
 
-    inst._colour = net_uint(inst.GUID, "_colour", "setupdirty")
-    inst._complete = false
+        inst._colour = net_uint(inst.GUID, "_colour", "setupdirty")
+        inst._complete = false
 
-    inst:ListenForEvent("setupdirty", OnSetUpDirty)
+        inst:ListenForEvent("setupdirty", OnSetUpDirty)
 
-    if not TheWorld.ismastersim then
+        inst.anim = anim
+
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        inst.Transform:SetFourFaced()
+
+        inst.SetUp = SetUp
+
+        inst:AddTag("FX")
+        inst.persists = false
+
+        --Disable instead of remove, because spawned fx also listens to the
+        --proxy state in order to remove itself (since fx can be cancelled)
+        inst:DoTaskInTime(MAX_LAG, Disable)
+
         return inst
     end
-
-    inst.Transform:SetFourFaced()
-
-    inst.SetUp = SetUp
-
-    inst:AddTag("FX")
-    inst.persists = false
-
-    --Disable instead of remove, because spawned fx also listens to the
-    --proxy state in order to remove itself (since fx can be cancelled)
-    inst:DoTaskInTime(MAX_LAG, Disable)
-
-    return inst
 end
 
-return Prefab("common/fx/staffcastfx", fn, assets)
+return  Prefab("staffcastfx", MakeStaffFX("staff"), assets),
+        Prefab("staffcastfx_mount", MakeStaffFX("staff_mount"), assets)

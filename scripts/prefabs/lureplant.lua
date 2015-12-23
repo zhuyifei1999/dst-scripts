@@ -3,6 +3,7 @@ local assets =
     Asset("ANIM", "anim/eyeplant_trap.zip"),
     Asset("ANIM", "anim/meat_rack_food.zip"),
     Asset("SOUND", "sound/plant.fsb"),
+	Asset("MINIMAP_IMAGE", "eyeplant"),
 }
 
 local prefabs =
@@ -315,7 +316,7 @@ local function fn()
 
     inst:AddComponent("minionspawner")
     inst.components.minionspawner.onminionattacked = HideBait
-    inst.components.minionspawner.validtiletypes = {4,5,6,7,8,13,14,15,17,30}
+    inst.components.minionspawner.validtiletypes = {4,5,6,7,8,13,14,15,17,30,24,25}
 
     inst:AddComponent("digester")
     inst.components.digester.itemstodigestfn = CanDigest
@@ -363,4 +364,4 @@ local function fn()
     return inst
 end
 
-return Prefab("cave/lureplant", fn, assets, prefabs)
+return Prefab("lureplant", fn, assets, prefabs)

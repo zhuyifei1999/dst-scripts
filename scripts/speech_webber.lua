@@ -1,6 +1,10 @@
 return {
 	ACTIONFAIL =
 	{
+        BUILD =
+        {
+            MOUNTED = "All our arms can't quite reach from up here.",
+        },
 		SHAVE =
 		{
 			AWAKEBEEFALO = "It's hairy like us but I don't think it likes shaving.",
@@ -12,6 +16,10 @@ return {
 			GENERIC = "All full!",
 			NOTALLOWED = "That's breaking the rules.",
 		},
+        MOUNT =
+        {
+            INUSE = "We didn't climb on to saddle in time!",
+        },
 	},
 	ACTIONFAIL_GENERIC = "That's off-limits.",
 	ANNOUNCE_ADVENTUREFAIL = "Play time is over.",
@@ -357,6 +365,11 @@ return {
 			GENERIC = "Big big beefalo!",
 			NAKED = "Shaved you good!",
 			SLEEPING = "Slumber deep, beefalo.",
+            --Domesticated states:
+            DOMESTICATED = "This one likes us!",
+            ORNERY = "We're kind of scared of this one.",
+            RIDER = "This one looks fast.",
+            PUDGY = "We like to cuddle this one!",
 		},
 		BEEFALOHAT = "We'll blend in perfectly.",
 		BEEFALOWOOL = "Thick fur.",
@@ -995,6 +1008,8 @@ return {
         ROOK = "Who made these things!?",
 		ROPE = "We could tie stuff up with this.",
 		ROTTENEGG = "Ew!",
+        SADDLE_BASIC = "We ride!",
+        SADDLE_WAR = "We'll have lots of fun riding on this.",
 		SANITYROCK =
 		{
 			ACTIVE = "It's in our way.",
@@ -1204,12 +1219,19 @@ return {
 			GENERIC = "Maybe they'll invite us in?",
 		},
 		WALRUS_TUSK = "Maybe we can use it for arts and crafts.",
+		WARDROBE = 
+		{
+			GENERIC = "We like playing hide-and-seek in wardrobes.",
+            BURNING = "Fire fire fire!",
+			BURNT = "We can't hide in there any more.",
+		},
 		WARG = "I don't think that puppy is very happy.",
 		WASPHIVE = "Sounds like anger!",
 		WATERMELON = "Looks tasty!",
 		WATERMELON_COOKED = "We can cook anything!",
 		WATERMELONHAT = "This is the best idea we have ever had.",
 		WETGOOP = "Experimenting is fun!",
+        WHIP = "Oooh, it makes so much noise!",
 		WINTERHAT = "Mum always said I should take a cap with me.",
 		WINTEROMETER = 
 		{

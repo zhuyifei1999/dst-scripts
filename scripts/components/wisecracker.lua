@@ -121,6 +121,10 @@ local Wisecracker = Class(function(self, inst)
     inst:ListenForEvent("lightningdamageavoided", function(inst, data)
         inst.components.talker:Say(GetString(inst, "ANNOUNCE_LIGHTNING_DAMAGE_AVOIDED"))
     end)
+
+    inst:ListenForEvent("mountwounded", function(inst, data)
+        inst.components.talker:Say(GetString(inst, "ANNOUNCE_MOUNT_LOWHEALTH"))
+    end)
 end)
 
 function Wisecracker:OnUpdate(dt)

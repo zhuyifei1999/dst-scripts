@@ -21,8 +21,10 @@ local TARGET_FOLLOW_DIST = 5
 local MAX_FOLLOW_DIST = 5
 
 local function GetFaceTargetFn(inst)
-    local target = FindClosestPlayerToInst(inst, START_FACE_DIST, true)
-    return target ~= nil and not target:HasTag("notarget") and target or nil
+    if not(inst.components.domesticatable and inst.components.domesticatable:IsDomesticated()) then
+        local target = FindClosestPlayerToInst(inst, START_FACE_DIST, true)
+        return target ~= nil and not target:HasTag("notarget") and target or nil
+    end
 end
 
 local function KeepFaceTargetFn(inst, target)

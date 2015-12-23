@@ -36,7 +36,11 @@ local COMPONENT_ACTIONS =
         end,
 
         container = function(inst, doer, actions)
-            if not inst:HasTag("burnt") and inst.replica.container:CanBeOpened() and doer.replica.inventory ~= nil then
+            if not inst:HasTag("burnt") and
+                inst.replica.container:CanBeOpened() and
+                doer.replica.inventory ~= nil and
+                not (doer.replica.rider ~= nil and
+                    doer.replica.rider:IsRiding()) then
                 table.insert(actions, ACTIONS.RUMMAGE)
             end
         end,
@@ -131,6 +135,21 @@ local COMPONENT_ACTIONS =
             end
         end,
 
+        rideable = function(inst, doer, actions, right)
+            if right and inst:HasTag("rideable") then
+                local rider = doer.replica.rider
+                if rider ~= nil and not rider:IsRiding() then
+                    table.insert(actions, ACTIONS.MOUNT)
+                end
+            end
+        end,
+
+        rider = function(inst, doer, actions)
+            if inst == doer and inst.replica.rider:IsRiding() then
+                table.insert(actions, ACTIONS.DISMOUNT)
+            end
+        end,
+
         shelf = function(inst, doer, actions)
             if inst:HasTag("takeshelfitem") then
                 table.insert(actions, ACTIONS.TAKEITEM)
@@ -143,8 +162,9 @@ local COMPONENT_ACTIONS =
         end,
         --]]
 
+
         sleepingbag = function(inst, doer, actions)
-            if doer:HasTag("player") and not doer:HasTag("insomniac") and not inst:HasTag("hassleeper") then
+        	if doer:HasTag("player") and not doer:HasTag("insomniac") and not inst:HasTag("hassleeper") then
                 table.insert(actions, ACTIONS.SLEEPIN)
             end
         end,
@@ -184,6 +204,12 @@ local COMPONENT_ACTIONS =
         worldmigrator = function(inst, doer, actions)
             if inst:HasTag("migrator") then
                 table.insert(actions, ACTIONS.MIGRATE)
+            end
+        end,
+
+        wardrobe = function(inst, doer, actions)
+            if inst:HasTag("wardrobe") and not inst:HasTag("fire") then
+                table.insert(actions, ACTIONS.CHANGEIN)
             end
         end,
 
@@ -239,7 +265,7 @@ local COMPONENT_ACTIONS =
         end,
 
         edible = function(inst, doer, target, actions, right)
-            if right then
+            if right and not (target.replica.rider ~= nil and target.replica.rider:IsRiding()) then
                 for k, v in pairs(FOODGROUP) do
                     if target:HasTag(v.name.."_eater") then
                         for i, v2 in ipairs(v.types) do
@@ -332,13 +358,16 @@ local COMPONENT_ACTIONS =
                     table.insert(actions, ACTIONS.GIVETOPLAYER)
                 end
             elseif target:HasTag("player") then
-                table.insert(actions,
-                    not (doer.components.playercontroller ~= nil and
-                        doer.components.playercontroller:IsControlPressed(CONTROL_FORCE_STACK)) and
-                    inst.replica.stackable ~= nil and
-                    inst.replica.stackable:IsStack() and
-                    ACTIONS.GIVEALLTOPLAYER or
-                    ACTIONS.GIVETOPLAYER)
+                if not (target.replica.rider ~= nil and
+                        target.replica.rider:IsRiding()) then
+                    table.insert(actions,
+                        not (doer.components.playercontroller ~= nil and
+                            doer.components.playercontroller:IsControlPressed(CONTROL_FORCE_STACK)) and
+                        inst.replica.stackable ~= nil and
+                        inst.replica.stackable:IsStack() and
+                        ACTIONS.GIVEALLTOPLAYER or
+                        ACTIONS.GIVETOPLAYER)
+                end
             elseif target:HasTag("alltrader") then
                 table.insert(actions, ACTIONS.GIVE)
             end
@@ -393,6 +422,12 @@ local COMPONENT_ACTIONS =
             end
         end,
 
+        saddler = function(inst, doer, target, actions)
+            if target:HasTag("saddleable") then
+                table.insert(actions, ACTIONS.SADDLE)
+            end
+        end,
+
         sewing = function(inst, doer, target, actions)
             if target:HasTag("needssewing") then
                 table.insert(actions, ACTIONS.SEW)
@@ -400,13 +435,14 @@ local COMPONENT_ACTIONS =
         end,
 
         shaver = function(inst, doer, target, actions)
-            if target:HasTag("bearded") then
+            if target:HasTag("bearded") and
+                not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding()) then
                 table.insert(actions, ACTIONS.SHAVE)
             end
         end,
 
         sleepingbag = function(inst, doer, target, actions)
-            if doer == target and doer:HasTag("player") and not doer:HasTag("insomniac") and not inst:HasTag("hassleeper") then
+           if doer == target and doer:HasTag("player") and not doer:HasTag("insomniac") and not inst:HasTag("hassleeper") then
                 table.insert(actions, ACTIONS.SLEEPIN)
             end
         end,
@@ -470,7 +506,8 @@ local COMPONENT_ACTIONS =
                 table.insert(actions, ACTIONS.STORE)
             elseif not right and
                 doer.replica.combat ~= nil and
-                doer.replica.combat:CanTarget(target) then
+                doer.replica.combat:CanTarget(target) and
+                (inst:HasTag("projectile") or not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding())) then
                 if target.replica.combat == nil then
                     -- lighting or extinguishing fires
                     table.insert(actions, ACTIONS.ATTACK)
@@ -604,38 +641,28 @@ local COMPONENT_ACTIONS =
         end,
 
         weapon = function(inst, doer, target, actions, right)
-            if not right 
+            if not right
                 and doer.replica.combat ~= nil
-                and inst:HasTag("extinguisher")
-                and (target:HasTag("smolder") or target:HasTag("fire")) then
-                table.insert(actions, ACTIONS.ATTACK)
-            elseif not right 
-                and doer.replica.combat ~= nil
-                and inst:HasTag("rangedlighter")
-                and target:HasTag("canlight")
-                and not target:HasTag("fire")
-                and not target:HasTag("burnt") then
-                table.insert(actions, ACTIONS.ATTACK)
-            elseif not right 
-                and doer.replica.combat ~= nil
-                and target.replica.combat ~= nil
-                and not target:HasTag("wall")
-                and doer.replica.combat:CanTarget(target)
-                and target.replica.combat:CanBeAttacked(doer)
-                and not doer.replica.combat:IsAlly(target)
-                and target:HasTag("mole")
-                and inst:HasTag("hammer") then
-                table.insert(actions, ACTIONS.ATTACK)
-            elseif not right
-                and not target:HasTag("wall")
-                and doer.replica.combat ~= nil
-                and target.replica.combat ~= nil
-                and doer.replica.combat:CanTarget(target)
-                and target.replica.combat:CanBeAttacked(doer)
-                and not doer.replica.combat:IsAlly(target)
-                and not (doer:HasTag("player") and target:HasTag("player"))
-                and not (inst:HasTag("tranquilizer") and not target:HasTag("sleeper")) then
-                table.insert(actions, ACTIONS.ATTACK)
+                and (inst:HasTag("projectile") or not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding())) then
+                if inst:HasTag("extinguisher")
+                    and (target:HasTag("smolder") or target:HasTag("fire")) then
+                    table.insert(actions, ACTIONS.ATTACK)
+                elseif inst:HasTag("rangedlighter")
+                    and target:HasTag("canlight")
+                    and not (target:HasTag("fire") or target:HasTag("burnt")) then
+                    table.insert(actions, ACTIONS.ATTACK)
+                elseif not target:HasTag("wall")
+                    and target.replica.combat ~= nil
+                    and doer.replica.combat:CanTarget(target)
+                    and target.replica.combat:CanBeAttacked(doer)
+                    and not doer.replica.combat:IsAlly(target) then
+                    if target:HasTag("mole") and inst:HasTag("hammer") then
+                        table.insert(actions, ACTIONS.ATTACK)
+                    elseif not (doer:HasTag("player") and target:HasTag("player"))
+                        and not (inst:HasTag("tranquilizer") and not target:HasTag("sleeper")) then
+                        table.insert(actions, ACTIONS.ATTACK)
+                    end
+                end
             end
         end,
     },
@@ -768,7 +795,13 @@ local COMPONENT_ACTIONS =
         end,
 
         shaver = function(inst, doer, actions)
-            if doer:HasTag("bearded") then
+            if doer:HasTag("bearded") and
+                not (doer.replica.inventory:GetActiveItem() == inst and
+                    doer.replica.rider ~= nil and
+                    doer.replica.rider:IsRiding()) then
+                --Don't show mouse active item Shave action when mounted
+                --because it's confusing and looks like you're trying to
+                --shave your beefalo mount.
                 table.insert(actions, ACTIONS.SHAVE)
             end
         end,

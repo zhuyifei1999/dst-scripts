@@ -1,6 +1,10 @@
 return {
 	ACTIONFAIL =
 	{
+        BUILD =
+        {
+            MOUNTED = "I can't place that from way up here.",
+        },
 		SHAVE =
 		{
 			AWAKEBEEFALO = "I'm not going to try that while he's awake.",
@@ -49,13 +53,29 @@ return {
             GENERIC = "I can't do that.",
             INUSE = "There's only room for one scribbler.",
         },
+        CHANGEIN =
+        {
+            GENERIC = "I can't do that.",
+            BURNING = "It's too dangerous right now!",
+            INUSE = "It can only handle one style change at a time.",
+        },
         ATTUNE =
         {
             NOHEALTH = "I don't feel well enough.",
         },
+        MOUNT =
+        {
+            TARGETINCOMBAT = "There's too much anger for me to try!",
+            INUSE = "Someone beat me to the saddle!",
+        },
+        SADDLE =
+        {
+            TARGETINCOMBAT = "It won't let me do that while it's angry.",
+        },
 	},
 	ACTIONFAIL_GENERIC = "I can't do that.",
 	ANNOUNCE_ADVENTUREFAIL = "That didn't go well. I'll have to try again.",
+    ANNOUNCE_MOUNT_LOWHEALTH = "This beast seems to be wounded.",
 	ANNOUNCE_BEES = "BEEEEEEEEEEEEES!!!!",
 	ANNOUNCE_BOOMERANG = "Ow! I should try to catch that!",
 	ANNOUNCE_CHARLIE = "What was that?!",
@@ -88,6 +108,8 @@ return {
 	ANNOUNCE_KNOCKEDOUT = "Ugh, my head!",
 	ANNOUNCE_LOWRESEARCH = "I didn't learn very much from that.",
 	ANNOUNCE_MOSQUITOS = "Aaah! Bug off!",
+    ANNOUNCE_NOWARDROBEONFIRE = "It's too dangerous right now!",
+    ANNOUNCE_NODANGERGIFT = "It's too dangerous right now!",
 	ANNOUNCE_NODANGERSLEEP = "It's too dangerous right now!",
 	ANNOUNCE_NODAYSLEEP = "It's too bright out.",
 	ANNOUNCE_NODAYSLEEP_CAVE = "I'm not tired.",
@@ -517,6 +539,11 @@ return {
 			GENERIC = "It's a beefalo!",
 			NAKED = "Aww, he's so sad.",
 			SLEEPING = "These guys are really heavy sleepers.",
+            --Domesticated states:
+            DOMESTICATED = "This one is slightly less smelly than the others.",
+            ORNERY = "It looks deeply angry.",
+            RIDER = "This fellow appears quite rideable.",
+            PUDGY = "Hmmm, there maybe too too much food inside it.",
 		},
 		BEEFALOHAT = "What a nice hat.",
 		BEEFALOWOOL = "It smells like beefalo tears.",
@@ -1169,6 +1196,8 @@ return {
         ROOK = "Storm the castle!",
 		ROPE = "Some short lengths of rope.",
 		ROTTENEGG = "Ew! It stinks!",
+        SADDLE_BASIC = "Should let me mount some smelly animal.",
+        SADDLE_WAR = "The only problem is the saddle sores.",
 		SANITYROCK =
 		{
 			ACTIVE = "That's a CRAZY looking rock!",
@@ -1379,12 +1408,19 @@ return {
 			GENERIC = "It looks warm and cozy inside.",
 		},
 		WALRUS_TUSK = "I'm sure I'll find a use for it eventually.",
+		WARDROBE = 
+		{
+			GENERIC = "Maybe I can be even more handsome!",
+            BURNING = "That's burning fast!",
+			BURNT = "So long, style.",
+		},
 		WARG = "You might be something to reckon with, big dog.",
 		WASPHIVE = "I think those bees are mad.",
 		WATERMELON = "Sticky sweet.",
 		WATERMELON_COOKED = "Juicy and warm.",
 		WATERMELONHAT = "Let the juice run down your face.",
 		WETGOOP = "I cooked it myself!",
+        WHIP = "Nothing like loud noises to help keep the peace.",
 		WINTERHAT = "It'll be good for when winter comes.",
 		WINTEROMETER = 
 		{

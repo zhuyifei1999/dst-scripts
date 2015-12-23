@@ -1,16 +1,30 @@
 local TIMEOUT = 2
 
 local function DoFoleySounds(inst)
-    if inst.replica.inventory ~= nil then
-        for k, v in pairs(inst.replica.inventory:GetEquips()) do
+    local inventory = inst.replica.inventory
+    if inventory ~= nil then
+        for k, v in pairs(inventory:GetEquips()) do
             if v.foleysound ~= nil then
                 inst.SoundEmitter:PlaySound(v.foleysound, nil, nil, true)
             end
         end
     end
-
     if inst.foleysound ~= nil then
         inst.SoundEmitter:PlaySound(inst.foleysound, nil, nil, true)
+    end
+end
+
+local function DoMountedFoleySounds(inst)
+    local rider = inst.replica.rider
+    local saddle = rider ~= nil and rider:GetSaddle() or nil
+    if saddle ~= nil and saddle.mounted_foleysound ~= nil then
+        inst.SoundEmitter:PlaySound(saddle.mounted_foleysound, nil, nil, true)
+    end
+end
+
+local function DoMountSound(inst, mount, sound)
+    if mount ~= nil and mount.sounds ~= nil then
+        inst.SoundEmitter:PlaySound(mount.sounds[sound])
     end
 end
 
@@ -153,9 +167,12 @@ local actionhandlers =
     ActionHandler(ACTIONS.TOSS, "throw"),
     ActionHandler(ACTIONS.UNPIN, "doshortaction"),
     ActionHandler(ACTIONS.CATCH, "catch_pre"),
+    ActionHandler(ACTIONS.CHANGEIN, "doshortaction"),
     ActionHandler(ACTIONS.WRITE, "doshortaction"),
     ActionHandler(ACTIONS.ATTUNE, "dolongaction"),
     ActionHandler(ACTIONS.MIGRATE, "migrate"),
+    ActionHandler(ACTIONS.MOUNT, "doshortaction"),
+    ActionHandler(ACTIONS.SADDLE, "doshortaction"),
 }
 
 local events =
@@ -188,7 +205,7 @@ local states =
     State
     {
         name = "idle",
-        tags = { "idle" },
+        tags = { "idle", "canrotate" },
 
         onenter = function(inst, pushanim)
             inst.entity:SetIsPredictingMovement(false)
@@ -206,9 +223,10 @@ local states =
             end
 
             local anims = {}
-            local anim = "idle_loop"
 
-            if inst:HasTag("beaver") then
+            if inst.replica.rider ~= nil and inst.replica.rider:IsRiding() then
+                table.insert(anims, "idle_loop")
+            elseif inst:HasTag("beaver") then
                 if inst:HasTag("groggy") then
                     table.insert(anims, "idle_groggy_pre")
                     table.insert(anims, "idle_groggy")
@@ -265,11 +283,37 @@ local states =
             inst.components.locomotor:RunForward()
             inst.AnimState:PlayAnimation(inst:HasTag("groggy") and "idle_walk_pre" or "run_pre")
             inst.sg.mem.footsteps = 0
+            inst.sg.statemem.riding = inst.replica.rider ~= nil and inst.replica.rider:IsRiding()
         end,
 
         onupdate = function(inst)
             inst.components.locomotor:RunForward()
         end,
+
+        timeline =
+        {
+            --mounted
+            TimeEvent(0, function(inst)
+                if inst.sg.statemem.riding then
+                    DoMountedFoleySounds(inst)
+                end
+            end),
+
+            --unmounted
+            TimeEvent(4 * FRAMES, function(inst)
+                if not inst.sg.statemem.riding then
+                    PlayFootstep(inst, nil, true)
+                    DoFoleySounds(inst)
+                end
+            end),
+
+            --mounted
+            TimeEvent(5 * FRAMES, function(inst)
+                if inst.sg.statemem.riding then
+                    PlayFootstep(inst, nil, true)
+                end
+            end),
+        },
 
         events =
         {
@@ -277,14 +321,6 @@ local states =
                 if inst.AnimState:AnimDone() then
                     inst.sg:GoToState("run")
                 end
-            end),
-        },
-        
-        timeline =
-        {
-            TimeEvent(4 * FRAMES, function(inst)
-                PlayFootstep(inst, nil, true)
-                DoFoleySounds(inst)
             end),
         },
     },
@@ -301,6 +337,7 @@ local states =
                 inst.AnimState:PlayAnimation(anim, true)
             end
             inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
+            inst.sg.statemem.riding = inst.replica.rider ~= nil and inst.replica.rider:IsRiding()
         end,
 
         onupdate = function(inst)
@@ -309,24 +346,40 @@ local states =
 
         timeline =
         {
+            --unmounted
             TimeEvent(7 * FRAMES, function(inst)
-                if inst.sg.mem.footsteps > 3 then
-                    PlayFootstep(inst, .6, true)
-                else
-                    inst.sg.mem.footsteps = inst.sg.mem.footsteps + 1
-                    PlayFootstep(inst, 1, true)
+                if not inst.sg.statemem.riding then
+                    if inst.sg.mem.footsteps > 3 then
+                        PlayFootstep(inst, .6, true)
+                    else
+                        inst.sg.mem.footsteps = inst.sg.mem.footsteps + 1
+                        PlayFootstep(inst, 1, true)
+                    end
+                    DoFoleySounds(inst)
                 end
-                DoFoleySounds(inst)
+            end),
+            TimeEvent(15 * FRAMES, function(inst)
+                if not inst.sg.statemem.riding then
+                    if inst.sg.mem.footsteps > 3 then
+                        PlayFootstep(inst, .6, true)
+                    else
+                        inst.sg.mem.footsteps = inst.sg.mem.footsteps + 1
+                        PlayFootstep(inst, 1, true)
+                    end
+                    DoFoleySounds(inst)
+                end
             end),
 
-            TimeEvent(15 * FRAMES, function(inst)
-                if inst.sg.mem.footsteps > 3 then
-                    PlayFootstep(inst, .6, true)
-                else
-                    inst.sg.mem.footsteps = inst.sg.mem.footsteps + 1
-                    PlayFootstep(inst, 1, true)
+            --mounted
+            TimeEvent(5 * FRAMES, function(inst)
+                if inst.sg.statemem.riding then
+                    if inst.sg.mem.footsteps > 3 then
+                        PlayFootstep(inst, .6, true)
+                    else
+                        inst.sg.mem.footsteps = inst.sg.mem.footsteps + 1
+                        PlayFootstep(inst, 1, true)
+                    end
                 end
-                DoFoleySounds(inst)
             end),
         },
 
@@ -1292,7 +1345,23 @@ local states =
             end
             inst.components.locomotor:Stop()
             local equip = inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-            if equip ~= nil and
+            local rider = inst.replica.rider
+            if rider ~= nil and rider:IsRiding() then
+                inst.AnimState:PlayAnimation("atk_pre")
+                inst.AnimState:PushAnimation("atk", false)
+                DoMountSound(inst, rider:GetMount(), "angry")
+                if cooldown > 0 then
+                    cooldown = math.max(cooldown, 16 * FRAMES)
+                end
+            elseif equip ~= nil and equip:HasTag("whip") then
+                inst.AnimState:PlayAnimation("whip_pre")
+                inst.AnimState:PushAnimation("whip", false)
+                inst.sg.statemem.iswhip = true
+                inst.SoundEmitter:PlaySound("dontstarve/common/whip_pre", nil, nil, true)
+                if cooldown > 0 then
+                    cooldown = math.max(cooldown, 17 * FRAMES)
+                end
+            elseif equip ~= nil and
                 equip.replica.inventoryitem ~= nil and
                 equip.replica.inventoryitem:IsWeapon() then
                 inst.AnimState:PlayAnimation("atk_pre")
@@ -1358,7 +1427,14 @@ local states =
                 end
             end),
             TimeEvent(8 * FRAMES, function(inst)
-                if not inst.sg.statemem.isbeaver then
+                if not (inst.sg.statemem.isbeaver or
+                        inst.sg.statemem.iswhip) then
+                    inst:ClearBufferedAction()
+                    inst.sg:RemoveStateTag("abouttoattack")
+                end
+            end),
+            TimeEvent(10 * FRAMES, function(inst)
+                if inst.sg.statemem.iswhip then
                     inst:ClearBufferedAction()
                     inst.sg:RemoveStateTag("abouttoattack")
                 end

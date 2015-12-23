@@ -28,7 +28,7 @@ end
 local function AddMember(inst, member)
     if inst.components.mood ~= nil then
         member:PushEvent(inst.components.mood:IsInMood() and "entermood" or "leavemood")
-    end
+        end
 end
 
 --local function OnFull(inst)
@@ -63,4 +63,4 @@ local function fn()
     return inst
 end
 
-return Prefab("forest/animals/penguinherd", fn, nil, prefabs)
+return Prefab("penguinherd", fn, nil, prefabs)

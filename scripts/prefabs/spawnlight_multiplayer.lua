@@ -107,4 +107,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/spawnlight_multiplayer", fn)
+return Prefab("spawnlight_multiplayer", fn)

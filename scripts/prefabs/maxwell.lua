@@ -36,4 +36,4 @@ local function fn(Sim)
     return inst
 end
 
-return Prefab( "common/characters/maxwell", fn, assets) 
+return Prefab( "maxwell", fn, assets) 

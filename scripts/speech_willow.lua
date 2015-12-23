@@ -1,4 +1,15 @@
 return {
+	ACTIONFAIL =
+	{
+        BUILD =
+        {
+            MOUNTED = "I can't place that from atop this hairy beast.",
+        },
+        MOUNT =
+        {
+            INUSE = "They beat me to the hairy beast. Maybe that's for the best.",
+        },
+	},
 	ANNOUNCE_ADVENTUREFAIL = "You win THIS time, Maxwell.",
 	ANNOUNCE_BOOMERANG = "Stupid boomerang!",
 	ANNOUNCE_CHARLIE = "I'm not afraid of you!",
@@ -575,6 +586,11 @@ return {
 			GENERIC = "What a disgusting, hairy beast!",
 			NAKED = "Ha! He's all naked now!",
 			SLEEPING = "They look even dumber when they're sleeping.",
+            --Domesticated states:
+            DOMESTICATED = "It's lost the fire from it's heart.",
+            ORNERY = "I can see fire in it's eyes.",
+            RIDER = "Let's go!",
+            PUDGY = "You need to burn some calories.",
 		},
 		BEEFALOHAT = "I've taken his hair and put it on my own!",
 		BEEFALOWOOL = "Ha! I stole his hair!",
@@ -1033,6 +1049,8 @@ return {
         ROOK = "It's a castle!",
         ROPE = "What can I tie up with this?",
 		ROTTENEGG = "Ew! Why? Oh Why?!",
+        SADDLE_BASIC = "It's so uncomfortable.",
+        SADDLE_WAR = "I'm going to raze some villages!",
 		SANITYROCK =
 		{
 			ACTIVE = "I wonder what these markings mean.",
@@ -1193,9 +1211,16 @@ return {
 			GENERIC = "Why does everyone have a nicer house than me?",
 		},
 		WALRUS_TUSK = "Nom nom nom.",
+		WARDROBE = 
+		{
+			GENERIC = "I want to set it on fire.",
+            BURNING = "Yes! Burn!",
+			BURNT = "Aww, the fire burned out.",
+		},
 		WARG = "You're a big mean jerk!",
 		WASPHIVE = "I had better keep my distance.",
 		WETGOOP = "How did it go wrong?! I put it in fire and everything.",
+        WHIP = "This means I'm the boss now.",
 		WINTERHAT = "It's not warm enough for my liking.",
 		WORMHOLE =
 		{

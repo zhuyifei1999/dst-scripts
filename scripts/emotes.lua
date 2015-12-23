@@ -1,17 +1,18 @@
 local EMOTES =
 {
-    ["/wave"] =             { anim = { "emoteXL_waving1", "emoteXL_waving2" }, randomanim = true },
+    ["/wave"] =             { anim = { "emoteXL_waving1", "emoteXL_waving2" }, randomanim = true, mounted = true },
     ["/waves"] =            "/wave",
+    ["/hi"] =               "/wave",
 
-    ["/bye"] =              { anim = { "emoteXL_waving4", "emoteXL_waving3" }, randomanim = true },
+    ["/bye"] =              { anim = { "emoteXL_waving4", "emoteXL_waving3" }, randomanim = true, mounted = true },
     ["/goaway"] =           "/bye",
     ["/goodbye"] =          "/bye",
 
-    ["/cheer"] =            { anim = "emoteXL_happycheer" },
+    ["/cheer"] =            { anim = "emoteXL_happycheer", mounted = true },
     ["/cheers"] =           "/cheer",
     ["/happy"] =            "/cheer",
 
-    ["/angry"] =            { anim = "emoteXL_angry" },
+    ["/angry"] =            { anim = "emoteXL_angry", mounted = true },
     ["/anger"] =            "/angry",
     ["/grimace"] =          "/angry",
     ["/grimaces"] =         "/angry",
@@ -19,10 +20,10 @@ local EMOTES =
     ["/frustrated"] =       "/angry",
     ["/frustration"] =      "/angry",
 
-    ["/cry"] =              { anim = "emoteXL_sad", fx = "tears", fxoffset = Vector3(0, -.8, 0), fxdelay = 17 * FRAMES },
+    ["/cry"] =              { anim = "emoteXL_sad", fx = "tears", fxoffset = Vector3(0, -.8, 0), fxdelay = 17 * FRAMES, mounted = true },
     ["/sad"] =              "/cry",
 
-    ["/no"] =               { anim = "emoteXL_annoyed" },
+    ["/no"] =               { anim = "emoteXL_annoyed", mounted = true },
     ["/annoyed"] =          "/no",
     ["/annoy"] =            "/no",
     ["/shakehead"] =        "/no",
@@ -37,23 +38,27 @@ local EMOTES =
     ["/celebrate"] =        "/joy",
     ["/celebration"] =      "/joy",
 
-    ["/dance"] =            { anim = { "emoteXL_pre_dance0", "emoteXL_loop_dance0" }, loop = true, fx = false, beaver = true },
+    ["/dance"] =            { anim = { "emoteXL_pre_dance0", "emoteXL_loop_dance0" }, loop = true, fx = false, beaver = true, mounted = true },
 
-    ["/bonesaw"] =          { anim = "emoteXL_bonesaw" },
+    ["/bonesaw"] =          { anim = "emoteXL_bonesaw", mounted = true },
     ["/ready"] =            "/bonesaw",
     ["/goingnowhere"] =     "/bonesaw",
     ["/playtime"] =         "/bonesaw",
     ["/threeminutes"] =     "/bonesaw",
 
-    ["/facepalm"] =         { anim = "emoteXL_facepalm" },
+    ["/facepalm"] =         { anim = "emoteXL_facepalm", mounted = true },
     ["/doh"] =              "/facepalm",
     ["/slapintheface"] =    "/facepalm",
 
-    ["/kiss"] =             { anim = "emoteXL_kiss" },
+    ["/kiss"] =             { anim = "emoteXL_kiss", mounted = true },
     ["/blowkiss"] =         "/kiss",
     ["/smooch"] =           "/kiss",
     ["/mwa"] =              "/kiss",
     ["/mwah"] =             "/kiss",
+
+    ["/pose"] =             { anim = "emote_strikepose", zoom = true, soundoverride = "/pose", mounted = true },
+    ["/strut"] =            "/pose",
+    ["/strikepose"] =       "/pose",
 }
 
 for k, v in pairs(EMOTES) do

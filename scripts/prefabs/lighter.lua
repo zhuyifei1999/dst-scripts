@@ -133,7 +133,7 @@ local function fn()
 
     inst:AddComponent("weapon")
     inst.components.weapon:SetDamage(TUNING.LIGHTER_DAMAGE)
-    inst.components.weapon:SetAttackCallback(onattack)
+    inst.components.weapon:SetOnAttack(onattack)
 
     -----------------------------------
     inst:AddComponent("lighter")
@@ -197,4 +197,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/lighter", fn, assets, prefabs)
+return Prefab("lighter", fn, assets, prefabs)

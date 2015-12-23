@@ -16,35 +16,6 @@ local function onextinguish(inst)
     end
 end
 
-local function destroy(inst)
-    local time_to_wait = 1
-    local time_to_erode = 1
-    local tick_time = TheSim:GetTickTime()
-
-    inst.persists = false
-
-    if inst.DynamicShadow then
-        inst.DynamicShadow:Enable(false)
-    end
-
-    inst:StartThread( function()
-        local ticks = 0
-        while ticks * tick_time < time_to_wait do
-            ticks = ticks + 1
-            Yield()
-        end
-
-        ticks = 0
-        while ticks * tick_time < time_to_erode do
-            local erode_amount = ticks * tick_time / time_to_erode
-            inst.AnimState:SetErosionParams( erode_amount, 0.1, 1.0 )
-            ticks = ticks + 1
-            Yield()
-        end
-        inst:Remove()
-    end)
-end
-
 local function onbuilt(inst)
     inst.AnimState:PlayAnimation("place")
     inst.AnimState:PushAnimation("idle", false)
@@ -142,7 +113,8 @@ local function fn()
                 inst.components.fueled.accepting = false
                 inst:RemoveComponent("cooker")
                 inst:RemoveComponent("propagator")
-                destroy(inst)
+                inst.persists = false
+                inst:DoTaskInTime(1, ErodeAway)
             else
                 inst.AnimState:PlayAnimation("idle")
                 inst.components.burnable:SetFXLevel(section, inst.components.fueled:GetSectionPercent())
@@ -175,5 +147,5 @@ local function fn()
     return inst
 end
 
-return Prefab("common/objects/campfire", fn, assets, prefabs),
-    MakePlacer("common/campfire_placer", "campfire", "campfire", "preview")
+return Prefab("campfire", fn, assets, prefabs),
+    MakePlacer("campfire_placer", "campfire", "campfire", "preview")

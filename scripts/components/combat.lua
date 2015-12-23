@@ -55,9 +55,9 @@ nil,
     panic_thresh = onpanicthresh,
 })
 
-local function SetLastTarget(self, target)
-    self.lasttargetGUID = target and target:IsValid() and target.GUID or nil
-    self.inst.replica.combat:SetLastTarget(target and target:IsValid() and target or nil)
+function Combat:SetLastTarget(target)
+    self.lasttargetGUID = target ~= nil and target:IsValid() and target.GUID or nil
+    self.inst.replica.combat:SetLastTarget(target ~= nil and target:IsValid() and target or nil)
 end
 
 function Combat:SetAttackPeriod(period)
@@ -266,7 +266,7 @@ end
 
 function Combat:DropTarget(hasnexttarget)
 	if self.target then
-	    SetLastTarget(self, self.target)
+	    self:SetLastTarget(self.target)
 		self:StopTrackingTarget(self.target)
 		self.inst:StopUpdatingComponent(self)
 		local oldtarget = self.target
@@ -380,10 +380,11 @@ function Combat:GetAttacked(attacker, damage, weapon, stimuli)
 
     --print ("ATTACKED", self.inst, attacker, damage)
     local blocked = false
+    local damageredirecttarget = self.redirectdamagefn ~= nil and self.redirectdamagefn(self.inst, attacker, damage, weapon, stimuli) or nil
 
     self.lastattacker = attacker
 
-    if self.inst.components.health ~= nil and damage ~= nil then
+    if self.inst.components.health ~= nil and damage ~= nil and damageredirecttarget == nil then
         if self.inst.components.inventory ~= nil then
             damage = self.inst.components.inventory:ApplyDamage(damage, attacker, weapon)
         end
@@ -407,25 +408,34 @@ function Combat:GetAttacked(attacker, damage, weapon, stimuli)
         end
     end
 
-    if self.inst.SoundEmitter ~= nil then
-        local hitsound = self:GetImpactSound(self.inst, weapon)
+    local redirect_combat = damageredirecttarget ~= nil and damageredirecttarget.components.combat or nil
+    if redirect_combat ~= nil then
+        redirect_combat:GetAttacked(attacker, damage, weapon, stimuli)
+    end
+
+    if self.inst.SoundEmitter ~= nil and not self.inst:IsInLimbo() then
+        local hitsound = self:GetImpactSound(damageredirecttarget or self.inst, weapon)
         if hitsound ~= nil then
             self.inst.SoundEmitter:PlaySound(hitsound)
         end
-        if self.hurtsound ~= nil then
+        if damageredirecttarget ~= nil then
+            if redirect_combat ~= nil and redirect_combat.hurtsound ~= nil then
+                self.inst.SoundEmitter:PlaySound(redirect_combat.hurtsound)
+            end
+        elseif self.hurtsound ~= nil then
             self.inst.SoundEmitter:PlaySound(self.hurtsound)
         end
     end
 
     if not blocked then
-        self.inst:PushEvent("attacked", { attacker = attacker, damage = damage, weapon = weapon, stimuli = stimuli })
+        self.inst:PushEvent("attacked", { attacker = attacker, damage = damage, weapon = weapon, stimuli = stimuli, redirected=damageredirecttarget })
 
         if self.onhitfn ~= nil then
             self.onhitfn(self.inst, attacker, damage)
         end
 
         if attacker ~= nil then
-            attacker:PushEvent("onhitother", { target = self.inst, damage = damage, stimuli = stimuli })
+            attacker:PushEvent("onhitother", { target = self.inst, damage = damage, stimuli = stimuli, redirected=damageredirecttarget })
             if attacker.components.combat ~= nil and attacker.components.combat.onhitotherfn ~= nil then
                 attacker.components.combat.onhitotherfn(attacker, self.inst, damage, stimuli)
             end
@@ -585,7 +595,13 @@ end
 function Combat:GetWeapon()
     if self.inst.components.inventory ~= nil then
         local item = self.inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-        return item ~= nil and item.components.weapon ~= nil and item or nil
+        return item ~= nil
+            and item.components.weapon ~= nil
+            and (item:HasTag("projectile") or
+                not (self.inst.components.rider ~= nil and
+                    self.inst.components.rider:IsRiding()))
+            and item
+            or nil
     end
 end
 
@@ -609,11 +625,29 @@ function Combat:CalcDamage(target, weapon, multiplier)
             or weapondamage * multiplier + bonus
     end
 
+    local basedamage = self.defaultdamage
+
+    if self.inst.components.rider ~= nil and self.inst.components.rider:IsRiding() then
+        local mount = self.inst.components.rider:GetMount()
+        local saddle = self.inst.components.rider:GetSaddle()
+        basedamage =
+            (   mount ~= nil and
+                mount.components.combat ~= nil and
+                mount.components.combat.defaultdamage or
+                basedamage
+            ) +
+            (   saddle ~= nil and
+                saddle.components.saddler ~= nil and
+                saddle.components.saddler:GetBonusDamage() or
+                0
+            )
+    end
+
     return (target == nil or not target:HasTag("player"))
-        and self.defaultdamage * multiplier + bonus
+        and basedamage * multiplier + bonus
         or (self.inst:HasTag("player") and
-            self.defaultdamage * self.playerdamagepercent * self.pvp_damagemod * multiplier + bonus or
-            self.defaultdamage * self.playerdamagepercent * multiplier + bonus)
+            basedamage * self.playerdamagepercent * self.pvp_damagemod * multiplier + bonus or
+            basedamage * self.playerdamagepercent * multiplier + bonus)
 end
 
 function Combat:GetAttackRange()
@@ -717,9 +751,11 @@ function Combat:DoAttack(target_override, weapon, projectile, stimuli, instancem
     if weapon ~= nil then
         weapon.components.weapon:OnAttack(self.inst, targ, projectile)
     end
+
     if self.areahitrange ~= nil then
         self:DoAreaAttack(targ, self.areahitrange, weapon, nil, stimuli)
     end
+
     self.lastdoattacktime = GetTime()
 end
 
