@@ -34,4 +34,4 @@ local function fn()
     return inst
 end
 
-return Prefab("objects/dragon_scales", fn, assets)
+return Prefab("dragon_scales", fn, assets)

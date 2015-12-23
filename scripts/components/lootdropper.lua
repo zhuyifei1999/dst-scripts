@@ -176,7 +176,7 @@ function LootDropper:GenerateLoot()
     return loots
 end
 
-local function SplashOceanLoot(loot)
+local function SplashOceanLoot(loot, cb)
     if not (loot.components.inventoryitem ~= nil and loot.components.inventoryitem:IsHeld()) and
         not loot:IsOnValidGround() then
         SpawnPrefab("splash_ocean").Transform:SetPosition(loot.Transform:GetWorldPosition())
@@ -185,6 +185,46 @@ local function SplashOceanLoot(loot)
         else
             loot:Remove()
         end
+    elseif cb ~= nil then
+        cb(loot)
+    end
+end
+
+function LootDropper:FlingItem(loot, pt, bouncedcb)
+    if loot ~= nil then
+        if pt == nil then
+            pt = self.inst:GetPosition()
+        end
+
+        loot.Transform:SetPosition(pt:Get())
+
+        if loot.Physics ~= nil then
+            local angle = math.random() * 2 * PI
+            local speed = math.random() * 2
+            if loot:IsAsleep() then
+                local radius = .5 * speed + (self.inst ~= nil and self.inst.Physics ~= nil and (loot.Physics:GetRadius() or 1) + (self.inst.Physics:GetRadius() or 1) or 0)
+                loot.Transform:SetPosition(
+                    pt.x + math.cos(angle) * radius,
+                    0,
+                    pt.z + math.sin(angle) * radius
+                )
+
+                SplashOceanLoot(loot, bouncedcb)
+            else
+                loot.Physics:SetVel(speed * math.cos(angle), GetRandomWithVariance(8, 4), speed * math.sin(angle))
+
+                if self.inst ~= nil and self.inst.Physics ~= nil then
+                    local radius = (loot.Physics:GetRadius() or 1) + (self.inst.Physics:GetRadius() or 1)
+                    loot.Transform:SetPosition(
+                        pt.x + math.cos(angle) * radius,
+                        pt.y,
+                        pt.z + math.sin(angle) * radius
+                    )
+                end
+
+                loot:DoTaskInTime(1, SplashOceanLoot, bouncedcb)
+            end
+        end
     end
 end
 
@@ -192,12 +232,6 @@ function LootDropper:SpawnLootPrefab(lootprefab, pt)
     if lootprefab ~= nil then
         local loot = SpawnPrefab(lootprefab)
         if loot ~= nil then
-            if pt == nil then
-                pt = self.inst:GetPosition()
-            end
-
-            loot.Transform:SetPosition(pt:Get())
-
             if loot.components.inventoryitem ~= nil then
                 if self.inst.components.inventoryitem ~= nil then
                     loot.components.inventoryitem:InheritMoisture(self.inst.components.inventoryitem:GetMoisture(), self.inst.components.inventoryitem:IsWet())
@@ -206,33 +240,7 @@ function LootDropper:SpawnLootPrefab(lootprefab, pt)
                 end
             end
 
-            if loot.Physics ~= nil then
-                local angle = math.random() * 2 * PI
-                local speed = math.random() * 2
-                if loot:IsAsleep() then
-                    local radius = .5 * speed + (self.inst ~= nil and self.inst.Physics ~= nil and (loot.Physics:GetRadius() or 1) + (self.inst.Physics:GetRadius() or 1) or 0)
-                    loot.Transform:SetPosition(
-                        pt.x + math.cos(angle) * radius,
-                        0,
-                        pt.z + math.sin(angle) * radius
-                    )
-
-                    SplashOceanLoot(loot)
-                else
-                    loot.Physics:SetVel(speed * math.cos(angle), GetRandomWithVariance(8, 4), speed * math.sin(angle))
-
-                    if self.inst ~= nil and self.inst.Physics ~= nil then
-                        local radius = (loot.Physics:GetRadius() or 1) + (self.inst.Physics:GetRadius() or 1)
-                        loot.Transform:SetPosition(
-                            pt.x + math.cos(angle) * radius,
-                            pt.y,
-                            pt.z + math.sin(angle) * radius
-                        )
-                    end
-
-                    loot:DoTaskInTime(1, SplashOceanLoot)
-                end
-            end
+            self:FlingItem(loot, pt)
 
             return loot
         end

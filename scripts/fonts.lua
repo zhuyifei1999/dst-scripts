@@ -10,7 +10,6 @@ NEWFONT_OUTLINE = "spirequal_outline"
 NEWFONT_OUTLINE_SMALL = "spirequal_outline_small"
 NUMBERFONT = "stint-ucr"
 TALKINGFONT = "talkingfont"
-TALKINGFONT_WATHGRITHR = "talkingfont_wathgrithr"
 SMALLNUMBERFONT = "stint-small"
 BODYTEXTFONT = "stint-ucr"
 CODEFONT = "ptmono"
@@ -49,7 +48,6 @@ DEFAULT_FALLBACK_TABLE_OUTLINE = {
 
 FONTS = {
 	{ filename = "fonts/talkingfont"..font_posfix..".zip", alias = TALKINGFONT, fallback = DEFAULT_FALLBACK_TABLE_OUTLINE },
-	{ filename = "fonts/talkingfont_wathgrithr.zip", alias = TALKINGFONT_WATHGRITHR, fallback = DEFAULT_FALLBACK_TABLE_OUTLINE },
 	{ filename = "fonts/stint-ucr50"..font_posfix..".zip", alias = BODYTEXTFONT, fallback = DEFAULT_FALLBACK_TABLE_OUTLINE },
 	{ filename = "fonts/stint-ucr20"..font_posfix..".zip", alias = SMALLNUMBERFONT, fallback = DEFAULT_FALLBACK_TABLE_OUTLINE },
 	{ filename = "fonts/opensans50"..font_posfix..".zip", alias = DEFAULTFONT, fallback = DEFAULT_FALLBACK_TABLE_OUTLINE },							-- aka DIALOGFONT

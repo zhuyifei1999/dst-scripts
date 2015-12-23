@@ -10,10 +10,20 @@ local assets =
     -- Asset("IMAGE", "images/selectscreen_portraits.tex"), -- Not currently used, but likely to come back
     Asset("ATLAS", "bigportraits/locked.xml"),
     Asset("IMAGE", "bigportraits/locked.tex"),
+
     Asset("ATLAS", "bigportraits/random.xml"),
     Asset("IMAGE", "bigportraits/random.tex"),
+    Asset("ATLAS", "bigportraits/random_none.xml"),
+    Asset("IMAGE", "bigportraits/random_none.tex"),
+    
+    Asset("ATLAS", "images/names_random.xml"),
+    Asset("IMAGE", "images/names_random.tex"),
+
     -- Asset("ANIM", "anim/portrait_frame.zip"), -- Not currently used, but likely to come back
     Asset("ANIM", "anim/spiral_bg.zip"),
+
+        Asset("ANIM", "anim/frames_comp.zip"),
+    	Asset("ANIM", "anim/frame_skins.zip"),
 
     Asset("ATLAS", "images/lobbybannertop.xml"),
     Asset("IMAGE", "images/lobbybannertop.tex"),
@@ -25,10 +35,21 @@ local assets =
 -- Add all the characters by name
 local charlist = GetActiveCharacterList ~= nil and GetActiveCharacterList() or DST_CHARACTERLIST
 for i, char in ipairs(charlist) do
-    table.insert(assets, Asset("ATLAS", "bigportraits/"..char..".xml"))
-    table.insert(assets, Asset("IMAGE", "bigportraits/"..char..".tex"))
-    --table.insert(assets, Asset("IMAGE", "images/selectscreen_portraits/"..char..".tex"))
-    --table.insert(assets, Asset("IMAGE", "images/selectscreen_portraits/"..char.."_silho.tex"))
+	if PREFAB_SKINS[char] then 
+	    for _,character in pairs(PREFAB_SKINS[char]) do
+			table.insert(assets, Asset("ATLAS", "bigportraits/"..character..".xml"))
+			table.insert(assets, Asset("IMAGE", "bigportraits/"..character..".tex"))
+		end
+		
+		table.insert(assets, Asset("ATLAS", "bigportraits/"..char..".xml"))
+		table.insert(assets, Asset("IMAGE", "bigportraits/"..char..".tex"))
+
+	    table.insert(assets, Asset("ATLAS", "images/names_"..char..".xml"))
+	    table.insert(assets, Asset("IMAGE", "images/names_"..char..".tex"))
+
+	     --table.insert(assets, Asset("IMAGE", "images/selectscreen_portraits/"..char..".tex"))
+    	--table.insert(assets, Asset("IMAGE", "images/selectscreen_portraits/"..char.."_silho.tex"))
+	end
 end
 
 for k, v in pairs(groundtiles.assets) do
@@ -37,6 +58,8 @@ end
 
 local prefabs =
 {
+    "sounddebugicon",
+
     "minimap",
     "evergreen",
     "evergreen_normal",
@@ -82,7 +105,6 @@ local prefabs =
     "flint",
     "log",
     "spiderden",
-    "spawnpoint",
     "fireflies",
 
     "turf_road",
@@ -139,8 +161,26 @@ local prefabs =
 
     "cactus",
 
+    "spawnlight_multiplayer",
+    "spawnpoint_multiplayer",
+    --"spawn_fx_huge",
+    --"spawn_fx_large",
+    "spawn_fx_medium",
+    "spawn_fx_small",
+    "spawn_fx_tiny",
+
     "migration_portal",
     "shard_network",
+
+    "focalpoint",
+
+    -- Common classified prefabs
+    "attunable_classified",
+    "inventoryitem_classified",
+    "writeable_classified",
+    "container_classified",
+
+    "dummytarget",
 }
 
 --------------------------------------------------------------------------

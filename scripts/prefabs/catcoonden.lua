@@ -95,7 +95,7 @@ local function OnChildChilled(inst, child)
             delay = delay + TheWorld.state.winterlength
             if TheWorld.state.season ~= "autumn" then
                 delay = delay + TheWorld.state.autumnlength
-                if TheWorld.state.summer ~= "summer" then
+                if TheWorld.state.season ~= "summer" then
                     delay = delay + TheWorld.state.summerlength
                 end
             end
@@ -233,4 +233,4 @@ local function fn()
     return inst
 end
 
-return Prefab("forest/monsters/catcoonden", fn, assets, prefabs)
+return Prefab("catcoonden", fn, assets, prefabs)

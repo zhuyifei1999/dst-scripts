@@ -131,4 +131,4 @@ local function fn()
     return inst
 end
 
-return Prefab("marsh/monsters/tentacle", fn, assets, prefabs)
+return Prefab("tentacle", fn, assets, prefabs)

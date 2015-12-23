@@ -95,4 +95,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/fx/lightning", fn, assets)
+return Prefab("lightning", fn, assets)

@@ -4,6 +4,9 @@ USE_SETTINGS_FILE = PLATFORM ~= "PS4" and PLATFORM ~= "NACL"
 PlayerProfile = Class(function(self)
     self.persistdata = 
     {
+    	-- TODO: Some of this data should be synced across computers
+    	-- so will need to be stored on a server somewhere 
+    	-- (In particular, collection_name, characterskins, and most_recent_item_skins)
         unlocked_worldgen = {},
         render_quality = RENDER_QUALITY.DEFAULT,
         -- Controlls should be a seperate file
@@ -13,6 +16,25 @@ PlayerProfile = Class(function(self)
         device_caps_a = 0,
         device_caps_b = 20,
         customizationpresets = {},
+        collection_name = nil,
+        characterskins =
+        {
+        	wilson = { base = "wilson_none", body = "body_flannel_red_higgsbury", legs = "legs_jeans_blue_peacock", hand = "hand_longgloves_blue_cerulean"}, 
+        	willow = { base = "willow_none", },
+        	wendy = {base = "wendy_none", },
+        	wolfgang = {base = "wolfgang_none", },
+        	wickerbottom = { base = "wickerbottom_none", },
+        	wx78 = { base = "wx78_none", },
+        	wes = { base = "wes_none", },
+        	waxwell = { base = "waxwell_none", },
+        	woodie = { base = "woodie_none", },
+        	webber = { base = "webber_none", },
+        	wigfrid = { base = "wigfrid_none", },
+    	},
+    	most_recent_item_skins = 
+    	{
+    		backpack = "backpack_beefalo",
+    	}
     }
 
   	--we should migrate the non-gameplay stuff to a separate file, so that we can save them whenever we want
@@ -87,6 +109,179 @@ function PlayerProfile:SoftReset()
     -- and apply these values
     local str = json.encode(self.persistdata)
     self:Set(str, nil)
+end
+
+function PlayerProfile:GetSkins()
+	local owned_skins = {}
+
+	for prefab, skins in pairs(PREFAB_SKINS) do 
+		local skins = self:GetSkinsForPrefab(prefab)
+		owned_skins = JoinArrays(owned_skins, skins)
+	end
+
+	return owned_skins
+end
+
+function PlayerProfile:GetSkinsForPrefab(prefab)
+	local owned_skins = {}
+	table.insert(owned_skins, prefab.."_none") --everyone always has access to the nothing option
+	
+	local skins = PREFAB_SKINS[prefab]
+	if skins ~= nil then
+		for k,v in pairs(skins) do
+			if TheInventory:CheckOwnership(v) then
+				if v ~= "backpack_mushy" then
+					table.insert(owned_skins, v)
+				end
+			end
+		end
+	end
+	return owned_skins
+end
+
+function PlayerProfile:GetClothingOptionsForType(type)
+	local owned_clothing = {}
+	table.insert(owned_clothing, "") --everyone always has access to the nothing option
+	
+	for clothing_name,data in pairs(CLOTHING) do
+		if data.type == type and TheInventory:CheckOwnership(clothing_name) then
+			table.insert(owned_clothing, clothing_name)
+		end
+	end
+	return owned_clothing
+end
+
+function PlayerProfile:GetBaseForCharacter(character)
+	if not self.persistdata.characterskins then
+		self.persistdata.characterskins = {}
+	end
+
+	if not self.persistdata.characterskins[character] then 
+		self.persistdata.characterskins[character] = {}
+	end
+
+	return self.persistdata.characterskins[character].last_base or nil
+end
+
+function PlayerProfile:GetSkinsForCharacter(character, base)
+	if not self.persistdata.characterskins then
+		self.persistdata.characterskins = {}
+	end
+
+	if not self.persistdata.characterskins[character] then 
+		self.persistdata.characterskins[character] = {}
+	end
+
+	return self.persistdata.characterskins[character][base] or {}
+end
+
+function PlayerProfile:SetSkinsForCharacter(character, base, skinList)
+	if not self.persistdata.characterskins then
+		self.persistdata.characterskins = {}
+	end
+
+	if not self.persistdata.characterskins[character] then 
+		self.persistdata.characterskins[character] = {}
+	end
+
+	self.persistdata.characterskins[character][base] = skinList
+	
+	self:Save()
+end
+
+function PlayerProfile:SetBaseForCharacter(character, base)
+	if not self.persistdata.characterskins then
+		self.persistdata.characterskins = {}
+	end
+
+	if not self.persistdata.characterskins[character] then 
+		self.persistdata.characterskins[character] = {}
+	end
+	
+	self.persistdata.characterskins[character].last_base = base
+end
+
+function PlayerProfile:SetCollectionTimestamp(time)
+	self.persistdata.collection_timestamp = time
+
+	self:Save()
+end
+
+function PlayerProfile:GetCollectionTimestamp()
+	return self.persistdata.collection_timestamp or -10000
+end
+
+function PlayerProfile:SetDressupTimestamp(time)
+	self.persistdata.lobby_timestamp = time
+
+	self:Save()
+end
+
+function PlayerProfile:GetDressupTimestamp()
+	return self.persistdata.lobby_timestamp or -10000
+end
+
+function PlayerProfile:SetRecipeTimestamp(recipe, time)
+	self.persistdata.recipe_timestamps = self.persistdata.recipetimestamps or {}
+
+	self.persistdata.recipe_timestamps[recipe] = time
+	self:Save()
+end
+
+function PlayerProfile:GetRecipeTimestamp(recipe)
+
+	if self.persistdata.recipe_timestamps then 
+		return self.persistdata.recipe_timestamps[recipe] or -10000
+	else 
+		return -10000
+	end
+end
+
+function PlayerProfile:IsSkinEquipped(name, type)
+
+	for character, data in pairs(self.persistdata.characterskins) do 
+		if data[type] == name then 
+			return true
+		end
+	end
+
+	return false
+end
+
+-- may return nil
+function PlayerProfile:GetLastUsedSkinForItem(item)
+	if not self.persistdata.most_recent_item_skins then 
+		self.persistdata.most_recent_item_skins = {}
+	--else 
+		--print("Most recent item skins is ", self.persistdata.most_recent_item_skins)
+	end
+
+	local skin = self.persistdata.most_recent_item_skins[item]
+	return skin
+end
+
+function PlayerProfile:SetLastUsedSkinForItem(item, skin)
+	if not self.persistdata.most_recent_item_skins then 
+		self.persistdata.most_recent_item_skins = {}
+	end
+
+	self.persistdata.most_recent_item_skins[item] = skin
+
+	self:Save()
+end
+
+function PlayerProfile:SetCollectionName(name)
+	self.persistdata.collection_name = name
+
+	self:Save()
+end
+
+function PlayerProfile:GetCollectionName()
+	if self.persistdata.collection_name then 
+		return self.persistdata.collection_name 
+	end
+
+	return nil
 end
 
 function PlayerProfile:UnlockEverything()
@@ -462,14 +657,12 @@ end
 
 function PlayerProfile:Set(str, callback)
 	if not str or string.len(str) == 0 then
-		print ("could not load ".. self:GetSaveName())
 
 		if callback then
 			self:SoftReset()	-- this is purposely inside the if
 			callback(false)
 		end
 	else
-		print ("loaded ".. self:GetSaveName())
 		self.dirty = false
 
 		self.persistdata = TrackedAssert("TheSim:GetPersistentString profile",  json.decode, str)
@@ -660,6 +853,19 @@ function PlayerProfile:SetWarnModsEnabled(do_warning)
 		self:SetValue("warn_mods_enabled", do_warning)
 		self.dirty = true
 	end
+end
+
+function PlayerProfile:IsEntitlementReceived(entitlement)
+	if self:GetValue("entitlement_"..entitlement) ~= nil then
+		return self:GetValue("entitlement_"..entitlement)
+	else
+		return false
+	end
+end
+
+function PlayerProfile:SetEntitlementReceived(entitlement)
+	self:SetValue("entitlement_"..entitlement, true)
+	self.dirty = true
 end
 
 return PlayerProfile

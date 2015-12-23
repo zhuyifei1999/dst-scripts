@@ -58,38 +58,40 @@ function Weapon:CanRangedAttack()
     return self.projectile ~= nil
 end
 
+--V2C: deprecated. why's this even here? it's same as :SetOnAttack(fn)
+--     keepin' it around in case modders used it
 function Weapon:SetAttackCallback(fn)
     self.onattack = fn
 end
 
 function Weapon:OnAttack(attacker, target, projectile)
-    if self.onattack then
+    if self.onattack ~= nil then
         self.onattack(self.inst, attacker, target)
     end
-    
-    if self.inst.components.finiteuses then
-	    self.inst.components.finiteuses:Use(self.attackwear or 1)
+
+    if self.inst.components.finiteuses ~= nil then
+        self.inst.components.finiteuses:Use(self.attackwear or 1)
     end
 end
 
 function Weapon:LaunchProjectile(attacker, target)
-	if self.projectile then
+    if self.projectile then
 
         if self.onprojectilelaunch then
             self.onprojectilelaunch(self.inst, attacker, target)
         end
 
-	    local proj = SpawnPrefab(self.projectile)
-	    if proj then
+        local proj = SpawnPrefab(self.projectile)
+        if proj then
             if proj.components.projectile then
-    	        proj.Transform:SetPosition(attacker.Transform:GetWorldPosition() )
-    	        proj.components.projectile:Throw(self.inst, target, attacker)
+                proj.Transform:SetPosition(attacker.Transform:GetWorldPosition() )
+                proj.components.projectile:Throw(self.inst, target, attacker)
             elseif proj.components.complexprojectile then
                 proj.Transform:SetPosition( attacker.Transform:GetWorldPosition() )
                 proj.components.complexprojectile:Launch(Vector3( target.Transform:GetWorldPosition() ), attacker, self.inst)
             end
-	    end
-	end
+        end
+    end
 end
 
 return Weapon

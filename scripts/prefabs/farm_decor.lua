@@ -30,7 +30,7 @@ local function makefn(bankname, buildname, animname)
 end
 
 local function item(name, bankname, buildname, animname)
-    return Prefab("forest/objects/farmdecor/"..name, makefn(bankname, buildname, animname), makeassetlist(bankname, buildname))
+    return Prefab(name, makefn(bankname, buildname, animname), makeassetlist(bankname, buildname))
 end
 
 return item("farmrock", "farm_decor", "farm_decor", "1"),

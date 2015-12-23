@@ -44,6 +44,9 @@ function Tune(overrides)
 		DUSK_SEGS_DEFAULT = dusk_segs, 
 		NIGHT_SEGS_DEFAULT = night_segs,
 		
+		TOAST_FALLBACK_TIME = 1440,
+		ITEM_DROP_TIME = seg_time, -- time to wait after start of night before activating
+
 		STACK_SIZE_LARGEITEM = 10,
 		STACK_SIZE_MEDITEM = 20,
 		STACK_SIZE_SMALLITEM = 40,
@@ -94,6 +97,7 @@ function Tune(overrides)
 	    PITCHFORK_USES = 25,
 	    PICKAXE_USES = 33,
 	    BUGNET_USES = 10,
+	    WHIP_USES = 75,
 	    SPEAR_USES = 150,
 	    CLAW_GLOVE_USES = 200,
 	    WATHGRITHR_SPEAR_USES = 200,
@@ -159,6 +163,7 @@ function Tune(overrides)
 	    SHOVEL_DAMAGE = wilson_attack*.5,
 	    PITCHFORK_DAMAGE = wilson_attack*.5,
 	    BUGNET_DAMAGE = wilson_attack*.125,
+	    WHIP_DAMAGE = wilson_attack*.8,
 	    FISHINGROD_DAMAGE = wilson_attack*.125,
 	    UMBRELLA_DAMAGE = wilson_attack*.5,
 	    CANE_DAMAGE = wilson_attack*.5,
@@ -169,10 +174,22 @@ function Tune(overrides)
 	    NIGHTSTICK_DAMAGE = wilson_attack*.85, -- Due to the damage being electric, it will get multiplied by 1.5 against any mob
 	    MINIFAN_DAMAGE = wilson_attack*.5,
 
+        SADDLE_BASIC_BONUS_DAMAGE = 0,
+        SADDLE_WAR_BONUS_DAMAGE = 15,
+
+        SADDLE_BASIC_USES = 5,
+        SADDLE_WAR_USES = 8,
+
 		CANE_SPEED_MULT = 1.25,
 		PIGGYBACK_SPEED_MULT = 0.9,
 
 	    TORCH_ATTACK_IGNITE_PERCENT = 1,
+
+        WHIP_RANGE = 2,
+        WHIP_SUPERCRACK_RANGE = 14,
+        WHIP_SUPERCRACK_EPIC_CHANCE = .05,
+        WHIP_SUPERCRACK_MONSTER_CHANCE = .2,
+        WHIP_SUPERCRACK_CREATURE_CHANCE = .25,
 
 	    SPRING_COMBAT_MOD = 1.33,
 
@@ -416,7 +433,12 @@ function Tune(overrides)
 	    MARBLETREE_MINE = 8,  
 	    
 	    BEEFALO_HEALTH = 500 * 2, -- harder for multiplayer
-	    BEEFALO_DAMAGE = 34,
+	    BEEFALO_DAMAGE = {
+            DEFAULT = 34,
+            RIDER = 25,
+            ORNERY = 40,
+            PUDGY = 20,
+        },
 	    BEEFALO_MATING_SEASON_LENGTH = 3,
 	    BEEFALO_MATING_SEASON_WAIT = 20,
 	    BEEFALO_MATING_SEASON_BABYDELAY = total_day_time*1.5,
@@ -424,6 +446,51 @@ function Tune(overrides)
 	    BEEFALO_TARGET_DIST = 5,
 	    BEEFALO_CHASE_DIST = 30,
 	    BEEFALO_FOLLOW_TIME = 30,
+        BEEFALO_HUNGER = 400,
+        BEEFALO_HUNGER_RATE = (calories_per_day*4)/total_day_time,
+        BEEFALO_WALK_SPEED = 1.0,
+        BEEFALO_RUN_SPEED = {
+            DEFAULT = 7,
+            RIDER = 7.5,
+            ORNERY = 6.5,
+            PUDGY = 5.5,
+        },
+        BEEFALO_SADDLEABLE_OBEDIENCE = 0.1,
+        BEEFALO_KEEP_SADDLE_OBEDIENCE = 0.4,
+        BEEFALO_MIN_BUCK_OBEDIENCE = 0.5,
+        BEEFALO_MIN_BUCK_TIME = 50,
+        BEEFALO_MAX_BUCK_TIME = 800,
+        BEEFALO_BUCK_TIME_VARIANCE = 3,
+        BEEFALO_MIN_DOMESTICATED_OBEDIENCE = {
+            DEFAULT = 0.8,
+            ORNERY = 0.45,
+            RIDER = 0.95,
+            PUDGY = 0.6,
+        },
+        BEEFALO_BUCK_TIME_MOOD_MULT = 0.2,
+        BEEFALO_BUCK_TIME_UNDOMESTICATED_MULT = 0.3,
+
+        BEEFALO_DOMESTICATION_STARVE_OBEDIENCE = -1/(total_day_time*1),
+        BEEFALO_DOMESTICATION_FEED_OBEDIENCE = 0.1,
+        BEEFALO_DOMESTICATION_OVERFEED_OBEDIENCE = -0.3,
+        BEEFALO_DOMESTICATION_ATTACKED_BY_PLAYER_OBEDIENCE = -1,
+
+        BEEFALO_DOMESTICATION_STARVE_DOMESTICATION = -1/(total_day_time*10),
+        BEEFALO_DOMESTICATION_WELLFED_DOMESTICATION = 1/(total_day_time*20),
+        BEEFALO_DOMESTICATION_OVERFEED_DOMESTICATION = -0.01,
+        BEEFALO_DOMESTICATION_RIDDEN_DOMESTICATION = 1/(total_day_time*15),
+        BEEFALO_DOMESTICATION_DOATTACK_DOMESTICATION = 0,
+        BEEFALO_DOMESTICATION_ATTACKED_DOMESTICATION = 0,
+        BEEFALO_DOMESTICATION_ATTACKED_OBEDIENCE = -0.01,
+        BEEFALO_DOMESTICATION_ATTACKED_BY_PLAYER_DOMESTICATION = -0.3,
+
+        BEEFALO_PUDGY_WELLFED = 1/(total_day_time*10),
+        BEEFALO_PUDGY_OVERFEED = 0.01,
+        BEEFALO_RIDER_RIDDEN = 1/(total_day_time*15),
+        BEEFALO_ORNERY_DOATTACK = 0.002,
+        BEEFALO_ORNERY_ATTACKED = 0.002,
+
+
 	    BEEFALOHERD_RANGE = 40,
 	    BEEFALOHERD_MAX_IN_RANGE = 16,
 	    

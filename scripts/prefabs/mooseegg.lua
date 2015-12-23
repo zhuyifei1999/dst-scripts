@@ -55,22 +55,6 @@ local function OnTimerDone(inst, data)
     end
 end
 
-local function destroy(inst)
-    local time_to_erode = 1
-    local tick_time = TheSim:GetTickTime()
-
-    inst:StartThread( function()
-        local ticks = 0
-        while ticks * tick_time < time_to_erode do
-            local erode_amount = ticks * tick_time / time_to_erode
-            inst.AnimState:SetErosionParams( erode_amount, 0.1, 1.0 )
-            ticks = ticks + 1
-            Yield()
-        end
-        inst:Remove()
-    end)
-end
-
 local function MakeWorkable(inst, bool)
     if bool then
         local function onhammered(inst, worker)
@@ -137,7 +121,7 @@ local function fn()
     inst.components.herd:SetGatherRange(40)
     inst.components.herd:SetUpdateRange(20)
     inst.components.herd.updatepos = false
-    inst.components.herd.onempty = destroy
+    inst.components.herd.onempty = ErodeAway
 
     inst:AddComponent("guardian")
     inst.components.guardian.prefab = "moose"
@@ -229,5 +213,5 @@ local function nesting_ground_fn()
     return inst
 end
 
-return Prefab( "common/objects/mooseegg", fn, assets, prefabs),
-    Prefab("common/objects/moose_nesting_ground", nesting_ground_fn, nesting_ground_assets)
+return Prefab( "mooseegg", fn, assets, prefabs),
+    Prefab("moose_nesting_ground", nesting_ground_fn, nesting_ground_assets)

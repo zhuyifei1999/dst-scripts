@@ -3,6 +3,7 @@ local BigPopupDialogScreen = require "screens/bigpopupdialog"
 local assets =
 {
 	Asset("ANIM", "anim/portal_adventure.zip"),
+	Asset("MINIMAP_IMAGE", "portal"),
 }
 
 local function GetVerb()
@@ -114,4 +115,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/adventure_portal", fn, assets)
+return Prefab("adventure_portal", fn, assets)

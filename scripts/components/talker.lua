@@ -78,6 +78,8 @@ local function sayfn(self, script, nobroadcast, colour)
                 line.message = self.mod_str_fn(line.message)
             end
 
+            line.message = GetSpecialCharacterPostProcess(self.inst.prefab, line.message)
+
             if self.widget ~= nil then
                 self.widget.text:SetString(line.message)
             end

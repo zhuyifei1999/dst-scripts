@@ -55,7 +55,6 @@ if JapaneseOnPS4() then
     font_size = 35 * 0.75;
 end
 
-local VALID_CHARS = [[ abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,:;[]\@!#$%&()'*+-/=?^_{|}~"]] --'
 local STRING_MAX_LENGTH = 254 -- http://tools.ietf.org/html/rfc5321#section-4.5.3.1
 
 local hover_text_params = { font = NEWFONT, size = 20, offset_x = -4, offset_y = 45, colour = {0,0,0,1} }
@@ -336,18 +335,35 @@ local function tchelper(first, rest)
   return first:upper()..rest:lower()
 end
 
-function ServerListingScreen:Join()
+function ServerListingScreen:Join(warnedOffline)
 	if self.selected_server ~= nil then
-        local filters = {}
-        for i,v in pairs(self.filters) do
-            if v.spinner then 
-                table.insert(filters, {name=v.name, data=v.spinner:GetSelectedData()})
-            elseif v.textbox then
-                table.insert(filters, {name="search", data=v.textbox:GetString()})
-            end
-        end
-        Profile:SaveFilters(filters)
-		JoinServer( self.selected_server )	
+		if not warnedOffline and self.selected_server.offline then 
+			local confirm_offline_popup = PopupDialogScreen(STRINGS.UI.SERVERLISTINGSCREEN.OFFLINEWARNINGTITLE, STRINGS.UI.SERVERLISTINGSCREEN.OFFLINEMODEBODYJOIN,
+	                            {
+	                                {text=STRINGS.UI.SERVERLISTINGSCREEN.OK, cb = function()
+	                                    -- If player is okay with offline mode, go ahead
+	                                    TheFrontEnd:PopScreen()
+	                                    self:Join(true)
+	                                end},
+	                                {text=STRINGS.UI.SERVERLISTINGSCREEN.CANCEL, cb = function()
+	                                    TheFrontEnd:PopScreen() 
+	                                end}
+	                            })
+	        self.last_focus = TheFrontEnd:GetFocusWidget()
+	        TheFrontEnd:PushScreen(confirm_offline_popup)
+	    else
+
+	        local filters = {}
+	        for i,v in pairs(self.filters) do
+	            if v.spinner then 
+	                table.insert(filters, {name=v.name, data=v.spinner:GetSelectedData()})
+	            elseif v.textbox then
+	                table.insert(filters, {name="search", data=v.textbox:GetString()})
+	            end
+	        end
+	        Profile:SaveFilters(filters)
+			JoinServer( self.selected_server )
+		end	
 	else
 		assert(false, "Invalid server selection")
 	end
@@ -769,7 +785,7 @@ function ServerListingScreen:OnFinishClickServerInList(index)
     if self.viewed_servers and self.viewed_servers[index] ~= nil and self.viewed_servers[index].actualindex == self.selected_index_actual then
         -- If we're clicking on the same server as the last click, check for double-click Join
         if self.last_server_click_time and GetTime() - self.last_server_click_time <= DOUBLE_CLICK_TIMEOUT then
-            self:Join()
+            self:Join(false)
             return
         end
     end
@@ -1715,7 +1731,6 @@ function ServerListingScreen:MakeFiltersPanel(filter_data)
     searchbox.textbox:SetHAlign(ANCHOR_LEFT)
     searchbox.textbox:SetFocusedImage( searchbox.outline, "images/textboxes.xml", "textbox2_small_grey.tex", "textbox2_small_gold.tex", "textbox2_small_gold_greyfill.tex" )
     searchbox.textbox:SetTextLengthLimit( STRING_MAX_LENGTH )
-    searchbox.textbox:SetCharacterFilter( VALID_CHARS )
     searchbox.gobutton = searchbox:AddChild(ImageButton("images/lobbyscreen.xml", "button_send.tex", "button_send_over.tex", "button_send_down.tex", "button_send_down.tex", "button_send_down.tex", {.15, .15}, {0,0}))
     searchbox.gobutton:SetPosition(-(total_width/2)+search_label_width+spacing+search_box_width+spacing+(search_button_width/2), 0)
     searchbox.gobutton:SetScale(.8)
@@ -1844,7 +1859,7 @@ function ServerListingScreen:MakeMenuButtons(left_col, right_col, nav_col)
             self:SetTab("online")
         end
     end, "nav")
-    self.join_button = MakeImgButton(self.server_detail_panel, -55, -RESOLUTION_Y*.5 + BACK_BUTTON_Y - 15, STRINGS.UI.SERVERLISTINGSCREEN.JOIN, function() self:Join() end, "large")
+    self.join_button = MakeImgButton(self.server_detail_panel, -55, -RESOLUTION_Y*.5 + BACK_BUTTON_Y - 15, STRINGS.UI.SERVERLISTINGSCREEN.JOIN, function() self:Join(false) end, "large")
     local tab_height = 212
     self.filters_button = MakeImgButton(self.server_detail_panel, -132, tab_height, STRINGS.UI.SERVERLISTINGSCREEN.FILTERS, function() self:ToggleShowFilters() end, "tab")
     self.details_button = MakeImgButton(self.server_detail_panel, -1, tab_height, STRINGS.UI.SERVERLISTINGSCREEN.SERVERDETAILS, function() self:ToggleShowFilters() end, "tab")
@@ -2190,7 +2205,7 @@ function ServerListingScreen:OnControl(control, down)
                 TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
             end
         elseif control == CONTROL_PAUSE and self.selected_server and TheInput:ControllerAttached() and not TheFrontEnd.tracking_mouse then
-            self:Join()
+            self:Join(false)
             TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
         elseif control == CONTROL_OPEN_CRAFTING or control == CONTROL_OPEN_INVENTORY then
             self:ToggleShowFilters()

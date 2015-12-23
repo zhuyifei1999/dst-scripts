@@ -187,4 +187,4 @@ local function fn(Sim)
     return inst
 end
 
-return Prefab("common/objects/tallbirdnest", fn, assets, prefabs)
+return Prefab("tallbirdnest", fn, assets, prefabs)

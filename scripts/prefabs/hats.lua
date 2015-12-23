@@ -11,7 +11,21 @@ local function MakeHat(name)
 
     local function onequip(inst, owner, fname_override)
         local build = fname_override or fname
-        owner.AnimState:OverrideSymbol("swap_hat", build, "swap_hat")
+        
+        local skin_build = inst:GetSkinBuild()
+		if skin_build ~= nil then
+            
+            local skin_name = inst:GetSkinName()
+            if skin_name ~= nil then
+                owner:PushEvent("equipskinneditem", skin_name)
+            else
+                owner:PushEvent("equipskinneditem", skin_build)
+            end
+			
+            owner.AnimState:OverrideItemSkinSymbol("swap_hat", skin_build, "swap_hat", inst.GUID, build)
+		else
+			owner.AnimState:OverrideSymbol("swap_hat", build, "swap_hat")
+		end
         owner.AnimState:Show("HAT")
         owner.AnimState:Show("HAT_HAIR")
         owner.AnimState:Hide("HAIR_NOHAT")
@@ -28,6 +42,16 @@ local function MakeHat(name)
     end
 
     local function onunequip(inst, owner)
+        local skin_build = inst:GetSkinBuild()
+        if skin_build ~= nil then
+            local skin_name = inst:GetSkinName()
+            if skin_name ~= nil then
+                owner:PushEvent("unequipskinneditem", skin_name)
+            else
+                owner:PushEvent("unequipskinneditem", skin_build)
+            end
+        end
+
         owner.AnimState:ClearOverrideSymbol("swap_hat")
         owner.AnimState:Hide("HAT")
         owner.AnimState:Hide("HAT_HAIR")
@@ -1131,7 +1155,7 @@ local function MakeHat(name)
         fn = eyebrella
     end
 
-    return Prefab("common/inventory/"..prefabname, fn or default, assets, prefabs)
+    return Prefab(prefabname, fn or default, assets, prefabs)
 end
 
 local function minerhatlightfn()
@@ -1181,4 +1205,4 @@ return  MakeHat("straw"),
         MakeHat("catcoon"),
         MakeHat("watermelon"),
         MakeHat("eyebrella"),
-        Prefab("common/inventory/minerhatlight", minerhatlightfn)
+        Prefab("minerhatlight", minerhatlightfn)

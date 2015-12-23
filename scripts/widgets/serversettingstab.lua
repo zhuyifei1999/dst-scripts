@@ -25,8 +25,6 @@ if JapaneseOnPS4() then
 end
 local textbox_font_ratio = .8
 
-local VALID_CHARS = [[ abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,:;[]\@!#$%&()'*+-/=?^_{|}~"]] --'
-local VALID_PASSWORD_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 local STRING_MAX_LENGTH = 254 -- http://tools.ietf.org/html/rfc5321#section-4.5.3.1
 local SERVER_NAME_MAX_LENGTH = 80
 
@@ -76,7 +74,6 @@ local ServerSettingsTab = Class(Widget, function(self, slotdata, servercreations
 
     self.server_name = TEMPLATES.LabelTextbox(STRINGS.UI.SERVERCREATIONSCREEN.SERVERNAME, TheNet:GetDefaultServerName(), wide_label_width, wide_input_width, label_height, space_between, NEWFONT, font_size, wide_field_nudge)
     self.server_name.textbox:SetTextLengthLimit( SERVER_NAME_MAX_LENGTH )
-    self.server_name.textbox:SetCharacterFilter( VALID_CHARS )
     self.server_name.textbox.OnTextInputted = function()
         self.servercreationscreen:UpdateTitle(self.servercreationscreen.saveslot, true)
         self.servercreationscreen:MakeDirty()
@@ -84,12 +81,10 @@ local ServerSettingsTab = Class(Widget, function(self, slotdata, servercreations
 
     self.server_desc = TEMPLATES.LabelTextbox(STRINGS.UI.SERVERCREATIONSCREEN.SERVERDESC, nil, wide_label_width, wide_input_width, label_height, space_between, NEWFONT, font_size, wide_field_nudge)
     self.server_desc.textbox:SetTextLengthLimit( STRING_MAX_LENGTH )
-    self.server_desc.textbox:SetCharacterFilter( VALID_CHARS )
     self.server_desc.textbox.OnTextInputted = function() self.servercreationscreen:MakeDirty() end
 
     self.server_pw = TEMPLATES.LabelTextbox(STRINGS.UI.SERVERCREATIONSCREEN.SERVERPASSWORD, nil, wide_label_width, wide_input_width, label_height, space_between, NEWFONT, font_size, wide_field_nudge)
     self.server_pw.textbox:SetTextLengthLimit( STRING_MAX_LENGTH )
-    self.server_pw.textbox:SetCharacterFilter( VALID_PASSWORD_CHARS )
     if not Profile:GetShowPasswordEnabled() then
         self.server_pw.textbox:SetPassword(true)
     end

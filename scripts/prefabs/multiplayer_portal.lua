@@ -1,6 +1,7 @@
 local assets =
 {
     Asset("ANIM", "anim/portal_dst.zip"),
+	Asset("MINIMAP_IMAGE", "portal_dst"),
 }
 
 local function GetVerb()
@@ -80,4 +81,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/multiplayer_portal", fn, assets)
+return Prefab("multiplayer_portal", fn, assets)

@@ -2,8 +2,7 @@ local MakePlayerCharacter = require "prefabs/player_common"
 
 local assets =
 {
-    Asset("ANIM", "anim/wathgrithr.zip"),
-    Asset("ANIM", "anim/ghost_wathgrithr_build.zip"),
+    Asset("SCRIPT", "scripts/prefabs/player_common.lua"),
     Asset("SOUND", "sound/wathgrithr.fsb"),
 }
 
@@ -108,11 +107,6 @@ end
 
 local function common_init(inst)
     inst:AddTag("valkyrie")
-
-    inst.components.talker.font = Profile:IsWathgrithrFontEnabled() and TALKINGFONT_WATHGRITHR or TALKINGFONT
-    inst:ListenForEvent("continuefrompause", function()
-        inst.components.talker.font = Profile:IsWathgrithrFontEnabled() and TALKINGFONT_WATHGRITHR or TALKINGFONT
-    end, TheWorld)
 end
 
 local function master_init(inst)

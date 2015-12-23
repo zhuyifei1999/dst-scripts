@@ -163,6 +163,24 @@ function Spinner:GetHelpText()
 	return table.concat(t, "  ")
 end
 
+-- This function allows display of hint text next to the arrow buttons 
+-- TODO: only tested with XBOX one controller. Test with other controller types to make sure there's room for the symbols.
+function Spinner:AddControllerHints()
+	local w = self.rightimage:GetSize() * self.arrow_scale
+
+	self.left_hint = self:AddChild( Text( BODYTEXTFONT, 26 ) )
+	self.left_hint:SetString(TheInput:GetLocalizedControl(TheInput:GetControllerID(), CONTROL_PREVVALUE))
+	self.left_hint:SetPosition( -self.width/2 + w/2 + 32, 0, 0 )
+
+	self.right_hint = self:AddChild( Text( BODYTEXTFONT, 26 ) )
+	self.right_hint:SetString(TheInput:GetLocalizedControl(TheInput:GetControllerID(), CONTROL_NEXTVALUE))
+	self.right_hint:SetPosition( self.width/2 - w/2 - 27, 0, 0 )
+	
+
+	self.hints_enabled = true
+end
+
+
 function Spinner:OnLoseFocus()
 	Spinner._base.OnLoseFocus(self)
 	self.changing = false
@@ -248,6 +266,11 @@ function Spinner:Disable()
 	self.text:SetColour(.5,.5,.5,1)
 	self.leftimage:Disable()
 	self.rightimage:Disable()
+
+	if self.hints_enabled then 
+		self.left_hint:Hide()
+		self.right_hint:Hide()
+	end
 end
 
 function Spinner:SetFont(font)
@@ -339,7 +362,11 @@ function Spinner:GetSelectedIndex()
 end
 
 function Spinner:GetSelectedText()
-	return self.options[ self.selectedIndex ].text
+	if self.options[self.selectedIndex] and self.options[self.selectedIndex].text then 
+		return self.options[ self.selectedIndex ].text, self.options[self.selectedIndex].colour
+	else
+		return ""
+	end
 end
 
 function Spinner:GetSelectedImage()
@@ -354,13 +381,18 @@ function Spinner:SetSelectedIndex( idx )
 	self.updating = true
 	self.selectedIndex = math.max(self:MinIndex(), math.min(self:MaxIndex(), idx))
 	
-	local selected_text = self:GetSelectedText()	
+	local selected_text, selected_colour = self:GetSelectedText()	
 	self:UpdateText( selected_text )
-	
+	if selected_colour then 
+		self:SetTextColour( unpack(selected_colour) )
+	else
+		self:SetTextColour(0, 0, 0, 1)
+	end
+
 	if self.options[ self.selectedIndex ] ~= nil then 
 		local selected_image = self:GetSelectedImage()
 		if selected_image ~= nil then
-			self.fgimage:SetTexture( selected_image )
+			self.fgimage:SetTexture( unpack(selected_image) )
 		end
 	end
 	
@@ -426,17 +458,34 @@ function Spinner:UpdateState()
 	if self.enabled then
 		self.leftimage:Enable()
 		self.rightimage:Enable()
+
+		if self.hints_enabled then 
+			self.left_hint:Show()
+			self.right_hint:Show()
+		end
+
 		if not self.enableWrap then
 			if self.selectedIndex == self:MinIndex() then
 				self.leftimage:Disable()
+				if self.hints_enabled then 
+					self.left_hint:Hide()
+				end
 			end
 			if self.selectedIndex == self:MaxIndex() then
 				self.rightimage:Disable()
+				if self.hints_enabled then 
+					self.right_hint:Hide()
+				end
 			end
 		end
 	else
 		self.leftimage:Disable()
 		self.rightimage:Disable()
+
+		if self.hints_enabled then 
+			self.left_hint:Hide()
+			self.right_hint:Hide()
+		end
 	end
 end
 
@@ -445,6 +494,9 @@ function Spinner:SetOptions( options )
 	self.options = options
 	if self.selectedIndex > #self.options then
 		self:SetSelectedIndex( #self.options )
+	else
+		-- update fgimage
+		self:SetSelectedIndex(self.selectedIndex)
 	end
 	self:UpdateState()
 end

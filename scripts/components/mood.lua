@@ -7,6 +7,9 @@ end
 
 local Mood = Class(function(self, inst)
     self.inst = inst
+
+    self.enabled = true
+
     self.moodtimeindays = {length = nil, wait = nil}
     self.isinmood = false
     self.daystomoodchange = nil
@@ -19,7 +22,12 @@ local Mood = Class(function(self, inst)
 end)
 
 function Mood:GetDebugString()
-    return string.format("inmood:%s, days till change:%s", tostring(self.isinmood), tostring(self.daystomoodchange) )
+    return string.format("inmood:%s, days till change:%s", self.enabled and tostring(self.isinmood) or "DISABLED", tostring(self.daystomoodchange) )
+end
+
+function Mood:Enable(enabled)
+    self.enabled = enabled
+    self:SetIsInMood(false, false)
 end
 
 function Mood:SetMoodTimeInDays(length, wait)
@@ -30,6 +38,10 @@ function Mood:SetMoodTimeInDays(length, wait)
 end
 
 local function OnSeasonChange(inst, season)
+    if not inst.components.mood.enabled then
+        return
+    end
+
 	local active = false
 	if inst.components.mood.moodseasons then 
 	    for i, s in pairs(inst.components.mood.moodseasons) do
@@ -48,29 +60,14 @@ end
 
 -- Use this to set the mood correctly (used for making sure the beefalo are mating when the start season is spring)
 function Mood:ValidateMood()
-	local active = false
-	if self.moodseasons then 
-	    for i, s in pairs(self.moodseasons) do
-	        if s == TheWorld.state.season then
-	            active = true
-	            break
-	        end
-	    end
-	end
-    if active then
-        self:SetIsInMood(true, true)
-    else
-        self:ResetMood()
-    end      
+    OnSeasonChange(self.inst, TheWorld.state.season)
 end
 
 function Mood:SetMoodSeason(activeseason)
-    if not self.moodtimeindays.wait or self.moodtimeindays.wait >= 0 then
-        table.insert(self.moodseasons, activeseason)
-        if not self.firstseasonadded then
-        	self.inst:WatchWorldState("season", OnSeasonChange)
-            self.firstseasonadded = true
-        end
+    table.insert(self.moodseasons, activeseason)
+    if not self.firstseasonadded then
+        self.inst:WatchWorldState("season", OnSeasonChange)
+        self.firstseasonadded = true
     end
 end
 
@@ -104,6 +101,10 @@ local function GetSeasonLength()
 end
 
 function Mood:SetIsInMood(inmood, entireseason)
+    if inmood and not self.enabled then
+        return
+    end
+
     if self.isinmood ~= inmood or entireseason then
     
         self.isinmood = inmood

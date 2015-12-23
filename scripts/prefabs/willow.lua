@@ -3,9 +3,8 @@ local easing = require("easing")
 
 local assets =
 {
-    Asset("ANIM", "anim/willow.zip"),
-    Asset("SOUND", "sound/willow.fsb"),
-    Asset("ANIM", "anim/ghost_willow_build.zip"),
+    Asset("SCRIPT", "scripts/prefabs/player_common.lua"),
+	Asset("SOUND", "sound/willow.fsb"),
 }
 
 local prefabs =

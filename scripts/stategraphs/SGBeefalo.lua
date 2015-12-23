@@ -17,8 +17,8 @@ local events=
     CommonHandlers.OnFreeze(),
 
     EventHandler("doattack", function(inst, data) if not inst.components.health:IsDead() then inst.sg:GoToState("attack", data.target) end end),
-    EventHandler("death", function(inst) inst.sg:GoToState("death") end),
-    EventHandler("attacked", function(inst) if not inst.components.health:IsDead() and not inst.sg:HasStateTag("attack") then inst.sg:GoToState("hit") end end),    
+    --EventHandler("death", function(inst) inst.sg:GoToState("death") end),
+    EventHandler("attacked", function(inst) if not inst.components.health:IsDead() and not inst.sg:HasStateTag("attack") then inst.sg:GoToState("hit") end end),
     EventHandler("heardhorn", function(inst, data)
         if not inst.components.health:IsDead()
            and not inst.sg:HasStateTag("attack")
@@ -26,9 +26,9 @@ local events=
             inst:FacePoint(Vector3(data.musician.Transform:GetWorldPosition()))
             inst.sg:GoToState("bellow")
         end
-    end),    
-    EventHandler("loseloyalty", function(inst) if not inst.components.health:IsDead() and not inst.sg:HasStateTag("attack") then inst.sg:GoToState("shake") end end),    
-    
+    end),
+    EventHandler("loseloyalty", function(inst) if not inst.components.health:IsDead() and not inst.sg:HasStateTag("attack") then inst.sg:GoToState("shake") end end),
+    EventHandler("eat", function(inst, data) inst.sg:GoToState("eat", data) end),
 }
 
 local states=
@@ -41,16 +41,32 @@ local states=
             inst.components.locomotor:StopMoving()
             if inst.hairGrowthPending then
                 inst.sg:GoToState("hair_growth")
+            elseif inst.growUpPending then
+                inst.sg:GoToState("grow_up")
+            elseif inst.domesticationPending then
+                inst.sg:GoToState("become_domesticated")
             else
-                inst.AnimState:PlayAnimation("idle_loop", true)
+                if pushanim then
+                    inst.AnimState:PushAnimation("idle_loop", true)
+                else
+                    inst.AnimState:PlayAnimation("idle_loop", true)
+                end
                 
-                inst.sg:SetTimeout(2 + 2*math.random())
+                inst.sg:SetTimeout(1 + 1*math.random())
             end
         end,
-        
+
+        timeline = {
+            TimeEvent(5*FRAMES, function(inst) inst.didalertnoise = nil end),
+        },
+
         ontimeout=function(inst)
             local herd = inst.components.herdmember and inst.components.herdmember:GetHerd()
-            if not inst:HasTag("baby") and herd and herd.components.mood and herd.components.mood:IsInMood() then
+            if inst.components.rideable and inst.components.rideable:IsSaddled() and inst.components.domesticatable and inst.components.domesticatable:GetObedience() < TUNING.BEEFALO_KEEP_SADDLE_OBEDIENCE then
+                inst.sg:GoToState("shake_off_saddle")
+            elseif not inst:HasTag("baby") 
+                and ((herd and herd.components.mood and herd.components.mood:IsInMood())
+                     or (inst.components.mood and inst.components.mood:IsInMood())) then
                 if math.random() < .5 then
                     inst.sg:GoToState("matingcall")
                 else
@@ -58,12 +74,16 @@ local states=
                 end
             else
                 local rand = math.random()
-                if rand < .3 then
-                    inst.sg:GoToState("graze")
-                elseif rand < .6 then
-                    inst.sg:GoToState("bellow")
-                else
+                if rand < .5 then
+                    if inst.components.hunger and inst.components.hunger:GetPercent() > 0 then
+                        inst.sg:GoToState("graze")
+                    else
+                        inst.sg:GoToState("graze_empty")
+                    end
+                elseif rand < .75 then
                     inst.sg:GoToState("shake")
+                else
+                    inst.sg:GoToState("bellow")
                 end
             end
         end,
@@ -71,7 +91,7 @@ local states=
     
     State{
         name = "shake",
-        tags = {"canrotate"},
+        tags = {"idle", "canrotate"},
         
         onenter = function(inst)
             inst.components.locomotor:StopMoving()
@@ -84,6 +104,61 @@ local states=
         },
     },
     
+    State{
+        name = "shake_off_saddle",
+        tags = {"busy"},
+
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("shakesaddle_off")
+            inst.SoundEmitter:PlaySound("dontstarve/beefalo/saddle/shake_off")
+        end,
+
+        timeline=
+        {
+            --TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.swish) end),
+            --TimeEvent(5*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.swish) end),
+            --TimeEvent(9*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.swish) end),
+            --TimeEvent(15*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.swish) end),
+            --TimeEvent(20*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.swish) end),
+            TimeEvent(24*FRAMES, function(inst) inst.components.rideable:SetSaddle(nil, nil) end),
+        },
+
+        events=
+        {
+            EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
+        },
+    },
+
+    State{
+        name = "regurgitate",
+        tags = {"busy"},
+
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("vomit")
+            --inst.SoundEmitter:PlaySound("dontstarve/beefalo/puke_start")
+        end,
+
+        timeline=
+        {
+            TimeEvent(14*FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/beefalo/puke_out")
+                local loot = SpawnPrefab("spoiled_food")
+                local x,y,z = inst.Transform:GetWorldPosition()
+                loot.Transform:SetPosition(x, 1.0, z)
+                loot.components.inventoryitem:AddMoisture(50)
+            end),
+        },
+
+        events=
+        {
+            EventHandler("animover", function(inst)
+                inst.sg:GoToState("idle")
+            end),
+        },
+    },
+
     State{
         name = "bellow",
         tags = {"canrotate"},
@@ -136,16 +211,64 @@ local states=
     
     State{
         name="graze",
-        tags = {"idle", "canrotate"},
+        tags = {"canrotate"},
         
-        onenter = function(inst)
+        onenter = function(inst, data)
             inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("graze_loop", true)
-            inst.sg:SetTimeout(5+math.random()*5)
+            inst.sg:SetTimeout(1+math.random()*5)
         end,
         
         ontimeout= function(inst)
             inst.sg:GoToState("idle")
+        end,
+
+    },
+
+    State{
+        name="graze_empty",
+        tags = {"canrotate"},
+        
+        onenter = function(inst, data)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("graze2_pre")
+            inst.AnimState:PushAnimation("graze2_loop")
+            inst.sg:SetTimeout(1+math.random()*5)
+        end,
+        
+        ontimeout= function(inst)
+            inst.AnimState:PlayAnimation("graze2_pst")
+            inst.sg:GoToState("idle", true)
+        end,
+
+    },
+
+    State{
+        name="eat",
+        tags = {"busy"},
+
+        onenter = function(inst, data)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("graze_loop", true)
+            inst.SoundEmitter:PlaySound("dontstarve/beefalo/eat_treat")
+            inst.sg:SetTimeout(2+math.random()*2)
+            inst.sg.statemem.full = data.full
+        end,
+
+        timeline =
+        {
+            TimeEvent(28*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/beefalo/chew") end),
+            TimeEvent(56*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/beefalo/chew") end),
+            TimeEvent(84*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/beefalo/chew") end),
+            TimeEvent(112*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/beefalo/chew") end),
+        },
+
+        ontimeout= function(inst)
+            if inst.sg.statemem.full then
+                inst.sg:GoToState("regurgitate")
+            else
+                inst.sg:GoToState("idle")
+            end
         end,
 
     },
@@ -156,9 +279,26 @@ local states=
         
         onenter = function(inst)
             inst.components.locomotor:StopMoving()
-            inst.SoundEmitter:PlaySound(inst.sounds.curious)
-            inst.AnimState:PlayAnimation("alert_pre")
-            inst.AnimState:PushAnimation("alert_idle", true)
+            if not inst.didalertnoise then
+                inst.SoundEmitter:PlaySound(inst.sounds.curious)
+                inst.didalertnoise = true
+            end
+            if not inst.AnimState:IsCurrentAnimation("alert_idle") then
+                inst.AnimState:PlayAnimation("alert_pre")
+                inst.AnimState:PushAnimation("alert_idle", true)
+            end
+
+            inst.sg:SetTimeout(2 + 2*math.random())
+        end,
+        
+        ontimeout=function(inst)
+            if inst.components.rideable and inst.components.rideable:IsSaddled() and inst.components.domesticatable and inst.components.domesticatable:GetObedience() < TUNING.BEEFALO_KEEP_SADDLE_OBEDIENCE then
+                inst.sg:GoToState("shake_off_saddle")
+            elseif inst.domesticationPending then
+                inst.sg:GoToState("become_domesticated")
+            else
+                inst.sg:GoToState("alert")
+            end
         end,
     },
     
@@ -197,11 +337,76 @@ local states=
             inst.Physics:Stop()
             RemovePhysicsColliders(inst)            
             inst.components.lootdropper:DropLoot(Vector3(inst.Transform:GetWorldPosition()))            
+
+            -- we handle our own erode, rather than the health component ~gjans
+            inst:DoTaskInTime(2, ErodeAway)
         end,
         
     },
 
     
+    State{
+        name = "become_domesticated",
+        tags = {"busy"},
+
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("transform") 
+            inst.SoundEmitter:PlaySound("dontstarve/beefalo/hairgrow_pop")
+            inst.domesticationPending = false
+        end,
+
+        timeline=
+        {
+            TimeEvent(8*FRAMES, function(inst) SpawnPrefab("beefalo_transform_fx").Transform:SetPosition(inst.Transform:GetWorldPosition()) end),
+            TimeEvent(11*FRAMES, function(inst) inst:UpdateDomestication() end),
+        },
+
+        events=
+        {
+            EventHandler("animover", function(inst)
+                inst.sg:GoToState("idle")
+            end),
+        },
+    },
+
+    State{
+        name = "grow_up",
+        tags = {"busy"},
+
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("hair_growth_pre")
+            inst.SoundEmitter:PlaySound("dontstarve/beefalo/hairgrow_vocal")
+        end,
+
+        events=
+        {
+            EventHandler("animover", function(inst)
+                inst.components.growable:SetStage(inst.components.growable:GetNextStage())
+                inst.growUpPending = false
+                inst.sg:GoToState("grow_up_pop")
+            end),
+        },
+    },
+
+    State{
+        name = "grow_up_pop",
+        tags = {"busy"},
+
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("hair_growth")
+            inst.SoundEmitter:PlaySound("dontstarve/beefalo/hairgrow_pop")
+        end,
+
+        events=
+        {
+            EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
+        },
+    },
+
+
     State{
         name = "hair_growth",
         tags = {"busy"},
@@ -217,42 +422,35 @@ local states=
             EventHandler("animover", function(inst) inst.sg:GoToState("hair_growth_pop") end),
         },
     },
-    
+
     State{
         name = "hair_growth_pop",
         tags = {"busy"},
-        
+
         onenter = function(inst)
             inst.components.locomotor:StopMoving()
-            inst.AnimState:PlayAnimation("hair_growth") 
-                inst.SoundEmitter:PlaySound("dontstarve/beefalo/hairgrow_pop")
-                if inst:HasTag("baby") and inst.components.growable then
-                    inst.AnimState:SetBuild("beefalo_baby_build")
-                    inst.components.growable:SetStage(inst.components.growable:GetNextStage() )
-                elseif inst.components.beard then
-                    local herd = inst.components.herdmember and inst.components.herdmember:GetHerd()
-                    if herd and herd.components.mood and herd.components.mood:IsInMood() then
-                        inst.AnimState:SetBuild("beefalo_heat_build") 
-                    else
-                        inst.AnimState:SetBuild("beefalo_build") 
-                    end
-                    inst.components.beard.bits = 3
-                end
-                inst.hairGrowthPending = false
+            inst.AnimState:PlayAnimation("hair_growth")
+            inst.SoundEmitter:PlaySound("dontstarve/beefalo/hairgrow_pop")
+            if inst.components.beard then
+                    inst.AnimState:SetBuild("beefalo_build")
+                inst.components.beard.bits = 3
+            end
+            inst.hairGrowthPending = false
+            inst:ApplyBuildOverrides(inst.AnimState)
         end,
-        
+
         events=
         {
             EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
         },
     },
-    
+
     State{
         name = "shaved",
         tags = {"busy", "sleeping"},
         
         onenter = function(inst)
-            inst.AnimState:SetBuild("beefalo_shaved_build")
+            inst:ApplyBuildOverrides(inst.AnimState)
             inst.AnimState:PlayAnimation("shave")
         end,
         
@@ -267,13 +465,34 @@ local states=
             end),
         },
     },
+
+    State{
+        name = "refuse",
+        tags = {"busy"},
+
+        onenter = function (inst)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("shake")
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+    },
 }
 
+--#TODO: Special walk states for when stomach is empty, use that graze walk loop
 CommonStates.AddWalkStates(
     states,
     {
-        walktimeline = 
-        { 
+        walktimeline =
+        {
+            TimeEvent(1*FRAMES, function(inst) inst.didalertnoise = nil end),
             TimeEvent(15*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.walk) end),
             TimeEvent(40*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.walk) end),
         }
@@ -282,9 +501,10 @@ CommonStates.AddWalkStates(
 CommonStates.AddRunStates(
     states,
     {
-        runtimeline = 
-        { 
-            TimeEvent(5*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.walk) end),
+        runtimeline =
+        {
+            TimeEvent(1*FRAMES, function(inst) inst.didalertnoise = nil end),
+            TimeEvent(5*FRAMES, PlayFootstep),
         }
     })
 

@@ -8,7 +8,6 @@ local TextEdit = require "widgets/textedit"
 local Text = require "widgets/text"
 local Widget = require "widgets/widget"
 
-local VALID_CHARS = [[ abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,:;[]\@!#$%&()'*+-/=?^_{|}~<>"]]
 -- fix syntax highlighting due to above list: "'
 
 local CONSOLE_HISTORY = {}
@@ -303,7 +302,7 @@ function ConsoleScreen:DoInit()
 	self.console_edit.OnTextEntered = function() self:OnTextEntered() end
 	--self.console_edit:SetLeftMouseDown( function() self:SetFocus( self.console_edit ) end )
 	self.console_edit:SetFocusedImage(self.edit_bg, "images/textboxes.xml", "textbox_long_over.tex", "textbox_long.tex")
-	self.console_edit:SetCharacterFilter(VALID_CHARS)
+	self.console_edit:SetInvalidCharacterFilter( [[`]] )
     self.console_edit:SetPassControlToScreen(CONTROL_CANCEL, true)
 
 	self.console_edit:SetString("")

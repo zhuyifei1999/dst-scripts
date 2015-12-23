@@ -1,6 +1,10 @@
 return {
 	ACTIONFAIL =
 	{
+        BUILD =
+        {
+            MOUNTED = "Even with my long arms, I still can't reach.",
+        },
 		SHAVE =
 		{
 			AWAKEBEEFALO = "I don't think she'd take kindly to that.",
@@ -12,6 +16,10 @@ return {
 			GENERIC = "It wouldn't fit.",
 			NOTALLOWED = "That can't go in there.",
 		},
+        MOUNT =
+        {
+            INUSE = "I should have reached for the saddle sooner.",
+        },
 	},
 	ACTIONFAIL_GENERIC = "That didn't work.",
     LICHEN = "A slow growing cave plant",
@@ -326,6 +334,12 @@ return {
 			GENERIC = "Moderately tough, but flammable.",
 			BURNT = "Not tough, nor flammable.",
 		},
+		WARDROBE = 
+		{
+			GENERIC = "Fashion without function.",
+            BURNING = "Oops.",
+			BURNT = "I'm sufficiently dapper without it.",
+		},
 		WARG = "The alpha!",
 		WATERMELON = "It's mostly water. Fibrous, sweet water.",
 		WATERMELON_COOKED = "Grillermelon.",
@@ -524,6 +538,11 @@ return {
 			GENERIC = "Just look at that stupid beast.",
 			NAKED = "Now it looks dumb AND pathetic.",
 			SLEEPING = "It's only marginally less stupid when it's asleep.",
+            --Domesticated states:
+            DOMESTICATED = "I like a creature that knows its place.",
+            ORNERY = "Yes, you understand how this works.",
+            RIDER = "I'd only ride you if I was desperate.",
+            PUDGY = "I suppose some people might find that charming.",
 		},
 		BEEFALOHAT = "How unfashionable.",
 		BEEFALOWOOL = "It smells like a barn.",
@@ -988,6 +1007,8 @@ return {
         ROOK = "A castle for my home.",
 		ROPE = "You'd think this would have more uses.",
 		ROTTENEGG = "Disgusting. Why am I carrying this around?",
+        SADDLE_BASIC = "But that means I'd have to touch the smelly thing.",
+        SADDLE_WAR = "At least it affords some dignity to the rider.",
 		SANITYROCK =
 		{
 			ACTIVE = "I can see its true nature now!",
@@ -1165,6 +1186,7 @@ return {
 		WASPHIVE = "That looks dangerous.",
 		WETGOOP = "My compliments to the chef!",
 		WINTERHAT = "How disappointingly rustic.",
+        WHIP = "Makes me feel like the master again.",
 		WORMHOLE =
 		{
 			GENERIC = "It's worse knowing what the other part looks like.",

@@ -25,6 +25,10 @@ local Eater = Class(function(self, inst)
     self.lasteattime = nil
     self.ignoresspoilage = false
     self.eatwholestack = false
+
+    self.healthabsorption = 1
+    self.hungerabsorption = 1
+    self.sanityabsorption = 1
 end,
 nil,
 {
@@ -38,6 +42,12 @@ end
 function Eater:SetDiet(caneat, preferseating)
     self.caneat = caneat
     self.preferseating = preferseating or caneat
+end
+
+function Eater:SetAbsorptionModifiers(health, hunger, sanity)
+    self.healthabsorption = health
+    self.hungerabsorption = hunger
+    self.sanityabsorption = sanity
 end
 
 function Eater:TimeSinceLastEating()
@@ -109,14 +119,14 @@ function Eater:Eat(food)
     if self:PrefersToEat(food) then
         if self.inst.components.health ~= nil and
             (food.components.edible.healthvalue >= 0 or self:DoFoodEffects(food)) then
-            local delta = food.components.edible:GetHealth(self.inst)
+            local delta = food.components.edible:GetHealth(self.inst) * self.healthabsorption
             if delta ~= 0 then
                 self.inst.components.health:DoDelta(delta, nil, food.prefab)
             end
         end
 
         if self.inst.components.hunger ~= nil then
-            local delta = food.components.edible:GetHunger(self.inst)
+            local delta = food.components.edible:GetHunger(self.inst) * self.hungerabsorption
             if delta ~= 0 then
                 self.inst.components.hunger:DoDelta(delta)
             end
@@ -124,7 +134,7 @@ function Eater:Eat(food)
 
         if self.inst.components.sanity ~= nil and
             (food.components.edible.sanityvalue >= 0 or self:DoFoodEffects(food)) then
-            local delta = food.components.edible:GetSanity(self.inst)
+            local delta = food.components.edible:GetSanity(self.inst) * self.sanityabsorption
             if delta ~= 0 then
                 self.inst.components.sanity:DoDelta(delta)
             end

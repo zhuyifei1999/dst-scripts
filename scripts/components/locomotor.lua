@@ -50,11 +50,41 @@ local function onexternalspeedmultiplier(self, externalspeedmultiplier)
 end
 
 local function ServerRunSpeed(self)
+    if self.inst.components.rider ~= nil then
+        local mount = self.inst.components.rider:IsRiding() and self.inst.components.rider:GetMount() or nil
+        if mount ~= nil then
+            return mount.components.locomotor.runspeed
+        end
+    end
     return self.runspeed
 end
 
 local function ClientRunSpeed(self)
+    local rider = self.inst.replica.rider
+    local mount = rider ~= nil and rider:IsRiding() and rider:GetMount() or nil
+    if mount ~= nil then
+        return rider:GetMountRunSpeed()
+    end
     return self.inst.player_classified ~= nil and self.inst.player_classified.runspeed:value() or self.runspeed
+end
+
+local function ServerFasterOnRoad(self)
+    if self.inst.components.rider ~= nil then
+        local mount = self.inst.components.rider:IsRiding() and self.inst.components.rider:GetMount() or nil
+        if mount ~= nil then
+            return mount.components.locomotor.fasteronroad
+        end
+    end
+    return self.fasteronroad
+end
+
+local function ClientFasterOnRoad(self)
+    local rider = self.inst.replica.rider
+    local mount = rider ~= nil and rider:IsRiding() and rider:GetMount() or nil
+    if mount ~= nil then
+        return rider:GetMountFasterOnRoad()
+    end
+    return self.fasteronroad
 end
 
 local function ServerExternalSpeedMutliplier(self)
@@ -72,11 +102,14 @@ local LocoMotor = Class(function(self, inst)
     if self.ismastersim then
         inst:AddTag("locomotor")
         self.RunSpeed = ServerRunSpeed
+        self.FasterOnRoad = ServerFasterOnRoad
         self.ExternalSpeedMultiplier = ServerExternalSpeedMutliplier
     else
         self.RunSpeed = ClientRunSpeed
+        self.FasterOnRoad = ClientFasterOnRoad
         self.ExternalSpeedMultiplier = ClientExternalSpeedMultiplier
         removesetter(self, "runspeed")
+        removesetter(self, "externalspeedmultiplier")
     end
 
     self.dest = nil
@@ -259,7 +292,7 @@ function LocoMotor:UpdateGroundSpeedMultiplier()
         self.groundspeedmultiplier = self.slowmultiplier
     else
         self.wasoncreep = false
-        if self.fasteronroad then
+        if self:FasterOnRoad() then
             --print(self.inst, "UpdateGroundSpeedMultiplier check road" )
             if (RoadManager ~= nil and RoadManager:IsOnRoad(x, 0, z)) or
                 ground.Map:GetTileAtPoint(x, 0, z) == GROUND.ROAD then

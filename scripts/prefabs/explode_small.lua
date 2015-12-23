@@ -14,7 +14,7 @@ local function MakeExplosion(data)
 
         inst.entity:AddTransform()
         inst.entity:AddAnimState()
-        inst.entity:AddSoundEmitter()
+            inst.entity:AddSoundEmitter()
 
         inst.Transform:SetFromProxy(proxy.GUID)
 
@@ -73,6 +73,6 @@ local extras = {
     },
 }
 
-return Prefab("common/explode_small", MakeExplosion(), assets),
-        Prefab("common/explode_small_slurtle", MakeExplosion(extras.slurtle), assets),
-        Prefab("common/explode_small_slurtlehole", MakeExplosion(extras.slurtlehole), assets)
+return Prefab("explode_small", MakeExplosion(), assets),
+        Prefab("explode_small_slurtle", MakeExplosion(extras.slurtle), assets),
+        Prefab("explode_small_slurtlehole", MakeExplosion(extras.slurtlehole), assets)

@@ -551,6 +551,10 @@ function ChildSpawner:AddChildrenInside(count)
     if self.onaddchild ~= nil then
         self.onaddchild(self.inst, count)
     end
+
+    if self.spawning or self.regening then
+        self:StartUpdate(6)
+    end
 end
 
 function ChildSpawner:AddEmergencyChildrenInside(count)

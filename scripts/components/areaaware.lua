@@ -4,10 +4,6 @@ local AreaAware = Class(function(self, inst)
     self.current_area_data = nil
     self.lastpt = Vector3(-9999,0,-9999)
 
-    --TODO: Add tags to rooms, which get pushed into worldgen. More efficient might be to add tags to tasks
-    --which get pushed down to the rooms in them... (Merged together, allow both!)
-    --Basically, add the "nightmare" tag so that this guy can trigger on that instead of room name.
-
     self.inst:StartUpdatingComponent(self)
 end)
 

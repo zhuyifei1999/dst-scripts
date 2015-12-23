@@ -29,6 +29,12 @@ local function fn()
 
     inst:AddComponent("inspectable")
 
+    inst:AddComponent("edible")
+    inst.components.edible.foodtype = FOODTYPE.ROUGHAGE
+    inst.components.edible.woodiness = 1
+    inst.components.edible.healthvalue = TUNING.HEALING_TINY
+    inst.components.edible.hungervalue = TUNING.CALORIES_TINY/2
+
     inst:AddComponent("fuel")
     inst.components.fuel.fuelvalue = TUNING.SMALL_FUEL
 
@@ -42,4 +48,4 @@ local function fn()
     return inst
 end
 
-return Prefab("common/inventory/cutreeds", fn, assets)
+return Prefab("cutreeds", fn, assets)

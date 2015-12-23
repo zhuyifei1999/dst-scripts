@@ -4,6 +4,8 @@ local PlayerActionPicker = Class(function(self, inst)
     self.containers = {}
     self.leftclickoverride = nil
     self.rightclickoverride = nil
+    self.actionfilterstack = {} -- only the top filter is active
+    self.actionfilter = nil
 end)
 
 function PlayerActionPicker:RegisterContainer(container)
@@ -20,6 +22,25 @@ function PlayerActionPicker:UnregisterContainer(container)
         self.inst:RemoveEventCallback("onremove", self.containers[container], container)
         self.containers[container] = nil
     end
+end
+
+function PlayerActionPicker:PushActionFilter(filterfn)
+    table.insert(self.actionfilterstack, filterfn)
+    self.actionfilter = filterfn
+end
+
+function PlayerActionPicker:PopActionFilter(filterfn)
+    if filterfn ~= nil then
+        for i = #self.actionfilterstack, 1, -1 do
+            if self.actionfilterstack[i] == filterfn then
+                table.remove(self.actionfilterstack, i)
+                break
+            end
+        end
+    else
+        table.remove(self.actionfilterstack, #self.actionfilterstack)
+    end
+    self.actionfilter = #self.actionfilterstack > 0 and self.actionfilterstack[#self.actionfilterstack] or nil
 end
 
 local function OrderByPriority(l, r)

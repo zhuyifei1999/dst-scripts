@@ -1,3 +1,11 @@
+local function onenabled(self, enabled)
+    if enabled then
+        self.inst:AddTag("herdmember")
+    else
+        self.inst:RemoveTag("herdmember")
+    end
+end
+
 --- Tracks the herd that the object belongs to, and creates one if missing
 local function OnInit(inst)
     inst.components.herdmember.task = nil
@@ -8,13 +16,17 @@ local HerdMember = Class(function(self, inst)
     self.inst = inst
 
     --V2C: Recommended to explicitly add tag to prefab pristine state
-    inst:AddTag("herdmember")
+    self.enabled = true
 
     self.herd = nil
     self.herdprefab = "beefaloherd"
     
     self.task = self.inst:DoTaskInTime(5, OnInit)
-end)
+end,
+nil,
+{
+    enabled = onenabled,
+})
 
 function HerdMember:OnRemoveFromEntity()
     if self.task ~= nil then
@@ -37,7 +49,7 @@ function HerdMember:GetHerd()
 end
 
 function HerdMember:CreateHerd()
-    if not self.herd then
+    if self.enabled and not self.herd then
         local herd = SpawnPrefab(self.herdprefab)
         if herd then
             herd.Transform:SetPosition(self.inst.Transform:GetWorldPosition() )
@@ -48,8 +60,17 @@ function HerdMember:CreateHerd()
     end
 end
 
+function HerdMember:Enable(enabled)
+    if not enabled and self.herd ~= nil then
+        self.herd.components.herd:RemoveMember(self.inst)
+    elseif enabled and self.herd == nil then
+        self.task = self.inst:DoTaskInTime(5, OnInit)
+    end
+    self.enabled = enabled
+end
+
 function HerdMember:GetDebugString()
-    return string.format("herd:%s",tostring(self.herd))
+    return string.format("herd:%s %s",tostring(self.herd), (not self.enabled) and "disabled" or "")
 end
 
 return HerdMember

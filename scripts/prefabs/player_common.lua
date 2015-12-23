@@ -523,7 +523,7 @@ local function OnSetOwner(inst)
             EnableMovementPrediction(inst, true)
             inst:AddComponent("playeractionpicker")
             inst:AddComponent("playercontroller")
-            inst.components.playeractionpicker.actionfilter = CheckGhostActionFilter
+            inst.components.playeractionpicker:PushActionFilter( CheckGhostActionFilter )
         end
     elseif inst.components.playercontroller ~= nil then
         inst:RemoveComponent("playeractionpicker")
@@ -694,6 +694,9 @@ local function DoActualRez(inst, source)
     if diefx and x and y and z then
         diefx.Transform:SetPosition(x, y, z)
     end
+	
+    -- inst.AnimState:SetBank("wilson")
+    -- inst.components.skinner:SetSkinMode("normal_skin")
 
     inst.AnimState:Hide("HAT_HAIR")
     inst.AnimState:Show("HAIR_NOHAT")
@@ -714,12 +717,12 @@ local function DoActualRez(inst, source)
     if source ~= nil then
         inst.DynamicShadow:Enable(true)
         inst.AnimState:SetBank("wilson")
-        inst.AnimState:SetBuild(inst.skin_name or inst.prefab)
+        inst.components.skinner:SetSkinMode("normal_skin") -- restore skin
         inst.AnimState:ClearBloomEffectHandle()
         inst.AnimState:SetLightOverride(0)
         inst.AnimState:Hide("HAT")
         inst.AnimState:Hide("HatFX")
-
+        
         source:PushEvent("activateresurrection", inst)
 
         if source.prefab == "amulet" then
@@ -783,7 +786,6 @@ local function DoActualRez(inst, source)
         end
         inst.rezsource = nil
     end
-
     inst.remoterezsource = nil
 
     inst:PushEvent("ms_respawnedfromghost")
@@ -923,7 +925,9 @@ local function OnMakePlayerGhost( inst, data )
     end
 
     inst.AnimState:SetBank("ghost")
-    inst.AnimState:SetBuild(inst.ghostbuild or ("ghost_"..inst.prefab.."_build"))
+
+    inst.components.skinner:SetSkinMode("ghost_skin")
+
     inst.AnimState:SetBloomEffectHandle("shaders/anim_bloom_ghost.ksh")
     inst.AnimState:SetLightOverride(TUNING.GHOST_LIGHT_OVERRIDE)
     if inst:HasTag("ghostwithhat") then
@@ -997,7 +1001,6 @@ end
 
 local function OnSave(inst, data)
     data.is_ghost = inst:HasTag("playerghost") or nil
-    data.skin_name = inst.skin_name or nil
 
     --Shard stuff
     data.migration = inst.migration
@@ -1041,8 +1044,6 @@ local function OnLoad(inst, data)
         if data.is_ghost then
             OnMakePlayerGhost(inst, { loading = true })
         end
-
-        inst:OnSetSkin(data.skin_name)
 
         --V2C: Sleeping hacks from snapshots or c_saves while sleeping
         if data.sleepinghandsitem ~= nil then
@@ -1153,6 +1154,8 @@ local function OnDespawn(inst)
     inst:OnWakeUp()
     --
 
+    inst.components.rider:ActualDismount()
+
     inst.components.inventory:DropEverythingWithTag("irreplaceable")
     inst.components.leader:RemoveAllFollowers()
 
@@ -1163,17 +1166,6 @@ local function OnDespawn(inst)
     inst.components.locomotor:Clear()
 end
 
-local function OnSetSkin(inst, skin_name)
-    inst.skin_name = skin_name ~= "" and skin_name or nil
-
-    if not inst:HasTag("playerghost") then
-        inst.AnimState:SetBuild(inst.skin_name or inst.prefab)
-    end
-
-    if inst._OnSetSkin ~= nil then
-        inst:_OnSetSkin(skin_name)
-    end
-end
 
 --------------------------------------------------------------------------
 --HUD/Camera/FE interface
@@ -1201,9 +1193,27 @@ local function ShowHUD(inst, show)
     end
 end
 
+local function ShowWardrobePopUp(inst, show)
+    if TheWorld.ismastersim then
+        inst.player_classified:ShowWardrobePopUp(show)
+    end
+end
+
+local function ShowGiftItemPopUp(inst, show)
+    if TheWorld.ismastersim then
+        inst.player_classified:ShowGiftItemPopUp(show)
+    end
+end
+
 local function SetCameraDistance(inst, distance)
     if TheWorld.ismastersim then
         inst.player_classified.cameradistance:set(distance or 0)
+    end
+end
+
+local function SetCameraZoomed(inst, iszoomed)
+    if TheWorld.ismastersim then
+        inst.player_classified.iscamerazoomed:set(iszoomed)
     end
 end
 
@@ -1321,6 +1331,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_actions_bugnet.zip"),
         Asset("ANIM", "anim/player_actions_fishing.zip"),
         Asset("ANIM", "anim/player_actions_boomerang.zip"),
+        Asset("ANIM", "anim/player_actions_whip.zip"),
         Asset("ANIM", "anim/player_bush_hat.zip"),
         Asset("ANIM", "anim/player_attacks.zip"),
         Asset("ANIM", "anim/player_idles.zip"),
@@ -1336,12 +1347,16 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
 
         Asset("ANIM", "anim/player_frozen.zip"),
         Asset("ANIM", "anim/player_shock.zip"),
-        Asset("ANIM", "anim/shock_fx.zip"),
         Asset("ANIM", "anim/player_tornado.zip"),
 
         Asset("ANIM", "anim/goo.zip"),
 
         Asset("ANIM", "anim/shadow_hands.zip"),
+
+        Asset("ANIM", "anim/player_wardrobe.zip"),
+        Asset("ANIM", "anim/player_skin_change.zip"),
+        Asset("ANIM", "anim/player_receive_gift.zip"),
+        Asset("ANIM", "anim/shadow_skinchangefx.zip"),
 
         Asset("SOUND", "sound/sfx.fsb"),
         Asset("SOUND", "sound/wilson.fsb"),
@@ -1352,7 +1367,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_knockedout.zip"),
         Asset("ANIM", "anim/player_emotesxl.zip"),
         Asset("ANIM", "anim/player_emotes_dance0.zip"),
-        Asset("ANIM", "anim/emote_fx.zip"),
+        Asset("ANIM", "anim/player_emotes.zip"),
         Asset("ANIM", "anim/tears.zip"),
         Asset("ANIM", "anim/puff_spawning.zip"),
         Asset("ANIM", "anim/attune_fx.zip"),
@@ -1363,10 +1378,33 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/fish01.zip"),   --These are used for the fishing animations.
         Asset("ANIM", "anim/eel01.zip"),
 
+        Asset("ANIM", "anim/corner_dude.zip"),
+
         Asset("IMAGE", "images/colour_cubes/ghost_cc.tex"),
         Asset("IMAGE", "images/colour_cubes/mole_vision_on_cc.tex"),
         Asset("IMAGE", "images/colour_cubes/mole_vision_off_cc.tex"),
+
+        Asset("ANIM", "anim/player_mount.zip"),
+        Asset("ANIM", "anim/player_mount_travel.zip"),
+        Asset("ANIM", "anim/player_mount_actions.zip"),
+        Asset("ANIM", "anim/player_mount_actions_item.zip"),
+        Asset("ANIM", "anim/player_mount_unique_actions.zip"),
+        Asset("ANIM", "anim/player_mount_blowdart.zip"),
+        Asset("ANIM", "anim/player_mount_shock.zip"),
+        Asset("ANIM", "anim/player_mount_frozen.zip"),
+        Asset("ANIM", "anim/player_mount_groggy.zip"),
+        Asset("ANIM", "anim/player_mount_hit_darkness.zip"),
+        Asset("ANIM", "anim/player_mount_emotes.zip"),
+        Asset("ANIM", "anim/player_mount_emotes_dance0.zip"),
+        Asset("ANIM", "anim/player_mount_emotesxl.zip"),
+
+        Asset("INV_IMAGE", "skull_"..name),
     }
+
+    local clothing_assets = require("clothing_assets")
+    for _, clothing_asset in pairs(clothing_assets) do
+        table.insert(assets, clothing_asset)
+    end
 
     local prefabs =
     {
@@ -1379,6 +1417,15 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         "attune_out_fx",
         "attune_in_fx",
         "attune_ghost_in_fx",
+        "staff_castinglight",
+        "hauntfx",
+        "emote_fx",
+        "tears",
+        "shock_fx",
+
+        -- Player specific classified prefabs
+        "player_classified",
+        "inventory_classified",
     }
 
     if starting_inventory ~= nil or customprefabs ~= nil then
@@ -1429,7 +1476,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.Transform:SetFourFaced()
 
         inst.AnimState:SetBank("wilson")
-        inst.AnimState:SetBuild(name)
+        inst.AnimState:SetBuild(name) --do we still need to do this or can we assume that the skinner will be setting the appropriate build?
         inst.AnimState:PlayAnimation("idle")
 
         inst.AnimState:Hide("ARM_carry")
@@ -1446,6 +1493,8 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
 
         --Additional effects symbols for hit_darkness animation
         inst.AnimState:AddOverrideBuild("player_hit_darkness")
+        inst.AnimState:AddOverrideBuild("player_receive_gift")
+        inst.AnimState:AddOverrideBuild("player_actions_uniqueitem")
 
         inst.DynamicShadow:SetSize(1.3, .6)
 
@@ -1517,6 +1566,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst:AddTag("_combat")
         inst:AddTag("_moisture")
         inst:AddTag("_sheltered")
+        inst:AddTag("_rider")
 
         inst.userid = ""
 
@@ -1536,6 +1586,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst:RemoveTag("_combat")
         inst:RemoveTag("_moisture")
         inst:RemoveTag("_sheltered")
+        inst:RemoveTag("_rider")
 
         if inst.ghostenabled then
             inst.Network:RemoveUserFlag(USERFLAGS.IS_GHOST)
@@ -1582,6 +1633,9 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst:AddComponent("inspectable")
         inst.components.inspectable.getstatus = GetStatus
 
+        -- Player avatar popup inspection
+        inst:AddComponent("playerinspectable")
+
         inst:AddComponent("temperature")
         inst.components.temperature.usespawnlight = true
 
@@ -1623,7 +1677,9 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst:AddComponent("eater")
         inst:AddComponent("leader")
         inst:AddComponent("frostybreather")
+        inst.components.frostybreather:SetOffset(0.3, 1.15, 0)
         inst:AddComponent("age")
+        inst:AddComponent("rider")
 
         inst:AddComponent("grue")
         inst.components.grue:SetSounds("dontstarve/charlie/warn","dontstarve/charlie/attack")
@@ -1636,6 +1692,8 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
 
         inst:AddComponent("colourtweener")
 
+        inst:AddComponent("skinner")
+        inst:AddComponent("giftreceiver")
         -------
         if METRICS_ENABLED then
             inst:AddComponent("overseer")
@@ -1644,6 +1702,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
 
         inst:AddInherentAction(ACTIONS.PICK)
         inst:AddInherentAction(ACTIONS.SLEEPIN)
+        inst:AddInherentAction(ACTIONS.CHANGEIN)
 
         inst:SetStateGraph("SGwilson")
 
@@ -1653,7 +1712,10 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.IsHUDVisible = IsHUDVisible
         inst.ShowActions = ShowActions
         inst.ShowHUD = ShowHUD
+        inst.ShowWardrobePopUp = ShowWardrobePopUp
+        inst.ShowGiftItemPopUp = ShowGiftItemPopUp
         inst.SetCameraDistance = SetCameraDistance
+        inst.SetCameraZoomed = SetCameraZoomed
         inst.SnapCamera = SnapCamera
         inst.ScreenFade = ScreenFade
         inst.ScreenFlash = ScreenFlash
@@ -1674,12 +1736,10 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst._OnPreLoad = inst.OnPreLoad
         inst._OnLoad = inst.OnLoad
         inst._OnDespawn = inst.OnDespawn
-        inst._OnSetSkin = inst.OnSetSkin
         inst.OnSave = OnSave
         inst.OnPreLoad = OnPreLoad
         inst.OnLoad = OnLoad
         inst.OnDespawn = OnDespawn
-        inst.OnSetSkin = OnSetSkin
 
         if starting_inventory ~= nil and #starting_inventory > 0 then
             --Will be triggered from SpawnNewPlayerOnServerFromSim
@@ -1708,7 +1768,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         return inst
     end
 
-    return Prefab("characters/"..name, fn, assets, prefabs)
+    return Prefab(name, fn, assets, prefabs)
 end
 
 return MakePlayerCharacter

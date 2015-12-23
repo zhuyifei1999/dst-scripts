@@ -61,10 +61,12 @@ local function OnVisibleDirty(classified)
             inst.HUD.controls.crafttabs:Show()
             inst.HUD.controls.inv:Show()
             inst.HUD.controls.containerroot_side:Show()
+            inst.HUD.controls.item_notification:ToggleCrafting(false)
         else
             inst.HUD.controls.crafttabs:Hide()
             inst.HUD.controls.inv:Hide()
             inst.HUD.controls.containerroot_side:Hide()
+            inst.HUD.controls.item_notification:ToggleCrafting(true)
         end
     end
 end
@@ -86,6 +88,7 @@ function Inventory:DetachClassified()
     if self.inst.HUD ~= nil then
         self.inst.HUD.controls.crafttabs:Hide()
         self.inst.HUD.controls.inv:Hide()
+        self.inst.HUD.controls.item_notification:ToggleCrafting(true)
         self.inst.HUD.controls.containerroot_side:Hide()
         self.inst:PushEvent("newactiveitem", {})
         self.inst:PushEvent("inventoryclosed")

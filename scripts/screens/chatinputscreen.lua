@@ -6,8 +6,6 @@ local Text = require "widgets/text"
 
 local emotes = require("emotes")
 
-local VALID_CHARS = [[ abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,:;[]\@!#$%&()'*+-/=?^_{|}~"<>]]
--- local VALID_CHARS = [[ abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,[]@!()'*+-/?{}" ]]
 local CHAT_INPUT_MAX_LENGTH = 200
 local CHAT_INPUT_HISTORY = {}
 
@@ -230,7 +228,6 @@ function ChatInputScreen:DoInit()
 	self.chat_edit.HasExclusiveHelpText = function() return false end
 
 	self.chat_edit.OnTextEntered = function() self:OnTextEntered() end
-	self.chat_edit:SetCharacterFilter(VALID_CHARS)
 	self.chat_edit:SetPassControlToScreen(CONTROL_CANCEL, true)
 	self.chat_edit:SetPassControlToScreen(CONTROL_MENU_MISC_2, true) -- toggle between say and whisper
 	self.chat_edit:SetTextLengthLimit(CHAT_INPUT_MAX_LENGTH)

@@ -17,6 +17,7 @@ local Hunger = Class(function(self, inst)
 
     self.hungerrate = 1
     self.hurtrate = 1
+    self.overridestarvefn = nil
     
     self.burning = true
     --100% burn rate. Currently used only by belt of hunger, will have to change unequip if use in something else
@@ -40,6 +41,10 @@ function Hunger:OnLoad(data)
         self.current = data.hunger
         self:DoDelta(0)
     end
+end
+
+function Hunger:SetOverrideStarveFn(fn)
+    self.overridestarvefn = fn
 end
 
 function Hunger:LongUpdate(dt)
@@ -84,7 +89,7 @@ function Hunger:DoDelta(delta, overtime, ignore_invincible)
     local old = self.current
     self.current = math.clamp(self.current + delta, 0, self.max)
 
-    self.inst:PushEvent("hungerdelta", { oldpercent = old / self.max, newpercent = self.current / self.max, overtime = overtime })
+    self.inst:PushEvent("hungerdelta", { oldpercent = old / self.max, newpercent = self.current / self.max, overtime = overtime, delta = self.current-old })
 
     --push starving event if beaverness value isn't currently starving
     if not (self.inst.components.beaverness ~= nil and self.inst.components.beaverness:IsStarving()) then
@@ -130,7 +135,11 @@ function Hunger:DoDec(dt, ignore_damage)
         if self.current > 0 then
             self:DoDelta(-self.hungerrate * dt * self.burnrate, true)
         elseif not ignore_damage then
-            self.inst.components.health:DoDelta(-self.hurtrate * dt, true, "hunger") --  ich haber hunger
+            if self.overridestarvefn ~= nil then
+                self.overridestarvefn(self.inst, dt)
+            else
+                self.inst.components.health:DoDelta(-self.hurtrate * dt, true, "hunger") --  ich haber hunger
+            end
         end
     end
 end

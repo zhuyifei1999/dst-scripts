@@ -3,6 +3,7 @@ require "prefabutil"
 local assets =
 {
     Asset("ANIM", "anim/chessmonster_ruins.zip"),
+	Asset("MINIMAP_IMAGE", "chessjunk"),
 }
 
 local prefabs =
@@ -185,6 +186,6 @@ local function Junk(style)
     end
 end
 
-return Prefab("common/objects/chessjunk1", Junk(1), assets, prefabs),
-    Prefab("common/objects/chessjunk2", Junk(2), assets, prefabs),
-    Prefab("common/objects/chessjunk3", Junk(3), assets, prefabs)
+return Prefab("chessjunk1", Junk(1), assets, prefabs),
+    Prefab("chessjunk2", Junk(2), assets, prefabs),
+    Prefab("chessjunk3", Junk(3), assets, prefabs)

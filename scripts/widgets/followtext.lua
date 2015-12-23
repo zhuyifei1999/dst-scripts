@@ -35,14 +35,16 @@ function FollowText:GetScreenOffset()
 end
 
 function FollowText:OnUpdate(dt)
-    if self.target and self.target:IsValid() then
+    if self.target ~= nil and self.target:IsValid() then
         local scale = TheFrontEnd:GetHUDScale()
         self.text:SetScale(scale)
-        local world_pos = Vector3(self.target.AnimState:GetSymbolPosition(self.symbol or "",self.offset.x, self.offset.y, self.offset.z))
-        local screen_pos = Vector3(TheSim:GetScreenPos(world_pos:Get())) 
-        screen_pos.x = screen_pos.x + self.screen_offset.x
-        screen_pos.y = screen_pos.y + self.screen_offset.y
-        self:SetPosition(screen_pos)
+        local pos =
+            self.target.AnimState ~= nil and
+            Vector3(self.target.AnimState:GetSymbolPosition(self.symbol or "", self.offset.x, self.offset.y, self.offset.z)) or
+            self.target:GetPosition()
+        pos.x, pos.y = TheSim:GetScreenPos(pos:Get())
+        pos.x, pos.y, pos.z = pos.x + self.screen_offset.x, pos.y + self.screen_offset.y, 0
+        self:SetPosition(pos)
     end
 end
 

@@ -5,7 +5,7 @@ local assets =
 
 local MAX_LAG = 1.5
 
-local function PlayBookFX(proxy, tint, tintalpha)
+local function PlayBookFX(proxy, tint, tintalpha, anim)
     local inst = CreateEntity()
 
     inst:AddTag("FX")
@@ -20,7 +20,7 @@ local function PlayBookFX(proxy, tint, tintalpha)
 
     inst.AnimState:SetBank("book_fx")
     inst.AnimState:SetBuild("book_fx")
-    inst.AnimState:PlayAnimation("book_fx")
+    inst.AnimState:PlayAnimation(anim)
     --inst.AnimState:SetScale(1.5, 1, 1)
 
     if tint ~= nil then
@@ -53,7 +53,7 @@ local function OnStateDirty(inst)
     end
 
     --Delay one frame in case we are about to be removed
-    inst:DoTaskInTime(0, PlayBookFX, inst.tint, inst.tintalpha)
+    inst:DoTaskInTime(0, PlayBookFX, inst.tint, inst.tintalpha, inst.anim)
     inst._complete = true
 end
 
@@ -71,6 +71,8 @@ local function common_fn()
 
     inst._state = net_tinybyte(inst.GUID, "_state", "statedirty")
     inst._complete = false
+
+    inst.anim = "book_fx"
 
     inst:ListenForEvent("statedirty", OnStateDirty)
 
@@ -100,6 +102,15 @@ local function book_fn()
     return inst
 end
 
+local function mount_book_fn()
+    local inst = common_fn()
+
+    inst.tintalpha = 0.4
+    inst.anim = "book_fx_mount"
+
+    return inst
+end
+
 local function waxwell_book_fn()
     local inst = common_fn()
 
@@ -108,5 +119,6 @@ local function waxwell_book_fn()
     return inst
 end
 
-return Prefab("common/book_fx", book_fn, assets),
-    Prefab("common/waxwell_book_fx", waxwell_book_fn, assets)
+return  Prefab("book_fx", book_fn, assets),
+        Prefab("book_fx_mount", mount_book_fn, assets),
+        Prefab("waxwell_book_fx", waxwell_book_fn, assets)

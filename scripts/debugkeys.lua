@@ -114,27 +114,47 @@ AddGlobalDebugKey(KEY_F1, function()
     if TheInput:IsKeyDown(KEY_CTRL) then
         TheSim:TogglePerfGraph()
         return true
+    elseif TheInput:IsKeyDown(KEY_SHIFT) then
+        c_removeall('beefalo')
+        c_give('saddle_basic')
+        c_give('carrot', 10)
+        c_give('dragonpie', 10)
+        c_spawn('dummytarget')
+        local beef = c_spawn('beefalo')
     else
-        local walls = {
-            "stone",
-            "wood",
-            "hay",
-            "ruins",
-            "moonrock",
-        }
-        local sx,sy,sz = ThePlayer.Transform:GetWorldPosition()
-        for i,mat in ipairs(walls) do
-            for j = 0,4 do
-                local wall = SpawnPrefab("wall_"..mat)
-                wall.Transform:SetPosition(sx + (i*6), sy, sz + j)
-                wall.components.health:SetPercent(j*0.25)
-            end
-            for j = 5,15 do
-                local wall = SpawnPrefab("wall_"..mat)
-                wall.Transform:SetPosition(sx + (i*6), sy, sz + j)
-                wall.components.health:SetPercent(j <= 11 and 1 or 0.5)
-            end
+        c_give('whip')
+        c_give('saddle_war')
+        c_spawn('dummytarget')
+        local beef = c_spawn('beefalo')
+        for k, v in pairs(TENDENCY) do
+            beef = c_spawn('beefalo')
+            beef.components.domesticatable:DeltaDomestication(1)
+            beef.components.domesticatable:DeltaObedience(0.5)
+            beef.components.domesticatable:DeltaTendency(v, 1)
+            beef:SetTendency()
+            beef.components.domesticatable:BecomeDomesticated()
+            beef.components.rideable:SetSaddle(nil, SpawnPrefab('saddle_basic'))
         end
+        --local walls = {
+            --"stone",
+            --"wood",
+            --"hay",
+            --"ruins",
+            --"moonrock",
+        --}
+        --local sx,sy,sz = ThePlayer.Transform:GetWorldPosition()
+        --for i,mat in ipairs(walls) do
+            --for j = 0,4 do
+                --local wall = SpawnPrefab("wall_"..mat)
+                --wall.Transform:SetPosition(sx + (i*6), sy, sz + j)
+                --wall.components.health:SetPercent(j*0.25)
+            --end
+            --for j = 5,15 do
+                --local wall = SpawnPrefab("wall_"..mat)
+                --wall.Transform:SetPosition(sx + (i*6), sy, sz + j)
+                --wall.components.health:SetPercent(j <= 11 and 1 or 0.5)
+            --end
+        --end
     end
 
 end)
@@ -176,6 +196,19 @@ AddGameDebugKey(KEY_R, function()
     end 
 end)
 
+AddGameDebugKey(KEY_I, function()
+	if TheInput:IsKeyDown(KEY_CTRL) and TheInput:IsKeyDown(KEY_SHIFT) then
+		TheInventory:Debug_DropAllGifts()
+		return true
+    elseif TheInput:IsKeyDown(KEY_CTRL) then
+        TheInventory:Debug_ForceHeartbeatGift("")
+        return true
+    elseif TheInput:IsKeyDown(KEY_SHIFT) then
+        c_spawn("researchlab")
+        return true
+    end
+end)
+
 AddGameDebugKey(KEY_F4, function()
     -- Spawn a ready-made base!
     local pos = TheInput:GetWorldPosition()
@@ -213,9 +246,16 @@ AddGameDebugKey(KEY_F4, function()
         "fast_farmplot",
         "fast_farmplot",
         "fast_farmplot",
+        "meatrack",
+        "meatrack",
+        "meatrack",
+        "meatrack",
+        "cookpot",
+        "cookpot",
+        "cookpot",
+        "cookpot",
         "pighouse",
         "birdcage",
-        "glommer",
         "firesuppressor",
     }
     for i,v in ipairs(items) do
@@ -237,6 +277,34 @@ AddGameDebugKey(KEY_F4, function()
                 SpawnPrefab(group_items[i]).Transform:SetPosition(sub_pos.x, sub_pos.y, sub_pos.z)
             end
         end
+    end
+    ConsoleCommandPlayer().components.inventory:Equip( c_spawn("backpack") ) -- do this first so other things can get put in it
+    ConsoleCommandPlayer().components.inventory:Equip( c_spawn("axe") )
+    ConsoleCommandPlayer().components.inventory:Equip( c_spawn("flowerhat") )
+    local invitems = {
+        meat = 10,
+        carrot = 20,
+        berries = 20,
+        twigs = 20,
+        cutgrass = 20,
+        flint = 20,
+        rocks = 40,
+        logs = 40,
+        spear = 2,
+        armorwood = 2,
+        footballhat = 1,
+        torch = 2,
+        axe = 1,
+        pickaxe = 1,
+        shovel = 1,
+        silk = 10,
+        spidergland = 5,
+        smallmeat = 8,
+        meat = 4,
+        meatballs = 4,
+    }
+    for k,v in pairs(invitems) do
+        c_give(k, v)
     end
 end)
 
@@ -621,6 +689,12 @@ AddGameDebugKey(KEY_G, function()
                 MouseCharacter.components.setter:StartSetting()
             elseif MouseCharacter.components.cooldown then
                 MouseCharacter.components.cooldown:LongUpdate(MouseCharacter.components.cooldown.cooldown_duration)
+            elseif MouseCharacter.components.domesticatable then
+                if MouseCharacter.components.domesticatable:IsDomesticated() then
+                    MouseCharacter.components.domesticatable:BecomeFeral()
+                else
+                    MouseCharacter.components.domesticatable:BecomeDomesticated()
+                end
             end
         end
     elseif TheInput:IsKeyDown(KEY_SHIFT) then

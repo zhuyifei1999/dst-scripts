@@ -8,21 +8,6 @@ local prefabs =
     "diviningrod",
 }
 
-local function starterosion(inst)
-    local tick_time = TheSim:GetTickTime()
-    local time_to_erode = 2
-    inst:StartThread(function()
-        local ticks = 0
-        while ticks * tick_time < time_to_erode do
-            local erode_amount = ticks * tick_time / time_to_erode
-            inst.AnimState:SetErosionParams(erode_amount, 0.1, 1.0)
-            ticks = ticks + 1
-            Yield()
-        end
-        inst:Remove()
-    end)
-end
-
 local function onpickedfn(inst, picker, loot)
     inst.persists = false
 	inst.AnimState:PlayAnimation("idle_empty")
@@ -32,7 +17,7 @@ local function onpickedfn(inst, picker, loot)
 	if loot and inst.disabled then
 	    loot.disabled = true
 	end
-	inst:DoTaskInTime(3, starterosion)
+	inst:DoTaskInTime(3, ErodeAway)
 end
 
 local function OnSave(inst, data)
@@ -78,4 +63,4 @@ local function fn(Sim)
     return inst
 end
 
-return Prefab("common/diviningrodstart", fn, assets)
+return Prefab("diviningrodstart", fn, assets)

@@ -2,12 +2,20 @@ return
 {
     ACTIONFAIL =
     {
+        BUILD =
+        {
+            MOUNTED = "In this elevated position, I can't reach the ground.",
+        },
         SHAVE =
         {
             GENERIC = "I would really rather not.",
             NOBITS = "It's already smooth, dear.",
             AWAKEBEEFALO = "I think he might object to that.",
-        }
+        },
+        MOUNT =
+        {
+            INUSE = "Patience is required. I can ride this beefalo later.",
+        },
     },
     DESCRIBE=
     {
@@ -250,6 +258,12 @@ return
             GENERIC = "That offers some protection.",
             BURNT = "Fire was its weakness.",
         },
+        WARDROBE = 
+        {
+        	GENERIC = "This reminds me of a famous book.",
+            BURNING = "Hmm, now it reminds me of a very different famous book.",
+        	BURNT = "It used to be a wardrobe.",
+    	},
         WARG = "That Canis will never be domesticated.",
         WATERMELON = "Citrullus lanatus.",
         WATERMELON_COOKED = "Beautifully grilled.",
@@ -536,6 +550,11 @@ return
             FOLLOWER = "It appears to be following me.",
             NAKED = "It looks cold.",
             SLEEPING = "It's sleeping.",
+            --Domesticated states:
+            DOMESTICATED = "While tame, it has become dependent on its human master.",
+            ORNERY = "The creature has developed a nasty disposition.",
+            RIDER = "This one seems lean and athletic.",
+            PUDGY = "Abundant nourishment has led to an amicable personality.",
         },
         BABYBEEFALO = "Look at his widdle face! (ahem!)",
         MANDRAKE_ACTIVE = "Mandragora officinarum. But with a face.",
@@ -656,6 +675,7 @@ return
         SPIDERHAT = "With this I should be able to exert psionic control over the spiders.",
 		EARMUFFHAT = "Only the most insulating part was used.",
         WETGOOP = "Oh no. No, no, no. This won't do at all.",
+        WHIP = "An instrument for developing pain compliance.",
         WINTERHAT = "I knit it myself.",
         NIGHTMAREFUEL = "Ectoplasmic residue.",
         NIGHTLIGHT = "Curiously luminescent.",
@@ -1071,6 +1091,8 @@ return
             INACTIVE = "It appears to be a tiny pyramid.",
             ACTIVE = "I must be seeing things.",
         },
+        SADDLE_BASIC = "A crude device for equestrianism.",
+        SADDLE_WAR = "A favorite perch of generals and assorted warlords.",
         SANITYROCK = {
             INACTIVE = "It seems to have sunk into the soil.",
             ACTIVE = "Fascinating. I'll have to study these markings later.",

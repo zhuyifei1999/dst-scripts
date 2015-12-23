@@ -370,24 +370,32 @@ local RPC_HANDLERS =
         end
     end,
 
-    MakeRecipeFromMenu = function(player, recipe)
+    MakeRecipeFromMenu = function(player, recipe, skin_index)
         local builder = player.components.builder
         if builder ~= nil then
             for k, v in pairs(AllRecipes) do
                 if v.rpc_id == recipe then
-                    builder:MakeRecipeFromMenu(v)
+					local skin = nil
+					if skin_index ~= -1 and PREFAB_SKINS[v.name] ~= nil then
+						skin = PREFAB_SKINS[v.name][skin_index]
+					end
+                    builder:MakeRecipeFromMenu(v, skin)
                     return
                 end
             end
         end
     end,
 
-    MakeRecipeAtPoint = function(player, recipe, x, z, rot)
+    MakeRecipeAtPoint = function(player, recipe, x, z, rot, skin_index)
         local builder = player.components.builder
         if builder ~= nil then
             for k, v in pairs(AllRecipes) do
                 if v.rpc_id == recipe then
-                    builder:MakeRecipeAtPoint(v, Vector3(x, 0, z), rot)
+					local skin = nil
+                    if skin_index ~= nil then
+                       skin = PREFAB_SKINS[v.name][skin_index]
+                    end
+                    builder:MakeRecipeAtPoint(v, Vector3(x, 0, z), rot, skin)
                     return
                 end
             end
@@ -436,6 +444,30 @@ local RPC_HANDLERS =
 
     Vote = function(player, option_index)
         TheWorld.net.components.voter:ReceivedVote(player, option_index)
+    end,
+
+    OpenGift = function(player)
+        local giftreceiver = player.components.giftreceiver
+        if giftreceiver ~= nil then
+            giftreceiver:OpenNextGift()
+        end
+    end,
+
+    DoneOpenGift = function(player, usewardrobe)
+        local giftreceiver = player.components.giftreceiver
+        if giftreceiver ~= nil then
+            giftreceiver:OnStopOpenGift(usewardrobe)
+        end
+    end,
+
+    CloseWardrobe = function(player, base_skin, body_skin, hand_skin, legs_skin, feet_skin)
+        player:PushEvent("ms_closewardrobe", {
+            base = base_skin,
+            body = body_skin,
+            hand = hand_skin,
+            legs = legs_skin,
+            feet = feet_skin,
+        })
     end,
 }
 
@@ -509,23 +541,26 @@ end
 
 MOD_RPC = {}
 MOD_RPC_HANDLERS = {}
-
+ 
 setmetadata(MOD_RPC)
 setmetadata(MOD_RPC_HANDLERS)
 
 function AddModRPCHandler( namespace, name, fn )
-    if MOD_RPC[namespace] == nil then
-        MOD_RPC[namespace] = {}
-        MOD_RPC_HANDLERS[namespace] = {}
+	if MOD_RPC[namespace] == nil then
+		MOD_RPC[namespace] = {}
+		MOD_RPC_HANDLERS[namespace] = {}
 
         setmetadata(MOD_RPC[namespace])
         setmetadata(MOD_RPC_HANDLERS[namespace])
-    end
+	end
+	
 
-    table.insert(MOD_RPC_HANDLERS[namespace], fn)
+	table.insert(MOD_RPC_HANDLERS[namespace], fn)
     MOD_RPC[namespace][name] = { namespace = namespace, id = #MOD_RPC_HANDLERS[namespace] }
 
     setmetadata(MOD_RPC[namespace][name])
+	
+	setmetadata(MOD_RPC[namespace][name])
 end
 
 function SendModRPCToServer(id_table, ...)
