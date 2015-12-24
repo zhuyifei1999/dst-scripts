@@ -704,7 +704,10 @@ local COMPONENT_ACTIONS =
         end,
 
         edible = function(inst, doer, actions, right)
-            if right or inst.replica.equippable == nil then
+            if (right or inst.replica.equippable == nil) and
+                not (doer.replica.inventory:GetActiveItem() == inst and
+                    doer.replica.rider ~= nil and
+                    doer.replica.rider:IsRiding()) then
                 for k, v in pairs(FOODGROUP) do
                     if doer:HasTag(v.name.."_eater") then
                         for i, v2 in ipairs(v.types) do

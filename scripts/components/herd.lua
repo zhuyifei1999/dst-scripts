@@ -2,6 +2,16 @@ local function _OnUpdate(inst, self)
     self:OnUpdate()
 end
 
+local function AddMemberListeners(self, member)
+    self.inst:ListenForEvent("onremove", self._onmbmerkilled, member)
+    self.inst:ListenForEvent("death", self._onmemberkilled, member)
+end
+
+local function RemoveMemberListeners(self, member)
+    self.inst:RemoveEventCallback("onremove", self._onmemberkilled, member)
+    self.inst:RemoveEventCallback("death", self._onmemberkilled, member)
+end
+
 local Herd = Class(function(self, inst)
     self.inst = inst
     self.maxsize = 12
@@ -19,10 +29,15 @@ local Herd = Class(function(self, inst)
     self.updatepos = true
 
     self.task = self.inst:DoPeriodicTask(math.random() * 2 + 6, _OnUpdate, nil, self)
+
+    self._onmemberkilled = function(member) self:RemoveMember(member) end
 end)
 
 function Herd:OnRemoveFromEntity()
     self.task:Cancel()
+    for k, v in pairs(self.members) do
+        RemoveMemberListeners(self, k)
+    end
 end
 
 function Herd:GetDebugString()
@@ -72,6 +87,8 @@ function Herd:AddMember(inst)
         --This really should never happen but if it does it's not the end of the world...
         --assert(self.membercount <= self.maxsize, "We've got too many beefalo!")
 
+        AddMemberListeners(self, inst)
+
         if inst.components.knownlocations ~= nil then
             inst.components.knownlocations:RememberLocation("herd", self.inst:GetPosition())
         end
@@ -81,7 +98,6 @@ function Herd:AddMember(inst)
         if self.addmember ~= nil then
             self.addmember(self.inst, inst)
         end
-        self.inst:ListenForEvent("onremove", function(inst) self:RemoveMember(inst) end, inst)
 
         if self.onfull ~= nil and self.membercount == self.maxsize then
             self.onfull(self.inst)
@@ -91,6 +107,8 @@ end
 
 function Herd:RemoveMember(inst)
     if self.members[inst] then
+        RemoveMemberListeners(self, inst)
+
         if inst.components.knownlocations ~= nil then
             inst.components.knownlocations:RememberLocation("herd", nil)
         end
@@ -200,7 +218,6 @@ function Herd:OnSave()
 
     return data, data.members
 end
-
 
 function Herd:LoadPostPass(newents, savedata)
     if savedata.members ~= nil then

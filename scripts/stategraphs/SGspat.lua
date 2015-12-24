@@ -54,13 +54,8 @@ local states=
         
         onenter = function(inst, pushanim)
             inst.components.locomotor:StopMoving()
-            if inst.hairGrowthPending then
-                inst.sg:GoToState("hair_growth")
-            else
-                inst.AnimState:PlayAnimation("idle_loop", true)
-                
-                inst.sg:SetTimeout(2 + 2*math.random())
-            end
+            inst.AnimState:PlayAnimation("idle_loop", true)
+            inst.sg:SetTimeout(2 + 2*math.random())
         end,
         
         ontimeout=function(inst)
@@ -217,73 +212,6 @@ local states=
             inst.components.lootdropper:DropLoot(Vector3(inst.Transform:GetWorldPosition()))            
         end,
         
-    },
-
-    
-    State{
-        name = "hair_growth",
-        tags = {"busy"},
-        
-        onenter = function(inst)
-            inst.components.locomotor:StopMoving()
-            inst.AnimState:PlayAnimation("hair_growth_pre")
-            inst.SoundEmitter:PlaySound("dontstarve/beefalo/hairgrow_vocal")
-        end,
-        
-        events=
-        {
-            EventHandler("animover", function(inst) inst.sg:GoToState("hair_growth_pop") end),
-        },
-    },
-    
-    State{
-        name = "hair_growth_pop",
-        tags = {"busy"},
-        
-        onenter = function(inst)
-            inst.components.locomotor:StopMoving()
-            inst.AnimState:PlayAnimation("hair_growth") 
-                inst.SoundEmitter:PlaySound("dontstarve/beefalo/hairgrow_pop")
-                if inst:HasTag("baby") and inst.components.growable then
-                    inst.AnimState:SetBuild("beefalo_baby_build")
-                    inst.components.growable:SetStage(inst.components.growable:GetNextStage() )
-                elseif inst.components.beard then
-                    local herd = inst.components.herdmember and inst.components.herdmember:GetHerd()
-                    if herd and herd.components.mood and herd.components.mood:IsInMood() then
-                        inst.AnimState:SetBuild("beefalo_heat_build") 
-                    else
-                        inst.AnimState:SetBuild("beefalo_build") 
-                    end
-                    inst.components.beard.bits = 3
-                end
-                inst.hairGrowthPending = false
-        end,
-        
-        events=
-        {
-            EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
-        },
-    },
-    
-    State{
-        name = "shaved",
-        tags = {"busy", "sleeping"},
-        
-        onenter = function(inst)
-            inst.AnimState:SetBuild("beefalo_shaved_build")
-            inst.AnimState:PlayAnimation("shave")
-        end,
-        
-        events=
-        {
-            EventHandler("animover", function(inst)
-                if inst.components.sleeper and inst.components.sleeper:IsAsleep() then
-                    inst.sg:GoToState("sleeping")
-                else
-                    inst.sg:GoToState("wake")
-                end
-            end),
-        },
     },
 }
 

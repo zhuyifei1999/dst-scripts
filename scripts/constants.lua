@@ -896,8 +896,8 @@ FOODGROUP =
     },
     WOODIE = 
     {
-    	name = "WOODIE",
-    	types =
+        name = "WOODIE",
+        types =
         {
             FOODTYPE.MEAT,
             FOODTYPE.VEGGIE,
@@ -905,8 +905,9 @@ FOODGROUP =
             FOODTYPE.SEEDS,
             FOODTYPE.GENERIC,
             FOODTYPE.WOOD,
+            FOODTYPE.ROUGHAGE,
         },
-	},
+    },
     BERRIES_AND_SEEDS =
     {
         name = "BERRIES_AND_SEEDS",
@@ -923,8 +924,8 @@ FOODGROUP =
         {
             FOODTYPE.MEAT,
             FOODTYPE.VEGGIE,
-			FOODTYPE.BERRY,
-			FOODTYPE.GENERIC,
+            FOODTYPE.BERRY,
+            FOODTYPE.GENERIC,
         },
     },
     MOOSE =
@@ -934,17 +935,17 @@ FOODGROUP =
         {
             FOODTYPE.MEAT,
             FOODTYPE.VEGGIE,
-			FOODTYPE.SEEDS,
+            FOODTYPE.SEEDS,
         },
     },
 }
 
 CHARACTER_INGREDIENT =
 {
-	HEALTH = "decrease_health",
-	MAX_HEALTH = "half_health",
-	SANITY = "decrease_sanity",
-	MAX_SANITY = "half_sanity",
+    HEALTH = "decrease_health",
+    MAX_HEALTH = "half_health",
+    SANITY = "decrease_sanity",
+    MAX_SANITY = "half_sanity",
 }
 
 --Character ingredient amounts must be multiples of 5
