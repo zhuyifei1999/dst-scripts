@@ -348,6 +348,8 @@ local PlayerList = Class(Widget, function(self, owner, nextWidgets)
 	Widget._ctor(self, "PlayerList")
 
 	self.proot = self:AddChild(Widget("ROOT"))
+
+    self.numPlayers = 0
     
     self:BuildPlayerList(nil, nextWidgets)
 
@@ -434,51 +436,7 @@ function PlayerList:BuildPlayerList(players, nextWidgets)
 
 end
 
-
-local testdata = {
-		{
-			name = "Harry",
-			userid = 0123456,
-			prefab = "wilson"
-		},
-		{
-			name = "Ginny",
-			userid = 0123456,
-			prefab = "willow",
-		},
-		{
-			name = "Ron",
-			userid = 8900876,
-			prefab = "woodie"
-		},
-		{
-			name = "Hermione",
-			userid = 4950980709,
-			prefab = "wickerbottom"
-		},
-		{
-			name = "Luna",
-			userid = 23456909090,
-			prefab = "wendy",
-		},
-		{
-			name = "Hagrid",
-			userid = 1234253452,
-			prefab = "wolfgang",
-		},
-		{
-			name = "Dumbledore",
-			userid = 0293845032948,
-			prefab = "wes"
-		},
-	}
-
 function PlayerList:GetPlayerTable()
-	-- Testing
-	
-	--return testdata
-	
-
     local ClientObjs = TheNet:GetClientTable()
     if ClientObjs == nil then
         return {}
@@ -494,9 +452,6 @@ function PlayerList:GetPlayerTable()
         end
     end
     return ClientObjs
-    
 end
-
-
 
 return PlayerList

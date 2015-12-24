@@ -61,7 +61,6 @@ local LobbyScreen = Class(Screen, function(self, profile, cb, no_backbutton, def
 	end
 
     self.currentcharacter = nil
-    self.numPlayers = 0
     self.time_to_refresh = REFRESH_INTERVAL
     self.active_tab = "players"
 
@@ -720,11 +719,8 @@ function LobbyScreen:SelectPortrait()
 			else
 				self.characterdetails:SetString(STRINGS.CHARACTER_DESCRIPTIONS[herocharacter] or "")
 			end
-
-			
 		end
 		
-
 		self.dressup:UpdateSpinners()
 		
 		self.can_accept = true
@@ -769,8 +765,6 @@ function LobbyScreen:GetHelpText()
     return table.concat(t, "  ")
 end
 
-
-
 function LobbyScreen:OnUpdate(dt)
     if self.time_to_refresh > dt then
         self.time_to_refresh = self.time_to_refresh - dt
@@ -780,13 +774,13 @@ function LobbyScreen:OnUpdate(dt)
         local right_widget = self.in_loadout and self.dressup or self.character_scroll_list
 
         local players = self.playerList:GetPlayerTable()
-        if #players ~= self.numPlayers then
+        if #players ~= self.playerList.numPlayers then
             --rebuild if player count changed
             self.playerList:BuildPlayerList(players, {right = right_widget, down = self.chatbox})
         else
             --rebuild if players changed even though count didn't change
             for i, v in ipairs(players) do
-                local listitem = self.scroll_list.items[i]
+                local listitem = self.playerList.scroll_list.items[i]
                 if listitem == nil or
                     v.userid ~= listitem.userid or
                     (v.performance ~= nil) ~= (listitem.performance ~= nil) then
@@ -796,7 +790,7 @@ function LobbyScreen:OnUpdate(dt)
             end
 
             --refresh existing players
-            for i, widget in ipairs(self.player_widgets) do
+            for i, widget in ipairs(self.playerList.player_widgets) do
                 for i2, data in ipairs(players) do
                     if widget.userid == data.userid and widget.characterBadge.ishost == (data.performance ~= nil) then
                         widget.characterBadge:Set(data.prefab or "", data.colour or DEFAULT_PLAYER_COLOUR, widget.characterBadge.ishost, data.userflags or 0)
@@ -815,6 +809,5 @@ function LobbyScreen:UpdateSpinners()
 	self.dressup:UpdateSpinners()
 	self:SetPortraitImage()
 end
-
 
 return LobbyScreen
