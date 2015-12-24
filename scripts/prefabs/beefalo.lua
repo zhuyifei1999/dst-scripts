@@ -576,6 +576,12 @@ local function beefalo()
     inst.components.sleeper:SetResistance(3)
     inst.components.sleeper.sleeptestfn = MountSleepTest
 
+    inst.ApplyBuildOverrides = ApplyBuildOverrides
+    inst.ClearBuildOverrides = ClearBuildOverrides
+
+    inst.tendency = TENDENCY.DEFAULT
+    inst._bucktask = nil
+
     -- Herdmember component is ONLY used when feral
     inst:AddComponent("herdmember")
     inst.components.herdmember:Enable(true)
@@ -601,12 +607,6 @@ local function beefalo()
 
     MakeHauntablePanic(inst)
     AddHauntableCustomReaction(inst, CustomOnHaunt, true, false, true)
-
-    inst.ApplyBuildOverrides = ApplyBuildOverrides
-    inst.ClearBuildOverrides = ClearBuildOverrides
-
-    inst.tendency = TENDENCY.DEFAULT
-    inst._bucktask = nil
 
     inst.SetTendency = SetTendency
     inst:SetTendency()

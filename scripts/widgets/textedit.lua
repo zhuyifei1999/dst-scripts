@@ -117,7 +117,7 @@ function TextEdit:OnTextInput(text)
 	end
 	
 	-- Note: even though text is in utf8, only testing the first bit is enough based on the current exclusion list
-	local invalid_chars = string.char(8, 10, 13, 27)
+	local invalid_chars = string.char(8, 10, 13, 22, 27)
 	if string.find( invalid_chars, text, 1, true) then
 		return
 	end
