@@ -674,7 +674,7 @@ end
 
 function DressupPanel:Reset(set_spinner_to_new_item)
 	local savedBaseForCharacter = self.profile:GetBaseForCharacter(self.currentcharacter)
-	if not savedBaseForCharacter then 
+	if not savedBaseForCharacter or savedBaseForCharacter == "" then -- checking == "" is for legacy profiles
 		savedBaseForCharacter = self.currentcharacter.."_none"
 	end
 	local savedSkinsForCharacter = self.profile:GetSkinsForCharacter(self.currentcharacter, savedBaseForCharacter)
