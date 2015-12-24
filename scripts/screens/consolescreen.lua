@@ -302,7 +302,7 @@ function ConsoleScreen:DoInit()
 	self.console_edit.OnTextEntered = function() self:OnTextEntered() end
 	--self.console_edit:SetLeftMouseDown( function() self:SetFocus( self.console_edit ) end )
 	self.console_edit:SetFocusedImage(self.edit_bg, "images/textboxes.xml", "textbox_long_over.tex", "textbox_long.tex")
-	self.console_edit:SetInvalidCharacterFilter( [[`]] )
+	self.console_edit:SetInvalidCharacterFilter( [[`	]] )
     self.console_edit:SetPassControlToScreen(CONTROL_CANCEL, true)
 
 	self.console_edit:SetString("")

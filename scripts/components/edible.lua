@@ -30,7 +30,7 @@ local Edible = Class(function(self, inst)
 
     self.temperaturedelta = 0
     self.temperatureduration = 0
-    
+
     self.stale_hunger = TUNING.STALE_FOOD_HUNGER
     self.stale_health = TUNING.STALE_FOOD_HEALTH
 
@@ -63,9 +63,9 @@ function Edible:GetWoodiness(eater)
 end
 
 function Edible:GetSanity(eater)
-    local ignore_spoilage = not self.degrades_with_spoilage or ((eater and eater.components.eater and eater.components.eater.ignoresspoilage) or self.sanityvalue < 0)
+    local ignore_spoilage = not self.degrades_with_spoilage or self.sanityvalue < 0 or (eater ~= nil and eater.components.eater ~= nil and eater.components.eater.ignoresspoilage)
 
-    if self.inst.components.perishable and not ignore_spoilage then
+    if not ignore_spoilage and self.inst.components.perishable ~= nil then
         if self.inst.components.perishable:IsStale() then
             if self.sanityvalue > 0 then
                 return 0
@@ -80,34 +80,33 @@ end
 
 function Edible:GetHunger(eater)
     local multiplier = 1
-    
-    local ignore_spoilage = not self.degrades_with_spoilage or ((eater and eater.components.eater and eater.components.eater.ignoresspoilage) or self.hungervalue < 0)
-    
-    if self.inst.components.perishable and not ignore_spoilage then
+    local ignore_spoilage = not self.degrades_with_spoilage or self.hungervalue < 0 or (eater ~= nil and eater.components.eater ~= nil and eater.components.eater.ignoresspoilage)
+
+    if not ignore_spoilage and self.inst.components.perishable ~= nil then
         if self.inst.components.perishable:IsStale() then
             multiplier = self.stale_hunger
         elseif self.inst.components.perishable:IsSpoiled() then
             multiplier = self.spoiled_hunger
         end
     end
-    
-    return multiplier*(self.hungervalue)
+
+    return multiplier * self.hungervalue
 end
 
 function Edible:GetHealth(eater)
     local multiplier = 1
-    local healthvalue = self.gethealthfn and self.gethealthfn(self.inst, eater) or self.healthvalue
+    local healthvalue = self.gethealthfn ~= nil and self.gethealthfn(self.inst, eater) or self.healthvalue
 
-    local ignore_spoilage = not self.degrades_with_spoilage or (eater and eater.components.eater and eater.components.eater.ignoresspoilage) or healthvalue < 0
-    
-    if self.inst.components.perishable and not ignore_spoilage then
+    local ignore_spoilage = not self.degrades_with_spoilage or healthvalue < 0 or (eater ~= nil and eater.components.eater ~= nil and eater.components.eater.ignoresspoilage)
+
+    if not ignore_spoilage and self.inst.components.perishable ~= nil then
         if self.inst.components.perishable:IsStale() then
             multiplier = self.stale_health
         elseif self.inst.components.perishable:IsSpoiled() then
             multiplier = self.spoiled_health
         end
     end
-    return multiplier*(healthvalue)
+    return multiplier * healthvalue
 end
 
 function Edible:GetDebugString()

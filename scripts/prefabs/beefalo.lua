@@ -4,8 +4,8 @@ local assets =
     Asset("ANIM", "anim/beefalo_actions.zip"),
     Asset("ANIM", "anim/beefalo_actions_domestic.zip"),
     Asset("ANIM", "anim/beefalo_build.zip"),
-    Asset("ANIM", "anim/beefalo_heat_build.zip"),
     Asset("ANIM", "anim/beefalo_shaved_build.zip"),
+    Asset("ANIM", "anim/beefalo_baby_build.zip"),
 
     Asset("ANIM", "anim/beefalo_domesticated.zip"),
     Asset("ANIM", "anim/beefalo_personality_docile.zip"),

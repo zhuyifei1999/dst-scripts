@@ -117,33 +117,38 @@ function Eater:Eat(food)
     -- wigfrid) can TRY to eat all foods (they get the actions for it) but upon actually put it in 
     -- their mouth, they bail and "spit it out" so to speak.
     if self:PrefersToEat(food) then
-        if self.inst.components.health ~= nil and
-            (food.components.edible.healthvalue >= 0 or self:DoFoodEffects(food)) then
-            local delta = food.components.edible:GetHealth(self.inst) * self.healthabsorption
-            if delta ~= 0 then
-                self.inst.components.health:DoDelta(delta, nil, food.prefab)
-            end
-        end
-
-        if self.inst.components.hunger ~= nil then
-            local delta = food.components.edible:GetHunger(self.inst) * self.hungerabsorption
-            if delta ~= 0 then
-                self.inst.components.hunger:DoDelta(delta)
-            end
-        end
-
-        if self.inst.components.sanity ~= nil and
-            (food.components.edible.sanityvalue >= 0 or self:DoFoodEffects(food)) then
-            local delta = food.components.edible:GetSanity(self.inst) * self.sanityabsorption
-            if delta ~= 0 then
-                self.inst.components.sanity:DoDelta(delta)
-            end
-        end
-
+        local iswoodiness = false
         if self.inst.components.beaverness ~= nil then
             local delta = food.components.edible:GetWoodiness(self.inst)
             if delta ~= 0 then
                 self.inst.components.beaverness:DoDelta(delta)
+                iswoodiness = true
+            end
+        end
+
+        --If gained woodiness from eating, then don't gain any other stats
+        if not iswoodiness then
+            if self.inst.components.health ~= nil and
+                (food.components.edible.healthvalue >= 0 or self:DoFoodEffects(food)) then
+                local delta = food.components.edible:GetHealth(self.inst) * self.healthabsorption
+                if delta ~= 0 then
+                    self.inst.components.health:DoDelta(delta, nil, food.prefab)
+                end
+            end
+
+            if self.inst.components.hunger ~= nil then
+                local delta = food.components.edible:GetHunger(self.inst) * self.hungerabsorption
+                if delta ~= 0 then
+                    self.inst.components.hunger:DoDelta(delta)
+                end
+            end
+
+            if self.inst.components.sanity ~= nil and
+                (food.components.edible.sanityvalue >= 0 or self:DoFoodEffects(food)) then
+                local delta = food.components.edible:GetSanity(self.inst) * self.sanityabsorption
+                if delta ~= 0 then
+                    self.inst.components.sanity:DoDelta(delta)
+                end
             end
         end
 

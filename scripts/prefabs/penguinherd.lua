@@ -28,7 +28,7 @@ end
 local function AddMember(inst, member)
     if inst.components.mood ~= nil then
         member:PushEvent(inst.components.mood:IsInMood() and "entermood" or "leavemood")
-        end
+    end
 end
 
 --local function OnFull(inst)
