@@ -76,6 +76,9 @@ function CharacterSelectScreen:Close()
 end
 
 
+local SCROLL_REPEAT_TIME = .15
+local MOUSE_SCROLL_REPEAT_TIME = 0
+
 function CharacterSelectScreen:OnControl(control, down)
     
     if CharacterSelectScreen._base.OnControl(self, control, down) then return true end
@@ -86,8 +89,6 @@ function CharacterSelectScreen:OnControl(control, down)
 		return true 
     end
 
-    -- Use d-pad buttons for cycling players list
-    -- Add trigger buttons to switch tabs
    	if not down then 
 	 	if control == CONTROL_PREVVALUE then  -- r-stick left
 	    	self.character_list:Scroll(-1)
@@ -98,6 +99,28 @@ function CharacterSelectScreen:OnControl(control, down)
 			TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
 			return true
 	    end
+	elseif down then
+		if control == CONTROL_SCROLLBACK then
+            if not self.character_list.repeat_time or self.character_list.repeat_time <= 0 then
+               	self.character_list:Scroll(-1)
+               	TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+                self.character_list.repeat_time =
+                    TheInput:GetControlIsMouseWheel(control)
+                    and MOUSE_SCROLL_REPEAT_TIME
+                    or SCROLL_REPEAT_TIME
+            end
+            return true
+        elseif control == CONTROL_SCROLLFWD then
+        	if not self.character_list.repeat_time or self.character_list.repeat_time <= 0 then
+                self.character_list:Scroll(1)
+				TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+                self.character_list.repeat_time =
+                    TheInput:GetControlIsMouseWheel(control)
+                    and MOUSE_SCROLL_REPEAT_TIME
+                    or SCROLL_REPEAT_TIME
+            end
+            return true
+        end
 	end
 end
 

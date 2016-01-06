@@ -17,7 +17,11 @@ local events=
     CommonHandlers.OnFreeze(),
 
     EventHandler("doattack", function(inst, data) if not inst.components.health:IsDead() then inst.sg:GoToState("attack", data.target) end end),
-    --EventHandler("death", function(inst) inst.sg:GoToState("death") end),
+    EventHandler("death", function(inst)
+        if inst.components.rideable == nil or not inst.components.rideable:IsBeingRidden() then
+            inst.sg:GoToState("death")
+        end
+    end),
     EventHandler("attacked", function(inst) if not inst.components.health:IsDead() and not inst.sg:HasStateTag("attack") then inst.sg:GoToState("hit") end end),
     EventHandler("heardhorn", function(inst, data)
         if not inst.components.health:IsDead()
@@ -301,50 +305,47 @@ local states=
             end
         end,
     },
-    
+
     State{
         name = "attack",
         tags = {"attack", "busy"},
-        
-        onenter = function(inst, target)    
-			inst.sg.statemem.target = target
+
+        onenter = function(inst, target)
+            inst.sg.statemem.target = target
             inst.SoundEmitter:PlaySound(inst.sounds.angry)
             inst.components.combat:StartAttack()
             inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("atk_pre")
             inst.AnimState:PushAnimation("atk", false)
         end,
-        
-        
+
         timeline=
         {
             TimeEvent(15*FRAMES, function(inst) inst.components.combat:DoAttack(inst.sg.statemem.target) end),
         },
-        
+
         events=
         {
             EventHandler("animqueueover", function(inst) inst.sg:GoToState("idle") end),
         },
-    },    
-    
+    },
+
     State{
         name = "death",
         tags = {"busy"},
-        
+
         onenter = function(inst)
-			inst.SoundEmitter:PlaySound(inst.sounds.yell)
+            inst.SoundEmitter:PlaySound(inst.sounds.yell)
             inst.AnimState:PlayAnimation("death")
             inst.Physics:Stop()
-            RemovePhysicsColliders(inst)            
-            inst.components.lootdropper:DropLoot(Vector3(inst.Transform:GetWorldPosition()))            
+            RemovePhysicsColliders(inst)
+            inst.components.lootdropper:DropLoot(inst:GetPosition())
 
             -- we handle our own erode, rather than the health component ~gjans
             inst:DoTaskInTime(2, ErodeAway)
         end,
-        
     },
 
-    
     State{
         name = "become_domesticated",
         tags = {"busy"},

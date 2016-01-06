@@ -45,7 +45,27 @@ function SetSkinMode( anim_state, prefab, base_skin, clothing_names, skintype, d
 				allow_arms = false
 			elseif skintype == "mighty_skin" then
 				allow_arms = false
-				allow_torso = false
+			
+				--check to see if we're wearing a one piece clothing, if so, allow the torso
+				local name = clothing_names["body"]
+				if CLOTHING[name] ~= nil then
+					local has_torso = false
+					local has_pelvis = false
+					for _,sym in pairs(CLOTHING[name].symbol_overrides) do
+						if sym == "torso" then
+							has_torso = true
+						end
+						if sym == "torso_pelvis" then
+							has_pelvis = true
+						end
+					end
+					if has_torso and has_pelvis then
+						--one piece clothing, so allow the torso
+						allow_torso = true
+					else
+						allow_torso = false
+					end
+				end
 			end
 		end
 		
@@ -63,6 +83,7 @@ function SetSkinMode( anim_state, prefab, base_skin, clothing_names, skintype, d
 					allow_arms = true
 					allow_torso = true
 				end
+
 				for _,sym in pairs(CLOTHING[name].symbol_overrides) do
 					if not ModManager:IsModCharacterClothingSymbolExcluded( prefab, sym ) then
 						if (not allow_torso and sym == "torso") or (not allow_arms and (sym == "arm_upper" or sym == "arm_upper_skin" or sym == "arm_lower")) then

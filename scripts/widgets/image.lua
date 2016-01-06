@@ -22,6 +22,8 @@ function Image:SetAlphaRange(min, max)
 	self.inst.ImageWidget:SetAlphaRange(min, max)
 end
 
+-- NOTE: the default_tex parameter is handled, but using 
+-- it will produce a bunch of warnings in the log.
 function Image:SetTexture(atlas, tex, default_tex)
     assert( atlas ~= nil )
     assert( tex ~= nil )

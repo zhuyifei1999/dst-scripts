@@ -180,6 +180,8 @@ function GiftItemPopUp:RevealItem(idx)
         if skin_data then
             if table.contains(skin_data.tags, "CRAFTABLE") then 
             	self.disable_use_now = true
+            elseif string.find( item_name, self.owner.prefab ) == nil then
+            	self.disable_use_now = true
             else
             	self.disable_use_now = false
             end

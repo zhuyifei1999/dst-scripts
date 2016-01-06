@@ -18,12 +18,12 @@ end
 
 local function supercrack(inst)
     local x,y,z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x,y,z, TUNING.WHIP_SUPERCRACK_RANGE, {"_combat"}, { "player" })
+    local ents = TheSim:FindEntities(x,y,z, TUNING.WHIP_SUPERCRACK_RANGE, { "_combat" }, { "player" })
     for i,v in ipairs(ents) do
         if v.components.combat:HasTarget() then
             v.components.combat:DropTarget()
-            if v.sg:HasState("hit")
-                and v.components.health and not v.components.health:IsDead()
+            if v.sg ~= nil and v.sg:HasState("hit")
+                and v.components.health ~= nil and not v.components.health:IsDead()
                 and not v.sg:HasStateTag("transform")
                 and not v.sg:HasStateTag("nointerrupt")
                 and not v.sg:HasStateTag("frozen")
@@ -83,8 +83,8 @@ local function fn()
         return inst
     end
 
-	inst:AddComponent("weapon")
-	inst.components.weapon:SetDamage(TUNING.WHIP_DAMAGE)
+    inst:AddComponent("weapon")
+    inst.components.weapon:SetDamage(TUNING.WHIP_DAMAGE)
     inst.components.weapon:SetRange(TUNING.WHIP_RANGE)
     inst.components.weapon:SetOnAttack(onattack)
 

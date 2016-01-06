@@ -347,9 +347,9 @@ end
 
 local function OnDeath(inst, data)
     if inst.components.rideable:IsBeingRidden() then
+        --SG won't handle "death" event while we're being ridden
+        --SG is forced into death state AFTER dismounting (OnRiderChanged)
         inst.components.rideable:Buck(true)
-    else
-        inst.sg:GoToState("death") -- force it to the death state -- this is what the SG event used to do
     end
 end
 
@@ -419,6 +419,10 @@ local function OnRiderChanged(inst, data)
         end
         inst:ListenForEvent("doattack", inst._OnRiderDoAttackCB, data.newrider)
         inst._bucktask = inst:DoTaskInTime(CalculateBuckDelay(inst), OnBuckTime)
+    elseif inst.components.health:IsDead() then
+        if inst.sg.currentstate.name ~= "death" then
+            inst.sg:GoToState("death")
+        end
     elseif inst.components.sleeper ~= nil then
         inst.components.sleeper:StartTesting()
     end
