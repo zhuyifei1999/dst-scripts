@@ -813,7 +813,7 @@ function GlobalInit()
     if PLATFORM == "PS4" then
         PreloadSounds()
     end
-    --TheSim:SendHardwareStats()
+    TheSim:SendHardwareStats()
     FirstStartupForNetworking = true
 end
 

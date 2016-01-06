@@ -4,6 +4,10 @@ local Button = require "widgets/button"
 local ImageButton = require "widgets/imagebutton"
 local TEMPLATES = require "widgets/templates"
 
+
+local SCROLL_REPEAT_TIME = .15
+local MOUSE_SCROLL_REPEAT_TIME = 0
+
 local CharacterSelect = Class(Widget, function(self, owner, character, cbPortraitSelected, additionalCharacters)
 	self.owner = owner
 	Widget._ctor(self, "CharacterSelect")
@@ -15,8 +19,15 @@ local CharacterSelect = Class(Widget, function(self, owner, character, cbPortrai
     self:BuildCharactersList(additionalCharacters or {})
     self:SetPortrait()
 
+    self.repeat_time = TheInput:ControllerAttached() and SCROLL_REPEAT_TIME or MOUSE_SCROLL_REPEAT_TIME
+    self:StartUpdating()
 end)
 
+function CharacterSelect:OnUpdate(dt)
+	if self.repeat_time > -.01 then
+        self.repeat_time = self.repeat_time - dt
+    end
+end
 
 function CharacterSelect:WrapIndex(index)
 	local new_index = index
@@ -123,7 +134,11 @@ function CharacterSelect:SetPortrait()
 		local skin = "_none"
 
 		-- get correct skin here if bases are enabled
-		self.heroportrait:SetTexture("bigportraits/" .. herocharacter..".xml", herocharacter .. skin .. ".tex", herocharacter .. ".tex")
+		if not table.contains(DST_CHARACTERLIST, herocharacter) then 
+			self.heroportrait:SetTexture("bigportraits/" .. herocharacter..".xml", herocharacter .. ".tex")
+		else
+			self.heroportrait:SetTexture("bigportraits/" .. herocharacter..".xml", herocharacter .. skin .. ".tex", herocharacter .. ".tex")
+		end
 
 		-- Slightly hacky way of dealing with mod characters. This function doesn't take a default image and mod characters don't have the 
 		-- "_none" appended.
