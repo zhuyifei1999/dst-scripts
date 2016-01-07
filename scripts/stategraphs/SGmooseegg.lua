@@ -125,7 +125,11 @@ local states =
 
 		onenter = function(inst)
 			inst:RemoveTag("lightningrod")
-			inst.AnimState:PlayAnimation("crack")
+            if inst:IsAsleep() then
+                inst.sg:GoToState("hatch")
+            else
+                inst.AnimState:PlayAnimation("crack")
+            end
 		end,
 
 		timeline =
@@ -143,7 +147,13 @@ local states =
 		tags = {"busy", "egg"},
 
 		onenter = function(inst)
-			inst.AnimState:PlayAnimation("hatch")
+            if inst:IsAsleep() then
+                inst.components.named.possiblenames = { STRINGS.NAMES["MOOSENEST1"], STRINGS.NAMES["MOOSENEST2"] }
+                Hatch(inst)
+                inst.sg:GoToState("idle_empty")
+            else
+                inst.AnimState:PlayAnimation("hatch")
+            end
 		end,
 
 		timeline =

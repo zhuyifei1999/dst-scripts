@@ -216,7 +216,12 @@ function PlayerHud:TogglePlayerAvatarPopup(player_name, data, show_net_profile)
             end
         end
     end
-    self.playeravatarpopup = self.controls.right_root:AddChild(PlayerAvatarPopup(self.owner, player_name, data, show_net_profile))
+    if self.owner.userid == data.userid then 
+    	-- Don't show steam button for yourself
+    	self.playeravatarpopup = self.controls.right_root:AddChild(PlayerAvatarPopup(self.owner, player_name, data, false))
+    else
+    	self.playeravatarpopup = self.controls.right_root:AddChild(PlayerAvatarPopup(self.owner, player_name, data, show_net_profile))
+    end
 end
 
 function PlayerHud:OpenItemManagerScreen()
@@ -554,7 +559,7 @@ function PlayerHud:InspectSelf()
         local client_obj = TheNet:GetClientTableForUser(self.owner.userid)
         if client_obj ~= nil then
             --client_obj.inst = self.owner --don't track yourself
-            self:TogglePlayerAvatarPopup(client_obj.name, client_obj)
+            self:TogglePlayerAvatarPopup(client_obj.name, client_obj) -- don't show steam button for yourself
             return true
         end
     end

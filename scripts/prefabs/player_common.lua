@@ -8,13 +8,13 @@ local screen_fade_time = .4
 local DEFAULT_PLAYER_COLOUR = { 1, 1, 1, 1 }
 
 local function giveupstring(combat, target)
-    return GetString(combat.inst, "COMBAT_QUIT", target ~= nil and target:HasTag("prey") and "prey" or nil)
+    return GetString(combat.inst, "COMBAT_QUIT", target ~= nil and target:HasTag("prey") and not target:HasTag("hostile") and "PREY" or nil)
 end
 
 local function battlecrystring(combat, target)
     return target ~= nil
         and target:IsValid()
-        and GetString(combat.inst, "BATTLECRY", target:HasTag("prey") and "PREY" or target.prefab)
+        and GetString(combat.inst, "BATTLECRY", target:HasTag("prey") and not target:HasTag("hostile") and "PREY" or target.prefab)
         or nil
 end
 

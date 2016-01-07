@@ -29,17 +29,20 @@ local MAX_CHASEAWAY_DIST = 80
 local MAX_TARGET_SHARES = 5
 local SHARE_TARGET_DIST = 40
 
-local function OnEntityWake(inst)
-    if CHEATS_ENABLED then return end
+local function OnAutoRemove(inst)
+    inst._autoremovetask = nil
     if not TheWorld.state.iswinter or TheWorld.state.remainingdaysinseason < 3 then
         inst:Remove()
     end
 end
 
-local function OnEntitySleep(inst)
-    if CHEATS_ENABLED then return end
+local function CheckAutoRemove(inst)
+    if inst._autoremovetask ~= nil then
+        inst._autoremovetask:Cancel()
+        inst._autoremovetask = nil
+    end
     if not TheWorld.state.iswinter or TheWorld.state.remainingdaysinseason < 3 then
-        inst:Remove()
+        inst._autoremovetask = inst:DoTaskInTime(0, OnAutoRemove)
     end
 end
 
@@ -353,8 +356,8 @@ local function fn()
 
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad
-    inst.OnEntityWake = OnEntityWake
-    inst.OnEntitySleep = OnEntitySleep
+    inst.OnEntityWake = CheckAutoRemove
+    inst.OnEntitySleep = CheckAutoRemove
     inst.eggsLayed = 0
 
     return inst

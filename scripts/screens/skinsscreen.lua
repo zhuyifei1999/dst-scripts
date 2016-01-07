@@ -87,6 +87,11 @@ local function line_constructor(screen, parent, num_pictures, data)
 		widget.images[focus_column]:SetFocus()
 	end
 
+	widget.ForceFocus = function()
+		local focus_column = widget.screen.focus_column or 1
+		widget.images[focus_column]:Embiggen()
+	end
+
 	return widget
 end
 
@@ -204,24 +209,6 @@ function SkinsScreen:DoInit( )
 
     self:BuildDetailsPanel()
 
-    --self.divider = self.fixed_root:AddChild(Image("images/ui.xml", "line_vertical_5.tex"))
-    --self.divider:SetScale(1, 1)
-    --self.divider:SetPosition(RESOLUTION_X*.1, 0, 0)
-
-    --[[local items = {STRINGS.UI.SKINSSCREEN.NONE, STRINGS.UI.SKINSSCREEN.BODY, STRINGS.UI.SKINSSCREEN.HAND, STRINGS.UI.SKINSSCREEN.LEGS, STRINGS.UI.SKINSSCREEN.ITEM,
-     STRINGS.UI.SKINSSCREEN.COMMON, STRINGS.UI.SKINSSCREEN.CLASSY, STRINGS.UI.SKINSSCREEN.SPIFFY, STRINGS.UI.SKINSSCREEN.DISTINGUISHED, STRINGS.UI.SKINSSCREEN.ELEGANT, STRINGS.UI.SKINSSCREEN.ELEGANT, STRINGS.UI.SKINSSCREEN.LOYAL}
-    self.filters = self.fixed_root:AddChild(DropDown( 175, nil, STRINGS.UI.SKINSSCREEN.FILTERS, items, true, 
-    																		function(text) 
-    																			self:ApplyFilter(text) 
-    																		end, 
-    																		function(text) 
-    																			self:RemoveFilter(text)
-    																		end))
-    self.filters:SetPosition(-200, 370, 0)
-	]]
-    --self.num_items = self.fixed_root:AddChild(Text(BUTTONFONT, 20, STRINGS.UI.SKINSSCREEN.ITEMS..": "..#self.full_skins_list, {0, 0, 0, 1}))
-    --self.num_items:SetPosition(-335, -RESOLUTION_Y*.5 + 50)
-
     if not TheInput:ControllerAttached() then 
     	self.exit_button = self.fixed_root:AddChild(TEMPLATES.BackButton(function() self:Quit() end)) 
 
@@ -260,131 +247,6 @@ function SkinsScreen:ClearFocus()
 		end
 	end
 	--self.details_panel:Hide()
-end
-
-
-function SkinsScreen:ClearFilters()
-	--print("Clearing filters")
-	self.filters:ClearAllSelections()
-	self.applied_filters = {}
-end
-
-local typeList = {}
-typeList[STRINGS.UI.SKINSSCREEN.BASE] = "base" 
-typeList[STRINGS.UI.SKINSSCREEN.BODY] = "body" 
-typeList[STRINGS.UI.SKINSSCREEN.HAND] = "hand"
-typeList[STRINGS.UI.SKINSSCREEN.LEGS] = "legs" 
-typeList[STRINGS.UI.SKINSSCREEN.FEET] = "feet" 
-typeList[STRINGS.UI.SKINSSCREEN.ITEM] = "item"
-				
-local rarityList = {}
-rarityList[STRINGS.UI.SKINSSCREEN.COMMON] = STRINGS.UI.SKINSSCREEN.COMMON
-rarityList[STRINGS.UI.SKINSSCREEN.CLASSY] = STRINGS.UI.SKINSSCREEN.CLASSY
-rarityList[STRINGS.UI.SKINSSCREEN.SPIFFY] = STRINGS.UI.SKINSSCREEN.SPIFFY
-rarityList[STRINGS.UI.SKINSSCREEN.DISTINGUISHED] = STRINGS.UI.SKINSSCREEN.DISTINGUISHED
-rarityList[STRINGS.UI.SKINSSCREEN.ELEGANT] = STRINGS.UI.SKINSSCREEN.ELEGANT
-rarityList[STRINGS.UI.SKINSSCREEN.TIMELESS] = STRINGS.UI.SKINSSCREEN.TIMELESS
-rarityList[STRINGS.UI.SKINSSCREEN.LOYAL] = STRINGS.UI.SKINSSCREEN.LOYAL
-
-
--- Apply a filter.
--- If filter is "none", remove all filters.
--- If filter is nil, just reapply whatever is in the applied_filters list.
-function SkinsScreen:ApplyFilter(filter)
-
-	if filter == nil and #self.applied_filters == 0 then 
-		--print("No applied filters, using none")
-		filter = STRINGS.UI.SKINSSCREEN.NONE
-	end
-
-	if filter == STRINGS.UI.SKINSSCREEN.NONE then 
-		--print("Got filter none")
-		self:ClearFilters()
-		self.skins_list = self:CopySkinsList(self.full_skins_list)
-		self:BuildInventoryList(self.skins_list)
-	else
-		self.skins_list = nil
-
-		if filter and typeList[filter] then
-			filter = typeList[filter]
-		elseif filter and rarityList[filter] then 
-			filter = rarityList[filter]
-		end
-		
-		if filter then 
-			table.insert(self.applied_filters, filter)
-		end
-
-		--print("Got type filter", filter)
-		for k,v in ipairs(self.applied_filters) do
-			--print("Adding skin type ", v) 
-			if not self.skins_list then 
-				self.skins_list = self:AddSkinType(v)
-			else
-				local tempList = self:AddSkinType(v)
-				
-				for k2,v2 in ipairs(tempList) do 
-					--print("Inserting ", k2, v2)
-					if not table.contains(self.skins_list, v2) then 
-						table.insert(self.skins_list, v2)
-					end
-				end
-			end
-			--dumptable(self.skins_list)
-		end
-		
-		if not self.skins_list then 
-			self.skins_list = {}
-		end
-
-		-- Call BuildInventoryList again with the new skins_list
-		self:BuildInventoryList(self.skins_list)
-	end
-end
-
-
-function SkinsScreen:RemoveFilter(filter)
-	--print("Removing filter ", filter)
-	if filter and typeList[filter] then
-		filter = typeList[filter]
-	elseif filter and rarityList[filter] then 
-		filter = rarityList[filter]
-	end
-
-
-	local applied_filters = {}
-	for k,v in ipairs(self.applied_filters) do
-		if v ~= filter then 
-			table.insert(applied_filters, v)
-		end
-	end
-
-	self.applied_filters = applied_filters
-	if not self.applied_filters then 
-		self.applied_filters = {}
-	end
-
-	--print("Dumping applied_filters table:")
-	--dumptable(self.applied_filters)
-	self:ApplyFilter(nil)
-end
-
-
-function SkinsScreen:AddSkinType(filter)
-	--print("Adding skin type", filter)
-
-	local newList = {}
-
-	for k,v in ipairs(self.full_skins_list) do 
-		if v.type == filter then 
-			table.insert(newList, v)
-		elseif GetRarityForItem(v.type, v.item) == filter then 
-			table.insert(newList, v)
-		end
-	end
-
-	return newList
-
 end
 
 
@@ -696,6 +558,10 @@ end
 
 
 
+local SCROLL_REPEAT_TIME = .15
+local MOUSE_SCROLL_REPEAT_TIME = 0
+local STICK_SCROLL_REPEAT_TIME = .25
+
 function SkinsScreen:OnControl(control, down)
     
     if SkinsScreen._base.OnControl(self, control, down) then return true end
@@ -712,18 +578,45 @@ function SkinsScreen:OnControl(control, down)
 		return true
     end
 
-    -- Use d-pad buttons for paging skins list
-   	if not down then 
+   	if down then 
 	 	if control == CONTROL_PREVVALUE then  -- r-stick left
-	    	self.page_list:ChangePage(-1)
-			TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+	    	self:ScrollBack(control)
 			return true 
 		elseif control == CONTROL_NEXTVALUE then -- r-stick right
-			self.page_list:ChangePage(1)
-			TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+			self:ScrollFwd(control)
 			return true
-	    end
+		elseif control == CONTROL_SCROLLBACK then
+            self:ScrollBack(control)
+            return true
+        elseif control == CONTROL_SCROLLFWD then
+        	self:ScrollFwd(control)
+            return true
+       	end
 	end
+end
+
+function SkinsScreen:ScrollBack(control)
+	if not self.page_list.repeat_time or self.page_list.repeat_time <= 0 then
+       	self.page_list:ChangePage(-1)
+       	TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+        self.page_list.repeat_time =
+            TheInput:GetControlIsMouseWheel(control)
+            and MOUSE_SCROLL_REPEAT_TIME
+            or (control == CONTROL_SCROLLBACK and SCROLL_REPEAT_TIME) 
+            or (control == CONTROL_PREVVALUE and STICK_SCROLL_REPEAT_TIME)
+    end
+end
+
+function SkinsScreen:ScrollFwd(control)
+	if not self.page_list.repeat_time or self.page_list.repeat_time <= 0 then
+        self.page_list:ChangePage(1)
+		TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+        self.page_list.repeat_time =
+            TheInput:GetControlIsMouseWheel(control)
+            and MOUSE_SCROLL_REPEAT_TIME
+            or (control == CONTROL_SCROLLFWD and SCROLL_REPEAT_TIME) 
+            or (control == CONTROL_NEXTVALUE and STICK_SCROLL_REPEAT_TIME)
+    end
 end
 
 function SkinsScreen:GetHelpText()

@@ -35,7 +35,7 @@ end
 
 local function IsValidVictim(victim)
     return victim ~= nil
-        and not (victim:HasTag("prey") or
+        and not ((victim:HasTag("prey") and not victim:HasTag("hostile")) or
                 victim:HasTag("veggie") or
                 victim:HasTag("structure") or
                 victim:HasTag("wall") or

@@ -312,8 +312,9 @@ function LobbyScreen:BuildSidebar()
 	self.playerList = self.sidebar_root:AddChild(PlayerList(self, {right = self.character_scroll_list, down = self.chatbox}))
 	self:BuildChatWindow()
 
-	 self.sidebar_root.OnControl = function(widget, control, down)
-	
+	-- Don't use OnControl because we still need the standard Widget version of the function to 
+	-- call OnControl on the children.
+	self.sidebar_root.BlockScroll = function(widget, control, down)
     	local mouseX = TheInput:GetScreenPosition().x
         local w,h = TheSim:GetScreenSize()
     	
@@ -471,6 +472,7 @@ end
 
 local SCROLL_REPEAT_TIME = .15
 local MOUSE_SCROLL_REPEAT_TIME = 0
+local STICK_SCROLL_REPEAT_TIME = .25
 
 function LobbyScreen:OnControl(control, down)
     
@@ -483,7 +485,7 @@ function LobbyScreen:OnControl(control, down)
 		return true
 	end
 
-	if self.sidebar_root and self.sidebar_root:OnControl(control, down) then 
+	if self.sidebar_root and self.sidebar_root:BlockScroll(control, down) then 
 		return true
 	end
 
@@ -513,16 +515,12 @@ function LobbyScreen:OnControl(control, down)
     end
 
     -- Use right stick for cycling players list
-   	if not down then 
+   	if down then 
 	 	if not self.in_loadout and control == CONTROL_PREVVALUE then  -- r-stick left
-	    	self.character_scroll_list:Scroll(-1)
-			self:SelectPortrait()
-			TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+			self:ScrollBack(control)
 			return true 
 		elseif not self.in_loadout and control == CONTROL_NEXTVALUE then -- r-stick right
-	    	self.character_scroll_list:Scroll(1)
-			self:SelectPortrait()
-			TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+			self:ScrollFwd(control)
 			return true
 		elseif control == CONTROL_MENU_MISC_2 then
 			if not self.in_loadout then 
@@ -532,29 +530,15 @@ function LobbyScreen:OnControl(control, down)
 			end
 			TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
 			return true
+	    elseif not self.in_loadout then
+			if control == CONTROL_SCROLLBACK then
+	            self:ScrollBack(control)
+	            return true
+	        elseif control == CONTROL_SCROLLFWD then
+	        	self:ScrollFwd(control)
+	            return true
+	        end
 	    end
-	elseif down and not self.in_loadout then
-		if control == CONTROL_SCROLLBACK then
-            if not self.character_scroll_list.repeat_time or self.character_scroll_list.repeat_time <= 0 then
-               	self.character_scroll_list:Scroll(-1)
-               	TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
-                self.character_scroll_list.repeat_time =
-                    TheInput:GetControlIsMouseWheel(control)
-                    and MOUSE_SCROLL_REPEAT_TIME
-                    or SCROLL_REPEAT_TIME
-            end
-            return true
-        elseif control == CONTROL_SCROLLFWD then
-        	if not self.character_scroll_list.repeat_time or self.character_scroll_list.repeat_time <= 0 then
-                self.character_scroll_list:Scroll(1)
-				TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
-                self.character_scroll_list.repeat_time =
-                    TheInput:GetControlIsMouseWheel(control)
-                    and MOUSE_SCROLL_REPEAT_TIME
-                    or SCROLL_REPEAT_TIME
-            end
-            return true
-        end
     end
 
 	-- DEBUG ONLY:
@@ -569,6 +553,29 @@ function LobbyScreen:OnControl(control, down)
 	return false
 end
 
+function LobbyScreen:ScrollBack(control)
+	if not self.character_scroll_list.repeat_time or self.character_scroll_list.repeat_time <= 0 then
+       	self.character_scroll_list:Scroll(-1)
+       	TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+        self.character_scroll_list.repeat_time =
+            TheInput:GetControlIsMouseWheel(control)
+            and MOUSE_SCROLL_REPEAT_TIME
+            or (control == CONTROL_SCROLLBACK and SCROLL_REPEAT_TIME) 
+            or (control == CONTROL_PREVVALUE and STICK_SCROLL_REPEAT_TIME)
+    end
+end
+
+function LobbyScreen:ScrollFwd(control)
+	if not self.character_scroll_list.repeat_time or self.character_scroll_list.repeat_time <= 0 then
+        self.character_scroll_list:Scroll(1)
+		TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+        self.character_scroll_list.repeat_time =
+            TheInput:GetControlIsMouseWheel(control)
+            and MOUSE_SCROLL_REPEAT_TIME
+            or (control == CONTROL_SCROLLFWD and SCROLL_REPEAT_TIME) 
+            or (control == CONTROL_NEXTVALUE and STICK_SCROLL_REPEAT_TIME)
+    end
+end
 
 function LobbyScreen:DoFocusHookups()
 
