@@ -19,7 +19,7 @@ local CharacterSelect = Class(Widget, function(self, owner, character, cbPortrai
     self:BuildCharactersList(additionalCharacters or {})
     self:SetPortrait()
 
-    self.repeat_time = TheInput:ControllerAttached() and SCROLL_REPEAT_TIME or MOUSE_SCROLL_REPEAT_TIME
+    self.repeat_time = (TheInput:ControllerAttached() and SCROLL_REPEAT_TIME) or MOUSE_SCROLL_REPEAT_TIME
     self:StartUpdating()
 end)
 

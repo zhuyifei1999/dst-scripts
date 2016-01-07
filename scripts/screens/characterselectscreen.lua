@@ -78,6 +78,7 @@ end
 
 local SCROLL_REPEAT_TIME = .15
 local MOUSE_SCROLL_REPEAT_TIME = 0
+local STICK_SCROLL_REPEAT_TIME = .25
 
 function CharacterSelectScreen:OnControl(control, down)
     
@@ -89,39 +90,45 @@ function CharacterSelectScreen:OnControl(control, down)
 		return true 
     end
 
-   	if not down then 
+   	if down then 
 	 	if control == CONTROL_PREVVALUE then  -- r-stick left
-	    	self.character_list:Scroll(-1)
-			TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+	    	self:ScrollBack(control)
 			return true 
 		elseif control == CONTROL_NEXTVALUE then -- r-stick right
-			self.character_list:Scroll(1)
-			TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+			self:ScrollFwd(control)
 			return true
-	    end
-	elseif down then
-		if control == CONTROL_SCROLLBACK then
-            if not self.character_list.repeat_time or self.character_list.repeat_time <= 0 then
-               	self.character_list:Scroll(-1)
-               	TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
-                self.character_list.repeat_time =
-                    TheInput:GetControlIsMouseWheel(control)
-                    and MOUSE_SCROLL_REPEAT_TIME
-                    or SCROLL_REPEAT_TIME
-            end
+		elseif control == CONTROL_SCROLLBACK then
+            self:ScrollBack(control)
             return true
         elseif control == CONTROL_SCROLLFWD then
-        	if not self.character_list.repeat_time or self.character_list.repeat_time <= 0 then
-                self.character_list:Scroll(1)
-				TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
-                self.character_list.repeat_time =
-                    TheInput:GetControlIsMouseWheel(control)
-                    and MOUSE_SCROLL_REPEAT_TIME
-                    or SCROLL_REPEAT_TIME
-            end
+        	self:ScrollFwd(control)
             return true
         end
 	end
+end
+
+function CharacterSelectScreen:ScrollBack(control)
+	if not self.character_list.repeat_time or self.character_list.repeat_time <= 0 then
+       	self.character_list:Scroll(-1)
+       	TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+        self.character_list.repeat_time =
+            TheInput:GetControlIsMouseWheel(control)
+            and MOUSE_SCROLL_REPEAT_TIME
+            or (control == CONTROL_SCROLLBACK and SCROLL_REPEAT_TIME) 
+            or (control == CONTROL_PREVVALUE and STICK_SCROLL_REPEAT_TIME)
+    end
+end
+
+function CharacterSelectScreen:ScrollFwd(control)
+	if not self.character_list.repeat_time or self.character_list.repeat_time <= 0 then
+        self.character_list:Scroll(1)
+		TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+        self.character_list.repeat_time =
+            TheInput:GetControlIsMouseWheel(control)
+            and MOUSE_SCROLL_REPEAT_TIME
+            or (control == CONTROL_SCROLLFWD and SCROLL_REPEAT_TIME) 
+            or (control == CONTROL_NEXTVALUE and STICK_SCROLL_REPEAT_TIME)
+    end
 end
 
 function CharacterSelectScreen:GetHelpText()

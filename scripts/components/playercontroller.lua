@@ -2427,7 +2427,7 @@ function PlayerController:OnLeftClick(down)
         local client_obj = TheNet:GetClientTableForUser(act.target.userid)
         if client_obj ~= nil then
             client_obj.inst = act.target
-            self.inst.HUD:TogglePlayerAvatarPopup(client_obj.name, client_obj)
+            self.inst.HUD:TogglePlayerAvatarPopup(client_obj.name, client_obj, true)
         end
     end
 

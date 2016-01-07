@@ -611,11 +611,11 @@ function MultiplayerMainScreen:MakeSubMenu()
         return btn
     end
 
-     local credits_button = TEMPLATES.IconButton("images/button_icons.xml", "credits.tex", STRINGS.UI.MAINSCREEN.CREDITS, false, true, function() self:OnCreditsButton() end, {font=NEWFONT_OUTLINE, focus_colour={1,1,1,1}})
+    local credits_button = TEMPLATES.IconButton("images/button_icons.xml", "credits.tex", STRINGS.UI.MAINSCREEN.CREDITS, false, true, function() self:OnCreditsButton() end, {font=NEWFONT_OUTLINE, focus_colour={1,1,1,1}})
     local forums_button = TEMPLATES.IconButton("images/button_icons.xml", "forums.tex", STRINGS.UI.MAINSCREEN.FORUM, false, true, function() self:Forums() end, {font=NEWFONT_OUTLINE, focus_colour={1,1,1,1}})
     local newsletter_button = TEMPLATES.IconButton("images/button_icons.xml", "newsletter.tex", STRINGS.UI.MAINSCREEN.NOTIFY, false, true, function() self:EmailSignup() end, {font=NEWFONT_OUTLINE, focus_colour={1,1,1,1}})
 
-    if PLATFORM == "WIN32_STEAM" then
+    if PLATFORM == "WIN32_STEAM" or PLATFORM == "LINUX_STEAM" or PLATFORM == "OSX_STEAM" then
 
         local more_games_button = TEMPLATES.IconButton("images/button_icons.xml", "more_games.tex", STRINGS.UI.MAINSCREEN.MOREGAMES, false, true, function() VisitURL("http://store.steampowered.com/search/?developer=Klei%20Entertainment") end, {font=NEWFONT_OUTLINE, focus_colour={1,1,1,1}})
 

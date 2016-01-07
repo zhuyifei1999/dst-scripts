@@ -182,7 +182,7 @@ function c_avatarscreen()
         local client_table = TheNet:GetClientTableForUser(ConsoleCommandPlayer().userid)
         if client_table ~= nil then
             --client_table.inst = ConsoleCommandPlayer() --don't track
-            ThePlayer.HUD:TogglePlayerAvatarPopup(client_table.name, client_table)
+            ThePlayer.HUD:TogglePlayerAvatarPopup(client_table.name, client_table, true)
         end
     end
 end

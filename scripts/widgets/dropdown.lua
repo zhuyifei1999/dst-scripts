@@ -33,9 +33,7 @@ local DropDown = Class(Widget, function(self, size_x, size_y, start_text, items,
 	items = items or {"---"}
 
 	self.fixed_root = self:AddChild(Widget("root"))
-    self.fixed_root:SetVAnchor(ANCHOR_MIDDLE)
-    self.fixed_root:SetHAnchor(ANCHOR_MIDDLE)
-    self.fixed_root:SetScaleMode(SCALEMODE_PROPORTIONAL)
+
   
     -- add background + scroll list for dropdown
     -- each item in scroll list textbox
@@ -100,12 +98,12 @@ local DropDown = Class(Widget, function(self, size_x, size_y, start_text, items,
 
 	-- arrow pointing down (clickable)
 	self.down_arrow = self.fixed_root:AddChild(ImageButton("images/ui.xml", "arrow2_down.tex", "arrow2_down_over.tex", "arrow2_down_down.tex", "arrow2_down_down.tex", "arrow2_down_down.tex", {1,1}, {0,0}))
-	self.down_arrow:SetOnClick(function() if not self.isopen then self:Open() self.down_arrow:Hide() self.up_arrow:Show() end end ) 
+	self.down_arrow:SetOnClick(function() self:Open() end)
 	self.down_arrow:ForceImageSize(size_y - 10, size_y - 10)
 	self.down_arrow:SetPosition((size_x/2) - (size_y/2), 0)
 
 	self.up_arrow = self.fixed_root:AddChild(ImageButton("images/ui.xml", "arrow2_up.tex", "arrow2_up_over.tex", "arrow2_up_down.tex", "arrow2_up_down.tex", "arrow2_up_down.tex", {1,1}, {0,0}))
-	self.up_arrow:SetOnClick(function() if self.isopen then  self:Close() self.up_arrow:Hide() self.down_arrow:Show() end end)  
+	self.up_arrow:SetOnClick(function() self:Close() end)
 	self.up_arrow:ForceImageSize(size_y - 10, size_y - 10)
 	self.up_arrow:SetPosition((size_x/2) - (size_y/2), 0)
 	self.up_arrow:Hide()
@@ -232,16 +230,24 @@ end
 
 
 function DropDown:Open() 
-	self.isopen = true
-	self.drop_list:Show()
-	--print("open")
+	if not self.isopen then
+		self.isopen = true
+		self.down_arrow:Hide()
+		self.up_arrow:Show()
+		self.drop_list:Show()
+		--print("open")
+	end
 end
 
 
 function DropDown:Close()
-	self.isopen = false
-	self.drop_list:Hide()
-	--print("close")
+	if self.isopen then
+		self.isopen = false
+		self.up_arrow:Hide()
+		self.down_arrow:Show()
+		self.drop_list:Hide()
+		--print("close")
+	end
 end
 
 return DropDown

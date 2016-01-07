@@ -12,6 +12,14 @@ To add a new language:
 ]]
 
 --[[
+***************************************************************
+-- Note for developers to keep the .pot file up to date
+-- 1. Open cmd and navigate to the data\scripts folder
+-- 2. Enter "..\..\tools\LUA\lua.exe createstringspo.lua" (without quotes) into the cmd line and press return
+***************************************************************
+]]
+
+--[[
 ***************************************************************    
 **                   DST UTF-8 formatting                    **
 - Unicode characters can be added to this file in a UTF-8 format.

@@ -2,6 +2,10 @@ local Widget = require "widgets/widget"
 local Text = require "widgets/text"
 local ImageButton = require "widgets/imagebutton"
 
+
+local SCROLL_REPEAT_TIME = .15
+local MOUSE_SCROLL_REPEAT_TIME = 0
+
 -------------------------------------------------------------------------------------------------------
 
 -- This is based on ScrollableList. Like Scrollable list, it takes a pre-built list of static widgets and a list of data to update those widgets with.
@@ -42,6 +46,8 @@ local PagedList = Class(Widget, function(self, items, itemwidth, itemheight, ite
 	self.page_number = 1
    	self.num_pages = math.max(1, math.ceil(#self.items/self.items_per_page))
 
+   	self.repeat_time = (TheInput:ControllerAttached() and SCROLL_REPEAT_TIME) or MOUSE_SCROLL_REPEAT_TIME
+
    	self.evaluate_arrows = evaluateArrows
 
     -- set the positions of the static_widgets
@@ -72,7 +78,14 @@ local PagedList = Class(Widget, function(self, items, itemwidth, itemheight, ite
 	self:DoFocusHookups()
 
     self:RefreshView()
+    self:StartUpdating()
 end)
+
+function PagedList:OnUpdate(dt)
+	if self.repeat_time > -.01 then
+        self.repeat_time = self.repeat_time - dt
+    end
+end
 
 function PagedList:ChangePage(dir)
 	if dir > 0 then 
@@ -141,8 +154,10 @@ function PagedList:RefreshView()
 
 	self.focused_widget = self:GetFocusedWidget() or nil
 	if self.focused_widget and TheInput:ControllerAttached() then 
-		self.focused_widget:ClearFocus()
 		self.focused_widget:SetFocus()
+		if self.focused_widget.ForceFocus then 
+			self.focused_widget:ForceFocus()
+		end
 	end
 
 end

@@ -274,8 +274,20 @@ end
 function Skinner:OnLoad(data)
 	if data.clothing then
 		self.clothing = data.clothing
+		
+		--it's possible that the clothing was traded away. Check to see if the player still owns it on load.
+		for type,clothing in pairs( self.clothing ) do
+			if clothing ~= "" and not TheInventory:CheckClientOwnership(self.inst.userid, clothing) then
+				self.clothing[type] = ""
+			end
+		end
 	end
+	
 	if data.skin_name then
+		--clean up any traded away base skins
+		if data.skin_name ~= "" and not TheInventory:CheckClientOwnership(self.inst.userid, data.skin_name) then
+			data.skin_name = ""
+		end
 		self:SetSkinName(data.skin_name)
 	end
 end

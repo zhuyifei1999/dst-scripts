@@ -66,6 +66,7 @@ local function fn()
 
     inst:AddTag("animal")
     inst:AddTag("prey")
+    inst:AddTag("hostile")
     inst:AddTag("smallcreature")
     inst:AddTag("frog")
     inst:AddTag("canbetrapped")
