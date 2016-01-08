@@ -22,7 +22,7 @@ return CreatePrefabSkin("wx78_none",
 	tags = tags,
 	
 	torso_tuck_builds = { "wx78" },
-	has_alternate_body = { "wx78" },
+	has_alternate_for_body = { "wx78" },
 	
 	skip_item_gen = true,
 	skip_giftable_gen = true,

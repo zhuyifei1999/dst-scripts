@@ -7,6 +7,7 @@ local TextEdit = Class(Text, function(self, font, size, text, colour)
     self.inst.entity:AddTextEditWidget()
     self:SetString(text)
     self.editing = false
+    self.editing_enter_down = false --track enter key while editing: ignore enter key up if key down wasn't recorded while editing
     self:SetEditing(false)
     self.validrawkeys = {}
     self.force_edit = false
@@ -45,6 +46,7 @@ function TextEdit:SetEditing(editing)
 
 	if editing and not self.editing then
         self.editing = true
+        self.editing_enter_down = false
 
 		self:SetFocus()
 		-- Guarantee that we're highlighted
@@ -67,6 +69,7 @@ function TextEdit:SetEditing(editing)
         end
 	elseif not editing and self.editing then
         self.editing = false
+        self.editing_enter_down = false
 
 		if self.focus then
 			self:DoHoverImage()
@@ -147,38 +150,45 @@ function TextEdit:OnStopForceProcessTextInput()
 end
 
 function TextEdit:OnRawKey(key, down)
-	if TextEdit._base.OnRawKey(self, key, down) then return true end
-	
-	if self.editing then
-		if down then
-			self.inst.TextEditWidget:OnKeyDown(key)
-		else
-			if key == KEY_ENTER and not self.focus then
-				-- this is a fail safe incase the mouse changes the focus widget while editing the text field. We could look into FrontEnd:LockFocus but some screens require focus to be soft (eg: lobbyscreen's chat)
-				self:OnProcess()
-				return true
-			elseif key == KEY_TAB and self.nextTextEditWidget then
-				local nextWidg = self.nextTextEditWidget
-				if type(self.nextTextEditWidget) == "function" then
-					nextWidg = self.nextTextEditWidget()
-				end
-				if nextWidg and (type(nextWidg) == "table" and nextWidg.inst.TextEditWidget) then
-					self:SetEditing(false)
-					nextWidg:SetEditing(true)
-				end
-				-- self.nextTextEditWidget:OnControl(CONTROL_ACCEPT, false)
-			else
-				self.inst.TextEditWidget:OnKeyUp(key)
-			end
-		end
+    if TextEdit._base.OnRawKey(self, key, down) then
+        self.editing_enter_down = false
+        return true
+    end
 
-		if self.OnTextInputted then
-			self.OnTextInputted()
-		end
-	end
-	
-	if self.validrawkeys[key] then return false end
-	return true --gobble this up, or we will engage debug keys!
+    if self.editing then
+        if down then
+            self.editing_enter_down = key == KEY_ENTER
+            self.inst.TextEditWidget:OnKeyDown(key)
+        elseif key == KEY_ENTER and not self.focus then
+                -- this is a fail safe incase the mouse changes the focus widget while editing the text field. We could look into FrontEnd:LockFocus but some screens require focus to be soft (eg: lobbyscreen's chat)
+                if self.editing_enter_down then
+                    self.editing_enter_down = false
+                    self:OnProcess()
+                end
+                return true
+        elseif key == KEY_TAB and self.nextTextEditWidget ~= nil then
+            self.editing_enter_down = false
+            local nextWidg = self.nextTextEditWidget
+            if type(nextWidg) == "function" then
+                nextWidg = nextWidg()
+            end
+            if nextWidg ~= nil and type(nextWidg) == "table" and nextWidg.inst.TextEditWidget ~= nil then
+                self:SetEditing(false)
+                nextWidg:SetEditing(true)
+            end
+            -- self.nextTextEditWidget:OnControl(CONTROL_ACCEPT, false)
+        else
+            self.editing_enter_down = false
+            self.inst.TextEditWidget:OnKeyUp(key)
+        end
+
+        if self.OnTextInputted ~= nil then
+            self.OnTextInputted()
+        end
+    end
+
+    --gobble up unregistered valid raw keys, or we will engage debug keys!
+    return not self.validrawkeys[key]
 end
 
 function TextEdit:SetPassControlToScreen(control, pass)

@@ -1309,7 +1309,20 @@ function PlayerController:DoInspectButton()
     local buffaction = TheInput:ControllerAttached() and (self:GetInspectButtonAction(self:GetControllerTarget() or TheInput:GetWorldEntityUnderMouse())) or nil
     if buffaction == nil then
         return
-    elseif self.ismastersim then
+    end
+
+    if buffaction.action == ACTIONS.LOOKAT and
+        buffaction.target ~= nil and
+        buffaction.target:HasTag("player") and
+        self.inst.HUD ~= nil then
+        local client_obj = TheNet:GetClientTableForUser(buffaction.target.userid)
+        if client_obj ~= nil then
+            client_obj.inst = buffaction.target
+            self.inst.HUD:TogglePlayerAvatarPopup(client_obj.name, client_obj, true)
+        end
+    end
+
+    if self.ismastersim then
         self.locomotor:PushAction(buffaction, true)
     elseif self.locomotor == nil then
         self:RemoteInspectButton(buffaction)

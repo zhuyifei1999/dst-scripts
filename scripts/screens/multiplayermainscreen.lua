@@ -163,6 +163,11 @@ function MultiplayerMainScreen:DoInit( )
     self.wilson = self.fg.character_root:AddChild(UIAnim())
     self.wilson:GetAnimState():SetBank("corner_dude")
     self.wilson:GetAnimState():SetBuild(MAINSCREEN_CHAR_1)
+    if BASE_TORSO_TUCK[MAINSCREEN_CHAR_1] then
+		--tuck torso into pelvis
+		self.wilson:GetAnimState():OverrideSkinSymbol("torso", MAINSCREEN_CHAR_1, "torso_pelvis" )
+		self.wilson:GetAnimState():OverrideSkinSymbol("torso_pelvis", MAINSCREEN_CHAR_1, "torso" )
+    end
     self.wilson:GetAnimState():SetMultColour(FRONTEND_CHARACTER_FAR_COLOUR[1], FRONTEND_CHARACTER_FAR_COLOUR[2], FRONTEND_CHARACTER_FAR_COLOUR[3], FRONTEND_CHARACTER_FAR_COLOUR[4])
     if MAINSCREEN_TOOL_1 == "swap_staffs" then
     	self.wilson:GetAnimState():OverrideSymbol("swap_object", MAINSCREEN_TOOL_1, "redstaff")
@@ -200,6 +205,11 @@ function MultiplayerMainScreen:DoInit( )
 	self.wilson2 = self.fg.character_root:AddChild(UIAnim())
     self.wilson2:GetAnimState():SetBank("corner_dude")
     self.wilson2:GetAnimState():SetBuild(MAINSCREEN_CHAR_2)
+    if BASE_TORSO_TUCK[MAINSCREEN_CHAR_2] then
+		--tuck torso into pelvis
+		self.wilson2:GetAnimState():OverrideSkinSymbol("torso", MAINSCREEN_CHAR_2, "torso_pelvis" )
+		self.wilson2:GetAnimState():OverrideSkinSymbol("torso_pelvis", MAINSCREEN_CHAR_2, "torso" )
+    end
     self.wilson2:GetAnimState():SetMultColour(FRONTEND_CHARACTER_CLOSE_COLOUR[1], FRONTEND_CHARACTER_CLOSE_COLOUR[2], FRONTEND_CHARACTER_CLOSE_COLOUR[3], FRONTEND_CHARACTER_CLOSE_COLOUR[4])
 	if MAINSCREEN_TOOL_2 == "swap_staffs" then
     	self.wilson2:GetAnimState():OverrideSymbol("swap_object", MAINSCREEN_TOOL_2, "redstaff")

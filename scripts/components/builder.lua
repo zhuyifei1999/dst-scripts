@@ -361,22 +361,31 @@ function Builder:DoBuild(recname, pt, rotation, skin)
                     self.inst:PushEvent("builditem", { item = prod, recipe = recipe, skin = skin })
                     ProfileStatsAdd("build_"..prod.prefab)
 
-                    if prod.components.equippable ~= nil and not self.inst.components.inventory:GetEquippedItem(prod.components.equippable.equipslot) then
-                        --The item is equippable. Equip it.
-                        self.inst.components.inventory:Equip(prod)
-
-                        if recipe.numtogive > 1 then
-                            --Looks like the recipe gave more than one item! Spawn in the rest and give them to the player.
+                    if prod.components.equippable ~= nil and self.inst.components.inventory:GetEquippedItem(prod.components.equippable.equipslot) == nil then
+                        if recipe.numtogive <= 1 then
+                            --The item is equippable. Equip it.
+                            self.inst.components.inventory:Equip(prod)
+                        elseif prod.components.stackable ~= nil then
+                            --The item is stackable. Just increase the stack size of the original item.
+                            prod.components.stackable:SetStackSize(recipe.numtogive)
+                            self.inst.components.inventory:Equip(prod)
+                        else
+                            --We still need to equip the original product that was spawned, so do that.
+                            self.inst.components.inventory:Equip(prod)
+                            --Now spawn in the rest of the items and give them to the player.
                             for i = 2, recipe.numtogive do
                                 local addt_prod = SpawnPrefab(recipe.product)
                                 self.inst.components.inventory:GiveItem(addt_prod, nil, pt)
                             end
                         end
-                    elseif recipe.numtogive > 1 and prod.components.stackable then
+                    elseif recipe.numtogive <= 1 then
+                        --Only the original item is being received.
+                        self.inst.components.inventory:GiveItem(prod, nil, pt)
+                    elseif prod.components.stackable ~= nil then
                         --The item is stackable. Just increase the stack size of the original item.
                         prod.components.stackable:SetStackSize(recipe.numtogive)
                         self.inst.components.inventory:GiveItem(prod, nil, pt)
-                    elseif recipe.numtogive > 1 and not prod.components.stackable then
+                    else
                         --We still need to give the player the original product that was spawned, so do that.
                         self.inst.components.inventory:GiveItem(prod, nil, pt)
                         --Now spawn in the rest of the items and give them to the player.
@@ -384,9 +393,6 @@ function Builder:DoBuild(recname, pt, rotation, skin)
                             local addt_prod = SpawnPrefab(recipe.product)
                             self.inst.components.inventory:GiveItem(addt_prod, nil, pt)
                         end
-                    else
-                        --Only the original item is being received.
-                        self.inst.components.inventory:GiveItem(prod, nil, pt)
                     end
 
                     if self.onBuild ~= nil then

@@ -28,7 +28,8 @@ return CreatePrefabSkin("wickerbottom_formal",
 	tags = tags,
 	
 	torso_tuck_builds = { "wickerbottom_formal" },
-	has_alternate_body = { "wickerbottom_formal" },
+	has_alternate_for_body = { "wickerbottom_formal" },
+	has_alternate_for_skirt = { "wickerbottom_formal" },
 	
 	skip_item_gen = false,
 	skip_giftable_gen = false,
