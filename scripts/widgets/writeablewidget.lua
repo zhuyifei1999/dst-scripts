@@ -42,6 +42,7 @@ local function onmiddle(inst, doer, widget)
     --print("OnMiddle",inst,doer,widget)
 
     widget.config.middlebtn.cb(inst, doer, widget)
+    widget.edit_text:SetEditing(true)
 end
 
 local function oncancel(inst, doer, widget)
@@ -150,12 +151,12 @@ local WriteableWidget = Class(Screen, function(self, owner, writeable, config)
         end
     end
 
-    self:OverrideText( defaulttext )
+    self:OverrideText(defaulttext)
     self.edit_text:OnControl(CONTROL_ACCEPT, false)
-    --self.edit_text.OnTextEntered = function() onaccept(self.writeable, self.owner, self) end
-	self.edit_text:SetHelpTextApply("")
-	self.edit_text:SetHelpTextCancel("")
-	self.edit_text:SetHelpTextEdit("")
+    self.edit_text.OnTextEntered = function() self:OnControl(CONTROL_ACCEPT, false) end
+    self.edit_text:SetHelpTextApply("")
+    self.edit_text:SetHelpTextCancel("")
+    self.edit_text:SetHelpTextEdit("")
     self.default_focus = self.edit_text
 
     if config.bgatlas ~= nil and config.bgimage ~= nil then
@@ -235,7 +236,6 @@ function WriteableWidget:SetValidChars(chars)
 end
 
 function WriteableWidget:OnControl(control, down)
-
     if WriteableWidget._base.OnControl(self,control, down) then return true end
 
     -- gjans: This makes it so that if the text box loses focus and you click

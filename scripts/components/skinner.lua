@@ -126,19 +126,23 @@ function SetSkinMode( anim_state, prefab, base_skin, clothing_names, skintype, d
 		local pelvis_symbol = "torso_pelvis"
 		
 		--Certain builds need to use the wide versions to fit clothing, nil build indicates it will use the base
-		if BASE_ALTERNATE_BODY[base_skin] and torso_build == nil and (pelvis_build ~= nil or skirt_build ~= nil) then
+		if (BASE_ALTERNATE_FOR_BODY[base_skin] and torso_build == nil and pelvis_build ~= nil)
+			or (BASE_ALTERNATE_FOR_SKIRT[base_skin] and torso_build == nil and skirt_build ~= nil) then
 			torso_symbol = "torso_wide"
 			--print("torso replaced with torso_wide")
 			anim_state:OverrideSkinSymbol("torso", base_skin, torso_symbol )
 		end
-		if BASE_ALTERNATE_BODY[base_skin] and (torso_build ~= nil or skirt_build ~= nil) and pelvis_build == nil then
+		
+		if (BASE_ALTERNATE_FOR_BODY[base_skin] and torso_build ~= nil and pelvis_build == nil) 
+			or (BASE_ALTERNATE_FOR_SKIRT[base_skin] and skirt_build ~= nil and pelvis_build == nil) then
 			pelvis_symbol = "torso_pelvis_wide"
 			if not hidden_symbols["torso_pelvis"] then
 				--print("torso_pelvis replaced with torso_pelvis_wide")
 				anim_state:OverrideSkinSymbol("torso_pelvis", base_skin, pelvis_symbol )
 			end
 		end
-		if BASE_ALTERNATE_BODY[base_skin] and torso_build ~= nil and skirt_build == nil then
+		
+		if BASE_ALTERNATE_FOR_BODY[base_skin] and torso_build ~= nil and skirt_build == nil then
 			if not hidden_symbols["skirt_wide"] then
 				--print("skirt replaced with skirt_wide")
 				anim_state:OverrideSkinSymbol("skirt", base_skin, "skirt_wide")
@@ -283,13 +287,15 @@ function Skinner:OnLoad(data)
 		end
 	end
 	
+	local skin_name = self.inst.prefab.."_none"
 	if data.skin_name then
+		skin_name = data.skin_name
 		--clean up any traded away base skins
-		if data.skin_name ~= "" and not TheInventory:CheckClientOwnership(self.inst.userid, data.skin_name) then
-			data.skin_name = ""
+		if data.skin_name ~= self.inst.prefab.."_none" and not TheInventory:CheckClientOwnership(self.inst.userid, data.skin_name) then
+			skin_name = self.inst.prefab.."_none"
 		end
-		self:SetSkinName(data.skin_name)
 	end
+	self:SetSkinName(skin_name)
 end
 
 return Skinner

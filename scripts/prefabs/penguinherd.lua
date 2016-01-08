@@ -52,7 +52,6 @@ local function fn()
     inst.components.herd:SetOnEmptyFn(inst.Remove)
     --inst.components.herd:SetOnFullFn(OnFull)
     inst.components.herd:SetAddMemberFn(AddMember)
-    inst.components.herd:GatherNearbyMembers()
 
     inst:AddComponent("mood")
     inst.components.mood:SetMoodTimeInDays(TUNING.PENGUIN_MATING_SEASON_LENGTH, 0)

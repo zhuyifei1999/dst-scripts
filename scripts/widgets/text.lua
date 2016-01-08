@@ -113,16 +113,28 @@ function Text:SetTruncatedString(str, maxwidth, maxchars, ellipses)
     end
 end
 
+local function IsWhiteSpace(charcode)
+    -- 32: space
+    --  9: \t
+    -- 10: \n
+    -- 11: \v
+    -- 12: \f
+    -- 13: \r
+    return charcode == 32 or (charcode >= 9 and charcode <= 13)
+end
+
+-- maxwidth can be a single number or an array of numbers if maxwidth is different per line
 function Text:SetMultilineTruncatedString(str, maxlines, maxwidth, maxcharsperline, ellipses)
+    local tempmaxwidth = type(maxwidth) == "table" and maxwidth[1] or maxwidth
     if maxlines <= 1 then
-        self:SetTruncatedString(str, maxwidth, maxcharsperline, ellipses)
+        self:SetTruncatedString(str, tempmaxwidth, maxcharsperline, ellipses)
     else
-        self:SetTruncatedString(str, maxwidth, maxcharsperline, false)
+        self:SetTruncatedString(str, tempmaxwidth, maxcharsperline, false)
         local line = self:GetString()
         if #line < #str then
-            if str:byte(#line + 1) ~= 32 then
+            if not IsWhiteSpace(str:byte(#line + 1)) then
                 for i = #line, 1, -1 do
-                    if line:byte(i) == 32 then
+                    if IsWhiteSpace(line:byte(i)) then
                         line = line:sub(1, i)
                         break
                     end
@@ -130,12 +142,22 @@ function Text:SetMultilineTruncatedString(str, maxlines, maxwidth, maxcharsperli
                 str = str:sub(#line + 1)
             else
                 str = str:sub(#line + 2)
-                while #str > 0 and str:byte(1) == 32 do
+                while #str > 0 and IsWhiteSpace(str:byte(1)) do
                     str = str:sub(2)
                 end
             end
             if #str > 0 then
-                self:SetMultilineTruncatedString(str, maxlines - 1, maxwidth, maxcharsperline, ellipses)
+                if type(maxwidth) == "table" then
+                    if #maxwidth > 2 then
+                        tempmaxwidth = {}
+                        for i = 2, #maxwidth do
+                            table.insert(tempmaxwidth, maxwidth[i])
+                        end
+                    elseif #maxwidth == 2 then
+                        tempmaxwidth = maxwidth[2]
+                    end
+                end
+                self:SetMultilineTruncatedString(str, maxlines - 1, tempmaxwidth, maxcharsperline, ellipses)
                 self:SetString(line.."\n"..self:GetString())
             end
         end

@@ -29,7 +29,7 @@ return CreatePrefabSkin("wx78_formal",
 	tags = tags,
 	
 	torso_tuck_builds = { "wx78_formal" },
-	has_alternate_body = { "wx78_formal" },
+	has_alternate_for_body = { "wx78_formal" },
 	
 	skip_item_gen = false,
 	skip_giftable_gen = false,

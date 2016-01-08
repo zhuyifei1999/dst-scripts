@@ -21,7 +21,8 @@ return CreatePrefabSkin("wendy_none",
 	assets = assets,
 	tags = tags,
 	
-	has_alternate_body = { "wendy" },
+	has_alternate_for_body = { "wendy" },
+	has_alternate_for_skirt = { "wendy" },
 	
 	skip_item_gen = true,
 	skip_giftable_gen = true,

@@ -5,62 +5,48 @@ local ScrollableList = require "widgets/scrollablelist"
 local MAX_MESSAGES = 20
 
 local function message_constructor(data)
-	local list = {}
+    local line_xpos = -85
+    local username_maxwidth = 120
+    local username_padding = 8
+    local line_maxwidth = 180
+    local line_maxchars = 50
+    local multiline_maxrows = 8
+    local multiline_indent = 10
 
-	local group = Widget("item-lobbychat")
+    local group = Widget("item-lobbychat")
+    group.user_widget = group:AddChild(Text(data.chat_font, data.chat_size - 5, nil, data.colour))
+    group.user_widget:SetTruncatedString(data.username..":", username_maxwidth, 30, "..:")
 
-	local username_width = 120
+    local username_width = group.user_widget:GetRegionSize()
+    group.user_widget:SetPosition(line_xpos + username_width * .5, -2)
 
-	local user_widget = group:AddChild(Text(data.chat_font, data.chat_size-5))
-    user_widget:SetTruncatedString(data.username..":", username_width, 25, "..:")
-    local user_name_width, h = user_widget:GetRegionSize()
-    user_widget:SetPosition(user_name_width * .5 - 85, -3) 
-	user_widget:SetColour(unpack(data.colour))
-	group.user_widget = user_widget
+    group.message = group:AddChild(Text(NEWFONT, data.chat_size, nil, BLACK))
+    group.message:SetMultilineTruncatedString(data.message, multiline_maxrows, { line_maxwidth - username_width - username_padding, line_maxwidth - multiline_indent }, line_maxchars, true)
 
-	--print("user is ", data.username, unpack(data.colour))
+    local lines = group.message:GetString():split("\n")
+    group.message:SetString(lines[1])
 
-	local shortwidth = 180-user_name_width
-	local longwidth = 180
+    local message_width = group.message:GetRegionSize()
+    group.message:SetPosition(line_xpos + username_width + username_padding + message_width * .5, 0)
 
-	group.messages = {}
-	local text = data.message
-	local lines = TheFrontEnd:SplitTextStringIntoLines(text, data.chat_font, data.chat_size, shortwidth, longwidth)
+    local list = { group }
 
-	for i = 1,#lines do 
-		local line = lines[i]
+    for i = 2, #lines do
+        group = Widget("item-lobbychat")
 
-		local width = longwidth
-		local xpos = 10
-		if group.user_widget then 
-			width = shortwidth
-			xpos = 10+user_name_width-(user_name_width/2)
-		end
+        group.message = group:AddChild(Text(NEWFONT, data.chat_size, nil, BLACK))
+        group.message:SetString(lines[i])
+        print(group.message:GetString():len())
 
-		local message_widget = group:AddChild(Text(NEWFONT, data.chat_size))
-		message_widget:SetPosition(xpos, 0 )--- (15*(i-1)))
-		message_widget:SetRegionSize( width, (data.chat_size) )
-		message_widget:SetHAlign(ANCHOR_LEFT)
-		message_widget:SetString(line)
-		message_widget:SetColour(unpack(BLACK))
-		group.message = message_widget	
-		
-		group.OnGainFocus = function(item) 
-			-- item.message:SetSize(data.chat_size + 1)
-		end
+        message_width = group.message:GetRegionSize()
+        group.message:SetPosition(line_xpos + multiline_indent + message_width * .5, 0)
 
-		group.OnLoseFocus = function(item)  
-			-- item.message:SetSize(data.chat_size)
-		end
+        table.insert(list, group)
+    end
 
-		table.insert(list, group)
-		group = Widget("item-lobbychat")
-	end
-
-	return list
+    return list
 end
 
-	
 local LobbyChatQueue = Class(Widget, function(self, owner, chatbox, onReceiveNewMessage, nextWidget)
 	Widget._ctor(self, "LobbyChatQueue")
 

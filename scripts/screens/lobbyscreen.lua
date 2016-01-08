@@ -502,7 +502,7 @@ function LobbyScreen:OnControl(control, down)
 		return true 
     end
 
-    if  TheInput:ControllerAttached() and 
+    if TheInput:ControllerAttached() and 
     	self.can_accept and not down and control == CONTROL_PAUSE then
     	
     	if (self.in_loadout) then
@@ -515,17 +515,17 @@ function LobbyScreen:OnControl(control, down)
     end
 
     -- Use right stick for cycling players list
-   	if down then 
+   	if down then
 	 	if not self.in_loadout and control == CONTROL_PREVVALUE then  -- r-stick left
 			self:ScrollBack(control)
-			return true 
+			return true
 		elseif not self.in_loadout and control == CONTROL_NEXTVALUE then -- r-stick right
 			self:ScrollFwd(control)
 			return true
 		elseif control == CONTROL_MENU_MISC_2 then
-			if not self.in_loadout then 
+			if not self.in_loadout then
 				self.character_scroll_list:SelectRandomCharacter()
-			else 
+			else
 				self.dressup:AllSpinnersToEnd()
 			end
 			TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
@@ -540,15 +540,6 @@ function LobbyScreen:OnControl(control, down)
 	        end
 	    end
     end
-
-	-- DEBUG ONLY:
-	if not down and DEBUG_MODE then 
-		if control == CONTROL_FOCUS_UP then 
-			self.chatqueue:OnMessageReceived("OU_76561197968176071", "Eliza", "willow", 
-											"alpha beta charlie delta foxtrot gamma housecat iguana jaguar koala limbo mustache norton ophelia periwinkle", 
-											{.3,.8,.2,1})
-		end
-	end
 
 	return false
 end

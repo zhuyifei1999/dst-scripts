@@ -8,7 +8,8 @@ local BACKPACK_DECAY_TIME = 3 * TUNING.TOTAL_DAY_TIME -- will decay after this a
 --tuck_torso = "skirt" - torso goes betwen the skirt and pelvis (the default)
 BASE_TORSO_TUCK = {}
 
-BASE_ALTERNATE_BODY = {}
+BASE_ALTERNATE_FOR_BODY = {}
+BASE_ALTERNATE_FOR_SKIRT = {}
 
 function backpack_dropped(inst)
 	if not inst.decayed then
@@ -117,9 +118,15 @@ function CreatePrefabSkin( name, info )
 		end
 	end
 	
-	if prefab_skin.has_alternate_body then
-		for _,base_skin in pairs(prefab_skin.has_alternate_body) do
-			BASE_ALTERNATE_BODY[base_skin] = true
+	if prefab_skin.has_alternate_for_body then
+		for _,base_skin in pairs(prefab_skin.has_alternate_for_body) do
+			BASE_ALTERNATE_FOR_BODY[base_skin] = true
+		end
+	end
+	
+	if prefab_skin.has_alternate_for_skirt then
+		for _,base_skin in pairs(prefab_skin.has_alternate_for_skirt) do
+			BASE_ALTERNATE_FOR_SKIRT[base_skin] = true
 		end
 	end
 	

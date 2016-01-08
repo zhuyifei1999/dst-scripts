@@ -3767,6 +3767,7 @@ local states =
             if bufferedaction == nil then
                 inst.AnimState:PlayAnimation("pickup_pst")
                 inst.sg:GoToState("idle", true)
+                return
             end
             local tent = bufferedaction.target
             if tent == nil or
