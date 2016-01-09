@@ -29,23 +29,6 @@ local MAX_CHASEAWAY_DIST = 80
 local MAX_TARGET_SHARES = 5
 local SHARE_TARGET_DIST = 40
 
-local function OnAutoRemove(inst)
-    inst._autoremovetask = nil
-    if not TheWorld.state.iswinter or TheWorld.state.remainingdaysinseason < 3 then
-        inst:Remove()
-    end
-end
-
-local function CheckAutoRemove(inst)
-    if inst._autoremovetask ~= nil then
-        inst._autoremovetask:Cancel()
-        inst._autoremovetask = nil
-    end
-    if not TheWorld.state.iswinter or TheWorld.state.remainingdaysinseason < 3 then
-        inst._autoremovetask = inst:DoTaskInTime(0, OnAutoRemove)
-    end
-end
-
 local function OnSave(inst, data)
     if inst.colonyNum then
         data.colonyNum = inst.colonyNum
@@ -112,7 +95,7 @@ end
 
 local function MakeTeam(inst, attacker)
         local leader = SpawnPrefab("teamleader")
-dprint("<<<<<<<<================>>>>> Making TEAM:",attacker)
+--print("<<<<<<<<================>>>>> Making TEAM:",attacker)
         leader:AddTag("penguin")
         leader.components.teamleader.threat = attacker
         leader.components.teamleader.radius = 10
@@ -125,7 +108,7 @@ dprint("<<<<<<<<================>>>>> Making TEAM:",attacker)
         leader.components.teamleader.team_type = inst.components.teamattacker.team_type
         leader.components.teamleader:NewTeammate(inst)
         leader.components.teamleader:BroadcastDistress(inst)
-dprint("<<<<<<<>>>>>")
+--print("<<<<<<<>>>>>")
 end
 
 local function Retarget(inst)
@@ -145,7 +128,7 @@ local function Retarget(inst)
             )
 
     if newtarget and ta and not ta.inteam and not ta:SearchForTeam() then
-        dprint("===============================MakeTeam on Retarget")
+        --print("===============================MakeTeam on Retarget")
         MakeTeam(inst, newtarget)
     end
 
@@ -164,7 +147,7 @@ local function KeepTarget(inst, target)
         or inst.components.teamattacker.orders == "ATTACK" then
         return true
     else
-        dprint(inst,"Looses TARGET")
+        --print(inst,"Loses TARGET")
         return false
     end 
 end
@@ -176,19 +159,19 @@ end
 local function OnAttacked(inst, data)
 
     if not inst.components.teamattacker then return end
-    dprint("OnAttacked")
+    --print("OnAttacked")
 
     if not inst.components.teamattacker.inteam and not inst.components.teamattacker:SearchForTeam() then
-        dprint("MakeTeam")
+        --print("MakeTeam")
         MakeTeam(inst, data.attacker)
     elseif inst.components.teamattacker.teamleader then    
         inst.components.teamattacker.teamleader:BroadcastDistress()   --Ask for  help!
-        dprint("ASK FOR HELP!")
+        --print("ASK FOR HELP!")
     end
 
     if inst.components.teamattacker.inteam and not inst.components.teamattacker.teamleader:CanAttack() then
         local attacker = data and data.attacker
-        dprint(inst,"OnAttack:settarget",attacker)
+        --print(inst,"OnAttack:settarget",attacker)
         inst.components.combat:SetTarget(attacker)
         inst.components.combat:ShareTarget(attacker, SHARE_TARGET_DIST, ShareTargetFn, MAX_TARGET_SHARES)
     end
@@ -196,23 +179,23 @@ end
 
 local function OnThrown(inst, data)
 
-    dprint("OnThrow",data.attacker)
+    --print("OnThrow",data.attacker)
     if not inst.components.teamattacker or
        data.target ~= inst then
         return
     end
 
     if not inst.components.teamattacker.inteam and not inst.components.teamattacker:SearchForTeam() then
-        dprint("MakeTeam",data.attacker)
+        --print("MakeTeam",data.attacker)
         MakeTeam(inst, data.attacker)
     elseif inst.components.teamattacker.teamleader then    
         inst.components.teamattacker.teamleader:BroadcastDistress()   --Ask for  help!
-        dprint("ASK FOR HELP!")
+        --print("ASK FOR HELP!")
     end
 
     if inst.components.teamattacker.inteam and not inst.components.teamattacker.teamleader:CanAttack() then
         local attacker = data.attacker
-        dprint(inst,"OnAttack:settarget",attacker)
+        --print(inst,"OnAttack:settarget",attacker)
         inst.components.combat:SetTarget(attacker)
         inst.components.combat:ShareTarget(attacker, SHARE_TARGET_DIST, ShareTargetFn, MAX_TARGET_SHARES)
     end
@@ -246,6 +229,18 @@ local function RememberKnownLocation(inst)
     if inst:IsValid() then  -- yes it can die in one frame
         inst.components.knownlocations:RememberLocation("home", Vector3(inst.Transform:GetWorldPosition()))
     end
+end
+
+local function CheckAutoRemove(inst)
+    if not TheWorld.state.iswinter or TheWorld.state.remainingdaysinseason < 3 then
+        inst:Remove()
+    end
+end
+
+local function OnInit(inst)
+    inst.OnEntityWake = CheckAutoRemove
+    inst.OnEntitySleep = CheckAutoRemove
+    CheckAutoRemove(inst)
 end
 
 local function fn()
@@ -356,9 +351,9 @@ local function fn()
 
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad
-    inst.OnEntityWake = CheckAutoRemove
-    inst.OnEntitySleep = CheckAutoRemove
     inst.eggsLayed = 0
+
+    inst:DoTaskInTime(0, OnInit)
 
     return inst
 end

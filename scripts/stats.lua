@@ -107,7 +107,7 @@ function SuUsed(item,value)
 end
 
 function SetSuper(value)
-    dprint("Setting SUPER",value)
+    --print("Setting SUPER",value)
     OnLoadGameInfo.super = value
 end
 
@@ -130,10 +130,10 @@ function GetProfileStats(wipe)
 	local sendstats = BuildContextTable()
 
 	sendstats.stats = ProfileStats
-	dprint("_________________++++++ Sending Accumulated profile stats...\n")
-	ddump(sendstats)
+	--print("_________________++++++ Sending Accumulated profile stats...\n")
+	--ddump(sendstats)
 
-	jsonstats = json.encode( sendstats )
+	jsonstats = json.encode(sendstats)
 
 	if wipe then
 		ProfileStats = {}
@@ -148,7 +148,7 @@ function RecordEndOfDayStats()
 	end
 
     -- Do local analysis of game session so far
-    dprint("RecordEndOfDayStats")
+    --print("RecordEndOfDayStats")
 end
 
 function RecordQuitStats()
@@ -157,25 +157,25 @@ function RecordQuitStats()
 	end
 
     -- Do local analysis of game session
-    dprint("RecordQuitStats")
+    --print("RecordQuitStats")
 end
 
 function RecordPauseStats()         -- Run some analysis and save stats when player pauses
 	if not STATS_ENABLE or not IsPaused() then
 		return
 	end
-    dprint("RecordPauseStats")
+    --print("RecordPauseStats")
 end
 
 function RecordOverseerStats(data)
 
 	if not STATS_ENABLE or GetTableSize(data.foeList) <= 0 then
-        dprint("^^^^^^^^^^^^^^^^^^^^ NO FOES!")
+        --print("^^^^^^^^^^^^^^^^^^^^ NO FOES!")
 		return
 	end
 
-    dprint("FoeList-----------------------")
-    ddump(data.foeList)
+    --print("FoeList-----------------------")
+    --ddump(data.foeList)
 
     if GetTableSize(data.eluded) == 0 then
         data.eluded = nil
@@ -223,11 +223,11 @@ function RecordOverseerStats(data)
     
     FightStat_EndFight()
 
-	dprint("_________________________________________________________________Sending fight stats...")
-	ddump(sendstats.fight)
-	dprint("_________________________________________________________________<END>")
-	local jsonstats = json.encode( sendstats )
-	--TODO: STATS TheSim:SendProfileStats( jsonstats )
+	--print("_________________________________________________________________Sending fight stats...")
+	--ddump(sendstats.fight)
+	--print("_________________________________________________________________<END>")
+	--local jsonstats = json.encode(sendstats)
+	--TODO: STATS TheSim:SendProfileStats(jsonstats)
 end
 
 function RecordDeathStats(killed_by, time_of_day, sanity, hunger, will_resurrect)
@@ -250,10 +250,10 @@ function RecordDeathStats(killed_by, time_of_day, sanity, hunger, will_resurrect
         armor_absorbed = ProfileStatsGet("armor_absorb"),
 	}
 
-	dprint("_________________________________________________________________Sending death stats...")
-	ddump(sendstats)
-	local jsonstats = json.encode( sendstats )
-	--TODO:STATS TheSim:SendProfileStats( jsonstats )
+	--print("_________________________________________________________________Sending death stats...")
+	--ddump(sendstats)
+	--local jsonstats = json.encode(sendstats)
+	--TODO:STATS TheSim:SendProfileStats(jsonstats)
 end
 
 function RecordSessionStartStats()
@@ -402,11 +402,11 @@ function SendAccumulatedProfileStats()
     local visited = map ~= nil and map:GetNumVisitedTiles() or 0
     local trod = visited - GameStats.StatsLastTrodCount
     ProfileStatsSet("trod", trod)
-    dprint(":::::::::::::::::::::::: TROD!", trod)
+    --print(":::::::::::::::::::::::: TROD!", trod)
     GameStats.StatsLastTrodCount = visited
     
-	local stats = GetProfileStats(true)
-	-- TODO:STATS TheSim:SendProfileStats( stats )
+	--local stats = GetProfileStats(true)
+	-- TODO:STATS TheSim:SendProfileStats(stats)
 end
 
 --Periodically upload and refresh the player stats, so we always
@@ -487,10 +487,10 @@ function GetMainMenuStats(wipe)
 	local sendstats = BuildContextTable()
 
 	sendstats.stats = MainMenuStats
-	dprint("_________________++++++ Sending Accumulated main menu stats...\n")
-	ddump(sendstats)
+	--print("_________________++++++ Sending Accumulated main menu stats...\n")
+	--ddump(sendstats)
 
-	jsonstats = json.encode( sendstats )
+	jsonstats = json.encode(sendstats)
 
 	if wipe then
 		MainMenuStats = {}

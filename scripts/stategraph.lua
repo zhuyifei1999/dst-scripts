@@ -465,7 +465,7 @@ function StateGraphInstance:GoToState(statename, params)
 --    if METRICS_ENABLED and self.inst == ThePlayer and self.currentstate and not IsAwayFromKeyBoard() then
 --        local dt = GetTime() - self.statestarttime
 --        self.currentstate.totaltime = self.currentstate.totaltime and (self.currentstate.totaltime + dt) or dt  -- works even if currentstate.time is nil
---        -- dprint(self.currentstate.name," time in state= ", self.currentstate.totaltime)
+--        --print(self.currentstate.name," time in state= ", self.currentstate.totaltime)
 --    end
 
     self.statemem = {}

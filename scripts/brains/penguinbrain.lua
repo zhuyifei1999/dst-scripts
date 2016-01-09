@@ -123,7 +123,7 @@ local function StealAction(inst)
             end
         end
 		if target and not target:IsInLimbo() and (char and char:IsNear(target, TOOCLOSE)) then
-            dprint("===== Steal:",target)
+            --print("===== Steal:",target)
             if inst.components.knownlocations.ForgetLocation then
                 inst.components.knownlocations:ForgetLocation("myegg")
             end
@@ -167,7 +167,7 @@ local function EatFoodAction(inst)
         end
 
         if target then
-            -- dprint("========================================== FoodTarget:",target)
+            --print("========================================== FoodTarget:",target)
             local ba = BufferedAction(inst,target,ACTIONS.EAT)
             ba.distance = 1.5
             return ba
@@ -180,7 +180,7 @@ local function LayEggAction(inst)
     if inst.layingEgg then return end  -- not egg-laying season
 
     if (inst.nextDropTime or 0) - GetTime() > 0 then
-        --IOprint("\rnextdrop:", (inst.nextDropTime or 0) - GetTime())
+        --print("\rnextdrop:", (inst.nextDropTime or 0) - GetTime())
         return
     end
 
@@ -188,10 +188,10 @@ local function LayEggAction(inst)
     local egg = CheckMyEgg(inst)
     local nearest = GetClosestInstWithTag("scarytoprey", inst, TOOCLOSE) 
     if nearest and nearest:IsNear(inst, TOOCLOSE) then
-        -- IOprint("\rTOO CLOSE")
+        --print("\rTOO CLOSE")
         return
     end
-    -- IOprint("\r",inst," eggcheck:",egg)
+    --print("\r",inst," eggcheck:",egg)
 
     if (inst.components.inventory and inst.components.inventory:IsFull()) then
         local egg = inst.components.inventory:GetItemInSlot(1)
@@ -201,7 +201,7 @@ local function LayEggAction(inst)
             inst.myEgg = egg
         end
         delay = GetRandomWithVariance(10,4)
-        dprint(inst," drops egg in:",delay)
+        --print(inst," drops egg in:",delay)
         inst.layingEgg = true
         inst:DoTaskInTime( delay,
                             function()
@@ -214,7 +214,7 @@ local function LayEggAction(inst)
                                    return
                                 end
 
-                                dprint("drop egg")
+                                --print("drop egg")
                                 inst.components.inventory:DropEverything()
                                 inst.components.knownlocations:RememberLocation("myegg", Vector3(inst.Transform:GetWorldPosition()) )
                                 inst.nextPickupTime = GetTime() + GetRandomWithVariance(MIN_TIME_TILL_NEXT_DROP,10)
@@ -224,7 +224,7 @@ local function LayEggAction(inst)
             return
         end
         delay = GetRandomWithVariance(TUNING.TOTAL_DAY_TIME/5,TUNING.TOTAL_DAY_TIME/6)
-        dprint(inst," lays egg in:",delay)
+        --print(inst," lays egg in:",delay)
         inst.layingEgg = true
         inst:DoTaskInTime( delay,
                             function()
@@ -241,7 +241,7 @@ local function LayEggAction(inst)
                                 local egg = SpawnPrefab("bird_egg")
 
                                 if egg then
-                                    dprint("lay egg")
+                                    --print("lay egg")
                                     inst.myEgg = egg
                                     inst.eggsLayed = (inst.eggsLayed and inst.eggsLayed + 1) or 1
                                     egg:AddTag("penguin_egg")
@@ -258,7 +258,7 @@ end
 local function PickUpEggAction(inst)
     if not inst.components.inventory:IsFull() then
         if not PrepareForNight(inst) and (inst.nextPickupTime or 0) - GetTime() > 0 then
-            --dprint("nextdrop:", (inst.nextDropTime or 0) - GetTime())
+            --print("nextdrop:", (inst.nextDropTime or 0) - GetTime())
             return
         end
         local lst
@@ -279,7 +279,7 @@ local function PickUpEggAction(inst)
             end
         end
 		if target and not target:IsInLimbo() then
-            dprint("________________________________________ Pickup Egg:",target)
+            --print("________________________________________ Pickup Egg:",target)
             if inst.components.knownlocations.GetLocation then
                 inst.components.knownlocations:ForgetLocation("myegg")
             end
@@ -326,7 +326,7 @@ local function HerdAtRookery(inst)
 end
 
 local function FlyAway(inst)
-    --dprint("FLYAWAY EVENT")
+    --print("FLYAWAY EVENT")
     inst:PushEvent("flyaway")
 end
 

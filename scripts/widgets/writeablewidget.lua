@@ -112,8 +112,8 @@ local WriteableWidget = Class(Screen, function(self, owner, writeable, config)
     self.edit_text:SetHAlign(ANCHOR_LEFT)
     --self.edit_text:SetFocusedImage(self.edit_text_bg, "images/textboxes.xml", "textbox_long_over.tex", "textbox_long.tex")
     self.edit_text:SetTextLengthLimit(STRING_MAX_LENGTH)
-    self.edit_text:EnableWordWrap(true)
-    self.edit_text:EnableScrollEditWindow(false)
+    self.edit_text:EnableWordWrap(false)
+    self.edit_text:EnableScrollEditWindow(true)
 
     self.buttons = {}
     table.insert(self.buttons, { text = config.cancelbtn.text, cb = function() oncancel(self.writeable, self.owner, self) end, control = config.cancelbtn.control })

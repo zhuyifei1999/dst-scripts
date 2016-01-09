@@ -17,27 +17,27 @@ local MEDIUM  = 4
 local LOW     = 2
 
 local function SetWorkLevel(inst, workleft)
-    dprint(string.format("SetWORKLEVEL: left=%d, state=%d",workleft,inst.state))
+    --print(string.format("SetWORKLEVEL: left=%d, state=%d",workleft,inst.state))
     if inst.exploding then
         return
     end
     if workleft == MAXWORK and inst.state == MEDIUM then
         inst.state = MAXWORK
-        dprint("MED -> MAX")
+        --print("MED -> MAX")
         inst.AnimState:PlayAnimation("med_grow")
         inst.components.fueled:MakeEmpty()
     elseif workleft <= MEDIUM and inst.state == MAXWORK then
         inst.state = MEDIUM
-        dprint("MAX -> MED")
+        --print("MAX -> MED")
         inst.AnimState:PlayAnimation("med")
         inst.components.fueled:ChangeSection(1)
         inst.components.fueled:StartConsuming()
     elseif workleft <= MEDIUM and inst.state == LOW then
         inst.state = MEDIUM
-        dprint("LOW -> MED")
+        --print("LOW -> MED")
         inst.AnimState:PlayAnimation("low_grow")
     elseif workleft <= LOW and inst.state == MEDIUM then
-        dprint("MED -> LOW")
+        --print("MED -> LOW")
         inst.state = LOW
         inst.AnimState:PlayAnimation("low")
         inst.components.fueled:ChangeSection(1)
@@ -80,14 +80,14 @@ local function DoShake(inst)
 end
 
 local function SealUp(rock)
-    dprint("SealUp:",rock)
+    --print("SealUp:",rock)
     rock.exploding = false
     rock.components.workable:SetWorkLeft(MAXWORK)
 end
 
 
 function ExplodeRock(rock)
-    dprint("Explode:",rock)
+    --print("Explode:",rock)
     if rock.components.workable.workleft < MAXWORK then
         rock.blastTask = rock:DoTaskInTime(GetRandomWithVariance(120,60), ExplodeRock)
         return
@@ -162,13 +162,13 @@ local function fn()
 
     inst.components.fueled:SetUpdateFn( function()
         if inst.components.burnable and inst.components.fueled then
-            dprint("fuel Update:", inst.components.fueled:GetCurrentSection()," %=", inst.components.fueled:GetSectionPercent())
+            --print("fuel Update:", inst.components.fueled:GetCurrentSection()," %=", inst.components.fueled:GetSectionPercent())
             inst.components.burnable:SetFXLevel(inst.components.fueled:GetCurrentSection(), inst.components.fueled:GetSectionPercent())
         end
     end)
 
     inst.components.fueled:SetSectionCallback( function(section,oldsection)
-        dprint(string.format("SectionCallback: old=%d, new=%d, perc=%f",oldsection, section, inst.components.fueled:GetSectionPercent()))
+        --print(string.format("SectionCallback: old=%d, new=%d, perc=%f",oldsection, section, inst.components.fueled:GetSectionPercent()))
         if section == 0 then
             inst.components.burnable:Extinguish() 
             inst:DoTaskInTime(2, function(inst)
@@ -199,7 +199,7 @@ local function fn()
     inst:AddComponent("inspectable")
     inst.components.inspectable.getstatus = function(inst)
         local sec = inst.components.fueled:GetCurrentSection()
-        dprint("get rock status:",sec)
+        --print("get rock status:",sec)
         if sec == 0 then 
             return "OUT"
         elseif sec <= 2 then
@@ -218,4 +218,4 @@ local function fn()
     return inst
 end
 
-return Prefab( "rock_light", fn, assets, prefabs)
+return Prefab("rock_light", fn, assets, prefabs)

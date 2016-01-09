@@ -32,7 +32,7 @@ function Overseer:Caught(attacker)
     data.caught[prefab]                  = (self.data.caught[prefab] or 0) + 1
 
     -- local ts     = self:TimeStamp()
-    -- dprint(ts,"OS: Caught:",attacker,prefab)
+    -- print(ts,"OS: Caught:",attacker,prefab)
     -- data.fight                           = data.fight or {}
     -- data.fight[ts]                       = data.fight[ts] or {}
     -- data.fight[ts]["caught" .. prefab] = true
@@ -68,7 +68,7 @@ function Overseer:GaveUp(attacker)
         end
     end  
 
-    dprint(ts,"OS: GaveUp:",attacker,prefab)
+    print(ts,"OS: GaveUp:",attacker,prefab)
 
     data.eluded                          = self.data.eluded or {}
     data.eluded_total                    = (self.data.eluded_total or 0) + 1
@@ -82,13 +82,13 @@ function Overseer:GaveUp(attacker)
 end
 
 function Overseer:EndFight()
-    --dprint("OS: EndFight:")
+    --print("OS: EndFight:")
     self.data.foeList = {}
     self.engaged = false
 end
 
 function Overseer:InitFight()
-        --dprint("OS InitFight: ****************** Start updating overseer")
+        --print("OS InitFight: ****************** Start updating overseer")
         local player = ThePlayer
         local inv = player.components.inventory
 
@@ -143,7 +143,7 @@ function Overseer:Targeted(attacker)
         return
     end
 
-    IOprint("\rOS: TargetedBy:",attacker)
+    print("\rOS: TargetedBy:",attacker)
 
     if not self.engaged then
         self:InitFight()
@@ -158,7 +158,7 @@ function Overseer:Targeted(attacker)
     end
 
     if prefab ~= "penguin" then  -- fix until I figure out why penguins repeately target and giveup
-        --dprint("\nOS Targeted:",prefab)
+        --print("\nOS Targeted:",prefab)
         data.targeted_by           = data.targeted_by or {}
         data.targeted_by[prefab]   = (data.targeted_by[prefab] or 0) + 1
     end
@@ -178,7 +178,7 @@ function Overseer:Attack(targ,weapon,projectile,damage)
     if not self.engaged then
         self:InitFight()
     end
-    -- dprint("OS: Attack:",targ,damage,weapon,projectile)
+    -- print("OS: Attack:",targ,damage,weapon,projectile)
 
     local data   = self.data
     local prefab = targ.prefab or targ.inst.prefab
@@ -206,7 +206,7 @@ function Overseer:AttackByFollower(targ,weapon,projectile,damage)
     if not self.engaged then
         self:InitFight()
     end
-    dprint("OS: AttackByFollower:",targ,damage,weapon,projectile)
+    print("OS: AttackByFollower:",targ,damage,weapon,projectile)
 
     local data   = self.data
     local prefab = targ.prefab or targ.inst.prefab
@@ -220,7 +220,7 @@ function Overseer:Equip(prefab,slot)
     local data = self.data
 
     if self.engaged then
-        dprint("OS: Equip:",prefab,slot)
+        print("OS: Equip:",prefab,slot)
         local ts = self:TimeStamp()
 
         data.used                       = self.data.used or {}
@@ -239,7 +239,7 @@ function Overseer:Heal(amount)
 
     if self.engaged then
         data.heal = (data.heal or 0) + amount
-        dprint("OS: Heal:",amount)
+        print("OS: Heal:",amount)
         -- local ts = self:TimeStamp()
         -- data.fight[ts]      = data.fight[ts] or {}
         -- data.fight[ts].heal = math.floor(amount)
@@ -252,7 +252,7 @@ function Overseer:Absorb(amount)
     local data = self.data
 
     if self.engaged then
-        dprint("OS: Absorb:",amount)
+        print("OS: Absorb:",amount)
         data.armor_absorbed = (data.armor_absorbed or 0) + amount
         local ts = self:TimeStamp()
         -- data.fight[ts]        = data.fight[ts] or {}
@@ -266,7 +266,7 @@ function Overseer:BrokenArmor(prefab)
     local data = self.data
 
     if self.engaged then
-        dprint("OS: BrokenArmor:",prefab)
+        print("OS: BrokenArmor:",prefab)
         data.armor_broken = (data.armor_broken or 0) + 1
         -- local ts = self:TimeStamp()
         -- data.fight[ts]                      = data.fight[ts] or {}
@@ -282,7 +282,7 @@ function Overseer:AttackedBy(attacker,damage,absorbed)
         self:InitFight()
     end
 
-    --dprint("OS:AttackedBy:",attacker,damage,absorbed)
+    --print("OS:AttackedBy:",attacker,damage,absorbed)
 
     local player = ThePlayer
     local data   = self.data
@@ -313,7 +313,7 @@ end
 
 function Overseer:TrapSprung(trap,target,damage)
 
-    dprint("OS: TrapSprung:",trap,target,damage)
+    print("OS: TrapSprung:",trap,target,damage)
     if not self.engaged then
         return
     end
@@ -355,7 +355,7 @@ function Overseer:AddKillByFollower(targ,damage,weapon)
     local ts     = self:TimeStamp()
 
     data.minion_kills = (data.minion_kills or 0) + 1
-    dprint("OS: KILL By FOLLOWER:",targ,data.minion_kills)
+    print("OS: KILL By FOLLOWER:",targ,data.minion_kills)
 
     -- data.fight[ts]                               = data.fight[ts] or {}
     -- data.fight[ts]["kill_by_follower" .. prefab] = true
@@ -381,7 +381,7 @@ function Overseer:AddKillByMine(targ,damage)
         data.trap_kills = (data.trap_kills or 0) + 1
         data.kill_total = (data.kill_total or 0) + 1
     end
-    dprint("OS: KILL By MINE:",targ,data.trap_kills)
+    print("OS: KILL By MINE:",targ,data.trap_kills)
 end
 
 function Overseer:AddKill(targ,damage,weapon)
@@ -398,7 +398,7 @@ function Overseer:AddKill(targ,damage,weapon)
     local prefab = targ.prefab or targ.inst.prefab
     local ts     = self:TimeStamp()
 
-    --dprint("OS: KILL:",prefab)
+    --print("OS: KILL:",prefab)
 
     data.kills                         = data.kills or {}
     data.kills[prefab]                 = (data.kills[prefab] or 0) + 1
@@ -440,13 +440,13 @@ function Overseer:Process()
          data.minion_hits  == 0 and 
          data.minion_kills == 0 and
          data.damage_taken == 0 ) then
-         --dprint ("|||||||||| VALIDTESTS:", data.trod == 0, duration < 3, data.damage_given == 0, data.minion_kills == 0, data.damage_taken == 0 ) 
+         --print ("|||||||||| VALIDTESTS:", data.trod == 0, duration < 3, data.damage_given == 0, data.minion_kills == 0, data.damage_taken == 0 ) 
         return false
     end
 
 
 	if GetTableSize(data.foeList) == 0 then
-        --dprint("||||||||||| #foeList=0")
+        --print("||||||||||| #foeList=0")
         return false
     end
 
@@ -495,7 +495,7 @@ function Overseer:OnUpdate(dt)
     for ent,v in pairs(data.foeList) do
         if type(ent) == "table" then
             local targ = ent.components and ent.components.combat and ent.components.combat.target
-            --dprint("ent= ",ent,"::",targ)
+            --print("ent= ",ent,"::",targ)
             if targ and ( targ == player or (targ.components.follower and targ.components.follower.leader == player) or CheckAura(ent) or (ent.components.teamattacker and CheckTeam(ent)) )  and
               (ent.components.health and ent.components.health.currenthealth and ent.components.health.currenthealth > 0 ) and
               not ent:IsInLimbo() and
@@ -518,7 +518,7 @@ function Overseer:OnUpdate(dt)
 
     if not targeted and self.engaged then
         self.inst:StopUpdatingComponent(self)
-        -- dprint("****************** Stop updating overseer")
+        -- print("****************** Stop updating overseer")
         if self:Process() then
             RecordOverseerStats(data)
         end

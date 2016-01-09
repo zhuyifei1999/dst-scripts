@@ -3,7 +3,7 @@ local function _OnUpdate(inst, self)
 end
 
 local function AddMemberListeners(self, member)
-    self.inst:ListenForEvent("onremove", self._onmbmerkilled, member)
+    self.inst:ListenForEvent("onremove", self._onmemberkilled, member)
     self.inst:ListenForEvent("death", self._onmemberkilled, member)
 end
 

@@ -158,11 +158,11 @@ function WorldOverseer:DumpPlayerStats()
         sendstats.worn_items = stat.worn_items
         sendstats.crafted_items = stat.crafted_items
 	
-		dprint("_________________________________________________________________Sending playtime heartbeat stats...")
-		ddump(sendstats)
-		dprint("_________________________________________________________________<END>")
-		local jsonstats = json.encode( sendstats )
-		TheSim:SendProfileStats( jsonstats )
+		--print("_________________________________________________________________Sending playtime heartbeat stats...")
+		--ddump(sendstats)
+		--print("_________________________________________________________________<END>")
+		local jsonstats = json.encode(sendstats)
+		TheSim:SendProfileStats(jsonstats)
 	end
 end
 
@@ -176,11 +176,11 @@ function WorldOverseer:OnPlayerDeath(player, data)
 								worldage = worldAge,
 								cause = data and data.cause or ""
 							}
-	dprint("_________________________________________________________________Sending playerdeath stats...")
-	ddump(sendstats)
-	dprint("_________________________________________________________________<END>")
-	local jsonstats = json.encode( sendstats )
-	TheSim:SendProfileStats( jsonstats )
+	--print("_________________________________________________________________Sending playerdeath stats...")
+	--ddump(sendstats)
+	--print("_________________________________________________________________<END>")
+	local jsonstats = json.encode(sendstats)
+	TheSim:SendProfileStats(jsonstats)
 end
 
 function WorldOverseer:OnPlayerChangedSkin(player, data)
@@ -274,11 +274,11 @@ function WorldOverseer:DumpSessionStats()
         sendstats.mpsession.clan_only = TheNet:GetServerClanOnly()
         --sendstats.clan_admins = TheNet:GetServerClanAdmins() -- not available in the handshake!
     end
-	dprint("_________________________________________________________________Sending session heartbeat stats...")
-	ddump(sendstats)
-	dprint("_________________________________________________________________<END>")
-	local jsonstats = json.encode( sendstats )
-	TheSim:SendProfileStats( jsonstats )
+	--print("_________________________________________________________________Sending session heartbeat stats...")
+	--ddump(sendstats)
+	--print("_________________________________________________________________<END>")
+	local jsonstats = json.encode(sendstats)
+	TheSim:SendProfileStats(jsonstats)
 end
 
 function WorldOverseer:OnPlayerJoined(src,player)
