@@ -69,7 +69,7 @@ local function FindLandNextToWater( playerpos, waterpos )
     -- returns offset, check_angle, deflected
     local loc,landAngle,deflected = FindValidPositionByFan(0, radius, 8, test)
     if loc then
-        -- dprint("Fan angle=",landAngle)
+        --print("Fan angle=",landAngle)
         return waterpos+loc,landAngle,deflected
     end
 end
@@ -91,7 +91,7 @@ local function FindSpawnLocationForPlayer(player)
             if loc ~= nil then
                 landPos = loc
                 tmpAng = ang
-                -- dprint("true angle",ang,ang/DEGREES)
+                --print("true angle",ang,ang/DEGREES)
                 return true
             end
         end
@@ -99,7 +99,7 @@ local function FindSpawnLocationForPlayer(player)
     end
 
     local cang = (TheCamera:GetHeading() % 360) * DEGREES
-    --dprint("cang:",cang)
+    --print("cang:",cang)
     local loc, landAngle, deflected = FindValidPositionByFan(cang, radius, 4, test)
     if loc ~= nil then
         return landPos, tmpAng, deflected
@@ -146,7 +146,7 @@ local function SpawnPenguin(inst,spawner,colonyNum,pos,angle)
 
     local pengu = SpawnPrefab("penguin")
     if pengu then
-        --dprint(TheCamera:GetHeading()," spawnPenguin at",pos,"angle:",angle)
+        --print(TheCamera:GetHeading()," spawnPenguin at",pos,"angle:",angle)
 
         pengu.Transform:SetPosition(pos.x,pos.y,pos.z)
         pengu.Transform:SetRotation(angle)
@@ -166,8 +166,8 @@ local function SpawnFlock(colonyNum,loc,check_angle)
         i = i + 1
         if map:IsAboveGroundAtPoint(spawnPos:Get()) then
             spawned = spawned + 1
-            -- dprint(TheCamera:GetHeading()%360,"Spawn flock at:",spawnPos,(check_angle/DEGREES),"degrees"," c_off=",c_off)
-            --dprint(TheCamera:GetHeading()," spawnPenguin at",pos,"angle:",angle)
+            --print(TheCamera:GetHeading()%360,"Spawn flock at:",spawnPos,(check_angle/DEGREES),"degrees"," c_off=",c_off)
+            --print(TheCamera:GetHeading()," spawnPenguin at",pos,"angle:",angle)
             self.inst:DoTaskInTime(GetRandomWithVariance(1,1), SpawnPenguin, self, colonyNum, spawnPos,(check_angle/DEGREES))
         end
     end
@@ -201,7 +201,7 @@ local function EstablishColony(loc)
             return false
         end
         if FindValidPositionByFan(0, 6, 16, NearWaterTest) then
-            -- dprint("colony too near water")
+            --print("colony too near water")
             return false
         end
             -- Now check that the rookeries are not too close together
@@ -219,14 +219,14 @@ local function EstablishColony(loc)
     -- Look for any nearby colonies with enough room
     -- return the colony if you find it
     for i,v in ipairs(_colonies) do
-        --dprint(i,"looking at size:",GetTableSize(v.members),v.rookery,"dist=",math.sqrt(distsq(loc,v.rookery)))
+        --print(i,"looking at size:",GetTableSize(v.members),v.rookery,"dist=",math.sqrt(distsq(loc,v.rookery)))
         if GetTableSize(v.members) <= (_maxColonySize-(FLOCK_SIZE*.8)) then
             pos = v.rookery
             if pos and distsq(loc,pos) < SEARCH_RADIUS2+60 and
                 ground.Pathfinder:IsClear(loc.x, loc.y, loc.z,                    -- check for interposing water
                                          pos.x, pos.y, pos.z,
                                          {ignorewalls = false, ignorecreep = true}) then 
-                --dprint("************* Found existing colony")
+                --print("************* Found existing colony")
                 return i
             end
         end
@@ -274,7 +274,7 @@ local function EstablishColony(loc)
                     end
                 end
                 placement_attempts = placement_attempts + 1
-                --dprint("placement_attempts:", placement_attempts)
+                --print("placement_attempts:", placement_attempts)
                 if placement_attempts > 10 then break end
             end
             numattempts = numattempts - 1
@@ -290,19 +290,19 @@ end
 
 local function TryToSpawnFlockForPlayer(playerdata)
     if _active then
-        -- dprint("---------:", TheWorld.state.season, TheWorld.state.remainingdaysinseason)
+        --print("---------:", TheWorld.state.season, TheWorld.state.remainingdaysinseason)
 	    if not TheWorld.state.iswinter or TheWorld.state.remainingdaysinseason <= 3 then
             return
         end
 
-        -- dprint("Totalbirds=",_totalBirds,_maxPenguins)
+        --print("Totalbirds=",_totalBirds,_maxPenguins)
         if #_colonies > _maxColonies then
-            -- dprint("Maxed out colonies")
+            --print("Maxed out colonies")
             return
         end
 
         if _totalBirds >= _maxPenguins or _seasonLimit > _maxSpawnsPerSeason then
-            -- dprint("TryToSpawn maxed out")
+            --print("TryToSpawn maxed out")
             return
         end
 
@@ -319,7 +319,7 @@ local function TryToSpawnFlockForPlayer(playerdata)
 		end
 
         if (_lastSpawnTime and (GetTime() - _lastSpawnTime) < _spawnInterval) then
-            -- dprint("too soon to spawn")
+            --print("too soon to spawn")
             return
         end
 
@@ -327,11 +327,11 @@ local function TryToSpawnFlockForPlayer(playerdata)
         -- returns offset, check_angle, deflected
         local loc,check_angle,deflected = FindSpawnLocationForPlayer(player)
         if loc then 
-            -- dprint("trying to spawn: Angle is",check_angle/DEGREES)
+            --print("trying to spawn: Angle is",check_angle/DEGREES)
             local colony = EstablishColony(loc)
 
             if not colony then
-                -- dprint("can't establish colony")
+                --print("can't establish colony")
                 return
             end
 
@@ -356,12 +356,12 @@ end
 
 local function OnLoadColonies(data)
 
-    -- dprint("____________ LOADING PSpawner")
+    --print("____________ LOADING PSpawner")
     _colonies = _colonies or {}
     if data.colonies then
         for i,v in ipairs(data.colonies) do
             local ice = SpawnPrefab("penguin_ice")
-            -- dprint(i,ice,"+++++++ pos=",v[1],v[2],v[3])
+            --print(i,ice,"+++++++ pos=",v[1],v[2],v[3])
             if ice then
                 ice.Transform:SetPosition(v[1],v[2],v[3])
                 ice.spawner = self
@@ -412,7 +412,7 @@ self.inst:DoTaskInTime(_checktime / math.max(#_activeplayers,1), function() TryT
 function self:AddToColony(colonyNum,pengu)
     local colony = _colonies[colonyNum]
     if colony then
-        -- dprint(pengu," added to ",colonyNum)
+        --print(pengu," added to ",colonyNum)
         colony.members = colony.members or {}
         colony.members[pengu] = true
         pengu.colonyNum = colonyNum
@@ -468,7 +468,7 @@ function self:OnSave()
             data.colonies[i] = {v.rookery.x,v.rookery.y,v.rookery.z}
         end
     else
-        --dprint("__NO COLONIES")
+        --print("__NO COLONIES")
     end
     data.maxPenguins = _maxPenguins
     data.spawnInterval = _spawnInterval

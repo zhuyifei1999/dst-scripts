@@ -24,7 +24,6 @@ function Inspectable:GetStatus(viewer)
     end
 
     if self.recordview then
-        dprint("++++++++++++++++++STATUSVIEW")
         ProfileStatsSet(self.inst.prefab .. "_examined", true)
     end
 

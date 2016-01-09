@@ -6,7 +6,7 @@ local Text = require "widgets/text"
 
 local emotes = require("emotes")
 
-local CHAT_INPUT_MAX_LENGTH = 200
+local CHAT_INPUT_MAX_LENGTH = 150
 local CHAT_INPUT_HISTORY = {}
 
 local ChatInputScreen = Class(Screen, function(self, whisper)

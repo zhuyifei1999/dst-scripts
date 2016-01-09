@@ -18,19 +18,19 @@ local ChatQueue = Class(Widget, function(self, owner)
 	
 	self.chat_font = TALKINGFONT--DEFAULTFONT --UIFONT
 	self.chat_size = 30 --22
-	
+
 	for i = 1,CHAT_QUEUE_SIZE do
+        local y = -400 - i * (self.chat_size + 2)
 		
 		local message_widget = self:AddChild(Text(self.chat_font, self.chat_size))
-		message_widget:SetPosition(-125+ 25 + 200, -400 - i * (self.chat_size+2))
-		message_widget:SetRegionSize( 850, (self.chat_size+2) )
+		message_widget:SetPosition(-325, y)
 		message_widget:SetHAlign(ANCHOR_LEFT)
 		message_widget:SetVAlign(ANCHOR_MIDDLE)
 		message_widget:SetString("")
 		self.messages[i] = message_widget	
 		
 		local user_widget = self:AddChild(Text(self.chat_font, self.chat_size))
-		user_widget:SetPosition(-330, -400 - i * (self.chat_size+2))
+		user_widget:SetPosition(-330, y)
 		user_widget:SetHAlign(ANCHOR_RIGHT)
 		user_widget:SetVAlign(ANCHOR_MIDDLE)
 		user_widget:SetString("")
@@ -38,7 +38,7 @@ local ChatQueue = Class(Widget, function(self, owner)
 		self.users[i] = user_widget
 
 		local whisper_widget = self:AddChild(Text(self.chat_font, self.chat_size))
-		whisper_widget:SetPosition(-515, -400 - i * (self.chat_size+2))
+		whisper_widget:SetPosition(-330, y)
 		whisper_widget:SetHAlign(ANCHOR_RIGHT)
 		whisper_widget:SetVAlign(ANCHOR_MIDDLE)
 		whisper_widget:SetString(STRINGS.UI.CHATINPUTSCREEN.WHISPER_DESIGNATOR)
@@ -117,22 +117,20 @@ function ChatQueue:OnMessageReceived(userid, name, prefab, message, colour, whis
 	local username = self:GetDisplayName(name, prefab)
 
 	-- Shuffle upwards
-	local x,y
 	for i = 1,CHAT_QUEUE_SIZE-1 do
 		local older_message = self.messages[i]
 		local newer_message = self.messages[i+1]
-		older_message:SetString( newer_message:GetString() )
+		older_message:SetString(newer_message:GetString())
+        older_message:SetPosition(newer_message:GetPosition().x, older_message:GetPosition().y)
 		local older_user = self.users[i]
 		local newer_user = self.users[i+1]
 		local older_whisper = self.whispers[i]
 		local newer_whisper = self.whispers[i+1]
-		older_user:SetString( newer_user:GetString() )
-		x,y = older_user:GetRegionSize()
-		older_user:SetPosition(-330 - x/2, -400 - i * (self.chat_size+2))
+		older_user:SetString(newer_user:GetString())
+		older_user:SetPosition(newer_user:GetPosition().x, older_user:GetPosition().y)
 		if newer_whisper:IsVisible() then
 			older_whisper:Show()
-			local x,y = older_user:GetRegionSize()
-			older_whisper:SetPosition(-330 - x - 15, -400 - i * (self.chat_size+2))
+			older_whisper:SetPosition(newer_whisper:GetPosition().x, older_whisper:GetPosition().y)
 			older_message:SetColour(WHISPER_COLOR)
 		else
 			older_whisper:Hide()
@@ -153,14 +151,16 @@ function ChatQueue:OnMessageReceived(userid, name, prefab, message, colour, whis
 		end
 	end
 	-- Add our new entry
-	self.messages[CHAT_QUEUE_SIZE]:SetString(message)
+	self.messages[CHAT_QUEUE_SIZE]:SetTruncatedString(message, 850, 150, true)
+    local w = self.messages[CHAT_QUEUE_SIZE]:GetRegionSize()
+    local y = -400 - CHAT_QUEUE_SIZE * (self.chat_size + 2)
+    self.messages[CHAT_QUEUE_SIZE]:SetPosition(-325 + w * .5, y)
     self.users[CHAT_QUEUE_SIZE]:SetTruncatedString(username..":", 140, 25, "..:")
-	x,y = self.users[CHAT_QUEUE_SIZE]:GetRegionSize()
-	self.users[CHAT_QUEUE_SIZE]:SetPosition(-330 - x/2, -400 - CHAT_QUEUE_SIZE * (self.chat_size+2))
+	w = self.users[CHAT_QUEUE_SIZE]:GetRegionSize()
+	self.users[CHAT_QUEUE_SIZE]:SetPosition(-330 - w * .5, y)
 	if whisper then
 		self.whispers[CHAT_QUEUE_SIZE]:Show()
-		x,y = self.users[CHAT_QUEUE_SIZE]:GetRegionSize()
-		self.whispers[CHAT_QUEUE_SIZE]:SetPosition(-330 - x - 15, -400 - CHAT_QUEUE_SIZE * (self.chat_size+2))
+		self.whispers[CHAT_QUEUE_SIZE]:SetPosition(-330 - w - 15, y)
 		self.messages[CHAT_QUEUE_SIZE]:SetColour(WHISPER_COLOR)
 	else
 		self.whispers[CHAT_QUEUE_SIZE]:Hide()

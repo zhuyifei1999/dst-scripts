@@ -186,14 +186,14 @@ local isAFK = true
 
 -- Do something when player pauses the game
 function OverseerPauseCheck(reason)
-    --dprint("OverseerPauseCheck")
+    --print("OverseerPauseCheck")
     RecordPauseStats(reason)
 end
 
 local function UpdateInputTime()
     local player = ThePlayer
     if IsPaused() then
-        -- dprint("HUDPAUSED InputUpdate")
+        --print("HUDPAUSED InputUpdate")
         local t = GetTime()
         if t > lastInputTime then  -- means this is the first time into the paused HUD
             lastIdleDuration = t - lastInputTime
@@ -205,14 +205,14 @@ local function UpdateInputTime()
             -- into WallUpdate to be called every few frames, so here I check to see if the
             -- time between inputs was long enough to be considered AFK and 
             if player ~= nil and pauseDuration > AFK_TIME then
-                dprint("============================= AFK during minimap",pauseDuration)
+                --print("============================= AFK during minimap",pauseDuration)
                 player:PushEvent("minimapAFK", pauseDuration)
                 -- Add stat about AFK during minimap
             end
             pauseScreenStart = GetTimeReal()/1000
             lastIdleDuration = pauseDuration
         else
-            -- dprint("some other reason")
+            --print("some other reason")
         end
         return lastIdleDuration
     end
@@ -220,7 +220,7 @@ local function UpdateInputTime()
     lastIdleDuration = t - lastInputTime
     lastInputTime = t
     if isAFK and player ~= nil then  -- Player not instantiated at first
-        dprint("++++++++++++++++++++++++++++++++++ return to game")
+        --print("++++++++++++++++++++++++++++++++++ return to game")
         player:PushEvent("returntogame")
     end
     isAFK = false
@@ -237,16 +237,16 @@ PlayerPauseCheck = function(paused,reason)
         OverseerPauseCheck(reason)
     else
         local p = UpdateInputTime() -- updates pauseDuration
-        -- dprint("Pausecheck=",p)
+        --print("Pausecheck=",p)
     end
 end
 
 IdlePlayerCheck = function()
-    -- dprint("IdlePlayerCheck:")
+    --print("IdlePlayerCheck:")
     local id = GetTime()-lastInputTime
     if id > AFK_TIME then
         if not isAFK and ThePlayer ~= nil then  -- Player not instantiated at first
-            dprint("---------------------------------- is AFK")
+            --print("---------------------------------- is AFK")
             ThePlayer:PushEvent("awayfromgame")
         end
         isAFK = true

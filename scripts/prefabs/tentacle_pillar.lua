@@ -102,14 +102,14 @@ local function SpawnArms(inst, attacker, forcelocal)
 
     for r = 1, rings do
         local theta = GetRandomWithVariance(0, PI / 2) -- randomize starting angle
-        -- dprint("Starting theta:",theta)
+        --print("Starting theta:",theta)
         for i = 1, steps do
             local radius = GetRandomWithVariance(ringdelta, ringdelta / 3) + minRadius
             local offset = Vector3(radius * math.cos(theta), 0, -radius * math.sin(theta))
             local wander_point = pt + offset
             local pillars = TheSim:FindEntities(wander_point.x, wander_point.y, wander_point.z, 3.5, { "tentacle_pillar" })
             if next(pillars) then
-                -- dprint("FoundPillar",pillars[1])
+                --print("FoundPillar",pillars[1])
                 pillarLoc = Vector3(pillars[1].Transform:GetWorldPosition())
             end
 
