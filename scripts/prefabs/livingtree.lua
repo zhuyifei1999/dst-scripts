@@ -10,9 +10,9 @@ local prefabs =
 
 local function chop_down_burnt_tree(inst, chopper)
     inst:RemoveComponent("workable")
-    inst.SoundEmitter:PlaySound("dontstarve/forest/treeCrumble")          
-    if not chopper or (chopper and not chopper:HasTag("playerghost")) then
-        inst.SoundEmitter:PlaySound("dontstarve/wilson/use_axe_tree")          
+    inst.SoundEmitter:PlaySound("dontstarve/forest/treeCrumble")
+    if not (chopper ~= nil and chopper:HasTag("playerghost")) then
+        inst.SoundEmitter:PlaySound("dontstarve/wilson/use_axe_tree")
     end
     inst.AnimState:PlayAnimation("chop_burnt_tall")
     RemovePhysicsColliders(inst)
@@ -53,6 +53,10 @@ end
 
 local function makestump(inst, instant)
     inst:RemoveComponent("workable")
+    inst:RemoveComponent("burnable")
+    MakeMediumBurnable(inst)
+    inst:RemoveComponent("propagator")
+    MakeSmallPropagator(inst)
     inst:RemoveComponent("hauntable")
     MakeHauntableIgnite(inst)
     RemovePhysicsColliders(inst)
@@ -86,11 +90,11 @@ local function ShakeCamera(inst)
 end
 
 local function onworkfinish(inst, chopper)
-    inst.SoundEmitter:PlaySound("dontstarve/forest/treefall")
-    local pt = Vector3(inst.Transform:GetWorldPosition())
-    local hispos = Vector3(chopper.Transform:GetWorldPosition())
+    local pt = inst:GetPosition()
+    local hispos = chopper:GetPosition()
     local he_right = (hispos - pt):Dot(TheCamera:GetRightVec()) > 0
 
+    inst.SoundEmitter:PlaySound("dontstarve/forest/treefall")
     inst.SoundEmitter:PlaySound("dontstarve/creatures/leif/livingtree_die")
 
     if he_right then
@@ -120,9 +124,10 @@ local function onload(inst, data)
     if data ~= nil then
         if data.stump then
             makestump(inst, true)
-        end
-
-        if data.burnt then
+            if data.burnt or inst:HasTag("burnt") then
+                DefaultBurntFn(inst)
+            end
+        elseif data.burnt and not inst:HasTag("burnt") then
             OnBurnt(inst)
         end
     end

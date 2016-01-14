@@ -573,8 +573,13 @@ local events =
         end),
     EventHandler("pinned",
         function(inst, data)
-            if inst.components.health ~= nil and not inst.components.health:IsDead() then
-                inst.sg:GoToState("pinned_pre", data)
+            if inst.components.health ~= nil and not inst.components.health:IsDead() and inst.components.pinnable ~= nil then
+                if inst.components.pinnable.canbepinned then
+                    inst.sg:GoToState("pinned_pre", data)
+                elseif inst.components.pinnable:IsStuck() then
+                    --V2C: Since sg events are queued, it's possible we're no longer pinnable
+                    inst.components.pinnable:Unstick()
+                end
             end
         end),
     EventHandler("freeze",

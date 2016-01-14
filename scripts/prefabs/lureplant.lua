@@ -3,14 +3,14 @@ local assets =
     Asset("ANIM", "anim/eyeplant_trap.zip"),
     Asset("ANIM", "anim/meat_rack_food.zip"),
     Asset("SOUND", "sound/plant.fsb"),
-	Asset("MINIMAP_IMAGE", "eyeplant"),
+    Asset("MINIMAP_IMAGE", "eyeplant"),
 }
 
 local prefabs =
 {
     "eyeplant",
     "lureplantbulb",
-    "plantmeat"
+    "plantmeat",
 }
 
 local brain = require "brains/lureplantbrain"
@@ -20,45 +20,35 @@ function adjustIdleSound(inst, vol)
 end
 
 local function TryRevealBait(inst)
+    inst.task = nil
     inst.lure = inst.lurefn(inst)
     if inst.lure ~= nil and inst.wakeinfo == nil then --There's something to show as bait!
-        inst.lure.onperishfn = function() inst.sg:GoToState("hidebait") end
-        inst:ListenForEvent("onremoved", inst.lure.onperishfn, inst.lure)
+        inst:ListenForEvent("onremove", inst._OnLurePerished, inst.lure)
         inst.components.shelf.cantakeitem = true
         inst.components.shelf.itemonshelf = inst.lure
         inst.sg:GoToState("showbait")
-
-        if inst.task then
-            inst.task = nil
-        end
-
     else --There was nothing to use as bait. Try to reveal bait again until you can.
-        
         inst.task = inst:DoTaskInTime(1, TryRevealBait)
     end
 end
 
 local function HideBait(inst)
-    if not inst.sg:HasStateTag("hiding") and not inst.components.health:IsDead() then   --Won't hide if it's already hiding.        
-        if not inst.task then
+    if not (inst.sg:HasStateTag("hiding") or inst.components.health:IsDead()) then --Won't hide if it's already hiding.
+        if inst.task == nil then
             inst.components.shelf.cantakeitem = false
             inst.sg:GoToState("hidebait")
         end
     end
 
-    if inst.lure then
-        if inst.lure.onperishfn then
-            inst:RemoveEventCallback("onremoved", inst.lure.onperishfn)
-        end
+    if inst.lure ~= nil then
+        inst:RemoveEventCallback("onremove", inst._OnLurePerished, inst.lure)
         inst.lure = nil
     end
 
-    if inst.task then
+    if inst.task ~= nil then
         inst.task:Cancel()
-        inst.task = nil
     end
-
-    inst.task = inst:DoTaskInTime(math.random() * 3 + 2, TryRevealBait)    --Emerge again after some time.
+    inst.task = inst:DoTaskInTime(math.random() * 3 + 2, TryRevealBait) --Emerge again after some time.
 end
 
 local function SetWakeInfo(inst, sleeptime)
@@ -71,7 +61,9 @@ local function WakeUp(inst)
         inst.wakeinfo = nil
         inst.components.minionspawner.shouldspawn = true
         inst.components.minionspawner:StartNextSpawn()
-        inst.task = inst:DoTaskInTime(1, TryRevealBait)
+        if inst.task == nil then
+            inst.task = inst:DoTaskInTime(1, TryRevealBait)
+        end
         inst.sg:GoToState("emerge")
     end
 end
@@ -80,7 +72,7 @@ local function ResumeSleep(inst, seconds)
     inst.sg:GoToState("hibernate")
     inst.components.shelf.cantakeitem = false
 
-    if inst.task then
+    if inst.task ~= nil then
         inst.task:Cancel()
         inst.task = nil
     end
@@ -93,16 +85,14 @@ local function ResumeSleep(inst, seconds)
 end
 
 local function OnPicked(inst)
-    if inst.lure then
-        if inst.lure.onperishfn then
-            inst:RemoveEventCallback("onremoved", inst.lure.onperishfn)
-        end
+    if inst.lure ~= nil then
+        inst:RemoveEventCallback("onremove", inst._OnLurePerished, inst.lure)
         inst.lure = nil
     end
     inst.components.shelf.cantakeitem = false
     inst.sg:GoToState("picked")
 
-    if inst.task then
+    if inst.task ~= nil then
         inst.task:Cancel()
         inst.task = nil
     end
@@ -112,17 +102,15 @@ local function OnPicked(inst)
 
     SetWakeInfo(inst, TUNING.LUREPLANT_HIBERNATE_TIME)
 
-    if inst.hibernatetask then
+    if inst.hibernatetask ~= nil then
         inst.hibernatetask:Cancel()
-        inst.hibernatetask = nil
     end
-
     inst.hibernatetask = inst:DoTaskInTime(TUNING.LUREPLANT_HIBERNATE_TIME, WakeUp)
 end
 
 local function FreshSpawn(inst)
     inst.components.shelf.cantakeitem = false
-    if inst.task then
+    if inst.task ~= nil then
         inst.task:Cancel()
         inst.task = nil
     end
@@ -130,29 +118,30 @@ local function FreshSpawn(inst)
     inst.components.minionspawner:KillAllMinions()
 
     SetWakeInfo(inst, TUNING.LUREPLANT_HIBERNATE_TIME)
+
+    if inst.hibernatetask ~= nil then
+        inst.hibernatetask:Cancel()
+    end
     inst.hibernatetask = inst:DoTaskInTime(TUNING.LUREPLANT_HIBERNATE_TIME, WakeUp)
 end
 
 local function CollectItems(inst)
     if inst.components.minionspawner.minions ~= nil then
-        for k,v in pairs(inst.components.minionspawner.minions) do
-            if v.components.inventory then                
+        for k, v in pairs(inst.components.minionspawner.minions) do
+            if v.components.inventory ~= nil then                
                 for k = 1, v.components.inventory.maxslots do
                     local item = v.components.inventory.itemslots[k]
-                    if item and not inst.components.inventory:IsFull() then
+                    if item ~= nil and not inst.components.inventory:IsFull() then
                         local it = v.components.inventory:RemoveItem(item)
-                        
-                        if it.components.perishable then
+                        if it.components.perishable ~= nil then
                             local top = it.components.perishable:GetPercent()
                             local bottom = .2
                             if top > bottom then
-                                it.components.perishable:SetPercent(bottom + math.random()*(top-bottom))
+                                it.components.perishable:SetPercent(bottom + math.random() * (top - bottom))
                             end
                         end
                         inst.components.inventory:GiveItem(it)
-                                        
-                        
-                    elseif item then
+                    elseif item ~= nil then
                         local item = v.components.inventory:RemoveItem(item)
                         item:Remove()
                     end
@@ -163,23 +152,25 @@ local function CollectItems(inst)
 end
 
 local function SelectLure(inst)    
-    if inst.components.inventory then
+    if inst.components.inventory ~= nil then
         local lures = {}
         for k = 1, inst.components.inventory.maxslots do
             local item = inst.components.inventory.itemslots[k]
-            if item and item.components.edible and inst.components.eater:CanEat(item) and not item:HasTag("preparedfood") and not item.components.weapon then
-               table.insert(lures, item)
+            if item ~= nil and
+                item.components.weapon == nil and
+                item.components.edible ~= nil and
+                inst.components.eater:CanEat(item) and
+                not item:HasTag("preparedfood") then
+                table.insert(lures, item)
             end
         end
 
         if #lures >= 1 then
             return lures[math.random(#lures)]
-        else      
-            if inst.components.minionspawner.numminions >= inst.components.minionspawner.maxminions / 2 then
-                local meat = SpawnPrefab("plantmeat")
-                inst.components.inventory:GiveItem(meat)      
-                return meat
-            end
+        elseif inst.components.minionspawner.numminions * 2 >= inst.components.minionspawner.maxminions then
+            local meat = SpawnPrefab("plantmeat")
+            inst.components.inventory:GiveItem(meat)
+            return meat
         end
     end
 end
@@ -199,22 +190,20 @@ local function CanDigest(owner, item)
 end
 
 local function OnLoad(inst, data)
-    if data then
-        if data.timeuntilwake then
-            ResumeSleep(inst, data.timeuntilwake)
-        end
+    if data ~= nil and data.timeuntilwake ~= nil then
+        ResumeSleep(inst, data.timeuntilwake)
     end
 end
 
 local function OnSave(inst, data)
-    if inst.wakeinfo then
+    if inst.wakeinfo ~= nil then
         data.timeuntilwake = inst.wakeinfo.endsleeptime - GetTime()
     end
 end
 
 local function OnLongUpdate(inst, dt)
-    if inst.wakeinfo and inst.wakeinfo.endsleeptime then
-        if inst.hibernatetask then
+    if inst.wakeinfo ~= nil and inst.wakeinfo.endsleeptime ~= nil then
+        if inst.hibernatetask ~= nil then
             inst.hibernatetask:Cancel()
             inst.hibernatetask = nil
         end
@@ -238,14 +227,12 @@ local function SeasonChanges(inst)
         else
             --it's already hibernating & it's still winter. Make it sleep for longer!
             SetWakeInfo(inst, TUNING.LUREPLANT_HIBERNATE_TIME)
-            if inst.hibernatetask then
+            if inst.hibernatetask ~= nil then
                 inst.hibernatetask:Cancel()
-                inst.hibernatetask = nil
             end
             inst.hibernatetask = inst:DoTaskInTime(TUNING.LUREPLANT_HIBERNATE_TIME, WakeUp)
         end
     end
-
 end
 
 local function OnEntityWake(inst)
@@ -264,6 +251,15 @@ end
 
 local function OnMinionChange(inst)
     adjustIdleSound(inst, inst.components.minionspawner.numminions / inst.components.minionspawner.maxminions)
+end
+
+local function OnHaunt(inst)
+    --if math.random() <= TUNING.HAUNT_CHANCE_ALWAYS then
+        HideBait(inst)
+        inst.components.hauntable.hauntvalue = TUNING.HAUNT_TINY
+        return true
+    --end
+    --return false
 end
 
 local function fn()
@@ -338,20 +334,14 @@ local function fn()
     MakeMediumPropagator(inst)
 
     MakeHauntableIgnite(inst, TUNING.HAUNT_CHANCE_OCCASIONAL)
-    AddHauntableCustomReaction(inst, function(inst, haunter)
-        if math.random() <= TUNING.HAUNT_CHANCE_ALWAYS then
-            HideBait(inst)
-            inst.components.hauntable.hauntvalue = TUNING.HAUNT_TINY
-            return true
-        end
-        return false
-    end, false, false, true)
+    AddHauntableCustomReaction(inst, OnHaunt, false, false, true)
 
     inst.OnLoad = OnLoad
     inst.OnSave = OnSave
 
     inst.OnLongUpdate = OnLongUpdate
 
+    inst._OnLurePerished = function() HideBait(inst) end
     inst.lurefn = SelectLure
     inst:DoPeriodicTask(2, CollectItems) -- Always do this.
     TryRevealBait(inst)

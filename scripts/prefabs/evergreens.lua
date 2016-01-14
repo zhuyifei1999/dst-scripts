@@ -6,7 +6,7 @@ local assets =
     Asset("ANIM", "anim/evergreen_short_normal.zip"),
     Asset("ANIM", "anim/dust_fx.zip"),
     Asset("SOUND", "sound/forest.fsb"),
-	Asset("MINIMAP_IMAGE", "evergreen_lumpy"),
+    Asset("MINIMAP_IMAGE", "evergreen_lumpy"),
 }
 
 local prefabs =
@@ -22,27 +22,27 @@ local prefabs =
 
 local builds =
 {
-	normal = {
-		file="evergreen_new",
-		prefab_name="evergreen",
+    normal = {
+        file="evergreen_new",
+        prefab_name="evergreen",
         regrowth_product="pinecone_sapling",
         regrowth_tuning=TUNING.EVERGREEN_REGROWTH,
-		normal_loot = {"log", "log", "pinecone"},
-		short_loot = {"log"},
-		tall_loot = {"log", "log", "log", "pinecone", "pinecone"},
-		drop_pinecones=true,
-		leif="leif",
+        normal_loot = {"log", "log", "pinecone"},
+        short_loot = {"log"},
+        tall_loot = {"log", "log", "log", "pinecone", "pinecone"},
+        drop_pinecones=true,
+        leif="leif",
     },
-	sparse = {
-		file="evergreen_new_2",
-		prefab_name="evergreen_sparse",
+    sparse = {
+        file="evergreen_new_2",
+        prefab_name="evergreen_sparse",
         regrowth_product="lumpy_sapling",
         regrowth_tuning=TUNING.EVERGREEN_SPARSE_REGROWTH,
-		normal_loot = {"log","log"},
-		short_loot = {"log"},
-		tall_loot = {"log", "log","log"},
-		drop_pinecones=false,
-		leif="leif_sparse",
+        normal_loot = {"log","log"},
+        short_loot = {"log"},
+        tall_loot = {"log", "log","log"},
+        drop_pinecones=false,
+        leif="leif_sparse",
     },
 }
 
@@ -67,7 +67,7 @@ local tall_anims = makeanims("tall")
 local normal_anims = makeanims("normal")
 local old_anims =
 {
-	idle="idle_old",
+    idle="idle_old",
     sway1="idle_old",
     sway2="idle_old",
     chop="chop_old",
@@ -87,13 +87,13 @@ end
 
 local function chop_down_burnt_tree(inst, chopper)
     inst:RemoveComponent("workable")
-    inst.SoundEmitter:PlaySound("dontstarve/forest/treeCrumble")       
+    inst.SoundEmitter:PlaySound("dontstarve/forest/treeCrumble")
     if not chopper or (chopper and not chopper:HasTag("playerghost")) then
-        inst.SoundEmitter:PlaySound("dontstarve/wilson/use_axe_tree")          
+        inst.SoundEmitter:PlaySound("dontstarve/wilson/use_axe_tree")
     end
-	inst.AnimState:PlayAnimation(inst.anims.chop_burnt)
+    inst.AnimState:PlayAnimation(inst.anims.chop_burnt)
     RemovePhysicsColliders(inst)
-	inst:ListenForEvent("animover", inst.Remove)
+    inst:ListenForEvent("animover", inst.Remove)
     inst.components.lootdropper:SpawnLootPrefab("charcoal")
     inst.components.lootdropper:DropLoot()
     if inst.pineconetask then
@@ -103,45 +103,44 @@ local function chop_down_burnt_tree(inst, chopper)
 end
 
 local function GetBuild(inst)
-	local build = builds[inst.build]
-	if build == nil then
-		return builds["normal"]
-	end
-	return build
+    local build = builds[inst.build]
+    if build == nil then
+        return builds["normal"]
+    end
+    return build
 end
 
 local burnt_highlight_override = {.5,.5,.5}
 local function OnBurnt(inst, immediate)
-	
-	local function changes()
-	    if inst.components.burnable then
-		    inst.components.burnable:Extinguish()
-		end
-		inst:RemoveComponent("burnable")
-		inst:RemoveComponent("propagator")
-		inst:RemoveComponent("growable")
+    local function changes()
+        if inst.components.burnable then
+            inst.components.burnable:Extinguish()
+        end
+        inst:RemoveComponent("burnable")
+        inst:RemoveComponent("propagator")
+        inst:RemoveComponent("growable")
         inst:RemoveComponent("hauntable")
         inst:RemoveTag("shelter")
         MakeHauntableWork(inst)
 
-		inst.components.lootdropper:SetLoot({})
-		if GetBuild(inst).drop_pinecones then
-			inst.components.lootdropper:AddChanceLoot("pinecone", 0.1)
-		end
-		
-		if inst.components.workable then
-			inst.components.workable:SetWorkLeft(1)
-			inst.components.workable:SetOnWorkCallback(nil)
-			inst.components.workable:SetOnFinishCallback(chop_down_burnt_tree)
-		end
-	end
-		
-	if immediate then
-		changes()
-	else
-		inst:DoTaskInTime( 0.5, changes)
-	end    
-	inst.AnimState:PlayAnimation(inst.anims.burnt, true)
+        inst.components.lootdropper:SetLoot({})
+        if GetBuild(inst).drop_pinecones then
+            inst.components.lootdropper:AddChanceLoot("pinecone", 0.1)
+        end
+
+        if inst.components.workable then
+            inst.components.workable:SetWorkLeft(1)
+            inst.components.workable:SetOnWorkCallback(nil)
+            inst.components.workable:SetOnFinishCallback(chop_down_burnt_tree)
+        end
+    end
+
+    if immediate then
+        changes()
+    else
+        inst:DoTaskInTime( 0.5, changes)
+    end
+    inst.AnimState:PlayAnimation(inst.anims.burnt, true)
     inst.AnimState:SetRayTestOnBB(true)
     inst:AddTag("burnt")
 
@@ -170,11 +169,11 @@ end
 
 local function SetShort(inst)
     inst.anims = short_anims
-    
+
     if inst.components.workable then
-	    inst.components.workable:SetWorkLeft(TUNING.EVERGREEN_CHOPS_SMALL)
-	end
-		    
+        inst.components.workable:SetWorkLeft(TUNING.EVERGREEN_CHOPS_SMALL)
+    end
+
     inst.components.lootdropper:SetLoot(GetBuild(inst).short_loot)
 
     inst:AddTag("shelter")
@@ -184,17 +183,17 @@ end
 
 local function GrowShort(inst)
     inst.AnimState:PlayAnimation("grow_old_to_short")
-    inst.SoundEmitter:PlaySound("dontstarve/forest/treeGrowFromWilt")          
+    inst.SoundEmitter:PlaySound("dontstarve/forest/treeGrowFromWilt")
     PushSway(inst)
 end
 
 local function SetNormal(inst)
     inst.anims = normal_anims
-    
+
     if inst.components.workable then
-	    inst.components.workable:SetWorkLeft(TUNING.EVERGREEN_CHOPS_NORMAL)
-	end
-	
+        inst.components.workable:SetWorkLeft(TUNING.EVERGREEN_CHOPS_NORMAL)
+    end
+
     inst.components.lootdropper:SetLoot(GetBuild(inst).normal_loot)
 
     inst:AddTag("shelter")
@@ -204,16 +203,16 @@ end
 
 local function GrowNormal(inst)
     inst.AnimState:PlayAnimation("grow_short_to_normal")
-    inst.SoundEmitter:PlaySound("dontstarve/forest/treeGrow")          
+    inst.SoundEmitter:PlaySound("dontstarve/forest/treeGrow")
     PushSway(inst)
 end
 
 local function SetTall(inst)
     inst.anims = tall_anims
-	if inst.components.workable then
-		inst.components.workable:SetWorkLeft(TUNING.EVERGREEN_CHOPS_TALL)
-	end
-	
+    if inst.components.workable then
+        inst.components.workable:SetWorkLeft(TUNING.EVERGREEN_CHOPS_TALL)
+    end
+
     inst.components.lootdropper:SetLoot(GetBuild(inst).tall_loot)
 
     inst:AddTag("shelter")
@@ -223,20 +222,20 @@ end
 
 local function GrowTall(inst)
     inst.AnimState:PlayAnimation("grow_normal_to_tall")
-    inst.SoundEmitter:PlaySound("dontstarve/forest/treeGrow")          
+    inst.SoundEmitter:PlaySound("dontstarve/forest/treeGrow")
     PushSway(inst)
 end
 
 local function SetOld(inst)
     inst.anims = old_anims
-	
-	if inst.components.workable then
-	    inst.components.workable:SetWorkLeft(1)
-	end
-	
-	if GetBuild(inst).drop_pinecones then
-		inst.components.lootdropper:SetLoot({"pinecone"})
-	else
+
+    if inst.components.workable then
+        inst.components.workable:SetWorkLeft(1)
+    end
+
+    if GetBuild(inst).drop_pinecones then
+        inst.components.lootdropper:SetLoot({"pinecone"})
+    else
         inst.components.lootdropper:SetLoot({})
     end
 
@@ -281,15 +280,15 @@ local function chop_tree(inst, chopper, chops)
 
     inst.AnimState:PlayAnimation(inst.anims.chop)
     inst.AnimState:PushAnimation(inst.anims.sway1, true)
-    
-	--tell any nearby leifs to wake up
-	local ents = TheSim:FindEntities(x, y, z, TUNING.LEIF_REAWAKEN_RADIUS, {"leif"})
-	for k,v in pairs(ents) do
-		if v.components.sleeper and v.components.sleeper:IsAsleep() then
-			v:DoTaskInTime(math.random(), function() v.components.sleeper:WakeUp() end)
-		end
-		v.components.combat:SuggestTarget(chopper)
-	end
+
+    --tell any nearby leifs to wake up
+    local ents = TheSim:FindEntities(x, y, z, TUNING.LEIF_REAWAKEN_RADIUS, {"leif"})
+    for k,v in pairs(ents) do
+        if v.components.sleeper and v.components.sleeper:IsAsleep() then
+            v:DoTaskInTime(math.random(), function() v.components.sleeper:WakeUp() end)
+        end
+        v.components.combat:SuggestTarget(chopper)
+    end
 end
 
 local function chop_down_tree_shake(inst)
@@ -297,17 +296,17 @@ local function chop_down_tree_shake(inst)
     ShakeAllCameras(CAMERASHAKE.FULL, .25, .03, sz, inst, 6)
 end
 
-local function find_leif_spawn_target(item) 
+local function find_leif_spawn_target(item)
     return item.components.growable ~= nil and item.components.growable.stage <= 3 and item:HasTag("evergreens")
         and item:HasTag("tree") and not item:HasTag("stump") and not item:HasTag("burnt") and not item.noleif
 end
 
-local function spawn_leif(target) 
+local function spawn_leif(target)
     local leif = SpawnPrefab(builds[target.build].leif)
     local scale = target.leifscale
     local r,g,b,a = target.AnimState:GetMultColour()
     leif.AnimState:SetMultColour(r,g,b,a)
-    
+
     --we should serialize this?
     leif.components.locomotor.walkspeed = leif.components.locomotor.walkspeed*scale
     leif.components.combat.defaultdamage = leif.components.combat.defaultdamage*scale
@@ -317,19 +316,19 @@ local function spawn_leif(target)
     local currenthealth = leif.components.health.currenthealth*scale
     leif.components.health:SetMaxHealth(maxhealth)
     leif.components.health:SetCurrentHealth(currenthealth)
-    
+
     leif.Transform:SetScale(scale,scale,scale) 
     if target.chopper then leif.components.combat:SuggestTarget(target.chopper) end
     leif.sg:GoToState("spawn")
     target:Remove()
-    
+
     leif.Transform:SetPosition(target.Transform:GetWorldPosition())
 end
 
 local function make_stump(inst)
     inst:RemoveComponent("burnable")
     MakeSmallBurnable(inst)
-	MakeDragonflyBait(inst, 1)
+    MakeDragonflyBait(inst, 1)
     inst:RemoveComponent("propagator")
     MakeSmallPropagator(inst)
     inst:RemoveComponent("workable")
@@ -338,13 +337,13 @@ local function make_stump(inst)
     MakeHauntableIgnite(inst)
 
     RemovePhysicsColliders(inst)
-    
+
     inst:AddTag("stump")
-    if inst.components.growable then
+    if inst.components.growable ~= nil then
         inst.components.growable:StopGrowing()
     end
-	
-	inst:AddComponent("workable")
+
+    inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.DIG)
     inst.components.workable:SetOnFinishCallback(dig_up_stump)
     inst.components.workable:SetWorkLeft(1)
@@ -360,7 +359,7 @@ local function chop_down_tree(inst, chopper)
     local hispos = Vector3(chopper.Transform:GetWorldPosition())
 
     local he_right = (hispos - pt):Dot(TheCamera:GetRightVec()) > 0
-    
+
     if he_right then
         inst.AnimState:PlayAnimation(inst.anims.fallleft)
         inst.components.lootdropper:DropLoot(pt - TheCamera:GetRightVec())
@@ -376,28 +375,28 @@ local function chop_down_tree(inst, chopper)
 
     inst:AddTag("NOCLICK")
     inst:DoTaskInTime(2, inst.RemoveTag, "NOCLICK")
-    
+
     local days_survived = TheWorld.state.cycles
     if days_survived >= TUNING.LEIF_MIN_DAY then
-		if math.random() <= TUNING.LEIF_PERCENT_CHANCE then
-				
-			local numleifs = 1
-			if days_survived > 30 then
-				numleifs = math.random(2)
-			elseif days_survived > 80 then
-				numleifs = math.random(3)
-			end
-			
-			for k = 1,numleifs do
-				local target = FindEntity(inst, TUNING.LEIF_MAXSPAWNDIST, find_leif_spawn_target)
-				if target ~= nil then
-					target.noleif = true
-					target.leifscale = growth_stages[target.components.growable.stage].leifscale or 1
+        if math.random() <= TUNING.LEIF_PERCENT_CHANCE then
+
+            local numleifs = 1
+            if days_survived > 30 then
+                numleifs = math.random(2)
+            elseif days_survived > 80 then
+                numleifs = math.random(3)
+            end
+
+            for k = 1,numleifs do
+                local target = FindEntity(inst, TUNING.LEIF_MAXSPAWNDIST, find_leif_spawn_target)
+                if target ~= nil then
+                    target.noleif = true
+                    target.leifscale = growth_stages[target.components.growable.stage].leifscale or 1
                     target.chopper = chopper
-					target:DoTaskInTime(1 + math.random() * 3, spawn_leif)
-				end
-			end
-		end
+                    target:DoTaskInTime(1 + math.random() * 3, spawn_leif)
+                end
+            end
+        end
     end
 end
 
@@ -414,52 +413,59 @@ local function onpineconetask(inst)
 end
 
 local function tree_burnt(inst)
-	OnBurnt(inst)
+    OnBurnt(inst)
     if not inst.burntcone then
         if inst.pineconetask then
             inst.pineconetask:Cancel()
         end
-    	inst.pineconetask = inst:DoTaskInTime(10, onpineconetask)
+        inst.pineconetask = inst:DoTaskInTime(10, onpineconetask)
     end
 end
 
-local function handler_growfromseed (inst)
-	inst.components.growable:SetStage(1)
-	inst.AnimState:PlayAnimation("grow_seed_to_short")
-    inst.SoundEmitter:PlaySound("dontstarve/forest/treeGrow")          
-	PushSway(inst)
+local function handler_growfromseed(inst)
+    inst.components.growable:SetStage(1)
+    inst.AnimState:PlayAnimation("grow_seed_to_short")
+    inst.SoundEmitter:PlaySound("dontstarve/forest/treeGrow")
+    PushSway(inst)
 end
 
 local function onsave(inst, data)
     if inst:HasTag("burnt") or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
         data.burnt = true
     end
-    
+
     if inst:HasTag("stump") then
         data.stump = true
     end
 
-	if inst.build ~= "normal" then
-		data.build = inst.build
-	end
+    if inst.build ~= "normal" then
+        data.build = inst.build
+    end
 
     data.burntcone = inst.burntcone
 end
-        
+
 local function onload(inst, data)
     if data ~= nil then
         inst.build = data.build ~= nil and builds[data.build] ~= nil and data.build or "normal"
 
-        if data.burnt then
-            OnBurnt(inst, true)
-        elseif data.stump then
+        if data.stump then
             make_stump(inst)
             inst.AnimState:PlayAnimation(inst.anims.stump)
+            if data.burnt or inst:HasTag("burnt") then
+                DefaultBurntFn(inst)
+            end
+        elseif data.burnt and not inst:HasTag("burnt") then
+            OnBurnt(inst, true)
+        end
+
+        if not inst:IsValid() then
+            return
         end
 
         inst.burntcone = data.burntcone
     end
-end        
+end
 
 local function OnEntitySleep(inst)
     local doBurnt = false
@@ -576,13 +582,13 @@ local function tree(name, build, stage, data)
         local color = 0.5 + math.random() * 0.5
         inst.AnimState:SetMultColour(color, color, color, 1)
 
-        -------------------        
+        -------------------
         MakeLargeBurnable(inst, TUNING.TREE_BURN_TIME)
         inst.components.burnable:SetFXLevel(5)
         inst.components.burnable:SetOnBurntFn(tree_burnt)
         MakeMediumPropagator(inst)
 
-        -------------------        
+        -------------------
         inst:AddComponent("inspectable")
         inst.components.inspectable.getstatus = inspect_tree
 
@@ -593,9 +599,9 @@ local function tree(name, build, stage, data)
         inst.components.workable:SetOnFinishCallback(chop_down_tree)
 
         -------------------
-        inst:AddComponent("lootdropper") 
+        inst:AddComponent("lootdropper")
 
-        ---------------------        
+        ---------------------
         inst:AddComponent("growable")
         inst.components.growable.stages = growth_stages
         inst.components.growable:SetStage(stage == 0 and math.random(1, 3) or stage)
@@ -611,14 +617,14 @@ local function tree(name, build, stage, data)
         inst.components.plantregrowth:SetProduct(GetBuild(inst).regrowth_product)
         inst.components.plantregrowth:SetSearchTag(GetBuild(inst).prefab_name)
 
-        ---------------------        
+        ---------------------
         inst:AddComponent("timer")
         inst:ListenForEvent("timerdone", OnTimerDone)
 
-        ---------------------        
+        ---------------------
         --PushSway(inst)
 
-        ---------------------        
+        ---------------------
 
         inst:AddComponent("hauntable")
         inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
@@ -645,7 +651,7 @@ local function tree(name, build, stage, data)
                 else
                     inst.leifscale = 1
                 end
-                spawn_leif(inst) 
+                spawn_leif(inst)
                 inst.components.hauntable.hauntvalue = TUNING.HAUNT_HUGE
                 inst.components.hauntable.cooldown_on_successful_haunt = false
                 ret = true
@@ -653,13 +659,13 @@ local function tree(name, build, stage, data)
             return ret
         end)
 
-        ---------------------        
+        ---------------------
 
         inst.OnSave = onsave
         inst.OnLoad = onload
 
         MakeSnowCovered(inst)
-        ---------------------        
+        ---------------------
 
         if data == "stump" then
             inst:RemoveComponent("burnable")

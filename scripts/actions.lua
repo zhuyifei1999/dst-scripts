@@ -1181,8 +1181,8 @@ ACTIONS.USEITEM.fn = function(act)
 end
 
 ACTIONS.TAKEITEM.fn = function(act)
---Use this for taking a specific item as opposed to having an item be generated as it is in Pick/ Harvest
-    if act.target and act.target.components.shelf and act.target.components.shelf.cantakeitem then
+    --Use this for taking a specific item as opposed to having an item be generated as it is in Pick/ Harvest
+    if act.target ~= nil and act.target.components.shelf ~= nil and act.target.components.shelf.cantakeitem then
         act.target.components.shelf:TakeItem(act.doer)
         return true
     end

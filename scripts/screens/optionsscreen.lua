@@ -662,13 +662,13 @@ function OptionsScreen:LoadCurrentControls()
     self:RefreshControls()	
 end
 
-function OptionsScreen:MapControlInputHandler(control, down)
-    --[[if not down and control == CONTROL_CANCEL then
+--[[function OptionsScreen:MapControlInputHandler(control, down)
+    if not down and control == CONTROL_CANCEL then
         TheInputProxy:CancelMapping()
         self.is_mapping = false
         TheFrontEnd:PopScreen()
-    end--]]
-end
+    end
+end--]]
 
 function OptionsScreen:MapControl(deviceId, controlId)
     --print("Mapping control [" .. controlId .. "] on device [" .. deviceId .. "]")
@@ -687,7 +687,7 @@ function OptionsScreen:MapControl(deviceId, controlId)
         popup.text:SetFont(NEWFONT)
     end
         
-    popup.OnControl = function(_, control, down) self:MapControlInputHandler(control, down) end
+    popup.OnControl = function(_, control, down) --[[self:MapControlInputHandler(control, down)]] return true end
 	TheFrontEnd:PushScreen(popup)
 
     TheInputProxy:MapControl(deviceId, controlId)

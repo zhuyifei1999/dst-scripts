@@ -1037,7 +1037,7 @@ local function onload(inst, data)
             inst.sg:GoToState("empty")
         end
 
-        if inst.components.growable then
+        if inst.components.growable ~= nil then
             if inst.components.growable.stage == 1 then
                 inst.anims = short_anims
             elseif inst.components.growable.stage == 2 then
@@ -1053,9 +1053,7 @@ local function onload(inst, data)
             inst.anims = tall_anims
         end
 
-        if data.burnt then
-            inst._wasonfire = true--OnEntityWake will handle it actually doing burnt logic
-        elseif data.stump then
+        if data.stump then
             if data.monster then
                 inst.AnimState:SetBank("tree_leaf_monster")
                 if GetBuild(inst).leavesbuild then
@@ -1073,7 +1071,16 @@ local function onload(inst, data)
             inst.AnimState:PlayAnimation(inst.anims.stump)
 
             make_stump(inst)
+            if data.burnt or inst:HasTag("burnt") then
+                DefaultBurntFn(inst)
+            end
+        elseif data.burnt then
+            inst._wasonfire = true--OnEntityWake will handle it actually doing burnt logic
         end
+    end
+
+    if not inst:IsValid() then
+        return
     end
 
     if data and data.leaveschangetime then

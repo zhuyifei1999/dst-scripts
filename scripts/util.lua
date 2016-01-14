@@ -1131,6 +1131,12 @@ function string.random(Length, CharSet)
    end
 end
 
+--utf8substr(str, start, end)
+--start: 1-based start position (can be negative to count from end)
+--end: 1-based end position (optional, can be negative to count from end)
+--returns a new string
+string.utf8sub = utf8substr
+string.utf8len = utf8strlen
 
 -- Returns the 0 - 255 color of a hex code
 function HexToRGB(hex)
