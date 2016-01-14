@@ -47,7 +47,9 @@ function Shelf:TakeItem(taker)
 
         if taker.components.inventory ~= nil then
             self.inst.components.inventory:RemoveItem(self.itemonshelf)
-            taker.components.inventory:GiveItem(self.itemonshelf)
+            self.itemonshelf.prevslot = nil
+            self.itemonshelf.prevcontainer = nil
+            taker.components.inventory:GiveItem(self.itemonshelf, nil, self.inst:GetPosition())
             self.itemonshelf = nil
         else
             self.inst.components.inventory:DropItem(self.itemonshelf)

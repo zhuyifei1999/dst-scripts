@@ -13,7 +13,7 @@ require "widgets/widgetutil"
 local Crafting = Class(Widget, function(self, owner, num_slots)
     Widget._ctor(self, "Crafting")
     
-	self.owner = owner
+    self.owner = owner
 
     self.bg = self:AddChild(TileBG(HUD_ATLAS, "craft_slotbg.tex"))
 
@@ -40,7 +40,7 @@ local Crafting = Class(Widget, function(self, owner, num_slots)
     self.downendcapbg = self:AddChild(Image(HUD_ATLAS, "craft_sep.tex"))
     self.upendcapbg = self:AddChild(Image(HUD_ATLAS, "craft_sep.tex"))
 
-	-- start slightly scrolled down
+    -- start slightly scrolled down
     self.idx = -1
     self.scrolldir = true
 
@@ -50,16 +50,12 @@ end)
 function Crafting:SetOrientation(horizontal)
     self.horizontal = horizontal
     self.bg.horizontal = horizontal
-    if horizontal then
-        self.bg.sepim = "craft_sep_h.tex"
-    else
-        self.bg.sepim = "craft_sep.tex"
-    end
+    self.bg.sepim = horizontal and "craft_sep_h.tex" or "craft_sep.tex"
 
     self.bg:SetNumTiles(self.current_slots)
     local slot_w, slot_h = self.bg:GetSlotSize()
     local w, h = self.bg:GetSize()
-    
+
     for k = 1, #self.craftslots.slots do
         local slotpos = self.bg:GetSlotPos(k)
         self.craftslots.slots[k]:SetPosition( slotpos.x,slotpos.y,slotpos.z )
@@ -78,13 +74,13 @@ function Crafting:SetOrientation(horizontal)
         self.upendcapbg:Hide()
     else
         self.downbutton:SetScale(Vector3(1, -1, 1))
-        if self.valid_recipes and #self.valid_recipes <= self.max_slots then
+        if self.valid_recipes ~= nil and #self.valid_recipes <= self.max_slots then
             self.downbutton:SetPosition(0, self.bg.length/2 + self.but_h/1.35 - slot_h/2 - 23,0)
             self.upbutton:SetPosition(0, -self.bg.length/2 - self.but_h/1.35 + slot_h/2 + 23,0)
 
             self.downconnector:SetPosition(-68, self.bg.length/2 + self.but_h/1.5 - slot_h/2 - 23,0)
             self.upconnector:SetPosition(-68, -self.bg.length/2 - self.but_h/1.5 + slot_h/2 + 23,0)
-            
+
             self.downendcapbg:SetPosition(0, self.bg.length/2 + self.but_h/2 - slot_h/2 - 23)
             self.upendcapbg:SetPosition(0, -self.bg.length/2 - self.but_h/2 + slot_h/2 + 23)
 
@@ -96,7 +92,7 @@ function Crafting:SetOrientation(horizontal)
 
             self.downconnector:SetPosition(-68, self.bg.length/2 + self.but_h/2 - slot_h/2 - 23,0)
             self.upconnector:SetPosition(-68, - self.bg.length/2 - self.but_h/2 + slot_h/2 + 23,0)
-            
+
             self.downendcapbg:Hide()
             self.upendcapbg:Hide()
         end
@@ -106,8 +102,8 @@ end
 function Crafting:SetFilter(filter)
     local new_filter = filter ~= self.filter
     self.filter = filter
-    
-    if new_filter then 
+
+    if new_filter then
         self:UpdateRecipes()
     end
 end
@@ -120,8 +116,8 @@ function Crafting:Close(fn)
 end
 
 function Crafting:Open(fn)
-	self.open = true
-	self:Enable() 
+    self.open = true
+    self:Enable() 
     self:MoveTo(self.out_pos, self.in_pos, .33, fn)
     self:Show() 
 end
@@ -131,12 +127,12 @@ local function SortByKey(a, b)
 end
 
 function Crafting:Resize(num_recipes)
-    if self.num_recipes ~= num_recipes then
-        self.num_recipes = num_recipes
-        self.current_slots = math.min(num_recipes, self.max_slots)
-        self.craftslots:SetNumSlots(self.current_slots)
-        self:SetOrientation(false)
-    end
+    --V2C: always refresh now... even if num_recipes is the same,
+    --     whether or not we need page up/down buttons may change
+    self.num_recipes = num_recipes
+    self.current_slots = math.min(num_recipes, self.max_slots)
+    self.craftslots:SetNumSlots(self.current_slots)
+    self:SetOrientation(false)
 
     if #self.valid_recipes <= self.max_slots then
         self.downbutton:SetTextures(HUD_ATLAS, "craft_end_short.tex", "craft_end_short.tex", "craft_end_short.tex", nil, nil, {1,1}, {0,0})-- self.downbutton:Hide()
@@ -212,8 +208,6 @@ function Crafting:UpdateRecipes()
         else
             self.upbutton:Enable()
         end
-
-
     end
 end
 

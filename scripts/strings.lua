@@ -3086,7 +3086,9 @@ STRINGS.UI =
     	NEW = "NEW",
     	TRADE = "Trade Inn",
     	BACK = "Back",
-    	TRADE_TOOLTIP = "Trade your unwanted items for something new! -- (Not yet available)"
+    	TRADE_TOOLTIP = "Trade your unwanted items for something new! -- (Not yet available)",
+		NO_ITEMS_TITLE = "Nothing to see here",
+    	NO_ITEMS = "Play the game to get items!",
 	},
 
 	TRADESCREEN = 

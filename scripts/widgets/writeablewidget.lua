@@ -86,9 +86,9 @@ local WriteableWidget = Class(Screen, function(self, owner, writeable, config)
     self.black:SetVAnchor(ANCHOR_MIDDLE)
     self.black:SetHAnchor(ANCHOR_MIDDLE)
     self.black:SetScaleMode(SCALEMODE_FILLSCREEN)
-    self.black:SetTint(0,0,0,0)
+    self.black:SetTint(0, 0, 0, 0)
     self.black.OnMouseButton = function() oncancel(self.writeable, self.owner, self) end
-   
+
     self.bganim = self:AddChild(UIAnim())
     self.bganim:SetScale(1,1,1)
     self.bgimage = self:AddChild(Image())
@@ -96,19 +96,18 @@ local WriteableWidget = Class(Screen, function(self, owner, writeable, config)
 
     --self.title = self:AddChild(Text(BUTTONFONT, 50))
     --self.title:SetPosition(0, 70, 0)
-    --self.title:SetColour(0,0,0,1)
+    --self.title:SetColour(0, 0, 0, 1)
     --self.title:SetString(self.config.prompt)
 
-    --self.edit_text_bg = self:AddChild( Image() )
-    --self.edit_text_bg:SetTexture( "images/textboxes.xml", "textbox_long.tex" )
-    --self.edit_text_bg:SetPosition( 0, 5, 0 )
-    --self.edit_text_bg:ScaleToSize( 480, 50 )
-    
-    self.edit_text = self:AddChild( TextEdit( BUTTONFONT, 50, "" ) )
-    self.edit_text:SetColour(0,0,0,1)
+    --self.edit_text_bg = self:AddChild(Image("images/textboxes.xml", "textbox_long.tex"))
+    --self.edit_text_bg:SetPosition(0, 5, 0)
+    --self.edit_text_bg:ScaleToSize(480, 50)
+
+    self.edit_text = self:AddChild(TextEdit(BUTTONFONT, 50, ""))
+    self.edit_text:SetColour(0, 0, 0, 1)
     self.edit_text:SetForceEdit(true)
-    self.edit_text:SetPosition( 0, 50, 0 )
-    self.edit_text:SetRegionSize( 440, 190 )
+    self.edit_text:SetPosition(0, 40, 0)
+    self.edit_text:SetRegionSize(440, 70)
     self.edit_text:SetHAlign(ANCHOR_LEFT)
     --self.edit_text:SetFocusedImage(self.edit_text_bg, "images/textboxes.xml", "textbox_long_over.tex", "textbox_long.tex")
     self.edit_text:SetTextLengthLimit(STRING_MAX_LENGTH)
@@ -248,13 +247,15 @@ function WriteableWidget:OnControl(control, down)
             --return true
         --end
     --end
-
     if not down then
         for i, v in ipairs(self.buttons) do
             if control == v.control and v.cb ~= nil then
                 v.cb()
                 return true
             end
+        end
+        if control == CONTROL_OPEN_DEBUG_CONSOLE then
+            return true
         end
     end
 end

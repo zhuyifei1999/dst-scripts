@@ -18,7 +18,7 @@ local function tree_burnt(inst)
 end
 
 local function stump_burnt(inst)
-    inst.components.lootdropper:SpawnLootPrefab("ash")
+    SpawnPrefab("ash").Transform:SetPosition(inst.Transform:GetWorldPosition())
     inst:Remove()
 end
 

@@ -34,7 +34,11 @@ local function set_stump(inst)
     inst:RemoveComponent("burnable")
     inst:RemoveComponent("propagator")
     inst:RemoveComponent("hauntable")
-    if not inst:HasTag("burnt") then MakeHauntableIgnite(inst) end
+    if not inst:HasTag("burnt") then
+        MakeSmallBurnable(inst)
+        MakeSmallPropagator(inst)
+        MakeHauntableIgnite(inst)
+    end
     RemovePhysicsColliders(inst)
     inst:AddTag("stump")
 end
@@ -107,26 +111,19 @@ end
 
 local function onload(inst, data)
     if data ~= nil then
-        if data.burnt then
-            OnBurnt(inst)
-        elseif data.stump then
-            inst:RemoveComponent("workable")
-            RemoveDragonflyBait(inst)
-            inst:RemoveComponent("burnable")
-            inst:RemoveComponent("propagator")
-            inst:RemoveComponent("growable")
-            inst:RemoveComponent("hauntable")
-            if not inst:HasTag("burnt") then
-                MakeHauntableIgnite(inst)
-            end
-            RemovePhysicsColliders(inst)
+        if data.stump then
+            set_stump(inst)
             inst.AnimState:PlayAnimation("stump", false)
-            inst:AddTag("stump")
-
-            inst:AddComponent("workable")
-            inst.components.workable:SetWorkAction(ACTIONS.DIG)
-            inst.components.workable:SetOnFinishCallback(dig_up_stump)
-            inst.components.workable:SetWorkLeft(1)
+            if data.burnt or inst:HasTag("burnt") then
+                DefaultBurntFn(inst)
+            else
+                inst:AddComponent("workable")
+                inst.components.workable:SetWorkAction(ACTIONS.DIG)
+                inst.components.workable:SetOnFinishCallback(dig_up_stump)
+                inst.components.workable:SetWorkLeft(1)
+            end
+        elseif data.burnt and not inst:HasTag("burnt") then
+            OnBurnt(inst)
         end
     end
 end

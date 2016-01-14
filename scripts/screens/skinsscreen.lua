@@ -455,6 +455,11 @@ function SkinsScreen:OnBecomeActive()
 		-- We don't have a saved popup, which means the game is online. Go ahead and activate it.
 	    SkinsScreen._base.OnBecomeActive(self)  
 
+		if not self.no_item_popup and #self.full_skins_list == 0 then
+			self.no_item_popup = PopupDialogScreen(STRINGS.UI.SKINSSCREEN.NO_ITEMS_TITLE, STRINGS.UI.SKINSSCREEN.NO_ITEMS, { {text=STRINGS.UI.POPUPDIALOG.OK, cb = function() TheFrontEnd:PopScreen() end} }) 
+			TheFrontEnd:PushScreen(self.no_item_popup)
+		end	
+	
 	    if self.exit_button then 
 	    	self.exit_button:Enable()
 	    	self.exit_button:SetFocus()

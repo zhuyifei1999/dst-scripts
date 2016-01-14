@@ -36,7 +36,6 @@ local function message_constructor(data)
 
         group.message = group:AddChild(Text(NEWFONT, data.chat_size, nil, BLACK))
         group.message:SetString(lines[i])
-        print(group.message:GetString():len())
 
         message_width = group.message:GetRegionSize()
         group.message:SetPosition(line_xpos + multiline_indent + message_width * .5, 0)
@@ -48,26 +47,26 @@ local function message_constructor(data)
 end
 
 local LobbyChatQueue = Class(Widget, function(self, owner, chatbox, onReceiveNewMessage, nextWidget)
-	Widget._ctor(self, "LobbyChatQueue")
+    Widget._ctor(self, "LobbyChatQueue")
 
-	self.owner = owner
+    self.owner = owner
 
-	self.list_items = {}
-	
-	self.chat_font = TALKINGFONT
-	self.chat_size = 22
+    self.list_items = {}
 
-	self.chatbox = chatbox
+    self.chat_font = TALKINGFONT
+    self.chat_size = 22
 
-	self.new_message_fn = onReceiveNewMessage
+    self.chatbox = chatbox
 
-	self.nextWidget = nextWidget
+    self.new_message_fn = onReceiveNewMessage
 
-	self:StartUpdating()
+    self.nextWidget = nextWidget
+
+    self:StartUpdating()
 end)
 
 function LobbyChatQueue:GetChatAlpha( current_time, chat_time )
-	return 1.0			
+    return 1
 end
 
 function LobbyChatQueue:OnUpdate()
@@ -79,16 +78,16 @@ function LobbyChatQueue:GetDisplayName(name, prefab)
 end
 
 function LobbyChatQueue:OnMessageReceived(userid, name, prefab, message, colour)
-	-- Early out if this player is muted
-	if TheFrontEnd.mutedPlayers ~= nil and TheFrontEnd.mutedPlayers[userid] then
-		return
-	end
+    -- Early out if this player is muted
+    if TheFrontEnd.mutedPlayers ~= nil and TheFrontEnd.mutedPlayers[userid] then
+        return
+    end
 
-	if message == "" then
-		return
-	end
+    if message == "" then
+        return
+    end
 
-	self.list_items[#self.list_items + 1] =
+    self.list_items[#self.list_items + 1] =
     {
         message = message,
         chat_font = self.chat_font,
@@ -97,50 +96,50 @@ function LobbyChatQueue:OnMessageReceived(userid, name, prefab, message, colour)
         username = self:GetDisplayName(name, prefab),
     }
 
-	local startidx = math.max(1, (#self.list_items - MAX_MESSAGES) + 1) -- older messages are dropped
-	local list_widgets = {}
-	for k,v in pairs(self.list_items) do 
-		if k >= startidx then 
-			local list = message_constructor(v)
-			for k2,v2 in pairs(list) do 
-				table.insert(list_widgets, v2)
-			end
-		end
-	end
+    local startidx = math.max(1, (#self.list_items - MAX_MESSAGES) + 1) -- older messages are dropped
+    local list_widgets = {}
+    for k,v in pairs(self.list_items) do 
+        if k >= startidx then 
+            local list = message_constructor(v)
+            for k2,v2 in pairs(list) do 
+                table.insert(list_widgets, v2)
+            end
+        end
+    end
 
-	if not self.scroll_list then
-		self.scroll_list = self:AddChild(ScrollableList(list_widgets, 115, 245, 20, 12, nil, nil, nil, nil, nil, 15))
-    	self.scroll_list:SetPosition(52, -2)
-	else
-		self.scroll_list:SetList(list_widgets)
-		self.scroll_list:ScrollToEnd()
-	end
+    if not self.scroll_list then
+        self.scroll_list = self:AddChild(ScrollableList(list_widgets, 115, 245, 20, 12, nil, nil, nil, nil, nil, 15))
+        self.scroll_list:SetPosition(52, -2)
+    else
+        self.scroll_list:SetList(list_widgets)
+        self.scroll_list:ScrollToEnd()
+    end
 
-	if self.new_message_fn then
-		self.new_message_fn()
-	end
+    if self.new_message_fn then
+        self.new_message_fn()
+    end
 
-	self:DoFocusHookups()
-end 
+    self:DoFocusHookups()
+end
 
 function LobbyChatQueue:DoFocusHookups()
-	if self.scroll_list then 
-		self.default_focus = self.scroll_list
-		self.scroll_list:SetFocusChangeDir(MOVE_RIGHT, self.nextWidget)
-	else
-		self:SetFocusChangeDir(MOVE_RIGHT, self.nextWidget)
-	end
+    if self.scroll_list then 
+        self.default_focus = self.scroll_list
+        self.scroll_list:SetFocusChangeDir(MOVE_RIGHT, self.nextWidget)
+    else
+        self:SetFocusChangeDir(MOVE_RIGHT, self.nextWidget)
+    end
 
 end
 
 function LobbyChatQueue:ScrollToEnd()
-	if self.scroll_list then
-		self.scroll_list:ScrollToEnd()
-	end
+    if self.scroll_list then
+        self.scroll_list:ScrollToEnd()
+    end
 end
 
 function LobbyChatQueue:OnControl(control, down)
-	if not self:IsEnabled() or not self.focus then return false end
+    if not self:IsEnabled() or not self.focus then return false end
 
     if self.chatbox and control == CONTROL_ACCEPT and TheInput:ControllerAttached() and not TheFrontEnd.tracking_mouse then
         return self.chatbox:OnControl(control, down)
@@ -149,7 +148,7 @@ function LobbyChatQueue:OnControl(control, down)
     if self.scroll_list and (control == CONTROL_SCROLLBACK or control == CONTROL_SCROLLFWD) then
         return self.scroll_list:OnControl(control, down, true)
     elseif self.scroll_list and self.scroll_list.focus then
-    	return self.scroll_list:OnControl(control, down)
+        return self.scroll_list:OnControl(control, down)
     end
 
     return false
@@ -164,7 +163,7 @@ function LobbyChatQueue:GetHelpText()
     end
 
     if self.chatbox then
-    	table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT, false, false ) .. " " .. STRINGS.UI.LOBBYSCREEN.CHAT)   
+        table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT, false, false ) .. " " .. STRINGS.UI.LOBBYSCREEN.CHAT)   
     end
 
     return table.concat(t, "  ")

@@ -164,7 +164,7 @@ function MakeWallType(data)
 
         inst:AddComponent("repairer")
 
-        inst.components.repairer.repairmaterial = data.name == "ruin" and MATERIALS.THULECITE or data.name
+        inst.components.repairer.repairmaterial = data.name == "ruins" and MATERIALS.THULECITE or data.name
         inst.components.repairer.healthrepairvalue = data.maxhealth / 6
 
         if data.flammable then

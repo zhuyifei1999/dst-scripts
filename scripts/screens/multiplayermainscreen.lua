@@ -197,8 +197,7 @@ function MultiplayerMainScreen:DoInit( )
 		self.wilson:GetAnimState():Show("HEAD_HAT")
     end
     self.wilson:GetAnimState():PlayAnimation("idle", true)
-    self.wilson:GetAnimState():SetPercent("idle", 0)
-    self.inst:DoTaskInTime(math.random()*1.5, function() self.wilson:GetAnimState():PlayAnimation("idle", true) end)
+    self.wilson:GetAnimState():SetTime(math.random()*1.5)
     self.wilson:SetPosition(char1_x,char1_y,0)
     self.wilson.inst.UITransform:SetScale(puppet_scale_1,puppet_scale_1,puppet_scale_1)
 

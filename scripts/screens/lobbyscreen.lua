@@ -28,46 +28,45 @@ local DEBUG_MODE = BRANCH == "dev"
 local REFRESH_INTERVAL = .5
 
 local function StartGame(this)
-	if this.startbutton then 
-		this.startbutton:Disable()
-	end
+    if this.startbutton then
+        this.startbutton:Disable()
+    end
 
-	if this.dressup then 
-		this.dressup:OnClose()
-	end
+    if this.dressup then
+        this.dressup:OnClose()
+    end
 
-	if this.cb and this.dressup then
-		local skins = this.dressup:GetSkinsForGameStart()
-		this.profile:SetBaseForCharacter(this.dressup.currentcharacter, this.dressup:GetBaseSkin())
-		--print("Starting game, character is ", this.currentcharacter or "nil", this.dressup.currentcharacter or "nil")
-		this.cb(this.dressup.currentcharacter, skins.base, skins.body, skins.hand, skins.legs, skins.feet) --parameters are base_prefab, skin_base, clothing_body, clothing_hand, then clothing_legs
-	end
+    if this.cb and this.dressup then
+        local skins = this.dressup:GetSkinsForGameStart()
+        this.profile:SetBaseForCharacter(this.dressup.currentcharacter, this.dressup:GetBaseSkin())
+        --print("Starting game, character is ", this.currentcharacter or "nil", this.dressup.currentcharacter or "nil")
+        this.cb(this.dressup.currentcharacter, skins.base, skins.body, skins.hand, skins.legs, skins.feet) --parameters are base_prefab, skin_base, clothing_body, clothing_hand, then clothing_legs
+    end
 end
 
-
 local LobbyScreen = Class(Screen, function(self, profile, cb, no_backbutton, default_character, days_survived)
-	Screen._ctor(self, "LobbyScreen")
+    Screen._ctor(self, "LobbyScreen")
     self.profile = profile
-	self.log = true
+    self.log = true
     self.issoundplaying = false
 
     self.no_cancel = no_backbutton
-    
-    if cb then 
-	    self.cb = function(char, skin_base, clothing_body, clothing_hand, clothing_legs, clothing_feet)
-	        self:StopLobbyMusic()
-	    	cb(char, skin_base, clothing_body, clothing_hand, clothing_legs, clothing_feet)
-	    end
-	end
+
+    if cb ~= nil then
+        self.cb = function(char, skin_base, clothing_body, clothing_hand, clothing_legs, clothing_feet)
+            self:StopLobbyMusic()
+            cb(char, skin_base, clothing_body, clothing_hand, clothing_legs, clothing_feet)
+        end
+    end
 
     self.currentcharacter = nil
     self.time_to_refresh = REFRESH_INTERVAL
     self.active_tab = "players"
 
     if days_survived then
-    	self.days_survived = math.floor(days_survived)
+        self.days_survived = math.floor(days_survived)
     else
-    	self.days_survived = -1
+        self.days_survived = -1
     end
 
     self.anim_bg = self:AddChild(Image("images/bg_spiral_anim.xml", "spiral_bg.tex"))
@@ -83,7 +82,7 @@ local LobbyScreen = Class(Screen, function(self, profile, cb, no_backbutton, def
     self.anim_root:SetHAnchor(ANCHOR_MIDDLE)
     self.anim_root:SetScaleMode(SCALEMODE_PROPORTIONAL)
 
-   	self.anim = self.anim_root:AddChild(UIAnim())
+    self.anim = self.anim_root:AddChild(UIAnim())
     self.anim:GetAnimState():SetBuild("spiral_bg")
     self.anim:GetAnimState():SetBank("spiral_bg")
     self.anim:GetAnimState():PlayAnimation("idle_loop", true)
@@ -110,88 +109,85 @@ local LobbyScreen = Class(Screen, function(self, profile, cb, no_backbutton, def
     self.fixed_root = self.root:AddChild(Widget("root"))
     self.fixed_root:SetPosition(-RESOLUTION_X/2, -RESOLUTION_Y/2, 0)
 
-    
     self.sidebar_root = self.root:AddChild(Widget("Sidebar"))
     self.sidebar_root:SetHAnchor(ANCHOR_LEFT)
     self.sidebar_root:SetVAnchor(ANCHOR_BOTTOM)
     self.sidebar_root:SetScaleMode(SCALEMODE_PROPORTIONAL)
 
-    self.characterselect_root = self.fixed_root:AddChild(Widget("CharacterSelect"))    
+    self.characterselect_root = self.fixed_root:AddChild(Widget("CharacterSelect"))
     self.loadout_root = self.fixed_root:AddChild(Widget("Loadout"))
 
-
     --[[if self.days_survived >= 0 then
-	    self.dayssurvivedwidget = self.root:AddChild(Text(UIFONT, 30, STRINGS.UI.LOBBYSCREEN.DAYSSURVIVED.." "..self.days_survived))
-	    self.dayssurvivedwidget:SetHAlign(ANCHOR_LEFT)
-	    self.dayssurvivedwidget:SetVAlign(ANCHOR_TOP)
-	    local w = self.dayssurvivedwidget:GetRegionSize()
-	    self.dayssurvivedwidget:SetPosition(-RESOLUTION_X/2 + w/2 + 80, -RESOLUTION_Y/2 + 80, 0)
-	end]]
+        self.dayssurvivedwidget = self.root:AddChild(Text(UIFONT, 30, STRINGS.UI.LOBBYSCREEN.DAYSSURVIVED.." "..self.days_survived))
+        self.dayssurvivedwidget:SetHAlign(ANCHOR_LEFT)
+        self.dayssurvivedwidget:SetVAlign(ANCHOR_TOP)
+        local w = self.dayssurvivedwidget:GetRegionSize()
+        self.dayssurvivedwidget:SetPosition(-RESOLUTION_X/2 + w/2 + 80, -RESOLUTION_Y/2 + 80, 0)
+    end]]
 
-	self.heroname = self.loadout_root:AddChild(Image())
-	self.heroname:SetScale(.34)
-	self.heroname:SetPosition(RESOLUTION_X/2+115, RESOLUTION_Y-175)  
+    self.heroname = self.loadout_root:AddChild(Image())
+    self.heroname:SetScale(.34)
+    self.heroname:SetPosition(RESOLUTION_X/2+115, RESOLUTION_Y-175)
 
     self.heroportrait = self.loadout_root:AddChild(Image())
     self.heroportrait:SetScale(.75)
     self.heroportrait:SetPosition(RESOLUTION_X/2-200, RESOLUTION_Y-345)
-    
+
     local adjust = 16
 
     self.playerselect_title = self.characterselect_root:AddChild(Text(BUTTONFONT, 35))
     self.playerselect_title:SetHAlign(ANCHOR_LEFT)
     self.playerselect_title:SetVAlign(ANCHOR_TOP)
-    self.playerselect_title:SetPosition(RESOLUTION_X/2 - 230, RESOLUTION_Y - 35) 
-	self.playerselect_title:SetRegionSize( 500, 60 )
-	self.playerselect_title:EnableWordWrap( false )
-	self.playerselect_title:SetString( STRINGS.UI.LOBBYSCREEN.SELECTION_TITLE )
-	self.playerselect_title:SetColour(BLACK)
+    self.playerselect_title:SetPosition(RESOLUTION_X/2 - 230, RESOLUTION_Y - 35)
+    self.playerselect_title:SetRegionSize( 500, 60 )
+    self.playerselect_title:EnableWordWrap( false )
+    self.playerselect_title:SetString( STRINGS.UI.LOBBYSCREEN.SELECTION_TITLE )
+    self.playerselect_title:SetColour(BLACK)
 
     self.characterquote = self.characterselect_root:AddChild(Text(BUTTONFONT, 35))
     self.characterquote:SetHAlign(ANCHOR_MIDDLE)
     self.characterquote:SetVAlign(ANCHOR_TOP)
-    self.characterquote:SetPosition(RESOLUTION_X/2 +10, RESOLUTION_Y - 85) 
-	self.characterquote:SetRegionSize( 500, 60 )
-	self.characterquote:EnableWordWrap( false )
-	self.characterquote:SetString( "" )
-	self.characterquote:SetColour(BLACK)
+    self.characterquote:SetPosition(RESOLUTION_X/2 +10, RESOLUTION_Y - 85)
+    self.characterquote:SetRegionSize( 500, 60 )
+    self.characterquote:EnableWordWrap( false )
+    self.characterquote:SetString( "" )
+    self.characterquote:SetColour(BLACK)
 
-	self.basequote = self.loadout_root:AddChild(Text(BUTTONFONT, 35))
-	self.basequote:SetHAlign(ANCHOR_MIDDLE)
+    self.basequote = self.loadout_root:AddChild(Text(BUTTONFONT, 35))
+    self.basequote:SetHAlign(ANCHOR_MIDDLE)
     self.basequote:SetVAlign(ANCHOR_TOP)
-    self.basequote:SetPosition(RESOLUTION_X/2+125, RESOLUTION_Y - 85) 
-	self.basequote:SetRegionSize( 600, 60 )
-	self.basequote:EnableWordWrap( false )
-	self.basequote:SetString( "" )
-	self.basequote:SetColour(BLACK)
+    self.basequote:SetPosition(RESOLUTION_X/2+125, RESOLUTION_Y - 85)
+    self.basequote:SetRegionSize( 600, 60 )
+    self.basequote:EnableWordWrap( false )
+    self.basequote:SetString( "" )
+    self.basequote:SetColour(BLACK)
 
-	self.basetitle = self.loadout_root:AddChild(Text(BUTTONFONT, 40))
-	self.basetitle:SetHAlign(ANCHOR_MIDDLE)
+    self.basetitle = self.loadout_root:AddChild(Text(BUTTONFONT, 40))
+    self.basetitle:SetHAlign(ANCHOR_MIDDLE)
     self.basetitle:SetVAlign(ANCHOR_TOP)
-    self.basetitle:SetPosition(RESOLUTION_X/2 - 200, RESOLUTION_Y/2-320) 
-	self.basetitle:SetRegionSize( 300, 100 )
-	self.basetitle:EnableWordWrap( false )
-	self.basetitle:SetString( "" )
-	self.basetitle:SetColour(BLACK)
+    self.basetitle:SetPosition(RESOLUTION_X/2 - 200, RESOLUTION_Y/2-320)
+    self.basetitle:SetRegionSize( 300, 100 )
+    self.basetitle:EnableWordWrap( false )
+    self.basetitle:SetString( "" )
+    self.basetitle:SetColour(BLACK)
 
+    self.horizontal_line = self.fixed_root:AddChild(Image("images/ui.xml", "line_horizontal_6.tex"))
+    self.horizontal_line:SetScale(2.9, .3)
+    self.horizontal_line:SetPosition(RESOLUTION_X/2 +130, RESOLUTION_Y-40, 0)
 
-	self.horizontal_line = self.fixed_root:AddChild(Image("images/ui.xml", "line_horizontal_6.tex"))
-	self.horizontal_line:SetScale(2.9, .3)
-	self.horizontal_line:SetPosition(RESOLUTION_X/2 +130, RESOLUTION_Y-40, 0)
+    self:BuildCharacterDetailsBox()
+    self:BuildSidebar()
 
-   	self:BuildCharacterDetailsBox()
-   	self:BuildSidebar()
-
-   	--self.dressup_bg = self.loadout_root:AddChild(Image("images/lobbyscreen.xml", "playerlobby_whitebg_chat.tex"))
-	--self.dressup_bg:SetPosition(1060, 335)
-	--self.dressup_bg:SetScale(.8, .62)
-	--self.dressup_bg:SetTint(1, 1, 1, .3)
-	--self.dressup_bg:SetClickable(false)
+    --self.dressup_bg = self.loadout_root:AddChild(Image("images/lobbyscreen.xml", "playerlobby_whitebg_chat.tex"))
+    --self.dressup_bg:SetPosition(1060, 335)
+    --self.dressup_bg:SetScale(.8, .62)
+    --self.dressup_bg:SetTint(1, 1, 1, .3)
+    --self.dressup_bg:SetClickable(false)
 
     self.dressup = self.loadout_root:AddChild(DressupPanel(self, self.profile, function() self:SetPortraitImage() end, nil, nil, nil, true))
     self.dressup:SetPosition(55, -80, 0)
-   	self.dressup:GetClothingOptions()
- 	self.dressup:SeparateAvatar()
+    self.dressup:GetClothingOptions()
+    self.dressup:SeparateAvatar()
 
     local client_obj = TheNet:GetClientTableForUser(TheNet:GetUserID())
     local name = TheNet:GetLocalUserName()..STRINGS.UI.LOBBYSCREEN.LOADOUT_TITLE
@@ -201,56 +197,54 @@ local LobbyScreen = Class(Screen, function(self, profile, cb, no_backbutton, def
     self.loadout_title:SetHAlign(ANCHOR_LEFT)
 
     if not TheInput:ControllerAttached() then
-		
-		self.invitebutton = self.sidebar_root:AddChild(TEMPLATES.Button(STRINGS.UI.LOBBYSCREEN.INVITE, function()  TheNet:ViewNetFriends() end))
-		self.invitebutton:SetPosition(190, RESOLUTION_Y-20, 0)
-		self.invitebutton.image:SetScale(.4)
-		self.invitebutton:SetTextSize(22)
-		self.invitebutton.text:SetPosition(0, -3)
+        self.invitebutton = self.sidebar_root:AddChild(TEMPLATES.Button(STRINGS.UI.LOBBYSCREEN.INVITE, function()  TheNet:ViewNetFriends() end))
+        self.invitebutton:SetPosition(190, RESOLUTION_Y-20, 0)
+        self.invitebutton.image:SetScale(.4)
+        self.invitebutton:SetTextSize(22)
+        self.invitebutton.text:SetPosition(0, -3)
 
+        self.selectbutton = self.characterselect_root:AddChild(TEMPLATES.Button(STRINGS.UI.LOBBYSCREEN.SELECT, function() self:StartLoadout() end))
+        self.selectbutton:SetPosition(RESOLUTION_X - 300, 60, 0)
 
-    	self.selectbutton = self.characterselect_root:AddChild(TEMPLATES.Button(STRINGS.UI.LOBBYSCREEN.SELECT, function() self:StartLoadout() end))
-		self.selectbutton:SetPosition(RESOLUTION_X - 300, 60, 0)
+        self.startbutton = self.loadout_root:AddChild(TEMPLATES.Button(STRINGS.UI.LOBBYSCREEN.SELECT, function() StartGame(self) end))
+        self.startbutton:SetPosition(RESOLUTION_X - 180, 60, 0)
 
-		self.startbutton = self.loadout_root:AddChild(TEMPLATES.Button(STRINGS.UI.LOBBYSCREEN.SELECT, function() StartGame(self) end))
-		self.startbutton:SetPosition(RESOLUTION_X - 180, 60, 0)
+        self.randomcharbutton = self.characterselect_root:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "random.tex", STRINGS.UI.LOBBYSCREEN.RANDOMCHAR, false, false, function()
+                self.character_scroll_list:SelectRandomCharacter()
+            end,
+        {
+            offset_y = -45
+        }))
+        self.randomcharbutton:SetPosition( RESOLUTION_X - 170, RESOLUTION_Y - 20, 0)
+        self.randomcharbutton:SetScale(.6, .6, .6)
 
-		self.randomcharbutton = self.characterselect_root:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "random.tex", STRINGS.UI.LOBBYSCREEN.RANDOMCHAR, false, false, function()
-				self.character_scroll_list:SelectRandomCharacter()
-			end, 
-		{
-			offset_y = -45
-		}))
-		self.randomcharbutton:SetPosition( RESOLUTION_X - 170, RESOLUTION_Y - 20, 0)
-		self.randomcharbutton:SetScale(.6, .6, .6)
+        self.randomskinsbutton = self.loadout_root:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "random.tex", STRINGS.UI.LOBBYSCREEN.RANDOMCHAR, false, false, function()
+                self.dressup:AllSpinnersToEnd()
+            end,
+        {
+            offset_y = -45
+        }))
+        self.randomskinsbutton:SetPosition( RESOLUTION_X - 50, RESOLUTION_Y - 20, 0) -- x pos is 120 more than the randomcharbutton because characterselect_root gets moved over
+        self.randomskinsbutton:SetScale(.6, .6, .6)
 
-		self.randomskinsbutton = self.loadout_root:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "random.tex", STRINGS.UI.LOBBYSCREEN.RANDOMCHAR, false, false, function()
-				self.dressup:AllSpinnersToEnd()
-			end, 
-		{
-			offset_y = -45
-		}))
-		self.randomskinsbutton:SetPosition( RESOLUTION_X - 50, RESOLUTION_Y - 20, 0) -- x pos is 120 more than the randomcharbutton because characterselect_root gets moved over
-		self.randomskinsbutton:SetScale(.6, .6, .6)
+        if not no_backbutton then
+            -- Note: putting these buttons in the characterselect_root or loadout_root results in the buttons behind the 
+            -- sidebar bg, even if MoveToFront is called. So they're in the sidebar_root instead.
+            self.disconnectbutton = self.sidebar_root:AddChild(TEMPLATES.BackButton(function() self:DoConfirmQuit() end, 
+                                                                        STRINGS.UI.LOBBYSCREEN.DISCONNECT,
+                                                                        {x=38, y=0}, --text offset
+                                                                        {x=1, y=-1}, --drop shadow offset from text
+                                                                        1)) -- scale
+            self.disconnectbutton:SetPosition(100, BACK_BUTTON_Y)
 
-		if not no_backbutton then
-			-- Note: putting these buttons in the characterselect_root or loadout_root results in the buttons behind the 
-			-- sidebar bg, even if MoveToFront is called. So they're in the sidebar_root instead.
-			self.disconnectbutton = self.sidebar_root:AddChild(TEMPLATES.BackButton(function() self:DoConfirmQuit() end, 
-																		STRINGS.UI.LOBBYSCREEN.DISCONNECT,
-																		{x=38, y=0}, --text offset
-																		{x=1, y=-1}, --drop shadow offset from text
-																		1)) -- scale
-			self.disconnectbutton:SetPosition(100, BACK_BUTTON_Y) 
-			
-			self.backbutton = self.sidebar_root:AddChild(TEMPLATES.BackButton(function() self:StartSelection() end, 
-																		STRINGS.UI.LOBBYSCREEN.BACK,
-																		{x=38, y=0}, --text offset
-																		{x=1, y=-1}, --drop shadow offset from text
-																		1)) -- scale 
-			self.backbutton:SetPosition(100, BACK_BUTTON_Y) 
-		end
-	end
+            self.backbutton = self.sidebar_root:AddChild(TEMPLATES.BackButton(function() self:StartSelection() end, 
+                                                                        STRINGS.UI.LOBBYSCREEN.BACK,
+                                                                        {x=38, y=0}, --text offset
+                                                                        {x=1, y=-1}, --drop shadow offset from text
+                                                                        1)) -- scale 
+            self.backbutton:SetPosition(100, BACK_BUTTON_Y)
+        end
+    end
 
     self.character_scroll_list = self.characterselect_root:AddChild(CharacterSelect(self, default_character, function() self:SelectPortrait() end,  {"random"}))
     self.character_scroll_list:SetPosition(RESOLUTION_X/2, RESOLUTION_Y-320, 0)
@@ -261,8 +255,8 @@ local LobbyScreen = Class(Screen, function(self, profile, cb, no_backbutton, def
     self.loadout_root:Hide()
     self.in_loadout = false
 
-    if self.backbutton then 
-    	self.backbutton:Hide()
+    if self.backbutton ~= nil then
+        self.backbutton:Hide()
     end
 
     self.default_focus = self.chatbox
@@ -299,52 +293,47 @@ function LobbyScreen:StopLobbyMusic()
     end
 end
 
-
-
 function LobbyScreen:BuildSidebar()
-	
-	self.sidebar_bg = self.sidebar_root:AddChild(Image("images/lobbyscreen.xml", "playerlobby_leftcolumn_bg.tex"))
-	self.sidebar_bg:SetPosition(90, 360)
-	self.sidebar_bg:SetScale(1, .8)
-	self.sidebar_bg:SetTint(1, 1, 1, 1)
-	self.sidebar_bg:SetClickable(false)
+    self.sidebar_bg = self.sidebar_root:AddChild(Image("images/lobbyscreen.xml", "playerlobby_leftcolumn_bg.tex"))
+    self.sidebar_bg:SetPosition(90, 360)
+    self.sidebar_bg:SetScale(1, .8)
+    self.sidebar_bg:SetTint(1, 1, 1, 1)
+    self.sidebar_bg:SetClickable(false)
 
-	self.playerList = self.sidebar_root:AddChild(PlayerList(self, {right = self.character_scroll_list, down = self.chatbox}))
-	self:BuildChatWindow()
+    self.playerList = self.sidebar_root:AddChild(PlayerList(self, {right = self.character_scroll_list, down = self.chatbox}))
+    self:BuildChatWindow()
 
-	-- Don't use OnControl because we still need the standard Widget version of the function to 
-	-- call OnControl on the children.
-	self.sidebar_root.BlockScroll = function(widget, control, down)
-    	local mouseX = TheInput:GetScreenPosition().x
+    -- Don't use OnControl because we still need the standard Widget version of the function to 
+    -- call OnControl on the children.
+    self.sidebar_root.BlockScroll = function(widget, control, down)
+        local mouseX = TheInput:GetScreenPosition().x
         local w,h = TheSim:GetScreenSize()
-    	
-    	if mouseX and mouseX < (w*.2) then 
-    		if down then
-	    		-- Eat scroll commands so the character list doesn't scroll when the mouse is over the sidebar 
-	    		if control == CONTROL_SCROLLBACK or control == CONTROL_SCROLLFWD then 
-	    			return true
-	    		end
-	    	end
-	    end
-    	return false
-    end
 
+        if mouseX and mouseX < (w*.2) then 
+            if down then
+                -- Eat scroll commands so the character list doesn't scroll when the mouse is over the sidebar 
+                if control == CONTROL_SCROLLBACK or control == CONTROL_SCROLLFWD then 
+                    return true
+                end
+            end
+        end
+        return false
+    end
 end
 
-
 --[[function LobbyScreen:UpdateMessageIndicator()
-	if self.active_tab ~= "chat" then
-		TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/chat_receive")
-		--self.message_indicator:Show()
-		--self.message_indicator.count:SetString(self.unread_count)
-	else
-		--self.unread_count = 0
-		--self.message_indicator:Hide()
-	end
+    if self.active_tab ~= "chat" then
+        TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/chat_receive")
+        --self.message_indicator:Show()
+        --self.message_indicator.count:SetString(self.unread_count)
+    else
+        --self.unread_count = 0
+        --self.message_indicator:Hide()
+    end
 end]]
 
 function LobbyScreen:MakeTextEntryBox(parent)
-	local chatbox = parent:AddChild(Widget("chatbox"))
+    local chatbox = parent:AddChild(Widget("chatbox"))
     chatbox.bg = chatbox:AddChild( Image("images/lobbyscreen.xml", "playerlobby_whitebg_type.tex") )
     chatbox.bg:SetTint(1, 1, 1, .65)
     local box_size = 210
@@ -356,7 +345,7 @@ function LobbyScreen:MakeTextEntryBox(parent)
     chatbox.textbox:SetForceEdit(true)
     chatbox.bg:SetPosition((box_size * .5) - 100 + 25 + nudgex, 8 + nudgey, 0)
     chatbox.textbox:SetPosition((box_size * .5) - 100 + 26 + nudgex, 8 + nudgey, 0)
-    chatbox.textbox:SetRegionSize( box_size - 23, box_y )
+    chatbox.textbox:SetRegionSize(box_size - 23, box_y)
     chatbox.textbox:SetHAlign(ANCHOR_LEFT)
     chatbox.textbox:SetVAlign(ANCHOR_MIDDLE)
 
@@ -364,26 +353,26 @@ function LobbyScreen:MakeTextEntryBox(parent)
     chatbox.bg_outline:ScaleToSize( box_size + 4, box_y + 8)
     chatbox.bg_outline:SetPosition((box_size * .5) - 100 + 24 + nudgex, 7 + nudgey, 0)
     chatbox.textbox:SetFocusedImage( chatbox.bg_outline, "images/textboxes.xml", "textbox2_small_grey.tex", "textbox2_small_gold.tex", "textbox2_small_gold_greyfill.tex" )
-    
+
     chatbox.textbox:SetTextLengthLimit( 200 )
     chatbox.textbox:EnableWordWrap(false)
     chatbox.textbox:EnableScrollEditWindow(true)
-   	chatbox.textbox:SetHelpTextEdit("")
-   	chatbox.textbox:SetHelpTextApply(STRINGS.UI.LOBBYSCREEN.CHAT)
+    chatbox.textbox:SetHelpTextEdit("")
+    chatbox.textbox:SetHelpTextApply(STRINGS.UI.LOBBYSCREEN.CHAT)
     chatbox.gobutton = chatbox:AddChild(ImageButton("images/lobbyscreen.xml", "button_send.tex", "button_send_over.tex", "button_send_down.tex", "button_send_down.tex", "button_send_down.tex", {1,1}, {0,0}))
     chatbox.gobutton:SetPosition(box_size - 59 + nudgex, 8 + nudgey)
     chatbox.gobutton:SetScale(.13)
     chatbox.gobutton.image:SetTint(.6,.6,.6,1)
-	chatbox.textbox.OnTextEntered = function()
-		if self.chatbox.textbox:GetString() ~= "" then
-			TheNet:Say(self.chatbox.textbox:GetString(), false)
-			self.chatbox.textbox:SetString("")
-	        TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/chat_send")
-		end
+    chatbox.textbox.OnTextEntered = function()
+        if self.chatbox.textbox:GetString() ~= "" then
+            TheNet:Say(self.chatbox.textbox:GetString(), false)
+            self.chatbox.textbox:SetString("")
+            TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/chat_send")
+        end
 
-		self.chatbox.textbox:SetEditing(true)
-	end
-    
+        self.chatbox.textbox:SetEditing(true)
+    end
+
     chatbox.gobutton:SetOnClick( function() self.chatbox.textbox:OnTextEntered() end )
 
      -- If chatbox ends up focused, highlight the textbox so we can tell something is focused.
@@ -391,422 +380,407 @@ function LobbyScreen:MakeTextEntryBox(parent)
     chatbox:SetOnLoseFocus( function() chatbox.textbox:OnLoseFocus() end )
 
     chatbox.GetHelpText = function()
-    	local t = {}
-    	local controller_id = TheInput:GetControllerID()
+        local t = {}
+        local controller_id = TheInput:GetControllerID()
 
-    	table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT, false, false ) .. " " .. STRINGS.UI.LOBBYSCREEN.CHAT)
-    	return table.concat(t, "  ")
-	end
-
+        table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT, false, false ) .. " " .. STRINGS.UI.LOBBYSCREEN.CHAT)
+        return table.concat(t, "  ")
+    end
 
     chatbox:SetPosition(-52, -178)
     self.chatbox = chatbox
 end
 
 function LobbyScreen:BuildChatWindow()
-	self.chat_pane = self.sidebar_root:AddChild(Widget("chat_pane"))
+    self.chat_pane = self.sidebar_root:AddChild(Widget("chat_pane"))
 
-	if not self.chat_pane.bg then 
-    	self.chat_pane.bg = self.chat_pane:AddChild(Image("images/lobbyscreen.xml", "playerlobby_whitebg_chat.tex"))
-    	self.chat_pane.bg:SetScale(.79, .64)
-    	self.chat_pane.bg:SetTint(1,1,1,.65)
-    	self.chat_pane.bg:SetPosition(59, -20)
+    if not self.chat_pane.bg then
+        self.chat_pane.bg = self.chat_pane:AddChild(Image("images/lobbyscreen.xml", "playerlobby_whitebg_chat.tex"))
+        self.chat_pane.bg:SetScale(.79, .64)
+        self.chat_pane.bg:SetTint(1,1,1,.65)
+        self.chat_pane.bg:SetPosition(59, -20)
     end
 
-    if not self.chat_pane.upper_horizontal_line then 
-	    self.chat_pane.upper_horizontal_line = self.chat_pane:AddChild(Image("images/ui.xml", "line_horizontal_6.tex"))
-	    self.chat_pane.upper_horizontal_line:SetScale(.66, .2)
-	    self.chat_pane.upper_horizontal_line:SetPosition(57, 115, 0)
-	end
+    if not self.chat_pane.upper_horizontal_line then
+        self.chat_pane.upper_horizontal_line = self.chat_pane:AddChild(Image("images/ui.xml", "line_horizontal_6.tex"))
+        self.chat_pane.upper_horizontal_line:SetScale(.66, .2)
+        self.chat_pane.upper_horizontal_line:SetPosition(57, 115, 0)
+    end
 
-	if not self.chat_pane.right_line then 
-		self.chat_pane.right_line = self.chat_pane:AddChild(Image("images/ui.xml", "line_vertical_5.tex"))
-		self.chat_pane.right_line:SetScale(.5, .41)
-		self.chat_pane.right_line:SetPosition(170, -20)
-	end
+    if not self.chat_pane.right_line then
+        self.chat_pane.right_line = self.chat_pane:AddChild(Image("images/ui.xml", "line_vertical_5.tex"))
+        self.chat_pane.right_line:SetScale(.5, .41)
+        self.chat_pane.right_line:SetPosition(170, -20)
+    end
 
-	if not self.chat_pane.left_line then 
-		self.chat_pane.left_line = self.chat_pane:AddChild(Image("images/ui.xml", "line_vertical_5.tex"))
-		self.chat_pane.left_line:SetScale(.5, .41)
-		self.chat_pane.left_line:SetPosition(-55, -20)
-	end
+    if not self.chat_pane.left_line then
+        self.chat_pane.left_line = self.chat_pane:AddChild(Image("images/ui.xml", "line_vertical_5.tex"))
+        self.chat_pane.left_line:SetScale(.5, .41)
+        self.chat_pane.left_line:SetPosition(-55, -20)
+    end
 
-	if not self.chat_pane.lower_horizontal_line then 
-	    self.chat_pane.lower_horizontal_line = self.chat_pane:AddChild(Image("images/ui.xml", "line_horizontal_6.tex"))
-	    self.chat_pane.lower_horizontal_line:SetScale(.66, .2)
-	    self.chat_pane.lower_horizontal_line:SetPosition(57, -150, 0)
-	end
+    if not self.chat_pane.lower_horizontal_line then
+        self.chat_pane.lower_horizontal_line = self.chat_pane:AddChild(Image("images/ui.xml", "line_horizontal_6.tex"))
+        self.chat_pane.lower_horizontal_line:SetScale(.66, .2)
+        self.chat_pane.lower_horizontal_line:SetPosition(57, -150, 0)
+    end
 
     self:MakeTextEntryBox(self.chat_pane)
 
     self.chatqueue = self.chat_pane:AddChild(LobbyChatQueue(TheNet:GetUserID(), self.chatbox.textbox, function() --[[TODO: put sounds back in!]] end))
     self.chatqueue:SetPosition(42,-20) 
 
-	self.chat_pane:SetPosition(75,RESOLUTION_Y-410,0)
+    self.chat_pane:SetPosition(75,RESOLUTION_Y-410,0)
 end
 
 function LobbyScreen:BuildCharacterDetailsBox()
-	self.character_details = self.characterselect_root:AddChild(Widget("character_details"))
+    self.character_details = self.characterselect_root:AddChild(Widget("character_details"))
 
-	self.biobox = self.character_details:AddChild(TEMPLATES.CurlyWindow(160, 45, .46, .46,  30, -18))
+    self.biobox = self.character_details:AddChild(TEMPLATES.CurlyWindow(160, 45, .46, .46,  30, -18))
 
     self.charactername = self.character_details:AddChild(Text(TALKINGFONT, 28))
     self.charactername:SetHAlign(ANCHOR_MIDDLE)
     self.charactername:SetPosition(7, 35) 
-	self.charactername:SetRegionSize( 500, 70 )
-	self.charactername:SetColour(GOLD)
+    self.charactername:SetRegionSize( 500, 70 )
+    self.charactername:SetColour(GOLD)
 
     self.characterdetails = self.character_details:AddChild(Text(NEWFONT_OUTLINE, 21))
     self.characterdetails:SetHAlign(ANCHOR_MIDDLE)
     self.characterdetails:SetVAlign(ANCHOR_TOP)
-    self.characterdetails:SetPosition(7, -35) 
-	self.characterdetails:SetRegionSize( 600, 120 )
-	self.characterdetails:EnableWordWrap( true )
-	self.characterdetails:SetString( "" )
-	self.characterdetails:SetColour(PORTAL_TEXT_COLOUR[1], PORTAL_TEXT_COLOUR[2], PORTAL_TEXT_COLOUR[3], PORTAL_TEXT_COLOUR[4])
+    self.characterdetails:SetPosition(7, -35)
+    self.characterdetails:SetRegionSize( 600, 120 )
+    self.characterdetails:EnableWordWrap( true )
+    self.characterdetails:SetString( "" )
+    self.characterdetails:SetColour(PORTAL_TEXT_COLOUR[1], PORTAL_TEXT_COLOUR[2], PORTAL_TEXT_COLOUR[3], PORTAL_TEXT_COLOUR[4])
 
-	self.character_details:SetPosition(RESOLUTION_X/2, RESOLUTION_Y-618, 0) 
-	self.character_details:MoveToFront()
+    self.character_details:SetPosition(RESOLUTION_X/2, RESOLUTION_Y-618, 0)
+    self.character_details:MoveToFront()
 end
-
 
 local SCROLL_REPEAT_TIME = .15
 local MOUSE_SCROLL_REPEAT_TIME = 0
 local STICK_SCROLL_REPEAT_TIME = .25
 
 function LobbyScreen:OnControl(control, down)
-    
     if LobbyScreen._base.OnControl(self, control, down) then return true end
 
    -- print("Lobby got control", control, down)
 
-	if self.chatbox and ((self.chatbox.textbox and self.chatbox.textbox.editing) or (self.chatbox.focus and control == CONTROL_ACCEPT)) then
-		self.chatbox.textbox:OnControl(control, down)
-		return true
-	end
-
-	if self.sidebar_root and self.sidebar_root:BlockScroll(control, down) then 
-		return true
-	end
-
-	
-    if not self.no_cancel and
-    	not down and control == CONTROL_CANCEL then 
-    	
-    	if not self.in_loadout then 
-			self:DoConfirmQuit()
-		else
-			self:StartSelection()
-		end
-
-		return true 
+    if self.chatbox ~= nil and ((self.chatbox.textbox ~= nil and self.chatbox.textbox.editing) or (self.chatbox.focus and control == CONTROL_ACCEPT)) then
+        self.chatbox.textbox:OnControl(control, down)
+        return true
     end
 
-    if TheInput:ControllerAttached() and 
-    	self.can_accept and not down and control == CONTROL_PAUSE then
-    	
-    	if (self.in_loadout) then
-    		StartGame(self)
-    	else
-    		self:StartLoadout()
-    	end
+    if self.sidebar_root ~= nil and self.sidebar_root:BlockScroll(control, down) then
+        return true
+    end
 
-		return true
+    if not self.no_cancel and not down and control == CONTROL_CANCEL then
+        if not self.in_loadout then
+            self:DoConfirmQuit()
+        else
+            self:StartSelection()
+        end
+
+        return true 
+    end
+
+    if TheInput:ControllerAttached() and
+        self.can_accept and not down and control == CONTROL_PAUSE then
+
+        if (self.in_loadout) then
+            StartGame(self)
+        else
+            self:StartLoadout()
+        end
+
+        return true
     end
 
     -- Use right stick for cycling players list
-   	if down then
-	 	if not self.in_loadout and control == CONTROL_PREVVALUE then  -- r-stick left
-			self:ScrollBack(control)
-			return true
-		elseif not self.in_loadout and control == CONTROL_NEXTVALUE then -- r-stick right
-			self:ScrollFwd(control)
-			return true
-		elseif control == CONTROL_MENU_MISC_2 then
-			if not self.in_loadout then
-				self.character_scroll_list:SelectRandomCharacter()
-			else
-				self.dressup:AllSpinnersToEnd()
-			end
-			TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
-			return true
-	    elseif not self.in_loadout then
-			if control == CONTROL_SCROLLBACK then
-	            self:ScrollBack(control)
-	            return true
-	        elseif control == CONTROL_SCROLLFWD then
-	        	self:ScrollFwd(control)
-	            return true
-	        end
-	    end
+    if down then
+        if not self.in_loadout and control == CONTROL_PREVVALUE then  -- r-stick left
+            self:ScrollBack(control)
+            return true
+        elseif not self.in_loadout and control == CONTROL_NEXTVALUE then -- r-stick right
+            self:ScrollFwd(control)
+            return true
+        elseif control == CONTROL_MENU_MISC_2 then
+            if not self.in_loadout then
+                self.character_scroll_list:SelectRandomCharacter()
+            else
+                self.dressup:AllSpinnersToEnd()
+            end
+            TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+            return true
+        elseif not self.in_loadout then
+            if control == CONTROL_SCROLLBACK then
+                self:ScrollBack(control)
+                return true
+            elseif control == CONTROL_SCROLLFWD then
+                self:ScrollFwd(control)
+                return true
+            end
+        end
     end
 
-	return false
+    return false
 end
 
 function LobbyScreen:ScrollBack(control)
-	if not self.character_scroll_list.repeat_time or self.character_scroll_list.repeat_time <= 0 then
-       	self.character_scroll_list:Scroll(-1)
-       	TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+    if not self.character_scroll_list.repeat_time or self.character_scroll_list.repeat_time <= 0 then
+        self.character_scroll_list:Scroll(-1)
+        TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
         self.character_scroll_list.repeat_time =
             TheInput:GetControlIsMouseWheel(control)
             and MOUSE_SCROLL_REPEAT_TIME
-            or (control == CONTROL_SCROLLBACK and SCROLL_REPEAT_TIME) 
+            or (control == CONTROL_SCROLLBACK and SCROLL_REPEAT_TIME)
             or (control == CONTROL_PREVVALUE and STICK_SCROLL_REPEAT_TIME)
     end
 end
 
 function LobbyScreen:ScrollFwd(control)
-	if not self.character_scroll_list.repeat_time or self.character_scroll_list.repeat_time <= 0 then
+    if not self.character_scroll_list.repeat_time or self.character_scroll_list.repeat_time <= 0 then
         self.character_scroll_list:Scroll(1)
-		TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+        TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
         self.character_scroll_list.repeat_time =
             TheInput:GetControlIsMouseWheel(control)
             and MOUSE_SCROLL_REPEAT_TIME
-            or (control == CONTROL_SCROLLFWD and SCROLL_REPEAT_TIME) 
+            or (control == CONTROL_SCROLLFWD and SCROLL_REPEAT_TIME)
             or (control == CONTROL_NEXTVALUE and STICK_SCROLL_REPEAT_TIME)
     end
 end
 
 function LobbyScreen:DoFocusHookups()
+    if self.in_loadout then
+        if self.dressup then
+            self.playerList:SetFocusChangeDir(MOVE_RIGHT, self.dressup)
+            self.chatbox:SetFocusChangeDir(MOVE_RIGHT, self.dressup)
+            self.chatbox.textbox:SetFocusChangeDir(MOVE_RIGHT, self.dressup)
+            self.dressup:SetFocusChangeDir(MOVE_LEFT, self.chatbox)
+        end
+    else
+        self.playerList:SetFocusChangeDir(MOVE_RIGHT, self.character_scroll_list)
+        self.chatbox:SetFocusChangeDir(MOVE_RIGHT, self.character_scroll_list)
+        self.chatbox.textbox:SetFocusChangeDir(MOVE_RIGHT, self.character_scroll_list)
+        self.character_scroll_list:SetFocusChangeDir(MOVE_LEFT, self.chatbox)
+    end
 
-	if self.in_loadout then 
-		if self.dressup then 
-			self.playerList:SetFocusChangeDir(MOVE_RIGHT, self.dressup)
-			self.chatbox:SetFocusChangeDir(MOVE_RIGHT, self.dressup)
-			self.chatbox.textbox:SetFocusChangeDir(MOVE_RIGHT, self.dressup)
-			self.dressup:SetFocusChangeDir(MOVE_LEFT, self.chatbox)
-		end
-	else
-		self.playerList:SetFocusChangeDir(MOVE_RIGHT, self.character_scroll_list)
-		self.chatbox:SetFocusChangeDir(MOVE_RIGHT, self.character_scroll_list)
-		self.chatbox.textbox:SetFocusChangeDir(MOVE_RIGHT, self.character_scroll_list)
-		self.character_scroll_list:SetFocusChangeDir(MOVE_LEFT, self.chatbox)
-	end
-
-	self.playerList:SetFocusChangeDir(MOVE_DOWN, self.chatbox)
-	self.chatbox:SetFocusChangeDir(MOVE_UP, self.playerList)
-	self.chatbox.textbox:SetFocusChangeDir(MOVE_UP, self.playerList)
-	
+    self.playerList:SetFocusChangeDir(MOVE_DOWN, self.chatbox)
+    self.chatbox:SetFocusChangeDir(MOVE_UP, self.playerList)
+    self.chatbox.textbox:SetFocusChangeDir(MOVE_UP, self.playerList)
 end
 
 function LobbyScreen:StartSelection()
-	self.in_loadout = false
+    self.in_loadout = false
 
-	if self.disconnectbutton then 
-		self.disconnectbutton:Show()
-	end
+    if self.disconnectbutton then 
+        self.disconnectbutton:Show()
+    end
 
-	self.characterselect_root:Show()
-	self.characterselect_root:MoveToFront()
-	self.loadout_root:Hide()
+    self.characterselect_root:Show()
+    self.characterselect_root:MoveToFront()
+    self.loadout_root:Hide()
 
-	if self.backbutton then 
-		self.backbutton:Hide()
-	end
+    if self.backbutton ~= nil then 
+        self.backbutton:Hide()
+    end
 
-	self:DoFocusHookups()
+    self:DoFocusHookups()
 
-	local right_widget = self.character_scroll_list 
+    local right_widget = self.character_scroll_list 
     local players = self.playerList:GetPlayerTable()
-    self.playerList:BuildPlayerList(players, {right = right_widget, down = self.chatbox})
+    self.playerList:BuildPlayerList(players, { right = right_widget, down = self.chatbox })
 
 end
 
 function LobbyScreen:StartLoadout()
-	self.in_loadout = true
+    self.in_loadout = true
 
-	if self.disconnectbutton then 
-		self.disconnectbutton:Hide()
-	end
+    if self.disconnectbutton ~= nil then
+        self.disconnectbutton:Hide()
+    end
 
-	self.characterselect_root:Hide()
-	self.loadout_root:MoveToFront()
-	self.loadout_root:Show()
+    self.characterselect_root:Hide()
+    self.loadout_root:MoveToFront()
+    self.loadout_root:Show()
 
-	if self.backbutton then 
-		self.backbutton:Show()
-	end
+    if self.backbutton ~= nil then 
+        self.backbutton:Show()
+    end
 
-	self:SetPortraitImage()
+    self:SetPortraitImage()
 
-	self:DoFocusHookups()
+    self:DoFocusHookups()
 
-	local right_widget = self.dressup 
+    local right_widget = self.dressup
     local players = self.playerList:GetPlayerTable()
-    self.playerList:BuildPlayerList(players, {right = right_widget, down = self.chatbox})
+    self.playerList:BuildPlayerList(players, { right = right_widget, down = self.chatbox })
 
     self.dressup:SetFocus()
 end
 
 function LobbyScreen:DoConfirmQuit()
- 	self.active = false
-	
-	local function doquit()
-		self.dressup:OnClose()
-		self.parent:Disable()
-		DoRestart(true)
-	end
+    self.active = false
 
-	if TheNet:GetIsServer() then
-		local confirm = PopupDialogScreen(STRINGS.UI.LOBBYSCREEN.HOSTQUITTITLE, STRINGS.UI.LOBBYSCREEN.HOSTQUITBODY, {{text=STRINGS.UI.LOBBYSCREEN.YES, cb = doquit},{text=STRINGS.UI.LOBBYSCREEN.NO, cb = function() TheFrontEnd:PopScreen() end}  })
-	    if JapaneseOnPS4() then
-			confirm:SetTitleTextSize(40)
-			confirm:SetButtonTextSize(30)
-		end
-		TheFrontEnd:PushScreen(confirm)
-	else
-		local confirm = PopupDialogScreen(STRINGS.UI.LOBBYSCREEN.CLIENTQUITTITLE, STRINGS.UI.LOBBYSCREEN.CLIENTQUITBODY, {{text=STRINGS.UI.LOBBYSCREEN.YES, cb = doquit},{text=STRINGS.UI.LOBBYSCREEN.NO, cb = function() TheFrontEnd:PopScreen() end}  })
-	    if JapaneseOnPS4() then
-			confirm:SetTitleTextSize(40)
-			confirm:SetButtonTextSize(30)
-		end
-		TheFrontEnd:PushScreen( confirm )
-	end
+    local function doquit()
+        self.dressup:OnClose()
+        self.parent:Disable()
+        DoRestart(true)
+    end
+
+    if TheNet:GetIsServer() then
+        local confirm = PopupDialogScreen(STRINGS.UI.LOBBYSCREEN.HOSTQUITTITLE, STRINGS.UI.LOBBYSCREEN.HOSTQUITBODY, {{text=STRINGS.UI.LOBBYSCREEN.YES, cb = doquit},{text=STRINGS.UI.LOBBYSCREEN.NO, cb = function() TheFrontEnd:PopScreen() end}  })
+        if JapaneseOnPS4() then
+            confirm:SetTitleTextSize(40)
+            confirm:SetButtonTextSize(30)
+        end
+        TheFrontEnd:PushScreen(confirm)
+    else
+        local confirm = PopupDialogScreen(STRINGS.UI.LOBBYSCREEN.CLIENTQUITTITLE, STRINGS.UI.LOBBYSCREEN.CLIENTQUITBODY, {{text=STRINGS.UI.LOBBYSCREEN.YES, cb = doquit},{text=STRINGS.UI.LOBBYSCREEN.NO, cb = function() TheFrontEnd:PopScreen() end}  })
+        if JapaneseOnPS4() then
+            confirm:SetTitleTextSize(40)
+            confirm:SetButtonTextSize(30)
+        end
+        TheFrontEnd:PushScreen(confirm)
+    end
 end
 
-
 --[[function LobbyScreen:OnFocusMove(dir, down)
-	
-	if down then
-		if dir == MOVE_LEFT then
-				self:Scroll(-1)
-				self:SelectPortrait()
-			return true
-		elseif dir == MOVE_RIGHT then
-				self:Scroll(1)	
-				self:SelectPortrait()
-			return true
-		end
-	end
+    if down then
+        if dir == MOVE_LEFT then
+                self:Scroll(-1)
+                self:SelectPortrait()
+            return true
+        elseif dir == MOVE_RIGHT then
+                self:Scroll(1)  
+                self:SelectPortrait()
+            return true
+        end
+    end
 end]]
 
-
-
 function LobbyScreen:SetPortraitImage()
-	local name = self.dressup:GetBaseSkin()
+    local name = self.dressup:GetBaseSkin()
 
-	if softresolvefilepath("images/names_"..self.currentcharacter..".xml") then 
-		self.heroname:Show()
-		self.heroname:SetTexture("images/names_"..self.currentcharacter..".xml", self.currentcharacter..".tex")
-	else
-		self.heroname:Hide()
-	end
+    if softresolvefilepath("images/names_"..self.currentcharacter..".xml") then 
+        self.heroname:Show()
+        self.heroname:SetTexture("images/names_"..self.currentcharacter..".xml", self.currentcharacter..".tex")
+    else
+        self.heroname:Hide()
+    end
 
-	self.basetitle:Hide()
-	self.basequote:Hide()
+    self.basetitle:Hide()
+    self.basequote:Hide()
 
-	
-	if name and name ~= "" and self.currentcharacter ~= "random" then
-		self.heroportrait:SetTexture("bigportraits/"..name..".xml", name.."_oval.tex", self.currentcharacter.."_none.tex")
+    if name and name ~= "" and self.currentcharacter ~= "random" then
+        self.heroportrait:SetTexture("bigportraits/"..name..".xml", name.."_oval.tex", self.currentcharacter.."_none.tex")
 
-		if self.currentcharacter ~= "wes"  then 
-			self.basequote:Show()
-			self.basequote:SetString("\""..(STRINGS.SKIN_QUOTES[name] or "").."\"")
-		else
-			self.basequote:Hide()
-		end
+        if self.currentcharacter ~= "wes"  then 
+            self.basequote:Show()
+            self.basequote:SetString("\""..(STRINGS.SKIN_QUOTES[name] or "").."\"")
+        else
+            self.basequote:Hide()
+        end
 
-		self.basetitle:Show()
-		self.basetitle:SetString(GetName(name)) 
-	else
-		if self.currentcharacter ~= "wes" and self.currentcharacter ~= "random" then
-			self.basequote:Show()
-			local str = "\""..(STRINGS.SKIN_QUOTES[name] or STRINGS.CHARACTER_QUOTES[self.currentcharacter] or "").."\""
-			str = string.gsub(str, "\"\"", "\"")
-			self.basequote:SetString(str)
-		else
-			self.basequote:Hide()
-		end
-		self.basetitle:Show()
-		self.basetitle:SetString(STRINGS.CHARACTER_TITLES[self.currentcharacter])
-		--self.basetitle:Hide()
-		--self.basequote:Hide()
-		--self.basequote:SetString(STRINGS.CHARACTER_QUOTES[self.currentcharacter] or "")
-		--print("Loading image", "bigportraits/"..self.currentcharacter.."_none.xml", self.currentcharacter.."_none_oval.tex")
+        self.basetitle:Show()
+        self.basetitle:SetString(GetName(name)) 
+    else
+        if self.currentcharacter ~= "wes" and self.currentcharacter ~= "random" then
+            self.basequote:Show()
+            local str = "\""..(STRINGS.SKIN_QUOTES[name] or STRINGS.CHARACTER_QUOTES[self.currentcharacter] or "").."\""
+            str = string.gsub(str, "\"\"", "\"")
+            self.basequote:SetString(str)
+        else
+            self.basequote:Hide()
+        end
+        self.basetitle:Show()
+        self.basetitle:SetString(STRINGS.CHARACTER_TITLES[self.currentcharacter])
+        --self.basetitle:Hide()
+        --self.basequote:Hide()
+        --self.basequote:SetString(STRINGS.CHARACTER_QUOTES[self.currentcharacter] or "")
+        --print("Loading image", "bigportraits/"..self.currentcharacter.."_none.xml", self.currentcharacter.."_none_oval.tex")
 
-		if softresolvefilepath("bigportraits/"..self.currentcharacter.."_none.xml") then 
-			self.heroportrait:SetTexture("bigportraits/"..self.currentcharacter.."_none.xml", self.currentcharacter.."_none_oval.tex")
-			self.heroportrait:SetPosition(RESOLUTION_X/2-200, RESOLUTION_Y-345)
-		else
-			self.heroportrait:SetTexture("bigportraits/"..self.currentcharacter..".xml", self.currentcharacter..".tex")
-			self.heroportrait:SetPosition(RESOLUTION_X/2-180, RESOLUTION_Y-345)
-		end
+        if softresolvefilepath("bigportraits/"..self.currentcharacter.."_none.xml") then 
+            self.heroportrait:SetTexture("bigportraits/"..self.currentcharacter.."_none.xml", self.currentcharacter.."_none_oval.tex")
+            self.heroportrait:SetPosition(RESOLUTION_X/2-200, RESOLUTION_Y-345)
+        else
+            self.heroportrait:SetTexture("bigportraits/"..self.currentcharacter..".xml", self.currentcharacter..".tex")
+            self.heroportrait:SetPosition(RESOLUTION_X/2-180, RESOLUTION_Y-345)
+        end
 
-	end
+    end
 
-	self.dressup:UpdatePuppet()
+    self.dressup:UpdatePuppet()
 end
 
 function LobbyScreen:SelectPortrait()
-	
-	if not self.character_scroll_list then return end
+    if not self.character_scroll_list then return end
 
+    local herocharacter = self.character_scroll_list:GetCharacter()
 
-	local herocharacter = self.character_scroll_list:GetCharacter()
+    if herocharacter ~= nil then
 
-	if herocharacter ~= nil then
+        self.currentcharacter = herocharacter
+        self.dressup:SetCurrentCharacter(herocharacter)
 
-		self.currentcharacter = herocharacter
-		self.dressup:SetCurrentCharacter(herocharacter)
-		
-		if self.charactername then 
-			self.charactername:SetString(STRINGS.CHARACTER_TITLES[herocharacter] or "")
-		end
-		if self.characterquote then 
-			self.characterquote:SetString(STRINGS.CHARACTER_QUOTES[herocharacter] or "")
-		end
-		if self.characterdetails then 
-			if herocharacter == "woodie" and TheNet:GetCountryCode() == "CA" then
-				self.characterdetails:SetString(STRINGS.CHARACTER_DESCRIPTIONS[herocharacter.."_canada"] or "")
-			elseif herocharacter == "woodie" and TheNet:GetCountryCode() == "US" then
-				self.characterdetails:SetString(STRINGS.CHARACTER_DESCRIPTIONS[herocharacter.."_us"] or "")
-			else
-				self.characterdetails:SetString(STRINGS.CHARACTER_DESCRIPTIONS[herocharacter] or "")
-			end
-		end
-		
-		self.dressup:UpdateSpinners()
-		
-		self.can_accept = true
-		if self.startbutton ~= nil then
-			self.startbutton:Enable()
-		end
-	else
-		-- THIS SHOULD NEVER HAPPEN IN DST
-		self.can_accept = false
-		self.heroportrait:SetTexture("bigportraits/locked.xml", "locked.tex")
-		self.charactername:SetString(STRINGS.CHARACTER_NAMES.unknown)
-		self.characterquote:SetString("")
-		self.characterdetails:SetString("")
-		if self.startbutton then
-			self.startbutton:Disable()
-		end
-	end
+        if self.charactername then
+            self.charactername:SetString(STRINGS.CHARACTER_TITLES[herocharacter] or "")
+        end
+        if self.characterquote then
+            self.characterquote:SetString(STRINGS.CHARACTER_QUOTES[herocharacter] or "")
+        end
+        if self.characterdetails then
+            if herocharacter == "woodie" and TheNet:GetCountryCode() == "CA" then
+                self.characterdetails:SetString(STRINGS.CHARACTER_DESCRIPTIONS[herocharacter.."_canada"] or "")
+            elseif herocharacter == "woodie" and TheNet:GetCountryCode() == "US" then
+                self.characterdetails:SetString(STRINGS.CHARACTER_DESCRIPTIONS[herocharacter.."_us"] or "")
+            else
+                self.characterdetails:SetString(STRINGS.CHARACTER_DESCRIPTIONS[herocharacter] or "")
+            end
+        end
+
+        self.dressup:UpdateSpinners()
+
+        self.can_accept = true
+        if self.startbutton ~= nil then
+            self.startbutton:Enable()
+        end
+    else
+        -- THIS SHOULD NEVER HAPPEN IN DST
+        self.can_accept = false
+        self.heroportrait:SetTexture("bigportraits/locked.xml", "locked.tex")
+        self.charactername:SetString(STRINGS.CHARACTER_NAMES.unknown)
+        self.characterquote:SetString("")
+        self.characterdetails:SetString("")
+        if self.startbutton then
+            self.startbutton:Disable()
+        end
+    end
 end
 
 function LobbyScreen:GetHelpText()
     local controller_id = TheInput:GetControllerID()
     local t = {}
-    
-    if not self.no_cancel then
-    	if not self.in_loadout then 
-    		table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_CANCEL) .. " " .. STRINGS.UI.LOBBYSCREEN.DISCONNECT)
-    	else
-    		table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_CANCEL) .. " " .. STRINGS.UI.HELP.BACK)
-    	end
-    end
- 
-    table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_2) .. " " .. STRINGS.UI.LOBBYSCREEN.RANDOMCHAR)
-    
-    if not self.in_loadout then 
-  		table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_PREVVALUE) .. "/" .. TheInput:GetLocalizedControl(controller_id, CONTROL_NEXTVALUE) .." " .. STRINGS.UI.HELP.CHANGECHARACTER)
-   	end
 
-   	if self.can_accept then
-   		table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_PAUSE) .. " " .. STRINGS.UI.LOBBYSCREEN.SELECT)
-   	end
-    
+    if not self.no_cancel then
+        if not self.in_loadout then
+            table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_CANCEL) .. " " .. STRINGS.UI.LOBBYSCREEN.DISCONNECT)
+        else
+            table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_CANCEL) .. " " .. STRINGS.UI.HELP.BACK)
+        end
+    end
+
+    table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_2) .. " " .. STRINGS.UI.LOBBYSCREEN.RANDOMCHAR)
+
+    if not self.in_loadout then
+        table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_PREVVALUE) .. "/" .. TheInput:GetLocalizedControl(controller_id, CONTROL_NEXTVALUE) .." " .. STRINGS.UI.HELP.CHANGECHARACTER)
+    end
+
+    if self.can_accept then
+        table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_PAUSE) .. " " .. STRINGS.UI.LOBBYSCREEN.SELECT)
+    end
+
     return table.concat(t, "  ")
 end
 
@@ -844,15 +818,15 @@ function LobbyScreen:OnUpdate(dt)
             end
         end
     end
-    
+
     if self.dressup and self.dressup.puppet then
-		self.dressup.puppet:EmoteUpdate(dt)
-	end
+        self.dressup.puppet:EmoteUpdate(dt)
+    end
 end
 
 function LobbyScreen:UpdateSpinners()
-	self.dressup:UpdateSpinners()
-	self:SetPortraitImage()
+    self.dressup:UpdateSpinners()
+    self:SetPortraitImage()
 end
 
 return LobbyScreen

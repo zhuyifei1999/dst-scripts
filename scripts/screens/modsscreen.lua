@@ -166,9 +166,13 @@ function ModsScreen:OnBecomeActive()
 	self.mainmenu:Enable()
 	if TheInput:ControllerAttached() then
 		if self.currentmodtype == "client" then
-			self.options_scroll_list_client:SetFocus()
+			if self.options_scroll_list_client ~= nil then
+				self.options_scroll_list_client:SetFocus()
+			end
 		elseif self.currentmodtype == "server" then
-			self.options_scroll_list_server:SetFocus()
+			if self.options_scroll_list_server ~= nil then
+				self.options_scroll_list_server:SetFocus()
+			end
 		elseif self.modlinks and self.modlinks[1] then
 			self.modlinks[1]:SetFocus()
 		end
