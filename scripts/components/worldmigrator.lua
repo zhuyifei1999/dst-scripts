@@ -63,11 +63,17 @@ function WorldMigrator:SetReceivedPortal(fromworld, fromportal)
     self:ValidateAndPushEvents()
 end
 
+function WorldMigrator:GetStatusString()
+    return string.lower(tostring(table.reverselookup(STATUS, self._status)))
+end
+
 function WorldMigrator:ValidateAndPushEvents()
     if self.enabled == false then
         self._status = STATUS.INACTIVE
         self.inst:PushEvent("migration_unavailable")
-        print(string.format("Validating %s (disabled by prefab)", self:GetDebugString()))
+        if InGamePlay() then
+            print(string.format("Validating portal[%d] <-> %s[%d] (%s)", self.id or -1, self.linkedWorld or "<nil>", self.receivedPortal or 0, self.linkedWorld ~= nil and Shard_IsWorldAvailable(self.linkedWorld) and "disabled" or "inactive"))
+        end
         return
     end
 
@@ -81,7 +87,9 @@ function WorldMigrator:ValidateAndPushEvents()
         self._status = STATUS.INACTIVE
         self.inst:PushEvent("migration_unavailable")
     end
-    print(string.format("Validating %s", self:GetDebugString()))
+    if InGamePlay() then
+        print(string.format("Validating portal[%d] <-> %s[%d] (%s)", self.id or -1, self.linkedWorld or "<nil>", self.receivedPortal or 0, self:GetStatusString()))
+    end
 end
 
 function WorldMigrator:IsBound()
@@ -120,7 +128,7 @@ function WorldMigrator:IsFull()
 end
 
 function WorldMigrator:Activate(doer)
-    print("Activating portal "..self.id.." to "..(self.linkedWorld or "<nil>"))
+    print("Activating portal["..self.id.."] to "..(self.linkedWorld or "<nil>"))
     if self.linkedWorld == nil then
         -- TODO
         --if not doer.admin then print("NOT ADMIN")return end
@@ -160,7 +168,7 @@ function WorldMigrator:OnLoad(data)
 end
 
 function WorldMigrator:GetDebugString()
-    return string.format("ID %d: world: %s (%s) available: %s receives: %d status: %s", self.id or -1, self.linkedWorld or "<nil>", self.auto and "auto" or "manual", tostring(self.linkedWorld and Shard_IsWorldAvailable(self.linkedWorld) or false), self.receivedPortal or -1, string.lower(tostring(table.reverselookup(STATUS, self._status))) )
+    return string.format("ID: %d world: %s (%s) available: %s receives: %d status: %s enabled: %s", self.id or -1, self.linkedWorld or "<nil>", self.auto and "auto" or "manual", tostring(self.linkedWorld and Shard_IsWorldAvailable(self.linkedWorld) or false), self.receivedPortal or -1, self:GetStatusString(), tostring(self.enabled))
 end
 
 return WorldMigrator

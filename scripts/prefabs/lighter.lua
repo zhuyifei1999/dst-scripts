@@ -122,6 +122,9 @@ local function fn()
 
     inst:AddTag("dangerouscooker")
 
+    --lighter (from lighter component) added to pristine state for optimization
+    inst:AddTag("lighter")
+
     --cooker (from cooker component) added to pristine state for optimization
     inst:AddTag("cooker")
 

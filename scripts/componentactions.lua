@@ -644,12 +644,8 @@ local COMPONENT_ACTIONS =
             if not right
                 and doer.replica.combat ~= nil
                 and (inst:HasTag("projectile") or not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding())) then
-                if inst:HasTag("extinguisher")
-                    and (target:HasTag("smolder") or target:HasTag("fire")) then
-                    table.insert(actions, ACTIONS.ATTACK)
-                elseif inst:HasTag("rangedlighter")
-                    and target:HasTag("canlight")
-                    and not (target:HasTag("fire") or target:HasTag("burnt")) then
+                if doer.replica.combat:CanExtinguishTarget(target, inst) or
+                    doer.replica.combat:CanLightTarget(target, inst) then
                     table.insert(actions, ACTIONS.ATTACK)
                 elseif not target:HasTag("wall")
                     and target.replica.combat ~= nil

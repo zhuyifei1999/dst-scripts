@@ -19,7 +19,7 @@ end
 --NOTE: should never be called with for our own world_id
 function Shard_UpdateWorldState(world_id, state)
     local ready = state == REMOTESHARDSTATE.READY
-    print("World '"..world_id.."' is now "..(ready and 'connected' or 'disconnected'))
+    print("World "..world_id.." is now "..(ready and 'connected' or 'disconnected'))
 
     ShardConnected[world_id] = ready or nil
 
@@ -31,7 +31,7 @@ function Shard_UpdateWorldState(world_id, state)
         elseif v.components.worldmigrator.linkedWorld == world_id then
             v.components.worldmigrator:ValidateAndPushEvents()
         else
-            print(string.format("Skipping portal %d (different permanent world)", v.components.worldmigrator.id))
+            print(string.format("Skipping portal[%d] (different permanent world)", v.components.worldmigrator.id))
         end
     end  
 end

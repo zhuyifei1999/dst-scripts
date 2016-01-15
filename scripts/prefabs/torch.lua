@@ -95,6 +95,9 @@ local function fn()
     inst.AnimState:SetBuild("torch")
     inst.AnimState:PlayAnimation("idle")
 
+    --lighter (from lighter component) added to pristine state for optimization
+    inst:AddTag("lighter")
+
     --waterproofer (from waterproofer component) added to pristine state for optimization
     inst:AddTag("waterproofer")
 

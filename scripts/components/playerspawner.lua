@@ -160,13 +160,13 @@ end
 
 local function UnregisterMigrationPortal(portal)
     if portal == nil then return end
-    print("[SHARD] Unregistering portal ID #"..tostring(portal.components.worldmigrator.id))
+    --print("Unregistering portal["..tostring(portal.components.worldmigrator.id).."]")
     RemoveByValue(ShardPortals, portal)
 end
 
 local function OnRegisterMigrationPortal(inst, portal)
     assert(portal.components.worldmigrator ~= nil, "Tried registering a migration prefab that wasn't a migrator!")
-    print("[SHARD] Registering portal ID #"..tostring(portal.components.worldmigrator.id))
+    --print("Registering portal["..tostring(portal.components.worldmigrator.id).."]")
 
     if portal == nil or table.contains(ShardPortals, portal) then return end
 
@@ -187,7 +187,7 @@ local function GetDestinationPortalLocation(player)
     end
 
     if portal ~= nil then
-        print("[SHARD] Player will spawn close to portal #"..tostring(portal.components.worldmigrator.id))
+        print("Player will spawn close to portal #"..tostring(portal.components.worldmigrator.id))
         local pos = portal:GetPosition()
         local start_angle = math.random() * PI * 2
         local rad = portal.Physics ~= nil and portal.Physics:GetRadius() + .5 or .5
@@ -202,7 +202,7 @@ local function GetDestinationPortalLocation(player)
         end
         return pos.x, 0, pos.z
     else
-        print("[SHARD] Player will spawn at default location")
+        print("Player will spawn at default location")
         return GetNextSpawnPosition()
     end
 end

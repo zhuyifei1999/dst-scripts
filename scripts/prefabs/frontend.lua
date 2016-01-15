@@ -144,9 +144,12 @@ for _,skins_prefabs in pairs(PREFAB_SKINS) do
 
 		if not string.find(skin_prefab, "_none") then 
 			local prefab = require("prefabs/"..skin_prefab)
-
-			for k, v in pairs(prefab.assets) do 
-				table.insert(assets, v)
+			if type(prefab)=="table" then
+				for k, v in pairs(prefab.assets) do 
+					table.insert(assets, v)
+				end
+			else
+				print("ERROR: The contents of prefabs/"..skin_prefab..".lua are corrupt. Try verifying your game's install." )
 			end
 		end
 	end
