@@ -76,7 +76,7 @@ function Combat:InCooldown()
             return true
         end
     end
-	return false
+    return false
 end
 
 function Combat:ResetCooldown()
@@ -102,12 +102,12 @@ function Combat:SetAreaDamage(range, percent)
 end
 
 function Combat:BlankOutAttacks(fortime)
-	self.canattack = false
-	
-	if self.blanktask then
-		self.blanktask:Cancel()
-	end
-	self.blanktask = self.inst:DoTaskInTime(fortime, function() self.canattack = true self.blanktask = nil end)
+    self.canattack = false
+    
+    if self.blanktask then
+        self.blanktask:Cancel()
+    end
+    self.blanktask = self.inst:DoTaskInTime(fortime, function() self.canattack = true self.blanktask = nil end)
 end
 
 
@@ -188,10 +188,10 @@ function Combat:SetRetargetFunction(period, fn)
     self.targetfn = fn
     self.retargetperiod = period
     
-	if self.retargettask then
-		self.retargettask:Cancel()
-		self.retargettask = nil
-	end
+    if self.retargettask then
+        self.retargettask:Cancel()
+        self.retargettask = nil
+    end
     
     if period and fn then
         self.retargettask = self.inst:DoPeriodicTask(period, tryretarget)
@@ -199,21 +199,21 @@ function Combat:SetRetargetFunction(period, fn)
 end
 
 function Combat:OnEntitySleep()
-	if self.retargettask then
-		self.retargettask:Cancel()
-		self.retargettask = nil
-	end
+    if self.retargettask then
+        self.retargettask:Cancel()
+        self.retargettask = nil
+    end
 end
 
 function Combat:OnEntityWake()
-	if self.retargettask then
-		self.retargettask:Cancel()
-		self.retargettask = nil
-	end
+    if self.retargettask then
+        self.retargettask:Cancel()
+        self.retargettask = nil
+    end
 
-	if self.retargetperiod then
-		self.retargettask = self.inst:DoPeriodicTask(self.retargetperiod, tryretarget)
-	end
+    if self.retargetperiod then
+        self.retargettask = self.inst:DoPeriodicTask(self.retargetperiod, tryretarget)
+    end
 end
 
 function Combat:OnUpdate(dt)
@@ -225,14 +225,14 @@ function Combat:OnUpdate(dt)
     if self.keeptargetfn then
         self.keeptargettimeout = self.keeptargettimeout - dt
         if self.keeptargettimeout < 0 then
-			if self.inst:IsAsleep() then
-		        self.inst:StopUpdatingComponent(self)
-		        return
-			end
+            if self.inst:IsAsleep() then
+                self.inst:StopUpdatingComponent(self)
+                return
+            end
             self.keeptargettimeout = 1
             if not self.target:IsValid() or 
-				self.target:IsInLimbo() or
-				not self.keeptargetfn(self.inst, self.target) or not 
+                self.target:IsInLimbo() or
+                not self.keeptargetfn(self.inst, self.target) or not 
                 (self.target and self.target.components.combat and self.target.components.combat:CanBeAttacked(self.inst)) then    
                 self.inst:PushEvent("losttarget")            
                 self:DropTarget()
@@ -242,61 +242,61 @@ function Combat:OnUpdate(dt)
 end
 
 function Combat:IsRecentTarget(target)
-	return target and (target == self.target or target.GUID == self.lasttargetGUID)
+    return target and (target == self.target or target.GUID == self.lasttargetGUID)
 end
 
 local function TargetDisappeared(self, target)
-	self:DropTarget()
+    self:DropTarget()
 end
 
 function Combat:StartTrackingTarget(target)
-	if target then
-		self.losetargetcallback = function() 
-			TargetDisappeared(self, target) 
-		end
-		self.inst:ListenForEvent("enterlimbo", self.losetargetcallback, target)
-		self.inst:ListenForEvent("onremove", self.losetargetcallback, target)
-	end
+    if target then
+        self.losetargetcallback = function() 
+            TargetDisappeared(self, target) 
+        end
+        self.inst:ListenForEvent("enterlimbo", self.losetargetcallback, target)
+        self.inst:ListenForEvent("onremove", self.losetargetcallback, target)
+    end
 end
 
 function Combat:StopTrackingTarget(target)
-	self.inst:RemoveEventCallback("enterlimbo", self.losetargetcallback, target)
-	self.inst:RemoveEventCallback("onremove", self.losetargetcallback, target)
+    self.inst:RemoveEventCallback("enterlimbo", self.losetargetcallback, target)
+    self.inst:RemoveEventCallback("onremove", self.losetargetcallback, target)
 end
 
 function Combat:DropTarget(hasnexttarget)
-	if self.target then
-	    self:SetLastTarget(self.target)
-		self:StopTrackingTarget(self.target)
-		self.inst:StopUpdatingComponent(self)
-		local oldtarget = self.target
-		self.target = nil
-		if not hasnexttarget then
-			self.inst:PushEvent("droppedtarget", {target=oldtarget})
-		end
-	end
+    if self.target then
+        self:SetLastTarget(self.target)
+        self:StopTrackingTarget(self.target)
+        self.inst:StopUpdatingComponent(self)
+        local oldtarget = self.target
+        self.target = nil
+        if not hasnexttarget then
+            self.inst:PushEvent("droppedtarget", {target=oldtarget})
+        end
+    end
 end
 
 function Combat:EngageTarget(target)
-	if target then
+    if target then
         local oldtarget = self.target
-		self.target = target
-		self.inst:PushEvent("newcombattarget", {target=target, oldtarget=oldtarget})
-		self:StartTrackingTarget(target)
-	    if self.keeptargetfn then
-    	    self.inst:StartUpdatingComponent(self)
-	    end
-        if self.inst.components.follower and self.inst.components.follower.leader == target and self.inst.components.follower.leader.components.leader then
-			self.inst.components.follower.leader.components.leader:RemoveFollower(self.inst)
+        self.target = target
+        self.inst:PushEvent("newcombattarget", {target=target, oldtarget=oldtarget})
+        self:StartTrackingTarget(target)
+        if self.keeptargetfn then
+            self.inst:StartUpdatingComponent(self)
         end
-	end
+        if self.inst.components.follower and self.inst.components.follower.leader == target and self.inst.components.follower.leader.components.leader then
+            self.inst.components.follower.leader.components.leader:RemoveFollower(self.inst)
+        end
+    end
 end
 
 function Combat:SetTarget(target)
     local new = target ~= self.target
     if new and (not target or self:IsValidTarget(target) ) and not (target and target.sg and target.sg:HasStateTag("hiding") and target:HasTag("player")) then
-		self:DropTarget(target ~= nil)
-		self:EngageTarget(target)
+        self:DropTarget(target ~= nil)
+        self:EngageTarget(target)
     end
 end
 
@@ -306,16 +306,15 @@ end
 
 function Combat:ValidateTarget()
     if self.target then
-		if self:IsValidTarget(self.target) then
-			return true
-		else
-			self:DropTarget()
-		end
+        if self:IsValidTarget(self.target) then
+            return true
+        else
+            self:DropTarget()
+        end
     end
 end
 
 function Combat:GetDebugString()
-    
     local str = string.format("target:%s, damage:%d", tostring(self.target), self.defaultdamage or 0 )
     if self.target then
         local dist = math.sqrt(self.inst:GetDistanceSqToInst(self.target)) or 0
@@ -325,10 +324,9 @@ function Combat:GetDebugString()
     if self.targetfn and self.retargetperiod then
         str = str.. " Retarget set"
     end
-	str = str..string.format(" can attack:%s", tostring(self:CanAttack(self.target)))
-
+    str = str..string.format(" can attack:%s", tostring(self:CanAttack(self.target)))
     str = str..string.format(" can be attacked: %s", tostring(self:CanBeAttacked()))
-    
+
     return str
 end
 
@@ -349,7 +347,7 @@ function Combat:GiveUp()
 --        FightStat_GaveUp(self.inst)
 --    end
     self.inst:PushEvent("giveuptarget", {target = self.target})
-	self:DropTarget()
+    self:DropTarget()
 end
 
 function Combat:GetBattleCryString(target)
@@ -536,18 +534,18 @@ end
 
 function Combat:CanAttack(target)
     if not self.canattack then 
-		return false 
-	end
+        return false 
+    end
 
     if self.laststartattacktime ~= nil and
         GetTime() - self.laststartattacktime < self.min_attack_period then
         return false
     end
 
-	if not self:IsValidTarget(target) or
+    if not self:IsValidTarget(target) or
         (self.inst.sg ~= nil and (not self.inst.sg:HasStateTag("hit") and self.inst.sg:HasStateTag("busy"))) then
-		return false
-	end
+        return false
+    end
 
     -- V2C: this is 3D distsq
     if distsq(target:GetPosition(), self.inst:GetPosition()) > self:CalcAttackRangeSq(target) then
@@ -568,19 +566,18 @@ end
 
 
 function Combat:TryAttack(target)
-    
     local target = target or self.target 
-    
+
     local is_attacking = self.inst.sg:HasStateTag("attack")
     if is_attacking then
         return true
     end
-    
+
     if self:CanAttack(target) then
         self.inst:PushEvent("doattack", {target = target})
         return true
     end
-    
+
     return false
 end
 
@@ -674,32 +671,50 @@ function Combat:CalcHitRangeSq(target)
     return range * range
 end
 
+function Combat:CanExtinguishTarget(target, weapon)
+    return weapon ~= nil
+        and weapon:HasTag("extinguisher")
+        and target.components.burnable ~= nil
+        and (target.components.burnable:IsSmoldering() or
+            target.components.burnable:IsBurning())
+end
+
+function Combat:CanLightTarget(target, weapon)
+    return weapon ~= nil
+        and weapon:HasTag("rangedlighter")
+        and target.components.burnable ~= nil
+        and target.components.burnable.canlight
+        and not target.components.burnable:IsBurning()
+        and not target:HasTag("burnt")
+        and (target.components.fueled == nil or
+            target.components.fueled.fueltype == FUELTYPE.BURNABLE or
+            target.components.fueled.secondaryfueltype == FUELTYPE.BURNABLE)
+end
+
 function Combat:CanHitTarget(target, weapon)
     if self.inst ~= nil and
         self.inst:IsValid() and
         target ~= nil and
         target:IsValid() and
-        not target:IsInLimbo() then
+        not target:IsInLimbo() and
+        (   self:CanExtinguishTarget(target, weapon) or
+            self:CanLightTarget(target, weapon) or
+            (   target.components.combat ~= nil and
+                target.components.combat:CanBeAttacked(self.inst)
+            )
+        ) then
 
-        local specialcase_target =
-            weapon ~= nil
-            and ((weapon:HasTag("extinguisher") and target.components.burnable ~= nil and (target.components.burnable:IsSmoldering() or target.components.burnable:IsBurning())) or
-                (weapon:HasTag("rangedlighter") and target:HasTag("canlight")))
-
-        if specialcase_target or 
-            (target.components.combat ~= nil and target.components.combat:CanBeAttacked(self.inst)) then
-
-            local targetpos = target:GetPosition()
+        local targetpos = target:GetPosition()
+        -- V2C: this is 3D distsq
+        if distsq(targetpos, self.inst:GetPosition()) <= self:CalcHitRangeSq(target) then
+            return true
+        elseif weapon ~= nil and weapon.components.projectile ~= nil then
+            local range = target.Physics ~= nil and target.Physics:GetRadius() + weapon.components.projectile.hitdist or weapon.components.projectile.hitdist
             -- V2C: this is 3D distsq
-            if distsq(targetpos, self.inst:GetPosition()) <= self:CalcHitRangeSq(target) then
-                return true
-            elseif weapon ~= nil and weapon.components.projectile ~= nil then
-                local range = target.Physics ~= nil and target.Physics:GetRadius() + weapon.components.projectile.hitdist or weapon.components.projectile.hitdist
-                -- V2C: this is 3D distsq
-                return distsq(targetpos, weapon:GetPosition()) <= range * range
-            end
+            return distsq(targetpos, weapon:GetPosition()) <= range * range
         end
     end
+    return false
 end
 
 function Combat:DoAttack(target_override, weapon, projectile, stimuli, instancemult)

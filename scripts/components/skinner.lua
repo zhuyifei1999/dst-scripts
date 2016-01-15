@@ -276,26 +276,32 @@ function Skinner:OnSave()
 end
 
 function Skinner:OnLoad(data)
-	if data.clothing then
-		self.clothing = data.clothing
-		
-		--it's possible that the clothing was traded away. Check to see if the player still owns it on load.
-		for type,clothing in pairs( self.clothing ) do
-			if clothing ~= "" and not TheInventory:CheckClientOwnership(self.inst.userid, clothing) then
-				self.clothing[type] = ""
-			end
-		end
-	end
-	
-	local skin_name = self.inst.prefab.."_none"
-	if data.skin_name then
-		skin_name = data.skin_name
-		--clean up any traded away base skins
-		if data.skin_name ~= self.inst.prefab.."_none" and not TheInventory:CheckClientOwnership(self.inst.userid, data.skin_name) then
-			skin_name = self.inst.prefab.."_none"
-		end
-	end
-	self:SetSkinName(skin_name)
+    --V2C: InGamePlay() is used to check whether world has finished
+    --     loading and snapshot player sessions have been restored.
+    --     Do not validate inventory when restoring snapshot saves,
+    --     because the user is not actually logged in at that time.
+
+    if data.clothing ~= nil then
+        self.clothing = data.clothing
+
+        if InGamePlay() then
+            --it's possible that the clothing was traded away. Check to see if the player still owns it on load.
+            for type,clothing in pairs( self.clothing ) do
+                if clothing ~= "" and not TheInventory:CheckClientOwnership(self.inst.userid, clothing) then
+                    self.clothing[type] = ""
+                end
+            end
+        end
+    end
+
+    local skin_name = self.inst.prefab.."_none"
+    if data.skin_name ~= nil and
+        data.skin_name ~= skin_name and
+        (not InGamePlay() or TheInventory:CheckClientOwnership(self.inst.userid, data.skin_name)) then
+        --load base skin (check that it hasn't been traded away)
+        skin_name = data.skin_name
+    end
+    self:SetSkinName(skin_name)
 end
 
 return Skinner

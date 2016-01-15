@@ -43,6 +43,7 @@ local function fn()
     if not TheWorld.ismastersim then
         return inst
     end
+
     inst:AddComponent("heater")
     inst.components.heater.heatfn = GetHeatFn
 

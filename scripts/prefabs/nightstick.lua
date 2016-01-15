@@ -84,6 +84,9 @@ local function fn()
 
     MakeInventoryPhysics(inst)
 
+    --lighter (from lighter component) added to pristine state for optimization
+    --inst:AddTag("lighter")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

@@ -184,35 +184,60 @@ function Combat:CanAttack(target)
     end
 end
 
+function Combat:CanExtinguishTarget(target, weapon)
+    if self.inst.components.combat ~= nil then
+        return self.inst.components.combat:CanExtinguishTarget(target, weapon)
+    end
+    return weapon ~= nil
+        and weapon:HasTag("extinguisher")
+        and (target:HasTag("smolder") or target:HasTag("fire"))
+end
+
+function Combat:CanLightTarget(target, weapon)
+    if self.inst.components.combat ~= nil then
+        return self.inst.components.combat:CanLightTarget(target, weapon)
+    elseif weapon == nil or
+        not (weapon:HasTag("rangedlighter") and
+            target:HasTag("canlight")) or
+        target:HasTag("burnt") then
+        return false
+    elseif target:HasTag(FUELTYPE.BURNABLE.."_fueled") then
+        return true
+    end
+    --Either it takes burnable fuel, or it's not fueled at all
+    --(USAGE doesn't count as fueled)
+    for k, v in pairs(FUELTYPE) do
+        if v ~= FUELTYPE.USAGE and v ~= FUELTYPE.BURNABLE and target:HasTag(v.."_fueled") then
+            return false
+        end
+    end
+    --Generic burnable
+    return true
+end
+
 function Combat:CanHitTarget(target)
     if self.inst.components.combat ~= nil then
         return self.inst.components.combat:CanHitTarget(target)
-    elseif self.classified ~= nil then
-        if target ~= nil and
-            target:IsValid() and
-            not target:HasTag("INLIMBO") then
+    elseif self.classified ~= nil
+        and target ~= nil
+        and target:IsValid()
+        and not target:HasTag("INLIMBO") then
 
-            local weapon = self:GetWeapon()
-            local specialcase_target =
-                weapon ~= nil
-                and ((weapon:HasTag("extinguisher") and (target:HasTag("smolder") or target:HasTag("fire"))) or
-                    (weapon:HasTag("rangedlighter") and target:HasTag("canlight")))
+        local weapon = self:GetWeapon()
+        if self:CanExtinguishTarget(target, weapon) or
+            self:CanLightTarget(target, weapon) or
+            (target.replica.combat ~= nil and target.replica.combat:CanBeAttacked(self.inst)) then
 
-            if specialcase_target or
-                (target.replica.combat ~= nil and target.replica.combat:CanBeAttacked(self.inst)) then
+            local range = target.Physics ~= nil and target.Physics:GetRadius() + self:GetAttackRangeWithWeapon() or self:GetAttackRangeWithWeapon()
+            local error_threshold = .5
+            --account for position error due to prediction
+            range = math.max(range - error_threshold, 0)
 
-                local range = target.Physics ~= nil and target.Physics:GetRadius() + self:GetAttackRangeWithWeapon() or self:GetAttackRangeWithWeapon()
-                local error_threshold = .5
-                --account for position error due to prediction
-                range = math.max(range - error_threshold, 0)
-
-                -- V2C: this is 3D distsq
-                return distsq(target:GetPosition(), self.inst:GetPosition()) <= range * range
-            end
+            -- V2C: this is 3D distsq
+            return distsq(target:GetPosition(), self.inst:GetPosition()) <= range * range
         end
-    else
-        return false
     end
+    return false
 end
 
 function Combat:IsValidTarget(target)
@@ -223,31 +248,18 @@ function Combat:IsValidTarget(target)
     end
 
     local weapon = self:GetWeapon()
-    if weapon ~= nil then
-        -- Light fire with ranged lighter
-        if weapon:HasTag("rangedlighter")
-            and target:HasTag("canlight")
-            and not (target:HasTag("fire") or target:HasTag("burnt")) then
-            return true
-
-        -- Extinguish smoldering fire
-        elseif weapon:HasTag("extinguisher")
-            and (target:HasTag("smolder") or target:HasTag("fire")) then
-            return true
-        end
-    end
-
-    return
-        target.replica.combat ~= nil and
-        target.replica.health ~= nil and
-        not target.replica.health:IsDead() and
-        not (target:HasTag("shadow") and self.inst.replica.sanity == nil) and
-        not (target:HasTag("playerghost") and (self.inst.replica.sanity == nil or self.inst.replica.sanity:IsSane())) and
-        -- gjans: Some specific logic so the birchnutter doesn't attack it's spawn with it's AOE
-        -- This could possibly be made more generic so that "things" don't attack other things in their "group" or something
-        (not self.inst:HasTag("birchnutroot") or not (target:HasTag("birchnutroot") or target:HasTag("birchnut") or target:HasTag("birchnutdrake"))) and 
-        (TheNet:GetPVPEnabled() or not (self.inst:HasTag("player") and target:HasTag("player"))) and
-        target:GetPosition().y <= self._attackrange:value() 
+    return self:CanExtinguishTarget(target, weapon)
+        or self:CanLightTarget(target, weapon)
+        or (target.replica.combat ~= nil and
+            target.replica.health ~= nil and
+            not target.replica.health:IsDead() and
+            not (target:HasTag("shadow") and self.inst.replica.sanity == nil) and
+            not (target:HasTag("playerghost") and (self.inst.replica.sanity == nil or self.inst.replica.sanity:IsSane())) and
+            -- gjans: Some specific logic so the birchnutter doesn't attack it's spawn with it's AOE
+            -- This could possibly be made more generic so that "things" don't attack other things in their "group" or something
+            (not self.inst:HasTag("birchnutroot") or not (target:HasTag("birchnutroot") or target:HasTag("birchnut") or target:HasTag("birchnutdrake"))) and 
+            (TheNet:GetPVPEnabled() or not (self.inst:HasTag("player") and target:HasTag("player"))) and
+            target:GetPosition().y <= self._attackrange:value())
 end
 
 function Combat:CanTarget(target)

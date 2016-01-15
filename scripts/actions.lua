@@ -575,18 +575,12 @@ end
 ACTIONS.ATTACK.strfn = function(act)
     if act.target ~= nil then
         --act.invobject is weapon
-        if act.invobject ~= nil then
-            if act.invobject:HasTag("extinguisher")
-                and (act.target:HasTag("smolder") or
-                    act.target:HasTag("fire")) then
+        if act.invobject ~= nil and act.doer.replica.combat ~= nil then
+            if act.doer.replica.combat:CanExtinguishTarget(act.target, act.invobject) then
                 return "RANGEDSMOTHER"
-            elseif act.invobject:HasTag("rangedlighter")
-                and act.target:HasTag("canlight")
-                and not act.target:HasTag("fire")
-                and not act.target:HasTag("burnt") then
+            elseif act.doer.replica.combat:CanLightTarget(act.target, act.invobject) then
                 return "RANGEDLIGHT"
-            elseif act.target:HasTag("mole")
-                and act.invobject:HasTag("hammer") then
+            elseif act.target:HasTag("mole") and act.invobject:HasTag("hammer") then
                 return "WHACK"
             end
         end

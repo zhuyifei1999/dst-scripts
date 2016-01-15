@@ -1,8 +1,8 @@
 local assets =
 {
-	--Asset("ANIM", "anim/fire_large_character.zip"),
-	Asset("ANIM", "anim/campfire_fire.zip"),
-	Asset("SOUND", "sound/common.fsb"),
+    --Asset("ANIM", "anim/fire_large_character.zip"),
+    Asset("ANIM", "anim/campfire_fire.zip"),
+    Asset("SOUND", "sound/common.fsb"),
 }
 
 local firelevels =
@@ -14,31 +14,32 @@ local firelevels =
 }
 
 local function fn()
+    local inst = CreateEntity()
 
-	local inst = CreateEntity()
-
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
-	inst.entity:AddLight()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
+    inst.entity:AddLight()
     inst.entity:AddNetwork()
-
-    if not TheWorld.ismastersim then
-        return inst
-    end
 
     inst.AnimState:SetBank("campfire_fire")
     inst.AnimState:SetBuild("campfire_fire")
     inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
     inst.AnimState:SetMultColour(0, 0, 0, .6)
+    inst.AnimState:SetRayTestOnBB(true)
+    inst.AnimState:SetFinalOffset(-1)
 
     inst:AddTag("FX")
-    inst:AddTag("NOCLICK")
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
 
     inst:AddComponent("firefx")
     inst.components.firefx.levels = firelevels
 
-    inst.AnimState:SetFinalOffset(-1)
     return inst
 end
 

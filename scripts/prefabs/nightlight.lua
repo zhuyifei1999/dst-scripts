@@ -126,7 +126,7 @@ local function fn()
             if not inst.components.burnable:IsBurning() then
                 inst.components.burnable:Ignite()
             end
-            
+
             inst.components.burnable:SetFXLevel(section, inst.components.fueled:GetSectionPercent())
         end
     end)

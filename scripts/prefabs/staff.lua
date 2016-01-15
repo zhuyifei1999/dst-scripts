@@ -30,15 +30,21 @@ local function onattack_red(inst, attacker, target, skipsanity)
     if target.components.burnable ~= nil and not target.components.burnable:IsBurning() then
         if target.components.freezable ~= nil and target.components.freezable:IsFrozen() then
             target.components.freezable:Unfreeze()
-        elseif target.components.fueled ~= nil and target:HasTag("campfire") and target:HasTag("structure") then
-            -- Rather than worrying about adding fuel cmp here, just spawn some fuel and immediately feed it to the fire
+        elseif target.components.fueled == nil then
+            target.components.burnable:Ignite(true)
+        elseif target.components.fueled.fueltype == FUELTYPE.BURNABLE
+            or target.components.fueled.secondaryfueltype == FUELTYPE.BURNABLE then
             local fuel = SpawnPrefab("cutgrass")
             if fuel ~= nil then
-                target.components.fueled:TakeFuelItem(fuel)
+                if fuel.components.fuel ~= nil and
+                    fuel.components.fuel.fueltype == FUELTYPE.BURNABLE then
+                    target.components.fueled:TakeFuelItem(fuel)
+                else
+                    fuel:Remove()
+                end
             end
-        else
-            target.components.burnable:Ignite(true)
         end
+        --V2C: don't ignite if it doens't accespt burnable fuel!
     end
 
     if target.components.freezable ~= nil then
