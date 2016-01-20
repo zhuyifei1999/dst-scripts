@@ -117,14 +117,6 @@ local LobbyScreen = Class(Screen, function(self, profile, cb, no_backbutton, def
     self.characterselect_root = self.fixed_root:AddChild(Widget("CharacterSelect"))
     self.loadout_root = self.fixed_root:AddChild(Widget("Loadout"))
 
-    --[[if self.days_survived >= 0 then
-        self.dayssurvivedwidget = self.root:AddChild(Text(UIFONT, 30, STRINGS.UI.LOBBYSCREEN.DAYSSURVIVED.." "..self.days_survived))
-        self.dayssurvivedwidget:SetHAlign(ANCHOR_LEFT)
-        self.dayssurvivedwidget:SetVAlign(ANCHOR_TOP)
-        local w = self.dayssurvivedwidget:GetRegionSize()
-        self.dayssurvivedwidget:SetPosition(-RESOLUTION_X/2 + w/2 + 80, -RESOLUTION_Y/2 + 80, 0)
-    end]]
-
     self.heroname = self.loadout_root:AddChild(Image())
     self.heroname:SetScale(.34)
     self.heroname:SetPosition(RESOLUTION_X/2+115, RESOLUTION_Y-175)

@@ -144,9 +144,8 @@ function WardrobePopupScreen:Close()
         elseif self.owner ~= nil then
             self.owner:PushEvent("ms_closewardrobe", data)
         end
-
-		self.profile:SetBaseForCharacter(self.dressup.currentcharacter, self.dressup:GetBaseSkin())
     end
+	self.profile:SetBaseForCharacter(self.dressup.currentcharacter, self.dressup:GetBaseSkin())
 
     self.dressup:OnClose()
     TheFrontEnd:PopScreen(self)

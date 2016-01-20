@@ -283,7 +283,7 @@ function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOu
             -- 2) The server browser will need to compose it's worldgen data from the shards, because
             --    the master server will no longer know the configuration the slaves were created with.
 
-			self.server_settings_tab:SetEditingTextboxes(false)
+            self.server_settings_tab:SetEditingTextboxes(false)
 
             local serverdata = self.server_settings_tab:GetServerData()
 
@@ -302,23 +302,15 @@ function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOu
                 TheNet:SetDefaultClanInfo("0", false, false)
             end
 
-			local start_in_online_mode = serverdata.online_mode
+            local start_in_online_mode = serverdata.online_mode
             if TheFrontEnd:GetIsOfflineMode() then
                 start_in_online_mode = false
             end
-			local server_started = TheNet:StartServer( start_in_online_mode )
-			if server_started == true then
-				self:Disable()
+            local server_started = TheNet:StartServer(start_in_online_mode)
+            if server_started == true then
+                self:Disable()
 
-                local screen = TheFrontEnd:GetActiveScreen()
-                while screen ~= nil and not (screen.bg ~= nil and screen.bg.anim_root ~= nil and screen.bg.anim_root.portal ~= nil) do
-                    -- Check if we're on a screen with a portal anim
-                    -- If we're not, then pop the current screen and try again with the next screen down
-                    TheFrontEnd:PopScreen()
-                    screen = TheFrontEnd:GetActiveScreen()
-                end
-
-                local function onFaded()
+                local function do_start_server()
                     -- Apply the mods
                     self.mods_tab:Apply()
 
@@ -332,24 +324,7 @@ function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOu
                     end
                 end
 
-                if screen == nil then
-                    -- If there are no more screens, just do a generic fade
-                    TheFrontEnd:Fade(false, SCREEN_FADE_TIME, onFaded, nil, nil, "white")
-                    return
-                end
-
-                -- If we have access to a portal, then start the animation fanciness!
-                TheFrontEnd:Fade(true, SCREEN_FADE_TIME * 4, nil, nil, nil, "alpha")
-
-                screen:Disable()
-                screen.inst:DoTaskInTime(SCREEN_FADE_TIME, function(inst)
-                    screen.bg.anim_root.portal:GetAnimState():PlayAnimation("portal_blackout", false)
-                    TheFrontEnd:GetSound():PlaySound("dontstarve/together_FE/portal_flash")
-
-                    inst:DoTaskInTime(1.5, function()
-                        TheFrontEnd:Fade(false, SCREEN_FADE_TIME, onFaded, nil, nil, "white")
-                    end)
-                end)
+                DoLoadingPortal(do_start_server)
             end
         end
     end

@@ -168,13 +168,14 @@ local function light_ontarget(inst, target)
     target:AddTag(inst.components.spell.spellname)
     inst.fx.entity:SetParent(target.entity)
     inst:ListenForEvent("onremove", forceremove, target)
+    inst:ListenForEvent("death", function() inst.fx:setdead() end, target)
 
     if target:HasTag("player") then
         inst:ListenForEvent("ms_becameghost", forceremove, target)
         if target:HasTag("electricdamageimmune") then
             inst:ListenForEvent("ms_overcharge", forceremove, target)
         end
-    target.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+        target.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
         inst.persists = false
     else
         target.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
@@ -188,7 +189,7 @@ local function light_onfinish(inst)
         target.wormlight = nil
         if not (target:HasTag("playerghost") or target:HasTag("overcharge")) then
             target.AnimState:ClearBloomEffectHandle()
-    end
+        end
     end
 end
 
@@ -234,7 +235,11 @@ end
 -----------------------------------------------------------------------
 
 local function OnUpdateLight(inst, dframes)
-    local frame = inst._lightframe:value() + dframes
+    local frame =
+        inst._lightdead:value() and
+        math.ceil(inst._lightframe:value() * .9 + inst._lightmaxframe * .1) or
+        (inst._lightframe:value() + dframes)
+
     if frame >= inst._lightmaxframe then
         inst._lightframe:set_local(inst._lightmaxframe)
         inst._lighttask:Cancel()
@@ -258,6 +263,11 @@ local function setprogress(inst, percent)
     OnLightDirty(inst)
 end
 
+local function setdead(inst)
+    inst._lightdead:set(true)
+    inst._lightframe:set(inst._lightframe:value())
+end
+
 local function lightfx_commonfn(duration)
     local inst = CreateEntity()
 
@@ -278,6 +288,7 @@ local function lightfx_commonfn(duration)
     inst._lightmaxframe = math.floor(duration / FRAMES + .5)
     inst._lightframe = net_ushortint(inst.GUID, "wormlight_light_fx._lightframe", "lightdirty")
     inst._lightframe:set(inst._lightmaxframe)
+    inst._lightdead = net_bool(inst.GUID, "wormlight_light_fx._lightdead")
     inst._lighttask = nil
 
     inst.entity:SetPristine()
@@ -289,6 +300,7 @@ local function lightfx_commonfn(duration)
     end
 
     inst.setprogress = setprogress
+    inst.setdead = setdead
     inst.persists = false
 
     return inst

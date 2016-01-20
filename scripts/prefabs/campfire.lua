@@ -8,7 +8,16 @@ local assets =
 local prefabs =
 {
     "campfirefire",
+    "collapse_small",
+    "ash",
 }
+
+local function onhammered(inst, worker)
+    local x, y, z = inst.Transform:GetWorldPosition()
+    SpawnPrefab("ash").Transform:SetPosition(x, y, z)
+    SpawnPrefab("collapse_small").Transform:SetPosition(x, y, z)
+    inst:Remove()
+end
 
 local function onextinguish(inst)
     if inst.components.fueled ~= nil then
@@ -22,18 +31,17 @@ local function onbuilt(inst)
     inst.SoundEmitter:PlaySound("dontstarve/common/fireAddFuel")
 end
 
-local status_table =
+local SECTION_STATUS =
 {
-    "EMBERS",
-    "LOW",
-    "NORMAL",
-    "HIGH"
+    [0] = "OUT",
+    [1] = "EMBERS",
+    [2] = "LOW",
+    [3] = "NORMAL",
+    [4] = "HIGH",
 }
+
 local function getstatus(inst)
-    local sec = inst.components.fueled:GetCurrentSection()
-    return (sec == 0 and "OUT")
-        or (sec <= #status_table and status_table[sec])
-        or nil
+    return SECTION_STATUS[inst.components.fueled:GetCurrentSection()]
 end
 
 local function OnHaunt(inst)
@@ -44,6 +52,7 @@ local function OnHaunt(inst)
         inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
         return true
     end
+    return false
 end
 
 local function fn()
@@ -63,6 +72,9 @@ local function fn()
 
     inst:AddTag("campfire")
 
+    --cooker (from cooker component) added to pristine state for optimization
+    inst:AddTag("cooker")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -79,6 +91,11 @@ local function fn()
     inst:ListenForEvent("onextinguish", onextinguish)
 
     -------------------------
+    inst:AddComponent("workable")
+    inst.components.workable:SetWorkAction(nil)
+    inst.components.workable:SetOnFinishCallback(onhammered)
+
+    -------------------------
     inst:AddComponent("cooker")
     -------------------------
     inst:AddComponent("fueled")
@@ -89,7 +106,7 @@ local function fn()
 
     inst.components.fueled.ontakefuelfn = function() inst.SoundEmitter:PlaySound("dontstarve/common/fireAddFuel") end
     inst.components.fueled:SetUpdateFn(function()
-        if inst.components.burnable and inst.components.fueled then
+        if inst.components.burnable ~= nil and inst.components.fueled ~= nil then
             if TheWorld.state.israining then
                 inst.components.fueled.rate = 1 + TUNING.CAMPFIRE_RAIN_RATE * TheWorld.state.precipitationrate
             else
@@ -107,13 +124,14 @@ local function fn()
                 inst.AnimState:PlayAnimation("dead")
                 RemovePhysicsColliders(inst)
 
-                local ash = SpawnPrefab("ash")
-                ash.Transform:SetPosition(inst.Transform:GetWorldPosition())
+                SpawnPrefab("ash").Transform:SetPosition(inst.Transform:GetWorldPosition())
 
                 inst.components.fueled.accepting = false
                 inst:RemoveComponent("cooker")
                 inst:RemoveComponent("propagator")
+                inst:RemoveComponent("workable")
                 inst.persists = false
+                inst:AddTag("NOCLICK")
                 inst:DoTaskInTime(1, ErodeAway)
             else
                 inst.AnimState:PlayAnimation("idle")

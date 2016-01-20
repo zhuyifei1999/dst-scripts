@@ -80,9 +80,11 @@ local function CanHatTarget(inst, target)
         target.components.inventory == nil or
         not (target.components.inventory.isopen or
             target:HasTag("pig") or
-            target:HasTag("manrabbit")) then
+            target:HasTag("manrabbit") or
+            (inst._loading and target:HasTag("player"))) then
         --NOTE: open inventory implies player, so we can skip "player" tag check
         --      closed inventory on player means they shouldn't be able to equip
+        --      EXCEPT during load, because player inventory opens after 1 frame
         return false
     end
     local hat = target.components.inventory:GetEquippedItem(EQUIPSLOTS.HEAD)
@@ -177,6 +179,7 @@ local function OnUnequip(inst, owner)
 
     inst._light.SoundEmitter:PlaySound("dontstarve/creatures/slurper/dettach")
 
+    owner.AnimState:ClearOverrideSymbol("swap_hat")
     owner.AnimState:Hide("HAT")
     owner.AnimState:Hide("HAT_HAIR")
     owner.AnimState:Show("HAIR_NOHAT")
@@ -211,7 +214,7 @@ local function SleepTest(inst)
         return false
     end
     local homePos = inst.components.knownlocations:GetLocation("home")
-    return homePos ~= nil and inst:GetDistanceSqToPoint(homePos) < 5 * 5
+    return homePos ~= nil and inst:GetDistanceSqToPoint(homePos) < 25--5 * 5
 end
 
 local function WakeTest(inst)
@@ -219,11 +222,20 @@ local function WakeTest(inst)
         return true
     end
     local homePos = inst.components.knownlocations:GetLocation("home")
-    return homePos ~= nil and inst:GetDistanceSqToPoint(homePos) >= 5 * 5
+    return homePos ~= nil and inst:GetDistanceSqToPoint(homePos) >= 25--5 * 5
 end
 
 local function OnInit(inst)
+    inst._loading = nil
     inst.components.knownlocations:RememberLocation("home", inst:GetPosition())
+end
+
+local function OnLoad(inst)
+    inst._loading = true
+end
+
+local function OnLoadPostPass(inst)
+    inst._loading = nil
 end
 
 local function OnRemoveEntity(inst)
@@ -321,6 +333,8 @@ local function fn()
 
     inst:DoTaskInTime(0, OnInit)
 
+    inst.OnLoad = OnLoad
+    inst.OnLoadPostPass = OnLoadPostPass
     inst.OnRemoveEntity = OnRemoveEntity
 
     inst._owner = nil

@@ -280,7 +280,7 @@ local function master_postinit(inst)
     inst.components.playerlightningtarget:SetHitChance(1)
     inst.components.playerlightningtarget:SetOnStrikeFn(onlightingstrike)
 
-    inst.components.talker.mod_str_fn = string.upper
+    inst.components.talker.mod_str_fn = string.utf8upper
 
     onbecamerobot(inst)
 

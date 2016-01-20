@@ -817,15 +817,7 @@ function GlobalInit()
     FirstStartupForNetworking = true
 end
 
--- This is for joining a game: once we're done downloading the map, we load it and simreset
-function LoadMapFile(map_name)
-    if InGamePlay() then
-        -- Must be a synchronous load if we're in any game play state (including lobby screen)
-        DisableAllDLC()
-        StartNextInstance({ reset_action = RESET_ACTION.LOAD_FILE, save_name = map_name })
-        return
-    end
-
+function DoLoadingPortal(cb)
     local screen = TheFrontEnd:GetActiveScreen()
     while screen ~= nil and not (screen.bg ~= nil and screen.bg.anim_root ~= nil and screen.bg.anim_root.portal ~= nil) do
         -- Check if we're on a screen with a portal anim
@@ -836,10 +828,7 @@ function LoadMapFile(map_name)
 
     if screen == nil then
         -- If there are no more screens, just do a generic fade
-        TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
-            DisableAllDLC()
-            StartNextInstance({ reset_action = RESET_ACTION.LOAD_FILE, save_name = map_name })
-        end, nil, nil, "white")
+        TheFrontEnd:Fade(false, SCREEN_FADE_TIME, cb, nil, nil, "white")
         return
     end
 
@@ -852,12 +841,24 @@ function LoadMapFile(map_name)
         TheFrontEnd:GetSound():PlaySound("dontstarve/together_FE/portal_flash")
 
         inst:DoTaskInTime(1.5, function()
-            TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
-                DisableAllDLC()
-                StartNextInstance({ reset_action = RESET_ACTION.LOAD_FILE, save_name = map_name })
-            end, nil, nil, "white")
+            TheFrontEnd:Fade(false, SCREEN_FADE_TIME, cb, nil, nil, "white")
         end)
     end)
+end
+
+-- This is for joining a game: once we're done downloading the map, we load it and simreset
+function LoadMapFile(map_name)
+    local function do_load_file()
+        DisableAllDLC()
+        StartNextInstance({ reset_action = RESET_ACTION.LOAD_FILE, save_name = map_name })
+    end
+
+    if InGamePlay() then
+        -- Must be a synchronous load if we're in any game play state (including lobby screen)
+        do_load_file()
+    else
+        DoLoadingPortal(do_load_file)
+    end
 end
 
 function JapaneseOnPS4()
@@ -1289,7 +1290,7 @@ end
 function RestoreSnapshotUserSession(sessionid, userid)
     local file = TheNet:GetUserSessionFile(sessionid, userid)
     if file ~= nil then
-        print("Restoring user session from "..file)
+        print("Restoring user: "..file)
         TheSim:GetPersistentString(file, function(success, str)
             if success and str ~= nil and #str > 0 then
                 local playerdata, prefab = ParseUserSessionData(str)

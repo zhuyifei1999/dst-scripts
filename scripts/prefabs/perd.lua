@@ -23,6 +23,23 @@ local function ShouldWake()
     return true
 end
 
+local function OnSave(inst, data)
+    if inst.components.homeseeker ~= nil and inst.components.homeseeker.home ~= nil then
+        data.home = inst.components.homeseeker.home.GUID
+        return { data.home }
+    end
+end
+
+local function OnLoadPostPass(inst, newents, data)
+    if data ~= nil and data.home ~= nil then
+        local home = newents[data.home]
+        if home ~= nil and inst.components.homeseeker ~= nil then
+            c_select(home.entity)
+            inst.components.homeseeker:SetHome(home.entity)
+        end
+    end
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -85,6 +102,9 @@ local function fn()
 
     MakeMediumBurnableCharacter(inst, "pig_torso")
     MakeMediumFreezableCharacter(inst, "pig_torso")
+
+    inst.OnSave = OnSave
+    inst.OnLoadPostPass = OnLoadPostPass
 
     return inst
 end

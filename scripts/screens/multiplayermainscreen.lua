@@ -692,6 +692,37 @@ function MultiplayerMainScreen:OnBecomeActive()
 	if TheSim:IsLoggedOn() then
 		TheSim:StartWorkshopQuery()
 	end
+	
+	
+	--Do language mods assistance popup
+	--[[
+	local interface_lang = TheNet:GetLanguageCode()
+	if interface_lang ~= "english" then
+		if Profile:GetValue("language_mod_asked_"..interface_lang) ~= true then
+			TheSim:QueryServer( "https://s3.amazonaws.com/ds-mod-language/dst_mod_languages.json",
+			function( result, isSuccessful, resultCode )
+ 				if isSuccessful and string.len(result) > 1 and resultCode == 200 then
+ 					local status, language_mods = pcall( function() return json.decode(result) end )
+					local lang_popup = language_mods[interface_lang]
+					if status and lang_popup ~= nil then
+						if lang_popup.collection ~= "" then
+							TheFrontEnd:PushScreen(
+								PopupDialogScreen( lang_popup.title, lang_popup.body,
+									{
+										{text=lang_popup.yes, cb = function() VisitURL("http://steamcommunity.com/workshop/filedetails/?id="..lang_popup.collection) TheFrontEnd:PopScreen() self:OnModsButton() end },
+										{text=lang_popup.no, cb = function() TheFrontEnd:PopScreen() end}
+									}
+								)
+							)
+							Profile:SetValue("language_mod_asked_"..interface_lang, true)
+							Profile:Save()
+						end
+					end
+				end
+			end, "GET" )
+		end
+	end
+	]]
 end
 
 

@@ -96,7 +96,7 @@ local UIClock = Class(Widget, function(self)
     self._text:SetPosition(5, 0 / basescale, 0)
 
     --Default initialization
-    self:UpdateDayString()
+    self:UpdateWorldString()
     self:OnClockSegsChanged({ day = NUM_SEGS })
 
     --Register events
@@ -116,20 +116,16 @@ end)
 function UIClock:UpdateDayString()
     if self._cycles ~= nil then
         local cycles_lived = ThePlayer.Network:GetPlayerAge()
-    	
-    	local clock_str = STRINGS.UI.HUD.CLOCKDAY.." "..tostring( cycles_lived )
-    	self._text:SetString(clock_str)
+        self._text:SetString(STRINGS.UI.HUD.CLOCKSURVIVED.."\n"..tostring(cycles_lived).." "..(cycles_lived == 1 and STRINGS.UI.HUD.CLOCKDAY or STRINGS.UI.HUD.CLOCKDAYS))
     else
         self._text:SetString("")
     end
-    self._showingcycles = true
+    self._showingcycles = false
 end
 
 function UIClock:UpdateWorldString()
-    local cycles_lived = TheWorld.state.cycles + 1
-    local clock_str = STRINGS.UI.HUD.WORLD_CLOCKDAY.." "..tostring(cycles_lived)
-    self._text:SetString(clock_str)
-    self._showingcycles = false
+    self._text:SetString(STRINGS.UI.HUD.WORLD_CLOCKDAY.." "..tostring(TheWorld.state.cycles + 1))
+    self._showingcycles = true
 end
 
 function UIClock:ShowMoon()
@@ -214,13 +210,13 @@ end
 
 function UIClock:OnGainFocus()
     UIClock._base.OnGainFocus(self)
-    self:UpdateWorldString()
+    self:UpdateDayString()
     return true
 end
 
 function UIClock:OnLoseFocus()
     UIClock._base.OnLoseFocus(self)
-    self:UpdateDayString()
+    self:UpdateWorldString()
     return true
 end
 
@@ -255,9 +251,11 @@ function UIClock:OnClockSegsChanged(data)
     self._daysegs = day
 end
 
-function UIClock:OnCyclesChanged(cycles)	
+function UIClock:OnCyclesChanged(cycles)
     self._cycles = cycles
     if self._showingcycles then
+        self:UpdateWorldString()
+    else
         self:UpdateDayString()
     end
 end
@@ -326,6 +324,8 @@ function UIClock:OnClockTick(data)
     self._hands:SetRotation(self._time * 360)
 
     if self._showingcycles then
+        self:UpdateWorldString()
+    else
         self:UpdateDayString()
     end
 end

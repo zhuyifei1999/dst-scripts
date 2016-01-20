@@ -1137,6 +1137,8 @@ end
 --returns a new string
 string.utf8sub = utf8substr
 string.utf8len = utf8strlen
+string.utf8upper = utf8strtoupper
+string.utf8lower = utf8strtolower
 
 -- Returns the 0 - 255 color of a hex code
 function HexToRGB(hex)

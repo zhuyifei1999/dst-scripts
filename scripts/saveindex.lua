@@ -125,7 +125,7 @@ function SaveIndex:GetSaveDataFile(file, cb)
         assert(str, "SaveIndex:GetSaveData: Encoded Savedata is NIL on load ["..file.."]")
         assert(#str>0, "SaveIndex:GetSaveData: Encoded Savedata is empty on load ["..file.."]")
 
-        print("Deserialize world session from "..file)
+        print("Loading world: "..file)
         local success, savedata = RunInSandbox(str)
 
         assert(success, "Corrupt Save file ["..file.."]")

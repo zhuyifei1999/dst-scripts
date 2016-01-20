@@ -17,24 +17,6 @@ PlayerProfile = Class(function(self)
         device_caps_b = 20,
         customizationpresets = {},
         collection_name = nil,
-        characterskins =
-        {
-        	wilson = { base = "wilson_none", body = "body_flannel_red_higgsbury", legs = "legs_jeans_blue_peacock", hand = "hand_longgloves_blue_cerulean"}, 
-        	willow = { base = "willow_none", },
-        	wendy = {base = "wendy_none", },
-        	wolfgang = {base = "wolfgang_none", },
-        	wickerbottom = { base = "wickerbottom_none", },
-        	wx78 = { base = "wx78_none", },
-        	wes = { base = "wes_none", },
-        	waxwell = { base = "waxwell_none", },
-        	woodie = { base = "woodie_none", },
-        	webber = { base = "webber_none", },
-        	wigfrid = { base = "wigfrid_none", },
-    	},
-    	most_recent_item_skins = 
-    	{
-    		backpack = "backpack_beefalo",
-    	}
     }
 
   	--we should migrate the non-gameplay stuff to a separate file, so that we can save them whenever we want
@@ -184,6 +166,7 @@ function PlayerProfile:SetSkinsForCharacter(character, base, skinList)
 		self.persistdata.characterskins[character] = {}
 	end
 
+	self.dirty = true
 	self.persistdata.characterskins[character][base] = skinList
 	
 	self:Save()
@@ -198,7 +181,10 @@ function PlayerProfile:SetBaseForCharacter(character, base)
 		self.persistdata.characterskins[character] = {}
 	end
 	
+	self.dirty = true
 	self.persistdata.characterskins[character].last_base = base
+	
+	self:Save()
 end
 
 function PlayerProfile:SetCollectionTimestamp(time)
@@ -641,7 +627,7 @@ end
 
 function PlayerProfile:Load(callback)
     TheSim:GetPersistentString(self:GetSaveName(),
-        function(load_success, str) 
+		function(load_success, str)
 			self:Set( str, callback )
         end, false)    
    	SaveGameIndex:GuaranteeMinNumSlots(NUM_DST_SAVE_SLOTS)

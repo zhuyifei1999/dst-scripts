@@ -943,17 +943,13 @@ function DressupPanel:SetPuppetSkins(skip_change_emote)
 	elseif (not TheNet:IsOnlineMode() and not (DEBUG_MODE and ONLINE))
 			or (DEBUG_MODE and not ONLINE) then 
 		-- no spinners in this case
-		local previous_base = self.profile:GetBaseForCharacter(self.currentcharacter)
-		if not previous_base then 
-			previous_base = self.currentcharacter
-		end
-		local skins = self.profile:GetSkinsForCharacter(self.currentcharacter, previous_base)
-		self.puppet:SetSkins(self.currentcharacter, previous_base, skins)
+		self.puppet:SetSkins(self.currentcharacter, nil, {}, skip_change_emote) --base_skin is nil and clothing_names is {}
 		return
 	end 
 
 	local base_skin = nil
 	local skin_item_name = self.base_spinner.GetItem()
+	
 	local skin_prefab = Prefabs[skin_item_name]
 	if skin_prefab then
 		if skin_prefab.skins then

@@ -28,7 +28,7 @@ end
 function backpack_decay_fn(inst)
 	inst.AnimState:SetSkin("swap_backpack_mushy", "swap_backpack")
 	inst.skin_build_name = "swap_backpack_mushy"
-	inst.skinname = "backpack_mushy"
+	inst.override_skinname = "backpack_mushy"
 	inst.replica.inventoryitem:SetImage("backpack_mushy")
 	inst.decayed = true
 	inst.target_decay_time = nil
@@ -61,7 +61,7 @@ function backpack_init_fn(inst, build_name)
 	inst.OnLoad = backpack_skin_load_fn
 	inst.OnLongUpdate = backpack_decay_long_update
 	
-    inst.replica.inventoryitem:SetImage(inst.skinname)
+    inst.replica.inventoryitem:SetImage(inst:GetSkinName())
 end
 
 function backpack_skin_save_fn(inst, data)
@@ -89,7 +89,7 @@ end
 
 function backpack_init_fn_no_decay(inst, build_name)
     inst.AnimState:SetSkin(build_name, "swap_backpack")
-    inst.replica.inventoryitem:SetImage(inst.skinname)
+    inst.replica.inventoryitem:SetImage(inst:GetSkinName())
 end
 
 
