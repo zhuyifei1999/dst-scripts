@@ -9,6 +9,7 @@ local prefabs =
 {
     "coldfirefire",
     "collapse_small",
+    "ash",
 }
 
 local function onhammered(inst, worker)

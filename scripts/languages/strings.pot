@@ -53506,19 +53506,14 @@ msgctxt "STRINGS.UI.WORLDRESETDIALOG.SURVIVED_MSG_1_DAY"
 msgid "Survived %d Day"
 msgstr ""
 
-#. STRINGS.UI.PLAYERSTATUSSCREEN.MUTE
-msgctxt "STRINGS.UI.PLAYERSTATUSSCREEN.MUTE"
-msgid "Mute"
+#. STRINGS.UI.PLAYERSTATUSSCREEN.AGE_DAYS
+msgctxt "STRINGS.UI.PLAYERSTATUSSCREEN.AGE_DAYS"
+msgid " Days"
 msgstr ""
 
 #. STRINGS.UI.PLAYERSTATUSSCREEN.AGE_PREFIX
 msgctxt "STRINGS.UI.PLAYERSTATUSSCREEN.AGE_PREFIX"
 msgid "Day "
-msgstr ""
-
-#. STRINGS.UI.PLAYERSTATUSSCREEN.WORLD
-msgctxt "STRINGS.UI.PLAYERSTATUSSCREEN.WORLD"
-msgid "World"
 msgstr ""
 
 #. STRINGS.UI.PLAYERSTATUSSCREEN.BANCONFIRM_BODY
@@ -53551,6 +53546,16 @@ msgctxt "STRINGS.UI.PLAYERSTATUSSCREEN.AFK"
 msgid "Away"
 msgstr ""
 
+#. STRINGS.UI.PLAYERSTATUSSCREEN.EMPTY_SERVER
+msgctxt "STRINGS.UI.PLAYERSTATUSSCREEN.EMPTY_SERVER"
+msgid "The server is empty."
+msgstr ""
+
+#. STRINGS.UI.PLAYERSTATUSSCREEN.MODSLISTPRE
+msgctxt "STRINGS.UI.PLAYERSTATUSSCREEN.MODSLISTPRE"
+msgid "Mods:"
+msgstr ""
+
 #. STRINGS.UI.PLAYERSTATUSSCREEN.BANCONFIRM_TITLE
 msgctxt "STRINGS.UI.PLAYERSTATUSSCREEN.BANCONFIRM_TITLE"
 msgid "Ban"
@@ -53561,9 +53566,9 @@ msgctxt "STRINGS.UI.PLAYERSTATUSSCREEN.UNMUTE"
 msgid "Unmute"
 msgstr ""
 
-#. STRINGS.UI.PLAYERSTATUSSCREEN.EMPTY_SERVER
-msgctxt "STRINGS.UI.PLAYERSTATUSSCREEN.EMPTY_SERVER"
-msgid "The server is empty."
+#. STRINGS.UI.PLAYERSTATUSSCREEN.CANCEL
+msgctxt "STRINGS.UI.PLAYERSTATUSSCREEN.CANCEL"
+msgid "Cancel"
 msgstr ""
 
 #. STRINGS.UI.PLAYERSTATUSSCREEN.VIEWPROFILE
@@ -53571,9 +53576,9 @@ msgctxt "STRINGS.UI.PLAYERSTATUSSCREEN.VIEWPROFILE"
 msgid "View Player"
 msgstr ""
 
-#. STRINGS.UI.PLAYERSTATUSSCREEN.MODSLISTPRE
-msgctxt "STRINGS.UI.PLAYERSTATUSSCREEN.MODSLISTPRE"
-msgid "Mods:"
+#. STRINGS.UI.PLAYERSTATUSSCREEN.KICKCONFIRM_TITLE
+msgctxt "STRINGS.UI.PLAYERSTATUSSCREEN.KICKCONFIRM_TITLE"
+msgid "Kick"
 msgstr ""
 
 #. STRINGS.UI.PLAYERSTATUSSCREEN.KICKCONFIRM_BODY
@@ -53586,24 +53591,24 @@ msgctxt "STRINGS.UI.PLAYERSTATUSSCREEN.OK"
 msgid "Do it!"
 msgstr ""
 
-#. STRINGS.UI.PLAYERSTATUSSCREEN.VOTEACTIVE
-msgctxt "STRINGS.UI.PLAYERSTATUSSCREEN.VOTEACTIVE"
-msgid "Vote In Progress"
-msgstr ""
-
-#. STRINGS.UI.PLAYERSTATUSSCREEN.CANCEL
-msgctxt "STRINGS.UI.PLAYERSTATUSSCREEN.CANCEL"
-msgid "Cancel"
-msgstr ""
-
-#. STRINGS.UI.PLAYERSTATUSSCREEN.KICKCONFIRM_TITLE
-msgctxt "STRINGS.UI.PLAYERSTATUSSCREEN.KICKCONFIRM_TITLE"
-msgid "Kick"
+#. STRINGS.UI.PLAYERSTATUSSCREEN.AGE_DAY
+msgctxt "STRINGS.UI.PLAYERSTATUSSCREEN.AGE_DAY"
+msgid " Day"
 msgstr ""
 
 #. STRINGS.UI.PLAYERSTATUSSCREEN.ADMIN
 msgctxt "STRINGS.UI.PLAYERSTATUSSCREEN.ADMIN"
 msgid "Admin"
+msgstr ""
+
+#. STRINGS.UI.PLAYERSTATUSSCREEN.VOTEACTIVE
+msgctxt "STRINGS.UI.PLAYERSTATUSSCREEN.VOTEACTIVE"
+msgid "Vote In Progress"
+msgstr ""
+
+#. STRINGS.UI.PLAYERSTATUSSCREEN.MUTE
+msgctxt "STRINGS.UI.PLAYERSTATUSSCREEN.MUTE"
+msgid "Mute"
 msgstr ""
 
 #. STRINGS.UI.PLAYERSTATUSSCREEN.KICK
@@ -55421,11 +55426,6 @@ msgctxt "STRINGS.UI.MORGUESCREEN.HISTORY"
 msgid "History"
 msgstr ""
 
-#. STRINGS.UI.MORGUESCREEN.DAYS_LIVED
-msgctxt "STRINGS.UI.MORGUESCREEN.DAYS_LIVED"
-msgid "Days Lived"
-msgstr ""
-
 #. STRINGS.UI.MORGUESCREEN.NET_ID
 msgctxt "STRINGS.UI.MORGUESCREEN.NET_ID"
 msgid "Profile"
@@ -55933,7 +55933,7 @@ msgstr ""
 
 #. STRINGS.UI.HUD.WORLD_CLOCKDAY
 msgctxt "STRINGS.UI.HUD.WORLD_CLOCKDAY"
-msgid "World Day"
+msgid "Day"
 msgstr ""
 
 #. STRINGS.UI.HUD.READY
@@ -55961,9 +55961,9 @@ msgctxt "STRINGS.UI.HUD.DEATH_ANNOUNCEMENT_2_FEMALE"
 msgid ". She became a spooky ghost!"
 msgstr ""
 
-#. STRINGS.UI.HUD.AFK_BODY
-msgctxt "STRINGS.UI.HUD.AFK_BODY"
-msgid "I get it. It's tough out there. Really. It is. You definitely shouldn't be embarrassed about this. You baby. Whenever you're ready to get back to actually playing the darn game, click below."
+#. STRINGS.UI.HUD.PUTONE
+msgctxt "STRINGS.UI.HUD.PUTONE"
+msgid "Put One"
 msgstr ""
 
 #. STRINGS.UI.HUD.INSPECT_SELF
@@ -55971,14 +55971,24 @@ msgctxt "STRINGS.UI.HUD.INSPECT_SELF"
 msgid "Inspect Self (i)"
 msgstr ""
 
-#. STRINGS.UI.HUD.PUTONE
-msgctxt "STRINGS.UI.HUD.PUTONE"
-msgid "Put One"
+#. STRINGS.UI.HUD.EQUIP
+msgctxt "STRINGS.UI.HUD.EQUIP"
+msgid "Equip"
 msgstr ""
 
-#. STRINGS.UI.HUD.GHOST_DEATH_ANNOUNCEMENT_FEMALE
-msgctxt "STRINGS.UI.HUD.GHOST_DEATH_ANNOUNCEMENT_FEMALE"
-msgid "lost all of her humanity and is gone forever."
+#. STRINGS.UI.HUD.DEATH_ANNOUNCEMENT_2_DEFAULT
+msgctxt "STRINGS.UI.HUD.DEATH_ANNOUNCEMENT_2_DEFAULT"
+msgid ". They became a spooky ghost!"
+msgstr ""
+
+#. STRINGS.UI.HUD.AFK_BODY
+msgctxt "STRINGS.UI.HUD.AFK_BODY"
+msgid "I get it. It's tough out there. Really. It is. You definitely shouldn't be embarrassed about this. You baby. Whenever you're ready to get back to actually playing the darn game, click below."
+msgstr ""
+
+#. STRINGS.UI.HUD.AFK_TITLE
+msgctxt "STRINGS.UI.HUD.AFK_TITLE"
+msgid "Taking A Breather"
 msgstr ""
 
 #. STRINGS.UI.HUD.START
@@ -55986,9 +55996,9 @@ msgctxt "STRINGS.UI.HUD.START"
 msgid "Start"
 msgstr ""
 
-#. STRINGS.UI.HUD.CANCEL
-msgctxt "STRINGS.UI.HUD.CANCEL"
-msgid "Cancel"
+#. STRINGS.UI.HUD.CLOCKSURVIVED
+msgctxt "STRINGS.UI.HUD.CLOCKSURVIVED"
+msgid "Survived"
 msgstr ""
 
 #. STRINGS.UI.HUD.OPENGIFT
@@ -56006,14 +56016,14 @@ msgctxt "STRINGS.UI.HUD.ROTLEFT"
 msgid "Rotate Left\n"
 msgstr ""
 
-#. STRINGS.UI.HUD.AFK_TITLE
-msgctxt "STRINGS.UI.HUD.AFK_TITLE"
-msgid "Taking A Breather"
+#. STRINGS.UI.HUD.START_AFK
+msgctxt "STRINGS.UI.HUD.START_AFK"
+msgid "went away for a bit."
 msgstr ""
 
-#. STRINGS.UI.HUD.STALE
-msgctxt "STRINGS.UI.HUD.STALE"
-msgid "Stale"
+#. STRINGS.UI.HUD.REZ_ANNOUNCEMENT
+msgctxt "STRINGS.UI.HUD.REZ_ANNOUNCEMENT"
+msgid "was resurrected by"
 msgstr ""
 
 #. STRINGS.UI.HUD.DEATH_ANNOUNCEMENT_2_ROBOT
@@ -56031,14 +56041,14 @@ msgctxt "STRINGS.UI.HUD.SPOILED_FROZEN"
 msgid "Melted"
 msgstr ""
 
-#. STRINGS.UI.HUD.START_AFK
-msgctxt "STRINGS.UI.HUD.START_AFK"
-msgid "went away for a bit."
+#. STRINGS.UI.HUD.CANCEL
+msgctxt "STRINGS.UI.HUD.CANCEL"
+msgid "Cancel"
 msgstr ""
 
-#. STRINGS.UI.HUD.REZ_ANNOUNCEMENT
-msgctxt "STRINGS.UI.HUD.REZ_ANNOUNCEMENT"
-msgid "was resurrected by"
+#. STRINGS.UI.HUD.DEATH_ANNOUNCEMENT_2_MALE
+msgctxt "STRINGS.UI.HUD.DEATH_ANNOUNCEMENT_2_MALE"
+msgid ". He became a spooky ghost!"
 msgstr ""
 
 #. STRINGS.UI.HUD.STARVING
@@ -56046,9 +56056,9 @@ msgctxt "STRINGS.UI.HUD.STARVING"
 msgid "Starving"
 msgstr ""
 
-#. STRINGS.UI.HUD.WHACK
-msgctxt "STRINGS.UI.HUD.WHACK"
-msgid "Whack"
+#. STRINGS.UI.HUD.GHOST_DEATH_ANNOUNCEMENT_FEMALE
+msgctxt "STRINGS.UI.HUD.GHOST_DEATH_ANNOUNCEMENT_FEMALE"
+msgid "lost all of her humanity and is gone forever."
 msgstr ""
 
 #. STRINGS.UI.HUD.GHOST_DEATH_ANNOUNCEMENT_MALE
@@ -56086,14 +56096,14 @@ msgctxt "STRINGS.UI.HUD.GHOST_DEATH_ANNOUNCEMENT_ROBOT"
 msgid "lost all of its approximation of humanity and is gone forever."
 msgstr ""
 
-#. STRINGS.UI.HUD.DEATH_ANNOUNCEMENT_2_DEFAULT
-msgctxt "STRINGS.UI.HUD.DEATH_ANNOUNCEMENT_2_DEFAULT"
-msgid ". They became a spooky ghost!"
+#. STRINGS.UI.HUD.DEATH_ANNOUNCEMENT_1
+msgctxt "STRINGS.UI.HUD.DEATH_ANNOUNCEMENT_1"
+msgid "was killed by"
 msgstr ""
 
-#. STRINGS.UI.HUD.DEATH_ANNOUNCEMENT_2_MALE
-msgctxt "STRINGS.UI.HUD.DEATH_ANNOUNCEMENT_2_MALE"
-msgid ". He became a spooky ghost!"
+#. STRINGS.UI.HUD.WHACK
+msgctxt "STRINGS.UI.HUD.WHACK"
+msgid "Whack"
 msgstr ""
 
 #. STRINGS.UI.HUD.READYTITLE
@@ -56101,14 +56111,14 @@ msgctxt "STRINGS.UI.HUD.READYTITLE"
 msgid "Ready to play!"
 msgstr ""
 
-#. STRINGS.UI.HUD.EQUIP
-msgctxt "STRINGS.UI.HUD.EQUIP"
-msgid "Equip"
+#. STRINGS.UI.HUD.CLOCKDAYS
+msgctxt "STRINGS.UI.HUD.CLOCKDAYS"
+msgid "Days"
 msgstr ""
 
-#. STRINGS.UI.HUD.DEATH_ANNOUNCEMENT_1
-msgctxt "STRINGS.UI.HUD.DEATH_ANNOUNCEMENT_1"
-msgid "was killed by"
+#. STRINGS.UI.HUD.STALE
+msgctxt "STRINGS.UI.HUD.STALE"
+msgid "Stale"
 msgstr ""
 
 #. STRINGS.UI.HUD.SPOILED
@@ -56321,11 +56331,6 @@ msgctxt "STRINGS.UI.LOBBYSCREEN.SKINS_HANDS"
 msgid "HANDS"
 msgstr ""
 
-#. STRINGS.UI.LOBBYSCREEN.SKINS_PREVIOUS
-msgctxt "STRINGS.UI.LOBBYSCREEN.SKINS_PREVIOUS"
-msgid "Previously Worn Item"
-msgstr ""
-
 #. STRINGS.UI.LOBBYSCREEN.SKINS_BASE
 msgctxt "STRINGS.UI.LOBBYSCREEN.SKINS_BASE"
 msgid "HEAD"
@@ -56351,9 +56356,9 @@ msgctxt "STRINGS.UI.LOBBYSCREEN.HOSTQUITBODY"
 msgid "Are you sure you want to shut the server down? If you do, any players connected will be disconnected."
 msgstr ""
 
-#. STRINGS.UI.LOBBYSCREEN.LOADOUT_TITLE
-msgctxt "STRINGS.UI.LOBBYSCREEN.LOADOUT_TITLE"
-msgid "'s Loadout"
+#. STRINGS.UI.LOBBYSCREEN.INVITE
+msgctxt "STRINGS.UI.LOBBYSCREEN.INVITE"
+msgid "Invite"
 msgstr ""
 
 #. STRINGS.UI.LOBBYSCREEN.HOSTQUITTITLE
@@ -56366,14 +56371,14 @@ msgctxt "STRINGS.UI.LOBBYSCREEN.SKINS_RANDOM"
 msgid "Random Item"
 msgstr ""
 
-#. STRINGS.UI.LOBBYSCREEN.DAYSSURVIVED
-msgctxt "STRINGS.UI.LOBBYSCREEN.DAYSSURVIVED"
-msgid "Days Survived:"
+#. STRINGS.UI.LOBBYSCREEN.SKINS_FEET
+msgctxt "STRINGS.UI.LOBBYSCREEN.SKINS_FEET"
+msgid "FEET"
 msgstr ""
 
-#. STRINGS.UI.LOBBYSCREEN.INVITE_FRIEND
-msgctxt "STRINGS.UI.LOBBYSCREEN.INVITE_FRIEND"
-msgid "Invite Friend"
+#. STRINGS.UI.LOBBYSCREEN.LOADOUT_TITLE
+msgctxt "STRINGS.UI.LOBBYSCREEN.LOADOUT_TITLE"
+msgid "'s Loadout"
 msgstr ""
 
 #. STRINGS.UI.LOBBYSCREEN.PLAYERLIST
@@ -56386,14 +56391,14 @@ msgctxt "STRINGS.UI.LOBBYSCREEN.SKINS_BODY"
 msgid "BODY"
 msgstr ""
 
-#. STRINGS.UI.LOBBYSCREEN.COMING
-msgctxt "STRINGS.UI.LOBBYSCREEN.COMING"
-msgid "Coming Soon!"
-msgstr ""
-
 #. STRINGS.UI.LOBBYSCREEN.CUSTOMIZE
 msgctxt "STRINGS.UI.LOBBYSCREEN.CUSTOMIZE"
 msgid "Customize Your Character"
+msgstr ""
+
+#. STRINGS.UI.LOBBYSCREEN.COMING
+msgctxt "STRINGS.UI.LOBBYSCREEN.COMING"
+msgid "Coming Soon!"
 msgstr ""
 
 #. STRINGS.UI.LOBBYSCREEN.BACK
@@ -56411,9 +56416,9 @@ msgctxt "STRINGS.UI.LOBBYSCREEN.APPLY"
 msgid "Apply"
 msgstr ""
 
-#. STRINGS.UI.LOBBYSCREEN.INVITE
-msgctxt "STRINGS.UI.LOBBYSCREEN.INVITE"
-msgid "Invite"
+#. STRINGS.UI.LOBBYSCREEN.INVITE_FRIEND
+msgctxt "STRINGS.UI.LOBBYSCREEN.INVITE_FRIEND"
+msgid "Invite Friend"
 msgstr ""
 
 #. STRINGS.UI.LOBBYSCREEN.SELECTION_TITLE
@@ -56426,9 +56431,9 @@ msgctxt "STRINGS.UI.LOBBYSCREEN.SKINS_LEGS"
 msgid "LEGS"
 msgstr ""
 
-#. STRINGS.UI.LOBBYSCREEN.SKINS_FEET
-msgctxt "STRINGS.UI.LOBBYSCREEN.SKINS_FEET"
-msgid "FEET"
+#. STRINGS.UI.LOBBYSCREEN.SKINS_PREVIOUS
+msgctxt "STRINGS.UI.LOBBYSCREEN.SKINS_PREVIOUS"
+msgid "Previously Worn Item"
 msgstr ""
 
 #. STRINGS.UI.LOBBYSCREEN.CHAT
@@ -56981,14 +56986,29 @@ msgctxt "STRINGS.UI.NOTIFICATION.LEFTGAME"
 msgid "has left the game."
 msgstr ""
 
-#. STRINGS.UI.PLAYER_AVATAR.CHOOSING
-msgctxt "STRINGS.UI.PLAYER_AVATAR.CHOOSING"
-msgid "is choosing their character"
+#. STRINGS.UI.PLAYER_AVATAR.AGE_DAY
+msgctxt "STRINGS.UI.PLAYER_AVATAR.AGE_DAY"
+msgid "Day"
 msgstr ""
 
 #. STRINGS.UI.PLAYER_AVATAR.CLOSE
 msgctxt "STRINGS.UI.PLAYER_AVATAR.CLOSE"
 msgid "Close"
+msgstr ""
+
+#. STRINGS.UI.PLAYER_AVATAR.CHOOSING
+msgctxt "STRINGS.UI.PLAYER_AVATAR.CHOOSING"
+msgid "is choosing their character"
+msgstr ""
+
+#. STRINGS.UI.PLAYER_AVATAR.AGE_SURVIVED
+msgctxt "STRINGS.UI.PLAYER_AVATAR.AGE_SURVIVED"
+msgid "Survived"
+msgstr ""
+
+#. STRINGS.UI.PLAYER_AVATAR.AGE_DAYS
+msgctxt "STRINGS.UI.PLAYER_AVATAR.AGE_DAYS"
+msgid "Days"
 msgstr ""
 
 #. STRINGS.UI.PLAYER_AVATAR.STEAM

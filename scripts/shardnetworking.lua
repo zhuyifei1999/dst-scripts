@@ -43,6 +43,7 @@ function Shard_UpdatePortalState(inst)
         for k, v in pairs(ShardConnected) do
             -- Bind to first available shard
             inst.components.worldmigrator:SetDestinationWorld(k)
+            return
         end
     end
     inst.components.worldmigrator:ValidateAndPushEvents()

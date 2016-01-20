@@ -471,16 +471,23 @@ function JoinServer( server_listing, optional_password_override )
 end
 
 function MigrateToServer(serverIp, serverPort, serverPassword, serverNetId)
+    local function do_join_server()
+        serverNetId = serverNetId or ""
 
-    serverNetId = serverNetId or ""
+        StartNextInstance({
+            reset_action = RESET_ACTION.JOIN_SERVER,
+            serverIp = serverIp,
+            serverPort = serverPort,
+            serverPassword = serverPassword,
+            serverNetId = serverNetId,
+        })
+    end
 
-    StartNextInstance({
-        reset_action = RESET_ACTION.JOIN_SERVER, 
-        serverIp=serverIp,
-        serverPort=serverPort,
-        serverPassword=serverPassword,
-        serverNetId=serverNetId
-    })
+    if InGamePlay() then
+        do_join_server()
+    else
+        DoLoadingPortal(do_join_server)
+    end
 end
 
 function GetAvailablePlayerColours()

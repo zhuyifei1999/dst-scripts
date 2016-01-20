@@ -202,7 +202,7 @@ function PlayerAvatarPopup:UpdateData(data)
     end
 
     if self.age ~= nil and data.playerage ~= nil then
-        self.age:SetString(STRINGS.UI.LOBBYSCREEN.DAYSSURVIVED.." "..data.playerage)
+        self.age:SetString(STRINGS.UI.PLAYER_AVATAR.AGE_SURVIVED.." "..data.playerage.." "..(data.playerage == 1 and STRINGS.UI.PLAYER_AVATAR.AGE_DAY or STRINGS.UI.PLAYER_AVATAR.AGE_DAYS))
     end
 
     if self.puppet ~= nil then

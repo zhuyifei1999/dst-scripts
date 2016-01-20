@@ -268,9 +268,6 @@ function EntityScript:GetSaveRecord()
     if self.skinname then 
     	record.skinname = self.skinname
     end
-    if self.skin_build_name then
-        record.skin_build_name = self.skin_build_name
-    end
     if self.skin_id then 
     	record.skin_id = self.skin_id
     end
@@ -609,7 +606,7 @@ function EntityScript:GetSkinBuild()
 end
 
 function EntityScript:GetSkinName()
-    return self.skinname
+    return self.override_skinname or self.skinname
 end
 
 function EntityScript:SetPrefabName(name)

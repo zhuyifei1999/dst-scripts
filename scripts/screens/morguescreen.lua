@@ -82,7 +82,7 @@ local function obit_widget_constructor(data, parent, obit_button)
     group.DAYS_LIVED:SetHAlign(ANCHOR_MIDDLE)
     group.DAYS_LIVED:SetPosition(column_offsets.DAYS_LIVED+slide_factor, 0, 0)
     group.DAYS_LIVED:SetRegionSize( 135, 30 )
-    group.DAYS_LIVED:SetString(data.days_survived or "?")
+    group.DAYS_LIVED:SetString((data.days_survived or "?").." "..(data.days_survived == 1 and STRINGS.UI.MORGUESCREEN.DAY or STRINGS.UI.MORGUESCREEN.DAYS))
     group.DAYS_LIVED:SetColour(0,0,0,1)
 
     group.DECEASED = group:AddChild(Widget("DECEASED"))
@@ -161,11 +161,7 @@ local function obit_widget_update(widget, data, index)
       return first:upper()..rest:lower()
     end
 
-    if data.days_survived then
-        widget.DAYS_LIVED:SetString(data.days_survived or "?")
-    else
-        widget.DAYS_LIVED:SetString("")
-    end
+    widget.DAYS_LIVED:SetString((data.days_survived or "?").." "..(data.days_survived == 1 and STRINGS.UI.MORGUESCREEN.DAY or STRINGS.UI.MORGUESCREEN.DAYS))
 
     local character = data.character
     if character == nil then
@@ -483,7 +479,7 @@ function MorgueScreen:BuildObituariesTab()
     self.DAYS_LIVED:SetHAlign(ANCHOR_MIDDLE)
     self.DAYS_LIVED:SetPosition(column_offsets.DAYS_LIVED - 65, 0, 0)
     self.DAYS_LIVED:SetRegionSize( 400, 30 )
-    self.DAYS_LIVED:SetString(STRINGS.UI.MORGUESCREEN.DAYS_LIVED)
+    self.DAYS_LIVED:SetString(STRINGS.UI.MORGUESCREEN.PLAYER_AGE)
     self.DAYS_LIVED:SetColour(0, 0, 0, 1)
     self.DAYS_LIVED:SetClickable(false)
 

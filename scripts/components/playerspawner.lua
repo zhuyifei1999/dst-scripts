@@ -258,7 +258,7 @@ function self:SpawnAtLocation(inst, player, x, y, z, isloading)
         player.migrationpets = nil
     end
 
-    print(string.format("[%s] SPAWNING PLAYER AT: (%2.2f, %2.2f, %2.2f)", isloading and "Load" or MODES[_mode], x, y, z))
+    print(string.format("Spawning player at: [%s] (%2.2f, %2.2f, %2.2f)", isloading and "Load" or MODES[_mode], x, y, z))
     player.Physics:Teleport(x, y, z)
 
     -- Spawn a light if it's dark

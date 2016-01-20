@@ -1259,10 +1259,88 @@ ACTIONS.MOLEPEEK.fn = function(act)
 end
 
 ACTIONS.FEED.fn = function(act)
-    if act.doer and act.target and act.target.components.eater and act.target.components.eater:CanEat(act.invobject) then
+    if act.doer ~= nil and act.target ~= nil and act.target.components.eater ~= nil and act.target.components.eater:CanEat(act.invobject) then
         act.target.components.eater:Eat(act.invobject)
+        local murdered =
+            act.target:IsValid() and
+            act.target.components.health ~= nil and
+            act.target.components.health:IsDead() and
+            act.target or nil
+
+        if murdered ~= nil then
+            murdered.causeofdeath = act.doer
+
+            local owner = murdered.components.inventoryitem ~= nil and murdered.components.inventoryitem.owner or nil
+            if owner ~= nil then
+                --In inventory or container:
+                --Slightly different from MURDER action since victim ate and died
+                --in place, so there should be no looting animation, and the loot
+                --should always replace the victim's old slot.
+                local grandowner = murdered.components.inventoryitem:GetGrandOwner()
+                local x, y, z = grandowner.Transform:GetWorldPosition()
+                murdered.components.inventoryitem:RemoveFromOwner(true)
+                murdered.Transform:SetPosition(x, y, z)
+
+                if murdered.components.health.murdersound ~= nil and grandowner.SoundEmitter ~= nil then
+                    grandowner.SoundEmitter:PlaySound(murdered.components.health.murdersound)
+                end
+
+                if murdered.components.lootdropper ~= nil then
+                    local container = owner.components.inventory or owner.components.container
+                    if container ~= nil then
+                        local stacksize = murdered.components.stackable ~= nil and murdered.components.stackable:StackSize() or 1
+                        for i = 1, stacksize do
+                            local loots = murdered.components.lootdropper:GenerateLoot()
+                            for k, v in pairs(loots) do
+                                local loot = SpawnPrefab(v)
+                                if loot ~= nil then
+                                    container:GiveItem(loot, murdered.prevslot)
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+
+            act.doer:PushEvent("killed", { victim = murdered })
+
+            if owner ~= nil then
+                murdered:Remove()
+            end
+        end
         return true
     end
+
+--[[    local murdered = act.invobject or act.target
+    if murdered ~= nil and murdered.components.health ~= nil then
+        local x, y, z = act.doer.Transform:GetWorldPosition()
+        murdered.components.inventoryitem:RemoveFromOwner(true)
+        murdered.Transform:SetPosition(x, y, z)
+
+        if murdered.components.health.murdersound ~= nil then
+            act.doer.SoundEmitter:PlaySound(murdered.components.health.murdersound)
+        end
+
+        if murdered.components.lootdropper ~= nil then
+            murdered.causeofdeath = act.doer
+            local pos = Vector3(x, y, z)
+            local stacksize = murdered.components.stackable ~= nil and murdered.components.stackable:StackSize() or 1
+            for i = 1, stacksize do
+                local loots = murdered.components.lootdropper:GenerateLoot()
+                for k, v in pairs(loots) do
+                    local loot = SpawnPrefab(v)
+                    if loot ~= nil then
+                        act.doer.components.inventory:GiveItem(loot, nil, pos)
+                    end
+                end
+            end
+        end
+
+        act.doer:PushEvent("killed", { victim = murdered })
+        murdered:Remove()
+
+        return true
+    end]]
 end
 
 ACTIONS.HAIRBALL.fn = function(act)

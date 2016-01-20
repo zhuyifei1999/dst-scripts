@@ -136,8 +136,7 @@ function PlayerStatusScreen:OnUpdate(dt)
             if self.serverstate and self.serverage and self.serverage ~= TheWorld.state.cycles + 1 then
                 self.serverage = TheWorld.state.cycles + 1
                 local modeStr = GetGameModeString(TheNet:GetServerGameMode()) ~= nil and GetGameModeString(TheNet:GetServerGameMode()).." - " or ""
-                modeStr = modeStr..STRINGS.UI.PLAYERSTATUSSCREEN.WORLD.." "..STRINGS.UI.PLAYERSTATUSSCREEN.AGE_PREFIX..self.serverage
-                self.serverstate:SetString(modeStr)
+                self.serverstate:SetString(modeStr.." "..STRINGS.UI.PLAYERSTATUSSCREEN.AGE_PREFIX..self.serverage)
             end
 
             if self.scroll_list ~= nil then
@@ -153,8 +152,7 @@ function PlayerStatusScreen:OnUpdate(dt)
                             if v.characterBadge:IsAFK() then
                                 v.age:SetString(STRINGS.UI.PLAYERSTATUSSCREEN.AFK)
                             else
-                                local agestring = k.playerage ~= nil and k.playerage > 0 and (STRINGS.UI.PLAYERSTATUSSCREEN.AGE_PREFIX..tostring(k.playerage)) or ""
-                                v.age:SetString(agestring)
+                                v.age:SetString(k.playerage ~= nil and k.playerage > 0 and (tostring(k.playerage)..(k.playerage == 1 and STRINGS.UI.PLAYERSTATUSSCREEN.AGE_DAY or STRINGS.UI.PLAYERSTATUSSCREEN.AGE_DAYS)) or "")
                             end
 
                             if k.performance ~= nil then
@@ -209,8 +207,7 @@ function PlayerStatusScreen:DoInit(ClientObjs)
     end
     self.serverage = TheWorld.state.cycles + 1
     local modeStr = GetGameModeString(TheNet:GetServerGameMode()) ~= nil and GetGameModeString(TheNet:GetServerGameMode()).." - " or ""
-    modeStr = modeStr..STRINGS.UI.PLAYERSTATUSSCREEN.WORLD.." "..STRINGS.UI.PLAYERSTATUSSCREEN.AGE_PREFIX..self.serverage
-    self.serverstate:SetString(modeStr)
+    self.serverstate:SetString(modeStr.." "..STRINGS.UI.PLAYERSTATUSSCREEN.AGE_PREFIX..self.serverage)
 
     self.server_group = TheNet:GetServerClanID()
     if self.server_group ~= "" and not TheInput:ControllerAttached() then
@@ -385,8 +382,7 @@ function PlayerStatusScreen:DoInit(ClientObjs)
         playerListing.name:SetPosition(playerListing.name._align.x + w * .5, 0, 0)
 		playerListing.name:SetColour(unpack(v.colour or DEFAULT_PLAYER_COLOUR))
 
-		local agestring = v.playerage ~= nil and v.playerage > 0 and (STRINGS.UI.PLAYERSTATUSSCREEN.AGE_PREFIX..tostring(v.playerage)) or ""
-		playerListing.age = playerListing:AddChild(Text(UIFONT, 35, agestring))
+		playerListing.age = playerListing:AddChild(Text(UIFONT, 35, v.playerage ~= nil and v.playerage > 0 and (tostring(v.playerage)..(v.playerage == 1 and STRINGS.UI.PLAYERSTATUSSCREEN.AGE_DAY or STRINGS.UI.PLAYERSTATUSSCREEN.AGE_DAYS)) or ""))
 		playerListing.age:SetPosition(-20,0,0)
 		playerListing.age:SetHAlign(ANCHOR_MIDDLE)
 		
@@ -680,8 +676,7 @@ function PlayerStatusScreen:DoInit(ClientObjs)
             playerListing.name:SetPosition(playerListing.name._align.x + w * .5, 0, 0)
 			playerListing.name:SetColour(unpack(v.colour or DEFAULT_PLAYER_COLOUR))
 
-			local agestring = v.playerage ~= nil and v.playerage > 0 and (STRINGS.UI.PLAYERSTATUSSCREEN.AGE_PREFIX..tostring(v.playerage)) or ""
-			playerListing.age:SetString(agestring)
+			playerListing.age:SetString(v.playerage ~= nil and v.playerage > 0 and (tostring(v.playerage)..(v.playerage == 1 and STRINGS.UI.PLAYERSTATUSSCREEN.AGE_DAY or STRINGS.UI.PLAYERSTATUSSCREEN.AGE_DAYS)) or "")
 			
 			playerListing.ishost = v.performance ~= nil
 
