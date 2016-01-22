@@ -3,19 +3,16 @@ local Text = require "widgets/text"
 local Image = require "widgets/image"
 
 local function GetIconX(w)
-    if w then
-        return -w/2 - 25
-    else
-        return -25
-    end
+    return w ~= nil and -.5 * w - 25 or -25
 end
 
 --base class for imagebuttons and animbuttons. 
 local AnnouncementWidget = Class(Widget, function(self, font, size, colour)
     Widget._ctor(self, "AnnouncementWidget")
-    
+
     self.root = self:AddChild(Widget("Root"))
     self.text = self.root:AddChild(Text(font or UIFONT, size or 30))
+    self.text:SetPosition(0, 2)
 
     self.icon = self:AddChild(Image("images/button_icons.xml", "announcement.tex"))
     self.icon:SetScale(.85)
@@ -50,9 +47,8 @@ function AnnouncementWidget:OnUpdate(dt)
 end
 
 function AnnouncementWidget:UpdateIconPosition()
-    local w,h = self.text:GetRegionSize()
-    local pos = self.icon:GetPosition()
-    self.icon:SetPosition(GetIconX(w), pos.y)
+    local w = self.text:GetRegionSize()
+    self.icon:SetPosition(w * -.5 - 25, self.icon:GetPosition().y)
 end
 
 function AnnouncementWidget:SetFont(font)

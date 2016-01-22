@@ -20,6 +20,7 @@ local SkinAnnouncement = Class(Widget, function(self, font, size)
     self.img_btn.text:SetHAlign(ANCHOR_LEFT)
 
     self.skin_txt = self.img_btn:AddChild(Text(font or UIFONT, size or 30))
+    self.skin_txt:SetPosition(0, 2)
 
     self.icon = self:AddChild(Image("images/button_icons.xml", "item_drop.tex"))
     self.icon:SetScale(.85)
@@ -115,9 +116,8 @@ function SkinAnnouncement:UpdateSkinTextPosition()
     --local pos = self.img_btn.image:GetPosition()
     self.img_btn:SetPosition(-(w2/2), pos.y, pos.z)
 
-    local pos = self.icon:GetPosition()
-    local w,h = self:GetTotalRegionSize()
-    self.icon:SetPosition(GetIconX(w), pos.y)
+    local w = self:GetTotalRegionSize()
+    self.icon:SetPosition(GetIconX(w), self.icon:GetPosition().y)
 end
 
 function SkinAnnouncement:SetGeneralFont(font)

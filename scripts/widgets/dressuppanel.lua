@@ -694,22 +694,22 @@ function DressupPanel:Reset(set_spinner_to_new_item)
 
 		if set_spinner_to_new_item and recent_item_type and recent_item_type == "base" then 
 			self.base_spinner.spinner:SetSelectedIndex(self.base_spinner:GetIndexForSkin(self.recent_item_types[1]))
-		elseif playerdata and playerdata.base_skin then 
-			self.base_spinner.spinner:SetSelectedIndex(self.base_spinner:GetIndexForSkin(savedBaseForCharacter))
+		elseif playerdata then 
+			self.base_spinner.spinner:SetSelectedIndex(self.base_spinner:GetIndexForSkin(playerdata.base_skin or self.currentcharacter))
 		elseif savedSkinsForCharacter.base and savedSkinsForCharacter.base ~= "" then 
 			self.base_spinner.spinner:SetSelectedIndex(self.base_spinner:GetIndexForSkin(savedBaseForCharacter))
 		else
 			self.base_spinner.spinner:SetSelectedIndex(1)
 		end
 	end
-
+	
 	if self.body_spinner then 
 		self.body_spinner.spinner:SetOptions(self:GetSkinOptionsForSlot("body"))
 
 		if set_spinner_to_new_item and recent_item_type and recent_item_type == "body" then 
 			self.body_spinner.spinner:SetSelectedIndex(self.body_spinner:GetIndexForSkin(self.recent_item_types[1]))
-		elseif playerdata and playerdata.body_skin then 
-			self.body_spinner.spinner:SetSelectedIndex(self.body_spinner:GetIndexForSkin(playerdata.body_skin))
+		elseif playerdata then 
+			self.body_spinner.spinner:SetSelectedIndex(self.body_spinner:GetIndexForSkin(playerdata.body_skin or "body_default1"))
 		elseif savedSkinsForCharacter.body and savedSkinsForCharacter.body ~= "" then 
 			self.body_spinner.spinner:SetSelectedIndex(self.body_spinner:GetIndexForSkin(savedSkinsForCharacter.body))
 		else
@@ -722,8 +722,8 @@ function DressupPanel:Reset(set_spinner_to_new_item)
 
 		if set_spinner_to_new_item and recent_item_type and recent_item_type == "hand" then 
 			self.hand_spinner.spinner:SetSelectedIndex(self.hand_spinner:GetIndexForSkin(self.recent_item_types[1]))
-		elseif playerdata and playerdata.hand_skin then 
-			self.hand_spinner.spinner:SetSelectedIndex(self.hand_spinner:GetIndexForSkin(playerdata.hand_skin))
+		elseif playerdata then 
+			self.hand_spinner.spinner:SetSelectedIndex(self.hand_spinner:GetIndexForSkin(playerdata.hand_skin or "hand_default1"))
 		elseif  savedSkinsForCharacter.hand and savedSkinsForCharacter.hand ~= "" then 
 			self.hand_spinner.spinner:SetSelectedIndex(self.hand_spinner:GetIndexForSkin(savedSkinsForCharacter.hand))
 		else
@@ -736,8 +736,8 @@ function DressupPanel:Reset(set_spinner_to_new_item)
 
 		if set_spinner_to_new_item and recent_item_type and recent_item_type == "legs" then 
 			self.legs_spinner.spinner:SetSelectedIndex(self.legs_spinner:GetIndexForSkin(self.recent_item_types[1]))
-		elseif playerdata and playerdata.legs_skin then 
-			self.legs_spinner.spinner:SetSelectedIndex(self.legs_spinner:GetIndexForSkin(playerdata.legs_skin))
+		elseif playerdata then 
+			self.legs_spinner.spinner:SetSelectedIndex(self.legs_spinner:GetIndexForSkin(playerdata.legs_skin or "legs_default1"))
 		elseif savedSkinsForCharacter.legs and savedSkinsForCharacter.legs ~= "" then 
 			self.legs_spinner.spinner:SetSelectedIndex(self.legs_spinner:GetIndexForSkin(savedSkinsForCharacter.legs))
 		else
@@ -750,8 +750,8 @@ function DressupPanel:Reset(set_spinner_to_new_item)
 
 		if set_spinner_to_new_item and recent_item_type and recent_item_type == "feet" then 
 			self.feet_spinner.spinner:SetSelectedIndex(self.feet_spinner:GetIndexForSkin(self.recent_item_types[1]))
-		elseif playerdata and playerdata.feet_skin then 
-			self.feet_spinner.spinner:SetSelectedIndex(self.feet_spinner:GetIndexForSkin(playerdata.feet_skin))
+		elseif playerdata then 
+			self.feet_spinner.spinner:SetSelectedIndex(self.feet_spinner:GetIndexForSkin(playerdata.feet_skin or "feet_default1"))
 		elseif savedSkinsForCharacter.feet and savedSkinsForCharacter.feet ~= "" then 
 			self.feet_spinner.spinner:SetSelectedIndex(self.feet_spinner:GetIndexForSkin(savedSkinsForCharacter.feet))
 		else
@@ -831,50 +831,53 @@ function DressupPanel:GetBaseSkin()
 end
 
 function DressupPanel:GetSkinsForGameStart()
-	local skins = {}
+	local skins = { base = self.currentcharacter.."_none", body = "", hand = "", legs = "", feet = "" } --default skins values
 
 	local currentcharacter_skins = self.profile:GetSkinsForPrefab(self.currentcharacter)
 
-	if self.currentcharacter == "random" then 
+	if self.currentcharacter == "random" then
 		local all_chars = ExceptionArrays(GetActiveCharacterList(), MODCHARACTEREXCEPTIONS_DST)
-		self.currentcharacter = all_chars[math.random(#all_chars)]
-		
-		local previous_base = self.profile:GetBaseForCharacter(self.currentcharacter)
-		if not previous_base then 
-			previous_base = self.currentcharacter
-		end
-		local previous_skins = self.profile:GetSkinsForCharacter(self.currentcharacter, previous_base)
+		self.currentcharacter = all_chars[math.random(#all_chars)]	
+		if self.dressup_frame then
+			local previous_base = self.profile:GetBaseForCharacter(self.currentcharacter)
+			if not previous_base or previous_base == "" then --checking == "" is for legacy profiles
+				previous_base = self.currentcharacter.."_none"
+			end
+			local previous_skins = self.profile:GetSkinsForCharacter(self.currentcharacter, previous_base)
 
-		if self.base_spinner and self.base_spinner.spinner:GetSelectedIndex() == 1 then 
-			skins.base = previous_base
+			if self.base_spinner and self.base_spinner.spinner:GetSelectedIndex() == 1 then 
+				skins.base = previous_base
+			else
+				skins.base = GetRandomItem(currentcharacter_skins)
+			end
+
+			if self.body_spinner and self.body_spinner.spinner:GetSelectedIndex() == 1 then 
+				skins.body = previous_skins.body
+			else
+				skins.body = GetRandomItem(self.clothing_options["body"])
+			end
+
+			if self.hand_spinner and self.hand_spinner.spinner:GetSelectedIndex() == 1 then 
+				skins.hand = previous_skins.hand
+			else
+				skins.hand = GetRandomItem(self.clothing_options["hand"])
+			end
+
+			if self.legs_spinner and self.legs_spinner.spinner:GetSelectedIndex() == 1 then 
+				skins.legs = previous_skins.legs
+			else
+				skins.legs = GetRandomItem(self.clothing_options["legs"])
+			end
+
+			if self.feet_spinner and self.feet_spinner.spinner:GetSelectedIndex() == 1 then 
+				skins.feet = previous_skins.feet
+			else
+				skins.feet = GetRandomItem(self.clothing_options["feet"])
+			end
 		else
-			skins.base = GetRandomItem(currentcharacter_skins)
+			--offline and random
+			skins.base = self.currentcharacter.."_none"
 		end
-
-		if self.body_spinner and self.body_spinner.spinner:GetSelectedIndex() == 1 then 
-			skins.body = previous_skins.body
-		else
-			skins.body = GetRandomItem(self.clothing_options["body"])
-		end
-
-		if self.hand_spinner and self.hand_spinner.spinner:GetSelectedIndex() == 1 then 
-			skins.hand = previous_skins.hand
-		else
-			skins.hand = GetRandomItem(self.clothing_options["hand"])
-		end
-
-		if self.legs_spinner and self.legs_spinner.spinner:GetSelectedIndex() == 1 then 
-			skins.legs = previous_skins.legs
-		else
-			skins.legs = GetRandomItem(self.clothing_options["legs"])
-		end
-
-		if self.feet_spinner and self.feet_spinner.spinner:GetSelectedIndex() == 1 then 
-			skins.feet = previous_skins.feet
-		else
-			skins.feet = GetRandomItem(self.clothing_options["feet"])
-		end
-
 	else
 		if self.dressup_frame then 
 			local base, random_base, body, random_body, hand, random_hand, legs, random_legs, feet, random_feet
@@ -913,26 +916,23 @@ function DressupPanel:GetSkinsForGameStart()
 				legs = legs,
 				feet = feet
 			}
-
 			
+			--cleanup spinner items
+			if not skins.base or skins.base == self.currentcharacter or skins.base == "" then skins.base = (self.currentcharacter.."_none") end
+			if not IsValidClothing( skins.body ) then skins.body = "" end
+			if not IsValidClothing( skins.hand ) then skins.hand = "" end
+			if not IsValidClothing( skins.legs ) then skins.legs = "" end
+			if not IsValidClothing( skins.feet ) then skins.feet = "" end
+			
+			self.profile:SetSkinsForCharacter(self.currentcharacter, skins.base, skins)
 		else
-			skins.base = self.profile:GetBaseForCharacter(self.currentcharacter)
-			skins = self.profile:GetSkinsForCharacter(self.currentcharacter, skins.base or self.currentcharacter)
+			--offline here, leave skins as default
+			if TheNet:IsOnlineMode() then
+				print( "Error: Game is online but the dressup panel hasn't been created." )
+			end
 		end
-
-		--cleanup spinner items
-		if not skins.base or skins.base == self.currentcharacter or skins.base == "" then skins.base = (self.currentcharacter.."_none") end
-		if not IsValidClothing( skins.body ) then skins.body = "" end
-		if not IsValidClothing( skins.hand ) then skins.hand = "" end
-		if not IsValidClothing( skins.legs ) then skins.legs = "" end
-		if not IsValidClothing( skins.feet ) then skins.feet = "" end
-		
-		
-		self.profile:SetSkinsForCharacter(self.currentcharacter, skins.base, skins)
 	end
 
-	--print("Getting skins")
-	--dumptable(skins)
 	return skins
 end
 

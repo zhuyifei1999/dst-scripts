@@ -57,6 +57,10 @@ local function OnInit(inst, self)
         --getting "equip" and "unequip" events, but we can also assume that
         --our inventory is emptied.
         inst:ListenForEvent("inventoryclosed", OnEquipChanged)
+        if inst.replica.inventory == nil then
+            --V2C: clients c_spawning characters ...grrrr
+            return
+        end
     end
     OnEquipChanged(inst)
 end

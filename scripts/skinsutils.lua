@@ -174,7 +174,7 @@ end
 -- NOTE: only works on the host
 function c_giftpopup()
 	local GiftItemPopUp = require "screens/giftitempopup"
-	TheFrontEnd:PushScreen(GiftItemPopUp(ThePlayer, { "body_suspenders_blue_cornflower", "body_buttons_teal_jade", "body_trenchcoat_grey_dark", "swap_backpack_bigfoot" }))
+	TheFrontEnd:PushScreen(GiftItemPopUp(ThePlayer, { "hand_shortgloves_white_smoke" }, { 101010 }))
 end
 
 function c_avatarscreen()

@@ -98,9 +98,8 @@ local function FindTarget(inst, radius)
             return inst.components.combat:CanTarget(guy)
                 and not (inst.components.follower ~= nil and inst.components.follower.leader == guy)
         end,
-        { "_combat" },
-        { "INLIMBO" },
-        { "character", "pig" }
+        { "_combat", "character" },
+        { "monster", "INLIMBO" }
     )
 end
 

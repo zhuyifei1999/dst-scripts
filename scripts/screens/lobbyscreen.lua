@@ -38,8 +38,6 @@ local function StartGame(this)
 
     if this.cb and this.dressup then
         local skins = this.dressup:GetSkinsForGameStart()
-        this.profile:SetBaseForCharacter(this.dressup.currentcharacter, this.dressup:GetBaseSkin())
-        --print("Starting game, character is ", this.currentcharacter or "nil", this.dressup.currentcharacter or "nil")
         this.cb(this.dressup.currentcharacter, skins.base, skins.body, skins.hand, skins.legs, skins.feet) --parameters are base_prefab, skin_base, clothing_body, clothing_hand, then clothing_legs
     end
 end
