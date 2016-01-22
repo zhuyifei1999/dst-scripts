@@ -650,17 +650,18 @@ function MakeHauntableWorkAndIgnite(inst, work_chance, ignite_chance, cooldown, 
 end
 
 function MakeHauntableFreeze(inst, chance, cooldown, haunt_value)
-    if not inst.components.hauntable then inst:AddComponent("hauntable") end
+    if inst.components.hauntable == nil then
+        inst:AddComponent("hauntable")
+    end
     inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
         inst.components.hauntable.cooldown = cooldown or TUNING.HAUNT_COOLDOWN_MEDIUM
-        chance = chance or TUNING.HAUNT_CHANCE_HALF
-        if math.random() <= chance then
-            if inst.components.freezable and not inst.components.freezable:IsFrozen() then
-                inst.components.freezable:Freeze()
-                inst.components.hauntable.hauntvalue = haunt_value or TUNING.HAUNT_MEDIUM
-                inst.components.hauntable.cooldown = cooldown or TUNING.HAUNT_COOLDOWN_HUGE
-                return true
-            end
+        if inst.components.freezable ~= nil and
+            not inst.components.freezable:IsFrozen() and
+            math.random() <= chance or TUNING.HAUNT_CHANCE_HALF then
+            inst.components.freezable:AddColdness(inst.components.freezable.resistance - inst.components.freezable.coldness + 1)
+            inst.components.hauntable.hauntvalue = haunt_value or TUNING.HAUNT_MEDIUM
+            inst.components.hauntable.cooldown = cooldown or TUNING.HAUNT_COOLDOWN_HUGE
+            return true
         end
         return false
     end)

@@ -21,7 +21,7 @@ local Wardrobe = Class(function(self, inst)
 
     self:SetCanBeShared(false)
 
-    self.onclosewardrobe = function(doer, skins) -- yay closures ~gj -- yay ~v2c
+    self.onclosewardrobe = function(doer, skins) -- yay closures ~gj -- yay ~v2c -- yay ~peter
         if self.changers[doer] and not self:ActivateChanging(doer, skins) then
             self:EndChanging(doer)
         end
@@ -126,12 +126,8 @@ function Wardrobe:EndChanging(doer)
 
         if doer.sg:HasStateTag("inwardrobe") and not doer.sg.statemem.isclosingwardrobe then
             doer.sg.statemem.isclosingwardrobe = true
-            if doer.sg.statemem.isopeninggift then
-                doer.AnimState:PlayAnimation("gift_open_pst")
-                doer.sg:GoToState("idle", true)
-            else
-                doer.sg:GoToState("idle")
-            end
+            doer.AnimState:PlayAnimation(doer.sg.statemem.isopeninggift and "gift_open_pst" or "idle_wardrobe1_pst")
+            doer.sg:GoToState("idle", true)
         end
 
         if next(self.changers) == nil then

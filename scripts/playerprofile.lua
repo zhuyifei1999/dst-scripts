@@ -167,22 +167,8 @@ function PlayerProfile:SetSkinsForCharacter(character, base, skinList)
 	end
 
 	self.dirty = true
-	self.persistdata.characterskins[character][base] = skinList
-	
-	self:Save()
-end
-
-function PlayerProfile:SetBaseForCharacter(character, base)
-	if not self.persistdata.characterskins then
-		self.persistdata.characterskins = {}
-	end
-
-	if not self.persistdata.characterskins[character] then 
-		self.persistdata.characterskins[character] = {}
-	end
-	
-	self.dirty = true
 	self.persistdata.characterskins[character].last_base = base
+	self.persistdata.characterskins[character][base] = skinList
 	
 	self:Save()
 end

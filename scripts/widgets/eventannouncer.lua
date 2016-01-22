@@ -22,7 +22,7 @@ local EventAnnouncer = Class(Widget, function(self, owner)
         -- Normal announcements
         local message_widget = self:AddChild(AnnouncementWidget(self.message_font, self.message_size))
         
-        message_widget.text:SetVAlign(ANCHOR_TOP)
+        message_widget.text:SetVAlign(ANCHOR_MIDDLE)
         message_widget.text:SetHAlign(ANCHOR_MIDDLE)
         message_widget:SetPosition(0, -15 - (i * (self.message_size+2)))
         
@@ -33,7 +33,7 @@ local EventAnnouncer = Class(Widget, function(self, owner)
         -- Clickable skin announcements
         local skin_announcement = self:AddChild(SkinAnnouncement(self.message_font, self.message_size))
         
-        skin_announcement.skin_txt:SetVAlign(ANCHOR_TOP)
+        skin_announcement.skin_txt:SetVAlign(ANCHOR_MIDDLE)
         skin_announcement.skin_txt:SetHAlign(ANCHOR_MIDDLE)
         skin_announcement:SetPosition(0, -15 - (i * (self.message_size+2)))
 

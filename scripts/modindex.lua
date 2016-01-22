@@ -101,17 +101,7 @@ function ModIndex:GetModNames()
 	return names
 end
 
-function ModIndex:GetClientModNames() --legacy can be removed once modtab is converted
-	local names = {}
-	for modname,_ in pairs(self.savedata.known_mods) do
-		if self:GetModInfo(modname).client_only_mod then
-			table.insert(names, modname)
-		end
-	end
-	return names
-end
-
-function ModIndex:GetServerModNames() --legacy can be removed once modtab is converted
+function ModIndex:GetServerModNames()
 	local names = {}
 	for modname,_ in pairs(self.savedata.known_mods) do
 		if not self:GetModInfo(modname).client_only_mod then
@@ -157,7 +147,7 @@ function ModIndex:Save(callback)
 		newdata.known_mods[name].disabled_bad = data.disabled_bad
 		newdata.known_mods[name].disabled_incompatible_with_mode = data.disabled_incompatible_with_mode
 		newdata.known_mods[name].seen_api_version = MOD_API_VERSION
-		newdata.known_mods[name].modinfo = data.modinfo
+		--newdata.known_mods[name].modinfo = data.modinfo --modinfo is no longer saved in the modindex. To remove the clutter from the modindex and to get rid of unreadable modindex files due to mods with invalid modinfo files
 		newdata.known_mods[name].temp_config_options = data.temp_config_options
 	end
 
@@ -504,9 +494,15 @@ function ModIndex:Load(callback)
 				if success and string.len(str) > 0 and savedata ~= nil then
 					self.savedata = savedata
 					print ("loaded "..filename)
-		--print("\n\n---LOADING MOD INDEX---\n\n")
-		--dumptable(self.savedata)
-		--print("\n\n---END LOADING MOD INDEX---\n\n")
+					--print("\n\n---LOADING MOD INDEX---\n\n")
+					--dumptable(self.savedata)
+					--print("\n\n---END LOADING MOD INDEX---\n\n")
+					
+		
+					--print("\n\n---LOADING MOD INFOS---\n\n")
+					self:UpdateModInfo()
+					--dumptable(self.savedata)
+					--print("\n\n---END LOADING MOD INFOS---\n\n")
 				else
 					print ("Could not load "..filename)
 					if string.len(str) > 0 then

@@ -83,20 +83,7 @@ local function OnRefuseItem(inst, item)
     end
 end
 
-local function NormalRetarget(inst)
-    return FindEntity(
-        inst,
-        inst.components.knownlocations:GetLocation("investigate") ~= nil and TUNING.SPIDER_INVESTIGATETARGET_DIST or TUNING.SPIDER_TARGET_DIST,
-        function(guy)
-            return inst.components.combat:CanTarget(guy)
-                and not (inst.components.follower ~= nil and inst.components.follower.leader == guy)
-        end,
-        { "character", "_combat" },
-        { "monster", "INLIMBO" }
-    )
-end
-
-local function FindWarriorTarget(inst, radius)
+local function FindTarget(inst, radius)
     return FindEntity(
         inst,
         SpringCombatMod(radius),
@@ -104,14 +91,17 @@ local function FindWarriorTarget(inst, radius)
             return inst.components.combat:CanTarget(guy)
                 and not (inst.components.follower ~= nil and inst.components.follower.leader == guy)
         end,
-        { "_combat" },
-        { "monster", "INLIMBO" },
-        { "character", "pig" }
+        { "_combat", "character" },
+        { "monster", "INLIMBO" }
     )
 end
 
+local function NormalRetarget(inst)
+    return FindTarget(inst, inst.components.knownlocations:GetLocation("investigate") ~= nil and TUNING.SPIDER_INVESTIGATETARGET_DIST or TUNING.SPIDER_TARGET_DIST)
+end
+
 local function WarriorRetarget(inst)
-    return FindWarriorTarget(inst, TUNING.SPIDER_WARRIOR_TARGET_DIST)
+    return FindTarget(inst, TUNING.SPIDER_WARRIOR_TARGET_DIST)
 end
 
 local function keeptargetfn(inst, target)
@@ -138,7 +128,7 @@ local function ShouldWake(inst)
     return TheWorld.state.iscavenight
         or BasicWakeCheck(inst)
         or (inst:HasTag("spider_warrior") and
-            FindWarriorTarget(inst, TUNING.SPIDER_WARRIOR_WAKE_RADIUS) ~= nil)
+            FindTarget(inst, TUNING.SPIDER_WARRIOR_WAKE_RADIUS) ~= nil)
 end
 
 local function DoReturn(inst)

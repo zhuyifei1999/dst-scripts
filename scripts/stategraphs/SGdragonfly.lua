@@ -216,7 +216,8 @@ local states=
 
 	State{
 		name = "knockdown_idle",
-		tags = {"grounded"},
+		tags = {"grounded", "nointerrupt"},
+        --V2C: added nointerrupt due to whip supercrack hackiness!
 
 		onenter = function(inst)
 			if inst.components.locomotor then
@@ -233,7 +234,8 @@ local states=
 
 	State{
 		name = "knockdown_hit",
-		tags = {"busy", "grounded"},
+		tags = {"busy", "grounded", "nointerrupt"},
+        --V2C: added nointerrupt due to whip supercrack hackiness!
 
 		onenter = function(inst)
 			if inst.components.locomotor then

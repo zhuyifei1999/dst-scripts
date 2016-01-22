@@ -22,7 +22,7 @@ local SMASHABLE_WORK_ACTIONS =
     HAMMER = true,
     MINE = true,
 }
-local SMASHABLE_TAGS = { "_combat", "_inventoryitem" }
+local SMASHABLE_TAGS = { "_combat", "_inventoryitem", "campfire" }
 for k, v in pairs(SMASHABLE_WORK_ACTIONS) do
     table.insert(SMASHABLE_TAGS, k.."_workable")
 end
@@ -73,8 +73,8 @@ local function onexplode(inst)
                 if v.components.workable ~= nil then
                     if v.sg == nil or not v.sg:HasStateTag("busy") then
                         local work_action = v.components.workable:GetWorkAction()
-                        if work_action ~= nil and
-                            SMASHABLE_WORK_ACTIONS[work_action.id] and
+                        --V2C: nil action for campfires
+                        if (work_action == nil or SMASHABLE_WORK_ACTIONS[work_action.id]) and
                             (work_action ~= ACTIONS.DIG
                             or (v.components.spawner == nil and
                                 v.components.childspawner == nil)) then

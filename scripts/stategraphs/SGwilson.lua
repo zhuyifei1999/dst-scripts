@@ -346,7 +346,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.UNPIN, "doshortaction"),
     ActionHandler(ACTIONS.CATCH, "catch_pre"),
 
-    ActionHandler(ACTIONS.CHANGEIN, "doshortaction"),
+    ActionHandler(ACTIONS.CHANGEIN, "usewardrobe"),
     ActionHandler(ACTIONS.WRITE, "doshortaction"),
     ActionHandler(ACTIONS.ATTUNE, "dolongaction"),
     ActionHandler(ACTIONS.MIGRATE, "migrate"),
@@ -2442,6 +2442,33 @@ local states =
     },
 
     State{
+        name = "usewardrobe",
+        tags = { "doing" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("give")
+            inst.AnimState:PushAnimation("give_pst", false)
+        end,
+
+        timeline =
+        {
+            TimeEvent(13 * FRAMES, function(inst)
+                inst:PerformBufferedAction()
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animqueueover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+    },
+
+    State{
         name = "openwardrobe",
         tags = { "inwardrobe", "busy", "pausepredict" },
 
@@ -2452,7 +2479,8 @@ local states =
                 inst.components.locomotor:Clear()
                 inst:ClearBufferedAction()
 
-                inst.AnimState:PushAnimation("idle_wardrobe1", true)
+                inst.AnimState:PlayAnimation("idle_wardrobe1_pre")
+                inst.AnimState:PushAnimation("idle_wardrobe1_loop", true)
 
                 if inst.components.playercontroller ~= nil then
                     inst.components.playercontroller:RemotePausePrediction()

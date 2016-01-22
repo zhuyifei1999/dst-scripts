@@ -126,17 +126,12 @@ function WardrobePopupScreen:Reset()
 end
 
 function WardrobePopupScreen:Close()
-    -- Gets the current skin names (and sets them as the character default)
-    local skins = self.dressup:GetSkinsForGameStart()
-
+	-- Gets the current skin names (and sets them as the character default)
+	local skins = self.dressup:GetSkinsForGameStart()
     if self.owner ~= nil then
         local data = {}
         if TheNet:IsOnlineMode() then
-            data.base = skins.base
-            data.body = skins.body
-            data.hand = skins.hand
-            data.legs = skins.legs
-            data.feet = skins.feet
+			data = skins
         end
 
         if not TheWorld.ismastersim then
@@ -145,7 +140,6 @@ function WardrobePopupScreen:Close()
             self.owner:PushEvent("ms_closewardrobe", data)
         end
     end
-	self.profile:SetBaseForCharacter(self.dressup.currentcharacter, self.dressup:GetBaseSkin())
 
     self.dressup:OnClose()
     TheFrontEnd:PopScreen(self)
