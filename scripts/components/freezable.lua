@@ -101,6 +101,10 @@ function Freezable:IsFrozen()
     return self.state == states.FROZEN or self.state == states.THAWING
 end
 
+function Freezable:IsThawing()
+    return self.state == states.THAWING
+end
+
 function Freezable:GetDebugString()
     return string.format("%s: %d / %d", self.state, self.coldness, self.resistance)
 end
@@ -108,12 +112,13 @@ end
 function Freezable:AddColdness(coldness, freezetime)
     self.coldness = math.max(0, self.coldness + coldness)
     self:UpdateTint()
-    if self.coldness > self.resistance or self:IsFrozen() then
-        self:Freeze(freezetime)
-    elseif self.coldness == self.resistance then
-        self:Freeze(freezetime)
-    elseif self.coldness > 0 then
-        self:StartWearingOff()
+    --V2C: when removing coldness, don't update freeze states here
+    if coldness > 0 then
+        if self.coldness >= self.resistance or self:IsFrozen() then
+            self:Freeze(freezetime)
+        elseif self.coldness > 0 then
+            self:StartWearingOff()
+        end
     end
 end
 

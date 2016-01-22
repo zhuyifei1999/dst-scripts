@@ -4737,6 +4737,19 @@ local states =
                 inst.components.playercontroller:EnableMapControls(false)
                 inst.components.playercontroller:Enable(false)
             end
+
+            --V2C: cuz... freezable component and SG need to match state,
+            --     but messages to SG are queued, so it is not great when
+            --     when freezable component tries to change state several
+            --     times within one frame...
+            if inst.components.freezable == nil then
+                inst.sg:GoToState("hit")
+            elseif inst.components.freezable:IsThawing() then
+                inst.sg.statemem.isstillfrozen = true
+                inst.sg:GoToState("thaw")
+            elseif not inst.components.freezable:IsFrozen() then
+                inst.sg:GoToState("hit")
+            end
         end,
 
         events =
