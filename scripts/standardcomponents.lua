@@ -657,7 +657,7 @@ function MakeHauntableFreeze(inst, chance, cooldown, haunt_value)
         inst.components.hauntable.cooldown = cooldown or TUNING.HAUNT_COOLDOWN_MEDIUM
         if inst.components.freezable ~= nil and
             not inst.components.freezable:IsFrozen() and
-            math.random() <= chance or TUNING.HAUNT_CHANCE_HALF then
+            math.random() <= (chance or TUNING.HAUNT_CHANCE_HALF) then
             inst.components.freezable:AddColdness(inst.components.freezable.resistance - inst.components.freezable.coldness + 1)
             inst.components.hauntable.hauntvalue = haunt_value or TUNING.HAUNT_MEDIUM
             inst.components.hauntable.cooldown = cooldown or TUNING.HAUNT_COOLDOWN_HUGE

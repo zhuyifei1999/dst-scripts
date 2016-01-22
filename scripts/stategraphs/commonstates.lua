@@ -467,6 +467,14 @@ CommonStates.AddSleepStates = function(states, timelines, fns)
 end
 
 --------------------------------------------------------------------------
+local function onunfreeze(inst)
+    inst.sg:GoToState(inst.sg.sg.states.hit ~= nil and "hit" or "idle")
+end
+
+local function onthaw(inst)
+    inst.sg:GoToState("thaw")
+end
+
 local function onenterfrozen(inst)
     if inst.components.locomotor ~= nil then
         inst.components.locomotor:StopMoving()
@@ -474,18 +482,22 @@ local function onenterfrozen(inst)
     inst.AnimState:PlayAnimation("frozen")
     inst.SoundEmitter:PlaySound("dontstarve/common/freezecreature")
     inst.AnimState:OverrideSymbol("swap_frozen", "frozen", "frozen")
+
+    --V2C: cuz... freezable component and SG need to match state,
+    --     but messages to SG are queued, so it is not great when
+    --     when freezable component tries to change state several
+    --     times within one frame...
+    if inst.components.freezable == nil then
+        onunfreeze(inst)
+    elseif inst.components.freezable:IsThawing() then
+        onthaw(inst)
+    elseif not inst.components.freezable:IsFrozen() then
+        onunfreeze(inst)
+    end
 end
 
 local function onexitfrozen(inst)
     inst.AnimState:ClearOverrideSymbol("swap_frozen")
-end
-
-local function onunfreeze(inst)
-    inst.sg:GoToState(inst.sg.sg.states.hit ~= nil and "hit" or "idle")
-end
-
-local function onthaw(inst)
-    inst.sg:GoToState("thaw")
 end
 
 local function onenterthaw(inst)
