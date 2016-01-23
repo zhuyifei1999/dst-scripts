@@ -65,6 +65,7 @@ function GroundPounder:DestroyPoints(points, breakobjects, dodamage)
                             if v2:IsValid() and --might've changed after work?
                                 not v2:IsInLimbo() and --might've changed after work?
                                 self.burner and
+                                v2.components.fueled == nil and
                                 v2.components.burnable ~= nil and
                                 not v2.components.burnable:IsBurning() and
                                 not v2:HasTag("burnt") then
@@ -129,6 +130,7 @@ function GroundPounder:GroundPound_Offscreen(position)
                 if v:IsValid() and
                     not v:IsInLimbo() and
                     self.burner and
+                    v.components.fueled == nil and
                     v.components.burnable ~= nil and
                     not v.components.burnable:IsBurning() and
                     not v:HasTag("burnt") then
