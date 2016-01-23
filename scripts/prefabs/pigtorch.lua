@@ -86,6 +86,7 @@ local function fn()
     inst.AnimState:PlayAnimation("idle", true)
 
     inst:AddTag("structure")
+    inst:AddTag("wildfireprotected")
 
     --MakeSnowCoveredPristine(inst)
 

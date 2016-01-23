@@ -96,7 +96,11 @@ local function OnLoad(inst, data)
 end
 
 local function OnCollide(inst, other)
-    if other ~= nil and other:IsValid() and inst:IsValid() and other.components.burnable ~= nil then
+    if other ~= nil and
+        other:IsValid() and
+        inst:IsValid() and
+        other.components.burnable ~= nil and
+        other.components.fueled == nil then
         other.components.burnable:Ignite(true, inst)
     end
 end

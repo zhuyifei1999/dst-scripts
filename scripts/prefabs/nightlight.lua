@@ -87,6 +87,7 @@ local function fn()
     inst.AnimState:PlayAnimation("idle", false)
 
     inst:AddTag("structure")
+    inst:AddTag("wildfireprotected")
 
     inst.entity:SetPristine()
 
