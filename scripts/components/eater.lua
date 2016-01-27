@@ -117,11 +117,13 @@ function Eater:Eat(food)
     -- wigfrid) can TRY to eat all foods (they get the actions for it) but upon actually put it in 
     -- their mouth, they bail and "spit it out" so to speak.
     if self:PrefersToEat(food) then
+        local stack_mult = self.eatwholestack and food.components.stackable ~= nil and food.components.stackable:StackSize() or 1
+
         local iswoodiness = false
         if self.inst.components.beaverness ~= nil then
             local delta = food.components.edible:GetWoodiness(self.inst)
             if delta ~= 0 then
-                self.inst.components.beaverness:DoDelta(delta)
+                self.inst.components.beaverness:DoDelta(delta * stack_mult)
                 iswoodiness = true
             end
         end
@@ -132,14 +134,14 @@ function Eater:Eat(food)
                 (food.components.edible.healthvalue >= 0 or self:DoFoodEffects(food)) then
                 local delta = food.components.edible:GetHealth(self.inst) * self.healthabsorption
                 if delta ~= 0 then
-                    self.inst.components.health:DoDelta(delta, nil, food.prefab)
+                    self.inst.components.health:DoDelta(delta * stack_mult, nil, food.prefab)
                 end
             end
 
             if self.inst.components.hunger ~= nil then
                 local delta = food.components.edible:GetHunger(self.inst) * self.hungerabsorption
                 if delta ~= 0 then
-                    self.inst.components.hunger:DoDelta(delta)
+                    self.inst.components.hunger:DoDelta(delta * stack_mult)
                 end
             end
 
@@ -147,7 +149,7 @@ function Eater:Eat(food)
                 (food.components.edible.sanityvalue >= 0 or self:DoFoodEffects(food)) then
                 local delta = food.components.edible:GetSanity(self.inst) * self.sanityabsorption
                 if delta ~= 0 then
-                    self.inst.components.sanity:DoDelta(delta)
+                    self.inst.components.sanity:DoDelta(delta * stack_mult)
                 end
             end
         end

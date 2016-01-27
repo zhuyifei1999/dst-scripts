@@ -26,7 +26,7 @@ local mid_col = RESOLUTION_X*.07
 local left_col = -RESOLUTION_X*.3
 local right_col = RESOLUTION_X*.37
 
-local title_x = 127
+local title_x = -73
 
 local ModsScreen = Class(Screen, function(self)
     Widget._ctor(self, "ModsScreen")
@@ -369,39 +369,31 @@ function ModsScreen:CreateDetailPanel()
 		--self.detailimage:SetScale(0.8,0.8,0.8)
 		self.detailimage:SetPosition(-133, 150, 0)
 
-		self.detailtitle = self.detailpanel:AddChild(Text(NEWFONT, 45, ""))
-		self.detailtitle:SetHAlign(ANCHOR_LEFT)
-		self.detailtitle:SetPosition(title_x, 175, 0)
-		self.detailtitle:SetRegionSize( 400, 100 )
+		self.detailtitle = self.detailpanel:AddChild(Text(NEWFONT, 40, ""))
+		self.detailtitle:SetPosition(title_x, 189, 0)
 		self.detailtitle:SetColour(0,0,0,1)
 
-		self.detailtitle2 = self.detailpanel:AddChild(Text(NEWFONT, 45, ""))
-		self.detailtitle2:SetHAlign(ANCHOR_LEFT)
-		self.detailtitle2:SetPosition(title_x, 150, 0)
-		self.detailtitle2:SetRegionSize( 400, 100 )
-		self.detailtitle2:SetColour(0,0,0,1)
+        self.detailtitle2 = self.detailpanel:AddChild(Text(NEWFONT, 40, ""))
+        self.detailtitle2:SetHAlign(ANCHOR_LEFT)
+        self.detailtitle2:SetRegionSize(400, 55)
+        self.detailtitle2:SetPosition(title_x + 200, 156, 0)
+        self.detailtitle2:SetColour(0,0,0,1)
 
 		self.detailauthor = self.detailpanel:AddChild(Text(NEWFONT, 25, ""))
 		self.detailauthor:SetColour(0,0,0,1)
 		--self.detailauthor:SetColour(0.9,0.8,0.6,1) -- link colour
-		self.detailauthor:SetHAlign(ANCHOR_LEFT)
 		self.detailauthor:SetPosition(title_x, 125, 0)
-		self.detailauthor:SetRegionSize( 400, 70 )
-		--self.detailauthor:EnableWordWrap(true)
 
 		self.detailcompatibility = self.detailpanel:AddChild(Text(NEWFONT, 20, ""))
 		self.detailcompatibility:SetColour(0,0,0,1)
 		self.detailcompatibility:SetHAlign(ANCHOR_LEFT)
-		self.detailcompatibility:SetPosition(title_x, 105, 0)
-		self.detailcompatibility:SetRegionSize( 400, 70 )
-		
+		self.detailcompatibility:SetPosition(title_x + 200, 105, 0)
+		self.detailcompatibility:SetRegionSize(400, 30)
+
 		self.detaildesc = self.detailpanel:AddChild(Text(NEWFONT, 20, ""))
 		self.detaildesc:SetColour(0,0,0,1)
-		self.detaildesc:SetPosition(70, -55, 0)
+		self.detaildesc:SetPosition(-183, 84, 0)
 		self.detaildesc:SetHAlign(ANCHOR_LEFT)
-		self.detaildesc:SetVAlign(ANCHOR_TOP)
-		self.detaildesc:SetRegionSize( 510, 280 )
-		self.detaildesc:EnableWordWrap(true)
 
 		self.detailwarning = self.detailpanel:AddChild(Text(BODYTEXTFONT, 30, ""))
 		self.detailwarning:SetColour(0.8,0.6,0.5, 1)
@@ -1039,35 +1031,28 @@ function ModsScreen:ShowModDetails(idx, client_mod)
 		self.detailimage:SetTexture("images/ui.xml", "portrait_bg.tex")
 		self.detailimage:SetSize(102, 102)
 	end
-	
-	local nameStr = modinfo.name or modname
-	local firstLine = TheFrontEnd:GetTruncatedString(nameStr, NEWFONT, 45, 450)
-	if string.len(firstLine) < string.len(nameStr) then
-		self.detailtitle:SetPosition(title_x, 187)
-		local i = 1
-		local split = 0
-		while i < string.len(firstLine) do
-			local nextChar = string.sub(firstLine, i, i)
-			if table.contains(splitChars, nextChar) then
-				split = i
-			end
-			i = i + 1
-		end
-		nameStr = string.sub(nameStr, split + 1)
-		nameStr = string.gsub(nameStr, "^%s*(.-)%s*$", "%1") -- Get rid of whitespace on the ends
-		self.detailtitle:SetString(string.sub(firstLine, 1, split))
-		self.detailtitle2:SetString(nameStr)
-	else
-		self.detailtitle:SetString(nameStr)
-		self.detailtitle:SetPosition(title_x, 165)
-    	self.detailtitle2:SetString("")
+
+    self.detailtitle:SetMultilineTruncatedString(modinfo.name or modname, 2, 400, 65, true)
+    local nameLines = self.detailtitle:GetString():split("\n")
+    if #nameLines > 1 then
+        self.detailtitle:SetString(nameLines[1])
+        print(self.detailtitle:GetString():len())
+        local w = self.detailtitle:GetRegionSize()
+        self.detailtitle:SetPosition(title_x + w * .5, 189)
+        self.detailtitle2:SetString(nameLines[2])
+    else
+        local w = self.detailtitle:GetRegionSize()
+        self.detailtitle:SetPosition(title_x + w * .5, 165)
+        self.detailtitle2:SetString("")
     end
-    
-	local authorStr = modinfo.author or "unknown"
-    self.detailauthor:SetString( string.format(STRINGS.UI.MODSSCREEN.AUTHORBY, authorStr))
-    
-	local descStr = modinfo.description or ""
-    self.detaildesc:SetString(descStr)
+
+    self.detailauthor:SetTruncatedString(string.format(STRINGS.UI.MODSSCREEN.AUTHORBY, modinfo.author or "unknown"), 400, 105, true)
+    local w, h = self.detailauthor:GetRegionSize()
+    self.detailauthor:SetPosition(title_x + w * .5, 125)
+
+    self.detaildesc:SetMultilineTruncatedString(modinfo.description or "", 14, 510, 163, true)
+    w, h = self.detaildesc:GetRegionSize()
+    self.detaildesc:SetPosition(w * .5 - 183, 84 - .5 * h)
 
 	-- if self.modlinkbutton then 
 	-- 	if (modinfo.forumthread and modinfo.forumthread ~= "") or string.sub(modname, 1, 9) == "workshop-" then

@@ -151,7 +151,6 @@ function ServerCreationScreen:UpdateTitle(slotnum, fromTextEntered)
         end
     end
 
-
     self.title:SetString(self.server_settings_tab:GetServerName())
     self.day_title:SetString(SaveGameIndex:GetSlotDay(slotnum) and (STRINGS.UI.SERVERCREATIONSCREEN.SERVERDAY.." "..(SaveGameIndex:GetSlotDay(slotnum) or "0")) or STRINGS.UI.SERVERCREATIONSCREEN.SERVERDAY_NEW)
 
@@ -610,17 +609,20 @@ function ServerCreationScreen:RefreshNavButtons()
 end
 
 function ServerCreationScreen:MakeSaveSlotButton(slotnum)
-
     local isempty = SaveGameIndex:IsSlotEmpty(slotnum)
-    local slotName = STRINGS.UI.SERVERCREATIONSCREEN.NEWGAME
-
-    if not isempty then 
+    local isnoname = false
+    local slotName
+    if isempty then
+        slotName = STRINGS.UI.SERVERCREATIONSCREEN.NEWGAME
+    else
         slotName = SaveGameIndex:GetSlotServerData(slotnum).name or ""
-        slotName = TheFrontEnd:GetTruncatedString(slotName, NEWFONT, 35, 140, nil, true)
+        if #slotName <= 0 then
+            slotName = STRINGS.UI.SERVERCREATIONSCREEN.NONAMEGAME
+            isnoname = true
+        end
     end
 
-    local screen = self
-    local btn = TEMPLATES.NavBarButton(-10-(slotnum-1)*47, slotName, function() screen:OnClickSlot(slotnum) end)
+    local btn = TEMPLATES.NavBarButton((1 - slotnum) * 47 - 10, slotName, function() self:OnClickSlot(slotnum) end, not (isempty or isnoname))
     btn.slot = slotnum
 
     -- SaveGameIndex:LoadSlotCharacter is not cheap! Use it in FE only.

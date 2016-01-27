@@ -11,6 +11,9 @@ BASE_TORSO_TUCK = {}
 BASE_ALTERNATE_FOR_BODY = {}
 BASE_ALTERNATE_FOR_SKIRT = {}
 
+--BASE_LEGS_SIZE = {} --not supported yet, due to bugs with determining if the body slot or legs slot is defining the leg symbol.
+BASE_FEET_SIZE = {}
+
 function backpack_dropped(inst)
 	if not inst.decayed then
 		inst.decay_task = inst:DoTaskInTime( BACKPACK_DECAY_TIME, backpack_decay_fn )
@@ -127,6 +130,18 @@ function CreatePrefabSkin( name, info )
 	if prefab_skin.has_alternate_for_skirt then
 		for _,base_skin in pairs(prefab_skin.has_alternate_for_skirt) do
 			BASE_ALTERNATE_FOR_SKIRT[base_skin] = true
+		end
+	end
+	
+	--[[if prefab_skin.legs_cuff_size then
+		for base_skin,size in pairs(prefab_skin.legs_cuff_size) do
+			BASE_LEGS_SIZE[base_skin] = size
+		end
+	end]]
+	
+	if prefab_skin.feet_cuff_size then
+		for base_skin,size in pairs(prefab_skin.feet_cuff_size) do
+			BASE_FEET_SIZE[base_skin] = size
 		end
 	end
 	

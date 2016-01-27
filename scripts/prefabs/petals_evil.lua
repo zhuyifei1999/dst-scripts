@@ -4,9 +4,13 @@ local assets =
 }
 
 local function oneaten(inst, eater)
-    if eater and eater.components.sanity then
+    if eater ~= nil and eater.components.sanity ~= nil then
         eater.components.sanity:DoDelta(-TUNING.SANITY_TINY)
     end
+end
+
+local function OnSpawnedFromHaunt(inst, data)
+    Launch(inst, data.haunter, TUNING.LAUNCH_SPEED_SMALL)
 end
 
 local function fn()
@@ -57,9 +61,7 @@ local function fn()
     inst.components.perishable.onperishreplacement = "spoiled_food"
 
     MakeHauntableLaunchAndPerish(inst)
-    inst:ListenForEvent("spawnedfromhaunt", function(inst, data)
-        Launch(inst, data.haunter, TUNING.LAUNCH_SPEED_SMALL)
-    end)
+    inst:ListenForEvent("spawnedfromhaunt", OnSpawnedFromHaunt)
 
     return inst
 end

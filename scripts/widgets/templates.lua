@@ -365,20 +365,25 @@ TEMPLATES = {
     end,
 
     -- To be added as a child of the Nav Bar. Approximate spacing in Y for these buttons is 45-50.
-    NavBarButton = function(yPos, buttonText, onclick)
+    NavBarButton = function(yPos, buttonText, onclick, truncate)
         local btn = Button()
         btn:SetPosition(10, yPos)
 
-        btn:SetText(buttonText)
         btn:SetFont(NEWFONT)
         btn:SetDisabledFont(NEWFONT)
         btn:SetTextSize(35)
 
-        btn.text:SetRegionSize(140,40)
+        if truncate then
+            btn:SetText("")
+            btn.text:SetTruncatedString(buttonText, 140, 28, true)
+        else
+            btn:SetText(buttonText)
+        end
+        btn.text:SetRegionSize(140, 40)
         btn.text:SetHAlign(ANCHOR_LEFT)
 
-        btn:SetTextColour(GOLD[1], GOLD[2], GOLD[3], GOLD[4])
-        btn:SetTextFocusColour(GOLD[1], GOLD[2], GOLD[3], GOLD[4])
+        btn:SetTextColour(unpack(GOLD))
+        btn:SetTextFocusColour(unpack(GOLD))
         btn:SetTextSelectedColour(0, 0, 0, 1)
 
         btn.active_page_image = btn:AddChild(Image("images/frontend.xml", "nav_selected2.tex"))

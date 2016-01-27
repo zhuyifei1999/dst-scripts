@@ -192,6 +192,9 @@ local function fn()
 
     MakeSnowCovered(inst)
 
+    inst.OnSave = onsave
+    inst.OnLoad = onload
+
     return inst
 end
 

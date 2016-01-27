@@ -45,10 +45,9 @@ local ModConfigurationScreen = Class(Screen, function(self, modname, client_conf
 			end
 		end
 	end
-	print(#self.options)
 
 	self.started_default = self:IsDefaultSettings()
-	
+
     self.black = self:AddChild(Image("images/global.xml", "square.tex"))
     self.black:SetVRegPoint(ANCHOR_MIDDLE)
     self.black:SetHRegPoint(ANCHOR_MIDDLE)
@@ -62,18 +61,25 @@ local ModConfigurationScreen = Class(Screen, function(self, modname, client_conf
     self.root:SetHAnchor(ANCHOR_MIDDLE)
     self.root:SetPosition(0,0,0)
     self.root:SetScaleMode(SCALEMODE_PROPORTIONAL)
-    
+
     self.shield = self.root:AddChild(TEMPLATES.CurlyWindow(40, 365, 1, 1, 67, -41))
     self.shield.fill = self.root:AddChild(Image("images/fepanel_fills.xml", "panel_fill_tall.tex"))
 	self.shield.fill:SetScale(.64, -.57)
 	self.shield.fill:SetPosition(8, 12)
     self.shield:SetPosition(0,0,0)
 
-	local titlestr = TheFrontEnd:GetTruncatedString(KnownModIndex:GetModFancyName(modname), BUTTONFONT, 45, 260, nil, true)
-	titlestr = titlestr.." "..STRINGS.UI.MODSSCREEN.CONFIGSCREENTITLESUFFIX
-	local title = self.root:AddChild( Text(BUTTONFONT, 45, titlestr) )
-	title:SetPosition(10,190)
-	title:SetColour(0,0,0,1)	
+    local title_max_w = 420
+    local title_max_chars = 70
+    local title = self.root:AddChild(Text(BUTTONFONT, 45, " "..STRINGS.UI.MODSSCREEN.CONFIGSCREENTITLESUFFIX))
+    local title_suffix_w = title:GetRegionSize()
+    title:SetPosition(10, 190)
+    title:SetColour(0, 0, 0, 1)
+    if title_suffix_w < title_max_w then
+        title:SetTruncatedString(KnownModIndex:GetModFancyName(modname), title_max_w - title_suffix_w, title_max_chars - 1 - STRINGS.UI.MODSSCREEN.CONFIGSCREENTITLESUFFIX:len(), true)
+        title:SetString(title:GetString().." "..STRINGS.UI.MODSSCREEN.CONFIGSCREENTITLESUFFIX)
+    else
+        title:SetTruncatedString(STRINGS.UI.MODSSCREEN.CONFIGSCREENTITLESUFFIX, title_max_w, title_max_chars, true)
+    end
 
 	self.option_offset = 0
     self.optionspanel = self.root:AddChild(Widget("optionspanel"))	

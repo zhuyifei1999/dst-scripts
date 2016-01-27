@@ -30,7 +30,26 @@ local Spawner = Class(function(self, inst)
     self.nextspawntime = nil
     self.queue_spawn = nil
     self.retry_period = nil
+
+    self._onchildkilled = function(child) self:OnChildKilled(child) end
 end)
+
+function Spawner:OnRemoveFromEntity()
+    if self.spawnoffscreen then
+        self.inst:RemoveEventCallback("entitysleep", OnEntitySleep)
+    end
+    if self.child ~= nil then
+        --Child is outside, release it!
+        if self.child.parent ~= self.inst then
+            self.inst:RemoveEventCallback("ontrapped", self._onchildkilled, self.child)
+            self.inst:RemoveEventCallback("death", self._onchildkilled, self.child)
+        end
+    end
+    if self.task ~= nil then
+        self.task:Cancel()
+        self.task = nil
+    end
+end
 
 function Spawner:GetDebugString()
     return "child: "..tostring(self.child)
@@ -129,8 +148,8 @@ end
 
 function Spawner:TakeOwnership(child)
     if self.child ~= child then
-        self.inst:ListenForEvent("ontrapped", function() self:OnChildKilled(child) end, child)
-        self.inst:ListenForEvent("death", function() self:OnChildKilled(child) end, child)
+        self.inst:ListenForEvent("ontrapped", self._onchildkilled, child)
+        self.inst:ListenForEvent("death", self._onchildkilled, child)
         if child.components.knownlocations ~= nil then
             child.components.knownlocations:RememberLocation("home", self.inst:GetPosition())
         end

@@ -31,6 +31,8 @@ return CreatePrefabSkin("wx78_formal",
 	torso_tuck_builds = { "wx78_formal" },
 	has_alternate_for_body = { "wx78_formal" },
 	
+	feet_cuff_size = { wx78_formal = 3 },
+	
 	skip_item_gen = false,
 	skip_giftable_gen = false,
 	

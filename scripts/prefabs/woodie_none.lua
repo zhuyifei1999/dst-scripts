@@ -22,6 +22,8 @@ return CreatePrefabSkin("woodie_none",
 	assets = assets,
 	tags = tags,
 	
+	feet_cuff_size = { woodie = 3 },
+	
 	skip_item_gen = true,
 	skip_giftable_gen = true,
 })

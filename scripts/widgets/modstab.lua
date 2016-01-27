@@ -177,14 +177,7 @@ function ModsTab:SetModsList(listtype)
         if self.options_scroll_list_client then self.options_scroll_list_client:Hide() end
         if self.options_scroll_list_server then self.options_scroll_list_server:Show() end
         self:DoFocusHookups()
-        
-        local isempty = SaveGameIndex:IsSlotEmpty(self.slotnum)
-        local slotName = STRINGS.UI.SERVERCREATIONSCREEN.NEWGAME
 
-        if not isempty then 
-            slotName = SaveGameIndex:GetSlotServerData(self.slotnum).name or ""
-            slotName = TheFrontEnd:GetTruncatedString(slotName, NEWFONT, 35, 142, nil, true)
-        end
         if self.clientmodsbutton.shown then self.clientmodsbutton:Unselect() end
         if self.servermodsbutton.shown then self.servermodsbutton:Select() end
 
@@ -217,46 +210,38 @@ function ModsTab:CreateDetailPanel()
         self.detailimage:SetScale(0.8,0.8,0.8)
         self.detailimage:SetPosition(-148, 145, 0)
 
-        self.detailtitle = self.detailpanel:AddChild(Text(NEWFONT, 35, ""))
-        self.detailtitle:SetHAlign(ANCHOR_LEFT)
-        self.detailtitle:SetPosition(35, 175)
-        self.detailtitle:SetRegionSize( 270, 70 )
+        self.detailtitle = self.detailpanel:AddChild(Text(NEWFONT, 30, ""))
+        self.detailtitle:SetPosition(-100, 176)
         self.detailtitle:SetColour(0,0,0,1)
 
-        self.detailtitle2 = self.detailpanel:AddChild(Text(NEWFONT, 35, ""))
+        self.detailtitle2 = self.detailpanel:AddChild(Text(NEWFONT, 30, ""))
         self.detailtitle2:SetHAlign(ANCHOR_LEFT)
-        self.detailtitle2:SetPosition(35, 150)
-        self.detailtitle2:SetRegionSize( 270, 70 )
+        self.detailtitle2:SetPosition(35, 151)
+        self.detailtitle2:SetRegionSize(270, 45)
         self.detailtitle2:SetColour(0,0,0,1)
 
         self.detailauthor = self.detailpanel:AddChild(Text(NEWFONT, 20, ""))
         self.detailauthor:SetColour(0,0,0,1)
         --self.detailauthor:SetColour(0.9,0.8,0.6,1) -- link colour
-        self.detailauthor:SetRegionSize( 270, 70 )
-        self.detailauthor:SetHAlign(ANCHOR_LEFT)
-        self.detailauthor:SetPosition(35, 127, 0)
-        --self.detailauthor:EnableWordWrap(true)
+        self.detailauthor:SetPosition(-100, 128, 0)
 
         self.detailcompatibility = self.detailpanel:AddChild(Text(NEWFONT, 18, ""))
         self.detailcompatibility:SetColour(0,0,0,1)
-        self.detailcompatibility:SetPosition(35, 110, 0)
-        self.detailcompatibility:SetRegionSize( 270, 70 )
+        self.detailcompatibility:SetPosition(35, 111, 0)
+        self.detailcompatibility:SetRegionSize(270, 30)
         self.detailcompatibility:SetHAlign(ANCHOR_LEFT)
         
         self.detaildesc = self.detailpanel:AddChild(Text(NEWFONT, 20, ""))
         self.detaildesc:SetColour(0,0,0,1)
-        self.detaildesc:SetPosition(-7, -15, 0)
+        self.detaildesc:SetPosition(-187, 97, 0)
         self.detaildesc:SetHAlign(ANCHOR_LEFT)
-        self.detaildesc:SetVAlign(ANCHOR_TOP)
-        self.detaildesc:SetRegionSize( 360, 225 )
-        self.detaildesc:EnableWordWrap(true)
 
         self.detailwarning = self.detailpanel:AddChild(Text(BODYTEXTFONT, 25, ""))
         self.detailwarning:SetColour(0.8,0.6,0.5, 1)
         self.detailwarning:SetPosition(-107, -153, 0)
         self.detailwarning:SetRegionSize( 360, 107 )
         self.detailwarning:EnableWordWrap(true)
-        
+
         self.modlinkbutton:SetHoverText(STRINGS.UI.MODSSCREEN.MODLINK_MOREINFO)
 		self.modlinkbutton:Unselect()
     else
@@ -815,34 +800,26 @@ function ModsTab:ShowModDetails(idx, client_mod)
         self.detailimage:SetSize(102, 102)
     end
 
-    local nameStr = modinfo.name or modname
-    local firstLine = TheFrontEnd:GetTruncatedString(nameStr, NEWFONT, 35, 270)
-    if string.len(firstLine) < string.len(nameStr) then
-        self.detailtitle:SetPosition(35, 175)
-        local i = 1
-        local split = 0
-        while i < string.len(firstLine) do
-            local nextChar = string.sub(firstLine, i, i)
-            if table.contains(splitChars, nextChar) then
-                split = i
-            end
-            i = i + 1
-        end
-        nameStr = string.sub(nameStr, split + 1)
-        nameStr = string.gsub(nameStr, "^%s*(.-)%s*$", "%1") -- Get rid of whitespace on the ends
-        self.detailtitle:SetString(string.sub(firstLine, 1, split))
-        self.detailtitle2:SetString(nameStr)
+    self.detailtitle:SetMultilineTruncatedString(modinfo.name or modname, 2, 270, 60, true)
+    local nameLines = self.detailtitle:GetString():split("\n")
+    if #nameLines > 1 then
+        self.detailtitle:SetString(nameLines[1])
+        local w = self.detailtitle:GetRegionSize()
+        self.detailtitle:SetPosition(w * .5 - 100, 176)
+        self.detailtitle2:SetString(nameLines[2])
     else
-        self.detailtitle:SetString(nameStr)
-        self.detailtitle:SetPosition(35, 160)
+        local w = self.detailtitle:GetRegionSize()
+        self.detailtitle:SetPosition(w * .5 - 100, 160)
         self.detailtitle2:SetString("")
     end
     
-    local authorStr = modinfo.author or "unknown"
-    self.detailauthor:SetString( string.format(STRINGS.UI.MODSSCREEN.AUTHORBY, authorStr))
+    self.detailauthor:SetTruncatedString(string.format(STRINGS.UI.MODSSCREEN.AUTHORBY, modinfo.author or "unknown"), 270, 88, true)
+    local w, h = self.detailauthor:GetRegionSize()
+    self.detailauthor:SetPosition(w * .5 - 100, 128)
     
-    local descStr = modinfo.description or ""
-    self.detaildesc:SetString(descStr)
+    self.detaildesc:SetMultilineTruncatedString(modinfo.description or "", 11, 360, 77, true)
+    w, h = self.detaildesc:GetRegionSize()
+    self.detaildesc:SetPosition(w * .5 - 187, 97 - .5 * h)
 
     -- if self.modlinkbutton then 
     --     if (modinfo.forumthread and modinfo.forumthread ~= "") or string.sub(modname, 1, 9) == "workshop-" then
@@ -851,7 +828,7 @@ function ModsTab:ShowModDetails(idx, client_mod)
     --         self.modlinkbutton:SetText(STRINGS.UI.MODSSCREEN.MODLINKGENERIC)
     --     end
     -- end
-    
+
     if modinfo.dst_compatible then
         if modinfo.dst_compatibility_specified == false then
             self.detailcompatibility:SetString(STRINGS.UI.MODSSCREEN.COMPATIBILITY_UNKNOWN) 

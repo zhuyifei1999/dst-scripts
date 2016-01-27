@@ -103,7 +103,13 @@ end
 
 local function OnAttacked(inst, data)
     inst.components.combat:SetTarget(data.attacker)
-    inst.components.combat:ShareTarget(data.attacker, 60, function(guy) return guy.prefab == inst.prefab end, 60)
+    inst.components.combat:ShareTarget(data.attacker, 60,
+        function(guy)
+            return guy.prefab == inst.prefab
+                or (inst.components.herdmember.herd ~= nil and
+                    inst.components.herdmember.herd.components.guardian.guardian == guy)
+        end,
+    60)
 end
 
 local function fn()
