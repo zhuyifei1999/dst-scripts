@@ -46,13 +46,9 @@ local function checkregrow(inst)
 end
 
 local function GetStatus(inst)
-    if inst.components.pickable == nil or not inst.components.pickable.canbepicked then
-        return "PICKED"
-    elseif inst.components.pickable.caninteractwith then
-        return "GENERIC"
-    else
-        return "INGROUND"
-    end
+    return (not (inst.components.pickable ~= nil and inst.components.pickable.canbepicked) and "PICKED")
+        or (inst.components.pickable.caninteractwith and "GENERIC")
+        or "INGROUND"
 end
 
 local function open(inst)
@@ -91,62 +87,79 @@ local function OnIsOpenPhase(inst, isopen)
     end
 end
 
-local function pickswitchprefab(inst)
-    if inst.prefab == "red_cap" then
-        if math.random() < .5 then
-            return "blue_cap"
-        else
-            return "green_cap"
-        end
-    elseif inst.prefab == "blue_cap" then
-        if math.random() < .5 then
-            return "red_cap"
-        else
-            return "green_cap"
-        end
-    elseif inst.prefab == "green_cap" then
-        if math.random() < .5 then
-            return "blue_cap"
-        else
-            return "red_cap"
-        end
-    elseif inst.prefab == "red_cap_cooked" then
-        if math.random() < .5 then
-            return "blue_cap_cooked"
-        else
-            return "green_cap_cooked"
-        end
-    elseif inst.prefab == "blue_cap_cooked" then
-        if math.random() < .5 then
-            return "red_cap_cooked"
-        else
-            return "green_cap_cooked"
-        end
-    elseif inst.prefab == "green_cap_cooked" then
-        if math.random() < .5 then
-            return "blue_cap_cooked"
-        else
-            return "red_cap_cooked"
-        end
-    elseif inst.prefab == "red_mushroom" then
-        if math.random() < .5 then
-            return "blue_mushroom"
-        else
-            return "green_mushroom"
-        end
-    elseif inst.prefab == "blue_mushroom" then
-        if math.random() < .5 then
-            return "red_mushroom"
-        else
-            return "green_mushroom"
-        end
-    elseif inst.prefab == "green_mushroom" then
-        if math.random() < .5 then
-            return "blue_mushroom"
-        else
-            return "red_mushroom"
+local function OnSpawnedFromHaunt(inst, data)
+    Launch(inst, data.haunter, TUNING.LAUNCH_SPEED_SMALL)
+end
+
+--V2C: basically, each colour and type can switch to another colour of the same type
+local switchtable = {}
+local switchcolours = { "red", "blue", "green" }
+local switchtypes = { "_cap", "_cap_cooked", "_mushroom" }
+for i, v in ipairs(switchcolours) do
+    for i2, v2 in ipairs(switchtypes) do
+        local t = {}
+        switchtable[v..v2] = t
+        for i3, v3 in ipairs(switchcolours) do
+            if v ~= v3 then
+                table.insert(t, v3..v2)
+            end
         end
     end
+end
+local function pickswitchprefab(inst)
+    local t = switchtable[inst.prefab]
+    return t ~= nil and t[math.random(#t)] or nil
+end
+
+local function OnHauntMush(inst, haunter)
+    local ret = false
+    if math.random() <= TUNING.HAUNT_CHANCE_OCCASIONAL then
+        local x, y, z = inst.Transform:GetWorldPosition()
+        SpawnPrefab("small_puff").Transform:SetPosition(x, y, z)
+        local prefab = pickswitchprefab(inst)
+        local new = prefab ~= nil and SpawnPrefab(prefab) or nil
+        if new ~= nil then
+            new.Transform:SetPosition(x, y, z)
+            -- Make it the right state
+            if inst.components.pickable ~= nil and not inst.components.pickable.canbepicked then
+                if new.components.pickable ~= nil then
+                    new.components.pickable:MakeEmpty()
+                end
+            elseif inst.components.pickable ~= nil and not inst.components.pickable.caninteractwith then
+                new.AnimState:PlayAnimation("inground")
+                if new.components.pickable ~= nil then
+                    new.components.pickable.caninteractwith = false
+                end
+            else
+                new.AnimState:PlayAnimation(new.data.animname)
+                if new.components.pickable ~= nil then
+                    new.components.pickable.caninteractwith = true
+                end
+            end
+        end
+        new:PushEvent("spawnedfromhaunt", { haunter = haunter, oldPrefab = inst })
+        inst:PushEvent("despawnedfromhaunt", { haunter = haunter, newPrefab = new })
+        inst.persists = false
+        inst.entity:Hide()
+        inst:DoTaskInTime(0, inst.Remove)
+        inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
+        ret = true
+    elseif inst.components.pickable ~= nil and inst.components.pickable:CanBePicked() and inst.components.pickable.caninteractwith then
+        inst:closetaskfn()
+        inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
+        ret = true
+    end
+    --#HAUNTFIX
+    --if math.random() <= TUNING.HAUNT_CHANCE_VERYRARE then
+        --if inst.components.burnable ~= nil and not inst.components.burnable:IsBurning() and
+            --inst.components.pickable ~= nil and inst.components.pickable.canbepicked then
+            --inst.components.burnable:Ignite()
+            --inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
+            --inst.components.hauntable.cooldown_on_successful_haunt = false
+            --ret = true
+        --end
+    --end
+    return ret
 end
 
 local function mushcommonfn(data)
@@ -228,53 +241,7 @@ local function mushcommonfn(data)
     MakeNoGrowInWinter(inst)
 
     inst:AddComponent("hauntable")
-    inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
-        local ret = false
-        if math.random() <= TUNING.HAUNT_CHANCE_OCCASIONAL then
-            local fx = SpawnPrefab("small_puff")
-            if fx then fx.Transform:SetPosition(inst.Transform:GetWorldPosition()) end
-            local prefab = pickswitchprefab(inst)
-            local new = nil
-            if prefab then new = SpawnPrefab(prefab) end
-            if new then
-                new.Transform:SetPosition(inst.Transform:GetWorldPosition())
-                -- Make it the right state
-                if inst.components.pickable and not inst.components.pickable.canbepicked then
-                    if new.components.pickable then
-                        new.components.pickable:MakeEmpty()
-                    end
-                elseif inst.components.pickable and not inst.components.pickable.caninteractwith then
-                    new.AnimState:PlayAnimation("inground")
-                    if new.components.pickable then
-                        new.components.pickable.caninteractwith = false
-                    end
-                else
-                    new.AnimState:PlayAnimation(new.data.animname)
-                    if new.components.pickable then
-                        new.components.pickable.caninteractwith = true
-                    end
-                end
-            end
-            inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
-            inst:DoTaskInTime(0, inst.Remove)
-            ret = true
-        elseif inst.components.pickable and inst.components.pickable:CanBePicked() and inst.components.pickable.caninteractwith then
-            inst:closetaskfn()
-            inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
-            ret = true
-        end
-        --#HAUNTFIX
-        --if math.random() <= TUNING.HAUNT_CHANCE_VERYRARE then
-            --if inst.components.burnable and not inst.components.burnable:IsBurning() and
-            --inst.components.pickable and inst.components.pickable.canbepicked then
-                --inst.components.burnable:Ignite()
-                --inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
-                --inst.components.hauntable.cooldown_on_successful_haunt = false
-                --ret = true
-            --end
-        --end
-        return ret
-    end)
+    inst.components.hauntable:SetOnHauntFn(OnHauntMush)
 
     inst:WatchWorldState("iscave"..data.open_time, OnIsOpenPhase)
 
@@ -289,6 +256,35 @@ local function mushcommonfn(data)
     end
 
     return inst
+end
+
+local function OnHauntCapOrCooked(inst, haunter)
+    if math.random() <= TUNING.HAUNT_CHANCE_RARE then
+        local x, y, z = inst.Transform:GetWorldPosition()
+        SpawnPrefab("small_puff").Transform:SetPosition(x, y, z)
+        local prefab = pickswitchprefab(inst)
+        local new = prefab ~= nil and SpawnPrefab(prefab) or nil
+        if new ~= nil then
+            new.Transform:SetPosition(x, y, z)
+            if new.components.stackable ~= nil and inst.components.stackable ~= nil and inst.components.stackable:IsStack() then
+                new.components.stackable:SetStackSize(inst.components.stackable:StackSize())
+            end
+            if new.components.inventoryitem ~= nil and inst.components.inventoryitem ~= nil then
+                new.components.inventoryitem:InheritMoisture(inst.components.inventoryitem:GetMoisture(), inst.components.inventoryitem:IsWet())
+            end
+            if new.components.perishable ~= nil and inst.components.perishable ~= nil then
+                new.components.perishable:SetPercent(inst.components.perishable:GetPercent())
+            end
+            new:PushEvent("spawnedfromhaunt", { haunter = haunter, oldPrefab = inst })
+            inst:PushEvent("despawnedfromhaunt", { haunter = haunter, newPrefab = new })
+            inst.persists = false
+            inst.entity:Hide()
+            inst:DoTaskInTime(0, inst.Remove)
+        end
+        inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
+        return true
+    end
+    return false
 end
 
 local function capcommonfn(data)
@@ -338,29 +334,8 @@ local function capcommonfn(data)
     inst.components.perishable.onperishreplacement = "spoiled_food"
 
     MakeHauntableLaunchAndPerish(inst)
-    AddHauntableCustomReaction(inst, function(inst, haunter)
-        if math.random() <= TUNING.HAUNT_CHANCE_RARE then
-            local fx = SpawnPrefab("small_puff")
-            if fx then fx.Transform:SetPosition(inst.Transform:GetWorldPosition()) end
-            local prefab = pickswitchprefab(inst)
-            local new = nil
-            if prefab then new = SpawnPrefab(prefab) end
-            if new then
-                new.Transform:SetPosition(inst.Transform:GetWorldPosition())
-                if new.components.perishable and inst.components.perishable then
-                    new.components.perishable:SetPercent(inst.components.perishable:GetPercent())
-                end
-                new:PushEvent("spawnedfromhaunt", {haunter=haunter, oldPrefab=inst})
-            end
-            inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
-            inst:DoTaskInTime(0, inst.Remove)
-            return true
-        end
-        return false
-    end, true, false, true)
-    inst:ListenForEvent("spawnedfromhaunt", function(inst, data)
-        Launch(inst, data.haunter, TUNING.LAUNCH_SPEED_SMALL)
-    end)
+    AddHauntableCustomReaction(inst, OnHauntCapOrCooked, true, false, true)
+    inst:ListenForEvent("spawnedfromhaunt", OnSpawnedFromHaunt)
 
     inst:AddComponent("cookable")
     inst.components.cookable.product = data.pickloot.."_cooked"
@@ -400,29 +375,8 @@ local function cookedcommonfn(data)
     inst:AddComponent("inventoryitem")
 
     MakeHauntableLaunchAndPerish(inst)
-    AddHauntableCustomReaction(inst, function(inst, haunter)
-        if math.random() <= TUNING.HAUNT_CHANCE_RARE then
-            local fx = SpawnPrefab("small_puff")
-            if fx then fx.Transform:SetPosition(inst.Transform:GetWorldPosition()) end
-            local prefab = pickswitchprefab(inst)
-            local new = nil
-            if prefab then new = SpawnPrefab(prefab) end
-            if new then
-                new.Transform:SetPosition(inst.Transform:GetWorldPosition())
-                if new.components.perishable and inst.components.perishable then
-                    new.components.perishable:SetPercent(inst.components.perishable:GetPercent())
-                end
-                new:PushEvent("spawnedfromhaunt", {haunter=haunter, oldPrefab=inst})
-            end
-            inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
-            inst:DoTaskInTime(0, inst.Remove)
-            return true
-        end
-        return false
-    end, true, false, true)
-    inst:ListenForEvent("spawnedfromhaunt", function(inst, data)
-        Launch(inst, data.haunter, TUNING.LAUNCH_SPEED_SMALL)
-    end)
+    AddHauntableCustomReaction(inst, OnHauntCapOrCooked, true, false, true)
+    inst:ListenForEvent("spawnedfromhaunt", OnSpawnedFromHaunt)
 
     --this is where it gets interesting
     inst:AddComponent("edible")
@@ -440,11 +394,16 @@ local function cookedcommonfn(data)
 end
 
 local function MakeMushroom(data)
-
     local prefabs =
     {
         data.pickloot,
         data.pickloot.."_cooked",
+        "small_puff",
+    }
+
+    local prefabs2 =
+    {
+        "small_puff",
     }
 
     local function mushfn()
@@ -460,11 +419,12 @@ local function MakeMushroom(data)
     end
 
     return Prefab(data.name, mushfn, mushassets, prefabs),
-           Prefab(data.pickloot, capfn, capassets),
-           Prefab(data.pickloot.."_cooked", cookedfn, cookedassets)
+           Prefab(data.pickloot, capfn, capassets, prefabs2),
+           Prefab(data.pickloot.."_cooked", cookedfn, cookedassets, prefabs2)
 end
 
-local data = {
+local data =
+{
     {
         name = "red_mushroom",
         animname="red",
@@ -477,12 +437,13 @@ local data = {
         cookedhealth = TUNING.HEALING_TINY,
         cookedhunger = 0,
         transform_prefab = "mushtree_medium",
-    }, 
+    },
     {
         name = "green_mushroom",
         animname="green",
         pickloot="green_cap",
-        open_time = "dusk", sanity = -TUNING.SANITY_HUGE,
+        open_time = "dusk",
+        sanity = -TUNING.SANITY_HUGE,
         health= 0,
         hunger = TUNING.CALORIES_SMALL,
         cookedsanity = TUNING.SANITY_MED,
@@ -494,7 +455,8 @@ local data = {
         name = "blue_mushroom",
         animname="blue",
         pickloot="blue_cap",
-        open_time = "night",    sanity = -TUNING.SANITY_MED,
+        open_time = "night",
+        sanity = -TUNING.SANITY_MED,
         health= TUNING.HEALING_MED,
         hunger = TUNING.CALORIES_SMALL,
         cookedsanity = TUNING.SANITY_SMALL,

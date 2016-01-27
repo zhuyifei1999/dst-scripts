@@ -65,22 +65,30 @@ local function AddMonsterMeatChange(inst, prefab)
             local new = SpawnPrefab(prefab)
             if new ~= nil then
                 new.Transform:SetPosition(x, y, z)
+                if new.components.stackable ~= nil and inst.components.stackable ~= nil and inst.components.stackable:IsStack() then
+                    new.components.stackable:SetStackSize(inst.components.stackable:StackSize())
+                end
+                if new.components.inventoryitem ~= nil and inst.components.inventoryitem ~= nil then
+                    new.components.inventoryitem:InheritMoisture(inst.components.inventoryitem:GetMoisture(), inst.components.inventoryitem:IsWet())
+                end
                 if new.components.perishable ~= nil and inst.components.perishable ~= nil then
                     new.components.perishable:SetPercent(inst.components.perishable:GetPercent())
                 end
-                new:PushEvent("spawnedfromhaunt", { haunter = haunter })
+                new:PushEvent("spawnedfromhaunt", { haunter = haunter, oldPrefab = inst })
+                inst:PushEvent("despawnedfromhaunt", { haunter = haunter, newPrefab = new })
+                inst.persists = false
+                inst.entity:Hide()
+                inst:DoTaskInTime(0, inst.Remove)
             end
             inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
-            --Delayed because the hauntable handler does not
-            --expect inst to become invalid during the event
-            inst.entity:Hide()
-            RemovePhysicsColliders(inst)
-            inst.persists = false
-            inst:DoTaskInTime(0, inst.Remove)
             return true
         end
         return false
     end, false, true, false)
+end
+
+local function OnSpawnedFromHaunt(inst, data)
+    Launch(inst, data.haunter, TUNING.LAUNCH_SPEED_SMALL)
 end
 
 local function common(bank, build, anim, tags, dryable, cookable)
@@ -150,9 +158,7 @@ local function common(bank, build, anim, tags, dryable, cookable)
     end
 
     MakeHauntableLaunchAndPerish(inst)
-    inst:ListenForEvent("spawnedfromhaunt", function(inst, data)
-        Launch(inst, data.haunter, TUNING.LAUNCH_SPEED_SMALL)
-    end)
+    inst:ListenForEvent("spawnedfromhaunt", OnSpawnedFromHaunt)
 
     return inst
 end
@@ -177,7 +183,6 @@ local function humanmeat()
 
     return inst
 end
-
 
 local function humanmeat_cooked()
     local inst = common("meat_human", "meat_human", "cooked")

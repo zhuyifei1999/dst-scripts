@@ -3,6 +3,40 @@ local assets =
     Asset("ANIM", "anim/flower_petals.zip"),
 }
 
+local prefabs =
+{
+    "small_puff",
+    "petals_evil",
+}
+
+local function OnHaunt(inst, haunter)
+    if math.random() <= TUNING.HAUNT_CHANCE_HALF then
+        local x, y, z = inst.Transform:GetWorldPosition()
+        SpawnPrefab("small_puff").Transform:SetPosition(x, y, z)
+        local new = SpawnPrefab("petals_evil")
+        if new ~= nil then
+            new.Transform:SetPosition(x, y, z)
+            if new.components.stackable ~= nil and inst.components.stackable ~= nil and inst.components.stackable:IsStack() then
+                new.components.stackable:SetStackSize(inst.components.stackable:StackSize())
+            end
+            if new.components.inventoryitem ~= nil and inst.components.inventoryitem ~= nil then
+                new.components.inventoryitem:InheritMoisture(inst.components.inventoryitem:GetMoisture(), inst.components.inventoryitem:IsWet())
+            end
+            if new.components.perishable ~= nil and inst.components.perishable ~= nil then
+                new.components.perishable:SetPercent(inst.components.perishable:GetPercent())
+            end
+            new:PushEvent("spawnedfromhaunt", { haunter = haunter, oldPrefab = inst })
+            inst:PushEvent("despawnedfromhaunt", { haunter = haunter, newPrefab = new })
+            inst.persists = false
+            inst.entity:Hide()
+            inst:DoTaskInTime(0, inst.Remove)
+        end
+        inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
+        return true
+    end
+    return false
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -50,26 +84,9 @@ local function fn()
     inst.components.perishable.onperishreplacement = "spoiled_food"
 
     MakeHauntableLaunchAndPerish(inst)
-    AddHauntableCustomReaction(inst, function(inst, haunter)
-        if math.random() <= TUNING.HAUNT_CHANCE_HALF then
-            local fx = SpawnPrefab("small_puff")
-            if fx then fx.Transform:SetPosition(inst.Transform:GetWorldPosition()) end
-            local new = SpawnPrefab("petals_evil")
-            if new then
-                new.Transform:SetPosition(inst.Transform:GetWorldPosition())
-                if new.components.perishable and inst.components.perishable then
-                    new.components.perishable:SetPercent(inst.components.perishable:GetPercent())
-                end
-                new:PushEvent("spawnedfromhaunt", {haunter=haunter, oldPrefab=inst})
-            end
-            inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
-            inst:DoTaskInTime(0, function(inst) inst:Remove() end)
-            return true
-        end
-        return false
-    end, false, true, false)
+    AddHauntableCustomReaction(inst, OnHaunt, false, true, false)
 
     return inst
 end
 
-return Prefab("petals", fn, assets)
+return Prefab("petals", fn, assets, prefabs)

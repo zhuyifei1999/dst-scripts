@@ -2,9 +2,9 @@ local Widget = require "widgets/widget"
 
 local Text = Class(Widget, function(self, font, size, text, colour)
     Widget._ctor(self, "Text")
-   
+
     self.inst.entity:AddTextWidget()
-    
+
     self.inst.TextWidget:SetFont(font)
     self.font = font
     self.inst.TextWidget:SetSize(size)
@@ -12,31 +12,25 @@ local Text = Class(Widget, function(self, font, size, text, colour)
 
     self:SetColour(colour or { 1, 1, 1, 1 })
 
-	if text then
-		self:SetString( text )
-	end
+    if text ~= nil then
+        self:SetString(text)
+    end
 end)
 
 function Text:__tostring()
     return string.format("%s - %s", self.name, self.string or "")
 end
 
-function Text:SetColour(r,g,b,a)
-    if type(r) == "number" then
-        self.inst.TextWidget:SetColour(r, g, b, a)
-        self.colour = {r, g, b, a}
-    else
-        self.inst.TextWidget:SetColour(r[1], r[2], r[3], r[4])
-        self.colour = r
-    end
+function Text:SetColour(r, g, b, a)
+    self.colour = type(r) == "number" and { r, g, b, a } or r
+    self.inst.TextWidget:SetColour(unpack(self.colour))
 end
 
-function  Text:GetColour()
-    local current_colour = { self.colour[1], self.colour[2], self.colour[3], self.colour[4]}
-    return current_colour
+function Text:GetColour()
+    return { unpack(self.colour) }
 end
 
-function Text:SetHorizontalSqueeze( squeeze )
+function Text:SetHorizontalSqueeze(squeeze)
     self.inst.TextWidget:SetHorizontalSqueeze(squeeze)
 end
 
@@ -75,7 +69,7 @@ function Text:SetString(str)
 end
 
 function Text:GetString()
-	--print("Text:GetString()", self.inst.TextWidget:GetString())
+    --print("Text:GetString()", self.inst.TextWidget:GetString())
     return self.inst.TextWidget:GetString() or ""
 end
 
@@ -96,31 +90,40 @@ end
 --  3) Use that number as an estimate for maxchars, or round up
 --     a little just in case dots aren't the smallest character
 function Text:SetTruncatedString(str, maxwidth, maxchars, ellipses)
-    if type(ellipses) ~= "string" then
-        ellipses = ellipses and "..." or ""
-    end
-    if maxchars ~= nil and str:utf8len() > maxchars then
-        str = str:utf8sub(1, maxchars)
-        self.inst.TextWidget:SetString(str..ellipses)
-    else
-        self.inst.TextWidget:SetString(str)
-    end
-    if maxwidth ~= nil then
-        while self.inst.TextWidget:GetRegionSize() > maxwidth do
-            str = str:utf8sub(1, -2)
-            self.inst.TextWidget:SetString(str..ellipses)
+    str = str:match("^[^\n\v\f\r]*")
+    if #str > 0 then
+        if type(ellipses) ~= "string" then
+            ellipses = ellipses and "..." or ""
         end
+        if maxchars ~= nil and str:utf8len() > maxchars then
+            str = str:utf8sub(1, maxchars)
+            self.inst.TextWidget:SetString(str..ellipses)
+        else
+            self.inst.TextWidget:SetString(str)
+        end
+        if maxwidth ~= nil then
+            while self.inst.TextWidget:GetRegionSize() > maxwidth do
+                str = str:utf8sub(1, -2)
+                self.inst.TextWidget:SetString(str..ellipses)
+            end
+        end
+    else
+        self.inst.TextWidget:SetString("")
     end
 end
 
 local function IsWhiteSpace(charcode)
     -- 32: space
     --  9: \t
+    return charcode == 32 or charcode == 9
+end
+
+local function IsNewLine(charcode)
     -- 10: \n
     -- 11: \v
     -- 12: \f
     -- 13: \r
-    return charcode == 32 or (charcode >= 9 and charcode <= 13)
+    return charcode >= 10 and charcode <= 13
 end
 
 -- maxwidth can be a single number or an array of numbers if maxwidth is different per line
@@ -132,7 +135,9 @@ function Text:SetMultilineTruncatedString(str, maxlines, maxwidth, maxcharsperli
         self:SetTruncatedString(str, tempmaxwidth, maxcharsperline, false)
         local line = self:GetString()
         if #line < #str then
-            if not IsWhiteSpace(str:byte(#line + 1)) then
+            if IsNewLine(str:byte(#line + 1)) then
+                str = str:sub(#line + 2)
+            elseif not IsWhiteSpace(str:byte(#line + 1)) then
                 for i = #line, 1, -1 do
                     if IsWhiteSpace(line:byte(i)) then
                         line = line:sub(1, i)
@@ -173,7 +178,7 @@ function Text:SetHAlign(anchor)
 end
 
 function Text:EnableWordWrap(enable)
-	self.inst.TextWidget:EnableWordWrap(enable)
+    self.inst.TextWidget:EnableWordWrap(enable)
 end
 
 return Text

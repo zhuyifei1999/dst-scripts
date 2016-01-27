@@ -356,41 +356,46 @@ local DESTSOUNDS =
 {
     {   --magic
         soundpath = "dontstarve/common/destroy_magic",
-        ing = {"nightmarefuel", "livinglog"},
+        ing = { "nightmarefuel", "livinglog" },
     },
     {   --cloth
         soundpath = "dontstarve/common/destroy_clothing",
-        ing = {"silk", "beefalowool"},
+        ing = { "silk", "beefalowool" },
     },
     {   --tool
         soundpath = "dontstarve/common/destroy_tool",
-        ing = {"twigs"},
+        ing = { "twigs" },
     },
     {   --gem
         soundpath = "dontstarve/common/gem_shatter",
-        ing = {"redgem", "bluegem", "greengem", "purplegem", "yellowgem", "orangegem"},
+        ing = { "redgem", "bluegem", "greengem", "purplegem", "yellowgem", "orangegem" },
     },
     {   --wood
         soundpath = "dontstarve/common/destroy_wood",
-        ing = {"log", "board"}
+        ing = { "log", "boards" },
     },
     {   --stone
         soundpath = "dontstarve/common/destroy_stone",
-        ing = {"rocks", "cutstone"}
+        ing = { "rocks", "cutstone" },
     },
     {   --straw
         soundpath = "dontstarve/common/destroy_straw",
-        ing = {"cutgrass", "cutreeds"}
+        ing = { "cutgrass", "cutreeds" },
     },
 }
+local DESTSOUNDSMAP = {}
+for i, v in ipairs(DESTSOUNDS) do
+    for i2, v2 in ipairs(v.ing) do
+        DESTSOUNDSMAP[v2] = v.soundpath
+    end
+end
+DESTSOUNDS = nil
 
 local function CheckSpawnedLoot(loot)
-    if not ((loot.components.inventoryitem and loot.components.inventoryitem:IsHeld()) or loot:IsOnValidGround()) then
+    if not ((loot.components.inventoryitem ~= nil and loot.components.inventoryitem:IsHeld()) or loot:IsOnValidGround()) then
         SpawnPrefab("splash_ocean").Transform:SetPosition(loot.Transform:GetWorldPosition())
-        --PlayFX(loot:GetPosition(), "splash", "splash_ocean", "idle")
         if loot:HasTag("irreplaceable") then
-			local x,y,z = FindSafeSpawnLocation(loot.Transform:GetWorldPosition())								
-            loot.Transform:SetPosition(x,y,z)
+            loot.Transform:SetPosition(FindSafeSpawnLocation(loot.Transform:GetWorldPosition()))
         else
             loot:Remove()
         end
@@ -398,120 +403,90 @@ local function CheckSpawnedLoot(loot)
 end
 
 local function SpawnLootPrefab(inst, lootprefab)
-    if lootprefab then
-        local loot = SpawnPrefab(lootprefab)
-        if loot ~= nil then
-            
-            local x, y, z = inst.Transform:GetWorldPosition()
-            
-            loot.Transform:SetPosition(x, y, z)
-            
-            if loot.Physics ~= nil then
-            
-                local angle = math.random()*2*PI
-                loot.Physics:SetVel(2*math.cos(angle), 10, 2*math.sin(angle))
-
-                if loot.Physics ~= nil and inst.Physics ~= nil then
-                    local len = loot.Physics:GetRadius() + inst.Physics:GetRadius()
-                    loot.Transform:SetPosition(x + math.cos(angle) * len, y, z + math.sin(angle) * len)
-                end
-                
-                loot:DoTaskInTime(1, CheckSpawnedLoot)
-            end
-            
-            return loot
-        end
-    end
-end
-
-local function getsoundsforstructure(inst, target)
-
-    local sounds = {}
-
-    local recipe = AllRecipes[target.prefab]
-
-    if recipe ~= nil then       
-        for k, soundtbl in pairs(DESTSOUNDS) do
-            for k2, ing in pairs(soundtbl.ing) do
-                for k3, rec_ingredients in pairs(recipe.ingredients) do
-                    if rec_ingredients.type == ing then
-                        table.insert(sounds, soundtbl.soundpath)
-                    end
-                end 
-            end
-        end
-    end
-
-    return sounds
-
-end
-
-local function destroystructure(staff, target)
-
-    local ingredient_percent = 1
-
-    if target.components.finiteuses then
-        ingredient_percent = target.components.finiteuses:GetPercent()
-    elseif target.components.fueled and target.components.inventoryitem then
-        ingredient_percent = target.components.fueled:GetPercent()
-    elseif target.components.armor and target.components.inventoryitem then
-        ingredient_percent = target.components.armor:GetPercent()
-    end
-
-    local recipe = AllRecipes[target.prefab]
-
-    local caster = staff.components.inventoryitem.owner
-
-    local loot = {}
-
-    if recipe then       
-        for k,v in ipairs(recipe.ingredients) do
-            if not string.find(v.type, "gem") then
-                local amt = math.ceil(v.amount * ingredient_percent)
-                for n = 1, amt do
-                    table.insert(loot, v.type)
-                end
-            end
-        end
-    end
-
-    if #loot <= 0 then
+    if lootprefab == nil then
         return
     end
 
-    local sounds = {}
-    sounds = getsoundsforstructure(staff, target)
-    for k,v in pairs(sounds) do
-        print("playing ",v)
-        staff.SoundEmitter:PlaySound(v)
+    local loot = SpawnPrefab(lootprefab)
+    if loot == nil then
+        return
     end
 
-    for k,v in pairs(loot) do
-        SpawnLootPrefab(target, v)
+    local x, y, z = inst.Transform:GetWorldPosition()
+
+    if loot.Physics ~= nil then
+        local angle = math.random() * 2 * PI
+        loot.Physics:SetVel(2 * math.cos(angle), 10, 2 * math.sin(angle))
+
+        if inst.Physics ~= nil then
+            local len = loot.Physics:GetRadius() + inst.Physics:GetRadius()
+            x = x + math.cos(angle) * len
+            z = z + math.sin(angle) * len
+        end
+
+        loot:DoTaskInTime(1, CheckSpawnedLoot)
     end
 
-    if caster and caster.components.sanity then
-        caster.components.sanity:DoDelta(-TUNING.SANITY_MEDLARGE)
+    loot.Transform:SetPosition(x, y, z)
+
+    return loot
+end
+
+local function destroystructure(staff, target)
+    local recipe = AllRecipes[target.prefab]
+    if recipe == nil then
+        --Action filters should prevent us from reaching here normally
+        return
     end
 
-    staff.SoundEmitter:PlaySound("dontstarve/common/staff_star_dissassemble")
+    local ingredient_percent =
+        (   (target.components.finiteuses ~= nil and target.components.finiteuses:GetPercent()) or
+            (target.components.fueled ~= nil and target.components.inventoryitem ~= nil and target.components.fueled:GetPercent()) or
+            (target.components.armor ~= nil and target.components.inventoryitem ~= nil and target.components.armor:GetPercent()) or
+            1
+        ) / recipe.numtogive
+
+    --V2C: Can't play sounds on the staff, or nobody
+    --     but the user and the host will hear them!
+    local caster = staff.components.inventoryitem.owner
+
+    for i, v in ipairs(recipe.ingredients) do
+        if caster ~= nil and DESTSOUNDSMAP[v.type] ~= nil then
+            caster.SoundEmitter:PlaySound(DESTSOUNDSMAP[v.type])
+        end
+        if not string.find(v.type, "gem") then
+            --V2C: always at least one in case ingredient_percent is 0%
+            local amt = math.max(1, math.ceil(v.amount * ingredient_percent))
+            for n = 1, amt do
+                SpawnLootPrefab(target, v.type)
+            end
+        end
+    end
+
+    if caster ~= nil then
+        caster.SoundEmitter:PlaySound("dontstarve/common/staff_dissassemble")
+
+        if caster.components.sanity ~= nil then
+            caster.components.sanity:DoDelta(-TUNING.SANITY_MEDLARGE)
+        end
+    end
 
     staff.components.finiteuses:Use(1)
 
-    if target.components.inventory then
+    if target.components.inventory ~= nil then
         target.components.inventory:DropEverything()
     end
 
-    if target.components.container then
+    if target.components.container ~= nil then
         target.components.container:DropEverything()
     end
 
-    if target.components.stackable then
+    if target.components.stackable ~= nil then
         --if it's stackable we only want to destroy one of them.
-        target = target.components.stackable:Get()
+        target.components.stackable:Get():Remove()
+    else
+        target:Remove()
     end
-
-    target:Remove()
 end
 
 local function HasRecipe(guy)

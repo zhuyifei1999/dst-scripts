@@ -175,13 +175,19 @@ local function OnPhaseChanged(inst, phase, instant)
     end
 end
 
+local function SetGemmedLoot(inst)
+    inst.components.lootdropper:SetLoot({ "thulecite", inst.gemmed })
+    inst.components.lootdropper:AddChanceLoot("thulecite", 0.05)
+end
+
 local function onsave(inst, data)
     data.gem = inst.gemmed
 end
 
 local function onload(inst, data)
-    if data and data.gem then
+    if data ~= nil and data.gem ~= nil then
         inst.gemmed = data.gem
+        SetGemmedLoot(inst)
     end
 end
 
@@ -279,8 +285,7 @@ local function gem(small)
 
     inst.AnimState:OverrideSymbol("swap_gem", small and "statue_ruins_small_gem" or "statue_ruins_gem", inst.gemmed)
 
-    inst.components.lootdropper:SetLoot({ "thulecite", inst.gemmed })
-    inst.components.lootdropper:AddChanceLoot("thulecite", 0.05)
+    SetGemmedLoot(inst)
 
     return inst
 end

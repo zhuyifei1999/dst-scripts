@@ -77,6 +77,10 @@ local function GetStatus(inst)
         or nil
 end
 
+local function canspawn(inst)
+    return inst.components.worldmigrator:IsActive() or inst.components.worldmigrator:IsFull()
+end
+
 local function activatebyother(inst)
     OnWork(inst, nil, 0)
 end
@@ -178,6 +182,7 @@ local function open_fn()
     inst.components.childspawner:SetRegenPeriod(60)
     inst.components.childspawner:SetSpawnPeriod(.1)
     inst.components.childspawner:SetMaxChildren(6)
+    inst.components.childspawner.canspawnfn = canspawn
     inst.components.childspawner.childname = "bat"
 
     inst.components.inspectable.getstatus = GetStatus

@@ -724,6 +724,15 @@ function MakeHauntableChangePrefab(inst, newprefab, chance, haunt_value, nofx)
             local new = SpawnPrefab(type(newprefab) == "table" and newprefab[math.random(#newprefab)] or newprefab)
             if new ~= nil then
                 new.Transform:SetPosition(x, y, z)
+                if new.components.stackable ~= nil and inst.components.stackable ~= nil and inst.components.stackable:IsStack() then
+                    new.components.stackable:SetStackSize(inst.components.stackable:StackSize())
+                end
+                if new.components.inventoryitem ~= nil and inst.components.inventoryitem ~= nil then
+                    new.components.inventoryitem:InheritMoisture(inst.components.inventoryitem:GetMoisture(), inst.components.inventoryitem:IsWet())
+                end
+                if new.components.perishable ~= nil and inst.components.perishable ~= nil then
+                    new.components.perishable:SetPercent(inst.components.perishable:GetPercent())
+                end
                 local home = inst.components.homeseeker ~= nil and inst.components.homeseeker.home or nil
                 inst:PushEvent("detachchild")
                 if home ~= nil and home.components.childspawner ~= nil then
@@ -732,6 +741,7 @@ function MakeHauntableChangePrefab(inst, newprefab, chance, haunt_value, nofx)
                 new:PushEvent("spawnedfromhaunt", { haunter = haunter, oldPrefab = inst })
                 inst:PushEvent("despawnedfromhaunt", { haunter = haunter, newPrefab = new })
                 inst.persists = false
+                inst.entity:Hide()
                 inst:DoTaskInTime(0, inst.Remove)
             end
             inst.components.hauntable.hauntvalue = haunt_value or TUNING.HAUNT_SMALL
@@ -759,6 +769,15 @@ function MakeHauntableLaunchOrChangePrefab(inst, launchchance, prefabchance, spe
                 local new = SpawnPrefab(newprefab)
                 if new ~= nil then
                     new.Transform:SetPosition(x, y, z)
+                    if new.components.stackable ~= nil and inst.components.stackable ~= nil and inst.components.stackable:IsStack() then
+                        new.components.stackable:SetStackSize(inst.components.stackable:StackSize())
+                    end
+                    if new.components.inventoryitem ~= nil and inst.components.inventoryitem ~= nil then
+                        new.components.inventoryitem:InheritMoisture(inst.components.inventoryitem:GetMoisture(), inst.components.inventoryitem:IsWet())
+                    end
+                    if new.components.perishable ~= nil and inst.components.perishable ~= nil then
+                        new.components.perishable:SetPercent(inst.components.perishable:GetPercent())
+                    end
                     local home = inst.components.homeseeker ~= nil and inst.components.homeseeker.home or nil
                     inst:PushEvent("detachchild")
                     if home ~= nil and home.components.childspawner ~= nil then
