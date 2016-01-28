@@ -227,12 +227,12 @@ local GROUP = {
 							["world_size"] = {value = "default", enable = false, image = "world_size.tex", desc = size_descriptions, order = 3}, 
 							["branching"] = {value = "default", enable = false, image = "world_branching.tex", desc = branching_descriptions, order = 4}, 
 							["loop"] = {value = "default", enable = false, image = "world_loop.tex", desc = loop_descriptions, order = 5}, 
-							["autumn"] = {value = "default", enable = true, image = "autumn.tex", desc = season_length_descriptions, order = 6},
-							["winter"] = {value = "default", enable = true, image = "winter.tex", desc = season_length_descriptions, order = 7},
-							["spring"] = {value = "default", enable = true, image = "spring.tex", desc = season_length_descriptions, order = 8},
-							["summer"] = {value = "default", enable = true, image = "summer.tex", desc = season_length_descriptions, order = 9},
-							["season_start"] = {value = "default", enable = false, image = "season_start.tex", desc = season_start_descriptions, order = 10}, 
-							["day"] = {value = "default", enable = false, image = "day.tex", desc = day_descriptions, order = 11}, 
+							["autumn"] = {value = "default", enable = true, image = "autumn.tex", desc = season_length_descriptions, master_controlled = true, order = 6},
+							["winter"] = {value = "default", enable = true, image = "winter.tex", desc = season_length_descriptions, master_controlled = true, order = 7},
+							["spring"] = {value = "default", enable = true, image = "spring.tex", desc = season_length_descriptions, master_controlled = true, order = 8},
+							["summer"] = {value = "default", enable = true, image = "summer.tex", desc = season_length_descriptions, master_controlled = true, order = 9},
+							["season_start"] = {value = "default", enable = false, image = "season_start.tex", desc = season_start_descriptions, master_controlled = true, order = 10}, 
+							["day"] = {value = "default", enable = false, image = "day.tex", desc = day_descriptions, master_controlled = true, order = 11}, 
 							["weather"] = {value = "default", enable = false, image = "rain.tex", desc = freqency_descriptions, order = 13}, 
 							["lightning"] = {value = "default", enable = false, image = "lightning.tex", desc = freqency_descriptions, order = 14, world={"forest"}}, 
 							["earthquakes"] = {value = "default", enable = false, image = "earthquakes.tex", desc = freqency_descriptions, order = 14, world={"cave"}}, 
@@ -257,7 +257,7 @@ local function GetGroupForItem(target)
 	return "misc"
 end
 
-local function GetOptions(world)
+local function GetOptions(world, is_master_world)
     local options = {}
 
     local groups = {}
@@ -272,7 +272,9 @@ local function GetOptions(world)
         local group = GROUP[groupname]
         for k,v in pairs(group.items) do
             if world == nil or v.world == nil or table.contains(v.world, world) then
-                table.insert(items, k)
+				if is_master_world or not v.master_controlled then
+	                table.insert(items, k)
+	            end
             end
         end
 

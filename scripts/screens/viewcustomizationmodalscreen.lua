@@ -169,7 +169,7 @@ end
 
 function ViewCustomizationModalScreen:RefreshSpinnerValues()
     local location = self.current_option_settings[self.currentmultilevel].presetdata.location or "forest"
-    self.options = Customise.GetOptions(location)
+    self.options = Customise.GetOptions(location, true)
     self.customizationlist = self.optionspanel:AddChild(CustomizationList(location, self.options, nil))
     self.customizationlist:SetPosition(-3, -40, 0)
     self.customizationlist:SetScale(.85)

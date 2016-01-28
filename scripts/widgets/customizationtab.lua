@@ -457,7 +457,7 @@ function CustomizationTab:RefreshSpinnerValues()
     end
 
     local location = self.activepresets[self.currentmultilevel].location or "forest"
-    self.options = Customise.GetOptions(location)
+    self.options = Customise.GetOptions(location, self.currentmultilevel == 1)
     if self.customizationlist ~= nil then
         self.customizationlist:Kill()
     end
