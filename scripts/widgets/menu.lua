@@ -260,4 +260,11 @@ function Menu:DisableItem(num)
 	end
 end
 
+function Menu:EnableItem(num)
+	if self.items[num] then 
+		local i = self.items[num]
+		i:Enable()
+	end
+end
+
 return Menu

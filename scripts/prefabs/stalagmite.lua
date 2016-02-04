@@ -1,7 +1,7 @@
 local stalagmite_assets =
 {
     Asset("ANIM", "anim/rock_stalagmite.zip"),
-	Asset("MINIMAP_IMAGE", "stalagmite"), --shared with other numbered prefabs
+    Asset("MINIMAP_IMAGE", "stalagmite"), --shared with other numbered prefabs
 }
 
 local prefabs =
@@ -11,6 +11,7 @@ local prefabs =
     "flint",
     "goldnugget",
     "orangegem",
+    "rock_break_fx",
 }
 
 SetSharedLootTable( 'full_rock',
@@ -45,15 +46,16 @@ SetSharedLootTable( 'low_rock',
 
 local function workcallback(inst, worker, workleft)
     if workleft <= 0 then
-        inst.SoundEmitter:PlaySound("dontstarve/wilson/rock_break")
-        inst.components.lootdropper:DropLoot(inst:GetPosition())
+        local pos = inst:GetPosition()
+        SpawnPrefab("rock_break_fx").Transform:SetPosition(pos:Get())
+        inst.components.lootdropper:DropLoot(pos)
         inst:Remove()
-    elseif workleft <= TUNING.ROCKS_MINE / 3 then
-        inst.AnimState:PlayAnimation("low")
-    elseif workleft <= TUNING.ROCKS_MINE * 2 / 3 then
-        inst.AnimState:PlayAnimation("med")
     else
-        inst.AnimState:PlayAnimation("full")
+        inst.AnimState:PlayAnimation(
+            (workleft <= TUNING.ROCKS_MINE / 3 and "low") or
+            (workleft <= TUNING.ROCKS_MINE * 2 / 3 and "med") or
+            "full"
+        )
     end
 end
 

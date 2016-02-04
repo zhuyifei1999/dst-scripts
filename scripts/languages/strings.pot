@@ -6256,6 +6256,16 @@ msgctxt "STRINGS.SKIN_NAMES.backpack_basic_blue_catcoon"
 msgid "Backpack"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.backpack_dragonfly_fire
+msgctxt "STRINGS.SKIN_NAMES.backpack_dragonfly_fire"
+msgid "Scorching Satchel"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_silk_loungewear_green_laurel
+msgctxt "STRINGS.SKIN_NAMES.body_silk_loungewear_green_laurel"
+msgid "Silk Loungewear"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.body_buttons_white_ghost
 msgctxt "STRINGS.SKIN_NAMES.body_buttons_white_ghost"
 msgid "Buttoned Shirt"
@@ -6266,6 +6276,11 @@ msgctxt "STRINGS.SKIN_NAMES.body_sweatervest_red_firehound"
 msgid "Sweater Vest"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.body_silk_eveningrobe_pink_ewecus
+msgctxt "STRINGS.SKIN_NAMES.body_silk_eveningrobe_pink_ewecus"
+msgid "Silk Robe"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.body_wes_formal
 msgctxt "STRINGS.SKIN_NAMES.body_wes_formal"
 msgid "Evening Attire"
@@ -6274,6 +6289,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.feet_maryjanes_white_pure
 msgctxt "STRINGS.SKIN_NAMES.feet_maryjanes_white_pure"
 msgid "Mary Janes"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_silk_eveningrobe_red_rump
+msgctxt "STRINGS.SKIN_NAMES.body_silk_eveningrobe_red_rump"
+msgid "Silk Robe"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.body_webber_formal
@@ -6316,6 +6336,11 @@ msgctxt "STRINGS.SKIN_NAMES.body_suspenders_white_pure"
 msgid "Suspension Shirt"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.body_cardigan_red_cardinal
+msgctxt "STRINGS.SKIN_NAMES.body_cardigan_red_cardinal"
+msgid "Cardigan"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.body_polo_white_marble
 msgctxt "STRINGS.SKIN_NAMES.body_polo_white_marble"
 msgid "Collared Shirt"
@@ -6351,9 +6376,19 @@ msgctxt "STRINGS.SKIN_NAMES.wickerbottom_formal"
 msgid "Guest of Honor"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.wx78_formal
+msgctxt "STRINGS.SKIN_NAMES.wx78_formal"
+msgid "Guest of Honor"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.backpack_spider
 msgctxt "STRINGS.SKIN_NAMES.backpack_spider"
 msgid "Spider Sack"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.woodie_formal
+msgctxt "STRINGS.SKIN_NAMES.woodie_formal"
+msgid "Guest of Honor"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.body_flannel_blue_snowbird
@@ -6361,14 +6396,39 @@ msgctxt "STRINGS.SKIN_NAMES.body_flannel_blue_snowbird"
 msgid "Lumberjack Shirt"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.body_silk_eveningrobe_blue_frost
+msgctxt "STRINGS.SKIN_NAMES.body_silk_eveningrobe_blue_frost"
+msgid "Silk Robe"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.body_buttons_pink_hibiscus
 msgctxt "STRINGS.SKIN_NAMES.body_buttons_pink_hibiscus"
 msgid "Buttoned Shirt"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.willow_formal
+msgctxt "STRINGS.SKIN_NAMES.willow_formal"
+msgid "Guest of Honor"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wes_formal
+msgctxt "STRINGS.SKIN_NAMES.wes_formal"
+msgid "Guest of Honor"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wendy_formal
+msgctxt "STRINGS.SKIN_NAMES.wendy_formal"
+msgid "Guest of Honor"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.backpack_bat
 msgctxt "STRINGS.SKIN_NAMES.backpack_bat"
 msgid "Back Bat"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_silk_eveningrobe_yellow_goldenrod
+msgctxt "STRINGS.SKIN_NAMES.body_silk_eveningrobe_yellow_goldenrod"
+msgid "Silk Robe"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.backpack_basic_green_olive
@@ -6381,9 +6441,14 @@ msgctxt "STRINGS.SKIN_NAMES.legs_pants_basic_grey_dark"
 msgid "Pants"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.wendy_formal
-msgctxt "STRINGS.SKIN_NAMES.wendy_formal"
-msgid "Guest of Honor"
+#. STRINGS.SKIN_NAMES.body_tshirt_purple_mauve
+msgctxt "STRINGS.SKIN_NAMES.body_tshirt_purple_mauve"
+msgid "T-Shirt"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_silk_loungewear_white_marble
+msgctxt "STRINGS.SKIN_NAMES.body_silk_loungewear_white_marble"
+msgid "Silk Loungewear"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.legs_skirt_basic_brown_sepia
@@ -6401,9 +6466,24 @@ msgctxt "STRINGS.SKIN_NAMES.body_buttons_blue_sky"
 msgid "Buttoned Shirt"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.legs_pants_basic_tan_cream
+msgctxt "STRINGS.SKIN_NAMES.legs_pants_basic_tan_cream"
+msgid "Pants"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wathgrithr_formal
+msgctxt "STRINGS.SKIN_NAMES.wathgrithr_formal"
+msgid "Guest of Honor"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.backpack_camping_orange_carrot
 msgctxt "STRINGS.SKIN_NAMES.backpack_camping_orange_carrot"
 msgid "Rucksack"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.none
+msgctxt "STRINGS.SKIN_NAMES.none"
+msgid "Default"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.hand_wilson_formal
@@ -6416,9 +6496,9 @@ msgctxt "STRINGS.SKIN_NAMES.body_buttons_green_laurel"
 msgid "Buttoned Shirt"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.legs_skirt_basic_black_scribble
-msgctxt "STRINGS.SKIN_NAMES.legs_skirt_basic_black_scribble"
-msgid "Skirt"
+#. STRINGS.SKIN_NAMES.body_cardigan_white_ghost
+msgctxt "STRINGS.SKIN_NAMES.body_cardigan_white_ghost"
+msgid "Cardigan"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.backpack_smallbird
@@ -6426,9 +6506,19 @@ msgctxt "STRINGS.SKIN_NAMES.backpack_smallbird"
 msgid "Smallbird Satchel"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.missing
+msgctxt "STRINGS.SKIN_NAMES.missing"
+msgid "Thingamabob"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.backpack_camping_red_koalefant
 msgctxt "STRINGS.SKIN_NAMES.backpack_camping_red_koalefant"
 msgid "Rucksack"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.legs_skirt_plaid_green_pistachio
+msgctxt "STRINGS.SKIN_NAMES.legs_skirt_plaid_green_pistachio"
+msgid "Plaid Skirt"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.body_suspenders_pink_pearl
@@ -6439,96 +6529,6 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.body_trimmed_blouse_red_higgsbury
 msgctxt "STRINGS.SKIN_NAMES.body_trimmed_blouse_red_higgsbury"
 msgid "Pleated Shirt"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.wx78_formal
-msgctxt "STRINGS.SKIN_NAMES.wx78_formal"
-msgid "Guest of Honor"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.backpack_poop
-msgctxt "STRINGS.SKIN_NAMES.backpack_poop"
-msgid "Poop Bag"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.woodie_formal
-msgctxt "STRINGS.SKIN_NAMES.woodie_formal"
-msgid "Guest of Honor"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.body_trimmed_blouse_white_pure
-msgctxt "STRINGS.SKIN_NAMES.body_trimmed_blouse_white_pure"
-msgid "Pleated Shirt"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.body_polo_yellow_goldenrod
-msgctxt "STRINGS.SKIN_NAMES.body_polo_yellow_goldenrod"
-msgid "Collared Shirt"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.webber_formal
-msgctxt "STRINGS.SKIN_NAMES.webber_formal"
-msgid "Guest of Honor"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.body_trimmed_blouse_yellow_flax
-msgctxt "STRINGS.SKIN_NAMES.body_trimmed_blouse_yellow_flax"
-msgid "Pleated Shirt"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.willow_formal
-msgctxt "STRINGS.SKIN_NAMES.willow_formal"
-msgid "Guest of Honor"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.wes_formal
-msgctxt "STRINGS.SKIN_NAMES.wes_formal"
-msgid "Guest of Honor"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.body_wendy_formal
-msgctxt "STRINGS.SKIN_NAMES.body_wendy_formal"
-msgid "Party Frock"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.hand_beltedgloves_brown_beaver
-msgctxt "STRINGS.SKIN_NAMES.hand_beltedgloves_brown_beaver"
-msgid "Buckled Gloves"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.wathgrithr_formal
-msgctxt "STRINGS.SKIN_NAMES.wathgrithr_formal"
-msgid "Guest of Honor"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.none
-msgctxt "STRINGS.SKIN_NAMES.none"
-msgid "Default"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.missing
-msgctxt "STRINGS.SKIN_NAMES.missing"
-msgid "Thingamabob"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.hand_drivergloves_white_ivory
-msgctxt "STRINGS.SKIN_NAMES.hand_drivergloves_white_ivory"
-msgid "Driving Gloves"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.body_sweatervest_blue_snowbird
-msgctxt "STRINGS.SKIN_NAMES.body_sweatervest_blue_snowbird"
-msgid "Sweater Vest"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.body_tweedvest_brown_chocolate
-msgctxt "STRINGS.SKIN_NAMES.body_tweedvest_brown_chocolate"
-msgid "Tweed Waistcoat"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.legs_skirt_plaid_green_pistachio
-msgctxt "STRINGS.SKIN_NAMES.legs_skirt_plaid_green_pistachio"
-msgid "Plaid Skirt"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.legs_skirt_plaid_blue_cornflower
@@ -6546,19 +6546,34 @@ msgctxt "STRINGS.SKIN_NAMES.legs_skirt_basic_grey_dark"
 msgid "Skirt"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.hand_longgloves_grey_battleship
-msgctxt "STRINGS.SKIN_NAMES.hand_longgloves_grey_battleship"
-msgid "Long Gloves"
+#. STRINGS.SKIN_NAMES.backpack_poop
+msgctxt "STRINGS.SKIN_NAMES.backpack_poop"
+msgid "Poop Bag"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.legs_pants_basic_tan_cream
-msgctxt "STRINGS.SKIN_NAMES.legs_pants_basic_tan_cream"
-msgid "Pants"
+#. STRINGS.SKIN_NAMES.legs_skirt_basic_black_scribble
+msgctxt "STRINGS.SKIN_NAMES.legs_skirt_basic_black_scribble"
+msgid "Skirt"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.legs_pants_basic_brown_sepia
-msgctxt "STRINGS.SKIN_NAMES.legs_pants_basic_brown_sepia"
-msgid "Pants"
+#. STRINGS.SKIN_NAMES.body_trimmed_blouse_white_pure
+msgctxt "STRINGS.SKIN_NAMES.body_trimmed_blouse_white_pure"
+msgid "Pleated Shirt"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_polo_yellow_goldenrod
+msgctxt "STRINGS.SKIN_NAMES.body_polo_yellow_goldenrod"
+msgid "Collared Shirt"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.webber_formal
+msgctxt "STRINGS.SKIN_NAMES.webber_formal"
+msgid "Guest of Honor"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.feet_sneakers_green_cactus
+msgctxt "STRINGS.SKIN_NAMES.feet_sneakers_green_cactus"
+msgid "Sneakers"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.legs_checkered_pleats_green_laurel
@@ -6566,14 +6581,19 @@ msgctxt "STRINGS.SKIN_NAMES.legs_checkered_pleats_green_laurel"
 msgid "Checkered Trousers"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.body_woodie_formal
-msgctxt "STRINGS.SKIN_NAMES.body_woodie_formal"
-msgid "Canadian Jacket"
-msgstr ""
-
 #. STRINGS.SKIN_NAMES.legs_checkered_pleats_blue_cornflower
 msgctxt "STRINGS.SKIN_NAMES.legs_checkered_pleats_blue_cornflower"
 msgid "Checkered Trousers"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_wendy_formal
+msgctxt "STRINGS.SKIN_NAMES.body_wendy_formal"
+msgid "Party Frock"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.hand_beltedgloves_brown_beaver
+msgctxt "STRINGS.SKIN_NAMES.hand_beltedgloves_brown_beaver"
+msgid "Buckled Gloves"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.hand_shortgloves_white_smoke
@@ -6581,14 +6601,94 @@ msgctxt "STRINGS.SKIN_NAMES.hand_shortgloves_white_smoke"
 msgid "Hand Covers"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.hand_shortgloves_red_higgsbury
+msgctxt "STRINGS.SKIN_NAMES.hand_shortgloves_red_higgsbury"
+msgid "Hand Covers"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.hand_shortgloves_blue_cornflower
+msgctxt "STRINGS.SKIN_NAMES.hand_shortgloves_blue_cornflower"
+msgid "Hand Covers"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.hand_drivergloves_white_ivory
+msgctxt "STRINGS.SKIN_NAMES.hand_drivergloves_white_ivory"
+msgid "Driving Gloves"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_sweatervest_blue_snowbird
+msgctxt "STRINGS.SKIN_NAMES.body_sweatervest_blue_snowbird"
+msgid "Sweater Vest"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_tweedvest_brown_chocolate
+msgctxt "STRINGS.SKIN_NAMES.body_tweedvest_brown_chocolate"
+msgid "Tweed Waistcoat"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_wolfgang_formal
+msgctxt "STRINGS.SKIN_NAMES.body_wolfgang_formal"
+msgid "Mess Dress"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.hand_longgloves_yellow_straw
+msgctxt "STRINGS.SKIN_NAMES.hand_longgloves_yellow_straw"
+msgid "Long Gloves"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.hand_longgloves_grey_battleship
+msgctxt "STRINGS.SKIN_NAMES.hand_longgloves_grey_battleship"
+msgid "Long Gloves"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.hand_longgloves_green_hunters
+msgctxt "STRINGS.SKIN_NAMES.hand_longgloves_green_hunters"
+msgid "Long Gloves"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.feet_sneakers_blue_catcoon
+msgctxt "STRINGS.SKIN_NAMES.feet_sneakers_blue_catcoon"
+msgid "Sneakers"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.feet_sneakers_red_auburn
+msgctxt "STRINGS.SKIN_NAMES.feet_sneakers_red_auburn"
+msgid "Sneakers"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.legs_pants_basic_brown_sepia
+msgctxt "STRINGS.SKIN_NAMES.legs_pants_basic_brown_sepia"
+msgid "Pants"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.feet_formal_lowheel_black_scribble
+msgctxt "STRINGS.SKIN_NAMES.feet_formal_lowheel_black_scribble"
+msgid "Low Heels"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_woodie_formal
+msgctxt "STRINGS.SKIN_NAMES.body_woodie_formal"
+msgid "Canadian Jacket"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.feet_formal_highheel_white_pure
+msgctxt "STRINGS.SKIN_NAMES.feet_formal_highheel_white_pure"
+msgid "Pumps"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_trenchcoat_brown_fawn
+msgctxt "STRINGS.SKIN_NAMES.body_trenchcoat_brown_fawn"
+msgid "Trench Coat"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.body_trenchcoat_yellow_straw
 msgctxt "STRINGS.SKIN_NAMES.body_trenchcoat_yellow_straw"
 msgid "Trench Coat"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.hand_shortgloves_red_higgsbury
-msgctxt "STRINGS.SKIN_NAMES.hand_shortgloves_red_higgsbury"
-msgid "Hand Covers"
+#. STRINGS.SKIN_NAMES.body_cardigan_teal_jade
+msgctxt "STRINGS.SKIN_NAMES.body_cardigan_teal_jade"
+msgid "Cardigan"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.body_polo_red_higgsbury
@@ -6601,9 +6701,9 @@ msgctxt "STRINGS.SKIN_NAMES.hand_shortgloves_black_scribble"
 msgid "Hand Covers"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.hand_longgloves_yellow_straw
-msgctxt "STRINGS.SKIN_NAMES.hand_longgloves_yellow_straw"
-msgid "Long Gloves"
+#. STRINGS.SKIN_NAMES.body_wilson_formal
+msgctxt "STRINGS.SKIN_NAMES.body_wilson_formal"
+msgid "Tuxedo"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.feet_fleece_boot_brown_sepia
@@ -6611,49 +6711,9 @@ msgctxt "STRINGS.SKIN_NAMES.feet_fleece_boot_brown_sepia"
 msgid "Canadian Boots"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.feet_formal_lowheel_black_scribble
-msgctxt "STRINGS.SKIN_NAMES.feet_formal_lowheel_black_scribble"
-msgid "Low Heels"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.feet_formal_highheel_white_pure
-msgctxt "STRINGS.SKIN_NAMES.feet_formal_highheel_white_pure"
-msgid "Pumps"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.body_sweatervest_grey_silver
-msgctxt "STRINGS.SKIN_NAMES.body_sweatervest_grey_silver"
-msgid "Sweater Vest"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.body_wathgrithr_formal
-msgctxt "STRINGS.SKIN_NAMES.body_wathgrithr_formal"
-msgid "Valkyrie Armor"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.backpack_buckle_grey_pewter
-msgctxt "STRINGS.SKIN_NAMES.backpack_buckle_grey_pewter"
-msgid "Buckled Backpack"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.body_wolfgang_formal
-msgctxt "STRINGS.SKIN_NAMES.body_wolfgang_formal"
-msgid "Mess Dress"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.body_willow_formal
-msgctxt "STRINGS.SKIN_NAMES.body_willow_formal"
-msgid "Cocktail Dress"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.backpack_buckle_navy_phthalo
-msgctxt "STRINGS.SKIN_NAMES.backpack_buckle_navy_phthalo"
-msgid "Buckled Backpack"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.body_wilson_formal
-msgctxt "STRINGS.SKIN_NAMES.body_wilson_formal"
-msgid "Tuxedo"
+#. STRINGS.SKIN_NAMES.body_tshirt_white_smoke
+msgctxt "STRINGS.SKIN_NAMES.body_tshirt_white_smoke"
+msgid "T-Shirt"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.body_tweedvest_tan_grass
@@ -6666,9 +6726,49 @@ msgctxt "STRINGS.SKIN_NAMES.body_tweedvest_grey_steel"
 msgid "Tweed Waistcoat"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.body_tshirt_white_smoke
-msgctxt "STRINGS.SKIN_NAMES.body_tshirt_white_smoke"
-msgid "T-Shirt"
+#. STRINGS.SKIN_NAMES.body_wathgrithr_formal
+msgctxt "STRINGS.SKIN_NAMES.body_wathgrithr_formal"
+msgid "Valkyrie Armor"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.backpack_buckle_grey_pewter
+msgctxt "STRINGS.SKIN_NAMES.backpack_buckle_grey_pewter"
+msgid "Buckled Backpack"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_trimmed_blouse_yellow_flax
+msgctxt "STRINGS.SKIN_NAMES.body_trimmed_blouse_yellow_flax"
+msgid "Pleated Shirt"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_willow_formal
+msgctxt "STRINGS.SKIN_NAMES.body_willow_formal"
+msgid "Cocktail Dress"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.backpack_buckle_navy_phthalo
+msgctxt "STRINGS.SKIN_NAMES.backpack_buckle_navy_phthalo"
+msgid "Buckled Backpack"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_sweatervest_grey_silver
+msgctxt "STRINGS.SKIN_NAMES.body_sweatervest_grey_silver"
+msgid "Sweater Vest"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_suspenders_yellow_flax
+msgctxt "STRINGS.SKIN_NAMES.body_suspenders_yellow_flax"
+msgid "Suspension Shirt"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_silk_loungewear_red_cranberry
+msgctxt "STRINGS.SKIN_NAMES.body_silk_loungewear_red_cranberry"
+msgid "Silk Loungewear"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_silk_loungewear_black_davys
+msgctxt "STRINGS.SKIN_NAMES.body_silk_loungewear_black_davys"
+msgid "Silk Loungewear"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.wilson_formal
@@ -6681,9 +6781,9 @@ msgctxt "STRINGS.SKIN_NAMES.backpack_camping_green_viridian"
 msgid "Rucksack"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.body_trenchcoat_brown_fawn
-msgctxt "STRINGS.SKIN_NAMES.body_trenchcoat_brown_fawn"
-msgid "Trench Coat"
+#. STRINGS.SKIN_NAMES.body_polo_blue_denim
+msgctxt "STRINGS.SKIN_NAMES.body_polo_blue_denim"
+msgid "Collared Shirt"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.body_wx78_formal
@@ -6691,9 +6791,9 @@ msgctxt "STRINGS.SKIN_NAMES.body_wx78_formal"
 msgid "Formal Body Shell"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.body_suspenders_yellow_flax
-msgctxt "STRINGS.SKIN_NAMES.body_suspenders_yellow_flax"
-msgid "Suspension Shirt"
+#. STRINGS.SKIN_NAMES.body_cardigan_black_jet
+msgctxt "STRINGS.SKIN_NAMES.body_cardigan_black_jet"
+msgid "Cardigan"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.backpack_rabbit
@@ -6901,6 +7001,16 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_basic_blue_catcoon"
 msgid "Carry your stuff in a 'catcoon blue' colored backpack."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.backpack_dragonfly_fire
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_dragonfly_fire"
+msgid "Dragon flier burning bright, in the desert quite a sight. What equipment is required to quench thy fearsome scorching fires?"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_silk_loungewear_green_laurel
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_silk_loungewear_green_laurel"
+msgid "Bathe under the new moon in comfort and luxury with this silk 'willful green' colored loungewear."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.body_buttons_white_ghost
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_buttons_white_ghost"
 msgid "A shirt that buttons up the front, in a 'ghost white' color. Luckily for you, the fabric is a non-iron material. Unfortunately, the placket will still wrinkle as you wear it."
@@ -6911,6 +7021,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_sweatervest_red_firehound"
 msgid "A 'firehound red' colored vest made of the finest beefalo wool. Unfortunately, it's not actually warm."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.body_silk_eveningrobe_pink_ewecus
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_silk_eveningrobe_pink_ewecus"
+msgid "So smooth, you'll never want to let go of this 'ewecus pink' colored robe."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.body_wes_formal
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wes_formal"
 msgid "A fancy flowing shirt with formal trousers."
@@ -6919,6 +7034,11 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.feet_maryjanes_white_pure
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_maryjanes_white_pure"
 msgid "Hit the jackpot with these classic 'pure white' colored Mary Janes."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_silk_eveningrobe_red_rump
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_silk_eveningrobe_red_rump"
+msgid "So smooth, you'll never want to let go of this 'rump red' colored robe."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_webber_formal
@@ -6961,6 +7081,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_suspenders_white_pure"
 msgid "Wearing this 'pure white' colored shirt makes you feel like the cat's pajamas."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.body_cardigan_red_cardinal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_cardigan_red_cardinal"
+msgid "A 'combobulated red' colored cardigan. As soft as it is comfortable."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.body_polo_white_marble
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_polo_white_marble"
 msgid "A 'marble white' colored polo shirt. Don't let your collar flap in the wind."
@@ -6996,9 +7121,19 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.wickerbottom_formal"
 msgid "Since Wickerbottom doesn't sleep, she can dance all night."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_formal"
+msgid "A moustached mechanical man."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.backpack_spider
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_spider"
 msgid "Wearing this backpack will let you make an arachnophobe's day a little bit worse. Or, you could ask yourself 'What would Willow do?' and burn it! Burn it with fire!"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.woodie_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.woodie_formal"
+msgid "Woodie puts bear fat on his hair when he goes out."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_flannel_blue_snowbird
@@ -7006,14 +7141,39 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_flannel_blue_snowbird"
 msgid "Well, it's not buckskin but it's still skookum. It's 'electrolytic blue' colored with no foofaraw."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.body_silk_eveningrobe_blue_frost
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_silk_eveningrobe_blue_frost"
+msgid "So smooth, you'll never want to let go of this 'high elevation blue' colored robe."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.body_buttons_pink_hibiscus
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_buttons_pink_hibiscus"
 msgid "A shirt that buttons up the front, in a 'pigman pink' color. Luckily for you, the fabric is a non-iron material. Unfortunately, the placket will still wrinkle as you wear it."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.willow_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.willow_formal"
+msgid "Willow prefers events that include bonfires or fireworks."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wes_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wes_formal"
+msgid "Formal Wes requires extra pomade."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wendy_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wendy_formal"
+msgid "Wendy is not cheered by party games."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.backpack_bat
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_bat"
 msgid "Behold, a batty black bat-shaped backpack. Bat."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_silk_eveningrobe_yellow_goldenrod
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_silk_eveningrobe_yellow_goldenrod"
+msgid "So smooth, you'll never want to let go of this 'downright neighborly yellow' colored robe."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.backpack_basic_green_olive
@@ -7026,9 +7186,14 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_pants_basic_grey_dark"
 msgid "Wearing these 'stormcloud gray' colored pants won't help you survive."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.wendy_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.wendy_formal"
-msgid "Wendy is not cheered by party games."
+#. STRINGS.SKIN_DESCRIPTIONS.body_tshirt_purple_mauve
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_tshirt_purple_mauve"
+msgid "A 'snail mucus purple' colored shirt. Wilson is working on a W-shirt, but this prototype came out more T-shaped."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_silk_loungewear_white_marble
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_silk_loungewear_white_marble"
+msgid "Bathe under the new moon in comfort and luxury with this silk 'marble white' colored loungewear."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.legs_skirt_basic_brown_sepia
@@ -7046,9 +7211,24 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_buttons_blue_sky"
 msgid "A shirt that buttons up the front, in a 'schematic blue' color. Luckily for you, the fabric is a non-iron material. Unfortunately, the placket will still wrinkle as you wear it."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.legs_pants_basic_tan_cream
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_pants_basic_tan_cream"
+msgid "Wearing these 'no-tan-lines tan' colored pants won't help you survive."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wathgrithr_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wathgrithr_formal"
+msgid "She resembles a Visigothic princess."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.backpack_camping_orange_carrot
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_camping_orange_carrot"
 msgid "A rustic rucksack in a 'carrot orange' color."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.none
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.none"
+msgid "Your usual look."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.hand_wilson_formal
@@ -7061,9 +7241,9 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_buttons_green_laurel"
 msgid "A shirt that buttons up the front, in a 'willful green' color. Luckily for you, the fabric is a non-iron material. Unfortunately, the placket will still wrinkle as you wear it."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.legs_skirt_basic_black_scribble
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_skirt_basic_black_scribble"
-msgid "Wearing this 'scribble black' colored skirt won't help you survive."
+#. STRINGS.SKIN_DESCRIPTIONS.body_cardigan_white_ghost
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_cardigan_white_ghost"
+msgid "A 'ghost white' colored cardigan. As soft as it is comfortable."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.backpack_smallbird
@@ -7071,9 +7251,19 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_smallbird"
 msgid "This smallbird won't ever grow up and reject you like a real smallbird would."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.missing
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.missing"
+msgid "This item completely mystifies you"
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.backpack_camping_red_koalefant
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_camping_red_koalefant"
 msgid "A rustic rucksack in a 'koalefant trunk red' color."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.legs_skirt_plaid_green_pistachio
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_skirt_plaid_green_pistachio"
+msgid "This 'science experiment green' colored skirt isn't a proper kilt, but you feel vaguely Scottish anyway."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_suspenders_pink_pearl
@@ -7084,96 +7274,6 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.body_trimmed_blouse_red_higgsbury
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_trimmed_blouse_red_higgsbury"
 msgid "Get your glad rags on with this 'Higgsbury red' colored shirt."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.wx78_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_formal"
-msgid "A moustached mechanical man."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.backpack_poop
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_poop"
-msgid "A bag shaped like feces. Obviously it was designed by somebody who enjoys sophomoric humor."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.woodie_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.woodie_formal"
-msgid "Woodie puts bear fat on his hair when he goes out."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.body_trimmed_blouse_white_pure
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_trimmed_blouse_white_pure"
-msgid "Get your glad rags on with this 'pure white' colored shirt."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.body_polo_yellow_goldenrod
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_polo_yellow_goldenrod"
-msgid "A 'downright neighborly yellow' colored polo shirt. Don't let your collar flap in the wind."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.webber_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.webber_formal"
-msgid "Webber takes parties seriously."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.body_trimmed_blouse_yellow_flax
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_trimmed_blouse_yellow_flax"
-msgid "Get your glad rags on with this 'follicle yellow' colored shirt."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.willow_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.willow_formal"
-msgid "Willow prefers events that include bonfires or fireworks."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.wes_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.wes_formal"
-msgid "Formal Wes requires extra pomade."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.body_wendy_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wendy_formal"
-msgid "A cute party dress with puffed sleeves."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.hand_beltedgloves_brown_beaver
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_beltedgloves_brown_beaver"
-msgid "'Werebeaver brown' colored gloves with a buckle on the back to help you hold it together."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.wathgrithr_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.wathgrithr_formal"
-msgid "She resembles a Visigothic princess."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.none
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.none"
-msgid "Your usual look."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.missing
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.missing"
-msgid "This item completely mystifies you"
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.hand_drivergloves_white_ivory
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_drivergloves_white_ivory"
-msgid "These 'houndbone white' colored gloves are worn by good looking people who look cool."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.body_sweatervest_blue_snowbird
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_sweatervest_blue_snowbird"
-msgid "An 'electrolytic blue' colored vest made of the finest beefalo wool. Unfortunately, it's not actually warm."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.body_tweedvest_brown_chocolate
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_tweedvest_brown_chocolate"
-msgid "Don't get lost in the tweeds wearing this 'insufficient chocolate brown' colored souvenir from the Village of Tweed."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.legs_skirt_plaid_green_pistachio
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_skirt_plaid_green_pistachio"
-msgid "This 'science experiment green' colored skirt isn't a proper kilt, but you feel vaguely Scottish anyway."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.legs_skirt_plaid_blue_cornflower
@@ -7191,19 +7291,34 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_skirt_basic_grey_dark"
 msgid "Wearing this 'stormcloud gray' colored skirt won't help you survive."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.hand_longgloves_grey_battleship
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_longgloves_grey_battleship"
-msgid "'Cumulus gray' colored gloves suitable for all types of persons, robots, and monsters."
+#. STRINGS.SKIN_DESCRIPTIONS.backpack_poop
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_poop"
+msgid "A bag shaped like feces. Obviously it was designed by somebody who enjoys sophomoric humor."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.legs_pants_basic_tan_cream
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_pants_basic_tan_cream"
-msgid "Wearing these 'no-tan-lines tan' colored pants won't help you survive."
+#. STRINGS.SKIN_DESCRIPTIONS.legs_skirt_basic_black_scribble
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_skirt_basic_black_scribble"
+msgid "Wearing this 'scribble black' colored skirt won't help you survive."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.legs_pants_basic_brown_sepia
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_pants_basic_brown_sepia"
-msgid "Wearing these 'werebeaver brown' colored pants won't help you survive."
+#. STRINGS.SKIN_DESCRIPTIONS.body_trimmed_blouse_white_pure
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_trimmed_blouse_white_pure"
+msgid "Get your glad rags on with this 'pure white' colored shirt."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_polo_yellow_goldenrod
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_polo_yellow_goldenrod"
+msgid "A 'downright neighborly yellow' colored polo shirt. Don't let your collar flap in the wind."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.webber_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.webber_formal"
+msgid "Webber takes parties seriously."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.feet_sneakers_green_cactus
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_sneakers_green_cactus"
+msgid "Wear these 'cactus green' colored sneakers surreptitiously."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.legs_checkered_pleats_green_laurel
@@ -7211,14 +7326,19 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_checkered_pleats_green_laurel"
 msgid "These 'willful green' colored pants are perfect for playing checkers, or checking items off your to-do list."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.body_woodie_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_woodie_formal"
-msgid "A real Canadian Jacket, made for real Canadians. (Not out of real Canadians.)"
-msgstr ""
-
 #. STRINGS.SKIN_DESCRIPTIONS.legs_checkered_pleats_blue_cornflower
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_checkered_pleats_blue_cornflower"
 msgid "These 'rubber glove blue' colored pants are perfect for playing checkers, or checking items off your to-do list."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_wendy_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wendy_formal"
+msgid "A cute party dress with puffed sleeves."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.hand_beltedgloves_brown_beaver
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_beltedgloves_brown_beaver"
+msgid "'Werebeaver brown' colored gloves with a buckle on the back to help you hold it together."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.hand_shortgloves_white_smoke
@@ -7226,14 +7346,94 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_shortgloves_white_smoke"
 msgid "These are gloves. They cover your hands. This pair is 'smoke white' colored."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.hand_shortgloves_red_higgsbury
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_shortgloves_red_higgsbury"
+msgid "These are gloves. They cover your hands. This pair is 'Higgsbury red' colored."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.hand_shortgloves_blue_cornflower
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_shortgloves_blue_cornflower"
+msgid "These are gloves. They cover your hands. This pair is 'rubber glove blue' colored."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.hand_drivergloves_white_ivory
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_drivergloves_white_ivory"
+msgid "These 'houndbone white' colored gloves are worn by good looking people who look cool."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_sweatervest_blue_snowbird
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_sweatervest_blue_snowbird"
+msgid "An 'electrolytic blue' colored vest made of the finest beefalo wool. Unfortunately, it's not actually warm."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_tweedvest_brown_chocolate
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_tweedvest_brown_chocolate"
+msgid "Don't get lost in the tweeds wearing this 'insufficient chocolate brown' colored souvenir from the Village of Tweed."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_wolfgang_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wolfgang_formal"
+msgid "Formal dinner attire for military officers."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.hand_longgloves_yellow_straw
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_longgloves_yellow_straw"
+msgid "'Sulfuric yellow' colored gloves suitable for all types of persons, robots, and monsters."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.hand_longgloves_grey_battleship
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_longgloves_grey_battleship"
+msgid "'Cumulus gray' colored gloves suitable for all types of persons, robots, and monsters."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.hand_longgloves_green_hunters
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_longgloves_green_hunters"
+msgid "'Forest guardian green' colored gloves suitable for all types of persons, robots, and monsters."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.feet_sneakers_blue_catcoon
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_sneakers_blue_catcoon"
+msgid "Wear these 'catcoon blue' colored sneakers surreptitiously."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.feet_sneakers_red_auburn
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_sneakers_red_auburn"
+msgid "Wear these 'low pH red' colored sneakers surreptitiously."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.legs_pants_basic_brown_sepia
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_pants_basic_brown_sepia"
+msgid "Wearing these 'werebeaver brown' colored pants won't help you survive."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.feet_formal_lowheel_black_scribble
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_formal_lowheel_black_scribble"
+msgid "Low-heeled 'scribble black' colored dress shoes."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_woodie_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_woodie_formal"
+msgid "A real Canadian Jacket, made for real Canadians. (Not out of real Canadians.)"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.feet_formal_highheel_white_pure
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_formal_highheel_white_pure"
+msgid "Dress to the nines in these 'pure white' colored shoes."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_trenchcoat_brown_fawn
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_trenchcoat_brown_fawn"
+msgid "A fashionable but unprotective trench coat in a 'werebeaver brown' color."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.body_trenchcoat_yellow_straw
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_trenchcoat_yellow_straw"
 msgid "A fashionable but unprotective trench coat in a 'sulfuric yellow' color."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.hand_shortgloves_red_higgsbury
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_shortgloves_red_higgsbury"
-msgid "These are gloves. They cover your hands. This pair is 'Higgsbury red' colored."
+#. STRINGS.SKIN_DESCRIPTIONS.body_cardigan_teal_jade
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_cardigan_teal_jade"
+msgid "A 'doydoy teal' colored cardigan. As soft as it is comfortable."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_polo_red_higgsbury
@@ -7246,9 +7446,9 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_shortgloves_black_scribble"
 msgid "These are gloves. They cover your hands. This pair is 'scribble black' colored."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.hand_longgloves_yellow_straw
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_longgloves_yellow_straw"
-msgid "'Sulfuric yellow' colored gloves suitable for all types of persons, robots, and monsters."
+#. STRINGS.SKIN_DESCRIPTIONS.body_wilson_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wilson_formal"
+msgid "Some events ask for white tie, and some ask for black tie. Well, this is red tie."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.feet_fleece_boot_brown_sepia
@@ -7256,49 +7456,9 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_fleece_boot_brown_sepia"
 msgid "Infused with maple syrup and essence of moose. This pair is a tasteful 'werebeaver brown' color."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.feet_formal_lowheel_black_scribble
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_formal_lowheel_black_scribble"
-msgid "Low-heeled 'scribble black' colored dress shoes."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.feet_formal_highheel_white_pure
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_formal_highheel_white_pure"
-msgid "Dress to the nines in these 'pure white' colored shoes."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.body_sweatervest_grey_silver
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_sweatervest_grey_silver"
-msgid "A 'cumulus gray' colored vest made of the finest beefalo wool. Unfortunately, it's not actually warm."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.body_wathgrithr_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wathgrithr_formal"
-msgid "Be a knight in shining armor. Or at least look like one. (It's just a costume, not real armor.)"
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.backpack_buckle_grey_pewter
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_buckle_grey_pewter"
-msgid "A 'dismal gray' colored backpack with a big, curved buckle."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.body_wolfgang_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wolfgang_formal"
-msgid "Formal dinner attire for military officers."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.body_willow_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_willow_formal"
-msgid "Everybody needs a little black dress. (Conveniently, it hides ash stains.)"
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.backpack_buckle_navy_phthalo
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_buckle_navy_phthalo"
-msgid "A 'monastral blue' colored backpack with a big, curved buckle."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.body_wilson_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wilson_formal"
-msgid "Some events ask for white tie, and some ask for black tie. Well, this is red tie."
+#. STRINGS.SKIN_DESCRIPTIONS.body_tshirt_white_smoke
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_tshirt_white_smoke"
+msgid "A 'smoke white' colored shirt. Wilson is working on a W-shirt, but this prototype came out more T-shaped."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_tweedvest_tan_grass
@@ -7311,9 +7471,49 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_tweedvest_grey_steel"
 msgid "Don't get lost in the tweeds wearing this 'colloidal silver gray' colored souvenir from the Village of Tweed."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.body_tshirt_white_smoke
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_tshirt_white_smoke"
-msgid "A 'smoke white' colored shirt. Wilson is working on a W-shirt, but this prototype came out more T-shaped."
+#. STRINGS.SKIN_DESCRIPTIONS.body_wathgrithr_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wathgrithr_formal"
+msgid "Be a knight in shining armor. Or at least look like one. (It's just a costume, not real armor.)"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.backpack_buckle_grey_pewter
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_buckle_grey_pewter"
+msgid "A 'dismal gray' colored backpack with a big, curved buckle."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_trimmed_blouse_yellow_flax
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_trimmed_blouse_yellow_flax"
+msgid "Get your glad rags on with this 'follicle yellow' colored shirt."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_willow_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_willow_formal"
+msgid "Everybody needs a little black dress. (Conveniently, it hides ash stains.)"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.backpack_buckle_navy_phthalo
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_buckle_navy_phthalo"
+msgid "A 'monastral blue' colored backpack with a big, curved buckle."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_sweatervest_grey_silver
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_sweatervest_grey_silver"
+msgid "A 'cumulus gray' colored vest made of the finest beefalo wool. Unfortunately, it's not actually warm."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_suspenders_yellow_flax
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_suspenders_yellow_flax"
+msgid "Wearing this 'follicle yellow' colored shirt makes you feel like the cat's pajamas."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_silk_loungewear_red_cranberry
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_silk_loungewear_red_cranberry"
+msgid "Bathe under the new moon in comfort and luxury with this silk 'apidae maxwellius red' colored loungewear."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_silk_loungewear_black_davys
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_silk_loungewear_black_davys"
+msgid "Bathe under the new moon in comfort and luxury with this silk 'disilluminated black' colored loungewear."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.wilson_formal
@@ -7326,9 +7526,9 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_camping_green_viridian"
 msgid "A rustic rucksack in a 'subaqueous megafauna green' color."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.body_trenchcoat_brown_fawn
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_trenchcoat_brown_fawn"
-msgid "A fashionable but unprotective trench coat in a 'werebeaver brown' color."
+#. STRINGS.SKIN_DESCRIPTIONS.body_polo_blue_denim
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_polo_blue_denim"
+msgid "A 'hyper-intelligent blue' colored polo shirt. Don't let your collar flap in the wind."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_wx78_formal
@@ -7336,9 +7536,9 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wx78_formal"
 msgid "But of course it has a cummerbund."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.body_suspenders_yellow_flax
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_suspenders_yellow_flax"
-msgid "Wearing this 'follicle yellow' colored shirt makes you feel like the cat's pajamas."
+#. STRINGS.SKIN_DESCRIPTIONS.body_cardigan_black_jet
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_cardigan_black_jet"
+msgid "A 'disilluminated black' colored cardigan. As soft as it is comfortable."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.backpack_rabbit
@@ -53463,7 +53663,7 @@ msgstr ""
 
 #. STRINGS.UI.TRADESCREEN.TITLE
 msgctxt "STRINGS.UI.TRADESCREEN.TITLE"
-msgid "Swap Shop"
+msgid "Trade Inn"
 msgstr ""
 
 #. STRINGS.UI.WORLDRESETDIALOG.TITLE_LATEJOIN

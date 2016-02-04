@@ -256,16 +256,9 @@ function OnRemoveEntity(entityguid)
         if debug_entity == ent then
             debug_entity = nil
         end
-        
+
         BrainManager:OnRemoveEntity(ent)
-        if PLATFORM ~= "PS4" then
-            SGManager:OnRemoveEntity(ent)
-        else
-            if ent.sg then
-                -- don't set ent.sg to nil, might still be referenced till end of frame
-                SGManager:RemoveInstance(ent.sg)
-            end
-        end
+        SGManager:OnRemoveEntity(ent)
 
         ent:KillTasks()
         NumEnts = NumEnts - 1

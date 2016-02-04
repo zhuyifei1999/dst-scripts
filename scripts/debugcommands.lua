@@ -90,3 +90,62 @@ function d_spawn_ds(prefab, scenario)
 end
 
 
+
+---------------------------------------------------
+------------ skins functions --------------------
+---------------------------------------------------
+
+function d_skin_mode(mode)
+    ConsoleCommandPlayer().components.skinner:SetSkinMode(mode)
+end
+
+function d_skin_name(name)
+    ConsoleCommandPlayer().components.skinner:SetSkinName(name)
+end
+
+function d_clothing(name)
+    ConsoleCommandPlayer().components.skinner:SetClothing(name)
+end
+function d_clothing_clear(type)
+    ConsoleCommandPlayer().components.skinner:ClearClothing(type)
+end
+
+function d_cycle_clothing()
+    local skinslist = TheInventory:GetFullInventory()
+
+    local idx = 1
+    local task = nil
+
+    ConsoleCommandPlayer().cycle_clothing_task = ConsoleCommandPlayer():DoPeriodicTask(10, 
+        function() 
+            local type, name = GetTypeForItem(skinslist[idx].item_type)
+            --print("showing clothing idx ", idx, name, type, #skinslist) 
+            if (type ~= "base" and type ~= "item") then 
+                c_clothing(name) 
+            end
+
+            if idx < #skinslist then 
+                idx = idx + 1 
+            else
+                print("Ending cycle")
+                ConsoleCommandPlayer().cycle_clothing_task:Cancel()
+            end
+        end)
+
+end
+
+-- NOTE: only works on the host
+function d_giftpopup()
+    local GiftItemPopUp = require "screens/giftitempopup"
+    TheFrontEnd:PushScreen(GiftItemPopUp(ThePlayer, { "hand_shortgloves_white_smoke" }, { 101010 }))
+end
+
+function d_avatarscreen()
+    if ThePlayer ~= nil and ThePlayer.HUD ~= nil then
+        local client_table = TheNet:GetClientTableForUser(ConsoleCommandPlayer().userid)
+        if client_table ~= nil then
+            --client_table.inst = ConsoleCommandPlayer() --don't track
+            ThePlayer.HUD:TogglePlayerAvatarPopup(client_table.name, client_table, true)
+        end
+    end
+end

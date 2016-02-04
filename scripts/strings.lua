@@ -3099,7 +3099,7 @@ STRINGS.UI =
 
 	TRADESCREEN = 
 	{
-		TITLE = "Swap Shop"
+		TITLE = "Trade Inn",
 	},
 
     MORGUESCREEN=

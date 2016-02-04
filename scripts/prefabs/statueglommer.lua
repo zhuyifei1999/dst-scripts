@@ -169,6 +169,7 @@ end
 
 local function OnWorked(inst, worker, workleft)
     if workleft <= 0 then
+        --V2C: Don't need to use "rock_break_fx" because we aren't removing this inst!
         inst.SoundEmitter:PlaySound("dontstarve/wilson/rock_break")
         inst.components.lootdropper:DropLoot(inst:GetPosition())
         inst.AnimState:PlayAnimation("low")

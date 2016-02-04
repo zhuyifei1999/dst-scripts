@@ -528,7 +528,7 @@ function Widget:ClearFocus()
         if self.onlosefocusfn then
             self.onlosefocusfn()
         end
-    for k,v in pairs(self.children) do
+		for k,v in pairs(self.children) do
             if v.focus then
                 v:ClearFocus()
             end
@@ -560,7 +560,7 @@ function Widget:SetFocusFromChild(from_child)
 end
 
 function Widget:SetFocus()
-    --print ("SET FOCUS, ", self)
+  --  print ("SET FOCUS ", self)
     if self.focus_forward and type(self.focus_forward) == "function" then
         local widg = self.focus_forward()
         widg:SetFocus()
@@ -605,7 +605,6 @@ function Widget:GetStr(indent)
     end
 
     return table.concat(str)
-
 end
 
 function Widget:__tostring()
@@ -644,14 +643,15 @@ function Widget:SetHoverText(text, params)
             self.hovertext:Hide()
 
             if params.bg == nil or params.bg == true then
-                self.hovertext.bg = self:AddChild(Image(params.bg_atlas or "images/frontend.xml", params.bg_texture or "scribble_black.tex"))
-                self.hovertext.bg:SetPosition(params.offset_x or 0, params.offset_y or 26)
+                self.hovertext_bg = self:AddChild(Image(params.bg_atlas or "images/frontend.xml", params.bg_texture or "scribble_black.tex"))
+                self.hovertext_bg:SetPosition(params.offset_x or 0, params.offset_y or 26)
                 local w, h = self.hovertext:GetRegionSize()
-                self.hovertext.bg:SetTint(1,1,1,.8)
-                self.hovertext.bg:SetSize(w*1.3, h*1.8)
-                self.hovertext.bg:MoveToBack()
-                self.hovertext.bg:Hide()
-                self.hovertext.bg:SetClickable(false)
+                self.hovertext_bg:SetTint(1,1,1,.8)
+                self.hovertext_bg:SetSize(w*1.3, h*1.8)
+                self.hovertext_bg:MoveToFront()
+                self.hovertext:MoveToFront() --this is so that the bg and text are both infront of the item it was added to
+                self.hovertext_bg:Hide()
+                self.hovertext_bg:SetClickable(false)
             end
 
             local hover_parent = self.text or self
@@ -661,35 +661,54 @@ function Widget:SetHoverText(text, params)
 
                 self.hover.OnGainFocus = function()
                     self.hovertext:Show()
-                    if self.hovertext.bg then self.hovertext.bg:Show() end
+                    if self.hovertext_bg then self.hovertext_bg:Show() end
                 end
                 self.hover.OnLoseFocus = function()
                     self.hovertext:Hide()
-                    if self.hovertext.bg then self.hovertext.bg:Hide() end
+                    if self.hovertext_bg then self.hovertext_bg:Hide() end
                 end
             else
-                local _OnGainFocus = self.OnGainFocus
-                local _OnLoseFocus = self.OnLoseFocus
+                self._OnGainFocus = self.OnGainFocus --save these fns so we can undo the hovertext on focus when clearing the text
+                self._OnLoseFocus = self.OnLoseFocus
 
                 self.OnGainFocus = function()
                     self.hovertext:Show()
-                    if self.hovertext.bg then self.hovertext.bg:Show() end
-                    _OnGainFocus( self )
+                    if self.hovertext_bg then self.hovertext_bg:Show() end
+                    self._OnGainFocus( self )
                 end
                 self.OnLoseFocus = function()
                     self.hovertext:Hide()
-                    if self.hovertext.bg then self.hovertext.bg:Hide() end
-                    _OnLoseFocus( self )
+                    if self.hovertext_bg then self.hovertext_bg:Hide() end
+                    self._OnLoseFocus( self )
                 end
             end
         else
             self.hovertext:SetString(text)
-            if self.hovertext.bg then
+            if self.hovertext_bg then
                 local w, h = self.hovertext:GetRegionSize()
-                self.hovertext.bg:SetSize(w*1.3, h*1.8)
+                self.hovertext_bg:SetSize(w*1.3, h*1.8)
             end
         end
     end
+end
+
+
+function Widget:ClearHoverText()
+	if self.hover then
+		assert( false, "not currently supported" )
+	end
+	if self.hovertext ~= nil then
+		self.hovertext:Kill()
+		self.hovertext_bg:Kill()
+		self.hovertext = nil
+		self.hovertext_bg = nil
+		
+		--unhook the hover text focus functions
+		if self._OnGainFocus then
+			self.OnGainFocus = self._OnGainFocus
+			self.OnLoseFocus = self._OnLoseFocus
+		end
+	end
 end
 
 return Widget

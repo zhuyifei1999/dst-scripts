@@ -17,119 +17,8 @@ local TEMPLATES = require "widgets/templates"
 local DEBUG_MODE = BRANCH == "dev"
 
 
-local function line_constructor(screen, parent, num_pictures, data)
-
-	local widget = parent:AddChild(Widget("inventory-line"))
-	local offset = 0
-
-	widget.screen = screen
-	widget.images = {}
-
-	-- create itemimages for each data item
-	for k, item in ipairs(data.items) do 
-
-		local itemimage = widget:AddChild(ItemImage(screen, item.type, item.item, item.timestamp,
-			function(type, item) 
-				screen:UpdateDetailsPanel(type, item)
-			end,
-
-		    nil,
-
-			nil, 
-
-			nil
-
-			)
-		)
-
-		itemimage:SetPosition(offset, -15, 0)
-		offset = offset + 80
-
-		if k > 1 then 
-			itemimage:SetFocusChangeDir(MOVE_LEFT, widget.images[k-1])
-			widget.images[k-1]:SetFocusChangeDir(MOVE_RIGHT, itemimage)
-		end
-   
-		table.insert(widget.images, itemimage)
-
-		-- FOR TESTING ONLY break
-	end
-
-	-- if the line isn't full, fill in the rest of the line with empty itemimages
-	while #widget.images < num_pictures do
-		local itemimage = widget:AddChild(ItemImage(screen, "", "", 0,
-			function(type, item) 
-				screen:UpdateDetailsPanel(type, item)
-			end,
-
-			nil,
-
-			nil
-
-			))
-
-		itemimage:SetPosition(offset, -15, 0)
-		offset = offset + 80
-
-		table.insert(widget.images, itemimage)
-
-		if #widget.images > 1 then 
-			itemimage:SetFocusChangeDir(MOVE_LEFT, widget.images[#widget.images - 1])
-			widget.images[#widget.images-1]:SetFocusChangeDir(MOVE_RIGHT, itemimage)
-		end
-	end
-
-	widget.focus_forward = widget.images[1]
-
-	-- When the itemimage gets focus, it tells the screen to set the focus_column so we can look it up here
-	widget.OnGainFocus = function() 
-		local focus_column = widget.screen.focus_column or 1
-		widget.images[focus_column]:SetFocus()
-	end
-
-	widget.ForceFocus = function()
-		local focus_column = widget.screen.focus_column or 1
-		widget.images[focus_column]:Embiggen()
-	end
-
-	return widget
-end
-
-local function updateWidget(widget, data, index, screen)
-
-	local offset = 0
-	for i = 1, #data do 
-		local item = data[i]
-
-		if widget.images[i] and item then 
-			widget.images[i]:SetItem(item.type, item.item, item.timestamp)
-		elseif item then 
-			widget.images[i] = widget:AddChild(ItemImage(screen, item.type, item.item, item.timestamp))
-			widget.images[i]:SetPosition(offset, 0, 0)
-		end
-
-		--print("Screen selected item is ", screen.selected_item, item.item)
-		if screen.selected_item and screen.selected_item == item.item then 
-			--print("Updating selected item, embiggening")
-			widget.images[i]:Select()
-		else
-			widget.images[i]:Unselect()
-		end
-
-		offset = offset + 100
-		widget.images[i]:Show()
-		-- FOR TESTING ONLY break 
-	end
-
-	if #data < #widget.images then 
-		for i = (#data+1), #widget.images do 
-			widget.images[i]:SetItem(nil, nil)
-			widget.images[i]:Unselect()
-		end
-	end
-
-end
-
+local NUM_ROWS = 4
+local NUM_ITEMS_PER_ROW = 4
 
 local SkinsScreen = Class(Screen, function(self, profile, screen)
 	Screen._ctor(self, "SkinsScreen")
@@ -174,15 +63,15 @@ function SkinsScreen:DoInit( )
     if not TheInput:ControllerAttached() then 
    		self.loadout_button = self.fixed_root:AddChild(TEMPLATES.SmallButton(STRINGS.UI.SKINSSCREEN.LOADOUT, 40, .75, 
     					function()
-    						TheFrontEnd:PushScreen(CharacterSelectScreen(self.profile, "wilson"))
+    							TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
+							       TheFrontEnd:PushScreen(CharacterSelectScreen(self.profile, "wilson"))
+							       TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
+							    end)
     						end))
    		self.loadout_button:SetPosition(475, -300)
    	end
 
    	self.trade_button = self.fixed_root:AddChild(ImageButton("images/tradescreen.xml", "trade_buttonactive.tex", "trade_buttonactive_hover.tex", "trade_button_disabled.tex", "trade_button_pressed.tex"))
-   	self.trade_button:SetOnClick(function() 
-   								-- TODO: open the trade screen
-   								end)
    	self.trade_button:SetScale(1.05)
    	self.trade_button:SetPosition(475, -170)
    	self.trade_button:Disable()
@@ -203,9 +92,8 @@ function SkinsScreen:DoInit( )
     	self.profile:SetCollectionName(self.title:GetString())
     end
 
-	self:GetSkinsList()
-
-    self:BuildInventoryList(self.skins_list)
+    self:BuildInventoryList()
+    self:UpdateInventoryList()
 
     self:BuildDetailsPanel()
 
@@ -233,8 +121,14 @@ function SkinsScreen:SetFocusColumn( itemimage )
 	end
 end
 
+
+function SkinsScreen:SetFocusIndex(idx)
+	self.focus_index = idx
+end
+
+
 function SkinsScreen:ClearFocus()
-	--print("Clearing focus")
+	--print("Clearing focus", debugstack())
 	if self.list_widgets then 
 		for i = 1, #self.list_widgets do 
 			local line = self.list_widgets[i]
@@ -249,14 +143,16 @@ function SkinsScreen:ClearFocus()
 	--self.details_panel:Hide()
 end
 
-
-function SkinsScreen:UpdateDetailsPanel(type, item)
+-- Update the details panel when an item is clicked
+function SkinsScreen:OnItemSelect(type, item, itemimage)
 
 	if type == nil or item == nil then 
 		self.details_panel:Hide()
 		self.dressup_hanger:Show()
 		return
 	end
+
+	self:SetFocusIndex(itemimage.index)
 
 	self.dressup_hanger:Hide()
 
@@ -298,10 +194,6 @@ function SkinsScreen:UpdateDetailsPanel(type, item)
 	self.details_panel.rarity:SetColour(unpack(SKIN_RARITY_COLORS[rarity]))
 
 	self.details_panel:Show()
-end
-
-function SkinsScreen:OnControl(control, down)
-	return SkinsScreen._base.OnControl(self,control, down)
 end
 
 function SkinsScreen:BuildDetailsPanel()
@@ -357,91 +249,46 @@ function SkinsScreen:BuildDetailsPanel()
 end
 
 
-function SkinsScreen:BuildInventoryList(skins_list)
-
-	if not skins_list then 
-		skins_list = {}
-	end
-
-	if not self.inventory_list then 
-		self.inventory_list = self.fixed_root:AddChild(Widget("container"))
-	end
+function SkinsScreen:BuildInventoryList()
+	self.inventory_list = self.fixed_root:AddChild(Widget("container"))
 
 	-- MUST have two separate roots for the scrollable list and the widgets inside the scrollable list, 
 	-- otherwise the sub-widgets don't get focus/click events.
 	-- (I assume this applies to the paged list as well, since it's based on the scrollable list.)
-	if not self.list_root then 
-		self.list_root = self.inventory_list:AddChild(Widget("list-root"))
+	self.list_root = self.inventory_list:AddChild(Widget("list-root"))
+	self.row_root = self.inventory_list:AddChild(Widget("row-root"))
+
+	self.list_widgets = {}
+
+	for i=1,NUM_ROWS do
+		table.insert(self.list_widgets, SkinLineConstructor(self, self.row_root, NUM_ITEMS_PER_ROW, false))
 	end
 
-	if not self.row_root then 
-		self.row_root = self.inventory_list:AddChild(Widget("row-root"))
-	end
-
-
-	self.inventory_lines = {}
-
-	if not self.list_widgets then 
-		self.list_widgets = {}
-	end
-
-	local line_items = {}
-
-	local num_items_per_row = 4
-	local num_visible_rows = 4
-
-	for k,v in pairs(skins_list) do 
-		
-		--print("adding ", v, v.item_id, v.item_type)
-
-		if #line_items < num_items_per_row then 
-			table.insert(line_items, v)
-		end
-
-		if #line_items == num_items_per_row then 
-			self.inventory_lines[#self.inventory_lines + 1] = line_items
-			
-			if #self.list_widgets < num_visible_rows then 
-				table.insert(self.list_widgets, line_constructor(self, self.row_root, num_items_per_row, {items = line_items}))
-			end
-
-			line_items = {}
-		end
-
-	end
-
-	if #line_items > 0 then 
-		self.inventory_lines[#self.inventory_lines + 1] = line_items
-
-		if #self.list_widgets < num_visible_rows then 
-			table.insert(self.list_widgets, line_constructor(self, self.row_root, num_items_per_row, {items = line_items}))
-		end
-	end
-
-	while #self.list_widgets < num_visible_rows do 
-		table.insert(self.list_widgets, line_constructor(self, self.row_root, num_items_per_row, {items = {}}))
-	end
-
+	local row_width = 240
 	local row_height = 70
 	local spacing = 10
-	if not self.page_list then 
-		self.page_list = self.list_root:AddChild(PagedList(self.inventory_lines, 240, row_height, spacing, function(widget, data, index) updateWidget(widget, data, index, self) end, self.list_widgets, true))
-		--self.page_list:LayOutStaticWidgets()
-		self.page_list:SetPosition(0, 0)
-	else
-		self.page_list:Show()
-		self.page_list:SetList(self.inventory_lines)
-	end
 
+	self.page_list = self.list_root:AddChild(PagedList(row_width, row_height, spacing, function(widget, data, index) UpdateSkinLine(widget, data, index, self) end, self.list_widgets))
+	self.page_list:SetPosition(0, 0)	
+	
 	self.inventory_list:SetPosition(-20, 240)
-
 end
+
+function SkinsScreen:UpdateInventoryList()
+	self:GetSkinsList() --populates self.skins_list	
+	local inventory_rows = SplitSkinsIntoInventoryRows(self.skins_list, NUM_ITEMS_PER_ROW)	
+	self.page_list:SetItemsData(inventory_rows)
+end
+
 
 function SkinsScreen:Quit()
 	--print("Setting dressuptimestamp from skinsscreen:Quit", self.timestamp)
 	self.profile:SetCollectionTimestamp(self.timestamp)
 	
-	TheFrontEnd:PopScreen()
+	TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
+        TheFrontEnd:PopScreen()
+        TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
+    end)
 end
 
 function SkinsScreen:OnBecomeActive()
@@ -467,9 +314,8 @@ function SkinsScreen:OnBecomeActive()
 
 	    self.leaving = nil
 
-	    -- Refresh the paged list to update the equipped stars (in case we're returning from the loadout screen)
-	    self.page_list:RefreshView()
-
+	    -- If we came from the tradescreen, we need to update the inventory list
+    	self:UpdateInventoryList()
 	else
 		-- This triggers when the "sorry" popup closes. Just quit.
 		self:Quit()
@@ -480,87 +326,11 @@ end
 
 function SkinsScreen:GetSkinsList()
 
-	local templist = TheInventory:GetFullInventory()
-	self.skins_list = {}
-	self.timestamp = 0
-
-	local listoflists = 
-	{
-		feet = {},
-		hand = {},
-		body = {},
-		legs = {},
-		base = {},
-		item = {},
-	}
-
-	for k,v in ipairs(templist) do 
-		local type, item = GetTypeForItem(v.item_type)
-		local rarity = GetRarityForItem(type, item)
-
-		if type ~= "unknown" then
-
-			local data = {}
-			data.type = type
-			data.item = item
-			data.rarity = rarity
-			data.timestamp = v.modified_time
-			data.item_id = v.item_id
-		
-			table.insert(listoflists[type], data)
-			
-			if v.modified_time > self.timestamp then 
-				self.timestamp = v.modified_time
-			end
-		end
-	end
-
-	local compare = function(a, b) 
-						if a.rarity == b.rarity then 
-							if a.item == b.item then 
-								return a.timestamp > b.timestamp
-							else
-								return a.item < b.item 
-							end
-						else 
-							return CompareRarities(a,b)
-						end
-					end
-	table.sort(listoflists.feet, compare)
-
-	table.sort(listoflists.hand, compare)
-	table.sort(listoflists.body, compare)
-	table.sort(listoflists.legs, compare)
-	table.sort(listoflists.base, compare)
-	table.sort(listoflists.item, compare)
-
-
-	self.skins_list = JoinArrays(self.skins_list, listoflists.item)
-	self.skins_list = JoinArrays(self.skins_list, listoflists.base)
-	self.skins_list = JoinArrays(self.skins_list, listoflists.body)
-	self.skins_list = JoinArrays(self.skins_list, listoflists.hand)
-	self.skins_list = JoinArrays(self.skins_list, listoflists.legs)
-	self.skins_list = JoinArrays(self.skins_list, listoflists.feet)
-
+	self.skins_list, self.timestamp = GetSortedSkinsList()
 
 	-- Keep a copy so we can change the skins_list later (for filters)
-	self.full_skins_list = self:CopySkinsList(self.skins_list)
+	self.full_skins_list = CopySkinsList(self.skins_list)
 end
-
-
-function SkinsScreen:CopySkinsList(list)
-
-	local newList = {}
-	for k, skin in ipairs(list) do 
-		newList[k] = {}
-		newList[k].type = skin.type
-		newList[k].item = skin.item
-		newList[k].timestamp = skin.modified_time
-	end
-
-	return newList
-end
-
 
 
 local SCROLL_REPEAT_TIME = .15
@@ -577,10 +347,15 @@ function SkinsScreen:OnControl(control, down)
 		return true 
     end
 
-    if  TheInput:ControllerAttached()  and 
-    	not down and control == CONTROL_PAUSE then
-    	TheFrontEnd:PushScreen(CharacterSelectScreen(self.profile, "wilson"))
-		return true
+    if  TheInput:ControllerAttached() then 
+
+    	if not down and control == CONTROL_PAUSE then
+    		TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
+		        TheFrontEnd:PushScreen(CharacterSelectScreen(self.profile, "wilson"))
+		        TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
+		    end)
+			return true
+		end
     end
 
    	if down then 

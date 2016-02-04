@@ -12,6 +12,7 @@ local assets =
 local prefabs =
 {
     "bat",
+    "rock_break_fx",
 }
 
 local function close(inst)
@@ -51,9 +52,9 @@ local function OnIsDay(inst, isday)
 end
 
 local function OnWork(inst, worker, workleft)
-    local pt = inst:GetPosition()
     if workleft <= 0 then
-        inst.SoundEmitter:PlaySound("dontstarve/wilson/rock_break")
+        local pt = inst:GetPosition()
+        SpawnPrefab("rock_break_fx").Transform:SetPosition(pt:Get())
         inst.components.lootdropper:DropLoot(pt)
         ProfileStatsSet("cave_entrance_opened", true)
         local openinst = SpawnPrefab("cave_entrance_open")

@@ -517,6 +517,7 @@ function DressupPanel:GetSkinOptionsForSlot(slot)
 
 	--print("Building skin_options")
 	
+	local skin_options_items = {}
 	for which = 1, #self.skins_list do
 		if self.skins_list[which].type == slot then
 			if slot == "base" and string.find( self.skins_list[which].item, self.currentcharacter ) == nil then
@@ -529,10 +530,10 @@ function DressupPanel:GetSkinOptionsForSlot(slot)
 					local rarity = GetRarityForItem(slot, item)
 					local colour = rarity and SKIN_RARITY_COLORS[rarity] or SKIN_RARITY_COLORS["Common"]
 					local text_name = GetName(self.skins_list[which].item)
-					local key = IsInList(skin_options, item)
+					local key = IsInList(skin_options_items, item)
 
 					if new_indicator and key then 
-						skin_options[key].new_indicator = true
+						skin_options_items[key].new_indicator = true
 						
 					elseif new_indicator or not key then 
 
@@ -549,7 +550,7 @@ function DressupPanel:GetSkinOptionsForSlot(slot)
 							end
 						end
 		
-						table.insert(skin_options,  
+						table.insert(skin_options_items,  
 						{
 							text = text_name or STRINGS.SKIN_NAMES["missing"], 
 							data = nil,
@@ -564,6 +565,11 @@ function DressupPanel:GetSkinOptionsForSlot(slot)
 			end
 		end
 	end
+	table.sort( skin_options_items, function (a,b) return a.text < b.text end )
+	for _,v in pairs( skin_options_items ) do
+		table.insert( skin_options, v ) 
+	end
+	
 	--print("done building skin options")
 	
 	if self.include_random_options and (#skin_options > 1) then 
