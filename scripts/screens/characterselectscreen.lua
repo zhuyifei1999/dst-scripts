@@ -51,7 +51,7 @@ local CharacterSelectScreen = Class(Screen, function(self, profile, character)
 	end
 	
 	table.insert(buttons, {text=STRINGS.UI.SKINSSCREEN.SELECT, cb=function() 
-						self:Close() 
+						self:Hide()
 						TheFrontEnd:PushScreen(WardrobePopupScreen(nil, profile, self.character_list.herocharacter or character, true)) end
 						})
     
@@ -70,9 +70,17 @@ local CharacterSelectScreen = Class(Screen, function(self, profile, character)
 
 end)
 
+function CharacterSelectScreen:OnBecomeActive()
+	Screen.OnBecomeActive(self)
+	self:Show()
+end
+
+
 function CharacterSelectScreen:Close()
-	
-	TheFrontEnd:PopScreen(self)
+    TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
+       TheFrontEnd:PopScreen(self)
+       TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
+    end)
 end
 
 

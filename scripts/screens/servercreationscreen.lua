@@ -189,9 +189,9 @@ function ServerCreationScreen:UpdateButtons(slotnum)
     self.mods_button:SetText(STRINGS.UI.MAINSCREEN.MODS.." ("..self.mods_tab:GetNumberOfModsEnabled()..")")
 end
 
-function BuildTagsStringHosting(creationScreen)
+local function BuildTagsStringHosting(creationScreen)
     if TheNet:IsDedicated() then return nil end
-    
+
     local tagsTable = {}
 
     table.insert(tagsTable, creationScreen.server_settings_tab:GetGameMode())

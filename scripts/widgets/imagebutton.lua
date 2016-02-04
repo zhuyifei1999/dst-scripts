@@ -160,12 +160,12 @@ function ImageButton:OnControl(control, down)
             self:StopUpdating()
         end
         return true
-    end
+	end
 end
 
 function ImageButton:OnEnable()
 	ImageButton._base.OnEnable(self)
-    if self.focus then 
+    if self.focus then
         self:OnGainFocus()
     else
         self:OnLoseFocus()

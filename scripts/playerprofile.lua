@@ -157,6 +157,27 @@ function PlayerProfile:GetSkinsForCharacter(character, base)
 	return self.persistdata.characterskins[character][base] or {}
 end
 
+function PlayerProfile:GetAllEquippedSkins()
+	if not self.persistdata.characterskins then
+		return {}
+	end
+
+	local skinslist = {}
+	for character,data in pairs(self.persistdata.characterskins) do
+		for base, skins in pairs(data) do
+			if type(skins) == "table" then 
+				for slot, name in pairs(skins) do 
+					if name ~= "" then 
+						table.insert(skinslist, name)
+					end
+				end
+			end
+		end 
+	end
+
+	return skinslist
+end
+
 function PlayerProfile:SetSkinsForCharacter(character, base, skinList)
 	if not self.persistdata.characterskins then
 		self.persistdata.characterskins = {}

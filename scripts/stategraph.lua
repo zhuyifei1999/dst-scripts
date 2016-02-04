@@ -74,9 +74,14 @@ end
 
 
 function StateGraphWrangler:OnRemoveEntity(inst)
-    
+    if self.instances[inst.sg] then
+        assert(inst.sg.inst == inst)
+        SGManager:RemoveInstance(inst.sg)
+        return
+    end
     for k,v in pairs(self.instances) do
         if k.inst == inst then
+            assert(false)
             self:RemoveInstance(k)
             return
         end

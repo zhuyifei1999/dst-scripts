@@ -157,6 +157,7 @@ local assets =
     Asset("ANIM", "anim/skingift_popup.zip"),
     Asset("ATLAS", "images/giftpopup.xml"),
     Asset("IMAGE", "images/giftpopup.tex"),
+
     
     --oft-used panel bgs
     Asset("ATLAS", "images/globalpanels2.xml"),

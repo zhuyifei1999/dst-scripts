@@ -433,17 +433,27 @@ local function InsertPostInitFunctions(env, isworldgen)
 		AddReplicableComponent(name)
 	end
 
-	env.AddModRPCHandler = function(namespace, name, fn)
-		initprint("AddModRPCHandler", namespace, name)
-		AddModRPCHandler(namespace, name, fn)
+	env.AddModRPCHandler = function( namespace, name, fn )
+		initprint( "AddModRPCHandler", namespace, name )
+		AddModRPCHandler( namespace, name, fn )
 	end
 
-	env.SendModRPCToServer = function(id_table,...)
-		initprint("SendModRPCToServer", id_table.namespace, id_table.id)
-		SendModRPCToServer(id_table,...)
+	env.GetModRPCHandler = function( namespace, name )
+		initprint( "GetModRPCHandler", namespace, name )
+		return GetModRPCHandler( namespace, name )
+	end
+	
+	env.SendModRPCToServer = function( id_table, ... )
+		initprint( "SendModRPCToServer", id_table.namespace, id_table.id )
+		SendModRPCToServer( id_table, ... )
 	end
 
-	env.MOD_RPC = MOD_RPC
+	env.MOD_RPC = MOD_RPC --legacy, mods should use GetModRPC below
+
+	env.GetModRPC = function( namespace, name )
+		initprint( "GetModRPC", namespace, name )
+		return GetModRPC( namespace, name )
+	end
 
     env.SetModHUDFocus = function(focusid, hasfocus)
         initprint("SetModHUDFocus", focusid, hasfocus)

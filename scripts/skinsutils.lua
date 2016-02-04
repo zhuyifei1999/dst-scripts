@@ -4,9 +4,9 @@ SKIN_RARITY_COLORS =
 {
 	Common			= { 0.718, 0.824, 0.851, 1 }, -- B7D2D9 - a common item
 	Classy			= { 0.255, 0.314, 0.471, 1 }, -- 415078 - an uncommon item
-	Spiffy			= { 0.408, 0.271, 0.486, 1 }, -- 68457C - a rare item (eg bearger pack)
-	Distinguished	= { 0.729, 0.455, 0.647, 1 }, -- BA74A5 - an extremely rare item (eg footpack)
-	Elegant			= { 0.741, 0.275, 0.275, 1 }, -- BD4646 - not used
+	Spiffy			= { 0.408, 0.271, 0.486, 1 }, -- 68457C - a rare item (eg Trenchcoat)
+	Distinguished	= { 0.729, 0.455, 0.647, 1 }, -- BA74A5 - a very rare item (eg Tuxedo)
+	Elegant			= { 0.741, 0.275, 0.275, 1 }, -- BD4646 - an extremely rare item (eg rabbit pack, GoH base skins)
 	Timeless		= { 0.957, 0.769, 0.188, 1 }, -- F4C430 - not used
 	Loyal			= { 0.635, 0.769, 0.435, 1 }, -- A2C46F - a one-time giveaway (eg mini monument)
 }
@@ -14,8 +14,8 @@ SKIN_RARITY_COLORS =
 -- for use in sort functions
 -- return true if rarity1 should go first in the list
 function CompareRarities(a, b)
-	local rarity1 = a.rarity
-	local rarity2 = b.rarity
+	local rarity1 = type(a) == "string" and a or a.rarity
+	local rarity2 = type(b) == "string" and b or b.rarity
 
 	if rarity1 == rarity2 then 
 		return false
@@ -44,6 +44,31 @@ function CompareRarities(a, b)
 	end
 
 	return false
+end
+
+function GetNextRarity(rarity)
+	local rarities = {Common = "Classy",
+					  Classy = "Spiffy",
+					  Spiffy = "Distinguished",
+					  Distinguished = "Elegant",
+					  Elegant = "Timeless",
+					  Timeless = "Loyal"
+					 }
+
+	return rarities[rarity] or nil
+end
+
+function GetBuildForItem(type, name)
+	if type == "base" or type == "item" then 
+		local skinsData = Prefabs[name]
+		if skinsData and skinsData.ui_preview then
+			name = skinsData.ui_preview.build
+		end
+		return name
+	else
+		--for now assume that clothing build matches the item name
+		return name
+	end
 end
 
 function GetTypeForItem(item)
@@ -127,64 +152,207 @@ function SetSkinEntitlementReceived(entitlement)
 	Profile:SetEntitlementReceived(entitlement)
 end
 
+----------------------------------------------------
 
----------------------------------------------------
------------- Console functions --------------------
----------------------------------------------------
+local Widget = require "widgets/widget"
+local ItemImage = require "widgets/itemimage"
 
-function c_skin_mode(mode)
-	ConsoleCommandPlayer().components.skinner:SetSkinMode(mode)
-end
+function SkinLineConstructor(screen, parent, num_pictures, disable_selecting)
 
-function c_skin_name(name)
-	ConsoleCommandPlayer().components.skinner:SetSkinName(name)
-end
+	local widget = parent:AddChild(Widget("inventory-line"))
+	local offset = 0
 
-function c_clothing(name)
-	ConsoleCommandPlayer().components.skinner:SetClothing(name)
-end
-function c_clothing_clear(type)
-	ConsoleCommandPlayer().components.skinner:ClearClothing(type)
-end
+	widget.screen = screen
+	widget.images = {}
 
-function c_cycle_clothing()
-	local skinslist = TheInventory:GetFullInventory()
+	--create the empty item image widgets which we'll populate later with data
+	for i = 1,num_pictures do
+		local itemimage = widget:AddChild(ItemImage(screen, nil, "", "", 0, 0, nil, nil, nil ))
 
-	local idx = 1
-	local task = nil
-
-	ConsoleCommandPlayer().cycle_clothing_task = ConsoleCommandPlayer():DoPeriodicTask(10, 
-		function() 
-			local type, name = GetTypeForItem(skinslist[idx].item_type)
-			print("showing clothing idx ", idx, name, type, #skinslist) 
-			if (type ~= "base" and type ~= "item") then 
-				c_clothing(name) 
+		itemimage.clickFn = function(type, item, item_id) 
+				screen:OnItemSelect(type, item, item_id, itemimage)
 			end
 
-			if idx < #skinslist then 
-				idx = idx + 1 
+		itemimage:SetPosition(offset, -15, 0)
+		offset = offset + 80
+
+		if i > 1 then 
+			itemimage:SetFocusChangeDir(MOVE_LEFT, widget.images[#widget.images - 1])
+			widget.images[i-1]:SetFocusChangeDir(MOVE_RIGHT, itemimage)
+		end
+		
+		table.insert(widget.images, itemimage)
+	end
+
+	widget.focus_forward = widget.images[1]
+
+	-- When the itemimage gets focus, it tells the screen to set the focus_column so we can look it up here
+	widget.OnGainFocus = function() 
+		local focus_column = widget.screen.focus_column or 1
+		widget.images[focus_column]:SetFocus()
+	end
+
+	widget.ForceFocus = function()
+		local focus_column = widget.screen.focus_column or 1
+		widget.images[focus_column]:Embiggen()
+	end
+
+	if disable_selecting then 
+		for _,item_image in pairs(widget.images) do
+			item_image:DisableSelecting()
+		end
+	end	
+	widget.disable_selecting = disable_selecting
+	
+	return widget
+end
+
+function UpdateSkinLine(widget, data, row_number, screen)
+	local focus_index = screen.focus_index
+
+	--print("UpdateSkinLine has screen", screen, screen.focus_index)
+	local offset = 0
+	for i = 1, #data do 
+		local item = data[i]
+
+		local idx = (row_number-1)*#data+i
+		--print("Item ", idx, " is", item.item, item.item_id)
+		widget.images[i]:SetItem(idx, item.type, item.item, item.item_id, item.timestamp)
+
+		offset = offset + 100
+
+		if not widget.disable_selecting then
+			if focus_index and focus_index == (idx) then
+				--print("Selecting image ", row_number, idx)
+				widget.images[i]:Select()
+				--widget.images[i]:ForceClick()
 			else
-				print("Ending cycle")
-				ConsoleCommandPlayer().cycle_clothing_task:Cancel()
+				widget.images[i]:Unselect()
 			end
-		end)
+		end
+
+		widget.images[i]:Show()
+
+		if screen.show_hover_text then
+			local rarity = GetRarityForItem(item.type, item.item)
+			local hover_text = rarity .. "\n" .. GetName(item.item)
+			widget.images[i]:SetHoverText( hover_text, { font = NEWFONT_OUTLINE, size = 20, offset_x = 0, offset_y = 50, colour = {1,1,1,1}})
+		end
+	end
+
+	if #data < #widget.images then 
+		for i = (#data+1), #widget.images do 
+			widget.images[i]:SetItem(nil, nil, nil, nil)
+			widget.images[i]:Unselect()
+			if screen.show_hover_text then
+				widget.images[i]:ClearHoverText()
+			end
+		end
+	end
+
 
 end
 
--- NOTE: only works on the host
-function c_giftpopup()
-	local GiftItemPopUp = require "screens/giftitempopup"
-	TheFrontEnd:PushScreen(GiftItemPopUp(ThePlayer, { "hand_shortgloves_white_smoke" }, { 101010 }))
+
+function GetSortedSkinsList()
+	local templist = TheInventory:GetFullInventory()
+	local skins_list = {}
+	local timestamp = 0
+
+	local listoflists = 
+	{
+		feet = {},
+		hand = {},
+		body = {},
+		legs = {},
+		base = {},
+		item = {},
+	}
+
+	for k,v in ipairs(templist) do 
+		local type, item = GetTypeForItem(v.item_type)
+		local rarity = GetRarityForItem(type, item)
+
+		if type ~= "unknown" then
+
+			local data = {}
+			data.type = type
+			data.item = item
+			data.rarity = rarity
+			data.timestamp = v.modified_time
+			data.item_id = v.item_id
+		
+			table.insert(listoflists[type], data)
+			
+			if v.modified_time > timestamp then 
+				timestamp = v.modified_time
+			end
+		end
+	end
+
+	local compare = function(a, b) 
+						if a.rarity == b.rarity then 
+							if a.item == b.item then 
+								return a.timestamp > b.timestamp
+							else
+								return a.item < b.item 
+							end
+						else 
+							return CompareRarities(a,b)
+						end
+					end
+	table.sort(listoflists.feet, compare)
+
+	table.sort(listoflists.hand, compare)
+	table.sort(listoflists.body, compare)
+	table.sort(listoflists.legs, compare)
+	table.sort(listoflists.base, compare)
+	table.sort(listoflists.item, compare)
+
+
+	skins_list = JoinArrays(skins_list, listoflists.item)
+	skins_list = JoinArrays(skins_list, listoflists.base)
+	skins_list = JoinArrays(skins_list, listoflists.body)
+	skins_list = JoinArrays(skins_list, listoflists.hand)
+	skins_list = JoinArrays(skins_list, listoflists.legs)
+	skins_list = JoinArrays(skins_list, listoflists.feet)
+
+
+	return skins_list, timestamp
 end
 
-function c_avatarscreen()
-    if ThePlayer ~= nil and ThePlayer.HUD ~= nil then
-        local client_table = TheNet:GetClientTableForUser(ConsoleCommandPlayer().userid)
-        if client_table ~= nil then
-            --client_table.inst = ConsoleCommandPlayer() --don't track
-            ThePlayer.HUD:TogglePlayerAvatarPopup(client_table.name, client_table, true)
-        end
-    end
+
+function CopySkinsList(list)
+	local newList = {}
+	for k, skin in ipairs(list) do 
+		newList[k] = {}
+		newList[k].type = skin.type
+		newList[k].item = skin.item
+		newList[k].item_id = skin.item_id
+		newList[k].timestamp = skin.modified_time
+	end
+
+	return newList
 end
 
+function SplitSkinsIntoInventoryRows(skins_list, num_items_per_row)
+	local inventory_rows = {}
+	
+	--split skins_list data into chunks of 4 items, for each row
+	local line_items = {}
+	for k,v in ipairs(skins_list) do	
+		if #line_items < num_items_per_row then
+			table.insert(line_items, v)
+		end
+		if #line_items == num_items_per_row then 
+			inventory_rows[#inventory_rows + 1] = line_items
+			line_items = {}
+		end
+	end
+	if #line_items > 0 then 
+		inventory_rows[#inventory_rows + 1] = line_items
+	end
+	
+	return inventory_rows
+end
 

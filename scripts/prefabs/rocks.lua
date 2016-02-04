@@ -27,7 +27,8 @@ local prefabs =
     "flint",
     "goldnugget",
     "moonrocknugget",
-}    
+    "rock_break_fx",
+}
 
 SetSharedLootTable( 'rock1',
 {
@@ -87,17 +88,17 @@ SetSharedLootTable( 'rock_moon',
 })
 
 local function OnWork(inst, worker, workleft)
-    local pt = Point(inst.Transform:GetWorldPosition())
     if workleft <= 0 then
-        inst.SoundEmitter:PlaySound("dontstarve/wilson/rock_break")
+        local pt = inst:GetPosition()
+        SpawnPrefab("rock_break_fx").Transform:SetPosition(pt:Get())
         inst.components.lootdropper:DropLoot(pt)
         inst:Remove()
-    elseif workleft < TUNING.ROCKS_MINE / 3 then
-        inst.AnimState:PlayAnimation("low")
-    elseif workleft < TUNING.ROCKS_MINE * 2 / 3 then
-        inst.AnimState:PlayAnimation("med")
     else
-        inst.AnimState:PlayAnimation("full")
+        inst.AnimState:PlayAnimation(
+            (workleft < TUNING.ROCKS_MINE / 3 and "low") or
+            (workleft < TUNING.ROCKS_MINE * 2 / 3 and "med") or
+            "full"
+        )
     end
 end
 

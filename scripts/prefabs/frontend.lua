@@ -41,6 +41,8 @@ local assets =
     Asset("ANIM", "anim/frame_skins.zip"),
     Asset("ANIM", "anim/frame_bg.zip"),
 
+    Asset("FILE", "images/motd.xml"),
+
     Asset("ANIM", "anim/chest_bg.zip"),
 }
 

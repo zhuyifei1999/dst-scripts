@@ -584,3 +584,7 @@ end
 function GetModRPCHandler( namespace, name )
 	return MOD_RPC_HANDLERS[namespace][MOD_RPC[namespace][name].id]
 end
+
+function GetModRPC( namespace, name )
+	return MOD_RPC[namespace][name]
+end

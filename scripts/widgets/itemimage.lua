@@ -5,17 +5,15 @@ local UIAnim = require "widgets/uianim"
 
 local image_scale = .6
 
-local ItemImage = Class(Widget, function(self, screen, type, name, timestamp, clickFn, mouseonFn, mouseoffFn, rightclickFn)
+local ItemImage = Class(Widget, function(self, screen, index, type, name, item_id, timestamp, clickFn)
     Widget._ctor(self, "item-image")
 
     self.screen = screen
     self.type = type
     self.name = name
+    self.item_id = item_id
     self.clickFn = clickFn
-    self.mouseonFn = mouseonFn
-    self.mouseoffFn = mouseoffFn
-   	self.rightclickFn = rightclickFn
-
+    
     self.frame = self:AddChild(UIAnim())
     self.frame:GetAnimState():SetBuild("frames_comp") -- use the animation file as the build, then override it
     self.frame:GetAnimState():AddOverrideBuild("frame_skins") -- file name
@@ -31,26 +29,43 @@ local ItemImage = Class(Widget, function(self, screen, type, name, timestamp, cl
    	if not timestamp or (timestamp > collection_timestamp) then 
     	self.frame:GetAnimState():PlayAnimation("idle_on", true)
     	self.new_tag:Show()
+    	self.default_anim = "idle_on"
+    	self.frame:GetAnimState():Show("NEW")
     else
     	self.frame:GetAnimState():PlayAnimation("icon", true)
     	self.new_tag:Hide()
+    	self.default_anim = "icon"
+    	self.frame:GetAnimState():Hide("NEW")
     end
     self.frame:SetScale(image_scale)
 
-    self.equipped = false
+    self.warning = false
 
-    self.equipped_marker = self.frame:AddChild(Image("images/ui.xml", "red_star.tex"))
-    self.equipped_marker:SetPosition(-40, 35)
-    self.equipped_marker:Hide()
+    self.warn_marker = self.frame:AddChild(Image("images/ui.xml", "yellow_exclamation.tex"))
+    self.warn_marker:SetPosition(-40, 35)
+    self.warn_marker:Hide()
 
-
-    self:SetItem(type, name)
-
+    self:SetItem(index, type, name, item_id)
 end)
 
-function ItemImage:SetItem(type, name, timestamp)
+function ItemImage:PlaySpecialAnimation(name, pushdefault)
+	self.frame:GetAnimState():PlayAnimation(name, false)
+	if pushdefault then 
+		self.frame:GetAnimState():PushAnimation(self.default_anim, true)
+	end
+end
 
-	self.equipped_marker:Hide()
+function ItemImage:PlayDefaultAnim()
+	self.frame:GetAnimState():PlayAnimation(self.default_anim, true)
+end
+
+function ItemImage:DisableSelecting()
+	self.disable_selecting = true
+end
+
+function ItemImage:SetItem(index, type, name, item_id, timestamp)
+
+	self.warn_marker:Hide()
 
 	-- Display an empty frame if there's no data
 	if not type and not name then 
@@ -59,6 +74,7 @@ function ItemImage:SetItem(type, name, timestamp)
 		self.name = nil
 		self.rarity = "common"
 		self.new_tag:Hide()
+		self.frame:GetAnimState():Hide("NEW")
 
 		-- Reset the stuff that just got cleared to an empty frame state
 		self.frame:GetAnimState():SetBuild("frames_comp")
@@ -74,6 +90,9 @@ function ItemImage:SetItem(type, name, timestamp)
 
 	self.type = type
 	self.name = name
+	self.index = index
+	self.item_id = item_id
+	--print("ItemImage got index", index)
 
 	self.rarity = GetRarityForItem( type, name )
 	
@@ -94,29 +113,40 @@ function ItemImage:SetItem(type, name, timestamp)
    	if timestamp and (timestamp > collection_timestamp) then 
     	self.frame:GetAnimState():PlayAnimation("idle_on", true)
     	self.new_tag:Show()
+    	self.frame:GetAnimState():Show("NEW")
     else
     	self.frame:GetAnimState():PlayAnimation("icon", true)
     	self.new_tag:Hide()
+    	self.frame:GetAnimState():Hide("NEW")
     end
 
+    -- TODO: use the Mark() function instead
 	--[[if self.screen.profile:IsSkinEquipped(name, type) then 
-		self.equipped_marker:Show()
+		self.warn_marker:Show()
 	end]]
 
+end
+
+function ItemImage:Mark(value)
+	self.warning = value
+
+	if self.warning then 
+		self.warn_marker:Show()
+	else 
+		self.warn_marker:Hide()
+	end
 end
 
 function ItemImage:OnGainFocus()
 	self._base:OnGainFocus()
 
-	if self.frame then 
+	if self.frame and self:IsEnabled() then 
 		self:Embiggen()
 	end
 
-	if self.mouseonFn then 
-		self.mouseonFn(self.type, self.name)
+	if self.screen.SetFocusColumn ~= nil then
+		self.screen:SetFocusColumn(self)
 	end
-
-	self.screen:SetFocusColumn(self)
 	TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover")
 end
 
@@ -126,10 +156,20 @@ function ItemImage:OnLoseFocus()
 	if self.frame and not self.clicked then 
 		self:Shrink()
 	end
+end
 
-	if self.mouseoffFn then 
-		self.mouseoffFn(self.type, self.name)
-	end
+function ItemImage:OnEnable()
+	self._base.OnEnable(self)
+    if self.focus then
+        self:OnGainFocus()
+    else
+        self:OnLoseFocus()
+    end
+end
+
+function ItemImage:OnDisable()
+	self._base.OnDisable(self)
+	self:OnLoseFocus()
 end
 
 
@@ -143,30 +183,35 @@ end
 
 -- Toggle clicked/unclicked
 function ItemImage:OnControl(control, down)
-    -- print(self.name, "Got control", control, down, self.clicked)
-    if control == CONTROL_ACCEPT then
+    --print(self.name, "Got control", control, down, self.clicked)
+	if control == CONTROL_ACCEPT then
         if not self.clicked then
+			if self:IsEnabled() then
+        		if not down then
+        			--print("~~~~~~ ItemImage Click ~~~~~~", debugstack())
+        			TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+        			
+        			if not self.disable_selecting then
+        				self.screen:ClearFocus()
+        				self:Select()
+        			end
 
-        	if down then  
-        		self.screen:ClearFocus()
-        		TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
-        		self:Select()
-        	end
-
-           	if self.clickFn then 
-           		self.clickFn(self.type, self.name) 
-           	end
-       
+        			if self.clickFn then 
+		       			self.clickFn(self.type, self.name, self.item_id) 
+		       		end
+        		end
+        		
+				return true
+			end
         end
-        return true
-    elseif control == CONTROL_SECONDARY then 
-    	if down then 
-	    	if self.rightclickFn then 
-	    		self.rightclickFn(self.type, self.name)
-	    	end
-	    	return true
-	    end
 	end
+end
+
+function ItemImage:ForceClick()
+	if self.clickFn then 
+       	self.clickFn(self.type, self.name, self.item_id) 
+    end
+    self.clicked = true
 end
 
 function ItemImage:Select()
@@ -175,7 +220,6 @@ function ItemImage:Select()
 end
 
 function ItemImage:Unselect()
-	--print(self.name, "unselect")
 	self:Shrink()
     self.clicked = false
 end

@@ -13,6 +13,7 @@ PREFAB_SKINS = {
 		"backpack_camping_green_viridian",
 		"backpack_camping_orange_carrot",
 		"backpack_camping_red_koalefant",
+		"backpack_dragonfly_fire",
 		"backpack_mushy",
 		"backpack_poop",
 		"backpack_rabbit",

@@ -22,8 +22,8 @@ local assets =
     -- Asset("ANIM", "anim/portrait_frame.zip"), -- Not currently used, but likely to come back
     Asset("ANIM", "anim/spiral_bg.zip"),
 
-        Asset("ANIM", "anim/frames_comp.zip"),
-    	Asset("ANIM", "anim/frame_skins.zip"),
+    Asset("ANIM", "anim/frames_comp.zip"),
+    Asset("ANIM", "anim/frame_skins.zip"),
 
     Asset("ATLAS", "images/lobbybannertop.xml"),
     Asset("IMAGE", "images/lobbybannertop.tex"),

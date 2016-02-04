@@ -8,6 +8,7 @@ local assets =
 local prefabs =
 {
     "marble",
+    "rock_break_fx",
 }
 
 SetSharedLootTable( 'marble_tree',
@@ -29,15 +30,16 @@ end
 
 local function onworked(inst, worker, workleft)
     if workleft <= 0 then
-        inst.SoundEmitter:PlaySound("dontstarve/wilson/rock_break")
-        inst.components.lootdropper:DropLoot(Point(inst.Transform:GetWorldPosition()))
+        local pos = inst:GetPosition()
+        SpawnPrefab("rock_break_fx").Transform:SetPosition(pos:Get())
+        inst.components.lootdropper:DropLoot(pos)
         inst:Remove()
-    elseif workleft < TUNING.MARBLETREE_MINE / 3 then
-        inst.AnimState:PlayAnimation("low_"..inst.animnumber)
-    elseif workleft < TUNING.MARBLETREE_MINE * 2 / 3 then
-        inst.AnimState:PlayAnimation("med_"..inst.animnumber)
     else
-        inst.AnimState:PlayAnimation("full_"..inst.animnumber)
+        inst.AnimState:PlayAnimation(
+            (workleft < TUNING.MARBLETREE_MINE / 3 and ("low_"..inst.animnumber)) or
+            (workleft < TUNING.MARBLETREE_MINE * 2 / 3 and ("med_"..inst.animnumber)) or
+            ("full_"..inst.animnumber)
+        )
     end
 end
 

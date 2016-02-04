@@ -7,6 +7,8 @@ local ImageButton = require "widgets/imagebutton"
 local NineSlice = require "widgets/nineslice"
 local UIAnim = require "widgets/uianim"
 local Spinner = require "widgets/spinner"
+local AnimButton = require "widgets/animbutton"
+
 
 local smoke_offset = -20
 
@@ -523,6 +525,23 @@ TEMPLATES = {
 
     -----------------
     -----------------
+    -- INVISIBLE BUTTON --
+    -----------------
+    -----------------
+
+    InvisibleButton = function(width, height, onclick, onfocus)
+    	local btn = ImageButton("images/ui.xml", "blank.tex", "blank.tex", "blank.tex", "blank.tex", "blank.tex", {width,height}, {0,0})
+    	btn:SetFocusScale(width, height)
+    	btn:SetNormalScale(width, height)
+        btn:SetOnClick(onclick)
+
+        btn.ongainfocus = onfocus
+
+        return btn
+    end,
+
+    -----------------
+    -----------------
     -- ICON BUTTON --
     -----------------
     -----------------
@@ -615,6 +634,28 @@ TEMPLATES = {
 
 	    return btn
 	end,
+
+	------------
+    ------------
+    -- AnimTextButton --
+    ------------
+    ------------
+    -- A button that uses an animation file and has text on top of the image.
+    AnimTextButton = function (animname, states, scale, cb, text, size)
+
+    	local button = AnimButton(animname, states)
+    	button:SetScale(scale)
+    	button:SetOnClick(cb)
+   
+   		button:SetFont(NEWFONT_OUTLINE)
+    	button:SetTextSize(size or 24)
+    	button:SetText(text)
+    	button:SetTextColour(1, 1, 1, 1)
+    	button:SetTextSelectedColour(1, 1, 1, 1)
+    	button:SetTextFocusColour(1, 1, 1, 1)
+
+   		return button
+    end,
 
 
 	------------
@@ -858,6 +899,48 @@ TEMPLATES = {
 
         return wdg
     end,
+
+    ----------------------
+    ----------------------
+    -- Moving Item --
+    -----------------------
+    -----------------------
+    -- An item image for the inventory screens that moves 
+    MovingItem = function(name, type, src_pos, dest_pos)
+
+        local widg = Widget("item_"..name)
+
+        widg.name = name
+
+        widg.frame = widg:AddChild(UIAnim())
+        widg.frame:GetAnimState():SetBuild("frames_comp") -- use the animation file as the build, then override it
+        widg.frame:GetAnimState():AddOverrideBuild("frame_skins") -- file name
+        widg.frame:GetAnimState():SetBank("fr") -- top level symbol from frames_comp
+
+        local rarity = GetRarityForItem(type, name)
+
+        widg.frame:GetAnimState():OverrideSkinSymbol("SWAP_ICON",  name, "SWAP_ICON")
+        widg.frame:GetAnimState():OverrideSymbol("SWAP_frameBG", "frame_BG", rarity)
+
+        widg.frame:GetAnimState():PlayAnimation("icon", true)
+        widg.frame:GetAnimState():Hide("NEW")
+
+        widg:SetScale(.66)
+        widg:Hide()
+
+        widg.Move = function() 
+                                widg:Show()
+                                widg.frame:MoveTo(src_pos, dest_pos, .3, 
+                                function()
+                                    --widg:ScaleTo(self.basescale * 2, self.basescale, .25)
+                                    widg:Kill()
+                                end)
+                    end
+
+        return widg
+    end,
+
+
 }
 
 return TEMPLATES

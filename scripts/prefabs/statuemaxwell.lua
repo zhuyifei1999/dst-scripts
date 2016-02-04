@@ -7,6 +7,7 @@ local assets =
 local prefabs =
 {
     "marble",
+    "rock_break_fx",
 }
 
 SetSharedLootTable('statue_maxwell',
@@ -18,8 +19,9 @@ SetSharedLootTable('statue_maxwell',
 
 local function OnWork(inst, worker, workleft)
     if workleft <= 0 then
-        inst.SoundEmitter:PlaySound("dontstarve/wilson/rock_break")
-        inst.components.lootdropper:DropLoot(inst:GetPosition())
+        local pos = inst:GetPosition()
+        SpawnPrefab("rock_break_fx").Transform:SetPosition(pos:Get())
+        inst.components.lootdropper:DropLoot(pos)
         inst:Remove()
     elseif workleft < TUNING.MARBLEPILLAR_MINE / 3 then
         inst.AnimState:PlayAnimation("hit_low")

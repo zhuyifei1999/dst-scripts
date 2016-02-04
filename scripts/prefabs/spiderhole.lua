@@ -14,6 +14,9 @@ local prefabs =
     "silk",
     "spidergland",
     "silk",
+
+    --fx
+    "rock_break_fx",
 }
 
 SetSharedLootTable('spider_hole',
@@ -38,8 +41,9 @@ end
 
 local function rock_onworked(inst, worker, workleft)
     if workleft <= 0 then
-        inst.SoundEmitter:PlaySound("dontstarve/wilson/rock_break")
-        inst.components.lootdropper:DropLoot(inst:GetPosition())
+        local pos = inst:GetPosition()
+        SpawnPrefab("rock_break_fx").Transform:SetPosition(pos:Get())
+        inst.components.lootdropper:DropLoot(pos)
         inst:Remove()
     else
         inst.AnimState:PlayAnimation(workleft <= TUNING.SPILAGMITE_ROCK * 0.5 and "low" or "med")
