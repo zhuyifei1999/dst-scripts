@@ -50,7 +50,7 @@ local function workcallback(inst, worker, workleft)
         inst.components.lootdropper:DropLoot(pos)
         inst:Remove()
     else
-        inst.AnimState(
+        inst.AnimState:PlayAnimation(
             (workleft <= TUNING.ROCKS_MINE / 3 and ("low"..inst.type)) or
             (workleft <= TUNING.ROCKS_MINE * 2 / 3 and ("med"..inst.type)) or
             ("full"..inst.type)
