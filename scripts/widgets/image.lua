@@ -75,7 +75,7 @@ end
 function Image:SetFadeAlpha(a, skipChildren)
 	if not self.can_fade_alpha then return end
 	
-    self:SetTint(self.tint[1], self.tint[2], self.tint[3], self.tint[4] * a)
+    self.inst.ImageWidget:SetTint(self.tint[1], self.tint[2], self.tint[3], self.tint[4] * a)
     Widget.SetFadeAlpha( self, a, skipChildren )
 end
 

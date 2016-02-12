@@ -429,13 +429,13 @@ end
 function OptionsScreen:Close()
 	self.nav_bar:Disable()
 	if TheFrontEnd:GetFadeLevel() < 1 then
-		TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
+		TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
 	        TheFrontEnd:PopScreen()
-	        TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
+	        TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)
 	    end)
 	else
 		TheFrontEnd:PopScreen()
-	    TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
+	    TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)
 	end
 end	
 
@@ -448,7 +448,7 @@ function OptionsScreen:ConfirmRevert()
 		  		text = STRINGS.UI.OPTIONS.YES, 
 		  		cb = function()
 					self:RevertChanges()
-					TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
+					TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
 						TheFrontEnd:PopScreen()
 						self:Close()
 					end)
@@ -476,7 +476,7 @@ function OptionsScreen:ConfirmApply( )
 		  		cb = function()
 					self:Apply()
 					self:Save(function() 
-						TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
+						TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
 							TheFrontEnd:PopScreen()
 							self:Close()
 						end)

@@ -121,7 +121,7 @@ function Voter:SetupCommands()
 	self.commands = {}
 		
 	self.commands["kick"] = { InitOptionsFn = KickVoteInitOptions, ProcessResultFn = KickVoteProcessResult, Timeout = 30 }
-	self.commands["kick"].enabled = TheSim:GetSetting("misc", "vote_kick_enabled") == "true"
+	self.commands["kick"].enabled = TheSim:GetSetting("GAMEPLAY", "vote_kick_enabled") == "true"
 	self.net_is_kick_enabled:set( self.commands["kick"].enabled )
 	
 	--Add in all the commands added by mods
@@ -207,9 +207,9 @@ function Voter:ReceivedVoteInternal( player, option_index )
 			--check if all votes are in
 			local ClientObjs = TheNet:GetClientTable()
 			local pending_vote = false
+            local is_dedicated = not TheNet:GetServerIsClientHosted()
 			for _,client in pairs(ClientObjs) do
-				local this_user_is_dedicated_server = client.performance ~= nil and TheNet:GetServerIsDedicated()
-				if not this_user_is_dedicated_server then
+				if not is_dedicated or client.performance == nil then
 					if not table.contains( self.vote_options.voters, client.userid ) then
 						print("pending vote", client.userid)
 						pending_vote = true
@@ -341,7 +341,7 @@ function Voter:ToggleVoteKick()
     if TheWorld.ismastersim then
         local kick_enabled = not self.commands["kick"].enabled
         self.commands["kick"].enabled = kick_enabled
-        TheSim:SetSetting("misc", "vote_kick_enabled", tostring(kick_enabled)) 
+        TheSim:SetSetting("GAMEPLAY", "vote_kick_enabled", tostring(kick_enabled)) 
         UpdateServerTagsString()
         self.net_is_kick_enabled:set( kick_enabled )
 

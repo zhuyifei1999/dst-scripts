@@ -821,12 +821,12 @@ function DoLoadingPortal(cb)
 
     if screen == nil then
         -- If there are no more screens, just do a generic fade
-        TheFrontEnd:Fade(false, SCREEN_FADE_TIME, cb, nil, nil, "white")
+        TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, cb, nil, nil, "white")
         return
     end
 
     -- If we have access to a portal, then start the animation fanciness!
-    TheFrontEnd:Fade(true, SCREEN_FADE_TIME * 4, nil, nil, nil, "alpha")
+    TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME * 4, nil, nil, nil, "alpha")
 
     screen:Disable()
     screen.inst:DoTaskInTime(SCREEN_FADE_TIME, function(inst)
@@ -834,7 +834,7 @@ function DoLoadingPortal(cb)
         TheFrontEnd:GetSound():PlaySound("dontstarve/together_FE/portal_flash")
 
         inst:DoTaskInTime(1.5, function()
-            TheFrontEnd:Fade(false, SCREEN_FADE_TIME, cb, nil, nil, "white")
+            TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, cb, nil, nil, "white")
         end)
     end)
 end
@@ -913,22 +913,25 @@ function RequestShutdown()
     exiting_game = true
 
     if (not TheNet:GetServerIsDedicated()) then
-        TheFrontEnd:PushScreen(
-            PopupDialogScreen( STRINGS.UI.QUITTINGTITLE, STRINGS.UI.QUITTING,
-              {  }
-            )
-        )
+	    TheFrontEnd:PushScreen(
+	        PopupDialogScreen( STRINGS.UI.QUITTINGTITLE, STRINGS.UI.QUITTING,
+	    	  {  }
+	    	)
+	    )
+	end
+	
+    if TheNet:GetIsHosting() then
+        TheSystemService:StopDedicatedServers()
     end
-
-    -----------------------------------------------------------------------------
-    -- Anything below here may not run if we don't have stats that need updating
-    -----------------------------------------------------------------------------
-
-    local stats = GetProfileStats(true)
-    if string.len(stats) <= 12 then -- empty stats are '{"stats":[]}'
-        Shutdown()
-        return
-    end
+	-----------------------------------------------------------------------------	
+	-- Anything below here may not run if we don't have stats that need updating
+	-----------------------------------------------------------------------------
+	
+	local stats = GetProfileStats(true)
+	if string.len(stats) <= 12 then -- empty stats are '{"stats":[]}'
+		Shutdown()
+		return
+	end
 
     SubmitExitStats()
 end
@@ -1039,6 +1042,11 @@ end
 local function postsavefn()
     TheNet:Disconnect(true)
     EnableAllMenuDLC()
+
+    if TheNet:GetIsHosting() then
+        TheSystemService:StopDedicatedServers()
+    end
+
     StartNextInstance()
     inGamePlay = false
     PerformingRestart = false
@@ -1065,7 +1073,7 @@ function DoRestart(save)
     if not PerformingRestart then
         PerformingRestart = true
         ShowLoading()
-        TheFrontEnd:Fade(false, 1, save and savefn or postsavefn)
+        TheFrontEnd:Fade(FADE_OUT, 1, save and savefn or postsavefn)
     end
 end
 
@@ -1113,6 +1121,10 @@ function OnNetworkDisconnect( message, should_reset, force_immediate_reset, deta
         return
     end
 
+	if not IsMigrating() then
+		TheSystemService:StopDedicatedServers()
+	end
+
     local screen = TheFrontEnd:GetActiveScreen()
     if screen and screen.name == "ConnectingToGamePopup" then
         TheFrontEnd:PopScreen()
@@ -1145,42 +1157,37 @@ function OnNetworkDisconnect( message, should_reset, force_immediate_reset, deta
     local title = STRINGS.UI.NETWORKDISCONNECT.TITLE[message] or STRINGS.UI.NETWORKDISCONNECT.TITLE.DEFAULT 
     message = STRINGS.UI.NETWORKDISCONNECT.BODY[message] or STRINGS.UI.NETWORKDISCONNECT.BODY.DEFAULT
 
-    -- Append details to this message
-    if details ~= nil and details ~= "" then
-        message = message .. "\nReason: " .. details
-    end
-
-    if TheFrontEnd:GetFadeLevel() > 0 then --we're already fading
-        if TheFrontEnd.fadedir == false then
-            local cb = TheFrontEnd.fadecb
-            TheFrontEnd.fadecb = function()
-                if cb then cb() end
-                TheFrontEnd:PushScreen( PopupDialogScreen(title, message, { {text=STRINGS.UI.NETWORKDISCONNECT.OK, cb = function() doquit( should_reset ) end}  }) )
-                local screen = TheFrontEnd:GetActiveScreen()
-                if screen then
-                    screen:Enable()
-                end
-                TheFrontEnd:Fade(true, screen_fade_time)
-            end
-        else
-            TheFrontEnd:PushScreen( PopupDialogScreen(title, message, { {text=STRINGS.UI.NETWORKDISCONNECT.OK, cb = function() doquit( should_reset ) end}  }) )
-            local screen = TheFrontEnd:GetActiveScreen()
-            if screen then
-                screen:Enable()
-            end
-            TheFrontEnd:Fade(true, screen_fade_time)
-        end
-    else
-        -- TheFrontEnd:Fade(false, screen_fade_time, function()
-            TheFrontEnd:PushScreen( PopupDialogScreen(title, message, { {text=STRINGS.UI.NETWORKDISCONNECT.OK, cb = function() doquit( should_reset ) end}  }) )
-            local screen = TheFrontEnd:GetActiveScreen()
-            if screen then
-                screen:Enable()
-            end
-            -- TheFrontEnd:Fade(true, screen_fade_time)
-        -- end)
-    end
-    return true
+	if TheFrontEnd:GetFadeLevel() > 0 then --we're already fading
+		if TheFrontEnd.fadedir == false then
+			local cb = TheFrontEnd.fadecb
+			TheFrontEnd.fadecb = function()
+				if cb then cb() end
+				TheFrontEnd:PushScreen( PopupDialogScreen(title, message, { {text=STRINGS.UI.NETWORKDISCONNECT.OK, cb = function() doquit( should_reset ) end}  }) )
+				local screen = TheFrontEnd:GetActiveScreen()
+			    if screen then
+			    	screen:Enable()
+			    end
+		    	TheFrontEnd:Fade(FADE_IN, screen_fade_time)
+			end
+		else
+			TheFrontEnd:PushScreen( PopupDialogScreen(title, message, { {text=STRINGS.UI.NETWORKDISCONNECT.OK, cb = function() doquit( should_reset ) end}  }) )
+			local screen = TheFrontEnd:GetActiveScreen()
+		    if screen then
+		    	screen:Enable()
+		    end
+		    TheFrontEnd:Fade(FADE_IN, screen_fade_time)
+		end
+	else
+		-- TheFrontEnd:Fade(FADE_OUT, screen_fade_time, function()
+	        TheFrontEnd:PushScreen( PopupDialogScreen(title, message, { {text=STRINGS.UI.NETWORKDISCONNECT.OK, cb = function() doquit( should_reset ) end}  }) )
+	        local screen = TheFrontEnd:GetActiveScreen()
+		    if screen then
+		    	screen:Enable()
+		    end
+	        -- TheFrontEnd:Fade(FADE_IN, screen_fade_time)
+	    -- end)
+	end
+	return true
 end
 
 OnAccountEventListeners = {}
@@ -1241,7 +1248,7 @@ local function OnUserPickedCharacter(char, skin_base, clothing_body, clothing_ha
         TheNet:SendSpawnRequestToServer(char, skin_base, clothing_body, clothing_hand, clothing_legs, clothing_feet)
     end
 
-    TheFrontEnd:Fade(false, 1, doSpawn, nil, nil, "white")
+    TheFrontEnd:Fade(FADE_OUT, 1, doSpawn, nil, nil, "white")
 end
 
 function ResumeRequestLoadComplete(success)
@@ -1251,7 +1258,7 @@ function ResumeRequestLoadComplete(success)
         TheNet:DeleteUserSession(TheNet:GetUserID())
         local LobbyScreen = require "screens/lobbyscreen"
         TheFrontEnd:PushScreen(LobbyScreen(Profile, OnUserPickedCharacter, false))
-        TheFrontEnd:Fade(true, 1, nil, nil, nil, "white")
+        TheFrontEnd:Fade(FADE_IN, 1, nil, nil, nil, "white")
         TheWorld:PushEvent("entercharacterselect")
     end
 end
@@ -1329,19 +1336,19 @@ LoadingStates = {
     }
 
 function NotifyLoadingState( loading_state )
-    if TheNet:GetIsClient() then
-        if loading_state == LoadingStates.Loading then
-            ShowLoading()
-            TheFrontEnd:Fade(false, 1)
-        elseif loading_state == LoadingStates.Generating then
-            local inst = CreateEntity()
-            inst:DoTaskInTime(0.15, function(inst) TheFrontEnd:PopScreen() TheFrontEnd:PushScreen(WorldGenScreen(nil, nil, nil)) inst.entity:Retire() end)
-        elseif loading_state == LoadingStates.DoneGenerating then
-            TheFrontEnd:PopScreen()
-        end
-    elseif TheNet:GetIsServer() then
-        TheNet:NotifyLoadingState( loading_state )
-    end
+	if TheNet:GetIsClient() then
+		if loading_state == LoadingStates.Loading then
+			ShowLoading()
+			TheFrontEnd:Fade(FADE_OUT, 1)
+		elseif loading_state == LoadingStates.Generating then
+			local inst = CreateEntity()
+			inst:DoTaskInTime(0.15, function(inst) TheFrontEnd:PopScreen() TheFrontEnd:PushScreen(WorldGenScreen(nil, nil, nil)) inst.entity:Retire() end)
+		elseif loading_state == LoadingStates.DoneGenerating then
+			TheFrontEnd:PopScreen()		
+		end
+	elseif TheNet:GetIsServer() then
+		TheNet:NotifyLoadingState( loading_state )
+	end
 end
 
 
@@ -1351,12 +1358,25 @@ function BuildTagsStringCommon(tagsTable)
         table.insert(tagsTable, mod_tag)
     end
     -- Vote command tags
-    if TheSim:GetSetting("misc", "vote_kick_enabled") == "true" then
+    if TheSim:GetSetting("GAMEPLAY", "vote_kick_enabled") == "true" then
         table.insert(tagsTable, "vote kick")
     end
 
     -- Concat & return the string
     return table.concat(tagsTable, ", ")
+end
+
+function SaveAndShutdown()
+    if not TheWorld then
+        return
+    end
+    if TheWorld.ismastersim then
+        for i, v in ipairs(AllPlayers) do
+            v:OnDespawn()
+        end
+        TheSystemService:EnableStorage(true)
+        SaveGameIndex:SaveCurrent(Shutdown, true)
+    end
 end
 
 require("dlcsupport")

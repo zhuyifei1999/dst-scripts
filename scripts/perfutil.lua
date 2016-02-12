@@ -33,23 +33,20 @@ function CountEntities()
 end
 
 function GetProfilerSave(results)
-	local levelstring = ""
-	if not TheWorld or not TheNet:GetIsMasterSimulation() then
-		return
-	else
-		local save_index = SaveGameIndex:GetSlotSession()
-		if save_index then
-			local filename = TheNet:GetWorldSessionFile(SaveGameIndex:GetSlotSession())
-			if filename then
-				TheSim:GetPersistentString( filename,	
-					function(load_success, str)
-    					if load_success == true then
-						results.levelstring = str
-					end
-				end)
-			end
-		end
-	end
+    if TheWorld ~= nil and TheWorld.ismastersim then
+        local save_index = SaveGameIndex:GetSlotSession()
+        if save_index ~= nil then
+            local filename = TheNet:GetWorldSessionFile(save_index)
+            if filename ~= nil then
+                TheSim:GetPersistentString(filename,
+                    function(load_success, str)
+                        if load_success == true then
+                            results.levelstring = str
+                        end
+                    end)
+            end
+        end
+    end
 end
 
 function GetProfilerPlayers(results)

@@ -138,9 +138,9 @@ local CreditsScreen = Class(Screen, function(self)
         self.OK_button = self.back_button_root:AddChild(TEMPLATES.BackButton(function() 
             self.OK_button:Disable()
             self:Disable()
-            TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
+            TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
                 TheFrontEnd:PopScreen()
-                TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
+                TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)
             end) 
         end , STRINGS.UI.MAINSCREEN.BACK))
 
@@ -199,9 +199,9 @@ function CreditsScreen:OnControl(control, down)
         if self.OK_button then self.OK_button:Disable() end
         self:Disable()
         TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
-        TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
+        TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
             TheFrontEnd:PopScreen()
-            TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
+            TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)
         end) 
         return true
     end

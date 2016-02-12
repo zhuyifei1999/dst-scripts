@@ -391,7 +391,7 @@ function ServerSettingsTab:UpdateDetails(slotnum, prevslot, fromDelete)
             self.game_mode.spinner:SetSelected(self.slotdata[slotnum] and self.slotdata[slotnum].game_mode or (server_data.game_mode ~= nil and server_data.game_mode or DEFAULT_GAME_MODE ))
             self.pvp.spinner:SetSelected(pvp)
 
-            self.max_players.spinner:SetSelected(self.slotdata[slotnum] and self.slotdata[slotnum].max_players or server_data.maxplayers)
+            self.max_players.spinner:SetSelected(self.slotdata[slotnum] and self.slotdata[slotnum].max_players or server_data.max_players)
             self.server_name.textbox:SetString(self.slotdata[slotnum] and self.slotdata[slotnum].name or server_data.name)
             self.server_pw.textbox:SetString(self.slotdata[slotnum] and self.slotdata[slotnum].password or server_data.password)
             self.server_desc.textbox:SetString(self.slotdata[slotnum] and self.slotdata[slotnum].description or server_data.description)

@@ -17,7 +17,9 @@ local _ismastersim = _world.ismastersim
 local _ismastershard = _world.ismastershard
 local _starttime = GetTime()
 local _lastsavetime = _starttime
-local _savingtasks = {}
+local _hudtasks = {}
+local _savetasks = {}
+local _savetaskid = 1
 local _restarting = false
 
 --Master simulation
@@ -37,12 +39,13 @@ local function EndSave(inst, hud)
     if hud.inst:IsValid() then
         hud.controls.saving:EndSave()
     end
-    _savingtasks[hud] = nil
+    _hudtasks[hud] = nil
 end
 
 local DoRollback = _ismastersim and not _ismastershard and function(snapshot)
     if not _restarting then
         _restarting = true
+        TheNet:SetIsWorldSaving(false)
 
         print("Synchronizing backward to master snapshot "..tostring(snapshot))
         TheNet:TruncateSnapshots(_world.meta.session_identifier, snapshot)
@@ -53,9 +56,13 @@ local DoRollback = _ismastersim and not _ismastershard and function(snapshot)
     end
 end or nil
 
-local function DoActualSave(inst, snapshot)
+local DoActualSave = _ismastersim and function(inst, taskid, snapshot)
+    _savetasks[taskid] = nil
+
     if _restarting then
         return
+    elseif next(_savetasks) == nil then
+        TheNet:SetIsWorldSaving(false)
     end
 
     _issaving:set_local(false)
@@ -77,7 +84,17 @@ local function DoActualSave(inst, snapshot)
 
     SaveGameIndex:SaveCurrent()
     _lastsavetime = GetTime()
-end
+end or nil
+
+local ScheduleActualSave = _ismastersim and function(snapshot)
+    if _restarting then
+        return
+    end
+
+    TheNet:SetIsWorldSaving(true)
+    _savetasks[_savetaskid] = inst:DoTaskInTime(1, DoActualSave, _savetaskid, snapshot)
+    _savetaskid = _savetaskid + 1
+end or nil
 
 --------------------------------------------------------------------------
 --[[ Private event listeners ]]
@@ -90,7 +107,7 @@ local function OnSave(src, mintime, snapshot)
         return
     elseif _ismastersim then
         _issaving:set(true)
-        inst:DoTaskInTime(1, DoActualSave)
+        ScheduleActualSave()
         if _ismastershard then
             _world:PushEvent("master_autosaverupdate", { snapshot = TheNet:GetCurrentSnapshot() })
         end
@@ -119,12 +136,12 @@ local function OnIsSavingDirty()
     if _issaving:value() and ThePlayer ~= nil then
         local hud = ThePlayer.HUD
         if hud ~= nil then
-            if _savingtasks[hud] then
-                _savingtasks[hud]:Cancel()
+            if _hudtasks[hud] ~= nil then
+                _hudtasks[hud]:Cancel()
             else
                 hud.controls.saving:StartSave()
             end
-            _savingtasks[hud] = inst:DoTaskInTime(3, EndSave, hud)
+            _hudtasks[hud] = inst:DoTaskInTime(3, EndSave, hud)
         end
         if not _ismastersim then
             OnSave()
@@ -140,6 +157,7 @@ end or nil
 
 local OnClearLoading = _ismastersim and not _ismastershard and function()
     _loading = nil
+    TheShard:SetSlaveLoading(false)
 end or nil
 
 local OnAutoSaverUpdate = _ismastersim and not _ismastershard and function(src, data)
@@ -147,7 +165,7 @@ local OnAutoSaverUpdate = _ismastersim and not _ismastershard and function(src, 
         local current_snapshot = TheNet:GetCurrentSnapshot()
         if data.snapshot >= current_snapshot then
             _issaving:set(true)
-            inst:DoTaskInTime(1, DoActualSave, data.snapshot)
+            ScheduleActualSave(data.snapshot)
         elseif _loading == nil or data.snapshot < current_snapshot - 1 then
             --If we are one ahead of the master value, then we are in sync
             --Otherwise, we need to rollback
@@ -173,6 +191,7 @@ inst:ListenForEvent("issavingdirty", OnIsSavingDirty)
 if _ismastershard then
     --Initialize master simulation variables
     _enabled = false
+    TheNet:SetIsWorldSaving(false) --Reset flag in case it's invalid
 
     --Register master simulation events
     inst:ListenForEvent("ms_save", OnSave, _world)
@@ -183,6 +202,8 @@ elseif _ismastersim then
     --Initialize slave simulation variables
     --We expect to get either one or 2 initial packets shortly after loading
     _loading = true
+    TheShard:SetSlaveLoading(true)
+    TheNet:SetIsWorldSaving(false) --Reset flag in case it's invalid
 
     --Register slave shard events
     inst:ListenForEvent("ms_save", OnSaveRequest, _world)

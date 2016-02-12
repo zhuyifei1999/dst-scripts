@@ -263,6 +263,9 @@ BACKEND_PREFABS = {"hud", "forest", "cave", "maxwell", "fire", "character_fire",
 FRONTEND_PREFABS = {"frontend"}
 RECIPE_PREFABS = {}
 
+FADE_OUT = false
+FADE_IN = true
+
 --Legacy table, not for DST
 MAIN_CHARACTERLIST = 
 {

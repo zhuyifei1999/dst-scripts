@@ -1250,12 +1250,12 @@ function ModsScreen:Cancel(extrapop)
 						
 						KnownModIndex:RestoreCachedSaveData()
 						self.mainmenu:Disable()
-						TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
+						TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
 							self:UnloadModInfoPrefabs(self.infoprefabs)
 							if extrapop then TheFrontEnd:PopScreen() end
 							TheFrontEnd:PopScreen()
 							TheFrontEnd:PopScreen()
-							TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
+							TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)
 						end)
                     end
                 },
@@ -1277,11 +1277,11 @@ function ModsScreen:Cancel(extrapop)
 		
 		KnownModIndex:RestoreCachedSaveData()
 		self.mainmenu:Disable()
-		TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
+		TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
 			self:UnloadModInfoPrefabs(self.infoprefabs)
 			if extrapop then TheFrontEnd:PopScreen() end
 			TheFrontEnd:PopScreen()
-			TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
+			TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)
 		end)
 	end
 end
@@ -1294,7 +1294,7 @@ function ModsScreen:Apply()
 	
 	KnownModIndex:Save()
 	self.mainmenu:Disable()
-	TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
+	TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
 		self:UnloadModInfoPrefabs(self.infoprefabs)
 		ForceAssetReset()
 		SimReset()
@@ -1384,7 +1384,7 @@ function ModsScreen:CleanAllButton()
 					TheFrontEnd:PopScreen()
 					
 					self.mainmenu:Disable()
-					TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
+					TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
 						
 						self:UnloadModInfoPrefabs(self.infoprefabs)
 						ForceAssetReset()

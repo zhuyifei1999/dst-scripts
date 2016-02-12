@@ -37,7 +37,7 @@ end
 function Text:SetFadeAlpha(a, skipChildren)
     if not self.can_fade_alpha then return end
     
-    self:SetColour(self.colour[1], self.colour[2], self.colour[3], self.colour[4] * a)
+    self.inst.TextWidget:SetColour(self.colour[1], self.colour[2], self.colour[3], self.colour[4] * a)
     Widget.SetFadeAlpha( self, a, skipChildren )
 end
 

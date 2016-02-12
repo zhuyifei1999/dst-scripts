@@ -54,7 +54,7 @@ local function ZoomAndFade(inst)
         end
     end
     Sleep(5)
-    TheFrontEnd:Fade(false, 3)
+    TheFrontEnd:Fade(FADE_OUT, 3)
 
     Sleep(4)
     --endgame screen

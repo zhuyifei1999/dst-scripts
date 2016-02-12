@@ -324,9 +324,9 @@ function MultiplayerMainScreen:OnCreateServerButton()
     self.last_focus_widget = TheFrontEnd:GetFocusWidget()
     self.menu:Disable()
     self.leaving = true
-    TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
+    TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
         TheFrontEnd:PushScreen(ServerCreationScreen())
-        TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
+        TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)
     end)
 end
 
@@ -369,9 +369,9 @@ function MultiplayerMainScreen:OnBrowseServersButton()
     self.last_focus_widget = TheFrontEnd:GetFocusWidget()
     self.menu:Disable()
     self.leaving = true
-    TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
+    TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
         TheFrontEnd:PushScreen(ServerListingScreen(self.filter_settings, cb, self.offline, self.session_data))
-        TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
+        TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)
     end)
 end
 
@@ -379,9 +379,9 @@ end
 function MultiplayerMainScreen:OnHistoryButton()
     self.last_focus_widget = TheFrontEnd:GetFocusWidget()
 	self.menu:Disable()
-	TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
+	TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
 		TheFrontEnd:PushScreen(MorgueScreen())
-		TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
+		TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)
 	end)
 end
 
@@ -390,9 +390,9 @@ end
 function MultiplayerMainScreen:Settings()
     self.last_focus_widget = TheFrontEnd:GetFocusWidget()
 	self.menu:Disable()
-	TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
+	TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
 		TheFrontEnd:PushScreen(OptionsScreen(false))
-		TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
+		TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)
 	end)
 end
 
@@ -414,9 +414,9 @@ function MultiplayerMainScreen:OnModsButton()
     self.last_focus_widget = TheFrontEnd:GetFocusWidget()
 	self.menu:Disable()
     if self.debug_menu then self.debug_menu:Disable() end
-	TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
+	TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
 		TheFrontEnd:PushScreen(ModsScreen())
-		TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
+		TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)
 	end)
 end
 
@@ -436,9 +436,9 @@ function MultiplayerMainScreen:OnCreditsButton()
 	TheFrontEnd:GetSound():KillSound("FEMusic")
 	self.menu:Disable()
     if self.debug_menu then self.debug_menu:Disable() end
-	TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
+	TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
 		TheFrontEnd:PushScreen( CreditsScreen() )
-		TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
+		TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)
 	end)
 end
 

@@ -3,8 +3,7 @@
 AddTaskSet("cave_default", {
     name = STRINGS.UI.CUSTOMIZATIONSCREEN.TASKSETNAMES.CAVE_DEFAULT,
     location = "cave",
-    --#TODOCAVES: disabled temporarily for main branch ~gjans
-    hideinfrontend = BRANCH~="dev",
+    hideinfrontend = false,
     tasks={
         "MudWorld",
         "MudCave",

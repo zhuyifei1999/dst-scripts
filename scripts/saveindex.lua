@@ -26,31 +26,31 @@ local function ResetSlotData(data)
 end
 
 local function GetWorldgenOverride(cb)
-	local filename = "../worldgenoverride.lua"
-	TheSim:GetPersistentString( filename,
-		function(load_success, str)
-    		if load_success == true then
-				local success, savedata = RunInSandboxSafe(str)
-				if success and string.len(str) > 0 then
+    local filename = "../worldgenoverride.lua"
+    TheSim:GetPersistentString( filename,
+        function(load_success, str)
+            if load_success == true then
+                local success, savedata = RunInSandboxSafe(str)
+                if success and string.len(str) > 0 then
                     print("Found a worldgen override file with these contents:")
                     dumptable(savedata)
-					if savedata ~= nil and savedata.override_enabled then
-						print("Loaded and applied world gen overrides from "..filename)
+                    if savedata ~= nil and savedata.override_enabled then
+                        print("Loaded and applied world gen overrides from "..filename)
                         local preset = savedata.preset
-						savedata.override_enabled = nil --remove this so the rest of the table can be interpreted as a tweak table
+                        savedata.override_enabled = nil --remove this so the rest of the table can be interpreted as a tweak table
                         savedata.preset = nil
-						cb( preset, savedata )
+                        cb( preset, savedata )
                         return
                     else
                         print("Found world gen overrides but not enabled.")
-					end
-				else
-					print("ERROR: Failed to load "..filename)
-				end
-			end
+                    end
+                else
+                    print("ERROR: Failed to load "..filename)
+                end
+            end
             print("Not applying world gen overrides.")
             cb( nil, nil )
-		end)
+        end)
 end
 
 function SaveIndex:GuaranteeMinNumSlots(numslots)
@@ -68,48 +68,64 @@ function SaveIndex:Save(callback)
     local insz, outsz = TheSim:SetPersistentString(self:GetSaveIndexName(), data, false, callback)
 end
 
+local function OnLoad(self, filename, callback, load_success, str)
+    local success, savedata = RunInSandbox(str)
+
+    -- If we are on steam cloud this will stop a currupt saveindex file from
+    -- ruining everyones day..
+    if success and
+        string.len(str) > 0 and
+        savedata ~= nil and
+        savedata.slots ~= nil and
+        type(savedata.slots) == "table" then
+
+        self:GuaranteeMinNumSlots(#savedata.slots)
+        self.data.last_used_slot = savedata.last_used_slot
+
+        for i, v in ipairs(self.data.slots) do
+            ResetSlotData(v)
+            local v2 = savedata.slots[i]
+            if v2 ~= nil then
+                v.world = v2.world or v.world
+                v.server = v2.server or v.server
+                v.session_id = v2.session_id or v.session_id
+                v.enabled_mods = v2.enabled_mods or v.enabled_mods
+
+                -- FIXME: this upgrades custom data to multilevel. Can remove this at some point. Added 23/11/2015 ~gjans
+                if v.world and v.world.options and v.world.options.supportsmultilevel ~= true then
+                    local data = v.world.options
+                    v.world.options = { supportsmultilevel = true }
+                    v.world.options[1] = data
+                end
+            end
+        end
+
+        if filename ~= nil then
+            print("loaded "..filename)
+        end
+    elseif filename ~= nil then
+        print("Could not load "..filename)
+    end
+
+    callback()
+end
+
 function SaveIndex:Load(callback)
     --This happens on game start.
     local filename = self:GetSaveIndexName()
     TheSim:GetPersistentString(filename,
         function(load_success, str)
-            local success, savedata = RunInSandbox(str)
+            OnLoad(self, filename, callback, load_success, str)
+        end)
+end
 
-            -- If we are on steam cloud this will stop a currupt saveindex file from
-            -- ruining everyones day..
-            if success and
-                string.len(str) > 0 and
-                savedata ~= nil and
-                savedata.slots ~= nil and
-                type(savedata.slots) == "table" then
-
-                self:GuaranteeMinNumSlots(#savedata.slots)
-                self.data.last_used_slot = savedata.last_used_slot
-
-                for i, v in ipairs(self.data.slots) do
-                    ResetSlotData(v)
-                    local v2 = savedata.slots[i]
-                    if v2 ~= nil then
-                        v.world = v2.world or v.world
-                        v.server = v2.server or v.server
-                        v.session_id = v2.session_id or v.session_id
-                        v.enabled_mods = v2.enabled_mods or v.enabled_mods
-
-                        -- FIXME: this upgrades custom data to multilevel. Can remove this at some point. Added 23/11/2015 ~gjans
-                        if v.world and v.world.options and v.world.options.supportsmultilevel ~= true then
-                            local data = v.world.options
-                            v.world.options = { supportsmultilevel = true }
-                            v.world.options[1] = data
-                        end
-                    end
-                end
-
-                print ("loaded "..filename)
-            else
-                print ("Could not load "..filename)
-            end
-
-            callback()
+function SaveIndex:LoadClusterSlot(slot, shard, callback)
+    --This happens in FE when we need data from cluster slots
+    --Don't pass filename to OnLoad, so we don't print errors
+    --for attempting to load empty slots
+    TheSim:GetPersistentStringInClusterSlot(slot, shard, self:GetSaveIndexName(),
+        function(load_success, str)
+            OnLoad(self, nil, callback, load_success, str)
         end)
 end
 
@@ -140,7 +156,7 @@ function SaveIndex:GetSaveData(slot, cb)
     self.current_slot = slot
     local file = TheNet:GetWorldSessionFile(self.data.slots[slot].session_id)
     if file ~= nil then
-        SaveGameIndex:GetSaveDataFile(file, cb)
+        self:GetSaveDataFile(file, cb)
     elseif cb ~= nil then
         cb()
     end
@@ -155,6 +171,10 @@ function SaveIndex:DeleteSlot(slot, cb, save_options)
         --DST session file stuff
         if slotdata.session_id ~= nil then
             TheNet:DeleteSession(slotdata.session_id)
+        end
+
+        if not TheNet:IsDedicated() then
+            TheNet:DeleteCluster(slot)
         end
 
         ResetSlotData(slotdata)
@@ -229,7 +249,7 @@ function SaveIndex:StartSurvivalMode(saveslot, customoptions, serverdata, onsave
     Profile:SetValue("starts", starts + 1)
     Profile:Save()
 
-	self.current_slot = saveslot
+    self.current_slot = saveslot
 
     local slot = self.data.slots[saveslot]
     slot.session_id = TheNet:GetSessionIdentifier()
@@ -304,6 +324,19 @@ function SaveIndex:GetSlotSession(slot)
     return self.data.slots[slot or self.current_slot].session_id
 end
 
+--V2C: This is for FE use, as it handles checking the cluster session folders
+function SaveIndex:GetClusterSlotSession(slot)
+    if TheNet:GetUseLegacyClientHosting() then
+        return self:GetSlotSession(slot)
+    end
+    local session_id = nil
+    local clusterSaveIndex = SaveIndex()
+    clusterSaveIndex:LoadClusterSlot(slot, "Master", function()
+        session_id = clusterSaveIndex.data.slots[clusterSaveIndex.current_slot].session_id
+    end)
+    return session_id
+end
+
 function SaveIndex:CheckWorldFile(slot)
     local session_id = self:GetSlotSession(slot)
     return session_id ~= nil and TheNet:GetWorldSessionFile(session_id) ~= nil
@@ -313,59 +346,91 @@ end
 --     dynamically switching user accounts locally, mmm'kay
 function SaveIndex:LoadSlotCharacter(slot)
     local character = nil
+
+    local function onreadusersession(success, str)
+        if success and str ~= nil and #str > 0 then
+            local success, savedata = RunInSandbox(str)
+            if success and savedata ~= nil and GetTableSize(savedata) > 0 then
+                character = savedata.prefab
+            end
+        end
+    end
+
     local slotdata = self.data.slots[slot or self.current_slot]
     if slotdata.session_id ~= nil then
-        local file = TheNet:GetUserSessionFile(slotdata.session_id, nil, slotdata.server.online_mode ~= false)
-        if file ~= nil then
-            TheSim:GetPersistentString(file,
-                function(success, str)
-                    if success and str ~= nil and #str > 0 then
-                        local success, savedata = RunInSandbox(str)
-                        if success and savedata ~= nil and GetTableSize(savedata) > 0 then
-                            character = savedata.prefab
+        local online_mode = slotdata.server.online_mode ~= false
+        if TheNet:GetUseLegacyClientHosting() then
+            local file = TheNet:GetUserSessionFile(slotdata.session_id, nil, online_mode)
+            if file ~= nil then
+                TheSim:GetPersistentString(file, onreadusersession)
+            end
+        else
+            local clusterSaveIndex = SaveIndex()
+            clusterSaveIndex:LoadClusterSlot(slot, "Master", function()
+                local slotdata = clusterSaveIndex.data.slots[clusterSaveIndex.current_slot]
+                if slotdata.session_id ~= nil then
+                    local shard, snapshot = TheNet:GetPlayerSaveLocationInClusterSlot(slot, slotdata.session_id, online_mode)
+                    if shard ~= nil and snapshot ~= nil then
+                        if shard ~= "Master" then
+                            clusterSaveIndex = SaveIndex()
+                            clusterSaveIndex:LoadClusterSlot(slot, shard, function()
+                                slotdata = clusterSaveIndex.data.slots[clusterSaveIndex.current_slot]
+                            end)
+                        end
+                        if slotdata.session_id ~= nil then
+                            local file = TheNet:GetUserSessionFileInClusterSlot(slot, shard, slotdata.session_id, snapshot, online_mode)
+                            if file ~= nil then
+                                TheSim:GetPersistentStringInClusterSlot(slot, shard ,file, onreadusersession)
+                            end
                         end
                     end
-                end)
+                end
+            end)
         end
     end
     return character
 end
 
 function SaveIndex:LoadServerEnabledModsFromSlot(slot)
-	local enabled_mods = self.data.slots[slot or self.current_slot].enabled_mods
-	ModManager:DisableAllServerMods()
-	for modname,config_data in pairs(enabled_mods) do
-		KnownModIndex:Enable(modname)
-		for option_name,value in pairs(config_data) do
-			KnownModIndex:SetConfigurationOption( modname, option_name, value )
-		end
-		KnownModIndex:SaveHostConfiguration(modname)
-	end
+    local enabled_mods = self.data.slots[slot or self.current_slot].enabled_mods
+    ModManager:DisableAllServerMods()
+    for modname,config_data in pairs(enabled_mods) do
+        KnownModIndex:Enable(modname)
+        for option_name,value in pairs(config_data) do
+            KnownModIndex:SetConfigurationOption( modname, option_name, value )
+        end
+        KnownModIndex:SaveHostConfiguration(modname)
+    end
 end
 
 function SaveIndex:SetServerEnabledMods(slot)
-	--Save enabled server mods to the save index
-	local server_enabled_mods = ModManager:GetEnabledServerModNames()
-	
-	local enabled_mods = {}
-	for _,modname in pairs(server_enabled_mods) do
-		local config_data = {}
-		local force_local_options = true
-		local config = KnownModIndex:LoadModConfigurationOptions(modname, false)
-		if config and type(config) == "table" then
-			for i,v in pairs(config) do
-		  		if v.saved ~= nil then
-					config_data[v.name] = v.saved 
-				else 
-					config_data[v.name] = v.default
-				end
-			end
-		end
-		enabled_mods[modname] = config_data
-	end
+    --Save enabled server mods to the save index
+    local server_enabled_mods = ModManager:GetEnabledServerModNames()
+    
+    local enabled_mods = {}
+    for _,modname in pairs(server_enabled_mods) do
+        local mod_data = { enabled = true }
+        mod_data.config_data = {}
+        local force_local_options = true
+        local config = KnownModIndex:LoadModConfigurationOptions(modname, false)
+        if config and type(config) == "table" then
+            for i,v in pairs(config) do
+                if v.saved ~= nil then
+                    mod_data.config_data[v.name] = v.saved 
+                else 
+                    mod_data.config_data[v.name] = v.default
+                end
+            end
+        end
+        enabled_mods[modname] = mod_data
+    end
     self.data.slots[slot or self.current_slot].enabled_mods = enabled_mods
 end
 
 function SaveIndex:GetEnabledMods(slot)
-	return self.data.slots[slot or self.current_slot].enabled_mods
+    return self.data.slots[slot or self.current_slot].enabled_mods
+end
+
+function SaveIndex:GetSaveIndexNameLegacy()
+    return BRANCH ~= "dev" and "saveindex" or ("saveindex_"..BRANCH)
 end

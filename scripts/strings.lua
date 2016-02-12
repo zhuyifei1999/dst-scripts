@@ -2285,6 +2285,10 @@ STRINGS.UI =
         DISCONNECT_CONTROLLER = " to Disconnect",
         CONNECTING = "Connecting",
         NEW_SKIN_ANNOUNCEMENT = "%s got a new skin: ",
+        LAUNCHING_SERVER = "Launching Server",
+        SERVER_WORLDGEN = "Server is Generating World",
+        INITIALIZING_SERVER = "Initializing Server",
+        WORLDGENERATING_SERVER = "Generating World",
     },
 
     ITEM_SCREEN =
@@ -2372,6 +2376,7 @@ STRINGS.UI =
             ID_DST_DESTINATION_SERVER_NOT_AVAILABLE = "Server not available",            ID_DST_SERVER_IS_CLAN_ONLY = "Private Group",
             ID_DST_SERVER_IS_CLAN_ONLY = "Not a member of the server's clan.",
             ID_DST_SERVER_IS_LAN_ONLY = "Server only allows local connections.",
+            ID_DST_DEDICATED_SERVER_STARTUP_FAILED = "Dedicated Server Failed To Start",
         },
         BODY =
         {   
@@ -2418,6 +2423,7 @@ STRINGS.UI =
 		    ID_DST_SERVER_IS_CLAN_ONLY = "You have to be part of this server's steam group to connect to it. You could try visiting their group page and asking nicely to join?",
             ID_DST_SERVER_IS_LAN_ONLY = "This server only allows joining from the same local network. You could run a really long cable from your computer.. or the server owner could change their server settings.",
             ID_DST_DESTINATION_SERVER_NOT_AVAILABLE = "The server you were playing on is not curently available. Try again later",
+            ID_DST_DEDICATED_SERVER_STARTUP_FAILED = "There was some kind of trouble starting up the server. How odd.",
 		},
 		OK = "OK",
     },
@@ -2615,6 +2621,7 @@ STRINGS.UI =
                 "Together Forever",	        -- Multiplayer coop
                 "No Giants Here",           -- Nothing Reign Of Giants
                 "The Caves",                 -- Caves content in DST
+                "Caves Plus",                -- harder caves
         },
                 
         PRESETLEVELDESC = {
@@ -2630,6 +2637,7 @@ STRINGS.UI =
             "The multiplayer Don't Starve experience.",
             "Don't Starve Together with Reign of Giants turned off.",
             "Delve into the caves... together!",
+            "A darker, more arachnidy cave experience.",
         },
 
         TASKSETNAMES = {
@@ -2817,8 +2825,9 @@ STRINGS.UI =
         OFFLINEWARNINGTITLE = "Offline World",
         OFFLINEMODEBODYJOIN = "Are you sure you want to join an offline world? You will not be able to receive or use Collection Items in this world.",
         
-        CHAR_AGE_1 = "Day ",
-        CHAR_AGE_2 = "",
+        CHAR_AGE_1 = "Survived ",
+        CHAR_AGE_2 = " Day",
+        CHAR_AGE_3 = " Days",
         WORLD_UNKNOWN = "World Unknown",
         VIEWWORLD = "View World",
         PLAYERS_UNKNOWN = "Players Unknown",
@@ -2933,7 +2942,7 @@ STRINGS.UI =
         DELETE = "Delete",
         SLOT = "Server Slot",
         SURE = "Are you sure?",
-        SERVERDAY = "World: Day",
+        SERVERDAY = "Day",
         SERVERDAY_NEW = "A Whole New World",
         SELECT_SLOT = "Select Slot",
         SNAPSHOTS = "Rollback",
@@ -2974,7 +2983,7 @@ STRINGS.UI =
         BANNED_PLAYERS_HEADER = "Banned Players",
         PLAYER = "Player",
         DATE = "Date",
-        DAY = "World Day",
+        DAY = "Day",
         UNKNOWN_DAY = "???",
         EMPTY_SLOT = "EMPTY",
         EMPTY_SLOT_TITLE = "Empty Slot",
@@ -3687,6 +3696,13 @@ STRINGS.UI =
 
         GENERATE = "OK",
         MAINMENU = "Cancel",
+        ENABLED = "Enabled",
+
+        LOCATIONTABNAME = {
+            FOREST = "Forest",
+            CAVE = "Caves",
+            UNKNOWN = "???",
+        },
 
         LOCATION = {
             FOREST = "Forest",

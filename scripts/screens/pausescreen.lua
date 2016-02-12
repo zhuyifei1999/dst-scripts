@@ -75,9 +75,9 @@ local PauseScreen = Class(Screen, function(self)
 	local buttons = {}
 	table.insert(buttons, {text=STRINGS.UI.PAUSEMENU.CONTINUE, cb=function() self:unpause() end })
 	table.insert(buttons, {text=STRINGS.UI.PAUSEMENU.OPTIONS, cb=function() 
-    	TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
+    	TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
 			TheFrontEnd:PushScreen(OptionsScreen(true))	
-			TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
+			TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)
             --Ensure last_focus is the options button since mouse can
             --unfocus this button during the screen change, resulting
             --in controllers having no focus when toggled on from the
@@ -133,12 +133,13 @@ function PauseScreen:doconfirmquit()
 		self.parent:Disable()
 		self.menu:Disable()
 		--self.afk_menu:Disable()
-
 		DoRestart(true)
 	end
 
-	if TheNet:GetIsServer() then
-		local confirm = PopupDialogScreen(STRINGS.UI.PAUSEMENU.HOSTQUITTITLE, STRINGS.UI.PAUSEMENU.HOSTQUITBODY, {{text=STRINGS.UI.PAUSEMENU.YES, cb = doquit},{text=STRINGS.UI.PAUSEMENU.NO, cb = function() TheFrontEnd:PopScreen() end}  })
+	if TheNet:GetIsHosting() then
+		local confirm = PopupDialogScreen(STRINGS.UI.PAUSEMENU.HOSTQUITTITLE, STRINGS.UI.PAUSEMENU.HOSTQUITBODY, {{text=STRINGS.UI.PAUSEMENU.YES, cb = doquit},{text=STRINGS.UI.PAUSEMENU.NO, cb = function()
+			TheFrontEnd:PopScreen()
+		end}  })
 		if JapaneseOnPS4() then
 			confirm:SetTitleTextSize(40)
 			confirm:SetButtonTextSize(30)

@@ -52,10 +52,9 @@ local function fn()
         return inst
     end
 
-    if BRANCH ~= "dev" and not TheNet:GetServerIsDedicated() then
-        --#TODOCAVES: On self-hosted servers we'll make these "vanish" for now, but still generate them
-        --into the world so that they can magically appear in existing saves once self-hosted caves servers
-        --are working.
+    if TheNet:GetServerIsClientHosted() and not (TheShard:IsMaster() or TheShard:IsSlave()) then
+        --On non-sharded servers we'll make these vanish for now, but still generate them
+        --into the world so that they can magically appear in existing saves when sharded
         RemovePhysicsColliders(inst)
         inst.AnimState:SetScale(0,0)
         inst.MiniMapEntity:SetEnabled(false)

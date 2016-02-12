@@ -17,6 +17,7 @@ local TEMPLATES = require "widgets/templates"
 local OnlineStatus = require "widgets/onlinestatus"
 local PopupDialogScreen = require "screens/popupdialog"
 local TextListPopupDialogScreen = require "screens/textlistpopupdialog"
+local LaunchingServerPopup = require "screens/launchingserverpopup"
 
 require("constants")
 require("tuning")
@@ -131,6 +132,7 @@ end)
 function ServerCreationScreen:OnBecomeActive()
     ServerCreationScreen._base.OnBecomeActive(self)
     self:Enable()
+    self.mods_tab:OnBecomeActive()
     if self.last_focus then self.last_focus:SetFocus() end
 end
 
@@ -139,6 +141,7 @@ function ServerCreationScreen:OnBecomeInactive()
 end
 
 function ServerCreationScreen:OnDestroy()
+    self.mods_tab:OnDestroy()
 	self._base.OnDestroy(self)
 end
 
@@ -152,7 +155,53 @@ function ServerCreationScreen:UpdateTitle(slotnum, fromTextEntered)
     end
 
     self.title:SetString(self.server_settings_tab:GetServerName())
-    self.day_title:SetString(SaveGameIndex:GetSlotDay(slotnum) and (STRINGS.UI.SERVERCREATIONSCREEN.SERVERDAY.." "..(SaveGameIndex:GetSlotDay(slotnum) or "0")) or STRINGS.UI.SERVERCREATIONSCREEN.SERVERDAY_NEW)
+
+    if SaveGameIndex:GetSlotDay(slotnum) == nil then
+        --V2C: slot day is never updated in the new cluster save slots,
+        --     but the nil check for new slots is still valid... - __-"
+        self.day_title:SetString(STRINGS.UI.SERVERCREATIONSCREEN.SERVERDAY_NEW)
+    elseif TheNet:GetUseLegacyClientHosting() then
+        self.day_title:SetString(STRINGS.UI.SERVERCREATIONSCREEN.SERVERDAY.." "..SaveGameIndex:GetSlotDay(slotnum))
+    else
+        local session_id = SaveGameIndex:GetClusterSlotSession(slotnum)
+        if session_id ~= nil then
+            local day = 1
+            local season = nil
+            local file = TheNet:GetWorldSessionFileInClusterSlot(slotnum, "Master", session_id)
+            if file ~= nil then
+                TheSim:GetPersistentStringInClusterSlot(slotnum, "Master", file,
+                    function(success, str)
+                        if success and str ~= nil and #str > 0 then
+                            local success, savedata = RunInSandbox(str)
+                            if success and savedata ~= nil and GetTableSize(savedata) > 0 then
+                                local worlddata = savedata.world_network ~= nil and savedata.world_network.persistdata or nil
+                                if worlddata ~= nil then
+                                    if worlddata.clock ~= nil then
+                                        day = (worlddata.clock.cycles or 0) + 1
+                                    end
+
+                                    if worlddata.seasons ~= nil and worlddata.seasons.season ~= nil then
+                                        season = STRINGS.UI.SERVERLISTINGSCREEN.SEASONS[string.upper(worlddata.seasons.season)]
+                                        if season ~= nil and
+                                            worlddata.seasons.elapseddaysinseason ~= nil and
+                                            worlddata.seasons.remainingdaysinseason ~= nil then
+                                            if worlddata.seasons.remainingdaysinseason * 3 <= worlddata.seasons.elapseddaysinseason then
+                                                season = STRINGS.UI.SERVERLISTINGSCREEN.LATE_SEASON_1..season..STRINGS.UI.SERVERLISTINGSCREEN.LATE_SEASON_2
+                                            elseif worlddata.seasons.elapseddaysinseason * 3 <= worlddata.seasons.remainingdaysinseason then
+                                                season = STRINGS.UI.SERVERLISTINGSCREEN.EARLY_SEASON_1..season..STRINGS.UI.SERVERLISTINGSCREEN.EARLY_SEASON_2
+                                            end
+                                        end
+                                    end
+                                end
+                            end
+                        end
+                    end)
+            end
+            self.day_title:SetString((season ~= nil and (season.." ") or "")..STRINGS.UI.SERVERCREATIONSCREEN.SERVERDAY.." "..day)
+        else
+            self.day_title:SetString(STRINGS.UI.SERVERCREATIONSCREEN.SERVERDAY_NEW)
+        end
+    end
 
     -- may also want to update the string used on the nav button...
 end
@@ -184,8 +233,6 @@ function ServerCreationScreen:UpdateButtons(slotnum)
         if self.delete_button then self.delete_button:Enable() end
         if self.create_button then self.create_button.text:SetString(STRINGS.UI.SERVERCREATIONSCREEN.RESUME) end
     end
-    self.configure_world_button:SetText(STRINGS.UI.SERVERCREATIONSCREEN.WORLD.." ("..self.world_tab:GetNumberOfTweaks()..")")
-    self.configure_world_button.description:SetString(self.world_tab:GetPresetName())
     self.mods_button:SetText(STRINGS.UI.MAINSCREEN.MODS.." ("..self.mods_tab:GetNumberOfModsEnabled()..")")
 end
 
@@ -245,8 +292,29 @@ function ServerCreationScreen:DeleteSlot(slot, cb)
 end
 
 function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOutOfDateMods)
-    local function onsaved()    
-        StartNextInstance({reset_action=RESET_ACTION.LOAD_SLOT, save_slot = self.saveslot})
+
+	local launchingServerPopup = nil
+
+    local function onsaved()
+        if TheNet:GetUseLegacyClientHosting() then
+            StartNextInstance({reset_action=RESET_ACTION.LOAD_SLOT, save_slot = self.saveslot})
+
+        else
+            ShowLoading()
+            launchingServerPopup = LaunchingServerPopup({}, 
+                function()
+                    local start_worked = TheNet:StartClient(DEFAULT_JOIN_IP, 10999, -1, self.server_settings_tab:GetServerData().password)
+                    if start_worked then
+                        DisableAllDLC()
+                    end
+                end,
+                function()
+                    OnNetworkDisconnect("ID_DST_DEDICATED_SERVER_STARTUP_FAILED", false, false)
+                    TheSystemService:StopDedicatedServers()
+                end)
+
+            TheFrontEnd:PushScreen(launchingServerPopup)
+        end
     end
 
 	local function onCreate()
@@ -276,16 +344,28 @@ function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOu
 				TheFrontEnd:PushScreen( popup )
 			end
 		else
-            --#TODO gjans qproust -- this is where we will diverge between a hosted game and
-            --spawning a local dedicated server process
-            -- 1) Write a worldgenoverride.lua for each server that contains the settings
-            -- 2) The server browser will need to compose it's worldgen data from the shards, because
-            --    the master server will no longer know the configuration the slaves were created with.
-
             self.server_settings_tab:SetEditingTextboxes(false)
 
             local serverdata = self.server_settings_tab:GetServerData()
+            local worldoptions = self.world_tab:CollectOptions()
 
+            local world1datastring = ""
+            if worldoptions[1] ~= nil then
+                local world1data = deepcopy(worldoptions[1].tweak)
+                world1data.preset = worldoptions[1].actualpreset
+                world1data.override_enabled = true
+                world1datastring = worldoptions[1] and DataDumper(world1data, nil, false) or ""
+            end
+
+            local world2datastring = ""
+            if worldoptions[2] ~= nil then
+                local world2data = deepcopy(worldoptions[2].tweak)
+                world2data.preset = worldoptions[2].actualpreset
+                world2data.override_enabled = true
+                world2datastring = worldoptions[2] and DataDumper(world2data, nil, false) or ""
+            end
+
+            --[[ Legacy: Starting a "client" server
             TheNet:SetDefaultServerIntention(serverdata.intention)
             TheNet:SetDefaultServerName(serverdata.name)
             TheNet:SetDefaultServerPassword(serverdata.password)
@@ -300,30 +380,71 @@ function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOu
             else
                 TheNet:SetDefaultClanInfo("0", false, false)
             end
+            --]]
 
+            -- Apply the mods
+            self.mods_tab:Apply()
+
+            -- Fill serverInfo object
+            local cluster_info = {}
+
+            local mod_data = DataDumper(SaveGameIndex:GetEnabledMods(self.saveslot), nil, false)
+            --print("V v v v v v v v v v v v v v v v")
+            --print(mod_data)
+            --print("^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^")
+            cluster_info.mods_config                             = mod_data
+            cluster_info.world1gen                               = world1datastring
+            cluster_info.world2gen                               = world2datastring
+            cluster_info.friends_only                            = serverdata.privacy_type == PRIVACY_TYPE.FRIENDS
+
+            cluster_info.settings                                = {}
+            cluster_info.settings.NETWORK                        = {}
+            cluster_info.settings.NETWORK.cluster_name           = serverdata.name
+            cluster_info.settings.NETWORK.cluster_password       = serverdata.password
+            cluster_info.settings.NETWORK.cluster_description    = serverdata.description
+            cluster_info.settings.NETWORK.lan_only_cluster       = tostring(serverdata.privacy_type == PRIVACY_TYPE.LOCAL)
+			cluster_info.settings.NETWORK.server_intention       = serverdata.intention
+            cluster_info.settings.NETWORK.offline_server         = tostring(not serverdata.online_mode)
+
+            cluster_info.settings.GAMEPLAY                       = {}
+            cluster_info.settings.GAMEPLAY.game_mode             = serverdata.game_mode
+            cluster_info.settings.GAMEPLAY.pvp                   = tostring(serverdata.pvp)
+            cluster_info.settings.GAMEPLAY.max_players           = tostring(serverdata.max_players)
+
+            if serverdata.privacy_type == PRIVACY_TYPE.CLAN then
+                cluster_info.settings.STEAM                      = {}
+                cluster_info.settings.STEAM.steam_group_only     = tostring(serverdata.clan.only)
+                cluster_info.settings.STEAM.steam_group_id       = tostring(serverdata.clan.id)
+                cluster_info.settings.STEAM.steam_group_admins   = tostring(serverdata.clan.admin)
+            end
+
+            -- Collect the tags we want and set the tags string now that we have our mods enabled
+            TheNet:SetServerTags(BuildTagsStringHosting(self))
+
+            if SaveGameIndex:IsSlotEmpty(self.saveslot) then
+                SaveGameIndex:StartSurvivalMode(self.saveslot, worldoptions, serverdata, onsaved)
+                self:RefreshNavButtons()
+                self:OnClickSlot(self.saveslot)
+            else
+                SaveGameIndex:UpdateServerData(self.saveslot, serverdata, onsaved)
+            end
+
+
+            --[[ Legacy: Starting a "client" server
             local start_in_online_mode = serverdata.online_mode
             if TheFrontEnd:GetIsOfflineMode() then
                 start_in_online_mode = false
             end
-            local server_started = TheNet:StartServer(start_in_online_mode)
-            if server_started == true then
-                self:Disable()
+            local server_started = TheNet:StartServer( start_in_online_mode )
+            --]]
 
-                local function do_start_server()
-                    -- Apply the mods
-                    self.mods_tab:Apply()
+            self:Disable()
 
-                    -- Collect the tags we want and set the tags string now that we have our mods enabled
-                    TheNet:SetServerTags(BuildTagsStringHosting(self))
-
-                    if SaveGameIndex:IsSlotEmpty(self.saveslot) then
-                        SaveGameIndex:StartSurvivalMode(self.saveslot, self.world_tab:CollectOptions(), serverdata, onsaved)
-                    else
-                        SaveGameIndex:UpdateServerData(self.saveslot, serverdata, onsaved)
-                    end
+            if not TheSystemService:StartDedicatedServers(self.saveslot, worldoptions[2] ~= nil, cluster_info) then
+                if launchingServerPopup ~= nil then
+                    launchingServerPopup:SetErrorStartingServers()
                 end
-
-                DoLoadingPortal(do_start_server)
+                self:Enable()
             end
         end
     end
@@ -525,11 +646,11 @@ function ServerCreationScreen:Cancel()
                         self:MakeClean()
                         self:Disable()
                         self.server_settings_tab:SetEditingTextboxes(false)
-                        TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
+                        TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
                             self.mods_tab:Cancel()
                             TheFrontEnd:PopScreen()
                             TheFrontEnd:PopScreen()
-                            TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
+                            TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)
                         end)
                     end
                 },
@@ -546,10 +667,10 @@ function ServerCreationScreen:Cancel()
     else
         self:Disable()
         self.server_settings_tab:SetEditingTextboxes(false)
-        TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
+        TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
             self.mods_tab:Cancel()
             TheFrontEnd:PopScreen()
-            TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
+            TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)
         end)
     end
 end
@@ -744,15 +865,10 @@ function ServerCreationScreen:MakeButtons()
     self.ban_admin_button.image:SetScale(.83, .92)
 
     self.settings_button.text:SetPosition(2,8)
-    self.configure_world_button.text:SetPosition(2,19)
+    self.configure_world_button.text:SetPosition(2,8)
     self.mods_button.text:SetPosition(2,8)
     self.snapshot_button.text:SetPosition(2,8)
     self.ban_admin_button.text:SetPosition(2,8)
-
-    self.configure_world_button:SetTextSize(24)
-    self.configure_world_button.description = self.configure_world_button:AddChild(Text(NEWFONT_OUTLINE,21,""))
-    self.configure_world_button.description:SetPosition(0,-1)
-    self.configure_world_button.description:SetColour(GOLD[1], GOLD[2], GOLD[3], GOLD[4])
 
     self.cancel_button = self.root:AddChild(TEMPLATES.BackButton(function() self:Cancel() end))
     self.create_button = MakeImgButton(self.detail_panel, 170, -RESOLUTION_Y*.5 + BACK_BUTTON_Y - 7, STRINGS.UI.SERVERCREATIONSCREEN.CREATE, function() self:Create() end, "create")
@@ -787,7 +903,9 @@ function ServerCreationScreen:DoFocusHookUps()
             if self.active_tab == "settings" then
                 return self.server_settings_tab
             elseif self.active_tab == "world" then
-                return self.world_tab.presetspinner
+                return (self.world_tab.presetspinner:IsVisible() and self.world_tab.presetspinner)
+                    or (self.world_tab.addmultilevel:IsEnabled() and self.world_tab.addmultilevel)
+                    or self.world_tab.level1tab
             elseif self.active_tab == "mods" then
                 return self.mods_tab.servermodsbutton
             elseif self.active_tab == "snapshot" then
@@ -861,8 +979,6 @@ function ServerCreationScreen:HideAllTabs(tab)
 
     self.settings_button:Enable()
     self.configure_world_button:Enable()
-    self.configure_world_button.description:SetColour(GOLD[1], GOLD[2], GOLD[3], GOLD[4])
-    self.configure_world_button.description:SetFont(NEWFONT_OUTLINE)
     self.mods_button:Enable()
     self.snapshot_button:Enable()
     self.ban_admin_button:Enable()
@@ -895,8 +1011,6 @@ end
 
 function ServerCreationScreen:ShowWorldTab(forceFocus)
     self.configure_world_button:Disable()
-    self.configure_world_button.description:SetColour(0, 0, 0, 1)
-    self.configure_world_button.description:SetFont(NEWFONT_SMALL)
     self.active_tab = "world"
     self.world_tab:Show()
     if forceFocus or self:IsTabPageFocused() then

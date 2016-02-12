@@ -231,7 +231,7 @@ function PlayerStatusScreen:DoInit(ClientObjs)
 	    self.players_number:SetHAlign(ANCHOR_RIGHT)
 	    self.players_number:SetColour(1,1,1,1)
 	end
-    self.players_number:SetString(tostring(TheNet:GetServerIsDedicated() and self.numPlayers - 1 or self.numPlayers).."/"..(TheNet:GetServerMaxPlayers() or "?"))
+    self.players_number:SetString(tostring(not TheNet:GetServerIsClientHosted() and self.numPlayers - 1 or self.numPlayers).."/"..(TheNet:GetServerMaxPlayers() or "?"))
 
 	local serverDescStr = TheNet:GetServerDescription()
 	if not self.serverdesc then
@@ -344,7 +344,7 @@ function PlayerStatusScreen:DoInit(ClientObjs)
 
 		playerListing.number = playerListing:AddChild(Text(UIFONT, 35))
 		local visible_index = i
-		if TheNet:GetServerIsDedicated() then
+		if not TheNet:GetServerIsClientHosted() then
 			playerListing.number:SetString(i-1)
 			visible_index = i-1
             if i <= 1 then
@@ -406,7 +406,7 @@ function PlayerStatusScreen:DoInit(ClientObjs)
         playerListing.perf:SetScale(unpack(perf_scale))
 
         local server_has_admin = TheNet:GetServerHasPresentAdmin()
-        local this_user_is_dedicated_server = empty ~= true and v.performance ~= nil and TheNet:GetServerIsDedicated()
+        local this_user_is_dedicated_server = empty ~= true and v.performance ~= nil and not TheNet:GetServerIsClientHosted()
 
     	playerListing.viewprofile = playerListing:AddChild(ImageButton("images/scoreboard.xml", "addfriend.tex", "addfriend.tex", "addfriend.tex", "addfriend.tex", nil, {1,1}, {0,0}))
 		playerListing.viewprofile:SetPosition(120,3,0)
@@ -659,7 +659,7 @@ function PlayerStatusScreen:DoInit(ClientObjs)
 			end
 			
 			local visible_index = i
-			if TheNet:GetServerIsDedicated() then
+			if not TheNet:GetServerIsClientHosted() then
 				playerListing.number:SetString(i-1)
 				visible_index = i-1
                 if i > 1 then
@@ -693,7 +693,7 @@ function PlayerStatusScreen:DoInit(ClientObjs)
             end
 
 	        local server_has_admin = TheNet:GetServerHasPresentAdmin()
-	        local this_user_is_dedicated_server = v.performance ~= nil and TheNet:GetServerIsDedicated()
+	        local this_user_is_dedicated_server = v.performance ~= nil and not TheNet:GetServerIsClientHosted()
 
 			playerListing.viewprofile:SetOnClick(
 				function()
