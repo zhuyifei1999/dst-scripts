@@ -500,7 +500,7 @@ local function OnPlayerActivated(world)
         --Stay faded out
         ActivateWorld()
     else
-        TheFrontEnd:Fade(true, 1, ActivateWorld, nil, nil, "white")
+        TheFrontEnd:Fade(FADE_IN, 1, ActivateWorld, nil, nil, "white")
     end
 end
 
@@ -906,10 +906,10 @@ end
 
 local function OnFilesLoaded()
 	print("OnFilesLoaded()")
-    if not TheNet:IsDedicated() then
+    if not (TheNet:IsDedicated() or TheNet:GetIsServer() or TheNet:GetIsClient()) then
         local host_sessions = {}
         for i = 1, NUM_SAVE_SLOTS do
-            local session = SaveGameIndex:GetSlotSession(i)
+            local session = SaveGameIndex:GetClusterSlotSession(i)
             if session ~= nil then
                 table.insert(host_sessions, session)
             end

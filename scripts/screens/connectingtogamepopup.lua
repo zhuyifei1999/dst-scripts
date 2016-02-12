@@ -105,6 +105,8 @@ function ConnectingToGamePopup:OnCancel()
     TheNet:Disconnect(false)
 	TheFrontEnd:PopScreen()
 
+    TheSystemService:StopDedicatedServers() -- just in case, we need to closes the server if the player cancel the connection
+
     if IsMigrating() then
         -- Still does not handle in-game, but
         -- this one's for canceling migration

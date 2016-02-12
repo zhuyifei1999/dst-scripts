@@ -41,7 +41,7 @@ function PlayerHistory:UpdateHistoryFromClientTable()
         for i, v in ipairs(ClientObjs) do
             -- Skip yourself
             -- Skip dedicated server host
-            if v.userid ~= my_userid and not (v.performance ~= nil and TheNet:GetServerIsDedicated()) then
+            if v.userid ~= my_userid and not (v.performance ~= nil and not TheNet:GetServerIsClientHosted()) then
                 local seen_state =
                 {
                     name = v.name,

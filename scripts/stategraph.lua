@@ -75,24 +75,21 @@ end
 
 function StateGraphWrangler:OnRemoveEntity(inst)
     if self.instances[inst.sg] then
-        assert(inst.sg.inst == inst)
         SGManager:RemoveInstance(inst.sg)
-        return
-    end
-    for k,v in pairs(self.instances) do
-        if k.inst == inst then
-            assert(false)
-            self:RemoveInstance(k)
-            return
-        end
     end
 end
 
 function StateGraphWrangler:RemoveInstance(inst)
+    --V2C: #legacycode: inst is inst.sg, yo! Pretty much
+    --     everywhere in this file except OnRemoveEntity
     local old_list = self.instances[inst]
     if old_list ~= nil then
         old_list[inst] = nil
     end
+
+    --V2C: If the sg removes itself, or its entity, during our event
+    --     handling loop, then we need to drop any remaining events.
+    inst:ClearBufferedEvents()
 
     --V2C: looks like this file was not maintained correctly,
     --     and instances are not always being moved to lists

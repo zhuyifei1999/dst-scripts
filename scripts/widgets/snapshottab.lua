@@ -44,6 +44,7 @@ function SnapshotTab:RefreshSnapshots()
 end
 
 function SnapshotTab:MakeSnapshotsMenu()
+    local use_legacy_client_hosting = TheNet:GetUseLegacyClientHosting()
 
     local function MakeSnapshotTile(data, index, parent)
         local widget = parent:AddChild(Widget("option"))
@@ -71,6 +72,13 @@ function SnapshotTab:MakeSnapshotsMenu()
         widget.day:SetPosition(0, 0, 0)
         widget.day:SetHAlign(ANCHOR_MIDDLE)
         widget.day:SetVAlign(ANCHOR_MIDDLE)
+
+        widget.season = widget:AddChild(Text(NEWFONT, 28))
+        widget.season:SetColour(0, 0, 0, 1)
+        widget.season:SetString("")
+        widget.season:SetPosition(0, 18, 0)
+        widget.season:SetHAlign(ANCHOR_MIDDLE)
+        widget.season:SetVAlign(ANCHOR_MIDDLE)
 
         widget.OnGainFocus = function(self)
             if not widget:IsEnabled() then return end
@@ -115,30 +123,40 @@ function SnapshotTab:MakeSnapshotsMenu()
             return table.concat(t, "  ")
         end
 
-        if data and not data.empty then
-            local character = data.character or ""
-            local atlas = "images/saveslot_portraits"
-            if not table.contains(DST_CHARACTERLIST, character) then
-                if table.contains(MODCHARACTERLIST, character) then
-                    atlas = atlas.."/"..character
-                else
-                    character = #character > 0 and "mod" or "unknown"
+        if data ~= nil and not data.empty then
+            local character, atlas
+            if TheNet:GetUseLegacyClientHosting() then
+                character = data.character or ""
+                atlas = "images/saveslot_portraits"
+                if not table.contains(DST_CHARACTERLIST, character) then
+                    if table.contains(MODCHARACTERLIST, character) then
+                        atlas = atlas.."/"..character
+                    else
+                        character = #character > 0 and "mod" or "unknown"
+                    end
                 end
+                atlas = atlas..".xml"
             end
-            atlas = atlas..".xml"
 
             if character ~= nil then
                 widget.portraitroot.image:SetTexture(atlas, character..".tex")
             else
                 widget.portraitroot:Hide()
             end
-            
+
             local day_text = STRINGS.UI.SERVERADMINSCREEN.DAY.." "..tostring(data.world_day or STRINGS.UI.SERVERADMINSCREEN.UNKNOWN_DAY)
             widget.day:SetString(day_text)
-            widget.day:SetPosition(character ~= nil and 40 or 0, 0, 0)
+            if not use_legacy_client_hosting and data.world_season ~= nil then
+                widget.season:SetString(data.world_season)
+                widget.day:SetPosition(0, -15, 0)
+            else
+                widget.season:Hide()
+                widget.day:SetPosition(character ~= nil and 40 or 0, 0, 0)
+            end
             widget.empty = false
         else
             widget.portraitroot:Hide()
+            widget.season:Hide()
 
             widget.empty = true
         end
@@ -147,17 +165,20 @@ function SnapshotTab:MakeSnapshotsMenu()
     end
 
     local function UpdateSnapshot(widget, data, index)
-        if data and not data.empty then
-            local character = data.character or ""
-            local atlas = "images/saveslot_portraits"
-            if not table.contains(DST_CHARACTERLIST, character) then
-                if table.contains(MODCHARACTERLIST, character) then
-                    atlas = atlas.."/"..character
-                else
-                    character = #character > 0 and "mod" or "unknown"
+        if data ~= nil and not data.empty then
+            local character, atlas
+            if TheNet:GetUseLegacyClientHosting() then
+                character = data.character or ""
+                atlas = "images/saveslot_portraits"
+                if not table.contains(DST_CHARACTERLIST, character) then
+                    if table.contains(MODCHARACTERLIST, character) then
+                        atlas = atlas.."/"..character
+                    else
+                        character = #character > 0 and "mod" or "unknown"
+                    end
                 end
+                atlas = atlas..".xml"
             end
-            atlas = atlas..".xml"
 
             if character ~= nil then
                 widget.portraitroot.image:SetTexture(atlas, character..".tex")
@@ -168,11 +189,20 @@ function SnapshotTab:MakeSnapshotsMenu()
             
             local day_text = STRINGS.UI.SERVERADMINSCREEN.DAY.." "..tostring(data.world_day or STRINGS.UI.SERVERADMINSCREEN.UNKNOWN_DAY)
             widget.day:SetString(day_text)
-            widget.day:SetPosition(character ~= nil and 40 or 0, 0, 0)
+            if not use_legacy_client_hosting and data.world_season ~= nil then
+                widget.season:SetString(data.world_season)
+                widget.season:Show()
+                widget.day:SetPosition(0, -15, 0)
+            else
+                widget.season:Hide()
+                widget.day:SetPosition(character ~= nil and 40 or 0, 0, 0)
+            end
             widget.empty = false
         else
             widget.day:SetString(STRINGS.UI.SERVERADMINSCREEN.EMPTY_SLOT)
             widget.day:SetPosition(0, 0, 0)
+            widget.season:SetString("")
+            widget.season:Hide()
             widget.portraitroot:Hide()
             widget.empty = true
         end
@@ -215,7 +245,12 @@ function SnapshotTab:OnClickSnapshot(snapshot_num)
             end
             local truncate_to_id = self.snapshots[snapshot_num].snapshot_id
             if truncate_to_id ~= nil and truncate_to_id > 0 then
-                TheNet:TruncateSnapshots(self.session_id, truncate_to_id)
+                if TheNet:GetUseLegacyClientHosting() then
+                    TheNet:TruncateSnapshots(self.session_id, truncate_to_id)
+                else
+                    TheNet:TruncateSnapshotsInClusterSlot(self.save_slot, "Master", self.session_id, truncate_to_id)
+                    --slaves will auto-truncate to synchornize at startup
+                end
             end
             SaveGameIndex:SetSlotDay(self.save_slot, self.snapshots[snapshot_num].world_day or STRINGS.UI.SERVERADMINSCREEN.UNKNOWN_DAY)
             SaveGameIndex:Save(onSaved)
@@ -226,32 +261,54 @@ function SnapshotTab:OnClickSnapshot(snapshot_num)
 end
 
 function SnapshotTab:ListSnapshots(force)
-
     if not force and self.slotsnaps[self.save_slot] then
         self.snapshots = deepcopy(self.slotsnaps[self.save_slot])
         return
     end
 
     self.snapshots = {}
-    if self.session_id ~= nil then
-        local snapshot_infos, has_more = TheNet:ListSnapshots(self.session_id, self.online_mode, 10)
+    if self.save_slot ~= nil and self.session_id ~= nil then
+        --V2C: TODO: update ListSnapshots to support cluster folders
+        local snapshot_infos, has_more = TheNet:ListSnapshots(self.save_slot, self.session_id, self.online_mode, 10)
         for i, v in ipairs(snapshot_infos) do
             if v.snapshot_id ~= nil then
                 local info = { snapshot_id = v.snapshot_id }
                 if v.world_file ~= nil then
-                    TheSim:GetPersistentString(v.world_file,
-                        function(success, str)
-                            if success and str ~= nil and #str > 0 then
-                                local success, savedata = RunInSandbox(str)
-                                if success and savedata ~= nil and GetTableSize(savedata) > 0 then
-                                    local worlddata = savedata.world_network ~= nil and savedata.world_network.persistdata or nil
-                                    local clockdata = worlddata ~= nil and worlddata.clock or nil
-                                    info.world_day = (clockdata ~= nil and clockdata.cycles or 0) + 1
+                    local function onreadworldfile(success, str)
+                        if success and str ~= nil and #str > 0 then
+                            local success, savedata = RunInSandbox(str)
+                            if success and savedata ~= nil and GetTableSize(savedata) > 0 then
+                                local worlddata = savedata.world_network ~= nil and savedata.world_network.persistdata or nil
+                                if worlddata ~= nil then
+                                    if worlddata.clock ~= nil then
+                                        info.world_day = (worlddata.clock.cycles or 0) + 1
+                                    end
+
+                                    if worlddata.seasons ~= nil and worlddata.seasons.season ~= nil then
+                                        info.world_season = STRINGS.UI.SERVERLISTINGSCREEN.SEASONS[string.upper(worlddata.seasons.season)]
+                                        if info.world_season ~= nil and
+                                            worlddata.seasons.elapseddaysinseason ~= nil and
+                                            worlddata.seasons.remainingdaysinseason ~= nil then
+                                            if worlddata.seasons.remainingdaysinseason * 3 <= worlddata.seasons.elapseddaysinseason then
+                                                info.world_season = STRINGS.UI.SERVERLISTINGSCREEN.LATE_SEASON_1..info.world_season..STRINGS.UI.SERVERLISTINGSCREEN.LATE_SEASON_2
+                                            elseif worlddata.seasons.elapseddaysinseason * 3 <= worlddata.seasons.remainingdaysinseason then
+                                                info.world_season = STRINGS.UI.SERVERLISTINGSCREEN.EARLY_SEASON_1..info.world_season..STRINGS.UI.SERVERLISTINGSCREEN.EARLY_SEASON_2
+                                            end
+                                        end
+                                    end
+                                else
+                                    info.world_day = 1
                                 end
                             end
-                        end)
+                        end
+                    end
+                    if TheNet:GetUseLegacyClientHosting() then
+                        TheSim:GetPersistentString(v.world_file, onreadworldfile)
+                    else
+                        TheSim:GetPersistentStringInClusterSlot(self.save_slot, "Master", v.world_file, onreadworldfile)
+                    end
                 end
-                if v.user_file ~= nil then
+                if v.user_file ~= nil and TheNet:GetUseLegacyClientHosting() then
                     TheSim:GetPersistentString(v.user_file,
                         function(success, str)
                             if success and str ~= nil and #str > 0 then
@@ -281,7 +338,7 @@ function SnapshotTab:SetSaveSlot(save_slot, prev_slot, fromDelete)
         self.slotsnaps[prev_slot] = deepcopy(self.snapshots)
     end
 
-    self.session_id = SaveGameIndex:GetSlotSession(save_slot)
+    self.session_id = SaveGameIndex:GetClusterSlotSession(save_slot)
     self.online_mode = SaveGameIndex:GetSlotServerData(save_slot).online_mode ~= false
 
     self:ListSnapshots()

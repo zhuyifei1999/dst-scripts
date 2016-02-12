@@ -1328,7 +1328,7 @@ function EntityScript:CanInteractWith(inst)
     if parent and parent ~= self then
         return false
     end
-    
+
     return true
 end
 
@@ -1371,7 +1371,7 @@ function EntityScript:GetCurrentTileType()
     local tilecenter_x, tilecenter_y, tilecenter_z  = map:GetTileCenterPoint(ptx, 0, ptz)
     local tx, ty = map:GetTileCoordsAtPoint(ptx, 0, ptz)
     local actual_tile = map:GetTile(tx, ty)
-    
+
     if actual_tile ~= nil and tilecenter_x ~= nil and tilecenter_z ~= nil then
         if actual_tile == GROUND.IMPASSABLE then
             local xpercent = (tilecenter_x - ptx) / TILE_SCALE + .5
@@ -1417,7 +1417,7 @@ function EntityScript:GetPersistData()
                     data[k] = t
                 end
             end
-            
+
             if refs then
                 if not references then
                     references = {}
@@ -1429,7 +1429,7 @@ function EntityScript:GetPersistData()
             end
         end
     end
-    
+
     if self.OnSave then
         if not data then
             data = {}
@@ -1455,20 +1455,18 @@ function EntityScript:GetPersistData()
 end
 
 function EntityScript:LoadPostPass(newents, savedata)
-    
-    if savedata then
-        for k,v in pairs(savedata) do
+    if savedata ~= nil then
+        for k, v in pairs(savedata) do
             local cmp = self.components[k]
-            if cmp and cmp.LoadPostPass then
+            if cmp ~= nil and cmp.LoadPostPass ~= nil then
                 cmp:LoadPostPass(newents, v)
             end
         end
     end
-    
-    if self.OnLoadPostPass then
+
+    if self.OnLoadPostPass ~= nil then
         self:OnLoadPostPass(newents, savedata)
     end
-    
 end
 
 function EntityScript:SetPersistData(data, newents)

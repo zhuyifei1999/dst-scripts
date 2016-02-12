@@ -2285,6 +2285,10 @@ STRINGS.UI =
         DISCONNECT_CONTROLLER = " to Disconnect",
         CONNECTING = "Connecting",
         NEW_SKIN_ANNOUNCEMENT = "%s got a new skin: ",
+        LAUNCHING_SERVER = "Launching Server",
+        SERVER_WORLDGEN = "Server is Generating World",
+        INITIALIZING_SERVER = "Initializing Server",
+        WORLDGENERATING_SERVER = "Generating World",
     },
 
     ITEM_SCREEN =
@@ -2372,6 +2376,7 @@ STRINGS.UI =
             ID_DST_DESTINATION_SERVER_NOT_AVAILABLE = "Server not available",            ID_DST_SERVER_IS_CLAN_ONLY = "Private Group",
             ID_DST_SERVER_IS_CLAN_ONLY = "Not a member of the server's clan.",
             ID_DST_SERVER_IS_LAN_ONLY = "Server only allows local connections.",
+            ID_DST_DEDICATED_SERVER_STARTUP_FAILED = "Dedicated Server Failed To Start",
         },
         BODY =
         {   
@@ -2418,6 +2423,7 @@ STRINGS.UI =
 		    ID_DST_SERVER_IS_CLAN_ONLY = "You have to be part of this server's steam group to connect to it. You could try visiting their group page and asking nicely to join?",
             ID_DST_SERVER_IS_LAN_ONLY = "This server only allows joining from the same local network. You could run a really long cable from your computer.. or the server owner could change their server settings.",
             ID_DST_DESTINATION_SERVER_NOT_AVAILABLE = "The server you were playing on is not curently available. Try again later",
+            ID_DST_DEDICATED_SERVER_STARTUP_FAILED = "There was some kind of trouble starting up the server. How odd.",
 		},
 		OK = "OK",
     },
@@ -2615,6 +2621,7 @@ STRINGS.UI =
                 "Together Forever",	        -- Multiplayer coop
                 "No Giants Here",           -- Nothing Reign Of Giants
                 "The Caves",                 -- Caves content in DST
+                "Caves Plus",                -- harder caves
         },
                 
         PRESETLEVELDESC = {
@@ -2630,6 +2637,7 @@ STRINGS.UI =
             "The multiplayer Don't Starve experience.",
             "Don't Starve Together with Reign of Giants turned off.",
             "Delve into the caves... together!",
+            "A darker, more arachnidy cave experience.",
         },
 
         TASKSETNAMES = {
@@ -2817,8 +2825,9 @@ STRINGS.UI =
         OFFLINEWARNINGTITLE = "Offline World",
         OFFLINEMODEBODYJOIN = "Are you sure you want to join an offline world? You will not be able to receive or use Collection Items in this world.",
         
-        CHAR_AGE_1 = "Day ",
-        CHAR_AGE_2 = "",
+        CHAR_AGE_1 = "Survived ",
+        CHAR_AGE_2 = " Day",
+        CHAR_AGE_3 = " Days",
         WORLD_UNKNOWN = "World Unknown",
         VIEWWORLD = "View World",
         PLAYERS_UNKNOWN = "Players Unknown",
@@ -2933,7 +2942,7 @@ STRINGS.UI =
         DELETE = "Delete",
         SLOT = "Server Slot",
         SURE = "Are you sure?",
-        SERVERDAY = "World: Day",
+        SERVERDAY = "Day",
         SERVERDAY_NEW = "A Whole New World",
         SELECT_SLOT = "Select Slot",
         SNAPSHOTS = "Rollback",
@@ -2974,7 +2983,7 @@ STRINGS.UI =
         BANNED_PLAYERS_HEADER = "Banned Players",
         PLAYER = "Player",
         DATE = "Date",
-        DAY = "World Day",
+        DAY = "Day",
         UNKNOWN_DAY = "???",
         EMPTY_SLOT = "EMPTY",
         EMPTY_SLOT_TITLE = "Empty Slot",
@@ -3092,7 +3101,7 @@ STRINGS.UI =
     	NEW = "NEW",
     	TRADE = "Trade Inn",
     	BACK = "Back",
-    	TRADE_TOOLTIP = "Trade your unwanted items for something new! -- (Not yet available)",
+    	TRADE_TOOLTIP = "Trade your unwanted items for something new!",
 		NO_ITEMS_TITLE = "Nothing to see here",
     	NO_ITEMS = "Play the game to get items!",
 	},
@@ -3100,6 +3109,92 @@ STRINGS.UI =
 	TRADESCREEN = 
 	{
 		TITLE = "Trade Inn",
+		RESET = "Reset",
+		TRADE = "Trade",
+		SELECT = "Select",
+		ACCEPT = "Accept",
+		CANCEL = "Cancel",
+		SELECT_TITLE = "Choose An Item To Swap",
+		REMOVE_ITEM = "Remove Last Item",
+		BACK = "Back",
+		MARKET = "Go to Steam",
+        EQUIPPED = "Last one!",
+        CHECK = "Warning!",
+        WARNING_SINGLE = "You won't be able to use an item if you give your last copy away. Really trade this item?",
+        WARNING = "You won't be able to use an item if you give your last copy away. Really trade these items?",
+		SERVER_ERROR_TITLE = "Error Trading Items",
+		SERVER_ERROR_BODY = "Unfortunately there was an error trading items. Please login again to correct your account inventory.",
+		OK = "Ok",
+		
+		SKIN_COLLECTOR_SPEECH = 
+		{
+            -- Old west fur trader.
+			START = 
+            {
+                "Ya got a heap 'o items? Want better items? Well, ya come to tha right place! Put 'em in that thar machine!",
+                "Got too many items? I can help ya with that problem! Stick 'em in my machine an' trade 'em for somethin' better!",
+                "Lookin' for new items? Trade in some old items and get a bran' new one of higher quality!",
+                "Lookin' to trade? Ya come to the right place. Put your items in tha machine to get somethin' better!",
+            },
+			START_EMPTY = 
+            {
+                "C'mon back when ya got something ta trade!",
+                "Sorry, but I can't give ya something for nothing, ya know.",
+                "If ya find any items while you're adventuring around out there, ya can bring the ones ya don't need ta me.",
+            },
+            ADDMORE = 
+            {
+                "Help a poor old trader out with a few more <rarity> items and I'll give ya a higher quality item in exchange. Guaranteed.",
+                "I'm gonna need a few more <rarity> items to make a trade. I gotta cover my overhead, ya know? But ya'll get a better item in exchange.",
+                "Tha's it, fill the machine on up with <rarity> items and ya'll get a higher quality item back out.",
+                "Tha's tha ticket. Just bang a few more a those <rarity> items in tha machine to get a better item!",
+            },
+            TRADEAVAIL = 
+            {
+                "All right, kid. Give tha button a push to getcher item!",
+                "Just push tha button to start tha trade!",
+                "If ya wanna make tha trade, just push tha green button.",
+            },
+            TRADE = 
+            {   "It'll be here in a jiffy.",
+                "I bet ya can't wait to see what comes out!",
+                "It should be here real soon now.",
+            },
+            WARNING = 
+            {
+                "Slow down there, greenhorn. Are ya sure ya wanna gimme your last one 'o those? Ya won't be able ta use it anymore if ya do.",
+                "Wait jest a tick there. Tha's your last one o' those things. Ya won't be able to use it anymore if ya trade it away.",
+                "Ya ain't got no more o' those. Ya sure ya wanna get rid o' it? Not that I won't take it, o' course.",
+            },
+            RESULT = 
+            {
+                "Here ya go, one very fine <item>!",
+                "Look a' that, ya won a <item>. C'mon back any time, now.",
+                "There ya go, ya got this here <item>.",
+            },
+            RESULT_LUCKY = 
+            {
+                "Hey, ya struck it rich! Look at that <item>. Ya must be extra lucky today.",
+                "Here ya go, one bran' new <item>. Jus' remember I can't afford to give ya items this good all tha time.",
+                "Well, I guess me & tha machine are feelin' gen'rous today. Ya won a <item>!",
+                "Ain't that just the koalefant's toenails! Ya got one very purty <item>.",
+            },
+            JOYSTICK = 
+            {
+                "Ya can bang on that joystick all ya want but it won't do ya no good.",
+                "Don't ya go breakin' tha joystick, now. Ya don' need it anyhow.",
+                "Up, down, left, right, tha joystick don' do nothin'.",
+            },
+            IDLE = 
+            {
+                "Ya may not feel young, but I've been tradin' longer than ya been around, young pup.",
+                "I've always been a loner, me. Tha boss mostly lets me alone, which suits me fine.",
+                "Take yer time. I can stand here yammerin' all day.",
+                "My wagon's pulled by a nox. 'Es a good 'un, but 'e can't hold a candle to my old mule, Shadow.",
+                "Once, when I was but a young shaver... oh, but ya don' wanna listen to an old trader's stories.",
+                "What's a nox? Well, I don't know as I can rightly describe it. It's kinda like an ox, but not.",
+            }
+		}
 	},
 
     MORGUESCREEN=
@@ -3687,6 +3782,13 @@ STRINGS.UI =
 
         GENERATE = "OK",
         MAINMENU = "Cancel",
+        ENABLED = "Enabled",
+
+        LOCATIONTABNAME = {
+            FOREST = "Forest",
+            CAVE = "Caves",
+            UNKNOWN = "???",
+        },
 
         LOCATION = {
             FOREST = "Forest",

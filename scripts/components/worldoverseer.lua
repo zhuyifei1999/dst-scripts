@@ -258,7 +258,7 @@ function WorldOverseer:DumpSessionStats()
                             max_players = TheNet:GetServerMaxPlayers(),
                             password = TheNet:GetServerHasPassword(),
                             gamemode = TheNet:GetServerGameMode(),
-                            dedicated = TheNet:GetServerIsDedicated(),
+                            dedicated = not TheNet:GetServerIsClientHosted(),
                             administrated = TheNet:GetServerHasPresentAdmin(),
                             modded = TheNet:GetServerModsEnabled(),
                             privacy = (TheNet:GetServerClanID() ~= "" and "CLAN")

@@ -908,7 +908,7 @@ function ServerListingScreen:MakeServerListWidgets()
         row.CHAR_ICON_BG:SetScale(.09)
         row.CHAR_ICON = row.CHAR:AddChild(Image("images/saveslot_portraits.xml", "unknown.tex"))
         row.CHAR_ICON:SetScale(.21, .22, 1)
-        row.CHAR:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.CHAR_AGE_1.."0"..STRINGS.UI.SERVERLISTINGSCREEN.CHAR_AGE_2, { font = NEWFONT_OUTLINE, size = 22, offset_x = 1, offset_y = 28, colour = {1,1,1,1} })
+        row.CHAR:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.CHAR_AGE_1.."0"..STRINGS.UI.SERVERLISTINGSCREEN.CHAR_AGE_3, { font = NEWFONT_OUTLINE, size = 22, offset_x = 1, offset_y = 28, colour = {1,1,1,1} })
         row.CHAR:SetPosition(details_x,1)
         row.CHAR:Hide()
         details_x = details_x + 27
@@ -1022,7 +1022,7 @@ function ServerListingScreen:MakeServerListWidgets()
                 atlas = atlas..".xml"
                 widget.CHAR_ICON:SetTexture(atlas, character..".tex")
                 local age = playerdata.age or "???"
-                widget.CHAR:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.CHAR_AGE_1..age..STRINGS.UI.SERVERLISTINGSCREEN.CHAR_AGE_2)
+                widget.CHAR:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.CHAR_AGE_1..age..(age == 1 and STRINGS.UI.SERVERLISTINGSCREEN.CHAR_AGE_2 or STRINGS.UI.SERVERLISTINGSCREEN.CHAR_AGE_3))
                 widget.CHAR:Show()
             else
                 widget.CHAR:Hide()
@@ -1562,7 +1562,7 @@ end
 function ServerListingScreen:Cancel()
     TheNet:StopSearchingServers()
     self:Disable()
-    TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
+    TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
         if self.cb then
             local filters = {}
             for i,v in pairs(self.filters) do
@@ -1575,7 +1575,7 @@ function ServerListingScreen:Cancel()
             self.cb(filters)
         end
         TheFrontEnd:PopScreen()
-        TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
+        TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)
     end)
 end
 
@@ -2199,7 +2199,7 @@ function ServerListingScreen:OnControl(control, down)
             if TheFrontEnd:GetFadeLevel() > 0 then 
                 TheNet:Disconnect(false)
                 HideCancelTip()
-                TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
+                TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)
             else
                 self:Cancel()
                 TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")

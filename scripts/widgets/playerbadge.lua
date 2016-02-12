@@ -85,7 +85,7 @@ function PlayerBadge:IsCharacterState2()
 end
 
 function PlayerBadge:GetBG()
-    return (self.ishost and self.prefabname == "" and TheNet:GetServerIsDedicated() and "avatar_bg.tex")
+    return (self.ishost and self.prefabname == "" and not TheNet:GetServerIsClientHosted() and "avatar_bg.tex")
         or (self:IsAFK() and "avatar_bg.tex")
         or (self:IsGhost() and "avatar_ghost_bg.tex")
         or "avatar_bg.tex"
@@ -109,7 +109,7 @@ function PlayerBadge:GetAvatarAtlas()
 end
 
 function PlayerBadge:GetAvatar()
-    if self.ishost and self.prefabname == "" and TheNet:GetServerIsDedicated() then
+    if self.ishost and self.prefabname == "" and not TheNet:GetServerIsClientHosted() then
         return "avatar_server.tex"
     elseif self.prefabname == "" then
         return self.is_mod_character and "avatar_mod.tex" or "avatar_unknown.tex"

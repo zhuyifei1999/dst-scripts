@@ -194,13 +194,13 @@ function MainScreen:OnLoginButton( push_mp_main_screen )
 		if push_mp_main_screen then
             local function session_mapping_cb(data)
                 TheFrontEnd:PushScreen(MultiplayerMainScreen(self.profile, offline, data))
-                TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
+                TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)
             end
             if not TheNet:DeserializeAllLocalUserSessions(session_mapping_cb) then
                 session_mapping_cb()
             end
         else
-            TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
+            TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)
 		end
     end
     	
@@ -246,7 +246,7 @@ function MainScreen:OnLoginButton( push_mp_main_screen )
                         {
                          {text=STRINGS.UI.MAINSCREEN.VERSION_OUT_OF_DATE_PLAY, 
                                     cb = function() 
-                                        TheFrontEnd:Fade(false, SCREEN_FADE_TIME, 
+                                        TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, 
                                             function()
                                                 TheFrontEnd:PopScreen()
                                                 GoToMultiplayerMainMenu(true) 
@@ -276,7 +276,7 @@ function MainScreen:OnLoginButton( push_mp_main_screen )
                     TheFrontEnd:PopScreen()
                 end
             
-                TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
+                TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
                     if push_mp_main_screen then
                         TheFrontEnd:PopScreen()
                     end
@@ -308,7 +308,7 @@ function MainScreen:OnLoginButton( push_mp_main_screen )
             local confirm = PopupDialogScreen( STRINGS.UI.MAINSCREEN.OFFLINEMODE,STRINGS.UI.MAINSCREEN.OFFLINEMODEDESC,
 								{
 								  	{text=STRINGS.UI.MAINSCREEN.PLAYOFFLINE, cb = function() 
-								  		TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
+								  		TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
 								  			TheFrontEnd:PopScreen()
 								  			GoToMultiplayerMainMenu(true) 
 								  		end)

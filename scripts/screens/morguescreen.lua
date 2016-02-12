@@ -741,9 +741,9 @@ end
 
 function MorgueScreen:OK()
     self:Disable()
-    TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
+    TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
         TheFrontEnd:PopScreen()
-        TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
+        TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)
     end)
 end
 

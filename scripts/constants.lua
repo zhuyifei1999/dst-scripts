@@ -263,6 +263,9 @@ BACKEND_PREFABS = {"hud", "forest", "cave", "maxwell", "fire", "character_fire",
 FRONTEND_PREFABS = {"frontend"}
 RECIPE_PREFABS = {}
 
+FADE_OUT = false
+FADE_IN = true
+
 --Legacy table, not for DST
 MAIN_CHARACTERLIST = 
 {
@@ -282,6 +285,7 @@ DST_CHARACTERLIST =
 
 require("prefabskins")
 require("clothing")
+require("misc_items")
 
 MAINSCREEN_CHAR_1 = "corner_dude"
 MAINSCREEN_CHAR_2 = "corner_dude"

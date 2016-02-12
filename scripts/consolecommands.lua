@@ -171,7 +171,7 @@ end
 
 -- Return a listing of currently active players
 function c_listplayers()
-    local isdedicated = TheNet:GetServerIsDedicated()
+    local isdedicated = not TheNet:GetServerIsClientHosted()
     local index = 1
     for i, v in ipairs(TheNet:GetClientTable()) do
         if not isdedicated or v.performance == nil then
@@ -325,7 +325,7 @@ function c_connect( ip, port, password )
     end
     ShowCancelTip()
     ShowLoading()
-    TheFrontEnd:Fade(false, 1)
+    TheFrontEnd:Fade(FADE_OUT, 1)
     return start_worked
 end
 

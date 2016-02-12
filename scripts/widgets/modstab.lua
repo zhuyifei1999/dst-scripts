@@ -84,7 +84,6 @@ local ModsTab = Class(Widget, function(self, servercreationscreen)
 
 	self.currentmodtype = "server"
 	
-    self:StartWorkshopUpdate()
     self:SetModsList("server")   
     
     self:DoFocusHookups()
@@ -267,6 +266,12 @@ function ModsTab:StartWorkshopUpdate()
 	TheSim:QueryStats( '{ "req":"modrank", "field":"Session.Loads.Mods.list", "fieldop":"unwind", "linkpref":"'..linkpref..'", "limit": 20}', 
 		function(result, isSuccessful, resultCode) self:OnStatsQueried(result, isSuccessful, resultCode) end)
 	]]	
+
+    if self.updatetask ~= nil then
+        self.updatetask:Cancel()
+        self.updatetask = nil
+    end
+
 	self:UpdateForWorkshop()
 	self.updatetask = scheduler:ExecutePeriodic( 1, self.UpdateForWorkshop, nil, 0, "updateforworkshop", self )
 
@@ -988,6 +993,7 @@ function ModsTab:Cancel()
 end
 
 function ModsTab:Apply()
+    -- Note: After "apply", the mods tab is no longer in a working state, it must be restarted with :StartWorkshopUpdate()
 	if self.updatetask then
 		self.updatetask:Cancel()
 		self.updatetask = nil
@@ -995,8 +1001,19 @@ function ModsTab:Apply()
 	
     KnownModIndex:Save()
     SaveGameIndex:SetServerEnabledMods( self.slotnum )
-    self:UnloadModInfoPrefabs(self.infoprefabs)
     SaveGameIndex:Save()
+end
+
+function ModsTab:OnDestroy()
+	if self.updatetask then
+		self.updatetask:Cancel()
+		self.updatetask = nil
+	end
+    self:UnloadModInfoPrefabs(self.infoprefabs)
+end
+
+function ModsTab:OnBecomeActive()
+    self:StartWorkshopUpdate()
 end
 
 function ModsTab:ConfigureSelectedMod()
@@ -1028,7 +1045,7 @@ function ModsTab:CleanAllButton()
                     TheFrontEnd:PopScreen()
                     
                     self.mainmenu:Disable()
-                    TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
+                    TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
                         
                         self:UnloadModInfoPrefabs(self.infoprefabs)
                         ForceAssetReset()

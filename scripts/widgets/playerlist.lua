@@ -440,7 +440,7 @@ function PlayerList:GetPlayerTable()
     local ClientObjs = TheNet:GetClientTable()
     if ClientObjs == nil then
         return {}
-    elseif not TheNet:GetServerIsDedicated() then
+    elseif TheNet:GetServerIsClientHosted() then
         return ClientObjs
     end
 

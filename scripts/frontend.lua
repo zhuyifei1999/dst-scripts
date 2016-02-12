@@ -292,6 +292,7 @@ function FrontEnd:StopTrackingMouse(autofocus)
 end
 
 function FrontEnd:OnFocusMove(dir, down)
+    if self:GetFadeLevel() > 0 then return true end
 	
 	if self.focus_locked then return true end
 
@@ -462,11 +463,9 @@ function FrontEnd:SetFadeLevel(alpha)
         end
         if self.fade_type == "alpha" then
             local screen = self:GetActiveScreen()
-            if screen ~= nil and screen.children ~= nil then
-                for k, v in pairs(screen.children) do
-                    if v.can_fade_alpha then
-                        v:Hide()
-                    end
+            if screen and screen.children then
+                for k,v in pairs(screen.children) do
+                    v:SetFadeAlpha(1)
                 end
             end
         end
@@ -485,8 +484,7 @@ function FrontEnd:SetFadeLevel(alpha)
         local screen = self:GetActiveScreen()
         if screen ~= nil and screen.children ~= nil then
             for k, v in pairs(screen.children) do
-                v:SetFadeAlpha(alpha)
-                v:SetClickable(false)
+				v:SetFadeAlpha(1-alpha) -- "alpha" here is the intensity of the fade, 1 is full intensity, so 0 widget alpha
             end
         end
     elseif self.fade_type == "black" then
@@ -504,34 +502,45 @@ function FrontEnd:GetFadeLevel()
 end
 
 function FrontEnd:DoFadingUpdate(dt)
-    if self.fade_delay_time ~= nil then
-        self.fade_delay_time = self.fade_delay_time - math.min(dt, FRAMES)
-        if self.fade_delay_time <= 0 then
-            self.fade_delay_time = nil
-            if self.delayovercb ~= nil then
-                self.delayovercb()
-                self.delayovercb = nil
-            end
+        dt = math.min(dt, FRAMES)
+        if self.fade_delay_time ~= nil then
+                self.fade_delay_time = self.fade_delay_time - dt
+                if self.fade_delay_time <= 0 then
+                        self.fade_delay_time = nil
+                        if self.delayovercb ~= nil then
+                                self.delayovercb()
+                                self.delayovercb = nil
+                        end
+                end
+                return
+        elseif self.fadedir ~= nil then
+                self.fade_time = self.fade_time + dt
+
+                local alpha = 0
+                if self.fadedir == FADE_IN then
+                        if self.total_fade_time == 0 then
+                                alpha = 0
+                        else
+                                alpha = easing.inOutCubic(self.fade_time, 1, -1, self.total_fade_time)
+                        end
+                elseif self.fadedir == FADE_OUT then
+                        if self.total_fade_time == 0 then
+                                alpha = 1
+                        else
+                                alpha = easing.outCubic(self.fade_time, 0, 1, self.total_fade_time)
+                        end
+                end
+
+                self:SetFadeLevel(alpha)
+                if self.fade_time >= self.total_fade_time then
+                        self.fadedir = nil
+                        if self.fadecb ~= nil then
+                                local cb = self.fadecb
+                                self.fadecb = nil
+                                cb()
+                        end
+                end
         end
-    elseif self.fadedir ~= nil then
-        self.fade_time = self.fade_time + math.min(dt, FRAMES)
-        if self.fade_time < self.total_fade_time then
-            self:SetFadeLevel(
-                self.fadedir and
-                (self.total_fade_time <= 0 and 0 or easing.inOutCubic(self.fade_time, 1, -1, self.total_fade_time)) or
-                (self.total_fade_time <= 0 and 1 or easing.outCubic(self.fade_time, 0, 1, self.total_fade_time))
-            )
-        else
-            self.fade_time = self.total_fade_time
-            self:SetFadeLevel(self.fadedir and 0 or 1)
-            self.fadedir = nil
-            if self.fadecb ~= nil then
-                local cb = self.fadecb
-                self.fadecb = nil
-                cb()
-            end
-        end
-    end
 end
 
 function FrontEnd:UpdateConsoleOutput()
@@ -653,19 +662,18 @@ function FrontEnd:Update(dt)
             end
         end
 
-        if self.tracking_mouse and not self.focus_locked then
-            local entitiesundermouse = TheInput:GetAllEntitiesUnderMouse()
-            local hover_inst = entitiesundermouse[1]
-            if hover_inst and hover_inst.widget then
-                hover_inst.widget:SetFocus()
-            else
-                if #self.screenstack > 0 then
-                    self.screenstack[#self.screenstack]:SetFocus()
-                end
-            end
-        end
-
-    end
+		if self.tracking_mouse and not self.focus_locked and not (self:GetFadeLevel() > 0) then
+			local entitiesundermouse = TheInput:GetAllEntitiesUnderMouse()
+			local hover_inst = entitiesundermouse[1]
+			if hover_inst and hover_inst.widget then
+				hover_inst.widget:SetFocus()
+			else
+				if #self.screenstack > 0 then
+					self.screenstack[#self.screenstack]:SetFocus()
+				end
+			end
+		end
+	end
 	
 	TheSim:ProfilerPush("update widgets")
 	if not self.updating_widgets_alt then
@@ -728,8 +736,8 @@ function FrontEnd:PushScreen(screen)
     screen:OnBecomeActive()
     self:Update(0)
 
-    --print("FOCUS IS", screen:GetDeepestFocus(), self.tracking_mouse)
-    --self:Fade(true, 2)
+	--print("FOCUS IS", screen:GetDeepestFocus(), self.tracking_mouse)
+	--self:Fade(FADE_IN, 2)
 end
 
 function FrontEnd:ClearScreens()
@@ -754,7 +762,7 @@ function FrontEnd:HideConsoleLog()
 end
 
 function FrontEnd:DoFadeIn(time_to_take)
-	self:Fade(true, time_to_take)	
+	self:Fade(FADE_IN, time_to_take)	
 end
 
 -- **CAUTION** about using the "alpha" fade: it leaves your screen's widgets at alpha 0 when it's finished AND makes all children of the screen not clickable
@@ -766,7 +774,7 @@ function FrontEnd:Fade(in_or_out, time_to_take, cb, fade_delay_time, delayovercb
 	self.fadecb = cb
 	self.fade_time = 0
 	self.fade_type = fadeType or "black"
-	if in_or_out then
+	if in_or_out == FADE_IN then
 		self:SetFadeLevel(1)
 	else
 		-- starting a fade out, make the top fade visible again
@@ -823,7 +831,7 @@ function FrontEnd:PopScreen(screen)
 		self:Update(0)
 		
 		--print ("POP!", self.screenstack[#self.screenstack]:GetDeepestFocus(), self.tracking_mouse)
-		--self:Fade(true, 1)
+		--self:Fade(FADE_IN, 1)
 	end
 end
 

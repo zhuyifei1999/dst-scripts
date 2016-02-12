@@ -90,7 +90,7 @@ local WorldReset = _ismastershard and function()
     if TheNet:IsDedicated() then
         DoDeleteAndReset()
     else
-        TheFrontEnd:Fade(false, .25, DoDeleteAndReset)
+        TheFrontEnd:Fade(FADE_OUT, .25, DoDeleteAndReset)
     end
 end or nil
 

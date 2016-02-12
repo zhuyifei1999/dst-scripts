@@ -5,7 +5,7 @@ local UIAnim = require "widgets/uianim"
 
 local image_scale = .6
 
-local ItemImage = Class(Widget, function(self, screen, index, type, name, item_id, timestamp, clickFn)
+local ItemImage = Class(Widget, function(self, screen, type, name, item_id, timestamp, clickFn)
     Widget._ctor(self, "item-image")
 
     self.screen = screen
@@ -45,7 +45,7 @@ local ItemImage = Class(Widget, function(self, screen, index, type, name, item_i
     self.warn_marker:SetPosition(-40, 35)
     self.warn_marker:Hide()
 
-    self:SetItem(index, type, name, item_id)
+    self:SetItem(type, name, item_id)
 end)
 
 function ItemImage:PlaySpecialAnimation(name, pushdefault)
@@ -63,7 +63,7 @@ function ItemImage:DisableSelecting()
 	self.disable_selecting = true
 end
 
-function ItemImage:SetItem(index, type, name, item_id, timestamp)
+function ItemImage:SetItem(type, name, item_id, timestamp)
 
 	self.warn_marker:Hide()
 
@@ -90,18 +90,12 @@ function ItemImage:SetItem(index, type, name, item_id, timestamp)
 
 	self.type = type
 	self.name = name
-	self.index = index
 	self.item_id = item_id
-	--print("ItemImage got index", index)
 
 	self.rarity = GetRarityForItem( type, name )
 	
-	if type == "base" or type == "item" then 
-		local skinsData = Prefabs[name]
-		if skinsData and skinsData.ui_preview then 
-			name = skinsData.ui_preview.build
-		end
-	end
+	name = GetBuildForItem(self.type, self.name) 
+	
 
 	if self.frame and name ~= "" then 
 		self.frame:GetAnimState():OverrideSkinSymbol("SWAP_ICON", name, "SWAP_ICON")
@@ -119,12 +113,6 @@ function ItemImage:SetItem(index, type, name, item_id, timestamp)
     	self.new_tag:Hide()
     	self.frame:GetAnimState():Hide("NEW")
     end
-
-    -- TODO: use the Mark() function instead
-	--[[if self.screen.profile:IsSkinEquipped(name, type) then 
-		self.warn_marker:Show()
-	end]]
-
 end
 
 function ItemImage:Mark(value)
@@ -183,16 +171,14 @@ end
 
 -- Toggle clicked/unclicked
 function ItemImage:OnControl(control, down)
-    --print(self.name, "Got control", control, down, self.clicked)
 	if control == CONTROL_ACCEPT then
         if not self.clicked then
 			if self:IsEnabled() then
         		if not down then
-        			--print("~~~~~~ ItemImage Click ~~~~~~", debugstack())
         			TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
         			
         			if not self.disable_selecting then
-        				self.screen:ClearFocus()
+        				self.screen:UnselectAll()
         				self:Select()
         			end
 
@@ -205,13 +191,6 @@ function ItemImage:OnControl(control, down)
 			end
         end
 	end
-end
-
-function ItemImage:ForceClick()
-	if self.clickFn then 
-       	self.clickFn(self.type, self.name, self.item_id) 
-    end
-    self.clicked = true
 end
 
 function ItemImage:Select()

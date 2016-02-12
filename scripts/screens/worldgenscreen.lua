@@ -125,7 +125,7 @@ local WorldGenScreen = Class(Screen, function(self, profile, cb, world_gen_optio
     self.total_time = 0
     self.cb = cb
     local time = 1
-    TheFrontEnd:Fade(true, time, nil, nil, nil, "white")
+    TheFrontEnd:Fade(FADE_IN, time, nil, nil, nil, "white")
 
     self.verbs = shuffleArray(STRINGS.UI.WORLDGEN.VERBS)
     self.nouns = shuffleArray(STRINGS.UI.WORLDGEN.NOUNS)
@@ -167,10 +167,14 @@ function WorldGenScreen:OnUpdate(dt)
                 self.cb(self.worlddata)
             elseif self.total_time > 0 --[[ MIN_GEN_TIME ]]and self.cb then
                 self.done = false
-                --TheFrontEnd:Fade(false, 1, function() 
+                --TheFrontEnd:Fade(FADE_OUT, 1, function() 
                     self.cb(self.worlddata)
                 --end, nil, nil, "white")
             end
+        end
+    elseif TheNet:GetChildProcessStatus() > 0 then
+        if TheNet:GetChildProcessStatus() == 3 and TheFrontEnd:GetActiveScreen() == self then
+            TheFrontEnd:PopScreen()
         end
     end
 end
