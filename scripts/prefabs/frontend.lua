@@ -25,8 +25,6 @@ local assets =
     Asset("ATLAS", "images/server_intentions.xml"),
     Asset("IMAGE", "images/server_intentions.tex"),
 
-    Asset("FILE", "images/motd.xml"),
-
 	--character portraits
 	Asset("ATLAS", "images/saveslot_portraits.xml"),
     Asset("IMAGE", "images/saveslot_portraits.tex"),
@@ -34,15 +32,8 @@ local assets =
     Asset("ATLAS", "bigportraits/unknownmod.xml"),
     Asset("IMAGE", "bigportraits/unknownmod.tex"),
 
-    Asset("ATLAS", "images/skinsscreen.xml"),
-    Asset("IMAGE", "images/skinsscreen.tex"),
-
     Asset("ATLAS", "images/tradescreen.xml"),
 	Asset("IMAGE", "images/tradescreen.tex"),
-	Asset("ATLAS", "images/tradescreen_bg.xml"),
-	Asset("IMAGE", "images/tradescreen_bg.tex"),
-	Asset("ATLAS", "images/tradescreen_overflow.xml"),
-	Asset("IMAGE", "images/tradescreen_overflow.tex"),
 
     Asset("ANIM", "anim/mod_player_build.zip"),
 
@@ -50,13 +41,7 @@ local assets =
     Asset("ANIM", "anim/frame_skins.zip"),
     Asset("ANIM", "anim/frame_bg.zip"),
 
-    Asset("ANIM", "anim/swapshoppe.zip"),
-    Asset("ANIM", "anim/swapshoppe_bg.zip"),
-    Asset("ANIM", "anim/joystick.zip"),
-    Asset("ANIM", "anim/button.zip"),
-    Asset("ANIM", "anim/shoppe_frames.zip"),
-    Asset("ANIM", "anim/skin_collector.zip"),
-    Asset("ANIM", "anim/textbox.zip"),
+    Asset("FILE", "images/motd.xml"),
 
     Asset("ANIM", "anim/chest_bg.zip"),
 }
