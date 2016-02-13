@@ -696,24 +696,53 @@ function UnloadFonts()
     end
 end
 
-function Start()
-    if SOUNDDEBUG_ENABLED then
-        require "debugsounds"
+local function Check_Mods()
+    if MODS_ENABLED then
+        --after starting everything up, give the mods additional environment variables
+        ModManager:SetPostEnv(ThePlayer)
+
+        --By this point the game should have either a) disabled bad mods, or b) be interactive
+        KnownModIndex:EndStartupSequence(nil) -- no callback, this doesn't need to block and we don't need the results
     end
 
-    ---The screen manager
-    TheFrontEnd = FrontEnd()
-    require ("gamelogic")
-
-    CheckControllers()
-
-    assert(TheSim:CanWriteConfigurationDirectory(), "Unable to write to config directory. Please make sure you have permissions for your Klei save folder.")
 end
 
-function CheckControllers()
+local function OnSelectedLegacyClientHosting()
+    Profile:ShowedLegacyClientHostingPopup()
+    TheFrontEnd:PopScreen() -- pop after updating settings otherwise this dialog might show again!
+    Profile:Save()
+    scheduler:ExecuteInTime(.05, function() Check_Mods() end)
+end
+
+local function SelectLegacyClientHosting(enabled)
+    if enabled ~= TheSim:IsLegacyClientHosting() then
+        TheSim:SetLegacyClientHosting(enabled)
+        SaveGameIndex:Load(OnSelectedLegacyClientHosting)
+    else
+        OnSelectedLegacyClientHosting()
+    end
+end
+
+local function Check_LegacyClientHosting()
+    local sawPopup = Profile:SawLegacyClientHostingPopup()
+    if not (sawPopup or TheNet:IsDedicated()) then
+        local popup = PopupDialogScreen(STRINGS.UI.MAINSCREEN.MULTILEVEL_HEADER, STRINGS.UI.MAINSCREEN.MULTILEVEL_BODY,
+            {
+                { text = STRINGS.UI.MAINSCREEN.ENABLE_MULTILEVELED_WORLDS, cb = function() SelectLegacyClientHosting(false) end },
+                { text = STRINGS.UI.MAINSCREEN.DISABLE_MULTILEVELED_WORLDS, cb = function() SelectLegacyClientHosting(true) end },
+            }
+        )
+
+        TheFrontEnd:PushScreen(popup)
+    else
+        Check_Mods()
+    end
+end
+
+local function CheckControllers()
     local isConnected = TheInput:ControllerConnected()
     local sawPopup = Profile:SawControllerPopup()
-    if isConnected and not sawPopup then
+    if isConnected and not (sawPopup or TheNet:IsDedicated()) then
 
         -- store previous controller enabled state so we can revert to it, then enable all controllers
         local controllers = {}
@@ -740,7 +769,7 @@ function CheckControllers()
             Profile:ShowedControllerPopup()
             TheFrontEnd:PopScreen() -- pop after updating settings otherwise this dialog might show again!
             Profile:Save()
-            scheduler:ExecuteInTime(0.05, function() Check_Mods() end)
+            scheduler:ExecuteInTime(0.05, function() Check_LegacyClientHosting() end)
         end
 
         local function disableControllers()
@@ -748,7 +777,7 @@ function CheckControllers()
             Profile:ShowedControllerPopup()
             TheFrontEnd:PopScreen() -- pop after updating settings otherwise this dialog might show again!
             Profile:Save()
-            scheduler:ExecuteInTime(0.05, function() Check_Mods() end)
+            scheduler:ExecuteInTime(0.05, function() Check_LegacyClientHosting() end)
         end
 
         local function revertControllers()
@@ -760,7 +789,7 @@ function CheckControllers()
             Profile:ShowedControllerPopup()
             TheFrontEnd:PopScreen() -- pop after updating settings otherwise this dialog might show again!
             Profile:Save()
-            scheduler:ExecuteInTime(0.05, function() Check_Mods() end)
+            scheduler:ExecuteInTime(0.05, function() Check_LegacyClientHosting() end)
         end
 
         local popup = PopupDialogScreen(STRINGS.UI.MAINSCREEN.CONTROLLER_DETECTED_HEADER, STRINGS.UI.MAINSCREEN.CONTROLLER_DETECTED_BODY,
@@ -780,19 +809,22 @@ function CheckControllers()
         if Input:ControllerAttached() then
             TheFrontEnd:StopTrackingMouse(true)
         end
-        Check_Mods()
+        Check_LegacyClientHosting()
     end
 end
 
-function Check_Mods()
-    if MODS_ENABLED then
-        --after starting everything up, give the mods additional environment variables
-        ModManager:SetPostEnv(ThePlayer)
-
-        --By this point the game should have either a) disabled bad mods, or b) be interactive
-        KnownModIndex:EndStartupSequence(nil) -- no callback, this doesn't need to block and we don't need the results
+function Start()
+    if SOUNDDEBUG_ENABLED then
+        require "debugsounds"
     end
 
+    ---The screen manager
+    TheFrontEnd = FrontEnd()
+    require ("gamelogic")
+
+    CheckControllers()
+
+    assert(TheSim:CanWriteConfigurationDirectory(), "Unable to write to config directory. Please make sure you have permissions for your Klei save folder.")
 end
 
 --------------------------

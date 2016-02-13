@@ -228,6 +228,7 @@ local OptionsScreen = Class(Screen, function(self, in_game)
 		screenshake = Profile:IsScreenShakeEnabled(),
 		hudSize = Profile:GetHUDSize(),
 		netbookmode = TheSim:IsNetbookMode(),
+        multiprocess = not TheSim:IsLegacyClientHosting(),
 		vibration = Profile:GetVibrationEnabled(),
 		showpassword = Profile:GetShowPasswordEnabled(),
 		automods = Profile:GetAutoSubscribeModsEnabled(),
@@ -312,7 +313,7 @@ local OptionsScreen = Class(Screen, function(self, in_game)
 
 	-- NOTE: if we add more options, they should be made scrollable. Look at customization screen for an example.
 	self.grid = self.settingsroot:AddChild(Grid())
-	self.grid:SetPosition(-180, 140, 0)
+	self.grid:SetPosition(-180, 147, 0)
 
 	self:DoInit()
 	self:InitializeSpinners(true)
@@ -372,16 +373,16 @@ function OptionsScreen:OnControl(control, down)
             TheFrontEnd:PushScreen(PopupDialogScreen( STRINGS.UI.CONTROLSSCREEN.RESETTITLE, STRINGS.UI.CONTROLSSCREEN.RESETBODY,
             { 
                 { 
-                    text = STRINGS.UI.CONTROLSSCREEN.YES, 
+                    text = STRINGS.UI.CONTROLSSCREEN.YES,
                     cb = function()
-                        self:LoadDefaultControls() 
+                        self:LoadDefaultControls()
                         TheFrontEnd:PopScreen()
                     end
                 },
                 { 
-                    text = STRINGS.UI.CONTROLSSCREEN.NO, 
+                    text = STRINGS.UI.CONTROLSSCREEN.NO,
                     cb = function()
-                        TheFrontEnd:PopScreen()                 
+                        TheFrontEnd:PopScreen()
                     end
                 }
             }))
@@ -445,7 +446,7 @@ function OptionsScreen:ConfirmRevert()
 		PopupDialogScreen( STRINGS.UI.OPTIONS.BACKTITLE, STRINGS.UI.OPTIONS.BACKBODY,
 		  { 
 		  	{ 
-		  		text = STRINGS.UI.OPTIONS.YES, 
+		  		text = STRINGS.UI.OPTIONS.YES,
 		  		cb = function()
 					self:RevertChanges()
 					TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
@@ -456,9 +457,9 @@ function OptionsScreen:ConfirmRevert()
 			},
 			
 			{ 
-				text = STRINGS.UI.OPTIONS.NO, 
+				text = STRINGS.UI.OPTIONS.NO,
 				cb = function()
-					TheFrontEnd:PopScreen()					
+					TheFrontEnd:PopScreen()
 				end
 			}
 		  }
@@ -639,6 +640,10 @@ function OptionsScreen:Apply( )
 	Profile:SetScreenShakeEnabled( self.working.screenshake )
 	Profile:SetWathgrithrFontEnabled( self.working.wathgrithrfont )
 	TheSim:SetNetbookMode(self.working.netbookmode)
+    if not InGamePlay() and self.working.multiprocess == TheSim:IsLegacyClientHosting() then
+        TheSim:SetLegacyClientHosting(not self.working.multiprocess)
+        SaveGameIndex:Load()
+    end
 
 	TheInputProxy:ApplyControlMapping()
     for index = 1, #self.devices do
@@ -1015,7 +1020,7 @@ function OptionsScreen:DoInit()
 				--this:Apply()
 				self:UpdateMenu()
 			end
-			
+
 		self.smallTexturesSpinner = Spinner( enableDisableOptions, spinner_width, spinner_height, nil, nil, nil, nil, true, nil, nil, spinner_scale_x, spinner_scale_y )
 		self.smallTexturesSpinner.OnChanged =
 			function( _, data )
@@ -1026,6 +1031,17 @@ function OptionsScreen:DoInit()
 						
 	end
 	
+    self.multiprocessSpinner = Spinner( enableDisableOptions, spinner_width, spinner_height, nil, nil, nil, nil, true, nil, nil, spinner_scale_x, spinner_scale_y )
+    self.multiprocessSpinner.OnChanged =
+        function( _, data )
+            this.working.multiprocess = data
+            --this:Apply()
+            self:UpdateMenu()
+        end
+    if InGamePlay() then
+        self.multiprocessSpinner:Disable()
+    end
+
 
 	self.bloomSpinner = Spinner( enableDisableOptions, spinner_width, spinner_height, nil, nil, nil, nil, true, nil, nil, spinner_scale_x, spinner_scale_y )
 	self.bloomSpinner.OnChanged =
@@ -1167,11 +1183,13 @@ function OptionsScreen:DoInit()
 		table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.DISPLAY, self.displaySpinner } )
 		table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.REFRESHRATE, self.refreshRateSpinner } )
 		table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.SMALLTEXTURES, self.smallTexturesSpinner } )
-		table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.NETBOOKMODE, self.netbookModeSpinner} )
+		table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.NETBOOKMODE, self.netbookModeSpinner } )
+        table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.MULTIPROCESS, self.multiprocessSpinner } )
 	else
 		table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.SCREENSHAKE, self.screenshakeSpinner } )
 		table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.DISTORTION, self.distortionSpinner } )
 		table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.BLOOM, self.bloomSpinner } )
+        table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.MULTIPROCESS, self.multiprocessSpinner } )
 
 		table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.INPUT, self.deviceSpinner } )
 		table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.VIBRATION, self.vibrationSpinner} )
@@ -1184,7 +1202,7 @@ function OptionsScreen:DoInit()
         table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.HUDSIZE, self.hudSize} )
 	end
 
-	self.grid:InitSize(2, 9, 440, -43)
+	self.grid:InitSize(2, 10, 440, -41)
 
 	for k,v in ipairs(self.left_spinners) do
 		self.grid:AddItem(self:CreateSpinnerGroup(v[1], v[2]), 1, k)	
@@ -1414,6 +1432,11 @@ function OptionsScreen:InitializeSpinners(first)
 		self.smallTexturesSpinner:SetSelectedIndex( EnabledOptionsIndex( self.working.smalltextures ) )
 		self.netbookModeSpinner:SetSelectedIndex( EnabledOptionsIndex( self.working.netbookmode ) )
 	end
+
+    self.multiprocessSpinner:SetSelectedIndex( EnabledOptionsIndex( self.working.multiprocess ) )
+    if InGamePlay() then
+        self.multiprocessSpinner:Disable()
+    end
 
 	--[[if PLATFORM == "WIN32_STEAM" and not self.in_game then
 		self.steamcloudSpinner:SetSelectedIndex( EnabledOptionsIndex( self.working.steamcloud ) )

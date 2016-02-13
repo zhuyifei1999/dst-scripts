@@ -44,7 +44,7 @@ function SnapshotTab:RefreshSnapshots()
 end
 
 function SnapshotTab:MakeSnapshotsMenu()
-    local use_legacy_client_hosting = TheNet:GetUseLegacyClientHosting()
+    local use_legacy_client_hosting = TheSim:IsLegacyClientHosting()
 
     local function MakeSnapshotTile(data, index, parent)
         local widget = parent:AddChild(Widget("option"))
@@ -125,7 +125,7 @@ function SnapshotTab:MakeSnapshotsMenu()
 
         if data ~= nil and not data.empty then
             local character, atlas
-            if TheNet:GetUseLegacyClientHosting() then
+            if TheSim:IsLegacyClientHosting() then
                 character = data.character or ""
                 atlas = "images/saveslot_portraits"
                 if not table.contains(DST_CHARACTERLIST, character) then
@@ -167,7 +167,7 @@ function SnapshotTab:MakeSnapshotsMenu()
     local function UpdateSnapshot(widget, data, index)
         if data ~= nil and not data.empty then
             local character, atlas
-            if TheNet:GetUseLegacyClientHosting() then
+            if TheSim:IsLegacyClientHosting() then
                 character = data.character or ""
                 atlas = "images/saveslot_portraits"
                 if not table.contains(DST_CHARACTERLIST, character) then
@@ -245,7 +245,7 @@ function SnapshotTab:OnClickSnapshot(snapshot_num)
             end
             local truncate_to_id = self.snapshots[snapshot_num].snapshot_id
             if truncate_to_id ~= nil and truncate_to_id > 0 then
-                if TheNet:GetUseLegacyClientHosting() then
+                if TheSim:IsLegacyClientHosting() then
                     TheNet:TruncateSnapshots(self.session_id, truncate_to_id)
                 else
                     TheNet:TruncateSnapshotsInClusterSlot(self.save_slot, "Master", self.session_id, truncate_to_id)
@@ -302,13 +302,13 @@ function SnapshotTab:ListSnapshots(force)
                             end
                         end
                     end
-                    if TheNet:GetUseLegacyClientHosting() then
+                    if TheSim:IsLegacyClientHosting() then
                         TheSim:GetPersistentString(v.world_file, onreadworldfile)
                     else
                         TheSim:GetPersistentStringInClusterSlot(self.save_slot, "Master", v.world_file, onreadworldfile)
                     end
                 end
-                if v.user_file ~= nil and TheNet:GetUseLegacyClientHosting() then
+                if v.user_file ~= nil and TheSim:IsLegacyClientHosting() then
                     TheSim:GetPersistentString(v.user_file,
                         function(success, str)
                             if success and str ~= nil and #str > 0 then

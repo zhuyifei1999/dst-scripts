@@ -160,7 +160,7 @@ function ServerCreationScreen:UpdateTitle(slotnum, fromTextEntered)
         --V2C: slot day is never updated in the new cluster save slots,
         --     but the nil check for new slots is still valid... - __-"
         self.day_title:SetString(STRINGS.UI.SERVERCREATIONSCREEN.SERVERDAY_NEW)
-    elseif TheNet:GetUseLegacyClientHosting() then
+    elseif TheSim:IsLegacyClientHosting() then
         self.day_title:SetString(STRINGS.UI.SERVERCREATIONSCREEN.SERVERDAY.." "..SaveGameIndex:GetSlotDay(slotnum))
     else
         local session_id = SaveGameIndex:GetClusterSlotSession(slotnum)
@@ -296,7 +296,7 @@ function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOu
 	local launchingServerPopup = nil
 
     local function onsaved()
-        if TheNet:GetUseLegacyClientHosting() then
+        if TheSim:IsLegacyClientHosting() then
             StartNextInstance({reset_action=RESET_ACTION.LOAD_SLOT, save_slot = self.saveslot})
 
         else
