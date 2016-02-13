@@ -60,7 +60,7 @@ function SaveIndex:GuaranteeMinNumSlots(numslots)
 end
 
 function SaveIndex:GetSaveIndexName()
-    return BRANCH ~= "dev" and "saveindex" or ("saveindex_"..BRANCH)
+    return (TheSim:IsLegacyClientHosting() and "saveindex_legacy" or "saveindex")..(BRANCH ~= "dev" and "" or ("_"..BRANCH))
 end
 
 function SaveIndex:Save(callback)
@@ -107,7 +107,9 @@ local function OnLoad(self, filename, callback, load_success, str)
         print("Could not load "..filename)
     end
 
-    callback()
+    if callback ~= nil then
+        callback()
+    end
 end
 
 function SaveIndex:Load(callback)
@@ -326,7 +328,7 @@ end
 
 --V2C: This is for FE use, as it handles checking the cluster session folders
 function SaveIndex:GetClusterSlotSession(slot)
-    if TheNet:GetUseLegacyClientHosting() then
+    if TheSim:IsLegacyClientHosting() then
         return self:GetSlotSession(slot)
     end
     local session_id = nil
@@ -359,7 +361,7 @@ function SaveIndex:LoadSlotCharacter(slot)
     local slotdata = self.data.slots[slot or self.current_slot]
     if slotdata.session_id ~= nil then
         local online_mode = slotdata.server.online_mode ~= false
-        if TheNet:GetUseLegacyClientHosting() then
+        if TheSim:IsLegacyClientHosting() then
             local file = TheNet:GetUserSessionFile(slotdata.session_id, nil, online_mode)
             if file ~= nil then
                 TheSim:GetPersistentString(file, onreadusersession)
@@ -429,8 +431,4 @@ end
 
 function SaveIndex:GetEnabledMods(slot)
     return self.data.slots[slot or self.current_slot].enabled_mods
-end
-
-function SaveIndex:GetSaveIndexNameLegacy()
-    return BRANCH ~= "dev" and "saveindex" or ("saveindex_"..BRANCH)
 end

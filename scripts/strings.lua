@@ -2080,6 +2080,11 @@ STRINGS.UI =
         ENABLECONTROLLER = "Enable Controller",
         DISABLECONTROLLER = "Disable Controller",
 
+        MULTILEVEL_HEADER = "Enable Multi-Leveled Worlds?",
+        MULTILEVEL_BODY = "Hosting a server with multiple levels requires running multiple servers at the same time. Is your computer up to the task?\n\nYou can change this setting in the Options screen.",
+        ENABLE_MULTILEVELED_WORLDS = "Enable",
+        DISABLE_MULTILEVELED_WORLDS = "Disable",
+
         VERSION_YOURS = "Your Version: %s",
         VERSION_LATEST = "Latest Version: %s",
         VERSION_CHECKING = "Checking for update",
@@ -2254,6 +2259,7 @@ STRINGS.UI =
         REFRESHRATE = "Refresh Rate:",
         SMALLTEXTURES = "Small Textures:",
         NETBOOKMODE = "Netbook Mode:",
+        MULTIPROCESS = "Multi-Leveled Worlds:",
         ENABLED = "Enabled",
         DISABLED = "Disabled",
         FX = "Sound FX Volume:",

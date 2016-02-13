@@ -250,11 +250,6 @@ function CustomizationTab:UpdateMultilevelUI()
 
         self.addmultilevel:SetTextures("images/ui.xml", "checkbox_on.tex", "checkbox_on_highlight.tex", "checkbox_on_disabled.tex", nil, nil, {1,1}, {0,0})
     else
-        --[[self.presettitle:SetPosition(0, 105, 0)
-        self.presetdesc:SetPosition(0, -20, 0)
-        self.presetspinner:SetPosition(0, 55, 0)
-        self.revertbutton:SetPosition(-35, -115, 0)
-        self.savepresetbutton:SetPosition(40, -115, 0)]]
         self.presettitle:Hide()
         self.presetdesc:Hide()
         self.presetspinner:Hide()
@@ -264,12 +259,23 @@ function CustomizationTab:UpdateMultilevelUI()
         self.addmultilevel:SetTextures("images/ui.xml", "checkbox_off.tex", "checkbox_off_highlight.tex", "checkbox_off_disabled.tex", nil, nil, {1,1}, {0,0})
     end
 
-    self.multileveltabs:Show()
+    if TheSim:IsLegacyClientHosting() then
+        self.presettitle:SetPosition(0, 105, 0)
+        self.presetdesc:SetPosition(0, -20, 0)
+        self.presetspinner:SetPosition(0, 55, 0)
+        self.revertbutton:SetPosition(-35, -115, 0)
+        self.savepresetbutton:SetPosition(40, -115, 0)
 
-    if self.allowEdit then
-        self.addmultilevel:Enable()
-    else
+        self.multileveltabs:Hide()
         self.addmultilevel:Disable()
+    else
+        self.multileveltabs:Show()
+
+        if self.allowEdit then
+            self.addmultilevel:Enable()
+        else
+            self.addmultilevel:Disable()
+        end
     end
 
     local currentpresets = self.activepresets[self.currentmultilevel]
@@ -571,7 +577,12 @@ end
 
 function CustomizationTab:RefreshTabValues()
     --V2C: filter presets for the tab based on the location of the current selection
-    local tablocation = self.activepresets[self.currentmultilevel].location or DEFAULT_TAB_LOCATIONS[self.currentmultilevel]
+    local tablocation =
+        not TheSim:IsLegacyClientHosting()
+        and (self.activepresets[self.currentmultilevel].location or
+            DEFAULT_TAB_LOCATIONS[self.currentmultilevel])
+        or nil
+
     if tablocation ~= nil then
         local filteredpresets = {}
         for i, v in ipairs(self.presets) do
@@ -666,12 +677,14 @@ function CustomizationTab:UpdateSlot(slotnum, prevslot, delete)
                 { tweak = {} }
             }
 
-            --Enable caves by default
-            self.slotoptions[self.slot][2] = {
-                actualpreset = DEFAULT_PRESETS[2],
-                preset = DEFAULT_PRESETS[2],
-                tweak={},
-            }
+            if not TheSim:IsLegacyClientHosting() then
+                --Enable caves by default
+                self.slotoptions[self.slot][2] = {
+                    actualpreset = DEFAULT_PRESETS[2],
+                    preset = DEFAULT_PRESETS[2],
+                    tweak={},
+                }
+            end
         end
     else -- Save data
         self.allowEdit = false

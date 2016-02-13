@@ -55846,6 +55846,11 @@ msgctxt "STRINGS.UI.OPTIONS.SNAPSHOTS"
 msgid "Server Snapshots"
 msgstr ""
 
+#. STRINGS.UI.OPTIONS.DISPLAY_AREA_BUTTON
+msgctxt "STRINGS.UI.OPTIONS.DISPLAY_AREA_BUTTON"
+msgid "Adjust"
+msgstr ""
+
 #. STRINGS.UI.OPTIONS.REVERT
 msgctxt "STRINGS.UI.OPTIONS.REVERT"
 msgid "Revert Changes"
@@ -55876,9 +55881,9 @@ msgctxt "STRINGS.UI.OPTIONS.BACK"
 msgid "Back"
 msgstr ""
 
-#. STRINGS.UI.OPTIONS.DISPLAY_AREA_BUTTON
-msgctxt "STRINGS.UI.OPTIONS.DISPLAY_AREA_BUTTON"
-msgid "Adjust"
+#. STRINGS.UI.OPTIONS.BACKTITLE
+msgctxt "STRINGS.UI.OPTIONS.BACKTITLE"
+msgid "Lose Changes?"
 msgstr ""
 
 #. STRINGS.UI.OPTIONS.DISABLED
@@ -55886,14 +55891,14 @@ msgctxt "STRINGS.UI.OPTIONS.DISABLED"
 msgid "Disabled"
 msgstr ""
 
-#. STRINGS.UI.OPTIONS.MUSIC
-msgctxt "STRINGS.UI.OPTIONS.MUSIC"
-msgid "Music Volume:"
-msgstr ""
-
 #. STRINGS.UI.OPTIONS.HUDSIZE
 msgctxt "STRINGS.UI.OPTIONS.HUDSIZE"
 msgid "HUD Size:"
+msgstr ""
+
+#. STRINGS.UI.OPTIONS.MUSIC
+msgctxt "STRINGS.UI.OPTIONS.MUSIC"
+msgid "Music Volume:"
 msgstr ""
 
 #. STRINGS.UI.OPTIONS.WATHGRITHRFONT
@@ -55911,9 +55916,9 @@ msgctxt "STRINGS.UI.OPTIONS.DISPLAY_AREA_LABEL"
 msgid "Display Area"
 msgstr ""
 
-#. STRINGS.UI.OPTIONS.BACKTITLE
-msgctxt "STRINGS.UI.OPTIONS.BACKTITLE"
-msgid "Lose Changes?"
+#. STRINGS.UI.OPTIONS.MULTIPROCESS
+msgctxt "STRINGS.UI.OPTIONS.MULTIPROCESS"
+msgid "Multi-Leveled Worlds:"
 msgstr ""
 
 #. STRINGS.UI.OPTIONS.NETBOOKMODE
@@ -60446,6 +60451,11 @@ msgctxt "STRINGS.UI.MAINSCREEN.BUYNOW"
 msgid "Buy Now"
 msgstr ""
 
+#. STRINGS.UI.MAINSCREEN.DISABLE_MULTILEVELED_WORLDS
+msgctxt "STRINGS.UI.MAINSCREEN.DISABLE_MULTILEVELED_WORLDS"
+msgid "Disable"
+msgstr ""
+
 #. STRINGS.UI.MAINSCREEN.GAMEWIZARD
 msgctxt "STRINGS.UI.MAINSCREEN.GAMEWIZARD"
 msgid "Game Wizard"
@@ -60579,6 +60589,11 @@ msgstr ""
 #. STRINGS.UI.MAINSCREEN.IMPORTSUCCESSDESC
 msgctxt "STRINGS.UI.MAINSCREEN.IMPORTSUCCESSDESC"
 msgid "Data was imported successfully."
+msgstr ""
+
+#. STRINGS.UI.MAINSCREEN.ENABLE_MULTILEVELED_WORLDS
+msgctxt "STRINGS.UI.MAINSCREEN.ENABLE_MULTILEVELED_WORLDS"
+msgid "Enable"
 msgstr ""
 
 #. STRINGS.UI.MAINSCREEN.NEWADVENTURE
@@ -60871,6 +60886,16 @@ msgctxt "STRINGS.UI.MAINSCREEN.TESTINGYES"
 msgid "I understand"
 msgstr ""
 
+#. STRINGS.UI.MAINSCREEN.VERSION_LATEST
+msgctxt "STRINGS.UI.MAINSCREEN.VERSION_LATEST"
+msgid "Latest Version: %s"
+msgstr ""
+
+#. STRINGS.UI.MAINSCREEN.TOOLTIP_SKINS
+msgctxt "STRINGS.UI.MAINSCREEN.TOOLTIP_SKINS"
+msgid "View and manage your items."
+msgstr ""
+
 #. STRINGS.UI.MAINSCREEN.SLOT_2
 msgctxt "STRINGS.UI.MAINSCREEN.SLOT_2"
 msgid "2"
@@ -60886,9 +60911,9 @@ msgctxt "STRINGS.UI.MAINSCREEN.VERSION_MOREINFO"
 msgid "Instructions"
 msgstr ""
 
-#. STRINGS.UI.MAINSCREEN.TOOLTIP_SKINS
-msgctxt "STRINGS.UI.MAINSCREEN.TOOLTIP_SKINS"
-msgid "View and manage your items."
+#. STRINGS.UI.MAINSCREEN.VERSION_NOTUPTODATE
+msgctxt "STRINGS.UI.MAINSCREEN.VERSION_NOTUPTODATE"
+msgid "Update required!"
 msgstr ""
 
 #. STRINGS.UI.MAINSCREEN.TOOLTIP_MODS
@@ -60896,19 +60921,19 @@ msgctxt "STRINGS.UI.MAINSCREEN.TOOLTIP_MODS"
 msgid "Customize your game"
 msgstr ""
 
-#. STRINGS.UI.MAINSCREEN.VERSION_NOTUPTODATE
-msgctxt "STRINGS.UI.MAINSCREEN.VERSION_NOTUPTODATE"
-msgid "Update required!"
+#. STRINGS.UI.MAINSCREEN.VERSION_YOURS
+msgctxt "STRINGS.UI.MAINSCREEN.VERSION_YOURS"
+msgid "Your Version: %s"
+msgstr ""
+
+#. STRINGS.UI.MAINSCREEN.MULTILEVEL_BODY
+msgctxt "STRINGS.UI.MAINSCREEN.MULTILEVEL_BODY"
+msgid "Hosting a server with multiple levels requires running multiple servers at the same time. Is your computer up to the task?\n\nYou can change this setting in the Options screen."
 msgstr ""
 
 #. STRINGS.UI.MAINSCREEN.SCREECHER_DIALOG_TEXT
 msgctxt "STRINGS.UI.MAINSCREEN.SCREECHER_DIALOG_TEXT"
 msgid "The Screecher mod requires the game to be restarted."
-msgstr ""
-
-#. STRINGS.UI.MAINSCREEN.VERSION_YOURS
-msgctxt "STRINGS.UI.MAINSCREEN.VERSION_YOURS"
-msgid "Your Version: %s"
 msgstr ""
 
 #. STRINGS.UI.MAINSCREEN.DISABLECONTROLLER
@@ -61001,9 +61026,9 @@ msgctxt "STRINGS.UI.MAINSCREEN.MODQUIT"
 msgid "Disable Mods"
 msgstr ""
 
-#. STRINGS.UI.MAINSCREEN.VERSION_LATEST
-msgctxt "STRINGS.UI.MAINSCREEN.VERSION_LATEST"
-msgid "Latest Version: %s"
+#. STRINGS.UI.MAINSCREEN.MULTILEVEL_HEADER
+msgctxt "STRINGS.UI.MAINSCREEN.MULTILEVEL_HEADER"
+msgid "Enable Multi-Leveled Worlds?"
 msgstr ""
 
 #. STRINGS.UI.MAINSCREEN.SCREECHER_DIALOG_TITLE
