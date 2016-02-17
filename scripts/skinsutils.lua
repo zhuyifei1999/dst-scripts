@@ -2,8 +2,8 @@
 -- RGBToPercentColor and a HexToPercentColor one
 SKIN_RARITY_COLORS =
 {
-	Common			= { 0.718, 0.824, 0.851, 1 }, -- B7D2D9 - a common item (eg t-shirt, plain gloves)
-	Classy			= { 0.255, 0.314, 0.471, 1 }, -- 415078 - an uncommon item (eg dress shoes, checkered trousers)
+	Common			= { 0.718, 0.824, 0.851, 1 }, -- B7D2D9 - a common item
+	Classy			= { 0.255, 0.314, 0.471, 1 }, -- 415078 - an uncommon item
 	Spiffy			= { 0.408, 0.271, 0.486, 1 }, -- 68457C - a rare item (eg Trenchcoat)
 	Distinguished	= { 0.729, 0.455, 0.647, 1 }, -- BA74A5 - a very rare item (eg Tuxedo)
 	Elegant			= { 0.741, 0.275, 0.275, 1 }, -- BD4646 - an extremely rare item (eg rabbit pack, GoH base skins)
@@ -65,17 +65,10 @@ function GetBuildForItem(type, name)
 			name = skinsData.ui_preview.build
 		end
 		return name
-	elseif type == "misc" then 
-		local skinsData = MISC_ITEMS[name]
-		if skinsData and skinsData.skin_build then 
-			name = skinsData.skin_build
-		end
 	else
 		--for now assume that clothing build matches the item name
 		return name
 	end
-
-	return name
 end
 
 function GetTypeForItem(item)
@@ -89,10 +82,7 @@ function GetTypeForItem(item)
 
 	if CLOTHING[itemName] then 
 		type = CLOTHING[itemName].type
-	elseif MISC_ITEMS[itemName] then 
-		type = MISC_ITEMS[itemName].type
 	else
-
 		local skinsData = Prefabs[itemName]
 
 		if skinsData then 
@@ -118,8 +108,6 @@ function GetRarityForItem(type, item)
 		end
 	elseif CLOTHING[item] then 
 		rarity = CLOTHING[item].rarity
-	elseif MISC_ITEMS[item] then 
-		rarity = MISC_ITEMS[item].rarity
 	end
 
 	if not rarity then 
@@ -169,86 +157,102 @@ end
 local Widget = require "widgets/widget"
 local ItemImage = require "widgets/itemimage"
 
-function SkinGrid4x4Constructor(screen, parent, disable_selecting)
-	local NUM_ROWS = 4
-	local NUM_COLUMNS = 4
-	local SPACING = 80
-	--assert( parent.images == nil )
-	--parent.images = {}
-	local widgets = {}
-	
-	--local widget = parent:AddChild(Widget("inventory-line"))
-	
-	local x_offset = (NUM_COLUMNS/2) * SPACING + SPACING/2
-	local y_offset = (NUM_ROWS/2) * SPACING + SPACING/2
-	
-	for y = 1,NUM_ROWS do
-		for x = 1,NUM_COLUMNS do
-			local index = ((y-1) * NUM_COLUMNS) + x
-			
-			local itemimage = parent:AddChild(ItemImage(screen, "", "", 0, 0, nil ))
-			itemimage.clickFn = function(type, item, item_id) 
+function SkinLineConstructor(screen, parent, num_pictures, disable_selecting)
+
+	local widget = parent:AddChild(Widget("inventory-line"))
+	local offset = 0
+
+	widget.screen = screen
+	widget.images = {}
+
+	--create the empty item image widgets which we'll populate later with data
+	for i = 1,num_pictures do
+		local itemimage = widget:AddChild(ItemImage(screen, nil, "", "", 0, 0, nil, nil, nil ))
+
+		itemimage.clickFn = function(type, item, item_id) 
 				screen:OnItemSelect(type, item, item_id, itemimage)
 			end
+
+		itemimage:SetPosition(offset, -15, 0)
+		offset = offset + 80
+
+		if i > 1 then 
+			itemimage:SetFocusChangeDir(MOVE_LEFT, widget.images[#widget.images - 1])
+			widget.images[i-1]:SetFocusChangeDir(MOVE_RIGHT, itemimage)
+		end
 		
-			itemimage:SetPosition( x * SPACING - x_offset, -y * SPACING + y_offset, 0)
-		
-			
-			--parent.images[index] = itemimage
-			widgets[index] = itemimage
-			
-			if x > 1 then 
-				itemimage:SetFocusChangeDir(MOVE_LEFT, widgets[index-1])
-				widgets[index-1]:SetFocusChangeDir(MOVE_RIGHT, itemimage)
-			end
-			if y > 1 then 
-				itemimage:SetFocusChangeDir(MOVE_UP, widgets[index-NUM_COLUMNS])
-				widgets[index-NUM_COLUMNS]:SetFocusChangeDir(MOVE_DOWN, itemimage)
-			end
-		end	
+		table.insert(widget.images, itemimage)
 	end
-	
-	if disable_selecting then
-		for _,item_image in pairs(widgets) do
+
+	widget.focus_forward = widget.images[1]
+
+	-- When the itemimage gets focus, it tells the screen to set the focus_column so we can look it up here
+	widget.OnGainFocus = function() 
+		local focus_column = widget.screen.focus_column or 1
+		widget.images[focus_column]:SetFocus()
+	end
+
+	widget.ForceFocus = function()
+		local focus_column = widget.screen.focus_column or 1
+		widget.images[focus_column]:Embiggen()
+	end
+
+	if disable_selecting then 
+		for _,item_image in pairs(widget.images) do
 			item_image:DisableSelecting()
 		end
-	end
+	end	
+	widget.disable_selecting = disable_selecting
 	
-	return widgets
+	return widget
 end
 
-function UpdateSkinGrid(list_widget, data, screen)
-	if data ~= nil then
-		list_widget:SetItem(data.type, data.item, data.item_id, data.timestamp)
+function UpdateSkinLine(widget, data, row_number, screen)
+	local focus_index = screen.focus_index
 
-		if not list_widget.disable_selecting then
-			list_widget:Unselect() --unselect everything when the data is updated
-			if list_widget.focus then --but maintain focus on the widget
-				list_widget:Embiggen()
+	--print("UpdateSkinLine has screen", screen, screen.focus_index)
+	local offset = 0
+	for i = 1, #data do 
+		local item = data[i]
+
+		local idx = (row_number-1)*#data+i
+		--print("Item ", idx, " is", item.item, item.item_id)
+		widget.images[i]:SetItem(idx, item.type, item.item, item.item_id, item.timestamp)
+
+		offset = offset + 100
+
+		if not widget.disable_selecting then
+			if focus_index and focus_index == (idx) then
+				--print("Selecting image ", row_number, idx)
+				widget.images[i]:Select()
+				--widget.images[i]:ForceClick()
+			else
+				widget.images[i]:Unselect()
 			end
 		end
 
-		list_widget:Show()
+		widget.images[i]:Show()
 
 		if screen.show_hover_text then
-			local rarity = GetRarityForItem(data.type, data.item)
-			local hover_text = rarity .. "\n" .. GetName(data.item)
-			list_widget:SetHoverText( hover_text, { font = NEWFONT_OUTLINE, size = 20, offset_x = 0, offset_y = 60, colour = {1,1,1,1}})
-			if list_widget.focus then --make sure we force the hover text to appear on the default focused item
-				list_widget:OnGainFocus()
-			end
-		end
-	else
-		list_widget:SetItem(nil, nil, nil)
-		list_widget:Unselect()
-		if list_widget.focus then --maintain focus on the widget
-			list_widget:Embiggen()
-		end
-		if screen.show_hover_text then
-			list_widget:ClearHoverText()
+			local rarity = GetRarityForItem(item.type, item.item)
+			local hover_text = rarity .. "\n" .. GetName(item.item)
+			widget.images[i]:SetHoverText( hover_text, { font = NEWFONT_OUTLINE, size = 20, offset_x = 0, offset_y = 50, colour = {1,1,1,1}})
 		end
 	end
+
+	if #data < #widget.images then 
+		for i = (#data+1), #widget.images do 
+			widget.images[i]:SetItem(nil, nil, nil, nil)
+			widget.images[i]:Unselect()
+			if screen.show_hover_text then
+				widget.images[i]:ClearHoverText()
+			end
+		end
+	end
+
+
 end
+
 
 function GetSortedSkinsList()
 	local templist = TheInventory:GetFullInventory()
@@ -263,15 +267,13 @@ function GetSortedSkinsList()
 		legs = {},
 		base = {},
 		item = {},
-		misc = {},
-		unknown = {},
 	}
 
 	for k,v in ipairs(templist) do 
 		local type, item = GetTypeForItem(v.item_type)
 		local rarity = GetRarityForItem(type, item)
 
-		--if type ~= "unknown" then
+		if type ~= "unknown" then
 
 			local data = {}
 			data.type = type
@@ -285,7 +287,7 @@ function GetSortedSkinsList()
 			if v.modified_time > timestamp then 
 				timestamp = v.modified_time
 			end
-		--end
+		end
 	end
 
 	local compare = function(a, b) 
@@ -306,8 +308,6 @@ function GetSortedSkinsList()
 	table.sort(listoflists.legs, compare)
 	table.sort(listoflists.base, compare)
 	table.sort(listoflists.item, compare)
-	table.sort(listoflists.misc, compare)
-	table.sort(listoflists.unknown, compare)
 
 
 	skins_list = JoinArrays(skins_list, listoflists.item)
@@ -316,8 +316,7 @@ function GetSortedSkinsList()
 	skins_list = JoinArrays(skins_list, listoflists.hand)
 	skins_list = JoinArrays(skins_list, listoflists.legs)
 	skins_list = JoinArrays(skins_list, listoflists.feet)
-	skins_list = JoinArrays(skins_list, listoflists.misc)
-	skins_list = JoinArrays(skins_list, listoflists.unknown)
+
 
 	return skins_list, timestamp
 end
@@ -335,3 +334,25 @@ function CopySkinsList(list)
 
 	return newList
 end
+
+function SplitSkinsIntoInventoryRows(skins_list, num_items_per_row)
+	local inventory_rows = {}
+	
+	--split skins_list data into chunks of 4 items, for each row
+	local line_items = {}
+	for k,v in ipairs(skins_list) do	
+		if #line_items < num_items_per_row then
+			table.insert(line_items, v)
+		end
+		if #line_items == num_items_per_row then 
+			inventory_rows[#inventory_rows + 1] = line_items
+			line_items = {}
+		end
+	end
+	if #line_items > 0 then 
+		inventory_rows[#inventory_rows + 1] = line_items
+	end
+	
+	return inventory_rows
+end
+

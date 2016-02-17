@@ -23,7 +23,7 @@ local SkinCollector = Class(Widget, function(self, num_items)
     self.speech_bubble = self.root:AddChild(UIAnim())
     self.speech_bubble:GetAnimState():SetBank("textbox")
     self.speech_bubble:GetAnimState():SetBuild("textbox")
-    self.speech_bubble:SetPosition(40, 550)
+    self.speech_bubble:SetPosition(0, 550)
     self.speech_bubble:SetScale(-.66, .95, .66)
     self.speech_bubble:Show()
     
@@ -31,7 +31,7 @@ local SkinCollector = Class(Widget, function(self, num_items)
     self.text:SetRegionSize( 250, 180)
     self.text:SetVAlign(ANCHOR_MIDDLE)
     self.text:EnableWordWrap(true)
-    self.text:SetPosition(50, 550)
+    self.text:SetPosition(15, 550)
 
     self.last_speech_time = 0
     self.num_items = num_items
@@ -75,26 +75,13 @@ function SkinCollector:InternalSay(text)
 	self.talking = true
 end
 
-function SkinCollector:Say(text, rarity, name)
+function SkinCollector:Say(text)
 	assert(text, "Bad text string for SkinCollector speech")
 
 	--print("Say called with ", text, "already saying", self.text_string)
 	--print("Talking?", self.talking or "nil", "last_speech_time", self.last_speech_time or "nil", GetTime() - self.last_speech_time)
 
-	local str = text
-	if type(text) == "table" then 
-		str = GetRandomItem(text)
-	end
-
-	if rarity then 
-		str = SubstituteRarity(str, rarity)
-	end
-
-	if name then 
-		str = string.gsub(str, "<item>", name)
-	end
-	
-	self:InternalSay(str)
+	self:InternalSay(text)
 end
 
 function SkinCollector:ClearSpeech()
@@ -135,7 +122,7 @@ function SkinCollector:OnUpdate(dt)
 	if self.intro_done and (GetTime() - self.last_speech_time) > IDLE_SPEECH_DELAY then 
 		--print("Playing idle speech at ", GetTime(), self.last_speech_time)
 		-- It's been a while since the last speech. Say something random
-		self:Say(STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.IDLE)
+		self:Say(GetRandomItem(STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.IDLE))
 	end
 
 	-- Update text

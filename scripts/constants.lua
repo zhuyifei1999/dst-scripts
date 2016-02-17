@@ -285,7 +285,6 @@ DST_CHARACTERLIST =
 
 require("prefabskins")
 require("clothing")
-require("misc_items")
 
 MAINSCREEN_CHAR_1 = "corner_dude"
 MAINSCREEN_CHAR_2 = "corner_dude"
