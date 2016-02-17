@@ -728,8 +728,8 @@ local function Check_LegacyClientHosting()
     if not (sawPopup or TheNet:IsDedicated()) then
         local popup = PopupDialogScreen(STRINGS.UI.MAINSCREEN.MULTILEVEL_HEADER, STRINGS.UI.MAINSCREEN.MULTILEVEL_BODY,
             {
-                { text = STRINGS.UI.MAINSCREEN.ENABLE_MULTILEVELED_WORLDS, cb = function() SelectLegacyClientHosting(false) end },
-                { text = STRINGS.UI.MAINSCREEN.DISABLE_MULTILEVELED_WORLDS, cb = function() SelectLegacyClientHosting(true) end },
+                { text = STRINGS.UI.MAINSCREEN.ENABLE_MULTILEVEL_WORLDS, cb = function() SelectLegacyClientHosting(false) end },
+                { text = STRINGS.UI.MAINSCREEN.DISABLE_MULTILEVEL_WORLDS, cb = function() SelectLegacyClientHosting(true) end },
             }
         )
 

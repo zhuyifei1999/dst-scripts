@@ -84,8 +84,8 @@ local PlayerDetailsPopup = Class(Screen, function(self, entry, buttons)
     self.black:SetVAnchor(ANCHOR_MIDDLE)
     self.black:SetHAnchor(ANCHOR_MIDDLE)
     self.black:SetScaleMode(SCALEMODE_FILLSCREEN)
-	self.black:SetTint(0,0,0,.75)	
-	
+	self.black:SetTint(0,0,0,.75)
+
 	self.root = self:AddChild(Widget("ROOT"))
     self.root:SetVAnchor(ANCHOR_MIDDLE)
     self.root:SetHAnchor(ANCHOR_MIDDLE)
@@ -98,25 +98,26 @@ local PlayerDetailsPopup = Class(Screen, function(self, entry, buttons)
     self.bg.fill = self.details_panel:AddChild(Image("images/fepanel_fills.xml", "panel_fill_tiny.tex"))
     self.bg.fill:SetScale(.92, .68)
     self.bg.fill:SetPosition(8, 12)
- 
-    local title_height = 70
+
+    local title_height = 75
 
     self.details_playername = self.details_panel:AddChild(Text(NEWFONT, 44))
-    self.details_playername:SetHAlign(ANCHOR_MIDDLE)
-    self.details_playername:SetVAlign(ANCHOR_TOP)
-    self.details_playername:SetPosition(30, title_height, 0)
     self.details_playername:SetColour(0,0,0,1)
-    
-    if "" == entry.netprofilename then
-        self.details_playername:SetString(STRINGS.UI.SERVERADMINSCREEN.UNKNOWN_USER_NAME)
-    else
-        self.details_playername:SetString(entry.netprofilename)
-    end
-    
+
+    self.details_playername:SetTruncatedString(
+        (entry.netprofilename ~= "" and entry.netprofilename) or
+        (entry.userid ~= "" and entry.userid) or
+        (entry.netid ~= "" and entry.netid) or
+        STRINGS.UI.SERVERADMINSCREEN.UNKNOWN_USER_NAME,
+        420,
+        64,
+        true
+    )
+
     self.details_icon = self.details_panel:AddChild(Widget("target"))
     self.details_icon:SetScale(.8)
-    local w,h = self.details_playername:GetRegionSize()
-    self.details_icon:SetPosition(-w/2 - 30, title_height+5)
+    local w = self.details_playername:GetRegionSize()
+    self.details_icon:SetPosition(-.5 * w - 3, title_height)
 
     local character = entry.character or ""
     local is_mod_character = false
@@ -136,6 +137,9 @@ local PlayerDetailsPopup = Class(Screen, function(self, entry, buttons)
     self.details_headframe = self.details_icon:AddChild(Image("images/avatars.xml", "avatar_frame_white.tex"))
     self.details_headframe:SetTint(.5,.5,.5,1)
     
+    w = self.details_headframe:GetSize() * self.details_icon:GetScale().x
+    self.details_playername:SetPosition(.5 * w + 17, title_height, 0)
+
     self.details_date_label = self.details_panel:AddChild(Text(NEWFONT, 25))
     -- self.details_date_label:SetHAlign(ANCHOR_RIGHT)
     self.details_date_label:SetPosition(0, 10, 0)
@@ -150,15 +154,15 @@ local PlayerDetailsPopup = Class(Screen, function(self, entry, buttons)
     self.details_servername_label:SetColour(0,0,0,1)
     
     self.details_servername = self.details_panel:AddChild(Text(NEWFONT, 27))
-    self.details_servername:SetHAlign(ANCHOR_LEFT)
-    self.details_servername:SetPosition(97, -25, 0)
-    self.details_servername:SetRegionSize( 360, 40 )
-    if entry.servername then
-        self.details_servername:SetString(entry.servername)        
-    else
-        self.details_servername:SetString(STRINGS.UI.SERVERADMINSCREEN.UNKNOWN)        
-    end
     self.details_servername:SetColour(0,0,0,1)
+    self.details_servername:SetTruncatedString(
+        entry.servername or STRINGS.UI.SERVERADMINSCREEN.UNKNOWN,
+        360,
+        128,
+        true
+    )
+    w = self.details_servername:GetRegionSize()
+    self.details_servername:SetPosition(.5 * w - 83, -25, 0)
     
     self.details_serverdescription_label = self.details_panel:AddChild(Text(NEWFONT, 27))
     self.details_serverdescription_label:SetHAlign(ANCHOR_RIGHT)
@@ -168,15 +172,16 @@ local PlayerDetailsPopup = Class(Screen, function(self, entry, buttons)
     self.details_serverdescription_label:SetColour(0,0,0,1)
         
     self.details_serverdescription = self.details_panel:AddChild(Text(NEWFONT, 27))
-    self.details_serverdescription:SetHAlign(ANCHOR_LEFT)
     self.details_serverdescription:SetPosition(97, -60, 0)
-    self.details_serverdescription:SetRegionSize( 360, 40 )
-    if entry.serverdescription then
-        self.details_serverdescription:SetString(entry.serverdescription)        
-    else
-        self.details_serverdescription:SetString(STRINGS.UI.SERVERADMINSCREEN.UNKNOWN)        
-    end
     self.details_serverdescription:SetColour(0,0,0,1)
+    self.details_serverdescription:SetTruncatedString(
+        entry.serverdescription or STRINGS.UI.SERVERADMINSCREEN.UNKNOWN,
+        360,
+        128,
+        true
+    )
+    w = self.details_serverdescription:GetRegionSize()
+    self.details_serverdescription:SetPosition(.5 * w - 83, -60, 0)
       
     local spacing = 200
 	self.menu = self.root:AddChild(Menu(buttons, spacing, true))
@@ -216,22 +221,21 @@ local BanTab = Class(Screen, function(self, servercreationscreen)
     self.left_line:SetScale(1, .6)
     self.left_line:SetPosition(-530, 5, 0)
 
-    self.blacklist = TheNet:GetBlacklist() --TestObjs
-    self.blacklist_clean = deepcopy(self.blacklist)
+    self.blacklist = TheNet:GetBlacklist()
 
     self:MakeMenuButtons()
 
     self:MakePlayerPanel()
 
-    self.default_focus = self.player_scroll_list    
-    self.focus_forward = self.player_scroll_list    
+    self.default_focus = self.player_scroll_list
+    self.focus_forward = self.player_scroll_list
 end)
 
-function BanTab:MakePlayerPanel()                    
+function BanTab:MakePlayerPanel()
     self.player_list_rows = self.ban_page:AddChild(Widget("player_list_rows"))
     self.player_list_rows:SetPosition(0, -8, 0) 
-     
-    self:MakePlayerList()    
+
+    self:MakePlayerList()
 end
 
 function BanTab:MakePlayerList()
@@ -241,10 +245,10 @@ function BanTab:MakePlayerList()
         widget:SetScale(.8)
 
         widget.white_bg = widget:AddChild(Image("images/ui.xml", "single_option_bg_large.tex"))
-        widget.white_bg:SetScale(.63, .9)
+        widget.white_bg:SetScale(.9, .9)
 
         widget.state_bg = widget:AddChild(Image("images/ui.xml", "single_option_bg_large_gold.tex"))
-        widget.state_bg:SetScale(.63, .9)
+        widget.state_bg:SetScale(.9, .9)
         widget.state_bg:Hide()
 
         widget.OnGainFocus = function(self)
@@ -264,10 +268,14 @@ function BanTab:MakePlayerList()
         widget.index = index
 
         widget.NAME = widget:AddChild(Text(NEWFONT, font_size))
-        widget.NAME:SetPosition( -75, y_offset, 0 )
-        widget.NAME:SetRegionSize( 140, 50 )
-        widget.NAME:SetHAlign( ANCHOR_LEFT )
-        widget.NAME:SetColour(0,0,0,1)
+        widget.NAME:SetPosition(-82, y_offset, 0)
+        widget.NAME:SetColour(0, 0, 0, 1)
+        widget.NAME._align =
+        {
+            maxwidth = 225,
+            maxchars = 44,
+            x = -82,
+        }
 
         widget.EMPTY = widget:AddChild(Text(NEWFONT, font_size, STRINGS.UI.SERVERADMINSCREEN.EMPTY_SLOT))
         widget.EMPTY:SetPosition( 0, y_offset, 0 )
@@ -286,14 +294,18 @@ function BanTab:MakePlayerList()
         end
 
         widget.MENU = widget:AddChild(Menu(buttons, 55, true))
-        widget.MENU:SetPosition(20,y_offset-2)
+        widget.MENU:SetPosition(75, y_offset - 2)
 
         if entry and not entry.empty then
-            if "" == entry.netprofilename then
-                widget.NAME:SetString(STRINGS.UI.SERVERADMINSCREEN.UNKNOWN_USER_NAME)
-            else
-                widget.NAME:SetString(entry.netprofilename)
-            end
+            widget.NAME:SetTruncatedString(
+                (entry.netprofilename ~= "" and entry.netprofilename) or
+                (entry.userid ~= "" and entry.userid) or
+                (entry.netid ~= "" and entry.netid) or
+                STRINGS.UI.SERVERADMINSCREEN.UNKNOWN_USER_NAME,
+                widget.NAME._align.maxwidth,
+                widget.NAME._align.maxchars,
+                true
+            )
 
             if "" == entry.character and "" == entry.servername and "" == entry.serverdescription then
                 widget.MENU.items[1]:Select()
@@ -319,11 +331,15 @@ function BanTab:MakePlayerList()
         if data and not data.empty then 
             widget.index = index
                     
-            if "" == data.netprofilename then
-                widget.NAME:SetString(STRINGS.UI.SERVERADMINSCREEN.UNKNOWN_USER_NAME)
-            else
-                widget.NAME:SetString(data.netprofilename)
-            end          
+            widget.NAME:SetTruncatedString(
+                (data.netprofilename ~= "" and data.netprofilename) or
+                (data.userid ~= "" and data.userid) or
+                (data.netid ~= "" and data.netid) or
+                STRINGS.UI.SERVERADMINSCREEN.UNKNOWN_USER_NAME,
+                widget.NAME._align.maxwidth,
+                widget.NAME._align.maxchars,
+                true
+            )
             widget.NAME:Show()
             widget.EMPTY:Hide()
             
@@ -430,12 +446,12 @@ end
 
 function BanTab:PromptDeletePlayer(selected_player)
     if selected_player then
-        local name = ""
-        if "" == self.blacklist[selected_player].netprofilename then
-            name = STRINGS.UI.SERVERADMINSCREEN.UNKNOWN_USER_NAME
-        else
-            name = self.blacklist[selected_player].netprofilename
-        end
+        local entry = self.blacklist[selected_player]
+        local name =
+            (entry.netprofilename ~= "" and entry.netprofilename) or
+            (entry.userid ~= "" and entry.userid) or
+            (entry.netid ~= "" and entry.netid) or
+            STRINGS.UI.SERVERADMINSCREEN.UNKNOWN_USER_NAME
         local popup = PopupDialogScreen(STRINGS.UI.SERVERADMINSCREEN.DELETE_ENTRY_TITLE, STRINGS.UI.SERVERADMINSCREEN.DELETE_ENTRY_BODY..name..STRINGS.UI.SERVERADMINSCREEN.DELETE_ENTRY_BODY_2,
 		    {{text=STRINGS.UI.SERVERADMINSCREEN.YES, cb = function()
                 self:DeletePlayer(selected_player)

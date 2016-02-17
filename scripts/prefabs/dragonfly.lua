@@ -6,6 +6,7 @@ local assets =
     Asset("ANIM", "anim/dragonfly_fire_build.zip"),
     Asset("ANIM", "anim/dragonfly_basic.zip"),
     Asset("ANIM", "anim/dragonfly_actions.zip"),
+    Asset("SOUND", "sound/dragonfly.fsb"),
 }
 
 local prefabs =

@@ -270,7 +270,7 @@ function IsWorkshopMod(modname)
 	return modname:sub( 1, workshop_prefix:len() ) == workshop_prefix
 end
 
-function ModIndex:ApplyEnabledOverrides(mod_overrides)
+function ModIndex:ApplyEnabledOverrides(mod_overrides) --Note(Peter): This function is now coupled with the format written by SaveIndex:SetServerEnabledMods
 	if mod_overrides == nil then
 		print("Warning: modoverrides.lua is empty, or is failing to return a table.")
 	else	
