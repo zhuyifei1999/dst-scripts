@@ -392,7 +392,7 @@ function SaveIndex:LoadServerEnabledModsFromSlot(slot)
 			KnownModIndex:Enable(modname)
 		end
 		
-		local config_options = mod_data.config_data or mod_data.configuration_options --config_data is the legacy format
+		local config_options = mod_data.config_data or mod_data.configuration_options or {} --config_data is the legacy format
         for option_name,value in pairs(config_options) do
 			KnownModIndex:SetConfigurationOption( modname, option_name, value )
         end
