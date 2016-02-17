@@ -313,15 +313,6 @@ function SaveIndex:GetSlotGenOptions(slot)
     return self.data.slots[slot or self.current_slot].world.options
 end
 
-function SaveIndex:GetSlotMods(slot)
-    slot = slot or self.current_slot
-    if slot and self.data.slots[slot] and self.data.slots[slot].enabled_mods then
-        return self.data.slots[slot].enabled_mods
-    else
-        return {}
-    end
-end
-
 function SaveIndex:GetSlotSession(slot)
     return self.data.slots[slot or self.current_slot].session_id
 end
@@ -396,10 +387,14 @@ end
 function SaveIndex:LoadServerEnabledModsFromSlot(slot)
     local enabled_mods = self.data.slots[slot or self.current_slot].enabled_mods
     ModManager:DisableAllServerMods()
-    for modname,config_data in pairs(enabled_mods) do
-        KnownModIndex:Enable(modname)
-        for option_name,value in pairs(config_data) do
-            KnownModIndex:SetConfigurationOption( modname, option_name, value )
+    for modname,mod_data in pairs(enabled_mods) do
+        if mod_data.enabled then
+			KnownModIndex:Enable(modname)
+		end
+		
+		local config_options = mod_data.config_data or mod_data.configuration_options --config_data is the legacy format
+        for option_name,value in pairs(config_options) do
+			KnownModIndex:SetConfigurationOption( modname, option_name, value )
         end
         KnownModIndex:SaveHostConfiguration(modname)
     end
@@ -411,16 +406,16 @@ function SaveIndex:SetServerEnabledMods(slot)
     
     local enabled_mods = {}
     for _,modname in pairs(server_enabled_mods) do
-        local mod_data = { enabled = true }
-        mod_data.config_data = {}
+        local mod_data = { enabled = true } --Note(Peter): The format of mod_data now must match the format expected in modoverrides.lua. See ModIndex:ApplyEnabledOverrides
+        mod_data.configuration_options = {}
         local force_local_options = true
         local config = KnownModIndex:LoadModConfigurationOptions(modname, false)
         if config and type(config) == "table" then
             for i,v in pairs(config) do
                 if v.saved ~= nil then
-                    mod_data.config_data[v.name] = v.saved 
+                    mod_data.configuration_options[v.name] = v.saved 
                 else 
-                    mod_data.config_data[v.name] = v.default
+                    mod_data.configuration_options[v.name] = v.default
                 end
             end
         end

@@ -3,7 +3,7 @@ local assets =
     Asset("ANIM", "anim/goosemoose_build.zip"),
     Asset("ANIM", "anim/goosemoose_basic.zip"),
     Asset("ANIM", "anim/goosemoose_actions.zip"),
-    --Asset("SOUND", "sound/moose.fsb"),
+    Asset("SOUND", "sound/goosemoose.fsb"),              -- Why was that commented ?
 }
 
 local prefabs =

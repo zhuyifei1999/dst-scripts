@@ -50,6 +50,8 @@ end)
 
 
 function MainScreen:DoInit( )
+    TheNet:LoadPermissionLists()
+
 	TheFrontEnd:GetGraphicsOptions():DisableStencil()
 	TheFrontEnd:GetGraphicsOptions():DisableLightMapComponent()
 	

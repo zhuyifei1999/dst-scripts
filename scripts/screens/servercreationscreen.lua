@@ -601,8 +601,8 @@ end
 function ServerCreationScreen:CheckForDisabledMods()
 
     local function isModEnabled(mod, enabledmods)
-        for i,v in pairs(enabledmods) do
-            if mod == v then
+        for _,modname in pairs(enabledmods) do
+            if mod == modname then
                 return true
             end
         end
@@ -611,12 +611,12 @@ function ServerCreationScreen:CheckForDisabledMods()
 
     local disabled = {}
 
-    local savedmods = SaveGameIndex:GetSlotMods(self.saveslot)
+    local savedmods = SaveGameIndex:GetEnabledMods(self.saveslot)
     local currentlyenabledmods = ModManager:GetEnabledServerModNames()
 
-    for i,v in pairs(savedmods) do
-        if not isModEnabled(i, currentlyenabledmods) then
-            table.insert(disabled, i)
+    for modname,_ in pairs(savedmods) do
+        if not isModEnabled(modname, currentlyenabledmods) then
+            table.insert(disabled, modname)
         end
     end
 

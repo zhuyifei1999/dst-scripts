@@ -2,6 +2,13 @@ local assets =
 {
     Asset("PKGREF", "sound/dontstarve.fev"),
 	Asset("SOUNDPACKAGE", "sound/dontstarve_DLC001.fev"),
+    Asset("SOUND", "sound/DLC_music.fsb"),
+
+    Asset("SOUND", "sound/wilton.fsb"),         -- Legacy sound that can be used in mods
+    Asset("SOUND", "sound/winnie.fsb"),         -- Legacy sound that can be used in mods
+    Asset("SOUND", "sound/wallace.fsb"),        -- Legacy sound that can be used in mods
+    Asset("SOUND", "sound/woodrow.fsb"),        -- Legacy sound that can be used in mods
+    Asset("SOUND", "sound/stuff.fsb"),          -- Legacy sound that can be used in mods
 
     Asset("ATLAS", "images/global.xml"),
     Asset("IMAGE", "images/global.tex"),
@@ -139,6 +146,14 @@ local assets =
 
 	Asset("SHADER", "shaders/waves.ksh"),
 	Asset("SHADER", "shaders/overheat.ksh"),
+
+    Asset("SHADER", "shaders/anim.ksh"),
+    Asset("SHADER", "shaders/anim_bloom.ksh"),
+    Asset("SHADER", "shaders/anim_fade.ksh"),
+    Asset("SHADER", "shaders/anim_haunted.ksh"),
+    Asset("SHADER", "shaders/anim_fade_haunted.ksh"),
+    Asset("SHADER", "shaders/anim_bloom_haunted.ksh"),
+    Asset("SHADER", "shaders/minimapblend.ksh"),
 
     --common UI elements that we will always need
     Asset("ATLAS", "images/ui.xml"),

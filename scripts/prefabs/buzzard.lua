@@ -3,7 +3,7 @@ local assets =
     Asset("ANIM", "anim/buzzard_build.zip"),
     --Asset("ANIM", "anim/buzzard_shadow.zip"),
     Asset("ANIM", "anim/buzzard_basic.zip"),
-    --Asset("SOUND", "sound/buzzard.fsb"),
+    Asset("SOUND", "sound/buzzard.fsb"),        -- Why was that commented ?
 }
 
 local prefabs =
