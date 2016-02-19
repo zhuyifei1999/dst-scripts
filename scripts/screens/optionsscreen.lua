@@ -228,7 +228,6 @@ local OptionsScreen = Class(Screen, function(self, in_game)
 		screenshake = Profile:IsScreenShakeEnabled(),
 		hudSize = Profile:GetHUDSize(),
 		netbookmode = TheSim:IsNetbookMode(),
-        multiprocess = not TheSim:IsLegacyClientHosting(),
 		vibration = Profile:GetVibrationEnabled(),
 		showpassword = Profile:GetShowPasswordEnabled(),
 		automods = Profile:GetAutoSubscribeModsEnabled(),
@@ -313,7 +312,7 @@ local OptionsScreen = Class(Screen, function(self, in_game)
 
 	-- NOTE: if we add more options, they should be made scrollable. Look at customization screen for an example.
 	self.grid = self.settingsroot:AddChild(Grid())
-	self.grid:SetPosition(-180, 147, 0)
+	self.grid:SetPosition(-180, 140, 0)
 
 	self:DoInit()
 	self:InitializeSpinners(true)
@@ -628,11 +627,11 @@ function OptionsScreen:ApplyVolume()
 	TheMixer:SetLevel("set_ambience", self.working.ambientvolume / 10 )
 end
 
-function OptionsScreen:Apply( )
+function OptionsScreen:Apply()
 	self:ApplyVolume()
-	
+
 	TheInputProxy:EnableVibration(self.working.vibration)
-	
+
 	local gopts = TheFrontEnd:GetGraphicsOptions()
 	gopts:SetBloomEnabled( self.working.bloom )
 	gopts:SetDistortionEnabled( self.working.distortion )
@@ -640,10 +639,6 @@ function OptionsScreen:Apply( )
 	Profile:SetScreenShakeEnabled( self.working.screenshake )
 	Profile:SetWathgrithrFontEnabled( self.working.wathgrithrfont )
 	TheSim:SetNetbookMode(self.working.netbookmode)
-    if not InGamePlay() and self.working.multiprocess == TheSim:IsLegacyClientHosting() then
-        TheSim:SetLegacyClientHosting(not self.working.multiprocess)
-        SaveGameIndex:Load()
-    end
 
 	TheInputProxy:ApplyControlMapping()
     for index = 1, #self.devices do
@@ -1031,18 +1026,6 @@ function OptionsScreen:DoInit()
 						
 	end
 	
-    self.multiprocessSpinner = Spinner( enableDisableOptions, spinner_width, spinner_height, nil, nil, nil, nil, true, nil, nil, spinner_scale_x, spinner_scale_y )
-    self.multiprocessSpinner.OnChanged =
-        function( _, data )
-            this.working.multiprocess = data
-            --this:Apply()
-            self:UpdateMenu()
-        end
-    if InGamePlay() then
-        self.multiprocessSpinner:Disable()
-    end
-
-
 	self.bloomSpinner = Spinner( enableDisableOptions, spinner_width, spinner_height, nil, nil, nil, nil, true, nil, nil, spinner_scale_x, spinner_scale_y )
 	self.bloomSpinner.OnChanged =
 		function( _, data )
@@ -1184,12 +1167,10 @@ function OptionsScreen:DoInit()
 		table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.REFRESHRATE, self.refreshRateSpinner } )
 		table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.SMALLTEXTURES, self.smallTexturesSpinner } )
 		table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.NETBOOKMODE, self.netbookModeSpinner } )
-        table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.MULTIPROCESS, self.multiprocessSpinner } )
 	else
 		table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.SCREENSHAKE, self.screenshakeSpinner } )
 		table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.DISTORTION, self.distortionSpinner } )
 		table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.BLOOM, self.bloomSpinner } )
-        table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.MULTIPROCESS, self.multiprocessSpinner } )
 
 		table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.INPUT, self.deviceSpinner } )
 		table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.VIBRATION, self.vibrationSpinner} )
@@ -1202,7 +1183,7 @@ function OptionsScreen:DoInit()
         table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.HUDSIZE, self.hudSize} )
 	end
 
-	self.grid:InitSize(2, 10, 440, -41)
+	self.grid:InitSize(2, 9, 440, -43)
 
 	for k,v in ipairs(self.left_spinners) do
 		self.grid:AddItem(self:CreateSpinnerGroup(v[1], v[2]), 1, k)	
@@ -1415,12 +1396,8 @@ function OptionsScreen:DoInit()
     self.controller_controllist:SetPosition(340, -40)
 end
 
-local function EnabledOptionsIndex( enabled )
-	if enabled then
-		return 2
-	else
-		return 1
-	end
+local function EnabledOptionsIndex(enabled)
+    return enabled and 2 or 1
 end
 
 function OptionsScreen:InitializeSpinners(first)
@@ -1433,16 +1410,11 @@ function OptionsScreen:InitializeSpinners(first)
 		self.netbookModeSpinner:SetSelectedIndex( EnabledOptionsIndex( self.working.netbookmode ) )
 	end
 
-    self.multiprocessSpinner:SetSelectedIndex( EnabledOptionsIndex( self.working.multiprocess ) )
-    if InGamePlay() then
-        self.multiprocessSpinner:Disable()
-    end
-
 	--[[if PLATFORM == "WIN32_STEAM" and not self.in_game then
 		self.steamcloudSpinner:SetSelectedIndex( EnabledOptionsIndex( self.working.steamcloud ) )
 	end
 	--]]
-	
+
 	self.bloomSpinner:SetSelectedIndex( EnabledOptionsIndex( self.working.bloom ) )
 	self.distortionSpinner:SetSelectedIndex( EnabledOptionsIndex( self.working.distortion ) )
 	self.screenshakeSpinner:SetSelectedIndex( EnabledOptionsIndex( self.working.screenshake ) )

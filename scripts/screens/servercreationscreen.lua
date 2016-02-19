@@ -70,13 +70,17 @@ local ServerCreationScreen = Class(Screen, function(self)
     self.nav_bar = self.root:AddChild(TEMPLATES.NavBarWithScreenTitle(STRINGS.UI.SERVERCREATIONSCREEN.HOST_GAME, "tall"))
     --self.load_panel was prev thing
 
-
     self.detail_panel = self.root:AddChild( Widget("detail_panel") )
     self.detail_panel:SetPosition(right_col, 0)
 
     self:RefreshNavButtons()
 
     self:MakeButtons()
+
+    -- This is for register focus change dir to return back to the current save slot
+    self.getfocussaveslot = function() return self.default_focus end
+    self.getfocuscancelorsaveslot = function() return self.cancel_button ~= nil and self.cancel_button:IsVisible() and self.cancel_button or self.default_focus end
+    self.getfocuscreate = function() return self.create_button ~= nil and self.create_button:IsVisible() and self.create_button or nil end
 
     -- Set up all the tabs and the buttons to nav
     self:MakeSettingsTab()
@@ -156,14 +160,10 @@ function ServerCreationScreen:UpdateTitle(slotnum, fromTextEntered)
 
     self.title:SetString(self.server_settings_tab:GetServerName())
 
-    if SaveGameIndex:GetSlotDay(slotnum) == nil then
-        --V2C: slot day is never updated in the new cluster save slots,
-        --     but the nil check for new slots is still valid... - __-"
+    if SaveGameIndex:IsSlotEmpty(slotnum) then
         self.day_title:SetString(STRINGS.UI.SERVERCREATIONSCREEN.SERVERDAY_NEW)
-    elseif TheSim:IsLegacyClientHosting() then
-        self.day_title:SetString(STRINGS.UI.SERVERCREATIONSCREEN.SERVERDAY.." "..SaveGameIndex:GetSlotDay(slotnum))
-    else
-        local session_id = SaveGameIndex:GetClusterSlotSession(slotnum)
+    elseif SaveGameIndex:IsSlotMultiLevel(slotnum) then
+        local session_id = SaveGameIndex:GetSlotSession(slotnum)
         if session_id ~= nil then
             local day = 1
             local season = nil
@@ -201,6 +201,8 @@ function ServerCreationScreen:UpdateTitle(slotnum, fromTextEntered)
         else
             self.day_title:SetString(STRINGS.UI.SERVERCREATIONSCREEN.SERVERDAY_NEW)
         end
+    else
+        self.day_title:SetString(STRINGS.UI.SERVERCREATIONSCREEN.SERVERDAY.." "..SaveGameIndex:GetSlotDay(slotnum))
     end
 
     -- may also want to update the string used on the nav button...
@@ -292,14 +294,10 @@ function ServerCreationScreen:DeleteSlot(slot, cb)
 end
 
 function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOutOfDateMods)
-
 	local launchingServerPopup = nil
 
     local function onsaved()
-        if TheSim:IsLegacyClientHosting() then
-            StartNextInstance({reset_action=RESET_ACTION.LOAD_SLOT, save_slot = self.saveslot})
-
-        else
+        if SaveGameIndex:IsSlotMultiLevel(self.saveslot) then
             ShowLoading()
             launchingServerPopup = LaunchingServerPopup({}, 
                 function()
@@ -314,6 +312,8 @@ function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOu
                 end)
 
             TheFrontEnd:PushScreen(launchingServerPopup)
+        else
+            StartNextInstance({ reset_action = RESET_ACTION.LOAD_SLOT, save_slot = self.saveslot })
         end
     end
 
@@ -332,6 +332,7 @@ function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOu
 			-- If we found an empty slot, make that our save slot and call Create() again
 			if emptySlot then
 				self.saveslot = emptySlot
+                self.default_focus = self.save_slots[emptySlot] or self.save_slots[1]
 				self:Create()
 			else -- Otherwise, show dialog informing that they must either load a game or delete a game
                 self.last_focus = TheFrontEnd:GetFocusWidget()
@@ -353,6 +354,7 @@ function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOu
             if worldoptions[1] ~= nil then
                 local world1data = deepcopy(worldoptions[1].tweak)
                 world1data.preset = worldoptions[1].actualpreset
+                world1data.presetdata = worldoptions[1].presetdata
                 world1data.override_enabled = true
                 world1datastring = worldoptions[1] and DataDumper(world1data, nil, false) or ""
             end
@@ -361,6 +363,7 @@ function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOu
             if worldoptions[2] ~= nil then
                 local world2data = deepcopy(worldoptions[2].tweak)
                 world2data.preset = worldoptions[2].actualpreset
+                world2data.presetdata = worldoptions[2].presetdata
                 world2data.override_enabled = true
                 world2datastring = worldoptions[2] and DataDumper(world2data, nil, false) or ""
             end
@@ -769,6 +772,7 @@ end
 function ServerCreationScreen:OnClickSlot(slotnum, goToSettings)
     local lastslot = self.saveslot
     self.saveslot = slotnum
+    self.default_focus = self.save_slots[slotnum] or self.save_slots[1]
     for i,v in ipairs(self.save_slots) do
         if v.slot == slotnum then
             v:Select()
@@ -883,40 +887,56 @@ end
 
 function ServerCreationScreen:DoFocusHookUps()
     if self.save_slots[1] then
-        if self.server_settings_tab then self.server_settings_tab:SetFocusChangeDir(MOVE_LEFT, self.save_slots[1]) end
-        if self.world_tab then self.world_tab:SetFocusChangeDir(MOVE_LEFT, self.save_slots[1]) end
-        if self.mods_tab then self.mods_tab:SetFocusChangeDir(MOVE_LEFT, self.save_slots[1]) end
-        if self.snapshot_tab then self.snapshot_tab:SetFocusChangeDir(MOVE_LEFT, self.save_slots[1]) end
-        if self.bans_tab then self.bans_tab:SetFocusChangeDir(MOVE_LEFT, self.save_slots[1]) end
+        if self.server_settings_tab then self.server_settings_tab:SetFocusChangeDir(MOVE_LEFT, self.getfocussaveslot) end
+        if self.world_tab then self.world_tab:SetFocusChangeDir(MOVE_LEFT, self.getfocussaveslot) end
+        if self.mods_tab then self.mods_tab:SetFocusChangeDir(MOVE_LEFT, self.getfocussaveslot) end
+        if self.snapshot_tab then self.snapshot_tab:SetFocusChangeDir(MOVE_LEFT, self.getfocussaveslot) end
+        if self.bans_tab then self.bans_tab:SetFocusChangeDir(MOVE_LEFT, self.getfocussaveslot) end
+    end
+
+    local function toactivetab()
+        return (self.active_tab == "settings" and self.server_settings_tab)
+            or (self.active_tab == "world" and self.world_tab.presetspinner)
+            or (self.active_tab == "mods" and self.mods_tab.servermodsbutton)
+            or (self.active_tab == "snapshot" and self.snapshot_tab.snapshot_scroll_list)
+            or (self.active_tab == "bans" and self.bans_tab.player_scroll_list)
+            or nil
     end
 
     for i,v in ipairs(self.save_slots) do
-        if self.save_slots[i-1] then
-            self.save_slots[i]:SetFocusChangeDir(MOVE_UP, self.save_slots[i-1])
+        if self.save_slots[i - 1] ~= nil then
+            self.save_slots[i]:SetFocusChangeDir(MOVE_UP, self.save_slots[i - 1])
         end
 
-        if self.save_slots[i+1] then
-            self.save_slots[i]:SetFocusChangeDir(MOVE_DOWN, self.save_slots[i+1])
+        if self.save_slots[i + 1] ~= nil then
+            self.save_slots[i]:SetFocusChangeDir(MOVE_DOWN, self.save_slots[i + 1])
         end
 
-        self.save_slots[i]:SetFocusChangeDir(MOVE_RIGHT, function()
-            if self.active_tab == "settings" then
-                return self.server_settings_tab
-            elseif self.active_tab == "world" then
-                return (self.world_tab.presetspinner:IsVisible() and self.world_tab.presetspinner)
-                    or (self.world_tab.addmultilevel:IsEnabled() and self.world_tab.addmultilevel)
-                    or self.world_tab.level1tab
-            elseif self.active_tab == "mods" then
-                return self.mods_tab.servermodsbutton
-            elseif self.active_tab == "snapshot" then
-                return self.snapshot_tab.snapshot_scroll_list
-            elseif self.active_tab == "bans" then
-                return self.bans_tab.player_scroll_list
-            end 
-        end)
+        self.save_slots[i]:SetFocusChangeDir(MOVE_RIGHT, toactivetab)
     end
 
-    self.save_slots[#self.save_slots]:SetFocusChangeDir(MOVE_DOWN, self.cancel_button)
+    if self.cancel_button ~= nil then
+        self.save_slots[#self.save_slots]:SetFocusChangeDir(MOVE_DOWN, self.cancel_button)
+        self.cancel_button:SetFocusChangeDir(MOVE_UP, self.save_slots[#self.save_slots])
+        self.cancel_button:SetFocusChangeDir(MOVE_RIGHT, self.create_button or toactivetab)
+    end
+
+    if self.create_button ~= nil then
+        self.create_button:SetFocusChangeDir(MOVE_UP, function()
+            return (self.active_tab == "world" and self.world_tab.customizationlist)
+                or (self.active_tab == "mods" and self.mods_tab.modlinkbutton)
+                or (self.active_tab == "bans" and self.bans_tab.clear_button:IsVisible() and self.bans_tab.clear_button:IsEnabled() and self.bans_tab.clear_button)
+                or toactivetab()
+        end)
+        self.create_button:SetFocusChangeDir(MOVE_LEFT, function()
+            return (self.active_tab == "mods" and self.mods_tab.updateallbutton)
+                or self.getfocuscancelorsaveslot()
+        end)
+        self.create_button:SetFocusChangeDir(MOVE_RIGHT, function()
+            return (self.active_tab == "mods" and self.mods_tab.top_mods_panel ~= nil and self.mods_tab.top_mods_panel.morebutton)
+                or nil
+        end)
+    end
 end
 
 function ServerCreationScreen:SetTab(tabName, direction)

@@ -1111,14 +1111,15 @@ function ModsTab:GetNumberOfModsEnabled()
 end
 
 function ModsTab:DoFocusHookups()
-
     local function tomiddlecol()
-        if self.currentmodtype == "client" then
-            return self.options_scroll_list_client
-        elseif self.currentmodtype == "server" then
-            return self.options_scroll_list_server
-        end
+        return (self.currentmodtype == "client" and self.options_scroll_list_client)
+            or (self.currentmodtype == "server" and self.options_scroll_list_server)
+            or nil
     end
+
+    local tosaveslots = self.servercreationscreen ~= nil and self.servercreationscreen.getfocussaveslot or nil
+    local tocancelorsaveslots = self.servercreationscreen ~= nil and self.servercreationscreen.getfocuscancelorsaveslot or nil
+    local tocreate = self.servercreationscreen ~= nil and self.servercreationscreen.getfocuscreate or nil
 
     self.servermodsbutton:SetFocusChangeDir(MOVE_RIGHT, tomiddlecol)
     self.clientmodsbutton:SetFocusChangeDir(MOVE_RIGHT, tomiddlecol)
@@ -1130,7 +1131,7 @@ function ModsTab:DoFocusHookups()
         self.options_scroll_list_client:SetFocusChangeDir(MOVE_RIGHT, self.modconfigbutton)
         self.options_scroll_list_client:SetFocusChangeDir(MOVE_LEFT, self.servermodsbutton)
     end
-    
+
     if self.options_scroll_list_server then 
         self.options_scroll_list_server:SetFocusChangeDir(MOVE_RIGHT, self.modconfigbutton) 
         self.options_scroll_list_server:SetFocusChangeDir(MOVE_LEFT, self.servermodsbutton)
@@ -1142,13 +1143,7 @@ function ModsTab:DoFocusHookups()
     self.cleanallbutton:SetFocusChangeDir(MOVE_RIGHT, self.updateallbutton)
     self.updateallbutton:SetFocusChangeDir(MOVE_RIGHT, tomiddlecol)
     self.updateallbutton:SetFocusChangeDir(MOVE_LEFT, self.cleanallbutton)
-    self.cleanallbutton:SetFocusChangeDir(MOVE_LEFT, function()
-        if self.servercreationscreen.cancel_button:IsVisible() then
-            return self.servercreationscreen.cancel_button
-        else
-            return self.servercreationscreen.save_slots[1]
-        end
-    end)
+    self.cleanallbutton:SetFocusChangeDir(MOVE_LEFT, tocancelorsaveslots)
 
     self.modlinkbutton:SetFocusChangeDir(MOVE_LEFT, self.modupdatebutton)
 
@@ -1158,27 +1153,14 @@ function ModsTab:DoFocusHookups()
     self.modconfigbutton:SetFocusChangeDir(MOVE_LEFT, tomiddlecol)
     self.modconfigbutton:SetFocusChangeDir(MOVE_RIGHT, self.modupdatebutton)
 
-    if self.servercreationscreen and self.servercreationscreen.save_slots and self.servercreationscreen.create_button then
-        self.modconfigbutton:SetFocusChangeDir(MOVE_DOWN, self.servercreationscreen.create_button)
-        self.modupdatebutton:SetFocusChangeDir(MOVE_DOWN, self.servercreationscreen.create_button)
-        self.modlinkbutton:SetFocusChangeDir(MOVE_DOWN, self.servercreationscreen.create_button)
+    self.modconfigbutton:SetFocusChangeDir(MOVE_DOWN, tocreate)
+    self.modupdatebutton:SetFocusChangeDir(MOVE_DOWN, tocreate)
+    self.modlinkbutton:SetFocusChangeDir(MOVE_DOWN, tocreate)
+    self.servermodsbutton:SetFocusChangeDir(MOVE_LEFT, tosaveslots)
+    self.clientmodsbutton:SetFocusChangeDir(MOVE_LEFT, tosaveslots)
 
-        self.servermodsbutton:SetFocusChangeDir(MOVE_LEFT, self.servercreationscreen.save_slots[1])
-        self.clientmodsbutton:SetFocusChangeDir(MOVE_LEFT, self.servercreationscreen.save_slots[1])
-        -- for i,v in ipairs(self.servercreationscreen.save_slots) do
-        --     v:SetFocusChangeDir(MOVE_RIGHT, self.servermodsbutton)
-        -- end
-        
-        self.servercreationscreen.create_button:SetFocusChangeDir(MOVE_LEFT, self.updateallbutton)
-        self.servercreationscreen.create_button:SetFocusChangeDir(MOVE_UP, self.modlinkbutton)
-        if self.top_mods_panel then
-            self.servercreationscreen.create_button:SetFocusChangeDir(MOVE_RIGHT, self.top_mods_panel.morebutton)
-        end
-    end
-
-    if self.top_mods_panel then
+    if self.top_mods_panel ~= nil then
         self.top_mods_panel:SetFocusChangeDir(MOVE_LEFT, self.modlinkbutton)
-
         self.modlinkbutton:SetFocusChangeDir(MOVE_RIGHT, self.top_mods_panel.morebutton)
     end
 end

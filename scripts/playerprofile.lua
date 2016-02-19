@@ -33,7 +33,6 @@ PlayerProfile = Class(function(self)
         self.persistdata.screenshake = true
         self.persistdata.warneddifficultyrog = false
         self.persistdata.controller_popup = false
-        self.persistdata.legacy_client_hosting_popup = false
         self.persistdata.warn_mods_enabled = true
 	end
 
@@ -87,7 +86,6 @@ function PlayerProfile:SoftReset()
         self.persistdata.screenshake = true
         self.persistdata.warneddifficultyrog = false
         self.persistdata.controller_popup = false
-        self.persistdata.legacy_client_hosting_popup = false
         self.persistdata.warn_mods_enabled = true
 	end
     -- and apply these values
@@ -823,29 +821,6 @@ function PlayerProfile:ShowedControllerPopup()
 		self:SetValue("controller_popup", true)
 		self.dirty = true
 	end
-end
-
-function PlayerProfile:SawLegacyClientHostingPopup()
-    local sawPopup
-    if USE_SETTINGS_FILE then
-        sawPopup = TheSim:GetSetting("misc", "legacy_client_hosting_popup") 
-        if nil == sawPopup then
-            sawPopup = false
-        end
-    else
-        sawPopup = self:GetValueOrDefault(self.persistdata.legacy_client_hosting_popup, false)
-    end
-    
-    return sawPopup
-end
-
-function PlayerProfile:ShowedLegacyClientHostingPopup()
-    if USE_SETTINGS_FILE then
-        TheSim:SetSetting("misc", "legacy_client_hosting_popup", tostring(true)) 
-    else
-        self:SetValue("legacy_client_hosting_popup", true)
-        self.dirty = true
-    end
 end
 
 function PlayerProfile:ShouldWarnModsEnabled()

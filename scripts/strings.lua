@@ -2080,11 +2080,6 @@ STRINGS.UI =
         ENABLECONTROLLER = "Enable Controller",
         DISABLECONTROLLER = "Disable Controller",
 
-        MULTILEVEL_HEADER = "Enable Multi-Level Worlds?",
-        MULTILEVEL_BODY = "Hosting a server with multiple levels requires running multiple servers at the same time. Is your computer up to the task?\n\nYou can change this setting in the Options screen.",
-        ENABLE_MULTILEVEL_WORLDS = "Enable",
-        DISABLE_MULTILEVEL_WORLDS = "Disable",
-
         VERSION_YOURS = "Your Version: %s",
         VERSION_LATEST = "Latest Version: %s",
         VERSION_CHECKING = "Checking for update",
@@ -2259,7 +2254,6 @@ STRINGS.UI =
         REFRESHRATE = "Refresh Rate:",
         SMALLTEXTURES = "Small Textures:",
         NETBOOKMODE = "Netbook Mode:",
-        MULTIPROCESS = "Multi-Level Worlds:",
         ENABLED = "Enabled",
         DISABLED = "Disabled",
         FX = "Sound FX Volume:",
@@ -2600,7 +2594,6 @@ STRINGS.UI =
         SAVEPRESET = "Save As Preset",
         CANCEL = "Cancel",
         BACK = "Back",
-        PRESETTITLE = "Preset",
         DEFAULT_PRESET_DESC = "Lots of pigs and spiders and a tallbird nest.",
         LOSECHANGESTITLE = "Lose Changes?",
         LOSECHANGESBODY = "Apply a new preset and lose custom changes?",
@@ -3702,7 +3695,14 @@ STRINGS.UI =
 
         GENERATE = "OK",
         MAINMENU = "Cancel",
-        ENABLED = "Enabled",
+
+        DISABLEDLEVEL = "No",
+
+        ADDLEVEL = "Add",
+        ADDLEVEL_WARNING = "This requires running multiple servers at the same time.\nIs your computer up to the task?",
+
+        REMOVELEVEL = "Remove",
+        REMOVELEVEL_WARNING = "Do you want to remove %s from this server?",
 
         LOCATIONTABNAME = {
             FOREST = "Forest",
@@ -3782,7 +3782,7 @@ STRINGS.UI =
         LOOPRANDOM = "Default",
         LOOPALWAYS = "Always",
         
-        USEPRESET = "Preset",
+        USEPRESETS = "Presets",
         CHAPTERS = {
                 "Chapter 1 of 5",
                 "Chapter 2 of 5",
