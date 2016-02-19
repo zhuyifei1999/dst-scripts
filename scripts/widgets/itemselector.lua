@@ -19,6 +19,9 @@ local ItemSelector = Class(Widget, function(self, parent, owner, profile, select
     Widget._ctor(self, "ItemSelector")
    
     self.root = self:AddChild(Widget("ItemSelectorRoot"))
+
+	self.focus_index = 1
+	self.focus_column = 1
 	
     -- Title banner
     self.title_group = self.root:AddChild(Widget("Title"))
@@ -44,19 +47,26 @@ end
 function ItemSelector:BuildInventoryList()
 	self.inventory_list = self.root:AddChild(Widget("container"))
 	self.inventory_list:SetScale(.78)
-    self.inventory_list:SetPosition( -21, 35 )
+    self.inventory_list:SetPosition(-115, 141)
 
-	self.tiles_root = self.inventory_list:AddChild(Widget("tiles_root"))
-	self.list_widgets = SkinGrid4x4Constructor(self, self.tiles_root, true)
+	-- MUST have two separate roots for the scrollable list and the widgets inside the scrollable list, 
+	-- otherwise the sub-widgets don't get focus/click events.
+	-- (I assume this applies to the paged list as well, since it's based on the scrollable list.)
+	self.list_root = self.inventory_list:AddChild(Widget("list-root"))
+	self.row_root = self.inventory_list:AddChild(Widget("row-root"))
+	self.list_widgets = {}
+	
+	for i=1,NUM_ROWS do
+		table.insert(self.list_widgets, SkinLineConstructor(self, self.row_root, NUM_ITEMS_PER_ROW, true))
+	end
 
 	local row_width = 240
 	local row_height = 70
 	local spacing = 10
 	
 	self.show_hover_text = true --shows the hover text on the paged list
-	
-	local grid_width = 400
-	self.page_list = self.inventory_list:AddChild(PagedList(grid_width, function(widget, data) UpdateSkinGrid(widget, data, self) end, self.list_widgets))
+	self.page_list = self.list_root:AddChild(PagedList(row_width, row_height, spacing, function(widget, data, index) UpdateSkinLine(widget, data, index, self) end, self.list_widgets))
+	self.page_list:SetPosition(0, 0)
 end
 
 function ItemSelector:UpdateData( selections, filters_list )
@@ -94,7 +104,9 @@ function ItemSelector:UpdateData( selections, filters_list )
     	end
     end
 
-	self.page_list:SetItemsData(self.skins_list)
+
+	local inventory_rows = SplitSkinsIntoInventoryRows(self.skins_list, NUM_ITEMS_PER_ROW)	
+	self.page_list:SetItemsData(inventory_rows)
 
 	if page_number ~= 0 then
 		self.page_list:SetPage(page_number)
@@ -102,27 +114,66 @@ function ItemSelector:UpdateData( selections, filters_list )
 end
 
 function ItemSelector:EnableInput()
-	for _,item_image in pairs( self.list_widgets ) do
-		item_image:Enable()
+	for _,line in pairs( self.list_widgets ) do
+		for _,item_image in pairs( line.images ) do
+			item_image:Enable()
+		end
 	end
 	self.page_list:EvaluateArrows() --enables the correct arrow buttons
 end
 
 function ItemSelector:DisableInput()
-	for _,item_image in pairs( self.list_widgets ) do
-		item_image:Disable()
+	for _,line in pairs( self.list_widgets ) do
+		for _,item_image in pairs( line.images ) do
+			item_image:Disable()
+		end
 	end
 	self.page_list.left_button:Disable()
 	self.page_list.right_button:Disable()
 end
 
+function ItemSelector:SetFocusColumn( itemimage )
+
+	if self.page_list then 
+		local row_widget = self.page_list:GetFocusedWidget()
+
+		for i=1,#row_widget.images do 
+			if row_widget.images[i] == itemimage then 
+				self.focus_column = i
+			end
+		end
+	else 
+		self.focus_column = 1
+	end
+end
+
+function ItemSelector:SetFocusIndex(idx)
+	self.focus_index = idx
+end
+
+function ItemSelector:ClearFocus()
+	--TODO(Peter): does clearing this also break the controller focus?
+	-- Clear focus on buttons etc.
+	for k,v in pairs(self.children) do
+        if v.focus then
+            v:ClearFocus()
+        end
+    end
+end
+
+function ItemSelector:TakeFocus()
+	self.page_list:ForceFocus()
+end
+
 -- OnItemSelect is called when an item in the list is clicked
-function ItemSelector:OnItemSelect(type, item, item_id, itemimage)
+function ItemSelector:OnItemSelect(type, item, id, itemimage)
 	-- TODO: put this back if we stop removing the items from the list entirely
 	--itemimage:PlaySpecialAnimation("off")
 
-	--print("ItemSelector position", self:GetPosition(), self:GetWorldPosition())
-	self.owner:StartAddSelectedItem( {type = type, item = item, item_id = item_id}, itemimage:GetWorldPosition())
+	self:SetFocusIndex(itemimage.index)
+
+	-- Tell the TradeScreen to add it to the claw machine
+	return self.owner:AddSelectedItem( {type = type, item = item, item_id = id})
 end
 
 function ItemSelector:NumItemsLikeThis(item_name)
@@ -134,7 +185,9 @@ function ItemSelector:NumItemsLikeThis(item_name)
 		end
 	end
 
+	--print("Returning ", count, " for ", item_name)
 	return count
+
 end
 
 function ItemSelector:GetNumFilteredItems()
