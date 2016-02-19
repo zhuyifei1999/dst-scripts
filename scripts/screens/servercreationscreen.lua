@@ -202,7 +202,7 @@ function ServerCreationScreen:UpdateTitle(slotnum, fromTextEntered)
             self.day_title:SetString(STRINGS.UI.SERVERCREATIONSCREEN.SERVERDAY_NEW)
         end
     else
-        self.day_title:SetString(STRINGS.UI.SERVERCREATIONSCREEN.SERVERDAY.." "..SaveGameIndex:GetSlotDay(slotnum))
+        self.day_title:SetString(STRINGS.UI.SERVERCREATIONSCREEN.SERVERDAY.." "..(SaveGameIndex:GetSlotDay(slotnum) or STRINGS.UI.SERVERADMINSCREEN.UNKNOWN_DAY))
     end
 
     -- may also want to update the string used on the nav button...
