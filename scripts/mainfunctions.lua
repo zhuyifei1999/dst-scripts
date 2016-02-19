@@ -704,39 +704,6 @@ local function Check_Mods()
         --By this point the game should have either a) disabled bad mods, or b) be interactive
         KnownModIndex:EndStartupSequence(nil) -- no callback, this doesn't need to block and we don't need the results
     end
-
-end
-
-local function OnSelectedLegacyClientHosting()
-    Profile:ShowedLegacyClientHostingPopup()
-    TheFrontEnd:PopScreen() -- pop after updating settings otherwise this dialog might show again!
-    Profile:Save()
-    scheduler:ExecuteInTime(.05, function() Check_Mods() end)
-end
-
-local function SelectLegacyClientHosting(enabled)
-    if enabled ~= TheSim:IsLegacyClientHosting() then
-        TheSim:SetLegacyClientHosting(enabled)
-        SaveGameIndex:Load(OnSelectedLegacyClientHosting)
-    else
-        OnSelectedLegacyClientHosting()
-    end
-end
-
-local function Check_LegacyClientHosting()
-    local sawPopup = Profile:SawLegacyClientHostingPopup()
-    if not (sawPopup or TheNet:IsDedicated()) then
-        local popup = PopupDialogScreen(STRINGS.UI.MAINSCREEN.MULTILEVEL_HEADER, STRINGS.UI.MAINSCREEN.MULTILEVEL_BODY,
-            {
-                { text = STRINGS.UI.MAINSCREEN.ENABLE_MULTILEVEL_WORLDS, cb = function() SelectLegacyClientHosting(false) end },
-                { text = STRINGS.UI.MAINSCREEN.DISABLE_MULTILEVEL_WORLDS, cb = function() SelectLegacyClientHosting(true) end },
-            }
-        )
-
-        TheFrontEnd:PushScreen(popup)
-    else
-        Check_Mods()
-    end
 end
 
 local function CheckControllers()
@@ -769,7 +736,7 @@ local function CheckControllers()
             Profile:ShowedControllerPopup()
             TheFrontEnd:PopScreen() -- pop after updating settings otherwise this dialog might show again!
             Profile:Save()
-            scheduler:ExecuteInTime(0.05, function() Check_LegacyClientHosting() end)
+            scheduler:ExecuteInTime(0.05, function() Check_Mods() end)
         end
 
         local function disableControllers()
@@ -777,7 +744,7 @@ local function CheckControllers()
             Profile:ShowedControllerPopup()
             TheFrontEnd:PopScreen() -- pop after updating settings otherwise this dialog might show again!
             Profile:Save()
-            scheduler:ExecuteInTime(0.05, function() Check_LegacyClientHosting() end)
+            scheduler:ExecuteInTime(0.05, function() Check_Mods() end)
         end
 
         local function revertControllers()
@@ -789,7 +756,7 @@ local function CheckControllers()
             Profile:ShowedControllerPopup()
             TheFrontEnd:PopScreen() -- pop after updating settings otherwise this dialog might show again!
             Profile:Save()
-            scheduler:ExecuteInTime(0.05, function() Check_LegacyClientHosting() end)
+            scheduler:ExecuteInTime(0.05, function() Check_Mods() end)
         end
 
         local popup = PopupDialogScreen(STRINGS.UI.MAINSCREEN.CONTROLLER_DETECTED_HEADER, STRINGS.UI.MAINSCREEN.CONTROLLER_DETECTED_BODY,
@@ -809,18 +776,18 @@ local function CheckControllers()
         if Input:ControllerAttached() then
             TheFrontEnd:StopTrackingMouse(true)
         end
-        Check_LegacyClientHosting()
+        Check_Mods()
     end
 end
 
 function Start()
     if SOUNDDEBUG_ENABLED then
-        require "debugsounds"
+        require("debugsounds")
     end
 
     ---The screen manager
     TheFrontEnd = FrontEnd()
-    require ("gamelogic")
+    require("gamelogic")
 
     CheckControllers()
 

@@ -909,7 +909,7 @@ local function OnFilesLoaded()
     if not (TheNet:IsDedicated() or TheNet:GetIsServer() or TheNet:GetIsClient()) then
         local host_sessions = {}
         for i = 1, NUM_SAVE_SLOTS do
-            local session = SaveGameIndex:GetClusterSlotSession(i)
+            local session = SaveGameIndex:GetSlotSession(i)
             if session ~= nil then
                 table.insert(host_sessions, session)
             end

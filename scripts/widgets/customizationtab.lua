@@ -24,6 +24,43 @@ local DEFAULT_TAB_LOCATIONS =
     "cave",
 }
 
+local function OnClickTab(self, level)
+    if level ~= 1 and not self:IsLevelEnabled(level) then
+        local locationname =
+            STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME[string.upper(self.activepresets[level].location or "")] or
+            STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME.UNKNOWN
+
+        TheFrontEnd:PushScreen(
+            PopupDialogScreen(
+                STRINGS.UI.SANDBOXMENU.ADDLEVEL.." "..locationname.."?",
+                string.format(STRINGS.UI.SANDBOXMENU.ADDLEVEL_WARNING, locationname),
+                {
+                    {
+                        text = STRINGS.UI.MODSSCREEN.YES,
+                        cb = function()
+                            TheFrontEnd:PopScreen()
+                            self:AddMultiLevel(level)
+                            self:SelectMultilevel(level)
+                            if TheInput:ControllerAttached() and not TheFrontEnd.tracking_mouse then
+                                self:SetFocus(self.default_focus)
+                            end
+                        end,
+                    },
+                    {
+                        text = STRINGS.UI.MODSSCREEN.NO,
+                        cb = function() TheFrontEnd:PopScreen() end,
+                    },
+                }
+            )
+        )
+    else
+        self:SelectMultilevel(level)
+        if TheInput:ControllerAttached() and not TheFrontEnd.tracking_mouse then
+            self:SetFocus(self.default_focus)
+        end
+    end
+end
+
 local CustomizationTab = Class(Widget, function(self, servercreationscreen)
     Widget._ctor(self, "CustomizationTab")
 
@@ -83,28 +120,15 @@ local CustomizationTab = Class(Widget, function(self, servercreationscreen)
     self.multileveltabs_bg_2:SetSize(320, 334)
     self.multileveltabs_bg_2:SetPosition(0, -175)
 
-    self.multileveltabs.tabs = {}
-    self.level1tab = self.multileveltabs:AddChild(TEMPLATES.TabButton(-80, 0, "",
-        function()
-            self:SelectMultilevel(1)
-            if TheInput:ControllerAttached() and not TheFrontEnd.tracking_mouse then
-                self:OnFocusMove(MOVE_DOWN, true)
-            end
-        end,
-        "small"))
-    self.level1tab:SetTextSize(24)
-    table.insert(self.multileveltabs.tabs, self.level1tab)
+    self.multileveltabs.tabs =
+    {
+        self.multileveltabs:AddChild(TEMPLATES.TabButton(-80, 0, "", function() OnClickTab(self, 1) end, "small")),
+        self.multileveltabs:AddChild(TEMPLATES.TabButton(80, 0, "", function() OnClickTab(self, 2) end, "small")),
+    }
 
-    self.level2tab = self.multileveltabs:AddChild(TEMPLATES.TabButton(80, 0, "",
-        function()
-            self:SelectMultilevel(2)
-            if TheInput:ControllerAttached() and not TheFrontEnd.tracking_mouse then
-                self:OnFocusMove(MOVE_DOWN, true)
-            end
-        end,
-        "small"))
-    self.level2tab:SetTextSize(24)
-    table.insert(self.multileveltabs.tabs, self.level2tab)
+    for i, v in ipairs(self.multileveltabs.tabs) do
+        v:SetTextSize(24)
+    end
 
     self.left_line = self:AddChild(Image("images/ui.xml", "line_vertical_5.tex"))
     self.left_line:SetScale(1, .6)
@@ -118,7 +142,7 @@ local CustomizationTab = Class(Widget, function(self, servercreationscreen)
     self.presettitle:SetColour(0,0,0,1)
     self.presettitle:SetHAlign(ANCHOR_MIDDLE)
     self.presettitle:SetRegionSize( 400, 70 )
-    self.presettitle:SetString(STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETTITLE)
+    self.presettitle:SetString(STRINGS.UI.CUSTOMIZATIONSCREEN.USEPRESETS)
 
     self.presetdesc = self.presetpanel:AddChild(Text(NEWFONT, 25))
     self.presetdesc:SetColour(0,0,0,1)
@@ -167,16 +191,38 @@ local CustomizationTab = Class(Widget, function(self, servercreationscreen)
 
     self.savepresetbutton = self.presetpanel:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "save.tex", STRINGS.UI.CUSTOMIZATIONSCREEN.SAVEPRESET, false, false, function() self:SavePreset() end))
 
-    self.addmultileveltext = self.presetpanel:AddChild(Text(NEWFONT, 25))
-    self.addmultileveltext:SetColour(0,0,0,1)
-    self.addmultileveltext:SetHAlign(ANCHOR_RIGHT)
-    self.addmultileveltext:SetPosition(-15, -175, 0)
-    self.addmultileveltext:SetRegionSize( 220, 40 )
-    self.addmultileveltext:SetString(STRINGS.UI.SANDBOXMENU.ENABLE)
-
-    self.addmultilevel = self.presetpanel:AddChild(ImageButton("images/ui.xml", "checkbox_off.tex", "checkbox_off_highlight.tex", "checkbox_off_disabled.tex", nil, nil, {1,1}, {0,0}))
-    self.addmultilevel:SetOnClick(function() self:ToggleMultilevel() end)
-    self.addmultilevel:SetPosition(120, -180, 0)
+    self.removemultilevel = self.presetpanel:AddChild(TEMPLATES.SmallButton(nil, 23, nil,
+        function()
+            local locationname =
+                STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME[string.upper(self.activepresets[self.currentmultilevel].location or "")] or
+                STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME.UNKNOWN
+            TheFrontEnd:PushScreen(
+                PopupDialogScreen(
+                    STRINGS.UI.SANDBOXMENU.REMOVELEVEL.." "..locationname.."?",
+                    string.format(STRINGS.UI.SANDBOXMENU.REMOVELEVEL_WARNING, locationname),
+                    {
+                        {
+                            text = STRINGS.UI.MODSSCREEN.YES,
+                            cb = function()
+                                TheFrontEnd:PopScreen()
+                                self:RemoveMultiLevel(self.currentmultilevel)
+                                self:SelectMultilevel(1)
+                                if TheInput:ControllerAttached() and not TheFrontEnd.tracking_mouse then
+                                    self:SetFocus(self.default_focus)
+                                end
+                            end,
+                        },
+                        {
+                            text = STRINGS.UI.MODSSCREEN.NO,
+                            cb = function() TheFrontEnd:PopScreen() end,
+                        },
+                    }
+                )
+            )
+        end))
+    self.removemultilevel.image:SetScale(.5, .4)
+    self.removemultilevel.text:SetPosition(0, -2, 0)
+    self.removemultilevel:SetPosition(0, -170, 0)
 
     --add the custom options panel
 
@@ -205,61 +251,42 @@ function CustomizationTab:GetValueForOption(option)
     return nil
 end
 
-function CustomizationTab:ToggleMultilevel()
-    if self.slotoptions[self.slot][2] ~= nil then
-        self:MakeSingleLevel()
-    else
-        self:MakeMultilevel()
+function CustomizationTab:AddMultiLevel(level)
+    if level ~= 1 and self.slotoptions[self.slot][level] == nil then
+        self.slotoptions[self.slot][level] =
+        {
+            actualpreset = DEFAULT_PRESETS[level],
+            preset = DEFAULT_PRESETS[level],
+            tweak = {},
+        }
+        self:UpdateMultilevelUI()
+        self:UpdateOptions(level)
     end
 end
 
-function CustomizationTab:MakeMultilevel()
-    self.slotoptions[self.slot][2] = {
-        actualpreset = DEFAULT_PRESETS[2],
-        preset = DEFAULT_PRESETS[2],
-        tweak={},
-    }
-
-    self:UpdateMultilevelUI()
-    self:UpdateOptions(2)
-end
-
-function CustomizationTab:MakeSingleLevel()
-    self.slotoptions[self.slot][2] = nil
-    --self.currentmultilevel = 1
-
-    self:UpdateMultilevelUI()
-    self:UpdateOptions(2)
+function CustomizationTab:RemoveMultiLevel(level)
+    if level ~= 1 and self.slotoptions[self.slot][level] ~= nil then
+        self.slotoptions[self.slot][level] = nil
+        self:UpdateMultilevelUI()
+        self:UpdateOptions(level)
+    end
 end
 
 function CustomizationTab:UpdateMultilevelUI()
     --V2C: Always show multilevel tabs
     --     Instead, clear out the info when the tab level is not enabled
-    if self.slotoptions[self.slot] ~= nil and self.slotoptions[self.slot][self.currentmultilevel] ~= nil then
-        self.presettitle:SetPosition(0, 85, 0)
-        self.presetdesc:SetPosition(0, -40, 0)
-        self.presetspinner:SetPosition(0, 35, 0)
-        self.revertbutton:SetPosition(-35, -125, 0)
-        self.savepresetbutton:SetPosition(40, -125, 0)
+    self.presettitle:SetPosition(0, 85, 0)
+    self.presetdesc:SetPosition(0, -40, 0)
+    self.presetspinner:SetPosition(0, 35, 0)
+    self.revertbutton:SetPosition(-35, -125, 0)
+    self.savepresetbutton:SetPosition(40, -125, 0)
 
-        self.presettitle:Show()
-        self.presetdesc:Show()
-        self.presetspinner:Show()
-        self.revertbutton:Show()
-        self.savepresetbutton:Show()
+    self.presettitle:Show()
+    self.presetdesc:Show()
+    self.presetspinner:Show()
+    self.multileveltabs:Show()
 
-        self.addmultilevel:SetTextures("images/ui.xml", "checkbox_on.tex", "checkbox_on_highlight.tex", "checkbox_on_disabled.tex", nil, nil, {1,1}, {0,0})
-    else
-        self.presettitle:Hide()
-        self.presetdesc:Hide()
-        self.presetspinner:Hide()
-        self.revertbutton:Hide()
-        self.savepresetbutton:Hide()
-
-        self.addmultilevel:SetTextures("images/ui.xml", "checkbox_off.tex", "checkbox_off_highlight.tex", "checkbox_off_disabled.tex", nil, nil, {1,1}, {0,0})
-    end
-
-    if TheSim:IsLegacyClientHosting() then
+    --[[ --Old code for no tabs layout
         self.presettitle:SetPosition(0, 105, 0)
         self.presetdesc:SetPosition(0, -20, 0)
         self.presetspinner:SetPosition(0, 55, 0)
@@ -267,32 +294,36 @@ function CustomizationTab:UpdateMultilevelUI()
         self.savepresetbutton:SetPosition(40, -115, 0)
 
         self.multileveltabs:Hide()
-        self.addmultilevel:Disable()
-    else
-        self.multileveltabs:Show()
+        self.removemultilevel:Hide()
+    ]]
 
-        if self.allowEdit then
-            self.addmultilevel:Enable()
-        else
-            self.addmultilevel:Disable()
-        end
+    if self.allowEdit then
+        self.revertbutton:Show()
+        self.savepresetbutton:Show()
+    else
+        self.revertbutton:Hide()
+        self.savepresetbutton:Hide()
+    end
+
+    if self.allowEdit and self.currentmultilevel ~= 1 then
+        self.removemultilevel:Show()
+    else
+        self.removemultilevel:Hide()
     end
 
     local currentpresets = self.activepresets[self.currentmultilevel]
-    local locationname = currentpresets ~= nil and STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME[string.upper(currentpresets.location or "")] or nil
+    local locationid = currentpresets ~= nil and string.upper(currentpresets.location or "") or nil
+
+    local locationname = STRINGS.UI.SANDBOXMENU.LOCATION[locationid]
     locationname = locationname ~= nil and (locationname.." ") or ""
-    self.addmultileveltext:SetString(locationname..STRINGS.UI.SANDBOXMENU.ENABLED)
+    self.presettitle:SetString(locationname.." "..STRINGS.UI.SANDBOXMENU.USEPRESETS)
 
-    if self.currentmultilevel == 1 then
-        self.addmultilevel:Hide()
-        self.addmultileveltext:Hide()
-    else
-        self.addmultilevel:Show()
-        self.addmultileveltext:Show()
-    end
+    locationname = STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME[locationid]
+    locationname = locationname ~= nil and (locationname.." ") or ""
+    self.removemultilevel:SetText(STRINGS.UI.SANDBOXMENU.REMOVELEVEL.." "..locationname)
 
-    for i,tab in ipairs(self.multileveltabs.tabs) do
-        if i == self.currentmultilevel then
+    for i, tab in ipairs(self.multileveltabs.tabs) do
+        if i == self.currentmultilevel or not (self.allowEdit or self:IsLevelEnabled(i)) then
             tab:Disable()
         else
             tab:Enable()
@@ -513,7 +544,7 @@ function CustomizationTab:RefreshSpinnerValues()
         self.customizationlist:Kill()
     end
 
-    if self.slotoptions[self.slot] == nil or self.slotoptions[self.slot][self.currentmultilevel] == nil then
+    if not self:IsLevelEnabled(self.currentmultilevel) then
         --Disabled level tab
         return
     end
@@ -575,13 +606,13 @@ function CustomizationTab:UpdateOptions(singlelevel)
     self:RefreshTabValues()
 end
 
+function CustomizationTab:IsLevelEnabled(level)
+    return self.slotoptions[self.slot] ~= nil and self.slotoptions[self.slot][level] ~= nil
+end
+
 function CustomizationTab:RefreshTabValues()
     --V2C: filter presets for the tab based on the location of the current selection
-    local tablocation =
-        not TheSim:IsLegacyClientHosting()
-        and (self.activepresets[self.currentmultilevel].location or
-            DEFAULT_TAB_LOCATIONS[self.currentmultilevel])
-        or nil
+    local tablocation = self.activepresets[self.currentmultilevel].location or DEFAULT_TAB_LOCATIONS[self.currentmultilevel]
 
     if tablocation ~= nil then
         local filteredpresets = {}
@@ -599,13 +630,45 @@ function CustomizationTab:RefreshTabValues()
     for i, presetdata in ipairs(self.activepresets) do
         local clean = self:GetNumberOfTweaks(i) == 0
 
+        local locationname =
+            STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME[string.upper(self.activepresets[i].location or "")] or
+            STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME.UNKNOWN
+
         --self.multileveltabs.tabs[i]:SetText(self.activepresets[i].text .. (clean and "" or "*"))
 
         --V2C: make the tab heading very clear that one is Forest tab and one is Caves tab
-        self.multileveltabs.tabs[i]:SetText(
-            STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME[string.upper(self.activepresets[i].location or "")] or
-            STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME.UNKNOWN
-        )
+        local tabbtn = self.multileveltabs.tabs[i]
+        if self:IsLevelEnabled(i) then
+            --tab is enabled, make it look like a regular tab
+            tabbtn:SetText(locationname)
+            tabbtn:SetTextures("images/frontend.xml", "tab2_button.tex", "tab2_button_highlight.tex", "tab2_selected.tex", nil, nil, { 1, 1 }, { 0, 0 })
+            tabbtn.image:SetScale(.73)
+            tabbtn:SetFont(NEWFONT_OUTLINE)
+            tabbtn:SetDisabledFont(NEWFONT_SMALL)
+            tabbtn:SetTextColour(unpack(GOLD))
+            tabbtn:SetTextFocusColour(unpack(GOLD))
+            tabbtn:SetTextDisabledColour(unpack(BLACK))
+        elseif self.allowEdit then
+            --tab is disabled, make it look like an "Add ___" button
+            tabbtn:SetText(STRINGS.UI.SANDBOXMENU.ADDLEVEL.." "..locationname)
+            tabbtn:SetTextures("images/frontend.xml", "button_long.tex", "button_long_highlight.tex", "button_long_disabled.tex", "button_long_halfshadow.tex", nil, { 1, 1 }, { 6, 2 })
+            tabbtn.image:SetScale(.5, .6)
+            tabbtn:SetFont(NEWFONT_SMALL)
+            tabbtn:SetDisabledFont(NEWFONT_SMALL)
+            tabbtn:SetTextColour(unpack(BLACK))
+            tabbtn:SetTextFocusColour(unpack(BLACK))
+            tabbtn:SetTextDisabledColour(unpack(BLACK))
+        else
+            --tab is disabled, but we can't add it because this slot is not editable
+            tabbtn:SetText(STRINGS.UI.SANDBOXMENU.DISABLEDLEVEL.." "..locationname)
+            tabbtn:SetTextures("images/frontend.xml", "tab2_button.tex", "tab2_button.tex", "tab2_button.tex", nil, nil, { 1, 1 }, { 0, 0 })
+            tabbtn.image:SetScale(.73)
+            tabbtn:SetFont(NEWFONT_SMALL)
+            tabbtn:SetDisabledFont(NEWFONT_SMALL)
+            tabbtn:SetTextColour(unpack(BLACK))
+            tabbtn:SetTextFocusColour(unpack(BLACK))
+            tabbtn:SetTextDisabledColour(unpack(BLACK))
+        end
 
         if i == self.currentmultilevel then
             self.presetspinner.spinner:SetSelected(self.activepresets[i].data)
@@ -677,14 +740,14 @@ function CustomizationTab:UpdateSlot(slotnum, prevslot, delete)
                 { tweak = {} }
             }
 
-            if not TheSim:IsLegacyClientHosting() then
-                --Enable caves by default
-                self.slotoptions[self.slot][2] = {
-                    actualpreset = DEFAULT_PRESETS[2],
-                    preset = DEFAULT_PRESETS[2],
-                    tweak={},
-                }
-            end
+            --Enable caves by default
+            --(by uncommenting.. it's disabled by default now)
+            --[[
+            self.slotoptions[self.slot][2] = {
+                actualpreset = DEFAULT_PRESETS[2],
+                preset = DEFAULT_PRESETS[2],
+                tweak={},
+            }]]
         end
     else -- Save data
         self.allowEdit = false
@@ -706,7 +769,7 @@ function CustomizationTab:UpdateSlot(slotnum, prevslot, delete)
     self:UpdateOptions()
     self:UpdateMultilevelUI()
 
-    if previouslevel ~= self.currentmultilevel then
+    if previouslevel ~= self.currentmultilevel and self:IsLevelEnabled(previouslevel) then
         self:SelectMultilevel(previouslevel)
     end
 end
@@ -775,24 +838,21 @@ function CustomizationTab:RevertChanges()
                     end
                     self:UpdateOptions(self.currentmultilevel)
                     TheFrontEnd:PopScreen()
-                end
+                end,
             },
-
             {
                 text = STRINGS.UI.CUSTOMIZATIONSCREEN.NO,
                 cb = function()
                     TheFrontEnd:PopScreen()
-                end
-            }
+                end,
+            },
           }
         )
     )
 end
 
 function CustomizationTab:HookupFocusMoves()
-    local function tosaveslots()
-        return self.servercreationscreen ~= nil and self.servercreationscreen.save_slots[self.slot] or nil
-    end
+    local tosaveslots = self.servercreationscreen ~= nil and self.servercreationscreen.getfocussaveslot or nil
 
     local function tocustomizationlist()
         return self.customizationlist
@@ -802,14 +862,8 @@ function CustomizationTab:HookupFocusMoves()
         return self.multileveltabs.tabs[self.currentmultilevel < #self.multileveltabs.tabs and self.currentmultilevel + 1 or self.currentmultilevel - 1]
     end
 
-    local function toleveldetails()
-        return (self.presetspinner:IsVisible() and self.presetspinner)
-            or (self.addmultilevel:IsEnabled() and self.addmultilevel)
-            or toleveltab()
-    end
-
     for i, v in ipairs(self.multileveltabs.tabs) do
-        v:SetFocusChangeDir(MOVE_DOWN, toleveldetails)
+        v:SetFocusChangeDir(MOVE_DOWN, self.presetspinner)
         v:SetFocusChangeDir(MOVE_RIGHT, i < #self.multileveltabs.tabs and self.multileveltabs.tabs[i + 1] or tocustomizationlist)
         v:SetFocusChangeDir(MOVE_LEFT, i > 1 and self.multileveltabs.tabs[i - 1] or tosaveslots)
     end
@@ -818,20 +872,14 @@ function CustomizationTab:HookupFocusMoves()
     self.presetspinner:SetFocusChangeDir(MOVE_DOWN, self.revertbutton)
     self.revertbutton:SetFocusChangeDir(MOVE_RIGHT, self.savepresetbutton)
     self.revertbutton:SetFocusChangeDir(MOVE_UP, self.presetspinner)
-    self.revertbutton:SetFocusChangeDir(MOVE_DOWN, self.addmultilevel)
+    self.revertbutton:SetFocusChangeDir(MOVE_DOWN, self.removemultilevel)
     self.savepresetbutton:SetFocusChangeDir(MOVE_LEFT, self.revertbutton)
     self.savepresetbutton:SetFocusChangeDir(MOVE_UP, self.presetspinner)
-    self.savepresetbutton:SetFocusChangeDir(MOVE_RIGHT, function()
-        return self.addmultilevel:IsVisible() and self.addmultilevel or self.customizationlist
-    end)
-    self.savepresetbutton:SetFocusChangeDir(MOVE_DOWN, self.addmultilevel)
-    self.addmultilevel:SetFocusChangeDir(MOVE_UP, function()
-        return self.savepresetbutton:IsVisible() and self.savepresetbutton or toleveltab()
-    end)
-    self.addmultilevel:SetFocusChangeDir(MOVE_LEFT, function()
-        return self.savepresetbutton:IsVisible() and self.savepresetbutton or tosaveslots()
-    end)
-    self.addmultilevel:SetFocusChangeDir(MOVE_RIGHT, tocustomizationlist)
+    self.savepresetbutton:SetFocusChangeDir(MOVE_RIGHT, tocustomizationlist)
+    self.savepresetbutton:SetFocusChangeDir(MOVE_DOWN, self.removemultilevel)
+    self.removemultilevel:SetFocusChangeDir(MOVE_UP, self.savepresetbutton)
+    self.removemultilevel:SetFocusChangeDir(MOVE_LEFT, tosaveslots)
+    self.removemultilevel:SetFocusChangeDir(MOVE_RIGHT, tocustomizationlist)
 
     self.presetspinner:SetFocusChangeDir(MOVE_LEFT, tosaveslots)
     self.revertbutton:SetFocusChangeDir(MOVE_LEFT, tosaveslots)

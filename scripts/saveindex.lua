@@ -37,9 +37,11 @@ local function GetWorldgenOverride(cb)
                     if savedata ~= nil and savedata.override_enabled then
                         print("Loaded and applied world gen overrides from "..filename)
                         local preset = savedata.preset
+						local presetdata = savedata.presetdata
                         savedata.override_enabled = nil --remove this so the rest of the table can be interpreted as a tweak table
                         savedata.preset = nil
-                        cb( preset, savedata )
+                        savedata.presetdata = nil
+                        cb( preset, presetdata, savedata )
                         return
                     else
                         print("Found world gen overrides but not enabled.")
@@ -112,7 +114,61 @@ local function OnLoad(self, filename, callback, load_success, str)
     end
 end
 
+--V2C: TODO: Temporary upgrading code, remove later
+function SaveIndex:DoLegacyUpgrade(callback)
+    if TheNet:IsDedicated() then
+        return false
+    end
+
+    local filename = self:GetSaveIndexName()
+    TheSim:GetPersistentString(filename,
+        function(load_success, str)
+            OnLoad(self, filename,
+                function()
+                    if TheSim:IsLegacyClientHosting() then
+                        TheSim:SetLegacyClientHosting(false)
+                        print("Deprecating Legacy Client Hosting")
+                        print("Migrating "..filename.." -> "..self:GetSaveIndexName())
+                        self:Save(callback)
+                    else
+                        local dirty = false
+                        for i, v in ipairs(self.data.slots) do
+                            if v.world ~= nil and
+                                v.world.options ~= nil and
+                                v.world.options[1] ~= nil and
+                                v.world.options[2] == nil and
+                                v.session_id == "" then
+                                --Migrate single-level multi-process slots to single-process
+                                local session_id = nil
+                                local clusterSaveIndex = SaveIndex()
+                                clusterSaveIndex:LoadClusterSlot(i, "Master", function()
+                                    session_id = clusterSaveIndex.data.slots[clusterSaveIndex.current_slot].session_id
+                                end)
+                                if session_id ~= nil and session_id ~= "" then
+                                    dirty = true
+                                    v.session_id = session_id
+                                    print("Migrating legacy save slot "..tostring(i).." session "..session_id)
+                                    TheSim:MigrateSingleLevelClusterSession(i)
+                                end
+                            end
+                        end
+                        if dirty then
+                            self:Save(callback)
+                        elseif callback ~= nil then
+                            callback()
+                        end
+                    end
+                end,
+                load_success, str)
+        end)
+    return true
+end
+
 function SaveIndex:Load(callback)
+    if self:DoLegacyUpgrade(callback) then
+        return
+    end
+
     --This happens on game start.
     local filename = self:GetSaveIndexName()
     TheSim:GetPersistentString(filename,
@@ -169,10 +225,11 @@ function SaveIndex:DeleteSlot(slot, cb, save_options)
     if slotdata ~= nil then
         local server = slotdata.server
         local options = slotdata.world.options
+        local session_id = self:GetSlotSession(slot)
 
         --DST session file stuff
-        if slotdata.session_id ~= nil then
-            TheNet:DeleteSession(slotdata.session_id)
+        if session_id ~= nil and session_id ~= "" then
+            TheNet:DeleteSession(session_id)
         end
 
         if not TheNet:IsDedicated() then
@@ -270,7 +327,7 @@ function SaveIndex:StartSurvivalMode(saveslot, customoptions, serverdata, onsave
         slot.world.options[1] = data
     end
 
-    GetWorldgenOverride(function(preset, overrideoptions)
+    GetWorldgenOverride(function(preset, presetdata, overrideoptions)
         -- note: Always overrides layer 1, as that's what worldgen will generate
         if slot.world.options == nil then
             slot.world.options = { supportsmultilevel = true }
@@ -280,6 +337,12 @@ function SaveIndex:StartSurvivalMode(saveslot, customoptions, serverdata, onsave
         end
         if preset then
             slot.world.options[1].actualpreset = preset
+        end
+        if presetdata then
+            slot.world.options[1].presetdata = presetdata
+			if presetdata.basepreset then
+				slot.world.options[1].preset = presetdata.basepreset
+			end
         end
         if overrideoptions then
             slot.world.options[1].tweak = overrideoptions
@@ -291,6 +354,14 @@ end
 
 function SaveIndex:IsSlotEmpty(slot)
     return slot == nil or self.data.slots[slot] == nil or self.data.slots[slot].session_id == nil
+end
+
+function SaveIndex:IsSlotMultiLevel(slot)
+    if TheNet:IsDedicated() then
+        return false
+    end
+    local slotdata = self.data.slots[slot]
+    return slotdata ~= nil and slotdata.session_id == "" and slotdata.world ~= nil and slotdata.world.options ~= nil and slotdata.world.options[1] ~= nil and slotdata.world.options[2] ~= nil
 end
 
 function SaveIndex:GetLastUsedSlot()
@@ -314,20 +385,15 @@ function SaveIndex:GetSlotGenOptions(slot)
 end
 
 function SaveIndex:GetSlotSession(slot)
-    return self.data.slots[slot or self.current_slot].session_id
-end
-
---V2C: This is for FE use, as it handles checking the cluster session folders
-function SaveIndex:GetClusterSlotSession(slot)
-    if TheSim:IsLegacyClientHosting() then
-        return self:GetSlotSession(slot)
+    if self:IsSlotMultiLevel(slot or self.current_slot) then
+        local session_id = nil
+        local clusterSaveIndex = SaveIndex()
+        clusterSaveIndex:LoadClusterSlot(slot or self.current_slot, "Master", function()
+            session_id = clusterSaveIndex.data.slots[clusterSaveIndex.current_slot].session_id
+        end)
+        return session_id
     end
-    local session_id = nil
-    local clusterSaveIndex = SaveIndex()
-    clusterSaveIndex:LoadClusterSlot(slot, "Master", function()
-        session_id = clusterSaveIndex.data.slots[clusterSaveIndex.current_slot].session_id
-    end)
-    return session_id
+    return self.data.slots[slot or self.current_slot].session_id
 end
 
 function SaveIndex:CheckWorldFile(slot)
@@ -352,12 +418,7 @@ function SaveIndex:LoadSlotCharacter(slot)
     local slotdata = self.data.slots[slot or self.current_slot]
     if slotdata.session_id ~= nil then
         local online_mode = slotdata.server.online_mode ~= false
-        if TheSim:IsLegacyClientHosting() then
-            local file = TheNet:GetUserSessionFile(slotdata.session_id, nil, online_mode)
-            if file ~= nil then
-                TheSim:GetPersistentString(file, onreadusersession)
-            end
-        else
+        if self:IsSlotMultiLevel(slot or self.current_slot) then
             local clusterSaveIndex = SaveIndex()
             clusterSaveIndex:LoadClusterSlot(slot, "Master", function()
                 local slotdata = clusterSaveIndex.data.slots[clusterSaveIndex.current_slot]
@@ -379,6 +440,11 @@ function SaveIndex:LoadSlotCharacter(slot)
                     end
                 end
             end)
+        else
+            local file = TheNet:GetUserSessionFile(slotdata.session_id, nil, online_mode)
+            if file ~= nil then
+                TheSim:GetPersistentString(file, onreadusersession)
+            end
         end
     end
     return character

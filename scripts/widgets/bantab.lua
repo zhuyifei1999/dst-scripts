@@ -392,6 +392,11 @@ function BanTab:MakePlayerList()
     end
     self.player_scroll_list:SetList(self.blacklist)
     self.player_scroll_list:SetPosition(-152, 0)
+
+    if self.clear_button ~= nil then
+        self.ban_page_row_root:SetFocusChangeDir(MOVE_RIGHT, function() return self.clear_button:IsVisible() and self.clear_button:IsEnabled() and self.clear_button or nil end)
+        self.clear_button:SetFocusChangeDir(MOVE_LEFT, self.player_scroll_list)
+    end
 end
 
 function BanTab:RefreshPlayers()
@@ -516,8 +521,8 @@ function BanTab:MakeMenuButtons()
         self.clear_button:Hide()
     end
 
-    self.servercreationscreen.create_button:SetFocusChangeDir(MOVE_UP, self.clear_button)
-    self.clear_button:SetFocusChangeDir(MOVE_DOWN, self.servercreationscreen.create_button)
+    local tocreate = self.servercreationscreen ~= nil and self.servercreationscreen.getfocuscreate or nil
+    self.clear_button:SetFocusChangeDir(MOVE_DOWN, tocreate)
 end
 
 function BanTab:OnControl(control, down)

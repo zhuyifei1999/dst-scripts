@@ -18,6 +18,8 @@ local PopupDialogScreen = require "screens/popupdialog"
 
 local TEMPLATES = require "widgets/templates"
 
+local clothing = require "clothing"
+
 require("util")
 require("networking")
 

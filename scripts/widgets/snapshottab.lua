@@ -16,6 +16,9 @@ local SnapshotTab = Class(Widget, function(self, cb)
     self.left_line:SetPosition(-530, 5, 0)
 
     self.save_slot = -1
+    self.session_id = nil
+    self.online_mode = nil
+    self.multi_level = nil
     self.cb = cb
     
     self.snapshots = nil
@@ -40,12 +43,9 @@ function SnapshotTab:RefreshSnapshots()
         end
     end
     self.snapshot_scroll_list:SetList(self.snapshots)
-    self.snapshot_scroll_list:SetPosition(has_scrollbar and -77 or -57, 0, 0)
 end
 
 function SnapshotTab:MakeSnapshotsMenu()
-    local use_legacy_client_hosting = TheSim:IsLegacyClientHosting()
-
     local function MakeSnapshotTile(data, index, parent)
         local widget = parent:AddChild(Widget("option"))
         widget:SetScale(.8)
@@ -57,14 +57,6 @@ function SnapshotTab:MakeSnapshotsMenu()
         widget.state_bg = widget:AddChild(Image("images/ui.xml", "single_option_bg_large_gold.tex"))
         widget.state_bg:SetScale(.63, .9)
         widget.state_bg:Hide()
-
-        widget.portraitroot = widget:AddChild(Widget("portrait"))
-        widget.portraitroot.bg = widget.portraitroot:AddChild(Image("images/saveslot_portraits.xml", "background.tex"))
-        widget.portraitroot.bg:SetClickable(false)
-        widget.portraitroot.image = widget.portraitroot:AddChild(Image())
-        widget.portraitroot.image:SetClickable(false)
-        widget.portraitroot:SetScale(.65, .65, 1)
-        widget.portraitroot:SetPosition(-100, 0, 0)
 
         widget.day = widget:AddChild(Text(NEWFONT, 35))
         widget.day:SetColour(0, 0, 0, 1)
@@ -124,40 +116,18 @@ function SnapshotTab:MakeSnapshotsMenu()
         end
 
         if data ~= nil and not data.empty then
-            local character, atlas
-            if TheSim:IsLegacyClientHosting() then
-                character = data.character or ""
-                atlas = "images/saveslot_portraits"
-                if not table.contains(DST_CHARACTERLIST, character) then
-                    if table.contains(MODCHARACTERLIST, character) then
-                        atlas = atlas.."/"..character
-                    else
-                        character = #character > 0 and "mod" or "unknown"
-                    end
-                end
-                atlas = atlas..".xml"
-            end
-
-            if character ~= nil then
-                widget.portraitroot.image:SetTexture(atlas, character..".tex")
-            else
-                widget.portraitroot:Hide()
-            end
-
             local day_text = STRINGS.UI.SERVERADMINSCREEN.DAY.." "..tostring(data.world_day or STRINGS.UI.SERVERADMINSCREEN.UNKNOWN_DAY)
             widget.day:SetString(day_text)
-            if not use_legacy_client_hosting and data.world_season ~= nil then
+            if data.world_season ~= nil then
                 widget.season:SetString(data.world_season)
                 widget.day:SetPosition(0, -15, 0)
             else
                 widget.season:Hide()
-                widget.day:SetPosition(character ~= nil and 40 or 0, 0, 0)
+                widget.day:SetPosition(0, 0, 0)
             end
             widget.empty = false
         else
-            widget.portraitroot:Hide()
             widget.season:Hide()
-
             widget.empty = true
         end
 
@@ -166,36 +136,15 @@ function SnapshotTab:MakeSnapshotsMenu()
 
     local function UpdateSnapshot(widget, data, index)
         if data ~= nil and not data.empty then
-            local character, atlas
-            if TheSim:IsLegacyClientHosting() then
-                character = data.character or ""
-                atlas = "images/saveslot_portraits"
-                if not table.contains(DST_CHARACTERLIST, character) then
-                    if table.contains(MODCHARACTERLIST, character) then
-                        atlas = atlas.."/"..character
-                    else
-                        character = #character > 0 and "mod" or "unknown"
-                    end
-                end
-                atlas = atlas..".xml"
-            end
-
-            if character ~= nil then
-                widget.portraitroot.image:SetTexture(atlas, character..".tex")
-                widget.portraitroot:Show()
-            else
-                widget.portraitroot:Hide()
-            end
-            
             local day_text = STRINGS.UI.SERVERADMINSCREEN.DAY.." "..tostring(data.world_day or STRINGS.UI.SERVERADMINSCREEN.UNKNOWN_DAY)
             widget.day:SetString(day_text)
-            if not use_legacy_client_hosting and data.world_season ~= nil then
+            if data.world_season ~= nil then
                 widget.season:SetString(data.world_season)
                 widget.season:Show()
                 widget.day:SetPosition(0, -15, 0)
             else
                 widget.season:Hide()
-                widget.day:SetPosition(character ~= nil and 40 or 0, 0, 0)
+                widget.day:SetPosition(0, 0, 0)
             end
             widget.empty = false
         else
@@ -203,25 +152,29 @@ function SnapshotTab:MakeSnapshotsMenu()
             widget.day:SetPosition(0, 0, 0)
             widget.season:SetString("")
             widget.season:Hide()
-            widget.portraitroot:Hide()
             widget.empty = true
         end
     end
 
     self.snapshot_page_scroll_root = self.snapshot_page:AddChild(Widget("scroll_root"))
-    self.snapshot_page_scroll_root:SetPosition(-40,0)
-
     self.snapshot_page_row_root = self.snapshot_page:AddChild(Widget("row_root"))
-    self.snapshot_page_row_root:SetPosition(-40,0)
 
     self.snapshot_widgets = {}
     for i=1,5 do
         table.insert(self.snapshot_widgets, MakeSnapshotTile(self.snapshots[i], i, self.snapshot_page_row_root))
     end
 
-    self.snapshot_scroll_list = self.snapshot_page_scroll_root:AddChild(ScrollableList(self.snapshots, 183, 450, 70, 3, UpdateSnapshot, self.snapshot_widgets, nil, nil, nil, -15))
-    self.snapshot_scroll_list:SetPosition(-152, 0)
-    self.snapshot_scroll_list:LayOutStaticWidgets(-55)
+    local tile_w = 526 --see source art
+    local tile_scale_x = .63 * .8 --see above widget and bg scale
+    self.snapshot_scroll_list = self.snapshot_page_scroll_root:AddChild(ScrollableList(self.snapshots, tile_w * tile_scale_x, 360, 70, 3, UpdateSnapshot, self.snapshot_widgets, nil, nil, nil, -15))
+    self.snapshot_scroll_list:SetPosition(-110, 0)
+    self.snapshot_scroll_list:LayOutStaticWidgets(-10)
+
+    self.snapshot_page_row_root.OnControl = function(_self, control, down)
+        return Widget.OnControl(_self, control, down)
+            or (_self:IsEnabled() and self.snapshot_scroll_list:OnControl(control, down, true))
+    end
+
     self:RefreshSnapshots()
 end
 
@@ -245,11 +198,11 @@ function SnapshotTab:OnClickSnapshot(snapshot_num)
             end
             local truncate_to_id = self.snapshots[snapshot_num].snapshot_id
             if truncate_to_id ~= nil and truncate_to_id > 0 then
-                if TheSim:IsLegacyClientHosting() then
-                    TheNet:TruncateSnapshots(self.session_id, truncate_to_id)
-                else
+                if self.multi_level then
                     TheNet:TruncateSnapshotsInClusterSlot(self.save_slot, "Master", self.session_id, truncate_to_id)
                     --slaves will auto-truncate to synchornize at startup
+                else
+                    TheNet:TruncateSnapshots(self.session_id, truncate_to_id)
                 end
             end
             SaveGameIndex:SetSlotDay(self.save_slot, self.snapshots[snapshot_num].world_day or STRINGS.UI.SERVERADMINSCREEN.UNKNOWN_DAY)
@@ -269,7 +222,12 @@ function SnapshotTab:ListSnapshots(force)
     self.snapshots = {}
     if self.save_slot ~= nil and self.session_id ~= nil then
         --V2C: TODO: update ListSnapshots to support cluster folders
-        local snapshot_infos, has_more = TheNet:ListSnapshots(self.save_slot, self.session_id, self.online_mode, 10)
+        local snapshot_infos, has_more
+        if self.multi_level then
+            snapshot_infos, has_more = TheNet:ListSnapshotsInClusterSlot(self.save_slot, "Master", self.session_id, self.online_mode, 10)
+        else
+            snapshot_infos, has_more = TheNet:ListSnapshots(self.session_id, self.online_mode, 10)
+        end
         for i, v in ipairs(snapshot_infos) do
             if v.snapshot_id ~= nil then
                 local info = { snapshot_id = v.snapshot_id }
@@ -302,22 +260,11 @@ function SnapshotTab:ListSnapshots(force)
                             end
                         end
                     end
-                    if TheSim:IsLegacyClientHosting() then
-                        TheSim:GetPersistentString(v.world_file, onreadworldfile)
-                    else
+                    if self.multi_level then
                         TheSim:GetPersistentStringInClusterSlot(self.save_slot, "Master", v.world_file, onreadworldfile)
+                    else
+                        TheSim:GetPersistentString(v.world_file, onreadworldfile)
                     end
-                end
-                if v.user_file ~= nil and TheSim:IsLegacyClientHosting() then
-                    TheSim:GetPersistentString(v.user_file,
-                        function(success, str)
-                            if success and str ~= nil and #str > 0 then
-                                local success, savedata = RunInSandbox(str)
-                                if success and savedata ~= nil and GetTableSize(savedata) > 0 then
-                                    info.character = savedata.prefab
-                                end
-                            end
-                        end)
                 end
                 table.insert(self.snapshots, info)
             end
@@ -338,8 +285,9 @@ function SnapshotTab:SetSaveSlot(save_slot, prev_slot, fromDelete)
         self.slotsnaps[prev_slot] = deepcopy(self.snapshots)
     end
 
-    self.session_id = SaveGameIndex:GetClusterSlotSession(save_slot)
+    self.session_id = SaveGameIndex:GetSlotSession(save_slot)
     self.online_mode = SaveGameIndex:GetSlotServerData(save_slot).online_mode ~= false
+    self.multi_level = SaveGameIndex:IsSlotMultiLevel(save_slot)
 
     self:ListSnapshots()
     self:RefreshSnapshots()
