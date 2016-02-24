@@ -406,7 +406,10 @@ function JoinServer( server_listing, optional_password_override )
 		end
 	end
 	
-	if not IsMigrating() and server_listing.mods_enabled and Profile:ShouldWarnModsEnabled() then
+	if server_listing.mods_enabled and
+        not IsMigrating() and
+        (server_listing.dedicated or not server_listing.owner) and
+        Profile:ShouldWarnModsEnabled() then
 
 		local checkbox_parent = Widget("checkbox_parent")
 		local checkbox = checkbox_parent:AddChild(ImageButton("images/ui.xml", "checkbox_off.tex", "checkbox_off_highlight.tex", "checkbox_off_disabled.tex", nil, nil, {1,1}, {0,0}))
@@ -602,7 +605,7 @@ end
 
 function StartDedicatedServer()
 	print "Starting Dedicated Server Game"
-	local start_in_online_mode = not TheNet:IsDedicatedOfflineServer()
+	local start_in_online_mode = not TheNet:IsDedicatedOfflineCluster()
 	local server_started = TheNet:StartServer( start_in_online_mode )
 	if server_started == true then
 		DisableAllDLC()

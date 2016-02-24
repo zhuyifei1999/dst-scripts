@@ -2,13 +2,13 @@ local assets =
 {
     Asset("PKGREF", "sound/dontstarve.fev"),
 	Asset("SOUNDPACKAGE", "sound/dontstarve_DLC001.fev"),
-    Asset("SOUND", "sound/DLC_music.fsb"),
+    Asset("FILE", "sound/DLC_music.fsb"),
 
-    Asset("SOUND", "sound/wilton.fsb"),         -- Legacy sound that can be used in mods
-    Asset("SOUND", "sound/winnie.fsb"),         -- Legacy sound that can be used in mods
-    Asset("SOUND", "sound/wallace.fsb"),        -- Legacy sound that can be used in mods
-    Asset("SOUND", "sound/woodrow.fsb"),        -- Legacy sound that can be used in mods
-    Asset("SOUND", "sound/stuff.fsb"),          -- Legacy sound that can be used in mods
+    Asset("FILE", "sound/wilton.fsb"),         -- Legacy sound that can be used in mods
+    Asset("FILE", "sound/winnie.fsb"),         -- Legacy sound that can be used in mods
+    Asset("FILE", "sound/wallace.fsb"),        -- Legacy sound that can be used in mods
+    Asset("FILE", "sound/woodrow.fsb"),        -- Legacy sound that can be used in mods
+    Asset("FILE", "sound/stuff.fsb"),          -- Legacy sound that can be used in mods
 
     Asset("ATLAS", "images/global.xml"),
     Asset("IMAGE", "images/global.tex"),

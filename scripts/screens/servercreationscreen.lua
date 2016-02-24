@@ -73,6 +73,9 @@ local ServerCreationScreen = Class(Screen, function(self)
     self.detail_panel = self.root:AddChild( Widget("detail_panel") )
     self.detail_panel:SetPosition(right_col, 0)
 
+    self.slot_character_cache = {}
+    self.slot_day_cache = {}
+
     self:RefreshNavButtons()
 
     self:MakeButtons()
@@ -149,6 +152,11 @@ function ServerCreationScreen:OnDestroy()
 	self._base.OnDestroy(self)
 end
 
+function ServerCreationScreen:ClearSlotCache(slotnum)
+    self.slot_character_cache[slotnum] = nil
+    self.slot_day_cache[slotnum] = nil
+end
+
 function ServerCreationScreen:UpdateTitle(slotnum, fromTextEntered)
     if not fromTextEntered then
         if self.save_slots[slotnum] and self.save_slots[slotnum].character ~= nil and not self.save_slots[slotnum].isempty then
@@ -161,49 +169,56 @@ function ServerCreationScreen:UpdateTitle(slotnum, fromTextEntered)
     self.title:SetString(self.server_settings_tab:GetServerName())
 
     if SaveGameIndex:IsSlotEmpty(slotnum) then
-        self.day_title:SetString(STRINGS.UI.SERVERCREATIONSCREEN.SERVERDAY_NEW)
-    elseif SaveGameIndex:IsSlotMultiLevel(slotnum) then
+        self.slot_day_cache[slotnum] = STRINGS.UI.SERVERCREATIONSCREEN.SERVERDAY_NEW
+    elseif self.slot_day_cache[slotnum] == nil then
         local session_id = SaveGameIndex:GetSlotSession(slotnum)
         if session_id ~= nil then
             local day = 1
             local season = nil
-            local file = TheNet:GetWorldSessionFileInClusterSlot(slotnum, "Master", session_id)
-            if file ~= nil then
-                TheSim:GetPersistentStringInClusterSlot(slotnum, "Master", file,
-                    function(success, str)
-                        if success and str ~= nil and #str > 0 then
-                            local success, savedata = RunInSandbox(str)
-                            if success and savedata ~= nil and GetTableSize(savedata) > 0 then
-                                local worlddata = savedata.world_network ~= nil and savedata.world_network.persistdata or nil
-                                if worlddata ~= nil then
-                                    if worlddata.clock ~= nil then
-                                        day = (worlddata.clock.cycles or 0) + 1
-                                    end
+            local function onreadworldfile(success, str)
+                if success and str ~= nil and #str > 0 then
+                    local success, savedata = RunInSandbox(str)
+                    if success and savedata ~= nil and GetTableSize(savedata) > 0 then
+                        local worlddata = savedata.world_network ~= nil and savedata.world_network.persistdata or nil
+                        if worlddata ~= nil then
+                            if worlddata.clock ~= nil then
+                                day = (worlddata.clock.cycles or 0) + 1
+                            end
 
-                                    if worlddata.seasons ~= nil and worlddata.seasons.season ~= nil then
-                                        season = STRINGS.UI.SERVERLISTINGSCREEN.SEASONS[string.upper(worlddata.seasons.season)]
-                                        if season ~= nil and
-                                            worlddata.seasons.elapseddaysinseason ~= nil and
-                                            worlddata.seasons.remainingdaysinseason ~= nil then
-                                            if worlddata.seasons.remainingdaysinseason * 3 <= worlddata.seasons.elapseddaysinseason then
-                                                season = STRINGS.UI.SERVERLISTINGSCREEN.LATE_SEASON_1..season..STRINGS.UI.SERVERLISTINGSCREEN.LATE_SEASON_2
-                                            elseif worlddata.seasons.elapseddaysinseason * 3 <= worlddata.seasons.remainingdaysinseason then
-                                                season = STRINGS.UI.SERVERLISTINGSCREEN.EARLY_SEASON_1..season..STRINGS.UI.SERVERLISTINGSCREEN.EARLY_SEASON_2
-                                            end
-                                        end
+                            if worlddata.seasons ~= nil and worlddata.seasons.season ~= nil then
+                                season = STRINGS.UI.SERVERLISTINGSCREEN.SEASONS[string.upper(worlddata.seasons.season)]
+                                if season ~= nil and
+                                    worlddata.seasons.elapseddaysinseason ~= nil and
+                                    worlddata.seasons.remainingdaysinseason ~= nil then
+                                    if worlddata.seasons.remainingdaysinseason * 3 <= worlddata.seasons.elapseddaysinseason then
+                                        season = STRINGS.UI.SERVERLISTINGSCREEN.LATE_SEASON_1..season..STRINGS.UI.SERVERLISTINGSCREEN.LATE_SEASON_2
+                                    elseif worlddata.seasons.elapseddaysinseason * 3 <= worlddata.seasons.remainingdaysinseason then
+                                        season = STRINGS.UI.SERVERLISTINGSCREEN.EARLY_SEASON_1..season..STRINGS.UI.SERVERLISTINGSCREEN.EARLY_SEASON_2
                                     end
                                 end
                             end
                         end
-                    end)
+                    end
+                end
             end
-            self.day_title:SetString((season ~= nil and (season.." ") or "")..STRINGS.UI.SERVERCREATIONSCREEN.SERVERDAY.." "..day)
+            if SaveGameIndex:IsSlotMultiLevel(slotnum) then
+                local file = TheNet:GetWorldSessionFileInClusterSlot(slotnum, "Master", session_id)
+                if file ~= nil then
+                    TheSim:GetPersistentStringInClusterSlot(slotnum, "Master", file, onreadworldfile)
+                end
+            else
+                local file = TheNet:GetWorldSessionFile(session_id)
+                if file ~= nil then
+                    TheSim:GetPersistentString(file, onreadworldfile)
+                end
+            end
+            self.slot_day_cache[slotnum] = (season ~= nil and (season.." ") or "")..STRINGS.UI.SERVERCREATIONSCREEN.SERVERDAY.." "..day
         else
-            self.day_title:SetString(STRINGS.UI.SERVERCREATIONSCREEN.SERVERDAY_NEW)
+            self.slot_day_cache[slotnum] = STRINGS.UI.SERVERCREATIONSCREEN.SERVERDAY_NEW
         end
-    else
-        self.day_title:SetString(STRINGS.UI.SERVERCREATIONSCREEN.SERVERDAY.." "..(SaveGameIndex:GetSlotDay(slotnum) or STRINGS.UI.SERVERADMINSCREEN.UNKNOWN_DAY))
     end
+
+    self.day_title:SetString(self.slot_day_cache[slotnum])
 
     -- may also want to update the string used on the nav button...
 end
@@ -268,13 +283,14 @@ function ServerCreationScreen:DeleteSlot(slot, cb)
             text=STRINGS.UI.SERVERCREATIONSCREEN.DELETE, 
             cb = function()
                 TheFrontEnd:PopScreen()
-                
+
                 SaveGameIndex:DeleteSlot(slot, function() 
                     self.save_slots[slot]:Kill()
                     self.save_slots[slot] = self.save_slots:AddChild(self:MakeSaveSlotButton(slot))
                     self:UpdateTabs(slot, nil, true)
                 end)
 
+                self:ClearSlotCache(slot)
                 self:RefreshNavButtons()
                 self:OnClickSlot(self.saveslot, true)
                 self:Enable()
@@ -407,7 +423,7 @@ function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOu
             cluster_info.settings.NETWORK.cluster_description    = serverdata.description
             cluster_info.settings.NETWORK.lan_only_cluster       = tostring(serverdata.privacy_type == PRIVACY_TYPE.LOCAL)
 			cluster_info.settings.NETWORK.server_intention       = serverdata.intention
-            cluster_info.settings.NETWORK.offline_server         = tostring(not serverdata.online_mode)
+            cluster_info.settings.NETWORK.offline_cluster        = tostring(not serverdata.online_mode)
 
             cluster_info.settings.GAMEPLAY                       = {}
             cluster_info.settings.GAMEPLAY.game_mode             = serverdata.game_mode
@@ -426,6 +442,7 @@ function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOu
 
             if SaveGameIndex:IsSlotEmpty(self.saveslot) then
                 SaveGameIndex:StartSurvivalMode(self.saveslot, worldoptions, serverdata, onsaved)
+                self:ClearSlotCache(self.saveslot)
                 self:RefreshNavButtons()
                 self:OnClickSlot(self.saveslot)
             else
@@ -717,11 +734,10 @@ function ServerCreationScreen:OnControl(control, down)
 end
 
 function ServerCreationScreen:RefreshNavButtons()
-
-    if self.save_slots then
+    if self.save_slots ~= nil then
         self.save_slots:Kill()
     end
-    
+
     self.save_slots = self.nav_bar:AddChild(Widget("save_slots"))
 
     for k = 1, NUM_DST_SAVE_SLOTS do
@@ -749,21 +765,29 @@ function ServerCreationScreen:MakeSaveSlotButton(slotnum)
     local btn = TEMPLATES.NavBarButton((1 - slotnum) * 47 - 10, slotName, function() self:OnClickSlot(slotnum) end, not (isempty or isnoname))
     btn.slot = slotnum
 
-    -- SaveGameIndex:LoadSlotCharacter is not cheap! Use it in FE only.
-    -- V2C: This comment is here as a warning to future copy&pasters - __-"
-    local character = SaveGameIndex:LoadSlotCharacter(slotnum) or ""
-    local atlas = "images/saveslot_portraits"
-    if not table.contains(DST_CHARACTERLIST, character) then
-        if table.contains(MODCHARACTERLIST, character) then
-            atlas = atlas.."/"..character
-        else
-            character = #character > 0 and "mod" or "unknown"
-        end
+    if isempty then
+        self.slot_character_cache[slotnum] = { character = "" }
+    elseif self.slot_character_cache[slotnum] == nil then
+        -- SaveGameIndex:LoadSlotCharacter is not cheap! Use it in FE only.
+        -- V2C: This comment is here as a warning to future copy&pasters - __-"
+        self.slot_character_cache[slotnum] = { character = SaveGameIndex:LoadSlotCharacter(slotnum) or "" }
     end
-    atlas = atlas..".xml"
 
-    btn.character_atlas = atlas
-    btn.character = character
+    local cache = self.slot_character_cache[slotnum]
+    if cache.atlas == nil then
+        cache.atlas = "images/saveslot_portraits"
+        if not table.contains(DST_CHARACTERLIST, cache.character) then
+            if table.contains(MODCHARACTERLIST, cache.character) then
+                cache.atlas = cache.atlas.."/"..cache.character
+            else
+                cache.character = #cache.character > 0 and "mod" or "unknown"
+            end
+        end
+        cache.atlas = cache.atlas..".xml"
+    end
+
+    btn.character_atlas = cache.atlas
+    btn.character = cache.character
     btn.isempty = isempty
 
     return btn
@@ -814,6 +838,7 @@ end
 
 function ServerCreationScreen:MakeSnapshotTab()
     local function cb()
+        self:ClearSlotCache(self.saveslot)
         self:RefreshNavButtons()
         self:OnClickSlot(self.saveslot)
     end

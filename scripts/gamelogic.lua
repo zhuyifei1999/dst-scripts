@@ -936,7 +936,7 @@ Profile:Load( function()
 end )
 
 --Online servers will call StartDedicatedServer after authentication
-if TheNet:IsDedicated() and not TheNet:GetIsServer() and TheNet:IsDedicatedOfflineServer() then
+if TheNet:IsDedicated() and not TheNet:GetIsServer() and TheNet:IsDedicatedOfflineCluster() then
 	StartDedicatedServer()
 end
 
