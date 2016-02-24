@@ -34,9 +34,9 @@ end
 
 function GetProfilerSave(results)
     if TheWorld ~= nil and TheWorld.ismastersim then
-        local save_index = SaveGameIndex:GetSlotSession()
-        if save_index ~= nil then
-            local filename = TheNet:GetWorldSessionFile(save_index)
+        local session_id = SaveGameIndex:GetSlotSession()
+        if session_id ~= nil then
+            local filename = TheNet:GetWorldSessionFile(session_id)
             if filename ~= nil then
                 TheSim:GetPersistentString(filename,
                     function(load_success, str)

@@ -843,7 +843,8 @@ function DressupPanel:GetSkinsForGameStart()
 
 	if self.currentcharacter == "random" then
 		local all_chars = ExceptionArrays(GetActiveCharacterList(), MODCHARACTEREXCEPTIONS_DST)
-		self.currentcharacter = all_chars[math.random(#all_chars)]	
+		self.currentcharacter = all_chars[math.random(#all_chars)]
+		currentcharacter_skins = self.profile:GetSkinsForPrefab(self.currentcharacter)
 		if self.dressup_frame then
 			local previous_base = self.profile:GetBaseForCharacter(self.currentcharacter)
 			if not previous_base or previous_base == "" then --checking == "" is for legacy profiles

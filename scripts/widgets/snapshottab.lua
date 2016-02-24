@@ -179,38 +179,43 @@ function SnapshotTab:MakeSnapshotsMenu()
 end
 
 function SnapshotTab:OnClickSnapshot(snapshot_num)
+    if not self.snapshots[snapshot_num] then
+        return
+    end
 
-    if not self.snapshots[snapshot_num] then return end
-    
-    TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")   
-    
+    TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+
     local day_text = STRINGS.UI.SERVERADMINSCREEN.DAY.." "..tostring(self.snapshots[snapshot_num].world_day or STRINGS.UI.SERVERADMINSCREEN.UNKNOWN_DAY)
     local header = string.format(STRINGS.UI.SERVERADMINSCREEN.RESTORE_SNAPSHOT_HEADER, day_text)
-    local popup = PopupDialogScreen(header, STRINGS.UI.SERVERADMINSCREEN.RESTORE_SNAPSHOT_BODY, 
-        {{text=STRINGS.UI.SERVERADMINSCREEN.YES, cb = function()    
-            local function onSaved()
-                self:ListSnapshots(true)
-                self:RefreshSnapshots()
-                if self.cb then
-                    self.cb()
+    local popup = PopupDialogScreen(header, STRINGS.UI.SERVERADMINSCREEN.RESTORE_SNAPSHOT_BODY, {
+        {
+            text = STRINGS.UI.SERVERADMINSCREEN.YES,
+            cb = function()
+                local truncate_to_id = self.snapshots[snapshot_num].snapshot_id
+                if truncate_to_id ~= nil and truncate_to_id > 0 then
+                    if self.multi_level then
+                        TheNet:TruncateSnapshotsInClusterSlot(self.save_slot, "Master", self.session_id, truncate_to_id)
+                        --slaves will auto-truncate to synchornize at startup
+                    else
+                        TheNet:TruncateSnapshots(self.session_id, truncate_to_id)
+                    end
+                    self:ListSnapshots(true)
+                    self:RefreshSnapshots()
+                    if self.cb ~= nil then
+                        self.cb()
+                    end
                 end
                 TheFrontEnd:PopScreen()
-            end
-            local truncate_to_id = self.snapshots[snapshot_num].snapshot_id
-            if truncate_to_id ~= nil and truncate_to_id > 0 then
-                if self.multi_level then
-                    TheNet:TruncateSnapshotsInClusterSlot(self.save_slot, "Master", self.session_id, truncate_to_id)
-                    --slaves will auto-truncate to synchornize at startup
-                else
-                    TheNet:TruncateSnapshots(self.session_id, truncate_to_id)
-                end
-            end
-            SaveGameIndex:SetSlotDay(self.save_slot, self.snapshots[snapshot_num].world_day or STRINGS.UI.SERVERADMINSCREEN.UNKNOWN_DAY)
-            SaveGameIndex:Save(onSaved)
-        end},
-        {text=STRINGS.UI.SERVERADMINSCREEN.NO, cb = function() TheFrontEnd:PopScreen() end}  })
-    TheFrontEnd:PushScreen(popup)   
-    
+            end,
+        },
+        {
+            text = STRINGS.UI.SERVERADMINSCREEN.NO,
+            cb = function()
+                TheFrontEnd:PopScreen()
+            end,
+        },
+    })
+    TheFrontEnd:PushScreen(popup)
 end
 
 function SnapshotTab:ListSnapshots(force)

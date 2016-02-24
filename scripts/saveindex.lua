@@ -261,7 +261,6 @@ function SaveIndex:SaveCurrent(onsavedcb, isshutdown)
 
     local slotdata = self.data.slots[self.current_slot]
     slotdata.session_id = TheNet:GetSessionIdentifier()
-    slotdata.world.day = TheWorld.state.cycles + 1
 
     SaveGame(isshutdown, onsavedcb)
 end
@@ -281,7 +280,6 @@ function SaveIndex:OnGenerateNewWorld(saveslot, savedata, session_identifier, cb
     local function onsavedatasaved()
         local slotdata = self.data.slots[self.current_slot]
         slotdata.session_id = session_identifier
-        slotdata.world.day = 1
 
         self:Save(cb)
     end
@@ -312,7 +310,6 @@ function SaveIndex:StartSurvivalMode(saveslot, customoptions, serverdata, onsave
 
     local slot = self.data.slots[saveslot]
     slot.session_id = TheNet:GetSessionIdentifier()
-    slot.world.day = 1
     slot.world.options = customoptions
     slot.server = {}
 
@@ -370,14 +367,6 @@ end
 
 function SaveIndex:GetSlotServerData(slot)
     return slot ~= nil and self.data.slots[slot] ~= nil and self.data.slots[slot].server or {}
-end
-
-function SaveIndex:GetSlotDay(slot)
-    return self.data.slots[slot or self.current_slot].world.day
-end
-
-function SaveIndex:SetSlotDay(slot, day)
-    self.data.slots[slot or self.current_slot].world.day = day
 end
 
 function SaveIndex:GetSlotGenOptions(slot)

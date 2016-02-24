@@ -122,7 +122,7 @@ local OnCyclesChanged = _ismastershard and function()
 end or nil
 
 local OnSetAutoSaveEnabled = _ismastershard and function(src, enable)
-    if _enabled == (enable == false) then
+    if _enabled == (enable == false) and TheNet:GetAutosaverEnabled() then
         _enabled = not _enabled
         if _enabled then
             self:WatchWorldState("cycles", OnCyclesChanged)
