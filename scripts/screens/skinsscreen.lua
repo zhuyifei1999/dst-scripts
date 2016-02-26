@@ -12,6 +12,7 @@ local Widget = require "widgets/widget"
 local Menu = require "widgets/menu"
 local Puppet = require "widgets/skinspuppet"
 local CharacterSelectScreen = require "screens/characterselectscreen"
+local TradeScreen = require "screens/tradescreen"
 local TEMPLATES = require "widgets/templates"
 
 local DEBUG_MODE = BRANCH == "dev"
@@ -19,6 +20,7 @@ local DEBUG_MODE = BRANCH == "dev"
 
 local NUM_ROWS = 4
 local NUM_ITEMS_PER_ROW = 4
+local NUM_ITEMS_PER_GRID = 16
 
 local SkinsScreen = Class(Screen, function(self, profile)
 	Screen._ctor(self, "SkinsScreen")
@@ -29,11 +31,9 @@ local SkinsScreen = Class(Screen, function(self, profile)
 	self:DoInit() 
 
 	self.applied_filters = {} -- filters that are currently applied (groups to show)
-	 
-   	self.default_focus = self.page_list
 end)
 
-function SkinsScreen:DoInit( )
+function SkinsScreen:DoInit()
 	STATS_ENABLE = true
 	TheFrontEnd:GetGraphicsOptions():DisableStencil()
 	TheFrontEnd:GetGraphicsOptions():DisableLightMapComponent()
@@ -58,23 +58,27 @@ function SkinsScreen:DoInit( )
     self.chest:SetScale(-.7, .7, .7)
     self.chest:SetPosition(100, -75)
 
-    if not TheInput:ControllerAttached() then 
-   		self.loadout_button = self.fixed_root:AddChild(TEMPLATES.SmallButton(STRINGS.UI.SKINSSCREEN.LOADOUT, 40, .75, 
-    					function()
-    							TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
-							       TheFrontEnd:PushScreen(CharacterSelectScreen(self.profile, "wilson"))
-							       TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
-							    end)
-    						end))
-   		self.loadout_button:SetPosition(475, -300)
-   	end
-
+   
+	self.loadout_button = self.fixed_root:AddChild(ImageButton("images/skinsscreen.xml", "loadout_button_active.tex", "loadout_button_hover.tex", "loadout_button_pressed.tex", "loadout_button_pressed.tex"))
+	self.loadout_button:SetOnClick(function()
+						TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
+					       TheFrontEnd:PushScreen(CharacterSelectScreen(self.profile, "wilson"))
+					       TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
+					    end)
+					end)
+	self.loadout_button:SetScale(1.05)
+	self.loadout_button:SetPosition(500, -250)
+   	
    	self.trade_button = self.fixed_root:AddChild(ImageButton("images/tradescreen.xml", "trade_buttonactive.tex", "trade_buttonactive_hover.tex", "trade_button_disabled.tex", "trade_button_pressed.tex"))
+   	self.trade_button:SetOnClick(function() 
+	   								TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
+									       TheFrontEnd:PushScreen(TradeScreen(self.profile))
+									       TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
+									    end)
+   								end)
    	self.trade_button:SetScale(1.05)
-   	self.trade_button:SetPosition(475, -170)
-   	self.trade_button:Disable()
-   	self.trade_button:SetHoverText(STRINGS.UI.SKINSSCREEN.TRADE_TOOLTIP, { font = NEWFONT_OUTLINE, size = 24, offset_x = 0, offset_y = 140, colour = {1,1,1,1}, wordwrap = true, region_h = 85, region_w = 215})
-
+   	self.trade_button:SetPosition(500, -65)
+   
 
     local collection_name = self.profile:GetCollectionName() or (TheNet:GetLocalUserName()..STRINGS.UI.SKINSSCREEN.TITLE)
     local VALID_CHARS = [[ abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,:;[]\@!#$%&()'*+-/=?^_{|}~"<>]]
@@ -99,50 +103,27 @@ function SkinsScreen:DoInit( )
     	self.exit_button = self.fixed_root:AddChild(TEMPLATES.BackButton(function() self:Quit() end)) 
 
     	self.exit_button:SetPosition(-RESOLUTION_X*.415, -RESOLUTION_Y*.505 + BACK_BUTTON_Y )
+  	else
+  		self.loadout_button:SetPosition(500, -240)
   	end
 
     self.details_panel:Hide()
-end
-
-function SkinsScreen:SetFocusColumn( itemimage )
-
-	if self.page_list then 
-		local row_widget = self.page_list:GetFocusedWidget()
-
-		for i=1,#row_widget.images do 
-			if row_widget.images[i] == itemimage then 
-				self.focus_column = i
-			end
-		end
-	else 
-		self.focus_column = 1
-	end
+    
+	self.default_focus = self.list_widgets[1]
 end
 
 
-function SkinsScreen:SetFocusIndex(idx)
-	self.focus_index = idx
-end
-
-
-function SkinsScreen:ClearFocus()
-	--print("Clearing focus", debugstack())
+function SkinsScreen:UnselectAll()
 	if self.list_widgets then 
 		for i = 1, #self.list_widgets do 
-			local line = self.list_widgets[i]
-
-			for j = 1, #line.images do 
-				--print("shrinking", line.images[j].name)
-				line.images[j]:Unselect()
-			end
-
+			self.list_widgets[i]:Unselect()
 		end
 	end
-	--self.details_panel:Hide()
 end
 
 -- Update the details panel when an item is clicked
-function SkinsScreen:OnItemSelect(type, item, itemimage)
+function SkinsScreen:OnItemSelect(type, item, item_id, itemimage)
+	--print( "OnItemSelect", type, item, item_id, itemimage )
 
 	if type == nil or item == nil then 
 		self.details_panel:Hide()
@@ -150,22 +131,10 @@ function SkinsScreen:OnItemSelect(type, item, itemimage)
 		return
 	end
 
-	self:SetFocusIndex(itemimage.index)
-
 	self.dressup_hanger:Hide()
 
-	local buildfile = item
-	if type == "base" or type == "item" then 
-		local skinsData = Prefabs[item]
-		if skinsData and skinsData.ui_preview then 
-			buildfile = skinsData.ui_preview.build
-		end
-	else
-		local clothing_data = CLOTHING[item]
-		if clothing_data and clothing_data.override_build then
-			buildfile = clothing_data.override_build
-		end
-	end
+	local buildfile = GetBuildForItem(type, item) --item
+	
 
 	if type == "base"  then 
 		self.details_panel.shadow:SetScale(.4)
@@ -250,32 +219,18 @@ end
 function SkinsScreen:BuildInventoryList()
 	self.inventory_list = self.fixed_root:AddChild(Widget("container"))
 
-	-- MUST have two separate roots for the scrollable list and the widgets inside the scrollable list, 
-	-- otherwise the sub-widgets don't get focus/click events.
-	-- (I assume this applies to the paged list as well, since it's based on the scrollable list.)
-	self.list_root = self.inventory_list:AddChild(Widget("list-root"))
-	self.row_root = self.inventory_list:AddChild(Widget("row-root"))
+	self.tiles_root = self.inventory_list:AddChild(Widget("tiles_root"))
+	self.list_widgets = SkinGrid4x4Constructor(self, self.tiles_root, false)
 
-	self.list_widgets = {}
-
-	for i=1,NUM_ROWS do
-		table.insert(self.list_widgets, SkinLineConstructor(self, self.row_root, NUM_ITEMS_PER_ROW, false))
-	end
-
-	local row_width = 240
-	local row_height = 70
-	local spacing = 10
-
-	self.page_list = self.list_root:AddChild(PagedList(row_width, row_height, spacing, function(widget, data, index) UpdateSkinLine(widget, data, index, self) end, self.list_widgets))
-	self.page_list:SetPosition(0, 0)	
+	local grid_width = 400
+	self.page_list = self.inventory_list:AddChild(PagedList(grid_width, function(widget, data) UpdateSkinGrid(widget, data, self) end, self.list_widgets))
 	
-	self.inventory_list:SetPosition(-20, 240)
+	self.inventory_list:SetPosition(100, 100)
 end
 
 function SkinsScreen:UpdateInventoryList()
-	self:GetSkinsList() --populates self.skins_list	
-	local inventory_rows = SplitSkinsIntoInventoryRows(self.skins_list, NUM_ITEMS_PER_ROW)	
-	self.page_list:SetItemsData(inventory_rows)
+	self:GetSkinsList()
+	self.page_list:SetItemsData(self.skins_list)
 end
 
 
@@ -307,7 +262,6 @@ function SkinsScreen:OnBecomeActive()
 	
 	    if self.exit_button then 
 	    	self.exit_button:Enable()
-	    	self.exit_button:SetFocus()
 	    end
 
 	    self.leaving = nil
@@ -353,6 +307,12 @@ function SkinsScreen:OnControl(control, down)
 		        TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
 		    end)
 			return true
+		elseif not down and control == CONTROL_INSPECT then 
+			TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
+		       TheFrontEnd:PushScreen(TradeScreen(self.profile))
+		        TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
+		    end)
+			return true
 		end
     end
 
@@ -375,8 +335,11 @@ end
 
 function SkinsScreen:ScrollBack(control)
 	if not self.page_list.repeat_time or self.page_list.repeat_time <= 0 then
+		local pageNum = self.page_list.page_number
        	self.page_list:ChangePage(-1)
-       	TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+       	if self.page_list.page_number ~= pageNum then 
+       		TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+       	end
         self.page_list.repeat_time =
             TheInput:GetControlIsMouseWheel(control)
             and MOUSE_SCROLL_REPEAT_TIME
@@ -387,8 +350,11 @@ end
 
 function SkinsScreen:ScrollFwd(control)
 	if not self.page_list.repeat_time or self.page_list.repeat_time <= 0 then
+		local pageNum = self.page_list.page_number
         self.page_list:ChangePage(1)
-		TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+		if self.page_list.page_number ~= pageNum then 
+       		TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+       	end
         self.page_list.repeat_time =
             TheInput:GetControlIsMouseWheel(control)
             and MOUSE_SCROLL_REPEAT_TIME
@@ -408,6 +374,8 @@ function SkinsScreen:GetHelpText()
    	table.insert(t, self.page_list:GetHelpText())
   	
    	table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_PAUSE) .. " " .. STRINGS.UI.SKINSSCREEN.LOADOUT)
+
+   	table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_INSPECT) .. " " .. STRINGS.UI.SKINSSCREEN.TRADE)
    	
     return table.concat(t, "  ")
 end

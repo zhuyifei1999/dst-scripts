@@ -935,37 +935,44 @@ TEMPLATES = {
     -----------------------
     -----------------------
     -- An item image for the inventory screens that moves 
-    MovingItem = function(name, type, src_pos, dest_pos)
+    MovingItem = function(name, type, slot_index, src_pos, dest_pos, start_scale, end_scale)
 
-        local widg = Widget("item_"..name)
-
+        local widg = UIAnim()
+       
         widg.name = name
 
-        widg.frame = widg:AddChild(UIAnim())
-        widg.frame:GetAnimState():SetBuild("frames_comp") -- use the animation file as the build, then override it
-        widg.frame:GetAnimState():AddOverrideBuild("frame_skins") -- file name
-        widg.frame:GetAnimState():SetBank("fr") -- top level symbol from frames_comp
+		widg.target_slot_index = slot_index
+		
+        widg:GetAnimState():SetBuild("frames_comp") -- use the animation file as the build, then override it
+        widg:GetAnimState():AddOverrideBuild("frame_skins") -- file name
+        widg:GetAnimState():SetBank("fr") -- top level symbol from frames_comp
 
         local rarity = GetRarityForItem(type, name)
 
-        widg.frame:GetAnimState():OverrideSkinSymbol("SWAP_ICON",  name, "SWAP_ICON")
-        widg.frame:GetAnimState():OverrideSymbol("SWAP_frameBG", "frame_BG", rarity)
+        widg:GetAnimState():OverrideSkinSymbol("SWAP_ICON", GetBuildForItem(type, name), "SWAP_ICON")
+        widg:GetAnimState():OverrideSymbol("SWAP_frameBG", "frame_BG", rarity)
 
-        widg.frame:GetAnimState():PlayAnimation("icon", true)
-        widg.frame:GetAnimState():Hide("NEW")
+        widg:GetAnimState():PlayAnimation("icon", true)
+        widg:GetAnimState():Hide("NEW")
 
-        widg:SetScale(.66)
         widg:Hide()
 
-        widg.Move = function() 
-                                widg:Show()
-                                widg.frame:MoveTo(src_pos, dest_pos, .3, 
-                                function()
-                                    --widg:ScaleTo(self.basescale * 2, self.basescale, .25)
-                                    widg:Kill()
-                                end)
-                    end
+        --print("SETTING UP MOVING ITEM ", name, src_pos, dest_pos, debugstack())
+        local move_time = 0.3 -- .3 is the time used for moving items into inventory in game
+        widg.Move = function(callbackfn)
+                        widg.moving = true
+                        widg:SetScale(start_scale or 1)
+                        widg:Show()
+                        widg:ScaleTo(start_scale or 1, end_scale or 1, move_time)
+                        widg:MoveTo(src_pos, dest_pos, move_time, 
+                        function()
+                            widg:Kill()
 
+                            if callbackfn then
+                                callbackfn()
+                            end
+                        end)
+                    end
         return widg
     end,
 
