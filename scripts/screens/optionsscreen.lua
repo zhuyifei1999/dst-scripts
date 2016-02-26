@@ -163,7 +163,6 @@ local function GetRefreshRates( display_id, mode_idx )
 	return refresh_rates
 end
 
-
 local function GetDisplayModes( display_id )
 	local gOpts = TheFrontEnd:GetGraphicsOptions()
 	local num_modes = gOpts:GetNumDisplayModes( display_id )
@@ -211,10 +210,8 @@ local function GetDisplayModeInfo( display_id, mode_idx )
 	return w, h, hz
 end
 
-local OptionsScreen = Class(Screen, function(self, in_game)
+local OptionsScreen = Class(Screen, function(self, prev_screen)
 	Screen._ctor(self, "OptionsScreen")
-	self.in_game = in_game
-	--TheFrontEnd:DoFadeIn(2)
 
 	local graphicsOptions = TheFrontEnd:GetGraphicsOptions()
 
@@ -247,25 +244,28 @@ local OptionsScreen = Class(Screen, function(self, in_game)
 		self.options.mode_idx = graphicsOptions:GetCurrentDisplayModeID( self.options.display )
 	end
 
-	self.working = deepcopy( self.options )
+	self.working = deepcopy(self.options)
 
 	self.is_mapping = false
     
     TheInputProxy:StartMappingControls()	
-	
-	self.bg = self:AddChild(TEMPLATES.AnimatedPortalBackground())
+
+    if prev_screen ~= nil then
+        self.prev_screen = prev_screen
+        prev_screen:TransferPortalOwnership(prev_screen, self)
+    else
+        self.bg = self:AddChild(TEMPLATES.AnimatedPortalBackground())
+        self.fg = self:AddChild(TEMPLATES.AnimatedPortalForeground())
+    end
     
 	self.root = self:AddChild(Widget("ROOT"))
     self.root:SetVAnchor(ANCHOR_MIDDLE)
     self.root:SetHAnchor(ANCHOR_MIDDLE)
     self.root:SetPosition(0,0,0)
     self.root:SetScaleMode(SCALEMODE_PROPORTIONAL)
-   
-	self.fg = self.root:AddChild(TEMPLATES.AnimatedPortalForeground())
 
     self.menu_bg = self.root:AddChild(TEMPLATES.LeftGradient())
 
-	
 	local panel_bg_frame = self.root:AddChild(TEMPLATES.CenterPanel())
 
 	local panel_frame = panel_bg_frame:AddChild(Image("images/options.xml", "panel_frame.tex"))
@@ -640,6 +640,14 @@ function OptionsScreen:Apply()
 	Profile:SetWathgrithrFontEnabled( self.working.wathgrithrfont )
 	TheSim:SetNetbookMode(self.working.netbookmode)
 
+    local portalsmoke = not (self.working.smalltextures or self.working.netbookmode)
+    if self.bg.EnableSmoke ~= nil then
+        self.bg:EnableSmoke(portalsmoke)
+    end
+    if self.fg.EnableSmoke ~= nil then
+        self.fg:EnableSmoke(portalsmoke)
+    end
+
 	TheInputProxy:ApplyControlMapping()
     for index = 1, #self.devices do
         local guid, data, enabled = TheInputProxy:SaveControls(self.devices[index].data)
@@ -830,6 +838,11 @@ function OptionsScreen:OnDestroy()
 	        v:Remove()
 	    end
 	end
+
+    if self.prev_screen ~= nil then
+        self.prev_screen:TransferPortalOwnership(self, self.prev_screen)
+    end
+
 	self._base.OnDestroy(self)
 end
 

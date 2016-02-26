@@ -318,15 +318,12 @@ end
 -- Work in progress direct connect code.
 -- Currently, to join an online server you must authenticate first.
 -- In the future this authentication will be taken care of for you.
-function c_connect( ip, port, password )
-    local start_worked = TheNet:StartClient( ip, port, 0, password )
-    if start_worked then
+function c_connect(ip, port, password)
+    if not InGamePlay() and TheNet:StartClient(ip, port, 0, password) then
         DisableAllDLC()
+        return true
     end
-    ShowCancelTip()
-    ShowLoading()
-    TheFrontEnd:Fade(FADE_OUT, 1)
-    return start_worked
+    return false
 end
 
 -- Put an item(s) in the player's inventory
@@ -334,12 +331,12 @@ function c_give(prefab, count)
     count = count or 1
 
     local MainCharacter = ConsoleCommandPlayer()
-    
+
     if MainCharacter then
         for i=1,count do
             local inst = DebugSpawn(prefab)
             if inst then
-print("giving ",inst)
+                print("giving ",inst)
                 MainCharacter.components.inventory:GiveItem(inst)
                 SetDebugEntity(inst)
                 SuUsed("c_give_" .. inst.prefab)

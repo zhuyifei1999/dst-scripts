@@ -66,14 +66,13 @@ local intention_images = {
     [INTENTIONS.MADNESS] = { big="madness.tex", small="playstyle_madness.tex" },
 }
 
-local ServerListingScreen = Class(Screen, function(self, filters, cb, offlineMode, session_mapping)
+local ServerListingScreen = Class(Screen, function(self, prev_screen, filters, cb, offlineMode, session_mapping)
     Widget._ctor(self, "ServerListingScreen")
 
     self.server_intention = {}
 
-    self.bg = self:AddChild(TEMPLATES.AnimatedPortalBackground())
-
-    self.fg = self:AddChild(TEMPLATES.AnimatedPortalForeground())
+    self.prev_screen = prev_screen
+    prev_screen:TransferPortalOwnership(prev_screen, self)
 
     -- Query all data related to user sessions
     self.session_mapping = session_mapping
@@ -329,8 +328,10 @@ function ServerListingScreen:OnBecomeInactive()
 end
 
 function ServerListingScreen:OnDestroy()
+    self.prev_screen:TransferPortalOwnership(self, self.prev_screen)
 	self._base.OnDestroy(self)
 end
+
 local function tchelper(first, rest)
   return first:upper()..rest:lower()
 end

@@ -18,6 +18,8 @@ local PopupDialogScreen = require "screens/popupdialog"
 
 local TEMPLATES = require "widgets/templates"
 
+local clothing = require "clothing"
+
 require("util")
 require("networking")
 
@@ -71,7 +73,7 @@ local LobbyScreen = Class(Screen, function(self, profile, cb, no_backbutton, def
     self.anim_bg:SetVAnchor(ANCHOR_MIDDLE)
     self.anim_bg:SetHAnchor(ANCHOR_MIDDLE)
     self.anim_bg:SetScaleMode(SCALEMODE_FILLSCREEN)
-    self.anim_bg:SetTint(FRONTEND_PORTAL_COLOUR[1], FRONTEND_PORTAL_COLOUR[2], FRONTEND_PORTAL_COLOUR[3], FRONTEND_PORTAL_COLOUR[4])
+    self.anim_bg:SetTint(unpack(FRONTEND_PORTAL_COLOUR))
 
     self.anim_root = self:AddChild(Widget("root"))
     self.anim_root:SetVAnchor(ANCHOR_MIDDLE)
@@ -82,7 +84,7 @@ local LobbyScreen = Class(Screen, function(self, profile, cb, no_backbutton, def
     self.anim:GetAnimState():SetBuild("spiral_bg")
     self.anim:GetAnimState():SetBank("spiral_bg")
     self.anim:GetAnimState():PlayAnimation("idle_loop", true)
-    self.anim:GetAnimState():SetMultColour(FRONTEND_PORTAL_COLOUR[1], FRONTEND_PORTAL_COLOUR[2], FRONTEND_PORTAL_COLOUR[3], FRONTEND_PORTAL_COLOUR[4])
+    self.anim:GetAnimState():SetMultColour(unpack(FRONTEND_PORTAL_COLOUR))
 
     self.anim_root:SetPosition(160, 0)
 
@@ -92,7 +94,7 @@ local LobbyScreen = Class(Screen, function(self, profile, cb, no_backbutton, def
     self.anim_ol:SetVAnchor(ANCHOR_MIDDLE)
     self.anim_ol:SetHAnchor(ANCHOR_MIDDLE)
     self.anim_ol:SetScaleMode(SCALEMODE_FILLSCREEN)
-    self.anim_ol:SetTint(FRONTEND_PORTAL_COLOUR[1], FRONTEND_PORTAL_COLOUR[2], FRONTEND_PORTAL_COLOUR[3], FRONTEND_PORTAL_COLOUR[4])
+    self.anim_ol:SetTint(unpack(FRONTEND_PORTAL_COLOUR))
 
     self.vignette = self:AddChild(TEMPLATES.BackgroundVignette())
     self.vignette:SetTint(1,1,1,.8)
@@ -439,7 +441,7 @@ function LobbyScreen:BuildCharacterDetailsBox()
     self.characterdetails:SetRegionSize( 600, 120 )
     self.characterdetails:EnableWordWrap( true )
     self.characterdetails:SetString( "" )
-    self.characterdetails:SetColour(PORTAL_TEXT_COLOUR[1], PORTAL_TEXT_COLOUR[2], PORTAL_TEXT_COLOUR[3], PORTAL_TEXT_COLOUR[4])
+    self.characterdetails:SetColour(unpack(PORTAL_TEXT_COLOUR))
 
     self.character_details:SetPosition(RESOLUTION_X/2, RESOLUTION_Y-618, 0)
     self.character_details:MoveToFront()

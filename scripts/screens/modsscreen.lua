@@ -28,7 +28,7 @@ local right_col = RESOLUTION_X*.37
 
 local title_x = -73
 
-local ModsScreen = Class(Screen, function(self)
+local ModsScreen = Class(Screen, function(self, prev_screen)
     Widget._ctor(self, "ModsScreen")
 
     self.currentmodtype = ""
@@ -41,14 +41,13 @@ local ModsScreen = Class(Screen, function(self)
 
 	self.infoprefabs = {}
 
+    self.prev_screen = prev_screen
+    prev_screen:TransferPortalOwnership(prev_screen, self)
+
     self.root = self:AddChild(Widget("root"))
     self.root:SetVAnchor(ANCHOR_MIDDLE)
     self.root:SetHAnchor(ANCHOR_MIDDLE)
     self.root:SetScaleMode(SCALEMODE_PROPORTIONAL)
-
-    self.bg = self.root:AddChild(TEMPLATES.AnimatedPortalBackground())
-	
-	self.fg = self.root:AddChild(TEMPLATES.AnimatedPortalForeground())
 
 	self.root:AddChild(TEMPLATES.LeftGradient())
 
@@ -160,6 +159,11 @@ local ModsScreen = Class(Screen, function(self)
     if self.cancelbutton then self.cancelbutton:MoveToFront() end
     if self.applybutton then self.applybutton:MoveToFront() end
 end)
+
+function ModsScreen:OnDestroy()
+    self.prev_screen:TransferPortalOwnership(self, self.prev_screen)
+    self._base.OnDestroy(self)
+end
 
 function ModsScreen:OnBecomeActive()
     ModsScreen._base.OnBecomeActive(self)

@@ -25,15 +25,15 @@ require("tuning")
 local DEFAULT_ATLAS = "images/saveslot_portraits.xml"
 local DEFAULT_AVATAR = "unknown.tex"
 
-local ServerCreationScreen = Class(Screen, function(self)
+local ServerCreationScreen = Class(Screen, function(self, prev_screen)
     Widget._ctor(self, "ServerCreationScreen")
 
     local left_col = -RESOLUTION_X*.05 - 285
     local right_col = RESOLUTION_X*.30 - 230
-	
-    self.bg = self:AddChild(TEMPLATES.AnimatedPortalBackground())
 
-    self.fg = self:AddChild(TEMPLATES.AnimatedPortalForeground())
+    self.prev_screen = prev_screen
+    prev_screen:TransferPortalOwnership(prev_screen, self)
+    self.onlinestatus = self.fg:AddChild(OnlineStatus())
 
     self.root = self:AddChild(Widget("root"))
     self.root:SetVAnchor(ANCHOR_MIDDLE)
@@ -94,8 +94,6 @@ local ServerCreationScreen = Class(Screen, function(self)
 
     self:HideAllTabs()
 
-    self.onlinestatus = self.fg:AddChild(OnlineStatus())
-
     self.refresh_load_panel = false
 
     self.title_portrait_bg = self.detail_panel_frame_parent:AddChild(Image("images/saveslot_portraits.xml", "background.tex"))
@@ -148,6 +146,8 @@ function ServerCreationScreen:OnBecomeInactive()
 end
 
 function ServerCreationScreen:OnDestroy()
+    self.onlinestatus:Kill()
+    self.prev_screen:TransferPortalOwnership(self, self.prev_screen)
     self.mods_tab:OnDestroy()
 	self._base.OnDestroy(self)
 end
@@ -329,7 +329,9 @@ function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOu
 
             TheFrontEnd:PushScreen(launchingServerPopup)
         else
-            StartNextInstance({ reset_action = RESET_ACTION.LOAD_SLOT, save_slot = self.saveslot })
+            DoLoadingPortal(function()
+                StartNextInstance({ reset_action = RESET_ACTION.LOAD_SLOT, save_slot = self.saveslot })
+            end)
         end
     end
 
