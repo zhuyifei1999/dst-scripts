@@ -8,20 +8,16 @@ local Widget = require "widgets/widget"
 local Levels = require "map/levels"
 
 local OnlineStatus = require "widgets/onlinestatus"
-
 local ScrollableList = require "widgets/scrollablelist"
-
-
 local TEMPLATES = require "widgets/templates"
-
 
 require("constants")
 
 -- Note: values are the position of the line at the right side of the named column
 local column_offsets
 if JapaneseOnPS4() then --NB: JP PS4 values have NOT been updated for the new screen (6/14/2015)
-     column_offsets ={ 
-        DAYS_LIVED = -35, 
+     column_offsets ={
+        DAYS_LIVED = -35,
         DECEASED = 100,
         CAUSE = 290,
         MODE = 500,
@@ -30,7 +26,7 @@ if JapaneseOnPS4() then --NB: JP PS4 values have NOT been updated for the new sc
         SERVER_NAME = 285,
     }
 else
-    column_offsets ={ 
+    column_offsets ={
         DAYS_LIVED = -200,
         DECEASED = -50,
         CAUSE = 125,
@@ -50,19 +46,46 @@ local num_rows = 14
 
 local portrait_scale = 0.25
 
+local function tchelper(first, rest)
+  return first:upper()..rest:lower()
+end
+
+local function get_killed_by(data)
+    if data.killed_by == nil then
+        return ""
+    elseif data.pk then
+        --If it's a PK, then don't do any remapping or reformatting on the player's name
+        return data.killed_by
+    end
+
+    local killed_by =
+        (data.killed_by == "nil" and (data.character == "waxwell" and "charlie" or "darkness")) or
+        (data.killed_by == "unknown" and "shenanigans") or
+        (data.killed_by == "moose" and (math.random() < .5 and "moose1" or "moose2")) or
+        data.killed_by
+
+    killed_by = STRINGS.NAMES[string.upper(killed_by)] or STRINGS.NAMES.SHENANIGANS
+
+    return killed_by:gsub("(%a)([%w_']*)", tchelper)
+end
+
+local function get_character_icon(character)
+    local atlas = "images/saveslot_portraits"
+    if not table.contains(DST_CHARACTERLIST, character) then
+        if table.contains(MODCHARACTERLIST, character) then
+            atlas = atlas.."/"..character
+        else
+            character = #character > 0 and "mod" or "unknown"
+        end
+    end
+    return atlas..".xml", character..".tex"
+end
 
 local function obit_widget_constructor(data, parent, obit_button)
     if not data and data.character and data.days_survived and data.location and data.killed_by and (data.world or data.server) then return end
 
      -- obits scroll list
-    local font_size = 28
-    if JapaneseOnPS4() then
-     font_size = 28 * 0.75
-    end
-    
-    local function tchelper(first, rest)
-      return first:upper()..rest:lower()
-    end
+    local font_size = JapaneseOnPS4() and 28 * .75 or 28
 
     local group = parent:AddChild(Widget("control-morgue"))
     group.bg = group:AddChild(Image("images/serverbrowser.xml", "textwidget_over.tex"))
@@ -82,7 +105,7 @@ local function obit_widget_constructor(data, parent, obit_button)
     group.DAYS_LIVED:SetHAlign(ANCHOR_MIDDLE)
     group.DAYS_LIVED:SetPosition(column_offsets.DAYS_LIVED+slide_factor, 0, 0)
     group.DAYS_LIVED:SetRegionSize( 135, 30 )
-    group.DAYS_LIVED:SetString((data.days_survived or "?").." "..(data.days_survived == 1 and STRINGS.UI.MORGUESCREEN.DAY or STRINGS.UI.MORGUESCREEN.DAYS))
+    group.DAYS_LIVED:SetString((data.days_survived or STRINGS.UI.MORGUESCREEN.UNKNOWN_DAYS).." "..(data.days_survived == 1 and STRINGS.UI.MORGUESCREEN.DAY or STRINGS.UI.MORGUESCREEN.DAYS))
     group.DAYS_LIVED:SetColour(0,0,0,1)
 
     group.DECEASED = group:AddChild(Widget("DECEASED"))
@@ -92,62 +115,37 @@ local function obit_widget_constructor(data, parent, obit_button)
     group.DECEASED.portraitbg:SetScale(portrait_scale, portrait_scale, 1)
     group.DECEASED.portraitbg:SetClickable(false)   
     group.DECEASED.base = group.DECEASED:AddChild(Widget("base"))
-    
+
     group.DECEASED.portrait = group.DECEASED.base:AddChild(Image())
     group.DECEASED.portrait:SetClickable(false) 
-
-    local character = data.character
-    if character == nil then
-        group.DECEASED.portrait:Hide()
-    else
-        local atlas = "images/saveslot_portraits"
-        if not table.contains(DST_CHARACTERLIST, character) then
-            if table.contains(MODCHARACTERLIST, character) then
-                atlas = atlas.."/"..character
-            else
-                character = #character > 0 and "mod" or "unknown"
-            end
-        end
-        atlas = atlas..".xml"
-        group.DECEASED.portrait:SetTexture(atlas, character..".tex")
-    end
     group.DECEASED.portrait:SetScale(portrait_scale, portrait_scale, 1)
+    if data.character ~= nil then
+        group.DECEASED.portrait:SetTexture(get_character_icon(data.character))
+    else
+        group.DECEASED:Hide()
+    end
 
     group.CAUSE = group:AddChild(Text(NEWFONT, font_size))
     group.CAUSE:SetHAlign(ANCHOR_MIDDLE)
     group.CAUSE:SetPosition(column_offsets.CAUSE+slide_factor-23, 0, 0)
-    group.CAUSE:SetRegionSize( 175, 30 )
-    local killed_by = data.killed_by
-    --If it's a PK, then don't do any remapping or reformatting on the player's name
-    if not data.pk then
-        killed_by = data.killed_by
-        if killed_by == "nil" then
-            if character == "waxwell" then
-                killed_by = "charlie"
-            else
-                killed_by = "darkness"
-            end
-        elseif killed_by == "unknown" then
-            killed_by = "shenanigans"
-        elseif killed_by == "moose" then
-            if math.random() < .5 then
-                killed_by = "moose1"
-            else
-                killed_by = "moose2"
-            end
-        end
-        killed_by = STRINGS.NAMES[string.upper(killed_by)] or STRINGS.NAMES.SHENANIGANS
-        killed_by = killed_by:gsub("(%a)([%w_']*)", tchelper)
-    end
-    group.CAUSE:SetString(killed_by)
+    group.CAUSE._align =
+    {
+        maxwidth = 165,
+        maxchars = 40,
+    }
+    group.CAUSE:SetTruncatedString(get_killed_by(data), group.CAUSE._align.maxwidth, group.CAUSE._align.maxchars, true)
     group.CAUSE:SetColour(0,0,0,1)
 
     group.MODE = group:AddChild(Text(NEWFONT, font_size))
     group.MODE:SetHAlign(ANCHOR_MIDDLE)
     group.MODE:SetPosition(column_offsets.MODE + slide_factor-5, 0, 0)
-    group.MODE:SetRegionSize( 400, 30 )
-    group.MODE:SetString(data.server or STRINGS.UI.MORGUESCREEN.LEVELTYPE[Levels.GetTypeForLevelID(data.world)])
     group.MODE:SetColour(0,0,0,1)
+    group.MODE._align =
+    {
+        maxwidth = 400,
+        maxchars = 92,
+    }
+    group.MODE:SetTruncatedString(data.server or "", group.MODE._align.maxwidth, group.MODE._align.maxchars, true)
 
     group:SetFocusChangeDir(MOVE_LEFT, obit_button)
 
@@ -157,69 +155,21 @@ end
 local function obit_widget_update(widget, data, index)
     if not widget then return end
 
-    local function tchelper(first, rest)
-      return first:upper()..rest:lower()
-    end
+    widget.DAYS_LIVED:SetString((data.days_survived or STRINGS.UI.MORGUESCREEN.UNKNOWN_DAYS).." "..(data.days_survived == 1 and STRINGS.UI.MORGUESCREEN.DAY or STRINGS.UI.MORGUESCREEN.DAYS))
 
-    widget.DAYS_LIVED:SetString((data.days_survived or "?").." "..(data.days_survived == 1 and STRINGS.UI.MORGUESCREEN.DAY or STRINGS.UI.MORGUESCREEN.DAYS))
-
-    local character = data.character
-    if character == nil then
-        widget.DECEASED:Hide()
-    else
-        local atlas = "images/saveslot_portraits"
-        if not table.contains(DST_CHARACTERLIST, character) then
-            if table.contains(MODCHARACTERLIST, character) then
-                atlas = atlas.."/"..character
-            else
-                character = #character > 0 and "mod" or "unknown"
-            end
-        end
-        atlas = atlas..".xml"
+    if data.character ~= nil then
+        widget.DECEASED.portrait:SetTexture(get_character_icon(data.character))
         widget.DECEASED:Show()
-        widget.DECEASED.portrait:SetTexture(atlas, character..".tex")
+    else
+        widget.DECEASED:Hide()
     end
 
-    local killed_by = data.killed_by or "none"
-    if killed_by == "none" then
-        widget.CAUSE:SetString("")
-    else
-        --If it's a PK, then don't do any remapping or reformatting on the player's name
-        if not data.pk then
-            killed_by = data.killed_by
-            if killed_by == "nil" then
-                if character == "waxwell" then
-                    killed_by = "charlie"
-                else
-                    killed_by = "darkness"
-                end
-            elseif killed_by == "unknown" then
-                killed_by = "shenanigans"
-            elseif killed_by == "moose" then
-                if math.random() < .5 then
-                    killed_by = "moose1"
-                else
-                    killed_by = "moose2"
-                end
-            end
-            killed_by = STRINGS.NAMES[string.upper(killed_by)] or STRINGS.NAMES.SHENANIGANS
-            killed_by = killed_by:gsub("(%a)([%w_']*)", tchelper)
-        end
-        widget.CAUSE:SetString(killed_by)
-    end
-
-    if data.server then
-        widget.MODE:SetString(data.server or STRINGS.UI.MORGUESCREEN.LEVELTYPE[Levels.GetTypeForLevelID(data.world)])
-    else
-        widget.MODE:SetString("")
-    end
+    widget.CAUSE:SetTruncatedString(get_killed_by(data), widget.CAUSE._align.maxwidth, widget.CAUSE._align.maxchars, true)
+    widget.MODE:SetTruncatedString(data.server or "", widget.MODE._align.maxwidth, widget.MODE._align.maxchars, true)
 end
 
-local function encounter_widget_constructor(data, parent, obit_button)	
-	local font_size = 28
-    if JapaneseOnPS4() then
-     font_size = 28 * 0.75
-    end
+local function encounter_widget_constructor(data, parent, obit_button)  
+    local font_size = JapaneseOnPS4() and 28 * .75 or 28
 
     local slide_factor = 200
 
@@ -235,13 +185,17 @@ local function encounter_widget_constructor(data, parent, obit_button)
     group.OnLoseFocus = function()
         group.bg:Hide()
     end
-        
+
     group.PLAYER_NAME = group:AddChild(Text(NEWFONT, font_size))
     group.PLAYER_NAME:SetHAlign(ANCHOR_MIDDLE)
     group.PLAYER_NAME:SetPosition(column_offsets.PLAYER_NAME-35+slide_factor, 0, 0)
-    group.PLAYER_NAME:SetRegionSize( 170, 30 )
-    group.PLAYER_NAME:SetString(data.name or "?")
     group.PLAYER_NAME:SetColour(0,0,0,1)
+    group.PLAYER_NAME._align =
+    {
+        maxwidth = 170,
+        maxchars = 40,
+    }
+    group.PLAYER_NAME:SetTruncatedString(data.name or "", group.PLAYER_NAME._align.maxwidth, group.PLAYER_NAME._align.maxchars, true)
 
     group.PLAYER_CHAR = group:AddChild(Widget("PLAYER_CHAR"))
     group.PLAYER_CHAR:SetPosition(column_offsets.PLAYER_CHAR+12+slide_factor, 0, 0)
@@ -249,9 +203,13 @@ local function encounter_widget_constructor(data, parent, obit_button)
     group.SERVER_NAME = group:AddChild(Text(NEWFONT, font_size))
     group.SERVER_NAME:SetHAlign(ANCHOR_MIDDLE)
     group.SERVER_NAME:SetPosition(column_offsets.SERVER_NAME-90+slide_factor, 0, 0)
-    group.SERVER_NAME:SetRegionSize( 285, 30 )
-    group.SERVER_NAME:SetString(data.server_name or "?")
     group.SERVER_NAME:SetColour(0,0,0,1)
+    group.SERVER_NAME._align =
+    {
+        maxwidth = 285,
+        maxchars = 66,
+    }
+    group.SERVER_NAME:SetTruncatedString(data.server_name or "", group.SERVER_NAME._align.maxwidth, group.SERVER_NAME._align.maxchars, true)
 
     group.PLAYER_CHAR.base = group.PLAYER_CHAR:AddChild(Widget("base"))
     group.PLAYER_CHAR.base:SetPosition(1,0)
@@ -260,51 +218,41 @@ local function encounter_widget_constructor(data, parent, obit_button)
     group.PLAYER_CHAR.portraitbg:SetClickable(false)
     group.PLAYER_CHAR.portrait = group.PLAYER_CHAR.base:AddChild(Image())
     group.PLAYER_CHAR.portrait:SetClickable(false)
-
-    local character = data.prefab
-    if character == nil then
-        group.PLAYER_CHAR.portrait:Hide()
-    else
-        local atlas = "images/saveslot_portraits"
-        if not table.contains(DST_CHARACTERLIST, character) then
-            if table.contains(MODCHARACTERLIST, character) then
-                atlas = atlas.."/"..character
-            else
-                character = #character > 0 and "mod" or "unknown"
-            end
-        end
-        atlas = atlas..".xml"
-        group.PLAYER_CHAR.portrait:SetTexture(atlas, character..".tex")
-    end
-
     group.PLAYER_CHAR.portrait:SetScale(portrait_scale, portrait_scale, 1)
+    if data.prefab ~= nil then
+        group.PLAYER_CHAR.portrait:SetTexture(get_character_icon(data.prefab))
+    else
+        group.PLAYER_CHAR:Hide()
+    end
 
     group.SEEN_DATE = group:AddChild(Text(NEWFONT, font_size))
     group.SEEN_DATE:SetHAlign(ANCHOR_MIDDLE)
     group.SEEN_DATE:SetPosition(column_offsets.SEEN_DATE-13+slide_factor, 0, 0)
     group.SEEN_DATE:SetRegionSize( 135, 30 )
-    group.SEEN_DATE:SetString(data.date)
+    group.SEEN_DATE:SetString(data.date or "")
     group.SEEN_DATE:SetColour(0,0,0,1)
-    
+
     group.PLAYER_AGE = group:AddChild(Text(NEWFONT, font_size))
     group.PLAYER_AGE:SetHAlign(ANCHOR_MIDDLE)
     group.PLAYER_AGE:SetPosition(column_offsets.PLAYER_AGE+15+slide_factor+20, 0, 0)
     group.PLAYER_AGE:SetRegionSize( 75, 30 )
-    local suffix = tonumber(data.playerage) > 1 and STRINGS.UI.MORGUESCREEN.DAYS or STRINGS.UI.MORGUESCREEN.DAY
-    group.PLAYER_AGE:SetString(data.playerage .. " " .. suffix)
+    group.PLAYER_AGE:SetString((data.playerage or STRINGS.UI.MORGUESCREEN.UNKNOWN_DAYS).." "..(tonumber(data.playerage) == 1 and STRINGS.UI.MORGUESCREEN.DAY or STRINGS.UI.MORGUESCREEN.DAYS))
     group.PLAYER_AGE:SetColour(0,0,0,1)
 
-    group.NET_ID = group:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "player_info.tex", STRINGS.UI.PLAYERSTATUSSCREEN.VIEWPROFILE, false, false, 
-    	function() 
-    		if data.netid ~= nil then 
-    			TheNet:ViewNetProfile(data.netid) 
-    		end 
-    		--TheFrontEnd:PushScreen(PlayerAvatarPopupScreen(data.name, data, true))
-    	end, {size = 50, offset_y = 65} ))
-    --NET_ID:SetHAlign(ANCHOR_MIDDLE)
+    group.NET_ID = group:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "player_info.tex", STRINGS.UI.PLAYERSTATUSSCREEN.VIEWPROFILE, false, false,
+        function()
+            if group.NET_ID._netid ~= nil then
+                TheNet:ViewNetProfile(group.NET_ID._netid)
+            end
+        end,
+        { size = 50, offset_y = 65 }))
     group.NET_ID:SetPosition(column_offsets.NET_ID+8+slide_factor+18, -1, 0)
-	group.NET_ID:SetScale(.45)
+    group.NET_ID:SetScale(.45)
     group.NET_ID:SetHelpTextMessage(STRINGS.UI.PLAYERSTATUSSCREEN.VIEWPROFILE)
+    group.NET_ID._netid = data.netid
+    if not TheNet:IsNetIDPlatformValid(data.netid) then
+        group.NET_ID:Hide()
+    end
 
     group.focus_forward = group.NET_ID
 
@@ -316,129 +264,89 @@ end
 local function encounter_widget_update(widget, data, index)   
     if not widget then return end
 
-    local name = data.name or "none"
-    if name == "none" then
-        widget.PLAYER_NAME:SetString("")
-    else
-        widget.PLAYER_NAME:SetString(data.name or "?")
-    end
+    widget.PLAYER_NAME:SetTruncatedString(data.name or "", widget.PLAYER_NAME._align.maxwidth, widget.PLAYER_NAME._align.maxchars, true)
+    widget.SERVER_NAME:SetTruncatedString(data.server_name or "", widget.SERVER_NAME._align.maxwidth, widget.SERVER_NAME._align.maxchars, true)
 
-    local server = data.server_name or "none"
-    if server == "none" then
-        widget.SERVER_NAME:SetString("")
-    else
-        widget.SERVER_NAME:SetString(data.server_name or "?")
-    end    
-
-    local character = data.prefab
-    if character == nil then
-        widget.PLAYER_CHAR:Hide()
-    else
-        local atlas = "images/saveslot_portraits"
-        if not table.contains(DST_CHARACTERLIST, character) then
-            if table.contains(MODCHARACTERLIST, character) then
-                atlas = atlas.."/"..character
-            else
-                character = #character > 0 and "mod" or "unknown"
-            end
-        end
-        atlas = atlas..".xml"
+    if data.prefab ~= nil then
+        widget.PLAYER_CHAR.portrait:SetTexture(get_character_icon(data.prefab))
         widget.PLAYER_CHAR:Show()
-        widget.PLAYER_CHAR.portrait:SetTexture(atlas, character..".tex")
+    else
+        widget.PLAYER_CHAR:Hide()
     end
 
     widget.SEEN_DATE:SetString(data.date or "")
-    
-    local age = data.playerage or "none"
-    if age == "none" then
-        widget.PLAYER_AGE:SetString("")
-    else
-        local suffix = tonumber(data.playerage) > 1 and STRINGS.UI.MORGUESCREEN.DAYS or STRINGS.UI.MORGUESCREEN.DAY
-        widget.PLAYER_AGE:SetString(data.playerage .. " " .. suffix)
-    end
+    widget.PLAYER_AGE:SetString((data.playerage or STRINGS.UI.MORGUESCREEN.UNKNOWN_DAYS).." "..(tonumber(data.playerage) == 1 and STRINGS.UI.MORGUESCREEN.DAY or STRINGS.UI.MORGUESCREEN.DAYS))
 
-    if not TheNet:IsNetIDPlatformValid(data.netid) then
-        widget.NET_ID:Hide()
-    else
-        widget.NET_ID:MoveToFront()
+    widget.NET_ID._netid = data.netid
+    if TheNet:IsNetIDPlatformValid(data.netid) then
         widget.NET_ID:Show()
-        widget.NET_ID:SetOnClick( function() 
-    		--TheFrontEnd:PushScreen(PlayerAvatarPopupScreen(data.name, data, true))
-    		if data.netid ~= nil then 
-    			TheNet:ViewNetProfile(data.netid)
-    		end 
-    	end)
+    else
+        widget.NET_ID:Hide()
     end
 end
 
-local MorgueScreen = Class(Screen, function(self, in_game)
+local MorgueScreen = Class(Screen, function(self, prev_screen)
     Widget._ctor(self, "MorgueScreen")
-    	
-	self.bg = self:AddChild(TEMPLATES.AnimatedPortalBackground())
-    
-	self.root = self:AddChild(Widget("ROOT"))
+
+    self.prev_screen = prev_screen
+    prev_screen:TransferPortalOwnership(prev_screen, self)
+
+    self.root = self:AddChild(Widget("ROOT"))
     self.root:SetVAnchor(ANCHOR_MIDDLE)
     self.root:SetHAnchor(ANCHOR_MIDDLE)
     self.root:SetPosition(0,0,0)
     self.root:SetScaleMode(SCALEMODE_PROPORTIONAL)
-   
-	self.fg = self.root:AddChild(TEMPLATES.AnimatedPortalForeground())
 
     self.menu_bg = self.root:AddChild(TEMPLATES.LeftGradient())
 
-	self.onlinestatus = self.root:AddChild(OnlineStatus())
-	self.cancel_button = self.root:AddChild(TEMPLATES.BackButton(function() self:OK() end))
+    self.onlinestatus = self.root:AddChild(OnlineStatus())
+    self.cancel_button = self.root:AddChild(TEMPLATES.BackButton(function() self:OK() end))
 
-	self.center_panel = self.root:AddChild(TEMPLATES.CenterPanel())
-	-- self.center_panel:SetPosition(75, 0)
+    self.center_panel = self.root:AddChild(TEMPLATES.CenterPanel())
+    -- self.center_panel:SetPosition(75, 0)
 
-	self.nav_bar = self.root:AddChild(TEMPLATES.NavBarWithScreenTitle(STRINGS.UI.MORGUESCREEN.HISTORY, "short"))
-	self.obituary_button = self.nav_bar:AddChild(TEMPLATES.NavBarButton(25, STRINGS.UI.MORGUESCREEN.TITLE, function() self:SetTab("obituary") end))
-	self.encounters_button = self.nav_bar:AddChild(TEMPLATES.NavBarButton(-25, STRINGS.UI.MORGUESCREEN.ENCOUNTERSTITLE, function() self:SetTab("encounters") end))
+    self.nav_bar = self.root:AddChild(TEMPLATES.NavBarWithScreenTitle(STRINGS.UI.MORGUESCREEN.HISTORY, "short"))
+    self.obituary_button = self.nav_bar:AddChild(TEMPLATES.NavBarButton(25, STRINGS.UI.MORGUESCREEN.TITLE, function() self:SetTab("obituary") end))
+    self.encounters_button = self.nav_bar:AddChild(TEMPLATES.NavBarButton(-25, STRINGS.UI.MORGUESCREEN.ENCOUNTERSTITLE, function() self:SetTab("encounters") end))
 
-	
-	self.list_widgets = {}
+    self.list_widgets = {}
     self.morgue = Morgue:GetRows()
 
     PlayerHistory:SortBackwards("sort_date")
     self.player_history = PlayerHistory:GetRows()
 
+    self:BuildObituariesTab()
+    self:BuildEncountersTab()
 
-	self:BuildObituariesTab()
-	self:BuildEncountersTab()
+    self:RefreshControls()
 
-	self:RefreshControls()
-
-	self:SetTab("obituary")
-	self.default_focus = self.obituary_button
-
+    self:SetTab("obituary")
+    self.default_focus = self.obituary_button
 end)
 
 function MorgueScreen:AddWhiteStripes(parent)
+    local y_height = header_height-.5*row_height
 
-	local y_height = header_height-.5*row_height
-
-	for i = 1, num_rows+1 do 
-		if i % 2 ~= 0 then 
-			local line = parent:AddChild(Image("images/ui.xml", "single_option_bg.tex"))
-			line:SetPosition(105, y_height)
-			line:SetScale(1.66, .68)
+    for i = 1, num_rows+1 do
+        if i % 2 ~= 0 then
+            local line = parent:AddChild(Image("images/ui.xml", "single_option_bg.tex"))
+            line:SetPosition(105, y_height)
+            line:SetScale(1.66, .68)
             line:MoveToBack()
-		end
+        end
 
-		y_height = y_height - row_height
-	end
-
+        y_height = y_height - row_height
+    end
 end
 
 function MorgueScreen:BuildObituariesTab()
-	self.obituaryroot = self.center_panel:AddChild(Widget("ROOT"))
+    self.obituaryroot = self.center_panel:AddChild(Widget("ROOT"))
 
     self.obituaryroot:SetPosition(-110,0,0)
 
     self.obituary_title = self.obituaryroot:AddChild(Text(BUTTONFONT, 45, STRINGS.UI.MORGUESCREEN.TITLE))
-    self.obituary_title:SetPosition(115,245) 
-    self.obituary_title:SetColour(0,0,0,1)   
+    self.obituary_title:SetPosition(115,245)
+    self.obituary_title:SetColour(0,0,0,1)
 
     self.obituary_lines = self.obituaryroot:AddChild(Widget("lines"))
     local vertical_line_y_offset = -20
@@ -465,9 +373,9 @@ function MorgueScreen:BuildObituariesTab()
 
     local font_size = 30
     if JapaneseOnPS4() then
-        font_size = 30 * 0.75;
+        font_size = 30 * 0.75
     end
-   
+
     self.obits_titles = self.obituaryroot:AddChild(Widget("obits_titles"))
     self.obits_titles:SetPosition(0, header_height-.5*row_height, 0)
 
@@ -506,7 +414,7 @@ function MorgueScreen:BuildObituariesTab()
     self.MODE:SetString(STRINGS.UI.MORGUESCREEN.MODE)
     self.MODE:SetColour(0, 0, 0, 1)
     self.MODE:SetClickable(false)
-	
+
     self.obits_rows = self.obituaryroot:AddChild(Widget("obits_rows"))
     self:AddWhiteStripes(self.obits_rows)
     self.obits_rows:MoveToBack()
@@ -519,7 +427,7 @@ function MorgueScreen:BuildObituariesTab()
 
     self.obit_widgets = {}
     for i=1,num_rows do
-        table.insert(self.obit_widgets, obit_widget_constructor(self.morgue[i] or {character="", days_survived="", location="", killed_by="", world=""}, self.obitsrowsroot, self.obituary_button))
+        table.insert(self.obit_widgets, obit_widget_constructor(self.morgue[i] or {}, self.obitsrowsroot, self.obituary_button))
     end
 
     self.obits_scroll_list = self.obitslistroot:AddChild(ScrollableList(self.morgue, 900, 420, row_height, 0, obit_widget_update, self.obit_widgets, nil, nil, nil, 30))
@@ -529,13 +437,13 @@ function MorgueScreen:BuildObituariesTab()
 end
 
 function MorgueScreen:BuildEncountersTab()
-	self.encountersroot = self.center_panel:AddChild(Widget("ROOT"))
+    self.encountersroot = self.center_panel:AddChild(Widget("ROOT"))
 
     self.encountersroot:SetPosition(-110,0,0)
 
     self.encounters_title = self.encountersroot:AddChild(Text(BUTTONFONT, 45, STRINGS.UI.MORGUESCREEN.LONGENCOUNTERSTITLE))
-    self.encounters_title:SetPosition(115,245) 
-    self.encounters_title:SetColour(0,0,0,1)   
+    self.encounters_title:SetPosition(115,245)
+    self.encounters_title:SetColour(0,0,0,1)
 
     self.encounters_lines = self.encountersroot:AddChild(Widget("lines"))
     local vertical_line_y_offset = -20
@@ -560,19 +468,19 @@ function MorgueScreen:BuildEncountersTab()
     self.third_column_end:SetScale(.66, .68)
     self.third_column_end:SetPosition(column_offsets.SERVER_NAME, vertical_line_y_offset, 0)
 
-    if not JapaneseOnPS4() then 
-	    self.fourth_column_end = self.encounters_lines:AddChild(Image("images/ui.xml", "line_vertical_5.tex"))
-	    self.fourth_column_end:SetScale(.66, .68)
-	    self.fourth_column_end:SetPosition(column_offsets.SEEN_DATE, vertical_line_y_offset, 0)
+    if not JapaneseOnPS4() then
+        self.fourth_column_end = self.encounters_lines:AddChild(Image("images/ui.xml", "line_vertical_5.tex"))
+        self.fourth_column_end:SetScale(.66, .68)
+        self.fourth_column_end:SetPosition(column_offsets.SEEN_DATE, vertical_line_y_offset, 0)
 
-	    self.fifth_column_end = self.encounters_lines:AddChild(Image("images/ui.xml", "line_vertical_5.tex"))
-	    self.fifth_column_end:SetScale(.66, .68)
-	    self.fifth_column_end:SetPosition(column_offsets.PLAYER_AGE+40, vertical_line_y_offset, 0)
-	end
+        self.fifth_column_end = self.encounters_lines:AddChild(Image("images/ui.xml", "line_vertical_5.tex"))
+        self.fifth_column_end:SetScale(.66, .68)
+        self.fifth_column_end:SetPosition(column_offsets.PLAYER_AGE+40, vertical_line_y_offset, 0)
+    end
 
-	self.encounters_rows = self.encountersroot:AddChild(Widget("encounters_rows"))
-	self:AddWhiteStripes(self.encounters_rows)
-	self.encounters_rows:MoveToBack()
+    self.encounters_rows = self.encountersroot:AddChild(Widget("encounters_rows"))
+    self:AddWhiteStripes(self.encounters_rows)
+    self.encounters_rows:MoveToBack()
 
     local font_size = 30
     if JapaneseOnPS4() then
@@ -610,31 +518,30 @@ function MorgueScreen:BuildEncountersTab()
     self.SERVER_NAME:SetClickable(false)
 
     if not JapaneseOnPS4() then
-    	self.SEEN_DATE = self.encounters_titles:AddChild(Text(NEWFONT, font_size))
-    	self.SEEN_DATE:SetHAlign(ANCHOR_MIDDLE)
-	    self.SEEN_DATE:SetPosition(column_offsets.SEEN_DATE + 12, header_height, 0)
-	    self.SEEN_DATE:SetRegionSize( 400, 30 )
-	    self.SEEN_DATE:SetString(STRINGS.UI.MORGUESCREEN.SEEN_DATE)
-	    self.SEEN_DATE:SetColour(0, 0, 0, 1)
+        self.SEEN_DATE = self.encounters_titles:AddChild(Text(NEWFONT, font_size))
+        self.SEEN_DATE:SetHAlign(ANCHOR_MIDDLE)
+        self.SEEN_DATE:SetPosition(column_offsets.SEEN_DATE + 12, header_height, 0)
+        self.SEEN_DATE:SetRegionSize( 400, 30 )
+        self.SEEN_DATE:SetString(STRINGS.UI.MORGUESCREEN.SEEN_DATE)
+        self.SEEN_DATE:SetColour(0, 0, 0, 1)
         self.SEEN_DATE:SetClickable(false)
 
-	    self.PLAYER_AGE = self.encounters_titles:AddChild(Text(NEWFONT, font_size))
-	    self.PLAYER_AGE:SetHAlign(ANCHOR_MIDDLE)
-	    self.PLAYER_AGE:SetPosition(column_offsets.PLAYER_AGE + 40 + 20, header_height, 0)
-	    self.PLAYER_AGE:SetRegionSize( 400, 30 )
-	    self.PLAYER_AGE:SetString(STRINGS.UI.MORGUESCREEN.PLAYER_AGE)
-	    self.PLAYER_AGE:SetColour(0, 0, 0, 1)
+        self.PLAYER_AGE = self.encounters_titles:AddChild(Text(NEWFONT, font_size))
+        self.PLAYER_AGE:SetHAlign(ANCHOR_MIDDLE)
+        self.PLAYER_AGE:SetPosition(column_offsets.PLAYER_AGE + 40 + 20, header_height, 0)
+        self.PLAYER_AGE:SetRegionSize( 400, 30 )
+        self.PLAYER_AGE:SetString(STRINGS.UI.MORGUESCREEN.PLAYER_AGE)
+        self.PLAYER_AGE:SetColour(0, 0, 0, 1)
         self.PLAYER_AGE:SetClickable(false)
 
-	    self.NET_ID = self.encounters_titles:AddChild(Text(NEWFONT, font_size))
-	    self.NET_ID:SetHAlign(ANCHOR_MIDDLE)
-	    self.NET_ID:SetPosition(column_offsets.NET_ID + 35 + 15, header_height, 0)
-	    self.NET_ID:SetRegionSize( 400, 30 )
-	    self.NET_ID:SetString(STRINGS.UI.MORGUESCREEN.NET_ID)
-	    self.NET_ID:SetColour(0, 0, 0, 1)
+        self.NET_ID = self.encounters_titles:AddChild(Text(NEWFONT, font_size))
+        self.NET_ID:SetHAlign(ANCHOR_MIDDLE)
+        self.NET_ID:SetPosition(column_offsets.NET_ID + 35 + 15, header_height, 0)
+        self.NET_ID:SetRegionSize( 400, 30 )
+        self.NET_ID:SetString(STRINGS.UI.MORGUESCREEN.NET_ID)
+        self.NET_ID:SetColour(0, 0, 0, 1)
         self.NET_ID:SetClickable(false)
-	end
-
+    end
 
     self.encounterslistroot = self.encountersroot:AddChild(Widget("encounterslistroot"))
     self.encounterslistroot:SetPosition(200,0)
@@ -643,71 +550,65 @@ function MorgueScreen:BuildEncountersTab()
     self.encountersrowsroot:SetPosition(200,0)
 
     self.encounter_widgets = {}
-    self.encounter_items = {}
-    local playerIdx = 1
-    local count = 0
-
-    while count < num_rows do 
-    	if not self.player_history[playerIdx] or self.player_history[playerIdx].prefab ~= "" then 
-        	table.insert(self.encounter_widgets, encounter_widget_constructor(self.player_history[playerIdx] or {name="", playerage="0", netid="", server_name="", date="", prefab=""}, self.encountersrowsroot, self.obituary_button))
-        	table.insert(self.encounter_items, self.player_history[playerIdx] or {name="", playerage="0", netid="", server_name="", date="", prefab=""})
-        	count = count + 1
-        end
-        playerIdx = playerIdx + 1
+    for i = 1, num_rows do
+        table.insert(self.encounter_widgets, encounter_widget_constructor(self.player_history[i] or {}, self.encountersrowsroot, self.obituary_button))
     end
 
-    self.encounters_scroll_list = self.encounterslistroot:AddChild(ScrollableList(self.encounter_items, 900, row_height * num_rows, row_height - 1, 1, encounter_widget_update, self.encounter_widgets, nil, nil, nil, 30))
+    self.encounters_scroll_list = self.encounterslistroot:AddChild(ScrollableList(self.player_history, 900, row_height * num_rows, row_height - 1, 1, encounter_widget_update, self.encounter_widgets, nil, nil, nil, 30))
     self.encounters_scroll_list:LayOutStaticWidgets(-25)
     self.encounters_scroll_list:SetPosition(-95, -35)
 end
 
 function MorgueScreen:SetTab(tab)
-	if tab == "obituary" then
-		self.selected_tab = "obituary"
-		if self.obituary_button.shown then self.obituary_button:Select() end
-		if self.encounters_button.shown then self.encounters_button:Unselect() end
-		self.obituaryroot:Show()
-		self.encountersroot:Hide()
-	elseif tab == "encounters" then
-		self.selected_tab = "encounters"
-		if self.obituary_button.shown then self.obituary_button:Unselect() end
-		if self.encounters_button.shown then self.encounters_button:Select() end
-		self.obituaryroot:Hide()
-		self.encountersroot:Show()
-	end
-	--self:UpdateMenu()
+    if tab == "obituary" then
+        self.selected_tab = "obituary"
+        if self.obituary_button.shown then self.obituary_button:Select() end
+        if self.encounters_button.shown then self.encounters_button:Unselect() end
+        self.obituaryroot:Show()
+        self.encountersroot:Hide()
+    elseif tab == "encounters" then
+        self.selected_tab = "encounters"
+        if self.obituary_button.shown then self.obituary_button:Unselect() end
+        if self.encounters_button.shown then self.encounters_button:Select() end
+        self.obituaryroot:Hide()
+        self.encountersroot:Show()
+    end
+    --self:UpdateMenu()
 end
 
+--[[
 function MorgueScreen:OnBecomeActive()
     MorgueScreen._base.OnBecomeActive(self)
-    --TheFrontEnd:GetSound():KillSound("FEMusic")    
+    TheFrontEnd:GetSound():KillSound("FEMusic")    
 end
 
 function MorgueScreen:OnBecomeInactive()
     MorgueScreen._base.OnBecomeInactive(self)
-    --TheFrontEnd:GetSound():PlaySound("dontstarve/music/music_FE","FEMusic")
+    TheFrontEnd:GetSound():PlaySound("dontstarve/music/music_FE","FEMusic")
 end
+]]
 
 function MorgueScreen:OnDestroy()
-	self._base.OnDestroy(self)
+    self.prev_screen:TransferPortalOwnership(self, self.prev_screen)
+    self._base.OnDestroy(self)
 end
 
 function MorgueScreen:RefreshControls()
-   self:RefreshNav()
+    self:RefreshNav()
 end
 
 function MorgueScreen:RefreshNav()
-	
-	local function torightcol()
+    
+    local function torightcol()
         if self.selected_tab == "obituary" then
-		    return self.obits_scroll_list
+            return self.obits_scroll_list
         else
             return self.encounters_scroll_list
         end
-	end
+    end
 
-	self.obits_scroll_list:SetFocusChangeDir(MOVE_LEFT, self.obituary_button)
-	self.encounters_scroll_list:SetFocusChangeDir(MOVE_LEFT, self.obituary_button)
+    self.obits_scroll_list:SetFocusChangeDir(MOVE_LEFT, self.obituary_button)
+    self.encounters_scroll_list:SetFocusChangeDir(MOVE_LEFT, self.obituary_button)
 
     self.cancel_button:SetFocusChangeDir(MOVE_UP, self.obituary_button)
 
@@ -730,13 +631,13 @@ end
 function MorgueScreen:OnControl(control, down)
     if MorgueScreen._base.OnControl(self, control, down) then return true end
 
-    if not down then 
-		if control == CONTROL_CANCEL then 
-			self:OK()
+    if not down then
+        if control == CONTROL_CANCEL then
+            self:OK()
             TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
-			return true 
-		end
-	end
+            return true
+        end
+    end
 end
 
 function MorgueScreen:OK()
@@ -747,16 +648,13 @@ function MorgueScreen:OK()
     end)
 end
 
-
 function MorgueScreen:GetHelpText()
     local controller_id = TheInput:GetControllerID()
     local t = {}
- 	
- 	table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_CANCEL) .. " " .. STRINGS.UI.HELP.BACK)
+
+    table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_CANCEL) .. " " .. STRINGS.UI.HELP.BACK)
 
     return table.concat(t, "  ")
 end
-
-
 
 return MorgueScreen

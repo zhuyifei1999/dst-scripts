@@ -3125,18 +3125,12 @@ STRINGS.UI =
         DECEASED = "Deceased",
         CAUSE = "Cause of Death",
         MODE = "World",
-        LEVELTYPE = {
-            "Survival",
-            "Caves",
-            "Adventure",
-            "TEST",
-            "Unknown",
-         },    
         SEEN_DATE = "Date",
         PLAYER_AGE = "Age",
         NET_ID = "Profile",
         DAY = "Day",
         DAYS = "Days",
+        UNKNOWN_DAYS = "?",
     },
 
     CONTROLSSCREEN=

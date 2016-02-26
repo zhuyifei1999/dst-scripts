@@ -44,8 +44,9 @@ local assets =
     Asset("ATLAS", "images/fg_trees.xml"),
     Asset("IMAGE", "images/fg_trees.tex"),
 
-    Asset("ATLAS", "images/bg_plain.xml"),
-    Asset("IMAGE", "images/bg_plain.tex"),
+    --V2C: moved to frontend
+    --Asset("ATLAS", "images/bg_plain.xml"),
+    --Asset("IMAGE", "images/bg_plain.tex"),
 
     Asset("ATLAS", "images/bg_spiral.xml"),
     Asset("IMAGE", "images/bg_spiral.tex"),
@@ -63,8 +64,6 @@ local assets =
     Asset("IMAGE", "images/bg_vignette.tex"),
     Asset("ATLAS", "images/bg_spiral_anim.xml"),
     Asset("IMAGE", "images/bg_spiral_anim.tex"),
-    Asset("ATLAS", "images/bg_spiral_anim_overlay.xml"),
-    Asset("IMAGE", "images/bg_spiral_anim_overlay.tex"),
 
     Asset("ATLAS", "images/lobbyscreen.xml"),
     Asset("Image", "images/lobbyscreen.tex"),
@@ -82,9 +81,6 @@ local assets =
 
     Asset("ATLAS", "images/fg_animated_portal.xml"),
     Asset("IMAGE", "images/fg_animated_portal.tex"),
-
-    Asset("ATLAS", "images/fg_dirt_layer.xml"),
-    Asset("IMAGE", "images/fg_dirt_layer.tex"),
 
     Asset("ANIM", "anim/portal_scene.zip"),
     Asset("ANIM", "anim/portal_scene_steamfxbg.zip"),
@@ -172,7 +168,6 @@ local assets =
     Asset("ANIM", "anim/skingift_popup.zip"),
     Asset("ATLAS", "images/giftpopup.xml"),
     Asset("IMAGE", "images/giftpopup.tex"),
-
     
     --oft-used panel bgs
     Asset("ATLAS", "images/globalpanels2.xml"),
@@ -183,7 +178,6 @@ local assets =
 
     Asset("ATLAS", "images/avatars.xml"),
     Asset("IMAGE", "images/avatars.tex"),
-    Asset("ANIM", "anim/tab_gift.zip"),
 
     Asset("DYNAMIC_ANIM", "anim/dynamic/body_default1.zip"),
     Asset("DYNAMIC_ANIM", "anim/dynamic/hand_default1.zip"),
@@ -194,14 +188,9 @@ local assets =
     Asset("DYNAMIC_ANIM", "anim/dynamic/random_skin.zip"),
 }
 
-
 require "fonts"
 for i, font in ipairs( FONTS ) do
 	table.insert( assets, Asset( "FONT", font.filename ) )
 end
 
-local function fn(Sim)
-    return nil
-end
-
-return Prefab( "global", fn, assets ) 
+return Prefab("global", function() end, assets)

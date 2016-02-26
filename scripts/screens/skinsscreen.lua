@@ -20,20 +20,18 @@ local DEBUG_MODE = BRANCH == "dev"
 local NUM_ROWS = 4
 local NUM_ITEMS_PER_ROW = 4
 
-local SkinsScreen = Class(Screen, function(self, profile, screen)
+local SkinsScreen = Class(Screen, function(self, profile)
 	Screen._ctor(self, "SkinsScreen")
 
 	--print("Is offline?", TheNet:IsOnlineMode() or "nil", TheFrontEnd:GetIsOfflineMode() or "nil")
 
 	self.profile = profile
 	self:DoInit() 
-	self.prevScreen = screen
 
 	self.applied_filters = {} -- filters that are currently applied (groups to show)
 	 
    	self.default_focus = self.page_list
 end)
-
 
 function SkinsScreen:DoInit( )
 	STATS_ENABLE = true

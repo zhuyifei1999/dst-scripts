@@ -58,7 +58,7 @@ local PauseScreen = Class(Screen, function(self)
 	--[[
 	--jcheng: disable afk for now
 	local buttons = {}
-    table.insert(buttons, {text=STRINGS.UI.PAUSEMENU.OPTIONS, cb=function() TheFrontEnd:PushScreen( OptionsScreen(true))	end })
+    table.insert(buttons, {text=STRINGS.UI.PAUSEMENU.OPTIONS, cb=function() TheFrontEnd:PushScreen( OptionsScreen())	end })
 
     local buttons2 = {}
     table.insert(buttons2, {text=STRINGS.UI.PAUSEMENU.CONTINUE, cb=function() self:unpause() end })
@@ -76,7 +76,7 @@ local PauseScreen = Class(Screen, function(self)
 	table.insert(buttons, {text=STRINGS.UI.PAUSEMENU.CONTINUE, cb=function() self:unpause() end })
 	table.insert(buttons, {text=STRINGS.UI.PAUSEMENU.OPTIONS, cb=function() 
     	TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
-			TheFrontEnd:PushScreen(OptionsScreen(true))	
+			TheFrontEnd:PushScreen(OptionsScreen())
 			TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)
             --Ensure last_focus is the options button since mouse can
             --unfocus this button during the screen change, resulting

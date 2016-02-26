@@ -48,8 +48,7 @@ local MainScreen = Class(Screen, function(self, profile)
     self.music_playing = false
 end)
 
-
-function MainScreen:DoInit( )
+function MainScreen:DoInit()
     TheNet:LoadPermissionLists()
 
 	TheFrontEnd:GetGraphicsOptions():DisableStencil()
@@ -57,12 +56,10 @@ function MainScreen:DoInit( )
 	
 	TheInputProxy:SetCursorVisible(true)
 
-	-- BG
-	self.bg = self:AddChild(TEMPLATES.AnimatedPortalBackground())	
-   
-    -- FG
-    self.fg = self:AddChild(TEMPLATES.AnimatedPortalForeground())
-	
+    self.portal_root = self:AddChild(Widget("portal_root"))
+    self.bg = self.portal_root:AddChild(TEMPLATES.AnimatedPortalBackground())	
+    self.fg = self.portal_root:AddChild(TEMPLATES.AnimatedPortalForeground())
+
 	-- FIXED ROOT
     self.fixed_root = self:AddChild(Widget("root"))
     self.fixed_root:SetVAnchor(ANCHOR_MIDDLE)
@@ -76,17 +73,17 @@ function MainScreen:DoInit( )
     self.title = self.fixed_root:AddChild(Image("images/frontscreen.xml", "title.tex"))
     self.title:SetScale(.65)
     self.title:SetPosition(title_x, title_y-5)
-    self.title:SetTint(FRONTEND_TITLE_COLOUR[1], FRONTEND_TITLE_COLOUR[2], FRONTEND_TITLE_COLOUR[3], FRONTEND_TITLE_COLOUR[4])
+    self.title:SetTint(unpack(FRONTEND_TITLE_COLOUR))
 
     self.presents_image = self.fixed_root:AddChild(Image("images/frontscreen.xml", "kleipresents.tex"))
     self.presents_image:SetPosition(title_x+subtitle_offset_x-30, title_y-subtitle_offset_y+30, 0)
     self.presents_image:SetScale(.7)
-    self.presents_image:SetTint(FRONTEND_TITLE_COLOUR[1], FRONTEND_TITLE_COLOUR[2], FRONTEND_TITLE_COLOUR[3], FRONTEND_TITLE_COLOUR[4])    
+    self.presents_image:SetTint(unpack(FRONTEND_TITLE_COLOUR))
 
     self.legalese_image = self.fixed_root:AddChild(Image("images/frontscreen.xml", "legalese.tex"))
     self.legalese_image:SetPosition(title_x+subtitle_offset_x, title_y+subtitle_offset_y-50, 0)
     self.legalese_image:SetScale(.7)
-    self.legalese_image:SetTint(FRONTEND_TITLE_COLOUR[1], FRONTEND_TITLE_COLOUR[2], FRONTEND_TITLE_COLOUR[3], FRONTEND_TITLE_COLOUR[4])    
+    self.legalese_image:SetTint(unpack(FRONTEND_TITLE_COLOUR))
     
 	self.countdown = self.fixed_root:AddChild(Countdown())
     self.countdown:SetScale(1)
@@ -137,12 +134,12 @@ function MainScreen:DoInit( )
     self.exit_button:SetPosition(-RESOLUTION_X*.4, -RESOLUTION_Y*.5 + BACK_BUTTON_Y)
     self.exit_button.image:SetPosition(-53, 2)
     self.exit_button.image:SetScale(.7)
-    self.exit_button:SetTextColour(GOLD[1], GOLD[2], GOLD[3], GOLD[4])
+    self.exit_button:SetTextColour(unpack(GOLD))
     self.exit_button:SetTextFocusColour(1,1,1,1)
     self.exit_button:SetText(STRINGS.UI.MAINSCREEN.QUIT, true, {2,-2})
     self.exit_button:SetFont(TITLEFONT)
     self.exit_button:SetDisabledFont(TITLEFONT)
-    self.exit_button:SetTextDisabledColour({GOLD[1], GOLD[2], GOLD[3], GOLD[4]})
+    self.exit_button:SetTextDisabledColour({ unpack(GOLD) })
     self.exit_button.bg = self.exit_button:AddChild(Image("images/ui.xml", "blank.tex"))
     local w,h = self.exit_button.text:GetRegionSize()
     self.exit_button.bg:ScaleToSize(w+15, h+15)
@@ -181,22 +178,22 @@ function MainScreen:DoInit( )
     self.play_button:SetFocus()
 end
 
-function MainScreen:OnRawKey( key, down )
+function MainScreen:OnRawKey(key, down)
 end
 
 -- MULTIPLAYER PLAY
-function MainScreen:OnLoginButton( push_mp_main_screen )	
-
+function MainScreen:OnLoginButton(push_mp_main_screen)
     local account_manager = TheFrontEnd:GetAccountManager()
 	local hadPendingConnection = TheNet:HasPendingConnection()
-	
-    local function GoToMultiplayerMainMenu( offline )		
+
+    local function GoToMultiplayerMainMenu(offline)
 		TheFrontEnd:SetOfflineMode(offline)
 		--self.bg.anim_root.portal:GetAnimState():PlayAnimation("portal_blackout", false)
 		if push_mp_main_screen then
             local function session_mapping_cb(data)
-                TheFrontEnd:PushScreen(MultiplayerMainScreen(self.profile, offline, data))
+                TheFrontEnd:PushScreen(MultiplayerMainScreen(self, self.profile, offline, data))
                 TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)
+                self:Hide()
             end
             if not TheNet:DeserializeAllLocalUserSessions(session_mapping_cb) then
                 session_mapping_cb()
@@ -405,6 +402,9 @@ end
 
 function MainScreen:OnBecomeActive()
     MainScreen._base.OnBecomeActive(self)
+
+    self:Show()
+
     TheFrontEnd:SetOfflineMode(false)
     self.play_button:Enable()
     self.exit_button:Enable()
@@ -420,7 +420,7 @@ function MainScreen:OnUpdate(dt)
         TheFrontEnd:GetSound():PlaySound("dontstarve/music/music_FE","FEMusic")
         TheFrontEnd:GetSound():PlaySound("dontstarve/together_FE/portal_idle","FEPortalSFX")
         self.music_playing = true
-    end	
+    end
 
     if self.bg.anim_root.portal:GetAnimState():AnimDone() and not self.leaving then 
     	if math.random() < .33 then 

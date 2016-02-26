@@ -27,9 +27,10 @@ local assets =
 
     Asset("ATLAS", "images/lobbybannertop.xml"),
     Asset("IMAGE", "images/lobbybannertop.tex"),
-
     Asset("ATLAS", "images/lobbybannerbottom.xml"),
     Asset("IMAGE", "images/lobbybannerbottom.tex"),
+    Asset("ATLAS", "images/bg_spiral_anim_overlay.xml"),
+    Asset("IMAGE", "images/bg_spiral_anim_overlay.tex"),
 }
 
 -- Add all the characters by name

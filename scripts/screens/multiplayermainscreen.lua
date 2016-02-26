@@ -43,35 +43,31 @@ if BRANCH == "dev" then
     SHOW_DEBUG_UNLOCK_RESET = true
 end
 
-local MultiplayerMainScreen = Class(Screen, function(self, profile, offline, session_data)
+local MultiplayerMainScreen = Class(Screen, function(self, prev_screen, profile, offline, session_data)
 	Screen._ctor(self, "MultiplayerMainScreen")
     self.profile = profile
     self.offline = offline
     self.session_data = session_data
 	self.log = true
+    self.prev_screen = prev_screen
 	self:DoInit()
 	self.default_focus = self.menu
 end)
 
+function MultiplayerMainScreen:DoInit()
+    -- Inherited from MainScreen
+    self.portal_root = self:AddChild(Widget("portal_root"))
+    self:TransferPortalOwnership(self.prev_screen, self)
 
-function MultiplayerMainScreen:DoInit( )
-
-	-- BG
-	self.bg = self:AddChild(TEMPLATES.AnimatedPortalBackground())
-
-    -- FG
-    self.fg = self:AddChild(TEMPLATES.AnimatedPortalForeground(true))
-    
     self.fixed_root = self:AddChild(Widget("root"))
     self.fixed_root:SetVAnchor(ANCHOR_MIDDLE)
     self.fixed_root:SetHAnchor(ANCHOR_MIDDLE)
     self.fixed_root:SetScaleMode(SCALEMODE_PROPORTIONAL)
 
-
 	--RIGHT COLUMN
     self.right_col = self.fixed_root:AddChild(Widget("right"))
 	self.right_col:SetPosition(rcol, 0)
-	
+
 	--LEFT COLUMN
     self.left_col = self.fixed_root:AddChild(Widget("left"))
 	self.left_col:SetPosition(lcol, 0)
@@ -119,18 +115,13 @@ function MultiplayerMainScreen:DoInit( )
 		function()
 			self.motd.button.onclick()
 		end)
-		
-		
-    
+
     self.motd.button = self.motd:AddChild(ImageButton())
 	self.motd.button:SetPosition(0,-160)
     self.motd.button:SetScale(.8*.9)
     self.motd.button:SetText(STRINGS.UI.MAINSCREEN.MOTDBUTTON)
     self.motd.button:SetOnClick( function() VisitURL("http://store.kleientertainment.com/") end )
 	self.motd.motdtext:EnableWordWrap(true)  
-	
-    self.fg.trees:Kill()
-    self.fg.trees = self.fixed_root:AddChild(TEMPLATES.ForegroundTrees())
 	
 	self.fixed_root:AddChild(Widget("left"))
 	self.left_col:SetPosition(lcol, 0) 
@@ -168,7 +159,7 @@ function MultiplayerMainScreen:DoInit( )
 		self.wilson:GetAnimState():OverrideSkinSymbol("torso", MAINSCREEN_CHAR_1, "torso_pelvis" )
 		self.wilson:GetAnimState():OverrideSkinSymbol("torso_pelvis", MAINSCREEN_CHAR_1, "torso" )
     end
-    self.wilson:GetAnimState():SetMultColour(FRONTEND_CHARACTER_FAR_COLOUR[1], FRONTEND_CHARACTER_FAR_COLOUR[2], FRONTEND_CHARACTER_FAR_COLOUR[3], FRONTEND_CHARACTER_FAR_COLOUR[4])
+    self.wilson:GetAnimState():SetMultColour(unpack(FRONTEND_CHARACTER_FAR_COLOUR))
     if MAINSCREEN_TOOL_1 == "swap_staffs" then
     	self.wilson:GetAnimState():OverrideSymbol("swap_object", MAINSCREEN_TOOL_1, "redstaff")
     else
@@ -209,7 +200,7 @@ function MultiplayerMainScreen:DoInit( )
 		self.wilson2:GetAnimState():OverrideSkinSymbol("torso", MAINSCREEN_CHAR_2, "torso_pelvis" )
 		self.wilson2:GetAnimState():OverrideSkinSymbol("torso_pelvis", MAINSCREEN_CHAR_2, "torso" )
     end
-    self.wilson2:GetAnimState():SetMultColour(FRONTEND_CHARACTER_CLOSE_COLOUR[1], FRONTEND_CHARACTER_CLOSE_COLOUR[2], FRONTEND_CHARACTER_CLOSE_COLOUR[3], FRONTEND_CHARACTER_CLOSE_COLOUR[4])
+    self.wilson2:GetAnimState():SetMultColour(unpack(FRONTEND_CHARACTER_CLOSE_COLOUR))
 	if MAINSCREEN_TOOL_2 == "swap_staffs" then
     	self.wilson2:GetAnimState():OverrideSymbol("swap_object", MAINSCREEN_TOOL_2, "redstaff")
     else
@@ -247,14 +238,12 @@ function MultiplayerMainScreen:DoInit( )
     self.shadow1:Hide()
     self.shadow2:Hide()
 
-    self.fg.character_root:SetCanFadeAlpha(false)
-
     self.menu_bg = self.fixed_root:AddChild(TEMPLATES.LeftGradient())
 
     self.title = self.fixed_root:AddChild(Image("images/frontscreen.xml", "title.tex"))
     self.title:SetScale(.32)
     self.title:SetPosition(titleX, 165)
-    self.title:SetTint(FRONTEND_TITLE_COLOUR[1], FRONTEND_TITLE_COLOUR[2], FRONTEND_TITLE_COLOUR[3], FRONTEND_TITLE_COLOUR[4])
+    self.title:SetTint(unpack(FRONTEND_TITLE_COLOUR))
 
     self.updatenameshadow = self.fixed_root:AddChild(Text(BUTTONFONT, 27))
     self.updatenameshadow:SetPosition(38,-(RESOLUTION_Y*.5)+52,0)
@@ -277,7 +266,6 @@ function MultiplayerMainScreen:DoInit( )
         self.updatenameshadow:SetPosition(38,-(RESOLUTION_Y*.5)+54,0)
         self.updatename:SetPosition(36,-(RESOLUTION_Y*.5)+56,0)
     end
-
 
     self:MakeMainMenu()
 	self:MakeSubMenu()
@@ -313,11 +301,38 @@ function MultiplayerMainScreen:DoInit( )
     	self.submenu:SetFocusChangeDir(MOVE_LEFT, self.menu, -1)
         self.submenu:SetFocusChangeDir(MOVE_UP, self.motd.button)
     end
-	
+
 	self.menu:SetFocus(#self.menu.items)
 end
 
-function MultiplayerMainScreen:OnRawKey( key, down )
+function MultiplayerMainScreen:OnShow()
+    self._base:OnShow()
+    self.fg.character_root:SetCanFadeAlpha(false)
+    self.fg.character_root:Show()
+end
+
+function MultiplayerMainScreen:OnHide()
+    self._base:OnHide()
+    self.fg.character_root:SetCanFadeAlpha(true)
+    self.fg.character_root:Hide()
+end
+
+function MultiplayerMainScreen:TransferPortalOwnership(src, dest)
+    --src and dest are Screens
+    local bg_root = dest.portal_root or dest
+    local fg_root = dest.portal_root or dest
+    dest.bg = bg_root:AddChild(src.bg)
+    dest.fg = fg_root:AddChild(src.fg)
+end
+
+function MultiplayerMainScreen:OnDestroy()
+    self:OnHide()
+    self.fg.character_root:KillAllChildren()
+    self:TransferPortalOwnership(self, self.prev_screen)
+    self._base.OnDestroy(self)
+end
+
+function MultiplayerMainScreen:OnRawKey(key, down)
 end
 
 function MultiplayerMainScreen:OnCreateServerButton()
@@ -325,8 +340,9 @@ function MultiplayerMainScreen:OnCreateServerButton()
     self.menu:Disable()
     self.leaving = true
     TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
-        TheFrontEnd:PushScreen(ServerCreationScreen())
+        TheFrontEnd:PushScreen(ServerCreationScreen(self))
         TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)
+        self:Hide()
     end)
 end
 
@@ -341,11 +357,11 @@ function MultiplayerMainScreen:OnSkinsButton()
     TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
         TheFrontEnd:PushScreen(SkinsScreen(Profile))
         TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
+        self:Hide()
     end)
 end
 
-function MultiplayerMainScreen:OnBrowseServersButton()	
-
+function MultiplayerMainScreen:OnBrowseServersButton()
     local function cb(filters)
 	    self.filter_settings = filters
 	    Profile:SaveFilters(self.filter_settings)
@@ -370,8 +386,9 @@ function MultiplayerMainScreen:OnBrowseServersButton()
     self.menu:Disable()
     self.leaving = true
     TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
-        TheFrontEnd:PushScreen(ServerListingScreen(self.filter_settings, cb, self.offline, self.session_data))
+        TheFrontEnd:PushScreen(ServerListingScreen(self, self.filter_settings, cb, self.offline, self.session_data))
         TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)
+        self:Hide()
     end)
 end
 
@@ -380,8 +397,9 @@ function MultiplayerMainScreen:OnHistoryButton()
     self.last_focus_widget = TheFrontEnd:GetFocusWidget()
 	self.menu:Disable()
 	TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
-		TheFrontEnd:PushScreen(MorgueScreen())
+		TheFrontEnd:PushScreen(MorgueScreen(self))
 		TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)
+        self:Hide()
 	end)
 end
 
@@ -391,8 +409,9 @@ function MultiplayerMainScreen:Settings()
     self.last_focus_widget = TheFrontEnd:GetFocusWidget()
 	self.menu:Disable()
 	TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
-		TheFrontEnd:PushScreen(OptionsScreen(false))
+		TheFrontEnd:PushScreen(OptionsScreen(self))
 		TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)
+        self:Hide()
 	end)
 end
 
@@ -415,11 +434,11 @@ function MultiplayerMainScreen:OnModsButton()
 	self.menu:Disable()
     if self.debug_menu then self.debug_menu:Disable() end
 	TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
-		TheFrontEnd:PushScreen(ModsScreen())
+		TheFrontEnd:PushScreen(ModsScreen(self))
 		TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)
+        self:Hide()
 	end)
 end
-
 
 function MultiplayerMainScreen:ResetProfile()
     self.last_focus_widget = TheFrontEnd:GetFocusWidget()
@@ -437,11 +456,11 @@ function MultiplayerMainScreen:OnCreditsButton()
 	self.menu:Disable()
     if self.debug_menu then self.debug_menu:Disable() end
 	TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
-		TheFrontEnd:PushScreen( CreditsScreen() )
+		TheFrontEnd:PushScreen(CreditsScreen())
 		TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)
+        self:Hide()
 	end)
 end
-
 
 function MultiplayerMainScreen:OnHostButton()
 	SaveGameIndex:LoadServerEnabledModsFromSlot()
@@ -463,14 +482,13 @@ function MultiplayerMainScreen:OnJoinButton()
 end
 
 function MultiplayerMainScreen:MakeMainMenu()
-	
 	local menu_items = {}
 
     local function MakeMainMenuButton(text, onclick, tooltip)
         local btn = Button()
         btn:SetFont(BUTTONFONT)
         btn:SetDisabledFont(BUTTONFONT)
-        btn:SetTextColour(GOLD[1], GOLD[2], GOLD[3], GOLD[4])
+        btn:SetTextColour(unpack(GOLD))
         btn:SetTextFocusColour(1, 1, 1, 1)
         btn:SetText(text, true)
         btn.text:SetRegionSize(180,40)
@@ -568,7 +586,6 @@ function MultiplayerMainScreen:MakeMainMenu()
     self.tooltip:SetPosition(tooltipX, -(RESOLUTION_Y*.5)+57, 0)
     self.tooltip_shadow:SetPosition(tooltipX+2, -(RESOLUTION_Y * .5) + 57-2, 0)
 
-
     -- For Debugging/Testing
     local debug_menu_items = {}
 
@@ -596,8 +613,8 @@ function MultiplayerMainScreen:MakeSubMenu()
     local function MakeSubMenuButton(name, text, onclick)
         local btn = ImageButton("images/frontscreen.xml", name..".tex", nil, nil, nil, nil, {1,1}, {0,0})
         btn.image:SetPosition(0, 70)
-        btn:SetTextColour(GOLD[1], GOLD[2], GOLD[3], GOLD[4])
-        btn:SetTextFocusColour(GOLD[1], GOLD[2], GOLD[3], GOLD[4])
+        btn:SetTextColour(unpack(GOLD))
+        btn:SetTextFocusColour(unpack(GOLD))
         btn:SetFocusScale(1.05, 1.05, 1.05)
         btn:SetNormalScale(1, 1, 1)
         btn:SetText(text)
@@ -669,6 +686,9 @@ end
 
 function MultiplayerMainScreen:OnBecomeActive()
     MultiplayerMainScreen._base.OnBecomeActive(self)
+
+    self:Show()
+
 	self.menu:Enable()
     local found = false
     for i,v in pairs(self.menu.items) do
@@ -679,21 +699,20 @@ function MultiplayerMainScreen:OnBecomeActive()
             v:SetFocus()
         end
     end
-    
+
     if not found then
 	   self.menu:SetFocus(#self.menu.items)
     end
 
     if self.debug_menu then self.debug_menu:Enable() end
-    
+
     self.leaving = nil
 
     --start a new query everytime we go back to the mainmenu
 	if TheSim:IsLoggedOn() then
 		TheSim:StartWorkshopQuery()
 	end
-	
-	
+
 	--Do language mods assistance popup
 	--[[
 	local interface_lang = TheNet:GetLanguageCode()
@@ -725,10 +744,7 @@ function MultiplayerMainScreen:OnBecomeActive()
 	]]
 end
 
-
-
-
-local anims = 
+local anims =
 {
 	scratch = .5,
 	hungry = .5,

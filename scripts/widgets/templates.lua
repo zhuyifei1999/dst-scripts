@@ -23,7 +23,7 @@ TEMPLATES = {
 
     -- A static, full screen background image
     -- To be added as a child of the screen itself.
-    Background = function()
+    --[[Background = function()
         local bg = Image("images/bg_color.xml", "bg.tex")
         TintBackground(bg)
         bg:SetVRegPoint(ANCHOR_MIDDLE)
@@ -35,7 +35,7 @@ TEMPLATES = {
         bg:SetCanFadeAlpha(false)
 
         return bg
-    end,
+    end,]]
 
     -- A dynamic background scene with an animated portal and smoke/mist
     -- To be added as a child of the screen itself.
@@ -49,7 +49,22 @@ TEMPLATES = {
         bg.anim_root:SetHAnchor(ANCHOR_MIDDLE)
         bg.anim_root:SetScaleMode(SCALEMODE_PROPORTIONAL)
 
-        bg.anim_root.smoke = bg.anim_root:AddChild(TEMPLATES.BackgroundSmoke())
+        if not InGamePlay() then
+            bg.anim_root.smoke = bg.anim_root:AddChild(TEMPLATES.BackgroundSmoke())
+
+            bg.EnableSmoke = function(bg, enable)
+                if enable then
+                    bg.anim_root.smoke:Show()
+                else
+                    bg.anim_root.smoke:Hide()
+                end
+            end
+
+            if TheSim:IsNetbookMode() or TheFrontEnd:GetGraphicsOptions():IsSmallTexturesMode() then
+                bg:EnableSmoke(false)
+            end
+        end
+
         bg.anim_root.portal = bg.anim_root:AddChild(TEMPLATES.BackgroundPortal())
 
         bg:SetCanFadeAlpha(false)
@@ -88,7 +103,7 @@ TEMPLATES = {
         portal:GetAnimState():SetBuild("portal_scene")
         portal:GetAnimState():SetBank("portal_scene")
         portal:GetAnimState():PlayAnimation("portal_idle", false)
-        portal:GetAnimState():SetMultColour(FRONTEND_PORTAL_COLOUR[1], FRONTEND_PORTAL_COLOUR[2], FRONTEND_PORTAL_COLOUR[3], FRONTEND_PORTAL_COLOUR[4])
+        portal:GetAnimState():SetMultColour(unpack(FRONTEND_PORTAL_COLOUR))
         portal:SetScale(.4)
 
         return portal
@@ -101,7 +116,7 @@ TEMPLATES = {
         bg:SetVAnchor(ANCHOR_MIDDLE)
         bg:SetHAnchor(ANCHOR_MIDDLE)
         bg:SetScaleMode(SCALEMODE_FILLSCREEN)
-        bg:SetTint(FRONTEND_PORTAL_COLOUR[1], FRONTEND_PORTAL_COLOUR[2], FRONTEND_PORTAL_COLOUR[3], FRONTEND_PORTAL_COLOUR[4])
+        bg:SetTint(unpack(FRONTEND_PORTAL_COLOUR))
 
         return bg
     end,
@@ -144,21 +159,42 @@ TEMPLATES = {
 
         fg.plate = fg:AddChild(TEMPLATES.ForegroundPlate())
 
-        fg.smoke_inside = fg:AddChild(TEMPLATES.ForegroundSmokeInside())
-
-        fg.smoke_west = fg:AddChild(TEMPLATES.ForegroundSmokeWest())
-        fg.smoke_east = fg:AddChild(TEMPLATES.ForegroundSmokeEast())
+        if not InGamePlay() then
+            fg.smoke_inside = fg:AddChild(TEMPLATES.ForegroundSmokeInside())
+            fg.smoke_west = fg:AddChild(TEMPLATES.ForegroundSmokeWest())
+            fg.smoke_east = fg:AddChild(TEMPLATES.ForegroundSmokeEast())
+        end
 
         -- A root widget for placing characters (or anything else you want to place "in" the scene) at the appropriate depth if desired
         fg.character_root = fg:AddChild(Widget("character_root"))
         fg.character_root:SetVAnchor(ANCHOR_MIDDLE)
         fg.character_root:SetHAnchor(ANCHOR_MIDDLE)
         fg.character_root:SetScaleMode(SCALEMODE_PROPORTIONAL)
+        fg.character_root:Hide()
 
-        fg.smoke_south = fg:AddChild(TEMPLATES.ForegroundSmokeSouth())
+        if not InGamePlay() then
+            fg.smoke_south = fg:AddChild(TEMPLATES.ForegroundSmokeSouth())
+
+            fg.EnableSmoke = function(bg, enable)
+                if enable then
+                    fg.smoke_inside:Show()
+                    fg.smoke_west:Show()
+                    fg.smoke_east:Show()
+                    fg.smoke_south:Show()
+                else
+                    fg.smoke_inside:Hide()
+                    fg.smoke_west:Hide()
+                    fg.smoke_east:Hide()
+                    fg.smoke_south:Hide()
+                end
+            end
+
+            if TheSim:IsNetbookMode() or TheFrontEnd:GetGraphicsOptions():IsSmallTexturesMode() then
+                fg:EnableSmoke(false)
+            end
+        end
 
         fg.trees = fg:AddChild(TEMPLATES.ForegroundTrees())
-        fg.dirt = fg:AddChild(TEMPLATES.ForegroundDirt())
 
         fg:SetCanFadeAlpha(false)
 
@@ -167,14 +203,19 @@ TEMPLATES = {
 
     -- A component of the AnimatedPortalForeground
     ForegroundPlate = function()
-        local plate = Image("images/fg_animated_portal.xml", "fg_plate.tex")
-        plate:SetVRegPoint(ANCHOR_MIDDLE)
-        plate:SetHRegPoint(ANCHOR_MIDDLE)
-        plate:SetVAnchor(ANCHOR_MIDDLE)
-        plate:SetHAnchor(ANCHOR_MIDDLE)
-        plate:SetScaleMode(SCALEMODE_FILLSCREEN)
+        local root = Widget("fg_plate_root")
+        root:SetVAnchor(ANCHOR_BOTTOM)
+        root:SetHAnchor(ANCHOR_MIDDLE)
+        root:SetScaleMode(SCALEMODE_PROPORTIONAL)
 
-        return plate
+        local plate = root:AddChild(Image("images/fg_animated_portal.xml", "fg_plate.tex"))
+        plate:SetVRegPoint(ANCHOR_BOTTOM)
+        plate:SetHRegPoint(ANCHOR_MIDDLE)
+
+        local w = plate:GetSize()
+        plate:SetScale(RESOLUTION_X / w)
+
+        return root
     end,
 
     -- A component of the AnimatedPortalForeground
@@ -187,7 +228,7 @@ TEMPLATES = {
         smoke:SetVAnchor(ANCHOR_MIDDLE)
         smoke:SetHAnchor(ANCHOR_MIDDLE)
         smoke:SetPosition(0,smoke_offset)
-        smoke:GetAnimState():SetMultColour(FRONTEND_SMOKE_COLOUR[1], FRONTEND_SMOKE_COLOUR[2], FRONTEND_SMOKE_COLOUR[3], FRONTEND_SMOKE_COLOUR[4])
+        smoke:GetAnimState():SetMultColour(unpack(FRONTEND_SMOKE_COLOUR))
 
         return smoke
     end,
@@ -202,7 +243,7 @@ TEMPLATES = {
         smoke:SetVAnchor(ANCHOR_MIDDLE)
         smoke:SetHAnchor(ANCHOR_MIDDLE)
         smoke:SetPosition(0,smoke_offset)
-        smoke:GetAnimState():SetMultColour(FRONTEND_SMOKE_COLOUR[1], FRONTEND_SMOKE_COLOUR[2], FRONTEND_SMOKE_COLOUR[3], FRONTEND_SMOKE_COLOUR[4])
+        smoke:GetAnimState():SetMultColour(unpack(FRONTEND_SMOKE_COLOUR))
 
         return smoke
     end,
@@ -217,7 +258,7 @@ TEMPLATES = {
         smoke:SetVAnchor(ANCHOR_MIDDLE)
         smoke:SetHAnchor(ANCHOR_MIDDLE)
         smoke:SetPosition(0,smoke_offset)
-        smoke:GetAnimState():SetMultColour(FRONTEND_SMOKE_COLOUR[1], FRONTEND_SMOKE_COLOUR[2], FRONTEND_SMOKE_COLOUR[3], FRONTEND_SMOKE_COLOUR[4])
+        smoke:GetAnimState():SetMultColour(unpack(FRONTEND_SMOKE_COLOUR))
 
         return smoke
     end,
@@ -241,23 +282,11 @@ TEMPLATES = {
         trees:SetVAnchor(ANCHOR_MIDDLE)
         trees:SetHAnchor(ANCHOR_MIDDLE)
         trees:SetScaleMode(SCALEMODE_FILLSCREEN)
-        trees:SetTint(FRONTEND_TREE_COLOUR[1], FRONTEND_TREE_COLOUR[2], FRONTEND_TREE_COLOUR[3], FRONTEND_TREE_COLOUR[4])
+        --V2C: Tint and dirt baked into trees layer now
+        --trees:SetTint(unpack(FRONTEND_TREE_COLOUR))
         trees:SetClickable(false)
 
         return trees
-    end,
-
-    -- A component of the AnimatedPortalForeground
-    ForegroundDirt = function()
-        local dirt = Image("images/fg_dirt_layer.xml", "dirtlayer.tex")
-        dirt:SetVRegPoint(ANCHOR_MIDDLE)
-        dirt:SetHRegPoint(ANCHOR_MIDDLE)
-        dirt:SetVAnchor(ANCHOR_MIDDLE)
-        dirt:SetHAnchor(ANCHOR_MIDDLE)
-        dirt:SetScaleMode(SCALEMODE_FILLSCREEN)
-        dirt:SetClickable(false)
-
-        return dirt
     end,
 
     -------------------
@@ -445,8 +474,8 @@ TEMPLATES = {
         btn:SetText(buttonText)
         btn:SetFont(NEWFONT_OUTLINE)
         btn:SetDisabledFont(NEWFONT_SMALL)
-        btn:SetTextColour(GOLD[1], GOLD[2], GOLD[3], GOLD[4])
-        btn:SetTextFocusColour(GOLD[1], GOLD[2], GOLD[3], GOLD[4])
+        btn:SetTextColour(unpack(GOLD))
+        btn:SetTextFocusColour(unpack(GOLD))
         btn:SetTextDisabledColour(0,0,0,1)
         btn:SetTextSize(30)
         btn.text:SetPosition(2,7)
@@ -478,11 +507,11 @@ TEMPLATES = {
             local textShadowPos = btn.text_shadow:GetPosition()
         	btn.text_shadow:SetPosition(textShadowPos.x + txt_offset.x, textShadowPos.y + txt_offset.y)
         end
-        btn:SetTextColour(GOLD[1], GOLD[2], GOLD[3], GOLD[4])
-        btn:SetTextFocusColour(PORTAL_TEXT_COLOUR[1], PORTAL_TEXT_COLOUR[2], PORTAL_TEXT_COLOUR[3], PORTAL_TEXT_COLOUR[4])
+        btn:SetTextColour(unpack(GOLD))
+        btn:SetTextFocusColour(unpack(PORTAL_TEXT_COLOUR))
         btn:SetFont(NEWFONT_OUTLINE)
         btn:SetDisabledFont(NEWFONT_OUTLINE)
-        btn:SetTextDisabledColour({GOLD[1], GOLD[2], GOLD[3], GOLD[4]})
+        btn:SetTextDisabledColour(unpack(GOLD))
 
         btn.bg = btn:AddChild(Image("images/ui.xml", "blank.tex"))
         local w,h = btn.text:GetRegionSize()
@@ -577,8 +606,8 @@ TEMPLATES = {
             btn.text:SetPosition(-3, -34)
             btn.text_shadow:SetPosition(-5, -36)
             btn:SetFont(textinfo.font or NEWFONT)
-            btn:SetTextColour(textinfo.colour or GOLD[1],GOLD[2],GOLD[3],GOLD[4])
-            btn:SetTextFocusColour(textinfo.focus_colour or GOLD[1],GOLD[2],GOLD[3],GOLD[4])
+            btn:SetTextColour(textinfo.colour or { unpack(GOLD) })
+            btn:SetTextFocusColour(textinfo.focus_colour or { unpack(GOLD) })
         else
             btn:SetHoverText(labelText, { font = textinfo.font or NEWFONT_OUTLINE, size = textinfo.size or 22, offset_x = textinfo.offset_x or -4, offset_y = textinfo.offset_y or 45, colour = textinfo.colour or {1,1,1,1}, bg = textinfo.bg })
         end

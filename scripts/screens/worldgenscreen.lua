@@ -49,7 +49,7 @@ local WorldGenScreen = Class(Screen, function(self, profile, cb, world_gen_optio
 
     self.worldgentext = self.center_root:AddChild(Text(TITLEFONT, 100))
     self.worldgentext:SetPosition(0, 200, 0)
-    self.worldgentext:SetColour(PORTAL_TEXT_COLOUR[1], PORTAL_TEXT_COLOUR[2], PORTAL_TEXT_COLOUR[3], PORTAL_TEXT_COLOUR[4])
+    self.worldgentext:SetColour(unpack(PORTAL_TEXT_COLOUR))
 
     if world_gen_options and world_gen_options.level_type == "cave" then
         self.bg:SetTint(unpack(BGCOLOURS.PURPLE))
@@ -66,7 +66,7 @@ local WorldGenScreen = Class(Screen, function(self, profile, cb, world_gen_optio
 
     self.flavourtext= self.center_root:AddChild(Text(UIFONT, 40))
     self.flavourtext:SetPosition(0, 100, 0)
-    self.flavourtext:SetColour(PORTAL_TEXT_COLOUR[1], PORTAL_TEXT_COLOUR[2], PORTAL_TEXT_COLOUR[3], PORTAL_TEXT_COLOUR[4])
+    self.flavourtext:SetColour(unpack(PORTAL_TEXT_COLOUR))
 
     Settings.save_slot = Settings.save_slot or 1
     local gen_parameters = {}

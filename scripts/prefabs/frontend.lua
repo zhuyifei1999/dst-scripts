@@ -16,8 +16,9 @@ local assets =
     -- Asset("ANIM", "anim/animated_title2.zip"), -- Not currently used, but likely to come back
     -- Asset("ANIM", "anim/title_fire.zip"), -- Not currently used, but likely to come back
 
-    Asset("ATLAS", "images/bg_color.xml"),
-    Asset("IMAGE", "images/bg_color.tex"),
+    -- Used by TEMPLATES.Background
+    -- Asset("ATLAS", "images/bg_color.xml"), -- Not currently used, but likely to come back
+    -- Asset("IMAGE", "images/bg_color.tex"), -- Not currently used, but likely to come back
 
     Asset("ATLAS", "images/servericons.xml"),
     Asset("IMAGE", "images/servericons.tex"),
@@ -31,6 +32,10 @@ local assets =
 
     Asset("ATLAS", "bigportraits/unknownmod.xml"),
     Asset("IMAGE", "bigportraits/unknownmod.tex"),
+
+    --V2C: originally in global, for old options and controls screens
+    Asset("ATLAS", "images/bg_plain.xml"),
+    Asset("IMAGE", "images/bg_plain.tex"),
 
     Asset("ATLAS", "images/tradescreen.xml"),
 	Asset("IMAGE", "images/tradescreen.tex"),
