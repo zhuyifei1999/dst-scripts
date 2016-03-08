@@ -175,11 +175,16 @@ local function onload(inst)
     inst:ListenForEvent("ms_respawnedfromghost", onbecamehuman)
     inst:ListenForEvent("ms_becameghost", onbecameghost)
 
+    --Restore absolute health value from loading after mightiness scaling
+    local health = inst.components.health.currenthealth
+
     if inst:HasTag("playerghost") then
         onbecameghost(inst)
     else
         onbecamehuman(inst)
     end
+
+    inst.components.health:SetPercent(health / inst.components.health.maxhealth, true)
 end
 
 local function master_init(inst)

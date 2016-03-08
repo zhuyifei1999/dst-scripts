@@ -399,13 +399,13 @@ function Inventory:InspectItemFromInvTile(item)
     end
 end
 
-function Inventory:DropItemFromInvTile(item)
+function Inventory:DropItemFromInvTile(item, single)
     if item == nil or not item:IsValid() then
         return
     elseif self.inst.components.inventory ~= nil then
-        self.inst.components.inventory:DropItemFromInvTile(item)
+        self.inst.components.inventory:DropItemFromInvTile(item, single)
     elseif self.classified ~= nil then
-        self.classified:DropItemFromInvTile(item)
+        self.classified:DropItemFromInvTile(item, single)
     end
 end
 

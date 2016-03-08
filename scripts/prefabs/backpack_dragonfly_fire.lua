@@ -26,4 +26,5 @@ return CreatePrefabSkin("backpack_dragonfly_fire",
 	tags = tags,
 	build_name = "swap_backpack_dragonfly_fire",
 	rarity = "Elegant",
+	skip_giftable_gen = true
 })

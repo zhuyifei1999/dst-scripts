@@ -64,6 +64,11 @@ end
 
 function PeriodicSpawner:TrySpawn(prefab)
     prefab = prefab or self.prefab
+
+    if type(prefab) == "function" then
+        prefab = prefab(self.inst)
+    end
+
     if not self.inst:IsValid() or not prefab then
         return
     end

@@ -25,8 +25,6 @@ local VoteDialog = require "widgets/votedialog"
 local TEMPLATES = require "widgets/templates"
 local easing = require("easing")
 
-local MAX_HUD_SCALE = 1.25
-
 local Controls = Class(Widget, function(self, owner)
     Widget._ctor(self, "Controls")
     self.owner = owner

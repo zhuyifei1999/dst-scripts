@@ -149,7 +149,7 @@ function ServerCreationScreen:OnDestroy()
     self.onlinestatus:Kill()
     self.prev_screen:TransferPortalOwnership(self, self.prev_screen)
     self.mods_tab:OnDestroy()
-	self._base.OnDestroy(self)
+    self._base.OnDestroy(self)
 end
 
 function ServerCreationScreen:ClearSlotCache(slotnum)
@@ -228,7 +228,7 @@ function ServerCreationScreen:UpdateModeSpinner(slotnum)
 end
 
 function ServerCreationScreen:UpdateTabs(slotnum, prevslot, fromDelete)
-	self.server_settings_tab:SavePrevSlot(prevslot) --needs to happen before mods_tab:SetSaveSlot so that we don't lose the current game mode selection when the next slot's mods are applied
+    self.server_settings_tab:SavePrevSlot(prevslot) --needs to happen before mods_tab:SetSaveSlot so that we don't lose the current game mode selection when the next slot's mods are applied
 
     self.mods_tab:SetSaveSlot(slotnum, fromDelete) --needs to happen before server_settings_tab:UpdateDetails
     
@@ -253,23 +253,38 @@ function ServerCreationScreen:UpdateButtons(slotnum)
     self.mods_button:SetText(STRINGS.UI.MAINSCREEN.MODS.." ("..self.mods_tab:GetNumberOfModsEnabled()..")")
 end
 
-local function BuildTagsStringHosting(creationScreen)
-    if TheNet:IsDedicated() then return nil end
+local function BuildTagsStringHosting(self, worldoptions)
+    if TheNet:IsDedicated() then
+        --Should be impossible to reach here right?
+        --Dedicated servers don't start through this screen
+        return
+    end
+
+    --V2C: ughh... well at least try to keep this in sync with
+    --     networking.lua UpdateServerTagsString()
 
     local tagsTable = {}
 
-    table.insert(tagsTable, creationScreen.server_settings_tab:GetGameMode())
-    
-    if creationScreen.server_settings_tab:GetPVP() then
+    table.insert(tagsTable, self.server_settings_tab:GetGameMode())
+
+    if self.server_settings_tab:GetPVP() then
         table.insert(tagsTable, STRINGS.TAGS.PVP)
     end
 
-    if creationScreen.server_settings_tab:GetPrivacyType() == PRIVACY_TYPE.FRIENDS then
+    if self.server_settings_tab:GetPrivacyType() == PRIVACY_TYPE.FRIENDS then
         table.insert(tagsTable, STRINGS.TAGS.FRIENDSONLY)
-    elseif creationScreen.server_settings_tab:GetPrivacyType() == PRIVACY_TYPE.CLAN then
+    elseif self.server_settings_tab:GetPrivacyType() == PRIVACY_TYPE.CLAN then
         table.insert(tagsTable, STRINGS.TAGS.CLAN)
-    elseif creationScreen.server_settings_tab:GetPrivacyType() == PRIVACY_TYPE.LOCAL then
+    elseif self.server_settings_tab:GetPrivacyType() == PRIVACY_TYPE.LOCAL then
         table.insert(tagsTable, STRINGS.TAGS.LOCAL)
+    end
+
+    local worlddata = worldoptions[1]
+    if worlddata ~= nil and worlddata.presetdata ~= nil and worlddata.presetdata.location ~= nil then
+        local locationtag = STRINGS.TAGS.LOCATION[string.upper(worlddata.presetdata.location)]
+        if locationtag ~= nil then
+            table.insert(tagsTable, locationtag)
+        end
     end
 
     return BuildTagsStringCommon(tagsTable)
@@ -310,59 +325,34 @@ function ServerCreationScreen:DeleteSlot(slot, cb)
 end
 
 function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOutOfDateMods)
-	local launchingServerPopup = nil
+    local function onCreate()
+        -- Check that the player has selected a spot
+        if self.saveslot < 0 then
+            -- If not, look for the first empty one
+            local emptySlot = nil
+            for k = 1, NUM_DST_SAVE_SLOTS do
+                if SaveGameIndex:IsSlotEmpty(k) then
+                    emptySlot = k
+                    break
+                end
+            end
 
-    local function onsaved()
-        if SaveGameIndex:IsSlotMultiLevel(self.saveslot) then
-            ShowLoading()
-            launchingServerPopup = LaunchingServerPopup({}, 
-                function()
-                    local start_worked = TheNet:StartClient(DEFAULT_JOIN_IP, 10999, -1, self.server_settings_tab:GetServerData().password)
-                    if start_worked then
-                        DisableAllDLC()
-                    end
-                end,
-                function()
-                    OnNetworkDisconnect("ID_DST_DEDICATED_SERVER_STARTUP_FAILED", false, false)
-                    TheSystemService:StopDedicatedServers()
-                end)
-
-            TheFrontEnd:PushScreen(launchingServerPopup)
-        else
-            DoLoadingPortal(function()
-                StartNextInstance({ reset_action = RESET_ACTION.LOAD_SLOT, save_slot = self.saveslot })
-            end)
-        end
-    end
-
-	local function onCreate()
-		-- Check that the player has selected a spot
-		if self.saveslot < 0 then
-			-- If not, look for the first empty one
-			local emptySlot = nil
-			for k = 1, NUM_DST_SAVE_SLOTS do
-				if SaveGameIndex:IsSlotEmpty(k) then
-					emptySlot = k
-					break
-				end
-			end
-
-			-- If we found an empty slot, make that our save slot and call Create() again
-			if emptySlot then
-				self.saveslot = emptySlot
+            -- If we found an empty slot, make that our save slot and call Create() again
+            if emptySlot then
+                self.saveslot = emptySlot
                 self.default_focus = self.save_slots[emptySlot] or self.save_slots[1]
-				self:Create()
-			else -- Otherwise, show dialog informing that they must either load a game or delete a game
+                self:Create()
+            else -- Otherwise, show dialog informing that they must either load a game or delete a game
                 self.last_focus = TheFrontEnd:GetFocusWidget()
-				local popup = PopupDialogScreen(STRINGS.UI.SERVERCREATIONSCREEN.FULLSLOTSTITLE, STRINGS.UI.SERVERCREATIONSCREEN.FULLSLOTSBODY,
-					{
-						{text=STRINGS.UI.SERVERCREATIONSCREEN.OK, cb = function()
-							TheFrontEnd:PopScreen() 
-						end},
-					})
-				TheFrontEnd:PushScreen( popup )
-			end
-		else
+                local popup = PopupDialogScreen(STRINGS.UI.SERVERCREATIONSCREEN.FULLSLOTSTITLE, STRINGS.UI.SERVERCREATIONSCREEN.FULLSLOTSBODY,
+                    {
+                        {text=STRINGS.UI.SERVERCREATIONSCREEN.OK, cb = function()
+                            TheFrontEnd:PopScreen() 
+                        end},
+                    })
+                TheFrontEnd:PushScreen( popup )
+            end
+        else
             self.server_settings_tab:SetEditingTextboxes(false)
 
             local serverdata = self.server_settings_tab:GetServerData()
@@ -424,7 +414,7 @@ function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOu
             cluster_info.settings.NETWORK.cluster_password       = serverdata.password
             cluster_info.settings.NETWORK.cluster_description    = serverdata.description
             cluster_info.settings.NETWORK.lan_only_cluster       = tostring(serverdata.privacy_type == PRIVACY_TYPE.LOCAL)
-			cluster_info.settings.NETWORK.server_intention       = serverdata.intention
+            cluster_info.settings.NETWORK.server_intention       = serverdata.intention
             cluster_info.settings.NETWORK.offline_cluster        = tostring(not serverdata.online_mode)
 
             cluster_info.settings.GAMEPLAY                       = {}
@@ -440,34 +430,59 @@ function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOu
             end
 
             -- Collect the tags we want and set the tags string now that we have our mods enabled
-            TheNet:SetServerTags(BuildTagsStringHosting(self))
+            TheNet:SetServerTags(BuildTagsStringHosting(self, worldoptions))
 
-            if SaveGameIndex:IsSlotEmpty(self.saveslot) then
+            local is_slot_empty = SaveGameIndex:IsSlotEmpty(self.saveslot)
+
+            local function onsaved()
+                if is_slot_empty then
+                    self:ClearSlotCache(self.saveslot)
+                    self:RefreshNavButtons()
+                    self:OnClickSlot(self.saveslot)
+                end
+
+                self:Disable()
+
+                local is_multi_level = SaveGameIndex:IsSlotMultiLevel(self.saveslot)
+                local launchingServerPopup = nil
+
+                if is_multi_level then
+                    ShowLoading()
+                    launchingServerPopup = LaunchingServerPopup({}, 
+                        function()
+                            local start_worked = TheNet:StartClient(DEFAULT_JOIN_IP, 10999, -1, self.server_settings_tab:GetServerData().password)
+                            if start_worked then
+                                DisableAllDLC()
+                            end
+                        end,
+                        function()
+                            OnNetworkDisconnect("ID_DST_DEDICATED_SERVER_STARTUP_FAILED", false, false)
+                            TheSystemService:StopDedicatedServers()
+                        end)
+
+                    TheFrontEnd:PushScreen(launchingServerPopup)
+                end
+
+                if not TheSystemService:StartDedicatedServers(self.saveslot, is_multi_level, cluster_info) then
+                    if launchingServerPopup ~= nil then
+                        launchingServerPopup:SetErrorStartingServers()
+                    end
+                    self:Enable()
+                elseif not is_multi_level then
+                    DoLoadingPortal(function()
+                        StartNextInstance({ reset_action = RESET_ACTION.LOAD_SLOT, save_slot = self.saveslot })
+                    end)
+                end
+            end
+
+            if is_slot_empty then
                 SaveGameIndex:StartSurvivalMode(self.saveslot, worldoptions, serverdata, onsaved)
-                self:ClearSlotCache(self.saveslot)
-                self:RefreshNavButtons()
-                self:OnClickSlot(self.saveslot)
             else
                 SaveGameIndex:UpdateServerData(self.saveslot, serverdata, onsaved)
             end
 
-
-            --[[ Legacy: Starting a "client" server
-            local start_in_online_mode = serverdata.online_mode
-            if TheFrontEnd:GetIsOfflineMode() then
-                start_in_online_mode = false
-            end
-            local server_started = TheNet:StartServer( start_in_online_mode )
-            --]]
-
-            self:Disable()
-
-            if not TheSystemService:StartDedicatedServers(self.saveslot, worldoptions[2] ~= nil, cluster_info) then
-                if launchingServerPopup ~= nil then
-                    launchingServerPopup:SetErrorStartingServers()
-                end
-                self:Enable()
-            end
+            --V2C: NO MORE CODE HERE!
+            --     onsaved callback may trigger StartNextInstance!
         end
     end
 

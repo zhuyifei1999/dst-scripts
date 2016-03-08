@@ -1228,6 +1228,8 @@ return {
 			OPEN = "I wonder if he likes spicy food?",
 		},
 		ACCOMPLISHMENT_SHRINE = "I hate that arrow!",        		
+        REVIVER = "I expected it to be blacker.",
+        LIFEINJECTOR = "Don't you dare stick that in me!",
 	},
 	DESCRIBE_TOODARK = "I need more light!",
 	DESCRIBE_SMOLDERING = "Hooray, it's about to light on fire!",

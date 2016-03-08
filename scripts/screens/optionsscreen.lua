@@ -254,8 +254,7 @@ local OptionsScreen = Class(Screen, function(self, prev_screen)
         self.prev_screen = prev_screen
         prev_screen:TransferPortalOwnership(prev_screen, self)
     else
-        self.bg = self:AddChild(TEMPLATES.AnimatedPortalBackground())
-        self.fg = self:AddChild(TEMPLATES.AnimatedPortalForeground())
+        self.bg = self:AddChild(TEMPLATES.NoPortalBackground())
     end
     
 	self.root = self:AddChild(Widget("ROOT"))
@@ -641,10 +640,10 @@ function OptionsScreen:Apply()
 	TheSim:SetNetbookMode(self.working.netbookmode)
 
     local portalsmoke = not (self.working.smalltextures or self.working.netbookmode)
-    if self.bg.EnableSmoke ~= nil then
+    if self.bg ~= nil and self.bg.EnableSmoke ~= nil then
         self.bg:EnableSmoke(portalsmoke)
     end
-    if self.fg.EnableSmoke ~= nil then
+    if self.fg ~= nil and self.fg.EnableSmoke ~= nil then
         self.fg:EnableSmoke(portalsmoke)
     end
 

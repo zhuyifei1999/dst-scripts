@@ -97,6 +97,7 @@ local Inv = Class(Widget, function(self, owner)
     self.hint_update_check = HINT_UPDATE_INTERVAL
 
     self.controller_build = nil
+    self.force_single_drop = false
 end)
 
 function Inv:AddEquipSlot(slot, atlas, image, sortkey)
@@ -523,7 +524,16 @@ end
 function Inv:OnControl(control, down)
     if Inv._base.OnControl(self, control, down) then
         return true
-    elseif not self.open or down then
+    elseif not self.open then
+        return
+    end
+
+    local was_force_single_drop = self.force_single_drop
+    if was_force_single_drop and not TheInput:IsControlPressed(CONTROL_PUTSTACK) then
+        self.force_single_drop = false
+    end
+
+    if down then
         return
     end
 
@@ -541,12 +551,17 @@ function Inv:OnControl(control, down)
         end
     elseif control == CONTROL_PUTSTACK then
         if self.active_slot ~= nil then
-            self.active_slot:Click(true)
+            if not was_force_single_drop then
+                self.active_slot:Click(true)
+            end
             return true
         end
     elseif control == CONTROL_INVENTORY_DROP then
         if inv_item ~= nil and active_item == nil then
-            self.owner.replica.inventory:DropItemFromInvTile(inv_item)
+            if not was_force_single_drop and TheInput:IsControlPressed(CONTROL_PUTSTACK) then
+                self.force_single_drop = true
+            end
+            self.owner.replica.inventory:DropItemFromInvTile(inv_item, self.force_single_drop)
             return true
         end
     elseif control == CONTROL_USE_ITEM_ON_ITEM then
@@ -564,6 +579,7 @@ function Inv:OpenControllerInventory()
         --     audio settings, which we don't want to do now
         --SetPause(true, "inv")
         self.open = true
+        self.force_single_drop = false --reset the flag
 
         self:UpdateCursor()
         self:ScaleTo(self.base_scale,self.selected_scale,.2)

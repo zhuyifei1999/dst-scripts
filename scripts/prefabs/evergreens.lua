@@ -374,7 +374,7 @@ local function chop_down_tree(inst, chopper)
     inst.AnimState:PushAnimation(inst.anims.stump)
 
     inst:AddTag("NOCLICK")
-    inst:DoTaskInTime(2, inst.RemoveTag, "NOCLICK")
+    inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength(), inst.RemoveTag, "NOCLICK")
 
     local days_survived = TheWorld.state.cycles
     if days_survived >= TUNING.LEIF_MIN_DAY then

@@ -33,6 +33,16 @@ local function GetDescription(inst, viewer)
     return string.format(playerdesc[modifier], inst:GetDisplayName())
 end
 
+local function CanUseTouchStone(inst, touchstone)
+    if inst.components.touchstonetracker ~= nil then
+        return not inst.components.touchstonetracker:IsUsed(touchstone)
+    elseif inst.player_classified ~= nil then
+        return touchstone.GetTouchStoneID ~= nil and not table.contains(inst.player_classified.touchstonetrackerused:value(), touchstone:GetTouchStoneID())
+    else
+        return false
+    end
+end
+
 local function GetTemperature(inst)
     if inst.components.temperature ~= nil then
         return inst.components.temperature:GetCurrent()
@@ -1524,6 +1534,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.OnRemoveEntity = OnRemoveEntity
         inst.CanExamine = nil -- Can be overridden; Needs to be on client as well for actions
         inst.ActionStringOverride = nil -- Can be overridden; Needs to be on client as well for actions
+        inst.CanUseTouchStone = CanUseTouchStone -- Didn't want to make touchstonetracker a networked component
         inst.GetTemperature = GetTemperature -- Didn't want to make temperature a networked component
         inst.IsFreezing = IsFreezing -- Didn't want to make temperature a networked component
         inst.IsOverheating = IsOverheating -- Didn't want to make temperature a networked component
@@ -1691,6 +1702,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.components.grogginess:SetKnockOutTest(ShouldKnockout)
 
         inst:AddComponent("colourtweener")
+        inst:AddComponent("touchstonetracker")
 
         inst:AddComponent("skinner")
         inst:AddComponent("giftreceiver")

@@ -140,6 +140,7 @@ FrontEnd = Class(function(self, name)
     self.saving_indicator:SetVAnchor(ANCHOR_BOTTOM)
     self.saving_indicator:SetHAnchor(ANCHOR_RIGHT)
 	self.saving_indicator:SetScaleMode(SCALEMODE_PROPORTIONAL)
+    self.saving_indicator:SetMaxPropUpscale(MAX_HUD_SCALE)
 	self.saving_indicator:SetPosition(-10, 40)
 	self.saving_indicator:Hide()
 

@@ -659,9 +659,11 @@ local function ControllerUseItemOnItemFromInvTile(inst, item, active_item)
         inst._parent.components.playercontroller ~= nil then
         local act = inst._parent.components.playercontroller:GetItemUseAction(active_item, item)
         if act ~= nil then
-            if inst._parent.HUD ~= nil then
+            --V2C: Usability improvement for DST, we don't need to close
+            --     the window for actions since it does not pause in DST
+            --[[if inst._parent.HUD ~= nil then
                 inst._parent.HUD.controls.inv:CloseControllerInventory()
-            end
+            end]]
             if act.action == ACTIONS.RUMMAGE then
                 local overflow = GetOverflowContainer(inst)
                 if overflow ~= nil and overflow.inst == item then
@@ -751,11 +753,11 @@ local function InspectItemFromInvTile(inst, item)
     end
 end
 
-local function DropItemFromInvTile(inst, item)
+local function DropItemFromInvTile(inst, item, single)
     if not IsBusy(inst) and
         inst._parent ~= nil and
         inst._parent.components.playercontroller ~= nil then
-        inst._parent.components.playercontroller:RemoteDropItemFromInvTile(item)
+        inst._parent.components.playercontroller:RemoteDropItemFromInvTile(item, single)
     end
 end
 

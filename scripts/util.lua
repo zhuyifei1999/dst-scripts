@@ -548,13 +548,15 @@ function weighted_random_choice(choices)
         return total
     end
 
-    local threshold = math.random(0, weighted_total(choices))
+    local threshold = math.random() * weighted_total(choices)
+    
     local last_choice
     for choice, weight in pairs(choices) do
         threshold = threshold - weight
         if threshold <= 0 then return choice end
         last_choice = choice
     end
+    
     return last_choice
 end
  

@@ -58,7 +58,7 @@ Recipe("icebox", {Ingredient("goldnugget", 2), Ingredient("gears", 1), Ingredien
 Recipe("reviver", {Ingredient("cutgrass", 3), Ingredient("spidergland", 1), Ingredient(CHARACTER_INGREDIENT.HEALTH, 40)}, RECIPETABS.SURVIVAL,  TECH.NONE)
 Recipe("healingsalve", {Ingredient("ash", 2), Ingredient("rocks", 1), Ingredient("spidergland",1)}, RECIPETABS.SURVIVAL,  TECH.SCIENCE_ONE)
 Recipe("bandage", {Ingredient("papyrus", 1), Ingredient("honey", 2)}, RECIPETABS.SURVIVAL,  TECH.SCIENCE_TWO)
-Recipe("lifeinjector", {Ingredient("healingsalve", 2), Ingredient("papyrus", 3), Ingredient("stinger",1)}, RECIPETABS.SURVIVAL,  TECH.SCIENCE_TWO)
+Recipe("lifeinjector", {Ingredient("spoiled_food", 8), Ingredient("nitre", 2), Ingredient("stinger",1)}, RECIPETABS.SURVIVAL,  TECH.SCIENCE_TWO)
 Recipe("bernie_inactive", {Ingredient("beardhair", 2), Ingredient("beefalowool", 2), Ingredient("silk", 2)}, RECIPETABS.SURVIVAL,  TECH.NONE, nil, nil, nil, nil, "pyromaniac")
 Recipe("trap", {Ingredient("twigs", 2),Ingredient("cutgrass", 6)}, RECIPETABS.SURVIVAL, TECH.NONE)
 Recipe("birdtrap", {Ingredient("twigs", 3),Ingredient("silk", 4)}, RECIPETABS.SURVIVAL, TECH.SCIENCE_ONE)

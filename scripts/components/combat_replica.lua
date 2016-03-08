@@ -294,14 +294,29 @@ function Combat:CanBeAttacked(attacker)
                 attacker:HasTag("birchnut")) then
             --Birchnut check
             return false
-        elseif attacker ~= self.inst and
-            not TheNet:GetPVPEnabled() and
-            attacker:HasTag("player") and
-            self.inst:HasTag("player") then
-            --PVP check
-            return false
-        elseif attacker.replica.sanity ~= nil and
-            attacker.replica.sanity:IsCrazy() then
+        elseif attacker ~= self.inst and self.inst:HasTag("player") then
+            --Player target check
+            if not TheNet:GetPVPEnabled() and attacker:HasTag("player") then
+                --PVP check
+                return false
+            elseif self._target:value() ~= attacker then
+                local follower = attacker.replica.follower
+                if follower ~= nil then
+                    local leader = follower:GetLeader()
+                    if leader ~= nil and
+                        leader ~= self._target:value() and
+                        leader:HasTag("player") then
+                        local combat = attacker.replica.combat
+                        if combat ~= nil and combat:GetTarget() ~= self.inst then
+                            --Follower check
+                            return false
+                        end
+                    end
+                end
+            end
+        end
+        local sanity = attacker.replica.sanity
+        if sanity ~= nil and sanity:IsCrazy() then
             --Insane attacker can pretty much attack anything
             return true
         end

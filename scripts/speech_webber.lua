@@ -1247,6 +1247,8 @@ return {
 		ACCOMPLISHMENT_SHRINE = "It gives me a goal in life.",        
 		LIVINGTREE = "Hello, Mr. Tree!",
 		ICESTAFF = "It makes me feel funny.",
+        REVIVER = "I think it loves me.",
+        LIFEINJECTOR = "I hate taking my medicine!",
 	},
 	DESCRIBE_GENERIC = "It's a... thing.",
 	DESCRIBE_TOODARK = "It's too dark to see!",

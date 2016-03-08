@@ -17,6 +17,24 @@ TEMPLATES = {
 
     ----------------
     ----------------
+    -- Static background comp --
+    ----------------
+    ----------------
+
+    NoPortalBackground = function()
+        local bg = Widget("background")
+
+        bg.bgplate = bg:AddChild(TEMPLATES.BackgroundPlate())
+        bg.fgplate = bg:AddChild(TEMPLATES.ForegroundPlate())
+        bg.trees = bg:AddChild(TEMPLATES.ForegroundTrees())
+
+        bg:SetCanFadeAlpha(false)
+
+        return bg
+    end,
+
+    ----------------
+    ----------------
     -- BACKGROUND --
     ----------------
     ----------------
@@ -74,14 +92,19 @@ TEMPLATES = {
 
     -- A component of the AnimatedPortalBackground
     BackgroundPlate = function()
-        local plate = Image("images/bg_animated_portal.xml", "bg_plate.tex")
+        local root = Widget("bg_plate_root")
+        root:SetVAnchor(ANCHOR_MIDDLE)
+        root:SetHAnchor(ANCHOR_MIDDLE)
+        root:SetScaleMode(SCALEMODE_PROPORTIONAL)
+
+        local plate = root:AddChild(Image("images/bg_animated_portal.xml", "bg_plate.tex"))
         plate:SetVRegPoint(ANCHOR_MIDDLE)
         plate:SetHRegPoint(ANCHOR_MIDDLE)
-        plate:SetVAnchor(ANCHOR_MIDDLE)
-        plate:SetHAnchor(ANCHOR_MIDDLE)
-        plate:SetScaleMode(SCALEMODE_FILLSCREEN)
 
-        return plate
+        local w = plate:GetSize()
+        plate:SetScale(RESOLUTION_X / w)
+
+        return root
     end,
 
     -- A component of the AnimatedPortalBackground
@@ -140,10 +163,17 @@ TEMPLATES = {
 
     -- To be added as a child of the root
     LeftGradient = function()
-        local grad = Image("images/frontend.xml", "sidemenu_bg.tex")
-        grad:SetPosition(-RESOLUTION_X*.35,0)
+        local root = Widget("left_gradient_root")
+        root:SetVAnchor(ANCHOR_MIDDLE)
+        root:SetHAnchor(ANCHOR_MIDDLE)
+        root:SetScaleMode(SCALEMODE_PROPORTIONAL)
 
-        return grad
+        local grad = root:AddChild(Image("images/frontend.xml", "sidemenu_bg.tex"))
+        grad:SetVRegPoint(ANCHOR_MIDDLE)
+        grad:SetHRegPoint(ANCHOR_LEFT)
+        grad:SetPosition(-.5 * RESOLUTION_X, 0)
+
+        return root
     end,
 
     ----------------
@@ -195,6 +225,7 @@ TEMPLATES = {
         end
 
         fg.trees = fg:AddChild(TEMPLATES.ForegroundTrees())
+        fg.letterbox = fg:AddChild(TEMPLATES.ForegroundLetterbox())
 
         fg:SetCanFadeAlpha(false)
 
@@ -204,13 +235,14 @@ TEMPLATES = {
     -- A component of the AnimatedPortalForeground
     ForegroundPlate = function()
         local root = Widget("fg_plate_root")
-        root:SetVAnchor(ANCHOR_BOTTOM)
+        root:SetVAnchor(ANCHOR_MIDDLE)
         root:SetHAnchor(ANCHOR_MIDDLE)
         root:SetScaleMode(SCALEMODE_PROPORTIONAL)
 
         local plate = root:AddChild(Image("images/fg_animated_portal.xml", "fg_plate.tex"))
         plate:SetVRegPoint(ANCHOR_BOTTOM)
         plate:SetHRegPoint(ANCHOR_MIDDLE)
+        plate:SetPosition(0, -.5 * RESOLUTION_Y)
 
         local w = plate:GetSize()
         plate:SetScale(RESOLUTION_X / w)
@@ -276,17 +308,129 @@ TEMPLATES = {
 
     -- A component of the AnimatedPortalForeground
     ForegroundTrees = function()
-        local trees = Image("images/fg_trees.xml", "trees.tex")
+        local root = Widget("fg_trees_root")
+        root:SetVAnchor(ANCHOR_MIDDLE)
+        root:SetHAnchor(ANCHOR_MIDDLE)
+        root:SetScaleMode(SCALEMODE_PROPORTIONAL)
+
+        local trees = root:AddChild(Image("images/fg_trees.xml", "trees.tex"))
         trees:SetVRegPoint(ANCHOR_MIDDLE)
         trees:SetHRegPoint(ANCHOR_MIDDLE)
-        trees:SetVAnchor(ANCHOR_MIDDLE)
-        trees:SetHAnchor(ANCHOR_MIDDLE)
-        trees:SetScaleMode(SCALEMODE_FILLSCREEN)
         --V2C: Tint and dirt baked into trees layer now
         --trees:SetTint(unpack(FRONTEND_TREE_COLOUR))
         trees:SetClickable(false)
 
-        return trees
+        local w = trees:GetSize()
+        trees:SetScale(RESOLUTION_X / w)
+
+        return root
+    end,
+
+    ForegroundLetterbox = function()
+        local root = Widget("fg_letterbox_root")
+        root:SetVAnchor(ANCHOR_MIDDLE)
+        root:SetHAnchor(ANCHOR_MIDDLE)
+        root:SetScaleMode(SCALEMODE_PROPORTIONAL)
+
+        local _scrnw, _scrnh
+        local aspect = RESOLUTION_X / RESOLUTION_Y
+        local maxw = RESOLUTION_X * MAX_FE_SCALE
+        local maxh = RESOLUTION_Y * MAX_FE_SCALE
+
+        root.OnUpdate = function()
+            local scrnw, scrnh = TheSim:GetScreenSize()
+            if _scrnw == scrnw and _scrnh == scrnh then
+                return
+            end
+
+            _scrnw = scrnw
+            _scrnh = scrnh
+
+            local scrnaspect = scrnw / scrnh
+            local hbars = scrnw > maxw or scrnaspect > aspect
+            local vbars = scrnh > maxh or scrnaspect < aspect
+
+            if hbars then
+                if root.left == nil then
+                    root.left = root:AddChild(Image("images/global.xml", "square.tex"))
+                    root.left:SetTint(0, 0, 0, 1)
+                    root.left:SetVRegPoint(ANCHOR_MIDDLE)
+                    root.left:SetHRegPoint(ANCHOR_RIGHT)
+                    root.left:SetPosition(-.5 * RESOLUTION_X, 0)
+                end
+                if root.right == nil then
+                    root.right = root:AddChild(Image("images/global.xml", "square.tex"))
+                    root.right:SetTint(0, 0, 0, 1)
+                    root.right:SetVRegPoint(ANCHOR_MIDDLE)
+                    root.right:SetHRegPoint(ANCHOR_LEFT)
+                    root.right:SetPosition(.5 * RESOLUTION_X, 0)
+                end
+            else
+                if root.left ~= nil then
+                    root.left:Kill()
+                    root.left = nil
+                end
+                if root.right ~= nil then
+                    root.right:Kill()
+                    root.right = nil
+                end
+            end
+            if vbars then
+                if root.top == nil then
+                    root.top = root:AddChild(Image("images/global.xml", "square.tex"))
+                    root.top:SetTint(0, 0, 0, 1)
+                    root.top:SetVRegPoint(ANCHOR_BOTTOM)
+                    root.top:SetHRegPoint(ANCHOR_MIDDLE)
+                    root.top:SetPosition(0, .5 * RESOLUTION_Y)
+                end
+                if root.bottom == nil then
+                    root.bottom = root:AddChild(Image("images/global.xml", "square.tex"))
+                    root.bottom:SetTint(0, 0, 0, 1)
+                    root.bottom:SetVRegPoint(ANCHOR_TOP)
+                    root.bottom:SetHRegPoint(ANCHOR_MIDDLE)
+                    root.bottom:SetPosition(0, -.5 * RESOLUTION_Y)
+                end
+            else
+                if root.top ~= nil then
+                    root.top:Kill()
+                    root.top = nil
+                end
+                if root.bottom ~= nil then
+                    root.bottom:Kill()
+                    root.bottom = nil
+                end
+            end
+
+            if hbars and vbars then
+                local w, h = root.left:GetSize()
+                local scalex = (scrnw - maxw) / (maxw * 2) * RESOLUTION_X / w
+                local scaley = scrnh / maxh * RESOLUTION_Y / h
+                root.left:SetScale(scalex, scaley)
+                root.right:SetScale(scalex, scaley)
+                scalex = RESOLUTION_X / w
+                scaley = (scrnh - maxh) / (maxh * 2) * RESOLUTION_Y / h
+                root.top:SetScale(scalex, scaley)
+                root.bottom:SetScale(scalex, scaley)
+            elseif hbars then
+                local w, h = root.left:GetSize()
+                local scalex = (scrnw / (scrnh * aspect) - 1) * .5 * RESOLUTION_X / w
+                local scaley = RESOLUTION_Y / h
+                root.left:SetScale(scalex, scaley)
+                root.right:SetScale(scalex, scaley)
+            elseif vbars then
+                local w, h = root.top:GetSize()
+                local qq = scrnh * aspect
+                local scalex = RESOLUTION_X / w
+                local scaley = (scrnh * aspect / scrnw - 1) * .5 * RESOLUTION_Y / h
+                root.top:SetScale(scalex, scaley)
+                root.bottom:SetScale(scalex, scaley)
+            end
+        end
+
+        root:StartUpdating()
+        root:OnUpdate()
+
+        return root
     end,
 
     -------------------
@@ -935,37 +1079,44 @@ TEMPLATES = {
     -----------------------
     -----------------------
     -- An item image for the inventory screens that moves 
-    MovingItem = function(name, type, src_pos, dest_pos)
+    MovingItem = function(name, type, slot_index, src_pos, dest_pos, start_scale, end_scale)
 
-        local widg = Widget("item_"..name)
-
+        local widg = UIAnim()
+       
         widg.name = name
 
-        widg.frame = widg:AddChild(UIAnim())
-        widg.frame:GetAnimState():SetBuild("frames_comp") -- use the animation file as the build, then override it
-        widg.frame:GetAnimState():AddOverrideBuild("frame_skins") -- file name
-        widg.frame:GetAnimState():SetBank("fr") -- top level symbol from frames_comp
+		widg.target_slot_index = slot_index
+		
+        widg:GetAnimState():SetBuild("frames_comp") -- use the animation file as the build, then override it
+        widg:GetAnimState():AddOverrideBuild("frame_skins") -- file name
+        widg:GetAnimState():SetBank("fr") -- top level symbol from frames_comp
 
         local rarity = GetRarityForItem(type, name)
 
-        widg.frame:GetAnimState():OverrideSkinSymbol("SWAP_ICON",  name, "SWAP_ICON")
-        widg.frame:GetAnimState():OverrideSymbol("SWAP_frameBG", "frame_BG", rarity)
+        widg:GetAnimState():OverrideSkinSymbol("SWAP_ICON", GetBuildForItem(type, name), "SWAP_ICON")
+        widg:GetAnimState():OverrideSymbol("SWAP_frameBG", "frame_BG", rarity)
 
-        widg.frame:GetAnimState():PlayAnimation("icon", true)
-        widg.frame:GetAnimState():Hide("NEW")
+        widg:GetAnimState():PlayAnimation("icon", true)
+        widg:GetAnimState():Hide("NEW")
 
-        widg:SetScale(.66)
         widg:Hide()
 
-        widg.Move = function() 
-                                widg:Show()
-                                widg.frame:MoveTo(src_pos, dest_pos, .3, 
-                                function()
-                                    --widg:ScaleTo(self.basescale * 2, self.basescale, .25)
-                                    widg:Kill()
-                                end)
-                    end
+        --print("SETTING UP MOVING ITEM ", name, src_pos, dest_pos, debugstack())
+        local move_time = 0.3 -- .3 is the time used for moving items into inventory in game
+        widg.Move = function(callbackfn)
+                        widg.moving = true
+                        widg:SetScale(start_scale or 1)
+                        widg:Show()
+                        widg:ScaleTo(start_scale or 1, end_scale or 1, move_time)
+                        widg:MoveTo(src_pos, dest_pos, move_time, 
+                        function()
+                            widg:Kill()
 
+                            if callbackfn then
+                                callbackfn()
+                            end
+                        end)
+                    end
         return widg
     end,
 

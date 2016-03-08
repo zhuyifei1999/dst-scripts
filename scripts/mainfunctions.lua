@@ -1265,7 +1265,7 @@ end
 --data is raw string data from save file
 function ParseUserSessionData(data)
     local success, playerdata = RunInSandboxSafe(data)
-    if success then
+    if success and playerdata ~= nil then
         --Here we can do some validation on data and/or prefab if we want
         --e.g. Resuming a mod character without the mod loaded?
         return playerdata, playerdata.prefab
@@ -1350,19 +1350,41 @@ function NotifyLoadingState( loading_state )
 	end
 end
 
-
 function BuildTagsStringCommon(tagsTable)
-    -- Mods tags
-    for i,mod_tag in pairs( KnownModIndex:GetEnabledModTags() ) do
-        table.insert(tagsTable, mod_tag)
-    end
     -- Vote command tags
     if TheSim:GetSetting("GAMEPLAY", "vote_kick_enabled") == "true" then
         table.insert(tagsTable, "vote kick")
     end
 
-    -- Concat & return the string
-    return table.concat(tagsTable, ", ")
+    if TheShard:IsMaster() then
+        -- Merge slave tags
+        for k, v in pairs(Shard_GetConnectedShards()) do
+            if v.tags ~= nil then
+                for i, tag in ipairs(v.tags:split(",")) do
+                    table.insert(tagsTable, tag)
+                end
+            end
+        end
+    end
+
+    -- Mods tags
+    for i, mod_tag in ipairs(KnownModIndex:GetEnabledModTags()) do
+        table.insert(tagsTable, mod_tag)
+    end
+
+    -- Concat unique tags
+    local tagged = {}
+    local tagsString = ""
+    for i, v in ipairs(tagsTable) do
+        --trim whitespace
+        v = v:lower():match("^%s*(.-%S)%s*$") or ""
+        if v:len() > 0 and not tagged[v] then
+            tagged[v] = true
+            tagsString = tagsString:len() > 0 and (tagsString..","..v) or v
+        end
+    end
+
+    return tagsString
 end
 
 function SaveAndShutdown()

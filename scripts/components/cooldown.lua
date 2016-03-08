@@ -1,21 +1,31 @@
 local Cooldown = Class(function(self, inst)
     self.inst = inst
     self.charged = false
-    --self.cooldown_time_left = nil
     self.cooldown_duration = nil
+    self.startchargingfn = nil
+    self.onchargedfn = nil
+    self.task = nil
 end)
 
+function Cooldown:OnRemoveFromEntity()
+    if self.task ~= nil then
+        self.task:Cancel()
+        self.task = nil
+    end
+end
 
-function donecharging(inst)
-    if inst.components.cooldown then
-        inst.components.cooldown.charged = true
-        inst.components.cooldown.cooldown_deadline = nil
-
-        if inst.components.cooldown.onchargedfn then
-            inst.components.cooldown.onchargedfn(inst)
-        end
+function donecharging(inst, self)
+    if self.task ~= nil then
+        self.task:Cancel()
+        self.task = nil
     end
 
+    self.charged = true
+    self.cooldown_deadline = nil
+
+    if self.onchargedfn ~= nil then
+        self.onchargedfn(inst)
+    end
 end
 
 function Cooldown:StartCharging(time)
@@ -23,27 +33,18 @@ function Cooldown:StartCharging(time)
     self.charged = false
     self.cooldown_deadline = GetTime() + time
 
-    if self.cooldown_deadline <= 0 then
-        donecharging(self.inst)
-        if self.startchargingfn then
-            self.startchargingfn(self.inst)
-        end
-        return
+    if self.task ~= nil then
+        self.task:Cancel()
     end
+    self.task = self.inst:DoTaskInTime(time, donecharging, self)
 
-    self.inst:DoTaskInTime(self.cooldown_duration, donecharging)    
-    if self.startchargingfn then
+    if self.startchargingfn ~= nil then
         self.startchargingfn(self.inst)
     end
-
 end
 
 function Cooldown:GetTimeToCharged()
-    if self.cooldown_deadline then
-        return self.cooldown_deadline - GetTime()
-    end
-
-    return 0
+    return self.cooldown_deadline ~= nil and self.cooldown_deadline - GetTime() or 0
 end
 
 function Cooldown:IsCharged()
@@ -51,36 +52,25 @@ function Cooldown:IsCharged()
 end
 
 function Cooldown:IsCharging()
-    return not self.charged and self.cooldown_duration
+    return not self.charged and self.cooldown_duration ~= nil
 end
 
 function Cooldown:OnSave()
-
-    local data = {
-        charged = self.charged
+    return {
+        charged = self.charged or nil,
+        time_to_charge = self.cooldown_deadline ~= nil and math.max(0, self.cooldown_deadline - GetTime()) or nil,
     }
-
-    if self.cooldown_deadline then
-        data.time_to_charge = math.max(0, self.cooldown_deadline - GetTime())
-    end
-
-    return data
 end
 
 function Cooldown:GetDebugString()
-    if self.charged then
-		return "CHARGED!"
-    else
-		return string.format("%2.2f", self:GetTimeToCharged())
-    end
+    return self.charged and "CHARGED!" or string.format("%2.2f", self:GetTimeToCharged())
 end
 
-
 function Cooldown:LongUpdate(dt)
-    if self.cooldown_deadline then
+    if self.cooldown_deadline ~= nil then
         self.cooldown_deadline = self.cooldown_deadline - dt
         if self.cooldown_deadline < GetTime() then
-            donecharging(self.inst)
+            donecharging(self.inst, self)
         else
             self:StartCharging(self.cooldown_deadline - GetTime())
         end
@@ -89,11 +79,10 @@ end
 
 function Cooldown:OnLoad(data)
     if data.charged then
-        donecharging(self.inst)
-    elseif data.time_to_charge then
+        donecharging(self.inst, self)
+    elseif data.time_to_charge ~= nil then
         self:StartCharging(data.time_to_charge)
     end
 end
-
 
 return Cooldown

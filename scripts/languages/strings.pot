@@ -7586,9 +7586,14 @@ msgctxt "STRINGS.PIG_TALK_GO_HOME.2"
 msgid "HOME! HOME!"
 msgstr ""
 
+#. STRINGS.TAGS.LOCATION.CAVE
+msgctxt "STRINGS.TAGS.LOCATION.CAVE"
+msgid "caves"
+msgstr ""
+
 #. STRINGS.TAGS.MULTISERVER
 msgctxt "STRINGS.TAGS.MULTISERVER"
-msgid "caves"
+msgid "multilevel"
 msgstr ""
 
 #. STRINGS.TAGS.LOCAL
@@ -12303,7 +12308,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.LIFEINJECTOR
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.LIFEINJECTOR"
-msgid "Booooost!"
+msgid "I seem to have discovered a cure!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.LIVINGLOG
@@ -15446,6 +15451,11 @@ msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.STAFF_TORNADO"
 msgid "TREACHEROUSLY POWERFUL GUSTS"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WX78.DESCRIBE.REVIVER
+msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.REVIVER"
+msgid "IT UNDOES MY MEATLING DESTRUCTION"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.PURPLEAMULET
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.PURPLEAMULET"
 msgid "I HAVE CREATED THE PERFECT AMULET."
@@ -16824,6 +16834,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.GUACAMOLE
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.GUACAMOLE"
 msgid "METHODS SEEM SUSPECT"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WX78.DESCRIBE.LIFEINJECTOR
+msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.LIFEINJECTOR"
+msgid "I HAVE MIXED FEELINGS ABOUT THIS"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.LIVINGLOG
@@ -19596,6 +19611,11 @@ msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.STAFF_TORNADO"
 msgid "A storm of pain."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.REVIVER
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.REVIVER"
+msgid "Feel the passion inside!"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.PURPLEAMULET
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.PURPLEAMULET"
 msgid "An amulet of dark powers."
@@ -21029,6 +21049,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.GUACAMOLE
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.GUACAMOLE"
 msgid "Yum, creamy!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.LIFEINJECTOR
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.LIFEINJECTOR"
+msgid "This will return me to top form."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.LIVINGLOG
@@ -24236,6 +24261,11 @@ msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.STAFF_TORNADO"
 msgid "Spin and spin!"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.REVIVER
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.REVIVER"
+msgid "Blib blup! Blib blup! Blib blup!"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.PURPLEAMULET
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.PURPLEAMULET"
 msgid "This amulet... it frightens Wolfgang."
@@ -25649,6 +25679,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.GUACAMOLE
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.GUACAMOLE"
 msgid "Wolfgang does not trust green mush."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.LIFEINJECTOR
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.LIFEINJECTOR"
+msgid "EeeeEEeeEEE!!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.LIVINGLOG
@@ -28666,6 +28701,11 @@ msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.STAFF_TORNADO"
 msgid "Wind power."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.REVIVER
+msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.REVIVER"
+msgid "I'm not sure I really want to give this up."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.PURPLEAMULET
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.PURPLEAMULET"
 msgid "It speaks with the shadow."
@@ -30074,6 +30114,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.GUACAMOLE
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.GUACAMOLE"
 msgid "There's a mole in the mix."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.LIFEINJECTOR
+msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.LIFEINJECTOR"
+msgid "I'm supposed to put this filth in my veins?"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.LIVINGLOG
@@ -34291,6 +34336,11 @@ msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.GUACAMOLE"
 msgid "That's just gruesome. I like it."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WENDY.DESCRIBE.LIFEINJECTOR
+msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.LIFEINJECTOR"
+msgid "We were not meant to cheat death."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.LIVINGLOG
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.LIVINGLOG"
 msgid "It is forever silently screaming."
@@ -37396,6 +37446,11 @@ msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.STAFF_TORNADO"
 msgid "We'll huff and we'll puff."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WEBBER.DESCRIBE.REVIVER
+msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.REVIVER"
+msgid "I think it loves me."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.PURPLEAMULET
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.PURPLEAMULET"
 msgid "Did you hear something?"
@@ -38819,6 +38874,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.GUACAMOLE
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.GUACAMOLE"
 msgid "Holy moley, this is tasty."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WEBBER.DESCRIBE.LIFEINJECTOR
+msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.LIFEINJECTOR"
+msgid "I hate taking my medicine!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.LIVINGLOG
@@ -41531,6 +41591,11 @@ msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.STAFF_TORNADO"
 msgid "I've never seen a weather vane employed as a weapon."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.REVIVER
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.REVIVER"
+msgid "This provides a corporeal anchor for the ectoplasmic configuration."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.PURPLEAMULET
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.PURPLEAMULET"
 msgid "I can almost sense it beckoning to something."
@@ -42939,6 +43004,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.GUACAMOLE
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.GUACAMOLE"
 msgid "I always make guacamole for science day at the library."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.LIFEINJECTOR
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.LIFEINJECTOR"
+msgid "The mould appears to have medicinal properties."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.LIVINGLOG
@@ -45986,6 +46056,11 @@ msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.STAFF_TORNADO"
 msgid "I prefer to chop the trees myself."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WOODIE.DESCRIBE.REVIVER
+msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.REVIVER"
+msgid "I need to share this with somebody!"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.PURPLEAMULET
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.PURPLEAMULET"
 msgid "The sparkle is gone from the gem."
@@ -47374,6 +47449,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.GUACAMOLE
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.GUACAMOLE"
 msgid "I'm not sure I trust it."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOODIE.DESCRIBE.LIFEINJECTOR
+msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.LIFEINJECTOR"
+msgid "This should cure those sniffles."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.LIVINGLOG
@@ -50251,6 +50331,11 @@ msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.STAFF_TORNADO"
 msgid "Always wwirling! Swirling towards destruction!"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WILLOW.DESCRIBE.REVIVER
+msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.REVIVER"
+msgid "I expected it to be blacker."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.PURPLEAMULET
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.PURPLEAMULET"
 msgid "Has science gone too far?"
@@ -51689,6 +51774,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.GUACAMOLE
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.GUACAMOLE"
 msgid "Holy moly, that's tasty!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WILLOW.DESCRIBE.LIFEINJECTOR
+msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.LIFEINJECTOR"
+msgid "Don't you dare stick that in me!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.LIVINGLOG
@@ -53661,9 +53751,269 @@ msgctxt "STRINGS.CHARACTERS.WILLOW.ANNOUNCE_NODAYSLEEP"
 msgid "I won't go inside when there's a great ball of fire in the sky."
 msgstr ""
 
+#. STRINGS.UI.TRADESCREEN.EQUIPPED
+msgctxt "STRINGS.UI.TRADESCREEN.EQUIPPED"
+msgid "Last one!"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SELECT
+msgctxt "STRINGS.UI.TRADESCREEN.SELECT"
+msgid "Select"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SERVER_ERROR_BODY
+msgctxt "STRINGS.UI.TRADESCREEN.SERVER_ERROR_BODY"
+msgid "Unfortunately there was an error trading items. Please login again to correct your account inventory."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.TRADE
+msgctxt "STRINGS.UI.TRADESCREEN.TRADE"
+msgid "Trade"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.CHECK
+msgctxt "STRINGS.UI.TRADESCREEN.CHECK"
+msgid "Warning!"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SELECT_TITLE
+msgctxt "STRINGS.UI.TRADESCREEN.SELECT_TITLE"
+msgid "Choose An Item To Swap"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.RESET
+msgctxt "STRINGS.UI.TRADESCREEN.RESET"
+msgid "Reset"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.ACCEPT
+msgctxt "STRINGS.UI.TRADESCREEN.ACCEPT"
+msgid "Accept"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.RESULT.1
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.RESULT.1"
+msgid "Here ya go, one very fine <item>!"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.RESULT.2
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.RESULT.2"
+msgid "Look a' that, ya won a <item>. C'mon back any time, now."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.RESULT.3
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.RESULT.3"
+msgid "There ya go, ya got this here <item>."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.TRADEAVAIL.1
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.TRADEAVAIL.1"
+msgid "All right, kid. Give tha button a push to getcher item!"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.TRADEAVAIL.2
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.TRADEAVAIL.2"
+msgid "Just push tha button to start tha trade!"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.TRADEAVAIL.3
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.TRADEAVAIL.3"
+msgid "If ya wanna make tha trade, just push tha green button."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.WARNING.1
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.WARNING.1"
+msgid "Slow down there, greenhorn. Are ya sure ya wanna gimme your last one 'o those? Ya won't be able ta use it anymore if ya do."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.WARNING.2
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.WARNING.2"
+msgid "Wait jest a tick there. Tha's your last one o' those things. Ya won't be able to use it anymore if ya trade it away."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.WARNING.3
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.WARNING.3"
+msgid "Ya ain't got no more o' those. Ya sure ya wanna get rid o' it? Not that I won't take it, o' course."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.START_EMPTY.1
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.START_EMPTY.1"
+msgid "C'mon back when ya got something ta trade!"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.START_EMPTY.2
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.START_EMPTY.2"
+msgid "Sorry, but I can't give ya something for nothing, ya know."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.START_EMPTY.3
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.START_EMPTY.3"
+msgid "If ya find any items while you're adventuring around out there, ya can bring the ones ya don't need ta me."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.ADDMORE.1
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.ADDMORE.1"
+msgid "Help a poor old trader out with a few more <rarity> items and I'll give ya a higher quality item in exchange. Guaranteed."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.ADDMORE.2
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.ADDMORE.2"
+msgid "I'm gonna need a few more <rarity> items to make a trade. I gotta cover my overhead, ya know? But ya'll get a better item in exchange."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.ADDMORE.3
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.ADDMORE.3"
+msgid "Tha's it, fill the machine on up with <rarity> items and ya'll get a higher quality item back out."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.ADDMORE.4
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.ADDMORE.4"
+msgid "Tha's tha ticket. Just bang a few more a those <rarity> items in tha machine to get a better item!"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.IDLE.1
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.IDLE.1"
+msgid "Ya may not feel young, but I've been tradin' longer than ya been around, young pup."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.IDLE.2
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.IDLE.2"
+msgid "I've always been a loner, me. Tha boss mostly lets me alone, which suits me fine."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.IDLE.3
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.IDLE.3"
+msgid "Take yer time. I can stand here yammerin' all day."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.IDLE.4
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.IDLE.4"
+msgid "My wagon's pulled by a nox. 'Es a good 'un, but 'e can't hold a candle to my old mule, Shadow."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.IDLE.5
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.IDLE.5"
+msgid "Once, when I was but a young shaver... oh, but ya don' wanna listen to an old trader's stories."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.IDLE.6
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.IDLE.6"
+msgid "What's a nox? Well, I don't know as I can rightly describe it. It's kinda like an ox, but not."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.JOYSTICK.1
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.JOYSTICK.1"
+msgid "Ya can bang on that joystick all ya want but it won't do ya no good."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.JOYSTICK.2
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.JOYSTICK.2"
+msgid "Don't ya go breakin' tha joystick, now. Ya don' need it anyhow."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.JOYSTICK.3
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.JOYSTICK.3"
+msgid "Up, down, left, right, tha joystick don' do nothin'."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.START.1
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.START.1"
+msgid "Ya got a heap 'o items? Want better items? Well, ya come to tha right place! Put 'em in that thar machine!"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.START.2
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.START.2"
+msgid "Got too many items? I can help ya with that problem! Stick 'em in my machine an' trade 'em for somethin' better!"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.START.3
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.START.3"
+msgid "Lookin' for new items? Trade in some old items and get a bran' new one of higher quality!"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.START.4
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.START.4"
+msgid "Lookin' to trade? Ya come to the right place. Put your items in tha machine to get somethin' better!"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.RESULT_LUCKY.1
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.RESULT_LUCKY.1"
+msgid "Hey, ya struck it rich! Look at that <item>. Ya must be extra lucky today."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.RESULT_LUCKY.2
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.RESULT_LUCKY.2"
+msgid "Here ya go, one bran' new <item>. Jus' remember I can't afford to give ya items this good all tha time."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.RESULT_LUCKY.3
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.RESULT_LUCKY.3"
+msgid "Well, I guess me & tha machine are feelin' gen'rous today. Ya won a <item>!"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.RESULT_LUCKY.4
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.RESULT_LUCKY.4"
+msgid "Ain't that just the koalefant's toenails! Ya got one very purty <item>."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.TRADE.1
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.TRADE.1"
+msgid "It'll be here in a jiffy."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.TRADE.2
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.TRADE.2"
+msgid "I bet ya can't wait to see what comes out!"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.TRADE.3
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.TRADE.3"
+msgid "It should be here real soon now."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.WARNING
+msgctxt "STRINGS.UI.TRADESCREEN.WARNING"
+msgid "You won't be able to use an item if you give your last copy away. Really trade these items?"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SERVER_ERROR_TITLE
+msgctxt "STRINGS.UI.TRADESCREEN.SERVER_ERROR_TITLE"
+msgid "Error Trading Items"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.MARKET
+msgctxt "STRINGS.UI.TRADESCREEN.MARKET"
+msgid "Go to Steam"
+msgstr ""
+
 #. STRINGS.UI.TRADESCREEN.TITLE
 msgctxt "STRINGS.UI.TRADESCREEN.TITLE"
 msgid "Trade Inn"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.OK
+msgctxt "STRINGS.UI.TRADESCREEN.OK"
+msgid "Ok"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.WARNING_SINGLE
+msgctxt "STRINGS.UI.TRADESCREEN.WARNING_SINGLE"
+msgid "You won't be able to use an item if you give your last copy away. Really trade this item?"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.BACK
+msgctxt "STRINGS.UI.TRADESCREEN.BACK"
+msgid "Back"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.CANCEL
+msgctxt "STRINGS.UI.TRADESCREEN.CANCEL"
+msgid "Cancel"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.REMOVE_ITEM
+msgctxt "STRINGS.UI.TRADESCREEN.REMOVE_ITEM"
+msgid "Remove Last Item"
 msgstr ""
 
 #. STRINGS.UI.WORLDRESETDIALOG.TITLE_LATEJOIN
@@ -55268,7 +55618,7 @@ msgstr ""
 
 #. STRINGS.UI.SKINSSCREEN.TRADE_TOOLTIP
 msgctxt "STRINGS.UI.SKINSSCREEN.TRADE_TOOLTIP"
-msgid "Trade your unwanted items for something new! -- (Not yet available)"
+msgid "Trade your unwanted items for something new!"
 msgstr ""
 
 #. STRINGS.UI.SKINSSCREEN.SELECT

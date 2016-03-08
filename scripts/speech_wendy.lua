@@ -1193,6 +1193,7 @@ return {
         WHIP = "It only provides the illusion of control.",
 		WINTERHAT = "It helps stave off the encroaching cold.",
 		REVIVER = "Choices matter.",
+        LIFEINJECTOR = "We were not meant to cheat death.",
 		WORMHOLE =
 		{
 			GENERIC = "Life doesn't always make sense.",

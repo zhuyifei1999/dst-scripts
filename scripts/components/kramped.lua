@@ -62,22 +62,22 @@ local function OnNaughtyAction(how_naughty, playerdata)
 	playerdata.timetodecay = TUNING.KRAMPUS_NAUGHTINESS_DECAY_PERIOD
 
 	if playerdata.actions >= playerdata.threshold and playerdata.threshold > 0 then
-		
+
 		local day = TheWorld.state.cycles
-		
+
 		local num_krampii = 1
 		playerdata.threshold = TUNING.KRAMPUS_THRESHOLD + math.random(TUNING.KRAMPUS_THRESHOLD_VARIANCE)
 		playerdata.actions = 0
-		
+
 		if TUNING.KRAMPUS_INCREASE_RAMP <= 1 then	-- KAJ 21-3-14:math.random can't be called with < 1. I am assuming that setting "never" in the tuning means to never spawn
 			return
 		end
-		
-		if day > TUNING.KRAMPUS_INCREASE_LVL1 then
-			num_krampii = num_krampii + math.random(TUNING.KRAMPUS_INCREASE_RAMP)
-		elseif day > TUNING.KRAMPUS_INCREASE_LVL2 then
-			num_krampii = num_krampii + 1 + math.random(TUNING.KRAMPUS_INCREASE_RAMP)
-		end
+
+        if day > TUNING.KRAMPUS_INCREASE_LVL2 then
+            num_krampii = num_krampii + 1 + math.random(TUNING.KRAMPUS_INCREASE_RAMP)
+        elseif day > TUNING.KRAMPUS_INCREASE_LVL1 then
+            num_krampii = num_krampii + math.random(TUNING.KRAMPUS_INCREASE_RAMP)
+        end
 
 		for k = 1, num_krampii do
 			MakeAKrampusForPlayer(player)

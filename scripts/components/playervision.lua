@@ -69,6 +69,7 @@ local PlayerVision = Class(function(self, inst)
     self.inst = inst
 
     self.ghostvision = false
+    self.nightmarevision = false
     self.nightvision = false
     self.forcenightvision = false
     self.overridecctable = nil
@@ -77,6 +78,14 @@ local PlayerVision = Class(function(self, inst)
 
     inst:DoTaskInTime(0, OnInit, self)
 end)
+
+function PlayerVision:HasGhostVision()
+    return self.ghostvision
+end
+
+function PlayerVision:HasNightmareVision()
+    return self.nightmarevision
+end
 
 function PlayerVision:HasNightVision()
     return self.nightvision or self.forcenightvision
@@ -115,6 +124,7 @@ function PlayerVision:SetGhostVision(enabled)
     if not self.ghostvision ~= not enabled then
         self.ghostvision = enabled == true
         self:UpdateCCTable()
+        self.inst:PushEvent("ghostvision", self.ghostvision)
     end
 end
 
@@ -122,6 +132,7 @@ function PlayerVision:SetNightmareVision(enabled)
     if not self.nightmarevision ~= not enabled then
         self.nightmarevision = enabled == true
         self:UpdateCCTable()
+        self.inst:PushEvent("nightmarevision", self.nightmarevision)
     end
 end
 

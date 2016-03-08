@@ -359,9 +359,9 @@ function MakeWorld(name, customprefabs, customassets, common_postinit, master_po
             master_postinit(inst)
         end
 
-        --Cache static world gen data for server listing
-        local worldgen_data = SaveGameIndex:GetSlotGenOptions() or {}
-        TheNet:SetWorldGenData(DataDumper(worldgen_data, nil, false))
+        --World gen data for server listing
+        --Also updated in shardnetworking.lua for multilevel server clusters
+        UpdateServerWorldGenDataString()
 
         inst.game_data_task = nil
 

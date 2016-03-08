@@ -245,10 +245,15 @@ function Sanity:OnUpdate(dt)
 end
 
 function Sanity:RecalcGhostDrain()
-    self.ghost_drain_mult =
-        GetGhostSanityDrain(TheNet:GetServerGameMode())
-        and math.min(TheWorld.shard.components.shard_players:GetNumGhosts(), TUNING.MAX_SANITY_GHOST_PLAYER_DRAIN_MULT)
-        or 0
+    if GetGhostSanityDrain(TheNet:GetServerGameMode()) then
+        local num_ghosts = TheWorld.shard.components.shard_players:GetNumGhosts()
+        local num_alive = TheWorld.shard.components.shard_players:GetNumAlive()
+        local group_resist = num_alive > num_ghosts and 1 - num_ghosts / num_alive or 0
+
+        self.ghost_drain_mult = math.min(num_ghosts, TUNING.MAX_SANITY_GHOST_PLAYER_DRAIN_MULT) * (1 - group_resist * group_resist)
+    else
+        self.ghost_drain_mult = 0
+    end
 end
 
 function Sanity:Recalc(dt)
@@ -264,7 +269,7 @@ function Sanity:Recalc(dt)
     local dapper_delta = total_dapperness * TUNING.SANITY_DAPPERNESS
 
     local moisture_delta = easing.inSine(self.inst.components.moisture:GetMoisture(), 0, TUNING.MOISTURE_SANITY_PENALTY_MAX, self.inst.components.moisture:GetMaxMoisture())
-    
+
     local light_delta
     if TheWorld.state.isday and not TheWorld:HasTag("cave") then
         light_delta = TUNING.SANITY_DAY_GAIN

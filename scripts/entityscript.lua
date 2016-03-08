@@ -1149,7 +1149,7 @@ function EntityScript:PreviewBufferedAction(bufferedaction)
         bufferedaction.target == self.bufferedaction.target and
         bufferedaction.action == self.bufferedaction.action and
         bufferedaction.inv_obj == self.bufferedaction.inv_obj and
-        not (self.sg ~= nil and self.sg:HasStateTag("idle")) then
+        not (self.sg ~= nil and self.sg:HasStateTag("idle") and self:HasTag("idle")) then
         return
     end
 

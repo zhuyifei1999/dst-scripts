@@ -1216,6 +1216,8 @@ return {
 		ACCOMPLISHMENT_SHRINE = "It seems a bit show-offy to me.",        		
 		LIVINGTREE = "I feel conflicted, eh?",
 		ICESTAFF = "It reminds me of home.",
+        REVIVER = "I need to share this with somebody!",
+        LIFEINJECTOR = "This should cure those sniffles.",
 	},
 	DESCRIBE_GENERIC = "What's that, eh?",
 	DESCRIBE_TOODARK = "It's dark, eh!",

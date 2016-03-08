@@ -1378,9 +1378,11 @@ function Inventory:ControllerUseItemOnItemFromInvTile(item, active_item, actionc
         if act == nil then
             return
         elseif actioncode == nil or (act.action.code == actioncode and act.action.mod_name == mod_name) then
-            if self.inst.HUD ~= nil then
+            --V2C: Usability improvement for DST, we don't need to close
+            --     the window for actions since it does not pause in DST
+            --[[if self.inst.HUD ~= nil then
                 self.inst.HUD.controls.inv:CloseControllerInventory()
-            end
+            end]]
             self.inst.components.locomotor:PushAction(act, true)
             return true
         --elseif mod_name ~= nil then
@@ -1458,10 +1460,10 @@ function Inventory:InspectItemFromInvTile(item)
     end
 end
 
-function Inventory:DropItemFromInvTile(item)
+function Inventory:DropItemFromInvTile(item, single)
     if self:CanAccessItem(item) and self.inst.components.playercontroller ~= nil then
         local buffaction = BufferedAction(self.inst, nil, ACTIONS.DROP, item, self.inst.components.playercontroller:GetRemotePredictPosition() or self.inst:GetPosition())
-        buffaction.options.wholestack = true
+        buffaction.options.wholestack = not (single and item.components.stackable ~= nil and item.components.stackable:IsStack())
         self.inst.components.locomotor:PushAction(buffaction, true)
     end
 end

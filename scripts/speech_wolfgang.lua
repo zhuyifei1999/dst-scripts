@@ -1222,6 +1222,8 @@ return {
         THULECITE = "Is pretty rock.",
         YELLOWAMULET = "Is glowing yellow.",    
 		ACCOMPLISHMENT_SHRINE = "I will defeat you, tiny arrow!",                
+        REVIVER = "Blib blup! Blib blup! Blib blup!",
+        LIFEINJECTOR = "EeeeEEeeEEE!!",
 	},
 	DESCRIBE_GENERIC = "What is this thing?",
 	DESCRIBE_TOODARK = "Help me! It is dark!",

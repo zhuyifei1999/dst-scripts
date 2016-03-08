@@ -22,6 +22,7 @@ local CustomizationList = Class(Widget, function(self, location, options, spinne
     self.presetvalues = {}
 
     self.spinners = {}
+    self.title = nil
 
     self.focused_column = 1
 
@@ -31,8 +32,75 @@ local CustomizationList = Class(Widget, function(self, location, options, spinne
     self.focus_forward = self.scroll_list
 end)
 
-function CustomizationList:MakeOptionSpinners()
+local function labelOnGainFocus(label)
+    label.focus_image:Show()
+end
 
+local function labelOnLoseFocus(label)
+    label.focus_image:Hide()
+end
+
+local function MakeLabel(text)
+    local labelParent = Widget("label")
+    labelParent.label_text = labelParent:AddChild(Text(BUTTONFONT, 37, text))
+    labelParent.label_text:SetHAlign(ANCHOR_MIDDLE)
+    labelParent.label_text:SetPosition(136, 0)
+    labelParent.label_text:SetColour(0, 0, 0, 1)
+    labelParent.focus_image = labelParent:AddChild(Image("images/ui.xml", "spinner_focus.tex"))
+    labelParent.focus_image:SetPosition(133, 3)
+    local w, h = labelParent.label_text:GetRegionSize()
+    labelParent.focus_image:SetSize(w + 50, h + 15)
+    labelParent.OnGainFocus = labelOnGainFocus
+    labelParent.OnLoseFocus = labelOnLoseFocus
+    labelParent.focus_image:Hide()
+    return labelParent
+end
+
+function CustomizationList:SetTitle(title)
+    if self.title == title then
+        return
+    end
+
+    if self.title ~= nil then
+        self.optionwidgets[1]:Kill()
+        table.remove(self.optionwidgets, 1)
+    end
+
+    self.title = title
+
+    if title ~= nil then
+        local titleParent = Widget("title")
+        local bg = titleParent:AddChild(Image("images/ui.xml", "single_option_bg_large.tex"))
+        bg:SetScale(.95, .56)
+        bg:SetPosition(127, 3)
+        local text = titleParent:AddChild(Text(NEWFONT, 30))
+        text:SetHAlign(ANCHOR_MIDDLE)
+        text:SetPosition(128, 4)
+        text:SetColour(0, 0, 0, 1)
+        text:SetTruncatedString(title, 470, 100, true)
+        titleParent.focus_image = titleParent:AddChild(Image("images/ui.xml", "spinner_focus.tex"))
+        titleParent.focus_image:SetPosition(125, 3)
+        local w, h = text:GetRegionSize()
+        titleParent.focus_image:SetSize(w + 50, h + 15)
+        titleParent.OnGainFocus = labelOnGainFocus
+        titleParent.OnLoseFocus = labelOnLoseFocus
+        titleParent.focus_image:Hide()
+
+        table.insert(self.optionwidgets, 1, titleParent)
+        self.scroll_list:AddChild(titleParent)
+    end
+
+    for i, v in ipairs(self.optionwidgets) do
+        if v.name == "label" then
+            v.label_text:SetPosition(title ~= nil and 128 or 136, 0)
+            v.focus_image:SetPosition(title ~= nil and 125 or 133, 3)
+        end
+    end
+
+    self.scroll_list:SetList(self.optionwidgets, true)
+end
+
+function CustomizationList:MakeOptionSpinners()
     self.optionwidgets = {}
 
     local function AddSpinnerToRow(self, v, index, row, side)
@@ -123,27 +191,10 @@ function CustomizationList:MakeOptionSpinners()
         local v = self.options[i]
 
         if v.group ~= lastgroup then
-            local labelParent = Widget("label")
-            local labelWidget = labelParent:AddChild(Text(BUTTONFONT,37))
-            labelWidget:SetHAlign(ANCHOR_MIDDLE)
-            labelWidget:SetPosition(136, 0)
-            labelWidget:SetString(string.format("%s %s",
+            table.insert(self.optionwidgets,
+                MakeLabel(string.format("%s %s",
                     STRINGS.UI.SANDBOXMENU.LOCATION[string.upper(self.location)] or STRINGS.UI.SANDBOXMENU.LOCATION.UNKNOWN,
-                    v.grouplabel))
-            labelWidget:SetColour(0,0,0,1)
-            labelParent.focus_image = labelParent:AddChild(Image("images/ui.xml", "spinner_focus.tex"))
-            labelParent.focus_image:SetPosition(133, 3)
-            local w,h = labelWidget:GetRegionSize()
-            labelParent.focus_image:SetSize(w+50, h+15)
-            labelParent.OnGainFocus = function()
-                labelParent.focus_image:Show()
-            end
-            labelParent.OnLoseFocus = function()
-                labelParent.focus_image:Hide()
-            end
-            labelParent.focus_image:Hide()
-
-            table.insert(self.optionwidgets, labelParent)
+                    v.grouplabel)))
             lastgroup = v.group
         end
 

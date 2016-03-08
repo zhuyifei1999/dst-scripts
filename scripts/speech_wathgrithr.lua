@@ -1250,6 +1250,8 @@ return {
 		ICESTAFF = "A gift from Ullr!",
 		WATHGRITHRHAT = "The power of the unicorn is great.",
 		SPEAR_WATHGRITHR = "My comrade in arms!",
+        REVIVER = "Feel the passion inside!",
+        LIFEINJECTOR = "This will return me to top form.",
 	},
 	DESCRIBE_GENERIC = "It is an artifact of this realm.",
 	DESCRIBE_TOODARK = "Too dark even for battle.",
