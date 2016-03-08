@@ -2664,7 +2664,7 @@ function PlayerController:GetGroundUseAction(position)
     end
 end
 
-local function ValidateItemUseAction(act, active_item, target)
+local function ValidateItemUseAction(self, act, active_item, target)
     return act ~= nil and
         (active_item.replica.equippable == nil or not active_item:HasTag(act.action.id.."_tool")) and
         (act.action ~= ACTIONS.STORE or target.replica.inventoryitem == nil or not target.replica.inventoryitem:IsGrandOwner(self.inst)) and
@@ -2679,8 +2679,8 @@ function PlayerController:GetItemUseAction(active_item, target)
     end
     target = target or self:GetControllerTarget()
     return target ~= nil
-        and (ValidateItemUseAction(--[[rmb]] self.inst.components.playeractionpicker:GetUseItemActions(target, active_item, true)[1], active_item, target) or
-            ValidateItemUseAction(--[[lmb]] self.inst.components.playeractionpicker:GetUseItemActions(target, active_item, false)[1], active_item, target))
+        and (ValidateItemUseAction(--[[rmb]] self, self.inst.components.playeractionpicker:GetUseItemActions(target, active_item, true)[1], active_item, target) or
+            ValidateItemUseAction(--[[lmb]] self, self.inst.components.playeractionpicker:GetUseItemActions(target, active_item, false)[1], active_item, target))
         or nil
 end
 
