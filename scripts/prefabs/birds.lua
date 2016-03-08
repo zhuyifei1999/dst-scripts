@@ -46,6 +46,34 @@ local function SeedSpawnTest()
     return not TheWorld.state.iswinter
 end
 
+local function SpawnPrefabChooser(inst)
+    if TheWorld.state.cycles <= 3 then
+        -- The flint drop is for drop-in players, players from the start of the game have to forage like normal
+        return "seeds"
+    end
+
+    local x,y,z = inst.Transform:GetWorldPosition()
+    local players = FindPlayersInRange(x, y, z, 20, true)
+
+    -- only give flint if only fresh players are nearby
+    local oldestplayer = -1
+    for i,player in ipairs(players) do
+        if player.components.age ~= nil then
+            oldestplayer = math.max(oldestplayer, player.components.age:GetAgeInDays())
+        end
+    end
+
+    if oldestplayer < 3 then
+        local r = math.random()
+        return (oldestplayer == 0 and r < 0.35 and "flint")
+            or (oldestplayer == 1 and r < 0.25 and "flint")
+            or (oldestplayer == 2 and r < 0.15 and "flint")
+            or "seeds"
+    else
+        return "seeds"
+    end
+end
+
 local function makebird(name, soundname)
     local assets =
     {
@@ -158,7 +186,7 @@ local function makebird(name, soundname)
         inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
 
         inst:AddComponent("periodicspawner")
-        inst.components.periodicspawner:SetPrefab("seeds")
+        inst.components.periodicspawner:SetPrefab(SpawnPrefabChooser)
         inst.components.periodicspawner:SetDensityInRange(20, 2)
         inst.components.periodicspawner:SetMinimumSpacing(8)
         inst.components.periodicspawner:SetSpawnTestFn(SeedSpawnTest)

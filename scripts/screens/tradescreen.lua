@@ -142,9 +142,8 @@ function TradeScreen:DoInit()
     self.fixed_root:SetHAnchor(ANCHOR_MIDDLE)
     self.fixed_root:SetScaleMode(SCALEMODE_PROPORTIONAL)
 
-    self.panel_bg = self.fixed_root:AddChild(Image("images/tradescreen_bg.xml", "bg_plate_noportal.tex"))
-    self.panel_bg:SetScale( 1, 1)
-    self.panel_bg:SetPosition(0, 0)
+    self.panel_bg = self.fixed_root:AddChild(TEMPLATES.NoPortalBackground())
+    self.menu_bg = self.fixed_root:AddChild(TEMPLATES.LeftGradient())
 
     if not TheInput:ControllerAttached() then 
     	self.exit_button = self.fixed_root:AddChild(TEMPLATES.BackButton(function() self:Quit() end)) 

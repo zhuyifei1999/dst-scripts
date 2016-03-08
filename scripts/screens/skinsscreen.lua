@@ -40,24 +40,27 @@ function SkinsScreen:DoInit()
 	
 	TheInputProxy:SetCursorVisible(true)
 
+	-- Background is a really big paper texture.
+    self.panel_bg = self:AddChild(Image("images/options_bg.xml", "options_panel_bg.tex"))
+    self.panel_bg:SetScaleMode(SCALEMODE_PROPORTIONAL)
+    self.panel_bg:SetVAnchor(ANCHOR_MIDDLE)
+    self.panel_bg:SetHAnchor(ANCHOR_MIDDLE)
+    self.panel_bg:SetVRegPoint(ANCHOR_MIDDLE)
+    self.panel_bg:SetHRegPoint(ANCHOR_MIDDLE)
+
 	-- FIXED ROOT
     self.fixed_root = self:AddChild(Widget("root"))
     self.fixed_root:SetVAnchor(ANCHOR_MIDDLE)
     self.fixed_root:SetHAnchor(ANCHOR_MIDDLE)
     self.fixed_root:SetScaleMode(SCALEMODE_PROPORTIONAL)
 
- 	-- Cover most of the normal backgrounds with a really big paper texture
-    self.panel_bg = self.fixed_root:AddChild(Image("images/options_bg.xml", "options_panel_bg.tex"))
-    self.panel_bg:SetScale(1.1, 1.2)
-    self.panel_bg:SetPosition(0, 0)
- 
+
     self.chest = self.fixed_root:AddChild(UIAnim())
     self.chest:GetAnimState():SetBuild("chest_bg") 
     self.chest:GetAnimState():SetBank("chest_bg") 
     self.chest:GetAnimState():PlayAnimation("idle", true)
     self.chest:SetScale(-.7, .7, .7)
     self.chest:SetPosition(100, -75)
-
    
 	self.loadout_button = self.fixed_root:AddChild(ImageButton("images/skinsscreen.xml", "loadout_button_active.tex", "loadout_button_hover.tex", "loadout_button_pressed.tex", "loadout_button_pressed.tex"))
 	self.loadout_button:SetOnClick(function()
@@ -110,6 +113,8 @@ function SkinsScreen:DoInit()
     self.details_panel:Hide()
     
 	self.default_focus = self.list_widgets[1]
+
+	self.letterbox = self:AddChild(TEMPLATES.ForegroundLetterbox())
 end
 
 

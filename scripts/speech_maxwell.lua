@@ -1194,6 +1194,8 @@ return {
 		},
 		WORMHOLE_LIMITED = "It looks ill.",
 		ACCOMPLISHMENT_SHRINE = "Even THEY couldn't build something so devious.",		
+        REVIVER = "I'm not sure I really want to give this up.",
+        LIFEINJECTOR = "I'm supposed to put this filth in my veins?",
 	},
 	DESCRIBE_GENERIC = "You tell me.",
 	DESCRIBE_TOODARK = "I can't see in the dark!",

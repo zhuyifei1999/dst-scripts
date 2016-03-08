@@ -131,6 +131,11 @@ local function SetTemperature(inst, temperature)
     end
 end
 
+--TouchStoneTracker stuff
+local function SetUsedTouchStones(inst, used)
+    inst.touchstonetrackerused:set(used)
+end
+
 --------------------------------------------------------------------------
 --Client interface
 --------------------------------------------------------------------------
@@ -872,6 +877,9 @@ local function fn()
     inst.riderfasteronroad = net_bool(inst.GUID, "rider.fasteronroad")
     inst.riderrunspeed:set(TUNING.BEEFALO_RUN_SPEED.DEFAULT) --V2C: just pick the most likely value to be the default for pristine state
 
+    --TouchStoneTracker variables
+    inst.touchstonetrackerused = net_smallbytearray(inst.GUID, "touchstonetracker.used")
+
     --Stategraph variables
     inst.isperformactionsuccess = net_bool(inst.GUID, "sg.isperformactionsuccess", "isperformactionsuccessdirty")
     inst.isghostmode = net_bool(inst.GUID, "sg.isghostmode", "isghostmodedirty")
@@ -907,6 +915,7 @@ local function fn()
     inst.PushPausePredictionFrames = PushPausePredictionFrames
     inst.AddMorgueRecord = AddMorgueRecord
     inst.SetTemperature = SetTemperature
+    inst.SetUsedTouchStones = SetUsedTouchStones
     inst.SetGhostMode = SetGhostMode
     inst.ShowActions = ShowActions
     inst.ShowHUD = ShowHUD

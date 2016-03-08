@@ -753,13 +753,11 @@ local anims =
 	wave1 = .1,
 	wave2 = .1,
 	wave3 = .1,
-	wave4 = .1,
 	happycheer = .1,
 	sad = .1,
 	angry = .1,
 	annoyed = .1,
-	bonesaw = .05,
-	facepalm = .1,	
+	facepalm = .1
 }
 
 function MultiplayerMainScreen:OnUpdate(dt)

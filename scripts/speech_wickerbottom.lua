@@ -1148,6 +1148,8 @@ return
         THULECITE = "This seems to be an interesting, ectoplasmic residue-bearing variety of ziosite.",
         YELLOWAMULET = "This amulet is glowing at the mid 530 nanometer wavelength.",    --Emits light, player walks faster.
         ACCOMPLISHMENT_SHRINE = "I feel a compulsive urge to activate it, again and again.",        
+        REVIVER = "This provides a corporeal anchor for the ectoplasmic configuration.",
+        LIFEINJECTOR = "The mould appears to have medicinal properties.",
    },
 
     EAT_FOOD = 

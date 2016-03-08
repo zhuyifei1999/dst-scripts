@@ -37,7 +37,7 @@ local function GetWorldgenOverride(cb)
                     if savedata ~= nil and savedata.override_enabled then
                         print("Loaded and applied world gen overrides from "..filename)
                         local preset = savedata.preset
-						local presetdata = savedata.presetdata
+                        local presetdata = savedata.presetdata
                         savedata.override_enabled = nil --remove this so the rest of the table can be interpreted as a tweak table
                         savedata.preset = nil
                         savedata.presetdata = nil
@@ -70,6 +70,21 @@ function SaveIndex:Save(callback)
     local insz, outsz = TheSim:SetPersistentString(self:GetSaveIndexName(), data, false, callback)
 end
 
+local function DoMultilevelUpgrade(world)
+    --V2C: TODO: get rid of this upgrade eventually
+    --NOTE: Also in viewcustomizationmodalscreen.lua
+    if world ~= nil and
+        world.options ~= nil and
+        (   world.options.presetdata ~= nil or
+            world.options.tweak ~= nil or
+            world.options.actualpreset ~= nil or
+            world.options.preset ~= nil
+        ) then
+        --V2C: Detected legacy single-level world options table
+        world.options = { world.options }
+    end
+end
+
 local function OnLoad(self, filename, callback, load_success, str)
     local success, savedata = RunInSandbox(str)
 
@@ -93,12 +108,7 @@ local function OnLoad(self, filename, callback, load_success, str)
                 v.session_id = v2.session_id or v.session_id
                 v.enabled_mods = v2.enabled_mods or v.enabled_mods
 
-                -- FIXME: this upgrades custom data to multilevel. Can remove this at some point. Added 23/11/2015 ~gjans
-                if v.world and v.world.options and v.world.options.supportsmultilevel ~= true then
-                    local data = v.world.options
-                    v.world.options = { supportsmultilevel = true }
-                    v.world.options[1] = data
-                end
+                DoMultilevelUpgrade(v.world)
             end
         end
 
@@ -310,38 +320,24 @@ function SaveIndex:StartSurvivalMode(saveslot, customoptions, serverdata, onsave
 
     local slot = self.data.slots[saveslot]
     slot.session_id = TheNet:GetSessionIdentifier()
-    slot.world.options = customoptions
+    slot.world.options = customoptions or {}
     slot.server = {}
 
-    if slot.world.options == nil then
-        slot.world.options = { supportsmultilevel = true }
-    end
-
-    -- FIXME: this upgrades custom data to multilevel. Can remove this at some point. Added 23/11/2015 ~gjans
-    if slot.world.options.supportsmultilevel ~= true then
-        local data = slot.world.options
-        slot.world.options = { supportsmultilevel = true }
-        slot.world.options[1] = data
-    end
-
     GetWorldgenOverride(function(preset, presetdata, overrideoptions)
-        -- note: Always overrides layer 1, as that's what worldgen will generate
-        if slot.world.options == nil then
-            slot.world.options = { supportsmultilevel = true }
-        end
+        --NOTE: Always overrides layer 1, as that's what worldgen will generate
         if slot.world.options[1] == nil then
             slot.world.options[1] = {}
         end
-        if preset then
+        if preset ~= nil then
             slot.world.options[1].actualpreset = preset
         end
-        if presetdata then
+        if presetdata ~= nil then
             slot.world.options[1].presetdata = presetdata
-			if presetdata.basepreset then
-				slot.world.options[1].preset = presetdata.basepreset
-			end
+            if presetdata.basepreset ~= nil then
+                slot.world.options[1].preset = presetdata.basepreset
+            end
         end
-        if overrideoptions then
+        if overrideoptions ~= nil then
             slot.world.options[1].tweak = overrideoptions
         end
 
@@ -444,12 +440,12 @@ function SaveIndex:LoadServerEnabledModsFromSlot(slot)
     ModManager:DisableAllServerMods()
     for modname,mod_data in pairs(enabled_mods) do
         if mod_data.enabled then
-			KnownModIndex:Enable(modname)
-		end
-		
-		local config_options = mod_data.config_data or mod_data.configuration_options or {} --config_data is the legacy format
+            KnownModIndex:Enable(modname)
+        end
+
+        local config_options = mod_data.config_data or mod_data.configuration_options or {} --config_data is the legacy format
         for option_name,value in pairs(config_options) do
-			KnownModIndex:SetConfigurationOption( modname, option_name, value )
+            KnownModIndex:SetConfigurationOption( modname, option_name, value )
         end
         KnownModIndex:SaveHostConfiguration(modname)
     end
@@ -458,7 +454,7 @@ end
 function SaveIndex:SetServerEnabledMods(slot)
     --Save enabled server mods to the save index
     local server_enabled_mods = ModManager:GetEnabledServerModNames()
-    
+
     local enabled_mods = {}
     for _,modname in pairs(server_enabled_mods) do
         local mod_data = { enabled = true } --Note(Peter): The format of mod_data now must match the format expected in modoverrides.lua. See ModIndex:ApplyEnabledOverrides

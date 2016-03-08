@@ -307,10 +307,10 @@ local RPC_HANDLERS =
         end
     end,
 
-    DropItemFromInvTile = function(player, item)
+    DropItemFromInvTile = function(player, item, single)
         local inventory = player.components.inventory
         if inventory ~= nil and item ~= nil then
-            inventory:DropItemFromInvTile(item)
+            inventory:DropItemFromInvTile(item, single)
         end
     end,
 

@@ -5,7 +5,7 @@ local FollowText = Class(Widget, function(self, font, size, text)
     Widget._ctor(self, "followtext")
 
     self:SetScaleMode(SCALEMODE_PROPORTIONAL)
-    self:SetMaxPropUpscale(1.25)
+    self:SetMaxPropUpscale(MAX_HUD_SCALE)
     self.text = self:AddChild(Text(font, size, text))
     self.offset = Vector3(0,0,0)
     self.screen_offset = Vector3(0,0,0)

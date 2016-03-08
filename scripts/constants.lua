@@ -9,6 +9,9 @@ TILE_SCALE = 4
 RESOLUTION_X = 1280
 RESOLUTION_Y = 720
 
+MAX_FE_SCALE = 3 --Default if you don't call SetMaxPropUpscale
+MAX_HUD_SCALE = 1.25
+
 FACING_RIGHT = 0
 FACING_UP = 1
 FACING_LEFT = 2

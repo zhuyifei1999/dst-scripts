@@ -713,8 +713,6 @@ function CustomizationTab:CollectOptions()
     for i,level in ipairs(self.current_option_settings) do
         ret[i].presetdata = deepcopy(self.activepresets[i])
     end
-    ret.supportsmultilevel = true
-
     return ret
 end
 
@@ -736,9 +734,7 @@ function CustomizationTab:UpdateSlot(slotnum, prevslot, delete)
             -- Duplicate prevslot's data into our new slot if it was also a blank slot
             self.slotoptions[slotnum] = deepcopy(self.slotoptions[prevslot])
         else
-            self.slotoptions[slotnum] = {
-                { tweak = {} }
-            }
+            self.slotoptions[slotnum] = { { tweak = {} } }
 
             --Enable caves by default
             --(by uncommenting.. it's disabled by default now)
@@ -751,16 +747,7 @@ function CustomizationTab:UpdateSlot(slotnum, prevslot, delete)
         end
     else -- Save data
         self.allowEdit = false
-
-        local genoptions = SaveGameIndex:GetSlotGenOptions(slotnum)
-        if genoptions == nil then
-            self.slotoptions[slotnum] = {{ tweak = {} }}
-        elseif genoptions.supportsmultilevel == true then
-            self.slotoptions[slotnum] = genoptions
-        else -- load legacy save index data 2015/10/14
-            self.slotoptions[slotnum] = {}
-            self.slotoptions[slotnum][1] = genoptions
-        end
+        self.slotoptions[slotnum] = SaveGameIndex:GetSlotGenOptions(slotnum) or { { tweak = {} } }
     end
 
     local previouslevel = self.currentmultilevel

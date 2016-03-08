@@ -7,7 +7,7 @@ ShardPortals = {}
 local ShardConnected = {}
 
 function Shard_IsWorldAvailable(world_id)
-    return ShardConnected[world_id or SHARDID.MASTER] == true
+    return ShardConnected[world_id or SHARDID.MASTER] ~= nil
 end
 
 function Shard_IsWorldFull(world_id)
@@ -16,12 +16,23 @@ end
 
 --Called from ShardManager whenever a shard is connected or
 --disconnected, to automatically update known portal states
+--On master server, slave tags and worldgen options are also passed through here
 --NOTE: should never be called with for our own world_id
-function Shard_UpdateWorldState(world_id, state)
+function Shard_UpdateWorldState(world_id, state, tags, world_data)
     local ready = state == REMOTESHARDSTATE.READY
     print("World "..world_id.." is now "..(ready and 'connected' or 'disconnected'))
 
-    ShardConnected[world_id] = ready or nil
+    if ready then
+        if world_data ~= nil and #world_data > 0 then
+            local success, data = RunInSandboxSafe(world_data)
+            world_data = success and data or {}
+        else
+            world_data = {}
+        end
+        ShardConnected[world_id] = { ready = true, tags = tags, world = world_data }
+    else
+        ShardConnected[world_id] = nil
+    end
 
     for k, v in pairs(ShardPortals) do
         if ready and (v.components.worldmigrator.linkedWorld == nil
@@ -33,7 +44,10 @@ function Shard_UpdateWorldState(world_id, state)
         else
             print(string.format("Skipping portal[%d] (different permanent world)", v.components.worldmigrator.id))
         end
-    end  
+    end
+
+    UpdateServerTagsString()
+    UpdateServerWorldGenDataString()
 end
 
 --Called from worldmigrator whenever a new portal is

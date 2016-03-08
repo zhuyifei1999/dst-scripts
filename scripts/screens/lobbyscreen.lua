@@ -25,6 +25,8 @@ local DEBUG_MODE = BRANCH == "dev"
 
 local REFRESH_INTERVAL = .5
 
+local lcol = -RESOLUTION_X/2
+
 local function StartGame(this)
     if this.startbutton then
         this.startbutton:Disable()
@@ -106,9 +108,7 @@ local LobbyScreen = Class(Screen, function(self, profile, cb, no_backbutton, def
     self.fixed_root:SetPosition(-RESOLUTION_X/2, -RESOLUTION_Y/2, 0)
 
     self.sidebar_root = self.root:AddChild(Widget("Sidebar"))
-    self.sidebar_root:SetHAnchor(ANCHOR_LEFT)
-    self.sidebar_root:SetVAnchor(ANCHOR_BOTTOM)
-    self.sidebar_root:SetScaleMode(SCALEMODE_PROPORTIONAL)
+    self.sidebar_root:SetPosition(lcol-5, -375)
 
     self.characterselect_root = self.fixed_root:AddChild(Widget("CharacterSelect"))
     self.loadout_root = self.fixed_root:AddChild(Widget("Loadout"))
@@ -283,8 +283,8 @@ end
 
 function LobbyScreen:BuildSidebar()
     self.sidebar_bg = self.sidebar_root:AddChild(Image("images/lobbyscreen.xml", "playerlobby_leftcolumn_bg.tex"))
-    self.sidebar_bg:SetPosition(90, 360)
-    self.sidebar_bg:SetScale(1, .8)
+    self.sidebar_bg:SetPosition(130, 375)
+    self.sidebar_bg:SetScale(.75, .8)
     self.sidebar_bg:SetTint(1, 1, 1, 1)
     self.sidebar_bg:SetClickable(false)
 

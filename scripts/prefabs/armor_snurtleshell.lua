@@ -11,12 +11,12 @@ local function ProtectionLevels(inst, data)
     local equippedArmor = inst.components.inventory ~= nil and inst.components.inventory:GetEquippedItem(EQUIPSLOTS.BODY) or nil
     if equippedArmor ~= nil then
         if inst.sg:HasStateTag("shell") then
-        equippedArmor.components.armor:SetAbsorption(TUNING.FULL_ABSORPTION)
-    else
-        equippedArmor.components.armor:SetAbsorption(TUNING.ARMORSNURTLESHELL_ABSORPTION)
-        equippedArmor.components.useableitem:StopUsingItem()
-    end
+            equippedArmor.components.armor:SetAbsorption(TUNING.FULL_ABSORPTION)
+        else
+            equippedArmor.components.armor:SetAbsorption(TUNING.ARMORSNURTLESHELL_ABSORPTION)
+            equippedArmor.components.useableitem:StopUsingItem()
         end
+    end
 end
 
 local function droptargets(inst)
@@ -25,12 +25,12 @@ local function droptargets(inst)
     local owner = inst.components.inventoryitem ~= nil and inst.components.inventoryitem.owner or nil
     if owner ~= nil and owner.sg:HasStateTag("shell") then
         local x, y, z = owner.Transform:GetWorldPosition()
-        local ents = TheSim:FindEntities(x, y, z, 20, { "_combat" })
+        local ents = TheSim:FindEntities(x, y, z, 20, { "_combat" }, { "INLIMBO" })
         for i, v in ipairs(ents) do
             if v.components.combat ~= nil and v.components.combat.target == owner then
-            v.components.combat:SetTarget(nil)
+                v.components.combat:SetTarget(nil)
+            end
         end
-    end
     end
 end
 
@@ -62,6 +62,7 @@ local function onunequip(inst, owner)
     owner.AnimState:ClearOverrideSymbol("swap_body_tall")
     inst:RemoveEventCallback("blocked", OnBlocked, owner)
     inst:RemoveEventCallback("newstate", ProtectionLevels, owner)
+    onstopuse(inst)
 end
 
 local function fn()

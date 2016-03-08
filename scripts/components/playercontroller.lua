@@ -798,8 +798,8 @@ function PlayerController:OnRemoteControllerAttackButton(target, isreleased, nof
     end
 end
 
-function PlayerController:DoControllerDropItemFromInvTile(item)
-    self.inst.replica.inventory:DropItemFromInvTile(item)
+function PlayerController:DoControllerDropItemFromInvTile(item, single)
+    self.inst.replica.inventory:DropItemFromInvTile(item, single)
 end
 
 function PlayerController:DoControllerInspectItemFromInvTile(item)
@@ -898,16 +898,36 @@ function PlayerController:StartBuildPlacementMode(recipe, skin)
 end
 
 local function ValidateAttackTarget(combat, target, force_attack, x, z, has_weapon, reach)
-    if not combat:CanTarget(target) or
-        (target.replica.combat ~= nil --no combat if light/extinguish target
-        and (combat:IsAlly(target) or
-            not (force_attack or
-                target:HasTag("hostile") or
-                (has_weapon and target:HasTag("monster") and not target:HasTag("player")) or
-                combat:IsRecentTarget(target) or
-                target.replica.combat:GetTarget() == combat.inst))) then
+    if not combat:CanTarget(target) then
         return false
     end
+
+    --no combat if light/extinguish target
+    local targetcombat = target.replica.combat
+    if targetcombat ~= nil then
+        if combat:IsAlly(target) then
+            return false
+        elseif not (force_attack or
+                    combat:IsRecentTarget(target) or
+                    targetcombat:GetTarget() == combat.inst) then
+            --must use force attack non-hostile creatures
+            if not (target:HasTag("hostile") or
+                    (has_weapon and target:HasTag("monster") and not target:HasTag("player"))) then
+                return false
+            end
+            --must use force attack on players' followers
+            local follower = target.replica.follower
+            if follower ~= nil then
+                local leader = follower:GetLeader()
+                if leader ~= nil and
+                    leader:HasTag("player") and
+                    leader.replica.combat:GetTarget() ~= combat.inst then
+                    return false
+                end
+            end
+        end
+    end
+
     --Now we ensure the target is in range
     --light/extinguish targets may not have physics
     reach = target.Physics ~= nil and reach + target.Physics:GetRadius() or reach
@@ -2644,17 +2664,7 @@ function PlayerController:GetGroundUseAction(position)
     end
 end
 
-function PlayerController:GetItemUseAction(active_item, target)
-    if active_item == nil then
-        return
-    end
-    target = target or self:GetControllerTarget()
-    if target == nil then
-        return
-    end
-    local act =
-        --[[rmb]] self.inst.components.playeractionpicker:GetUseItemActions(target, active_item, true)[1] or
-        --[[lmb]] self.inst.components.playeractionpicker:GetUseItemActions(target, active_item, false)[1]
+local function ValidateItemUseAction(act, active_item, target)
     return act ~= nil and
         (active_item.replica.equippable == nil or not active_item:HasTag(act.action.id.."_tool")) and
         (act.action ~= ACTIONS.STORE or target.replica.inventoryitem == nil or not target.replica.inventoryitem:IsGrandOwner(self.inst)) and
@@ -2663,12 +2673,25 @@ function PlayerController:GetItemUseAction(active_item, target)
         act or nil
 end
 
+function PlayerController:GetItemUseAction(active_item, target)
+    if active_item == nil then
+        return
+    end
+    target = target or self:GetControllerTarget()
+    return target ~= nil
+        and (ValidateItemUseAction(--[[rmb]] self.inst.components.playeractionpicker:GetUseItemActions(target, active_item, true)[1], active_item, target) or
+            ValidateItemUseAction(--[[lmb]] self.inst.components.playeractionpicker:GetUseItemActions(target, active_item, false)[1], active_item, target))
+        or nil
+end
+
 function PlayerController:RemoteUseItemFromInvTile(buffaction, item)
     if not self.ismastersim then
         local controlmods = self:EncodeControlMods()
         if self.locomotor == nil then
             SendRPCToServer(RPC.UseItemFromInvTile, buffaction.action.code, item, controlmods, buffaction.action.mod_name)
-        elseif buffaction.action ~= ACTIONS.WALKTO and self:CanLocomote() then
+        elseif buffaction.action ~= ACTIONS.WALKTO
+            and self:CanLocomote()
+            and not self:IsBusy() then
             buffaction.preview_cb = function()
                 SendRPCToServer(RPC.UseItemFromInvTile, buffaction.action.code, item, controlmods, buffaction.action.mod_name)
             end
@@ -2681,7 +2704,9 @@ function PlayerController:RemoteControllerUseItemOnItemFromInvTile(buffaction, i
     if not self.ismastersim then
         if self.locomotor == nil then
             SendRPCToServer(RPC.ControllerUseItemOnItemFromInvTile, buffaction.action.code, item, active_item, buffaction.action.mod_name)
-        elseif buffaction.action ~= ACTIONS.WALKTO and self:CanLocomote() then
+        elseif buffaction.action ~= ACTIONS.WALKTO
+            and self:CanLocomote()
+            and not self:IsBusy() then
             buffaction.preview_cb = function()
                 SendRPCToServer(RPC.ControllerUseItemOnItemFromInvTile, buffaction.action.code, item, active_item, buffaction.action.mod_name)
             end
@@ -2694,7 +2719,9 @@ function PlayerController:RemoteControllerUseItemOnSelfFromInvTile(buffaction, i
     if not self.ismastersim then
         if self.locomotor == nil then
             SendRPCToServer(RPC.ControllerUseItemOnSelfFromInvTile, buffaction.action.code, item, buffaction.action.mod_name)
-        elseif buffaction.action ~= ACTIONS.WALKTO and self:CanLocomote() then
+        elseif buffaction.action ~= ACTIONS.WALKTO
+            and self:CanLocomote()
+            and not self:IsBusy() then
             buffaction.preview_cb = function()
                 SendRPCToServer(RPC.ControllerUseItemOnSelfFromInvTile, buffaction.action.code, item, buffaction.action.mod_name)
             end
@@ -2707,7 +2734,9 @@ function PlayerController:RemoteControllerUseItemOnSceneFromInvTile(buffaction, 
     if not self.ismastersim then
         if self.locomotor == nil then
             SendRPCToServer(RPC.ControllerUseItemOnSceneFromInvTile, buffaction.action.code, item, buffaction.target, buffaction.action.mod_name)
-        elseif buffaction.action ~= ACTIONS.WALKTO and self:CanLocomote() then
+        elseif buffaction.action ~= ACTIONS.WALKTO
+            and self:CanLocomote()
+            and not self:IsBusy() then
             buffaction.preview_cb = function()
                 SendRPCToServer(RPC.ControllerUseItemOnSceneFromInvTile, buffaction.action.code, item, buffaction.target, buffaction.action.mod_name)
             end
@@ -2730,14 +2759,14 @@ function PlayerController:RemoteInspectItemFromInvTile(item)
     end
 end
 
-function PlayerController:RemoteDropItemFromInvTile(item)
+function PlayerController:RemoteDropItemFromInvTile(item, single)
     if not self.ismastersim then
         if self.locomotor == nil then
-            SendRPCToServer(RPC.DropItemFromInvTile, item)
+            SendRPCToServer(RPC.DropItemFromInvTile, item, single or nil)
         elseif self:CanLocomote() then
             local buffaction = BufferedAction(self.inst, nil, ACTIONS.DROP, item, self.inst:GetPosition())
             buffaction.preview_cb = function()
-                SendRPCToServer(RPC.DropItemFromInvTile, item)
+                SendRPCToServer(RPC.DropItemFromInvTile, item, single or nil)
             end
             self.locomotor:PreviewAction(buffaction, true)
         end

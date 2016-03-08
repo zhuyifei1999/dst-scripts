@@ -44,8 +44,6 @@ local assets =
 
     Asset("ATLAS", "images/tradescreen.xml"),
 	Asset("IMAGE", "images/tradescreen.tex"),
-	Asset("ATLAS", "images/tradescreen_bg.xml"),
-	Asset("IMAGE", "images/tradescreen_bg.tex"),
 	Asset("ATLAS", "images/tradescreen_overflow.xml"),
 	Asset("IMAGE", "images/tradescreen_overflow.tex"),
 

@@ -24,7 +24,7 @@ local prefabs =
     "wormlight",
 }
 
-local brain = require"brains/wormbrain"
+local brain = require("brains/wormbrain")
 
 local MAX_LIGHT_FRAME = 20
 
@@ -71,77 +71,76 @@ local function turnofflight(inst)
     OnLightDirty(inst)
 end
 
+local function IsAlive(guy)
+    return guy.components.health ~= nil and not guy.components.health:IsDead()
+end
+
 local function retargetfn(inst)
-
     --Don't search for targets when you're luring. Targets will come to you.
-    if inst.sg:HasStateTag("lure") then
-        return
-    end
-
-    return FindEntity(inst, TUNING.WORM_TARGET_DIST, function(guy)
-        if guy.components.health and not guy.components.health:IsDead() then
-            return not (guy.prefab == inst.prefab)
-        end
-    end,
-    {"_combat"}, -- see entityscript.lua
-    {"prey"},
-    {"character","monster","animal"}
-    )
+    return not inst.sg:HasStateTag("lure")
+        and FindEntity(
+                inst,
+                TUNING.WORM_TARGET_DIST,
+                IsAlive,
+                { "_combat", "_health" }, -- see entityscript.lua
+                { "prey", "worm", "INLIMBO" },
+                { "character", "monster", "animal" }
+            )
+        or nil
 end
 
 local function shouldKeepTarget(inst, target)
-
-    if inst.sg:HasStateTag("lure") then
+    if inst.sg:HasStateTag("lure") or
+        target == nil or
+        not target:IsValid() or
+        target.components.health == nil or
+        target.components.health:IsDead() then
         return false
     end
 
     local home = inst.components.knownlocations:GetLocation("home")
-
-    if target and target:IsValid() and target.components.health and not target.components.health:IsDead() then
-        if home then
-            return distsq(home, target:GetPosition()) < TUNING.WORM_CHASE_DIST * TUNING.WORM_CHASE_DIST
-        elseif not home then
-            local distsq = target:GetDistanceSqToInst(inst)
-            return distsq < TUNING.WORM_CHASE_DIST * TUNING.WORM_CHASE_DIST
-        end
-    else
-        return false
-    end
+    return home ~= nil
+        and target:GetDistanceSqToPoint(home) < TUNING.WORM_CHASE_DIST * TUNING.WORM_CHASE_DIST
+        or target:IsNear(inst, TUNING.WORM_CHASE_DIST)
 end
 
 local function onpickedfn(inst, target)
-    if target then
+    --V2C: need to check valid target because this
+    --     also gets queued up via a delayed task.
+    if target ~= nil and target:IsValid() then
         inst.components.combat:SetTarget(target)
         inst:FacePoint(target:GetPosition())
         inst.components.combat:TryAttack(target)
     end
 
-    if inst.attacktask then
+    if inst.attacktask ~= nil then
         inst.attacktask:Cancel()
         inst.attacktask = nil
     end
 end
 
 local function displaynamefn(inst)
-    return STRINGS.NAMES[
-        inst:HasTag("lure") and "WORM_PLANT" or
-        (inst:HasTag("dirt") and "WORM_DIRT" or "WORM")]
+    return
+        STRINGS.NAMES[
+            (inst:HasTag("lure") and "WORM_PLANT") or
+            (inst:HasTag("dirt") and "WORM_DIRT") or
+            "WORM"
+        ]
 end
 
 local function getstatus(inst)
-    return (inst:HasTag("lure") and "PLANT") or
-            (inst:HasTag("dirt") and "DIRT") or
-            "WORM"
+    return (inst:HasTag("lure") and "PLANT")
+        or (inst:HasTag("dirt") and "DIRT")
+        or "WORM"
 end
 
-local function areaislush(pos)
-    local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, 7, {"pickable"})
-    return #ents >= 3
+local function areaislush(x, y, z)
+    return #TheSim:FindEntities(x, y, z, 7, { "pickable" }, { "INLIMBO" }) >= 3
 end
 
-local function notclaimed(inst, pos)
-    local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, 30, {"worm"})
-    return #ents <= 1 --(This will always find yourself)
+local function notclaimed(x, y, z)
+    --(1 because this will always find yourself)
+    return #TheSim:FindEntities(x, y, z, 30, { "worm" }) <= 1
 end
 
 local function LookForHome(inst)
@@ -151,48 +150,45 @@ local function LookForHome(inst)
         return
     end
 
-    local pt = inst:GetPosition()
-
-    local positions = {}
-    local distancemod = 30
+    local map = TheWorld.Map
+    local x, y, z = inst.Transform:GetWorldPosition()
 
     for i = 1, 30 do
-        local s = i/32.0--(num/2) -- 32.0
-        local a = math.sqrt(s*512.0)
-        local b = math.sqrt(s)
-        table.insert(positions, Vector3(math.sin(a)*b, 0, math.cos(a)*b))
-    end
+        local s = i / 32--(num/2) -- 32.0
+        local a = math.sqrt(s * 512)
+        local b = math.sqrt(s) * 30
+        local x1 = x + math.sin(a) * b
+        local z1 = z + math.cos(a) * b
 
-    local map = TheWorld.Map
-
-    for k, v in pairs(positions) do
-        local offset = Vector3(v.x * distancemod, 0, v.z * distancemod)
-        local pos = offset + pt
-        if map:IsAboveGroundAtPoint(pos:Get()) and areaislush(pos) and notclaimed(inst, pos) then
+        if map:IsAboveGroundAtPoint(x1, 0, z1) and areaislush(x1, 0, z1) and notclaimed(x1, 0, z1) then
             --Yay! Set this as my home
-            inst.components.knownlocations:RememberLocation("home", pos)
-            break
+            inst.components.knownlocations:RememberLocation("home", Vector3(x1, 0, z1))
+            return
         end
     end
 end
 
 local function playernear(inst, player)
-    if not inst.attacktask and inst.sg:HasStateTag("lure") then
-        inst.attacktask = inst:DoTaskInTime(2 + math.random(), function() onpickedfn(inst, player) end )
+    if inst.attacktask == nil and inst.sg:HasStateTag("lure") then
+        inst.attacktask = inst:DoTaskInTime(2 + math.random(), onpickedfn, player)
     end
 end
 
 local function playerfar(inst)
-    if inst.attacktask then
+    if inst.attacktask ~= nil then
         inst.attacktask:Cancel()
         inst.attacktask = nil
     end
 end
 
+local function IsWorm(dude)
+    return dude:HasTag("worm") and not dude.components.health:IsDead()
+end
+
 local function onattacked(inst, data)
-    if data.attacker then
+    if data.attacker ~= nil then
         inst.components.combat:SetTarget(data.attacker)
-        inst.components.combat:ShareTarget(data.attacker, 40, function(dude) return dude:HasTag("worm") and not dude.components.health:IsDead() end, 3)
+        inst.components.combat:ShareTarget(data.attacker, 40, IsWorm, 3)
     end
 end
 
@@ -203,12 +199,11 @@ local function CustomOnHaunt(inst, haunter)
             return true
         end
     else
-        if inst.components.sleeper then -- Wake up, there's a ghost!
+        if inst.components.sleeper ~= nil then -- Wake up, there's a ghost!
             inst.components.sleeper:WakeUp()
         end
 
-        local chance = TUNING.HAUNT_CHANCE_ALWAYS
-        if math.random() <= chance then
+        if math.random() <= TUNING.HAUNT_CHANCE_ALWAYS then
             inst.components.hauntable.panic = true
             inst.components.hauntable.panictimer = TUNING.HAUNT_PANIC_TIME_SMALL
             inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
@@ -301,7 +296,7 @@ local function fn()
     inst.components.inspectable.getstatus = getstatus
 
     inst:AddComponent("lootdropper")
-    inst.components.lootdropper:SetLoot({"monstermeat", "monstermeat", "monstermeat", "monstermeat", "wormlight"})
+    inst.components.lootdropper:SetLoot({ "monstermeat", "monstermeat", "monstermeat", "monstermeat", "wormlight" })
 
     --Disable this task for worm attacks
     inst.HomeTask = inst:DoPeriodicTask(3, LookForHome)

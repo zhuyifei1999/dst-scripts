@@ -1437,7 +1437,7 @@ return {
 		LIVINGTREE = "Is it watching me?",
 		ICESTAFF = "It's cold to the touch.",
 		REVIVER = "The beating of this hideous heart will bring a ghost back to life!",
-		LIFEINJECTOR = "Booooost!",
+		LIFEINJECTOR = "I seem to have discovered a cure!",
 		SKELETON_PLAYER =
 		{
 			MALE = "%s must've died performing an important experiment with %s.",

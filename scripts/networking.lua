@@ -572,13 +572,12 @@ function WorldRollbackFromSim(count)
 end
 
 function UpdateServerTagsString()
+    --V2C: ughh... well at least try to keep this in sync with
+    --     servercreationscreen.lua BuildTagsStringHosting()
+
     local tagsTable = {}
 
-    if TheNet:IsDedicated() then -- gjans: Not sure what the difference between these is
-        table.insert(tagsTable, TheNet:GetDefaultGameMode())
-    else
-        table.insert(tagsTable, TheNet:GetServerGameMode())
-    end
+    table.insert(tagsTable, TheNet:GetDefaultGameMode())
 
     if TheNet:GetDefaultPvpSetting() then
         table.insert(tagsTable, STRINGS.TAGS.PVP)
@@ -596,11 +595,35 @@ function UpdateServerTagsString()
         table.insert(tagsTable, STRINGS.TAGS.CLAN)
     end
 
-    if TheShard:GetDefaultShardEnabled() then
-        table.insert(tagsTable, STRINGS.TAGS.MULTISERVER)
+    local worldoptions = SaveGameIndex:GetSlotGenOptions()
+    local worlddata = worldoptions ~= nil and worldoptions[1] or nil
+    if worlddata ~= nil and worlddata.presetdata ~= nil and worlddata.presetdata.location ~= nil then
+        local locationtag = STRINGS.TAGS.LOCATION[string.upper(worlddata.presetdata.location)]
+        if locationtag ~= nil then
+            table.insert(tagsTable, locationtag)
+        end
     end
 
     TheNet:SetServerTags(BuildTagsStringCommon(tagsTable))
+end
+
+function UpdateServerWorldGenDataString()
+    local clusteroptions = {}
+    local worldoptions = SaveGameIndex:GetSlotGenOptions()
+    table.insert(clusteroptions, worldoptions ~= nil and worldoptions[1] or {})
+
+    if TheShard:IsMaster() then
+        -- Merge slave worldgen data
+        for k, v in pairs(Shard_GetConnectedShards()) do
+            if v.world ~= nil and v.world[1] ~= nil then
+                table.insert(clusteroptions, v.world[1])
+            end
+        end
+    end
+
+    --V2C: TODO: Likely to exceed data size limit with custom multilevel worlds
+
+    TheNet:SetWorldGenData(DataDumper(clusteroptions, nil, false))
 end
 
 function StartDedicatedServer()

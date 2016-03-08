@@ -189,6 +189,7 @@ end
 
 function Hauntable:OnRemoveFromEntity()
     self:StopFX()
+    self:StopShaderFX()
     self.inst:RemoveTag("haunted")
 end
 

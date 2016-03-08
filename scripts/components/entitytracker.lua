@@ -1,62 +1,67 @@
 local EntityTracker = Class(function(self, inst)
-	self.inst = inst
-	self.entities = {}
-
+    self.inst = inst
+    self.entities = {}
 end)
 
+function EntityTracker:OnRemoveFromEntity()
+    for k, v in pairs(self.entities) do
+        self.inst:RemoveEventCallback("onremove", v.onremove, v.inst)
+    end
+end
+
 function EntityTracker:GetDebugString()
-	local str = "\n"
-		for k,v in pairs(self.entities) do
-			str = str.."	--"..k.."\n"
-			str = str..string.format("		--entity: %s \n", tostring(self.entities[k]))
-		end
-	return str
+    local str = "\n"
+    for k, v in pairs(self.entities) do
+        str = str.."    --"..k.."\n"
+        str = str..string.format("      --entity: %s \n", tostring(v.inst))
+    end
+    return str
 end
 
 function EntityTracker:TrackEntity(name, inst)
-	self.entities[name] = inst
-	self.inst:ListenForEvent("onremove", function() self:ForgetEntity(name) end, inst)
+    local function onremove()
+        self.entities[name] = nil
+    end
+    self.entities[name] = { inst = inst, onremove = onremove }
+    self.inst:ListenForEvent("onremove", onremove, inst)
 end
 
 function EntityTracker:ForgetEntity(name)
-	self.entities[name] = nil
+    if self.entities[name] ~= nil then
+        self.inst:RemoveEventCallback("onremove", self.entities[name].onremove, self.entites[name].inst)
+        self.entities[name] = nil
+    end
 end
 
 function EntityTracker:GetEntity(name)
-	return self.entities[name]
+    return self.entities[name] ~= nil and self.entities[name].inst or nil
 end
 
 function EntityTracker:OnSave()
-	local data = {}
-	local refs = {}
+    if next(self.entities) == nil then
+        return
+    end
 
-	for k,v in pairs(self.entities) do
-		if k and v then
-			if not data.entities then
-				data.entities = {{name = k, GUID = v.GUID}}
-			else
-				table.insert(data.entities, {name = k, GUID = v.GUID})
-			end
+    local ents = {}
+    local refs = {}
 
-			table.insert(refs, v.GUID)
-		end
-	end
+    for k, v in pairs(self.entities) do
+        table.insert(ents, { name = k, GUID = v.inst.GUID })
+        table.insert(refs, v.inst.GUID)
+    end
 
-	return data, refs
+    return { entities = ents }, refs
 end
 
 function EntityTracker:LoadPostPass(ents, data)
-	if data.entities then
-		for k,v in pairs(data.entities) do
-			if v then
-				local ent = ents[v.GUID]
-				if ent then
-					ent = ent.entity
-					self:TrackEntity(v.name, ent)
-				end
-			end
-		end
-	end
+    if data.entities ~= nil then
+        for i, v in ipairs(data.entities) do
+            local ent = ents[v.GUID]
+            if ent ~= nil then
+                self:TrackEntity(v.name, ent.entity)
+            end
+        end
+    end
 end
 
 return EntityTracker

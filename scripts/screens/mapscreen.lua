@@ -1,5 +1,4 @@
 local Screen = require "widgets/screen"
-local MAX_HUD_SCALE = 1.25
 
 local MapWidget = require("widgets/mapwidget")
 local Widget = require "widgets/widget"
