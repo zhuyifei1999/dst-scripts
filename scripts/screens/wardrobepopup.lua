@@ -100,6 +100,13 @@ function WardrobePopupScreen:OnDestroy()
     self._base.OnDestroy(self)
 end
 
+function WardrobePopupScreen:OnBecomeActive()
+    self._base.OnBecomeActive(self)
+    if TheInput:ControllerAttached() then
+        self.default_focus:SetFocus()
+    end
+end
+
 function WardrobePopupScreen:DoFocusHookups()
 	self.menu:SetFocusChangeDir(MOVE_UP, self.dressup)
     self.dressup:SetFocusChangeDir(MOVE_DOWN, self.menu)

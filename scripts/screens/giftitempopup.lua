@@ -89,6 +89,13 @@ function GiftItemPopUp:OnDestroy()
     self._base.OnDestroy(self)
 end
 
+function GiftItemPopUp:OnBecomeActive()
+    self._base.OnBecomeActive(self)
+    if TheInput:ControllerAttached() and self.menu ~= nil and self.menu:IsVisible() then
+        self.menu:SetFocus()
+    end
+end
+
 function GiftItemPopUp:ApplySkin()
     --Hack for holding offset when transitioning from giftitempopup to wardrobepopup
     TheCamera:PushScreenHOffset(self.owner.HUD, SCREEN_OFFSET)

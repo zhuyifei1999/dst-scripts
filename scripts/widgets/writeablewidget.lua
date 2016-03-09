@@ -192,6 +192,12 @@ local WriteableWidget = Class(Screen, function(self, owner, writeable, config)
     end
 end)
 
+function WriteableWidget:OnBecomeActive()
+    self._base.OnBecomeActive(self)
+    self.edit_text:SetFocus()
+    self.edit_text:SetEditing(true)
+end
+
 function WriteableWidget:Close()
     if self.isopen then
         --if self.container ~= nil then

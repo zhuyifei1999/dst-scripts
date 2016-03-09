@@ -712,6 +712,11 @@ function FrontEnd:StopUpdatingWidget(w)
 	self.updating_widgets[w] = nil
 end
 
+function FrontEnd:InsertScreenUnderTop(screen)
+    self.screenroot:AddChild(screen)
+    table.insert(self.screenstack, #self.screenstack, screen)
+    self.screenstack[#self.screenstack]:MoveToFront()
+end
 
 function FrontEnd:PushScreen(screen)
 	self.focus_locked = false
