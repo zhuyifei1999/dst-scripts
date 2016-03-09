@@ -224,6 +224,14 @@ function PlayerHud:TogglePlayerAvatarPopup(player_name, data, show_net_profile)
     end
 end
 
+function PlayerHud:OpenScreenUnderPause(screen)
+    if self:IsPauseScreenOpen() then
+        TheFrontEnd:InsertScreenUnderTop(screen)
+    else
+        TheFrontEnd:PushScreen(screen)
+    end
+end
+
 function PlayerHud:OpenItemManagerScreen()
     --Hack for holding offset when transitioning from giftitempopup to wardrobepopup
     TheCamera:PopScreenHOffset(self)
@@ -235,7 +243,7 @@ function PlayerHud:OpenItemManagerScreen()
     local item = TheInventory:GetUnopenedItems()[1]
     if item ~= nil then
         self.giftitempopup = GiftItemPopUp(self.owner, { item.item_type }, { item.item_id })
-        TheFrontEnd:PushScreen(self.giftitempopup)
+        self:OpenScreenUnderPause(self.giftitempopup)
         return true
     else
         return false
@@ -279,7 +287,7 @@ function PlayerHud:OpenWardrobeScreen()
             self.recentgifts ~= nil and self.recentgifts.item_ids or nil
         )
     self:ClearRecentGifts()
-    TheFrontEnd:PushScreen(self.wardrobepopup)
+    self:OpenScreenUnderPause(self.wardrobepopup)
     return true
 end
 
@@ -340,9 +348,11 @@ function PlayerHud:ShowWriteableWidget(writeable, config)
         return
     else
         self.writeablescreen = WriteableWidget(self.owner, writeable, config)
-        TheFrontEnd:PushScreen(self.writeablescreen)
-        -- Have to set editing AFTER pushscreen finishes.
-        self.writeablescreen.edit_text:SetEditing(true)
+        self:OpenScreenUnderPause(self.writeablescreen)
+        if TheFrontEnd:GetActiveScreen() == self.writeablescreen then
+            -- Have to set editing AFTER pushscreen finishes.
+            self.writeablescreen.edit_text:SetEditing(true)
+        end
         return self.writeablescreen
     end
 end

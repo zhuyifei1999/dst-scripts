@@ -258,7 +258,7 @@ function MinionSpawner:SpawnNewMinion()
 		return
 	end
 
-	if self.shouldspawn and not self:MaxedMinions() then
+	if self.shouldspawn and not self:MaxedMinions() and #self.freepositions > 0 then
 		self.spawninprogress = false
 		local minion = self:MakeMinion()
 		if minion then
