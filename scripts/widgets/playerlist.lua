@@ -59,9 +59,8 @@ local function listingConstructor(v, i, parent, nextWidgets)
 	local name_badge_nudge_x = 15
 
     playerListing.bg = playerListing:AddChild(Image("images/ui.xml", "blank.tex"))
-    playerListing.bg:SetPosition(15+nudge_x+name_badge_nudge_x, 0)
-    playerListing.bg:ScaleToSize(196,48)
-    playerListing.bg:SetTint(1, 1, 1, (i % 2) == 0 and .85 or .5)
+    playerListing.bg:SetPosition(-5+nudge_x+name_badge_nudge_x, 0)
+    playerListing.bg:ScaleToSize(186,34)
 	if empty then
 		playerListing.bg:Hide()
 	end
@@ -453,7 +452,7 @@ function PlayerList:GetPlayerTable()
             break
         end
     end
-    return ClientObjs
+    return ClientObjs 
 end
 
 return PlayerList

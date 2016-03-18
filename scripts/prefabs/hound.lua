@@ -168,7 +168,7 @@ local function fncommon(build, morphlist)
     inst:AddTag("hound")
 
     inst.AnimState:SetBank("hound")
-    inst.AnimState:SetBuild("hound")
+    inst.AnimState:SetBuild(build)
     inst.AnimState:PlayAnimation("idle")
 
     inst.entity:SetPristine()

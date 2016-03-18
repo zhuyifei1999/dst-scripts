@@ -31,7 +31,7 @@ function Networking_SlashCmd(guid, cmd)
 end
 
 function Networking_Announcement(message, colour, announce_type)
-    if ThePlayer ~= nil and ThePlayer.HUD ~= nil then
+    if ThePlayer ~= nil and ThePlayer.HUD ~= nil and ThePlayer.HUD.eventannouncer.inst:IsValid() then
         ThePlayer.HUD.eventannouncer:ShowNewAnnouncement(message, colour, announce_type)
     end
 end
@@ -45,7 +45,7 @@ function Networking_LeaveAnnouncement(name, colour)
 end
 
 function Networking_SkinAnnouncement(user_name, user_colour, skin_name)
-	if ThePlayer ~= nil and ThePlayer.HUD ~= nil then
+	if ThePlayer ~= nil and ThePlayer.HUD ~= nil and ThePlayer.HUD.eventannouncer.inst:IsValid() then
         ThePlayer.HUD.eventannouncer:ShowSkinAnnouncement(user_name, user_colour, skin_name)
     end
 end

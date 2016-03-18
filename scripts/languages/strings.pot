@@ -8273,7 +8273,7 @@ msgstr ""
 
 #. STRINGS.SKIN_QUOTES.webber_survivor
 msgctxt "STRINGS.SKIN_QUOTES.webber_survivor"
-msgid "I want to go home."
+msgid "I want to go home but we can't find the way."
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.wilson_survivor
@@ -57158,7 +57158,7 @@ msgstr ""
 
 #. STRINGS.UI.HUD.INSPECT_SELF
 msgctxt "STRINGS.UI.HUD.INSPECT_SELF"
-msgid "Inspect Self (i)"
+msgid "Inspect Self"
 msgstr ""
 
 #. STRINGS.UI.HUD.EQUIP
