@@ -2164,7 +2164,7 @@ STRINGS.UI =
         AFK_BODY = "I get it. It's tough out there. Really. It is. You definitely shouldn't be embarrassed about this. You baby. Whenever you're ready to get back to actually playing the darn game, click below.",
         AFK_OK = "Return",
         ACTIVATE_RESURRECTION = "Activate Meat Effigy",
-        INSPECT_SELF = "Inspect Self (i)",
+        INSPECT_SELF = "Inspect Self",
         OPENGIFT = "Activate",
     },
     
