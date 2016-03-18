@@ -164,7 +164,7 @@ function Rideable:OnLoadDomesticatable(data)
         if data.saddle ~= nil then
             self:SetSaddle(nil, SpawnSaveRecord(data.saddle))
         end
-        self.lastridetime = (GetTime() - data.lastridedelta) or 0
+        self.lastridetime = data.lastridedelta ~= nil and GetTime() - data.lastridedelta or 0
     end
 end
 

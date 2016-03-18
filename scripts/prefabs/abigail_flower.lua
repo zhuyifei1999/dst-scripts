@@ -113,15 +113,22 @@ local function updatestate(inst)
     end
 end
 
-local function ondeath(inst, deadthing)
+local function ondeath(inst, deadthing, killer)
     if inst._chargestate == 3 and
         inst._playerlink ~= nil and
         inst._playerlink.abigail == nil and
         inst._playerlink.components.leader ~= nil and
         inst.components.inventoryitem.owner == nil and
         deadthing ~= nil and
-        not deadthing:HasTag("wall") and
-        inst:GetDistanceSqToInst(deadthing) < 256 --[[16 * 16]] then
+        not (deadthing:HasTag("wall") or deadthing:HasTag("smashable")) then
+
+        if deadthing:IsValid() then
+            if not inst:IsNear(deadthing, 16) then
+                return
+            end
+        elseif killer == nil or not inst:IsNear(killer, 16) then
+            return
+        end
 
         inst._playerlink.components.sanity:DoDelta(-TUNING.SANITY_HUGE)
         local abigail = SpawnPrefab("abigail")
@@ -253,7 +260,7 @@ local function fn()
     end
 
     inst._onplayerkillthing = function(player, data)
-        ondeath(inst, data.victim)
+        ondeath(inst, data.victim, player)
     end
 
     inst._onentitydeath = function(world, data)

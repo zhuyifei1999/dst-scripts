@@ -1281,8 +1281,9 @@ function TradeScreen:OnControl(control, down)
             return true
        	elseif control == CONTROL_ACCEPT and self.accept_waiting then
        		self:Reset()
-       	elseif control == CONTROL_OPEN_INVENTORY then -- right trigger 
-       		self:ToggleSpecialsMode()
+       	--TEMP DISABLED SPECIALS MODE 
+       	--elseif control == CONTROL_OPEN_INVENTORY then -- right trigger 
+       	--	self:ToggleSpecialsMode()
        	end
 	end
 
@@ -1331,14 +1332,15 @@ function TradeScreen:GetHelpText()
 
 	    table.insert(t, self.popup.page_list:GetHelpText())
 
-	    if self.specials_mode then 
+		--TEMP DISABLED SPECIALS MODE
+	    --[[if self.specials_mode then 
 	    	table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_OPEN_INVENTORY) .. " " .. STRINGS.UI.TRADESCREEN.NOSPECIALS )
 
 	    	-- This uses too much space. Just use the hints on the spinner instead.
 	    	--table.insert(t, self.specials_list:GetHelpText())
 	    else
 	    	table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_OPEN_INVENTORY) .. " " .. STRINGS.UI.TRADESCREEN.SPECIALS )
-	    end
+	    end]]
 
 		if self.resetbtn:IsEnabled() then
 			table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_MAP) .. " " .. STRINGS.UI.TRADESCREEN.RESET)

@@ -336,6 +336,8 @@ local function UpdatePlayerListing(widget, data, index)
 
 	if empty or data.userid == owner then
 		widget.mute:Hide()
+	else
+		widget.mute:Show()
 	end
 end
 
