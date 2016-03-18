@@ -694,6 +694,13 @@ return {
 		},
 		DIVININGRODSTART = "That's a weird looking rod.",
 		DRAGONFLY = "He will burn all the trees before I can chop them!",
+
+        HUTCH_FISHBOWL =
+        {
+            GENERIC = "I've never had one of these before.",
+            WAITING = "It was bound to happen.",
+        },
+
 		LAVASPIT = 
 		{
 			HOT = "Aaaah! Tree killer!",
@@ -1026,6 +1033,8 @@ return {
 		ROTTENEGG = "One less bird. Good.",
         SADDLE_BASIC = "Yep, that'll get us there.",
         SADDLE_WAR = "Makes me feel like a Mountie.",
+        SADDLEHORN = "Puts the critter back to how nature intended.",
+        BRUSH = "You could debark a log with this thing.",
 		SANITYROCK =
 		{
 			ACTIVE = "Something is off about that rock, eh?",

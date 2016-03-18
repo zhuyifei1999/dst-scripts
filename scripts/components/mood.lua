@@ -22,7 +22,7 @@ local Mood = Class(function(self, inst)
 end)
 
 function Mood:GetDebugString()
-    return string.format("inmood:%s, days till change:%s", self.enabled and tostring(self.isinmood) or "DISABLED", tostring(self.daystomoodchange) )
+    return string.format("inmood:%s, days till change:%s %s", self.enabled and tostring(self.isinmood) or "DISABLED", tostring(self.daystomoodchange), self.seasonmood and "SEASONMOOD" or "" )
 end
 
 function Mood:Enable(enabled)

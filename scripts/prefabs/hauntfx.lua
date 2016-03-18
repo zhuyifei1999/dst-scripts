@@ -50,16 +50,17 @@ local function fn()
 
 	InitEnvelope()
 
-    local emitter = inst.entity:AddParticleEmitter()
-	emitter:SetRenderResources(texture, shader)
-	emitter:SetMaxNumParticles(64)
-	emitter:SetMaxLifetime(max_lifetime)
-	emitter:SetColourEnvelope(colour_envelope_name)
-	emitter:SetScaleEnvelope(scale_envelope_name)
-	emitter:SetBlendMode(BLENDMODE.Additive)
-	emitter:EnableBloomPass(true)
-	emitter:SetUVFrameSize(0.25, 1)
-    emitter:SetSortOrder(1)
+    local effect = inst.entity:AddVFXEffect()
+    effect:InitEmitters( 1 )
+	effect:SetRenderResources( 0, texture, shader )
+	effect:SetMaxNumParticles( 0, 64 )
+	effect:SetMaxLifetime( 0, max_lifetime )
+	effect:SetColourEnvelope( 0, colour_envelope_name )
+	effect:SetScaleEnvelope( 0, scale_envelope_name )
+	effect:SetBlendMode( 0, BLENDMODE.Additive )
+	effect:EnableBloomPass( 0, true )
+	effect:SetUVFrameSize( 0, 0.25, 1 )
+    effect:SetSortOrder( 0, 1 )
 
 	-----------------------------------------------------
 	local tick_time = TheSim:GetTickTime()
@@ -82,7 +83,8 @@ local function fn()
 
 		local uv_offset = math.random(0, 3) * 0.25
 
-		emitter:AddParticleUV(
+		effect:AddParticleUV(
+			0,
 			lifetime,			-- lifetime
 			px, py, pz,			-- position
 			vx, vy, vz,			-- velocity
@@ -92,7 +94,7 @@ local function fn()
 	
 	local function updateFunc()
 		while num_particles_to_emit > 1 do
-			emit_fn(emitter)
+			emit_fn(effect)
 			num_particles_to_emit = num_particles_to_emit - 1
 		end
 

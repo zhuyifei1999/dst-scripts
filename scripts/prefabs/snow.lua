@@ -48,17 +48,18 @@ local function fn()
 
 	InitEnvelope()
 
-    local emitter = inst.entity:AddParticleEmitter()
-	emitter:SetRenderResources(texture, shader)
-	emitter:SetMaxNumParticles(4800)
-	emitter:SetMaxLifetime(max_lifetime)
-	emitter:SetColourEnvelope(colour_envelope_name)
-	emitter:SetScaleEnvelope(scale_envelope_name)
-	emitter:SetBlendMode(BLENDMODE.Premultiplied)
-	emitter:SetSortOrder(3)
-	emitter:SetAcceleration(-1, -9.80, 1)
-	emitter:SetDragCoefficient(0.8)
-	emitter:EnableDepthTest(true)
+    local effect = inst.entity:AddVFXEffect()
+    effect:InitEmitters( 1 )
+	effect:SetRenderResources( 0, texture, shader )
+	effect:SetMaxNumParticles( 0, 4800 )
+	effect:SetMaxLifetime( 0, max_lifetime )
+	effect:SetColourEnvelope( 0, colour_envelope_name )
+	effect:SetScaleEnvelope( 0, scale_envelope_name )
+	effect:SetBlendMode( 0, BLENDMODE.Premultiplied )
+	effect:SetSortOrder( 0, 3 )
+	effect:SetAcceleration( 0, -1, -9.80, 1 )
+	effect:SetDragCoefficient( 0, 0.8 )
+	effect:EnableDepthTest( 0, true )
 
 	-----------------------------------------------------
 	local rng = math.random
@@ -77,7 +78,8 @@ local function fn()
 		local lifetime = min_lifetime + (max_lifetime - min_lifetime) * UnitRand()
 		local px, py, pz = emitter_shape()
 
-		emitter:AddParticle(
+		effect:AddParticle(
+			0,
 			lifetime,			-- lifetime
 			px, py, pz,			-- position
 			vx, vy, vz			-- velocity
@@ -86,7 +88,7 @@ local function fn()
 
 	local function updateFunc()
 		while inst.num_particles_to_emit > 1 do
-			emit_fn(emitter)
+			emit_fn(effect)
 			inst.num_particles_to_emit = inst.num_particles_to_emit - 1
 		end
 
@@ -101,7 +103,7 @@ local function fn()
         while t > 0 do
             t = t - dt
             updateFunc()
-            emitter:FastForward(dt)
+            effect:FastForward( 0, dt )
         end
     end
 

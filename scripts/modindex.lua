@@ -48,7 +48,7 @@ function ModIndex:GetModConfigurationName(modname, client_config)
 	if BRANCH ~= "release" then
 		name = name .. "_"..BRANCH
 	end
-	if not self:GetModInfo(modname).client_only_mod and client_config then
+	if self:GetModInfo(modname) and not self:GetModInfo(modname).client_only_mod and client_config then
 		name = name .. "_CLIENT"
 	end
 	return name
@@ -576,6 +576,11 @@ end
 -- Loads the actual file from disk
 function ModIndex:LoadModConfigurationOptions(modname, client_config)
 	local known_mod = self.savedata.known_mods[modname]
+	if known_mod == nil then
+		print("Error: mod isn't known", modname )
+		return nil
+	end
+	
 	-- Try to find saved config settings first
 	local filename = self:GetModConfigurationPath(modname, client_config)
 	TheSim:GetPersistentString(filename,

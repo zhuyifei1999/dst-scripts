@@ -13,7 +13,7 @@ local skins =
 
 local base_prefab = "woodie"
 
-local tags = {"WOODIE", "CHARACTER"}
+local tags = {"WOODIE", "CHARACTER", "FORMAL"}
 
 local ui_preview =
 {

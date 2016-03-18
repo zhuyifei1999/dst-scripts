@@ -3,6 +3,7 @@ local assets =
     Asset("ANIM", "anim/beefalo_basic.zip"),
     Asset("ANIM", "anim/beefalo_actions.zip"),
     Asset("ANIM", "anim/beefalo_actions_domestic.zip"),
+    Asset("ANIM", "anim/beefalo_actions_quirky.zip"),
     Asset("ANIM", "anim/beefalo_build.zip"),
     Asset("ANIM", "anim/beefalo_shaved_build.zip"),
     Asset("ANIM", "anim/beefalo_baby_build.zip"),
@@ -72,7 +73,7 @@ local tendencies =
             inst:AddComponent("sanityaura")
             inst.components.sanityaura.aura = TUNING.SANITYAURA_TINY
         end,
-        customdeactivatevn = function(inst)
+        customdeactivatefn = function(inst)
             inst:RemoveComponent("sanityaura")
         end,
     },
@@ -169,8 +170,10 @@ end
 
 local function OnAttacked(inst, data)
     if inst.components.rideable:IsBeingRidden() then
-        inst.components.domesticatable:DeltaDomestication(TUNING.BEEFALO_DOMESTICATION_ATTACKED_DOMESTICATION)
-        inst.components.domesticatable:DeltaObedience(TUNING.BEEFALO_DOMESTICATION_ATTACKED_OBEDIENCE)
+        if not inst.components.domesticatable:IsDomesticated() or not inst.tendency == TENDENCY.ORNERY then
+            inst.components.domesticatable:DeltaDomestication(TUNING.BEEFALO_DOMESTICATION_ATTACKED_DOMESTICATION)
+            inst.components.domesticatable:DeltaObedience(TUNING.BEEFALO_DOMESTICATION_ATTACKED_OBEDIENCE)
+        end
         inst.components.domesticatable:DeltaTendency(TENDENCY.ORNERY, TUNING.BEEFALO_ORNERY_ATTACKED)
     else
         if data.attacker ~= nil and data.attacker:HasTag("player") then
@@ -193,6 +196,8 @@ end
 
 local function OnResetBeard(inst)
     inst.sg:GoToState("shaved")
+    inst.components.brushable:SetBrushable(false)
+    inst.components.domesticatable:DeltaObedience(TUNING.BEEFALO_DOMESTICATION_SHAVED_OBEDIENCE)
 end
 
 local function CanShaveTest(inst)
@@ -213,6 +218,13 @@ local function OnHairGrowth(inst)
         if inst.components.rideable ~= nil then
             inst.components.rideable:Buck()
         end
+    end
+end
+
+local function OnBrushed(inst, data)
+    if data.numprizes > 0 and inst.components.domesticatable ~= nil then
+        inst.components.domesticatable:DeltaDomestication(TUNING.BEEFALO_DOMESTICATION_BRUSHED_DOMESTICATION)
+        inst.components.domesticatable:DeltaObedience(TUNING.BEEFALO_DOMESTICATION_BRUSHED_OBEDIENCE)
     end
 end
 
@@ -244,7 +256,7 @@ local function DoDomestication(inst)
     inst.components.mood:Enable(true)
     inst.components.mood:ValidateMood()
 
-    inst:SetTendency()
+    inst:SetTendency("domestication")
 end
 
 local function OnFeral(inst, data)
@@ -257,7 +269,7 @@ local function DoFeral(inst)
     inst.components.mood:Enable(false)
     inst.components.mood:ValidateMood()
 
-    inst:SetTendency()
+    inst:SetTendency("feral")
 end
 
 local function UpdateDomestication(inst)
@@ -268,7 +280,7 @@ local function UpdateDomestication(inst)
     end
 end
 
-local function SetTendency(inst)
+local function SetTendency(inst, changedomestication)
     -- tendency is locked in after we become domesticated
     if not inst.components.domesticatable:IsDomesticated() then
         local tendencysum = 0
@@ -283,6 +295,15 @@ local function SetTendency(inst)
         end
         inst.tendency = (tendencysum < 0.1 or maxtendencyval < tendencysum * 0.5) and TENDENCY.DEFAULT or maxtendency
     end
+
+    if changedomestication ~= nil then
+        if tendencies[inst.tendency].customactivatefn ~= nil and changedomestication == "domestication" then
+            tendencies[inst.tendency].customactivatefn(inst)
+        elseif tendencies[inst.tendency].customdeactivatefn ~= nil and changedomestication == "feral" then
+            tendencies[inst.tendency].customdeactivatefn(inst)
+        end
+    end
+
 
     if inst.components.domesticatable:IsDomesticated() then
         inst.components.domesticatable:SetMinObedience(TUNING.BEEFALO_MIN_DOMESTICATED_OBEDIENCE[inst.tendency])
@@ -303,10 +324,21 @@ local function SetTendency(inst)
     end
 end
 
+local function ShouldBeg(inst)
+    local herd = inst.components.herdmember and inst.components.herdmember:GetHerd()
+    return inst.components.domesticatable ~= nil
+        and inst.components.domesticatable:GetDomestication() > 0.0
+        and inst.components.hunger ~= nil
+        and inst.components.hunger:GetPercent() < TUNING.BEEFALO_BEG_HUNGER_PERCENT
+        and (not herd or not herd.components.mood and not herd.components.mood:IsInMood())
+        and (not inst.components.mood or not inst.components.mood:IsInMood())
+end
+
+
 local function CalculateBuckDelay(inst)
-    local obedience =
+    local domestication =
         inst.components.domesticatable ~= nil
-        and inst.components.domesticatable:GetObedience()
+        and inst.components.domesticatable:GetDomestication()
         or 0
 
     local moodmult =
@@ -315,18 +347,19 @@ local function CalculateBuckDelay(inst)
         and TUNING.BEEFALO_BUCK_TIME_MOOD_MULT
         or 1
 
+    local beardmult =
+        (inst.components.beard ~= nil and inst.components.beard.bits == 0)
+        and TUNING.BEEFALO_BUCK_TIME_NUDE_MULT
+        or 1
+
     local domesticmult =
         inst.components.domesticatable:IsDomesticated()
         and 1
         or TUNING.BEEFALO_BUCK_TIME_UNDOMESTICATED_MULT
 
-    local basedelay =
-        obedience > TUNING.BEEFALO_MIN_BUCK_OBEDIENCE
-        and Remap(obedience, TUNING.BEEFALO_MIN_BUCK_OBEDIENCE, 1, TUNING.BEEFALO_MIN_BUCK_TIME, TUNING.BEEFALO_MAX_BUCK_TIME)
-        or (Remap(obedience, 0, TUNING.BEEFALO_MIN_BUCK_OBEDIENCE, 0, TUNING.BEEFALO_MIN_BUCK_TIME)
-            + math.random() * TUNING.BEEFALO_BUCK_TIME_VARIANCE)
+    local basedelay = Remap(domestication, 0, 1, TUNING.BEEFALO_MIN_BUCK_TIME, TUNING.BEEFALO_MAX_BUCK_TIME)
 
-    return basedelay * moodmult * domesticmult
+    return basedelay * moodmult * beardmult * domesticmult
 end
 
 local function OnBuckTime(inst)
@@ -353,16 +386,21 @@ local function OnDeath(inst, data)
     end
 end
 
+local function DomesticationTriggerFn(inst)
+    return inst.components.hunger:GetPercent() > 0
+        or inst.components.rideable:IsBeingRidden() == true
+end
+
 local function OnStarving(inst, dt)
     -- apply no health damage; the stomach is just used by domesticatable
     inst.components.domesticatable:DeltaObedience(TUNING.BEEFALO_DOMESTICATION_STARVE_OBEDIENCE * dt)
-    inst.components.domesticatable:DeltaDomestication(TUNING.BEEFALO_DOMESTICATION_STARVE_DOMESTICATION * dt)
+    --inst.components.domesticatable:DeltaDomestication(TUNING.BEEFALO_DOMESTICATION_STARVE_DOMESTICATION * dt)
 end
 
 local function OnHungerDelta(inst, data)
     if data.oldpercent > 0 and data.delta < 0 then
         -- basically, give domestication while we are digesting
-        inst.components.domesticatable:DeltaDomestication(TUNING.BEEFALO_DOMESTICATION_WELLFED_DOMESTICATION * -data.delta)
+        --inst.components.domesticatable:DeltaDomestication(TUNING.BEEFALO_DOMESTICATION_WELLFED_DOMESTICATION * -data.delta)
         if data.oldpercent > 0.5 then
             inst.components.domesticatable:DeltaTendency(TENDENCY.PUDGY, TUNING.BEEFALO_PUDGY_WELLFED * -data.delta)
         end
@@ -373,12 +411,15 @@ local function OnEat(inst, food)
     local full = inst.components.hunger:GetPercent() >= 1
     if not full then
         inst.components.domesticatable:DeltaObedience(TUNING.BEEFALO_DOMESTICATION_FEED_OBEDIENCE)
+
+        inst.components.domesticatable:TryBecomeDomesticated()
     else
         inst.components.domesticatable:DeltaObedience(TUNING.BEEFALO_DOMESTICATION_OVERFEED_OBEDIENCE)
         inst.components.domesticatable:DeltaDomestication(TUNING.BEEFALO_DOMESTICATION_OVERFEED_DOMESTICATION)
         inst.components.domesticatable:DeltaTendency(TENDENCY.PUDGY, TUNING.BEEFALO_PUDGY_OVERFEED)
     end
-    inst:PushEvent("eat", { full = full })
+    inst:PushEvent("eat", { full = full, food = food })
+    inst.components.knownlocations:RememberLocation("loiteranchor", inst:GetPosition())
 end
 
 local function OnDomesticationDelta(inst, data)
@@ -394,12 +435,10 @@ local function OnHealthDelta(inst, data)
 end
 
 local function OnBeingRidden(inst, dt)
-    inst.components.domesticatable:DeltaDomestication(TUNING.BEEFALO_DOMESTICATION_RIDDEN_DOMESTICATION * dt)
     inst.components.domesticatable:DeltaTendency(TENDENCY.RIDER, TUNING.BEEFALO_RIDER_RIDDEN * dt)
 end
 
 local function OnRiderDoAttack(inst)
-    inst.components.domesticatable:DeltaDomestication(TUNING.BEEFALO_DOMESTICATION_DOATTACK_DOMESTICATION)
     inst.components.domesticatable:DeltaTendency(TENDENCY.ORNERY, TUNING.BEEFALO_ORNERY_DOATTACK)
 end
 
@@ -419,12 +458,21 @@ local function OnRiderChanged(inst, data)
         end
         inst:ListenForEvent("doattack", inst._OnRiderDoAttackCB, data.newrider)
         inst._bucktask = inst:DoTaskInTime(CalculateBuckDelay(inst), OnBuckTime)
+        inst.components.knownlocations:RememberLocation("loiteranchor", inst:GetPosition())
     elseif inst.components.health:IsDead() then
         if inst.sg.currentstate.name ~= "death" then
             inst.sg:GoToState("death")
         end
     elseif inst.components.sleeper ~= nil then
         inst.components.sleeper:StartTesting()
+    end
+end
+
+local function OnSaddleChanged(inst, data)
+    if data.saddle ~= nil then
+        inst:AddTag("companion")
+    else
+        inst:RemoveTag("companion")
     end
 end
 
@@ -453,7 +501,7 @@ local function OnLoad(inst, data)
 end
 
 local function GetDebugString(inst)
-    return "tendency: "..inst.tendency
+    return string.format( "tendency %s nextbuck %.2f", inst.tendency, GetTaskRemaining(inst._bucktask) )
 end
 
 local function beefalo()
@@ -499,17 +547,21 @@ local function beefalo()
         return inst
     end
 
-    local hair_growth_days = 3
-
     inst:AddComponent("beard")
     -- assume the beefalo has already grown its hair
     inst.components.beard.bits = 3
-    inst.components.beard.daysgrowth = hair_growth_days + 1
+    inst.components.beard.daysgrowth = TUNING.BEEFALO_HAIR_GROWTH_DAYS + 1
     inst.components.beard.onreset = OnResetBeard
     inst.components.beard.canshavetest = CanShaveTest
     inst.components.beard.prize = "beefalowool"
     inst.components.beard:AddCallback(0, OnShaved)
-    inst.components.beard:AddCallback(hair_growth_days, OnHairGrowth)
+    inst.components.beard:AddCallback(TUNING.BEEFALO_HAIR_GROWTH_DAYS, OnHairGrowth)
+
+    inst:AddComponent("brushable")
+    inst.components.brushable.regrowthdays = 1
+    inst.components.brushable.max = 1
+    inst.components.brushable.prize = "beefalowool"
+    inst:ListenForEvent("brushed", OnBrushed)
 
     inst:AddComponent("eater")
     inst.components.eater:SetDiet({ FOODTYPE.VEGGIE, FOODTYPE.ROUGHAGE }, { FOODTYPE.VEGGIE, FOODTYPE.ROUGHAGE })
@@ -525,6 +577,7 @@ local function beefalo()
     inst:AddComponent("health")
     inst.components.health:SetMaxHealth(TUNING.BEEFALO_HEALTH)
     inst.components.health.nofadeout = true
+    inst.components.health:StartRegen(TUNING.BEEFALO_HEALTH_REGEN, TUNING.BEEFALO_HEALTH_REGEN_PERIOD)
     inst:ListenForEvent("death", OnDeath) -- need to handle this due to being mountable
     inst:ListenForEvent("healthdelta", OnHealthDelta) -- to inform rider
 
@@ -554,6 +607,8 @@ local function beefalo()
     inst.components.periodicspawner:Start()
 
     inst:AddComponent("rideable")
+    inst.components.rideable:SetRequiredObedience(TUNING.BEEFALO_MIN_BUCK_OBEDIENCE)
+    inst:ListenForEvent("saddlechanged", OnSaddleChanged)
 
     inst:AddComponent("trader")
     inst.components.trader:SetAcceptTest(ShouldAcceptItem)
@@ -568,6 +623,7 @@ local function beefalo()
     inst.components.hunger:SetOverrideStarveFn(OnStarving)
 
     inst:AddComponent("domesticatable")
+    inst.components.domesticatable:SetDomesticationTrigger(DomesticationTriggerFn)
 
     MakeLargeBurnableCharacter(inst, "beefalo_body")
     MakeLargeFreezableCharacter(inst, "beefalo_body")
@@ -593,7 +649,6 @@ local function beefalo()
     -- Mood component is ONLY used when domesticated, otherwise it's part of the herd
     inst:AddComponent("mood")
     inst.components.mood:SetMoodTimeInDays(TUNING.BEEFALO_MATING_SEASON_LENGTH, TUNING.BEEFALO_MATING_SEASON_WAIT)
-    inst.components.mood:SetMoodSeason(SEASONS.SPRING)
     inst.components.mood:SetInMoodFn(OnEnterMood)
     inst.components.mood:SetLeaveMoodFn(OnLeaveMood)
     inst.components.mood:CheckForMoodChange()
@@ -614,6 +669,8 @@ local function beefalo()
 
     inst.SetTendency = SetTendency
     inst:SetTendency()
+
+    inst.ShouldBeg = ShouldBeg
 
     inst:SetBrain(brain)
     inst:SetStateGraph("SGBeefalo")

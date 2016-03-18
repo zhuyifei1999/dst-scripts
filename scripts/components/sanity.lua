@@ -292,6 +292,12 @@ function Sanity:Recalc(dt)
         end
     end
 
+    local mount = self.inst.components.rider:IsRiding() and self.inst.components.rider:GetMount() or nil
+    if mount ~= nil and mount.components.sanityaura ~= nil then
+        local aura_val = mount.components.sanityaura:GetAura(self.inst)
+        aura_delta = aura_delta + (aura_val < 0 and aura_val * self.neg_aura_mult or aura_val)
+    end
+
     self:RecalcGhostDrain()
     local ghost_delta = TUNING.SANITY_GHOST_PLAYER_DRAIN * self.ghost_drain_mult
 

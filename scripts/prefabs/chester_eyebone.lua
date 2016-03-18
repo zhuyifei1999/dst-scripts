@@ -4,33 +4,34 @@ local assets =
     Asset("ANIM", "anim/chester_eyebone_build.zip"),
     Asset("ANIM", "anim/chester_eyebone_snow_build.zip"),
     Asset("ANIM", "anim/chester_eyebone_shadow_build.zip"),
-	Asset("INV_IMAGE", "chester_eyebone" ),
-	Asset("INV_IMAGE", "chester_eyebone_closed" ),
-	Asset("INV_IMAGE", "chester_eyebone_closed_shadow" ),
-	Asset("INV_IMAGE", "chester_eyebone_closed_snow" ),
-	Asset("INV_IMAGE", "chester_eyebone_shadow" ),
-	Asset("INV_IMAGE", "chester_eyebone_snow" ),
-	Asset("MINIMAP_IMAGE", "treasure_chest"), --for debugging
+    Asset("INV_IMAGE", "chester_eyebone"),
+    Asset("INV_IMAGE", "chester_eyebone_closed"),
+    Asset("INV_IMAGE", "chester_eyebone_closed_shadow"),
+    Asset("INV_IMAGE", "chester_eyebone_closed_snow"),
+    Asset("INV_IMAGE", "chester_eyebone_shadow"),
+    Asset("INV_IMAGE", "chester_eyebone_snow"),
 }
 
 local SPAWN_DIST = 30
 
 local function OpenEye(inst)
-    inst.isOpenEye = true
-    inst.components.inventoryitem:ChangeImageName(inst.openEye)
+    if not inst.isOpenEye then
+        inst.isOpenEye = true
+        inst.components.inventoryitem:ChangeImageName(inst.openEye)
+        inst.AnimState:PlayAnimation("idle_loop", true)
+    end
 end
 
 local function CloseEye(inst)
-    inst.isOpenEye = nil
-    inst.components.inventoryitem:ChangeImageName(inst.closedEye)
+    if inst.isOpenEye then
+        inst.isOpenEye = nil
+        inst.components.inventoryitem:ChangeImageName(inst.closedEye)
+        inst.AnimState:PlayAnimation("dead", true)
+    end
 end
 
 local function RefreshEye(inst)
-    if inst.isOpenEye then
-        OpenEye(inst)
-    else
-        CloseEye(inst)
-    end
+    inst.components.inventoryitem:ChangeImageName(inst.isOpenEye and inst.openEye or inst.closedEye)
 end
 
 local function MorphShadowEyebone(inst)
@@ -58,7 +59,7 @@ local function MorphNormalEyebone(inst)
     inst.AnimState:SetBuild("chester_eyebone_build")
 
     inst.openEye = "chester_eyebone"
-    inst.closedEye = "chester_eyebone_closed"    
+    inst.closedEye = "chester_eyebone_closed"
     RefreshEye(inst)
 
     inst.EyeboneState = "NORMAL"
@@ -77,7 +78,7 @@ local function SpawnChester(inst)
 
     local pt = inst:GetPosition()
     --print("    near", pt)
-        
+
     local spawn_pt = GetSpawnPoint(pt)
     if spawn_pt ~= nil then
         --print("    at", spawn_pt)
@@ -98,7 +99,6 @@ end
 local StartRespawn
 
 local function StopRespawn(inst)
-    --print("chester_eyebone - StopRespawn")
     if inst.respawntask ~= nil then
         inst.respawntask:Cancel()
         inst.respawntask = nil
@@ -109,7 +109,6 @@ end
 local function RebindChester(inst, chester)
     chester = chester or TheSim:FindFirstEntityWithTag("chester")
     if chester ~= nil then
-        inst.AnimState:PlayAnimation("idle_loop", true)
         OpenEye(inst)
         inst:ListenForEvent("death", function() StartRespawn(inst, TUNING.CHESTER_RESPAWN_TIME) end, chester)
 
@@ -121,7 +120,6 @@ local function RebindChester(inst, chester)
 end
 
 local function RespawnChester(inst)
-    --print("chester_eyebone - RespawnChester")
     StopRespawn(inst)
     RebindChester(inst, TheSim:FindFirstEntityWithTag("chester") or SpawnChester(inst))
 end
@@ -132,26 +130,20 @@ StartRespawn = function(inst, time)
     time = time or 0
     inst.respawntask = inst:DoTaskInTime(time, RespawnChester)
     inst.respawntime = GetTime() + time
-    inst.AnimState:PlayAnimation("dead", true)
     CloseEye(inst)
 end
 
 local function FixChester(inst)
-	inst.fixtask = nil
-	--take an existing chester if there is one
-	if not RebindChester(inst) then
-        inst.AnimState:PlayAnimation("dead", true)
+    inst.fixtask = nil
+    --take an existing chester if there is one
+    if not RebindChester(inst) then
         CloseEye(inst)
-		
-		if inst.components.inventoryitem.owner ~= nil then
-			local time_remaining = 0
-			local time = GetTime()
-			if inst.respawntime and inst.respawntime > time then
-				time_remaining = inst.respawntime - time		
-			end
-			StartRespawn(inst, time_remaining)
-		end
-	end
+        
+        if inst.components.inventoryitem.owner ~= nil then
+            local time_remaining = inst.respawntime ~= nil and math.max(0, inst.respawntime - GetTime()) or 0
+            StartRespawn(inst, time_remaining)
+        end
+    end
 end
 
 local function OnPutInInventory(inst)
@@ -161,7 +153,6 @@ local function OnPutInInventory(inst)
 end
 
 local function OnSave(inst, data)
-    --print("chester_eyebone - OnSave")
     data.EyeboneState = inst.EyeboneState
     if inst.respawntime ~= nil then
         local time = GetTime()
@@ -184,14 +175,13 @@ local function OnLoad(inst, data)
 
     if data.respawntimeremaining ~= nil then
         inst.respawntime = data.respawntimeremaining + GetTime()
+    else
+        OpenEye(inst)
     end
 end
 
 local function GetStatus(inst)
-    --print("smallbird - GetStatus")
-    if inst.respawntask ~= nil then
-        return "WAITING"
-    end
+    return inst.respawntask ~= nil and "WAITING" or nil
 end
 
 local function fn()
@@ -201,10 +191,6 @@ local function fn()
     inst.entity:AddAnimState()
     inst.entity:AddNetwork()
 
-    --so I can find the thing while testing
-    --inst.entity:AddMiniMapEntity()
-    --inst.MiniMapEntity:SetIcon("treasure_chest.png")
-
     MakeInventoryPhysics(inst)
 
     inst:AddTag("chester_eyebone")
@@ -213,7 +199,7 @@ local function fn()
 
     inst.AnimState:SetBank("eyebone")
     inst.AnimState:SetBuild("chester_eyebone_build")
-    inst.AnimState:PlayAnimation("idle_loop", true)
+    inst.AnimState:PlayAnimation("dead", true)
 
     inst.entity:SetPristine()
 
@@ -221,15 +207,14 @@ local function fn()
         return inst
     end
 
-    inst:AddComponent("inventoryitem")
-    inst.components.inventoryitem:SetOnPutInInventoryFn(OnPutInInventory)
-
     inst.EyeboneState = "NORMAL"
     inst.openEye = "chester_eyebone"
     inst.closedEye = "chester_eyebone_closed"
-
     inst.isOpenEye = nil
-    OpenEye(inst)
+
+    inst:AddComponent("inventoryitem")
+    inst.components.inventoryitem:SetOnPutInInventoryFn(OnPutInInventory)
+    inst.components.inventoryitem:ChangeImageName(inst.closedEye)
 
     inst:AddComponent("inspectable")
     inst.components.inspectable.getstatus = GetStatus

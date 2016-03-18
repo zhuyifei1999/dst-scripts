@@ -53,17 +53,18 @@ local function fn()
 
 	InitEnvelope()
 
-    local emitter = inst.entity:AddParticleEmitter()
-	emitter:SetRenderResources(texture, shader)
-	emitter:SetRotationStatus(true)
-	emitter:SetMaxNumParticles(4800)
-	emitter:SetMaxLifetime(max_lifetime)
-	emitter:SetColourEnvelope(colour_envelope_name)
-	emitter:SetScaleEnvelope(scale_envelope_name)
-	emitter:SetBlendMode(BLENDMODE.Premultiplied)
-	emitter:SetSortOrder(3)
-	emitter:SetDragCoefficient(0.2)
-	emitter:EnableDepthTest(true)
+    local effect = inst.entity:AddVFXEffect()
+    effect:InitEmitters( 1 )
+	effect:SetRenderResources( 0, texture, shader )
+	effect:SetRotationStatus( 0, true )
+	effect:SetMaxNumParticles( 0, 4800 )
+	effect:SetMaxLifetime( 0, max_lifetime )
+	effect:SetColourEnvelope( 0, colour_envelope_name )
+	effect:SetScaleEnvelope( 0, scale_envelope_name )
+	effect:SetBlendMode( 0, BLENDMODE.Premultiplied )
+	effect:SetSortOrder( 0, 3 )
+	effect:SetDragCoefficient( 0, 0.2 )
+	effect:EnableDepthTest( 0, true )
 
 	-----------------------------------------------------
 	local rng = math.random
@@ -83,7 +84,7 @@ local function fn()
 
 	local angle = 0
 	local dx = math.cos(angle * PI / 180)
-	emitter:SetAcceleration(dx, -9.80, 1)
+	effect:SetAcceleration( 0, dx, -9.80, 1 )
 
 	local function emit_fn()
 		local vy = -2 + UnitRand() * -8
@@ -93,7 +94,8 @@ local function fn()
 		local lifetime = min_lifetime + (max_lifetime - min_lifetime) * UnitRand()
 		local px, py, pz = emitter_shape()
 
-		emitter:AddRotatingParticle(
+		effect:AddRotatingParticle(
+			0,					-- the only emitter
 			lifetime,			-- lifetime
 			px, py, pz,			-- position
 			vx, vy, vz,			-- velocity
@@ -107,7 +109,7 @@ local function fn()
 
 	local function updateFunc(fastforward)
 		while inst.num_particles_to_emit > 0 do
-			emit_fn(emitter)
+			emit_fn(effect)
 			inst.num_particles_to_emit = inst.num_particles_to_emit - 1
 		end
 		
@@ -142,7 +144,7 @@ local function fn()
         while t > 0 do
             t = t - dt
             updateFunc(t)
-            emitter:FastForward(dt)
+            effect:FastForward( 0, dt  )
         end
     end
 

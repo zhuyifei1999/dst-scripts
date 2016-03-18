@@ -110,6 +110,11 @@ AddGlobalDebugKey(KEY_HOME, function()
     return true
 end)
 
+local ridingpercent = {
+    on = 0,
+    off = 0,
+}
+
 AddGlobalDebugKey(KEY_F1, function()
     if TheInput:IsKeyDown(KEY_CTRL) then
         TheSim:TogglePerfGraph()
@@ -117,44 +122,22 @@ AddGlobalDebugKey(KEY_F1, function()
     elseif TheInput:IsKeyDown(KEY_SHIFT) then
         c_removeall('beefalo')
         c_give('saddle_basic')
-        c_give('carrot', 10)
+        c_give('saddlehorn')
+        c_give('carrot', 80)
         c_give('dragonpie', 10)
         c_spawn('dummytarget')
         local beef = c_spawn('beefalo')
+        beef.components.domesticatable:DeltaDomestication(0.05)
+        beef.components.domesticatable:DeltaObedience(1.0)
+        beef.components.rideable:SetSaddle(nil, SpawnPrefab('saddle_basic'))
     else
-        c_give('whip')
-        c_give('saddle_war')
-        c_spawn('dummytarget')
-        local beef = c_spawn('beefalo')
-        for k, v in pairs(TENDENCY) do
-            beef = c_spawn('beefalo')
-            beef.components.domesticatable:DeltaDomestication(1)
-            beef.components.domesticatable:DeltaObedience(0.5)
-            beef.components.domesticatable:DeltaTendency(v, 1)
-            beef:SetTendency()
-            beef.components.domesticatable:BecomeDomesticated()
-            beef.components.rideable:SetSaddle(nil, SpawnPrefab('saddle_basic'))
+        c_select()
+        if c_sel() ~= nil and c_sel().prefab == "beefalo" then
+            c_sel().components.domesticatable:DeltaDomestication(0.05)
+            c_sel().components.domesticatable:DeltaObedience(1.0)
+            c_sel().components.hunger:SetPercent(.3)
+            c_sel().components.rideable:SetSaddle(nil, SpawnPrefab('saddle_basic'))
         end
-        --local walls = {
-            --"stone",
-            --"wood",
-            --"hay",
-            --"ruins",
-            --"moonrock",
-        --}
-        --local sx,sy,sz = ThePlayer.Transform:GetWorldPosition()
-        --for i,mat in ipairs(walls) do
-            --for j = 0,4 do
-                --local wall = SpawnPrefab("wall_"..mat)
-                --wall.Transform:SetPosition(sx + (i*6), sy, sz + j)
-                --wall.components.health:SetPercent(j*0.25)
-            --end
-            --for j = 5,15 do
-                --local wall = SpawnPrefab("wall_"..mat)
-                --wall.Transform:SetPosition(sx + (i*6), sy, sz + j)
-                --wall.components.health:SetPercent(j <= 11 and 1 or 0.5)
-            --end
-        --end
     end
 
 end)

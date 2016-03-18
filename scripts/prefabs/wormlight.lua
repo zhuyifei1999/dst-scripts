@@ -71,6 +71,8 @@ local function item_commonfn(bank, build, masterfn)
     inst.Light:SetColour(169/255, 231/255, 245/255)
     inst.Light:Enable(true)
 
+    inst:AddTag("lightbattery")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

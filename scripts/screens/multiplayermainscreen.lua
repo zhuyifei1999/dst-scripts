@@ -23,6 +23,8 @@ local ServerListingScreen = require "screens/serverlistingscreen"
 local ServerCreationScreen = require "screens/servercreationscreen"
 local SkinsScreen = require "screens/skinsscreen"
 
+local SkinsAndEquipmentPuppet = require "widgets/skinsandequipmentpuppet"
+
 local TEMPLATES = require "widgets/templates"
 
 local OnlineStatus = require "widgets/onlinestatus"
@@ -33,6 +35,7 @@ local lcol = -RESOLUTION_X/2 +200
 local bottom_offset = 60
 
 local titleX = lcol-35
+local titleY = 165
 local menuX = lcol-30
 local menuY = -240 -- Use -265 when the "game wizard" option is added
 
@@ -151,86 +154,48 @@ function MultiplayerMainScreen:DoInit()
     self.shadow2:SetPosition(char2_x+shadow2_x,char2_y+shadow2_y)
     self.shadow2:SetScale(shadow2_scale)
 
-    self.wilson = self.fg.character_root:AddChild(UIAnim())
-    self.wilson:GetAnimState():SetBank("corner_dude")
-    self.wilson:GetAnimState():SetBuild(MAINSCREEN_CHAR_1)
-    if BASE_TORSO_TUCK[MAINSCREEN_CHAR_1] then
-		--tuck torso into pelvis
-		self.wilson:GetAnimState():OverrideSkinSymbol("torso", MAINSCREEN_CHAR_1, "torso_pelvis" )
-		self.wilson:GetAnimState():OverrideSkinSymbol("torso_pelvis", MAINSCREEN_CHAR_1, "torso" )
-    end
-    self.wilson:GetAnimState():SetMultColour(unpack(FRONTEND_CHARACTER_FAR_COLOUR))
-    if MAINSCREEN_TOOL_1 == "swap_staffs" then
-    	self.wilson:GetAnimState():OverrideSymbol("swap_object", MAINSCREEN_TOOL_1, "redstaff")
-    else
-    	self.wilson:GetAnimState():OverrideSymbol("swap_object", MAINSCREEN_TOOL_1, MAINSCREEN_TOOL_1)
-    end
-    self.wilson:GetAnimState():Show("ARM_carry")
-    self.wilson:GetAnimState():Hide("ARM_normal")
-    if MAINSCREEN_TORSO_1 ~= "" then
-    	if MAINSCREEN_TORSO_1 == "torso_amulets" then
-    		if math.random() <= .5 then
-    			self.wilson:GetAnimState():OverrideSymbol("swap_body", MAINSCREEN_TORSO_1, "purpleamulet")
-    		else
-    			self.wilson:GetAnimState():OverrideSymbol("swap_body", MAINSCREEN_TORSO_1, "blueamulet")
-    		end
-    	else
-    		self.wilson:GetAnimState():OverrideSymbol("swap_body", MAINSCREEN_TORSO_1, "swap_body")
-    	end
-    end
-    if MAINSCREEN_HAT_1 ~= "" then
-    	self.wilson:GetAnimState():OverrideSymbol("swap_hat", MAINSCREEN_HAT_1, "swap_hat")
-        self.wilson:GetAnimState():Show("HAT")
-        self.wilson:GetAnimState():Show("HAT_HAIR")
-        self.wilson:GetAnimState():Hide("HAIR_NOHAT")
-        self.wilson:GetAnimState():Hide("HAIR")
-		self.wilson:GetAnimState():Hide("HEAD")
-		self.wilson:GetAnimState():Show("HEAD_HAT")
-    end
-    self.wilson:GetAnimState():PlayAnimation("idle", true)
-    self.wilson:GetAnimState():SetTime(math.random()*1.5)
-    self.wilson:SetPosition(char1_x,char1_y,0)
-    self.wilson.inst.UITransform:SetScale(puppet_scale_1,puppet_scale_1,puppet_scale_1)
+    local characters = PickSome(2, deepcopy(DST_CHARACTERLIST))
+    local tools = PickSome(2, deepcopy(MAINSCREEN_TOOL_LIST))
+    local torsos = PickSome(2, deepcopy(MAINSCREEN_TORSO_LIST))
+    local hats = PickSome(2, deepcopy(MAINSCREEN_HAT_LIST))
 
-	self.wilson2 = self.fg.character_root:AddChild(UIAnim())
-    self.wilson2:GetAnimState():SetBank("corner_dude")
-    self.wilson2:GetAnimState():SetBuild(MAINSCREEN_CHAR_2)
-    if BASE_TORSO_TUCK[MAINSCREEN_CHAR_2] then
-		--tuck torso into pelvis
-		self.wilson2:GetAnimState():OverrideSkinSymbol("torso", MAINSCREEN_CHAR_2, "torso_pelvis" )
-		self.wilson2:GetAnimState():OverrideSkinSymbol("torso_pelvis", MAINSCREEN_CHAR_2, "torso" )
+    local players = {}
+
+    --TEMP DISABLED
+    --[[
+    PlayerHistory:SortBackwards("sort_date")
+    self.player_history = PlayerHistory:GetRows()
+
+    if self.player_history and next(self.player_history) then 
+        players = PickSome(2, deepcopy(self.player_history))
     end
-    self.wilson2:GetAnimState():SetMultColour(unpack(FRONTEND_CHARACTER_CLOSE_COLOUR))
-	if MAINSCREEN_TOOL_2 == "swap_staffs" then
-    	self.wilson2:GetAnimState():OverrideSymbol("swap_object", MAINSCREEN_TOOL_2, "redstaff")
-    else
-    	self.wilson2:GetAnimState():OverrideSymbol("swap_object", MAINSCREEN_TOOL_2, MAINSCREEN_TOOL_2)
+    ]]
+
+    self.wilson = self.fg.character_root:AddChild(SkinsAndEquipmentPuppet(characters[1], FRONTEND_CHARACTER_FAR_COLOUR, {puppet_scale_1,puppet_scale_1, puppet_scale_1}))
+    --TEMP DISABLED
+    --[[
+    if players[1] then 
+        self.wilson:InitSkins(players[1])
     end
-    self.wilson2:GetAnimState():Show("ARM_carry")
-    self.wilson2:GetAnimState():Hide("ARM_normal")
-    if MAINSCREEN_TORSO_2 ~= "" then
-    	if MAINSCREEN_TORSO_2 == "torso_amulets" then
-    		if math.random() <= .5 then
-    			self.wilson2:GetAnimState():OverrideSymbol("swap_body", MAINSCREEN_TORSO_2, "purpleamulet")
-    		else
-    			self.wilson2:GetAnimState():OverrideSymbol("swap_body", MAINSCREEN_TORSO_2, "blueamulet")
-    		end
-    	else
-    		self.wilson2:GetAnimState():OverrideSymbol("swap_body", MAINSCREEN_TORSO_2, "swap_body")
-    	end
+    ]]
+    self.wilson:SetTool(tools[1])
+    self.wilson:SetTorso(torsos[1])
+    self.wilson:SetHat(hats[1])
+    self.wilson:StartAnimUpdate()
+    self.wilson:SetPosition(char1_x,char1_y,0)
+
+	self.wilson2 = self.fg.character_root:AddChild(SkinsAndEquipmentPuppet(characters[2], FRONTEND_CHARACTER_CLOSE_COLOUR, {-puppet_scale_2,puppet_scale_2, puppet_scale_2}))
+     --TEMP DISABLED
+    --[[
+    if players[2] then 
+        self.wilson2:InitSkins(players[2])
     end
-    if MAINSCREEN_HAT_2 ~= "" then
-    	self.wilson2:GetAnimState():OverrideSymbol("swap_hat", MAINSCREEN_HAT_2, "swap_hat")
-        self.wilson2:GetAnimState():Show("HAT")
-        self.wilson2:GetAnimState():Show("HAT_HAIR")
-        self.wilson2:GetAnimState():Hide("HAIR_NOHAT")
-        self.wilson2:GetAnimState():Hide("HAIR")
-		self.wilson2:GetAnimState():Hide("HEAD")
-		self.wilson2:GetAnimState():Show("HEAD_HAT")
-    end
-    self.wilson2:GetAnimState():PlayAnimation("idle", true)
+    ]]
+    self.wilson2:SetTool(tools[2])
+    self.wilson2:SetTorso(torsos[2])
+    self.wilson2:SetHat(hats[2])
+    self.wilson2:StartAnimUpdate()
     self.wilson2:SetPosition(char2_x,char2_y,0)
-    self.wilson2.inst.UITransform:SetScale(-puppet_scale_2,puppet_scale_2,puppet_scale_2)
 
     self.countdown:Hide()
     self.wilson:Hide()
@@ -242,15 +207,18 @@ function MultiplayerMainScreen:DoInit()
 
     self.title = self.fixed_root:AddChild(Image("images/frontscreen.xml", "title.tex"))
     self.title:SetScale(.32)
-    self.title:SetPosition(titleX, 165)
+    self.title:SetPosition(titleX, titleY)
     self.title:SetTint(unpack(FRONTEND_TITLE_COLOUR))
 
+    local updateX = 36
+    local updateY = -(RESOLUTION_Y*.5)+52
+
     self.updatenameshadow = self.fixed_root:AddChild(Text(BUTTONFONT, 27))
-    self.updatenameshadow:SetPosition(38,-(RESOLUTION_Y*.5)+52,0)
+    self.updatenameshadow:SetPosition(updateX + 2, updateY - 2,0)
     self.updatenameshadow:SetColour(.1,.1,.1,1)
 
     self.updatename = self.fixed_root:AddChild(Text(BUTTONFONT, 27))
-    self.updatename:SetPosition(36,-(RESOLUTION_Y*.5)+54,0)
+    self.updatename:SetPosition(updateX,updateY,0)
     self.updatename:SetColour(1,1,1,1)
     local suffix = ""
     if BRANCH == "dev" then
@@ -260,12 +228,9 @@ function MultiplayerMainScreen:DoInit()
     else
         suffix = " (v"..APP_VERSION..")"
     end
+    
     self.updatename:SetString(STRINGS.UI.MAINSCREEN.DST_UPDATENAME .. suffix)
     self.updatenameshadow:SetString(STRINGS.UI.MAINSCREEN.DST_UPDATENAME .. suffix)
-    if TheInput:ControllerAttached() then
-        self.updatenameshadow:SetPosition(38,-(RESOLUTION_Y*.5)+54,0)
-        self.updatename:SetPosition(36,-(RESOLUTION_Y*.5)+56,0)
-    end
 
     self:MakeMainMenu()
 	self:MakeSubMenu()
@@ -761,19 +726,6 @@ local anims =
 }
 
 function MultiplayerMainScreen:OnUpdate(dt)
-	self.timetonewanim = self.timetonewanim and self.timetonewanim - dt or 5 +math.random()*5
-	self.timetonewanim2 = self.timetonewanim2 and self.timetonewanim2 - dt or 5 +math.random()*5
-	if self.timetonewanim < 0 and self.wilson then
-		self.wilson:GetAnimState():PushAnimation(weighted_random_choice(anims))		
-		self.wilson:GetAnimState():PushAnimation("idle", true)		
-		self.timetonewanim = 10 + math.random()*15
-	end
-	if self.timetonewanim2 < 0 and self.wilson2 then
-		self.wilson2:GetAnimState():PushAnimation(weighted_random_choice(anims))		
-		self.wilson2:GetAnimState():PushAnimation("idle", true)		
-		self.timetonewanim2 = 10 + math.random()*15
-	end
-
 	if self.bg.anim_root.portal:GetAnimState():AnimDone() and not self.leaving then 
     	if math.random() < .33 then 
 			self.bg.anim_root.portal:GetAnimState():PlayAnimation("portal_idle_eyescratch", false) 

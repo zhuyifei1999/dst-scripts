@@ -20,55 +20,73 @@ PREFAB_SKINS = {
 		"backpack_smallbird",
 		"backpack_spider",
 	},
+	cookpot = 
+	{
+		"cookpot_survival",
+	},
+	torch = 
+	{
+		"torch_rag",
+	},
 	wathgrithr = 
 	{
 		"wathgrithr_none",
 		"wathgrithr_formal",
+		"wathgrithr_survivor",
 	},
 	webber = 
 	{
 		"webber_none",
 		"webber_formal",
+		"webber_survivor",
 	},
 	wendy = 
 	{
 		"wendy_none",
 		"wendy_formal",
+		"wendy_survivor",
 	},
 	wes = 
 	{
 		"wes_none",
 		"wes_formal",
+		"wes_survivor",
 	},
 	wickerbottom = 
 	{
 		"wickerbottom_none",
 		"wickerbottom_formal",
+		"wickerbottom_survivor",
 	},
 	willow = 
 	{
 		"willow_none",
 		"willow_formal",
+		"willow_survivor",
 	},
 	wilson = 
 	{
 		"wilson_none",
 		"wilson_formal",
+		"wilson_survivor",
 	},
 	wolfgang = 
 	{
 		"wolfgang_none",
 		"wolfgang_formal",
+		"wolfgang_survivor",
 	},
 	woodie = 
 	{
 		"woodie_none",
 		"woodie_formal",
+		"woodie_survivor",
 	},
 	wx78 = 
 	{
 		"wx78_none",
 		"wx78_formal",
+		"wx78_survivor",
 	},
 
 }

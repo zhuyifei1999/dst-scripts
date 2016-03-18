@@ -78,8 +78,20 @@ function GetBuildForItem(type, name)
 	return name
 end
 
-function GetTypeForItem(item)
 
+function IsItemId(name)
+	if Prefabs[name] then 
+		return true
+	elseif MISC_ITEMS[name] then 
+		return true
+	elseif CLOTHING[name] then 
+		return true
+	end
+	return false
+end
+
+
+function GetTypeForItem(item)
 
 	local itemName = string.lower(item) -- they come back from the server in caps
 	local type = "unknown"
@@ -105,6 +117,37 @@ function GetTypeForItem(item)
 	end
 
 	return type, itemName
+end
+
+
+--Note(Peter): do we actually want to do this here, or actually provide the json tags from the pipeline?
+function GetTagFromType(type)
+	if type == "body" or type == "hand" or type == "legs" or type == "feet" then
+		return string.upper("CLOTHING_" .. type)
+	elseif type == "base" then
+		return "CHARACTER"
+	elseif type == "item" then
+		return nil --what tags are on item type things
+	else
+		return string.upper("MISCELLANEOUS_" .. type)
+	end
+end
+function GetTypeFromTag(tag)
+	if string.find(tag, "CLOTHING_") then
+		return string.lower( string.gsub(tag, "CLOTHING_", "") )
+	elseif string.find(tag, "CHARACTER") then
+		return "base"
+	else
+		return nil --What do we want to do about colour and misc tags?
+	end
+end
+
+function GetColourFromColourTag(c) --UNTESTED!!!
+	local s = string.lower(c)
+	return s:sub(1,1):upper()..s:sub(2)
+end
+function GetColourTagFromColour(c)
+	return string.upper(c)
 end
 
 
@@ -164,6 +207,7 @@ function SetSkinEntitlementReceived(entitlement)
 	Profile:SetEntitlementReceived(entitlement)
 end
 
+
 ----------------------------------------------------
 
 local Widget = require "widgets/widget"
@@ -172,7 +216,7 @@ local ItemImage = require "widgets/itemimage"
 function SkinGrid4x4Constructor(screen, parent, disable_selecting)
 	local NUM_ROWS = 4
 	local NUM_COLUMNS = 4
-	local SPACING = 80
+	local SPACING = 85
 	--assert( parent.images == nil )
 	--parent.images = {}
 	local widgets = {}

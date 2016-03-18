@@ -841,9 +841,9 @@ msgctxt "STRINGS.RECIPE_DESC.TURF_ROAD"
 msgid "Build your own road to nowhere."
 msgstr ""
 
-#. STRINGS.RECIPE_DESC.REVIVER
-msgctxt "STRINGS.RECIPE_DESC.REVIVER"
-msgid "Ghastly revival of a ghostly friend."
+#. STRINGS.RECIPE_DESC.SADDLEHORN
+msgctxt "STRINGS.RECIPE_DESC.SADDLEHORN"
+msgid "Pry that saddle off."
 msgstr ""
 
 #. STRINGS.RECIPE_DESC.BEEMINE
@@ -1111,6 +1111,11 @@ msgctxt "STRINGS.RECIPE_DESC.ONEMANBAND"
 msgid "Even crazy musicians amass a following."
 msgstr ""
 
+#. STRINGS.RECIPE_DESC.BRUSH
+msgctxt "STRINGS.RECIPE_DESC.BRUSH"
+msgid "Relieve beefalo of their hair buildup."
+msgstr ""
+
 #. STRINGS.RECIPE_DESC.FIRESTAFF
 msgctxt "STRINGS.RECIPE_DESC.FIRESTAFF"
 msgid "Harness the power of combustion!"
@@ -1236,19 +1241,14 @@ msgctxt "STRINGS.RECIPE_DESC.PITCHFORK"
 msgid "Move the ground around."
 msgstr ""
 
-#. STRINGS.RECIPE_DESC.BUGNET
-msgctxt "STRINGS.RECIPE_DESC.BUGNET"
-msgid "Catch bugs."
-msgstr ""
-
 #. STRINGS.RECIPE_DESC.BERNIE_INACTIVE
 msgctxt "STRINGS.RECIPE_DESC.BERNIE_INACTIVE"
 msgid "A familiar face in this mad world."
 msgstr ""
 
-#. STRINGS.RECIPE_DESC.NIGHTMAREFUEL
-msgctxt "STRINGS.RECIPE_DESC.NIGHTMAREFUEL"
-msgid "Evil residue used by the foolish and crazy."
+#. STRINGS.RECIPE_DESC.BUGNET
+msgctxt "STRINGS.RECIPE_DESC.BUGNET"
+msgid "Catch bugs."
 msgstr ""
 
 #. STRINGS.RECIPE_DESC.PURPLEAMULET
@@ -1256,14 +1256,24 @@ msgctxt "STRINGS.RECIPE_DESC.PURPLEAMULET"
 msgid "Induce insanity."
 msgstr ""
 
-#. STRINGS.RECIPE_DESC.TURF_CHECKERFLOOR
-msgctxt "STRINGS.RECIPE_DESC.TURF_CHECKERFLOOR"
-msgid "Nicely checkered marble tiles."
+#. STRINGS.RECIPE_DESC.NIGHTMAREFUEL
+msgctxt "STRINGS.RECIPE_DESC.NIGHTMAREFUEL"
+msgid "Evil residue used by the foolish and crazy."
 msgstr ""
 
 #. STRINGS.RECIPE_DESC.ABIGAIL_FLOWER
 msgctxt "STRINGS.RECIPE_DESC.ABIGAIL_FLOWER"
 msgid "A magical keepsake."
+msgstr ""
+
+#. STRINGS.RECIPE_DESC.TURF_CHECKERFLOOR
+msgctxt "STRINGS.RECIPE_DESC.TURF_CHECKERFLOOR"
+msgid "Nicely checkered marble tiles."
+msgstr ""
+
+#. STRINGS.RECIPE_DESC.REVIVER
+msgctxt "STRINGS.RECIPE_DESC.REVIVER"
+msgid "Ghastly revival of a ghostly friend."
 msgstr ""
 
 #. STRINGS.RECIPE_DESC.CATCOONHAT
@@ -2141,6 +2151,11 @@ msgctxt "STRINGS.ACTIONS.SHAVE"
 msgid "Shave"
 msgstr ""
 
+#. STRINGS.ACTIONS.UNSADDLE
+msgctxt "STRINGS.ACTIONS.UNSADDLE"
+msgid "Unsaddle"
+msgstr ""
+
 #. STRINGS.ACTIONS.UNPIN
 msgctxt "STRINGS.ACTIONS.UNPIN"
 msgid "Unstick"
@@ -2304,6 +2319,11 @@ msgstr ""
 #. STRINGS.ACTIONS.ADDWETFUEL
 msgctxt "STRINGS.ACTIONS.ADDWETFUEL"
 msgid "Add Wet Fuel"
+msgstr ""
+
+#. STRINGS.ACTIONS.HAMMER
+msgctxt "STRINGS.ACTIONS.HAMMER"
+msgid "Hammer"
 msgstr ""
 
 #. STRINGS.ACTIONS.DIG
@@ -2486,9 +2506,9 @@ msgctxt "STRINGS.ACTIONS.JUMPIN.HAUNT"
 msgid "Haunt"
 msgstr ""
 
-#. STRINGS.ACTIONS.HAMMER
-msgctxt "STRINGS.ACTIONS.HAMMER"
-msgid "Hammer"
+#. STRINGS.ACTIONS.BRUSH
+msgctxt "STRINGS.ACTIONS.BRUSH"
+msgid "Brush"
 msgstr ""
 
 #. STRINGS.ACTIONS.TRAVEL
@@ -2674,6 +2694,11 @@ msgstr ""
 #. STRINGS.NAMES.DEERCLOPS
 msgctxt "STRINGS.NAMES.DEERCLOPS"
 msgid "Deerclops"
+msgstr ""
+
+#. STRINGS.NAMES.SADDLEHORN
+msgctxt "STRINGS.NAMES.SADDLEHORN"
+msgid "Saddlehorn"
 msgstr ""
 
 #. STRINGS.NAMES.CORN_COOKED
@@ -2931,6 +2956,11 @@ msgctxt "STRINGS.NAMES.BEARGER"
 msgid "Bearger"
 msgstr ""
 
+#. STRINGS.NAMES.HUTCH
+msgctxt "STRINGS.NAMES.HUTCH"
+msgid "Hutch"
+msgstr ""
+
 #. STRINGS.NAMES.DIVININGRODBASE
 msgctxt "STRINGS.NAMES.DIVININGRODBASE"
 msgid "Divining Rod Holder"
@@ -2949,6 +2979,11 @@ msgstr ""
 #. STRINGS.NAMES.TENTACLE_PILLAR_ARM
 msgctxt "STRINGS.NAMES.TENTACLE_PILLAR_ARM"
 msgid "Baby Tentacle"
+msgstr ""
+
+#. STRINGS.NAMES.BRUSH
+msgctxt "STRINGS.NAMES.BRUSH"
+msgid "Brush"
 msgstr ""
 
 #. STRINGS.NAMES.REDGEM
@@ -3314,6 +3349,11 @@ msgstr ""
 #. STRINGS.NAMES.DURIAN_COOKED
 msgctxt "STRINGS.NAMES.DURIAN_COOKED"
 msgid "Extra Smelly Durian"
+msgstr ""
+
+#. STRINGS.NAMES.HUTCH_FISHBOWL
+msgctxt "STRINGS.NAMES.HUTCH_FISHBOWL"
+msgid "Star-sky"
 msgstr ""
 
 #. STRINGS.NAMES.DRAGONFRUIT_COOKED
@@ -6251,6 +6291,246 @@ msgctxt "STRINGS.PIG_TALK_RUN_FROM_SPIDER.3"
 msgid "SCARY SPIDER!"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.backpack_buckle_red_rook
+msgctxt "STRINGS.SKIN_NAMES.backpack_buckle_red_rook"
+msgid "Buckled Backpack"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.webber_survivor
+msgctxt "STRINGS.SKIN_NAMES.webber_survivor"
+msgid "The Survivor"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_silk_eveningrobe_pink_ewecus
+msgctxt "STRINGS.SKIN_NAMES.body_silk_eveningrobe_pink_ewecus"
+msgid "Silk Robe"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_wes_formal
+msgctxt "STRINGS.SKIN_NAMES.body_wes_formal"
+msgid "Evening Attire"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_silk_eveningrobe_red_rump
+msgctxt "STRINGS.SKIN_NAMES.body_silk_eveningrobe_red_rump"
+msgid "Silk Robe"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_webber_formal
+msgctxt "STRINGS.SKIN_NAMES.body_webber_formal"
+msgid "Formal Jacket"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_sweatervest_grey_silver
+msgctxt "STRINGS.SKIN_NAMES.body_sweatervest_grey_silver"
+msgid "Sweater Vest"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.legs_pants_basic_black_scribble
+msgctxt "STRINGS.SKIN_NAMES.legs_pants_basic_black_scribble"
+msgid "Pants"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_wes_survivor
+msgctxt "STRINGS.SKIN_NAMES.body_wes_survivor"
+msgid "Threadbare Clothing"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.backpack_beefalo
+msgctxt "STRINGS.SKIN_NAMES.backpack_beefalo"
+msgid "Beefalo Carryall"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_tshirt_grey_battleship
+msgctxt "STRINGS.SKIN_NAMES.body_tshirt_grey_battleship"
+msgid "T-Shirt"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_suspenders_white_pure
+msgctxt "STRINGS.SKIN_NAMES.body_suspenders_white_pure"
+msgid "Suspension Shirt"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_cardigan_red_cardinal
+msgctxt "STRINGS.SKIN_NAMES.body_cardigan_red_cardinal"
+msgid "Cardigan"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.none
+msgctxt "STRINGS.SKIN_NAMES.none"
+msgid "Default"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.feet_ridingboot_white_pure
+msgctxt "STRINGS.SKIN_NAMES.feet_ridingboot_white_pure"
+msgid "Riding Boots"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wilson_survivor
+msgctxt "STRINGS.SKIN_NAMES.wilson_survivor"
+msgid "The Survivor"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_buttons_pink_hibiscus
+msgctxt "STRINGS.SKIN_NAMES.body_buttons_pink_hibiscus"
+msgid "Buttoned Shirt"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.backpack_bat
+msgctxt "STRINGS.SKIN_NAMES.backpack_bat"
+msgid "Back Bat"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wathgrithr_survivor
+msgctxt "STRINGS.SKIN_NAMES.wathgrithr_survivor"
+msgid "The Survivor"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.legs_pants_basic_grey_dark
+msgctxt "STRINGS.SKIN_NAMES.legs_pants_basic_grey_dark"
+msgid "Pants"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_silk_loungewear_white_marble
+msgctxt "STRINGS.SKIN_NAMES.body_silk_loungewear_white_marble"
+msgid "Silk Loungewear"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_flannel_purple_grape
+msgctxt "STRINGS.SKIN_NAMES.body_flannel_purple_grape"
+msgid "Lumberjack Shirt"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_buttons_blue_sky
+msgctxt "STRINGS.SKIN_NAMES.body_buttons_blue_sky"
+msgid "Buttoned Shirt"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.backpack_camping_orange_carrot
+msgctxt "STRINGS.SKIN_NAMES.backpack_camping_orange_carrot"
+msgid "Rucksack"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.hand_wilson_formal
+msgctxt "STRINGS.SKIN_NAMES.hand_wilson_formal"
+msgid "Tuxedo Gloves"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_cardigan_teal_jade
+msgctxt "STRINGS.SKIN_NAMES.body_cardigan_teal_jade"
+msgid "Cardigan"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.backpack_smallbird
+msgctxt "STRINGS.SKIN_NAMES.backpack_smallbird"
+msgid "Smallbird Satchel"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.backpack_camping_red_koalefant
+msgctxt "STRINGS.SKIN_NAMES.backpack_camping_red_koalefant"
+msgid "Rucksack"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_suspenders_pink_pearl
+msgctxt "STRINGS.SKIN_NAMES.body_suspenders_pink_pearl"
+msgid "Suspension Shirt"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_trimmed_blouse_red_higgsbury
+msgctxt "STRINGS.SKIN_NAMES.body_trimmed_blouse_red_higgsbury"
+msgid "Pleated Shirt"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.backpack_poop
+msgctxt "STRINGS.SKIN_NAMES.backpack_poop"
+msgid "Poop Pouch"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.feet_formal_lowheel_black_scribble
+msgctxt "STRINGS.SKIN_NAMES.feet_formal_lowheel_black_scribble"
+msgid "Low Heels"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_wathgrithr_survivor
+msgctxt "STRINGS.SKIN_NAMES.body_wathgrithr_survivor"
+msgid "Torn Costume"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_wickerbottom_survivor
+msgctxt "STRINGS.SKIN_NAMES.body_wickerbottom_survivor"
+msgid "Tattered Togs"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.hand_beltedgloves_brown_beaver
+msgctxt "STRINGS.SKIN_NAMES.hand_beltedgloves_brown_beaver"
+msgid "Buckled Gloves"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_sweatervest_blue_snowbird
+msgctxt "STRINGS.SKIN_NAMES.body_sweatervest_blue_snowbird"
+msgid "Sweater Vest"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_tweedvest_brown_chocolate
+msgctxt "STRINGS.SKIN_NAMES.body_tweedvest_brown_chocolate"
+msgid "Tweed Waistcoat"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_wilson_survivor
+msgctxt "STRINGS.SKIN_NAMES.body_wilson_survivor"
+msgid "Rumpled Outfit"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.legs_pants_basic_brown_sepia
+msgctxt "STRINGS.SKIN_NAMES.legs_pants_basic_brown_sepia"
+msgid "Pants"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_woodie_formal
+msgctxt "STRINGS.SKIN_NAMES.body_woodie_formal"
+msgid "Canadian Jacket"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_polo_red_higgsbury
+msgctxt "STRINGS.SKIN_NAMES.body_polo_red_higgsbury"
+msgid "Collared Shirt"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.hand_shortgloves_black_scribble
+msgctxt "STRINGS.SKIN_NAMES.hand_shortgloves_black_scribble"
+msgid "Hand Covers"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_woodie_survivor
+msgctxt "STRINGS.SKIN_NAMES.body_woodie_survivor"
+msgid "Grubby Gear"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.backpack_buckle_grey_pewter
+msgctxt "STRINGS.SKIN_NAMES.backpack_buckle_grey_pewter"
+msgid "Buckled Backpack"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_willow_formal
+msgctxt "STRINGS.SKIN_NAMES.body_willow_formal"
+msgid "Cocktail Dress"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.backpack_buckle_navy_phthalo
+msgctxt "STRINGS.SKIN_NAMES.backpack_buckle_navy_phthalo"
+msgid "Buckled Backpack"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_cardigan_black_jet
+msgctxt "STRINGS.SKIN_NAMES.body_cardigan_black_jet"
+msgid "Cardigan"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.backpack_rabbit
+msgctxt "STRINGS.SKIN_NAMES.backpack_rabbit"
+msgid "Rabbit Rucksack"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.backpack_basic_blue_catcoon
 msgctxt "STRINGS.SKIN_NAMES.backpack_basic_blue_catcoon"
 msgid "Backpack"
@@ -6276,14 +6556,9 @@ msgctxt "STRINGS.SKIN_NAMES.body_sweatervest_red_firehound"
 msgid "Sweater Vest"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.body_silk_eveningrobe_pink_ewecus
-msgctxt "STRINGS.SKIN_NAMES.body_silk_eveningrobe_pink_ewecus"
-msgid "Silk Robe"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.body_wes_formal
-msgctxt "STRINGS.SKIN_NAMES.body_wes_formal"
-msgid "Evening Attire"
+#. STRINGS.SKIN_NAMES.wx78_survivor
+msgctxt "STRINGS.SKIN_NAMES.wx78_survivor"
+msgid "The Survivor"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.feet_maryjanes_white_pure
@@ -6291,24 +6566,14 @@ msgctxt "STRINGS.SKIN_NAMES.feet_maryjanes_white_pure"
 msgid "Mary Janes"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.body_silk_eveningrobe_red_rump
-msgctxt "STRINGS.SKIN_NAMES.body_silk_eveningrobe_red_rump"
-msgid "Silk Robe"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.body_webber_formal
-msgctxt "STRINGS.SKIN_NAMES.body_webber_formal"
-msgid "Formal Jacket"
+#. STRINGS.SKIN_NAMES.woodie_formal
+msgctxt "STRINGS.SKIN_NAMES.woodie_formal"
+msgid "Guest of Honor"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.body_sweatervest_brown_beaver
 msgctxt "STRINGS.SKIN_NAMES.body_sweatervest_brown_beaver"
 msgid "Sweater Vest"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.legs_pants_basic_black_scribble
-msgctxt "STRINGS.SKIN_NAMES.legs_pants_basic_black_scribble"
-msgid "Pants"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.body_wickerbottom_formal
@@ -6319,26 +6584,6 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.body_tshirt_red_higgsbury
 msgctxt "STRINGS.SKIN_NAMES.body_tshirt_red_higgsbury"
 msgid "T-Shirt"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.backpack_beefalo
-msgctxt "STRINGS.SKIN_NAMES.backpack_beefalo"
-msgid "Beefalo Carryall"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.body_tshirt_grey_battleship
-msgctxt "STRINGS.SKIN_NAMES.body_tshirt_grey_battleship"
-msgid "T-Shirt"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.body_suspenders_white_pure
-msgctxt "STRINGS.SKIN_NAMES.body_suspenders_white_pure"
-msgid "Suspension Shirt"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.body_cardigan_red_cardinal
-msgctxt "STRINGS.SKIN_NAMES.body_cardigan_red_cardinal"
-msgid "Cardigan"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.body_polo_white_marble
@@ -6361,9 +6606,9 @@ msgctxt "STRINGS.SKIN_NAMES.body_flannel_orange_lumberjack"
 msgid "Lumberjack Shirt"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.feet_ridingboot_white_pure
-msgctxt "STRINGS.SKIN_NAMES.feet_ridingboot_white_pure"
-msgid "Riding Boots"
+#. STRINGS.SKIN_NAMES.legs_skirt_basic_grey_dark
+msgctxt "STRINGS.SKIN_NAMES.legs_skirt_basic_grey_dark"
+msgid "Skirt"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.feet_formal_stiletto_black_scribble
@@ -6376,54 +6621,14 @@ msgctxt "STRINGS.SKIN_NAMES.wickerbottom_formal"
 msgid "Guest of Honor"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.wx78_formal
-msgctxt "STRINGS.SKIN_NAMES.wx78_formal"
-msgid "Guest of Honor"
-msgstr ""
-
 #. STRINGS.SKIN_NAMES.backpack_spider
 msgctxt "STRINGS.SKIN_NAMES.backpack_spider"
 msgid "Spider Sack"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.woodie_formal
-msgctxt "STRINGS.SKIN_NAMES.woodie_formal"
-msgid "Guest of Honor"
-msgstr ""
-
 #. STRINGS.SKIN_NAMES.body_flannel_blue_snowbird
 msgctxt "STRINGS.SKIN_NAMES.body_flannel_blue_snowbird"
 msgid "Lumberjack Shirt"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.body_silk_eveningrobe_blue_frost
-msgctxt "STRINGS.SKIN_NAMES.body_silk_eveningrobe_blue_frost"
-msgid "Silk Robe"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.body_buttons_pink_hibiscus
-msgctxt "STRINGS.SKIN_NAMES.body_buttons_pink_hibiscus"
-msgid "Buttoned Shirt"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.willow_formal
-msgctxt "STRINGS.SKIN_NAMES.willow_formal"
-msgid "Guest of Honor"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.wes_formal
-msgctxt "STRINGS.SKIN_NAMES.wes_formal"
-msgid "Guest of Honor"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.wendy_formal
-msgctxt "STRINGS.SKIN_NAMES.wendy_formal"
-msgid "Guest of Honor"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.backpack_bat
-msgctxt "STRINGS.SKIN_NAMES.backpack_bat"
-msgid "Back Bat"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.body_silk_eveningrobe_yellow_goldenrod
@@ -6436,19 +6641,14 @@ msgctxt "STRINGS.SKIN_NAMES.backpack_basic_green_olive"
 msgid "Backpack"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.legs_pants_basic_grey_dark
-msgctxt "STRINGS.SKIN_NAMES.legs_pants_basic_grey_dark"
-msgid "Pants"
-msgstr ""
-
 #. STRINGS.SKIN_NAMES.body_tshirt_purple_mauve
 msgctxt "STRINGS.SKIN_NAMES.body_tshirt_purple_mauve"
 msgid "T-Shirt"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.body_silk_loungewear_white_marble
-msgctxt "STRINGS.SKIN_NAMES.body_silk_loungewear_white_marble"
-msgid "Silk Loungewear"
+#. STRINGS.SKIN_NAMES.wendy_formal
+msgctxt "STRINGS.SKIN_NAMES.wendy_formal"
+msgid "Guest of Honor"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.legs_skirt_basic_brown_sepia
@@ -6456,39 +6656,14 @@ msgctxt "STRINGS.SKIN_NAMES.legs_skirt_basic_brown_sepia"
 msgid "Skirt"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.body_flannel_purple_grape
-msgctxt "STRINGS.SKIN_NAMES.body_flannel_purple_grape"
-msgid "Lumberjack Shirt"
+#. STRINGS.SKIN_NAMES.backpack_mushy
+msgctxt "STRINGS.SKIN_NAMES.backpack_mushy"
+msgid "Moldy Backpack"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.body_buttons_blue_sky
-msgctxt "STRINGS.SKIN_NAMES.body_buttons_blue_sky"
-msgid "Buttoned Shirt"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.legs_pants_basic_tan_cream
-msgctxt "STRINGS.SKIN_NAMES.legs_pants_basic_tan_cream"
-msgid "Pants"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.wathgrithr_formal
-msgctxt "STRINGS.SKIN_NAMES.wathgrithr_formal"
-msgid "Guest of Honor"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.backpack_camping_orange_carrot
-msgctxt "STRINGS.SKIN_NAMES.backpack_camping_orange_carrot"
-msgid "Rucksack"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.none
-msgctxt "STRINGS.SKIN_NAMES.none"
-msgid "Default"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.hand_wilson_formal
-msgctxt "STRINGS.SKIN_NAMES.hand_wilson_formal"
-msgid "Tuxedo Gloves"
+#. STRINGS.SKIN_NAMES.wolfgang_survivor
+msgctxt "STRINGS.SKIN_NAMES.wolfgang_survivor"
+msgid "The Survivor"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.body_buttons_green_laurel
@@ -6501,59 +6676,34 @@ msgctxt "STRINGS.SKIN_NAMES.body_cardigan_white_ghost"
 msgid "Cardigan"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.backpack_smallbird
-msgctxt "STRINGS.SKIN_NAMES.backpack_smallbird"
-msgid "Smallbird Satchel"
-msgstr ""
-
 #. STRINGS.SKIN_NAMES.missing
 msgctxt "STRINGS.SKIN_NAMES.missing"
 msgid "Thingamabob"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.backpack_camping_red_koalefant
-msgctxt "STRINGS.SKIN_NAMES.backpack_camping_red_koalefant"
-msgid "Rucksack"
+#. STRINGS.SKIN_NAMES.body_wilson_formal
+msgctxt "STRINGS.SKIN_NAMES.body_wilson_formal"
+msgid "Tuxedo"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.legs_skirt_plaid_green_pistachio
-msgctxt "STRINGS.SKIN_NAMES.legs_skirt_plaid_green_pistachio"
-msgid "Plaid Skirt"
+#. STRINGS.SKIN_NAMES.wx78_formal
+msgctxt "STRINGS.SKIN_NAMES.wx78_formal"
+msgid "Guest of Honor"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.body_suspenders_pink_pearl
-msgctxt "STRINGS.SKIN_NAMES.body_suspenders_pink_pearl"
-msgid "Suspension Shirt"
+#. STRINGS.SKIN_NAMES.body_wendy_survivor
+msgctxt "STRINGS.SKIN_NAMES.body_wendy_survivor"
+msgid "Shredded Skirt"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.body_trimmed_blouse_red_higgsbury
-msgctxt "STRINGS.SKIN_NAMES.body_trimmed_blouse_red_higgsbury"
-msgid "Pleated Shirt"
+#. STRINGS.SKIN_NAMES.wilson_formal
+msgctxt "STRINGS.SKIN_NAMES.wilson_formal"
+msgid "Guest of Honor"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.legs_skirt_plaid_blue_cornflower
-msgctxt "STRINGS.SKIN_NAMES.legs_skirt_plaid_blue_cornflower"
-msgid "Plaid Skirt"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.legs_skirt_basic_tan_cream
-msgctxt "STRINGS.SKIN_NAMES.legs_skirt_basic_tan_cream"
-msgid "Skirt"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.legs_skirt_basic_grey_dark
-msgctxt "STRINGS.SKIN_NAMES.legs_skirt_basic_grey_dark"
-msgid "Skirt"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.backpack_poop
-msgctxt "STRINGS.SKIN_NAMES.backpack_poop"
-msgid "Poop Bag"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.legs_skirt_basic_black_scribble
-msgctxt "STRINGS.SKIN_NAMES.legs_skirt_basic_black_scribble"
-msgid "Skirt"
+#. STRINGS.SKIN_NAMES.body_tweedvest_tan_grass
+msgctxt "STRINGS.SKIN_NAMES.body_tweedvest_tan_grass"
+msgid "Tweed Waistcoat"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.body_trimmed_blouse_white_pure
@@ -6571,19 +6721,19 @@ msgctxt "STRINGS.SKIN_NAMES.webber_formal"
 msgid "Guest of Honor"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.feet_sneakers_green_cactus
-msgctxt "STRINGS.SKIN_NAMES.feet_sneakers_green_cactus"
-msgid "Sneakers"
+#. STRINGS.SKIN_NAMES.willow_formal
+msgctxt "STRINGS.SKIN_NAMES.willow_formal"
+msgid "Guest of Honor"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.legs_checkered_pleats_green_laurel
-msgctxt "STRINGS.SKIN_NAMES.legs_checkered_pleats_green_laurel"
-msgid "Checkered Trousers"
+#. STRINGS.SKIN_NAMES.body_suspenders_yellow_flax
+msgctxt "STRINGS.SKIN_NAMES.body_suspenders_yellow_flax"
+msgid "Suspension Shirt"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.legs_checkered_pleats_blue_cornflower
-msgctxt "STRINGS.SKIN_NAMES.legs_checkered_pleats_blue_cornflower"
-msgid "Checkered Trousers"
+#. STRINGS.SKIN_NAMES.wes_survivor
+msgctxt "STRINGS.SKIN_NAMES.wes_survivor"
+msgid "The Survivor"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.body_wendy_formal
@@ -6591,9 +6741,74 @@ msgctxt "STRINGS.SKIN_NAMES.body_wendy_formal"
 msgid "Party Frock"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.hand_beltedgloves_brown_beaver
-msgctxt "STRINGS.SKIN_NAMES.hand_beltedgloves_brown_beaver"
-msgid "Buckled Gloves"
+#. STRINGS.SKIN_NAMES.wes_formal
+msgctxt "STRINGS.SKIN_NAMES.wes_formal"
+msgid "Guest of Honor"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wendy_survivor
+msgctxt "STRINGS.SKIN_NAMES.wendy_survivor"
+msgid "The Survivor"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wathgrithr_formal
+msgctxt "STRINGS.SKIN_NAMES.wathgrithr_formal"
+msgid "Guest of Honor"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.torch_rag
+msgctxt "STRINGS.SKIN_NAMES.torch_rag"
+msgid "Weatherbeaten Torch"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.hand_drivergloves_white_ivory
+msgctxt "STRINGS.SKIN_NAMES.hand_drivergloves_white_ivory"
+msgid "Driving Gloves"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.legs_skirt_plaid_green_pistachio
+msgctxt "STRINGS.SKIN_NAMES.legs_skirt_plaid_green_pistachio"
+msgid "Plaid Skirt"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.legs_skirt_plaid_blue_cornflower
+msgctxt "STRINGS.SKIN_NAMES.legs_skirt_plaid_blue_cornflower"
+msgid "Plaid Skirt"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.legs_skirt_basic_tan_cream
+msgctxt "STRINGS.SKIN_NAMES.legs_skirt_basic_tan_cream"
+msgid "Skirt"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.legs_skirt_basic_black_scribble
+msgctxt "STRINGS.SKIN_NAMES.legs_skirt_basic_black_scribble"
+msgid "Skirt"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.legs_pants_basic_tan_cream
+msgctxt "STRINGS.SKIN_NAMES.legs_pants_basic_tan_cream"
+msgid "Pants"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.legs_checkered_pleats_green_laurel
+msgctxt "STRINGS.SKIN_NAMES.legs_checkered_pleats_green_laurel"
+msgid "Checkered Trousers"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.hand_longgloves_grey_battleship
+msgctxt "STRINGS.SKIN_NAMES.hand_longgloves_grey_battleship"
+msgid "Long Gloves"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.feet_sneakers_red_auburn
+msgctxt "STRINGS.SKIN_NAMES.feet_sneakers_red_auburn"
+msgid "Sneakers"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.legs_checkered_pleats_blue_cornflower
+msgctxt "STRINGS.SKIN_NAMES.legs_checkered_pleats_blue_cornflower"
+msgid "Checkered Trousers"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.hand_shortgloves_white_smoke
@@ -6611,74 +6826,9 @@ msgctxt "STRINGS.SKIN_NAMES.hand_shortgloves_blue_cornflower"
 msgid "Hand Covers"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.hand_drivergloves_white_ivory
-msgctxt "STRINGS.SKIN_NAMES.hand_drivergloves_white_ivory"
-msgid "Driving Gloves"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.body_sweatervest_blue_snowbird
-msgctxt "STRINGS.SKIN_NAMES.body_sweatervest_blue_snowbird"
-msgid "Sweater Vest"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.body_tweedvest_brown_chocolate
-msgctxt "STRINGS.SKIN_NAMES.body_tweedvest_brown_chocolate"
-msgid "Tweed Waistcoat"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.body_wolfgang_formal
-msgctxt "STRINGS.SKIN_NAMES.body_wolfgang_formal"
-msgid "Mess Dress"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.hand_longgloves_yellow_straw
-msgctxt "STRINGS.SKIN_NAMES.hand_longgloves_yellow_straw"
-msgid "Long Gloves"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.hand_longgloves_grey_battleship
-msgctxt "STRINGS.SKIN_NAMES.hand_longgloves_grey_battleship"
-msgid "Long Gloves"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.hand_longgloves_green_hunters
-msgctxt "STRINGS.SKIN_NAMES.hand_longgloves_green_hunters"
-msgid "Long Gloves"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.feet_sneakers_blue_catcoon
-msgctxt "STRINGS.SKIN_NAMES.feet_sneakers_blue_catcoon"
-msgid "Sneakers"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.feet_sneakers_red_auburn
-msgctxt "STRINGS.SKIN_NAMES.feet_sneakers_red_auburn"
-msgid "Sneakers"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.legs_pants_basic_brown_sepia
-msgctxt "STRINGS.SKIN_NAMES.legs_pants_basic_brown_sepia"
-msgid "Pants"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.feet_formal_lowheel_black_scribble
-msgctxt "STRINGS.SKIN_NAMES.feet_formal_lowheel_black_scribble"
-msgid "Low Heels"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.body_woodie_formal
-msgctxt "STRINGS.SKIN_NAMES.body_woodie_formal"
-msgid "Canadian Jacket"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.feet_formal_highheel_white_pure
-msgctxt "STRINGS.SKIN_NAMES.feet_formal_highheel_white_pure"
-msgid "Pumps"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.body_trenchcoat_brown_fawn
-msgctxt "STRINGS.SKIN_NAMES.body_trenchcoat_brown_fawn"
-msgid "Trench Coat"
+#. STRINGS.SKIN_NAMES.body_wx78_survivor
+msgctxt "STRINGS.SKIN_NAMES.body_wx78_survivor"
+msgid "Battered Body Case"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.body_trenchcoat_yellow_straw
@@ -6686,24 +6836,34 @@ msgctxt "STRINGS.SKIN_NAMES.body_trenchcoat_yellow_straw"
 msgid "Trench Coat"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.body_cardigan_teal_jade
-msgctxt "STRINGS.SKIN_NAMES.body_cardigan_teal_jade"
-msgid "Cardigan"
+#. STRINGS.SKIN_NAMES.hand_longgloves_yellow_straw
+msgctxt "STRINGS.SKIN_NAMES.hand_longgloves_yellow_straw"
+msgid "Long Gloves"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.body_polo_red_higgsbury
-msgctxt "STRINGS.SKIN_NAMES.body_polo_red_higgsbury"
-msgid "Collared Shirt"
+#. STRINGS.SKIN_NAMES.body_trenchcoat_brown_fawn
+msgctxt "STRINGS.SKIN_NAMES.body_trenchcoat_brown_fawn"
+msgid "Trench Coat"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.hand_shortgloves_black_scribble
-msgctxt "STRINGS.SKIN_NAMES.hand_shortgloves_black_scribble"
-msgid "Hand Covers"
+#. STRINGS.SKIN_NAMES.hand_longgloves_green_hunters
+msgctxt "STRINGS.SKIN_NAMES.hand_longgloves_green_hunters"
+msgid "Long Gloves"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.body_wilson_formal
-msgctxt "STRINGS.SKIN_NAMES.body_wilson_formal"
-msgid "Tuxedo"
+#. STRINGS.SKIN_NAMES.feet_sneakers_green_cactus
+msgctxt "STRINGS.SKIN_NAMES.feet_sneakers_green_cactus"
+msgid "Sneakers"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.feet_sneakers_blue_catcoon
+msgctxt "STRINGS.SKIN_NAMES.feet_sneakers_blue_catcoon"
+msgid "Sneakers"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.feet_formal_highheel_white_pure
+msgctxt "STRINGS.SKIN_NAMES.feet_formal_highheel_white_pure"
+msgid "Pumps"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.feet_fleece_boot_brown_sepia
@@ -6711,19 +6871,9 @@ msgctxt "STRINGS.SKIN_NAMES.feet_fleece_boot_brown_sepia"
 msgid "Canadian Boots"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.body_tshirt_white_smoke
-msgctxt "STRINGS.SKIN_NAMES.body_tshirt_white_smoke"
-msgid "T-Shirt"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.body_tweedvest_tan_grass
-msgctxt "STRINGS.SKIN_NAMES.body_tweedvest_tan_grass"
-msgid "Tweed Waistcoat"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.body_tweedvest_grey_steel
-msgctxt "STRINGS.SKIN_NAMES.body_tweedvest_grey_steel"
-msgid "Tweed Waistcoat"
+#. STRINGS.SKIN_NAMES.cookpot_survival
+msgctxt "STRINGS.SKIN_NAMES.cookpot_survival"
+msgid "Camping Crock Pot"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.body_wathgrithr_formal
@@ -6731,34 +6881,69 @@ msgctxt "STRINGS.SKIN_NAMES.body_wathgrithr_formal"
 msgid "Valkyrie Armor"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.backpack_buckle_grey_pewter
-msgctxt "STRINGS.SKIN_NAMES.backpack_buckle_grey_pewter"
-msgid "Buckled Backpack"
-msgstr ""
-
 #. STRINGS.SKIN_NAMES.body_trimmed_blouse_yellow_flax
 msgctxt "STRINGS.SKIN_NAMES.body_trimmed_blouse_yellow_flax"
 msgid "Pleated Shirt"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.body_willow_formal
-msgctxt "STRINGS.SKIN_NAMES.body_willow_formal"
-msgid "Cocktail Dress"
+#. STRINGS.SKIN_NAMES.body_willow_survivor
+msgctxt "STRINGS.SKIN_NAMES.body_willow_survivor"
+msgid "Raggedy Rags"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.backpack_buckle_navy_phthalo
-msgctxt "STRINGS.SKIN_NAMES.backpack_buckle_navy_phthalo"
-msgid "Buckled Backpack"
+#. STRINGS.SKIN_NAMES.body_tshirt_white_smoke
+msgctxt "STRINGS.SKIN_NAMES.body_tshirt_white_smoke"
+msgid "T-Shirt"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.body_sweatervest_grey_silver
-msgctxt "STRINGS.SKIN_NAMES.body_sweatervest_grey_silver"
-msgid "Sweater Vest"
+#. STRINGS.SKIN_NAMES.body_polo_blue_denim
+msgctxt "STRINGS.SKIN_NAMES.body_polo_blue_denim"
+msgid "Collared Shirt"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.body_suspenders_yellow_flax
-msgctxt "STRINGS.SKIN_NAMES.body_suspenders_yellow_flax"
-msgid "Suspension Shirt"
+#. STRINGS.SKIN_NAMES.body_wolfgang_survivor
+msgctxt "STRINGS.SKIN_NAMES.body_wolfgang_survivor"
+msgid "Patched Bodysuit"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_wolfgang_formal
+msgctxt "STRINGS.SKIN_NAMES.body_wolfgang_formal"
+msgid "Mess Dress"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.woodie_survivor
+msgctxt "STRINGS.SKIN_NAMES.woodie_survivor"
+msgid "The Survivor"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_webber_survivor
+msgctxt "STRINGS.SKIN_NAMES.body_webber_survivor"
+msgid "Bandaged Body"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.willow_survivor
+msgctxt "STRINGS.SKIN_NAMES.willow_survivor"
+msgid "The Survivor"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.backpack_camping_green_viridian
+msgctxt "STRINGS.SKIN_NAMES.backpack_camping_green_viridian"
+msgid "Rucksack"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_tweedvest_grey_steel
+msgctxt "STRINGS.SKIN_NAMES.body_tweedvest_grey_steel"
+msgid "Tweed Waistcoat"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_wx78_formal
+msgctxt "STRINGS.SKIN_NAMES.body_wx78_formal"
+msgid "Formal Body Shell"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wickerbottom_survivor
+msgctxt "STRINGS.SKIN_NAMES.wickerbottom_survivor"
+msgid "The Survivor"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.body_silk_loungewear_red_cranberry
@@ -6771,44 +6956,9 @@ msgctxt "STRINGS.SKIN_NAMES.body_silk_loungewear_black_davys"
 msgid "Silk Loungewear"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.wilson_formal
-msgctxt "STRINGS.SKIN_NAMES.wilson_formal"
-msgid "Guest of Honor"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.backpack_camping_green_viridian
-msgctxt "STRINGS.SKIN_NAMES.backpack_camping_green_viridian"
-msgid "Rucksack"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.body_polo_blue_denim
-msgctxt "STRINGS.SKIN_NAMES.body_polo_blue_denim"
-msgid "Collared Shirt"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.body_wx78_formal
-msgctxt "STRINGS.SKIN_NAMES.body_wx78_formal"
-msgid "Formal Body Shell"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.body_cardigan_black_jet
-msgctxt "STRINGS.SKIN_NAMES.body_cardigan_black_jet"
-msgid "Cardigan"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.backpack_rabbit
-msgctxt "STRINGS.SKIN_NAMES.backpack_rabbit"
-msgid "Rabbit Rucksack"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.backpack_mushy
-msgctxt "STRINGS.SKIN_NAMES.backpack_mushy"
-msgid "Moldy Backpack"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.backpack_buckle_red_rook
-msgctxt "STRINGS.SKIN_NAMES.backpack_buckle_red_rook"
-msgid "Buckled Backpack"
+#. STRINGS.SKIN_NAMES.body_silk_eveningrobe_blue_frost
+msgctxt "STRINGS.SKIN_NAMES.body_silk_eveningrobe_blue_frost"
+msgid "Silk Robe"
 msgstr ""
 
 #. STRINGS.RABBIT_MEAT_BATTLECRY.1
@@ -6996,6 +7146,246 @@ msgctxt "STRINGS.PIG_TALK_LOOKATWILSON.4"
 msgid "YOU HAS MEAT?"
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.backpack_buckle_red_rook
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_buckle_red_rook"
+msgid "A 'rook red' colored backpack with a big, curved buckle."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.webber_survivor
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.webber_survivor"
+msgid "Webber looks a little worse for the wear."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_silk_eveningrobe_pink_ewecus
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_silk_eveningrobe_pink_ewecus"
+msgid "So smooth, you'll never want to let go of this 'ewecus pink' colored robe."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_wes_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wes_formal"
+msgid "A fancy flowing shirt with formal trousers."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_silk_eveningrobe_red_rump
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_silk_eveningrobe_red_rump"
+msgid "So smooth, you'll never want to let go of this 'rump red' colored robe."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_webber_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_webber_formal"
+msgid "A black blazer with a red scarf."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_sweatervest_grey_silver
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_sweatervest_grey_silver"
+msgid "A 'cumulus gray' colored vest made of the finest beefalo wool. Unfortunately, it's not actually warm."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.legs_pants_basic_black_scribble
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_pants_basic_black_scribble"
+msgid "Wearing these 'scribble black' colored pants won't help you survive."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_wes_survivor
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wes_survivor"
+msgid "If these clothes could talk just imagine the stories they would tell."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.backpack_beefalo
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_beefalo"
+msgid "A backpack made in the shape of a little beefalo. It's so cute and fluffy!"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_tshirt_grey_battleship
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_tshirt_grey_battleship"
+msgid "A 'cumulus gray' colored shirt. Wilson is working on a W-shirt, but this prototype came out more T-shaped."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_suspenders_white_pure
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_suspenders_white_pure"
+msgid "Wearing this 'pure white' colored shirt makes you feel like the cat's pajamas."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_cardigan_red_cardinal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_cardigan_red_cardinal"
+msgid "A 'combobulated red' colored cardigan. As soft as it is comfortable."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.none
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.none"
+msgid "Your usual look."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.feet_ridingboot_white_pure
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_ridingboot_white_pure"
+msgid "A pair of 'pure white' colored riding boots. Yee-haw!"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wilson_survivor
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wilson_survivor"
+msgid "As a scientist, Wilson is well equipped to investigate the natural world."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_buttons_pink_hibiscus
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_buttons_pink_hibiscus"
+msgid "A shirt that buttons up the front, in a 'pigman pink' color. Luckily for you, the fabric is a non-iron material. Unfortunately, the placket will still wrinkle as you wear it."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.backpack_bat
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_bat"
+msgid "Behold, a batty black bat-shaped backpack. Bat."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wathgrithr_survivor
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wathgrithr_survivor"
+msgid "A warrior cannot eat until she defeats some meat."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.legs_pants_basic_grey_dark
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_pants_basic_grey_dark"
+msgid "Wearing these 'stormcloud gray' colored pants won't help you survive."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_silk_loungewear_white_marble
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_silk_loungewear_white_marble"
+msgid "Bathe under the new moon in comfort and luxury with this silk 'marble white' colored loungewear."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_flannel_purple_grape
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_flannel_purple_grape"
+msgid "Well, it's not buckskin but it's still skookum. It's 'tentacle purple' colored with no foofaraw."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_buttons_blue_sky
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_buttons_blue_sky"
+msgid "A shirt that buttons up the front, in a 'schematic blue' color. Luckily for you, the fabric is a non-iron material. Unfortunately, the placket will still wrinkle as you wear it."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.backpack_camping_orange_carrot
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_camping_orange_carrot"
+msgid "A rustic rucksack in a 'carrot orange' color."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.hand_wilson_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_wilson_formal"
+msgid "These gloves will hide the chemical stains on your hands when you dress up for formal occasions."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_cardigan_teal_jade
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_cardigan_teal_jade"
+msgid "A 'doydoy teal' colored cardigan. As soft as it is comfortable."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.backpack_smallbird
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_smallbird"
+msgid "This smallbird won't ever grow up and reject you like a real smallbird would."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.backpack_camping_red_koalefant
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_camping_red_koalefant"
+msgid "A rustic rucksack in a 'koalefant trunk red' color."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_suspenders_pink_pearl
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_suspenders_pink_pearl"
+msgid "Wearing this 'pigman pink' colored shirt makes you feel like the cat's pajamas."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_trimmed_blouse_red_higgsbury
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_trimmed_blouse_red_higgsbury"
+msgid "Get your glad rags on with this 'Higgsbury red' colored shirt."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.backpack_poop
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_poop"
+msgid "A bag shaped like feces. Obviously it was designed by somebody who enjoys sophomoric humor."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.feet_formal_lowheel_black_scribble
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_formal_lowheel_black_scribble"
+msgid "Low-heeled 'scribble black' colored dress shoes."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_wathgrithr_survivor
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wathgrithr_survivor"
+msgid "This costume looks a little the worse for wear, but the performance must go on."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_wickerbottom_survivor
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wickerbottom_survivor"
+msgid "Living outdoors may be healthy, but it's sure hard on your clothing."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.hand_beltedgloves_brown_beaver
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_beltedgloves_brown_beaver"
+msgid "'Werebeaver brown' colored gloves with a buckle on the back to help you hold it together."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_sweatervest_blue_snowbird
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_sweatervest_blue_snowbird"
+msgid "An 'electrolytic blue' colored vest made of the finest beefalo wool. Unfortunately, it's not actually warm."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_tweedvest_brown_chocolate
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_tweedvest_brown_chocolate"
+msgid "Don't get lost in the tweeds wearing this 'insufficient chocolate brown' colored souvenir from the Village of Tweed."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_wilson_survivor
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wilson_survivor"
+msgid "This outfit may have been attacked by weevils. Or something worse."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.legs_pants_basic_brown_sepia
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_pants_basic_brown_sepia"
+msgid "Wearing these 'werebeaver brown' colored pants won't help you survive."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_woodie_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_woodie_formal"
+msgid "A real Canadian Jacket, made for real Canadians. (Not out of real Canadians.)"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_polo_red_higgsbury
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_polo_red_higgsbury"
+msgid "A 'Higgsbury red' colored polo shirt. Don't let your collar flap in the wind."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.hand_shortgloves_black_scribble
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_shortgloves_black_scribble"
+msgid "These are gloves. They cover your hands. This pair is 'scribble black' colored."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_woodie_survivor
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_woodie_survivor"
+msgid "Trees are great, but clothing doesn't grow on them."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.backpack_buckle_grey_pewter
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_buckle_grey_pewter"
+msgid "A 'dismal gray' colored backpack with a big, curved buckle."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_willow_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_willow_formal"
+msgid "Everybody needs a little black dress. (Conveniently, it hides ash stains.)"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.backpack_buckle_navy_phthalo
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_buckle_navy_phthalo"
+msgid "A 'monastral blue' colored backpack with a big, curved buckle."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_cardigan_black_jet
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_cardigan_black_jet"
+msgid "A 'disilluminated black' colored cardigan. As soft as it is comfortable."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.backpack_rabbit
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_rabbit"
+msgid "Go down the rabbit hole with this rabbit-shaped backpack."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.backpack_basic_blue_catcoon
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_basic_blue_catcoon"
 msgid "Carry your stuff in a 'catcoon blue' colored backpack."
@@ -7021,14 +7411,9 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_sweatervest_red_firehound"
 msgid "A 'firehound red' colored vest made of the finest beefalo wool. Unfortunately, it's not actually warm."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.body_silk_eveningrobe_pink_ewecus
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_silk_eveningrobe_pink_ewecus"
-msgid "So smooth, you'll never want to let go of this 'ewecus pink' colored robe."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.body_wes_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wes_formal"
-msgid "A fancy flowing shirt with formal trousers."
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_survivor
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_survivor"
+msgid "Exposure to the elements causes corrosion."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.feet_maryjanes_white_pure
@@ -7036,24 +7421,14 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_maryjanes_white_pure"
 msgid "Hit the jackpot with these classic 'pure white' colored Mary Janes."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.body_silk_eveningrobe_red_rump
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_silk_eveningrobe_red_rump"
-msgid "So smooth, you'll never want to let go of this 'rump red' colored robe."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.body_webber_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_webber_formal"
-msgid "A black blazer with a red scarf."
+#. STRINGS.SKIN_DESCRIPTIONS.woodie_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.woodie_formal"
+msgid "Woodie puts bear fat in his hair when he goes out."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_sweatervest_brown_beaver
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_sweatervest_brown_beaver"
 msgid "A 'werebeaver brown' colored vest made of the finest beefalo wool. Unfortunately, it's not actually warm."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.legs_pants_basic_black_scribble
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_pants_basic_black_scribble"
-msgid "Wearing these 'scribble black' colored pants won't help you survive."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_wickerbottom_formal
@@ -7064,26 +7439,6 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.body_tshirt_red_higgsbury
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_tshirt_red_higgsbury"
 msgid "A 'Higgsbury red' colored shirt. Wilson is working on a W-shirt, but this prototype came out more T-shaped."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.backpack_beefalo
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_beefalo"
-msgid "A backpack made in the shape of a little beefalo. It's so cute and fluffy!"
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.body_tshirt_grey_battleship
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_tshirt_grey_battleship"
-msgid "A 'cumulus gray' colored shirt. Wilson is working on a W-shirt, but this prototype came out more T-shaped."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.body_suspenders_white_pure
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_suspenders_white_pure"
-msgid "Wearing this 'pure white' colored shirt makes you feel like the cat's pajamas."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.body_cardigan_red_cardinal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_cardigan_red_cardinal"
-msgid "A 'combobulated red' colored cardigan. As soft as it is comfortable."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_polo_white_marble
@@ -7106,9 +7461,9 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_flannel_orange_lumberjack"
 msgid "Well, it's not buckskin but it's still skookum. It's 'lumberjack orange' colored with no foofaraw."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.feet_ridingboot_white_pure
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_ridingboot_white_pure"
-msgid "A pair of 'pure white' colored riding boots. Yee-haw!"
+#. STRINGS.SKIN_DESCRIPTIONS.legs_skirt_basic_grey_dark
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_skirt_basic_grey_dark"
+msgid "Wearing this 'stormcloud gray' colored skirt won't help you survive."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.feet_formal_stiletto_black_scribble
@@ -7121,54 +7476,14 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.wickerbottom_formal"
 msgid "Since Wickerbottom doesn't sleep, she can dance all night."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.wx78_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_formal"
-msgid "A moustached mechanical man."
-msgstr ""
-
 #. STRINGS.SKIN_DESCRIPTIONS.backpack_spider
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_spider"
 msgid "Wearing this backpack will let you make an arachnophobe's day a little bit worse. Or, you could ask yourself 'What would Willow do?' and burn it! Burn it with fire!"
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.woodie_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.woodie_formal"
-msgid "Woodie puts bear fat on his hair when he goes out."
-msgstr ""
-
 #. STRINGS.SKIN_DESCRIPTIONS.body_flannel_blue_snowbird
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_flannel_blue_snowbird"
 msgid "Well, it's not buckskin but it's still skookum. It's 'electrolytic blue' colored with no foofaraw."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.body_silk_eveningrobe_blue_frost
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_silk_eveningrobe_blue_frost"
-msgid "So smooth, you'll never want to let go of this 'high elevation blue' colored robe."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.body_buttons_pink_hibiscus
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_buttons_pink_hibiscus"
-msgid "A shirt that buttons up the front, in a 'pigman pink' color. Luckily for you, the fabric is a non-iron material. Unfortunately, the placket will still wrinkle as you wear it."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.willow_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.willow_formal"
-msgid "Willow prefers events that include bonfires or fireworks."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.wes_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.wes_formal"
-msgid "Formal Wes requires extra pomade."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.wendy_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.wendy_formal"
-msgid "Wendy is not cheered by party games."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.backpack_bat
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_bat"
-msgid "Behold, a batty black bat-shaped backpack. Bat."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_silk_eveningrobe_yellow_goldenrod
@@ -7181,19 +7496,14 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_basic_green_olive"
 msgid "Carry your stuff in a 'forever green' colored backpack."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.legs_pants_basic_grey_dark
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_pants_basic_grey_dark"
-msgid "Wearing these 'stormcloud gray' colored pants won't help you survive."
-msgstr ""
-
 #. STRINGS.SKIN_DESCRIPTIONS.body_tshirt_purple_mauve
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_tshirt_purple_mauve"
 msgid "A 'snail mucus purple' colored shirt. Wilson is working on a W-shirt, but this prototype came out more T-shaped."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.body_silk_loungewear_white_marble
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_silk_loungewear_white_marble"
-msgid "Bathe under the new moon in comfort and luxury with this silk 'marble white' colored loungewear."
+#. STRINGS.SKIN_DESCRIPTIONS.wendy_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wendy_formal"
+msgid "Wendy is not cheered by party games."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.legs_skirt_basic_brown_sepia
@@ -7201,39 +7511,14 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_skirt_basic_brown_sepia"
 msgid "Wearing this 'werebeaver brown' colored skirt won't help you survive."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.body_flannel_purple_grape
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_flannel_purple_grape"
-msgid "Well, it's not buckskin but it's still skookum. It's 'tentacle purple' colored with no foofaraw."
+#. STRINGS.SKIN_DESCRIPTIONS.backpack_mushy
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_mushy"
+msgid "A backpack which has grown moldy from disuse."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.body_buttons_blue_sky
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_buttons_blue_sky"
-msgid "A shirt that buttons up the front, in a 'schematic blue' color. Luckily for you, the fabric is a non-iron material. Unfortunately, the placket will still wrinkle as you wear it."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.legs_pants_basic_tan_cream
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_pants_basic_tan_cream"
-msgid "Wearing these 'no-tan-lines tan' colored pants won't help you survive."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.wathgrithr_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.wathgrithr_formal"
-msgid "She resembles a Visigothic princess."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.backpack_camping_orange_carrot
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_camping_orange_carrot"
-msgid "A rustic rucksack in a 'carrot orange' color."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.none
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.none"
-msgid "Your usual look."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.hand_wilson_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_wilson_formal"
-msgid "These gloves will hide the chemical stains on your hands when you dress up for formal occasions."
+#. STRINGS.SKIN_DESCRIPTIONS.wolfgang_survivor
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wolfgang_survivor"
+msgid "In the wilderness, only the mighty survive."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_buttons_green_laurel
@@ -7246,59 +7531,34 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_cardigan_white_ghost"
 msgid "A 'ghost white' colored cardigan. As soft as it is comfortable."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.backpack_smallbird
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_smallbird"
-msgid "This smallbird won't ever grow up and reject you like a real smallbird would."
-msgstr ""
-
 #. STRINGS.SKIN_DESCRIPTIONS.missing
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.missing"
 msgid "This item completely mystifies you"
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.backpack_camping_red_koalefant
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_camping_red_koalefant"
-msgid "A rustic rucksack in a 'koalefant trunk red' color."
+#. STRINGS.SKIN_DESCRIPTIONS.body_wilson_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wilson_formal"
+msgid "Some events ask for white tie, and some ask for black tie. Well, this is red tie."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.legs_skirt_plaid_green_pistachio
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_skirt_plaid_green_pistachio"
-msgid "This 'science experiment green' colored skirt isn't a proper kilt, but you feel vaguely Scottish anyway."
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_formal"
+msgid "A moustached mechanical man."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.body_suspenders_pink_pearl
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_suspenders_pink_pearl"
-msgid "Wearing this 'pigman pink' colored shirt makes you feel like the cat's pajamas."
+#. STRINGS.SKIN_DESCRIPTIONS.body_wendy_survivor
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wendy_survivor"
+msgid "This skirt has had a close brush with the forces of darkness."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.body_trimmed_blouse_red_higgsbury
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_trimmed_blouse_red_higgsbury"
-msgid "Get your glad rags on with this 'Higgsbury red' colored shirt."
+#. STRINGS.SKIN_DESCRIPTIONS.wilson_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wilson_formal"
+msgid "Formal Wilson is unhappy Wilson."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.legs_skirt_plaid_blue_cornflower
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_skirt_plaid_blue_cornflower"
-msgid "This 'rubber glove blue' colored skirt isn't a proper kilt, but you feel vaguely Scottish anyway."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.legs_skirt_basic_tan_cream
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_skirt_basic_tan_cream"
-msgid "Wearing this 'no-tan-lines tan' colored skirt won't help you survive."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.legs_skirt_basic_grey_dark
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_skirt_basic_grey_dark"
-msgid "Wearing this 'stormcloud gray' colored skirt won't help you survive."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.backpack_poop
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_poop"
-msgid "A bag shaped like feces. Obviously it was designed by somebody who enjoys sophomoric humor."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.legs_skirt_basic_black_scribble
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_skirt_basic_black_scribble"
-msgid "Wearing this 'scribble black' colored skirt won't help you survive."
+#. STRINGS.SKIN_DESCRIPTIONS.body_tweedvest_tan_grass
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_tweedvest_tan_grass"
+msgid "Don't get lost in the tweeds wearing this 'dry grass tan' colored souvenir from the Village of Tweed."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_trimmed_blouse_white_pure
@@ -7316,19 +7576,19 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.webber_formal"
 msgid "Webber takes parties seriously."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.feet_sneakers_green_cactus
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_sneakers_green_cactus"
-msgid "Wear these 'cactus green' colored sneakers surreptitiously."
+#. STRINGS.SKIN_DESCRIPTIONS.willow_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.willow_formal"
+msgid "Willow prefers events that include bonfires or fireworks."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.legs_checkered_pleats_green_laurel
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_checkered_pleats_green_laurel"
-msgid "These 'willful green' colored pants are perfect for playing checkers, or checking items off your to-do list."
+#. STRINGS.SKIN_DESCRIPTIONS.body_suspenders_yellow_flax
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_suspenders_yellow_flax"
+msgid "Wearing this 'follicle yellow' colored shirt makes you feel like the cat's pajamas."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.legs_checkered_pleats_blue_cornflower
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_checkered_pleats_blue_cornflower"
-msgid "These 'rubber glove blue' colored pants are perfect for playing checkers, or checking items off your to-do list."
+#. STRINGS.SKIN_DESCRIPTIONS.wes_survivor
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wes_survivor"
+msgid "Even mimes can fight if confronted with a monster."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_wendy_formal
@@ -7336,9 +7596,74 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wendy_formal"
 msgid "A cute party dress with puffed sleeves."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.hand_beltedgloves_brown_beaver
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_beltedgloves_brown_beaver"
-msgid "'Werebeaver brown' colored gloves with a buckle on the back to help you hold it together."
+#. STRINGS.SKIN_DESCRIPTIONS.wes_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wes_formal"
+msgid "Formal Wes requires extra pomade."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wendy_survivor
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wendy_survivor"
+msgid "Wendy is actually pretty good at surviving."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wathgrithr_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wathgrithr_formal"
+msgid "She resembles a Visigothic princess."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.torch_rag
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.torch_rag"
+msgid "Give the look of your torch some flare with these hastily wrapped, desiccated rags. Smoky!"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.hand_drivergloves_white_ivory
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_drivergloves_white_ivory"
+msgid "These 'houndbone white' colored gloves are worn by good looking people who look cool."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.legs_skirt_plaid_green_pistachio
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_skirt_plaid_green_pistachio"
+msgid "This 'science experiment green' colored skirt isn't a proper kilt, but you feel vaguely Scottish anyway."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.legs_skirt_plaid_blue_cornflower
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_skirt_plaid_blue_cornflower"
+msgid "This 'rubber glove blue' colored skirt isn't a proper kilt, but you feel vaguely Scottish anyway."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.legs_skirt_basic_tan_cream
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_skirt_basic_tan_cream"
+msgid "Wearing this 'no-tan-lines tan' colored skirt won't help you survive."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.legs_skirt_basic_black_scribble
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_skirt_basic_black_scribble"
+msgid "Wearing this 'scribble black' colored skirt won't help you survive."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.legs_pants_basic_tan_cream
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_pants_basic_tan_cream"
+msgid "Wearing these 'no-tan-lines tan' colored pants won't help you survive."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.legs_checkered_pleats_green_laurel
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_checkered_pleats_green_laurel"
+msgid "These 'willful green' colored pants are perfect for playing checkers, or checking items off your to-do list."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.hand_longgloves_grey_battleship
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_longgloves_grey_battleship"
+msgid "'Cumulus gray' colored gloves suitable for all types of persons, robots, and monsters."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.feet_sneakers_red_auburn
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_sneakers_red_auburn"
+msgid "Wear these 'low pH red' colored sneakers surreptitiously."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.legs_checkered_pleats_blue_cornflower
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_checkered_pleats_blue_cornflower"
+msgid "These 'rubber glove blue' colored pants are perfect for playing checkers, or checking items off your to-do list."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.hand_shortgloves_white_smoke
@@ -7356,74 +7681,9 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_shortgloves_blue_cornflower"
 msgid "These are gloves. They cover your hands. This pair is 'rubber glove blue' colored."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.hand_drivergloves_white_ivory
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_drivergloves_white_ivory"
-msgid "These 'houndbone white' colored gloves are worn by good looking people who look cool."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.body_sweatervest_blue_snowbird
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_sweatervest_blue_snowbird"
-msgid "An 'electrolytic blue' colored vest made of the finest beefalo wool. Unfortunately, it's not actually warm."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.body_tweedvest_brown_chocolate
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_tweedvest_brown_chocolate"
-msgid "Don't get lost in the tweeds wearing this 'insufficient chocolate brown' colored souvenir from the Village of Tweed."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.body_wolfgang_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wolfgang_formal"
-msgid "Formal dinner attire for military officers."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.hand_longgloves_yellow_straw
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_longgloves_yellow_straw"
-msgid "'Sulfuric yellow' colored gloves suitable for all types of persons, robots, and monsters."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.hand_longgloves_grey_battleship
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_longgloves_grey_battleship"
-msgid "'Cumulus gray' colored gloves suitable for all types of persons, robots, and monsters."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.hand_longgloves_green_hunters
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_longgloves_green_hunters"
-msgid "'Forest guardian green' colored gloves suitable for all types of persons, robots, and monsters."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.feet_sneakers_blue_catcoon
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_sneakers_blue_catcoon"
-msgid "Wear these 'catcoon blue' colored sneakers surreptitiously."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.feet_sneakers_red_auburn
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_sneakers_red_auburn"
-msgid "Wear these 'low pH red' colored sneakers surreptitiously."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.legs_pants_basic_brown_sepia
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_pants_basic_brown_sepia"
-msgid "Wearing these 'werebeaver brown' colored pants won't help you survive."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.feet_formal_lowheel_black_scribble
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_formal_lowheel_black_scribble"
-msgid "Low-heeled 'scribble black' colored dress shoes."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.body_woodie_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_woodie_formal"
-msgid "A real Canadian Jacket, made for real Canadians. (Not out of real Canadians.)"
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.feet_formal_highheel_white_pure
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_formal_highheel_white_pure"
-msgid "Dress to the nines in these 'pure white' colored shoes."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.body_trenchcoat_brown_fawn
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_trenchcoat_brown_fawn"
-msgid "A fashionable but unprotective trench coat in a 'werebeaver brown' color."
+#. STRINGS.SKIN_DESCRIPTIONS.body_wx78_survivor
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wx78_survivor"
+msgid "It may have seen better days, but this body is still minimally functional."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_trenchcoat_yellow_straw
@@ -7431,24 +7691,34 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_trenchcoat_yellow_straw"
 msgid "A fashionable but unprotective trench coat in a 'sulfuric yellow' color."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.body_cardigan_teal_jade
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_cardigan_teal_jade"
-msgid "A 'doydoy teal' colored cardigan. As soft as it is comfortable."
+#. STRINGS.SKIN_DESCRIPTIONS.hand_longgloves_yellow_straw
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_longgloves_yellow_straw"
+msgid "'Sulfuric yellow' colored gloves suitable for all types of persons, robots, and monsters."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.body_polo_red_higgsbury
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_polo_red_higgsbury"
-msgid "A 'Higgsbury red' colored polo shirt. Don't let your collar flap in the wind."
+#. STRINGS.SKIN_DESCRIPTIONS.body_trenchcoat_brown_fawn
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_trenchcoat_brown_fawn"
+msgid "A fashionable but unprotective trench coat in a 'werebeaver brown' color."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.hand_shortgloves_black_scribble
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_shortgloves_black_scribble"
-msgid "These are gloves. They cover your hands. This pair is 'scribble black' colored."
+#. STRINGS.SKIN_DESCRIPTIONS.hand_longgloves_green_hunters
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_longgloves_green_hunters"
+msgid "'Forest guardian green' colored gloves suitable for all types of persons, robots, and monsters."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.body_wilson_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wilson_formal"
-msgid "Some events ask for white tie, and some ask for black tie. Well, this is red tie."
+#. STRINGS.SKIN_DESCRIPTIONS.feet_sneakers_green_cactus
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_sneakers_green_cactus"
+msgid "Wear these 'cactus green' colored sneakers surreptitiously."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.feet_sneakers_blue_catcoon
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_sneakers_blue_catcoon"
+msgid "Wear these 'catcoon blue' colored sneakers surreptitiously."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.feet_formal_highheel_white_pure
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_formal_highheel_white_pure"
+msgid "Dress to the nines in these 'pure white' colored shoes."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.feet_fleece_boot_brown_sepia
@@ -7456,19 +7726,9 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_fleece_boot_brown_sepia"
 msgid "Infused with maple syrup and essence of moose. This pair is a tasteful 'werebeaver brown' color."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.body_tshirt_white_smoke
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_tshirt_white_smoke"
-msgid "A 'smoke white' colored shirt. Wilson is working on a W-shirt, but this prototype came out more T-shaped."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.body_tweedvest_tan_grass
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_tweedvest_tan_grass"
-msgid "Don't get lost in the tweeds wearing this 'dry grass tan' colored souvenir from the Village of Tweed."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.body_tweedvest_grey_steel
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_tweedvest_grey_steel"
-msgid "Don't get lost in the tweeds wearing this 'colloidal silver gray' colored souvenir from the Village of Tweed."
+#. STRINGS.SKIN_DESCRIPTIONS.cookpot_survival
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.cookpot_survival"
+msgid "This cooking pot looks kind of beaten up, but the food it cooks still tastes delicious."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_wathgrithr_formal
@@ -7476,34 +7736,69 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wathgrithr_formal"
 msgid "Be a knight in shining armor. Or at least look like one. (It's just a costume, not real armor.)"
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.backpack_buckle_grey_pewter
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_buckle_grey_pewter"
-msgid "A 'dismal gray' colored backpack with a big, curved buckle."
-msgstr ""
-
 #. STRINGS.SKIN_DESCRIPTIONS.body_trimmed_blouse_yellow_flax
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_trimmed_blouse_yellow_flax"
 msgid "Get your glad rags on with this 'follicle yellow' colored shirt."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.body_willow_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_willow_formal"
-msgid "Everybody needs a little black dress. (Conveniently, it hides ash stains.)"
+#. STRINGS.SKIN_DESCRIPTIONS.body_willow_survivor
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_willow_survivor"
+msgid "These clothes aren't good for anything except fueling a fire."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.backpack_buckle_navy_phthalo
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_buckle_navy_phthalo"
-msgid "A 'monastral blue' colored backpack with a big, curved buckle."
+#. STRINGS.SKIN_DESCRIPTIONS.body_tshirt_white_smoke
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_tshirt_white_smoke"
+msgid "A 'smoke white' colored shirt. Wilson is working on a W-shirt, but this prototype came out more T-shaped."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.body_sweatervest_grey_silver
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_sweatervest_grey_silver"
-msgid "A 'cumulus gray' colored vest made of the finest beefalo wool. Unfortunately, it's not actually warm."
+#. STRINGS.SKIN_DESCRIPTIONS.body_polo_blue_denim
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_polo_blue_denim"
+msgid "A 'hyper-intelligent blue' colored polo shirt. Don't let your collar flap in the wind."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.body_suspenders_yellow_flax
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_suspenders_yellow_flax"
-msgid "Wearing this 'follicle yellow' colored shirt makes you feel like the cat's pajamas."
+#. STRINGS.SKIN_DESCRIPTIONS.body_wolfgang_survivor
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wolfgang_survivor"
+msgid "Wearing fur makes you feel like mighty animal!"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_wolfgang_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wolfgang_formal"
+msgid "Formal dinner attire for military officers."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.woodie_survivor
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.woodie_survivor"
+msgid "Woodie looks like he's turning into a tree."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_webber_survivor
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_webber_survivor"
+msgid "Spiderwebs are pretty useful for bandaging scrapes."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.willow_survivor
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.willow_survivor"
+msgid "Willow is taming the wilderness with fire."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.backpack_camping_green_viridian
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_camping_green_viridian"
+msgid "A rustic rucksack in a 'subaqueous megafauna green' color."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_tweedvest_grey_steel
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_tweedvest_grey_steel"
+msgid "Don't get lost in the tweeds wearing this 'colloidal silver gray' colored souvenir from the Village of Tweed."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_wx78_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wx78_formal"
+msgid "But of course it has a cummerbund."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wickerbottom_survivor
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wickerbottom_survivor"
+msgid "Those with knowledge are good at making do in difficult circumstances."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_silk_loungewear_red_cranberry
@@ -7516,44 +7811,9 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_silk_loungewear_black_davys"
 msgid "Bathe under the new moon in comfort and luxury with this silk 'disilluminated black' colored loungewear."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.wilson_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.wilson_formal"
-msgid "Formal Wilson is unhappy Wilson."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.backpack_camping_green_viridian
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_camping_green_viridian"
-msgid "A rustic rucksack in a 'subaqueous megafauna green' color."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.body_polo_blue_denim
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_polo_blue_denim"
-msgid "A 'hyper-intelligent blue' colored polo shirt. Don't let your collar flap in the wind."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.body_wx78_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wx78_formal"
-msgid "But of course it has a cummerbund."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.body_cardigan_black_jet
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_cardigan_black_jet"
-msgid "A 'disilluminated black' colored cardigan. As soft as it is comfortable."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.backpack_rabbit
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_rabbit"
-msgid "Go down the rabbit hole with this rabbit-shaped backpack."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.backpack_mushy
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_mushy"
-msgid "A backpack which has grown moldy from disuse."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.backpack_buckle_red_rook
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_buckle_red_rook"
-msgid "A 'rook red' colored backpack with a big, curved buckle."
+#. STRINGS.SKIN_DESCRIPTIONS.body_silk_eveningrobe_blue_frost
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_silk_eveningrobe_blue_frost"
+msgid "So smooth, you'll never want to let go of this 'high elevation blue' colored robe."
 msgstr ""
 
 #. STRINGS.GREENAMULET_TOOLTIP
@@ -8006,9 +8266,34 @@ msgctxt "STRINGS.SKIN_QUOTES.wolfgang_formal"
 msgid "I used my special moustache wax."
 msgstr ""
 
-#. STRINGS.SKIN_QUOTES.willow_formal
-msgctxt "STRINGS.SKIN_QUOTES.willow_formal"
-msgid "He died before getting to see these beautiful flames."
+#. STRINGS.SKIN_QUOTES.wickerbottom_formal
+msgctxt "STRINGS.SKIN_QUOTES.wickerbottom_formal"
+msgid "Even I let my hair down occasionally."
+msgstr ""
+
+#. STRINGS.SKIN_QUOTES.webber_survivor
+msgctxt "STRINGS.SKIN_QUOTES.webber_survivor"
+msgid "I want to go home."
+msgstr ""
+
+#. STRINGS.SKIN_QUOTES.wilson_survivor
+msgctxt "STRINGS.SKIN_QUOTES.wilson_survivor"
+msgid "There is a scientific solution, here. I know it."
+msgstr ""
+
+#. STRINGS.SKIN_QUOTES.webber_formal
+msgctxt "STRINGS.SKIN_QUOTES.webber_formal"
+msgid "We like parties!"
+msgstr ""
+
+#. STRINGS.SKIN_QUOTES.wendy_survivor
+msgctxt "STRINGS.SKIN_QUOTES.wendy_survivor"
+msgid "I carry on for Abigail's sake."
+msgstr ""
+
+#. STRINGS.SKIN_QUOTES.wathgrithr_survivor
+msgctxt "STRINGS.SKIN_QUOTES.wathgrithr_survivor"
+msgid "You have to try harder than this to defeat me!"
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.wx78_formal
@@ -8016,14 +8301,24 @@ msgctxt "STRINGS.SKIN_QUOTES.wx78_formal"
 msgid "I POLISHED MY CHASSIS FOR THE OCCASION"
 msgstr ""
 
+#. STRINGS.SKIN_QUOTES.woodie_survivor
+msgctxt "STRINGS.SKIN_QUOTES.woodie_survivor"
+msgid "I could do with a haircut and a cup of tea, eh?"
+msgstr ""
+
 #. STRINGS.SKIN_QUOTES.wendy_formal
 msgctxt "STRINGS.SKIN_QUOTES.wendy_formal"
 msgid "I'll only go to the party if Abigail comes too."
 msgstr ""
 
-#. STRINGS.SKIN_QUOTES.wickerbottom_formal
-msgctxt "STRINGS.SKIN_QUOTES.wickerbottom_formal"
-msgid "Even I let my hair down occasionally."
+#. STRINGS.SKIN_QUOTES.willow_survivor
+msgctxt "STRINGS.SKIN_QUOTES.willow_survivor"
+msgid "Surviving just requires strength of will. (And fire.)"
+msgstr ""
+
+#. STRINGS.SKIN_QUOTES.wx78_survivor
+msgctxt "STRINGS.SKIN_QUOTES.wx78_survivor"
+msgid "PLEASE DIRECT ME TO THE NEAREST REPAIR SHOP"
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.woodie_formal
@@ -8031,14 +8326,24 @@ msgctxt "STRINGS.SKIN_QUOTES.woodie_formal"
 msgid "I clean up pretty good, eh?"
 msgstr ""
 
+#. STRINGS.SKIN_QUOTES.wickerbottom_survivor
+msgctxt "STRINGS.SKIN_QUOTES.wickerbottom_survivor"
+msgid "I hope I don't break my glasses."
+msgstr ""
+
 #. STRINGS.SKIN_QUOTES.wilson_formal
 msgctxt "STRINGS.SKIN_QUOTES.wilson_formal"
 msgid "I hate parties."
 msgstr ""
 
-#. STRINGS.SKIN_QUOTES.webber_formal
-msgctxt "STRINGS.SKIN_QUOTES.webber_formal"
-msgid "We like parties!"
+#. STRINGS.SKIN_QUOTES.wolfgang_survivor
+msgctxt "STRINGS.SKIN_QUOTES.wolfgang_survivor"
+msgid "Wolfgang is tough. Lots of muscle."
+msgstr ""
+
+#. STRINGS.SKIN_QUOTES.willow_formal
+msgctxt "STRINGS.SKIN_QUOTES.willow_formal"
+msgid "He died before getting to see these beautiful flames."
 msgstr ""
 
 #. STRINGS.CHARACTER_QUOTES.wilson
@@ -9656,6 +9961,11 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.DEERCLOPS"
 msgid "It's enormous!!"
 msgstr ""
 
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SADDLEHORN
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SADDLEHORN"
+msgid "I can take the saddle off now."
+msgstr ""
+
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.CORN_COOKED
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.CORN_COOKED"
 msgid "High in fructose!"
@@ -9966,6 +10276,11 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.BEARGER"
 msgid "What a bear of a badger."
 msgstr ""
 
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.HUTCH
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.HUTCH"
+msgid "Hutch Danglefish, P.I."
+msgstr ""
+
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.DIVININGRODBASE.GENERIC
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.DIVININGRODBASE.GENERIC"
 msgid "I wonder what it does."
@@ -10019,6 +10334,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TENTACLE_PILLAR_ARM
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TENTACLE_PILLAR_ARM"
 msgid "Little slippery arms."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.BRUSH
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.BRUSH"
+msgid "I bet the beefalo really like this."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SLURTLESLIME
@@ -10584,6 +10904,16 @@ msgstr ""
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.DURIAN_COOKED
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.DURIAN_COOKED"
 msgid "Now it smells even worse!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.HUTCH_FISHBOWL.GENERIC
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.HUTCH_FISHBOWL.GENERIC"
+msgid "I always wanted one of these."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.HUTCH_FISHBOWL.WAITING
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.HUTCH_FISHBOWL.WAITING"
+msgid "Maybe he needs some science?"
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.DRAGONFRUIT_COOKED
@@ -14551,6 +14881,11 @@ msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.DEERCLOPS"
 msgid "DANGER! THREAT INCOMING!"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WX78.DESCRIBE.SADDLEHORN
+msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.SADDLEHORN"
+msgid "HAHA, IT SHALL BE NAKED"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.CORN_COOKED
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.CORN_COOKED"
 msgid "EMPTY CALORIES"
@@ -14909,6 +15244,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.TENTACLE_PILLAR_ARM
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.TENTACLE_PILLAR_ARM"
 msgid "DANGER! DANGER!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WX78.DESCRIBE.BRUSH
+msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.BRUSH"
+msgid "I WILL REMOVE YOUR HAIR, BIT BY BIT"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.SLURTLESLIME
@@ -15419,6 +15759,16 @@ msgstr ""
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.DURIAN_COOKED
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.DURIAN_COOKED"
 msgid "STILL NOT GOOD"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WX78.DESCRIBE.HUTCH_FISHBOWL.GENERIC
+msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.HUTCH_FISHBOWL.GENERIC"
+msgid "A USELESS HUMAN DISTRACTION."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WX78.DESCRIBE.HUTCH_FISHBOWL.WAITING
+msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.HUTCH_FISHBOWL.WAITING"
+msgid "ONE FISH, TWO FISH. RED FISH, DEAD FISH."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.DRAGONFRUIT_COOKED
@@ -18711,6 +19061,11 @@ msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.DEERCLOPS"
 msgid "Rays will shine through my spear and poke out your eyeball!"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.SADDLEHORN
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.SADDLEHORN"
+msgid "With this I can unsaddle my steed."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.CORN_COOKED
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.CORN_COOKED"
 msgid "Popped corn smells good."
@@ -18983,7 +19338,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.THULECITE
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.THULECITE"
-msgid "A strength of this material is gargantuan!"
+msgid "The strength of this material is gargantuan!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.EYETURRET_ITEM
@@ -19069,6 +19424,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.TENTACLE_PILLAR_ARM
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.TENTACLE_PILLAR_ARM"
 msgid "A gross grasping appendage."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.BRUSH
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.BRUSH"
+msgid "Time for hair and makeup!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.SLURTLESLIME
@@ -19579,6 +19939,16 @@ msgstr ""
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.DURIAN_COOKED
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.DURIAN_COOKED"
 msgid "Why did I cook this again?"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HUTCH_FISHBOWL.GENERIC
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HUTCH_FISHBOWL.GENERIC"
+msgid "Pets make such difficult co-stars."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HUTCH_FISHBOWL.WAITING
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HUTCH_FISHBOWL.WAITING"
+msgid "An unfortunate casualty of battle."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.DRAGONFRUIT_COOKED
@@ -23361,6 +23731,11 @@ msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.DEERCLOPS"
 msgid "He looks mightier than me!"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.SADDLEHORN
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.SADDLEHORN"
+msgid "I won't hurt you, hair cow!"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.CORN_COOKED
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.CORN_COOKED"
 msgid "Pop pop pop! Ha ha, funny corn."
@@ -23724,6 +24099,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.TENTACLE_PILLAR_ARM
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.TENTACLE_PILLAR_ARM"
 msgid "Tiny tentacle baby thing! Ha!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.BRUSH
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.BRUSH"
+msgid "For brush really strong hair!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.SLURTLESLIME
@@ -24229,6 +24609,16 @@ msgstr ""
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.DURIAN_COOKED
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.DURIAN_COOKED"
 msgid "Now is hot spiky smelly fruit."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.HUTCH_FISHBOWL.GENERIC
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.HUTCH_FISHBOWL.GENERIC"
+msgid "Is tiny swimming teeth."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.HUTCH_FISHBOWL.WAITING
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.HUTCH_FISHBOWL.WAITING"
+msgid "Is tiny floating teeth."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.DRAGONFRUIT_COOKED
@@ -27806,6 +28196,11 @@ msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.DEERCLOPS"
 msgid "Even I am afraid of that guy."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.SADDLEHORN
+msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.SADDLEHORN"
+msgid "And I may never put it back on."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.CORN_COOKED
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.CORN_COOKED"
 msgid "A little more refined, at least."
@@ -28154,6 +28549,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.TENTACLE_PILLAR_ARM
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.TENTACLE_PILLAR_ARM"
 msgid "Babies?"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.BRUSH
+msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.BRUSH"
+msgid "It's like showing affection without actually touching it."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.SLURTLESLIME
@@ -28669,6 +29069,16 @@ msgstr ""
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.DURIAN_COOKED
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.DURIAN_COOKED"
 msgid "A little more refined, at least."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.HUTCH_FISHBOWL.GENERIC
+msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.HUTCH_FISHBOWL.GENERIC"
+msgid "Better him in that bowl than me."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.HUTCH_FISHBOWL.WAITING
+msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.HUTCH_FISHBOWL.WAITING"
+msgid "His spirit is free now."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.DRAGONFRUIT_COOKED
@@ -31986,6 +32396,11 @@ msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.DEERCLOPS"
 msgid "Death incarnate!"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WENDY.DESCRIBE.SADDLEHORN
+msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.SADDLEHORN"
+msgid "I'm only taking back what's mine."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.CORN_COOKED
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.CORN_COOKED"
 msgid "This corn couldn't handle the heat."
@@ -32344,6 +32759,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.TENTACLE_PILLAR_ARM
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.TENTACLE_PILLAR_ARM"
 msgid "Babies!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WENDY.DESCRIBE.BRUSH
+msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.BRUSH"
+msgid "We'll rid the world of its fluff."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.SLURTLESLIME
@@ -32854,6 +33274,16 @@ msgstr ""
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.DURIAN_COOKED
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.DURIAN_COOKED"
 msgid "Less spiky, but even smellier!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WENDY.DESCRIBE.HUTCH_FISHBOWL.GENERIC
+msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.HUTCH_FISHBOWL.GENERIC"
+msgid "It's not floating, yet."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WENDY.DESCRIBE.HUTCH_FISHBOWL.WAITING
+msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.HUTCH_FISHBOWL.WAITING"
+msgid "It's reached it's natural state."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.DRAGONFRUIT_COOKED
@@ -36546,6 +36976,11 @@ msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.DEERCLOPS"
 msgid "He might be able to digest me!"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WEBBER.DESCRIBE.SADDLEHORN
+msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.SADDLEHORN"
+msgid "I'm taking my saddle and leaving."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.CORN_COOKED
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.CORN_COOKED"
 msgid "Popping corn."
@@ -36904,6 +37339,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.TENTACLE_PILLAR_ARM
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.TENTACLE_PILLAR_ARM"
 msgid "."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WEBBER.DESCRIBE.BRUSH
+msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.BRUSH"
+msgid "It's more scratchy than anything."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.SLURTLESLIME
@@ -37414,6 +37854,16 @@ msgstr ""
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.DURIAN_COOKED
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.DURIAN_COOKED"
 msgid "No sir, I don't like it."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WEBBER.DESCRIBE.HUTCH_FISHBOWL.GENERIC
+msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.HUTCH_FISHBOWL.GENERIC"
+msgid "He's our new friend."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WEBBER.DESCRIBE.HUTCH_FISHBOWL.WAITING
+msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.HUTCH_FISHBOWL.WAITING"
+msgid "He was our new friend."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.DRAGONFRUIT_COOKED
@@ -40706,6 +41156,11 @@ msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.DEERCLOPS"
 msgid "Laurasiatheria!"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.SADDLEHORN
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.SADDLEHORN"
+msgid "A device for forceful unfurnishment."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.CORN_COOKED
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.CORN_COOKED"
 msgid "Popped corn!"
@@ -41039,6 +41494,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.TENTACLE_PILLAR_ARM
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.TENTACLE_PILLAR_ARM"
 msgid "A tiny horror waiting in the mud."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.BRUSH
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.BRUSH"
+msgid "Microscopic barbs allow for optimal hair retrieval."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.SLURTLESLIME
@@ -41559,6 +42019,16 @@ msgstr ""
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.DURIAN_COOKED
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.DURIAN_COOKED"
 msgid "Cooking this certainly did not improve its odour."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.HUTCH_FISHBOWL.GENERIC
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.HUTCH_FISHBOWL.GENERIC"
+msgid "Pygocentrus Nattereri."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.HUTCH_FISHBOWL.WAITING
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.HUTCH_FISHBOWL.WAITING"
+msgid "mortuus piscis."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.DRAGONFRUIT_COOKED
@@ -45166,6 +45636,11 @@ msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.DEERCLOPS"
 msgid "That's a big moose!"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WOODIE.DESCRIBE.SADDLEHORN
+msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.SADDLEHORN"
+msgid "Puts the critter back to how nature intended."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.CORN_COOKED
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.CORN_COOKED"
 msgid "Cooked with the goodness of corn."
@@ -45509,6 +45984,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.TENTACLE_PILLAR_ARM
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.TENTACLE_PILLAR_ARM"
 msgid "Are those squid babies?"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOODIE.DESCRIBE.BRUSH
+msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.BRUSH"
+msgid "You could debark a log with this thing."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.SLURTLESLIME
@@ -46024,6 +46504,16 @@ msgstr ""
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.DURIAN_COOKED
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.DURIAN_COOKED"
 msgid "It smells even worse."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOODIE.DESCRIBE.HUTCH_FISHBOWL.GENERIC
+msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.HUTCH_FISHBOWL.GENERIC"
+msgid "I've never had one of these before."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOODIE.DESCRIBE.HUTCH_FISHBOWL.WAITING
+msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.HUTCH_FISHBOWL.WAITING"
+msgid "It was bound to happen."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.DRAGONFRUIT_COOKED
@@ -49436,6 +49926,11 @@ msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.DEERCLOPS"
 msgid "Holy crap!"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WILLOW.DESCRIBE.SADDLEHORN
+msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.SADDLEHORN"
+msgid "I bet it stinks under the saddle."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.CORN_COOKED
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.CORN_COOKED"
 msgid "Ooh, this one explodes when it goes in fire!"
@@ -49794,6 +50289,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.TENTACLE_PILLAR_ARM
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.TENTACLE_PILLAR_ARM"
 msgid "Awwww, they want hugs!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WILLOW.DESCRIBE.BRUSH
+msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.BRUSH"
+msgid "It smells like burnt hair."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.SLURTLESLIME
@@ -50299,6 +50799,16 @@ msgstr ""
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.DURIAN_COOKED
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.DURIAN_COOKED"
 msgid "Yuck, it smells just as bad cooked!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WILLOW.DESCRIBE.HUTCH_FISHBOWL.GENERIC
+msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.HUTCH_FISHBOWL.GENERIC"
+msgid "It's too wet to burn."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WILLOW.DESCRIBE.HUTCH_FISHBOWL.WAITING
+msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.HUTCH_FISHBOWL.WAITING"
+msgid "It's still too wet to burn."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.DRAGONFRUIT_COOKED
@@ -53751,14 +54261,99 @@ msgctxt "STRINGS.CHARACTERS.WILLOW.ANNOUNCE_NODAYSLEEP"
 msgid "I won't go inside when there's a great ball of fire in the sky."
 msgstr ""
 
+#. STRINGS.UI.TRADESCREEN.RECIPE_INGREDIENT_RARITY
+msgctxt "STRINGS.UI.TRADESCREEN.RECIPE_INGREDIENT_RARITY"
+msgid "Any <number> <rarity> Item<plural>"
+msgstr ""
+
 #. STRINGS.UI.TRADESCREEN.EQUIPPED
 msgctxt "STRINGS.UI.TRADESCREEN.EQUIPPED"
 msgid "Last one!"
 msgstr ""
 
+#. STRINGS.UI.TRADESCREEN.PREV
+msgctxt "STRINGS.UI.TRADESCREEN.PREV"
+msgid "Prev. Special"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SPECIALS_TITLE
+msgctxt "STRINGS.UI.TRADESCREEN.SPECIALS_TITLE"
+msgid "Specials"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.CHECK
+msgctxt "STRINGS.UI.TRADESCREEN.CHECK"
+msgid "Warning!"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.LESS_THAN_DAY
+msgctxt "STRINGS.UI.TRADESCREEN.LESS_THAN_DAY"
+msgid "Less Than A Day Remaining"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.FEET
+msgctxt "STRINGS.UI.TRADESCREEN.FEET"
+msgid "Feet"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.ACCEPT
+msgctxt "STRINGS.UI.TRADESCREEN.ACCEPT"
+msgid "Accept"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.NEXT
+msgctxt "STRINGS.UI.TRADESCREEN.NEXT"
+msgid "Next Special"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.WARNING
+msgctxt "STRINGS.UI.TRADESCREEN.WARNING"
+msgid "You won't be able to use an item if you give your last copy away. Really trade these items?"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SERVER_ERROR_TITLE
+msgctxt "STRINGS.UI.TRADESCREEN.SERVER_ERROR_TITLE"
+msgid "Error Trading Items"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.MARKET
+msgctxt "STRINGS.UI.TRADESCREEN.MARKET"
+msgid "Steam"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SOLD_OUT
+msgctxt "STRINGS.UI.TRADESCREEN.SOLD_OUT"
+msgid "Sold Out"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.RECIPE_INGREDIENT_ITEM
+msgctxt "STRINGS.UI.TRADESCREEN.RECIPE_INGREDIENT_ITEM"
+msgid "<number> <rarity> <colour><item><plural>"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.CANCEL
+msgctxt "STRINGS.UI.TRADESCREEN.CANCEL"
+msgid "Cancel"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SPECIALS
+msgctxt "STRINGS.UI.TRADESCREEN.SPECIALS"
+msgid "Specials"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.LEGS
+msgctxt "STRINGS.UI.TRADESCREEN.LEGS"
+msgid "Legs"
+msgstr ""
+
 #. STRINGS.UI.TRADESCREEN.SELECT
 msgctxt "STRINGS.UI.TRADESCREEN.SELECT"
 msgid "Select"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.ENDING_SOON
+msgctxt "STRINGS.UI.TRADESCREEN.ENDING_SOON"
+msgid "Ending Soon"
 msgstr ""
 
 #. STRINGS.UI.TRADESCREEN.SERVER_ERROR_BODY
@@ -53771,9 +54366,9 @@ msgctxt "STRINGS.UI.TRADESCREEN.TRADE"
 msgid "Trade"
 msgstr ""
 
-#. STRINGS.UI.TRADESCREEN.CHECK
-msgctxt "STRINGS.UI.TRADESCREEN.CHECK"
-msgid "Warning!"
+#. STRINGS.UI.TRADESCREEN.NOSPECIALS
+msgctxt "STRINGS.UI.TRADESCREEN.NOSPECIALS"
+msgid "Unspecials"
 msgstr ""
 
 #. STRINGS.UI.TRADESCREEN.SELECT_TITLE
@@ -53786,9 +54381,9 @@ msgctxt "STRINGS.UI.TRADESCREEN.RESET"
 msgid "Reset"
 msgstr ""
 
-#. STRINGS.UI.TRADESCREEN.ACCEPT
-msgctxt "STRINGS.UI.TRADESCREEN.ACCEPT"
-msgid "Accept"
+#. STRINGS.UI.TRADESCREEN.RECIPE_INGREDIENT_TAGS
+msgctxt "STRINGS.UI.TRADESCREEN.RECIPE_INGREDIENT_TAGS"
+msgid "<number> <rarity> <tags>Item<plural>"
 msgstr ""
 
 #. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.RESULT.1
@@ -53806,19 +54401,69 @@ msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.RESULT.3"
 msgid "There ya go, ya got this here <item>."
 msgstr ""
 
-#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.TRADEAVAIL.1
-msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.TRADEAVAIL.1"
-msgid "All right, kid. Give tha button a push to getcher item!"
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.ADDMORESPECIALS.1
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.ADDMORESPECIALS.1"
+msgid "Ya got the rest of tha stuff I'm lookin' for? If not, come back in a few days an' there might be a new deal."
 msgstr ""
 
-#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.TRADEAVAIL.2
-msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.TRADEAVAIL.2"
-msgid "Just push tha button to start tha trade!"
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.ADDMORESPECIALS.2
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.ADDMORESPECIALS.2"
+msgid "I just need tha rest of the items on tha list. Bang 'em on in tha machine an' it'll spit out a higher quality item for ya."
 msgstr ""
 
-#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.TRADEAVAIL.3
-msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.TRADEAVAIL.3"
-msgid "If ya wanna make tha trade, just push tha green button."
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.SPECIALRECIPE.1
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.SPECIALRECIPE.1"
+msgid "If ya give me tha items on tha list, I'll give ya a higher quality item in exchange."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.SPECIALRECIPE.2
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.SPECIALRECIPE.2"
+msgid "Take a look at tha list. Get me all tha things on it and I'll give ya a better item."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.SPECIALRECIPE.3
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.SPECIALRECIPE.3"
+msgid "Ya got tha items on tha list? Stick 'em in there and ya'll get a better item out 'o tha machine."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.IDLE.1
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.IDLE.1"
+msgid "Ya may not feel young, but I've been tradin' longer than ya been around, young pup."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.IDLE.2
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.IDLE.2"
+msgid "I've always been a loner, me. Tha boss mostly lets me alone, which suits me fine."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.IDLE.3
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.IDLE.3"
+msgid "Take yer time. I can stand here yammerin' all day."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.IDLE.4
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.IDLE.4"
+msgid "My wagon's pulled by a nox. 'Es a good 'un, but 'e can't hold a candle to my old mule, Shadow."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.IDLE.5
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.IDLE.5"
+msgid "Once, when I was but a young shaver... ah, but ya don' wanna listen to an old trader's stories."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.IDLE.6
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.IDLE.6"
+msgid "What's a nox? Well, I don't know as I can rightly describe it. It's kinda like an ox, but not."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.HAND.1
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.HAND.1"
+msgid "Pleased ta meecha."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.HAND.2
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.HAND.2"
+msgid "Pleasure doin' business with ya."
 msgstr ""
 
 #. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.WARNING.1
@@ -53871,36 +54516,6 @@ msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.ADDMORE.4"
 msgid "Tha's tha ticket. Just bang a few more a those <rarity> items in tha machine to get a better item!"
 msgstr ""
 
-#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.IDLE.1
-msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.IDLE.1"
-msgid "Ya may not feel young, but I've been tradin' longer than ya been around, young pup."
-msgstr ""
-
-#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.IDLE.2
-msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.IDLE.2"
-msgid "I've always been a loner, me. Tha boss mostly lets me alone, which suits me fine."
-msgstr ""
-
-#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.IDLE.3
-msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.IDLE.3"
-msgid "Take yer time. I can stand here yammerin' all day."
-msgstr ""
-
-#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.IDLE.4
-msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.IDLE.4"
-msgid "My wagon's pulled by a nox. 'Es a good 'un, but 'e can't hold a candle to my old mule, Shadow."
-msgstr ""
-
-#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.IDLE.5
-msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.IDLE.5"
-msgid "Once, when I was but a young shaver... oh, but ya don' wanna listen to an old trader's stories."
-msgstr ""
-
-#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.IDLE.6
-msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.IDLE.6"
-msgid "What's a nox? Well, I don't know as I can rightly describe it. It's kinda like an ox, but not."
-msgstr ""
-
 #. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.JOYSTICK.1
 msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.JOYSTICK.1"
 msgid "Ya can bang on that joystick all ya want but it won't do ya no good."
@@ -53914,26 +54529,6 @@ msgstr ""
 #. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.JOYSTICK.3
 msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.JOYSTICK.3"
 msgid "Up, down, left, right, tha joystick don' do nothin'."
-msgstr ""
-
-#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.START.1
-msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.START.1"
-msgid "Ya got a heap 'o items? Want better items? Well, ya come to tha right place! Put 'em in that thar machine!"
-msgstr ""
-
-#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.START.2
-msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.START.2"
-msgid "Got too many items? I can help ya with that problem! Stick 'em in my machine an' trade 'em for somethin' better!"
-msgstr ""
-
-#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.START.3
-msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.START.3"
-msgid "Lookin' for new items? Trade in some old items and get a bran' new one of higher quality!"
-msgstr ""
-
-#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.START.4
-msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.START.4"
-msgid "Lookin' to trade? Ya come to the right place. Put your items in tha machine to get somethin' better!"
 msgstr ""
 
 #. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.RESULT_LUCKY.1
@@ -53971,19 +54566,74 @@ msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.TRADE.3"
 msgid "It should be here real soon now."
 msgstr ""
 
-#. STRINGS.UI.TRADESCREEN.WARNING
-msgctxt "STRINGS.UI.TRADESCREEN.WARNING"
-msgid "You won't be able to use an item if you give your last copy away. Really trade these items?"
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.START.1
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.START.1"
+msgid "Ya got a heap 'o items? Want better items? Well, ya come to tha right place! Put 'em in that thar machine!"
 msgstr ""
 
-#. STRINGS.UI.TRADESCREEN.SERVER_ERROR_TITLE
-msgctxt "STRINGS.UI.TRADESCREEN.SERVER_ERROR_TITLE"
-msgid "Error Trading Items"
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.START.2
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.START.2"
+msgid "Got too many items? I can help ya with that problem! Stick 'em in my machine an' trade 'em for somethin' better!"
 msgstr ""
 
-#. STRINGS.UI.TRADESCREEN.MARKET
-msgctxt "STRINGS.UI.TRADESCREEN.MARKET"
-msgid "Go to Steam"
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.START.3
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.START.3"
+msgid "Lookin' for new items? Trade in some old items and get a bran' new one of higher quality!"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.START.4
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.START.4"
+msgid "Lookin' to trade? Ya come to the right place. Put your items in tha machine to get somethin' better!"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.TRADEAVAIL.1
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.TRADEAVAIL.1"
+msgid "All right, kid. Give tha button a push to getcher item!"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.TRADEAVAIL.2
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.TRADEAVAIL.2"
+msgid "Just push tha button to start tha trade!"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.TRADEAVAIL.3
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.TRADEAVAIL.3"
+msgid "If ya wanna make tha trade, just push tha green button."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.SPECIALS.1
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.SPECIALS.1"
+msgid "These're my special deals. Gimme the stuff I'm looking for and I'll give ya a better item in exchange."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.SPECIALS.2
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.SPECIALS.2"
+msgid "I'm lookin' for some particular things right now. If ya can give 'em to me, I'll give ya a new one of higher quality."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.SPECIALS.3
+msgctxt "STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.SPECIALS.3"
+msgid "The special deals are cheaper than tha normal ones, but ya gotta give me the exact things I'm lookin' for."
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.HAND
+msgctxt "STRINGS.UI.TRADESCREEN.HAND"
+msgid "Hands"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.BODY
+msgctxt "STRINGS.UI.TRADESCREEN.BODY"
+msgid "Body"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.BASE
+msgctxt "STRINGS.UI.TRADESCREEN.BASE"
+msgid "Head"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.OK
+msgctxt "STRINGS.UI.TRADESCREEN.OK"
+msgid "Ok"
 msgstr ""
 
 #. STRINGS.UI.TRADESCREEN.TITLE
@@ -53991,9 +54641,14 @@ msgctxt "STRINGS.UI.TRADESCREEN.TITLE"
 msgid "Trade Inn"
 msgstr ""
 
-#. STRINGS.UI.TRADESCREEN.OK
-msgctxt "STRINGS.UI.TRADESCREEN.OK"
-msgid "Ok"
+#. STRINGS.UI.TRADESCREEN.DAYS_REMAINING
+msgctxt "STRINGS.UI.TRADESCREEN.DAYS_REMAINING"
+msgid "Days Remaining"
+msgstr ""
+
+#. STRINGS.UI.TRADESCREEN.DAY_REMAINING
+msgctxt "STRINGS.UI.TRADESCREEN.DAY_REMAINING"
+msgid "Day Remaining"
 msgstr ""
 
 #. STRINGS.UI.TRADESCREEN.WARNING_SINGLE
@@ -54004,11 +54659,6 @@ msgstr ""
 #. STRINGS.UI.TRADESCREEN.BACK
 msgctxt "STRINGS.UI.TRADESCREEN.BACK"
 msgid "Back"
-msgstr ""
-
-#. STRINGS.UI.TRADESCREEN.CANCEL
-msgctxt "STRINGS.UI.TRADESCREEN.CANCEL"
-msgid "Cancel"
 msgstr ""
 
 #. STRINGS.UI.TRADESCREEN.REMOVE_ITEM
@@ -56706,6 +57356,491 @@ msgctxt "STRINGS.UI.HUD.ATTACK"
 msgid "Attack"
 msgstr ""
 
+#. STRINGS.UI.TELEPORTNO
+msgctxt "STRINGS.UI.TELEPORTNO"
+msgid "Stay here."
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.SLIDESLOW
+msgctxt "STRINGS.UI.SANDBOXMENU.SLIDESLOW"
+msgid "Slow"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.ALLSEASONS
+msgctxt "STRINGS.UI.SANDBOXMENU.ALLSEASONS"
+msgid "All Seasons"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.GENERATE
+msgctxt "STRINGS.UI.SANDBOXMENU.GENERATE"
+msgid "OK"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.CHOICECOOKED
+msgctxt "STRINGS.UI.SANDBOXMENU.CHOICECOOKED"
+msgid "Prepared Food"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.CHOICEMONSTERS
+msgctxt "STRINGS.UI.SANDBOXMENU.CHOICEMONSTERS"
+msgid "Monsters"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.EXTREMETEMPS
+msgctxt "STRINGS.UI.SANDBOXMENU.EXTREMETEMPS"
+msgid "Summer, Winter"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.SLIDECOMPLEX
+msgctxt "STRINGS.UI.SANDBOXMENU.SLIDECOMPLEX"
+msgid "Complex"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.EASY
+msgctxt "STRINGS.UI.SANDBOXMENU.EASY"
+msgid "Not Easy"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.BRANCHINGLEAST
+msgctxt "STRINGS.UI.SANDBOXMENU.BRANCHINGLEAST"
+msgid "Least"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.AUTUMN_SPRING
+msgctxt "STRINGS.UI.SANDBOXMENU.AUTUMN_SPRING"
+msgid "Autumn/Spring"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.NO
+msgctxt "STRINGS.UI.SANDBOXMENU.NO"
+msgid "No"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.CAVESTART
+msgctxt "STRINGS.UI.SANDBOXMENU.CAVESTART"
+msgid "Caves"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.DUSK
+msgctxt "STRINGS.UI.SANDBOXMENU.DUSK"
+msgid "Dusk"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.SLIDESMEDIUM
+msgctxt "STRINGS.UI.SANDBOXMENU.SLIDESMEDIUM"
+msgid "Medium"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME.FOREST
+msgctxt "STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME.FOREST"
+msgid "Forest"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME.CAVE
+msgctxt "STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME.CAVE"
+msgid "Caves"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME.UNKNOWN
+msgctxt "STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME.UNKNOWN"
+msgid "???"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.BRANCHINGMOST
+msgctxt "STRINGS.UI.SANDBOXMENU.BRANCHINGMOST"
+msgid "Most"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.MAINMENU
+msgctxt "STRINGS.UI.SANDBOXMENU.MAINMENU"
+msgid "Cancel"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.SLIDESHUGE
+msgctxt "STRINGS.UI.SANDBOXMENU.SLIDESHUGE"
+msgid "Huge"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.DLC
+msgctxt "STRINGS.UI.SANDBOXMENU.DLC"
+msgid "Spring, Summer"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.CHOICEFOOD
+msgctxt "STRINGS.UI.SANDBOXMENU.CHOICEFOOD"
+msgid "Food"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.TITLE
+msgctxt "STRINGS.UI.SANDBOXMENU.TITLE"
+msgid "World Customisation"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.SLIDEVERYSLOW
+msgctxt "STRINGS.UI.SANDBOXMENU.SLIDEVERYSLOW"
+msgid "Very Slow"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.DAY
+msgctxt "STRINGS.UI.SANDBOXMENU.DAY"
+msgid "Day"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.USEPRESETS
+msgctxt "STRINGS.UI.SANDBOXMENU.USEPRESETS"
+msgid "Presets"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.ADDLEVEL_WARNING
+msgctxt "STRINGS.UI.SANDBOXMENU.ADDLEVEL_WARNING"
+msgid "This requires running multiple servers at the same time.\nIs your computer up to the task?"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.SLIDERARE
+msgctxt "STRINGS.UI.SANDBOXMENU.SLIDERARE"
+msgid "Less"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.SLIDEVERYFAST
+msgctxt "STRINGS.UI.SANDBOXMENU.SLIDEVERYFAST"
+msgid "Very Fast"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.SLIDEFAST
+msgctxt "STRINGS.UI.SANDBOXMENU.SLIDEFAST"
+msgid "Fast"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.SLIDEVERYSHORT
+msgctxt "STRINGS.UI.SANDBOXMENU.SLIDEVERYSHORT"
+msgid "Very Short"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.WINTER_SUMMER
+msgctxt "STRINGS.UI.SANDBOXMENU.WINTER_SUMMER"
+msgid "Winter/Summer"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.MEDIUM
+msgctxt "STRINGS.UI.SANDBOXMENU.MEDIUM"
+msgid "Quite Difficult"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.CHOICEMISC
+msgctxt "STRINGS.UI.SANDBOXMENU.CHOICEMISC"
+msgid "World"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.TITLEDETAIL
+msgctxt "STRINGS.UI.SANDBOXMENU.TITLEDETAIL"
+msgid ""
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.DARKSTART
+msgctxt "STRINGS.UI.SANDBOXMENU.DARKSTART"
+msgid "Dark"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.LOCATION.FOREST
+msgctxt "STRINGS.UI.SANDBOXMENU.LOCATION.FOREST"
+msgid "Forest"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.LOCATION.CAVE
+msgctxt "STRINGS.UI.SANDBOXMENU.LOCATION.CAVE"
+msgid "Cave"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.LOCATION.UNKNOWN
+msgctxt "STRINGS.UI.SANDBOXMENU.LOCATION.UNKNOWN"
+msgid "Some"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.CHOICEAMTDAY
+msgctxt "STRINGS.UI.SANDBOXMENU.CHOICEAMTDAY"
+msgid "Amount of Day"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.SLIDESMALL
+msgctxt "STRINGS.UI.SANDBOXMENU.SLIDESMALL"
+msgid "Small"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.WINTER
+msgctxt "STRINGS.UI.SANDBOXMENU.WINTER"
+msgid "Winter"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.LOOPRANDOM
+msgctxt "STRINGS.UI.SANDBOXMENU.LOOPRANDOM"
+msgid "Default"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.YES
+msgctxt "STRINGS.UI.SANDBOXMENU.YES"
+msgid "Yes"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.MODIFYTASKS
+msgctxt "STRINGS.UI.SANDBOXMENU.MODIFYTASKS"
+msgid "Modify Tasks"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.NIGHT
+msgctxt "STRINGS.UI.SANDBOXMENU.NIGHT"
+msgid "Night"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.ADVENTURELEVELS.1
+msgctxt "STRINGS.UI.SANDBOXMENU.ADVENTURELEVELS.1"
+msgid "A Cold Reception"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.ADVENTURELEVELS.2
+msgctxt "STRINGS.UI.SANDBOXMENU.ADVENTURELEVELS.2"
+msgid "The King of Winter"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.ADVENTURELEVELS.3
+msgctxt "STRINGS.UI.SANDBOXMENU.ADVENTURELEVELS.3"
+msgid "The Game is Afoot"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.ADVENTURELEVELS.4
+msgctxt "STRINGS.UI.SANDBOXMENU.ADVENTURELEVELS.4"
+msgid "Archipelago"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.ADVENTURELEVELS.5
+msgctxt "STRINGS.UI.SANDBOXMENU.ADVENTURELEVELS.5"
+msgid "Two Worlds"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.ADVENTURELEVELS.6
+msgctxt "STRINGS.UI.SANDBOXMENU.ADVENTURELEVELS.6"
+msgid "Darkness"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.ADVENTURELEVELS.7
+msgctxt "STRINGS.UI.SANDBOXMENU.ADVENTURELEVELS.7"
+msgid "Checkmate"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.CHOICERESOURCES
+msgctxt "STRINGS.UI.SANDBOXMENU.CHOICERESOURCES"
+msgid "Resources"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.LOOPNEVER
+msgctxt "STRINGS.UI.SANDBOXMENU.LOOPNEVER"
+msgid "Never"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.DISABLEDLEVEL
+msgctxt "STRINGS.UI.SANDBOXMENU.DISABLEDLEVEL"
+msgid "No"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.SLIDEOFTEN
+msgctxt "STRINGS.UI.SANDBOXMENU.SLIDEOFTEN"
+msgid "More"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.NONE
+msgctxt "STRINGS.UI.SANDBOXMENU.NONE"
+msgid "None"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.CHAPTERS.1
+msgctxt "STRINGS.UI.SANDBOXMENU.CHAPTERS.1"
+msgid "Chapter 1 of 5"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.CHAPTERS.2
+msgctxt "STRINGS.UI.SANDBOXMENU.CHAPTERS.2"
+msgid "Chapter 2 of 5"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.CHAPTERS.3
+msgctxt "STRINGS.UI.SANDBOXMENU.CHAPTERS.3"
+msgid "Chapter 3 of 5"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.CHAPTERS.4
+msgctxt "STRINGS.UI.SANDBOXMENU.CHAPTERS.4"
+msgid "Chapter 4 of 5"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.CHAPTERS.5
+msgctxt "STRINGS.UI.SANDBOXMENU.CHAPTERS.5"
+msgid "Chapter 5 of 5"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.CHAPTERS.6
+msgctxt "STRINGS.UI.SANDBOXMENU.CHAPTERS.6"
+msgid "Epilogue"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.REMOVELEVEL
+msgctxt "STRINGS.UI.SANDBOXMENU.REMOVELEVEL"
+msgid "Remove"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.SLIDEALL
+msgctxt "STRINGS.UI.SANDBOXMENU.SLIDEALL"
+msgid "Only"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.DEFAULTSTART
+msgctxt "STRINGS.UI.SANDBOXMENU.DEFAULTSTART"
+msgid "Default"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.BRANCHINGNEVER
+msgctxt "STRINGS.UI.SANDBOXMENU.BRANCHINGNEVER"
+msgid "Never"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.HARD
+msgctxt "STRINGS.UI.SANDBOXMENU.HARD"
+msgid "Overly Taxing"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.BRANCHINGANY
+msgctxt "STRINGS.UI.SANDBOXMENU.BRANCHINGANY"
+msgid "Default"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.SLIDEVERYSIMPLE
+msgctxt "STRINGS.UI.SANDBOXMENU.SLIDEVERYSIMPLE"
+msgid "Very Simple"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.SLIDELONG
+msgctxt "STRINGS.UI.SANDBOXMENU.SLIDELONG"
+msgid "Long"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.SPRING
+msgctxt "STRINGS.UI.SANDBOXMENU.SPRING"
+msgid "Spring"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.BOTH
+msgctxt "STRINGS.UI.SANDBOXMENU.BOTH"
+msgid "Both"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.SLIDEVERYCOMPLEX
+msgctxt "STRINGS.UI.SANDBOXMENU.SLIDEVERYCOMPLEX"
+msgid "Very Complex"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.STATICTEMPS
+msgctxt "STRINGS.UI.SANDBOXMENU.STATICTEMPS"
+msgid "Autumn, Spring"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.RANDOM
+msgctxt "STRINGS.UI.SANDBOXMENU.RANDOM"
+msgid "Random"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.SLIDETINY
+msgctxt "STRINGS.UI.SANDBOXMENU.SLIDETINY"
+msgid "Tiny"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.EXCLUDE
+msgctxt "STRINGS.UI.SANDBOXMENU.EXCLUDE"
+msgid "No"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.SLIDEVERYLONG
+msgctxt "STRINGS.UI.SANDBOXMENU.SLIDEVERYLONG"
+msgid "Very Long"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.ADDLEVEL
+msgctxt "STRINGS.UI.SANDBOXMENU.ADDLEVEL"
+msgid "Add"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.SLIDESIMPLE
+msgctxt "STRINGS.UI.SANDBOXMENU.SLIDESIMPLE"
+msgid "Simple"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.CLASSIC
+msgctxt "STRINGS.UI.SANDBOXMENU.CLASSIC"
+msgid "Autumn, Winter"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.SLIDESLARGE
+msgctxt "STRINGS.UI.SANDBOXMENU.SLIDESLARGE"
+msgid "Large"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.REMOVELEVEL_WARNING
+msgctxt "STRINGS.UI.SANDBOXMENU.REMOVELEVEL_WARNING"
+msgid "Do you want to remove %s from this server?"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.PLUSSTART
+msgctxt "STRINGS.UI.SANDBOXMENU.PLUSSTART"
+msgid "Plus"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.SUMMER
+msgctxt "STRINGS.UI.SANDBOXMENU.SUMMER"
+msgid "Summer"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.DEFAULT
+msgctxt "STRINGS.UI.SANDBOXMENU.DEFAULT"
+msgid "Autumn"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.SLIDEALWAYS
+msgctxt "STRINGS.UI.SANDBOXMENU.SLIDEALWAYS"
+msgid "Lots"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.SLIDESHORT
+msgctxt "STRINGS.UI.SANDBOXMENU.SLIDESHORT"
+msgid "Short"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.SLIDENEVER
+msgctxt "STRINGS.UI.SANDBOXMENU.SLIDENEVER"
+msgid "None"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.SLIDEDEFAULT
+msgctxt "STRINGS.UI.SANDBOXMENU.SLIDEDEFAULT"
+msgid "Default"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.LOOPALWAYS
+msgctxt "STRINGS.UI.SANDBOXMENU.LOOPALWAYS"
+msgid "Always"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.NONEAVAILABLE
+msgctxt "STRINGS.UI.SANDBOXMENU.NONEAVAILABLE"
+msgid "None Available"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.CHOICEANIMALS
+msgctxt "STRINGS.UI.SANDBOXMENU.CHOICEANIMALS"
+msgid "Animals"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.AUTUMN
+msgctxt "STRINGS.UI.SANDBOXMENU.AUTUMN"
+msgid "Autumn"
+msgstr ""
+
 #. STRINGS.UI.ENDGAME.BODY1
 msgctxt "STRINGS.UI.ENDGAME.BODY1"
 msgid "And so the cycle continues. Will "
@@ -56838,7 +57973,7 @@ msgstr ""
 
 #. STRINGS.UI.HELP.PREVPAGE
 msgctxt "STRINGS.UI.HELP.PREVPAGE"
-msgid "Previous Page"
+msgid "Prev. Page"
 msgstr ""
 
 #. STRINGS.UI.HELP.NEXTPAGE
@@ -57586,9 +58721,9 @@ msgctxt "STRINGS.UI.CONSOLESCREEN.REMOTEEXECUTE"
 msgid "Remote:"
 msgstr ""
 
-#. STRINGS.UI.TELEPORTNO
-msgctxt "STRINGS.UI.TELEPORTNO"
-msgid "Stay here."
+#. STRINGS.UI.TELEPORTBODY_SURVIVAL
+msgctxt "STRINGS.UI.TELEPORTBODY_SURVIVAL"
+msgid "This will destroy your current world but you will retain your inventory contents."
 msgstr ""
 
 #. STRINGS.UI.CONTROLSSCREEN.CLOSE
@@ -59071,9 +60206,9 @@ msgctxt "STRINGS.UI.PAUSEMENU.QUITNO"
 msgid "Never mind..."
 msgstr ""
 
-#. STRINGS.UI.TELEPORTBODY_SURVIVAL
-msgctxt "STRINGS.UI.TELEPORTBODY_SURVIVAL"
-msgid "This will destroy your current world but you will retain your inventory contents."
+#. STRINGS.UI.QUITTINGTITLE
+msgctxt "STRINGS.UI.QUITTINGTITLE"
+msgid "Quitting!"
 msgstr ""
 
 #. STRINGS.UI.SAVELOAD.DATA_DAMAGED
@@ -59131,9 +60266,44 @@ msgctxt "STRINGS.UI.TELEPORTBODY_ADVENTURE"
 msgid "This will REMOVE ALL YOUR ITEMS and destroy your current world. Only items placed in the machine will appear in the next world."
 msgstr ""
 
-#. STRINGS.UI.QUITTINGTITLE
-msgctxt "STRINGS.UI.QUITTINGTITLE"
-msgid "Quitting!"
+#. STRINGS.UI.GENDERSTRINGS.DEFAULT.ONE
+msgctxt "STRINGS.UI.GENDERSTRINGS.DEFAULT.ONE"
+msgid "they"
+msgstr ""
+
+#. STRINGS.UI.GENDERSTRINGS.DEFAULT.TWO
+msgctxt "STRINGS.UI.GENDERSTRINGS.DEFAULT.TWO"
+msgid "their"
+msgstr ""
+
+#. STRINGS.UI.GENDERSTRINGS.FEMALE.ONE
+msgctxt "STRINGS.UI.GENDERSTRINGS.FEMALE.ONE"
+msgid "she"
+msgstr ""
+
+#. STRINGS.UI.GENDERSTRINGS.FEMALE.TWO
+msgctxt "STRINGS.UI.GENDERSTRINGS.FEMALE.TWO"
+msgid "her"
+msgstr ""
+
+#. STRINGS.UI.GENDERSTRINGS.MALE.ONE
+msgctxt "STRINGS.UI.GENDERSTRINGS.MALE.ONE"
+msgid "he"
+msgstr ""
+
+#. STRINGS.UI.GENDERSTRINGS.MALE.TWO
+msgctxt "STRINGS.UI.GENDERSTRINGS.MALE.TWO"
+msgid "his"
+msgstr ""
+
+#. STRINGS.UI.GENDERSTRINGS.ROBOT.ONE
+msgctxt "STRINGS.UI.GENDERSTRINGS.ROBOT.ONE"
+msgid "it"
+msgstr ""
+
+#. STRINGS.UI.GENDERSTRINGS.ROBOT.TWO
+msgctxt "STRINGS.UI.GENDERSTRINGS.ROBOT.TWO"
+msgid "its"
 msgstr ""
 
 #. STRINGS.UI.NETWORKDISCONNECT.BODY.ID_INVALID_PASSWORD
@@ -59581,526 +60751,6 @@ msgctxt "STRINGS.UI.NETWORKDISCONNECT.OK"
 msgid "OK"
 msgstr ""
 
-#. STRINGS.UI.SANDBOXMENU.SLIDESLOW
-msgctxt "STRINGS.UI.SANDBOXMENU.SLIDESLOW"
-msgid "Slow"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.ALLSEASONS
-msgctxt "STRINGS.UI.SANDBOXMENU.ALLSEASONS"
-msgid "All Seasons"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.GENERATE
-msgctxt "STRINGS.UI.SANDBOXMENU.GENERATE"
-msgid "OK"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.CHOICECOOKED
-msgctxt "STRINGS.UI.SANDBOXMENU.CHOICECOOKED"
-msgid "Prepared Food"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.CHOICEMONSTERS
-msgctxt "STRINGS.UI.SANDBOXMENU.CHOICEMONSTERS"
-msgid "Monsters"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.EXTREMETEMPS
-msgctxt "STRINGS.UI.SANDBOXMENU.EXTREMETEMPS"
-msgid "Summer, Winter"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.SLIDECOMPLEX
-msgctxt "STRINGS.UI.SANDBOXMENU.SLIDECOMPLEX"
-msgid "Complex"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.EASY
-msgctxt "STRINGS.UI.SANDBOXMENU.EASY"
-msgid "Not Easy"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.BRANCHINGLEAST
-msgctxt "STRINGS.UI.SANDBOXMENU.BRANCHINGLEAST"
-msgid "Least"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.AUTUMN_SPRING
-msgctxt "STRINGS.UI.SANDBOXMENU.AUTUMN_SPRING"
-msgid "Autumn/Spring"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.NO
-msgctxt "STRINGS.UI.SANDBOXMENU.NO"
-msgid "No"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.CAVESTART
-msgctxt "STRINGS.UI.SANDBOXMENU.CAVESTART"
-msgid "Caves"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.DUSK
-msgctxt "STRINGS.UI.SANDBOXMENU.DUSK"
-msgid "Dusk"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.SLIDESMEDIUM
-msgctxt "STRINGS.UI.SANDBOXMENU.SLIDESMEDIUM"
-msgid "Medium"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME.FOREST
-msgctxt "STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME.FOREST"
-msgid "Forest"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME.CAVE
-msgctxt "STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME.CAVE"
-msgid "Caves"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME.UNKNOWN
-msgctxt "STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME.UNKNOWN"
-msgid "???"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.BRANCHINGMOST
-msgctxt "STRINGS.UI.SANDBOXMENU.BRANCHINGMOST"
-msgid "Most"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.MAINMENU
-msgctxt "STRINGS.UI.SANDBOXMENU.MAINMENU"
-msgid "Cancel"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.SLIDESHUGE
-msgctxt "STRINGS.UI.SANDBOXMENU.SLIDESHUGE"
-msgid "Huge"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.DLC
-msgctxt "STRINGS.UI.SANDBOXMENU.DLC"
-msgid "Spring, Summer"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.CHOICEFOOD
-msgctxt "STRINGS.UI.SANDBOXMENU.CHOICEFOOD"
-msgid "Food"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.TITLE
-msgctxt "STRINGS.UI.SANDBOXMENU.TITLE"
-msgid "World Customisation"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.SLIDEVERYSLOW
-msgctxt "STRINGS.UI.SANDBOXMENU.SLIDEVERYSLOW"
-msgid "Very Slow"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.DAY
-msgctxt "STRINGS.UI.SANDBOXMENU.DAY"
-msgid "Day"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.USEPRESETS
-msgctxt "STRINGS.UI.SANDBOXMENU.USEPRESETS"
-msgid "Presets"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.ADDLEVEL_WARNING
-msgctxt "STRINGS.UI.SANDBOXMENU.ADDLEVEL_WARNING"
-msgid "This requires running multiple servers at the same time.\nIs your computer up to the task?"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.SLIDERARE
-msgctxt "STRINGS.UI.SANDBOXMENU.SLIDERARE"
-msgid "Less"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.SLIDEVERYFAST
-msgctxt "STRINGS.UI.SANDBOXMENU.SLIDEVERYFAST"
-msgid "Very Fast"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.SLIDEFAST
-msgctxt "STRINGS.UI.SANDBOXMENU.SLIDEFAST"
-msgid "Fast"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.SLIDEVERYSHORT
-msgctxt "STRINGS.UI.SANDBOXMENU.SLIDEVERYSHORT"
-msgid "Very Short"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.WINTER_SUMMER
-msgctxt "STRINGS.UI.SANDBOXMENU.WINTER_SUMMER"
-msgid "Winter/Summer"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.MEDIUM
-msgctxt "STRINGS.UI.SANDBOXMENU.MEDIUM"
-msgid "Quite Difficult"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.CHOICEMISC
-msgctxt "STRINGS.UI.SANDBOXMENU.CHOICEMISC"
-msgid "World"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.TITLEDETAIL
-msgctxt "STRINGS.UI.SANDBOXMENU.TITLEDETAIL"
-msgid ""
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.DARKSTART
-msgctxt "STRINGS.UI.SANDBOXMENU.DARKSTART"
-msgid "Dark"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.LOCATION.FOREST
-msgctxt "STRINGS.UI.SANDBOXMENU.LOCATION.FOREST"
-msgid "Forest"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.LOCATION.CAVE
-msgctxt "STRINGS.UI.SANDBOXMENU.LOCATION.CAVE"
-msgid "Cave"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.LOCATION.UNKNOWN
-msgctxt "STRINGS.UI.SANDBOXMENU.LOCATION.UNKNOWN"
-msgid "Some"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.CHOICEAMTDAY
-msgctxt "STRINGS.UI.SANDBOXMENU.CHOICEAMTDAY"
-msgid "Amount of Day"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.SLIDESMALL
-msgctxt "STRINGS.UI.SANDBOXMENU.SLIDESMALL"
-msgid "Small"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.WINTER
-msgctxt "STRINGS.UI.SANDBOXMENU.WINTER"
-msgid "Winter"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.LOOPRANDOM
-msgctxt "STRINGS.UI.SANDBOXMENU.LOOPRANDOM"
-msgid "Default"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.YES
-msgctxt "STRINGS.UI.SANDBOXMENU.YES"
-msgid "Yes"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.MODIFYTASKS
-msgctxt "STRINGS.UI.SANDBOXMENU.MODIFYTASKS"
-msgid "Modify Tasks"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.NIGHT
-msgctxt "STRINGS.UI.SANDBOXMENU.NIGHT"
-msgid "Night"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.ADVENTURELEVELS.1
-msgctxt "STRINGS.UI.SANDBOXMENU.ADVENTURELEVELS.1"
-msgid "A Cold Reception"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.ADVENTURELEVELS.2
-msgctxt "STRINGS.UI.SANDBOXMENU.ADVENTURELEVELS.2"
-msgid "The King of Winter"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.ADVENTURELEVELS.3
-msgctxt "STRINGS.UI.SANDBOXMENU.ADVENTURELEVELS.3"
-msgid "The Game is Afoot"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.ADVENTURELEVELS.4
-msgctxt "STRINGS.UI.SANDBOXMENU.ADVENTURELEVELS.4"
-msgid "Archipelago"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.ADVENTURELEVELS.5
-msgctxt "STRINGS.UI.SANDBOXMENU.ADVENTURELEVELS.5"
-msgid "Two Worlds"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.ADVENTURELEVELS.6
-msgctxt "STRINGS.UI.SANDBOXMENU.ADVENTURELEVELS.6"
-msgid "Darkness"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.ADVENTURELEVELS.7
-msgctxt "STRINGS.UI.SANDBOXMENU.ADVENTURELEVELS.7"
-msgid "Checkmate"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.CHOICERESOURCES
-msgctxt "STRINGS.UI.SANDBOXMENU.CHOICERESOURCES"
-msgid "Resources"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.LOOPNEVER
-msgctxt "STRINGS.UI.SANDBOXMENU.LOOPNEVER"
-msgid "Never"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.DISABLEDLEVEL
-msgctxt "STRINGS.UI.SANDBOXMENU.DISABLEDLEVEL"
-msgid "No"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.SLIDEOFTEN
-msgctxt "STRINGS.UI.SANDBOXMENU.SLIDEOFTEN"
-msgid "More"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.NONE
-msgctxt "STRINGS.UI.SANDBOXMENU.NONE"
-msgid "None"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.CHAPTERS.1
-msgctxt "STRINGS.UI.SANDBOXMENU.CHAPTERS.1"
-msgid "Chapter 1 of 5"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.CHAPTERS.2
-msgctxt "STRINGS.UI.SANDBOXMENU.CHAPTERS.2"
-msgid "Chapter 2 of 5"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.CHAPTERS.3
-msgctxt "STRINGS.UI.SANDBOXMENU.CHAPTERS.3"
-msgid "Chapter 3 of 5"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.CHAPTERS.4
-msgctxt "STRINGS.UI.SANDBOXMENU.CHAPTERS.4"
-msgid "Chapter 4 of 5"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.CHAPTERS.5
-msgctxt "STRINGS.UI.SANDBOXMENU.CHAPTERS.5"
-msgid "Chapter 5 of 5"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.CHAPTERS.6
-msgctxt "STRINGS.UI.SANDBOXMENU.CHAPTERS.6"
-msgid "Epilogue"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.REMOVELEVEL
-msgctxt "STRINGS.UI.SANDBOXMENU.REMOVELEVEL"
-msgid "Remove"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.SLIDEALL
-msgctxt "STRINGS.UI.SANDBOXMENU.SLIDEALL"
-msgid "Only"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.DEFAULTSTART
-msgctxt "STRINGS.UI.SANDBOXMENU.DEFAULTSTART"
-msgid "Default"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.BRANCHINGNEVER
-msgctxt "STRINGS.UI.SANDBOXMENU.BRANCHINGNEVER"
-msgid "Never"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.HARD
-msgctxt "STRINGS.UI.SANDBOXMENU.HARD"
-msgid "Overly Taxing"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.BRANCHINGANY
-msgctxt "STRINGS.UI.SANDBOXMENU.BRANCHINGANY"
-msgid "Default"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.SLIDEVERYSIMPLE
-msgctxt "STRINGS.UI.SANDBOXMENU.SLIDEVERYSIMPLE"
-msgid "Very Simple"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.SLIDELONG
-msgctxt "STRINGS.UI.SANDBOXMENU.SLIDELONG"
-msgid "Long"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.SPRING
-msgctxt "STRINGS.UI.SANDBOXMENU.SPRING"
-msgid "Spring"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.BOTH
-msgctxt "STRINGS.UI.SANDBOXMENU.BOTH"
-msgid "Both"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.SLIDEVERYCOMPLEX
-msgctxt "STRINGS.UI.SANDBOXMENU.SLIDEVERYCOMPLEX"
-msgid "Very Complex"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.STATICTEMPS
-msgctxt "STRINGS.UI.SANDBOXMENU.STATICTEMPS"
-msgid "Autumn, Spring"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.RANDOM
-msgctxt "STRINGS.UI.SANDBOXMENU.RANDOM"
-msgid "Random"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.SLIDETINY
-msgctxt "STRINGS.UI.SANDBOXMENU.SLIDETINY"
-msgid "Tiny"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.EXCLUDE
-msgctxt "STRINGS.UI.SANDBOXMENU.EXCLUDE"
-msgid "No"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.SLIDEVERYLONG
-msgctxt "STRINGS.UI.SANDBOXMENU.SLIDEVERYLONG"
-msgid "Very Long"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.ADDLEVEL
-msgctxt "STRINGS.UI.SANDBOXMENU.ADDLEVEL"
-msgid "Add"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.SLIDESIMPLE
-msgctxt "STRINGS.UI.SANDBOXMENU.SLIDESIMPLE"
-msgid "Simple"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.CLASSIC
-msgctxt "STRINGS.UI.SANDBOXMENU.CLASSIC"
-msgid "Autumn, Winter"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.SLIDESLARGE
-msgctxt "STRINGS.UI.SANDBOXMENU.SLIDESLARGE"
-msgid "Large"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.REMOVELEVEL_WARNING
-msgctxt "STRINGS.UI.SANDBOXMENU.REMOVELEVEL_WARNING"
-msgid "Do you want to remove %s from this server?"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.PLUSSTART
-msgctxt "STRINGS.UI.SANDBOXMENU.PLUSSTART"
-msgid "Plus"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.SUMMER
-msgctxt "STRINGS.UI.SANDBOXMENU.SUMMER"
-msgid "Summer"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.DEFAULT
-msgctxt "STRINGS.UI.SANDBOXMENU.DEFAULT"
-msgid "Autumn"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.SLIDEALWAYS
-msgctxt "STRINGS.UI.SANDBOXMENU.SLIDEALWAYS"
-msgid "Lots"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.SLIDESHORT
-msgctxt "STRINGS.UI.SANDBOXMENU.SLIDESHORT"
-msgid "Short"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.SLIDENEVER
-msgctxt "STRINGS.UI.SANDBOXMENU.SLIDENEVER"
-msgid "None"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.SLIDEDEFAULT
-msgctxt "STRINGS.UI.SANDBOXMENU.SLIDEDEFAULT"
-msgid "Default"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.LOOPALWAYS
-msgctxt "STRINGS.UI.SANDBOXMENU.LOOPALWAYS"
-msgid "Always"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.NONEAVAILABLE
-msgctxt "STRINGS.UI.SANDBOXMENU.NONEAVAILABLE"
-msgid "None Available"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.CHOICEANIMALS
-msgctxt "STRINGS.UI.SANDBOXMENU.CHOICEANIMALS"
-msgid "Animals"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.AUTUMN
-msgctxt "STRINGS.UI.SANDBOXMENU.AUTUMN"
-msgid "Autumn"
-msgstr ""
-
-#. STRINGS.UI.GENDERSTRINGS.DEFAULT.ONE
-msgctxt "STRINGS.UI.GENDERSTRINGS.DEFAULT.ONE"
-msgid "they"
-msgstr ""
-
-#. STRINGS.UI.GENDERSTRINGS.DEFAULT.TWO
-msgctxt "STRINGS.UI.GENDERSTRINGS.DEFAULT.TWO"
-msgid "their"
-msgstr ""
-
-#. STRINGS.UI.GENDERSTRINGS.FEMALE.ONE
-msgctxt "STRINGS.UI.GENDERSTRINGS.FEMALE.ONE"
-msgid "she"
-msgstr ""
-
-#. STRINGS.UI.GENDERSTRINGS.FEMALE.TWO
-msgctxt "STRINGS.UI.GENDERSTRINGS.FEMALE.TWO"
-msgid "her"
-msgstr ""
-
-#. STRINGS.UI.GENDERSTRINGS.MALE.ONE
-msgctxt "STRINGS.UI.GENDERSTRINGS.MALE.ONE"
-msgid "he"
-msgstr ""
-
-#. STRINGS.UI.GENDERSTRINGS.MALE.TWO
-msgctxt "STRINGS.UI.GENDERSTRINGS.MALE.TWO"
-msgid "his"
-msgstr ""
-
-#. STRINGS.UI.GENDERSTRINGS.ROBOT.ONE
-msgctxt "STRINGS.UI.GENDERSTRINGS.ROBOT.ONE"
-msgid "it"
-msgstr ""
-
-#. STRINGS.UI.GENDERSTRINGS.ROBOT.TWO
-msgctxt "STRINGS.UI.GENDERSTRINGS.ROBOT.TWO"
-msgid "its"
-msgstr ""
-
 #. STRINGS.UI.STARTADVENTURE.BODY
 msgctxt "STRINGS.UI.STARTADVENTURE.BODY"
 msgid "You're about to step into a long, arduous journey to find Maxwell. You will need to survive 5 worlds, each randomly generated to present a new challenge.\n\nShould you die, you will start back at this portal, but lose all your progress on the journey."
@@ -60124,31 +60774,6 @@ msgstr ""
 #. STRINGS.UI.STARTADVENTURE.BODY_TEST
 msgctxt "STRINGS.UI.STARTADVENTURE.BODY_TEST"
 msgid "If you die during adventure mode, you will return back to this portal where you may restart the adventure.\n\nYou're about to step into a long, arduous journey to find Maxwell. You will need to survive 5 worlds, each randomly generated to present a new challenge."
-msgstr ""
-
-#. STRINGS.UI.INTENTION.SOCIAL
-msgctxt "STRINGS.UI.INTENTION.SOCIAL"
-msgid "Social"
-msgstr ""
-
-#. STRINGS.UI.INTENTION.MADNESS
-msgctxt "STRINGS.UI.INTENTION.MADNESS"
-msgid "Madness"
-msgstr ""
-
-#. STRINGS.UI.INTENTION.COOPERATIVE
-msgctxt "STRINGS.UI.INTENTION.COOPERATIVE"
-msgid "Cooperative"
-msgstr ""
-
-#. STRINGS.UI.INTENTION.COMPETITIVE
-msgctxt "STRINGS.UI.INTENTION.COMPETITIVE"
-msgid "Competitive"
-msgstr ""
-
-#. STRINGS.UI.INTENTION.ANY
-msgctxt "STRINGS.UI.INTENTION.ANY"
-msgid "Any"
 msgstr ""
 
 #. STRINGS.UI.SERVERADMINSCREEN.DATE
@@ -60326,6 +60951,136 @@ msgctxt "STRINGS.UI.SERVERADMINSCREEN.UNKNOWN_DAY"
 msgid "???"
 msgstr ""
 
+#. STRINGS.UI.COLOUR.Navy
+msgctxt "STRINGS.UI.COLOUR.Navy"
+msgid "Navy"
+msgstr ""
+
+#. STRINGS.UI.COLOUR.Blue
+msgctxt "STRINGS.UI.COLOUR.Blue"
+msgid "Blue"
+msgstr ""
+
+#. STRINGS.UI.COLOUR.Purple
+msgctxt "STRINGS.UI.COLOUR.Purple"
+msgid "Purple"
+msgstr ""
+
+#. STRINGS.UI.COLOUR.Grey
+msgctxt "STRINGS.UI.COLOUR.Grey"
+msgid "Gray"
+msgstr ""
+
+#. STRINGS.UI.COLOUR.White
+msgctxt "STRINGS.UI.COLOUR.White"
+msgid "White"
+msgstr ""
+
+#. STRINGS.UI.COLOUR.Pink
+msgctxt "STRINGS.UI.COLOUR.Pink"
+msgid "Pink"
+msgstr ""
+
+#. STRINGS.UI.COLOUR.Teal
+msgctxt "STRINGS.UI.COLOUR.Teal"
+msgid "Teal"
+msgstr ""
+
+#. STRINGS.UI.COLOUR.Tan
+msgctxt "STRINGS.UI.COLOUR.Tan"
+msgid "Tan"
+msgstr ""
+
+#. STRINGS.UI.COLOUR.Black
+msgctxt "STRINGS.UI.COLOUR.Black"
+msgid "Black"
+msgstr ""
+
+#. STRINGS.UI.COLOUR.Green
+msgctxt "STRINGS.UI.COLOUR.Green"
+msgid "Green"
+msgstr ""
+
+#. STRINGS.UI.COLOUR.Brown
+msgctxt "STRINGS.UI.COLOUR.Brown"
+msgid "Brown"
+msgstr ""
+
+#. STRINGS.UI.COLOUR.Yellow
+msgctxt "STRINGS.UI.COLOUR.Yellow"
+msgid "Yellow"
+msgstr ""
+
+#. STRINGS.UI.COLOUR.Orange
+msgctxt "STRINGS.UI.COLOUR.Orange"
+msgid "Orange"
+msgstr ""
+
+#. STRINGS.UI.COLOUR.Red
+msgctxt "STRINGS.UI.COLOUR.Red"
+msgid "Red"
+msgstr ""
+
+#. STRINGS.UI.INTENTION.SOCIAL
+msgctxt "STRINGS.UI.INTENTION.SOCIAL"
+msgid "Social"
+msgstr ""
+
+#. STRINGS.UI.INTENTION.MADNESS
+msgctxt "STRINGS.UI.INTENTION.MADNESS"
+msgid "Madness"
+msgstr ""
+
+#. STRINGS.UI.INTENTION.COOPERATIVE
+msgctxt "STRINGS.UI.INTENTION.COOPERATIVE"
+msgid "Cooperative"
+msgstr ""
+
+#. STRINGS.UI.INTENTION.COMPETITIVE
+msgctxt "STRINGS.UI.INTENTION.COMPETITIVE"
+msgid "Competitive"
+msgstr ""
+
+#. STRINGS.UI.INTENTION.ANY
+msgctxt "STRINGS.UI.INTENTION.ANY"
+msgid "Any"
+msgstr ""
+
+#. STRINGS.UI.RARITY.Loyal
+msgctxt "STRINGS.UI.RARITY.Loyal"
+msgid "Loyal"
+msgstr ""
+
+#. STRINGS.UI.RARITY.Timeless
+msgctxt "STRINGS.UI.RARITY.Timeless"
+msgid "Timeless"
+msgstr ""
+
+#. STRINGS.UI.RARITY.Common
+msgctxt "STRINGS.UI.RARITY.Common"
+msgid "Common"
+msgstr ""
+
+#. STRINGS.UI.RARITY.Elegant
+msgctxt "STRINGS.UI.RARITY.Elegant"
+msgid "Elegant"
+msgstr ""
+
+#. STRINGS.UI.RARITY.Classy
+msgctxt "STRINGS.UI.RARITY.Classy"
+msgid "Classy"
+msgstr ""
+
+#. STRINGS.UI.RARITY.Spiffy
+msgctxt "STRINGS.UI.RARITY.Spiffy"
+msgid "Spiffy"
+msgstr ""
+
+#. STRINGS.UI.RARITY.Distinguished
+msgctxt "STRINGS.UI.RARITY.Distinguished"
+msgid "Distinguished"
+msgstr ""
+
 #. STRINGS.UI.NOAUTHENTICATIONSCREEN.TITLE_FAILEDEMAIL
 msgctxt "STRINGS.UI.NOAUTHENTICATIONSCREEN.TITLE_FAILEDEMAIL"
 msgid "Email Not Validated"
@@ -60421,14 +61176,14 @@ msgctxt "STRINGS.UI.ITEM_SCREEN.USE_NOW"
 msgid "Use Now"
 msgstr ""
 
+#. STRINGS.UI.ITEM_SCREEN.THANKS_POPUP_TITLE
+msgctxt "STRINGS.UI.ITEM_SCREEN.THANKS_POPUP_TITLE"
+msgid "THANKS FOR PLAYING"
+msgstr ""
+
 #. STRINGS.UI.ITEM_SCREEN.DISABLED_TOAST_TOOLTIP
 msgctxt "STRINGS.UI.ITEM_SCREEN.DISABLED_TOAST_TOOLTIP"
 msgid "This requires more science!"
-msgstr ""
-
-#. STRINGS.UI.ITEM_SCREEN.ENABLED_TOAST_TOOLTIP
-msgctxt "STRINGS.UI.ITEM_SCREEN.ENABLED_TOAST_TOOLTIP"
-msgid "Open"
 msgstr ""
 
 #. STRINGS.UI.ITEM_SCREEN.OPEN_BUTTON
@@ -60436,9 +61191,9 @@ msgctxt "STRINGS.UI.ITEM_SCREEN.OPEN_BUTTON"
 msgid "Open Now!"
 msgstr ""
 
-#. STRINGS.UI.ITEM_SCREEN.ROG_POPUP_TITLE
-msgctxt "STRINGS.UI.ITEM_SCREEN.ROG_POPUP_TITLE"
-msgid "THANKS FOR PLAYING"
+#. STRINGS.UI.ITEM_SCREEN.ENABLED_TOAST_TOOLTIP
+msgctxt "STRINGS.UI.ITEM_SCREEN.ENABLED_TOAST_TOOLTIP"
+msgid "Open"
 msgstr ""
 
 #. STRINGS.UI.ITEM_SCREEN.NEXT_ITEM

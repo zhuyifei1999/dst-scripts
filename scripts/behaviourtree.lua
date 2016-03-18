@@ -759,3 +759,30 @@ function IfNode(cond, name, node)
 end
 ---------------------------------------------------------------
 
+LatchNode = Class(BehaviourNode, function(self, inst, latchduration, child)
+    BehaviourNode._ctor(self, "Latch ("..tostring(latchduration)..")", {child})
+    self.inst = inst
+    self.latchduration = latchduration
+    self.currentlatchduration = 0
+    self.lastlatchtime = -math.huge
+end)
+
+function LatchNode:Visit()
+    if self.status == READY then
+        if GetTime() > self.currentlatchduration + self.lastlatchtime then
+            print("GONNA GO!", GetTime(), self.currentlatchduration, "----", GetTime()+self.currentlatchduration, ">", self.lastlatchtime)
+            self.lastlatchtime = GetTime()
+            self.currentlatchduration = type(self.latchduration) == "function" and self.latchduration(self.inst) or self.latchduration
+            print("New vals:", self.currentlatchduration , self.lastlatchtime)
+
+            self.status = RUNNING
+        else
+            self.status = FAILED
+        end
+    end
+
+    if self.status == RUNNING then
+        self.children[1]:Visit()
+        self.status = self.children[1].status
+    end
+end

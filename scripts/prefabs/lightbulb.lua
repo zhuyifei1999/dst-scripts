@@ -32,6 +32,8 @@ local function fn()
     inst.Light:SetColour(237/255, 237/255, 209/255)
     inst.Light:Enable(true)
 
+    inst:AddTag("lightbattery")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

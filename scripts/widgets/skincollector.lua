@@ -2,6 +2,7 @@ local Widget = require "widgets/widget"
 local UIAnim = require "widgets/uianim"
 local Image = require "widgets/image"
 local Text = require "widgets/text"
+local TEMPLATES = require "widgets/templates"
 
 -- all delay times are in seconds
 local SPEECH_TIME = 6
@@ -33,6 +34,14 @@ local SkinCollector = Class(Widget, function(self, num_items)
     self.text:EnableWordWrap(true)
     self.text:SetPosition(50, 550)
 
+    self.hand = self.root:AddChild(TEMPLATES.InvisibleButton(15, 15, 
+			    											function() if not self.talking then 
+			    														self:Say(STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.HAND) 
+			    													   end
+			    											end, 
+			   												nil ))
+    self.hand:SetPosition(-75, 75)
+
     self.last_speech_time = 0
     self.num_items = num_items
 end)
@@ -49,14 +58,38 @@ function SkinCollector:Disappear(callbackfn)
 	self.exit_callback = callbackfn
 end
 
+function SkinCollector:Snap()
+	self:QuitTalking()
+	self.innkeeper:GetAnimState():PlayAnimation("snap", false)
+	self.innkeeper:GetAnimState():PushAnimation("idle", true)
+end
+
 function SkinCollector:QuitTalking()
 	--print("SkinCollector QuitTalking")
 	self:ClearSpeech()
 	TheFrontEnd:GetSound():KillSound("skincollector")
 end
 
-function SkinCollector:InternalSay(text)
-	--print("Internal saying ", text)
+function SkinCollector:Say(text, rarity, name, number)
+	assert(text, "Bad text string for SkinCollector speech")
+
+	local str = text
+	if type(text) == "table" then 
+		str = GetRandomItem(text)
+	end
+
+	if rarity then 
+		str = string.gsub(str, "<rarity>", rarity)
+	end
+
+	if name then 
+		str = string.gsub(str, "<item>", name)
+	end
+	
+	if number then 
+		str = string.gsub(str, "<number>", number)
+	end
+
 	self.last_speech_time = GetTime()
 	
 	if not (self.innkeeper:GetAnimState():IsCurrentAnimation("dialog_pre") or self.innkeeper:GetAnimState():IsCurrentAnimation("dial_loop")) then
@@ -69,32 +102,10 @@ function SkinCollector:InternalSay(text)
 		self.speech_bubble:GetAnimState():PlayAnimation("open", false)
 	end
 
-	self.text_string = text
+	self.text_string = str
 	self.display_text_time = SPEECH_TIME
 	
 	self.talking = true
-end
-
-function SkinCollector:Say(text, rarity, name)
-	assert(text, "Bad text string for SkinCollector speech")
-
-	--print("Say called with ", text, "already saying", self.text_string)
-	--print("Talking?", self.talking or "nil", "last_speech_time", self.last_speech_time or "nil", GetTime() - self.last_speech_time)
-
-	local str = text
-	if type(text) == "table" then 
-		str = GetRandomItem(text)
-	end
-
-	if rarity then 
-		str = SubstituteRarity(str, rarity)
-	end
-
-	if name then 
-		str = string.gsub(str, "<item>", name)
-	end
-	
-	self:InternalSay(str)
 end
 
 function SkinCollector:ClearSpeech()
@@ -126,7 +137,9 @@ function SkinCollector:OnUpdate(dt)
 	elseif self.innkeeper:GetAnimState():IsCurrentAnimation("disappear") then
 		if self.innkeeper:GetAnimState():AnimDone() then 
 			self:StopUpdating()
-			self.exit_callback()
+			if self.exit_callback then 
+				self.exit_callback()
+			end
 		end
 
 		return
@@ -147,7 +160,7 @@ function SkinCollector:OnUpdate(dt)
 
 			if not self.sound_started then 
 				--print("Playing skin collector talk sound")
-				TheFrontEnd:GetSound():PlaySound("dontstarve/characters/Skincollector/talk_LP", "skincollector")
+				TheFrontEnd:GetSound():PlaySound("dontstarve/characters/skincollector/talk_LP", "skincollector")
 				self.sound_started = true
 				--print("Starting sound")
 			end

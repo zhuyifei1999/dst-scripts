@@ -6,9 +6,17 @@ local Image = require "widgets/image"
 local Widget = require "widgets/widget"
 local UIAnim = require "widgets/uianim"
 
+require "skinsutils"
 
-local ROGItemPopup = Class(Screen, function(self, items)
-    Screen._ctor(self, "ROGItemPopup")
+local ThankYouPopup = Class(Screen, function(self, items, bgatlas, bgimage, logoatlas, logoimage, callbackfn)
+    Screen._ctor(self, "ThankYouPopup")
+
+    bgatlas = bgatlas or "images/ui.xml"
+    bgimage = bgimage or "black.tex"
+    logoatlas = logoatlas or "images/ui.xml"
+    logoimage = logoimage or "klei_new_logo.tex"
+
+    self.callbackfn = callbackfn
 
     --darken everything behind the dialog
     self.black = self:AddChild(Image("images/global.xml", "square.tex"))
@@ -25,16 +33,7 @@ local ROGItemPopup = Class(Screen, function(self, items)
     self.proot:SetPosition(0,0,0)
     self.proot:SetScaleMode(SCALEMODE_PROPORTIONAL)
 
-    -- Used to select a random image for the giant on the shield background
-    local shield_images =
-    {
-        { name = "rog_item_popup_1", shields = {"bearger_shield_1.tex", "bearger_shield_2.tex", "deerclops_shield_1.tex", "deerclops_shield_2.tex" }},
-        { name = "rog_item_popup_2", shields = {"dragonfly_shield.tex",  "moosegoose_shield.tex"}}
-    }
-    local random_atlas = shield_images[math.random(#shield_images)]
-
-    -- Sets the random image
-    self.bg = self.proot:AddChild(Image("images/" ..random_atlas.name ..".xml", random_atlas.shields[math.random(#random_atlas.shields)]))
+    self.bg = self.proot:AddChild(Image(bgatlas, bgimage))
     self.bg:SetVRegPoint(ANCHOR_MIDDLE)
     self.bg:SetHRegPoint(ANCHOR_MIDDLE)
     self.bg:SetScale(.97)
@@ -42,14 +41,14 @@ local ROGItemPopup = Class(Screen, function(self, items)
     --title 
     self.title = self.proot:AddChild(Text(BUTTONFONT, 60))
     self.title:SetPosition(-70, 235, 0)
-    self.title:SetString(STRINGS.UI.ITEM_SCREEN.ROG_POPUP_TITLE)    
+    self.title:SetString(STRINGS.UI.ITEM_SCREEN.THANKS_POPUP_TITLE)    
     
-    -- ROG Logo
-    self.rog_img = self.proot:AddChild(Image("images/rog_item_popup_2.xml", "ReignOfGiants.tex"))
-    self.rog_img:SetVRegPoint(ANCHOR_MIDDLE)
-    self.rog_img:SetHRegPoint(ANCHOR_MIDDLE)
-    self.rog_img:SetScale(.9,.9,.9)
-    self.rog_img:SetPosition(155, 215, 0)
+    -- Logo
+    self.logo_img = self.proot:AddChild(Image(logoatlas, logoimage))
+    self.logo_img:SetVRegPoint(ANCHOR_MIDDLE)
+    self.logo_img:SetHRegPoint(ANCHOR_MIDDLE)
+    self.logo_img:SetScale(.9,.9,.9)
+    self.logo_img:SetPosition(155, 215, 0)
 
     -- Actual animation
     self.spawn_portal = self.proot:AddChild(UIAnim())
@@ -59,7 +58,7 @@ local ROGItemPopup = Class(Screen, function(self, items)
     self.spawn_portal:GetAnimState():SetBank("gift_popup") -- top level symbol
 
     self.banner = self.proot:AddChild(Image("images/giftpopup.xml", "banner.tex"))
-    self.banner:SetPosition(0, -180, 0)
+    self.banner:SetPosition(0, -185, 0)
     self.banner:SetScale(.9)
 
     -- Name of the received item, parented to the banner so they show and hide together
@@ -68,6 +67,11 @@ local ROGItemPopup = Class(Screen, function(self, items)
     self.item_name:SetPosition(0, -10, 0)
 
     self.banner:Hide()
+
+    -- Text saying "you received" on the upper banner
+    self.upper_banner_text = self.proot:AddChild(Text(BUTTONFONT, 32, STRINGS.UI.ITEM_SCREEN.RECEIVED))
+    self.upper_banner_text:SetPosition(0, 48, 0)
+
 
     self.right_btn = self.proot:AddChild(ImageButton("images/lobbyscreen.xml", "DSTMenu_PlayerLobby_arrow_paper_R.tex", "DSTMenu_PlayerLobby_arrow_paperHL_R.tex"))
     self.right_btn:SetPosition(275, -55, 0)
@@ -114,7 +118,7 @@ local ROGItemPopup = Class(Screen, function(self, items)
     self:NewGift()
 end)
 
-function ROGItemPopup:OnUpdate(dt)
+function ThankYouPopup:OnUpdate(dt)
     if self.spawn_portal:GetAnimState():IsCurrentAnimation("skin_loop") then
         -- We just revealed a new skin
         if self.reveal_skin then
@@ -131,6 +135,9 @@ function ROGItemPopup:OnUpdate(dt)
     -- We're closing the popup
     elseif self.spawn_portal:GetAnimState():IsCurrentAnimation("skin_out") and self.spawn_portal:GetAnimState():AnimDone() then
         TheFrontEnd:PopScreen(self)
+        if self.callbackfn then 
+            self.callbackfn()
+        end
     -- We just navigated to an unrevealed skin
     elseif self.spawn_portal:GetAnimState():IsCurrentAnimation("idle") and self.transitioning then
         self.transitioning = false
@@ -140,23 +147,13 @@ function ROGItemPopup:OnUpdate(dt)
 end
 
 -- Sets the name of the skin on the banner and enables the close button if needed
-function ROGItemPopup:SetSkinName()
+function ThankYouPopup:SetSkinName()
     
-    local skin_name = string.lower(self.items[self.current_item].item_type)
-    local name_string = STRINGS.SKIN_NAMES[skin_name]
+    local skin_name = string.lower(self.items[self.current_item])
+    local name_string = GetName(skin_name) 
 
-    local skin_data
-    if CLOTHING[skin_name] ~= nil then
-        skin_data = CLOTHING[skin_name]
-    else
-        skin_data = Prefabs[skin_name]
-    end
-    
-    local rarity = "Common"
-    if skin_data and skin_data.rarity then
-        rarity = skin_data.rarity
-    end
-
+    local itemtype = GetTypeForItem(skin_name)
+    local rarity = GetRarityForItem(itemtype, skin_name)
     self.item_name:SetColour(SKIN_RARITY_COLORS[rarity])
     self.item_name:SetString(name_string or skin_name or "bad item name")
     self.banner:Show()
@@ -173,7 +170,7 @@ function ROGItemPopup:SetSkinName()
 end
 
 -- Enables or disables arrows according to our current item
-function ROGItemPopup:EvaluateArrows()
+function ThankYouPopup:EvaluateArrows()
     if #self.items == 1 then
         self.right_btn:Hide()
         self.left_btn:Hide()
@@ -193,7 +190,7 @@ function ROGItemPopup:EvaluateArrows()
 end
 
 -- Sets the new Gift after we navigated
-function ROGItemPopup:NewGift()
+function ThankYouPopup:NewGift()
 
     self.banner:Hide()
 
@@ -204,7 +201,8 @@ function ROGItemPopup:NewGift()
         self.open_btn:Hide()
         self.close_btn:Hide()
     else -- Already opened item
-        self.spawn_portal:GetAnimState():OverrideSkinSymbol("SWAP_ICON", self.items[self.current_item], "SWAP_ICON")
+        local build = GetBuildForItem(GetTypeForItem(self.items[self.current_item]), self.items[self.current_item])
+        self.spawn_portal:GetAnimState():OverrideSkinSymbol("SWAP_ICON", build, "SWAP_ICON")
         TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/player_receives_gift_animation_spin")
         self.spawn_portal:GetAnimState():PlayAnimation("skin_in")
         self.spawn_portal:GetAnimState():PushAnimation("skin_loop", true)
@@ -218,7 +216,7 @@ function ROGItemPopup:NewGift()
 end
 
 -- Plays the closing animation
-function ROGItemPopup:GoAway()
+function ThankYouPopup:GoAway()
 	TheFrontEnd:GetSound():KillSound("gift_idle")
 	TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/player_receives_gift_animation_skinout")
     self.spawn_portal:GetAnimState():PlayAnimation("skin_out")
@@ -230,18 +228,15 @@ function ROGItemPopup:GoAway()
 end
 
 -- Plays the open gift animation
-function ROGItemPopup:OpenGift()
+function ThankYouPopup:OpenGift()
     self.open_btn:Hide()
     self.right_btn:Hide()
     self.left_btn:Hide()
 
     local skin_name = self.items[self.current_item]
-    if CLOTHING[skin_name] == nil then -- Is it a craftable?
-        local skin_data = Prefabs[skin_name]
-        self.spawn_portal:GetAnimState():OverrideSkinSymbol("SWAP_ICON", skin_data.ui_preview.build, "SWAP_ICON")
-    else -- Nope, it's actually normal clothing
-         self.spawn_portal:GetAnimState():OverrideSkinSymbol("SWAP_ICON", skin_name, "SWAP_ICON")
-    end
+    local build = GetBuildForItem(GetTypeForItem(skin_name), skin_name)
+
+    self.spawn_portal:GetAnimState():OverrideSkinSymbol("SWAP_ICON", build, "SWAP_ICON")
 
     TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/player_receives_gift_animation")
     self.spawn_portal:GetAnimState():PlayAnimation("open")
@@ -254,10 +249,10 @@ function ROGItemPopup:OpenGift()
 
 end
 
-function ROGItemPopup:OnControl(control, down)
-    if ROGItemPopup._base.OnControl(self,control, down) then 
+function ThankYouPopup:OnControl(control, down)
+    if ThankYouPopup._base.OnControl(self,control, down) then 
         return true 
     end
 end
 
-return ROGItemPopup
+return ThankYouPopup

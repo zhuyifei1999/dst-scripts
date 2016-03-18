@@ -13,8 +13,7 @@ AddRoom("MandrakeHome", {
 															end,
 									},
 					                countprefabs= {
-					                    --TODO: jcheng: fix mandrakes
-					                    --mandrake = 1,
+                                        mandrake_planted = 1,
 					                },
 					                distributepercent = .2,
 					                distributeprefabs=

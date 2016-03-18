@@ -8,6 +8,7 @@ require "map/room_functions"
 AddRoom("SinkholeSwamp", {
     colour={r=0.4,g=0.1,b=0.6,a=0.9},
     value = GROUND.MARSH,
+    tags = {"Hutch_Fishbowl"},
     type = NODE_TYPE.Room,
     contents =  {
         distributepercent = .35,
@@ -30,6 +31,7 @@ AddRoom("SinkholeSwamp", {
 AddRoom("DarkSwamp", {
     colour={r=0.4,g=0.1,b=0.6,a=0.9},
     value = GROUND.MARSH,
+    tags = {"Hutch_Fishbowl"},
     type = NODE_TYPE.Room,
     contents =  {
         distributepercent = .25,
@@ -49,6 +51,7 @@ AddRoom("DarkSwamp", {
 AddRoom("TentacleMud", {
     colour={r=0.4,g=0.1,b=0.6,a=0.9},
     value = GROUND.MARSH,
+    tags = {"Hutch_Fishbowl"},
     type = NODE_TYPE.Room,
     contents =  {
         countstaticlayouts={
@@ -73,6 +76,7 @@ AddRoom("TentacleMud", {
 AddRoom("TentaclesAndTrees", {
     colour={r=0.4,g=0.1,b=0.6,a=0.9},
     value = GROUND.MARSH,
+    tags = {"Hutch_Fishbowl"},
     type = NODE_TYPE.Room,
     contents =  {
         countstaticlayouts={
@@ -96,6 +100,7 @@ AddRoom("TentaclesAndTrees", {
 local bgsinkholeswamp = {
     colour={r=0.4,g=0.1,b=0.6,a=0.9},
     value = GROUND.MARSH,
+    tags = {"Hutch_Fishbowl"},
     type = NODE_TYPE.Room,
     contents =  {
         distributepercent = .35,

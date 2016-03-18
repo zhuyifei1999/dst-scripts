@@ -534,6 +534,13 @@ return {
 		ARMORDRAGONFLY = "Another creature casing.",
 		DRAGON_SCALES = "They don't weigh much for scales.",
 		DRAGONFLYCHEST = "It looks like my old toy chest!",
+
+        HUTCH_FISHBOWL =
+        {
+            GENERIC = "He's our new friend.",
+            WAITING = "He was our new friend.",
+        },
+
 		LAVASPIT = 
 		{
 			HOT = "Too hot for us!",
@@ -1010,6 +1017,8 @@ return {
 		ROTTENEGG = "Ew!",
         SADDLE_BASIC = "We ride!",
         SADDLE_WAR = "We'll have lots of fun riding on this.",
+        SADDLEHORN = "I'm taking my saddle and leaving.",
+        BRUSH = "It's more scratchy than anything.",
 		SANITYROCK =
 		{
 			ACTIVE = "It's in our way.",

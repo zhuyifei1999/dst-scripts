@@ -338,8 +338,8 @@ local function PopulateWorld(savedata, profile)
             if story ~= "START" then
                 story = string.sub(story, 1, string.find(story,":")-1)
             end
-
-            if node.type == "Graveyard" or node.type == "MistyCavern" then
+            
+            if table.contains( node.tags, "Mist" ) then
                 if node.area_emitter == nil then
 
                     local mist = SpawnPrefab( "mist" )

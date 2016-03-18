@@ -1339,6 +1339,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_cave_enter.zip"),
         Asset("ANIM", "anim/player_actions_uniqueitem.zip"),
         Asset("ANIM", "anim/player_actions_bugnet.zip"),
+        Asset("ANIM", "anim/player_actions_unsaddle.zip"),
         Asset("ANIM", "anim/player_actions_fishing.zip"),
         Asset("ANIM", "anim/player_actions_boomerang.zip"),
         Asset("ANIM", "anim/player_actions_whip.zip"),

@@ -33,6 +33,15 @@ local events=
     end),
     EventHandler("loseloyalty", function(inst) if not inst.components.health:IsDead() and not inst.sg:HasStateTag("attack") then inst.sg:GoToState("shake") end end),
     EventHandler("eat", function(inst, data) inst.sg:GoToState("eat", data) end),
+    EventHandler("brushed", function(inst, data)
+        if not inst.components.health:IsDead() and not inst.sg:HasStateTag("busy") then
+            if data.numprizes > 0 then
+                inst.sg:GoToState("pleased")
+            else
+                inst.sg:GoToState("meh")
+            end
+        end
+    end),
 }
 
 local states=
@@ -78,16 +87,22 @@ local states=
                 end
             else
                 local rand = math.random()
-                if rand < .5 then
-                    if inst.components.hunger and inst.components.hunger:GetPercent() > 0 then
+                if inst.components.hunger and inst.components.hunger:GetPercent() > 0 then
+                    if rand < .75 then
                         inst.sg:GoToState("graze")
+                    elseif rand < .90 then
+                        inst.sg:GoToState("shake")
                     else
-                        inst.sg:GoToState("graze_empty")
+                        inst.sg:GoToState("bellow")
                     end
-                elseif rand < .75 then
-                    inst.sg:GoToState("shake")
                 else
-                    inst.sg:GoToState("bellow")
+                    if rand < .5 then
+                        inst.sg:GoToState("graze_empty")
+                    elseif rand < .75 then
+                        inst.sg:GoToState("shake")
+                    else
+                        inst.sg:GoToState("bellow")
+                    end
                 end
             end
         end,
@@ -120,12 +135,9 @@ local states=
 
         timeline=
         {
-            --TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.swish) end),
-            --TimeEvent(5*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.swish) end),
-            --TimeEvent(9*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.swish) end),
-            --TimeEvent(15*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.swish) end),
-            --TimeEvent(20*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.swish) end),
-            TimeEvent(24*FRAMES, function(inst) inst.components.rideable:SetSaddle(nil, nil) end),
+            TimeEvent(24*FRAMES, function(inst)
+                inst.components.rideable:SetSaddle(nil, nil)
+            end),
         },
 
         events=
@@ -160,6 +172,60 @@ local states=
             EventHandler("animover", function(inst)
                 inst.sg:GoToState("idle")
             end),
+        },
+    },
+
+    State{
+        name = "pleased",
+        tags = {"canrotate"},
+
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("brush")
+            inst.SoundEmitter:PlaySound("dontstarve/beefalo/positive")
+        end,
+
+        events=
+        {
+            EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
+        },
+    },
+
+    State{
+        name = "meh",
+        tags = {"canrotate"},
+
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("shake")
+        end,
+
+        events=
+        {
+            EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
+        },
+    },
+
+    State{
+        name = "beg",
+        tags = {"canrotate"},
+
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("beg_pre")
+            inst.AnimState:PushAnimation("beg_loop")
+            inst.AnimState:PushAnimation("beg_loop")
+            inst.AnimState:PushAnimation("beg_pst", false)
+        end,
+
+        timeline=
+        {
+            TimeEvent(6*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/beefalo/beg") end),
+        },
+
+        events=
+        {
+            EventHandler("animqueueover", function(inst) inst.sg:GoToState("actual_alert") end),
         },
     },
 
@@ -255,7 +321,11 @@ local states=
             inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("graze_loop", true)
             inst.SoundEmitter:PlaySound("dontstarve/beefalo/eat_treat")
-            inst.sg:SetTimeout(2+math.random()*2)
+            if data.food ~= nil and data.food.components.edible ~= nil then
+                inst.sg:SetTimeout(Remap(math.abs(data.food.components.edible.hungervalue), TUNING.CALORIES_TINY, TUNING.CALORIES_SUPERHUGE, 0.4, 8.0) + math.random()*0.3)
+            else
+                inst.sg:SetTimeout(2.0+math.random()*2.0)
+            end
             inst.sg.statemem.full = data.full
         end,
 
@@ -270,16 +340,55 @@ local states=
         ontimeout= function(inst)
             if inst.sg.statemem.full then
                 inst.sg:GoToState("regurgitate")
+            elseif inst.components.hunger:GetPercent() > 0.8 then
+                inst.sg:GoToState("flatulate")
             else
                 inst.sg:GoToState("idle")
             end
         end,
 
     },
-    
+
+    State{
+        name="flatulate",
+        tags = {"busy"},
+
+        onenter = function(inst, data)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("fart")
+        end,
+
+        timeline =
+        {
+            TimeEvent(9*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/beefalo/fart") end),
+            TimeEvent(10*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/beefalo/tail_swish_fast") end),
+        },
+
+        events=
+        {
+            EventHandler("animqueueover", function(inst) inst.sg:GoToState("idle") end),
+        },
+
+    },
+
+
+    -- The "alert" state name is hardcoded into the FaceEntity behaviour, but since we want to beg sometimes instead...
     State{
         name = "alert",
-        tags = {"idle", "canrotate"},
+        tags = {"idle", "canrotate", "alert"},
+        
+        onenter = function(inst)
+            if inst:ShouldBeg() then
+                inst.sg:GoToState("beg")
+            else
+                inst.sg:GoToState("actual_alert")
+            end
+        end,
+    },
+    
+    State{
+        name = "actual_alert",
+        tags = {"idle", "canrotate", "alert"},
         
         onenter = function(inst)
             inst.components.locomotor:StopMoving()
@@ -300,8 +409,10 @@ local states=
                 inst.sg:GoToState("shake_off_saddle")
             elseif inst.domesticationPending then
                 inst.sg:GoToState("become_domesticated")
+            elseif inst:ShouldBeg() then
+                inst.sg:GoToState("beg")
             else
-                inst.sg:GoToState("alert")
+                inst.sg:GoToState("actual_alert")
             end
         end,
     },
@@ -436,6 +547,9 @@ local states=
                     inst.AnimState:SetBuild("beefalo_build")
                 inst.components.beard.bits = 3
             end
+            if inst.components.brushable then
+                inst.components.brushable:SetBrushable(true, true)
+            end
             inst.hairGrowthPending = false
             inst:ApplyBuildOverrides(inst.AnimState)
         end,
@@ -485,6 +599,66 @@ local states=
             end),
         },
     },
+   
+    State
+    {
+        name = "run_start",
+        tags = { "moving", "running", "canrotate" },
+
+        onenter = function(inst)
+            inst.components.locomotor:RunForward()
+            local hastarget = inst.components.combat ~= nil and inst.components.combat:HasTarget()
+            inst.AnimState:PlayAnimation(hastarget and "run_pre" or "run2_pre")
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                inst.sg:GoToState("run")
+            end),
+        },
+    },
+   
+    State
+    {
+        name = "run",
+        tags = { "moving", "running", "canrotate" },
+
+        onenter = function(inst)
+            inst.components.locomotor:RunForward()
+            local hastarget = inst.components.combat ~= nil and inst.components.combat:HasTarget()
+            inst.AnimState:PlayAnimation(hastarget and "run_loop" or "run2_loop", true)
+            inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
+        end,
+
+        timeline = {
+            TimeEvent(1*FRAMES, function(inst) inst.didalertnoise = nil end),
+            TimeEvent(5*FRAMES, PlayFootstep),
+        },
+
+        ontimeout = function(inst)
+            inst.sg:GoToState("run")
+        end,
+    },
+   
+    State
+    {
+        name = "run_stop",
+        tags = { "idle" },
+
+        onenter = function(inst) 
+            inst.components.locomotor:StopMoving()
+            local hastarget = inst.components.combat ~= nil and inst.components.combat:HasTarget()
+            inst.AnimState:PlayAnimation(hastarget and "run_pst" or "run2_pst")
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                inst.sg:GoToState("idle")
+            end),
+        },
+    },
 }
 
 --#TODO: Special walk states for when stomach is empty, use that graze walk loop
@@ -496,16 +670,6 @@ CommonStates.AddWalkStates(
             TimeEvent(1*FRAMES, function(inst) inst.didalertnoise = nil end),
             TimeEvent(15*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.walk) end),
             TimeEvent(40*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.walk) end),
-        }
-    })
-    
-CommonStates.AddRunStates(
-    states,
-    {
-        runtimeline =
-        {
-            TimeEvent(1*FRAMES, function(inst) inst.didalertnoise = nil end),
-            TimeEvent(5*FRAMES, PlayFootstep),
         }
     })
 

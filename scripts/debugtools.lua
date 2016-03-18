@@ -112,9 +112,9 @@ function dumptable(obj, indent, recurse_levels, visit_table)
         for k,v in pairs(obj) do
             if type(v) == "table" and i_recurse_levels>0 then
                 if v.entity and v.entity:GetGUID() then
-                    print(dent.."K: ",k," V", v, "(Entity -- skipping.)")
+                    print(dent.."K: ",k," V: ", v, "(Entity -- skipping.)")
                 else
-                    print(dent.."K: ",k," V", v)
+                    print(dent.."K: ",k," V: ", v)
                     dumptable(v, indent+1, i_recurse_levels-1, visit_table)
                 end
             else

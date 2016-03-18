@@ -23,7 +23,6 @@ local assets =
     Asset("ANIM", "anim/spiral_bg.zip"),
 
     Asset("ANIM", "anim/frames_comp.zip"),
-    Asset("ANIM", "anim/frame_skins.zip"),
 
     Asset("ATLAS", "images/lobbybannertop.xml"),
     Asset("IMAGE", "images/lobbybannertop.tex"),
@@ -93,7 +92,6 @@ local prefabs =
     "pighouse",
     "pigking",
     "mandrake",
-    "chester",
     "rook",
     "bishop",
     "knight",

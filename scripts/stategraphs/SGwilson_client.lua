@@ -173,6 +173,8 @@ local actionhandlers =
     ActionHandler(ACTIONS.MIGRATE, "migrate"),
     ActionHandler(ACTIONS.MOUNT, "doshortaction"),
     ActionHandler(ACTIONS.SADDLE, "doshortaction"),
+    ActionHandler(ACTIONS.UNSADDLE, "unsaddle"),
+    ActionHandler(ACTIONS.BRUSH, "dolongaction"),
 }
 
 local events =
@@ -1015,6 +1017,45 @@ local states =
         ontimeout = function(inst)
             inst:ClearBufferedAction()
             inst.AnimState:PlayAnimation("give_pst")
+            inst.sg:GoToState("idle", true)
+        end,
+    },
+
+    State
+    {
+        name = "unsaddle",
+        tags = { "doing", "busy" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("unsaddle_pre")
+            inst.AnimState:PushAnimation("unsaddle_lag", false)
+
+            inst:PerformPreviewBufferedAction()
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        timeline =
+        {
+            TimeEvent(13 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
+        },
+
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.AnimState:PlayAnimation("unsaddle")
+                inst.sg:GoToState("idle", true)
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.AnimState:PlayAnimation("unsaddle")
             inst.sg:GoToState("idle", true)
         end,
     },

@@ -8,6 +8,7 @@ require "map/room_functions"
 AddRoom("BatCave", {
     colour={r=0.3,g=0.2,b=0.1,a=0.3},
     value = GROUND.CAVE,
+    tags = {"Hutch_Fishbowl"},    
     type = NODE_TYPE.Room,
     contents =  {
         distributepercent = .15,
@@ -30,6 +31,7 @@ AddRoom("BatCave", {
 AddRoom("BattyCave", {
     colour={r=0.3,g=0.2,b=0.1,a=0.3},
     value = GROUND.CAVE,
+    tags = {"Hutch_Fishbowl"},    
     type = NODE_TYPE.Room,
     contents =  {
         distributepercent = .25,
@@ -51,6 +53,7 @@ AddRoom("BattyCave", {
 AddRoom("FernyBatCave", {
     colour={r=0.3,g=0.2,b=0.1,a=0.3},
     value = GROUND.CAVE,
+    tags = {"Hutch_Fishbowl"},    
     type = NODE_TYPE.Room,
     contents =  {
         distributepercent = .25,
@@ -73,6 +76,7 @@ AddRoom("FernyBatCave", {
 local bgbatcave = {
     colour={r=0.3,g=0.2,b=0.1,a=0.3},
     value = GROUND.CAVE,
+    tags = {"Hutch_Fishbowl"},    
     contents =  {
         distributepercent = .13,
         distributeprefabs=

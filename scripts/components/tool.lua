@@ -15,7 +15,7 @@ end)
 
 function Tool:OnRemoveFromEntity()
     for k, v in pairs(self.actions) do
-        self.inst:RemoveTag(v.id.."_tool")
+        self.inst:RemoveTag(k.id.."_tool")
     end
 end
 

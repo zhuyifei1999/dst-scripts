@@ -8,6 +8,7 @@ require "map/room_functions"
 AddRoom("SinkholeForest", {
     colour={r=0.2,g=1,b=0.5,a=0.9},
     value = GROUND.SINKHOLE,
+    tags = {"Hutch_Fishbowl"},
     contents =  {
         distributepercent = .55,
         distributeprefabs=
@@ -28,6 +29,7 @@ AddRoom("SinkholeForest", {
 AddRoom("SinkholeCopses", {
     colour={r=0.2,g=1,b=0.5,a=0.9},
     value = GROUND.SINKHOLE,
+    tags = {"Hutch_Fishbowl"},
     contents =  {
         countstaticlayouts={
             ["EvergreenSinkhole"]=3,
@@ -53,6 +55,7 @@ AddRoom("SinkholeCopses", {
 AddRoom("SparseSinkholes", {
     colour={r=0.1,g=0.8,b=0.2,a=0.9},
     value = GROUND.SINKHOLE,
+    tags = {"Hutch_Fishbowl"},
     contents =  {
         distributepercent = .15,
         distributeprefabs=
@@ -74,6 +77,7 @@ AddRoom("SparseSinkholes", {
 AddRoom("SinkholeOasis", {
     colour={r=0.1,g=0.8,b=0.2,a=0.9},
     value = GROUND.SINKHOLE,
+    tags = {"Hutch_Fishbowl"},
     contents =  {
         countstaticlayouts={
             ["PondSinkhole"]=1,
@@ -100,6 +104,7 @@ AddRoom("SinkholeOasis", {
 AddRoom("GrasslandSinkhole", {
     colour={r=0.1,g=0.8,b=0.2,a=0.9},
     value = GROUND.SINKHOLE,
+    tags = {"Hutch_Fishbowl"},
     contents =  {
         countstaticlayouts={
             ["GrassySinkhole"]=1,
@@ -119,6 +124,7 @@ AddRoom("GrasslandSinkhole", {
 local bgsinkhole = {
     colour={r=0.1,g=0.8,b=0.2,a=0.9},
     value = GROUND.SINKHOLE,
+    tags = {"Hutch_Fishbowl"},
     type = NODE_TYPE.Room,
     contents =  {
         distributepercent = .15,

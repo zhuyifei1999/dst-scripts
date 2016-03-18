@@ -86,24 +86,7 @@ local CustomizationTab = Class(Widget, function(self, servercreationscreen)
 
     self.max_custom_presets = 5
 
-    self.presets = {}
-    self.activepresets = {}
-    self.presetdirty = {}
-
-    for i, level in pairs(Levels.sandbox_levels) do
-        if not level.hideinfrontend then
-            assert(level.id ~= nil, "Attempting to add an invalid level to the preset list. name: "..tostring(level.name))
-            table.insert(self.presets, {text=level.name, data=level.id, desc = level.desc, overrides = level.overrides, location=level.location})
-        end
-    end
-
-    local profilepresets = Profile:GetWorldCustomizationPresets()
-    if profilepresets ~= nil then
-        for i, level in pairs(profilepresets) do
-            assert(level.data ~= nil, "Attempting to add an invalid custom preset to the preset list. name: "..tostring(level.text))
-            table.insert(self.presets, {text=level.text, data=level.data, desc = level.desc, overrides = level.overrides, basepreset=level.basepreset, location=level.location})
-        end
-    end
+    self:ReloadPresetsFromProfile()
 
     self.presetpanel = self:AddChild(Widget("presetpanel"))
     self.presetpanel:SetPosition(left_col,15,0)
@@ -236,6 +219,27 @@ local CustomizationTab = Class(Widget, function(self, servercreationscreen)
     self.default_focus = self.presetspinner
     self.focus_forward = self.presetspinner
 end)
+
+function CustomizationTab:ReloadPresetsFromProfile()
+    self.presets = {}
+    self.activepresets = {}
+    self.presetdirty = {}
+
+    for i, level in pairs(Levels.sandbox_levels) do
+        if not level.hideinfrontend then
+            assert(level.id ~= nil, "Attempting to add an invalid level to the preset list. name: "..tostring(level.name))
+            table.insert(self.presets, {text=level.name, data=level.id, desc = level.desc, overrides = level.overrides, location=level.location})
+        end
+    end
+
+    local profilepresets = Profile:GetWorldCustomizationPresets()
+    if profilepresets ~= nil then
+        for i, level in pairs(profilepresets) do
+            assert(level.data ~= nil, "Attempting to add an invalid custom preset to the preset list. name: "..tostring(level.text))
+            table.insert(self.presets, {text=level.text, data=level.data, desc = level.desc, overrides = level.overrides, basepreset=level.basepreset, location=level.location})
+        end
+    end
+end
 
 function CustomizationTab:GetValueForOption(option)
     for idx,opt in ipairs(self.options) do
@@ -420,7 +424,9 @@ function CustomizationTab:SavePreset()
         local presetdesc = STRINGS.UI.CUSTOMIZATIONSCREEN.CUSTOM_PRESET_DESC.." "..index..". "..STRINGS.UI.CUSTOMIZATIONSCREEN.CUSTOMDESC
 
         -- Add the preset to the preset spinner and make the preset the selected one
-        local base = self.presetspinner.spinner:GetSelectedIndex() <= #Levels.sandbox_levels and self.presetspinner.spinner:GetSelected().data or self.presetspinner.spinner:GetSelected().basepreset
+
+        local custom = GetTypeForLevelID(self.presetspinner.spinner:GetSelected().data) == LEVELTYPE.UNKNOWN
+        local base = custom and self.presetspinner.spinner:GetSelected().basepreset or self.presetspinner.spinner:GetSelected().data
         local location = self.presetspinner.spinner:GetSelected().location
         local preset = {text=presetname, data=presetid, desc=presetdesc, overrides=presetdata, basepreset=base, location=location}
         -- just throw this to the end of the presets list for now
@@ -431,6 +437,9 @@ function CustomizationTab:SavePreset()
         -- And save it to the profile
         Profile:AddWorldCustomizationPreset(preset, index)
         Profile:Save()
+
+        self:ReloadPresetsFromProfile()
+        self:UpdateOptions()
 
         self:ChangePresetForCurrentSlot(self.currentmultilevel, preset.data, preset.basepreset)
         if self.servercreationscreen then self.servercreationscreen:UpdateButtons(self.slot) end
@@ -468,48 +477,40 @@ function CustomizationTab:SavePreset()
 
     -- If we're at max num of presets, show a modal dialog asking which one to replace
     if presetnum > self.max_custom_presets then
+        local modal = nil -- forward declare
+        local menuitems =
+        {
+            {text=STRINGS.UI.CUSTOMIZATIONSCREEN.OVERWRITE, 
+                cb = function()
+                    TheFrontEnd:PopScreen()
+                    AddPreset(modal.overwrite_spinner.spinner:GetSelectedIndex(), newoverrides)
+                end},
+            {text=STRINGS.UI.CUSTOMIZATIONSCREEN.CANCEL,
+                cb = function()
+                    TheFrontEnd:PopScreen()
+                end}
+        }
+        modal = PopupDialogScreen(STRINGS.UI.CUSTOMIZATIONSCREEN.MAX_PRESETS_EXCEEDED_TITLE, STRINGS.UI.CUSTOMIZATIONSCREEN.MAX_PRESETS_EXCEEDED_BODY..STRINGS.UI.CUSTOMIZATIONSCREEN.MAX_PRESETS_EXCEEDED_BODYSPACING, menuitems)
+
         local spinner_options = {}
         for i=1,self.max_custom_presets do
             table.insert(spinner_options, {text=tostring(i), data=i})
         end
-        local overwrite_spinner = Spinner(spinner_options, 150, 64, nil, nil, nil, nil, true, nil, nil, .6, .7)
-        overwrite_spinner:SetTextColour(0,0,0,1)
-        overwrite_spinner:SetSelected("1")
         local size = JapaneseOnPS4() and 28 or 30
-        local label = overwrite_spinner:AddChild( Text( NEWFONT, size, STRINGS.UI.CUSTOMIZATIONSCREEN.CUSTOM_PRESET ))
-        local bg = overwrite_spinner:AddChild(Image("images/ui.xml", "single_option_bg.tex"))
+        modal.overwrite_spinner = modal.proot:AddChild(TEMPLATES.LabelSpinner(STRINGS.UI.CUSTOMIZATIONSCREEN.CUSTOM_PRESET, spinner_options, 200, 110, 40, 5, NEWFONT, size))
+        modal.overwrite_spinner.spinner:SetSelected("1")
+        modal.overwrite_spinner:SetPosition(0,-60,0)
+        local bg = modal.overwrite_spinner:AddChild(Image("images/ui.xml", "single_option_bg.tex"))
         bg:MoveToBack()
         bg:SetClickable(false)
         bg:SetScale(.75,.95)
-        bg:SetPosition(-75,2)
-        label:SetPosition( -180/2 - 25, 0, 0 )
-        label:SetRegionSize( 180, 50 )
-        label:SetColour(0,0,0,1)
-        label:SetHAlign( ANCHOR_MIDDLE )
-        local menuitems =
-        {
-            {widget=overwrite_spinner, offset=Vector3(250,70,0)},
-            {text=STRINGS.UI.CUSTOMIZATIONSCREEN.OVERWRITE, 
-                cb = function()
-                    TheFrontEnd:PopScreen()
-                    AddPreset(overwrite_spinner:GetSelectedIndex(), newoverrides)
-                end, offset=Vector3(-90,0,0)},
-            {text=STRINGS.UI.CUSTOMIZATIONSCREEN.CANCEL,
-                cb = function()
-                    TheFrontEnd:PopScreen()
-                end, offset=Vector3(-90,0,0)}
-        }
-        local modal = PopupDialogScreen(STRINGS.UI.CUSTOMIZATIONSCREEN.MAX_PRESETS_EXCEEDED_TITLE, STRINGS.UI.CUSTOMIZATIONSCREEN.MAX_PRESETS_EXCEEDED_BODY..STRINGS.UI.CUSTOMIZATIONSCREEN.MAX_PRESETS_EXCEEDED_BODYSPACING, menuitems)
-        modal.menu.items[1]:SetFocusChangeDir(MOVE_DOWN, modal.menu.items[2])
-        modal.menu.items[1]:SetFocusChangeDir(MOVE_RIGHT, nil)
-        modal.menu.items[2]:SetFocusChangeDir(MOVE_LEFT, nil)
-        modal.menu.items[2]:SetFocusChangeDir(MOVE_RIGHT, modal.menu.items[3])
-        modal.menu.items[2]:SetFocusChangeDir(MOVE_UP, modal.menu.items[1])
-        modal.menu.items[3]:SetFocusChangeDir(MOVE_LEFT, modal.menu.items[2])
-        modal.menu.items[3]:SetFocusChangeDir(MOVE_UP, modal.menu.items[1])
 
+
+        modal.menu:SetFocusChangeDir(MOVE_UP, modal.overwrite_spinner)
+        modal.overwrite_spinner:SetFocusChangeDir(MOVE_DOWN, modal.menu)
+
+        modal.menu.items[1]:SetScale(.7)
         modal.menu.items[2]:SetScale(.7)
-        modal.menu.items[3]:SetScale(.7)
         modal.text:SetPosition(5, 10, 0)
         if self.servercreationscreen then self.servercreationscreen.last_focus = TheFrontEnd:GetFocusWidget() end
         TheFrontEnd:PushScreen(modal)

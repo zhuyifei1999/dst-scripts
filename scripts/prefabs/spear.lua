@@ -29,6 +29,7 @@ local function fn()
     inst.AnimState:PlayAnimation("idle")
 
     inst:AddTag("sharp")
+    inst:AddTag("pointy")
 
     inst.entity:SetPristine()
 

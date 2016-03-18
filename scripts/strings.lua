@@ -268,6 +268,8 @@ STRINGS=
         MOUNT = "Mount",
         DISMOUNT = "Dismount",
         SADDLE = "Saddle",
+        UNSADDLE = "Unsaddle",
+        BRUSH = "Brush",
     },
 
 	-- PC controls get hex ranges EE90xx to EE9Fxx
@@ -632,6 +634,8 @@ STRINGS=
         MARSH_TREE = "Spiky Tree",
         PANFLUTE = "Pan Flute",
         BUGNET = "Bug Net",
+        SADDLEHORN = "Saddlehorn",
+        BRUSH = "Brush",
         FROG = "Frog",
         FISHINGROD = "Fishing Rod",
         FISH = "Fish",
@@ -1053,6 +1057,9 @@ STRINGS=
         HALF_HEALTH = "Maximum Health",
         DECREASE_SANITY = "Sanity",
         HALF_SANITY = "Maximum Sanity",
+
+        HUTCH = "Hutch",
+        HUTCH_FISHBOWL = "Star-sky",
     },
 
     DIRECTIONS=
@@ -1133,6 +1140,8 @@ STRINGS=
         PANFLUTE = "Music to soothe savage beasts.",
         COOKPOT = "Make better food.",
         BUGNET = "Catch bugs.",
+        SADDLEHORN = "Pry that saddle off.",
+        BRUSH = "Relieve beefalo of their hair buildup.",
         BEEBOX = "Store your own bees.",
         BEEHAT = "Protection against angry bees.",
         TREASURECHEST = "A sturdy container.",
@@ -1719,7 +1728,7 @@ STRINGS.UI =
         SELECT = "Select",
         BACK = "Back",
         CHANGECHARACTER = "Change Character",
-        PREVPAGE = "Previous Page",
+        PREVPAGE = "Prev. Page",
         NEXTPAGE = "Next Page",
         ROTATE_LEFT = "Rotate Left",
         ROTATE_RIGHT = "Rotate Right",
@@ -2293,7 +2302,7 @@ STRINGS.UI =
 
     ITEM_SCREEN =
     {
-        ROG_POPUP_TITLE ="THANKS FOR PLAYING",
+        THANKS_POPUP_TITLE ="THANKS FOR PLAYING",
         NORMAL_POPUP_TITLE = "received...",
         NEW_SKIN = "You got a skin for %s!",
         OK_BUTTON = "Close",
@@ -3105,6 +3114,36 @@ STRINGS.UI =
     	NO_ITEMS = "Play the game to get items!",
 	},
 
+    -- Rarity and colour tables are to allow translation of item properties. Keys are the names as returned by the item server.
+    RARITY = 
+    {
+        Common          = "Common", -- a common item (eg t-shirt, plain gloves)
+        Classy          = "Classy", -- an uncommon item (eg dress shoes, checkered trousers)
+        Spiffy          = "Spiffy", -- a rare item (eg Trenchcoat)
+        Distinguished   = "Distinguished", -- a very rare item (eg Tuxedo)
+        Elegant         = "Elegant", -- an extremely rare item (eg rabbit pack, GoH base skins)
+        Timeless        = "Timeless", -- not used (yet)
+        Loyal           = "Loyal", -- a special item that isn't tradeable
+    },
+
+    COLOUR = 
+    {
+        Black = "Black",
+        Blue = "Blue",
+        Brown = "Brown",
+        Green = "Green",
+        Grey = "Gray",
+        Navy = "Navy",
+        Orange = "Orange",
+        Pink = "Pink",
+        Purple = "Purple",
+        Red = "Red",
+        Tan = "Tan",
+        Teal = "Teal",
+        White = "White",
+        Yellow = "Yellow",
+    },
+
 	TRADESCREEN = 
 	{
 		TITLE = "Trade Inn",
@@ -3116,7 +3155,7 @@ STRINGS.UI =
 		SELECT_TITLE = "Choose An Item To Swap",
 		REMOVE_ITEM = "Remove Last Item",
 		BACK = "Back",
-		MARKET = "Go to Steam",
+		MARKET = "Steam",
         EQUIPPED = "Last one!",
         CHECK = "Warning!",
         WARNING_SINGLE = "You won't be able to use an item if you give your last copy away. Really trade this item?",
@@ -3124,6 +3163,26 @@ STRINGS.UI =
 		SERVER_ERROR_TITLE = "Error Trading Items",
 		SERVER_ERROR_BODY = "Unfortunately there was an error trading items. Please login again to correct your account inventory.",
 		OK = "Ok",
+        SPECIALS_TITLE = "Specials",
+        SPECIALS = "Specials",
+        NOSPECIALS = "Unspecials",
+        DAYS_REMAINING = "Days Remaining",
+        DAY_REMAINING = "Day Remaining",
+        LESS_THAN_DAY = "Less Than A Day Remaining",
+        ENDING_SOON = "Ending Soon",
+        SOLD_OUT = "Sold Out",
+        NEXT = "Next Special",
+        PREV = "Prev. Special",
+
+	    BASE = "Head",
+		BODY = "Body",
+		HAND = "Hands",
+		LEGS = "Legs",
+		FEET = "Feet",
+
+        RECIPE_INGREDIENT_ITEM = "<number> <rarity> <colour><item><plural>",
+        RECIPE_INGREDIENT_TAGS = "<number> <rarity> <tags>Item<plural>",
+        RECIPE_INGREDIENT_RARITY = "Any <number> <rarity> Item<plural>",
 		
 		SKIN_COLLECTOR_SPEECH = 
 		{
@@ -3141,12 +3200,29 @@ STRINGS.UI =
                 "Sorry, but I can't give ya something for nothing, ya know.",
                 "If ya find any items while you're adventuring around out there, ya can bring the ones ya don't need ta me.",
             },
+            SPECIALS = 
+            {
+                "These're my special deals. Gimme the stuff I'm looking for and I'll give ya a better item in exchange.",
+                "I'm lookin' for some particular things right now. If ya can give 'em to me, I'll give ya a new one of higher quality.",
+                "The special deals are cheaper than tha normal ones, but ya gotta give me the exact things I'm lookin' for.",
+            },
             ADDMORE = 
             {
                 "Help a poor old trader out with a few more <rarity> items and I'll give ya a higher quality item in exchange. Guaranteed.",
                 "I'm gonna need a few more <rarity> items to make a trade. I gotta cover my overhead, ya know? But ya'll get a better item in exchange.",
                 "Tha's it, fill the machine on up with <rarity> items and ya'll get a higher quality item back out.",
                 "Tha's tha ticket. Just bang a few more a those <rarity> items in tha machine to get a better item!",
+            },
+            ADDMORESPECIALS = 
+            {
+                "Ya got the rest of tha stuff I'm lookin' for? If not, come back in a few days an' there might be a new deal.",
+                "I just need tha rest of the items on tha list. Bang 'em on in tha machine an' it'll spit out a higher quality item for ya.",
+            },
+            SPECIALRECIPE = 
+            {
+                "If ya give me tha items on tha list, I'll give ya a higher quality item in exchange.",
+                "Take a look at tha list. Get me all tha things on it and I'll give ya a better item.",
+                "Ya got tha items on tha list? Stick 'em in there and ya'll get a better item out 'o tha machine.",
             },
             TRADEAVAIL = 
             {
@@ -3184,13 +3260,18 @@ STRINGS.UI =
                 "Don't ya go breakin' tha joystick, now. Ya don' need it anyhow.",
                 "Up, down, left, right, tha joystick don' do nothin'.",
             },
+            HAND = 
+            {
+                "Pleased ta meecha.",
+                "Pleasure doin' business with ya.",
+            },
             IDLE = 
             {
                 "Ya may not feel young, but I've been tradin' longer than ya been around, young pup.",
                 "I've always been a loner, me. Tha boss mostly lets me alone, which suits me fine.",
                 "Take yer time. I can stand here yammerin' all day.",
                 "My wagon's pulled by a nox. 'Es a good 'un, but 'e can't hold a candle to my old mule, Shadow.",
-                "Once, when I was but a young shaver... oh, but ya don' wanna listen to an old trader's stories.",
+                "Once, when I was but a young shaver... ah, but ya don' wanna listen to an old trader's stories.",
                 "What's a nox? Well, I don't know as I can rightly describe it. It's kinda like an ox, but not.",
             }
 		}

@@ -706,6 +706,13 @@ return {
 		},
 		DIVININGRODSTART = "I'll make something out of it.",
 		DRAGONFLY = "It's filled with fire!",
+
+        HUTCH_FISHBOWL =
+        {
+            GENERIC = "It's too wet to burn.",
+            WAITING = "It's still too wet to burn.",
+        },
+
 		LAVASPIT = 
 		{
 			HOT = "The coolest drool!",
@@ -1051,6 +1058,8 @@ return {
 		ROTTENEGG = "Ew! Why? Oh Why?!",
         SADDLE_BASIC = "It's so uncomfortable.",
         SADDLE_WAR = "I'm going to raze some villages!",
+        SADDLEHORN = "I bet it stinks under the saddle.",
+        BRUSH = "It smells like burnt hair.",
 		SANITYROCK =
 		{
 			ACTIVE = "I wonder what these markings mean.",

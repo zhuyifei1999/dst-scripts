@@ -106,7 +106,7 @@ function Button:OnLoseFocus()
 end
 
 function Button:OnEnable()
-	if not self.focus and not self.selected then
+	if not self.focus and not self.selected then --Note(Peter):This causes the disabled font to remain on an enabled text button, if it has focus (EG: When you click on a button and the button is temporarily disabled). Why do we check the focus here?
 		self.text:SetColour(self.textcolour)
 	    self.text:SetFont(self.font)
 	end

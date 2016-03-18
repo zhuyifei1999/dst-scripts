@@ -42,22 +42,23 @@ local min_lifetime = 30
 local function fn(Sim)
 	local inst = CreateEntity()
 	local trans = inst.entity:AddTransform()
-	local emitter = inst.entity:AddParticleEmitter()
+    local effect = inst.entity:AddVFXEffect()
 	inst:AddTag("FX")
 
 	InitEnvelope()
 
-	emitter:SetRenderResources( texture, shader )
-	emitter:SetMaxNumParticles( 1000 )
-	emitter:SetMaxLifetime( max_lifetime )
-	emitter:SetColourEnvelope( colour_envelope_name )
-	emitter:SetScaleEnvelope( scale_envelope_name );
-	emitter:SetBlendMode( BLENDMODE.Premultiplied )
-	emitter:SetSortOrder( 3 )
-	--emitter:SetLayer( LAYER_BACKGROUND )
-	emitter:SetAcceleration( 0, 0.0001, 0 )
-	emitter:SetDragCoefficient( 0.0001 )
-	emitter:EnableDepthTest( false )
+    effect:InitEmitters( 1 )
+	effect:SetRenderResources( 0, texture, shader )
+	effect:SetMaxNumParticles( 0, 1000 )
+	effect:SetMaxLifetime( 0, max_lifetime )
+	effect:SetColourEnvelope( 0, colour_envelope_name )
+	effect:SetScaleEnvelope( 0, scale_envelope_name );
+	effect:SetBlendMode( 0, BLENDMODE.Premultiplied )
+	effect:SetSortOrder( 0, 3 )
+	--effect:SetLayer( 0, LAYER_BACKGROUND )
+	effect:SetAcceleration( 0, 0, 0.0001, 0 )
+	effect:SetDragCoefficient( 0, 0.0001 )
+	effect:EnableDepthTest( 0, false )
 
 	-----------------------------------------------------
 	local rng = math.random
@@ -95,7 +96,8 @@ local function fn(Sim)
 
                 local lifetime = min_lifetime + ( max_lifetime - min_lifetime ) * UnitRand()
 
-	            emitter:AddParticle(
+	            effect:AddParticle(
+					0,
 		            lifetime,			-- lifetime
 		            px, py, pz,			-- position
 		            vx, vy, vz			-- velocity
@@ -120,11 +122,11 @@ local function fn(Sim)
 		    inst.interval = 0
             if TheWorld.state.isday and TheWorld.state.temperature > TUNING.WILDFIRE_THRESHOLD then
                 local sin_val = 0.01 * math.sin(inst.time*.8)
-                emitter:SetAcceleration( 0, sin_val, 0 )
+                effect:SetAcceleration( 0, 0, sin_val, 0 )
             else
                 local sin_val = 0.006 * math.sin(inst.time/3)
                 local cos_val = 0.006 * math.cos(inst.time/3)
-                emitter:SetAcceleration( sin_val, 0.05 * sin_val, cos_val )
+                effect:SetAcceleration( 0, sin_val, 0.05 * sin_val, cos_val )
             end
 		end
 		
@@ -141,7 +143,7 @@ local function fn(Sim)
         while t > 0 do
             t = t - dt
             updateFunc()
-            emitter:FastForward(dt)
+            effect:FastForward( 0, dt )
         end
     end
 

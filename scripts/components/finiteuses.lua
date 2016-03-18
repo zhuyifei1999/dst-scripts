@@ -10,21 +10,20 @@ function FiniteUses:SetConsumption(action, uses)
 end
 
 function FiniteUses:GetDebugString()
-	return string.format("%d/%d", self.current, self.total)
+    return string.format("%d/%d", self.current, self.total)
 end
 
 function FiniteUses:OnSave()
     if self.current ~= self.total then
-        return {uses = self.current}
+        return { uses = self.current }
     end
 end
 
 function FiniteUses:OnLoad(data)
-    if data.uses then
+    if data.uses ~= nil then
         self:SetUses(data.uses)
     end
 end
-
 
 function FiniteUses:SetMaxUses(val)
     self.total = val
@@ -33,14 +32,13 @@ end
 function FiniteUses:SetUses(val)
     local was_positive = self.current > 0
     self.current = val
-    self.inst:PushEvent("percentusedchange", {percent = self:GetPercent()})    
+    self.inst:PushEvent("percentusedchange", {percent = self:GetPercent()})
     if self.current <= 0 then
         self.current = 0
-        if was_positive and self.onfinished then
+        if was_positive and self.onfinished ~= nil then
             self.onfinished(self.inst)
         end
     end
-    
 end
 
 function FiniteUses:GetUses()
@@ -53,7 +51,7 @@ end
 
 function FiniteUses:OnUsedAsItem(action)
     local uses = self.consumption[action]
-    if uses then
+    if uses ~= nil then
         self:Use(uses)
     end
 end
@@ -63,8 +61,7 @@ function FiniteUses:GetPercent()
 end
 
 function FiniteUses:SetPercent(amount)
-    local target = (self.total * amount)
-    self:SetUses((target - self.current) + self.current)
+    self:SetUses(self.total * amount)
 end
 
 function FiniteUses:SetOnFinished(fn)

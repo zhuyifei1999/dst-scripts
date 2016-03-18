@@ -3,6 +3,7 @@ local function MakeTags()
 	local map_data =
 		{
 			["Chester_Eyebone"] = true,
+			["Hutch_Fishbowl"] = true,
 		}
 		
 	local map_tags = 
@@ -65,8 +66,19 @@ local function MakeTags()
 										tagdata["Chester_Eyebone"] = false
 										return "ITEM", "chester_eyebone"
 									end,
+			["Hutch_Fishbowl"] =	function(tagdata)										
+										if tagdata["Hutch_Fishbowl"] == false then
+											return
+										end
+										tagdata["Hutch_Fishbowl"] = false
+										return "ITEM", "hutch_fishbowl"
+									end,									
             ["Nightmare"] = function(tagdata)
                             return "TAG", "Nightmare"
+                        end, 
+                        
+			["Mist"] = function(tagdata)
+                            return "TAG", "Mist"
                         end,
 		}
 	return {Tag = map_tags, TagData = map_data }

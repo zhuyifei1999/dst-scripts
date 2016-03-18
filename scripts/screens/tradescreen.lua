@@ -2,77 +2,29 @@ local Screen = require "widgets/screen"
 local TEMPLATES = require "widgets/templates"
 local Widget = require "widgets/widget"
 local UIAnim = require "widgets/uianim"
-local AnimButton = require "widgets/animbutton"
+local UIAnimButton = require "widgets/uianimbutton"
 local Text = require "widgets/text"
 local SkinCollector = require "widgets/skincollector"
 local ItemSelector = require "widgets/itemselector"
 local ItemImage = require "widgets/itemimage"
 local ImagePopupDialogScreen = require "screens/imagepopupdialog"
 local PopupDialogScreen = require "screens/popupdialog"
+local MouseTracker = require "widgets/mousetracker"
+local RecipeList = require "widgets/recipelist"
 local easing = require "easing"
 
 require("skinsfiltersutils")
 require("skinstradeutils")
 
-local DOMINO_DELAY = .3
+-- Constant values
 local MAX_TRADE_ITEMS = 9
-
-local FRAMES_Y = -50
-
+local TRANSITION_ANIM = "large"
 local DEBUG_MODE = BRANCH == "dev"
 
-function GetJoystickAnim(angle)
 
-	if angle > 0 then 
-
-		if angle < math.pi/8 then 
-			return "3"
-		elseif angle < 3*math.pi/8 then
-			return "1:30"
-		elseif angle < 5*math.pi/8 then 
-			return "12"
-		elseif angle < 7*math.pi/8 then 
-			return "10:30"
-		elseif angle < 9*math.pi/8 then 
-			return "9"
-		elseif angle < 11*math.pi/8 then 
-			return "7:30"
-		elseif angle < 13*math.pi/8 then 
-			return "6"
-		elseif angle < 15*math.pi/8 then 
-			return "4:30"
-		else
-			return "3" 
-		end
-
-	else
-		if angle > -1*math.pi/8 then 
-			return "3"
-		elseif angle > -3*math.pi/8 then
-			return "4:30"
-		elseif angle > -5*math.pi/8 then 
-			return "6"
-		elseif angle > -7*math.pi/8 then 
-			return "7:30"
-		elseif angle > -9*math.pi/8 then 
-			return "9"
-		elseif angle > -11*math.pi/8 then 
-			return "10:30"
-		elseif angle > -13*math.pi/8 then 
-			return "12"
-		elseif angle > -15*math.pi/8 then 
-			return "1:30"
-		else
-			return "3" 
-		end
-
-	end
-
-end
-
-local function FindFirstEmptySlot(selections)
+local function FindFirstEmptySlot(selections, num_items)
 	local first = nil
-	for i=1,MAX_TRADE_ITEMS do
+	for i=1,num_items do
 		if selections[i] == nil then
 			first = i
 			break
@@ -81,9 +33,9 @@ local function FindFirstEmptySlot(selections)
 	return first
 end
 
-local function FindLastFullSlot(selections)
+local function FindLastFullSlot(selections, num_items)
 	local last = nil
-	for i=MAX_TRADE_ITEMS,1,-1 do
+	for i=num_items,1,-1 do
 		if selections[i] ~= nil then
 			last = i
 			break
@@ -99,6 +51,8 @@ local ItemEndMove = function(owner, i)
 		--print("All items finished moving, clearing moving items list")
 		owner.popup:EnableInput()
 	end
+
+	owner:RefreshUIState()
 end
 
 local ItemsInUse = function( selected_items, moving_items_list )
@@ -115,19 +69,17 @@ local ItemsInUse = function( selected_items, moving_items_list )
 	return items_in_use
 end
 
-
-
-
 local TradeScreen = Class(Screen, function(self, profile, screen)
 	Screen._ctor(self, "TradeScreen")
 
 	--print("Is offline?", TheNet:IsOnlineMode() or "nil", TheFrontEnd:GetIsOfflineMode() or "nil")
+	
+	self.recipes = TheItems:GetRecipes()
 
 	self.profile = profile
 	self:DoInit() 
 	self.prevScreen = screen
 end)
-
 
 function TradeScreen:DoInit()
 	STATS_ENABLE = true
@@ -158,25 +110,98 @@ function TradeScreen:DoInit()
   	self.market_button:SetPosition(RESOLUTION_X*.45, -RESOLUTION_Y*.505 + BACK_BUTTON_Y)
 
 
+	self.current_num_trade_items = 9
+	self.frames_height_adjustment = 0
+
+  	self:DoInitInventoryAndMachine()
+--TEMP DISABLED SPECIALS MODE
+  	--self:DoInitSpecials()
+	self:DoInitState()
+
+	self.warning_timeout = 0
+	
+	self.default_focus = self.popup.list_widgets[1]	
+
+
+	self:RefreshUIState()
+	   
+	-- Skin collector
+  	self.innkeeper = self.fixed_root:AddChild(SkinCollector( self.popup:GetNumFilteredItems() )) --this needs to happen after RefreshUIState was called so that we have the filtered list 
+    self.innkeeper:SetPosition(410, -390)
+    self.innkeeper:Appear()
+end
+
+function TradeScreen:DoInitInventoryAndMachine()
+
   	-- Hanging sign
     self.sign_bg = self.fixed_root:AddChild(Image("images/tradescreen.xml", "hanging_sign_brackets.tex"))
-    self.sign_bg:SetScale(.7, .7, .7)
-    self.sign_bg:SetPosition(-425, 17)
+    self.sign_bg:SetScale(.65, .65, .65)
+    self.sign_bg:SetPosition(-438, 40)
     self.sign_bg:SetClickable(false)
-  	
+
+	-- Item Selector
+	self.popup = self.fixed_root:AddChild(ItemSelector(self.fixed_root, self, self.profile))
+	self.popup:SetPosition(-435, -100)
+
+	local machine_scale = 0.62
+	
   	-- Add the claw machine
   	self.claw_machine_bg = self.fixed_root:AddChild(UIAnim())
   	self.claw_machine_bg:GetAnimState():SetBuild("swapshoppe_bg")
     self.claw_machine_bg:GetAnimState():SetBank("shop_bg")
-    self.claw_machine_bg:SetScale(.62)
+    self.claw_machine_bg:SetScale(machine_scale)
     self.claw_machine_bg:SetPosition(0, 65)
   	
+	--Specials recipe list
+	self.specials_list = self.fixed_root:AddChild(RecipeList(
+		function(data)
+			if self.specials_mode then
+				self.innkeeper:Say(STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.SPECIALRECIPE, data.rarity, nil, data.number)
+				self.sold_out = data.sold_out
+				self:Reset()
+			end
+		end)
+	)
+	self.specials_list:SetData( self.recipes )
+	self.specials_list:SetHintStrings(STRINGS.UI.TRADESCREEN.PREV, STRINGS.UI.TRADESCREEN.NEXT)
+	self.specials_list:Hide()
+	
+	
+	--Machine tiles: frames_container is in the root so that we can order all the layers correctly and the hover text (while still allowing the specials_list to not be scaled)
+	self.frames_container = self.fixed_root:AddChild(Widget("frames_container"))
+    self.frames_container:SetScale(machine_scale*1.75)
+    self.frames_container:SetPosition(5, 0)
+	self.frames_single = {}
+	for i=1,MAX_TRADE_ITEMS do
+		self.frames_single[i] = self.frames_container:AddChild(ItemImage(self, nil, nil, 0, 0, function() self:RemoveSelectedItem(i) end ))
+		self.frames_single[i]:DisableSelecting()
+	end	
+	self:ResetFrameTiles()
+	
+	--Special recipe sold out sign
+    self.sold_out_sign = self.fixed_root:AddChild(Image("images/tradescreen.xml", "sold_out_sign.tex"))
+    self.sold_out_sign:SetPosition(5, 0, 0)
+    self.sold_out_sign:SetScale(.8)
+    self.sold_out_sign.text = self.sold_out_sign:AddChild(Text(NEWFONT_OUTLINE, 70, STRINGS.UI.TRADESCREEN.SOLD_OUT, GOLD))
+    self.sold_out_sign.text:SetRotation(-16)
+    self.sold_out_sign.text:SetPosition(0, -35)
+   	self.sold_out_sign:Hide()
+
   	self.claw_machine = self.fixed_root:AddChild(UIAnim())
   	self.claw_machine:GetAnimState():SetBuild("swapshoppe")
     self.claw_machine:GetAnimState():SetBank("shop")
-    self.claw_machine:SetScale(.62)
+    self.claw_machine:SetScale(machine_scale)
     self.claw_machine:SetPosition(0, 65)
     
+--TEMP DISABLED SPECIALS MODE
+--[[
+	self.special_lightfx = self.claw_machine:AddChild(UIAnim())
+	self.special_lightfx:GetAnimState():SetBuild("swapshoppe_special_lightfx")
+	self.special_lightfx:GetAnimState():SetBank("shop_lights")
+	--self.special_lightfx:GetAnimState():PlayAnimation("turn_on")
+	self.special_lightfx:GetAnimState():PlayAnimation("flicker_loop", true)
+]]
+	
 	self:PlayMachineAnim("idle_empty", true)
 
     -- Title (Trade Inn sign)
@@ -185,19 +210,8 @@ function TradeScreen:DoInit()
   	self.title:SetPosition(0, 305)
 
   	-- joystick 
-    self.joystick = self.claw_machine:AddChild(UIAnim())
-  	self.joystick:GetAnimState():SetBuild("joystick")
-    self.joystick:GetAnimState():SetBank("joystick")
-    self.joystick:GetAnimState():PlayAnimation("idle", true) -- possible anims are idle, 6, 7:30, 9, 10:30, 12, 1:30, 3, 4:30
-    
-
-    -- Add an invisible button to catch mouse events.
-    -- On click, the skin collector will talk about the joystick.
-    -- On mouseover, the joystick starts following the mouse.
-    self.joystick.button = self.joystick:AddChild(TEMPLATES.InvisibleButton(50, 50, 
-    											function() self.innkeeper:Say(STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.JOYSTICK) end, 
-    											function() if not self.joystick_started then self:StartJoystick() end end ))
-
+    self.joystick = self.claw_machine:AddChild(MouseTracker("joystick", function() self.innkeeper:Say(STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.JOYSTICK) end))
+  	
     local jx = 5
     local jy = -550
     self.joystick:SetPosition(jx, jy)
@@ -232,51 +246,62 @@ function TradeScreen:DoInit()
     											45))
     self.tradebtn:SetPosition(208, -540)
 
-  
-	--Machine tiles
-	self.frames_container = self.claw_machine_bg:AddChild(Widget("frames_container"))
-	self.frames_single = {}
-	for i=1,MAX_TRADE_ITEMS do
-		self.frames_single[i] = self.frames_container:AddChild(ItemImage(self, nil, nil, 0, 0, function() self:RemoveSelectedItem(i) end ))
-		self.frames_single[i]:DisableSelecting()
-	end	
-	self.frames_positions = {}
-	for x = 1,3 do
-		for y = 0,2 do
-			local index = x + y*3
-			self.frames_positions[index] = { x = (x-2) * 90, y = (y-1) * -90, z = 0}
-		end
-	end
-	self:ResetTiles()
 
     self.selected_items = {}
 	self.last_added_item_index = nil
 	
 	self.moving_items_list = {}
-
-    -- Create the inventory list
-    local recipes = GetRecipeMatches(self.selected_items)
-	self.filters = GetFilters(recipes)
-
-	self:RefreshUIState()
-
-    -- Skin collector
-  	self.innkeeper = self.fixed_root:AddChild(SkinCollector( self.popup:GetNumFilteredItems() )) --this needs to happen after RefreshUIState was called so that we have the filtered list 
-    self.innkeeper:SetPosition(410, -390)
-    self.innkeeper:Appear()
-    
-	self.machine_in_use = false
-	self.flush_items = false
-	self.trade_started = false
-	self.accept_waiting = false
-
-	self.warning_timeout = 0
-	
-	self.default_focus = self.popup.list_widgets[1]	
-
-	self:RefreshUIState()
 end
 
+--TEMP DISABLED SPECIALS MODE
+--[[
+function TradeScreen:DoInitSpecials()
+
+	self.specials_button = self.fixed_root:AddChild(UIAnimButton("button_special", "button_weeklyspecial", 
+											nil, "hover", "pressed", "pressed", nil ))
+	-- Looping anims must be inialized to nil and then set separately:
+	self.specials_button:SetIdleAnim("flicker2_loop", true)
+	self.specials_button:SetSelectedAnim("flicker2_loop", true)
+	self.specials_button:SetOnClick( function()
+		self:ToggleSpecialsMode()
+	end)
+
+	self.specials_button:SetFont(TALKINGFONT)
+	self.specials_button:SetDisabledFont(TALKINGFONT)
+	self.specials_button:SetTextSize(50)
+	self.specials_button:SetText(STRINGS.UI.TRADESCREEN.SPECIALS)
+	self.specials_button:SetTextColour(WHITE)
+	self.specials_button:SetTextFocusColour(WHITE)
+	self.specials_button:SetTextDisabledColour(WHITE)
+	self.specials_button:SetTextSelectedColour(WHITE)
+	self.specials_button.text:MoveToFront()
+
+	self.specials_button:SetScale(.5)
+	self.specials_button:SetPosition(-455, -205, 0)
+
+	self.specials_title = self.claw_machine:AddChild(Text(TALKINGFONT, 55, STRINGS.UI.TRADESCREEN.SPECIALS_TITLE, WHITE))
+	self.specials_title:SetPosition(25, 373)
+	self.specials_title:Hide()
+
+	self.specials_transitionFx = self.fixed_root:AddChild(UIAnim())
+	self.specials_transitionFx:GetAnimState():SetBuild("die")
+	self.specials_transitionFx:GetAnimState():SetBank("die_fx")
+	for i=0,13 do
+		self.specials_transitionFx:GetAnimState():Hide("dfs"..i)
+	end
+	self.specials_transitionFx:SetPosition(0, -325)
+	self.specials_transitionFx:SetScale(.9, 1.1, 1)
+	self.specials_transitionFx:Hide()
+end]]
+
+function TradeScreen:DoInitState()
+	self.machine_in_use = false		-- the machine is currently in-use, we use this to disable things and ignore input
+	self.flush_items = false		-- the flush anim is programmatic so must run its own update
+	self.accept_waiting = false		-- there is an item waiting to be accepted
+	self.specials_mode = false		-- the machine is in special recipes mode, which changes the display + number of items in the machine
+	self.sold_out = false 			-- display a recipe that is currently sold out, so all tiles are disabled
+	self.transitioning = false		-- the machine is transitioning from one mode to another
+end
 
 --[[function TradeScreen:DoFocusHookups()
 	for i=1,MAX_TRADE_ITEMS do 
@@ -298,21 +323,60 @@ end
 	end
 end]]
 
-function TradeScreen:StartJoystick()
-	self.joystick_started = true
+function TradeScreen:ToggleSpecialsMode()
+	self.innkeeper:Snap()
+	self.transitioning = true
+	self:RefreshUIState()
 
-	if not self.joystickmover then 
-		self.joystickmover = TheInput:AddMoveHandler(function(mx,my)
+	self.snap_sound = self.inst:DoTaskInTime(18*FRAMES, function()
+		TheFrontEnd:GetSound():PlaySound("dontstarve/characters/skincollector/snap", "skincollector_snap") 
 
-			local jpos = self.joystick:GetWorldPosition()
-			local xdiff = mx - jpos.x
-			local ydiff = my - jpos.y
+		if not self.specials_mode then 
+			TheFrontEnd:GetSound():PlaySound("dontstarve/music/fanfare", "fanfare") 
+		end
+	end)
 
-			local angle = math.atan2(ydiff, xdiff)
-			local anim = GetJoystickAnim(angle)
-			self.joystick:GetAnimState():PlayAnimation(anim, true)
-		end)
-	end
+	-- This is delayed until partway through the snap anim.
+	self.snap_task = self.inst:DoTaskInTime(28*FRAMES, function() 
+		self.specials_transitionFx:Show()
+		self.specials_transitionFx:GetAnimState():PlayAnimation(TRANSITION_ANIM)
+
+		TheFrontEnd:GetSound():PlaySound("dontstarve/characters/skincollector/magicpoof", "poof")
+
+		self.transitioning = false
+
+		if not self.specials_mode then 
+			-- Update button
+			self.specials_button:SetText(STRINGS.UI.TRADESCREEN.NOSPECIALS)
+			self.specials_button:SetIdleAnim("flicker_loop", true)
+			self.specials_button:SetSelectedAnim("flicker_loop", true)
+
+			-- Update state
+       		self.specials_mode = true
+
+			self.current_num_trade_items = 6
+			self.frames_height_adjustment = -100
+
+			self.innkeeper:Say(STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.SPECIALS)
+       	else
+       		-- Update button
+       		self.specials_button:SetText(STRINGS.UI.TRADESCREEN.SPECIALS)
+       		self.specials_button:SetIdleAnim("flicker2_loop", true)
+       		self.specials_button:SetSelectedAnim("flicker2_loop", true)
+
+       		-- Update state
+       		self.specials_mode = false
+       		self.sold_out = false
+
+			self.current_num_trade_items = MAX_TRADE_ITEMS
+			self.frames_height_adjustment = 0
+       	end
+       	
+		self:Reset() -- clear the current selections
+		
+		-- Update UI
+       	self:RefreshUIState()
+    end)
 end
 
 function TradeScreen:PlayMachineAnim( name, loop )
@@ -335,17 +399,13 @@ function TradeScreen:Reset()
 	
 	self.item_name:Hide()
 	
-	-- stop the joystick so we can restart it
-	if self.joystickmover then 
-		self.joystickmover:Remove()
-		self.joystickmover = nil
-	end
-
-	self.joystick:GetAnimState():PlayAnimation("idle", true)
+	self.joystick:Stop()
 
 	self.item_name_displayed = nil
 
-	self.innkeeper:ClearSpeech()
+	if self.innkekeper then 
+		self.innkeeper:ClearSpeech()
+	end
 
 	TheFrontEnd:GetSound():KillSound("idle_sound")
 
@@ -379,15 +439,11 @@ function TradeScreen:FinishReset(move_items)
 	self.claw_machine:GetAnimState():OverrideSymbol("SWAP_frameBG", "frame_BG", "")
 	self:PlayMachineAnim("idle_empty", true)
 	
-	self:DisableTiles()
-
 	if move_items then 
 		self:CancelPendingMoves()
 		
-		local reset_moves_started = false
 		for i=1,MAX_TRADE_ITEMS do 
 			if self.frames_single[i].name then
-				reset_moves_started = true
 				self.moving_items_list[i] = TEMPLATES.MovingItem( self.frames_single[i].name,
 														self.frames_single[i].type,
 														i,
@@ -395,20 +451,15 @@ function TradeScreen:FinishReset(move_items)
 														self.popup.page_list.right_button:GetWorldPosition(),
 														.65 * self.fixed_root:GetScale().x, 
 														.5 * self.fixed_root:GetScale().x )
-				self.moving_items_list[i].Move(function() ItemEndMove(self, i) end) -- EnableTiles() is done inside ItemEndMove if all items are done moving
+				self.moving_items_list[i].Move(function() ItemEndMove(self, i) end)
 			end
 		end
-		if not reset_moves_started then --nothing to reset, so we need to re-enable the tiles
-			self:EnableTiles()
-		end
-	else
-		self:EnableTiles() -- this case hits if we are accepting an item instead of taking stuff out of the machine
 	end
 	
-	self:ResetTiles()
+	self:ResetFrameTiles()
 	
-	if self.joystick_started then 
-		self:StartJoystick()
+	if self.joystick.started_ever then 
+		self.joystick:Start()
 	end
 
 	-- Clear all clothing data
@@ -425,22 +476,18 @@ function TradeScreen:FinishReset(move_items)
 	self:RefreshUIState()
 end
 
-function TradeScreen:EnableTiles()
-	--print("Enabling tiles", debugstack())
-	self.popup:EnableInput()
-	self:EnableMachineTiles()
-end
-
 function TradeScreen:EnableMachineTiles()
 	for i=1,MAX_TRADE_ITEMS do
-		self.frames_single[i]:Enable()
+		if i <= self.current_num_trade_items then 
+			self.frames_single[i]:Show()
+			self.frames_single[i]:Enable()
+		else 
+			self.frames_single[i]:Disable()
+			self.frames_single[i]:Hide()
+		end
 	end
 end
 
-function TradeScreen:DisableTiles()
-	self.popup:DisableInput()
-	self:DisableMachineTiles()
-end
 
 function TradeScreen:DisableMachineTiles()
 	for i=1,MAX_TRADE_ITEMS do
@@ -449,14 +496,16 @@ function TradeScreen:DisableMachineTiles()
 end
 
 function TradeScreen:OnBecomeActive()
-	--print("**** Activate TradeScreen ****")
+	--print("**** Activate TradeScreen ****", self.specials_mode)
 	Screen.OnBecomeActive(self)
 
-	if self.joystick_started then 
-		self:StartJoystick()
+--Note(Peter): check if the joystick will get into a weird state when the trade confirmation popup is pushed and then popped.
+	if self.joystick.started_ever then 
+		self.joystick:Start()
 	end
 
 	self.item_name:Hide()
+
 
 	self:RefreshUIState()
 end
@@ -475,7 +524,7 @@ function TradeScreen:Trade(done_warning)
 
 	if not done_warning then 
 		local warn_table = {}
-		for i=1,MAX_TRADE_ITEMS do 
+		for i=1,self.current_num_trade_items do 
 			if not widget_already_processed(self.frames_single[i].name, warn_table) and self.popup:NumItemsLikeThis(self.frames_single[i].name) == 0 then  
 				local widg = Widget("item"..i)
 
@@ -483,7 +532,6 @@ function TradeScreen:Trade(done_warning)
 
 		        widg.frame = widg:AddChild(UIAnim())
 		        widg.frame:GetAnimState():SetBuild("frames_comp") -- use the animation file as the build, then override it
-		        widg.frame:GetAnimState():AddOverrideBuild("frame_skins") -- file name
 		        widg.frame:GetAnimState():SetBank("fr") -- top level symbol from frames_comp
 
 		        local rarity = GetRarityForItem(self.frames_single[i].type, self.frames_single[i].name)
@@ -516,13 +564,10 @@ function TradeScreen:Trade(done_warning)
 		end
 	end
 
-	self.trade_started = true
 	self.machine_in_use = true
 	
-	
-	
 	self:PlayMachineAnim("claw_in", false)
-	self.joystick:GetAnimState():PlayAnimation("idle", true)
+	self.joystick:Stop()
 	TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/swapshoppe/claw_in")
 
 	self.innkeeper:Say(STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.TRADE)
@@ -532,57 +577,80 @@ function TradeScreen:Trade(done_warning)
 		self.frames_single[i]:ClearHoverText()
 	end
 
-	self:DisableTiles()
-	self.tradebtn:Disable()
-	self.resetbtn:Disable()
-
-	local recipes = GetRecipeMatches(self.selected_items)
-	local name = TRADE_RECIPES[recipes[1]].name
 
 	-- TODO: stop hard-coding the rarity to the next one up. We should really read it out of the recipes file.
 	local rarity = GetRarityForItem(self.frames_single[1].type, self.frames_single[1].name)
 	self.expected_rarity = GetNextRarity(rarity)
 
-	--print("Using trade rule", name)
-
-	local items_array = {}
-	for i=1,MAX_TRADE_ITEMS do 
-		table.insert(items_array, self.selected_items[i].item_id)
-	end
 
 	self.queued_item = nil
+	local items_array = {}
+	local swap_name = ""
 	
-	--For Testing
-	--self.queued_item = "backpack_camping_orange_carrot"
+	if false then --DEBUG TESTING
+		self.queued_item = "backpack_camping_orange_carrot"
+	else
+		if not self.specials_mode then	
+			local recipe_name = GetBasicRecipeMatch(self.selected_items)
+			swap_name = TRADE_RECIPES[recipe_name].name
+			
+			for i=1,self.current_num_trade_items do
+				table.insert(items_array, self.selected_items[i].item_id)
+			end
+		else
+			swap_name = self.specials_list:GetRecipeName()
+			local recipe_index = self.specials_list:GetRecipeIndex()
 	
-	TheItems:SwapItems(name,
-		items_array,
-		function(success, msg, item_type) print("Item swap completed", success, msg, item_type) 
-			if success then
-				self.queued_item = item_type
-			else
-				local server_error = PopupDialogScreen(STRINGS.UI.TRADESCREEN.SERVER_ERROR_TITLE, STRINGS.UI.TRADESCREEN.SERVER_ERROR_BODY,
-					{
-						{text=STRINGS.UI.TRADESCREEN.OK, cb = 
-							function()
-								print("ERROR: Failed to contact the item server.", msg )
-								SimReset()
-							end}
-					}
-				)
-				TheFrontEnd:PushScreen( server_error )
+			--sort the items based on the recipe requirement
+			local recipe_index = self.specials_list:GetRecipeIndex()
+			local special_recipe = self.recipes[recipe_index]
+			
+			local selection_item_used = {}
+			for _,restriction in pairs(special_recipe.Restrictions) do
+				for index=1,self.current_num_trade_items do
+					if not selection_item_used[index] then
+						local matches = does_item_match_restriction( restriction, self.selected_items[index] )
+						if matches then
+							selection_item_used[index] = true
+							table.insert(items_array, self.selected_items[index].item_id)
+							break
+						end
+					end
+				end
 			end
 		end
-	)
+		
+		TheItems:SwapItems(swap_name,
+			items_array,
+			function(success, msg, item_type) print("Item swap completed", success, msg, item_type) 
+				if success then
+					self.queued_item = item_type
+				else
+					local server_error = PopupDialogScreen(STRINGS.UI.TRADESCREEN.SERVER_ERROR_TITLE, STRINGS.UI.TRADESCREEN.SERVER_ERROR_BODY,
+						{
+							{text=STRINGS.UI.TRADESCREEN.OK, cb = 
+								function()
+									print("ERROR: Failed to contact the item server.", msg )
+									SimReset()
+								end}
+						}
+					)
+					TheFrontEnd:PushScreen( server_error )
+				end
+			end
+		)
+	end
 	
-	self.selected_items = {}
+	
+	self:RefreshUIState()
 end
 
 function TradeScreen:FinishTrade()
 	if self.queued_item ~= nil then
-		self.trade_started = false
 		self:GiveItem(self.queued_item)
 		self.queued_item = nil
+	
+		self.selected_items = {}
 	end
 end
 
@@ -591,7 +659,7 @@ function TradeScreen:GiveItem(item)
 	local name = GetBuildForItem(item_type, item)
 
 	-- Need to store a reference to this so we can start it moving when the player clicks
-	self.moving_gift_item = TEMPLATES.MovingItem(name, item_type, MAX_TRADE_ITEMS, self.claw_machine_bg:GetWorldPosition(), 
+	self.moving_gift_item = TEMPLATES.MovingItem(name, item_type, self.current_num_trade_items, self.claw_machine_bg:GetWorldPosition(), 
 											self.popup.page_list.right_button:GetWorldPosition(), 1 * self.fixed_root:GetScale().x, .5 * self.fixed_root:GetScale().x)
 
 	table.insert(self.moving_items_list, self.moving_gift_item)
@@ -618,12 +686,7 @@ function TradeScreen:GiveItem(item)
 		end
 	)
 	
-	if self.joystickmover then 
-		self.joystickmover:Remove()
-		self.joystickmover = nil
-	end
-
-	self.joystick:GetAnimState():PlayAnimation("idle", true)
+	self.joystick:Stop()
 end
 
 function TradeScreen:DisplayItemName(gift)
@@ -649,11 +712,8 @@ function TradeScreen:DisplayItemName(gift)
 end
 
 function TradeScreen:Quit()
-	if self.joystickmover then 
-		self.joystickmover:Remove()
-		self.joystickmover = nil
-	end
-
+	self.joystick:Stop()
+	
 	if self.skin_in_task then
 		self.skin_in_task:Cancel()
 		self.skin_in_task = nil
@@ -664,10 +724,15 @@ function TradeScreen:Quit()
 		self.idle_sound_task = nil
 	end
 
-	if self.exit_button then 
-		self.exit_button:Disable()
+	if self.snap_task then 
+		self.snap_task:Cancel()
+		self.snap_task = nil
 	end
-	self.quitting = true
+
+	if self.snap_sound then 
+		self.snap_sound:Cancel()
+		self.snap_sound = nil
+	end
 
 	self.innkeeper:Disappear(function() 
 		TheFrontEnd:GetSound():KillSound("idle_sound")
@@ -678,6 +743,11 @@ function TradeScreen:Quit()
 		v:Kill()
 	end
 
+	-- kill fx
+	if self.special_lightfx then 
+		self.special_lightfx:Kill()
+	end
+	
 	-- Start the fade approximately halfway through the disappear animation
 	-- (which is 45 frames long)
 	self.inst:DoTaskInTime(20*FRAMES, function()
@@ -686,8 +756,13 @@ function TradeScreen:Quit()
 	       TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
 	    end)
 	end)
+	
+	self.quitting = true
+	
+	self:RefreshUIState()
 end
 
+-- RemoveSelectedItem is called when the player clicks on an item in the machine.
 function TradeScreen:RemoveSelectedItem(number)
 	--print( "TradeScreen:RemoveSelectedItem", number )
 	if self.machine_in_use then
@@ -707,7 +782,7 @@ function TradeScreen:RemoveSelectedItem(number)
 													start_scale * self.fixed_root:GetScale().x, .5 * self.fixed_root:GetScale().x)
 	
 		local idx = #self.moving_items_list + 1
-		moving_item.Move(function() ItemEndMove(self, idx) self:RefreshUIState() end)
+		moving_item.Move(function() ItemEndMove(self, idx) end)
 
 		--take the item out of the selected_items list and store it in the moving items list
 		moving_item.item = self.selected_items[number]
@@ -735,7 +810,7 @@ function TradeScreen:StartAddSelectedItem(item, start_pos)
 
 	local items_in_use = ItemsInUse( self.selected_items, self.moving_items_list )	
 
-	local empty_slot = FindFirstEmptySlot(items_in_use) 
+	local empty_slot = FindFirstEmptySlot(items_in_use, self.current_num_trade_items) 
 	if item and item.item and empty_slot ~= nil then -- we don't add an item unless there's an empty slot
 
 		local slot = self.frames_single[empty_slot]
@@ -748,7 +823,7 @@ function TradeScreen:StartAddSelectedItem(item, start_pos)
 												.65 *  self.fixed_root:GetScale().x)
 	
 		local idx = #self.moving_items_list + 1
-		moving_item.Move(function() ItemEndMove(self, idx) self:AddSelectedItem(item) self:RefreshUIState() end ) -- start the item moving toward the empty slot
+		moving_item.Move(function() ItemEndMove(self, idx) self:AddSelectedItem(item) end ) -- start the item moving toward the empty slot
 		moving_item.item = item
 		table.insert(self.moving_items_list, moving_item)
 		
@@ -772,14 +847,14 @@ function TradeScreen:AddSelectedItem(item)
 		self.selected_items[item.target_index] = item
 		self.frames_single[item.target_index]:SetItem( item.type, item.item, 0) --Swap item
 		
+	
 		if item.count == 0 then --the count will be 0 after it is refreshed with this item removed. 
 			if self.warning_timeout <= 0 then
 				self.innkeeper:Say( STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.WARNING )
 				self.warning_timeout = 8 --don't warn more than once per 8 seconds.
 			end
 
-		-- TODO: Get the rarity out of the trade_recipes instead of hard-coding it to the next rarity up.
-		elseif IsTradeAllowed(self.selected_items) then 
+		elseif self:IsTradeAllowed() then 
 			self.innkeeper:Say( STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.TRADEAVAIL )
 		else
 			local number_selected = 0
@@ -789,44 +864,166 @@ function TradeScreen:AddSelectedItem(item)
 				end
 			end
 
-			if number_selected == 1 then 
-				self.innkeeper:Say(STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.ADDMORE, rarity)
+			if number_selected == 1 then
+				if not self.specials_mode then  
+					self.innkeeper:Say(STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.ADDMORE, STRINGS.UI.RARITY[rarity])
+				else 
+					self.innkeeper:Say(STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.ADDMORESPECIALS, STRINGS.UI.RARITY[rarity])
+				end
 			end
 		end
+		
+		self:RefreshUIState()
 	end
 end
 
 
--- Delete the popup and re-create it. Called when an item is added to the claw machine so that the list is re-filtered.
-function TradeScreen:RefreshUIState()
-	local items_in_use = ItemsInUse( self.selected_items, self.moving_items_list )
-		
-	local recipes = GetRecipeMatches(items_in_use)
-	self.filters = GetFilters(recipes)
+-- Returns true or false. If true, also returns the specific trade rule that will apply.
+-- Assumes that there is only one input type per rule, and that input only specifies rarity and number.
+function TradeScreen:IsTradeAllowed()
+	local count = GetNumberSelectedItems(self.selected_items)
 	
-	if self.popup == nil then
-		self.popup = self.fixed_root:AddChild(ItemSelector(self.fixed_root, self, self.profile, items_in_use, self.filters))
-		self.popup:SetPosition(-420, -100)
+	if self.specials_mode then
+		local RECIPE_SIZE = 6
+		if count == RECIPE_SIZE then
+			local recipe_index = self.specials_list:GetRecipeIndex()
+			local special_recipe = self.recipes[recipe_index]
+			--dumptable(special_recipe.Restrictions)
+			--dumptable(self.selected_items)
+			assert(#special_recipe.Restrictions == RECIPE_SIZE)
+			
+			local selection_item_used = {} --need all 6 slots to be set to true for this recipe to be matched
+			for res_id,restriction in pairs(special_recipe.Restrictions) do
+				for index=1,RECIPE_SIZE do
+					if not selection_item_used[index] then
+						local matches = does_item_match_restriction( restriction, self.selected_items[index] )
+						if matches then
+							selection_item_used[index] = true
+							break
+						end
+					end
+				end
+			end
+			
+			--if the recipe was matched, all items will be consumed
+			local matching_recipe = true
+			for i=1,RECIPE_SIZE do
+				if not selection_item_used[i] then
+					matching_recipe = false
+					break
+				end
+			end
+			
+			return matching_recipe
+		end 
 	else
-		self.popup:UpdateData(items_in_use, self.filters)
+		--regular recipe
+		if count == 9 then
+			return true
+		end 
 	end
+
+	return false
+end
+
+
+-- Redisplay the entire UI
+function TradeScreen:RefreshUIState()
+	--print("~~~~~~~~~~~~~~TradeScreen:RefreshUIState")
+	local items_in_use = ItemsInUse( self.selected_items, self.moving_items_list )
 	
-	if IsTradeAllowed(self.selected_items) then
+	local filters = nil
+	if self.specials_mode then
+		local recipe_index = self.specials_list:GetRecipeIndex()
+		filters = GetSpecialFilters(self.recipes[recipe_index], items_in_use) 
+	else
+		local recipe_name = GetBasicRecipeMatch(items_in_use)
+		filters = GetBasicFilters(recipe_name)
+	end	
+	self.popup:UpdateData(items_in_use, filters)
+	
+	if not self.machine_in_use and self:IsTradeAllowed() then
 		self.tradebtn:Enable()
 	else
 		self.tradebtn:Disable()
 	end
 	
-	if next(self.selected_items) == nil then -- No items selected.
+	if self.machine_in_use or next(self.selected_items) == nil then -- No items selected.
 		self.resetbtn:Disable()
 		self:DisableMachineTiles()
 	else
 		self.resetbtn:Enable()
 		self:EnableMachineTiles()
 	end
-		
+
+--TEMP DISABLED SPECIALS MODE
+--[[	if self.specials_mode then
+		self:ShowSpecials()
+	else
+		self:HideSpecials()
+	end]]
+
+	if self.machine_in_use or self.sold_out or self.transitioning or self.quitting then 
+		self.popup:DisableInput()
+	else
+		self.popup:EnableInput()
+	end
+
+   	if self.sold_out then
+	   	self.sold_out_sign:Show()
+	else
+	   	self.sold_out_sign:Hide()
+	end
+	
+
+--TEMP DISABLED SPECIALS MODE
+--[[	if self.machine_in_use or self.transitioning or self.quitting then
+		self.specials_button:Disable() 
+	else
+		self.specials_button:Enable()
+	end]]
+	
+	if self.exit_button ~= nil then
+		if self.quitting or self.machine_in_use then
+			self.exit_button:Disable()
+		else
+			self.exit_button:Enable()
+		end
+	end
+	
+	
 	self:RefreshMachineTilesState() -- Do this at the end so that self.popup will be already updated.
 end
+
+--TEMP DISABLED SPECIALS MODE
+--[[
+function TradeScreen:ShowSpecials()
+	--print("**** Setting up specials mode")
+	if not self.machine_in_use then
+		self.specials_list:Show()
+		self.specials_list:UpdateSelectedIngredients(self.selected_items)
+	else
+		self.specials_list:Hide()
+	end
+	self.special_lightfx:Show()
+	
+	self.claw_machine:GetAnimState():AddOverrideBuild("swapshoppe_special_build")
+
+	self.title:Hide()
+	self.specials_title:Show()
+end
+
+function TradeScreen:HideSpecials()	
+	--print("**** Hiding specials ")	
+	self.specials_list:Hide()	
+	self.special_lightfx:Hide()
+
+	self.claw_machine:GetAnimState():ClearOverrideBuild("swapshoppe_special_build")
+
+	self.title:Show()
+	self.specials_title:Hide()
+end
+]]
 
 function TradeScreen:RefreshMachineTilesState()
 
@@ -851,7 +1048,7 @@ function TradeScreen:RefreshMachineTilesState()
 	
 	for i=1,MAX_TRADE_ITEMS do
 		local item = self.selected_items[i]
-		if item ~= nil then 
+		if not self.machine_in_use and item ~= nil then 
 			local rarity = GetRarityForItem(item.type, item.item)
 			local hover_text = rarity .. "\n" .. GetName(item.item)
 
@@ -869,15 +1066,36 @@ function TradeScreen:RefreshMachineTilesState()
 	end
 end
 
+local FLUSH_TIME_SPREAD = .8
 
 function TradeScreen:StartFlushTiles()
 	--print("Playing disappear and flush")
 	self.flush_items = true
 	self.flush_time = 0
-	self.flush_tiles_moved = false
 	self.flush_tiles_rot_rand = {}
-	for i=1,MAX_TRADE_ITEMS do
-		table.insert( self.flush_tiles_rot_rand, 20 + math.random()*(50) )
+	self.flush_tiles_t = {}
+	self.flush_pos_x = {}
+	self.flush_pos_y = {}
+	for i=1,self.current_num_trade_items do
+		table.insert( self.flush_tiles_rot_rand, math.random()*(100) )
+		
+		table.insert( self.flush_pos_x, math.random() * 15 )
+		table.insert( self.flush_pos_y, math.random() * 15 )
+	end
+	
+	local rand_time_offset = 0.07
+	if self.current_num_trade_items == 9 then
+		local remap_tiles = { 3, 2, 1, 4, 0, 8, 5, 6, 7 }
+		for i=1,self.current_num_trade_items do
+			self.flush_tiles_t[i] = 0 - FLUSH_TIME_SPREAD * (remap_tiles[i]/self.current_num_trade_items) + math.random() * rand_time_offset
+		end
+	elseif self.current_num_trade_items == 6 then
+		local remap_tiles = { 2, 1, 0, 3, 4, 5 }
+		for i=1,self.current_num_trade_items do
+			self.flush_tiles_t[i] = 0 - FLUSH_TIME_SPREAD * (remap_tiles[i]/self.current_num_trade_items) + math.random() * rand_time_offset
+		end
+	else
+		print("Error: Figure out a new layout for tiles!!!")
 	end
 	
 	self:PlayMachineAnim("flush", false)
@@ -904,38 +1122,36 @@ function TradeScreen:FlushTilesUpdate(dt)
 		--Handle the programatic animation of the tiles flushing
 		local START_OFFSET = 10 * FRAMES
 		if self.flush_time > START_OFFSET then
-			local FLUSH_TIME = 1.5
+			local FLUSH_TIME = 1.8
 			local CONTAINER_ROT = 500
-			
-			if not self.flush_tiles_moved then
-				self.flush_tiles_moved = true
-				for i=1,MAX_TRADE_ITEMS do
-					local dest = {}
-					dest.x = self.frames_positions[i].x + (math.random() - 0.5) * 60
-					dest.y = self.frames_positions[i].y + (math.random() - 0.5) * 60
-					dest.z = 0
-					self.frames_single[i]:MoveTo( self.frames_positions[i], dest, 10*FLUSH_TIME )				
-				end
-			end
 			
 			local ft = self.flush_time - START_OFFSET
 			
-			local rot = easing.inQuad(ft, 0, CONTAINER_ROT, FLUSH_TIME)
-			self.frames_container:SetRotation(rot)
-			
-			local scale = easing.inQuad(ft, 1.75, -1.75, FLUSH_TIME)
-			self.frames_container:SetScale(scale)
-			
-			for i=1,MAX_TRADE_ITEMS do				
-				local tile_rot = easing.outQuint(ft, 0, self.flush_tiles_rot_rand[i], 2*FLUSH_TIME)
-				self.frames_single[i]:SetRotation(tile_rot)
+			for i=1,self.current_num_trade_items do
+				self.flush_tiles_t[i] = self.flush_tiles_t[i] + dt
+				local clamp_t = math.clamp( self.flush_tiles_t[i], 0, FLUSH_TIME - FLUSH_TIME_SPREAD )
+				local r = Remap( clamp_t, 0, FLUSH_TIME - FLUSH_TIME_SPREAD, 120, 0)
+
+				local x = math.sin(2.5 * PI * self.flush_tiles_t[i])
+				local y = math.cos(2.5 * PI * self.flush_tiles_t[i])
 				
-				local tile_scale = easing.inQuad(ft, 1, -0.1, FLUSH_TIME)
-				self.frames_single[i]:SetScale(tile_scale)	
+				x = Lerp( self.frames_positions[i].x, r * x + self.flush_pos_x[i], math.clamp( ft * 3, 0, 1) )
+				y = Lerp( self.frames_positions[i].y, r * y + self.flush_pos_y[i], math.clamp( ft * 3, 0, 1) )
+
+				self.frames_single[i]:SetPosition( x, y, 0)
+				
+				local tile_scale = easing.inQuad( clamp_t, 1, -1, FLUSH_TIME - FLUSH_TIME_SPREAD)
+				self.frames_single[i]:SetScale(tile_scale)
+				if self.flush_tiles_t[i] > (FLUSH_TIME - FLUSH_TIME_SPREAD) then
+					self.frames_single[i]:Hide()
+				end
+				
+				local tile_rot = easing.outQuad(ft, 0, self.flush_tiles_rot_rand[i], FLUSH_TIME)
+				self.frames_single[i]:SetRotation(tile_rot)
 			end
 			
 			if ft > FLUSH_TIME then
-				for i=1,MAX_TRADE_ITEMS do
+				for i=1,self.current_num_trade_items do
 					self.frames_single[i]:Hide()
 				end
 				self.flush_items = false
@@ -945,18 +1161,27 @@ function TradeScreen:FlushTilesUpdate(dt)
 end
 
 
-function TradeScreen:ResetTiles()
+function TradeScreen:ResetFrameTiles()
+	self.frames_positions = {}
+	for x = 1,3 do
+		for y = 0,2 do
+			local index = x + y*3
+			self.frames_positions[index] = { x = (x-2) * 90, y = (y-1) * -90 + self.frames_height_adjustment, z = 0}
+		end
+	end
+	
 	for i=1,MAX_TRADE_ITEMS do
-		self.frames_single[i]:Show()
+		if i <= self.current_num_trade_items then 
+			self.frames_single[i]:Show()
+		else 
+			self.frames_single[i]:Hide()
+		end
 		self.frames_single[i].inst.components.uianim.pos_t = nil --to stop any MoveTo in progress
 		self.frames_single[i]:SetPosition( self.frames_positions[i].x, self.frames_positions[i].y, 0)
 		self.frames_single[i]:SetScale( 1 )
 		self.frames_single[i]:SetRotation( 0 )
 		self.frames_single[i]:SetItem( nil, nil, nil )
 	end
-	self.frames_container:SetPosition( 5, -85, 0 )
-	self.frames_container:SetRotation( 0 )
-	self.frames_container:SetScale( 1.75 )
 end
 
 
@@ -976,13 +1201,18 @@ function TradeScreen:OnUpdate(dt)
 	elseif self.claw_machine:GetAnimState():IsCurrentAnimation("claw_in") and self.claw_machine:GetAnimState():AnimDone() then 
 		self:StartFlushTiles()
 		
-	elseif self.claw_machine:GetAnimState():IsCurrentAnimation("spiral_loop") and self.trade_started then 
+	elseif self.claw_machine:GetAnimState():IsCurrentAnimation("spiral_loop") then
 		self:FinishTrade()
 	end
 
+--TEMP DISABLED SPECIALS MODE
+--[[	if self.specials_transitionFx:GetAnimState():IsCurrentAnimation("large") and self.specials_transitionFx:GetAnimState():AnimDone() then 
+		self.specials_transitionFx:Hide()
+	end]]
+
 	self:FlushTilesUpdate(dt)
 	
-	if self.warning_timeout > 0 then
+	if self.warning_timeout and self.warning_timeout > 0 then
 		self.warning_timeout = self.warning_timeout - dt
 	end	
 
@@ -998,19 +1228,23 @@ local STICK_SCROLL_REPEAT_TIME = .25
 function TradeScreen:OnControl(control, down)
     if TradeScreen._base.OnControl(self, control, down) then return true end
 
+    if not down then 
+    	if control == CONTROL_CANCEL and not self.quitting and not self.machine_in_use then 
+			self:Quit()
+			return true 
+		end
+	end
+
     if  TheInput:ControllerAttached() then 
 	    if not down then 
-	    	if control == CONTROL_CANCEL and not self.quitting then 
-				self:Quit()
-				return true 
-			elseif control == CONTROL_MAP then 
+	    	if control == CONTROL_MAP then -- view button / back button / select button
 				if self.resetbtn:IsEnabled() then
 					TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
 					self:Reset()
 				end
 				return true
-			elseif control == CONTROL_PAUSE then 
-				if IsTradeAllowed(self.selected_items) then
+			elseif control == CONTROL_PAUSE then -- menu button / start button
+				if self:IsTradeAllowed() then
 					TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
 					self:Trade()
 				end
@@ -1018,12 +1252,13 @@ function TradeScreen:OnControl(control, down)
 					self:Reset()
 				end
 				return true
-			elseif control == CONTROL_INSPECT then 
+			elseif control == CONTROL_INSPECT then -- Y button
 				VisitURL("https://steamcommunity.com/market/search?appid=322330")
 				return true
-			elseif control == CONTROL_MENU_MISC_1 then
-				local slot_to_remove = FindLastFullSlot(self.selected_items)				
-				if slot_to_remove ~= nil then
+			elseif control == CONTROL_MENU_MISC_1 then -- X button
+				local slot_to_remove = FindLastFullSlot(self.selected_items, self.current_num_trade_items)				
+				-- Don't do this if the tile is disabled for any reason (will happen during transitions, quitting, etc.)
+				if slot_to_remove ~= nil and self.frames_single[slot_to_remove]:IsEnabled() then
 					self:RemoveSelectedItem(slot_to_remove)
 					TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
 				end
@@ -1032,19 +1267,22 @@ function TradeScreen:OnControl(control, down)
 	end
 
 	if down then 
-	 	if control == CONTROL_PREVVALUE then  -- r-stick left
-	    	self:ScrollBack(control)
+	 	if control == CONTROL_PREVVALUE and self.specials_mode then  -- r-stick left
+	    	self.specials_list:OnControl(control, down)
 			return true 
-		elseif control == CONTROL_NEXTVALUE then -- r-stick right
-			self:ScrollFwd(control)
+		elseif control == CONTROL_NEXTVALUE and self.specials_mode then -- r-stick right
+			self.specials_list:OnControl(control, down)
 			return true
 		elseif control == CONTROL_SCROLLBACK then
             self:ScrollBack(control)
             return true
-        elseif control == CONTROL_SCROLLFWD then self:ScrollFwd(control)
+        elseif control == CONTROL_SCROLLFWD then 
+        	self:ScrollFwd(control)
             return true
        	elseif control == CONTROL_ACCEPT and self.accept_waiting then
        		self:Reset()
+       	elseif control == CONTROL_OPEN_INVENTORY then -- right trigger 
+       		self:ToggleSpecialsMode()
        	end
 	end
 
@@ -1088,27 +1326,46 @@ function TradeScreen:GetHelpText()
     
     table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_CANCEL) .. " " .. STRINGS.UI.TRADESCREEN.BACK)
     
-    table.insert(t, self.popup.page_list:GetHelpText())
 
-    table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_INSPECT) .. " " .. STRINGS.UI.TRADESCREEN.MARKET)
+	if not self.machine_in_use and not self.transitioning then 
 
-	if self.resetbtn:IsEnabled() then
-		table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_MAP) .. " " .. STRINGS.UI.TRADESCREEN.RESET)
+	    table.insert(t, self.popup.page_list:GetHelpText())
+
+	    if self.specials_mode then 
+	    	table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_OPEN_INVENTORY) .. " " .. STRINGS.UI.TRADESCREEN.NOSPECIALS )
+
+	    	-- This uses too much space. Just use the hints on the spinner instead.
+	    	--table.insert(t, self.specials_list:GetHelpText())
+	    else
+	    	table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_OPEN_INVENTORY) .. " " .. STRINGS.UI.TRADESCREEN.SPECIALS )
+	    end
+
+		if self.resetbtn:IsEnabled() then
+			table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_MAP) .. " " .. STRINGS.UI.TRADESCREEN.RESET)
+		end
+
+	    if self.tradebtn:IsEnabled() then
+	   		table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_PAUSE) .. " " .. STRINGS.UI.TRADESCREEN.TRADE)
+	   	end
 	end
 
-    if self.tradebtn:IsEnabled() then
-   		table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_PAUSE) .. " " .. STRINGS.UI.TRADESCREEN.TRADE)
-   	end
 	if self.accept_waiting then
-   		table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_PAUSE) .. " " .. STRINGS.UI.TRADESCREEN.ACCEPT)
+   		table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT) .. " " .. STRINGS.UI.TRADESCREEN.ACCEPT)
     end
     
-    local slot_to_remove = FindLastFullSlot(self.selected_items)				
-	if slot_to_remove ~= nil then
-   		table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_1) .. " " .. STRINGS.UI.TRADESCREEN.REMOVE_ITEM)
-   	end
-   
-   	table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT) .. " " .. STRINGS.UI.TRADESCREEN.SELECT)
+    if not self.machine_in_use and not self.transitioning then 
+	    local slot_to_remove = FindLastFullSlot(self.selected_items, self.current_num_trade_items)				
+		if slot_to_remove ~= nil then
+	   		table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_1) .. " " .. STRINGS.UI.TRADESCREEN.REMOVE_ITEM)
+	   	end
+	   
+	   	-- Selecting an item doesn't do anything if the machine is full, so drop the hint text
+	   	if not self.tradebtn:IsEnabled() and not self.accept_waiting then 
+	   		table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT) .. " " .. STRINGS.UI.TRADESCREEN.SELECT)
+	   	end
+    end
+
+    table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_INSPECT) .. " " .. STRINGS.UI.TRADESCREEN.MARKET)
 
     return table.concat(t, "  ")
 end

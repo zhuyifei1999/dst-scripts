@@ -14,14 +14,7 @@ local function MakeHat(name)
         
         local skin_build = inst:GetSkinBuild()
 		if skin_build ~= nil then
-            
-            local skin_name = inst:GetSkinName()
-            if skin_name ~= nil then
-                owner:PushEvent("equipskinneditem", skin_name)
-            else
-                owner:PushEvent("equipskinneditem", skin_build)
-            end
-			
+			owner:PushEvent("equipskinneditem", inst:GetSkinName())
             owner.AnimState:OverrideItemSkinSymbol("swap_hat", skin_build, "swap_hat", inst.GUID, build)
 		else
 			owner.AnimState:OverrideSymbol("swap_hat", build, "swap_hat")
@@ -44,12 +37,7 @@ local function MakeHat(name)
     local function onunequip(inst, owner)
         local skin_build = inst:GetSkinBuild()
         if skin_build ~= nil then
-            local skin_name = inst:GetSkinName()
-            if skin_name ~= nil then
-                owner:PushEvent("unequipskinneditem", skin_name)
-            else
-                owner:PushEvent("unequipskinneditem", skin_build)
-            end
+			owner:PushEvent("unequipskinneditem", inst:GetSkinName())
         end
 
         owner.AnimState:ClearOverrideSymbol("swap_hat")

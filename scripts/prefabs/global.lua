@@ -128,6 +128,7 @@ local assets =
 	Asset("SHADER", "shaders/minimap.ksh"),
 	Asset("SHADER", "shaders/minimapfs.ksh"),
 	Asset("SHADER", "shaders/particle.ksh"),
+	Asset("SHADER", "shaders/particle_add.ksh"),
 	Asset("SHADER", "shaders/road.ksh"),
 	Asset("SHADER", "shaders/river.ksh"),
 	Asset("SHADER", "shaders/splat.ksh"),

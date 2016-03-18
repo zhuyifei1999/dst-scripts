@@ -466,6 +466,13 @@ return
 		},
 		DIVININGRODSTART = "This rod could be useful!",
         DRAGONFLY = "It's some kind of mythical variant of a Diptera.",
+
+        HUTCH_FISHBOWL =
+        {
+            GENERIC = "Pygocentrus Nattereri.",
+            WAITING = "mortuus piscis.",
+        },
+
         LAVASPIT = 
         {
             HOT = "Its saliva is similar to molten lava.",
@@ -1093,6 +1100,8 @@ return
         },
         SADDLE_BASIC = "A crude device for equestrianism.",
         SADDLE_WAR = "A favorite perch of generals and assorted warlords.",
+        SADDLEHORN = "A device for forceful unfurnishment.",
+        BRUSH = "Microscopic barbs allow for optimal hair retrieval.",
         SANITYROCK = {
             INACTIVE = "It seems to have sunk into the soil.",
             ACTIVE = "Fascinating. I'll have to study these markings later.",

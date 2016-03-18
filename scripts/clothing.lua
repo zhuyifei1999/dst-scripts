@@ -340,11 +340,28 @@ CLOTHING =
 		torso_tuck = "untucked",
 		rarity = "Distinguished",
 	},
+	body_wathgrithr_survivor =
+	{
+		type = "body",
+		symbol_overrides = { "torso", "torso_pelvis", "arm_upper", "leg", "foot", },
+		override_build = "body_wathgrithr_survivor",
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+	},
 	body_webber_formal =
 	{
 		type = "body",
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_webber_formal",
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+	},
+	body_webber_survivor =
+	{
+		type = "body",
+		symbol_overrides = { "arm_lower", "arm_upper", "arm_upper_skin", "foot", "hand", "leg", "torso", "torso_pelvis", },
+		symbol_hides = { "skirt", },
+		override_build = "body_webber_survivor",
 		torso_tuck = "untucked",
 		rarity = "Distinguished",
 	},
@@ -356,12 +373,29 @@ CLOTHING =
 		torso_tuck = "untucked",
 		rarity = "Distinguished",
 	},
+	body_wendy_survivor =
+	{
+		type = "body",
+		symbol_overrides = { "arm_upper", "torso", "torso_pelvis", "skirt", "leg", "foot", },
+		override_build = "body_wendy_survivor",
+		torso_tuck = "skirt",
+		rarity = "Distinguished",
+	},
 	body_wes_formal =
 	{
 		type = "body",
 		symbol_overrides = { "torso", "arm_upper", "arm_lower", "torso_pelvis", "leg", },
 		symbol_hides = { "skirt", },
 		override_build = "body_wes_formal",
+		torso_tuck = "full",
+		rarity = "Distinguished",
+	},
+	body_wes_survivor =
+	{
+		type = "body",
+		symbol_overrides = { "torso", "torso_pelvis", "leg", "foot", },
+		symbol_hides = { "skirt", "arm_upper", },
+		override_build = "body_wes_survivor",
 		torso_tuck = "full",
 		rarity = "Distinguished",
 	},
@@ -373,11 +407,27 @@ CLOTHING =
 		torso_tuck = "full",
 		rarity = "Distinguished",
 	},
+	body_wickerbottom_survivor =
+	{
+		type = "body",
+		symbol_overrides = { "arm_upper", "torso", "torso_pelvis", "skirt", "leg", "foot", },
+		override_build = "body_wickerbottom_survivor",
+		torso_tuck = "full",
+		rarity = "Distinguished",
+	},
 	body_willow_formal =
 	{
 		type = "body",
 		symbol_overrides = { "arm_upper", "torso", "torso_pelvis", "skirt", },
 		override_build = "body_willow_formal",
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+	},
+	body_willow_survivor =
+	{
+		type = "body",
+		symbol_overrides = { "torso", "torso_pelvis", "arm_upper", "skirt", },
+		override_build = "body_willow_survivor",
 		torso_tuck = "untucked",
 		rarity = "Distinguished",
 	},
@@ -387,6 +437,15 @@ CLOTHING =
 		symbol_overrides = { "arm_upper", "torso", "torso_pelvis", "arm_lower", "leg", },
 		symbol_hides = { "skirt", },
 		override_build = "body_wilson_formal",
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+	},
+	body_wilson_survivor =
+	{
+		type = "body",
+		symbol_overrides = { "torso", "torso_pelvis", "leg", "arm_upper", "arm_upper_skin", "foot", },
+		symbol_hides = { "skirt", },
+		override_build = "body_wilson_survivor",
 		torso_tuck = "untucked",
 		rarity = "Distinguished",
 	},
@@ -401,6 +460,18 @@ CLOTHING =
 		torso_tuck = "untucked",
 		rarity = "Distinguished",
 	},
+	body_wolfgang_survivor =
+	{
+		type = "body",
+		symbol_overrides = { "torso", "torso_pelvis", "leg", "foot", },
+		symbol_overrides_skinny = { },
+		symbol_overrides_mighty = { torso_pelvis = "torso_pelvis_mighty", torso = "torso_mighty", },
+		symbol_hides = { "skirt", },
+		override_build = "body_wolfgang_survivor",
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+		legs_cuff_size = 2,
+	},
 	body_woodie_formal =
 	{
 		type = "body",
@@ -409,11 +480,28 @@ CLOTHING =
 		torso_tuck = "full",
 		rarity = "Distinguished",
 	},
+	body_woodie_survivor =
+	{
+		type = "body",
+		symbol_overrides = { "torso", "torso_pelvis", "leg", "foot", },
+		symbol_hides = { "skirt", },
+		override_build = "body_woodie_survivor",
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+	},
 	body_wx78_formal =
 	{
 		type = "body",
 		symbol_overrides = { "arm_upper", "torso", "torso_pelvis", },
 		override_build = "body_wx78_formal",
+		torso_tuck = "skirt",
+		rarity = "Distinguished",
+	},
+	body_wx78_survivor =
+	{
+		type = "body",
+		symbol_overrides = { "arm_upper", "torso", "torso_pelvis", },
+		override_build = "body_wx78_survivor",
 		torso_tuck = "skirt",
 		rarity = "Distinguished",
 	},

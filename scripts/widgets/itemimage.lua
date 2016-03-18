@@ -13,10 +13,9 @@ local ItemImage = Class(Widget, function(self, screen, type, name, item_id, time
     self.name = name
     self.item_id = item_id
     self.clickFn = clickFn
-    
+
     self.frame = self:AddChild(UIAnim())
     self.frame:GetAnimState():SetBuild("frames_comp") -- use the animation file as the build, then override it
-    self.frame:GetAnimState():AddOverrideBuild("frame_skins") -- file name
     self.frame:GetAnimState():SetBank("fr") -- top level symbol from frames_comp
 
     self.new_tag = self.frame:AddChild(Text(BODYTEXTFONT, 20, STRINGS.UI.SKINSSCREEN.NEW))
@@ -24,7 +23,7 @@ local ItemImage = Class(Widget, function(self, screen, type, name, item_id, time
     self.new_tag:SetPosition(41, 34)
     self.new_tag:SetColour(WHITE)
 
-    local collection_timestamp = self.screen.profile:GetCollectionTimestamp()
+    local collection_timestamp = self.screen and self.screen.profile:GetCollectionTimestamp() or timestamp
     --print(name, "Timestamp is ", timestamp, collection_timestamp)
    	if not timestamp or (timestamp > collection_timestamp) then 
     	self.frame:GetAnimState():PlayAnimation("idle_on", true)
@@ -38,7 +37,7 @@ local ItemImage = Class(Widget, function(self, screen, type, name, item_id, time
     	self.frame:GetAnimState():Hide("NEW")
     end
     self.frame:SetScale(image_scale)
-
+                                                                                                                                                                         
     self.warning = false
 
     self.warn_marker = self.frame:AddChild(Image("images/ui.xml", "yellow_exclamation.tex"))
@@ -78,7 +77,6 @@ function ItemImage:SetItem(type, name, item_id, timestamp)
 
 		-- Reset the stuff that just got cleared to an empty frame state
 		self.frame:GetAnimState():SetBuild("frames_comp")
-    	self.frame:GetAnimState():AddOverrideBuild("frame_skins") -- file name
 		self.frame:GetAnimState():OverrideSymbol("SWAP_frameBG", "frame_BG", self.rarity)
 		self.frame:GetAnimState():PlayAnimation("icon", true)
 		return
@@ -102,7 +100,7 @@ function ItemImage:SetItem(type, name, item_id, timestamp)
 		self.frame:GetAnimState():OverrideSymbol("SWAP_frameBG", "frame_BG", self.rarity)
 	end
 
-	local collection_timestamp = self.screen.profile:GetCollectionTimestamp()
+	local collection_timestamp = self.screen and self.screen.profile:GetCollectionTimestamp() or timestamp
     --print(name, "Timestamp is ", timestamp, collection_timestamp)
    	if timestamp and (timestamp > collection_timestamp) then 
     	self.frame:GetAnimState():PlayAnimation("idle_on", true)
@@ -113,6 +111,26 @@ function ItemImage:SetItem(type, name, item_id, timestamp)
     	self.new_tag:Hide()
     	self.frame:GetAnimState():Hide("NEW")
     end
+end
+
+function ItemImage:ClearFrame()
+	self.frame:GetAnimState():ClearAllOverrideSymbols()
+	self.type = nil
+	self.name = nil
+	self.rarity = "common"
+	self.new_tag:Hide()
+	self.frame:GetAnimState():Hide("NEW")
+
+	-- Reset the stuff that just got cleared to an empty frame state
+	self.frame:GetAnimState():SetBuild("frames_comp")
+	self.frame:GetAnimState():OverrideSymbol("SWAP_frameBG", "frame_BG", self.rarity)
+	self.frame:GetAnimState():PlayAnimation("icon", true)
+	return
+end
+
+function ItemImage:SetItemRarity(rarity)
+	self.rarity = rarity or "common"
+	self.frame:GetAnimState():OverrideSymbol("SWAP_frameBG", "frame_BG", self.rarity)
 end
 
 function ItemImage:Mark(value)
@@ -130,9 +148,10 @@ function ItemImage:OnGainFocus()
 
 	if self.frame and self:IsEnabled() then 
 		self:Embiggen()
+		self.frame:GetAnimState():PlayAnimation("hover", true)
 	end
 
-	if self.screen.SetFocusColumn ~= nil then
+	if self.screen and self.screen.SetFocusColumn ~= nil then
 		self.screen:SetFocusColumn(self)
 	end
 	TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover")
@@ -144,6 +163,8 @@ function ItemImage:OnLoseFocus()
 	if self.frame and not self.clicked then 
 		self:Shrink()
 	end
+
+	self:PlayDefaultAnim()
 end
 
 function ItemImage:OnEnable()
@@ -162,7 +183,7 @@ end
 
 
 function ItemImage:Embiggen()
-	self.frame:SetScale(image_scale * 1.2)
+	self.frame:SetScale(image_scale * 1.18)
 end
 
 function ItemImage:Shrink()
@@ -178,7 +199,9 @@ function ItemImage:OnControl(control, down)
         			TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
         			
         			if not self.disable_selecting then
-        				self.screen:UnselectAll()
+        				if self.screen then 
+        					self.screen:UnselectAll()
+        				end
         				self:Select()
         			end
 

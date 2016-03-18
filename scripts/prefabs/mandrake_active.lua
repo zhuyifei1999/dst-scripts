@@ -42,12 +42,13 @@ local function ondeath(inst)
 	inst:Remove()
 end
 
+local FindNewLeader = nil -- forward declare...
+
 local function onpicked(inst, leader)
 	--Go to proper animation state
 	inst.sg:GoToState("picked")
-	
-	--Set leader
-	inst.components.follower:SetLeader(leader)
+
+    FindNewLeader(inst)
 
 	--(Die if it's day time)
 	inst:DoTaskInTime(26*FRAMES, function()
@@ -55,6 +56,29 @@ local function onpicked(inst, leader)
 			inst.components.health:Kill()
 		end
 	end)
+end
+
+local function StartFindLeaderTask(inst)
+    if inst._findleadertask == nil then
+        inst._findleadertask = inst:DoPeriodicTask(1, FindNewLeader)
+    end
+end
+
+FindNewLeader = function(inst) -- was forward declared
+    if inst.components.follower.leader == nil then
+        local player = FindClosestPlayerToInst(inst, 5, true)
+        if player ~= nil then
+            inst.components.follower:SetLeader(player)
+            inst:ListenForEvent("onremove", function(other)
+                StartFindLeaderTask(inst)
+            end, player)
+        end
+    end
+
+    if inst.components.follower.leader ~= nil then
+        inst._findleadertask:Cancel()
+        inst._findleadertask = nil
+    end
 end
 
 local function onstartday(inst)
@@ -104,6 +128,7 @@ local function fn()
 
 	--Watch world state
 	inst:WatchWorldState("startday", onstartday)
+    StartFindLeaderTask(inst)
 	inst.ondeath = ondeath
 
 	return inst

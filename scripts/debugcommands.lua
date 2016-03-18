@@ -1,3 +1,55 @@
+function d_domesticatedbeefalo()
+    c_give('whip')
+    c_give('saddle_war')
+    c_spawn('dummytarget')
+    local beef = c_spawn('beefalo')
+    for k, v in pairs(TENDENCY) do
+        beef = c_spawn('beefalo')
+        beef.components.domesticatable:DeltaDomestication(1)
+        beef.components.domesticatable:DeltaObedience(0.5)
+        beef.components.domesticatable:DeltaTendency(v, 1)
+        beef:SetTendency()
+        beef.components.domesticatable:BecomeDomesticated()
+        beef.components.rideable:SetSaddle(nil, SpawnPrefab('saddle_basic'))
+    end
+end
+
+function d_domestication(domestication, obedience)
+    if c_sel().components.domesticatable == nil then
+        print("Selected ent not domesticatable")
+    end
+    if domestication ~= nil then
+        c_sel().components.domesticatable:DeltaDomestication(domestication - c_sel().components.domesticatable:GetDomestication())
+    end
+    if obedience ~= nil then
+        c_sel().components.domesticatable:DeltaObedience(obedience - c_sel().components.domesticatable:GetObedience())
+    end
+end
+
+function d_testwalls()
+    local walls = {
+        "stone",
+        "wood",
+        "hay",
+        "ruins",
+        "moonrock",
+    }
+    local sx,sy,sz = ConsoleCommandPlayer().Transform:GetWorldPosition()
+    for i,mat in ipairs(walls) do
+        for j = 0,4 do
+            local wall = SpawnPrefab("wall_"..mat)
+            wall.Transform:SetPosition(sx + (i*6), sy, sz + j)
+            wall.components.health:SetPercent(j*0.25)
+        end
+        for j = 5,15 do
+            local wall = SpawnPrefab("wall_"..mat)
+            wall.Transform:SetPosition(sx + (i*6), sy, sz + j)
+            wall.components.health:SetPercent(j <= 11 and 1 or 0.5)
+        end
+    end
+end
+
+
 function d_testruins()
     ConsoleCommandPlayer().components.builder:UnlockRecipesForTech({SCIENCE = 2, MAGIC = 2})
     c_give("log", 20)

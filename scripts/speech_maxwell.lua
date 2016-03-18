@@ -667,6 +667,13 @@ return {
 		},
 		DIVININGRODSTART = "The portals lead to the next rod.",
 		DRAGONFLY = "A fiery fly.",
+
+        HUTCH_FISHBOWL =
+        {
+            GENERIC = "Better him in that bowl than me.",
+            WAITING = "His spirit is free now.",
+        },
+
 		LAVASPIT = 
 		{
 			HOT = "Spitfire.",
@@ -1009,6 +1016,8 @@ return {
 		ROTTENEGG = "Disgusting. Why am I carrying this around?",
         SADDLE_BASIC = "But that means I'd have to touch the smelly thing.",
         SADDLE_WAR = "At least it affords some dignity to the rider.",
+        SADDLEHORN = "And I may never put it back on.",
+        BRUSH = "It's like showing affection without actually touching it.",
 		SANITYROCK =
 		{
 			ACTIVE = "I can see its true nature now!",

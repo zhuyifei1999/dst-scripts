@@ -12,7 +12,7 @@ local skins =
 
 local base_prefab = "wx78"
 
-local tags = {"WX78", "CHARACTER"}
+local tags = {"WX78", "CHARACTER", "FORMAL"}
 
 local ui_preview =
 {

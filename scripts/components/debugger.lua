@@ -50,11 +50,11 @@ function Debugger:SetAll(key, origin, tar, colour)
         self.debuggerdraws[key] = {}
     end
     if origin then
-        self.debuggerdraws[key].p1 = origin
+        self.debuggerdraws[key].p1 = origin.z ~= nil and {x=origin.x, y=origin.z} or {x=origin.x, y=origin.y}
     end
 
     if tar then
-        self.debuggerdraws[key].p2 = SetTarget
+        self.debuggerdraws[key].p2 = tar.z ~= nil and {x=tar.x, y=tar.z} or {x=tar.x, y=tar.y}
     end
 
     if colour then

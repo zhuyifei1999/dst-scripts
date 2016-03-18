@@ -206,7 +206,7 @@ function ModsScreen:OnStatsQueried( result, isSuccessful, resultCode )
 
 	local status, jsonresult = pcall( function() return json.decode(result) end )
 
-	if not jsonresult or not status then return end
+	if not jsonresult or not status or jsonresult["modnames"] == nil then return end
 
 	local randomPicks = self:GenerateRandomPicks(#self.modlinks, 20)
 

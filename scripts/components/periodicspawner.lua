@@ -158,7 +158,7 @@ function PeriodicSpawner:LongUpdate(dt)
 end
 
 function PeriodicSpawner:GetDebugString()
-    return string.format("Next Spawn: %s prefab: %s", self.target_time and tostring(self.target_time - GetTime()) or "never", self.prefab)
+    return string.format("Next Spawn: %s prefab: %s", self.target_time and string.format("%.1f", self.target_time - GetTime()) or "never", self.prefab)
 end
 
 return PeriodicSpawner

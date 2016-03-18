@@ -6,14 +6,14 @@ local DSP =
     {
         lowdsp =
         {
-            ["set_music"] = 50,
-            ["set_ambience"] = 50,
-            ["set_sfx/set_ambience"] = 50,
-            ["set_sfx/movement"] = 50,
-            ["set_sfx/creature"] = 50,
-            ["set_sfx/player"] = 50,
-            ["set_sfx/voice"] = 50,
-            ["set_sfx/sfx"] = 50,
+            ["set_music"] = 750,
+            ["set_ambience"] = 750,
+            ["set_sfx/set_ambience"] = 750,
+            ["set_sfx/movement"] = 750,
+            ["set_sfx/creature"] = 750,
+            ["set_sfx/player"] = 750,
+            ["set_sfx/voice"] = 750,
+            ["set_sfx/sfx"] = 750,
         },
         duration = DURATION,
     },

@@ -9,14 +9,7 @@ local assets =
 local function onequip(inst, owner)
 	local skin_build = inst:GetSkinBuild()
 	if skin_build ~= nil then
-        
-        local skin_name = inst:GetSkinName()
-        if skin_name ~= nil then
-            owner:PushEvent("equipskinneditem", skin_name)
-        else
-            owner:PushEvent("equipskinneditem", skin_build)
-        end
-
+		owner:PushEvent("equipskinneditem", inst:GetSkinName())
 		owner.AnimState:OverrideItemSkinSymbol("swap_object", skin_build, "swap_axe", inst.GUID, "swap_axe" )
 	else
 		owner.AnimState:OverrideSymbol("swap_object", "swap_axe", "swap_axe")
@@ -30,12 +23,7 @@ local function onunequip(inst, owner)
     owner.AnimState:Show("ARM_normal")
     local skin_build = inst:GetSkinBuild()
     if skin_build ~= nil then
-        local skin_name = inst:GetSkinName()
-        if skin_name ~= nil then
-            owner:PushEvent("unequipskinneditem", skin_name)
-        else
-            owner:PushEvent("unequipskinneditem", skin_build)
-        end
+        owner:PushEvent("unequipskinneditem", inst:GetSkinName())
     end
 end
 

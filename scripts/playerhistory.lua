@@ -141,29 +141,36 @@ function PlayerHistory:Set(str, callback)
             callback(false)
         end
     else
-        print("PlayerHistory loaded "..self:GetSaveName(), #str)
+		local status, data = pcall( function() return json.decode(str) end )
+		if status and data then
+			print("PlayerHistory loaded "..self:GetSaveName(), #str)
+			self.persistdata = data
 
-        self.persistdata = TrackedAssert("TheSim:GetPersistentString player history", json.decode, str)
+			-- Create a map for existing user ids
+			-- NOTE: cannot map to index, because once we add new
+			--       records to the front, all these indices will
+			--       become invalid
+			self.existing_map = {}
+			for i, v in ipairs(self.persistdata) do
+				self.existing_map[v.userid] = v
+			end
 
-        -- Create a map for existing user ids
-        -- NOTE: cannot map to index, because once we add new
-        --       records to the front, all these indices will
-        --       become invalid
-        self.existing_map = {}
-        for i, v in ipairs(self.persistdata) do
-            self.existing_map[v.userid] = v
-        end
+			self:SortBackwards("sort_date")
 
-        self:SortBackwards("sort_date")
+			-- self.totals = {days_survived = 0, deaths = 0}
+			-- for i,v in ipairs(self.persistdata) do
+			--  self.totals.days_survived = self.totals.days_survived + (v.days_survived or 0)
+			-- end
 
-        -- self.totals = {days_survived = 0, deaths = 0}
-        -- for i,v in ipairs(self.persistdata) do
-        --  self.totals.days_survived = self.totals.days_survived + (v.days_survived or 0)
-        -- end
-
-        self.dirty = false
-        if callback ~= nil then
-            callback(true)
-        end
+			self.dirty = false
+			if callback ~= nil then
+				callback(true)
+			end
+		else
+			print("PlayerHistory failed to decode json "..self:GetSaveName(), #str)
+			if callback ~= nil then
+				callback(false)
+			end
+		end
     end
 end
