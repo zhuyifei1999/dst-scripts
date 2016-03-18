@@ -9,6 +9,7 @@ require "map/room_functions"
 AddRoom("BlueMushForest", {
     colour={r=0.1,g=0.1,b=0.8,a=0.9},
     value = GROUND.FUNGUS,
+    tags = {"Hutch_Fishbowl"},
     contents =  {
         distributepercent = .6,
         distributeprefabs=
@@ -31,6 +32,7 @@ AddRoom("BlueMushForest", {
 AddRoom("BlueMushMeadow", {
     colour={r=0.1,g=0.1,b=0.8,a=0.9},
     value = GROUND.FUNGUS,
+    tags = {"Hutch_Fishbowl"},
     contents =  {
         distributepercent = .3,
         distributeprefabs=
@@ -53,6 +55,7 @@ AddRoom("BlueMushMeadow", {
 AddRoom("BlueSpiderForest", {
     colour={r=0.1,g=0.1,b=0.8,a=0.9},
     value = GROUND.FUNGUS,
+    tags = {"Hutch_Fishbowl"},
     contents =  {
         distributepercent = .4,
         distributeprefabs=
@@ -76,6 +79,7 @@ AddRoom("BlueSpiderForest", {
 AddRoom("DropperDesolation", {
     colour={r=0.1,g=0.1,b=0.8,a=0.9},
     value = GROUND.FUNGUS,
+    tags = {"Hutch_Fishbowl"},
     contents =  {
         distributepercent = .2,
         distributeprefabs=
@@ -98,6 +102,7 @@ AddRoom("DropperDesolation", {
 local bgbluemush = {
     colour={r=0.1,g=0.1,b=0.8,a=0.9},
     value = GROUND.FUNGUS,
+    tags = {"Hutch_Fishbowl"},
     contents =  {
         distributepercent = .6,
         distributeprefabs=

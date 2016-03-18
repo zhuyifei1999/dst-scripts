@@ -8,6 +8,7 @@ local NineSlice = require "widgets/nineslice"
 local UIAnim = require "widgets/uianim"
 local Spinner = require "widgets/spinner"
 local AnimButton = require "widgets/animbutton"
+local ItemImage = require "widgets/itemimage"
 
 
 local smoke_offset = -20
@@ -1088,7 +1089,6 @@ TEMPLATES = {
 		widg.target_slot_index = slot_index
 		
         widg:GetAnimState():SetBuild("frames_comp") -- use the animation file as the build, then override it
-        widg:GetAnimState():AddOverrideBuild("frame_skins") -- file name
         widg:GetAnimState():SetBank("fr") -- top level symbol from frames_comp
 
         local rarity = GetRarityForItem(type, name)
@@ -1121,6 +1121,47 @@ TEMPLATES = {
     end,
 
 
+    ----------------------
+    ----------------------
+    -- ItemImageText --
+    -----------------------
+    -----------------------
+    -- An item image with text to the right of it. 
+    ItemImageText = function(type, name, iconScale, font, textsize, string, colour, textwidth)
+        textwidth = textwidth or 50 
+
+        local widg = Widget("ImageText")
+
+        widg.icon = widg:AddChild(ItemImage(nil, type, name, nil, nil, nil))
+        widg.icon:SetScale(iconScale)
+        widg.icon:Disable() -- shouldn't be clickable
+        widg.icon:SetPosition(0, 0)
+
+        widg.check = widg.icon:AddChild(Image("images/ui.xml", "checkmark.tex"))
+        widg.check:SetScale(.33)
+        widg.check:SetPosition(-75, 0)
+        widg.check:Hide()
+
+       
+        widg.text = widg:AddChild(Text(font or BUTTONFONT, textsize or 35, 
+                                        string or "", colour or BLACK))
+
+        widg.text:SetRegionSize(textwidth, 40)
+        widg.text:SetPosition(20 + .5*textwidth, 0)
+        widg.text:SetHAlign( ANCHOR_LEFT )
+
+       
+        widg.SetChecked = function(self, value)
+            if value then 
+                self.check:Show()
+            else
+                self.check:Hide()
+            end
+        end
+
+        return widg
+
+    end,
 }
 
 return TEMPLATES

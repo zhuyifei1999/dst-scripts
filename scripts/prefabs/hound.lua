@@ -147,7 +147,7 @@ local function OnLoad(inst, data)
     end
 end
 
-local function fncommon(build)
+local function fncommon(build, morphlist)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -168,7 +168,7 @@ local function fncommon(build)
     inst:AddTag("hound")
 
     inst.AnimState:SetBank("hound")
-    inst.AnimState:SetBuild(build or "hound")
+    inst.AnimState:SetBuild("hound")
     inst.AnimState:PlayAnimation("idle")
 
     inst.entity:SetPristine()
@@ -216,7 +216,7 @@ local function fncommon(build)
     inst.components.sleeper:SetWakeTest(ShouldWakeUp)
     inst:ListenForEvent("newcombattarget", OnNewTarget)
 
-    MakeHauntableChangePrefab(inst, { "firehound", "icehound" })
+    MakeHauntableChangePrefab(inst, morphlist)
     inst:ListenForEvent("spawnedfromhaunt", OnSpawnedFromHaunt)
 
     inst:WatchWorldState("stopday", OnStopDay)
@@ -232,7 +232,7 @@ local function fncommon(build)
 end
 
 local function fndefault()
-    local inst = fncommon()
+    local inst = fncommon("hound", { "firehound", "icehound" })
 
     if not TheWorld.ismastersim then
         return inst
@@ -248,7 +248,7 @@ local function PlayFireExplosionSound(inst)
 end
 
 local function fnfire()
-    local inst = fncommon("hound_red")
+    local inst = fncommon("hound_red", { "hound", "icehound" })
 
     if not TheWorld.ismastersim then
         return inst
@@ -286,7 +286,7 @@ local function DoIceExplosion(inst)
 end
 
 local function fncold()
-    local inst = fncommon("hound_ice")
+    local inst = fncommon("hound_ice", { "firehound", "hound" })
 
     if not TheWorld.ismastersim then
         return inst

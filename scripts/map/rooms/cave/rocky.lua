@@ -8,6 +8,7 @@ require "map/room_functions"
 AddRoom("SlurtleCanyon", {
     colour={r=0.7,g=0.7,b=0.7,a=0.9},
     value = GROUND.CAVE_NOISE,
+    tags = {"Hutch_Fishbowl"},
     type = NODE_TYPE.Room,
     contents =  {
         distributepercent = .15,
@@ -29,6 +30,7 @@ AddRoom("SlurtleCanyon", {
 AddRoom("BatsAndSlurtles", {
     colour={r=0.7,g=0.7,b=0.7,a=0.9},
     value = GROUND.CAVE_NOISE,
+    tags = {"Hutch_Fishbowl"},
     type = NODE_TYPE.Room,
     contents =  {
         distributepercent = .15,
@@ -56,6 +58,7 @@ AddRoom("BatsAndSlurtles", {
 AddRoom("RockyPlains", {
     colour={r=0.7,g=0.7,b=0.7,a=0.9},
     value = GROUND.CAVE_NOISE,
+    tags = {"Hutch_Fishbowl"},
     type = NODE_TYPE.Room,
     contents =  {
         distributepercent = .10,
@@ -82,6 +85,7 @@ AddRoom("RockyPlains", {
 AddRoom("RockyHatchingGrounds", {
     colour={r=0.7,g=0.7,b=0.7,a=0.9},
     value = GROUND.CAVE_NOISE,
+    tags = {"Hutch_Fishbowl"},
     type = NODE_TYPE.Room,
     contents =  {
         distributepercent = .25,
@@ -108,6 +112,7 @@ AddRoom("RockyHatchingGrounds", {
 AddRoom("BatsAndRocky", {
     colour={r=0.7,g=0.7,b=0.7,a=0.9},
     value = GROUND.CAVE_NOISE,
+    tags = {"Hutch_Fishbowl"},
     type = NODE_TYPE.Room,
     contents =  {
         distributepercent = .20,
@@ -139,6 +144,7 @@ AddRoom("BatsAndRocky", {
 local bgrocky = {
     colour={r=0.7,g=0.7,b=0.7,a=0.9},
     value = GROUND.CAVE_NOISE,
+    tags = {"Hutch_Fishbowl"},
     type = NODE_TYPE.Room,
     contents =  {
         distributepercent = .10,

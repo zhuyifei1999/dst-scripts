@@ -683,6 +683,13 @@ return {
 		},
 		DIVININGRODSTART = "Is funny rod thing.",
 		DRAGONFLY = "I confuse: is dragonfly or a dragon-fly?",
+
+        HUTCH_FISHBOWL =
+        {
+            GENERIC = "Is tiny swimming teeth.",
+            WAITING = "Is tiny floating teeth.",
+        },
+
 		LAVASPIT = 
 		{
 			HOT = "Is hot mouth germs.",
@@ -1017,6 +1024,8 @@ return {
 		ROTTENEGG = "Stinky!",
         SADDLE_BASIC = "Just need creature mighty enough to hold me!",
         SADDLE_WAR = "I will ride like king!",
+        SADDLEHORN = "I won't hurt you, hair cow!",
+        BRUSH = "For brush really strong hair!",
 		SANITYROCK =
 		{
 			ACTIVE = "Is beautiful!",

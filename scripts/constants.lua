@@ -290,32 +290,23 @@ require("prefabskins")
 require("clothing")
 require("misc_items")
 
-MAINSCREEN_CHAR_1 = "corner_dude"
-MAINSCREEN_CHAR_2 = "corner_dude"
-
 MAINSCREEN_TOOL_LIST = 
 {
-	"swap_axe", "swap_spear", "swap_pickaxe", "swap_shovel", "swap_staffs", "swap_cane",
+	"swap_axe", "swap_spear", "swap_pickaxe", "swap_shovel", "swap_staffs", "swap_cane", 
 }
 
-MAINSCREEN_TOOL_1 = "swap_axe"
-MAINSCREEN_TOOL_2 = "swap_axe"
 
 MAINSCREEN_TORSO_LIST = 
 {
-	"", "", "", "", "armor_wood", "armor_sweatervest", "torso_amulets", "armor_trunkvest_winter", "armor_ruins",
+	"", "", "", "", "armor_wood", "armor_sweatervest", "torso_amulets", "armor_trunkvest_winter", "armor_ruins", 
 }
 
-MAINSCREEN_TORSO_1 = ""
-MAINSCREEN_TORSO_2 = ""
 
 MAINSCREEN_HAT_LIST = 
 {
-	"", "", "", "", "hat_top", "hat_beefalo", "hat_football", "hat_winter", "hat_spider",
+	"", "", "", "", "hat_top", "hat_beefalo", "hat_football", "hat_winter", "hat_spider", 
 }
 
-MAINSCREEN_HAT_1 = ""
-MAINSCREEN_HAT_2 = ""
 
 MODCHARACTERLIST = 
 {
@@ -985,6 +976,7 @@ TOOLACTIONS =
     MINE = true,
     NET = true,
     PLAY = true,
+    UNSADDLE = true,
 }
 
 DEPLOYMODE =
@@ -1033,6 +1025,8 @@ GREY = {.57, .57, .57, 1}
 BLACK = {.1, .1, .1, 1}
 WHITE = {1, 1, 1, 1}
 BROWN = {97/255, 73/255, 46/255, 255/255}
+RED = {.7, .1, .1, 1}
+DARKGREY = {.12, .12, .12, 1}
 
 --Bit flags, currently supports up to 8
 --Server may use these for things that clients need to know about

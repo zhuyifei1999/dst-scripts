@@ -4,9 +4,24 @@ local KnownLocations = Class(function(self, inst)
 end)
 
 function KnownLocations:GetDebugString()
+    --if self.inst.components.debugger == nil then
+        --self.inst:AddComponent("debugger")
+    --end
+    --local ci = 0
+
     local str = ""
     for k,v in pairs(self.locations) do
         str = str..string.format("%s: %s ", k, tostring(v))
+
+        --self.inst.components.debugger:SetAll("knownloc_"..k, self.inst:GetPosition(), v,
+            --{
+                --r=(ci%6==0 or ci%6==1 or ci%6==2) and 1 or 0,
+                --g=(ci%6==2 or ci%6==3 or ci%6==4) and 1 or 0,
+                --b=(ci%6==4 or ci%6==5 or ci%6==0) and 1 or 0,
+                --a=1,
+            --}
+        --)
+        --ci = ci+1
     end
     return str
 end

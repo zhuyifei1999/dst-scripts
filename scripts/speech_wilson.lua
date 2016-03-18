@@ -710,6 +710,12 @@ return {
 		ARMORDRAGONFLY = "Hot mail!",
 		DRAGON_SCALES = "They're still warm.",
 		DRAGONFLYCHEST = "Next best thing to a lockbox!",
+        HUTCH = "Hutch Danglefish, P.I.",
+        HUTCH_FISHBOWL =
+        {
+            GENERIC = "I always wanted one of these.",
+            WAITING = "Maybe he needs some science?",
+        },
 		LAVASPIT = 
 		{
 			HOT = "Hot spit!",
@@ -1198,6 +1204,8 @@ return {
 		ROTTENEGG = "Ew! It stinks!",
         SADDLE_BASIC = "Should let me mount some smelly animal.",
         SADDLE_WAR = "The only problem is the saddle sores.",
+        SADDLEHORN = "I can take the saddle off now.",
+        BRUSH = "I bet the beefalo really like this.",
 		SANITYROCK =
 		{
 			ACTIVE = "That's a CRAZY looking rock!",

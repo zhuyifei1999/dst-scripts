@@ -708,8 +708,44 @@ function MakeHauntableLaunchAndIgnite(inst, launchchance, ignitechance, speed, c
     end)
 end
 
+local function DoChangePrefab(inst, newprefab, haunter, nofx)
+    local x, y, z = inst.Transform:GetWorldPosition()
+    if not nofx then
+        SpawnPrefab("small_puff").Transform:SetPosition(x, y, z)
+    end
+    local new = SpawnPrefab(type(newprefab) == "table" and newprefab[math.random(#newprefab)] or newprefab)
+    if new ~= nil then
+        new.Transform:SetPosition(x, y, z)
+        if new.components.stackable ~= nil and inst.components.stackable ~= nil and inst.components.stackable:IsStack() then
+            new.components.stackable:SetStackSize(math.min(new.components.stackable.maxsize, inst.components.stackable:StackSize()))
+        end
+        if new.components.inventoryitem ~= nil and inst.components.inventoryitem ~= nil then
+            new.components.inventoryitem:InheritMoisture(inst.components.inventoryitem:GetMoisture(), inst.components.inventoryitem:IsWet())
+        end
+        if new.components.perishable ~= nil and inst.components.perishable ~= nil then
+            new.components.perishable:SetPercent(inst.components.perishable:GetPercent())
+        end
+        if new.components.fueled ~= nil and inst.components.fueled ~= nil then
+            new.components.fueled:SetPercent(inst.components.fueled:GetPercent())
+        end
+        if new.components.finiteuses ~= nil and inst.components.finiteuses ~= nil then
+            new.components.finiteuses:SetPercent(inst.components.finiteuses:GetPercent())
+        end
+        local home = inst.components.homeseeker ~= nil and inst.components.homeseeker.home or nil
+        inst:PushEvent("detachchild")
+        if home ~= nil and home.components.childspawner ~= nil then
+            home.components.childspawner:TakeOwnership(new)
+        end
+        new:PushEvent("spawnedfromhaunt", { haunter = haunter, oldPrefab = inst })
+        inst:PushEvent("despawnedfromhaunt", { haunter = haunter, newPrefab = new })
+        inst.persists = false
+        inst.entity:Hide()
+        inst:DoTaskInTime(0, inst.Remove)
+    end
+end
+
 function MakeHauntableChangePrefab(inst, newprefab, chance, haunt_value, nofx)
-    if newprefab == nil then
+    if newprefab == nil or (type(newprefab) == "table" and #newprefab <= 0) then
         return
     elseif inst.components.hauntable == nil then
         inst:AddComponent("hauntable")
@@ -717,33 +753,7 @@ function MakeHauntableChangePrefab(inst, newprefab, chance, haunt_value, nofx)
     inst.components.hauntable.cooldown_on_successful_haunt = false
     inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
         if math.random() <= (chance or TUNING.HAUNT_CHANCE_HALF) then
-            local x, y, z = inst.Transform:GetWorldPosition()
-            if not nofx then
-                SpawnPrefab("small_puff").Transform:SetPosition(x, y, z)
-            end
-            local new = SpawnPrefab(type(newprefab) == "table" and newprefab[math.random(#newprefab)] or newprefab)
-            if new ~= nil then
-                new.Transform:SetPosition(x, y, z)
-                if new.components.stackable ~= nil and inst.components.stackable ~= nil and inst.components.stackable:IsStack() then
-                    new.components.stackable:SetStackSize(inst.components.stackable:StackSize())
-                end
-                if new.components.inventoryitem ~= nil and inst.components.inventoryitem ~= nil then
-                    new.components.inventoryitem:InheritMoisture(inst.components.inventoryitem:GetMoisture(), inst.components.inventoryitem:IsWet())
-                end
-                if new.components.perishable ~= nil and inst.components.perishable ~= nil then
-                    new.components.perishable:SetPercent(inst.components.perishable:GetPercent())
-                end
-                local home = inst.components.homeseeker ~= nil and inst.components.homeseeker.home or nil
-                inst:PushEvent("detachchild")
-                if home ~= nil and home.components.childspawner ~= nil then
-                    home.components.childspawner:TakeOwnership(new)
-                end
-                new:PushEvent("spawnedfromhaunt", { haunter = haunter, oldPrefab = inst })
-                inst:PushEvent("despawnedfromhaunt", { haunter = haunter, newPrefab = new })
-                inst.persists = false
-                inst.entity:Hide()
-                inst:DoTaskInTime(0, inst.Remove)
-            end
+            DoChangePrefab(inst, newprefab, haunter, nofx)
             inst.components.hauntable.hauntvalue = haunt_value or TUNING.HAUNT_SMALL
             return true
         end
@@ -752,7 +762,7 @@ function MakeHauntableChangePrefab(inst, newprefab, chance, haunt_value, nofx)
 end
 
 function MakeHauntableLaunchOrChangePrefab(inst, launchchance, prefabchance, speed, cooldown, newprefab, prefab_haunt_value, launch_haunt_value, nofx)
-    if newprefab == nil then
+    if newprefab == nil or (type(newprefab) == "table" and #newprefab <= 0) then
         return
     elseif inst.components.hauntable == nil then
         inst:AddComponent("hauntable")
@@ -761,33 +771,7 @@ function MakeHauntableLaunchOrChangePrefab(inst, launchchance, prefabchance, spe
     inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
         if math.random() <= (launchchance or TUNING.HAUNT_CHANCE_ALWAYS) then
             if math.random() <= (prefabchance or TUNING.HAUNT_CHANCE_OCCASIONAL) then
-                local x, y, z = inst.Transform:GetWorldPosition()
-                if not nofx then
-                    local fx = SpawnPrefab("small_puff")
-                    fx.Transform:SetPosition(x, y, z)
-                end
-                local new = SpawnPrefab(newprefab)
-                if new ~= nil then
-                    new.Transform:SetPosition(x, y, z)
-                    if new.components.stackable ~= nil and inst.components.stackable ~= nil and inst.components.stackable:IsStack() then
-                        new.components.stackable:SetStackSize(inst.components.stackable:StackSize())
-                    end
-                    if new.components.inventoryitem ~= nil and inst.components.inventoryitem ~= nil then
-                        new.components.inventoryitem:InheritMoisture(inst.components.inventoryitem:GetMoisture(), inst.components.inventoryitem:IsWet())
-                    end
-                    if new.components.perishable ~= nil and inst.components.perishable ~= nil then
-                        new.components.perishable:SetPercent(inst.components.perishable:GetPercent())
-                    end
-                    local home = inst.components.homeseeker ~= nil and inst.components.homeseeker.home or nil
-                    inst:PushEvent("detachchild")
-                    if home ~= nil and home.components.childspawner ~= nil then
-                        home.components.childspawner:TakeOwnership(new)
-                    end
-                    new:PushEvent("spawnedfromhaunt", { haunter = haunter, oldPrefab = inst })
-                    inst:PushEvent("despawnedfromhaunt", { haunter = haunter, newPrefab = new })
-                    inst.persists = false
-                    inst:DoTaskInTime(0, inst.Remove)
-                end
+                DoChangePrefab(inst, newprefab, haunter, nofx)
                 inst.components.hauntable.hauntvalue = prefab_haunt_value or TUNING.HAUNT_SMALL
             else
                 Launch(inst, haunter, speed or TUNING.LAUNCH_SPEED_SMALL)

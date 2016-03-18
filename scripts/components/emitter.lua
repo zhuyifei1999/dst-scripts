@@ -15,9 +15,15 @@ end)
 function Emitter:Emit()
 	--print("Emit()....")
 
-	local emitter = self.inst.ParticleEmitter
+	--just one of these should be set
+	local effect = self.inst.VFXEffect
+	local emitter = self.inst.ParticleEmitter --legacy
 
-	emitter:SetMaxNumParticles( self.density_factor * self.config.max_num_particles)
+	if effect then
+		effect:SetMaxNumParticles( 0, self.density_factor * self.config.max_num_particles)
+	else
+		emitter:SetMaxNumParticles( self.density_factor * self.config.max_num_particles)
+	end
 
 	local tick_time = TheSim:GetTickTime()
 
@@ -34,18 +40,29 @@ function Emitter:Emit()
 		
 		px, pz = self.area_emitter()
 		--print("px", px, "py", py, "pz", pz, "lifetime", lifetime)
-		emitter:AddParticle(
-			lifetime,			-- lifetime
-			px, py, pz,			-- position
-			vx, vy, vz			-- velocity
-		)
+		
+
+		if effect then
+			effect:AddParticle(
+				0,
+				lifetime,			-- lifetime
+				px, py, pz,			-- position
+				vx, vy, vz			-- velocity
+			)
+		else
+			emitter:AddParticle(
+				lifetime,			-- lifetime
+				px, py, pz,			-- position
+				vx, vy, vz			-- velocity
+			)
+		end
 		--print("emit.... complete")
 	end
 	
 	local updateFunc = function()
 		--print("emit updateFunc....", self.num_particles_to_emit)
 		while self.num_particles_to_emit > 1 do
-			emit_fn( emitter )
+			emit_fn( effect or emitter )
 			self.num_particles_to_emit = self.num_particles_to_emit - 1
 		end
 

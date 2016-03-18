@@ -3,108 +3,128 @@ require("trade_recipes")
 
 function GetNumberSelectedItems(selections)
 	local count = 0
-
-	for rarity, value in pairs(selections) do 
-		for key, item in pairs(value) do 
-			count = count + 1
-		end
+	for k,v in pairs(selections) do
+		count = count + 1
 	end
 
 	return count
 end
 
--- Takes a flat array of items, and rebuilds it into a table 
--- indexed by rarity.
-function RebuildSelectionsByRarity(selectionsIn)
-	local selected_items = {}
 
-	for k, item in pairs(selectionsIn) do 
-		local rarity = GetRarityForItem(item.type, item.item)
-
-		if not selected_items[rarity] then 
-			selected_items[rarity] = {}
-		end
-		 
-		table.insert(selected_items[rarity], item)
-		
+--Returns the recipe name from the basic recipe list in trade_recipes.lua
+function GetBasicRecipeMatch(selections)
+	local rarity = nil
+	for _,item in pairs(selections) do
+		rarity = GetRarityForItem(item.type, item.item)
+		break
 	end
-
-	return selected_items
-end
-
-
--- Returns a list of rules that does match this set of selected items or might match this set of selected items if more are added.
--- 
--- Assumes that there is only one input type per rule, and that input only specifies rarity and number.
-function GetRecipeMatches(selectionsIn)
-
-	local selections = RebuildSelectionsByRarity(selectionsIn)
-
-	local rules = {}
-
-	local num_selections = GetNumberSelectedItems(selections)
-
-	for rule_name, rule_contents in pairs(TRADE_RECIPES) do 
-
-		if num_selections == 0 then 
-			table.insert(rules, rule_name)
-		elseif selections[rule_contents.inputs.rarity] then 
-			if #selections[rule_contents.inputs.rarity] <= rule_contents.inputs.number then 
-				table.insert(rules, rule_name)
+	
+	if rarity ~= nil then
+		for rule_name, rule_contents in pairs(TRADE_RECIPES) do 
+			if rule_contents.inputs.rarity == rarity then
+				return rule_name
 			end
 		end
-
 	end
 
-	return rules
+	return nil
 end
 
 
--- Returns true or false. If true, also returns the specific trade rule that will apply.
--- 
--- Assumes that there is only one input type per rule, and that input only specifies rarity and number.
-function IsTradeAllowed(selectionsIn)
-
-	local selections = RebuildSelectionsByRarity(selectionsIn)
-
-	local rules = {}
-	
-	
-	-- TODO: this doesn't handle tags, only rarities
-	-- TODO: this also doesn't handle multiple input rules
-
-	for rule_name, rule_contents in pairs(TRADE_RECIPES) do
-
-		if selections[rule_contents.inputs.rarity] then 
-				if #selections[rule_contents.inputs.rarity] == rule_contents.inputs.number then 
-				return true, rule_name
-			end
-		end
-
+--currently only returns a single filter
+function GetBasicFilters(recipe_name)
+	if recipe_name ~= nil then
+		return { {TRADE_RECIPES[recipe_name].inputs.rarity} }
+	else
+		return { {"Common"}, {"Classy"}, {"Spiffy"} }
 	end
-
-	return false
 end
 
+function GetSpecialFilters(recipe_data, selected_items)
 
--- Generate a list of filters from a set of trade rules. Currently, this should always result in a table containing a single 
--- rarity name.
-function GetFilters(rules)
 	local filters = {}
 
-	for k, v in pairs(rules) do
-		local inputs = TRADE_RECIPES[v].inputs
-		--print("Getting filter for", v, inputs.rarity)
-		assert(inputs)
+	local satisfied_restrictions = GetSatisfiedRestrictions(recipe_data, selected_items)
+
+	for k,restriction in pairs(recipe_data.Restrictions) do 
 		
-		table.insert(filters, inputs.rarity)
+		if not satisfied_restrictions[k] then 
+
+			local filters_list = {}
+
+			local type_tag = nil
+			for _, tag in pairs(restriction.Tags) do 
+				type_tag = GetTypeFromTag(tag)
+				if type_tag ~= nil then 
+					break
+				end
+			end
+
+			if restriction.ItemType 
+				and IsItemId(restriction.ItemType) 
+				and not table.contains(filters, type_tag)
+			then -- ItemType is the item id
+				table.insert(filters_list, restriction.ItemType)
+			end
+
+			if type_tag ~= nil and not table.contains(filters, type_tag) then 
+				table.insert(filters_list, type_tag)
+			end
+
+			-- TODO: add colour
+			if not table.contains(filters, restriction.Rarity) then 
+				table.insert(filters_list, restriction.Rarity)
+			end
+
+			table.insert(filters, filters_list)
+		end
 	end
 
-	table.sort(filters, CompareRarities)
-
 	return filters
+
 end
 
-function SubstituteRarity(text, rarity)
-	return string.gsub(text, "<rarity>", rarity)
+function GetSatisfiedRestrictions(recipe_data, selected_items)
+	local used_items = {}
+	local satisfied_restrictions = {}
+	for res_id,restriction in pairs(recipe_data.Restrictions) do
+		if not satisfied_restrictions[res_id] then 
+			for index, data in pairs(selected_items) do
+				if not used_items[index] then 
+					local matches = does_item_match_restriction( restriction, data )
+					if matches then
+						used_items[index] = true
+						satisfied_restrictions[res_id] = true
+						break
+					end
+				end
+			end
+		end
+	end
+	return satisfied_restrictions
+end
+
+-- Moved this out of tradescreen since recipelist also needs to access it now.
+function does_item_match_restriction( restriction, item )
+	local matched_item = true
+	if restriction.ItemType ~= "" then
+		--print( "looking for item", restriction.ItemType )
+		if item.item ~= restriction.ItemType then
+			matched_item = false
+		end
+	elseif next(restriction.Tags) ~= nil then
+		--print( "looking for tags" )
+		for _,tag in pairs(restriction.Tags) do
+			local type = GetTypeForItem( item.item )
+			if tag ~= GetTagFromType(type) then
+				matched_item = false
+			end
+			--CURRENTLY THIS ONLY SUPPORTS THE TYPE TAG FOR CLOTHING, DO COLOUR NEXT
+		end
+	else
+		--print( "looking for rarity" )
+		--restriction.Rarity
+		--Assume the rarity is correct from the filtering
+	end
+	return matched_item
 end

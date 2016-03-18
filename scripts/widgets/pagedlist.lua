@@ -144,11 +144,11 @@ function PagedList:GetHelpText()
 
 	local t = {}
 	if self.left_button and self.left_button:IsEnabled() then
-		table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_PREVVALUE, false, false) .. " " .. STRINGS.UI.HELP.PREVPAGE)
+		table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_SCROLLBACK, false, false) .. " " .. STRINGS.UI.HELP.PREVPAGE)
 	end
 
 	if self.right_button and self.right_button:IsEnabled() then
-		table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_NEXTVALUE, false, false) .. " " .. STRINGS.UI.HELP.NEXTPAGE)
+		table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_SCROLLFWD, false, false) .. " " .. STRINGS.UI.HELP.NEXTPAGE)
 	end
 	
 	return table.concat(t, "  ")

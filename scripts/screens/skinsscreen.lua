@@ -61,7 +61,6 @@ function SkinsScreen:DoInit()
     self.chest:GetAnimState():PlayAnimation("idle", true)
     self.chest:SetScale(-.7, .7, .7)
     self.chest:SetPosition(100, -75)
-   
 	self.loadout_button = self.fixed_root:AddChild(ImageButton("images/skinsscreen.xml", "loadout_button_active.tex", "loadout_button_hover.tex", "loadout_button_pressed.tex", "loadout_button_pressed.tex"))
 	self.loadout_button:SetOnClick(function()
 						TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
@@ -138,8 +137,7 @@ function SkinsScreen:OnItemSelect(type, item, item_id, itemimage)
 
 	self.dressup_hanger:Hide()
 
-	local buildfile = GetBuildForItem(type, item) --item
-	
+	local buildfile = GetBuildForItem(type, item) 
 
 	if type == "base"  then 
 		self.details_panel.shadow:SetScale(.4)
@@ -194,6 +192,8 @@ function SkinsScreen:BuildDetailsPanel()
 	self.details_panel.image = self.details_panel:AddChild(UIAnim()) 
 	self.details_panel.image:GetAnimState():SetBuild("frames_comp")
 	self.details_panel.image:GetAnimState():SetBank("fr")
+	self.details_panel.image:GetAnimState():Hide("frame")
+	self.details_panel.image:GetAnimState():Hide("NEW")
 	self.details_panel.image:GetAnimState():PlayAnimation("icon")
 	self.details_panel.image:SetPosition(0, 125)
 	self.details_panel.image:SetScale(1.65)
@@ -227,7 +227,7 @@ function SkinsScreen:BuildInventoryList()
 	self.tiles_root = self.inventory_list:AddChild(Widget("tiles_root"))
 	self.list_widgets = SkinGrid4x4Constructor(self, self.tiles_root, false)
 
-	local grid_width = 400
+	local grid_width = 420
 	self.page_list = self.inventory_list:AddChild(PagedList(grid_width, function(widget, data) UpdateSkinGrid(widget, data, self) end, self.list_widgets))
 	
 	self.inventory_list:SetPosition(100, 100)
@@ -240,7 +240,7 @@ end
 
 
 function SkinsScreen:Quit()
-	--print("Setting dressuptimestamp from skinsscreen:Quit", self.timestamp)
+	--print("Setting collectiontimestamp from skinsscreen:Quit", self.timestamp)
 	self.profile:SetCollectionTimestamp(self.timestamp)
 	
 	TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
@@ -322,13 +322,7 @@ function SkinsScreen:OnControl(control, down)
     end
 
    	if down then 
-	 	if control == CONTROL_PREVVALUE then  -- r-stick left
-	    	self:ScrollBack(control)
-			return true 
-		elseif control == CONTROL_NEXTVALUE then -- r-stick right
-			self:ScrollFwd(control)
-			return true
-		elseif control == CONTROL_SCROLLBACK then
+	 	if control == CONTROL_SCROLLBACK then
             self:ScrollBack(control)
             return true
         elseif control == CONTROL_SCROLLFWD then

@@ -1,5 +1,31 @@
 require("stategraphs/commonstates")
 
+local NUM_FX_VARIATIONS = 7
+local MAX_RECENT_FX = 4
+local MIN_FX_SCALE = .5
+local MAX_FX_SCALE = 1.6
+
+local function SpawnMoveFx(inst, scale)
+    local fx = SpawnPrefab("hutch_move_fx")
+    if fx ~= nil then
+        if inst.sg.mem.recentfx == nil then
+            inst.sg.mem.recentfx = {}
+        end
+        local recentcount = #inst.sg.mem.recentfx
+        local rand = math.random(NUM_FX_VARIATIONS - recentcount)
+        if recentcount > 0 then
+            while table.contains(inst.sg.mem.recentfx, rand) do
+                rand = rand + 1
+            end
+            if recentcount >= MAX_RECENT_FX then
+                table.remove(inst.sg.mem.recentfx, 1)
+            end
+        end
+        table.insert(inst.sg.mem.recentfx, rand)
+        fx:SetVariation(rand, fx._min_scale + (fx._max_scale - fx._min_scale) * scale)
+        fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+    end
+end
 
 local actionhandlers = 
 {
@@ -13,10 +39,15 @@ local events=
     EventHandler("attacked", function(inst)
         if inst.components.health and not inst.components.health:IsDead() then
             inst.sg:GoToState("hit")
-            inst.SoundEmitter:PlaySound("dontstarve/creatures/chester/hurt")
+        
+            inst.SoundEmitter:PlaySound(inst.sounds.hurt)
+
         end
     end),
     EventHandler("death", function(inst) inst.sg:GoToState("death") end),
+    EventHandler("morph", function(inst, data)
+        inst.sg:GoToState("morph", data.morphfn)
+    end),
 }
 
 local states=
@@ -43,29 +74,33 @@ local states=
         {
             TimeEvent(7*FRAMES, function(inst) 
 				inst.sg.mem.pant_ducking = inst.sg.mem.pant_ducking or 1
-				inst.SoundEmitter:PlaySound("dontstarve/creatures/chester/pant", nil, inst.sg.mem.pant_ducking) 
+
+				inst.SoundEmitter:PlaySound(inst.sounds.pant, nil, inst.sg.mem.pant_ducking) 
 				if inst.sg.mem.pant_ducking and inst.sg.mem.pant_ducking > .35 then
 					inst.sg.mem.pant_ducking = inst.sg.mem.pant_ducking - .05
 				end
 			end),
-        },        
+        },
    },
-    
-   
+
+
     State{
         name = "death",
         tags = {"busy"},
-        
+
         onenter = function(inst)
             inst.components.container:Close()
             inst.components.container:DropEverything()
-            inst.SoundEmitter:PlaySound("dontstarve/creatures/chester/death")
+            inst.components.container.canbeopened = false
+
+            inst.SoundEmitter:PlaySound(inst.sounds.death)
+
             inst.AnimState:PlayAnimation("death")
             inst.Physics:Stop()
-            RemovePhysicsColliders(inst)            
+            RemovePhysicsColliders(inst)
         end,
     },
-    
+
 
     State{
         name = "open",
@@ -75,6 +110,9 @@ local states=
             inst.Physics:Stop()
             inst.components.sleeper:WakeUp()
             inst.AnimState:PlayAnimation("open")
+            if inst.SoundEmitter:PlayingSound("hutchMusic") then
+                inst.SoundEmitter:SetParameter("hutchMusic", "intensity", 1)
+            end 
         end,
 
         events=
@@ -84,7 +122,7 @@ local states=
 
         timeline=
         {
-            TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/chester/open") end),
+            TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound( inst.sounds.open ) end),
         },        
     },
 
@@ -112,7 +150,7 @@ local states=
         
             TimeEvent(3*FRAMES, function(inst) 
 				inst.sg.mem.pant_ducking = inst.sg.mem.pant_ducking or 1
-				inst.SoundEmitter:PlaySound("dontstarve/creatures/chester/pant", nil, inst.sg.mem.pant_ducking) 
+				inst.SoundEmitter:PlaySound( inst.sounds.pant , nil, inst.sg.mem.pant_ducking) 
 				if inst.sg.mem.pant_ducking and inst.sg.mem.pant_ducking > .35 then
 					inst.sg.mem.pant_ducking = inst.sg.mem.pant_ducking - .05
 				end
@@ -127,6 +165,12 @@ local states=
             inst.AnimState:PlayAnimation("closed")
         end,
 
+        onexit = function(inst)
+            if not inst.sg.statemem.muffled and inst.SoundEmitter:PlayingSound("hutchMusic") then
+                inst.SoundEmitter:SetParameter("hutchMusic", "intensity", 0)
+            end 
+        end,
+
         events=
         {   
             EventHandler("animover", function(inst) inst.sg:GoToState("idle") end ),
@@ -134,7 +178,13 @@ local states=
 
         timeline=
         {
-            TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/chester/close") end),
+            TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound( inst.sounds.close ) end),
+            TimeEvent(4*FRAMES, function(inst)
+                if inst.SoundEmitter:PlayingSound("hutchMusic") then
+                    inst.sg.statemem.muffled = true
+                    inst.SoundEmitter:SetParameter("hutchMusic", "intensity", 0)
+                end 
+            end)
         },        
     },
 
@@ -177,7 +227,7 @@ local states=
                 SpawnPrefab("chester_transform_fx").Transform:SetPosition(x, y + 1, z)
             end),
             TimeEvent(60*FRAMES, function(inst)
-                inst.SoundEmitter:PlaySound("dontstarve/creatures/chester/pop")
+                inst.SoundEmitter:PlaySound( inst.sounds.pop )
                 if inst.MorphChester ~= nil then
                     inst:MorphChester()
                 end
@@ -189,33 +239,181 @@ local states=
             EventHandler("animqueueover", function(inst) inst.sg:GoToState("idle") end ),
         },
     },
+
+    State{
+        name = "morph",
+        tags = {"busy"},
+        onenter = function(inst, morphfn)
+            inst.Physics:Stop()
+                        
+            inst.SoundEmitter:PlaySound("dontstarve/creatures/chester/raise")
+            inst.AnimState:PlayAnimation("transition", false)
+
+            --Remove ability to open chester for short time.
+            inst.components.container.canbeopened = false
+            inst.components.container:Close()
+
+            inst.sg.statemem.morphfn = morphfn
+        end,
+
+        timeline =
+        {
+
+            TimeEvent(1*FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/hutch/bounce")
+            end),
+            TimeEvent(22*FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/hutch/clap")
+            end),
+            TimeEvent(27*FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/hutch/clap")
+            end),
+            TimeEvent(32*FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/hutch/clap")
+            end),
+            TimeEvent(36*FRAMES, function(inst) 
+                local x, y, z = inst.Transform:GetWorldPosition()
+                SpawnPrefab("chester_transform_fx").Transform:SetPosition(x, y + 1, z)
+            end),
+            TimeEvent(37*FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/hutch/clap")
+            end),
+            TimeEvent(40*FRAMES, function(inst)
+                if inst.sg.statemem.morphfn ~= nil then
+                    local morphfn = inst.sg.statemem.morphfn
+                    inst.sg.statemem.morphfn = nil
+                    morphfn(inst)
+                end
+                inst.SoundEmitter:PlaySound( inst.sounds.pop )
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst) inst.sg:GoToState("idle") end ),
+        },
+
+        onexit = function(inst)
+            if inst.sg.statemem.morphfn ~= nil then
+                --In case state was interrupted
+                local morphfn = inst.sg.statemem.morphfn
+                inst.sg.statemem.morphfn = nil
+                morphfn(inst)
+            end
+            --Add ability to open chester again.
+            inst.components.container.canbeopened = true
+        end,
+
+    },
 }
 
 CommonStates.AddWalkStates(states, {
     walktimeline = 
     { 
         --TimeEvent(0*FRAMES, function(inst)  end),
+
         TimeEvent(1*FRAMES, function(inst) 
-            inst.SoundEmitter:PlaySound("dontstarve/creatures/chester/boing")
-            inst.components.locomotor:RunForward() 
+            inst.SoundEmitter:PlaySound( inst.sounds.boing )
+
+            inst.components.locomotor:RunForward()
+
+            --Cave chester leaves slime as he bounces
+            if inst.leave_slime then
+                inst.sg.statemem.slimein = true
+                if inst.sg.mem.lastspawnlandingmovefx ~= nil and inst.sg.mem.lastspawnlandingmovefx + 2 > GetTime() then
+                    inst.sg.statemem.slimeout = true
+                    SpawnMoveFx(inst, .45 + math.random() * .1)
+                end
+            end
         end),
-        --TimeEvent(12*FRAMES, function(inst) PlayFootstep(inst) end),
+
+        TimeEvent(2 * FRAMES, function(inst)
+            if inst.sg.statemem.slimeout then
+                SpawnMoveFx(inst, .2 + math.random() * .1)
+            end
+        end),
+
+        TimeEvent(4 * FRAMES, function(inst)
+            if inst.sg.statemem.slimeout and math.random() < .7 then
+                SpawnMoveFx(inst, .1 + math.random() * .1)
+            end
+        end),
+
+        TimeEvent(7 * FRAMES, function(inst)
+            if inst.sg.statemem.slimeout and math.random() < .3 then
+                SpawnMoveFx(inst, 0)
+            end
+        end),
+
+        TimeEvent(10 * FRAMES, function(inst)
+            if inst.sg.statemem.slimein and math.random() < .6 then
+                SpawnMoveFx(inst, .05 + math.random() * .1)
+            end
+        end),
+
+        TimeEvent(12 * FRAMES, function(inst)
+            if inst.sg.statemem.slimein then
+                SpawnMoveFx(inst, .25 + math.random() * .1)
+            end
+        end),
+
+        TimeEvent(13*FRAMES, function(inst) 
+            if inst.sounds.land_hit ~= nil then
+                inst.SoundEmitter:PlaySound(inst.sounds.land_hit)
+            end
+            if inst.sg.statemem.slimein then
+                if inst.sounds.land ~= nil then
+                    inst.SoundEmitter:PlaySound(inst.sounds.land)
+                end                
+                SpawnMoveFx(inst, .8 + math.random() * .2)
+                inst.sg.mem.lastspawnlandingmovefx = GetTime()
+            end
+        end),
+
         TimeEvent(14*FRAMES, function(inst) 
             PlayFootstep(inst)
             inst.components.locomotor:WalkForward()
         end),
-    }
+    },
+
+    endtimeline =
+    {
+        TimeEvent(1*FRAMES, function(inst) 
+--[[
+            if inst.sounds.land_hit then
+                inst.SoundEmitter:PlaySound( inst.sounds.land_hit )
+            end
+            ]]
+            if inst.sg.statemem.slimein then
+                if inst.sounds.land ~= nil then
+                    inst.SoundEmitter:PlaySound(inst.sounds.land)
+                end                
+                SpawnMoveFx(inst, .4 + math.random() * .2)
+                inst.sg.mem.lastspawnlandingmovefx = GetTime()
+            end
+        end),
+    },
+
 }, nil, true)
 
 CommonStates.AddSleepStates(states,
 {
     starttimeline = 
     {
-        TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/chester/close") end)
+        TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound( inst.sounds.close ) end)
+    },
+
+    sleeptimeline = 
+    {
+        TimeEvent(1*FRAMES, function(inst) 
+            if inst.sounds.sleep then
+                inst.SoundEmitter:PlaySound( inst.sounds.sleep ) 
+            end
+        end)
     },
     waketimeline = 
     {
-        TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/chester/open") end)
+        TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound( inst.sounds.open ) end)
     },
 })
 

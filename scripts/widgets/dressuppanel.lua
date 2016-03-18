@@ -362,6 +362,8 @@ function DressupPanel:MakeSpinner(slot)
 
 	spinner_group.spinner = spinner_group:AddChild(AnimSpinner( self:GetSkinOptionsForSlot(slot), spinner_width, nil, {font=NEWFONT_OUTLINE, size=22}, nil, nil, textures, true, 100, 50 ))
 	spinner_group.spinner:SetAnim("frames_comp", "fr", "icon", "SWAP_ICON", true)
+	spinner_group.spinner.fganim:GetAnimState():Hide("frame")
+	spinner_group.spinner.fganim:GetAnimState():Hide("NEW")
 	spinner_group.spinner:SetTextColour(0,0,0,1)
 	spinner_group.spinner:SetPosition(10, 46, 0)
 	spinner_group.spinner.text:SetHAlign(ANCHOR_LEFT)

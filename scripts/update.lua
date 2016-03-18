@@ -244,23 +244,25 @@ function LongUpdate(dt, ignore_player)
 
 
 		for k,v in pairs(Ents) do
-			
+
 			local should_ignore = false
 			if ignore_player then
-				
+
 				if v.components.inventoryitem then
 					local grand_owner = v.components.inventoryitem:GetGrandOwner()
-					if grand_owner and grand_owner:HasTag("player") then
-						should_ignore = true
-					end
-					if grand_owner and grand_owner.prefab == "chester" then
-						local leader = grand_owner.components.follower.leader
-						if leader and leader:HasTag("player") then
-							should_ignore = true
-						end
-					end
+                    if grand_owner ~= nil then
+                        if grand_owner:HasTag("player") then
+                            should_ignore = true
+                        elseif grand_owner.prefab == "chester"
+                            or grand_owner.prefab == "hutch" then
+                            local leader = grand_owner.components.follower.leader
+                            if leader ~= nil and leader:HasTag("player") then
+                                should_ignore = true
+                            end
+                        end
+                    end
 				end
-				
+
 				if v.components.follower and v.components.follower.leader and v.components.follower.leader:HasTag("player") then
 					should_ignore = true
 				end
@@ -271,7 +273,7 @@ function LongUpdate(dt, ignore_player)
 			end
 				
 			if not should_ignore then
-				v:LongUpdate(dt)	
+				v:LongUpdate(dt)
 			end
 			
 		end	

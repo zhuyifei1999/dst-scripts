@@ -10,6 +10,7 @@ require "map/room_functions"
 AddRoom("RedMushForest", {
     colour={r=0.8,g=0.1,b=0.1,a=0.9},
     value = GROUND.FUNGUSRED,
+    tags = {"Hutch_Fishbowl"},    
     contents =  {
         distributepercent = .3,
         distributeprefabs=
@@ -33,6 +34,7 @@ AddRoom("RedMushForest", {
 AddRoom("RedSpiderForest", {
     colour={r=0.8,g=0.1,b=0.4,a=0.9},
     value = GROUND.FUNGUSRED,
+    tags = {"Hutch_Fishbowl"},    
     contents =  {
         distributepercent = .3,
         distributeprefabs=
@@ -56,6 +58,7 @@ AddRoom("RedSpiderForest", {
 AddRoom("RedMushPillars", {
     colour={r=0.8,g=0.1,b=0.4,a=0.9},
     value = GROUND.FUNGUSRED,
+    tags = {"Hutch_Fishbowl"},    
     contents =  {
         distributepercent = .15,
         distributeprefabs=
@@ -79,6 +82,7 @@ AddRoom("RedMushPillars", {
 AddRoom("StalagmiteForest", {
     colour={r=0.8,g=0.1,b=0.1,a=0.9},
     value = GROUND.FUNGUSRED,
+    tags = {"Hutch_Fishbowl"},    
     contents =  {
         distributepercent = .3,
         distributeprefabs=
@@ -102,6 +106,7 @@ AddRoom("StalagmiteForest", {
 AddRoom("SpillagmiteMeadow", {
     colour={r=0.8,g=0.1,b=0.1,a=0.9},
     value = GROUND.FUNGUSRED,
+    tags = {"Hutch_Fishbowl"},    
     contents =  {
         distributepercent = .15,
         distributeprefabs=
@@ -124,6 +129,7 @@ AddRoom("SpillagmiteMeadow", {
 local bgredmush = {
     colour={r=0.8,g=0.1,b=0.1,a=0.9},
     value = GROUND.FUNGUSRED,
+    tags = {"Hutch_Fishbowl"},
     contents =  {
         distributepercent = .3,
         distributeprefabs=

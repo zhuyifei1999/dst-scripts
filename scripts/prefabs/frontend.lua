@@ -47,19 +47,32 @@ local assets =
 	Asset("ATLAS", "images/tradescreen_overflow.xml"),
 	Asset("IMAGE", "images/tradescreen_overflow.tex"),
 
+  
+    --testing 
+    Asset("ATLAS", "images/inventoryimages.xml"),
+    Asset("IMAGE", "images/inventoryimages.tex"),
+
     Asset("ANIM", "anim/mod_player_build.zip"),
 
     Asset("ANIM", "anim/frames_comp.zip"),
-    Asset("ANIM", "anim/frame_skins.zip"),
     Asset("ANIM", "anim/frame_bg.zip"),
 
+--TEMP DISABLED SPECIALS MODE
+    --Asset("ANIM", "anim/button_weeklyspecial.zip"),
+
     Asset("ANIM", "anim/swapshoppe.zip"),
+
+--TEMP DISABLED SPECIALS MODE
+    --Asset("ANIM", "anim/swapshoppe_special_build.zip"),
+    --Asset("ANIM", "anim/swapshoppe_special_lightfx.zip"),
+
     Asset("ANIM", "anim/swapshoppe_bg.zip"),
     Asset("ANIM", "anim/joystick.zip"),
     Asset("ANIM", "anim/button.zip"),
     Asset("ANIM", "anim/shoppe_frames.zip"),
     Asset("ANIM", "anim/skin_collector.zip"),
     Asset("ANIM", "anim/textbox.zip"),
+    Asset("ANIM", "anim/die.zip"),
 
     Asset("ANIM", "anim/chest_bg.zip"),
 }
@@ -88,44 +101,6 @@ for i,char in ipairs(charlist) do
 		--table.insert(assets, Asset("IMAGE", "images/selectscreen_portraits/"..char.."_silho.tex")) -- Not currently used, but likely to come back
 	end
 end
-
-
--- Pick some random stuff to show on the puppets on the main screen (and only load the assets that we need)
-local attempts = 0
-while MAINSCREEN_CHAR_1 == MAINSCREEN_CHAR_2 and attempts < 10 do
-    MAINSCREEN_CHAR_1 = DST_CHARACTERLIST[math.random(#DST_CHARACTERLIST)]
-    MAINSCREEN_CHAR_2 = DST_CHARACTERLIST[math.random(#DST_CHARACTERLIST)]
-    attempts = attempts + 1
-end
--- table.insert(assets, Asset("ANIM", "anim/"..MAINSCREEN_CHAR_1..".zip"))
--- table.insert(assets, Asset("ANIM", "anim/"..MAINSCREEN_CHAR_2..".zip"))
-
-attempts = 0
-while MAINSCREEN_TOOL_1 == MAINSCREEN_TOOL_2 and attempts < 10 do
-    MAINSCREEN_TOOL_1 = MAINSCREEN_TOOL_LIST[math.random(#MAINSCREEN_TOOL_LIST)]
-    MAINSCREEN_TOOL_2 = MAINSCREEN_TOOL_LIST[math.random(#MAINSCREEN_TOOL_LIST)]
-    attempts = attempts + 1
-end
--- table.insert(assets, Asset("ANIM", "anim/"..MAINSCREEN_TOOL_1..".zip"))
--- table.insert(assets, Asset("ANIM", "anim/"..MAINSCREEN_TOOL_2..".zip"))
-
-attempts = 0
-while MAINSCREEN_TORSO_1 == MAINSCREEN_TORSO_2 and attempts < 10 do
-    MAINSCREEN_TORSO_1 = MAINSCREEN_TORSO_LIST[math.random(#MAINSCREEN_TORSO_LIST)]
-    MAINSCREEN_TORSO_2 = MAINSCREEN_TORSO_LIST[math.random(#MAINSCREEN_TORSO_LIST)]
-    attempts = attempts + 1
-end
--- if MAINSCREEN_TORSO_1 ~= "" then table.insert(assets, Asset("ANIM", "anim/"..MAINSCREEN_TORSO_1..".zip")) end
--- if MAINSCREEN_TORSO_2 ~= "" then table.insert(assets, Asset("ANIM", "anim/"..MAINSCREEN_TORSO_2..".zip")) end
-
-attempts = 0
-while MAINSCREEN_HAT_1 == MAINSCREEN_HAT_2 and attempts < 10 do
-    MAINSCREEN_HAT_1 = MAINSCREEN_HAT_LIST[math.random(#MAINSCREEN_HAT_LIST)]
-    MAINSCREEN_HAT_2 = MAINSCREEN_HAT_LIST[math.random(#MAINSCREEN_HAT_LIST)]
-    attempts = attempts + 1
-end
--- if MAINSCREEN_HAT_1 ~= "" then table.insert(assets, Asset("ANIM", "anim/"..MAINSCREEN_HAT_1..".zip")) end
--- if MAINSCREEN_HAT_2 ~= "" then table.insert(assets, Asset("ANIM", "anim/"..MAINSCREEN_HAT_2..".zip")) end 
 
 for i,v in pairs(DST_CHARACTERLIST) do
     if v ~= "" then
@@ -161,11 +136,10 @@ end
 for _,skins_prefabs in pairs(PREFAB_SKINS) do
 	for _,skin_prefab in pairs(skins_prefabs) do
 		table.insert( prefabs, skin_prefab )
-
-		if not string.find(skin_prefab, "_none") then 
+		if not string.find(skin_prefab, "_none") then
 			local prefab = require("prefabs/"..skin_prefab)
 			if type(prefab)=="table" then
-				for k, v in pairs(prefab.assets) do 
+				for k, v in pairs(prefab.assets) do
 					table.insert(assets, v)
 				end
 			else

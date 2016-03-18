@@ -43,8 +43,10 @@ local function fn(Sim)
 	-----------------------------------------------------	
 	InitEnvelopes()
 
-	local emitter = inst.entity:AddParticleEmitter()
 	
+	local effect = inst.entity:AddVFXEffect()
+    effect:InitEmitters( 1 )
+   	
 	local config = {texture = texture, shader = shader,
 						max_num_particles = (max_lifetime + 1),
 						max_lifetime = max_lifetime, 
@@ -53,16 +55,16 @@ local function fn(Sim)
 						colour_envelope_name = colour_envelope_name,
 						scale_envelope_name = scale_envelope_name
 						}
-	emitter:SetRenderResources( config.texture, config.shader )
-	emitter:SetMaxNumParticles( config.max_num_particles)
-	emitter:SetMaxLifetime( config.max_lifetime )
-	emitter:SetSpawnVectors( config.SV[1].x, config.SV[1].y, config.SV[1].z,
+	effect:SetRenderResources( 0, config.texture, config.shader )
+	effect:SetMaxNumParticles( 0, config.max_num_particles)
+	effect:SetMaxLifetime( 0, config.max_lifetime )
+	effect:SetSpawnVectors( 0, config.SV[1].x, config.SV[1].y, config.SV[1].z,
 							 config.SV[2].x, config.SV[2].y, config.SV[2].z)
-	emitter:SetSortOrder( config.sort_order )
-	emitter:SetColourEnvelope( config.colour_envelope_name )
-	emitter:SetScaleEnvelope( config.scale_envelope_name );
+	effect:SetSortOrder( 0, config.sort_order )
+	effect:SetColourEnvelope( 0, config.colour_envelope_name )
+	effect:SetScaleEnvelope( 0, config.scale_envelope_name )
 	
-	emitter:SetRadius(emitter_radius)
+	effect:SetRadius( 0, emitter_radius )
 	-----------------------------------------------------	
 
 	inst:AddComponent("emitter")

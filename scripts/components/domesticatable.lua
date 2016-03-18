@@ -5,6 +5,7 @@ local DECAY_TASK_PERIOD = 10
 local OBEDIENCE_DECAY_RATE = -1/(TUNING.TOTAL_DAY_TIME * 2)
 local FEEDBACK_DECAY_RATE = -1/(TUNING.TOTAL_DAY_TIME * 45)
 
+
 local Domesticatable = Class(function(self, inst)
     self.inst = inst
 
@@ -17,6 +18,8 @@ local Domesticatable = Class(function(self, inst)
 
     self.domestication = 0
     self.domestication_latch = false
+    self.lastdomesticationgain = 0
+    self.domestication_triggerfn = nil
 
     self.obedience = 0
     self.minobedience = 0
@@ -28,8 +31,16 @@ local Domesticatable = Class(function(self, inst)
 end
 )
 
+function Domesticatable:SetDomesticationTrigger(fn)
+    self.domestication_triggerfn = fn
+end
+
 function Domesticatable:GetObedience()
     return self.obedience
+end
+
+function Domesticatable:GetDomestication()
+    return self.domestication
 end
 
 function Domesticatable:Validate()
@@ -49,7 +60,8 @@ function Domesticatable:Validate()
     end
 
     if self.obedience <= self.minobedience
-        and self.inst.components.hunger:GetPercent() <= 0 and self.domestication <= 0 then
+        and self.inst.components.hunger:GetPercent() <= 0
+        and self.domestication <= 0 then
         self:CancelTask()
         return false
     end
@@ -63,13 +75,27 @@ function Domesticatable:BecomeDomesticated()
     self.inst:PushEvent("domesticated", {tendencies=self.tendencies})
 end
 
-local function DoDecay(inst)
+local function CalculateLoss(currenttime, lastgaintime)
+    -- you don't lose full domestication right away, only after ignoring the critter for a while
+    local delta = currenttime-lastgaintime
+    local ratio = math.min(delta/(TUNING.BEEFALO_DOMESTICATION_MAX_LOSS_DAYS*TUNING.TOTAL_DAY_TIME), 1.0)
+    return TUNING.BEEFALO_DOMESTICATION_LOSE_DOMESTICATION * ratio
+end
+
+local function UpdateDomestication(inst)
     local self = inst.components.domesticatable
     for k,v in pairs(self.tendencies) do
         self.tendencies[k] = math.max(v + FEEDBACK_DECAY_RATE * DECAY_TASK_PERIOD, 0)
     end
 
     self:DeltaObedience(OBEDIENCE_DECAY_RATE * DECAY_TASK_PERIOD)
+
+    if self.domestication_triggerfn(inst) then
+        self:DeltaDomestication(TUNING.BEEFALO_DOMESTICATION_GAIN_DOMESTICATION * DECAY_TASK_PERIOD)
+        self.lastdomesticationgain = GetTime()
+    else
+        self:DeltaDomestication(CalculateLoss(GetTime(), self.lastdomesticationgain) * DECAY_TASK_PERIOD)
+    end
 
     self:Validate()
 end
@@ -87,7 +113,7 @@ function Domesticatable:DeltaDomestication(delta)
     local old = self.domestication
     self.domestication = math.max(math.min(self.domestication + delta, 1), 0)
 
-    self.maxobedience = Lerp(0.49, 1.0, self.domestication)
+    self.maxobedience = 1
 
     if old ~= self.domestication then
         self.inst:PushEvent("domesticationdelta", {old=old, new=self.domestication})
@@ -123,7 +149,7 @@ function Domesticatable:CheckAndStartTask()
     if self.decaytask ~= nil then
         return
     end
-    self.decaytask = self.inst:DoPeriodicTask(DECAY_TASK_PERIOD, DoDecay)
+    self.decaytask = self.inst:DoPeriodicTask(DECAY_TASK_PERIOD, UpdateDomestication, 0)
 end
 
 function Domesticatable:SetDomesticated(domesticated)
@@ -151,6 +177,7 @@ function Domesticatable:OnSave()
         domesticated = self.domesticated,
         obedience = self.obedience,
         minobedience = self.minobedience,
+        lastdomesticationgaindelta = GetTime() - self.lastdomesticationgain,
         --V2C: domesticatable MUST load b4 rideable, and we
         --     aren't using the usual OnLoadPostPass method
         --     so... we did this! lol...
@@ -165,6 +192,7 @@ function Domesticatable:OnLoad(data)
         self.domestication_latch = data.domestication_latch or false
         self:SetDomesticated(data.domesticated or false)
         self.obedience = 0
+        self.lastdomesticationgain = GetTime() - (data.lastdomesticationgaindelta or 0)
         self:DeltaObedience(data.obedience or 0)
         self:SetMinObedience(data.minobedience or 0)
         --V2C: see above comment in OnSave

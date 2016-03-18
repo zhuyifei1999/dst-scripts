@@ -166,18 +166,20 @@ end
 -- This function allows display of hint text next to the arrow buttons 
 -- TODO: only tested with XBOX one controller. Test with other controller types to make sure there's room for the symbols.
 function Spinner:AddControllerHints()
-	local w = self.rightimage:GetSize() * self.arrow_scale
+	if TheInput:ControllerAttached() then 
+		local w = self.rightimage:GetSize() * self.arrow_scale
 
-	self.left_hint = self:AddChild( Text( BODYTEXTFONT, 26 ) )
-	self.left_hint:SetString(TheInput:GetLocalizedControl(TheInput:GetControllerID(), CONTROL_PREVVALUE))
-	self.left_hint:SetPosition( -self.width/2 + w/2 + 32, 0, 0 )
+		self.left_hint = self:AddChild( Text( BODYTEXTFONT, 26 ) )
+		self.left_hint:SetString(TheInput:GetLocalizedControl(TheInput:GetControllerID(), CONTROL_PREVVALUE))
+		self.left_hint:SetPosition( -self.width/2 + w/2 + 32, 0, 0 )
 
-	self.right_hint = self:AddChild( Text( BODYTEXTFONT, 26 ) )
-	self.right_hint:SetString(TheInput:GetLocalizedControl(TheInput:GetControllerID(), CONTROL_NEXTVALUE))
-	self.right_hint:SetPosition( self.width/2 - w/2 - 27, 0, 0 )
-	
+		self.right_hint = self:AddChild( Text( BODYTEXTFONT, 26 ) )
+		self.right_hint:SetString(TheInput:GetLocalizedControl(TheInput:GetControllerID(), CONTROL_NEXTVALUE))
+		self.right_hint:SetPosition( self.width/2 - w/2 - 27, 0, 0 )
+		
 
-	self.hints_enabled = true
+		self.hints_enabled = true
+	end
 end
 
 

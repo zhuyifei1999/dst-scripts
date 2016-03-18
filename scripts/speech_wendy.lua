@@ -695,6 +695,13 @@ return {
 			UNLOCKED = "Let's see what I can find!",
 		},
 		DRAGONFLY = "It's burning on the inside.",
+
+        HUTCH_FISHBOWL =
+        {
+            GENERIC = "It's not floating, yet.",
+            WAITING = "It's reached it's natural state.",
+        },
+
 		LAVASPIT = 
 		{
 			HOT = "It spit up.",
@@ -1019,6 +1026,8 @@ return {
 		ROTTENEGG = "The way of all things.",
         SADDLE_BASIC = "As if the beast wasn't already carrying a burden...",
         SADDLE_WAR = "Oh how we bend creatures to our ill intent.",
+        SADDLEHORN = "I'm only taking back what's mine.",
+        BRUSH = "We'll rid the world of its fluff.",
 		SANITYROCK =
 		{
 			ACTIVE = "It's calling to me.",

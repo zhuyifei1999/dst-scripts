@@ -22,7 +22,7 @@ local NetworkLoginPopup = require "screens/networkloginpopup"
 local OnlineStatus = require "widgets/onlinestatus"
 
 --local UnopenedItemPopup = require "screens/unopeneditempopup"
-local ROGItemPopup = require "screens/rogitempopup"
+local ThankYouPopup = require "screens/thankyoupopup"
 
 local rcol = RESOLUTION_X/2 -200
 local lcol = -RESOLUTION_X/2 + 280
@@ -282,6 +282,9 @@ function MainScreen:OnLoginButton(push_mp_main_screen)
 
                     GoToMultiplayerMainMenu(forceOffline or false )
 
+                    local rog_items = {} -- reign of giants thank you gifts "body_trenchcoat_brown_fawn", "firepit_stonehenge", "webber_punk"}
+                    local ea_items = {} -- early access thank you gifts
+
                     -- In case we have given out token items that have no assets in the game
                     -- But still need to be marked as opened
                     local uo_items = TheInventory:GetUnopenedItems()
@@ -289,14 +292,42 @@ function MainScreen:OnLoginButton(push_mp_main_screen)
                         if Prefabs[string.lower(item.item_type)] == nil and CLOTHING[string.lower(item.item_type)] == nil then
                             TheInventory:SetItemOpened(item.item_id)
                         end
+					end
+                       
+                    local entitlement_items = TheInventory:GetUnopenedEntitlementItems()
+                     for _,item in pairs(entitlement_items) do
+                        if item.item_type == "firepit_stonehenge" then -- TODO: correct this name
+                            table.insert(rog_items, item.item_id)
+                        elseif item.item_type == "firepit_hole" then -- TODO: correct this name
+                            table.insert(ea_items, item.item_id)
+                        end
                     end
-
-                    local rog_items = {}--"body_buttons_green_laurel", "body_buttons_pink_hibiscus" }
+                    
+                    --table.insert(rog_items, "backpack_smallbird")
+                    --table.insert(ea_items, "body_trenchcoat_brown_fawn")
 
                     if #rog_items > 0 then
-                        local rog_popup = ROGItemPopup(rog_items)
-                        TheFrontEnd:PushScreen(rog_popup)
+                        local shield_images =
+                        {
+                            { name = "images/rog_item_popup_1.xml", shields = {"bearger_shield_1.tex", "bearger_shield_2.tex", "deerclops_shield_1.tex", "deerclops_shield_2.tex" }},
+                            { name = "images/rog_item_popup_2.xml", shields = {"dragonfly_shield.tex",  "moosegoose_shield.tex"}}
+                        }
+                        local random_atlas = shield_images[math.random(#shield_images)]
+
+                        local thankyou_popup = ThankYouPopup(rog_items, random_atlas.name, random_atlas.shields[math.random(#random_atlas.shields)], "images/rog_item_popup_2.xml", "ReignOfGiants.tex",
+                                                            function() 
+                                                                if #ea_items > 0 then 
+                                                                    local thankyou_popup = ThankYouPopup(ea_items, "images/ui.xml", "button_place.tex", "images/button_icons.xml", "item_drop.tex")
+                                                                    TheFrontEnd:PushScreen(thankyou_popup)
+                                                                end
+                                                            end)
+                        TheFrontEnd:PushScreen(thankyou_popup)
+                    elseif #ea_items > 0 then 
+                        local thankyou_popup = ThankYouPopup(ea_items, "images/ui.xml", "button_place.tex", "images/button_icons.xml", "item_drop.tex")
+                        TheFrontEnd:PushScreen(thankyou_popup)
                     end
+                   
+
                     TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
 
                 end)

@@ -137,5 +137,5 @@ CommonStates.AddWalkStates(states, {
     }
 })
 
-return StateGraph("mandrake", states, events, "ground", actionhandlers)
+return StateGraph("mandrake", states, events, "idle", actionhandlers)
 

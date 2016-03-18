@@ -158,7 +158,7 @@ return {
 		GREENSTAFF = "Twirly green power.",
 		POTTEDFERN = "What am I supposed to do with this?",
 
-		THULECITE = "A strength of this material is gargantuan!",
+		THULECITE = "The strength of this material is gargantuan!",
 		ARMORRUINS = "Armour fit for Odin himself!",
 		RUINS_BAT = "A warrior wand!",
 		RUINSHAT = "A crown, that fights!",
@@ -532,6 +532,13 @@ return {
 		ARMORDRAGONFLY = "Excellent armour for the heat of battle.",
 		DRAGON_SCALES = "Mystical scales.",
 		DRAGONFLYCHEST = "This chest is worthy of my weapons.",
+
+        HUTCH_FISHBOWL =
+        {
+            GENERIC = "Pets make such difficult co-stars.",
+            WAITING = "An unfortunate casualty of battle.",
+        },
+
 		LAVASPIT = 
 		{
 			HOT = "Your fire pools are no match for me!",
@@ -1017,6 +1024,8 @@ return {
 		ROTTENEGG = "Ruined for eating, but primed for battle.",
         SADDLE_BASIC = "Now I must find a faithful steed.",
         SADDLE_WAR = "I ride to victory or death!",
+        SADDLEHORN = "With this I can unsaddle my steed.",
+        BRUSH = "Time for hair and makeup!",
 		SANITYROCK =
 		{
 			ACTIVE = "I do not think I can best this rock in combat.",

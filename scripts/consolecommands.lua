@@ -3,16 +3,11 @@ function ConsoleCommandPlayer()
     return (c_sel() and c_sel():HasTag("player") and c_sel()) or ThePlayer or AllPlayers[1]
 end
 
-local function Spawn(prefab)
-    --TheSim:LoadPrefabs({prefab})
-    return SpawnPrefab(prefab)
-end
-
-local function ConsoleWorldPosition()
+function ConsoleWorldPosition()
     return TheInput.overridepos or TheInput:GetWorldPosition()
 end
 
-local function ConsoleWorldEntityUnderMouse()
+function ConsoleWorldEntityUnderMouse()
     if TheInput.overridepos == nil then
         return TheInput:GetWorldEntityUnderMouse()
     else
@@ -24,6 +19,11 @@ local function ConsoleWorldEntityUnderMouse()
             end
         end
     end
+end
+
+local function Spawn(prefab)
+    --TheSim:LoadPrefabs({prefab})
+    return SpawnPrefab(prefab)
 end
 
 ---------------------------------------------------------------------------------------

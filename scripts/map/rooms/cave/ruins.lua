@@ -14,6 +14,7 @@ require "map/room_functions"
 AddRoom("WetWilds", {
     colour={r=0.3,g=0.2,b=0.1,a=0.3},
     value = GROUND.MUD,
+    tags = {"Hutch_Fishbowl"},    
     contents =  {
         distributepercent = 0.25,
         distributeprefabs=
@@ -32,6 +33,7 @@ AddRoom("WetWilds", {
 AddRoom("LichenMeadow", {
     colour={r=0.3,g=0.2,b=0.1,a=0.3},
     value = GROUND.MUD,
+    tags = {"Hutch_Fishbowl"},
     contents =  {
         distributepercent = 0.15,
         distributeprefabs=
@@ -56,6 +58,7 @@ AddRoom("LichenMeadow", {
 AddRoom("CaveJungle", {
     colour={r=0.3,g=0.2,b=0.1,a=0.3},
     value = GROUND.MUD,
+    tags = {"Hutch_Fishbowl"},
     contents =  {
         distributepercent = 0.35,
         distributeprefabs=
@@ -80,6 +83,7 @@ AddRoom("CaveJungle", {
 AddRoom("MonkeyMeadow", {
     colour={r=0.3,g=0.2,b=0.1,a=0.3},
     value = GROUND.MUD,
+    tags = {"Hutch_Fishbowl"},
     contents =  {
         distributepercent = 0.1,
         distributeprefabs=
@@ -104,6 +108,7 @@ AddRoom("MonkeyMeadow", {
 AddRoom("LichenLand", {
     colour={r=0.3,g=0.2,b=0.1,a=0.3},
     value = GROUND.MUD,
+    tags = {"Hutch_Fishbowl"},
     contents =  {
         distributepercent = 0.35,
         distributeprefabs=
@@ -120,6 +125,7 @@ AddRoom("LichenLand", {
 bgwilds = {
     colour={r=0.3,g=0.2,b=0.1,a=0.3},
     value = GROUND.MUD,
+    tags = {"Hutch_Fishbowl"},    
     contents =  {
         distributepercent = 0.15,
         distributeprefabs=

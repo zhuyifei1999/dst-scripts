@@ -171,7 +171,10 @@ local function retargetfn(inst)
 end
 
 local function shouldKeepTarget(inst)
-    return inst:HasTag("nightmare")
+    --[[if inst:HasTag("nightmare") then
+        return true
+    end]]
+    return true
 end
 
 local function _DropAndGoHome(inst)

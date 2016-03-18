@@ -23,47 +23,95 @@ end]]
 end]]
 
 local typeList = {}
-typeList[STRINGS.UI.SKINSSCREEN.BASE] = "base" 
-typeList[STRINGS.UI.SKINSSCREEN.BODY] = "body" 
-typeList[STRINGS.UI.SKINSSCREEN.HAND] = "hand"
-typeList[STRINGS.UI.SKINSSCREEN.LEGS] = "legs" 
-typeList[STRINGS.UI.SKINSSCREEN.FEET] = "feet" 
-typeList[STRINGS.UI.SKINSSCREEN.ITEM] = "item"
+typeList["base"] = true
+typeList["body"] = true
+typeList["hand"] = true
+typeList["legs"] = true
+typeList["feet"] = true
+typeList["item"] = true
+
 				
 local rarityList = {}
-rarityList[STRINGS.UI.SKINSSCREEN.COMMON] = STRINGS.UI.SKINSSCREEN.COMMON
-rarityList[STRINGS.UI.SKINSSCREEN.CLASSY] = STRINGS.UI.SKINSSCREEN.CLASSY
-rarityList[STRINGS.UI.SKINSSCREEN.SPIFFY] = STRINGS.UI.SKINSSCREEN.SPIFFY
-rarityList[STRINGS.UI.SKINSSCREEN.DISTINGUISHED] = STRINGS.UI.SKINSSCREEN.DISTINGUISHED
-rarityList[STRINGS.UI.SKINSSCREEN.ELEGANT] = STRINGS.UI.SKINSSCREEN.ELEGANT
-rarityList[STRINGS.UI.SKINSSCREEN.TIMELESS] = STRINGS.UI.SKINSSCREEN.TIMELESS
-rarityList[STRINGS.UI.SKINSSCREEN.LOYAL] = STRINGS.UI.SKINSSCREEN.LOYAL
+rarityList[STRINGS.UI.SKINSSCREEN.COMMON] = "Common"
+rarityList[STRINGS.UI.SKINSSCREEN.CLASSY] = "Classy"
+rarityList[STRINGS.UI.SKINSSCREEN.SPIFFY] = "Spiffy"
+rarityList[STRINGS.UI.SKINSSCREEN.DISTINGUISHED] = "Distinguished"
+rarityList[STRINGS.UI.SKINSSCREEN.ELEGANT] = "Elegant"
+rarityList[STRINGS.UI.SKINSSCREEN.TIMELESS] = "Timeless"
+rarityList[STRINGS.UI.SKINSSCREEN.LOYAL] = "Loyal"
+
+local coloursList = {}
+coloursList["black"] = true
+coloursList["blue"] = true
+coloursList["brown"] = true
+coloursList["green"] = true
+coloursList["grey"] = true
+coloursList["navy"] = true
+coloursList["orange"] = true
+coloursList["pink"] = true
+coloursList["purple"] = true
+coloursList["red"] = true
+coloursList["tan"] = true
+coloursList["teal"] = true
+coloursList["white"] = true
+coloursList["yellow"] = true
 
 
 -- Apply a list of filters
+-- Each filter is a list containing a group of filter values that must ALL apply to the item in order to add it.
+-- eg filters = { {"Classy", "legs"}, {"Common"} }
 function ApplyFilters(full_skins_list, filters)
+	--print( "~~~~~~~~~~~~~ApplyFilters~~~~~~~~~~~~~~" )
+	--dumptable(filters)
 	local filtered_list = {}
 
 	for _,skin_item in ipairs(full_skins_list) do 
-		for _,filter_name in pairs( filters ) do
-			if filter_name == STRINGS.UI.SKINSSCREEN.NONE then --TODO(Peter): change to not use the strings table for filter names, as translations could break it.
-				filtered_list = CopySkinsList(full_skins_list)
-				return filtered_list
-			else
-				local filter_type = ""
-				if typeList[filter_name] then
-					filter_type = typeList[filter_name]
-				elseif rarityList[filter_name] then 
-					filter_type = rarityList[filter_name]
-				end
+		for _, filters_list in pairs(filters) do 
 
-				-- For each item in the full list, if it matchs a filter then put it on the list of things to display.
-				-- This method preserves the original order.
-				if skin_item.type == filter_type then
-					table.insert(filtered_list, skin_item)
-				elseif GetRarityForItem(skin_item.type, skin_item.item) == filter_type then
-					table.insert(filtered_list, skin_item)
+			local matches_filters = true
+			
+			for _,filter_name in pairs( filters_list) do
+				if string.lower(filter_name) == "none" then 
+					filtered_list = CopySkinsList(full_skins_list)
+					return filtered_list
+				else
+					local filter_type = ""
+					local filter_value = ""
+					if typeList[filter_name] then
+						filter_type = "type"
+						filter_value = filter_name
+					elseif rarityList[filter_name] then 
+						filter_type = "rarity"
+						filter_value = rarityList[filter_name]
+					elseif IsItemId(filter_name) then 
+						filter_type = "item"
+						filter_value = filter_name
+					elseif coloursList[filter_name] then 
+						filter_type = "colour"
+						filter_value = filter_name
+					end
+
+					
+					-- Each item must match all the values in this filter
+					if filter_type == "type" and skin_item.type ~= filter_value then
+						matches_filters = false
+						break
+					elseif filter_type == "rarity" and GetRarityForItem(skin_item.type, skin_item.item) ~= filter_value then
+						matches_filters = false
+						break
+					elseif filter_type == "item" and skin_item.item ~= filter_value then 
+						matches_filters = false
+						break
+					elseif filter_type == "colour" and ITEM_COLOURS[skin_item.item] ~= filter_value then 
+						matches_filters = false
+						break
+					end
 				end
+			end
+
+			if matches_filters then 
+				table.insert(filtered_list, skin_item)
+				break -- stop checking filters if we matched one
 			end
 		end
 	end

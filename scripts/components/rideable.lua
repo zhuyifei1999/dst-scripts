@@ -6,7 +6,16 @@ local function oncanride(self, canride)
     end
 end
 
+local function onsaddle(self, saddle)
+    if saddle ~= nil then
+        self.inst:AddTag("saddled")
+    else
+        self.inst:RemoveTag("saddled")
+    end
+end
+
 local function RiddenTick(inst, dt)
+    inst.components.rideable.lastridetime = GetTime()
     inst:PushEvent("beingridden", dt)
 end
 
@@ -29,21 +38,42 @@ local Rideable = Class(function(self, inst)
     self.canride = false
     self.saddle = nil
     self.rider = nil
+    self.requiredobedience = nil
+    self.lastridetime = -1000
 
     self.riddentask = nil
 
     --V2C: Recommended to explicitly add tag to prefab pristine state
     inst:AddTag("saddleable")
+
+    inst:ListenForEvent("death", function()
+        self:SetSaddle(nil, nil)
+    end)
 end,
 nil,
 {
     canride = oncanride,
+    saddle = onsaddle,
 })
 
 function Rideable:OnRemoveFromEntity()
     StopRiddenTick(self)
     self.inst:RemoveTag("saddleable")
     self.inst:RemoveTag("rideable")
+end
+
+function Rideable:TimeSinceLastRide()
+    return GetTime() - self.lastridetime
+end
+
+function Rideable:SetRequiredObedience(required)
+    self.requiredobedience = required
+end
+
+function Rideable:TestObedience()
+    return self.requiredobedience == nil
+        or self.inst.components.domesticatable == nil
+        or self.inst.components.domesticatable:GetObedience() >= self.requiredobedience
 end
 
 function Rideable:SetSaddle(doer, newsaddle)
@@ -54,7 +84,7 @@ function Rideable:SetSaddle(doer, newsaddle)
         self.inst:RemoveChild(self.saddle)
         self.saddle:ReturnToScene()
 
-        self.inst.components.lootdropper:FlingItem(self.saddle, nil, self.saddle.components.saddler.discardedcb)
+        self.inst.components.lootdropper:FlingItem(self.saddle, nil, doer == nil and self.saddle.components.saddler.discardedcb or nil)
         self.canride = false
         self.saddle = nil
         self.inst:PushEvent("saddlechanged", { saddle = nil })
@@ -98,6 +128,7 @@ function Rideable:SetRider(rider)
         StartRiddenTick(self)
     else
         StopRiddenTick(self)
+        self.lastridetime = GetTime()
     end
 
     self.inst:PushEvent("riderchanged", { oldrider = oldrider, newrider = self.rider })
@@ -123,13 +154,17 @@ function Rideable:OnSaveDomesticatable()
     local data =
     {
         saddle = self.saddle ~= nil and self.saddle:GetSaveRecord() or nil,
+        lastridedelta = GetTime() - self.lastridetime,
     }
     return next(data) ~= nil and data or nil
 end
 
 function Rideable:OnLoadDomesticatable(data)
-    if data ~= nil and data.saddle ~= nil then
-        self:SetSaddle(nil, SpawnSaveRecord(data.saddle))
+    if data ~= nil then
+        if data.saddle ~= nil then
+            self:SetSaddle(nil, SpawnSaveRecord(data.saddle))
+        end
+        self.lastridetime = (GetTime() - data.lastridedelta) or 0
     end
 end
 

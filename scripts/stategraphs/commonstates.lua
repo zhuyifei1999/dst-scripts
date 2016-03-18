@@ -288,7 +288,7 @@ CommonStates.AddRunStates = function(states, timelines, anims, softstop)
         onenter = function(inst) 
             inst.components.locomotor:StopMoving()
             if softstop == true or (type(softstop) == "function" and softstop(inst)) then
-                inst.AnimState:PushAnimation(get_loco_anim(inst, anims ~= nil and anims.stoprun or nil, "run_pst"))
+                inst.AnimState:PushAnimation(get_loco_anim(inst, anims ~= nil and anims.stoprun or nil, "run_pst"), false)
             else
                 inst.AnimState:PlayAnimation(get_loco_anim(inst, anims ~= nil and anims.stoprun or nil, "run_pst"))
             end
@@ -363,7 +363,7 @@ CommonStates.AddWalkStates = function(states, timelines, anims, softstop)
         onenter = function(inst)
             inst.components.locomotor:StopMoving()
             if softstop == true or (type(softstop) == "function" and softstop(inst)) then
-                inst.AnimState:PushAnimation(get_loco_anim(inst, anims ~= nil and anims.stopwalk or nil, "walk_pst"))
+                inst.AnimState:PushAnimation(get_loco_anim(inst, anims ~= nil and anims.stopwalk or nil, "walk_pst"), false)
             else
                 inst.AnimState:PlayAnimation(get_loco_anim(inst, anims ~= nil and anims.stopwalk or nil, "walk_pst"))
             end

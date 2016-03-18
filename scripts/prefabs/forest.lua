@@ -118,12 +118,12 @@ local prefabs =
     "rubble",
     "tumbleweedspawner",
     "meteorspawner",
-
     "dragonfly_spawner",
     "moose",
     "mossling",
     "bearger",
     "dragonfly",
+    "chester",
 }
 
 local monsters =

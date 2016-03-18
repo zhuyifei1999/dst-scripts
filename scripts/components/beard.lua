@@ -92,6 +92,8 @@ function Beard:Shave(who, withwhat)
         who.components.sanity:DoDelta(TUNING.SANITY_SMALL)
     end
 
+    self.inst:PushEvent("shaved")
+
     return true
 end
 

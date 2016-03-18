@@ -11,8 +11,10 @@ BASE_TORSO_TUCK = {}
 BASE_ALTERNATE_FOR_BODY = {}
 BASE_ALTERNATE_FOR_SKIRT = {}
 
---BASE_LEGS_SIZE = {} --not supported yet, due to bugs with determining if the body slot or legs slot is defining the leg symbol.
+BASE_LEGS_SIZE = {}
 BASE_FEET_SIZE = {}
+
+SKIN_FX_PREFAB = {}
 
 function backpack_dropped(inst)
 	if not inst.decayed then
@@ -96,54 +98,68 @@ function backpack_init_fn_no_decay(inst, build_name)
 end
 
 
+function torch_init_fn(inst, build_name)
+    inst.AnimState:SetSkin(build_name, "swap_torch")
+	
+    inst.replica.inventoryitem:SetImage(inst:GetSkinName())
+end
+
+
 function CreatePrefabSkin( name, info )
-	local prefab_skin = Prefab(name)
+	local prefab_skin = Prefab(name, nil, info.assets, info.prefabs)
 	prefab_skin.is_skin = true
 	
-	for k,v in pairs(info) do
-		prefab_skin[k] = v
-	end
+	prefab_skin.base_prefab			= info.base_prefab or ""
+	prefab_skin.ui_preview			= info.ui_preview
+	prefab_skin.tags				= info.tags or {}
+	prefab_skin.item_type			= info.item_type or "CHARACTER_SKIN"
+	prefab_skin.init_fn				= info.init_fn
+	prefab_skin.build_name			= info.build_name
+	prefab_skin.rarity				= info.rarity
+	prefab_skin.skins				= info.skins
+	prefab_skin.skip_item_gen		= info.skip_item_gen
+	prefab_skin.skip_giftable_gen	= info.skip_giftable_gen
 	
-	prefab_skin.base_prefab = prefab_skin.base_prefab or ""
-	prefab_skin.assets		= prefab_skin.assets or {}
-	prefab_skin.tags		= prefab_skin.tags or {}	
-	prefab_skin.item_type	= prefab_skin.item_type or "CHARACTER_SKIN"
-	
-	if prefab_skin.torso_tuck_builds then
-		for _,base_skin in pairs(prefab_skin.torso_tuck_builds) do
+	if info.torso_tuck_builds then
+		for _,base_skin in pairs(info.torso_tuck_builds) do
 			BASE_TORSO_TUCK[base_skin] = "full"
 		end
 	end
 	
-	if prefab_skin.torso_untuck_builds then
-		for _,base_skin in pairs(prefab_skin.torso_untuck_builds) do
+	if info.torso_untuck_builds then
+		for _,base_skin in pairs(info.torso_untuck_builds) do
 			BASE_TORSO_TUCK[base_skin] = "untucked"
 		end
 	end
 	
-	if prefab_skin.has_alternate_for_body then
-		for _,base_skin in pairs(prefab_skin.has_alternate_for_body) do
+	if info.has_alternate_for_body then
+		for _,base_skin in pairs(info.has_alternate_for_body) do
 			BASE_ALTERNATE_FOR_BODY[base_skin] = true
 		end
 	end
 	
-	if prefab_skin.has_alternate_for_skirt then
-		for _,base_skin in pairs(prefab_skin.has_alternate_for_skirt) do
+	if info.has_alternate_for_skirt then
+		for _,base_skin in pairs(info.has_alternate_for_skirt) do
 			BASE_ALTERNATE_FOR_SKIRT[base_skin] = true
 		end
 	end
 	
-	--[[if prefab_skin.legs_cuff_size then
-		for base_skin,size in pairs(prefab_skin.legs_cuff_size) do
+	if info.legs_cuff_size then
+		for base_skin,size in pairs(info.legs_cuff_size) do
 			BASE_LEGS_SIZE[base_skin] = size
 		end
-	end]]
+	end
 	
-	if prefab_skin.feet_cuff_size then
-		for base_skin,size in pairs(prefab_skin.feet_cuff_size) do
+	if info.feet_cuff_size then
+		for base_skin,size in pairs(info.feet_cuff_size) do
 			BASE_FEET_SIZE[base_skin] = size
 		end
 	end
+	
+	if info.fx_prefab ~= nil then
+		SKIN_FX_PREFAB[name] = info.fx_prefab
+	end
+	
 	
 	return prefab_skin
 end

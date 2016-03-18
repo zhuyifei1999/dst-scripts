@@ -647,6 +647,46 @@ function Combat:CalcDamage(target, weapon, multiplier)
             basedamage * self.playerdamagepercent * multiplier + bonus)
 end
 
+local function _CalcReflectedDamage(inst, attacker, dmg, weapon, stimuli, reflect_list)
+    if inst == nil then
+        return 0
+    end
+
+    local dmg = 0
+
+    if inst.components.damagereflect ~= nil then
+        local dmg1 = inst.components.damagereflect:GetReflectedDamage(attacker, dmg, weapon, stimuli)
+        if dmg1 > 0 then
+            dmg = dmg + dmg1
+            table.insert(reflect_list, { inst = inst, attacker = attacker, reflected_dmg = dmg1 })
+        end
+    end
+
+    if inst.components.inventory ~= nil then
+        for k, v in pairs(EQUIPSLOTS) do
+            local equip = inst.components.inventory:GetEquippedItem(v)
+            if equip ~= nil and equip.components.damagereflect ~= nil then
+                local dmg1 = equip.components.damagereflect:GetReflectedDamage(attacker, dmg, weapon, stimuli)
+                if dmg1 > 0 then
+                    dmg = dmg + dmg1
+                    table.insert(reflect_list, { inst = equip, attacker = attacker, reflected_dmg = dmg1 })
+                end
+            end
+        end
+    end
+
+    return dmg
+end
+
+function Combat:CalcReflectedDamage(targ, dmg, weapon, stimuli, reflect_list)
+    return targ.components.rider ~= nil
+        and targ.components.rider:IsRiding()
+        and (   _CalcReflectedDamage(targ.components.rider:GetMount(), self.inst, dmg, weapon, stimuli, reflect_list) +
+                _CalcReflectedDamage(targ.components.rider:GetSaddle(), self.inst, dmg, weapon, stimuli, reflect_list)
+            )
+        or _CalcReflectedDamage(targ, self.inst, dmg, weapon, stimuli, reflect_list)
+end
+
 function Combat:GetAttackRange()
     local weapon = self:GetWeapon()
     return (weapon == nil and self.attackrange)
@@ -752,6 +792,8 @@ function Combat:DoAttack(target_override, weapon, projectile, stimuli, instancem
         end
     end
 
+    local reflected_dmg = 0
+    local reflect_list = {}
     if targ.components.combat ~= nil then
         local mult =
             (stimuli == "electric" or
@@ -760,7 +802,14 @@ function Combat:DoAttack(target_override, weapon, projectile, stimuli, instancem
                     (targ.components.inventory ~= nil and targ.components.inventory:IsInsulated()))
             and TUNING.ELECTRIC_DAMAGE_MULT + TUNING.ELECTRIC_WET_DAMAGE_MULT * (targ.components.moisture ~= nil and targ.components.moisture:GetMoisturePercent() or (targ:GetIsWet() and 1 or 0))
             or 1
-        targ.components.combat:GetAttacked(self.inst, self:CalcDamage(targ, weapon, mult) * (instancemult or 1), weapon, stimuli)
+        local dmg = self:CalcDamage(targ, weapon, mult) * (instancemult or 1)
+        --Calculate reflect first, before GetAttacked destroys armor etc.
+        if projectile == nil then
+            reflected_dmg = self:CalcReflectedDamage(targ, dmg, weapon, stimuli, reflect_list)
+        end
+        targ.components.combat:GetAttacked(self.inst, dmg, weapon, stimuli)
+    elseif projectile == nil then
+        reflected_dmg = self:CalcReflectedDamage(targ, 0, weapon, stimuli, reflect_list)
     end
 
     if weapon ~= nil then
@@ -772,6 +821,32 @@ function Combat:DoAttack(target_override, weapon, projectile, stimuli, instancem
     end
 
     self.lastdoattacktime = GetTime()
+
+    --Apply reflected damage to self after our attack damage is completed
+    if reflected_dmg > 0 and self.inst.components.health ~= nil and not self.inst.components.health:IsDead() then
+        self:GetAttacked(targ, reflected_dmg)
+        for i, v in ipairs(reflect_list) do
+            if v.inst:IsValid() then
+                v.inst:PushEvent("onreflectdamage", v)
+            end
+        end
+    end
+end
+
+function Combat:GetDamageReflect(target, damage, weapon, stimuli)
+    if target.components.rider ~= nil and target.components.rider:IsRiding() then
+        local mount = target.components.rider:GetMount()
+        if mount ~= nil then
+            if mount.components.damagereflect ~= nil then
+                mount.components.damagereflect:OnAttacked(self.inst, damage, weapon, stimuli)
+            end
+            return
+        end
+    end
+    if target.components.damagereflect ~= nil then
+        target.components.damagereflect:OnAttacked(self.inst, damage, weapon, stimuli)
+    end
+
 end
 
 function Combat:DoAreaAttack(target, range, weapon, validfn, stimuli)

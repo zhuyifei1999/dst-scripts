@@ -37,7 +37,7 @@ function SetSkinMode( anim_state, prefab, base_skin, clothing_names, skintype, d
 		local tuck_torso = BASE_TORSO_TUCK[base_skin] or "skirt" --tucked into the skirt is the default
 		--print( 	"tuck_torso is ", tuck_torso, base_skin )
 		
-		local legs_cuff_size = 1 -- BASE_LEGS_SIZE[base_skin] or 1 --not supported yet, due to bugs with determining if the body slot or legs slot is defining the leg symbol.
+		local legs_cuff_size = BASE_LEGS_SIZE[base_skin] or 1
 		local feet_cuff_size = BASE_FEET_SIZE[base_skin] or 1
 		--print( "legs_cuff_size and feet_cuff_size is ", legs_cuff_size, feet_cuff_size, base_skin )
 		
@@ -105,7 +105,25 @@ function SetSkinMode( anim_state, prefab, base_skin, clothing_names, skintype, d
 							anim_state:ShowSymbol(sym)
 							hidden_symbols[sym] = nil --remove it from the hidden list
 							anim_state:OverrideSkinSymbol(sym, CLOTHING[name].override_build, src_sym )
-							--print("setting skin", sym, CLOTHING[name].override_build )	
+							--print("setting skin", sym, CLOTHING[name].override_build )
+							
+							if sym == "leg" then
+								if CLOTHING[name].legs_cuff_size ~= nil then
+									legs_cuff_size = CLOTHING[name].legs_cuff_size
+									--print("setting legs_cuff_size to", legs_cuff_size, name )
+								else
+									legs_cuff_size = 1
+								end
+							end
+							if sym == "foot" then
+								if CLOTHING[name].feet_cuff_size ~= nil then
+									feet_cuff_size = CLOTHING[name].feet_cuff_size
+									--print("setting feet_cuff_size to", feet_cuff_size, name )
+								else
+									feet_cuff_size = 1
+									--print("setting feet_cuff_size to 1", name )
+								end
+							end
 						end
 					end
 				end
@@ -115,20 +133,6 @@ function SetSkinMode( anim_state, prefab, base_skin, clothing_names, skintype, d
 					tuck_torso = CLOTHING[name].torso_tuck
 					--print("setting tuck_torso to", tuck_torso, name )
 				end				
-				if CLOTHING[name].legs_cuff_size ~= nil then
-					legs_cuff_size = CLOTHING[name].legs_cuff_size
-					--print("setting legs_cuff_size to", legs_cuff_size, name )
-				end
-				if type == "feet" then
-					if CLOTHING[name].feet_cuff_size ~= nil then
-						feet_cuff_size = CLOTHING[name].feet_cuff_size
-						--print("setting feet_cuff_size to", feet_cuff_size, name )
-					else
-						feet_cuff_size = 1
-						--print("setting feet_cuff_size to 1", name )
-					end
-				end
-				
 				if CLOTHING[name].symbol_hides then
 					for _,sym in pairs(CLOTHING[name].symbol_hides) do
 						anim_state:HideSymbol(sym)

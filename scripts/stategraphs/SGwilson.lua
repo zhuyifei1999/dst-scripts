@@ -352,6 +352,8 @@ local actionhandlers =
     ActionHandler(ACTIONS.MIGRATE, "migrate"),
     ActionHandler(ACTIONS.MOUNT, "doshortaction"),
     ActionHandler(ACTIONS.SADDLE, "doshortaction"),
+    ActionHandler(ACTIONS.UNSADDLE, "unsaddle"),
+    ActionHandler(ACTIONS.BRUSH, "dolongaction"),
 }
 
 local events =
@@ -2709,6 +2711,42 @@ local states =
 
         onexit = function(inst)
             inst.SoundEmitter:KillSound("talk")
+        end,
+    },
+
+    State
+    {
+        name = "unsaddle",
+        tags = { "doing", "busy" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("unsaddle_pre")
+            inst.AnimState:PushAnimation("unsaddle", false)
+
+            inst.sg.statemem.action = inst.bufferedaction
+            inst.sg:SetTimeout(21 * FRAMES)
+        end,
+
+        timeline =
+        {
+            TimeEvent(13 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
+            TimeEvent(15 * FRAMES, function(inst)
+                inst:PerformBufferedAction()
+            end),
+        },
+
+        ontimeout = function(inst)
+            --pickup_pst should still be playing
+            inst.sg:GoToState("idle", true)
+        end,
+
+        onexit = function(inst)
+            if inst.bufferedaction == inst.sg.statemem.action then
+                inst:ClearBufferedAction()
+            end
         end,
     },
 

@@ -65,6 +65,7 @@ local prefabs =
     "spider_dropper",
     "caverain",
     "dropperweb",
+    "hutch",
 }
 
 local monsters =

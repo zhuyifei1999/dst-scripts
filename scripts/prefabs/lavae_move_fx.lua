@@ -20,12 +20,15 @@ local function PlayFX(proxy, variation, scale)
     inst.AnimState:SetBank("lava_trail_fx")
     inst.AnimState:SetBuild("lavae_move_fx")
     inst.AnimState:PlayAnimation("trail"..tostring(variation))
+    inst.AnimState:SetLayer(LAYER_BACKGROUND)
+    inst.AnimState:SetSortOrder(3)
+
+    if proxy._colour ~= nil then
+        inst.AnimState:SetMultColour(unpack(proxy._colour))
+    end
 
     inst:ListenForEvent("animover", inst.Remove)
 end
-
-local MIN_FX_SCALE = .5
-local MAX_FX_SCALE = 1.3
 
 local function OnRandDirty(inst)
     if inst._complete or inst._rand:value() <= 0 then
@@ -33,17 +36,17 @@ local function OnRandDirty(inst)
     end
 
     --Delay one frame in case we are about to be removed
-    inst:DoTaskInTime(0, PlayFX, inst._rand:value(), inst._scale:value() / 7 * (MAX_FX_SCALE - MIN_FX_SCALE) + MIN_FX_SCALE)
+    inst:DoTaskInTime(0, PlayFX, inst._rand:value(), inst._scale:value() / 7 * (inst._max_scale - inst._min_scale) + inst._min_scale)
     inst._complete = true
 end
 
 local function SetVariation(inst, rand, scale)
     inst._rand:set(rand)
-    --scale range from .5 -> 1.2
-    inst._scale:set(math.clamp(math.floor(math.floor((scale - MIN_FX_SCALE) / (MAX_FX_SCALE - MIN_FX_SCALE) * 7 + .5)), 0, 7))
+    --scale range from inst._min_scale -> inst._max_scale
+    inst._scale:set(math.clamp(math.floor(math.floor((scale - inst._min_scale) / (inst._max_scale - inst._min_scale) * 7 + .5)), 0, 7))
 end
 
-local function fn()
+local function common_fn()
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -74,4 +77,20 @@ local function fn()
     return inst
 end
 
-return Prefab("lavae_move_fx", fn, assets)
+local function lavae_fn()
+    local inst = common_fn()
+    inst._min_scale = .5
+    inst._max_scale = 1.3
+    return inst
+end
+
+local function hutch_fn()
+    local inst = common_fn()
+    inst._min_scale = .3
+    inst._max_scale = 1.5
+    inst._colour = { .6, 1, 1, 1 }
+    return inst
+end
+
+return Prefab("lavae_move_fx", lavae_fn, assets),
+    Prefab("hutch_move_fx", hutch_fn, assets)

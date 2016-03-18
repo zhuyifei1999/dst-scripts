@@ -1072,6 +1072,10 @@ local function ValidateBugNet(target)
     return not target.replica.health:IsDead()
 end
 
+local function ValidateUnsaddler(target)
+    return not target.replica.health:IsDead()
+end
+
 local function GetPickupAction(target, tool)
     if target:HasTag("smolder") then
         return ACTIONS.SMOTHER
@@ -1104,6 +1108,10 @@ local function GetPickupAction(target, tool)
         return ACTIONS.HARVEST
     elseif target:HasTag("donecooking") and not target:HasTag("burnt") then
         return ACTIONS.HARVEST
+    elseif tool ~= nil and tool:HasTag("unsaddler") and target:HasTag("saddled") and (not target.replica.health or not target.replica.health:IsDead()) then
+        return ACTIONS.UNSADDLE
+    elseif tool ~= nil and tool:HasTag("brush") and target:HasTag("brushable") and (not target.replica.health or not target.replica.health:IsDead()) then
+        return ACTIONS.BRUSH
     end
     --no action found
 end
@@ -1219,6 +1227,8 @@ function PlayerController:GetActionButtonAction(force_target)
                 "dried",
                 "inactive",
                 "smolder",
+                "saddled",
+                "brushable",
             }
             if tool ~= nil then
                 for k, v in pairs(TOOLACTIONS) do

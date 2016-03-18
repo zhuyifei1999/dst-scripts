@@ -97,7 +97,7 @@ function Tune(overrides)
 	    PITCHFORK_USES = 25,
 	    PICKAXE_USES = 33,
 	    BUGNET_USES = 10,
-	    WHIP_USES = 75,
+	    WHIP_USES = 175,
 	    SPEAR_USES = 150,
 	    CLAW_GLOVE_USES = 200,
 	    WATHGRITHR_SPEAR_USES = 200,
@@ -115,6 +115,8 @@ function Tune(overrides)
 	    BATBAT_USES = 75,
 	    MULTITOOL_AXE_PICKAXE_USES = 400,
 	    RUINS_BAT_USES = 150,
+        SADDLEHORN_USES = 10,
+        BRUSH_USES = 75,
 
 	    REDAMULET_USES = 20,
 	    REDAMULET_CONVERSION = 5,
@@ -173,6 +175,8 @@ function Tune(overrides)
 	    RUINS_BAT_DAMAGE = wilson_attack * 1.75,
 	    NIGHTSTICK_DAMAGE = wilson_attack*.85, -- Due to the damage being electric, it will get multiplied by 1.5 against any mob
 	    MINIFAN_DAMAGE = wilson_attack*.5,
+        SADDLEHORN_DAMAGE = wilson_attack*.5,
+        BRUSH_DAMAGE = wilson_attack*.8,
 
         SADDLE_BASIC_BONUS_DAMAGE = 0,
         SADDLE_WAR_BONUS_DAMAGE = 15,
@@ -433,10 +437,12 @@ function Tune(overrides)
 	    MARBLETREE_MINE = 8,  
 	    
 	    BEEFALO_HEALTH = 500 * 2, -- harder for multiplayer
+        BEEFALO_HEALTH_REGEN_PERIOD = 10,
+        BEEFALO_HEALTH_REGEN = (500*2)/(total_day_time*3)*10,
 	    BEEFALO_DAMAGE = {
             DEFAULT = 34,
             RIDER = 25,
-            ORNERY = 40,
+            ORNERY = 50,
             PUDGY = 20,
         },
 	    BEEFALO_MATING_SEASON_LENGTH = 3,
@@ -446,15 +452,16 @@ function Tune(overrides)
 	    BEEFALO_TARGET_DIST = 5,
 	    BEEFALO_CHASE_DIST = 30,
 	    BEEFALO_FOLLOW_TIME = 30,
-        BEEFALO_HUNGER = 400,
+        BEEFALO_HUNGER = (calories_per_day*4)/0.8, -- so a 0.8 fullness lasts a day
         BEEFALO_HUNGER_RATE = (calories_per_day*4)/total_day_time,
         BEEFALO_WALK_SPEED = 1.0,
         BEEFALO_RUN_SPEED = {
             DEFAULT = 7,
-            RIDER = 7.5,
-            ORNERY = 6.5,
-            PUDGY = 5.5,
+            RIDER = 8.0,
+            ORNERY = 7.0,
+            PUDGY = 6.5,
         },
+        BEEFALO_HAIR_GROWTH_DAYS = 3,
         BEEFALO_SADDLEABLE_OBEDIENCE = 0.1,
         BEEFALO_KEEP_SADDLE_OBEDIENCE = 0.4,
         BEEFALO_MIN_BUCK_OBEDIENCE = 0.5,
@@ -469,26 +476,31 @@ function Tune(overrides)
         },
         BEEFALO_BUCK_TIME_MOOD_MULT = 0.2,
         BEEFALO_BUCK_TIME_UNDOMESTICATED_MULT = 0.3,
+        BEEFALO_BUCK_TIME_NUDE_MULT = 0.2,
+
+        BEEFALO_BEG_HUNGER_PERCENT = 0.45,
 
         BEEFALO_DOMESTICATION_STARVE_OBEDIENCE = -1/(total_day_time*1),
         BEEFALO_DOMESTICATION_FEED_OBEDIENCE = 0.1,
         BEEFALO_DOMESTICATION_OVERFEED_OBEDIENCE = -0.3,
         BEEFALO_DOMESTICATION_ATTACKED_BY_PLAYER_OBEDIENCE = -1,
+        BEEFALO_DOMESTICATION_BRUSHED_OBEDIENCE = 0.4,
+        BEEFALO_DOMESTICATION_SHAVED_OBEDIENCE = -1,
 
-        BEEFALO_DOMESTICATION_STARVE_DOMESTICATION = -1/(total_day_time*10),
-        BEEFALO_DOMESTICATION_WELLFED_DOMESTICATION = 1/(total_day_time*20),
+        BEEFALO_DOMESTICATION_LOSE_DOMESTICATION = -1/(total_day_time*4),
+        BEEFALO_DOMESTICATION_GAIN_DOMESTICATION = 1/(total_day_time*20),
+        BEEFALO_DOMESTICATION_MAX_LOSS_DAYS = 10, -- days
         BEEFALO_DOMESTICATION_OVERFEED_DOMESTICATION = -0.01,
-        BEEFALO_DOMESTICATION_RIDDEN_DOMESTICATION = 1/(total_day_time*15),
-        BEEFALO_DOMESTICATION_DOATTACK_DOMESTICATION = 0,
         BEEFALO_DOMESTICATION_ATTACKED_DOMESTICATION = 0,
         BEEFALO_DOMESTICATION_ATTACKED_OBEDIENCE = -0.01,
         BEEFALO_DOMESTICATION_ATTACKED_BY_PLAYER_DOMESTICATION = -0.3,
+        BEEFALO_DOMESTICATION_BRUSHED_DOMESTICATION = (1-(15/20))/15, -- (1-(targetdays/basedays))/targetdays
 
-        BEEFALO_PUDGY_WELLFED = 1/(total_day_time*10),
-        BEEFALO_PUDGY_OVERFEED = 0.01,
-        BEEFALO_RIDER_RIDDEN = 1/(total_day_time*15),
-        BEEFALO_ORNERY_DOATTACK = 0.002,
-        BEEFALO_ORNERY_ATTACKED = 0.002,
+        BEEFALO_PUDGY_WELLFED = 1/(total_day_time*5),
+        BEEFALO_PUDGY_OVERFEED = 0.02,
+        BEEFALO_RIDER_RIDDEN = 1/(total_day_time*5),
+        BEEFALO_ORNERY_DOATTACK = 0.004,
+        BEEFALO_ORNERY_ATTACKED = 0.004,
 
 
 	    BEEFALOHERD_RANGE = 40,
@@ -754,15 +766,20 @@ function Tune(overrides)
 
 	    MIN_SPRING_SMALL_BIRD_SPAWN_TIME = total_day_time * 2,
 	    MAX_SPRING_SMALL_BIRD_SPAWN_TIME = total_day_time * 8,
-	
+
 	    HATCH_UPDATE_PERIOD = 3,
 	    HATCH_CAMPFIRE_RADIUS = 4,
-	   
+
 	    CHESTER_HEALTH = wilson_health*3,
 	    CHESTER_RESPAWN_TIME = total_day_time * 1,
 	    CHESTER_HEALTH_REGEN_AMOUNT = (wilson_health*3) * 3/60,
 	    CHESTER_HEALTH_REGEN_PERIOD = 3,
-	
+
+        HUTCH_HEALTH = wilson_health * 3,
+        HUTCH_RESPAWN_TIME = total_day_time * 1,
+        HUTCH_HEALTH_REGEN_AMOUNT = (wilson_health*3) * 3/60,
+        HUTCH_HEALTH_REGEN_PERIOD = 3,
+
 		PROTOTYPER_TREES = {
 		    SCIENCEMACHINE =
 		    {
@@ -1899,6 +1916,10 @@ function Tune(overrides)
         ANCIENT_ALTAR_BROKEN_WORK = 9,
 
         CAVE_LIGHT_WAKE_TIME = 4.0,
+
+        HUTCH_RADIUS = 1.5,
+        HUTCH_DMG_PERIOD = 1.2,
+        HUTCH_PRICKLY_DAMAGE = 30,
     }
 end
 

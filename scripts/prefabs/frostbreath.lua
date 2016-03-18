@@ -41,7 +41,7 @@ end
 local max_lifetime = 2.5
 
 local function Emit(inst)
-	local emitter = inst.ParticleEmitter
+	local effect = inst.VFXEffect
 	local sphere_emitter = CreateSphereEmitter(0.05)
 
 	local vx, vy, vz = 0, .005, 0
@@ -53,7 +53,8 @@ local function Emit(inst)
 	local angle = UnitRand() * 360
 	local angular_velocity = UnitRand()*5
 
-	emitter:AddRotatingParticleUV(
+	effect:AddRotatingParticleUV(
+		0,
 		lifetime,			-- lifetime
 		px, py, pz,			-- position
 		vx, vy, vz,			-- velocity
@@ -75,15 +76,16 @@ local function fn()
 
 	InitEnvelopes()
 
-    local emitter = inst.entity:AddParticleEmitter()
-	emitter:SetRenderResources( texture, shader )
-	emitter:SetRotationStatus( true )
-	emitter:SetMaxNumParticles( 64 )
-	emitter:SetMaxLifetime( max_lifetime )
-	emitter:SetColourEnvelope( colour_envelope_name )
-	emitter:SetScaleEnvelope( scale_envelope_name );
-	emitter:SetBlendMode( BLENDMODE.Premultiplied )
-	emitter:SetUVFrameSize( 1.0, 1.0 )
+    local effect = inst.entity:AddVFXEffect()
+    effect:InitEmitters( 1 )
+	effect:SetRenderResources( 0, texture, shader )
+	effect:SetRotationStatus( 0, true )
+	effect:SetMaxNumParticles( 0, 64 )
+	effect:SetMaxLifetime( 0, max_lifetime )
+	effect:SetColourEnvelope( 0, colour_envelope_name )
+	effect:SetScaleEnvelope( 0, scale_envelope_name );
+	effect:SetBlendMode( 0, BLENDMODE.Premultiplied )
+	effect:SetUVFrameSize( 0, 1.0, 1.0 )
 
 	-----------------------------------------------------
 	inst.Emit = Emit

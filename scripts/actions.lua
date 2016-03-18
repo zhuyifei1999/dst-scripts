@@ -140,6 +140,8 @@ ACTIONS =
     MOUNT = Action({ priority=1, rmb=true }),
     DISMOUNT = Action({ priority=1, instant=true, rmb=true, mount_valid=true }),
     SADDLE = Action({ priority=1 }),
+    UNSADDLE = Action({ priority=3, rmb=false }),
+    BRUSH = Action({ priority=3, rmb=false }),
 }
 
 ACTION_IDS = {}
@@ -1495,14 +1497,33 @@ ACTIONS.DISMOUNT.fn = function(act)
     end
 end
 
-ACTIONS.SADDLE.fn = function(act)
-    if act.target.components.combat ~= nil and act.target.components.combat:HasTarget() then
+ACTIONS.SADDLE.fn = function(act) if act.target.components.combat ~= nil and act.target.components.combat:HasTarget() then
         return false, "TARGETINCOMBAT"
     elseif act.target.components.rideable ~= nil then
         --V2C: currently, rideable component implies saddleable always
         act.doer:PushEvent("saddle", { target = act.target })
         act.doer.components.inventory:RemoveItem(act.invobject)
         act.target.components.rideable:SetSaddle(act.doer, act.invobject)
+        return true
+    end
+end
+
+ACTIONS.UNSADDLE.fn = function(act)
+    if act.target.components.combat ~= nil and act.target.components.combat:HasTarget() then
+        return false, "TARGETINCOMBAT"
+    elseif act.target.components.rideable ~= nil then
+        --V2C: currently, rideable component implies saddleable always
+        act.doer:PushEvent("saddle", { target = act.target })
+        act.target.components.rideable:SetSaddle(act.doer, nil)
+        return true
+    end
+end
+
+ACTIONS.BRUSH.fn = function(act)
+    if act.target.components.combat ~= nil and act.target.components.combat:HasTarget() then
+        return false, "TARGETINCOMBAT"
+    elseif act.target.components.brushable ~= nil then
+        act.target.components.brushable:Brush(act.doer, act.invobject)
         return true
     end
 end

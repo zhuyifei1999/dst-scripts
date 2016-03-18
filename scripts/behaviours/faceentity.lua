@@ -31,7 +31,7 @@ function FaceEntity:Visit()
 
     if self.status == RUNNING then
         --uhhhh....
-        if self.inst.sg:HasStateTag("idle") and self.inst.sg.currentstate.name ~= "alert" and self.inst.sg.sg.states.alert then
+        if self.inst.sg:HasStateTag("idle") and not self.inst.sg:HasStateTag("alert") and self.inst.sg.currentstate.name ~= "alert" and self.inst.sg.sg.states.alert then
             self.inst.sg:GoToState("alert")
         end
 

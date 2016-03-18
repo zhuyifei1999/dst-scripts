@@ -68,6 +68,11 @@ function Rider:Mount(target, instant)
         return
     end
 
+    if not target.components.rideable:TestObedience() then
+        target.sg:GoToState("matingcall")
+        return
+    end
+
     local rideable = target.components.rideable
     local saddler = rideable.saddle.components.saddler
 

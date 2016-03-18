@@ -12,7 +12,7 @@ local DEBUG_MODE = BRANCH == "dev"
 local NUM_ROWS = 4
 local NUM_ITEMS_PER_ROW = 4
 	
-local ItemSelector = Class(Widget, function(self, parent, owner, profile, selections, filters_list)
+local ItemSelector = Class(Widget, function(self, parent, owner, profile)
     self.owner = owner
 	self.parent = parent
     self.profile = profile
@@ -22,17 +22,16 @@ local ItemSelector = Class(Widget, function(self, parent, owner, profile, select
 	
     -- Title banner
     self.title_group = self.root:AddChild(Widget("Title"))
-    self.title_group:SetPosition(15, 285)
+    self.title_group:SetPosition(25, 255)
    
     self.banner = self.title_group:AddChild(Image("images/tradescreen.xml", "banner0_small.tex"))
     self.banner:SetScale(.38)
-    self.banner:SetPosition(-38, -43)
+    self.banner:SetPosition(-40, 27)
     self.title = self.title_group:AddChild(Text(BUTTONFONT, 35, STRINGS.UI.TRADESCREEN.SELECT_TITLE, BLACK))
-    self.title:SetPosition(-40, -45)
+    self.title:SetPosition(-35, 25)
     self.title:SetRotation(-17)
 	
     self:BuildInventoryList()
-    self:UpdateData( selections, filters_list )
 
     self.focus_forward = self.page_list
 end)
@@ -43,19 +42,15 @@ end
 
 function ItemSelector:BuildInventoryList()
 	self.inventory_list = self.root:AddChild(Widget("container"))
-	self.inventory_list:SetScale(.78)
-    self.inventory_list:SetPosition( -21, 35 )
+	self.inventory_list:SetScale(.7)
+    self.inventory_list:SetPosition( -18, 65)
 
 	self.tiles_root = self.inventory_list:AddChild(Widget("tiles_root"))
 	self.list_widgets = SkinGrid4x4Constructor(self, self.tiles_root, true)
 
-	local row_width = 240
-	local row_height = 70
-	local spacing = 10
-	
 	self.show_hover_text = true --shows the hover text on the paged list
 	
-	local grid_width = 400
+	local grid_width = 420
 	self.page_list = self.inventory_list:AddChild(PagedList(grid_width, function(widget, data) UpdateSkinGrid(widget, data, self) end, self.list_widgets))
 end
 

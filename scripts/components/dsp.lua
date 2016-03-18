@@ -14,26 +14,47 @@ local easing = require("easing")
 --[[ Constants ]]
 --------------------------------------------------------------------------
 
---[[
+local WINTER_FREQUENCY = 5000
+
 local LOWDSP =
 {
     winter =
     {
         ["set_music"] = 2000,
-        --["set_ambience"] = 5000,
-        --["set_sfx/HUD"] = 5000,
-        --["set_sfx/movement"] = 5000,
-        ["set_sfx/creature"] = 5000,
-        ["set_sfx/player"] = 5000,
-        ["set_sfx/sfx"] = 5000,
-        ["set_sfx/voice"] = 5000,
-        ["set_sfx/set_ambience"] = 5000,
+        --["set_ambience"] = WINTER_FREQUENCY,
+        --["set_sfx/HUD"] = WINTER_FREQUENCY,
+        ["set_sfx/movement"] = WINTER_FREQUENCY,
+        ["set_sfx/creature"] = WINTER_FREQUENCY,
+        ["set_sfx/player"] = WINTER_FREQUENCY,
+        ["set_sfx/sfx"] = WINTER_FREQUENCY,
+        ["set_sfx/voice"] = WINTER_FREQUENCY,
     },
 }
 
 local SUMMER_FREQUENCIES = { 100, 250, 500, 750, 1000 }
 local SUMMER_THRESHOLDS = { 65, 70, 75, 80 }
-]]
+
+local _summerlevel = nil -- note, have to declare this up here so the DSP function works..
+
+local SUMMER_DSP = function()
+    return SUMMER_FREQUENCIES[_summerlevel]
+end
+
+local HIGHDSP =
+{
+    summer =
+    {
+        ["set_music"] = 500,
+        --["set_ambience"] = SUMMER_DSP,
+        --["set_sfx/HUD"] = SUMMER_DSP,
+        ["set_sfx/movement"] = SUMMER_DSP,
+        ["set_sfx/creature"] = SUMMER_DSP,
+        ["set_sfx/player"] = SUMMER_DSP,
+        ["set_sfx/sfx"] = SUMMER_DSP,
+        ["set_sfx/voice"] = SUMMER_DSP,
+    },
+}
+
 
 --------------------------------------------------------------------------
 --[[ Member variables ]]
@@ -50,36 +71,12 @@ local _dsplowstack = {}
 local _dsplowcomp = {}
 local _dsphighstack = {}
 local _dsphighcomp = {}
---local _summerlevel = nil
 local _activatedplayer = nil --cached for activation/deactivation only, NOT for logic use
 
 --------------------------------------------------------------------------
 --[[ Private member functions ]]
 --------------------------------------------------------------------------
 
---[[
--- gjans: this is here due to initialization order crap..
-local SUMMER_DSP = function()
-    return SUMMER_FREQUENCIES[_summerlevel]
-end
-
--- gjans: this is here due to initialization order crap..
-local HIGHDSP =
-{
-    summer =
-    {
-        ["set_music"] = 500,
-        --["set_ambience"] = SUMMER_DSP,
-        --["set_sfx/HUD"] = SUMMER_DSP,
-        ["set_sfx/movement"] = SUMMER_DSP,
-        ["set_sfx/creature"] = SUMMER_DSP,
-        ["set_sfx/player"] = SUMMER_DSP,
-        ["set_sfx/sfx"] = SUMMER_DSP,
-        --["set_sfx/voice"] = SUMMER_DSP,
-        ["set_sfx/set_ambience"] = SUMMER_DSP,
-    },
-}
-]]
 
 local function RefreshDSP(duration)
     local lowdsp = {}
@@ -129,7 +126,6 @@ local function RefreshDSP(duration)
     _dsphighcomp = highdsp
 end
 
---[[
 local function UpdateSeasonDSP(season, duration)
     local lowdsp = LOWDSP[season]
 
@@ -168,13 +164,11 @@ local function UpdateSeasonDSP(season, duration)
     end
     RefreshDSP(duration)
 end
-]]
 
 --------------------------------------------------------------------------
 --[[ Private event handlers ]]
 --------------------------------------------------------------------------
 
---[[
 local function OnTemperatureTick(src, temperature)
     local step = #SUMMER_FREQUENCIES
     for i, v in ipairs(SUMMER_THRESHOLDS) do
@@ -206,7 +200,6 @@ end
 local function OnSeasonTick(inst, data)
     OnUpdateSeasonDSP(data.season, 5)
 end
-]]
 
 local function OnPushDSP(inst, data)
     if data.lowdsp ~= nil then
@@ -244,10 +237,8 @@ local function OnPopDSP(inst, data)
 end
 
 local function StartPlayerListeners(player)
-    --[[
     inst:ListenForEvent("seasontick", OnSeasonTick)
     OnUpdateSeasonDSP(TheWorld.state.season, 0)
-    ]]
     inst:ListenForEvent("pushdsp", OnPushDSP, player)
     inst:ListenForEvent("popdsp", OnPopDSP, player)
     if player.components.playerhearing ~= nil then
@@ -258,13 +249,11 @@ local function StartPlayerListeners(player)
 end
 
 local function StopPlayerListeners(player)
-    --[[
     inst:RemoveEventCallback("seasontick", OnSeasonTick)
     if _summerlevel ~= nil then
         _summerlevel = nil
         inst:RemoveEventCallback("temperaturetick", OnTemperatureTick)
     end
-    ]]
     inst:RemoveEventCallback("pushdsp", OnPushDSP, player)
     inst:RemoveEventCallback("popdsp", OnPopDSP, player)
     for i = #_dsplowstack, 2, -1 do

@@ -235,6 +235,12 @@ local COMPONENT_ACTIONS =
             end
         end,
 
+        brush = function(inst, doer, target, actions, right)
+            if not right and target:HasTag("brushable") then
+                table.insert(actions, ACTIONS.BRUSH)
+            end
+        end,
+
         cookable = function(inst, doer, target, actions)
             if target:HasTag("cooker") and
                 not target:HasTag("fueldepleted") and
@@ -488,6 +494,12 @@ local COMPONENT_ACTIONS =
             end
         end,
 
+        unsaddler = function(inst, doer, target, actions, right)
+            if not right and target:HasTag("saddled") then
+                table.insert(actions, ACTIONS.UNSADDLE)
+            end
+        end,
+
         upgrader = function(inst, doer, target, actions)
             for k,v in pairs(UPGRADETYPES) do
                 if inst:HasTag(v.."_upgrader") 
@@ -564,6 +576,12 @@ local COMPONENT_ACTIONS =
 
     EQUIPPED = --args: inst, doer, target, actions, right
     {
+        brush = function(inst, doer, target, actions, right)
+            if not right and target:HasTag("brushable") then
+                table.insert(actions, ACTIONS.BRUSH)
+            end
+        end,
+
         complexprojectile = function(inst, doer, target, actions, right)
             if right then
                 table.insert(actions, ACTIONS.TOSS)
@@ -637,6 +655,12 @@ local COMPONENT_ACTIONS =
                         end
                     end
                 end
+            end
+        end,
+
+        unsaddler = function(inst, doer, target, actions, right)
+            if target:HasTag("saddled") and not right then
+                table.insert(actions, ACTIONS.UNSADDLE)
             end
         end,
 
