@@ -177,12 +177,12 @@ local book_defs =
 }
 
 local function MakeBook(def)
-    local morphlist = {}
+    --[[local morphlist = {}
     for i, v in ipairs(book_defs) do
         if v ~= def then
             table.insert(morphlist, v.name)
         end
-    end
+    end]]
 
     local function fn()
         local inst = CreateEntity()
@@ -220,7 +220,8 @@ local function MakeBook(def)
         MakeSmallBurnable(inst)
         MakeSmallPropagator(inst)
 
-        MakeHauntableLaunchOrChangePrefab(inst, TUNING.HAUNT_CHANCE_OFTEN, TUNING.HAUNT_CHANCE_OCCASIONAL, nil, nil, morphlist)
+        --MakeHauntableLaunchOrChangePrefab(inst, TUNING.HAUNT_CHANCE_OFTEN, TUNING.HAUNT_CHANCE_OCCASIONAL, nil, nil, morphlist)
+        MakeHauntableLaunch(inst)
 
         return inst
     end

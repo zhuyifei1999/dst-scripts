@@ -330,10 +330,9 @@ local function ShouldBeg(inst)
         and inst.components.domesticatable:GetDomestication() > 0.0
         and inst.components.hunger ~= nil
         and inst.components.hunger:GetPercent() < TUNING.BEEFALO_BEG_HUNGER_PERCENT
-        and (not herd or not herd.components.mood and not herd.components.mood:IsInMood())
-        and (not inst.components.mood or not inst.components.mood:IsInMood())
+        and (herd and herd.components.mood ~= nil and herd.components.mood:IsInMood() == false)
+        and (inst.components.mood ~= nil and inst.components.mood:IsInMood() == false)
 end
-
 
 local function CalculateBuckDelay(inst)
     local domestication =

@@ -661,6 +661,9 @@ TEMPLATES = {
         btn.bg = btn:AddChild(Image("images/ui.xml", "blank.tex"))
         local w,h = btn.text:GetRegionSize()
         btn.bg:ScaleToSize(w+50, h+15)
+        if txt_offset then 
+            btn.bg:SetPosition(txt_offset.x, txt_offset.y)
+        end
 
         btn:SetOnGainFocus(function()
             btn:SetScale(btn.scale + .05)
