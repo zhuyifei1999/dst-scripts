@@ -204,10 +204,10 @@ AddRoom("Vacant", {
     contents =  {
         countstaticlayouts =
         {
-            ["CornerWall"] = math.random(2,3),
-            ["StraightWall"] = math.random(2,3),
-            ["CornerWall2"] = math.random(2,3),
-            ["StraightWall2"] = math.random(2,3),
+            ["CornerWall"] = function() return math.random(2,3) end,
+            ["StraightWall"] = function() return math.random(2,3) end,
+            ["CornerWall2"] = function() return math.random(2,3) end,
+            ["StraightWall2"] = function() return math.random(2,3) end,
         },
         distributepercent = 0.5,
         distributeprefabs=
@@ -492,6 +492,7 @@ AddRoom("RuinedGuarden", {
             ["WalledGarden"] = 1,
         },
         countprefabs= {
+            
             mushtree = function () return 3 + math.random(3) end,
             flower_cave = function () return 5 + math.random(3) end,
             gravestone = function () return 4 + math.random(4) end,

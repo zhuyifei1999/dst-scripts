@@ -231,6 +231,13 @@ SERVER_TERMINATION_TIMER = -1
 require("globalvariableoverrides")
 
 
+--world setup
+require("map/levels")
+require("map/tasks")
+require("map/rooms")
+require("map/tasksets")
+require("map/startlocations")
+
 inGamePlay = false
 
 local function ModSafeStartup()

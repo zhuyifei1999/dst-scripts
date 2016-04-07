@@ -30,7 +30,6 @@ local function InitTabSoundsAfterFadein(inst, self)
         self.tabs.onchange = nil
         self.tabs.onclose = nil
         self.tabs.onhighlight = function() return .2 end
-        --self.tabs.onalthighlight = nil
         self.tabs.onoverlay = self.tabs.onhighlight
         inst:DoTaskInTime(0, InitTabSoundsAfterFadein, self)
     else
@@ -38,7 +37,6 @@ local function InitTabSoundsAfterFadein(inst, self)
         self.tabs.onchange = self.tabs.onopen
         self.tabs.onclose = function() TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/craft_close") end
         self.tabs.onhighlight = function() TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/recipe_ready") return .2 end
-        --self.tabs.onalthighlight = function() end
         self.tabs.onoverlay = function() TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/research_available") return .2 end
     end
 end
@@ -156,7 +154,7 @@ local CraftTabs = Class(Widget, function(self, owner, top_root)
         local health = owner.replica.health
         if health ~= nil then
             local current_seg = math.floor(math.ceil(data.newpercent * health:Max()) / CHARACTER_INGREDIENT_SEG)
-            local penalty_seg = math.floor(health:GetPenaltyPercent() / CHARACTER_INGREDIENT_SEG)
+            local penalty_seg = health:GetPenaltyPercent()
             if current_seg ~= last_health_seg or
                 penalty_seg ~= last_health_penalty_seg then
                 last_health_seg = current_seg
@@ -170,7 +168,7 @@ local CraftTabs = Class(Widget, function(self, owner, top_root)
         local sanity = owner.replica.sanity
         if sanity ~= nil then
             local current_seg = math.floor(math.ceil(data.newpercent * sanity:Max()) / CHARACTER_INGREDIENT_SEG)
-            local penalty_seg = math.floor(sanity:GetPenaltyPercent() / CHARACTER_INGREDIENT_SEG)
+            local penalty_seg = sanity:GetPenaltyPercent()
             if current_seg ~= last_sanity_seg or
                 penalty_seg ~= last_sanity_penalty_seg then
                 last_sanity_seg = current_seg
@@ -375,17 +373,14 @@ function CraftTabs:DoUpdateRecipes()
 
                         valid_tabs[tab] = valid_tabs[tab] or can_see
 
-                        if buffered_build and has_researched then
-                            tabs_to_alt_highlight[tab] = 1 + (tabs_to_alt_highlight[tab] or 0)
-                        end
-
-                        if can_build and has_researched then
-                            tabs_to_alt_highlight[tab] = 0 -- Highlight takes precedence
-                            tabs_to_highlight[tab] = 1 + (tabs_to_highlight[tab] or 0)
-                        end
-
-                        if can_research then
-                            tabs_to_overlay[tab] = 1 + (tabs_to_overlay[tab] or 0)
+                        if has_researched then
+                            if buffered_build then
+                                tabs_to_alt_highlight[tab] = tabs_to_alt_highlight[tab] + 1
+                            elseif can_build then
+                                tabs_to_highlight[tab] = tabs_to_highlight[tab] + 1
+                            end
+                        elseif can_research then
+                            tabs_to_overlay[tab] = tabs_to_overlay[tab] + 1
                         end
                     end
                 end
@@ -395,39 +390,23 @@ function CraftTabs:DoUpdateRecipes()
         local to_select = nil
         local current_open = nil
 
-        for k,v in pairs(valid_tabs) do
+        for k, v in pairs(valid_tabs) do
             if v then
                 self.tabs:ShowTab(k)
             else
                 self.tabs:HideTab(k)
             end
-        end
 
-        for k,v in pairs(tabs_to_highlight) do    
-            if v > 0 and (not self.tabs_to_highlight or v ~= self.tabs_to_highlight[k]) then
-                k:Highlight(v)
+            local num = tabs_to_highlight[k]
+            local alt = tabs_to_alt_highlight[k] > 0
+            if num > 0 or alt then
+                local numchanged = self.tabs_to_highlight == nil or num ~= self.tabs_to_highlight[k]
+                k:Highlight(num, not numchanged, alt)
+            else
+                k:UnHighlight()
             end
-        end
 
-        for k,v in pairs(tabs_to_alt_highlight) do
-            if v > 0 and tabs_to_highlight[k] <= 0 then
-                k:UnHighlight(true)
-                k:AlternateHighlight(v)
-            end
-        end
-
-        for k,v in pairs(tabs_to_highlight) do
-            for m,n in pairs(tabs_to_alt_highlight) do
-                if k == m then
-                    if v <= 0 and n <= 0 then
-                        k:UnHighlight()
-                    end
-                end
-            end
-        end
-
-        for k,v in pairs(tabs_to_overlay) do    
-            if v > 0 then
+            if tabs_to_overlay[k] > 0 then
                 k:Overlay()
             else
                 k:HideOverlay()

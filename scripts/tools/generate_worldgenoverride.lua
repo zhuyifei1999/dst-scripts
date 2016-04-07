@@ -27,40 +27,29 @@ table.insert(out, "\toverride_enabled = true,")
 
 
 local presets = "-- "
-for i, level in ipairs(Levels.sandbox_levels) do
+for i, level in ipairs(Levels.GetLevelList(LEVELTYPE.SURVIVAL)) do
     if i > 0 then
         presets = presets .. " or "
     end
-    presets = presets .. '"' ..level.id.. '"'
+    presets = presets .. '"' ..level.data.. '"'
 end
-table.insert(out, string.format("\tpreset = %s, %s", Levels.sandbox_levels[1].id, presets))
+table.insert(out, string.format("\tpreset = %s, %s", Levels.GetLevelList(LEVELTYPE.SURVIVAL)[1].data, presets))
 
-for name,group in pairs(Customise.GROUP) do
-    local desc = group.desc
+table.insert(out, '\toverrides = {')
+local lastgroup = nil
+for i,item in ipairs(Customise.GetOptions()) do
+    if lastgroup ~= nil and lastgroup ~= item.group then
+        table.insert(out, '')
+    end
+    lastgroup = item.group
 
-    if desc then
-        table.insert(out, string.format("\t%s = { %s", name, makedescstring(desc)))
+    if item.desc ~= nil then
+        table.insert(out, string.format('\t\t%s = "%s", %s', item.name, item.value, makedescstring(item.desc)))
     else
-        table.insert(out, string.format("\t%s = {", name, makedescstring(desc)))
+        table.insert(out, string.format('\t\t%s = "%s",', item.name, item.value))
     end
-
-    local itemkeys = {}
-    for itemname,_ in pairs(group.items) do
-        table.insert(itemkeys, itemname)
-    end
-    table.sort(itemkeys)
-
-    for i,itemname in ipairs(itemkeys) do
-        local item = group.items[itemname]
-        if desc == nil and item.desc ~= nil then
-            table.insert(out, string.format('\t\t%s = "%s", %s', itemname, item.value, makedescstring(item.desc)))
-        else
-            table.insert(out, string.format('\t\t%s = "%s",', itemname, item.value))
-        end
-    end
-
-    table.insert(out, "\t},")
 end
+table.insert(out, "\t},")
 table.insert(out, "}")
 
 print( table.concat(out, "\n"))

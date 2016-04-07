@@ -448,14 +448,14 @@ local function OnRiderChanged(inst, data)
     end
 
     if data.oldrider ~= nil then
-        inst:RemoveEventCallback("doattack", inst._OnRiderDoAttackCB, data.oldrider)
+        inst:RemoveEventCallback("onattackother", inst._OnRiderDoAttackCB, data.oldrider)
     end
 
     if data.newrider ~= nil then
         if inst.components.sleeper ~= nil then
             inst.components.sleeper:WakeUp()
         end
-        inst:ListenForEvent("doattack", inst._OnRiderDoAttackCB, data.newrider)
+        inst:ListenForEvent("onattackother", inst._OnRiderDoAttackCB, data.newrider)
         inst._bucktask = inst:DoTaskInTime(CalculateBuckDelay(inst), OnBuckTime)
         inst.components.knownlocations:RememberLocation("loiteranchor", inst:GetPosition())
     elseif inst.components.health:IsDead() then

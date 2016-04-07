@@ -3,6 +3,7 @@ require "map/graphedge"
 require "map/graphnode"
 require "map/extents"
 require "map/terrain"
+local Rooms = require "map/rooms"
 
 Graph = Class(function(self, id, args)   
 	self.id = id
@@ -47,7 +48,9 @@ Graph = Class(function(self, id, args)
 	-- print("####New node!! ",self.id, self.maze_tiles)
 	-- dumptable(self.maze_tiles,1)
 	self.MIN_WORMHOLE_ID = 2300000
-    self.wormholeprefab = "wormhole"
+    self.wormholeprefab = nil
+
+    self.required_prefabs = {}
 end)
 
 ------------------------------------------------------------------------------------------
@@ -439,6 +442,12 @@ function Graph:AddNodeByNode(node)
 		--WorldSim:SetSiteFlags(node.id, node.data.tags[1])
 	end
 
+    if node.data.required_prefabs ~= nil then
+        for i,prefab in ipairs(node.data.required_prefabs) do
+            self:AddRequiredPrefab(prefab)
+        end
+    end
+
 	return self.nodes[node.id]
 end
 
@@ -697,7 +706,7 @@ function Graph:GetBackgroundRoom(roomName)
 end
 
 function Graph:GetRoomForName(roomName)
-	local backgroundRoom = terrain.rooms[roomName]
+	local backgroundRoom = Rooms.GetRoomByName(roomName)
 	return backgroundRoom
 end
 
@@ -711,6 +720,28 @@ function Graph:GlobalPostPopulate(entities, width, height)
 	-- Spawn wormhole pairs (randomly, for now)
 	self:SwapOutWormholeMarkers(entities, width, height)
 
+end
+
+function Graph:AddRequiredPrefab(prefab)
+    if self.required_prefabs[prefab] == nil then
+        self.required_prefabs[prefab] = 0
+    end
+    self.required_prefabs[prefab] = self.required_prefabs[prefab] + 1
+end
+
+function Graph:GetRequiredPrefabs()
+    local req = deepcopy(self.required_prefabs)
+    for k,child in pairs(self:GetChildren()) do
+        for prefab, count in pairs(child:GetRequiredPrefabs()) do
+            if req[prefab] == nil then
+                req[prefab] = count
+            else
+                req[prefab] = req[prefab] + count
+            end
+        end
+    end
+
+    return req
 end
 
 local function IsNodeTagged(node, look_for_tag)
@@ -814,6 +845,7 @@ function Graph:ProcessInsanityWormholes(entities, width, height)
 end
 
 function Graph:SwapOutWormholeMarkers(entities, width, height)
+    assert(self.wormholeprefab ~= nil, "Level must specify a wormhole prefab.")
 		
 	if entities["wormhole_MARKER"] ~= nil then
 
@@ -849,6 +881,8 @@ end
 
 
 function Graph:ApplyWormhole(entities, width, height, x1, y1, x2, y2)
+    assert(self.wormholeprefab ~= nil, "Level must specify a wormhole prefab.")
+
 	if x1 ~= nil and x2 ~= nil and y1 ~= nil and y2 ~= nil and x1>1 and x2 >1 and y1>1 and y2>1 then
 		--print("\t\t\t(".. x1 ..",".. y1 ..")\t<--->\t(".. x2 ..",".. y2 ..")")
 
@@ -871,6 +905,8 @@ function Graph:ApplyWormhole(entities, width, height, x1, y1, x2, y2)
 end
 
 function Graph:SwapWormholesAndRoadsExtra(entities, width, height)
+    assert(self.wormholeprefab ~= nil, "Level must specify a wormhole prefab.")
+
 	if entities[self.wormholeprefab] == nil then
 		entities[self.wormholeprefab] = {}
 	end
@@ -922,6 +958,8 @@ function Graph:ApplyPoisonTag()
 end
 
 function Graph:SwapWormholesAndRoads(entities, width, height)
+    assert(self.wormholeprefab ~= nil, "Level must specify a wormhole prefab.")
+
 	if entities[self.wormholeprefab] == nil then
 		entities[self.wormholeprefab] = {}
 	end

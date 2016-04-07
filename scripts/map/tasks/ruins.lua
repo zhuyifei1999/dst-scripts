@@ -11,8 +11,8 @@ AddTask("LichenLand", {
     keys_given= {KEYS.TIER2, KEYS.RUINS},
     room_tags = {"Nightmare"},
     room_choices={
-        ["WetWilds"] = math.random(1,2),
-        ["LichenMeadow"] = math.random(1,2),
+        ["WetWilds"] = function() return math.random(1,2) end,
+        ["LichenMeadow"] = function() return math.random(1,2) end,
         ["LichenLand"] = 3,
         ["PitRoom"] = 2,
     },
@@ -26,10 +26,10 @@ AddTask("CaveJungle", {
     keys_given= {KEYS.TIER3, KEYS.RUINS},
     room_tags = {"Nightmare"},
     room_choices={
-        ["WetWilds"] = math.random(1,2),
+        ["WetWilds"] = function() return math.random(1,2) end,
         ["LichenMeadow"] = 1,
-        ["CaveJungle"] = math.random(1,2),
-        ["MonkeyMeadow"] = math.random(1,2),
+        ["CaveJungle"] = function() return math.random(1,2) end,
+        ["MonkeyMeadow"] = function() return math.random(1,2) end,
         ["PitRoom"] = 2,
     },
     room_bg=GROUND.MUD,
@@ -94,10 +94,10 @@ AddTask("Sacred", {
     entrance_room = "BridgeEntrance",
     room_choices =
     {
-        ["SacredBarracks"] = math.random(1,2),
-        ["Bishops"] = math.random(1,2),
-        ["Spiral"] = math.random(1,2),
-        ["BrokenAltar"] = math.random(1,2),
+        ["SacredBarracks"] = function() return math.random(1,2) end,
+        ["Bishops"] = function() return math.random(1,2) end,
+        ["Spiral"] = function() return math.random(1,2) end,
+        ["BrokenAltar"] = function() return math.random(1,2) end,
         ["PitRoom"] = 2,
     },
     room_bg = GROUND.TILES,
@@ -111,7 +111,7 @@ AddTask("TheLabyrinth", {
     room_tags = {"Nightmare"},
     entrance_room="LabyrinthEntrance",
     room_choices={
-        ["Labyrinth"] = 3+math.random(3),
+        ["Labyrinth"] = function() return 3+math.random(3) end,
         ["RuinedGuarden"] = 1,
     },
     room_bg=GROUND.IMPASSABLE,
@@ -146,7 +146,7 @@ AddTask("MoreAltars", {
     room_tags = {"Nightmare"},
     room_choices =
     {
-        [math.random(1,4) > 1 and "BrokenAltar" or "Altar"] = 1,
+        ["BrokenAltar"] = 1,
         ["PitRoom"] = 2,
     },
     room_bg = GROUND.TILES,
@@ -159,8 +159,8 @@ AddTask("SacredDanger", {
     room_tags = {"Nightmare"},
     room_choices =
     {
-        ["SacredBarracks"] = math.random(1,2),
-        ["Barracks"] = math.random(1,2),
+        ["SacredBarracks"] = function() return math.random(1,2) end,
+        ["Barracks"] = function() return math.random(1,2) end,
     },
     room_bg = GROUND.TILES,
     background_room="BGSacred",
@@ -173,10 +173,10 @@ AddTask("MuddySacred", {
     room_tags = {"Nightmare"},
     room_choices =
     {
-        ["SacredBarracks"] = math.random(0,1),
-        ["Bishops"] = math.random(0,1),
-        ["Spiral"] = math.random(0,1),
-        ["BrokenAltar"] = math.random(0,1),
+        ["SacredBarracks"] = function() return math.random(0,1) end,
+        ["Bishops"] = function() return math.random(0,1) end,
+        ["Spiral"] = function() return math.random(0,1) end,
+        ["BrokenAltar"] = function() return math.random(0,1) end,
         ["WetWilds"] = 1,
         ["MonkeyMeadow"] = 1,
     },
@@ -208,7 +208,7 @@ AddTask("Residential3", {
     room_tags = {"Nightmare"},
     room_choices =
     {
-        ["Vacant"] = math.random(3,4),
+        ["Vacant"] = function() return math.random(3,4) end,
     },
     room_bg = GROUND.TILES,
     background_room="BGWilds",

@@ -1,6 +1,6 @@
 local smoke_texture = "fx/smoke.tex"
 local texture = "fx/torchfire.tex"
-local shader = "shaders/particle.ksh"
+local shader = "shaders/vfx_particle.ksh"
 
 local colour_envelope_name_smoke = "firesmokecolourenvelope"
 local scale_envelope_name_smoke = "firesmokescaleenvelope"
@@ -87,6 +87,7 @@ local function fn()
     effect:EnableBloomPass( 0, true )
     effect:SetUVFrameSize( 0, 0.25, 1 )
     effect:SetSortOrder( 0, 1 )
+    effect:SetRadius( 0, 2 ) --only needed on a single emitter
     
     --FIRE
     effect:SetRenderResources( 1, texture, shader )
@@ -99,6 +100,9 @@ local function fn()
     effect:SetUVFrameSize( 1, 0.25, 1 )
     effect:SetSortOrder( 1, 2 )
 
+
+	inst.fx_offset = -110
+	
     -----------------------------------------------------
     local tick_time = TheSim:GetTickTime()
 
@@ -117,10 +121,7 @@ local function fn()
         local vx, vy, vz = 0.01 * UnitRand(), 0, 0.01 * UnitRand()
         vy = vy + 0.05
         local lifetime = smoke_max_lifetime * (0.9 + UnitRand() * 0.1)
-        local px, py, pz
-
-        px, py, pz = sphere_emitter()
-        py = py + 0.25 --offset the flame particles upwards a bit so they can be used on a torch
+        local px, py, pz = sphere_emitter()
 
 		local uv_offset = math.random(0, 3) * 0.25
 
@@ -130,17 +131,14 @@ local function fn()
             px, py, pz,         -- position
             vx, vy, vz,         -- velocity
             uv_offset, 0        -- uv offset
-        )       
+        )      
     end
         
     local function emit_fire_fn()            
         --FIRE
         local vx, vy, vz = 0.01 * UnitRand(), 0, 0.01 * UnitRand()
         local lifetime = fire_max_lifetime * (0.9 + UnitRand() * 0.1)
-		local px, py, pz
-
-        px, py, pz = sphere_emitter()
-        py = py + 0.25 -- the flame particles upwards a bit so they can be used on a torch
+		local px, py, pz = sphere_emitter()
 
         local uv_offset = math.random(0, 3) * 0.25
 

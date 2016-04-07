@@ -1,8 +1,8 @@
 local smoke_texture = "fx/smoke.tex"
 local ember_texture = "fx/snow.tex"
 local fire_texture = "fx/torchfire.tex"
-local shader = "shaders/particle.ksh"
-local add_shader = "shaders/particle_add.ksh"
+local shader = "shaders/vfx_particle.ksh"
+local add_shader = "shaders/vfx_particle_add.ksh"
 local colour_envelope_name_smoke = "torch_rag_colourenvelope_smoke"
 local scale_envelope_name_smoke = "torch_rag_scaleenvelope_smoke"
 local colour_envelope_name = "torch_rag_colourenvelope"
@@ -62,7 +62,7 @@ local function InitEnvelope()
         EnvelopeManager:AddVector2Envelope(
             scale_envelope_name,
             {
-                { 0,    { fire_max_scale * 0.75, fire_max_scale } },
+                { 0,    { fire_max_scale * 0.9, fire_max_scale } },
                 { 1,    { fire_max_scale * 0.5, fire_max_scale * 0.4 } },
             } )
             
@@ -112,6 +112,8 @@ local function fn()
     effect:EnableBloomPass( 0, true )
     effect:SetUVFrameSize( 0, 0.25, 1 )
     effect:SetSortOrder( 0, 1 )
+    effect:SetRadius( 0, 3 ) --only needed on a single emitter
+    
     
     --FIRE
     effect:SetRenderResources( 1, fire_texture, add_shader )
@@ -137,6 +139,7 @@ local function fn()
     effect:SetDragCoefficient( 2, 0.07 )
     
 
+	inst.fx_offset = -120
 
     -----------------------------------------------------
     local tick_time = TheSim:GetTickTime()
@@ -158,12 +161,10 @@ local function fn()
     local function emit_smoke_fn()
 		--SMOKE
         local vx, vy, vz = 0.01 * UnitRand(), 0, 0.01 * UnitRand()
-        vy = vy + 0.06 + 0.02 * UnitRand()
+        vy = vy + 0.08 + 0.02 * UnitRand()
         local lifetime = smoke_max_lifetime * (0.9 + UnitRand() * 0.1)
-        local px, py, pz
-
-        px, py, pz = sphere_emitter()
-        py = py + 0.4 --offset the flame particles upwards a bit so they can be used on a torch
+        local px, py, pz = sphere_emitter()
+		py = py + 0.2
 
 		local uv_offset = math.random(0, 3) * 0.25
 
@@ -180,10 +181,7 @@ local function fn()
         --FIRE
         local vx, vy, vz = 0.01 * UnitRand(), 0, 0.01 * UnitRand()
         local lifetime = fire_max_lifetime * (0.9 + UnitRand() * 0.1)
-		local px, py, pz
-
-        px, py, pz = sphere_emitter()
-        py = py + 0.5 -- the flame particles upwards a bit so they can be used on a torch
+		local px, py, pz = sphere_emitter()
 
         local uv_offset = math.random(0, 3) * 0.25
 
@@ -199,12 +197,10 @@ local function fn()
     local function emit_ember_fn()            
         --EMBER
         local vx, vy, vz = 0.02 * UnitRand(), 0, 0.02 * UnitRand()
-        vy = vy + 0.06 + 0.03 * UnitRand()
+        vy = vy + 0.08 + 0.03 * UnitRand()
         local lifetime = ember_max_lifetime * (0.9 + UnitRand() * 0.1)
-		local px, py, pz
-
-        px, py, pz = ember_sphere_emitter()
-        py = py + 0.65 -- the flame particles upwards a bit so they can be used on a torch
+		local px, py, pz = ember_sphere_emitter()
+		py = py + 0.4
 
         effect:AddParticleUV(
 			2,

@@ -570,7 +570,7 @@ return {
 		BEEHAT = "Is hat for to protect from stinger bees.",
 		BEEHIVE = "Oh, beehive!",
 		BEEMINE = "Is ball full of anger bees.",
-		BEEMINE_MAXWELL = "Is ball full of anger mosquitos.",
+		BEEMINE_MAXWELL = "Is ball full of anger mosquitoes.",
 		BERRIES = "Is tasty!",
 		BERRIES_COOKED = "Is more tasty!",
 		BERRYBUSH =
@@ -587,8 +587,8 @@ return {
 			SLEEPING = "I should be quiet!",
 			HUNGRY = "I hear tiny grumbles!",
 			STARVING = "His tiny stomach is empty!",
-			DEAD = "Birdie? Are you ok?",
-			SKELETON = "He is not ok.",
+			DEAD = "Birdie? Are you okay?",
+			SKELETON = "He is not okay.",
 		},
 		BIRDTRAP = "I will catch bird!",
 		BIRD_EGG = "Poor birdy.",
@@ -887,9 +887,9 @@ return {
 		MARSH_TREE =
 		{
 			BURNING = "I burn the spikes!",
-			BURNT = "Is spikey and black now",
+			BURNT = "Is spiky and black now",
 			CHOPPED = "I chop the spikes off!",
-			GENERIC = "Is spikey.",
+			GENERIC = "Is spiky.",
 		},
 		MAXWELL = "A fancy suit is no match for my muscles!",
 		MAXWELLHEAD = "Scary head is 12 feet tall!",

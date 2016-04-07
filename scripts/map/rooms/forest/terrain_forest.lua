@@ -86,7 +86,7 @@ AddRoom("BurntForest", {
 					contents =  {
 									distributepercent = 0.4,
 									distributeprefabs= {
-										evergreen = 3 + math.random(4),
+										evergreen = function() return 3 + math.random(4) end,
 									},
 									prefabdata={
 										evergreen = {burnt=true},

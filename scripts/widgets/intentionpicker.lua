@@ -20,7 +20,18 @@ local IntentionPicker = Class(Widget, function(self, titlestring, descriptionstr
     Widget._ctor(self, "IntentionPicker")
 
     self.buttons = {}
-    for i,v in ipairs(intention_options) do
+
+    local function CheckClearDescription()
+        for i, v in ipairs(self.buttons) do
+            if v.focus then
+                return
+            end
+        end
+        --None of the buttons has focus
+        self.description:SetString("")
+    end
+
+    for i, v in ipairs(intention_options) do
         self.buttons[i] = self:AddChild(ImageButton("images/ui.xml", "in-window_button_tile_idle.tex", "in-window_button_tile_hl.tex", "in-window_button_tile_disabled.tex", "in-window_button_tile_hl_noshadow.tex", "in-window_button_tile_disabled.tex", {tile_scale, tile_scale}, {0,0}))
 
         self.buttons[i].bigicon = self.buttons[i]:AddChild(Image(intention_options[i].atlas, intention_options[i].image))
@@ -35,8 +46,9 @@ local IntentionPicker = Class(Widget, function(self, titlestring, descriptionstr
         self.buttons[i]:SetOnGainFocus(function()
             self.description:SetString(descriptionstrings[string.upper(v.data)])
         end)
+        self.buttons[i]:SetOnLoseFocus(CheckClearDescription)
         self.buttons[i]:SetOnClick(function()
-            if self.cb then
+            if self.cb ~= nil then
                 self.cb(intention_options[i].data)
             end
         end)

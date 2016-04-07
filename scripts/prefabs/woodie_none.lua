@@ -9,6 +9,7 @@ local skins =
 	normal_skin = "woodie",
 	ghost_skin = "ghost_woodie_build",
 	werebeaver_skin = "werebeaver_build",
+	ghost_werebeaver_skin = "ghost_werebeaver_build",
 }
 
 local base_prefab = "woodie"

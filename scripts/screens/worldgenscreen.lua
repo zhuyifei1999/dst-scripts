@@ -9,7 +9,7 @@ local TEMPLATES = require "widgets/templates"
 
 local MIN_GEN_TIME = 9.5
 
-local WorldGenScreen = Class(Screen, function(self, profile, cb, world_gen_options)
+local WorldGenScreen = Class(Screen, function(self, profile, cb, world_gen_data)
     Screen._ctor(self, "WorldGenScreen")
     self.profile = profile
     self.log = true
@@ -51,15 +51,20 @@ local WorldGenScreen = Class(Screen, function(self, profile, cb, world_gen_optio
     self.worldgentext:SetPosition(0, 200, 0)
     self.worldgentext:SetColour(unpack(PORTAL_TEXT_COLOUR))
 
-    if world_gen_options and world_gen_options.level_type == "cave" then
+    if world_gen_data and world_gen_data.level_type == "cave" then
+        -- todo: make this show the cave screen for modern DST worldgen...
         self.bg:SetTint(unpack(BGCOLOURS.PURPLE))
         self.worldanim:GetAnimState():SetBuild("generating_cave")
         self.worldanim:GetAnimState():SetBank("generating_cave")
         self.worldgentext:SetString(STRINGS.UI.WORLDGEN.CAVETITLE)
+
+        TheFrontEnd:GetSound():PlaySound( "dontstarve/HUD/caveGen", "worldgensound" )
     else
         self.worldanim:GetAnimState():SetBuild("generating_world")
         self.worldanim:GetAnimState():SetBank("generating_world")
         self.worldgentext:SetString(STRINGS.UI.WORLDGEN.TITLE)
+
+        TheFrontEnd:GetSound():PlaySound( "dontstarve/HUD/worldGen", "worldgensound" )
     end
 
     self.worldanim:GetAnimState():PlayAnimation("idle", true)
@@ -67,60 +72,6 @@ local WorldGenScreen = Class(Screen, function(self, profile, cb, world_gen_optio
     self.flavourtext= self.center_root:AddChild(Text(UIFONT, 40))
     self.flavourtext:SetPosition(0, 100, 0)
     self.flavourtext:SetColour(unpack(PORTAL_TEXT_COLOUR))
-
-    Settings.save_slot = Settings.save_slot or 1
-    local gen_parameters = {}
-
-    if not world_gen_options then
-        world_gen_options = {}
-    end
-
-    if world_gen_options.level_type == nil then
-        gen_parameters.level_type = "free"
-    else
-        gen_parameters.level_type = world_gen_options.level_type
-    end
-
-    -- The saveindex may contain descriptions for multiple levels (e.g. for a shard master)
-    -- but we always generate the first description (which will either be the master server
-    -- options, or the options stomped in by worldgenoverride.lua -- see GetWorldgenOverride
-    -- usage in saveindex.lua)
-    gen_parameters.world_gen_choices = world_gen_options.custom_options and world_gen_options.custom_options[1] or {}
-
-    gen_parameters.current_level = world_gen_options.level_world
-
-    if gen_parameters.level_type == "adventure" then
-        if gen_parameters.current_level == nil or gen_parameters.current_level < 1 then
-            gen_parameters.current_level = 1
-        end
-
-        gen_parameters.adventure_progress = world_gen_options.adventure_progress or 1
-    end
-
-    gen_parameters.profiledata = world_gen_options.profiledata
-    if gen_parameters.profiledata == nil then
-        gen_parameters.profiledata = { unlocked_characters = {} }
-    end
-
-    local DLCEnabledTable = {}
-    for i,v in pairs(DLC_LIST) do
-        DLCEnabledTable[i] = IsDLCEnabled(i)
-    end
-    gen_parameters.DLCEnabled = DLCEnabledTable
-
-    local moddata = {}
-    moddata.index = KnownModIndex:CacheSaveData()
-
-    self.genparam = json.encode(gen_parameters)
-    self.modparam = json.encode(moddata)
-
-    if TheNet:GetIsServer() then
-        TheSim:GenerateNewWorld(self.genparam, self.modparam,
-            function(worlddata)
-                self.worlddata = worlddata
-                self.done = true
-            end)
-    end
 
     self.total_time = 0
     self.cb = cb
@@ -134,11 +85,33 @@ local WorldGenScreen = Class(Screen, function(self, profile, cb, world_gen_optio
     self.nounidx = 1
     self:ChangeFlavourText()
 
-    TheFrontEnd:GetSound():PlaySound(
-        world_gen_options.level_type == "cave" and
-        "dontstarve/HUD/caveGen" or
-        "dontstarve/HUD/worldGen",
-        "worldgensound")
+    if TheNet:GetIsServer() then
+        assert(world_gen_data.profile_data ~= nil and world_gen_data.level_data ~= nil, "Worldgen must be started with a complete profile and level description.")
+
+        -- The saveindex may contain descriptions for multiple levels (e.g. for a shard master)
+        -- but we always generate the first description (which will either be the master server
+        -- options, or the options stomped in by worldgenoverride.lua -- see GetWorldgenOverride
+        -- usage in saveindex.lua)
+        assert(world_gen_data.level_data[1] ~= nil, "Level data must contain information for the first world.")
+
+        local DLCEnabledTable = {}
+        for i,v in pairs(DLC_LIST) do
+            DLCEnabledTable[i] = IsDLCEnabled(i)
+        end
+        world_gen_data.DLCEnabled = DLCEnabledTable
+        self.genparam = json.encode(world_gen_data)
+
+        local moddata = {}
+        moddata.index = KnownModIndex:CacheSaveData()
+
+        self.modparam = json.encode(moddata)
+
+        TheSim:GenerateNewWorld(self.genparam, self.modparam,
+            function(worlddata)
+                self.worlddata = worlddata
+                self.done = true
+            end)
+    end
 end)
 
 function WorldGenScreen:OnDestroy()

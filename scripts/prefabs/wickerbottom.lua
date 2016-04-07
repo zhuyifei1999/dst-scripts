@@ -25,6 +25,9 @@ local start_inv =
 local function common_postinit(inst)
     inst:AddTag("insomniac")
     inst:AddTag("bookbuilder")
+
+    --reader (from reader component) added to pristine state for optimization
+    inst:AddTag("reader")
 end
 
 local function master_postinit(inst)

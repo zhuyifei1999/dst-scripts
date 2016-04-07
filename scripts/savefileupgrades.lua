@@ -1,10 +1,177 @@
 
+local t = nil
+t = {
+    utilities = {
+        UpgradeUserPresetFromV1toV2 = function(preset, custompresets)
+            if preset.version ~= nil and preset.version >= 2 then
+                return preset
+            end
+            print(string.format("Upgrading user preset data for '%s' from v1 to v2", preset.data))
+
+            local newid = preset.data
+            local newname = preset.text
+            local newdesc = preset.desc
+            local location = preset.location
+            local basepreset = preset.basepreset
+            local overrides = preset.overrides
+
+            local Levels = require"map/levels"
+
+            local ret = nil
+            if Levels.GetTypeForLevelID(basepreset) == LEVELTYPE.UNKNOWN then
+                print(string.format("WARNING: custom preset %s has a non-standard preset for its base (%s). Attempting to recursively upgrade...", newid, basepreset))
+                for i,custompreset in ipairs(custompresets) do
+                    if basepreset == custompreset.id then
+                        print("  ...whew! Found an upgraded base to use. Using that.")
+                        ret = deepcopy(custompreset)
+                        break
+                    elseif basepreset == custompreset.data then
+                        print("  ...ack. The base preset isn't upgraded either. Trying to uppgrade that...")
+                        -- note, this performs the upgrade in place in the custompresets table to prevent infinite recursion ~gjans
+                        custompresets[i] = t.utilities.UpgradeUserPresetFromV1toV2(custompreset)
+                        ret = deepcopy(custompresets[i])
+                        break
+                    end
+                end
+
+                if ret == nil then
+                    print(string.format("WARNING: Upgrading preset %s to v2 failed, base preset is %s which is unknown or invalid.", newid, basepreset))
+                    print("This preset will be deleted.")
+                    return nil
+                end
+            else
+                ret = Levels.GetDataForLevelID(basepreset)
+            end
+
+            ret.id = newid
+            ret.name = newname
+            ret.desc = newdesc
+            if ret.location ~= location then
+                print(string.format("WARNING: Upgrading preset %s to v2, but there was a location mismatch: '%s' in %s, and '%s' in %s.", newid, tostring(ret.location), basepreset, tostring(location), newid))
+            end
+            ret.location = location or "forest"
+
+            for i,override in ipairs(overrides) do
+                ret.overrides[override[1]] = override[2]
+            end
+
+            return ret
+        end,
+        UpgradeSavedLevelFromV1toV2 = function(level, master_world)
+            if level.version ~= nil and level.version >= 2 then
+                return level
+            end
+
+            local basepreset = "SURVIVAL_TOGETHER"
+            local newid = nil
+            local newname = nil
+            local newdesc = nil
+            local location = nil
+            local overrides = nil
+            local tweak = nil
+            if level.presetdata ~= nil then
+                basepreset = level.presetdata.basepreset or level.presetdata.data
+                print(string.format("Upgrading saved level data for '%s' from v1 to v2", tostring(basepreset)))
+
+                newid = level.presetdata.data
+                newname = level.presetdata.text
+                newdesc = level.presetdata.desc
+                location = level.presetdata.location
+                overrides = level.presetdata.overrides
+                tweak = level.tweak
+            else
+                print(string.format("Upgrading invalid save level data to v2"))
+            end
+
+            local Levels = require"map/levels"
+            local Customise = require"map/customise"
+
+            local ret = Levels.GetDataForLevelID(basepreset)
+
+            ret.id = newid or ret.id
+            ret.name = newname or ret.name
+            ret.desc = newdesc or ret.desc
+            if location ~= nil and ret.location ~= location then
+                print(string.format("WARNING: Upgrading preset %s to v2, but there was a location mismatch: '%s' in %s, and '%s' in %s.", tostring(newid), tostring(ret.location), basepreset, tostring(location), tostring(newid)))
+            end
+            ret.location = location or ret.location or "forest"
+
+            local options = Customise.GetOptionsWithLocationDefaults(ret.location, master_world)
+            for i, option in ipairs(options) do
+                ret.overrides[option.name] = option.default
+            end
+
+            if overrides ~= nil then
+                for i,override in ipairs(overrides) do
+                    ret.overrides[override[1]] = override[2]
+                end
+            end
+
+            if tweak ~= nil then
+                for group,tweaks in pairs(tweak) do
+                    for name,value in pairs(tweaks) do
+                        ret.overrides[name] = value
+                    end
+                end
+            end
+
+            return ret
+        end,
+        UpgradeWorldgenoverrideFromV1toV2 = function(wgo)
+            local validfields = {
+                overrides = true,
+                preset = true,
+                override_enabled = true,
+            }
+            local needsupgrade = false
+            for k,v in pairs(wgo) do
+                if validfields[k] == nil then
+                    needsupgrade = true
+                    break
+                end
+            end
+
+            if not needsupgrade then
+                return wgo
+            end
+
+            print("Worldgenoverride needs upgrading from v1 to v2!")
+
+            local ret = {}
+
+            ret.preset = wgo.actualpreset or wgo.preset
+            ret.overrides = deepcopy(wgo.overrides or {})
+            ret.override_enabled = wgo.override_enabled
+
+            if wgo.presetdata and wgo.presetdata.overrides then
+                for i,override in ipairs(wgo.presetdata.overrides) do
+                    ret.overrides[override[1]] = override[2]
+                end
+            end
+            wgo.presetdata = nil
+
+            -- We'll just assume that all nested tables contain override data.
+            for _,t in pairs(wgo) do
+                if type(t) == "table" then
+                    for tweak,value in pairs(t) do
+                        ret.overrides[tweak] = value
+                    end
+                end
+            end
+
+            print("  Your file will be loaded correctly. However,")
+            print("  to ensure it will load correctly in the future,")
+            print("  please edit your worldgenoverride.lua to use this format:")
+            print("\n\n"..DataDumper(ret).."\n")
+
+            return ret
+        end,
+    },
+
 -- These functions will be applied in order, starting with the one whose
 -- version is higher than the current version in the save file. Version numbers
 -- are declared explicitly to prevent the values from getting out of sync
 -- somehow.
-
-local t = {
     upgrades =
     {
         {

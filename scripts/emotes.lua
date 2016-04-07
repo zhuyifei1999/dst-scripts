@@ -20,7 +20,7 @@ local EMOTES =
     ["/frustrated"] =       "/angry",
     ["/frustration"] =      "/angry",
 
-    ["/cry"] =              { anim = "emoteXL_sad", fx = "tears", fxoffset = Vector3(0, -.8, 0), fxdelay = 17 * FRAMES, mounted = true },
+    ["/cry"] =              { anim = "emoteXL_sad", fx = "tears", fxdelay = 17 * FRAMES, mounted = true },
     ["/sad"] =              "/cry",
 
     ["/no"] =               { anim = "emoteXL_annoyed", mounted = true },
@@ -38,7 +38,7 @@ local EMOTES =
     ["/celebrate"] =        "/joy",
     ["/celebration"] =      "/joy",
 
-    ["/dance"] =            { anim = { "emoteXL_pre_dance0", "emoteXL_loop_dance0" }, loop = true, fx = false, beaver = true, mounted = true },
+    ["/dance"] =            { anim = { "emoteXL_pre_dance0", "emoteXL_loop_dance0" }, loop = true, fx = false, beaver = true, mounted = true, tags = { "dancing" } },
 
     ["/bonesaw"] =          { anim = "emoteXL_bonesaw", mounted = true },
     ["/ready"] =            "/bonesaw",

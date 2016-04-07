@@ -126,50 +126,40 @@ local TRANSLATE_AND_OVERRIDE = { --These are entities that should be translated 
 
 local customise = require("map/customise")
 local function TranslateWorldGenChoices(gen_params)
-	if gen_params == nil or GetTableSize(gen_params.finaltweak) == 0 then
-		return nil, nil
-	end
-	
-	local translated = {}
-	local runtime_overrides = {}
-	
-	for group, items in pairs(gen_params.finaltweak) do
-		for selected, v in pairs(items) do
-			if v ~= "default" then
-				if TRANSLATE_AND_OVERRIDE[selected] ~= nil then --Override and Translate
-					local area = customise.GetGroupForItem(selected) --Override
-					if runtime_overrides[area] == nil then
-						runtime_overrides[area] = {}
-					end
-					table.insert(runtime_overrides[area], {selected, v})
+    if gen_params == nil or GetTableSize(gen_params) == 0 then
+        return nil, nil
+    end
 
-					for i,prefab in ipairs(TRANSLATE_AND_OVERRIDE[selected]) do --Translate
-						translated[prefab] = MULTIPLY[v]
-					end
-				elseif TRANSLATE_TO_PREFABS[selected] == nil then --Override only
-					local area = customise.GetGroupForItem(selected)
-					if runtime_overrides[area] == nil then
-						runtime_overrides[area] = {}
-					end
-					table.insert(runtime_overrides[area], {selected, v})
-				else --Translate only
-					for i,prefab in ipairs(TRANSLATE_TO_PREFABS[selected]) do
-						translated[prefab] = MULTIPLY[v]
-					end	
-				end	
-			end	
-		end
-	end
-	
-	if GetTableSize(translated) == 0 then
-		translated = nil
-	end
+    local translated_prefabs = {}
+    local runtime_overrides = {}
 
-	if GetTableSize(runtime_overrides) == 0 then
-		runtime_overrides = nil
-	end
+    for tweak, v in pairs(gen_params) do
+        if v ~= "default" then
+            if TRANSLATE_AND_OVERRIDE[tweak] ~= nil then --Override and Translate
+                for i,prefab in ipairs(TRANSLATE_AND_OVERRIDE[tweak]) do --Translate
+                    translated_prefabs[prefab] = MULTIPLY[v]
+                end
 
-	return translated, runtime_overrides
+                runtime_overrides[tweak] = v --Override
+            elseif TRANSLATE_TO_PREFABS[tweak] ~= nil then --Translate only
+                for i,prefab in ipairs(TRANSLATE_TO_PREFABS[tweak]) do
+                    translated_prefabs[prefab] = MULTIPLY[v]
+                end
+            else --Override only
+                runtime_overrides[tweak] = v
+            end
+        end
+    end
+
+    if GetTableSize(translated_prefabs) == 0 then
+        translated_prefabs = nil
+    end
+
+    if GetTableSize(runtime_overrides) == 0 then
+        runtime_overrides = nil
+    end
+
+    return translated_prefabs, runtime_overrides
 end
 	
 local function UpdatePercentage(distributeprefabs, gen_params)
@@ -183,151 +173,120 @@ local function UpdatePercentage(distributeprefabs, gen_params)
 		end
 	end
 end
-	
-local function UpdateTerrainValues(gen_params)
-	if gen_params == nil or GetTableSize(gen_params) == 0 then
-		return
-	end
-	
-	for name,val in pairs(terrain.rooms) do
-		if val.contents.distributeprefabs ~= nil then
-			UpdatePercentage(val.contents.distributeprefabs, gen_params)
-		end
-	end
-end
 
-
-local function GenerateVoro(prefab, map_width, map_height, tasks, world_gen_choices, level_type, level)
-	--print("Generate",prefab, map_width, map_height, tasks, world_gen_choices, level_type)
+local function Generate(prefab, map_width, map_height, tasks, level, level_type)
+	--print("Generate",prefab, map_width, map_height, tasks, level, level_type)
 	local start_time = GetTimeReal()
 
     local SpawnFunctions = {
-        pickspawnprefab = pickspawnprefab, 
-        pickspawngroup = pickspawngroup, 
+        pickspawnprefab = pickspawnprefab,
+        pickspawngroup = pickspawngroup,
     }
 
-    local check_col = {}
-    
-	require "map/storygen"	
-	
-  	local current_gen_params = deepcopy(world_gen_choices)
-	
-	local start_node_override = nil
-	local islandpercent = nil
-	local story_gen_params = {}
+    assert(level.overrides ~= nil, "Level must have overrides specified.")
+    local current_gen_params = deepcopy(level.overrides)
 
-  	local defalt_impassible_tile = GROUND.IMPASSABLE
+    local story_gen_params = {}
 
-  	story_gen_params.impassible_value = defalt_impassible_tile
-	story_gen_params.level_type = level_type
+    local default_impassible_tile = GROUND.IMPASSABLE
 
-    if current_gen_params.finaltweak == nil then current_gen_params.finaltweak = {} end
-    if current_gen_params.finaltweak.misc == nil then current_gen_params.finaltweak.misc = {} end
-	
-	if current_gen_params.finaltweak ~=nil and current_gen_params.finaltweak["misc"] ~= nil then
+    story_gen_params.impassible_value = default_impassible_tile
+    story_gen_params.level_type = level_type
 
-        if current_gen_params.finaltweak["misc"]["start_location"] == nil then
-            current_gen_params.finaltweak["misc"]["start_location"] = "default"
+    if current_gen_params.start_location == nil then
+        current_gen_params.start_location = "default"
+    end
+    if current_gen_params.start_location ~= nil then
+        local start_loc = startlocations.GetStartLocation( current_gen_params.start_location )
+        story_gen_params.start_setpeice = type(start_loc.start_setpeice) == "table" and start_loc.start_setpeice[math.random(#start_loc.start_setpeice)] or start_loc.start_setpeice
+        story_gen_params.start_node = type(start_loc.start_node) == "table" and start_loc.start_node[math.random(#start_loc.start_node)] or start_loc.start_node
+    end
+
+    if  current_gen_params.islands ~= nil then
+        local percent = {always=1, never=0,default=0.2, sometimes=0.1, often=0.8}
+        story_gen_params.island_percent = percent[current_gen_params.islands]
+    end
+
+    if  current_gen_params.branching ~= nil then
+        story_gen_params.branching = current_gen_params.branching
+    end
+
+    if  current_gen_params.loop ~= nil then
+        local loop_percent = { never=0, default=nil, always=1.0 }
+        local loop_target = { never="any", default=nil, always="end"}
+        story_gen_params.loop_percent = loop_percent[current_gen_params.loop]
+        story_gen_params.loop_target = loop_target[current_gen_params.loop]
+    end
+
+    if current_gen_params.layout_mode ~= nil then
+        story_gen_params.layout_mode = current_gen_params.layout_mode
+    end
+
+    if current_gen_params.wormhole_prefab ~= nil then
+        story_gen_params.wormhole_prefab = current_gen_params.wormhole_prefab
+    end
+
+    local min_size = 350
+    if current_gen_params.world_size ~= nil then
+        local sizes
+        if PLATFORM == "PS4" then
+            sizes = {
+                ["default"] = 350,
+                ["medium"] = 400,
+                ["large"] = 425,
+            }
+        else
+            sizes = {
+                ["tiny"] = 1,
+                ["small"] = 350,
+                ["medium"] = 400,
+                ["default"] = 425, -- default == large, at the moment...
+                ["large"] = 425,
+                ["huge"] = 450,
+            }
         end
-		if current_gen_params.finaltweak["misc"]["start_location"] ~= nil then
-            local start_loc = startlocations.GetStartLocation( current_gen_params.finaltweak["misc"]["start_location"] )
-            story_gen_params.start_setpeice = type(start_loc.start_setpeice) == "table" and start_loc.start_setpeice[math.random(#start_loc.start_setpeice)] or start_loc.start_setpeice
-            story_gen_params.start_node = type(start_loc.start_node) == "table" and start_loc.start_node[math.random(#start_loc.start_node)] or start_loc.start_node
-            current_gen_params.finaltweak["misc"]["start_location"] = nil
-		end
-		
-		if  current_gen_params.finaltweak["misc"]["islands"] ~= nil then
-			local percent = {always=1, never=0,default=0.2, sometimes=0.1, often=0.8}
-			story_gen_params.island_percent = percent[current_gen_params.finaltweak["misc"]["islands"]]
-			current_gen_params.finaltweak["misc"]["islands"] = nil
-		end
 
-		if  current_gen_params.finaltweak["misc"]["branching"] ~= nil then
-			story_gen_params.branching = current_gen_params.finaltweak["misc"]["branching"]
-			current_gen_params.finaltweak["misc"]["branching"] = nil
-		end
-
-		if  current_gen_params.finaltweak["misc"]["loop"] ~= nil then
-			local loop_percent = { never=0, default=nil, always=1.0 }
-			local loop_target = { never="any", default=nil, always="end"}
-			story_gen_params.loop_percent = loop_percent[current_gen_params.finaltweak["misc"]["loop"]]
-			story_gen_params.loop_target = loop_target[current_gen_params.finaltweak["misc"]["loop"]]
-			current_gen_params.finaltweak["misc"]["loop"] = nil
-		end
-
-        if current_gen_params.finaltweak["misc"]["layout_mode"] ~= nil then
-            story_gen_params.layout_mode = current_gen_params.finaltweak["misc"]["layout_mode"]
-            current_gen_params.finaltweak["misc"]["layout_mode"] = nil
-        end
-
-        if current_gen_params.finaltweak["misc"]["wormhole_prefab"] ~= nil then
-            story_gen_params.wormhole_prefab = current_gen_params.finaltweak["misc"]["wormhole_prefab"]
-            current_gen_params.finaltweak["misc"]["wormhole_prefab"] = nil
+        if sizes[current_gen_params.world_size] then
+            min_size = sizes[current_gen_params.world_size]
+            print("New size:", min_size, current_gen_params.world_size)
+        else
+            print("ERROR: Worldgen preset had an invalid size: "..current_gen_params.world_size)
         end
 	end
 
     print("Creating story...")
-	local topology_save = TEST_STORY(tasks, story_gen_params, level)
+    require "map/storygen"
+    local topology_save = BuildStory(tasks, story_gen_params, level)
 
-	local entities = {}
- 
+    local entities = {}
+
     local save = {}
     save.ents = {}
-    
+
 
     --save out the map
     save.map = {
         revealed = "",
         tiles = "",
+        prefab = prefab,
     }
-    
-    save.map.prefab = prefab  
-   
-	local min_size = 350
-	if current_gen_params.finaltweak ~= nil and current_gen_params.finaltweak["misc"] ~= nil and current_gen_params.finaltweak["misc"]["world_size"] ~= nil then
-		local sizes
-		if PLATFORM == "PS4" then
-			sizes = {
-				["default"] = 350,
-				["medium"] = 400,
-				["large"] = 425,
-			}
-		else
-			sizes = {
-				["tiny"] = 1,
-				["small"] = 350,
-				["medium"] = 400,
-				["default"] = 425, -- default == large, at the moment...
-				["large"] = 425,
-				["huge"] = 450,
-			}
-		end
-			
-        if sizes[current_gen_params.finaltweak["misc"]["world_size"]] then
-            min_size = sizes[current_gen_params.finaltweak["misc"]["world_size"]]
-            print("New size:", min_size, current_gen_params.finaltweak["misc"]["world_size"])
-        else
-            print("ERROR: Worldgen preset had an invalid size: "..current_gen_params.finaltweak["misc"]["world_size"])
-        end
-		current_gen_params.finaltweak["misc"]["world_size"] = nil
-	end
-		
-	map_width = min_size
-	map_height = min_size
-    
-    WorldSim:SetWorldSize( map_width, map_height)
-    
+
+    map_width = min_size
+    map_height = min_size
+
+    WorldSim:SetWorldSize(map_width, map_height)
+
     print("Baking map...",min_size)
-    	
-  	if WorldSim:GenerateVoronoiMap(math.random(), 0) == false then--math.random(0,100)) -- AM: Dont use the tend
-  		return nil
-  	end
+
+    if WorldSim:GenerateVoronoiMap(math.random(), 0) == false then -- AM: Dont use the tend
+        return nil
+    end
 
     topology_save.root:ApplyPoisonTag()
 
-  	WorldSim:SetImpassibleTileType(defalt_impassible_tile)
-  	
-	WorldSim:ConvertToTileMap(min_size)
+    WorldSim:SetImpassibleTileType(default_impassible_tile)
+
+    WorldSim:ConvertToTileMap(min_size)
 
 	WorldSim:SeparateIslands()
     print("Map Baked!")
@@ -383,9 +342,8 @@ local function GenerateVoro(prefab, map_width, map_height, tasks, world_gen_choi
 	   		end
 	   	end
 	end
-		
-	local runtime_overrides = nil
-    current_gen_params, runtime_overrides = TranslateWorldGenChoices(current_gen_params)
+
+    local translated_prefabs, runtime_overrides = TranslateWorldGenChoices(current_gen_params)
 
     print("Checking Tags")
 	local obj_layout = require("map/object_layout")
@@ -534,65 +492,75 @@ local function GenerateVoro(prefab, map_width, map_height, tasks, world_gen_choi
     save.map.generated = {}
     save.map.generated.densities = {}
 
-   	topology_save.root:PopulateVoronoi(SpawnFunctions, entities, map_width, map_height, current_gen_params, save.map.generated.densities)
-	topology_save.root:GlobalPostPopulate(entities, map_width, map_height)
+    topology_save.root:PopulateVoronoi(SpawnFunctions, entities, map_width, map_height, translated_prefabs, save.map.generated.densities)
+    topology_save.root:GlobalPostPopulate(entities, map_width, map_height)
 
-	for k,ents in pairs(entities) do
-		for i=#ents, 1, -1 do
-			local x = ents[i].x/TILE_SCALE + map_width/2.0 
-			local y = ents[i].z/TILE_SCALE + map_height/2.0 
+    for k,ents in pairs(entities) do
+        for i=#ents, 1, -1 do
+            local x = ents[i].x/TILE_SCALE + map_width/2.0 
+            local y = ents[i].z/TILE_SCALE + map_height/2.0 
 
-			local tiletype = WorldSim:GetVisualTileAtPosition(x,y)
-			local ground_OK = tiletype > GROUND.IMPASSABLE and tiletype < GROUND.UNDERGROUND
-			if ground_OK == false then
-				table.remove(entities[k], i)
-			end
-		end
-	end
+            local tiletype = WorldSim:GetVisualTileAtPosition(x,y)
+            local ground_OK = tiletype > GROUND.IMPASSABLE and tiletype < GROUND.UNDERGROUND
+            if ground_OK == false then
+                table.remove(entities[k], i)
+            end
+        end
+    end
+
+    if translated_prefabs ~= nil then
+        -- Filter out any etities over our overrides
+        for prefab,mult in pairs(translated_prefabs) do
+            if mult < 1 and entities[prefab] ~= nil and #entities[prefab] > 0 then
+                local new_amt = math.floor(#entities[prefab]*mult)
+                if new_amt == 0 then
+                    entities[prefab] = nil
+                else
+                    entities[prefab] = shuffleArray(entities[prefab])
+                    while #entities[prefab] > new_amt do
+                        table.remove(entities[prefab], 1)
+                    end
+                end
+            end
+        end
+    end
+
+
+    local double_check = {}
+    for i,prefab in ipairs(level.required_prefabs or {}) do
+        if double_check[prefab] == nil then
+            double_check[prefab] = 1
+        else
+            double_check[prefab] = double_check[prefab] + 1
+        end
+    end
+    for prefab, count in pairs(topology_save.root:GetRequiredPrefabs()) do
+        if double_check[prefab] == nil then
+            double_check[prefab] = count
+        else
+            double_check[prefab] = double_check[prefab] + count
+        end
+    end
+
+    for prefab,count in pairs(double_check) do
+        if entities[prefab] == nil or #entities[prefab] < count then
+            print(string.format("PANIC: missing required prefab [%s]! Expected %d, got %d", prefab, count, entities[prefab] == nil and 0 or #entities[prefab]))
+            if SKIP_GEN_CHECKS == false then
+                return nil
+            end
+        end
+    end
+
+    save.ents = entities
 
     save.map.tiles, save.map.nav, save.map.adj = WorldSim:GetEncodedMap(join_islands)
 
-   	local double_check = level.required_prefabs or {}
-   	
-	for i,k in ipairs(double_check) do
-		if entities[k] == nil then
-			print("PANIC: missing required prefab! ",k)
-			if SKIP_GEN_CHECKS == false then
-				return nil
-			end
-		end			
-	end
-   	
-   	save.map.topology.overrides = runtime_overrides
-	if save.map.topology.overrides == nil then
-		save.map.topology.overrides = {}
-	end
-    save.map.topology.overrides.original = deepcopy(world_gen_choices)
-   	
-   	if current_gen_params ~= nil then
-	   	-- Filter out any etities over our overrides
-		for prefab,amt in pairs(current_gen_params) do
-			if amt < 1 and entities[prefab] ~= nil and #entities[prefab] > 0 then
-				local new_amt = math.floor(#entities[prefab]*amt)
-				if new_amt == 0 then
-					entities[prefab] = nil
-				else
-					entities[prefab] = shuffleArray(entities[prefab])
-					while #entities[prefab] > new_amt do
-						table.remove(entities[prefab], 1)
-					end
-				end
-			end
-		end	
-	end
-   	
-   	
-    save.ents = entities
-    
-    -- TODO: Double check that the entities are all existing in the world
-    -- For each item in each room of the room list
-	--
-    
+    save.map.topology.overrides = runtime_overrides
+    if save.map.topology.overrides == nil then
+        save.map.topology.overrides = {}
+    end
+    save.map.topology.overrides.original = deepcopy(current_gen_params)
+
     save.map.width, save.map.height = map_width, map_height
 
     save.playerinfo = {}
@@ -607,45 +575,39 @@ local function GenerateVoro(prefab, map_width, map_height, tasks, world_gen_choi
     end
 
     save.map.roads = {}
-    if prefab == "forest" then	   	
 
-	    local current_pos_idx = 1
-	    if current_gen_params == nil or (current_gen_params.finaltweak == nil or current_gen_params.finaltweak["misc"] == nil or current_gen_params.finaltweak["misc"]["roads"] == nil) or current_gen_params.finaltweak["misc"]["roads"] ~= "never" then
-		    local num_roads, road_weight, points_x, points_y = WorldSim:GetRoad(0, join_islands)
-		    local current_road = 1
-		    local min_road_length = math.random(3,5)
-		   	--print("Building roads... Min Length:"..min_road_length, current_gen_params.finaltweak["misc"]["roads"])
-		   	
-		    
-		    if #points_x>=min_road_length then
-		    	save.map.roads[current_road] = {3}
-				for current_pos_idx = 1, #points_x  do
-						local x = math.floor((points_x[current_pos_idx] - map_width/2.0)*TILE_SCALE*10)/10.0
-						local y = math.floor((points_y[current_pos_idx] - map_height/2.0)*TILE_SCALE*10)/10.0
-						
-						table.insert(save.map.roads[current_road], {x, y})
-				end
-				current_road = current_road + 1
-			end
-			
-		    for current_road = current_road, num_roads  do
-		    	
-		    	num_roads, road_weight, points_x, points_y = WorldSim:GetRoad(current_road-1, join_islands)
-		    	    
-		    	if #points_x>=min_road_length then    	
-			    	save.map.roads[current_road] = {road_weight}
-				    for current_pos_idx = 1, #points_x  do
-						local x = math.floor((points_x[current_pos_idx] - map_width/2.0)*TILE_SCALE*10)/10.0
-						local y = math.floor((points_y[current_pos_idx] - map_height/2.0)*TILE_SCALE*10)/10.0
-						
-						table.insert(save.map.roads[current_road], {x, y})
-					end
-				end
-			end
-		end
-	end
+    if current_gen_params.roads == nil or current_gen_params.roads ~= "never" then
+        local num_roads, road_weight, points_x, points_y = WorldSim:GetRoad(0, join_islands)
+        local current_road = 1
+        local min_road_length = math.random(3,5)
+        --print("Building roads... Min Length:"..min_road_length, current_gen_params.roads)
 
-    save.map.topology.overrides.original.finaltweak = nil -- composite tweaks no longer needed, discard. They can be reconstructed.
+        if #points_x>=min_road_length then
+            save.map.roads[current_road] = {3}
+            for current_pos_idx = 1, #points_x  do
+                local x = math.floor((points_x[current_pos_idx] - map_width/2.0)*TILE_SCALE*10)/10.0
+                local y = math.floor((points_y[current_pos_idx] - map_height/2.0)*TILE_SCALE*10)/10.0
+
+                table.insert(save.map.roads[current_road], {x, y})
+            end
+            current_road = current_road + 1
+        end
+
+        for current_road = current_road, num_roads  do
+
+            num_roads, road_weight, points_x, points_y = WorldSim:GetRoad(current_road-1, join_islands)
+
+            if #points_x>=min_road_length then
+                save.map.roads[current_road] = {road_weight}
+                for current_pos_idx = 1, #points_x  do
+                    local x = math.floor((points_x[current_pos_idx] - map_width/2.0)*TILE_SCALE*10)/10.0
+                    local y = math.floor((points_y[current_pos_idx] - map_height/2.0)*TILE_SCALE*10)/10.0
+
+                    table.insert(save.map.roads[current_road], {x, y})
+                end
+            end
+        end
+    end
 
 	print("Done "..prefab.." map gen!")
 
@@ -653,7 +615,7 @@ local function GenerateVoro(prefab, map_width, map_height, tasks, world_gen_choi
 end
 
 return {
-    Generate = GenerateVoro,
+    Generate = Generate,
 	TRANSLATE_TO_PREFABS = TRANSLATE_TO_PREFABS,
 	MULTIPLY = MULTIPLY,
 	TRANSLATE_AND_OVERRIDE = TRANSLATE_AND_OVERRIDE,

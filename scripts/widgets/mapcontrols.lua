@@ -30,26 +30,36 @@ local MapControls = Class(Widget, function(self)
     self.minimapBtn:SetScale(MAPSCALE, MAPSCALE, MAPSCALE)
     self.minimapBtn:SetOnClick(OnToggleMap)
 
-    local controller_id = TheInput:GetControllerID()
-    self.minimapBtn:SetTooltip(STRINGS.UI.HUD.MAP.."("..TheInput:GetLocalizedControl(controller_id, CONTROL_MAP)..")")
-
     self.pauseBtn = self:AddChild(ImageButton(HUD_ATLAS, "pause.tex", nil, nil, nil, nil, {1,1}, {0,0}))
     self.pauseBtn:SetScale(.33, .33, .33)
     self.pauseBtn:SetPosition(0, -50, 0)
     self.pauseBtn:SetOnClick(OnPause)
-    self.pauseBtn:SetTooltip(STRINGS.UI.HUD.PAUSE.."("..TheInput:GetLocalizedControl(controller_id, CONTROL_CANCEL)..")")
+
     self.rotleft = self:AddChild(ImageButton(HUD_ATLAS, "turnarrow_icon.tex", nil, nil, nil, nil, {1,1}, {0,0}))
     self.rotleft:SetPosition(-40, -40, 0)
     self.rotleft:SetScale(-.7, .7, .7)
     self.rotleft:SetOnClick(OnRotLeft)
-    self.rotleft:SetTooltip(STRINGS.UI.HUD.ROTLEFT.."("..TheInput:GetLocalizedControl(controller_id, CONTROL_ROTATE_LEFT)..")")
 
     self.rotright = self:AddChild(ImageButton(HUD_ATLAS, "turnarrow_icon.tex", nil, nil, nil, nil, {1,1}, {0,0}))
     self.rotright:SetPosition(40, -40, 0)
     self.rotright:SetScale(.7, .7, .7)
     self.rotright:SetOnClick(OnRotRight)
-    self.rotright:SetTooltip(STRINGS.UI.HUD.ROTRIGHT.."("..TheInput:GetLocalizedControl(controller_id, CONTROL_ROTATE_RIGHT)..")")
+
+    self:RefreshTooltips()
 end)
+
+function MapControls:RefreshTooltips()
+    local controller_id = TheInput:GetControllerID()
+    self.minimapBtn:SetTooltip(STRINGS.UI.HUD.MAP.."("..TheInput:GetLocalizedControl(controller_id, CONTROL_MAP)..")")
+    self.pauseBtn:SetTooltip(STRINGS.UI.HUD.PAUSE.."("..TheInput:GetLocalizedControl(controller_id, CONTROL_CANCEL)..")")
+    self.rotleft:SetTooltip(STRINGS.UI.HUD.ROTLEFT.."("..TheInput:GetLocalizedControl(controller_id, CONTROL_ROTATE_LEFT)..")")
+    self.rotright:SetTooltip(STRINGS.UI.HUD.ROTRIGHT.."("..TheInput:GetLocalizedControl(controller_id, CONTROL_ROTATE_RIGHT)..")")
+end
+
+function MapControls:Show()
+    self._base.Show(self)
+    self:RefreshTooltips()
+end
 
 function MapControls:ShowMapButton()
     self.minimapBtn:Show()

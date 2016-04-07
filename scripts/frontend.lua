@@ -133,16 +133,18 @@ FrontEnd = Class(function(self, name)
     self.subtitle:SetHAnchor(ANCHOR_MIDDLE)
 	self.overlayroot:AddChild(self.subtitle)
 
-	self.saving_indicator = UIAnim()
-    self.saving_indicator:GetAnimState():SetBank("saving_indicator")
-    self.saving_indicator:GetAnimState():SetBuild("saving_indicator")
-    self.saving_indicator:GetAnimState():PlayAnimation("save_loop", true)
-    self.saving_indicator:SetVAnchor(ANCHOR_BOTTOM)
-    self.saving_indicator:SetHAnchor(ANCHOR_RIGHT)
-	self.saving_indicator:SetScaleMode(SCALEMODE_PROPORTIONAL)
-    self.saving_indicator:SetMaxPropUpscale(MAX_HUD_SCALE)
-	self.saving_indicator:SetPosition(-10, 40)
-	self.saving_indicator:Hide()
+    if PLATFORM == "PS4" then
+        self.saving_indicator = UIAnim()
+        self.saving_indicator:GetAnimState():SetBank("saving_indicator")
+        self.saving_indicator:GetAnimState():SetBuild("saving_indicator")
+        self.saving_indicator:GetAnimState():PlayAnimation("save_loop", true)
+        self.saving_indicator:SetVAnchor(ANCHOR_BOTTOM)
+        self.saving_indicator:SetHAnchor(ANCHOR_RIGHT)
+        self.saving_indicator:SetScaleMode(SCALEMODE_PROPORTIONAL)
+        self.saving_indicator:SetMaxPropUpscale(MAX_HUD_SCALE)
+        self.saving_indicator:SetPosition(-10, 40)
+        self.saving_indicator:Hide()
+    end
 
 	self:HideTitle()
 
@@ -171,9 +173,7 @@ FrontEnd = Class(function(self, name)
 end)
 
 function FrontEnd:ShowSavingIndicator()
-	if PLATFORM ~= "PS4" then return end
-
-    if TheSystemService:IsStorageEnabled() then
+    if self.saving_indicator ~= nil and TheSystemService:IsStorageEnabled() then
 		if not self.saving_indicator.shown then
 			self.save_indicator_time_left = 3
 			self.saving_indicator:Show()
@@ -188,9 +188,7 @@ function FrontEnd:ShowSavingIndicator()
 end
 
 function FrontEnd:HideSavingIndicator()
-	if PLATFORM ~= "PS4" then return end
-	
-	if self.num_pending_saves > 0 then
+	if self.saving_indicator ~= nil and self.num_pending_saves > 0 then
 		self.num_pending_saves = self.num_pending_saves - 1
 	end
 end
@@ -555,7 +553,7 @@ function FrontEnd:Update(dt)
 	    ProbeReload(Input:IsKeyDown(KEY_F6))
 	end
 	
-	if self.saving_indicator.shown then
+	if self.saving_indicator ~= nil and self.saving_indicator.shown then
 		if self.save_indicator_fade then
 			local alpha = 1
 			self.save_indicator_fade_time = self.save_indicator_fade_time - math.min(dt, 1/60)

@@ -57,7 +57,9 @@ local function GetPenaltyPercent_Client(self)
 end
 
 local function MaxWithPenalty_Client(self)
-    return self.classified.maxsanity:value() * (1 - GetPenaltyPercent_Client(self))
+    --V2C: precision error.. gg...
+    --return self.classified.maxsanity:value() * (1 - GetPenaltyPercent_Client(self))
+    return self.classified.maxsanity:value() * (200 - self.classified.sanitypenalty:value()) / 200
 end
 
 --------------------------------------------------------------------------

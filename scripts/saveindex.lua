@@ -1,9 +1,14 @@
+local SAVEDATA_VERSION = 2
+
 SaveIndex = Class(function(self)
     self:Init()
 end)
 
 function SaveIndex:Init()
-    self.data = { slots = {} }
+    self.data = {
+        version = SAVEDATA_VERSION,
+        slots = {}
+    }
     self:GuaranteeMinNumSlots(NUM_SAVE_SLOTS)
     self.current_slot = 1
 end
@@ -25,6 +30,70 @@ local function ResetSlotData(data)
     data.enabled_mods = {}
 end
 
+local function GetLevelDataOverride(cb)
+    local filename = "../leveldataoverride.lua"
+    TheSim:GetPersistentString( filename,
+        function(load_success, str)
+            if load_success == true then
+                local success, savedata = RunInSandboxSafe(str)
+                if success and string.len(str) > 0 then
+                    print("Found a level data override file with these contents:")
+                    dumptable(savedata)
+                    if savedata ~= nil then
+                        print("Loaded and applied level data override from "..filename)
+                        assert(savedata.id ~= nil
+                            and savedata.name ~= nil
+                            and savedata.desc ~= nil
+                            and savedata.location ~= nil
+                            and savedata.overrides ~= nil, "Level data override is invalid!")
+
+                        cb( savedata )
+                        return
+                    end
+                else
+                    print("ERROR: Failed to load "..filename)
+                end
+            end
+            print("Not applying level data overrides.")
+            cb( nil, nil )
+        end)
+end
+
+local function SanityCheckWorldGenOverride(wgo)
+    print("  sanity-checking worldgenoverride.lua...")
+    local validfields = {
+        overrides = true,
+        preset = true,
+        override_enabled = true,
+    }
+    for k,v in pairs(wgo) do
+        if validfields[k] == nil then
+            print(string.format("    WARNING! Found entry '%s' in worldgenoverride.lua, but this isn't a valid entry.", k))
+        end
+    end
+
+    local optionlookup = {}
+    local Customise = require("map/customise")
+    for i,option in ipairs(Customise.GetOptions(nil, true)) do
+        optionlookup[option.name] = {}
+        for i,value in ipairs(option.options) do
+            table.insert(optionlookup[option.name], value.data)
+        end
+    end
+
+    if wgo.overrides ~= nil then
+        for k,v in pairs(wgo.overrides) do
+            if optionlookup[k] == nil then
+                print(string.format("    WARNING! Found override '%s', but this doesn't match any known option. Did you make a typo?", k))
+            else
+                if not table.contains(optionlookup[k], v) then
+                    print(string.format("    WARNING! Found value '%s' for setting '%s', but this is not a valid value. Use one of {%s}.", v, k, table.concat(optionlookup[k], ", ")))
+                end
+            end
+        end
+    end
+end
+
 local function GetWorldgenOverride(cb)
     local filename = "../worldgenoverride.lua"
     TheSim:GetPersistentString( filename,
@@ -34,17 +103,48 @@ local function GetWorldgenOverride(cb)
                 if success and string.len(str) > 0 then
                     print("Found a worldgen override file with these contents:")
                     dumptable(savedata)
-                    if savedata ~= nil and savedata.override_enabled then
-                        print("Loaded and applied world gen overrides from "..filename)
-                        local preset = savedata.preset
-                        local presetdata = savedata.presetdata
-                        savedata.override_enabled = nil --remove this so the rest of the table can be interpreted as a tweak table
-                        savedata.preset = nil
-                        savedata.presetdata = nil
-                        cb( preset, presetdata, savedata )
-                        return
-                    else
-                        print("Found world gen overrides but not enabled.")
+
+                    if savedata ~= nil then
+
+                        -- gjans: Added upgrade path 28/03/2016. Because this is softer and user editable, will probably have to leave this one in longer than the other upgrades from this same change set.
+                        local savefileupgrades = require("savefileupgrades")
+                        savedata = savefileupgrades.utilities.UpgradeWorldgenoverrideFromV1toV2(savedata)
+
+                        SanityCheckWorldGenOverride(savedata)
+
+                        if savedata.override_enabled then
+                            print("Loaded and applied world gen overrides from "..filename)
+                            savedata.override_enabled = nil -- Only part of worldgenoverride, not standard level definition.
+
+                            local presetdata = nil
+                            local frompreset = false
+                            if savedata.preset ~= nil then
+                                print("  contained preset "..savedata.preset..", loading...")
+                                local Levels = require("map/levels")
+                                presetdata = Levels.GetDataForLevelID(savedata.preset)
+                                if presetdata ~= nil then
+                                    if GetTableSize(savedata) > 0 then
+                                        print("  applying overrides to preset...")
+                                        presetdata = MergeMapsDeep(presetdata, savedata)
+                                    end
+                                    frompreset = true
+                                else
+                                    print("Worldgenoverride specified a nonexistent preset: "..savedata.preset..". If this is a custom preset, it may not exist in this save location. Ignoring it and applying overrides.")
+                                    presetdata = savedata
+                                end
+                                savedata.preset = nil -- Only part of worldgenoverride, not standard level definition.
+                            else
+                                presetdata = savedata
+                            end
+
+                            presetdata.override_enabled = nil
+                            presetdata.preset = nil
+
+                            cb( presetdata, frompreset )
+                            return
+                        else
+                            print("Found world gen overrides but not enabled.")
+                        end
                     end
                 else
                     print("ERROR: Failed to load "..filename)
@@ -62,7 +162,7 @@ function SaveIndex:GuaranteeMinNumSlots(numslots)
 end
 
 function SaveIndex:GetSaveIndexName()
-    return (TheSim:IsLegacyClientHosting() and "saveindex_legacy" or "saveindex")..(BRANCH ~= "dev" and "" or ("_"..BRANCH))
+    return "saveindex"..(BRANCH ~= "dev" and "" or ("_"..BRANCH))
 end
 
 function SaveIndex:Save(callback)
@@ -70,26 +170,24 @@ function SaveIndex:Save(callback)
     local insz, outsz = TheSim:SetPersistentString(self:GetSaveIndexName(), data, false, callback)
 end
 
-local function DoMultilevelUpgrade(world)
-    --V2C: TODO: get rid of this upgrade eventually
-    --NOTE: Also in viewcustomizationmodalscreen.lua
-    if world ~= nil and
-        world.options ~= nil and
-        (   world.options.presetdata ~= nil or
-            world.options.tweak ~= nil or
-            world.options.actualpreset ~= nil or
-            world.options.preset ~= nil
-        ) then
-        --V2C: Detected legacy single-level world options table
-        world.options = { world.options }
+-- gjans: Added this upgrade path 28/03/2016
+local function UpgradeSavedLevelData(worldoptions)
+    local savefileupgrades = require "savefileupgrades"
+    local ret = {}
+    for i,level in ipairs(worldoptions) do
+        ret[i] = deepcopy(level)
+        if level.version == nil or level.version == 1 then
+            ret[i] = savefileupgrades.utilities.UpgradeSavedLevelFromV1toV2(ret[i], i == 1)
+        end
     end
+    return ret
 end
 
 local function OnLoad(self, filename, callback, load_success, str)
     local success, savedata = RunInSandbox(str)
 
-    -- If we are on steam cloud this will stop a currupt saveindex file from
-    -- ruining everyones day..
+    -- If we are on steam cloud this will stop a corrupt saveindex file from
+    -- ruining everyone's day..
     if success and
         string.len(str) > 0 and
         savedata ~= nil and
@@ -104,11 +202,12 @@ local function OnLoad(self, filename, callback, load_success, str)
             local v2 = savedata.slots[i]
             if v2 ~= nil then
                 v.world = v2.world or v.world
+                if v.world.options ~= nil then
+                    v.world.options = UpgradeSavedLevelData(v.world.options)
+                end
                 v.server = v2.server or v.server
                 v.session_id = v2.session_id or v.session_id
                 v.enabled_mods = v2.enabled_mods or v.enabled_mods
-
-                DoMultilevelUpgrade(v.world)
             end
         end
 
@@ -124,61 +223,7 @@ local function OnLoad(self, filename, callback, load_success, str)
     end
 end
 
---V2C: TODO: Temporary upgrading code, remove later
-function SaveIndex:DoLegacyUpgrade(callback)
-    if TheNet:IsDedicated() then
-        return false
-    end
-
-    local filename = self:GetSaveIndexName()
-    TheSim:GetPersistentString(filename,
-        function(load_success, str)
-            OnLoad(self, filename,
-                function()
-                    if TheSim:IsLegacyClientHosting() then
-                        TheSim:SetLegacyClientHosting(false)
-                        print("Deprecating Legacy Client Hosting")
-                        print("Migrating "..filename.." -> "..self:GetSaveIndexName())
-                        self:Save(callback)
-                    else
-                        local dirty = false
-                        for i, v in ipairs(self.data.slots) do
-                            if v.world ~= nil and
-                                v.world.options ~= nil and
-                                v.world.options[1] ~= nil and
-                                v.world.options[2] == nil and
-                                v.session_id == "" then
-                                --Migrate single-level multi-process slots to single-process
-                                local session_id = nil
-                                local clusterSaveIndex = SaveIndex()
-                                clusterSaveIndex:LoadClusterSlot(i, "Master", function()
-                                    session_id = clusterSaveIndex.data.slots[clusterSaveIndex.current_slot].session_id
-                                end)
-                                if session_id ~= nil and session_id ~= "" then
-                                    dirty = true
-                                    v.session_id = session_id
-                                    print("Migrating legacy save slot "..tostring(i).." session "..session_id)
-                                    TheSim:MigrateSingleLevelClusterSession(i)
-                                end
-                            end
-                        end
-                        if dirty then
-                            self:Save(callback)
-                        elseif callback ~= nil then
-                            callback()
-                        end
-                    end
-                end,
-                load_success, str)
-        end)
-    return true
-end
-
 function SaveIndex:Load(callback)
-    if self:DoLegacyUpgrade(callback) then
-        return
-    end
-
     --This happens on game start.
     local filename = self:GetSaveIndexName()
     TheSim:GetPersistentString(filename,
@@ -236,6 +281,7 @@ function SaveIndex:DeleteSlot(slot, cb, save_options)
         local server = slotdata.server
         local options = slotdata.world.options
         local session_id = self:GetSlotSession(slot)
+        local enabled_mods = slotdata.enabled_mods
 
         --DST session file stuff
         if session_id ~= nil and session_id ~= "" then
@@ -251,6 +297,7 @@ function SaveIndex:DeleteSlot(slot, cb, save_options)
         if save_options then
             slotdata.server = server
             slotdata.world.options = options
+            slotdata.enabled_mods = enabled_mods
         end
 
         self:Save(cb)
@@ -310,38 +357,55 @@ function SaveIndex:UpdateServerData(saveslot, serverdata, onsavedcb)
     self:Save(onsavedcb)
 end
 
+function SaveIndex:GetGameMode(saveslot)
+    local game_mode = self.data.slots[saveslot].server.game_mode or DEFAULT_GAME_MODE
+    return game_mode
+end
+
+local function GetDefaultWorldOptions(level_type)
+    local Levels = require "map/levels"
+    return { Levels.GetDefaultLevelData(level_type, nil) }
+end
+
 --call after you have worldgen data to initialize a new survival save slot
 function SaveIndex:StartSurvivalMode(saveslot, customoptions, serverdata, onsavedcb)
-    local starts = Profile:GetValue("starts") or 0
-    Profile:SetValue("starts", starts + 1)
-    Profile:Save()
-
     self.current_slot = saveslot
 
     local slot = self.data.slots[saveslot]
     slot.session_id = TheNet:GetSessionIdentifier()
-    slot.world.options = customoptions or {}
+    
+    slot.world.options = customoptions or GetDefaultWorldOptions(GetLevelType(serverdata.game_mode or DEFAULT_GAME_MODE))
     slot.server = {}
 
-    GetWorldgenOverride(function(preset, presetdata, overrideoptions)
-        --NOTE: Always overrides layer 1, as that's what worldgen will generate
-        if slot.world.options[1] == nil then
-            slot.world.options[1] = {}
-        end
-        if preset ~= nil then
-            slot.world.options[1].actualpreset = preset
-        end
-        if presetdata ~= nil then
-            slot.world.options[1].presetdata = presetdata
-            if presetdata.basepreset ~= nil then
-                slot.world.options[1].preset = presetdata.basepreset
-            end
-        end
-        if overrideoptions ~= nil then
-            slot.world.options[1].tweak = overrideoptions
+    --NOTE: Always overrides layer 1, as that's what worldgen will generate
+    if slot.world.options[1] == nil then
+        slot.world.options[1] = {}
+    end
+
+    -- gjans:
+    -- leveldataoverride is for GAME USE. It contains a _complete level definition_ and is used by the clusters to transfer level settings reliably from the client to the cluster servers. It completely overrides existing saved world data.
+    -- worldgenoverride is for USER USE. It contains optionally:
+    --   a) a preset name. If present, this preset will be loaded and completely override existing save data, including the above. (Note, this is not reliable between client and cluster, but users can do this if they please.)
+    --   b) a partial list of overrides that are layered on top of whatever savedata we have at this point now.
+    GetLevelDataOverride(function(leveldata)
+        if leveldata ~= nil then
+            print("Overwriting savedata with level data file.")
+            slot.world.options[1] = leveldata
         end
 
-        self:UpdateServerData(saveslot, serverdata, onsavedcb)
+        GetWorldgenOverride(function(overridedata, frompreset)
+            if overridedata ~= nil then
+                if frompreset == true then
+                    print("Overwriting savedata with override file.")
+                    slot.world.options[1] = overridedata
+                else
+                    print("Merging override file into savedata.")
+                    slot.world.options[1] = MergeMapsDeep(slot.world.options[1], overridedata)
+                end
+            end
+
+            self:UpdateServerData(saveslot, serverdata, onsavedcb)
+        end)
     end)
 end
 

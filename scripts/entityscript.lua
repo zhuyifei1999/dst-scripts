@@ -17,7 +17,7 @@ local function EntityWatchWorldState(self, var, fn)
         self.worldstatewatching[var] = watcherfns
     end
 
-    table.insert(watcherfns, var)
+    table.insert(watcherfns, fn)
 end
 
 local function EntityStopWatchingWorldState(self, var, fn)
@@ -34,7 +34,7 @@ local function EntityStopWatchingWorldState(self, var, fn)
         if next(self.worldstatewatching) == nil then
             self.worldstatewatching = nil
         end
-    end 
+    end
 end
 
 local function ComponentWatchWorldState(self, var, fn)
@@ -48,7 +48,6 @@ local function ComponentStopWatchingWorldState(self, var, fn)
 end
 
 local function LoadComponent(name)
-    
     if Components[name] == nil then
         Components[name] = require("components/"..name)
         assert(Components[name], "could not load component "..name)

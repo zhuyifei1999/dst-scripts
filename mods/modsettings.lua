@@ -11,3 +11,7 @@
 -- Use "EnableModDebugPrint()" to show extra information during startup.
 
 --EnableModDebugPrint()
+
+-- Use "EnableModError()" to make the game more strict and crash on bad mod practices.
+
+--EnableModError()

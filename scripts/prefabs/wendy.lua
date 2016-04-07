@@ -4,7 +4,6 @@ local assets =
 {
     Asset("SCRIPT", "scripts/prefabs/player_common.lua"),
 	Asset("SOUND", "sound/wendy.fsb"),
-    Asset("ANIM", "anim/ghost_wendyplayer_build.zip"),
 }
 
 local prefabs =
@@ -13,7 +12,6 @@ local prefabs =
 }
 
 local function common_postinit(inst)
-    inst:AddTag("ghostwithhat")
     inst:AddTag("ghostlyfriend")
 end
 
@@ -48,7 +46,6 @@ local function OnLoad(inst, data)
 end
 
 local function master_postinit(inst)
-    inst.ghostbuild = "ghost_wendyplayer_build"
     inst.components.sanity.night_drain_mult = TUNING.WENDY_SANITY_MULT
     inst.components.sanity.neg_aura_mult = TUNING.WENDY_SANITY_MULT
     inst.components.combat.damagemultiplier = TUNING.WENDY_DAMAGE_MULT

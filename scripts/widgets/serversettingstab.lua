@@ -7,6 +7,7 @@ local NumericSpinner = require "widgets/numericspinner"
 local TextEdit = require "widgets/textedit"
 local ScrollableList = require "widgets/scrollablelist"
 local RadioButtons = require "widgets/radiobuttons"
+local NewHostPicker = require "widgets/newhostpicker"
 local IntentionPicker = require "widgets/intentionpicker"
 local PopupDialogScreen = require "screens/popupdialog"
 local TEMPLATES = require "widgets/templates"
@@ -65,12 +66,12 @@ local ServerSettingsTab = Class(Widget, function(self, slotdata, servercreations
     end)
     self.intentions_overlay:SetPosition(-115, 180)
 
-
     self.server_intention = TEMPLATES.LabelButton(STRINGS.UI.SERVERCREATIONSCREEN.INTENTION_LABEL, "", narrow_label_width, narrow_input_width, label_height, space_between, NEWFONT, font_size, narrow_field_nudge)
-    self.server_intention.button:SetOnClick(function(data)
+    self.server_intention.button._onclickfn = function(data)
         self:SetServerIntention(nil)
         self.servercreationscreen:MakeDirty()
-    end)
+    end
+    self.server_intention.button:SetOnClick(self.server_intention.button._onclickfn)
 
     self.server_name = TEMPLATES.LabelTextbox(STRINGS.UI.SERVERCREATIONSCREEN.SERVERNAME, TheNet:GetDefaultServerName(), wide_label_width, wide_input_width, label_height, space_between, NEWFONT, font_size, wide_field_nudge)
     self.server_name.textbox:SetTextLengthLimit( SERVER_NAME_MAX_LENGTH )
@@ -146,7 +147,7 @@ local ServerSettingsTab = Class(Widget, function(self, slotdata, servercreations
     self.clan_admins.spinner:SetOnChangedFn(function() self.servercreationscreen:MakeDirty() end)
 
     self.game_mode = TEMPLATES.LabelSpinner(STRINGS.UI.SERVERCREATIONSCREEN.GAMEMODE, GetGameModesSpinnerData(ModManager:GetEnabledServerModNames()), narrow_label_width, narrow_input_width, label_height, space_between, NEWFONT, font_size, narrow_field_nudge)
-    self.game_mode.spinner:SetOnChangedFn(function() self.servercreationscreen:MakeDirty() end)
+    self.game_mode.spinner:SetOnChangedFn(function() self.servercreationscreen.world_tab:Refresh() self.servercreationscreen:MakeDirty() end)
 
     self.game_mode.info_button = self.game_mode:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "info.tex", "", false, false, function() 
             local mode_title = GetGameModeString( self.game_mode.spinner:GetSelectedData() )
@@ -168,12 +169,18 @@ local ServerSettingsTab = Class(Widget, function(self, slotdata, servercreations
     self.game_mode.spinner:SetFocusChangeDir(MOVE_RIGHT, self.game_mode.info_button)
 
     local numplayer_options = {}
-    for i=2, TUNING.MAX_SERVER_SIZE do
+    for i = 1, TUNING.MAX_SERVER_SIZE do
         table.insert(numplayer_options,{text=i, data=i})
     end
     self.max_players = TEMPLATES.LabelSpinner(STRINGS.UI.SERVERCREATIONSCREEN.MAXPLAYERS, numplayer_options, narrow_label_width, narrow_input_width, label_height, space_between, NEWFONT, font_size, narrow_field_nudge)
     self.max_players.spinner:SetSelected(TheNet:GetDefaultMaxPlayers())
-    self.max_players.spinner:SetOnChangedFn(function() self.servercreationscreen:MakeDirty() end)
+    self.max_players.spinner:SetOnChangedFn(function(selected, old)
+        if (selected > 1) ~= (old > 1) then
+            self:RefreshPrivacyButtons()
+            self:RefreshIntentionsButton()
+        end
+        self.servercreationscreen:MakeDirty()
+    end)
 
     local pvp_options = {
         { text = STRINGS.UI.SERVERCREATIONSCREEN.OFF, data = false },
@@ -237,12 +244,9 @@ local ServerSettingsTab = Class(Widget, function(self, slotdata, servercreations
     self.focus_forward = self.scroll_list
 end)
 
-function ServerSettingsTab:SetOnlineWidgets(online)
-    if online ~= nil then
-        self.online_mode.spinner:SetSelected(online)
-    end
-
-    if self.online_mode.spinner:GetSelectedData() == false then
+function ServerSettingsTab:RefreshPrivacyButtons()
+    if self.online_mode.spinner:GetSelectedData() == false or
+        self.max_players.spinner:GetSelectedData() <= 1 then
         self._cached_privacy_setting = self.privacy_type.buttons:GetSelectedData()
         self.privacy_type.buttons:DisableAllButtons()
         self.privacy_type.buttons:EnableButton(PRIVACY_TYPE.LOCAL)
@@ -253,6 +257,35 @@ function ServerSettingsTab:SetOnlineWidgets(online)
             self.privacy_type.buttons:SetSelected(self._cached_privacy_setting)
         end
     end
+end
+
+function ServerSettingsTab:RefreshIntentionsButton()
+    if self.max_players.spinner:GetSelectedData() <= 1 then
+        self.server_intention.button:SetText(STRINGS.UI.SERVERCREATIONSCREEN.NEWHOST_TYPE.ALONE)
+        self.server_intention.button:SetOnClick(nil)
+        self.server_intention.button.scale_on_focus = false
+        self.server_intention.button.move_on_click = false
+        self.server_intention.button:SetTextures("images/ui.xml", "single_option_bg_large_grey.tex", "single_option_bg_large_gold.tex", "single_option_bg_large_grey.tex", "single_option_bg_large_gold.tex", "single_option_bg_large_grey.tex", { 1, 1 }, { 0, 0 })
+        self.server_intention.button:ForceImageSize(narrow_input_width, label_height * .9)
+        self.server_intention.button:SetTextColour(unpack(GREY))
+        self.server_intention.button:SetTextFocusColour(unpack(GREY))
+    else
+        self.server_intention.button:SetText(self.server_intention.button.data ~= nil and STRINGS.UI.INTENTION[string.upper(self.server_intention.button.data)] or "")
+        self.server_intention.button:SetOnClick(self.server_intention.button._onclickfn)
+        self.server_intention.button.scale_on_focus = true
+        self.server_intention.button.move_on_click = true
+        self.server_intention.button:SetTextures("images/ui.xml", "in-window_button_sm_idle.tex", "in-window_button_sm_hl.tex", "in-window_button_sm_disabled.tex", "in-window_button_sm_hl_noshadow.tex", "in-window_button_sm_disabled.tex", { 1, 1 }, { 0, 0 })
+        self.server_intention.button:ForceImageSize(narrow_input_width, label_height)
+        self.server_intention.button:SetTextColour(0, 0, 0, 1)
+        self.server_intention.button:SetTextFocusColour(0, 0, 0, 1)
+    end
+end
+
+function ServerSettingsTab:SetOnlineWidgets(online)
+    if online ~= nil then
+        self.online_mode.spinner:SetSelected(online)
+    end
+    self:RefreshPrivacyButtons()
 end
 
 function ServerSettingsTab:DisplayClanControls(show)
@@ -310,8 +343,9 @@ end
 function ServerSettingsTab:SetServerIntention(intention)
     self.server_intention.button.data = intention
 
+    self:RefreshIntentionsButton()
+
     if intention ~= nil then
-        self.server_intention.button:SetText(STRINGS.UI.INTENTION[string.upper(intention)])
         self.intentions_overlay:SetSelected(intention)
     end
 
@@ -320,22 +354,50 @@ end
 
 function ServerSettingsTab:ShowServerIntention(show)
     if show then
-        self.intentions_overlay:Show()
+        if not Profile:SawNewHostPicker() then
+            self:ShowNewHostPicker(true)
+            self.intentions_overlay:Hide()
+            self.default_focus = self.newhost_overlay
+        else
+            self:ShowNewHostPicker(false)
+            self.intentions_overlay:Show()
+            self.default_focus = self.intentions_overlay
+        end
         self.scroll_list:Hide()
-
-        self.default_focus = self.intentions_overlay
-        self.focus_forward = self.intentions_overlay
-
     else
+        self:ShowNewHostPicker(false)
         self.intentions_overlay:Hide()
         self.scroll_list:Show()
-
         self.default_focus = self.scroll_list
-        self.focus_forward = self.scroll_list
     end
 
+    self.focus_forward = self.default_focus
     if self.focus then
         self.default_focus:SetFocus()
+    end
+end
+
+function ServerSettingsTab:ShowNewHostPicker(show)
+    if show then
+        if self.newhost_overlay == nil then
+            self.newhost_overlay = self:AddChild(NewHostPicker())
+            self.newhost_overlay:SetPosition(-115, 180)
+            self.newhost_overlay:SetCallback(function(data)
+                Profile:ShowedNewHostPicker()
+                Profile:Save(function()
+                    if data == "ALONE" then
+                        self.max_players.spinner:SetSelected(1)
+                        self:SetServerIntention(INTENTIONS.COOPERATIVE)
+                        self:RefreshPrivacyButtons()
+                    end
+                    self:ShowServerIntention(self.server_intention.button.data == nil)
+                    self.servercreationscreen:MakeDirty()
+                end)
+            end)
+        end
+    elseif self.newhost_overlay ~= nil then
+        self.newhost_overlay:Kill()
+        self.newhost_overlay = nil
     end
 end
 
@@ -374,7 +436,6 @@ function ServerSettingsTab:UpdateDetails(slotnum, prevslot, fromDelete)
         self.privacy_type.buttons:SetSelected(self.slotdata[slotnum] and self.slotdata[slotnum].privacy_type or PRIVACY_TYPE.PUBLIC)
 
         self:SetServerIntention(self.slotdata[slotnum] and self.slotdata[slotnum].intention or nil)
-
         self:SetOnlineWidgets(online)
 
         self.game_mode.spinner:Enable()
@@ -409,7 +470,6 @@ function ServerSettingsTab:UpdateDetails(slotnum, prevslot, fromDelete)
         else
             self:SetServerIntention(nil)
         end
-		
 
 		-- No editing online or game mode for servers that have already been created
         self.game_mode.spinner:Disable()
@@ -475,7 +535,6 @@ function ServerSettingsTab:GetServerData()
     }
 end
 
-
 function ServerSettingsTab:VerifyValidClanSettings()
     return self.privacy_type.buttons:GetSelectedData() ~= PRIVACY_TYPE.CLAN or TheNet:IsClanIDValid(self.clan_id.textbox:GetString())
 end
@@ -486,6 +545,10 @@ end
 
 function ServerSettingsTab:VerifyValidServerIntention()
     return self.server_intention.button.data ~= nil
+end
+
+function ServerSettingsTab:VerifyValidNewHostType()
+    return Profile:SawNewHostPicker()
 end
 
 function ServerSettingsTab:SetEditingTextboxes(edit)

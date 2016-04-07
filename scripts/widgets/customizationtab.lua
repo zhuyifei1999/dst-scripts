@@ -12,13 +12,9 @@ local TEMPLATES = require "widgets/templates"
 local Customise = require "map/customise"
 local Levels = require "map/levels"
 
-local DEFAULT_PRESETS =
-{
-    "SURVIVAL_TOGETHER",
-    "DST_CAVE",
-}
-
-local DEFAULT_TAB_LOCATIONS =
+-- global for modding
+-- note that the automatic portal linking isn't affected by this and always assumes 2 levels!
+SERVER_LEVEL_LOCATIONS =
 {
     "forest",
     "cave",
@@ -26,13 +22,12 @@ local DEFAULT_TAB_LOCATIONS =
 
 local function OnClickTab(self, level)
     if level ~= 1 and not self:IsLevelEnabled(level) then
-        local locationname =
-            STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME[string.upper(self.activepresets[level].location or "")] or
-            STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME.UNKNOWN
+        local locationid = self:GetLocationStringID(level)
+        local locationname = STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME[locationid]
 
         TheFrontEnd:PushScreen(
             PopupDialogScreen(
-                STRINGS.UI.SANDBOXMENU.ADDLEVEL.." "..locationname.."?",
+                string.format(STRINGS.UI.SANDBOXMENU.ADDLEVEL, locationname),
                 string.format(STRINGS.UI.SANDBOXMENU.ADDLEVEL_WARNING, locationname),
                 {
                     {
@@ -73,11 +68,7 @@ local CustomizationTab = Class(Widget, function(self, servercreationscreen)
 
     -- Build the options menu so that the spinners are shown in an order that makes sense/in order of how impactful the changes are
 
-    self.current_option_settings =
-    {
-        { tweak = {} }
-        -- one level by default
-    }
+    self.current_option_settings = {}
 
     local left_col =-RESOLUTION_X*.25 - 50
     local right_col = RESOLUTION_X*.25 - 75
@@ -86,14 +77,11 @@ local CustomizationTab = Class(Widget, function(self, servercreationscreen)
 
     self.max_custom_presets = 5
 
-    self:ReloadPresetsFromProfile()
-
     self.presetpanel = self:AddChild(Widget("presetpanel"))
     self.presetpanel:SetPosition(left_col,15,0)
 
     self.multileveltabs = self.presetpanel:AddChild(Widget("multileveltabs"))
     self.multileveltabs:SetPosition(0, 140, 0)
-    self.multileveltabs:Hide()
 
     self.multileveltabs_bg = self.multileveltabs:AddChild(Image("images/ui.xml", "black.tex"))
     self.multileveltabs_bg:SetSize(320, 60)
@@ -103,11 +91,16 @@ local CustomizationTab = Class(Widget, function(self, servercreationscreen)
     self.multileveltabs_bg_2:SetSize(320, 334)
     self.multileveltabs_bg_2:SetPosition(0, -175)
 
-    self.multileveltabs.tabs =
-    {
-        self.multileveltabs:AddChild(TEMPLATES.TabButton(-80, 0, "", function() OnClickTab(self, 1) end, "small")),
-        self.multileveltabs:AddChild(TEMPLATES.TabButton(80, 0, "", function() OnClickTab(self, 2) end, "small")),
-    }
+    self.multileveltabs.tabs = {}
+    local tabboxwidth = 310
+    local tabboxspacing = 5
+    for i,location in ipairs(SERVER_LEVEL_LOCATIONS) do
+        local tabwidth = tabboxwidth/#SERVER_LEVEL_LOCATIONS - tabboxspacing
+        local tabpos = (-tabboxwidth/2)+(tabwidth/2)+(tabwidth)*(i-1)+(tabboxspacing*i)-(tabboxspacing/2)
+        self.multileveltabs.tabs[i] = self.multileveltabs:AddChild(TEMPLATES.TabButton(tabpos, 0, "", function() OnClickTab(self, i) end, "small"))
+        self.multileveltabs.tabs[i]:SetTextSize(24)
+        self.multileveltabs.tabs[i]:ForceImageSize(tabwidth, 60)
+    end
 
     for i, v in ipairs(self.multileveltabs.tabs) do
         v:SetTextSize(24)
@@ -126,18 +119,21 @@ local CustomizationTab = Class(Widget, function(self, servercreationscreen)
     self.presettitle:SetHAlign(ANCHOR_MIDDLE)
     self.presettitle:SetRegionSize( 400, 70 )
     self.presettitle:SetString(STRINGS.UI.CUSTOMIZATIONSCREEN.USEPRESETS)
+    self.presettitle:SetPosition(0, 85, 0)
 
     self.presetdesc = self.presetpanel:AddChild(Text(NEWFONT, 25))
     self.presetdesc:SetColour(0,0,0,1)
     self.presetdesc:SetHAlign(ANCHOR_MIDDLE)
     self.presetdesc:SetRegionSize( 300, 110 )
-    self.presetdesc:SetString(self.presets[1].desc)
+    self.presetdesc:SetString("")
     self.presetdesc:EnableWordWrap(true)
+    self.presetdesc:SetPosition(0, -40, 0)
 
     local spinner_width = 290
     local spinner_height = nil -- use default height
     self.presetspinner = self.presetpanel:AddChild(Widget("presetspinner"))
-    self.presetspinner.spinner = self.presetspinner:AddChild(Spinner( self.presets, spinner_width, spinner_height, {font=NEWFONT, size=22}, nil, nil, nil, true))
+    self.presetspinner:SetPosition(0, 35, 0)
+    self.presetspinner.spinner = self.presetspinner:AddChild(Spinner( {}, spinner_width, spinner_height, {font=NEWFONT, size=22}, nil, nil, nil, true))
     self.presetspinner.focus_forward = self.presetspinner.spinner
     self.presetspinner.spinner:SetTextColour(0,0,0,1)
     self.presetspinner.bg = self.presetspinner:AddChild(Image("images/ui.xml", "single_option_bg_large.tex"))
@@ -147,41 +143,43 @@ local CustomizationTab = Class(Widget, function(self, servercreationscreen)
     self.presetspinner.bg:SetClickable(false)
     self.presetspinner.spinner.OnChanged =
         function( _, data, oldData )
-            if self.presetdirty[self.currentmultilevel] then
+            if self:GetNumberOfTweaks(self.currentmultilevel) > 0 then
                 if self.servercreationscreen then self.servercreationscreen.last_focus = TheFrontEnd:GetFocusWidget() end
                 TheFrontEnd:PushScreen(PopupDialogScreen(STRINGS.UI.CUSTOMIZATIONSCREEN.LOSECHANGESTITLE, STRINGS.UI.CUSTOMIZATIONSCREEN.LOSECHANGESBODY,
                     {
                         {text=STRINGS.UI.CUSTOMIZATIONSCREEN.YES, cb = function()
-                            self:ChangePresetForCurrentSlot(self.currentmultilevel, data, self.presetspinner.spinner:GetSelected().basepreset)
+                            self:LoadPreset(self.currentmultilevel, data)
+                            self:Refresh()
                             TheFrontEnd:PopScreen()
                         end},
                         {text=STRINGS.UI.CUSTOMIZATIONSCREEN.NO, cb = function()
                             self.presetspinner.spinner:SetSelected(oldData)
-                            self:RefreshSpinnerValues()
-                            self:RefreshTabValues() -- restore the "custom" text on the spinner
                             TheFrontEnd:PopScreen()
                         end}
                     }))
             else
-                self:ChangePresetForCurrentSlot(self.currentmultilevel, data, self.presetspinner.spinner:GetSelected().basepreset)
+                self:LoadPreset(self.currentmultilevel, data)
+                self:Refresh()
             end
             self.servercreationscreen:UpdateButtons(self.slot)
             self.servercreationscreen:MakeDirty()
         end
 
     self.revertbutton = self.presetpanel:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "undo.tex", STRINGS.UI.CUSTOMIZATIONSCREEN.REVERTCHANGES, false, false, function() self:RevertChanges() end))
+    self.revertbutton:SetPosition(-35, -125, 0)
     self.revertbutton:Select()
 
     self.savepresetbutton = self.presetpanel:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "save.tex", STRINGS.UI.CUSTOMIZATIONSCREEN.SAVEPRESET, false, false, function() self:SavePreset() end))
+    self.savepresetbutton:SetPosition(40, -125, 0)
 
     self.removemultilevel = self.presetpanel:AddChild(TEMPLATES.SmallButton(nil, 23, nil,
         function()
             local locationname =
-                STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME[string.upper(self.activepresets[self.currentmultilevel].location or "")] or
+                STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME[string.upper(Levels.GetLocationForLevelID(self.current_option_settings[self.currentmultilevel].preset) or "")] or
                 STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME.UNKNOWN
             TheFrontEnd:PushScreen(
                 PopupDialogScreen(
-                    STRINGS.UI.SANDBOXMENU.REMOVELEVEL.." "..locationname.."?",
+                    string.format(STRINGS.UI.SANDBOXMENU.REMOVELEVEL, locationname),
                     string.format(STRINGS.UI.SANDBOXMENU.REMOVELEVEL_WARNING, locationname),
                     {
                         {
@@ -214,92 +212,200 @@ local CustomizationTab = Class(Widget, function(self, servercreationscreen)
     self.current_option_settingspanel:SetPosition(right_col,20,0)
 
     self:HookupFocusMoves()
-    self:UpdateMultilevelUI()
 
     self.default_focus = self.presetspinner
     self.focus_forward = self.presetspinner
 end)
 
-function CustomizationTab:ReloadPresetsFromProfile()
-    self.presets = {}
-    self.activepresets = {}
-    self.presetdirty = {}
+function CustomizationTab:Refresh()
+    self:UpdatePresetList()
+    self:UpdatePresetInfo(self.currentmultilevel)
+    self:UpdateMultilevelUI()
+end
 
-    for i, level in pairs(Levels.sandbox_levels) do
-        if not level.hideinfrontend then
-            assert(level.id ~= nil, "Attempting to add an invalid level to the preset list. name: "..tostring(level.name))
-            table.insert(self.presets, {text=level.name, data=level.id, desc = level.desc, overrides = level.overrides, location=level.location})
-        end
+function CustomizationTab:UpdatePresetList()
+    --
+    -- PRESETS
+    --
+
+    local presets = nil
+    if self.allowEdit == false then
+        presets = {
+            {
+                text = self.slotoptions[self.slot][self.currentmultilevel].name,
+                data = self.slotoptions[self.slot][self.currentmultilevel].id,
+            }
+        }
+    else
+		local level_type = GetLevelType( self.servercreationscreen:GetGameMode() )
+        presets = Levels.GetLevelList(level_type, SERVER_LEVEL_LOCATIONS[self.currentmultilevel], true)
+    end
+    self.presetspinner.spinner:SetOptions(presets)
+    self.presetspinner.spinner:SetSelected(self.current_option_settings[self.currentmultilevel].preset)
+    -- In case our preset disappeared, grab whatever is in the spinner.
+    self.current_option_settings[self.currentmultilevel].preset = self.presetspinner.spinner:GetSelectedData()
+
+    --
+    -- CUSTOMIZATION LIST
+    --
+    local location = self:GetLocationForLevel(self.currentmultilevel)
+    assert(location ~= nil, "Can only load values for a preset with a location!")
+
+    local options = Customise.GetOptionsWithLocationDefaults(location, self.currentmultilevel == 1)
+
+    if self.customizationlist ~= nil then
+        self.customizationlist:Kill()
     end
 
-    local profilepresets = Profile:GetWorldCustomizationPresets()
-    if profilepresets ~= nil then
-        for i, level in pairs(profilepresets) do
-            assert(level.data ~= nil, "Attempting to add an invalid custom preset to the preset list. name: "..tostring(level.text))
-            table.insert(self.presets, {text=level.text, data=level.data, desc = level.desc, overrides = level.overrides, basepreset=level.basepreset, location=level.location})
+    if self:IsLevelEnabled(self.currentmultilevel) then
+        self.customizationlist = self.current_option_settingspanel:AddChild(CustomizationList(location, options,
+            function(option, value)
+                self:SetTweak(self.currentmultilevel, option, value)
+            end))
+        self.customizationlist:SetPosition(-245, -24, 0)
+        self.customizationlist:SetFocusChangeDir(MOVE_LEFT, self.presetspinner)
+        local leveldata = Levels.GetDataForLevelID(self.current_option_settings[self.currentmultilevel].preset)
+        if leveldata ~= nil then -- e.g. loading a slot for a disabled mod
+            self.customizationlist:SetPresetValues(leveldata.overrides)
+        end
+        self.customizationlist:SetEditable(self.allowEdit)
+
+        for i,v in ipairs(options) do
+            self.customizationlist:SetValueForOption(v.name, self:GetValueForOption(self.currentmultilevel, v.name))
         end
     end
 end
 
-function CustomizationTab:GetValueForOption(option)
-    for idx,opt in ipairs(self.options) do
-        if (opt.name == option) then
-            local value = self.overrides[opt.name] or opt.default
-            if self.current_option_settings[self.currentmultilevel].tweak[opt.group] then
-                local possiblevalue = self.current_option_settings[self.currentmultilevel].tweak[opt.group][opt.name]
-                value = possiblevalue or value
-            end
-            return value
-        end
+
+function CustomizationTab:GetValueForOption(level, option)
+    local presetdata = nil
+    if not self.allowEdit then
+        presetdata = deepcopy(self.slotoptions[self.slot][level])
+    else
+        presetdata = Levels.GetDataForLevelID(self.current_option_settings[level].preset)
     end
-    return nil
+    return self.current_option_settings[level].tweaks[option]
+        or (presetdata ~= nil and presetdata.overrides[option])
+        or Customise.GetLocationDefaultForOption(presetdata.location, option)
 end
 
 function CustomizationTab:AddMultiLevel(level)
-    if level ~= 1 and self.slotoptions[self.slot][level] == nil then
-        self.slotoptions[self.slot][level] =
-        {
-            actualpreset = DEFAULT_PRESETS[level],
-            preset = DEFAULT_PRESETS[level],
-            tweak = {},
-        }
-        self:UpdateMultilevelUI()
-        self:UpdateOptions(level)
+    if level ~= 1 and self.current_option_settings[level] == nil then
+        self:LoadPreset(level, nil)
     end
 end
 
 function CustomizationTab:RemoveMultiLevel(level)
-    if level ~= 1 and self.slotoptions[self.slot][level] ~= nil then
-        self.slotoptions[self.slot][level] = nil
-        self:UpdateMultilevelUI()
-        self:UpdateOptions(level)
+    if level ~= 1 and self.current_option_settings[level] ~= nil then
+        self.current_option_settings[level] = nil
+        if self.currentmultilevel == level then
+            self.currentmultilevel = self.currentmultilevel - 1
+        end
     end
 end
 
+function CustomizationTab:GetLocationForLevel(level)
+    return (self.current_option_settings[level] ~= nil
+            and self.current_option_settings[level].preset ~= nil
+            and Levels.GetLocationForLevelID(self.current_option_settings[level].preset))
+        or SERVER_LEVEL_LOCATIONS[level]
+end
+
+function CustomizationTab:GetLocationStringID(level)
+    if self.current_option_settings[level] ~= nil
+        and self.current_option_settings[level].preset ~= nil then
+
+        local location = Levels.GetLocationForLevelID(self.current_option_settings[level].preset)
+        return location ~= nil and string.upper(location) or "UNKNOWN"
+    end
+
+    -- if there is no preset yet, use the default
+    return string.upper(SERVER_LEVEL_LOCATIONS[level])
+end
+
+
 function CustomizationTab:UpdateMultilevelUI()
-    --V2C: Always show multilevel tabs
-    --     Instead, clear out the info when the tab level is not enabled
-    self.presettitle:SetPosition(0, 85, 0)
-    self.presetdesc:SetPosition(0, -40, 0)
-    self.presetspinner:SetPosition(0, 35, 0)
-    self.revertbutton:SetPosition(-35, -125, 0)
-    self.savepresetbutton:SetPosition(40, -125, 0)
 
-    self.presettitle:Show()
-    self.presetdesc:Show()
-    self.presetspinner:Show()
-    self.multileveltabs:Show()
-
-    --[[ --Old code for no tabs layout
-        self.presettitle:SetPosition(0, 105, 0)
-        self.presetdesc:SetPosition(0, -20, 0)
-        self.presetspinner:SetPosition(0, 55, 0)
-        self.revertbutton:SetPosition(-35, -115, 0)
-        self.savepresetbutton:SetPosition(40, -115, 0)
-
-        self.multileveltabs:Hide()
+    if self.allowEdit and self.currentmultilevel ~= 1 then
+        self.removemultilevel:Show()
+    else
         self.removemultilevel:Hide()
-    ]]
+    end
+
+
+    local locationid = self:GetLocationStringID(self.currentmultilevel)
+    local locationname = STRINGS.UI.SANDBOXMENU.LOCATION[locationid]
+    self.presettitle:SetString(string.format(STRINGS.UI.SANDBOXMENU.USEPRESETS_LOCATION, locationname))
+
+    locationname = STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME[locationid]
+    self.removemultilevel:SetText(string.format(STRINGS.UI.SANDBOXMENU.REMOVELEVEL, locationname))
+
+    for i, tabbtn in ipairs(self.multileveltabs.tabs) do
+        local locationid = self:GetLocationStringID(i)
+        local locationname = STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME[locationid]
+
+        if self:IsLevelEnabled(i) then
+            --tab is enabled, make it look like a regular tab
+            tabbtn:SetText(locationname)
+            tabbtn:SetTextures("images/frontend.xml", "tab2_button.tex", "tab2_button_highlight.tex", "tab2_selected.tex", nil, nil, { 1, 1 }, { 0, 0 })
+            tabbtn.image:SetScale(.73)
+            tabbtn:SetFont(NEWFONT_OUTLINE)
+            tabbtn:SetDisabledFont(NEWFONT_SMALL)
+            tabbtn:SetTextColour(unpack(GOLD))
+            tabbtn:SetTextFocusColour(unpack(GOLD))
+            tabbtn:SetTextDisabledColour(unpack(BLACK))
+        elseif self.allowEdit then
+            --tab is disabled, make it look like an "Add ___" button
+            tabbtn:SetText(string.format(STRINGS.UI.SANDBOXMENU.ADDLEVEL, locationname))
+            tabbtn:SetTextures("images/frontend.xml", "button_long.tex", "button_long_highlight.tex", "button_long_disabled.tex", "button_long_halfshadow.tex", nil, { 1, 1 }, { 6, 2 })
+            tabbtn.image:SetScale(.5, .6)
+            tabbtn:SetFont(NEWFONT_SMALL)
+            tabbtn:SetDisabledFont(NEWFONT_SMALL)
+            tabbtn:SetTextColour(unpack(BLACK))
+            tabbtn:SetTextFocusColour(unpack(BLACK))
+            tabbtn:SetTextDisabledColour(unpack(BLACK))
+        else
+            --tab is disabled, but we can't add it because this slot is not editable
+            tabbtn:SetText(string.format(STRINGS.UI.SANDBOXMENU.DISABLEDLEVEL, locationname))
+            tabbtn:SetTextures("images/frontend.xml", "tab2_button.tex", "tab2_button.tex", "tab2_button.tex", nil, nil, { 1, 1 }, { 0, 0 })
+            tabbtn.image:SetScale(.73)
+            tabbtn:SetFont(NEWFONT_SMALL)
+            tabbtn:SetDisabledFont(NEWFONT_SMALL)
+            tabbtn:SetTextColour(unpack(BLACK))
+            tabbtn:SetTextFocusColour(unpack(BLACK))
+            tabbtn:SetTextDisabledColour(unpack(BLACK))
+        end
+
+        if i == self.currentmultilevel or not (self.allowEdit or self:IsLevelEnabled(i)) then
+            tabbtn:Disable()
+        else
+            tabbtn:Enable()
+        end
+    end
+
+end
+
+function CustomizationTab:UpdatePresetInfo(level)
+    if level ~= self.currentmultilevel then
+        -- this might be called for the "unselected" level, so we don't want to do anything.
+        return
+    end
+
+    local clean = self:GetNumberOfTweaks(self.currentmultilevel) == 0
+
+    if not self.allowEdit then
+        self.presetdesc:SetString(self.slotoptions[self.slot][self.currentmultilevel].desc)
+        self.presetspinner.spinner:UpdateText(self.slotoptions[self.slot][self.currentmultilevel].name)
+    elseif clean then
+        self.presetdesc:SetString(Levels.GetDescForLevelID(self.current_option_settings[self.currentmultilevel].preset))
+        self.presetspinner.spinner:UpdateText(Levels.GetNameForLevelID(self.current_option_settings[self.currentmultilevel].preset))
+    elseif self.current_option_settings[self.currentmultilevel].preset == "MOD_MISSING" then
+        self.presetdesc:SetString(Levels.GetDescForLevelID("MOD_MISSING"))
+        self.presetspinner.spinner:UpdateText(Levels.GetNameForLevelID("MOD_MISSING"))
+    else
+        self.presetdesc:SetString(STRINGS.UI.CUSTOMIZATIONSCREEN.CUSTOMDESC)
+        self.presetspinner.spinner:UpdateText(string.format(STRINGS.UI.CUSTOMIZATIONSCREEN.CUSTOM, Levels.GetNameForLevelID(self.current_option_settings[self.currentmultilevel].preset)))
+    end
 
     if self.allowEdit then
         self.revertbutton:Show()
@@ -309,69 +415,41 @@ function CustomizationTab:UpdateMultilevelUI()
         self.savepresetbutton:Hide()
     end
 
-    if self.allowEdit and self.currentmultilevel ~= 1 then
-        self.removemultilevel:Show()
+    if not clean and self.allowEdit then
+        self.revertbutton:Unselect()
     else
-        self.removemultilevel:Hide()
-    end
-
-    local currentpresets = self.activepresets[self.currentmultilevel]
-    local locationid = currentpresets ~= nil and string.upper(currentpresets.location or "") or nil
-
-    local locationname = STRINGS.UI.SANDBOXMENU.LOCATION[locationid]
-    locationname = locationname ~= nil and (locationname.." ") or ""
-    self.presettitle:SetString(locationname.." "..STRINGS.UI.SANDBOXMENU.USEPRESETS)
-
-    locationname = STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME[locationid]
-    locationname = locationname ~= nil and (locationname.." ") or ""
-    self.removemultilevel:SetText(STRINGS.UI.SANDBOXMENU.REMOVELEVEL.." "..locationname)
-
-    for i, tab in ipairs(self.multileveltabs.tabs) do
-        if i == self.currentmultilevel or not (self.allowEdit or self:IsLevelEnabled(i)) then
-            tab:Disable()
-        else
-            tab:Enable()
-        end
+        self.revertbutton:Select()
     end
 end
 
 function CustomizationTab:SelectMultilevel(level)
     self.currentmultilevel = level
-    self:RefreshSpinnerValues()
-    self:RefreshTabValues()
-    self:UpdateMultilevelUI()
+    self:Refresh()
 end
 
-function CustomizationTab:SetTweak(option, value)
-
-    for idx,v in ipairs(self.options) do
-        if (self.options[idx].name == option) then
-            local group = self.options[idx].group
-
-            if (value == self.overrides[option] or
-                (value == v.default and self.overrides[option] == nil)) then
-
-                if self.current_option_settings[self.currentmultilevel].tweak[group] then
-                    self.current_option_settings[self.currentmultilevel].tweak[group][option] = nil
-                    if not next(self.current_option_settings[self.currentmultilevel].tweak[group]) then
-                        self.current_option_settings[self.currentmultilevel].tweak[group] = nil
-                    end
-                end
-            else
-                if not self.current_option_settings[self.currentmultilevel].tweak[group] then
-                    self.current_option_settings[self.currentmultilevel].tweak[group] = {}
-                end
-                self.current_option_settings[self.currentmultilevel].tweak[group][option] = value
-            end
+function CustomizationTab:SetTweak(level, option, value)
+    local presetdata = Levels.GetDataForLevelID(self.current_option_settings[level].preset)
+    if presetdata ~= nil and presetdata.overrides[option] ~= nil then
+        if value == presetdata.overrides[option] then
+            self.current_option_settings[level].tweaks[option] = nil
+        else
+            self.current_option_settings[level].tweaks[option] = value
+        end
+    else
+        if value == Customise.GetLocationDefaultForOption(presetdata.location, option) then
+            self.current_option_settings[level].tweaks[option] = nil
+        else
+            self.current_option_settings[level].tweaks[option] = value
         end
     end
+    self:UpdatePresetInfo(level)
 end
 
 function CustomizationTab:VerifyValidSeasonSettings()
-    local autumn = self:GetValueForOption("autumn")
-    local winter = self:GetValueForOption("winter")
-    local spring = self:GetValueForOption("spring")
-    local summer = self:GetValueForOption("summer")
+    local autumn = self:GetValueForOption(1, "autumn")
+    local winter = self:GetValueForOption(1, "winter")
+    local spring = self:GetValueForOption(1, "spring")
+    local summer = self:GetValueForOption(1, "summer")
     if autumn == "noseason" and winter == "noseason" and spring == "noseason" and summer == "noseason" then
         return false
     end
@@ -379,98 +457,87 @@ function CustomizationTab:VerifyValidSeasonSettings()
 end
 
 function CustomizationTab:LoadPreset(level, preset)
-    for k,v in pairs(self.presets) do
-        if preset == v.data then
-            self.presetdirty[level] = false
-            self.activepresets[level] = deepcopy(v)
-            return
+
+    local presetdata = nil
+    if preset ~= nil then
+        presetdata = Levels.GetDataForLevelID(preset)
+    else
+        local level_type = GetLevelType( self.servercreationscreen:GetGameMode() )
+        local location = SERVER_LEVEL_LOCATIONS[level]
+        presetdata = Levels.GetDefaultLevelData(level_type, location)
+    end
+
+    if self.allowEdit then
+        assert(presetdata ~= nil, "Could not load a preset with id "..tostring(preset))
+    else
+        if presetdata == nil then
+            print(string.format("WARNING! Could not load a preset with id %s, loading MOD_MISSING preset instead.", tostring(preset)))
+            presetdata = Levels.GetDataForLevelID("MOD_MISSING")
         end
     end
 
-    -- We can only get here if a world was created before all preset data was being populated into the save index.
-    print("Presets:")
-    local s = {}
-    for k,p in pairs(self.presets) do
-        table.insert(s, p.data)
-    end
-    print(table.concat(s,", "))
-    print("Error: Tried loading preset "..preset.." but we don't have that!")
+    self.current_option_settings[level] = {}
+    self.current_option_settings[level].preset = presetdata.id
+    self.current_option_settings[level].tweaks = {}
 
-    self:LoadUnknownPreset(level)
+    self:UpdatePresetInfo(level)
+
+    ---- We can only get here if a world was created before all preset data was being populated into the save index.
+    --print("Presets:")
+    --local s = {}
+    --for k,p in pairs(self.presets) do
+        --table.insert(s, p.data)
+    --end
+    --print(table.concat(s,", "))
+    --print("Error: Tried loading preset "..preset.." but we don't have that!")
+
+    --assert(false, "Do we still need to load a fake preset? I hope not...")
+    ----self:LoadUnknownPreset(level)
 end
 
-function CustomizationTab:LoadUnknownPreset(level)
-    -- Populate a "fake" empty preset so that the screen still functions in case the loaded preset is missing.
-    -- This is super gross, I know. I apologize. ~gjans
-    self.presetspinner.spinner:UpdateText(STRINGS.UI.CUSTOMIZATIONSCREEN.UNKNOWN_PRESET)
-    self.presetdesc:SetString(STRINGS.UI.CUSTOMIZATIONSCREEN.UNKNOWN_PRESET_DESC)
-    self.presetdirty[level] = false
-    self.activepresets[level] = {
-        basepreset = "UNKNOWN_PRESET",
-        data = "UNKNOWN_PRESET",
-        overrides = {},
-        text = STRINGS.UI.CUSTOMIZATIONSCREEN.UNKNOWN_PRESET,
-        desc = STRINGS.UI.CUSTOMIZATIONSCREEN.UNKNOWN_PRESET_DESC,
-    }
+--function CustomizationTab:LoadUnknownPreset(level)
+    ---- Populate a "fake" empty preset so that the screen still functions in case the loaded preset is missing.
+    ---- This is super gross, I know. I apologize. ~gjans
+    --self.presetspinner.spinner:UpdateText(STRINGS.UI.CUSTOMIZATIONSCREEN.UNKNOWN_PRESET)
+    --self.presetdesc:SetString(STRINGS.UI.CUSTOMIZATIONSCREEN.UNKNOWN_PRESET_DESC)
+    --self.presetdirty[level] = false
+    --self.activepresets[level] = {
+        --data = "UNKNOWN_PRESET",
+        --overrides = {},
+        --text = STRINGS.UI.CUSTOMIZATIONSCREEN.UNKNOWN_PRESET,
+        --desc = STRINGS.UI.CUSTOMIZATIONSCREEN.UNKNOWN_PRESET_DESC,
+    --}
 
-    table.insert(self.presets, 1, self.activepresets[level])
-end
+    --table.insert(self.presets, 1, {text=self.activepresets[level].text, data=self.activepresets[level].data})
+--end
 
 function CustomizationTab:SavePreset()
 
-    local function AddPreset(index, presetdata)
+    local function AddPreset(index, sourcedata, tweaks)
         local presetid = "CUSTOM_PRESET_"..index
         local presetname = STRINGS.UI.CUSTOMIZATIONSCREEN.CUSTOM_PRESET.." "..index
         local presetdesc = STRINGS.UI.CUSTOMIZATIONSCREEN.CUSTOM_PRESET_DESC.." "..index..". "..STRINGS.UI.CUSTOMIZATIONSCREEN.CUSTOMDESC
 
-        -- Add the preset to the preset spinner and make the preset the selected one
+        local preset = {
+            id        = presetid,
+            name      = presetname,
+            desc      = presetdesc,
+            overrides = deepcopy(tweaks),
+        }
 
-        local custom = GetTypeForLevelID(self.presetspinner.spinner:GetSelected().data) == LEVELTYPE.UNKNOWN
-        local base = custom and self.presetspinner.spinner:GetSelected().basepreset or self.presetspinner.spinner:GetSelected().data
-        local location = self.presetspinner.spinner:GetSelected().location
-        local preset = {text=presetname, data=presetid, desc=presetdesc, overrides=presetdata, basepreset=base, location=location}
-        -- just throw this to the end of the presets list for now
-        self.presets[#self.presets + 1] = preset
-        self.presetspinner.spinner:SetOptions(self.presets)
-        self.presetspinner.spinner:SetSelectedIndex(#self.presets)
+        preset = MergeMapsDeep(sourcedata, preset)
 
         -- And save it to the profile
         Profile:AddWorldCustomizationPreset(preset, index)
         Profile:Save()
 
-        self:ReloadPresetsFromProfile()
-        self:UpdateOptions()
+        self:LoadPreset(self.currentmultilevel, presetid)
+        self:Refresh()
 
-        self:ChangePresetForCurrentSlot(self.currentmultilevel, preset.data, preset.basepreset)
         if self.servercreationscreen then self.servercreationscreen:UpdateButtons(self.slot) end
     end
 
-    -- Grab the current data
-    -- First, the current preset's values
-    local newoverrides = {}
-    for i,override in ipairs(self.activepresets[self.currentmultilevel].overrides) do
-        table.insert(newoverrides, {override[1], override[2]})
-    end
-
-    -- Then, the current tweaks
-    for group,tweaks in pairs(self.current_option_settings[self.currentmultilevel].tweak) do
-        for tweakname, tweakvalue in pairs(tweaks) do
-            local found = false
-            for i,override in ipairs(newoverrides) do
-                if override[1] == tweakname then
-                    override[2] = tweakvalue
-                    found = true
-                    break
-                end
-            end
-
-            if not found then
-                table.insert(newoverrides, {tweakname, tweakvalue})
-            end
-        end
-    end
-
-    if #newoverrides <= 0 then return end
+    if self:GetNumberOfTweaks() <= 0 then return end
 
     -- Figure out what the id, name and description should be
     local presetnum = (Profile:GetWorldCustomizationPresets() and #Profile:GetWorldCustomizationPresets() or 0) + 1
@@ -480,17 +547,17 @@ function CustomizationTab:SavePreset()
         local modal = nil -- forward declare
         local menuitems =
         {
-            {text=STRINGS.UI.CUSTOMIZATIONSCREEN.OVERWRITE, 
+            {text=STRINGS.UI.CUSTOMIZATIONSCREEN.OVERWRITE,
                 cb = function()
                     TheFrontEnd:PopScreen()
-                    AddPreset(modal.overwrite_spinner.spinner:GetSelectedIndex(), newoverrides)
+                    AddPreset(modal.overwrite_spinner.spinner:GetSelectedIndex(), Levels.GetDataForLevelID(self.current_option_settings[self.currentmultilevel].preset, true), self.current_option_settings[self.currentmultilevel].tweaks)
                 end},
             {text=STRINGS.UI.CUSTOMIZATIONSCREEN.CANCEL,
                 cb = function()
                     TheFrontEnd:PopScreen()
                 end}
         }
-        modal = PopupDialogScreen(STRINGS.UI.CUSTOMIZATIONSCREEN.MAX_PRESETS_EXCEEDED_TITLE, STRINGS.UI.CUSTOMIZATIONSCREEN.MAX_PRESETS_EXCEEDED_BODY..STRINGS.UI.CUSTOMIZATIONSCREEN.MAX_PRESETS_EXCEEDED_BODYSPACING, menuitems)
+        modal = PopupDialogScreen(STRINGS.UI.CUSTOMIZATIONSCREEN.MAX_PRESETS_EXCEEDED_TITLE, STRINGS.UI.CUSTOMIZATIONSCREEN.MAX_PRESETS_EXCEEDED_BODY, menuitems)
 
         local spinner_options = {}
         for i=1,self.max_custom_presets do
@@ -515,205 +582,25 @@ function CustomizationTab:SavePreset()
         if self.servercreationscreen then self.servercreationscreen.last_focus = TheFrontEnd:GetFocusWidget() end
         TheFrontEnd:PushScreen(modal)
     else -- Otherwise, just save it
-        AddPreset(presetnum, newoverrides)
+        AddPreset(presetnum, Levels.GetDataForLevelID(self.current_option_settings[self.currentmultilevel].preset, true), self.current_option_settings[self.currentmultilevel].tweaks)
     end
-end
-
-function CustomizationTab:ChangePresetForCurrentSlot(level, preset, basepreset)
-    self.slotoptions[self.slot][level].actualpreset = preset
-    self.slotoptions[self.slot][level].preset = basepreset
-    self.slotoptions[self.slot][level].tweak = {}
-    self:UpdateOptions(level)
-
-    self.servercreationscreen:UpdateButtons(self.slot)
-end
-
-function CustomizationTab:RefreshSpinnerValues()
-    --these are in kind of a weird format, so convert it to something useful...
-    self.overrides = {}
-    for i, v in ipairs(self.presets) do
-        if self.activepresets[self.currentmultilevel].data == v.data then
-            for k, v2 in pairs(v.overrides) do
-                self.overrides[v2[1]] = v2[2]
-            end
-        end
-    end
-
-    local location = self.activepresets[self.currentmultilevel].location or "forest"
-    self.options = Customise.GetOptions(location, self.currentmultilevel == 1)
-    if self.customizationlist ~= nil then
-        self.customizationlist:Kill()
-    end
-
-    if not self:IsLevelEnabled(self.currentmultilevel) then
-        --Disabled level tab
-        return
-    end
-
-    self.customizationlist = self.current_option_settingspanel:AddChild(CustomizationList(location, self.options,
-        function(option, value)
-            self:SetTweak(option, value)
-            self:RefreshTabValues()
-        end))
-    self.customizationlist:SetPosition(-245, -24, 0)
-    self.customizationlist:SetFocusChangeDir(MOVE_LEFT, self.presetspinner)
-    self.customizationlist:SetPresetValues(self.overrides)
-    self.customizationlist:SetEditable(self.allowEdit)
-
-    for i,v in ipairs(self.options) do
-        self.customizationlist:SetValueForOption(v.name, self:GetValueForOption(v.name))
-    end
-end
-
-function CustomizationTab:UpdateOptions(singlelevel)
-
-    if singlelevel == nil then
-        self.current_option_settings = {}
-        for i,leveldata in ipairs(self.slotoptions[self.slot]) do
-
-            self.current_option_settings[i] = deepcopy(leveldata)
-            if self.current_option_settings[i] ~= nil then
-                local preset = self.current_option_settings[i].actualpreset
-                    or self.current_option_settings[i].preset
-                    or self.presets[i].data
-                self:LoadPreset(i, preset)
-
-                self.current_option_settings[i].tweak = self.current_option_settings[i].tweak or {}
-            else
-                self.current_option_settings[i] = { tweak = {} }
-            end
-        end
-        --V2C: need to load the default preset for disabled levels too
-        --     now that we don't hide any tabs
-        for i, v in ipairs(DEFAULT_PRESETS) do
-            if self.slotoptions[self.slot][i] == nil then
-                self:LoadPreset(i, v)
-            end
-        end
-    else
-        self.current_option_settings[singlelevel] = deepcopy(self.slotoptions[self.slot][singlelevel])
-        if self.current_option_settings[singlelevel] ~= nil then
-            local preset = self.current_option_settings[singlelevel].actualpreset
-                or self.current_option_settings[singlelevel].preset
-                or self.presets[1].data
-            self:LoadPreset(singlelevel, preset)
-
-            self.current_option_settings[singlelevel].tweak = self.current_option_settings[singlelevel].tweak or {}
-        end
-        -- if it is nil, the level has been removed in the slotoptions. cool.
-    end
-
-    self:RefreshSpinnerValues()
-    self:RefreshTabValues()
 end
 
 function CustomizationTab:IsLevelEnabled(level)
-    return self.slotoptions[self.slot] ~= nil and self.slotoptions[self.slot][level] ~= nil
-end
-
-function CustomizationTab:RefreshTabValues()
-    --V2C: filter presets for the tab based on the location of the current selection
-    local tablocation = self.activepresets[self.currentmultilevel].location or DEFAULT_TAB_LOCATIONS[self.currentmultilevel]
-
-    if tablocation ~= nil then
-        local filteredpresets = {}
-        for i, v in ipairs(self.presets) do
-            if v.location == tablocation then
-                table.insert(filteredpresets, v)
-            end
-        end
-        self.presetspinner.spinner:SetOptions(filteredpresets)
-    else
-        --This is fallback, but shouldn't happen with normal data
-        self.presetspinner.spinner:SetOptions(self.presets)
-    end
-
-    for i, presetdata in ipairs(self.activepresets) do
-        local clean = self:GetNumberOfTweaks(i) == 0
-
-        local locationname =
-            STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME[string.upper(self.activepresets[i].location or "")] or
-            STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME.UNKNOWN
-
-        --self.multileveltabs.tabs[i]:SetText(self.activepresets[i].text .. (clean and "" or "*"))
-
-        --V2C: make the tab heading very clear that one is Forest tab and one is Caves tab
-        local tabbtn = self.multileveltabs.tabs[i]
-        if self:IsLevelEnabled(i) then
-            --tab is enabled, make it look like a regular tab
-            tabbtn:SetText(locationname)
-            tabbtn:SetTextures("images/frontend.xml", "tab2_button.tex", "tab2_button_highlight.tex", "tab2_selected.tex", nil, nil, { 1, 1 }, { 0, 0 })
-            tabbtn.image:SetScale(.73)
-            tabbtn:SetFont(NEWFONT_OUTLINE)
-            tabbtn:SetDisabledFont(NEWFONT_SMALL)
-            tabbtn:SetTextColour(unpack(GOLD))
-            tabbtn:SetTextFocusColour(unpack(GOLD))
-            tabbtn:SetTextDisabledColour(unpack(BLACK))
-        elseif self.allowEdit then
-            --tab is disabled, make it look like an "Add ___" button
-            tabbtn:SetText(STRINGS.UI.SANDBOXMENU.ADDLEVEL.." "..locationname)
-            tabbtn:SetTextures("images/frontend.xml", "button_long.tex", "button_long_highlight.tex", "button_long_disabled.tex", "button_long_halfshadow.tex", nil, { 1, 1 }, { 6, 2 })
-            tabbtn.image:SetScale(.5, .6)
-            tabbtn:SetFont(NEWFONT_SMALL)
-            tabbtn:SetDisabledFont(NEWFONT_SMALL)
-            tabbtn:SetTextColour(unpack(BLACK))
-            tabbtn:SetTextFocusColour(unpack(BLACK))
-            tabbtn:SetTextDisabledColour(unpack(BLACK))
-        else
-            --tab is disabled, but we can't add it because this slot is not editable
-            tabbtn:SetText(STRINGS.UI.SANDBOXMENU.DISABLEDLEVEL.." "..locationname)
-            tabbtn:SetTextures("images/frontend.xml", "tab2_button.tex", "tab2_button.tex", "tab2_button.tex", nil, nil, { 1, 1 }, { 0, 0 })
-            tabbtn.image:SetScale(.73)
-            tabbtn:SetFont(NEWFONT_SMALL)
-            tabbtn:SetDisabledFont(NEWFONT_SMALL)
-            tabbtn:SetTextColour(unpack(BLACK))
-            tabbtn:SetTextFocusColour(unpack(BLACK))
-            tabbtn:SetTextDisabledColour(unpack(BLACK))
-        end
-
-        if i == self.currentmultilevel then
-            self.presetspinner.spinner:SetSelected(self.activepresets[i].data)
-            self.presetdesc:SetString(self.activepresets[i].desc)
-
-            if not clean then
-                self.presetdesc:SetString(STRINGS.UI.CUSTOMIZATIONSCREEN.CUSTOMDESC)
-                self.presetspinner.spinner:UpdateText(self.activepresets[i].text .. " " .. STRINGS.UI.CUSTOMIZATIONSCREEN.CUSTOM)
-            end
-
-            if not clean and self.allowEdit then
-                self.presetdirty[i] = true
-                self.revertbutton:Unselect()
-            else
-                self.presetdirty[i] = false
-                self.revertbutton:Select()
-            end
-        end
-    end
-
-    if self.allowEdit then
-        self.presetspinner.spinner:Enable()
-    else
-        self.presetspinner.spinner:Disable()
-        self.presetspinner.spinner:SetTextColour(0,0,0,1)
-    end
-
-    for i, dirty in ipairs(self.presetdirty) do
-        if dirty then
-            self.servercreationscreen:MakeDirty()
-            break
-        end
-    end
-
-    if self.servercreationscreen ~= nil and self.servercreationscreen.UpdateButtons ~= nil then
-        self.servercreationscreen:UpdateButtons(self.slot)
-    end
+    return self.current_option_settings[level] ~= nil
 end
 
 function CustomizationTab:CollectOptions()
-    local ret = deepcopy(self.current_option_settings)
-    for i,level in ipairs(self.current_option_settings) do
-        ret[i].presetdata = deepcopy(self.activepresets[i])
+    -- Everything outside of this screen only ever sees a flattened final list of settings.
+    local ret = {}
+    for level_index,level in ipairs(self.current_option_settings) do
+        ret[level_index] = Levels.GetDataForLevelID(level.preset)
+        local options = Customise.GetOptionsWithLocationDefaults(Levels.GetLocationForLevelID(level.preset), level_index == 1)
+        for i,option in ipairs(options) do
+            ret[level_index].overrides[option.name] = self:GetValueForOption(level_index, option.name)
+        end
     end
+
     return ret
 end
 
@@ -724,38 +611,53 @@ function CustomizationTab:UpdateSlot(slotnum, prevslot, delete)
     self.slot = slotnum
 
     -- Remember what was typed/set
+    local prev_option_settings = nil
     if prevslot and prevslot > 0 then
-        self.slotoptions[prevslot] = deepcopy(self.current_option_settings)
+        prev_option_settings = deepcopy(self.current_option_settings)
     end
 
+    self.current_option_settings = {}
+
     -- No save data
-    if slotnum < 0 or SaveGameIndex:IsSlotEmpty(slotnum) then
+    assert(slotnum > 0 and slotnum <= NUM_SAVE_SLOTS) -- not sure why this was a condition in the if, should always be a valid slot!
+    if SaveGameIndex:IsSlotEmpty(slotnum) then
         -- no slot, so hide all the details and set all the text boxes back to their defaults
         if prevslot and prevslot > 0 and SaveGameIndex:IsSlotEmpty(prevslot) then
             -- Duplicate prevslot's data into our new slot if it was also a blank slot
-            self.slotoptions[slotnum] = deepcopy(self.slotoptions[prevslot])
+            for i,prev in ipairs(prev_option_settings) do
+                self:LoadPreset(i, prev.preset)
+                self.current_option_settings[i].tweaks = deepcopy(prev.tweaks)
+            end
         else
-            self.slotoptions[slotnum] = { { tweak = {} } }
-
-            --Enable caves by default
-            --(by uncommenting.. it's disabled by default now)
-            --[[
-            self.slotoptions[self.slot][2] = {
-                actualpreset = DEFAULT_PRESETS[2],
-                preset = DEFAULT_PRESETS[2],
-                tweak={},
-            }]]
+            local location = SERVER_LEVEL_LOCATIONS[1]
+            
+            self:LoadPreset(1, nil)
         end
     else -- Save data
         self.allowEdit = false
-        self.slotoptions[slotnum] = SaveGameIndex:GetSlotGenOptions(slotnum) or { { tweak = {} } }
+        local options = SaveGameIndex:GetSlotGenOptions(slotnum)
+        if options == nil or GetTableSize(options) == 0 then
+            -- Ruh roh! Bad data. Fill in with a default.
+            local location = SERVER_LEVEL_LOCATIONS[1]
+            local level_type = GetLevelType( self.servercreationscreen:GetGameMode() )
+            local presetdata = Levels.GetDefaultLevelData(level_type, location)
+            self.slotoptions[slotnum] = { presetdata }
+        else
+            self.slotoptions[slotnum] = options
+        end
+
+        for i,level in ipairs(self.slotoptions[slotnum]) do
+            self:LoadPreset(i, level.id)
+            for option, value in pairs(level.overrides) do
+                self:SetTweak(i, option, value) -- SetTweak deduplicates.
+            end
+        end
     end
 
     local previouslevel = self.currentmultilevel
     self.currentmultilevel = 1
 
-    self:UpdateOptions()
-    self:UpdateMultilevelUI()
+    self:Refresh()
 
     if previouslevel ~= self.currentmultilevel and self:IsLevelEnabled(previouslevel) then
         self:SelectMultilevel(previouslevel)
@@ -764,46 +666,16 @@ end
 
 function CustomizationTab:GetNumberOfTweaks(levelonly)
     local numTweaks = 0
-
-    if self.current_option_settings then
-        for i, level in ipairs(self.current_option_settings) do
-            if levelonly == nil or i == levelonly then
-                if level.tweak then
-                    for i,v in pairs(level.tweak) do
-                        if v then
-                            for j,k in pairs(v) do
-                                numTweaks = numTweaks + 1
-                            end
-                        end
-                    end
+    for i, level in ipairs(self.current_option_settings) do
+        if levelonly == nil or i == levelonly then
+            if level then
+                for tweak,v in pairs(level.tweaks) do
+                    numTweaks = numTweaks + 1
                 end
             end
         end
-        return numTweaks
-    else
-        return 0
     end
-end
-
-function CustomizationTab:GetPresetName()
-    if self.slotoptions[self.slot][2] ~= nil then
-        return "Multilevel World" -- #TODO: strings.lua
-    elseif self.slotoptions[self.slot][1].presetdata then
-        return self.slotoptions[self.slot][1].presetdata.text
-    elseif self.slotoptions[self.slot][1].actualpreset ~= nil then
-        for i,preset in ipairs(self.presets) do
-            if preset.data == self.slotoptions[self.slot][1].actualpreset then
-                return preset.text
-            end
-        end
-    elseif self.slotoptions[self.slot][1].preset ~= nil then
-        for i,preset in ipairs(self.presets) do
-            if preset.data == self.slotoptions[self.slot][1].preset then
-                return preset.text
-            end
-        end
-    end
-    return self.presets[1].text
+    return numTweaks
 end
 
 function CustomizationTab:RevertChanges()
@@ -814,17 +686,10 @@ function CustomizationTab:RevertChanges()
             {
                 text = STRINGS.UI.CUSTOMIZATIONSCREEN.YES,
                 cb = function()
-                    if self.slotoptions[self.slot] and self.slotoptions[self.slot][self.currentmultilevel] then
-                        self.slotoptions[self.slot][self.currentmultilevel].tweak = {}
-                    else
-                        if self.slotoptions[self.slot] == nil then
-                            self.slotoptions[self.slot] = {}
-                        end
-                        self.slotoptions[self.slot][self.currentmultilevel] = {
-                            tweak = {},
-                        }
-                    end
-                    self:UpdateOptions(self.currentmultilevel)
+
+                    self:LoadPreset(self.currentmultilevel, self.current_option_settings[self.currentmultilevel].preset)
+                    self:Refresh()
+
                     TheFrontEnd:PopScreen()
                 end,
             },

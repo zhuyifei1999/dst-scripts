@@ -12,8 +12,6 @@ local prefabs =
 }
 
 local function common_postinit(inst)
-    inst:AddTag("ghostwithhat")
-
     --bearded (from beard component) added to pristine state for optimization
     inst:AddTag("bearded")
 end

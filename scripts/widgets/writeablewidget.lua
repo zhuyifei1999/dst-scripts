@@ -63,7 +63,6 @@ local function oncancel(inst, doer, widget)
     doer.HUD:CloseWriteableWidget()
 end
 
-
 local WriteableWidget = Class(Screen, function(self, owner, writeable, config)
     Screen._ctor(self, "SignWriter")
 
@@ -73,14 +72,27 @@ local WriteableWidget = Class(Screen, function(self, owner, writeable, config)
 
     self.isopen = false
 
-    local scale = .6
-    self:SetScale(scale,scale,scale)
+    self._scrnw, self._scrnh = TheSim:GetScreenSize()
+
+    self:SetScaleMode(SCALEMODE_PROPORTIONAL)
+    self:SetMaxPropUpscale(MAX_HUD_SCALE)
     self:SetPosition(0, 0, 0)
     self:SetVAnchor(ANCHOR_MIDDLE)
     self:SetHAnchor(ANCHOR_MIDDLE)
 
+    self.scalingroot = self:AddChild(Widget("writeablewidgetscalingroot"))
+    self.scalingroot:SetScale(TheFrontEnd:GetHUDScale())
+    self.inst:ListenForEvent("continuefrompause", function()
+        if self.isopen then
+            self.scalingroot:SetScale(TheFrontEnd:GetHUDScale())
+        end
+    end, TheWorld)
+
+    self.root = self.scalingroot:AddChild(Widget("writeablewidgetroot"))
+    self.root:SetScale(.6, .6, .6)
+
     -- secretly this thing is a modal Screen, it just LOOKS like a widget
-    self.black = self:AddChild(Image("images/global.xml", "square.tex"))
+    self.black = self.root:AddChild(Image("images/global.xml", "square.tex"))
     self.black:SetVRegPoint(ANCHOR_MIDDLE)
     self.black:SetHRegPoint(ANCHOR_MIDDLE)
     self.black:SetVAnchor(ANCHOR_MIDDLE)
@@ -89,21 +101,21 @@ local WriteableWidget = Class(Screen, function(self, owner, writeable, config)
     self.black:SetTint(0, 0, 0, 0)
     self.black.OnMouseButton = function() oncancel(self.writeable, self.owner, self) end
 
-    self.bganim = self:AddChild(UIAnim())
-    self.bganim:SetScale(1,1,1)
-    self.bgimage = self:AddChild(Image())
-    self.bganim:SetScale(1,1,1)
+    self.bganim = self.root:AddChild(UIAnim())
+    self.bganim:SetScale(1, 1, 1)
+    self.bgimage = self.root:AddChild(Image())
+    self.bganim:SetScale(1, 1, 1)
 
-    --self.title = self:AddChild(Text(BUTTONFONT, 50))
+    --self.title = self.root:AddChild(Text(BUTTONFONT, 50))
     --self.title:SetPosition(0, 70, 0)
     --self.title:SetColour(0, 0, 0, 1)
     --self.title:SetString(self.config.prompt)
 
-    --self.edit_text_bg = self:AddChild(Image("images/textboxes.xml", "textbox_long.tex"))
+    --self.edit_text_bg = self.root:AddChild(Image("images/textboxes.xml", "textbox_long.tex"))
     --self.edit_text_bg:SetPosition(0, 5, 0)
     --self.edit_text_bg:ScaleToSize(480, 50)
 
-    self.edit_text = self:AddChild(TextEdit(BUTTONFONT, 50, ""))
+    self.edit_text = self.root:AddChild(TextEdit(BUTTONFONT, 50, ""))
     self.edit_text:SetColour(0, 0, 0, 1)
     self.edit_text:SetForceEdit(true)
     self.edit_text:SetPosition(0, 40, 0)
@@ -130,13 +142,13 @@ local WriteableWidget = Class(Screen, function(self, owner, writeable, config)
     local menuoffset = config.menuoffset or Vector3(0, 0, 0)
     if TheInput:ControllerAttached() then
         local spacing = 150
-        self.menu = self:AddChild(Menu(self.buttons, spacing, true, "none"))
+        self.menu = self.root:AddChild(Menu(self.buttons, spacing, true, "none"))
         self.menu:SetTextSize(40)
         local w = self.menu:AutoSpaceByText(15)
         self.menu:SetPosition(menuoffset.x - .5 * w, menuoffset.y, menuoffset.z)
     else
         local spacing = 110
-        self.menu = self:AddChild(Menu(self.buttons, spacing, true, "small"))
+        self.menu = self.root:AddChild(Menu(self.buttons, spacing, true, "small"))
         self.menu:SetTextSize(35)
         self.menu:SetPosition(menuoffset.x - .5 * spacing * (#self.buttons - 1), menuoffset.y, menuoffset.z)
     end
@@ -171,9 +183,9 @@ local WriteableWidget = Class(Screen, function(self, owner, writeable, config)
     end
 
     if config.pos ~= nil then
-        self:SetPosition(config.pos)
+        self.root:SetPosition(config.pos)
     else
-        self:SetPosition(0, 150, 0)
+        self.root:SetPosition(0, 150, 0)
     end
 
     --if config.buttoninfo ~= nil then
@@ -262,6 +274,16 @@ function WriteableWidget:OnControl(control, down)
         end
         if control == CONTROL_OPEN_DEBUG_CONSOLE then
             return true
+        end
+    end
+end
+
+function WriteableWidget:OnUpdate()
+    if self.isopen then
+        local scrnw, scrnh = TheSim:GetScreenSize()
+        if scrnw ~= self._scrnw or scrnh ~= self._scrnh then
+            self._scrnw, self._scrnh = scrnw, scrnh
+            self.scalingroot:SetScale(TheFrontEnd:GetHUDScale())
         end
     end
 end

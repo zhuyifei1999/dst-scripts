@@ -8,7 +8,7 @@ AddRoom("BurntForestStart", {
 									},	
 									distributepercent = 0.6,
 									distributeprefabs= {
-										evergreen = 3 + math.random(4),
+										evergreen = function() return 3 + math.random(4) end,
 										charcoal = 0.2,
 									},
 									prefabdata={
@@ -20,15 +20,10 @@ AddRoom("SafeSwamp", {
 					colour={r=0.2,g=0.0,b=0.2,a=0.3},
 					value = GROUND.MARSH,
 					contents =  {
-					                countprefabs= {
-					                    --TODO: jcheng: fix mandrakes
-					                    --mandrake = math.random(1,2),
-					                },
 					                distributepercent = 0.2,
 									distributeprefabs = {
 										marsh_tree=1,
 										marsh_bush=1,
-										--TODO: Traps need to be not "owned" by player
 					                }
 					            }
 					})

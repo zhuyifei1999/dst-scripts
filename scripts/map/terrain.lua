@@ -128,6 +128,14 @@ TERRAIN_FILTER.Print = function (filter)
 	return val
 end
 
-local rooms = require("map/rooms")
+-- gjans: Rooms should be tweaked from mods using the AddRoomPreInit function now. Preserving backwards compatability here, but with a warning.
+local Rooms = require("map/rooms")
+local old_rooms = {}
+local old_rooms_mt = {}
+old_rooms_mt.__index = function(table, key)
+    moderror(string.format("Accessing 'terrain.rooms' directly is being deprecated, please use AddRoomPreInit(\"%s\") instead!", key ))
+    return Rooms.GetRoomByName(key)
+end
+setmetatable(old_rooms, old_rooms_mt)
 
-terrain={rooms=rooms, filter=TERRAIN_FILTER}
+terrain={rooms=old_rooms, filter=TERRAIN_FILTER}

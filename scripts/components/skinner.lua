@@ -26,7 +26,7 @@ function SetSkinMode( anim_state, prefab, base_skin, clothing_names, skintype, d
 	end
 					
 	--if not ghost, then we need to apply the clothing
-	if skintype ~= "ghost_skin" and skintype ~= "werebeaver_skin" then
+	if skintype ~= "ghost_skin" and skintype ~= "werebeaver_skin" and skintype ~= "ghost_werebeaver_skin" then
 		local needs_legacy_fixup = not anim_state:BuildHasSymbol( "torso_pelvis" ) --support clothing on legacy mod characters
 		local torso_build = nil
 		local pelvis_build = nil
@@ -235,6 +235,7 @@ function Skinner:SetSkinMode(skintype, default_build)
 	end
 	
 	if skintype == "ghost_skin" then
+		--DST characters should all be using self.skin_data, ghostbuild is legacy for mod characters
 		base_skin = self.skin_data[skintype] or self.inst.ghostbuild or default_build or "ghost_" .. self.inst.prefab .. "_build"
 	else
 		base_skin = self.skin_data[skintype] or default_build or self.inst.prefab

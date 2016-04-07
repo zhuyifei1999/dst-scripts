@@ -7,54 +7,35 @@ require("map/level")
 
 AddLevel(LEVELTYPE.SURVIVAL, {
         id="DST_CAVE",
-        name=STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELS[12],
-        desc= STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELDESC[12],
+        name=STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELS.DST_CAVE,
+        desc= STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELDESC.DST_CAVE,
         location = "cave",
-        hideinfrontend = false,
+        version = 2,
 
         overrides={
-            {"task_set",        "cave_default"},
-            {"start_location",  "caves"},
-
-            --{"day",           "onlynight"},
-            {"waves",           "off"},
-            {"layout_mode",     "RestrictNodesByKey"},
-            {"wormhole_prefab", "tentacle_pillar" },
         },
         background_node_range = {0,1},
-        required_prefabs = {
-            "multiplayer_portal",
-        },
     })
 
 AddLevel(LEVELTYPE.SURVIVAL, {
         id="DST_CAVE_PLUS",
-        name=STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELS[13],
-        desc= STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELDESC[13],
+        name=STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELS.DST_CAVE_PLUS,
+        desc= STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELDESC.DST_CAVE_PLUS,
         location = "cave",
-        hideinfrontend = false,
-        
+        version = 2,
+
         overrides={
-                {"task_set",        "cave_default"},
-                {"start_location",  "caves"},
+            boons = "often",
 
-                {"boons",           "often"},
-                {"cave_spiders",    "often"},
-                {"berrybush",       "rare"},
-                {"carrot",          "rare"},
-                {"rabbits",         "rare"},
-                {"flower_cave",     "rare"},
-                {"wormlights",      "rare"},
+            cave_spiders = "often",
 
-                -- {"world_size",       "large"},   --large is now default, kept here for clarity   
-                -- {"task_set",         "default"}, --don't need to specify default, kept here for clarity      
+            rabbits = "rare",
 
-                {"waves",           "off"},
-                {"layout_mode",     "RestrictNodesByKey"},
-                {"wormhole_prefab", "tentacle_pillar" },
+            berrybush = "rare",
+            carrot = "rare",
+
+            flower_cave = "rare",
+            wormlights = "rare",
         },
         background_node_range = {0,1},
-        required_prefabs = {
-            "multiplayer_portal",
-        },
     })

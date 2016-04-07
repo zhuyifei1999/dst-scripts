@@ -27,6 +27,8 @@ return CreatePrefabSkin("willow_formal",
 	ui_preview = ui_preview,
 	tags = tags,
 	
+	--torso_tuck_builds = { "willow_formal" },
+	
 	skip_item_gen = false,
 	skip_giftable_gen = false,
 	

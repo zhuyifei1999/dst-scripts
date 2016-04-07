@@ -5,7 +5,6 @@ local Text = require "widgets/text"
 local Image = require "widgets/image"
 
 local Widget = require "widgets/widget"
-local Levels = require "map/levels"
 
 local OnlineStatus = require "widgets/onlinestatus"
 local ScrollableList = require "widgets/scrollablelist"

@@ -10,25 +10,6 @@ local TEMPLATES = require "widgets/templates"
 local Customise = require "map/customise"
 local Levels = require "map/levels"
 
-local DEFAULT_TAB_LOCATIONS =
-{
-    "forest",
-    "cave",
-}
-
-local function DoMultiLevelUpgrade(self)
-    --V2C: TODO: get rid of this upgrade eventually
-    --NOTE: Also in saveindex.lua
-    if self.current_option_settings.presetdata ~= nil or
-        self.current_option_settings.tweak ~= nil or
-        self.current_option_settings.actualpreset ~= nil or
-        self.current_option_settings.preset ~= nil or
-        next(self.current_option_settings) == nil then
-        --V2C: Detected legacy single-level world options table
-        self.current_option_settings = { self.current_option_settings }
-    end
-end
-
 local function OnClickTab(self, level)
     self:SelectMultilevel(level)
     if TheInput:ControllerAttached() and not TheFrontEnd.tracking_mouse then
@@ -36,36 +17,13 @@ local function OnClickTab(self, level)
     end
 end
 
-local ViewCustomizationModalScreen = Class(Screen, function(self, worldgenoptions)
+local ViewCustomizationModalScreen = Class(Screen, function(self, leveldata)
     Widget._ctor(self, "ViewCustomizationModalScreen")
 
     self.currentmultilevel = 1
-    self.presets = {}
-
-    for i, level in pairs(Levels.sandbox_levels) do
-        table.insert(self.presets, {text=level.name, data=level.id, desc = level.desc, overrides = level.overrides, location = level.location})
-    end
 
     --V2C: assert comment is here just as a reminder
-    --assert(worldgenoptions ~= nil)
-
-    self.current_option_settings = deepcopy(worldgenoptions)
-    DoMultiLevelUpgrade(self)
-
-    -- Populate the settings with preset data.
-    -- Note: this tries "actualpreset" before "preset". "actualpreset" may be a custom preset and so won't be present/accurate on a remote machine
-    for i, level in ipairs(self.current_option_settings) do
-        level.tweak = level.tweak or {}
-        if level.presetdata == nil then
-            if self:FindPresetData(level.actualpreset) ~= nil then
-                self:LoadPresetData(i, level.actualpreset)
-            elseif self:FindPresetData(level.preset) ~= nil then
-                self:LoadPresetData(i, level.preset)
-            else
-                self:LoadPresetData(i, self.presets[i].data)
-            end
-        end
-    end
+    --assert(leveldata ~= nil)
 
     self.black = self:AddChild(Image("images/global.xml", "square.tex"))
     self.black:SetVRegPoint(ANCHOR_MIDDLE)
@@ -96,30 +54,6 @@ local ViewCustomizationModalScreen = Class(Screen, function(self, worldgenoption
     self.optionspanelbg.fill:SetPosition(9, -15)
     self.optionspanelbg:SetPosition(0,0,0)
 
-    self.multileveltabs = self.optionspanel:AddChild(Widget("multileveltabs"))
-    self.multileveltabs:SetPosition(9, 180, 0)
-
-    self.multileveltabs.tabs =
-    {
-        self.multileveltabs:AddChild(TEMPLATES.TabButton(-123, 0, "", function() OnClickTab(self, 1) end, "small")),
-        self.multileveltabs:AddChild(TEMPLATES.TabButton(123, 0, "", function() OnClickTab(self, 2) end, "small")),
-    }
-
-    for i, v in ipairs(self.multileveltabs.tabs) do
-        if self:IsLevelEnabled(i) then
-            v:SetText(STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME[string.upper(self.current_option_settings[i].presetdata.location or "")] or STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME.UNKNOWN)
-        else
-            if self:IsLevelEnabled(1) and self.current_option_settings[1].presetdata.location == DEFAULT_TAB_LOCATIONS[1] then
-                v:SetText(STRINGS.UI.SANDBOXMENU.DISABLEDLEVEL.." "..STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME[string.upper(DEFAULT_TAB_LOCATIONS[i])])
-            end
-            v:SetTextures("images/frontend.xml", "tab2_button.tex", "tab2_button.tex", nil, nil, { 1, 1 }, { 0, 0 })
-        end
-        v.image:SetScale(1.135, 1)
-    end
-
-    self:HookupFocusMoves()
-    self:UpdateMultilevelUI()
-
     if not TheInput:ControllerAttached() then
         self.button = self.optionspanel:AddChild(ImageButton())
         self.button:SetText(STRINGS.UI.SERVERLISTINGSCREEN.OK)
@@ -127,33 +61,59 @@ local ViewCustomizationModalScreen = Class(Screen, function(self, worldgenoption
         self.button:SetPosition(0,-257)
     end
 
-    self:RefreshSpinnerValues()
-end)
+    self.leveldata = deepcopy(leveldata)
 
-function ViewCustomizationModalScreen:FindPresetData(preset_id)
-    local preset = nil
-    for k,v in pairs(self.presets) do
-        if v.data == preset_id then
-            return v
+    if self.leveldata ~= nil and self.leveldata[1] and self.leveldata[1].version ~= nil and self.leveldata[1].version >= 2 then
+
+        self.multileveltabs = self.optionspanel:AddChild(Widget("multileveltabs"))
+        self.multileveltabs:SetPosition(9, 180, 0)
+
+        self.multileveltabs.tabs =
+        {
+            self.multileveltabs:AddChild(TEMPLATES.TabButton(-123, 0, "", function() OnClickTab(self, 1) end, "small")),
+            self.multileveltabs:AddChild(TEMPLATES.TabButton(123, 0, "", function() OnClickTab(self, 2) end, "small")),
+        }
+
+        for i, v in ipairs(self.multileveltabs.tabs) do
+            if self:IsLevelEnabled(i) then
+
+                local locationid = string.upper(self.leveldata[i].location)
+                local locationname = STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME[locationid] or STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME.UNKNOWN
+
+                v:SetText(locationname)
+            else
+                v:Disable()
+                v:Hide()
+            end
+            v.image:SetScale(1.135, 1)
         end
+
+        self:HookupFocusMoves()
+        self:UpdateMultilevelUI()
+
+        self:Refresh()
+    else
+        self.missingtitle = self.optionspanel:AddChild(Text(BUTTONFONT, 50, STRINGS.UI.SERVERLISTINGSCREEN.MISSINGDATATITLE))
+        self.missingtitle:SetColour(0,0,0,1)
+        self.missingtitle:SetPosition(0, 110)
+
+        self.missingbody = self.optionspanel:AddChild(Text(NEWFONT, 28, STRINGS.UI.SERVERLISTINGSCREEN.MISSINGDATABODY))
+        self.missingbody:SetRegionSize(450, 250)
+        self.missingbody:SetVAlign(ANCHOR_TOP)
+        self.missingbody:SetColour(0,0,0,1)
+        self.missingbody:SetPosition(0, -50)
+        self.missingbody:EnableWordWrap(true)
     end
-    return nil
-end
-
-function ViewCustomizationModalScreen:LoadPresetData(level, preset_id)
-    assert(self.current_option_settings[level].presetdata == nil, "Trying to load presetdata but it already exists!")
-
-    self.current_option_settings[level].presetdata = self:FindPresetData(preset_id)
-end
+end)
 
 function ViewCustomizationModalScreen:SelectMultilevel(level)
     self.currentmultilevel = level
-    self:RefreshSpinnerValues()
+    self:Refresh()
     self:UpdateMultilevelUI()
 end
 
 function ViewCustomizationModalScreen:IsLevelEnabled(level)
-    return self.current_option_settings[level] ~= nil
+    return self.leveldata[level] ~= nil
 end
 
 function ViewCustomizationModalScreen:UpdateMultilevelUI()
@@ -166,19 +126,15 @@ function ViewCustomizationModalScreen:UpdateMultilevelUI()
     end
 end
 
-function ViewCustomizationModalScreen:RefreshSpinnerValues()
-    --[[self.title = self.optionspanel:AddChild(Text(BUTTONFONT, 45, nil, { 0, 0, 0, 1 }))
-    self.title:SetPosition(0, 175)
-    self.title:SetString(self.current_option_settings[1].presetdata.text)]]
-
-    local location = self.current_option_settings[self.currentmultilevel].presetdata.location or DEFAULT_TAB_LOCATIONS[self.currentmultilevel]
-    self.options = Customise.GetOptions(location, self.currentmultilevel == 1)
+function ViewCustomizationModalScreen:Refresh()
+    local location = self.leveldata[self.currentmultilevel].location
+    local options = Customise.GetOptionsWithLocationDefaults(location, self.currentmultilevel == 1)
 
     if self.customizationlist ~= nil then
         self.customizationlist:Kill()
     end
 
-    self.customizationlist = self.optionspanel:AddChild(CustomizationList(location, self.options, nil))
+    self.customizationlist = self.optionspanel:AddChild(CustomizationList(location, options, nil))
     self.customizationlist:SetPosition(-3, -40, 0)
     self.customizationlist:SetScale(.85)
     self.customizationlist:SetEditable(false)
@@ -188,38 +144,31 @@ function ViewCustomizationModalScreen:RefreshSpinnerValues()
     end
     self.customizationlist:SetFocusChangeDir(MOVE_UP, toleveltab)
 
-    local title = self.current_option_settings[self.currentmultilevel].presetdata.text
-    if next(self.current_option_settings[self.currentmultilevel].tweak) ~= nil then
-        title = title.." "..STRINGS.UI.CUSTOMIZATIONSCREEN.CUSTOM
+    local presetdata = Levels.GetDataForLevelID(self.leveldata[self.currentmultilevel].id)
+    if presetdata == nil then
+        print("Couldn't get data for "..tostring(self.leveldata[self.currentmultilevel].id))
+        presetdata = Levels.GetDataForLocation(self.leveldata[self.currentmultilevel].location)
     end
+    if presetdata ~= nil then
+        self.customizationlist:SetPresetValues(presetdata)
+    end
+
+    local title = self.leveldata[self.currentmultilevel].name
+    --if next(self.leveldata[self.currentmultilevel].tweak) ~= nil then
+        ----title = title.." "..STRINGS.UI.CUSTOMIZATIONSCREEN.CUSTOM
+    --end
     self.customizationlist:SetTitle(title)
 
     self.default_focus = self.customizationlist
 
-    for i,v in ipairs(self.options) do
-        self.customizationlist:SetValueForOption(v.name, self:GetValueForOption(v.name))
+    for i,v in ipairs(options) do
+        self.customizationlist:SetValueForOption(v.name, self:GetValueForOption(self.currentmultilevel, v.name))
     end
 end
 
-function ViewCustomizationModalScreen:GetValueForOption(option)
-    local levelopts = self.current_option_settings[self.currentmultilevel]
-    for idx,opt in ipairs(self.options) do
-        if (opt.name == option) then
-            if self.current_option_settings[self.currentmultilevel].tweak[opt.group] then
-                local value = self.current_option_settings[self.currentmultilevel].tweak[opt.group][opt.name]
-                if value then
-                    return value
-                end
-            end
-            for i,override in ipairs(levelopts.presetdata.overrides) do
-                if override[1] == option then
-                    return override[2]
-                end
-            end
-            return opt.default
-        end
-    end
-    return nil
+function ViewCustomizationModalScreen:GetValueForOption(level, option)
+    return self.leveldata[level].overrides[option]
+        or Customise.GetLocationDefaultForOption(self.leveldata[level].location, option)
 end
 
 function ViewCustomizationModalScreen:Cancel()

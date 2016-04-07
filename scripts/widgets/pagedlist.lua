@@ -26,7 +26,7 @@ local PagedList = Class(Widget, function(self, width, updatefn, widgetstoupdate)
     	self.updatefn = updatefn
     	self.static_widgets = widgetstoupdate
     else
-	    assert("PagedList requires static widgets and an update function")
+	    assert(false, "PagedList requires static widgets and an update function")
 	end
 
 	self.page_number = 1
@@ -144,10 +144,13 @@ function PagedList:GetHelpText()
 
 	local t = {}
 	if self.left_button and self.left_button:IsEnabled() then
-		table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_SCROLLBACK, false, false) .. " " .. STRINGS.UI.HELP.PREVPAGE)
-	end
 
-	if self.right_button and self.right_button:IsEnabled() then
+		if self.right_button and self.right_button:IsEnabled() then
+			table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_SCROLLBACK, false, false) .. "/" .. TheInput:GetLocalizedControl(controller_id, CONTROL_SCROLLFWD, false, false) .. " " .. STRINGS.UI.HELP.CHANGEPAGE)
+		else
+			table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_SCROLLBACK, false, false) .. " " .. STRINGS.UI.HELP.PREVPAGE)
+		end
+	elseif self.right_button and self.right_button:IsEnabled() then
 		table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_SCROLLFWD, false, false) .. " " .. STRINGS.UI.HELP.NEXTPAGE)
 	end
 	

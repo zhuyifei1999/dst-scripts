@@ -79,6 +79,10 @@ function Combat:InCooldown()
     return false
 end
 
+function Combat:GetCooldown()
+    return self.laststartattacktime ~= nil and math.max(0, self.min_attack_period - GetTime() + self.laststartattacktime) or 0
+end
+
 function Combat:ResetCooldown()
     self.laststartattacktime = 0
 end

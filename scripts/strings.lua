@@ -270,6 +270,7 @@ STRINGS=
         SADDLE = "Saddle",
         UNSADDLE = "Unsaddle",
         BRUSH = "Brush",
+        DANCE = "Dance",
     },
 
 	-- PC controls get hex ranges EE90xx to EE9Fxx
@@ -937,6 +938,10 @@ STRINGS=
 
         WAXWELLJOURNAL = "Codex Umbra",
         SHADOWWAXWELL = "Shadow",
+        SHADOWLUMBER_BUILDER = "Shadow Logger",
+        SHADOWMINER_BUILDER = "Shadow Miner",
+        SHADOWDIGGER_BUILDER = "Shadow Digger",
+        SHADOWDUELIST_BUILDER = "Shadow Duelist",
 
         ACCOMPLISHMENT_SHRINE = "Accomploshrine",
 
@@ -1262,6 +1267,12 @@ STRINGS=
         BERNIE_INACTIVE = "A familiar face in this mad world.",
 
         WARDROBE = "Change your look.",
+
+        WAXWELLJOURNAL = "It'll blow your mind.",
+        SHADOWLUMBER_BUILDER = "Holds a grudge against trees.",
+        SHADOWMINER_BUILDER = "Mine that rock!",
+        SHADOWDIGGER_BUILDER = "Diggy diggy hole.",
+        SHADOWDUELIST_BUILDER = "Ethereael bodyguard.",
     },
 
     -- MAXWELL_TEST = {"Say pal, you don't look so good.", "You better find something to eat before night comes!"},
@@ -1480,6 +1491,7 @@ STRINGS=
         BOOKS = "Books",
         GEMOLOGY = "Gemology",
         ANCIENT = "Ancient",
+        SHADOW = "Shadow",
     },
 
     GREENAMULET_TOOLTIP = "Reduced Material Cost",
@@ -1730,6 +1742,7 @@ STRINGS.UI =
         CHANGECHARACTER = "Change Character",
         PREVPAGE = "Prev. Page",
         NEXTPAGE = "Next Page",
+        CHANGEPAGE = "Change Page",
         ROTATE_LEFT = "Rotate Left",
         ROTATE_RIGHT = "Rotate Right",
         ZOOM_IN = "Zoom In",
@@ -1768,6 +1781,7 @@ STRINGS.UI =
         NEEDSHADOWMANIPULATOR = "Use a shadow manipulator to build a prototype!",
         NEEDPRESTIHATITATOR = "Use a Prestihatitator to build a prototype!",
         NEEDSANCIENT_FOUR = "It seems that this altar is not fully functional!",
+        NEEDWAXWELLJOURNAL = "If only I had my journal with me...",
         CANTRESEARCH = "Some things are unknowable",
         DEFAULT = "Classic",
     },
@@ -1815,6 +1829,12 @@ STRINGS.UI =
             "Quentin Proust",
             "Hugo Moraleida",
             "Kris Fortune",
+            "James Lantz",
+            "Jason Dreger",
+            "Kristin Ruff-Frederickson",
+            "Dany Gagnon",
+            "May Wa Leng",
+            "Will Turnbull",
         },
 
         ALTGAMES = 
@@ -2088,6 +2108,11 @@ STRINGS.UI =
         CONTROLLER_DETECTED_BODY = "Play Don't Starve Together with a controller?\nYou won't be asked again but you can change this setting in the controls screen if you change your mind.\n\nNOTE: Controller support is not yet complete.",--"Do you want to use the controller to play Don't Starve?\n\nYou will not be asked again, but you can change this setting in the controls screen if you change your mind.",
         ENABLECONTROLLER = "Enable Controller",
         DISABLECONTROLLER = "Disable Controller",
+
+        NEWUSER_DETECTED_HEADER = "New to Don't Starve?",
+        NEWUSER_DETECTED_BODY = "You might want to explore on your own for a bit and get a feel for things. Would you like to host your own private game first?",
+        NEWUSER_NO = "No, Browse Games",
+        NEWUSER_YES = "Yes, Host Game",
 
         VERSION_YOURS = "Your Version: %s",
         VERSION_LATEST = "Latest Version: %s",
@@ -2392,16 +2417,16 @@ STRINGS.UI =
             DEFAULT = "You have been disconnected. We're not sure exactly why... Oh well!",
             ID_NO_FREE_INCOMING_CONNECTIONS = "The server is full. Try again later once one of these miscreants has been consumed by the gaping maw that is this game.",
             ID_DST_NO_FREE_PLAYER_SLOTS = "The server is full. Try again later once one of these miscreants has been consumed by the gaping maw that is this game.",
-            ID_CONNECTION_ATTEMPT_FAILED = "The server is not responding.\nTry yelling louder?",
-            ID_DST_DESTINATION_CONNECTION_ATTEMPT_FAILED = "The destination is not responding.\nTry yelling louder?",
+            ID_CONNECTION_ATTEMPT_FAILED = "The server is not responding. If only yelling louder would help...",
+            ID_DST_DESTINATION_CONNECTION_ATTEMPT_FAILED = "The destination server is not responding. That's not very polite, is it?",
             ID_INVALID_PASSWORD = "The password you entered was incorrect.\nAre you sure you're welcome in there?",
             ID_CONNECTION_LOST = "You have lost connection to the server. Maybe it's for the best, you know? Then again, I'm just a dialog box--who am I to say?",
             ID_DISCONNECTION_NOTIFICATION = "You have been disconnected from the server. Bye bye!",
             ID_ALREADY_CONNECTED = "You are already connected to the server. Maybe share some of that cloning science with the lab, OK?",
             ID_DST_LOGGED_IN_SOMEWHERE_ELSE = "Someone has just logged into this server using your account. We can't have clones running around--you'll have to go.",
-            ID_CONNECTION_BANNED = "You have been banned from this server. B-A-N-N-E-D. I'm not sure how much clearer I can be...",
-            ID_DST_USER_BANNED   = "You have been banned from this server. B-A-N-N-E-D. I'm not sure how much clearer I can be...",
-            ID_DST_USER_KICKED = "You have been kicked from this server. Are you miffed? Yes, you're likely miffed.",
+            ID_CONNECTION_BANNED = "You have been banned from this server. I guess that's that.",
+            ID_DST_USER_BANNED   = "You have been banned from this server. I guess that's that.",
+            ID_DST_USER_KICKED = "You have been kicked from this server. Well, you'll probably have more fun elsewhere anyways.",
             ID_DST_IDLE_TIMEOUT = "You have lost connection to the server. Maybe it's for the best, you know? Then again, I'm just a dialog box--who am I to say?",
             ID_DST_INCOMING_CONNECTIONS_DISABLED = "The server is temporarily not accepting new connections.  Please wait a moment before trying again.",
             FAILED_TO_AUTOJOIN_LAN = "Unable to join a LAN server.\nAre you sure it exists?",
@@ -2609,7 +2634,7 @@ STRINGS.UI =
         YES = "Yes",
         NO = "No",
         CUSTOMDESC = "Your world, your rules!",
-        CUSTOM = "(Custom)",
+        CUSTOM = "%s (Custom)",
         BACKTITLE = "Discard Changes",
         BACKBODY = "Do you want to discard the changes you made to your world generation options?",
         INVALIDSEASONCOMBO_TITLE = "All Seasons Disabled",
@@ -2617,6 +2642,7 @@ STRINGS.UI =
         OKAY = "Okay",
 
         PRESETLEVELS = {
+            -- indexed titles left in place for backwards compatability with mods...
                 "Default", 
                 "Together Plus",             -- Bootstrap the start
                 "Lights Out",   
@@ -2630,22 +2656,41 @@ STRINGS.UI =
                 "No Giants Here",           -- Nothing Reign Of Giants
                 "The Caves",                 -- Caves content in DST
                 "Caves Plus",                -- harder caves
+
+            SURVIVAL_TOGETHER = "Default",
+            SURVIVAL_TOGETHER_CLASSIC = "No Giants Here",
+            SURVIVAL_DEFAULT_PLUS = "Together Plus",
+            COMPLETE_DARKNESS = "Lights Out",
+            DST_CAVE = "The Caves",
+            DST_CAVE_PLUS = "Caves Plus",
+
+            MOD_MISSING = "<MOD MISSING>",
         },
                 
         PRESETLEVELDESC = {
-            "The standard Don't Starve experience.",
-            "A quicker start in a harsher world.",
-            "A dark twist on the standard Don't Starve experience.",
-            "The standard Don't Starve Experience 4",
-            "The standard Don't Starve Experience 5",
-            "The standard Don't Starve Experience 6",
-            "The standard Don't Starve Experience 7",
-            "The standard Don't Starve Experience 8",
-            "The standard Don't Starve Experience 9",
-            "The multiplayer Don't Starve experience.",
-            "Don't Starve Together with Reign of Giants turned off.",
-            "Delve into the caves... together!",
-            "A darker, more arachnidy cave experience.",
+            -- indexed titles left in place for backwards compatability with mods...
+                "The standard Don't Starve experience.",
+                "A quicker start in a harsher world.",
+                "A dark twist on the standard Don't Starve experience.",
+                "The standard Don't Starve Experience 4",
+                "The standard Don't Starve Experience 5",
+                "The standard Don't Starve Experience 6",
+                "The standard Don't Starve Experience 7",
+                "The standard Don't Starve Experience 8",
+                "The standard Don't Starve Experience 9",
+                "The multiplayer Don't Starve experience.",
+                "Don't Starve Together with Reign of Giants turned off.",
+                "Delve into the caves... together!",
+                "A darker, more arachnidy cave experience.",
+
+            SURVIVAL_TOGETHER = "The standard Don't Starve experience.",
+            SURVIVAL_TOGETHER_CLASSIC = "Don't Starve Together with Reign of Giants turned off.",
+            SURVIVAL_DEFAULT_PLUS = "A quicker start in a harsher world.",
+            COMPLETE_DARKNESS = "A dark twist on the standard Don't Starve experience.",
+            DST_CAVE = "Delve into the caves... together!",
+            DST_CAVE_PLUS = "A darker, more arachnidy cave experience.",
+
+            MOD_MISSING = "This preset came from a mod, but it looks like that mod isn't active right now!",
         },
 
         TASKSETNAMES = {
@@ -2658,7 +2703,6 @@ STRINGS.UI =
         CUSTOM_PRESET_DESC = "Custom preset",
         MAX_PRESETS_EXCEEDED_TITLE = "Preset Limit Reached",
         MAX_PRESETS_EXCEEDED_BODY = "Only 5 custom presets allowed.\nChoose one to overwrite:",
-        MAX_PRESETS_EXCEEDED_BODYSPACING = "\n\n\n\n ",
         OVERWRITE = "Overwrite",
         UNKNOWN_PRESET = "Unknown Preset",
         UNKNOWN_PRESET_DESC = "This game was started with some weird settings.",
@@ -2890,7 +2934,9 @@ STRINGS.UI =
             COMPETITIVE = "By playing harder, smarter, and better than your opponents, you will show them what you're made of.",
             MADNESS = "Fighting, looting, filling the world with spiders... Who knows what you'll do next?",
             ANY = "You're flexible, you can adapt to whatever world you find yourself in."
-        }
+        },
+        MISSINGDATATITLE = "Out-of-Date Server",
+        MISSINGDATABODY = "This server is not up to date so we can't display its world settings.",
     },
 
     SERVERCREATIONSCREEN =
@@ -2922,6 +2968,17 @@ STRINGS.UI =
             COOPERATIVE = "We're all trying to survive together. Here, we play our best and do what we can to tame this hostile world.",
             COMPETITIVE = "This is where you'll find a fair fight. Everyone needs a place to prove who's the best at surviving, fighting, building, or whatever.",
             MADNESS = "Anything goes on this server! Forests will be burned, food will be nommed, backs will be stabbed.",
+        },
+        NEWHOST_TITLE = "Creating your first world?",
+        NEWHOST_TYPE =
+        {
+            ALONE = "Alone",
+            TOGETHER = "Together",
+        },
+        NEWHOST_DESC =
+        {
+            ALONE = "Play alone in a private world while you learn the ropes and get a handle on the basics of not starving. This is recommended for your first time playing.",
+            TOGETHER = "Start a server to play with other players. You can decide if you want just friends or anyone to be able to join.",
         },
         CLANID = "Group ID:",
         CLANONLY = "Members Only:",
@@ -2970,6 +3027,8 @@ STRINGS.UI =
         INVALIDCLANSETTINGS_BODY = "You have to specify a steam group you belong to! Go back and check that number.",
         INVALIDINTENTIONSETTINGS_TITLE = "Missing Server Intention",
         INVALIDINTENTIONSETTINGS_BODY = "You forgot to choose a playstyle for your server!",
+        INVALIDNEWHOST_TITLE = "Creating your first world?",
+        INVALIDNEWHOST_BODY = "We recommend trying the game alone in a private world while you learn the ropes and get a handle on the basics of not starving.  But it's totally up to you!",
     },
     
     
@@ -3153,7 +3212,7 @@ STRINGS.UI =
 		ACCEPT = "Accept",
 		CANCEL = "Cancel",
 		SELECT_TITLE = "Choose An Item To Swap",
-		REMOVE_ITEM = "Remove Last Item",
+		REMOVE_ITEM = "Remove Item",
 		BACK = "Back",
 		MARKET = "Steam",
         EQUIPPED = "Last one!",
@@ -3183,6 +3242,9 @@ STRINGS.UI =
         RECIPE_INGREDIENT_ITEM = "<number> <rarity> <colour><item><plural>",
         RECIPE_INGREDIENT_TAGS = "<number> <rarity> <tags>Item<plural>",
         RECIPE_INGREDIENT_RARITY = "Any <number> <rarity> Item<plural>",
+
+        RECIPE_TITLE = "Wanted: <rarity> Items",
+        NO_RECIPES = "No offers",
 		
 		SKIN_COLLECTOR_SPEECH = 
 		{
@@ -3857,12 +3919,12 @@ STRINGS.UI =
         GENERATE = "OK",
         MAINMENU = "Cancel",
 
-        DISABLEDLEVEL = "No",
+        DISABLEDLEVEL = "No %s",
 
-        ADDLEVEL = "Add",
+        ADDLEVEL = "Add %s",
         ADDLEVEL_WARNING = "This requires running multiple servers at the same time.\nIs your computer up to the task?",
 
-        REMOVELEVEL = "Remove",
+        REMOVELEVEL = "Remove %s",
         REMOVELEVEL_WARNING = "Do you want to remove %s from this server?",
 
         LOCATIONTABNAME = {
@@ -3944,6 +4006,7 @@ STRINGS.UI =
         LOOPALWAYS = "Always",
         
         USEPRESETS = "Presets",
+        USEPRESETS_LOCATION = "%s Presets",
         CHAPTERS = {
                 "Chapter 1 of 5",
                 "Chapter 2 of 5",

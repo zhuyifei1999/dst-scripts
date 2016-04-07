@@ -1,5 +1,5 @@
 local texture = "fx/torchfire.tex"
-local shader = "shaders/particle.ksh"
+local shader = "shaders/vfx_particle.ksh"
 local colour_envelope_name = "firecolourenvelope"
 local scale_envelope_name = "firescaleenvelope"
 

@@ -3,12 +3,37 @@ require ("map/room_functions")
 
 
 local rooms = {}
+local modrooms = {}
+
+local function GetRoomByName(name)
+    for mod,roomset in pairs(modrooms) do
+        if roomset[name] ~= nil then
+            return roomset[name]
+        end
+    end
+
+    return rooms[name]
+end
+
 function AddRoom(name, data)
-	--print("AddRoom "..name)
+    --print("AddRoom "..name)
+    assert(GetRoomByName(name) == nil, "Adding a room '"..name.."' failed, it already exists!")
     function data:__tostring()
         return "Room: "..name
     end
-	rooms[name] = data
+    rooms[name] = data
+end
+
+function AddModRoom(mod, name, data)
+    if GetRoomByName(name) ~= nil then
+        moderror(string.format("Tried adding a room called '%s', but it already exists!\n\t\tRoom will not be added. Maybe try using AddRoomPreInit to extend an existing room instead?", name))
+        return
+    end
+    if modrooms[mod] == nil then modrooms[mod] = {} end
+    function data:__tostring()
+        return "ModRoom: "..name
+    end
+    modrooms[mod][name] = data
 end
 
 -- "Special" rooms
@@ -89,4 +114,16 @@ AddRoom("Blank", {
 					            }
 					})
 
-return rooms
+
+local function ClearModData(mod)
+    if mod ~= nil then
+        modrooms[mod] = nil
+    else
+        modrooms = {}
+    end
+end
+
+return {
+    GetRoomByName = GetRoomByName,
+    ClearModData = ClearModData,
+}

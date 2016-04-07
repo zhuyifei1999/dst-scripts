@@ -1,5 +1,5 @@
 local texture = "levels/textures/ds_fog1.tex"
-local shader = "shaders/particle.ksh"
+local shader = "shaders/vfx_particle.ksh"
 local colour_envelope_name = "mistcolourenvelope"
 local scale_envelope_name = "mistscaleenvelope"
 

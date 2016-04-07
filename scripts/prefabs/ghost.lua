@@ -1,6 +1,6 @@
 local assets =
 {
-    Asset("ANIM", "anim/ghost.zip"),
+    Asset("ANIM", "anim/player_ghost_withhat.zip"),
     Asset("ANIM", "anim/ghost_build.zip"),
     Asset("SOUND", "sound/ghost.fsb"),
 }
@@ -30,8 +30,6 @@ local function fn()
     inst.AnimState:SetBank("ghost")
     inst.AnimState:SetBuild("ghost_build")
     inst.AnimState:PlayAnimation("idle", true)
-    inst.AnimState:Hide("HAT")
-    inst.AnimState:Hide("HatFX")
     --inst.AnimState:SetMultColour(1,1,1,.6)
 
     inst:AddTag("monster")

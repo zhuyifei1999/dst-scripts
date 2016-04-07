@@ -1,3 +1,4 @@
+local modcompatability = require"modcompatability"
 
 function ModInfoname(name)
 	local prettyname = KnownModIndex:GetModFancyName(name)
@@ -70,11 +71,46 @@ local function RemoveDefaultCharacter(name)
 	end
 end
 
+-- Will assert if the modder has EnableModDebugPrint turned on, otherwise just print a warning for normal users.
+function moderror(message, level)
+    local modname = (global('env') and env.modname) or ModManager.currentlyloadingmod or "unknown mod"
+    local message = string.format("MOD ERROR: %s: %s", ModInfoname(modname), tostring(message))
+    if KnownModIndex:IsModErrorEnabled() then
+        level = level or 1
+        if level ~= 0 then
+            level = level + 1
+        end
+        return error(message, level)
+    else
+        print(message)
+        return
+    end
+end
+
+function modassert(test, message)
+    if not test then
+        return moderror(message)
+    else
+        return test
+    end
+end
+
+local function getfenvminfield(level, fieldname)
+    level = level + 1 -- increase level due to this function call
+    -- tail call doesn't have full debug info, its func is nil
+    -- use rawget to circumvent strict.lua's checks of _G that we might hit
+    while debug.getinfo(level) ~= nil and (debug.getinfo(level).func == nil or rawget(getfenv(level), fieldname) == nil) do
+        level = level + 1
+    end
+    assert(debug.getinfo(level) ~= nil, "Field " .. tostring(fieldname) .. " not found in callstack's functions' environments")
+    return getfenv(level)[fieldname]
+end
+
 local function initprint(...)
-	if KnownModIndex:IsModInitPrintEnabled() then
-		local modname = getfenv(3).modname
-		print(ModInfoname(modname), ...)
-	end
+    if KnownModIndex:IsModInitPrintEnabled() then
+        local modname = getfenvminfield(3, "modname")
+        print(ModInfoname(modname), ...)
+    end
 end
 
 -- Based on @no_signal's AddWidgetPostInit :)
@@ -114,6 +150,8 @@ end
 
 local function InsertPostInitFunctions(env, isworldgen)
 
+    env.modassert = modassert
+    env.moderror = moderror
 
 	env.postinitfns = {}
 	env.postinitdata = {}
@@ -130,6 +168,22 @@ local function InsertPostInitFunctions(env, isworldgen)
 	env.AddLevelPreInitAny = function(fn)
 		initprint("AddLevelPreInitAny")
 		table.insert(env.postinitfns.LevelPreInitAny, fn)
+	end
+	env.postinitfns.TaskSetPreInit = {}
+	env.AddTaskSetPreInit = function(tasksetname, fn)
+		initprint("AddTaskSetPreInit", tasksetname)
+		if env.postinitfns.TaskSetPreInit[tasksetname] == nil then
+			env.postinitfns.TaskSetPreInit[tasksetname] = {}
+		end
+		table.insert(env.postinitfns.TaskSetPreInit[tasksetname], fn)
+	end
+	env.postinitfns.TaskSetPreInitAny = {}
+	env.AddTaskSetPreInitAny = function(fn)
+		initprint("AddTaskSetPreInitAny")
+		if env.postinitfns.TaskSetPreInitAny == nil then
+			env.postinitfns.TaskSetPreInitAny = {}
+		end
+		table.insert(env.postinitfns.TaskSetPreInitAny, fn)
 	end
 	env.postinitfns.TaskPreInit = {}
 	env.AddTaskPreInit = function(taskname, fn)
@@ -148,30 +202,39 @@ local function InsertPostInitFunctions(env, isworldgen)
 		table.insert(env.postinitfns.RoomPreInit[roomname], fn)
 	end
 
+	env.AddLocation = function(...)
+		arg = {...}
+		initprint("AddLocation", arg[1].location)
+		AddModLocation(env.modname, ...)
+	end
 	env.AddLevel = function(...)
 		arg = {...}
 		initprint("AddLevel", arg[1], arg[2].id)
-		require("map/levels")
-		AddLevel(...)
+
+		arg[2] = modcompatability.UpgradeModLevelFromV1toV2(env.modname, arg[2])
+
+		AddModLevel(env.modname, unpack(arg))
 	end
 	env.AddTaskSet = function(...)
 		arg = {...}
 		initprint("AddTaskSet", arg[1])
-		require("map/tasks")
-		AddTaskSet(...)
+		AddModTaskSet(env.modname, ...)
 	end
 	env.AddTask = function(...)
 		arg = {...}
 		initprint("AddTask", arg[1])
-		require("map/tasks")
-		AddTask(...)
+		AddModTask(env.modname, ...)
 	end
 	env.AddRoom = function(...)
 		arg = {...}
 		initprint("AddRoom", arg[1])
-		require("map/rooms")
-		AddRoom(...)
+		AddModRoom(env.modname, ...)
 	end
+    env.AddStartLocation = function(...)
+        arg = {...}
+        initprint("AddStartLocation", arg[1])
+        AddModStartLocation(env.modname, ...)
+    end
 
 	env.AddGameMode = function(game_mode, game_mode_text)
 		print("Warning: AddGameMode has been removed.")

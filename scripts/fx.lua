@@ -234,6 +234,14 @@ local fx =
         tintalpha = 0.6,
     },
     {
+        name = "shadow_despawn",
+        bank = "statue_ruins_fx",
+        build = "statue_ruins_fx",
+        anim = "transform_nightmare",
+        sound = "dontstarve/maxwell/shadowmax_despawn",
+        tintalpha = 0.6,
+    },
+    {
         name = "mole_move_fx",
         bank = "mole_fx",
         build = "mole_move_fx",
@@ -262,12 +270,14 @@ local fx =
         bank = "emote_fx",
         build = "emote_fx",
         anim = "emote_fx",
+        fn = function(inst) inst.AnimState:SetFinalOffset(1) end,
     },
     {
         name = "tears",
         bank = "tears_fx",
         build = "tears",
         anim = "tears_fx",
+        fn = function(inst) inst.AnimState:SetFinalOffset(1) end,
     },
     {
         name = "spawn_fx_tiny",
@@ -344,6 +354,7 @@ local fx =
         build = "shock_fx",
         anim = "shock",
         sound = "dontstarve_DLC001/common/shocked",
+        fn = function(inst) inst.AnimState:SetFinalOffset(1) end,
     },
     {
         name = "groundpound_fx",

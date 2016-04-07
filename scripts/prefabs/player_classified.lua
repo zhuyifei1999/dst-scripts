@@ -321,6 +321,7 @@ local function OnTechTreesDirty(inst)
     inst.techtrees.SCIENCE = inst.sciencelevel:value()
     inst.techtrees.MAGIC = inst.magiclevel:value()
     inst.techtrees.ANCIENT = inst.ancientlevel:value()
+    inst.techtrees.SHADOW = inst.shadowlevel:value()
     if inst._parent ~= nil then
         inst._parent:PushEvent("techtreechange", { level = inst.techtrees })
     end
@@ -827,10 +828,12 @@ local function fn()
     inst.sciencebonus = net_tinybyte(inst.GUID, "builder.science_bonus")
     inst.magicbonus = net_tinybyte(inst.GUID, "builder.magic_bonus")
     inst.ancientbonus = net_tinybyte(inst.GUID, "builder.ancient_bonus")
+    inst.shadowbonus = net_tinybyte(inst.GUID, "builder.shadow_bonus")
     inst.ingredientmod = net_tinybyte(inst.GUID, "builder.ingredientmod")
     inst.sciencelevel = net_tinybyte(inst.GUID, "builder.accessible_tech_trees.SCIENCE", "techtreesdirty")
     inst.magiclevel = net_tinybyte(inst.GUID, "builder.accessible_tech_trees.MAGIC", "techtreesdirty")
     inst.ancientlevel = net_tinybyte(inst.GUID, "builder.accessible_tech_trees.ANCIENT", "techtreesdirty")
+    inst.shadowlevel = net_tinybyte(inst.GUID, "builder.accessible_tech_trees.SHADOW", "techtreesdirty")
     inst.isfreebuildmode = net_bool(inst.GUID, "builder.freebuildmode", "recipesdirty")
     inst.recipes = {}
     inst.bufferedbuilds = {}
@@ -844,6 +847,7 @@ local function fn()
     inst.sciencelevel:set(inst.techtrees.SCIENCE)
     inst.magiclevel:set(inst.techtrees.MAGIC)
     inst.ancientlevel:set(inst.techtrees.ANCIENT)
+    inst.shadowlevel:set(inst.techtrees.SHADOW)
 
     --Repair variables
     inst.repairevent = net_event(inst.GUID, "repair.repair")

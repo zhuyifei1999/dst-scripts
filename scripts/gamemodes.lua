@@ -3,15 +3,15 @@ DEFAULT_GAME_MODE = "survival" --only used when we can't actually find the game 
 
 GAME_MODES =
 {
-	survival	= { text = STRINGS.UI.GAMEMODES.SURVIVAL,	description = STRINGS.UI.GAMEMODES.SURVIVAL_DESCRIPTION,	mod_game_mode = false,	spawn_mode = "fixed",	resource_renewal = false, ghost_sanity_drain = true,	ghost_enabled = true,	portal_rez = false,	reset_time = { time = 120, loadingtime = 180 },	invalid_recipes = {} },
-	wilderness	= { text = STRINGS.UI.GAMEMODES.WILDERNESS,	description = STRINGS.UI.GAMEMODES.WILDERNESS_DESCRIPTION,	mod_game_mode = false,	spawn_mode = "scatter", resource_renewal = true,  ghost_sanity_drain = false,	ghost_enabled = false,	portal_rez = false,	reset_time = nil,								invalid_recipes = { "lifeinjector", "resurrectionstatue", "reviver" } },
-	endless		= { text = STRINGS.UI.GAMEMODES.ENDLESS,	description = STRINGS.UI.GAMEMODES.ENDLESS_DESCRIPTION,		mod_game_mode = false,	spawn_mode = "fixed",	resource_renewal = true,  ghost_sanity_drain = false,	ghost_enabled = true,	portal_rez = true,	reset_time = nil,								invalid_recipes = {} },
+	survival	= { text = STRINGS.UI.GAMEMODES.SURVIVAL,	description = STRINGS.UI.GAMEMODES.SURVIVAL_DESCRIPTION,	level_type = LEVELTYPE.SURVIVAL,	mod_game_mode = false,	spawn_mode = "fixed",	resource_renewal = false, ghost_sanity_drain = true,	ghost_enabled = true,	portal_rez = false,	reset_time = { time = 120, loadingtime = 180 },	invalid_recipes = {} },
+	wilderness	= { text = STRINGS.UI.GAMEMODES.WILDERNESS,	description = STRINGS.UI.GAMEMODES.WILDERNESS_DESCRIPTION,	level_type = LEVELTYPE.SURVIVAL,	mod_game_mode = false,	spawn_mode = "scatter", resource_renewal = true,  ghost_sanity_drain = false,	ghost_enabled = false,	portal_rez = false,	reset_time = nil,								invalid_recipes = { "lifeinjector", "resurrectionstatue", "reviver" } },
+	endless		= { text = STRINGS.UI.GAMEMODES.ENDLESS,	description = STRINGS.UI.GAMEMODES.ENDLESS_DESCRIPTION,		level_type = LEVELTYPE.SURVIVAL,	mod_game_mode = false,	spawn_mode = "fixed",	resource_renewal = true,  ghost_sanity_drain = false,	ghost_enabled = true,	portal_rez = true,	reset_time = nil,								invalid_recipes = {} },
 }
 
 
 
 function AddGameMode( game_mode, game_mode_text )
-	GAME_MODES[game_mode] = { modded_mode = true, text = game_mode_text, description = "", mod_game_mode = true, spawn_mode = "fixed", resource_renewal = false, ghost_sanity_drain = false, ghost_enabled = true, portal_rez = false, reset_time = nil, invalid_recipes = {} } 
+	GAME_MODES[game_mode] = { modded_mode = true, text = game_mode_text, description = "", level_type = LEVELTYPE.SURVIVAL, mod_game_mode = true, spawn_mode = "fixed", resource_renewal = false, ghost_sanity_drain = false, ghost_enabled = true, portal_rez = false, reset_time = nil, invalid_recipes = {} } 
 	return GAME_MODES[game_mode]
 end
 
@@ -148,4 +148,12 @@ function IsRecipeValidInGameMode( game_mode, recipe_name )
 		end
 	end
 	return true
+end
+
+function GetLevelType( game_mode )
+	if GAME_MODES[game_mode] then
+		return GAME_MODES[game_mode].level_type
+	end
+	assert( false, "game_mode not found in GAME_MODES" )
+	return LEVELTYPE.SURVIVAL
 end

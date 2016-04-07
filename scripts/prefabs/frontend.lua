@@ -26,6 +26,9 @@ local assets =
     Asset("ATLAS", "images/server_intentions.xml"),
     Asset("IMAGE", "images/server_intentions.tex"),
 
+    Asset("ATLAS", "images/new_host_picker.xml"),
+    Asset("IMAGE", "images/new_host_picker.tex"),
+
     Asset("FILE", "images/motd.xml"),
 
 	--character portraits
@@ -57,14 +60,15 @@ local assets =
     Asset("ANIM", "anim/frames_comp.zip"),
     Asset("ANIM", "anim/frame_bg.zip"),
 
---TEMP DISABLED SPECIALS MODE
+    -- DISABLE SPECIAL RECIPES
     --Asset("ANIM", "anim/button_weeklyspecial.zip"),
 
     Asset("ANIM", "anim/swapshoppe.zip"),
-
---TEMP DISABLED SPECIALS MODE
+    
+    -- DISABLE SPECIAL RECIPES
     --Asset("ANIM", "anim/swapshoppe_special_build.zip"),
     --Asset("ANIM", "anim/swapshoppe_special_lightfx.zip"),
+    --Asset("ANIM", "anim/swapshoppe_special_transitionfx.zip"),
 
     Asset("ANIM", "anim/swapshoppe_bg.zip"),
     Asset("ANIM", "anim/joystick.zip"),
@@ -72,7 +76,6 @@ local assets =
     Asset("ANIM", "anim/shoppe_frames.zip"),
     Asset("ANIM", "anim/skin_collector.zip"),
     Asset("ANIM", "anim/textbox.zip"),
-    Asset("ANIM", "anim/die.zip"),
 
     Asset("ANIM", "anim/chest_bg.zip"),
 }

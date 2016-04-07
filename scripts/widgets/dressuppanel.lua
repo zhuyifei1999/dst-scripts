@@ -330,7 +330,7 @@ function DressupPanel:MakeSpinner(slot)
 	}
 
 
-	local spinner_width = 224
+	local spinner_width = 226
 	local spinner_height = 86
 	
 	--local bg = spinner_group:AddChild(Image("images/lobbyscreen.xml", "playerlobby_whitebg_chat.tex"))
@@ -360,7 +360,7 @@ function DressupPanel:MakeSpinner(slot)
 	spinner_group.glow:SetClickable(false)
 	spinner_group.glow:Hide()
 
-	spinner_group.spinner = spinner_group:AddChild(AnimSpinner( self:GetSkinOptionsForSlot(slot), spinner_width, nil, {font=NEWFONT_OUTLINE, size=22}, nil, nil, textures, true, 100, 50 ))
+	spinner_group.spinner = spinner_group:AddChild(AnimSpinner( self:GetSkinOptionsForSlot(slot), spinner_width, nil, {font=NEWFONT_OUTLINE, size=22}, nil, nil, textures, true, 104, 50 ))
 	spinner_group.spinner:SetAnim("frames_comp", "fr", "icon", "SWAP_ICON", true)
 	spinner_group.spinner.fganim:GetAnimState():Hide("frame")
 	spinner_group.spinner.fganim:GetAnimState():Hide("NEW")

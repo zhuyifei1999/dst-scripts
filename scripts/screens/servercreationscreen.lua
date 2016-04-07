@@ -227,6 +227,10 @@ function ServerCreationScreen:UpdateModeSpinner(slotnum)
     self.server_settings_tab:UpdateModeSpinner(slotnum)
 end
 
+function ServerCreationScreen:GetGameMode()
+	return self.server_settings_tab:GetGameMode()
+end
+
 function ServerCreationScreen:UpdateTabs(slotnum, prevslot, fromDelete)
     self.server_settings_tab:SavePrevSlot(prevslot) --needs to happen before mods_tab:SetSaveSlot so that we don't lose the current game mode selection when the next slot's mods are applied
 
@@ -360,40 +364,17 @@ function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOu
 
             local world1datastring = ""
             if worldoptions[1] ~= nil then
-                local world1data = deepcopy(worldoptions[1].tweak)
-                world1data.preset = worldoptions[1].actualpreset
-                world1data.presetdata = worldoptions[1].presetdata
-                world1data.override_enabled = true
-                world1datastring = worldoptions[1] and DataDumper(world1data, nil, false) or ""
+                local world1data = worldoptions[1]
+                world1datastring = DataDumper(world1data, nil, false)
             end
 
             local world2datastring = ""
             if worldoptions[2] ~= nil then
-                local world2data = deepcopy(worldoptions[2].tweak)
-                world2data.preset = worldoptions[2].actualpreset
-                world2data.presetdata = worldoptions[2].presetdata
-                world2data.override_enabled = true
-                world2datastring = worldoptions[2] and DataDumper(world2data, nil, false) or ""
+                local world2data = worldoptions[2]
+                world2datastring = DataDumper(world2data, nil, false)
             end
 
-            --[[ Legacy: Starting a "client" server
-            TheNet:SetDefaultServerIntention(serverdata.intention)
-            TheNet:SetDefaultServerName(serverdata.name)
-            TheNet:SetDefaultServerPassword(serverdata.password)
-            TheNet:SetDefaultServerDescription(serverdata.description)
-            TheNet:SetDefaultGameMode(serverdata.game_mode)
-            TheNet:SetDefaultMaxPlayers(serverdata.max_players)
-            TheNet:SetDefaultPvpSetting(serverdata.pvp)
-            TheNet:SetDefaultFriendsOnlyServer(serverdata.privacy_type == PRIVACY_TYPE.FRIENDS)
-            TheNet:SetDefaultLANOnlyServer(serverdata.privacy_type == PRIVACY_TYPE.LOCAL)
-            if serverdata.privacy_type == PRIVACY_TYPE.CLAN then
-                TheNet:SetDefaultClanInfo(serverdata.clan.id, serverdata.clan.only, serverdata.clan.admin)
-            else
-                TheNet:SetDefaultClanInfo("0", false, false)
-            end
-            --]]
-
-            -- Apply the mods
+            -- Apply the mod settings
             self.mods_tab:Apply()
 
             -- Fill serverInfo object
@@ -463,6 +444,7 @@ function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOu
                     TheFrontEnd:PushScreen(launchingServerPopup)
                 end
 
+                -- Note: StartDedicatedServers launches both dedicated and non-dedicated servers... ~gjans
                 if not TheSystemService:StartDedicatedServers(self.saveslot, is_multi_level, cluster_info) then
                     if launchingServerPopup ~= nil then
                         launchingServerPopup:SetErrorStartingServers()
@@ -476,7 +458,9 @@ function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOu
             end
 
             if is_slot_empty then
-                SaveGameIndex:StartSurvivalMode(self.saveslot, worldoptions, serverdata, onsaved)
+                local starts = Profile:GetValue("starts") or 0
+                Profile:SetValue("starts", starts + 1)
+                Profile:Save(function() SaveGameIndex:StartSurvivalMode(self.saveslot, worldoptions, serverdata, onsaved) end)
             else
                 SaveGameIndex:UpdateServerData(self.saveslot, serverdata, onsaved)
             end
@@ -609,26 +593,27 @@ function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOu
 end
 
 function ServerCreationScreen:ValidateSettings()
-    -- Check if our season settings are valid (i.e. at least one season has a duration)
     self.last_focus = TheFrontEnd:GetFocusWidget()
-    if not self.world_tab:VerifyValidSeasonSettings() then
-        TheFrontEnd:PushScreen(PopupDialogScreen(STRINGS.UI.CUSTOMIZATIONSCREEN.INVALIDSEASONCOMBO_TITLE, STRINGS.UI.CUSTOMIZATIONSCREEN.INVALIDSEASONCOMBO_BODY,
-                    {{text=STRINGS.UI.CUSTOMIZATIONSCREEN.OKAY, cb = function() TheFrontEnd:PopScreen() self:SetTab("world") end}}))
+    if not self.server_settings_tab:VerifyValidNewHostType() then
+        TheFrontEnd:PushScreen(PopupDialogScreen(STRINGS.UI.SERVERCREATIONSCREEN.INVALIDNEWHOST_TITLE, STRINGS.UI.SERVERCREATIONSCREEN.INVALIDNEWHOST_BODY,
+                    {{text=STRINGS.UI.CUSTOMIZATIONSCREEN.OKAY, cb = function() TheFrontEnd:PopScreen() self:SetTab("settings") end}}))
+        return false
+    elseif not self.server_settings_tab:VerifyValidServerIntention() then
+        TheFrontEnd:PushScreen(PopupDialogScreen(STRINGS.UI.SERVERCREATIONSCREEN.INVALIDINTENTIONSETTINGS_TITLE, STRINGS.UI.SERVERCREATIONSCREEN.INVALIDINTENTIONSETTINGS_BODY,
+                    {{text=STRINGS.UI.CUSTOMIZATIONSCREEN.OKAY, cb = function() TheFrontEnd:PopScreen() self:SetTab("settings") end}}))
         return false
     elseif not self.server_settings_tab:VerifyValidServerName() then
-        self.last_focus = TheFrontEnd:GetFocusWidget()
         TheFrontEnd:PushScreen(PopupDialogScreen(STRINGS.UI.SERVERCREATIONSCREEN.INVALIDSERVERNAME_TITLE, STRINGS.UI.SERVERCREATIONSCREEN.INVALIDSERVERNAME_BODY,
                     {{text=STRINGS.UI.CUSTOMIZATIONSCREEN.OKAY, cb = function() TheFrontEnd:PopScreen() self:SetTab("settings") end}}))
         return false
     elseif not self.server_settings_tab:VerifyValidClanSettings() then
-        self.last_focus = TheFrontEnd:GetFocusWidget()
         TheFrontEnd:PushScreen(PopupDialogScreen(STRINGS.UI.SERVERCREATIONSCREEN.INVALIDCLANSETTINGS_TITLE, STRINGS.UI.SERVERCREATIONSCREEN.INVALIDCLANSETTINGS_BODY,
                     {{text=STRINGS.UI.CUSTOMIZATIONSCREEN.OKAY, cb = function() TheFrontEnd:PopScreen() self:SetTab("settings") end}}))
         return false
-    elseif not self.server_settings_tab:VerifyValidServerIntention() then
-        self.last_focus = TheFrontEnd:GetFocusWidget()
-        TheFrontEnd:PushScreen(PopupDialogScreen(STRINGS.UI.SERVERCREATIONSCREEN.INVALIDINTENTIONSETTINGS_TITLE, STRINGS.UI.SERVERCREATIONSCREEN.INVALIDINTENTIONSETTINGS_BODY,
-                    {{text=STRINGS.UI.CUSTOMIZATIONSCREEN.OKAY, cb = function() TheFrontEnd:PopScreen() self:SetTab("settings") end}}))
+    -- Check if our season settings are valid (i.e. at least one season has a duration)
+    elseif not self.world_tab:VerifyValidSeasonSettings() then
+        TheFrontEnd:PushScreen(PopupDialogScreen(STRINGS.UI.CUSTOMIZATIONSCREEN.INVALIDSEASONCOMBO_TITLE, STRINGS.UI.CUSTOMIZATIONSCREEN.INVALIDSEASONCOMBO_BODY,
+                    {{text=STRINGS.UI.CUSTOMIZATIONSCREEN.OKAY, cb = function() TheFrontEnd:PopScreen() self:SetTab("world") end}}))
         return false
     end
 

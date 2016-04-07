@@ -319,7 +319,8 @@ function self:OnUpdate(dt)
         _ambientvolume = ambientvolume
     end
 
-    local sanityparam = player ~= nil and player.components.sanity ~= nil and (1 - player.components.sanity:GetPercent()) or 0
+    local sanity = player ~= nil and player.replica.sanity or nil
+    local sanityparam = sanity ~= nil and (1 - sanity:GetPercent()) or 0
     if _sanityparam ~= sanityparam then
         inst.SoundEmitter:SetParameter("SANITY", "sanity", sanityparam)
         _sanityparam = sanityparam

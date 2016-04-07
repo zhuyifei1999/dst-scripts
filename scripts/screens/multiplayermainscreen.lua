@@ -305,9 +305,12 @@ function MultiplayerMainScreen:OnCreateServerButton()
     self.menu:Disable()
     self.leaving = true
     TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
-        TheFrontEnd:PushScreen(ServerCreationScreen(self))
-        TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)
-        self:Hide()
+        Profile:ShowedNewUserPopup()
+        Profile:Save(function()
+            TheFrontEnd:PushScreen(ServerCreationScreen(self))
+            TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)
+            self:Hide()
+        end)
     end)
 end
 
@@ -327,6 +330,10 @@ function MultiplayerMainScreen:OnSkinsButton()
 end
 
 function MultiplayerMainScreen:OnBrowseServersButton()
+    if self:CheckNewUser() then
+        return
+    end
+
     local function cb(filters)
 	    self.filter_settings = filters
 	    Profile:SaveFilters(self.filter_settings)
@@ -346,14 +353,17 @@ function MultiplayerMainScreen:OnBrowseServersButton()
         self.filter_settings = {}
         table.insert(self.filter_settings, {name = "SHOWLAN", data=self.offline} )   
     end
-	
+
     self.last_focus_widget = TheFrontEnd:GetFocusWidget()
     self.menu:Disable()
     self.leaving = true
     TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
-        TheFrontEnd:PushScreen(ServerListingScreen(self, self.filter_settings, cb, self.offline, self.session_data))
-        TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)
-        self:Hide()
+        Profile:ShowedNewUserPopup()
+        Profile:Save(function()
+            TheFrontEnd:PushScreen(ServerListingScreen(self, self.filter_settings, cb, self.offline, self.session_data))
+            TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)
+            self:Hide()
+        end)
     end)
 end
 
@@ -679,7 +689,6 @@ function MultiplayerMainScreen:OnBecomeActive()
 	end
 
 	--Do language mods assistance popup
-	--[[
 	local interface_lang = TheNet:GetLanguageCode()
 	if interface_lang ~= "english" then
 		if Profile:GetValue("language_mod_asked_"..interface_lang) ~= true then
@@ -706,7 +715,7 @@ function MultiplayerMainScreen:OnBecomeActive()
 			end, "GET" )
 		end
 	end
-	]]
+	
 end
 
 local anims =
@@ -726,7 +735,7 @@ local anims =
 }
 
 function MultiplayerMainScreen:OnUpdate(dt)
-	if self.bg.anim_root.portal:GetAnimState():AnimDone() and not self.leaving then 
+	if self.bg.anim_root.portal:GetAnimState():AnimDone() and not self.leaving then
     	if math.random() < .33 then 
 			self.bg.anim_root.portal:GetAnimState():PlayAnimation("portal_idle_eyescratch", false) 
     	else
@@ -883,6 +892,44 @@ end
 function MultiplayerMainScreen:UpdateCountdown()
 	--print("MultiplayerMainScreen:UpdateMOTD()")
 	TheSim:GetPersistentString("updatecountdown", function(...) self:OnCachedCountdownLoad(...) end)
+end
+
+function MultiplayerMainScreen:CheckNewUser()
+    if Profile:SawNewUserPopup() then
+        return false
+    end
+
+    local popup = PopupDialogScreen(
+        STRINGS.UI.MAINSCREEN.NEWUSER_DETECTED_HEADER,
+        STRINGS.UI.MAINSCREEN.NEWUSER_DETECTED_BODY,
+        {
+            {
+                text = STRINGS.UI.MAINSCREEN.NEWUSER_YES,
+                cb = function()
+                    TheFrontEnd:PopScreen()
+                    Profile:ShowedNewUserPopup()
+                    self:OnCreateServerButton()
+                end,
+                offset = Vector3(-25, 0, 0),
+            },
+            {
+                text = STRINGS.UI.MAINSCREEN.NEWUSER_NO,
+                cb = function()
+                    TheFrontEnd:PopScreen()
+                    Profile:ShowedNewUserPopup()
+                    self:OnBrowseServersButton()
+                end,
+                offset = Vector3(25, 0, 0),
+            },
+        }
+    )
+
+    for i, v in ipairs(popup.menu.items) do
+        v:ForceImageSize(300, 65)
+    end
+
+    TheFrontEnd:PushScreen(popup)
+    return true
 end
 
 return MultiplayerMainScreen

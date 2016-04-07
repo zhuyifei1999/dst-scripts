@@ -4,8 +4,6 @@ local Rider = Class(function(self, inst)
     self._isriding = net_bool(inst.GUID, "rider._isriding", "isridingdirty")
 
     self._default_talker_offset = nil
-    self._default_emote_fx_offset = nil
-    self._default_shock_fx_offset = nil
     self._default_frosty_breather_offset = Vector3(0, 0, 0)
 
     if TheWorld.ismastersim then
@@ -89,8 +87,6 @@ end
 --------------------------------------------------------------------------
 
 local TALKER_OFFSET = Vector3(0, -700, 0)
-local EMOTE_FX_OFFSET = Vector3(0, 2.6, 0)
-local SHOCK_FX_OFFSET = EMOTE_FX_OFFSET
 local FROSTY_BREATHER_OFFSET = Vector3(.3, 1.15, 0)
 
 function Rider:OnIsRiding(riding)
@@ -108,11 +104,6 @@ function Rider:OnIsRiding(riding)
             self._default_frosty_breather_offset.z = self.inst.components.frostybreather:GetOffset()
             self.inst.components.frostybreather:SetOffset(FROSTY_BREATHER_OFFSET:Get())
         end
-
-        self._default_emote_fx_offset = self.inst.emotefxoffset
-        self._default_shock_fx_offset = self.inst.shockfxoffset
-        self.inst.emotefxoffset = EMOTE_FX_OFFSET
-        self.inst.shockfxoffset = SHOCK_FX_OFFSET
     else
         if self.inst.components.talker ~= nil then
             self.inst.components.talker.offset = self._default_talker_offset
@@ -125,11 +116,6 @@ function Rider:OnIsRiding(riding)
             self._default_frosty_breather_offset.y,
             self._default_frosty_breather_offset.z = 0, 0, 0
         end
-
-        self.inst.emotefxoffset = self._default_emote_fx_offset
-        self.inst.shockfxoffset = self._default_shock_fx_offset
-        self._default_emote_fx_offset = nil
-        self._default_shock_fx_offset = nil
     end
 
     if self.classified ~= nil then

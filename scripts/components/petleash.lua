@@ -2,10 +2,19 @@ local PetLeash = Class(function(self, inst)
     self.inst = inst
 
     self.petprefab = nil
-    self.pet = nil
+    self.pets = {}
+    self.maxpets = 1
+    self.numpets = 0
 
     self.onspawnfn = nil
     self.ondespawnfn = nil
+
+    self._onremovepet = function(pet)
+        if self.pets[pet] ~= nil then
+            self.pets[pet] = nil
+            self.numpets = self.numpets - 1
+        end
+    end
 end)
 
 function PetLeash:SetPetPrefab(prefab)
@@ -20,71 +29,116 @@ function PetLeash:SetOnDespawnFn(fn)
     self.ondespawnfn = fn
 end
 
-function PetLeash:SpawnPetAt(x, y, z)
-    if self.pet ~= nil or self.petprefab == nil then
+function PetLeash:SetMaxPets(num)
+    self.maxpets = num
+end
+
+function PetLeash:GetMaxPets()
+    return self.maxpets
+end
+
+function PetLeash:GetNumPets()
+    return self.numpets
+end
+
+function PetLeash:IsFull()
+    return self.numpets >= self.maxpets
+end
+
+function PetLeash:GetPets()
+    return self.pets
+end
+
+local function LinkPet(self, pet)
+    self.pets[pet] = pet
+    self.numpets = self.numpets + 1
+    self.inst:ListenForEvent("onremove", self._onremovepet, pet)
+    pet.persists = false
+
+    if self.inst.components.leader ~= nil then
+        self.inst.components.leader:AddFollower(pet)
+    end
+end
+
+function PetLeash:SpawnPetAt(x, y, z, prefaboverride)
+    local petprefab = prefaboverride or self.petprefab
+    if self.numpets >= self.maxpets or petprefab == nil then
         return
     end
 
-    self.pet = SpawnPrefab(self.petprefab)
+    local pet = SpawnPrefab(petprefab)
+    if pet ~= nil then
+        LinkPet(self, pet)
 
-    if self.pet ~= nil then
-        self.inst:ListenForEvent("onremove", function() self.pet = nil end, self.pet)
-        self.pet.persists = false
-
-        if self.pet.Physics ~= nil then
-            self.pet.Physics:Teleport(x, y, z)
-        elseif self.pet.Transform ~= nil then
-            self.pet.Transform:SetPosition(x, y, z)
-        end
-
-        if self.inst.components.leader ~= nil then
-            self.inst.components.leader:AddFollower(self.pet)
+        if pet.Physics ~= nil then
+            pet.Physics:Teleport(x, y, z)
+        elseif pet.Transform ~= nil then
+            pet.Transform:SetPosition(x, y, z)
         end
 
         if self.onspawnfn ~= nil then
-            self.onspawnfn(self.inst, self.pet)
+            self.onspawnfn(self.inst, pet)
         end
     end
 end
 
-function PetLeash:DespawnPet()
-    if self.pet ~= nil then
+function PetLeash:DespawnPet(pet)
+    if self.pets[pet] ~= nil then
         if self.ondespawnfn ~= nil then
-            self.ondespawnfn(self.inst, self.pet)
+            self.ondespawnfn(self.inst, pet)
         else
-            self.pet:Remove()
+            pet:Remove()
         end
+    end
+end
+
+function PetLeash:DespawnAllPets()
+    local toremove = {}
+    for k, v in pairs(self.pets) do
+        table.insert(toremove, v)
+    end
+    for i, v in ipairs(toremove) do
+        self:DespawnPet(v)
     end
 end
 
 function PetLeash:OnSave()
-    if self.pet ~= nil then
-        return
-        {
-            pet = self.pet:GetSaveRecord(),
-        }
+    if next(self.pets) ~= nil then
+        local data = {}
+        for k, v in pairs(self.pets) do
+            local saved--[[, refs]] = v:GetSaveRecord()
+            table.insert(data, saved)
+        end
+        return { pets = data }
     end
 end
 
 function PetLeash:OnLoad(data)
-    if data ~= nil and data.pet ~= nil and self.pet == nil then
-        self.pet = SpawnSaveRecord(data.pet)
+    if data ~= nil and data.pets ~= nil then
+        for i, v in ipairs(data.pets) do
+            local pet = SpawnSaveRecord(v)
+            if pet ~= nil then
+                LinkPet(self, pet)
 
-        if self.pet ~= nil then
-            self.inst:ListenForEvent("onremove", function() self.pet = nil end, self.pet)
-            self.pet.persists = false
-
-            if self.inst.components.leader ~= nil then
-                self.inst.components.leader:AddFollower(self.pet)
+                if self.onspawnfn ~= nil then
+                    self.onspawnfn(self.inst, pet)
+                end
             end
-
-            if self.onspawnfn ~= nil then
-                self.onspawnfn(self.inst, self.pet)
+        end
+        if self.inst.migrationpets ~= nil then
+            for k, v in pairs(self.pets) do
+                table.insert(self.inst.migrationpets, v)
             end
         end
     end
 end
 
-PetLeash.OnRemoveEntity = PetLeash.DespawnPet
+function PetLeash:OnRemoveFromEntity()
+    for k, v in pairs(self.pets) do
+        self.inst:RemoveEventCallback("onremove", self._onremovepet, v)
+    end
+end
+
+PetLeash.OnRemoveEntity = PetLeash.DespawnAllPets
 
 return PetLeash

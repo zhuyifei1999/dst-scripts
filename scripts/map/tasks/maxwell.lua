@@ -3,7 +3,7 @@ AddTask("MaxPuzzle1", {
 		keys_given=KEYS.WOOD,
 		room_choices={
 			["MaxPuzzle1"] = 1,
-			["SpiderMarsh"] = 2+math.random(SIZE_VARIATION), 
+			["SpiderMarsh"] = function() return 2+math.random(SIZE_VARIATION) end, 
 		},
 		room_bg=GROUND.MARSH,
 		background_room="BGMarsh",
@@ -14,7 +14,7 @@ AddTask("MaxPuzzle2", {
 		keys_given=KEYS.WOOD,
 		room_choices={
 			["MaxPuzzle2"] = 1,
-			["SpiderMarsh"] = 2+math.random(SIZE_VARIATION), 
+			["SpiderMarsh"] = function() return 2+math.random(SIZE_VARIATION) end, 
 		},
 		room_bg=GROUND.MARSH,
 		background_room="BGMarsh",
@@ -25,7 +25,7 @@ AddTask("MaxPuzzle3", {
 		keys_given=KEYS.WOOD,
 		room_choices={
 			["MaxPuzzle3"] = 1,
-			["SpiderMarsh"] = 2+math.random(SIZE_VARIATION), 
+			["SpiderMarsh"] = function() return 2+math.random(SIZE_VARIATION) end, 
 		},
 		room_bg=GROUND.MARSH,
 		background_room="BGMarsh",

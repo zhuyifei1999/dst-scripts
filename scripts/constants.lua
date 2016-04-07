@@ -262,7 +262,7 @@ GESTURE_ROTATE_RIGHT = 903
 GESTURE_MAX = 904
 
 
-BACKEND_PREFABS = {"hud", "forest", "cave", "maxwell", "fire", "character_fire", "shatter"}
+BACKEND_PREFABS = {"hud", "forest", "cave", "fire", "character_fire", "shatter"}
 FRONTEND_PREFABS = {"frontend"}
 RECIPE_PREFABS = {}
 
@@ -434,7 +434,7 @@ GROUND =
 }
 
 TECH = {
-	NONE = { SCIENCE = 0, MAGIC = 0, ANCIENT = 0 },
+	NONE = { SCIENCE = 0, MAGIC = 0, ANCIENT = 0, SHADOW = 0 },
 	SCIENCE_ONE = {SCIENCE = 1},
 	SCIENCE_TWO = {SCIENCE = 2},
 	SCIENCE_THREE = {SCIENCE = 3},
@@ -447,6 +447,8 @@ TECH = {
 	ANCIENT_TWO = {ANCIENT = 2},
 	ANCIENT_THREE = {ANCIENT = 3},
 	ANCIENT_FOUR = {ANCIENT = 4},
+
+	SHADOW_TWO = {SHADOW = 3},
 }
 
 -- See cell_data.h
@@ -600,6 +602,8 @@ BLENDMODE =
 	Additive = 2,
 	Premultiplied = 3,
 	InverseAlpha = 4,
+	AlphaAdditive = 5,
+	VFXTest = 6,
 }
 
 ANIM_ORIENTATION =
@@ -627,6 +631,7 @@ RECIPETABS=
 CUSTOM_RECIPETABS =
 {
     BOOKS = { str = "BOOKS", sort = 999, icon = "tab_book.tex", owner_tag = "bookbuilder" },
+    SHADOW = { str = "SHADOW", sort = 999, icon = "tab_shadow.tex", owner_tag = "shadowmagic" },
 }
 
 VERBOSITY =
@@ -940,6 +945,7 @@ FOODGROUP =
 
 CHARACTER_INGREDIENT =
 {
+    --NOTE: Value is used as key for NAME string and inventory image
     HEALTH = "decrease_health",
     MAX_HEALTH = "half_health",
     SANITY = "decrease_sanity",
@@ -1136,4 +1142,14 @@ INTENTIONS =
     COMPETITIVE = "competitive",
     MADNESS = "madness",
     ANY = "any", -- for player use only, servers must have an intention
+}
+
+
+LEVELTYPE = {
+	SURVIVAL = "SURVIVAL",
+	CAVE = "CAVE",
+	ADVENTURE = "ADVENTURE",
+	TEST = "TEST",
+	UNKNOWN = "UNKNOWN",
+	CUSTOM = "CUSTOM",
 }

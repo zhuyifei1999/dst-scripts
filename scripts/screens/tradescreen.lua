@@ -44,6 +44,17 @@ local function FindLastFullSlot(selections, num_items)
 	return last
 end
 
+local function CountItemsInTable(item, table)
+	local count = 0
+	for k,v in pairs(table) do 
+		if v.item == item then 
+			count = count + 1
+		end
+	end
+
+	return count
+end
+
 local ItemEndMove = function(owner, i)
 	owner.moving_items_list[i] = nil 
 	--print("Item ", i, " finished moving")
@@ -114,8 +125,8 @@ function TradeScreen:DoInit()
 	self.frames_height_adjustment = 0
 
   	self:DoInitInventoryAndMachine()
---TEMP DISABLED SPECIALS MODE
-  	--self:DoInitSpecials()
+ 	-- DISABLE SPECIAL RECIPES
+    -- self:DoInitSpecials()
 	self:DoInitState()
 
 	self.warning_timeout = 0
@@ -193,14 +204,13 @@ function TradeScreen:DoInitInventoryAndMachine()
     self.claw_machine:SetScale(machine_scale)
     self.claw_machine:SetPosition(0, 65)
     
---TEMP DISABLED SPECIALS MODE
---[[
-	self.special_lightfx = self.claw_machine:AddChild(UIAnim())
+	-- DISABLE SPECIAL RECIPES
+	--[[self.special_lightfx = self.claw_machine:AddChild(UIAnim())
 	self.special_lightfx:GetAnimState():SetBuild("swapshoppe_special_lightfx")
 	self.special_lightfx:GetAnimState():SetBank("shop_lights")
 	--self.special_lightfx:GetAnimState():PlayAnimation("turn_on")
-	self.special_lightfx:GetAnimState():PlayAnimation("flicker_loop", true)
-]]
+	self.special_lightfx:GetAnimState():PlayAnimation("flicker_loop", true)]]
+
 	
 	self:PlayMachineAnim("idle_empty", true)
 
@@ -253,9 +263,8 @@ function TradeScreen:DoInitInventoryAndMachine()
 	self.moving_items_list = {}
 end
 
---TEMP DISABLED SPECIALS MODE
---[[
-function TradeScreen:DoInitSpecials()
+-- DISABLE SPECIAL RECIPES
+--[[function TradeScreen:DoInitSpecials()
 
 	self.specials_button = self.fixed_root:AddChild(UIAnimButton("button_special", "button_weeklyspecial", 
 											nil, "hover", "pressed", "pressed", nil ))
@@ -284,11 +293,8 @@ function TradeScreen:DoInitSpecials()
 	self.specials_title:Hide()
 
 	self.specials_transitionFx = self.fixed_root:AddChild(UIAnim())
-	self.specials_transitionFx:GetAnimState():SetBuild("die")
-	self.specials_transitionFx:GetAnimState():SetBank("die_fx")
-	for i=0,13 do
-		self.specials_transitionFx:GetAnimState():Hide("dfs"..i)
-	end
+	self.specials_transitionFx:GetAnimState():SetBuild("swapshoppe_special_transitionfx")
+	self.specials_transitionFx:GetAnimState():SetBank("transitionfx")
 	self.specials_transitionFx:SetPosition(0, -325)
 	self.specials_transitionFx:SetScale(.9, 1.1, 1)
 	self.specials_transitionFx:Hide()
@@ -332,7 +338,9 @@ function TradeScreen:ToggleSpecialsMode()
 		TheFrontEnd:GetSound():PlaySound("dontstarve/characters/skincollector/snap", "skincollector_snap") 
 
 		if not self.specials_mode then 
-			TheFrontEnd:GetSound():PlaySound("dontstarve/music/fanfare", "fanfare") 
+			TheFrontEnd:GetSound():PlaySound("dontstarve/music/shop_specials_open", "tradescreentransition") 
+		else 
+			TheFrontEnd:GetSound():PlaySound("dontstarve/music/shop_specials_closed", "tradescreentransition")
 		end
 	end)
 
@@ -357,7 +365,8 @@ function TradeScreen:ToggleSpecialsMode()
 			self.current_num_trade_items = 6
 			self.frames_height_adjustment = -100
 
-			self.innkeeper:Say(STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.SPECIALS)
+			self.talk_task = self.inst:DoTaskInTime(20*FRAMES, function() self.innkeeper:Say(STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.SPECIALS) end)
+		
        	else
        		-- Update button
        		self.specials_button:SetText(STRINGS.UI.TRADESCREEN.SPECIALS)
@@ -506,7 +515,6 @@ function TradeScreen:OnBecomeActive()
 
 	self.item_name:Hide()
 
-
 	self:RefreshUIState()
 end
 
@@ -523,9 +531,12 @@ end
 function TradeScreen:Trade(done_warning)
 
 	if not done_warning then 
+		local items_in_use = ItemsInUse( self.selected_items, self.moving_items_list )	
+
 		local warn_table = {}
 		for i=1,self.current_num_trade_items do 
-			if not widget_already_processed(self.frames_single[i].name, warn_table) and self.popup:NumItemsLikeThis(self.frames_single[i].name) == 0 then  
+			local numCopiesInUse = CountItemsInTable(self.frames_single[i].name, items_in_use)
+			if not widget_already_processed(self.frames_single[i].name, warn_table) and ((self.popup:NumItemsLikeThis(self.frames_single[i].name) - numCopiesInUse) <= 0) then  
 				local widg = Widget("item"..i)
 
 				widg.name = self.frames_single[i].name
@@ -734,6 +745,11 @@ function TradeScreen:Quit()
 		self.snap_sound = nil
 	end
 
+	if self.talk_task then 
+		self.talk_task:Cancel()
+		self.talk_task = nil
+	end
+
 	self.innkeeper:Disappear(function() 
 		TheFrontEnd:GetSound():KillSound("idle_sound")
 	end)
@@ -828,8 +844,9 @@ function TradeScreen:StartAddSelectedItem(item, start_pos)
 		table.insert(self.moving_items_list, moving_item)
 		
 		item.target_index = empty_slot
-		item.count = self.popup:NumItemsLikeThis(item.item)-1 -- it will be 1 less once the call to RefreshUIState updates the popup and removes the item
-		if item.count == 0 then
+		local numCopiesInUse = CountItemsInTable(item.item, items_in_use)
+		item.count = self.popup:NumItemsLikeThis(item.item)-numCopiesInUse 
+		if item.count <= 1 then -- moving item hasn't been added to items_in_use yet
 			item.last_item_warning = true
 		end
 		
@@ -956,8 +973,8 @@ function TradeScreen:RefreshUIState()
 		self:EnableMachineTiles()
 	end
 
---TEMP DISABLED SPECIALS MODE
---[[	if self.specials_mode then
+	-- DISABLE SPECIAL RECIPES
+	--[[if self.specials_mode then
 		self:ShowSpecials()
 	else
 		self:HideSpecials()
@@ -976,8 +993,8 @@ function TradeScreen:RefreshUIState()
 	end
 	
 
---TEMP DISABLED SPECIALS MODE
---[[	if self.machine_in_use or self.transitioning or self.quitting then
+	-- DISABLE SPECIAL RECIPES
+	--[[if self.machine_in_use or self.transitioning or self.quitting then
 		self.specials_button:Disable() 
 	else
 		self.specials_button:Enable()
@@ -995,9 +1012,8 @@ function TradeScreen:RefreshUIState()
 	self:RefreshMachineTilesState() -- Do this at the end so that self.popup will be already updated.
 end
 
---TEMP DISABLED SPECIALS MODE
---[[
-function TradeScreen:ShowSpecials()
+-- DISABLE SPECIAL RECIPES
+--[[function TradeScreen:ShowSpecials()
 	--print("**** Setting up specials mode")
 	if not self.machine_in_use then
 		self.specials_list:Show()
@@ -1022,17 +1038,19 @@ function TradeScreen:HideSpecials()
 
 	self.title:Show()
 	self.specials_title:Hide()
-end
-]]
+end]]
 
 function TradeScreen:RefreshMachineTilesState()
+
+	local items_in_use = ItemsInUse( self.selected_items, self.moving_items_list )	
 
 	--check the count of items in the selector and remove any last item warning flags
 	for i=1,MAX_TRADE_ITEMS do
 		local item = self.selected_items[i]
 		if item ~= nil and item.last_item_warning then 
 			local count = self.popup:NumItemsLikeThis(item.item)
-			if count > 0 then
+			local numCopiesInUse = CountItemsInTable(item.item, items_in_use)
+			if (count - numCopiesInUse) > 0 then
 				item.last_item_warning = nil
 			else
 				--also remove any duplicate last_item_warning
@@ -1205,8 +1223,8 @@ function TradeScreen:OnUpdate(dt)
 		self:FinishTrade()
 	end
 
---TEMP DISABLED SPECIALS MODE
---[[	if self.specials_transitionFx:GetAnimState():IsCurrentAnimation("large") and self.specials_transitionFx:GetAnimState():AnimDone() then 
+	-- DISABLE SPECIAL RECIPES
+	--[[if self.specials_transitionFx:GetAnimState():IsCurrentAnimation(TRANSITION_ANIM) and self.specials_transitionFx:GetAnimState():AnimDone() then 
 		self.specials_transitionFx:Hide()
 	end]]
 
@@ -1281,9 +1299,9 @@ function TradeScreen:OnControl(control, down)
             return true
        	elseif control == CONTROL_ACCEPT and self.accept_waiting then
        		self:Reset()
-       	--TEMP DISABLED SPECIALS MODE 
-       	--elseif control == CONTROL_OPEN_INVENTORY then -- right trigger 
-       	--	self:ToggleSpecialsMode()
+       	-- DISABLE SPECIAL RECIPES
+       	--[[elseif control == CONTROL_OPEN_INVENTORY then -- right trigger 
+       		self:ToggleSpecialsMode()]]
        	end
 	end
 
@@ -1322,6 +1340,7 @@ function TradeScreen:ScrollFwd(control)
 end
 
 function TradeScreen:GetHelpText()
+	
     local controller_id = TheInput:GetControllerID()
     local t = {}
     
@@ -1332,8 +1351,8 @@ function TradeScreen:GetHelpText()
 
 	    table.insert(t, self.popup.page_list:GetHelpText())
 
-		--TEMP DISABLED SPECIALS MODE
-	    --[[if self.specials_mode then 
+		-- DISABLE SPECIAL RECIPES
+       	--[[if self.specials_mode then 
 	    	table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_OPEN_INVENTORY) .. " " .. STRINGS.UI.TRADESCREEN.NOSPECIALS )
 
 	    	-- This uses too much space. Just use the hints on the spinner instead.
@@ -1366,6 +1385,13 @@ function TradeScreen:GetHelpText()
 	   		table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT) .. " " .. STRINGS.UI.TRADESCREEN.SELECT)
 	   	end
     end
+
+	-- DISABLE SPECIAL RECIPES
+	--[[
+    if self.specials_mode then
+    	local str = self.specials_list:GetHelpText()
+    	table.insert(t, str)
+    end]]
 
     table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_INSPECT) .. " " .. STRINGS.UI.TRADESCREEN.MARKET)
 

@@ -708,6 +708,7 @@ local function DoActualRez(inst, source)
     -- inst.AnimState:SetBank("wilson")
     -- inst.components.skinner:SetSkinMode("normal_skin")
 
+    inst.AnimState:Hide("HAT")
     inst.AnimState:Hide("HAT_HAIR")
     inst.AnimState:Show("HAIR_NOHAT")
     inst.AnimState:Show("HAIR")
@@ -728,10 +729,8 @@ local function DoActualRez(inst, source)
         inst.DynamicShadow:Enable(true)
         inst.AnimState:SetBank("wilson")
         inst.components.skinner:SetSkinMode("normal_skin") -- restore skin
-        inst.AnimState:ClearBloomEffectHandle()
+        inst.components.bloomer:PopBloom("playerghostbloom")
         inst.AnimState:SetLightOverride(0)
-        inst.AnimState:Hide("HAT")
-        inst.AnimState:Hide("HatFX")
         
         source:PushEvent("activateresurrection", inst)
 
@@ -938,16 +937,8 @@ local function OnMakePlayerGhost( inst, data )
 
     inst.components.skinner:SetSkinMode("ghost_skin")
 
-    inst.AnimState:SetBloomEffectHandle("shaders/anim_bloom_ghost.ksh")
+    inst.components.bloomer:PushBloom("playerghostbloom", "shaders/anim_bloom_ghost.ksh", 100)
     inst.AnimState:SetLightOverride(TUNING.GHOST_LIGHT_OVERRIDE)
-    if inst:HasTag("ghostwithhat") then
-        inst.AnimState:Show("HAT")
-        inst.AnimState:Show("HatFX")
-    else
-        inst.AnimState:Hide("HAT")
-        inst.AnimState:Hide("HatFX")
-    end
-    --inst.AnimState:ClearOverrideSymbol("FX")
 
     inst:SetStateGraph("SGwilsonghost")
 
@@ -1618,6 +1609,8 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         else
             inst:ListenForEvent("playerdied", OnPlayerDied)
         end
+
+        inst:AddComponent("bloomer")
 
         inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
         ConfigurePlayerLocomotor(inst)

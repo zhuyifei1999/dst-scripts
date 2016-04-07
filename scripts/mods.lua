@@ -132,7 +132,8 @@ local runmodfn = function(fn,mod,modtype)
 	end)
 end
 
-ModWrangler = Class(function(self)
+-- Note: This is a singleton (created at the bottom of this file) so the class is local
+local ModWrangler = Class(function(self)
 	self.modnames = {}
 	self.mods = {}
 	self.records = {}
@@ -140,6 +141,7 @@ ModWrangler = Class(function(self)
 	self.enabledmods = {}
 	self.loadedprefabs = {}
 	self.servermods = nil
+    self.currentlyloadingmod = nil
 end)
 
 function ModWrangler:GetEnabledModNames()
@@ -221,12 +223,11 @@ end
 function CreateEnvironment(modname, isworldgen)
 
 	local modutil = require("modutil")
-	require("recipe") -- for Ingredient
+    require("map/lockandkey")
 
 	local env = 
 	{
-		TUNING=TUNING,
-		modname = modname,
+        -- lua
 		pairs = pairs,
 		ipairs = ipairs,
 		print = print,
@@ -236,7 +237,19 @@ function CreateEnvironment(modname, isworldgen)
 		string = string,
 		tostring = tostring,
 		Class = Class,
+
+        -- runtime
+        TUNING=TUNING,
+
+        -- worldgen
+        GROUND = GROUND,
+        LOCKS = LOCKS,
+        KEYS = KEYS,
+        LEVELTYPE = LEVELTYPE,
+
+        -- utility
 		GLOBAL = _G,
+		modname = modname,
 		MODROOT = MODS_ROOT..modname.."/",
 	}
 
@@ -249,6 +262,9 @@ function CreateEnvironment(modname, isworldgen)
 	--install our crazy loader!
 	env.modimport = function(modulename)
 		print("modimport: "..env.MODROOT..modulename)
+        if string.sub(modulename, #modulename-3,#modulename) ~= ".lua" then
+            modulename = modulename..".lua"
+        end
         local result = kleiloadlua(env.MODROOT..modulename)
 		if result == nil then
 			error("Error in modimport: "..modulename.." not found!")
@@ -314,6 +330,49 @@ end
 
 local function IsInFrontEnd()
 	return Settings.reset_action == nil or Settings.reset_action == RESET_ACTION.LOAD_FRONTEND
+end
+
+function ModWrangler:FrontendLoadMod(modname)
+    -- When a mod gets enabled, we partially load it, in order to populate settings screens, world gen options, and such.
+    if not KnownModIndex:DoesModExistAnyVersion(modname) then
+        print(string.format("Tried frontend-loading mod '%s' but it doesn't exist.", modname))
+        return
+    end
+    print("FrontendLoadMod", modname)
+
+    KnownModIndex:LoadModConfigurationOptions(modname, not TheNet:GetIsServer())
+
+    local initenv = KnownModIndex:GetModInfo(modname)
+    local env = CreateEnvironment(modname,  self.worldgen)
+    env.modinfo = initenv
+
+    local loadmsg = "Fontend-Loading mod: "..ModInfoname(modname).." Version:"..env.modinfo.version
+    if initenv.modinfo_message and initenv.modinfo_message ~= "" then
+        loadmsg = loadmsg .. " ("..initenv.modinfo_message..")"
+    end
+    print(loadmsg)
+
+    local oldpath = package.path
+    package.path = MODS_ROOT..env.modname.."\\scripts\\?.lua;"..package.path
+    self.currentlyloadingmod = env.modname
+    -- Only worldgenmain, to populate the presets panel etc.
+    self:InitializeModMain(env.modname, env, "modworldgenmain.lua")
+    self.currentlyloadingmod = nil
+    package.path = oldpath
+end
+
+function ModWrangler:FrontendUnloadMod(modname)
+    print(string.format("Frontend-Unloading mod '%s'.", modname or "all"))
+    local Levels = require"map/levels"
+    local TaskSets = require"map/tasksets"
+    local Tasks = require"map/tasks"
+    local Rooms = require"map/rooms"
+    local StartLocations = require"map/startlocations"
+    Levels.ClearModData(modname)
+    TaskSets.ClearModData(modname)
+    Tasks.ClearModData(modname)
+    Rooms.ClearModData(modname)
+    StartLocations.ClearModData(modname)
 end
 
 function ModWrangler:LoadMods(worldgen)	
@@ -382,12 +441,14 @@ function ModWrangler:LoadMods(worldgen)
 	for i,mod in ipairs(self.mods) do
 		table.insert(self.enabledmods, mod.modname)
 		package.path = MODS_ROOT..mod.modname.."\\scripts\\?.lua;"..package.path
+        self.currentlyloadingmod = mod.modname
 		self:InitializeModMain(mod.modname, mod, "modworldgenmain.lua")
 		if not self.worldgen then 
 			-- worldgen has to always run (for customization screen) but modmain can be
 			-- skipped for worldgen. This reduces a lot of issues with missing globals.
 			self:InitializeModMain(mod.modname, mod, "modmain.lua")
 		end
+        self.currentlyloadingmod = nil
 	end
 end
 
@@ -742,6 +803,3 @@ function ModWrangler:StartVersionChecking()
 end
 
 ModManager = ModWrangler()
-
----------------------------------------------
-

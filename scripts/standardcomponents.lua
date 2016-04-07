@@ -428,14 +428,17 @@ function RemovePhysicsColliders(inst)
 end
 
 local function TogglePickable(pickable, iswinter)
-    pickable[iswinter and "Pause" or "Resume"](pickable)
+    if iswinter then
+        pickable:Pause()
+    else
+        pickable:Resume()
+    end
 end
 
 function MakeNoGrowInWinter(inst)
     inst.components.pickable:WatchWorldState("iswinter", TogglePickable)
     TogglePickable(inst.components.pickable, TheWorld.state.iswinter)
 end
-
 
 function MakeSnowCoveredPristine(inst)
     inst.AnimState:OverrideSymbol("snow", "snow", "snow")

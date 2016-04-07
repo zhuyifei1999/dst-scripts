@@ -39,6 +39,8 @@ local function GetHintTextForRecipe(player, recipe)
                 adjusted_level.MAGIC = adjusted_level.MAGIC - player.replica.builder:MagicBonus()
             elseif k == "ANCIENTALTAR_LOW" or k == "ANCIENTALTAR_HIGH" then
                 adjusted_level.ANCIENT = adjusted_level.ANCIENT - player.replica.builder:AncientBonus()
+            elseif k == "WAXWELLJOURNAL" then
+                adjusted_level.SHADOW = adjusted_level.SHADOW - player.replica.builder:ShadowBonus()
             end
         end
 
@@ -67,6 +69,8 @@ local function GetHintTextForRecipe(player, recipe)
                             v.SCORE = v.SCORE + player.replica.builder:MagicBonus()
                         elseif v.TREE == "ANCIENTALTAR_LOW" or v.TREE == "ANCIENTALTAR_HIGH" then
                             v.SCORE = v.SCORE + player.replica.builder:AncientBonus()
+                        elseif v.TREE == "WAXWELLJOURNAL" then
+                            v.SCORE = v.SCORE + player.replica.builder:ShadowBonus()
                         end
                     end
                 end
@@ -339,6 +343,7 @@ function RecipePopup:Refresh()
             ["PRESTIHATITATOR"] = STRINGS.UI.CRAFTING.NEEDPRESTIHATITATOR,
             ["CANTRESEARCH"] = STRINGS.UI.CRAFTING.CANTRESEARCH,
             ["ANCIENTALTAR_HIGH"] = STRINGS.UI.CRAFTING.NEEDSANCIENT_FOUR,
+            ["WAXWELLJOURNAL"] = STRINGS.UI.CRAFTING.NEEDWAXWELLJOURNAL,
         }
         local str = hint_text[GetHintTextForRecipe(owner, recipe)] or "Text not found."
         self.teaser:SetScale(TEASER_SCALE_TEXT)

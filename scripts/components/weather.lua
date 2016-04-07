@@ -192,7 +192,7 @@ local _temperature = TUNING.STARTING_TEMP
 
 --Precipiation
 local _rainsound = false
-local _treerainsound = nil
+local _treerainsound = false
 local _umbrellarainsound = false
 local _seasonprogress = 0
 local _groundoverlay = nil
@@ -255,24 +255,17 @@ local function StopAmbientRainSound()
     end
 end
 
---V2C: hack to loop the tree rain sound without having to change the sound data :O
-local function DoTreeRainSound(inst, soundemitter)
-    --Intentionally (lazy) not caring if we kill a sound that isn't still playing.
-    --Log spams should also be disabled for that.
-    soundemitter:KillSound("treerainsound")
-    soundemitter:PlaySound("dontstarve_DLC001/common/rain_on_tree", "treerainsound")
-end
-
-local function StartTreeRainSound()
-    if _treerainsound == nil then
-        _treerainsound = inst:DoPeriodicTask(19, DoTreeRainSound, 0, TheFocalPoint.SoundEmitter)
+local function StartTreeRainSound(intensity)
+    if not _treerainsound then
+        _treerainsound = true
+        TheFocalPoint.SoundEmitter:PlaySound("dontstarve_DLC001/common/rain_on_tree", "treerainsound")
     end
+    TheFocalPoint.SoundEmitter:SetParameter("treerainsound", "intensity", intensity)
 end
 
 local function StopTreeRainSound()
-    if _treerainsound ~= nil then
-        _treerainsound:Cancel()
-        _treerainsound = nil
+    if _treerainsound then
+        _treerainsound = false
         TheFocalPoint.SoundEmitter:KillSound("treerainsound")
     end
 end
@@ -770,14 +763,14 @@ function self:OnUpdate(dt)
     if _preciptype:value() == PRECIP_TYPES.rain then
         local preciprate_sound = preciprate
         if _activatedplayer == nil then
-            StopTreeRainSound()
+            StartTreeRainSound(0)
             StopUmbrellaRainSound()
         elseif _activatedplayer.replica.sheltered ~= nil and _activatedplayer.replica.sheltered:IsSheltered() then
-            StartTreeRainSound()
+            StartTreeRainSound(preciprate_sound)
             StopUmbrellaRainSound()
             preciprate_sound = preciprate_sound - .4
         else
-            StopTreeRainSound()
+            StartTreeRainSound(0)
             if _activatedplayer.replica.inventory:EquipHasTag("umbrella") then
                 preciprate_sound = preciprate_sound - .4
                 StartUmbrellaRainSound()

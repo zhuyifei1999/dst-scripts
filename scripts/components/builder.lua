@@ -10,6 +10,10 @@ local function onancientbonus(self, ancientbonus)
     self.inst.replica.builder:SetAncientBonus(ancientbonus)
 end
 
+local function onshadowbonus(self, shadowbonus)
+    self.inst.replica.builder:SetShadowBonus(shadowbonus)
+end
+
 local function oningredientmod(self, ingredientmod)
     assert(INGREDIENT_MOD[ingredientmod] ~= nil, "Ingredient mods restricted to certain values, see constants.lua INGREDIENT_MOD")
     self.inst.replica.builder:SetIngredientMod(ingredientmod)
@@ -31,6 +35,7 @@ local Builder = Class(function(self, inst)
     self.science_bonus = 0
     self.magic_bonus = 0
     self.ancient_bonus = 0
+    self.shadow_bonus = 0
     self.ingredientmod = 1
 
     self.freebuildmode = false
@@ -41,12 +46,20 @@ local Builder = Class(function(self, inst)
             self.inst.replica.builder:SetIsBuildBuffered(v.name, false)
         end
     end
+
+    self.exclude_tags = { "INLIMBO" }
+    for k, v in pairs(CUSTOM_RECIPETABS) do
+        if v.owner_tag ~= nil and not inst:HasTag(v.owner_tag) then
+            table.insert(self.exclude_tags, v.owner_tag)
+        end
+    end
 end,
 nil,
 {
     science_bonus = onsciencebonus,
     magic_bonus = onmagicbonus,
     ancient_bonus = onancientbonus,
+    shadow_bonus = onshadowbonus,
     ingredientmod = oningredientmod,
     freebuildmode = onfreebuildmode,
 })
@@ -118,7 +131,7 @@ end
 
 function Builder:EvaluateTechTrees()
     local pos = self.inst:GetPosition()
-    local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, TUNING.RESEARCH_MACHINE_DIST, {"prototyper"})
+    local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, TUNING.RESEARCH_MACHINE_DIST, { "prototyper" }, self.exclude_tags)
 
     local old_accessible_tech_trees = deepcopy(self.accessible_tech_trees or TECH.NONE)
     local old_prototyper = self.current_prototyper
@@ -157,10 +170,12 @@ function Builder:EvaluateTechTrees()
         self.accessible_tech_trees.SCIENCE = self.science_bonus
         self.accessible_tech_trees.MAGIC = self.magic_bonus
         self.accessible_tech_trees.ANCIENT = self.ancient_bonus
+        self.accessible_tech_trees.SHADOW = self.shadow_bonus
     else
         self.accessible_tech_trees.SCIENCE = self.accessible_tech_trees.SCIENCE + self.science_bonus
         self.accessible_tech_trees.MAGIC = self.accessible_tech_trees.MAGIC + self.magic_bonus
         self.accessible_tech_trees.ANCIENT = self.accessible_tech_trees.ANCIENT + self.ancient_bonus
+        self.accessible_tech_trees.SHADOW = self.accessible_tech_trees.SHADOW + self.shadow_bonus
     end
 
     local trees_changed = false
@@ -349,7 +364,7 @@ function Builder:DoBuild(recname, pt, rotation, skin)
         local prod = SpawnPrefab(recipe.product, skin, nil, self.inst.userid)
         if prod ~= nil then
             
-            pt = pt or Point(self.inst.Transform:GetWorldPosition())
+            pt = pt or self.inst:GetPosition()
 
             if wetlevel > 0 and prod.components.inventoryitem ~= nil then
                 prod.components.inventoryitem:InheritMoisture(wetlevel, self.inst:GetIsWet())
@@ -429,6 +444,7 @@ function Builder:KnowsRecipe(recname)
         and (   (recipe.level.SCIENCE <= self.science_bonus and
                 recipe.level.MAGIC <= self.magic_bonus and
                 recipe.level.ANCIENT <= self.ancient_bonus and
+                recipe.level.SHADOW <= self.shadow_bonus and
                 (recipe.builder_tag == nil or self.inst:HasTag(recipe.builder_tag)))
             or self.freebuildmode
             or table.contains(self.recipes, recname))

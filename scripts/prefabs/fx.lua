@@ -36,8 +36,12 @@ local function MakeFx(t)
             inst:DoTaskInTime(t.sounddelay2 or 0, PlaySound, t.sound2)
         end
         
-        if t.fn ~= nil and t.fntime ~= nil then
-            inst:DoTaskInTime(t.fntime, t.fn)
+        if t.fn ~= nil then
+            if t.fntime ~= nil then
+                inst:DoTaskInTime(t.fntime, t.fn)
+            else
+                t.fn(inst)
+            end
         end
 
         inst.AnimState:SetBank(t.bank)

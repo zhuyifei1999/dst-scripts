@@ -110,11 +110,6 @@ AddGlobalDebugKey(KEY_HOME, function()
     return true
 end)
 
-local ridingpercent = {
-    on = 0,
-    off = 0,
-}
-
 AddGlobalDebugKey(KEY_F1, function()
     if TheInput:IsKeyDown(KEY_CTRL) then
         TheSim:TogglePerfGraph()
@@ -132,11 +127,20 @@ AddGlobalDebugKey(KEY_F1, function()
         beef.components.rideable:SetSaddle(nil, SpawnPrefab('saddle_basic'))
     else
         c_select()
-        if c_sel() ~= nil and c_sel().prefab == "beefalo" then
-            c_sel().components.domesticatable:DeltaDomestication(0.05)
-            c_sel().components.domesticatable:DeltaObedience(1.0)
-            c_sel().components.hunger:SetPercent(.3)
-            c_sel().components.rideable:SetSaddle(nil, SpawnPrefab('saddle_basic'))
+        if c_sel() ~= nil then
+            if c_sel().prefab == "beefalo" then
+                c_sel():DoPeriodicTask(1, function(inst)
+                    print("Tendencies:",
+                        "default", inst.components.domesticatable.tendencies.DEFAULT or 'nil',
+                        "ornery", inst.components.domesticatable.tendencies.ORNERY or 'nil',
+                        "rider", inst.components.domesticatable.tendencies.RIDER or 'nil',
+                        "pudgy", inst.components.domesticatable.tendencies.PUDGY or 'nil')
+                end)
+            elseif c_sel():HasTag("player") then
+                c_sel():ListenForEvent("onattackother", function(inst)
+                    print("I DID ATTTACCCCKED")
+                end)
+            end
         end
     end
 
@@ -418,7 +422,6 @@ AddGameDebugKey(KEY_F7, function()
 end)
 
 ---Spawn random items from the "items" table in a circles around me.
-
 AddGameDebugKey(KEY_F8, function()
     --Spawns a lot of prefabs around you in rings.
     local items = {"light_flower"} --Which items spawn. 

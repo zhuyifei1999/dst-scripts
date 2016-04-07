@@ -39,14 +39,15 @@ local function ShouldAcceptItem(inst, item)
     if item.components.equippable ~= nil and item.components.equippable.equipslot == EQUIPSLOTS.HEAD then
         return true
     elseif item.components.edible ~= nil then
-        local foodtype = item.components.foodtype
+        local foodtype = item.components.edible.foodtype
         if foodtype == FOODTYPE.MEAT or foodtype == FOODTYPE.HORRIBLE then
             return inst.components.follower.leader == nil or inst.components.follower:GetLoyaltyPercent() <= 0.9
         elseif foodtype == FOODTYPE.VEGGIE or foodtype == FOODTYPE.RAW then
             local last_eat_time = inst.components.eater:TimeSinceLastEating()
             return (last_eat_time == nil or
                     last_eat_time >= TUNING.PIG_MIN_POOP_PERIOD)
-                and not inst.components:Has(item.prefab, 1)
+                and (inst.components.inventory == nil or
+                    not inst.components.inventory:Has(item.prefab, 1))
         end
         return true
     end
@@ -477,6 +478,8 @@ local function common()
     inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
     inst.components.locomotor.runspeed = TUNING.PIG_RUN_SPEED --5
     inst.components.locomotor.walkspeed = TUNING.PIG_WALK_SPEED --3
+
+    inst:AddComponent("bloomer")
 
     ------------------------------------------
     inst:AddComponent("eater")

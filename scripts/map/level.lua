@@ -1,28 +1,26 @@
 local tasks = require("map/tasks")
-
-LEVELTYPE = {
-	SURVIVAL = 1,
-	CAVE = 2,
-	ADVENTURE = 3,
-	TEST = 4,
-	UNKNOWN = 5,
-	CUSTOM = 6,
-}
+local tasksets = require("map/tasksets")
 
 Level = Class( function(self, data)
-	self.id = data.id or "UNKNOWN_ID"
+	assert( data.id ~= nil, "level must specify an id." )
+	self.id = data.id
 	self.name = data.name or ""
 	self.desc = data.desc or ""
-    self.location = data.location or "forest"
+	self.override_level_string = data.override_level_string or false
+    assert(data.location ~= nil, "Levels must specify a location, no more default.")
+    self.location = data.location
     self.hideinfrontend = data.hideinfrontend
 	self.overrides = data.overrides or {}
 	self.substitutes = data.substitutes or {}
 	self.override_triggers = data.override_triggers
-	self.set_pieces = data.set_pieces or {}
-	self.numoptionaltasks = data.numoptionaltasks or 0
-	self.override_level_string = data.override_level_string or false
-	self.optionaltasks = data.optionaltasks or {}
-    self.valid_start_tasks = data.valid_start_tasks or nil
+    assert(data.set_pieces == nil, "level 'set_pieces' should be specified as an override via 'task_set' now.")
+	self.set_pieces = nil
+    assert(data.numoptionaltasks == nil, "level 'numoptionaltasks' should be specified as an override via 'task_set' now.")
+	self.numoptionaltasks = nil
+    assert(data.optionaltasks == nil, "level 'optionaltasks' should be specified as an override via 'task_set' now.")
+	self.optionaltasks = nil
+    assert(data.valid_start_tasks == nil, "level 'valid_start_tasks' should be specified as an override via 'task_set' now.")
+    self.valid_start_tasks = nil
 	self.hideminimap = data.hideminimap or false
 	self.min_playlist_position = data.min_playlist_position or 0
 	self.max_playlist_position = data.max_playlist_position or 999
@@ -35,6 +33,8 @@ Level = Class( function(self, data)
 	self.random_set_pieces = data.random_set_pieces or nil
 
     self.chosen_tasks = nil
+
+    self.version = data.version or 1
 end)
 
 function Level:ApplyModsToTasks(tasklist)
@@ -83,12 +83,24 @@ function Level:GetTasksForLevel()
     return self.chosen_tasks
 end
 
-function Level:ChooseTasks(sampletasks, current_gen_params)
+function Level:ChooseTasks(taskdefinitions)
 	--print("Getting tasks for level:", self.name)
 	local tasklist = {}
-	local task_group = tasks.GetGenTasks(current_gen_params.finaltweak.misc and current_gen_params.finaltweak.misc["task_set"] or "default")
+    assert(self.overrides["task_set"] ~= nil, "Must specify the task set for a level!")
+    local task_set = self.overrides["task_set"]
+	local task_set_data = tasksets.GetGenTasks(task_set)
+	local modfns = ModManager:GetPostInitFns("TaskSetPreInit", task_set)
+	for i,modfn in ipairs(modfns) do
+		print("Applying mod to task set '"..task_set.."'")
+		modfn(task_set_data)
+	end
+	modfns = ModManager:GetPostInitFns("TaskSetPreInitAny")
+	for i,modfn in ipairs(modfns) do
+		print("Applying mod to current task set")
+		modfn(task_set_data)
+	end
 	
-	for k, v in pairs(task_group) do
+	for k, v in pairs(task_set_data) do
 		self[k] = v
 	end
 	
@@ -104,23 +116,23 @@ function Level:ChooseTasks(sampletasks, current_gen_params)
 	end
 	
 	for i=1,#self.tasks do
-		self:EnqueueATask(tasklist, self.tasks[i], sampletasks)
+		self:EnqueueATask(tasklist, self.tasks[i])
 	end
 	
 	self:ApplyModsToTasks(tasklist)
 
-	if self.numoptionaltasks and self.numoptionaltasks > 0 then
+	if self.numoptionaltasks and self.numoptionaltasks > 0 and self.optionaltasks then
 		local shuffletasknames = shuffleArray(self.optionaltasks)
 		local numtoadd = self.numoptionaltasks
 		local i = 1
 		while numtoadd > 0 and i <= #self.optionaltasks do
 			if type(self.optionaltasks[i]) == "table" then
 				for i,taskname in ipairs(self.optionaltasks[i]) do
-					self:EnqueueATask(tasklist, taskname, sampletasks)
+					self:EnqueueATask(tasklist, taskname)
 					numtoadd = numtoadd - 1
 				end
 			else
-				self:EnqueueATask(tasklist, self.optionaltasks[i], sampletasks)
+				self:EnqueueATask(tasklist, self.optionaltasks[i])
 				numtoadd = numtoadd - 1
 			end
 			i = i + 1
@@ -132,7 +144,7 @@ function Level:ChooseTasks(sampletasks, current_gen_params)
 	self.chosen_tasks = tasklist
 end
 
-function Level:ChooseSetPieces(current_gen_params)
+function Level:ChooseSetPieces()
     assert(self.chosen_tasks ~= nil, "Must call ChooseTasks before ChooseSetPieces")
 
 	for i = 1, self.numrandom_set_pieces do
@@ -183,8 +195,8 @@ function Level:ChooseSetPieces(current_gen_params)
 	end
 end
 
-function Level:EnqueueATask(tasklist, taskname, sampletasks)
-	local task = self:GetTaskByName(taskname, sampletasks)
+function Level:EnqueueATask(tasklist, taskname)
+	local task = tasks.GetTaskByName(taskname)
 	if task then
 		--print("\tChoosing task:",task.id)
 		table.insert(tasklist, deepcopy(task))
@@ -192,13 +204,3 @@ function Level:EnqueueATask(tasklist, taskname, sampletasks)
 		assert(task, "Could not find a task called "..taskname)
 	end
 end
-
-function Level:GetTaskByName(taskname, sampletasks)
-	for j=1,#sampletasks do
-		if string.upper(taskname) == string.upper(sampletasks[j].id) then
-			return sampletasks[j]
-		end
-	end
-	return nil
-end
-
