@@ -250,7 +250,7 @@ return {
 		MANRABBIT_TAIL="Can I put it in my hair?",
 		MUSHTREE_TALL={
             GENERIC = "What is this magic?",
-            BLOOM = "An enthusastic performance!",
+            BLOOM = "An enthusiastic performance!",
         },
 		MUSHTREE_MEDIUM={
             GENERIC = "I do like its glow.",
@@ -279,7 +279,7 @@ return {
 		SLURTLESLIME="Yes. Slime.",
 		SNURTLE="I like his helmet.",
 		SPIDER_HIDER="I'll smash you!",
-		SPIDER_SPITTER="This one's fiesty.",
+		SPIDER_SPITTER="This one's feisty.",
 		SPIDERHOLE="Webbing, never a good sign.",
 		STALAGMITE="Cave boulder.",
 		STALAGMITE_FULL="Cave boulder.",
@@ -332,7 +332,7 @@ return {
 		},
 		AXE = "To chop and destroy!",
 		BABYBEEFALO = "Mini beastie.",
-		BACKPACK = "A portable armoury.",
+		BACKPACK = "A portable armory.",
 		BACONEGGS = "Pig and eggs!",
 		BANDAGE = "To heal my battle wounds.",
 		BASALT = "A thousand mortals couldn't break through this stone.",
@@ -360,7 +360,7 @@ return {
 		BEEFALO =
 		{
 			FOLLOWER = "Come along beastie.",
-			GENERIC = "Ancient woollen beasts!",
+			GENERIC = "Ancient woolen beasts!",
 			NAKED = "Are you cold without your wools?",
 			SLEEPING = "Sounds like Aunt Hilda.",
             --Domesticated states:
@@ -402,7 +402,7 @@ return {
 		BLOWDART_FIRE = "Like the breath of a dragon.",
 		BLOWDART_SLEEP = "Goodnight to my foes.",
 		BLOWDART_PIPE = "Projectile weaponry!",
-		BLUEAMULET = "Cold jewellery.",
+		BLUEAMULET = "Cold jewelery.",
 		BLUEGEM = "An icy blue sapphire.",
 		BLUEPRINT = "Oh, a map! No, wait. That's wrong.",
 		BELL_BLUEPRINT = "Oh, a map! No, wait. That's wrong.",
@@ -431,12 +431,12 @@ return {
 		BUZZARD = "You and I, we meat feast together.",
 		CACTUS = 
 		{
-			GENERIC = "It does have admirable armour.",
+			GENERIC = "It does have admirable armor.",
 			PICKED = "It will return.",
 		},
 		CACTUS_MEAT_COOKED = "Toasted sword plant meat.",
 		CACTUS_MEAT = "Sword plant meat.",
-		CACTUS_FLOWER = "Beauty from braun.",
+		CACTUS_FLOWER = "Beauty from brawn.",
 		COLDFIRE =
 		{
 			EMBERS = "That fire's nearly dead.",
@@ -529,7 +529,7 @@ return {
 		},
 		DIVININGRODSTART = "This mysterious sword feels important.",
 		DRAGONFLY = "Ah dragon! We meet at last!",
-		ARMORDRAGONFLY = "Excellent armour for the heat of battle.",
+		ARMORDRAGONFLY = "Excellent armor for the heat of battle.",
 		DRAGON_SCALES = "Mystical scales.",
 		DRAGONFLYCHEST = "This chest is worthy of my weapons.",
 
@@ -700,7 +700,7 @@ return {
 		},
 		GUNPOWDER = "Such energy!",
 		HAMBAT = "A weapon fit for the great dining halls!",
-		HAMMER = "More fit for labour than battle.",
+		HAMMER = "More fit for labor than battle.",
 		HEALINGSALVE = "Fill me with life!",
 		HEATROCK =
 		{
@@ -899,8 +899,8 @@ return {
 		},
 		PIGSKIN = "The hide of a pig creature.",
 		PIGTORCH = "Do these pigs worship Loge?",
-		PINECONE = "This baby tree is well protected by spiky armour.",
-        PINECONE_SAPLING = "It has shed its armour. Grow, baby tree!",
+		PINECONE = "This baby tree is well protected by spiky armor.",
+        PINECONE_SAPLING = "It has shed its armor. Grow, baby tree!",
         LUMPY_SAPLING = "I guess these trees aren't just props.",
 		PITCHFORK = "A weapon for farmers.",
 		PLANTMEAT = "I suppose it's close enough.",
@@ -949,7 +949,7 @@ return {
 		RED_CAP_COOKED = "I won't eat it, but it was fun to put in the fire.",
 		RED_MUSHROOM =
 		{
-			GENERIC = "At least it's got a nice colour.",
+			GENERIC = "At least it's got a nice color.",
 			INGROUND = "And stay down there!",
 			PICKED = "Good riddance.",
 		},
@@ -964,7 +964,7 @@ return {
             GENERIC = "Fit for Asgard.",
             BROKEN = "It has been reduced to smithereens.",
         },
-        RUINS_RUBBLE = "It's days are not done.",
+        RUINS_RUBBLE = "Its days are not done.",
         RUBBLE = "A pile of ancient rocks.",
 		RESEARCHLAB = 
 		{	
@@ -1063,7 +1063,7 @@ return {
 		},
 		SMALLMEAT = "A nice meaty snack.",
 		SMALLMEAT_DRIED = "A small provision for a long campaign.",
-		SPEAR = "It is not my favoured spear, but it will do the trick.",
+		SPEAR = "It is not my favored spear, but it will do the trick.",
 		SPIDER =
 		{
 			DEAD = "Felled by my spear, like so many before it.",
@@ -1174,9 +1174,9 @@ return {
 		TRINKET_6 = "Useless technology.",
 		TRINKET_7 = "No time for games! There is battle at hand!",
 		TRINKET_8 = "It would make an okay weapon in a pinch.",
-		TRINKET_9 = "No decent armour can be made with these.",
+		TRINKET_9 = "No decent armor can be made with these.",
 		TRINKET_10 = "A token of victory.",
-		TRINKET_11 = "A warrior encased in a fine armour.",
+		TRINKET_11 = "A warrior encased in a fine armor.",
 		TRINKET_12 = "Shorn from a hideous monster.",
 		TRINKET_13 = "A peculiar small woman.",
         TRINKET_14 = "Tea is a luxury that warriors cannot afford.",
@@ -1187,7 +1187,7 @@ return {
         TRINKET_19 = "A useless toy.",
         TRINKET_20 = "This could perhaps be fashioned into a weapon if nothing else is to hand.",
         TRINKET_21 = "Cooking utensils do not interest me.",
-        TRINKET_22 = "It won't stand up to the rigours of battle.",
+        TRINKET_22 = "It won't stand up to the rigors of battle.",
         TRINKET_23 = "Not as useful as a battle horn.",
         TRINKET_24 = "Will it bring me luck in battle?",
         TRINKET_25 = "Perhaps the stench will drive the enemy away.",
@@ -1202,7 +1202,7 @@ return {
 		TURKEYDINNER = "A true feast.",
 		TWIGS = "Good for making spears.",
 		UMBRELLA = "Rain protection made from the trophy of a hunt.",
-		GRASS_UMBRELLA = "I dislike flowers, but I dislike wet armour more.",
+		GRASS_UMBRELLA = "I dislike flowers, but I dislike wet armor more.",
 		UNIMPLEMENTED = "A mysterious relic, sure to contain great power.",
 		WAFFLES = "Waffles are no way to prepare for battle!",
 		WALL_HAY = 

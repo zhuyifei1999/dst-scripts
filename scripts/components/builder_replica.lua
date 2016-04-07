@@ -84,6 +84,22 @@ function Builder:AncientBonus()
     end
 end
 
+function Builder:SetShadowBonus(shadowbonus)
+    if self.classified ~= nil then
+        self.classified.shadowbonus:set(shadowbonus)
+    end
+end
+
+function Builder:ShadowBonus()
+    if self.inst.components.builder ~= nil then
+        return self.inst.components.builder.shadow_bonus or 0
+    elseif self.classified ~= nil then
+        return self.classified.shadowbonus:value()
+    else
+        return 0
+    end
+end
+
 function Builder:SetIngredientMod(ingredientmod)
     if self.classified ~= nil then
         self.classified.ingredientmod:set(INGREDIENT_MOD[ingredientmod])
@@ -111,6 +127,7 @@ function Builder:SetTechTrees(techlevels)
         self.classified.sciencelevel:set(techlevels.SCIENCE or 0)
         self.classified.magiclevel:set(techlevels.MAGIC or 0)
         self.classified.ancientlevel:set(techlevels.ANCIENT or 0)
+        self.classified.shadowlevel:set(techlevels.SHADOW or 0)
     end
 end
 
@@ -201,6 +218,7 @@ function Builder:KnowsRecipe(recipename)
             and (   (recipe.level.SCIENCE <= self.classified.sciencebonus:value() and
                     recipe.level.MAGIC <= self.classified.magicbonus:value() and
                     recipe.level.ANCIENT <= self.classified.ancientbonus:value() and
+                    recipe.level.SHADOW <= self.classified.shadowbonus:value() and
                     (recipe.builder_tag == nil or self.inst:HasTag(recipe.builder_tag)))
                 or self.classified.isfreebuildmode:value()
                 or (self.classified.recipes[recipename] ~= nil and self.classified.recipes[recipename]:value()))

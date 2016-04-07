@@ -510,7 +510,7 @@ end
 
 local function onbecameghost(inst)
     if inst.isbeavermode:value() then
-        inst.AnimState:SetBuild("ghost_werebeaver_build")
+        inst.components.skinner:SetSkinMode("ghost_werebeaver_skin")
     end
 
     inst.components.beaverness:StopTimeEffect()
@@ -570,7 +570,6 @@ end
 local function common_postinit(inst)
     inst:AddTag("woodcutter")
     inst:AddTag("polite")
-    inst:AddTag("ghostwithhat")
 
     --bearded (from beard component) added to pristine state for optimization
     inst:AddTag("bearded")

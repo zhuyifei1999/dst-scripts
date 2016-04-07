@@ -151,24 +151,45 @@ end
 local function onequip_yellow(inst, owner)
     owner.AnimState:OverrideSymbol("swap_body", "torso_amulets", "yellowamulet")
 
-    if inst.components.fueled then
-        inst.components.fueled:StartConsuming()        
+    if inst.components.fueled ~= nil then
+        inst.components.fueled:StartConsuming()
     end
 
-    inst.Light:Enable(true)
+    if inst._light == nil or not inst._light:IsValid() then
+        inst._light = SpawnPrefab("yellowamuletlight")
+    end
+    inst._light.entity:SetParent(owner.entity)
 
-    owner.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+    if owner.components.bloomer ~= nil then
+        owner.components.bloomer:PushBloom(inst, "shaders/anim.ksh", 1)
+    else
+        owner.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+    end
+end
 
+local function turnoff_yellow(inst)
+    if inst._light ~= nil then
+        if inst._light:IsValid() then
+            inst._light:Remove()
+        end
+        inst._light = nil
+    end
 end
 
 local function onunequip_yellow(inst, owner)
-    owner.AnimState:ClearBloomEffectHandle()
-    owner.AnimState:ClearOverrideSymbol("swap_body")
-    if inst.components.fueled then
-        inst.components.fueled:StopConsuming()        
+    if owner.components.bloomer ~= nil then
+        owner.components.bloomer:PopBloom(inst)
+    else
+        owner.AnimState:ClearBloomEffectHandle()
     end
 
-    inst.Light:Enable(false)
+    owner.AnimState:ClearOverrideSymbol("swap_body")
+
+    if inst.components.fueled ~= nil then
+        inst.components.fueled:StopConsuming()
+    end
+
+    turnoff_yellow(inst)
 end
 
 ---COMMON FUNCTIONS
@@ -186,11 +207,11 @@ local function unimplementeditem(inst)
 end
 --]]
 
-local function commonfn(anim, tag, custom_init)
-	local inst = CreateEntity()
+local function commonfn(anim, tag)
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddNetwork()
 
     MakeInventoryPhysics(inst)
@@ -205,10 +226,6 @@ local function commonfn(anim, tag, custom_init)
 
     inst.foleysound = "dontstarve/movement/foley/jewlery"
 
-    if custom_init ~= nil then
-        custom_init(inst)
-    end
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -219,7 +236,7 @@ local function commonfn(anim, tag, custom_init)
 
     inst:AddComponent("equippable")
     inst.components.equippable.equipslot = EQUIPSLOTS.BODY
-	inst.components.equippable.dapperness = TUNING.DAPPERNESS_SMALL    
+    inst.components.equippable.dapperness = TUNING.DAPPERNESS_SMALL
 
     inst:AddComponent("inventoryitem")
 
@@ -236,10 +253,10 @@ local function red()
     -- red amulet now falls off on death, so you HAVE to haunt it
     -- This is more straightforward for prototype purposes, but has side effect of allowing amulet steals
     -- inst.components.inventoryitem.keepondeath = true
-    
+
     inst.components.equippable:SetOnEquip(onequip_red)
     inst.components.equippable:SetOnUnequip(onunequip_red)
-    
+
     inst:AddComponent("finiteuses")
     inst.components.finiteuses:SetOnFinished(inst.Remove)
     inst.components.finiteuses:SetMaxUses(TUNING.REDAMULET_USES)
@@ -249,6 +266,20 @@ local function red()
     inst.components.hauntable:SetHauntValue(TUNING.HAUNT_INSTANT_REZ)
 
     return inst
+end
+
+local function OnHauntBlue(inst)
+    if math.random() <= TUNING.HAUNT_CHANCE_OCCASIONAL then
+        local x, y, z = inst.Transform:GetWorldPosition()
+        local ents = TheSim:FindEntities(x, y, z, 10, { "freezable" }, { "FX", "NOCLICK", "DECOR","INLIMBO" }) 
+        for i, v in ipairs(ents) do
+            if v.components.freezable ~= nil then
+                v.components.freezable:AddColdness(.67)
+                v.components.freezable:SpawnShatterFX()
+            end
+        end
+        inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
+    end
 end
 
 local function blue()
@@ -271,19 +302,7 @@ local function blue()
     inst.components.fueled:SetDepletedFn(inst.Remove)
 
     MakeHauntableLaunch(inst)
-    AddHauntableCustomReaction(inst, function(inst, haunter)
-        if math.random() <= TUNING.HAUNT_CHANCE_OCCASIONAL then
-            local x,y,z = inst.Transform:GetWorldPosition()
-            local ents = TheSim:FindEntities(x,y,z, 10, {"freezable"}, {"FX", "NOCLICK", "DECOR","INLIMBO"}) 
-            for i,v in pairs(ents) do
-                if v and v.components.freezable then
-                    v.components.freezable:AddColdness(0.67)
-                    v.components.freezable:SpawnShatterFX()
-                end
-            end
-            inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
-        end
-    end, true, nil, true)
+    AddHauntableCustomReaction(inst, OnHauntBlue, true, nil, true)
 
     return inst
 end
@@ -353,21 +372,8 @@ local function orange()
     return inst
 end
 
-local function DisableLight(inst)
-    inst.Light:Enable(false)
-end
-
-local function InitLight(inst)
-    inst.entity:AddLight()
-    inst.Light:Enable(false)
-    inst.Light:SetRadius(2)
-    inst.Light:SetFalloff(0.7)
-    inst.Light:SetIntensity(.65)
-    inst.Light:SetColour(223 / 255, 208 / 255, 69 / 255)
-end
-
 local function yellow()
-    local inst = commonfn("yellowamulet", nil, InitLight)
+    local inst = commonfn("yellowamulet")
 
     if not TheWorld.ismastersim then
         return inst
@@ -376,21 +382,51 @@ local function yellow()
     inst.components.equippable:SetOnEquip(onequip_yellow)
     inst.components.equippable:SetOnUnequip(onunequip_yellow)
     inst.components.equippable.walkspeedmult = 1.2
-    inst.components.inventoryitem:SetOnDroppedFn(DisableLight)
+    inst.components.inventoryitem:SetOnDroppedFn(turnoff_yellow)
 
     inst:AddComponent("fueled")
-    inst.components.fueled.fueltype = FUELTYPE.MAGIC
+    inst.components.fueled.fueltype = FUELTYPE.NIGHTMARE
     inst.components.fueled:InitializeFuelLevel(TUNING.YELLOWAMULET_FUEL)
     inst.components.fueled:SetDepletedFn(inst.Remove)
+    inst.components.fueled.accepting = true
 
     MakeHauntableLaunch(inst)
+
+    inst._light = nil
+    inst.OnRemoveEntity = turnoff_yellow
+
+    return inst
+end
+
+local function yellowlightfn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddLight()
+    inst.entity:AddNetwork()
+
+    inst:AddTag("FX")
+
+    inst.Light:SetRadius(2)
+    inst.Light:SetFalloff(.7)
+    inst.Light:SetIntensity(.65)
+    inst.Light:SetColour(223 / 255, 208 / 255, 69 / 255)
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.persists = false
 
     return inst
 end
 
 return Prefab("amulet", red, assets),
-Prefab("blueamulet", blue, assets),
-Prefab("purpleamulet", purple, assets),
-Prefab("orangeamulet", orange, assets),
-Prefab("greenamulet", green, assets),
-Prefab("yellowamulet", yellow, assets)
+    Prefab("blueamulet", blue, assets),
+    Prefab("purpleamulet", purple, assets),
+    Prefab("orangeamulet", orange, assets),
+    Prefab("greenamulet", green, assets),
+    Prefab("yellowamulet", yellow, assets, { "yellowamuletlight" }),
+    Prefab("yellowamuletlight", yellowlightfn)

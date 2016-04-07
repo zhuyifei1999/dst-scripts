@@ -139,12 +139,11 @@ function Tune(overrides)
 		GREENAMULET_INGREDIENTMOD = 0.5,
 		GREENSTAFF_USES = 5,
 
-
 	    FISHING_MINWAIT = 2,
 	    FISHING_MAXWAIT = 20,
-	    
+
 		RESEARCH_MACHINE_DIST = 4,
-	    
+
 	    UNARMED_DAMAGE = 10,
 	    NIGHTSWORD_DAMAGE = wilson_attack*2,
 	    -------
@@ -179,7 +178,7 @@ function Tune(overrides)
         BRUSH_DAMAGE = wilson_attack*.8,
 
         SADDLE_BASIC_BONUS_DAMAGE = 0,
-        SADDLE_WAR_BONUS_DAMAGE = 15,
+        SADDLE_WAR_BONUS_DAMAGE = 16,
 
         SADDLE_BASIC_USES = 5,
         SADDLE_WAR_USES = 8,
@@ -784,8 +783,9 @@ function Tune(overrides)
 		    SCIENCEMACHINE =
 		    {
 		    	SCIENCE = 1,
-		    	MAGIC = 1, 
+		    	MAGIC = 1,
 		    	ANCIENT = 0,
+                SHADOW = 0,
 			},
 
 			ALCHEMYMACHINE =
@@ -793,20 +793,23 @@ function Tune(overrides)
 				SCIENCE = 2,
 				MAGIC = 1,
 				ANCIENT = 0,
+                SHADOW = 0,
 			},
 
 			PRESTIHATITATOR =
 			{
 				SCIENCE = 0,
 				MAGIC = 2,
-				ANCIENT = 0,			
+				ANCIENT = 0,
+                SHADOW = 0,
 			},
 
 			SHADOWMANIPULATOR =
 			{
 				SCIENCE = 0,
 				MAGIC = 3,
-				ANCIENT = 0,				
+				ANCIENT = 0,
+                SHADOW = 0,
 			},
 
 			ANCIENTALTAR_LOW =
@@ -814,6 +817,7 @@ function Tune(overrides)
 				SCIENCE = 0,
 				MAGIC = 0,
 				ANCIENT = 2,
+                SHADOW = 0,
 			},
 
 			ANCIENTALTAR_HIGH =
@@ -821,10 +825,18 @@ function Tune(overrides)
 				SCIENCE = 0,
 				MAGIC = 0,
 				ANCIENT = 4,
+                SHADOW = 0,
+			},
+
+			WAXWELLJOURNAL =
+			{
+				SCIENCE = 0,
+				MAGIC = 0,
+				ANCIENT = 0,
+				SHADOW = 4,
 			},
 		},
 
-	 
 	    RABBIT_HEALTH = 25*multiplayer_attack_modifier,
 	    MOLE_HEALTH = 30,
 	    
@@ -1629,17 +1641,26 @@ function Tune(overrides)
         },
         NIGHTMARE_SEG_VARIATION = 3,
 
-		SHADOWWAXWELL_LIFETIME = total_day_time * 2.5,
 		SHADOWWAXWELL_SPEED = 6,
 		SHADOWWAXWELL_DAMAGE = 40,
 		SHADOWWAXWELL_LIFE = 75,
 		SHADOWWAXWELL_ATTACK_PERIOD = 2,
-		SHADOWWAXWELL_SANITY_PENALTY = 55,
-		SHADOWWAXWELL_HEALTH_COST = 15,
-		SHADOWWAXWELL_FUEL_COST = 2,
+        SHADOWWAXWELL_HEALTH_REGEN = 15,
+        SHADOWWAXWELL_HEALTH_REGEN_PERIOD = 2,
+        SHADOWWAXWELL_TARGET_DIST = 10,
+
+        SHADOWWAXWELL_SANITY_PENALTY =
+        {
+            SHADOWLUMBER = .2,
+            SHADOWMINER = .2,
+            SHADOWDIGGER = .2,
+            SHADOWDUELIST = .35,
+        },
+
+        WAXWELLJOURNAL_DECAY_TIME = total_day_time * 3,
 
 		LIVINGTREE_CHANCE = 0.55,
-		
+
 		-- Birchnut monster chances have been reduced and tied to seasons instead of the number of days to balance things out for dedicated servers (which may be running for extremely long times)
 		DECID_MONSTER_MIN_DAY = 3, -- No monsters during the first few days
 	    DECID_MONSTER_SPAWN_CHANCE_AUTUMN = .15,	-- high chance of monsters in autumn to cancel out double birchnut and general easyness of autumn

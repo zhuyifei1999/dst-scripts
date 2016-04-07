@@ -67,14 +67,6 @@ local assets =
     Asset("INV_IMAGE", "half_hunger"),
     Asset("INV_IMAGE", "half_sanity"),
 
-    Asset("INV_IMAGE", "health_down"),
-    Asset("INV_IMAGE", "hunger_down"),
-    Asset("INV_IMAGE", "sanity_down"),
-
-    Asset("INV_IMAGE", "health_max"),
-    Asset("INV_IMAGE", "hunger_max"),
-    Asset("INV_IMAGE", "sanity_max"),
-
     Asset("SOUND", "sound/together.fsb"),
 }
 

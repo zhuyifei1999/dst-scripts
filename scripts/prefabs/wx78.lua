@@ -60,7 +60,7 @@ local function onupdate(inst, dt)
         inst:RemoveTag("overcharge")
         inst.Light:Enable(false)
         inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED 
-        inst.AnimState:ClearBloomEffectHandle()
+        inst.components.bloomer:PopBloom("overcharge")
         inst.components.temperature.mintemp = -20
         inst.components.talker:Say(GetString(inst, "ANNOUNCE_DISCHARGE"))
     else
@@ -105,7 +105,7 @@ local function startovercharge(inst, duration)
 
     inst.SoundEmitter:KillSound("overcharge_sound")
     inst.SoundEmitter:PlaySound("dontstarve/characters/wx78/charged", "overcharge_sound")
-    inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+    inst.components.bloomer:PushBloom("overcharge", "shaders/anim.ksh", 50)
 
     if inst.charged_task == nil then
         inst.charged_task = inst:DoPeriodicTask(1, onupdate, nil, 1)
@@ -210,6 +210,7 @@ local function onbecameghost(inst)
         inst.SoundEmitter:KillSound("overcharge_sound")
         inst:RemoveTag("overcharge")
         inst.components.temperature.mintemp = -20
+        inst.components.bloomer:PopBloom("overcharge")
         --Ghost mode already sets light and bloom
     end
 

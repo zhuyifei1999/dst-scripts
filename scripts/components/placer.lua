@@ -1,10 +1,13 @@
 local Placer = Class(function(self, inst)
     self.inst = inst
+
+    inst:AddTag("NOCLICK")
+    inst:AddTag("placer")
+
     self.can_build = false
     self.testfn = nil
     self.radius = 1
     self.selected_pos = nil
-    self.inst:AddTag("NOCLICK")
     self.oncanbuild = nil
     self.oncannotbuild = nil
 end)

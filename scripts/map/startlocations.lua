@@ -1,23 +1,71 @@
 
 local startlocations = {}
+local modstartlocations = {}
 
-function AddStartLocation(name, data)
-    startlocations[name] = data
-end
+--------------------------------------------------------------------
+-- Module functions
+--------------------------------------------------------------------
 
-function GetGenStartLocations(world)
+local function GetGenStartLocations(world)
     local ret = {}
     for k,v in pairs(startlocations) do
         if world == nil or v.location == world then
             table.insert(ret, {text = v.name, data = k})
         end
     end
+    for mod,locations in pairs(modstartlocations) do
+        for k,v in pairs(locations) do
+            if world == nil or v.location == world then
+                table.insert(ret, {text = v.name, data = k})
+            end
+        end
+    end
+
     return ret
 end
 
-function GetStartLocation(name)
-    return startlocations[name]
+local function GetStartLocation(name)
+    for mod,locations in pairs(modstartlocations) do
+        if locations[name] ~= nil then
+            return deepcopy(locations[name])
+        end
+    end
+    return deepcopy(startlocations[name])
 end
+
+local function ClearModData(mod)
+    if mod == nil then
+        modstartlocations = {}
+    else
+        modstartlocations[mod] = nil
+    end
+end
+
+------------------------------------------------------------------
+-- GLOBAL functions
+------------------------------------------------------------------
+
+function AddStartLocation(name, data)
+    if ModManager.currentlyloadingmod ~= nil then
+        AddModStartLocation(ModManager.currentlyloadingmod, name, data)
+        return
+    end
+    assert(GetStartLocation(name) == nil, string.format("Tried adding a start location '%s' but one already exists!", name))
+    startlocations[name] = data
+end
+
+function AddModStartLocation(mod, name, data)
+    if GetStartLocation(name) ~= nil then
+        moderror(string.format("Tried adding a start location '%s' but one already exists!", name))
+        return
+    end
+    if modstartlocations[mod] == nil then modstartlocations[mod] = {} end
+    modstartlocations[mod][name] = data
+end
+
+------------------------------------------------------------------
+-- Load the data
+------------------------------------------------------------------
 
 AddStartLocation("default", {
     name = STRINGS.UI.SANDBOXMENU.DEFAULTSTART,
@@ -58,8 +106,12 @@ AddStartLocation("caves", {
     },
 })
 
+------------------------------------------------------------------
+-- Export functions
+------------------------------------------------------------------
+
 return {
-    startlocations = startlocations,
     GetGenStartLocations = GetGenStartLocations,
     GetStartLocation = GetStartLocation,
+    ClearModData = ClearModData,
 }

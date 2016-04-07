@@ -29,6 +29,8 @@ local Controls = Class(Widget, function(self, owner)
     Widget._ctor(self, "Controls")
     self.owner = owner
 
+    self._scrnw, self._scrnh = TheSim:GetScreenSize()
+
     self.playeractionhint = self:AddChild(FollowText(TALKINGFONT, 28))
     self.playeractionhint:SetOffset(Vector3(0, 100, 0))
     self.playeractionhint:Hide()
@@ -58,10 +60,14 @@ local Controls = Class(Widget, function(self, owner)
     self.containerroot = self:AddChild(Widget(""))
     self:MakeScalingNodes()
 
-    self.saving = self:AddChild(SavingIndicator(self.owner))
-    self.saving:SetHAnchor(ANCHOR_MIDDLE)
-    self.saving:SetVAnchor(ANCHOR_TOP)
-    self.saving:SetPosition(Vector3(200,0,0))
+    self.savingroot = self:AddChild(Widget("savingroot"))
+    self.savingroot:SetHAnchor(ANCHOR_RIGHT)
+    self.savingroot:SetVAnchor(ANCHOR_TOP)
+    self.savingroot:SetScaleMode(SCALEMODE_PROPORTIONAL)
+    self.savingroot:SetMaxPropUpscale(MAX_HUD_SCALE)
+    self.savingroot = self.savingroot:AddChild(Widget("savingroot2"))
+    self.saving = self.savingroot:AddChild(SavingIndicator(self.owner))
+    self.saving:SetPosition(-440, 0, 0)
 
     self.item_notification = self.topleft_root:AddChild(GiftItemToast(self.owner))
     self.item_notification:SetPosition(115, 150, 0)
@@ -134,11 +140,13 @@ local Controls = Class(Widget, function(self, owner)
     self.crafttabs = self.left_root:AddChild(CraftTabs(self.owner, self.top_root))
 
     if TheNet:GetIsClient() then
-        self.desync = self:AddChild(Desync(owner))
+        --Not using topleft_root because we need to be on top of containerroot
+        self.desync = self:AddChild(Widget("desyncroot"))
         self.desync:SetScaleMode(SCALEMODE_PROPORTIONAL)
         self.desync:SetHAnchor(ANCHOR_LEFT)
         self.desync:SetVAnchor(ANCHOR_TOP)
         self.desync:SetMaxPropUpscale(MAX_HUD_SCALE)
+        self.desync = self.desync:AddChild(Desync(owner))
     end
 
     self.votedialog = self:AddChild(VoteDialog())
@@ -231,6 +239,7 @@ function Controls:SetHUDSize(  )
     self.containerroot:SetScale(scale,scale,scale)
     self.containerroot_side:SetScale(scale,scale,scale)
     self.hover:SetScale(scale,scale,scale)
+    self.savingroot:SetScale(scale, scale, scale)
 
     self.mousefollow:SetScale(scale,scale,scale)
 
@@ -246,6 +255,12 @@ function Controls:OnUpdate(dt)
         self.attackhint:SetTarget(nil)
         self.groundactionhint:SetTarget(nil)
         return
+    end
+
+    local scrnw, scrnh = TheSim:GetScreenSize()
+    if scrnw ~= self._scrnw or scrnh ~= self._scrnh then
+        self._scrnw, self._scrnh = scrnw, scrnh
+        self:SetHUDSize()
     end
 
     local controller_mode = TheInput:ControllerAttached()

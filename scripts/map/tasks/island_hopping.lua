@@ -6,11 +6,11 @@ AddTask("IslandHop_Start", { -- Sweet starting node, horrid other than that (lea
 		locks=LOCKS.NONE,
 		keys_given=KEYS.MEAT,
 		room_choices={
-			["SpiderMarsh"] = 1+math.random(2), 
+			["SpiderMarsh"] = function() return 1+math.random(2) end, 
 		},
 		room_bg=GROUND.DIRT,
 		background_room="BGMarsh",
-		colour={r=math.random(),g=math.random(),b=math.random(),a=math.random()},
+		colour={1,.5,.5,.2},
 	})
 
 AddTask("IslandHop_Hounds", {
@@ -18,11 +18,11 @@ AddTask("IslandHop_Hounds", {
 		keys_given=KEYS.MEAT,
 		entrance_room = "ForceDisconnectedRoom",
 		room_choices={
-			["SpiderForest"] = 1+math.random(2), 
+			["SpiderForest"] = function() return 1+math.random(2) end, 
 		},
 		room_bg=GROUND.DIRT,
 		background_room="BGBadlands",
-		colour={r=math.random(),g=math.random(),b=math.random(),a=math.random()},
+		colour={1,.5,.5,.2},
 	})
 
 AddTask("IslandHop_Forest", {
@@ -30,14 +30,14 @@ AddTask("IslandHop_Forest", {
 		keys_given=KEYS.MEAT,
 		entrance_room = "ForceDisconnectedRoom",
 		room_choices={
-			["Waspnests"] = 1+math.random(2), 
+			["Waspnests"] = function() return 1+math.random(2) end, 
 		},
 		-- room_choices={
-		-- 	["DeepForest"] = 1+math.random(2), 
+		-- 	["DeepForest"] = function() return 1+math.random(2) end, 
 		-- },
 		room_bg=GROUND.DIRT,
 		background_room="BGDeepForest",
-		colour={r=math.random(),g=math.random(),b=math.random(),a=math.random()},
+		colour={1,.5,.5,.2},
 	})
 
 AddTask("IslandHop_Savanna", {
@@ -45,14 +45,14 @@ AddTask("IslandHop_Savanna", {
 		keys_given=KEYS.MEAT,
 		entrance_room = "ForceDisconnectedRoom",
 		room_choices={
-			["BeefalowPlain"] = 1+math.random(2), 
+			["BeefalowPlain"] = function() return 1+math.random(2) end, 
 		},
 		-- room_choices={
-		-- 	["BeefalowPlain"] = 1+math.random(2), 
+		-- 	["BeefalowPlain"] = function() return 1+math.random(2) end, 
 		-- },
 		room_bg=GROUND.DIRT,
 		background_room="BGSavanna",
-		colour={r=math.random(),g=math.random(),b=math.random(),a=math.random()},
+		colour={1,.5,.5,.2},
 	})
 
 AddTask("IslandHop_Rocky", {
@@ -60,11 +60,11 @@ AddTask("IslandHop_Rocky", {
 		keys_given=KEYS.MEAT,
 		entrance_room = "ForceDisconnectedRoom",
 		room_choices={
-			["Rocky"] = 1+math.random(2), 
+			["Rocky"] = function() return 1+math.random(2) end, 
 		},
 		room_bg=GROUND.DIRT,
 		background_room="BGRocky",
-		colour={r=math.random(),g=math.random(),b=math.random(),a=math.random()},
+		colour={1,.5,.5,.2},
 	})
 
 AddTask("IslandHop_Merm", {
@@ -72,9 +72,9 @@ AddTask("IslandHop_Merm", {
 		keys_given=KEYS.MEAT,
 		entrance_room = "ForceDisconnectedRoom",
 		room_choices={
-			["SlightlyMermySwamp"] = 1+math.random(2), 
+			["SlightlyMermySwamp"] = function() return 1+math.random(2) end, 
 		},
 		room_bg=GROUND.DIRT,
 		background_room="BGMarsh",
-		colour={r=math.random(),g=math.random(),b=math.random(),a=math.random()},
+		colour={1,.5,.5,.2},
 	})

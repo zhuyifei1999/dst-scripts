@@ -10,17 +10,17 @@ end
 local HealthBadge = Class(Badge, function(self, owner)
     Badge._ctor(self, "health", owner)
 
-    self.sanityarrow = self.underNumber:AddChild(UIAnim())
-    self.sanityarrow:GetAnimState():SetBank("sanity_arrow")
-    self.sanityarrow:GetAnimState():SetBuild("sanity_arrow")
-    self.sanityarrow:GetAnimState():PlayAnimation("neutral")
-    self.sanityarrow:SetClickable(false)
-
     self.topperanim = self.underNumber:AddChild(UIAnim())
     self.topperanim:GetAnimState():SetBank("effigy_topper")
     self.topperanim:GetAnimState():SetBuild("effigy_topper")
     self.topperanim:GetAnimState():PlayAnimation("anim")
     self.topperanim:SetClickable(false)
+
+    self.sanityarrow = self.underNumber:AddChild(UIAnim())
+    self.sanityarrow:GetAnimState():SetBank("sanity_arrow")
+    self.sanityarrow:GetAnimState():SetBuild("sanity_arrow")
+    self.sanityarrow:GetAnimState():PlayAnimation("neutral")
+    self.sanityarrow:SetClickable(false)
 
     --Hide the original frame since it is now overlapped by the topperanim
     self.anim:GetAnimState():Hide("frame")

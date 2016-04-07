@@ -161,6 +161,6 @@ local bgrocky = {
         },
     }
 }
-AddRoom("BGRocky", bgrocky)
-AddRoom("BGRockyRoom", Roomify(bgrocky))
+AddRoom("BGRockyCave", bgrocky)
+AddRoom("BGRockyCaveRoom", Roomify(bgrocky))
 

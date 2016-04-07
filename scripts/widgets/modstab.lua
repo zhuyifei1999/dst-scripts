@@ -694,9 +694,11 @@ end
 
 function ModsTab:OnConfirmEnable(restart, modname)
     if KnownModIndex:IsModEnabled(modname) then
+        ModManager:FrontendUnloadMod(modname)
 		KnownModIndex:Disable(modname)
 	else
 		KnownModIndex:Enable(modname)
+        ModManager:FrontendLoadMod(modname)
 	end
 	
     --show the auto-download warning for non-workshop mods
@@ -722,6 +724,7 @@ function ModsTab:OnConfirmEnable(restart, modname)
     self.servercreationscreen:UpdateModeSpinner(self.slotnum)
     self.servercreationscreen:UpdateButtons(self.slotnum)
     self.servercreationscreen:MakeDirty()
+    self.servercreationscreen.world_tab:Refresh()
 
     if restart then
         KnownModIndex:Save()
@@ -988,6 +991,7 @@ function ModsTab:Cancel()
 		self.updatetask = nil
 	end
 	
+    ModManager:FrontendUnloadMod(nil) -- all mods
     KnownModIndex:RestoreCachedSaveData()
     self:UnloadModInfoPrefabs(self.infoprefabs)
 end
@@ -1100,10 +1104,16 @@ end
 function ModsTab:SetSaveSlot(slotnum, fromDelete)
     if not fromDelete and slotnum == self.slotnum then return end
 
+    ModManager:FrontendUnloadMod(nil) -- all mods
+
     self.slotnum = slotnum
     SaveGameIndex:LoadServerEnabledModsFromSlot( self.slotnum )
     
     self:UpdateForWorkshop(true)
+
+    for i, name in ipairs(ModManager:GetEnabledServerModNames()) do
+        ModManager:FrontendLoadMod(name)
+    end
 end
 
 function ModsTab:GetNumberOfModsEnabled()

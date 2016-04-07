@@ -178,9 +178,6 @@ local function makefn(name, asset, smashsound, rubble)
                 inst.components.lootdropper:AddRandomLoot("spider_hider"   , 0.05)
                 inst.components.lootdropper:AddRandomLoot("spider_spitter" , 0.05)
                 inst.components.lootdropper:AddRandomLoot("monkey"         , 0.05)
-                if TheWorld:HasTag("cave") and TheWorld.topology.level_number == 2 then  -- ruins
-                    inst.components.lootdropper:AddChanceLoot("thulecite"  , 0.05)
-                end
             else
                 inst.components.lootdropper:SetChanceLootTable('smashables')
                 inst.components.lootdropper.numrandomloot = 1
@@ -190,9 +187,6 @@ local function makefn(name, asset, smashsound, rubble)
                 inst.components.lootdropper:AddRandomLoot("yellowgem"     , 0.01)
                 inst.components.lootdropper:AddRandomLoot("orangegem"     , 0.01)
                 inst.components.lootdropper:AddRandomLoot("nightmarefuel" , 0.01)
-                if TheWorld:HasTag("cave") and TheWorld.topology.level_number == 2 then  -- ruins
-                    inst.components.lootdropper:AddRandomLoot("thulecite" , 0.02)
-                end
             end
         end
 

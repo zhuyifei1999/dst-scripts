@@ -11,6 +11,7 @@ local Prototyper = Class(function(self, inst)
         SCIENCE = 0,
         MAGIC = 0,
         ANCIENT = 0,
+        SHADOW = 0,
     }
 
     self.on = false

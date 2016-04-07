@@ -2,13 +2,14 @@ require("mods")
 require("modutil")
 
 local function modprint(...)
-	--print(type(...) == "table" and unpack(...) or ...)
+    --print(type(...) == "table" and unpack(...) or ...)
 end
 
 local mod_config_path = "mod_config_data/"
 
 
-ModIndex = Class(function(self)
+-- Note: This is a singleton (created at the bottom of this file) so the class is local
+local ModIndex = Class(function(self)
 	self.startingup = false
 	self.cached_data = {}
 	self.savedata =
@@ -17,6 +18,7 @@ ModIndex = Class(function(self)
 		known_api_version = 0,
 	}
 end)
+
 --[[
 known_mods = {
 	[modname] = {
@@ -194,7 +196,7 @@ function ModIndex:GetModInfo(modname)
 	if self.savedata.known_mods[modname] then
 		return self.savedata.known_mods[modname].modinfo or {}
 	else
-		--print("unknown mod " .. modname)
+		modprint("unknown mod " .. modname)
 		return nil
 	end
 end
@@ -338,7 +340,10 @@ function ModIndex:LoadModInfo(modname)
 	end
 	
 	info.version = TrimString(info.version or "")
-	info.version_compatible = info.version_compatible or info.version
+	info.version = string.lower(info.version)
+	info.version_compatible = type(info.version_compatible) == "string" and info.version_compatible or info.version
+	info.version_compatible = TrimString( info.version_compatible )
+	info.version_compatible = string.lower(info.version_compatible)
 	
 	if info.icon_atlas ~= nil and info.icon ~= nil and info.icon_atlas ~= "" and info.icon ~= "" then
 		local atlaspath = MODS_ROOT..modname.."/"..info.icon_atlas
@@ -682,6 +687,10 @@ function ModIndex:IsModInitPrintEnabled()
 	return self.modsettings.initdebugprint
 end
 
+function ModIndex:IsModErrorEnabled()
+	return self.modsettings.moderror
+end
+
 function ModIndex:Disable(modname)
 	if not self.savedata.known_mods[modname] then
 		self.savedata.known_mods[modname] = {}
@@ -837,10 +846,14 @@ function ModIndex:UpdateModSettings()
 	local function EnableModDebugPrint()
 		self.modsettings.initdebugprint = true
 	end
+	local function EnableModError()
+		self.modsettings.moderror = true
+	end
 	
 	local env = {
 		ForceEnableMod = ForceEnableMod,
 		EnableModDebugPrint = EnableModDebugPrint,
+        EnableModError = EnableModError
 	}
 
 	local filename = MODS_ROOT.."modsettings.lua"
@@ -901,6 +914,5 @@ function ModIndex:GetEnabledModTags()
 	end
 	return tags	
 end
-
 
 KnownModIndex = ModIndex()

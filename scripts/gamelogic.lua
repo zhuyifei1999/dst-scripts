@@ -28,6 +28,7 @@ LoadingWidget = require "widgets/loadingwidget"
 global_loading_widget = LoadingWidget(Settings.load_screen_image)
 global_loading_widget:SetHAnchor(ANCHOR_LEFT)
 global_loading_widget:SetVAnchor(ANCHOR_BOTTOM)
+global_loading_widget:SetScaleMode(SCALEMODE_PROPORTIONAL)
 
 global_error_widget = nil
 ScriptErrorWidget = require "widgets/scripterrorwidget"
@@ -322,12 +323,6 @@ local function PopulateWorld(savedata, profile)
             end
         end
 
-        if world.topology.level_number == 2 and world:HasTag("cave") then
-            world:AddTag("ruin")
-            world:AddComponent("nightmareclock")
-            world:AddComponent("nightmareambientsoundmixer")
-        end
-
         for i,node in ipairs(world.topology.nodes) do
             local story = world.topology.ids[i]
             -- guard for old saves
@@ -380,31 +375,28 @@ local function PopulateWorld(savedata, profile)
         end
 
         -- Force overrides for ambient
-		local retune = require("tuning_override")
-		retune.areaambientdefault(savedata.map.prefab)
+        local tuning_override = require("tuning_override")
+        tuning_override.areaambientdefault(savedata.map.prefab)
 
-		-- Check for map overrides
-		if world.topology.overrides ~= nil and GetTableSize(world.topology.overrides) > 0 then			
-			for area, overrides in pairs(world.topology.overrides) do	
-				for i,override in ipairs(overrides) do	
-					if retune[override[1]] ~= nil then
-                        print("OVERRIDE: setting",override[1],"to",override[2])
-						retune[override[1]](override[2])
-					end
-				end
-			end
-
-            -- Clear out one time overrides
-			local onetime = {"season_start", "autumn", "winter", "spring", "summer", "frograin", "wildfires"}
-            if world.topology.overrides.misc then
-                for i=#world.topology.overrides.misc,1,-1 do
-                    if table.contains(onetime, world.topology.overrides.misc[i][1]) then
-						table.remove(world.topology.overrides.misc, i)
-                    end
+        -- Check for map overrides
+        if world.topology.overrides ~= nil and GetTableSize(world.topology.overrides) > 0 then
+            for override,value in pairs(world.topology.overrides) do
+                if tuning_override[override] ~= nil then
+                    print("OVERRIDE: setting",override,"to",value)
+                    tuning_override[override](value)
                 end
             end
-		end
-        
+
+            -- Clear out one time overrides
+            local onetime = {"season_start", "autumn", "winter", "spring", "summer", "frograin", "wildfires"}
+            for i,override in ipairs(onetime) do
+                if world.topology.overrides[override] ~= nil then
+                    print("removing onetime override",override)
+                    world.topology.overrides[override] = nil
+                end
+            end
+        end
+
         --instantiate all the dudes
         local newents = {}
         for prefab, ents in pairs(savedata.ents) do
@@ -784,15 +776,14 @@ local function DoGenerateWorld(saveslot)
 		end
 	end
 
-	local world_gen_options =
-	{
-		level_type = "survival",
-		custom_options = SaveGameIndex:GetSlotGenOptions(saveslot),
-		level_world = 1,
-		profiledata = Profile.persistdata,
-	}
+    local world_gen_data =
+    {
+        level_type = GetLevelType(SaveGameIndex:GetGameMode(saveslot)),
+        level_data = SaveGameIndex:GetSlotGenOptions(saveslot),
+        profile_data = Profile.persistdata,
+    }
 
-	TheFrontEnd:PushScreen(WorldGenScreen(Profile, onComplete, world_gen_options))
+	TheFrontEnd:PushScreen(WorldGenScreen(Profile, onComplete, world_gen_data))
 end
 
 local function LoadSlot(slot)
@@ -836,7 +827,7 @@ local function DoResetAction()
 	if Settings.reset_action then
 		if Settings.reset_action == RESET_ACTION.DO_DEMO then
 			SaveGameIndex:DeleteSlot(1, function()
-				SaveGameIndex:StartSurvivalMode(1, nil, nil, function() 
+				SaveGameIndex:StartSurvivalMode(1, nil, GetDefaultServerData(), function() 
 					--print("Reset Action: DO_DEMO")
 					DoGenerateWorld(1)
 				end)
@@ -882,7 +873,7 @@ local function DoResetAction()
 					local function onsaved()
 						SimReset({reset_action="printtextureinfo",save_slot=1})
 					end
-					SaveGameIndex:StartSurvivalMode(1, nil, nil, onsaved)
+					SaveGameIndex:StartSurvivalMode(1, nil, GetDefaultServerData(), onsaved)
 				end)
 		else
 			LoadAssets("FRONTEND")
@@ -905,7 +896,7 @@ local function OnUpdatePurchaseStateComplete()
 end
 
 local function OnFilesLoaded()
-	print("OnFilesLoaded()")
+    print("OnFilesLoaded()")
     if not (TheNet:IsDedicated() or TheNet:GetIsServer() or TheNet:GetIsClient()) then
         local host_sessions = {}
         for i = 1, NUM_SAVE_SLOTS do
@@ -915,8 +906,17 @@ local function OnFilesLoaded()
             end
         end
         TheNet:CleanupSessionCache(host_sessions)
+
+        if #host_sessions > 0 then
+            Profile:ShowedNewUserPopup()
+            Profile:ShowedNewHostPicker()
+            Profile:Save(function()
+                UpdateGamePurchasedState(OnUpdatePurchaseStateComplete)
+            end)
+            return
+        end
     end
-	UpdateGamePurchasedState(OnUpdatePurchaseStateComplete)
+    UpdateGamePurchasedState(OnUpdatePurchaseStateComplete)
 end
 
 Profile = PlayerProfile()

@@ -50,6 +50,7 @@ AddRoom("PigKingdom", {
 					colour={r=0.8,g=.8,b=.1,a=.50},
 					value = GROUND.GRASS,
 					tags = {"Town"},
+                    required_prefabs = {"pigking"},
 					contents =  {
 									countstaticlayouts=
 									{
@@ -71,6 +72,7 @@ AddRoom("PigCity", {
 					colour={r=0.9,g=.9,b=.2,a=.50},
 					value = GROUND.ROCKY,
 					tags = {"Town"},
+                    required_prefabs = {"pigking"},
 					contents =  {
 									countstaticlayouts=
 									{

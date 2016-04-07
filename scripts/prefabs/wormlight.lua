@@ -167,7 +167,6 @@ local function light_ontarget(inst, target)
 
     target.wormlight = inst
     inst.Follower:FollowSymbol(target.GUID, "", 0, 0, 0)
-    target:AddTag(inst.components.spell.spellname)
     inst.fx.entity:SetParent(target.entity)
     inst:ListenForEvent("onremove", forceremove, target)
     inst:ListenForEvent("death", function() inst.fx:setdead() end, target)
@@ -177,11 +176,15 @@ local function light_ontarget(inst, target)
         if target:HasTag("electricdamageimmune") then
             inst:ListenForEvent("ms_overcharge", forceremove, target)
         end
-        target.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
         inst.persists = false
     else
-        target.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
         inst.persists = true
+    end
+
+    if target.components.bloomer ~= nil then
+        target.components.bloomer:PushBloom(inst, "shaders/anim.ksh", -1)
+    else
+        target.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
     end
 end
 
@@ -189,7 +192,9 @@ local function light_onfinish(inst)
     local target = inst.components.spell.target
     if target ~= nil then
         target.wormlight = nil
-        if not (target:HasTag("playerghost") or target:HasTag("overcharge")) then
+        if target.components.bloomer ~= nil then
+            target.components.bloomer:PopBloom(inst)
+        else
             target.AnimState:ClearBloomEffectHandle()
         end
     end

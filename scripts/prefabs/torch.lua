@@ -8,7 +8,6 @@ local assets =
 local prefabs =
 {
     "torchfire",
-    --"torchfire_smoke",
 }
 
 local function onequipfueldelta(inst)
@@ -47,7 +46,7 @@ local function onequip(inst, owner)
 		for _,fx_prefab in pairs(fire_fx) do
 			local fx = SpawnPrefab(fx_prefab)
 			local follower = fx.entity:AddFollower()
-			follower:FollowSymbol(owner.GUID, "swap_object", 0, -114, 0)
+			follower:FollowSymbol(owner.GUID, "swap_object", 0, fx.fx_offset, 0)
 	        
 			table.insert( inst.fires, fx )
 		end
@@ -68,6 +67,7 @@ local function onunequip(inst, owner)
 			fx:Remove()
 		end
 		inst.fires = nil
+		inst.SoundEmitter:PlaySound("dontstarve/common/fireOut")
     end
 
     inst.components.burnable:Extinguish()
@@ -75,7 +75,6 @@ local function onunequip(inst, owner)
     owner.AnimState:Hide("ARM_carry") 
     owner.AnimState:Show("ARM_normal")
     inst.SoundEmitter:KillSound("torch")
-    inst.SoundEmitter:PlaySound("dontstarve/common/fireOut")
 end
 
 local function onpocket(inst, owner)

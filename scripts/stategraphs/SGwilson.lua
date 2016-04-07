@@ -132,12 +132,15 @@ local function SetSleeperAwakeState(inst)
     inst:ShowActions(true)
 end
 
-local function DoEmoteFX(inst, prefab, offset)
+local function DoEmoteFX(inst, prefab)
     local fx = SpawnPrefab(prefab)
     if fx ~= nil then
-        local finaloffset = (inst.emotefxoffset or Vector3(0,0,0)) + (offset or Vector3(0,0,0))
-        fx.Transform:SetPosition(finaloffset:Get())
-        fx.entity:SetParent(inst.entity)
+        fx.Transform:SetRotation(inst.Transform:GetRotation())
+        if inst.components.rider ~= nil and inst.components.rider:IsRiding() then
+            fx.Transform:SetSixFaced()
+        end
+        fx.entity:AddFollower()
+        fx.Follower:FollowSymbol(inst.GUID, "emotefx", 0, 0, 0)
     end
 end
 
@@ -844,16 +847,14 @@ local states =
 
             inst.fx = SpawnPrefab("shock_fx")
             inst.fx.Transform:SetRotation(inst.Transform:GetRotation())
-            if inst.shockfxoffset ~= nil then
-                inst.fx.Transform:SetPosition((inst.shockfxoffset + inst:GetPosition()):Get())
-            else
-                inst.fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+            if inst.components.rider ~= nil and inst.components.rider:IsRiding() then
+                inst.fx.Transform:SetSixFaced()
             end
+            inst.fx.entity:AddFollower()
+            inst.fx.Follower:FollowSymbol(inst.GUID, "swap_shock_fx", 0, 0, 0)
 
             if not inst:HasTag("electricdamageimmune") then
-                if not inst:HasTag("wormlight") then
-                    inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
-                end
+                inst.components.bloomer:PushBloom("electrocute", "shaders/anim.ksh", -2)
                 inst.Light:Enable(true)
             end
 
@@ -874,9 +875,7 @@ local states =
                 if inst.fx ~= nil then
                     if not inst:HasTag("electricdamageimmune") then
                         inst.Light:Enable(false)
-                        if not inst:HasTag("wormlight") then
-                            inst.AnimState:ClearBloomEffectHandle()
-                        end
+                        inst.components.bloomer:PopBloom("electrocute")
                     end
                     inst.fx:Remove()
                     inst.fx = nil
@@ -898,9 +897,7 @@ local states =
             if inst.fx ~= nil then
                 if not inst:HasTag("electricdamageimmune") then
                     inst.Light:Enable(false)
-                    if not inst:HasTag("wormlight") then
-                        inst.AnimState:ClearBloomEffectHandle()
-                    end
+                    inst.components.bloomer:PopBloom("electrocute")
                 end
                 inst.fx:Remove()
                 inst.fx = nil
@@ -3174,9 +3171,6 @@ local states =
         {
             TimeEvent(0, function(inst)
                 local fxtoplay = inst.components.rider ~= nil and inst.components.rider:IsRiding() and "book_fx_mount" or "book_fx"
-                if inst.prefab == "waxwell" then
-                    fxtoplay = "waxwell_book_fx" 
-                end
                 local fx = SpawnPrefab(fxtoplay)
                 local x, y, z = inst.Transform:GetWorldPosition()
                 fx.Transform:SetRotation(inst.Transform:GetRotation())
@@ -4301,7 +4295,11 @@ local states =
 
             inst.SoundEmitter:PlaySound("dontstarve/ghost/ghost_get_bloodpump")
             inst.AnimState:SetBank("ghost")
-            inst.components.skinner:SetSkinMode("ghost_skin")
+            if inst:HasTag("beaver") then
+				inst.components.skinner:SetSkinMode("ghost_werebeaver_skin")
+			else
+				inst.components.skinner:SetSkinMode("ghost_skin")
+			end
             inst.AnimState:PlayAnimation("shudder")
             inst.AnimState:PushAnimation("hit", false)
             inst.AnimState:PushAnimation("transform", false)
@@ -4316,7 +4314,7 @@ local states =
                 inst.DynamicShadow:Enable(true)
                 if inst:HasTag("beaver") then
                     inst.AnimState:SetBank("werebeaver")
-                    inst.AnimState:SetBuild("werebeaver_build")
+                    inst.components.skinner:SetSkinMode("werebeaver_skin")
                 else
                     inst.AnimState:SetBank("wilson")
                     inst.components.skinner:SetSkinMode("normal_skin")
@@ -4325,10 +4323,8 @@ local states =
                 inst.SoundEmitter:PlaySound("dontstarve/ghost/ghost_use_bloodpump")
             end),
             TimeEvent(96 * FRAMES, function(inst) 
-                inst.AnimState:ClearBloomEffectHandle()
+                inst.components.bloomer:PopBloom("playerghostbloom")
                 inst.AnimState:SetLightOverride(0)
-                inst.AnimState:Hide("HAT")
-                inst.AnimState:Hide("HatFX")
             end),
         },
 
@@ -4346,15 +4342,13 @@ local states =
             inst.DynamicShadow:Enable(true)
             if inst:HasTag("beaver") then
                 inst.AnimState:SetBank("werebeaver")
-                inst.AnimState:SetBuild("werebeaver_build")
+                inst.components.skinner:SetSkinMode("werebeaver_skin")
             else
                 inst.AnimState:SetBank("wilson")
-	            inst.components.skinner:SetSkinMode("normal_skin")
+                inst.components.skinner:SetSkinMode("normal_skin")
             end
-            inst.AnimState:ClearBloomEffectHandle()
+            inst.components.bloomer:PopBloom("playerghostbloom")
             inst.AnimState:SetLightOverride(0)
-            inst.AnimState:Hide("HAT")
-            inst.AnimState:Hide("HatFX")
             --
             inst.components.health:SetInvincible(false)
             if inst.components.playercontroller ~= nil then
@@ -4667,6 +4661,12 @@ local states =
         onenter = function(inst, data)
             inst.components.locomotor:Stop()
 
+            if data.tags ~= nil then
+                for i, v in ipairs(data.tags) do
+                    inst.sg:AddStateTag(v)
+                end
+            end
+
             local anim = data.anim
             local animtype = type(anim)
             if data.randomanim and animtype == "table" then
@@ -4690,9 +4690,9 @@ local states =
 
             if data.fx then --fx might be a boolean, so don't do ~= nil
                 if data.fxdelay == nil or data.fxdelay == 0 then
-                    DoEmoteFX(inst, data.fx, data.fxoffset)
+                    DoEmoteFX(inst, data.fx)
                 else
-                    inst.sg.statemem.emotefxtask = inst:DoTaskInTime(data.fxdelay, DoEmoteFX, data.fx, data.fxoffset)
+                    inst.sg.statemem.emotefxtask = inst:DoTaskInTime(data.fxdelay, DoEmoteFX, data.fx)
                 end
             elseif data.fx ~= false then
                 DoEmoteFX(inst, "emote_fx", nil)

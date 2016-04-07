@@ -18,7 +18,7 @@ local TOP_Y = 225
 local LINE_HEIGHT = 28
 local LEFT_COLUMN = -90
 local RIGHT_COLUMN = 90
-local TEXT_WIDTH = 250
+local TEXT_WIDTH = 215
 
 local DAYS_TEXT_POSITION = 35
 local DAYS_TEXT_NO_ICON_POSITION = 22
@@ -73,15 +73,14 @@ function RecipeList:DoInit()
     self.recipes_spinner = self.root:AddChild(Spinner( {}, TEXT_WIDTH, nil, {font=BUTTONFONT, size=24}, nil, nil, spinner_lean_images, true, 200, 50))
     self.recipes_spinner:SetOnChangedFn(function()
 											local selectedRecipe = self.data[self.recipes_spinner:GetSelectedIndex()]
+											self:DisplayData(selectedRecipe) 
 											if selectedRecipe ~= nil then
-	    										self:DisplayData(selectedRecipe) 
 	    										if self.clickFn then 
 	    											self.clickFn(selectedRecipe or {})
 	    										end
 	    									end
 	    								end)
 	self.recipes_spinner:SetPosition(15, TOP_Y + 10, 0)
-	self.recipes_spinner:AddControllerHints()
 	self.recipes_spinner:Layout()
 
 	self.specials_root = self.root:AddChild(Widget("specials-container"))
@@ -96,13 +95,16 @@ end
 
 function RecipeList:SetData(recipes)
 	self.data = recipes or {}
+
 	
 	local options = {}
 	for k,v in pairs(recipes) do
-		table.insert(options, {text="Wanted: " .. v.Restrictions[1].Rarity .. " Items"} )
+		local str = STRINGS.UI.TRADESCREEN.RECIPE_TITLE
+		str = str:gsub("<rarity>", v.Restrictions[1].Rarity)
+		table.insert(options, {text=str} )
 	end
 	if #recipes == 0 then
-		table.insert(options, {text="No recipes"} )
+		table.insert(options, {text=STRINGS.UI.TRADESCREEN.NO_RECIPES} )
 	end
 	self.recipes_spinner:SetOptions( options )
 	
@@ -175,74 +177,78 @@ local function coalesce_recipes(recipe_data)
 end
 
 function RecipeList:DisplayData(recipe_data)
-	--print( "DisplayData for", recipe_data.RecipeName )
-	
-	self.num_needed = {} -- this stores the number of items needed to match each recipe line
+	if recipe_data ~= nil then	
+		--print( "DisplayData for", recipe_data.RecipeName )
+		
+		self.num_needed = {} -- this stores the number of items needed to match each recipe line
 
-	--Coalesce recipe restrictions
-	local res_data = coalesce_recipes(recipe_data)	
+		--Coalesce recipe restrictions
+		local res_data = coalesce_recipes(recipe_data)	
 
-	-- local vars for getting the max string width so we can center the ingredients list
-	local temp = Text(FONT, FONTSIZE, "")
-	local maxwidth = 0
+		-- local vars for getting the max string width so we can center the ingredients list
+		local temp = Text(FONT, FONTSIZE, "")
+		local maxwidth = 0
 
-	--Display coalesced recipe data/restrictions
-	for i=1,MAX_LINES do
-		local coalesce_res = res_data[i]
-		if coalesce_res ~= nil then
-			local str, show_icon = self:BuildString(coalesce_res)
+		--Display coalesced recipe data/restrictions
+		for i=1,MAX_LINES do
+			local coalesce_res = res_data[i]
+			if coalesce_res ~= nil then
+				local str, show_icon = self:BuildString(coalesce_res)
 
-			self.specials[i].text:SetString(str)
+				self.specials[i].text:SetString(str)
 
-			temp:SetString(str)
-			local w,h = temp:GetRegionSize()
-			if w > maxwidth then 
-				maxwidth = w
-			end 
+				temp:SetString(str)
+				local w,h = temp:GetRegionSize()
+				if w > maxwidth then 
+					maxwidth = w
+				end 
 
-			if show_icon then 
-				self.specials[i].icon:SetItem(coalesce_res.type or "", coalesce_res.item_type, nil, nil)
+				if show_icon then 
+					self.specials[i].icon:SetItem(coalesce_res.type or "", coalesce_res.item_type, nil, nil)
+				else
+					self.specials[i].icon:ClearFrame()
+				end
+
+				-- set rarity for frames that are empty or contain default icons
+				self.specials[i].icon:SetItemRarity(coalesce_res.rarity)
+
+				self.specials[i]:Show()
 			else
-				self.specials[i].icon:ClearFrame()
+				self.specials[i]:Hide()
 			end
-
-			-- set rarity for frames that are empty or contain default icons
-			self.specials[i].icon:SetItemRarity(coalesce_res.rarity)
-
-			self.specials[i]:Show()
-		else
-			self.specials[i]:Hide()
 		end
-	end
 
-	-- center the ingredients list
-	self.specials_root:SetPosition(-.5*(maxwidth - 30), 0, 0)
+		-- center the ingredients list
+		self.specials_root:SetPosition(-.5*(maxwidth - 30), 0, 0)
 
-	temp:Kill()
+		temp:Kill()
+		
+		local num_days = math.floor( recipe_data.TimeLeft / (60*60*24) )
+		self.days_remaining.days:SetString(""..num_days)
+		
+		self.days_remaining.days:Show()
+		self.days_remaining.tag:Show()
+		self.days_remaining.days_text:SetPosition(DAYS_TEXT_POSITION, 0, 0)
 
-	recipe_data.TimeLeft = 49*60*60
-	
-	local num_days = math.floor( recipe_data.TimeLeft / (60*60*24) )
-	self.days_remaining.days:SetString(""..num_days)
-	
-	self.days_remaining.days:Show()
-	self.days_remaining.tag:Show()
-	self.days_remaining.days_text:SetPosition(DAYS_TEXT_POSITION, 0, 0)
-
-	if num_days == 0 then
+		if num_days == 0 then
+			self.days_remaining.days:Hide()
+			self.days_remaining.tag:Hide()
+			self.days_remaining.days_text:SetPosition(DAYS_TEXT_NO_ICON_POSITION, 0, 0)
+			local num_hours = math.floor( recipe_data.TimeLeft / (60*60) )
+			if num_hours > 6 then
+				self.days_remaining.days_text:SetString(STRINGS.UI.TRADESCREEN.LESS_THAN_DAY)
+			else
+				self.days_remaining.days_text:SetString(STRINGS.UI.TRADESCREEN.ENDING_SOON)
+			end
+		elseif num_days == 1 then
+			self.days_remaining.days_text:SetString(STRINGS.UI.TRADESCREEN.DAY_REMAINING)
+		else 
+			self.days_remaining.days_text:SetString(STRINGS.UI.TRADESCREEN.DAYS_REMAINING)
+		end
+	else
 		self.days_remaining.days:Hide()
 		self.days_remaining.tag:Hide()
-		self.days_remaining.days_text:SetPosition(DAYS_TEXT_NO_ICON_POSITION, 0, 0)
-		local num_hours = math.floor( recipe_data.TimeLeft / (60*60) )
-		if num_hours > 6 then
-			self.days_remaining.days_text:SetString(STRINGS.UI.TRADESCREEN.LESS_THAN_DAY)
-		else
-			self.days_remaining.days_text:SetString(STRINGS.UI.TRADESCREEN.ENDING_SOON)
-		end
-	elseif num_days == 1 then
-		self.days_remaining.days_text:SetString(STRINGS.UI.TRADESCREEN.DAY_REMAINING)
-	else 
-		self.days_remaining.days_text:SetString(STRINGS.UI.TRADESCREEN.DAYS_REMAINING)
+		self.days_remaining.days_text:SetString("")
 	end
 end
 

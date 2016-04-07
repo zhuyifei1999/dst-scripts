@@ -250,7 +250,7 @@ return {
 		FEATHERFAN = "I donno... it could put out some fires....",
         MINIFAN = "No fun, making me exercise to stay cool!",
 		GOOSE_FEATHER = "So snuggly!",
-		STAFF_TORNADO = "Always wwirling! Swirling towards destruction!",
+		STAFF_TORNADO = "Always whirling! Swirling towards destruction!",
 		PIGHEAD = 
 		{	
 			GENERIC = "I guess I have it alright.",
@@ -294,7 +294,7 @@ return {
 		RESURRECTIONSTATUE = 
 		{
 			GENERIC = "That's my insurance policy.",
-			BURNT = "My policy was cancelled.",
+			BURNT = "My policy was canceled.",
 		},
 		ROCK_ICE = 
 		{
@@ -587,8 +587,8 @@ return {
 			NAKED = "Ha! He's all naked now!",
 			SLEEPING = "They look even dumber when they're sleeping.",
             --Domesticated states:
-            DOMESTICATED = "It's lost the fire from it's heart.",
-            ORNERY = "I can see fire in it's eyes.",
+            DOMESTICATED = "It's lost the fire from its heart.",
+            ORNERY = "I can see fire in its eyes.",
             RIDER = "Let's go!",
             PUDGY = "You need to burn some calories.",
 		},
@@ -596,7 +596,7 @@ return {
 		BEEFALOWOOL = "Ha! I stole his hair!",
 		BEEHIVE = "It's full of bees!",
 		BEEMINE = "Bees inside. Should've put some fire in there for good measure.",
-		BEEMINE_MAXWELL = "Mosquitos inside. They don't sound happy.",
+		BEEMINE_MAXWELL = "Mosquitoes inside. They don't sound happy.",
 		BEEHAT = "This will keep the pokeys off of me.",
 		BERRIES = "Red berries taste the best.",
 		BERRIES_COOKED = "Red berries with fire somehow taste even better.",
@@ -621,7 +621,7 @@ return {
 		BIRD_EGG = "It smells like a bird's butt.",
 		BIRD_EGG_COOKED = "Yuck. The yellow part is all runny.",
 		BISHOP = "It's a bishop!",
-		BLOWDART_FIRE = "This is my favourite thing in the whole wide world.",
+		BLOWDART_FIRE = "This is my favorite thing in the whole wide world.",
 		BLOWDART_SLEEP = "The tranquilizer will make it easier to light on fire.",
 		BLOWDART_PIPE = "Good practice for blowing into a fire.",
 		BLUEGEM = "Ugh. This one is ugly.",
@@ -1013,7 +1013,7 @@ return {
 		RATATOUILLE = "Vegetables. So many vegetables.",
 		RAZOR = "Why did I build this?",
 		REDGEM = "So pretty!",
-		RED_CAP = "I like the colour.",
+		RED_CAP = "I like the color.",
 		RED_CAP_COOKED = "I changed it with fire!",
 		RED_MUSHROOM =
 		{
@@ -1052,7 +1052,7 @@ return {
 			LOW = "The lava is cooling.",
 			NORMAL = "A pool of fire!",
 		},
-		ROCKS = "Can make inuksuks with these?",
+		ROCKS = "Can make inukshuks with these?",
         ROOK = "It's a castle!",
         ROPE = "What can I tie up with this?",
 		ROTTENEGG = "Ew! Why? Oh Why?!",
@@ -1093,7 +1093,7 @@ return {
 		{
 			GENERIC = "Not quite a phoenix but still cute, I guess.",
 			HUNGRY = "Are you hungry?",
-			STARVING = "Ok, ok! I get it, you're hungry.",
+			STARVING = "Okay, okay! I get it, you're hungry.",
 		},
 		SMALLMEAT = "I could make this better with FIRE!",
 		SMALLMEAT_DRIED = "Chewy, but satisfying.",
@@ -1204,7 +1204,7 @@ return {
 		TRUNK_COOKED = "I'm still not sure I want to eat this.",
 		TRUNK_SUMMER = "Well, part of him is still cuddly.",
 		TRUNK_WINTER = "It's so soft and squishy!",
-		UMBRELLA = "I love the colour!",
+		UMBRELLA = "I love the color!",
 		WAFFLES = "Hi, waffles!",
 		WALL_HAY_ITEM = "Hmmm. I wonder if these will burn.",
 		WALL_STONE = "Eh. I guess that's OK.",

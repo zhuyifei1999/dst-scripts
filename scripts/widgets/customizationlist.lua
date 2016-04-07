@@ -9,9 +9,6 @@ local Grid = require "widgets/grid"
 local PopupDialogScreen = require "screens/popupdialog"
 local TEMPLATES = require "widgets/templates"
 
-local levels = require "map/levels"
-local customise = nil
-
 local CustomizationList = Class(Widget, function(self, location, options, spinnerCB)
     Widget._ctor(self, "CustomizationList")
 
@@ -247,12 +244,12 @@ function CustomizationList:SetBGForSpinner(spinner)
     local option = spinner.optionName
     local value = spinner:GetSelectedData()
 
-    for idx,v in ipairs(self.options) do
-        if (self.options[idx].name == option) then
-
-            if value == v.default and self.presetvalues[v.name] == nil then
+    for i,defaultoption in ipairs(self.options) do
+        if defaultoption.name == option then
+            if value == defaultoption.default
+                and (self.presetvalues[option] == nil or self.presetvalues[option] == defaultoption.default)  then
                 spinner.bg:SetTint(1,1,1,1)
-            elseif value == self.presetvalues[v.name] then
+            elseif value == self.presetvalues[option] then
                 spinner.bg:SetTint(.6,.6,.6,1)
             else
                 spinner.bg:SetTint(.15,.15,.15,1)

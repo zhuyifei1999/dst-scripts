@@ -1,7 +1,7 @@
 local assets =
 {
-    Asset("ANIM", "anim/ghost.zip"),
-    Asset("ANIM", "anim/ghost_wendy_build.zip"),
+    Asset("ANIM", "anim/player_ghost_withhat.zip"),
+    Asset("ANIM", "anim/ghost_abigail_build.zip"),
     Asset("SOUND", "sound/ghost.fsb"),
 }
 
@@ -109,7 +109,7 @@ local function fn()
     inst.entity:AddNetwork()
 
     inst.AnimState:SetBank("ghost")
-    inst.AnimState:SetBuild("ghost_wendy_build")
+    inst.AnimState:SetBuild("ghost_abigail_build")
     inst.AnimState:PlayAnimation("idle", true)
     inst.AnimState:SetBloomEffectHandle("shaders/anim_bloom_ghost.ksh")
     inst.AnimState:SetLightOverride(TUNING.GHOST_LIGHT_OVERRIDE)

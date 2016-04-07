@@ -363,6 +363,23 @@ function MergeKeyValueList(...)
     return ret
 end
 
+function SubtractMapKeys(base, subtract)
+    local ret = {}
+    for k,v in pairs(base) do
+        if subtract[k] ~= nil then
+            if type(subtract[k]) == "table" then
+                local subtable = SubtractMapKeys(v, subtract[k])
+                if GetTableSize(subtable) > 0 then
+                    ret[k] = subtable
+                end
+            elseif subtract[k] == nil then
+                ret[k] = v
+            end
+        end
+    end
+    return ret
+end
+
 -- Adds 'addition' to the end of 'orig', 'mult' times.
 -- ExtendedArray({"one"}, {"two","three"}, 2) == {"one", "two", "three", "two", "three" }
 function ExtendedArray(orig, addition, mult)

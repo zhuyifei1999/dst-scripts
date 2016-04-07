@@ -2,14 +2,10 @@ require "class"
 require "util"
 
 Ingredient = Class(function(self, ingredienttype, amount, atlas)
-    local is_character_ingredient = false
-    for k, v in pairs(CHARACTER_INGREDIENT) do
-        if ingredienttype == v then
-            is_character_ingredient = true
-            break
-        end
-    end
-    if is_character_ingredient then
+    --Character ingredient multiples of 5 check only applies to
+    --health and sanity cost, not max health or max sanity
+    if ingredienttype == CHARACTER_INGREDIENT.HEALTH or
+        ingredienttype == CHARACTER_INGREDIENT.SANITY then
         --V2C: string solution due to inconsistent precision errors with math.floor
         --local x = math.floor(amount)
         local x = tostring(amount)
@@ -61,6 +57,7 @@ Recipe = Class(function(self, name, ingredients, tab, level, placer, min_spacing
     self.level.ANCIENT = self.level.ANCIENT or 0
     self.level.MAGIC   = self.level.MAGIC or 0
     self.level.SCIENCE = self.level.SCIENCE or 0
+    self.level.SHADOW  = self.level.SHADOW or 0
     self.placer        = placer
     self.min_spacing   = min_spacing or 3.2
 

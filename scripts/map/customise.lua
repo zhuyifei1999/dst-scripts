@@ -1,5 +1,7 @@
+local tasksets = require("map/tasksets")
 local tasks = require ("map/tasks")
 local startlocations = require ("map/startlocations")
+local Levels = require("map/levels")
 
 local freqency_descriptions
 if PLATFORM ~= "PS4" then
@@ -104,10 +106,6 @@ local complexity_descriptions = {
 	{ text = STRINGS.UI.SANDBOXMENU.SLIDEDEFAULT, data = "default" },	
 	{ text = STRINGS.UI.SANDBOXMENU.SLIDECOMPLEX, data = "complex" },	
 	{ text = STRINGS.UI.SANDBOXMENU.SLIDEVERYCOMPLEX, data = "verycomplex" },	
-}
-
--- Read this from the levels.lua
-local preset_descriptions = {
 }
 
 -- TODO: Read this from the tasks.lua
@@ -222,7 +220,7 @@ local GROUP = {
 						enable = true,
 						items={
                             --["location"] = {value = "forest", enable = false, image = "world_map.tex", desc = location_descriptions, order = 0}, 
-                            ["task_set"] = {value = "default", enable = false, image = "world_map.tex", desc = tasks.GetGenTaskLists, order = 1}, 
+                            ["task_set"] = {value = "default", enable = false, image = "world_map.tex", desc = tasksets.GetGenTaskLists, order = 1}, 
                             ["start_location"] = {value = "default", enable = false, image = "world_start.tex", desc = startlocations.GetGenStartLocations, order = 2}, 
 							["world_size"] = {value = "default", enable = false, image = "world_size.tex", desc = size_descriptions, order = 3}, 
 							["branching"] = {value = "default", enable = false, image = "world_branching.tex", desc = branching_descriptions, order = 4}, 
@@ -246,18 +244,18 @@ local GROUP = {
 					},
 }
 
-local function GetGroupForItem(target)
-	for area,items in pairs(GROUP) do
+local function GetGroupForOption(target)
+	for group,items in pairs(GROUP) do
 		for name,item in pairs(items.items) do
 			if name == target then
-				return area
+				return group
 			end
 		end
 	end
 	return "misc"
 end
 
-local function GetOptions(world, is_master_world)
+local function GetOptions(location, is_master_world)
     local options = {}
 
     local groups = {}
@@ -271,7 +269,7 @@ local function GetOptions(world, is_master_world)
         local items = {}
         local group = GROUP[groupname]
         for k,v in pairs(group.items) do
-            if world == nil or v.world == nil or table.contains(v.world, world) then
+            if location == nil or v.world == nil or table.contains(v.world, location) then
 				if is_master_world or not v.master_controlled then
 	                table.insert(items, k)
 	            end
@@ -282,7 +280,7 @@ local function GetOptions(world, is_master_world)
 
         for ii,itemname in ipairs(items) do
             local item = group.items[itemname]
-            local values = item.desc and (type(item.desc)=="function" and item.desc(world) or item.desc) or group.desc
+            local values = item.desc and (type(item.desc)=="function" and item.desc(location) or item.desc) or group.desc
             table.insert(options, {name = itemname, image = item.image, options = values, default = item.value, group = groupname, grouplabel = group.text})
         end
     end
@@ -290,4 +288,62 @@ local function GetOptions(world, is_master_world)
     return options
 end
 
-return {GetGroupForItem=GetGroupForItem, GROUP=GROUP, preset_descriptions=preset_descriptions, GetOptions=GetOptions}
+local function GetOptionsWithLocationDefaults(location, is_master_world)
+    local options = GetOptions(location, is_master_world)
+
+    local locationdata = Levels.GetDataForLocation(location)
+    for i,option in ipairs(options) do
+        if locationdata.overrides[option.name] ~= nil then
+            option.default = locationdata.overrides[option.name]
+        end
+    end
+
+    return options
+end
+
+local function GetDefaultForOption(option)
+	for group,items in pairs(GROUP) do
+		for name,item in pairs(items.items) do
+			if name == option then
+				return item.value -- pretty sure this is always "default"...
+			end
+		end
+	end
+end
+
+local function GetLocationDefaultForOption(location, option)
+    local locationdata = Levels.GetDataForLocation(location)
+    return locationdata.overrides[option] or GetDefaultForOption(option)
+end
+
+local function ValidateOption(tweak, value)
+    local group = GetGroupForOption(tweak)
+    assert(GROUP[group][tweak] ~= nil, "Invalid override tweak %s:%s", tostring(group), tostring(tweak))
+
+    if GROUP[group][tweak].desc ~= nil then
+        for i,d in ipairs(GROUP[group][tweak].desc) do
+            if d.data == value then
+                return true
+            end
+        end
+    end
+
+    if GROUP[group].desc ~= nil then
+        for i,d in ipairs(GROUP[group].desc) do
+            if d.data == value then
+                return true
+            end
+        end
+    end
+
+    assert(false, string.format("Invalid value '%s' for %s:%s", tostring(value), tostring(group), tostring(tweak)))
+end
+
+return {
+    GetOptions                     = GetOptions,
+    GetOptionsWithLocationDefaults = GetOptionsWithLocationDefaults,
+    GetGroupForOption              = GetGroupForOption,
+    GetDefaultForOption            = GetDefaultForOption,
+    GetLocationDefaultForOption    = GetLocationDefaultForOption,
+    ValidateOption                 = ValidateOption,
+}

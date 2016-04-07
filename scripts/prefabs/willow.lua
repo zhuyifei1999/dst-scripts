@@ -38,7 +38,6 @@ local function sanityfn(inst)
 end
 
 local function common_postinit(inst)
-    inst:AddTag("ghostwithhat")
     inst:AddTag("pyromaniac")
     inst:AddTag("expertchef")
 end

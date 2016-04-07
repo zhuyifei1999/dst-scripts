@@ -41,42 +41,43 @@ function GetBasicFilters(recipe_name)
 end
 
 function GetSpecialFilters(recipe_data, selected_items)
-
 	local filters = {}
+	
+	if recipe_data ~= nil then
+		local satisfied_restrictions = GetSatisfiedRestrictions(recipe_data, selected_items)
 
-	local satisfied_restrictions = GetSatisfiedRestrictions(recipe_data, selected_items)
+		for k,restriction in pairs(recipe_data.Restrictions) do 
+			
+			if not satisfied_restrictions[k] then 
 
-	for k,restriction in pairs(recipe_data.Restrictions) do 
-		
-		if not satisfied_restrictions[k] then 
+				local filters_list = {}
 
-			local filters_list = {}
-
-			local type_tag = nil
-			for _, tag in pairs(restriction.Tags) do 
-				type_tag = GetTypeFromTag(tag)
-				if type_tag ~= nil then 
-					break
+				local type_tag = nil
+				for _, tag in pairs(restriction.Tags) do 
+					type_tag = GetTypeFromTag(tag)
+					if type_tag ~= nil then 
+						break
+					end
 				end
-			end
 
-			if restriction.ItemType 
-				and IsItemId(restriction.ItemType) 
-				and not table.contains(filters, type_tag)
-			then -- ItemType is the item id
-				table.insert(filters_list, restriction.ItemType)
-			end
+				if restriction.ItemType 
+					and IsItemId(restriction.ItemType) 
+					and not table.contains(filters, type_tag)
+				then -- ItemType is the item id
+					table.insert(filters_list, restriction.ItemType)
+				end
 
-			if type_tag ~= nil and not table.contains(filters, type_tag) then 
-				table.insert(filters_list, type_tag)
-			end
+				if type_tag ~= nil and not table.contains(filters, type_tag) then 
+					table.insert(filters_list, type_tag)
+				end
 
-			-- TODO: add colour
-			if not table.contains(filters, restriction.Rarity) then 
-				table.insert(filters_list, restriction.Rarity)
-			end
+				-- TODO: add colour
+				if not table.contains(filters, restriction.Rarity) then 
+					table.insert(filters_list, restriction.Rarity)
+				end
 
-			table.insert(filters, filters_list)
+				table.insert(filters, filters_list)
+			end
 		end
 	end
 

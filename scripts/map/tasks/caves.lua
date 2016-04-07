@@ -1,87 +1,5 @@
 
 
-AddTaskSet("cave_default", {
-    name = STRINGS.UI.CUSTOMIZATIONSCREEN.TASKSETNAMES.CAVE_DEFAULT,
-    location = "cave",
-    hideinfrontend = false,
-    tasks={
-        "MudWorld",
-        "MudCave",
-        "MudLights",
-        "MudPit",
-
-        "BigBatCave",
-        "RockyLand",
-        "RedForest",
-        "GreenForest",
-        "BlueForest",
-        "SpillagmiteCaverns",
-
-        "CaveExitTask1",
-        "CaveExitTask2",
-        "CaveExitTask3",
-        "CaveExitTask4",
-        "CaveExitTask5",
-        "CaveExitTask6",
-        "CaveExitTask7",
-        "CaveExitTask8",
-        "CaveExitTask9",
-        "CaveExitTask10",
-
-        -- ruins
-        "LichenLand",
-        "Residential",
-        "Military",
-        "Sacred",
-        "TheLabyrinth",
-        "SacredAltar",
-    },
-    numoptionaltasks = 8,
-    optionaltasks = {
-        "SwampySinkhole",
-        "CaveSwamp",
-        "UndergroundForest",
-        "PleasantSinkhole",
-        "FungalNoiseForest",
-        "FungalNoiseMeadow",
-        "BatCloister",
-        "RabbitTown",
-        "RabbitCity",
-        "SpiderLand",
-        "RabbitSpiderWar",
-
-        --ruins
-        "MoreAltars",
-        "CaveJungle",
-        "SacredDanger",
-        "MilitaryPits",
-        "MuddySacred",
-        "Residential2",
-        "Residential3",
-    },
-    valid_start_tasks = {
-        "CaveExitTask1",
-        "CaveExitTask2",
-        "CaveExitTask3",
-        "CaveExitTask4",
-        "CaveExitTask5",
-        "CaveExitTask6",
-        "CaveExitTask7",
-        "CaveExitTask8",
-        "CaveExitTask9",
-        "CaveExitTask10",
-    },
-    set_pieces = { -- if you add or remove tasks, don't forget to update this list!
-        ["TentaclePillar"] = { count = 10, tasks= {
-            "MudWorld", "MudCave", "MudLights", "MudPit", "BigBatCave", "RockyLand", "RedForest", "GreenForest", "BlueForest", "SpillagmiteCaverns", "SwampySinkhole", "CaveSwamp", "UndergroundForest", "PleasantSinkhole", "FungalNoiseForest", "FungalNoiseMeadow", "BatCloister", "RabbitTown", "RabbitCity", "SpiderLand", "RabbitSpiderWar",
-        } },
-        ["ResurrectionStone"] = { count = 2, tasks={
-            "MudWorld", "MudCave", "MudLights", "MudPit", "BigBatCave", "RockyLand", "RedForest", "GreenForest", "BlueForest", "SpillagmiteCaverns", "SwampySinkhole", "CaveSwamp", "UndergroundForest", "PleasantSinkhole", "FungalNoiseForest", "FungalNoiseMeadow", "BatCloister", "RabbitTown", "RabbitCity", "SpiderLand", "RabbitSpiderWar",
-        } },
-    },
-})
-
-
 ------------------------------------------------------------
 -- One of every room
 ------------------------------------------------------------
@@ -146,8 +64,8 @@ AddTask("CavesTEST", {
         ["RockyPlains"] = 1,
         ["RockyHatchingGrounds"] = 1,
         ["BatsAndRocky"] = 1,
-        ["BGRocky"] = 1,
-        ["BGRockyRoom"] = 1,
+        ["BGRockyCave"] = 1,
+        ["BGRockyCaveRoom"] = 1,
 
         ["SpillagmiteForest"] = 1,
         ["DropperCanyon"] = 1,
@@ -262,7 +180,7 @@ AddTask("RockyLand",{
         ["BatsAndRocky"] = 1,
         ["PitRoom"] = 2,
     },
-    background_room="BGRockyRoom",
+    background_room="BGRockyCaveRoom",
     room_bg=GROUND.CAVE,
     colour={r=0.5,g=0.5,b=0.5,a=0.9},
 })

@@ -3,6 +3,7 @@ require("map/lockandkey")
 require("map/stack")
 require("map/terrain")
 local MapTags = require("map/maptags")
+local Rooms = require("map/rooms")
 
 function print_lockandkey_ex(...)
 	--print(...)
@@ -90,7 +91,7 @@ function Story:ModRoom(roomname, room)
 end
 
 function Story:GetRoom(roomname)
-	local newroom = deepcopy(self.terrain.rooms[roomname])
+	local newroom = deepcopy(Rooms.GetRoomByName(roomname))
     if newroom == nil then
         return nil
     end
@@ -622,8 +623,8 @@ function Story:GenerateNodesFromTasks()
 	unusedTasks[startParentNode.id] = nil
 
 	local finalNode = startParentNode
-    if self.gen_params.layout_mode
-        and string.upper(self.gen_params.layout_mode) == string.upper("RestrictNodesByKey") then
+    assert(self.gen_params.layout_mode ~= nil, "Must specify a layout mode for your level.")
+    if string.upper(self.gen_params.layout_mode) == string.upper("RestrictNodesByKey") then
 
         print("RestrictNodesByKey")
         finalNode = self:RestrictNodesByKey(startParentNode, unusedTasks)
@@ -924,7 +925,10 @@ function Story:GenerateNodesFromTask(task, crossLinkFactor)
 
 	if task.room_choices then
 		for room, count in pairs(task.room_choices) do
-			--print("Story:GenerateNodesFromTask adding "..count.." of "..room, self.terrain.rooms[room].contents.fn)
+			--print("Story:GenerateNodesFromTask adding "..count.." of "..room, Rooms.GetRoomByName(room).contents.fn)
+            if type(count) == "function" then
+                count = count()
+            end
 			for id = 1, count do
 				local new_room = self:GetRoom(room)
 
@@ -1010,20 +1014,20 @@ end
 ---------             TESTING                   --------------------------------------
 ------------------------------------------------------------------------------------------
 
-function TEST_STORY(tasks, story_gen_params, level)
-	--print("Building TEST STORY", tasks)
-	local start_time = GetTimeReal()
-	
-	local story = Story("GAME", tasks, terrain, story_gen_params, level)
-	story:GenerationPipeline()
-	    
-	SetTimingStat("time", "generate_story", GetTimeReal() - start_time)
-	
-	--print("\n------------------------------------------------")
-	--story.rootNode:Dump()
-	--print("\n------------------------------------------------")
-	
-	return {root=story.rootNode, startNode=story.startNode, GlobalTags = story.GlobalTags}
+function BuildStory(tasks, story_gen_params, level)
+    --print("Building TEST STORY", tasks)
+    local start_time = GetTimeReal()
+
+    local story = Story("GAME", tasks, terrain, story_gen_params, level)
+    story:GenerationPipeline()
+
+    SetTimingStat("time", "generate_story", GetTimeReal() - start_time)
+
+    --print("\n------------------------------------------------")
+    --story.rootNode:Dump()
+    --print("\n------------------------------------------------")
+
+    return {root=story.rootNode, startNode=story.startNode, GlobalTags = story.GlobalTags}
 end
 
 

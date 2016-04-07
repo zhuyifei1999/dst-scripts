@@ -70,9 +70,6 @@ end
 
 local function OnPlayerRepaired(inst, player)
     inst.components.lootdropper:AddChanceLoot("gears", .1)
-    if TheWorld:HasTag("cave") and TheWorld.topology.level_number == 2 then -- ruins
-        inst.components.lootdropper:AddChanceLoot("thulecite", 0.05)
-    end
     inst.components.lootdropper:DropLoot()
     SpawnScion(inst:GetPosition(), true, inst.style, player)
     inst:Remove()

@@ -68,14 +68,20 @@ local savefileupgrades = require("savefileupgrades")
 require("mods")
 require("modindex")
 
+local tasks = require("map/tasks")
+local levels = require("map/levels")
+local rooms = require("map/rooms")
+local tasksets = require("map/tasksets")
+local forest_map = require("map/forest_map")
+local startlocations = require("map/startlocations")
+
+
 local moddata = json.decode(GEN_MODDATA)
 if moddata then
 	KnownModIndex:RestoreCachedSaveData(moddata.index)
 	ModManager:LoadMods(true)
 end
 
-local customise = require("map/customise")
-local tasks = require("map/tasks")
 
 print ("running worldgen_main.lua\n")
 
@@ -257,59 +263,6 @@ function CheckMapSaveData(savedata)
 	assert(savedata.ents, "Entites missing from savedata on generate")
 end
 
-local function ApplySingleTweak(tweaktable, tweak)
-    local name = tweak[1]
-    local value = tweak[2]
-
-    if type(name) == type({}) then
-        name = name[math.random(#name)]
-    end
-    if type(value) == type({}) then
-        value = value[math.random(#value)]
-    end
-
-    local group = customise.GetGroupForItem(name)
-
-    if tweaktable[group] == nil then
-        tweaktable[group] = {}
-    end
-    tweaktable[group][name] = value
-end
-
-
-local function OverrideTweaks(level, gen_params)
-    -- Level settings come first, then presetdata (which is identical for known
-    -- presets, but different for custom presets), and then tweaks.
-    -- We just apply them all with the latter ones stomping the former ones.
-    
-    local finaltweak = {}
-
-	local customise = require("map/customise")
-	for i,v in ipairs(level.overrides) do
-        ApplySingleTweak(finaltweak, v)
-    end
-
-    if gen_params.presetdata ~= nil then
-        for i,v in ipairs(gen_params.presetdata.overrides) do
-            ApplySingleTweak(finaltweak, v)
-        end
-    end
-
-    if gen_params.tweak ~= nil then
-        for group,tweaks in pairs(gen_params.tweak) do
-            if finaltweak[group] == nil then
-                finaltweak[group] = {}
-            end
-
-            for tweakname, tweakvalue in pairs(tweaks) do
-                finaltweak[group][tweakname] = tweakvalue
-            end
-        end
-    end
-
-    return finaltweak
-end
-
 local function GetRandomFromLayouts( layouts )
 	local area_keys = {}
 	for k,v in pairs(layouts) do
@@ -336,7 +289,7 @@ local function GetAreasForChoice(area, level)
 	local areas = {}
 
 	for i, task_name in ipairs(level.tasks) do
-		local task = tasks.GetTaskByName(task_name, tasks.sampletasks)
+		local task = tasks.GetTaskByName(task_name, tasks.taskdefinitions)
 		if area == "Any" or area == "Rare" or  area == task.room_bg then
 			table.insert(areas, task_name)
 		end
@@ -367,7 +320,7 @@ local function AddSingleSetPeice(level, choicefile)
 	end
 end
 
-local function AddSetPeices(level, gen_params)
+local function AddSetPeices(level)
 
 	local boons_override = "default"
 	local touchstone_override = "default"
@@ -375,35 +328,35 @@ local function AddSetPeices(level, gen_params)
 	local poi_override = "default"
 	local protected_override = "default"
 
-	if gen_params.finaltweak ~=nil and 
-		gen_params.finaltweak["misc"] ~= nil then
+    if level.overrides ~= nil and
+        level.overrides ~= nil then
 
-		if gen_params.finaltweak["misc"]["boons"] ~= nil then
-			boons_override = gen_params.finaltweak["misc"]["boons"]
-		end
-		if gen_params.finaltweak["misc"]["touchstone"] ~= nil then
-			touchstone_override = gen_params.finaltweak["misc"]["touchstone"]
-		end
-		if gen_params.finaltweak["misc"]["traps"] ~= nil then
-			traps_override = gen_params.finaltweak["misc"]["traps"]
-		end
-		if gen_params.finaltweak["misc"]["poi"] ~= nil then
-			poi_override = gen_params.finaltweak["misc"]["poi"]
-		end
-		if gen_params.finaltweak["misc"]["protected"] ~= nil then
-			protected_override = gen_params.finaltweak["misc"]["protected"]
-		end
-	end
+        if level.overrides.boons ~= nil then
+            boons_override = level.overrides.boons
+        end
+        if level.overrides.touchstone ~= nil then
+            touchstone_override = level.overrides.touchstone
+        end
+        if level.overrides.traps ~= nil then
+            traps_override = level.overrides.traps
+        end
+        if level.overrides.poi ~= nil then
+            poi_override = level.overrides.poi
+        end
+        if level.overrides.protected ~= nil then
+            protected_override = level.overrides.protected
+        end
+    end
 
-	if traps_override ~= "never" then
-		AddSingleSetPeice(level, "map/traps")
-	end
-	if poi_override ~= "never" then
-		AddSingleSetPeice(level, "map/pointsofinterest")
-	end
-	if protected_override ~= "never" then
-		AddSingleSetPeice(level, "map/protected_resources")
-	end
+    if traps_override ~= "never" then
+        AddSingleSetPeice(level, "map/traps")
+    end
+    if poi_override ~= "never" then
+        AddSingleSetPeice(level, "map/pointsofinterest")
+    end
+    if protected_override ~= "never" then
+        AddSingleSetPeice(level, "map/protected_resources")
+    end
 
 	local multiply = {
 		["rare"] = 0.5,
@@ -433,135 +386,73 @@ local function AddSetPeices(level, gen_params)
 
 end
 
-function GenerateNew(debug, parameters)
-    
+function GenerateNew(debug, world_gen_data)
 
     print("Generating world with these parameters:")
-    print("level_type", tostring(parameters.level_type))
-    print("current_level", tostring(parameters.current_level))
-    print("customizationpresets:")
-    dumptable(parameters.profiledata.customizationpresets)
-    print("worldgen_choices:")
-    dumptable(parameters.world_gen_choices)
-    --print("Generate New map",debug, parameters.gen_type, "type: "..parameters.level_type, parameters.current_level, parameters.world_gen_choices)
-	local Gen = require "map/forest_map"
-	
-	local levels = require("map/levels")
+    print("level_type", tostring(world_gen_data.level_type))
+    print("level_data:")
+    dumptable(world_gen_data.level_data)
 
-	local level = levels.test_level
+    assert(world_gen_data.level_data ~= nil and world_gen_data.level_data[1] ~= nil, "Must provide complete level data to worldgen.")
+    local level = Level(world_gen_data.level_data[1]) -- we always generate the first level defined in the data
 
+    print(string.format("\n#######\n#\n# Generating %s Mode Level\n#\n#######\n", world_gen_data.level_type))
 
-	if parameters.level_type and string.upper(parameters.level_type) == "CAVE" then
-		
-		print("\n#######\n#\n# Generating CAVE Mode Level\n#\n#######\n")
+    level:ChooseTasks(tasks.taskdefinitions)
+    AddSetPeices(level)
+    level:ChooseSetPieces()
 
-		if parameters.current_level == nil or parameters.current_level > #levels.cave_levels then
-			parameters.current_level = 1
-		end
-
-		level = levels.cave_levels[parameters.current_level]
-
-	elseif parameters.level_type and string.upper(parameters.level_type) == "TEST" then
-		print("\n#######\n#\n# Generating TEST Mode Level\n#\n#######\n")
-	elseif parameters.level_type and string.upper(parameters.level_type) == "SURVIVAL" then
-		print("\n#######\n#\n# Generating SURVIVAL Mode Level\n#\n#######\n")
-		if parameters.world_gen_choices.preset == nil then
-			if parameters.world_gen_choices.actualpreset == nil then
-				parameters.world_gen_choices.preset = "SURVIVAL_TOGETHER"
-			else
-				parameters.world_gen_choices.preset =  parameters.world_gen_choices.actualpreset
-			end
-		end
-		print("WORLDGEN PRESET: ",parameters.world_gen_choices.preset)
-		for i,v in ipairs(levels.sandbox_levels) do
-			if v.id == parameters.world_gen_choices.preset then
-				parameters.world_gen_choices.level_id = i
-				break
-			end
-		end
-
-		print("WORLDGEN LEVEL ID: ", parameters.world_gen_choices.level_id )
-		if parameters.world_gen_choices.level_id == nil or parameters.world_gen_choices.level_id > #levels.sandbox_levels then
-			parameters.world_gen_choices.level_id = 1
-		end
-		
-		level = levels.sandbox_levels[parameters.world_gen_choices.level_id]
-
-		print("\n#######\n#\n# Generating Normal Mode "..level.name.." Level "..level.id.."\n#\n#######\n")
-	else
-		-- Probably got here from a mod, up to the mod to tell us what to load.
-		level = levels.custom_levels[parameters.world_gen_choices.level_id]
-		print("\n#######\n#\n# Special: Generating "..parameters.level_type.." mode "..level.name.." Level\n#\n#######\n")
-	end
-
-	parameters.world_gen_choices.finaltweak = OverrideTweaks(level, parameters.world_gen_choices)	
-	local level_area_triggers = level.override_triggers or nil
-	level:ChooseTasks(tasks.sampletasks, parameters.world_gen_choices)
-	AddSetPeices(level, parameters.world_gen_choices)
-    level:ChooseSetPieces(parameters.world_gen_choices)
-
-	local id = level.id
-	local override_level_string = level.override_level_string or false
-	local name = level.name or "ERROR"
-	local hideminimap = level.hideminimap or false
-
-	local prefab = level.location or "forest"
+    assert(level.location ~= nil, "Level must specify a location!")
+    local prefab = level.location
 
     local choose_tasks = level:GetTasksForLevel()
 
-	if debug == true then
-	 	 choose_tasks = tasks.oneofeverything
-	end
+    if debug == true then
+        choose_tasks = tasks.oneofeverything
+    end
     --print ("Generating new world","forest", max_map_width, max_map_height, choose_tasks)
-        
-	local savedata = nil
 
-	local max_map_width = 1024 -- 1024--256 
-	local max_map_height = 1024 -- 1024--256 
-	
-	local try = 1
-	local maxtries = 5
+    local savedata = nil
 
-    print("*****************************")
-    print("Final Worldgen Choices:")
-    dumptable(parameters.world_gen_choices)
-    print("*****************************")
-	
-	while savedata == nil do
-		savedata = Gen.Generate(prefab, max_map_width, max_map_height, choose_tasks, parameters.world_gen_choices, parameters.level_type, level)
-		
-		if savedata == nil then
-			if try >= maxtries then
+    local max_map_width = 1024 -- 1024--256 
+    local max_map_height = 1024 -- 1024--256 
+
+    local try = 1
+    local maxtries = 5
+
+    while savedata == nil do
+        savedata = forest_map.Generate(prefab, max_map_width, max_map_height, choose_tasks, level, world_gen_data.level_type)
+
+        if savedata == nil then
+            if try >= maxtries then
                 print("An error occured during world and we give up! [was ",try," of ",maxtries,"]")
-				return nil
+                return nil
             else
                 print("An error occured during world gen we will retry! [was ",try," of ",maxtries,"]")
-			end
-			try = try + 1
-			
-			--assert(try <= maxtries, "Maximum world gen retries reached!")
-			collectgarbage("collect")
-			WorldSim:ResetAll()
-		elseif GEN_PARAMETERS == "" or parameters.show_debug == true then			
-			ShowDebug(savedata)
-		end
-	end
-	
-	
-    savedata.map.prefab = prefab
-		
-	savedata.map.topology.level_type = parameters.level_type
-	savedata.map.topology.level_number = parameters.current_level or 1
-	savedata.map.override_level_string = override_level_string
-	savedata.map.name = name
-	savedata.map.hideminimap = hideminimap
+            end
+            try = try + 1
 
-	--Record mod information
-	ModManager:SetModRecords(savedata.mods or {})
-	savedata.mods = ModManager:GetModRecords()
+            --assert(try <= maxtries, "Maximum world gen retries reached!")
+            collectgarbage("collect")
+            WorldSim:ResetAll()
+        elseif GEN_PARAMETERS == "" or world_gen_data.show_debug == true then			
+            ShowDebug(savedata)
+        end
+    end
+
+
+    savedata.map.prefab = prefab
+    savedata.map.topology.level_type = world_gen_data.level_type
+    savedata.map.topology.override_triggers = level.override_triggers or nil
+    savedata.map.override_level_string = level.override_level_string or false
+    savedata.map.name = level.name or "ERROR"
+    savedata.map.hideminimap = level.hideminimap or false
+
+    --Record mod information
+    ModManager:SetModRecords(savedata.mods or {})
+    savedata.mods = ModManager:GetModRecords()
         
 	
-	savedata.map.topology.override_triggers = level_area_triggers
 	
 	if APP_VERSION == nil then
 		APP_VERSION = "DEV_UNKNOWN"
@@ -580,7 +471,7 @@ function GenerateNew(debug, parameters)
 						build_date = APP_BUILD_DATE,
 						build_time = APP_BUILD_TIME,
 						seed = SEED,
-						level_id = id or "survival",
+						level_id = level.id,
 						session_identifier = WorldSim:GenerateSessionIdentifier(),
                         saveversion = savefileupgrades.VERSION,
 					}
@@ -609,20 +500,13 @@ end
 
 local function LoadParametersAndGenerate(debug)
 
-	local parameters = nil
-	if GEN_PARAMETERS == "" then
-		print("WARNING: No parameters found, using defaults. This should only happen from the test harness!")
-		parameters = { level_type="survival", current_level=5, adventure_progress=3, profiledata={unlocked_characters={wes=true}} }
-	else
-		parameters = json.decode(GEN_PARAMETERS)
-	end
-    
-    if 	parameters.world_gen_choices == nil then
-		parameters.world_gen_choices = {}
-    end
-	SetDLCEnabled(parameters.DLCEnabled)
+    local world_gen_data = nil
+    assert(GEN_PARAMETERS ~= nil, "Parameters were not provided to worldgen!")
+    world_gen_data = json.decode(GEN_PARAMETERS)
 
-	return GenerateNew(debug, parameters)-- parameters.worldgen_type, parameters.level_type, parameters.current_level, parameters.world_gen_choices)
+    SetDLCEnabled(world_gen_data.DLCEnabled)
+
+    return GenerateNew(debug, world_gen_data)
 end
 
 return LoadParametersAndGenerate(false)

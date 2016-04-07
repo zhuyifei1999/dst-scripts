@@ -29,7 +29,7 @@ local function SpawnLavae(inst)
         inst:AddComponent("lootdropper")
     end
     local tooth = inst.components.lootdropper:SpawnLootPrefab("lavae_tooth")
-    if tooth ~= nil and tooth.components.petleash ~= nil and tooth.components.petleash.pet == nil then
+    if tooth ~= nil and tooth.components.petleash ~= nil and not tooth.components.petleash:IsFull() then
         tooth.nospawnfx = true
         tooth.components.petleash:SpawnPetAt(inst.Transform:GetWorldPosition())
         tooth.nospawnfx = nil

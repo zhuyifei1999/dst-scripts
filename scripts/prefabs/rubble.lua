@@ -68,9 +68,6 @@ local function common_fn(anim)
     inst.components.lootdropper:AddRandomLoot("yellowgem"     , 0.01)
     inst.components.lootdropper:AddRandomLoot("orangegem"     , 0.01)
     inst.components.lootdropper:AddRandomLoot("nightmarefuel" , 0.01)
-    if TheWorld:HasTag("cave") and TheWorld.topology.level_number == 2 then  -- ruins
-        inst.components.lootdropper:AddRandomLoot("thulecite" , 0.01)
-    end
 
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.MINE)

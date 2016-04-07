@@ -31,7 +31,7 @@ local function onequip(inst, owner)
         inst.fire = SpawnPrefab("lighterfire")
         --inst.fire.Transform:SetScale(.125, .125, .125)
         local follower = inst.fire.entity:AddFollower()
-        follower:FollowSymbol(owner.GUID, "swap_object", 40, -40, 0)
+        follower:FollowSymbol(owner.GUID, "swap_object", 56, -40, 0)
     end
 
     inst:DoTaskInTime(0, onequipfueldelta)

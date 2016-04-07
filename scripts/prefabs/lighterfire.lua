@@ -1,5 +1,5 @@
 local texture = "fx/torchfire.tex"
-local shader = "shaders/particle.ksh"
+local shader = "shaders/vfx_particle.ksh"
 local colour_envelope_name = "lighterfirecolourenvelope"
 local scale_envelope_name = "lighterfirescaleenvelope"
 
@@ -75,10 +75,7 @@ local function fn()
 	local function emit_fn()
 		local vx, vy, vz = 0.01 * UnitRand(), 0, 0.01 * UnitRand()
 		local lifetime = max_lifetime * (0.9 + UnitRand() * 0.1)
-		local px, py, pz
-
-		px, py, pz = sphere_emitter()
-		py = py + 0.25 -- the 0.2 is to offset the flame particles upwards a bit so they can be used on a torch
+		local px, py, pz = sphere_emitter()
 
 		local uv_offset = math.random(0, 3) * 0.25
 

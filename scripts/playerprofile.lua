@@ -17,6 +17,8 @@ PlayerProfile = Class(function(self)
         device_caps_b = 20,
         customizationpresets = {},
         collection_name = nil,
+        saw_new_user_popup = false,
+        saw_new_host_picker = false,
     }
 
   	--we should migrate the non-gameplay stuff to a separate file, so that we can save them whenever we want
@@ -46,6 +48,8 @@ function PlayerProfile:Reset()
     self.persistdata.device_caps_a = 0
     self.persistdata.device_caps_b = 20
     self.persistdata.customizationpresets = {}
+    self.persistdata.saw_new_user_popup = false
+    self.persistdata.saw_new_host_picker = false
 
  	if not USE_SETTINGS_FILE then
         self.persistdata.volume_ambient = 7
@@ -73,6 +77,8 @@ function PlayerProfile:SoftReset()
     self.persistdata.device_caps_a = 0
     self.persistdata.device_caps_b = 20
     self.persistdata.customizationpresets = {}
+    self.persistdata.saw_new_user_popup = false
+    self.persistdata.saw_new_host_picker = false
 
  	if not USE_SETTINGS_FILE then
         self.persistdata.volume_ambient = 7
@@ -485,44 +491,59 @@ function PlayerProfile:GetAutosaveEnabled()
 	end
 end
 
-function PlayerProfile:GetWorldCustomizationPresets()
-	local presets_string = self:GetValue("customizationpresets")
 
-	if presets_string ~= nil and type(presets_string) == "string" then
-		local success, presets = RunInSandbox(presets_string)
-		if success then
-			return presets
-		else
-			return {}
-		end
-	else
-		return {}
-	end
+-- gjans: Added this upgrade path 28/03/2016
+local function UpgradeProfilePresets(presets_string)
+    local didupgrade = false
+    local savefileupgrades = require "savefileupgrades"
+
+    if presets_string ~= nil and type(presets_string) == "string" then
+        local success, presets = RunInSandbox(presets_string)
+        if success then
+            for i,preset in ipairs(presets) do
+                if preset.version == nil or preset.version == 1 then
+                    -- note: this upgrades the presets table in-place, to handle custom presets referencing other custom presets without infinite recursion ~gjans
+                    presets[i] = savefileupgrades.utilities.UpgradeUserPresetFromV1toV2(preset, presets)
+                    didupgrade = true
+                end
+            end
+
+            if didupgrade then
+                local data = DataDumper(presets, nil, false)
+                return data
+            end
+        end
+    end
+    return nil
+end
+
+function PlayerProfile:GetWorldCustomizationPresets()
+    local presets_string = self:GetValue("customizationpresets")
+
+    if presets_string ~= nil and type(presets_string) == "string" then
+        local success, presets = RunInSandbox(presets_string)
+        if success then
+            return presets
+        else
+            return {}
+        end
+    else
+        return {}
+    end
 end
 
 function PlayerProfile:AddWorldCustomizationPreset(preset, index)
-	local presets_string = self:GetValue("customizationpresets")
-	
-	local success = nil
-	local presets = nil
-	if presets_string ~= nil and type(presets_string) == "string" then
-		success, presets = RunInSandbox(presets_string)
-		if not success then
-			presets = {}
-		end
-	else
-		presets = {}
-	end
+    local presets = self:GetWorldCustomizationPresets()
 
-	if index then
-		presets[index] = preset
-	else
-		table.insert(presets, preset)
-	end
-	local data = DataDumper(presets, nil, false)
+    if index then
+        presets[index] = preset
+    else
+        table.insert(presets, preset)
+    end
+    local data = DataDumper(presets, nil, false)
 
-	self:SetValue("customizationpresets", data)
-	self.dirty = true
+    self:SetValue("customizationpresets", data)
+    self.dirty = true
 end
 
 function PlayerProfile:GetSavedFilters()
@@ -585,11 +606,11 @@ function PlayerProfile:IsWorldGenUnlocked(area, item)
 	if self.persistdata.unlocked_worldgen == nil then
 		return false
 	end
-	
+
 	if self.persistdata.unlocked_worldgen[area] == nil then
 		return false
 	end
-	
+
     if item == nil or self.persistdata.unlocked_worldgen[area][item] then
         return true
     end
@@ -621,23 +642,21 @@ function PlayerProfile:GetSaveName()
 end
 
 function PlayerProfile:Save(callback)
-	Print( VERBOSITY.DEBUG, "SAVING" )
+    Print( VERBOSITY.DEBUG, "SAVING" )
     if self.dirty then
         local str = json.encode(self.persistdata)
-        local insz, outsz = SavePersistentString(self:GetSaveName(), str, ENCODE_SAVES, callback)
-    else
-		if callback then
-			callback(true)
-		end
+        SavePersistentString(self:GetSaveName(), str, ENCODE_SAVES, callback)
+    elseif callback ~= nil then
+        callback(true)
     end
 end
 
 function PlayerProfile:Load(callback)
     TheSim:GetPersistentString(self:GetSaveName(),
-		function(load_success, str)
-			self:Set( str, callback )
-        end, false)    
-   	SaveGameIndex:GuaranteeMinNumSlots(NUM_DST_SAVE_SLOTS)
+        function(load_success, str)
+            self:Set(str, callback)
+        end, false)
+    SaveGameIndex:GuaranteeMinNumSlots(NUM_DST_SAVE_SLOTS)
 end
 
 local function GetValueOrDefault( value, default )
@@ -662,6 +681,14 @@ function PlayerProfile:Set(str, callback)
 		    
         if self.persistdata.saw_display_adjustment_popup == nil then
             self.persistdata.saw_display_adjustment_popup = false
+        end
+
+        if self.persistdata.saw_new_user_popup == nil then
+            self.persistdata.saw_new_user_popup = false
+        end
+
+        if self.persistdata.saw_new_host_picker == nil then
+            self.persistdata.saw_new_host_picker = false
         end
         
 		if self.persistdata.autosave == nil then
@@ -745,6 +772,12 @@ function PlayerProfile:Set(str, callback)
             self.persistdata.device_caps_a = 0
             self.persistdata.device_caps_b = 20
 		end
+
+        local upgraded = UpgradeProfilePresets(self.persistdata.customizationpresets)
+        if upgraded ~= nil then
+            self.persistdata.customizationpresets = upgraded
+            self.dirty = true
+        end
 		
 		self.persistdata.device_caps_a, self.persistdata.device_caps_b = TheSim:UpdateDeviceCaps(self.persistdata.device_caps_a, self.persistdata.device_caps_b)
         self.dirty = true
@@ -859,6 +892,28 @@ end
 function PlayerProfile:SetEntitlementReceived(entitlement)
 	self:SetValue("entitlement_"..entitlement, true)
 	self.dirty = true
+end
+
+function PlayerProfile:SawNewUserPopup()
+    return self.persistdata.saw_new_user_popup
+end
+
+function PlayerProfile:ShowedNewUserPopup()
+    if not self.persistdata.saw_new_user_popup then
+        self.persistdata.saw_new_user_popup = true
+        self.dirty = true
+    end
+end
+
+function PlayerProfile:SawNewHostPicker()
+    return self.persistdata.saw_new_host_picker
+end
+
+function PlayerProfile:ShowedNewHostPicker()
+    if not self.persistdata.saw_new_host_picker then
+        self.persistdata.saw_new_host_picker = true
+        self.dirty = true
+    end
 end
 
 return PlayerProfile

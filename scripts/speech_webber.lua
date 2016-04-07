@@ -71,7 +71,7 @@ return {
 	ANNOUNCE_THORNS = "Yowch!",
 	ANNOUNCE_BURNT = "Jeepers, that was hot!",
 	ANNOUNCE_TORCH_OUT = "Waah, our light went out!",
-    ANNOUNCE_FAN_OUT = "Aaw, the twrily is gone.",
+    ANNOUNCE_FAN_OUT = "Aaw, the twirly is gone.",
     ANNOUNCE_COMPASS_OUT = "Uh oh, I broke it.",
 	ANNOUNCE_TRAP_WENT_OFF = "Eek!",
 	ANNOUNCE_UNIMPLEMENTED = "Gah! It needs more time.",
@@ -663,7 +663,7 @@ return {
 		FLINT = "Oh, to feel a sharp edge against my skin.",
 		FLOWER = "We agree that flowers are nice.",
         FLOWER_WITHERED = "Aww so sad!",
-		FLOWERHAT = "Colourful crown.",
+		FLOWERHAT = "Colorful crown.",
 		FLOWER_EVIL = "This flower is decidedly not nice!",
 		FOLIAGE = "Soft and leafy.",
 		FOOTBALLHAT = "We could be good at football, much better than I was!",
@@ -779,7 +779,7 @@ return {
 			BURNING = "So much for our arts and crafts!",
 			GENERIC = "That's a log of wood.",
 		},
-		LUREPLANT = "What a colourful plant.",
+		LUREPLANT = "What a colorful plant.",
 		LUREPLANTBULB = "I wish we could learn to generate meat.",
 		MALE_PUPPET = "He doesn't look like he's having much fun.",
         MANDRAKE_ACTIVE = "You're a bad friend!",
@@ -801,7 +801,7 @@ return {
 		MARSH_TREE =
 		{
 			BURNING = "It's extra dangerous now!",
-			BURNT = "It's growing days are over.",
+			BURNT = "Its growing days are over.",
 			CHOPPED = "An axe can solve any tree-related problem!",
 			GENERIC = "A harsh tree for harsh conditions.",
 		},
@@ -873,7 +873,7 @@ return {
 		PENGUIN = "Where do they live the rest of the year?",
 		PERD = "Come back! I just want to eat you!",
 		PEROGIES = "We are accomplished chefs!",
-		PETALS = "How colourful.",
+		PETALS = "How colorful.",
 		PETALS_EVIL = "They make our head hurt.",
 		PICKAXE = "Rocks will be ours!",
 		PIGGYBACK = "It holds so much stuff!",
@@ -933,7 +933,7 @@ return {
 		RABBITHOLE = 
 		{
 			GENERIC = "Come out! We just want to be friends.",
-			SPRING = "I hope they're ok in there.",
+			SPRING = "I hope they're okay in there.",
 		},
 		RAINOMETER = 
 		{	
@@ -994,7 +994,7 @@ return {
 		RESURRECTIONSTONE = "Some sort of religious monument maybe?",
 		ROBIN =
 		{
-			GENERIC = "Red is my favorite colour!",
+			GENERIC = "Red is my favorite color!",
 			HELD = "Held snug in our pockets.",
 		},
 		ROBIN_WINTER =
@@ -1051,7 +1051,7 @@ return {
 		SMALLBIRD =
 		{
 			GENERIC = "Could this be a friend for us?",
-			HUNGRY = "I can see it's tummy rumble.",
+			HUNGRY = "I can see its tummy rumble.",
 			STARVING = "Poor thing. It looks so hungry!",
 		},
 		SMALLMEAT = "A couple more and we'll have a meal!",

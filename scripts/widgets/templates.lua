@@ -1150,7 +1150,7 @@ TEMPLATES = {
                                         string or "", colour or BLACK))
 
         widg.text:SetRegionSize(textwidth, 40)
-        widg.text:SetPosition(20 + .5*textwidth, 0)
+        widg.text:SetPosition(20 + .5*textwidth, -2)
         widg.text:SetHAlign( ANCHOR_LEFT )
 
        

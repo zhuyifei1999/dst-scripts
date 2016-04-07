@@ -120,10 +120,11 @@ function ItemSelector:OnItemSelect(type, item, item_id, itemimage)
 	self.owner:StartAddSelectedItem( {type = type, item = item, item_id = item_id}, itemimage:GetWorldPosition())
 end
 
+-- This is the TOTAL number of items in the player's inventory, not the number shown in the filtered view.
 function ItemSelector:NumItemsLikeThis(item_name)
 	local count = 0
 
-	for k,v in ipairs(self.skins_list) do 
+	for k,v in ipairs(self.full_skins_list) do 
 		if v.item == item_name then 
 			count = count + 1
 		end

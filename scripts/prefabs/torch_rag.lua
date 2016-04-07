@@ -9,7 +9,7 @@ local prefabs = { "torchfire_rag" }
 
 local base_prefab = "torch"
 
-local tags = {"TORCH", "CRAFTABLE"}
+local tags = {"TORCH", "CRAFTABLE", "SURVIVOR"}
 
 local ui_preview =
 {

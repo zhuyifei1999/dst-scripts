@@ -111,7 +111,7 @@ return {
 		{
 			HELD = "Want some rocks?",
 			UNDERGROUND = "Dig, dig, dig.",
-			ABOVEGROUND = "It feels about rocks the way I feel about trees.",
+			ABOVEGROUND = "It feels aboot rocks the way I feel aboot trees.",
 		},
 		MOLEHILL = "I bet it's just a pile of rocks inside.",
 		MOLEHAT = "Now featuring night-time chopping!",
@@ -145,7 +145,7 @@ return {
 			EMBERS = "It's almost gone.",
 			GENERIC = "Where's my electric guitar?",
 			HIGH = "Uh oh! It's bit high!",
-			LOW = "I should probably do something about that, eh?",
+			LOW = "I should probably do something aboot that, eh?",
 			NORMAL = "I love a cold fire in the evening.",
 			OUT = "It was good while it lasted.",
 		},
@@ -331,7 +331,7 @@ return {
     	},
 		WARG = "That thing could pull a sled by its lonesome.",
 		WATERMELON = "How can it be both water and melon?",
-		WATERMELON_COOKED = "I'm not sure about grilled fruit...",
+		WATERMELON_COOKED = "I'm not sure aboot grilled fruit...",
 		WATERMELONHAT = "You can call me Mr. Melon.",
 		WINTEROMETER = 
 		{
@@ -402,7 +402,7 @@ return {
 			VALID = "Looks ready.",
 			GEMS = "It'll need a gem.",
 		},
-		STAFFLIGHT = "Well aint that something.",	
+		STAFFLIGHT = "Well ain't that something.",	
 		LUCY = "I love Lucy!",
         ANCIENT_ALTAR =
         {
@@ -571,7 +571,7 @@ return {
 		BEEFALOWOOL = "It feels like my beard.",
 		BEEHAT = "This will keep the bees out of my eyes.",
 		
-		BEEHIVE = "They're all comfy-cosy in there.",
+		BEEHIVE = "They're all comfy-cozy in there.",
 		
 		BEEMINE = "I don't know if the bees like this.",
 		BEEMINE_MAXWELL = "Hey! That's just mean!",
@@ -587,7 +587,7 @@ return {
 		BIRDCAGE =
 		{
 			GENERIC = "It's where I try to make birds reform their evil ways.",
-			OCCUPIED = "Think about what you've done, bird!",
+			OCCUPIED = "Think aboot what you've done, bird!",
 			SLEEPING = "They look so innocent when they dream.",
 			HUNGRY = "I'll get you something to eat soon buddy.",
 			STARVING = "He's got a hankering for some poutine!",
@@ -630,7 +630,7 @@ return {
 			EMBERS = "It's almost gone.",
 			GENERIC = "Where's my guitar?",
 			HIGH = "Uh oh! It's bit high!",
-			LOW = "I should probably do something about that, eh?",
+			LOW = "I should probably do something aboot that, eh?",
 			NORMAL = "I love a fire in the evening.",
 			OUT = "It was good while it lasted.",
 		},
@@ -864,8 +864,8 @@ return {
 		KOALEFANT_WINTER = "They get tastier in the winter.",
 		KRAMPUS = "Back off, hoser!",
 		KRAMPUS_SACK = "I feel bad taking someone else's sack.",
-		LEIF = "I'm sorry about all of those trees!",
-		LEIF_SPARSE = "I'm sorry about all of those trees!",
+		LEIF = "I'm sorry aboot all of those trees!",
+		LEIF_SPARSE = "I'm sorry aboot all of those trees!",
 		LIGHTNING_ROD =
 		{
 			CHARGED = "It's pretty like the northern lights.",
@@ -1037,7 +1037,7 @@ return {
         BRUSH = "You could debark a log with this thing.",
 		SANITYROCK =
 		{
-			ACTIVE = "Something is off about that rock, eh?",
+			ACTIVE = "Something is off aboot that rock, eh?",
 			INACTIVE = "That makes sense.",
 		},
 		SAPLING =
@@ -1148,7 +1148,7 @@ return {
 		TRAP = "Work smarter, eh?",
 		TRAP_TEETH = "This seems a bit rough.",
 		TRAP_TEETH_MAXWELL = "He's not playing fair, eh?",
-		TREASURECHEST_TRAP = "Something is not quite right about that chest.",
+		TREASURECHEST_TRAP = "Something is not quite right aboot that chest.",
 
 		TRINKET_1 = "I used to play that game.",
 		TRINKET_2 = "Not the real thing, eh?",
@@ -1230,7 +1230,7 @@ return {
 	},
 	DESCRIBE_GENERIC = "What's that, eh?",
 	DESCRIBE_TOODARK = "It's dark, eh!",
-	DESCRIBE_SMOLDERING = "It's about to go up in flames, eh?",
+	DESCRIBE_SMOLDERING = "It's aboot to go up in flames, eh?",
 	EAT_FOOD =
 	{
 		TALLBIRDEGG_CRACKED = "You can taste the beak, eh?",

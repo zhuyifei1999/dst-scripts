@@ -46,7 +46,7 @@ return
         {
             HELD = "I don't think my pocket is its natural habitat.",
             UNDERGROUND = "Something is tunneling down there.",
-            ABOVEGROUND = "Ah, it's Talpidae!",
+            ABOVEGROUND = "Ah, it's a Talpidae!",
         },
         MOLEHILL = "The tunnel system must be vast!",
         MOLEHAT = "Ah, to look through another creatures, uh, nose!",
@@ -101,7 +101,7 @@ return
             BURNT = "Now it's truly derelict.",
         },
         EYEBRELLAHAT =  "The cornea must be quite water-repellent.",
-        ARMORDRAGONFLY = "Pyrotechnic armour!",
+        ARMORDRAGONFLY = "Pyrotechnic armor!",
         DRAGON_SCALES = "Scales from an insect? Unheard of!",
         DRAGONFLYCHEST = "Scales! Scales are the winner!",
         DECIDUOUSTREE = 
@@ -172,7 +172,7 @@ return
         MOOSEEGG = "What a marvel!",
         MOSSLING = "I suppose that's approximately what I expected.",
         FEATHERFAN = "This will induce quite an airflow!",
-        MINIFAN = "It's aerodynamic principals are astonishing.",
+        MINIFAN = "Its aerodynamic principals are astonishing.",
         GOOSE_FEATHER = "Soft body down! Makes me wish I could sleep.",
         STAFF_TORNADO = "I've never seen a weather vane employed as a weapon.",
         PIGHEAD = 
@@ -314,10 +314,10 @@ return
         EEL = "It's an eel.",
         EEL_COOKED = "This eel has been cooked.",
         UNAGI = "A common way to prepare eel.",
-        EYETURRET = "The magic of the two beasts has been concentrated by the thulecite.",
+        EYETURRET = "The magic of the two beasts has been concentrated by the Thulecite.",
         EYETURRET_ITEM = "I'll need to place this.",
         MINOTAURHORN = "An amazingly large horn. I wonder if the nightmare helped fuel the growth.",
-        MINOTAURCHEST = "That chest is absolutely marvellous.",
+        MINOTAURCHEST = "That chest is absolutely marvelous.",
         THULECITE_PIECES = "I could combine these to create a larger piece.",
         POND_ALGAE = "It is a good thing this algae has no need for photosynthesis.",
         GREENSTAFF = "It appears to rewind time on an object.",
@@ -351,7 +351,7 @@ return
         ANCIENT_ALTAR = "A monument to some long dead god.",
         ANCIENT_ALTAR_BROKEN = "Parts of this are missing.",
         ANCIENT_STATUE = "This seems mystically aligned to the world.",
-        LICHEN = "A symbiot! A fungus and a phycobiontic bacteria.",
+        LICHEN = "A symbiote! A fungus and a phycobiontic bacteria.",
 		CUTLICHEN = "This won't last long.",
 
         CAVE_BANANA = "All of them are genetically identical.",
@@ -404,7 +404,7 @@ return
         SLURTLEHAT="It provides protection.",
         SLURTLEHOLE="A gastropod pod.",
         SLURTLESLIME="Their mucus is explosive for some reason.",
-        SNURTLE="A rare varient of gastropod.",
+        SNURTLE="A rare variant of gastropod.",
         SPIDER_HIDER="An arachnid with a thick carapace.",
         SPIDER_SPITTER="An arachnid that spits projectiles.",
         SPIDERHOLE="This is the source of the spider infestation.",
@@ -470,7 +470,7 @@ return
         HUTCH_FISHBOWL =
         {
             GENERIC = "Pygocentrus Nattereri.",
-            WAITING = "mortuus piscis.",
+            WAITING = "Mortuus piscis.",
         },
 
         LAVASPIT = 
@@ -506,7 +506,7 @@ return
         DRUMSTICK = "A leg of poultry.",
         DRUMSTICK_COOKED = "Not terribly healthy, but my is it delicious!",
         DURIAN = "Aha, the Durio zibethinus. It really does reek.",
-        DURIAN_COOKED = "Cooking this certainly did not improve its odour.",
+        DURIAN_COOKED = "Cooking this certainly did not improve its odor.",
         DURIAN_SEEDS = "Even the seeds of the Durio zibethinus smell a bit.",
         EARMUFFSHAT = "Poor Leporidae. At least my ears will be warm.",
         EGGPLANT = "A nightshade, specifically Solanum melongena.",
@@ -588,7 +588,7 @@ return
         SPEAR = "Ancient weapons technology.",
         STRAWHAT = "This will offer some protection from the sun.",
         STEELWOOL = "It has a variety of household uses.",
-        STUFFEDEGGPLANT = "I've cooked this auburgine and packed it with other comestibles.",
+        STUFFEDEGGPLANT = "I've cooked this aubergine and packed it with other comestibles.",
         BEEFALOHAT = "This hat is hideous.",
         TOPHAT = "How bourgeois.",
         FLOWERHAT = "How celebratory.",
@@ -606,7 +606,7 @@ return
         CUTSTONE = "Some smoothed rock slabs.",
         SEEDS = "A handful of unidentifiable seeds.",
         SEEDS_COOKED = "A toasted embryonic plant treat!",
-        SILK = "Protein fibre extruded from an arachnid.",
+        SILK = "Protein fiber extruded from an arachnid.",
 		SPIDERGLAND = "This gland secretes a mildly toxic venom.",
         BOARDS = "Roughly hewn wood boards.",
         BONESTEW = "Not quite how mum used to make, but it smells great!",
@@ -653,11 +653,11 @@ return
         },
         AXE = "A dual inclined plane attached to a lever.",
 		HAMMER = "A worker's tool.",
-        PHLEGM = "The congealed mucus retains it's sticky texture.",
+        PHLEGM = "The congealed mucus retains its sticky texture.",
         PICKAXE = "A specialized axe for chipping away at rocks.",
         SEWING_KIT = "A simple implement for domestic tasks",
         SHOVEL = "It's a shovel. Surely you've seen one before?",
-		PITCHFORK = "It's design is effective at loosening earth.",
+		PITCHFORK = "Its design is effective at loosening earth.",
         ROCKS = "A handful of assorted rocks.",
         FIRESTAFF = "Some kind of fire-throwing contraption.",
         FISH = "Some kind of whitefish, I believe.",
@@ -905,7 +905,7 @@ return
         BEARDHAIR = "This is human facial hair.",
         BUTTERFLY = 
         {
-            GENERIC = "A colourful lepidopteran.",
+            GENERIC = "A colorful lepidopteran.",
             HELD = "It is captured.",
         },
         BUTTERFLYWINGS = "Wings from a captured butterfly.",
@@ -968,7 +968,7 @@ return
         TRINKET_8 = "It reminds me of my bath tub. I could use a long soak.",
         TRINKET_9 = "Hmm, don't think I'm missing any buttons at the moment.",
         TRINKET_10 = "Don't need these yet: I've still got a few teeth left.",
-        TRINKET_11 = "Ah, it's a scale replica of that mischevious robot.",
+        TRINKET_11 = "Ah, it's a scale replica of that mischievous robot.",
         TRINKET_12 = "A muscular hydrostat that's been sat near something hygroscopic.",
         TRINKET_13 = "What a positively, delightfully odd little lady.",
         TRINKET_14 = "This is a leaky vessel.",
@@ -997,7 +997,7 @@ return
             PICKED = "Picking brambles is dangerous.",
             BURNING = "Combustion!",
         },
-        PAPYRUS = "Thin sheets of cellulose and lignin",
+        PAPYRUS = "Thin sheets of cellulose and lignin.",
         MARSH_TREE = {
             GENERIC = "A mangal rhizophora.",
             CHOPPED = "It has been felled",
@@ -1050,7 +1050,7 @@ return
             GENERIC = "Development appears to be progressing.",
             HOT = "Exposure to temperature extremes may result in death.",
             COLD = "You will catch your death of cold!",
-            SHORT = "We shall soon reap the fruits of our labours.",
+            SHORT = "We shall soon reap the fruits of our labors.",
             LONG = "A watched pot never boils.",
         },
         TALLBIRDNEST =
@@ -1061,8 +1061,8 @@ return
 
         ANIMAL_TRACK = "Animal sign, leading away.",
         DIRTPILE = "Unhygienic!",
-        KOALEFANT_SUMMER = "Koalefanta Proboscidea",
-        KOALEFANT_WINTER = "Koalefanta Proboscidea in thick winter pelage",
+        KOALEFANT_SUMMER = "Koalefanta Proboscidea.",
+        KOALEFANT_WINTER = "Koalefanta Proboscidea in thick winter pelage.",
         TRUNK_SUMMER = "A utilitarian proboscis.",
 		TRUNK_WINTER = "A specimen of leather and fur.",
         TRUNK_COOKED = "Unpalatable, but high in protein.",
@@ -1078,7 +1078,7 @@ return
         FIREHOUND = "That hound is more dangerous than the others.",
         ICEHOUND = "What a strange, cold beast.",
         HOUNDBONE = "The endoskeleton of Canis lupus, definitely not familiaris.",
-        PENGUIN = "What a classy bird",
+        PENGUIN = "What a classy bird.",
         DEERCLOPS_EYEBALL = "I feel a vague sense of accomplishment.",
         DEPLETED_GRASS =
         {
@@ -1129,17 +1129,17 @@ return
 		    CHARGED = "Radiant electrical energy!",
 		},
  
-        ARMORRUINS = "A hardy Thulecite armour.",
+        ARMORRUINS = "A hardy Thulecite armor.",
         BISHOP_NIGHTMARE = "Such exhilaratingly complex technology.",
         GREENAMULET = "I don't know what that is.", --Reduce cost of crafting
-        GREENGEM = "Chromium impurities have coloured this gem green.",
-        KNIGHT_NIGHTMARE = "It's nightmare fueled surroundings seem to have corrupted its programming.",
+        GREENGEM = "Chromium impurities have colored this gem green.",
+        KNIGHT_NIGHTMARE = "Its nightmare fueled surroundings seem to have corrupted its programming.",
         MINOTAUR = "Get away, you beast!",    --Monster in labyrinth
         MULTITOOL_AXE_PICKAXE = "Quite functional, it operates as both an axe and a pickaxe.", --Works as axe and pickaxe
         NIGHTMARELIGHT = "The ancients seem to have used nightmare fuel to power everything.",   --Lights that activate during nightmare.
         NIGHTMARE_TIMEPIECE = --Keeps track of the nightmare cycle
         {
-            WARN = "There are low, but increasing levels of vapours containing ectoplasmic residue.",  --Before nightmare
+            WARN = "There are low, but increasing levels of vapors containing ectoplasmic residue.",  --Before nightmare
             WAXING = "Levels of ectoplasmic residue seem to be increasing.", --Nightmare Phase first 33%
             STEADY = "The levels of ectoplasmic residue seem to be at their peak.", --Nightmare 33% - 66%
             WANING = "Levels of ectoplasmic residue are high but seem to be decreasing.", --Nightmare 66% +
@@ -1158,7 +1158,7 @@ return
         YELLOWAMULET = "This amulet is glowing at the mid 530 nanometer wavelength.",    --Emits light, player walks faster.
         ACCOMPLISHMENT_SHRINE = "I feel a compulsive urge to activate it, again and again.",        
         REVIVER = "This provides a corporeal anchor for the ectoplasmic configuration.",
-        LIFEINJECTOR = "The mould appears to have medicinal properties.",
+        LIFEINJECTOR = "The mold appears to have medicinal properties.",
    },
 
     EAT_FOOD = 

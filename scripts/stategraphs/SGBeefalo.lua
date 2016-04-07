@@ -32,7 +32,12 @@ local events=
         end
     end),
     EventHandler("loseloyalty", function(inst) if not inst.components.health:IsDead() and not inst.sg:HasStateTag("attack") then inst.sg:GoToState("shake") end end),
-    EventHandler("eat", function(inst, data) inst.sg:GoToState("eat", data) end),
+    EventHandler("eat", function(inst, data) 
+        if not inst.components.health:IsDead()
+           and not inst.sg:HasStateTag("attack") then
+           inst.sg:GoToState("eat", data)
+       end
+    end),
     EventHandler("brushed", function(inst, data)
         if not inst.components.health:IsDead() and not inst.sg:HasStateTag("busy") then
             if data.numprizes > 0 then
@@ -122,7 +127,22 @@ local states=
             EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
         },
     },
-    
+
+    State{
+        name = "badfood",
+        tags = {"busy"},
+
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("intestinal_cramp")
+        end,
+
+        events=
+        {
+            EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
+        },
+    },
+
     State{
         name = "shake_off_saddle",
         tags = {"busy"},
@@ -322,6 +342,7 @@ local states=
             inst.AnimState:PlayAnimation("graze_loop", true)
             inst.SoundEmitter:PlaySound("dontstarve/beefalo/eat_treat")
             if data.food ~= nil and data.food.components.edible ~= nil then
+                inst.sg.statemem.badfood = data.food.components.edible.hungervalue < 0 or data.food.components.edible.healthvalue < 0
                 inst.sg:SetTimeout(Remap(math.abs(data.food.components.edible.hungervalue), TUNING.CALORIES_TINY, TUNING.CALORIES_SUPERHUGE, 0.4, 8.0) + math.random()*0.3)
             else
                 inst.sg:SetTimeout(2.0+math.random()*2.0)
@@ -340,10 +361,14 @@ local states=
         ontimeout= function(inst)
             if inst.sg.statemem.full then
                 inst.sg:GoToState("regurgitate")
-            elseif inst.components.hunger:GetPercent() > 0.8 then
-                inst.sg:GoToState("flatulate")
             else
-                inst.sg:GoToState("idle")
+                if inst.sg.statemem.badfood then
+                    inst.sg:GoToState("badfood")
+                elseif inst.components.hunger:GetPercent() > 0.8 then
+                    inst.sg:GoToState("flatulate")
+                else
+                    inst.sg:GoToState("idle")
+                end
             end
         end,
 

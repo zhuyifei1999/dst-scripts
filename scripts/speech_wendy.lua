@@ -42,7 +42,7 @@ return {
 	ANNOUNCE_QUAKE = "The ground shakes. Will it swallow me whole?",
 	ANNOUNCE_THORNS = "Ow! Prickly, like me.",
 	ANNOUNCE_TORCH_OUT = "Darkness has returned!",
-    ANNOUNCE_FAN_OUT = "The fan has breathed it's last.",
+    ANNOUNCE_FAN_OUT = "The fan has breathed its last.",
     ANNOUNCE_COMPASS_OUT = "It feels the force of the earth no more.",
 	ANNOUNCE_TRAP_WENT_OFF = "Oh, goodness.",
 	ANNOUNCE_WORMHOLE = "I emerge into this world once more.",
@@ -56,7 +56,7 @@ return {
 	ANNOUNCE_FREEDOM = "Freedom. Great.",
 	ANNOUNCE_HIGHRESEARCH = "I have seen the void and it is deep and dark.",
 	ANNOUNCE_LOWRESEARCH = "I have seen the void and it is deep and dark.",
-	ANNOUNCE_MOSQUITOS = "Mosquitos! Suck all my blood out!",
+	ANNOUNCE_MOSQUITOS = "Mosquitoes! Suck all my blood out!",
 	ANNOUNCE_NODANGERSLEEP = "I can't sleep, there's death to be had.",
 	ANNOUNCE_NODAYSLEEP = "The sun upsets me. I couldn't sleep.",
 	ANNOUNCE_NODAYSLEEP_CAVE = "I'm not tired yet.",
@@ -338,24 +338,24 @@ return {
 		HOMESIGN =
 		{
 			GENERIC = "A mark is made, however transient.",
-            UNWRITTEN = "It's blank face shall soon bear a secret.",
+            UNWRITTEN = "Its blank face shall soon bear a secret.",
 			BURNT = "Transient, indeed.",
 		},
 		ARROWSIGN_POST =
 		{
 			GENERIC = "A mark is made, however transient.",
-            UNWRITTEN = "It's blank face shall soon bear a secret.",
+            UNWRITTEN = "Its blank face shall soon bear a secret.",
 			BURNT = "Transient, indeed.",
 		},
 		ARROWSIGN_PANEL =
 		{
 			GENERIC = "A mark is made, however transient.",
-            UNWRITTEN = "It's blank face shall soon bear a secret.",
+            UNWRITTEN = "Its blank face shall soon bear a secret.",
 			BURNT = "Transient, indeed.",
 		},
 		BEEBOX =
 		{
-			GENERIC = "They shall labour so I can steal.",
+			GENERIC = "They shall labor so I can steal.",
 			READY = "Their toils have been fruitful!",
 			FULLHONEY = "Their toils have been fruitful!",
 			NOHONEY = "Work, bees!",
@@ -403,7 +403,7 @@ return {
 		ROOK_NIGHTMARE = "Time erodes everything.",
 		KNIGHT_NIGHTMARE = "Another battle lost to time.",
 		MINOTAUR = "He must be lonely. Trapped in such a small cage.",	--Monster in labyrinth
-		SPIDER_DROPPER = "The darkness has drained the colour from their fur.",	--White spider that comes from the roof
+		SPIDER_DROPPER = "The darkness has drained the color from their fur.",	--White spider that comes from the roof
 		NIGHTMARELIGHT = "It pulls power from beneath.",	--Lights that activate during nightmare.
 		RELIC = "A vision of the past.",	--Fixed relic
 		RUINS_RUBBLE = "A vision of the past. Broken.",	--Broken relic
@@ -443,8 +443,8 @@ return {
 
 		},
 
-        ANCIENT_ALTAR = "It is full of the echos of the dead.",
-        ANCIENT_ALTAR_BROKEN = "I hear the painful echos of the dead.",
+        ANCIENT_ALTAR = "It is full of the echoes of the dead.",
+        ANCIENT_ALTAR_BROKEN = "I hear the painful echoes of the dead.",
         ANCIENT_STATUE = "Not very attractive.",
 
         LICHEN = "How does it manage to grow like that?",
@@ -482,7 +482,7 @@ return {
         },
 		MUSHTREE_MEDIUM={
             GENERIC = "It looks like a rotting hat.",
-            BLOOM = "All it's efforts fall on rocky soil.",
+            BLOOM = "All its efforts fall on rocky soil.",
         },
 		MUSHTREE_SMALL={
             GENERIC = "Do little gnomes live in these?",
@@ -573,7 +573,7 @@ return {
 			NAKED = "His nakedness is now on display.",
 			SLEEPING = "What nightmares he must be having.",
             --Domesticated states:
-            DOMESTICATED = "I wonder if it misses it's old family?",
+            DOMESTICATED = "I wonder if it misses its old family?",
             ORNERY = "The world has wronged you.",
             RIDER = "Together we can venture far.",
             PUDGY = "More of the world is within than without.",
@@ -646,11 +646,11 @@ return {
 		CARROT_COOKED = "It's a carrot that's gone through the gauntlet of fire.",
 		CARROT_PLANTED = "It's a carrot that's in the ground.",
 		CARROT_SEEDS = "One day, this seed will be a carrot.",
-		CAVE_FERN = "A touch of colour in the darkness.",
+		CAVE_FERN = "A touch of color in the darkness.",
 		CHARCOAL = "It is cold and dead, like my heart.",
-        CHESSJUNK1 = "Cold, dead artifical life.",
-        CHESSJUNK2 = "Cold, dead artifical life.",
-        CHESSJUNK3 = "Cold, dead artifical life.",
+        CHESSJUNK1 = "Cold, dead artificial life.",
+        CHESSJUNK2 = "Cold, dead artificial life.",
+        CHESSJUNK3 = "Cold, dead artificial life.",
 		CHESTER = "A fuzzy ball of emptiness.",
 		CHESTER_EYEBONE =
 		{
@@ -699,7 +699,7 @@ return {
         HUTCH_FISHBOWL =
         {
             GENERIC = "It's not floating, yet.",
-            WAITING = "It's reached it's natural state.",
+            WAITING = "It's reached its natural state.",
         },
 
 		LAVASPIT = 
@@ -772,7 +772,7 @@ return {
 			GENERIC = "A tiny brightness in the dark.",
 			HELD = "Tiny lights, stranded from the world outside my pocket.",
 		},
-		FIREHOUND = "His disposition is firey.",
+		FIREHOUND = "His disposition is fiery.",
 		FIRESTAFF = "I could set the world on fire!",
 		FISH = "It was flopping around desperately for life. The poor fool.",
 		FISHINGROD = "With this, I can yank the fishies out of their precious safe pond.",
@@ -928,7 +928,7 @@ return {
 		PERD = "Dumb bird! Stay away from my berries!",
 		PEROGIES = "A lovely little pouch of nutrients.",
 		PETALS = "I have destroyed something beautiful.",
-		PETALS_EVIL = "They are painted with the colours of my soul.",
+		PETALS_EVIL = "They are painted with the colors of my soul.",
 		PHLEGM = "The wretched beast must have been sick.",
 		PICKAXE = "So that I may penetrate the earth itself.",
 		PIGGYBACK = "They are more useful in death.",
@@ -1009,7 +1009,7 @@ return {
 		ROBIN_WINTER =
 		{
 			GENERIC = "Life in the barren, frozen wastes.",
-			HELD = "It's so soft. it is my enemy.",
+			HELD = "It's so soft. It is my enemy.",
 		},
 		ROBOT_PUPPET = "I wonder what it did.",
 		ROCK_LIGHT =
@@ -1065,7 +1065,7 @@ return {
 		},
 		SMALLMEAT = "It smells like tiny fear.",
 		SMALLMEAT_DRIED = "Meat turned dry and delicious.",
-		SPAT = "I should put it out of it's misery.",
+		SPAT = "I should put it out of its misery.",
 		SPEAR = "I have become the destroyer of worlds.",
 		SPIDER =
 		{
@@ -1073,7 +1073,7 @@ return {
 			GENERIC = "A creature of the night!",
 			SLEEPING = "Evil is sleeping.",
 		},
-		SPIDERDEN = "A nest of filth and villany.",
+		SPIDERDEN = "A nest of filth and villainy.",
 		SPIDEREGGSACK = "A tiny package full of death and destruction.",
 		SPIDERGLAND = "Even in death, this beast causes pain.",
 		SPIDERHAT = "Time to stare into the abyss.",

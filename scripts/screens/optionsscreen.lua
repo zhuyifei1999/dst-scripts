@@ -248,15 +248,16 @@ local OptionsScreen = Class(Screen, function(self, prev_screen)
 
 	self.is_mapping = false
     
-    TheInputProxy:StartMappingControls()	
+    TheInputProxy:StartMappingControls()
 
     if prev_screen ~= nil then
         self.prev_screen = prev_screen
         prev_screen:TransferPortalOwnership(prev_screen, self)
     else
         self.bg = self:AddChild(TEMPLATES.NoPortalBackground())
+        self.letterbox = self:AddChild(TEMPLATES.ForegroundLetterbox())
     end
-    
+
 	self.root = self:AddChild(Widget("ROOT"))
     self.root:SetVAnchor(ANCHOR_MIDDLE)
     self.root:SetHAnchor(ANCHOR_MIDDLE)
@@ -318,11 +319,12 @@ local OptionsScreen = Class(Screen, function(self, prev_screen)
 
 	-------------------------------------------------------
 	-- Must get done AFTER InitializeSpinners()
-	if self.deviceSpinner:GetSelectedData() ~= 0 then
+    self._deviceSaved = self.deviceSpinner:GetSelectedData()
+    if self._deviceSaved ~= 0 then
         self.kb_controllist:Hide()
         self.active_list = self.controller_controllist
-      	self.active_list:Show()
-      	self.controls_header:SetString(STRINGS.UI.CONTROLSSCREEN.INPUT_NAMES[self.deviceSpinner:GetSelectedIndex()])
+        self.active_list:Show()
+        self.controls_header:SetString(STRINGS.UI.CONTROLSSCREEN.INPUT_NAMES[self._deviceSaved])
     else
         self.controller_controllist:Hide()
         self.active_list = self.kb_controllist
@@ -340,7 +342,6 @@ local OptionsScreen = Class(Screen, function(self, prev_screen)
 	self:SetTab("settings")
 
 	self.default_focus = self.settings_button
-
 end)
 
 function OptionsScreen:MakeBackButton()
@@ -528,16 +529,21 @@ function OptionsScreen:Save(cb)
 	Profile:SetVibrationEnabled( self.options.vibration )
 	Profile:SetShowPasswordEnabled( self.options.showpassword )
 	Profile:SetAutoSubscribeModsEnabled( self.options.automods )
-	
-	Profile:Save( function() if cb then cb() end end)	
+
+	Profile:Save( function() if cb then cb() end end)
 end
 
 function OptionsScreen:RevertChanges()
-	self.working = deepcopy( self.options )
+    for i, v in ipairs(self.devices) do
+        if v.data ~= 0 then -- never disable the keyboard
+            TheInputProxy:EnableInputDevice(v.data, v.data == self._deviceSaved)
+        end
+    end
+	self.working = deepcopy(self.options)
 	self:LoadCurrentControls()
 	self:Apply()
 	self:InitializeSpinners()
-	self:UpdateMenu()							
+	self:UpdateMenu()
 end
 
 function OptionsScreen:MakeDirty()
@@ -616,8 +622,6 @@ function OptionsScreen:ConfirmGraphicsChanges(fn)
 			)
 		)
 	end
-
-
 end
 
 function OptionsScreen:ApplyVolume()
@@ -648,12 +652,17 @@ function OptionsScreen:Apply()
     end
 
 	TheInputProxy:ApplyControlMapping()
-    for index = 1, #self.devices do
-        local guid, data, enabled = TheInputProxy:SaveControls(self.devices[index].data)
-        if not(nil == guid) and not(nil == data) then
+    self._deviceSaved = 0 --Default if nothing else was enabled
+    for i, v in ipairs(self.devices) do
+        local guid, data, enabled = TheInputProxy:SaveControls(self.devices[i].data)
+        if guid ~= nil and data ~= nil then
             Profile:SetControls(guid, data, enabled)
+            if enabled and self.devices[i].data ~= 0 then
+                self._deviceSaved = self.devices[i].data
+            end
         end
     end
+
     self:MakeClean()
 end
 
@@ -1129,16 +1138,12 @@ function OptionsScreen:DoInit()
 	self.deviceSpinner = Spinner( self.devices, spinner_width, spinner_height, nil, nil, nil, nil, true, 250, nil, spinner_scale_x, spinner_scale_y )
 	self.deviceSpinner.OnChanged =
 		function( _, data )
-            for i,v in pairs(self.devices) do
+            for i, v in ipairs(self.devices) do
                 if v.data ~= 0 then -- never disable the keyboard
-                    if v.data == self.deviceSpinner:GetSelectedData() then
-                        TheInputProxy:EnableInputDevice(v.data, true)
-                    else
-                        TheInputProxy:EnableInputDevice(v.data, false)
-                    end
+                    TheInputProxy:EnableInputDevice(v.data, v.data == self.deviceSpinner:GetSelectedData())
                 end
             end
-            
+
             self.controls_header:SetString(self.deviceSpinner:GetSelectedText())
 
             if self.deviceSpinner:GetSelectedData() ~= 0 then

@@ -29,10 +29,6 @@ function Spell:OnStart()
 end
 
 function Spell:OnFinish()
-    if self.target ~= nil then
-        self.target:RemoveTag(self.spellname)
-    end
-
     if self.onfinishfn ~= nil then
         self.onfinishfn(self.inst)
     end
