@@ -3,6 +3,7 @@ require "components/map" --extends Map component
 
 local assets =
 {
+    Asset("SOUND", "sound/music.fsb"),
     Asset("SOUND", "sound/sanity.fsb"),
     Asset("SOUND", "sound/amb_stream.fsb"),
     Asset("SHADER", "shaders/uifade.ksh"),
