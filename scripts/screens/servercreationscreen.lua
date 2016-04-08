@@ -120,15 +120,16 @@ local ServerCreationScreen = Class(Screen, function(self, prev_screen)
 
     local startingsaveslot = SaveGameIndex:GetLastUsedSlot()
     if startingsaveslot < 0 or SaveGameIndex:IsSlotEmpty(startingsaveslot) then
-        for k = 1, NUM_DST_SAVE_SLOTS do
+        --find first empty slot
+        for k = 1, SaveGameIndex:GetNumSlots() do
             if SaveGameIndex:IsSlotEmpty(k) then
                 startingsaveslot = k
                 break
             end
         end
-    end
-    if startingsaveslot < 0 then
-        startingsaveslot = 1 --if we have no empty slots and no last slot used, pick the first slot
+        if startingsaveslot < 0 then
+            startingsaveslot = 1 --if we have no empty slots and no last slot used, pick the first slot
+        end
     end
 
     self:OnClickSlot(startingsaveslot, true) --This also sets the tab to be server settings when "true" is passed
@@ -284,8 +285,8 @@ local function BuildTagsStringHosting(self, worldoptions)
     end
 
     local worlddata = worldoptions[1]
-    if worlddata ~= nil and worlddata.presetdata ~= nil and worlddata.presetdata.location ~= nil then
-        local locationtag = STRINGS.TAGS.LOCATION[string.upper(worlddata.presetdata.location)]
+    if worlddata ~= nil and worlddata.location ~= nil then
+        local locationtag = STRINGS.TAGS.LOCATION[string.upper(worlddata.location)]
         if locationtag ~= nil then
             table.insert(tagsTable, locationtag)
         end
@@ -334,7 +335,7 @@ function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOu
         if self.saveslot < 0 then
             -- If not, look for the first empty one
             local emptySlot = nil
-            for k = 1, NUM_DST_SAVE_SLOTS do
+            for k = 1, SaveGameIndex:GetNumSlots() do
                 if SaveGameIndex:IsSlotEmpty(k) then
                     emptySlot = k
                     break
@@ -742,7 +743,7 @@ function ServerCreationScreen:RefreshNavButtons()
 
     self.save_slots = self.nav_bar:AddChild(Widget("save_slots"))
 
-    for k = 1, NUM_DST_SAVE_SLOTS do
+    for k = 1, SaveGameIndex:GetNumSlots() do
         local btn = self:MakeSaveSlotButton(k)
         self.save_slots[k] = self.save_slots:AddChild(btn)
     end

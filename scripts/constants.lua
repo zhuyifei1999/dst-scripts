@@ -799,7 +799,12 @@ VIBRATION_CAMERA_SHAKE = 0
 VIBRATION_BLOOD_FLASH = 1
 VIBRATION_BLOOD_OVER = 2
 
+--V2C: NUM_DST_SAVE_SLOTS is totally redundant...
+--     Not sure why it was added, but keeping it around in case mods are using it
+--     Also, use SaveGameIndex:GetNumSlots() instead of NUM_SAVE_SLOTS from now on
+--     NUM_SAVE_SLOTS constant is now only intended for initializing SaveGameIndex
 NUM_SAVE_SLOTS = 5
+NUM_DST_SAVE_SLOTS = NUM_SAVE_SLOTS
 
 SAVELOAD = 
 {    
@@ -1014,8 +1019,6 @@ DEPLOYSPACING_RADIUS =
 DONT_STARVE_TOGETHER_APPID = 322330
 DONT_STARVE_APPID = 219740
 REIGN_OF_GIANTS_APPID = 282470
-
-NUM_DST_SAVE_SLOTS = 5
 
 -- keeping this here in case someone wants to mod it in. It won't be a default part of the game (or even an option), but we've already done the work
 -- and someone might be able to do something cool with it.

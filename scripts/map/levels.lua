@@ -146,9 +146,9 @@ local function GetLevelList(leveltype, location, frontend)
     if profilepresets ~= nil then
         for i, level in pairs(profilepresets) do
             if location == nil or level.location == location then
-                assert(level.id ~= nil, "Attempting to add an invalid custom preset to the preset list. custom preset "..i.." named "..tostring(level.id))
-                assert(level.data == nil, "This is the old format! Why do we call the field 'data'??")
-                table.insert(ret, {text=level.name, data=level.id})
+                if level.id ~= nil and level.name ~= nil then -- could be looking at a preset that hasn't been upgraded yet, just skip it...
+                    table.insert(ret, {text=level.name, data=level.id})
+                end
             end
         end
     end

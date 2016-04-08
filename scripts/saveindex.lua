@@ -161,6 +161,10 @@ function SaveIndex:GuaranteeMinNumSlots(numslots)
     end
 end
 
+function SaveIndex:GetNumSlots()
+    return #self.data.slots
+end
+
 function SaveIndex:GetSaveIndexName()
     return "saveindex"..(BRANCH ~= "dev" and "" or ("_"..BRANCH))
 end

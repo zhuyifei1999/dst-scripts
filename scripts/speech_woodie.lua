@@ -230,6 +230,7 @@ return {
 		FLOWERSALAD = "Healthy, but not very hardy.",
         ICECREAM = "Only after I've chopped enough!",
         WATERMELONICLE = "Wood AND food?!",
+        TREEGUARD = "I've angered the forest!",
         TRAILMIX = "The perfect snack for a day of chopping.",
         HOTCHILI = "Good after a long day of chopping in the cold.",
         GUACAMOLE = "I'm not sure I trust it.",

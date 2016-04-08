@@ -12,6 +12,19 @@ local modtaskdefinitions = {}
 -- Module functions
 ------------------------------------------------------------------
 
+local function GetAllTaskNames()
+    local ret = {}
+    for i,task in ipairs(taskdefinitions) do
+        table.insert(ret, task.id)
+    end
+    for mod, tasks in pairs(modtaskdefinitions) do
+        for i,task in ipairs(tasks) do
+            table.insert(ret, task.id)
+        end
+    end
+    return ret
+end
+
 local function GetTaskByName(name)
     for i,task in ipairs(taskdefinitions) do
         if task.id == name then
@@ -163,6 +176,7 @@ AddTask("TEST_EMPTY", {
 
 return {
     oneofeverything = everything_sample,
+    GetAllTaskNames = GetAllTaskNames,
     GetTaskByName = GetTaskByName,
     ClearModData = ClearModData,
 }

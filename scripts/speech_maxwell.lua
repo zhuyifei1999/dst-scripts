@@ -137,6 +137,7 @@ return {
 		TURF_BADLANDS = "Turf.",
 		BEARGER = "Take anything you want.",
 		BEARGERVEST = "See my vest.",
+		TREEGUARD = "Stop this ridiculous charade, beast.",
 		ICEPACK = "Its contents are hibernating.",
 		BEARGER_FUR = "This would make a nice rug.",
 		FURTUFT = "Not enough for a rug.", 

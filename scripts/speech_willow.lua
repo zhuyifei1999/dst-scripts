@@ -393,7 +393,7 @@ return {
 		POND_ALGAE = "It must need a lot of water.",
 		GREENSTAFF = "It won't start a fire but I guess it's still useful.",
 		POTTEDFERN = "I'd rather burn them.",
-
+		TREEGUARD = "You'll burn like the rest!",
 		THULECITE = "I don't think it would burn.",
 		ARMORRUINS = "Not sure I want to wear this.",
 		RUINS_BAT = "This will keep the nasties at bay.",

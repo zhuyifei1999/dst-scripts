@@ -594,8 +594,8 @@ function UpdateServerTagsString()
 
     local worldoptions = SaveGameIndex:GetSlotGenOptions()
     local worlddata = worldoptions ~= nil and worldoptions[1] or nil
-    if worlddata ~= nil and worlddata.presetdata ~= nil and worlddata.presetdata.location ~= nil then
-        local locationtag = STRINGS.TAGS.LOCATION[string.upper(worlddata.presetdata.location)]
+    if worlddata ~= nil and worlddata.location ~= nil then
+        local locationtag = STRINGS.TAGS.LOCATION[string.upper(worlddata.location)]
         if locationtag ~= nil then
             table.insert(tagsTable, locationtag)
         end

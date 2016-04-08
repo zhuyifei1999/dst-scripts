@@ -134,6 +134,7 @@ return {
 		FURTUFT = "This came from a living creature.", 
 		BIGFOOT = "Harbinger of doom.",
 		BONESHARD = "Choking hazard.",
+		TREEGUARD = "Oh... no...",
 		BUZZARD = "I hear they feed on the dead.",
 		CACTUS = 
 		{

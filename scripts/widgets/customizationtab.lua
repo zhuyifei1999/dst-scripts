@@ -619,7 +619,6 @@ function CustomizationTab:UpdateSlot(slotnum, prevslot, delete)
     self.current_option_settings = {}
 
     -- No save data
-    assert(slotnum > 0 and slotnum <= NUM_SAVE_SLOTS) -- not sure why this was a condition in the if, should always be a valid slot!
     if SaveGameIndex:IsSlotEmpty(slotnum) then
         -- no slot, so hide all the details and set all the text boxes back to their defaults
         if prevslot and prevslot > 0 and SaveGameIndex:IsSlotEmpty(prevslot) then
