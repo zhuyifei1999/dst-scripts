@@ -236,14 +236,16 @@ function CustomizationTab:UpdatePresetList()
                 data = self.slotoptions[self.slot][self.currentmultilevel].id,
             }
         }
+        self.presetspinner.spinner:SetOptions(presets)
+        self.presetspinner.spinner:SetSelected(self.slotoptions[self.slot][self.currentmultilevel].id)
     else
-		local level_type = GetLevelType( self.servercreationscreen:GetGameMode() )
+        local level_type = GetLevelType( self.servercreationscreen:GetGameMode() )
         presets = Levels.GetLevelList(level_type, SERVER_LEVEL_LOCATIONS[self.currentmultilevel], true)
+        self.presetspinner.spinner:SetOptions(presets)
+        self.presetspinner.spinner:SetSelected(self.current_option_settings[self.currentmultilevel].preset)
+        -- In case our preset disappeared, grab whatever is in the spinner.
+        self.current_option_settings[self.currentmultilevel].preset = self.presetspinner.spinner:GetSelectedData()
     end
-    self.presetspinner.spinner:SetOptions(presets)
-    self.presetspinner.spinner:SetSelected(self.current_option_settings[self.currentmultilevel].preset)
-    -- In case our preset disappeared, grab whatever is in the spinner.
-    self.current_option_settings[self.currentmultilevel].preset = self.presetspinner.spinner:GetSelectedData()
 
     --
     -- CUSTOMIZATION LIST
@@ -481,35 +483,7 @@ function CustomizationTab:LoadPreset(level, preset)
     self.current_option_settings[level].tweaks = {}
 
     self:UpdatePresetInfo(level)
-
-    ---- We can only get here if a world was created before all preset data was being populated into the save index.
-    --print("Presets:")
-    --local s = {}
-    --for k,p in pairs(self.presets) do
-        --table.insert(s, p.data)
-    --end
-    --print(table.concat(s,", "))
-    --print("Error: Tried loading preset "..preset.." but we don't have that!")
-
-    --assert(false, "Do we still need to load a fake preset? I hope not...")
-    ----self:LoadUnknownPreset(level)
 end
-
---function CustomizationTab:LoadUnknownPreset(level)
-    ---- Populate a "fake" empty preset so that the screen still functions in case the loaded preset is missing.
-    ---- This is super gross, I know. I apologize. ~gjans
-    --self.presetspinner.spinner:UpdateText(STRINGS.UI.CUSTOMIZATIONSCREEN.UNKNOWN_PRESET)
-    --self.presetdesc:SetString(STRINGS.UI.CUSTOMIZATIONSCREEN.UNKNOWN_PRESET_DESC)
-    --self.presetdirty[level] = false
-    --self.activepresets[level] = {
-        --data = "UNKNOWN_PRESET",
-        --overrides = {},
-        --text = STRINGS.UI.CUSTOMIZATIONSCREEN.UNKNOWN_PRESET,
-        --desc = STRINGS.UI.CUSTOMIZATIONSCREEN.UNKNOWN_PRESET_DESC,
-    --}
-
-    --table.insert(self.presets, 1, {text=self.activepresets[level].text, data=self.activepresets[level].data})
---end
 
 function CustomizationTab:SavePreset()
 

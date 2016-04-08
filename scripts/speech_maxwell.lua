@@ -135,6 +135,28 @@ return {
 		TURF_DECIDUOUS = "Turf.",
 		TURF_SANDY = "Turf.",
 		TURF_BADLANDS = "Turf.",
+
+		LIGHTER = "It does the job, I suppose.",
+		
+		ABIGAIL_FLOWER =
+		{
+			GENERIC = "Hm? What a familiar presence.",
+			LONG = "I can sense strong magic within it.",
+			MEDIUM = "This enchantment is not of my doing.",
+			SOON = "Whatever it is will be arriving soon.",
+			HAUNTED_POCKET = "I should quit toying with this now.",
+			HAUNTED_GROUND = "It demands a sacrifice.",
+		},
+
+		BOOK_BIRDS = "What a wasteful misuse of magic.",
+		BOOK_TENTACLES = "Shall I summon horrors from the depths?",
+		BOOK_GARDENING = "It's not wise to toy with forces beyond your comprehension.",
+		BOOK_SLEEP = "I haven't had a real sleep in... ages.",
+		BOOK_BRIMSTONE = "It's a novel, er... novel.",
+		LUCY = "Ah. How have you been, Lucy?",
+		BALLOONS_EMPTY = "Those look much too jovial for my liking.",
+		SPEAR_WATHGRITHR = "I can appreciate a finely crafted weapon.",
+
 		BEARGER = "Take anything you want.",
 		BEARGERVEST = "See my vest.",
 		TREEGUARD = "Stop this ridiculous charade, beast.",

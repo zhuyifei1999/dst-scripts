@@ -158,6 +158,27 @@ return {
 		GREENSTAFF = "Twirly green power.",
 		POTTEDFERN = "What am I supposed to do with this?",
 
+		LIGHTER = "It lights the fires of mine heart!",
+		
+		ABIGAIL_FLOWER = 
+		{
+			GENERIC = "For me?",
+			LONG = "For me?",
+			MEDIUM = "What is it doing?",
+			SOON = "Something wicked this way comes.",
+			HAUNTED_POCKET = "Perhaps it's best we part ways...",
+			HAUNTED_GROUND = "What is it waiting for?!",
+		},
+
+		BOOK_BIRDS = "I will rule the skies!",
+		BOOK_TENTACLES = "Knowledge to bring me power!",
+		BOOK_GARDENING = "But can I tend the garden in mine heart?",
+		BOOK_SLEEP = "Where's the drama? The suspense?",
+		BOOK_BRIMSTONE = "This tome has a flare for the dramatic!",
+		LUCY = "It's nice, but it's no spear.",
+		BALLOONS_EMPTY = "Such colors! I could sing!",
+		WAXWELLJOURNAL = "A tragic tale of woe and misery!",
+
 		THULECITE = "The strength of this material is gargantuan!",
 		ARMORRUINS = "Armour fit for Odin himself!",
 		RUINS_BAT = "A warrior wand!",

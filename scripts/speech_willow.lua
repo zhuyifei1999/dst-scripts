@@ -138,6 +138,27 @@ return {
 		BEARGER = "Whoa! Niiiice bear...",
 		BEARGERVEST = "It's like swimming in fur.",
 		ICEPACK = "Fuzzy backpack!",
+
+		ABIGAIL_FLOWER = 
+		{
+			GENERIC = "Looks flammable.",
+			LONG = "Looks flammable.",
+			MEDIUM = "Ugh, it's weird!",
+			SOON = "Burning is still an option.",
+			HAUNTED_POCKET = "It's burning a hole in my pocket. Heh.",
+			HAUNTED_GROUND = "I don't want to mess with that.",
+		},
+
+		BOOK_BIRDS = "Less reading, more burning!",
+		BOOK_TENTACLES = "Looks like kindling to me!",
+		BOOK_GARDENING = "Ughh, who cares?",
+		BOOK_SLEEP = "Bo-oring!",
+		BOOK_BRIMSTONE = "That's my favorite book!",
+		LUCY = "We could be good friends, you and I.",
+		BALLOONS_EMPTY = "I could fill them with flammable gas.",
+		SPEAR_WATHGRITHR = "I prefer a flame, but to each her own.",
+		WAXWELLJOURNAL = "Would make a great bedtime story... for nightmares!",
+
 		BEARGER_FUR = "It's fur all the way down.",
 		FURTUFT = "Black & white & fuzzy!",
 		BIGFOOT = "What in the world!",

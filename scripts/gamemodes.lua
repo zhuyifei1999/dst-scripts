@@ -3,9 +3,9 @@ DEFAULT_GAME_MODE = "survival" --only used when we can't actually find the game 
 
 GAME_MODES =
 {
-	survival	= { text = STRINGS.UI.GAMEMODES.SURVIVAL,	description = STRINGS.UI.GAMEMODES.SURVIVAL_DESCRIPTION,	level_type = LEVELTYPE.SURVIVAL,	mod_game_mode = false,	spawn_mode = "fixed",	resource_renewal = false, ghost_sanity_drain = true,	ghost_enabled = true,	portal_rez = false,	reset_time = { time = 120, loadingtime = 180 },	invalid_recipes = {} },
-	wilderness	= { text = STRINGS.UI.GAMEMODES.WILDERNESS,	description = STRINGS.UI.GAMEMODES.WILDERNESS_DESCRIPTION,	level_type = LEVELTYPE.SURVIVAL,	mod_game_mode = false,	spawn_mode = "scatter", resource_renewal = true,  ghost_sanity_drain = false,	ghost_enabled = false,	portal_rez = false,	reset_time = nil,								invalid_recipes = { "lifeinjector", "resurrectionstatue", "reviver" } },
-	endless		= { text = STRINGS.UI.GAMEMODES.ENDLESS,	description = STRINGS.UI.GAMEMODES.ENDLESS_DESCRIPTION,		level_type = LEVELTYPE.SURVIVAL,	mod_game_mode = false,	spawn_mode = "fixed",	resource_renewal = true,  ghost_sanity_drain = false,	ghost_enabled = true,	portal_rez = true,	reset_time = nil,								invalid_recipes = {} },
+	survival	= { text = "",	description = "",	level_type = LEVELTYPE.SURVIVAL,	mod_game_mode = false,	spawn_mode = "fixed",	resource_renewal = false, ghost_sanity_drain = true,	ghost_enabled = true,	portal_rez = false,	reset_time = { time = 120, loadingtime = 180 },	invalid_recipes = {} },
+	wilderness	= { text = "",	description = "",	level_type = LEVELTYPE.SURVIVAL,	mod_game_mode = false,	spawn_mode = "scatter", resource_renewal = true,  ghost_sanity_drain = false,	ghost_enabled = false,	portal_rez = false,	reset_time = nil,								invalid_recipes = { "lifeinjector", "resurrectionstatue", "reviver" } },
+	endless		= { text = "",	description = "",	level_type = LEVELTYPE.SURVIVAL,	mod_game_mode = false,	spawn_mode = "fixed",	resource_renewal = true,  ghost_sanity_drain = false,	ghost_enabled = true,	portal_rez = true,	reset_time = nil,								invalid_recipes = {} },
 }
 
 
@@ -19,7 +19,7 @@ function GetGameModesSpinnerData( enabled_mods )
 	local spinner_data = {}
 	for k,v in pairs( GAME_MODES ) do
 		if not v.modded_mode then
-			table.insert( spinner_data, { text = v.text or "blank", data = k } )
+			table.insert( spinner_data, { text = STRINGS.UI.GAMEMODES[string.upper(k)] or "blank", data = k } )
 		end
 	end
 	
@@ -36,17 +36,16 @@ function GetGameModesSpinnerData( enabled_mods )
 	end
 
 	local function mode_cmp(a,b)
-		if a.text == STRINGS.UI.GAMEMODES.SURVIVAL then
+		if a.data == "survival" then
 			return true
-		elseif a.text == STRINGS.UI.GAMEMODES.WILDERNESS and b.text ~= STRINGS.UI.GAMEMODES.SURVIVAL then
+		elseif a.data == "wilderness" and b.data ~= "survival" then
 			return true
-		elseif a.text == STRINGS.UI.GAMEMODES.ENDLESS and b.text ~= STRINGS.UI.GAMEMODES.SURVIVAL and b.text ~= STRINGS.UI.GAMEMODES.WILDERNESS then
+		elseif a.data == "endless" and b.data ~= "survival" and b.data ~= "wilderness" then
 			return true
 		else
 			return false
 		end
 	end
-
 	table.sort(spinner_data, mode_cmp)
 
 	return spinner_data
@@ -57,7 +56,7 @@ function GetGameModeString( game_mode )
 		return STRINGS.UI.GAMEMODES.UNKNOWN
 	else
 		if GAME_MODES[game_mode] then
-			return GAME_MODES[game_mode].text
+			return STRINGS.UI.GAMEMODES[string.upper(game_mode)] or GAME_MODES[game_mode].text
 		end
 		return STRINGS.UI.GAMEMODES.CUSTOM
 	end
@@ -76,7 +75,7 @@ function GetGameModeDescriptionString( game_mode )
 			if GAME_MODES[game_mode].hover_text then
 				return GAME_MODES[game_mode].hover_text
 			else
-				return GAME_MODES[game_mode].description
+				return STRINGS.UI.GAMEMODES[string.upper(game_mode).."_DESCRIPTION"] or GAME_MODES[game_mode].description
 			end
 		end
 		return ""
