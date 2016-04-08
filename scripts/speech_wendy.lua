@@ -244,6 +244,18 @@ return {
         MINIFAN = "When I am still, it is as lifeless as Abigail.",
 		GOOSE_FEATHER = "Plucked like Abigail was from me.",
 		STAFF_TORNADO = "Some weather out there.",
+
+		LIGHTER = "Death in a box...",
+		BOOK_BIRDS = "Will it teach me how to fly away from here?",
+		BOOK_TENTACLES = "Does this world need more beasts?",
+		BOOK_GARDENING = "Imagine, a rolling field of red flowers...",
+		BOOK_SLEEP = "Does it impart an eternal slumber?",
+		BOOK_BRIMSTONE = "The tome to end it all...",
+		LUCY = "Hello... 'Lucy'... I'd like you to meet my sister.",
+		BALLOONS_EMPTY = "These look as deflated as I feel...",
+		SPEAR_WATHGRITHR = "It seems a tad dramatic.",
+		WAXWELLJOURNAL = "Do you want me to read you a story, Abigail?",
+
 		PIGHEAD = 
 		{	
 			GENERIC = "Kill the pig. Spill his blood.",

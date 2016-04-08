@@ -124,6 +124,28 @@ return {
 		TURF_DECIDUOUS = "Just some ground, eh?",
 		TURF_SANDY = "Just some ground, eh?",
 		TURF_BADLANDS = "Just some ground, eh?",
+
+		LIGHTER = "Keep it away from the trees!",
+		
+		ABIGAIL_FLOWER = 
+		{
+			GENERIC = "It's a flower? I guess.",
+			LONG = "Yup. It's a flower.",
+			MEDIUM = "That flower's acting funny...",
+			SOON = "Did it just move?",
+			HAUNTED_POCKET = "I'm not comfortable with this.",
+			HAUNTED_GROUND = "Maybe we should split, eh?",
+		},
+
+		BOOK_BIRDS = "I already know more than enough about those things.",
+		BOOK_TENTACLES = "They don't have tentacles in Canada.",
+		BOOK_GARDENING = "Does it grow trees?",
+		BOOK_SLEEP = "The perfect book for a full moon.",
+		BOOK_BRIMSTONE = "I know better than to mess with that, eh.",
+		BALLOONS_EMPTY = "Are those balloons?",
+		SPEAR_WATHGRITHR = "Who needs a spear when you got ol' Luce?",
+		WAXWELLJOURNAL = "Trees made into... paper? How unholy!",
+
 		BEARGER = "That's a big bear!",
 		BEARGERVEST = "Now this is some proper winter gear.",
 		ICEPACK = "Good for long hikes.",

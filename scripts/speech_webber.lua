@@ -161,6 +161,28 @@ return {
 		GREENSTAFF = "Magic taker-apart-er.",
 		POTTEDFERN = "Mum would like this nice fern.",
 
+		LIGHTER = "Lighter than what?",
+		
+		ABIGAIL_FLOWER =
+		{
+			GENERIC = "Pretty petals!",
+			LONG = "I think it's listening to us!",
+			MEDIUM = "It's getting creepy!",
+			SOON = "It gives us itches and skritches up our spine!",
+			HAUNTED_POCKET = "Put it down! Put it down!",
+			HAUNTED_GROUND = "Scary blossoms!",
+		},
+
+		BOOK_BIRDS = "This one has pictures!",
+		BOOK_TENTACLES = "I'll read it for us!",
+		BOOK_GARDENING = "Why should we read about flowers when we can pick them?",
+		BOOK_SLEEP = "It's... beddy-bye time...",
+		BOOK_BRIMSTONE = "We don't like how this one ends!",
+		LUCY = "If we talks to it will it talk back?",
+		BALLOONS_EMPTY = "Is there going to be a party?!",
+		SPEAR_WATHGRITHR = "Pointy ouchies!",
+		WAXWELLJOURNAL = "I don't think we should play with that...",
+
 		THULECITE = "Fancy rocks!",
 		ARMORRUINS = "Nice and lightweight.",
 		RUINS_BAT = "We will, we will, smash you!",

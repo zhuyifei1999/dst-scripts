@@ -253,6 +253,29 @@ return {
 		FLOWERSALAD = "Is not spinach, but maybe still work!",
         ICECREAM = "Well, is Sunday after all.",
         WATERMELONICLE = "Ha! Melon on a stick.",
+
+		LIGHTER = "Is tiny firestarter!",
+		
+		ABIGAIL_FLOWER = 
+		{
+			GENERIC = "Is pretty.",
+			LONG = "Is pretty.",
+			MEDIUM = "Little flower gives Wolfgang the 'heebie jeebies'.",
+			SOON = "I do not like it.",
+			HAUNTED_POCKET = "Wolfgang is feeling a little squeamish.",
+			HAUNTED_GROUND = "Does it want to fight?",
+		},
+
+		BOOK_BIRDS = "Book is for the birds!",
+		BOOK_TENTACLES = "Wolfgang will summon many foes to fight!",
+		BOOK_GARDENING = "Wolfgang prefers growing muscle mass to flowers.",
+		BOOK_SLEEP = "Wolfgang's eyes feel heavy like dumbells.",
+		BOOK_BRIMSTONE = "Tiny book scares Wolfgang!",
+		LUCY = "Wolfgang loves a sharp missus.",
+		BALLOONS_EMPTY = "Wolfgang will make balloon muscles.",
+		SPEAR_WATHGRITHR = "Is a fine weapon.",
+		WAXWELLJOURNAL = "Wolfgang is glad he cannot read!",
+
         TRAILMIX = "Berries and nuts, berries and nuts!",
         HOTCHILI = "Haha, nothing is too spicy for Wolfgang!",
         GUACAMOLE = "Wolfgang does not trust green mush.",

@@ -59,6 +59,24 @@ return
         TURF_DECIDUOUS = "The ground. You step on it.",
         TURF_SANDY = "The ground. You step on it.",
         TURF_BADLANDS = "The ground. You step on it.",
+
+        LIGHTER = "Ah, a mechanical tool for fire starting. How useful.",
+        
+        ABIGAIL_FLOWER =
+        {
+            GENERIC = "Ah... I'm not familiar with this strain of flower.",
+            LONG = "Odd...",
+            MEDIUM = "It's emitting a strange energy.",
+            SOON = "The flower's energy is growing powerful.",
+            HAUNTED_POCKET = "I feel I should set it down now.",
+            HAUNTED_GROUND = "Does it expect something of me?",
+         },
+
+        LUCY = "A perfectly fine looking axe.",
+        BALLOONS_EMPTY = "These seem frivolous.",
+        SPEAR_WATHGRITHR = "What a handsome hunting implement.",
+        WAXWELLJOURNAL = "I'm not letting THAT in MY library!",
+
         BEARGER = "It's the Caniformia suborder... Beyond that, I cannot say.",
         BEARGERVEST = "Whatever it was, its pelt makes for a fine garment.",
         ICEPACK = "Perfectly insulated.",
