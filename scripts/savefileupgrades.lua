@@ -88,6 +88,9 @@ t = {
             local Customise = require"map/customise"
 
             local ret = Levels.GetDataForLevelID(basepreset)
+            if ret == nil then
+                ret = Levels.GetDefaultLevelData(LEVELTYPE.SURVIVAL, location)
+            end
 
             ret.id = newid or ret.id
             ret.name = newname or ret.name
