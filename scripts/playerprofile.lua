@@ -656,7 +656,6 @@ function PlayerProfile:Load(callback)
         function(load_success, str)
             self:Set(str, callback)
         end, false)
-    SaveGameIndex:GuaranteeMinNumSlots(NUM_DST_SAVE_SLOTS)
 end
 
 local function GetValueOrDefault( value, default )

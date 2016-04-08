@@ -1,3 +1,17 @@
+function d_decodedata(path)
+    print("DECODING",path)
+    TheSim:GetPersistentString(path, function(load_success, str)
+        if load_success then
+            print("LOADED...")
+            TheSim:SetPersistentString(path.."_decoded", str, false, function()
+                print("SAVED!")
+            end)
+        else
+            print("ERROR LOADING FILE! (wrong path?)")
+        end
+    end)
+end
+
 function d_domesticatedbeefalo()
     c_give('whip')
     c_give('saddle_war')

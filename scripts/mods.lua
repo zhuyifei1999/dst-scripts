@@ -340,7 +340,7 @@ function ModWrangler:FrontendLoadMod(modname)
     end
     print("FrontendLoadMod", modname)
 
-    KnownModIndex:LoadModConfigurationOptions(modname, not TheNet:GetIsServer())
+    KnownModIndex:LoadModConfigurationOptions(modname, false)
 
     local initenv = KnownModIndex:GetModInfo(modname)
     local env = CreateEnvironment(modname,  self.worldgen)

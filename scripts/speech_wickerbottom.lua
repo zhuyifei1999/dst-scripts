@@ -73,6 +73,7 @@ return
             PICKED = "Desperate times, desperate measures.",
         },
         CACTUS_MEAT_COOKED = "Delightfully devoid of spines.",
+        TREEGUARD = "Fascinating... it's become bipedal!",
         CACTUS_MEAT = "I'm not sure it's been prepared properly.",
         CACTUS_FLOWER = "Reminds me of Burrows. A favorite at the library.",
         COLDFIRE =

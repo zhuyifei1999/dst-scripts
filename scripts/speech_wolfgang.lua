@@ -149,6 +149,7 @@ return {
 		BEARGER = "Wolfgang not want to fight big bear.",
 		BEARGERVEST = "Big bear shirt.",
 		ICEPACK = "Furry bag.",
+		TREEGUARD = "Tree man! Fight me!",
 		BEARGER_FUR = "Is like hair on Wolfgang chest.",
 		FURTUFT = "Fur from bear?", 
 		BIGFOOT = "Foot is too big!",
