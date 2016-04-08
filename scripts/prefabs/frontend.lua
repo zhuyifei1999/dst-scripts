@@ -78,6 +78,9 @@ local assets =
     Asset("ANIM", "anim/textbox.zip"),
 
     Asset("ANIM", "anim/chest_bg.zip"),
+
+    --Credits screen
+    Asset("SOUND", "sound/gramaphone.fsb"),
 }
 
 if PLATFORM == "PS4" then
