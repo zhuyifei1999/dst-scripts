@@ -602,6 +602,17 @@ end
 local env = {  -- add functions you know are safe here
     loadstring=loadstring -- functions can get serialized to text, this is required to turn them back into functions
  }
+ 
+
+function RunInEnvironment(fn, fnenv)
+	setfenv(fn, fnenv)
+	return xpcall(fn, debug.traceback)
+end
+
+function RunInEnvironmentSafe(fn, fnenv)
+	setfenv(fn, fnenv)
+	return xpcall(fn, function(msg) print(msg) StackTraceToLog() print(debugstack()) return "" end )
+end
 
 -- run code under environment [Lua 5.1]
 function RunInSandbox(untrusted_code)
@@ -609,11 +620,6 @@ function RunInSandbox(untrusted_code)
 	local untrusted_function, message = loadstring(untrusted_code)
 	if not untrusted_function then return nil, message end
 	return RunInEnvironment(untrusted_function, env)
-end
-
-function RunInEnvironment(fn, fnenv)
-	setfenv(fn, fnenv)
-	return xpcall(fn, debug.traceback)
 end
 
 -- RunInSandboxSafe uses an empty environement

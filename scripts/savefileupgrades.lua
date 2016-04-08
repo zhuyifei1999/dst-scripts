@@ -20,24 +20,25 @@ t = {
             local ret = nil
             if Levels.GetTypeForLevelID(basepreset) == LEVELTYPE.UNKNOWN then
                 print(string.format("WARNING: custom preset %s has a non-standard preset for its base (%s). Attempting to recursively upgrade...", newid, basepreset))
-                for i,custompreset in ipairs(custompresets) do
-                    if basepreset == custompreset.id then
-                        print("  ...whew! Found an upgraded base to use. Using that.")
-                        ret = deepcopy(custompreset)
-                        break
-                    elseif basepreset == custompreset.data then
-                        print("  ...ack. The base preset isn't upgraded either. Trying to uppgrade that...")
-                        -- note, this performs the upgrade in place in the custompresets table to prevent infinite recursion ~gjans
-                        custompresets[i] = t.utilities.UpgradeUserPresetFromV1toV2(custompreset)
-                        ret = deepcopy(custompresets[i])
-                        break
+                if basepreset ~= newid then
+                    for i,custompreset in ipairs(custompresets) do
+                        if basepreset == custompreset.id then
+                            print("  ...whew! Found an upgraded base to use. Using that.")
+                            ret = deepcopy(custompreset)
+                            break
+                        elseif basepreset == custompreset.data then
+                            print("  ...ack. The base preset isn't upgraded either. Trying to uppgrade that...")
+                            -- note, this performs the upgrade in place in the custompresets table to prevent infinite recursion ~gjans
+                            custompresets[i] = t.utilities.UpgradeUserPresetFromV1toV2(custompreset, custompresets)
+                            ret = deepcopy(custompresets[i])
+                            break
+                        end
                     end
                 end
 
                 if ret == nil then
-                    print(string.format("WARNING: Upgrading preset %s to v2 failed, base preset is %s which is unknown or invalid.", newid, basepreset))
-                    print("This preset will be deleted.")
-                    return nil
+                    print("  ...Could not find a valid base for the preset. Using defaults.")
+                    ret = Levels.GetDefaultLevelData(LEVELTYPE.SURVIVAL)
                 end
             else
                 ret = Levels.GetDataForLevelID(basepreset)

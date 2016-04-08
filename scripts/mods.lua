@@ -356,7 +356,7 @@ function ModWrangler:FrontendLoadMod(modname)
     package.path = MODS_ROOT..env.modname.."\\scripts\\?.lua;"..package.path
     self.currentlyloadingmod = env.modname
     -- Only worldgenmain, to populate the presets panel etc.
-    self:InitializeModMain(env.modname, env, "modworldgenmain.lua")
+    self:InitializeModMain(env.modname, env, "modworldgenmain.lua", true)
     self.currentlyloadingmod = nil
     package.path = oldpath
 end
@@ -452,7 +452,7 @@ function ModWrangler:LoadMods(worldgen)
 	end
 end
 
-function ModWrangler:InitializeModMain(modname, env, mainfile)
+function ModWrangler:InitializeModMain(modname, env, mainfile, safe)
 	if not KnownModIndex:IsModCompatibleWithMode(modname) then return end
 
 	print("Mod: "..ModInfoname(modname), "Loading "..mainfile)
@@ -466,10 +466,17 @@ function ModWrangler:InitializeModMain(modname, env, mainfile)
 		print("Mod: "..ModInfoname(modname), "  Mod had no "..mainfile..". Skipping.")
 		return true
 	else
-		local status, r = RunInEnvironment(fn,env)
+		
+		local status = nil
+		local r = nil
+		if safe then
+			status, r = RunInEnvironmentSafe(fn,env)
+		else
+			status, r = RunInEnvironment(fn,env)
+		end
 
 		if status == false then
-			print("Mod: "..ModInfoname(modname), "  Error loading mod!\n"..r.."\n")
+			moderror("Mod: "..ModInfoname(modname), "  Error loading mod!\n"..r.."\n")
 			table.insert( self.failedmods, {name=modname,error=r} )
 			return false
 		else

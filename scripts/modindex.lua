@@ -196,7 +196,7 @@ function ModIndex:GetModInfo(modname)
 	if self.savedata.known_mods[modname] then
 		return self.savedata.known_mods[modname].modinfo or {}
 	else
-		modprint("unknown mod " .. modname)
+		modprint("unknown mod " .. tostring(modname))
 		return nil
 	end
 end
