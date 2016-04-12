@@ -146,7 +146,7 @@ function TopModsPanel:GenerateRandomPicks(num, numrange)
 end
 
 function TopModsPanel:OnStatsQueried( result, isSuccessful, resultCode )
-    if not (self.inst:IsValid() and self:IsVisible()) then
+    if not (self.inst:IsValid()) then
         return
     end
 

@@ -53,7 +53,8 @@ local function fn()
     MakeHauntableLaunchAndIgnite(inst)
 
     inst:AddComponent("deployable")
-    inst.components.deployable:SetDeployMode(DEPLOYMODE.ANYWHERE)
+    --inst.components.deployable:SetDeployMode(DEPLOYMODE.ANYWHERE)
+    inst.components.deployable:SetDeploySpacing(DEPLOYSPACING.NONE)
     inst.components.deployable.ondeploy = ondeploy
 
     return inst

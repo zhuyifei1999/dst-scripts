@@ -3,7 +3,7 @@ local Image = require "widgets/image"
 
 local TileBG = Class(Widget, function(self, atlas, tileim, sepim, endim, horizontal)
     Widget._ctor(self, "TileBG")
-    
+
     self.atlas = atlas
     self.tileim = tileim
     self.sepim = sepim
@@ -15,8 +15,8 @@ local TileBG = Class(Widget, function(self, atlas, tileim, sepim, endim, horizon
     self.slotpos = {}
     self.stepsize = 0
     self.length = 0
-	self.bgs = nil
-	self.seps = nil
+    self.bgs = nil
+    self.seps = nil
 end)
 
 function TileBG:GetSlotPos(k)
@@ -24,11 +24,17 @@ function TileBG:GetSlotPos(k)
 end
 
 function TileBG:GetSepSize()
-	return self.seps[1]:GetSize()
+    if self.seps ~= nil and self.seps[1] ~= nil then
+        return self.seps[1]:GetSize()
+    end
+    return 0, 0
 end
 
 function TileBG:GetSlotSize()
-	return self.bgs[1]:GetSize()
+    if self.bgs ~= nil and self.bgs[1] ~= nil then
+        return self.bgs[1]:GetSize()
+    end
+    return 0, 0
 end
 
 function TileBG:GetSize()
@@ -38,13 +44,13 @@ end
 function TileBG:SetNumTiles(numtiles)
     self.numtiles = numtiles
     self:KillAllChildren()
-    
+
     local end1, end2
     if self.endim then
         end1 = self:AddChild(Image(self.atlas, self.endim))
         end2 = self:AddChild(Image(self.atlas, self.endim))
     end
-    
+
     self.bgs = {}
     for k = 1,numtiles do
         self.bgs[k] = self:AddChild(Image(self.atlas, self.tileim))
@@ -59,15 +65,16 @@ function TileBG:SetNumTiles(numtiles)
 
         sep_w, sep_h = self.seps[1]:GetSize()
     end
-    
+
     local end_w, end_h = 0, 0
-    
     if end1 then
         end_w, end_h = end1:GetSize()
     end
-    
-    local tile_w, tile_h =  self.bgs[1]:GetSize()
-    
+
+    local tile_w, tile_h = 0, 0
+    if numtiles > 0 then
+        tile_w, tile_h = self.bgs[1]:GetSize()
+    end
 
     if self.horizontal then
         self.w = end_w*2 + tile_w*numtiles + sep_w*(numtiles-1)
@@ -80,7 +87,7 @@ function TileBG:SetNumTiles(numtiles)
         self.stepsize = tile_h + sep_h
         self.length = self.h
     end
-    
+
     if end1 then
         if self.horizontal then
             end1:SetPosition(-self.w/2 + end_w/2, 0,0)
@@ -88,7 +95,7 @@ function TileBG:SetNumTiles(numtiles)
             end1:SetPosition(0, -self.h/2 + end_h/2,0)
         end
     end
-    
+
     if end2 then
         if self.horizontal then
             end2:SetPosition(self.w/2 - end_w/2, 0,0)
@@ -98,7 +105,7 @@ function TileBG:SetNumTiles(numtiles)
             end2:SetScale(0,-1,1)
         end
     end
-    
+
     if self.horizontal then
         for k = 1, numtiles do
             local x = -self.w/2 + end_w + tile_w/2 + tile_w*(k-1)
@@ -138,7 +145,6 @@ function TileBG:SetNumTiles(numtiles)
             end
         end
     end
-    
 end
 
 return TileBG

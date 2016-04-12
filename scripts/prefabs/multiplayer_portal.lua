@@ -40,6 +40,8 @@ local function fn()
     inst.AnimState:SetBuild("portal_dst")
     inst.AnimState:PlayAnimation("idle_loop", true)
 
+    inst:AddTag("portal")
+
     inst.GetActivateVerb = GetVerb
 
     inst.entity:SetPristine()
