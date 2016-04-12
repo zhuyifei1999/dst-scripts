@@ -173,8 +173,8 @@ local function itemfn()
 
     inst:AddComponent("deployable")
     inst.components.deployable.ondeploy = ondeploy
-    inst.components.deployable:SetDeployMode(DEPLOYMODE.ANYWHERE)
-    inst.components.deployable:SetDeploySpacing(DEPLOYSPACING.NONE)
+    --inst.components.deployable:SetDeployMode(DEPLOYMODE.ANYWHERE)
+    --inst.components.deployable:SetDeploySpacing(DEPLOYSPACING.NONE)
     
     return inst
 end

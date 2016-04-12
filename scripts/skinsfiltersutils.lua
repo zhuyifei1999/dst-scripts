@@ -32,13 +32,13 @@ typeList["item"] = true
 
 				
 local rarityList = {}
-rarityList[STRINGS.UI.SKINSSCREEN.COMMON] = "Common"
-rarityList[STRINGS.UI.SKINSSCREEN.CLASSY] = "Classy"
-rarityList[STRINGS.UI.SKINSSCREEN.SPIFFY] = "Spiffy"
-rarityList[STRINGS.UI.SKINSSCREEN.DISTINGUISHED] = "Distinguished"
-rarityList[STRINGS.UI.SKINSSCREEN.ELEGANT] = "Elegant"
-rarityList[STRINGS.UI.SKINSSCREEN.TIMELESS] = "Timeless"
-rarityList[STRINGS.UI.SKINSSCREEN.LOYAL] = "Loyal"
+rarityList["Common"] = true
+rarityList["Classy"] = true
+rarityList["Spiffy"] = true
+rarityList["Distinguished"] = true
+rarityList["Elegant"] = true
+rarityList["Timeless"] = true
+rarityList["Loyal"] = true
 
 local coloursList = {}
 coloursList["black"] = true
@@ -82,7 +82,7 @@ function ApplyFilters(full_skins_list, filters)
 						filter_value = filter_name
 					elseif rarityList[filter_name] then 
 						filter_type = "rarity"
-						filter_value = rarityList[filter_name]
+						filter_value = filter_name
 					elseif IsItemId(filter_name) then 
 						filter_type = "item"
 						filter_value = filter_name

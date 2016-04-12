@@ -40,6 +40,7 @@ local function onburnt(inst)
     if inst.components.workable ~= nil then
         inst.components.workable:SetWorkLeft(1)
     end
+    inst:RemoveComponent("attunable")
     inst.AnimState:PlayAnimation("burnt", true)
 end
 

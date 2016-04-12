@@ -60,7 +60,8 @@ local function fn()
     inst.components.inventoryitem:SetOnPickupFn(onpickup)
 
     inst:AddComponent("deployable")
-    inst.components.deployable:SetDeployMode(DEPLOYMODE.ANYWHERE)
+    --inst.components.deployable:SetDeployMode(DEPLOYMODE.ANYWHERE)
+    inst.components.deployable:SetDeploySpacing(DEPLOYSPACING.NONE)
     inst.components.deployable.ondeploy = ondeploy
 
     return inst

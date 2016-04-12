@@ -411,9 +411,6 @@ function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOu
                 cluster_info.settings.STEAM.steam_group_admins   = tostring(serverdata.clan.admin)
             end
 
-            -- Collect the tags we want and set the tags string now that we have our mods enabled
-            TheNet:SetServerTags(BuildTagsStringHosting(self, worldoptions))
-
             local is_slot_empty = SaveGameIndex:IsSlotEmpty(self.saveslot)
 
             local function onsaved()
@@ -452,6 +449,8 @@ function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOu
                     end
                     self:Enable()
                 elseif not is_multi_level then
+                    -- Collect the tags we want and set the tags string now that we have our mods enabled
+                    TheNet:SetServerTags(BuildTagsStringHosting(self, worldoptions))
                     DoLoadingPortal(function()
                         StartNextInstance({ reset_action = RESET_ACTION.LOAD_SLOT, save_slot = self.saveslot })
                     end)

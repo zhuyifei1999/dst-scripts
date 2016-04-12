@@ -518,7 +518,7 @@ function Combat:GetImpactSound(target, weapon)
 end
 
 function Combat:StartAttack()
-    if self.target and self.forcefacing then
+    if self.forcefacing and self.target ~= nil and self.target:IsValid() then
         self.inst:ForceFacePoint(self.target:GetPosition())
     end
     self.laststartattacktime = GetTime()

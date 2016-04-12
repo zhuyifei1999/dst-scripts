@@ -658,8 +658,6 @@ function StartDedicatedServer()
     local server_started = TheNet:StartServer(start_in_online_mode)
     if server_started == true then
         DisableAllDLC()
-        -- Collect the tags we want and set the tags string
-        UpdateServerTagsString()
 
         --V2C: From now on, we want to actually write data into
         --     a slot before initiating LOAD_SLOT action on it!
@@ -668,6 +666,8 @@ function StartDedicatedServer()
         local serverdata = GetDefaultServerData()
 
         local function onsaved()
+            -- Collect the tags we want and set the tags string
+            UpdateServerTagsString()
             StartNextInstance({ reset_action = RESET_ACTION.LOAD_SLOT, save_slot = slot })
         end
 
