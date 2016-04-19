@@ -1,6 +1,8 @@
 local assets =
 {
     Asset("ANIM", "anim/book_maxwell.zip"),
+
+    Asset("SOUND", "sound/together.fsb"),
 }
 
 local prefabs =
@@ -84,9 +86,9 @@ local function tryqueueclosingsounds(inst, onanimover)
     if inst.AnimState:IsCurrentAnimation("proximity_pst") then
         inst:RemoveEventCallback("animover", onanimover)
         --Delay one less frame, since this task is delayed one frame already
-        queueplaysound(inst, 4 * FRAMES, "close", "dontstarve/common/book_maxwell/close")
+        queueplaysound(inst, 4 * FRAMES, "close", "dontstarve/common/together/book_maxwell/close")
         queuekillsound(inst, 5 * FRAMES, "killidle", "idlesound")
-        queueplaysound(inst, 14 * FRAMES, "drop", "dontstarve/common/book_maxwell/drop")
+        queueplaysound(inst, 14 * FRAMES, "drop", "dontstarve/common/together/book_maxwell/drop")
     end
 end
 
@@ -125,7 +127,7 @@ local function onturnon(inst)
             inst.AnimState:PushAnimation("proximity_loop", true)
         end
         if not inst.SoundEmitter:PlayingSound("idlesound") then
-            inst.SoundEmitter:PlaySound("dontstarve/common/book_maxwell/active_LP", "idlesound")
+            inst.SoundEmitter:PlaySound("dontstarve/common/together/book_maxwell/active_LP", "idlesound")
         end
     end
 end
@@ -144,7 +146,7 @@ local function doneact(inst)
     if inst.components.prototyper.on then
         inst.AnimState:PlayAnimation("proximity_loop", true)
         if not inst.SoundEmitter:PlayingSound("idlesound") then
-            inst.SoundEmitter:PlaySound("dontstarve/common/book_maxwell/active_LP", "idlesound")
+            inst.SoundEmitter:PlaySound("dontstarve/common/together/book_maxwell/active_LP", "idlesound")
         end
     else
         inst.AnimState:PushAnimation("proximity_pst")
@@ -167,7 +169,7 @@ local function onuse(inst, hasfx)
     stopclosingsounds(inst)
     inst.AnimState:PlayAnimation("use")
     inst:DoTaskInTime(0, showfx, hasfx)
-    inst.SoundEmitter:PlaySound("dontstarve/common/book_maxwell/use")
+    inst.SoundEmitter:PlaySound("dontstarve/common/together/book_maxwell/use")
     if inst._activetask ~= nil then
         inst._activetask:Cancel()
     end

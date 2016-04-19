@@ -45,8 +45,6 @@ end
 
 function NIS:Cancel()
 
-    IncTrackingStat(self.name, "nis_skip")
-
     if self.task then
         KillThread(self.task)
     end

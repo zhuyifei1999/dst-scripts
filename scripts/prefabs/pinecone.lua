@@ -2,15 +2,21 @@ require "prefabutil"
 local assets =
 {
     Asset("ANIM", "anim/pinecone.zip"),
+    Asset("ANIM", "anim/twiggy_nut.zip"),
 }
 
 local prefabs =
 {
     "pinecone_sapling",
+    "twiggy_nut_sapling",
 }
 
 local function plant(inst, growtime)
-    local sapling = SpawnPrefab("pinecone_sapling")
+    local spawn_item = "pinecone_sapling"
+    if inst._spawn_prefab then
+        spawn_item = inst._spawn_prefab
+    end
+    local sapling = SpawnPrefab(spawn_item)
     sapling:StartGrowing()
     sapling.Transform:SetPosition(inst.Transform:GetWorldPosition())
     sapling.SoundEmitter:PlaySound("dontstarve/wilson/plant_tree")
@@ -50,55 +56,66 @@ local function OnLoad(inst, data)
     end
 end
 
-local function fn()
-    local inst = CreateEntity()
+local cones = {}
 
-    inst.entity:AddTransform()
-    inst.entity:AddAnimState()
-    inst.entity:AddSoundEmitter()
-    inst.entity:AddNetwork()
+local function addcone(name, spawn_prefab, bank, build, anim)
+    local function fn()
+        local inst = CreateEntity()
 
-    MakeInventoryPhysics(inst)
+        inst._spawn_prefab = spawn_prefab
 
-    inst.AnimState:SetBank("pinecone")
-    inst.AnimState:SetBuild("pinecone")
-    inst.AnimState:PlayAnimation("idle")
+        inst.entity:AddTransform()
+        inst.entity:AddAnimState()
+        inst.entity:AddSoundEmitter()
+        inst.entity:AddNetwork()
 
-    inst:AddTag("cattoy")
-    MakeDragonflyBait(inst, 3)
+        MakeInventoryPhysics(inst)
 
-    inst.entity:SetPristine()
+        inst.AnimState:SetBank(bank)
+        inst.AnimState:SetBuild(build)
+        inst.AnimState:PlayAnimation("idle")
 
-    if not TheWorld.ismastersim then
+        inst:AddTag("cattoy")
+        MakeDragonflyBait(inst, 3)
+
+        inst.entity:SetPristine()
+
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        inst:AddComponent("tradable")
+
+        inst:AddComponent("stackable")
+        inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
+
+        inst:AddComponent("inspectable")
+
+        inst:AddComponent("fuel")
+        inst.components.fuel.fuelvalue = TUNING.SMALL_FUEL
+
+        MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
+        MakeSmallPropagator(inst)
+
+        inst:AddComponent("inventoryitem")
+
+        MakeHauntableLaunchAndIgnite(inst)
+
+        inst:AddComponent("deployable")
+        inst.components.deployable:SetDeployMode(DEPLOYMODE.PLANT)
+        inst.components.deployable.ondeploy = ondeploy
+
+        -- This is left in for "save file upgrading", June 3 2015. We can remove it after some time.
+        inst.OnLoad = OnLoad
+
         return inst
     end
 
-    inst:AddComponent("tradable")
-
-    inst:AddComponent("stackable")
-    inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
-
-    inst:AddComponent("inspectable")
-
-    inst:AddComponent("fuel")
-    inst.components.fuel.fuelvalue = TUNING.SMALL_FUEL
-
-    MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
-    MakeSmallPropagator(inst)
-
-    inst:AddComponent("inventoryitem")
-
-    MakeHauntableLaunchAndIgnite(inst)
-
-    inst:AddComponent("deployable")
-    inst.components.deployable:SetDeployMode(DEPLOYMODE.PLANT)
-    inst.components.deployable.ondeploy = ondeploy
-
-    -- This is left in for "save file upgrading", June 3 2015. We can remove it after some time.
-    inst.OnLoad = OnLoad
-
-    return inst
+    table.insert(cones, Prefab(name, fn, assets, prefabs))
+    table.insert(cones, MakePlacer(name.."_placer", bank, build, anim))
 end
 
-return Prefab("pinecone", fn, assets, prefabs),
-    MakePlacer("pinecone_placer", "pinecone", "pinecone", "idle_planted")
+addcone("pinecone", "pinecone_sapling", "pinecone", "pinecone", "idle_planted")
+addcone("twiggy_nut", "twiggy_nut_sapling", "twiggy_nut", "twiggy_nut", "idle_planted")
+
+return unpack(cones)

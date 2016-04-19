@@ -447,6 +447,34 @@ local fx =
         --#TODO: this one
         sound = "dontstarve/ghost/ghost_haunt",
     },
+    {
+        name = "disease_puff",
+        bank = "small_puff",
+        build = "smoke_puff_small",
+        anim = "puff",
+        sound = "dontstarve/common/together/diseased/small",
+    },
+    {
+        name = "disease_fx_small",
+        bank = "disease_fx",
+        build = "disease_fx",
+        anim = "disease_small",
+        sound = "dontstarve/common/together/diseased/small",
+    },
+    {
+        name = "disease_fx",
+        bank = "disease_fx",
+        build = "disease_fx",
+        anim = "disease",
+        sound = "dontstarve/common/together/diseased/small",
+    },
+    {
+        name = "disease_fx_tall",
+        bank = "disease_fx",
+        build = "disease_fx",
+        anim = "disease_tall",
+        sound = "dontstarve/common/together/diseased/big",
+    },
 }
 
 if ACCOMPLISHMENTS_ENABLED then

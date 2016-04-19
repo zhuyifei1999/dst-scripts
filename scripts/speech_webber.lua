@@ -548,7 +548,7 @@ return {
 		DIVININGRODBASE =
 		{
 			GENERIC = "It's a mystery.",
-			READY = "Looks like there's a hole for an oversized key.",
+			READY = "Looks like there's a hole for an over-sized key.",
 			UNLOCKED = "It's ready to go.",
 		},
 		DIVININGRODSTART = "Radical rod!",

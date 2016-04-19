@@ -649,57 +649,59 @@ end
 end]]
 
 function LobbyScreen:SetPortraitImage()
-    local name = self.dressup:GetBaseSkin()
+	if self.in_loadout then
+		local name = self.dressup:GetBaseSkin()
 
-    if softresolvefilepath("images/names_"..self.currentcharacter..".xml") then 
-        self.heroname:Show()
-        self.heroname:SetTexture("images/names_"..self.currentcharacter..".xml", self.currentcharacter..".tex")
-    else
-        self.heroname:Hide()
-    end
+		if softresolvefilepath("images/names_"..self.currentcharacter..".xml") then 
+			self.heroname:Show()
+			self.heroname:SetTexture("images/names_"..self.currentcharacter..".xml", self.currentcharacter..".tex")
+		else
+			self.heroname:Hide()
+		end
 
-    self.basetitle:Hide()
-    self.basequote:Hide()
+		self.basetitle:Hide()
+		self.basequote:Hide()
 
-    if name and name ~= "" and self.currentcharacter ~= "random" then
-        self.heroportrait:SetTexture("bigportraits/"..name..".xml", name.."_oval.tex", self.currentcharacter.."_none.tex")
+		if name and name ~= "" and self.currentcharacter ~= "random" then
+			self.heroportrait:SetTexture("bigportraits/"..name..".xml", name.."_oval.tex", self.currentcharacter.."_none.tex")
 
-        if self.currentcharacter ~= "wes"  then 
-            self.basequote:Show()
-            self.basequote:SetString("\""..(STRINGS.SKIN_QUOTES[name] or "").."\"")
-        else
-            self.basequote:Hide()
-        end
+			if self.currentcharacter ~= "wes"  then 
+				self.basequote:Show()
+				self.basequote:SetString("\""..(STRINGS.SKIN_QUOTES[name] or "").."\"")
+			else
+				self.basequote:Hide()
+			end
 
-        self.basetitle:Show()
-        self.basetitle:SetString(GetName(name)) 
-    else
-        if self.currentcharacter ~= "wes" and self.currentcharacter ~= "random" then
-            self.basequote:Show()
-            local str = "\""..(STRINGS.SKIN_QUOTES[name] or STRINGS.CHARACTER_QUOTES[self.currentcharacter] or "").."\""
-            str = string.gsub(str, "\"\"", "\"")
-            self.basequote:SetString(str)
-        else
-            self.basequote:Hide()
-        end
-        self.basetitle:Show()
-        self.basetitle:SetString(STRINGS.CHARACTER_TITLES[self.currentcharacter])
-        --self.basetitle:Hide()
-        --self.basequote:Hide()
-        --self.basequote:SetString(STRINGS.CHARACTER_QUOTES[self.currentcharacter] or "")
-        --print("Loading image", "bigportraits/"..self.currentcharacter.."_none.xml", self.currentcharacter.."_none_oval.tex")
+			self.basetitle:Show()
+			self.basetitle:SetString(GetName(name)) 
+		else
+			if self.currentcharacter ~= "wes" and self.currentcharacter ~= "random" then
+				self.basequote:Show()
+				local str = "\""..(STRINGS.SKIN_QUOTES[name] or STRINGS.CHARACTER_QUOTES[self.currentcharacter] or "").."\""
+				str = string.gsub(str, "\"\"", "\"")
+				self.basequote:SetString(str)
+			else
+				self.basequote:Hide()
+			end
+			self.basetitle:Show()
+			self.basetitle:SetString(STRINGS.CHARACTER_TITLES[self.currentcharacter])
+			--self.basetitle:Hide()
+			--self.basequote:Hide()
+			--self.basequote:SetString(STRINGS.CHARACTER_QUOTES[self.currentcharacter] or "")
+			--print("Loading image", "bigportraits/"..self.currentcharacter.."_none.xml", self.currentcharacter.."_none_oval.tex")
 
-        if softresolvefilepath("bigportraits/"..self.currentcharacter.."_none.xml") then 
-            self.heroportrait:SetTexture("bigportraits/"..self.currentcharacter.."_none.xml", self.currentcharacter.."_none_oval.tex")
-            self.heroportrait:SetPosition(RESOLUTION_X/2-200, RESOLUTION_Y-345)
-        else
-            self.heroportrait:SetTexture("bigportraits/"..self.currentcharacter..".xml", self.currentcharacter..".tex")
-            self.heroportrait:SetPosition(RESOLUTION_X/2-180, RESOLUTION_Y-345)
-        end
+			if softresolvefilepath("bigportraits/"..self.currentcharacter.."_none.xml") then 
+				self.heroportrait:SetTexture("bigportraits/"..self.currentcharacter.."_none.xml", self.currentcharacter.."_none_oval.tex")
+				self.heroportrait:SetPosition(RESOLUTION_X/2-200, RESOLUTION_Y-345)
+			else
+				self.heroportrait:SetTexture("bigportraits/"..self.currentcharacter..".xml", self.currentcharacter..".tex")
+				self.heroportrait:SetPosition(RESOLUTION_X/2-180, RESOLUTION_Y-345)
+			end
 
-    end
+		end
 
-    self.dressup:UpdatePuppet()
+		self.dressup:UpdatePuppet()
+	end
 end
 
 function LobbyScreen:SelectPortrait()

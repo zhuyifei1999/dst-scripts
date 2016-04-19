@@ -52,9 +52,6 @@ local function OnExplode(inst)
     if inst.components.inventoryitem ~= nil then
         inst.components.inventoryitem.canbepickedup = false
     end
-    if METRICS_ENABLED then
-        FightStat_TrapSprung(inst,nil,0)
-    end
 end
 
 local function onhammered(inst, worker)

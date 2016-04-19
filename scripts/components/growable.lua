@@ -7,73 +7,44 @@ local Growable = Class(function(self, inst)
     self.springgrowth = false
 end)
 
---[[local waiting_for_growth = {}
-local function GrowableUpdate(dt)
-	local tick = TheSim:GetTick()
-	if waiting_for_growth[tick] then
-		for k,v in pairs(waiting_for_growth[tick]) do
-			if v:IsValid() and v.components.growable then
-				v.components.growable:DoGrowth()
-			end
-		end
-		waiting_for_growth[tick] = nil
-	end	
-end
-
-local function GrowableLongUpdate(dt)
-	
-end
---]]
-
-
-
-function Growable:OnRemoveEntity()
-	self:StopGrowing()
-end
-
 function Growable:GetDebugString()
-	if self.targettime then
-		return string.format("Growing! stage %d, timeleft %2.2fs", self.stage, self.targettime - GetTime())
-	end
-	return "Not Growing"
+    return (self.targettime ~= nil and string.format("Growing! stage %d, timeleft %2.2fs", self.stage, self.targettime - GetTime()))
+        or (self.pausedremaining ~= nil and string.format("Paused! stage %d, timeleft %2.2fs", self.stage, self.pausedremaining))
+        or "Not Growing"
 end
 
-local function ongrow(inst)
-	inst.components.growable:DoGrowth()
+local function ongrow(inst, self)
+    self:DoGrowth()
 end
 
 function Growable:StartGrowing(time)
-	--if true then return end
-
     if #self.stages == 0 then
         print "Growable component: Trying to grow without setting the stages table"
         return
     end
-    
+
     if self.stage <= #self.stages then
         self:StopGrowing()
-        
-        local timeToGrow = 10
-        if time then
-			timeToGrow = time
-        elseif self.stages[self.stage].time then
-			timeToGrow = self.stages[self.stage].time(self.inst, self.stage)
-		end
-		--print ("growing ", time, self.stage, timeToGrow)
 
-        if timeToGrow then
+        local timeToGrow = 10
+        if time ~= nil then
+            timeToGrow = time
+        elseif self.stages[self.stage].time ~= nil then
+            timeToGrow = self.stages[self.stage].time(self.inst, self.stage)
+        end
+
+        if timeToGrow ~= nil then
             if self.springgrowth and TheWorld.state.isspring then
                 timeToGrow = timeToGrow * TUNING.SPRING_GROWTH_MODIFIER
             end
-			self.targettime = GetTime() + timeToGrow
-            
+            self.targettime = GetTime() + timeToGrow
+
             if not self.inst:IsAsleep() then
-				if self.task then
-					self.task:Cancel()
-					self.task = nil
-				end
-				self.task = self.inst:DoTaskInTime(timeToGrow, ongrow)
-			end
+                if self.task ~= nil then
+                    self.task:Cancel()
+                end
+                self.task = self.inst:DoTaskInTime(timeToGrow, ongrow, self)
+            end
         end
     end
 end
@@ -91,50 +62,47 @@ function Growable:GetNextStage()
 end
 
 function Growable:DoGrowth()
+    if self.targettime == nil and self.pausedremaining == nil then
+        --neither started nor paused, which means we're fully stopped
+        return
+    end
+
     local stage = self:GetNextStage()
-    
+
     if not self.growonly then
         self:SetStage(stage)
     end
-    
-    if self.stages[stage] and self.stages[stage].growfn then
+
+    if self.stages[stage] ~= nil and self.stages[stage].growfn ~= nil then
         self.stages[stage].growfn(self.inst)
     end
-    
+
     if stage < #self.stages or self.loopstages then 
-		self:StartGrowing()
+        self:StartGrowing()
     end
 end
 
 function Growable:StopGrowing()
-    
-	self.targettime = nil
-	
-	--[[if self.targettick and waiting_for_growth[self.targettick] then
-		waiting_for_growth[self.targettick][self.inst] = nil
-    end
-    self.targettick = nil
-    --]]
+    self.targettime = nil
+    self.pausedremaining = nil
 
-	if self.task then
-		self.task:Cancel()
-		self.task = nil
-	end
-	
+    if self.task ~= nil then
+        self.task:Cancel()
+        self.task = nil
+    end
 end
 
 function Growable:Pause()
-    local time = GetTime()
-    if self.targettime and self.targettime > time then
-        self.pausedremaining = math.floor(self.targettime - time)
-    end
+    local targettime = self.targettime
     self:StopGrowing()
+    self.pausedremaining = targettime ~= nil and math.floor(targettime - GetTime()) or nil
 end
 
 function Growable:Resume()
-    if self.pausedremaining then
-        self:StartGrowing(self.pausedremaining)
+    if self.pausedremaining ~= nil then
+        local remainingtime = math.max(0, self.pausedremaining)
         self.pausedremaining = nil
+        self:StartGrowing(remainingtime)
     end
 end
 
@@ -142,10 +110,10 @@ function Growable:SetStage(stage)
     if stage > #self.stages then
         stage = #self.stages
     end
-    
+
     self.stage = stage
-    
-    if self.stages[stage] and self.stages[stage].fn then
+
+    if self.stages[stage] ~= nil and self.stages[stage].fn ~= nil then
         self.stages[stage].fn(self.inst)
     end
 end
@@ -155,61 +123,53 @@ function Growable:GetCurrentStageData()
 end
 
 function Growable:OnSave()
-    local data = 
+    local data =
     {
-        stage = self.stage ~= 1 and self.stage or nil --1 is kind of by default
+        stage = self.stage ~= 1 and self.stage or nil, --1 is kind of by default
+        time = (self.pausedremaining ~= nil and math.floor(self.pausedremaining))
+            or (self.targettime ~= nil and math.floor(self.targettime - GetTime()))
+            or nil,
     }
-    local time = GetTime()
-    if self.targettime and self.targettime > time then
-        data.time = math.floor(self.targettime - time)
-    end
-    return data
-end   
-   
+    return next(data) ~= nil and data or nil
+end
+
 function Growable:OnLoad(data)
-    if data then    
+    if data ~= nil then
         self:SetStage(data.stage or self.stage)
-        if data.time then
-            self:StartGrowing(data.time)
+        if data.time ~= nil then
+            self:StartGrowing(math.max(0, data.time))
         end
     end
 end
 
-function Growable:OnRemoveFromEntity()
-    self:StopGrowing()
-end
-
-
 function Growable:LongUpdate(dt)
-	if self.targettime then
-		local time_from_now = (self.targettime - dt) - GetTime()
-		time_from_now = math.max(0, time_from_now)
-		self:StartGrowing(time_from_now)
-	end
+    if self.targettime ~= nil then
+        local time_from_now = math.max(0, self.targettime - dt - GetTime())
+        self:StartGrowing(time_from_now)
+    end
 end
 
 function Growable:OnEntitySleep()
-	if self.task then
-		self.task:Cancel()
-		self.task = nil
-	end
+    if self.task ~= nil then
+        self.task:Cancel()
+        self.task = nil
+    end
 end
 
 function Growable:OnEntityWake()
-	if self.targettime then
-		if self.targettime < GetTime() then
-			self:DoGrowth()
-		else
-			if self.task then
-				self.task:Cancel()
-				self.task = nil
-			end
-			self.task = self.inst:DoTaskInTime(self.targettime - GetTime(), ongrow)
-		end
-	end
+    if self.targettime ~= nil then
+        local time = GetTime()
+        if self.targettime <= time then
+            self:DoGrowth()
+        else
+            if self.task ~= nil then
+                self.task:Cancel()
+            end
+            self.task = self.inst:DoTaskInTime(self.targettime - time, ongrow, self)
+        end
+    end
 end
 
---RegisterStaticComponentUpdate("growable", GrowableUpdate)
---RegisterStaticComponentLongUpdate("growable", GrowableLongUpdate)
+Growable.OnRemoveFromEntity = Growable.StopGrowing
 
 return Growable

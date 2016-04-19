@@ -555,6 +555,8 @@ function EntityScript:GetDisplayName()
         return name
     elseif self:HasTag("smolder") then
         return ConstructAdjectivedName(self, name, STRINGS.SMOLDERINGITEM)
+    elseif self:HasTag("diseased") then
+        return ConstructAdjectivedName(self, name, STRINGS.DISEASEDITEM)
     elseif self:HasTag("withered") then
         return ConstructAdjectivedName(self, name, STRINGS.WITHEREDITEM)
     elseif not self.no_wet_prefix and (self.always_wet_prefix or self:GetIsWet()) then
@@ -1400,6 +1402,15 @@ function EntityScript:GetCurrentTileType()
     end
 
     --print (string.format("(%d+%d, %d+%d), (%2.2f, %2.2f), %d", tx, x_off, ty, y_off, xpercent, ypercent, actual_tile))
+end
+
+function EntityScript:PutBackOnGround()
+    if not self:IsOnValidGround() then
+        local dest = FindNearbyLand(self:GetPosition())
+        if dest ~= nil then
+            self.Transform:SetPosition(dest.x, dest.y, dest.z)
+        end
+    end
 end
 
 function EntityScript:GetPersistData()

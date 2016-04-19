@@ -434,7 +434,12 @@ function Tune(overrides)
 	    SPILAGMITE_ROCK = 4,
 	    MARBLEPILLAR_MINE = 10,
 	    MARBLETREE_MINE = 8,  
-	    
+
+        PETRIFIED_TREE_SMALL = 2,
+        PETRIFIED_TREE_NORMAL = 3,
+        PETRIFIED_TREE_TALL = 4,
+        PETRIFIED_TREE_OLD = 1,
+
 	    BEEFALO_HEALTH = 500 * 2, -- harder for multiplayer
         BEEFALO_HEALTH_REGEN_PERIOD = 10,
         BEEFALO_HEALTH_REGEN = (500*2)/(total_day_time*3)*10,
@@ -1017,7 +1022,7 @@ function Tune(overrides)
 		MOLEHAT_PERISHTIME = total_day_time*1.5,
 		RAINHAT_PERISHTIME = total_day_time*10,
 		CATCOONHAT_PERISHTIME = total_day_time*10,
-	    
+
 	    GRASS_REGROW_TIME = total_day_time*3,
 	    SAPLING_REGROW_TIME = total_day_time*4,
 	    MARSHBUSH_REGROW_TIME = total_day_time*4,
@@ -1026,19 +1031,24 @@ function Tune(overrides)
         FLOWER_CAVE_LIGHT_TIME = 90,
         FLOWER_CAVE_RECHARGE_TIME = 110,
 	    LICHEN_REGROW_TIME = total_day_time*5,
-	    
+
 	    BERRY_REGROW_TIME = total_day_time*3,
 	    BERRY_REGROW_INCREASE = total_day_time*.5,
 	    BERRY_REGROW_VARIANCE = total_day_time*2,
 	    BERRYBUSH_CYCLES = 3,
-	    
+
+        BERRY_JUICY_REGROW_TIME =  total_day_time * 9,
+        BERRY_JUICY_REGROW_INCREASE = total_day_time*.5,
+        BERRY_JUICY_REGROW_VARIANCE = total_day_time*2,
+        BERRYBUSH_JUICY_CYCLES = 3,
+
 	    REEDS_REGROW_TIME = total_day_time*3,
-	    
+
 	    CROW_LEAVINGS_CHANCE = .3333,
 	    BIRD_TRAP_CHANCE = 0.025,
 	    BIRD_HEALTH = 25*multiplayer_attack_modifier,
 	    BIRD_PERISH_TIME = total_day_time * 5,
-	    
+
 	    BUTTERFLY_SPAWN_TIME = 10*multiplayer_wildlife_respawn_modifier,
 	    BUTTERFLY_POP_CAP = 4,
 	    BUTTERFLY_PERISH_TIME = total_day_time * 3,
@@ -1046,15 +1056,15 @@ function Tune(overrides)
 	    FLOWER_SPAWN_TIME_VARIATION = 20,
 	    FLOWER_SPAWN_TIME = 30,
 	    MAX_FLOWERS_PER_AREA = 50,
- 	    
+
 	    MOLE_RESPAWN_TIME = day_time*4*multiplayer_wildlife_respawn_modifier,
-	    
+
 	    RABBIT_RESPAWN_TIME = day_time*4*multiplayer_wildlife_respawn_modifier,
 	    RABBIT_PERISH_TIME = total_day_time * 5,
-	    
+
 	    MIN_RABBIT_HOLE_TRANSITION_TIME = day_time*.5,
 	    MAX_RABBIT_HOLE_TRANSITION_TIME = day_time*2,
-	    
+
 	    FULL_ABSORPTION = 1,
 	    ARMORGRASS = wilson_health*1.5*multiplayer_armor_durability_modifier,
 		ARMORGRASS_ABSORPTION = .6*multiplayer_armor_absorption_modifier,
@@ -1072,7 +1082,7 @@ function Tune(overrides)
 		ARMORSLURPER = wilson_health * 4*multiplayer_armor_durability_modifier,
 	    ARMOR_FOOTBALLHAT = wilson_health*3*multiplayer_armor_durability_modifier,
 		ARMOR_FOOTBALLHAT_ABSORPTION = .8*multiplayer_armor_absorption_modifier,
- 
+
 		ARMORDRAGONFLY = wilson_health * 9*multiplayer_armor_durability_modifier,
 		ARMORDRAGONFLY_ABSORPTION = 0.7*multiplayer_armor_absorption_modifier,
 		ARMORDRAGONFLY_FIRE_RESIST = 1,
@@ -1744,6 +1754,14 @@ function Tune(overrides)
 	    CATCOON_PICKUP_ITEM_CHANCE = .67,
 	    CATCOON_ATTACK_CONNECT_CHANCE = .25,
 
+        GRASSGEKKO_LIFE = 150,
+        GRASSGEKKO_WALK_SPEED = 1, --0.5
+        GRASSGEKKO_RUN_SPEED = 10,
+        GRASSGEKKO_REGROW_TIME = total_day_time*2,
+        GRASSGEKKO_REGROW_INCREASE = total_day_time*.5,
+        GRASSGEKKO_REGROW_VARIANCE = total_day_time,
+        GRASSGEKKO_CYCLES = 3,
+
 		FERTILIZER_USES = 10,
 
 		GLOMMERBELL_USES = 3,
@@ -1941,6 +1959,8 @@ function Tune(overrides)
         HUTCH_RADIUS = 1.5,
         HUTCH_DMG_PERIOD = 1.2,
         HUTCH_PRICKLY_DAMAGE = 30,
+
+        NUM_PREFAB_SWAPS = 2,
     }
 end
 

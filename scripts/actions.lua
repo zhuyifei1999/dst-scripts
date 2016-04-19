@@ -159,7 +159,7 @@ ACTION_MOD_IDS = {} --This will be filled in when mods add actions via AddAction
 ACTIONS.EAT.fn = function(act)
     local obj = act.target or act.invobject
     if obj ~= nil and obj.components.edible ~= nil and act.doer.components.eater ~= nil then
-        return act.doer.components.eater:Eat(obj)
+        return act.doer.components.eater:Eat(obj, act.doer)
     end
 end
 
@@ -814,7 +814,7 @@ ACTIONS.FEEDPLAYER.fn = function(act)
                     (act.target:HasTag("beaver") and "beavereat") or
                     (food.components.edible.foodtype == FOODTYPE.MEAT and "eat") or
                     "quickeat",
-                    food
+                    {feed=food,feeder=act.doer}
                 )
                 return true
             end
@@ -1262,7 +1262,7 @@ end
 
 ACTIONS.FEED.fn = function(act)
     if act.doer ~= nil and act.target ~= nil and act.target.components.eater ~= nil and act.target.components.eater:CanEat(act.invobject) then
-        act.target.components.eater:Eat(act.invobject)
+        act.target.components.eater:Eat(act.invobject, act.doer)
         local murdered =
             act.target:IsValid() and
             act.target.components.health ~= nil and

@@ -409,7 +409,7 @@ function DressupPanel:MakeSpinner(slot)
 														spinner_group.new_tag:Hide()
 														--print("Hiding new_tag", spinner_group.GetItem())
 													end
-													self.inst:DoTaskInTime(0, function() self:SetPuppetSkins() end)
+													self:SetPuppetSkins()
 
 													if self.onChanged then 
 														self.onChanged()
@@ -445,7 +445,7 @@ function DressupPanel:MakeSpinner(slot)
 								  	spinner_group.new_tag:Hide()
 								  	--print("Hiding new_tag", spinner_group.GetItem())
 								end
-								self.inst:DoTaskInTime(0, function() self:SetPuppetSkins() end)
+								self:SetPuppetSkins()
 							end 
 						end)
 	end

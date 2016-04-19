@@ -84,7 +84,7 @@ local function OnGetItemFromPlayer(inst, giver, item)
         if inst.components.combat.target and inst.components.combat.target == giver then
             inst.components.combat:SetTarget(nil)
         end
-        if inst.components.eater:Eat(item) then
+        if inst.components.eater:Eat(item, giver) then
             --print("   yummy!")
             -- yay!?
         end

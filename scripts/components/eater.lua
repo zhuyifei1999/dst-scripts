@@ -112,7 +112,8 @@ function Eater:GetEdibleTags()
     return tags
 end
 
-function Eater:Eat(food)
+function Eater:Eat(food, feeder)
+    feeder = feeder or self.inst
     -- This used to be CanEat. The reason for two checks is to that special diet characters (e.g.
     -- wigfrid) can TRY to eat all foods (they get the actions for it) but upon actually put it in 
     -- their mouth, they bail and "spit it out" so to speak.
@@ -154,7 +155,7 @@ function Eater:Eat(food)
             end
         end
 
-        self.inst:PushEvent("oneat", { food = food })
+        self.inst:PushEvent("oneat", { food = food, feeder = feeder })
         if self.oneatfn ~= nil then
             self.oneatfn(self.inst, food)
         end

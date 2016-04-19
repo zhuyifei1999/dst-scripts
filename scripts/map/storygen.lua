@@ -677,6 +677,7 @@ function Story:GenerateNodesFromTasks()
 										sapling=1,
 										flint=1,
 										berrybush=1, 
+										berrybush_juicy = 0.5,
 										grass=function () return 2 + math.random(2) end
 									} 
 								}
@@ -1020,8 +1021,6 @@ function BuildStory(tasks, story_gen_params, level)
 
     local story = Story("GAME", tasks, terrain, story_gen_params, level)
     story:GenerationPipeline()
-
-    SetTimingStat("time", "generate_story", GetTimeReal() - start_time)
 
     --print("\n------------------------------------------------")
     --story.rootNode:Dump()

@@ -5,6 +5,118 @@ require "mathutil"
 -- Save characters in the save file
 local DENSITY_PRECISION = 1/10000
 
+
+function getFilteredSpawnWeight(list,weight,prefab)
+	local prefabswap_list = require"prefabswap_list"
+	local total = 0
+	local testList = deepcopy(list)
+
+	for i,weightList in pairs(testList)do
+		if type(weightList) == "table" then
+			total = total + weightList.weight
+		else
+			local add = true
+			
+			for cat,catdata in pairs(prefabswap_list:getPrefabSwapsForWorldGen())do				
+				for swap,swapData in ipairs(catdata)do
+					if swapData.primary and prefab == i then
+						add = false -- remove it if the prefab is a primary, will be added in later
+					end	
+					if add then
+						for p,prefab2 in ipairs(swapData.prefabs)do
+							if not swapData.primary and i == prefab2 then
+								add = false -- remove all alternate prefabs, only keep the primaries.
+							end						
+						end
+					end
+				end
+			end			
+			if add then
+				--print(total ,"+",weightList,"=", total + weightList,i)
+				total = total + weightList			
+			end
+		end
+	end	
+
+	total = total + weight -- add the prefabs weight to the total at the end.
+
+	--print("final weight",weight / total)
+	return  weight / total --getPercentFromWeigth(list,weight)
+end
+
+function recurseTable(dataTable, removed, fn)	
+	local deleteList = {}
+	local addList = {}
+
+	for k,v in pairs(dataTable)do
+		if type(v) == "table" then
+			v = recurseTable(v, fn)
+		else
+			local add, delete = fn(k, fn)
+			if add then
+				table.insert(addList,{prefab=add,weight=v})				
+			end			
+			if delete then
+				table.insert(deleteList,k)			
+			end					
+
+			if not add and delete then
+				removed[k] = v
+			end
+		end
+	end
+
+	for k,v in ipairs(deleteList)do
+		--print("REMOVING PREFAB",v)
+		dataTable[v] = nil 	
+	end
+
+	-- this isn't really adding a prefab, it's replacing one that may have just been removed with it's actual name. eg: ground_sticks
+	for k,v in ipairs(addList)do
+		--print("ADDING PREFAB",v.prefab)
+		dataTable[v.prefab] = v.weight
+	end
+
+	return dataTable,removed
+end
+
+function filterPrefabsForGlobalSwaps(params, removed, prefabSwaps, prefabProxies)
+
+	--REMOVE PREFABS NOT USED IN THIS WORLD
+	local function removeUnusedPrefabs(testData, fn)
+		for k,v in pairs(prefabSwaps)do
+			for k1,v1 in ipairs(v)do
+				if v1.status == "inactive" then
+					for i,prefab in ipairs(v1.prefabs)do					
+						if testData == prefab then
+							return false,true
+						end
+					end
+				end
+			end
+		end
+		return false,false	
+	end
+
+	--CHANGE MARKED UP PREFABS TO THEIR ACTUAL PREFAB NAME
+	local function swapToActualPrefabs(testData, fn)
+		for k,v in pairs(prefabProxies)do
+			if testData == k then				
+				return v, true
+			end		
+		end
+		return false, false
+	end
+
+	if type(params) == "table" then
+		params,removed = recurseTable(params, removed, removeUnusedPrefabs)
+		params,removed = recurseTable(params, removed, swapToActualPrefabs)
+	end	
+
+	return params, removed
+end
+
+
 Node = Class(function(self, id, data)
 	self.id = id
 	self.graph = nil
@@ -69,10 +181,10 @@ end
 function Node:SetPosition(position)
 	self.data.position = position
 end
+
 function Node:GetPosition()
 	return self.data.position
 end
-
 
 function Node:IsConnectedTo(node)
 	assert(node)
@@ -220,7 +332,9 @@ local function resolveswappableprefabs(table)
 	return tbl
 end
 
-function Node:PopulateVoronoi(spawnFn, entitiesOut, width, height, world_gen_choices, prefabDensities)
+function Node:PopulateVoronoi(spawnFn, entitiesOut, width, height, world_gen_choices, prefabDensities, prefabSwaps, prefabProxies)
+
+	local prefabSwapDensites = nil
 
 	if self.populated == true then
 		--table.insert(entitiesOut[prefab], save_data)
@@ -246,7 +360,7 @@ function Node:PopulateVoronoi(spawnFn, entitiesOut, width, height, world_gen_cho
 	end
 	local current_pos_idx = 1
 	
-	--print("Number of points returned:",#points_x)
+	--print("Number of points returned:",#points_x)	
 
 	if self.data.terrain_contents.countprefabs ~= nil then
 		for prefab, count in pairs(self.data.terrain_contents.countprefabs) do
@@ -301,11 +415,16 @@ function Node:PopulateVoronoi(spawnFn, entitiesOut, width, height, world_gen_cho
 		end
 	end
 
+	local removed = {}
+
 	if self.data.terrain_contents.distributepercent and self.data.terrain_contents.distributeprefabs then
+		
 		local idx_left = {}
 
-		local distributeprefabs = resolveswappableprefabs(self.data.terrain_contents.distributeprefabs)
+		local distributeprefabs = resolveswappableprefabs(self.data.terrain_contents.distributeprefabs)		
 		
+		distributeprefabs, removed = filterPrefabsForGlobalSwaps(distributeprefabs, removed, prefabSwaps, prefabProxies)
+
 		for current_pos_idx = current_pos_idx, #points_x  do
 			if math.random() < self.data.terrain_contents.distributepercent then
 				local prefab = spawnFn.pickspawnprefab(distributeprefabs, points_type[current_pos_idx])
@@ -322,13 +441,30 @@ function Node:PopulateVoronoi(spawnFn, entitiesOut, width, height, world_gen_cho
 				table.insert(idx_left, current_pos_idx)
 			end
 		end
+		-- converts the removed prefabs to a percent of the distrubute percents
+		for prefab,v in pairs(removed)do
+		--	print(self.id,prefab,"percent of weight:",getFilteredSpawnWeight(self.data.terrain_contents.distributeprefabs,v,prefab),"distribute percent:", self.data.terrain_contents.distributepercent)
+			removed[prefab] = getFilteredSpawnWeight(self.data.terrain_contents.distributeprefabs,v,prefab) *  self.data.terrain_contents.distributepercent
+		end
+
+		-- add the prefab distributions removed due to to prefab swaps back in for future populations
+
 		self:PopulateExtra(world_gen_choices, spawnFn, {points_type=points_type, points_x=points_x, points_y=points_y, idx_left=idx_left, entitiesOut=entitiesOut, width=width, height=height, prefab_list=prefab_list})
 	end
 
-    prefabDensities[self.id] ={}
-    for k,v in pairs(prefab_list) do
-        prefabDensities[self.id][k] = RoundToNearest(v / #points_x, DENSITY_PRECISION)
-    end
+ 	prefabDensities[self.id] ={}
+ 	if self.data.terrain_contents.distributepercent then
+		for prefab,v in pairs(prefab_list) do
+			-- convererts from actual numbers to a percentage of the distribute percent
+			prefabDensities[self.id][prefab] = v/#points_x 			
+		
+		end
+	end
+	-- merges the items removed due to prefab swaps back into the list
+	for prefab,v in pairs(removed)do
+		prefabDensities[self.id][prefab] = v
+	end
+
 end
 
 

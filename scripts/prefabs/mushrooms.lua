@@ -212,7 +212,7 @@ local function mushcommonfn(data)
     inst.components.pickable:SetUp(data.pickloot, nil)
     inst.components.pickable.onpickedfn = onpickedfn
     inst.components.pickable.onregenfn = onregenfn
-    inst.components.pickable:SetMakeEmptyFn(makeemptyfn)
+    inst.components.pickable.makeemptyfn = makeemptyfn
     --inst.components.pickable.quickpick = true
 
     inst.rain = 0

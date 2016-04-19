@@ -2,6 +2,7 @@ local assets =
 {
     Asset("ANIM", "anim/grass.zip"),
     Asset("ANIM", "anim/grass1.zip"),
+    Asset("ANIM", "anim/grass_diseased_build.zip"),
     Asset("SOUND", "sound/common.fsb"),
 }
 
@@ -9,6 +10,9 @@ local prefabs =
 {
     "cutgrass",
     "dug_grass",
+    "disease_fx_small",
+    "disease_puff",
+    "diseaseflies",
 }
 
 local function ontransplantfn(inst)
@@ -28,23 +32,23 @@ local function dig_up(inst, chopper)
 end
 
 local function onregenfn(inst)
-    inst.AnimState:PlayAnimation("grow") 
+    inst.AnimState:PlayAnimation("grow")
     inst.AnimState:PushAnimation("idle", true)
 end
 
 local function makeemptyfn(inst)
-    if inst:HasTag("withered") then
+    if not POPULATING and inst:HasTag("withered") or inst.AnimState:IsCurrentAnimation("idle_dead") then
         inst.AnimState:PlayAnimation("dead_to_empty")
-        inst.AnimState:PushAnimation("picked")
+        inst.AnimState:PushAnimation("picked", false)
     else
         inst.AnimState:PlayAnimation("picked")
     end
 end
 
 local function makebarrenfn(inst, wasempty)
-    if inst:HasTag("withered") then
+    if not POPULATING and inst:HasTag("withered") then
         inst.AnimState:PlayAnimation(wasempty and "empty_to_dead" or "full_to_dead")
-        inst.AnimState:PushAnimation("idle_dead")
+        inst.AnimState:PushAnimation("idle_dead", false)
     else
         inst.AnimState:PlayAnimation("idle_dead")
     end
@@ -56,10 +60,21 @@ local function onpickedfn(inst)
 
     if inst.components.pickable:IsBarren() then
         inst.AnimState:PushAnimation("empty_to_dead")
-        inst.AnimState:PushAnimation("idle_dead")
+        inst.AnimState:PushAnimation("idle_dead", false)
     else
-        inst.AnimState:PushAnimation("picked")
+        inst.AnimState:PushAnimation("picked", false)
     end
+end
+
+local function ondiseaseddeathfn(inst)
+    SpawnPrefab("disease_puff").Transform:SetPosition(inst.Transform:GetWorldPosition())
+    inst:Remove()
+end
+
+local function ondiseasedfn(inst)
+    inst.AnimState:SetBuild("grass_diseased_build")
+    SpawnPrefab("disease_fx_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
+    inst.components.pickable:ChangeProduct("spoiled_food")
 end
 
 local function grass(name, stage)
@@ -79,6 +94,8 @@ local function grass(name, stage)
         inst.AnimState:PlayAnimation("idle", true)
 
         inst:AddTag("renewable")
+
+        inst:AddTag("disease_check_grass")
 
         --witherable (from witherable component) added to pristine state for optimization
         inst:AddTag("witherable")
@@ -104,7 +121,7 @@ local function grass(name, stage)
         inst.components.pickable.makeemptyfn = makeemptyfn
         inst.components.pickable.makebarrenfn = makebarrenfn
         inst.components.pickable.max_cycles = 20
-        inst.components.pickable.cycles_left = 20   
+        inst.components.pickable.cycles_left = 20
         inst.components.pickable.ontransplantfn = ontransplantfn
 
         inst:AddComponent("witherable")
@@ -114,12 +131,18 @@ local function grass(name, stage)
         end
 
         inst:AddComponent("lootdropper")
-        inst:AddComponent("inspectable")    
+        inst:AddComponent("inspectable")
+
+        --inst:AddComponent("lootdropper")
 
         inst:AddComponent("workable")
         inst.components.workable:SetWorkAction(ACTIONS.DIG)
         inst.components.workable:SetOnFinishCallback(dig_up)
         inst.components.workable:SetWorkLeft(1)
+
+        inst:AddComponent("diseaseable")
+        inst.components.diseaseable:SetDiseasedFn(ondiseasedfn)
+        inst.components.diseaseable:SetDiseasedDeathFn(ondiseaseddeathfn)
 
         ---------------------
 

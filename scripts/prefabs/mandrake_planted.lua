@@ -56,7 +56,7 @@ local function fn()
 
 	inst:AddComponent("inspectable")
 	inst:AddComponent("pickable")
-	inst.components.pickable:SetOnPickedFn(onpicked)
+	inst.components.pickable.onpickedfn = onpicked
 	inst.components.pickable:Regen()
 
 	inst.replant = replant

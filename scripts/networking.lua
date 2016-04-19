@@ -23,9 +23,13 @@ end
 function Networking_SlashCmd(guid, cmd)
     local entity = Ents[guid]
     if entity ~= nil then
-        local cmd, params = emotes.translate(cmd)
-        if params ~= nil then
-            entity:PushEvent("emote", params)
+        if string.sub(cmd, 2, 7) == "rescue" then
+            entity:PutBackOnGround()
+        else
+            local cmd, params = emotes.translate(cmd)
+            if params ~= nil then
+                entity:PushEvent("emote", params)
+            end
         end
     end
 end

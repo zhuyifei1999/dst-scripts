@@ -584,6 +584,7 @@ function SaveGame(isshutdown, cb)
         save.map.persistdata, new_refs = ground:GetPersistData()
         save.meta = ground.meta
         save.map.hideminimap = ground.hideminimap
+        save.map.prefabswapstatus = ground.prefabswapstatus
 
         if new_refs ~= nil then
             for k, v in pairs(new_refs) do
@@ -638,7 +639,7 @@ function SaveGame(isshutdown, cb)
     assert(save.ents, "Entites missing from savedata on save")
     assert(save.mods, "Mod records missing from savedata on save")
 
-    local PRETTY_PRINT = false
+    local PRETTY_PRINT = BRANCH == "dev"
     local data = DataDumper(save, nil, not PRETTY_PRINT)
 
     local function callback()
@@ -860,7 +861,7 @@ function JapaneseOnPS4()
     return false
 end
 
-function StartNextInstance(in_params, send_stats)
+function StartNextInstance(in_params)
     if TheNet:GetIsServer() then
         NotifyLoadingState( LoadingStates.Loading )
     end
@@ -869,10 +870,6 @@ function StartNextInstance(in_params, send_stats)
     params.last_reset_action = Settings.reset_action
 
     params.load_screen_image = global_loading_widget.image_random
-
-    if send_stats then
-        SendAccumulatedProfileStats()
-    end
 
     if LOADED_CHARACTER then
         for i, v in ipairs(AllPlayers) do
@@ -922,17 +919,8 @@ function RequestShutdown()
     if TheNet:GetIsHosting() then
         TheSystemService:StopDedicatedServers()
     end
-	-----------------------------------------------------------------------------	
-	-- Anything below here may not run if we don't have stats that need updating
-	-----------------------------------------------------------------------------
-	
-	local stats = GetProfileStats(true)
-	if string.len(stats) <= 12 then -- empty stats are '{"stats":[]}'
-		Shutdown()
-		return
-	end
 
-    SubmitExitStats()
+    Shutdown()
 end
 
 function Shutdown()
@@ -947,7 +935,6 @@ function Shutdown()
     end
 
     Print(VERBOSITY.DEBUG, 'Ending the sim now!')
-    SubmitQuitStats()
 
     UnloadFonts()
 
@@ -1003,7 +990,7 @@ function DisplayError(error)
         if PLATFORM ~= "PS4" then
             buttons = {
                 {text=STRINGS.UI.MAINSCREEN.SCRIPTERRORQUIT, cb = function() TheSim:ForceAbort() end},
-                {text=STRINGS.UI.MAINSCREEN.FORUM, nopop=true, cb = function() VisitURL("http://forums.kleientertainment.com/index.php?/forum/26-dont-starve-mods-and-tools/") end }
+                {text=STRINGS.UI.MAINSCREEN.ISSUE, nopop=true, cb = function() VisitURL("http://forums.kleientertainment.com/klei-bug-tracker/dont-starve-together/") end }
             }
         end
         SetGlobalErrorWidget(

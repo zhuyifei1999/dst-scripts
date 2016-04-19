@@ -44,6 +44,17 @@ function Domesticatable:GetDomestication()
 end
 
 function Domesticatable:Validate()
+    if self.obedience <= self.minobedience
+        and self.inst.components.hunger:GetPercent() <= 0
+        and self.domestication <= 0 then
+        self:CancelTask()
+        return false
+    end
+
+    return true
+end
+
+function Domesticatable:CheckForChanges()
     if not self.domesticated and self.domestication >= 1.0 then
         self.domestication_latch = true
         self.domestication = 1.0
@@ -53,20 +64,11 @@ function Domesticatable:Validate()
 
     if self.inst.components.hunger:GetPercent() <= 0 and self.domestication <= 0 then
         self.tendencies = {}
+        self.inst:PushEvent("goneferal", {domesticated = self.domesticated})
         if self.domesticated then
             self:SetDomesticated(false)
-            self.inst:PushEvent("goneferal")
         end
     end
-
-    if self.obedience <= self.minobedience
-        and self.inst.components.hunger:GetPercent() <= 0
-        and self.domestication <= 0 then
-        self:CancelTask()
-        return false
-    end
-
-    return true
 end
 
 function Domesticatable:BecomeDomesticated()
@@ -97,6 +99,7 @@ local function UpdateDomestication(inst)
         self:DeltaDomestication(CalculateLoss(GetTime(), self.lastdomesticationgain) * DECAY_TASK_PERIOD)
     end
 
+    self:CheckForChanges()
     self:Validate()
 end
 
@@ -205,7 +208,7 @@ end
 
 function Domesticatable:GetDebugString()
     local s = string.format("%s %.3f%% %s obedience: %.2f/%.3f/%.2f ",
-        self.domesticated and "DOMO" or "FERAL",
+        self.domesticated and "DOMO" or "NORMAL",
         self.domestication * 100, self.decaytask ~= nil and (GetTime() % 2 < 1 and " ." or ". ") or "..",
         self.minobedience, self.obedience, self.maxobedience
         )

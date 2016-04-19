@@ -10,6 +10,7 @@ AddRoom("BGBadlands", {
 										rock_flintless = 1,
 										--rock_ice = .5,
 										grass = 0.1,
+										grassgekko = 0.4,
 										houndbone = 0.2,
 										cactus = 0.2,
 										tumbleweedspawner = .05,
@@ -26,6 +27,7 @@ AddRoom("Lightning", {
 									{
 										marsh_bush = .8,
 										grass = .5,
+										grassgekko = 0.4,
 										--rock_ice = .5,
 										lightninggoat = 1,
 										cactus = .8,
@@ -46,6 +48,7 @@ AddRoom("Badlands", {
 										marsh_bush = 0.25,
 										marsh_tree = 0.75,
 										grass = .5,
+										grassgekko = 0.6,
 										cactus = .7,
 										houndbone = .6,
 										tumbleweedspawner = .1,
@@ -79,6 +82,7 @@ AddRoom("BuzzardyBadlands", {
 										marsh_bush = .66,
 										marsh_tree = 1,
 										grass = .33,
+										grassgekko = 0.4,
 										buzzardspawner = .25,
 										houndbone = .15,
 										tumbleweedspawner = .1,
@@ -103,7 +107,7 @@ AddRoom("BGDeciduous", {
 										rock2=0.05,
 
 										sapling=1,
-										grass=0.03,
+										grass=0.03,								
 
 										flower=0.75,
 
@@ -111,6 +115,7 @@ AddRoom("BGDeciduous", {
 					                    blue_mushroom = 0.3,
 					                    green_mushroom = 0.3,
 										berrybush=0.1,
+										berrybush_juicy = 0.05,
 										carrot_planted = 0.1,
 
 										fireflies = 1,
@@ -131,6 +136,7 @@ AddRoom("DeepDeciduous", {
 					                    grass = .03,
 					                    sapling=1,
 					                    berrybush=.1,
+					                    berrybush_juicy = 0.05,
 
 					                    deciduoustree = 10,
 					                    catcoonden = .05,
@@ -161,6 +167,7 @@ AddRoom("MagicalDeciduous", {
 					                    grass = .03,
 					                    sapling=1,
 					                    berrybush=1,
+					                    berrybush_juicy = 0.05,
 
 					                    red_mushroom = 2,
 					                    blue_mushroom = 2,
@@ -173,6 +180,7 @@ AddRoom("MagicalDeciduous", {
 										catcoonden = .25,
 
 										berrybush = 3,
+										berrybush_juicy = 1.5,
 					                },
 					            }
 					})
@@ -194,6 +202,7 @@ AddRoom("DeciduousMole", {
 					                    molehill=.5,
 					                    catcoonden=.05,
 					                    berrybush=.03,
+					                    berrybush_juicy = 0.015,
 					                    deciduoustree = 6,
 					                    red_mushroom = 0.3,
 					                    blue_mushroom = 0.3,
@@ -217,6 +226,7 @@ AddRoom("MolesvilleDeciduous", {
 					                    rocks=.03,
 					                    flint=.03,
 					                    berrybush=.02,
+					                    berrybush_juicy = 0.01,
 					                    deciduoustree = 6,
 					                    red_mushroom = 0.3,
 					                    blue_mushroom = 0.3,
@@ -248,6 +258,7 @@ AddRoom("DeciduousClearing", {
 					                    grass = .5,
 					                    sapling = .5,
 					                    berrybush = .5,
+					                    berrybush_juicy = 0.25,
 
 					                    red_mushroom = .5,
 					                    blue_mushroom = .5,
@@ -269,6 +280,7 @@ AddRoom("PondyGrass", {
 					                    grass = .05,
 					                    sapling=.2,
 					                    berrybush=.02,
+					                    berrybush_juicy = 0.01,
 					                    pond = 0.15,
 					                    deciduoustree = 1,
 					                    catcoonden = .05,

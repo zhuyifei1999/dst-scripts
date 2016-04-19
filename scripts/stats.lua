@@ -7,10 +7,9 @@ STATS_ENABLE = METRICS_ENABLED
 TrackingEventsStats = {}
 TrackingTimingStats = {}
 local GameStats = {}
-GameStats.StatsLastTrodCount = 0
 local OnLoadGameInfo = {}
 
-function IncTrackingStat(stat, subtable)
+local function IncTrackingStat(stat, subtable)
 
 	if not STATS_ENABLE then
 		return
@@ -29,7 +28,7 @@ function IncTrackingStat(stat, subtable)
     t[stat] = 1 + (t[stat] or 0)
 end
 
-function SetTimingStat(subtable, stat, value)
+local function SetTimingStat(subtable, stat, value)
 
 	if not STATS_ENABLE then
 		return
@@ -48,8 +47,7 @@ function SetTimingStat(subtable, stat, value)
     t[stat] = math.floor(value/1000)
 end
 
-
-function SendTrackingStats()
+local function SendTrackingStats()
 
 	if not STATS_ENABLE then
 		return
@@ -61,73 +59,74 @@ function SendTrackingStats()
     end
 end
 
-
-function BuildContextTable()
+local function BuildContextTable(player)
     local sendstats = {}
 
-    sendstats.user = TheNet:GetUserID()
+    sendstats.build = APP_VERSION
+    if Profile ~= nil then
+        sendstats.install_id = Profile:GetInstallID()
+        sendstats.session_id = Profile:GetPlayInstance()
+    end
+    if TheWorld ~= nil then
+        sendstats.save_id = TheWorld.meta.session_identifier
+        sendstats.master_save_id = TheWorld.net ~= nil and TheWorld.net.components.shardstate ~= nil and TheWorld.net.components.shardstate:GetMasterSessionId() or nil
+
+        if TheWorld.state ~= nil then
+            sendstats.world_time = TheWorld.state.cycles + TheWorld.state.time
+        end
+    end
+
+    -- can be called with a player or a userid
+    if type(player) == "table" then
+        sendstats.user = player.userid
+        sendstats.user_age = player.components.age ~= nil and player.components.age:GetAgeInDays() or nil
+    else
+        sendstats.user = player
+    end
+
     sendstats.user =
         (sendstats.user ~= nil and (sendstats.user.."@chester")) or
         (BRANCH == "dev" and "testing") or
         "unknown"
 
-	local steamID = TheSim:GetSteamUserID()
-	if steamID ~= "" and steamID ~= "unknownID" then
-		sendstats.steamid = steamID
-	end
+    return sendstats
+end
 
-	sendstats.branch = BRANCH
 
-	local modnames = KnownModIndex:GetModNames()
-	for i, name in ipairs(modnames) do
-		if KnownModIndex:IsModEnabled(name) then
-			sendstats.branch = sendstats.branch .. "_modded"
-			break
-		end
-	end
+local function BuildStartupContextTable() -- includes a bit more metadata about the user, should probably only be on startup
+    local sendstats = BuildContextTable(TheNet:GetUserID())
 
-	sendstats.build = APP_VERSION
-	sendstats.platform = PLATFORM
-
-    if TheWorld and TheWorld.meta then
-        sendstats.save_id = TheWorld.meta.session_identifier
+    local steamID = TheSim:GetSteamUserID()
+    if steamID ~= "" and steamID ~= "unknownID" then
+        sendstats.steamid = steamID
     end
 
-	return sendstats
+    sendstats.platform = PLATFORM
+    sendstats.branch = BRANCH
+
+    local modnames = KnownModIndex:GetModNames()
+    for i, name in ipairs(modnames) do
+        if KnownModIndex:IsModEnabled(name) then
+            sendstats.branch = sendstats.branch .. "_modded"
+            break
+        end
+    end
+
+    return sendstats
 end
 
-
---- GAME Stats and details to be sent to server on game complete ---
-ProfileStats = {}
-MainMenuStats = {}
-
-function SuUsed(item,value)
-    GameStats.super = true
-    ProfileStatsSet(item, value)
+local function ClearProfileStats()
+    ProfileStats = {}
 end
 
-function SetSuper(value)
-    --print("Setting SUPER",value)
-    OnLoadGameInfo.super = value
-end
-
-function SuUsedAdd(item,value)
-    GameStats.super = true
-    ProfileStatsAdd(item, value)
-end
-
-function WasSuUsed()
-    return GameStats.super
-end
-
-function GetProfileStats(wipe)
+local function GetProfileStats(wipe)
 	if GetTableSize(ProfileStats) == 0 then
 		return json.encode( {} )
 	end
 
 	wipe = wipe or false
 	local jsonstats = ''
-	local sendstats = BuildContextTable()
+	local sendstats = BuildContextTable() -- Ack! This should be passing in a user or something...
 
 	sendstats.stats = ProfileStats
 	--print("_________________++++++ Sending Accumulated profile stats...\n")
@@ -136,134 +135,21 @@ function GetProfileStats(wipe)
 	jsonstats = json.encode(sendstats)
 
 	if wipe then
-		ProfileStats = {}
+		ClearProfileStats()
     end
     return jsonstats
 end
 
 
-function RecordEndOfDayStats()
-	if not STATS_ENABLE then
-		return
-	end
-
-    -- Do local analysis of game session so far
-    --print("RecordEndOfDayStats")
-end
-
-function RecordQuitStats()
-	if not STATS_ENABLE then
-		return
-	end
-
-    -- Do local analysis of game session
-    --print("RecordQuitStats")
-end
-
-function RecordPauseStats()         -- Run some analysis and save stats when player pauses
-	if not STATS_ENABLE or not IsPaused() then
-		return
-	end
-    --print("RecordPauseStats")
-end
-
-function RecordOverseerStats(data)
-
-	if not STATS_ENABLE or GetTableSize(data.foeList) <= 0 then
-        --print("^^^^^^^^^^^^^^^^^^^^ NO FOES!")
-		return
-	end
-
-    --print("FoeList-----------------------")
-    --ddump(data.foeList)
-
-    if GetTableSize(data.eluded) == 0 then
-        data.eluded = nil
-    end
-
-
-	local sendstats = BuildContextTable()
-	sendstats.fight = {
-        duration       = data.duration,
-        dmg_taken      = data.damage_taken,
-        dmg_given      = data.damage_given,
-        wield          = data.wield,
-        wear           = data.wear,
-        head           = data.head,
-        sanity         = data.sanity_start,
-        hunger         = data.hunger_start,
-        health_lvl     = data.health_start,
-        health_start   = data.health_abs,
-        health_end     = data.health_end_abs,
-        health_end_lvl = data.health_end,
-        died           = data.died,
-        trod           = data.trod,
-        attacked_by    = data.attacked_by,
-        targeted_by    = data.targeted_by,
-        foes_total     = data.foes_total,
-        eluded_total   = data.eluded_total,
-        eluded         = data.eluded,
-        kill_total     = data.kill_total,
-        armor_broken   = data.armor_broken,
-        caught_total   = data.caught_total,
-        kills          = data.kills,
-        absorbed       = data.armor_absorbed,
-        AFK            = data.AFK,
-        used           = data.used,
-        minions        = data.minions,
-        minion_kill    = data.minion_kills,
-        minions_lost   = data.minions_lost,
-        minion_dmg     = data.minion_hits,
-        trap_sprung    = data.traps_sprung,
-        trap_dmg       = data.trap_damage,
-        trap_kill      = data.trap_kills,
-        heal           = data.heal,
-        --fight          = data.fight,
-	}
-    
-    FightStat_EndFight()
-
-	--print("_________________________________________________________________Sending fight stats...")
-	--ddump(sendstats.fight)
-	--print("_________________________________________________________________<END>")
-	--local jsonstats = json.encode(sendstats)
-	--TODO: STATS TheSim:SendProfileStats(jsonstats)
-end
-
-function RecordDeathStats(killed_by, time_of_day, sanity, hunger, will_resurrect)
-	if not STATS_ENABLE then
-		return
-	end
-
-	local sendstats = BuildContextTable()
-    local map = TheWorld ~= nil and TheWorld.Map or nil
-	sendstats.death = {
-		killed_by=killed_by,
-		time_of_day=time_of_day,
-		sanity=math.floor(sanity*100),
-		hunger=math.floor(hunger*100),
-		will_resurrect=will_resurrect,
-        AFK = IsAwayFromKeyBoard(),
-        trod = map ~= nil and map:GetNumVisitedTiles() or nil,
-        tiles = map ~= nil and map:GetNumWalkableTiles() or nil,
-        last_armor = ProfileStatsGet("armor"),
-        armor_absorbed = ProfileStatsGet("armor_absorb"),
-	}
-
-	--print("_________________________________________________________________Sending death stats...")
-	--ddump(sendstats)
-	--local jsonstats = json.encode(sendstats)
-	--TODO:STATS TheSim:SendProfileStats(jsonstats)
-end
-
-function RecordSessionStartStats()
+local function RecordSessionStartStats()
 	if not STATS_ENABLE then
 		return
 	end
 
 	-- TODO: This should actually just write the specific start stats, and it will eventually
 	-- be rolled into the "quit" stats and sent off all at once.
-	local sendstats = BuildContextTable()
+	local sendstats = BuildStartupContextTable()
+    sendstats.event = "sessionstart"
 	sendstats.Session = {
 		Loads = {
 			Mods = { 
@@ -279,43 +165,22 @@ function RecordSessionStartStats()
 		table.insert(sendstats.Session.Loads.Mods.list, name)
 	end
 
-	--[[if IsDLCInstalled(REIGN_OF_GIANTS) and not IsDLCEnabled(REIGN_OF_GIANTS) then
-		sendstats.Session.Loads.Mods.mod = true
-		table.insert(sendstats.Session.Loads.Mods.list, "RoG-NotPlaying")
-	end
-	if IsDLCEnabled(REIGN_OF_GIANTS) then
-		sendstats.Session.Loads.Mods.mod = true
-		table.insert(sendstats.Session.Loads.Mods.list, "RoG-Playing")
-	end]]
-
-    --local map = TheWorld ~= nil and TheWorld.Map or nil
-    --sendstats.Session.map_trod = map ~= nil and map:GetNumVisitedTiles() or 0
-
---KAJ: TODO: stats, commented out for now
---    if ThePlayer ~= nil then
---        sendstats.Session.character = ThePlayer.prefab
---    end
-
-    --GameStats = {}
-    --GameStats.StatsLastTrodCount = map ~= nil and map:GetNumVisitedTiles() or 0
-    --GameStats.super = OnLoadGameInfo.super
-    --OnLoadGameInfo.super = nil
 	
 	--print("_________________++++++ Sending sessions start stats...\n")
 	--dumptable(sendstats)
 	local jsonstats = json.encode( sendstats )
 	TheSim:SendProfileStats( jsonstats )
-
 end
 
-function RecordGameStartStats()
+local function RecordGameStartStats()
 	if not STATS_ENABLE then
 		return
 	end
 
 	-- TODO: This should actually just write the specific start stats, and it will eventually
 	-- be rolled into the "quit" stats and sent off all at once.
-	local sendstats = BuildContextTable()
+	local sendstats = BuildStartupContextTable()
+    sendstats.event = "startup.gamestart"
     sendstats.startup = {}
 
 	--print("_________________++++++ Sending game start stats...\n")
@@ -323,6 +188,82 @@ function RecordGameStartStats()
 	local jsonstats = json.encode( sendstats )
 	TheSim:SendProfileStats( jsonstats )
 end
+
+local function SendAccumulatedProfileStats()
+	if not STATS_ENABLE then
+		return
+	end
+
+	--local sendstats = GetProfileStats(true)
+    --sendstats.event = "accumulatedprofile"
+	-- TODO:STATS TheSim:SendProfileStats(sendstats)
+end
+
+
+local function GetTestGroup()
+	local id = TheSim:GetSteamIDNumber()
+
+	local groupid = id%2 -- group 0 must always be default, because GetSteamIDNumber returns 0 for non-steam users
+	return groupid
+end
+
+
+local function OnLaunchComplete()
+	if STATS_ENABLE then
+		local sendstats = BuildStartupContextTable()
+        sendstats.event = "startup.launchcomplete"
+		sendstats.ownsds = TheSim:GetUserHasLicenseForApp(DONT_STARVE_APPID)
+		sendstats.ownsrog = TheSim:GetUserHasLicenseForApp(REIGN_OF_GIANTS_APPID)
+		sendstats.betabranch = TheSim:GetSteamBetaBranchName()
+		local jsonstats = json.encode( sendstats )
+	   	TheSim:SendProfileStats( jsonstats )
+	end
+end
+
+local statsEventListener
+local sessionStatsSent = false
+
+local function SuccesfulConnect(account_event, success, event_code, custom_message )
+	if event_code == 3 and success == true or
+           event_code == 6 and success == true and 
+           not sessionStatsSent then
+                sessionStatsSent = true
+		OnLaunchComplete()
+	end
+end
+
+local function InitStats()
+	statsEventListener = CreateEntity()
+	statsEventListener.OnAccountEvent = SuccesfulConnect
+	RegisterOnAccountEventListener(statsEventListener)
+end
+
+local function PushMetricsEvent(data)
+
+    local sendstats = BuildContextTable(data.player)
+    sendstats.event = data.event
+
+    if data.values then
+        for k,v in pairs(data.values) do
+            sendstats[k] = v
+        end
+    end
+
+    --print("PUSH METRICS EVENT")
+    --dumptable(sendstats)
+    --print("^^^^^^^^^^^^^^^^^^")
+    local jsonstats = json.encode(sendstats)
+    TheSim:SendProfileStats(jsonstats)
+end
+
+------------------------------------------------------------------------------------------------
+-- GLOBAL functions
+------------------------------------------------------------------------------------------------
+
+--- GAME Stats and details to be sent to server on game complete ---
+ProfileStats = {}
+MainMenuStats = {}
+
 
 -- value is optional, 1 if nil
 function ProfileStatsAdd(item, value)
@@ -392,148 +333,36 @@ function ProfileStatsAppendToField(field, value)
     table.setfield(ProfileStats, field .. ".", value)
 end
 
-
-function SendAccumulatedProfileStats()
-	if not STATS_ENABLE then
-		return
-	end
-
-    local map = TheWorld ~= nil and TheWorld.Map or nil
-    local visited = map ~= nil and map:GetNumVisitedTiles() or 0
-    local trod = visited - GameStats.StatsLastTrodCount
-    ProfileStatsSet("trod", trod)
-    --print(":::::::::::::::::::::::: TROD!", trod)
-    GameStats.StatsLastTrodCount = visited
-    
-	--local stats = GetProfileStats(true)
-	-- TODO:STATS TheSim:SendProfileStats(stats)
+function SuUsed(item,value)
+    GameStats.super = true
+    ProfileStatsSet(item, value)
 end
 
---Periodically upload and refresh the player stats, so we always
---have up-to-date stats even if they close/crash the game.
-StatsHeartbeatRemaining = 30
-
-function AccumulatedStatsHeartbeat(dt)
-    -- only fire this while in-game
---KAJ: TODO stats, commented out for now
---    local player = ThePlayer
---    if player then
---        ProfileStatsAdd("time_played", math.floor(dt*1000))
---        StatsHeartbeatRemaining = StatsHeartbeatRemaining - dt
---        if StatsHeartbeatRemaining < 0 then
---            SendAccumulatedProfileStats()
---            StatsHeartbeatRemaining = 120
---        end
---    end
+function SetSuper(value)
+    --print("Setting SUPER",value)
+    OnLoadGameInfo.super = value
 end
 
-function SubmitCompletedLevel()
-	SendAccumulatedProfileStats()
+function SuUsedAdd(item,value)
+    GameStats.super = true
+    ProfileStatsAdd(item, value)
 end
 
-function SubmitStartStats(playercharacter)
-	if not STATS_ENABLE then
-		return
-	end
-	
-	-- At the moment there are no special start stats.
-end
-
-function SubmitExitStats()
-	if not STATS_ENABLE then
-	    Shutdown()
-		return
-	end
-
-	-- At the moment there are no special exit stats.
-	Shutdown()
-end
-
-function SubmitQuitStats()
-	if not STATS_ENABLE then
-		return
-	end
-
-	-- At the moment there are no special quit stats.
-end
-
-function GetTestGroup()
-	local id = TheSim:GetSteamIDNumber()
-
-	local groupid = id%2 -- group 0 must always be default, because GetSteamIDNumber returns 0 for non-steam users
-	return groupid
+function WasSuUsed()
+    return GameStats.super
 end
 
 
-function MainMenuStatsAdd(item, value)
-    if value == nil then
-        value = 1
-    end
+------------------------------------------------------------------------------------------------
+-- Export public methods
+------------------------------------------------------------------------------------------------
 
-    if MainMenuStats[item] then
-    	MainMenuStats[item] = MainMenuStats[item] + value
-    else
-    	MainMenuStats[item] = value
-    end
-end
-
-function GetMainMenuStats(wipe)
-	if GetTableSize(MainMenuStats) == 0 then
-		return json.encode( {} )
-	end
-
-	wipe = wipe or false
-	local jsonstats = ''
-	local sendstats = BuildContextTable()
-
-	sendstats.stats = MainMenuStats
-	--print("_________________++++++ Sending Accumulated main menu stats...\n")
-	--ddump(sendstats)
-
-	jsonstats = json.encode(sendstats)
-
-	if wipe then
-		MainMenuStats = {}
-    end
-
-    return jsonstats
-end
-
-function SendMainMenuStats()
-	if not STATS_ENABLE then
-		return
-	end
-   
-	local stats = GetMainMenuStats(true)
-	-- TODO:STATS TheSim:SendProfileStats(stats)
-end
-
-function OnLaunchComplete()
-	if STATS_ENABLE then
-		local sendstats = BuildContextTable()
-		sendstats.ownsds = TheSim:GetUserHasLicenseForApp(DONT_STARVE_APPID)
-		sendstats.ownsrog = TheSim:GetUserHasLicenseForApp(REIGN_OF_GIANTS_APPID)
-		sendstats.betabranch = TheSim:GetSteamBetaBranchName()
-		local jsonstats = json.encode( sendstats )
-	   	TheSim:SendProfileStats( jsonstats )
-	end
-end
-
-local statsEventListener
-local sessionStatsSent = false
-
-function SuccesfulConnect(account_event, success, event_code, custom_message )
-	if event_code == 3 and success == true or
-           event_code == 6 and success == true and 
-           not sessionStatsSent then
-                sessionStatsSent = true
-		OnLaunchComplete()
-	end
-end
-
-function InitStats()
-	statsEventListener = CreateEntity()
-	statsEventListener.OnAccountEvent = SuccesfulConnect
-	RegisterOnAccountEventListener(statsEventListener)
-end
-
+return {
+    BuildContextTable = BuildContextTable,
+    InitStats = InitStats,
+    GetTestGroup = GetTestGroup,
+    PushMetricsEvent = PushMetricsEvent,
+    ClearProfileStats = ClearProfileStats,
+    RecordSessionStartStats = RecordSessionStartStats,
+    RecordGameStartStats = RecordGameStartStats,
+}

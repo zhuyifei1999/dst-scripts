@@ -260,23 +260,23 @@ local states=
         {
 
             TimeEvent(1*FRAMES, function(inst)
-                inst.SoundEmitter:PlaySound("dontstarve/creatures/hutch/bounce")
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/hutch/bounce")
             end),
             TimeEvent(22*FRAMES, function(inst)
-                inst.SoundEmitter:PlaySound("dontstarve/creatures/hutch/clap")
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/hutch/clap")
             end),
             TimeEvent(27*FRAMES, function(inst)
-                inst.SoundEmitter:PlaySound("dontstarve/creatures/hutch/clap")
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/hutch/clap")
             end),
             TimeEvent(32*FRAMES, function(inst)
-                inst.SoundEmitter:PlaySound("dontstarve/creatures/hutch/clap")
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/hutch/clap")
             end),
             TimeEvent(36*FRAMES, function(inst) 
                 local x, y, z = inst.Transform:GetWorldPosition()
                 SpawnPrefab("chester_transform_fx").Transform:SetPosition(x, y + 1, z)
             end),
             TimeEvent(37*FRAMES, function(inst)
-                inst.SoundEmitter:PlaySound("dontstarve/creatures/hutch/clap")
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/hutch/clap")
             end),
             TimeEvent(40*FRAMES, function(inst)
                 if inst.sg.statemem.morphfn ~= nil then

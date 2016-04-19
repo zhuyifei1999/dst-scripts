@@ -31,9 +31,6 @@ local function OnExplode(inst, target)
     if target then
         inst.SoundEmitter:PlaySound("dontstarve/common/trap_teeth_trigger")
         target.components.combat:GetAttacked(inst, TUNING.TRAP_TEETH_DAMAGE)
-        if METRICS_ENABLED then
-            FightStat_TrapSprung(inst,target,TUNING.TRAP_TEETH_DAMAGE)
-        end
     end
     if inst.components.finiteuses then
         inst.components.finiteuses:Use(1)

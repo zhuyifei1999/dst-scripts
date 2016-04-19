@@ -29,6 +29,7 @@ AddRoom("Wormhole_Plains", {
 					                distributeprefabs= {
 					                    grass = 3,
 										rocks = 2,
+										rock_petrified_tree = 0.15,
 										rock1 = 0.5,
 										rock2 = 0.5,
 									},

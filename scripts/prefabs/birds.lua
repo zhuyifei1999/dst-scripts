@@ -46,6 +46,26 @@ local function SeedSpawnTest()
     return not TheWorld.state.iswinter
 end
 
+local function chooseItem()
+
+    local items = {"flint"}
+
+    local swaps  = TheWorld.prefabswapstatus
+
+    for k,v in pairs(swaps)do
+        for i,set in ipairs(v)do
+
+            if set.status == "active" and set.mercy_items then
+                for t,item in ipairs(set.mercy_items)do
+                    table.insert(items,item)
+                end
+            end
+        end
+    end
+
+    return items[math.random(1,#items)]
+end
+
 local function SpawnPrefabChooser(inst)
     if TheWorld.state.cycles <= 3 then
         -- The flint drop is for drop-in players, players from the start of the game have to forage like normal
@@ -63,12 +83,16 @@ local function SpawnPrefabChooser(inst)
         end
     end
 
+
     if oldestplayer < 3 then
         local r = math.random()
-        return (oldestplayer == 0 and r < 0.35 and "flint")
-            or (oldestplayer == 1 and r < 0.25 and "flint")
-            or (oldestplayer == 2 and r < 0.15 and "flint")
-            or "seeds"
+        local item = "seeds"
+
+        if (oldestplayer == 0 and r < 0.35) or (oldestplayer == 1 and r < 0.25)  or (oldestplayer == 2 and r < 0.15) then
+            item = chooseItem()
+        end
+
+        return item
     else
         return "seeds"
     end

@@ -4,12 +4,11 @@ local easing = require("easing")
 local assets =
 {
     Asset("SCRIPT", "scripts/prefabs/player_common.lua"),
-	Asset("SOUND", "sound/willow.fsb"),
+    Asset("SOUND", "sound/willow.fsb"),
 }
 
 local prefabs =
 {
-    "willowfire",
     "lighter",
     "small_puff",
 }

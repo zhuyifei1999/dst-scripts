@@ -60,6 +60,46 @@ local function SetSkeletonDescription(inst, char, playername, cause, pkname)
     inst.components.inspectable.getspecialdescription = getdesc
 end
 
+local function SetSkeletonAvatarData(inst, client_obj)
+    for k, v in pairs(inst._avatar_net.strings) do
+        v:set(client_obj ~= nil and client_obj[k] or "")
+    end
+    for k, v in pairs(inst._avatar_net.skins) do
+        v:set(client_obj ~= nil and client_obj[k] or "")
+    end
+    for k, v in pairs(inst._avatar_net.numbers) do
+        v:set(client_obj ~= nil and client_obj[k] or 0)
+    end
+    for k, v in pairs(inst._avatar_net.equip) do
+        v:set(client_obj ~= nil and client_obj.equip ~= nil and client_obj.equip[k] or "")
+    end
+end
+
+--Always return a new table because this data is used in place
+--of TheNet:GetClientTable, where the return value is modified
+--most of the time by the screens using it.
+local function GetSkeletonAvatarData(inst)
+    if inst._avatar_net.strings.name:value() == "" then
+        return
+    end
+
+    local data = { equip = {} }
+    for k, v in pairs(inst._avatar_net.strings) do
+        data[k] = v:value()
+    end
+    for k, v in pairs(inst._avatar_net.skins) do
+        --Skin strings are translated to nil when empty
+        data[k] = v:value() ~= "" and v:value() or nil
+    end
+    for k, v in pairs(inst._avatar_net.numbers) do
+        data[k] = v:value()
+    end
+    for k, v in pairs(inst._avatar_net.equip) do
+        data.equip[k] = v:value()
+    end
+    return data
+end
+
 local function onhammered(inst)
     inst.components.lootdropper:DropLoot()
     local fx = SpawnPrefab("collapse_small")
@@ -70,6 +110,18 @@ end
 
 local function onsave(inst, data)
     data.anim = inst.animnum
+end
+
+local function onload(inst, data)
+    if data ~= nil and data.anim ~= nil then
+        inst.animnum = data.anim
+        inst.AnimState:PlayAnimation("idle"..tostring(inst.animnum))
+    end
+end
+
+local function onsaveplayer(inst, data)
+    onsave(inst, data)
+
     data.char = inst.char
     data.playername = inst.playername
     data.pkname = inst.pkname
@@ -80,30 +132,49 @@ local function onsave(inst, data)
             data.age = time - inst.skeletonspawntime
         end
     end
-end
 
-local function onload(inst, data)
-    if data ~= nil then
-        if data.anim ~= nil then
-            inst.animnum = data.anim
-            inst.AnimState:PlayAnimation("idle"..tostring(inst.animnum))
-        end
-        if data.char ~= nil and (data.cause ~= nil or data.pkname ~= nil) then
-            inst.char = data.char
-            inst.playername = data.playername --backward compatibility for nil playername
-            inst.pkname = data.pkname --backward compatibility for nil pkname
-            inst.cause = data.cause
-            if inst.components.inspectable ~= nil then
-                inst.components.inspectable.getspecialdescription = getdesc
-            end
-            if data.age ~= nil and data.age > 0 then
-                inst.skeletonspawntime = -data.age
-            end
+    data.avatar = inst:GetSkeletonAvatarData()
+    if data.avatar ~= nil and data.avatar.equip ~= nil then
+        --translate equipslot id to name
+        --names never change, but ids change if slots are added/removed
+        local temp = data.avatar.equip
+        data.avatar.equip = {}
+        for k, v in pairs(EQUIPSLOT_IDS) do
+            data.avatar.equip[k] = temp[v]
         end
     end
 end
 
-local function fn()
+local function onloadplayer(inst, data)
+    onload(inst, data)
+
+    if data ~= nil and data.char ~= nil and (data.cause ~= nil or data.pkname ~= nil) then
+        inst.char = data.char
+        inst.playername = data.playername --backward compatibility for nil playername
+        inst.pkname = data.pkname --backward compatibility for nil pkname
+        inst.cause = data.cause
+        if inst.components.inspectable ~= nil then
+            inst.components.inspectable.getspecialdescription = getdesc
+        end
+        if data.age ~= nil and data.age > 0 then
+            inst.skeletonspawntime = -data.age
+        end
+
+        if data.avatar ~= nil then
+            --translate equipslot name back to id
+            if data.avatar.equip ~= nil then
+                local temp = {}
+                for k, v in pairs(data.avatar.equip) do
+                    temp[EQUIPSLOT_IDS[k]] = v
+                end
+                data.avatar.equip = temp
+            end
+            inst:SetSkeletonAvatarData(data.avatar)
+        end
+    end
+end
+
+local function common_fn(custom_init)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -115,6 +186,10 @@ local function fn()
 
     inst.AnimState:SetBank("skeleton")
     inst.AnimState:SetBuild("skeletons")
+
+    if custom_init ~= nil then
+        custom_init(inst)
+    end
 
     inst.entity:SetPristine()
 
@@ -137,23 +212,67 @@ local function fn()
     inst.components.workable:SetWorkLeft(3)
     inst.components.workable:SetOnFinishCallback(onhammered)
 
-    inst.OnLoad = onload
-    inst.OnSave = onsave
-    inst.Decay = decay
-
-    inst.skeletonspawntime = nil
-
     return inst
 end
 
-local function fnplayer()
-    local inst = fn()
+local function fn()
+    local inst = common_fn()
 
     if not TheWorld.ismastersim then
         return inst
     end
 
+    inst.OnLoad = onload
+    inst.OnSave = onsave
+
+    return inst
+end
+
+local function player_custominit(inst)
+    inst:AddTag("playerskeleton")
+
+    inst._avatar_net =
+    {
+        strings =
+        {
+            name = net_string(inst.GUID, "skeleton_player.avatar.name"),
+            prefab = net_string(inst.GUID, "skeleton_player.avatar.prefab"),
+        },
+        skins =
+        {
+            --Skin strings are translated to nil when empty
+            base_skin = net_string(inst.GUID, "skeleton_player.avatar.base_skin"),
+            body_skin = net_string(inst.GUID, "skeleton_player.avatar.body_skin"),
+            hand_skin = net_string(inst.GUID, "skeleton_player.avatar.hand_skin"),
+            legs_skin = net_string(inst.GUID, "skeleton_player.avatar.legs_skin"),
+            feet_skin = net_string(inst.GUID, "skeleton_player.avatar.feet_skin"),
+        },
+        numbers =
+        {
+            playerage = net_ushortint(inst.GUID, "skeleton_player.avatar.playerage"),
+        },
+        equip = {},
+    }
+
+    for k, v in pairs(EQUIPSLOTS) do
+        inst._avatar_net.equip[EQUIPSLOT_IDS[v]] = net_string(inst.GUID, "skeleton_player.avatar.equip."..v)
+    end
+    
+    inst.GetSkeletonAvatarData = GetSkeletonAvatarData
+end
+
+local function fnplayer()
+    local inst = common_fn(player_custominit)
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.OnLoad = onloadplayer
+    inst.OnSave = onsaveplayer
     inst.SetSkeletonDescription = SetSkeletonDescription
+    inst.SetSkeletonAvatarData = SetSkeletonAvatarData
+    inst.Decay = decay
     inst.skeletonspawntime = GetTime()
     TheWorld:PushEvent("ms_skeletonspawn", inst)
 

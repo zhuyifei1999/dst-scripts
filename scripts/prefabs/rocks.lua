@@ -20,6 +20,15 @@ local rock_moon_assets =
     Asset("ANIM", "anim/rock7.zip"),
 }
 
+local rock_petrified_tree_assets =
+{
+    Asset("ANIM", "anim/petrified_tree.zip"),
+    Asset("ANIM", "anim/petrified_tree_tall.zip"),
+    Asset("ANIM", "anim/petrified_tree_short.zip"),
+    Asset("ANIM", "anim/petrified_tree_old.zip"),
+    Asset("MINIMAP_IMAGE", "petrified_tree"),
+}
+
 local prefabs =
 {
     "rocks",
@@ -28,6 +37,7 @@ local prefabs =
     "goldnugget",
     "moonrocknugget",
     "rock_break_fx",
+    "collapse_small",
 }
 
 SetSharedLootTable( 'rock1',
@@ -87,11 +97,48 @@ SetSharedLootTable( 'rock_moon',
     {'flint',           0.60},
 })
 
+SetSharedLootTable( 'rock_petrified_tree',
+{
+    {'rocks',  1.00},
+    {'rocks',  0.75},
+    {'nitre',  0.15},
+    {'flint',  0.25},
+})
+SetSharedLootTable( 'rock_petrified_tree_tall',
+{
+    {'rocks',  1.00},
+    {'rocks',  1.00},
+    {'rocks',  0.35},
+    {'nitre',  0.15},
+    {'flint',  0.75},
+})
+SetSharedLootTable( 'rock_petrified_tree_short',
+{
+    {'rocks',  1.00},    
+    {'rocks',  0.35},
+    {'nitre',  0.15},
+    {'flint',  0.25},
+})
+SetSharedLootTable( 'rock_petrified_tree_old',
+{
+    {'rocks',  0.50},    
+    {'rocks',  0.50},
+    {'nitre',  0.25},
+    {'flint',  0.75},
+})
+
+
 local function OnWork(inst, worker, workleft)
     if workleft <= 0 then
         local pt = inst:GetPosition()
         SpawnPrefab("rock_break_fx").Transform:SetPosition(pt:Get())
         inst.components.lootdropper:DropLoot(pt)
+
+        if inst.showCloudFXwhenRemoved then
+            local fx = SpawnPrefab("collapse_small")
+            fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+        end
+
         inst:Remove()
     else
         inst.AnimState:PlayAnimation(
@@ -102,7 +149,47 @@ local function OnWork(inst, worker, workleft)
     end
 end
 
-local function baserock_fn(bank, build, anim, icon)
+local function setPetrifiedTreeSize(inst)
+    if inst.treeSize == 4 then
+        inst.AnimState:SetBuild("petrified_tree_old")
+        inst.AnimState:SetBank("petrified_tree_old")
+        inst.components.lootdropper:SetChanceLootTable('rock_petrified_tree_old')
+        inst.components.workable:SetWorkLeft(TUNING.PETRIFIED_TREE_OLD)
+        inst.Physics:SetCapsule(.25, 2)
+    elseif inst.treeSize == 3 then
+        inst.AnimState:SetBuild("petrified_tree_tall")
+        inst.AnimState:SetBank("petrified_tree_tall")
+        inst.components.lootdropper:SetChanceLootTable('rock_petrified_tree_tall')
+        inst.components.workable:SetWorkLeft(TUNING.PETRIFIED_TREE_TALL)
+        inst.Physics:SetCapsule(1, 2)
+    elseif inst.treeSize == 1 then
+        inst.AnimState:SetBuild("petrified_tree_short")
+        inst.AnimState:SetBank("petrified_tree_short")
+        inst.components.lootdropper:SetChanceLootTable('rock_petrified_tree_short')
+        inst.components.workable:SetWorkLeft(TUNING.PETRIFIED_TREE_SMALL)
+        inst.Physics:SetCapsule(.25, 2)
+    else
+        inst.AnimState:SetBuild("petrified_tree")
+        inst.AnimState:SetBank("petrified_tree")
+        inst.components.lootdropper:SetChanceLootTable('rock_petrified_tree')
+        inst.components.workable:SetWorkLeft(TUNING.PETRIFIED_TREE_NORMAL)
+        inst.Physics:SetCapsule(.65, 2)
+    end
+end
+
+local function onsave(inst, data)
+    data.treeSize = inst.treeSize
+end
+
+local function onload(inst, data)
+    if data ~= nil and data.treeSize ~= nil then
+        inst.treeSize = data.treeSize
+        --V2C: Note that this will reset workleft as well
+        --     Gotta change this if you set workable to savestate
+        setPetrifiedTreeSize(inst) 
+    end
+end
+local function baserock_fn(bank, build, anim, icon, tag)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -117,11 +204,24 @@ local function baserock_fn(bank, build, anim, icon)
 
     inst.AnimState:SetBank(bank)
     inst.AnimState:SetBuild(build)
-    inst.AnimState:PlayAnimation(anim)
+    if type(anim) == "table" then
+        for i, v in ipairs(anim) do
+            if i == 1 then
+                inst.AnimState:PlayAnimation(v)
+            else
+                inst.AnimState:PushAnimation(v, false)
+            end
+        end
+    else
+        inst.AnimState:PlayAnimation(anim)
+    end
 
     MakeSnowCoveredPristine(inst)
 
     inst:AddTag("boulder")
+    if tag ~= nil then
+        inst:AddTag(tag)
+    end
 
     inst.entity:SetPristine()
 
@@ -223,9 +323,70 @@ local function rock_moon()
     return inst
 end
 
+local function rock_petrified_tree_common(size)
+    local inst = baserock_fn("petrified_tree", "petrified_tree", { "petrify_in", "full" }, "petrified_tree.png", "shelter")
+
+    inst:SetPrefabName("rock_petrified_tree")
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.showCloudFXwhenRemoved = true
+
+    if not size then
+        local rand = math.random()
+        if rand > 0.90 then
+            size = 4 
+        elseif rand > 0.60 then
+            size = 1
+        elseif rand < 0.30 then
+            size = 2
+        else
+            size = 3
+        end
+    end    
+
+    inst.treeSize = size
+
+    setPetrifiedTreeSize(inst)
+
+    inst.components.inspectable.nameoverride = "PETRIFIED_TREE"
+
+    inst.OnSave = onsave
+    inst.OnLoad = onload
+
+    return inst
+end
+
+local function rock_petrified_tree()
+    return rock_petrified_tree_common()
+end
+
+local function rock_petrified_tree_short()
+    return rock_petrified_tree_common(1)
+end
+
+local function rock_petrified_tree_med()
+    return rock_petrified_tree_common(2)
+end
+
+local function rock_petrified_tree_tall()
+    return rock_petrified_tree_common(3)
+end
+
+local function rock_petrified_tree_old()
+    return rock_petrified_tree_common(4)
+end
+
 return Prefab("rock1", rock1_fn, rock1_assets, prefabs),
     Prefab("rock2", rock2_fn, rock2_assets, prefabs),
     Prefab("rock_flintless", rock_flintless_fn, rock_flintless_assets, prefabs),
     Prefab("rock_flintless_med", rock_flintless_med, rock_flintless_assets, prefabs),
     Prefab("rock_flintless_low", rock_flintless_low, rock_flintless_assets, prefabs),
-    Prefab("rock_moon", rock_moon, rock_moon_assets, prefabs)
+    Prefab("rock_moon", rock_moon, rock_moon_assets, prefabs),
+    Prefab("rock_petrified_tree", rock_petrified_tree, rock_petrified_tree_assets, prefabs),
+    Prefab("rock_petrified_tree_med", rock_petrified_tree_med, rock_petrified_tree_assets, prefabs),
+    Prefab("rock_petrified_tree_tall", rock_petrified_tree_tall, rock_petrified_tree_assets, prefabs),
+    Prefab("rock_petrified_tree_short", rock_petrified_tree_short, rock_petrified_tree_assets, prefabs),
+    Prefab("rock_petrified_tree_old", rock_petrified_tree_old, rock_petrified_tree_assets, prefabs)    

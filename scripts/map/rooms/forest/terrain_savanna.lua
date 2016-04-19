@@ -8,7 +8,7 @@ AddRoom("BGSavanna", {
 					                distributeprefabs=
 					                {
 										spiderden=0.001,
-										grass=0.09,
+										perma_grass =0.09,
 										rabbithole=0.025,
 										flower=0.003,
 					                },
@@ -23,9 +23,10 @@ AddRoom("Plain", {
 					                distributepercent = .2,
 					                distributeprefabs=
 					                {
+					                	rock_petrified_tree = 0.15,
 					                    rock1 = 0.05,
-					                    grass = .5,
-					                    rabbithole=.25, 
+					                    perma_grass = 0.5,
+					                    rabbithole= 0.25, 
 					                    green_mushroom = .005,
 					                },
 					            }
@@ -35,11 +36,11 @@ AddRoom("BarePlain", {					colour={r=.5,g=.5,b=.45,a=.50},
 					value = GROUND.SAVANNA,
 					tags = {"ExitPiece", "Chester_Eyebone"},
 					contents =  {
-					                distributepercent = .1,
+					                distributepercent = 0.1,
 					                distributeprefabs=
 					                {
-					                    grass = .8,
-					                    rabbithole=.4,
+					                    perma_grass = 0.8,
+					                    rabbithole=0.4,
 --					                    beefalo=0.2
 					                },
 					            }

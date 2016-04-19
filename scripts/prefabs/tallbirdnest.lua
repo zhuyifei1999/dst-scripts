@@ -1,6 +1,6 @@
 local assets =
 {
-	Asset("ANIM", "anim/tallbird_egg.zip"),
+    Asset("ANIM", "anim/tallbird_egg.zip"),
 }
 
 local prefabs =
@@ -8,7 +8,7 @@ local prefabs =
     "smallbird",
     "tallbird",
     "tallbirdegg",
-}    
+}
 
 local NEST_TIME = 35*TUNING.SEG_TIME
 local TALLBIRD_LAY_DIST = 16
@@ -22,14 +22,14 @@ local function StopNesting(inst)
 end
 
 local function ForceLay(inst)
-	if inst.components.childspawner and inst.components.pickable then
-	    for k,v in pairs(inst.components.childspawner.childrenoutside) do
-		    if distsq(Vector3(v.Transform:GetWorldPosition()), Vector3(inst.Transform:GetWorldPosition()) ) < TALLBIRD_LAY_DIST*TALLBIRD_LAY_DIST then
-		        inst.components.pickable:Regen()
-		        break
-		    end
-	    end
-	end
+    if inst.components.childspawner and inst.components.pickable then
+        for k,v in pairs(inst.components.childspawner.childrenoutside) do
+            if distsq(Vector3(v.Transform:GetWorldPosition()), Vector3(inst.Transform:GetWorldPosition()) ) < TALLBIRD_LAY_DIST*TALLBIRD_LAY_DIST then
+                inst.components.pickable:Regen()
+                break
+            end
+        end
+    end
 end
 
 local function DoNesting(inst)
@@ -50,37 +50,37 @@ local function StartNesting(inst, time)
 end
 
 local function onpicked(inst, picker)
-	inst.thief = picker
-	inst.AnimState:PlayAnimation("nest")
-	inst.components.childspawner.noregen = true
-	if inst.components.childspawner and picker then
-		for k,v in pairs(inst.components.childspawner.childrenoutside) do
-			if v.components.combat then
-				v.components.combat:SuggestTarget(picker)
-			end
-		end
-	end
-	inst:DoTaskInTime(0, StartNesting)
+    inst.thief = picker
+    inst.AnimState:PlayAnimation("nest")
+    inst.components.childspawner.noregen = true
+    if inst.components.childspawner and picker then
+        for k,v in pairs(inst.components.childspawner.childrenoutside) do
+            if v.components.combat then
+                v.components.combat:SuggestTarget(picker)
+            end
+        end
+    end
+    inst:DoTaskInTime(0, StartNesting)
 end
 
 local function onmakeempty(inst)
-	inst.AnimState:PlayAnimation("nest")
-	inst.components.childspawner.noregen = true
+    inst.AnimState:PlayAnimation("nest")
+    inst.components.childspawner.noregen = true
 end
 
 local function onregrow(inst)
-	inst.AnimState:PlayAnimation("eggnest")
-	inst.components.childspawner.noregen = false
-	StopNesting(inst)
-	inst.thief = nil
-	inst.readytolay = nil
+    inst.AnimState:PlayAnimation("eggnest")
+    inst.components.childspawner.noregen = false
+    StopNesting(inst)
+    inst.thief = nil
+    inst.readytolay = nil
 end
 
 local function onvacate(inst)
-	if inst.components.pickable then
-		inst.components.pickable:MakeEmpty()
+    if inst.components.pickable then
+        inst.components.pickable:MakeEmpty()
         StartNesting(inst)
-	end
+    end
 end
 
 local function onsleep(inst)
@@ -110,7 +110,7 @@ local function OnLoad(inst, data)
 end
 
 local function SpawnSmallBird(inst)
-	local tallbird = nil
+    local tallbird = nil
     for k,v in pairs(inst.components.childspawner.childrenoutside) do
         if v.prefab == "tallbird" then tallbird = v break end
     end
@@ -137,52 +137,54 @@ local function SeasonalSpawnChanges(inst)
     end
 end
 
-local function fn(Sim)
-	local inst = CreateEntity()
+local function fn()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
+
+    inst.MiniMapEntity:SetIcon("tallbirdnest.png")
+
+    inst.AnimState:SetBuild("tallbird_egg")
+    inst.AnimState:SetBank("egg")
+    inst.AnimState:PlayAnimation("eggnest", false)
+
+    inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
 
-	inst.MiniMapEntity:SetIcon( "tallbirdnest.png" )
-   
-    inst.AnimState:SetBuild("tallbird_egg")
-    inst.AnimState:SetBank("egg")
-    inst.AnimState:PlayAnimation("eggnest", false)
-
     inst:AddComponent("pickable")
     --inst.components.pickable.picksound = "dontstarve/wilson/harvest_berries"
     inst.components.pickable:SetUp("tallbirdegg", nil)
-    inst.components.pickable:SetOnPickedFn(onpicked)
-    inst.components.pickable:SetOnRegenFn(onregrow)
-    inst.components.pickable:SetMakeEmptyFn(onmakeempty)
+    inst.components.pickable.onpickedfn = onpicked
+    inst.components.pickable.onregenfn = onregrow
+    inst.components.pickable.makeemptyfn = onmakeempty
 
     MakeMediumBurnable(inst)
     MakeSmallPropagator(inst)
 
     -------------------
-	inst:AddComponent("childspawner")
-	inst.components.childspawner.childname = "tallbird"
-	inst.components.childspawner.spawnoffscreen = true
-	inst.components.childspawner:SetRegenPeriod(5*16*TUNING.SEG_TIME)
-	inst.components.childspawner:SetSpawnPeriod(0)
-	inst.components.childspawner:SetSpawnedFn(onvacate)
-	inst.components.childspawner:SetMaxChildren(1)
-	inst.components.childspawner:StartSpawning()
+    inst:AddComponent("childspawner")
+    inst.components.childspawner.childname = "tallbird"
+    inst.components.childspawner.spawnoffscreen = true
+    inst.components.childspawner:SetRegenPeriod(5*16*TUNING.SEG_TIME)
+    inst.components.childspawner:SetSpawnPeriod(0)
+    inst.components.childspawner:SetSpawnedFn(onvacate)
+    inst.components.childspawner:SetMaxChildren(1)
+    inst.components.childspawner:StartSpawning()
     -------------------
-   
+
     inst:AddComponent("inspectable")
-	inst:ListenForEvent("entitysleep", onsleep)
-	inst.OnSave = OnSave
-	inst.OnLoad = OnLoad
-   
-   	SeasonalSpawnChanges(inst)
-	inst:WatchWorldState("isspring", SeasonalSpawnChanges)
+    inst:ListenForEvent("entitysleep", onsleep)
+    inst.OnSave = OnSave
+    inst.OnLoad = OnLoad
+
+    SeasonalSpawnChanges(inst)
+    inst:WatchWorldState("isspring", SeasonalSpawnChanges)
 
     return inst
 end

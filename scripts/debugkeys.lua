@@ -71,31 +71,6 @@ if CHEATS_ENABLED and userName == "My Username" then
     CHEATS_ENABLE_DPRINT = true
 end
 
-function InitDevDebugSession()
-    --[[ To setup this function to be called when the game starts up edit stats.lua and patch the context:
-                    function RecordSessionStartStats()
-                        if not STATS_ENABLE then
-                            return
-                        end
-
-                        if InitDevDebugSession then
-                            InitDevDebugSession()
-                        end
-                     --- rest of function
-    --]]
-    -- Add calls that you want executed whenever a session starts
-    -- Here, for example the minhealth is set so the player can't be killed
-    -- and the autosave is disabled so that it
-    -- doesnt' overwrite my carefully constructed debugging setup
-    dprint("DEVDEBUGSESSION")
-    global( "TheFrontEnd" )
-    local player = ConsoleCommandPlayer()
-
-    c_setminhealth(5)
-    TheFrontEnd.consoletext.closeonrun = true
-    TheWorld:PushEvent("ms_setautosaveenabled", false)
-end
-
 AddGlobalDebugKey(KEY_HOME, function()
     if not TheSim:IsDebugPaused() then
         print("Home key pressed PAUSING GAME")
@@ -381,6 +356,9 @@ AddGameDebugKey(KEY_F7, function()
                     print("type", node.type)
                     print("story depth", TheWorld.topology.story_depths[i])
                     print("area", node.area)
+                    print("tags", table.concat(node.tags, ", "))
+
+                    dumptable(TheWorld.generated.densities[ TheWorld.topology.ids[i] ])
 
                     if TheInput:IsKeyDown(KEY_SHIFT) and TheInput:IsKeyDown(KEY_CTRL) then
                         -- eat this, handled above
@@ -406,7 +384,9 @@ AddGameDebugKey(KEY_F7, function()
                     elseif TheInput:IsKeyDown(KEY_ALT) then
                         print("densities")
                         if TheWorld.generated.densities[TheWorld.topology.ids[i]] == nil then
-                            print("\t<none>")
+                            print("\t<nil>")
+                        elseif GetTableSize(TheWorld.generated.densities[TheWorld.topology.ids[i]]) == 0 then
+                            print("\t<zero densities>")
                         else
                             for k,v in pairs(TheWorld.generated.densities[TheWorld.topology.ids[i]]) do
                                 print("\t",k,v)
@@ -793,13 +773,53 @@ AddGameDebugKey(KEY_M, function()
 end)
 
 AddGameDebugKey(KEY_N, function()
-    c_gonext()
+    if TheInput:IsKeyDown(KEY_ALT) then
+        local world = TheWorld
+        local area = nil
+        local player = ConsoleCommandPlayer()
+        local x, y, z = player.Transform:GetWorldPosition()
+        for i, node in ipairs(TheWorld.topology.nodes) do
+            if TheSim:WorldPointInPoly(x, z, node.poly) then
+                 area =  i
+            end
+        end
+        if area then
+            world:PushEvent("ms_petrifyforest", { area = area })
+
+            local function startPetrifySound(world)
+                local pos = world.topology.nodes[area].cent
+                SpawnPrefab("petrify_announce").Transform:SetPosition(pos[1], 0, pos[2])
+            end
+            world:DoTaskInTime(TUNING.SEG_TIME, startPetrifySound)
+
+            local function _DoPetrifiedSpeech(world,player)
+                if player then
+                    player.components.talker:Say(GetString(player, "ANNOUNCE_PETRIFED_TREES"))
+                end
+            end
+            for i, v in ipairs(AllPlayers) do
+                world:DoTaskInTime( TUNING.SEG_TIME + 1 + (math.random() * 2), _DoPetrifiedSpeech, v)
+            end
+        end
+    elseif TheInput:IsKeyDown(KEY_SHIFT) then
+        print("OVERRIDING PREFAB SWAPS")
+        TheWorld:PushEvent("ms_setnextprefabswaps", { ["berries"] = "regular berries" })
+    elseif TheInput:IsKeyDown(KEY_CTRL) then
+            local prefabswap_list = require"prefabswap_list"
+
+            prefabswap_list.petrifyForest(TheWorld)
+    else
+        c_gonext()
+    end
 end)
 
 AddGameDebugKey(KEY_S, function()
     if TheInput:IsKeyDown(KEY_CTRL) then
         TheWorld:PushEvent("ms_save")
         return true
+    elseif TheInput:IsKeyDown(KEY_ALT) then
+        print("######################################")
+        dumptable(TheWorld.generated.densities)
     end
 end)
 

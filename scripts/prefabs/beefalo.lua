@@ -221,8 +221,8 @@ local function OnHairGrowth(inst)
     end
 end
 
-local function OnBrushed(inst, data)
-    if data.numprizes > 0 and inst.components.domesticatable ~= nil then
+local function OnBrushed(inst, doer, numprizes)
+    if numprizes > 0 and inst.components.domesticatable ~= nil then
         inst.components.domesticatable:DeltaDomestication(TUNING.BEEFALO_DOMESTICATION_BRUSHED_DOMESTICATION)
         inst.components.domesticatable:DeltaObedience(TUNING.BEEFALO_DOMESTICATION_BRUSHED_OBEDIENCE)
     end
@@ -235,7 +235,7 @@ end
 
 local function OnGetItemFromPlayer(inst, giver, item)
     if inst.components.eater:CanEat(item) then
-        inst.components.eater:Eat(item)
+        inst.components.eater:Eat(item, giver)
     end
 end
 
@@ -261,7 +261,9 @@ end
 
 local function OnFeral(inst, data)
     inst.components.rideable:Buck()
-    inst.domesticationPending = true
+    if inst.components.domesticatable:IsDomesticated() then
+        inst.domesticationPending = true
+    end
 end
 
 local function DoFeral(inst)
@@ -437,7 +439,7 @@ local function OnBeingRidden(inst, dt)
     inst.components.domesticatable:DeltaTendency(TENDENCY.RIDER, TUNING.BEEFALO_RIDER_RIDDEN * dt)
 end
 
-local function OnRiderDoAttack(inst)
+local function OnRiderDoAttack(inst, data)
     inst.components.domesticatable:DeltaTendency(TENDENCY.ORNERY, TUNING.BEEFALO_ORNERY_DOATTACK)
 end
 
@@ -448,14 +450,12 @@ local function OnRiderChanged(inst, data)
     end
 
     if data.oldrider ~= nil then
-        inst:RemoveEventCallback("onattackother", inst._OnRiderDoAttackCB, data.oldrider)
     end
 
     if data.newrider ~= nil then
         if inst.components.sleeper ~= nil then
             inst.components.sleeper:WakeUp()
         end
-        inst:ListenForEvent("onattackother", inst._OnRiderDoAttackCB, data.newrider)
         inst._bucktask = inst:DoTaskInTime(CalculateBuckDelay(inst), OnBuckTime)
         inst.components.knownlocations:RememberLocation("loiteranchor", inst:GetPosition())
     elseif inst.components.health:IsDead() then
@@ -560,7 +560,7 @@ local function beefalo()
     inst.components.brushable.regrowthdays = 1
     inst.components.brushable.max = 1
     inst.components.brushable.prize = "beefalowool"
-    inst:ListenForEvent("brushed", OnBrushed)
+    inst.components.brushable:SetOnBrushed(OnBrushed)
 
     inst:AddComponent("eater")
     inst.components.eater:SetDiet({ FOODTYPE.VEGGIE, FOODTYPE.ROUGHAGE }, { FOODTYPE.VEGGIE, FOODTYPE.ROUGHAGE })
@@ -659,9 +659,12 @@ local function beefalo()
     inst:ListenForEvent("goneferal", OnFeral)
     inst:ListenForEvent("obediencedelta", OnObedienceDelta)
     inst:ListenForEvent("beingridden", OnBeingRidden)
-    inst._OnRiderDoAttackCB = function(other) OnRiderDoAttack(inst) end
     inst:ListenForEvent("riderchanged", OnRiderChanged)
+    inst:ListenForEvent("riderdoattackother", OnRiderDoAttack)
     inst:ListenForEvent("hungerdelta", OnHungerDelta)
+
+    inst:AddComponent("uniqueid")
+    inst:AddComponent("beefalometrics")
 
     MakeHauntablePanic(inst)
     AddHauntableCustomReaction(inst, CustomOnHaunt, true, false, true)

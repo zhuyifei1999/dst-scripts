@@ -9,26 +9,22 @@ local assets =
     Asset("SHADER", "shaders/uifade.ksh"),
     -- Asset("ATLAS", "images/selectscreen_portraits.xml"), -- Not currently used, but likely to come back
     -- Asset("IMAGE", "images/selectscreen_portraits.tex"), -- Not currently used, but likely to come back
-    Asset("ATLAS", "bigportraits/locked.xml"),
-    Asset("IMAGE", "bigportraits/locked.tex"),
+    Asset("DYNAMIC_ATLAS", "bigportraits/locked.xml"),
+    Asset("ASSET_PKGREF", "bigportraits/locked.tex"),
 
-    Asset("ATLAS", "bigportraits/random.xml"),
-    Asset("IMAGE", "bigportraits/random.tex"),
-    Asset("ATLAS", "bigportraits/random_none.xml"),
-    Asset("IMAGE", "bigportraits/random_none.tex"),
+    Asset("DYNAMIC_ATLAS", "bigportraits/random.xml"),
+    Asset("ASSET_PKGREF", "bigportraits/random.tex"),
+    Asset("DYNAMIC_ATLAS", "bigportraits/random_none.xml"),
+    Asset("ASSET_PKGREF", "bigportraits/random_none.tex"),
     
-    Asset("ATLAS", "images/names_random.xml"),
-    Asset("IMAGE", "images/names_random.tex"),
+    Asset("DYNAMIC_ATLAS", "images/names_random.xml"),
+    Asset("ASSET_PKGREF", "images/names_random.tex"),
 
     -- Asset("ANIM", "anim/portrait_frame.zip"), -- Not currently used, but likely to come back
     Asset("ANIM", "anim/spiral_bg.zip"),
 
     Asset("ANIM", "anim/frames_comp.zip"),
 
-    Asset("ATLAS", "images/lobbybannertop.xml"),
-    Asset("IMAGE", "images/lobbybannertop.tex"),
-    Asset("ATLAS", "images/lobbybannerbottom.xml"),
-    Asset("IMAGE", "images/lobbybannerbottom.tex"),
     Asset("ATLAS", "images/bg_spiral_anim_overlay.xml"),
     Asset("IMAGE", "images/bg_spiral_anim_overlay.tex"),
 }
@@ -38,17 +34,16 @@ local charlist = GetActiveCharacterList ~= nil and GetActiveCharacterList() or D
 for i, char in ipairs(charlist) do
 	if PREFAB_SKINS[char] then 
 	    for _,character in pairs(PREFAB_SKINS[char]) do
-			table.insert(assets, Asset("ATLAS", "bigportraits/"..character..".xml"))
-			table.insert(assets, Asset("IMAGE", "bigportraits/"..character..".tex"))
+			table.insert(assets, Asset("DYNAMIC_ATLAS", "bigportraits/"..character..".xml"))
+			table.insert(assets, Asset("ASSET_PKGREF", "bigportraits/"..character..".tex"))
 		end
-		
-		table.insert(assets, Asset("ATLAS", "bigportraits/"..char..".xml"))
-		table.insert(assets, Asset("IMAGE", "bigportraits/"..char..".tex"))
+		table.insert(assets, Asset("DYNAMIC_ATLAS", "bigportraits/"..char..".xml"))
+		table.insert(assets, Asset("ASSET_PKGREF", "bigportraits/"..char..".tex"))
 
-	    table.insert(assets, Asset("ATLAS", "images/names_"..char..".xml"))
-	    table.insert(assets, Asset("IMAGE", "images/names_"..char..".tex"))
+	    table.insert(assets, Asset("DYNAMIC_ATLAS", "images/names_"..char..".xml"))
+	    table.insert(assets, Asset("ASSET_PKGREF", "images/names_"..char..".tex"))
 
-	     --table.insert(assets, Asset("IMAGE", "images/selectscreen_portraits/"..char..".tex"))
+	    --table.insert(assets, Asset("IMAGE", "images/selectscreen_portraits/"..char..".tex"))
     	--table.insert(assets, Asset("IMAGE", "images/selectscreen_portraits/"..char.."_silho.tex"))
 	end
 end
@@ -73,14 +68,24 @@ local prefabs =
     "evergreen_burnt",
     "evergreen_stump",
 
+    "twiggytree",
+    "twiggy_tall",
+    "twiggy_short",
+    "twiggy_normal",
+
     "sapling",
     "berrybush",
     "berrybush2",
+    "berrybush_juicy",
     "grass",
     "rock1",
     "rock2",
     "rock_flintless",
     "rock_moon",
+    "rock_petrified_tree",
+    "rock_petrified_tree_tall",
+    "rock_petrified_tree_short",
+    "rock_petrified_tree_med",
 
     "tallbirdnest",
     "hound",
@@ -357,6 +362,9 @@ function MakeWorld(name, customprefabs, customassets, common_postinit, master_po
         if master_postinit ~= nil then
             master_postinit(inst)
         end
+
+        --Metrics
+        inst:AddComponent("uniqueprefabids")
 
         --World gen data for server listing
         --Also updated in shardnetworking.lua for multilevel server clusters

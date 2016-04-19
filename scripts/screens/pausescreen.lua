@@ -20,6 +20,9 @@ local PauseScreen = Class(Screen, function(self)
 
 	self.active = true
 	SetPause(true,"pause")
+
+    global("TAB")
+    TAB = self
 	
 	--darken everything behind the dialog
     self.black = self:AddChild(Image("images/global.xml", "square.tex"))
@@ -28,7 +31,7 @@ local PauseScreen = Class(Screen, function(self)
     self.black:SetVAnchor(ANCHOR_MIDDLE)
     self.black:SetHAnchor(ANCHOR_MIDDLE)
     self.black:SetScaleMode(SCALEMODE_FILLSCREEN)
-	self.black:SetTint(0,0,0,.75)	
+	self.black:SetTint(0,0,0,.5)	
 
 	self.proot = self:AddChild(Widget("ROOT"))
     self.proot:SetVAnchor(ANCHOR_MIDDLE)
@@ -37,23 +40,29 @@ local PauseScreen = Class(Screen, function(self)
     self.proot:SetScaleMode(SCALEMODE_PROPORTIONAL)
 
 	--throw up the background
-	self.bg = self.proot:AddChild(TEMPLATES.CurlyWindow(70, 50, 1, 1, 68, -40))
+	self.bg = self.proot:AddChild(TEMPLATES.CurlyWindow(-40, 236, 0.75, 0.75, 50, -31))
+    self.bg:SetPosition(-5,0)
     self.bg.fill = self.proot:AddChild(Image("images/fepanel_fills.xml", "panel_fill_tiny.tex"))
-	self.bg.fill:SetScale(.82, .4)
-	self.bg.fill:SetPosition(8, 12)
+	self.bg.fill:SetSize(295, 307)
+	self.bg.fill:SetPosition(2, 10)
 	
 	--title	
     self.title = self.proot:AddChild(Text(BUTTONFONT, 50))
-    self.title:SetPosition(5, 35, 0)
+    self.title:SetPosition(0, 105, 0)
     self.title:SetString(STRINGS.UI.PAUSEMENU.DST_TITLE)
     self.title:SetColour(0,0,0,1)
+
+	--subtitle	
+    self.subtitle = self.proot:AddChild(Text(NEWFONT_SMALL, 16))
+    self.subtitle:SetPosition(0, 75, 0)
+    self.subtitle:SetString(STRINGS.UI.PAUSEMENU.DST_SUBTITLE)
+    self.subtitle:SetColour(0,0,0,1)
 
 	--create the menu itself
 	local player = ThePlayer
 	local can_save = player and player:IsValid() and player.components.health and not player.components.health:IsDead() and IsGamePurchased()
 	local button_w = 160
-	
-	local quit_button_text = STRINGS.UI.PAUSEMENU.DISCONNECT
+    local button_h = 45
 	
 	--[[
 	--jcheng: disable afk for now
@@ -85,10 +94,11 @@ local PauseScreen = Class(Screen, function(self)
             self.last_focus = self.menu.items[2]
 		end)
     end })
-    table.insert(buttons, {text=quit_button_text, cb=function() self:doconfirmquit()	end})
+    table.insert(buttons, {text=STRINGS.UI.PAUSEMENU.DISCONNECT, cb=function() self:doconfirmquit()	end})
+    table.insert(buttons, {text=STRINGS.UI.PAUSEMENU.ISSUE, cb = function() VisitURL("http://forums.kleientertainment.com/klei-bug-tracker/dont-starve-together/") end })
     
-	self.menu = self.proot:AddChild(Menu(buttons, button_w, true))
-	self.menu:SetPosition(10-(button_w*(#buttons-1))/2, -25, 0) 
+	self.menu = self.proot:AddChild(Menu(buttons, -button_h, false))
+	self.menu:SetPosition(0, 35, 0)
 	for i,v in pairs(self.menu.items) do
 		v:SetScale(.7)
 	end

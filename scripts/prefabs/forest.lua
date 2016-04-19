@@ -112,6 +112,8 @@ local prefabs =
     "bearger",
     "dragonfly",
     "chester",
+    "grassgekko",
+    "petrify_announce",
 }
 
 local monsters =
@@ -212,6 +214,7 @@ local function master_postinit(inst)
     inst:AddComponent("forestresourcespawner")
     inst:AddComponent("regrowthmanager")
     inst:AddComponent("desolationspawner")
+    inst:AddComponent("prefabswapmanager") 
 
     if METRICS_ENABLED then
         inst:AddComponent("worldoverseer")

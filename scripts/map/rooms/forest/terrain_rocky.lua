@@ -12,6 +12,7 @@ AddRoom("BGChessRocky", {
 					                distributeprefabs=
 					                {
 										flint=0.5,
+										rock_petrified_tree = 2,
 										rock1=1,
 										rock2=1,
 										tallbirdnest=0.008,
@@ -28,10 +29,12 @@ AddRoom("BGRocky", {
 					                distributeprefabs=
 					                {
 										flint=0.5,
-										rock1=1,
-										rock2=1,
+										rock_petrified_tree = 2,
+										rock1=1,										
+										rock2=1,										
 										rock_ice=0.4,
 										tallbirdnest=0.008,
+										grassgekko = 0.3,
 					                },
 					            }
 					})
@@ -49,11 +52,13 @@ AddRoom("Rocky", {
 					                distributeprefabs=
 					                {
 					                    rock1 = 2,
+					                    rock_petrified_tree = 6,
 					                    rock2 = 2,
 										rock_ice = 1,
 					                    tallbirdnest=.1,
 					                    spiderden=.01,
 					                    blue_mushroom = .002,
+					                    grassgekko = 0.3,
 					                },
 					            }
 					})
@@ -65,6 +70,7 @@ AddRoom("RockyBuzzards", {
 					                distributepercent = .1,
 					                distributeprefabs=
 					                {
+					                	rock_petrified_tree = 6,
 					                    rock1 = 2,
 					                    rock2 = 2,
 					                    buzzardspawner = .1,
@@ -81,6 +87,7 @@ AddRoom("GenericRockyNoThreat", {
 					                distributepercent = .1,
 					                distributeprefabs=
 					                {
+					                	rock_petrified_tree = 6,
 					                    rock1 = 2,
 					                    rock2 = 2,
 					                    rock_ice = .75,
@@ -89,6 +96,7 @@ AddRoom("GenericRockyNoThreat", {
 					                    blue_mushroom = .002,
 					                    green_mushroom = .002,
 					                    red_mushroom = .002,
+					                    grassgekko = 0.3,
 					                },
 					            }
 					})
@@ -101,14 +109,15 @@ AddRoom("MolesvilleRocky", {
 									distributeprefabs =
 									{
 										marsh_bush = 0.2,
+										rock_petrified_tree = 3,
 										rock1 = 1,
 										rock2 = 1,
 										rock_ice = .3,
 										rocks = .5,
 										flint = .1,
 										grass = 0.1,
-										molehill = 1,
-										
+										molehill = 1,										
+										grassgekko = 0.3,
 									},
 					            }
 					})

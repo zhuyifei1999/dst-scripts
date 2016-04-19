@@ -31,7 +31,7 @@ return
         GLOMMERFLOWER = 
         {
             GENERIC = "It's dripping with goo.",
-            DEAD = "It's gone grey, but it's still dripping.",
+            DEAD = "It's gone gray, but it's still dripping.",
         },
         GLOMMERWINGS = "The fins of that strange specimen.",
         GLOMMERFUEL = "It appears to be quite volatile.",

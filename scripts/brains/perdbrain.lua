@@ -72,7 +72,7 @@ local function EatFoodAction(inst)
 end
 
 local function HasBerry(item)
-    return item.components.pickable ~= nil and item.components.pickable.product == "berries"
+    return item.components.pickable ~= nil and (item.components.pickable.product == "berries" or item.components.pickable.product == "berries_juicy")
 end
 
 local function PickBerriesAction(inst)

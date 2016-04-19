@@ -45,10 +45,6 @@ local killersounds =
 local function OnWorked(inst, worker)
     inst:PushEvent("detachchild")
     if worker.components.inventory ~= nil then
-        if METRICS_ENABLED then
-            FightStat_Caught(inst)
-        end
-
         inst.SoundEmitter:KillAllSounds()
 
         worker.components.inventory:GiveItem(inst, nil, inst:GetPosition())

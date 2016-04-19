@@ -24,7 +24,7 @@ end
 
 local function DoMountSound(inst, mount, sound)
     if mount ~= nil and mount.sounds ~= nil then
-        inst.SoundEmitter:PlaySound(mount.sounds[sound])
+        inst.SoundEmitter:PlaySound(mount.sounds[sound], nil, nil, true)
     end
 end
 
@@ -101,7 +101,9 @@ local actionhandlers =
         end),
     ActionHandler(ACTIONS.PICK,
         function(inst, action)
-            return action.target:HasTag("quickpick") and "doshortaction" or "dolongaction"
+            return (action.target:HasTag("jostlepick") and "dojostleaction")
+                or (action.target:HasTag("quickpick") and "doshortaction")
+                or "dolongaction"
         end),
     ActionHandler(ACTIONS.SLEEPIN,
         function(inst, action)
@@ -1145,6 +1147,89 @@ local states =
 
     State
     {
+        name = "dojostleaction",
+        tags = { "doing", "busy" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            local equip = inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+            local rider = inst.replica.rider
+            if rider ~= nil and rider:IsRiding() then
+                inst.AnimState:PlayAnimation("atk_pre")
+                inst.AnimState:PushAnimation("atk_lag", false)
+            elseif equip ~= nil and equip:HasTag("whip") then
+                inst.AnimState:PlayAnimation("whip_pre")
+                inst.AnimState:PushAnimation("whip_lag", false)
+                inst.sg.statemem.iswhip = true
+            elseif equip ~= nil and
+                equip.replica.inventoryitem ~= nil and
+                equip.replica.inventoryitem:IsWeapon() and
+                not equip:HasTag("punch") then
+                inst.AnimState:PlayAnimation("atk_pre")
+                inst.AnimState:PushAnimation("atk_lag", false)
+            elseif equip ~= nil and
+                (equip:HasTag("light") or
+                equip:HasTag("nopunch")) then
+                inst.AnimState:PlayAnimation("atk_pre")
+                inst.AnimState:PushAnimation("atk_lag", false)
+            elseif inst:HasTag("beaver") then
+                inst.sg.statemem.isbeaver = true
+                inst.AnimState:PlayAnimation("atk_pre")
+                inst.AnimState:PushAnimation("atk_lag", false)
+            else
+                inst.AnimState:PlayAnimation("punch")
+            end
+
+            local buffaction = inst:GetBufferedAction()
+            if buffaction ~= nil then
+                inst:PerformPreviewBufferedAction()
+
+                if buffaction.target ~= nil and buffaction.target:IsValid() then
+                    inst:FacePoint(buffaction.target:GetPosition())
+                end
+            end
+
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        timeline =
+        {
+            TimeEvent(4 * FRAMES, function(inst)
+                if inst.sg.statemem.isbeaver then
+                    inst.sg:RemoveStateTag("busy")
+                end
+            end),
+            TimeEvent(6 * FRAMES, function(inst)
+                if not (inst.sg.statemem.isbeaver or
+                        inst.sg.statemem.iswhip) then
+                    inst.sg:RemoveStateTag("busy")
+                end
+            end),
+            TimeEvent(8 * FRAMES, function(inst)
+                if inst.sg.statemem.iswhip then
+                    inst.sg:RemoveStateTag("busy")
+                end
+            end),
+        },
+
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.sg:GoToState("idle")
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.sg:GoToState("idle")
+        end,
+    },
+
+    State
+    {
         name = "makeballoon",
         tags = { "doing", "busy" },
 
@@ -1437,18 +1522,17 @@ local states =
                 end
             elseif equip ~= nil and
                 equip.replica.inventoryitem ~= nil and
-                equip.replica.inventoryitem:IsWeapon() then
+                equip.replica.inventoryitem:IsWeapon() and
+                not equip:HasTag("punch") then
                 inst.AnimState:PlayAnimation("atk_pre")
                 inst.AnimState:PushAnimation("atk", false)
-                if equip:HasTag("icestaff") then
-                    inst.SoundEmitter:PlaySound("dontstarve/wilson/attack_icestaff", nil, nil, true)
-                elseif equip:HasTag("shadow") then
-                    inst.SoundEmitter:PlaySound("dontstarve/wilson/attack_nightsword", nil, nil, true)
-                elseif equip:HasTag("firestaff") then
-                    inst.SoundEmitter:PlaySound("dontstarve/wilson/attack_firestaff", nil, nil, true)
-                else
-                    inst.SoundEmitter:PlaySound("dontstarve/wilson/attack_weapon", nil, nil, true)
-                end
+                inst.SoundEmitter:PlaySound(
+                    (equip:HasTag("icestaff") and "dontstarve/wilson/attack_icestaff") or
+                    (equip:HasTag("shadow") and "dontstarve/wilson/attack_nightsword") or
+                    (equip:HasTag("firestaff") and "dontstarve/wilson/attack_firestaff") or
+                    "dontstarve/wilson/attack_weapon",
+                    nil, nil, true
+                )
                 if cooldown > 0 then
                     cooldown = math.max(cooldown, 13 * FRAMES)
                 end

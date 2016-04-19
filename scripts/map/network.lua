@@ -675,11 +675,11 @@ function Graph:Populate(map, spawnFN, entities, check_col)
 	end
 end
 
-function Graph:PopulateVoronoi(spawnFN, entities, width, height, world_gen_choices, prefabDensities)
+function Graph:PopulateVoronoi(spawnFN, entities, width, height, world_gen_choices, prefabDensities, prefabSwaps, prefabProxies)
 	local nodes = self:GetNodes(false)
 	--print(self.id.." Populating "..GetTableSize(nodes).." nodes...")	
 	for k,node in pairs(nodes) do
-		node:PopulateVoronoi(spawnFN, entities, width, height, world_gen_choices, prefabDensities)
+		node:PopulateVoronoi(spawnFN, entities, width, height, world_gen_choices, prefabDensities, prefabSwaps, prefabProxies)
 		local perTerrain = false
 		if type(self.data.background) == type({}) then
 			perTerrain = true
@@ -688,7 +688,7 @@ function Graph:PopulateVoronoi(spawnFN, entities, width, height, world_gen_choic
 		node:PopulateChildren(spawnFN, entities, width, height, backgroundRoom, perTerrain, world_gen_choices)
 	end 
 	for k,child in pairs(self:GetChildren()) do
-		child:PopulateVoronoi(spawnFN, entities, width, height, world_gen_choices, prefabDensities)
+		child:PopulateVoronoi(spawnFN, entities, width, height, world_gen_choices, prefabDensities, prefabSwaps, prefabProxies)
 	end
 end
 

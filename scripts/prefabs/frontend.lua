@@ -1,9 +1,14 @@
 local assets =
 {
   --FE
-
-    Asset("ANIM", "anim/credits.zip"),
-    Asset("ANIM", "anim/credits2.zip"),
+    Asset("DYNAMIC_ANIM", "anim/dynamic/credits.zip"),
+    Asset("DYNAMIC_ANIM", "anim/dynamic/credits2.zip"),
+    --[[Asset("DYNAMIC_ANIM", "anim/dynamic/credits3.zip"),
+    Asset("DYNAMIC_ANIM", "anim/dynamic/credits4.zip"),
+    Asset("DYNAMIC_ANIM", "anim/dynamic/credits5.zip"),
+    Asset("DYNAMIC_ANIM", "anim/dynamic/credits6.zip"),
+    Asset("DYNAMIC_ANIM", "anim/dynamic/credits7.zip"),
+    Asset("DYNAMIC_ANIM", "anim/dynamic/credits8.zip"),]]
     
     Asset("IMAGE", "images/customisation.tex" ),
     Asset("ATLAS", "images/customisation.xml" ),
@@ -94,15 +99,14 @@ end
 -- Add all the characters by name
 local charlist = GetActiveCharacterList and GetActiveCharacterList() or DST_CHARACTERLIST
 for i,char in ipairs(charlist) do
-	if PREFAB_SKINS[char] then 
+	if PREFAB_SKINS[char] then
 		for _,character in pairs(PREFAB_SKINS[char]) do
-			table.insert(assets, Asset("ATLAS", "bigportraits/"..character..".xml"))
-			table.insert(assets, Asset("IMAGE", "bigportraits/"..character..".tex"))
+			table.insert(assets, Asset("DYNAMIC_ATLAS", "bigportraits/"..character..".xml"))
+			table.insert(assets, Asset("ASSET_PKGREF", "bigportraits/"..character..".tex"))
 		end
+		table.insert(assets, Asset("DYNAMIC_ATLAS", "bigportraits/"..char..".xml"))
+		table.insert(assets, Asset("ASSET_PKGREF", "bigportraits/"..char..".tex"))
 		
-		table.insert(assets, Asset("ATLAS", "bigportraits/"..char..".xml"))
-		table.insert(assets, Asset("IMAGE", "bigportraits/"..char..".tex"))
-
 		--table.insert(assets, Asset("IMAGE", "images/selectscreen_portraits/"..char..".tex")) -- Not currently used, but likely to come back
 		--table.insert(assets, Asset("IMAGE", "images/selectscreen_portraits/"..char.."_silho.tex")) -- Not currently used, but likely to come back
 	end

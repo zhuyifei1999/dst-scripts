@@ -173,6 +173,9 @@ end)
 self:SetSpawningForType("evergreen_sparse", "lumpy_sapling", TUNING.EVERGREEN_SPARSE_REGROWTH.DESOLATION_RESPAWN_TIME, {"evergreen_sparse"}, function()
     return 1
 end)
+self:SetSpawningForType("twiggytree", "twiggy_nut_sapling", TUNING.EVERGREEN_SPARSE_REGROWTH.DESOLATION_RESPAWN_TIME, {"twiggytree"}, function()
+    return 1
+end)
 self:SetSpawningForType("deciduoustree", "acorn_sapling", TUNING.DECIDUOUS_REGROWTH.DESOLATION_RESPAWN_TIME, {"deciduoustree"}, function()
     return (not _worldstate.isspring and 0) or 1
 end)
@@ -195,8 +198,12 @@ inst:DoTaskInTime(0, PopulateAreaDataFromReplacements)
 
 function self:LongUpdate(dt)
     for k, data in pairs(_replacementdata) do
-        local prefabtimemult = _replacementdata[k].timemult and _replacementdata[k].timemult() or 1
-        _internaltimes[k] = _internaltimes[k] + dt * TUNING.REGROWTH_TIME_MULTIPLIER * prefabtimemult
+        local diseased = self.inst.components.prefabswapmanager ~= nil
+                            and self.inst.components.prefabswapmanager:IsDiseasedPrefab(k)
+        if not diseased then
+            local prefabtimemult = _replacementdata[k].timemult and _replacementdata[k].timemult() or 1
+            _internaltimes[k] = _internaltimes[k] + dt * TUNING.REGROWTH_TIME_MULTIPLIER * prefabtimemult
+        end
     end
 
     for area,data in pairs(_areadata) do

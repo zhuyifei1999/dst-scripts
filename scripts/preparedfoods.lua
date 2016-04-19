@@ -249,7 +249,7 @@ local foods=
 	},
 	waffles =
 	{
-		test = function(cooker, names, tags) return names.butter and (names.berries or names.berries_cooked) and tags.egg end,
+		test = function(cooker, names, tags) return names.butter and (names.berries or names.berries_cooked or names.berries_juicy or names.berries_juicy_cooked) and tags.egg end,
 		priority = 10,
 		foodtype = FOODTYPE.VEGGIE,
 		health = TUNING.HEALING_HUGE,
@@ -351,7 +351,7 @@ local foods=
 
 	trailmix =
 	{
-		test = function(cooker, names, tags) return names.acorn_cooked and tags.seed and tags.seed >= 1 and (names.berries or names.berries_cooked) and tags.fruit and tags.fruit >= 1 and not tags.meat and not tags.veggie and not tags.egg and not tags.dairy end,
+		test = function(cooker, names, tags) return names.acorn_cooked and tags.seed and tags.seed >= 1 and (names.berries or names.berries_cooked or names.berries_juicy or names.berries_juicy_cooked) and tags.fruit and tags.fruit >= 1 and not tags.meat and not tags.veggie and not tags.egg and not tags.dairy end,
 		priority = 10,
 		foodtype = "VEGGIE",
 		health = TUNING.HEALING_MEDLARGE,

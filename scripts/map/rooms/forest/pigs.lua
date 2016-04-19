@@ -17,6 +17,7 @@ AddRoom("PigTown", {
 									distributeprefabs= {
 					                    grass = .05,
 					                    berrybush=.05,
+					                    berrybush_juicy = 0.025,
 									},
 					            }
 					})
@@ -43,6 +44,7 @@ AddRoom("PigVillage", {
 									distributeprefabs= {
 					                    grass = .05,
 					                    berrybush=.05,
+					                    berrybush_juicy = 0.025,
 									},
 					            }
 					})
@@ -99,6 +101,7 @@ AddRoom("PigCamp", {
 										wall_hay = 0.01,
 					                    grass = .15,
 					                    berrybush=.05,
+					                    berrybush_juicy = 0.025,
 									},
 					                }
 					})

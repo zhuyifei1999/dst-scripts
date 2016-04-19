@@ -48,6 +48,7 @@ AddRoom("WalrusHut_Rocky", {
 					                distributeprefabs=
 					                {
 										flint=0.5,
+										rock_petrified_tree = 3,
 										rock1=1,
 										rock2=1,
 										tallbirdnest=0.3,

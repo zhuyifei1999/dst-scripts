@@ -13,6 +13,7 @@ local assets =
     Asset("ANIM", "anim/hutch_pufferfish_build.zip"),
 
     Asset("SOUND", "sound/chester.fsb"),
+    Asset("SOUND", "sound/together.fsb"),
 
     Asset("MINIMAP_IMAGE", "hutch"),
     Asset("MINIMAP_IMAGE", "hutch_musicbox"),
@@ -35,17 +36,17 @@ local prefabs =
 
 local sounds =
 {
-    sleep = "dontstarve/creatures/hutch/sleep",
-    hurt = "dontstarve/creatures/hutch/hit",
-    pant = "dontstarve/creatures/hutch/pant",
-    death = "dontstarve/creatures/hutch/death",
-    open = "dontstarve/creatures/hutch/open",
-    close = "dontstarve/creatures/hutch/close",
-    pop = "dontstarve/creatures/hutch/pop",
-    lick = "dontstarve/creatures/hutch/lick",
-    boing = "dontstarve/creatures/hutch/land_hit",
-    land = "dontstarve/creatures/hutch/land",
-    musicbox = "dontstarve/creatures/hutch/one_man_band",
+    sleep = "dontstarve/creatures/together/hutch/sleep",
+    hurt = "dontstarve/creatures/together/hutch/hit",
+    pant = "dontstarve/creatures/together/hutch/pant",
+    death = "dontstarve/creatures/together/hutch/death",
+    open = "dontstarve/creatures/together/hutch/open",
+    close = "dontstarve/creatures/together/hutch/close",
+    pop = "dontstarve/creatures/together/hutch/pop",
+    lick = "dontstarve/creatures/together/hutch/lick",
+    boing = "dontstarve/creatures/together/hutch/land_hit",
+    land = "dontstarve/creatures/together/hutch/land",
+    musicbox = "dontstarve/creatures/together/hutch/one_man_band",
 }
 
 local function ShouldWakeUp(inst)
@@ -193,10 +194,10 @@ local function CheckBattery(inst)
             if inst._lightbattery == nil then
                 inst.Light:Enable(true)
                 inst.AnimState:Show("fx_lure_light")
-                inst.SoundEmitter:PlaySound("dontstarve/creatures/hutch/light_on")
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/hutch/light_on")
             end
         elseif inst._lightbattery ~= nil then
-            inst.SoundEmitter:PlaySound("dontstarve/creatures/hutch/light_off")
+            inst.SoundEmitter:PlaySound("dontstarve/creatures/together/hutch/light_off")
             inst.Light:Enable(false)
             inst.AnimState:Hide("fx_lure_light")
         end

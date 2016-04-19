@@ -1,7 +1,7 @@
 
 USE_SETTINGS_FILE = PLATFORM ~= "PS4" and PLATFORM ~= "NACL"
 
-PlayerProfile = Class(function(self)
+local PlayerProfile = Class(function(self)
     self.persistdata = 
     {
     	-- TODO: Some of this data should be synced across computers
@@ -19,6 +19,8 @@ PlayerProfile = Class(function(self)
         collection_name = nil,
         saw_new_user_popup = false,
         saw_new_host_picker = false,
+        install_id = os.time(),
+        play_instance = 0,
     }
 
   	--we should migrate the non-gameplay stuff to a separate file, so that we can save them whenever we want
@@ -50,6 +52,8 @@ function PlayerProfile:Reset()
     self.persistdata.customizationpresets = {}
     self.persistdata.saw_new_user_popup = false
     self.persistdata.saw_new_host_picker = false
+    self.persistdata.install_id = os.time()
+    self.persistdata.play_instance = 0
 
  	if not USE_SETTINGS_FILE then
         self.persistdata.volume_ambient = 7
@@ -79,6 +83,8 @@ function PlayerProfile:SoftReset()
     self.persistdata.customizationpresets = {}
     self.persistdata.saw_new_user_popup = false
     self.persistdata.saw_new_host_picker = false
+    self.persistdata.install_id = os.time()
+    self.persistdata.play_instance = 0
 
  	if not USE_SETTINGS_FILE then
         self.persistdata.volume_ambient = 7
@@ -600,6 +606,23 @@ function PlayerProfile:GetRenderQuality()
 	return self:GetValue("render_quality")
 end
 
+-- read only
+function PlayerProfile:GetInstallID()
+    return self:GetValue("install_id")
+end
+
+function PlayerProfile:GetPlayInstance()
+    local stashed = TheSim:GetStashedPlayInstance()
+    if stashed == -1 then
+        stashed = self:GetValue("play_instance")
+        TheSim:StashPlayInstance(stashed)
+        self:SetValue("play_instance", stashed + 1)
+        -- need to write this out right away, specifically because this should increment on crashes
+        self:Save()
+    end
+    return stashed
+end
+
 ----------------------------
 
 function PlayerProfile:IsWorldGenUnlocked(area, item)
@@ -693,6 +716,14 @@ function PlayerProfile:Set(str, callback)
 		if self.persistdata.autosave == nil then
 		    self.persistdata.autosave = true
 		end
+
+        if self.persistdata.install_id == nil then
+            self.persistdata.install_id = os.time()
+        end
+
+        if self.persistdata.play_instance == nil then
+            self.persistdata.play_instance = 0
+        end
 		    
  	    if USE_SETTINGS_FILE then
 			-- Copy over old settings

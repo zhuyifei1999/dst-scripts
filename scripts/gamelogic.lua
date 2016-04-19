@@ -1,5 +1,4 @@
 require "mods"
-require "playerprofile"
 require "playerdeaths"
 require "playerhistory"
 require "saveindex"
@@ -7,6 +6,7 @@ require "map/extents"
 require "perfutil"
 require "maputil"
 require "constants"
+local Stats = require("stats")
 
 -- globals
 chestfunctions = require("scenarios/chestfunctions")
@@ -306,6 +306,8 @@ local function PopulateWorld(savedata, profile)
 
         world.hideminimap = savedata.map.hideminimap
         world.topology = savedata.map.topology
+        world.prefabswapstatus = savedata.map.prefabswapstatus
+
         world.generated = savedata.map.generated
         world.meta = savedata.meta
         assert(savedata.map.topology.ids, "[MALFORMED SAVE DATA] Map missing topology information. This save file is too old, and is missing neccessary information.")
@@ -388,7 +390,7 @@ local function PopulateWorld(savedata, profile)
             end
 
             -- Clear out one time overrides
-            local onetime = {"season_start", "autumn", "winter", "spring", "summer", "frograin", "wildfires"}
+            local onetime = {"season_start", "autumn", "winter", "spring", "summer", "frograin", "wildfires", "prefabswaps"}
             for i,override in ipairs(onetime) do
                 if world.topology.overrides[override] ~= nil then
                     print("removing onetime override",override)
@@ -642,9 +644,9 @@ local function DoInitGame(savedata, profile)
 
 	if global_error_widget == nil then
 	    --clear the player stats, so that it doesn't count items "acquired" from the save file
-	    GetProfileStats(true)
+	    Stats.ClearProfileStats()
 
-		RecordSessionStartStats()
+		Stats.RecordSessionStartStats()
 		
 	    --after starting everything up, give the mods additional environment variables
 	    ModManager:SimPostInit( nil )
@@ -919,7 +921,7 @@ local function OnFilesLoaded()
     UpdateGamePurchasedState(OnUpdatePurchaseStateComplete)
 end
 
-Profile = PlayerProfile()
+Profile = require("playerprofile")()
 SaveGameIndex = SaveIndex()
 Morgue = PlayerDeaths()
 PlayerHistory = PlayerHistory()
@@ -940,4 +942,4 @@ if TheNet:IsDedicated() and not TheNet:GetIsServer() and TheNet:IsDedicatedOffli
 	StartDedicatedServer()
 end
 
-InitStats()
+Stats.InitStats()

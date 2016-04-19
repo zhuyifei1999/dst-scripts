@@ -405,7 +405,6 @@ function PlayerStatusScreen:DoInit(ClientObjs)
         playerListing.perf:SetPosition(295, 4, 0)
         playerListing.perf:SetScale(unpack(perf_scale))
 
-        local server_has_admin = TheNet:GetServerHasPresentAdmin()
         local this_user_is_dedicated_server = empty ~= true and v.performance ~= nil and not TheNet:GetServerIsClientHosted()
 
     	playerListing.viewprofile = playerListing:AddChild(ImageButton("images/scoreboard.xml", "addfriend.tex", "addfriend.tex", "addfriend.tex", "addfriend.tex", nil, {1,1}, {0,0}))
@@ -692,7 +691,6 @@ function PlayerStatusScreen:DoInit(ClientObjs)
                 playerListing.perf:SetScale(unpack(PERF_CLIENT_SCALE))
             end
 
-	        local server_has_admin = TheNet:GetServerHasPresentAdmin()
 	        local this_user_is_dedicated_server = v.performance ~= nil and not TheNet:GetServerIsClientHosted()
 
 			playerListing.viewprofile:SetOnClick(

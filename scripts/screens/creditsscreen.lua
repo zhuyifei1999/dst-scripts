@@ -8,40 +8,56 @@ local UIAnim = require "widgets/uianim"
 local Widget = require "widgets/widget"
 local TEMPLATES = require "widgets/templates"
 
-local num_name_page_types = 5
-
-local internal_names =
+local internal_names_pages =
 {
-    {x=300,y=30, bg=1, build="credits", bank="credits", anim="1", names=true},
-    {x=-220,y=30, bg=3, build="credits", bank="credits", anim="2", names=true},
-    {x=-325,y=30, bg=2, build="credits", bank="credits", anim="3", names=true},
-    {x=260,y=30, bg=1, build="credits", bank="credits", anim="4", names=true},
-    {x=-300,y=30, bg=2, build="credits", bank="credits", anim="5", names=true},
+    {x=300, y=30, bg=1, build="credits", bank="credits", anim="1", names=true},
+    {x=-220,y=30, bg=2, build="credits", bank="credits", anim="2", names=true},
+    {x=-325,y=30, bg=3, build="credits", bank="credits", anim="3", names=true},
+    {x=260, y=30, bg=1, build="credits", bank="credits", anim="4", names=true},
+    {x=-300,y=30, bg=2, build="credits", bank="credits", anim="5", names=true},    
+    --[[{x=300, y=30, bg=3, build="credits3", bank="credits3", anim="12", names=true},
+    {x=-300,y=30, bg=1, build="credits4", bank="credits4", anim="13", names=true},
+    {x=-300,y=30, bg=2, build="credits4", bank="credits4", anim="14", names=true},
+    {x=260, y=30, bg=3, build="credits4", bank="credits4", anim="15", names=true},
+    {x=-300,y=30, bg=1, build="credits4", bank="credits4", anim="16", names=true},
+    {x=300, y=30, bg=2, build="credits5", bank="credits5", anim="17", names=true},
+    {x=-320,y=30, bg=3, build="credits5", bank="credits5", anim="18", names=true},
+    {x=300, y=30, bg=1, build="credits5", bank="credits5", anim="19", names=true},
+    {x=-300,y=30, bg=2, build="credits6", bank="credits6", anim="20", names=true},
+    {x=80,y=30, bg=2, build="credits7", bank="credits7", anim="21", names=true},
+    {x=-300,y=30, bg=2, build="credits8", bank="credits8", anim="23", names=true},]]
 }
 
 local pc_pages=
 {
-    {x=220,y=0, bg=3, tx=220,ty=200,  title =STRINGS.UI.CREDITS.THANKYOU, build="credits", bank="credits", anim="6", flavour = STRINGS.UI.CREDITS.EXTRA_THANKS},    -- EXTRA THANKS 
-    {x=-260,y=0, bg=2, tx=-260,ty=200, title =STRINGS.UI.CREDITS.THANKYOU, build="credits", bank="credits", anim="7", flavour = STRINGS.UI.CREDITS.EXTRA_THANKS_2},    -- EXTRA THANKS - STEAM
-    {x=0,y=0, bg=1, tx=0,ty=200, title =STRINGS.UI.CREDITS.ALTGAMES.TITLE, build="credits2", bank="credits2", anim="8", flavour = table.concat(STRINGS.UI.CREDITS.ALTGAMES.NAMES, "\n")},    -- ALTGAME
+    {x=260,y=0, bg=3, tx=260,ty=200, title = STRINGS.UI.CREDITS.THANKYOU, build="credits", bank="credits", anim="6", flavour = STRINGS.UI.CREDITS.EXTRA_THANKS},    -- EXTRA THANKS 
+    {x=-320,y=0, bg=2, tx=-320,ty=200, title = STRINGS.UI.CREDITS.THANKYOU, build="credits", bank="credits", anim="7", flavour = STRINGS.UI.CREDITS.EXTRA_THANKS_2},    -- EXTRA THANKS - STEAM
+    {x=0,y=0, bg=1, tx=0,ty=200, title = STRINGS.UI.CREDITS.ALTGAMES.TITLE, build="credits2", bank="credits2", anim="8", flavour = table.concat(STRINGS.UI.CREDITS.ALTGAMES.NAMES, "\n")},    -- ALTGAME
     {x=0,y=60, bg=3, flavour = STRINGS.UI.CREDITS.FMOD, build="credits2", bank="credits2", anim="9"},    -- FMOD
     {x=0,y=180, bg=2, tx=0,ty=180, title =STRINGS.UI.CREDITS.THANKYOU, thanks=true, delay=10, build="credits2", bank="credits2", anim="10"},      -- THANKS
-    {x=0,y=180, bg=1, build="credits2", bank="credits2", anim="11", klei=true},      -- KLEI
 }
 
 local ps4_pages =
 {
-    {x=220,y=0, bg=1, tx=220,ty=200,  title =STRINGS.UI.CREDITS.THANKYOU, build="credits", bank="credits", anim="6", flavour = STRINGS.UI.CREDITS.EXTRA_THANKS},    -- GOOGLE 
-    {x=-260,y=0, bg=3, tx=-260,ty=200, title =STRINGS.UI.CREDITS.THANKYOU, build="credits", bank="credits", anim="7", flavour = STRINGS.UI.CREDITS.EXTRA_THANKS_2},    -- STEAM
+    {x=260,y=0, bg=1, tx=260,ty=200,  title =STRINGS.UI.CREDITS.THANKYOU, build="credits", bank="credits", anim="6", flavour = STRINGS.UI.CREDITS.EXTRA_THANKS},    -- GOOGLE 
+    {x=-320,y=0, bg=3, tx=-320,ty=200, title =STRINGS.UI.CREDITS.THANKYOU, build="credits", bank="credits", anim="7", flavour = STRINGS.UI.CREDITS.EXTRA_THANKS_2},    -- STEAM
     {x=220,y=0, bg=2, tx=220,ty=200,  title =STRINGS.UI.CREDITS.THANKYOU, build="credits", bank="credits", anim="1", flavour = STRINGS.UI.CREDITS.SONY_THANKS},    -- SONY 
     {x=-260,y=0, bg=1, tx=-260, ty=200, title =STRINGS.UI.CREDITS.THANKYOU, build="credits", bank="credits", anim="3", flavour = table.concat(STRINGS.UI.CREDITS.ALTGAMES.NAMES, "\n")},    -- ALTGAMES
     {x=-220,y=0, bg=3, x2 = 260, y2 = 0, tx=20,ty=250, title = STRINGS.UI.CREDITS.BABEL.TITLE, build="credits2", bank="credits2", anim="8", flavour =table.concat(STRINGS.UI.CREDITS.BABEL.NAMES1, "\n"), flavour2 =table.concat(STRINGS.UI.CREDITS.BABEL.NAMES2, "\n")},    -- BABEL  
     {x=-220,y=0, bg=3, x2 = 260, y2 = 0, tx=20,ty=250, title = STRINGS.UI.CREDITS.BABEL.TITLE, build="credits2", bank="credits2", anim="9", flavour =table.concat(STRINGS.UI.CREDITS.BABEL.NAMES1, "\n"), flavour2 =table.concat(STRINGS.UI.CREDITS.BABEL.NAMES2, "\n")},    -- BABEL  
 	{x=-100,y=60, bg=2, flavour = STRINGS.UI.CREDITS.FMOD, build="credits", bank="credits", anim="2"},    -- FMOD    
-    {x=0,y=180, bg=1, build="credits2", bank="credits2", anim="11", klei=true},      -- KLEI
 }
 
-local names_per_page = 6
+
+    
+local klei_pages =
+{
+    {x=0,y=180, bg=1, build="credits2", bank="credits2", anim="11"},
+    --{x=0,y=180, bg=1, build="credits8", bank="credits8", anim="24"},
+}
+
+
+local names_per_page = 5
 local PS4CREDITS = PLATFORM == "PS4"
 
 local CreditsScreen = Class(Screen, function(self)
@@ -54,16 +70,7 @@ local CreditsScreen = Class(Screen, function(self)
     self.bg:SetVAnchor(ANCHOR_MIDDLE)
     self.bg:SetHAnchor(ANCHOR_MIDDLE)
     self.bg:SetScaleMode(SCALEMODE_FILLSCREEN)
-
-    self.bgcolors = 
-    {
-        BGCOLOURS.RED,
-        BGCOLOURS.YELLOW,
-        BGCOLOURS.PURPLE
-    }
-    TintBackground(self.bg)
-    -- self.bg:SetTint(unpack(self.bgcolors[1]))
-
+    self.bg:SetTint(unpack(BGCOLOURS.HALF))
 
     self.klei_img = self:AddChild(Image("images/ui.xml", "klei_new_logo.tex"))
     self.klei_img:SetVAnchor(ANCHOR_MIDDLE)
@@ -89,7 +96,6 @@ local CreditsScreen = Class(Screen, function(self)
     self.worldanim = self.bottom_root:AddChild(UIAnim())
     self.worldanim:GetAnimState():SetBuild("credits")
     self.worldanim:GetAnimState():SetBank("credits")
-    self.worldanim:GetAnimState():PlayAnimation("1", true)
 
     self.flavourtext = self.center_root:AddChild(Text(TITLEFONT, 70))
     self.flavourtext2 = self.center_root:AddChild(Text(TITLEFONT, 70))
@@ -99,34 +105,14 @@ local CreditsScreen = Class(Screen, function(self)
 
     TheFrontEnd:DoFadeIn(2)
     
-    self.credit_names = deepcopy(STRINGS.UI.CREDITS.NAMES)
-
-    if PS4CREDITS then
-        table.insert(self.credit_names, "Auday Hussein")
-    end
-
-    shuffleArray(self.credit_names)
-    
-    local num_credit_pages = math.floor(#self.credit_names / (names_per_page-1))
-    
-    self.num_leftover_names = #self.credit_names - num_credit_pages* (names_per_page-1)
-    self.credit_name_idx = 1
-
-    self.pages = {}
-    for k = 1, num_credit_pages do
-        table.insert(self.pages, internal_names[1+ (k-1) % num_name_page_types])
-    end
-	for k,v in ipairs( PS4CREDITS and ps4_pages or pc_pages) do
-        table.insert(self.pages, v)
-	end
-
-
     self.titletext = self.center_root:AddChild(Text(TITLEFONT, 70))
     self.titletext:SetPosition(0, 180, 0)
     self.titletext:SetString(STRINGS.UI.CREDITS.THANKYOU)
     self.titletext:Hide()
 
-
+	self:SetupRandomPages()
+	
+    self.credit_name_idx = 1
     self.page_order_idx = 1
     self:ShowNextPage()
     
@@ -181,6 +167,29 @@ local CreditsScreen = Class(Screen, function(self)
 end)
 
 
+function CreditsScreen:SetupRandomPages()
+    self.credit_names = deepcopy(STRINGS.UI.CREDITS.NAMES)
+    if PS4CREDITS then
+        table.insert(self.credit_names, "Auday Hussein")
+    end
+    
+    self.num_credit_pages = math.floor(#self.credit_names / (names_per_page-1))    
+    self.num_leftover_names = #self.credit_names - self.num_credit_pages * (names_per_page-1)
+    
+    shuffleArray(self.credit_names)
+    
+    self.pages = {}
+	local offset = 0--math.floor(GetRandomMinMax(0,#internal_names_pages))
+	for k = 1, self.num_credit_pages do
+        table.insert(self.pages, internal_names_pages[1+((offset+k) % #internal_names_pages)])
+    end
+	for k,v in ipairs( PS4CREDITS and ps4_pages or pc_pages) do
+        table.insert(self.pages, v)
+	end
+	local ki = math.floor(GetRandomMinMax(0,#klei_pages))
+	table.insert(self.pages, klei_pages[1+ki])
+end
+
 function CreditsScreen:OnBecomeActive()
     CreditsScreen._base.OnBecomeActive(self)
     TheFrontEnd:GetSound():PlaySound("dontstarve/music/gramaphone_ragtime", "creditsscreenmusic")    
@@ -208,17 +217,28 @@ function CreditsScreen:OnControl(control, down)
 end
 
 
+function CreditsScreen:OnUpdate(dt)
+	if self.delay ~= nil then
+		self.delay = self.delay - dt
+		if self.delay < 0 then
+			self:ShowNextPage()			
+		end
+	else
+		if self.worldanim:GetAnimState():AnimDone() then
+			self:ShowNextPage()
+		end
+	end
+end
+
 function CreditsScreen:ShowNextPage()
     local page = self.pages[self.page_order_idx]
 
     TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/creditpage_flip", "flippage")   
-    local bgidx = page.bg or 1
-    self.bg:SetTint(unpack(self.bgcolors[page.bg]))
 
     self.worldanim:Show()
     self.worldanim:GetAnimState():SetBuild(page.build)
     self.worldanim:GetAnimState():SetBank(page.bank)
-    self.worldanim:GetAnimState():PlayAnimation(page.anim, true)
+    self.worldanim:GetAnimState():PlayAnimation(page.anim)
 
     if page.title then
         self.titletext:Show()
@@ -255,8 +275,6 @@ function CreditsScreen:ShowNextPage()
 		self.flavourtext2:Hide()
 	end
 	
-	
-	        
     if page.names then
         self.flavourtext:Show()
         self.flavourtext:SetPosition(page.x or 0, page.y or 0, 0)
@@ -280,10 +298,10 @@ function CreditsScreen:ShowNextPage()
     self.page_order_idx = self.page_order_idx + 1
     if self.page_order_idx > #self.pages then
         self.page_order_idx = 1
+        self:SetupRandomPages()
     end
 
-    local delay = page.delay or 3.3
-	self.inst:DoTaskInTime(delay, function() self:ShowNextPage() end)
+    self.delay = page.delay
 end
 
 

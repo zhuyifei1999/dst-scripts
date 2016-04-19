@@ -34,9 +34,6 @@ local function OnWorked(inst, worker)
         owner.components.childspawner:OnChildKilled(inst)
     end
     if worker.components.inventory ~= nil then
-        if METRICS_ENABLED then
-            FightStat_Caught(inst)
-        end
         worker.components.inventory:GiveItem(inst, nil, inst:GetPosition())
     end
 end
