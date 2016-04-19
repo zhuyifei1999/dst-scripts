@@ -346,10 +346,6 @@ function Combat:GiveUp()
         end
     end
 
--- KAJ: TODO: Metrics related. disabled until we know what to do
---    if METRICS_ENABLED and GetPlayer() == self.target then
---        FightStat_GaveUp(self.inst)
---    end
     self.inst:PushEvent("giveuptarget", {target = self.target})
     self:DropTarget()
 end

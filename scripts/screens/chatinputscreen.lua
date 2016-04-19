@@ -136,6 +136,11 @@ function ChatInputScreen:Run()
             --print("parameters is [".. parameters.. "]")
 
             TheWorld.net.components.voter:StartVote( ThePlayer, command, parameters )
+        elseif string.sub(chat_string, 2, 4) == "bug" then
+            VisitURL("http://forums.kleientertainment.com/klei-bug-tracker/dont-starve-together/")
+        elseif string.sub(chat_string, 2, 7) == "rescue" then
+            -- This is a real command, send it to the server. Note: If we add more of these, they should probably be bundled up in chatcommands.lua or something...
+            TheNet:SendSlashCmdToServer(chat_string)
         else
             --Check emotes (remote command; must be sent to server)
             local cmd--[[, params]] = emotes.translate(chat_string)

@@ -80,6 +80,7 @@ AddRoom("GreenMushSinkhole", {
             grass = 0.1,
             sapling = 0.1,
             berrybush = 0.05,
+            berrybush_juicy = 0.025,
 
             cave_fern = 3.5,
 
@@ -137,6 +138,7 @@ AddRoom("GreenMushRabbits", {
             grass = 0.1,
             sapling = 0.1,
             berrybush = 0.05,
+            berrybush_juicy = 0.025,
 
             cave_fern = 3.5,
 

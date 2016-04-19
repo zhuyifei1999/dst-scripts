@@ -117,6 +117,14 @@ function FindSafeSpawnLocation(x, y, z)
     end
 end
 
+function FindNearbyLand(position)
+    local finaloffset = FindValidPositionByFan(0, 8, 8, function(offset)
+        local run_point = position+offset
+        return TheWorld.Map:IsAboveGroundAtPoint(run_point.x, run_point.y, run_point.z)
+    end)
+    return position + finaloffset
+end
+
 function GetRandomInstWithTag(tag, inst, radius)
     local x, y, z = inst.Transform:GetWorldPosition()
     local ents = TheSim:FindEntities(x, y, z, radius, type(tag) == "string" and { tag } or tag)

@@ -1,6 +1,7 @@
 local assets =
 {
     Asset("ANIM", "anim/sapling.zip"),
+    Asset("ANIM", "anim/sapling_diseased_build.zip"),
     Asset("SOUND", "sound/common.fsb"),
 }
 
@@ -8,7 +9,27 @@ local prefabs =
 {
     "twigs",
     "dug_sapling",
+    "disease_fx_small",
+    "disease_puff",
+    "diseaseflies",
 }
+
+local function ondiseaseddeathfn(inst)
+    SpawnPrefab("disease_puff").Transform:SetPosition(inst.Transform:GetWorldPosition())
+    inst:Remove()
+end
+
+local function ondiseasedfn(inst)
+    inst.AnimState:SetBuild("sapling_diseased_build")
+    SpawnPrefab("disease_fx_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
+    inst.components.pickable:ChangeProduct("spoiled_food")
+end
+
+local function onrebirthedfn(inst)
+    if inst.components.pickable:CanBePicked() then
+        inst.components.pickable:MakeEmpty()
+    end
+end
 
 local function ontransplantfn(inst)
     inst.components.pickable:MakeEmpty()
@@ -18,37 +39,37 @@ local function dig_up(inst, chopper)
     if inst.components.pickable and inst.components.pickable:CanBePicked() then
         inst.components.lootdropper:SpawnLootPrefab("twigs")
     end
-    if not inst:HasTag("withered") then 
+    if not inst:HasTag("withered") then
         local bush = inst.components.lootdropper:SpawnLootPrefab("dug_sapling")
-    else 
+    else
         inst.components.lootdropper:SpawnLootPrefab("twigs")
     end
     inst:Remove()
 end
 
 local function onpickedfn(inst)
-    inst.AnimState:PlayAnimation("rustle") 
-    inst.AnimState:PushAnimation("picked", false) 
+    inst.AnimState:PlayAnimation("rustle")
+    inst.AnimState:PushAnimation("picked", false)
 end
 
 local function onregenfn(inst)
-    inst.AnimState:PlayAnimation("grow") 
+    inst.AnimState:PlayAnimation("grow")
     inst.AnimState:PushAnimation("sway", true)
 end
 
 local function makeemptyfn(inst)
-    if inst:HasTag("withered") then
+    if not POPULATING and inst:HasTag("withered") or inst.AnimState:IsCurrentAnimation("idle_dead") then
         inst.AnimState:PlayAnimation("dead_to_empty")
-        inst.AnimState:PushAnimation("empty")
+        inst.AnimState:PushAnimation("empty", false)
     else
         inst.AnimState:PlayAnimation("empty")
     end
 end
 
 local function makebarrenfn(inst, wasempty)
-    if inst:HasTag("withered") then
+    if not POPULATING and inst:HasTag("withered") then
         inst.AnimState:PlayAnimation(wasempty and "empty_to_dead" or "full_to_dead")
-        inst.AnimState:PushAnimation("idle_dead")
+        inst.AnimState:PushAnimation("idle_dead", false)
     else
         inst.AnimState:PlayAnimation("idle_dead")
     end
@@ -103,9 +124,14 @@ local function fn()
     inst.components.workable:SetOnFinishCallback(dig_up)
     inst.components.workable:SetWorkLeft(1)
 
+    inst:AddComponent("diseaseable")
+    inst.components.diseaseable:SetDiseasedFn(ondiseasedfn)
+    inst.components.diseaseable:SetRebirthedFn(onrebirthedfn)
+    inst.components.diseaseable:SetDiseasedDeathFn(ondiseaseddeathfn)
+
     MakeMediumBurnable(inst)
     MakeSmallPropagator(inst)
-    MakeNoGrowInWinter(inst)    
+    MakeNoGrowInWinter(inst)
     MakeHauntableIgnite(inst)
     ---------------------   
 

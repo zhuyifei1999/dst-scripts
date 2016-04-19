@@ -2465,9 +2465,13 @@ function PlayerController:OnLeftClick(down)
         end
     elseif act.action == ACTIONS.LOOKAT
         and act.target ~= nil
-        and act.target:HasTag("player")
+        and (act.target:HasTag("player") or act.target:HasTag("playerskeleton"))
         and self.inst.HUD ~= nil then
-        local client_obj = TheNet:GetClientTableForUser(act.target.userid)
+
+        local client_obj =
+            (act.target.userid ~= nil and TheNet:GetClientTableForUser(act.target.userid)) or
+            (act.target.GetSkeletonAvatarData ~= nil and act.target:GetSkeletonAvatarData()) or
+            nil
         if client_obj ~= nil then
             client_obj.inst = act.target
             self.inst.HUD:TogglePlayerAvatarPopup(client_obj.name, client_obj, true)

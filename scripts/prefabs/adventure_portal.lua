@@ -36,7 +36,7 @@ local function OnActivate(inst)
 	end
 
 	-- A/B test
-	local bodytext = GetTestGroup() == 0 and STRINGS.UI.STARTADVENTURE.BODY or STRINGS.UI.STARTADVENTURE.BODY_TEST
+	local bodytext = require("stats").GetTestGroup() == 0 and STRINGS.UI.STARTADVENTURE.BODY or STRINGS.UI.STARTADVENTURE.BODY_TEST
 
 	TheFrontEnd:PushScreen(BigPopupDialogScreen(STRINGS.UI.STARTADVENTURE.TITLE, bodytext,
 			{{text=STRINGS.UI.STARTADVENTURE.YES, cb = startadventure},

@@ -7,6 +7,7 @@ local MATERIAL_NAMES =
 {
     "wood",
     "metal",
+    "rock",
     "stone",
     "straw",
     "pot",
@@ -15,7 +16,7 @@ local MATERIALS = table.invert(MATERIAL_NAMES)
 
 local MATERIAL_SOUND_MAP =
 {
-    rock = "dontstarve/wilson/rock_break",
+    ["rock"] = "dontstarve/wilson/rock_break",
     --default: "dontstarve/common/destroy_"..material
 }
 

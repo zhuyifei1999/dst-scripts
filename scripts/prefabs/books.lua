@@ -157,7 +157,7 @@ local book_defs =
             reader.components.sanity:DoDelta(-TUNING.SANITY_LARGE)
 
             local range = 30
-            local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, range)
+            local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, range, nil, { "pickable", "stump", "withered", "INLIMBO" })
             for k, v in pairs(ents) do
                 if v.components.pickable ~= nil then
                     v.components.pickable:FinishGrowing()
@@ -166,8 +166,8 @@ local book_defs =
                 if v.components.crop ~= nil then
                     v.components.crop:DoGrow(TUNING.TOTAL_DAY_TIME * 3, true)
                 end
-                
-                if v.components.growable ~= nil and v:HasTag("tree") and not v:HasTag("stump") then
+
+                if v.components.growable ~= nil and v:HasTag("tree") --[[and not v:HasTag("stump")]] then
                     v.components.growable:DoGrowth()
                 end
             end

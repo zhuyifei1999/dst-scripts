@@ -10,6 +10,7 @@ AddRoom("BGNoise", {
 					                {
 										flint=0.4,
 										rocks=0.4,
+										rock_petrified_tree = 0.3,
 										rock1=0.1,
 										rock2=0.1,
 										grass=0.09,
@@ -18,7 +19,10 @@ AddRoom("BGNoise", {
 										spiderden=0.001,
 										beehive=0.003,
 										berrybush=0.05,
+										berrybush_juicy = 0.025,
 										sapling=0.2,
+										twiggytree = 0.2,
+										ground_twigs = 0.02,											
 										pond=.001,
 					                    blue_mushroom = .001,
 					                    green_mushroom = .001,

@@ -49,6 +49,8 @@ local Rideable = Class(function(self, inst)
     inst:ListenForEvent("death", function()
         self:SetSaddle(nil, nil)
     end)
+
+    self._OnRiderDoAttackOtherCB = function(other, data) self.inst:PushEvent("riderdoattackother", data) end
 end,
 nil,
 {
@@ -124,8 +126,13 @@ function Rideable:SetRider(rider)
     local oldrider = self.rider
     self.rider = rider
 
+    if oldrider ~= nil then
+        self.inst:RemoveEventCallback("onattackother", self._OnRiderDoAttackOtherCB, oldrider)
+    end
+
     if rider ~= nil then
         StartRiddenTick(self)
+        self.inst:ListenForEvent("onattackother", self._OnRiderDoAttackOtherCB, rider)
     else
         StopRiddenTick(self)
         self.lastridetime = GetTime()

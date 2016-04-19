@@ -149,6 +149,8 @@ return {
 	ANNOUNCE_BECOMEGHOST = "ooOOoooOOOoOooo!!",
 	ANNOUNCE_GHOSTDRAIN = "My humanity is about to start slipping away...",
 
+	ANNOUNCE_PETRIFED_TREES = "Did I just hear trees screaming?",
+
 	DESCRIBE_SAMECHARACTER = "Is that a mirror?",
 	
 	BATTLECRY =
@@ -566,6 +568,7 @@ return {
 			WITHERED = "Nothing will grow in this heat.",
 			GENERIC = "Red berries taste the best.",
 			PICKED = "Maybe they'll grow back?",
+			DISEASED = "It looks pretty sick.",
 		},
 		BIGFOOT = "That is one biiig foot.",
 		BIRDCAGE =
@@ -792,6 +795,14 @@ return {
 			CHOPPED = "Take that, nature!",
 			GENERIC = "This sad tree has no cones.",
 		},
+		TWIGGYTREE = 
+		{
+			BURNING = "What a waste of wood.",
+			BURNT = "I feel like I could have prevented that.",
+			CHOPPED = "Take that, nature!",
+			GENERIC = "It's all sticky.",			
+			DISEASED = "It looks sick. More so than usual.",
+		},
 		EYEPLANT = "I think I'm being watched.",
 		FARMPLOT =
 		{
@@ -874,6 +885,12 @@ return {
 			BURNING = "That's burning fast!",
 			GENERIC = "It's a tuft of grass.",
 			PICKED = "It was cut down in the prime of its life.",
+			DISEASED = "It looks pretty sick.",
+		},
+		GRASSGEKKO = 
+		{
+			GENERIC = "It's an extra leafy lizard.",	
+			DISEASED = "It looks pretty sick.",
 		},
 		GREEN_CAP = "It seems pretty normal.",
 		GREEN_CAP_COOKED = "It's different now...",
@@ -1201,6 +1218,7 @@ return {
 			NORMAL = "Nice and comfy.",
 		},
 		ROCK = "It wouldn't fit in my pocket.",
+		PETRIFIED_TREE = "It looks scared stiff.",
 		ROCK_ICE = 
 		{
 			GENERIC = "A very isolated glacier.",
@@ -1227,6 +1245,7 @@ return {
 			WITHERED = "It might be okay if it was cooler.",
 			GENERIC = "Baby trees are so cute!",
 			PICKED = "That'll teach him.",
+			DISEASED = "It looks pretty sick.",
 		},
 		SEEDS = "Each one is a tiny mystery.",
 		SEEDS_COOKED = "I cooked all the life out of 'em!",

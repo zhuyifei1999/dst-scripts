@@ -1,5 +1,7 @@
 return 
 {
     "debugkeys",
+    "debugcommands",
+    "consolecommands",
 }
 

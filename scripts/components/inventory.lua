@@ -1,6 +1,6 @@
 local function OnDeath(inst)
     if inst.components.inventory ~= nil then
-        inst.components.inventory:DropEverything(true)
+		inst.components.inventory:DropEverything(true)
     end
 end
 
@@ -20,7 +20,7 @@ local Inventory = Class(function(self, inst)
     self.maxslots = MAXITEMSLOTS
 
     self.equipslots = {}
-    
+
     self.activeitem = nil
     self.acceptsstacks = true
     self.ignorescangoincontainer = false
@@ -243,9 +243,6 @@ function Inventory:ApplyDamage(damage, attacker, weapon)
     -- print("\tabsorbed%", absorbed_percent, "total_absorption", total_absorption, "absorbed_damage", absorbed_damage, "leftover_damage", leftover_damage)
 
     if total_absorption > 0 then
-        if METRICS_ENABLED then
-            FightStat_Absorb(absorbed_damage)
-        end
         ProfileStatsAdd("armor_absorb", absorbed_damage)
 
         for armor, amt in pairs(absorbers) do

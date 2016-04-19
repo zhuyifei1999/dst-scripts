@@ -11,14 +11,6 @@ local TEMPLATES = require "widgets/templates"
 
 local REFRESH_INTERVAL = .5
 
-local EQUIPSLOT_IDS = {}
-local slot = 0
-for k, v in pairs(EQUIPSLOTS) do
-    slot = slot + 1
-    EQUIPSLOT_IDS[v] = slot
-end
-slot = nil
-
 local PlayerAvatarPopup = Class(Widget, function(self, owner, player_name, data, show_net_profile)
     Widget._ctor(self, "PlayerAvatarPopupScreen")
 
@@ -319,7 +311,7 @@ function PlayerAvatarPopup:OnUpdate(dt)
         return
     elseif self.time_to_refresh > dt then
         self.time_to_refresh = self.time_to_refresh - dt
-    else
+    elseif self.userid ~= nil then
         self.time_to_refresh = REFRESH_INTERVAL
         local client_obj = TheNet:GetClientTableForUser(self.userid)
         if client_obj ~= nil then

@@ -138,11 +138,6 @@ require("netvars")
 require("networking")
 require("networkclientrpc")
 require("shardnetworking")
-
-if METRICS_ENABLED then
-require("overseer")
-end
-
 require("fileutil")
 require("prefablist")
 require("standardcomponents")
@@ -179,6 +174,8 @@ local Mixer = require("mixer")
 TheMixer = Mixer.Mixer()
 require("mixes")
 TheMixer:PushMix("start")
+
+local Stats = require("stats")
 
 
 Prefabs = {}
@@ -288,7 +285,7 @@ local function ModSafeStartup()
 
     -- I think we've got everything we need by now...
     if TheSim:GetNumLaunches() == 1 then
-        RecordGameStartStats()
+        Stats.RecordGameStartStats()
     end
 
 end

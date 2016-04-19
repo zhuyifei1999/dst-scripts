@@ -19,6 +19,16 @@ local acorn_prefabs =
     "deciduoustree",
 }
 
+local twiggy_nut_assets =
+{
+    Asset("ANIM", "anim/twiggy_nut.zip"),
+}
+
+local twiggy_nut_prefabs =
+{
+    "twiggy_short",
+}
+
 local function growtree(inst)
     local tree = SpawnPrefab(inst.growprefab)
     if c_sel() == inst then c_select(tree) end
@@ -104,4 +114,5 @@ end
 
 return Prefab("pinecone_sapling", sapling_fn("pinecone", "idle_planted", "evergreen_short", "evergreen"), pinecone_assets, pinecone_prefabs),
     Prefab("lumpy_sapling", sapling_fn("pinecone", "idle_planted2", "evergreen_sparse_short", "evergreen_sparse"), pinecone_assets, pinecone_prefabs),
-    Prefab("acorn_sapling", sapling_fn("acorn", "idle_planted", "deciduoustree", "deciduoustree"), acorn_assets, acorn_prefabs)
+    Prefab("acorn_sapling", sapling_fn("acorn", "idle_planted", "deciduoustree", "deciduoustree"), acorn_assets, acorn_prefabs),
+    Prefab("twiggy_nut_sapling", sapling_fn("twiggy_nut", "idle_planted", "twiggy_short", "twiggytree"),  twiggy_nut_assets, twiggy_nut_prefabs)

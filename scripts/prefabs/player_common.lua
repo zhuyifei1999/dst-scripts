@@ -634,6 +634,7 @@ local function RemoveDeadPlayer(inst, spawnskeleton)
             skel.Transform:SetPosition(x, y, z)
             -- Set the description
             skel:SetSkeletonDescription(inst.prefab, inst:GetDisplayName(), inst.deathcause, inst.deathpkname)
+            skel:SetSkeletonAvatarData(inst.deathclientobj)
         end
 
         -- Death FX
@@ -667,6 +668,7 @@ local function OnPlayerDeath(inst, data)
     inst.components.inventory:Close()
     inst:PushEvent("ms_closepopups")
 
+    inst.deathclientobj = TheNet:GetClientTableForUser(inst.userid)
     inst.deathcause = data ~= nil and data.cause or "unknown"
     inst.deathpkname =
         data ~= nil and
@@ -861,6 +863,7 @@ local function OnRespawnFromGhost(inst, data)
         return
     end
 
+    inst.deathclientobj = nil
     inst.deathcause = nil
     inst.deathpkname = nil
     inst:ShowHUD(false)
@@ -916,6 +919,7 @@ local function OnMakePlayerGhost( inst, data )
             skel.Transform:SetPosition(x, y, z)
             -- Set the description
             skel:SetSkeletonDescription(inst.prefab, inst:GetDisplayName(), inst.deathcause, inst.deathpkname)
+            skel:SetSkeletonAvatarData(inst.deathclientobj)
         end
     end
 
@@ -1700,11 +1704,6 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
 
         inst:AddComponent("skinner")
         inst:AddComponent("giftreceiver")
-        -------
-        if METRICS_ENABLED then
-            inst:AddComponent("overseer")
-        end
-        -------
 
         inst:AddInherentAction(ACTIONS.PICK)
         inst:AddInherentAction(ACTIONS.SLEEPIN)

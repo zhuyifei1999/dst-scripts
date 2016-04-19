@@ -4,26 +4,68 @@ local assets =
     Asset("ANIM", "anim/evergreen_new_2.zip"), --build
     Asset("ANIM", "anim/evergreen_tall_old.zip"),
     Asset("ANIM", "anim/evergreen_short_normal.zip"),
+
     Asset("ANIM", "anim/dust_fx.zip"),
     Asset("SOUND", "sound/forest.fsb"),
     Asset("MINIMAP_IMAGE", "evergreen_lumpy"),
 }
 
+local twiggy_assets =
+{
+    Asset("ANIM", "anim/twiggy_build.zip"), --build
+    Asset("ANIM", "anim/twiggy_diseased_build.zip"), --build
+    Asset("ANIM", "anim/twiggy_short_normal.zip"),
+    Asset("ANIM", "anim/twiggy_tall_old.zip"),
+    Asset("ANIM", "anim/twiggy_diseased_short_normal.zip"),
+    Asset("ANIM", "anim/twiggy_diseased_tall_old.zip"),
+    Asset("ANIM", "anim/twiggy_diseased_transformed.zip"),
+
+    Asset("ANIM", "anim/dust_fx.zip"),
+    Asset("SOUND", "sound/forest.fsb"),
+    Asset("MINIMAP_IMAGE", "twiggy"),
+}
+
 local prefabs =
 {
     "log",
-    "twigs",
     "pinecone",
     "charcoal",
     "leif",
     "leif_sparse",
     "pine_needles_chop",
+    "rock_petrified_tree_short",
+    "rock_petrified_tree_med",
+    "rock_petrified_tree_tall",
+    "rock_petrified_tree_old",
+    "disease_puff",
+    "disease_fx_small",
+    "disease_fx",
+    "disease_fx_tall",
 }
+
+local twiggy_prefabs =
+{
+    "log",
+    "twigs",
+    "twiggy_nut",
+    "charcoal",
+    "disease_fx_small",
+    "disease_fx",
+    "disease_fx_tall",
+    "diseaseflies",
+    "green_leaves_chop",
+}
+
+SetSharedLootTable( 'diseaseTree',
+{
+    {'twigs',        0.125},
+})
 
 local builds =
 {
     normal = {
         file="evergreen_new",
+        file_bank = "evergreen_short",
         prefab_name="evergreen",
         regrowth_product="pinecone_sapling",
         regrowth_tuning=TUNING.EVERGREEN_REGROWTH,
@@ -35,6 +77,7 @@ local builds =
     },
     sparse = {
         file="evergreen_new_2",
+        file_bank = "evergreen_short",
         prefab_name="evergreen_sparse",
         regrowth_product="lumpy_sapling",
         regrowth_tuning=TUNING.EVERGREEN_SPARSE_REGROWTH,
@@ -43,6 +86,20 @@ local builds =
         tall_loot = {"log", "log","log"},
         drop_pinecones=false,
         leif="leif_sparse",
+    },
+    twiggy = {
+        file="twiggy_build",
+        file_bank = "twiggy",
+        file_disease = "twiggy_diseased_build",
+        file_disease_bank = "twiggy_diseased",
+        prefab_name="twiggytree",
+        regrowth_product="twiggy_nut_sapling",
+        regrowth_tuning=TUNING.EVERGREEN_REGROWTH,
+        normal_loot = {"log","twigs"},
+        short_loot = {"twigs"},
+        tall_loot = {"log", "twigs","twigs","twiggy_nut","twiggy_nut"},
+        drop_pinecones=false,
+        disease_fx = "green_leaves_chop",
     },
 }
 
@@ -58,7 +115,8 @@ local function makeanims(stage)
         burning="burning_loop_"..stage,
         burnt="burnt_"..stage,
         chop_burnt="chop_burnt_"..stage,
-        idle_chop_burnt="idle_chop_burnt_"..stage
+        idle_chop_burnt="idle_chop_burnt_"..stage,
+        transform = "transform_"..stage,
     }
 end
 
@@ -78,6 +136,7 @@ local old_anims =
     burnt="burnt_tall",
     chop_burnt="chop_burnt_tall",
     idle_chop_burnt="idle_chop_burnt_tall",
+    transform="transform_old",
 }
 
 local function dig_up_stump(inst, chopper)
@@ -103,23 +162,20 @@ local function chop_down_burnt_tree(inst, chopper)
 end
 
 local function GetBuild(inst)
-    local build = builds[inst.build]
-    if build == nil then
-        return builds["normal"]
-    end
-    return build
+    return builds[inst.build] or builds["normal"]
 end
 
 local burnt_highlight_override = {.5,.5,.5}
 local function OnBurnt(inst, immediate)
     local function changes()
-        if inst.components.burnable then
+        if inst.components.burnable ~= nil then
             inst.components.burnable:Extinguish()
         end
         inst:RemoveComponent("burnable")
         inst:RemoveComponent("propagator")
         inst:RemoveComponent("growable")
         inst:RemoveComponent("hauntable")
+        inst:RemoveComponent("diseaseable")
         inst:RemoveTag("shelter")
         MakeHauntableWork(inst)
 
@@ -128,19 +184,24 @@ local function OnBurnt(inst, immediate)
             inst.components.lootdropper:AddChanceLoot("pinecone", 0.1)
         end
 
+        if GetBuild(inst).drop_pinecones_twiggy then
+            inst.components.lootdropper:AddChanceLoot("twiggy_nut", 0.1)
+        end
+
         if inst.components.workable then
             inst.components.workable:SetWorkLeft(1)
             inst.components.workable:SetOnWorkCallback(nil)
             inst.components.workable:SetOnFinishCallback(chop_down_burnt_tree)
         end
     end
-
+        
     if immediate then
         changes()
     else
         inst:DoTaskInTime( 0.5, changes)
     end
     inst.AnimState:PlayAnimation(inst.anims.burnt, true)
+
     inst.AnimState:SetRayTestOnBB(true)
     inst:AddTag("burnt")
 
@@ -229,13 +290,16 @@ end
 local function SetOld(inst)
     inst.anims = old_anims
 
-    if inst.components.workable then
+    if inst.components.workable ~= nil then
         inst.components.workable:SetWorkLeft(1)
     end
 
     if GetBuild(inst).drop_pinecones then
         inst.components.lootdropper:SetLoot({"pinecone"})
+    elseif GetBuild(inst).drop_pinecones_twiggy then
+        inst.components.lootdropper:SetLoot({"twiggy_nut"})
     else
+
         inst.components.lootdropper:SetLoot({})
     end
 
@@ -251,11 +315,10 @@ local function GrowOld(inst)
 end
 
 local function inspect_tree(inst)
-    if inst:HasTag("burnt") then
-        return "BURNT"
-    elseif inst:HasTag("stump") then
-        return "CHOPPED"
-    end
+    return (inst:HasTag("burnt") and "BURNT")
+        or (inst:HasTag("stump") and "CHOPPED")
+        or (inst:HasTag("diseased") and "DISEASED")
+        or nil
 end
 
 local growth_stages =
@@ -297,12 +360,14 @@ local function chop_down_tree_shake(inst)
 end
 
 local function find_leif_spawn_target(item)
-    return item.components.growable ~= nil and item.components.growable.stage <= 3 and item:HasTag("evergreens")
-        and item:HasTag("tree") and not item:HasTag("stump") and not item:HasTag("burnt") and not item.noleif
+    return not item.noleif
+        and item.components.growable ~= nil
+        and item.components.growable.stage <= 3
 end
 
 local function spawn_leif(target)
-    local leif = SpawnPrefab(builds[target.build].leif)
+    --assert(GetBuild(target).leif ~= nil)
+    local leif = SpawnPrefab(GetBuild(target).leif)
     local scale = target.leifscale
     local r,g,b,a = target.AnimState:GetMultColour()
     leif.AnimState:SetMultColour(r,g,b,a)
@@ -326,6 +391,7 @@ local function spawn_leif(target)
 end
 
 local function make_stump(inst)
+
     inst:RemoveComponent("burnable")
     MakeSmallBurnable(inst)
     MakeDragonflyBait(inst, 1)
@@ -353,12 +419,25 @@ local function make_stump(inst)
     end
 end
 
+local function finish_chop_down_diseased_tree(inst)
+    SpawnPrefab("disease_puff").Transform:SetPosition(inst.Transform:GetWorldPosition())
+    inst:Remove()
+end
+
 local function chop_down_tree(inst, chopper)
     inst.SoundEmitter:PlaySound("dontstarve/forest/treefall")
-    local pt = Vector3(inst.Transform:GetWorldPosition())
-    local hispos = Vector3(chopper.Transform:GetWorldPosition())
+    local pt = inst:GetPosition()
 
-    local he_right = (hispos - pt):Dot(TheCamera:GetRightVec()) > 0
+    local he_right = true
+
+    if chopper then
+        local hispos = chopper:GetPosition()
+        he_right = (hispos - pt):Dot(TheCamera:GetRightVec()) > 0
+    else
+        if math.random() > 0.5 then
+            he_right = false
+        end
+    end
 
     if he_right then
         inst.AnimState:PlayAnimation(inst.anims.fallleft)
@@ -370,43 +449,49 @@ local function chop_down_tree(inst, chopper)
 
     inst:DoTaskInTime(.4, chop_down_tree_shake)
 
-    make_stump(inst)
-    inst.AnimState:PushAnimation(inst.anims.stump)
-
     inst:AddTag("NOCLICK")
-    inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength(), inst.RemoveTag, "NOCLICK")
 
-    local days_survived = TheWorld.state.cycles
-    if days_survived >= TUNING.LEIF_MIN_DAY then
-        if math.random() <= TUNING.LEIF_PERCENT_CHANCE then
+    if inst.components.diseaseable ~= nil and inst.components.diseaseable:IsDiseased() then
+        inst.persists = false
+        inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength(), finish_chop_down_diseased_tree)
+    else
+        make_stump(inst)
+        inst.AnimState:PushAnimation(inst.anims.stump)
 
-            local numleifs = 1
-            if days_survived > 30 then
-                numleifs = math.random(2)
-            elseif days_survived > 80 then
-                numleifs = math.random(3)
-            end
+        inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength(), inst.RemoveTag, "NOCLICK")
 
-            for k = 1,numleifs do
-                local target = FindEntity(inst, TUNING.LEIF_MAXSPAWNDIST, find_leif_spawn_target)
-                if target ~= nil then
-                    target.noleif = true
-                    target.leifscale = growth_stages[target.components.growable.stage].leifscale or 1
-                    target.chopper = chopper
-                    target:DoTaskInTime(1 + math.random() * 3, spawn_leif)
+        if GetBuild(inst).leif ~= nil then
+            local days_survived = TheWorld.state.cycles
+            if days_survived >= TUNING.LEIF_MIN_DAY then
+                if math.random() <= TUNING.LEIF_PERCENT_CHANCE then
+
+                    local numleifs = 1
+                    if days_survived > 30 then
+                        numleifs = math.random(2)
+                    elseif days_survived > 80 then
+                        numleifs = math.random(3)
+                    end
+
+                    for k = 1,numleifs do
+                        local target = FindEntity(inst, TUNING.LEIF_MAXSPAWNDIST, find_leif_spawn_target, { "evergreens", "tree" }, { "leif", "stump", "burnt" })
+                        if target ~= nil then
+                            target.noleif = true
+                            target.leifscale = growth_stages[target.components.growable.stage].leifscale or 1
+                            target.chopper = chopper
+                            target:DoTaskInTime(1 + math.random() * 3, spawn_leif)
+                        end
+                    end
                 end
             end
-        end
+        end 
     end
 end
 
 local function onpineconetask(inst)
-    local pt = Vector3(inst.Transform:GetWorldPosition())
-    if math.random(0, 1) == 1 then
-        pt = pt + TheCamera:GetRightVec()
-    else
-        pt = pt - TheCamera:GetRightVec()
-    end
+    local pt = inst:GetPosition()
+    local angle = math.random() * 2 * PI
+    pt.x = pt.x + math.cos(angle)
+    pt.z = pt.z + math.sin(angle)
     inst.components.lootdropper:DropLoot(pt)
     inst.pineconetask = nil
     inst.burntcone = true
@@ -415,7 +500,7 @@ end
 local function tree_burnt(inst)
     OnBurnt(inst)
     if not inst.burntcone then
-        if inst.pineconetask then
+        if inst.pineconetask ~= nil then
             inst.pineconetask:Cancel()
         end
         inst.pineconetask = inst:DoTaskInTime(10, onpineconetask)
@@ -468,10 +553,7 @@ local function onload(inst, data)
 end
 
 local function OnEntitySleep(inst)
-    local doBurnt = false
-    if inst.components.burnable and inst.components.burnable.burning then
-        doBurnt = true
-    end
+    local doBurnt = inst.components.burnable ~= nil and inst.components.burnable:IsBurning()
     inst:RemoveComponent("burnable")
     inst:RemoveComponent("propagator")
     inst:RemoveComponent("inspectable")
@@ -534,6 +616,96 @@ local function OnTimerDone(inst, data)
     end
 end
 
+local STAGE_PETRIFY_PREFABS =
+{
+    "rock_petrified_tree_short",
+    "rock_petrified_tree_med",
+    "rock_petrified_tree_tall",
+    "rock_petrified_tree_old",
+}
+local function dopetrify(inst, stage)
+    local x, y, z = inst.Transform:GetWorldPosition()
+    inst:Remove()
+    --remap anim
+    local rock = SpawnPrefab(STAGE_PETRIFY_PREFABS[stage])
+    if rock ~= nil then
+        rock.Transform:SetPosition(x, 0, z)
+        rock.SoundEmitter:PlaySound("dontstarve/common/together/petrified/post")
+        SpawnPrefab(
+            (stage > 2 and "disease_fx_tall") or
+            (stage > 1 and "disease_fx") or
+            "disease_fx_small"
+        ).Transform:SetPosition(x, y, z)
+    end
+end
+
+local STAGE_PETRIFY_ANIMS =
+{
+    "petrify_short",
+    "petrify_normal",
+    "petrify_tall",
+    "petrify_old",
+}
+local function ondiseasedfn_evergreen(inst)
+    if inst.components.growable ~= nil and not inst:HasTag("stump") then
+        local stage = inst.components.growable.stage
+        if STAGE_PETRIFY_ANIMS[stage] ~= nil then
+            inst.AnimState:PlayAnimation(STAGE_PETRIFY_ANIMS[stage])
+            inst.SoundEmitter:PlaySound("dontstarve/common/together/petrified/pre")
+            inst:AddTag("NOCLICK")
+            inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength(), dopetrify, stage)
+            inst.components.diseaseable:Stop()
+            return
+        end
+    end
+    inst.components.diseaseable:ForceDeath()
+end
+
+local function ondiseaseddeathfn_evergreen(inst)
+    --Should normally only reach here for stumps
+    --Others would've petrified
+    SpawnPrefab("disease_puff").Transform:SetPosition(inst.Transform:GetWorldPosition())
+    inst:Remove()
+end
+
+local function ondiseasedfn_twiggy(inst)
+    inst.AnimState:SetBuild(GetBuild(inst).file_disease)
+    local disease_bank = GetBuild(inst).file_disease_bank
+    if disease_bank ~= nil then
+        inst.AnimState:SetBank(disease_bank)
+    end
+
+    inst.components.lootdropper:SetLoot({})
+    inst.components.lootdropper:SetChanceLootTable('diseaseTree')
+
+    if GetBuild(inst).disease_fx then
+        local leaffx = SpawnPrefab(GetBuild(inst).disease_fx) 
+        local x, y, z= inst.Transform:GetWorldPosition()
+        if inst.components.growable and inst.components.growable.stage == 1 then
+            y = y + 0 --Short FX height
+        elseif inst.components.growable and inst.components.growable.stage == 2 then
+            y = y + 0.3 --Normal FX height
+        elseif inst.components.growable and inst.components.growable.stage == 3 then
+            y = y + 1 --Tall FX height
+        end
+        leaffx.Transform:SetPosition(x,y,z)
+    end
+
+    if inst.components.growable ~= nil then
+        inst.components.growable:StopGrowing()
+        SpawnPrefab(
+            (inst.components.growable.stage > 2 and "disease_fx_tall") or
+            (inst.components.growable.stage > 1 and "disease_fx") or
+            "disease_fx_small"
+        ).Transform:SetPosition(inst.Transform:GetWorldPosition())
+    else
+        SpawnPrefab("disease_fx_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
+    end
+
+    inst.AnimState:PlayAnimation(inst.anims.transform)
+    PushSway(inst)
+end
+
 local function tree(name, build, stage, data)
     local function fn()
         local inst = CreateEntity()
@@ -550,6 +722,8 @@ local function tree(name, build, stage, data)
             inst.MiniMapEntity:SetIcon("evergreen.png")
         elseif build == "sparse" then
             inst.MiniMapEntity:SetIcon("evergreen_lumpy.png")
+        elseif build == "twiggy" then
+            inst.MiniMapEntity:SetIcon("twiggy.png")
         end
         inst.MiniMapEntity:SetPriority(-1)
 
@@ -560,7 +734,8 @@ local function tree(name, build, stage, data)
 
         inst.build = build
         inst.AnimState:SetBuild(GetBuild(inst).file)
-        inst.AnimState:SetBank("evergreen_short")
+
+        inst.AnimState:SetBank(GetBuild(inst).file_bank)
 
         inst:SetPrefabName(GetBuild(inst).prefab_name)
         inst:AddTag(GetBuild(inst).prefab_name) -- used by regrowth
@@ -622,6 +797,19 @@ local function tree(name, build, stage, data)
         inst:ListenForEvent("timerdone", OnTimerDone)
 
         ---------------------
+        inst:AddComponent("diseaseable")
+        if build == "twiggy" then
+            inst.noleif = true
+            inst.components.diseaseable:SetDiseasedFn(ondiseasedfn_twiggy)
+            inst.components.diseaseable:SetRebirthedFn(SetShort)
+            inst.components.diseaseable:SetDiseasedDeathFn(chop_down_tree)
+        else
+            inst.components.diseaseable:SetDefaultDelayRange(TUNING.SEG_TIME, TUNING.SEG_TIME * 1.3)
+            inst.components.diseaseable:SetDiseasedFn(ondiseasedfn_evergreen)
+            inst.components.diseaseable:SetDiseasedDeathFn(ondiseaseddeathfn_evergreen)
+        end
+
+        ---------------------
         --PushSway(inst)
 
         ---------------------
@@ -629,12 +817,10 @@ local function tree(name, build, stage, data)
         inst:AddComponent("hauntable")
         inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
             local ret = false
-            if math.random() <= TUNING.HAUNT_CHANCE_OFTEN then
-                if inst.components.workable then
-                    inst.components.workable:WorkedBy(haunter, 1)
-                    inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
-                    ret = true
-                end
+            if inst.components.workable ~= nil and math.random() <= TUNING.HAUNT_CHANCE_OFTEN then
+                inst.components.workable:WorkedBy(haunter, 1)
+                inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
+                ret = true
             end
             --#HAUNTFIX
             --if math.random() <= TUNING.HAUNT_CHANCE_VERYRARE then
@@ -645,13 +831,13 @@ local function tree(name, build, stage, data)
                     --ret = true
                 --end
             --else
-            if math.random() <= TUNING.HAUNT_CHANCE_SUPERRARE then
-                if inst.components.growable then
-                    inst.leifscale = growth_stages[inst.components.growable.stage].leifscale or 1
-                else
-                    inst.leifscale = 1
-                end
+            if math.random() <= TUNING.HAUNT_CHANCE_SUPERRARE and
+                find_leif_spawn_target(inst) and
+                not (inst:HasTag("burnt") or inst:HasTag("stump")) then
+
+                inst.leifscale = growth_stages[inst.components.growable.stage].leifscale or 1
                 spawn_leif(inst)
+
                 inst.components.hauntable.hauntvalue = TUNING.HAUNT_HUGE
                 inst.components.hauntable.cooldown_on_successful_haunt = false
                 ret = true
@@ -669,7 +855,7 @@ local function tree(name, build, stage, data)
 
         if data == "stump" then
             inst:RemoveComponent("burnable")
-            MakeSmallBurnable(inst)            
+            MakeSmallBurnable(inst)
             inst:RemoveComponent("workable")
             inst:RemoveComponent("propagator")
             MakeSmallPropagator(inst)
@@ -692,10 +878,12 @@ local function tree(name, build, stage, data)
         return inst
     end
 
-    return Prefab(name, fn, assets, prefabs)
+    return build == "twiggy"
+        and Prefab(name, fn, twiggy_assets, twiggy_prefabs)
+        or Prefab(name, fn, assets, prefabs)
 end
 
-return tree("evergreen", "normal", 0),
+return  tree("evergreen", "normal", 0),
         tree("evergreen_normal", "normal", 2),
         tree("evergreen_tall", "normal", 3),
         tree("evergreen_short", "normal", 1),
@@ -703,5 +891,12 @@ return tree("evergreen", "normal", 0),
         tree("evergreen_sparse_normal", "sparse", 2),
         tree("evergreen_sparse_tall", "sparse", 3),
         tree("evergreen_sparse_short", "sparse", 1),
+
+        tree("twiggytree", "twiggy", 0),
+        tree("twiggy_normal", "twiggy", 2),
+        tree("twiggy_tall", "twiggy", 3),
+        tree("twiggy_short", "twiggy", 1),
+        tree("twiggy_old", "twiggy", 4),
+
         tree("evergreen_burnt", "normal", 0, "burnt"),
         tree("evergreen_stump", "normal", 0, "stump")

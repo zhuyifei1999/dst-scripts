@@ -11,7 +11,12 @@ local BeefBloodOver = require "widgets/beefbloodover"
 local HeatOver = require "widgets/heatover"
 local easing = require("easing")
 
-local PauseScreen = require "screens/pausescreen"
+local PauseScreen = nil
+if PLATFORM == "PS4" then
+    PauseScreen = require "screens/pausescreen_ps4"
+else
+    PauseScreen = require "screens/pausescreen"
+end
 local ChatInputScreen = require "screens/chatinputscreen"
 local PlayerStatusScreen = require "screens/playerstatusscreen"
 local InputDialogScreen = require "screens/inputdialog"
@@ -208,16 +213,16 @@ function PlayerHud:TogglePlayerAvatarPopup(player_name, data, show_net_profile)
             self.playeravatarpopup.inst:IsValid() then
             self.playeravatarpopup:Close()
             if player_name == nil or
-                data == nil or
-                self.playeravatarpopup.userid == data.userid or
-                self.owner.userid == data.userid then
-                self.playeravatarpopup = nil
-                return
+				data == nil or
+				(data.userid ~= nil and (self.playeravatarpopup.userid == data.userid or self.owner.userid == data.userid)) or --if we have a userid, test for that
+				(data.userid == nil and self.playeravatarpopup.target == data.inst) then --if no userid, then compare inst
+					self.playeravatarpopup = nil
+					return
             end
         end
     end
-    if self.owner.userid == data.userid then 
-    	-- Don't show steam button for yourself
+    if self.owner.userid == data.userid or data.userid == nil then 
+    	-- Don't show steam button for yourself or targets without a userid(skeletons)
     	self.playeravatarpopup = self.controls.right_root:AddChild(PlayerAvatarPopup(self.owner, player_name, data, false))
     else
     	self.playeravatarpopup = self.controls.right_root:AddChild(PlayerAvatarPopup(self.owner, player_name, data, show_net_profile))

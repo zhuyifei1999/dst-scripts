@@ -68,10 +68,6 @@ function Armor:SetCondition(amount)
         ProfileStatsSet("armor_broke_"..self.inst.prefab, true)
         ProfileStatsSet("armor", self.inst.prefab)
 
-        if METRICS_ENABLED then
-            FightStat_BrokenArmor(self.inst.prefab)
-        end
-
         if self.onfinished ~= nil then
             self.onfinished()
         end

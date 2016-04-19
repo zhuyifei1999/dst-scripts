@@ -257,8 +257,8 @@ local function fn()
 
     inst:AddComponent("pickable")
     inst.components.pickable.product = "glommerflower"
-    inst.components.pickable:SetOnPickedFn(OnPicked)
-    inst.components.pickable:SetMakeEmptyFn(OnMakeEmpty)
+    inst.components.pickable.onpickedfn = OnPicked
+    inst.components.pickable.makeemptyfn = OnMakeEmpty
     inst.components.pickable.makefullfn = OnMakeFull
 
     inst:AddComponent("workable")

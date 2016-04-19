@@ -14,6 +14,7 @@ AddRoom("MooseGooseBreedingGrounds", {
         distributeprefabs =
         {
         	berrybush = 0.5,
+        	berrybush_juicy = 0.25,
         	carrot_planted = 0.5,
 			flower = 0.333,
 			grass = 0.8,

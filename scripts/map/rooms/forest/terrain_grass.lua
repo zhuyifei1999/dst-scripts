@@ -7,6 +7,7 @@ AddRoom("BGGrassBurnt", {
 					                distributepercent = .275,
 					                distributeprefabs=
 					                {
+					                	rock_petrified_tree = 0.03,
 										rock1=0.01,
 										rock2=0.01,
 										spiderden=0.001,
@@ -16,6 +17,8 @@ AddRoom("BGGrassBurnt", {
 										smallmammal = {weight = 0.02, prefabs = {"rabbithole", "molehill"}},
 										flint=0.05,
 										sapling=0.2,
+										twiggytree = 0.2,
+										ground_twigs = 0.04,											
 										evergreen=0.3,
 					                },
 									prefabdata={
@@ -42,7 +45,10 @@ AddRoom("BGGrass", {
 										carrot_planted=0.05,
 										flint=0.05,
 										berrybush=0.05,
+										berrybush_juicy = 0.025,
 										sapling=0.2,
+										twiggytree = 0.2,
+										ground_twigs = 0.04,										
 										tree = {weight = 0.3, prefabs = {"evergreen", "deciduoustree"}},
 										pond=.001,
 					                    blue_mushroom = .005,

@@ -84,6 +84,13 @@ local plantables =
         inspectoverride = "dug_berrybush",
     },
     {
+        name = "berrybush_juicy",
+        bank = "berrybush",
+        anim = "idle_dead",
+        build = "berrybush_juicy_build",
+        inspectoverride = "dug_berrybush",
+    },
+    {
         name = "sapling",
         mediumspacing = true
     },

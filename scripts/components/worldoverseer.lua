@@ -1,24 +1,31 @@
 local WORLDOVERSEER_HEARTBEAT = 5 * 60
 
+local Stats = require("stats")
+
 local WorldOverseer = Class(function(self, inst)
 	self.inst = inst
     self.data = {}
 	self._seenplayers = {}
-	self._cycles = 0
+	self._cycles = nil
+    self._daytime = nil
 
 	self.inst:DoPeriodicTask(WORLDOVERSEER_HEARTBEAT, function() self:Heartbeat() end )
 	self.inst:ListenForEvent("ms_playerjoined", function(src, player) self:OnPlayerJoined(src, player) end , TheWorld)
 	self.inst:ListenForEvent("ms_playerleft", function(src, player) self:OnPlayerLeft(src, player) end, TheWorld)
     self.inst:ListenForEvent("cycleschanged", function(inst, data) self:OnCyclesChanged(data) end, TheWorld)
+    self.inst:ListenForEvent("clocktick", function(inst, data) self:OnClockTick(data) end, TheWorld)
 
 	for i, v in ipairs(AllPlayers) do
 		self:OnPlayerJoined(self.inst, v)
 	end
 end)
 
-
 function WorldOverseer:OnCyclesChanged(cycles)
     self._cycles = cycles
+end
+
+function WorldOverseer:OnClockTick(data)
+    self._daytime = data.time
 end
 
 function WorldOverseer:RecordPlayerJoined(player)
@@ -66,23 +73,6 @@ function WorldOverseer:RecordPlayerLeft(player)
 		end
 
 	end
-end
-
-function WorldOverseer:BuildContextTable(player)
-    local sendstats = {}
-    -- can be called with a player or a userid
-    if type(player) == "table" then
-        sendstats.user = player.userid
-    else
-        sendstats.user = player
-    end
-
-    sendstats.user =
-        (sendstats.user ~= nil and (sendstats.user.."@chester")) or
-        (BRANCH == "dev" and "testing") or
-        "unknown"
-
-    return sendstats
 end
 
 function WorldOverseer:CalcPlayerStats()
@@ -151,16 +141,14 @@ end
 function WorldOverseer:DumpPlayerStats()
 	local playerstats = self:CalcPlayerStats() 
 	for i,stat in ipairs(playerstats) do
-		local sendstats = self:BuildContextTable(stat.player)
+		local sendstats = Stats.BuildContextTable(stat.player)
+        sendstats.event = "heartbeat.player"
 		sendstats.play_t = RoundBiasedUp(stat.secondsplayed,2)
         sendstats.character = stat.player and stat.player.prefab or nil
         sendstats.save_id = self.inst.meta.session_identifier
         sendstats.worn_items = stat.worn_items
         sendstats.crafted_items = stat.crafted_items
 	
-		--print("_________________________________________________________________Sending playtime heartbeat stats...")
-		--ddump(sendstats)
-		--print("_________________________________________________________________<END>")
 		local jsonstats = json.encode(sendstats)
 		TheSim:SendProfileStats(jsonstats)
 	end
@@ -169,16 +157,15 @@ end
 function WorldOverseer:OnPlayerDeath(player, data)
 	local age = player.components.age:GetAgeInDays()
 	local worldAge = self._cycles
-	local sendstats = self:BuildContextTable(player)
+	local sendstats = Stats.BuildContextTable(player)
+    sendstats.event = "player.death"
 	sendstats.playerdeath = {
                                 save_id = self.inst.meta.session_identifier,
 								playerage = RoundBiasedUp(age,2),
 								worldage = worldAge,
 								cause = data and data.cause or ""
+                                -- note: 'cause' is the character prefab for player kills. probably need another field which is the player ID.
 							}
-	--print("_________________________________________________________________Sending playerdeath stats...")
-	--ddump(sendstats)
-	--print("_________________________________________________________________<END>")
 	local jsonstats = json.encode(sendstats)
 	TheSim:SendProfileStats(jsonstats)
 end
@@ -241,12 +228,10 @@ function WorldOverseer:OnUnequipSkinnedItem(player, data)
 	end
 end
 
-function WorldOverseer:GetSessionStats()
-end
-
 function WorldOverseer:DumpSessionStats()
 	local hosting = TheNet:GetUserID()
-	local sendstats = self:BuildContextTable(hosting)
+	local sendstats = Stats.BuildContextTable(hosting)
+    sendstats.event = "heartbeat.session"
 	-- we don't have to send the host, as the sending user will be the host
 
     local clients = TheNet:GetClientTable() or {}
@@ -266,6 +251,7 @@ function WorldOverseer:DumpSessionStats()
                                     or (TheNet:GetServerFriendsOnly() and "FRIENDS")
                                     or "PUBLIC",
                             offline = not TheNet:IsOnlineMode(),
+                            intention = TheNet:GetServerIntention(),
                             pvp = TheNet:GetServerPVP(),
                         }
     local clanid = TheNet:GetServerClanID()
@@ -274,9 +260,9 @@ function WorldOverseer:DumpSessionStats()
         sendstats.mpsession.clan_only = TheNet:GetServerClanOnly()
         --sendstats.clan_admins = TheNet:GetServerClanAdmins() -- not available in the handshake!
     end
-	--print("_________________________________________________________________Sending session heartbeat stats...")
-	--ddump(sendstats)
-	--print("_________________________________________________________________<END>")
+    --print("SENDING SESSION STATS VVVVVVVVVVVV")
+    --dumptable(sendstats)
+    --print("SENDING SESSION STATS ^^^^^^^^^^^^")
 	local jsonstats = json.encode(sendstats)
 	TheSim:SendProfileStats(jsonstats)
 end

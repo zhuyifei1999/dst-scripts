@@ -346,7 +346,7 @@ function ModWrangler:FrontendLoadMod(modname)
     local env = CreateEnvironment(modname,  self.worldgen)
     env.modinfo = initenv
 
-    local loadmsg = "Fontend-Loading mod: "..ModInfoname(modname).." Version:"..env.modinfo.version
+    local loadmsg = "Fontend-Loading mod: "..ModInfoname(modname).." Version:"..tostring(env.modinfo.version)
     if initenv.modinfo_message and initenv.modinfo_message ~= "" then
         loadmsg = loadmsg .. " ("..initenv.modinfo_message..")"
     end

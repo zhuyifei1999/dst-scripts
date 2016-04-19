@@ -1,0 +1,203 @@
+local brain = require("brains/grassgekkobrain")
+
+local assets =
+{
+    Asset("ANIM", "anim/grassgecko_notail_build.zip"),
+    Asset("ANIM", "anim/grassgecko.zip"),
+    Asset("ANIM", "anim/grassgecko_disease.zip"),
+    Asset("ANIM", "anim/grassgecko_notail_build_disease.zip"),
+    Asset("SOUND", "sound/catcoon.fsb"),
+}
+
+local prefabs =
+{
+    "cutgrass",
+    "plantmeat",
+    "grassgekkoherd",
+    "disease_fx_small",
+    "diseaseflies",
+}
+
+SetSharedLootTable( 'grassgekko',
+{
+    {'plantmeat',        1.00},
+    {'cutgrass',         0.75},
+    {'cutgrass',         0.75},
+})
+
+function GetRunAngle(inst, pt, hp)
+    local angle = inst:GetAngleToPoint(hp) + 180 -- + math.random(30)-15
+    if angle > 360 then angle = angle - 360 end
+
+    local radius = 6
+
+    local result_offset, result_angle, deflected = FindWalkableOffset(pt, angle*DEGREES, radius, 8, true, false) -- try avoiding walls
+    if not result_angle then
+        result_offset, result_angle, deflected = FindWalkableOffset(pt, angle*DEGREES, radius, 8, true, true) -- ok don't try to avoid walls, but at least avoid water
+    end
+    if not result_angle then
+        return angle -- ok whatever, just run
+    end
+
+    if result_angle then
+        result_angle = result_angle/DEGREES
+        return result_angle
+    end
+
+    return nil
+end
+
+local function OnAttacked(inst, data)
+    --[[
+    if data.attacker then
+
+        local pt = Point(inst.Transform:GetWorldPosition())
+        local hp = Point(data.attacker.Transform:GetWorldPosition())
+
+        local angle = GetRunAngle(inst, pt, hp)
+
+        if angle and not inst.sg or inst.sg:HasStateTag("canrotate") then
+            inst.Transform:SetRotation(angle)
+        end 
+    end
+    ]]
+end
+
+local function ontimerdone(inst, data)
+    if data.name == "growTail" then
+       inst.tailGrowthPending = true
+    end
+end
+
+local function SleepTest(inst)
+    if ( inst.components.follower and inst.components.follower.leader )
+        or ( inst.components.combat and inst.components.combat.target )
+        or inst.components.playerprox:IsPlayerClose()
+        or TheWorld.state.israining then
+        return
+    end
+    if not inst.sg:HasStateTag("busy") and (not inst.last_wake_time or GetTime() - inst.last_wake_time >= inst.nap_interval) then
+        inst.nap_length = math.random(TUNING.MIN_CATNAP_LENGTH, TUNING.MAX_CATNAP_LENGTH)
+        inst.last_sleep_time = GetTime()
+        return true
+    end
+end
+
+local function WakeTest(inst)
+    if not inst.last_sleep_time
+        or GetTime() - inst.last_sleep_time >= inst.nap_length
+        or TheWorld.state.israining then
+        inst.nap_interval = math.random(TUNING.MIN_CATNAP_INTERVAL, TUNING.MAX_CATNAP_INTERVAL)
+        inst.last_wake_time = GetTime()
+        return true
+    end
+end
+
+local function ondiseasedfn(inst)
+    inst.AnimState:SetBuild("grassgecko_disease")
+
+    SpawnPrefab("disease_fx_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
+
+    --inst.AnimState:PlayAnimation(inst.anims.transform)
+    inst.components.lootdropper:SetChanceLootTable()
+
+    inst.components.lootdropper:SetLoot({"spoiled_food"})
+
+    inst.AnimState:SetBuild(inst.hasTail and "grassgecko_disease" or "grassgecko_notail_build_disease")
+end
+
+local function ondiseaseddeathfn(inst)
+    inst.components.health:Kill()
+end
+
+local function fn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
+    inst.entity:AddDynamicShadow()
+    inst.entity:AddNetwork()
+
+    inst.DynamicShadow:SetSize(2,0.75)
+    inst.Transform:SetFourFaced()
+
+    MakeCharacterPhysics(inst, 1, 0.5)
+
+    inst.AnimState:SetBank("grassgecko")
+    inst.AnimState:SetBuild("grassgecko")
+    inst.AnimState:PlayAnimation("idle_loop")
+
+    inst:AddTag("smallcreature")
+    inst:AddTag("animal")
+    inst:AddTag("grassgekko")
+
+    --herdmember (from herdmember component) added to pristine state for optimization
+    inst:AddTag("herdmember")
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst:AddComponent("timer")
+    inst.hasTail = true
+    inst:ListenForEvent("timerdone", ontimerdone)
+    inst:ListenForEvent("attacked", OnAttacked)
+
+    inst:AddComponent("inspectable")
+
+    inst:AddComponent("health")
+    inst.components.health:SetMaxHealth(TUNING.GRASSGEKKO_LIFE)
+
+    inst:AddComponent("combat")
+    inst.components.combat:SetHurtSound("dontstarve/creatures/together/grass_gekko/hit")
+    --inst:ListenForEvent("attacked", OnAttacked)
+
+    inst:AddComponent("lootdropper")
+    inst.components.lootdropper:SetChanceLootTable('grassgekko')
+
+    inst:AddComponent("playerprox")
+    inst.components.playerprox:SetDist(3,4)
+    inst.components.playerprox:SetOnPlayerNear(function(inst)
+        if inst.components.sleeper:IsAsleep() then
+            inst.components.sleeper:WakeUp()
+        end
+    end)
+
+    inst:AddComponent("knownlocations")
+    inst:AddComponent("herdmember")
+    inst.components.herdmember:SetHerdPrefab("grassgekkoherd")
+    --inst.components.herdmember:Enable(true)
+
+    inst:AddComponent("sleeper")
+    --inst.components.sleeper:SetResistance(3)
+    inst.components.sleeper.testperiod = GetRandomWithVariance(12, 4)
+    inst.last_sleep_time = nil
+    inst.last_wake_time = GetTime()
+    inst.nap_interval = math.random(TUNING.MIN_CATNAP_INTERVAL, TUNING.MAX_CATNAP_INTERVAL)
+    inst.nap_length = math.random(TUNING.MIN_CATNAP_LENGTH, TUNING.MAX_CATNAP_LENGTH)
+    inst.components.sleeper:SetWakeTest(WakeTest)
+    inst.components.sleeper:SetSleepTest(SleepTest)
+
+    inst:AddComponent("locomotor")
+    inst.components.locomotor.runspeed = TUNING.GRASSGEKKO_RUN_SPEED
+    inst.components.locomotor.walkspeed = TUNING.GRASSGEKKO_WALK_SPEED
+
+    inst:AddComponent("diseaseable")
+    inst.components.diseaseable:SetDiseasedFn(ondiseasedfn)
+    inst.components.diseaseable:SetDiseasedDeathFn(ondiseaseddeathfn)
+
+    MakeSmallBurnableCharacter(inst, "grassgecko_body", Vector3(1,0,1))
+    MakeSmallFreezableCharacter(inst)
+
+    inst:SetBrain(brain)
+    inst:SetStateGraph("SGgrassgekko")
+
+    MakeHauntablePanicAndIgnite(inst)
+
+    return inst
+end
+
+return Prefab("grassgekko", fn, assets, prefabs)

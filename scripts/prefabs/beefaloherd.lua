@@ -44,6 +44,7 @@ local function CanSpawn(inst)
 end
 
 local function OnSpawned(inst, newent)
+    print("At ONSPAWNED",inst)
     if inst.components.herd ~= nil then
         inst.components.herd:AddMember(newent)
     end
@@ -69,7 +70,11 @@ local function fn()
     inst:AddTag("NOCLICK")
 
     inst:AddComponent("herd")
-    inst.components.herd:SetMemberTag("beefalo")
+    if inst:HasTag("migratory") then
+        inst.components.herd:SetMemberTag("beefalo_migratory") 
+    else
+        inst.components.herd:SetMemberTag("beefalo")
+    end
     inst.components.herd:SetGatherRange(TUNING.BEEFALOHERD_RANGE)
     inst.components.herd:SetUpdateRange(20)
     inst.components.herd:SetOnEmptyFn(inst.Remove)

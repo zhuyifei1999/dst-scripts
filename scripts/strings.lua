@@ -63,15 +63,15 @@ STRINGS=
     {
         wilson = "\"I will conquer it all with the power of my MIND!\"",
         willow = "\"Things are so much prettier when they burn.\"",
-        woodie = "\"That's a nice tree, eh?\"",
+        woodie = "\"That's a nice lookin' tree, eh? Not for long.\"",
         wendy ="\"Abigail? Come back! I'm not done playing with you.\"",
         wolfgang = "\"I am mighty! No one is mightier!\"",
         wx78 = "\"EMPATHY MODULE NOT RESPONDING\"",
         wickerbottom = "\"Shhhh! No talking!\"",
-        waxwell = "\"Freedom!\"",
+        waxwell = "\"Free at last.\"",
         wes = "...",
-        wathgrithr = "\"A test of my incredible acting!\"",
-        webber = "\"We can overcome anything!\"",
+        wathgrithr = "\"All the world's a stage. For me!\"",
+        webber = "\"We're always together, and never alone!\"",
         random = "Anybody could be under that hat.",
     },
 
@@ -94,17 +94,17 @@ STRINGS=
     CHARACTER_DESCRIPTIONS =
     {
         wilson = "*Grows a magnificent beard",
-        willow = "*Resistant to fire damage\n*Can craft a sweet lighter and a cuddly bear\n*Loses heat when insane",
-        wendy = "*Haunted by her twin sister \n*Comfortable with darkness \n*Doesn't hit very hard",
-        wolfgang = "*Gets stronger with a full belly \n*Is afraid of the dark and monsters",
+        willow = "*Is resistant to fire damage \n*Can craft a cuddly bear and a super-sweet lighter \n*Can't stay warm when insane",
+        wendy = "*Haunted by her twin sister \n*Is comfortable with darkness \n*Doesn't hit very hard",
+        wolfgang = "*Gets stronger with a full belly \n*Is afraid of monsters and the dark \n*Always skips leg day",
         wx78 = "*Not a picky eater \n*Charged by lightning, damaged by water \n*Can upgrade with gears",
         wickerbottom = "*Knows many things \n*Self-publishes books \n*Can't sleep, hates spoilage",
         wes = "*Can't talk \n*Has trouble staying alive \n*Practices balloonomancy",
-        waxwell = "*Is dapper but frail \n*Can fragment his mind \n*Brings his own sword",
-        woodie = "*Has a lovely axe \n*Has a terrible secret \n*Thankful for bountiful harvests",
-        woodie_us = "*Has a lovely axe \n*Has a terrible secret \n*Celebrates Thanksgiving too early",
-        woodie_canada = "*Has a lovely axe \n*Has a terrible secret \n*Celebrates Thanksgiving at the correct time",
-        wathgrithr = "*Excels in battle \n*Gains power from fallen foes \n*Only eats meat",
+        waxwell = "*Is dapper, but frail \n*Can fragment his mind \n*On a first-name basis with the night",
+        woodie = "*Has a lovely axe \n*And a terrible secret \n*Is thankful for bountiful harvests",
+        woodie_us = "*Has a lovely axe \n*And a terrible secret \n*Celebrates Thanksgiving too early",
+        woodie_canada = "*Has a lovely axe \n*And a terrible secret \n*Celebrates Thanksgiving at the correct time",
+        wathgrithr = "*Excels in battle \n*Absorbs the power from fallen foes \n*Only eats meat",
         webber = "*Is a monster \n*Can befriend spiders \n*Grows a silky smooth beard",
         random = "\nThis will select a random character",
     },
@@ -289,6 +289,7 @@ STRINGS=
 
     WITHEREDITEM = "Withered",
     SMOLDERINGITEM = "Smoldering",
+    DISEASEDITEM = "Diseased",
 
     WET_PREFIX =
     {
@@ -377,6 +378,7 @@ STRINGS=
         RAINOMETER = "Rainometer",
         SPOILED_FOOD = "Rot",
         BERRIES = "Berries",
+        BERRIES_JUICY = "Juicy Berries",
         BACKPACK = "Backpack",
         PIGGYBACK = "Piggyback",
         ICEPACK = "Insulated Pack",
@@ -397,6 +399,7 @@ STRINGS=
         DURIAN_COOKED = "Extra Smelly Durian",
         EGGPLANT_COOKED = "Braised Eggplant",
         BERRIES_COOKED = "Roasted Berries",
+        BERRIES_JUICY_COOKED = "Roasted Juicy Berries",
         CAVE_ENTRANCE = "Plugged Sinkhole",
         CAVE_ENTRANCE_OPEN = "Sinkhole",
         CAVE_ENTRANCE_OPEN_CAVE = "Deeper",  
@@ -423,21 +426,22 @@ STRINGS=
         TURF_FUNGUS = "Fungal Turf",
         TURF_FUNGUS_RED = "Fungal Turf",
         TURF_FUNGUS_GREEN = "Fungal Turf",
-        TURF_SINKHOLE = "Slimey Turf",
+        TURF_SINKHOLE = "Slimy Turf",
         TURF_UNDERROCK = "Cave Rock Turf",
         TURF_MUD = "Mud Turf",
         TURF_DESERTDIRT = "Sandy Turf",
         TURF_DECIDUOUS = "Deciduous Turf",
 
         TURF_WEBBING = "Sticky Webbing",
-        
+
         COOKPOT = "Crock Pot",
         DUG_GRASS = "Grass Tuft",
         DUG_SAPLING = "Sapling",
         DUG_BERRYBUSH = "Berry Bush",
         DUG_BERRYBUSH2 = "Berry Bush",
         DUG_MARSH_BUSH = "Spiky Bush",
-        
+        DUG_BERRYBUSH_JUICY = "Juicy Berry Bush",
+
         FOOTBALLHAT="Football Helmet",
         PIGSKIN = "Pig Skin",
         AXE = "Axe",
@@ -500,6 +504,7 @@ STRINGS=
         BABYBEEFALO = "Baby Beefalo",
         BERRYBUSH = "Berry Bush",
         BERRYBUSH2 = "Berry Bush",
+        BERRYBUSH_JUICY = "Juicy Berry Bush",
         SUNKBOAT = "Boat",
         BONFIRE = "Bonfire",
         CAMPFIRE = "Campfire",
@@ -616,6 +621,8 @@ STRINGS=
         BEEFALOWOOL = "Beefalo Wool",
         PINECONE = "Pine Cone",
         PINECONE_SAPLING = "Evergreen Sapling",
+        TWIGGY_NUT = "Twiggy Tree Cone",
+        TWIGGY_NUT_SAPLING = "Twiggy Sapling",
         LUMPY_SAPLING = "Lumpy Sapling",
         SPIDEREGGSACK = "Spider Eggs",
         CHARCOAL = "Charcoal",
@@ -1063,6 +1070,10 @@ STRINGS=
         DECREASE_SANITY = "Sanity",
         HALF_SANITY = "Maximum Sanity",
 
+        GRASSGEKKO = "Grass Gekko",
+        ROCK_PETRIFIED_TREE = "Petrified Tree",
+        TWIGGYTREE = "Twiggy Tree",
+
         HUTCH = "Hutch",
         HUTCH_FISHBOWL = "Star-sky",
     },
@@ -1187,14 +1198,14 @@ STRINGS=
         ICEBOX = "Slows food spoilage.",
         ONEMANBAND = "Even crazy musicians amass a following.",
         NIGHTMAREFUEL = "Evil residue used by the foolish and crazy.",
-        PURPLEGEM = "By your colours combined!",
+        PURPLEGEM = "By your colors combined!",
         HAMBAT = "It takes food to make food.",
         HOMESIGN = "Make your mark upon the world.",
         ARROWSIGN_POST = "Point fingers at the world. Or signs.",
         WALL_WOOD_ITEM = "Wooden wall segments.",
         WALL_STONE_ITEM = "Stone wall segments.",
         WALL_HAY_ITEM = "Hay wall segments. Not very sturdy.",
-        WALL_MOONROCK_ITEM = "Walls for the lunar looney.",
+        WALL_MOONROCK_ITEM = "Walls for the lunar loony.",
         TURF_WOODFLOOR = "High-quality laminate floorboards.",
         TURF_CHECKERFLOOR = "Nicely checkered marble tiles.",
         TURF_CARPETFLOOR = "Super soft. Smells like Beefalo.",
@@ -1251,7 +1262,7 @@ STRINGS=
         EYEBRELLAHAT = "An eye on the sky keeps you dry.",
         FEATHERFAN = "Luxuriously soft, luxuriously large.",
         MINIFAN = "You have to run to create a breeze!",
-        WHIP = "Dish out some constructive feeback.",
+        WHIP = "Dish out some constructive feedback.",
         SADDLE_BASIC = "Lets you sit on animals. In theory.",
         SADDLE_WAR = "A throne for the boss of the battlefield.",
 
@@ -1272,7 +1283,7 @@ STRINGS=
         SHADOWLUMBER_BUILDER = "Holds a grudge against trees.",
         SHADOWMINER_BUILDER = "Mine that rock!",
         SHADOWDIGGER_BUILDER = "Diggy diggy hole.",
-        SHADOWDUELIST_BUILDER = "Ethereael bodyguard.",
+        SHADOWDUELIST_BUILDER = "Ethereal bodyguard.",
     },
 
     -- MAXWELL_TEST = {"Say pal, you don't look so good.", "You better find something to eat before night comes!"},
@@ -1303,7 +1314,7 @@ STRINGS=
             TWO = "You'd think you would have learned your lesson by now.",
             --THREE = "Strange machinery hasn't exactly been kind to you in the past.",
             THREE = "Hmm. Let's try something a little more challenging, shall we?",
-            --FIVE = "Let's see if you're so enthusastic when it's fourty below.",
+            --FIVE = "Let's see if you're as enthusiastic when it's fourty below.",
         },
         LEVEL_2 =
         {
@@ -1657,6 +1668,7 @@ STRINGS.PIGNAMES=
 
     --forum fun
     "Mickey",
+    "Cheeky Chris",
 
     --dev team
     "Kevin",
@@ -1666,6 +1678,7 @@ STRINGS.PIGNAMES=
     "Brook",
     "Matt",
     "Alex",
+    "Kris",
     "Kelly",
     "Eugene",
     "Graham",
@@ -1873,7 +1886,7 @@ STRINGS.UI =
                 "Katri Luotonen",
             }           
         },
-        THANKS = "And a very special thanks to all our supporters who braved the challenge of the \"Early-Access\nBeta\". You are too numerous to name - our amazing moderators, the wonderful artists, musicians,\nlive streamers, to all who made a Let's Play video and everybody who chimed in to let us know\nexactly what you think. Your encouragement, passion and support has been amazing.\n\nDon't Starve Together is truly a better game because of all of you.",
+        THANKS = "And a very special thanks to all our supporters who braved the challenge of the \"Early-Access\nBeta\". You are too numerous to name - our amazing moderators, the wonderful artists, musicians,\nlivestreamers, to all who made a Let's Play video and everybody who chimed in to let us know\nexactly what you think. Your encouragement, passion and support has been amazing.\n\nDon't Starve Together is truly a better game because of all of you.",
 
         FMOD = "FMOD Sound System,\nCopyright Firelight Technologies",
 
@@ -1899,16 +1912,16 @@ STRINGS.UI =
         },
         NOUNS=
         {
-            "trees",
-            "pathos",
-            "pines",
-            "spiders",
-            "monsters",
-            "a keen sense of despair",
-            "Wilson's beard",
-            "buckets and buckets of loot",
-            "game theory",
-            "food",     
+            "trees...",
+            "pathos...",
+            "pines...",
+            "spiders...",
+            "monsters...",
+            "a keen sense of despair...",
+            "Wilson's beard...",
+            "buckets and buckets of loot...",
+            "game theory...",
+            "food...",     
         }
     },
 
@@ -1964,6 +1977,7 @@ STRINGS.UI =
     {
         NOTIFY = "News",
         FORUM = "Forum",
+        ISSUE = "Report an Issue",
         BUYNOW = "Buy Now",
         BUYDONTSTARVEMAIN = "Buy Don't Starve",
         GIFT = "Send Gift",
@@ -1986,8 +2000,8 @@ STRINGS.UI =
         SCRIPTERRORMODWARNING = "This error may have occurred due to a mod you have enabled!\nYou have the following mods enabled:\n",
         TESTING = "This is the testing branch!", 
         TESTINGDETAIL = "You may encounter bugs or broken features, and you may lose your save game when we update. Please report all problems in the forum.",
-        TESTINGNO = "No thank you!",
-        TESTINGYES = "I understand",
+        TESTINGNO = "No, thank you!",
+        TESTINGYES = "I understand.",
         CONTINUE = "Continue",
         DELETE = "Delete",
         RESTART = "Restart",
@@ -2415,8 +2429,8 @@ STRINGS.UI =
         BODY =
         {   
             DEFAULT = "You have been disconnected. We're not sure exactly why... Oh well!",
-            ID_NO_FREE_INCOMING_CONNECTIONS = "The server is full. Try again later once one of these miscreants has been consumed by the gaping maw that is this game.",
-            ID_DST_NO_FREE_PLAYER_SLOTS = "The server is full. Try again later once one of these miscreants has been consumed by the gaping maw that is this game.",
+            ID_NO_FREE_INCOMING_CONNECTIONS = "The server is full. Try again later once one of these miscreants has been consumed by the gaping maw of this game.",
+            ID_DST_NO_FREE_PLAYER_SLOTS = "The server is full. Try again later once one of these miscreants has been consumed by the gaping maw of this game.",
             ID_CONNECTION_ATTEMPT_FAILED = "The server is not responding. If only yelling louder would help...",
             ID_DST_DESTINATION_CONNECTION_ATTEMPT_FAILED = "The destination server is not responding. That's not very polite, is it?",
             ID_INVALID_PASSWORD = "The password you entered was incorrect.\nAre you sure you're welcome in there?",
@@ -2428,7 +2442,7 @@ STRINGS.UI =
             ID_DST_USER_BANNED   = "You have been banned from this server. I guess that's that.",
             ID_DST_USER_KICKED = "You have been kicked from this server. Well, you'll probably have more fun elsewhere anyways.",
             ID_DST_IDLE_TIMEOUT = "You have lost connection to the server. Maybe it's for the best, you know? Then again, I'm just a dialog box--who am I to say?",
-            ID_DST_INCOMING_CONNECTIONS_DISABLED = "The server is temporarily not accepting new connections.  Please wait a moment before trying again.",
+            ID_DST_INCOMING_CONNECTIONS_DISABLED = "The server is not accepting new connections... but only temporarily.  Please wait a moment before trying again.",
             FAILED_TO_AUTOJOIN_LAN = "Unable to join a LAN server.\nAre you sure it exists?",
             ID_DST_INITIALIZATION_FAILED = "Networking did not initialize properly. Don't get discouraged! Give it another whirl, yeah?",
             ID_NAT_PUNCHTHROUGH_FAILED = "Unable to connect to the server. Look, I'll be honest. I'm pretty sure our programmers are actual wizards. I just write these things.",
@@ -2438,8 +2452,8 @@ STRINGS.UI =
             VERSION_MISMATCH_OLD_SERVER = "The server is on an older version than you. Be a little patient and hopefully it'll catch up soon.",
             VERSION_MISMATCH_OLD_CLIENT = "The server is on a newer version than you. Well, what are you doing just sitting there? Go and get the new version!",
             VERSION_HANDSHAKE_FAILED    = "The server is on a different version than you. Why can't we all just get along?",
-            ID_INCOMPATIBLE_PROTOCOL_VERSION = "The server has a different version than you do. No use crying over split versions! Just make sure everything's on the latest verison.",
-            ID_DST_INCOMPATIBLE_PROTOCOL_VERSION = "The server has a different version than you do. No use crying over split versions! Just make sure everything's on the latest verison.",
+            ID_INCOMPATIBLE_PROTOCOL_VERSION = "The server has a different version than you do. No use crying over split versions! Just make sure everything's on the latest version.",
+            ID_DST_INCOMPATIBLE_PROTOCOL_VERSION = "The server has a different version than you do. No use crying over split versions! Just make sure everything's on the latest version.",
             FORCE_DISCONNECTION         = "The connection has been forcibly closed by the engine. Vrooom vroom.",
             E_BANNED = "Your account has been banned for violating the terms of use. This is no laughing matter.",
             E_UPGRADE = "A new version is available. Please update Don't Starve Together.",
@@ -2447,16 +2461,16 @@ STRINGS.UI =
             INVALID_GAME_SESSION_TOKEN = "Unable to reach the Klei server. That thing is sort of the gatekeeper to this whole 'online game' business. Try again?",
             ID_DST_GAME_SESSION_AUTH_FAILED = "Something fishy is going on... either we couldn't reach the Klei server or you're not who you say you are.",
             ID_DST_USER_CONNECTION_FAILED = "We tried really hard to get you connected, but something went awry.",
-            ID_DST_FRIENDS_ONLY_SERVER = "Attempted to join a 'friends only' server but you're not friends with the host. Friendship is not a transitive property.",
-            APP_OWNERSHIP_CHECK_FAILED = "Steam says you don't own the game.  But you do... right?",
+            ID_DST_FRIENDS_ONLY_SERVER = "Attempted to join a 'friends only' server, but you're not friends with the host. Friendship is not a transitive property.",
+            APP_OWNERSHIP_CHECK_FAILED = "Steam says you don't own the game. But you do... right?",
             SERVER_MODS_NOT_ON_WORKSHOP = "You are missing mods. The mod required isn't on the Workshop. You will need to manually download mods that are not on the Workshop.",
             SERVER_MODS_WORKSHOP_VERSION_MISMATCH = "The server is running mods with an old version. The server owner must update the mods so that new players can join.",
             SERVER_MODS_WORKSHOP_FAILURE = "You failed to download the required mods from the Steam Workshop. Please try again.",
             SERVER_MODS_WORKSHOP_ACCESS_DENIED = "You failed to download the required mods from the Steam Workshop because one or more are not visible to you.",
-            ID_DST_SLOT_RESERVATION = "Unable to join the server. The only unused slots are reserved. Try again later once one of these miscreants has been consumed by the gaping maw that is this game.",
+            ID_DST_SLOT_RESERVATION = "Unable to join the server. The only unused slots are reserved. Try again later once one of these miscreants has been consumed by the gaping maw of this game.",
 		    ID_DST_SERVER_IS_CLAN_ONLY = "You have to be part of this server's steam group to connect to it. You could try visiting their group page and asking nicely to join?",
-            ID_DST_SERVER_IS_LAN_ONLY = "This server only allows joining from the same local network. You could run a really long cable from your computer.. or the server owner could change their server settings.",
-            ID_DST_DESTINATION_SERVER_NOT_AVAILABLE = "The server you were playing on is not curently available. Try again later",
+            ID_DST_SERVER_IS_LAN_ONLY = "This server only allows joining from the same local network. You could run a really long cable from your computer... or the owner could change their server settings.",
+            ID_DST_DESTINATION_SERVER_NOT_AVAILABLE = "The server you were playing on is currently unavailable. Please try again later.",
             ID_DST_DEDICATED_SERVER_STARTUP_FAILED = "There was some kind of trouble starting up the server. How odd.",
 		},
 		OK = "OK",
@@ -2465,9 +2479,10 @@ STRINGS.UI =
     PAUSEMENU =
     {
         TITLE = "Paused",
-        DST_TITLE = "Not Paused. Seriously. It's Not.",
+        DST_TITLE = "Not Paused.",
+        DST_SUBTITLE = "Seriously. It's Not.",
         SAVEANDQUITTITLE = "Save and return to main menu?",
-        SAVEANDQUITBODY = "Don't worry: we'll be waiting for you.",
+        SAVEANDQUITBODY = "Don't worry: we'll wait here for you.",
         SAVEANDQUITYES = "I said quit!",
         SAVEANDQUITNO = "Never mind...",
         QUITTITLE = "Return to main menu?",
@@ -2483,11 +2498,12 @@ STRINGS.UI =
         CLIENTQUITTITLE = "Leave Server",
         CLIENTQUITBODY = "Are you sure you want to leave the server?",
         HOSTQUITTITLE = "Shut Down Server",
-        HOSTQUITBODY = "Are you sure you want to shut the server down? If you do, any players connected will be disconnected.",
+        HOSTQUITBODY = "Are you sure you want to shut down the server? If you do, all current players will be disconnected.",
         YES = "Do it!",
         NO = "Maybe not...",
         AFK = "Go AFK",
         SERVER_ADMIN = "Server Admin",
+        ISSUE = "Report an Issue",
     },
 
     PLAYERSTATUSSCREEN =
@@ -2564,7 +2580,7 @@ STRINGS.UI =
         UPTODATE = "Up To Date",
         CONFIGSCREENTITLESUFFIX = "Configuration",
         BACKTITLE = "Discard Changes",
-        BACKBODY = "Do you want to discard the changes you made to the mod's options?",
+        BACKBODY = "Do you want to discard the changes you made to this mod's options?",
         UNKNOWN_MOD_CONFIG_SETTING = "[NAME UNDEFINED]",
         YES = "Yes",
         NO = "No",
@@ -2599,7 +2615,7 @@ STRINGS.UI =
         RESTART = "Exit Now",
         MOD_WARNING_TITLE = "Mod Warning",
         MOD_WARNING = "This is not a Steam Workshop mod. Players will need to download it themselves if you host a server.",
-        DST_COMPAT_WARNING = "This mod hasn't been tagged as compatible with Don't Starve Together, it is likely that there will be issues.",
+        DST_COMPAT_WARNING = "This mod hasn't been tagged as compatible with Don't Starve Together. It is likely there will be issues.",
         OK = "OK",
         MODPAGE = "Mod Page",
         MODTITLE = "Mods",
@@ -2628,7 +2644,7 @@ STRINGS.UI =
         SAVEPRESET = "Save As Preset",
         CANCEL = "Cancel",
         BACK = "Back",
-        DEFAULT_PRESET_DESC = "Lots of pigs and spiders and a tallbird nest.",
+        DEFAULT_PRESET_DESC = "Lots of pigs and spiders and a Tallbird nest.",
         LOSECHANGESTITLE = "Lose Changes?",
         LOSECHANGESBODY = "Apply a new preset and lose custom changes?",
         YES = "Yes",
@@ -2642,7 +2658,7 @@ STRINGS.UI =
         OKAY = "Okay",
 
         PRESETLEVELS = {
-            -- indexed titles left in place for backwards compatability with mods...
+            -- indexed titles left in place for backwards compatibility with mods...
                 "Default", 
                 "Together Plus",             -- Bootstrap the start
                 "Lights Out",   
@@ -2668,7 +2684,7 @@ STRINGS.UI =
         },
                 
         PRESETLEVELDESC = {
-            -- indexed titles left in place for backwards compatability with mods...
+            -- indexed titles left in place for backwards compatibility with mods...
                 "The standard Don't Starve experience.",
                 "A quicker start in a harsher world.",
                 "A dark twist on the standard Don't Starve experience.",
@@ -2681,14 +2697,14 @@ STRINGS.UI =
                 "The multiplayer Don't Starve experience.",
                 "Don't Starve Together with Reign of Giants turned off.",
                 "Delve into the caves... together!",
-                "A darker, more arachnidy cave experience.",
+                "A darker, more arachnid-y cave experience.",
 
             SURVIVAL_TOGETHER = "The standard Don't Starve experience.",
             SURVIVAL_TOGETHER_CLASSIC = "Don't Starve Together with Reign of Giants turned off.",
             SURVIVAL_DEFAULT_PLUS = "A quicker start in a harsher world.",
             COMPLETE_DARKNESS = "A dark twist on the standard Don't Starve experience.",
             DST_CAVE = "Delve into the caves... together!",
-            DST_CAVE_PLUS = "A darker, more arachnidy cave experience.",
+            DST_CAVE_PLUS = "A darker, more arachnid-y cave experience.",
 
             MOD_MISSING = "This preset came from a mod, but it looks like that mod isn't active right now!",
         },
@@ -2725,11 +2741,15 @@ STRINGS.UI =
         WILDFIRES = "Wildfires",
         TOUCHSTONE = "Touch Stones",
         BOONS = "Failed Survivors",
+
+        PREFABSWAPS = "Changing Resources",
+        PREFABSWAPS_START = "Starting Resource Variety",
+
         REGROWTH = "World Regrowth",
         BERRYBUSH = "Berry Bushes",
         CARROT = "Carrots",
         MUSHROOM = "Mushrooms",
-        CACTUS = "Cactuses",
+        CACTUS = "Cacti",
         FLOWERS = "Flowers, Evil Flowers",
         GRASS = "Grass",
         SAPLING = "Saplings",
@@ -2859,7 +2879,7 @@ STRINGS.UI =
         MODSTITLE = "Mods",
         TAGSTITLE = "Tags",
         MOD_WARNING_TITLE = "Mods Enabled",
-        MOD_WARNING_BODY = "This server has mods enabled. Klei is not able to help you should issues arise while playing on a modded server.",
+        MOD_WARNING_BODY = "This server has mods enabled. Klei won't be able to help if you encounter issues while playing on a modded server.",
         PASSWORD_ICON_HOVER = "Passworded",
         DEDICATED_ICON_HOVER = "Dedicated",
         FRIEND_ICON_HOVER = "Friends Playing",
@@ -2871,7 +2891,7 @@ STRINGS.UI =
         MODS_ICON_HOVER = "Modded",
         FILTER_RESET = "Reset Filters",
         MODS_HIDDEN_MISMATCH = "Unable to retrieve mod list due to a version mismatch.",
-        MODS_HIDDEN_LAN = "The mods list isn't visible over LAN.\nWhy don't you go over and ask your friend?",
+        MODS_HIDDEN_LAN = "The mods list isn't visible over LAN.\nWhy don't you scooch over and ask your friend?",
         OFFLINE_MODE_TITLE = "Offline",
         OFFLINE_MODE_BODY = "You are not logged in and can't play in online games.\nTry playing over LAN or restarting the game to log in.",
         OFFLINEWARNINGTITLE = "Offline World",
@@ -2929,14 +2949,14 @@ STRINGS.UI =
         INTENTION_TITLE = "What's your playstyle?",
         INTENTION_BUTTON = "Choose Playstyle",
         INTENTION_DESC = {
-            SOCIAL = "You want to relax, make friends, and play for fun. Winning or losing isn't so important so long as everyone is having a good time.",
-            COOPERATIVE = "Teamwork is your guiding principal. It's not enough to not starve, you have to not starve Together!",
-            COMPETITIVE = "By playing harder, smarter, and better than your opponents, you will show them what you're made of.",
-            MADNESS = "Fighting, looting, filling the world with spiders... Who knows what you'll do next?",
-            ANY = "You're flexible, you can adapt to whatever world you find yourself in."
+            SOCIAL = "You want to relax, make friends, and play for fun. Winning or losing isn't super important, so long as everyone is having a good time.",
+            COOPERATIVE = "Teamwork is your guiding principal. It's not enough to just not starve, you have to not starve, Together!",
+            COMPETITIVE = "You plan to show to your opponents what you're made of by playing smarter, harder, faster and coming out on top!",
+            MADNESS = "Who knows what you'll do next? Fighting, dancing, filling the world with carnivorous spiders... it's pure madness!",
+            ANY = "You're, like, laidback and flexible man. You'll adapt to whatever world you find yourself in."
         },
         MISSINGDATATITLE = "Out-of-Date Server",
-        MISSINGDATABODY = "This server is not up to date so we can't display its world settings.",
+        MISSINGDATABODY = "This server is not up to date. We can't display its world settings.",
     },
 
     SERVERCREATIONSCREEN =
@@ -2965,9 +2985,9 @@ STRINGS.UI =
         INTENTION_BUTTON = "Set Intention",
         INTENTION_DESC = {
             SOCIAL = "This server is a place for friendly chatter, a relaxed playstyle, and getting to know people. Come on in!",
-            COOPERATIVE = "We're all trying to survive together. Here, we play our best and do what we can to tame this hostile world.",
+            COOPERATIVE = "We're all trying to survive together. Here, we work together and do what we can to tame this hostile world.",
             COMPETITIVE = "This is where you'll find a fair fight. Everyone needs a place to prove who's the best at surviving, fighting, building, or whatever.",
-            MADNESS = "Anything goes on this server! Forests will be burned, food will be nommed, backs will be stabbed.",
+            MADNESS = "Anything goes on this server! Forests will be burned, food will be nommed, and backs will be stabbed.",
         },
         NEWHOST_TITLE = "Creating your first world?",
         NEWHOST_TYPE =
@@ -2977,8 +2997,8 @@ STRINGS.UI =
         },
         NEWHOST_DESC =
         {
-            ALONE = "Play alone in a private world while you learn the ropes and get a handle on the basics of not starving. This is recommended for your first time playing.",
-            TOGETHER = "Start a server to play with other players. You can decide if you want just friends or anyone to be able to join.",
+            ALONE = "Play alone in a private world where you can collect your bearings and get the hang of not starving. This is recommended for your first time playing.",
+            TOGETHER = "Start an online server where other players can join in your adventures. It's up to you whether it open to everyone, or just your friends.",
         },
         CLANID = "Group ID:",
         CLANONLY = "Members Only:",
@@ -2999,7 +3019,7 @@ STRINGS.UI =
         OFFLINEMODEBODYCREATE = "Are you sure you want to create an offline world? This is a limited mode where only players on your Local Area Network can join. Players will not be able to receive or use Collection Items in this world.",
         OFFLINEMODEBODYRESUME = "You are resuming an offline world. Only users on your Local Area Network will be able to join this world. Players will not be able to receive or use Collection Items in this world.",
         FULLSLOTSTITLE = "No Slots Available",
-        FULLSLOTSBODY = "All of your server slots are currently full. You must either select a slot to load the world from or delete a slot to start a new world.",
+        FULLSLOTSBODY = "All of your server slots are currently full. You must either select a slot to load from, or delete a slot and start a new world.",
         OK = "OK",
         NONAMEGAME = "[No Name]",
         NEWGAME = "New Server",
@@ -3024,11 +3044,11 @@ STRINGS.UI =
         INVALIDSERVERNAME_TITLE = "Missing Server Name",
         INVALIDSERVERNAME_BODY = "No one will be able to find you if you don't have a name!",
         INVALIDCLANSETTINGS_TITLE = "Bad Group ID",
-        INVALIDCLANSETTINGS_BODY = "You have to specify a steam group you belong to! Go back and check that number.",
+        INVALIDCLANSETTINGS_BODY = "You have to specify the steam group you belong to! Go back and check that number.",
         INVALIDINTENTIONSETTINGS_TITLE = "Missing Server Intention",
         INVALIDINTENTIONSETTINGS_BODY = "You forgot to choose a playstyle for your server!",
         INVALIDNEWHOST_TITLE = "Creating your first world?",
-        INVALIDNEWHOST_BODY = "We recommend trying the game alone in a private world while you learn the ropes and get a handle on the basics of not starving.  But it's totally up to you!",
+        INVALIDNEWHOST_BODY = "We recommend trying the game alone in a private world while you learn the ropes and get the hang of not starving. But it's totally up to you!",
     },
     
     
@@ -3075,11 +3095,11 @@ STRINGS.UI =
         LOSE_CHANGES_BODY = "Do you want abandon your changes?",    
         DELETE_ENTRY_TITLE = "Unban Player?",
         DELETE_ENTRY_BODY = "Do you want to delete \"",
-        DELETE_ENTRY_BODY_2 = "\" from your ban list?\nThis affects all servers you create.",
+        DELETE_ENTRY_BODY_2 = "\" from your ban list?\nThis will affect all servers you create.",
         CLEAR_LIST_TITLE = "Unban all?",
-        CLEAR_LIST_BODY = "Do you want to delete all banned players?\nThis affects all servers you create.",
+        CLEAR_LIST_BODY = "Do you want to delete all banned players?\nThis will affect all servers you create.",
         RESTORE_SNAPSHOT_HEADER = "Restore %s",
-        RESTORE_SNAPSHOT_BODY = "Do you want to restore the selected save? You will lose all changes to the world past that day, as well as all subsequent saves. This cannot be undone.",
+        RESTORE_SNAPSHOT_BODY = "Do you want to restore this save? You will lose all changes made to the world past the selected day, as well as all subsequent saves. This cannot be undone.",
         UNKNOWN_USER_NAME = "[unknown]", -- this is consistent with what steam when it can't get a player name
         SNAPSHOTS_TITLE = "Snapshots: ",
         RESTORE_SNAPSHOT = "Restore Snapshot",
@@ -3090,7 +3110,7 @@ STRINGS.UI =
         TITLE = "Create an Account",
         TITLE_FAILEDEMAIL = "Email Not Validated",
         BODY = "It looks like this is your first time playing Don't Starve Together.\nPlease click below to create an account and start playing.",
-        BODY_FAILEDEMAIL = "The email associated with your account has not been validated.\nCheck your inbox for a validation request.\nIf you think your email was entered incorrectly,\nclick below to try again.",
+        BODY_FAILEDEMAIL = "The email associated with your account has not been validated.\nPlease check your inbox for a validation request.\nIf you think your email was entered incorrectly,\nclick below to try again.",
         BODY2 = "Account creation will temporarily minimize your game and open your web browser.\nIf it doesn't work, try enabling your Steam overlay.",
         BODY2_FAILEDEMAIL = "Trying again will temporarily minimize your game and open your web browser.",
         CREATEBUTTON = "Create Account",
@@ -3109,9 +3129,9 @@ STRINGS.UI =
         BACK = "Back",
         DISCONNECT = "Disconnect",
         CLIENTQUITTITLE = "Leave Server",
-        CLIENTQUITBODY = "Are you sure you want to leave the server?",
+        CLIENTQUITBODY = "Are you sure you want to leave this server?",
         HOSTQUITTITLE = "Shut Down Server",
-        HOSTQUITBODY = "Are you sure you want to shut the server down? If you do, any players connected will be disconnected.",
+        HOSTQUITBODY = "Are you sure you want to shut down this server? If you do, all players will be disconnected.",
         YES = "Do it!",
         NO = "Maybe not...",
         INVITE = "Invite",
@@ -3168,7 +3188,7 @@ STRINGS.UI =
     	NEW = "NEW",
     	TRADE = "Trade Inn",
     	BACK = "Back",
-    	TRADE_TOOLTIP = "Trade your unwanted items for something new!",
+    	TRADE_TOOLTIP = "Trade your unwanted items in for something new!",
 		NO_ITEMS_TITLE = "Nothing to see here",
     	NO_ITEMS = "Play the game to get items!",
 	},
@@ -3220,7 +3240,7 @@ STRINGS.UI =
         WARNING_SINGLE = "You won't be able to use an item if you give your last copy away. Really trade this item?",
         WARNING = "You won't be able to use an item if you give your last copy away. Really trade these items?",
 		SERVER_ERROR_TITLE = "Error Trading Items",
-		SERVER_ERROR_BODY = "Unfortunately there was an error trading items. Please login again to correct your account inventory.",
+		SERVER_ERROR_BODY = "There was an error trading items. Please login again to correct your account inventory.",
 		OK = "Ok",
         SPECIALS_TITLE = "Specials",
         SPECIALS = "Specials",
@@ -3869,8 +3889,8 @@ STRINGS.UI =
     STARTADVENTURE=
     {
         TITLE="Doorway to Adventure!",
-        BODY="You're about to step into a long, arduous journey to find Maxwell. You will need to survive 5 worlds, each randomly generated to present a new challenge.\n\nShould you die, you will start back at this portal, but lose all your progress on the journey.",
-        BODY_TEST="If you die during adventure mode, you will return back to this portal where you may restart the adventure.\n\nYou're about to step into a long, arduous journey to find Maxwell. You will need to survive 5 worlds, each randomly generated to present a new challenge.",
+        BODY="You are about to embark on a long, arduous expedition to locate Maxwell. You will need to survive five randomly generated worlds, each presenting you with a unique challenge.\n\nShould you die you will be transported safely back to this portal, but lose all your progress on the adventure.",
+        BODY_TEST="If you die during adventure mode, you will return back to this portal where you may restart the adventure.\n\nYou are about to embark on a long, arduous expedition to locate Maxwell. You will need to survive five randomly generated worlds, each presenting you with a unique challenge.",
         YES="Let's Go!",
         NO="Not Yet",
     },
@@ -3879,7 +3899,7 @@ STRINGS.UI =
     {
         TITLE="The End.",
         BODY1 = "And so the cycle continues. Will ",
-        BODY2 = " ever escape?\n Perhaps %s too will tire of this wretched place, and use %s new powers to tempt the unsuspecting.\n\nThe mysterious beings that control this place still lurk in the shadows, and new challenges will soon be revealed.\n\nUntil then,\n- The Don't Starve Team -",
+        BODY2 = " ever escape?\n Perhaps %s, too, will tire of this wretched place, and use %s new powers to tempt the unsuspecting.\n\nThe mysterious beings that control this realm still lurk in the shadows, and new challenges will soon be revealed.\n\nUntil then,\n- The Don't Starve Team -",
         YES= "For Science!",
     },
 
@@ -3909,7 +3929,7 @@ STRINGS.UI =
 
     SANDBOXMENU =
     {
-        TITLE = "World Customisation",
+        TITLE = "World Customization",
         TITLEDETAIL = "",
         
         EASY = "Not Easy",
@@ -3938,37 +3958,37 @@ STRINGS.UI =
             CAVE = "Cave",
             UNKNOWN = "Some",
         },
-        
+
         CHOICEMONSTERS = "Monsters",
         CHOICEANIMALS = "Animals",
         CHOICERESOURCES = "Resources",
         CHOICEFOOD =    "Food",
-        CHOICECOOKED = "Prepared Food",     
-        CHOICEAMTDAY = "Amount of Day", 
-        CHOICEMISC = "World",   
-                
+        CHOICECOOKED = "Prepared Food",
+        CHOICEAMTDAY = "Amount of Day",
+        CHOICEMISC = "World",
+
         DAY = "Day",
         NIGHT = "Night",
         DUSK = "Dusk",
-        
+
         SLIDEVERYSHORT = "Very Short",
         SLIDESHORT = "Short",
         SLIDELONG = "Long",
         SLIDEVERYLONG = "Very Long",
         SLIDEALL = "Only",
-        
+
         SLIDEDEFAULT = "Default",
-        
+
         SLIDENEVER = "None",
         SLIDERARE = "Less",
         SLIDEOFTEN = "More",
         SLIDEALWAYS = "Lots",
-        
+
         SLIDEVERYSLOW = "Very Slow",
         SLIDESLOW = "Slow",
         SLIDEFAST = "Fast",
         SLIDEVERYFAST = "Very Fast",
-        
+
         DEFAULT = "Autumn",
         SUMMER = "Summer",
         WINTER = "Winter",
@@ -3977,6 +3997,7 @@ STRINGS.UI =
         AUTUMN_SPRING = "Autumn/Spring",
         WINTER_SUMMER = "Winter/Summer",
         RANDOM = "Random",
+        HIGHLYRANDOM = "Highly Random",
         BOTH = "Both",
         ALLSEASONS = "All Seasons",
         CLASSIC = "Autumn, Winter",
@@ -3984,17 +4005,23 @@ STRINGS.UI =
         EXTREMETEMPS = "Summer, Winter",
         STATICTEMPS = "Autumn, Spring",
         EXCLUDE = "No",
-        
+
         SLIDETINY = "Tiny",
         SLIDESMALL = "Small",
         SLIDESMEDIUM = "Medium",
         SLIDESLARGE = "Large",
         SLIDESHUGE = "Huge",
-        
+
         SLIDEVERYSIMPLE = "Very Simple",
         SLIDESIMPLE = "Simple",
         SLIDECOMPLEX = "Complex",
         SLIDEVERYCOMPLEX = "Very Complex",
+
+        QTYALL = "All",
+        QTYMANY = "Many",
+        QTYFEW = "Few",
+        QTYNONE = "None",
+        QTYMAX = "Maximum",
 
         BRANCHINGMOST = "Most",
         BRANCHINGANY = "Default",
@@ -4004,7 +4031,7 @@ STRINGS.UI =
         LOOPNEVER = "Never",
         LOOPRANDOM = "Default",
         LOOPALWAYS = "Always",
-        
+
         USEPRESETS = "Presets",
         USEPRESETS_LOCATION = "%s Presets",
         CHAPTERS = {
@@ -4043,7 +4070,7 @@ STRINGS.UI =
         SAVE_FAILED = "An error occurred while saving your data.",
         LOAD_FAILED = "An error occurred while loading your data.",
         DELETE_FAILED = "An error occurred while deleting your data.",	    
-        DATA_DAMAGED = "Your saved data is corrupt and cannot be used",
+        DATA_DAMAGED = "Oh no! Your saved data is corrupt and cannot be used.",
         DISABLE_AUTOSAVE = "Are you sure you want to\ndisable the auto-save feature?",
         
         OVERWRITE = "Overwrite",	    
@@ -4057,9 +4084,9 @@ STRINGS.UI =
     QUITTING = "Packing up the science.",
     
     TELEPORTTITLE = "Journey onwards?",
-    TELEPORTBODY_SURVIVAL = "This will destroy your current world but you will retain your inventory contents.",
+    TELEPORTBODY_SURVIVAL = "This will destroy your current world, but you will retain your inventory contents.",
     TELEPORTBODY_ADVENTURE = "This will REMOVE ALL YOUR ITEMS and destroy your current world. Only items placed in the machine will appear in the next world.",
-    TELEPORTYES = "Lets Go!",
+    TELEPORTYES = "Let's Go!",
     TELEPORTNO = "Stay here.",
 }
 
@@ -4086,9 +4113,13 @@ STRINGS.LUCY =
         "Nice day for a walk!",
         "We make a good team!",
         "There must be some trees around here somewhere.",
+        "This is perfect chopping weather.",
+        "A perfect day for some chopping.",
+        "You've got chops, buddy.",
         "Hey! Chop some trees!",
         "All work and no play makes me want to chop some trees.",
         "Chop chop chop. Heh.",
+        "Chop, c-c-chop!",
     },
 
     on_ground =
@@ -4096,6 +4127,12 @@ STRINGS.LUCY =
         "Come back! Take we with you!",
         "Where did you go?",
         "Take me with you!",
+        "It's cold!",
+        "I'm getting dirty!",
+        "Hey! Get back over here!",
+        "I can't chop tree by myself!",
+        "So... lonely...",
+        "I guess I'll just stay here then...",
         "What if I get stolen?!",
     },
 
@@ -4106,6 +4143,14 @@ STRINGS.LUCY =
     	"Now I'm a HAUNTED axe.",
     	"I'm not scared of you, ghost!",
     	"Boo who?",
+        "If you were corporeal I'd chop you!",
+        "OOooOOooOOoo! Haha, just kidding.",
+        "Creepy!",
+        "Rude!",
+        "I am an axe possessed!",
+        "Pick on someone your own size!",
+        "Hey!",
+        "Jeez! Did I anger you in a past life?",
     	"I'm white as a sheet.",
     	"You're looking boo-tiful today.",
 	},
@@ -4114,8 +4159,17 @@ STRINGS.LUCY =
     {
         "It's dark in here!",
         "I'm scared!",
+        "Help! Get me out!",
+        "There's nothing to chop in here!",
+        "This sucks.",
+        "Getttt meeee outttt!",
+        "I'm claustrophobic!",
+        "I have a fear of tight spaces!",
+        "I can't breathe! Wait.",
         "I can't see anything!",
+        "This is honestly the worst.",
         "I hate it in here.",
+        "What did I ever do to you?",
     },
 
     --Removed strings that refer to owner as "Woodie"
@@ -4123,6 +4177,12 @@ STRINGS.LUCY =
     {
         "I don't know you.",
         "Put me down!",
+        "Hey! Fresh!",
+        "Get your mitts off me!",
+        "Drop me this instant!",
+        "How dare you pick me up?!",
+        "Yuck, your hands are greasy!",
+        "Let me go!",
         "Help! I'm being kidnapped",
         "Stranger danger!",
     },
@@ -4130,6 +4190,12 @@ STRINGS.LUCY =
     on_pickedup =
     {
         "I missed you so much!",
+        "Ahhh, I'm back where I belong.",
+        "It feels so good to be reunited!",
+        "I was afraid you'd never come back.",
+        "You came back for me!",
+        "Never do that again! My little heart can't take it.",
+        "From now on we'll be inseparable.",
         "Did you miss me?",
         "Together again!",
     },
@@ -4138,17 +4204,27 @@ STRINGS.LUCY =
     {
         "You two-timer!",
         "But I'M your one and only Lucy!",
+        "There can be only one!",
+        "I'm having an identity crisis over here.",
+        "Oh you're just AXING for trouble!",
         "You can't have two Lucys!",
-        "You can't have him! He's mine!"
+        "You can't have him! He's mine!",
 	},
 
     on_dropped =
     {
         "You'll come back, right?",
         "What did I say?",
+        "Oh that's low.",
+        "I know this is only temporary...",
+        "Awww...",
+        "Why would you throw me away?",
+        "Aren't we friends?",
+        "Who chucks a talking axe?!",
         "I... don't understand!",
         "Can we talk about this?",
         "Don't forget about me!",
+        "Ouch!",
     },
 
     on_chopped =
@@ -4158,6 +4234,15 @@ STRINGS.LUCY =
         "Stupid tree!",
         "Nom nom nom!",
         "We did it!",
+        "I feel ALIVE!",
+        "HaHAHA!",
+        "YEEEESS!",
+        "This is what I live for!",
+        "Woo-hoohoo!",
+        "Die! Die!",
+        "Chop! Chop!",
+        "Destruction!",
+        "CHOP!",
         "This is AWESOME!",
         "Death to all trees!",
         "Again! Let's chop another!",
@@ -4171,7 +4256,7 @@ STRINGS.LUCY =
         "Are you OK?",
         "You look distracted.",
         "Calm down! Maybe you need to chew on a twig or something.",
-        "Chewing some wood will help you focus",
+        "Chewing some wood will help you focus.",
         --"It's just a tree! Calm down!",
     },
     beaver_down_mid =
@@ -4182,6 +4267,8 @@ STRINGS.LUCY =
         --"Careful, you're getting yourself worked up!",
         --"Don't chop too fast. You know what will happen!",
         "You might want to eat a log.",
+        "Have you been putting off your wood meals again?",
+        "Hey, hey, have a woodchip.",
         "You know what happens if you don't eat enough wood!",
     },
     beaver_down_late =
@@ -4214,7 +4301,9 @@ STRINGS.LUCY =
         "You're back!",
         --"Quick! Pick me up!", --Inventory isn't dropped in DST
         "Are you OK?",
+        "That was a rough one, huh?",
         "Don't let that happen again!",
+        "You scared me!",
         "Everything is going to be fine. Just focus!",
     },
 }
@@ -4288,7 +4377,7 @@ STRINGS.SIGNS =
 		"Uninteresting",
 		"Fascinating",
 		"Magnificent",
-		"Souless",
+		"Soulless",
 		"Echoing",
 		"Sleepy",
 		"Smelly",
@@ -4370,8 +4459,8 @@ STRINGS.SHARD =
         DST_SHARD_MIGRATION_DESTINATION_NOT_READY = "[WIP] Destination is not ready!",
         -- If the destination server is full (We may close the portal?)
         DST_SHARD_DESTINATION_FULL = "[WIP] Destination is full!",
-        -- If there were an error while sending the migration data, migration is cancelled
-        DST_SHARD_MIGRATION_CANCELLED = "[WIP] Migration cancelled",
+        -- If there were an error while sending the migration data, migration is canceled
+        DST_SHARD_MIGRATION_CANCELLED = "[WIP] Migration canceled",
     }   
 }
 

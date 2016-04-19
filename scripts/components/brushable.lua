@@ -28,6 +28,10 @@ function Brushable:SetBrushable(brushable, reset)
     end
 end
 
+function Brushable:SetOnBrushed(fn)
+    self.onbrushfn = fn
+end
+
 function Brushable:CalculateNumPrizes()
     local elapsed = TheWorld.state.cycles - self.lastbrushcycle
     return elapsed <= 0 and 0 or math.min( math.floor(elapsed/self.cyclesperprize), self.max )
@@ -51,6 +55,9 @@ function Brushable:Brush(doer, brush)
 
     -- no callback, I'm just using the event...
     self.inst:PushEvent("brushed", {doer = doer, numprizes = numprizes})
+    if self.onbrushfn ~= nil then
+        self.onbrushfn(self.inst, doer, numprizes)
+    end
 end
 
 function Brushable:OnSave()

@@ -262,11 +262,6 @@ function ModsTab:CreateDetailPanel()
 end
 
 function ModsTab:StartWorkshopUpdate()
-    --[[local linkpref = (PLATFORM == "WIN32_STEAM" and "external") or "klei"
-	TheSim:QueryStats( '{ "req":"modrank", "field":"Session.Loads.Mods.list", "fieldop":"unwind", "linkpref":"'..linkpref..'", "limit": 20}', 
-		function(result, isSuccessful, resultCode) self:OnStatsQueried(result, isSuccessful, resultCode) end)
-	]]	
-
     if self.updatetask ~= nil then
         self.updatetask:Cancel()
         self.updatetask = nil

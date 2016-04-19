@@ -44,7 +44,7 @@ local SEASON_HARSH_LENGTHS =
 }
 
 local function SetSpawnMode(spawner, difficulty)
-    if spawner then
+    if spawner ~= nil then
         spawner[SPAWN_MODE_FN[difficulty]](spawner)
     end
 end
@@ -296,24 +296,28 @@ return
 	end,
 
     season_start = function(difficulty)
-		if difficulty == "random" then
-			difficulty = GetRandomItem({"winter","spring","summer","autumn"})
-		elseif difficulty == "autumnorspring" then
+        if difficulty == "random" then
+            difficulty = GetRandomItem({"winter","spring","summer","autumn"})
+        elseif difficulty == "autumnorspring" then
             difficulty = GetRandomItem({"spring","autumn"})
         elseif difficulty == "winterorsummer" then
             difficulty = GetRandomItem({"winter","summer"})
         end
 
         if difficulty == "winter" then
+            TheWorld:PushEvent("ms_setstartseason", "winter")
             TheWorld:PushEvent("ms_setseason", "winter")
             TheWorld:PushEvent("ms_setsnowlevel", 1)
         elseif difficulty == "spring" then
+            TheWorld:PushEvent("ms_setstartseason", "spring")
             TheWorld:PushEvent("ms_setseason", "spring")
             TheWorld:PushEvent("ms_setsnowlevel", 0)
         elseif difficulty == "summer" then
+            TheWorld:PushEvent("ms_setstartseason", "summer")
             TheWorld:PushEvent("ms_setseason", "summer")
             TheWorld:PushEvent("ms_setsnowlevel", 0)
         else
+            TheWorld:PushEvent("ms_setstartseason", "autumn")
             TheWorld:PushEvent("ms_setseason", "autumn")
             TheWorld:PushEvent("ms_setsnowlevel", 0)
         end
@@ -462,7 +466,7 @@ return
         end
     end,
 
-        meteorshowers = function(difficulty)
+    meteorshowers = function(difficulty)
         local tuning_vars =
         {
             never = 
@@ -646,4 +650,16 @@ return
         OverrideTuningVariables(tuning_vars[difficulty])
     end,
 
+    prefabswaps = function(difficulty)
+        local prefabswap_list = require("prefabswap_list")
+        local tuning_vars =
+        {
+            none    = { NUM_PREFAB_SWAPS = 0 },
+            few     = { NUM_PREFAB_SWAPS = 1 },
+            default = { NUM_PREFAB_SWAPS = 2 },
+            many    = { NUM_PREFAB_SWAPS = 3 },
+            max     = { NUM_PREFAB_SWAPS = GetTableSize(prefabswap_list:getPrefabSwapsForWorldGen()) },
+        }
+        OverrideTuningVariables(tuning_vars[difficulty])
+    end,
 }

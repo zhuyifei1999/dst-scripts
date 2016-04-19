@@ -136,80 +136,6 @@ end
 function GetDebugString()
     return tostring(scheduler)
 end
-------------------------------
-
---- non-user-facing Tracking stats  ---
-TrackingEventsStats = {}
-TrackingTimingStats = {}
-function IncTrackingStat(stat, subtable)
-
-    local t = TrackingEventsStats
-    if subtable then
-        t = TrackingEventsStats[subtable]
-
-        if not t then
-            t = {}
-            TrackingEventsStats[subtable] = t
-        end
-    end
-
-    t[stat] = 1 + (t[stat] or 0)
-end
-
-function SetTimingStat(subtable, stat, value)
-
-    local t = TrackingTimingStats
-    if subtable then
-        t = TrackingTimingStats[subtable]
-
-        if not t then
-            t = {}
-            TrackingTimingStats[subtable] = t
-        end
-    end
-
-    t[stat] = math.floor(value/1000)
-end
-
---- GAME Stats and details to be sent to server on game complete ---
-ProfileStats = {}
-
-function GetProfileStats()
-	if GetTableSize(ProfileStats) then
-    	return json.encode({
-    						stats = ProfileStats
-    						})
-    else
-    	return json.encode({})
-    end
-end
-
-function ProfileStatsSet(item, value)
-    ProfileStats[item] = value
-end
-
-function ProfileStatsAdd(item)
-    --print ("ProfileStatsAdd", item)
-    if ProfileStats[item] then
-    	ProfileStats[item] = ProfileStats[item] +1
-    else
-    	ProfileStats[item] = 1
-    end
-end
-
-function ProfileStatsAddItemChunk(item, chunk)
-    if ProfileStats[item] == nil then
-    	ProfileStats[item] = {}
-    end
-
-    if ProfileStats[item][chunk] then
-    	ProfileStats[item][chunk] =ProfileStats[item][chunk] +1
-    else
-    	ProfileStats[item][chunk] = 1
-    end
-end
-
-
 
 
 function PROFILE_world_gen(debug)
@@ -494,7 +420,8 @@ function GenerateNew(debug, world_gen_data)
 	
 	print("Generation complete")
 
-	local strdata = DataDumper(savedata, nil, PLATFORM == "NACL")
+    local PRETTY_PRINT = BRANCH == "dev"
+	local strdata = DataDumper(savedata, nil, not PRETTY_PRINT)
 	return strdata
 end
 
