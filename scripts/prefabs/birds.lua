@@ -51,19 +51,20 @@ local function chooseItem()
     local items = {"flint"}
 
     local swaps  = TheWorld.prefabswapstatus
+    if swaps ~= nil then
+        for k,v in pairs(swaps)do
+            for i,set in ipairs(v)do
 
-    for k,v in pairs(swaps)do
-        for i,set in ipairs(v)do
-
-            if set.status == "active" and set.mercy_items then
-                for t,item in ipairs(set.mercy_items)do
-                    table.insert(items,item)
+                if set.status == "active" and set.mercy_items then
+                    for t,item in ipairs(set.mercy_items)do
+                        table.insert(items,item)
+                    end
                 end
             end
         end
     end
 
-    return items[math.random(1,#items)]
+    return items[math.random(#items)]
 end
 
 local function SpawnPrefabChooser(inst)
