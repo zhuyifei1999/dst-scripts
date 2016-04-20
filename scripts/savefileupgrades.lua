@@ -320,10 +320,28 @@ t = {
                     return
                 end
 
-                print("One-time disabling of prefab swap management.")
-                savedata.map.topology.overrides.prefabswaps = nil
-                savedata.map.topology.overrides.original.prefabswaps = "default"
-                savedata.map.persistdata.prefabswapmanager.changes = {}
+                --print("One-time disabling of prefab swap management.")
+                --savedata.map.topology.overrides.prefabswaps = nil
+                --savedata.map.topology.overrides.original.prefabswaps = "default"
+                --if savedata.map.persistdata ~= nil and savedata.map.persistdata.prefabswapmanager ~= nil then
+                    --savedata.map.persistdata.prefabswapmanager.changes = {}
+                --end
+            end,
+        },
+        {
+            version = 3,
+            fn = function(savedata)
+                if savedata == nil then
+                    return
+                end
+
+                print("Checking for default prefab swaps and disabling if necessary.")
+                if savedata.map.topology.overrides.prefabswaps == nil
+                    or savedata.map.topology.overrides.prefabswaps == "default" then -- Default is now zero swaps.
+                    if savedata.map.persistdata ~= nil and savedata.map.persistdata.prefabswapmanager ~= nil then
+                        savedata.map.persistdata.prefabswapmanager.changes = {}
+                    end
+                end
             end,
         }
     },

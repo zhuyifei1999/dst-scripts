@@ -21,9 +21,14 @@ return {
 			NOTALLOWED = "That can't go in there.",
 			INUSE = "I can come back later...",
 		},
+		RUMMAGE =
+        {   
+            GENERIC = "I can't do anything right.",
+            INUSE = "I can come back later...",   
+        },
 		COOK =
         {
-            GENERIC = "I can't do that.",
+            GENERIC = "I can't do anything right.",
             INUSE = "I can come back later...",
             TOOFAR = "It's so... far away...",
         },
@@ -35,7 +40,28 @@ return {
         {
             NOHEALTH = "I can't... I don't feel so good...",
         },
+        GIVE =
+        {
+            DEAD = "They've no need of material possessions where they've gone.",
+            SLEEPING = "I'll come back later...",
+            BUSY = "It's too busy to pay attention to me...",
+        },
+        GIVETOPLAYER = 
+        {
+        	FULL = "They are already too burdened by this world...",
+            DEAD = "They've no need of material possessions where they've gone.",
+            SLEEPING = "They look so peaceful... I'll come back later.",
+            BUSY = "Oh... I can tell you're busy...",
+    	},
+    	GIVEALLTOPLAYER = 
+        {
+        	FULL = "They are already too burdened by this world...",
+            DEAD = "They've no need of material possessions where they've gone.",
+            SLEEPING = "They look so peaceful... I'll come back later.",
+            BUSY = "Oh... I can tell you're busy...",
+    	},
 	},
+	ANNOUNCE_MOUNT_LOWHEALTH = "This beast... is not long for this world.",
 	ACTIONFAIL_GENERIC = "I can't do anything right.",
 	ANNOUNCE_ADVENTUREFAIL = "Not all deaths are alike.",
 	ANNOUNCE_BOOMERANG = "Ow! That was karma.",

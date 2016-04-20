@@ -18,9 +18,14 @@ return
             NOTALLOWED = "Nonsense.",
             INUSE = "Someone's already using it.",
         },
+        RUMMAGE =
+        {   
+            GENERIC = "It seems I can't do that.",
+            INUSE = "Someone's already using it.",   
+        },
         COOK =
         {
-            GENERIC = "I can't do that.",
+            GENERIC = "It seems I can't do that.",
             INUSE = "Someone's already using it.",
             TOOFAR = "It is not within my reach.",
         },
@@ -36,7 +41,28 @@ return
         {
             NOHEALTH = "I'm too ill for that.",
         },
+        GIVE =
+        {
+            DEAD = "That would be a waste.",
+            SLEEPING = "It appear to be sleeping.",
+            BUSY = "I'll try again when it's done..",
+        },
+        GIVETOPLAYER = 
+        {
+            FULL = "They are already heavily burdened.",
+            DEAD = "That would be a waste.",
+            SLEEPING = "They're in REM sleep. No need to disturb them.",
+            BUSY = "I'll try again when they're free.",
+        },
+        GIVEALLTOPLAYER = 
+        {
+            FULL = "They are already heavily burdened.",
+            DEAD = "That would be a waste.",
+            SLEEPING = "They're in REM sleep. No need to disturb them.",
+            BUSY = "I'll try again when they're free.",
+        },
     },
+    ANNOUNCE_MOUNT_LOWHEALTH = "My mount requires attention of the medical variety.",
     DESCRIBE=
     {
         BERNIE_INACTIVE =
@@ -1208,7 +1234,7 @@ return
     DESCRIBE_TOODARK = "I can't see in the dark.",
     DESCRIBE_SMOLDERING = "Seems it's about to ignite from the heat.",
     DESCRIBE_GENERIC = "I don't know what that is.",
-    ACTIONFAIL_GENERIC = "I can't do that.",
+    ACTIONFAIL_GENERIC = "It seems I can't do that.",
 
     BATTLECRY =
     {

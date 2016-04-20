@@ -4015,6 +4015,7 @@ STRINGS.UI =
         QTYFEW = "Few",
         QTYNONE = "None",
         QTYMAX = "Maximum",
+        QTYNORMAL = "Normal",
 
         BRANCHINGMOST = "Most",
         BRANCHINGANY = "Default",

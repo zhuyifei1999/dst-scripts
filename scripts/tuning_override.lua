@@ -646,12 +646,13 @@ return
         local prefabswap_list = require("prefabswap_list")
         local tuning_vars =
         {
-            default = { NUM_PREFAB_SWAPS = 0},  -- temporarily disabling prefabswaps by making the default zero.
-            --none    = { NUM_PREFAB_SWAPS = 0 },
-            --few     = { NUM_PREFAB_SWAPS = 1 },
-            --default = { NUM_PREFAB_SWAPS = 2 },
-            --many    = { NUM_PREFAB_SWAPS = 3 },
-            --max     = { NUM_PREFAB_SWAPS = GetTableSize(prefabswap_list:getPrefabSwapsForWorldGen()) },
+            default = { NUM_PREFAB_SWAPS = 0 }, -- for now, default is "none". eventually this will be "normal"
+
+            none    = { NUM_PREFAB_SWAPS = 0 },
+            few     = { NUM_PREFAB_SWAPS = 1 },
+            normal  = { NUM_PREFAB_SWAPS = 2 },
+            many    = { NUM_PREFAB_SWAPS = 3 },
+            max     = { NUM_PREFAB_SWAPS = GetTableSize(prefabswap_list:getPrefabSwapsForWorldGen()) },
         }
         OverrideTuningVariables(tuning_vars[difficulty])
     end,

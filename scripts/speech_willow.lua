@@ -17,9 +17,14 @@ return {
 			NOTALLOWED = "They won't let me.",
 			INUSE = "I'll use after they're done.",
 		},
+		RUMMAGE =
+        {   
+            GENERIC = "I can'tttttt.",
+            INUSE = "I'll use after they're done.",  
+        },
 		COOK =
         {
-            GENERIC = "I can't do that.",
+            GENERIC = "I can'tttttt.",
             INUSE = "I'll use after they're done.",
             TOOFAR = "It's all the way over thereeeee!",
         },
@@ -31,7 +36,29 @@ return {
         {
             TARGETINCOMBAT = "I'll ride it when it settles down'.",
         },
+        GIVE =
+        {
+            DEAD = "They won't fully appreciate my gift.",
+            SLEEPING = "Not right now. It's sleeping.",
+            BUSY = "It's busyyyy.",
+        },
+        GIVETOPLAYER = 
+        {
+        	FULL = "They can't carry any more things.",
+            DEAD = "They won't fully appreciate my gift.",
+            SLEEPING = "I could leave it under their pillow...?",
+            BUSY = "Hurry uppp! I have a sweet present for you!",
+    	},
+    	GIVEALLTOPLAYER = 
+        {
+        	FULL = "They can't carry any more things.",
+            DEAD = "They won't fully appreciate my gift.",
+            SLEEPING = "I could leave it under their pillow...?",
+            BUSY = "Hurry uppp! I have a sweet present for you!",
+    	},
 	},
+	ANNOUNCE_MOUNT_LOWHEALTH = "This beast is looking pretty bad.",
+	ACTIONFAIL_GENERIC = "I can'tttttt.",
 	ANNOUNCE_ADVENTUREFAIL = "You win THIS time, Maxwell.",
 	ANNOUNCE_BOOMERANG = "Stupid boomerang!",
 	ANNOUNCE_CHARLIE = "I'm not afraid of you!",
