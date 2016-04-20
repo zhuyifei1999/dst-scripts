@@ -53,6 +53,7 @@ local fruits = {"pomegranate", "dragonfruit", "cave_banana"}
 AddIngredientValues(fruits, {fruit=1}, true)
 
 AddIngredientValues({"berries"}, {fruit=.5}, true)
+AddIngredientValues({"berries_juicy"}, {fruit=.5}, true)
 AddIngredientValues({"durian"}, {fruit=1, monster=1}, true)
 
 AddIngredientValues({"honey", "honeycomb"}, {sweetener=1}, true)

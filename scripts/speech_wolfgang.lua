@@ -11,9 +11,25 @@ return {
 			GENERIC = "That cannot be shaved.",
 			NOBITS = "I cannot shave when there are no hairs.",
 		},
+		STORE =
+		{
+			GENERIC = "I will make it fit!",
+			NOTALLOWED = "Bah! Useless.",
+			INUSE = "Wolfgang can share!",
+		},
+		COOK =
+        {
+            GENERIC = "I can't do that.",
+            INUSE = "Wolfgang can share!",
+            TOOFAR = "Is pot very small, or just far away?",
+        },
         MOUNT =
         {
             INUSE = "Hair-cow is occupied by another.",
+        },
+        SADDLE =
+        {
+            TARGETINCOMBAT = "I cannot ride it now! Hair-cow is proving itself in battle!",
         },
 	},
 	ACTIONFAIL_GENERIC = "I am not mighty enough to do that.",

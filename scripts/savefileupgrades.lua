@@ -312,6 +312,19 @@ t = {
                 end
 
             end,
+        },
+        {
+            version = 2,
+            fn = function(savedata)
+                if savedata == nil then
+                    return
+                end
+
+                print("One-time disabling of prefab swap management.")
+                savedata.map.topology.overrides.prefabswaps = nil
+                savedata.map.topology.overrides.original.prefabswaps = "default"
+                savedata.map.persistdata.prefabswapmanager.changes = {}
+            end,
         }
     },
 }

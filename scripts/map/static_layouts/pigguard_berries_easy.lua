@@ -17,7 +17,7 @@ return {
       margin = 0,
       image = "../../../../tools/tiled/dont_starve/tiles.png",
       imagewidth = 512,
-      imageheight = 128,
+      imageheight = 384,
       properties = {},
       tiles = {}
     }
@@ -62,50 +62,6 @@ return {
       objects = {
         {
           name = "",
-          type = "berrybush",
-          shape = "rectangle",
-          x = 112,
-          y = 64,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
-          type = "berrybush",
-          shape = "rectangle",
-          x = 144,
-          y = 64,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
-          type = "berrybush",
-          shape = "rectangle",
-          x = 80,
-          y = 64,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
-          type = "berrybush",
-          shape = "rectangle",
-          x = 176,
-          y = 64,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
           type = "pigtorch",
           shape = "rectangle",
           x = 128,
@@ -117,7 +73,51 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
+          shape = "rectangle",
+          x = 112,
+          y = 64,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "sps_berrybush",
+          shape = "rectangle",
+          x = 144,
+          y = 64,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "sps_berrybush",
+          shape = "rectangle",
+          x = 80,
+          y = 64,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "sps_berrybush",
+          shape = "rectangle",
+          x = 176,
+          y = 64,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 96,
           y = 96,
@@ -128,7 +128,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 192,
           y = 96,
@@ -139,7 +139,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 64,
           y = 96,
@@ -150,7 +150,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 160,
           y = 96,
@@ -161,7 +161,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 80,
           y = 128,
@@ -172,7 +172,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 208,
           y = 128,
@@ -183,7 +183,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 48,
           y = 128,
@@ -194,7 +194,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 176,
           y = 128,
@@ -205,7 +205,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 96,
           y = 160,
@@ -216,7 +216,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 192,
           y = 160,
@@ -227,7 +227,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 64,
           y = 160,
@@ -238,7 +238,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 160,
           y = 160,
@@ -249,7 +249,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 112,
           y = 192,
@@ -260,7 +260,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 176,
           y = 192,
@@ -271,7 +271,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 80,
           y = 192,
@@ -282,7 +282,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 144,
           y = 192,
@@ -293,7 +293,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 128,
           y = 224,
@@ -304,10 +304,186 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 128,
           y = 32,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
+          shape = "rectangle",
+          x = 111,
+          y = 65,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
+          shape = "rectangle",
+          x = 143,
+          y = 65,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
+          shape = "rectangle",
+          x = 79,
+          y = 65,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
+          shape = "rectangle",
+          x = 93,
+          y = 98,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
+          shape = "rectangle",
+          x = 160,
+          y = 98,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
+          shape = "rectangle",
+          x = 174,
+          y = 66,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
+          shape = "rectangle",
+          x = 177,
+          y = 128,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
+          shape = "rectangle",
+          x = 76,
+          y = 129,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
+          shape = "rectangle",
+          x = 93,
+          y = 162,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
+          shape = "rectangle",
+          x = 157,
+          y = 162,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
+          shape = "rectangle",
+          x = 109,
+          y = 194,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
+          shape = "rectangle",
+          x = 173,
+          y = 194,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
+          shape = "rectangle",
+          x = 77,
+          y = 194,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
+          shape = "rectangle",
+          x = 141,
+          y = 194,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
+          shape = "rectangle",
+          x = 125,
+          y = 226,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
+          shape = "rectangle",
+          x = 125,
+          y = 34,
           width = 0,
           height = 0,
           visible = true,

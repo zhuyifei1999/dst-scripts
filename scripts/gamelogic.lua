@@ -390,7 +390,7 @@ local function PopulateWorld(savedata, profile)
             end
 
             -- Clear out one time overrides
-            local onetime = {"season_start", "autumn", "winter", "spring", "summer", "frograin", "wildfires", "prefabswaps"}
+            local onetime = {"season_start", "autumn", "winter", "spring", "summer", "frograin", "wildfires", "prefabswaps_start"}
             for i,override in ipairs(onetime) do
                 if world.topology.overrides[override] ~= nil then
                     print("removing onetime override",override)

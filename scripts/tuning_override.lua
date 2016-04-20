@@ -1,19 +1,11 @@
---local tuning_backups = {}
 
 local function OverrideTuningVariables(tuning)
-    for k, v in pairs(tuning) do
-        --tuning_backups[k] = TUNING[k] 
-        TUNING[k] = v
+    if tuning ~= nil then
+        for k, v in pairs(tuning) do
+            TUNING[k] = v
+        end
     end
 end
-
---[[
-local function ResetTuningVariables()
-    for k, v in pairs(tuning_backups) do
-        TUNING[k] = v
-    end
-end
---]]
 
 local SPAWN_MODE_FN =
 {
@@ -654,11 +646,12 @@ return
         local prefabswap_list = require("prefabswap_list")
         local tuning_vars =
         {
-            none    = { NUM_PREFAB_SWAPS = 0 },
-            few     = { NUM_PREFAB_SWAPS = 1 },
-            default = { NUM_PREFAB_SWAPS = 2 },
-            many    = { NUM_PREFAB_SWAPS = 3 },
-            max     = { NUM_PREFAB_SWAPS = GetTableSize(prefabswap_list:getPrefabSwapsForWorldGen()) },
+            default = { NUM_PREFAB_SWAPS = 0},  -- temporarily disabling prefabswaps by making the default zero.
+            --none    = { NUM_PREFAB_SWAPS = 0 },
+            --few     = { NUM_PREFAB_SWAPS = 1 },
+            --default = { NUM_PREFAB_SWAPS = 2 },
+            --many    = { NUM_PREFAB_SWAPS = 3 },
+            --max     = { NUM_PREFAB_SWAPS = GetTableSize(prefabswap_list:getPrefabSwapsForWorldGen()) },
         }
         OverrideTuningVariables(tuning_vars[difficulty])
     end,

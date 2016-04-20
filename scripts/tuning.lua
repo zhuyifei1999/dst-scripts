@@ -1960,7 +1960,7 @@ function Tune(overrides)
         HUTCH_DMG_PERIOD = 1.2,
         HUTCH_PRICKLY_DAMAGE = 30,
 
-        NUM_PREFAB_SWAPS = 2,
+        NUM_PREFAB_SWAPS = 0,
     }
 end
 

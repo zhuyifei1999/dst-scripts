@@ -12,9 +12,29 @@ return
             NOBITS = "It's already smooth, dear.",
             AWAKEBEEFALO = "I think he might object to that.",
         },
+        STORE =
+        {
+            GENERIC = "It's full to the brim, I'm afraid.",
+            NOTALLOWED = "Nonsense.",
+            INUSE = "Someone's already using it.",
+        },
+        COOK =
+        {
+            GENERIC = "I can't do that.",
+            INUSE = "Someone's already using it.",
+            TOOFAR = "It is not within my reach.",
+        },
         MOUNT =
         {
             INUSE = "Patience is required. I can ride this beefalo later.",
+        },
+        SADDLE =
+        {
+            TARGETINCOMBAT = "It would be ill-advised to approach that scuffle.",
+        },
+        ATTUNE =
+        {
+            NOHEALTH = "I'm too ill for that.",
         },
     },
     DESCRIBE=

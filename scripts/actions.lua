@@ -1480,7 +1480,9 @@ ACTIONS.MOUNT.fn = function(act)
     elseif act.target.components.rideable == nil
         or not act.target.components.rideable.canride
         or (act.target.components.health ~= nil and
-            act.target.components.health:IsDead()) then
+            act.target.components.health:IsDead())
+        or (act.target.components.freezable and
+            act.target.components.freezable:IsFrozen()) then
         return false
     elseif act.target.components.rideable:IsBeingRidden() then
         return false, "INUSE"

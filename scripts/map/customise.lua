@@ -26,7 +26,7 @@ end
 --}
 
 local starting_swaps_descriptions = {
-	{ text = STRINGS.UI.SANDBOXMENU.QTYNONE, data = "classic" },		
+	{ text = STRINGS.UI.SANDBOXMENU.CLASSIC, data = "classic" },		
 	{ text = STRINGS.UI.SANDBOXMENU.SLIDEDEFAULT, data = "default" },		
 	{ text = STRINGS.UI.SANDBOXMENU.HIGHLYRANDOM, data = "highly random" },	
 }
@@ -255,7 +255,7 @@ local GROUP = {
 							["regrowth"] = {value = "default", enable = false, image = "regrowth.tex", desc = speed_descriptions, order = 17}, 						
 							["cavelight"] = {value = "default", enable = false, image = "cavelight.tex", desc = speed_descriptions, order = 18, world={"cave"}},							
 							["prefabswaps_start"] = {value = "default", enable = false, image = "starting_variety.tex", desc = starting_swaps_descriptions, order = 19},	
-							["prefabswaps"] = {value = "default", enable = false, image = "changing_resources.tex", desc = swaps_descriptions, order = 20}, 												
+							--["prefabswaps"] = {value = "default", enable = false, image = "changing_resources.tex", desc = swaps_descriptions, order = 20}, 												
 						}
 					},
 }

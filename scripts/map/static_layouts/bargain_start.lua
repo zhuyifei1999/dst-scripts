@@ -17,7 +17,7 @@ return {
       margin = 0,
       image = "../../../../tools/tiled/dont_starve/tiles.png",
       imagewidth = 512,
-      imageheight = 128,
+      imageheight = 384,
       properties = {},
       tiles = {}
     }
@@ -507,7 +507,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 100,
           y = 334,
@@ -518,7 +518,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 130,
           y = 381,
@@ -529,7 +529,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 137,
           y = 429,
@@ -540,7 +540,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 192,
           y = 412,
@@ -551,10 +551,43 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 77,
           y = 402,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
+          shape = "rectangle",
+          x = 112,
+          y = 419,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
+          shape = "rectangle",
+          x = 166,
+          y = 406,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
+          shape = "rectangle",
+          x = 111,
+          y = 356,
           width = 0,
           height = 0,
           visible = true,

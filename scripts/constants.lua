@@ -344,20 +344,12 @@ CHARACTER_GENDERS =
 
 MAXITEMSLOTS = 15
 
-EQUIPSLOTS=
+EQUIPSLOTS =
 {
     HANDS = "hands",
     HEAD = "head",
     BODY = "body",
 }
-EQUIPSLOT_IDS = {}
-local slot = 0
-for k, v in pairs(EQUIPSLOTS) do
-    slot = slot + 1
-    EQUIPSLOT_IDS[v] = slot
-end
-slot = nil
-
 
 ITEMTAG=
 {

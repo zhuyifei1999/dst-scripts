@@ -432,9 +432,10 @@ local function processTrigger(change)
             if swap.trigger.prefab_spawns then
 
                 for i, prefab_data in ipairs(swap.trigger.prefab_spawns) do
-
                     print("######################")
-                    print("SIGNAL SPAWN IN ",prefab_data.prefab)   
+                    print("SIGNAL SPAWN IN ",prefab_data.prefab)
+
+                    TheWorld:PushEvent("ms_spawnsetpiece"..prefab_data.prefab, { delay = 0, delayvariance = TUNING.TOTAL_DAY_TIME })
 
                     repopulatePrefabByDensity(prefab_data,swap.trigger.disease_check)
                 end

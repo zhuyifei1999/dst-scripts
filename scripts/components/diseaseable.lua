@@ -74,6 +74,7 @@ end
 function Diseaseable:ForceDiseased(deathTimeMin, deathTimeMax)
     if not self.diseased then
         self.diseased = true
+        TheWorld:PushEvent("ms_unregisterdiseaseable", self.inst)
         self:Stop()
         self:StartDeathTime(deathTimeMin, deathTimeMax)
         if self.fxtask == nil then

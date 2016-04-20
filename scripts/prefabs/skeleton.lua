@@ -15,6 +15,12 @@ SetSharedLootTable('skeleton',
     {'boneshard',   1.00},
 })
 
+local EQUIPSLOT_NAMES = {}
+for k, v in pairs(EQUIPSLOTS) do
+    table.insert(EQUIPSLOT_NAMES, v)
+end
+local EQUIPSLOT_IDS = table.invert(EQUIPSLOT_NAMES)
+
 local function getdesc(inst, viewer)
     if inst.char ~= nil and not viewer:HasTag("playerghost") then
         local mod = GetGenderStrings(inst.char)
@@ -70,8 +76,8 @@ local function SetSkeletonAvatarData(inst, client_obj)
     for k, v in pairs(inst._avatar_net.numbers) do
         v:set(client_obj ~= nil and client_obj[k] or 0)
     end
-    for k, v in pairs(inst._avatar_net.equip) do
-        v:set(client_obj ~= nil and client_obj.equip ~= nil and client_obj.equip[k] or "")
+    for i, v in ipairs(inst._avatar_net.equip) do
+        v:set(client_obj ~= nil and client_obj.equip ~= nil and client_obj.equip[i] or "")
     end
 end
 
@@ -94,8 +100,8 @@ local function GetSkeletonAvatarData(inst)
     for k, v in pairs(inst._avatar_net.numbers) do
         data[k] = v:value()
     end
-    for k, v in pairs(inst._avatar_net.equip) do
-        data.equip[k] = v:value()
+    for i, v in ipairs(inst._avatar_net.equip) do
+        table.insert(data.equip, v:value())
     end
     return data
 end
@@ -137,11 +143,11 @@ local function onsaveplayer(inst, data)
     if data.avatar ~= nil and data.avatar.equip ~= nil then
         --translate equipslot id to name
         --names never change, but ids change if slots are added/removed
-        local temp = data.avatar.equip
-        data.avatar.equip = {}
-        for k, v in pairs(EQUIPSLOT_IDS) do
-            data.avatar.equip[k] = temp[v]
+        local temp = {}
+        for i, v in ipairs(data.avatar.equip) do
+            temp[EQUIPSLOT_NAMES[i]] = v
         end
+        data.avatar.equip = temp
     end
 end
 
@@ -254,10 +260,10 @@ local function player_custominit(inst)
         equip = {},
     }
 
-    for k, v in pairs(EQUIPSLOTS) do
-        inst._avatar_net.equip[EQUIPSLOT_IDS[v]] = net_string(inst.GUID, "skeleton_player.avatar.equip."..v)
+    for i, v in ipairs(EQUIPSLOT_NAMES) do
+        table.insert(inst._avatar_net.equip, net_string(inst.GUID, "skeleton_player.avatar.equip."..v))
     end
-    
+
     inst.GetSkeletonAvatarData = GetSkeletonAvatarData
 end
 

@@ -15,10 +15,21 @@ return {
 		{
 			GENERIC = "It's packed full.",
 			NOTALLOWED = "That's not a good spot for this.",
+			INUSE = "It's not my turn yet.",
 		},
+		COOK =
+        {
+            GENERIC = "I can't do that.",
+            INUSE = "It's not my turn yet.",
+            TOOFAR = "I must close the gap between us!",
+        },
         MOUNT =
         {
             INUSE = "I'll need to be faster than that in battle!",
+        },
+        SADDLE =
+        {
+            TARGETINCOMBAT = "I'll only ride it if it's the victor.",
         },
 	},
 	ACTIONFAIL_GENERIC = "It can't be done.",

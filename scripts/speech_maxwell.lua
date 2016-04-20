@@ -15,10 +15,25 @@ return {
 		{
 			GENERIC = "It wouldn't fit.",
 			NOTALLOWED = "That can't go in there.",
+			INUSE = "I suppose I can wait.",
 		},
+		COOK =
+        {
+            GENERIC = "I can't do that.",
+            INUSE = "I suppose I can wait.",
+            TOOFAR = "I must get closer.",
+        },
         MOUNT =
         {
             INUSE = "I should have reached for the saddle sooner.",
+        },
+        SADDLE =
+        {
+            TARGETINCOMBAT = "Perhaps I should stand back.",
+        },
+		ATTUNE =
+        {
+            NOHEALTH = "I must wait and regain my strength.",
         },
 	},
 	ACTIONFAIL_GENERIC = "That didn't work.",

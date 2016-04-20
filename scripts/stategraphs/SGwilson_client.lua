@@ -1,6 +1,6 @@
 local TIMEOUT = 2
 
-local function DoFoleySounds(inst)
+local function DoEquipmentFoleySounds(inst)
     local inventory = inst.replica.inventory
     if inventory ~= nil then
         for k, v in pairs(inventory:GetEquips()) do
@@ -9,12 +9,17 @@ local function DoFoleySounds(inst)
             end
         end
     end
+end
+
+local function DoFoleySounds(inst)
+    DoEquipmentFoleySounds(inst)
     if inst.foleysound ~= nil then
         inst.SoundEmitter:PlaySound(inst.foleysound, nil, nil, true)
     end
 end
 
 local function DoMountedFoleySounds(inst)
+    DoEquipmentFoleySounds(inst)
     local rider = inst.replica.rider
     local saddle = rider ~= nil and rider:GetSaddle() or nil
     if saddle ~= nil and saddle.mounted_foleysound ~= nil then
@@ -375,6 +380,11 @@ local states =
             end),
 
             --mounted
+            TimeEvent(0, function(inst)
+                if inst.sg.statemem.riding then
+                    DoMountedFoleySounds(inst)
+                end
+            end),
             TimeEvent(5 * FRAMES, function(inst)
                 if inst.sg.statemem.riding then
                     if inst.sg.mem.footsteps > 3 then

@@ -16,10 +16,21 @@ return {
 		{
 			GENERIC = "It's already packed tighter than a Toronto streetcar.",
 			NOTALLOWED = "That's not allowed, eh?",
+			INUSE = "I'll wait til they're finished.",
 		},
+		COOK =
+        {
+            GENERIC = "I can't do that.",
+            INUSE = "I'll wait til they're finished.",
+            TOOFAR = "I gotta get closer, eh?",
+        },
         MOUNT =
         {
             INUSE = "Maybe I can find caribou to ride instead.",
+        },
+        SADDLE =
+        {
+            TARGETINCOMBAT = "I should wait for the dust to settle, eh?.",
         },
 	},
 	ACTIONFAIL_GENERIC = "Sorry, I can't do that.",
