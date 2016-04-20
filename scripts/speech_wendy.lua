@@ -9,6 +9,32 @@ return {
         {
             INUSE = "I'll have to be quicker to the saddle next time.",
         },
+        SHAVE =
+		{
+			AWAKEBEEFALO = "I'd prefer to be blanketed by the night for this.",
+			GENERIC = "I'm not taking a razor to that.",
+			NOBITS = "I've already taken everything from her.",
+		},
+		STORE =
+		{
+			GENERIC = "It wouldn't fit.",
+			NOTALLOWED = "That can't go in there.",
+			INUSE = "I can come back later...",
+		},
+		COOK =
+        {
+            GENERIC = "I can't do that.",
+            INUSE = "I can come back later...",
+            TOOFAR = "It's so... far away...",
+        },
+		SADDLE =
+        {
+            TARGETINCOMBAT = "I'll wait for it to calm down...",
+        },
+        ATTUNE =
+        {
+            NOHEALTH = "I can't... I don't feel so good...",
+        },
 	},
 	ACTIONFAIL_GENERIC = "I can't do anything right.",
 	ANNOUNCE_ADVENTUREFAIL = "Not all deaths are alike.",

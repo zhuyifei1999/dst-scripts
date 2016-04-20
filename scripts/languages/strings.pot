@@ -6816,6 +6816,11 @@ msgctxt "STRINGS.SKIN_NAMES.body_tweedvest_tan_grass"
 msgid "Tweed Waistcoat"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.willow_formal
+msgctxt "STRINGS.SKIN_NAMES.willow_formal"
+msgid "Guest of Honor"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.body_trimmed_blouse_white_pure
 msgctxt "STRINGS.SKIN_NAMES.body_trimmed_blouse_white_pure"
 msgid "Pleated Shirt"
@@ -6831,11 +6836,6 @@ msgctxt "STRINGS.SKIN_NAMES.webber_formal"
 msgid "Guest of Honor"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.willow_formal
-msgctxt "STRINGS.SKIN_NAMES.willow_formal"
-msgid "Guest of Honor"
-msgstr ""
-
 #. STRINGS.SKIN_NAMES.body_suspenders_yellow_flax
 msgctxt "STRINGS.SKIN_NAMES.body_suspenders_yellow_flax"
 msgid "Suspension Shirt"
@@ -6846,14 +6846,14 @@ msgctxt "STRINGS.SKIN_NAMES.wes_survivor"
 msgid "The Survivor"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.body_wendy_formal
-msgctxt "STRINGS.SKIN_NAMES.body_wendy_formal"
-msgid "Party Frock"
-msgstr ""
-
 #. STRINGS.SKIN_NAMES.wes_formal
 msgctxt "STRINGS.SKIN_NAMES.wes_formal"
 msgid "Guest of Honor"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_wendy_formal
+msgctxt "STRINGS.SKIN_NAMES.body_wendy_formal"
+msgid "Party Frock"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.wendy_survivor
@@ -6869,6 +6869,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.torch_rag
 msgctxt "STRINGS.SKIN_NAMES.torch_rag"
 msgid "Weatherbeaten Torch"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.hand_shortgloves_white_smoke
+msgctxt "STRINGS.SKIN_NAMES.hand_shortgloves_white_smoke"
+msgid "Hand Covers"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.hand_drivergloves_white_ivory
@@ -6921,9 +6926,9 @@ msgctxt "STRINGS.SKIN_NAMES.legs_checkered_pleats_blue_cornflower"
 msgid "Checkered Trousers"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.hand_shortgloves_white_smoke
-msgctxt "STRINGS.SKIN_NAMES.hand_shortgloves_white_smoke"
-msgid "Hand Covers"
+#. STRINGS.SKIN_NAMES.torch_shadow
+msgctxt "STRINGS.SKIN_NAMES.torch_shadow"
+msgid "Tragic Torch"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.hand_shortgloves_red_higgsbury
@@ -7671,6 +7676,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_tweedvest_tan_grass"
 msgid "Don't get lost in the tweeds wearing this 'dry grass tan' colored souvenir from the Village of Tweed."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.willow_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.willow_formal"
+msgid "Willow prefers events that include bonfires or fireworks."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.body_trimmed_blouse_white_pure
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_trimmed_blouse_white_pure"
 msgid "Get your glad rags on with this 'pure white' colored shirt."
@@ -7686,11 +7696,6 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.webber_formal"
 msgid "Webber takes parties seriously."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.willow_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.willow_formal"
-msgid "Willow prefers events that include bonfires or fireworks."
-msgstr ""
-
 #. STRINGS.SKIN_DESCRIPTIONS.body_suspenders_yellow_flax
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_suspenders_yellow_flax"
 msgid "Wearing this 'follicle yellow' colored shirt makes you feel like the cat's pajamas."
@@ -7701,14 +7706,14 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.wes_survivor"
 msgid "Even mimes can fight if confronted with a monster."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.body_wendy_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wendy_formal"
-msgid "A cute party dress with puffed sleeves."
-msgstr ""
-
 #. STRINGS.SKIN_DESCRIPTIONS.wes_formal
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.wes_formal"
 msgid "Formal Wes requires extra pomade."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_wendy_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wendy_formal"
+msgid "A cute party dress with puffed sleeves."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.wendy_survivor
@@ -7724,6 +7729,11 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.torch_rag
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.torch_rag"
 msgid "Give the look of your torch some flare with these hastily wrapped, desiccated rags. Smoky!"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.hand_shortgloves_white_smoke
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_shortgloves_white_smoke"
+msgid "These are gloves. They cover your hands. This pair is 'smoke white' colored."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.hand_drivergloves_white_ivory
@@ -7776,9 +7786,9 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_checkered_pleats_blue_cornflower"
 msgid "These 'rubber glove blue' colored pants are perfect for playing checkers, or checking items off your to-do list."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.hand_shortgloves_white_smoke
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_shortgloves_white_smoke"
-msgid "These are gloves. They cover your hands. This pair is 'smoke white' colored."
+#. STRINGS.SKIN_DESCRIPTIONS.torch_shadow
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.torch_shadow"
+msgid "At first glance this torch appears menacing, but holding it makes you feel quite sad."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.hand_shortgloves_red_higgsbury
@@ -58726,11 +58736,6 @@ msgctxt "STRINGS.UI.SANDBOXMENU.SLIDESLOW"
 msgid "Slow"
 msgstr ""
 
-#. STRINGS.UI.SANDBOXMENU.ALLSEASONS
-msgctxt "STRINGS.UI.SANDBOXMENU.ALLSEASONS"
-msgid "All Seasons"
-msgstr ""
-
 #. STRINGS.UI.SANDBOXMENU.GENERATE
 msgctxt "STRINGS.UI.SANDBOXMENU.GENERATE"
 msgid "OK"
@@ -58751,11 +58756,6 @@ msgctxt "STRINGS.UI.SANDBOXMENU.USEPRESETS_LOCATION"
 msgid "%s Presets"
 msgstr ""
 
-#. STRINGS.UI.SANDBOXMENU.EXTREMETEMPS
-msgctxt "STRINGS.UI.SANDBOXMENU.EXTREMETEMPS"
-msgid "Summer, Winter"
-msgstr ""
-
 #. STRINGS.UI.SANDBOXMENU.SLIDECOMPLEX
 msgctxt "STRINGS.UI.SANDBOXMENU.SLIDECOMPLEX"
 msgid "Complex"
@@ -58774,11 +58774,6 @@ msgstr ""
 #. STRINGS.UI.SANDBOXMENU.HIGHLYRANDOM
 msgctxt "STRINGS.UI.SANDBOXMENU.HIGHLYRANDOM"
 msgid "Highly Random"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.AUTUMN_SPRING
-msgctxt "STRINGS.UI.SANDBOXMENU.AUTUMN_SPRING"
-msgid "Autumn/Spring"
 msgstr ""
 
 #. STRINGS.UI.SANDBOXMENU.NO
@@ -58831,9 +58826,9 @@ msgctxt "STRINGS.UI.SANDBOXMENU.SLIDESHUGE"
 msgid "Huge"
 msgstr ""
 
-#. STRINGS.UI.SANDBOXMENU.DLC
-msgctxt "STRINGS.UI.SANDBOXMENU.DLC"
-msgid "Spring, Summer"
+#. STRINGS.UI.SANDBOXMENU.MODIFYTASKS
+msgctxt "STRINGS.UI.SANDBOXMENU.MODIFYTASKS"
+msgid "Modify Tasks"
 msgstr ""
 
 #. STRINGS.UI.SANDBOXMENU.CHOICEFOOD
@@ -58891,34 +58886,14 @@ msgctxt "STRINGS.UI.SANDBOXMENU.SLIDEVERYSHORT"
 msgid "Very Short"
 msgstr ""
 
-#. STRINGS.UI.SANDBOXMENU.DARKSTART
-msgctxt "STRINGS.UI.SANDBOXMENU.DARKSTART"
-msgid "Dark"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.WINTER_SUMMER
-msgctxt "STRINGS.UI.SANDBOXMENU.WINTER_SUMMER"
-msgid "Winter/Summer"
-msgstr ""
-
 #. STRINGS.UI.SANDBOXMENU.MEDIUM
 msgctxt "STRINGS.UI.SANDBOXMENU.MEDIUM"
 msgid "Quite Difficult"
 msgstr ""
 
-#. STRINGS.UI.SANDBOXMENU.WINTER
-msgctxt "STRINGS.UI.SANDBOXMENU.WINTER"
-msgid "Winter"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.QTYNONE
-msgctxt "STRINGS.UI.SANDBOXMENU.QTYNONE"
-msgid "None"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.YES
-msgctxt "STRINGS.UI.SANDBOXMENU.YES"
-msgid "Yes"
+#. STRINGS.UI.SANDBOXMENU.DARKSTART
+msgctxt "STRINGS.UI.SANDBOXMENU.DARKSTART"
+msgid "Dark"
 msgstr ""
 
 #. STRINGS.UI.SANDBOXMENU.CHOICEMISC
@@ -58931,9 +58906,9 @@ msgctxt "STRINGS.UI.SANDBOXMENU.TITLEDETAIL"
 msgid ""
 msgstr ""
 
-#. STRINGS.UI.SANDBOXMENU.MODIFYTASKS
-msgctxt "STRINGS.UI.SANDBOXMENU.MODIFYTASKS"
-msgid "Modify Tasks"
+#. STRINGS.UI.SANDBOXMENU.WINTER
+msgctxt "STRINGS.UI.SANDBOXMENU.WINTER"
+msgid "Winter"
 msgstr ""
 
 #. STRINGS.UI.SANDBOXMENU.LOCATION.FOREST
@@ -58961,6 +58936,16 @@ msgctxt "STRINGS.UI.SANDBOXMENU.SLIDESMALL"
 msgid "Small"
 msgstr ""
 
+#. STRINGS.UI.SANDBOXMENU.BRANCHINGANY
+msgctxt "STRINGS.UI.SANDBOXMENU.BRANCHINGANY"
+msgid "Default"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.YES
+msgctxt "STRINGS.UI.SANDBOXMENU.YES"
+msgid "Yes"
+msgstr ""
+
 #. STRINGS.UI.SANDBOXMENU.CHOICERESOURCES
 msgctxt "STRINGS.UI.SANDBOXMENU.CHOICERESOURCES"
 msgid "Resources"
@@ -58969,41 +58954,6 @@ msgstr ""
 #. STRINGS.UI.SANDBOXMENU.NONE
 msgctxt "STRINGS.UI.SANDBOXMENU.NONE"
 msgid "None"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.SLIDEALL
-msgctxt "STRINGS.UI.SANDBOXMENU.SLIDEALL"
-msgid "Only"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.CHAPTERS.1
-msgctxt "STRINGS.UI.SANDBOXMENU.CHAPTERS.1"
-msgid "Chapter 1 of 5"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.CHAPTERS.2
-msgctxt "STRINGS.UI.SANDBOXMENU.CHAPTERS.2"
-msgid "Chapter 2 of 5"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.CHAPTERS.3
-msgctxt "STRINGS.UI.SANDBOXMENU.CHAPTERS.3"
-msgid "Chapter 3 of 5"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.CHAPTERS.4
-msgctxt "STRINGS.UI.SANDBOXMENU.CHAPTERS.4"
-msgid "Chapter 4 of 5"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.CHAPTERS.5
-msgctxt "STRINGS.UI.SANDBOXMENU.CHAPTERS.5"
-msgid "Chapter 5 of 5"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.CHAPTERS.6
-msgctxt "STRINGS.UI.SANDBOXMENU.CHAPTERS.6"
-msgid "Epilogue"
 msgstr ""
 
 #. STRINGS.UI.SANDBOXMENU.NIGHT
@@ -59046,9 +58996,34 @@ msgctxt "STRINGS.UI.SANDBOXMENU.ADVENTURELEVELS.7"
 msgid "Checkmate"
 msgstr ""
 
-#. STRINGS.UI.SANDBOXMENU.LOOPRANDOM
-msgctxt "STRINGS.UI.SANDBOXMENU.LOOPRANDOM"
-msgid "Default"
+#. STRINGS.UI.SANDBOXMENU.CHAPTERS.1
+msgctxt "STRINGS.UI.SANDBOXMENU.CHAPTERS.1"
+msgid "Chapter 1 of 5"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.CHAPTERS.2
+msgctxt "STRINGS.UI.SANDBOXMENU.CHAPTERS.2"
+msgid "Chapter 2 of 5"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.CHAPTERS.3
+msgctxt "STRINGS.UI.SANDBOXMENU.CHAPTERS.3"
+msgid "Chapter 3 of 5"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.CHAPTERS.4
+msgctxt "STRINGS.UI.SANDBOXMENU.CHAPTERS.4"
+msgid "Chapter 4 of 5"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.CHAPTERS.5
+msgctxt "STRINGS.UI.SANDBOXMENU.CHAPTERS.5"
+msgid "Chapter 5 of 5"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.CHAPTERS.6
+msgctxt "STRINGS.UI.SANDBOXMENU.CHAPTERS.6"
+msgid "Epilogue"
 msgstr ""
 
 #. STRINGS.UI.SANDBOXMENU.LOOPNEVER
@@ -59066,13 +59041,13 @@ msgctxt "STRINGS.UI.SANDBOXMENU.SLIDEOFTEN"
 msgid "More"
 msgstr ""
 
-#. STRINGS.UI.SANDBOXMENU.BRANCHINGNEVER
-msgctxt "STRINGS.UI.SANDBOXMENU.BRANCHINGNEVER"
-msgid "Never"
+#. STRINGS.UI.SANDBOXMENU.SLIDEALL
+msgctxt "STRINGS.UI.SANDBOXMENU.SLIDEALL"
+msgid "Only"
 msgstr ""
 
-#. STRINGS.UI.SANDBOXMENU.BRANCHINGANY
-msgctxt "STRINGS.UI.SANDBOXMENU.BRANCHINGANY"
+#. STRINGS.UI.SANDBOXMENU.LOOPRANDOM
+msgctxt "STRINGS.UI.SANDBOXMENU.LOOPRANDOM"
 msgid "Default"
 msgstr ""
 
@@ -59081,9 +59056,9 @@ msgctxt "STRINGS.UI.SANDBOXMENU.REMOVELEVEL"
 msgid "Remove %s"
 msgstr ""
 
-#. STRINGS.UI.SANDBOXMENU.QTYMAX
-msgctxt "STRINGS.UI.SANDBOXMENU.QTYMAX"
-msgid "Maximum"
+#. STRINGS.UI.SANDBOXMENU.BRANCHINGNEVER
+msgctxt "STRINGS.UI.SANDBOXMENU.BRANCHINGNEVER"
+msgid "Never"
 msgstr ""
 
 #. STRINGS.UI.SANDBOXMENU.DEFAULTSTART
@@ -59091,9 +59066,9 @@ msgctxt "STRINGS.UI.SANDBOXMENU.DEFAULTSTART"
 msgid "Default"
 msgstr ""
 
-#. STRINGS.UI.SANDBOXMENU.SLIDENEVER
-msgctxt "STRINGS.UI.SANDBOXMENU.SLIDENEVER"
-msgid "None"
+#. STRINGS.UI.SANDBOXMENU.QTYMAX
+msgctxt "STRINGS.UI.SANDBOXMENU.QTYMAX"
+msgid "Maximum"
 msgstr ""
 
 #. STRINGS.UI.SANDBOXMENU.HARD
@@ -59101,9 +59076,9 @@ msgctxt "STRINGS.UI.SANDBOXMENU.HARD"
 msgid "Overly Taxing"
 msgstr ""
 
-#. STRINGS.UI.SANDBOXMENU.QTYALL
-msgctxt "STRINGS.UI.SANDBOXMENU.QTYALL"
-msgid "All"
+#. STRINGS.UI.SANDBOXMENU.QTYNONE
+msgctxt "STRINGS.UI.SANDBOXMENU.QTYNONE"
+msgid "None"
 msgstr ""
 
 #. STRINGS.UI.SANDBOXMENU.SLIDEVERYSIMPLE
@@ -59121,9 +59096,14 @@ msgctxt "STRINGS.UI.SANDBOXMENU.SPRING"
 msgid "Spring"
 msgstr ""
 
-#. STRINGS.UI.SANDBOXMENU.BOTH
-msgctxt "STRINGS.UI.SANDBOXMENU.BOTH"
-msgid "Both"
+#. STRINGS.UI.SANDBOXMENU.SLIDENEVER
+msgctxt "STRINGS.UI.SANDBOXMENU.SLIDENEVER"
+msgid "None"
+msgstr ""
+
+#. STRINGS.UI.SANDBOXMENU.QTYALL
+msgctxt "STRINGS.UI.SANDBOXMENU.QTYALL"
+msgid "All"
 msgstr ""
 
 #. STRINGS.UI.SANDBOXMENU.SLIDEVERYCOMPLEX
@@ -59131,9 +59111,9 @@ msgctxt "STRINGS.UI.SANDBOXMENU.SLIDEVERYCOMPLEX"
 msgid "Very Complex"
 msgstr ""
 
-#. STRINGS.UI.SANDBOXMENU.STATICTEMPS
-msgctxt "STRINGS.UI.SANDBOXMENU.STATICTEMPS"
-msgid "Autumn, Spring"
+#. STRINGS.UI.SANDBOXMENU.CLASSIC
+msgctxt "STRINGS.UI.SANDBOXMENU.CLASSIC"
+msgid "Classic"
 msgstr ""
 
 #. STRINGS.UI.SANDBOXMENU.RANDOM
@@ -59144,11 +59124,6 @@ msgstr ""
 #. STRINGS.UI.SANDBOXMENU.SLIDETINY
 msgctxt "STRINGS.UI.SANDBOXMENU.SLIDETINY"
 msgid "Tiny"
-msgstr ""
-
-#. STRINGS.UI.SANDBOXMENU.EXCLUDE
-msgctxt "STRINGS.UI.SANDBOXMENU.EXCLUDE"
-msgid "No"
 msgstr ""
 
 #. STRINGS.UI.SANDBOXMENU.SLIDEVERYLONG
@@ -59166,9 +59141,9 @@ msgctxt "STRINGS.UI.SANDBOXMENU.SLIDESIMPLE"
 msgid "Simple"
 msgstr ""
 
-#. STRINGS.UI.SANDBOXMENU.CLASSIC
-msgctxt "STRINGS.UI.SANDBOXMENU.CLASSIC"
-msgid "Autumn, Winter"
+#. STRINGS.UI.SANDBOXMENU.EXCLUDE
+msgctxt "STRINGS.UI.SANDBOXMENU.EXCLUDE"
+msgid "No"
 msgstr ""
 
 #. STRINGS.UI.SANDBOXMENU.SLIDESLARGE

@@ -605,7 +605,7 @@ local function Generate(prefab, map_width, map_height, tasks, level, level_type)
    	dumptable(world_gen_choices)
     if world_gen_choices then
 
-	    if world_gen_choices["prefabswaps_start"] == "none" then
+	    if world_gen_choices["prefabswaps_start"] == "classic" then
 	    	noswaps = true
 	    end
 	    if world_gen_choices["prefabswaps_start"] == "highly random" then

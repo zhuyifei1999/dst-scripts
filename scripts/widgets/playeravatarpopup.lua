@@ -11,6 +11,13 @@ local TEMPLATES = require "widgets/templates"
 
 local REFRESH_INTERVAL = .5
 
+local EQUIPSLOT_NAMES = {}
+for k, v in pairs(EQUIPSLOTS) do
+    table.insert(EQUIPSLOT_NAMES, v)
+end
+local EQUIPSLOT_IDS = table.invert(EQUIPSLOT_NAMES)
+EQUIPSLOT_NAMES = nil
+
 local PlayerAvatarPopup = Class(Widget, function(self, owner, player_name, data, show_net_profile)
     Widget._ctor(self, "PlayerAvatarPopupScreen")
 
@@ -266,7 +273,7 @@ end
 function PlayerAvatarPopup:OnControl(control, down)
     if PlayerAvatarPopup._base.OnControl(self,control, down) then return true end
 
-    --[[if control == CONTROL_CANCEL and not down then    
+    --[[if control == CONTROL_CANCEL and not down then
         if #self.buttons > 1 and self.buttons[#self.buttons] then
             self.buttons[#self.buttons].cb()
             TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
@@ -432,7 +439,7 @@ function PlayerAvatarPopup:UpdateEquipWidgetForSlot(image_group, slot, equipdata
 
     local atlas = "images/inventoryimages.xml"
     local default = default_images[slot] or "trinket_5.tex"
-    if not name or name == "none" then
+    if name == "none" then
         if slot == EQUIPSLOTS.BODY then
             atlas = "images/hud.xml"
             name = "equip_slot_body_hud"
@@ -445,12 +452,10 @@ function PlayerAvatarPopup:UpdateEquipWidgetForSlot(image_group, slot, equipdata
         else
             name = "default"
         end
-    else
-		if softresolvefilepath("images/inventoryimages/"..name..".xml") ~= nil then
-			atlas = "images/inventoryimages/"..name..".xml"
-		end
+    elseif softresolvefilepath("images/inventoryimages/"..name..".xml") ~= nil then
+        atlas = "images/inventoryimages/"..name..".xml"
     end
-    image_group._image:SetTexture(atlas, name..".tex", default)		
+    image_group._image:SetTexture(atlas, name..".tex", default)
 end
 
 return PlayerAvatarPopup

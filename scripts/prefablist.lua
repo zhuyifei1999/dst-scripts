@@ -369,6 +369,7 @@ PREFABFILES = {
   "scorched_skeleton",
   "scorchedground",
   "seeds",
+  "setpiecespawners",
   "sewingkit",
   "shadowcreature",
   "shadowhand",

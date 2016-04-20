@@ -15,10 +15,21 @@ return {
 		{
 			GENERIC = "All full!",
 			NOTALLOWED = "That's breaking the rules.",
+			INUSE = "It's okay, we'll wait our turn!",
 		},
+		COOK =
+        {
+            GENERIC = "I can't do that.",
+            INUSE = "It's okay, we'll wait our turn!",
+            TOOFAR = "Let's scurry closer!",
+        },
         MOUNT =
         {
             INUSE = "We didn't climb on to saddle in time!",
+        },
+        SADDLE =
+        {
+            TARGETINCOMBAT = "It's too angry!",
         },
 	},
 	ACTIONFAIL_GENERIC = "That's off-limits.",
@@ -1286,6 +1297,6 @@ return {
 	DESCRIBE_SMOLDERING = "That thing is about to catch fire.",
 	EAT_FOOD =
 	{
-		TALLBIRDEGG_CRACKED = "Mmm. Beaky.",
+		TALLBIRDEGG_CRACKED = "What if it hatches in our belly?",
 	},
 }

@@ -114,6 +114,10 @@ local prefabs =
     "chester",
     "grassgekko",
     "petrify_announce",
+
+    --Set piece spawners
+    "sps_berrybush",
+    "sps_berrybush_juicy",
 }
 
 local monsters =

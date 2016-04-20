@@ -17,7 +17,7 @@ return {
       margin = 0,
       image = "../../../../tools/tiled/dont_starve/tiles.png",
       imagewidth = 512,
-      imageheight = 128,
+      imageheight = 384,
       properties = {},
       tiles = {}
     }
@@ -639,7 +639,18 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
+          shape = "rectangle",
+          x = 273,
+          y = 125,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
           shape = "rectangle",
           x = 273,
           y = 125,
@@ -716,7 +727,18 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
+          shape = "rectangle",
+          x = 301,
+          y = 153,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
           shape = "rectangle",
           x = 301,
           y = 153,
@@ -738,7 +760,18 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
+          shape = "rectangle",
+          x = 327,
+          y = 178,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
           shape = "rectangle",
           x = 327,
           y = 178,
@@ -760,7 +793,18 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
+          shape = "rectangle",
+          x = 353,
+          y = 203,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
           shape = "rectangle",
           x = 353,
           y = 203,

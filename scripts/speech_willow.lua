@@ -3,11 +3,33 @@ return {
 	{
         BUILD =
         {
-            MOUNTED = "I can't place that from atop this hairy beast.",
+            MOUNTED = "I can't place anything from atop this big lout!",
+        },
+        SHAVE =
+		{
+			AWAKEBEEFALO = "Maybe I should wait for it to be distracted...",
+			GENERIC = "Nu-uh.",
+			NOBITS = "It's already shaved!",
+		},
+		STORE =
+		{
+			GENERIC = "It's full already.",
+			NOTALLOWED = "They won't let me.",
+			INUSE = "I'll use after they're done.",
+		},
+		COOK =
+        {
+            GENERIC = "I can't do that.",
+            INUSE = "I'll use after they're done.",
+            TOOFAR = "It's all the way over thereeeee!",
         },
         MOUNT =
         {
             INUSE = "They beat me to the hairy beast. Maybe that's for the best.",
+        },
+		SADDLE =
+        {
+            TARGETINCOMBAT = "I'll ride it when it settles down'.",
         },
 	},
 	ANNOUNCE_ADVENTUREFAIL = "You win THIS time, Maxwell.",

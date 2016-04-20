@@ -817,9 +817,6 @@ AddGameDebugKey(KEY_S, function()
     if TheInput:IsKeyDown(KEY_CTRL) then
         TheWorld:PushEvent("ms_save")
         return true
-    elseif TheInput:IsKeyDown(KEY_ALT) then
-        print("######################################")
-        dumptable(TheWorld.generated.densities)
     end
 end)
 

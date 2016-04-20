@@ -3312,7 +3312,20 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
+          shape = "rectangle",
+          x = 4762,
+          y = 6225,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {
+            ["data.pickable.makealwaysbarren"] = "1"
+          }
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
           shape = "rectangle",
           x = 4762,
           y = 6225,
@@ -3720,7 +3733,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 4763,
           y = 6253,
@@ -3733,7 +3746,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 4762,
           y = 6282,
@@ -3746,7 +3759,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 4763,
           y = 6369,
@@ -3759,7 +3772,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 4764,
           y = 6340,
@@ -3772,7 +3785,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 4762,
           y = 6311,
@@ -3785,7 +3798,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 4727,
           y = 6313,
@@ -3798,7 +3811,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 4727,
           y = 6371,
@@ -3811,7 +3824,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 4728,
           y = 6342,
@@ -3824,7 +3837,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 4727,
           y = 6284,
@@ -3837,7 +3850,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 4728,
           y = 6255,
@@ -3850,7 +3863,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 4726,
           y = 6227,
@@ -3863,7 +3876,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 4690,
           y = 6315,
@@ -3876,7 +3889,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 4690,
           y = 6372,
@@ -3889,7 +3902,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 4691,
           y = 6343,
@@ -3902,7 +3915,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 4690,
           y = 6286,
@@ -3915,7 +3928,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 4691,
           y = 6257,
@@ -3928,7 +3941,228 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
+          shape = "rectangle",
+          x = 4689,
+          y = 6228,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {
+            ["data.pickable.makealwaysbarren"] = "1"
+          }
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
+          shape = "rectangle",
+          x = 4763,
+          y = 6253,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {
+            ["data.pickable.makealwaysbarren"] = "1"
+          }
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
+          shape = "rectangle",
+          x = 4762,
+          y = 6282,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {
+            ["data.pickable.makealwaysbarren"] = "1"
+          }
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
+          shape = "rectangle",
+          x = 4763,
+          y = 6369,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {
+            ["data.pickable.makealwaysbarren"] = "1"
+          }
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
+          shape = "rectangle",
+          x = 4764,
+          y = 6340,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {
+            ["data.pickable.makealwaysbarren"] = "1"
+          }
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
+          shape = "rectangle",
+          x = 4762,
+          y = 6311,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {
+            ["data.pickable.makealwaysbarren"] = "1"
+          }
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
+          shape = "rectangle",
+          x = 4727,
+          y = 6313,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {
+            ["data.pickable.makealwaysbarren"] = "1"
+          }
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
+          shape = "rectangle",
+          x = 4727,
+          y = 6371,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {
+            ["data.pickable.makealwaysbarren"] = "1"
+          }
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
+          shape = "rectangle",
+          x = 4728,
+          y = 6342,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {
+            ["data.pickable.makealwaysbarren"] = "1"
+          }
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
+          shape = "rectangle",
+          x = 4727,
+          y = 6284,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {
+            ["data.pickable.makealwaysbarren"] = "1"
+          }
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
+          shape = "rectangle",
+          x = 4728,
+          y = 6255,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {
+            [""] = ""
+          }
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
+          shape = "rectangle",
+          x = 4726,
+          y = 6227,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {
+            ["data.pickable.makealwaysbarren"] = "1"
+          }
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
+          shape = "rectangle",
+          x = 4690,
+          y = 6315,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {
+            ["data.pickable.makealwaysbarren"] = "1"
+          }
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
+          shape = "rectangle",
+          x = 4690,
+          y = 6372,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {
+            ["data.pickable.makealwaysbarren"] = "1"
+          }
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
+          shape = "rectangle",
+          x = 4691,
+          y = 6343,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {
+            [""] = ""
+          }
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
+          shape = "rectangle",
+          x = 4690,
+          y = 6286,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {
+            ["data.pickable.makealwaysbarren"] = "1"
+          }
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
+          shape = "rectangle",
+          x = 4691,
+          y = 6257,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {
+            ["data.pickable.makealwaysbarren"] = "1"
+          }
+        },
+        {
+          name = "",
+          type = "sps_berrybush_juicy",
           shape = "rectangle",
           x = 4689,
           y = 6228,

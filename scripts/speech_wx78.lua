@@ -15,10 +15,21 @@ return {
 		{
 			GENERIC = "IT IS AT CAPACITY",
 			NOTALLOWED = "THAT INPUT IS NOT ALLOWED",
+			INUSE = "STATUS: QUEUED.",
 		},
+		COOK =
+        {
+            GENERIC = "I CANNOT DO THAT",
+            INUSE = "STATUS: QUEUED.",
+            TOOFAR = "NOT IN OPTIMAL RANGE.",
+        },
         MOUNT =
         {
             INUSE = "ERROR: MOUNT IN USE",
+        },
+        SADDLE =
+        {
+            TARGETINCOMBAT = "I'LL RIDE IT LATER. RIGHT NOW IT FIGHTS FOR MY AMUSEMENT.",
         },
 	},
 	ANNOUNCE_NOSLEEPONFIRE = "SLEEPING SYSTEM COMPROMISED",
