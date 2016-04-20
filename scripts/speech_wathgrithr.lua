@@ -17,9 +17,14 @@ return {
 			NOTALLOWED = "That's not a good spot for this.",
 			INUSE = "It's not my turn yet.",
 		},
+		RUMMAGE =
+        {   
+            GENERIC = "If I can't do it, it can't be done!",
+            INUSE = "It's not my turn yet.",   
+        },
 		COOK =
         {
-            GENERIC = "I can't do that.",
+            GENERIC = "If I can't do it, it can't be done!",
             INUSE = "It's not my turn yet.",
             TOOFAR = "I must close the gap between us!",
         },
@@ -31,8 +36,29 @@ return {
         {
             TARGETINCOMBAT = "I'll only ride it if it's the victor.",
         },
+        GIVE =
+        {
+            DEAD = "They'll have better things in Valhalla.",
+            SLEEPING = "Such sweet slumber... Maybe later.",
+            BUSY = "I'll try once more when it's done.",
+        },
+        GIVETOPLAYER = 
+        {
+        	FULL = "They're not strong enough to carry more!",
+            DEAD = "They'll have better things in Valhalla.",
+            SLEEPING = "Such sweet slumber... Maybe later.",
+            BUSY = "I'll try once more when they're free.",
+    	},
+    	GIVEALLTOPLAYER = 
+        {
+        	FULL = "They're not strong enough to carry more!",
+            DEAD = "They'll have better things in Valhalla.",
+            SLEEPING = "Such sweet slumber... Maybe later.",
+            BUSY = "I'll try once more when they're free.",
+    	},
 	},
-	ACTIONFAIL_GENERIC = "It can't be done.",
+	ANNOUNCE_MOUNT_LOWHEALTH = "Don't give up, beast! Fight!",
+	ACTIONFAIL_GENERIC = "If I can't do it, it can't be done!",
 	ANNOUNCE_ADVENTUREFAIL = "Back to the Otherworld, victory shall be mine!",
 	ANNOUNCE_BEES = "Back wee speared creatures!",
 	ANNOUNCE_BOOMERANG = "Urg! I must master the curved weapon.",

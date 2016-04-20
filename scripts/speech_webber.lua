@@ -15,12 +15,17 @@ return {
 		{
 			GENERIC = "All full!",
 			NOTALLOWED = "That's breaking the rules.",
-			INUSE = "It's okay, we'll wait our turn!",
+			INUSE = "It's okay, we'll wait for you to finish!",
 		},
+		RUMMAGE =
+        {   
+            GENERIC = "That's off-limits.",
+            INUSE = "It's okay, we'll wait for you to finish!",   
+        },
 		COOK =
         {
-            GENERIC = "I can't do that.",
-            INUSE = "It's okay, we'll wait our turn!",
+            GENERIC = "That's off-limits.",
+            INUSE = "It's okay, we'll wait for you to finish!",
             TOOFAR = "Let's scurry closer!",
         },
         MOUNT =
@@ -31,7 +36,28 @@ return {
         {
             TARGETINCOMBAT = "It's too angry!",
         },
+        GIVE =
+        {
+            DEAD = "We should probably keep it.",
+            SLEEPING = "Aww... It's sleepy-snoozy right now!",
+            BUSY = "We can try again when it's finished.",
+        },
+        GIVETOPLAYER = 
+        {
+        	FULL = "Hey! Make room!",
+            DEAD = "We should probably keep it.",
+            SLEEPING = "Aww... They're getting snoozies right now!",
+            BUSY = "We have something for you!",
+    	},
+    	GIVEALLTOPLAYER = 
+        {
+        	FULL = "Hey! Make room!",
+            DEAD = "We should probably keep it.",
+            SLEEPING = "Aww... They're getting snoozies right now!",
+            BUSY = "We have something for you!",
+    	},
 	},
+	ANNOUNCE_MOUNT_LOWHEALTH = "Our hairy friend is hurt!",
 	ACTIONFAIL_GENERIC = "That's off-limits.",
 	ANNOUNCE_ADVENTUREFAIL = "Play time is over.",
 	ANNOUNCE_BEES = "Flying ouchies!",

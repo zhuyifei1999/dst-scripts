@@ -122,7 +122,7 @@ function FindNearbyLand(position)
         local run_point = position+offset
         return TheWorld.Map:IsAboveGroundAtPoint(run_point.x, run_point.y, run_point.z)
     end)
-    return position + finaloffset
+    return finaloffset ~= nil and position + finaloffset or nil
 end
 
 function GetRandomInstWithTag(tag, inst, radius)

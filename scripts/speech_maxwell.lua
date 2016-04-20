@@ -17,9 +17,14 @@ return {
 			NOTALLOWED = "That can't go in there.",
 			INUSE = "I suppose I can wait.",
 		},
+		RUMMAGE =
+		{	
+			GENERIC = "That didn't work.",
+			INUSE = "I suppose I can wait.",	
+		},
 		COOK =
         {
-            GENERIC = "I can't do that.",
+            GENERIC = "That didn't work.",
             INUSE = "I suppose I can wait.",
             TOOFAR = "I must get closer.",
         },
@@ -35,8 +40,29 @@ return {
         {
             NOHEALTH = "I must wait and regain my strength.",
         },
+        GIVE =
+        {
+            DEAD = "The dead have no need of such things.",
+            SLEEPING = "It's thoroughly unconscious.",
+            BUSY = "It's busy, currently..",
+        },
+        GIVETOPLAYER = 
+        {
+        	FULL = "No sense giving them more than they can carry.",
+            DEAD = "The dead have no need of such things.",
+            SLEEPING = "Err... I'll let you rest.",
+            BUSY = "When you have a moment.",
+    	},
+    	GIVEALLTOPLAYER = 
+        {
+        	FULL = "No sense giving them more than they can carry.",
+            DEAD = "The dead have no need of such things.",
+            SLEEPING = "Err... I'll let you rest.",
+            BUSY = "When you have a moment.",
+    	},
 	},
 	ACTIONFAIL_GENERIC = "That didn't work.",
+	ANNOUNCE_MOUNT_LOWHEALTH = "Say, pal, you don't look so good.",
     LICHEN = "A slow growing cave plant",
     ANNOUNCE_NOSLEEPONFIRE = "That might not be the best idea.",
 	ANNOUNCE_NODANGERSIESTA = "They're hot on my heels!",
@@ -91,17 +117,17 @@ return {
 	ANNOUNCE_QUAKE = "That rumbling can't be good.",
 	ANNOUNCE_RESEARCH = "Knowledge is power. And power is... well, power.",
 	ANNOUNCE_THORNS = "I scratched my arms up doing that.",
-	ANNOUNCE_TORCH_OUT = "Dang it, another light down.",
+	ANNOUNCE_TORCH_OUT = "Curses. Another light down.",
     ANNOUNCE_FAN_OUT = "There goes my respite.",
     ANNOUNCE_COMPASS_OUT = "The compass has fallen to pieces.",
 	ANNOUNCE_TRAP_WENT_OFF = "Ack!",
 	ANNOUNCE_UNIMPLEMENTED = "Hmm, not quite done.",
 	ANNOUNCE_WORMHOLE = "Yech. It's horrible in there.",
 	ANNOUNCE_CANFIX = "\nI think I can fix this!",
-	ANNOUNCE_NOSANITY = "I have a headache!",
+	ANNOUNCE_NOSANITY = "I have the worst headache!",
 	ANNOUNCE_NOFUEL = "I need some nightmare fuel.",
 	ANNOUNCE_ACCOMPLISHMENT= "I need to pass the time somehow.",
-	ANNOUNCE_ACCOMPLISHMENT_DONE = "That kinda makes it all worthwhile.",	
+	ANNOUNCE_ACCOMPLISHMENT_DONE = "Ah. The satisfation of a job well done.",	
 	ANNOUNCE_INSUFFICIENTFERTILIZER = "It perked up just a tiny bit.",
 	ANNOUNCE_LIGHTNING_DAMAGE_AVOIDED = "Can't touch this!",
 	BATTLECRY =
@@ -121,7 +147,7 @@ return {
 		BERNIE_INACTIVE =
 		{
 			BROKEN = "It's seen better days.",
-			GENERIC = "How quaint.",
+			GENERIC = "It makes me a little nostalgic.",
 		},
 		BERNIE_ACTIVE = "Just what am I looking at here?",
 

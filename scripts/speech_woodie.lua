@@ -16,12 +16,17 @@ return {
 		{
 			GENERIC = "It's already packed tighter than a Toronto streetcar.",
 			NOTALLOWED = "That's not allowed, eh?",
-			INUSE = "I'll wait til they're finished.",
+			INUSE = "Sorry! I'll wait til you're finished.",
 		},
+		RUMMAGE =
+        {   
+            GENERIC = "Sorry, I can't do that.",
+            INUSE = "Sorry! I'll wait til you're finished.",  
+        },
 		COOK =
         {
-            GENERIC = "I can't do that.",
-            INUSE = "I'll wait til they're finished.",
+            GENERIC = "Sorry, I can't do that.",
+            INUSE = "Sorry! I'll wait til you're finished.",
             TOOFAR = "I gotta get closer, eh?",
         },
         MOUNT =
@@ -32,7 +37,28 @@ return {
         {
             TARGETINCOMBAT = "I should wait for the dust to settle, eh?.",
         },
+        GIVE =
+        {
+            DEAD = "I don't think they... um...",
+            SLEEPING = "It's sleeping.",
+            BUSY = "I'll try again in a mo'.",
+        },
+        GIVETOPLAYER = 
+        {
+        	FULL = "They need to make room, eh.",
+            DEAD = "I don't think they... um...",
+            SLEEPING = "Let them get their shut eye.",
+            BUSY = "I've something for you when you've got a mo'.",
+    	},
+    	GIVEALLTOPLAYER = 
+        {
+        	FULL = "They need to make room, eh.",
+            DEAD = "I don't think they... um...",
+            SLEEPING = "Let them get their shut eye.",
+            BUSY = "I've something for you when you've got a mo'.",
+    	},
 	},
+	ANNOUNCE_MOUNT_LOWHEALTH = "This beast looks in a bad way, eh.",
 	ACTIONFAIL_GENERIC = "Sorry, I can't do that.",
 	ANNOUNCE_ADVENTUREFAIL = "Oh well. I gave it a good try.",
 	ANNOUNCE_BEES = "Bees! Bees!",

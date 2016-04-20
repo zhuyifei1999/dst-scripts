@@ -17,9 +17,14 @@ return {
 			NOTALLOWED = "Bah! Useless.",
 			INUSE = "Wolfgang can share!",
 		},
+		RUMMAGE =
+        {   
+            GENERIC = "I am not mighty enough to do that.",
+            INUSE = "Wolfgang can share!", 
+        },
 		COOK =
         {
-            GENERIC = "I can't do that.",
+            GENERIC = "I am not mighty enough to do that.",
             INUSE = "Wolfgang can share!",
             TOOFAR = "Is pot very small, or just far away?",
         },
@@ -31,9 +36,29 @@ return {
         {
             TARGETINCOMBAT = "I cannot ride it now! Hair-cow is proving itself in battle!",
         },
+        GIVE =
+        {
+            DEAD = "You know is dead, yes?",
+            SLEEPING = "Is sleeping now!",
+            BUSY = "The Mighty Wolfgang will try again soon!",
+        },
+        GIVETOPLAYER = 
+        {
+        	FULL = "Make room for Wolfgang's presents!",
+            DEAD = "You know is dead, yes?",
+            SLEEPING = "Friend is sleeping now!",
+            BUSY = "The Mighty Wolfgang desires your attention!",
+    	},
+    	GIVEALLTOPLAYER = 
+        {
+        	FULL = "Make room for Wolfgang's presents!",
+            DEAD = "You know is dead, yes?",
+            SLEEPING = "Friend is sleeping now!",
+            BUSY = "The Mighty Wolfgang desires your attention!",
+    	},
 	},
 	ACTIONFAIL_GENERIC = "I am not mighty enough to do that.",
-	
+	ANNOUNCE_MOUNT_LOWHEALTH = "What is wrong, hair beast? Feeling not-so-mighty?",
 	ANNOUNCE_NORMALTOMIGHTY="I AM MIGHTY!",
 	ANNOUNCE_NORMALTOWIMPY="I am not feeling so good.",
 	ANNOUNCE_WIMPYTONORMAL="Wolfgang is better.",
