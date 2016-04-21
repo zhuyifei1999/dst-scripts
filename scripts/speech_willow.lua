@@ -93,6 +93,8 @@ return {
 	ANNOUNCE_HUNT_LOST_TRAIL_SPRING = "Boo! I lost track of him in this mud.",
 	ANNOUNCE_ACCOMPLISHMENT= "Move, arrow! MOVE!",
 	ANNOUNCE_ACCOMPLISHMENT_DONE = "I DID IT!",	
+	ANNOUNCE_PETRIFED_TREES = "Something weird is happening...!",
+
 	ANNOUNCE_LIGHTFIRE =
 	{
 		[1] = "Tee hee!",
@@ -102,6 +104,10 @@ return {
 		[5] = "Burn!",
 		[6] = "I can't help myself!",
 	},
+	
+	ANNOUNCE_BECOMEGHOST = "oOoOooOo!!",
+	ANNOUNCE_GHOSTDRAIN = "Burn... It all must burn...",
+
 	ANNOUNCE_PECKED = "No! Bad birdy!",
 	ANNOUNCE_TORCH_OUT = "My precious light is gone!",
     ANNOUNCE_FAN_OUT = "Stupid thing broke!",
@@ -145,6 +151,7 @@ return {
 	},
 	DESCRIBE =
 	{
+        MULTIPLAYER_PORTAL = "The vines coil away from my lighter... weird!",
 		BERNIE_INACTIVE =
 		{
 			BROKEN = "I need to fix Bernie up.",
@@ -207,6 +214,7 @@ return {
 		BALLOONS_EMPTY = "I could fill them with flammable gas.",
 		SPEAR_WATHGRITHR = "I prefer a flame, but to each her own.",
 		WAXWELLJOURNAL = "Would make a great bedtime story... for nightmares!",
+		MOONROCKNUGGET = "Just another rock to me.",
 
 		BEARGER_FUR = "It's fur all the way down.",
 		FURTUFT = "Black & white & fuzzy!",
@@ -550,6 +558,11 @@ return {
 		FLOWER_CAVE="It's burning inside.",
 		FLOWER_CAVE_DOUBLE="It's burning inside.",
 		FLOWER_CAVE_TRIPLE="It's burning inside.",
+		GRASSGEKKO = 
+		{
+			GENERIC = "Ew.",	
+			DISEASED = "Double ew!",
+		},
 		GUANO="It burns like normal poop.",
 		LANTERN="Fire is not meant to be contained like this!",
 		LIGHTBULB="Bright!",
@@ -670,6 +683,8 @@ return {
 		BEEHAT = "This will keep the pokeys off of me.",
 		BERRIES = "Red berries taste the best.",
 		BERRIES_COOKED = "Red berries with fire somehow taste even better.",
+        BERRIES_JUICY = "Red berries taste the best.",
+        BERRIES_JUICY_COOKED = "Red berries with fire somehow taste even better.",
 		BERRYBUSH =
 		{
 			BARREN = "Eat poop, stupid plant!",
@@ -878,7 +893,10 @@ return {
 		FISHTACOS = "Convenient taco-grip.",
 		FISH_COOKED = "Less slippery now that it's found fire.",
 		FLINT = "The poor man's fire-starter.",
-		FLOWER = "I don't have time to waste on flowers.",
+		FLOWER = {
+            GENERIC = "I don't have time to waste on flowers.",
+            ROSE = "I want to burn this flower in particular.",
+        },
         FLOWER_WITHERED = "Looks like good kindling.",
 		FLOWERHAT = "A halo of flowers. Too bad it's not a burning halo of flowers.",
 		FLOWER_EVIL = "Ugh, that smells terrible.",
@@ -1033,6 +1051,7 @@ return {
 		PEROGIES = "Tasty things sealed with fire.",
 		PETALS = "Stupid flowers. They're almost useless.",
 		PETALS_EVIL = "Ew, they're sticky.",
+		PETRIFIED_TREE = "How am I supposed to burn it now?",
 		PHLEGM = "Gross! I should burn it.",
 		PICKAXE = "It's very pointy.",
 		PIGGYBACK = "I made a backpack out of butts!",
@@ -1306,12 +1325,15 @@ return {
 			GENERIC = "Poke it with a stick!",
 			OPEN = "I wonder if he likes spicy food?",
 		},
+		WORMHOLE_LIMITED = "Yuck. That won't hold long.",
 		ACCOMPLISHMENT_SHRINE = "I hate that arrow!",        		
         REVIVER = "I expected it to be blacker.",
         LIFEINJECTOR = "Don't you dare stick that in me!",
 	},
+	DESCRIBE_GENERIC = "I have no idea what that is!",
 	DESCRIBE_TOODARK = "I need more light!",
 	DESCRIBE_SMOLDERING = "Hooray, it's about to light on fire!",
+	DESCRIBE_SAMECHARACTER = "Hey! That's my face! Give it back!",
 	EAT_FOOD =
 	{
 		TALLBIRDEGG_CRACKED = "Ugh. Crunchy.",

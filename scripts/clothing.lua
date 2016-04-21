@@ -348,6 +348,24 @@ CLOTHING =
 		torso_tuck = "untucked",
 		rarity = "Distinguished",
 	},
+	body_waxwell_formal =
+	{
+		type = "body",
+		symbol_overrides = { "torso", "arm_upper", "torso_pelvis", "leg", },
+		symbol_hides = { "skirt", },
+		override_build = "body_waxwell_formal",
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+	},
+	body_waxwell_survivor =
+	{
+		type = "body",
+		symbol_overrides = { "torso", "arm_upper", "torso_pelvis", "leg", "foot", },
+		symbol_hides = { "skirt", },
+		override_build = "body_waxwell_survivor",
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+	},
 	body_webber_formal =
 	{
 		type = "body",
@@ -623,6 +641,13 @@ CLOTHING =
 		type = "hand",
 		symbol_overrides = { "hand", },
 		override_build = "hand_shortgloves_white_smoke",
+	},
+	hand_waxwell_formal =
+	{
+		type = "hand",
+		symbol_overrides = { "hand", "arm_lower_cuff", },
+		override_build = "hand_waxwell_formal",
+		rarity = "Classy",
 	},
 	hand_wilson_formal =
 	{

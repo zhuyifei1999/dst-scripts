@@ -132,6 +132,12 @@ function CreatePrefabSkin( name, info )
 		end
 	end
 	
+	if info.torso_untuck_wide_builds then
+		for _,base_skin in pairs(info.torso_untuck_wide_builds) do
+			BASE_TORSO_TUCK[base_skin] = "untucked_wide"
+		end
+	end
+	
 	if info.has_alternate_for_body then
 		for _,base_skin in pairs(info.has_alternate_for_body) do
 			BASE_ALTERNATE_FOR_BODY[base_skin] = true

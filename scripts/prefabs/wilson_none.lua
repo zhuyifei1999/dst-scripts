@@ -21,6 +21,8 @@ return CreatePrefabSkin("wilson_none",
 	assets = assets,
 	tags = tags,
 	
+	torso_untuck_builds = {"wilson"},
+	
 	skip_item_gen = true,
 	skip_giftable_gen = true,
 })

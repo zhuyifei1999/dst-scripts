@@ -75,6 +75,7 @@ local TextListPopupDialogScreen = Class(Screen, function(self, title, str, body,
         strWidg:SetTruncatedString(v, 285, 75, true)
         local w, h = strWidg:GetRegionSize()
         strWidg:SetPosition(23 + w * .5, 0, 0)
+        widg.text = strWidg
         table.insert(self.listwidgets, widg)
     end
 

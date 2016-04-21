@@ -93,6 +93,11 @@ return {
 		INVALID = "Hahah! That's not food!",
 		YUCKY = "Stomach is not strong enough for that.",
 	},
+	
+	ANNOUNCE_BECOMEGHOST = "oOooOOoo!!",
+	ANNOUNCE_GHOSTDRAIN = "They are coming... for Wolfgang!",
+	ANNOUNCE_PETRIFED_TREES = "Trees! Getting! STRONG!",
+
 	ANNOUNCE_ENTER_DARK = "I cannot see! I am scared!",
 	ANNOUNCE_ENTER_LIGHT = "I can see again!",
 	ANNOUNCE_HOUNDS = "I hear puppies!",
@@ -146,6 +151,7 @@ return {
 	},
 	DESCRIBE =
 	{
+		MULTIPLAYER_PORTAL = "It is impervious to my mighty punches!",
 
 		BERNIE_INACTIVE =
 		{
@@ -316,6 +322,7 @@ return {
 		BALLOONS_EMPTY = "Wolfgang will make balloon muscles.",
 		SPEAR_WATHGRITHR = "Is a fine weapon.",
 		WAXWELLJOURNAL = "Wolfgang is glad he cannot read!",
+		MOONROCKNUGGET = "But is not cheese?",
 
         TRAILMIX = "Berries and nuts, berries and nuts!",
         HOTCHILI = "Haha, nothing is too spicy for Wolfgang!",
@@ -638,6 +645,8 @@ return {
 		BEEMINE_MAXWELL = "Is ball full of anger mosquitoes.",
 		BERRIES = "Is tasty!",
 		BERRIES_COOKED = "Is more tasty!",
+        BERRIES_JUICY = "Is tasty!",
+        BERRIES_JUICY_COOKED = "Is more tasty!",
 		BERRYBUSH =
 		{
 			BARREN = "I need to poop on it.",
@@ -799,6 +808,11 @@ return {
 		EGGPLANT_COOKED = "Has no yolk! Yolk is strongest part!",
 		EGGPLANT_SEEDS = "Teensy fake egg plant.",
 		STUFFEDEGGPLANT = "I make yolk of other foods.",
+		GRASSGEKKO = 
+		{
+			GENERIC = "Lizard looks flimsy.",	
+			DISEASED = "It looks worst than before.",
+		},
 		ACORN = "I could crush this tree-seed with my hands!",
         ACORN_SAPLING = "It will be tree soon.",
 		EVERGREEN =
@@ -843,7 +857,10 @@ return {
 		FISHTACOS = "Wolfgang hope is not too spicy for Wolfgang.",
 		FISH_COOKED = "Meat from water still make Wolfgang strong.",
 		FLINT = "Is rock, but pointy-er.",
-		FLOWER = "They are very pretty.",
+		FLOWER = {
+            GENERIC = "They are very pretty.",
+            ROSE = "Wolfgang tried to crush it, but it pricked him.",
+        },
         FLOWER_WITHERED = "Aw, this one is sad.",
 		FLOWERHAT = "Is so pretty!",
 		FLOWER_EVIL = "Is not potato.",
@@ -992,6 +1009,7 @@ return {
 		PEROGIES = "Wolfgang love perogi!",
 		PETALS = "These smell nice.",
 		PETALS_EVIL = "They make my brain hurt.",
+		PETRIFIED_TREE = "Now I punch it apart!",
 		PHLEGM = "A ha ha ha! Boogers! Oh ho ho!",
 		PICKAXE = "Pick!",
 		PIGGYBACK = "Smelly bag!",
@@ -1267,7 +1285,7 @@ return {
 			GENERIC = "Like soft pillow, growing on ground.",
 			OPEN = "It can not harm this man!",
 		},
- 
+ 		WORMHOLE_LIMITED = "Is not looking very good.",
         ARMORRUINS = "Protect me? I don't need it!",
         BISHOP_NIGHTMARE = "Is angry man. Should relax.",
         GREENAMULET = "What is this thing?", 
@@ -1302,6 +1320,7 @@ return {
 	DESCRIBE_GENERIC = "What is this thing?",
 	DESCRIBE_TOODARK = "Help me! It is dark!",
 	DESCRIBE_SMOLDERING = "Is almost on fire.",
+	DESCRIBE_SAMECHARACTER = "Friend! We must arm wrestle!",
 	EAT_FOOD =
 	{
 		TALLBIRDEGG_CRACKED = "This egg too crunchy.",

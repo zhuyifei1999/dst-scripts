@@ -23,6 +23,7 @@ return CreatePrefabSkin("wendy_none",
 	
 	has_alternate_for_body = { "wendy" },
 	has_alternate_for_skirt = { "wendy" },
+	torso_untuck_wide_builds = {"wendy"},
 	
 	skip_item_gen = true,
 	skip_giftable_gen = true,

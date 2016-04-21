@@ -1,6 +1,6 @@
 local assets =
 {
-    Asset("ANIM", "anim/portal_dst.zip"),
+    Asset("ANIM", "anim/portal_stone.zip"),
 	Asset("MINIMAP_IMAGE", "portal_dst"),
 }
 
@@ -37,7 +37,7 @@ local function fn()
     inst.MiniMapEntity:SetIcon("portal_dst.png")
 
     inst.AnimState:SetBank("portal_dst")
-    inst.AnimState:SetBuild("portal_dst")
+    inst.AnimState:SetBuild("portal_stone")
     inst.AnimState:PlayAnimation("idle_loop", true)
 
     inst:AddTag("portal")

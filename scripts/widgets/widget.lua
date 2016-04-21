@@ -149,6 +149,12 @@ function Widget:ScaleTo(from, to, time, fn)
     self.inst.components.uianim:ScaleTo(from, to, time, fn)
 end
 
+function Widget:CancelMoveTo(run_complete_fn)
+    if self.inst.components.uianim ~= nil then
+        self.inst.components.uianim:CancelMoveTo(run_complete_fn)
+    end
+end
+
 function Widget:MoveTo(from, to, time, fn)
     if not self.inst.components.uianim then
         self.inst:AddComponent("uianim")

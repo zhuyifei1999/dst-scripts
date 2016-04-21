@@ -129,7 +129,7 @@ function SetSkinMode( anim_state, prefab, base_skin, clothing_names, skintype, d
 				end
 				
 				--override the base skin's torso_tuck value
-				if CLOTHING[name].torso_tuck ~= nil then
+				if CLOTHING[name].torso_tuck ~= nil and allow_torso then
 					tuck_torso = CLOTHING[name].torso_tuck
 					--print("setting tuck_torso to", tuck_torso, name )
 				end				
@@ -145,12 +145,13 @@ function SetSkinMode( anim_state, prefab, base_skin, clothing_names, skintype, d
 		
 		local torso_symbol = "torso"
 		local pelvis_symbol = "torso_pelvis"
-		
+		local wide = false
 		--Certain builds need to use the wide versions to fit clothing, nil build indicates it will use the base
 		if (BASE_ALTERNATE_FOR_BODY[base_skin] and torso_build == nil and pelvis_build ~= nil)
 			or (BASE_ALTERNATE_FOR_SKIRT[base_skin] and torso_build == nil and skirt_build ~= nil) then
 			torso_symbol = "torso_wide"
 			--print("torso replaced with torso_wide")
+			wide = true
 			anim_state:OverrideSkinSymbol("torso", base_skin, torso_symbol )
 		end
 		
@@ -159,6 +160,7 @@ function SetSkinMode( anim_state, prefab, base_skin, clothing_names, skintype, d
 			pelvis_symbol = "torso_pelvis_wide"
 			if not hidden_symbols["torso_pelvis"] then
 				--print("torso_pelvis replaced with torso_pelvis_wide")
+				wide = true
 				anim_state:OverrideSkinSymbol("torso_pelvis", base_skin, pelvis_symbol )
 			end
 		end
@@ -166,13 +168,14 @@ function SetSkinMode( anim_state, prefab, base_skin, clothing_names, skintype, d
 		if BASE_ALTERNATE_FOR_BODY[base_skin] and torso_build ~= nil and skirt_build == nil then
 			if not hidden_symbols["skirt_wide"] then
 				--print("skirt replaced with skirt_wide")
+				wide = true
 				anim_state:OverrideSkinSymbol("skirt", base_skin, "skirt_wide")
 			end
 		end
 		
 		
 		--characters with skirts, and untucked torso clothing need to exchange the render order of the torso and skirt so that the torso is above the skirt
-		if tuck_torso == "untucked" then
+		if tuck_torso == "untucked" or (tuck_torso == "untucked_wide" and wide) then
 			--print("torso over the skirt")
 			anim_state:SetSymbolExchange( "skirt", "torso" )
 		end

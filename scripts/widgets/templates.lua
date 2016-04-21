@@ -124,7 +124,7 @@ TEMPLATES = {
     -- A component of the AnimatedPortalBackground
     BackgroundPortal = function()
         local portal = UIAnim()
-        portal:GetAnimState():SetBuild("portal_scene")
+        portal:GetAnimState():SetBuild("portal_scene2")
         portal:GetAnimState():SetBank("portal_scene")
         portal:GetAnimState():PlayAnimation("portal_idle", false)
         portal:GetAnimState():SetMultColour(unpack(FRONTEND_PORTAL_COLOUR))
@@ -299,7 +299,7 @@ TEMPLATES = {
     -- A component of the AnimatedPortalForeground
     ForegroundSmokeInside = function()
         local smoke = UIAnim()
-        smoke:GetAnimState():SetBuild("portal_scene_inside")
+        smoke:GetAnimState():SetBuild("portal_scene2_inside")
         smoke:GetAnimState():SetBank("cloudsfx_insideportal")
         smoke:GetAnimState():PlayAnimation("insideportal_idle", true)
         smoke:SetScale(.7)

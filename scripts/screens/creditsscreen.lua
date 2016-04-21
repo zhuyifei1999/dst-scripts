@@ -15,7 +15,7 @@ local internal_names_pages =
     {x=-325,y=30, bg=3, build="credits", bank="credits", anim="3", names=true},
     {x=260, y=30, bg=1, build="credits", bank="credits", anim="4", names=true},
     {x=-300,y=30, bg=2, build="credits", bank="credits", anim="5", names=true},    
-    --[[{x=300, y=30, bg=3, build="credits3", bank="credits3", anim="12", names=true},
+    {x=300, y=30, bg=3, build="credits3", bank="credits3", anim="12", names=true},
     {x=-300,y=30, bg=1, build="credits4", bank="credits4", anim="13", names=true},
     {x=-300,y=30, bg=2, build="credits4", bank="credits4", anim="14", names=true},
     {x=260, y=30, bg=3, build="credits4", bank="credits4", anim="15", names=true},
@@ -25,7 +25,7 @@ local internal_names_pages =
     {x=300, y=30, bg=1, build="credits5", bank="credits5", anim="19", names=true},
     {x=-300,y=30, bg=2, build="credits6", bank="credits6", anim="20", names=true},
     {x=80,y=30, bg=2, build="credits7", bank="credits7", anim="21", names=true},
-    {x=-300,y=30, bg=2, build="credits8", bank="credits8", anim="23", names=true},]]
+    {x=-300,y=30, bg=2, build="credits8", bank="credits8", anim="23", names=true},
 }
 
 local pc_pages=
@@ -53,7 +53,7 @@ local ps4_pages =
 local klei_pages =
 {
     {x=0,y=180, bg=1, build="credits2", bank="credits2", anim="11"},
-    --{x=0,y=180, bg=1, build="credits8", bank="credits8", anim="24"},
+    {x=0,y=180, bg=1, build="credits8", bank="credits8", anim="24"},
 }
 
 
@@ -179,7 +179,7 @@ function CreditsScreen:SetupRandomPages()
     shuffleArray(self.credit_names)
     
     self.pages = {}
-	local offset = 0--math.floor(GetRandomMinMax(0,#internal_names_pages))
+	local offset = math.floor(GetRandomMinMax(0,#internal_names_pages))
 	for k = 1, self.num_credit_pages do
         table.insert(self.pages, internal_names_pages[1+((offset+k) % #internal_names_pages)])
     end

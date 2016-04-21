@@ -78,6 +78,11 @@ return {
 		INVALID = "We can't, we won't, we refuse to eat that.",
 		YUCKY = "We can't, we won't, we refuse to eat that.",
 	},
+	
+	ANNOUNCE_BECOMEGHOST = "oOooOooO!!",
+	ANNOUNCE_GHOSTDRAIN = "We're becoming... even more monstrous!",
+	ANNOUNCE_PETRIFED_TREES = "The trees are yelling at us!!",
+
 	ANNOUNCE_ENTER_DARK = "We can't see! I want my nightlight.",
 	ANNOUNCE_ENTER_LIGHT = "Phew, light!",
 	ANNOUNCE_FREEDOM = "We made it!",
@@ -143,6 +148,7 @@ return {
 	},
 	DESCRIBE =
 	{
+        MULTIPLAYER_PORTAL = "It's pretty... pretty scary!",
 
 		BERNIE_INACTIVE =
 		{
@@ -219,6 +225,7 @@ return {
 		BALLOONS_EMPTY = "Is there going to be a party?!",
 		SPEAR_WATHGRITHR = "Pointy ouchies!",
 		WAXWELLJOURNAL = "I don't think we should play with that...",
+		MOONROCKNUGGET = "Neat!",
 
 		THULECITE = "Fancy rocks!",
 		ARMORRUINS = "Nice and lightweight.",
@@ -438,6 +445,8 @@ return {
 		BEEMINE_MAXWELL = "I just can't mosquito you.",
 		BERRIES = "Juice sacks.",
 		BERRIES_COOKED = "Warm juice sacks.",
+        BERRIES_JUICY = "Juice sacks.",
+        BERRIES_JUICY_COOKED = "Warm juice sacks.",
 		BERRYBUSH =
 		{
 			BARREN = "It's run out of plant food.",
@@ -720,7 +729,10 @@ return {
 		FISHTACOS = "Taco Tuesday!",
 		FISH_COOKED = "Flaky and moist. Delicious.",
 		FLINT = "Oh, to feel a sharp edge against my skin.",
-		FLOWER = "We agree that flowers are nice.",
+		FLOWER = {
+            GENERIC = "We agree that flowers are nice.",
+            ROSE = "Bright red petals! We loves it!",
+        },
         FLOWER_WITHERED = "Aww so sad!",
 		FLOWERHAT = "Colorful crown.",
 		FLOWER_EVIL = "This flower is decidedly not nice!",
@@ -901,6 +913,11 @@ return {
         WATERMELONICLE = "Just the thing for a hot summer day.",
         TRAILMIX = "Crunchy and healthy.",
         HOTCHILI = "Flavor bombs!",
+        GRASSGEKKO = 
+		{
+			GENERIC = "Hey! You dropped something!",	
+			DISEASED = "It's got ouchies in its tummy.",
+		},
         GUACAMOLE = "Holy moley, this is tasty.",
 		MONSTERMEAT = "Smells foul.",
 		MONSTERMEAT_DRIED = "It's really chewy.",
@@ -934,6 +951,7 @@ return {
 		PEROGIES = "We are accomplished chefs!",
 		PETALS = "How colorful.",
 		PETALS_EVIL = "They make our head hurt.",
+		PETRIFIED_TREE = "It's all stone and no bark.",
 		PICKAXE = "Rocks will be ours!",
 		PIGGYBACK = "It holds so much stuff!",
 		PIGHEAD = 
@@ -1076,7 +1094,7 @@ return {
 		ROTTENEGG = "Ew!",
         SADDLE_BASIC = "We ride!",
         SADDLE_WAR = "We'll have lots of fun riding on this.",
-        SADDLEHORN = "I'm taking my saddle and leaving.",
+        SADDLEHORN = "Leaves the beast nakey.",
         BRUSH = "It's more scratchy than anything.",
 		SANITYROCK =
 		{
@@ -1318,9 +1336,10 @@ return {
         REVIVER = "I think it loves me.",
         LIFEINJECTOR = "I hate taking my medicine!",
 	},
-	DESCRIBE_GENERIC = "It's a... thing.",
+	DESCRIBE_GENERIC = "Can we plays with it?",
 	DESCRIBE_TOODARK = "It's too dark to see!",
 	DESCRIBE_SMOLDERING = "That thing is about to catch fire.",
+	DESCRIBE_SAMECHARACTER = "Lookin' good!",
 	EAT_FOOD =
 	{
 		TALLBIRDEGG_CRACKED = "What if it hatches in our belly?",

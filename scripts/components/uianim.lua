@@ -38,6 +38,14 @@ function UIAnim:ScaleTo(start, dest, duration, whendone)
     self.inst:StartWallUpdatingComponent(self)
 end
 
+function UIAnim:CancelMoveTo( run_complete_fn )
+	self.pos_t = nil
+	if run_complete_fn ~= nil and self.pos_whendone then
+		self.pos_whendone()
+    end
+	self.pos_whendone = nil
+end
+
 function UIAnim:MoveTo(start, dest, duration, whendone)
     self.pos_start = start
     self.pos_dest = dest

@@ -3,12 +3,12 @@ local assets =
   --FE
     Asset("DYNAMIC_ANIM", "anim/dynamic/credits.zip"),
     Asset("DYNAMIC_ANIM", "anim/dynamic/credits2.zip"),
-    --[[Asset("DYNAMIC_ANIM", "anim/dynamic/credits3.zip"),
+    Asset("DYNAMIC_ANIM", "anim/dynamic/credits3.zip"),
     Asset("DYNAMIC_ANIM", "anim/dynamic/credits4.zip"),
     Asset("DYNAMIC_ANIM", "anim/dynamic/credits5.zip"),
     Asset("DYNAMIC_ANIM", "anim/dynamic/credits6.zip"),
     Asset("DYNAMIC_ANIM", "anim/dynamic/credits7.zip"),
-    Asset("DYNAMIC_ANIM", "anim/dynamic/credits8.zip"),]]
+    Asset("DYNAMIC_ANIM", "anim/dynamic/credits8.zip"),
     
     Asset("IMAGE", "images/customisation.tex" ),
     Asset("ATLAS", "images/customisation.xml" ),

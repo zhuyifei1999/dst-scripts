@@ -28,7 +28,9 @@ local TextEdit = Class(Text, function(self, font, size, text, colour)
 	self.apply_helptext = STRINGS.UI.HELP.APPLY
 
     --Default cursor colour is WHITE { 1, 1, 1, 1 }
-    self:SetEditCursorColour(0,0,0,1) 
+    self:SetEditCursorColour(0,0,0,1)
+    
+    self.conversions = {} --text character transformations, see OnTextInput
 end)
 
 function TextEdit:SetForceEdit(force)
@@ -36,6 +38,7 @@ function TextEdit:SetForceEdit(force)
 end
 
 function TextEdit:SetString(str)
+    str = self:FormatString(str)
 	if self.inst and self.inst.TextEditWidget then
 		self.inst.TextEditWidget:SetString(str or "")
 	end
@@ -94,38 +97,94 @@ function TextEdit:OnMouseButton(button, down, x, y)
 --	self:SetEditing(true)
 end
 
+function TextEdit:ValidateChar(text)
+    if self.validchars then
+        if not string.find(self.validchars, text, 1, true) then
+            return false
+        end
+    end
+
+    if self.invalidchars then
+        if string.find( self.invalidchars, text, 1, true) then
+            return false
+        end
+    end
+
+    -- Note: even though text is in utf8, only testing the first bit is enough based on the current exclusion list
+    local invalid_chars = string.char(8, 10, 13, 22, 27)
+    if string.find( invalid_chars, text, 1, true) then
+        return false
+    end
+
+    return true
+end
+
+function TextEdit:ValidatedString(str)
+    local res = ""
+    for i=1,#str do
+        local char = str:sub(i,i)
+        if self:ValidateChar(char) then
+            res = res .. char
+        end
+    end
+    return res
+end
+
+-- * is a valid input char, any other char is formatting.
+function TextEdit:SetFormat(format)
+    self.format = format
+    if format ~= nil then
+        self:SetTextLengthLimit(#format)
+    end
+end
+
+function TextEdit:FormatString(str)
+    if self.format == nil then
+        return str
+    end
+
+    local unformatted = self:ValidatedString(str)
+    local res = ""
+    for i=0,#unformatted do
+        while #res < #self.format and self.format:sub(#res+1,#res+1) ~= "*" do
+            res = res .. self.format:sub(#res+1,#res+1)
+        end
+        res = res .. unformatted:sub(i,i)
+    end
+    return res
+end
+
+function TextEdit:SetTextConversion( in_char, out_char )
+	self.conversions[in_char] = out_char
+end
+
 function TextEdit:OnTextInput(text)
-
-	if not self.editing then return end
-	if not self.shown then return end
-
-	if self.limit then
-		local str = self:GetString()
-		--print("len", string.len(str), "limit", self.limit)
-		if string.len(str) >= self.limit then
-			return
-		end
-	end
-
-	if self.validchars then
-		if not string.find(self.validchars, text, 1, true) then
-			return
+	--do text conversions
+	for k,v in pairs( self.conversions ) do
+		if text == k then
+			text = v
+			break
 		end
 	end
 	
-	if self.invalidchars then
-		if string.find( self.invalidchars, text, 1, true) then
-			return
-		end
-	end
+    if not self.editing then return false end
+    if not self.shown then return false end
+	if not self:ValidateChar(text) then return false end
 	
-	-- Note: even though text is in utf8, only testing the first bit is enough based on the current exclusion list
-	local invalid_chars = string.char(8, 10, 13, 22, 27)
-	if string.find( invalid_chars, text, 1, true) then
-		return
-	end
-	
-	self.inst.TextEditWidget:OnTextInput(text)
+    if self.limit then
+        local str = self:GetString()
+        --print("len", string.len(str), "limit", self.limit)
+        if string.len(str) >= self.limit then
+            return false
+        end
+    end
+    
+    self.inst.TextEditWidget:OnTextInput(text)
+    if self.format ~= nil then
+        self:SetString(self:FormatString(self:GetString()))
+    end
+
+    return true
 end
 
 
@@ -157,8 +216,16 @@ function TextEdit:OnRawKey(key, down)
 
     if self.editing then
         if down then
-            self.editing_enter_down = key == KEY_ENTER
-            self.inst.TextEditWidget:OnKeyDown(key)
+			if (key == KEY_V and TheInput:IsKeyDown(KEY_CTRL)) or (key == KEY_INSERT and TheInput:IsKeyDown(KEY_SHIFT)) then
+				local clipboard = TheSim:GetClipboardData()
+				for i=1,#clipboard do
+					local char = clipboard:sub(i,i)
+					self:OnTextInput(char)
+				end
+            else 
+				self.editing_enter_down = key == KEY_ENTER
+				self.inst.TextEditWidget:OnKeyDown(key)
+			end
         elseif key == KEY_ENTER and not self.focus then
                 -- this is a fail safe incase the mouse changes the focus widget while editing the text field. We could look into FrontEnd:LockFocus but some screens require focus to be soft (eg: lobbyscreen's chat)
                 if self.editing_enter_down then
@@ -352,10 +419,6 @@ end
 
 function TextEdit:SetPassword(to)
 	self.inst.TextEditWidget:SetPassword(to)
-end
-
-function TextEdit:SetAllowClipboardPaste(to)
-	self.inst.TextEditWidget:SetAllowClipboardPaste(to)
 end
 
 function TextEdit:SetForceUpperCase(to)

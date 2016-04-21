@@ -215,6 +215,7 @@ function GetRandomItemWithIndex(choices)
 end
 
 -- Made to work with (And return) array-style tables
+-- This function does not preserve the original table
 function PickSome(num, choices)
 	local l_choices = choices
 	local ret = {}

@@ -77,10 +77,7 @@ end
 
 
 function CharacterSelectScreen:Close()
-    TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
-       TheFrontEnd:PopScreen(self)
-       TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
-    end)
+    TheFrontEnd:PopScreen(self)
 end
 
 

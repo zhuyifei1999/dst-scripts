@@ -171,7 +171,9 @@ local function onloadplayer(inst, data)
             if data.avatar.equip ~= nil then
                 local temp = {}
                 for k, v in pairs(data.avatar.equip) do
-                    temp[EQUIPSLOT_IDS[k]] = v
+                    if EQUIPSLOT_IDS[k] ~= nil then
+                        temp[EQUIPSLOT_IDS[k]] = v
+                    end
                 end
                 data.avatar.equip = temp
             end

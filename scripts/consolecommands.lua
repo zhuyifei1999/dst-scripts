@@ -130,14 +130,16 @@ end
 
 -- Spawn At Cursor and select the new ent
 -- Has a gimpy short name so it's easier to type from the console
-function c_spawn(prefab, count)
+function c_spawn(prefab, count, dontselect)
     count = count or 1
     local inst = nil
     for i = 1, count do
         inst = DebugSpawn(prefab)
         inst.Transform:SetPosition(ConsoleWorldPosition():Get())
     end
-    SetDebugEntity(inst)
+    if not dontselect then
+        SetDebugEntity(inst)
+    end
     SuUsed("c_spawn_"..prefab , true)
     return inst
 end
@@ -327,7 +329,7 @@ function c_connect(ip, port, password)
 end
 
 -- Put an item(s) in the player's inventory
-function c_give(prefab, count)
+function c_give(prefab, count, dontselect)
     count = count or 1
 
     local MainCharacter = ConsoleCommandPlayer()
@@ -338,7 +340,9 @@ function c_give(prefab, count)
             if inst then
                 print("giving ",inst)
                 MainCharacter.components.inventory:GiveItem(inst)
-                SetDebugEntity(inst)
+                if not dontselect then
+                    SetDebugEntity(inst)
+                end
                 SuUsed("c_give_" .. inst.prefab)
             end
         end
@@ -917,22 +921,22 @@ function c_migrationportal(worldId, portalId)
 end
 
 function c_goadventuring()
-    c_give("lantern")
-    c_give("minerhat")
-    c_give("axe")
-    c_give("pickaxe")
-    c_give("footballhat")
-    c_give("armorwood")
-    c_give("spear")
-    c_give("carrot_cooked", 10)
-    c_give("berries_cooked", 10)
-    c_give("smallmeat_dried", 5)
-    c_give("flowerhat")
-    c_give("cutgrass", 20)
-    c_give("twigs", 20)
-    c_give("log", 20)
-    c_give("flint", 20)
-    c_spawn("backpack")
+    ConsoleCommandPlayer().components.inventory:Equip( c_spawn("backpack", nil, true) )
+    c_give("lantern", nil, true)
+    c_give("minerhat", nil, true)
+    c_give("axe", nil, true)
+    c_give("pickaxe", nil, true)
+    c_give("footballhat", nil, true)
+    c_give("armorwood", nil, true)
+    c_give("spear", nil, true)
+    c_give("carrot_cooked", 10, true)
+    c_give("berries_cooked", 10, true)
+    c_give("smallmeat_dried", 5, true)
+    c_give("flowerhat", nil, true)
+    c_give("cutgrass", 20, true)
+    c_give("twigs", 20, true)
+    c_give("log", 20, true)
+    c_give("flint", 20, true)
 end
 
 function c_sounddebug()
