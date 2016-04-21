@@ -132,7 +132,7 @@ return {
 	ANNOUNCE_NOSANITY = "I have the worst headache!",
 	ANNOUNCE_NOFUEL = "I need some nightmare fuel.",
 	ANNOUNCE_ACCOMPLISHMENT= "I need to pass the time somehow.",
-	ANNOUNCE_ACCOMPLISHMENT_DONE = "Ah. The satisfation of a job well done.",	
+	ANNOUNCE_ACCOMPLISHMENT_DONE = "Ah. The satisfaction of a job well done.",	
 	ANNOUNCE_INSUFFICIENTFERTILIZER = "It perked up just a tiny bit.",
 	ANNOUNCE_LIGHTNING_DAMAGE_AVOIDED = "Can't touch this!",
 	BATTLECRY =
@@ -156,6 +156,7 @@ return {
 		},
 		BERNIE_ACTIVE = "Just what am I looking at here?",
 		MULTIPLAYER_PORTAL = "Always did have a flare for the dramatic...",
+		--...Make your jokes...I'll be seeing you soon...
 		GLOMMER = "A flying goop factory.",
         GLOMMERFLOWER = 
         {
@@ -575,6 +576,7 @@ return {
         CAVE_EXIT = "Get me out of here!",
 
 		MAXWELLPHONOGRAPH = "That accursed thing!",
+		--...
 		BOOMERANG = "Beats getting your hands dirty.",
 		PIGGUARD = "Blech. Disgusting brute.",
 		ABIGAIL = "Why won't these mortals just stay dead?",
@@ -631,6 +633,7 @@ return {
 		BEEHIVE = "Not the bees!",
 		BEEMINE = "They wait so patiently.",
 		BEEMINE_MAXWELL = "Maybe I shouldn't have put that there.",
+		--...
 		BERRIES = "Sigh. If I have to.",
 		BERRIES_COOKED = "A little more refined, at least.",
         BERRIES_JUICY = "Sigh. If I have to.",
@@ -964,10 +967,15 @@ return {
 			GENERIC = "A tree with a foul demeanor.",
 		},
 		MAXWELL = "Looking good!",
+		--This was your fault...
 		MAXWELLHEAD = "Hey, handsome.",
+		--You did this...
 		MAXWELLLIGHT = "Aw, it remembers me.",
+		--You...
 		MAXWELLLOCK = "It keeps the master in the chair.",
+		--You...
 		MAXWELLTHRONE = "It's less painful than it looks. Barely.",
+		--You haven't escaped its pull...
 		MEAT = "I'm used to much finer fare.",
 		MEATBALLS = "My compliments to the chef!",
 		MEAT_DRIED = "My teeth are getting too old for this.",
@@ -1123,7 +1131,6 @@ return {
 		SHOVEL = "This is some real advanced technology.",
 		SILK = "Despite its origin, it could make some fine garments.",
 		SKELETON = "Ha! I remember that one.",
-		SKELETON_PLAYER = "The master becomes the student.",
 		SKELETON_PLAYER =
 		{
 			MALE = "A pity, dear %s. He was not prepared for %s.",
@@ -1162,6 +1169,7 @@ return {
 		SPOILED_FOOD = "That used to be food until I wasted it.",
 		STATUEHARP = "Not my best work.",
 		STATUEMAXWELL = "It seems silly now...",
+		--Your hubris... Maxy... it was always your weakness...
 		STEELWOOL = "Someone should use this to clean something.",
 		STINGER = "It's dripping with venom.",
 		STRAWHAT = "A hat fit for a peasant.",
@@ -1215,6 +1223,7 @@ return {
 		TRAP = "Only the dumbest animals will fall for this.",
 		TRAP_TEETH = "This one packs a wallop.",
 		TRAP_TEETH_MAXWELL = "I'm... sure I had my reasons when I placed this.",
+		--...
 		TREASURECHEST_TRAP = "Hmmm. Looks suspicious.",
 		TREECLUMP = "I can't get through there.",
 		TRINKET_1 = "This was important to someone once.",
@@ -1305,8 +1314,9 @@ return {
 	DESCRIBE_TOODARK = "I can't see in the dark!",
 	DESCRIBE_SMOLDERING = "Won't be long before it lights on fire.",
 	DESCRIBE_SAMECHARACTER = "What a dapper fellow!",
+	--Pride... Arrogance... Conceit...
 	EAT_FOOD =
 	{
 		TALLBIRDEGG_CRACKED = "That tastes about as good as you'd expect.",
-	},
+	},	
 }

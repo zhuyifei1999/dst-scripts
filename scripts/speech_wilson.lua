@@ -178,7 +178,7 @@ return {
 			GENERIC ="It's hauntingly beautiful.",
 			LONG = "It's hauntingly beautiful.",
 			MEDIUM = "It's giving me the heebie jeebies.",
-			SOON = "It's not the wierdest thing I've seen...",
+			SOON = "It's not the weirdest thing I've seen...",
 			HAUNTED_POCKET = "I don't know if I should hang on to this.",
 			HAUNTED_GROUND = "I'd die to find out what it does.",
 		},

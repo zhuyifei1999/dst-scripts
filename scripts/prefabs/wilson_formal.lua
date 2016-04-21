@@ -27,8 +27,5 @@ return CreatePrefabSkin("wilson_formal",
 	ui_preview = ui_preview,
 	tags = tags,
 	
-	skip_item_gen = false,
-	skip_giftable_gen = false,
-	
 	rarity = "Elegant",
 })

@@ -24,7 +24,4 @@ return CreatePrefabSkin("wes_none",
 	torso_tuck_builds = { "wes" },
 	has_alternate_for_body = { "wes" },
 	has_alternate_for_skirt = { "wes" },
-	
-	skip_item_gen = true,
-	skip_giftable_gen = true,
 })

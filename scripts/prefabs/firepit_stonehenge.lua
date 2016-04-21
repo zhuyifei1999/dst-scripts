@@ -36,6 +36,4 @@ return CreatePrefabSkin("firepit_stonehenge",
 	ui_preview = ui_preview,
 	item_type = "ITEM_SKIN_LOYAL",
 	rarity = "Loyal",
-	
-	skip_giftable_gen = true,
 })

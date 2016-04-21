@@ -22,7 +22,4 @@ return CreatePrefabSkin("waxwell_none",
 	tags = tags,
 	
 	torso_untuck_builds = {"waxwell"},
-	
-	skip_item_gen = true,
-	skip_giftable_gen = true,
 })

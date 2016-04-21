@@ -28,9 +28,6 @@ return CreatePrefabSkin("waxwell_survivor",
 	tags = tags,
 	
 	torso_tuck_builds = { "waxwell_survivor" },
-	
-	skip_item_gen = false,
-	skip_giftable_gen = false,
 
 	rarity = "Elegant",
 })

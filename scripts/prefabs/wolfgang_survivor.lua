@@ -32,9 +32,6 @@ return CreatePrefabSkin("wolfgang_survivor",
 	tags = tags,
 	
 	torso_tuck_builds = { "wolfgang_survivor", "wolfgang_skinny_survivor", "wolfgang_mighty_survivor" },
-	
-	skip_item_gen = false,
-	skip_giftable_gen = false,
 
 	rarity = "Elegant",
 })

@@ -30,9 +30,6 @@ return CreatePrefabSkin("wx78_survivor",
 	
 	torso_tuck_builds = { "wx78_survivor" },
 	has_alternate_for_body = { "wx78_survivor" },
-	
-	skip_item_gen = false,
-	skip_giftable_gen = false,
 
 	rarity = "Elegant",
 })

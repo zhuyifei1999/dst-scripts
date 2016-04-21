@@ -30,9 +30,6 @@ return CreatePrefabSkin("wickerbottom_survivor",
 	torso_tuck_builds = { "wickerbottom_survivor" },
 	has_alternate_for_body = { "wickerbottom_survivor" },
 	has_alternate_for_skirt = { "wickerbottom_survivor" },
-	
-	skip_item_gen = false,
-	skip_giftable_gen = false,
 
 	rarity = "Elegant",
 })

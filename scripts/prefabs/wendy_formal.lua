@@ -29,8 +29,5 @@ return CreatePrefabSkin("wendy_formal",
 	
 	torso_untuck_builds = { "wendy_formal" },
 	
-	skip_item_gen = false,
-	skip_giftable_gen = false,
-	
 	rarity = "Elegant",
 })
