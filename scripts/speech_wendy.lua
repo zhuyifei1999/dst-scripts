@@ -80,6 +80,11 @@ return {
 		INVALID = "No can do.",
 		YUCKY = "I fear to consume that.",
 	},
+	
+	ANNOUNCE_BECOMEGHOST = "oOoooooO!!",
+	ANNOUNCE_GHOSTDRAIN = "The ghosts... Want to play...",
+	ANNOUNCE_PETRIFED_TREES = "A wave of sadness just washed over me...?",
+
 	ANNOUNCE_ENTER_DARK = "The darkness has swallowed me.",
 	ANNOUNCE_ENTER_LIGHT = "And there was light!",
 	ANNOUNCE_HOUNDS = "The hounds are baying.",
@@ -138,6 +143,7 @@ return {
 	},
 	DESCRIBE =
 	{
+        MULTIPLAYER_PORTAL = "Its beauty is twinged with a heartbreaking sadness.",
 
 		BERNIE_INACTIVE =
 		{
@@ -650,6 +656,8 @@ return {
 		BEEMINE = "They're still alive in there. Poor things.",
 		BERRIES = "These berries are tart.",
 		BERRIES_COOKED = "More balanced flavor, but they won't last long.",
+        BERRIES_JUICY = "These berries are tart.",
+        BERRIES_JUICY_COOKED = "More balanced flavor, but they won't last long.",
 		BERRYBUSH =
 		{
 			BARREN = "It is barren.",
@@ -845,7 +853,10 @@ return {
 		FISHTACOS = "I hope I got all the bones out.",
 		FISH_COOKED = "A proper grilling puts a stop to the flopping.",
 		FLINT = "A tiny blade-like rock.",
-		FLOWER = "They are bright and cheery. Yuck.",
+		FLOWER = {
+            GENERIC = "They are bright and cheery. Yuck.",
+            ROSE = "Prickly and blood red...",
+        },
         FLOWER_WITHERED = "This is everything's fate.",
 		FLOWERHAT = "But I am in mourning...",
 		FLOWER_EVIL = "At least they're better than the other flowers.",
@@ -868,6 +879,11 @@ return {
 		GOLDENPITCHFORK = "At least I can till the earth with style.",
 		GOLDENSHOVEL = "At least I can dig with style.",
 		GOLDNUGGET = "I will take it with me.",
+		GRASSGEKKO = 
+		{
+			GENERIC = "This is a creature ruled by fear.",	
+			DISEASED = "It's suffering.",
+		},
 		GRASS =
 		{
 			BARREN = "It needs poop.",
@@ -994,6 +1010,7 @@ return {
 		PEROGIES = "A lovely little pouch of nutrients.",
 		PETALS = "I have destroyed something beautiful.",
 		PETALS_EVIL = "They are painted with the colors of my soul.",
+		PETRIFIED_TREE = "Now it will never die...",
 		PHLEGM = "The wretched beast must have been sick.",
 		PICKAXE = "So that I may penetrate the earth itself.",
 		PIGGYBACK = "They are more useful in death.",
@@ -1089,8 +1106,8 @@ return {
         ROOK = "A Rook? Or is it a Castle?",
 		ROPE = "That would be the easy way out of this place.",
 		ROTTENEGG = "The way of all things.",
-        SADDLE_BASIC = "As if the beast wasn't already carrying a burden...",
-        SADDLE_WAR = "Oh how we bend creatures to our ill intent.",
+        SADDLE_BASIC = "As if the wasn't already laden with the yoke of life...",
+        SADDLE_WAR = "Oh, how we bend creatures to our ill intent.",
         SADDLEHORN = "I'm only taking back what's mine.",
         BRUSH = "We'll rid the world of its fluff.",
 		SANITYROCK =
@@ -1273,11 +1290,14 @@ return {
 			GENERIC = "Life doesn't always make sense.",
 			OPEN = "No matter what it consumes, it is never satisfied.",
 		},
+		WORMHOLE_LIMITED = "It will soon give up.",
 		ACCOMPLISHMENT_SHRINE = "I've never much cared for metaphor.",
+		MOONROCKNUGGET = "It's travelled so far...",
 	},
-	DESCRIBE_GENERIC = "It is unmentionable.",
+	DESCRIBE_GENERIC = "Sigh... I don't know.",
 	DESCRIBE_TOODARK = "The darkness! It is too dark!",
 	DESCRIBE_SMOLDERING = "It's about to be swallowed by flames.",
+	DESCRIBE_SAMECHARACTER = "She looks sad...",
 	EAT_FOOD =
 	{
 		TALLBIRDEGG_CRACKED = "I spared it the torment of living.",

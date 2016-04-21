@@ -404,14 +404,14 @@ end)
 ---Spawn random items from the "items" table in a circles around me.
 AddGameDebugKey(KEY_F8, function()
     --Spawns a lot of prefabs around you in rings.
-    local items = {"light_flower"} --Which items spawn. 
+    local items = {"flower"} --Which items spawn. 
     local player = DebugKeyPlayer()
     local pt = Vector3(player.Transform:GetWorldPosition())
     local theta = math.random() * 2 * PI
     local numrings = 10 --How many rings of stuff you spawn
-    local radius = 5 --Initial distance from player
-    local radius_step_distance = 10 --How much the radius increases per ring.
-    local itemdensity = 0.1 --(X items per unit)
+    local radius = 2 --Initial distance from player
+    local radius_step_distance = 1 --How much the radius increases per ring.
+    local itemdensity = 1 --(X items per unit)
     local map = TheWorld.Map
     
     local finalRad = (radius + (radius_step_distance * numrings))

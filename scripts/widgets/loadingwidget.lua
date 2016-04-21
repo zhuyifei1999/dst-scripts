@@ -8,6 +8,9 @@ local images = {
     {atlas="images/bg_spiral_fill3.xml", tex="bg_image3.tex"},
     {atlas="images/bg_spiral_fill4.xml", tex="bg_image4.tex"},
     {atlas="images/bg_spiral_fill5.xml", tex="bg_image5.tex"},
+    {atlas="images/bg_spiral_fill6.xml", tex="bg_image6.tex"},
+    {atlas="images/bg_spiral_fill7.xml", tex="bg_image7.tex"},
+    {atlas="images/bg_spiral_fill8.xml", tex="bg_image8.tex"},
 }
 
 local LoadingWidget = Class(Widget, function(self, imageRand)
@@ -15,7 +18,7 @@ local LoadingWidget = Class(Widget, function(self, imageRand)
     self.initialized = false
     self.forceShowNextFrame = false
     self.is_enabled = false
-    self.image_random = imageRand or math.random()
+    self.image_random = imageRand or math.random(#images)
     self:Hide()
     self:StartUpdating()
 end)
@@ -40,17 +43,8 @@ function LoadingWidget:KeepAlive(auto_increment)
 
         local vignette = self:AddChild(TEMPLATES.BackgroundVignette())
 
-        local atlas = "images/bg_spiral_fill1.xml"
-        local tex = "bg_image1.tex"
-        for i,v in ipairs(images) do
-            v.thresh = (1/#images)*i
-        end
-        local idx = 1
-        while self.image_random >= images[idx].thresh do
-            idx = idx + 1
-            atlas = images[idx].atlas
-            tex = images[idx].tex
-        end
+        local atlas = images[self.image_random].atlas
+        local tex = images[self.image_random].tex
 
         local image = self:AddChild(Image(atlas, tex))
         image:SetScaleMode(SCALEMODE_FILLSCREEN)

@@ -78,6 +78,11 @@ return {
 		INVALID = "This is not food fit for a warrior.",
 		YUCKY = "This is not food fit for a warrior.",
 	},
+	
+	ANNOUNCE_BECOMEGHOST = "oOooOOOo!!",
+	ANNOUNCE_GHOSTDRAIN = "They're driving me mad...!",
+	ANNOUNCE_PETRIFED_TREES = "There's tree drama approaching!",
+
 	ANNOUNCE_ENTER_DARK = "And the curtain falls.",
 	ANNOUNCE_ENTER_LIGHT = "I step into the light!",
 	ANNOUNCE_FREEDOM = "Freedom! The saga continues!",
@@ -142,6 +147,7 @@ return {
 	},
 	DESCRIBE =
 	{		
+        MULTIPLAYER_PORTAL = "It makes me long for the stage!",
 		BERNIE_INACTIVE =
 		{
 			BROKEN = "He has gone to Valhalla.",
@@ -435,6 +441,8 @@ return {
 		BEEMINE_MAXWELL = "Watch your step!",
 		BERRIES = "Fruits. I don't like 'em.",
 		BERRIES_COOKED = "Warm red mush.",
+        BERRIES_JUICY = "Fruits. I don't like 'em.",
+        BERRIES_JUICY_COOKED = "Warm red mush.",
 		BERRYBUSH =
 		{
 			BARREN = "Should I put some turds on it?",
@@ -716,7 +724,10 @@ return {
 		FISHTACOS = "Fish in a blanket!",
 		FISH_COOKED = "Joy!",
 		FLINT = "Vital for spear construction.",
-		FLOWER = "A flower from Freia.",
+		FLOWER = {
+            GENERIC = "A flower from Freia.",
+            ROSE = "Were that I smelled half as sweet.",
+        },
         FLOWER_WITHERED = "Not enough time in the limelight.",
 		FLOWERHAT = "Flimsy for the fight, pretty for my head.",
 		FLOWER_EVIL = "Some evil plagues this flora.",
@@ -739,7 +750,11 @@ return {
 		GOLDENPITCHFORK = "Why did I even make a pitchfork this fancy?",
 		GOLDENSHOVEL = "Digging like a king!",
 		GOLDNUGGET = "I am pleased with this gold piece.",
-
+		GRASSGEKKO = 
+		{
+			GENERIC = "What flaxen scales.",	
+			DISEASED = "Alas! It is stricken.",
+		},
 		GRASS =
 		{
 			BARREN = "The life has gone from it.",
@@ -932,6 +947,7 @@ return {
 		PEROGIES = "Pockets of meat.",
 		PETALS = "Thank you Froh for this gift!",
 		PETALS_EVIL = "These were not made by Froh.",
+		PETRIFIED_TREE = "If all the world's a stage, perhaps these are my columns.",
 		PICKAXE = "I can use it to get precious spear and helm materials.",
 		PIGGYBACK = "The pig died with honor and gave to me this pack.",
 		PIGHEAD = 
@@ -1108,7 +1124,7 @@ return {
 		{
 			MALE = "%s fought %s well. He will live on in Valhalla.",
 			FEMALE = "%s fought %s well. She will live on in Valhalla.",
-			ROBOT = "%s fought %s well. It will live on in Valhalla.",
+			ROBOT = "%s fought %s well. They will live on in Valhalla.",
 			DEFAULT = "%s. You fought %s well. Live on in Valhalla.",
 		},
 
@@ -1319,10 +1335,12 @@ return {
 		SPEAR_WATHGRITHR = "My comrade in arms!",
         REVIVER = "Feel the passion inside!",
         LIFEINJECTOR = "This will return me to top form.",
+        MOONROCKNUGGET = "A gift from Mani.",
 	},
 	DESCRIBE_GENERIC = "It is an artifact of this realm.",
 	DESCRIBE_TOODARK = "Too dark even for battle.",
 	DESCRIBE_SMOLDERING = "Flames will soon consume it.",
+	DESCRIBE_SAMECHARACTER = "Hail, fellow shieldmaiden!",
 	EAT_FOOD =
 	{
 		TALLBIRDEGG_CRACKED = "Bones and all.",

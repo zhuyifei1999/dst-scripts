@@ -448,7 +448,11 @@ end
 
 function ServerListingScreen:ViewServerTags()
     if self.selected_server ~= nil and self.selected_server.tags then            
-        TheFrontEnd:PushScreen(TextListPopupDialogScreen(STRINGS.UI.SERVERLISTINGSCREEN.TAGSTITLE, self.selected_server.tags))
+		local text_list_popup = TextListPopupDialogScreen(STRINGS.UI.SERVERLISTINGSCREEN.TAGSTITLE, self.selected_server.tags)
+		for _,list_widget in pairs(text_list_popup.listwidgets) do
+			list_widget.text:SetFont(FALLBACK_FONT) --force the item to use the fallback font so that language tags don't look broken 
+		end
+        TheFrontEnd:PushScreen(text_list_popup)
     end
 end
 

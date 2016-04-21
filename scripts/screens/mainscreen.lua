@@ -21,9 +21,6 @@ local NetworkLoginPopup = require "screens/networkloginpopup"
 
 local OnlineStatus = require "widgets/onlinestatus"
 
---local UnopenedItemPopup = require "screens/unopeneditempopup"
-local ThankYouPopup = require "screens/thankyoupopup"
-
 local rcol = RESOLUTION_X/2 -200
 local lcol = -RESOLUTION_X/2 + 280
 local title_x = 20
@@ -65,6 +62,14 @@ function MainScreen:DoInit()
     self.fixed_root:SetVAnchor(ANCHOR_MIDDLE)
     self.fixed_root:SetHAnchor(ANCHOR_MIDDLE)
     self.fixed_root:SetScaleMode(SCALEMODE_PROPORTIONAL)
+
+    self.dark_card = self.fixed_root:AddChild(Image("images/global.xml", "square.tex"))
+    self.dark_card:SetVRegPoint(ANCHOR_MIDDLE)
+    self.dark_card:SetHRegPoint(ANCHOR_MIDDLE)
+    self.dark_card:SetVAnchor(ANCHOR_MIDDLE)
+    self.dark_card:SetHAnchor(ANCHOR_MIDDLE)
+    self.dark_card:SetScaleMode(SCALEMODE_FILLSCREEN)
+	self.dark_card:SetTint(0,0,0,.75)	
  
 	--LEFT COLUMN
     self.left_col = self.fixed_root:AddChild(Widget("left"))
@@ -181,6 +186,8 @@ end
 function MainScreen:OnRawKey(key, down)
 end
 
+local PLAY_BUTTON_FADE_TIME = 1.0
+
 -- MULTIPLAYER PLAY
 function MainScreen:OnLoginButton(push_mp_main_screen)
     local account_manager = TheFrontEnd:GetAccountManager()
@@ -192,14 +199,14 @@ function MainScreen:OnLoginButton(push_mp_main_screen)
 		if push_mp_main_screen then
             local function session_mapping_cb(data)
                 TheFrontEnd:PushScreen(MultiplayerMainScreen(self, self.profile, offline, data))
-                TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)
+                TheFrontEnd:Fade(FADE_IN, PLAY_BUTTON_FADE_TIME, nil, nil, nil, "alpha")
                 self:Hide()
             end
             if not TheNet:DeserializeAllLocalUserSessions(session_mapping_cb) then
                 session_mapping_cb()
             end
         else
-            TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)
+            TheFrontEnd:Fade(FADE_IN, PLAY_BUTTON_FADE_TIME, nil, nil, nil, "alpha")
 		end
     end
     	
@@ -245,11 +252,11 @@ function MainScreen:OnLoginButton(push_mp_main_screen)
                         {
                          {text=STRINGS.UI.MAINSCREEN.VERSION_OUT_OF_DATE_PLAY, 
                                     cb = function() 
-                                        TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, 
+                                        TheFrontEnd:PopScreen()
+                                        TheFrontEnd:Fade(FADE_OUT, PLAY_BUTTON_FADE_TIME, 
                                             function()
-                                                TheFrontEnd:PopScreen()
                                                 GoToMultiplayerMainMenu(true) 
-                                            end) 
+                                            end, nil, nil, "alpha") 
                                     end },
                          {text=STRINGS.UI.MAINSCREEN.VERSION_OUT_OF_DATE_INSTRUCTIONS, 
                                     cb = function() 
@@ -271,66 +278,19 @@ function MainScreen:OnLoginButton(push_mp_main_screen)
             if hadPendingConnection then
                 TheFrontEnd:PopScreen()
             else
-                if not push_mp_main_screen then
+                --if not push_mp_main_screen then
                     TheFrontEnd:PopScreen()
-                end
+                --end
             
-                TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
-                    if push_mp_main_screen then
-                        TheFrontEnd:PopScreen()
-                    end
+                TheFrontEnd:Fade(FADE_OUT, PLAY_BUTTON_FADE_TIME, function()
+                    --if push_mp_main_screen then
+                        --TheFrontEnd:PopScreen()
+                    --end
 
                     GoToMultiplayerMainMenu(forceOffline or false )
 
-                    local rog_items = {} -- reign of giants thank you gifts "body_trenchcoat_brown_fawn", "firepit_stonehenge", "webber_punk"}
-                    local ea_items = {} -- early access thank you gifts
-
-                    -- In case we have given out token items that have no assets in the game
-                    -- But still need to be marked as opened
-                    local uo_items = TheInventory:GetUnopenedItems()
-                    for _,item in pairs(uo_items) do
-                        if Prefabs[string.lower(item.item_type)] == nil and CLOTHING[string.lower(item.item_type)] == nil then
-                            TheInventory:SetItemOpened(item.item_id)
-                        end
-					end
-                       
-                    local entitlement_items = TheInventory:GetUnopenedEntitlementItems()
-                     for _,item in pairs(entitlement_items) do
-                        if item.item_type == "firepit_stonehenge" then -- TODO: correct this name
-                            table.insert(rog_items, item.item_id)
-                        elseif item.item_type == "firepit_hole" then -- TODO: correct this name
-                            table.insert(ea_items, item.item_id)
-                        end
-                    end
-                    
-                    --table.insert(rog_items, "backpack_smallbird")
-                    --table.insert(ea_items, "body_trenchcoat_brown_fawn")
-
-                    if #rog_items > 0 then
-                        local shield_images =
-                        {
-                            { name = "images/rog_item_popup_1.xml", shields = {"bearger_shield_1.tex", "bearger_shield_2.tex", "deerclops_shield_1.tex", "deerclops_shield_2.tex" }},
-                            { name = "images/rog_item_popup_2.xml", shields = {"dragonfly_shield.tex",  "moosegoose_shield.tex"}}
-                        }
-                        local random_atlas = shield_images[math.random(#shield_images)]
-
-                        local thankyou_popup = ThankYouPopup(rog_items, random_atlas.name, random_atlas.shields[math.random(#random_atlas.shields)], "images/rog_item_popup_2.xml", "ReignOfGiants.tex",
-                                                            function() 
-                                                                if #ea_items > 0 then 
-                                                                    local thankyou_popup = ThankYouPopup(ea_items, "images/ui.xml", "button_place.tex", "images/button_icons.xml", "item_drop.tex")
-                                                                    TheFrontEnd:PushScreen(thankyou_popup)
-                                                                end
-                                                            end)
-                        TheFrontEnd:PushScreen(thankyou_popup)
-                    elseif #ea_items > 0 then 
-                        local thankyou_popup = ThankYouPopup(ea_items, "images/ui.xml", "button_place.tex", "images/button_icons.xml", "item_drop.tex")
-                        TheFrontEnd:PushScreen(thankyou_popup)
-                    end
-                   
-
-                    TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
-
-                end)
+                    --TheFrontEnd:Fade(FADE_IN, PLAY_BUTTON_FADE_TIME)
+                end, nil, nil, "alpha")
             end
         elseif not communication_succeeded then  -- We could not communicate with our auth server or steam is down
             print ( "failed_communication" )
@@ -338,10 +298,10 @@ function MainScreen:OnLoginButton(push_mp_main_screen)
             local confirm = PopupDialogScreen( STRINGS.UI.MAINSCREEN.OFFLINEMODE,STRINGS.UI.MAINSCREEN.OFFLINEMODEDESC,
 								{
 								  	{text=STRINGS.UI.MAINSCREEN.PLAYOFFLINE, cb = function() 
-								  		TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
-								  			TheFrontEnd:PopScreen()
+								  		TheFrontEnd:PopScreen()
+								  		TheFrontEnd:Fade(FADE_OUT, PLAY_BUTTON_FADE_TIME, function()
 								  			GoToMultiplayerMainMenu(true) 
-								  		end)
+                                        end, nil, nil, "alpha")
 								  	end },
 								  	{text=STRINGS.UI.MAINSCREEN.CANCELOFFLINE,   cb = function() 
 								  		onCancel() 
@@ -449,7 +409,7 @@ function MainScreen:OnUpdate(dt)
         self.music_playing = true
 	elseif not self.music_playing then
         TheFrontEnd:GetSound():PlaySound("dontstarve/music/music_FE","FEMusic")
-        TheFrontEnd:GetSound():PlaySound("dontstarve/together_FE/portal_idle","FEPortalSFX")
+        TheFrontEnd:GetSound():PlaySound("dontstarve/together_FE/portal_idle_vines","FEPortalSFX")
         self.music_playing = true
     end
 

@@ -8,9 +8,6 @@ local AnimSpinner = require "widgets/animspinner"
 
 local TEMPLATES = require "widgets/templates"
 
-
-local DEBUG_MODE = false --= BRANCH == "dev"
-local ONLINE = true
 local testNewTag = false
 
 -------------------------------------------------------------------------------------------------------
@@ -45,12 +42,7 @@ local DressupPanel = Class(Widget, function(self, owner, profile, onChanged, use
     self.root = self:AddChild(Widget("Root"))
     self.root:SetPosition(RESOLUTION_X - 250, window_y_pos, 0)
 
-	
-
-	if (not TheNet:IsOnlineMode() and not (DEBUG_MODE and ONLINE))
-		or (DEBUG_MODE and not ONLINE) 
-		then
-
+	if not TheNet:IsOnlineMode() then
 		self.bg_group = self.root:AddChild(TEMPLATES.CurlyWindow(10, 400, .6, .6, 39, -25))
 	   
 		self.dressup_bg = self.bg_group:AddChild(Image("images/serverbrowser.xml", "side_panel.tex"))
@@ -185,8 +177,7 @@ end
 -- This function removes the background and moves the puppet out to the side. This is only done when the game is online 
 -- because the offline images don't work without the background.
 function DressupPanel:SeparateAvatar()
-	if (TheNet:IsOnlineMode() and not (DEBUG_MODE and ONLINE == false))
-		or (DEBUG_MODE and ONLINE) then 
+	if TheNet:IsOnlineMode() then 
 		 
 		self.bg_group:Hide()
 		self.outline:Hide()
@@ -946,11 +937,9 @@ function DressupPanel:GetSkinsForGameStart()
 end
 
 function DressupPanel:SetPuppetSkins(skip_change_emote)
-	
 	if self.currentcharacter == "random" then 
 		return -- no puppet in this case
-	elseif (not TheNet:IsOnlineMode() and not (DEBUG_MODE and ONLINE))
-			or (DEBUG_MODE and not ONLINE) then 
+	elseif not TheNet:IsOnlineMode() then 
 		-- no spinners in this case
 		self.puppet:SetSkins(self.currentcharacter, nil, {}, skip_change_emote) --base_skin is nil and clothing_names is {}
 		return

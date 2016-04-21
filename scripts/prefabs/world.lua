@@ -25,8 +25,10 @@ local assets =
 
     Asset("ANIM", "anim/frames_comp.zip"),
 
-    Asset("ATLAS", "images/bg_spiral_anim_overlay.xml"),
-    Asset("IMAGE", "images/bg_spiral_anim_overlay.tex"),
+    Asset("DYNAMIC_ATLAS", "images/bg_spiral_anim.xml"),
+    Asset("ASSET_PKGREF", "images/bg_spiral_anim.tex"),
+    Asset("DYNAMIC_ATLAS", "images/bg_spiral_anim_overlay.xml"),
+    Asset("ASSET_PKGREF", "images/bg_spiral_anim_overlay.tex"),
 }
 
 -- Add all the characters by name

@@ -367,6 +367,7 @@ function Tune(overrides)
 	    
 	    MARSHBUSH_DAMAGE = wilson_health*.02,
 	    CACTUS_DAMAGE = wilson_health*.04,
+        ROSE_DAMAGE = 1,
 	    
 	    GHOST_SPEED = 2,
 	    GHOST_HEALTH = 200,

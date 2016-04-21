@@ -1160,13 +1160,11 @@ local states =
         tags = { "idle", "canrotate" },
 
         onenter = function(inst, pushanim)
-            --#TODO: remove after we have mounted onemanband anims
             local equippedArmor = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.BODY)
             if equippedArmor ~= nil and equippedArmor:HasTag("band") then
-                inst.sg:GoToState("mounted_onemanband", pushanim)
+                inst.sg:GoToState("enter_onemanband", pushanim)
                 return
             end
-            ------------------------------------------------------
 
             if pushanim then
                 inst.AnimState:PushAnimation("idle_loop", true)
@@ -3040,44 +3038,6 @@ local states =
             inst.SoundEmitter:KillSound("shave")
         end,
     },
-
-    --#TODO: remove after we have mounted onemanband anims
-    State{
-        name = "mounted_onemanband",
-        tags = { "playing", "idle" },
-
-        onenter = function(inst, pushanim)
-            inst.components.locomotor:Stop()
-
-            if pushanim then
-                inst.AnimState:PushAnimation("idle_loop", true)
-            else
-                inst.AnimState:PlayAnimation("idle_loop", true)
-            end
-
-            if inst.AnimState:IsCurrentAnimation("idle_loop") then
-                inst.SoundEmitter:PlaySound("dontstarve/wilson/onemanband")
-                inst.sg.statemem.nextsoundtime = GetTime() + math.random(11, 13) * FRAMES
-            else
-                inst.sg.statemem.nextsoundtime = 0
-            end
-        end,
-
-        onupdate = function(inst)
-            local time = GetTime()
-            if inst.sg.statemem.nextsoundtime < time and inst.AnimState:IsCurrentAnimation("idle_loop") then
-                inst.SoundEmitter:PlaySound("dontstarve/wilson/onemanband")
-                local rnd = math.random(10, 15)
-                if rnd == 10 then
-                    rnd = 5
-                elseif rnd == 15 then
-                    rnd = 12
-                end
-                inst.sg.statemem.nextsoundtime = time + rnd * FRAMES
-            end
-        end,
-    },
-    ------------------------------------------------------
 
     State{
         name = "enter_onemanband",

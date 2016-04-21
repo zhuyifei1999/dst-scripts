@@ -82,6 +82,9 @@ return {
 	ANNOUNCE_WET = "Plaid's warm, even when wet.",
 	ANNOUNCE_WETTER = "I'm getting quite wet, eh?",
 	ANNOUNCE_SOAKED = "Better hold on tight to Lucy.",
+
+	ANNOUNCE_PETRIFED_TREES = "No! Not the wood!",
+
 	ANNOUNCE_EAT =
 	{
 		GENERIC = "Tasty!",
@@ -91,6 +94,10 @@ return {
 		INVALID = "I don't think my teeth could cut through that.",
 		YUCKY = "I'd rather chew on blubber balls.",
 	},
+	
+	ANNOUNCE_BECOMEGHOST = "oOooOOOO!!",
+	ANNOUNCE_GHOSTDRAIN = "I'm goin', like, nutso over here...",
+
 	ANNOUNCE_ENTER_DARK = "Who turned out the lights?",
 	ANNOUNCE_ENTER_LIGHT = "Brilliance!",
 	ANNOUNCE_FREEDOM = "I got out!",
@@ -129,6 +136,7 @@ return {
 	},
 	DESCRIBE =
 	{
+		MULTIPLAYER_PORTAL = "That'd be the thing I fell through, eh.",
 		GLOMMER = "Keep flapping, little guy!",
         GLOMMERFLOWER = 
         {
@@ -637,6 +645,8 @@ return {
 		BEEMINE_MAXWELL = "Hey! That's just mean!",
 		BERRIES = "I have a heartier appetite than that.",
 		BERRIES_COOKED = "Tastes like warm berries.",
+        BERRIES_JUICY = "I have a heartier appetite than that.",
+        BERRIES_JUICY_COOKED = "Tastes like warm berries.",
 		BERRYBUSH =
 		{
 			BARREN = "It needs a good poopin'",
@@ -827,7 +837,10 @@ return {
 		FISHTACOS = "Tastes like the sea, eh?",
 		FISH_COOKED = "I wish I had some chips.",
 		FLINT = "This could be an axe head.",
-		FLOWER = "That's nice.",
+		FLOWER = {
+            GENERIC = "That's nice.",
+            ROSE = "Not very satisfying chopping, that.",
+        },
         FLOWER_WITHERED = "Someone's got a brown thumb.",
 		FLOWERHAT = "I think it looks nice with my red hair.",
 		FLOWER_EVIL = "Something is wrong with that flower.",
@@ -850,6 +863,11 @@ return {
 		GOLDENPITCHFORK = "I don't know why I made this.",
 		GOLDENSHOVEL = "Time to dig golden holes.",
 		GOLDNUGGET = "You can't make a coffee table out of gold.\nWell, maybe you can. But you shouldn't.",
+		GRASSGEKKO = 
+		{
+			GENERIC = "Where's the log lizard?",	
+			DISEASED = "It's lookin' pretty unhealthy.",
+		},
 		GRASS =
 		{
 			BARREN = "I need to poop on it.",
@@ -1001,6 +1019,7 @@ return {
 		PEROGIES = "I call them 'Yum pockets'.",
 		PETALS = "I wonder if Lucy would like these.",
 		PETALS_EVIL = "They're frowning at me with little evil faces.",
+		PETRIFIED_TREE = "So... senseless.",
 		PHLEGM = "I hope it doesn't get stuck in my moustache.",
 		PICKAXE = "Almost an axe, but not quite.",
 		PIGGYBACK = "I used all parts of the pig.",
@@ -1287,10 +1306,12 @@ return {
 		ICESTAFF = "It reminds me of home.",
         REVIVER = "I need to share this with somebody!",
         LIFEINJECTOR = "This should cure those sniffles.",
+        MOONROCKNUGGET = "It's uh, a moon rock.",
 	},
 	DESCRIBE_GENERIC = "What's that, eh?",
 	DESCRIBE_TOODARK = "It's dark, eh!",
 	DESCRIBE_SMOLDERING = "It's aboot to go up in flames, eh?",
+	DESCRIBE_SAMECHARACTER = "Good to see another Canadian in these parts.",
 	EAT_FOOD =
 	{
 		TALLBIRDEGG_CRACKED = "You can taste the beak, eh?",

@@ -65,6 +65,7 @@ return
     ANNOUNCE_MOUNT_LOWHEALTH = "My mount requires attention of the medical variety.",
     DESCRIBE=
     {
+        MULTIPLAYER_PORTAL = "Hmm... This may require further reading.",
         BERNIE_INACTIVE =
         {
             BROKEN = "That bear is in need of repair.",
@@ -88,6 +89,9 @@ return
             EMPTY = "Nope, just a statue.",
         },
         WEBBERSKULL = "That is a most unusual skull.",
+
+        MOONROCKNUGGET = "Implications of a lunar body? Interesting.",
+
         MOLE =
         {
             HELD = "I don't think my pocket is its natural habitat.",
@@ -668,6 +672,8 @@ return
         CARROT_SEEDS = "Seed of Daucus carota.",
         BERRIES = "Some Ardisia crenata berries, I think.",
         BERRIES_COOKED = "Roasted Ardisia crenata, just in case.",
+        BERRIES_JUICY = "Some Ardisia crenata berries, I think.",
+        BERRIES_JUICY_COOKED = "Roasted Ardisia crenata, just in case.",
         CUTSTONE = "Some smoothed rock slabs.",
         SEEDS = "A handful of unidentifiable seeds.",
         SEEDS_COOKED = "A toasted embryonic plant treat!",
@@ -788,12 +794,21 @@ return
             HELD = "He's mine now.",
         },
         GHOST = "It must be fake. I don't believe it.",
+        GRASSGEKKO = 
+        {
+            GENERIC = "I've never encountered this species before. Seems harmless.",   
+            DISEASED = "It appears to be infected by some unknown pathogen.",
+        },
         CUTGRASS = "Some grass cuttings.",
         CUTREEDS = "Some rush cuttings.",
         PEROGIES = "A wonderfully bland dumpling.",
         PETALS = "I've made some potpourri.",
-        PETALS_EVIL = "Interesting, these petals seem to have a mind of their own.",        
-        FLOWER = "It's a wildflower. I'm unfamiliar with the species.",
+        PETALS_EVIL = "Interesting, these petals seem to have a mind of their own.",
+        PETRIFIED_TREE = "Should make for an excellent building material.",        
+		FLOWER = {
+            GENERIC = "It's a wildflower. I'm unfamiliar with the species.",
+            ROSE = "Ah, a Rosa Macdub... what's it doing out here?",
+        },
         FLOWER_WITHERED = "This flower lacks the essentials for growth.",
         FLOWER_EVIL = "It's not often one sees a flower with such a powerful aura.",
         GOLDENAXE = "The most malleable of metals, but let's see how this chops.",
@@ -1082,7 +1097,7 @@ return
 			GENERIC = "The sleeping Megadrilacea Oraduos.",
 			OPEN = "Concentric rings of teeth for rapid ingestion.",
 		},
-
+        WORMHOLE_LIMITED = "It will only last a few trips.",
         CHESSJUNK1 = "Clockwork junk",
         CHESSJUNK2 = "Clockwork junk",
         CHESSJUNK3 = "Clockwork junk",
@@ -1233,7 +1248,8 @@ return
 
     DESCRIBE_TOODARK = "I can't see in the dark.",
     DESCRIBE_SMOLDERING = "Seems it's about to ignite from the heat.",
-    DESCRIBE_GENERIC = "I don't know what that is.",
+    DESCRIBE_GENERIC = "A rare occurance. I don't know what that is.",
+    DESCRIBE_SAMECHARACTER = "Curious. Does she have all my knowledge, too?",
     ACTIONFAIL_GENERIC = "It seems I can't do that.",
 
     BATTLECRY =
@@ -1264,6 +1280,10 @@ return
     ANNOUNCE_FAN_OUT = "This fragile device has decayed.",
     ANNOUNCE_COMPASS_OUT = "My compass has become demagnetized.",
     ANNOUNCE_DUSK = "Night will be here soon.",
+
+    ANNOUNCE_BECOMEGHOST = "oOoooOoO!!",
+    ANNOUNCE_GHOSTDRAIN = "My humanity... it's slipping.",
+    ANNOUNCE_PETRIFED_TREES = "The chemical reaction has been catalyzed...",
 
     ANNOUNCE_CHARLIE_ATTACK = "OUCH! Something bit me!",
     ANNOUNCE_CHARLIE = "Did you hear that?",

@@ -11,6 +11,7 @@ require "os"
 
 local WorldGenScreen = require "screens/worldgenscreen"
 local PopupDialogScreen = require "screens/popupdialog"
+local RedeemDialog = require "screens/redeemdialog"
 local PlayerHud = require "screens/playerhud"
 local EmailSignupScreen = require "screens/emailsignupscreen"
 local CreditsScreen = require "screens/creditsscreen"
@@ -29,7 +30,10 @@ local TEMPLATES = require "widgets/templates"
 
 local OnlineStatus = require "widgets/onlinestatus"
 
-local rcol = RESOLUTION_X/2 -200
+local ThankYouPopup = require "screens/thankyoupopup"
+
+
+local rcol = RESOLUTION_X/2 -170
 local lcol = -RESOLUTION_X/2 +200
 
 local bottom_offset = 60
@@ -127,81 +131,124 @@ function MultiplayerMainScreen:DoInit()
 	self.motd.motdtext:EnableWordWrap(true)  
 	
 	self.fixed_root:AddChild(Widget("left"))
-	self.left_col:SetPosition(lcol, 0) 
     
 	self.countdown = self.fixed_root:AddChild(Countdown())
     self.countdown:SetScale(1)
     self.countdown:SetPosition(-575, -330, 0)
 
-    local char1_x = 95
-    local char1_y = -260
-    local puppet_scale_1 = .52
-    local shadow1_x = -3
-    local shadow1_y = -5
-    local shadow1_scale = .25
+    local puppet_data = {
+        {
+            startpos = {x=0,y=0},
+            endpos = {x=95,y=-260},
+            startscale = .1,
+            endscale = .52,
+        },
+        {
+            flip = true,
+            startpos = {x=0,y=0},
+            endpos = {x=-30,y=-275},
+            startscale = .1,
+            endscale = .6,
+        },
+    }
+    local shadowpos = {x=-6,y=-5}
+    local shadowscale = .3
 
-    local char2_x = -30
-    local char2_y = -275
-    local puppet_scale_2 = .6
-    local shadow2_x = -3
-    local shadow2_y = -5
-    local shadow2_scale = .35
+    local function PickTwo(choices, no_dupe)
+        local choice1 = math.random(1, #choices)
+        local choice2 = math.random(2, #choices)
+		if choice2 == choice1 then 
+			choice2 = 1
+		end
+		
+		if no_dupe then
+			local choice2_start = choice2
+			while choices[choice1].name == choices[choice2].name do
+				choice2 = ((choice2 + 1) % #choices) + 1
+				--check if a player with this name is already chosen
+				if choice2 == choice2_start then
+					return {choices[choice1]} --no good second choice, so just return 1
+				end
+			end
+		end
+		
+        return {choices[choice1], choices[choice2]}
+    end
 
-    self.shadow1 = self.fg.character_root:AddChild(Image("images/frontscreen.xml", "char_shadow.tex"))
-    self.shadow1:SetPosition(char1_x+shadow1_x,char1_y+shadow1_y)
-    self.shadow1:SetScale(shadow1_scale)
-    self.shadow2 = self.fg.character_root:AddChild(Image("images/frontscreen.xml", "char_shadow.tex"))
-    self.shadow2:SetPosition(char2_x+shadow2_x,char2_y+shadow2_y)
-    self.shadow2:SetScale(shadow2_scale)
+    local characters = PickTwo(DST_CHARACTERLIST) 
+    local tools = PickTwo(MAINSCREEN_TOOL_LIST) 
+    local torsos = PickTwo(MAINSCREEN_TORSO_LIST) 
+    local hats = PickTwo(MAINSCREEN_HAT_LIST) 
 
-    local characters = PickSome(2, deepcopy(DST_CHARACTERLIST))
-    local tools = PickSome(2, deepcopy(MAINSCREEN_TOOL_LIST))
-    local torsos = PickSome(2, deepcopy(MAINSCREEN_TORSO_LIST))
-    local hats = PickSome(2, deepcopy(MAINSCREEN_HAT_LIST))
-
-    local players = {}
-
-    --TEMP DISABLED
-    --[[
     PlayerHistory:SortBackwards("sort_date")
     self.player_history = PlayerHistory:GetRows()
-
+    
+    local players = {}
+    local total_characters = {}
     if self.player_history and next(self.player_history) then 
-        players = PickSome(2, deepcopy(self.player_history))
+        for k,v in pairs(self.player_history) do 
+            table.insert(total_characters, v)
+        end
     end
-    ]]
+	local player_characters = self.profile:GetAllRecentLoadouts()
+    if #player_characters > 0 then
+        table.insert(total_characters, player_characters[math.random(1, #player_characters)])
+    end
+    
+    if #total_characters >= 2 then 
+        players = PickTwo(total_characters, true)
+    elseif #total_characters == 1 then
+		players[1] = total_characters[1]
+    end
+    
+    self.puppets = {}
+    
+    for i,data in ipairs(puppet_data) do
+        self.puppets[i] = self.fg.character_root:AddChild(SkinsAndEquipmentPuppet(characters[i], FRONTEND_CHARACTER_FAR_COLOUR, {(data.flip and -1 or 1)*data.endscale,data.endscale, data.endscale}))
+        if players[i] then 
+            self.puppets[i]:InitSkins(players[i])
+        end
+        self.puppets[i]:SetTool(tools[i])
+        self.puppets[i]:SetTorso(torsos[i])
+        self.puppets[i]:SetHat(hats[i])
+        self.puppets[i]:StartAnimUpdate()
+        self.puppets[i]:SetPosition(data.endpos.x, data.endpos.y,0)
+        self.puppets[i].shadow = self.puppets[i]:AddChild(Image("images/frontscreen.xml", "char_shadow.tex"))
+        self.puppets[i].shadow:SetPosition(shadowpos.x,shadowpos.y)
+        self.puppets[i].shadow:SetScale(shadowscale)
+        self.puppets[i].shadow:MoveToBack()
 
-    self.wilson = self.fg.character_root:AddChild(SkinsAndEquipmentPuppet(characters[1], FRONTEND_CHARACTER_FAR_COLOUR, {puppet_scale_1,puppet_scale_1, puppet_scale_1}))
-    --TEMP DISABLED
-    --[[
-    if players[1] then 
-        self.wilson:InitSkins(players[1])
+        local puppet_fade = nil
+        local puppet_alpha = -30*FRAMES - (i-1)*45*FRAMES
+        local puppet_lastalpha = puppet_alpha
+        self.puppets[i].animstate:SetMultColour(0,0,0,1)
+        puppet_fade = self.puppets[i].inst:DoPeriodicTask(0, function()
+            puppet_alpha = puppet_alpha + FRAMES
+            if puppet_alpha > -15*FRAMES and puppet_lastalpha <= -15*FRAMES then
+                self.bg.anim_root.portal:GetAnimState():PlayAnimation("portal_spawnplayer", false)
+                self.bg.anim_root.portal:GetAnimState():PushAnimation("portal_idle", true)
+            end
+            if puppet_alpha > -8*FRAMES and puppet_lastalpha <= -8*FRAMES then
+                TheFrontEnd:GetSound():PlaySound("dontstarve/common/spawn/spawnportal_open")
+            end
+            if puppet_alpha > 0 and puppet_lastalpha <= 0 then
+                self.puppets[i]:Show()
+            end
+            puppet_lastalpha = puppet_alpha
+            if puppet_alpha < 1 then
+                self.puppets[i].animstate:SetMultColour(puppet_alpha*puppet_alpha, puppet_alpha*puppet_alpha, puppet_alpha*puppet_alpha, 1)
+            else
+                self.puppets[i].animstate:SetMultColour(1,1,1,1)
+                puppet_fade:Cancel()
+            end
+        end)
     end
-    ]]
-    self.wilson:SetTool(tools[1])
-    self.wilson:SetTorso(torsos[1])
-    self.wilson:SetHat(hats[1])
-    self.wilson:StartAnimUpdate()
-    self.wilson:SetPosition(char1_x,char1_y,0)
 
-	self.wilson2 = self.fg.character_root:AddChild(SkinsAndEquipmentPuppet(characters[2], FRONTEND_CHARACTER_CLOSE_COLOUR, {-puppet_scale_2,puppet_scale_2, puppet_scale_2}))
-     --TEMP DISABLED
-    --[[
-    if players[2] then 
-        self.wilson2:InitSkins(players[2])
-    end
-    ]]
-    self.wilson2:SetTool(tools[2])
-    self.wilson2:SetTorso(torsos[2])
-    self.wilson2:SetHat(hats[2])
-    self.wilson2:StartAnimUpdate()
-    self.wilson2:SetPosition(char2_x,char2_y,0)
 
     self.countdown:Hide()
-    self.wilson:Hide()
-    self.wilson2:Hide()
-    self.shadow1:Hide()
-    self.shadow2:Hide()
+    for i,puppet in ipairs(self.puppets) do
+        puppet:Hide()
+    end
 
     self.menu_bg = self.fixed_root:AddChild(TEMPLATES.LeftGradient())
 
@@ -210,16 +257,24 @@ function MultiplayerMainScreen:DoInit()
     self.title:SetPosition(titleX, titleY)
     self.title:SetTint(unpack(FRONTEND_TITLE_COLOUR))
 
-    local updateX = 36
-    local updateY = -(RESOLUTION_Y*.5)+52
 
-    self.updatenameshadow = self.fixed_root:AddChild(Text(BUTTONFONT, 27))
-    self.updatenameshadow:SetPosition(updateX + 2, updateY - 2,0)
+	local updatename_root_x = -RESOLUTION_X * .5 + 180
+	local updatename_root_y = -RESOLUTION_Y * .5 + 55
+	self.updatename_root_on = Vector3( updatename_root_x, updatename_root_y, 0 )
+	self.updatename_root_off = Vector3( updatename_root_x-300, updatename_root_y, 0 )
+	
+    self.updatename_root = self.fixed_root:AddChild(Widget("updatename"))
+    self.updatename_root:SetPosition( self.updatename_root_on )
+    self.updatenameshadow = self.updatename_root:AddChild(Text(BUTTONFONT, 21))
+    self.updatenameshadow:SetPosition(2, 2,0)
     self.updatenameshadow:SetColour(.1,.1,.1,1)
-
-    self.updatename = self.fixed_root:AddChild(Text(BUTTONFONT, 27))
-    self.updatename:SetPosition(updateX,updateY,0)
+	self.updatenameshadow:SetHAlign(ANCHOR_LEFT)
+    self.updatenameshadow:SetRegionSize(200,45)
+    self.updatename = self.updatename_root:AddChild(Text(BUTTONFONT, 21))
+    self.updatename:SetPosition(0,0,0)
     self.updatename:SetColour(1,1,1,1)
+    self.updatename:SetHAlign(ANCHOR_LEFT)
+    self.updatename:SetRegionSize(200,45)
     local suffix = ""
     if BRANCH == "dev" then
 		suffix = " (internal v"..APP_VERSION..")"
@@ -227,10 +282,17 @@ function MultiplayerMainScreen:DoInit()
 		suffix = " (preview v"..APP_VERSION..")"
     else
         suffix = " (v"..APP_VERSION..")"
-    end
-    
+    end    
     self.updatename:SetString(STRINGS.UI.MAINSCREEN.DST_UPDATENAME .. suffix)
     self.updatenameshadow:SetString(STRINGS.UI.MAINSCREEN.DST_UPDATENAME .. suffix)
+    
+    --hack to deal with updatename_root going outside the view box and is a less complex solution than trying to interleave the updatename between bg and fg while still being infront of the main menu gradient
+    self.update_blackcover = self.fixed_root:AddChild(Image("images/global.xml", "square.tex"))
+    self.update_blackcover:SetPosition( updatename_root_x-355, updatename_root_y )
+    self.update_blackcover:ScaleToSize( 350, 45 )
+	self.update_blackcover:SetTint(0, 0, 0, 1)
+	
+	
 
     self:MakeMainMenu()
 	self:MakeSubMenu()
@@ -240,10 +302,9 @@ function MultiplayerMainScreen:DoInit()
 	self:UpdateMOTD()
 	--self:UpdateCountdown()
     --V2C: Show puppets because we're skipping UpdateCountdown
-    self.wilson:Show()
-    self.wilson2:Show()
-    self.shadow1:Show()
-    self.shadow2:Show()
+    --for i,puppet in ipairs(self.puppets) do
+        --puppet:Show()
+    --end
     ----------------------------------------------------------
 
 	self.filter_settings = nil
@@ -437,6 +498,11 @@ function MultiplayerMainScreen:OnCreditsButton()
 	end)
 end
 
+function MultiplayerMainScreen:OnRedeemButton()
+	self.last_focus_widget = TheFrontEnd:GetFocusWidget()
+	TheFrontEnd:PushScreen(RedeemDialog())
+end
+
 function MultiplayerMainScreen:OnHostButton()
 	SaveGameIndex:LoadServerEnabledModsFromSlot()
 	KnownModIndex:Save()
@@ -489,6 +555,9 @@ function MultiplayerMainScreen:MakeMainMenu()
             btn.image:Show()
             self.tooltip:SetString(tooltip)
             self.tooltip_shadow:SetString(tooltip)
+            
+            self.updatename_root:CancelMoveTo()
+			self.updatename_root:SetPosition( self.updatename_root_off )
         end
         
         btn.OnLoseFocus = function()
@@ -504,6 +573,7 @@ function MultiplayerMainScreen:MakeMainMenu()
             if not self.menu.focus then
                 self.tooltip:SetString("")
                 self.tooltip_shadow:SetString("")
+				self.updatename_root:MoveTo( self.updatename_root_off, self.updatename_root_on, .5 )
             end
         end
         btn:SetOnClick(onclick)
@@ -612,6 +682,7 @@ function MultiplayerMainScreen:MakeSubMenu()
         return btn
     end
 
+	local redeem_button = TEMPLATES.IconButton("images/button_icons.xml", "redeem.tex", STRINGS.UI.MAINSCREEN.REDEEM, false, true, function() self:OnRedeemButton() end, {font=NEWFONT_OUTLINE, focus_colour={1,1,1,1}})
     local credits_button = TEMPLATES.IconButton("images/button_icons.xml", "credits.tex", STRINGS.UI.MAINSCREEN.CREDITS, false, true, function() self:OnCreditsButton() end, {font=NEWFONT_OUTLINE, focus_colour={1,1,1,1}})
     local forums_button = TEMPLATES.IconButton("images/button_icons.xml", "forums.tex", STRINGS.UI.MAINSCREEN.FORUM, false, true, function() self:Forums() end, {font=NEWFONT_OUTLINE, focus_colour={1,1,1,1}})
     local newsletter_button = TEMPLATES.IconButton("images/button_icons.xml", "newsletter.tex", STRINGS.UI.MAINSCREEN.NOTIFY, false, true, function() self:EmailSignup() end, {font=NEWFONT_OUTLINE, focus_colour={1,1,1,1}})
@@ -626,6 +697,7 @@ function MultiplayerMainScreen:MakeSubMenu()
 
             submenuitems = 
             {
+            	{widget = redeem_button},
                 {widget = manage_account_button},
                 {widget = credits_button},
                 {widget = forums_button},
@@ -649,12 +721,12 @@ function MultiplayerMainScreen:MakeSubMenu()
                 {widget = newsletter_button},
             }
     end
-
-    self.submenu = self.fixed_root:AddChild(Menu(submenuitems, 90, true))
+   
+    self.submenu = self.fixed_root:AddChild(Menu(submenuitems, 75, true))
     if TheInput:ControllerAttached() then
-        self.submenu:SetPosition((RESOLUTION_X*.5)-(75*#submenuitems), -(RESOLUTION_Y*.5)+80, 0)
+        self.submenu:SetPosition( RESOLUTION_X*.5 - (#submenuitems*60), -(RESOLUTION_Y*.5)+80, 0)
     else
-        self.submenu:SetPosition((RESOLUTION_X*.5)-(75*#submenuitems), -(RESOLUTION_Y*.5)+77, 0)
+        self.submenu:SetPosition( RESOLUTION_X*.5 - (#submenuitems*60), -(RESOLUTION_Y*.5)+77, 0)    
     end
     self.submenu:SetScale(.8)
 end
@@ -687,35 +759,61 @@ function MultiplayerMainScreen:OnBecomeActive()
 	if TheSim:IsLoggedOn() then
 		TheSim:StartWorkshopQuery()
 	end
-
-	--Do language mods assistance popup
-	local interface_lang = TheNet:GetLanguageCode()
-	if interface_lang ~= "english" then
-		if Profile:GetValue("language_mod_asked_"..interface_lang) ~= true then
-			TheSim:QueryServer( "https://s3.amazonaws.com/ds-mod-language/dst_mod_languages.json",
-			function( result, isSuccessful, resultCode )
- 				if isSuccessful and string.len(result) > 1 and resultCode == 200 then
- 					local status, language_mods = pcall( function() return json.decode(result) end )
-					local lang_popup = language_mods[interface_lang]
-					if status and lang_popup ~= nil then
-						if lang_popup.collection ~= "" then
-							TheFrontEnd:PushScreen(
-								PopupDialogScreen( lang_popup.title, lang_popup.body,
-									{
-										{text=lang_popup.yes, cb = function() VisitURL("http://steamcommunity.com/workshop/filedetails/?id="..lang_popup.collection) TheFrontEnd:PopScreen() self:OnModsButton() end },
-										{text=lang_popup.no, cb = function() TheFrontEnd:PopScreen() end}
-									}
-								)
-							)
-							Profile:SetValue("language_mod_asked_"..interface_lang, true)
-							Profile:Save()
-						end
-					end
-				end
-			end, "GET" )
+	
+	
+	--Do new entitlement items
+	local items = {} -- early access thank you gifts
+    local entitlement_items = TheInventory:GetUnopenedEntitlementItems()
+	for _,item in pairs(entitlement_items) do
+		if item.item_type == "firepit_hole" then
+			table.insert(items, {item=item.item_type, item_id=item.item_id, gifttype="EARLY_ACCESS"})
+		else
+			table.insert(items, {item=item.item_type, item_id=item.item_id, gifttype="DEFAULT"})
 		end
 	end
-	
+	if not self.test_done then
+		--test code for thank you popup
+		--table.insert(items, {item="firepit_stonehenge", item_id=0, gifttype="ROG"})
+		--table.insert(items, {item="firepit_hole", item_id=0, gifttype="EARLY_ACCESS"})
+		--table.insert(items, {item="body_wes_survivor", item_id=0, gifttype="TWITCH", message="Thanks for watching 's\nTwitch stream!"})
+		--table.insert(items, {item="backpack_crab", item_id=0, gifttype="STORE", message="Enjoy your plushie purchase!\ncome again"})
+		self.test_done = true
+	end
+
+    if #items > 0 then
+        local thankyou_popup = ThankYouPopup(items)
+        TheFrontEnd:PushScreen(thankyou_popup)
+    else
+		--Make sure we only do one mainscreen popup at a time
+		--Do language mods assistance popup
+		local interface_lang = TheNet:GetLanguageCode()
+		if interface_lang ~= "english" then
+			if Profile:GetValue("language_mod_asked_"..interface_lang) ~= true then
+				TheSim:QueryServer( "https://s3.amazonaws.com/ds-mod-language/dst_mod_languages.json",
+				function( result, isSuccessful, resultCode )
+ 					if isSuccessful and string.len(result) > 1 and resultCode == 200 then
+ 						local status, language_mods = pcall( function() return json.decode(result) end )
+						local lang_popup = language_mods[interface_lang]
+						if status and lang_popup ~= nil then
+							if lang_popup.collection ~= "" then
+								local popup_screen = PopupDialogScreen( lang_popup.title, lang_popup.body,
+										{
+											{text=lang_popup.yes, cb = function() VisitURL("http://steamcommunity.com/workshop/filedetails/?id="..lang_popup.collection) TheFrontEnd:PopScreen() self:OnModsButton() end },
+											{text=lang_popup.no, cb = function() TheFrontEnd:PopScreen() end}
+										}
+									)
+								popup_screen.text:SetFont(BUTTONFONT)
+
+								TheFrontEnd:PushScreen( popup_screen )
+								Profile:SetValue("language_mod_asked_"..interface_lang, true)
+								Profile:Save()
+							end
+						end
+					end
+				end, "GET" )
+			end
+		end
+	end
 end
 
 local anims =
@@ -860,16 +958,14 @@ function MultiplayerMainScreen:SetCountdown(str, cache)
 
 		if update_date and self.countdown:ShouldShowCountdown(update_date) then
 		    self.countdown:Show()
-		    self.wilson:Hide()
-		    self.wilson2:Hide()
-            self.shadow1:Hide()
-            self.shadow2:Hide()
+            for i,puppet in ipairs(self.puppets) do
+                puppet:Show()
+            end
 	    else
 			self.countdown:Hide()
-		    self.wilson:Show()
-		    self.wilson2:Show()
-            self.shadow1:Show()
-            self.shadow2:Show()
+            for i,puppet in ipairs(self.puppets) do
+                puppet:Hide()
+            end
 		end
 	end	
 end

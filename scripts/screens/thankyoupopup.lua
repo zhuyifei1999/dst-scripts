@@ -8,15 +8,48 @@ local UIAnim = require "widgets/uianim"
 
 require "skinsutils"
 
-local ThankYouPopup = Class(Screen, function(self, items, bgatlas, bgimage, logoatlas, logoimage, callbackfn)
+GIFT_TYPE = {
+    EARLY_ACCESS = {
+        atlas="images/thankyou_item_popup.xml",
+        image="thankyou_beta_1.tex",
+        titleoffset={-70, 0, 0},
+        title=STRINGS.UI.ITEM_SCREEN.THANKS_POPUP_TITLE,
+        secondtitle=STRINGS.UI.ITEM_SCREEN.THANKS_POPUP_SECONDTITLE.EARLY_ACCESS,
+    },
+    ROG = {
+        atlas="images/thankyou_item_popup_rog.xml",
+        image={"thankyou_ROG_1.tex", "thankyou_ROG_2.tex", "thankyou_ROG_3.tex", "thankyou_ROG_4.tex"},
+        title=STRINGS.UI.ITEM_SCREEN.THANKS_POPUP_TITLE,
+        titleoffset={-70, 0, 0},
+    },
+    TWITCH = {
+        atlas="images/thankyou_item_popup.xml",
+        image={"thankyou_twitch.tex"},
+        title=STRINGS.UI.ITEM_SCREEN.THANKS_POPUP_TITLE_TWITCH,
+        titleoffset={0, -20, 0},
+    },
+    STORE = {
+        atlas="images/thankyou_item_popup.xml",
+        image={"thankyou_gift.tex"},
+        title=STRINGS.UI.ITEM_SCREEN.THANKS_POPUP_TITLE_STORE,
+        titleoffset={0, -20, 0},
+    },
+    DEFAULT = {
+        atlas="images/thankyou_item_popup.xml",
+        image={"thankyou_gift.tex"},
+        title=STRINGS.UI.ITEM_SCREEN.THANKS_POPUP_TITLE_DEFAULT,
+        titleoffset={0, -20, 0},
+    },
+    
+}
+
+local ThankYouPopup = Class(Screen, function(self, items, callbackfn)
     Screen._ctor(self, "ThankYouPopup")
 
-    bgatlas = bgatlas or "images/ui.xml"
-    bgimage = bgimage or "black.tex"
-    logoatlas = logoatlas or "images/ui.xml"
-    logoimage = logoimage or "klei_new_logo.tex"
-
     self.callbackfn = callbackfn
+
+    global("TAB")
+    TAB = self
 
     --darken everything behind the dialog
     self.black = self:AddChild(Image("images/global.xml", "square.tex"))
@@ -26,51 +59,65 @@ local ThankYouPopup = Class(Screen, function(self, items, bgatlas, bgimage, logo
     self.black:SetHAnchor(ANCHOR_MIDDLE)
     self.black:SetScaleMode(SCALEMODE_FILLSCREEN)
     self.black:SetTint(0,0,0,.75)
-    
+
     self.proot = self:AddChild(Widget("ROOT"))
     self.proot:SetVAnchor(ANCHOR_MIDDLE)
     self.proot:SetHAnchor(ANCHOR_MIDDLE)
     self.proot:SetPosition(0,0,0)
     self.proot:SetScaleMode(SCALEMODE_PROPORTIONAL)
 
-    self.bg = self.proot:AddChild(Image(bgatlas, bgimage))
+    self.bg = self.proot:AddChild(Image())
     self.bg:SetVRegPoint(ANCHOR_MIDDLE)
     self.bg:SetHRegPoint(ANCHOR_MIDDLE)
     self.bg:SetScale(.97)
-    
+
     --title 
-    self.title = self.proot:AddChild(Text(BUTTONFONT, 60))
-    self.title:SetPosition(-70, 235, 0)
-    self.title:SetString(STRINGS.UI.ITEM_SCREEN.THANKS_POPUP_TITLE)    
-    
-    -- Logo
-    self.logo_img = self.proot:AddChild(Image(logoatlas, logoimage))
-    self.logo_img:SetVRegPoint(ANCHOR_MIDDLE)
-    self.logo_img:SetHRegPoint(ANCHOR_MIDDLE)
-    self.logo_img:SetScale(.9,.9,.9)
-    self.logo_img:SetPosition(155, 215, 0)
+    self.title = self.proot:AddChild(Text(TITLEFONT, 60))
+    self.title:SetPosition(0, 235, 0)
+
+    ---- Logo
+    --self.logo_img = self.proot:AddChild(Image(logoatlas, logoimage))
+    --self.logo_img:SetVRegPoint(ANCHOR_MIDDLE)
+    --self.logo_img:SetHRegPoint(ANCHOR_MIDDLE)
+    --self.logo_img:SetScale(.9,.9,.9)
+    --self.logo_img:SetPosition(155, 215, 0)
+
+    self.side_title = self.proot:AddChild(Text(TITLEFONT, 90))
+    self.side_title:SetPosition(255, 138)
+    self.side_title:SetHAlign(ANCHOR_LEFT)
+    self.side_title:SetVAlign(ANCHOR_TOP)
+    self.side_title:SetRegionSize(300, 300)
+    self.side_title:Hide()
 
     -- Actual animation
     self.spawn_portal = self.proot:AddChild(UIAnim())
-    self.spawn_portal:SetScale(.6)
+    self.spawn_portal:SetScale(.7)
     self.spawn_portal:SetPosition(0, -55, 0)
     self.spawn_portal:GetAnimState():SetBuild("skingift_popup") -- file name
     self.spawn_portal:GetAnimState():SetBank("gift_popup") -- top level symbol
-
-    self.banner = self.proot:AddChild(Image("images/giftpopup.xml", "banner.tex"))
-    self.banner:SetPosition(0, -185, 0)
-    self.banner:SetScale(.9)
-
-    -- Name of the received item, parented to the banner so they show and hide together
-    self.item_name = self.banner:AddChild(Text(BUTTONFONT, 55))
-    self.item_name:SetString("Dragonfly Backpack")
-    self.item_name:SetPosition(0, -10, 0)
-
-    self.banner:Hide()
+    self.spawn_portal:GetAnimState():Hide("banner")
+    self.spawn_portal:GetAnimState():Hide("BG")
 
     -- Text saying "you received" on the upper banner
-    self.upper_banner_text = self.proot:AddChild(Text(BUTTONFONT, 32, STRINGS.UI.ITEM_SCREEN.RECEIVED))
-    self.upper_banner_text:SetPosition(0, 48, 0)
+    self.upper_banner_text = self.proot:AddChild(Text(UIFONT, 55, STRINGS.UI.ITEM_SCREEN.RECEIVED))
+    self.upper_banner_text:SetPosition(0, 75, 0)
+    self.upper_banner_text:SetColour(36/255, 118/255, 169/255, 1)
+
+    --self.banner = self.proot:AddChild(Image("images/giftpopup.xml", "banner.tex"))
+    --self.banner:SetPosition(0, -185, 0)
+    --self.banner:SetScale(.9)
+
+    ---- Name of the received item, parented to the banner so they show and hide together
+    --self.item_name = self.banner:AddChild(Text(UIFONT, 55))
+    --self.item_name:SetString("Dragonfly Backpack")
+    --self.item_name:SetPosition(0, -10, 0)
+    self.item_name = self.proot:AddChild(Text(UIFONT, 55))
+    self.item_name:SetString("Dragonfly Backpack")
+    self.item_name:SetPosition(0, -205, 0)
+
+    --self.banner:Hide()
+    self.item_name:Hide()
+    self.upper_banner_text:Hide()
 
 
     self.right_btn = self.proot:AddChild(ImageButton("images/lobbyscreen.xml", "DSTMenu_PlayerLobby_arrow_paper_R.tex", "DSTMenu_PlayerLobby_arrow_paperHL_R.tex"))
@@ -78,8 +125,7 @@ local ThankYouPopup = Class(Screen, function(self, items, bgatlas, bgimage, logo
     self.right_btn:SetScale(0.6)
     self.right_btn:SetOnClick(
         function() -- Item navigation
-            self.current_item = self.current_item + 1 
-            self:NewGift() 
+            self:ChangeGift(1)
         end)
 
 
@@ -88,8 +134,7 @@ local ThankYouPopup = Class(Screen, function(self, items, bgatlas, bgimage, logo
     self.left_btn:SetScale(0.6)
     self.left_btn:SetOnClick(
         function() -- Item navigation
-            self.current_item = self.current_item - 1 
-            self:NewGift() 
+            self:ChangeGift(-1)
         end)
 
     -- Open skin button
@@ -114,8 +159,8 @@ local ThankYouPopup = Class(Screen, function(self, items, bgatlas, bgimage, logo
     self.revealed_items = {}
     self.current_item = 1
 
-    self:EvaluateArrows()
-    self:NewGift()
+    self:EvaluateButtons()
+    self:ChangeGift(0)
 end)
 
 function ThankYouPopup:OnUpdate(dt)
@@ -123,12 +168,13 @@ function ThankYouPopup:OnUpdate(dt)
         -- We just revealed a new skin
         if self.reveal_skin then
             self.reveal_skin = false
-            self:EvaluateArrows()
+            self:EvaluateButtons()
             self:SetSkinName()
             TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/player_recieves_gift_idle", "gift_idle")
         -- We just navigated to an already revealed skin
         elseif self.transitioning then
             self.transitioning = false
+            self:EvaluateButtons()
             self:SetSkinName()
             TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/player_recieves_gift_idle", "gift_idle")
         end
@@ -149,15 +195,21 @@ end
 -- Sets the name of the skin on the banner and enables the close button if needed
 function ThankYouPopup:SetSkinName()
     
-    local skin_name = string.lower(self.items[self.current_item])
+    local skin_name = string.lower(self.items[self.current_item].item)
     local name_string = GetName(skin_name) 
 
     local itemtype = GetTypeForItem(skin_name)
     local rarity = GetRarityForItem(itemtype, skin_name)
     self.item_name:SetColour(SKIN_RARITY_COLORS[rarity])
     self.item_name:SetString(name_string or skin_name or "bad item name")
-    self.banner:Show()
+    --self.banner:Show()
+    self.item_name:Show()
+    self.upper_banner_text:Show()
 
+end
+
+-- Enables or disables arrows according to our current item
+function ThankYouPopup:EvaluateButtons()
     local revealed_items_size = 0
     for k,v in pairs(self.revealed_items) do
         revealed_items_size = revealed_items_size + 1
@@ -167,32 +219,52 @@ function ThankYouPopup:SetSkinName()
         self.close_btn:Show()
     end
 
-end
-
--- Enables or disables arrows according to our current item
-function ThankYouPopup:EvaluateArrows()
     if #self.items == 1 then
         self.right_btn:Hide()
         self.left_btn:Hide()
-        return
-    end
-
-    if self.current_item == #self.items then
-        self.right_btn:Hide()
-        self.left_btn:Show()
-    elseif self.current_item == 1 then
-        self.right_btn:Show()
-        self.left_btn:Hide()
     else
-        self.right_btn:Show()
-        self.left_btn:Show()
+        if self.current_item == #self.items then
+            self.right_btn:Hide()
+            self.left_btn:Show()
+        elseif self.current_item == 1 then
+            self.right_btn:Show()
+            self.left_btn:Hide()
+        else
+            self.right_btn:Show()
+            self.left_btn:Show()
+        end
     end
 end
 
 -- Sets the new Gift after we navigated
-function ThankYouPopup:NewGift()
+function ThankYouPopup:ChangeGift(offset)
+    self.current_item = math.clamp(self.current_item + offset, 1, #self.items)
 
-    self.banner:Hide()
+    self.item_name:Hide()
+    self.upper_banner_text:Hide()
+    
+    local gifttype = GIFT_TYPE[self.items[self.current_item].gifttype or "DEFAULT"] or GIFT_TYPE["DEFAULT"]
+    local backgroundimage = type(gifttype.image) == "table" and gifttype.image[math.random(#gifttype.image)] or gifttype.image
+    self.bg:SetTexture(gifttype.atlas, backgroundimage)
+
+    self.title:SetString(self.items[self.current_item].message or gifttype.title)
+    
+    if gifttype.titleoffset ~= nil then
+        self.title:SetPosition(
+                gifttype.titleoffset[1] + 0,
+                gifttype.titleoffset[2] + 235,
+                gifttype.titleoffset[3] + 0
+            )
+    else
+        self.title:SetPosition(0,235,0)
+    end
+
+    if gifttype.secondtitle ~= nil then
+        self.side_title:SetString(gifttype.secondtitle)
+        self.side_title:Show()
+    else
+        self.side_title:Hide()
+    end
 
     if not self.revealed_items[self.current_item] then -- Unopened item
     	TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/player_receives_gift_animation_spin")
@@ -201,7 +273,7 @@ function ThankYouPopup:NewGift()
         self.open_btn:Hide()
         self.close_btn:Hide()
     else -- Already opened item
-        local build = GetBuildForItem(GetTypeForItem(self.items[self.current_item]), self.items[self.current_item])
+        local build = GetBuildForItem(GetTypeForItem(self.items[self.current_item].item), self.items[self.current_item].item)
         self.spawn_portal:GetAnimState():OverrideSkinSymbol("SWAP_ICON", build, "SWAP_ICON")
         TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/player_receives_gift_animation_spin")
         self.spawn_portal:GetAnimState():PlayAnimation("skin_in")
@@ -211,7 +283,7 @@ function ThankYouPopup:NewGift()
     end
 
     self.transitioning = true
-    self:EvaluateArrows()
+    self:EvaluateButtons()
 
 end
 
@@ -221,7 +293,9 @@ function ThankYouPopup:GoAway()
 	TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/player_receives_gift_animation_skinout")
     self.spawn_portal:GetAnimState():PlayAnimation("skin_out")
     
-    self.banner:Hide()
+    --self.banner:Hide()
+    self.item_name:Hide()
+    self.upper_banner_text:Hide()
     self.right_btn:Hide()
     self.left_btn:Hide()
     self.close_btn:Hide()
@@ -233,7 +307,7 @@ function ThankYouPopup:OpenGift()
     self.right_btn:Hide()
     self.left_btn:Hide()
 
-    local skin_name = self.items[self.current_item]
+    local skin_name = self.items[self.current_item].item
     local build = GetBuildForItem(GetTypeForItem(skin_name), skin_name)
 
     self.spawn_portal:GetAnimState():OverrideSkinSymbol("SWAP_ICON", build, "SWAP_ICON")
@@ -245,8 +319,7 @@ function ThankYouPopup:OpenGift()
     -- Mark the item as revealed
     self.revealed_items[self.current_item] = true
     self.reveal_skin = true -- Used on update
-    --TODO: set the item as opened here
-
+    TheInventory:SetItemOpened(self.items[self.current_item].item_id)
 end
 
 function ThankYouPopup:OnControl(control, down)

@@ -138,7 +138,7 @@ return {
 	ANNOUNCE_ACCOMPLISHMENT = "I feel so accomplished!",
 	ANNOUNCE_ACCOMPLISHMENT_DONE = "If only my friends could see me now...",	
 	ANNOUNCE_INSUFFICIENTFERTILIZER = "Are you still hungry, plant?",
-	ANNOUNCE_TOOL_SLIP = "Wow that tool is slippery!",
+	ANNOUNCE_TOOL_SLIP = "Wow, that tool is slippery!",
 	ANNOUNCE_LIGHTNING_DAMAGE_AVOIDED = "Safe from that frightening lightning!",
 
 	ANNOUNCE_DAMP = "Oh, H2O.",
@@ -146,7 +146,7 @@ return {
 	ANNOUNCE_WETTER = "Water way to go!",
 	ANNOUNCE_SOAKED = "I've nearly reached my saturation point.",
 	
-	ANNOUNCE_BECOMEGHOST = "ooOOoooOOOoOooo!!",
+	ANNOUNCE_BECOMEGHOST = "oOooOooo!!",
 	ANNOUNCE_GHOSTDRAIN = "My humanity is about to start slipping away...",
 
 	ANNOUNCE_PETRIFED_TREES = "Did I just hear trees screaming?",
@@ -171,6 +171,7 @@ return {
 	},
 	DESCRIBE =
 	{
+		MULTIPLAYER_PORTAL = "This ought to be a scientific impossibility.",
 
 		ABIGAIL_FLOWER = 
 		{ 
@@ -278,7 +279,6 @@ return {
 			REVIVER = "Wes, friend of ghosts.",
 			GHOST = "Wes could use a heart.",
 		},
-		MULTIPLAYER_PORTAL = "It's rickety, but it appears to function. After a fashion...",
         MIGRATION_PORTAL = {
             GENERIC = "If I had any friends, this could take me to them.",
             OPEN = "If I step through, will I still be me?",
@@ -562,6 +562,8 @@ return {
 		BEEMINE_MAXWELL = "Bottled mosquito rage!",
 		BERRIES = "Red berries taste the best.",
 		BERRIES_COOKED = "I don't think heat improved them.",
+        BERRIES_JUICY = "Red berries taste the best.",
+        BERRIES_JUICY_COOKED = "I don't think heat improved them.",
 		BERRYBUSH =
 		{
 			BARREN = "I think it needs to be fertilized.",
@@ -854,7 +856,10 @@ return {
 		FISHTACOS = "I cooked it myself!",
 		FISH_COOKED = "Grilled to perfection.",
 		FLINT = "It's a very sharp rock.",
-		FLOWER = "It's pretty but it smells like a common laborer.",
+		FLOWER = {
+            GENERIC = "It's pretty but it smells like a common laborer.",
+            ROSE = "To match my rosy cheeks.",
+        },
         FLOWER_WITHERED = "I don't think it got enough sun.",
 		FLOWERHAT = "It smells like prettiness.",
 		FLOWER_EVIL = "Augh! It's so evil!",
@@ -1198,7 +1203,8 @@ return {
 		{
 			GENERIC = "What a handsome devil!",
 			BURNT = "Not much use anymore.",
-		},		RESURRECTIONSTONE = "Such a touching stone.",
+		},		
+		RESURRECTIONSTONE = "Such a touching stone.",
 		ROBIN =
 		{
 			GENERIC = "Does that mean winter is gone?",

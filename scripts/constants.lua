@@ -283,7 +283,7 @@ ROG_CHARACTERLIST =
 
 DST_CHARACTERLIST =
 {
-    "wilson", "willow", "wolfgang", "wendy", "wx78", "wickerbottom", "woodie", "wes", "wathgrithr", "webber",
+    "wilson", "willow", "wolfgang", "wendy", "wx78", "wickerbottom", "woodie", "wes", "waxwell", "wathgrithr", "webber"
 }
 
 require("prefabskins")
@@ -292,19 +292,19 @@ require("misc_items")
 
 MAINSCREEN_TOOL_LIST = 
 {
-	"swap_axe", "swap_spear", "swap_pickaxe", "swap_shovel", "swap_staffs", "swap_cane", 
+	"swap_axe", "swap_spear", "swap_pickaxe", "swap_shovel", "swap_staffs", "swap_cane", "swap_fishingrod", "swap_hammer", "swap_batbat", "swap_ham_bat",
 }
 
 
 MAINSCREEN_TORSO_LIST = 
 {
-	"", "", "", "", "armor_wood", "armor_sweatervest", "torso_amulets", "armor_trunkvest_winter", "armor_ruins", 
+	"", "", "", "", "armor_wood", "armor_sweatervest", "torso_amulets", "armor_trunkvest_winter", "armor_ruins", "torso_dragonfly", "torso_hawaiian"
 }
 
 
 MAINSCREEN_HAT_LIST = 
 {
-	"", "", "", "", "hat_top", "hat_beefalo", "hat_football", "hat_winter", "hat_spider", 
+	"", "", "", "", "hat_top", "hat_beefalo", "hat_football", "hat_winter", "hat_spider", "hat_catcoon", "hat_mole", "hat_ice", "hat_watermelon"
 }
 
 

@@ -688,6 +688,9 @@ function LoadFonts()
         if v.fallback and v.fallback ~= "" then
             TheSim:SetupFontFallbacks(v.alias, v.fallback)
         end
+        if v.adjustadvance ~= nil then
+            TheSim:AdjustFontAdvance(v.alias, v.adjustadvance)
+        end
     end
 end
 
@@ -1359,6 +1362,11 @@ function BuildTagsStringCommon(tagsTable)
         table.insert(tagsTable, mod_tag)
     end
 
+    --Concat language
+    --Note(Peter): The language tag must be the first tag to be correctly formated by ServerListingScreen:ViewServerTags
+    local lang_code = TheNet:GetLanguageCode()
+    table.insert(tagsTable, SERVER_LANGUAGES_TAGS[lang_code] or lang_code)
+    
     -- Concat unique tags
     local tagged = {}
     local tagsString = ""

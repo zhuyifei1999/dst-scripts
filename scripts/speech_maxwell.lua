@@ -64,6 +64,11 @@ return {
 	ACTIONFAIL_GENERIC = "That didn't work.",
 	ANNOUNCE_MOUNT_LOWHEALTH = "Say, pal, you don't look so good.",
     LICHEN = "A slow growing cave plant",
+    
+    ANNOUNCE_BECOMEGHOST = "oOooooOO!!",
+	ANNOUNCE_GHOSTDRAIN = "I can hear them...!",
+	ANNOUNCE_PETRIFED_TREES = "Oh, this should be good.",
+
     ANNOUNCE_NOSLEEPONFIRE = "That might not be the best idea.",
 	ANNOUNCE_NODANGERSIESTA = "They're hot on my heels!",
 	ANNOUNCE_NONIGHTSIESTA = "It's sleep-time, not siesta-time.",
@@ -150,7 +155,7 @@ return {
 			GENERIC = "It makes me a little nostalgic.",
 		},
 		BERNIE_ACTIVE = "Just what am I looking at here?",
-
+		MULTIPLAYER_PORTAL = "Always did have a flare for the dramatic...",
 		GLOMMER = "A flying goop factory.",
         GLOMMERFLOWER = 
         {
@@ -248,6 +253,11 @@ return {
 			BURNT = "A bit overdone for my tastes.",
 		},
 		EYEBRELLAHAT =	"Eye to the sky.",
+		GRASSGEKKO = 
+		{
+			GENERIC = "I'm sure its tail grows back.",	
+			DISEASED = "It's sickly and frail.",
+		},
 		ARMORDRAGONFLY = "That's some fly mail.",
 		DRAGON_SCALES = "Fiery.",
 		DRAGONFLYCHEST = "Those scales sure are nifty.",
@@ -623,6 +633,8 @@ return {
 		BEEMINE_MAXWELL = "Maybe I shouldn't have put that there.",
 		BERRIES = "Sigh. If I have to.",
 		BERRIES_COOKED = "A little more refined, at least.",
+        BERRIES_JUICY = "Sigh. If I have to.",
+        BERRIES_JUICY_COOKED = "A little more refined, at least.",
 		BERRYBUSH =
 		{
 			BARREN = "It needs manure.",
@@ -811,7 +823,10 @@ return {
 		FISHTACOS = "Cooked fish in a crunchy shell.",
 		FISH_COOKED = "It still stinks.",
 		FLINT = "Ow! I cut my finger!",
-		FLOWER = "I am filled with the irrational urge to stomp upon it.",
+		FLOWER = {
+            GENERIC = "I am filled with the irrational urge to stomp upon it.",
+            ROSE = "This is wrong.",
+        },
         FLOWER_WITHERED = "It got what it deserved.",
 		FLOWERHAT = "Definitely not my style.",
 		FLOWER_EVIL = "I like that flower.",
@@ -987,6 +1002,7 @@ return {
 		PEROGIES = "They look superb.",
 		PETALS = "I've a habit of destroying beautiful things, don't I?",
 		PETALS_EVIL = "It's dripping with nightmare essence.",
+		PETRIFIED_TREE = "I think it looks much better this way.",
 		PHLEGM = "I need to put on gloves for this.",
 		PICKAXE = "Everybody loves a little mining.",
 		PIGGYBACK = "Oh that's just demeaning.",
@@ -1088,7 +1104,7 @@ return {
         SADDLE_BASIC = "But that means I'd have to touch the smelly thing.",
         SADDLE_WAR = "At least it affords some dignity to the rider.",
         SADDLEHORN = "And I may never put it back on.",
-        BRUSH = "It's like showing affection without actually touching it.",
+        BRUSH = "It's like showing affection, without actually touching it.",
 		SANITYROCK =
 		{
 			ACTIVE = "I can see its true nature now!",
@@ -1108,7 +1124,14 @@ return {
 		SILK = "Despite its origin, it could make some fine garments.",
 		SKELETON = "Ha! I remember that one.",
 		SKELETON_PLAYER = "The master becomes the student.",
-		SKULLCHEST = "That's one snazzy chest.",
+		SKELETON_PLAYER =
+		{
+			MALE = "A pity, dear %s. He was not prepared for %s.",
+			FEMALE = "A pity, dear %s. She was not prepared for %s.",
+			ROBOT = "A pity, dear %s. They were not prepared for %s.",
+			DEFAULT = "A pity, dear %s. So ill-prepared for %s.",
+		},
+		SKULLCHEST = "That chest is calling to me.",
 		SMALLBIRD =
 		{
 			GENERIC = "What!? What do you want?",
@@ -1138,7 +1161,7 @@ return {
 		},
 		SPOILED_FOOD = "That used to be food until I wasted it.",
 		STATUEHARP = "Not my best work.",
-		STATUEMAXWELL = "Now that's a fine statue.",
+		STATUEMAXWELL = "It seems silly now...",
 		STEELWOOL = "Someone should use this to clean something.",
 		STINGER = "It's dripping with venom.",
 		STRAWHAT = "A hat fit for a peasant.",
@@ -1179,7 +1202,7 @@ return {
 		TELEPORTATO_CRANK = "This is used to agitate the humors.",
 		TELEPORTATO_POTATO = "The gears in here are so small they turn the fabric of reality.",
 		TELEPORTATO_RING = "This is the quantum field guard band.",
-		TELESTAFF = "Power can do amazing things when it's funneled through the right channels.",
+		TELESTAFF = "Magic power can do amazing things, when funneled through the right channels.",
 		TENTACLE = "I'm glad the rest of it is still down there.",
 		TENTACLESPIKE = "Ugh. This is so revolting.",
 		TENTACLESPOTS = "This is how they reproduce.",
@@ -1191,7 +1214,7 @@ return {
 		TORCH = "It keeps Charlie at bay.",
 		TRAP = "Only the dumbest animals will fall for this.",
 		TRAP_TEETH = "This one packs a wallop.",
-		TRAP_TEETH_MAXWELL = "I'm sure I had my reasons when I placed this.",
+		TRAP_TEETH_MAXWELL = "I'm... sure I had my reasons when I placed this.",
 		TREASURECHEST_TRAP = "Hmmm. Looks suspicious.",
 		TREECLUMP = "I can't get through there.",
 		TRINKET_1 = "This was important to someone once.",
@@ -1270,16 +1293,18 @@ return {
 		WORMHOLE =
 		{
 			GENERIC = "It's worse knowing what the other part looks like.",
-			OPEN = "I can assure you that it smells worse than it looks.",
+			OPEN = "I assure you that it smells worse than it looks.",
 		},
 		WORMHOLE_LIMITED = "It looks ill.",
 		ACCOMPLISHMENT_SHRINE = "Even THEY couldn't build something so devious.",		
         REVIVER = "I'm not sure I really want to give this up.",
         LIFEINJECTOR = "I'm supposed to put this filth in my veins?",
+        MOONROCKNUGGET = "'Moon' rock.",
 	},
 	DESCRIBE_GENERIC = "You tell me.",
 	DESCRIBE_TOODARK = "I can't see in the dark!",
 	DESCRIBE_SMOLDERING = "Won't be long before it lights on fire.",
+	DESCRIBE_SAMECHARACTER = "What a dapper fellow!",
 	EAT_FOOD =
 	{
 		TALLBIRDEGG_CRACKED = "That tastes about as good as you'd expect.",

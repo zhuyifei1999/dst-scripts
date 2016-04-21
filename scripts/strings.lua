@@ -470,7 +470,7 @@ STRINGS=
         PETALS = "Petals",
         PETALS_EVIL = "Dark Petals",
         ADVENTURE_PORTAL = "Maxwell's Door",
-        MULTIPLAYER_PORTAL = "Jury-Rigged Portal",
+        MULTIPLAYER_PORTAL = "Florid Postern",
         MIGRATION_PORTAL = "Friend-O-Matic Portal",
         POOP = "Manure",
         TORCH = "Torch",
@@ -2082,7 +2082,7 @@ STRINGS.UI =
         CREDITS = "Credits",
         UPDATENAME = "All's Well That Maxwell",
         DLC_UPDATENAME = "Where There's a Wilson...",
-        DST_UPDATENAME = "Early Access",
+        DST_UPDATENAME = "Release",
         CONTROLS = "Controls",
 
         PLAY_ON_STEAM = "PLAY ON STEAM TEXT",
@@ -2341,7 +2341,10 @@ STRINGS.UI =
 
     ITEM_SCREEN =
     {
-        THANKS_POPUP_TITLE ="THANKS FOR PLAYING",
+        THANKS_POPUP_TITLE_DEFAULT ="Thanks for playing",
+        THANKS_POPUP_TITLE ="Thanks for playing",
+        THANKS_POPUP_TITLE_TWITCH ="Thanks for watching Twitch",
+        THANKS_POPUP_TITLE_STORE ="Enjoy your gift",
         NORMAL_POPUP_TITLE = "received...",
         NEW_SKIN = "You got a skin for %s!",
         OK_BUTTON = "Close",
@@ -2354,6 +2357,9 @@ STRINGS.UI =
         RECEIVED = "You Received",
         ENABLED_TOAST_TOOLTIP = "Open",
         DISABLED_TOAST_TOOLTIP = "This requires more science!",
+        THANKS_POPUP_SECONDTITLE = {
+            EARLY_ACCESS = "Early\nAccess",
+        },
     },
     
     POPUPDIALOG =
@@ -2376,6 +2382,18 @@ STRINGS.UI =
         },
         OK = "OK",
     },
+    
+    REDEEMDIALOG = 
+    {
+    	TITLE = "Enter Your Code",
+    	SUBMIT = "Submit",
+    	CANCEL = "Cancel",
+    	ACCEPTED = "Success: Code Accepted!",
+    	INVALID_CODE = "This code doesn't look right. Are you sure you entered it correctly?",
+    	ALREADY_REDEEMED = "Somebody has already redeemed this code. Maybe it was you?",
+    	FAILED_TO_CONTACT = "Sorry, it looks like the server's not answering right now. Please try again later.",
+    	LEGALESE = "Delivery time variable due to temporal portal anomalies. Wilson is not responsible for emotional injuries caused by waiting. Gifts may result in bragging, unexpected delight, and/or enhanced gameplay experiences.",
+	},
 
     NETWORKDISCONNECT =
     {
@@ -2966,7 +2984,7 @@ STRINGS.UI =
         BACK  = "Back",
         CANCEL = "Cancel",
         ADMIN = "Manage Server",
-        MANAGE_ACCOUNT = "Acct Info",
+        MANAGE_ACCOUNT = "Account",
         DELETE_SLOT_BUTTON = "Delete\nServer",
         DELETE_SLOT = "Delete Slot",
         WORLD = "World",

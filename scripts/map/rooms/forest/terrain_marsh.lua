@@ -16,7 +16,7 @@ AddRoom("BGMarsh", {
 										spiderden=0.003,
 										sapling=0.0001,
 										twiggytree = 0.0001,
-										ground_twigs = 0.00001,										
+										ground_twigs = 0.00003,										
 										pond_mos=0.005,
 										reeds=0.005,
 										tentacle=0.095,

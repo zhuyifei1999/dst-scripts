@@ -13,6 +13,8 @@ local prefabs =
 local DAYLIGHT_SEARCH_RANGE = 30
 
 local names = {"f1","f2","f3","f4","f5","f6","f7","f8","f9","f10"}
+local ROSE_NAME = "rose"
+local ROSE_CHANCE = 0.01
 
 local function onsave(inst, data)
     data.anim = inst.animname
@@ -30,9 +32,18 @@ local function onpickedfn(inst, picker)
         picker.components.sanity:DoDelta(TUNING.SANITY_TINY)
     end
 
+    if inst.animname == ROSE_NAME and picker.components.combat ~= nil then
+        picker.components.combat:GetAttacked(inst, TUNING.ROSE_DAMAGE)
+        picker:PushEvent("thorns")
+    end
+
     TheWorld:PushEvent("beginregrowth", inst)
 
     inst:Remove()
+end
+
+local function GetStatus(inst)
+    return inst.animname == ROSE_NAME and "ROSE" or nil
 end
 
 local function testfortransformonload(inst)
@@ -86,10 +97,15 @@ local function fn()
         return inst
     end
 
-    inst.animname = names[math.random(#names)]
+    if math.random() < ROSE_CHANCE then
+        inst.animname = ROSE_NAME
+    else
+        inst.animname = names[math.random(#names)]
+    end
     inst.AnimState:PlayAnimation(inst.animname)
 
     inst:AddComponent("inspectable")
+    inst.components.inspectable.getstatus = GetStatus
 
     inst:AddComponent("pickable")
     inst.components.pickable.picksound = "dontstarve/wilson/pickup_plants"

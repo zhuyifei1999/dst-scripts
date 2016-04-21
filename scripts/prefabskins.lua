@@ -24,6 +24,12 @@ PREFAB_SKINS = {
 	{
 		"cookpot_survival",
 	},
+	firepit = 
+	{
+		"firepit_fanged",
+		"firepit_hole",
+		"firepit_stonehenge",
+	},
 	torch = 
 	{
 		"torch_rag",
@@ -33,6 +39,12 @@ PREFAB_SKINS = {
 		"wathgrithr_none",
 		"wathgrithr_formal",
 		"wathgrithr_survivor",
+	},
+	waxwell = 
+	{
+		"waxwell_none",
+		"waxwell_formal",
+		"waxwell_survivor",
 	},
 	webber = 
 	{
