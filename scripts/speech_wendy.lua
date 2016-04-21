@@ -1292,7 +1292,7 @@ return {
 		},
 		WORMHOLE_LIMITED = "It will soon give up.",
 		ACCOMPLISHMENT_SHRINE = "I've never much cared for metaphor.",
-		MOONROCKNUGGET = "It's travelled so far...",
+		MOONROCKNUGGET = "It's traveled so far...",
 	},
 	DESCRIBE_GENERIC = "Sigh... I don't know.",
 	DESCRIBE_TOODARK = "The darkness! It is too dark!",

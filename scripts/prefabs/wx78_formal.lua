@@ -33,8 +33,5 @@ return CreatePrefabSkin("wx78_formal",
 	
 	feet_cuff_size = { wx78_formal = 3 },
 	
-	skip_item_gen = false,
-	skip_giftable_gen = false,
-	
 	rarity = "Elegant",
 })

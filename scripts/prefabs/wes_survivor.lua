@@ -30,9 +30,6 @@ return CreatePrefabSkin("wes_survivor",
 	torso_tuck_builds = { "wes_survivor" },
 	has_alternate_for_body = { "wes_survivor" },
 	has_alternate_for_skirt = { "wes_survivor" },
-	
-	skip_item_gen = false,
-	skip_giftable_gen = false,
 
 	rarity = "Elegant",
 })

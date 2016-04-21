@@ -33,8 +33,5 @@ return CreatePrefabSkin("wolfgang_formal",
 	
 	torso_tuck_builds = { "wolfgang_formal", "wolfgang_skinny_formal", "wolfgang_mighty_formal" },
 	
-	skip_item_gen = false,
-	skip_giftable_gen = false,
-	
 	rarity = "Elegant",
 })

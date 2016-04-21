@@ -9323,7 +9323,7 @@ msgstr ""
 
 #. STRINGS.CHARACTER_DESCRIPTIONS.waxwell
 msgctxt "STRINGS.CHARACTER_DESCRIPTIONS.waxwell"
-msgid "*Is dapper, but frail \n*Can fragment his mind \n*On a first-name basis with the night"
+msgid "*Is dapper, but frail \n*Can fragment his mind \n*Used to be king of the world"
 msgstr ""
 
 #. STRINGS.CHARACTER_DESCRIPTIONS.wickerbottom
@@ -11533,7 +11533,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.ABIGAIL_FLOWER.SOON
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.ABIGAIL_FLOWER.SOON"
-msgid "It's not the wierdest thing I've seen..."
+msgid "It's not the weirdest thing I've seen..."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.ABIGAIL_FLOWER.HAUNTED_POCKET
@@ -28813,7 +28813,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.ANNOUNCE_ACCOMPLISHMENT_DONE
 msgctxt "STRINGS.CHARACTERS.WAXWELL.ANNOUNCE_ACCOMPLISHMENT_DONE"
-msgid "Ah. The satisfation of a job well done."
+msgid "Ah. The satisfaction of a job well done."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.ANNOUNCE_DUSK
@@ -34558,7 +34558,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.MOONROCKNUGGET
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.MOONROCKNUGGET"
-msgid "It's travelled so far..."
+msgid "It's traveled so far..."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.SPORE_MEDIUM_INV

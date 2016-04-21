@@ -22,7 +22,4 @@ return CreatePrefabSkin("webber_none",
 	tags = tags,
 	
 	torso_tuck_builds = { "webber" },
-	
-	skip_item_gen = true,
-	skip_giftable_gen = true,
 })

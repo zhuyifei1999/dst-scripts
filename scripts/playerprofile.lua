@@ -202,12 +202,16 @@ function PlayerProfile:GetAllRecentLoadouts()
 			local character = data["last_base"]
 			local character_data = {}
 			character_data.name = TheNet:GetLocalUserName()
-			character_data.base_skin = data[character]["base"]
-			character_data.body_skin = data[character]["body"]
-			character_data.hand_skin = data[character]["hand"]
-			character_data.legs_skin = data[character]["legs"]
-			character_data.feet_skin = data[character]["feet"]
-			table.insert(loadouts, character_data)
+			if data[character] ~= nil then
+				character_data.base_skin = data[character]["base"]
+				character_data.body_skin = data[character]["body"]
+				character_data.hand_skin = data[character]["hand"]
+				character_data.legs_skin = data[character]["legs"]
+				character_data.feet_skin = data[character]["feet"]
+				table.insert(loadouts, character_data)
+			else
+				print("Error: unable to find character in profile", character)
+			end
 		end
 	end
 

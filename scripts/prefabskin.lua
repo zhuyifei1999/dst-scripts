@@ -117,8 +117,6 @@ function CreatePrefabSkin( name, info )
 	prefab_skin.build_name			= info.build_name
 	prefab_skin.rarity				= info.rarity
 	prefab_skin.skins				= info.skins
-	prefab_skin.skip_item_gen		= info.skip_item_gen
-	prefab_skin.skip_giftable_gen	= info.skip_giftable_gen
 	
 	if info.torso_tuck_builds then
 		for _,base_skin in pairs(info.torso_tuck_builds) do

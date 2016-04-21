@@ -31,8 +31,5 @@ return CreatePrefabSkin("wes_formal",
 	has_alternate_for_body = { "wes_formal" },
 	has_alternate_for_skirt = { "wes_formal" },
 	
-	skip_item_gen = false,
-	skip_giftable_gen = false,
-	
 	rarity = "Elegant",
 })

@@ -26,7 +26,4 @@ return CreatePrefabSkin("wickerbottom_none",
 	has_alternate_for_skirt = { "wickerbottom" },
 	
 	feet_cuff_size = { wickerbottom = 3 },
-	
-	skip_item_gen = true,
-	skip_giftable_gen = true,
 })

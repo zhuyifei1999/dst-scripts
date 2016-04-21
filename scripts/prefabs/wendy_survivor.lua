@@ -28,9 +28,6 @@ return CreatePrefabSkin("wendy_survivor",
 	tags = tags,
 	
 	torso_untuck_builds = { "wendy_survivor" },
-	
-	skip_item_gen = false,
-	skip_giftable_gen = false,
 
 	rarity = "Elegant",
 })

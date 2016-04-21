@@ -23,7 +23,4 @@ return CreatePrefabSkin("backpack_mushy",
 	assets = assets,
 	tags = tags,
 	build_name = "swap_backpack_mushy",
-	
-	skip_item_gen = true,
-	skip_giftable_gen = true,
 })

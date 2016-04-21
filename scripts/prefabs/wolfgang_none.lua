@@ -26,7 +26,4 @@ return CreatePrefabSkin("wolfgang_none",
 	tags = tags,
 	
 	torso_tuck_builds = { "wolfgang", "wolfgang_skinny", "wolfgang_mighty" },
-	
-	skip_item_gen = true,
-	skip_giftable_gen = true,
 })

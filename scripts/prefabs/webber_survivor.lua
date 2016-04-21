@@ -28,9 +28,6 @@ return CreatePrefabSkin("webber_survivor",
 	tags = tags,
 	
 	torso_tuck_builds = { "webber_survivor" },
-	
-	skip_item_gen = false,
-	skip_giftable_gen = false,
 
 	rarity = "Elegant",
 })
