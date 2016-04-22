@@ -187,7 +187,7 @@ function Burnable:StartWildfire()
         self.smoke = SpawnPrefab("smoke_plant")
         if self.smoke ~= nil then
             if #self.fxdata == 1 and self.fxdata[1].follow then
-                if v.followaschild then
+                if self.fxdata[1].followaschild then
                     self.inst:AddChild(self.smoke)
                 end
                 local follower = self.smoke.entity:AddFollower()
