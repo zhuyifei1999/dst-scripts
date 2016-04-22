@@ -445,14 +445,21 @@ return {
 		BEEMINE_MAXWELL = "I just can't mosquito you.",
 		BERRIES = "Juice sacks.",
 		BERRIES_COOKED = "Warm juice sacks.",
-        BERRIES_JUICY = "Juice sacks.",
-        BERRIES_JUICY_COOKED = "Warm juice sacks.",
+        BERRIES_JUICY = "Yum! Let's find more!",
+        BERRIES_JUICY_COOKED = "They're so filling!",
 		BERRYBUSH =
 		{
 			BARREN = "It's run out of plant food.",
 			WITHERED = "Heat too intense for ya?",
 			GENERIC = "Ripe for the pickin'.",
 			PICKED = "See you soon, berries!",
+		},
+		BERRYBUSH_JUICY =
+		{
+			BARREN = "It needs some poops!",
+			WITHERED = "Aww, are you sad?",
+			GENERIC = "Those berries look so juicy!",
+			PICKED = "It's taking a nap.",
 		},
 		BIGFOOT = "AAAAAAAAAAH!",
 		BIRDCAGE =
@@ -504,7 +511,7 @@ return {
 			GENERIC = "It's got more things coming out of it than we do.",
 			PICKED = "It's got no meat left in it.",
 		},
-		CACTUS_MEAT_COOKED = "Take that, pokey things!",
+		CACTUS_MEAT_COOKED = "Take that, poky things!",
 		CACTUS_MEAT = "Haven't had enough, huh?",
 		CACTUS_FLOWER = "This part is nice.",
 		COLDFIRE =
@@ -642,6 +649,7 @@ return {
 		DRUMSTICK = "I just want to bang on my drum.",
 		DRUMSTICK_COOKED = "We love finger food.",
 		DUG_BERRYBUSH = "Into the ground with you!",
+		DUG_BERRYBUSH_JUICY = "Into the ground with you!",
 		DUG_GRASS = "Into the ground with you!",
 		DUG_MARSH_BUSH = "Into the ground with you!",
 		DUG_SAPLING = "Into the ground with you!",

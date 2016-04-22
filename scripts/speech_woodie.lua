@@ -182,7 +182,7 @@ return {
 			HAUNTED_GROUND = "Maybe we should split, eh?",
 		},
 
-		BOOK_BIRDS = "I already know more than enough about those things.",
+		BOOK_BIRDS = "I already know more than enough aboot those things.",
 		BOOK_TENTACLES = "They don't have tentacles in Canada.",
 		BOOK_GARDENING = "Does it grow trees?",
 		BOOK_SLEEP = "The perfect book for a full moon.",
@@ -645,14 +645,21 @@ return {
 		BEEMINE_MAXWELL = "Hey! That's just mean!",
 		BERRIES = "I have a heartier appetite than that.",
 		BERRIES_COOKED = "Tastes like warm berries.",
-        BERRIES_JUICY = "I have a heartier appetite than that.",
-        BERRIES_JUICY_COOKED = "Tastes like warm berries.",
+        BERRIES_JUICY = "That's good eatin', eh?",
+        BERRIES_JUICY_COOKED = "Mmm. With some syrup these'd be perfect.",
 		BERRYBUSH =
 		{
 			BARREN = "It needs a good poopin'",
 			WITHERED = "It's perished from the heat, eh?",
 			GENERIC = "Saskatoon berries?",
 			PICKED = "No berries left!",
+		},
+		BERRYBUSH_JUICY =
+		{
+			BARREN = "Lookin' pretty barren.",
+			WITHERED = "Dry as the Albert plains.",
+			GENERIC = "I see a snack.",
+			PICKED = "Eh, they'll be back.",
 		},
 		BIRDCAGE =
 		{
@@ -783,6 +790,7 @@ return {
 		DRUMSTICK = "October food.",
 		DRUMSTICK_COOKED = "Thanks, turkey.",
 		DUG_BERRYBUSH = "Time for a little landscaping.",
+		DUG_BERRYBUSH_JUICY = "This would be more useful somewhere else, eh?",
 		DUG_GRASS = "It makes my eyes water.",
 		DUG_MARSH_BUSH = "I should plant this.",
 		DUG_SAPLING = "Mmmmm. It's all twiggy.",

@@ -47,14 +47,14 @@ return {
         	FULL = "Make room for Wolfgang's presents!",
             DEAD = "You know is dead, yes?",
             SLEEPING = "Friend is sleeping now!",
-            BUSY = "The Mighty Wolfgang desires your attention!",
+            BUSY = "Please give Mighty Wolfgang your attention!",
     	},
     	GIVEALLTOPLAYER = 
         {
         	FULL = "Make room for Wolfgang's presents!",
             DEAD = "You know is dead, yes?",
             SLEEPING = "Friend is sleeping now!",
-            BUSY = "The Mighty Wolfgang desires your attention!",
+            BUSY = "Please give Mighty Wolfgang your attention!",
     	},
 	},
 	ACTIONFAIL_GENERIC = "I am not mighty enough to do that.",
@@ -62,7 +62,7 @@ return {
 	ANNOUNCE_NORMALTOMIGHTY="I AM MIGHTY!",
 	ANNOUNCE_NORMALTOWIMPY="I am not feeling so good.",
 	ANNOUNCE_WIMPYTONORMAL="Wolfgang is better.",
-	ANNOUNCE_MIGHTYTONORMAL="I need to filly my mighty belly again!",
+	ANNOUNCE_MIGHTYTONORMAL="I need to fill my mighty belly again!",
 
 	ANNOUNCE_NOSLEEPONFIRE = "Is too hot for sleeping.",
 	ANNOUNCE_NODANGERSIESTA = "Wolfgang prefer fight to nap.",
@@ -151,7 +151,7 @@ return {
 	},
 	DESCRIBE =
 	{
-		MULTIPLAYER_PORTAL = "It is impervious to my mighty punches!",
+		MULTIPLAYER_PORTAL = "Why door not crumble under mighty Wolfgang punches?!",
 
 		BERNIE_INACTIVE =
 		{
@@ -301,26 +301,26 @@ return {
         ICECREAM = "Well, is Sunday after all.",
         WATERMELONICLE = "Ha! Melon on a stick.",
 
-		LIGHTER = "Is tiny firestarter!",
+		LIGHTER = "Is tiny firebox!",
 		
 		ABIGAIL_FLOWER = 
 		{
 			GENERIC = "Is pretty.",
 			LONG = "Is pretty.",
 			MEDIUM = "Little flower gives Wolfgang the 'heebie jeebies'.",
-			SOON = "I do not like it.",
-			HAUNTED_POCKET = "Wolfgang is feeling a little squeamish.",
+			SOON = "I do not like.",
+			HAUNTED_POCKET = "Is making Wolfgang scared!",
 			HAUNTED_GROUND = "Does it want to fight?",
 		},
 
 		BOOK_BIRDS = "Book is for the birds!",
-		BOOK_TENTACLES = "Wolfgang will summon many foes to fight!",
-		BOOK_GARDENING = "Wolfgang prefers growing muscle mass to flowers.",
-		BOOK_SLEEP = "Wolfgang's eyes feel heavy like dumbells.",
+		BOOK_TENTACLES = "Wolfgang will call many foes to fight!",
+		BOOK_GARDENING = "Wolfgang rather grow muscle than flowers.",
+		BOOK_SLEEP = "Wolfgang's eyes feel heavy like dumbbells.",
 		BOOK_BRIMSTONE = "Tiny book scares Wolfgang!",
-		LUCY = "Wolfgang loves a sharp missus.",
+		LUCY = "Wolfgang like a sharp missus.",
 		BALLOONS_EMPTY = "Wolfgang will make balloon muscles.",
-		SPEAR_WATHGRITHR = "Is a fine weapon.",
+		SPEAR_WATHGRITHR = "Is a good weapon.",
 		WAXWELLJOURNAL = "Wolfgang is glad he cannot read!",
 		MOONROCKNUGGET = "But is not cheese?",
 
@@ -645,14 +645,21 @@ return {
 		BEEMINE_MAXWELL = "Is ball full of anger mosquitoes.",
 		BERRIES = "Is tasty!",
 		BERRIES_COOKED = "Is more tasty!",
-        BERRIES_JUICY = "Is tasty!",
-        BERRIES_JUICY_COOKED = "Is more tasty!",
+        BERRIES_JUICY = "Is extra sweet and juicy!",
+        BERRIES_JUICY_COOKED = "Sweet, juicy berries is ready for eating!",
 		BERRYBUSH =
 		{
 			BARREN = "I need to poop on it.",
 			WITHERED = "Is too hot for bush.",
 			GENERIC = "Is full of food-balls!",
 			PICKED = "Eating part is gone.",
+		},
+		BERRYBUSH_JUICY =
+		{
+			BARREN = "I need to poop on it to make juicy again.",
+			WITHERED = "Is it dead?",
+			GENERIC = "I will eat you!",
+			PICKED = "I took them all.",
 		},
 		BIRDCAGE =
 		{
@@ -796,6 +803,7 @@ return {
 		DRUMSTICK = "Leg meat for make legs more strong.",
 		DRUMSTICK_COOKED = "Eat off bone is good.",
 		DUG_BERRYBUSH = "He is cold and lonely.",
+		DUG_BERRYBUSH_JUICY = "He is cold, and juicy.",
 		DUG_GRASS = "He is cold and lonely.",
 		DUG_MARSH_BUSH = "He is cold and lonely.",
 		DUG_SAPLING = "He is cold and lonely.",
@@ -1123,7 +1131,7 @@ return {
 		},
 		SEEDS = "Too small to eat.",
 		SEEDS_COOKED = "Fire make bigger, can eat now.",
-		SEWING_KIT = "Is pokey!",
+		SEWING_KIT = "Is poky!",
 		SHOVEL = "Dirt Spoon!",
 		SILK = "Is too fancy.",
 		SKELETON = "Not enough muscle.",
@@ -1260,7 +1268,7 @@ return {
 		WALL_STONE_ITEM = "Piles of rocks!",
 		WALL_RUINS = "Old Wall is strong!",
 		WALL_RUINS_ITEM = "Stack of old rocks!",
-		WALL_WOOD_ITEM = "Pokey sticks!",
+		WALL_WOOD_ITEM = "Poky sticks!",
 		WALRUS = "Sea cow man!",
 		WALRUSHAT = "I have sea cow man's hat!",
 		WALRUS_CAMP =

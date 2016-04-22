@@ -78,15 +78,15 @@ local TRANSLATE_TO_PREFABS = {
 	["ponds"] = 			{"pond", "pond_mos"},
 	["cave_ponds"] = 		{"pond", "pond_cave"},
 	["bees"] = 				{"beehive", "bee"},
-	["grass"] = 			{"grass"},
-	["rock"] = 				{"rocks", "rock1", "rock2", "rock_flintless"}, 
+	["grass"] = 			{"grass","grassgekko"},
+	["rock"] = 				{"rocks", "rock1", "rock2", "rock_flintless","rock_petrified_tree"}, 
 	["rock_ice"] = 			{"rock_ice"}, 
-	["sapling"] = 			{"sapling"},
+	["sapling"] = 			{"sapling","twiggytree","ground_twigs"},
 	["reeds"] = 			{"reeds"},	
 	["trees"] = 			{"evergreen", "evergreen_sparse", "deciduoustree", "marsh_tree"},	
 	["evergreen"] = 		{"evergreen"},	
 	["carrot"] = 			{"carrot_planted"},
-	["berrybush"] = 		{"berrybush", "berrybush2"},
+	["berrybush"] = 		{"berrybush", "berrybush2","sps_berrybush","berrybush_juicy","sps_berrybush_juicy"},
 	["maxwelllight"] = 		{"maxwelllight"},
 	["maxwelllight_area"] = {"maxwelllight_area"},
 	["fireflies"] = 		{"fireflies"},
@@ -218,6 +218,7 @@ local function selectPrefabSwapSets(prefabSwaps, veryRandom, noswaps)
 
 			local choice = choiceList:getChoice(  math.random(1, choiceList:getTotalWeight())  )	
 			if noswaps and primary then
+				print("==> Setting to primary")
 				choice = primary
 			end
 			v[choice] = setSetToActive(v[choice])

@@ -759,8 +759,10 @@ function MultiplayerMainScreen:OnBecomeActive()
 	if TheSim:IsLoggedOn() then
 		TheSim:StartWorkshopQuery()
 	end
-	
-	
+
+end
+
+function MultiplayerMainScreen:FinishedFadeIn()
 	--Do new entitlement items
 	local items = {} -- early access thank you gifts
     local entitlement_items = TheInventory:GetUnopenedEntitlementItems()
@@ -770,14 +772,6 @@ function MultiplayerMainScreen:OnBecomeActive()
 		else
 			table.insert(items, {item=item.item_type, item_id=item.item_id, gifttype="DEFAULT"})
 		end
-	end
-	if not self.test_done then
-		--test code for thank you popup
-		--table.insert(items, {item="firepit_stonehenge", item_id=0, gifttype="ROG"})
-		--table.insert(items, {item="firepit_hole", item_id=0, gifttype="EARLY_ACCESS"})
-		--table.insert(items, {item="body_wes_survivor", item_id=0, gifttype="TWITCH", message="Thanks for watching 's\nTwitch stream!"})
-		--table.insert(items, {item="backpack_crab", item_id=0, gifttype="STORE", message="Enjoy your plushie purchase!\ncome again"})
-		self.test_done = true
 	end
 
     if #items > 0 then
@@ -815,6 +809,7 @@ function MultiplayerMainScreen:OnBecomeActive()
 		end
 	end
 end
+
 
 local anims =
 {

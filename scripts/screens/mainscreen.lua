@@ -198,8 +198,9 @@ function MainScreen:OnLoginButton(push_mp_main_screen)
 		--self.bg.anim_root.portal:GetAnimState():PlayAnimation("portal_blackout", false)
 		if push_mp_main_screen then
             local function session_mapping_cb(data)
-                TheFrontEnd:PushScreen(MultiplayerMainScreen(self, self.profile, offline, data))
-                TheFrontEnd:Fade(FADE_IN, PLAY_BUTTON_FADE_TIME, nil, nil, nil, "alpha")
+				local mp_main_screen = MultiplayerMainScreen(self, self.profile, offline, data)
+                TheFrontEnd:PushScreen(mp_main_screen)
+                TheFrontEnd:Fade(FADE_IN, PLAY_BUTTON_FADE_TIME, function() mp_main_screen:FinishedFadeIn() end, nil, nil, "alpha")
                 self:Hide()
             end
             if not TheNet:DeserializeAllLocalUserSessions(session_mapping_cb) then

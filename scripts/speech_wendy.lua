@@ -656,14 +656,21 @@ return {
 		BEEMINE = "They're still alive in there. Poor things.",
 		BERRIES = "These berries are tart.",
 		BERRIES_COOKED = "More balanced flavor, but they won't last long.",
-        BERRIES_JUICY = "These berries are tart.",
-        BERRIES_JUICY_COOKED = "More balanced flavor, but they won't last long.",
+        BERRIES_JUICY = "I'd better consume these before death does.",
+        BERRIES_JUICY_COOKED = "I haven't halted the decay, but I've stalled it.",
 		BERRYBUSH =
 		{
 			BARREN = "It is barren.",
 			WITHERED = "It succumbed to the heat.",
 			GENERIC = "A snack, perchance?",
 			PICKED = "I shall have to wait.",
+		},
+		BERRYBUSH_JUICY =
+		{
+			BARREN = "There's no life to be had here...",
+			WITHERED = "It has crumpled under the heat.",
+			GENERIC = "I could strip it clean, if I so chose...",
+			PICKED = "It's given me all it had to give.",
 		},
 		BIRDCAGE =
 		{
@@ -807,7 +814,8 @@ return {
 		DRAGONPIE = "Well, at least it's a pie now.",
 		DRUMSTICK = "Makes a good thud and it has nutrients!",
 		DRUMSTICK_COOKED = "Less raw, more tasty.",
-		DUG_BERRYBUSH = "I like it dead, but I should plant this.",
+		DUG_BERRYBUSH = "I'm taking you back to my house.",
+		DUG_BERRYBUSH_JUICY = "You're mine now.",
 		DUG_GRASS = "I like it dead, but I should plant this.",
 		DUG_MARSH_BUSH = "I like it dead, but I should plant this.",
 		DUG_SAPLING = "I like it dead, but I should plant this.",
@@ -1106,10 +1114,10 @@ return {
         ROOK = "A Rook? Or is it a Castle?",
 		ROPE = "That would be the easy way out of this place.",
 		ROTTENEGG = "The way of all things.",
-        SADDLE_BASIC = "As if the wasn't already laden with the yoke of life...",
+        SADDLE_BASIC = "As if the creature wasn't already burdened by the yoke of life...",
         SADDLE_WAR = "Oh, how we bend creatures to our ill intent.",
         SADDLEHORN = "I'm only taking back what's mine.",
-        BRUSH = "We'll rid the world of its fluff.",
+        BRUSH = "I'll rid the world of its fluff.",
 		SANITYROCK =
 		{
 			ACTIVE = "It's calling to me.",

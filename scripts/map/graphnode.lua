@@ -447,9 +447,7 @@ function Node:PopulateVoronoi(spawnFn, entitiesOut, width, height, world_gen_cho
 			removed[prefab] = getFilteredSpawnWeight(self.data.terrain_contents.distributeprefabs,v,prefab) *  self.data.terrain_contents.distributepercent
 		end
 
-		-- add the prefab distributions removed due to to prefab swaps back in for future populations
-
-		self:PopulateExtra(world_gen_choices, spawnFn, {points_type=points_type, points_x=points_x, points_y=points_y, idx_left=idx_left, entitiesOut=entitiesOut, width=width, height=height, prefab_list=prefab_list})
+		self:PopulateExtra(world_gen_choices, spawnFn, {points_type=points_type, points_x=points_x, points_y=points_y, idx_left=idx_left, entitiesOut=entitiesOut, width=width, height=height, prefab_list=prefab_list}, prefabSwaps)
 	end
 
  	prefabDensities[self.id] ={}
@@ -468,7 +466,7 @@ function Node:PopulateVoronoi(spawnFn, entitiesOut, width, height, world_gen_cho
 end
 
 
-function Node:PopulateChildren(spawnFn, entitiesOut, width, height, backgroundRoom, perTerrain, world_gen_choices, prefabDensities)
+function Node:PopulateChildren(spawnFn, entitiesOut, width, height, backgroundRoom, perTerrain, world_gen_choices, prefabDensities,prefabSwaps)
 	-- Fill in any background sites that we have generated
 
 	if self.children_populated == true then
@@ -526,7 +524,7 @@ function Node:PopulateChildren(spawnFn, entitiesOut, width, height, backgroundRo
 				end
 			end
 			
-			self:PopulateExtra(world_gen_choices, spawnFn, {points_type=points_type, points_x=points_x, points_y=points_y, idx_left=idx_left, entitiesOut=entitiesOut, width=width, height=height, prefab_list=prefab_list})
+			self:PopulateExtra(world_gen_choices, spawnFn, {points_type=points_type, points_x=points_x, points_y=points_y, idx_left=idx_left, entitiesOut=entitiesOut, width=width, height=height, prefab_list=prefab_list},prefabSwaps)
 
             prefabDensities[self.id] ={}
             for k,v in pairs(prefab_list) do
@@ -537,7 +535,22 @@ function Node:PopulateChildren(spawnFn, entitiesOut, width, height, backgroundRo
 
 end
 
-function Node:PopulateExtra(world_gen_choices, spawnFn, data)
+function Node:PopulateExtra(world_gen_choices, spawnFn, data, prefabSwaps)
+
+	-- create list of filtered out prefabs
+	local inactive = {}
+	if prefabSwaps then 
+		for k,v in pairs(prefabSwaps)do
+	        for i,set in ipairs(v)do
+	        	if set.status == "inactive" then
+					for t,prefab in ipairs(set.prefabs)do
+						inactive[prefab] = true
+					end        		
+	        	end
+	      	end
+	    end
+	end
+
 	-- We have a bunch of unused positions that we can use.
 	-- loop through anything > 'default' (ie 1)
 	-- add in % more
@@ -546,16 +559,20 @@ function Node:PopulateExtra(world_gen_choices, spawnFn, data)
 			
 		local amount_to_generate = {}
 		for prefab,amt in pairs(world_gen_choices) do
-			if data.prefab_list[prefab] == nil then
-				-- TODO: Need a better way to increse items in areas where they dont usually generate
-				data.prefab_list[prefab] = math.random(1,2)
+
+			--test if prefab should be used..
+			if not inactive[prefab] then
+				if data.prefab_list[prefab] == nil then
+					-- TODO: Need a better way to increse items in areas where they dont usually generate
+					data.prefab_list[prefab] = math.random(1,2)
+				end
+					
+				local new_amt = math.floor(data.prefab_list[prefab]*amt) - data.prefab_list[prefab]
+				if new_amt > 0 then
+					amount_to_generate[prefab] = new_amt
+				end
+				--print("Need ",prefab,new_amt)
 			end
-				
-			local new_amt = math.floor(data.prefab_list[prefab]*amt) - data.prefab_list[prefab]
-			if new_amt > 0 then
-				amount_to_generate[prefab] = new_amt
-			end
-			--print("Need ",prefab,new_amt)
 		end	
 					
 		local idx = 1 

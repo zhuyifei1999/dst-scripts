@@ -683,14 +683,21 @@ return {
 		BEEHAT = "This will keep the pokeys off of me.",
 		BERRIES = "Red berries taste the best.",
 		BERRIES_COOKED = "Red berries with fire somehow taste even better.",
-        BERRIES_JUICY = "Red berries taste the best.",
-        BERRIES_JUICY_COOKED = "Red berries with fire somehow taste even better.",
+        BERRIES_JUICY = "Mmm. They pop in your mouth.",
+        BERRIES_JUICY_COOKED = "Fire improves everything.",
 		BERRYBUSH =
 		{
 			BARREN = "Eat poop, stupid plant!",
 			WITHERED = "All dried out. Primed for fire!",
 			GENERIC = "Mmmmm. Berries.",
 			PICKED = "I want more berries!",
+		},
+		BERRYBUSH_JUICY =
+		{
+			BARREN = "But I wanted more berries!",
+			WITHERED = "It's burning up.",
+			GENERIC = "Now I've just gotta pick them.",
+			PICKED = "Make mooooore!",
 		},
 		BIRDCAGE =
 		{
@@ -838,6 +845,7 @@ return {
 		EGGPLANT_SEEDS = "Will these seeds make a plant or baby bird?",
 		STUFFEDEGGPLANT = "It's still not a bird, but I stuffed it like one!",
 		DUG_BERRYBUSH = "What's the matter, got no dirt?",
+		DUG_BERRYBUSH_JUICY = "What's the matter, got no dirt?",
 		DUG_GRASS = "What's the matter, got no dirt?",
 		DUG_MARSH_BUSH = "What's the matter, got no dirt?",
 		DUG_SAPLING = "What's the matter, got no dirt?",

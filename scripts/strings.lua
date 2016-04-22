@@ -94,13 +94,13 @@ STRINGS=
     CHARACTER_DESCRIPTIONS =
     {
         wilson = "*Grows a magnificent beard",
-        willow = "*Is resistant to fire damage \n*Can craft a cuddly bear and a super-sweet lighter \n*Can't stay warm when insane",
+        willow = "*Is resistant to fire damage \n*Can craft a cuddly bear and a super-sweet lighter \n*Can't keep warm when insane",
         wendy = "*Haunted by her twin sister \n*Is comfortable with darkness \n*Doesn't hit very hard",
         wolfgang = "*Gets stronger with a full belly \n*Is afraid of monsters and the dark \n*Always skips leg day",
         wx78 = "*Not a picky eater \n*Charged by lightning, damaged by water \n*Can upgrade with gears",
         wickerbottom = "*Knows many things \n*Self-publishes books \n*Can't sleep, hates spoilage",
         wes = "*Can't talk \n*Has trouble staying alive \n*Practices balloonomancy",
-        waxwell = "*Is dapper, but frail \n*Can fragment his mind \n*Used to be king of the world",
+        waxwell = "*Is dapper, but frail \n*Can fragment his mind \n*Was once the king of the world",
         woodie = "*Has a lovely axe \n*And a terrible secret \n*Is thankful for bountiful harvests",
         woodie_us = "*Has a lovely axe \n*And a terrible secret \n*Celebrates Thanksgiving too early",
         woodie_canada = "*Has a lovely axe \n*And a terrible secret \n*Celebrates Thanksgiving at the correct time",
@@ -2187,6 +2187,7 @@ STRINGS.UI =
         WHACK = "Whack",
         HUNGRY = "Hungry",
         STARVING = "Starving",
+        DEATH_PET_NAME = "%s's %s", --e.g. "Vito's Cat"
         DEATH_ANNOUNCEMENT_1 = "was killed by",
         DEATH_ANNOUNCEMENT_2_MALE = ". He became a spooky ghost!",
         DEATH_ANNOUNCEMENT_2_FEMALE = ". She became a spooky ghost!",
@@ -4228,6 +4229,7 @@ STRINGS.LUCY =
         "You'll come back, right?",
         "What did I say?",
         "Oh that's low.",
+        "Don't leave! I... I think I smell roses!",
         "I know this is only temporary...",
         "Awww...",
         "Why would you throw me away?",
@@ -4265,8 +4267,10 @@ STRINGS.LUCY =
     -- Adjusted text since beaverness meter now drains continuously, and can be raised by eating wood.
     beaver_down_early =
     {
-        "Are you OK?",
+        "Are you okay?",
         "You look distracted.",
+        "Why are you making that face?",
+        "Try to take deep breaths, okay?",
         "Calm down! Maybe you need to chew on a twig or something.",
         "Chewing some wood will help you focus.",
         --"It's just a tree! Calm down!",
@@ -4288,6 +4292,8 @@ STRINGS.LUCY =
         "No! Don't chop any more!",
         "The transformation is starting!",
         "One more chop and you're in trouble!",
+        "You're overdoing it!",
+        "You're not pacing yourself!",
         "You're about to change!",
         "Watch out! You're going to turn!",
     },
@@ -4297,6 +4303,7 @@ STRINGS.LUCY =
         "I think we'll be alright.",
         "You're looking much better now.",
         "It's passed. For now.",
+        "I think the colour's returning to your cheeks.",
         "It's back in the lodge. Phew!",
     },
 
@@ -4305,6 +4312,8 @@ STRINGS.LUCY =
         "Oh no!",
         "It happened again!",
         "The curse!",
+        "Not again!",
+        "You don't have to do this!",
         "I warned you!",
         --"Woodie!",
     },
@@ -4312,10 +4321,11 @@ STRINGS.LUCY =
     {
         "You're back!",
         --"Quick! Pick me up!", --Inventory isn't dropped in DST
-        "Are you OK?",
+        "Are you okay?",
         "That was a rough one, huh?",
         "Don't let that happen again!",
         "You scared me!",
+        "Remember your breathing exercises!",
         "Everything is going to be fine. Just focus!",
     },
 }

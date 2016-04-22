@@ -16,8 +16,9 @@ local prefabs =
 local brain = require "brains/shadowwaxwellbrain"
 
 local function OnAttacked(inst, data)
-    if data.attacker ~= nil and data.attacker.components.petleash ~= nil then
-        --This won't do anything if it's not the attacker's pet
+    if data.attacker ~= nil and
+        data.attacker.components.petleash ~= nil and
+        data.attacker.components.petleash:IsPet(inst) then
         data.attacker.components.petleash:DespawnPet(inst)
     else
         inst.components.combat:SuggestTarget(data.attacker)

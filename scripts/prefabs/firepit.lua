@@ -83,6 +83,12 @@ local function OnHaunt(inst, haunter)
     return false
 end
 
+local function OnInit(inst)
+    if inst.components.burnable ~= nil then
+        inst.components.burnable:FixFX()
+    end
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -117,7 +123,7 @@ local function fn()
     -----------------------
     inst:AddComponent("burnable")
     --inst.components.burnable:SetFXLevel(2)
-    inst.components.burnable:AddBurnFX("campfirefire", Vector3(0, .6, 0))
+    inst.components.burnable:AddBurnFX("campfirefire", Vector3(0, 0, 0), "firefx", true)
     inst:ListenForEvent("onextinguish", onextinguish)
 
     -------------------------
@@ -163,6 +169,8 @@ local function fn()
     inst.components.inspectable.getstatus = getstatus
 
     inst:ListenForEvent("onbuilt", onbuilt)
+
+    inst:DoTaskInTime(0, OnInit)
 
     return inst
 end

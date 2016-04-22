@@ -672,8 +672,8 @@ return
         CARROT_SEEDS = "Seed of Daucus carota.",
         BERRIES = "Some Ardisia crenata berries, I think.",
         BERRIES_COOKED = "Roasted Ardisia crenata, just in case.",
-        BERRIES_JUICY = "Some Ardisia crenata berries, I think.",
-        BERRIES_JUICY_COOKED = "Roasted Ardisia crenata, just in case.",
+        BERRIES_JUICY = "A variant of Ardisia crenata berries. Good hydration.",
+        BERRIES_JUICY_COOKED = "Spoilage is a constant threat.",
         CUTSTONE = "Some smoothed rock slabs.",
         SEEDS = "A handful of unidentifiable seeds.",
         SEEDS_COOKED = "A toasted embryonic plant treat!",
@@ -912,13 +912,21 @@ return
         BERRYBUSH = {
             GENERIC = "It's an Ardisia crenata bush.",
             PICKED = "The berries are growing back, slowly.",
-            BARREN = "I will require an intervention.",
+            BARREN = "It will require an intervention.",
             WITHERED = "Ardisia crenata don't do well in extreme heat.",
+        },
+        BERRYBUSH_JUICY =
+        {
+            BARREN = "It needs some agricultural attention.",
+            WITHERED = "The Ardisia crenata variant has shriveled in the heat.",
+            GENERIC = "That bush looks ready for harvest.",
+            PICKED = "I will have to wait.",
         },
 
 		DUG_GRASS = "It requires soil to grow.",
 		DUG_SAPLING = "It requires soil to grow.",
 		DUG_BERRYBUSH = "It requires soil to grow.",
+        DUG_BERRYBUSH_JUICY = "It requires soil to grow.",
         DUG_MARSH_BUSH = "It requires soil to grow.",
 
 
@@ -1248,7 +1256,7 @@ return
 
     DESCRIBE_TOODARK = "I can't see in the dark.",
     DESCRIBE_SMOLDERING = "Seems it's about to ignite from the heat.",
-    DESCRIBE_GENERIC = "A rare occurance. I don't know what that is.",
+    DESCRIBE_GENERIC = "A rare occurrence. I don't know what that is.",
     DESCRIBE_SAMECHARACTER = "Curious. Does she have all my knowledge, too?",
     ACTIONFAIL_GENERIC = "It seems I can't do that.",
 

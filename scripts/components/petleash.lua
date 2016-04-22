@@ -49,6 +49,10 @@ function PetLeash:GetPets()
     return self.pets
 end
 
+function PetLeash:IsPet(pet)
+    return self.pets[pet] ~= nil
+end
+
 local function LinkPet(self, pet)
     self.pets[pet] = pet
     self.numpets = self.numpets + 1

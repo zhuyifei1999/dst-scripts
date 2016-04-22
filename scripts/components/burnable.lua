@@ -37,6 +37,7 @@ local Burnable = Class(function(self, inst)
     self.fxdata = {}
     self.fxlevel = 1
     self.fxchildren = {}
+    self.fxoffset = nil
     self.burning = false
     self.burntime = nil
     self.extinguishimmediately = true
@@ -96,8 +97,14 @@ end
 -- @param prefab The prefab to spawn as the effect
 -- @param offset The offset from the burning entity/symbol that the effect should appear at
 -- @param followsymbol Optional symbol for the effect to follow
-function Burnable:AddBurnFX(prefab, offset, followsymbol)
-    table.insert(self.fxdata, { prefab = prefab, x = offset.x, y = offset.y, z = offset.z, follow = followsymbol })
+-- @param followaschild Optional flag to force fx to be a child even when it has a follow symbol
+function Burnable:AddBurnFX(prefab, offset, followsymbol, followaschild)
+    table.insert(self.fxdata, { prefab = prefab, x = offset.x, y = offset.y, z = offset.z, follow = followsymbol, followaschild = followaschild or nil })
+end
+
+--Set an optional offset to be added on top of all individually registered offsets from AddBurnFX
+function Burnable:SetFXOffset(x, y, z)
+    self.fxoffset = x ~= nil and (y ~= nil and z ~= nil and Vector3(x, y, z) or Vector3(x:Get())) or nil
 end
 
 --- Set the level of any current or future burning effects
@@ -180,8 +187,17 @@ function Burnable:StartWildfire()
         self.smoke = SpawnPrefab("smoke_plant")
         if self.smoke ~= nil then
             if #self.fxdata == 1 and self.fxdata[1].follow then
+                if v.followaschild then
+                    self.inst:AddChild(self.smoke)
+                end
                 local follower = self.smoke.entity:AddFollower()
-                follower:FollowSymbol(self.inst.GUID, self.fxdata[1].follow, self.fxdata[1].x, self.fxdata[1].y, self.fxdata[1].z)
+                local xoffs, yoffs, zoffs = self.fxdata[1].x, self.fxdata[1].y, self.fxdata[1].z
+                if self.fxoffset ~= nil then
+                    xoffs = xoffs + self.fxoffset.x
+                    yoffs = yoffs + self.fxoffset.y
+                    zoffs = zoffs + self.fxoffset.z
+                end
+                follower:FollowSymbol(self.inst.GUID, self.fxdata[1].follow, xoffs, yoffs, zoffs)
             else
                 self.inst:AddChild(self.smoke)
             end
@@ -341,7 +357,6 @@ function Burnable:Extinguish(resetpropagator, heatpct, smotherer)
     end
 end
 
-
 function Burnable:SpawnFX(immediate)
     self:KillFX()
 
@@ -349,21 +364,42 @@ function Burnable:SpawnFX(immediate)
         self.fxdata = { x = 0, y = 0, z = 0, level = self:GetDefaultFXLevel() }
     end
 
+    local fxoffset = self.fxoffset or Vector3(0, 0, 0)
     for k, v in pairs(self.fxdata) do
         local fx = SpawnPrefab(v.prefab)
         if fx ~= nil then
             fx.Transform:SetScale(self.inst.Transform:GetScale())
+            local xoffs, yoffs, zoffs = v.x + fxoffset.x, v.y + fxoffset.y, v.z + fxoffset.z
             if v.follow ~= nil then
-                local follower = fx.entity:AddFollower()
-                follower:FollowSymbol(self.inst.GUID, v.follow, v.x, v.y, v.z)
+                if v.followaschild then
+                    self.inst:AddChild(fx)
+                end
+                fx.entity:AddFollower()
+                fx.Follower:FollowSymbol(self.inst.GUID, v.follow, xoffs, yoffs, zoffs)
             else
                 self.inst:AddChild(fx)
-                fx.Transform:SetPosition(v.x, v.y, v.z)
+                fx.Transform:SetPosition(xoffs, yoffs, zoffs)
             end
             fx.persists = false
             table.insert(self.fxchildren, fx)
             if fx.components.firefx ~= nil then
                 fx.components.firefx:SetLevel(self.fxlevel, immediate)
+            end
+        end
+    end
+end
+
+--If fx were spawned during entity construction, follow symbols may not
+--be hooked up properly. Call this to fix them.
+function Burnable:FixFX()
+    local fxoffset = self.fxoffset or Vector3(0, 0, 0)
+    for i, fx in ipairs(self.fxchildren) do
+        if fx.Follower ~= nil then
+            for k, v in pairs(self.fxdata) do
+                if v.prefab == fx.prefab and v.follow ~= nil then
+                    fx.Follower:FollowSymbol(self.inst.GUID, v.follow, v.x + fxoffset.x, v.y + fxoffset.y, v.z + fxoffset.z)
+                    break
+                end
             end
         end
     end

@@ -136,13 +136,18 @@ function EventAnnouncer:ShowSkinAnnouncement(user_name, user_colour, skin_name)
 end
 
 -- If source param is provided, then death announcement will be for living > ghost. If not, it will be for ghost/final death.
-function GetNewDeathAnnouncementString(theDead, source, pkname)
+function GetNewDeathAnnouncementString(theDead, source, pkname, sourceispet)
     if not theDead or not source then return "" end
 
     local message = ""
     if source and not theDead:HasTag("playerghost") then
         if pkname ~= nil then
-            message = theDead:GetDisplayName().." "..STRINGS.UI.HUD.DEATH_ANNOUNCEMENT_1.." "..pkname
+            local petname = sourceispet and STRINGS.NAMES[string.upper(source)] or nil
+            if petname ~= nil then
+                message = theDead:GetDisplayName().." "..STRINGS.UI.HUD.DEATH_ANNOUNCEMENT_1.." "..string.format(STRINGS.UI.HUD.DEATH_PET_NAME, pkname, petname)
+            else
+                message = theDead:GetDisplayName().." "..STRINGS.UI.HUD.DEATH_ANNOUNCEMENT_1.." "..pkname
+            end
         elseif table.contains(GetActiveCharacterList(), source) then
             message = theDead:GetDisplayName().." "..STRINGS.UI.HUD.DEATH_ANNOUNCEMENT_1.." "..FirstToUpper(source)
         else

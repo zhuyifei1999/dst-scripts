@@ -199,24 +199,24 @@ function PlayerProfile:GetAllRecentLoadouts()
 	local loadouts = {}
 	for character,data in pairs(self.persistdata.characterskins) do
 		if data["last_base"] then 
-			local character = data["last_base"]
+			local character_base = data["last_base"]
 			local character_data = {}
 			character_data.name = TheNet:GetLocalUserName()
-			if data[character] ~= nil then
-				character_data.base_skin = data[character]["base"]
-				character_data.body_skin = data[character]["body"]
-				character_data.hand_skin = data[character]["hand"]
-				character_data.legs_skin = data[character]["legs"]
-				character_data.feet_skin = data[character]["feet"]
-				table.insert(loadouts, character_data)
+			if data[character_base] ~= nil then
+				character_data.prefab = character
+				character_data.base_skin = data[character_base]["base"]
+				character_data.body_skin = data[character_base]["body"]
+				character_data.hand_skin = data[character_base]["hand"]
+				character_data.legs_skin = data[character_base]["legs"]
+				character_data.feet_skin = data[character_base]["feet"]
 			else
 				print("Error: unable to find character in profile", character)
 			end
+			table.insert(loadouts, character_data)
 		end
 	end
 
 	return loadouts
-
 end
 
 function PlayerProfile:SetSkinsForCharacter(character, base, skinList)

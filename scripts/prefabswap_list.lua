@@ -128,7 +128,7 @@ addPrefabSwap( {
 				})
 
 addPrefabSwap( {
-					category="rocks", 		
+					category="rocks", 	
 					weight=1, 	
 					prefabs={"rock_petrified_tree"}, 
 					name="petrified trees",
@@ -147,7 +147,6 @@ addPrefabSwap( {
 					primary = true, 	
 					weight=3, 
 					prefabs={"berrybush"},  
-					
 					trigger={ 
 								season="winter",
 								event="snow", 
@@ -160,8 +159,7 @@ addPrefabSwap( {
 					category = "berries",
 					name="juicy berries",
 					weight=1,
-					prefabs={"berrybush_juicy"},
-
+					prefabs={"berrybush_juicy","sps_berrybush_juicy"},
 					trigger={
 								season="spring",
 								event="rain",
