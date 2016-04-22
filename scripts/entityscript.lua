@@ -1408,7 +1408,11 @@ function EntityScript:PutBackOnGround()
     if not self:IsOnValidGround() then
         local dest = FindNearbyLand(self:GetPosition())
         if dest ~= nil then
-            self.Transform:SetPosition(dest.x, dest.y, dest.z)
+            if self.Physics ~= nil then
+                self.Physics:Teleport(dest:Get())
+            elseif self.Transform ~= nil then
+                self.Transform:SetPosition(dest:Get())
+            end
         end
     end
 end

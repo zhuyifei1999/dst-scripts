@@ -162,6 +162,13 @@ function Widget:MoveTo(from, to, time, fn)
     self.inst.components.uianim:MoveTo(from, to, time, fn)
 end
 
+function Widget:TintTo(from, to, time, fn)
+    if not self.inst.components.uianim then
+        self.inst:AddComponent("uianim")
+    end
+    self.inst.components.uianim:TintTo(from, to, time, fn)
+end
+
 function Widget:ForceStartWallUpdating()
     if not self.inst.components.uianim then
         self.inst:AddComponent("uianim")

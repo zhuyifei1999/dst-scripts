@@ -147,6 +147,8 @@ return {
 		PIG = "Next time, pig!",
 		PREY = "You're not worth my time!",
 	},
+	DESCRIBE_SAMECHARACTER = "What a dapper fellow!",
+	--Pride... Arrogance... Conceit...
 	DESCRIBE =
 	{
 		BERNIE_INACTIVE =
@@ -155,8 +157,6 @@ return {
 			GENERIC = "It makes me a little nostalgic.",
 		},
 		BERNIE_ACTIVE = "Just what am I looking at here?",
-		MULTIPLAYER_PORTAL = "Always did have a flare for the dramatic...",
-		--...Make your jokes...I'll be seeing you soon...
 		GLOMMER = "A flying goop factory.",
         GLOMMERFLOWER = 
         {
@@ -636,14 +636,21 @@ return {
 		--...
 		BERRIES = "Sigh. If I have to.",
 		BERRIES_COOKED = "A little more refined, at least.",
-        BERRIES_JUICY = "Sigh. If I have to.",
-        BERRIES_JUICY_COOKED = "A little more refined, at least.",
+        BERRIES_JUICY = "Delightfully sweet with a subtle hint of tartness.",
+        BERRIES_JUICY_COOKED = "They're quite delicious, actually.",
 		BERRYBUSH =
 		{
 			BARREN = "It needs manure.",
 			WITHERED = "Too hot for that little bush.",
 			GENERIC = "Reduced to eating berries. Sigh.",
 			PICKED = "And now we wait.",
+		},
+		BERRYBUSH_JUICY =
+		{
+			BARREN = "It looks to be in need of assistance. Fertilizer, perhaps?",
+			WITHERED = "I know the feeling.",
+			GENERIC = "The berries will stay fresh as long as I leave them there.",
+			PICKED = "I fear I'll have to wait.",
 		},
 		BIRDCAGE =
 		{
@@ -772,9 +779,10 @@ return {
 		DRUMSTICK = "It tastes strangely like berries.",
 		DRUMSTICK_COOKED = "Still tastes like berries.",
 		DUG_BERRYBUSH = "Do I look like a gardener?",
+		DUG_BERRYBUSH_JUICY = "I could find a much better place for it.",
 		DUG_GRASS = "Do I look like a gardener?",
 		DUG_MARSH_BUSH = "Do I look like a gardener?",
-		DUG_SAPLING = "Do I look like a gardener?",
+		DUG_SAPLING = "I can't believe I'm reduced to this.",
 		DURIAN = "It's an acquired taste.",
 		DURIAN_COOKED = "A little more refined, at least.",
 		DURIAN_SEEDS = "This labor is beneath me.",
@@ -1309,12 +1317,12 @@ return {
         REVIVER = "I'm not sure I really want to give this up.",
         LIFEINJECTOR = "I'm supposed to put this filth in my veins?",
         MOONROCKNUGGET = "'Moon' rock.",
+        MULTIPLAYER_PORTAL = "Always did have a flair for the dramatic...",
+		--...Make your jokes...I'll be seeing you soon...
 	},
 	DESCRIBE_GENERIC = "You tell me.",
 	DESCRIBE_TOODARK = "I can't see in the dark!",
 	DESCRIBE_SMOLDERING = "Won't be long before it lights on fire.",
-	DESCRIBE_SAMECHARACTER = "What a dapper fellow!",
-	--Pride... Arrogance... Conceit...
 	EAT_FOOD =
 	{
 		TALLBIRDEGG_CRACKED = "That tastes about as good as you'd expect.",

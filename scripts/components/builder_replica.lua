@@ -234,12 +234,11 @@ function Builder:CanBuild(recipename)
         local recipe = GetValidRecipe(recipename)
         if recipe == nil then
             return false
-        elseif self.classified.isfreebuildmode:value() then
-            return true
-        end
-        for i, v in ipairs(recipe.ingredients) do
-            if not self.inst.replica.inventory:Has(v.type, math.max(1, RoundBiasedUp(v.amount * self:IngredientMod()))) then
-                return false
+        elseif not self.classified.isfreebuildmode:value() then
+            for i, v in ipairs(recipe.ingredients) do
+                if not self.inst.replica.inventory:Has(v.type, math.max(1, RoundBiasedUp(v.amount * self:IngredientMod()))) then
+                    return false
+                end
             end
         end
         for i, v in ipairs(recipe.character_ingredients) do

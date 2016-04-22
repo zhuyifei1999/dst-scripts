@@ -62,7 +62,7 @@ local function onfinishcallback(inst, worker)
         if worker.components.sanity ~= nil then
             worker.components.sanity:DoDelta(-TUNING.SANITY_SMALL)
         end
-        if not spawnghost(inst, .1) and worker.components.inventory ~= nil then
+        if not spawnghost(inst, .1)  then
             local item = nil
             if math.random() < .5 then
                 item = weighted_random_choice(LOOTS)

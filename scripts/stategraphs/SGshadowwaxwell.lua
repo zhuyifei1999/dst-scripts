@@ -312,9 +312,18 @@ local states =
         timeline =
         {
             TimeEvent(9*FRAMES, function(inst)
-                inst:PerformBufferedAction()
+                local buffaction = inst:GetBufferedAction()
+                if buffaction ~= nil then
+                    local target = buffaction.target
+                    if target ~= nil and target:IsValid() then
+                        if target.Transform ~= nil then
+                            SpawnPrefab("mining_fx").Transform:SetPosition(target.Transform:GetWorldPosition())
+                        end
+                        inst.SoundEmitter:PlaySound(target:HasTag("frozen") and "dontstarve_DLC001/common/iceboulder_hit" or "dontstarve/wilson/use_pick_rock")
+                    end
+                    inst:PerformBufferedAction()
+                end
                 inst.sg:RemoveStateTag("premine")
-                inst.SoundEmitter:PlaySound("dontstarve/wilson/use_pick_rock")
             end),
         },
 

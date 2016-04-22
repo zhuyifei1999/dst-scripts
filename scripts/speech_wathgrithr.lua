@@ -441,14 +441,21 @@ return {
 		BEEMINE_MAXWELL = "Watch your step!",
 		BERRIES = "Fruits. I don't like 'em.",
 		BERRIES_COOKED = "Warm red mush.",
-        BERRIES_JUICY = "Fruits. I don't like 'em.",
-        BERRIES_JUICY_COOKED = "Warm red mush.",
+        BERRIES_JUICY = "I'd prefer a juicy steak.",
+        BERRIES_JUICY_COOKED = "You're not meat.",
 		BERRYBUSH =
 		{
 			BARREN = "Should I put some turds on it?",
 			WITHERED = "It's too hot to grow.",
 			GENERIC = "A fruit bush.",
 			PICKED = "The fruits have been snatched.",
+		},
+		BERRYBUSH_JUICY =
+		{
+			BARREN = "Good.",
+			WITHERED = "It looks atrocious.",
+			GENERIC = "It's covered in rabbit food.",
+			PICKED = "The rabbit food is all gone.",
 		},
 		BIFOOT = "Stompy foot.",
 		BIRDCAGE =
@@ -637,6 +644,7 @@ return {
 		DRUMSTICK = "Leg of beastie, in my belly.",
 		DRUMSTICK_COOKED = "Hooooot meat!",
 		DUG_BERRYBUSH = "I think I'll return this to the earth goddess.",
+		DUG_BERRYBUSH_JUICY = "I think I'll return this to the earth goddess.",
 		DUG_GRASS = "I think I'll return this to the earth goddess.",
 		DUG_MARSH_BUSH = "I think I'll return this to the earth goddess.",
 		DUG_SAPLING = "I think I'll return this to the earth goddess.",
@@ -1295,7 +1303,7 @@ return {
 			BURNT = "Fire, wood's only weakness!",
 		},
 		WALL_WOOD_ITEM = "A mediocre fortification.",
-		WALRUS = "Those tusks could pierce even the finest armour.",
+		WALRUS = "Those tusks could pierce even the finest armor.",
 		WALRUSHAT = "Highland filth!",
 		WALRUS_CAMP =
 		{

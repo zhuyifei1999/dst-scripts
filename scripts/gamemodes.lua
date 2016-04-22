@@ -153,6 +153,6 @@ function GetLevelType( game_mode )
 	if GAME_MODES[game_mode] then
 		return GAME_MODES[game_mode].level_type
 	end
-	assert( false, "game_mode not found in GAME_MODES" )
+	moderror( string.format("game_mode '%s' not found in GAME_MODES, return default level type", tostring(game_mode)) )
 	return LEVELTYPE.SURVIVAL
 end

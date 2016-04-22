@@ -5,6 +5,37 @@ local UIAnim = Class(function(self, inst)
     self.inst = inst
 end)
 
+function UIAnim:FinishCurrentTint()
+    if not self.inst or not self.inst:IsValid() then
+        -- sometimes the ent becomes invalid during a "finished" callback, but this gets run anyways.
+        return
+    end
+
+    local val = self.tint_dest
+    self.tint_t = nil
+
+    self.inst.widget:SetTint(val.r, val.g, val.b, val.a)
+
+    if self.tint_whendone then
+        self.tint_whendone()
+        self.tint_whendone = nil
+    end
+end
+
+function UIAnim:TintTo(start, dest, duration, whendone)
+    if not self.inst.widget.SetTint then
+        return
+    end
+
+    self.tint_start = start
+    self.tint_dest = dest
+    self.tint_duration = duration
+    self.tint_t = 0
+
+    self.tint_whendone = whendone
+    self.inst:StartWallUpdatingComponent(self)
+end
+
 function UIAnim:FinishCurrentScale()
     if not self.inst or not self.inst:IsValid() then
         -- sometimes the ent becomes invalid during a "finished" callback, but this gets run anyways.
@@ -15,13 +46,13 @@ function UIAnim:FinishCurrentScale()
 
     local val = self.scale_dest
     self.scale_t = nil
+
+    self.inst.UITransform:SetScale(sx >= 0 and val or -val, sy >= 0 and val or -val, sz >= 0 and val or -val)
     
     if self.scale_whendone then
         self.scale_whendone()
         self.scale_whendone = nil
     end
-
-    self.inst.UITransform:SetScale(sx >= 0 and val or -val, sy >= 0 and val or -val, sz >= 0 and val or -val)
 end
 
 function UIAnim:ScaleTo(start, dest, duration, whendone)
@@ -86,30 +117,42 @@ function UIAnim:OnWallUpdate(dt)
     end
 
     if self.pos_t then
-        local valx = 0
-        local valy = 0
-        local valz = 0
-        --local sx, sy, sz = self.inst.UITransform:GetPosition()
-        
+
         self.pos_t = self.pos_t + dt
         if self.pos_t < self.pos_duration then
-            valx = easing.outCubic( self.pos_t, self.pos_start.x, self.pos_dest.x - self.pos_start.x, self.pos_duration)
-            valy = easing.outCubic( self.pos_t, self.pos_start.y, self.pos_dest.y - self.pos_start.y, self.pos_duration)
-            valz = easing.outCubic( self.pos_t, self.pos_start.z, self.pos_dest.z - self.pos_start.z, self.pos_duration)
+            local valx = easing.outCubic( self.pos_t, self.pos_start.x, self.pos_dest.x - self.pos_start.x, self.pos_duration)
+            local valy = easing.outCubic( self.pos_t, self.pos_start.y, self.pos_dest.y - self.pos_start.y, self.pos_duration)
+            local valz = easing.outCubic( self.pos_t, self.pos_start.z, self.pos_dest.z - self.pos_start.z, self.pos_duration)
+            self.inst.UITransform:SetPosition(valx, valy, valz)
         else
-            valx= self.pos_dest.x
-            valy= self.pos_dest.y
-            valz= self.pos_dest.z
+            local valx = self.pos_dest.x
+            local valy = self.pos_dest.y
+            local valz = self.pos_dest.z
+            self.inst.UITransform:SetPosition(valx, valy, valz)
+
             self.pos_t = nil
             if self.pos_whendone then
-				self.pos_whendone()
-				self.pos_whendone = nil
+                self.pos_whendone()
+                self.pos_whendone = nil
             end
         end
-        self.inst.UITransform:SetPosition(valx, valy, valz)
     end
-    
-    if not self.scale_t and not self.pos_t then
+
+    if self.tint_t then
+        self.tint_t = self.tint_t + dt
+
+        if self.tint_t < self.tint_duration then
+            local r = easing.outCubic( self.tint_t, self.tint_start.r, self.tint_dest.r - self.tint_start.r, self.tint_duration)
+            local g = easing.outCubic( self.tint_t, self.tint_start.g, self.tint_dest.g - self.tint_start.g, self.tint_duration)
+            local b = easing.outCubic( self.tint_t, self.tint_start.b, self.tint_dest.b - self.tint_start.b, self.tint_duration)
+            local a = easing.outCubic( self.tint_t, self.tint_start.a, self.tint_dest.a - self.tint_start.a, self.tint_duration)
+            self.inst.widget:SetTint(r,g,b,a)
+        else
+            self:FinishCurrentTint()
+        end
+    end
+
+    if not self.scale_t and not self.pos_t and not self.tint_t then
         self.inst:StopWallUpdatingComponent(self)
     end
 end

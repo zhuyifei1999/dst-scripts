@@ -144,6 +144,11 @@ local function onsaveplayer(inst, data)
         --translate equipslot id to name
         --names never change, but ids change if slots are added/removed
         local temp = {}
+        if inst.unsupported_equips ~= nil then
+            for k, v in pairs(inst.unsupported_equips) do
+                temp[k] = v
+            end
+        end
         for i, v in ipairs(data.avatar.equip) do
             temp[EQUIPSLOT_NAMES[i]] = v
         end
@@ -173,6 +178,10 @@ local function onloadplayer(inst, data)
                 for k, v in pairs(data.avatar.equip) do
                     if EQUIPSLOT_IDS[k] ~= nil then
                         temp[EQUIPSLOT_IDS[k]] = v
+                    elseif inst.unsupported_equips == nil then
+                        inst.unsupported_equips = { [k] = v }
+                    else
+                        inst.unsupported_equips[k] = v
                     end
                 end
                 data.avatar.equip = temp

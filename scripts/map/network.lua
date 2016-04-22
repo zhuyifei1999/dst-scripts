@@ -685,7 +685,7 @@ function Graph:PopulateVoronoi(spawnFN, entities, width, height, world_gen_choic
 			perTerrain = true
 		end
 		local backgroundRoom = self:GetBackgroundRoom(self.data.background)
-		node:PopulateChildren(spawnFN, entities, width, height, backgroundRoom, perTerrain, world_gen_choices)
+		node:PopulateChildren(spawnFN, entities, width, height, backgroundRoom, perTerrain, world_gen_choices, prefabSwaps)
 	end 
 	for k,child in pairs(self:GetChildren()) do
 		child:PopulateVoronoi(spawnFN, entities, width, height, world_gen_choices, prefabDensities, prefabSwaps, prefabProxies)

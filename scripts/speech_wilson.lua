@@ -562,8 +562,8 @@ return {
 		BEEMINE_MAXWELL = "Bottled mosquito rage!",
 		BERRIES = "Red berries taste the best.",
 		BERRIES_COOKED = "I don't think heat improved them.",
-        BERRIES_JUICY = "Red berries taste the best.",
-        BERRIES_JUICY_COOKED = "I don't think heat improved them.",
+        BERRIES_JUICY = "Extra tasty, though they won't last long.",
+        BERRIES_JUICY_COOKED = "Better eat them before they spoil!",
 		BERRYBUSH =
 		{
 			BARREN = "I think it needs to be fertilized.",
@@ -571,6 +571,13 @@ return {
 			GENERIC = "Red berries taste the best.",
 			PICKED = "Maybe they'll grow back?",
 			DISEASED = "It looks pretty sick.",
+		},
+		BERRYBUSH_JUICY =
+		{
+			BARREN = "It won't make any berries in this state.",
+			WITHERED = "The heat even dehydrated the juicy berries!",
+			GENERIC = "I should leave them there until I'm ready to eat.",
+			PICKED = "The bush is working hard on the next batch.",
 		},
 		BIGFOOT = "That is one biiig foot.",
 		BIRDCAGE =
@@ -760,8 +767,9 @@ return {
 		DRAGONPIE = "I cooked it myself!",
 		DRUMSTICK = "I should gobble it.",
 		DRUMSTICK_COOKED = "Now it's even tastier.",
-		DUG_BERRYBUSH = "I should plant this.",
-		DUG_GRASS = "I should plant this.",
+		DUG_BERRYBUSH = "Now I can take it anywhere.",
+		DUG_BERRYBUSH_JUICY = "I'd like to plant this closer to home.",
+		DUG_GRASS = "I can plant it wherever I want now.",
 		DUG_MARSH_BUSH = "I should plant this.",
 		DUG_SAPLING = "I should plant this.",
 		DURIAN = "Oh it smells!",

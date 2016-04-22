@@ -392,7 +392,7 @@ function Combat:GetAttacked(attacker, damage, weapon, stimuli)
                 damage = damage + attacker.components.combat.bonusdamagefn(attacker, self.inst, damage, weapon) or 0
             end
             local cause = attacker == self.inst and weapon or attacker
-            self.inst.components.health:DoDelta(-damage, nil, cause ~= nil and cause.prefab or "NIL", nil, cause)
+            self.inst.components.health:DoDelta(-damage, nil, cause ~= nil and (cause.nameoverride or cause.prefab) or "NIL", nil, cause)
             if self.inst.components.health:IsDead() then
                 if attacker ~= nil then
                     attacker:PushEvent("killed", { victim = self.inst })

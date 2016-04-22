@@ -5,6 +5,7 @@ local Text = require "widgets/text"
 local Image = require "widgets/image"
 local Widget = require "widgets/widget"
 local UIAnim = require "widgets/uianim"
+local TEMPLATES = require "widgets/templates"
 
 require "skinsutils"
 
@@ -43,6 +44,8 @@ GIFT_TYPE = {
     
 }
 
+TRANSITION_DURATION = 0.9
+
 local ThankYouPopup = Class(Screen, function(self, items, callbackfn)
     Screen._ctor(self, "ThankYouPopup")
 
@@ -50,7 +53,7 @@ local ThankYouPopup = Class(Screen, function(self, items, callbackfn)
 
     global("TAB")
     TAB = self
-
+	
     --darken everything behind the dialog
     self.black = self:AddChild(Image("images/global.xml", "square.tex"))
     self.black:SetVRegPoint(ANCHOR_MIDDLE)
@@ -58,16 +61,22 @@ local ThankYouPopup = Class(Screen, function(self, items, callbackfn)
     self.black:SetVAnchor(ANCHOR_MIDDLE)
     self.black:SetHAnchor(ANCHOR_MIDDLE)
     self.black:SetScaleMode(SCALEMODE_FILLSCREEN)
-    self.black:SetTint(0,0,0,.75)
+    self.black:SetTint(0,0,0,0)
+    self.black:TintTo({r=0,g=0,b=0,a=0}, {r=0,g=0,b=0,a=0.75}, TRANSITION_DURATION, nil)
 
-    self.proot = self:AddChild(Widget("ROOT"))
-    self.proot:SetVAnchor(ANCHOR_MIDDLE)
-    self.proot:SetHAnchor(ANCHOR_MIDDLE)
-    self.proot:SetPosition(0,0,0)
-    self.proot:SetScaleMode(SCALEMODE_PROPORTIONAL)
+
+
+    self.center_root = self:AddChild(Widget("ROOT_C"))
+    self.center_root:SetVAnchor(ANCHOR_MIDDLE)
+    self.center_root:SetHAnchor(ANCHOR_MIDDLE)
+    self.center_root:SetScaleMode(SCALEMODE_PROPORTIONAL)
+	
+    self.proot = self.center_root:AddChild(Widget("ROOT_P"))
+    self.proot:MoveTo({x=0,y=RESOLUTION_Y,z=0}, {x=0,y=0,z=0}, TRANSITION_DURATION, nil)
+    
 
     self.bg = self.proot:AddChild(Image())
-    self.bg:SetVRegPoint(ANCHOR_MIDDLE)
+	self.bg:SetVRegPoint(ANCHOR_MIDDLE)
     self.bg:SetHRegPoint(ANCHOR_MIDDLE)
     self.bg:SetScale(.97)
 
@@ -161,6 +170,8 @@ local ThankYouPopup = Class(Screen, function(self, items, callbackfn)
 
     self:EvaluateButtons()
     self:ChangeGift(0)
+    
+    self:AddChild(TEMPLATES.ForegroundLetterbox())
 end)
 
 function ThankYouPopup:OnUpdate(dt)
@@ -179,11 +190,18 @@ function ThankYouPopup:OnUpdate(dt)
             TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/player_recieves_gift_idle", "gift_idle")
         end
     -- We're closing the popup
-    elseif self.spawn_portal:GetAnimState():IsCurrentAnimation("skin_out") and self.spawn_portal:GetAnimState():AnimDone() then
-        TheFrontEnd:PopScreen(self)
-        if self.callbackfn then 
-            self.callbackfn()
-        end
+    elseif self.spawn_portal:GetAnimState():IsCurrentAnimation("skin_out") and self.spawn_portal:GetAnimState():AnimDone() and not self.transitioning then
+
+        self.transitioning = true
+
+        self.proot:MoveTo({x=0,y=0,z=0}, {x=0,y=RESOLUTION_Y,z=0}, TRANSITION_DURATION, nil)
+        self.black:TintTo({r=0,g=0,b=0,a=0.75}, {r=0,g=0,b=0,a=0}, TRANSITION_DURATION, function()
+            TheFrontEnd:PopScreen(self)
+            if self.callbackfn then
+                self.callbackfn()
+            end
+        end)
+
     -- We just navigated to an unrevealed skin
     elseif self.spawn_portal:GetAnimState():IsCurrentAnimation("idle") and self.transitioning then
         self.transitioning = false
@@ -247,7 +265,8 @@ function ThankYouPopup:ChangeGift(offset)
     local backgroundimage = type(gifttype.image) == "table" and gifttype.image[math.random(#gifttype.image)] or gifttype.image
     self.bg:SetTexture(gifttype.atlas, backgroundimage)
 
-    self.title:SetString(self.items[self.current_item].message or gifttype.title)
+	local message = self.items[self.current_item].message
+    self.title:SetString( (message ~= "" and message) or gifttype.title)
     
     if gifttype.titleoffset ~= nil then
         self.title:SetPosition(

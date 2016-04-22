@@ -670,17 +670,25 @@ local function OnPlayerDeath(inst, data)
 
     inst.deathclientobj = TheNet:GetClientTableForUser(inst.userid)
     inst.deathcause = data ~= nil and data.cause or "unknown"
-    inst.deathpkname =
-        data ~= nil and
-        data.afflicter ~= nil and
-        data.afflicter:HasTag("player") and
-        data.afflicter:GetDisplayName() or nil
+    if data ~= nil and data.afflicter ~= nil then
+        local killer = data.afflicter.components.follower ~= nil and data.afflicter.components.follower:GetLeader() or nil
+        if killer ~= nil and
+            killer.components.petleash ~= nil and
+            killer.components.petleash:IsPet(data.afflicter) then
+            inst.deathbypet = true
+        else
+            killer = data.afflicter
+        end
+        inst.deathpkname = killer:HasTag("player") and killer:GetDisplayName() or nil
+    else
+        inst.deathpkname = nil
+    end
 
     if not inst.ghostenabled then
         if inst.deathcause ~= "file_load" then
             inst.player_classified:AddMorgueRecord()
 
-            local announcement_string = GetNewDeathAnnouncementString(inst, inst.deathcause, inst.deathpkname)
+            local announcement_string = GetNewDeathAnnouncementString(inst, inst.deathcause, inst.deathpkname, inst.deathbypet)
             if announcement_string ~= "" then
                TheNet:Announce(announcement_string, inst.entity, false, "death")
             end
@@ -866,6 +874,7 @@ local function OnRespawnFromGhost(inst, data)
     inst.deathclientobj = nil
     inst.deathcause = nil
     inst.deathpkname = nil
+    inst.deathbypet = nil
     inst:ShowHUD(false)
     if inst.components.playercontroller ~= nil then
         inst.components.playercontroller:Enable(false)
@@ -928,7 +937,7 @@ local function OnMakePlayerGhost( inst, data )
         -- Used in ghost stategraph as well as below in this function
         inst.loading_ghost = true
     else
-        local announcement_string = GetNewDeathAnnouncementString(inst, inst.deathcause, inst.deathpkname)
+        local announcement_string = GetNewDeathAnnouncementString(inst, inst.deathcause, inst.deathpkname, inst.deathbypet)
         if announcement_string ~= "" then
            TheNet:Announce(announcement_string, inst.entity, false, "death" )
         end
