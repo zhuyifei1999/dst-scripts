@@ -17,6 +17,11 @@ return {
 			NOTALLOWED = "THAT INPUT IS NOT ALLOWED",
 			INUSE = "STATUS: QUEUED.",
 		},
+		WRITE =
+        {
+            GENERIC = "ERROR: CANNOT FULFIL REQUEST",
+            INUSE = "PRIMITIVE MESSAGEBOARD OCCUPIED",
+        },
 		RUMMAGE =
         {   
             GENERIC = "ERROR: ACTION NOT AVAILABLE",
@@ -49,6 +54,12 @@ return {
             SLEEPING = "THEY'RE BUSY RECHARGING",
             BUSY = "TARGET IS PREOCCUPIED",
     	},
+    	CHANGEIN =
+        {
+            GENERIC = "THERE ARE MORE IMPORTANT ISSUES TO ATTEND TO",
+            BURNING = "IT'S BURNING. OH WELL.",
+            INUSE = "OCCUPIED",
+        },
     	GIVEALLTOPLAYER = 
         {
         	FULL = "TARGET ALREADY OVERCAPACITY",
@@ -56,6 +67,10 @@ return {
             SLEEPING = "THEY'RE BUSY RECHARGING",
             BUSY = "TARGET IS PREOCCUPIED",
     	},
+    	ATTUNE =
+        {
+            NOHEALTH = "I MUST MAKE REPAIRS BEFORE DOING THIS.",
+        },
 	},
 	ANNOUNCE_MOUNT_LOWHEALTH = "WARNING: BEAST REQUIRES TUNE-UP.",
 	ANNOUNCE_NOSLEEPONFIRE = "SLEEPING SYSTEM COMPROMISED",

@@ -42,6 +42,11 @@ return {
             SLEEPING = "Such sweet slumber... Maybe later.",
             BUSY = "I'll try once more when it's done.",
         },
+        WRITE =
+        {
+            GENERIC = "I fear I cannot!",
+            INUSE = "I shall valiantly wait my turn.",
+        },
         GIVETOPLAYER = 
         {
         	FULL = "They're not strong enough to carry more!",
@@ -56,6 +61,16 @@ return {
             SLEEPING = "Such sweet slumber... Maybe later.",
             BUSY = "I'll try once more when they're free.",
     	},
+    	CHANGEIN =
+        {
+            GENERIC = "Why change when my costume is already so magnificent?",
+            BURNING = "Gasp! My costumes!",
+            INUSE = "Even a trained actor can't perform a costume change that fast!.",
+        },
+    	ATTUNE =
+        {
+            NOHEALTH = "Alas, I am too stricken.",
+        },
 	},
 	ANNOUNCE_MOUNT_LOWHEALTH = "Don't give up, beast! Fight!",
 	ACTIONFAIL_GENERIC = "If I can't do it, it can't be done!",
@@ -223,7 +238,7 @@ return {
 		WAXWELLJOURNAL = "A tragic tale of woe and misery!",
 
 		THULECITE = "The strength of this material is gargantuan!",
-		ARMORRUINS = "Armour fit for Odin himself!",
+		ARMORRUINS = "Armor fit for Odin himself!",
 		RUINS_BAT = "A warrior wand!",
 		RUINSHAT = "A crown, that fights!",
 		NIGHTMARE_TIMEPIECE =
@@ -733,7 +748,7 @@ return {
 		FISH_COOKED = "Joy!",
 		FLINT = "Vital for spear construction.",
 		FLOWER = {
-            GENERIC = "A flower from Freia.",
+            GENERIC = "A flower from Freya.",
             ROSE = "Were that I smelled half as sweet.",
         },
         FLOWER_WITHERED = "Not enough time in the limelight.",

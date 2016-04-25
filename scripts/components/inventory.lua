@@ -578,23 +578,21 @@ function Inventory:CanAcceptCount(item, maxcount)
     return acceptcount
 end
 
-function Inventory:GiveActiveItem( inst )
-    
-    if inst and inst:IsValid() then
+function Inventory:GiveActiveItem(inst)
+    if inst ~= nil and inst:IsValid() then
         self:ReturnActiveItem()
-        assert(inst.components.inventoryitem, inst.entity:GetPrefabName().." in inventory is lacking inventoryitem component")
+        assert(inst.components.inventoryitem ~= nil, inst.entity:GetPrefabName().." in inventory is lacking inventoryitem component")
         if not inst.components.inventoryitem:OnPickup(self.inst) then
             inst.components.inventoryitem:OnPutInInventory(self.inst)
 
             self:SetActiveItem(inst)
-            self.inst:PushEvent("itemget", {item=inst, slot = nil})
+            self.inst:PushEvent("itemget", { item = inst, slot = nil })
 
-            if inst.components.equippable then
+            if inst.components.equippable ~= nil then
                 inst.components.equippable:ToPocket()
             end
         end
     end
-    
 end
 
 function Inventory:GiveItem( inst, slot, src_pos )
@@ -763,17 +761,17 @@ function Inventory:SetActiveItem(item)
 end
 
 function Inventory:Equip(item, old_to_active)
-    if not item or not item.components.equippable or not item:IsValid() then
+    if item == nil or item.components.equippable == nil or not item:IsValid() then
         return
     end
 
     -----
-    item.prevslot = self:GetItemSlot(item) 
+    item.prevslot = self:GetItemSlot(item)
 
-    if item.prevslot == nil 
-            and item.components.inventoryitem.owner
-            and item.components.inventoryitem.owner.components.container 
-            and item.components.inventoryitem.owner.components.inventoryitem then
+    if item.prevslot == nil and
+        item.components.inventoryitem.owner ~= nil and
+        item.components.inventoryitem.owner.components.container ~= nil and
+        item.components.inventoryitem.owner.components.inventoryitem ~= nil then
         item.prevcontainer = item.components.inventoryitem.owner.components.container
         item.prevslot = item.components.inventoryitem.owner.components.container:GetItemSlot(item)
     else
@@ -781,22 +779,25 @@ function Inventory:Equip(item, old_to_active)
     end
     -----
 
-    if item.components.inventoryitem then
-        item = item.components.inventoryitem:RemoveFromOwner(item.components.equippable.equipstack) or item
-    else
+    local leftovers = nil
+    if item.components.inventoryitem == nil then
         item = self:RemoveItem(item, item.components.equippable.equipstack) or item
+    elseif item.components.inventoryitem:IsHeld() then
+        item = item.components.inventoryitem:RemoveFromOwner(item.components.equippable.equipstack) or item
+    elseif item.components.stackable ~= nil and item.components.stackable:IsStack() and not item.components.equippable.equipstack then
+        leftovers = item
+        item = item.components.stackable:Get()
     end
 
-    local leftovers = nil
     if item == self.activeitem then
         leftovers = self.activeitem
         self:SetActiveItem(nil)
     end
-    
+
     local eslot = item.components.equippable.equipslot
     if self.equipslots[eslot] ~= item then
         local olditem = self.equipslots[eslot]
-        if leftovers then
+        if leftovers ~= nil then
             if old_to_active then
                 self:GiveActiveItem(leftovers)
             else
@@ -805,20 +806,18 @@ function Inventory:Equip(item, old_to_active)
                 self.silentfull = false
             end
         end
-        if olditem then
+        if olditem ~= nil then
             self:Unequip(eslot)
             olditem.components.equippable:ToPocket()
-            if olditem.components.inventoryitem and not olditem.components.inventoryitem.cangoincontainer and not self.ignorescangoincontainer then
+            if olditem.components.inventoryitem ~= nil and not olditem.components.inventoryitem.cangoincontainer and not self.ignorescangoincontainer then
                 olditem.components.inventoryitem:OnRemoved()
                 self:DropItem(olditem)
+            elseif old_to_active then
+                self:GiveActiveItem(olditem)
             else
-                if old_to_active then
-                    self:GiveActiveItem(olditem)
-                else
-                    self.silentfull = true
-                    self:GiveItem(olditem)
-                    self.silentfull = false
-                end
+                self.silentfull = true
+                self:GiveItem(olditem)
+                self.silentfull = false
             end
         end
 
@@ -830,13 +829,12 @@ function Inventory:Equip(item, old_to_active)
             self.inst:PushEvent("setoverflow", { overflow = item })
         end
 
-        self.inst:PushEvent("equip", {item=item, eslot=eslot})
-        if METRICS_ENABLED and item.prefab then
+        self.inst:PushEvent("equip", { item = item, eslot = eslot })
+        if METRICS_ENABLED and item.prefab ~= nil then
             ProfileStatsAdd("equip_"..item.prefab)
         end
         return true
     end
-
 end
 
 function Inventory:RemoveItem(item, wholestack)

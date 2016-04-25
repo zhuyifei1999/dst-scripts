@@ -33,11 +33,13 @@ PREFAB_SKINS = {
 	torch = 
 	{
 		"torch_rag",
+		"torch_shadow",
 	},
 	wathgrithr = 
 	{
 		"wathgrithr_none",
 		"wathgrithr_formal",
+		"wathgrithr_shadow",
 		"wathgrithr_survivor",
 	},
 	waxwell = 
@@ -45,59 +47,69 @@ PREFAB_SKINS = {
 		"waxwell_none",
 		"waxwell_formal",
 		"waxwell_survivor",
+		"waxwell_unshadow",
 	},
 	webber = 
 	{
 		"webber_none",
 		"webber_formal",
+		"webber_shadow",
 		"webber_survivor",
 	},
 	wendy = 
 	{
 		"wendy_none",
 		"wendy_formal",
+		"wendy_shadow",
 		"wendy_survivor",
 	},
 	wes = 
 	{
 		"wes_none",
 		"wes_formal",
+		"wes_shadow",
 		"wes_survivor",
 	},
 	wickerbottom = 
 	{
 		"wickerbottom_none",
 		"wickerbottom_formal",
+		"wickerbottom_shadow",
 		"wickerbottom_survivor",
 	},
 	willow = 
 	{
 		"willow_none",
 		"willow_formal",
+		"willow_shadow",
 		"willow_survivor",
 	},
 	wilson = 
 	{
 		"wilson_none",
 		"wilson_formal",
+		"wilson_shadow",
 		"wilson_survivor",
 	},
 	wolfgang = 
 	{
 		"wolfgang_none",
 		"wolfgang_formal",
+		"wolfgang_shadow",
 		"wolfgang_survivor",
 	},
 	woodie = 
 	{
 		"woodie_none",
 		"woodie_formal",
+		"woodie_shadow",
 		"woodie_survivor",
 	},
 	wx78 = 
 	{
 		"wx78_none",
 		"wx78_formal",
+		"wx78_shadow",
 		"wx78_survivor",
 	},
 

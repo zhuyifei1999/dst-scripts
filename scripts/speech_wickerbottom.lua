@@ -18,10 +18,21 @@ return
             NOTALLOWED = "Nonsense.",
             INUSE = "Someone's already using it.",
         },
+        WRITE =
+        {
+            GENERIC = "I cannot.",
+            INUSE = "When you're done, dear.",
+        },
         RUMMAGE =
         {   
             GENERIC = "It seems I can't do that.",
             INUSE = "Someone's already using it.",   
+        },
+        CHANGEIN =
+        {
+            GENERIC = "I think I look pretty smart already.",
+            BURNING = "No more changes for me. It's gone up in flames.",
+            INUSE = "If I could use that after you, dear.",
         },
         COOK =
         {

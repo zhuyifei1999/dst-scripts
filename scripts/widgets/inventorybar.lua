@@ -36,12 +36,8 @@ local Inv = Class(Widget, function(self, owner)
 
     self.inv = {}
     self.backpackinv = {}
-    
     self.equip = {}
-
-    self.equipslotinfo =
-    {
-    }
+    self.equipslotinfo = {}
 
     self.root = self:AddChild(Widget("root"))
 
@@ -52,7 +48,7 @@ local Inv = Class(Widget, function(self, owner)
     self.bg = self.root:AddChild(Image(HUD_ATLAS, "inventory_bg.tex"))
 
     --self.bg = self.root:AddChild(ThreeSlice(HUD_ATLAS, "inventory_corner.tex", "inventory_filler.tex"))
-    
+
     self.bgcover = self.root:AddChild(Image(HUD_ATLAS, "inventory_bg_cover.tex"))
 
     self.hovertile = nil
@@ -93,7 +89,7 @@ local Inv = Class(Widget, function(self, owner)
     self.openhint:SetRegionSize(300, 60)
     self.openhint:SetHAlign(ANCHOR_LEFT)
     self.openhint:SetPosition(940, 70, 0)
-    
+
     self.hint_update_check = HINT_UPDATE_INTERVAL
 
     self.controller_build = nil
@@ -198,11 +194,11 @@ function Inv:Rebuild()
         x = x + W + (k % 5 == 0 and INTERSEP or SEP)
     end
 
-    local image_name = "self_inspect_"..self.owner.prefab..".tex" 
-	local atlas_name = "images/hud.xml"
-	if softresolvefilepath("images/avatars/self_inspect_"..self.owner.prefab..".xml") ~= nil then
-		atlas_name = "images/avatars/self_inspect_"..self.owner.prefab..".xml"
-	end
+    local image_name = "self_inspect_"..self.owner.prefab..".tex"
+    local atlas_name = "images/avatars/self_inspect_"..self.owner.prefab..".xml"
+    if softresolvefilepath(atlas_name) == nil then
+        atlas_name = "images/hud.xml"
+    end
 
     if not self.controller_build then
         self.bg:SetScale(1.22, 1, 1)
@@ -242,7 +238,7 @@ function Inv:Rebuild()
             self.backpackinv[k] = self.bottomrow:AddChild(slot)
 
             slot.top_align_tip = W*1.5 + YSEP*2
-            
+
             if offset > 0 then
                 slot:SetPosition(self.inv[offset+k-1]:GetPosition().x,0,0)
             else
@@ -254,9 +250,8 @@ function Inv:Rebuild()
             if item ~= nil then
                 slot:SetTile(ItemTile(item))
             end
-
         end
-        
+
         self.backpack = overflow.inst
         self.inst:ListenForEvent("itemget", BackpackGet, self.backpack)
         self.inst:ListenForEvent("itemlose", BackpackLose, self.backpack)
@@ -307,7 +302,7 @@ function Inv:OnUpdate(dt)
     self:UpdatePosition()
 
     self.hint_update_check = self.hint_update_check - dt
-    if 0 > self.hint_update_check then  
+    if 0 > self.hint_update_check then
         if not TheInput:ControllerAttached() then
             self.openhint:Hide()
         else
@@ -316,9 +311,10 @@ function Inv:OnUpdate(dt)
         end
         self.hint_update_check = HINT_UPDATE_INTERVAL
     end
-    
-    if ThePlayer.HUD ~= TheFrontEnd:GetActiveScreen() then return end
-    if not ThePlayer.HUD.shown then return end
+
+    if not ThePlayer.HUD.shown or ThePlayer.HUD ~= TheFrontEnd:GetActiveScreen() then
+        return
+    end
 
     if self.rebuild_pending then
         self:Rebuild()
@@ -341,17 +337,16 @@ function Inv:OnUpdate(dt)
     if self.repeat_time > 0 then
         self.repeat_time = self.repeat_time - dt
     end
-    
-    if self.active_slot and not self.active_slot.inst:IsValid() then
+
+    if self.active_slot ~= nil and not self.active_slot.inst:IsValid() then
         self:SelectSlot(self.inv[1])
-        
+
         self.current_list = self.inv
-        
-        if self.cursor then
+
+        if self.cursor ~= nil then
             self.cursor:Kill()
             self.cursor = nil
         end
-        
     end
 
     self:UpdateCursor()
@@ -382,7 +377,7 @@ function Inv:OnUpdate(dt)
             else
                 self.repeat_time = 1/30
             end
-        end 
+        end
     end
 end
 
@@ -390,24 +385,23 @@ function Inv:OffsetCursor(offset, val, minval, maxval, slot_is_valid_fn)
     if val == nil then
         val = minval
     else
-        
         local idx = val
         local start_idx = idx
 
-        repeat 
+        repeat
             idx = idx + offset
-            
+
             if idx < minval then idx = maxval end
             if idx > maxval then idx = minval end
 
-            if slot_is_valid_fn(idx) then 
+            if slot_is_valid_fn(idx) then
                 val = idx
                 break
             end
 
         until start_idx == idx
     end
-    
+
     return val
 end
 
@@ -436,7 +430,6 @@ function Inv:GetInventoryLists(same_container_only)
 end
 
 function Inv:CursorNav(dir, same_container_only)
-
     ThePlayer.components.playercontroller:CancelDeployPlacement()
 
     if self:GetCursorItem() ~= nil then
@@ -451,14 +444,13 @@ function Inv:CursorNav(dir, same_container_only)
 
     local lists = self:GetInventoryLists(same_container_only)
     local slot, list = self:GetClosestWidget(lists, self.active_slot:GetWorldPosition(), dir)
-    if slot and list then       
+    if slot and list then
         self.current_list = list
         return self:SelectSlot(slot)
     end
 end
 
 function Inv:CursorLeft()
-    
     if self:CursorNav(Vector3(-1,0,0), true) then
         TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
     end
@@ -486,7 +478,7 @@ function Inv:GetClosestWidget(lists, pos, dir)
     local closest = nil
     local closest_score = nil
     local closest_list = nil
-    
+
     for kk, vv in pairs(lists) do
         for k,v in pairs(vv) do
             if v ~= self.active_slot then
@@ -539,6 +531,9 @@ function Inv:OnControl(control, down)
 
     local active_item = self.owner.replica.inventory:GetActiveItem()
     local inv_item = self:GetCursorItem()
+    if inv_item ~= nil and inv_item.replica.inventoryitem == nil then
+        inv_item = nil
+    end
 
     if control == CONTROL_ACCEPT then
         if inv_item ~= nil and active_item == nil and not inv_item.replica.inventoryitem:CanGoInContainer() then
@@ -585,8 +580,8 @@ function Inv:OpenControllerInventory()
         self:ScaleTo(self.base_scale,self.selected_scale,.2)
 
         local bp = self.owner.HUD:GetFirstOpenContainerWidget()
-        if bp then
-            self.owner.HUD:GetFirstOpenContainerWidget():ScaleTo(self.base_scale,self.selected_scale,.2)
+        if bp ~= nil then
+            bp:ScaleTo(self.base_scale,self.selected_scale,.2)
         end
 
         TheFrontEnd:LockFocus(true)
@@ -611,18 +606,18 @@ function Inv:CloseControllerInventory()
         self.owner.HUD.controls:SetDark(false)
 
         self.owner.replica.inventory:ReturnActiveItem()
-        
+
         self:UpdateCursor()
-        
-        if self.active_slot then
+
+        if self.active_slot ~= nil then
             self.active_slot:DeHighlight()
         end
-        
+
         self:ScaleTo(self.selected_scale, self.base_scale,.1)
 
         local bp = self.owner.HUD:GetFirstOpenContainerWidget()
-        if bp then
-            self.owner.HUD:GetFirstOpenContainerWidget():ScaleTo(self.selected_scale,self.base_scale,.1)
+        if bp ~= nil then
+            bp:ScaleTo(self.selected_scale,self.base_scale,.1)
         end
 
         TheFrontEnd:LockFocus(false)

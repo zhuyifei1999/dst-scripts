@@ -495,7 +495,7 @@ function Combat:GetImpactSound(target, weapon)
             ((target:HasTag("insect") or target:HasTag("spider")) and "insect_") or
             ((target:HasTag("chess") or target:HasTag("mech")) and "mech_") or
             (target:HasTag("mound") and "mound_") or
-            (target:HasTag("shadow") and "shadow_") or
+            ((target:HasTag("shadow") or target:HasTag("shadowminion")) and "shadow_") or
             (target:HasTag("tree") and "tree_") or
             (target:HasTag("veggie") and "vegetable_") or
             (target:HasTag("shell") and "shell_") or

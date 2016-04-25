@@ -15,6 +15,11 @@ return {
 			GENERIC = "I'm not taking a razor to that.",
 			NOBITS = "I've already taken everything from her.",
 		},
+		WRITE =
+        {
+            GENERIC = "I... I can't.",
+            INUSE = "Take your time... I'll just watch.",
+        },
 		STORE =
 		{
 			GENERIC = "It wouldn't fit.",
@@ -25,6 +30,12 @@ return {
         {   
             GENERIC = "I can't do anything right.",
             INUSE = "I can come back later...",   
+        },
+        CHANGEIN =
+        {
+            GENERIC = "What's the point.",
+            BURNING = "I guess I won't be changing again anytime soon.",
+            INUSE = "I'd like to use that after you. If you don't mind, I mean.",
         },
 		COOK =
         {

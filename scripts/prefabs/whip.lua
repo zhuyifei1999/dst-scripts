@@ -18,7 +18,7 @@ end
 
 local function supercrack(inst)
     local x,y,z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x,y,z, TUNING.WHIP_SUPERCRACK_RANGE, { "_combat" }, { "player" })
+    local ents = TheSim:FindEntities(x,y,z, TUNING.WHIP_SUPERCRACK_RANGE, { "_combat" }, { "player", "shadow", "shadowminion" })
     for i,v in ipairs(ents) do
         if v.components.combat:HasTarget() then
             v.components.combat:DropTarget()

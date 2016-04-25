@@ -456,7 +456,8 @@ local COMPONENT_ACTIONS =
         smotherer = function(inst, doer, target, actions)
             if target:HasTag("smolder") then
                 table.insert(actions, ACTIONS.SMOTHER)
-            elseif inst:HasTag("frozen") and target:HasTag("fire") then
+            elseif inst:HasTag("frozen") and target:HasTag("fire") and
+                not (target.replica.inventoryitem ~= nil and target.replica.inventoryitem:IsHeld()) then
                 table.insert(actions, ACTIONS.MANUALEXTINGUISH)
             end
         end,
