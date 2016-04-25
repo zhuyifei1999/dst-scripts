@@ -18,6 +18,11 @@ return {
 			NOTALLOWED = "That's not allowed, eh?",
 			INUSE = "Sorry! I'll wait til you're finished.",
 		},
+		WRITE =
+        {
+            GENERIC = "Sorry, I can't.",
+            INUSE = "If I could just... scooch in there after you...",
+        },
 		RUMMAGE =
         {   
             GENERIC = "Sorry, I can't do that.",
@@ -50,6 +55,12 @@ return {
             SLEEPING = "Let them get their shut eye.",
             BUSY = "I've something for you when you've got a mo'.",
     	},
+    	CHANGEIN =
+        {
+            GENERIC = "Ouch. Do I not look skookum enough already?",
+            BURNING = "Better it than a tree.",
+            INUSE = "Could you hand me my plaid shirt while you're in there?",
+        },
     	GIVEALLTOPLAYER = 
         {
         	FULL = "They need to make room, eh.",
@@ -57,6 +68,10 @@ return {
             SLEEPING = "Let them get their shut eye.",
             BUSY = "I've something for you when you've got a mo'.",
     	},
+    	ATTUNE =
+        {
+            NOHEALTH = "I feel worse than a used roll of duct tape. Maybe later?",
+        },
 	},
 	ANNOUNCE_MOUNT_LOWHEALTH = "This beast looks in a bad way, eh.",
 	ACTIONFAIL_GENERIC = "Sorry, I can't do that.",

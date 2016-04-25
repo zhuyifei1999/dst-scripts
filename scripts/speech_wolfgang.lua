@@ -17,6 +17,11 @@ return {
 			NOTALLOWED = "Bah! Useless.",
 			INUSE = "Wolfgang can share!",
 		},
+		WRITE =
+        {
+            GENERIC = "I'm not mighty enough to do that.",
+            INUSE = "Can Wolfgang help make scribblemarks when you're done?",
+        },
 		RUMMAGE =
         {   
             GENERIC = "I am not mighty enough to do that.",
@@ -56,6 +61,16 @@ return {
             SLEEPING = "Friend is sleeping now!",
             BUSY = "Please give Mighty Wolfgang your attention!",
     	},
+    	CHANGEIN =
+        {
+            GENERIC = "Clothes only good for ripping with strong muscles!",
+            BURNING = "Wolfgang's weekday undergarments burning? Wolfgang is sad.",
+            INUSE = "Wolfgang will wait til they leave to change. He is shy.",
+        },
+    	ATTUNE =
+        {
+            NOHEALTH = "Wolfgang is too woozy to do this.",
+        },
 	},
 	ACTIONFAIL_GENERIC = "I am not mighty enough to do that.",
 	ANNOUNCE_MOUNT_LOWHEALTH = "What is wrong, hair beast? Feeling not-so-mighty?",
@@ -864,7 +879,7 @@ return {
 		FISHSTICKS = "Ha ha, is funny name.",
 		FISHTACOS = "Wolfgang hope is not too spicy for Wolfgang.",
 		FISH_COOKED = "Meat from water still make Wolfgang strong.",
-		FLINT = "Is rock, but pointy-er.",
+		FLINT = "Is rock, but eh, pointy.",
 		FLOWER = {
             GENERIC = "They are very pretty.",
             ROSE = "Wolfgang tried to crush it, but it pricked him.",
@@ -1014,7 +1029,7 @@ return {
 		PAPYRUS = "Is like paper",
 		PENGUIN = "Funny walking birds!",
 		PERD = "Dumb bird is take all berries!",
-		PEROGIES = "Wolfgang love perogi!",
+		PEROGIES = "Wolfgang love pierogi!",
 		PETALS = "These smell nice.",
 		PETALS_EVIL = "They make my brain hurt.",
 		PETRIFIED_TREE = "Now I punch it apart!",

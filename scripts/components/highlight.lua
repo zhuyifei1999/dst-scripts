@@ -4,20 +4,23 @@ local Highlight = Class(function(self, inst)
     self.inst = inst
     --[[
     self.highlit = nil
-	self.base_add_colour_red = 0
+    self.base_add_colour_red = 0
     self.base_add_colour_green = 0
     self.base_add_colour_blue = 0
-	self.highlight_add_colour_red = 0
+    self.highlight_add_colour_red = 0
     self.highlight_add_colour_green = 0
     self.highlight_add_colour_blue = 0
     --]]
 end)
 
 function Highlight:SetAddColour(col)
-	self.base_add_colour_red = col.x
+    self.base_add_colour_red = col.x
     self.base_add_colour_green = col.y
     self.base_add_colour_blue = col.z
-	self:ApplyColour()
+
+    if not self.flashing then
+        self:ApplyColour()
+    end
 end
 
 function Highlight:Flash(toadd, timein, timeout)
@@ -27,94 +30,92 @@ function Highlight:Flash(toadd, timein, timeout)
     self.t = 0
     self.flashing = true
     self.goingin = true
-    
+
     self.inst:StartUpdatingComponent(self)
 end
 
 function Highlight:OnUpdate(dt)
-
     if not self.inst:IsValid() then
-		self.inst:StopUpdatingComponent(self)
-		self.flashing = false
-		if not self.highlit then
-			self.inst:RemoveComponent("highlight")
-		end
-		return
+        if self.highlit then
+            self.inst:StopUpdatingComponent(self)
+            self.flashing = false
+            self.flash_val = nil
+        else
+            self.inst:RemoveComponent("highlight")
+        end
+        return
     end
-    
-    self.t = self.t + dt
+
     if self.flashing then
-        
-        local val = 0
+        self.t = self.t + dt
+
         if self.goingin then
             if self.t > self.flashtimein then
                 self.goingin = false
                 self.t = 0
+            else
+                self.flash_val = easing.outCubic(self.t, 0, self.flashadd, self.flashtimein)
             end
-            val = easing.outCubic( self.t, 0, self.flashadd, self.flashtimein)             
         end
-    
+
         if not self.goingin then
             if self.t > self.flashtimeout then
                 self.flashing = false
+            else
+                self.flash_val = easing.outCubic(self.t, self.flashadd, 0, self.flashtimeout)
             end
-            val = easing.outCubic( self.t, self.flashadd, 0, self.flashtimeout)                     
         end
-        
-        if self.highlit then
-            val = val + .2
-        end
-        
-        self.highlight_add_colour_red = val
-        self.highlight_add_colour_green = val
-        self.highlight_add_colour_blue = val
     end
 
-
-    if not self.flashing then
+    if self.flashing then
+        self:ApplyColour()
+    elseif self.highlit then
         self.inst:StopUpdatingComponent(self)
-        local val = 0
-        
-        if self.highlit then
-            val = .2
-        end
-        
-        self.highlight_add_colour_red = val
-        self.highlight_add_colour_green = val
-        self.highlight_add_colour_blue = val
+        self.flash_val = nil
+        self:ApplyColour()
+    else
+        self.inst:RemoveComponent("highlight")
     end
-
-	self:ApplyColour()
 end
 
 function Highlight:ApplyColour()
-    if self.inst.AnimState then
-		self.inst.AnimState:SetHighlightColour((self.highlight_add_colour_red or 0) + (self.base_add_colour_red or 0), (self.highlight_add_colour_green or 0) + (self.base_add_colour_green or 0), (self.highlight_add_colour_blue or 0) + (self.base_add_colour_blue or 0), 0)
-	end
+    if self.inst.AnimState ~= nil then
+        self.inst.AnimState:SetHighlightColour(
+            (self.highlight_add_colour_red or 0) + (self.base_add_colour_red or 0) + (self.flash_val or 0),
+            (self.highlight_add_colour_green or 0) + (self.base_add_colour_green or 0) + (self.flash_val or 0),
+            (self.highlight_add_colour_blue or 0) + (self.base_add_colour_blue or 0) + (self.flash_val or 0),
+            0
+        )
+    end
 end
 
-function Highlight:Highlight(r,g,b)
+function Highlight:Highlight(r, g, b)
     self.highlit = true
-    
+
     if self.inst:IsValid() and self.inst:HasTag("player") or CanEntitySeeTarget(ThePlayer, self.inst) then
-        local m = .2
-		self.highlight_add_colour_red = r or m
-        self.highlight_add_colour_green = g or m
-        self.highlight_add_colour_blue = b or m
+        self.highlight_add_colour_red = r or .2
+        self.highlight_add_colour_green = g or .2
+        self.highlight_add_colour_blue = b or .2
+    else
+        self.highlight_add_colour_red = nil
+        self.highlight_add_colour_green = nil
+        self.highlight_add_colour_blue = nil
     end
 
-	self:ApplyColour()    
+    if not self.flashing then
+        self:ApplyColour()
+    end
 end
 
 function Highlight:UnHighlight()
     self.highlit = nil
-	self.highlight_add_colour_red = nil
-    self.highlight_add_colour_green = nil
-    self.highlight_add_colour_blue = nil
-	self:ApplyColour()   
-	if not self.flashing then
-		self.inst:RemoveComponent("highlight")
-	end
+    --self.highlight_add_colour_red = nil
+    --self.highlight_add_colour_green = nil
+    --self.highlight_add_colour_blue = nil
+
+    if not self.flashing then
+        self.inst:RemoveComponent("highlight")
+    end
 end
 
 function Highlight:OnRemoveFromEntity()

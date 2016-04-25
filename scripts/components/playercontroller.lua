@@ -1571,8 +1571,8 @@ function PlayerController:OnUpdate(dt)
                 self.highlight_guy:AddComponent("highlight")
             end
 
-            if self.highlight_guy.highlight_override ~= nil then
-                self.highlight_guy.components.highlight:Highlight(unpack(self.highlight_guy.highlight_override))
+            if self.highlight_guy:HasTag("burnt") then
+                self.highlight_guy.components.highlight:Highlight(.5, .5, .5)
             else
                 self.highlight_guy.components.highlight:Highlight()
             end
@@ -1582,7 +1582,7 @@ function PlayerController:OnUpdate(dt)
 
         self:DoCameraControl()
 
-        if not controller_mode and self.reticule ~= nil then         
+        if not controller_mode and self.reticule ~= nil then
             self.reticule:DestroyReticule()
             self.reticule = nil
         end

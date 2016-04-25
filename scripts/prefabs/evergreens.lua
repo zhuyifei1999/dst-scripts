@@ -165,7 +165,6 @@ local function GetBuild(inst)
     return builds[inst.build] or builds["normal"]
 end
 
-local burnt_highlight_override = {.5,.5,.5}
 local function OnBurnt(inst, immediate)
     local function changes()
         if inst.components.burnable ~= nil then
@@ -205,11 +204,9 @@ local function OnBurnt(inst, immediate)
     inst.AnimState:SetRayTestOnBB(true)
     inst:AddTag("burnt")
 
-    if inst.components.timer and not inst.components.timer:TimerExists("decay") then
+    if inst.components.timer ~= nil and not inst.components.timer:TimerExists("decay") then
         inst.components.timer:StartTimer("decay", GetRandomWithVariance(GetBuild(inst).regrowth_tuning.DEAD_DECAY_TIME, GetBuild(inst).regrowth_tuning.DEAD_DECAY_TIME*0.5))
     end
-
-    inst.highlight_override = burnt_highlight_override
 end
 
 local function PushSway(inst)

@@ -17,6 +17,11 @@ return {
 			NOTALLOWED = "That's breaking the rules.",
 			INUSE = "It's okay, we'll wait for you to finish!",
 		},
+		WRITE =
+        {
+            GENERIC = "We can't write on that now.",
+            INUSE = "We'll get our crayons ready while they finish up!",
+        },
 		RUMMAGE =
         {   
             GENERIC = "That's off-limits.",
@@ -56,6 +61,16 @@ return {
             SLEEPING = "Aww... They're getting snoozies right now!",
             BUSY = "We have something for you!",
     	},
+    	ATTUNE =
+        {
+            NOHEALTH = "We don't feel so good right now. Later?",
+        },
+        CHANGEIN =
+        {
+            GENERIC = "Not right now, we're comfy.",
+            BURNING = "Woah! Hot fashions!",
+            INUSE = "We'll give them some privacy while they change.",
+        },
 	},
 	ANNOUNCE_MOUNT_LOWHEALTH = "Our hairy friend is hurt!",
 	ACTIONFAIL_GENERIC = "That's off-limits.",
@@ -103,7 +118,7 @@ return {
 	ANNOUNCE_NOSLEEPONFIRE = "Mum always said, 'Don't sleep in a burning building.'",
 	ANNOUNCE_NODANGERSIESTA = "Can't nap with monsters nearby!",
 	ANNOUNCE_NONIGHTSIESTA = "We can't take a nap, it's nighttime!",
-	ANNOUNCE_NONIGHTSIESTA_CAVE = "No naps 'til daybreak!",
+	ANNOUNCE_NONIGHTSIESTA_CAVE = "No naps til daybreak!",
 	ANNOUNCE_NOHUNGERSIESTA = "Won't be able to nap with a rumbling tummy.",
 	ANNOUNCE_NO_TRAP = "Easy peasy.",
 	ANNOUNCE_PECKED = "Bad bird!",

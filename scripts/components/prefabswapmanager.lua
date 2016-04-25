@@ -34,6 +34,7 @@ local EXCLUDE_RADIUS = 3
 local BASE_AREA =  BASE_RADIUS * BASE_RADIUS * PI
 local UPDATE_ENTS_PER_FRAME = 30
 
+local MIN_PLAYER_DISTANCE = 64 *1.2
 --------------------------------------------------------------------------
 --[[ Member variables ]]
 --------------------------------------------------------------------------
@@ -310,9 +311,11 @@ local function managePrefabsSpawnInOverTime(inst, prefab, coordsList, spawnTime,
     local x = coordsList[location].x
     local z = coordsList[location].z
 
-    if TestForRegrow(x,0,z, prefab) then
+    local player_in_range = IsAnyPlayerInRange(x,0,z, MIN_PLAYER_DISTANCE, nil)
+    local regrow_ok = TestForRegrow(x,0,z, prefab) 
+
+    if regrow_ok and not player_in_range then
         local instance = SpawnPrefab(prefab)
-        print("Making a",prefab," @ ",x,z)
         if instance ~= nil then
             instance.Transform:SetPosition(x,0,z)
             if instance.components.diseaseable ~= nil then

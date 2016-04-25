@@ -6471,6 +6471,11 @@ msgctxt "STRINGS.SKIN_NAMES.none"
 msgid "Default"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.body_webber_shadow
+msgctxt "STRINGS.SKIN_NAMES.body_webber_shadow"
+msgid "Shadow Spider Body"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.feet_ridingboot_white_pure
 msgctxt "STRINGS.SKIN_NAMES.feet_ridingboot_white_pure"
 msgid "Riding Boots"
@@ -6481,9 +6486,14 @@ msgctxt "STRINGS.SKIN_NAMES.waxwell_survivor"
 msgid "The Survivor"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.wilson_survivor
-msgctxt "STRINGS.SKIN_NAMES.wilson_survivor"
-msgid "The Survivor"
+#. STRINGS.SKIN_NAMES.wendy_shadow
+msgctxt "STRINGS.SKIN_NAMES.wendy_shadow"
+msgid "The Triumphant"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wolfgang_shadow
+msgctxt "STRINGS.SKIN_NAMES.wolfgang_shadow"
+msgid "The Triumphant"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.body_buttons_pink_hibiscus
@@ -6541,6 +6551,11 @@ msgctxt "STRINGS.SKIN_NAMES.backpack_smallbird"
 msgid "Smallbird Satchel"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.body_wilson_shadow
+msgctxt "STRINGS.SKIN_NAMES.body_wilson_shadow"
+msgid "Shadow Suit"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.backpack_camping_red_koalefant
 msgctxt "STRINGS.SKIN_NAMES.backpack_camping_red_koalefant"
 msgid "Rucksack"
@@ -6581,6 +6596,11 @@ msgctxt "STRINGS.SKIN_NAMES.hand_beltedgloves_brown_beaver"
 msgid "Buckled Gloves"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.waxwell_unshadow
+msgctxt "STRINGS.SKIN_NAMES.waxwell_unshadow"
+msgid "The Untriumphant"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.body_sweatervest_blue_snowbird
 msgctxt "STRINGS.SKIN_NAMES.body_sweatervest_blue_snowbird"
 msgid "Sweater Vest"
@@ -6589,6 +6609,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.body_tweedvest_brown_chocolate
 msgctxt "STRINGS.SKIN_NAMES.body_tweedvest_brown_chocolate"
 msgid "Tweed Waistcoat"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.willow_shadow
+msgctxt "STRINGS.SKIN_NAMES.willow_shadow"
+msgid "The Triumphant"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.body_wilson_survivor
@@ -6604,6 +6629,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.body_woodie_formal
 msgctxt "STRINGS.SKIN_NAMES.body_woodie_formal"
 msgid "Canadian Jacket"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.webber_shadow
+msgctxt "STRINGS.SKIN_NAMES.webber_shadow"
+msgid "The Triumphant"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.body_polo_red_higgsbury
@@ -6631,9 +6661,19 @@ msgctxt "STRINGS.SKIN_NAMES.body_waxwell_survivor"
 msgid "Frayed Finery"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.body_wickerbottom_shadow
+msgctxt "STRINGS.SKIN_NAMES.body_wickerbottom_shadow"
+msgid "Shadow Gown"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.backpack_buckle_grey_pewter
 msgctxt "STRINGS.SKIN_NAMES.backpack_buckle_grey_pewter"
 msgid "Buckled Backpack"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wickerbottom_shadow
+msgctxt "STRINGS.SKIN_NAMES.wickerbottom_shadow"
+msgid "The Triumphant"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.body_willow_formal
@@ -6659,6 +6699,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.backpack_rabbit
 msgctxt "STRINGS.SKIN_NAMES.backpack_rabbit"
 msgid "Rabbit Rucksack"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_wathgrithr_shadow
+msgctxt "STRINGS.SKIN_NAMES.body_wathgrithr_shadow"
+msgid "Shadow Armor"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.backpack_basic_blue_catcoon
@@ -6689,6 +6734,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.wx78_survivor
 msgctxt "STRINGS.SKIN_NAMES.wx78_survivor"
 msgid "The Survivor"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_woodie_shadow
+msgctxt "STRINGS.SKIN_NAMES.body_woodie_shadow"
+msgid "Shadow Feller's Kit"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.feet_maryjanes_white_pure
@@ -6726,9 +6776,9 @@ msgctxt "STRINGS.SKIN_NAMES.body_tweedvest_green_hunters"
 msgid "Tweed Waistcoat"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.wolfgang_formal
-msgctxt "STRINGS.SKIN_NAMES.wolfgang_formal"
-msgid "Guest of Honor"
+#. STRINGS.SKIN_NAMES.body_waxwell_unshadow
+msgctxt "STRINGS.SKIN_NAMES.body_waxwell_unshadow"
+msgid "Unshadow Suit"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.body_flannel_orange_lumberjack
@@ -6761,6 +6811,36 @@ msgctxt "STRINGS.SKIN_NAMES.body_flannel_blue_snowbird"
 msgid "Lumberjack Shirt"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.hand_longgloves_yellow_straw
+msgctxt "STRINGS.SKIN_NAMES.hand_longgloves_yellow_straw"
+msgid "Long Gloves"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wx78_formal
+msgctxt "STRINGS.SKIN_NAMES.wx78_formal"
+msgid "Guest of Honor"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_wendy_shadow
+msgctxt "STRINGS.SKIN_NAMES.body_wendy_shadow"
+msgid "Shadow Frock"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wes_shadow
+msgctxt "STRINGS.SKIN_NAMES.wes_shadow"
+msgid "The Triumphant"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wolfgang_survivor
+msgctxt "STRINGS.SKIN_NAMES.wolfgang_survivor"
+msgid "The Survivor"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wolfgang_formal
+msgctxt "STRINGS.SKIN_NAMES.wolfgang_formal"
+msgid "Guest of Honor"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.body_silk_eveningrobe_yellow_goldenrod
 msgctxt "STRINGS.SKIN_NAMES.body_silk_eveningrobe_yellow_goldenrod"
 msgid "Silk Robe"
@@ -6769,6 +6849,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.backpack_basic_green_olive
 msgctxt "STRINGS.SKIN_NAMES.backpack_basic_green_olive"
 msgid "Backpack"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wilson_survivor
+msgctxt "STRINGS.SKIN_NAMES.wilson_survivor"
+msgid "The Survivor"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.body_tshirt_purple_mauve
@@ -6786,49 +6871,9 @@ msgctxt "STRINGS.SKIN_NAMES.legs_skirt_basic_brown_sepia"
 msgid "Skirt"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.backpack_mushy
-msgctxt "STRINGS.SKIN_NAMES.backpack_mushy"
-msgid "Moldy Backpack"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.body_waxwell_formal
-msgctxt "STRINGS.SKIN_NAMES.body_waxwell_formal"
-msgid "Striking Tuxedo"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.body_buttons_green_laurel
-msgctxt "STRINGS.SKIN_NAMES.body_buttons_green_laurel"
-msgid "Buttoned Shirt"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.body_cardigan_white_ghost
-msgctxt "STRINGS.SKIN_NAMES.body_cardigan_white_ghost"
-msgid "Cardigan"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.wx78_formal
-msgctxt "STRINGS.SKIN_NAMES.wx78_formal"
-msgid "Guest of Honor"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.missing
-msgctxt "STRINGS.SKIN_NAMES.missing"
-msgid "Thingamabob"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.body_wendy_survivor
-msgctxt "STRINGS.SKIN_NAMES.body_wendy_survivor"
-msgid "Shredded Skirt"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.body_wilson_formal
-msgctxt "STRINGS.SKIN_NAMES.body_wilson_formal"
-msgid "Tuxedo"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.wolfgang_survivor
-msgctxt "STRINGS.SKIN_NAMES.wolfgang_survivor"
-msgid "The Survivor"
+#. STRINGS.SKIN_NAMES.wilson_shadow
+msgctxt "STRINGS.SKIN_NAMES.wilson_shadow"
+msgid "The Triumphant"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.wilson_formal
@@ -6846,14 +6891,84 @@ msgctxt "STRINGS.SKIN_NAMES.willow_formal"
 msgid "Guest of Honor"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.backpack_mushy
+msgctxt "STRINGS.SKIN_NAMES.backpack_mushy"
+msgid "Moldy Backpack"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_waxwell_formal
+msgctxt "STRINGS.SKIN_NAMES.body_waxwell_formal"
+msgid "Striking Tuxedo"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.body_suspenders_yellow_flax
 msgctxt "STRINGS.SKIN_NAMES.body_suspenders_yellow_flax"
 msgid "Suspension Shirt"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.body_buttons_green_laurel
+msgctxt "STRINGS.SKIN_NAMES.body_buttons_green_laurel"
+msgid "Buttoned Shirt"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_cardigan_white_ghost
+msgctxt "STRINGS.SKIN_NAMES.body_cardigan_white_ghost"
+msgid "Cardigan"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.wes_survivor
 msgctxt "STRINGS.SKIN_NAMES.wes_survivor"
 msgid "The Survivor"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.woodie_shadow
+msgctxt "STRINGS.SKIN_NAMES.woodie_shadow"
+msgid "The Triumphant"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.missing
+msgctxt "STRINGS.SKIN_NAMES.missing"
+msgid "Thingamabob"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wes_formal
+msgctxt "STRINGS.SKIN_NAMES.wes_formal"
+msgid "Guest of Honor"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_wilson_formal
+msgctxt "STRINGS.SKIN_NAMES.body_wilson_formal"
+msgid "Tuxedo"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wendy_survivor
+msgctxt "STRINGS.SKIN_NAMES.wendy_survivor"
+msgid "The Survivor"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.webber_formal
+msgctxt "STRINGS.SKIN_NAMES.webber_formal"
+msgid "Guest of Honor"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.waxwell_formal
+msgctxt "STRINGS.SKIN_NAMES.waxwell_formal"
+msgid "Guest of Honor"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wathgrithr_shadow
+msgctxt "STRINGS.SKIN_NAMES.wathgrithr_shadow"
+msgid "The Triumphant"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wathgrithr_formal
+msgctxt "STRINGS.SKIN_NAMES.wathgrithr_formal"
+msgid "Guest of Honor"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.firepit_fanged
+msgctxt "STRINGS.SKIN_NAMES.firepit_fanged"
+msgid "Fanged Firepit"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.body_trimmed_blouse_white_pure
@@ -6866,34 +6981,9 @@ msgctxt "STRINGS.SKIN_NAMES.body_polo_yellow_goldenrod"
 msgid "Collared Shirt"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.webber_formal
-msgctxt "STRINGS.SKIN_NAMES.webber_formal"
-msgid "Guest of Honor"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.wes_formal
-msgctxt "STRINGS.SKIN_NAMES.wes_formal"
-msgid "Guest of Honor"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.wendy_survivor
-msgctxt "STRINGS.SKIN_NAMES.wendy_survivor"
-msgid "The Survivor"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.waxwell_formal
-msgctxt "STRINGS.SKIN_NAMES.waxwell_formal"
-msgid "Guest of Honor"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.body_wendy_formal
-msgctxt "STRINGS.SKIN_NAMES.body_wendy_formal"
-msgid "Party Frock"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.wathgrithr_formal
-msgctxt "STRINGS.SKIN_NAMES.wathgrithr_formal"
-msgid "Guest of Honor"
+#. STRINGS.SKIN_NAMES.body_willow_shadow
+msgctxt "STRINGS.SKIN_NAMES.body_willow_shadow"
+msgid "Shadow Dress"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.torch_rag
@@ -6911,9 +7001,9 @@ msgctxt "STRINGS.SKIN_NAMES.legs_skirt_plaid_blue_cornflower"
 msgid "Plaid Skirt"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.hand_drivergloves_white_ivory
-msgctxt "STRINGS.SKIN_NAMES.hand_drivergloves_white_ivory"
-msgid "Driving Gloves"
+#. STRINGS.SKIN_NAMES.body_wendy_formal
+msgctxt "STRINGS.SKIN_NAMES.body_wendy_formal"
+msgid "Party Frock"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.legs_skirt_basic_tan_cream
@@ -6936,6 +7026,11 @@ msgctxt "STRINGS.SKIN_NAMES.legs_checkered_pleats_green_laurel"
 msgid "Checkered Trousers"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.hand_drivergloves_white_ivory
+msgctxt "STRINGS.SKIN_NAMES.hand_drivergloves_white_ivory"
+msgid "Driving Gloves"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.legs_checkered_pleats_blue_cornflower
 msgctxt "STRINGS.SKIN_NAMES.legs_checkered_pleats_blue_cornflower"
 msgid "Checkered Trousers"
@@ -6944,16 +7039,6 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.hand_shortgloves_white_smoke
 msgctxt "STRINGS.SKIN_NAMES.hand_shortgloves_white_smoke"
 msgid "Hand Covers"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.hand_longgloves_grey_battleship
-msgctxt "STRINGS.SKIN_NAMES.hand_longgloves_grey_battleship"
-msgid "Long Gloves"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.feet_sneakers_red_auburn
-msgctxt "STRINGS.SKIN_NAMES.feet_sneakers_red_auburn"
-msgid "Sneakers"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.hand_shortgloves_red_higgsbury
@@ -6966,9 +7051,9 @@ msgctxt "STRINGS.SKIN_NAMES.hand_shortgloves_blue_cornflower"
 msgid "Hand Covers"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.hand_longgloves_yellow_straw
-msgctxt "STRINGS.SKIN_NAMES.hand_longgloves_yellow_straw"
-msgid "Long Gloves"
+#. STRINGS.SKIN_NAMES.wx78_shadow
+msgctxt "STRINGS.SKIN_NAMES.wx78_shadow"
+msgid "The Triumphant"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.hand_longgloves_green_hunters
@@ -6976,14 +7061,14 @@ msgctxt "STRINGS.SKIN_NAMES.hand_longgloves_green_hunters"
 msgid "Long Gloves"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.body_wx78_survivor
-msgctxt "STRINGS.SKIN_NAMES.body_wx78_survivor"
-msgid "Battered Body Case"
+#. STRINGS.SKIN_NAMES.hand_longgloves_grey_battleship
+msgctxt "STRINGS.SKIN_NAMES.hand_longgloves_grey_battleship"
+msgid "Long Gloves"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.body_trenchcoat_yellow_straw
-msgctxt "STRINGS.SKIN_NAMES.body_trenchcoat_yellow_straw"
-msgid "Trench Coat"
+#. STRINGS.SKIN_NAMES.feet_sneakers_red_auburn
+msgctxt "STRINGS.SKIN_NAMES.feet_sneakers_red_auburn"
+msgid "Sneakers"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.firepit_stonehenge
@@ -6991,14 +7076,9 @@ msgctxt "STRINGS.SKIN_NAMES.firepit_stonehenge"
 msgid "Mini Monument"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.body_trenchcoat_brown_fawn
-msgctxt "STRINGS.SKIN_NAMES.body_trenchcoat_brown_fawn"
-msgid "Trench Coat"
-msgstr ""
-
-#. STRINGS.SKIN_NAMES.firepit_fanged
-msgctxt "STRINGS.SKIN_NAMES.firepit_fanged"
-msgid "Fanged Firepit"
+#. STRINGS.SKIN_NAMES.torch_shadow
+msgctxt "STRINGS.SKIN_NAMES.torch_shadow"
+msgid "Tragic Torch"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.feet_sneakers_green_cactus
@@ -7011,9 +7091,24 @@ msgctxt "STRINGS.SKIN_NAMES.feet_sneakers_blue_catcoon"
 msgid "Sneakers"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.body_wx78_survivor
+msgctxt "STRINGS.SKIN_NAMES.body_wx78_survivor"
+msgid "Battered Body Case"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_trenchcoat_yellow_straw
+msgctxt "STRINGS.SKIN_NAMES.body_trenchcoat_yellow_straw"
+msgid "Trench Coat"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.feet_formal_highheel_white_pure
 msgctxt "STRINGS.SKIN_NAMES.feet_formal_highheel_white_pure"
 msgid "Pumps"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_trenchcoat_brown_fawn
+msgctxt "STRINGS.SKIN_NAMES.body_trenchcoat_brown_fawn"
+msgid "Trench Coat"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.feet_fleece_boot_brown_sepia
@@ -7024,6 +7119,26 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.cookpot_survival
 msgctxt "STRINGS.SKIN_NAMES.cookpot_survival"
 msgid "Camping Crock Pot"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_wx78_shadow
+msgctxt "STRINGS.SKIN_NAMES.body_wx78_shadow"
+msgid "Shadow Chassis"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_tshirt_white_smoke
+msgctxt "STRINGS.SKIN_NAMES.body_tshirt_white_smoke"
+msgid "T-Shirt"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_wolfgang_survivor
+msgctxt "STRINGS.SKIN_NAMES.body_wolfgang_survivor"
+msgid "Patched Bodysuit"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_wolfgang_shadow
+msgctxt "STRINGS.SKIN_NAMES.body_wolfgang_shadow"
+msgid "Shadow Jumpsuit"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.body_wathgrithr_formal
@@ -7041,9 +7156,9 @@ msgctxt "STRINGS.SKIN_NAMES.body_willow_survivor"
 msgid "Raggedy Rags"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.body_tshirt_white_smoke
-msgctxt "STRINGS.SKIN_NAMES.body_tshirt_white_smoke"
-msgid "T-Shirt"
+#. STRINGS.SKIN_NAMES.body_wolfgang_formal
+msgctxt "STRINGS.SKIN_NAMES.body_wolfgang_formal"
+msgid "Mess Dress"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.body_polo_blue_denim
@@ -7051,14 +7166,14 @@ msgctxt "STRINGS.SKIN_NAMES.body_polo_blue_denim"
 msgid "Collared Shirt"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.body_wolfgang_survivor
-msgctxt "STRINGS.SKIN_NAMES.body_wolfgang_survivor"
-msgid "Patched Bodysuit"
+#. STRINGS.SKIN_NAMES.body_tweedvest_grey_steel
+msgctxt "STRINGS.SKIN_NAMES.body_tweedvest_grey_steel"
+msgid "Tweed Waistcoat"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.body_wolfgang_formal
-msgctxt "STRINGS.SKIN_NAMES.body_wolfgang_formal"
-msgid "Mess Dress"
+#. STRINGS.SKIN_NAMES.body_wendy_survivor
+msgctxt "STRINGS.SKIN_NAMES.body_wendy_survivor"
+msgid "Shredded Skirt"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.woodie_survivor
@@ -7081,9 +7196,9 @@ msgctxt "STRINGS.SKIN_NAMES.backpack_camping_green_viridian"
 msgid "Rucksack"
 msgstr ""
 
-#. STRINGS.SKIN_NAMES.body_tweedvest_grey_steel
-msgctxt "STRINGS.SKIN_NAMES.body_tweedvest_grey_steel"
-msgid "Tweed Waistcoat"
+#. STRINGS.SKIN_NAMES.body_wes_shadow
+msgctxt "STRINGS.SKIN_NAMES.body_wes_shadow"
+msgid "Cool Shadow Clothes"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.body_wx78_formal
@@ -7366,6 +7481,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.none"
 msgid "Your usual look."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.body_webber_shadow
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_webber_shadow"
+msgid "The hollowed out body of an elegant black widow."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.feet_ridingboot_white_pure
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_ridingboot_white_pure"
 msgid "A pair of 'pure white' colored riding boots. Yee-haw!"
@@ -7376,9 +7496,14 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.waxwell_survivor"
 msgid "This is Maxwell, the intrepid explorer."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.wilson_survivor
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.wilson_survivor"
-msgid "As a scientist, Wilson is well equipped to investigate the natural world."
+#. STRINGS.SKIN_DESCRIPTIONS.wendy_shadow
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wendy_shadow"
+msgid "Wendy has always been comfortable with darkness."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wolfgang_shadow
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wolfgang_shadow"
+msgid "Wolfgang is even mightier than usual."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_buttons_pink_hibiscus
@@ -7436,6 +7561,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_smallbird"
 msgid "This smallbird won't ever grow up and reject you like a real smallbird would."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.body_wilson_shadow
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wilson_shadow"
+msgid "A suit made of shadows. Quite the opposite of flashy."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.backpack_camping_red_koalefant
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_camping_red_koalefant"
 msgid "A rustic rucksack in a 'koalefant trunk red' color."
@@ -7476,6 +7606,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_beltedgloves_brown_beaver"
 msgid "'Werebeaver brown' colored gloves with a buckle on the back to help you hold it together."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.waxwell_unshadow
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.waxwell_unshadow"
+msgid "Before it all went so wrong..."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.body_sweatervest_blue_snowbird
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_sweatervest_blue_snowbird"
 msgid "An 'electrolytic blue' colored vest made of the finest beefalo wool. Unfortunately, it's not actually warm."
@@ -7484,6 +7619,11 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.body_tweedvest_brown_chocolate
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_tweedvest_brown_chocolate"
 msgid "Don't get lost in the tweeds wearing this 'insufficient chocolate brown' colored souvenir from the Village of Tweed."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.willow_shadow
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.willow_shadow"
+msgid "Willow enjoys flickering flames of inky blackness."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_wilson_survivor
@@ -7499,6 +7639,11 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.body_woodie_formal
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_woodie_formal"
 msgid "A real Canadian Jacket, made for real Canadians. (Not out of real Canadians.)"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.webber_shadow
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.webber_shadow"
+msgid "Dark spiders have poisonous fangs."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_polo_red_higgsbury
@@ -7526,9 +7671,19 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_waxwell_survivor"
 msgid "A tragic end to a once-dapper three piece suit."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.body_wickerbottom_shadow
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wickerbottom_shadow"
+msgid "This dress is made from many shadow fragments sewn together."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.backpack_buckle_grey_pewter
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_buckle_grey_pewter"
 msgid "A 'dismal gray' colored backpack with a big, curved buckle."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wickerbottom_shadow
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wickerbottom_shadow"
+msgid "A librarian knows how to watch from the shadows."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_willow_formal
@@ -7554,6 +7709,11 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.backpack_rabbit
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_rabbit"
 msgid "Go down the rabbit hole with this rabbit-shaped backpack."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_wathgrithr_shadow
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wathgrithr_shadow"
+msgid "Dark armor. It looks nice, but unfortunately shadows have no substance."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.backpack_basic_blue_catcoon
@@ -7584,6 +7744,11 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.wx78_survivor
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_survivor"
 msgid "Exposure to the elements causes corrosion."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_woodie_shadow
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_woodie_shadow"
+msgid "Clothes for leaping from tree to tree and eating buttered scones."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.feet_maryjanes_white_pure
@@ -7621,9 +7786,9 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_tweedvest_green_hunters"
 msgid "Don't get lost in the tweeds wearing this 'forest guardian green' colored souvenir from the Village of Tweed."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.wolfgang_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.wolfgang_formal"
-msgid "Wolfgang enjoys formal dinners: the food is usually excellent."
+#. STRINGS.SKIN_DESCRIPTIONS.body_waxwell_unshadow
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_waxwell_unshadow"
+msgid "This look hearkens back to a simpler time. You are missed, Charlie."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_flannel_orange_lumberjack
@@ -7656,6 +7821,36 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_flannel_blue_snowbird"
 msgid "Well, it's not buckskin but it's still skookum. It's 'electrolytic blue' colored with no foofaraw."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.hand_longgloves_yellow_straw
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_longgloves_yellow_straw"
+msgid "'Sulfuric yellow' colored gloves suitable for all types of persons, robots, and monsters."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_formal"
+msgid "A moustached mechanical man."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_wendy_shadow
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wendy_shadow"
+msgid "Finally the darkness envelops you, as you always knew it would."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wes_shadow
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wes_shadow"
+msgid "The sun is too bright. It blots out the darkness."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wolfgang_survivor
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wolfgang_survivor"
+msgid "In the wilderness, only the mighty survive."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wolfgang_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wolfgang_formal"
+msgid "Wolfgang enjoys formal dinners: the food is usually excellent."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.body_silk_eveningrobe_yellow_goldenrod
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_silk_eveningrobe_yellow_goldenrod"
 msgid "So smooth, you'll never want to let go of this 'downright neighborly yellow' colored robe."
@@ -7664,6 +7859,11 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.backpack_basic_green_olive
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_basic_green_olive"
 msgid "Carry your stuff in a 'forever green' colored backpack."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wilson_survivor
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wilson_survivor"
+msgid "As a scientist, Wilson is well equipped to investigate the natural world."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_tshirt_purple_mauve
@@ -7681,49 +7881,9 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_skirt_basic_brown_sepia"
 msgid "Wearing this 'werebeaver brown' colored skirt won't help you survive... But you'll look great!"
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.backpack_mushy
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_mushy"
-msgid "A backpack which has grown moldy from disuse."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.body_waxwell_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_waxwell_formal"
-msgid "The delightful aroma of mothballs and decay wafts off it."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.body_buttons_green_laurel
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_buttons_green_laurel"
-msgid "A shirt that buttons up the front, in a 'willful green' color. Luckily for you, the fabric is a non-iron material. Unfortunately, the placket will still wrinkle as you wear it."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.body_cardigan_white_ghost
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_cardigan_white_ghost"
-msgid "A 'ghost white' colored cardigan. As soft as it is comfortable."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.wx78_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_formal"
-msgid "A moustached mechanical man."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.missing
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.missing"
-msgid "This item completely mystifies you"
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.body_wendy_survivor
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wendy_survivor"
-msgid "This skirt has had a close brush with the forces of darkness."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.body_wilson_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wilson_formal"
-msgid "Some events ask for white tie, and some ask for black tie. Well, this is red tie."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.wolfgang_survivor
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.wolfgang_survivor"
-msgid "In the wilderness, only the mighty survive."
+#. STRINGS.SKIN_DESCRIPTIONS.wilson_shadow
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wilson_shadow"
+msgid "Wilson has learned the science of shadows."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.wilson_formal
@@ -7741,14 +7901,84 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.willow_formal"
 msgid "Willow prefers events that include bonfires or fireworks."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.backpack_mushy
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_mushy"
+msgid "A backpack which has grown moldy from disuse."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_waxwell_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_waxwell_formal"
+msgid "The delightful aroma of mothballs and decay wafts off it."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.body_suspenders_yellow_flax
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_suspenders_yellow_flax"
 msgid "Wearing this 'follicle yellow' colored shirt makes you feel like the cat's pajamas."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.body_buttons_green_laurel
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_buttons_green_laurel"
+msgid "A shirt that buttons up the front, in a 'willful green' color. Luckily for you, the fabric is a non-iron material. Unfortunately, the placket will still wrinkle as you wear it."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_cardigan_white_ghost
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_cardigan_white_ghost"
+msgid "A 'ghost white' colored cardigan. As soft as it is comfortable."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.wes_survivor
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.wes_survivor"
 msgid "Even mimes can fight if confronted with a monster."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.woodie_shadow
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.woodie_shadow"
+msgid "The shadow realm is pretty much the same as here, just darker."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.missing
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.missing"
+msgid "This item completely mystifies you"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wes_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wes_formal"
+msgid "Formal Wes requires extra pomade."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_wilson_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wilson_formal"
+msgid "Some events ask for white tie, and some ask for black tie. Well, this is red tie."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wendy_survivor
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wendy_survivor"
+msgid "Wendy is actually pretty good at surviving."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.webber_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.webber_formal"
+msgid "Webber takes parties seriously."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.waxwell_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.waxwell_formal"
+msgid "Against all possible odds Maxwell has become even more dapper."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wathgrithr_shadow
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wathgrithr_shadow"
+msgid "Go to the dark side and be on top of the world."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wathgrithr_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wathgrithr_formal"
+msgid "She resembles a Visigothic princess."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.firepit_fanged
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.firepit_fanged"
+msgid "Thish firepit ish made of rocksh that reshemble fangsh. What would it shay if it could shpeak?"
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_trimmed_blouse_white_pure
@@ -7761,34 +7991,9 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_polo_yellow_goldenrod"
 msgid "A 'downright neighborly yellow' colored polo shirt. Don't let your collar flap in the wind."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.webber_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.webber_formal"
-msgid "Webber takes parties seriously."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.wes_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.wes_formal"
-msgid "Formal Wes requires extra pomade."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.wendy_survivor
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.wendy_survivor"
-msgid "Wendy is actually pretty good at surviving."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.waxwell_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.waxwell_formal"
-msgid "Against all possible odds Maxwell has become even more dapper."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.body_wendy_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wendy_formal"
-msgid "A cute party dress with puffed sleeves."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.wathgrithr_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.wathgrithr_formal"
-msgid "She resembles a Visigothic princess."
+#. STRINGS.SKIN_DESCRIPTIONS.body_willow_shadow
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_willow_shadow"
+msgid "This dress flickers as if it were on fire... If that fire were made of shadows."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.torch_rag
@@ -7806,9 +8011,9 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_skirt_plaid_blue_cornflower"
 msgid "This 'rubber glove blue' colored skirt isn't a proper kilt, but you feel vaguely Scottish anyway."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.hand_drivergloves_white_ivory
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_drivergloves_white_ivory"
-msgid "These 'houndbone white' colored gloves are worn by good looking people who look cool."
+#. STRINGS.SKIN_DESCRIPTIONS.body_wendy_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wendy_formal"
+msgid "A cute party dress with puffed sleeves."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.legs_skirt_basic_tan_cream
@@ -7831,6 +8036,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_checkered_pleats_green_laurel"
 msgid "These 'willful green' colored pants are perfect for playing checkers, or checking items off your to-do list."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.hand_drivergloves_white_ivory
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_drivergloves_white_ivory"
+msgid "These 'houndbone white' colored gloves are worn by good looking people who look cool."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.legs_checkered_pleats_blue_cornflower
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_checkered_pleats_blue_cornflower"
 msgid "These 'rubber glove blue' colored pants are perfect for playing checkers, or checking items off your to-do list."
@@ -7839,16 +8049,6 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.hand_shortgloves_white_smoke
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_shortgloves_white_smoke"
 msgid "These are gloves. They cover your hands. This pair is 'smoke white' colored."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.hand_longgloves_grey_battleship
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_longgloves_grey_battleship"
-msgid "'Cumulus gray' colored gloves suitable for all types of persons, robots, and monsters."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.feet_sneakers_red_auburn
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_sneakers_red_auburn"
-msgid "Wear these 'low pH red' colored sneakers surreptitiously."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.hand_shortgloves_red_higgsbury
@@ -7861,9 +8061,9 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_shortgloves_blue_cornflower"
 msgid "These are gloves. They cover your hands. This pair is 'rubber glove blue' colored."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.hand_longgloves_yellow_straw
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_longgloves_yellow_straw"
-msgid "'Sulfuric yellow' colored gloves suitable for all types of persons, robots, and monsters."
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_shadow
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_shadow"
+msgid "A truly evil robot."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.hand_longgloves_green_hunters
@@ -7871,14 +8071,14 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_longgloves_green_hunters"
 msgid "'Forest guardian green' colored gloves suitable for all types of persons, robots, and monsters."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.body_wx78_survivor
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wx78_survivor"
-msgid "It may have seen better days, but this body is still minimally functional."
+#. STRINGS.SKIN_DESCRIPTIONS.hand_longgloves_grey_battleship
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_longgloves_grey_battleship"
+msgid "'Cumulus gray' colored gloves suitable for all types of persons, robots, and monsters."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.body_trenchcoat_yellow_straw
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_trenchcoat_yellow_straw"
-msgid "A fashionable but unprotective trench coat in a 'sulfuric yellow' color."
+#. STRINGS.SKIN_DESCRIPTIONS.feet_sneakers_red_auburn
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_sneakers_red_auburn"
+msgid "Wear these 'low pH red' colored sneakers surreptitiously."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.firepit_stonehenge
@@ -7886,14 +8086,9 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.firepit_stonehenge"
 msgid "A firepit modeled after an ancient, giant monument. Luckily, this version is sized more appropriately for humans (and human-sized entities)."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.body_trenchcoat_brown_fawn
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_trenchcoat_brown_fawn"
-msgid "A fashionable but unprotective trench coat in a 'werebeaver brown' color."
-msgstr ""
-
-#. STRINGS.SKIN_DESCRIPTIONS.firepit_fanged
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.firepit_fanged"
-msgid "Thish firepit ish made of rocksh that reshemble fangsh. What would it shay if it could shpeak?"
+#. STRINGS.SKIN_DESCRIPTIONS.torch_shadow
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.torch_shadow"
+msgid "At first glance this torch appears menacing, but holding it makes you feel quite sad."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.feet_sneakers_green_cactus
@@ -7906,9 +8101,24 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_sneakers_blue_catcoon"
 msgid "Wear these 'catcoon blue' colored sneakers surreptitiously."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.body_wx78_survivor
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wx78_survivor"
+msgid "It may have seen better days, but this body is still minimally functional."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_trenchcoat_yellow_straw
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_trenchcoat_yellow_straw"
+msgid "A fashionable but unprotective trench coat in a 'sulfuric yellow' color."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.feet_formal_highheel_white_pure
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_formal_highheel_white_pure"
 msgid "Dress to the nines in these 'pure white' colored shoes."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_trenchcoat_brown_fawn
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_trenchcoat_brown_fawn"
+msgid "A fashionable but unprotective trench coat in a 'werebeaver brown' color."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.feet_fleece_boot_brown_sepia
@@ -7919,6 +8129,26 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.cookpot_survival
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.cookpot_survival"
 msgid "This cooking pot looks kind of beaten up, but the food it cooks still tastes delicious."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_wx78_shadow
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wx78_shadow"
+msgid "A dark automaton chassis with a lovely decorative gemstone."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_tshirt_white_smoke
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_tshirt_white_smoke"
+msgid "A 'smoke white' colored shirt. Wilson is working on a W-shirt, but this prototype came out more T-shaped."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_wolfgang_survivor
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wolfgang_survivor"
+msgid "Wearing fur makes you feel like mighty animal!"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_wolfgang_shadow
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wolfgang_shadow"
+msgid "These clothes put hair on your chest."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_wathgrithr_formal
@@ -7936,9 +8166,9 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_willow_survivor"
 msgid "These clothes aren't good for anything except fueling a fire."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.body_tshirt_white_smoke
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_tshirt_white_smoke"
-msgid "A 'smoke white' colored shirt. Wilson is working on a W-shirt, but this prototype came out more T-shaped."
+#. STRINGS.SKIN_DESCRIPTIONS.body_wolfgang_formal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wolfgang_formal"
+msgid "Formal dinner attire for military officers."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_polo_blue_denim
@@ -7946,14 +8176,14 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_polo_blue_denim"
 msgid "A 'hyper-intelligent blue' colored polo shirt. Don't let your collar flap in the wind."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.body_wolfgang_survivor
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wolfgang_survivor"
-msgid "Wearing fur makes you feel like mighty animal!"
+#. STRINGS.SKIN_DESCRIPTIONS.body_tweedvest_grey_steel
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_tweedvest_grey_steel"
+msgid "Don't get lost in the tweeds wearing this 'colloidal silver gray' colored souvenir from the Village of Tweed."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.body_wolfgang_formal
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wolfgang_formal"
-msgid "Formal dinner attire for military officers."
+#. STRINGS.SKIN_DESCRIPTIONS.body_wendy_survivor
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wendy_survivor"
+msgid "This skirt has had a close brush with the forces of darkness."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.woodie_survivor
@@ -7976,9 +8206,9 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_camping_green_viridian"
 msgid "A rustic rucksack in a 'subaqueous megafauna green' color."
 msgstr ""
 
-#. STRINGS.SKIN_DESCRIPTIONS.body_tweedvest_grey_steel
-msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_tweedvest_grey_steel"
-msgid "Don't get lost in the tweeds wearing this 'colloidal silver gray' colored souvenir from the Village of Tweed."
+#. STRINGS.SKIN_DESCRIPTIONS.body_wes_shadow
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wes_shadow"
+msgid "Dark clothes for cool people."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_wx78_formal
@@ -8086,9 +8316,24 @@ msgctxt "STRINGS.SKIN_QUOTES.wolfgang_formal"
 msgid "I used my special moustache wax."
 msgstr ""
 
+#. STRINGS.SKIN_QUOTES.woodie_shadow
+msgctxt "STRINGS.SKIN_QUOTES.woodie_shadow"
+msgid "Forests are full of shadows, eh?"
+msgstr ""
+
+#. STRINGS.SKIN_QUOTES.webber_shadow
+msgctxt "STRINGS.SKIN_QUOTES.webber_shadow"
+msgid "Come closer - we are hungry!"
+msgstr ""
+
 #. STRINGS.SKIN_QUOTES.waxwell_formal
 msgctxt "STRINGS.SKIN_QUOTES.waxwell_formal"
 msgid "I just need to find my beautiful assistant."
+msgstr ""
+
+#. STRINGS.SKIN_QUOTES.wx78_survivor
+msgctxt "STRINGS.SKIN_QUOTES.wx78_survivor"
+msgid "PLEASE DIRECT ME TO THE NEAREST REPAIR SHOP"
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.waxwell_survivor
@@ -8101,9 +8346,29 @@ msgctxt "STRINGS.SKIN_QUOTES.webber_survivor"
 msgid "I want to go home, but we can't find the way."
 msgstr ""
 
+#. STRINGS.SKIN_QUOTES.wx78_shadow
+msgctxt "STRINGS.SKIN_QUOTES.wx78_shadow"
+msgid "I AM AN EVIL ROBOT"
+msgstr ""
+
+#. STRINGS.SKIN_QUOTES.wendy_shadow
+msgctxt "STRINGS.SKIN_QUOTES.wendy_shadow"
+msgid "Shadows are as black as ink, or night, or nightmares."
+msgstr ""
+
+#. STRINGS.SKIN_QUOTES.wolfgang_shadow
+msgctxt "STRINGS.SKIN_QUOTES.wolfgang_shadow"
+msgid "Do not challenge the Mighty Wolfgang!"
+msgstr ""
+
 #. STRINGS.SKIN_QUOTES.wilson_survivor
 msgctxt "STRINGS.SKIN_QUOTES.wilson_survivor"
 msgid "There is a scientific solution, here. I know it."
+msgstr ""
+
+#. STRINGS.SKIN_QUOTES.woodie_survivor
+msgctxt "STRINGS.SKIN_QUOTES.woodie_survivor"
+msgid "I could do with a haircut and a cup of tea, eh?"
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.webber_formal
@@ -8116,9 +8381,24 @@ msgctxt "STRINGS.SKIN_QUOTES.wendy_survivor"
 msgid "I carry on for Abigail's sake."
 msgstr ""
 
+#. STRINGS.SKIN_QUOTES.wickerbottom_shadow
+msgctxt "STRINGS.SKIN_QUOTES.wickerbottom_shadow"
+msgid "Knowledge is power!"
+msgstr ""
+
+#. STRINGS.SKIN_QUOTES.woodie_formal
+msgctxt "STRINGS.SKIN_QUOTES.woodie_formal"
+msgid "I clean up pretty good, eh?"
+msgstr ""
+
 #. STRINGS.SKIN_QUOTES.wathgrithr_survivor
 msgctxt "STRINGS.SKIN_QUOTES.wathgrithr_survivor"
 msgid "You have to try harder than this to defeat me!"
+msgstr ""
+
+#. STRINGS.SKIN_QUOTES.wolfgang_survivor
+msgctxt "STRINGS.SKIN_QUOTES.wolfgang_survivor"
+msgid "Wolfgang is tough. Lots of muscle."
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.wx78_formal
@@ -8126,9 +8406,9 @@ msgctxt "STRINGS.SKIN_QUOTES.wx78_formal"
 msgid "I POLISHED MY CHASSIS FOR THE OCCASION"
 msgstr ""
 
-#. STRINGS.SKIN_QUOTES.woodie_survivor
-msgctxt "STRINGS.SKIN_QUOTES.woodie_survivor"
-msgid "I could do with a haircut and a cup of tea, eh?"
+#. STRINGS.SKIN_QUOTES.waxwell_unshadow
+msgctxt "STRINGS.SKIN_QUOTES.waxwell_unshadow"
+msgid "The poor unsuspecting fool has no idea what's coming."
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.wendy_formal
@@ -8141,24 +8421,9 @@ msgctxt "STRINGS.SKIN_QUOTES.willow_survivor"
 msgid "Surviving just requires strength of will. (And fire.)"
 msgstr ""
 
-#. STRINGS.SKIN_QUOTES.wx78_survivor
-msgctxt "STRINGS.SKIN_QUOTES.wx78_survivor"
-msgid "PLEASE DIRECT ME TO THE NEAREST REPAIR SHOP"
-msgstr ""
-
-#. STRINGS.SKIN_QUOTES.woodie_formal
-msgctxt "STRINGS.SKIN_QUOTES.woodie_formal"
-msgid "I clean up pretty good, eh?"
-msgstr ""
-
 #. STRINGS.SKIN_QUOTES.willow_formal
 msgctxt "STRINGS.SKIN_QUOTES.willow_formal"
 msgid "He died before getting to see these beautiful flames."
-msgstr ""
-
-#. STRINGS.SKIN_QUOTES.wickerbottom_survivor
-msgctxt "STRINGS.SKIN_QUOTES.wickerbottom_survivor"
-msgid "I hope I don't break my glasses."
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.wilson_formal
@@ -8166,9 +8431,24 @@ msgctxt "STRINGS.SKIN_QUOTES.wilson_formal"
 msgid "I hate parties."
 msgstr ""
 
-#. STRINGS.SKIN_QUOTES.wolfgang_survivor
-msgctxt "STRINGS.SKIN_QUOTES.wolfgang_survivor"
-msgid "Wolfgang is tough. Lots of muscle."
+#. STRINGS.SKIN_QUOTES.wathgrithr_shadow
+msgctxt "STRINGS.SKIN_QUOTES.wathgrithr_shadow"
+msgid "I will destroy my enemies!"
+msgstr ""
+
+#. STRINGS.SKIN_QUOTES.wickerbottom_survivor
+msgctxt "STRINGS.SKIN_QUOTES.wickerbottom_survivor"
+msgid "I hope I don't break my glasses."
+msgstr ""
+
+#. STRINGS.SKIN_QUOTES.wilson_shadow
+msgctxt "STRINGS.SKIN_QUOTES.wilson_shadow"
+msgid "Mwahahaha!"
+msgstr ""
+
+#. STRINGS.SKIN_QUOTES.willow_shadow
+msgctxt "STRINGS.SKIN_QUOTES.willow_shadow"
+msgid "Shadows are just inverted flames."
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.wickerbottom_formal
@@ -14656,19 +14936,14 @@ msgctxt "STRINGS.CHARACTERS.WX78.ACTIONFAIL.GIVEALLTOPLAYER.DEAD"
 msgid "WHY? THEY'RE DEAD."
 msgstr ""
 
-#. STRINGS.CHARACTERS.WX78.ACTIONFAIL.GIVE.BUSY
-msgctxt "STRINGS.CHARACTERS.WX78.ACTIONFAIL.GIVE.BUSY"
-msgid "TARGET IS PREOCCUPIED"
+#. STRINGS.CHARACTERS.WX78.ACTIONFAIL.WRITE.GENERIC
+msgctxt "STRINGS.CHARACTERS.WX78.ACTIONFAIL.WRITE.GENERIC"
+msgid "ERROR: CANNOT FULFIL REQUEST"
 msgstr ""
 
-#. STRINGS.CHARACTERS.WX78.ACTIONFAIL.GIVE.SLEEPING
-msgctxt "STRINGS.CHARACTERS.WX78.ACTIONFAIL.GIVE.SLEEPING"
-msgid "IT'S BUSY RECHARGING"
-msgstr ""
-
-#. STRINGS.CHARACTERS.WX78.ACTIONFAIL.GIVE.DEAD
-msgctxt "STRINGS.CHARACTERS.WX78.ACTIONFAIL.GIVE.DEAD"
-msgid "WHY? THEY'RE DEAD."
+#. STRINGS.CHARACTERS.WX78.ACTIONFAIL.WRITE.INUSE
+msgctxt "STRINGS.CHARACTERS.WX78.ACTIONFAIL.WRITE.INUSE"
+msgid "PRIMITIVE MESSAGEBOARD OCCUPIED"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.ACTIONFAIL.GIVETOPLAYER.FULL
@@ -14691,14 +14966,49 @@ msgctxt "STRINGS.CHARACTERS.WX78.ACTIONFAIL.GIVETOPLAYER.DEAD"
 msgid "WHY? THEY'RE DEAD."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WX78.ACTIONFAIL.ATTUNE.NOHEALTH
+msgctxt "STRINGS.CHARACTERS.WX78.ACTIONFAIL.ATTUNE.NOHEALTH"
+msgid "I MUST MAKE REPAIRS BEFORE DOING THIS."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WX78.ACTIONFAIL.MOUNT.INUSE
 msgctxt "STRINGS.CHARACTERS.WX78.ACTIONFAIL.MOUNT.INUSE"
 msgid "ERROR: MOUNT IN USE"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WX78.ACTIONFAIL.CHANGEIN.GENERIC
+msgctxt "STRINGS.CHARACTERS.WX78.ACTIONFAIL.CHANGEIN.GENERIC"
+msgid "THERE ARE MORE IMPORTANT ISSUES TO ATTEND TO"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WX78.ACTIONFAIL.CHANGEIN.INUSE
+msgctxt "STRINGS.CHARACTERS.WX78.ACTIONFAIL.CHANGEIN.INUSE"
+msgid "OCCUPIED"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WX78.ACTIONFAIL.CHANGEIN.BURNING
+msgctxt "STRINGS.CHARACTERS.WX78.ACTIONFAIL.CHANGEIN.BURNING"
+msgid "IT'S BURNING. OH WELL."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WX78.ACTIONFAIL.SADDLE.TARGETINCOMBAT
 msgctxt "STRINGS.CHARACTERS.WX78.ACTIONFAIL.SADDLE.TARGETINCOMBAT"
 msgid "I'LL RIDE IT LATER. RIGHT NOW IT FIGHTS FOR MY AMUSEMENT."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WX78.ACTIONFAIL.GIVE.BUSY
+msgctxt "STRINGS.CHARACTERS.WX78.ACTIONFAIL.GIVE.BUSY"
+msgid "TARGET IS PREOCCUPIED"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WX78.ACTIONFAIL.GIVE.SLEEPING
+msgctxt "STRINGS.CHARACTERS.WX78.ACTIONFAIL.GIVE.SLEEPING"
+msgid "IT'S BUSY RECHARGING"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WX78.ACTIONFAIL.GIVE.DEAD
+msgctxt "STRINGS.CHARACTERS.WX78.ACTIONFAIL.GIVE.DEAD"
+msgid "WHY? THEY'RE DEAD."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.ACTIONFAIL.SHAVE.GENERIC
@@ -19371,14 +19681,44 @@ msgctxt "STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.GIVETOPLAYER.DEAD"
 msgid "They'll have better things in Valhalla."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.ATTUNE.NOHEALTH
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.ATTUNE.NOHEALTH"
+msgid "Alas, I am too stricken."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.MOUNT.INUSE
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.MOUNT.INUSE"
 msgid "I'll need to be faster than that in battle!"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.CHANGEIN.GENERIC
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.CHANGEIN.GENERIC"
+msgid "Why change when my costume is already so magnificent?"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.CHANGEIN.INUSE
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.CHANGEIN.INUSE"
+msgid "Even a trained actor can't perform a costume change that fast!."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.CHANGEIN.BURNING
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.CHANGEIN.BURNING"
+msgid "Gasp! My costumes!"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.SADDLE.TARGETINCOMBAT
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.SADDLE.TARGETINCOMBAT"
 msgid "I'll only ride it if it's the victor."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.WRITE.GENERIC
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.WRITE.GENERIC"
+msgid "I fear I cannot!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.WRITE.INUSE
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.WRITE.INUSE"
+msgid "I shall valiantly wait my turn."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.SHAVE.GENERIC
@@ -21943,7 +22283,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.FLOWER.GENERIC
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.FLOWER.GENERIC"
-msgid "A flower from Freia."
+msgid "A flower from Freya."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.FLOWER.ROSE
@@ -23818,7 +24158,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.ARMORRUINS
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.ARMORRUINS"
-msgid "Armour fit for Odin himself!"
+msgid "Armor fit for Odin himself!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.SADDLE_BASIC
@@ -24046,19 +24386,14 @@ msgctxt "STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.GIVEALLTOPLAYER.DEAD"
 msgid "You know is dead, yes?"
 msgstr ""
 
-#. STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.GIVE.BUSY
-msgctxt "STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.GIVE.BUSY"
-msgid "The Mighty Wolfgang will try again soon!"
+#. STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.WRITE.GENERIC
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.WRITE.GENERIC"
+msgid "I'm not mighty enough to do that."
 msgstr ""
 
-#. STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.GIVE.SLEEPING
-msgctxt "STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.GIVE.SLEEPING"
-msgid "Is sleeping now!"
-msgstr ""
-
-#. STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.GIVE.DEAD
-msgctxt "STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.GIVE.DEAD"
-msgid "You know is dead, yes?"
+#. STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.WRITE.INUSE
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.WRITE.INUSE"
+msgid "Can Wolfgang help make scribblemarks when you're done?"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.GIVETOPLAYER.FULL
@@ -24081,14 +24416,49 @@ msgctxt "STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.GIVETOPLAYER.DEAD"
 msgid "You know is dead, yes?"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.ATTUNE.NOHEALTH
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.ATTUNE.NOHEALTH"
+msgid "Wolfgang is too woozy to do this."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.MOUNT.INUSE
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.MOUNT.INUSE"
 msgid "Hair-cow is occupied by another."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.CHANGEIN.GENERIC
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.CHANGEIN.GENERIC"
+msgid "Clothes only good for ripping with strong muscles!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.CHANGEIN.INUSE
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.CHANGEIN.INUSE"
+msgid "Wolfgang will wait til they leave to change. He is shy."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.CHANGEIN.BURNING
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.CHANGEIN.BURNING"
+msgid "Wolfgang's weekday undergarments burning? Wolfgang is sad."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.SADDLE.TARGETINCOMBAT
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.SADDLE.TARGETINCOMBAT"
 msgid "I cannot ride it now! Hair-cow is proving itself in battle!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.GIVE.BUSY
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.GIVE.BUSY"
+msgid "The Mighty Wolfgang will try again soon!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.GIVE.SLEEPING
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.GIVE.SLEEPING"
+msgid "Is sleeping now!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.GIVE.DEAD
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.GIVE.DEAD"
+msgid "You know is dead, yes?"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.SHAVE.GENERIC
@@ -26688,7 +27058,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.FLINT
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.FLINT"
-msgid "Is rock, but pointy-er."
+msgid "Is rock, but eh, pointy."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.FEATHER_ROBIN
@@ -27183,7 +27553,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.PEROGIES
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.PEROGIES"
-msgid "Wolfgang love perogi!"
+msgid "Wolfgang love pierogi!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.FROGGLEBUNWICH
@@ -28776,19 +29146,14 @@ msgctxt "STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.GIVEALLTOPLAYER.DEAD"
 msgid "The dead have no need of such things."
 msgstr ""
 
-#. STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.GIVE.BUSY
-msgctxt "STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.GIVE.BUSY"
-msgid "It's busy, currently.."
+#. STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.WRITE.GENERIC
+msgctxt "STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.WRITE.GENERIC"
+msgid "I'm unable to do that right now."
 msgstr ""
 
-#. STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.GIVE.SLEEPING
-msgctxt "STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.GIVE.SLEEPING"
-msgid "It's thoroughly unconscious."
-msgstr ""
-
-#. STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.GIVE.DEAD
-msgctxt "STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.GIVE.DEAD"
-msgid "The dead have no need of such things."
+#. STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.WRITE.INUSE
+msgctxt "STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.WRITE.INUSE"
+msgid "I can wait... it's the courteous thing to do."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.GIVETOPLAYER.FULL
@@ -28811,9 +29176,39 @@ msgctxt "STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.GIVETOPLAYER.DEAD"
 msgid "The dead have no need of such things."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.GIVE.BUSY
+msgctxt "STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.GIVE.BUSY"
+msgid "It's busy, currently.."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.GIVE.SLEEPING
+msgctxt "STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.GIVE.SLEEPING"
+msgid "It's thoroughly unconscious."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.GIVE.DEAD
+msgctxt "STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.GIVE.DEAD"
+msgid "The dead have no need of such things."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.MOUNT.INUSE
 msgctxt "STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.MOUNT.INUSE"
 msgid "I should have reached for the saddle sooner."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.CHANGEIN.GENERIC
+msgctxt "STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.CHANGEIN.GENERIC"
+msgid "How could you improve on perfection?"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.CHANGEIN.INUSE
+msgctxt "STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.CHANGEIN.INUSE"
+msgid "They're in much more dire need of it."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.CHANGEIN.BURNING
+msgctxt "STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.CHANGEIN.BURNING"
+msgid "Oh. There go all my good pocket squares. Sigh."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.SADDLE.TARGETINCOMBAT
@@ -33471,19 +33866,14 @@ msgctxt "STRINGS.CHARACTERS.WENDY.ACTIONFAIL.GIVEALLTOPLAYER.DEAD"
 msgid "They've no need of material possessions where they've gone."
 msgstr ""
 
-#. STRINGS.CHARACTERS.WENDY.ACTIONFAIL.GIVE.BUSY
-msgctxt "STRINGS.CHARACTERS.WENDY.ACTIONFAIL.GIVE.BUSY"
-msgid "It's too busy to pay attention to me..."
+#. STRINGS.CHARACTERS.WENDY.ACTIONFAIL.WRITE.GENERIC
+msgctxt "STRINGS.CHARACTERS.WENDY.ACTIONFAIL.WRITE.GENERIC"
+msgid "I... I can't."
 msgstr ""
 
-#. STRINGS.CHARACTERS.WENDY.ACTIONFAIL.GIVE.SLEEPING
-msgctxt "STRINGS.CHARACTERS.WENDY.ACTIONFAIL.GIVE.SLEEPING"
-msgid "I'll come back later..."
-msgstr ""
-
-#. STRINGS.CHARACTERS.WENDY.ACTIONFAIL.GIVE.DEAD
-msgctxt "STRINGS.CHARACTERS.WENDY.ACTIONFAIL.GIVE.DEAD"
-msgid "They've no need of material possessions where they've gone."
+#. STRINGS.CHARACTERS.WENDY.ACTIONFAIL.WRITE.INUSE
+msgctxt "STRINGS.CHARACTERS.WENDY.ACTIONFAIL.WRITE.INUSE"
+msgid "Take your time... I'll just watch."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.ACTIONFAIL.GIVETOPLAYER.FULL
@@ -33506,9 +33896,39 @@ msgctxt "STRINGS.CHARACTERS.WENDY.ACTIONFAIL.GIVETOPLAYER.DEAD"
 msgid "They've no need of material possessions where they've gone."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WENDY.ACTIONFAIL.GIVE.BUSY
+msgctxt "STRINGS.CHARACTERS.WENDY.ACTIONFAIL.GIVE.BUSY"
+msgid "It's too busy to pay attention to me..."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WENDY.ACTIONFAIL.GIVE.SLEEPING
+msgctxt "STRINGS.CHARACTERS.WENDY.ACTIONFAIL.GIVE.SLEEPING"
+msgid "I'll come back later..."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WENDY.ACTIONFAIL.GIVE.DEAD
+msgctxt "STRINGS.CHARACTERS.WENDY.ACTIONFAIL.GIVE.DEAD"
+msgid "They've no need of material possessions where they've gone."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WENDY.ACTIONFAIL.MOUNT.INUSE
 msgctxt "STRINGS.CHARACTERS.WENDY.ACTIONFAIL.MOUNT.INUSE"
 msgid "I'll have to be quicker to the saddle next time."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WENDY.ACTIONFAIL.CHANGEIN.GENERIC
+msgctxt "STRINGS.CHARACTERS.WENDY.ACTIONFAIL.CHANGEIN.GENERIC"
+msgid "What's the point."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WENDY.ACTIONFAIL.CHANGEIN.INUSE
+msgctxt "STRINGS.CHARACTERS.WENDY.ACTIONFAIL.CHANGEIN.INUSE"
+msgid "I'd like to use that after you. If you don't mind, I mean."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WENDY.ACTIONFAIL.CHANGEIN.BURNING
+msgctxt "STRINGS.CHARACTERS.WENDY.ACTIONFAIL.CHANGEIN.BURNING"
+msgid "I guess I won't be changing again anytime soon."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.ACTIONFAIL.SADDLE.TARGETINCOMBAT
@@ -38106,19 +38526,14 @@ msgctxt "STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.GIVEALLTOPLAYER.DEAD"
 msgid "We should probably keep it."
 msgstr ""
 
-#. STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.GIVE.BUSY
-msgctxt "STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.GIVE.BUSY"
-msgid "We can try again when it's finished."
+#. STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.WRITE.GENERIC
+msgctxt "STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.WRITE.GENERIC"
+msgid "We can't write on that now."
 msgstr ""
 
-#. STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.GIVE.SLEEPING
-msgctxt "STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.GIVE.SLEEPING"
-msgid "Aww... It's sleepy-snoozy right now!"
-msgstr ""
-
-#. STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.GIVE.DEAD
-msgctxt "STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.GIVE.DEAD"
-msgid "We should probably keep it."
+#. STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.WRITE.INUSE
+msgctxt "STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.WRITE.INUSE"
+msgid "We'll get our crayons ready while they finish up!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.GIVETOPLAYER.FULL
@@ -38141,14 +38556,49 @@ msgctxt "STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.GIVETOPLAYER.DEAD"
 msgid "We should probably keep it."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.ATTUNE.NOHEALTH
+msgctxt "STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.ATTUNE.NOHEALTH"
+msgid "We don't feel so good right now. Later?"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.MOUNT.INUSE
 msgctxt "STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.MOUNT.INUSE"
 msgid "We didn't climb on to saddle in time!"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.CHANGEIN.GENERIC
+msgctxt "STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.CHANGEIN.GENERIC"
+msgid "Not right now, we're comfy."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.CHANGEIN.INUSE
+msgctxt "STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.CHANGEIN.INUSE"
+msgid "We'll give them some privacy while they change."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.CHANGEIN.BURNING
+msgctxt "STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.CHANGEIN.BURNING"
+msgid "Woah! Hot fashions!"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.SADDLE.TARGETINCOMBAT
 msgctxt "STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.SADDLE.TARGETINCOMBAT"
 msgid "It's too angry!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.GIVE.BUSY
+msgctxt "STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.GIVE.BUSY"
+msgid "We can try again when it's finished."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.GIVE.SLEEPING
+msgctxt "STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.GIVE.SLEEPING"
+msgid "Aww... It's sleepy-snoozy right now!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.GIVE.DEAD
+msgctxt "STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.GIVE.DEAD"
+msgid "We should probably keep it."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.SHAVE.GENERIC
@@ -38368,7 +38818,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.ANNOUNCE_NONIGHTSIESTA_CAVE
 msgctxt "STRINGS.CHARACTERS.WEBBER.ANNOUNCE_NONIGHTSIESTA_CAVE"
-msgid "No naps 'til daybreak!"
+msgid "No naps til daybreak!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.ANNOUNCE_EAT.GENERIC
@@ -42761,19 +43211,14 @@ msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.GIVEALLTOPLAYER.DEAD"
 msgid "That would be a waste."
 msgstr ""
 
-#. STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.GIVE.BUSY
-msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.GIVE.BUSY"
-msgid "I'll try again when it's done.."
+#. STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.WRITE.GENERIC
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.WRITE.GENERIC"
+msgid "I cannot."
 msgstr ""
 
-#. STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.GIVE.SLEEPING
-msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.GIVE.SLEEPING"
-msgid "It appear to be sleeping."
-msgstr ""
-
-#. STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.GIVE.DEAD
-msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.GIVE.DEAD"
-msgid "That would be a waste."
+#. STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.WRITE.INUSE
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.WRITE.INUSE"
+msgid "When you're done, dear."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.GIVETOPLAYER.FULL
@@ -42796,9 +43241,39 @@ msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.GIVETOPLAYER.DEAD"
 msgid "That would be a waste."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.GIVE.BUSY
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.GIVE.BUSY"
+msgid "I'll try again when it's done.."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.GIVE.SLEEPING
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.GIVE.SLEEPING"
+msgid "It appear to be sleeping."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.GIVE.DEAD
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.GIVE.DEAD"
+msgid "That would be a waste."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.MOUNT.INUSE
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.MOUNT.INUSE"
 msgid "Patience is required. I can ride this beefalo later."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.CHANGEIN.GENERIC
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.CHANGEIN.GENERIC"
+msgid "I think I look pretty smart already."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.CHANGEIN.INUSE
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.CHANGEIN.INUSE"
+msgid "If I could use that after you, dear."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.CHANGEIN.BURNING
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.CHANGEIN.BURNING"
+msgid "No more changes for me. It's gone up in flames."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.SADDLE.TARGETINCOMBAT
@@ -47426,19 +47901,14 @@ msgctxt "STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.GIVEALLTOPLAYER.DEAD"
 msgid "I don't think they... um..."
 msgstr ""
 
-#. STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.GIVE.BUSY
-msgctxt "STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.GIVE.BUSY"
-msgid "I'll try again in a mo'."
+#. STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.WRITE.GENERIC
+msgctxt "STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.WRITE.GENERIC"
+msgid "Sorry, I can't."
 msgstr ""
 
-#. STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.GIVE.SLEEPING
-msgctxt "STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.GIVE.SLEEPING"
-msgid "It's sleeping."
-msgstr ""
-
-#. STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.GIVE.DEAD
-msgctxt "STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.GIVE.DEAD"
-msgid "I don't think they... um..."
+#. STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.WRITE.INUSE
+msgctxt "STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.WRITE.INUSE"
+msgid "If I could just... scooch in there after you..."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.GIVETOPLAYER.FULL
@@ -47461,14 +47931,49 @@ msgctxt "STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.GIVETOPLAYER.DEAD"
 msgid "I don't think they... um..."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.ATTUNE.NOHEALTH
+msgctxt "STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.ATTUNE.NOHEALTH"
+msgid "I feel worse than a used roll of duct tape. Maybe later?"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.MOUNT.INUSE
 msgctxt "STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.MOUNT.INUSE"
 msgid "Maybe I can find caribou to ride instead."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.CHANGEIN.GENERIC
+msgctxt "STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.CHANGEIN.GENERIC"
+msgid "Ouch. Do I not look skookum enough already?"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.CHANGEIN.INUSE
+msgctxt "STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.CHANGEIN.INUSE"
+msgid "Could you hand me my plaid shirt while you're in there?"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.CHANGEIN.BURNING
+msgctxt "STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.CHANGEIN.BURNING"
+msgid "Better it than a tree."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.SADDLE.TARGETINCOMBAT
 msgctxt "STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.SADDLE.TARGETINCOMBAT"
 msgid "I should wait for the dust to settle, eh?."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.GIVE.BUSY
+msgctxt "STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.GIVE.BUSY"
+msgid "I'll try again in a mo'."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.GIVE.SLEEPING
+msgctxt "STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.GIVE.SLEEPING"
+msgid "It's sleeping."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.GIVE.DEAD
+msgctxt "STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.GIVE.DEAD"
+msgid "I don't think they... um..."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.SHAVE.GENERIC
@@ -52056,19 +52561,14 @@ msgctxt "STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.GIVEALLTOPLAYER.DEAD"
 msgid "They won't fully appreciate my gift."
 msgstr ""
 
-#. STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.GIVE.BUSY
-msgctxt "STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.GIVE.BUSY"
-msgid "It's busyyyy."
+#. STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.WRITE.GENERIC
+msgctxt "STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.WRITE.GENERIC"
+msgid "I can't!"
 msgstr ""
 
-#. STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.GIVE.SLEEPING
-msgctxt "STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.GIVE.SLEEPING"
-msgid "Not right now. It's sleeping."
-msgstr ""
-
-#. STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.GIVE.DEAD
-msgctxt "STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.GIVE.DEAD"
-msgid "They won't fully appreciate my gift."
+#. STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.WRITE.INUSE
+msgctxt "STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.WRITE.INUSE"
+msgid "I wanna write when you're done!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.GIVETOPLAYER.FULL
@@ -52091,14 +52591,49 @@ msgctxt "STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.GIVETOPLAYER.DEAD"
 msgid "They won't fully appreciate my gift."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.GIVE.BUSY
+msgctxt "STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.GIVE.BUSY"
+msgid "It's busyyyy."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.GIVE.SLEEPING
+msgctxt "STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.GIVE.SLEEPING"
+msgid "Not right now. It's sleeping."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.GIVE.DEAD
+msgctxt "STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.GIVE.DEAD"
+msgid "They won't fully appreciate my gift."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.MOUNT.INUSE
 msgctxt "STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.MOUNT.INUSE"
 msgid "They beat me to the hairy beast. Maybe that's for the best."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.CHANGEIN.GENERIC
+msgctxt "STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.CHANGEIN.GENERIC"
+msgid "Nah, too much effort."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.CHANGEIN.INUSE
+msgctxt "STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.CHANGEIN.INUSE"
+msgid "Stop hogging it, I wanna dressup too!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.CHANGEIN.BURNING
+msgctxt "STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.CHANGEIN.BURNING"
+msgid "That's way better than some dumb dresses!"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.SADDLE.TARGETINCOMBAT
 msgctxt "STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.SADDLE.TARGETINCOMBAT"
 msgid "I'll ride it when it settles down'."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.ATTUNE.NOHEALTH
+msgctxt "STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.ATTUNE.NOHEALTH"
+msgid "Ughhhh, nooo... I don't feel good."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.SHAVE.GENERIC
@@ -54853,7 +55388,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.GUACAMOLE
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.GUACAMOLE"
-msgid "Holy moly, that's tasty!"
+msgid "Holy moley, that's tasty!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.LIFEINJECTOR
@@ -56328,7 +56863,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.BACONEGGS
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.BACONEGGS"
-msgid "The yellow mucousy part is gross but the bacon is great!"
+msgid "The yellow mucus-y part is gross, but the bacon is great!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.ARMOR_SANITY
@@ -56768,36 +57303,51 @@ msgstr ""
 
 #. STRINGS.LUCY.on_haunt.9
 msgctxt "STRINGS.LUCY.on_haunt.9"
-msgid "Rude!"
+msgid "Brrr! You're cold!"
 msgstr ""
 
 #. STRINGS.LUCY.on_haunt.10
 msgctxt "STRINGS.LUCY.on_haunt.10"
-msgid "I am an axe possessed!"
+msgid "You got ectoplasm on my handle!!"
 msgstr ""
 
 #. STRINGS.LUCY.on_haunt.11
 msgctxt "STRINGS.LUCY.on_haunt.11"
-msgid "Pick on someone your own size!"
+msgid "Knock it off!"
 msgstr ""
 
 #. STRINGS.LUCY.on_haunt.12
 msgctxt "STRINGS.LUCY.on_haunt.12"
-msgid "Hey!"
+msgid "Rude!"
 msgstr ""
 
 #. STRINGS.LUCY.on_haunt.13
 msgctxt "STRINGS.LUCY.on_haunt.13"
-msgid "Jeez! Did I anger you in a past life?"
+msgid "I am an axe possessed!"
 msgstr ""
 
 #. STRINGS.LUCY.on_haunt.14
 msgctxt "STRINGS.LUCY.on_haunt.14"
-msgid "I'm white as a sheet."
+msgid "Pick on someone your own size!"
 msgstr ""
 
 #. STRINGS.LUCY.on_haunt.15
 msgctxt "STRINGS.LUCY.on_haunt.15"
+msgid "Hey!"
+msgstr ""
+
+#. STRINGS.LUCY.on_haunt.16
+msgctxt "STRINGS.LUCY.on_haunt.16"
+msgid "Jeez! Did I anger you in a past life?"
+msgstr ""
+
+#. STRINGS.LUCY.on_haunt.17
+msgctxt "STRINGS.LUCY.on_haunt.17"
+msgid "I'm white as a sheet."
+msgstr ""
+
+#. STRINGS.LUCY.on_haunt.18
+msgctxt "STRINGS.LUCY.on_haunt.18"
 msgid "You're looking boo-tiful today."
 msgstr ""
 
@@ -56893,26 +57443,46 @@ msgstr ""
 
 #. STRINGS.LUCY.on_ground.6
 msgctxt "STRINGS.LUCY.on_ground.6"
-msgid "Hey! Get back over here!"
+msgid "There's monsters around you know!"
 msgstr ""
 
 #. STRINGS.LUCY.on_ground.7
 msgctxt "STRINGS.LUCY.on_ground.7"
-msgid "I can't chop tree by myself!"
+msgid "I resent that!"
 msgstr ""
 
 #. STRINGS.LUCY.on_ground.8
 msgctxt "STRINGS.LUCY.on_ground.8"
-msgid "So... lonely..."
+msgid "You're abandoning me?!"
 msgstr ""
 
 #. STRINGS.LUCY.on_ground.9
 msgctxt "STRINGS.LUCY.on_ground.9"
-msgid "I guess I'll just stay here then..."
+msgid "But... but we're inseparable!"
 msgstr ""
 
 #. STRINGS.LUCY.on_ground.10
 msgctxt "STRINGS.LUCY.on_ground.10"
+msgid "Hey! Get back over here!"
+msgstr ""
+
+#. STRINGS.LUCY.on_ground.11
+msgctxt "STRINGS.LUCY.on_ground.11"
+msgid "I can't chop tree by myself!"
+msgstr ""
+
+#. STRINGS.LUCY.on_ground.12
+msgctxt "STRINGS.LUCY.on_ground.12"
+msgid "So... lonely..."
+msgstr ""
+
+#. STRINGS.LUCY.on_ground.13
+msgctxt "STRINGS.LUCY.on_ground.13"
+msgid "I guess I'll just stay here then..."
+msgstr ""
+
+#. STRINGS.LUCY.on_ground.14
+msgctxt "STRINGS.LUCY.on_ground.14"
 msgid "What if I get stolen?!"
 msgstr ""
 
@@ -56943,11 +57513,36 @@ msgstr ""
 
 #. STRINGS.LUCY.transform_woodie.6
 msgctxt "STRINGS.LUCY.transform_woodie.6"
-msgid "Remember your breathing exercises!"
+msgid "It's good to have you back, buddy."
 msgstr ""
 
 #. STRINGS.LUCY.transform_woodie.7
 msgctxt "STRINGS.LUCY.transform_woodie.7"
+msgid "You look much better."
+msgstr ""
+
+#. STRINGS.LUCY.transform_woodie.8
+msgctxt "STRINGS.LUCY.transform_woodie.8"
+msgid "Phew! That was scary!"
+msgstr ""
+
+#. STRINGS.LUCY.transform_woodie.9
+msgctxt "STRINGS.LUCY.transform_woodie.9"
+msgid "I'm glad it's over..."
+msgstr ""
+
+#. STRINGS.LUCY.transform_woodie.10
+msgctxt "STRINGS.LUCY.transform_woodie.10"
+msgid "Let's not do that again."
+msgstr ""
+
+#. STRINGS.LUCY.transform_woodie.11
+msgctxt "STRINGS.LUCY.transform_woodie.11"
+msgid "Remember your breathing exercises!"
+msgstr ""
+
+#. STRINGS.LUCY.transform_woodie.12
+msgctxt "STRINGS.LUCY.transform_woodie.12"
 msgid "Everything is going to be fine. Just focus!"
 msgstr ""
 
@@ -56968,21 +57563,51 @@ msgstr ""
 
 #. STRINGS.LUCY.on_woodie_pickedup_other.4
 msgctxt "STRINGS.LUCY.on_woodie_pickedup_other.4"
-msgid "I'm having an identity crisis over here."
+msgid "How dare you do this to me!"
 msgstr ""
 
 #. STRINGS.LUCY.on_woodie_pickedup_other.5
 msgctxt "STRINGS.LUCY.on_woodie_pickedup_other.5"
-msgid "Oh you're just AXING for trouble!"
+msgid "You're replacing me?!"
 msgstr ""
 
 #. STRINGS.LUCY.on_woodie_pickedup_other.6
 msgctxt "STRINGS.LUCY.on_woodie_pickedup_other.6"
-msgid "You can't have two Lucys!"
+msgid "That's not me!"
 msgstr ""
 
 #. STRINGS.LUCY.on_woodie_pickedup_other.7
 msgctxt "STRINGS.LUCY.on_woodie_pickedup_other.7"
+msgid "Hey! Can't you tell us apart?"
+msgstr ""
+
+#. STRINGS.LUCY.on_woodie_pickedup_other.8
+msgctxt "STRINGS.LUCY.on_woodie_pickedup_other.8"
+msgid "She's an impostor!"
+msgstr ""
+
+#. STRINGS.LUCY.on_woodie_pickedup_other.9
+msgctxt "STRINGS.LUCY.on_woodie_pickedup_other.9"
+msgid "Get rid of her! It's freaking me out."
+msgstr ""
+
+#. STRINGS.LUCY.on_woodie_pickedup_other.10
+msgctxt "STRINGS.LUCY.on_woodie_pickedup_other.10"
+msgid "I'm having an identity crisis over here."
+msgstr ""
+
+#. STRINGS.LUCY.on_woodie_pickedup_other.11
+msgctxt "STRINGS.LUCY.on_woodie_pickedup_other.11"
+msgid "Oh you're just AXING for trouble!"
+msgstr ""
+
+#. STRINGS.LUCY.on_woodie_pickedup_other.12
+msgctxt "STRINGS.LUCY.on_woodie_pickedup_other.12"
+msgid "You can't have two Lucys!"
+msgstr ""
+
+#. STRINGS.LUCY.on_woodie_pickedup_other.13
+msgctxt "STRINGS.LUCY.on_woodie_pickedup_other.13"
 msgid "You can't have him! He's mine!"
 msgstr ""
 
@@ -57038,46 +57663,51 @@ msgstr ""
 
 #. STRINGS.LUCY.on_chopped.11
 msgctxt "STRINGS.LUCY.on_chopped.11"
-msgid "Die! Die!"
+msgid "RAAAA!"
 msgstr ""
 
 #. STRINGS.LUCY.on_chopped.12
 msgctxt "STRINGS.LUCY.on_chopped.12"
-msgid "Chop! Chop!"
+msgid "Die! Die!"
 msgstr ""
 
 #. STRINGS.LUCY.on_chopped.13
 msgctxt "STRINGS.LUCY.on_chopped.13"
-msgid "Destruction!"
+msgid "Chop! Chop!"
 msgstr ""
 
 #. STRINGS.LUCY.on_chopped.14
 msgctxt "STRINGS.LUCY.on_chopped.14"
-msgid "CHOP!"
+msgid "Destruction!"
 msgstr ""
 
 #. STRINGS.LUCY.on_chopped.15
 msgctxt "STRINGS.LUCY.on_chopped.15"
-msgid "This is AWESOME!"
+msgid "CHOP!"
 msgstr ""
 
 #. STRINGS.LUCY.on_chopped.16
 msgctxt "STRINGS.LUCY.on_chopped.16"
-msgid "Death to all trees!"
+msgid "This is AWESOME!"
 msgstr ""
 
 #. STRINGS.LUCY.on_chopped.17
 msgctxt "STRINGS.LUCY.on_chopped.17"
-msgid "Again! Let's chop another!"
+msgid "Death to all trees!"
 msgstr ""
 
 #. STRINGS.LUCY.on_chopped.18
 msgctxt "STRINGS.LUCY.on_chopped.18"
-msgid "Nice swing!"
+msgid "Again! Let's chop another!"
 msgstr ""
 
 #. STRINGS.LUCY.on_chopped.19
 msgctxt "STRINGS.LUCY.on_chopped.19"
+msgid "Nice swing!"
+msgstr ""
+
+#. STRINGS.LUCY.on_chopped.20
+msgctxt "STRINGS.LUCY.on_chopped.20"
 msgid "Too easy!"
 msgstr ""
 
@@ -57108,21 +57738,31 @@ msgstr ""
 
 #. STRINGS.LUCY.on_pickedup.6
 msgctxt "STRINGS.LUCY.on_pickedup.6"
-msgid "Never do that again! My little heart can't take it."
+msgid "Oh thank goodness."
 msgstr ""
 
 #. STRINGS.LUCY.on_pickedup.7
 msgctxt "STRINGS.LUCY.on_pickedup.7"
-msgid "From now on we'll be inseparable."
+msgid "Oh, it was awful!"
 msgstr ""
 
 #. STRINGS.LUCY.on_pickedup.8
 msgctxt "STRINGS.LUCY.on_pickedup.8"
-msgid "Did you miss me?"
+msgid "Never do that again! My little heart can't take it."
 msgstr ""
 
 #. STRINGS.LUCY.on_pickedup.9
 msgctxt "STRINGS.LUCY.on_pickedup.9"
+msgid "From now on we'll be inseparable."
+msgstr ""
+
+#. STRINGS.LUCY.on_pickedup.10
+msgctxt "STRINGS.LUCY.on_pickedup.10"
+msgid "Did you miss me?"
+msgstr ""
+
+#. STRINGS.LUCY.on_pickedup.11
+msgctxt "STRINGS.LUCY.on_pickedup.11"
 msgid "Together again!"
 msgstr ""
 
@@ -57343,6 +57983,21 @@ msgstr ""
 
 #. STRINGS.LUCY.on_dropped.13
 msgctxt "STRINGS.LUCY.on_dropped.13"
+msgid "Oof!"
+msgstr ""
+
+#. STRINGS.LUCY.on_dropped.14
+msgctxt "STRINGS.LUCY.on_dropped.14"
+msgid "I don't like where this is going."
+msgstr ""
+
+#. STRINGS.LUCY.on_dropped.15
+msgctxt "STRINGS.LUCY.on_dropped.15"
+msgid "Are... are you gonna make like a tree?"
+msgstr ""
+
+#. STRINGS.LUCY.on_dropped.16
+msgctxt "STRINGS.LUCY.on_dropped.16"
 msgid "Ouch!"
 msgstr ""
 
@@ -57401,6 +58056,16 @@ msgctxt "STRINGS.LUCY.equipped.11"
 msgid "Chop, c-c-chop!"
 msgstr ""
 
+#. STRINGS.LUCY.equipped.12
+msgctxt "STRINGS.LUCY.equipped.12"
+msgid "So, stone trees... what's up with that?"
+msgstr ""
+
+#. STRINGS.LUCY.equipped.13
+msgctxt "STRINGS.LUCY.equipped.13"
+msgid "Let's find a small grove and just go nuts!"
+msgstr ""
+
 #. STRINGS.LUCY.other_owner.1
 msgctxt "STRINGS.LUCY.other_owner.1"
 msgid "I don't know you."
@@ -57418,36 +58083,66 @@ msgstr ""
 
 #. STRINGS.LUCY.other_owner.4
 msgctxt "STRINGS.LUCY.other_owner.4"
-msgid "Get your mitts off me!"
+msgid "Gross."
 msgstr ""
 
 #. STRINGS.LUCY.other_owner.5
 msgctxt "STRINGS.LUCY.other_owner.5"
-msgid "Drop me this instant!"
+msgid "Excuse you!"
 msgstr ""
 
 #. STRINGS.LUCY.other_owner.6
 msgctxt "STRINGS.LUCY.other_owner.6"
-msgid "How dare you pick me up?!"
+msgid "Ummmm, EXCUSE me??"
 msgstr ""
 
 #. STRINGS.LUCY.other_owner.7
 msgctxt "STRINGS.LUCY.other_owner.7"
-msgid "Yuck, your hands are greasy!"
+msgid "Leave me alone, you brute!"
 msgstr ""
 
 #. STRINGS.LUCY.other_owner.8
 msgctxt "STRINGS.LUCY.other_owner.8"
-msgid "Let me go!"
+msgid "Put me down! You smell!"
 msgstr ""
 
 #. STRINGS.LUCY.other_owner.9
 msgctxt "STRINGS.LUCY.other_owner.9"
-msgid "Help! I'm being kidnapped"
+msgid "Did I say you could take me?"
 msgstr ""
 
 #. STRINGS.LUCY.other_owner.10
 msgctxt "STRINGS.LUCY.other_owner.10"
+msgid "Get your mitts off me!"
+msgstr ""
+
+#. STRINGS.LUCY.other_owner.11
+msgctxt "STRINGS.LUCY.other_owner.11"
+msgid "Drop me this instant!"
+msgstr ""
+
+#. STRINGS.LUCY.other_owner.12
+msgctxt "STRINGS.LUCY.other_owner.12"
+msgid "How dare you pick me up?!"
+msgstr ""
+
+#. STRINGS.LUCY.other_owner.13
+msgctxt "STRINGS.LUCY.other_owner.13"
+msgid "Yuck, your hands are greasy!"
+msgstr ""
+
+#. STRINGS.LUCY.other_owner.14
+msgctxt "STRINGS.LUCY.other_owner.14"
+msgid "Let me go!"
+msgstr ""
+
+#. STRINGS.LUCY.other_owner.15
+msgctxt "STRINGS.LUCY.other_owner.15"
+msgid "Help! I'm being kidnapped"
+msgstr ""
+
+#. STRINGS.LUCY.other_owner.16
+msgctxt "STRINGS.LUCY.other_owner.16"
 msgid "Stranger danger!"
 msgstr ""
 
@@ -60518,7 +61213,7 @@ msgstr ""
 
 #. STRINGS.UI.HUD.DEATH_ANNOUNCEMENT_2_ROBOT
 msgctxt "STRINGS.UI.HUD.DEATH_ANNOUNCEMENT_2_ROBOT"
-msgid ". It became a spooky ghost!"
+msgid ". They became a spooky ghost!"
 msgstr ""
 
 #. STRINGS.UI.HUD.SELECT
@@ -60548,7 +61243,7 @@ msgstr ""
 
 #. STRINGS.UI.HUD.DEATH_ANNOUNCEMENT_2_DEFAULT
 msgctxt "STRINGS.UI.HUD.DEATH_ANNOUNCEMENT_2_DEFAULT"
-msgid ". They became a spooky ghost!"
+msgid ". It became a spooky ghost!"
 msgstr ""
 
 #. STRINGS.UI.HUD.GHOST_DEATH_ANNOUNCEMENT_MALE
@@ -60583,7 +61278,7 @@ msgstr ""
 
 #. STRINGS.UI.HUD.GHOST_DEATH_ANNOUNCEMENT_ROBOT
 msgctxt "STRINGS.UI.HUD.GHOST_DEATH_ANNOUNCEMENT_ROBOT"
-msgid "lost all of its approximation of humanity and is gone forever."
+msgid "lost all of their approximation of humanity and is gone forever."
 msgstr ""
 
 #. STRINGS.UI.HUD.EQUIP
@@ -60618,7 +61313,7 @@ msgstr ""
 
 #. STRINGS.UI.HUD.GHOST_DEATH_ANNOUNCEMENT_DEFAULT
 msgctxt "STRINGS.UI.HUD.GHOST_DEATH_ANNOUNCEMENT_DEFAULT"
-msgid "lost all of their humanity and is gone forever."
+msgid "lost all of its humanity and is gone forever."
 msgstr ""
 
 #. STRINGS.UI.HUD.STOP_AFK
@@ -63658,12 +64353,12 @@ msgstr ""
 
 #. STRINGS.UI.GENDERSTRINGS.DEFAULT.ONE
 msgctxt "STRINGS.UI.GENDERSTRINGS.DEFAULT.ONE"
-msgid "they"
+msgid "it"
 msgstr ""
 
 #. STRINGS.UI.GENDERSTRINGS.DEFAULT.TWO
 msgctxt "STRINGS.UI.GENDERSTRINGS.DEFAULT.TWO"
-msgid "their"
+msgid "its"
 msgstr ""
 
 #. STRINGS.UI.GENDERSTRINGS.FEMALE.ONE
@@ -63688,12 +64383,12 @@ msgstr ""
 
 #. STRINGS.UI.GENDERSTRINGS.ROBOT.ONE
 msgctxt "STRINGS.UI.GENDERSTRINGS.ROBOT.ONE"
-msgid "it"
+msgid "they"
 msgstr ""
 
 #. STRINGS.UI.GENDERSTRINGS.ROBOT.TWO
 msgctxt "STRINGS.UI.GENDERSTRINGS.ROBOT.TWO"
-msgid "its"
+msgid "their"
 msgstr ""
 
 #. STRINGS.UI.NETWORKDISCONNECT.BODY.ID_INVALID_PASSWORD

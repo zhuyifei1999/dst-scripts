@@ -97,6 +97,7 @@ local function MakeMinion(prefab, tool, hat, master_postinit)
         end
 
         inst:AddTag("scarytoprey")
+        inst:AddTag("shadowminion")
 
         inst:SetPrefabNameOverride("shadowwaxwell")
 
@@ -120,6 +121,7 @@ local function MakeMinion(prefab, tool, hat, master_postinit)
         inst.components.combat:SetRange(2)
 
         inst:AddComponent("follower")
+        inst.components.follower.keepdeadleader = true
 
         inst:SetBrain(brain)
         inst:SetStateGraph("SGshadowwaxwell")

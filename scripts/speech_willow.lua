@@ -17,6 +17,11 @@ return {
 			NOTALLOWED = "They won't let me.",
 			INUSE = "I'll use after they're done.",
 		},
+		WRITE =
+        {
+            GENERIC = "I can't!",
+            INUSE = "I wanna write when you're done!",
+        },
 		RUMMAGE =
         {   
             GENERIC = "I can'tttttt.",
@@ -35,6 +40,16 @@ return {
 		SADDLE =
         {
             TARGETINCOMBAT = "I'll ride it when it settles down'.",
+        },
+        ATTUNE =
+        {
+            NOHEALTH = "Ughhhh, nooo... I don't feel good.",
+        },
+        CHANGEIN =
+        {
+            GENERIC = "Nah, too much effort.",
+            BURNING = "That's way better than some dumb dresses!",
+            INUSE = "Stop hogging it, I wanna dressup too!",
         },
         GIVE =
         {
@@ -321,7 +336,7 @@ return {
         WATERMELONICLE = "Why would you freeze a fruit when you could burn it?",
         TRAILMIX = "Crunch crunch crunch.",
         HOTCHILI = "Now that's my kind of heat!",
-        GUACAMOLE = "Holy moly, that's tasty!",
+        GUACAMOLE = "Holy moley, that's tasty!",
 		MOOSE = "What in the world...",
 		MOOSEEGG = "It's huuuuge!",
 		MOSSLING = "Its feathers are frazzled.",
@@ -653,7 +668,7 @@ return {
 			SLEEPING = "WAKE UP!",
 		},
 		BACKPACK = "I could fit like a million lighters in here.",
-		BACONEGGS = "The yellow mucousy part is gross but the bacon is great!",
+		BACONEGGS = "The yellow mucus-y part is gross, but the bacon is great!",
 		BANDAGE = "Eww, do I have to?",
 		BASALT = "It's too hard to break!",
 		BEARDHAIR = "Uh, where did this come from?",

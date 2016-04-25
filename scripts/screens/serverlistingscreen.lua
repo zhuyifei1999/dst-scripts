@@ -38,11 +38,11 @@ local filters_per_page = 6
 local column_offsets_x_pos = -RESOLUTION_X*0.18;
 local column_offsets_y_pos = RESOLUTION_Y*0.23;
 
-local column_offsets ={ 
-        NAME = -92,  
-        DETAILS = 238,  
+local column_offsets ={
+        NAME = -92,
+        DETAILS = 238,
         PLAYERS = 413,
-        PING = 509,        
+        PING = 509,
     }
 
 local dev_color = { 80/255, 16/255, 158/255, 1 }
@@ -103,7 +103,7 @@ local ServerListingScreen = Class(Screen, function(self, prev_screen, filters, c
     self.server_list_frame:SetScale(.66, .65)
 
     self.server_list = self.root:AddChild(Widget("server_list"))
-    self.server_list:SetPosition(left_col,-15,0)    
+    self.server_list:SetPosition(left_col,-15,0)
 
     self.server_list_background = self.server_list:AddChild(Image("images/options_bg.xml", "options_panel_bg.tex"))
     self.server_list_background:SetScale(-.563,.66)
@@ -118,7 +118,6 @@ local ServerListingScreen = Class(Screen, function(self, prev_screen, filters, c
         self:SetServerIntention(intention)
     end)
     self.intentions_overlay:SetPosition(0, 180)
-
 
     self.table = self.server_list:AddChild(Widget("table container"))
     self.table.titles = self.table:AddChild(Widget("table titles"))
@@ -178,7 +177,7 @@ local ServerListingScreen = Class(Screen, function(self, prev_screen, filters, c
     self:MakeFiltersPanel(filters)
 
     self.onlinestatus = self.root:AddChild(OnlineStatus())
-    
+
     self:UpdateServerInformation(false)
     self:ToggleShowFilters()
     self:SetServerIntention(Profile:GetValue("playerintention"))
@@ -270,7 +269,7 @@ end
 
 
 function ServerListingScreen:UpdateServerInformation( show )
-	if show then
+    if show then
         if self.filters_shown then
             self:ToggleShowFilters(true)
         end
@@ -279,13 +278,13 @@ function ServerListingScreen:UpdateServerInformation( show )
         if self.selected_server ~= nil then
             self.server_details_additional:Show()-- self.detail_scroll_list:Show()
         end
-	else
+    else
         if self.filters_shown then
-		    self.details_servername:Hide()
+            self.details_servername:Hide()
             self.details_serverdesc:Hide()
         end
         self.server_details_additional:Hide()-- self.detail_scroll_list:Hide()
-	end
+    end
 end
 
 function ServerListingScreen:ToggleShowFilters(forcehide)
@@ -301,8 +300,8 @@ function ServerListingScreen:ToggleShowFilters(forcehide)
         self.server_details_additional:Hide()--self.detail_scroll_list:Hide()
     else
         self.filters_scroll_list:Hide()
-        if self.selected_server ~= nil then 
-            self.server_details_additional:Show()--self.detail_scroll_list:Show() 
+        if self.selected_server ~= nil then
+            self.server_details_additional:Show()--self.detail_scroll_list:Show()
         end
         if TheInput:ControllerAttached() and self.filters_scroll_list.focus then
             self.server_details_additional:SetFocus()--self.detail_scroll_list:SetFocus()
@@ -317,7 +316,7 @@ end
 function ServerListingScreen:OnBecomeActive()
     ServerListingScreen._base.OnBecomeActive(self)
     self:Enable()
-    
+
     self:StartPeriodicRefreshTask()
 end
 
@@ -329,7 +328,7 @@ end
 
 function ServerListingScreen:OnDestroy()
     self.prev_screen:TransferPortalOwnership(self, self.prev_screen)
-	self._base.OnDestroy(self)
+    self._base.OnDestroy(self)
 end
 
 local function tchelper(first, rest)
@@ -337,37 +336,37 @@ local function tchelper(first, rest)
 end
 
 function ServerListingScreen:Join(warnedOffline)
-	if self.selected_server ~= nil then
-		if not warnedOffline and self.selected_server.offline then 
-			local confirm_offline_popup = PopupDialogScreen(STRINGS.UI.SERVERLISTINGSCREEN.OFFLINEWARNINGTITLE, STRINGS.UI.SERVERLISTINGSCREEN.OFFLINEMODEBODYJOIN,
-	                            {
-	                                {text=STRINGS.UI.SERVERLISTINGSCREEN.OK, cb = function()
-	                                    -- If player is okay with offline mode, go ahead
-	                                    TheFrontEnd:PopScreen()
-	                                    self:Join(true)
-	                                end},
-	                                {text=STRINGS.UI.SERVERLISTINGSCREEN.CANCEL, cb = function()
-	                                    TheFrontEnd:PopScreen() 
-	                                end}
-	                            })
-	        self.last_focus = TheFrontEnd:GetFocusWidget()
-	        TheFrontEnd:PushScreen(confirm_offline_popup)
-	    else
+    if self.selected_server ~= nil then
+        if not warnedOffline and self.selected_server.offline then 
+            local confirm_offline_popup = PopupDialogScreen(STRINGS.UI.SERVERLISTINGSCREEN.OFFLINEWARNINGTITLE, STRINGS.UI.SERVERLISTINGSCREEN.OFFLINEMODEBODYJOIN,
+                                {
+                                    {text=STRINGS.UI.SERVERLISTINGSCREEN.OK, cb = function()
+                                        -- If player is okay with offline mode, go ahead
+                                        TheFrontEnd:PopScreen()
+                                        self:Join(true)
+                                    end},
+                                    {text=STRINGS.UI.SERVERLISTINGSCREEN.CANCEL, cb = function()
+                                        TheFrontEnd:PopScreen() 
+                                    end}
+                                })
+            self.last_focus = TheFrontEnd:GetFocusWidget()
+            TheFrontEnd:PushScreen(confirm_offline_popup)
+        else
 
-	        local filters = {}
-	        for i,v in pairs(self.filters) do
-	            if v.spinner then 
-	                table.insert(filters, {name=v.name, data=v.spinner:GetSelectedData()})
-	            elseif v.textbox then
-	                table.insert(filters, {name="search", data=v.textbox:GetString()})
-	            end
-	        end
-	        Profile:SaveFilters(filters)
-			JoinServer( self.selected_server )
-		end	
-	else
-		assert(false, "Invalid server selection")
-	end
+            local filters = {}
+            for i,v in pairs(self.filters) do
+                if v.spinner then 
+                    table.insert(filters, {name=v.name, data=v.spinner:GetSelectedData()})
+                elseif v.textbox then
+                    table.insert(filters, {name="search", data=v.textbox:GetString()})
+                end
+            end
+            Profile:SaveFilters(filters)
+            JoinServer( self.selected_server )
+        end 
+    else
+        assert(false, "Invalid server selection")
+    end
 end
 
 function ServerListingScreen:Report()
@@ -401,40 +400,40 @@ function ServerListingScreen:Report()
 end
 
 local function SetChecked( widget, label, check )
-	if check then
+    if check then
         label:SetColour(0,0,0,1)
         widget.off_image:Hide()
         widget.bg:Show()
         widget.img:Show()
-	else
+    else
         label:SetColour(.4,.4,.4,1)
         widget.off_image:Show()
         widget.bg:Hide()
         widget.img:Hide()
-	end
+    end
 end
 
 function ServerListingScreen:ViewServerMods()
     if self.selected_server ~= nil and self.selected_server.mods_enabled then
         local success = false
         local mods_list = ""
-		if self.selected_server.mods_failed_deserialization then
-			mods_list = STRINGS.UI.SERVERLISTINGSCREEN.MODS_HIDDEN_MISMATCH
-		else
-			local added_mod_name = false
-			for k,v in pairs(self.selected_server.mods_description) do
-				mods_list = mods_list .. v.modinfo_name .. ", "
-				added_mod_name = true
-			end
-			mods_list = string.sub( mods_list, 1, string.len(mods_list)-2 )
-			
-			if not added_mod_name then
-				mods_list = STRINGS.UI.SERVERLISTINGSCREEN.MODS_HIDDEN_LAN
-			else
+        if self.selected_server.mods_failed_deserialization then
+            mods_list = STRINGS.UI.SERVERLISTINGSCREEN.MODS_HIDDEN_MISMATCH
+        else
+            local added_mod_name = false
+            for k,v in pairs(self.selected_server.mods_description) do
+                mods_list = mods_list .. v.modinfo_name .. ", "
+                added_mod_name = true
+            end
+            mods_list = string.sub( mods_list, 1, string.len(mods_list)-2 )
+            
+            if not added_mod_name then
+                mods_list = STRINGS.UI.SERVERLISTINGSCREEN.MODS_HIDDEN_LAN
+            else
                 success = true
             end
-		end
-		
+        end
+
         if success then
             TheFrontEnd:PushScreen(TextListPopupDialogScreen(STRINGS.UI.SERVERLISTINGSCREEN.MODSTITLE, mods_list))
         else
@@ -447,12 +446,9 @@ function ServerListingScreen:ViewServerMods()
 end
 
 function ServerListingScreen:ViewServerTags()
-    if self.selected_server ~= nil and self.selected_server.tags then            
-		local text_list_popup = TextListPopupDialogScreen(STRINGS.UI.SERVERLISTINGSCREEN.TAGSTITLE, self.selected_server.tags)
-		for _,list_widget in pairs(text_list_popup.listwidgets) do
-			list_widget.text:SetFont(FALLBACK_FONT) --force the item to use the fallback font so that language tags don't look broken 
-		end
-        TheFrontEnd:PushScreen(text_list_popup)
+    if self.selected_server ~= nil and self.selected_server.tags ~= nil then
+        --force the item to use the fallback font so that language tags don't look broken
+        TheFrontEnd:PushScreen(TextListPopupDialogScreen(STRINGS.UI.SERVERLISTINGSCREEN.TAGSTITLE, self.selected_server.tags, nil, nil, nil, FALLBACK_FONT))
     end
 end
 
@@ -469,7 +465,7 @@ function ServerListingScreen:ViewServerWorld()
     end
 end
 
-function ServerListingScreen:ViewServerPlayers() 
+function ServerListingScreen:ViewServerPlayers()
     local players = self:ProcessServerPlayersData()
     if players ~= nil then
         TheFrontEnd:PushScreen(ViewPlayersModalScreen(players, self.selected_server.max_players))
@@ -528,33 +524,31 @@ function ServerListingScreen:ProcessServerPlayersData()
 end
 
 local function CompareTable(table_a, table_b)
+    -- Basic validation
+    if table_a==table_b then return true end
 
-  -- Basic validation
-  if table_a==table_b then return true end
-  
-  -- Null check
-  if table_a == nil or table_b == nil then return false end
+    -- Null check
+    if table_a == nil or table_b == nil then return false end
 
-  -- Validate type
-  if type(table_a) ~= "table" then return false end
-  
-  -- Compare meta tables
-  local meta_table_a = getmetatable(table_a)
-  local meta_table_b = getmetatable(table_b)
-  if not CompareTable(meta_table_a,meta_table_b) then return false end
+    -- Validate type
+    if type(table_a) ~= "table" then return false end
 
-  -- Compare nested tables
-  for index,value_a in pairs(table_a) do
-    local value_b = table_b[index]
-    if not CompareTable(value_a,value_b) then return false end
-  end
-  for index,value_b in pairs(table_b) do
-    local value_a = table_a[index]
-    if not CompareTable(value_a,value_b) then return false end
-  end
-  
-  return true  
-  
+    -- Compare meta tables
+    local meta_table_a = getmetatable(table_a)
+    local meta_table_b = getmetatable(table_b)
+    if not CompareTable(meta_table_a,meta_table_b) then return false end
+
+    -- Compare nested tables
+    for index,value_a in pairs(table_a) do
+        local value_b = table_b[index]
+        if not CompareTable(value_a,value_b) then return false end
+    end
+    for index,value_b in pairs(table_b) do
+        local value_a = table_a[index]
+        if not CompareTable(value_a,value_b) then return false end
+    end
+
+    return true
 end
 
 function ServerListingScreen:UpdateServerData(selected_index_actual)
@@ -704,17 +698,17 @@ function ServerListingScreen:ServerSelected(new_index)
 end
 
 function ServerListingScreen:StartPeriodicRefreshTask()
-    if self.task then
+    if self.task ~= nil then
         self.task:Cancel()
     end
-    self.task = self.inst:DoPeriodicTask(self.tickperiod, function() self:RefreshView(false) end) 
+    self.task = self.inst:DoPeriodicTask(self.tickperiod, function() self:RefreshView(false) end)
 end
 
 function ServerListingScreen:StopPeriodicRefreshTask()
-	if self.task then
-		self.task:Cancel()
-		self.task = nil
-	end
+    if self.task ~= nil then
+        self.task:Cancel()
+        self.task = nil
+    end
 end
 
 function ServerListingScreen:ClearServerList()
@@ -731,11 +725,11 @@ function ServerListingScreen:ClearServerList()
         v.PVP_ICON:Hide()
         v.MODS_ENABLED_ICON:Hide()
         v.PLAYERS:SetString("")
-        v.PING:SetString("")  
+        v.PING:SetString("")
     end
     -- Scroll back to the top of the list
     if self.servers_scroll_list.items and #self.servers_scroll_list.items > 0 then
-        self.servers_scroll_list:Scroll(-self.servers_scroll_list.view_offset, true) 
+        self.servers_scroll_list:Scroll(-self.servers_scroll_list.view_offset, true)
     end
 end
 
@@ -762,7 +756,7 @@ function ServerListingScreen:SearchForServers()
     for i,v in pairs(self.filters) do
         if v.name == "VERSIONCHECK" then
             local version_check = v.spinner:GetSelectedData()
-			TheNet:SetCheckVersionOnQuery( version_check )
+            TheNet:SetCheckVersionOnQuery( version_check )
         end
     end
 
@@ -773,9 +767,9 @@ function ServerListingScreen:SearchForServers()
         self.servers_scroll_list.focused_index = 1
         TheNet:SearchLANServers(self.offlinemode)
     end
-    
-	self:StartPeriodicRefreshTask()
-	self:RefreshView(true)
+
+    self:StartPeriodicRefreshTask()
+    self:RefreshView(true)
 end
 
 function ServerListingScreen:OnStartClickServerInList(index)
@@ -815,21 +809,21 @@ function ServerListingScreen:RefreshView(skipPoll)
             self.server_count:SetString("("..STRINGS.UI.SERVERLISTINGSCREEN.LAN..")")
         end
     end
-		
+
     if not skipPoll then
         if TheNet:GetServerListingReadDirty() == false then
             return
         end
-	
+
         local servers = {}
         servers = TheNet:GetServerListings()
-        
+
         self.servers = servers
 
         self:DoFiltering() -- This also calls DoSorting
     end
 
-	self.servers_scroll_list:RefreshView()
+    self.servers_scroll_list:RefreshView()
     self:GuaranteeSelectedServerHighlighted()
     self:UpdateServerData( self.selected_index_actual )
 end
@@ -844,7 +838,7 @@ function ServerListingScreen:MakeServerListWidgets()
     self.list_widgets = {}
 
     local bg_y_offset = -215
-    for i=1, listings_per_view do        
+    for i=1, listings_per_view do
         local row = self.table.server_list_rows:AddChild(Widget("server_list_row"))
 
         local font_size = font_size * .7
@@ -881,7 +875,7 @@ function ServerListingScreen:MakeServerListWidgets()
             y = y_offset,
         }
         row.NAME:SetPosition(row.NAME._align.x, row.NAME._align.y, 0)
-        
+
         row.DETAILS = row.cursor:AddChild(Widget("detail_icons"))
         row.DETAILS:SetPosition(column_offsets.DETAILS-200, -1, 0)
 
@@ -957,12 +951,12 @@ function ServerListingScreen:MakeServerListWidgets()
         row:SetFocusChangeDir(MOVE_RIGHT, function() return self:CurrentRightFocus() end)
         row:SetFocusChangeDir(MOVE_LEFT, function() return self.online_button end)
 
-        table.insert(self.list_widgets, row)--, id=i})    
+        table.insert(self.list_widgets, row)--, id=i})
     end
 
     local function UpdateServerListWidget(widget, serverdata)
         if not widget then return end
-                
+
         if not serverdata then
             widget.index = -1
             widget.INTENTION:Hide()
@@ -1006,13 +1000,13 @@ function ServerListingScreen:MakeServerListWidgets()
             else
                 widget.INTENTION:Hide()
             end
-            
+
             widget.NAME:SetTruncatedString(serverdata.name, widget.NAME._align.maxwidth, widget.NAME._align.maxchars, true)
             local w, h = widget.NAME:GetRegionSize()
             widget.NAME:SetPosition(widget.NAME._align.x + w * .5, widget.NAME._align.y, 0)
 
             self:ProcessPlayerData( serverdata.session )
-	    
+
             if self.sessions[serverdata.session] ~= nil and self.sessions[serverdata.session] ~= false then
                 local playerdata = self.sessions[serverdata.session]
                 local character = playerdata.prefab or ""
@@ -1032,8 +1026,8 @@ function ServerListingScreen:MakeServerListWidgets()
             else
                 widget.CHAR:Hide()
             end
-            
-            if serverdata.friend_playing then 
+
+            if serverdata.friend_playing then
                 widget.FRIEND_ICON:Show()
             else
                 widget.FRIEND_ICON:Hide()
@@ -1070,12 +1064,12 @@ function ServerListingScreen:MakeServerListWidgets()
             else
                 widget.DEDICATED_ICON:Hide()
             end
-            if serverdata.pvp then 
+            if serverdata.pvp then
                 widget.PVP_ICON:Show()
             else
                 widget.PVP_ICON:Hide()
             end
-            if serverdata.mods_enabled then 
+            if serverdata.mods_enabled then
                 widget.MODS_ENABLED_ICON:Show()
             else
                 widget.MODS_ENABLED_ICON:Hide()
@@ -1083,7 +1077,7 @@ function ServerListingScreen:MakeServerListWidgets()
 
             widget.PLAYERS:SetString(serverdata.current_players .. "/" .. serverdata.max_players)
 
-            widget.PING:SetString(serverdata.ping)  
+            widget.PING:SetString(serverdata.ping)
             if serverdata.ping < 0 then
                 widget.PING:SetString("???")
             end
@@ -1120,7 +1114,7 @@ function ServerListingScreen:GuaranteeSelectedServerHighlighted()
     for i,v in pairs(self.list_widgets) do
         local dev_server = v.version and v.version == -1 or false
         local version_check_failed = v.version and v.version ~= tonumber(APP_VERSION) or false
-		if v and v.index ~= -1 and v.index == self.selected_index_actual then
+        if v and v.index ~= -1 and v.index == self.selected_index_actual then
             if dev_server then
                 self:SetRowColour(v, dev_color)
             elseif version_check_failed then 
@@ -1153,7 +1147,7 @@ function ServerListingScreen:CycleColumnSort()
         self:SetSort(self.sort_column)
     else
         if self.sort_column == "DETAILS" then
-            self:SetSort("PLAYERS")    
+            self:SetSort("PLAYERS")
         elseif self.sort_column == "PLAYERS" then
             self:SetSort("PING")
         elseif self.sort_column == "PING" then
@@ -1324,9 +1318,8 @@ function ServerListingScreen:IsValidWithFilters(server)
     end
 
     local function charInvalid(session, spinnerSelection)
-		
         self:ProcessPlayerData( session )
-        
+
         if self.sessions[session] ~= nil then
             local char = self.sessions[session]
             if spinnerSelection == true then
@@ -1506,29 +1499,29 @@ function ServerListingScreen:DoFiltering(doneSearching)
             if v and self:IsValidWithFilters(v) then
                 table.insert(filtered_servers, 
                     {
-                        name=v.name, 
+                        name=v.name,
                         mode = v.mode,
-                        has_password=v.has_password, 
+                        has_password=v.has_password,
                         description=v.description,
                         mods_description=v.mods_description,
                         mods_failed_deserialization=v.mods_failed_deserialization,
                         dedicated=v.dedicated, 
                         pvp=v.pvp,
-                        current_players=v.current_players, 
-                        max_players=v.max_players, 
-                        ping=v.ping, 
-                        ip=v.ip,  
-                        port=v.port, 
-                        row=v.row, 
+                        current_players=v.current_players,
+                        max_players=v.max_players,
+                        ping=v.ping,
+                        ip=v.ip,
+                        port=v.port,
+                        row=v.row,
                         version=v.version,
                         friend=v.friend,
-                        friend_playing=v.friend_playing, 
+                        friend_playing=v.friend_playing,
                         clan_server = v.clan_server,
                         clan_only = v.clan_only,
                         belongs_to_clan=v.belongs_to_clan,
                         lan_only = v.lan_only,
                         offline = v.offline,
-                        net_group_id = v.net_group_id, 
+                        net_group_id = v.net_group_id,
                         actualindex=i,
                         mods_enabled = v.mods_enabled,
                         tags = v.tags,
@@ -1544,7 +1537,7 @@ function ServerListingScreen:DoFiltering(doneSearching)
             self:ServerSelected(nil)
         end
     end
-    
+
     if CompareTable(self.viewed_servers, filtered_servers) and not doneSearching then
         return
     end
@@ -1677,19 +1670,19 @@ function ServerListingScreen:MakeFiltersPanel(filter_data)
     local yes_no = {{ text = STRINGS.UI.SERVERLISTINGSCREEN.YES, data = true }, { text = STRINGS.UI.SERVERLISTINGSCREEN.NO, data = false }}
     local no_yes = {{ text = STRINGS.UI.SERVERLISTINGSCREEN.NO, data = false }, { text = STRINGS.UI.SERVERLISTINGSCREEN.YES, data = true }}
     local any_dedicated_hosted = {{ text = STRINGS.UI.SERVERLISTINGSCREEN.ANY, data = "ANY" }, { text = STRINGS.UI.SERVERLISTINGSCREEN.DEDICATED, data = true }, { text = STRINGS.UI.SERVERLISTINGSCREEN.HOSTED, data = false }}
-    
+
     local seasons = {{ text = STRINGS.UI.SERVERLISTINGSCREEN.ANY, data = "ANY" },
                     { text = STRINGS.UI.SERVERLISTINGSCREEN.SEASONS.AUTUMN, data = "autumn" },
                     { text = STRINGS.UI.SERVERLISTINGSCREEN.SEASONS.WINTER, data = "winter" },
                     { text = STRINGS.UI.SERVERLISTINGSCREEN.SEASONS.SPRING, data = "spring" },
                     { text = STRINGS.UI.SERVERLISTINGSCREEN.SEASONS.SUMMER, data = "summer" }}
-    
+
     local game_modes = {{ text = STRINGS.UI.SERVERLISTINGSCREEN.ANY, data = "ANY" }}
     local m = GetGameModesSpinnerData()
- 	for i,v in ipairs(m) do
+    for i,v in ipairs(m) do
         table.insert( game_modes, { text = v.text, data = v.data} )
     end
-	table.insert( game_modes, { text = STRINGS.UI.SERVERLISTINGSCREEN.CUSTOM, data = "custom" } )
+    table.insert( game_modes, { text = STRINGS.UI.SERVERLISTINGSCREEN.CUSTOM, data = "custom" } )
     local player_slots = {{ text = STRINGS.UI.SERVERLISTINGSCREEN.ANY, data = "ANY" }}
     local i = TUNING.MAX_SERVER_SIZE
     while i > 0 do
@@ -1747,13 +1740,12 @@ function ServerListingScreen:MakeFiltersPanel(filter_data)
     searchbox.GetHelpText = function()
         local t = {}
         if not self.searchbox.textbox.editing and not self.searchbox.textbox.focus then
-			table.insert(t, self.searchbox.textbox:GetHelpText())
+            table.insert(t, self.searchbox.textbox:GetHelpText())
         end
         return table.concat(t, "  ")
     end
 
     self.searchbox = searchbox
-
 
     local server_intention = CreateButtonFilter(self, nil, STRINGS.UI.SERVERLISTINGSCREEN.INTENTION_FILTER, nil, function(data)
         self:SetServerIntention(nil)
@@ -1780,7 +1772,7 @@ function ServerListingScreen:MakeFiltersPanel(filter_data)
     table.insert(self.filters, CreateSpinnerFilter( self, "MINOPENSLOTS", STRINGS.UI.SERVERLISTINGSCREEN.MINOPENSLOTS, player_slots, false ))
     table.insert(self.filters, CreateSpinnerFilter( self, "ISEMPTY", STRINGS.UI.SERVERLISTINGSCREEN.ISEMPTY, yes_no, false ))
     -- table.insert(self.filters, CreateSpinnerFilter( "MAXSERVERSIZE", STRINGS.UI.SERVERLISTINGSCREEN.MAXSERVERSIZE, {min=2,max=4}, true ))
-    
+
     if BRANCH == "dev" then
         table.insert(self.filters, CreateSpinnerFilter( self, "VERSIONCHECK", STRINGS.UI.SERVERLISTINGSCREEN.VERSIONCHECK, no_yes, false ))
     else
@@ -1830,9 +1822,9 @@ local function MakeImgButton(parent, xPos, yPos, text, onclick, style, image)
     elseif style == "icon" then
         btn = parent:AddChild(TEMPLATES.IconButton("images/button_icons.xml", image..".tex", text, false, false, onclick))
     end
-    
+
     btn:SetPosition(xPos, yPos)
-    
+
     if not style or style == "large" then
         btn:SetTextColour(0,0,0,1)
         btn:SetTextSize(40)
@@ -1842,7 +1834,7 @@ local function MakeImgButton(parent, xPos, yPos, text, onclick, style, image)
     if style ~= "icon" then
         btn:SetText(text)
     end
-    
+
     if style ~= "tab" then
         btn:SetFont(NEWFONT)
         btn:SetDisabledFont(NEWFONT)
@@ -1857,8 +1849,8 @@ function ServerListingScreen:MakeMenuButtons(left_col, right_col, nav_col)
     self.online_button = MakeImgButton(self.nav_bar, 10, 25, STRINGS.UI.SERVERLISTINGSCREEN.ONLINE, function() 
         if self.offlinemode then
             TheFrontEnd:PushScreen(PopupDialogScreen(
-                    STRINGS.UI.SERVERLISTINGSCREEN.OFFLINE_MODE_TITLE, 
-                    STRINGS.UI.SERVERLISTINGSCREEN.OFFLINE_MODE_BODY, 
+                    STRINGS.UI.SERVERLISTINGSCREEN.OFFLINE_MODE_TITLE,
+                    STRINGS.UI.SERVERLISTINGSCREEN.OFFLINE_MODE_BODY,
                     {{ text = STRINGS.UI.SERVERLISTINGSCREEN.OK, cb = function() TheFrontEnd:PopScreen() end }}))
         else
             self:SetTab("online")
@@ -1901,7 +1893,7 @@ function ServerListingScreen:MakeDetailPanel(right_col)
     self.server_detail_panelbg = self.server_detail_panel:AddChild(Image("images/serverbrowser.xml", "side_panel.tex"))
     self.server_detail_panelbg:SetScale(-.66,.7)
     self.server_detail_panelbg:SetPosition(-62,-45)
-    
+
     local detail_x = -65
     local width = 240
     local detail_y = 135
@@ -2075,7 +2067,7 @@ function ServerListingScreen:MakeDetailPanel(right_col)
     self.dedicated_server_description:SetRegionSize( 200, 50 )
     self.dedicated_server_description:SetColour(0,0,0,1)
     SetChecked( self.checkbox_dedicated_server, self.dedicated_server_description, false )
-    
+
     local pvp = self.server_details_additional:AddChild(Widget("pvp"))
     detail_y = detail_y - 26
     pvp:SetPosition(detail_x, detail_y)
@@ -2176,7 +2168,7 @@ function ServerListingScreen:MakeColumnHeaders()
     self.server_count:SetColour(0,0,0,1)
     self.server_count:SetRegionSize(300,40)
     self.server_count:SetHAlign(ANCHOR_RIGHT)
-    self.server_count:SetPosition(column_offsets.DETAILS+167, 53)    
+    self.server_count:SetPosition(column_offsets.DETAILS+167, 53)
 
     self.NAME = MakeHeader(self, self.table.titles, column_offsets.NAME, STRINGS.UI.SERVERLISTINGSCREEN.NAME, function() self:SetSort("NAME") end)
     self.DETAILS = MakeHeader(self, self.table.titles, column_offsets.DETAILS-13, STRINGS.UI.SERVERLISTINGSCREEN.DETAILS, function() self:SetSort("DETAILS") end)
@@ -2193,15 +2185,15 @@ end
 
 function ServerListingScreen:OnControl(control, down)
     if ServerListingScreen._base.OnControl(self, control, down) then return true end
-    
+
     if self.searchbox and ((self.searchbox.textbox and self.searchbox.textbox.editing) or (self.searchbox.focus and control == CONTROL_ACCEPT)) then
         self.searchbox.textbox:OnControl(control, down)
         return true
     end
 
     if not down then
-        if control == CONTROL_CANCEL then 
-            if TheFrontEnd:GetFadeLevel() > 0 then 
+        if control == CONTROL_CANCEL then
+            if TheFrontEnd:GetFadeLevel() > 0 then
                 TheNet:Disconnect(false)
                 HideCancelTip()
                 TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)

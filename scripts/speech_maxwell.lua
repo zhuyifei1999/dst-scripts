@@ -17,6 +17,11 @@ return {
 			NOTALLOWED = "That can't go in there.",
 			INUSE = "I suppose I can wait.",
 		},
+		WRITE =
+        {
+            GENERIC = "I'm unable to do that right now.",
+            INUSE = "I can wait... it's the courteous thing to do.",
+        },
 		RUMMAGE =
 		{	
 			GENERIC = "That didn't work.",
@@ -35,6 +40,12 @@ return {
         SADDLE =
         {
             TARGETINCOMBAT = "Perhaps I should stand back.",
+        },
+        CHANGEIN =
+        {
+            GENERIC = "How could you improve on perfection?",
+            BURNING = "Oh. There go all my good pocket squares. Sigh.",
+            INUSE = "They're in much more dire need of it.",
         },
 		ATTUNE =
         {
