@@ -16,6 +16,11 @@ FACING_RIGHT = 0
 FACING_UP = 1
 FACING_LEFT = 2
 FACING_DOWN = 3
+FACING_UPRIGHT = 4
+FACING_UPLEFT = 5
+FACING_DOWNRIGHT = 6
+FACING_DOWNLEFT = 7
+FACING_NONE = 8
 
 -- Careful inserting into here. You will have to update game\render\RenderLayer.h
 LAYER_BACKGROUND = 1

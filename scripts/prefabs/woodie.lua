@@ -567,6 +567,18 @@ end
 
 --------------------------------------------------------------------------
 
+local TALLER_FROSTYBREATHER_OFFSET = Vector3(.3, 3.75, 0)
+local BEAVER_FROSTYBREATHER_OFFSET = Vector3(1.2, 2.15, 0)
+local DEFAULT_FROSTYBREATHER_OFFSET = Vector3(.3, 1.15, 0)
+local function GetFrostyBreatherOffset(inst)
+    local rider = inst.replica.rider
+    return (rider ~= nil and rider:IsRiding() and TALLER_FROSTYBREATHER_OFFSET)
+        or (inst.isbeavermode:value() and BEAVER_FROSTYBREATHER_OFFSET)
+        or DEFAULT_FROSTYBREATHER_OFFSET
+end
+
+--------------------------------------------------------------------------
+
 local function common_postinit(inst)
     inst:AddTag("woodcutter")
     inst:AddTag("polite")
@@ -588,6 +600,8 @@ local function common_postinit(inst)
         inst._SetGhostMode = inst.SetGhostMode
         inst.SetGhostMode = SetGhostMode
     end
+
+    inst.components.frostybreather:SetOffsetFn(GetFrostyBreatherOffset)
 
     if not TheWorld.ismastersim then
         inst.OnEntityReplicated = onentityreplicated

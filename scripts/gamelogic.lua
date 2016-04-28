@@ -6,6 +6,7 @@ require "map/extents"
 require "perfutil"
 require "maputil"
 require "constants"
+require "knownerrors"
 local Stats = require("stats")
 
 -- globals
@@ -30,6 +31,7 @@ global_loading_widget:SetHAnchor(ANCHOR_LEFT)
 global_loading_widget:SetVAnchor(ANCHOR_BOTTOM)
 global_loading_widget:SetScaleMode(SCALEMODE_PROPORTIONAL)
 
+known_error_key = nil
 global_error_widget = nil
 ScriptErrorWidget = require "widgets/scripterrorwidget"
 function SetGlobalErrorWidget(...)
@@ -390,7 +392,7 @@ local function PopulateWorld(savedata, profile)
             end
 
             -- Clear out one time overrides
-            local onetime = {"season_start", "autumn", "winter", "spring", "summer", "frograin", "wildfires", "prefabswaps_start"}
+            local onetime = {"season_start", "autumn", "winter", "spring", "summer", "frograin", "wildfires", "prefabswaps_start", "rock_ice"}
             for i,override in ipairs(onetime) do
                 if world.topology.overrides[override] ~= nil then
                     print("removing onetime override",override)

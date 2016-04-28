@@ -33,6 +33,24 @@ local function GetDescription(inst, viewer)
     return string.format(playerdesc[modifier], inst:GetDisplayName())
 end
 
+local TALLER_TALKER_OFFSET = Vector3(0, -700, 0)
+local DEFAULT_TALKER_OFFSET = Vector3(0, -400, 0)
+local function GetTalkerOffset(inst)
+    local rider = inst.replica.rider
+    return (rider ~= nil and rider:IsRiding() or inst:HasTag("playerghost"))
+        and TALLER_TALKER_OFFSET
+        or DEFAULT_TALKER_OFFSET
+end
+
+local TALLER_FROSTYBREATHER_OFFSET = Vector3(.3, 3.75, 0)
+local DEFAULT_FROSTYBREATHER_OFFSET = Vector3(.3, 1.15, 0)
+local function GetFrostyBreatherOffset(inst)
+    local rider = inst.replica.rider
+    return rider ~= nil and rider:IsRiding()
+        and TALLER_FROSTYBREATHER_OFFSET
+        or DEFAULT_FROSTYBREATHER_OFFSET
+end
+
 local function CanUseTouchStone(inst, touchstone)
     if inst.components.touchstonetracker ~= nil then
         return not inst.components.touchstonetracker:IsUsed(touchstone)
@@ -774,6 +792,7 @@ local function DoActualRez(inst, source)
 
     inst.components.hunger:Resume()
     inst.components.temperature:SetTemp() --nil param will resume temp
+    inst.components.frostybreather:Enable()
 
     MakeMediumBurnableCharacter(inst, "torso")
     inst.components.burnable:SetBurnTime(TUNING.PLAYER_BURN_TIME)
@@ -994,6 +1013,7 @@ local function OnMakePlayerGhost( inst, data )
     inst.components.hunger:Pause()
 
     inst.components.temperature:SetTemp(TUNING.STARTING_TEMP)
+    inst.components.frostybreather:Disable()
 
     if inst.components.playercontroller ~= nil then
         inst.components.playercontroller:Enable(true)
@@ -1559,8 +1579,11 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.jointask = inst:DoTaskInTime(0, OnPlayerJoined)
         inst:ListenForEvent("setowner", OnSetOwner)
 
-        -- V2C: also TODO implement talker properly after PAX
         inst:AddComponent("talker")
+        inst.components.talker:SetOffsetFn(GetTalkerOffset)
+
+        inst:AddComponent("frostybreather")
+        inst.components.frostybreather:SetOffsetFn(GetFrostyBreatherOffset)
 
         inst:AddComponent("playervision")
         inst:AddComponent("areaaware")
@@ -1695,8 +1718,6 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
 
         inst:AddComponent("eater")
         inst:AddComponent("leader")
-        inst:AddComponent("frostybreather")
-        inst.components.frostybreather:SetOffset(0.3, 1.15, 0)
         inst:AddComponent("age")
         inst:AddComponent("rider")
 

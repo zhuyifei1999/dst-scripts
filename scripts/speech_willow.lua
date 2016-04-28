@@ -87,6 +87,7 @@ return {
 		PAINFUL = "Ugh! Nasty!",
 		SPOILED = "That tasted terrible!",
 		STALE = "That was kinda gross.",
+		INVALID = "How would I even eat that!",
 		YUCKY = "Eeeew no way!",
 	},
 	ANNOUNCE_NOSLEEPONFIRE = "It's just the collapsing that concerns me.",
@@ -166,6 +167,86 @@ return {
 	},
 	DESCRIBE =
 	{
+        PLAYER =
+        {
+            GENERIC = "Hi %s!",
+            ATTACKER = "%s... that fire in your eyes!",
+            MURDERER = "Burn the murderer!",
+            REVIVER = "Who do ghosts call? %s!",
+            GHOST = "I better get a heart for %s.",
+        },
+		WILSON = 
+		{
+			GENERIC = "Hi Wilson!",
+			ATTACKER = "Wilson... that fire in your eyes!",
+			MURDERER = "Burn the murderer!",
+			REVIVER = "Who do ghosts call? Wilson!",
+			GHOST = "I better get a heart for Wilson.",
+		},
+		WOLFGANG = 
+		{
+			GENERIC = "Hi Wolfgang!",
+			ATTACKER = "Wolfgang... that fire in your eyes!",
+			MURDERER = "Burn the murderer!",
+			REVIVER = "Who do ghosts call? Wolfgang!",
+			GHOST = "I better get a heart for Wolfgang.",
+		},
+		WAXWELL = 
+		{
+			GENERIC = "Hi Maxwell!",
+			ATTACKER = "Maxwell... that fire in your eyes!",
+			MURDERER = "Burn the murderer!",
+			REVIVER = "Who do ghosts call? Maxwell!",
+			GHOST = "I better get a heart for Maxwell.",
+		},
+		WX78 = 
+		{
+			GENERIC = "Hi WX!",
+			ATTACKER = "WX-78... that fire in your eyes!",
+			MURDERER = "Burn the murderer!",
+			REVIVER = "Who do ghosts call? WX!",
+			GHOST = "I better get a heart for WX.",
+		},
+		WILLOW = 
+		{
+			GENERIC = "Hi Other-Willow!",
+			ATTACKER = "Willow... that fire in your eyes!",
+			MURDERER = "Burn the murderer!",
+			REVIVER = "Who do ghosts call? Willow!",
+			GHOST = "I better get a heart for Willow.",
+		},
+		WENDY = 
+		{
+			GENERIC = "Hi Wendy!",
+			ATTACKER = "Wendy... that fire in your eyes!",
+			MURDERER = "Burn the murderer!",
+			REVIVER = "Who do ghosts call? Wendy!",
+			GHOST = "I better get a heart for Wendy.",
+		},
+		WOODIE = 
+		{
+			GENERIC = "Hi Woodie!",
+			ATTACKER = "Woodie... that fire in your eyes!",
+			MURDERER = "Burn the murderer!",
+			REVIVER = "Who do ghosts call? Woodie!",
+			GHOST = "I better get a heart for Woodie.",
+		},
+		WICKERBOTTOM = 
+		{
+			GENERIC = "Hi Wickerbottom!",
+			ATTACKER = "Wickerbottom... that fire in your eyes!",
+			MURDERER = "Burn the murderer!",
+			REVIVER = "Who do ghosts call? Wickerbottom!",
+			GHOST = "I better get a heart for Wickerbottom.",
+		},
+		WES = 
+		{
+			GENERIC = "Hi Wes!",
+			ATTACKER = "Wes... that fire in your eyes!",
+			MURDERER = "Burn the murderer!",
+			REVIVER = "Who do ghosts call? Wes!",
+			GHOST = "I better get a heart for Wes.",
+		},
         MULTIPLAYER_PORTAL = "The vines coil away from my lighter... weird!",
 		BERNIE_INACTIVE =
 		{
@@ -269,6 +350,20 @@ return {
 			EMPTY = "I could put food in it and fire underneath it.",
 			BURNT = "At least it went out in a blaze of glory.",
 		},
+
+		COMPASS =
+		{
+			E = "East",
+			GENERIC = "I can't get a reading.",
+			N = "North",
+			NE = "Northeast",
+			NW = "Northwest",
+			S = "South",
+			SE = "Southeast",
+			SW = "Southwest",
+			W = "West",
+		},
+
 		EYEBRELLAHAT =	"If I wear it, I don't have to look at it...",
 		ARMORDRAGONFLY = "Yay! More FIRE!!!",
 		DRAGON_SCALES = "Oooooooh! I LIKE these.",
@@ -436,23 +531,23 @@ return {
 			GENERIC = "It would be better if it measured fire.",
 			BURNT = "If you'd measured fire, maybe you woulda been prepared!",
 		},
-		HOMESIGN =
+		HOMESIGN = 
 		{
 			GENERIC = "Less reading! More burning!",
-            UNWRITTEN = "I should burn something into it.",
+			UNWRITTEN = "I should burn something into it.",
 			BURNT = "Hahaha, yesss!",
 		},
 		ARROWSIGN_POST =
 		{
 			GENERIC = "Less reading! More burning!",
-            UNWRITTEN = "I should burn something into it.",
-			BURNT = "Hahaha, yesss!",
+			UNWRITTEN = "I could doodle something rude here.",
+			BURNT = "It said \"Don't play with matches\", but the \"Don't\" is crossed out now.",
 		},
 		ARROWSIGN_PANEL =
 		{
 			GENERIC = "Less reading! More burning!",
-            UNWRITTEN = "I should burn something into it.",
-			BURNT = "Hahaha, yesss!",
+			UNWRITTEN = "I could doodle something rude here.",
+			BURNT = "It said \"Don't play with matches\", but the \"Don't\" is crossed out now.",
 		},
 		BEEBOX =
 		{
@@ -476,7 +571,7 @@ return {
         WORMLIGHT_PLANT = "Light without fire. Unnatural.",
 		EEL = "I don't like the look it's giving me!",
 		EEL_COOKED = "Fire improves everything.",
-		UNAGI = "I cooked that.",
+		UNAGI = "You can make it fancy but it's still an eel.",
 		EYETURRET = "I wish it lit stuff on fire.",
 		EYETURRET_ITEM = "It's no good until I place it.",
 		MINOTAURHORN = "I wonder if these rings are an indication of age.",
@@ -635,14 +730,26 @@ return {
 		TURF_SINKHOLE="The ground is boring.",
 		TURF_UNDERROCK="The ground is boring.",
 		TURF_MUD="The ground is boring.",
+		TURF_DRAGONFLY = "My lighter doesn't work on it.",
 		
 		TURKEYDINNER = "A feast of burned bird!",
 		TWIGS = "A bunch of small twigs. Good for fires, among other things.",
 		POWCAKE = "I wonder if it is flammable.",
         CAVE_ENTRANCE = "Who plugged that hole?",
         CAVE_ENTRANCE_RUINS = "Who plugged that hole?",
-        CAVE_ENTRANCE_OPEN = "I hope there's lava down there somewhere.",
-        CAVE_EXIT = "It's dark and stuffy down here.",
+
+        CAVE_ENTRANCE_OPEN = 
+        {
+            GENERIC = "I don't want to go in that gross hole!",
+            OPEN = "I hope there's lava down there somewhere.",
+            FULL = "There's too many people down there.",
+        },
+        CAVE_EXIT = 
+        {
+            GENERIC = "It's cooler down here, anyway.",
+            OPEN = "It's too dark and stuffy down here.",
+            FULL = "There's too many people up there.",
+        },
 
 		MAXWELLPHONOGRAPH = "I like more exciting music.",
 		PIGGUARD = "I like his attitude!",
@@ -706,6 +813,7 @@ return {
 			WITHERED = "All dried out. Primed for fire!",
 			GENERIC = "Mmmmm. Berries.",
 			PICKED = "I want more berries!",
+			DISEASED = "Burn the sick!",
 		},
 		BERRYBUSH_JUICY =
 		{
@@ -713,6 +821,7 @@ return {
 			WITHERED = "It's burning up.",
 			GENERIC = "Now I've just gotta pick them.",
 			PICKED = "Make mooooore!",
+			DISEASED = "Burn the sick!",
 		},
 		BIRDCAGE =
 		{
@@ -814,6 +923,7 @@ return {
 		DIVININGRODSTART = "I'll make something out of it.",
 		DRAGONFLY = "It's filled with fire!",
 
+		HUTCH = "What's your angle?",
         HUTCH_FISHBOWL =
         {
             GENERIC = "It's too wet to burn.",
@@ -825,7 +935,7 @@ return {
 			HOT = "The coolest drool!",
 			COOL = "Cool drool, literally.",
 		},
-
+		LAVA_POND = "Yes! Yessss!",
 		LAVAE = "Why can't we be friends?",
 		LAVAE_PET = 
 		{
@@ -916,7 +1026,8 @@ return {
 		FISHTACOS = "Convenient taco-grip.",
 		FISH_COOKED = "Less slippery now that it's found fire.",
 		FLINT = "The poor man's fire-starter.",
-		FLOWER = {
+		FLOWER = 
+		{
             GENERIC = "I don't have time to waste on flowers.",
             ROSE = "I want to burn this flower in particular.",
         },
@@ -949,6 +1060,7 @@ return {
 			BURNING = "Fire! Wooo!",
 			GENERIC = "It's a flammable tuft of grass.",
 			PICKED = "Grass stubble is kind of useless.",
+			DISEASED = "Burn the sick!",
 		},
 		GREEN_CAP = "Boring!",
 		GREEN_CAP_COOKED = "I changed it with fire!",
@@ -1159,12 +1271,12 @@ return {
 		ROBOT_PUPPET = "It looks scared half to death.",
 		ROCK_LIGHT =
 		{
-			GENERIC = "A crusted over lava pit.",
+			GENERIC = "There's heat in there, just waiting to get out!",
 			OUT = "Aww, it's cooled off.",
 			LOW = "The lava is cooling.",
 			NORMAL = "A pool of fire!",
 		},
-		ROCKS = "Can make inukshuks with these?",
+		ROCKS = "Can I make inukshuks with these?",
         ROOK = "It's a castle!",
         ROPE = "What can I tie up with this?",
 		ROTTENEGG = "Ew! Why? Oh Why?!",
@@ -1177,12 +1289,22 @@ return {
 			ACTIVE = "I wonder what these markings mean.",
 			INACTIVE = "Where'd it go?",
 		},
+		TWIGGYTREE = 
+        {
+            BURNING = "YES! BURN!",
+			BURNT = "I wish it was still burning.",
+			CHOPPED = "One less tree in the world.",
+            GENERIC = "How am I supposed to get the sticks from up there??",           
+            DISEASED = "Burn the sick!",
+        },
+        TWIGGY_NUT = "Looks like campfire fuel to me!",
 		SAPLING =
 		{
 			BURNING = "Burn! Yeah!",
 			WITHERED = "It's so dry, it's like it wants to be on fire.",
 			GENERIC = "I should pick it.",
 			PICKED = "Poor little limp tree.",
+			DISEASED = "Burn the sick!",
 		},
 		SEEDS = "Farming is boring.",
 		SEEDS_COOKED = "No good for farming now.",
@@ -1324,6 +1446,8 @@ return {
 		WALL_RUINS = "And they'll huff and they'll puff!",
 		WALL_RUINS_ITEM = "Will they fit in my pockets?",
 		WALL_WOOD_ITEM = "I hate hiding.",
+		WALL_MOONROCK = "Safe for now.",
+		WALL_MOONROCK_ITEM = "I guess I could take it with me.",
 		WALRUS = "Stop following me!",
 		WALRUSHAT = "I kind of like the look of it.",
 		WALRUS_CAMP =
@@ -1340,6 +1464,7 @@ return {
 		},
 		WARG = "You're a big mean jerk!",
 		WASPHIVE = "I had better keep my distance.",
+		WATERBALLOON = "Boo! Hissss!",
 		WETGOOP = "How did it go wrong?! I put it in fire and everything.",
         WHIP = "This means I'm the boss now.",
 		WINTERHAT = "It's not warm enough for my liking.",

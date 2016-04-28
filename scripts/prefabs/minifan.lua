@@ -23,7 +23,7 @@ local function onequip(inst, owner)
 
     if inst.wheel == nil then
         inst.wheel = SpawnPrefab("fan_wheel")
-        inst.wheel.Transform:SetPosition(inst:GetPosition():Get())
+        inst.wheel.Transform:SetPosition(inst.Transform:GetWorldPosition())
         inst.wheel:SetFollowTarget(owner)
     end
 

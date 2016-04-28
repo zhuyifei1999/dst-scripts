@@ -35,7 +35,7 @@ local swaps_descriptions = {
 	{ text = STRINGS.UI.SANDBOXMENU.SLIDEDEFAULT, data = "default" },		
 	{ text = STRINGS.UI.SANDBOXMENU.QTYNONE, data = "none" },	
 	{ text = STRINGS.UI.SANDBOXMENU.QTYFEW, data = "few" },	
-	{ text = STRINGS.UI.SANDBOXMENU.QTYNORMAL, data = "normal" },		
+	{ text = STRINGS.UI.SANDBOXMENU.QTYMEDIUM, data = "normal" },		
 	{ text = STRINGS.UI.SANDBOXMENU.QTYMANY, data = "many" },	
 	{ text = STRINGS.UI.SANDBOXMENU.QTYMAX, data = "max" },	
 }

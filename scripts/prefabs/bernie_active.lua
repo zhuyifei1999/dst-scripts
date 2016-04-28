@@ -128,6 +128,7 @@ local function fn()
     inst:AddComponent("locomotor")
     inst.components.locomotor.walkspeed = TUNING.BERNIE_SPEED
     inst:AddComponent("follower")
+    inst.components.follower:KeepLeaderOnAttacked()
     inst.components.follower.keepdeadleader = true
     inst:AddComponent("combat")
     inst:AddComponent("timer")
@@ -136,7 +137,7 @@ local function fn()
 
     inst:SetStateGraph("SGbernie")
     inst:SetBrain(brain)
-    
+
     inst.LinkToPlayer = linktoplayer
     inst.GoInactive = goinactive
 

@@ -8,7 +8,7 @@ local ScrollableList = require "widgets/scrollablelist"
 
 local SnapshotTab = Class(Widget, function(self, cb)
     Widget._ctor(self, "SnapshotTab")
-  
+
     self.snapshot_page = self:AddChild(Widget("snapshot_page"))
 
     self.left_line = self.snapshot_page:AddChild(Image("images/ui.xml", "line_vertical_5.tex"))
@@ -20,7 +20,7 @@ local SnapshotTab = Class(Widget, function(self, cb)
     self.online_mode = nil
     self.multi_level = nil
     self.cb = cb
-    
+
     self.snapshots = nil
     self.slotsnaps = {}
     self:ListSnapshots()
@@ -219,14 +219,12 @@ function SnapshotTab:OnClickSnapshot(snapshot_num)
 end
 
 function SnapshotTab:ListSnapshots(force)
-    if not force and self.slotsnaps[self.save_slot] then
+    if self.save_slot == nil or self.session_id == nil then
+        self.snapshots = {}
+    elseif not force and self.slotsnaps[self.save_slot] ~= nil then
         self.snapshots = deepcopy(self.slotsnaps[self.save_slot])
-        return
-    end
-
-    self.snapshots = {}
-    if self.save_slot ~= nil and self.session_id ~= nil then
-        --V2C: TODO: update ListSnapshots to support cluster folders
+    else
+        self.snapshots = {}
         local snapshot_infos, has_more
         if self.multi_level then
             snapshot_infos, has_more = TheNet:ListSnapshotsInClusterSlot(self.save_slot, "Master", self.session_id, self.online_mode, 10)
@@ -274,27 +272,37 @@ function SnapshotTab:ListSnapshots(force)
                 table.insert(self.snapshots, info)
             end
         end
+        if #self.snapshots > 0 then
+            -- Remove the first element in the table, since that's our current save
+            table.remove(self.snapshots, 1)
+        end
     end
-
-    -- Remove the first element in the table, since that's our current save
-    table.remove(self.snapshots, 1)
 end
 
 function SnapshotTab:SetSaveSlot(save_slot, prev_slot, fromDelete)
-    if not fromDelete and (save_slot == self.save_slot or save_slot == prev_slot or not save_slot or not prev_slot) then return end
+    if not fromDelete and
+        (   save_slot == self.save_slot or
+            save_slot == prev_slot or
+            save_slot == nil or
+            prev_slot == nil    ) then
+        return
+    end
 
     self.save_slot = save_slot
 
-    if not SaveGameIndex:IsSlotEmpty(save_slot) and prev_slot and prev_slot > 0 then
+    if prev_slot ~= nil and prev_slot > 0 then
         -- remember snapshots
-        self.slotsnaps[prev_slot] = deepcopy(self.snapshots)
+        self.slotsnaps[prev_slot] =
+            not SaveGameIndex:IsSlotEmpty(prev_slot)
+            and deepcopy(self.snapshots)
+            or nil
     end
 
     self.session_id = SaveGameIndex:GetSlotSession(save_slot)
     self.online_mode = SaveGameIndex:GetSlotServerData(save_slot).online_mode ~= false
     self.multi_level = SaveGameIndex:IsSlotMultiLevel(save_slot)
 
-    self:ListSnapshots()
+    self:ListSnapshots(fromDelete)
     self:RefreshSnapshots()
 end
 

@@ -769,6 +769,8 @@ function MultiplayerMainScreen:FinishedFadeIn()
 	for _,item in pairs(entitlement_items) do
 		if item.item_type == "firepit_hole" then
 			table.insert(items, {item=item.item_type, item_id=item.item_id, gifttype="EARLY_ACCESS"})
+		elseif item.item_type == "torch_shadow" then
+			table.insert(items, {item=item.item_type, item_id=item.item_id, gifttype="ARG"})
 		else
 			table.insert(items, {item=item.item_type, item_id=item.item_id, gifttype="DEFAULT"})
 		end

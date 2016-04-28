@@ -78,63 +78,72 @@ local states=
             inst.Physics:Stop()
         end,
     },
-    
+
     State{
         name = "death",
         tags = {"busy"},
-        
+
         onenter = function(inst)
             inst.SoundEmitter:PlaySound("dontstarve/pig/grunt")
             inst.AnimState:PlayAnimation("death")
             inst.Physics:Stop()
-            RemovePhysicsColliders(inst)            
+            RemovePhysicsColliders(inst)
             inst.components.lootdropper:DropLoot(Vector3(inst.Transform:GetWorldPosition()))            
         end,
         
     },
-    
+
     State{
 		name = "abandon",
 		tags = {"busy"},
-		
+
 		onenter = function(inst, leader)
 			inst.Physics:Stop()
 			inst.AnimState:PlayAnimation("abandon")
             inst:FacePoint(Vector3(leader.Transform:GetWorldPosition()))
 		end,
-		
+
         events =
         {
             EventHandler("animover", function(inst) inst.sg:GoToState("idle") end ),
-        },        
+        },
     },
-    
+
     State{
 		name = "transformNormal",
 		tags = {"transform", "busy", "sleeping"},
-		
+
 		onenter = function(inst)
 			inst.Physics:Stop()
 			inst.SoundEmitter:PlaySound("dontstarve/creatures/werepig/transformToPig")
             inst.AnimState:SetBuild("werepig_build")
 			inst.AnimState:PlayAnimation("transform_were_pig")
 		    inst:RemoveTag("hostile")
-			
+            inst.AnimState:OverrideSymbol("pig_arm_trans", inst.build, "pig_arm")
+            inst.AnimState:OverrideSymbol("pig_ear_trans", inst.build, "pig_ear")
+            inst.AnimState:OverrideSymbol("pig_head_trans", inst.build, "pig_head")
+            inst.AnimState:OverrideSymbol("pig_leg_trans", inst.build, "pig_leg")
+            inst.AnimState:OverrideSymbol("pig_torso_trans", inst.build, "pig_torso")
 		end,
-		
+
 		onexit = function(inst)
             inst.AnimState:SetBuild(inst.build)
+            inst.AnimState:ClearOverrideSymbol("pig_arm_trans")
+            inst.AnimState:ClearOverrideSymbol("pig_ear_trans")
+            inst.AnimState:ClearOverrideSymbol("pig_head_trans")
+            inst.AnimState:ClearOverrideSymbol("pig_leg_trans")
+            inst.AnimState:ClearOverrideSymbol("pig_torso_trans")
 		end,
-		
+
         events=
         {
             EventHandler("animover", function(inst)
 				inst.components.sleeper:GoToSleep(15+math.random()*4)
 				inst.sg:GoToState("sleeping")
 			end ),
-        },        
+        },
     },
-    
+
     State{
         name = "attack",
         tags = {"attack", "busy"},

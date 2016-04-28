@@ -1,6 +1,8 @@
+--TO RUN THIS FROM THE GAME TYPE THIS INTO THE CONSOLE
+--require "tools/generate_worldgenoverride"
+
 local Customise = require "map/customise"
 local Levels = require "map/levels"
-
 
 local function makedescstring(desc)
     if desc ~= nil then

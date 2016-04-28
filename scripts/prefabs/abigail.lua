@@ -173,6 +173,7 @@ local function fn()
     ------------------    
 
     inst:AddComponent("follower")
+    inst.components.follower:KeepLeaderOnAttacked()
     inst.components.follower.keepdeadleader = true
 
     inst:ListenForEvent("attacked", OnAttacked)

@@ -80,7 +80,6 @@ local TRANSLATE_TO_PREFABS = {
 	["bees"] = 				{"beehive", "bee"},
 	["grass"] = 			{"grass","grassgekko"},
 	["rock"] = 				{"rocks", "rock1", "rock2", "rock_flintless","rock_petrified_tree"}, 
-	["rock_ice"] = 			{"rock_ice"}, 
 	["sapling"] = 			{"sapling","twiggytree","ground_twigs"},
 	["reeds"] = 			{"reeds"},	
 	["trees"] = 			{"evergreen", "evergreen_sparse", "deciduoustree", "marsh_tree"},	
@@ -124,6 +123,7 @@ local TRANSLATE_TO_PREFABS = {
 
 local TRANSLATE_AND_OVERRIDE = { --These are entities that should be translated to prefabs for world gen but also have a postinit override to do
 	["flowers"] =			{"flower", "flower_evil"},
+	["rock_ice"] = 			{"rock_ice"}, 
 }
 
 

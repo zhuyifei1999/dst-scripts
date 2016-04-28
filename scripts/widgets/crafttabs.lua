@@ -246,18 +246,19 @@ function CraftTabs:OnUpdate(dt)
 
     if self.crafting.open then
         local x = TheInput:GetScreenPosition().x
-        local w,h = TheSim:GetScreenSize()
-        if x > w*.33 then
+        local w, h = TheSim:GetScreenSize()
+        local res_scale = math.min(w / 1280, h / 720, MAX_HUD_SCALE)
+        local max_x = 465 * res_scale * TheFrontEnd:GetHUDScale()
+        --465 based on 1280x720
+        if x > max_x then
             self.crafting:Close()
             self.tabs:DeselectAll()
         end
-
     end
 
     if self.needtoupdate then
         self:DoUpdateRecipes()
     end
-    
 end
 
 function CraftTabs:OpenTab(idx)

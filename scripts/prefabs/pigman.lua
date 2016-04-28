@@ -459,6 +459,13 @@ local function common()
     --Sneak these into pristine state for optimization
     inst:AddTag("_named")
 
+    inst:AddComponent("talker")
+    inst.components.talker.fontsize = 35
+    inst.components.talker.font = TALKINGFONT
+    --inst.components.talker.colour = Vector3(133/255, 140/255, 167/255)
+    inst.components.talker.offset = Vector3(0, -400, 0)
+    inst.components.talker:MakeChatter()
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -468,12 +475,7 @@ local function common()
     --Remove these tags so that they can be added properly when replicating components below
     inst:RemoveTag("_named")
 
-    inst:AddComponent("talker")
     inst.components.talker.ontalk = ontalk
-    inst.components.talker.fontsize = 35
-    inst.components.talker.font = TALKINGFONT
-    --inst.components.talker.colour = Vector3(133/255, 140/255, 167/255)
-    inst.components.talker.offset = Vector3(0, -400, 0)
 
     inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
     inst.components.locomotor.runspeed = TUNING.PIG_RUN_SPEED --5

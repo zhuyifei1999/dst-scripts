@@ -3,9 +3,6 @@ local Rider = Class(function(self, inst)
 
     self._isriding = net_bool(inst.GUID, "rider._isriding", "isridingdirty")
 
-    self._default_talker_offset = nil
-    self._default_frosty_breather_offset = Vector3(0, 0, 0)
-
     if TheWorld.ismastersim then
         self.classified = inst.player_classified
         self._onmounthealthdelta = function(mount, data) self:OnMountHealth(data.newpercent) end
@@ -86,38 +83,7 @@ end
 
 --------------------------------------------------------------------------
 
-local TALKER_OFFSET = Vector3(0, -700, 0)
-local FROSTY_BREATHER_OFFSET = Vector3(.3, 1.15, 0)
-
 function Rider:OnIsRiding(riding)
-    --V2C: This is special for components that are added on clients,
-    --     which is why there's no checks for ismastersim or replica
-    if riding then
-        if self.inst.components.talker ~= nil then
-            self._default_talker_offset = self.inst.components.talker.offset
-            self.inst.components.talker.offset = TALKER_OFFSET
-        end
-
-        if self.inst.components.frostybreather ~= nil then
-            self._default_frosty_breather_offset.x,
-            self._default_frosty_breather_offset.y,
-            self._default_frosty_breather_offset.z = self.inst.components.frostybreather:GetOffset()
-            self.inst.components.frostybreather:SetOffset(FROSTY_BREATHER_OFFSET:Get())
-        end
-    else
-        if self.inst.components.talker ~= nil then
-            self.inst.components.talker.offset = self._default_talker_offset
-            self._default_talker_offset = nil
-        end
-
-        if self.inst.components.frostybreather ~= nil then
-            self.inst.components.frostybreather:SetOffset(self._default_frosty_breather_offset:Get())
-            self._default_frosty_breather_offset.x,
-            self._default_frosty_breather_offset.y,
-            self._default_frosty_breather_offset.z = 0, 0, 0
-        end
-    end
-
     if self.classified ~= nil then
         self:SetActionFilter(riding)
     end

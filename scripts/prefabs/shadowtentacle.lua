@@ -58,6 +58,7 @@ local function fn()
     inst:SetStateGraph("SGshadowtentacle")
 
     inst:DoTaskInTime(9, inst.Remove)
+    inst.persists = false
 
     return inst
 end

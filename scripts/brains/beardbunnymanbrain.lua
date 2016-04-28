@@ -1,7 +1,6 @@
 require "behaviours/wander"
 require "behaviours/chaseandattack"
 require "behaviours/doaction"
-require "behaviours/chattynode"
 require "behaviours/panic"
 
 local MAX_WANDER_DIST = 20
@@ -49,19 +48,18 @@ function WerePigBrain:OnStart()
         WhileNode( function() return self.inst.components.hauntable and self.inst.components.hauntable.panic end, "PanicHaunted", Panic(self.inst)),
         WhileNode( function() return self.inst.components.health.takingfiredamage end, "OnFire", Panic(self.inst)),
         WhileNode(function() return not TargetIsAggressive(self.inst) end, "SafeToEat",
-	        DoAction(self.inst, function() return FindFoodAction(self.inst) end, "EatMeat", true)
-		),
-		
+            DoAction(self.inst, function() return FindFoodAction(self.inst) end, "EatMeat", true)
+        ),
+
         ChaseAndAttack(self.inst, MAX_CHASE_TIME, MAX_CHASE_DIST),
         Wander(self.inst, function() return self.inst.components.knownlocations:GetLocation("home") end, MAX_WANDER_DIST),
     }, .5)
-    
+
     self.bt = BT(self.inst, root)
 end
 
 function WerePigBrain:OnInitializationComplete()
     self.inst.components.knownlocations:RememberLocation("home", Point(self.inst.Transform:GetWorldPosition()))
 end
-
 
 return WerePigBrain

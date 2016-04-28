@@ -162,6 +162,86 @@ return {
 	--Pride... Arrogance... Conceit...
 	DESCRIBE =
 	{
+		PLAYER =
+        {
+            GENERIC = "Greetings, %s.",
+            ATTACKER = "%s seems untrustworthy...",
+            MURDERER = "Murderous fiend!",
+            REVIVER = "%s tethers lost spirits to this world.",
+            GHOST = "%s needs heart-shaped assistance.",
+        },
+		WILSON = 
+		{
+			GENERIC = "Greetings, Mr Higgsbury.",
+			ATTACKER = "That Wilson seems untrustworthy...",
+			MURDERER = "Murderous fiend!",
+			REVIVER = "Wilson tethers lost spirits to this world.",
+			GHOST = "Wilson needs heart-shaped assistance.",
+		},
+		WOLFGANG = 
+		{
+			GENERIC = "Greetings, Mr Wolfgang.",
+			ATTACKER = "That Wolfgang seems untrustworthy...",
+			MURDERER = "Murderous fiend!",
+			REVIVER = "Wolfgang tethers lost spirits to this world.",
+			GHOST = "Wolfgang needs heart-shaped assistance.",
+		},
+		WAXWELL = 
+		{
+			GENERIC = "Greetings, Other-Maxwell.",
+			ATTACKER = "That Maxwell seems untrustworthy...",
+			MURDERER = "Murderous fiend!",
+			REVIVER = "Maxwell tethers lost spirits to this world.",
+			GHOST = "Maxwell needs heart-shaped assistance.",
+		},
+		WX78 = 
+		{
+			GENERIC = "Greetings, Mx WX-78.",
+			ATTACKER = "That WX-78 seems untrustworthy...",
+			MURDERER = "Murderous fiend!",
+			REVIVER = "WX-78 tethers lost spirits to this world.",
+			GHOST = "WX-78 needs heart-shaped assistance.",
+		},
+		WILLOW = 
+		{
+			GENERIC = "Greetings, Ms Willow.",
+			ATTACKER = "That Willow seems untrustworthy...",
+			MURDERER = "Murderous fiend!",
+			REVIVER = "Willow tethers lost spirits to this world.",
+			GHOST = "Willow needs heart-shaped assistance.",
+		},
+		WENDY = 
+		{
+			GENERIC = "Greetings, Ms Wendy.",
+			ATTACKER = "That Wendy seems untrustworthy...",
+			MURDERER = "Murderous fiend!",
+			REVIVER = "Wendy tethers lost spirits to this world.",
+			GHOST = "Wendy needs heart-shaped assistance.",
+		},
+		WOODIE = 
+		{
+			GENERIC = "Greetings, Mr Woodie.",
+			ATTACKER = "That Woodie seems untrustworthy...",
+			MURDERER = "Murderous fiend!",
+			REVIVER = "Woodie tethers lost spirits to this world.",
+			GHOST = "Woodie needs heart-shaped assistance.",
+		},
+		WICKERBOTTOM = 
+		{
+			GENERIC = "Greetings, Ms Wickerbottom.",
+			ATTACKER = "That Wickerbottom seems untrustworthy...",
+			MURDERER = "Murderous fiend!",
+			REVIVER = "Wickerbottom tethers lost spirits to this world.",
+			GHOST = "Wickerbottom needs heart-shaped assistance.",
+		},
+		WES = 
+		{
+			GENERIC = "Greetings, Mr Wes.",
+			ATTACKER = "That Wes looks seems untrustworthy...",
+			MURDERER = "Murderous fiend!",
+			REVIVER = "Wes tethers lost spirits to this world.",
+			GHOST = "Wes could needs heart-shaped assistance.",
+		},
 		BERNIE_INACTIVE =
 		{
 			BROKEN = "It's seen better days.",
@@ -264,6 +344,20 @@ return {
 			EMPTY = "Just the thought makes my mouth water.",
 			BURNT = "A bit overdone for my tastes.",
 		},
+
+		COMPASS =
+		{
+			GENERIC= "Hm. I'm unable to get a reading.",
+			N = "North.",
+			S = "South.",
+			E = "East.",
+			W = "West.",
+			NE = "Northeast.",
+			SE = "Southeast.",
+			NW = "Northwest.",
+			SW = "Southwest.",
+		},
+
 		EYEBRELLAHAT =	"Eye to the sky.",
 		GRASSGEKKO = 
 		{
@@ -583,8 +677,19 @@ return {
 		POWCAKE = "What foul product of science is this?",
 		CAVE_ENTRANCE = "I plugged it a long time ago.",
 		CAVE_ENTRANCE_RUINS = "Probably shouldn't venture any deeper.",
-        CAVE_ENTRANCE_OPEN = "That was not a good idea!",
-        CAVE_EXIT = "Get me out of here!",
+        
+        CAVE_ENTRANCE_OPEN = 
+        {
+            GENERIC = "That was not a good idea!",
+            OPEN = "Off to plunder the depths.",
+            FULL = "When it's less claustrophobic, perhaps.",
+        },
+        CAVE_EXIT = 
+        {
+            GENERIC = "Get me out of here!",
+            OPEN = "Onward to the next thing.",
+            FULL = "I'd rather stay here than mingle with crowds above.",
+        },
 
 		MAXWELLPHONOGRAPH = "That accursed thing!",
 		--...
@@ -603,7 +708,7 @@ return {
 			GENERIC = "A fine powder that smells of destruction.",
 			REMAINS_GLOMMERFLOWER = "There's always another Glommer.",
 			REMAINS_EYE_BONE = "Don't worry. There will be more Chesters.",
-			REMAINS_THINGIE = "There's a perfectly scientific explanation for that.",
+			REMAINS_THINGIE = "My trip through the portal made it unrecognizable.",
 		},
 		AXE = "Sometimes the direct approach is best.",
 		BABYBEEFALO = "They're even ugly as children.",
@@ -655,6 +760,7 @@ return {
 			WITHERED = "Too hot for that little bush.",
 			GENERIC = "Reduced to eating berries. Sigh.",
 			PICKED = "And now we wait.",
+			DISEASED = "What has brought this blight upon my world?",
 		},
 		BERRYBUSH_JUICY =
 		{
@@ -662,6 +768,7 @@ return {
 			WITHERED = "I know the feeling.",
 			GENERIC = "The berries will stay fresh as long as I leave them there.",
 			PICKED = "I fear I'll have to wait.",
+			DISEASED = "What has brought this blight upon my world?",
 		},
 		BIRDCAGE =
 		{
@@ -772,17 +879,38 @@ return {
 		DIVININGRODSTART = "The portals lead to the next rod.",
 		DRAGONFLY = "A fiery fly.",
 
+		HUTCH = "Stick your tongue in. You're getting slobber on my pantlegs.",
         HUTCH_FISHBOWL =
         {
             GENERIC = "Better him in that bowl than me.",
             WAITING = "His spirit is free now.",
         },
+		
+		LAVAE = "Foul beast! Know your place!",
+		LAVAE_PET = 
+		{
+			STARVING = "I think it's going to die!",
+			HUNGRY = "It's hungry. Why is it hungry?",
+			CONTENT = "It's happy with me, and I with it.",
+			GENERIC = "You're not a hellbeast are you? Nooo. Just misunderstood!",
+		},
+		LAVAE_EGG = 
+		{
+			GENERIC = "It's alive in there.",
+		},
+		LAVAE_EGG_CRACKED =
+		{
+			COLD = "I knew I would make a terrible pa-pa.",
+			COMFY = "I can say with pride that it is comfy and cozy.",
+		},
+		LAVAE_TOOTH = "The lavae's baby tooth.",
 
 		LAVASPIT = 
 		{
 			HOT = "Spitfire.",
 			COOL = "It's cold and dry now.",
 		},
+		LAVA_POND = "A touch hot, but could cook my food in a pinch.",
 		DRAGONFRUIT = "Exotic and delicious.",
 		DRAGONFRUIT_COOKED = "A little more refined, at least.",
 		DRAGONFRUIT_SEEDS = "This labor is beneath me.",
@@ -818,7 +946,7 @@ return {
 			GENERIC = "It looks sickly.",
 		},
 		EYEPLANT = "The Meat Bulb's pawns.",
-		FEATHERHAT = "I will lure them in with my plumage.",
+		FEATHERHAT = "I will lure them in with my magnificent plumage.",
 		FEATHER_CROW = "Black is the color of sleep.",
 		FEATHER_ROBIN = "Red is the color of fire.",
 		FEATHER_ROBIN_WINTER = "Grey is the color of pain.",
@@ -878,6 +1006,7 @@ return {
 			BURNING = "Oops.",
 			GENERIC = "Tufty.",
 			PICKED = "Nothing to harvest.",
+			DISEASED = "What has brought this blight upon my world?",
 		},
 		GREEN_CAP = "I should eat it.",
 		GREEN_CAP_COOKED = "Salty!",
@@ -902,24 +1031,24 @@ return {
 		HOME = "There's no place like it.",
 		HOMESIGN =
 		{
-			GENERIC = "It says... nothing.",
+			GENERIC = "\"You are here\"... I wish I wasn't!",
             UNWRITTEN = "This requires profundity.",
 			BURNT = "Somehow, it says even less now.",
 		},
 		ARROWSIGN_POST =
 		{
-			GENERIC = "It says... nothing.",
+			GENERIC = "\"You are here\"... I wish I wasn't!",
             UNWRITTEN = "This requires profundity.",
 			BURNT = "Somehow, it says even less now.",
 		},
 		ARROWSIGN_PANEL =
 		{
-			GENERIC = "It says... nothing.",
+			GENERIC = "\"You are here\"... I wish I wasn't!",
             UNWRITTEN = "This requires profundity.",
 			BURNT = "Somehow, it says even less now.",
 		},
 		HONEY = "Sticky and sweet.",
-		HONEYCOMB = "It's full of bee seeds.",
+		HONEYCOMB = "It's full of bee maggots.",
 		HONEYHAM = "Tender.",
 		HONEYNUGGETS = "These look childish, but they're delicious.",
 		HORN = "Call forth the beasts!",
@@ -1100,10 +1229,10 @@ return {
         RELIC = 
         {
             GENERIC = "Remnants of an extinct civilization.",
-            BROKEN = "Just bits and pieces of rock",
+            BROKEN = "Everything eventually turns to dust.",
         },
         RUINS_RUBBLE = "A broken relic.",
-        RUBBLE = "Just bits and pieces of rock",
+        RUBBLE = "Everything eventually turns to dust.",
 		RESURRECTIONSTONE = "There's a story behind that...",
 		ROBIN =
 		{
@@ -1118,7 +1247,7 @@ return {
 		ROBOT_PUPPET = "Better it than me.",
 		ROCK_LIGHT =
 		{
-			GENERIC = "A crusted over lava pit.",
+			GENERIC = "The top of this lava pit has cooled into a fine crust.",
 			OUT = "It looks harmless.",
 			LOW = "The fires are cooling",
 			NORMAL = "It's hot.",
@@ -1143,6 +1272,7 @@ return {
 			WITHERED = "Nothing survives in this heat.",
 			GENERIC = "A supple, woody stem.",
 			PICKED = "It'll grow back.",
+			DISEASED = "What has brought this blight upon my world?",
 		},
 		SEEDS = "I suppose these won't plant themselves.",
 		SEEDS_COOKED = "I broiled the life out of 'em.",
@@ -1294,9 +1424,19 @@ return {
 		TURF_SINKHOLE="Turf.",
 		TURF_UNDERROCK="Turf.",
 		TURF_MUD="Turf.",
+		TURF_DRAGONFLY = "It's warm, but quells flame.",
 
 		TURKEYDINNER = "How festive.",
 		TWIGS = "Common, but useful.",
+		TWIGGYTREE = 
+        {
+            BURNING = "Oops.",
+			BURNT = "Bathed in fire.",
+			CHOPPED = "That's not about to grow back.",
+            GENERIC = "The tree of an amateur.",           
+            DISEASED = "What has brought this blight upon my world?",
+        },
+        TWIGGY_NUT = "I could plant it... but why?",
 		UMBRELLA = "It's crooked!",
 		WAFFLES = "An excellent start to the morning. Or evening.",
 		WALL_HAY_ITEM = "Pocket-sized wall pieces. Yup.",
@@ -1305,6 +1445,8 @@ return {
 		WALL_WOOD_ITEM = "Pocket-sized wall pieces. Yup.",
 		WALL_RUINS = "An ancient wall.",
 		WALL_RUINS_ITEM = "Pocket-sized wall pieces. Yup.",
+		WALL_MOONROCK = "I like to build walls between myself and the outside.",
+		WALL_MOONROCK_ITEM = "Where should I put this?",
 		WALRUS = "Don't you recognize me?",
 		WALRUSHAT = "Made in Scotland.",
 		WALRUS_CAMP =
@@ -1315,6 +1457,7 @@ return {
 		WALRUS_TUSK = "I'll put this to better use.",
 		WARG = "The alpha!",
 		WASPHIVE = "That looks dangerous.",
+		WATERBALLOON = "Do you have any idea how much this suit cost?",
 		WETGOOP = "How uncultured.",
 		WINTERHAT = "How disappointingly rustic.",
         WHIP = "Makes me feel like the master again.",

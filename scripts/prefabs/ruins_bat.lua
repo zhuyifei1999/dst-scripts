@@ -35,7 +35,7 @@ local function onattack(inst, owner, target)
         if offset ~= nil then
             inst.SoundEmitter:PlaySound("dontstarve/common/shadowTentacleAttack_1")
             inst.SoundEmitter:PlaySound("dontstarve/common/shadowTentacleAttack_2")
-            local tentacle = nil--SpawnPrefab("shadowtentacle")
+            local tentacle = SpawnPrefab("shadowtentacle")
             if tentacle ~= nil then
                 tentacle.Transform:SetPosition(pt.x + offset.x, 0, pt.z + offset.z)
                 tentacle.components.combat:SetTarget(target)

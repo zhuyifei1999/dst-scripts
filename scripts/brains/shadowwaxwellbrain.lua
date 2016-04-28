@@ -48,9 +48,33 @@ local function KeepWorkingAction(inst, dist)
 end
 
 local function FindEntityToWorkAction(inst, action, addtltags)
-    local target = FindEntity(GetLeader(inst), SEE_WORK_DIST, nil, {action.id.."_workable"}, {"INLIMBO"}, addtltags)
-    if target then
-        return BufferedAction(inst, target, action) or nil
+    local leader = GetLeader(inst)
+    if leader ~= nil then
+        --Keep existing target?
+        local target = inst.sg.statemem.target
+        if target ~= nil and
+            target:IsValid() and
+            not target:IsInLimbo() and
+            target.components.workable ~= nil and
+            target.components.workable:CanBeWorked() and
+            target.components.workable:GetWorkAction() == action and
+            target.entity:IsVisible() and
+            target:IsNear(leader, KEEP_WORKING_DIST) then
+                
+            if addtltags ~= nil then
+                for i, v in ipairs(addtltags) do
+                    if target:HasTag(v) then
+                        return BufferedAction(inst, target, action)
+                    end
+                end
+            else
+                return BufferedAction(inst, target, action)
+            end
+        end
+
+        --Find new target
+        target = FindEntity(leader, SEE_WORK_DIST, nil, { action.id.."_workable" }, { "INLIMBO" }, addtltags)
+        return target ~= nil and BufferedAction(inst, target, action) or nil
     end
 end
 

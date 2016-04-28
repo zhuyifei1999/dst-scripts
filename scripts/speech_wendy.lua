@@ -163,6 +163,86 @@ return {
 		},
 		BERNIE_ACTIVE = "He seeks sweet relief.",
 		
+		PLAYER =
+        {
+            GENERIC = "How do you do, %s?",
+            ATTACKER = "%s... they'll betray us.",
+            MURDERER = "Murderer! Cutthroat!",
+            REVIVER = "Abigail likes you, %s.",
+            GHOST = "A heart could return %s to this world...",
+        },
+		WILSON = 
+		{
+			GENERIC = "How do you do, Wilson?",
+			ATTACKER = "That Wilson... he'll betray us.",
+			MURDERER = "Murderer! Cutthroat!",
+			REVIVER = "Abigail likes you, Wilson.",
+			GHOST = "A heart could return Wilson to this world...",
+		},
+		WOLFGANG = 
+		{
+			GENERIC = "How do you do, Wolfgang?",
+			ATTACKER = "That Wolfgang... he'll betray us.",
+			MURDERER = "Murderer! Cutthroat!",
+			REVIVER = "Abigail likes you, Wolfgang.",
+			GHOST = "A heart could return Wolfgang to this world...",
+		},
+		WAXWELL = 
+		{
+			GENERIC = "How do you do, Maxwell?",
+			ATTACKER = "That Maxwell... he'll betray us.",
+			MURDERER = "Murderer! Cutthroat!",
+			REVIVER = "Abigail likes you, Maxwell.",
+			GHOST = "A heart could return Maxwell to this world...",
+		},
+		WX78 = 
+		{
+			GENERIC = "How do you do, WX-78?",
+			ATTACKER = "That WX-78... they'll betray us.",
+			MURDERER = "Murderer! Cutthroat!",
+			REVIVER = "Abigail likes you, WX-78.",
+			GHOST = "A heart could return WX-78 to this world...",
+		},
+		WILLOW = 
+		{
+			GENERIC = "How do you do, Willow?",
+			ATTACKER = "That Willow... she'll betray us.",
+			MURDERER = "Murderer! Cutthroat!",
+			REVIVER = "Abigail likes you, Willow.",
+			GHOST = "A heart could return Willow to this world...",
+		},
+		WENDY = 
+		{
+			GENERIC = "How do you do, Other-Wendy?",
+			ATTACKER = "Other-Wendy... she'll betray us.",
+			MURDERER = "Murderer! Cutthroat!",
+			REVIVER = "My Abigail likes you, Other-Wendy.",
+			GHOST = "A heart could return that Wendy to this world...",
+		},
+		WOODIE = 
+		{
+			GENERIC = "How do you do, Woodie?",
+			ATTACKER = "That Woodie... he'll betray us.",
+			MURDERER = "Murderer! Cutthroat!",
+			REVIVER = "Abigail likes you, Woodie.",
+			GHOST = "A heart could return Woodie to this world...",
+		},
+		WICKERBOTTOM = 
+		{
+			GENERIC = "How do you do, Wickerbottom?",
+			ATTACKER = "That Wickerbottom... she'll betray us.",
+			MURDERER = "Murderer! Cutthroat!",
+			REVIVER = "Abigail likes you, Wickerbottom.",
+			GHOST = "A heart could return Wickerbottom to this world...",
+		},
+		WES = 
+		{
+			GENERIC = "How do you do, Wes?",
+			ATTACKER = "That Wes... he'll betray us.",
+			MURDERER = "Murderer! Cutthroat!",
+			REVIVER = "Abigail likes you, Wes.",
+			GHOST = "A heart could return Wes to this world...",
+		},
 
 		GLOMMER = "Well aren't you a happy little fuzzball. Die.",
         GLOMMERFLOWER = 
@@ -238,6 +318,20 @@ return {
 			EMPTY = "Empty as my soul.",
 			BURNT = "Burnt to a crisp.",
 		},
+
+		COMPASS =
+		{
+			E = "East.",
+			GENERIC = "I am directionless.",
+			N = "North.",
+			NE = "Northeast.",
+			NW = "Northwest.",
+			S = "North. No wait, South.",
+			SE = "Southeast.",
+			SW = "Southwest.",
+			W = "West.",
+		},
+
 		EYEBRELLAHAT =	"That's one stretchy eye.",
 		ARMORDRAGONFLY = "I'd like to wear it inside-out.",
 		DRAGON_SCALES = "Scales of pain.",
@@ -417,6 +511,7 @@ return {
 			GENERIC = "Why do I feel that it is measuring my mortality?",
 			BURNT = "Does that mean my day to die is here?",
 		},
+		HOME = "A pathetic simulcra...",
 		HOMESIGN =
 		{
 			GENERIC = "A mark is made, however transient.",
@@ -611,12 +706,25 @@ return {
 		TURF_SINKHOLE="Some ground.",
 		TURF_UNDERROCK="Some ground.",
 		TURF_MUD="Some ground.",
+		TURF_DRAGONFLY = "Some ground.",
 
 		POWCAKE = "I would have to be desperate.",		
 		CAVE_ENTRANCE = "Someone is trying to keep the underground at bay.",
 		CAVE_ENTRANCE_RUINS = "Someone is trying to keep the underground at bay.",
-        CAVE_ENTRANCE_OPEN = "A great evil lurks beneath the surface.",
-        CAVE_EXIT = "The surface beckons.",
+
+        CAVE_ENTRANCE_OPEN = 
+        {
+            GENERIC = "I'm too busy descending into madness to descend that cave.",
+            OPEN = "A great evil lurks beneath the surface.",
+            FULL = "There's no room at the cave party for me...",
+        },
+        CAVE_EXIT = 
+        {
+            GENERIC = "Why leave? The light here compliments my complexion.",
+            OPEN = "The surface beckons.",
+            FULL = "Oh... I guess I'm not invited to the surface party...",
+        },
+
 		BOOMERANG = "Death returns to the sender.",
 		MAXWELLPHONOGRAPH = "Shall we have a danse macabre?",
 		ABIGAIL = "That's my twin sister, Abigail.",
@@ -675,6 +783,7 @@ return {
 			WITHERED = "It succumbed to the heat.",
 			GENERIC = "A snack, perchance?",
 			PICKED = "I shall have to wait.",
+			DISEASED = "It's not long for this world...",
 		},
 		BERRYBUSH_JUICY =
 		{
@@ -682,6 +791,7 @@ return {
 			WITHERED = "It has crumpled under the heat.",
 			GENERIC = "I could strip it clean, if I so chose...",
 			PICKED = "It's given me all it had to give.",
+			DISEASED = "It's not long for this world...",
 		},
 		BIRDCAGE =
 		{
@@ -787,6 +897,7 @@ return {
 		},
 		DRAGONFLY = "It's burning on the inside.",
 
+		HUTCH = "He is blissfully ignorant.",
         HUTCH_FISHBOWL =
         {
             GENERIC = "It's not floating, yet.",
@@ -798,7 +909,7 @@ return {
 			HOT = "It spit up.",
 			COOL = "It's cooled off and smells funny.",
 		},
-
+		LAVA_POND = "I could jump in and be done.",
 		LAVAE = "It burns with the fires of Hell.",
 		LAVAE_PET = 
 		{
@@ -817,7 +928,6 @@ return {
 			COMFY = "The egg is warm, but my heart is still cold.",
 		},
 		LAVAE_TOOTH = "Forsooth, it's a tooth.",
-
 
 		DRAGONFRUIT = "This isn't shaped like a dragon at all.",
 		DRAGONFRUIT_COOKED = "Still not a dragon. At least it's dead.",
@@ -910,6 +1020,7 @@ return {
 			BURNING = "It smells funny.",
 			GENERIC = "It's just a tuft of grass.",
 			PICKED = "It has been killed.",
+			DISEASED = "It's not long for this world...",
 		},
 		GREEN_CAP = "This mushroom is disappointingly normal.",
 		GREEN_CAP_COOKED = "All is malleable.",
@@ -1098,8 +1209,9 @@ return {
         RELIC = 
         {
             GENERIC = "A leftover of an ancient world.",
-            BROKEN = "Broken bits of stone",
+            BROKEN = "Broken bits of stone.",
         },
+        RUBBLE = "Broken bits of stone.",
         RUINS_RUBBLE = "A pile of broken dreams.",
 		RESURRECTIONSTONE = "A futile ward.",
 		ROBIN =
@@ -1115,8 +1227,8 @@ return {
 		ROBOT_PUPPET = "I wonder what it did.",
 		ROCK_LIGHT =
 		{
-			GENERIC = "A crusted over lava pit.",
-			OUT = "It looks harmless.",
+			GENERIC = "There's a fire in the pit's belly.",
+			OUT = "The lava lost its will to burn...",
 			LOW = "The shadows encroach.",
 			NORMAL = "The lava's on fire.",
 		},
@@ -1140,6 +1252,7 @@ return {
 			WITHERED = "The oppressive heat got to this one.",
 			GENERIC = "It's trying to grow up.",
 			PICKED = "Maybe next time, sapling.",
+			DISEASED = "It's not long for this world...",
 		},
 		SEEDS = "Life, or at least the promise of it.",
 		SEEDS_COOKED = "I toasted their life away.",
@@ -1275,6 +1388,15 @@ return {
 		TRUNK_WINTER = "Separated from its only friend.",
 		TURKEYDINNER = "Who's gobbling now?",
 		TWIGS = "Plucked from the ground before their prime.",
+		TWIGGYTREE = 
+        {
+            BURNING = "It's burning brightly.",
+			BURNT = "Used up and done for.",
+			CHOPPED = "Everything dies.",
+            GENERIC = "How I must toil for the necessities of life.",           
+            DISEASED = "It's not long for this world...",
+        },
+        TWIGGY_NUT = "It's sad it's not in the earth.",
 		UMBRELLA = "The clouds weep.",
 		WAFFLES = "They're definitely waffles.",
 		WALL_HAY_ITEM = "Their defensive value is questionable.",
@@ -1283,6 +1405,8 @@ return {
 		WALL_RUINS = "These didn't protect the ancients did they!",
 		WALL_RUINS_ITEM = "Are the very stones haunted?",
 		WALL_WOOD_ITEM = "Bundled logs.",
+		WALL_MOONROCK = "The moon... she whispers promises of protection to me.",
+		WALL_MOONROCK_ITEM = "I should make use of this gift from above.",
 		WALRUS = "An old man, of the sea.",
 		WALRUSHAT = "What feverish thoughts transpired beneath this?",
 		WALRUS_CAMP =
@@ -1299,6 +1423,7 @@ return {
 		},
 		WARG = "A true bastion of evil.",
 		WASPHIVE = "They hide in their fortress of hate.",
+		WATERBALLOON = "At any moment it could pop and spill its guts.",
 		WETGOOP = "A miserable mess, just like life.",
         WHIP = "It only provides the illusion of control.",
 		WINTERHAT = "It helps stave off the encroaching cold.",

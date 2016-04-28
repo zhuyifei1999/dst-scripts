@@ -163,6 +163,87 @@ return {
 	},
 	DESCRIBE =
 	{
+        PLAYER =
+        {
+            GENERIC = "Hey! Hi %s!",
+            ATTACKER = "%s looks mean.",
+            MURDERER = "Murderer! Cutthroat!",
+            REVIVER = "%s is super nice to ghosts.",
+            GHOST = "Don't worry %s, we'll find you a heart!",
+        },
+		WILSON =
+		{
+			GENERIC = "Hey! Hi Wilson!",
+			ATTACKER = "That Wilson looks mean.",
+			MURDERER = "Murderer! Cutthroat!",
+			REVIVER = "That Wilson is super nice to ghosts.",
+			GHOST = "Don't worry Wilson, we'll find you a heart!",
+        },
+		WOLFGANG =
+		{
+			GENERIC = "Hey! Hi Wolfgang!",
+			ATTACKER = "That Wolfgang looks mean.",
+			MURDERER = "Murderer! Cutthroat!",
+			REVIVER = "That Wolfgang is super nice to ghosts.",
+			GHOST = "Don't worry Wolfgang, we'll find you a heart!",
+		},
+		WAXWELL =
+		{
+			GENERIC = "Hey! Hi Maxwell!",
+			ATTACKER = "That Maxwell looks mean.",
+			MURDERER = "Murderer! Cutthroat!",
+			REVIVER = "%s is super nice to ghosts.",
+			GHOST = "Don't worry Maxwell, we'll find you a heart!",
+		},
+		WX78 =
+		{
+			GENERIC = "Hey! Hi WX-78!",
+			ATTACKER = "That WX-78 looks mean.",
+			MURDERER = "Murderer! Cutthroat!",
+			REVIVER = "That WX-78 is super nice to ghosts.",
+			GHOST = "Don't worry WX-78, we'll find you a heart!",
+		},
+		WILLOW =
+		{
+			GENERIC = "Hey! Hi Willow!",
+			ATTACKER = "That Willow looks mean.",
+			MURDERER = "Murderer! Cutthroat!",
+			REVIVER = "That Willow is super nice to ghosts.",
+			GHOST = "Don't worry Willow, we'll find you a heart!",
+		},
+		WENDY =
+		{
+			GENERIC = "Hey! Hi Wendy!",
+			ATTACKER = "That Wendy looks mean.",
+			MURDERER = "Murderer! Cutthroat!",
+			REVIVER = "That Wendy is super nice to ghosts.",
+			GHOST = "Don't worry Wendy, we'll find you a heart!",
+		},
+		WOODIE =
+		{
+			GENERIC = "Hey! Hi Woodie!",
+			ATTACKER = "That Woodie looks mean.",
+			MURDERER = "Murderer! Cutthroat!",
+			REVIVER = "That Woodie is super nice to ghosts.",
+			GHOST = "Don't worry Woodie, we'll find you a heart!",
+		},
+		WICKERBOTTOM =
+		{
+			GENERIC = "Hey! Hi Ms Wickerbottom!",
+			ATTACKER = "That Wickerbottom looks mean.",
+			MURDERER = "Murderer! Cutthroat!",
+			REVIVER = "Ms Wickerbottom is super nice to ghosts.",
+			GHOST = "Don't worry Ms Wickerbottom, we'll find you a heart!",
+		},
+		WES =
+		{
+			GENERIC = "Hey! Hi Wes!",
+			ATTACKER = "That Wes looks mean.",
+			MURDERER = "Murderer! Cutthroat!",
+			REVIVER = "That Wes is super nice to ghosts.",
+			GHOST = "Don't worry Wes, we'll find you a heart!",
+		},
+
         MULTIPLAYER_PORTAL = "It's pretty... pretty scary!",
 
 		BERNIE_INACTIVE =
@@ -171,7 +252,6 @@ return {
 			GENERIC = "A teddy bear.",
 		},
 		BERNIE_ACTIVE = "That teddy bear is moving!",
-		
 
         GLOMMER = "Nice eyes.",
         GLOMMERFLOWER = 
@@ -315,7 +395,18 @@ return {
 			DAWN = "Return to us, day!",
 			NOMAGIC = "Not much magic here.",
 		},
-
+		COMPASS =
+		{
+			GENERIC= "We can't get a reading!",
+			N = "North",
+			S = "South",
+			E = "East",
+			W = "West",
+			NE = "Northeast",
+			SE = "Southeast",
+			NW = "Northwest",
+			SW = "Southwest",
+		},
 		HOUNDSTOOTH="Our very own tooth to gnash.",
 		ARMORSNURTLESHELL="We're a giant spider! Wearing a shell!",
 		BAT="Screechy mean guy!",
@@ -394,8 +485,20 @@ return {
 		POWCAKE = "Mum never let me have these.",
         CAVE_ENTRANCE = "It's plugged up.",
         CAVE_ENTRANCE_RUINS = "It's plugged up.",
-        CAVE_ENTRANCE_OPEN = "I can hear some spider friends down there.",
-        CAVE_EXIT = "It leads back to the light.",
+
+		CAVE_ENTRANCE_OPEN = 
+        {
+            GENERIC = "We'd rather visit our spider friends on the surface.",
+            OPEN = "I can hear some spider friends down there.",
+            FULL = "We'll explore when everyone else's had their turn!",
+        },
+        CAVE_EXIT = 
+        {
+            GENERIC = "We like it down here.",
+            OPEN = "It leads back to the light.",
+            FULL = "They don't have enough space for us!",
+        },
+
 		MAXWELLPHONOGRAPH = "It looks like grandpa's.",
 		BOOMERANG = "Boomerangarangarang!",
 		PIGGUARD = "We wouldn't want to cross that one.",
@@ -468,6 +571,7 @@ return {
 			WITHERED = "Heat too intense for ya?",
 			GENERIC = "Ripe for the pickin'.",
 			PICKED = "See you soon, berries!",
+			DISEASED = "Maybe it needs some chicken soup?",
 		},
 		BERRYBUSH_JUICY =
 		{
@@ -475,6 +579,7 @@ return {
 			WITHERED = "Aww, are you sad?",
 			GENERIC = "Those berries look so juicy!",
 			PICKED = "It's taking a nap.",
+			DISEASED = "Maybe it needs some chicken soup?",
 		},
 		BIGFOOT = "AAAAAAAAAAH!",
 		BIRDCAGE =
@@ -625,6 +730,7 @@ return {
 		DRAGON_SCALES = "They don't weigh much for scales.",
 		DRAGONFLYCHEST = "It looks like my old toy chest!",
 
+		HUTCH = "Give us a Huggy!",
         HUTCH_FISHBOWL =
         {
             GENERIC = "He's our new friend.",
@@ -636,7 +742,7 @@ return {
 			HOT = "Too hot for us!",
 			COOL = "Looks safe now.",
 		},
-
+		LAVA_POND = "Ouch! Burnies!",
 		LAVAE = "Sizzling hot!",
 		LAVAE_PET = 
 		{
@@ -655,7 +761,6 @@ return {
 			COMFY = "The egg seems happy.",
 		},
 		LAVAE_TOOTH = "What a weird tooth.",
-
 
 		DRAGONFRUIT = "It looks suspect.",
 		DRAGONFRUIT_COOKED = "It looks tastier now.",
@@ -785,6 +890,7 @@ return {
 			BURNING = "Fire fire fire!",
 			GENERIC = "Grass, next best thing to silk.",
 			PICKED = "Picked down to the stems.",
+			DISEASED = "Maybe it needs some chicken soup?",
 		},
 		GREEN_CAP = "Smells really earthy.",
 		GREEN_CAP_COOKED = "Heat really brings out the juices.",
@@ -806,6 +912,7 @@ return {
 			WARM = "It's getting hot!",
 			HOT = "It's hot to the touch!",
 		},
+		HOME = "Hellooo? We're here!",
 		HOMESIGN =
 		{
 			GENERIC = "We could write on that if only we had a pen!",
@@ -838,10 +945,10 @@ return {
 			ACTIVE = "Move, stupid rock!",
 			INACTIVE = "I wonder what that does.",
 		},
-		HONEYHAM = "We are accomplished chefs!",
-		HONEYNUGGETS = "We are accomplished chefs!",
-		JAMMYPRESERVES = "We are accomplished chefs!",
-		KABOBS = "We are accomplished chefs!",
+		HONEYHAM = "Ooo, tasty!",
+		HONEYNUGGETS = "We wishes they were shaped like dinosaurs.",
+		JAMMYPRESERVES = "Ew... sticky fingies.",
+		KABOBS = "Foods on a stick!",
 		KILLERBEE =
 		{
 			GENERIC = "Uh oh, run!",
@@ -850,7 +957,7 @@ return {
 		KNIGHT = "Wow! Thats a complicated clockwork.",
 		KOALEFANT_SUMMER = "Maybe it's lost.",
 		KOALEFANT_WINTER = "We finally found it!",
-		KRAMPUS = "Stop! Thief!",
+		KRAMPUS = "Give us back our things!",
 		KRAMPUS_SACK = "We could put more in it but we're scared to touch the stuff he left inside.",
 		LEIF = "Where did that come from?!",
 		LEIF_SPARSE = "Where did that come from?!",
@@ -969,9 +1076,10 @@ return {
 		ONEMANBAND = "We need to practice more.",
 		PANFLUTE = "A well constructed instrument.",
 		PAPYRUS = "We could do our homework.",
+		PHLEGM = "It's a boogie!",
 		PENGUIN = "Where do they live the rest of the year?",
 		PERD = "Come back! I just want to eat you!",
-		PEROGIES = "We are accomplished chefs!",
+		PEROGIES = "It does not look like pie...",
 		PETALS = "How colorful.",
 		PETALS_EVIL = "They make our head hurt.",
 		PETRIFIED_TREE = "It's all stone and no bark.",
@@ -1042,7 +1150,7 @@ return {
 		},
 		RAINCOAT = "We might look silly, but it'll keep our fur dry.",
 		RAINHAT = "It'll keep the water out of our fur.",
-		RATATOUILLE = "We are accomplished chefs!",
+		RATATOUILLE = "Do we have to eat our veggies?",
 		RAZOR = "I watched my father use one of these.",
 		REDGEM = "It feels warm even on the coldest nights.",
 		RED_CAP = "It smells funny.",
@@ -1130,6 +1238,7 @@ return {
 			WITHERED = "I think the heat broke it.",
 			GENERIC = "These sure grow slowly.",
 			PICKED = "We'll make good use of your twigs!",
+			DISEASED = "Maybe it needs some chicken soup?",
 		},
 		SEEDS = "A small life trapped within. My sympathies.",
 		SEEDS_COOKED = "Their growing days are over.",
@@ -1178,11 +1287,11 @@ return {
 		STATUEMAXWELL = "That's the guy who said he could help us.",
 		STINGER = "We should be careful, we could poke an eye out!",
 		STRAWHAT = "This might keep the sun out of our eyes.",
-		STUFFEDEGGPLANT = "We are accomplished chefs!",
+		STUFFEDEGGPLANT = "We will stuff ourself with eggyplants!",
 		SWEATERVEST = "It itches and fits funny.",
 		REFLECTIVEVEST = "Safety first!",
 		HAWAIIANSHIRT = "Grandpa's style, definitely.",
-		TAFFY = "We are accomplished chefs!",
+		TAFFY = "Candy!",
 		TALLBIRD = "Look at those legs!",
 		TALLBIRDEGG = "Did I hear a meep?",
 		TALLBIRDEGG_COOKED = "Smells great!",
@@ -1297,9 +1406,21 @@ return {
 		TURF_ROAD = "Some ground that we dug up.",
 		TURF_ROCKY = "Some ground that we dug up.",
 		TURF_SAVANNA = "Some grassy dirt.",
+		TURF_DRAGONFLY = "Warm and cozy ground!",
 		TURF_WOODFLOOR = "If we put these on the ground we'll have a floor!",
 		TURKEYDINNER = "Like mother used to make before this happened!",
 		TWIGS = "Wish we had a friend to play stick swords with.",
+		TWIGGYTREE = 
+        {
+            BURNING = "What a senseless waste of firewood.",
+			BURNT = "Only we can prevent forest fires.",
+			CHOPPED = "Got you good, tree!",
+            GENERIC = "We want to climb it!",           
+            DISEASED = "Maybe it needs some chicken soup?",
+        },
+        TWIGGY_NUT = "The tree wants to come out and play!",
+		STEELWOOL = "Scratchy like father's beard!",
+		SPAT = "Maybe it just needs a cuddle!",
 		UMBRELLA = "This should keep some of the rain off of us.",
 		GRASS_UMBRELLA = "It won't keep us from playing in puddles!",
 		UNIMPLEMENTED = "What a crummy item.",
@@ -1320,6 +1441,8 @@ return {
 			BURNT = "Turns out wood burns really well.",
 		},
 		WALL_WOOD_ITEM = "They won't keep us safe if we keep holding them.",
+		WALL_MOONROCK = "We feel safe behind this wall... it makes us sleepy...",
+		WALL_MOONROCK_ITEM = "We thought 'moon' meant something totally different!",
 		WALRUS = "I don't think he wants to be friends with us.",
 		WALRUSHAT = "Reminds me of grandpa.",
 		WALRUS_CAMP =
@@ -1336,6 +1459,7 @@ return {
 		},
 		WARG = "I don't think that puppy is very happy.",
 		WASPHIVE = "Sounds like anger!",
+		WATERBALLOON = "We have to be gentle with our claws if we try to hold it!",
 		WATERMELON = "Looks tasty!",
 		WATERMELON_COOKED = "We can cook anything!",
 		WATERMELONHAT = "This is the best idea we have ever had.",

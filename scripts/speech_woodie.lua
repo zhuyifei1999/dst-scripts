@@ -151,6 +151,86 @@ return {
 	},
 	DESCRIBE =
 	{
+		PLAYER =
+        {
+            GENERIC = "Look who it is! %s!",
+            ATTACKER = "%s isn't very polite...",
+            MURDERER = "Enemy of the forest!",
+            REVIVER = "%s, you're an alright sort.",
+            GHOST = "Someone should rub a heart on %s.",
+        },
+		WILSON = 
+		{
+			GENERIC = "Look who it is! Wilson!",
+			ATTACKER = "That Wilson isn't very polite...",
+			MURDERER = "Enemy of the forest!",
+			REVIVER = "Wilson, you're an alright guy.",
+			GHOST = "Someone should rub a heart on that Wilson.",
+		},
+		WOLFGANG = 
+		{
+			GENERIC = "Look who it is! Wolfgang!",
+			ATTACKER = "That Wolfgang isn't very polite...",
+			MURDERER = "Enemy of the forest!",
+			REVIVER = "Wolfgang, you're an alright guy.",
+			GHOST = "Someone should rub a heart on that Wolfgang.",
+		},
+		WAXWELL = 
+		{
+			GENERIC = "Look who it is! Maxwell!",
+			ATTACKER = "That Maxwell isn't very polite...",
+			MURDERER = "Enemy of the forest!",
+			REVIVER = "Maxwell, you're an alright guy.",
+			GHOST = "Someone should rub a heart on that Maxwell.",
+		},
+		WX78 = 
+		{
+			GENERIC = "Look who it is! WX!",
+			ATTACKER = "That WX isn't very polite...",
+			MURDERER = "Enemy of the forest!",
+			REVIVER = "WX, you're an alright sort.",
+			GHOST = "Someone should rub a heart on that WX.",
+		},
+		WILLOW = 
+		{
+			GENERIC = "Look who it is! Willow!",
+			ATTACKER = "That Willow isn't very polite...",
+			MURDERER = "Enemy of the forest!",
+			REVIVER = "Willow, you're an alright gal.",
+			GHOST = "Someone should rub a heart on that Willow.",
+		},
+		WENDY = 
+		{
+			GENERIC = "Look who it is! Wendy!",
+			ATTACKER = "That Wendy isn't very polite...",
+			MURDERER = "Enemy of the forest!",
+			REVIVER = "Wendy, you're an alright gal.",
+			GHOST = "Someone should rub a heart on that Wendy.",
+		},
+		WOODIE = 
+		{
+			GENERIC = "Look who it is! Other-Woodie!",
+			ATTACKER = "That Woodie isn't a true Canadian...",
+			MURDERER = "Enemy of the forest!",
+			REVIVER = "Other-Woodie, you're an alright guy.",
+			GHOST = "Someone should rub a heart on that Woodie.",
+		},
+		WICKERBOTTOM = 
+		{
+			GENERIC = "Look who it is! Wickerbottom!",
+			ATTACKER = "That Wickerbottom isn't very polite...",
+			MURDERER = "Enemy of the forest!",
+			REVIVER = "Wickerbottom, you're an alright gal.",
+			GHOST = "Someone should rub a heart on that Wickerbottom.",
+		},
+		WES = 
+		{
+			GENERIC = "Look who it is! Wes!",
+			ATTACKER = "That Wes isn't very polite...",
+			MURDERER = "Enemy of the forest!",
+			REVIVER = "Wes, you're an alright guy.",
+			GHOST = "Someone should rub a heart on that Wes.",
+		},
 		MULTIPLAYER_PORTAL = "That'd be the thing I fell through, eh.",
 		GLOMMER = "Keep flapping, little guy!",
         GLOMMERFLOWER = 
@@ -446,13 +526,13 @@ return {
 		RUINSHAT = "It's no toque, but it'll do.",
 		NIGHTMARE_TIMEPIECE = --Keeps track of the nightmare cycle
 		{
-		CALM = "I think it's off.",	--calm phase
-		WARN = "This thing just turned on!",	--Before nightmare
-		WAXING = "It's vibrating!", --Nightmare Phase first 33%
-		STEADY = "It's going crazy!", --Nightmare 33% - 66%
-		WANING = "It's settling down.", --Nightmare 66% +
-		DAWN = "It's nearly still.", --After nightmare
-		NOMAGIC = "I think it's off.", --Place with no nightmare cycle.
+			CALM = "I think it's off.",	--calm phase
+			WARN = "This thing just turned on!",	--Before nightmare
+			WAXING = "It's vibrating!", --Nightmare Phase first 33%
+			STEADY = "It's going crazy!", --Nightmare 33% - 66%
+			WANING = "It's settling down.", --Nightmare 66% +
+			DAWN = "It's nearly still.", --After nightmare
+			NOMAGIC = "I think it's off.", --Place with no nightmare cycle.
 		},
 		BISHOP_NIGHTMARE = "I can see the internal workings!",
 		ROOK_NIGHTMARE = "The gears are spilling out.",
@@ -513,7 +593,6 @@ return {
 			NW = "Northwest",
 			SW = "Southwest",
 		},
-
 
 		BLUEAMULET = "Just need a beverage to cool now, eh?",
 		PURPLEAMULET = "The sparkle is gone from the gem.",
@@ -597,9 +676,20 @@ return {
 		POWCAKE = "I like the ones made with real sugar better.",
         CAVE_ENTRANCE = "It's bunged up.",
         CAVE_ENTRANCE_RUINS = "It's bunged up.",
-        CAVE_ENTRANCE_OPEN = "It looks like Sudbury down there.",
-        CAVE_EXIT = "There are probably trees up there.",
-		
+
+		CAVE_ENTRANCE_OPEN = 
+        {
+            GENERIC = "There're probably no trees down there anyway.",
+            OPEN = "It looks like Sudbury down there.",
+            FULL = "More crowded than a Toronto subway!",
+        },
+        CAVE_EXIT = 
+        {
+            GENERIC = "Maybe later. I've gotten cozy down here.",
+            OPEN = "There are probably trees up there.",
+            FULL = "Sorry! I'll wait til you're all done up there!",
+        },
+
 		MAXWELLPHONOGRAPH = "Better than most of the stuff on the radio.",
 		BOOMERANG = "That looks hard to throw.",
 		PIGGUARD = "I don't want to make him mad.",
@@ -668,6 +758,7 @@ return {
 			WITHERED = "It's perished from the heat, eh?",
 			GENERIC = "Saskatoon berries?",
 			PICKED = "No berries left!",
+			DISEASED = "It's caught a bit of a bug.",
 		},
 		BERRYBUSH_JUICY =
 		{
@@ -675,6 +766,7 @@ return {
 			WITHERED = "Dry as the Albert plains.",
 			GENERIC = "I see a snack.",
 			PICKED = "Eh, they'll be back.",
+			DISEASED = "It's caught a bit of a bug.",
 		},
 		BIRDCAGE =
 		{
@@ -787,17 +879,38 @@ return {
 		DIVININGRODSTART = "That's a weird looking rod.",
 		DRAGONFLY = "He will burn all the trees before I can chop them!",
 
+		HUTCH = "Friendly lil' guy, eh?",
         HUTCH_FISHBOWL =
         {
             GENERIC = "I've never had one of these before.",
             WAITING = "It was bound to happen.",
         },
 
+		LAVAE = "Death by axe!",
+		LAVAE_PET = 
+		{
+			STARVING = "Skinnier than a blue heron's legs.",
+			HUNGRY = "Poor gal's getting hungry.",
+			CONTENT = "Look how happy she is.",
+			GENERIC = "That's my lil' critter.",
+		},
+		LAVAE_EGG = 
+		{
+			GENERIC = "There's a fire burning in there.",
+		},
+		LAVAE_EGG_CRACKED =
+		{
+			COLD = "She could use a parka.",
+			COMFY = "Cozier than a moose wrapped in duct tape!",
+		},
+		LAVAE_TOOTH = "Not as sharp as Lucy!",
+		
 		LAVASPIT = 
 		{
 			HOT = "Aaaah! Tree killer!",
 			COOL = "My trees are safe now.",
 		},
+		LAVA_POND = "I wouldn't get too close to that, eh?",
 		DRAGONFRUIT = "I've never seen one of those before.",
 		DRAGONFRUIT_COOKED = "It tastes like maple syrup.",
 		DRAGONFRUIT_SEEDS = "Maybe I can grow more.",
@@ -898,6 +1011,7 @@ return {
 			BURNING = "I hope that doesn't spread to the trees.",
 			GENERIC = "Looks like kindling.",
 			PICKED = "It's gone all nubbly.",
+			DISEASED = "It's caught a bit of a bug.",
 		},
 		GREEN_CAP = "I've eaten stranger things in the woods.",
 		GREEN_CAP_COOKED = "I don't trust it.",
@@ -928,13 +1042,13 @@ return {
 		},
 		ARROWSIGN_POST =
 		{
-			GENERIC = "Is there anything wood can't do?",
+			GENERIC = "Let the wood guide the way.",
             UNWRITTEN = "Let's give our neighbours some guidance.",
 			BURNT = "Wood is the best at burning.",
 		},
 		ARROWSIGN_PANEL =
 		{
-			GENERIC = "Is there anything wood can't do?",
+			GENERIC = "Let the wood guide the way.",
             UNWRITTEN = "Let's give our neighbours some guidance.",
 			BURNT = "Wood is the best at burning.",
 		},
@@ -1123,10 +1237,10 @@ return {
 		ROBOT_PUPPET = "It's trapped!",
 		ROCK_LIGHT =
 		{
-			GENERIC = "A fire that needs no wood? Un-natural!.",
+			GENERIC = "It's looking a tad crusty.",
 			OUT = "This looks like that will break.",
 			LOW = "Needs more... wood?",
-			NORMAL = "A fire that needs no wood? Un-natural!.",
+			NORMAL = "A fire that needs no wood? Un-natural!",
 		},
 		ROCK = "I could break it down if I tried hard enough.",
 		ROCKS = "For the times when wood won't work.",
@@ -1148,6 +1262,7 @@ return {
 			WITHERED = "With this heat, it'll never grow to chopping size!",
 			GENERIC = "I want to see it grow so that I can chop it down.",
 			PICKED = "Picking isn't as fun as chopping.",
+			DISEASED = "It's caught a bit of a bug.",
 		},
 		SEEDS = "Not trees.",
 		SEEDS_COOKED = "We call this 'lumberjack surprise'.",
@@ -1294,8 +1409,18 @@ return {
 		TURF_ROCKY = "Just some ground, eh?",
 		TURF_SAVANNA = "Just some ground, eh?",
 		TURF_WOODFLOOR = "Flooring fit for a king!",
+		TURF_DRAGONFLY = "Just some ground, eh?",
 		TURKEYDINNER = "Turkey day is here again!",
 		TWIGS = "I should build a tiny axe to chop these.",
+		TWIGGYTREE = 
+        {
+            BURNING = "I'm sorry!",
+			BURNT = "I feel terrible!",
+			CHOPPED = "Another one!",
+            GENERIC = "Choppin's choppin'.",           
+            DISEASED = "It's caught a bit of a bug.",
+        },
+        TWIGGY_NUT = "With a little care, this could make fer some good choppin'.",
 		UMBRELLA = "This will keep my beard dry, eh?",
 		UNIMPLEMENTED = "It doesn't look safe.",
 		WAFFLES = "I prefer flapjacks.",
@@ -1305,6 +1430,8 @@ return {
 		WALL_RUINS = "Crumbling but still secure, eh?",
 		WALL_RUINS_ITEM = "Heh, stoned again eh?",
 		WALL_WOOD_ITEM = "I like the look of that!",
+		WALL_MOONROCK = "Looks nice'n'sturdy.",
+		WALL_MOONROCK_ITEM = "It's not much use like that.",
 		WALRUS = "Oh no. Walruses again!",
 		WALRUSHAT = "My grandad wore a hat like this.",
 		WALRUS_CAMP =
@@ -1315,6 +1442,8 @@ return {
 		WALRUS_TUSK = "He had a cavity, eh?",
 		WARG = "That thing could pull a sled by its lonesome.",
 		WASPHIVE = "Why are those bees so angry?",
+		WATERBALLOON = "Could be fun times lobbin' these around.",
+		WORMLIGHT_LESSER = "Wrinklier than the underside of a beaver.",
 		WETGOOP = "Better than some things I've eaten!",
         WHIP = "I hope I don't hurt the little critters with this.",
 		WINTERHAT = "It's a nice toque, eh?",

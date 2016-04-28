@@ -911,6 +911,16 @@ function c_forcecrash(unique)
     end
 end
 
+function c_knownassert(key)
+    key = key or "CONFIG_DIR_WRITE_PERMISSION"
+
+    if TheWorld then
+        TheWorld:DoTaskInTime(0,function() known_assert(false, key) end)
+    elseif TheFrontEnd then
+        TheFrontEnd.screenroot.inst:DoTaskInTime(0,function() known_assert(false, key) end)
+    end
+end
+
 function c_migrationportal(worldId, portalId)
     local inst = c_spawn("migration_portal")
     if portalId then

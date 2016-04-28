@@ -339,14 +339,18 @@ function Combat:GetGiveUpString(target)
 end
 
 function Combat:GiveUp()
-    if self.inst.components.talker then
-        local str = self:GetGiveUpString(self.target)
-        if str then
-            self.inst.components.talker:Say(str)
+    if self.inst.components.talker ~= nil then
+        local str, strid = self:GetGiveUpString(self.target)
+        if str ~= nil then
+            if strid ~= nil then
+                self.inst.components.talker:Chatter(str, strid)
+            else
+                self.inst.components.talker:Say(str)
+            end
         end
     end
 
-    self.inst:PushEvent("giveuptarget", {target = self.target})
+    self.inst:PushEvent("giveuptarget", { target = self.target })
     self:DropTarget()
 end
 
@@ -355,16 +359,22 @@ function Combat:GetBattleCryString(target)
 end
 
 function Combat:BattleCry()
-
-    if self.battlecryenabled and (not self.nextbattlecrytime or GetTime() > self.nextbattlecrytime) then
-        self.nextbattlecrytime = GetTime() + (self.battlecryinterval and self.battlecryinterval or 5)+math.random()*3
-        if self.inst.components.talker then            
-            local cry = self:GetBattleCryString(self.target)
-            if cry then
-                self.inst.components.talker:Say{Line(cry, 2)}
+    if self.battlecryenabled then
+        local t = GetTime()
+        if self.nextbattlecrytime == nil or t > self.nextbattlecrytime then
+            self.nextbattlecrytime = t + (self.battlecryinterval or 5) + math.random() * 3
+            if self.inst.components.talker ~= nil then
+                local cry, strid = self:GetBattleCryString(self.target)
+                if cry ~= nil then
+                    if strid ~= nil then
+                        self.inst.components.talker:Chatter(cry, strid, 2)
+                    else
+                        self.inst.components.talker:Say(cry, 2)
+                    end
+                end
+            elseif self.inst.sg.sg.states.taunt and not self.inst.sg:HasStateTag("busy") then
+                self.inst.sg:GoToState("taunt")
             end
-        elseif self.inst.sg.sg.states.taunt and not self.inst.sg:HasStateTag("busy") then
-            self.inst.sg:GoToState("taunt")
         end
     end
 end
