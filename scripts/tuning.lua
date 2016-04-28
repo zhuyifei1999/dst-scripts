@@ -1927,6 +1927,12 @@ function Tune(overrides)
             DEAD_DECAY_TIME = total_day_time * 30,
         },
 
+        TWIGGY_TREE_REGROWTH = {
+            OFFSPRING_TIME = total_day_time * 8,
+            DESOLATION_RESPAWN_TIME = total_day_time * 50,
+            DEAD_DECAY_TIME = total_day_time * 30,
+        },
+
         DECIDUOUS_REGROWTH = {
             OFFSPRING_TIME = total_day_time * 3,
             DESOLATION_RESPAWN_TIME = total_day_time * 50,

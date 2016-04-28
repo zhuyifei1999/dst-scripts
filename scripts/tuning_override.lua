@@ -197,6 +197,17 @@ return
         SetSpawnMode(TheWorld.components.lureplantspawner, difficulty)
     end,
 
+    rock_ice = function(difficulty)
+        local lookup = {
+            never = 0,
+            rare = 4,
+            default = 7,
+            always = 7,
+            often = 7,
+        }
+        TheWorld:PushEvent("ms_setpenguinnumboulders", lookup[difficulty])
+    end,
+
     beefaloheat = function(difficulty)
         local tuning_vars =
         {

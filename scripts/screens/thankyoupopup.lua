@@ -41,6 +41,12 @@ GIFT_TYPE = {
         title=STRINGS.UI.ITEM_SCREEN.THANKS_POPUP_TITLE_DEFAULT,
         titleoffset={0, -20, 0},
     },
+    ARG = {
+        atlas="images/thankyou_item_popup.xml",
+        image={"thankyou_gift.tex"},
+        title=STRINGS.UI.ITEM_SCREEN.THANKS_POPUP_TITLE_ARG,
+        titleoffset={0, -20, 0},
+    },
     
 }
 

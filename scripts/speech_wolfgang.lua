@@ -166,6 +166,87 @@ return {
 	},
 	DESCRIBE =
 	{
+		PLAYER =
+        {
+            GENERIC = "Is tiny %s! Hello!",
+            ATTACKER = "Does %s want to fight?",
+            MURDERER = "%s is killer!",
+            REVIVER = "%s is nice person.",
+            GHOST = "Wolfgang will get raw pump-y heart for you!",
+        },
+        WILSON = 
+        {
+            GENERIC = "Is tiny Wilson! Hello!",
+            ATTACKER = "Does Wilson want to fight?",
+            MURDERER = "Wilson is killer!",
+            REVIVER = "Wilson is nice man.",
+            GHOST = "Wolfgang will get raw pump-y heart for you!",
+        },
+        WOLFGANG = 
+        {
+            GENERIC = "Is strong Other-Wolfgang! Hello!",
+            ATTACKER = "Does Other-Wolfgang want to fight?",
+            MURDERER = "Other-Wolfgang is killer!",
+            REVIVER = "Other-Wolfgang is nice man. Ha ha!",
+            GHOST = "Wolfgang will get raw pump-y heart for you!",
+        },
+        WAXWELL = 
+        {
+            GENERIC = "Is tiny Maxwell! Hello!",
+            ATTACKER = "Does Maxwell want to fight?",
+            MURDERER = "Maxwell is killer!",
+            REVIVER = "Maxwell is nice man.",
+            GHOST = "Wolfgang will get raw pump-y heart for you!",
+        },
+        WX78 = 
+        {
+            GENERIC = "Is tiny WX-78! Hello!",
+            ATTACKER = "Does WX-78 want to fight?",
+            MURDERER = "WX-78 is killer!",
+            REVIVER = "WX-78 is nice person. Deep down.",
+           	GHOST = "Wolfgang will get raw pump-y heart for you!",
+        },
+        WILLOW = 
+        {
+            GENERIC = "Is tiny Willow! Hello!",
+            ATTACKER = "Does Willow want to fight?",
+            MURDERER = "Willow is killer!",
+            REVIVER = "Willow is nice lady.",
+            GHOST = "Wolfgang will get raw pump-y heart for you!",
+        },
+        WENDY = 
+        {
+            GENERIC = "Is tiny Wendy! Hello!",
+            ATTACKER = "Does Wendy want to fight?",
+            MURDERER = "Wendy is killer!",
+            REVIVER = "Wendy is nice little lady.",
+            GHOST = "Wolfgang will get raw pump-y heart for you!",
+        },
+        WOODIE = 
+        {
+            GENERIC = "Is tiny Woodie! Hello!",
+            ATTACKER = "Does Woodie want to fight?",
+            MURDERER = "Woodie is killer!",
+            REVIVER = "Woodie is nice man.",
+            GHOST = "Wolfgang will get raw pump-y heart for you!",
+        },
+        WICKERBOTTOM = 
+        {
+            GENERIC = "Is tiny Wickerbottom! Hello!",
+            ATTACKER = "Does Wickerbottom want to fight?",
+            MURDERER = "Wickerbottom is killer!",
+            REVIVER = "Wickerbottom is nice lady.",
+            GHOST = "Wolfgang will get raw pump-y heart for you!",
+        },
+        WES = 
+        {
+            GENERIC = "Is tiny Wes! Hello!",
+            ATTACKER = "Does Wes want to fight?",
+            MURDERER = "Wes is killer!",
+            REVIVER = "Wes is nice man.",
+            GHOST = "Wolfgang will get raw pump-y heart for you!",
+        },
+
 		MULTIPLAYER_PORTAL = "Why door not crumble under mighty Wolfgang punches?!",
 
 		BERNIE_INACTIVE =
@@ -250,6 +331,20 @@ return {
 			EMPTY = "Empty pot make Wolfgang think hungry thoughts.",
 			BURNT = "Pot is dead.",
 		},
+
+		COMPASS =
+		{
+			E = "Is East.",
+			GENERIC = "Is all directions, but no directions.",
+			N = "Is North.",
+			NE = "Is Northeast.",
+			NW = "Is Northwest.",
+			S = "Is South.",
+			SE = "Is Southeast.",
+			SW = "Is Southwest.",
+			W = "Is West.",
+		},
+
 		EYEBRELLAHAT =	"Is always looking up.",
 		ARMORDRAGONFLY = "Wolfgang not need protection.",
 		DRAGON_SCALES = "Glowy scales.",
@@ -441,6 +536,7 @@ return {
 			GENERIC = "Cold go up! Red go down!",
 			BURNT = "Flames go up! Thermometer go down!",
 		},
+		HOME = "Tiny house for weaklings!",
 		HOMESIGN =
 		{
 			GENERIC = "Is no time for reading signs!",
@@ -603,12 +699,24 @@ return {
 		TURF_SINKHOLE="Step stones.",
 		TURF_UNDERROCK="Step stones.",
 		TURF_MUD="Step stones.",
+		TURF_DRAGONFLY = "Hot step stones.",
 
 		POWCAKE = "Is made of nothings!",
         CAVE_ENTRANCE = "Even I am not that mighty.",
         CAVE_ENTRANCE_RUINS = "Even I am not that mighty.",
-        CAVE_ENTRANCE_OPEN = "World has belly button!",
-        CAVE_EXIT = "Is dark and scary down here.",
+
+		CAVE_ENTRANCE_OPEN = 
+        {
+            GENERIC = "Who wants to go in scary cave hole, anyway!",
+            OPEN = "World has belly button!",
+            FULL = "Too many peoples stuffed in there.",
+        },
+        CAVE_EXIT = 
+        {
+            GENERIC = "Please let Wolfgang out!",
+            OPEN = "Is dark and scary down here.",
+            FULL = "Please make room! Mighty Wolfgang is scared!",
+        },
 
 		MAXWELLPHONOGRAPH = "Is box that sings!",
 		BOOMERANG = "Boom! A rang! Ha!",
@@ -668,6 +776,7 @@ return {
 			WITHERED = "Is too hot for bush.",
 			GENERIC = "Is full of food-balls!",
 			PICKED = "Eating part is gone.",
+			DISEASED = "Is weak. Sickly!",
 		},
 		BERRYBUSH_JUICY =
 		{
@@ -675,6 +784,7 @@ return {
 			WITHERED = "Is it dead?",
 			GENERIC = "I will eat you!",
 			PICKED = "I took them all.",
+			DISEASED = "Is weak. Sickly!",
 		},
 		BIRDCAGE =
 		{
@@ -780,6 +890,7 @@ return {
 		DIVININGRODSTART = "Is funny rod thing.",
 		DRAGONFLY = "I confuse: is dragonfly or a dragon-fly?",
 
+		HUTCH = "You are creepy.",
         HUTCH_FISHBOWL =
         {
             GENERIC = "Is tiny swimming teeth.",
@@ -791,7 +902,7 @@ return {
 			HOT = "Is hot mouth germs.",
 			COOL = "Is cold, hard mouth germs.",
 		},
-
+		LAVA_POND = "Is not time for swimming!",
 		LAVAE = "I must run!",
 		LAVAE_PET = 
 		{
@@ -913,6 +1024,7 @@ return {
 			BURNING = "Not good!",
 			GENERIC = "Is grass.",
 			PICKED = "The grass has been defeated!",
+			DISEASED = "Is weak. Sickly!",
 		},
 		GREEN_CAP = "Is for salads. Blech.",
 		GREEN_CAP_COOKED = "Is not same.",
@@ -1119,8 +1231,8 @@ return {
 		ROCK_LIGHT =
 		{
 			GENERIC = "A pile of crusty rocks!",
-			OUT = "Ha! Another thing to smash!",
-			LOW = "The lava is cooling.",
+			OUT = "Ha! More thing to smash!",
+			LOW = "Is getting cold.",
 			NORMAL = "Liquid fire!",
         },
 		ROCK = "Is hard! Like me!",
@@ -1143,6 +1255,7 @@ return {
 			WITHERED = "Puny tree could not take heat.",
 			GENERIC = "Puny tree! I am stronger than you!",
 			PICKED = "Ha! Ha! Ha! Tree is floppy!",
+			DISEASED = "Is weak. Sickly!",
 		},
 		SEEDS = "Too small to eat.",
 		SEEDS_COOKED = "Fire make bigger, can eat now.",
@@ -1276,6 +1389,15 @@ return {
 		TRUNK_WINTER = "Is floppy hairy nose.",
 		TURKEYDINNER = "Is good feast of bird meat.",
 		TWIGS = "Puny twigs! I can break them!",
+		TWIGGYTREE = 
+        {
+            BURNING = "I broke it.",
+			BURNT = "Is small and broken now.",
+			CHOPPED = "Ha! I have prevailed!",
+            GENERIC = "Wolfgang will snap like toothpick!",           
+            DISEASED = "Is weak. Sickly!",
+        },
+        TWIGGY_NUT = "Little cone make big tree!",
 		UMBRELLA = "The rain hurts my mighty skin.",
 		WAFFLES = "Why does bread have holes?",
 		WALL_HAY_ITEM = "Scratchy straws!",
@@ -1284,7 +1406,9 @@ return {
 		WALL_RUINS = "Old Wall is strong!",
 		WALL_RUINS_ITEM = "Stack of old rocks!",
 		WALL_WOOD_ITEM = "Poky sticks!",
-		WALRUS = "Sea cow man!",
+		WALL_MOONROCK = "Rock of moon protects Wolfgang.",
+		WALL_MOONROCK_ITEM = "Wolfgang build with power of moon!",
+		WALRUS = "",
 		WALRUSHAT = "I have sea cow man's hat!",
 		WALRUS_CAMP =
 		{
@@ -1300,6 +1424,7 @@ return {
 		},
 		WARG = "Big puppy!",
 		WASPHIVE = "Mind says no. Muscles say yes!",
+		WATERBALLOON = "Is very squishy-wobbly!",
 		WETGOOP = "Wolfgang ruin food!",
         WHIP = "Good to floss teeth with.",
 		WINTERHAT = "It make ears happy in cold!",

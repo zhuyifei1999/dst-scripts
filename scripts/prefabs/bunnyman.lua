@@ -147,15 +147,17 @@ local function NormalKeepTargetFn(inst, target)
 end
 
 local function giveupstring()
-    return STRINGS.RABBIT_GIVEUP[math.random(#STRINGS.RABBIT_GIVEUP)]
+    return "RABBIT_GIVEUP", math.random(#STRINGS["RABBIT_GIVEUP"])
 end
 
 local function battlecry(combatcmp, target)
-    return target ~= nil
-        and target.components.inventory ~= nil
-        and target.components.inventory:FindItem(is_meat) ~= nil
-        and STRINGS.RABBIT_MEAT_BATTLECRY[math.random(#STRINGS.RABBIT_MEAT_BATTLECRY)]
-        or STRINGS.RABBIT_BATTLECRY[math.random(#STRINGS.RABBIT_BATTLECRY)]
+    local strtbl =
+        target ~= nil and
+        target.components.inventory ~= nil and
+        target.components.inventory:FindItem(is_meat) ~= nil and
+        "RABBIT_MEAT_BATTLECRY" or
+        "RABBIT_BATTLECRY"
+    return strtbl, math.random(#STRINGS[strtbl])
 end
 
 local function GetStatus(inst)
@@ -213,6 +215,12 @@ local function fn()
     --Sneak these into pristine state for optimization
     inst:AddTag("_named")
 
+    inst:AddComponent("talker")
+    inst.components.talker.fontsize = 24
+    inst.components.talker.font = TALKINGFONT
+    inst.components.talker.offset = Vector3(0, -500, 0)
+    inst.components.talker:MakeChatter()
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -221,6 +229,8 @@ local function fn()
 
     --Remove these tags so that they can be added properly when replicating components below
     inst:RemoveTag("_named")
+
+    inst.components.talker.ontalk = ontalk
 
     inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
     inst.components.locomotor.runspeed = TUNING.PIG_RUN_SPEED * 2.2 -- account for them being stopped for part of their anim
@@ -267,11 +277,6 @@ local function fn()
     ------------------------------------------
 
     inst:AddComponent("knownlocations")
-    inst:AddComponent("talker")
-    inst.components.talker.ontalk = ontalk
-    inst.components.talker.fontsize = 24
-    inst.components.talker.font = TALKINGFONT
-    inst.components.talker.offset = Vector3(0, -500, 0)
 
     ------------------------------------------
 

@@ -93,7 +93,7 @@ STRINGS=
 
     CHARACTER_DESCRIPTIONS =
     {
-        wilson = "*Grows a magnificent beard",
+        wilson = "\n*Grows a magnificent beard",
         willow = "*Is resistant to fire damage \n*Can craft a cuddly bear and a super-sweet lighter \n*Can't keep warm when insane",
         wendy = "*Haunted by her twin sister \n*Is comfortable with darkness \n*Doesn't hit very hard",
         wolfgang = "*Gets stronger with a full belly \n*Is afraid of monsters and the dark \n*Always skips leg day",
@@ -948,6 +948,8 @@ STRINGS=
         SHADOWMINER_BUILDER = "Shadow Miner",
         SHADOWDIGGER_BUILDER = "Shadow Digger",
         SHADOWDUELIST_BUILDER = "Shadow Duelist",
+
+        SHADOWTENTACLE = "Shadow Tentacle",
 
         ACCOMPLISHMENT_SHRINE = "Accomploshrine",
 
@@ -1977,6 +1979,7 @@ STRINGS.UI =
         NOTIFY = "News",
         FORUM = "Forum",
         ISSUE = "Report an Issue",
+        GETHELP = "Get More Help",
         BUYNOW = "Buy Now",
         BUYDONTSTARVEMAIN = "Buy Don't Starve",
         GIFT = "Send Gift",
@@ -2342,6 +2345,7 @@ STRINGS.UI =
     ITEM_SCREEN =
     {
         THANKS_POPUP_TITLE_DEFAULT ="Thanks for playing",
+        THANKS_POPUP_TITLE_ARG ="Pulvis et umbra sumus",
         THANKS_POPUP_TITLE ="Thanks for playing",
         THANKS_POPUP_TITLE_TWITCH ="Thanks for watching Twitch",
         THANKS_POPUP_TITLE_STORE ="Enjoy your gift",
@@ -4034,6 +4038,7 @@ STRINGS.UI =
         QTYNONE = "None",
         QTYMAX = "Maximum",
         QTYNORMAL = "Normal",
+        QTYMEDIUM = "Medium",
 
         BRANCHINGMOST = "Most",
         BRANCHINGANY = "Default",

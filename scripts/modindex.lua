@@ -524,14 +524,8 @@ end
 
 function ModIndex:IsModCompatibleWithMode(modname, dlcmode)
 	local known_mod = self.savedata.known_mods[modname]
-	--local reignofgiants = dlcmode or IsDLCEnabled(REIGN_OF_GIANTS)
-	if known_mod then
+	if known_mod and known_mod.modinfo then
 		return known_mod.modinfo.dst_compatible
-		--[[if reignofgiants then
-			return known_mod.modinfo.reign_of_giants_compatible
-		else
-			return known_mod.modinfo.dont_starve_compatible
-		end]]
 	end
 	return false
 end

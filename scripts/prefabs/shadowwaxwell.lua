@@ -121,6 +121,7 @@ local function MakeMinion(prefab, tool, hat, master_postinit)
         inst.components.combat:SetRange(2)
 
         inst:AddComponent("follower")
+        inst.components.follower:KeepLeaderOnAttacked()
         inst.components.follower.keepdeadleader = true
 
         inst:SetBrain(brain)

@@ -1,64 +1,72 @@
 require "behaviours/wander"
 require "behaviours/faceentity"
 require "behaviours/follow"
-require "behaviours/panic"
 
 local BernieBrain = Class(Brain, function(self, inst)
     Brain._ctor(self,inst)
-
-    self.listenerfunc = function() self.mytarget = nil end
+    self.targets = nil
 end)
 
 local MIN_FOLLOW_DIST = 0
 local MAX_FOLLOW_DIST = 20
 local TARGET_FOLLOW_DIST = 8
-local MAX_WANDER_DIST = 18
+local TAUNT_DIST = 16
 
-local wander_times = 
+local wander_times =
 {
     minwalktime = 1,
     minwaittime = 1,
 }
 
-local function TauntCreatures(inst)
-    local x, y, z = inst.Transform:GetWorldPosition()
-    local shadowcreatures = TheSim:FindEntities(x, y, z, 30, { "shadowcreature", "_combat" })
-    for _, creature in ipairs(shadowcreatures) do
-        --Taunt the first creature that isn't targeting you & is valid
-        if creature.components.combat ~= nil and
-            not creature.components.combat:TargetIs(inst) and
-            creature.components.combat:CanTarget(inst) then
-            return BufferedAction(inst, creature, ACTIONS.TAUNT)
-        end
-    end
+local function IsTauntable(inst, target)
+    return target.components.combat ~= nil
+        and not target.components.combat:TargetIs(inst)
+        and target.components.combat:CanTarget(inst)
 end
 
-function BernieBrain:SetTarget(target)
-    if target ~= self.target then
-        if self.mytarget ~= nil then
-            self.inst:RemoveEventCallback("onremove", self.listenerfunc, self.mytarget)
+local function FindShadowCreatures(inst)
+    local x, y, z = inst.Transform:GetWorldPosition()
+    local ents = TheSim:FindEntities(x, y, z, TAUNT_DIST, { "shadowcreature", "_combat" })
+    for i = #ents, 1, -1 do
+        if not IsTauntable(inst, ents[i]) then
+            table.remove(ents, i)
         end
-        if target ~= nil then
-            self.inst:ListenForEvent("onremove", self.listenerfunc, target)
+    end
+    return #ents > 0 and ents or nil
+end
+
+local function TauntCreatures(self)
+    local taunted = false
+    if self.targets ~= nil then
+        for i, v in ipairs(self.targets) do
+            if IsTauntable(self.inst, v) then
+                v.components.combat:SetTarget(self.inst)
+                taunted = true
+            end
         end
-        self.mytarget = target
+    end
+    if taunted then
+        self.inst.sg:GoToState("taunt")
     end
 end
 
 function BernieBrain:OnStart()
-    local root = 
+    local root =
     PriorityNode({
         --Get the attention of nearby sanity monsters.
         WhileNode(
             function()
-                return not (self.inst.sg:HasStateTag("taunt") or self.inst.components.timer:TimerExists("taunt_cd"))
+                self.targets =
+                    not (self.inst.sg:HasStateTag("busy") or self.inst.components.timer:TimerExists("taunt_cd"))
+                    and FindShadowCreatures(self.inst)
+                    or nil
+                return self.targets ~= nil
             end,
-            "Can Taunt", 
-            DoAction(self.inst, TauntCreatures, "Taunt")),
+            "Can Taunt",
+            ActionNode(function() TauntCreatures(self) end)),
 
         Follow(self.inst, function() return self.inst.components.follower.leader end, MIN_FOLLOW_DIST, TARGET_FOLLOW_DIST, MAX_FOLLOW_DIST),
-        Wander(self.inst, function() return self.mytarget ~= nil and self.mytarget:GetPosition() or nil end, MAX_WANDER_DIST, wander_times),
-        --Panic(self.inst),
+        Wander(self.inst, nil, nil, wander_times),
     }, 1)
     self.bt = BT(self.inst, root)
 end

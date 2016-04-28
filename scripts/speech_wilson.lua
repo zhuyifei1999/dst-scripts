@@ -202,7 +202,7 @@ return {
         PLAYER =
         {
             GENERIC = "It's %s!",
-            ATTACKER = "That %s looks shifty...",
+            ATTACKER = "%s looks shifty...",
             MURDERER = "Murderer!",
             REVIVER = "%s, friend of ghosts.",
             GHOST = "%s could use a heart.",
@@ -320,7 +320,7 @@ return {
 
 		EEL = "This will make a delicious meal.",
 		EEL_COOKED = "Smells great!",
-		UNAGI = "I cooked it myself!",
+		UNAGI = "I hope this doesn't make me feel eel!",
 		EYETURRET = "I hope it doesn't turn on me.",
 		EYETURRET_ITEM = "I think it's sleeping.",
 		MINOTAURHORN = "Wow! I'm glad that didn't gore me!",
@@ -484,20 +484,25 @@ return {
 		TURF_DECIDUOUS = "Yet another ground type.",
 		TURF_SANDY = "Yet another ground type.",
 		TURF_BADLANDS = "Yet another ground type.",
+		TURF_DRAGONFLY = "You want proof it's fireproof?",
 
 		POWCAKE = "I don't know if I'm hungry enough.",
         CAVE_ENTRANCE = "I wonder if I could move that rock.",
         CAVE_ENTRANCE_RUINS = "It's probably hiding something.",
-        CAVE_ENTRANCE_OPEN = {
+       
+       	CAVE_ENTRANCE_OPEN = 
+        {
             GENERIC = "The earth itself rejects me!",
             OPEN = "I bet there's all sorts of things to discover down there.",
             FULL = "I'll have to wait until someone leaves.",
         },
-        CAVE_EXIT = {
+        CAVE_EXIT = 
+        {
             GENERIC = "I'll just stay down here, I suppose.",
             OPEN = "I've had enough discovery for now.",
             FULL = "The surface is too crowded!",
         },
+
 		MAXWELLPHONOGRAPH = "So that's where the music was coming from.",
 		BOOMERANG = "Aerodynamical!",
 		PIGGUARD = "He doesn't look as friendly as the others.",
@@ -514,12 +519,12 @@ return {
 			GENERIC = "All that's left after fire has done its job.",
 			REMAINS_GLOMMERFLOWER = "The flower was consumed by fire when I teleported!",
 			REMAINS_EYE_BONE = "The eyebone was consumed by fire when I teleported!",
-			REMAINS_THINGIE = "This was once some thing before it got burned...",
+			REMAINS_THINGIE = "There's a perfectly scientific explanation for that.",
 		},
 		AXE = "It's my trusty axe.",
 		BABYBEEFALO = "Awwww. So cute!",
 		BACKPACK = "It's for me to put my stuff in.",
-		BACONEGGS = "I cooked it myself!",
+		BACONEGGS = "The perfect breakfast for a man of science.",
 		BANDAGE = "Seems sterile enough.",
 		BASALT = "That's too strong to break through!",
 		BEARDHAIR = "I made them with my face.",
@@ -578,6 +583,7 @@ return {
 			WITHERED = "The heat even dehydrated the juicy berries!",
 			GENERIC = "I should leave them there until I'm ready to eat.",
 			PICKED = "The bush is working hard on the next batch.",
+			DISEASED = "It looks pretty sick.",
 		},
 		BIGFOOT = "That is one biiig foot.",
 		BIRDCAGE =
@@ -612,7 +618,7 @@ return {
 		BOARDS = "Boards.",
 		BOAT = "Is that how I got here?",
 		BONESHARD = "Bits of bone.",
-		BONESTEW = "I cooked it myself!",
+		BONESTEW = "A stew to put some meat on my bones.",
 		BUGNET = "For catching bugs.",
 		BUSHHAT = "It's kind of scratchy.",
 		BUTTER = "I can't believe it's butter!",
@@ -621,7 +627,7 @@ return {
 			GENERIC = "Butterfly, flutter by.",
 			HELD = "Now I have you!",
 		},
-		BUTTERFLYMUFFIN = "I cooked it myself!",
+		BUTTERFLYMUFFIN = "I threw the recipe away and just kind of winged it.",
 		BUTTERFLYWINGS = "Without these, it's just a butter.",
 		BUZZARD = "What a bizarre buzzard!",
 		CACTUS = 
@@ -729,6 +735,7 @@ return {
 		ARMORDRAGONFLY = "Hot mail!",
 		DRAGON_SCALES = "They're still warm.",
 		DRAGONFLYCHEST = "Next best thing to a lockbox!",
+        
         HUTCH = "Hutch Danglefish, P.I.",
         HUTCH_FISHBOWL =
         {
@@ -740,7 +747,7 @@ return {
 			HOT = "Hot spit!",
 			COOL = "I like to call it 'Basaliva'.",
 		},
-
+		LAVA_POND = "Magmificent!",
 		LAVAE = "Too hot to handle.",
 		LAVAE_PET = 
 		{
@@ -760,11 +767,10 @@ return {
 		},
 		LAVAE_TOOTH = "It's an egg tooth!",
 
-
 		DRAGONFRUIT = "What a weird fruit.",
 		DRAGONFRUIT_COOKED = "Still weird.",
 		DRAGONFRUIT_SEEDS = "It's a seed.",
-		DRAGONPIE = "I cooked it myself!",
+		DRAGONPIE = "The dragonfruit is very filling.",
 		DRUMSTICK = "I should gobble it.",
 		DRUMSTICK_COOKED = "Now it's even tastier.",
 		DUG_BERRYBUSH = "Now I can take it anywhere.",
@@ -813,6 +819,7 @@ return {
 			GENERIC = "It's all sticky.",			
 			DISEASED = "It looks sick. More so than usual.",
 		},
+		TWIGGY_NUT = "There's a sticky tree inside it that wants to get out.",
 		EYEPLANT = "I think I'm being watched.",
 		FARMPLOT =
 		{
@@ -860,11 +867,12 @@ return {
 
 		FISH = "Now I shall eat for a day.",
 		FISHINGROD = "Hook, line and stick!",
-		FISHSTICKS = "I cooked it myself!",
-		FISHTACOS = "I cooked it myself!",
+		FISHSTICKS = "Sticks to my ribs.",
+		FISHTACOS = "Crunchy and delicious!",
 		FISH_COOKED = "Grilled to perfection.",
 		FLINT = "It's a very sharp rock.",
-		FLOWER = {
+		FLOWER = 
+		{
             GENERIC = "It's pretty but it smells like a common laborer.",
             ROSE = "To match my rosy cheeks.",
         },
@@ -879,10 +887,10 @@ return {
 			GENERIC = "He's so cute!",
 			SLEEPING = "Aww, look at him sleep!",
 		},
-		FROGGLEBUNWICH = "I cooked it myself!",
+		FROGGLEBUNWICH = "A very leggy sandwich.",
 		FROGLEGS = "I've heard it's a delicacy.",
 		FROGLEGS_COOKED = "Tastes like chicken.",
-		FRUITMEDLEY = "I cooked it myself!",
+		FRUITMEDLEY = "Fruity.",
 		FURTUFT = "Black and white fur.", 
 		GEARS = "A pile of mechanical parts.",
 		GHOST = "That offends me as a Scientist.",
@@ -928,7 +936,7 @@ return {
 		HOME = "Someone must live here.",
 		HOMESIGN =
 		{
-			GENERIC = "It says 'You are here'.",
+			GENERIC = "It says \"You are here\".",
             UNWRITTEN = "The sign is currently blank.",
 			BURNT = "\"Don't play with matches.\"",
 		},
@@ -946,8 +954,8 @@ return {
 		},
 		HONEY = "Looks delicious!",
 		HONEYCOMB = "Bees used to live in this.",
-		HONEYHAM = "I cooked it myself!",
-		HONEYNUGGETS = "I cooked it myself!",
+		HONEYHAM = "Sweet and savory.",
+		HONEYNUGGETS = "Taste like chicken, but I don't think it is.",
 		HORN = "It sounds like a beefalo field in there.",
 		HOUND = "You ain't nothing, hound dog!",
 		HOUNDBONE = "Creepy.",
@@ -960,8 +968,8 @@ return {
 			ACTIVE = "TAKE THAT, SANE SELF!",
 			INACTIVE = "It's more of a pyramid than an obelisk.",
 		},
-		JAMMYPRESERVES = "I cooked it myself!",
-		KABOBS = "I cooked it myself!",
+		JAMMYPRESERVES = "I probably should have made a jar.",
+		KABOBS = "Lunch on a stick.",
 		KILLERBEE =
 		{
 			GENERIC = "Oh no! It's a killer bee!",
@@ -1003,7 +1011,7 @@ return {
 		MANDRAKE_PLANTED = "I've heard strange things about those plants.",
 		MANDRAKE = "A mandrake root has strange powers.",
 
-		MANDRAKESOUP = "I cooked it myself!",
+		MANDRAKESOUP = "Well he won't be waking up again.",
 		MANDRAKE_COOKED = "It doesn't seem so strange anymore.",
 		MARBLE = "Fancy!",
 		MARBLEPILLAR = "I think I could use that.",
@@ -1029,7 +1037,7 @@ return {
 		MAXWELLLOCK = "Looks almost like a key hole.",
 		MAXWELLTHRONE = "That doesn't look very comfortable.",
 		MEAT = "It's a bit gamey, but it'll do.",
-		MEATBALLS = "I cooked it myself!",
+		MEATBALLS = "It's just a big wad of meat.",
 		MEATRACK =
 		{
 			DONE = "Jerky time!",
@@ -1053,7 +1061,7 @@ return {
 		MINERHAT = "This will keep my hands free.",
 		MONKEY = "Curious little guy.",
 		MONKEYBARREL = "Did that just move?",
-		MONSTERLASAGNA = "I cooked it myself!",
+		MONSTERLASAGNA = "It's an affront to science.",
 		FLOWERSALAD = "A bowl of foliage.",
         ICECREAM = "I scream for ice cream!",
         WATERMELONICLE = "Cryogenic watermelon.",
@@ -1090,7 +1098,7 @@ return {
 		PAPYRUS = "Some sheets of paper.",
 		PENGUIN = "Must be breeding season.",
 		PERD = "Stupid bird! Stay away from my berries!",
-		PEROGIES = "I cooked it myself!",
+		PEROGIES = "These turned out pretty good.",
 		PETALS = "I showed those flowers who's boss!",
 		PETALS_EVIL = "I'm not sure I want to hold these.",
 		PHLEGM = "It's thick and pliable. And salty.",
@@ -1140,7 +1148,7 @@ return {
 		POOP = "I should fill my pockets!",
 		FERTILIZER = "That is definitely a bucket full of poop.",
 		PUMPKIN = "It's as big as my head!",
-		PUMPKINCOOKIE = "I cooked it myself!",
+		PUMPKINCOOKIE = "That's a pretty gourd cookie!",
 		PUMPKIN_COOKED = "How did it not turn into a pie?",
 		PUMPKIN_LANTERN = "Spooky!",
 		PUMPKIN_SEEDS = "It's a seed.",
@@ -1163,7 +1171,7 @@ return {
 		},
 		RAINCOAT = "Keeps the rain where it ought to be. Outside my body.",
 		RAINHAT = "It'll mess up my hair, but I'll stay nice and dry.",
-		RATATOUILLE = "I cooked it myself!",
+		RATATOUILLE = "An excellent source of fibre.",
 		RAZOR = "A sharpened rock tied to a stick. Hygienic!",
 		REDGEM = "It sparkles with inner warmth.",
 		RED_CAP = "It smells funny.",
@@ -1303,12 +1311,12 @@ return {
 		STEELWOOL = "Scratchy metal fibers.",
 		STINGER = "Looks sharp!",
 		STRAWHAT = "What a nice hat.",
-		STUFFEDEGGPLANT = "I cooked it myself!",
+		STUFFEDEGGPLANT = "I'll be stuffed after eating this!",
 		SUNKBOAT = "It's no use to me out there!",
 		SWEATERVEST = "This vest is dapper as all get-out.",
 		REFLECTIVEVEST = "Keep off, evil sun!",
 		HAWAIIANSHIRT = "It's not lab-safe!",
-		TAFFY = "I cooked it myself!",
+		TAFFY = "My dentist'd get mad if I ate this... but I don't have one.",
 		TALLBIRD = "That's a tall bird!",
 		TALLBIRDEGG = "Will it hatch?",
 		TALLBIRDEGG_COOKED = "Delicious and nutritional.",
@@ -1413,7 +1421,7 @@ return {
 		UMBRELLA = "This will keep my hair dry, at least.",
 		GRASS_UMBRELLA = "This will keep my hair moderately dry, at least.",
 		UNIMPLEMENTED = "It doesn't look finished! It could be dangerous.",
-		WAFFLES = "I cooked it myself!",
+		WAFFLES = "I'm waffling on whether I should add more syrup.",
 		WALL_HAY = 
 		{	
 			GENERIC = "Hmmmm. I guess that'll have to do.",
@@ -1431,7 +1439,7 @@ return {
 		},
 		WALL_WOOD_ITEM = "Pickets!",
 		WALL_MOONROCK = "Spacey and smooth!",
-		WALL_MOONROCK_ITEM = "Very light but surprisingly tough.",
+		WALL_MOONROCK_ITEM = "Very light, but surprisingly tough.",
 		WALRUS = "Walruses are natural predators.",
 		WALRUSHAT = "It's covered with walrus hairs.",
 		WALRUS_CAMP =
@@ -1448,11 +1456,12 @@ return {
 		},
 		WARG = "You might be something to reckon with, big dog.",
 		WASPHIVE = "I think those bees are mad.",
+		WATERBALLOON = "What a scientific marvel!",
 		WATERMELON = "Sticky sweet.",
 		WATERMELON_COOKED = "Juicy and warm.",
 		WATERMELONHAT = "Let the juice run down your face.",
 		WAXWELLJOURNAL = "Spooky.",
-		WETGOOP = "I cooked it myself!",
+		WETGOOP = "It tastes like nothing.",
         WHIP = "Nothing like loud noises to help keep the peace.",
 		WINTERHAT = "It'll be good for when winter comes.",
 		WINTEROMETER = 

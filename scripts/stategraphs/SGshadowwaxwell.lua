@@ -241,6 +241,9 @@ local states =
         tags = {"prechop", "chopping", "working"},
 
         onenter = function(inst)
+            local buffaction = inst:GetBufferedAction()
+            inst.sg.statemem.target = buffaction ~= nil and buffaction.target or nil
+
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("chop_pre")
         end,
@@ -258,6 +261,9 @@ local states =
         tags = {"prechop", "chopping", "working"},
 
         onenter = function(inst)
+            local buffaction = inst:GetBufferedAction()
+            inst.sg.statemem.target = buffaction ~= nil and buffaction.target or nil
+
             inst.AnimState:PlayAnimation("chop_loop")
         end,
 
@@ -289,6 +295,9 @@ local states =
         tags = {"premine", "working"},
 
         onenter = function(inst)
+            local buffaction = inst:GetBufferedAction()
+            inst.sg.statemem.target = buffaction ~= nil and buffaction.target or nil
+
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("pickaxe_pre")
         end,
@@ -306,6 +315,9 @@ local states =
         tags = {"premine", "mining", "working"},
 
         onenter = function(inst)
+            local buffaction = inst:GetBufferedAction()
+            inst.sg.statemem.target = buffaction ~= nil and buffaction.target or nil
+
             inst.AnimState:PlayAnimation("pickaxe_loop")
         end,
 
@@ -341,6 +353,9 @@ local states =
         tags = {"predig", "working"},
 
         onenter = function(inst)
+            local buffaction = inst:GetBufferedAction()
+            inst.sg.statemem.target = buffaction ~= nil and buffaction.target or nil
+
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("shovel_pre")
         end,
@@ -358,12 +373,15 @@ local states =
         tags = {"predig", "mining", "working"},
 
         onenter = function(inst)
+            local buffaction = inst:GetBufferedAction()
+            inst.sg.statemem.target = buffaction ~= nil and buffaction.target or nil
+
             inst.AnimState:PlayAnimation("shovel_loop")
         end,
 
         timeline =
         {
-            TimeEvent(9*FRAMES, function(inst)
+            TimeEvent(15 * FRAMES, function(inst)
                 inst:PerformBufferedAction()
                 inst.sg:RemoveStateTag("predig")
                 inst.SoundEmitter:PlaySound("dontstarve/wilson/dig")

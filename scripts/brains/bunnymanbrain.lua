@@ -10,7 +10,6 @@ require "behaviours/panic"
 require "behaviours/chattynode"
 require "behaviours/leash"
 
-
 local MIN_FOLLOW_DIST = 2
 local TARGET_FOLLOW_DIST = 5
 local MAX_FOLLOW_DIST = 9
@@ -50,29 +49,29 @@ end
 local function FindFoodAction(inst)
     local target = nil
 
-	if inst.sg:HasStateTag("busy") then
-		return
-	end
-    
+    if inst.sg:HasStateTag("busy") then
+        return
+    end
+
     if inst.components.inventory and inst.components.eater then
         target = inst.components.inventory:FindItem(function(item) return inst.components.eater:CanEat(item) end)
     end
-    
+
     local time_since_eat = inst.components.eater:TimeSinceLastEating()
     local noveggie = time_since_eat and time_since_eat < TUNING.PIG_MIN_POOP_PERIOD*4
-    
+
     if not target and (not time_since_eat or time_since_eat > TUNING.PIG_MIN_POOP_PERIOD*2) then
-        target = FindEntity(inst, SEE_FOOD_DIST, function(item) 
-				if item:GetTimeAlive() < 8 then return false end
-				if item.prefab == "mandrake" then return false end
-				if noveggie and item.components.edible and item.components.edible.foodtype ~= FOODTYPE.MEAT then
-					return false
-				end
-				if not item:IsOnValidGround() then
-					return false
-				end
-				return inst.components.eater:CanEat(item) 
-			end)
+        target = FindEntity(inst, SEE_FOOD_DIST, function(item)
+                if item:GetTimeAlive() < 8 then return false end
+                if item.prefab == "mandrake" then return false end
+                if noveggie and item.components.edible and item.components.edible.foodtype ~= FOODTYPE.MEAT then
+                    return false
+                end
+                if not item:IsOnValidGround() then
+                    return false
+                end
+                return inst.components.eater:CanEat(item)
+            end)
     end
     if target then
         return BufferedAction(inst, target, ACTIONS.EAT)
@@ -111,7 +110,6 @@ local function GetHomePos(inst)
     return HasValidHome(inst) and inst.components.homeseeker:GetHomePos()
 end
 
-
 local function GetNoLeaderHomePos(inst)
     if GetLeader(inst) then
         return nil
@@ -130,27 +128,25 @@ function BunnymanBrain:OnStart()
         {
             WhileNode( function() return self.inst.components.hauntable and self.inst.components.hauntable.panic end, "PanicHaunted", Panic(self.inst)),
             WhileNode(function() return self.inst.components.health.takingfiredamage end, "OnFire",
-                ChattyNode(self.inst, STRINGS.RABBIT_PANICFIRE,
+                ChattyNode(self.inst, "RABBIT_PANICFIRE",
                     Panic(self.inst))),
             WhileNode(function() return self.inst.components.health:GetPercent() < TUNING.BUNNYMAN_PANIC_THRESH end, "LowHealth",
-				ChattyNode(self.inst, STRINGS.RABBIT_RETREAT,
-					RunAway(self.inst, "scarytoprey", SEE_PLAYER_DIST, STOP_RUN_DIST))),
+                ChattyNode(self.inst, "RABBIT_RETREAT",
+                    RunAway(self.inst, "scarytoprey", SEE_PLAYER_DIST, STOP_RUN_DIST))),
             ChaseAndAttack(self.inst, MAX_CHASE_TIME, MAX_CHASE_DIST),
             WhileNode(function() return IsHomeOnFire(self.inst) end, "OnFire",
-				ChattyNode(self.inst, STRINGS.RABBIT_PANICHOUSEFIRE,
-					Panic(self.inst))),
-            FaceEntity(self.inst, GetTraderFn, KeepTraderFn),            
-            DoAction(self.inst, FindFoodAction ),
+                ChattyNode(self.inst, "RABBIT_PANICHOUSEFIRE",
+                    Panic(self.inst))),
+            FaceEntity(self.inst, GetTraderFn, KeepTraderFn),
+            DoAction(self.inst, FindFoodAction),
             Follow(self.inst, GetLeader, MIN_FOLLOW_DIST, TARGET_FOLLOW_DIST, MAX_FOLLOW_DIST),
-            WhileNode( function() return not self.inst.beardlord and TheWorld.state.iscaveday end, "IsDay",
+            WhileNode(function() return not self.inst.beardlord and TheWorld.state.iscaveday end, "IsDay",
                         DoAction(self.inst, GoHomeAction, "go home", true ), 1),
             Leash(self.inst, GetNoLeaderHomePos, LEASH_MAX_DIST, LEASH_RETURN_DIST),
             Wander(self.inst, GetNoLeaderHomePos, MAX_WANDER_DIST)
-
         }, .5)
-    
+
     self.bt = BT(self.inst, root)
-    
 end
 
 return BunnymanBrain

@@ -96,7 +96,7 @@ return {
 	
 	ANNOUNCE_BECOMEGHOST = "oOooOOOo!!",
 	ANNOUNCE_GHOSTDRAIN = "They're driving me mad...!",
-	ANNOUNCE_PETRIFED_TREES = "There's tree drama approaching!",
+	ANNOUNCE_PETRIFED_TREES = "I sense Loki's mischievous hand in the shadows.",
 
 	ANNOUNCE_ENTER_DARK = "And the curtain falls.",
 	ANNOUNCE_ENTER_LIGHT = "I step into the light!",
@@ -162,6 +162,87 @@ return {
 	},
 	DESCRIBE =
 	{		
+        PLAYER =
+        {
+            GENERIC = "Good health to you, %s!",
+            ATTACKER = "If %s is looking for trouble, I'll give it to them!",
+            MURDERER = "Murderer! To battle!",
+            REVIVER = "Freya smiles on %s.",
+            GHOST = "%s's restless spirit could be revived with a heart.",
+        },
+        WILSON = 
+        {
+            GENERIC = "Good health to you, Wilson!",
+            ATTACKER = "If Wilson is looking for trouble, I'll give it to him!",
+            MURDERER = "Murderer! To battle!",
+            REVIVER = "Freya smiles on Wilson.",
+            GHOST = "Wilson's restless spirit could be revived with a heart.",
+        },
+        WOLFGANG = 
+        {
+            GENERIC = "Good health to you, Wolfgang!",
+            ATTACKER = "If Wolfgang is looking for trouble, I'll give it to him!",
+            MURDERER = "Murderer! To battle!",
+            REVIVER = "Freya smiles on Wolfgang.",
+            GHOST = "Wolfgang's restless spirit could be revived with a heart.",
+        },
+        WAXWELL = 
+        {
+            GENERIC = "Good health to you, Maxwell!",
+            ATTACKER = "If Maxwell is looking for trouble, I'll give it to him!",
+            MURDERER = "Murderer! To battle!",
+            REVIVER = "Freya smiles on Maxwell.",
+            GHOST = "Maxwell's restless spirit could be revived with a heart.",
+        },
+        WX78 = 
+        {
+            GENERIC = "Good health to you, WX-78!",
+            ATTACKER = "If WX-78 is looking for trouble, I'll give it to them!",
+            MURDERER = "Murderer! To battle!",
+            REVIVER = "Freya smiles on WX-78.",
+            GHOST = "WX-78's restless spirit could be revived with a heart.",
+        },
+        WILLOW = 
+        {
+            GENERIC = "Good health to you, Willow!",
+            ATTACKER = "If Willow is looking for trouble, I'll give it to her!",
+            MURDERER = "Murderer! To battle!",
+            REVIVER = "Freya smiles on Willow.",
+            GHOST = "Willow's restless spirit could be revived with a heart.",
+        },
+        WENDY = 
+        {
+            GENERIC = "Good health to you, Wendy!",
+            ATTACKER = "If Wendy is looking for trouble, I'll give it to her!",
+            MURDERER = "Murderer! To battle!",
+            REVIVER = "Freya smiles on Wendy.",
+            GHOST = "Wendy's restless spirit could be revived with a heart.",
+        },
+        WOODIE = 
+        {
+            GENERIC = "Good health to you, Woodie!",
+            ATTACKER = "If Woodie is looking for trouble, I'll give it to him!",
+            MURDERER = "Murderer! To battle!",
+            REVIVER = "Freya smiles on Woodie.",
+            GHOST = "Woodie's restless spirit could be revived with a heart.",
+        },
+        WICKERBOTTOM = 
+        {
+            GENERIC = "Good health to you, Wickerbottom!",
+            ATTACKER = "If Wickerbottom is looking for trouble, I'll give it to her!",
+            MURDERER = "Murderer! To battle!",
+            REVIVER = "Freya smiles on Wickerbottom.",
+            GHOST = "Wickerbottom's restless spirit could be revived with a heart.",
+        },
+        WES = 
+        {
+            GENERIC = "Good health to you, Wes!",
+            ATTACKER = "If Wes is looking for trouble, I'll give it to him!",
+            MURDERER = "Murderer! To battle!",
+            REVIVER = "Freya smiles on Wes.",
+            GHOST = "Wes's restless spirit could be revived with a heart.",
+        },
+
         MULTIPLAYER_PORTAL = "It makes me long for the stage!",
 		BERNIE_INACTIVE =
 		{
@@ -385,12 +466,25 @@ return {
 		TURF_SINKHOLE="A piece of the battlefield.",
 		TURF_UNDERROCK="A piece of the battlefield.",
 		TURF_MUD="A piece of the battlefield.",
+		TURF_DRAGONFLY = "A warm piece of the battlefield.",
 
 		POWCAKE = "What in the name of the unicorn is this?",
         CAVE_ENTRANCE = "What treasures lie beneath?",
         CAVE_ENTRANCE_RUINS = "What treasures lie beneath?",
-        CAVE_ENTRANCE_OPEN = "To the underworld!",
-        CAVE_EXIT = "Back to open skies!",
+
+		CAVE_ENTRANCE_OPEN = 
+        {
+            GENERIC = "I've no desire to visit Hel.",
+            OPEN = "To the underworld!",
+            FULL = "It's more packed than the Thingvellir!",
+        },
+        CAVE_EXIT = 
+        {
+            GENERIC = "I've had enough of Sol's shining face for one day.",
+            OPEN = "Back to open skies!",
+            FULL = "There are too many people up there.",
+        },
+
 		MAXWELLPHONOGRAPH = "A mechanical songstress.",
 		BOOMERANG = "For flinging at foes!",
 		PIGGUARD = "He's battle ready, I can tell.",
@@ -421,7 +515,7 @@ return {
 		BEARGER = "Beast or berserker?",
 		BEARGERVEST = "I am berserker!",
 		ICEPACK = "A backpack of the beast.",
-		BEARGER_FUR = "It fought bravely but I have claimed its hide.",
+		BEARGER_FUR = "It fought bravely, but I have claimed its hide.",
 		FURTUFT = "Fur from a large beastie.", 	
 		BEE =
 		{
@@ -445,8 +539,8 @@ return {
             --Domesticated states:
             DOMESTICATED = "The critter has finally learned its role.",
             ORNERY = "The noble steed of a mighty warrior!",
-            RIDER = "What's your inspiration?",
-            PUDGY = "I bet you're a baritone.",
+            RIDER = "With stalwart beast at my side, we ride tonight!",
+            PUDGY = "My mouth's watering just looking at it..",
 		},
 		BEEFALOHAT = "This is going to look good on me, I can tell.",
 		BEEFALOWOOL = "I do love woolly things.",
@@ -464,6 +558,7 @@ return {
 			WITHERED = "It's too hot to grow.",
 			GENERIC = "A fruit bush.",
 			PICKED = "The fruits have been snatched.",
+			DISEASED = "The disease festers within its soul.",
 		},
 		BERRYBUSH_JUICY =
 		{
@@ -471,6 +566,7 @@ return {
 			WITHERED = "It looks atrocious.",
 			GENERIC = "It's covered in rabbit food.",
 			PICKED = "The rabbit food is all gone.",
+			DISEASED = "The disease festers within its soul.",
 		},
 		BIFOOT = "Stompy foot.",
 		BIRDCAGE =
@@ -552,6 +648,18 @@ return {
 		},
 		CATCOONHAT = "Furry cap! Bless cute meat.",
 		COONTAIL = "It is the tail of cute meat.",
+		COMPASS =
+		{
+			GENERIC= "I cannot glean reading.",
+			N = "North",
+			S = "South",
+			E = "East",
+			W = "West",
+			NE = "Northeast",
+			SE = "Southeast",
+			NW = "Northwest",
+			SW = "Southwest",
+		},
 		CARROT = "Where's the protein?",
 		CARROT_COOKED = "Sad cooked carrots.",
 		CARROT_PLANTED = "A wee root vegetable.",
@@ -621,9 +729,10 @@ return {
 		DRAGON_SCALES = "Mystical scales.",
 		DRAGONFLYCHEST = "This chest is worthy of my weapons.",
 
+		HUTCH = "A loyal companion, if ever there were one.",
         HUTCH_FISHBOWL =
         {
-            GENERIC = "Pets make such difficult co-stars.",
+            GENERIC = "An ensconced water sprite!",
             WAITING = "An unfortunate casualty of battle.",
         },
 
@@ -632,14 +741,14 @@ return {
 			HOT = "Your fire pools are no match for me!",
 			COOL = "It's not very scary now, is it?",
 		},
-
+		LAVA_POND = "I shall not surrender to the fiery pits!",
 		LAVAE = "A fiery foe!",
 		LAVAE_PET = 
 		{
 			STARVING = "Its fires are dying out.",
 			HUNGRY = "You must eat to keep your fires burning.",
 			CONTENT = "It glows contentedly.",
-			GENERIC = "A faithful fiery friend.",
+			GENERIC = "A faithful, fiery friend.",
 		},
 		LAVAE_EGG = 
 		{
@@ -650,7 +759,7 @@ return {
 			COLD = "This egg looks chilly.",
 			COMFY = "It's warm and toasty.",
 		},
-		LAVAE_TOOTH = "It's an egg tooth!",
+		LAVAE_TOOTH = "A fearsome eggy fang!",
 
 		DRAGONFRUIT = "It's very fancy.",
 		DRAGONFRUIT_COOKED = "Grilled fancy fruit.",
@@ -785,6 +894,7 @@ return {
 			BURNING = "Loge looks upon you!",
 			GENERIC = "That could be useful.",
 			PICKED = "It fell to my might.",
+			DISEASED = "The disease festers within its soul.",
 		},
 		GREEN_CAP = "Terrible!",
 		GREEN_CAP_COOKED = "Charred by flame or not, it will not touch my lips!",
@@ -806,6 +916,7 @@ return {
 			WARM = "The stone has taken on warmth!",
 			HOT = "Loge would be proud.",
 		},
+		HOME = "Home is where the hearth is!",
 		HOMESIGN =
 		{
 			GENERIC = "A most well placed sign.",
@@ -943,7 +1054,7 @@ return {
 		MOOSEEGG = "Something is bouncing around inside.",
 		MOSSLING = "You are not large enough to be a steed.",
 		FEATHERFAN = "The luxuries of camp, on the go.",
-        MINIFAN = "What a delicate prop.",
+        MINIFAN = "The chilling breeze reminds me of my frigid home.",
 		GOOSE_FEATHER = "A shieldmaiden deserves a soft bed of dunn.",
 		STAFF_TORNADO = "A storm of pain.",
 		MOSQUITO =
@@ -965,12 +1076,13 @@ return {
 		PANDORASCHEST = "It contains a mystery.",
 		PANFLUTE = "I prefer to face my enemies awake.",
 		PAPYRUS = "This will carry forth the record of my saga.",
+		PHLEGM = "The secretions of a terrible beast!",
 		PENGUIN = "Birds of the sea, come from afar.",
 		PERD = "You cannot run forever!",
 		PEROGIES = "Pockets of meat.",
 		PETALS = "Thank you Froh for this gift!",
 		PETALS_EVIL = "These were not made by Froh.",
-		PETRIFIED_TREE = "If all the world's a stage, perhaps these are my columns.",
+		PETRIFIED_TREE = "My mere presence struck terror into their tree-hearts!",
 		PICKAXE = "I can use it to get precious spear and helm materials.",
 		PIGGYBACK = "The pig died with honor and gave to me this pack.",
 		PIGHEAD = 
@@ -998,7 +1110,7 @@ return {
 		PIGTORCH = "Do these pigs worship Loge?",
 		PINECONE = "This baby tree is well protected by spiky armor.",
         PINECONE_SAPLING = "It has shed its armor. Grow, baby tree!",
-        LUMPY_SAPLING = "I guess these trees aren't just props.",
+        LUMPY_SAPLING = "It brings shame to the might of Yggdrasil.",
 		PITCHFORK = "A weapon for farmers.",
 		PLANTMEAT = "I suppose it's close enough.",
 		PLANTMEAT_COOKED = "Still green, but it'll do.",
@@ -1134,7 +1246,17 @@ return {
 			WITHERED = "It has been shriveled by the heat.",
 			GENERIC = "I will make it into a spear.",
 			PICKED = "I have slain the small tree!",
+			DISEASED = "The disease festers within its soul.",
 		},
+		TWIGGYTREE = 
+		{
+			BURNING = "The wood's ablaze!",
+			BURNT = "Loge took that one.",
+			CHOPPED = "Chopped by the warrior in the woods!",
+			GENERIC = "With its many resources, I will triumph.",			
+			DISEASED = "The disease festers within its soul.",
+		},
+		TWIGGY_NUT = "It will one one day rival Yggdrasil!",
 		SEEDS = "Tiny nature bits.",
 		SEEDS_COOKED = "Tiny nature bits, cooked to death.",
 		SEWING_KIT = "I am no seamstress, but repairs are sometimes necessary.",
@@ -1298,6 +1420,8 @@ return {
 		TUMBLEWEED = "Flee, bouncing coward!",
 		TURKEYDINNER = "A true feast.",
 		TWIGS = "Good for making spears.",
+		STEELWOOL = "It could easily best regular wool in combat.",
+		SPAT = "How much meat is hiding under there?",
 		UMBRELLA = "Rain protection made from the trophy of a hunt.",
 		GRASS_UMBRELLA = "I dislike flowers, but I dislike wet armor more.",
 		UNIMPLEMENTED = "A mysterious relic, sure to contain great power.",
@@ -1318,6 +1442,8 @@ return {
 			BURNT = "Fire, wood's only weakness!",
 		},
 		WALL_WOOD_ITEM = "A mediocre fortification.",
+		WALL_MOONROCK = "Wholly impregnable, a worthy fortification!",
+		WALL_MOONROCK_ITEM = "Our fortress shall be impenetrable!",
 		WALRUS = "Those tusks could pierce even the finest armor.",
 		WALRUSHAT = "Highland filth!",
 		WALRUS_CAMP =
@@ -1328,9 +1454,9 @@ return {
 		WALRUS_TUSK = "Rended from the mouth of the sea beast.",
 		WARDROBE = 
         {
-        	GENERIC = "Ah, costumes to assist my performance.",
-            BURNING = "No, my costumes!",
-        	BURNT = "A good performance doesn't require costumes.",
+        	GENERIC = "That's where I keep my furs and cloaks.",
+            BURNING = "No, my furs and cloaks!",
+        	BURNT = "No use crying over burnt pelts.",
     	},
 		WARG = "Is it you, Fenrir?",
 		WASPHIVE = "Bees of war!",
@@ -1338,7 +1464,7 @@ return {
 		WATERMELON_COOKED = "Warm and red, but it doesn't flow.",
 		WATERMELONHAT = "It's almost like wearing a pelt.",
 		WETGOOP = "Slop.",
-        WHIP = "Wow, this has some great special effects!",
+        WHIP = "Loud and powerful!",
 		WINTERHAT = "Warm, but not suitable for combat.",
 		WINTEROMETER = 
 		{
@@ -1355,6 +1481,7 @@ return {
 		LIVINGTREE = "A tree of life, but it is not Yggdrasil.",
 		ICESTAFF = "A gift from Ullr!",
 		WATHGRITHRHAT = "The power of the unicorn is great.",
+		WATERBALLOON = "Prepare to engage in water-y battle!",
 		SPEAR_WATHGRITHR = "My comrade in arms!",
         REVIVER = "Feel the passion inside!",
         LIFEINJECTOR = "This will return me to top form.",

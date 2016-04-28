@@ -795,7 +795,7 @@ function Start()
 
     CheckControllers()
 
-    assert(TheSim:CanWriteConfigurationDirectory(), "Unable to write to config directory. Please make sure you have permissions for your Klei save folder.")
+    known_assert(TheSim:CanWriteConfigurationDirectory(), "CONFIG_DIR_WRITE_PERMISSION")
 end
 
 --------------------------
@@ -990,19 +990,32 @@ function DisplayError(error)
                 )
     else
         local buttons = nil
+
+        -- If we know what happened, display a better message for the user
+        local known_error = known_error_key ~= nil and ERRORS[known_error_key]
+        if known_error ~= nil then
+            error = known_error.message
+        end
+
         if PLATFORM ~= "PS4" then
             buttons = {
                 {text=STRINGS.UI.MAINSCREEN.SCRIPTERRORQUIT, cb = function() TheSim:ForceAbort() end},
-                {text=STRINGS.UI.MAINSCREEN.ISSUE, nopop=true, cb = function() VisitURL("http://forums.kleientertainment.com/klei-bug-tracker/dont-starve-together/") end }
             }
+
+            if known_error_key == nil or ERRORS[known_error_key] == nil then
+                table.insert(buttons, {text=STRINGS.UI.MAINSCREEN.ISSUE, nopop=true, cb = function() VisitURL("http://forums.kleientertainment.com/klei-bug-tracker/dont-starve-together/") end })
+            else
+                table.insert(buttons, {text=STRINGS.UI.MAINSCREEN.GETHELP, nopop=true, cb = function() VisitURL(known_error.url) end })
+            end
         end
+
         SetGlobalErrorWidget(
                 STRINGS.UI.MAINSCREEN.MODFAILTITLE,
                 error,
                 buttons,
-                ANCHOR_LEFT,
+                known_error and ANCHOR_MIDDLE or ANCHOR_LEFT,
                 nil,
-                20
+                known_error ~= nil and 30 or 20
                 )
     end
 end

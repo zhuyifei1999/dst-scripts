@@ -3,31 +3,31 @@ local assets =
     Asset("ANIM", "anim/fan_wheel.zip"),
 }
 
-local function AlignToOwner(inst)
-    if inst.followtarget ~= nil then
-		local ownerrot = inst.followtarget.Transform:GetRotation()
-        inst.Transform:SetRotation(ownerrot)
-    end
+local function AlignToTarget(inst, target)
+    inst.Transform:SetRotation(target.Transform:GetRotation())
 end
 
 local function SetFollowTarget(inst, target)
-    inst.followtarget = target
-	if inst.followtarget ~= nil then
-		inst.Follower:FollowSymbol(target.GUID, "swap_object", 0, -114, 0.02)
-		inst.savedfollowtarget = target
-	elseif inst.savedfollowtarget ~= nil then
-		inst:Remove()
-	end
+    if target ~= nil then
+        inst.Follower:FollowSymbol(target.GUID, "swap_object", 0, -114, 0.02)
+        if inst._followtask ~= nil then
+            inst._followtask:Cancel()
+        end
+        inst._followtask = inst:DoPeriodicTask(0, AlignToTarget, nil, target)
+        AlignToTarget(inst, target)
+    elseif inst._followtask ~= nil then
+        inst:Remove()
+    end
 end
 
-local function local_fn(proxy)
-	local inst = CreateEntity()
+local function fn()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
+    inst.entity:AddTransform()
     inst.entity:AddAnimState()
-	inst.entity:AddFollower()
+    inst.entity:AddFollower()
     inst.entity:AddSoundEmitter()
-	inst.entity:AddNetwork()
+    inst.entity:AddNetwork()
 
     inst.Transform:SetFourFaced()
 
@@ -35,17 +35,8 @@ local function local_fn(proxy)
     inst.AnimState:SetBuild("fan_wheel")
     inst.AnimState:PlayAnimation("idle")
 
-	-----------------------------------------------------
+    -----------------------------------------------------
     inst:AddTag("FX")
-
-    inst.persists = false
-
-	--inst.followtarget = net_entity(inst.GUID, "fan_wheel.followtarget", "followtargetdirty")
-	--inst:ListenForEvent("followtargetdirty", followtargetdirty, inst)
-
-    ----Dedicated server does not need to spawn the local fx
-    --if not TheNet:IsDedicated() then
-    --end
 
     inst.entity:SetPristine()
 
@@ -53,11 +44,13 @@ local function local_fn(proxy)
         return inst
     end
 
+    inst._followtask = nil
+    inst._mounted = nil
     inst.SetFollowTarget = SetFollowTarget
 
-    inst:DoPeriodicTask(0, AlignToOwner)
+    inst.persists = false
 
     return inst
 end
 
-return Prefab("fan_wheel", local_fn, assets)
+return Prefab("fan_wheel", fn, assets)

@@ -441,13 +441,17 @@ end
 function Builder:KnowsRecipe(recname)
     local recipe = GetValidRecipe(recname)
     return recipe ~= nil
-        and (   (recipe.level.SCIENCE <= self.science_bonus and
-                recipe.level.MAGIC <= self.magic_bonus and
-                recipe.level.ANCIENT <= self.ancient_bonus and
-                recipe.level.SHADOW <= self.shadow_bonus and
-                (recipe.builder_tag == nil or self.inst:HasTag(recipe.builder_tag)))
-            or self.freebuildmode
-            or table.contains(self.recipes, recname))
+        and (   (   recipe.level.SCIENCE <= self.science_bonus and
+                    recipe.level.MAGIC <= self.magic_bonus and
+                    recipe.level.ANCIENT <= self.ancient_bonus and
+                    recipe.level.SHADOW <= self.shadow_bonus or
+                    self.freebuildmode
+                ) and (
+                    recipe.builder_tag == nil or
+                    self.inst:HasTag(recipe.builder_tag)
+                ) or
+                table.contains(self.recipes, recname)
+            )
 end
 
 function Builder:CanBuild(recname)
@@ -473,8 +477,7 @@ function Builder:CanLearn(recname)
     local recipe = GetValidRecipe(recname)
     return recipe ~= nil
         and (recipe.builder_tag == nil or
-            self.inst:HasTag(recipe.builder_tag) or
-            self.freebuildmode)
+            self.inst:HasTag(recipe.builder_tag))
 end
 
 --------------------------------------------------------------------------

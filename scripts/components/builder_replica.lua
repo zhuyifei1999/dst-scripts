@@ -215,13 +215,19 @@ function Builder:KnowsRecipe(recipename)
     elseif self.classified ~= nil then
         local recipe = GetValidRecipe(recipename)
         return recipe ~= nil
-            and (   (recipe.level.SCIENCE <= self.classified.sciencebonus:value() and
-                    recipe.level.MAGIC <= self.classified.magicbonus:value() and
-                    recipe.level.ANCIENT <= self.classified.ancientbonus:value() and
-                    recipe.level.SHADOW <= self.classified.shadowbonus:value() and
-                    (recipe.builder_tag == nil or self.inst:HasTag(recipe.builder_tag)))
-                or self.classified.isfreebuildmode:value()
-                or (self.classified.recipes[recipename] ~= nil and self.classified.recipes[recipename]:value()))
+            and (   (   recipe.level.SCIENCE <= self.classified.sciencebonus:value() and
+                        recipe.level.MAGIC <= self.classified.magicbonus:value() and
+                        recipe.level.ANCIENT <= self.classified.ancientbonus:value() and
+                        recipe.level.SHADOW <= self.classified.shadowbonus:value() or
+                        self.classified.isfreebuildmode:value()
+                    ) and (
+                        recipe.builder_tag == nil or
+                        self.inst:HasTag(recipe.builder_tag)
+                    ) or (
+                        self.classified.recipes[recipename] ~= nil and
+                        self.classified.recipes[recipename]:value()
+                    )
+                )
     else
         return false
     end
@@ -259,8 +265,7 @@ function Builder:CanLearn(recipename)
         local recipe = GetValidRecipe(recipename)
         return recipe ~= nil
             and (recipe.builder_tag == nil or
-                self.inst:HasTag(recipe.builder_tag) or
-                self.classified.isfreebuildmode:value())
+                self.inst:HasTag(recipe.builder_tag))
     else
         return false
     end

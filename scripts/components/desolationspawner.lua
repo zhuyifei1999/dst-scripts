@@ -83,7 +83,7 @@ local function DoRegrowth(area, prefab, product, searchtags)
     --if not IsAnyPlayerInRange(x,0,z, MIN_PLAYER_DISTANCE, nil) then
         if TestForRegrow(x,0,z, product, searchtags) then
             local instance = SpawnPrefab(product)
-            print("Making a",product," from ",prefab," for ",area)
+            --print("Making a",product," from ",prefab," for ",area)
             if instance ~= nil then
                 instance.Transform:SetPosition(x,0,z)
             end
@@ -173,7 +173,7 @@ end)
 self:SetSpawningForType("evergreen_sparse", "lumpy_sapling", TUNING.EVERGREEN_SPARSE_REGROWTH.DESOLATION_RESPAWN_TIME, {"evergreen_sparse"}, function()
     return 1
 end)
-self:SetSpawningForType("twiggytree", "twiggy_nut_sapling", TUNING.EVERGREEN_SPARSE_REGROWTH.DESOLATION_RESPAWN_TIME, {"twiggytree"}, function()
+self:SetSpawningForType("twiggytree", "twiggy_nut_sapling", TUNING.TWIGGY_TREE_REGROWTH.DESOLATION_RESPAWN_TIME, {"twiggytree"}, function()
     return 1
 end)
 self:SetSpawningForType("deciduoustree", "acorn_sapling", TUNING.DECIDUOUS_REGROWTH.DESOLATION_RESPAWN_TIME, {"deciduoustree"}, function()
@@ -232,7 +232,7 @@ function self:OnSave()
         for prefab, prefabdata in pairs(areadata) do
             data.areas[area][prefab] = {
                 density = prefabdata.density,
-                regrowtime = _internaltimes[prefab] - prefabdata.regrowtime,
+                regrowtime = prefabdata.regrowtime - _internaltimes[prefab],
             }
         end
     end
@@ -247,7 +247,7 @@ function self:OnLoad(data)
             end
             _areadata[area][prefab] = {
                 density = prefabdata.density,
-                regrowtime = _internaltimes[prefab] + prefabdata.regrowtime,
+                regrowtime = prefabdata.regrowtime + _internaltimes[prefab],
             }
         end
     end
@@ -257,10 +257,21 @@ end
 --[[ Debug ]]
 --------------------------------------------------------------------------
 
---function self:GetDebugString()
-    --local s = ""
-    --return s
---end
+function self:GetDebugString()
+    local s = ""
+    local nextdata = {}
+    for area, data in pairs(_areadata) do
+        for prefab, prefabdata in pairs(data) do
+            if nextdata[prefab] == nil or nextdata[prefab] > prefabdata.regrowtime then
+                nextdata[prefab] = prefabdata.regrowtime
+            end
+        end
+    end
+    for prefab, time in pairs(nextdata) do
+        s = s..string.format("%s: %.1f/%.1f ", prefab, _internaltimes[prefab], time)
+    end
+    return s
+end
 
 --------------------------------------------------------------------------
 --[[ End ]]

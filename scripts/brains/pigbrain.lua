@@ -10,7 +10,6 @@ require "behaviours/panic"
 require "behaviours/chattynode"
 require "behaviours/leash"
 
-
 local MIN_FOLLOW_DIST = 2
 local TARGET_FOLLOW_DIST = 5
 local MAX_FOLLOW_DIST = 9
@@ -59,29 +58,29 @@ end
 local function FindFoodAction(inst)
     local target = nil
 
-	if inst.sg:HasStateTag("busy") then
-		return
-	end
-    
+    if inst.sg:HasStateTag("busy") then
+        return
+    end
+
     if inst.components.inventory and inst.components.eater then
         target = inst.components.inventory:FindItem(function(item) return inst.components.eater:CanEat(item) end)
     end
-    
+
     local time_since_eat = inst.components.eater:TimeSinceLastEating()
     local noveggie = time_since_eat and time_since_eat < TUNING.PIG_MIN_POOP_PERIOD*4
-    
+
     if not target and (not time_since_eat or time_since_eat > TUNING.PIG_MIN_POOP_PERIOD*2) then
         target = FindEntity(inst, SEE_FOOD_DIST, function(item) 
-				if item:GetTimeAlive() < 8 then return false end
-				if item.prefab == "mandrake" then return false end
-				if noveggie and item.components.edible and item.components.edible.foodtype ~= FOODTYPE.MEAT then
-					return false
-				end
-				if not item:IsOnValidGround() then
-					return false
-				end
-				return inst.components.eater:CanEat(item) 
-			end)
+                if item:GetTimeAlive() < 8 then return false end
+                if item.prefab == "mandrake" then return false end
+                if noveggie and item.components.edible and item.components.edible.foodtype ~= FOODTYPE.MEAT then
+                    return false
+                end
+                if not item:IsOnValidGround() then
+                    return false
+                end
+                return inst.components.eater:CanEat(item)
+            end)
     end
     if target then
         return BufferedAction(inst, target, ACTIONS.EAT)
@@ -104,15 +103,13 @@ local function FindFoodAction(inst)
     if target then
         return BufferedAction(inst, target, ACTIONS.TAKEITEM)
     end
-
 end
-
 
 local function KeepChoppingAction(inst)
     local keep_chop = inst.components.follower.leader and inst.components.follower.leader:GetDistanceSqToInst(inst) <= KEEP_CHOPPING_DIST*KEEP_CHOPPING_DIST
     local target = FindEntity(inst, SEE_TREE_DIST/3, function(item)
         return item.prefab == "deciduoustree" and item.monster and item.components.workable and item.components.workable.action == ACTIONS.CHOP 
-    end)    
+    end)
     if inst.tree_target ~= nil then target = inst.tree_target end
 
     return (keep_chop or target ~= nil)
@@ -120,14 +117,13 @@ end
 
 local function StartChoppingCondition(inst)
     local start_chop = inst.components.follower.leader and inst.components.follower.leader.sg and inst.components.follower.leader.sg:HasStateTag("chopping")
-    local target = FindEntity(inst, SEE_TREE_DIST/3, function(item) 
+    local target = FindEntity(inst, SEE_TREE_DIST/3, function(item)
         return item.prefab == "deciduoustree" and item.monster and item.components.workable and item.components.workable.action == ACTIONS.CHOP 
     end)
     if inst.tree_target ~= nil then target = inst.tree_target end
-    
+
     return (start_chop or target ~= nil)
 end
-
 
 local function FindTreeToChopAction(inst)
     local target = FindEntity(inst, SEE_TREE_DIST, function(item) return item.components.workable and item.components.workable.action == ACTIONS.CHOP end)
@@ -163,7 +159,7 @@ local function GoHomeAction(inst)
 end
 
 local function GetLeader(inst)
-    return inst.components.follower.leader 
+    return inst.components.follower.leader
 end
 
 local function GetHomePos(inst)
@@ -220,8 +216,6 @@ local function IsHomeOnFire(inst)
         and inst:GetDistanceSqToInst(inst.components.homeseeker.home) < SEE_BURNING_HOME_DIST_SQ
 end
 
-
-
 local PigBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
 end)
@@ -230,37 +224,36 @@ function PigBrain:OnStart()
     --print(self.inst, "PigBrain:OnStart")
     local day = WhileNode( function() return TheWorld.state.isday end, "IsDay",
         PriorityNode{
-            ChattyNode(self.inst, STRINGS.PIG_TALK_FIND_MEAT,
+            ChattyNode(self.inst, "PIG_TALK_FIND_MEAT",
                 DoAction(self.inst, FindFoodAction )),
             IfNode(function() return StartChoppingCondition(self.inst) end, "chop", 
                 WhileNode(function() return KeepChoppingAction(self.inst) end, "keep chopping",
                     LoopNode{ 
-                        ChattyNode(self.inst, STRINGS.PIG_TALK_HELP_CHOP_WOOD,
+                        ChattyNode(self.inst, "PIG_TALK_HELP_CHOP_WOOD",
                             DoAction(self.inst, FindTreeToChopAction ))})),
-            ChattyNode(self.inst, STRINGS.PIG_TALK_FOLLOWWILSON, 
+            ChattyNode(self.inst, "PIG_TALK_FOLLOWWILSON",
                 Follow(self.inst, GetLeader, MIN_FOLLOW_DIST, TARGET_FOLLOW_DIST, MAX_FOLLOW_DIST)),
             IfNode(function() return GetLeader(self.inst) end, "has leader",
-				ChattyNode(self.inst, STRINGS.PIG_TALK_FOLLOWWILSON,
-					FaceEntity(self.inst, GetFaceTargetFn, KeepFaceTargetFn ))),
+                ChattyNode(self.inst, "PIG_TALK_FOLLOWWILSON",
+                    FaceEntity(self.inst, GetFaceTargetFn, KeepFaceTargetFn ))),
 
             Leash(self.inst, GetNoLeaderHomePos, LEASH_MAX_DIST, LEASH_RETURN_DIST),
 
-            ChattyNode(self.inst, STRINGS.PIG_TALK_RUNAWAY_WILSON,
+            ChattyNode(self.inst, "PIG_TALK_RUNAWAY_WILSON",
                 RunAway(self.inst, "player", START_RUN_DIST, STOP_RUN_DIST)),
-            ChattyNode(self.inst, STRINGS.PIG_TALK_LOOKATWILSON,
+            ChattyNode(self.inst, "PIG_TALK_LOOKATWILSON",
                 FaceEntity(self.inst, GetFaceTargetFn, KeepFaceTargetFn)),
             Wander(self.inst, GetNoLeaderHomePos, MAX_WANDER_DIST)
-        },.5)
-        
-    
+        }, .5)
+
     local night = WhileNode( function() return not TheWorld.state.isday end, "IsNight",
         PriorityNode{
-            ChattyNode(self.inst, STRINGS.PIG_TALK_RUN_FROM_SPIDER,
+            ChattyNode(self.inst, "PIG_TALK_RUN_FROM_SPIDER",
                 RunAway(self.inst, "spider", 4, 8)),
-            ChattyNode(self.inst, STRINGS.PIG_TALK_FIND_MEAT,
+            ChattyNode(self.inst, "PIG_TALK_FIND_MEAT",
                 DoAction(self.inst, FindFoodAction )),
             RunAway(self.inst, "player", START_RUN_DIST, STOP_RUN_DIST, function(target) return ShouldRunAway(self.inst, target) end ),
-            ChattyNode(self.inst, STRINGS.PIG_TALK_GO_HOME,
+            ChattyNode(self.inst, "PIG_TALK_GO_HOME",
                 WhileNode( function() return not TheWorld.state.iscaveday or not self.inst.LightWatcher:IsInLight() end, "Cave nightness",
                     DoAction(self.inst, GoHomeAction, "go home", true ))),
             WhileNode(function() return TheWorld.state.isnight and self.inst.LightWatcher:GetLightValue() > COMFORT_LIGHT_LEVEL end, "IsInLight", -- wants slightly brighter light for this
@@ -271,43 +264,41 @@ function PigBrain:OnStart()
                     randwaittime = 5
                 })
             ),
-            ChattyNode(self.inst, STRINGS.PIG_TALK_FIND_LIGHT,
+            ChattyNode(self.inst, "PIG_TALK_FIND_LIGHT",
                 FindLight(self.inst, SEE_LIGHT_DIST, SafeLightDist)),
-            ChattyNode(self.inst, STRINGS.PIG_TALK_PANIC,
+            ChattyNode(self.inst, "PIG_TALK_PANIC",
                 Panic(self.inst)),
-        },1)
-    
-    
-    local root = 
+        }, 1)
+
+    local root =
         PriorityNode(
         {
-            WhileNode( function() return self.inst.components.hauntable and self.inst.components.hauntable.panic end, "PanicHaunted", 
-                ChattyNode(self.inst, STRINGS.PIG_TALK_PANICHAUNT,
+            WhileNode( function() return self.inst.components.hauntable and self.inst.components.hauntable.panic end, "PanicHaunted",
+                ChattyNode(self.inst, "PIG_TALK_PANICHAUNT",
                     Panic(self.inst))),
             WhileNode(function() return self.inst.components.health.takingfiredamage end, "OnFire",
-				ChattyNode(self.inst, STRINGS.PIG_TALK_PANICFIRE,
-					Panic(self.inst))),
-            ChattyNode(self.inst, STRINGS.PIG_TALK_FIGHT,
+                ChattyNode(self.inst, "PIG_TALK_PANICFIRE",
+                    Panic(self.inst))),
+            ChattyNode(self.inst, "PIG_TALK_FIGHT",
                 WhileNode( function() return self.inst.components.combat.target == nil or not self.inst.components.combat:InCooldown() end, "AttackMomentarily",
                     ChaseAndAttack(self.inst, MAX_CHASE_TIME, MAX_CHASE_DIST) )),
-            ChattyNode(self.inst, STRINGS.PIG_TALK_RESCUE,
+            ChattyNode(self.inst, "PIG_TALK_RESCUE",
                 WhileNode( function() return GetLeader(self.inst) and GetLeader(self.inst).components.pinnable and GetLeader(self.inst).components.pinnable:IsStuck() end, "Leader Phlegmed",
                     DoAction(self.inst, RescueLeaderAction, "Rescue Leader", true) )),
-            ChattyNode(self.inst, STRINGS.PIG_TALK_FIGHT,
+            ChattyNode(self.inst, "PIG_TALK_FIGHT",
                 WhileNode( function() return self.inst.components.combat.target and self.inst.components.combat:InCooldown() end, "Dodge",
                     RunAway(self.inst, function() return self.inst.components.combat.target end, RUN_AWAY_DIST, STOP_RUN_AWAY_DIST) )),
             WhileNode(function() return IsHomeOnFire(self.inst) end, "OnFire",
-				ChattyNode(self.inst, STRINGS.PIG_TALK_PANICHOUSEFIRE,
-					Panic(self.inst))),
+                ChattyNode(self.inst, "PIG_TALK_PANICHOUSEFIRE",
+                    Panic(self.inst))),
             RunAway(self.inst, function(guy) return guy:HasTag("pig") and guy.components.combat and guy.components.combat.target == self.inst end, RUN_AWAY_DIST, STOP_RUN_AWAY_DIST ),
-            ChattyNode(self.inst, STRINGS.PIG_TALK_ATTEMPT_TRADE,
-                FaceEntity(self.inst, GetTraderFn, KeepTraderFn)),            
+            ChattyNode(self.inst, "PIG_TALK_ATTEMPT_TRADE",
+                FaceEntity(self.inst, GetTraderFn, KeepTraderFn)),
             day,
             night
         }, .5)
-    
+
     self.bt = BT(self.inst, root)
-    
 end
 
 return PigBrain

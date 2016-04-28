@@ -133,7 +133,6 @@ ACTIONS =
     TOSS = Action({ rmb=true, distance=8, mount_valid=true }),
     NUZZLE = Action(),
     WRITE = Action(),
-    TAUNT = Action({ distance=30 }),
     ATTUNE = Action(),
     REMOTERESURRECT = Action({ rmb=false, ghost_valid=true, ghost_exclusive=true }),
     MIGRATE = Action({ rmb=false, ghost_valid=true }),
@@ -1435,15 +1434,6 @@ ACTIONS.WRITE.fn = function(act)
         if CanEntitySeeTarget(act.doer, act.target) then
             act.target.components.writeable:BeginWriting(act.doer)
         end
-        return true
-    end
-end
-
-ACTIONS.TAUNT.fn = function(act)
-    if act.target ~= nil and
-        act.target.components.combat ~= nil and
-        act.target.components.combat:CanTarget(act.doer) then
-        act.target.components.combat:SetTarget(act.doer)
         return true
     end
 end

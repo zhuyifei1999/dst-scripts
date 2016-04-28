@@ -11,6 +11,8 @@ local MAX_DIST_FROM_WATER = 6
 local SEARCH_RADIUS = 50
 local SEARCH_RADIUS2 = SEARCH_RADIUS*SEARCH_RADIUS
 
+local DEFAULT_NUM_BOULDERS = 7
+
 --------------------------------------------------------------------------
 --[[ PenguinSpawner class definition ]]
 --------------------------------------------------------------------------
@@ -42,6 +44,8 @@ local _spawnInterval = 30
 local _maxColonies = 10
 local _maxSpawnsPerSeason = 35
 local _active = true
+
+local _numBoulders = DEFAULT_NUM_BOULDERS
 
 local _activeplayers = {}
 
@@ -252,7 +256,7 @@ local function EstablishColony(loc)
         newFlock.ice.Transform:SetPosition(newFlock.rookery:Get())
         newFlock.ice.spawner = self
 
-        local numboulders = math.random(3,7)
+        local numboulders = math.random(math.floor(_numBoulders/2), _numBoulders)
         local sectorsize = 360 / numboulders
         local numattempts = 50
         while numboulders > 0 and numattempts > 0 do
@@ -392,6 +396,10 @@ local function OnPlayerLeft(src, player)
     end
 end
 
+local function OnSetNumBoulders(val)
+    _numBoulders = val or DEFAULT_NUM_BOULDERS
+end
+
 --------------------------------------------------------------------------
 --[[ Initialization ]]
 --------------------------------------------------------------------------
@@ -402,6 +410,7 @@ end
 
 inst:ListenForEvent("ms_playerjoined", function(src, player) OnPlayerJoined(src, player) end, TheWorld)
 inst:ListenForEvent("ms_playerleft", function(src, player) OnPlayerLeft(src,player) end, TheWorld)
+inst:ListenForEvent("ms_setpenguinnumboulders", function(src, val) OnSetNumBoulders(val) end, TheWorld)
 
 -- Reschedule based on number of players
 self.inst:DoTaskInTime(_checktime / math.max(#_activeplayers,1), function() TryToSpawnFlock() end)
@@ -475,6 +484,7 @@ function self:OnSave()
     data.maxColonies = _maxColonies
     data.maxSpawnsPerSeason = _maxSpawnsPerSeason
     data.active = _active
+    data.numBoulders = _numBoulders
     return data
 end
 
@@ -489,6 +499,7 @@ function self:OnLoad(data)
         _spawnInterval = data.spawnInterval or 30
         _maxColonies = data.maxColonies or 10
         _maxSpawnsPerSeason = data.maxSpawnsPerSeason or 35
+        _numBoulders = data.numBoulders or DEFAULT_NUM_BOULDERS
     end
 end
 
