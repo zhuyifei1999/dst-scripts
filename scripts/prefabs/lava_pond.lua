@@ -47,6 +47,9 @@ local function makerock(rocktype)
 
         inst:AddComponent("inspectable")
 
+        inst:AddComponent("hauntable")
+        inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
+
         return inst
     end
     return Prefab("lava_pond_rock"..rocktype, fn, rock_assets)
@@ -161,6 +164,9 @@ local function fn()
 
     inst.rocks = nil
     inst.task = inst:DoTaskInTime(0, SpawnRocks)
+
+    inst:AddComponent("hauntable")
+    inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
 
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad

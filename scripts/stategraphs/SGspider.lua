@@ -63,6 +63,12 @@ local events =
             end
         end
     end),
+
+    EventHandler("trapped", function(inst)
+        if not inst.sg:HasStateTag("busy") then
+            inst.sg:GoToState("trapped")
+        end
+    end),
 }
 
 local function SoundPath(inst, event)
@@ -417,13 +423,30 @@ local states =
         onenter = function(inst)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("enter")
-            inst.SoundEmitter:PlaySound("dontstarve/creatures/spider/descend")            
+            inst.SoundEmitter:PlaySound("dontstarve/creatures/spider/descend")
         end,
 
         events=
         {
-            EventHandler("animqueueover", function(inst) inst.sg:GoToState("taunt") end ),
+            EventHandler("animqueueover", function(inst) inst.sg:GoToState("taunt") end),
         },
+    },
+
+    State{
+        name = "trapped",
+        tags = { "busy", "trapped" },
+
+        onenter = function(inst)
+            inst.Physics:Stop()
+            inst:ClearBufferedAction()
+            inst.AnimState:PlayAnimation("cower")
+            inst.AnimState:PushAnimation("cower_loop", true)
+            inst.sg:SetTimeout(1)
+        end,
+
+        ontimeout = function(inst)
+            inst.sg:GoToState("idle")
+        end,
     },
 }
 

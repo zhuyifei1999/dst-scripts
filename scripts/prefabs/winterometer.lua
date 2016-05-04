@@ -50,6 +50,7 @@ local function onbuilt(inst)
         inst.task = nil
     end
     inst.AnimState:PlayAnimation("place")
+    inst.SoundEmitter:PlaySound("dontstarve/common/winter_meter_craft")
     --the global animover handler will restart the check task
 end
 

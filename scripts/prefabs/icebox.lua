@@ -13,12 +13,12 @@ local prefabs =
 
 local function onopen(inst)
     inst.AnimState:PlayAnimation("open")
-    inst.SoundEmitter:PlaySound("dontstarve/wilson/chest_open")
+    inst.SoundEmitter:PlaySound("dontstarve/common/icebox_open")
 end
 
 local function onclose(inst)
     inst.AnimState:PlayAnimation("close")
-    inst.SoundEmitter:PlaySound("dontstarve/wilson/chest_close")
+    inst.SoundEmitter:PlaySound("dontstarve/common/icebox_close")
 end
 
 local function onhammered(inst, worker)
@@ -40,6 +40,7 @@ end
 local function onbuilt(inst)
     inst.AnimState:PlayAnimation("place")
     inst.AnimState:PushAnimation("closed", false)
+    inst.SoundEmitter:PlaySound("dontstarve/common/icebox_craft")
 end
 
 local function fn()
@@ -59,6 +60,8 @@ local function fn()
     inst.AnimState:SetBank("icebox")
     inst.AnimState:SetBuild("ice_box")
     inst.AnimState:PlayAnimation("closed")
+
+    inst.SoundEmitter:PlaySound("dontstarve/common/ice_box_LP", "idlesound")
 
     MakeSnowCoveredPristine(inst)
 
@@ -82,7 +85,7 @@ local function fn()
     inst.components.workable:SetOnWorkCallback(onhit) 
 
     inst:ListenForEvent("onbuilt", onbuilt)
-    MakeSnowCovered(inst)   
+    MakeSnowCovered(inst)
 
     AddHauntableDropItemOrWork(inst)
 

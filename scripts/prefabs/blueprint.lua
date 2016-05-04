@@ -10,24 +10,53 @@ local function onload(inst, data)
     if data ~= nil and data.recipetouse ~= nil then
         inst.recipetouse = data.recipetouse
         inst.components.teacher:SetRecipe(inst.recipetouse)
-        inst.components.named:SetName((STRINGS.NAMES[string.upper(inst.recipetouse)] or STRINGS.NAMES.UNKNOWN).." Blueprint")
+        inst.components.named:SetName((STRINGS.NAMES[string.upper(inst.recipetouse)] or STRINGS.NAMES.UNKNOWN).." "..STRINGS.NAMES.BLUEPRINT)
     end
 end
 
 local function onsave(inst, data)
-    if inst.recipetouse then
-        data.recipetouse = inst.recipetouse
-    end
-end
-
-local function selectrecipe_any(recipes)
-    if next(recipes) then
-        return recipes[math.random(1, #recipes)]
-    end
+    data.recipetouse = inst.recipetouse
 end
 
 local function OnTeach(inst, learner)
     learner:PushEvent("learnrecipe", { teacher = inst, recipe = inst.components.teacher.recipe })
+end
+
+local function CanBlueprintRecipe(recipe)
+    --Exclude character specific and TECH.NONE
+    if not recipe.nounlock and recipe.builder_tag == nil and type(recipe.level) == "table" then
+        for k, v in pairs(recipe.level) do
+            if v > 0 then
+                return true
+            end
+        end
+    end
+    return false
+end
+
+local function OnHaunt(inst, haunter)
+    if math.random() <= TUNING.HAUNT_CHANCE_HALF then
+        local recipes = {}
+        local old = inst.recipetouse ~= nil and GetValidRecipe(inst.recipetouse) or nil
+        for k, v in pairs(AllRecipes) do
+            if IsRecipeValid(v.name) and
+                old ~= v and
+                (old == nil or old.tab == v.tab) and
+                CanBlueprintRecipe(v) and
+                not haunter.components.builder:KnowsRecipe(v.name) and
+                haunter.components.builder:CanLearn(v.name) then
+                table.insert(recipes, v)
+            end
+        end
+        if #recipes > 0 then
+            inst.recipetouse = recipes[math.random(#recipes)].name or STRINGS.NAMES.UNKNOWN
+            inst.components.teacher:SetRecipe(inst.recipetouse)
+            inst.components.named:SetName(STRINGS.NAMES[string.upper(inst.recipetouse)].." "..STRINGS.NAMES.BLUEPRINT)
+            inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
+            return true
+        end
+    end
+    return false
 end
 
 local function fn()
@@ -66,27 +95,7 @@ local function fn()
     inst.components.teacher.onteach = OnTeach
 
     MakeHauntableLaunch(inst)
-    AddHauntableCustomReaction(inst, function(inst, haunter)
-        if math.random() <= TUNING.HAUNT_CHANCE_HALF then
-            local recipes = {}
-            for k, v in pairs(AllRecipes) do
-                if IsRecipeValid(v.name) and
-                    not haunter.components.builder:KnowsRecipe(v.name) and
-                    haunter.components.builder:CanLearn(v.name) then
-                    table.insert(recipes, v)
-                end
-            end
-            local r = selectrecipe_any(recipes)
-            if r ~= nil then
-                inst.recipetouse = r.name or STRINGS.NAMES.UNKNOWN
-                inst.components.teacher:SetRecipe(inst.recipetouse)
-                inst.components.named:SetName(STRINGS.NAMES[string.upper(inst.recipetouse)].." Blueprint")
-                inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
-                return true
-            end
-        end
-        return false
-    end, true, false, true)
+    AddHauntableCustomReaction(inst, OnHaunt, true, false, true)
 
     inst.OnLoad = onload
     inst.OnSave = onsave
@@ -104,7 +113,7 @@ local function MakeAnyBlueprint()
     local recipes = {}
     local allplayers = AllPlayers
     for k, v in pairs(AllRecipes) do
-        if IsRecipeValid(v.name) then
+        if IsRecipeValid(v.name) and CanBlueprintRecipe(v) then
             local known = false
             for i, player in ipairs(allplayers) do
                 if player.components.builder:KnowsRecipe(v.name) or
@@ -118,18 +127,13 @@ local function MakeAnyBlueprint()
             end
         end
     end
-    local r = selectrecipe_any(recipes)
-    if r ~= nil then
-        if not inst.recipetouse then
-            inst.recipetouse = r.name or STRINGS.NAMES.UNKNOWN
-        end
-        inst.components.teacher:SetRecipe(inst.recipetouse)
-        inst.components.named:SetName(STRINGS.NAMES[string.upper(inst.recipetouse)].." Blueprint")
-    end
+    inst.recipetouse = #recipes > 0 and recipes[math.random(#recipes)].name or STRINGS.NAMES.UNKNOWN
+    inst.components.teacher:SetRecipe(inst.recipetouse)
+    inst.components.named:SetName(STRINGS.NAMES[string.upper(inst.recipetouse)].." "..STRINGS.NAMES.BLUEPRINT)
     return inst
 end
 
-local function MakeAnySpecificBlueprint(specific_item)
+local function MakeSpecificBlueprint(specific_item)
     return function()
         local inst = fn()
 
@@ -137,40 +141,15 @@ local function MakeAnySpecificBlueprint(specific_item)
             return inst
         end
 
-        local recipes = {}
-        local allplayers = AllPlayers
-        for k, v in pairs(AllRecipes) do
-            if IsRecipeValid(v.name) then
-                if specific_item == nil then
-                    local known = false
-                    for i, player in ipairs(allplayers) do
-                        if player.components.builder:KnowsRecipe(v.name) or
-                            not player.components.builder:CanLearn(v.name) then
-                            known = true
-                            break
-                        end
-                    end
-                    if not known then
-                        table.insert(recipes, v)
-                    end
-                elseif v.name == specific_item then
-                    table.insert(recipes, v)
-                end
-            end
-        end
-        local r = selectrecipe_any(recipes)
-        if r ~= nil then
-            if not inst.recipetouse then
-                inst.recipetouse = r.name
-            end
-            inst.components.teacher:SetRecipe(inst.recipetouse)
-            inst.components.named:SetName(STRINGS.NAMES[string.upper(inst.recipetouse)].." Blueprint")
-        end
+        local r = GetValidRecipe(specific_item)
+        inst.recipetouse = r ~= nil and not r.nounlock and r.name or STRINGS.NAMES.UNKNOWN
+        inst.components.teacher:SetRecipe(inst.recipetouse)
+        inst.components.named:SetName(STRINGS.NAMES[string.upper(inst.recipetouse)].." "..STRINGS.NAMES.BLUEPRINT)
         return inst
     end
 end
 
-local function MakeSpecificBlueprint(recipetab)
+local function MakeAnyBlueprintFromTab(recipetab)
     return function()
         local inst = fn()
 
@@ -181,7 +160,7 @@ local function MakeSpecificBlueprint(recipetab)
         local recipes = {}
         local allplayers = AllPlayers
         for k, v in pairs(AllRecipes) do
-            if IsRecipeValid(v.name) and v.tab == recipetab then
+            if IsRecipeValid(v.name) and v.tab == recipetab and CanBlueprintRecipe(v) then
                 local known = false
                 for i, player in ipairs(allplayers) do
                     if player.components.builder:KnowsRecipe(v.name) or
@@ -195,14 +174,9 @@ local function MakeSpecificBlueprint(recipetab)
                 end
             end
         end
-        local r = selectrecipe_any(recipes)
-        if r ~= nil then
-            if not inst.recipetouse then
-                inst.recipetouse = r.name
-            end
-            inst.components.teacher:SetRecipe(inst.recipetouse)
-            inst.components.named:SetName(STRINGS.NAMES[string.upper(inst.recipetouse)].." Blueprint")
-        end
+        inst.recipetouse = #recipes > 0 and recipes[math.random(#recipes)].name or STRINGS.NAMES.UNKNOWN
+        inst.components.teacher:SetRecipe(inst.recipetouse)
+        inst.components.named:SetName(STRINGS.NAMES[string.upper(inst.recipetouse)].." "..STRINGS.NAMES.BLUEPRINT)
         return inst
     end
 end
@@ -210,10 +184,10 @@ end
 local prefabs = {}
 
 table.insert(prefabs, Prefab("blueprint", MakeAnyBlueprint, assets))
-for k,v in pairs(RECIPETABS) do
-    table.insert(prefabs, Prefab(string.lower(v.str or "NONAME").."_blueprint", MakeSpecificBlueprint(v), assets))
+for k, v in pairs(RECIPETABS) do
+    table.insert(prefabs, Prefab(string.lower(v.str or "NONAME").."_blueprint", MakeAnyBlueprintFromTab(v), assets))
 end
-for k,v in pairs(AllRecipes) do
-    table.insert(prefabs, Prefab(string.lower(k or "NONAME").."_blueprint", MakeAnySpecificBlueprint(k), assets))
+for k, v in pairs(AllRecipes) do
+    table.insert(prefabs, Prefab(string.lower(k or "NONAME").."_blueprint", MakeSpecificBlueprint(k), assets))
 end
 return unpack(prefabs)

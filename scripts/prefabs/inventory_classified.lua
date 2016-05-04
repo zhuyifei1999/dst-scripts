@@ -400,14 +400,14 @@ local function PushNewActiveItem(inst, data, returncontainer, returnslot)
     inst._returnslot = returnslot
 end
 
-local function PushItemGet(inst, data, isreturning)
+local function PushItemGet(inst, data, ignoresound)
     if data ~= nil then
         if inst._itemspreview == nil then
             inst._itemspreview = inst:GetItems()
         end
         inst._itemspreview[data.slot] = data.item
         if inst._parent ~= nil then
-            if not isreturning then
+            if not ignoresound then
                 inst._parent:PushEvent("gotnewitem", data)
             end
             inst._parent:PushEvent("itemget", data)
@@ -538,7 +538,7 @@ end
 local function PutOneOfActiveItemInSlot(inst, slot)
     if not IsBusy(inst) and inst._activeitem ~= nil then
         local giveitem = SlotItem(inst._activeitem, slot)
-        PushItemGet(inst, giveitem)
+        PushItemGet(inst, giveitem, true)
         PushStackSize(inst, inst._activeitem, 1, false, inst._activeitem.replica.stackable:StackSize() - 1, true)
         SendRPCToServer(RPC.PutOneOfActiveItemInSlot, slot)
     end
@@ -548,7 +548,7 @@ local function PutAllOfActiveItemInSlot(inst, slot)
     if not IsBusy(inst) and inst._activeitem ~= nil then
         local giveitem = SlotItem(inst._activeitem, slot)
         PushNewActiveItem(inst)
-        PushItemGet(inst, giveitem)
+        PushItemGet(inst, giveitem, true)
         SendRPCToServer(RPC.PutAllOfActiveItemInSlot, slot)
     end
 end

@@ -114,6 +114,8 @@ local function burnt_fn()
     inst.AnimState:SetMultColour(color, color, color, 1)
 
     inst:AddComponent("inspectable")
+    inst:AddComponent("hauntable")
+    inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
 
     return inst
 end

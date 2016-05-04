@@ -35,7 +35,7 @@ function ErasePersistentString(name, callback)
         TheSim:ErasePersistentString(name, cb)
     else
         TheSim:ErasePersistentString(name, callback)
-    end 
+    end
 end
 
 function Print( msg_verbosity, ... )
@@ -47,15 +47,13 @@ end
 function SecondsToTimeString( total_seconds )
     local minutes = math.floor(total_seconds / 60)
     local seconds = math.floor(total_seconds - minutes*60)
-    
+
     if minutes > 0 then
-        return string.format("%d:%02d", minutes, seconds )
+        return string.format("%d:%02d", minutes, seconds)
+    elseif seconds > 9 then
+        return string.format("%02d", seconds)
     else
-        if seconds > 9 then
-            return string.format("%02d", seconds )
-        else
-            return string.format("%d", seconds )
-        end
+        return string.format("%d", seconds)
     end
 end
 
@@ -243,7 +241,6 @@ function CreateEntity()
     return scr
 end
 
-
 local debug_entity = nil
 
 function OnRemoveEntity(entityguid)
@@ -324,7 +321,6 @@ function LoadScript(filename)
     end
     return Scripts[filename]
 end
-
 
 function RunScript(filename)
     local fn = LoadScript(filename)
@@ -461,8 +457,6 @@ function PlayNIS(nisname, lines)
     inst.components.nis:Play(lines)
     return inst
 end
-
-
 
 local paused = false
 local simpaused = false
@@ -911,14 +905,12 @@ function RequestShutdown()
     end
     exiting_game = true
 
-    if (not TheNet:GetServerIsDedicated()) then
-	    TheFrontEnd:PushScreen(
-	        PopupDialogScreen( STRINGS.UI.QUITTINGTITLE, STRINGS.UI.QUITTING,
-	    	  {  }
-	    	)
-	    )
-	end
-	
+    if not TheNet:GetServerIsDedicated() then
+        TheFrontEnd:PushScreen(
+            PopupDialogScreen(STRINGS.UI.QUITTINGTITLE, STRINGS.UI.QUITTING, {})
+        )
+    end
+
     if TheNet:GetIsHosting() then
         TheSystemService:StopDedicatedServers()
     end
@@ -927,7 +919,6 @@ function RequestShutdown()
 end
 
 function Shutdown()
-
     SimShuttingDown = true
 
     for i, v in ipairs(AllPlayers) do
@@ -992,7 +983,7 @@ function DisplayError(error)
         local buttons = nil
 
         -- If we know what happened, display a better message for the user
-        local known_error = known_error_key ~= nil and ERRORS[known_error_key]
+        local known_error = known_error_key ~= nil and ERRORS[known_error_key] or nil
         if known_error ~= nil then
             error = known_error.message
         end
@@ -1013,7 +1004,7 @@ function DisplayError(error)
                 STRINGS.UI.MAINSCREEN.MODFAILTITLE,
                 error,
                 buttons,
-                known_error and ANCHOR_MIDDLE or ANCHOR_LEFT,
+                known_error ~= nil and ANCHOR_MIDDLE or ANCHOR_LEFT,
                 nil,
                 known_error ~= nil and 30 or 20
                 )
@@ -1123,9 +1114,9 @@ function OnNetworkDisconnect( message, should_reset, force_immediate_reset, deta
         return
     end
 
-	if not IsMigrating() then
-		TheSystemService:StopDedicatedServers()
-	end
+    if not IsMigrating() then
+        TheSystemService:StopDedicatedServers()
+    end
 
     local screen = TheFrontEnd:GetActiveScreen()
     if screen and screen.name == "ConnectingToGamePopup" then
@@ -1159,37 +1150,37 @@ function OnNetworkDisconnect( message, should_reset, force_immediate_reset, deta
     local title = STRINGS.UI.NETWORKDISCONNECT.TITLE[message] or STRINGS.UI.NETWORKDISCONNECT.TITLE.DEFAULT 
     message = STRINGS.UI.NETWORKDISCONNECT.BODY[message] or STRINGS.UI.NETWORKDISCONNECT.BODY.DEFAULT
 
-	if TheFrontEnd:GetFadeLevel() > 0 then --we're already fading
-		if TheFrontEnd.fadedir == false then
-			local cb = TheFrontEnd.fadecb
-			TheFrontEnd.fadecb = function()
-				if cb then cb() end
-				TheFrontEnd:PushScreen( PopupDialogScreen(title, message, { {text=STRINGS.UI.NETWORKDISCONNECT.OK, cb = function() doquit( should_reset ) end}  }) )
-				local screen = TheFrontEnd:GetActiveScreen()
-			    if screen then
-			    	screen:Enable()
-			    end
-		    	TheFrontEnd:Fade(FADE_IN, screen_fade_time)
-			end
-		else
-			TheFrontEnd:PushScreen( PopupDialogScreen(title, message, { {text=STRINGS.UI.NETWORKDISCONNECT.OK, cb = function() doquit( should_reset ) end}  }) )
-			local screen = TheFrontEnd:GetActiveScreen()
-		    if screen then
-		    	screen:Enable()
-		    end
-		    TheFrontEnd:Fade(FADE_IN, screen_fade_time)
-		end
-	else
-		-- TheFrontEnd:Fade(FADE_OUT, screen_fade_time, function()
-	        TheFrontEnd:PushScreen( PopupDialogScreen(title, message, { {text=STRINGS.UI.NETWORKDISCONNECT.OK, cb = function() doquit( should_reset ) end}  }) )
-	        local screen = TheFrontEnd:GetActiveScreen()
-		    if screen then
-		    	screen:Enable()
-		    end
-	        -- TheFrontEnd:Fade(FADE_IN, screen_fade_time)
-	    -- end)
-	end
-	return true
+    if TheFrontEnd:GetFadeLevel() > 0 then --we're already fading
+        if TheFrontEnd.fadedir == false then
+            local cb = TheFrontEnd.fadecb
+            TheFrontEnd.fadecb = function()
+                if cb then cb() end
+                TheFrontEnd:PushScreen( PopupDialogScreen(title, message, { {text=STRINGS.UI.NETWORKDISCONNECT.OK, cb = function() doquit( should_reset ) end}  }) )
+                local screen = TheFrontEnd:GetActiveScreen()
+                if screen then
+                    screen:Enable()
+                end
+                TheFrontEnd:Fade(FADE_IN, screen_fade_time)
+            end
+        else
+            TheFrontEnd:PushScreen( PopupDialogScreen(title, message, { {text=STRINGS.UI.NETWORKDISCONNECT.OK, cb = function() doquit( should_reset ) end}  }) )
+            local screen = TheFrontEnd:GetActiveScreen()
+            if screen then
+                screen:Enable()
+            end
+            TheFrontEnd:Fade(FADE_IN, screen_fade_time)
+        end
+    else
+        -- TheFrontEnd:Fade(FADE_OUT, screen_fade_time, function()
+            TheFrontEnd:PushScreen( PopupDialogScreen(title, message, { {text=STRINGS.UI.NETWORKDISCONNECT.OK, cb = function() doquit( should_reset ) end}  }) )
+            local screen = TheFrontEnd:GetActiveScreen()
+            if screen then
+                screen:Enable()
+            end
+            -- TheFrontEnd:Fade(FADE_IN, screen_fade_time)
+        -- end)
+    end
+    return true
 end
 
 OnAccountEventListeners = {}
@@ -1338,19 +1329,19 @@ LoadingStates = {
     }
 
 function NotifyLoadingState( loading_state )
-	if TheNet:GetIsClient() then
-		if loading_state == LoadingStates.Loading then
-			ShowLoading()
-			TheFrontEnd:Fade(FADE_OUT, 1)
-		elseif loading_state == LoadingStates.Generating then
-			local inst = CreateEntity()
-			inst:DoTaskInTime(0.15, function(inst) TheFrontEnd:PopScreen() TheFrontEnd:PushScreen(WorldGenScreen(nil, nil, nil)) inst.entity:Retire() end)
-		elseif loading_state == LoadingStates.DoneGenerating then
-			TheFrontEnd:PopScreen()		
-		end
-	elseif TheNet:GetIsServer() then
-		TheNet:NotifyLoadingState( loading_state )
-	end
+    if TheNet:GetIsClient() then
+        if loading_state == LoadingStates.Loading then
+            ShowLoading()
+            TheFrontEnd:Fade(FADE_OUT, 1)
+        elseif loading_state == LoadingStates.Generating then
+            local inst = CreateEntity()
+            inst:DoTaskInTime(0.15, function(inst) TheFrontEnd:PopScreen() TheFrontEnd:PushScreen(WorldGenScreen(nil, nil, nil)) inst.entity:Retire() end)
+        elseif loading_state == LoadingStates.DoneGenerating then
+            TheFrontEnd:PopScreen()
+        end
+    elseif TheNet:GetIsServer() then
+        TheNet:NotifyLoadingState( loading_state )
+    end
 end
 
 function BuildTagsStringCommon(tagsTable)
@@ -1375,11 +1366,10 @@ function BuildTagsStringCommon(tagsTable)
         table.insert(tagsTable, mod_tag)
     end
 
-    --Concat language
-    --Note(Peter): The language tag must be the first tag to be correctly formated by ServerListingScreen:ViewServerTags
+    -- Language tag (forced to front of list)
     local lang_code = TheNet:GetLanguageCode()
-    table.insert(tagsTable, SERVER_LANGUAGES_TAGS[lang_code] or lang_code)
-    
+    table.insert(tagsTable, 1, SERVER_LANGUAGES_TAGS[lang_code] or lang_code)
+
     -- Concat unique tags
     local tagged = {}
     local tagsString = ""

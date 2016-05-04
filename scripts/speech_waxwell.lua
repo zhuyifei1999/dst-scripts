@@ -55,7 +55,9 @@ return {
         {
             DEAD = "The dead have no need of such things.",
             SLEEPING = "It's thoroughly unconscious.",
-            BUSY = "It's busy, currently..",
+            BUSY = "It's busy, currently.",
+            ABIGAILHEART = "I had to try.",
+            GHOSTHEART = "They're beyond my help.",
         },
         GIVETOPLAYER = 
         {
@@ -71,6 +73,11 @@ return {
             SLEEPING = "Err... I'll let you rest.",
             BUSY = "When you have a moment.",
     	},
+    	TEACH =
+        {
+            KNOWN = "I am far too advanced for this.",
+            CANTLEARN = "There's a lessoned to be learned about tampering with secret knowledge.",
+        },
 	},
 	ACTIONFAIL_GENERIC = "That didn't work.",
 	ANNOUNCE_MOUNT_LOWHEALTH = "Say, pal, you don't look so good.",
@@ -111,8 +118,8 @@ return {
 		INVALID = "I won't let that anywhere near my mouth.", 
 		YUCKY = "I won't let that anywhere near my mouth.", 
 	},
-	ANNOUNCE_ENTER_DARK = "It's dark! I can't see!",
-	ANNOUNCE_ENTER_LIGHT = "The light is back.",
+	ANNOUNCE_ENTER_DARK = "That smell... both nostalgic and terrifying!",
+	ANNOUNCE_ENTER_LIGHT = "Thank goodness for the light.",
 	ANNOUNCE_FREEDOM = "Freedom, at last!",
 	ANNOUNCE_HIGHRESEARCH = "My brain swells with power!",
 	ANNOUNCE_HOUNDS = "The hounds are growing restless.",
@@ -166,82 +173,99 @@ return {
         {
             GENERIC = "Greetings, %s.",
             ATTACKER = "%s seems untrustworthy...",
-            MURDERER = "Murderous fiend!",
+            MURDERER = "Murderous fiend! I'll stop at nothing!",
             REVIVER = "%s tethers lost spirits to this world.",
             GHOST = "%s needs heart-shaped assistance.",
         },
 		WILSON = 
 		{
-			GENERIC = "Greetings, Mr Higgsbury.",
-			ATTACKER = "That Wilson seems untrustworthy...",
-			MURDERER = "Murderous fiend!",
-			REVIVER = "Wilson tethers lost spirits to this world.",
-			GHOST = "Wilson needs heart-shaped assistance.",
+			GENERIC = "Err, greetings, Mr %s.",
+			ATTACKER = "You're going off the deep end, pal.",
+			MURDERER = "Our truce ends here, murderer!",
+			REVIVER = "%s tethers lost spirits to this world.",
+			GHOST = "Are you certain you wish to return to this world, %s?",
 		},
 		WOLFGANG = 
 		{
-			GENERIC = "Greetings, Mr Wolfgang.",
-			ATTACKER = "That Wolfgang seems untrustworthy...",
-			MURDERER = "Murderous fiend!",
-			REVIVER = "Wolfgang tethers lost spirits to this world.",
-			GHOST = "Wolfgang needs heart-shaped assistance.",
+			GENERIC = "Good day to you, Mr %s.",
+			ATTACKER = "The strongman %s seems a little unhinged.",
+			MURDERER = "Murderous fiend! Behold my power!",
+			REVIVER = "%s tethers lost spirits to this world.",
+			GHOST = "Let's find a heart, %s. I'll prepare my incantations.",
 		},
 		WAXWELL = 
 		{
-			GENERIC = "Greetings, Other-Maxwell.",
-			ATTACKER = "That Maxwell seems untrustworthy...",
-			MURDERER = "Murderous fiend!",
-			REVIVER = "Maxwell tethers lost spirits to this world.",
-			GHOST = "Maxwell needs heart-shaped assistance.",
+			GENERIC = "Greetings, %s. Pleasure to see you.",
+			ATTACKER = "I know that look, %s. What are you up to?",
+			MURDERER = "Old habits die hard... and so will you!",
+			REVIVER = "Trust only yourself, hey %s?.",
+			GHOST = "I'll have to pay in blood to bring you back, %s.",
 		},
 		WX78 = 
 		{
-			GENERIC = "Greetings, Mx WX-78.",
-			ATTACKER = "That WX-78 seems untrustworthy...",
-			MURDERER = "Murderous fiend!",
-			REVIVER = "WX-78 tethers lost spirits to this world.",
-			GHOST = "WX-78 needs heart-shaped assistance.",
+			GENERIC = "Greetings, Mx %s.",
+			ATTACKER = "If you're going to attack, at least finish the job!",
+			MURDERER = "Murderous fiend! This will be your destruction!",
+			REVIVER = "%s never did respect human mortality.",
+			GHOST = "A shame about your death, %s. You were the only one I half-liked.",
 		},
 		WILLOW = 
 		{
-			GENERIC = "Greetings, Ms Willow.",
-			ATTACKER = "That Willow seems untrustworthy...",
-			MURDERER = "Murderous fiend!",
-			REVIVER = "Willow tethers lost spirits to this world.",
-			GHOST = "Willow needs heart-shaped assistance.",
+			GENERIC = "Greetings, Ms %s.",
+			ATTACKER = "%s is not my ally...",
+			MURDERER = "Murderous fiend! Taste my wrath!",
+			REVIVER = "%s has bent reality to her fiery will.",
+			GHOST = "We will require a heart to bring you back, %s.",
 		},
 		WENDY = 
 		{
-			GENERIC = "Greetings, Ms Wendy.",
-			ATTACKER = "That Wendy seems untrustworthy...",
-			MURDERER = "Murderous fiend!",
-			REVIVER = "Wendy tethers lost spirits to this world.",
-			GHOST = "Wendy needs heart-shaped assistance.",
+			GENERIC = "Greetings, Ms %s. How are you?",
+			ATTACKER = "%s has been corrupted...",
+			MURDERER = "Don't think I'll hesitate, murderous fiend!",
+			REVIVER = "%s is a true death defier.",
+			GHOST = "%s's looking a little too much like her sister. Needs a heart.",
 		},
 		WOODIE = 
 		{
-			GENERIC = "Greetings, Mr Woodie.",
-			ATTACKER = "That Woodie seems untrustworthy...",
-			MURDERER = "Murderous fiend!",
-			REVIVER = "Woodie tethers lost spirits to this world.",
-			GHOST = "Woodie needs heart-shaped assistance.",
+			GENERIC = "Greetings, Mr %s.",
+			ATTACKER = "%s is going against the grain...",
+			MURDERER = "Fiend! Time to make like a tree...!",
+			REVIVER = "%s seems very in touch with the spirits of the forest.",
+			GHOST = "That blockhead could use a heart.",
 		},
 		WICKERBOTTOM = 
 		{
-			GENERIC = "Greetings, Ms Wickerbottom.",
-			ATTACKER = "That Wickerbottom seems untrustworthy...",
-			MURDERER = "Murderous fiend!",
-			REVIVER = "Wickerbottom tethers lost spirits to this world.",
-			GHOST = "Wickerbottom needs heart-shaped assistance.",
+			GENERIC = "Good day, Ms %s.",
+			ATTACKER = "%s is withholding information...",
+			MURDERER = "Do not start fights you cannot win!",
+			REVIVER = "%s has excellent command of the dark arts.",
+			GHOST = "You know the price of revival as well as I do, %s.",
 		},
 		WES = 
 		{
-			GENERIC = "Greetings, Mr Wes.",
-			ATTACKER = "That Wes looks seems untrustworthy...",
-			MURDERER = "Murderous fiend!",
-			REVIVER = "Wes tethers lost spirits to this world.",
-			GHOST = "Wes could needs heart-shaped assistance.",
+			GENERIC = "Greetings, Mr %s.",
+			ATTACKER = "%s is giving me the creeps...",
+			MURDERER = "Murderous fiend! You cannot escape!",
+			REVIVER = "%s is an effective ally.",
+			GHOST = "I could get you a heart, %s... for a price.",
 		},
+		WEBBER = 
+		{
+			GENERIC = "Greetings, Mr %s.",
+			ATTACKER = "%s is looking a downright feral...",
+			MURDERER = "So, %s, you're a monster after all!",
+			REVIVER = "This child, %s, doesn't have a mean bone in his body.",
+			GHOST = "Looks like you got squashed, %s.",
+		},
+		WATHGRITHR = 
+		{
+			GENERIC = "Greetings, Ms %s.",
+			ATTACKER = "What's %s's motivation?",
+			MURDERER = "Bloodthirsty warrior! This ends now!",
+			REVIVER = "%s has excellent command of the spirit realm.",
+			GHOST = "Do you desire a heart, %s?",
+		},
+
 		BERNIE_INACTIVE =
 		{
 			BROKEN = "It's seen better days.",
@@ -280,7 +304,10 @@ return {
 		TURF_DECIDUOUS = "Turf.",
 		TURF_SANDY = "Turf.",
 		TURF_BADLANDS = "Turf.",
-
+		GOLDENMACHETE = "I've always wanted to hack things in luxury.",
+		MACHETE = "Truthfully I was always a hack.",
+		MOWER = "Truthfully I was always a hack.",
+		OBSIDIANMACHETE = "This seems like a dangerous thing to farm with.",
 		LIGHTER = "It does the job, I suppose.",
 		
 		ABIGAIL_FLOWER =
@@ -300,6 +327,7 @@ return {
 		BOOK_BRIMSTONE = "I've had enough fire and brimstone for one eternity.",
 		LUCY = "Ah. How have you been, Lucy?",
 		BALLOONS_EMPTY = "Those look much too jovial for my liking.",
+		BALLOON = "This seems out of place here. Too cheery.",
 		SPEAR_WATHGRITHR = "I can appreciate a finely crafted weapon.",
 
 		BEARGER = "Take anything you want.",
@@ -1192,6 +1220,7 @@ return {
 		POMEGRANATE_SEEDS = "This labor is beneath me.",
 		POND = "I can see my face reflected off the top.",
 		POOP = "It's the way of all mortal life.",
+		PORTABLECOOKPOT_ITEM = "",
 		PUMPKIN = "Hallowe'en was always my favorite.",
 		PUMPKINCOOKIE = "It's been eons since I had a good biscuit.",
 		PUMPKIN_COOKED = "A little more refined, at least.",

@@ -269,7 +269,7 @@ local function GetGroupForOption(target)
 			end
 		end
 	end
-	return "misc"
+	return nil
 end
 
 local function GetOptions(location, is_master_world)
@@ -333,12 +333,17 @@ local function GetLocationDefaultForOption(location, option)
     return locationdata.overrides[option] or GetDefaultForOption(option)
 end
 
-local function ValidateOption(tweak, value)
+local function ValidateOption(tweak, value, location)
     local group = GetGroupForOption(tweak)
-    assert(GROUP[group][tweak] ~= nil, "Invalid override tweak %s:%s", tostring(group), tostring(tweak))
+    if group == nil or GROUP[group].items[tweak] == nil then
+        --gjans: not printing this warning for now because there are some tweaks (e.g. wormholeprefab) which don't process via customise.
+        --print(string.format("Customisation validation WARNING: Invalid override tweak %s:%s", tostring(group), tostring(tweak)))
+        return false
+    end
 
-    if GROUP[group][tweak].desc ~= nil then
-        for i,d in ipairs(GROUP[group][tweak].desc) do
+    if GROUP[group].items[tweak].desc ~= nil then
+        local desc = type(GROUP[group].items[tweak].desc) == "function" and GROUP[group].items[tweak].desc(location) or GROUP[group].items[tweak].desc
+        for i,d in ipairs(desc) do
             if d.data == value then
                 return true
             end
@@ -346,14 +351,16 @@ local function ValidateOption(tweak, value)
     end
 
     if GROUP[group].desc ~= nil then
-        for i,d in ipairs(GROUP[group].desc) do
+        local desc = type(GROUP[group].desc) == "function" and GROUP[group].desc(location) or GROUP[group].desc
+        for i,d in ipairs(desc) do
             if d.data == value then
                 return true
             end
         end
     end
 
-    assert(false, string.format("Invalid value '%s' for %s:%s", tostring(value), tostring(group), tostring(tweak)))
+    --print(string.format("Customisation validation WARNING: Invalid value '%s' for %s:%s", tostring(value), tostring(group), tostring(tweak)))
+    return false
 end
 
 return {

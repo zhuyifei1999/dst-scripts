@@ -56,9 +56,9 @@ local function onattack(inst, attacker, target)
             snap.Transform:SetScale(3, 3, 3)
             snap.SoundEmitter:PlaySound("dontstarve/common/whip_large")
             inst:DoTaskInTime(0, supercrack)
-        end
-            snap.SoundEmitter:PlaySound("dontstarve/common/whip_small")
         else
+            snap.SoundEmitter:PlaySound("dontstarve/common/whip_small")
+        end
     end
 end
 

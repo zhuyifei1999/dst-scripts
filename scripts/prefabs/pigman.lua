@@ -210,10 +210,6 @@ local function SetNormalPig(inst)
     inst:SetStateGraph("SGpig")
     inst.AnimState:SetBuild(inst.build)
 
-    if inst.components.hauntable ~= nil then
-        inst.components.hauntable.haunted = false
-        inst.components.hauntable.cooldown_on_successful_haunt = true
-    end
     inst.components.werebeast:SetOnNormalFn(SetNormalPig)
     inst.components.sleeper:SetResistance(2)
 
@@ -313,10 +309,6 @@ local function SetGuardPig(inst)
     inst:SetStateGraph("SGpig")
     inst.AnimState:SetBuild(inst.build)
 
-    if inst.components.hauntable ~= nil then 
-        inst.components.hauntable.haunted = false 
-        inst.components.hauntable.cooldown_on_successful_haunt = true
-    end
     inst.components.werebeast:SetOnNormalFn(SetGuardPig)
     inst.components.sleeper:SetResistance(3)
 
@@ -423,10 +415,10 @@ local function OnLoad(inst, data)
 end
 
 local function CustomOnHaunt(inst)
-    if math.random() <= TUNING.HAUNT_CHANCE_OCCASIONAL then
-        SetWerePig(inst)
-        inst:PushEvent("transformwere")
-        inst.components.hauntable.cooldown_on_successful_haunt = false -- Set this to false here because we need werepigs to handle own un-haunting (will also need to unset this flag)
+    if not inst:HasTag("werepig") and math.random() <= TUNING.HAUNT_CHANCE_OCCASIONAL then
+        local remainingtime = TUNING.TOTAL_DAY_TIME * (1 - TheWorld.state.time)
+        local mintime = TUNING.SEG_TIME
+        inst.components.werebeast:SetWere(math.max(mintime, remainingtime) + math.random() * TUNING.SEG_TIME)
         inst.components.hauntable.hauntvalue = TUNING.HAUNT_LARGE
     end
 end

@@ -25,7 +25,6 @@ local Equippable = Class(function(self, inst)
     self.insulated = false
     self.equippedmoisture = 0
     self.maxequippedmoisture = 0
-
 end,
 nil,
 {
@@ -40,7 +39,7 @@ function Equippable:OnRemoveFromEntity()
 end
 
 function Equippable:IsInsulated() -- from electricity, not temperature
-	return self.insulated
+    return self.insulated
 end
 
 function Equippable:SetOnEquip(fn)
@@ -59,44 +58,43 @@ function Equippable:IsEquipped()
     return self.isequipped
 end
 
-function Equippable:Equip(owner, slot)
+function Equippable:Equip(owner)
     self.isequipped = true
-    
-    if self.inst.components.burnable then
+
+    if self.inst.components.burnable ~= nil then
         self.inst.components.burnable:StopSmoldering()
     end
-    
-    if self.onequipfn then
+
+    if self.onequipfn ~= nil then
         self.onequipfn(self.inst, owner)
     end
-    self.inst:PushEvent("equipped", {owner=owner, slot=slot})
-
+    self.inst:PushEvent("equipped", { owner = owner })
 end
 
 function Equippable:ToPocket(owner)
-    if self.onpocketfn then
+    if self.onpocketfn ~= nil then
         self.onpocketfn(self.inst, owner)
     end
 end
 
-function Equippable:Unequip(owner, slot)
+function Equippable:Unequip(owner)
     self.isequipped = false
-    
-    if self.onunequipfn then
+
+    if self.onunequipfn ~= nil then
         self.onunequipfn(self.inst, owner)
     end
-    
-    self.inst:PushEvent("unequipped", {owner=owner, slot=slot})
+
+    self.inst:PushEvent("unequipped", { owner = owner })
 end
 
 function Equippable:GetWalkSpeedMult()
-	return self.walkspeedmult or 1.0
+    return self.walkspeedmult or 1.0
 end
 
 function Equippable:GetDapperness(owner)
     local dapperness = self.dapperness
-    
-    if self.dapperfn then
+
+    if self.dapperfn ~= nil then
         dapperness = self.dapperfn(self.inst, owner)
     end
 
@@ -108,7 +106,7 @@ function Equippable:GetDapperness(owner)
 end
 
 function Equippable:GetEquippedMoisture()
-    return {moisture = self.equippedmoisture, max = self.maxequippedmoisture}
+    return { moisture = self.equippedmoisture, max = self.maxequippedmoisture }
 end
 
 return Equippable

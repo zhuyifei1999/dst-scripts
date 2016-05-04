@@ -224,6 +224,10 @@ local function oninit(inst)
     inst._glow.Follower:FollowSymbol(inst.GUID, "swap_glow", 0, 0, 0)
 end
 
+local function onbuilt(inst)
+    inst.SoundEmitter:PlaySound("dontstarve_DLC001/common/firesupressor_craft")
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -264,6 +268,7 @@ local function fn()
 
     inst._glow = SpawnPrefab("firesuppressor_glow")
     inst:DoTaskInTime(0, oninit)
+    inst:ListenForEvent("onbuilt", onbuilt)
 
     inst:AddComponent("inspectable")
     inst.components.inspectable.getstatus = getstatus

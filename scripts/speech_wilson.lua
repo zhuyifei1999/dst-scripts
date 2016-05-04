@@ -34,6 +34,8 @@ return {
             DEAD = "Maybe I'll just hold on to this.",
             SLEEPING = "Too unconscious to care.",
             BUSY = "I'll try again in a second.",
+            ABIGAILHEART = "It was worth a shot.",
+            GHOSTHEART = "Perhaps this is a bad idea.",
         },
         GIVETOPLAYER = 
         {
@@ -72,6 +74,11 @@ return {
         SADDLE =
         {
             TARGETINCOMBAT = "It won't let me do that while it's angry.",
+        },
+        TEACH =
+        {
+            KNOWN = "I already know that one.",
+            CANTLEARN = "I can't learn that one.",
         },
 	},
 	ACTIONFAIL_GENERIC = "I can't do that.",
@@ -184,6 +191,7 @@ return {
 		},
 
 		BALLOONS_EMPTY = "It looks like clown currency.",
+		BALLOON = "How are they floating?",
 
 		BERNIE_INACTIVE =
 		{
@@ -201,7 +209,7 @@ return {
 
         PLAYER =
         {
-            GENERIC = "It's %s!",
+            GENERIC = "Greetings, %s!",
             ATTACKER = "%s looks shifty...",
             MURDERER = "Murderer!",
             REVIVER = "%s, friend of ghosts.",
@@ -209,75 +217,91 @@ return {
         },
 		WILSON = 
 		{
-			GENERIC = "It's Wilson!",
-			ATTACKER = "That Wilson looks shifty...",
-			MURDERER = "Murderer!",
-			REVIVER = "Wilson, friend of ghosts.",
-			GHOST = "Wilson could use a heart.",
+			GENERIC = "Stars and atoms! It's %s!",
+			ATTACKER = "Yeesh. Do I always look that creepy?",
+			MURDERER = "Your existence is an affront to the laws of science, %s!",
+			REVIVER = "%s has expertly put our theories into practice.",
+			GHOST = "Better concoct a revival device. Can't leave a fellow scientist floating.",
 		},
 		WOLFGANG = 
 		{
-			GENERIC = "It's Wolfgang!",
-			ATTACKER = "That Wolfgang looks shifty...",
-			MURDERER = "Murderer!",
-			REVIVER = "Wolfgang, friend of ghosts.",
-			GHOST = "Wolfgang could use a heart.",
+			GENERIC = "It's good to see you, %s!",
+			ATTACKER = "Let's not start a fight with the strongman...",
+			MURDERER = "Murderer! I can take you!",
+			REVIVER = "%s, friend of ghosts.",
+			GHOST = "I told you you couldn't deadlift that boulder, %s. The numbers were all wrong.",
 		},
 		WAXWELL = 
 		{
-			GENERIC = "It's Maxwell!",
-			ATTACKER = "That Maxwell looks shifty...",
-			MURDERER = "Murderer!",
-			REVIVER = "Maxwell, friend of ghosts.",
-			GHOST = "Maxwell could use a heart.",
+			GENERIC = "Decent day to you, %s!",
+			ATTACKER = "Seems you've gone from 'dapper' to 'slapper'.",
+			MURDERER = "I'll show you Logic and Reason... those're my fists!",
+			REVIVER = "%s is using his powers for good.",
+			GHOST = "Don't look at me like that, %s! I'm working on it!",
 		},
 		WX78 = 
 		{
-			GENERIC = "It's WX-78!",
-			ATTACKER = "That WX-78 looks shifty...",
-			MURDERER = "Murderer!",
-			REVIVER = "WX-78, friend of ghosts.",
-			GHOST = "WX-78 could use a heart.",
+			GENERIC = "Good day to you, %s!",
+			ATTACKER = "I think we need to tweak your primary directive, %s...",
+			MURDERER = "You've violated the first law!",
+			REVIVER = "Looks like %s got that empathy nodule up and running.",
+			GHOST = "I always thought %s could use a heart. Now I'm certain!",
 		},
 		WILLOW = 
 		{
-			GENERIC = "It's Willow!",
-			ATTACKER = "That Willow looks shifty...",
+			GENERIC = "Good day to you, %s!",
+			ATTACKER = "%s is holding that lighter pretty tightly...",
 			MURDERER = "Murderer!",
-			REVIVER = "Willow, friend of ghosts.",
-			GHOST = "Willow could use a heart.",
+			REVIVER = "%s, friend of ghosts.",
+			GHOST = "I bet you're just burning for a heart, %s.",
 		},
 		WENDY = 
 		{
-			GENERIC = "It's Wendy!",
-			ATTACKER = "That Wendy looks shifty...",
+			GENERIC = "Greetings, %s!",
+			ATTACKER = "%s doesn't have any sharp objects, does she?",
 			MURDERER = "Murderer!",
-			REVIVER = "Wendy, friend of ghosts.",
-			GHOST = "Wendy could use a heart.",
+			REVIVER = "%s, friend of ghosts.",
+			GHOST = "I'm seeing double! I'd better concoct a revival device.",
 		},
 		WOODIE = 
 		{
-			GENERIC = "It's Woodie!",
-			ATTACKER = "That Woodie looks shifty...",
-			MURDERER = "Murderer!",
-			REVIVER = "Woodie, friend of ghosts.",
-			GHOST = "Woodie could use a heart.",
+			GENERIC = "Greetings, %s!",
+			ATTACKER = "%s has been a bit of a sap lately...",
+			MURDERER = "Murder! Bring me an axe and we'll get in the swing of things!",
+			REVIVER = "%s saved everyone's backbacon.",
+			GHOST = "Does 'universal' coverage include the void, %s?",
 		},
 		WICKERBOTTOM = 
 		{
-			GENERIC = "It's Wickerbottom!",
-			ATTACKER = "That Wickerbottom looks shifty...",
-			MURDERER = "Murderer!",
-			REVIVER = "Wickerbottom, friend of ghosts.",
-			GHOST = "Wickerbottom could use a heart.",
+			GENERIC = "Good day, %s!",
+			ATTACKER = "I think she's planning to throw the book at me.",
+			MURDERER = "Here comes my peer review!",
+			REVIVER = "I have deep respect for %s's practical theorems.",
+			GHOST = "This doesn't seem very scientific, does it, %s?",
 		},
 		WES = 
 		{
-			GENERIC = "It's Wes!",
-			ATTACKER = "That Wes looks shifty...",
-			MURDERER = "Murderer!",
-			REVIVER = "Wes, friend of ghosts.",
-			GHOST = "Wes could use a heart.",
+			GENERIC = "Greetings, %s!",
+			ATTACKER = "%s is silent, but deadly...",
+			MURDERER = "Mime this!",
+			REVIVER = "%s thinks outside the invisible box.",
+			GHOST = "How do you say 'I'll conduct a revival device' in mime?",
+		},
+		WEBBER = 
+		{
+			GENERIC = "Good day, %s!",
+			ATTACKER = "I'm gonna roll up a piece of papyrus newspaper, just in case.",
+			MURDERER = "Murderer! I'll squash you, %s!",
+			REVIVER = "%s is playing well with others.",
+			GHOST = "%s is really buggin' me for a heart.",
+		},
+		WATHGRITHR = 
+		{
+			GENERIC = "Good day, %s!",
+			ATTACKER = "I'd like to avoid a punch from %s, if possible.",
+			MURDERER = "She's gone berserk!",
+			REVIVER = "%s has full command of spirits.",
+			GHOST = "Nice try. You're not escaping to Valhalla yet, %s.",
 		},
         MIGRATION_PORTAL = {
             GENERIC = "If I had any friends, this could take me to them.",
@@ -329,7 +353,10 @@ return {
 		POND_ALGAE = "Some algae by a pond.",
 		GREENSTAFF = "This will come in handy.",
 		POTTEDFERN = "A fern in a pot.",
-
+		MOWER = "I like the cut of this blade.",
+		MACHETE = "I like the cut of this blade.",
+		GOLDENMACHETE = "Hack in style!",
+		OBSIDIANMACHETE = "It's hot to the touch.",
 		THULECITE = "I wonder where this is from?",
 		ARMORRUINS = "It's oddly light.",
 		RUINS_BAT = "It has quite a heft to it.",
@@ -557,7 +584,7 @@ return {
             DOMESTICATED = "This one is slightly less smelly than the others.",
             ORNERY = "It looks deeply angry.",
             RIDER = "This fellow appears quite ridable.",
-            PUDGY = "Hmmm, there maybe too too much food inside it.",
+            PUDGY = "Hmmm, there maybe too much food inside it.",
 		},
 		BEEFALOHAT = "What a nice hat.",
 		BEEFALOWOOL = "It smells like beefalo tears.",
@@ -1131,7 +1158,7 @@ return {
 		PINECONE = "I can hear a tiny tree inside it, trying to get out.",
         PINECONE_SAPLING = "It'll be a tree soon!",
         LUMPY_SAPLING = "How did this tree even reproduce?",
-		PITCHFORK = "Maxwell might be looking for this.",
+		PITCHFORK = "Now I just need an angry mob to join.",
 		PLANTMEAT = "That doesn't look very appealing.",
 		PLANTMEAT_COOKED = "At least it's warm now.",
 		PLANT_NORMAL =
@@ -1146,6 +1173,7 @@ return {
 		POMEGRANATE_SEEDS = "It's a seed.",
 		POND = "I can't see the bottom!",
 		POOP = "I should fill my pockets!",
+		PORTABLECOOKPOT_ITEM = "",
 		FERTILIZER = "That is definitely a bucket full of poop.",
 		PUMPKIN = "It's as big as my head!",
 		PUMPKINCOOKIE = "That's a pretty gourd cookie!",
@@ -1307,7 +1335,7 @@ return {
 		},
 		SPOILED_FOOD = "It's a furry ball of rotten food.",
 		STATUEHARP = "What has happened to the head?",
-		STATUEMAXWELL = "It really captures his personality.",
+		STATUEMAXWELL = "He's a lot shorter in person.",
 		STEELWOOL = "Scratchy metal fibers.",
 		STINGER = "Looks sharp!",
 		STRAWHAT = "What a nice hat.",

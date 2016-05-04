@@ -306,4 +306,4 @@ end
 
 return createbush("berrybush", "berrybush", "berrybush", "berries", true, normal_postinit),
     createbush("berrybush2", "berrybush2", "berrybush2", "berries", false, normal_postinit),
-    createbush("berrybush_juicy", "berrybush", "berrybush_juicy_build", "berries_juicy", true, juicy_postinit)
+    createbush("berrybush_juicy", "berrybush_juicy", "berrybush_juicy", "berries_juicy", true, juicy_postinit)

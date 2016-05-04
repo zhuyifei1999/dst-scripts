@@ -29,7 +29,11 @@ end
 local function GetDescription(inst, viewer)
     local modifier = GetStatus(inst, viewer) or "GENERIC"
     local charstrings = STRINGS.CHARACTERS[string.upper(viewer.prefab)] or STRINGS.CHARACTERS.GENERIC
-    local playerdesc = charstrings.DESCRIBE.PLAYER or STRINGS.CHARACTERS.GENERIC.DESCRIBE.PLAYER
+    local playerdesc =
+        charstrings.DESCRIBE[string.upper(inst.prefab)] or
+        STRINGS.CHARACTERS.GENERIC.DESCRIBE[string.upper(inst.prefab)] or
+        charstrings.DESCRIBE.PLAYER or
+        STRINGS.CHARACTERS.GENERIC.DESCRIBE.PLAYER
     return string.format(playerdesc[modifier], inst:GetDisplayName())
 end
 
@@ -543,7 +547,6 @@ local function OnSetOwner(inst)
     if TheWorld.ismastersim then
         TheNet:SetIsClientInWorld(inst.userid, true)
         inst.player_classified.Network:SetClassifiedTarget(inst)
-        inst.components.inspectable.getspecialdescription = GetDescription
     end
 
     if inst ~= nil and (inst == ThePlayer or TheWorld.ismastersim) then
@@ -1674,6 +1677,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         -- Player labeling stuff
         inst:AddComponent("inspectable")
         inst.components.inspectable.getstatus = GetStatus
+        inst.components.inspectable.getspecialdescription = GetDescription
 
         -- Player avatar popup inspection
         inst:AddComponent("playerinspectable")

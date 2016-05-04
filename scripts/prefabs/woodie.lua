@@ -327,7 +327,7 @@ local function onworked(inst, data)
 end
 
 local function ondeployitem(inst, data)
-    if data.prefab == "pinecone" or data.prefab == "acorn" then
+    if data.prefab == "pinecone" or data.prefab == "acorn" or data.prefab == "twiggy_nut" then
         --inst.components.beaverness:DoDelta(TUNING.WOODIE_PLANT_TREE_GAIN)
         inst.components.sanity:DoDelta(TUNING.SANITY_TINY)
     end

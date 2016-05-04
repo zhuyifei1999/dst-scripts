@@ -56,7 +56,9 @@ return
         {
             DEAD = "That would be a waste.",
             SLEEPING = "It appear to be sleeping.",
-            BUSY = "I'll try again when it's done..",
+            BUSY = "I'll try again when it's done.",
+            ABIGAILHEART = "Her spirit is already bound to something in this world.",
+            GHOSTHEART = "I'll not be meddling in that business.",
         },
         GIVETOPLAYER = 
         {
@@ -72,6 +74,11 @@ return
             SLEEPING = "They're in REM sleep. No need to disturb them.",
             BUSY = "I'll try again when they're free.",
         },
+        TEACH =
+        {
+            KNOWN = "Please. That knowledge is child's play.",
+            CANTLEARN = "A piece of knowledge I cannot grasp... Intriguing!",
+        },
     },
     ANNOUNCE_MOUNT_LOWHEALTH = "My mount requires attention of the medical variety.",
     DESCRIBE=
@@ -80,81 +87,97 @@ return
         {
             GENERIC = "Ah, greetings dear %s!",
             ATTACKER = "That no good %s is up to no good.",
-            MURDERER = "I will defend myself from you, foul cad!",
-            REVIVER = "I appreciate your committment to group survival, %s.",
+            MURDERER = "I'll erase you from the history books!",
+            REVIVER = "I appreciate your commitment to group survival, %s.",
             GHOST = "Poor dear. %s needs a heart to anchor them to this plane.",
         },
         WILSON = 
         {
-            GENERIC = "Ah, greetings dear Wilson!",
-            ATTACKER = "That no good Wilson is up to no good.",
-            MURDERER = "I will defend myself from you, foul cad!",
-            REVIVER = "I appreciate your committment to group survival, Wilson.",
-            GHOST = "Poor dear. Wilson needs a heart to anchor him to this plane.",
+            GENERIC = "Greetings dear %s! How are your theorems coming?",
+            ATTACKER = "I'll pull you back to base by the ear if I have to, %s.",
+            MURDERER = "It appears we've entered a battle of the wits, %s!",
+            REVIVER = "You may know a thing or two after all, scientist!",
+            GHOST = "Didn't I tell you to wear your jacket? Sigh. I'll get the hearts...",
         },
         WOLFGANG = 
         {
-            GENERIC = "Ah, greetings dear Wolfgang!",
-            ATTACKER = "That no good Wolfgang is up to no good.",
-            MURDERER = "I will defend myself from you, foul cad!",
-            REVIVER = "I appreciate your committment to group survival, Wolfgang.",
-            GHOST = "Poor dear. Wolfgang needs a heart to anchor him to this plane.",
+            GENERIC = "Ah, greetings dear %s!",
+            ATTACKER = "I will not tolerate such behavior, %s.",
+            MURDERER = "That's it, %s! I'm taking my glasses off!",
+            REVIVER = "Excellent work, %s. You're a fast learner.",
+            GHOST = "%s acts tough, but he needs my help. A heart should do it.",
         },
         WAXWELL = 
         {
-            GENERIC = "Ah, greetings dear Maxwell!",
-            ATTACKER = "That no good Maxwell is up to no good.",
-            MURDERER = "I will defend myself from you, foul cad!",
-            REVIVER = "I appreciate your committment to group survival, Maxwell.",
-            GHOST = "Poor dear. Maxwell needs a heart to anchor him to this plane.",
+            GENERIC = "Ah, greetings dear %s!",
+            ATTACKER = "Up to your old tricks, are you %s?",
+            MURDERER = "Fool me once, shame on you. Fool me twice - you're dead!",
+            REVIVER = "There's good in you after all, %s.",
+            GHOST = "Stings, doesn't it dear? I'll fetch you a heart.",
         },
         WX78 = 
         {
-            GENERIC = "Ah, greetings dear WX-78!",
-            ATTACKER = "That no good WX-78 is up to no good.",
-            MURDERER = "I will defend myself from you, foul cad!",
-            REVIVER = "I appreciate your committment to group survival, WX-78.",
-            GHOST = "Poor dear. WX-78 needs a heart to anchor them to this plane.",
+            GENERIC = "Ah, the automaton. Greetings, dear %s!",
+            ATTACKER = "What devilishness is that robot up to?",
+            MURDERER = "The binary is simple, %s... On, or OFF.",
+            REVIVER = "I appreciate your commitment to group survival, %s.",
+            GHOST = "Ah, fascinating. %s indeed has a specter, and it lingers still.",
         },
         WILLOW = 
         {
-            GENERIC = "Ah, greetings dear Willow!",
-            ATTACKER = "That no good Willow is up to no good.",
-            MURDERER = "I will defend myself from you, foul cad!",
-            REVIVER = "I appreciate your committment to group survival, Willow.",
-            GHOST = "Poor dear. Willow needs a heart to anchor her to this plane.",
+            GENERIC = "Ah, greetings dear %s!",
+            ATTACKER = "You like to test boundaries, don't you dear?",
+            MURDERER = "You WILL respect your elders, %s!",
+            REVIVER = "You're doing so well, %s.",
+            GHOST = "If you cross your ghosteyes they'll get stuck like that, dear.",
         },
         WENDY = 
         {
-            GENERIC = "Ah, greetings dear Wendy!",
-            ATTACKER = "That no good Wendy is up to no good.",
-            MURDERER = "I will defend myself from you, foul cad!",
-            REVIVER = "I appreciate your committment to group survival, Wendy.",
-            GHOST = "Poor dear. Wendy needs a heart to anchor her to this plane.",
+            GENERIC = "Ah, greetings dear %s!",
+            ATTACKER = "That's enough out of you, young lady!",
+            MURDERER = "Someone needs to teach you some manners, %s!",
+            REVIVER = "You're a dear, %s. And so uniquely qualified for handling specters!",
+            GHOST = "Goodness, this just won't do. Let me find you a heart, %.",
         },
         WOODIE = 
         {
-            GENERIC = "Ah, greetings dear Woodie!",
-            ATTACKER = "That no good Woodie is up to no good.",
+            GENERIC = "Ah, greetings dear %s!",
+            ATTACKER = "Careful, %s. You know what paper pulp's made of, don't you?",
             MURDERER = "I will defend myself from you, foul cad!",
-            REVIVER = "I appreciate your committment to group survival, Woodie.",
-            GHOST = "Poor dear. Woodie needs a heart to anchor him to this plane.",
+            REVIVER = "Excellent work, %s.",
+            GHOST = "What did I say about playing with axes? Let's get you a heart.",
         },
         WICKERBOTTOM = 
         {
-            GENERIC = "Ah, greetings Other-Wickerbottom!",
-            ATTACKER = "That Other-Wickerbottom is up to no good.",
-            MURDERER = "I will defend myself from you, foul cad!",
-            REVIVER = "I appreciate your committment to group survival, Wickerbottom.",
-            GHOST = "That Wickerbottom needs a heart to anchor her to this plane.",
+            GENERIC = "Ah, greetings %s! Fancy seeing you here.",
+            ATTACKER = "%s's immoral acts are putting holes in my multiverse speculations.",
+            MURDERER = "You. Should Not. Exist!",
+            REVIVER = "Our knowledge comes in handy, doesn't it, %s?",
+            GHOST = "I suppose all those self-help books will finally come in handy, won't they %s?",
         },
         WES = 
         {
-            GENERIC = "Ah, greetings dear Wes!",
-            ATTACKER = "That no good Wes is up to no good.",
-            MURDERER = "I will defend myself from you, foul cad!",
-            REVIVER = "I appreciate your committment to group survival, Wes.",
-            GHOST = "Poor dear. Wes needs a heart to anchor him to this plane.",
+            GENERIC = "Ah, the mime lad. Greetings, dear %s!",
+            ATTACKER = "His body language says everything.",
+            MURDERER = "They'll tell tales of your defeat, %s!",
+            REVIVER = "You're a fine young man, %s.",
+            GHOST = "Poor dear. %s needs a heart to anchor him to this plane.",
+        },
+        WEBBER = 
+        {
+            GENERIC = "Ah, greetings dear %s!",
+            ATTACKER = "That's enough funny business, young arachnid.",
+            MURDERER = "Someone needs to teach you some manners!",
+            REVIVER = "You're a sweet boy, %s.",
+            GHOST = "Poor dear. We'll get you a nice colored bandaid once you're revived.",
+        },
+        WATHGRITHR = 
+        {
+            GENERIC = "Ah, greetings dear %s!",
+            ATTACKER = "You're not making trouble, are you %s?",
+            MURDERER = "Your saga ends here, %s!",
+            REVIVER = "I appreciate your commitment to group survival, %s.",
+            GHOST = "%s, I told you not to run with spears. Let me get the hearts.",
         },
 
         MULTIPLAYER_PORTAL = "Hmm... This may require further reading.",
@@ -216,6 +239,7 @@ return
 
         LUCY = "A perfectly fine looking axe.",
         BALLOONS_EMPTY = "These seem frivolous.",
+        BALLOON = "Could serve as a suitable diversion.",
         SPEAR_WATHGRITHR = "What a handsome hunting implement.",
         WAXWELLJOURNAL = "I'm not letting THAT in MY library!",
 
@@ -275,6 +299,10 @@ return
         },
         EYEBRELLAHAT =  "The cornea must be quite water-repellent.",
         ARMORDRAGONFLY = "Pyrotechnic armor!",
+        GOLDENMACHETE = "The most malleable of metals, but let's see how this slices.",
+        MACHETE = "Used for hacking through the brush.",
+        MOWER = "Used for hacking through the brush.",
+        OBSIDIANMACHETE = "This tool generates its own heat.",
         DRAGON_SCALES = "Scales from an insect? Unheard of!",
         DRAGONFLYCHEST = "Scales! Scales are the winner!",
         DECIDUOUSTREE = 
@@ -633,7 +661,7 @@ return
         {
             GENERIC = "Perhaps later.",
             OPEN = "Maybe I should go back up for some fresh air.",
-            FULL = "With all those people? It's bound to be cacaphony.",
+            FULL = "With all those people? It's bound to be cacophony.",
         },
 
 		BOOMERANG = "It is a flat aerofoil.",
@@ -824,7 +852,7 @@ return
 		ROCK_LIGHT =
 		{
 			GENERIC = "A capped lava pit.",
-			OUT = "Nothing but a sheath of ignreous rock now.",
+			OUT = "Nothing but a sheath of igneous rock now.",
 			LOW = "The cooling process has begun.",
 			NORMAL = "Much too hot to touch.",
 		},
@@ -937,6 +965,7 @@ return
         GOLDENSHOVEL = "The most malleable of metals, but let's see how this digs.",
         GOLDNUGGET = "A small lump of gold. Atomic number 79.",
         POOP = "A quantity of animal feces. How fragrant.",
+        PORTABLECOOKPOT_ITEM = "",
         PUMPKIN = "Cucurbita pepo.",
         PUMPKINCOOKIE = "Pumpkin biscuits, goody!",
         PUMPKIN_COOKED = "Cooked Cucurbita pepo. Gooey and delicious.",
@@ -951,7 +980,7 @@ return
         BIRDTRAP = "A simple clap-trap for birds.",
         GEARS = "Various cogs and wheels.",
         STATUEHARP = "A simple statue.",
-        STATUEMAXWELL = "It's a visage of the man who trapped me here.",
+        STATUEMAXWELL = "He's actually quite a sweet boy when you peel away the ego.",
         SKELETON = "An incredibly well preserved human skeleton.",
         --SKELETON_PLAYER = "My, what a specimen I make!",
 
@@ -1034,15 +1063,16 @@ return
             PICKED = "The berries are growing back, slowly.",
             BARREN = "It will require an intervention.",
             WITHERED = "Ardisia crenata don't do well in extreme heat.",
-            DISEASED = "It's afflicted with a agrarian disease beyond my curing.",
+            DISEASED = "It's afflicted with an agrarian disease beyond my curing.",
         },
+
         BERRYBUSH_JUICY =
         {
             BARREN = "It needs some agricultural attention.",
             WITHERED = "The Ardisia crenata variant has shriveled in the heat.",
             GENERIC = "That bush looks ready for harvest.",
             PICKED = "I will have to wait.",
-            DISEASED = "It's afflicted with a agrarian disease beyond my curing.",
+            DISEASED = "It's afflicted with an agrarian disease beyond my curing.",
         },
 
 		DUG_GRASS = "It requires soil to grow.",
@@ -1056,7 +1086,7 @@ return
             WITHERED = "The heat's gotten to it.",
             PICKED = "Odd. I thought that would have killed it.",
             BURNING = "Combustion!",
-            DISEASED = "It's afflicted with a agrarian disease beyond my curing.",
+            DISEASED = "It's afflicted with an agrarian disease beyond my curing.",
         },
         TWIGGYTREE =
         {
@@ -1064,7 +1094,7 @@ return
             BURNING = "The tree is burning.",
             BURNT = "A carbonized tree.",
             GENERIC = "It appears this species yields both lumber and pliable sprigs. Useful.",
-            DISEASED = "It's afflicted with a agrarian disease beyond my curing.",
+            DISEASED = "It's afflicted with an agrarian disease beyond my curing.",
         },
         TWIGGY_NUT = "Seeds encased in a mature strobilus.",
         GRASS = {
@@ -1073,7 +1103,7 @@ return
             BARREN = "It needs poop.",
             WITHERED = "It can't survive in this hot climate.",
             BURNING = "Combustion!",
-            DISEASED = "It's afflicted with a agrarian disease beyond my curing.",
+            DISEASED = "It's afflicted with an agrarian disease beyond my curing.",
         },
 
         REEDS = {

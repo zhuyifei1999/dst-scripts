@@ -9,7 +9,8 @@ end
 
 local function SetFollowTarget(inst, target)
     if target ~= nil then
-        inst.Follower:FollowSymbol(target.GUID, "swap_object", 0, -114, 0.02)
+        inst.entity:SetParent(target.entity)
+        inst.Follower:FollowSymbol(target.GUID, "swap_object", 0, -114, 0)
         if inst._followtask ~= nil then
             inst._followtask:Cancel()
         end
@@ -34,6 +35,7 @@ local function fn()
     inst.AnimState:SetBank("fan_wheel")
     inst.AnimState:SetBuild("fan_wheel")
     inst.AnimState:PlayAnimation("idle")
+    inst.AnimState:SetFinalOffset(1)
 
     -----------------------------------------------------
     inst:AddTag("FX")

@@ -603,7 +603,7 @@ local function Generate(prefab, map_width, map_height, tasks, level, level_type)
 
    	local world_gen_choices = deepcopy(level.overrides)
 
-   	dumptable(world_gen_choices)
+       --dumptable(world_gen_choices)
     if world_gen_choices then
 
 	    if world_gen_choices["prefabswaps_start"] == "classic" then

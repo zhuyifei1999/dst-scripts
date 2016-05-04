@@ -267,6 +267,7 @@ function LobbyScreen:StartLobbyMusic()
         TheMixer:SetLevel("master", 1)
         TheMixer:PushMix("lobby")
         TheFrontEnd:GetSound():KillSound("FEMusic")
+        TheFrontEnd:GetSound():KillSound("FEPortalSFX")
         TheFrontEnd:GetSound():PlaySound("dontstarve/together_FE/DST_theme_portaled", "PortalMusic")
         TheFrontEnd:GetSound():PlaySound("dontstarve/together_FE/portal_swirl", "PortalSFX")
     end

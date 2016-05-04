@@ -633,6 +633,7 @@ local function DoInitGame(savedata, profile)
 	Print(VERBOSITY.DEBUG, "DoInitGame Populating world...")
 
     TheFrontEnd:GetSound():KillSound("FEMusic") -- just in case...
+    TheFrontEnd:GetSound():KillSound("FEPortalSFX")
 
     PopulateWorld(savedata, profile)
 

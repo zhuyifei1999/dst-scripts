@@ -376,6 +376,8 @@ local COMPONENT_ACTIONS =
                 end
             elseif target:HasTag("alltrader") then
                 table.insert(actions, ACTIONS.GIVE)
+            elseif inst.prefab == "reviver" and target:HasTag("ghost") then
+                table.insert(actions, ACTIONS.GIVE)
             end
         end,
 
@@ -490,7 +492,7 @@ local COMPONENT_ACTIONS =
         end,
 
         tradable = function(inst, doer, target, actions)
-            if target:HasTag("trader") and not target:HasTag("player") then
+            if target:HasTag("trader") and not (target:HasTag("player") or target:HasTag("ghost")) then
                 table.insert(actions, ACTIONS.GIVE)
             end
         end,

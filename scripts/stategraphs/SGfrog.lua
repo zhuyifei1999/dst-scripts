@@ -36,6 +36,11 @@ local events=
             inst.sg:GoToState("hit")
         end
     end),
+    EventHandler("trapped", function(inst)
+        if not inst.sg:HasStateTag("busy") then
+            inst.sg:GoToState("trapped")
+        end
+    end),
 }
 
 local states=
@@ -217,7 +222,7 @@ local states=
             inst.Physics:Stop()
         end,
 
-        events=
+        events =
         {
             EventHandler("animover", function(inst) inst.sg:GoToState("idle") end ),
         },
@@ -226,18 +231,31 @@ local states=
     State{
         name = "death",
         tags = {"busy"},
-        
+
         onenter = function(inst)
             inst.SoundEmitter:PlaySound("dontstarve/frog/die")
             inst.AnimState:PlayAnimation("death")
             inst.Physics:Stop()
-            RemovePhysicsColliders(inst)            
-            inst.components.lootdropper:DropLoot(Vector3(inst.Transform:GetWorldPosition()))            
+            RemovePhysicsColliders(inst)
+            inst.components.lootdropper:DropLoot(inst:GetPosition())
         end,
-        
     },
 
-    
+    State{
+        name = "trapped",
+        tags = { "busy", "trapped" },
+
+        onenter = function(inst)
+            inst.Physics:Stop()
+            inst:ClearBufferedAction()
+            inst.AnimState:PlayAnimation("atk_pre")
+            inst.sg:SetTimeout(1)
+        end,
+
+        ontimeout = function(inst)
+            inst.sg:GoToState("idle")
+        end,
+    },
 }
 
 CommonStates.AddSleepStates(states,
@@ -248,7 +266,4 @@ CommonStates.AddSleepStates(states,
 })
 CommonStates.AddFrozenStates(states)
 
-
-    
 return StateGraph("frog", states, events, "idle", actionhandlers)
-

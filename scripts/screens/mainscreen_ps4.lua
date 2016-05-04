@@ -157,7 +157,8 @@ end
 
 function MainScreen:Refresh()
 	self:MainMenu()
-	TheFrontEnd:GetSound():PlaySound("dontstarve/music/music_FE","FEMusic")
+	TheFrontEnd:GetSound():PlaySound("dontstarve/music/music_FE", "FEMusic")
+    TheFrontEnd:GetSound():PlaySound("dontstarve/together_FE/portal_idle_vines", "FEPortalSFX")
 end
 
 function MainScreen:ShowMenu(menu_items)
@@ -185,6 +186,7 @@ end
 
 function MainScreen:OnCreditsButton()
 	TheFrontEnd:GetSound():KillSound("FEMusic")
+    TheFrontEnd:GetSound():KillSound("FEPortalSFX")
 	TheFrontEnd:PushScreen( CreditsScreen() )
 end
 	
@@ -247,15 +249,23 @@ end
 
 
 function MainScreen:OnUpdate(dt)
-	if TheSim:ShouldPlayIntroMovie() then
-		TheFrontEnd:PushScreen( MovieDialog("movies/forbidden_knowledge.mp4", function() TheFrontEnd:GetSound():PlaySound("dontstarve/music/music_FE","FEMusic") self:CheckStorage() end ) )
+    if TheSim:ShouldPlayIntroMovie() then
+        TheFrontEnd:PushScreen(
+            MovieDialog("movies/forbidden_knowledge.mp4",
+                function()
+                    TheFrontEnd:GetSound():PlaySound("dontstarve/music/music_FE", "FEMusic")
+                    TheFrontEnd:GetSound():PlaySound("dontstarve/together_FE/portal_idle_vines", "FEPortalSFX")
+                    self:CheckStorage()
+                end
+            )
+        )
         self.music_playing = true
-	elseif not self.music_playing then
-        TheFrontEnd:GetSound():PlaySound("dontstarve/music/music_FE","FEMusic")
+    elseif not self.music_playing then
+        TheFrontEnd:GetSound():PlaySound("dontstarve/music/music_FE", "FEMusic")
+        TheFrontEnd:GetSound():PlaySound("dontstarve/together_FE/portal_idle_vines", "FEPortalSFX")
         self.music_playing = true
-        
         self:CheckStorage()
-    end		
+    end
 end
 
 function MainScreen:GetHelpText()
@@ -266,6 +276,5 @@ function MainScreen:GetHelpText()
     	return ""
     end
 end
-
 
 return MainScreen

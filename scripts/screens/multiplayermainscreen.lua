@@ -489,6 +489,7 @@ end
 function MultiplayerMainScreen:OnCreditsButton()
     self.last_focus_widget = TheFrontEnd:GetFocusWidget()
 	TheFrontEnd:GetSound():KillSound("FEMusic")
+    TheFrontEnd:GetSound():KillSound("FEPortalSFX")
 	self.menu:Disable()
     if self.debug_menu then self.debug_menu:Disable() end
 	TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
@@ -682,7 +683,6 @@ function MultiplayerMainScreen:MakeSubMenu()
         return btn
     end
 
-	local redeem_button = TEMPLATES.IconButton("images/button_icons.xml", "redeem.tex", STRINGS.UI.MAINSCREEN.REDEEM, false, true, function() self:OnRedeemButton() end, {font=NEWFONT_OUTLINE, focus_colour={1,1,1,1}})
     local credits_button = TEMPLATES.IconButton("images/button_icons.xml", "credits.tex", STRINGS.UI.MAINSCREEN.CREDITS, false, true, function() self:OnCreditsButton() end, {font=NEWFONT_OUTLINE, focus_colour={1,1,1,1}})
     local forums_button = TEMPLATES.IconButton("images/button_icons.xml", "forums.tex", STRINGS.UI.MAINSCREEN.FORUM, false, true, function() self:Forums() end, {font=NEWFONT_OUTLINE, focus_colour={1,1,1,1}})
     local newsletter_button = TEMPLATES.IconButton("images/button_icons.xml", "newsletter.tex", STRINGS.UI.MAINSCREEN.NOTIFY, false, true, function() self:EmailSignup() end, {font=NEWFONT_OUTLINE, focus_colour={1,1,1,1}})
@@ -694,17 +694,32 @@ function MultiplayerMainScreen:MakeSubMenu()
         if TheFrontEnd:GetAccountManager():HasSteamTicket() then
 
             local manage_account_button = TEMPLATES.IconButton("images/button_icons.xml", "profile.tex", STRINGS.UI.SERVERCREATIONSCREEN.MANAGE_ACCOUNT, false, true, function() VisitURL(TheFrontEnd:GetAccountManager():GetViewAccountURL(), true ) end, {font=NEWFONT_OUTLINE, focus_colour={1,1,1,1}})
-
-            submenuitems = 
-            {
-            	{widget = redeem_button},
-                {widget = manage_account_button},
-                {widget = credits_button},
-                {widget = forums_button},
-                {widget = more_games_button},
-                {widget = newsletter_button},
-            }
+            
+			local online = TheNet:IsOnlineMode() and not TheFrontEnd:GetIsOfflineMode()
+			if online then
+				local redeem_button = TEMPLATES.IconButton("images/button_icons.xml", "redeem.tex", STRINGS.UI.MAINSCREEN.REDEEM, false, true, function() self:OnRedeemButton() end, {font=NEWFONT_OUTLINE, focus_colour={1,1,1,1}})
+	            submenuitems = 
+				{
+            		{widget = redeem_button},
+					{widget = manage_account_button},
+					{widget = credits_button},
+					{widget = forums_button},
+					{widget = more_games_button},
+					{widget = newsletter_button},
+				}
+			else
+				--have steam ticket, but offline
+				submenuitems = 
+				{
+					{widget = manage_account_button},
+					{widget = credits_button},
+					{widget = forums_button},
+					{widget = more_games_button},
+					{widget = newsletter_button},
+				}
+			end
         else
+			--no valid steam ticket
             submenuitems = 
             {
                 {widget = credits_button},

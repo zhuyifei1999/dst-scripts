@@ -1235,7 +1235,9 @@ function Inventory:PutOneOfActiveItemInSlot(slot)
         active_item.components.stackable ~= nil and
         active_item.components.stackable:StackSize() > 1 then
 
+        self.ignoresound = true
         self:GiveItem(active_item.components.stackable:Get(1), slot)
+        self.ignoresound = false
     end
 end
 
@@ -1249,7 +1251,9 @@ function Inventory:PutAllOfActiveItemInSlot(slot)
         active_item.components.stackable:StackSize() == 1) then
 
         self:RemoveItem(active_item, true)
+        self.ignoresound = true
         self:GiveItem(active_item, slot)
+        self.ignoresound = false
     end
 end
 

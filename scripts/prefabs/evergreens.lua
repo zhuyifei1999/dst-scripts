@@ -95,7 +95,7 @@ local builds =
         prefab_name="twiggytree",
         regrowth_product="twiggy_nut_sapling",
         regrowth_tuning=TUNING.EVERGREEN_REGROWTH,
-        normal_loot = {"log","twigs"},
+        normal_loot = {"log","twigs","twiggy_nut"},
         short_loot = {"twigs"},
         tall_loot = {"log", "twigs","twigs","twiggy_nut","twiggy_nut"},
         drop_pinecones=false,
@@ -446,16 +446,13 @@ local function chop_down_tree(inst, chopper)
 
     inst:DoTaskInTime(.4, chop_down_tree_shake)
 
-    inst:AddTag("NOCLICK")
-
     if inst.components.diseaseable ~= nil and inst.components.diseaseable:IsDiseased() then
+        inst:AddTag("NOCLICK")
         inst.persists = false
         inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength(), finish_chop_down_diseased_tree)
     else
         make_stump(inst)
         inst.AnimState:PushAnimation(inst.anims.stump)
-
-        inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength(), inst.RemoveTag, "NOCLICK")
 
         if GetBuild(inst).leif ~= nil then
             local days_survived = TheWorld.state.cycles

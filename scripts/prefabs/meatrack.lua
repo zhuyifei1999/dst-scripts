@@ -98,6 +98,7 @@ end
 local function onbuilt(inst)
     inst.AnimState:PlayAnimation("place")
     inst.AnimState:PushAnimation("idle_empty", false)
+    inst.SoundEmitter:PlaySound("dontstarve/common/meat_rack_craft")
 end
 
 local function onsave(inst, data)

@@ -101,7 +101,7 @@ SetSharedLootTable( 'rock_petrified_tree',
 {
     {'rocks',  1.00},
     {'rocks',  0.75},
-    {'nitre',  0.15},
+    {'nitre',  0.4},
     {'flint',  0.25},
 })
 SetSharedLootTable( 'rock_petrified_tree_tall',
@@ -109,14 +109,14 @@ SetSharedLootTable( 'rock_petrified_tree_tall',
     {'rocks',  1.00},
     {'rocks',  1.00},
     {'rocks',  0.35},
-    {'nitre',  0.15},
+    {'nitre',  0.65},
     {'flint',  0.75},
 })
 SetSharedLootTable( 'rock_petrified_tree_short',
 {
     {'rocks',  1.00},    
     {'rocks',  0.35},
-    {'nitre',  0.15},
+    {'nitre',  0.25},
     {'flint',  0.25},
 })
 SetSharedLootTable( 'rock_petrified_tree_old',

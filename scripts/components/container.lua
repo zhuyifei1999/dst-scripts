@@ -565,7 +565,9 @@ function Container:PutOneOfActiveItemInSlot(slot)
         active_item.components.stackable ~= nil and
         active_item.components.stackable:IsStack() then
 
+        self.ignoresound = true
         self:GiveItem(active_item.components.stackable:Get(1), slot)
+        self.ignoresound = false
     end
 end
 
@@ -579,7 +581,9 @@ function Container:PutAllOfActiveItemInSlot(slot)
         not active_item.components.stackable:IsStack()) then
 
         inventory:RemoveItem(active_item, true)
+        self.ignoresound = true
         self:GiveItem(active_item, slot)
+        self.ignoresound = false
     end
 end
 

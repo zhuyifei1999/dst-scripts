@@ -56,21 +56,28 @@ return {
             DEAD = "They've no need of material possessions where they've gone.",
             SLEEPING = "I'll come back later...",
             BUSY = "It's too busy to pay attention to me...",
+            ABIGAILHEART = "Why isn't it working, Abigail?",
+            GHOSTHEART = "Some things should stay dead.",
         },
         GIVETOPLAYER = 
         {
-        	FULL = "They are already too burdened by this world...",
-            DEAD = "They've no need of material possessions where they've gone.",
+        	FULL = "%s is already too burdened by this world...",
+            DEAD = "%s has no need of material possessions where they've gone.",
             SLEEPING = "They look so peaceful... I'll come back later.",
             BUSY = "Oh... I can tell you're busy...",
     	},
     	GIVEALLTOPLAYER = 
         {
-        	FULL = "They are already too burdened by this world...",
-            DEAD = "They've no need of material possessions where they've gone.",
+        	FULL = "%s is already too burdened by this world...",
+            DEAD = "%s has no need of material possessions where they've gone.",
             SLEEPING = "They look so peaceful... I'll come back later.",
             BUSY = "Oh... I can tell you're busy...",
     	},
+    	TEACH =
+        {
+            KNOWN = "I already possess that knowledge...",
+            CANTLEARN = "That knowledge is beyond me...",
+        },
 	},
 	ANNOUNCE_MOUNT_LOWHEALTH = "This beast... is not long for this world.",
 	ACTIONFAIL_GENERIC = "I can't do anything right.",
@@ -81,7 +88,7 @@ return {
 	ANNOUNCE_COLD = "I am chilled to the bone.",
 	ANNOUNCE_HOT = "I am miserably hot.",
 	ANNOUNCE_CRAFTING_FAIL = "I lack the necessary materials.",
-	ANNOUNCE_DUSK = "The darkness will be here soon. I must prepare.",
+	ANNOUNCE_DUSK = "The sickly sweet scent of roses fills the air...",
 	ANNOUNCE_EAT =
 	{
 		GENERIC = "Yum!",
@@ -123,7 +130,7 @@ return {
 	ANNOUNCE_DEERCLOPS = "That could be bad.",
 	ANNOUNCE_FREEDOM = "Freedom. Great.",
 	ANNOUNCE_HIGHRESEARCH = "I have seen the void and it is deep and dark.",
-	ANNOUNCE_LOWRESEARCH = "I have seen the void and it is deep and dark.",
+	ANNOUNCE_LOWRESEARCH = "Pithy knowledge...",
 	ANNOUNCE_MOSQUITOS = "Mosquitoes! Suck all my blood out!",
 	ANNOUNCE_NODANGERSLEEP = "I can't sleep, there's death to be had.",
 	ANNOUNCE_NODAYSLEEP = "The sun upsets me. I couldn't sleep.",
@@ -173,75 +180,91 @@ return {
         },
 		WILSON = 
 		{
-			GENERIC = "How do you do, Wilson?",
-			ATTACKER = "That Wilson... he'll betray us.",
-			MURDERER = "Murderer! Cutthroat!",
-			REVIVER = "Abigail likes you, Wilson.",
-			GHOST = "A heart could return Wilson to this world...",
+			GENERIC = "How do you do, %s?",
+			ATTACKER = "%s is unstable.",
+			MURDERER = "You've gone mad, scientist.",
+			REVIVER = "Abigail likes you, %s.",
+			GHOST = "That was a bad experiment, %s... I'll get a heart.",
 		},
 		WOLFGANG = 
 		{
-			GENERIC = "How do you do, Wolfgang?",
-			ATTACKER = "That Wolfgang... he'll betray us.",
-			MURDERER = "Murderer! Cutthroat!",
-			REVIVER = "Abigail likes you, Wolfgang.",
-			GHOST = "A heart could return Wolfgang to this world...",
+			GENERIC = "Hi %s. Why are you shaking?",
+			ATTACKER = "I don't trust %s. Fear makes people dangerous.",
+			MURDERER = "Your strength is meaningless if you can't catch me...",
+			REVIVER = "Don't be scared, %s. Abigail just wants to be friends.",
+			GHOST = "%s... Everyone leaves...",
 		},
 		WAXWELL = 
 		{
-			GENERIC = "How do you do, Maxwell?",
-			ATTACKER = "That Maxwell... he'll betray us.",
-			MURDERER = "Murderer! Cutthroat!",
-			REVIVER = "Abigail likes you, Maxwell.",
-			GHOST = "A heart could return Maxwell to this world...",
+			GENERIC = "How are you coping, %s?",
+			ATTACKER = "I don't think I trust %s yet.",
+			MURDERER = "Cursed villain!",
+			REVIVER = "From Sisyphus to Lazarus, hey %s?",
+			GHOST = "Should I revive you, %s? Hmm...",
 		},
 		WX78 = 
 		{
-			GENERIC = "How do you do, WX-78?",
-			ATTACKER = "That WX-78... they'll betray us.",
-			MURDERER = "Murderer! Cutthroat!",
-			REVIVER = "Abigail likes you, WX-78.",
-			GHOST = "A heart could return WX-78 to this world...",
+			GENERIC = "How do you do, %s?",
+			ATTACKER = "Do you have a conscience, %s?",
+			MURDERER = "None of us are above death, %s!",
+			REVIVER = "Abigail likes you, %s.",
+			GHOST = "Say 'Pretty Please' and I might get you a heart, %s.",
 		},
 		WILLOW = 
 		{
-			GENERIC = "How do you do, Willow?",
-			ATTACKER = "That Willow... she'll betray us.",
-			MURDERER = "Murderer! Cutthroat!",
-			REVIVER = "Abigail likes you, Willow.",
-			GHOST = "A heart could return Willow to this world...",
+			GENERIC = "How do you do, %s?",
+			ATTACKER = "%s is a madwoman.",
+			MURDERER = "You've made a terrible error, %s.",
+			REVIVER = "Abigail likes you, %s. Do you like her?",
+			GHOST = "Say hi to Abigail while I go get you a heart, %s.",
 		},
 		WENDY = 
 		{
-			GENERIC = "How do you do, Other-Wendy?",
-			ATTACKER = "Other-Wendy... she'll betray us.",
-			MURDERER = "Murderer! Cutthroat!",
-			REVIVER = "My Abigail likes you, Other-Wendy.",
-			GHOST = "A heart could return that Wendy to this world...",
+			GENERIC = "Are you surviving, %s?",
+			ATTACKER = "%s... she's no sister of mine.",
+			MURDERER = "Have we not seen enough death, %s?",
+			REVIVER = "I hope Abigail doesn't like you more than me...",
+			GHOST = "At least a heart could return one sister to this world...",
 		},
 		WOODIE = 
 		{
-			GENERIC = "How do you do, Woodie?",
-			ATTACKER = "That Woodie... he'll betray us.",
-			MURDERER = "Murderer! Cutthroat!",
-			REVIVER = "Abigail likes you, Woodie.",
-			GHOST = "A heart could return Woodie to this world...",
+			GENERIC = "How do you do, %s?",
+			ATTACKER = "%s is plotting something dastardly with that axe.",
+			MURDERER = "I'll send you someplace much nicer than this, %s.",
+			REVIVER = "Abigail likes you, %s. And Lucy.",
+			GHOST = "We can get a heart, but are you sure you even want to come back, %s?",
 		},
 		WICKERBOTTOM = 
 		{
-			GENERIC = "How do you do, Wickerbottom?",
-			ATTACKER = "That Wickerbottom... she'll betray us.",
-			MURDERER = "Murderer! Cutthroat!",
-			REVIVER = "Abigail likes you, Wickerbottom.",
-			GHOST = "A heart could return Wickerbottom to this world...",
+			GENERIC = "How do you do, Ms %s?",
+			ATTACKER = "Ms %s... do you turn your wits against us?",
+			MURDERER = "'Murder', she wrote.",
+			REVIVER = "Abigail likes you, Ms %s.",
+			GHOST = "Everyone that leaves takes a piece of my heart...",
 		},
 		WES = 
 		{
-			GENERIC = "How do you do, Wes?",
-			ATTACKER = "That Wes... he'll betray us.",
-			MURDERER = "Murderer! Cutthroat!",
-			REVIVER = "Abigail likes you, Wes.",
-			GHOST = "A heart could return Wes to this world...",
+			GENERIC = "How do you do, %s?",
+			ATTACKER = "%s... there's something you're not telling us...",
+			MURDERER = "%s, this is the end... for you.",
+			REVIVER = "Abigail says she understands you, %s.",
+			GHOST = "If I get you a heart you won't leave us, right %s?",
+		},
+		WEBBER = 
+		{
+			GENERIC = "Hey, %s!",
+			ATTACKER = "%s, are you friend... or foe?",
+			MURDERER = "Don't worry, %s. This won't hurt a bit.",
+			REVIVER = "You could never be a monster, %s.",
+			GHOST = "A heart could bring back my friend, %s...",
+		},
+		WATHGRITHR = 
+		{
+			GENERIC = "How do you do, %s?",
+			ATTACKER = "%s... she's bloodthirsty.",
+			MURDERER = "It'll all be over soon, %s.",
+			REVIVER = "It seems your heart is strong too, %s...",
+			GHOST = "Come back, %s... Take my heart...",
 		},
 
 		GLOMMER = "Well aren't you a happy little fuzzball. Die.",
@@ -256,7 +279,7 @@ return {
         STATUEGLOMMER = 
         {	
         	GENERIC = "What IS that?!",
-        	EMPTY = "I killed it.",
+        	EMPTY = "Death has claimed it.",
     	},
 		WEBBERSKULL = "He's better this way.",
 		MOLE =
@@ -290,7 +313,7 @@ return {
 			GENERIC = "Knives out.",
 			PICKED = "Flattened.",
 		},
-		CACTUS_MEAT_COOKED = "I ripped all its spikes off.",
+		CACTUS_MEAT_COOKED = "Its defenses have been stripped away.",
 		CACTUS_MEAT = "It's still dangerous.",
 		CACTUS_FLOWER = "Even the knife-plant has a flower. Ugh.",
 		COLDFIRE =
@@ -312,7 +335,7 @@ return {
 		COONTAIL = "It's matted, patchy and putrid.",
 		COOKPOT =
 		{
-			COOKING_LONG = "Whatever is in there isn't dead yet.",
+			COOKING_LONG = "Whatever's in there isn't dead yet.",
 			COOKING_SHORT = "It needs to boil.",
 			DONE = "Finally, food.",
 			EMPTY = "Empty as my soul.",
@@ -407,7 +430,10 @@ return {
         MINIFAN = "When I am still, it is as lifeless as Abigail.",
 		GOOSE_FEATHER = "Plucked like Abigail was from me.",
 		STAFF_TORNADO = "Some weather out there.",
-
+		GOLDENMACHETE = "What a fancy blade to ruin bamboo with!",
+		OBSIDIANMACHETE = "A blade that bites and burns.",
+		MACHETE = "This is a lot of blade.",
+		MOWER = "This is a lot of blade.",
 		LIGHTER = "Death in a box...",
 		BOOK_BIRDS = "Will it teach me how to fly away from here?",
 		BOOK_TENTACLES = "Does this world need more beasts?",
@@ -416,6 +442,7 @@ return {
 		BOOK_BRIMSTONE = "The tome to end it all...",
 		LUCY = "Hello... 'Lucy'... I'd like you to meet my sister.",
 		BALLOONS_EMPTY = "These look as deflated as I feel...",
+		BALLOON = "A colorful reminder that my childhood is no more.",
 		SPEAR_WATHGRITHR = "It seems a tad dramatic.",
 		WAXWELLJOURNAL = "Do you want me to read you a story, Abigail?",
 
@@ -428,7 +455,7 @@ return {
 		{
 			FULL = "I hope he is enjoying himself.",
 			GENERIC = "At least they are comfortable.",
-			LIGHTSOUT = "Now I am all alone.",
+			LIGHTSOUT = "Always on the outside, looking in.",
 			BURNT = "Nothing lasts forever.",
 		},
 		FERTILIZER = "A bucket of grime.",
@@ -442,17 +469,17 @@ return {
 		RESEARCHLAB = 
 		{	
 			GENERIC = "I will learn unspeakable things.",
-			BURNT = "It's unspeakably burnt to the ground.",
+			BURNT = "It is unspeakably burnt.",
 		},
 		RESEARCHLAB2 = 
 		{
 			GENERIC = "I will learn unspeakable things.",
-			BURNT = "It's unspeakably burnt to the ground.",
+			BURNT = "It is unspeakably burnt.",
 		},
 		RESEARCHLAB3 = 
 		{
 			GENERIC = "I have learnt unspeakable things.",
-			BURNT = "It's unspeakably burnt to the ground.",
+			BURNT = "It is unspeakably burnt.",
 		},
 		RESEARCHLAB4 = 
 		{
@@ -499,7 +526,7 @@ return {
 		},
 		WALL_WOOD = 
 		{
-			GENERIC = "Now I can delay the inevitable.",
+			GENERIC = "It will only delay the inevitable.",
 			BURNT = "The inevitable is coming.",
 		},
 		WARG = "A true bastion of evil.",
@@ -515,19 +542,19 @@ return {
 		HOMESIGN =
 		{
 			GENERIC = "A mark is made, however transient.",
-            UNWRITTEN = "Its blank face shall soon bear a secret.",
+            UNWRITTEN = "Its blank face shall soon offer a secret.",
 			BURNT = "Transient, indeed.",
 		},
 		ARROWSIGN_POST =
 		{
 			GENERIC = "A mark is made, however transient.",
-            UNWRITTEN = "Its blank face shall soon bear a secret.",
+            UNWRITTEN = "Its blank face shall soon offer a secret.",
 			BURNT = "Transient, indeed.",
 		},
 		ARROWSIGN_PANEL =
 		{
 			GENERIC = "A mark is made, however transient.",
-            UNWRITTEN = "Its blank face shall soon bear a secret.",
+            UNWRITTEN = "Its blank face shall soon offer a secret.",
 			BURNT = "Transient, indeed.",
 		},
 		BEEBOX =
@@ -554,7 +581,7 @@ return {
 		EEL_COOKED = "An eel that has been cooked.",
 		UNAGI = "It looks more appetizing this way.",
 		EYETURRET = "I do not know why it helps me.",
-		EYETURRET_ITEM = "I think I need to place it.",
+		EYETURRET_ITEM = "I think it needs to be placed.",
 		MINOTAURHORN = "All that remains of a once great beast.",
 		MINOTAURCHEST = "My, what magnificent horns you have!",
 		THULECITE_PIECES = "Fragments of a powerful material.",
@@ -564,17 +591,17 @@ return {
 
 		THULECITE = "Its presence marks the edge of the unknown.",
 		ARMORRUINS = "A reprieve from death.",
-		RUINS_BAT = "I hold the power of the ancients in my hands.",
+		RUINS_BAT = "It possesses the power of the ancients.",
 		RUINSHAT = "Abigail would've loved this crown.",
 		NIGHTMARE_TIMEPIECE = --Keeps track of the nightmare cycle
 		{
 			CALM = "I know not what lurks in the shadow.",	--calm phase
 			WARN = "I can feel the prying eyes.",	--Before nightmare
 			WAXING = "They approach.", --Nightmare Phase first 33%
-			STEADY = "They're all around me!", --Nightmare 33% - 66%
+			STEADY = "They're all around!", --Nightmare 33% - 66%
 			WANING = "I think they're leaving.", --Nightmare 66% +
 			DAWN = "It's almost over.", --After nightmare
-			NOMAGIC = "I am alone.", --Place with no nightmare cycle.
+			NOMAGIC = "The presence has departed.", --Place with no nightmare cycle.
 		},
 		BISHOP_NIGHTMARE = "Time has won this battle.",
 		ROOK_NIGHTMARE = "Time erodes everything.",
@@ -586,7 +613,7 @@ return {
 		RUINS_RUBBLE = "A vision of the past. Broken.",	--Broken relic
 		MULTITOOL_AXE_PICKAXE = "An item with multiple uses.",	--Works as axe and pickaxe
 		GREENGEM = "The flaws are its most beautiful features.",
-		ORANGESTAFF = "Each time I use it I die and am reborn.",	--Teleports player.
+		ORANGESTAFF = "With each use the wielder dies and is reborn.",	--Teleports player.
 		YELLOWAMULET = "A brief light in my dark life.",	--Emits light, player walks faster.
 		GREENAMULET = "A flash of brilliance!",	--Reduce cost of crafting
 
@@ -633,27 +660,28 @@ return {
 
 		BLUEAMULET = "A familiar chilling embrace.",
 		PURPLEAMULET = "It's oozing.",
-		TELESTAFF = "I could escape if it were more powerful.",
+		TELESTAFF = "We could escape if it were more powerful.",
 		MONKEY = "Living without the burden of intelligence must be nice.",
 		MONKEYBARREL = "It's filthy.",
-		MONSTERLASAGNA = "Cooked evil is still evil, even in lasagna.",
-		HOUNDSTOOTH="Pulled out by the root.",
-		ARMORSNURTLESHELL="Now I can hide from my problems.",
-		BAT="A creature of the night.",
+		MONSTERLASAGNA = "Cooked evil is still evil. Even in lasagna.",
+		HOUNDSTOOTH= "Pulled out by the root.",
+		ARMORSNURTLESHELL= "A suit to hide from one's problems.",
+		BAT= "A creature of the night.",
 		BATBAT = "An enchanted weapon. How exciting!",
-		BATWING="If only I could fly away.",
-		BATWING_COOKED="They once held such great potential.",
-        BATCAVE="They're just lurking in there...",
-		BEDROLL_FURRY="I will wrap myself in the fuzzy skins of the fallen.",
-		BUNNYMAN="What tormented inner lives they must have.",
-		FLOWER_CAVE="It looks fragile.",
-		FLOWER_CAVE_DOUBLE="It looks fragile.",
-		FLOWER_CAVE_TRIPLE="It looks fragile.",
-		GUANO="The inevitable byproduct of life.",
-		LANTERN="Light the way darkly.",
-		LIGHTBULB="It's slowly burning out.",
-		MANRABBIT_TAIL="It contains his fuzzy wuzzy essence.",
-		MUSHTREE_TALL={
+		BATWING= "If only I could fly away.",
+		BATWING_COOKED= "They once held such great potential.",
+        BATCAVE= "They're just lurking in there...",
+		BEDROLL_FURRY= "For veiling oneself in the fuzzy skins of the fallen.",
+		BUNNYMAN= "What tormented inner lives they must have.",
+		FLOWER_CAVE= "It looks fragile.",
+		FLOWER_CAVE_DOUBLE= "It looks fragile.",
+		FLOWER_CAVE_TRIPLE= "It looks fragile.",
+		GUANO= "The inevitable byproduct of life.",
+		LANTERN= "Light the way, darkly.",
+		LIGHTBULB= "It's slowly burning out.",
+		MANRABBIT_TAIL= "It contains his fuzzy wuzzy essence.",
+		MUSHTREE_TALL=
+		{
             GENERIC = "These are some strange trees.",
             BLOOM = "It's trying so hard to give.",
         },
@@ -732,9 +760,9 @@ return {
 		ADVENTURE_PORTAL = "What technological terror is this?",
 		AMULET = "I wonder who used to own this.",
 		ANIMAL_TRACK = "Signs of the beast.",
-		ARMORGRASS = "I prolong the inevitable.",
+		ARMORGRASS = "To prolong the inevitable.",
 		ARMORMARBLE = "Stops the daggers that stab at mine heart.",
-		ARMORWOOD = "I might hold off the inevitable a bit longer with this.",
+		ARMORWOOD = "To hold off the inevitable a bit longer.",
 		ARMOR_SANITY = "A perfectly safe way to go insane.",
 		ASH =
 		{
@@ -745,7 +773,7 @@ return {
 		},
 		AXE = "An instrument for industry and murder.",
 		BABYBEEFALO = "Enjoy your youth. Soon you will learn the terrors of the real world.",
-		BACKPACK = "A pack. Now I can carry even more burden.",
+		BACKPACK = "A pack. Now I can carry an even heavier burden.",
 		BACONEGGS = "A balanced breakfast to start another miserable day.",
 		BANDAGE = "I'll only end up hurt again.",
 		BASALT = "Trying to break it would be pointless.",
@@ -776,13 +804,13 @@ return {
 		BERRIES = "These berries are tart.",
 		BERRIES_COOKED = "More balanced flavor, but they won't last long.",
         BERRIES_JUICY = "I'd better consume these before death does.",
-        BERRIES_JUICY_COOKED = "I haven't halted the decay, but I've stalled it.",
+        BERRIES_JUICY_COOKED = "This hasn't halted the decay, but it's stalled it.",
 		BERRYBUSH =
 		{
 			BARREN = "It is barren.",
 			WITHERED = "It succumbed to the heat.",
 			GENERIC = "A snack, perchance?",
-			PICKED = "I shall have to wait.",
+			PICKED = "The wait begins.",
 			DISEASED = "It's not long for this world...",
 		},
 		BERRYBUSH_JUICY =
@@ -790,7 +818,7 @@ return {
 			BARREN = "There's no life to be had here...",
 			WITHERED = "It has crumpled under the heat.",
 			GENERIC = "I could strip it clean, if I so chose...",
-			PICKED = "It's given me all it had to give.",
+			PICKED = "It's given all it had to give.",
 			DISEASED = "It's not long for this world...",
 		},
 		BIRDCAGE =
@@ -808,8 +836,8 @@ return {
 		BIRD_EGG_COOKED = "No bird will ever come of it.",
 		BISHOP = "What does he pray for?",
 		BLOWDART_SLEEP = "Not even the big sleep, just a temporary one.",
-		BLOWDART_PIPE = "I blow in this end and pain comes out the other end.",
-		BLOWDART_FIRE = "Shall I burn down the world?",
+		BLOWDART_PIPE = "Blow in one end and pain comes out the other.",
+		BLOWDART_FIRE = "Shall we burn down the world?",
 		BLUEGEM = "Blue like... er... a sad bird?",
 		BLUEPRINT = "Whoever drew this is probably dead.",
 		BELL_BLUEPRINT = "Whoever drew this is probably dead.",
@@ -822,7 +850,7 @@ return {
 			PICKED = "Harvested.",
 		},
 		BOARDS = "Even scarier for the trees.",
-		BONESTEW = "They died. And then I put them in a stew.",
+		BONESTEW = "You'd be surprised how much life can be gleaned from death and bones.",
 		BUGNET = "A prison for tiny insects.",
 		BUSHHAT = "Oh to disappear.",
 		BUTTER = "I wasn't expecting that.",
@@ -842,7 +870,7 @@ return {
 			NORMAL = "It's a fire.",
 			OUT = "That is not a good sign.",
 		},
-		CANE = "I can get nowhere faster.",
+		CANE = "To explore to the ends of this wretched world.",
 		CARROT = "It's a carrot.",
 		CARROT_COOKED = "It's a carrot that's gone through the gauntlet of fire.",
 		CARROT_PLANTED = "It's a carrot that's in the ground.",
@@ -870,10 +898,10 @@ return {
 			GENERIC = "Take thy beak from out my heart!",
 			HELD = "He is mine.",
 		},
-		CUTGRASS = "I like to kill small things.",
-		CUTREEDS = "I like to cut things up.",
+		CUTGRASS = "It never even knew it was alive. How fortunate.",
+		CUTREEDS = "The blade has sentenced you to death.",
 		CUTSTONE = "The better to mark graves with.",
-		DEADLYFEAST = "This, my final feast.",
+		DEADLYFEAST = "This, a fitting final meal.",
 		DEERCLOPS = "Death incarnate!",
 		DEERCLOPS_EYEBALL = "What terrors it must see.",
 		DEPLETED_GRASS =
@@ -893,7 +921,7 @@ return {
 		{
 			GENERIC = "What does this newfangled thing do?",
 			READY = "It still needs a large key.",
-			UNLOCKED = "Let's see what I can find!",
+			UNLOCKED = "What mysteries will be revealed!",
 		},
 		DRAGONFLY = "It's burning on the inside.",
 
@@ -920,7 +948,7 @@ return {
 		},
 		LAVAE_EGG = 
 		{
-			GENERIC = "It has potential for life, but I control its fate.",
+			GENERIC = "Is it even worth it to put stake in your future?",
 		},
 		LAVAE_EGG_CRACKED =
 		{
@@ -935,15 +963,15 @@ return {
 		DRAGONPIE = "Well, at least it's a pie now.",
 		DRUMSTICK = "Makes a good thud and it has nutrients!",
 		DRUMSTICK_COOKED = "Less raw, more tasty.",
-		DUG_BERRYBUSH = "I'm taking you back to my house.",
-		DUG_BERRYBUSH_JUICY = "You're mine now.",
-		DUG_GRASS = "I like it dead, but I should plant this.",
-		DUG_MARSH_BUSH = "I like it dead, but I should plant this.",
-		DUG_SAPLING = "I like it dead, but I should plant this.",
+		DUG_BERRYBUSH = "Let's go back to my house.",
+		DUG_BERRYBUSH_JUICY = "How does it feel to be ripped from your home?",
+		DUG_GRASS = "I like it dead, but it should probably be returned to the earth.",
+		DUG_MARSH_BUSH = "I like it dead, but it should probably be returned to the earth.",
+		DUG_SAPLING = "I like it dead, but it should probably be returned to the earth.",
 		DURIAN = "Spiky and smelly!",
 		DURIAN_COOKED = "Less spiky, but even smellier!",
 		DURIAN_SEEDS = "Miraculously, the seeds don't smell.",
-		EARMUFFSHAT = "Their bitter end protects me from the bitter cold.",
+		EARMUFFSHAT = "Their bitter end offers protection from the bitter cold.",
 		EGGPLANT = "Almost a deadly nightshade. Almost.",
 		EGGPLANT_COOKED = "Cooking this nightshade made it even less deadly.",
 		EGGPLANT_SEEDS = "It's a nightshade seed.",
@@ -975,18 +1003,18 @@ return {
 			HELD = "Tiny lights, stranded from the world outside my pocket.",
 		},
 		FIREHOUND = "His disposition is fiery.",
-		FIRESTAFF = "I could set the world on fire!",
+		FIRESTAFF = "The world will burn before this staff.",
 		FISH = "It was flopping around desperately for life. The poor fool.",
-		FISHINGROD = "With this, I can yank the fishies out of their precious safe pond.",
+		FISHINGROD = "With this the fishies can be ripped from the safety of their precious pond.",
 		FISHSTICKS = "Perfectly molded blocks of fish.",
-		FISHTACOS = "I hope I got all the bones out.",
+		FISHTACOS = "Hopefully no bones still linger.",
 		FISH_COOKED = "A proper grilling puts a stop to the flopping.",
 		FLINT = "A tiny blade-like rock.",
 		FLOWER = {
             GENERIC = "They are bright and cheery. Yuck.",
             ROSE = "Prickly and blood red...",
         },
-        FLOWER_WITHERED = "This is everything's fate.",
+        FLOWER_WITHERED = "This is the fate of all things.",
 		FLOWERHAT = "But I am in mourning...",
 		FLOWER_EVIL = "At least they're better than the other flowers.",
 		FOLIAGE = "Lead me to the Aarnivalkea.",
@@ -1003,11 +1031,11 @@ return {
 		FRUITMEDLEY = "Sweet, tart and in a cup.",
 		GEARS = "The insides of a mechanical demon.",
 		GHOST = "He has risen from the grave!",
-		GOLDENAXE = "At least I can kill trees with style.",
-		GOLDENPICKAXE = "At least I can smash rocks with style.",
-		GOLDENPITCHFORK = "At least I can till the earth with style.",
-		GOLDENSHOVEL = "At least I can dig with style.",
-		GOLDNUGGET = "I will take it with me.",
+		GOLDENAXE = "One might as well kill trees with style.",
+		GOLDENPICKAXE = "One might as well smash rocks with style.",
+		GOLDENPITCHFORK = "One might as well till the earth with style.",
+		GOLDENSHOVEL = "One might as well can dig with style.",
+		GOLDNUGGET = "Even in purgatory it remains the most precious of metals.",
 		GRASSGEKKO = 
 		{
 			GENERIC = "This is a creature ruled by fear.",	
@@ -1030,7 +1058,7 @@ return {
 			INGROUND = "I would hide too, if I could.",
 			PICKED = "Harvested.",
 		},
-		GUNPOWDER = "It is a dark path I tread.",
+		GUNPOWDER = "It is a dark path we tread.",
 		HAMBAT = "Death begets death.",
 		HAMMER = "Oh that I may crush the world.",
 		HEALINGSALVE = "Life brings pain, pain brings life.",
@@ -1138,11 +1166,11 @@ return {
 		PENGUIN = "All dressed up, but where to go?",
 		PERD = "Dumb bird! Stay away from my berries!",
 		PEROGIES = "A lovely little pouch of nutrients.",
-		PETALS = "I have destroyed something beautiful.",
+		PETALS = "Its joy and happiness was so disparaging...",
 		PETALS_EVIL = "They are painted with the colors of my soul.",
 		PETRIFIED_TREE = "Now it will never die...",
 		PHLEGM = "The wretched beast must have been sick.",
-		PICKAXE = "So that I may penetrate the earth itself.",
+		PICKAXE = "That the earth itself might be penetrated.",
 		PIGGYBACK = "They are more useful in death.",
 		PIGKING = "Live it up while you can, Your Majesty.",
 		PIGMAN =
@@ -1173,8 +1201,9 @@ return {
 		POMEGRANATE_SEEDS = "I was expecting more seeds than this from that thing.",
 		POND = "Ophelia? Are you down there?",
 		POOP = "Life is blood and this.",
-		PUMPKIN = "It's as big as the hole where my heart was.",
-		PUMPKINCOOKIE = "I cooked it myself!",
+		PORTABLECOOKPOT_ITEM = "",
+		PUMPKIN = "It's as big as the hole where my heart once was.",
+		PUMPKINCOOKIE = "Do I dare indulge in childish things?",
 		PUMPKIN_COOKED = "It shriveled a tiny bit from the heat. I like that.",
 		PUMPKIN_LANTERN = "You're not so scary.",
 		PUMPKIN_SEEDS = "It's a seed. Exciting.",
@@ -1204,7 +1233,7 @@ return {
 		{
 			BURNING = "Soon to be ashes.",
 			GENERIC = "It's just a bunch of reeds.",
-			PICKED = "I have picked them.",
+			PICKED = "They have already been torn away.",
 		},
         RELIC = 
         {
@@ -1255,9 +1284,9 @@ return {
 			DISEASED = "It's not long for this world...",
 		},
 		SEEDS = "Life, or at least the promise of it.",
-		SEEDS_COOKED = "I toasted their life away.",
+		SEEDS_COOKED = "The fire has toasted their life away.",
 		SEWING_KIT = "Another implement for putting off inevitable decay.",
-		SHOVEL = "What terrible secrets might I uncover?",
+		SHOVEL = "What terrible secrets might be uncovered with this?",
 		SILK = "So slippery and fine.",
 		SKELETON = "I envy his escape.",
 		--SKELETON_PLAYER = "I was so, so close.",
@@ -1280,7 +1309,7 @@ return {
 		SMALLMEAT = "It smells like tiny fear.",
 		SMALLMEAT_DRIED = "Meat turned dry and delicious.",
 		SPAT = "I should put it out of its misery.",
-		SPEAR = "I have become the destroyer of worlds.",
+		SPEAR = "They who wield it shall become the destroyer of worlds.",
 		SPIDER =
 		{
 			DEAD = "We will meet again some day.",
@@ -1300,14 +1329,14 @@ return {
 		},
 		SPOILED_FOOD = "Everything turns to waste, eventually.",
 		STATUEHARP = "Maybe these statues will keep me company.",
-		STATUEMAXWELL = "He brought me here.",
+		STATUEMAXWELL = "Did it go as you planned?",
 		STEELWOOL = "This offers no hope of warmth.",
 		STINGER = "Sharp and deadly.",
-		STRAWHAT = "I shall cover my head.",
+		STRAWHAT = "When the sun beats mercilessly, life finds a way.",
 		STUFFEDEGGPLANT = "A nightshade. Probably not filled with poison.",
 		SUNKBOAT = "A cruel trick!",
-		SWEATERVEST = "I can wear pieces of dead things made into a vest!",
-		TAFFY = "Never imagined I could make a thing so sweet.",
+		SWEATERVEST = "Pieces of dead things, made into a vest!",
+		TAFFY = "I never imagined a thing so sweet.",
 		TALLBIRD = "Free from the shackles of the sky.",
 		TALLBIRDEGG = "So full of potential.",
 		TALLBIRDEGG_COOKED = "All that promise, snatched away. Not bad with bacon.",
@@ -1326,7 +1355,7 @@ return {
 		},
 		TEENBIRD =
 		{
-			GENERIC = "Will you leave me too?",
+			GENERIC = "Will you leave too?",
 			HUNGRY = "We all try to fill the void.",
 			STARVING = "Your true nature is revealed!",
 		},
@@ -1341,14 +1370,14 @@ return {
 		TELEPORTATO_CRANK = "It looks complicated.",
 		TELEPORTATO_POTATO = "What a hideous creation!",
 		TELEPORTATO_RING = "It has no sharp edges.",
-		TENTACLE = "Long and thin and dangerous!",
+		TENTACLE = "Long, thin and dangerous!",
 		TENTACLESPOTS = "These are better left unmentioned.",
 		TENTACLESPIKE = "Sharp, slimy and dangerous.",
         TENTACLE_PILLAR = "So this is what goes on down below.",
         TENTACLE_PILLAR_HOLE = "It shall return, some day.",
         TENTACLE_PILLAR_ARM = "Babies!",
         TENTACLE_GARDEN = "This one is different.",
-		TOPHAT = "I shall cover my head.",
+		TOPHAT = "A piece of finery to help forget the inescapable wild.",
 		TORCH = "A tiny bulwark against the night.",
 		TRAP = "Simple grass has become deadly.",
 		TRAP_TEETH = "A devious surprise from underground.",
@@ -1378,11 +1407,11 @@ return {
         TRINKET_23 = "I'm not a-frayed.",
         TRINKET_24 = "I've never been lucky.",
         TRINKET_25 = "It smells of decay and death.",
-		TRINKET_26 = "The potato is as hollow as I am.",
-		TRINKET_27 = "At least I can hang my clothes.",
+		TRINKET_26 = "That potato is as hollow as I am.",
+		TRINKET_27 = "Now at least the wardrobe can be organized.",
 
-		TRUNKVEST_SUMMER = "Skin to wear on my skin.",
-		TRUNKVEST_WINTER = "It may warm my body, but what of my spirit?",
+		TRUNKVEST_SUMMER = "Skin to wear over your skin.",
+		TRUNKVEST_WINTER = "It may warm the body, but what of my spirit?",
 		TRUNK_COOKED = "It looks even worse now.",
 		TRUNK_SUMMER = "I would have preferred the ears.",
 		TRUNK_WINTER = "Separated from its only friend.",
@@ -1393,7 +1422,7 @@ return {
             BURNING = "It's burning brightly.",
 			BURNT = "Used up and done for.",
 			CHOPPED = "Everything dies.",
-            GENERIC = "How I must toil for the necessities of life.",           
+            GENERIC = "How all must toil for the necessities of life.",           
             DISEASED = "It's not long for this world...",
         },
         TWIGGY_NUT = "It's sad it's not in the earth.",
@@ -1406,7 +1435,7 @@ return {
 		WALL_RUINS_ITEM = "Are the very stones haunted?",
 		WALL_WOOD_ITEM = "Bundled logs.",
 		WALL_MOONROCK = "The moon... she whispers promises of protection to me.",
-		WALL_MOONROCK_ITEM = "I should make use of this gift from above.",
+		WALL_MOONROCK_ITEM = "This gift from above should not go to waste.",
 		WALRUS = "An old man, of the sea.",
 		WALRUSHAT = "What feverish thoughts transpired beneath this?",
 		WALRUS_CAMP =

@@ -107,6 +107,6 @@ TheMixer:AddNewMix("lobby", 2, 8,
     [creature] = 0,
     [player] = 0,
     [HUD] = 1,
-    [sfx] = 1,
+    [sfx] = 0,
     [slurp] = 0,
 })

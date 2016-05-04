@@ -50,10 +50,11 @@ function CraftSlot:OnControl(control, down)
 
                 local skin = (self.recipepopup.skins_spinner and self.recipepopup.skins_spinner.GetItem()) or nil
             
+				if skin ~= nil then
+               		Profile:SetLastUsedSkinForItem(self.recipe.name, skin)
+               	end
                 if not DoRecipeClick(self.owner, self.recipe, skin ) then 
                 	self:Close() 
-               	elseif self.recipepopup.skins_spinner then 
-               		Profile:SetLastUsedSkinForItem(self.recipe.name, self.recipepopup.skins_spinner.GetItem())
                	end
 
                 return true

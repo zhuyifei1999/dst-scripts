@@ -578,12 +578,14 @@ end
 --[[
 function MorgueScreen:OnBecomeActive()
     MorgueScreen._base.OnBecomeActive(self)
-    TheFrontEnd:GetSound():KillSound("FEMusic")    
+    TheFrontEnd:GetSound():KillSound("FEMusic")
+    TheFrontEnd:GetSound():KillSound("FEPortalSFX")
 end
 
 function MorgueScreen:OnBecomeInactive()
     MorgueScreen._base.OnBecomeInactive(self)
-    TheFrontEnd:GetSound():PlaySound("dontstarve/music/music_FE","FEMusic")
+    TheFrontEnd:GetSound():PlaySound("dontstarve/music/music_FE", "FEMusic")
+    TheFrontEnd:GetSound():PlaySound("dontstarve/together_FE/portal_idle_vines", "FEPortalSFX")
 end
 ]]
 
