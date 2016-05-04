@@ -439,7 +439,7 @@ local states =
 
         onupdate = function(inst)
             if inst.bufferedaction == nil then
-                inst.sg:GoToState("idle")
+                inst.sg:GoToState("idle", true)
             end
         end,
 
@@ -1306,7 +1306,7 @@ local states =
                     inst.sg:GoToState("idle", "noanim")
                 end
             elseif inst.bufferedaction == nil then
-                inst.sg:GoToState("idle")
+                inst.sg:GoToState("idle", true)
             end
         end,
 

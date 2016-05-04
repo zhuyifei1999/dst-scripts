@@ -61,14 +61,14 @@ STRINGS=
 
     CHARACTER_QUOTES =
     {
-        wilson = "\"I will conquer it all with the power of my MIND!\"",
-        willow = "\"Things are so much prettier when they burn.\"",
+        wilson = "\"I'll conquer this world with the power of my MIND!\"",
+        willow = "\"Everything will bathe in prettiest of flames.\"",
         woodie = "\"That's a nice lookin' tree, eh? Not for long.\"",
         wendy ="\"Abigail? Come back! I'm not done playing with you.\"",
         wolfgang = "\"I am mighty! No one is mightier!\"",
         wx78 = "\"EMPATHY MODULE NOT RESPONDING\"",
         wickerbottom = "\"Shhhh! No talking!\"",
-        waxwell = "\"Free at last.\"",
+        waxwell = "\"Freedom suits me.\"",
         wes = "...",
         wathgrithr = "\"All the world's a stage. For me!\"",
         webber = "\"We're always together, and never alone!\"",
@@ -94,17 +94,17 @@ STRINGS=
     CHARACTER_DESCRIPTIONS =
     {
         wilson = "\n*Grows a magnificent beard",
-        willow = "*Is resistant to fire damage \n*Can craft a cuddly bear and a super-sweet lighter \n*Can't keep warm when insane",
-        wendy = "*Haunted by her twin sister \n*Is comfortable with darkness \n*Doesn't hit very hard",
-        wolfgang = "*Gets stronger with a full belly \n*Is afraid of monsters and the dark \n*Always skips leg day",
-        wx78 = "*Not a picky eater \n*Charged by lightning, damaged by water \n*Can upgrade with gears",
+        willow = "*Is resistant to fire damage \n*Can craft a cuddly bear and super-sweet lighter \n*Can't keep warm when insane",
+        wendy = "*Is haunted by her twin sister \n*Feels comfortable in the dark \n*Doesn't hit very hard",
+        wolfgang = "*Grows stronger with a full belly \n*Is afraid of monsters and the dark",
+        wx78 = "*Not a picky eater \n*Is charged by lightning, but damaged by water \n*Can upgrade with gears",
         wickerbottom = "*Knows many things \n*Self-publishes books \n*Can't sleep, hates spoilage",
         wes = "*Can't talk \n*Has trouble staying alive \n*Practices balloonomancy",
-        waxwell = "*Is dapper, but frail \n*Can fragment his mind \n*Was once the king of the world",
+        waxwell = "*Is dapper, but frail \n*Can split his mind into pieces \n*Was once the king of the world",
         woodie = "*Has a lovely axe \n*And a terrible secret \n*Is thankful for bountiful harvests",
         woodie_us = "*Has a lovely axe \n*And a terrible secret \n*Celebrates Thanksgiving too early",
         woodie_canada = "*Has a lovely axe \n*And a terrible secret \n*Celebrates Thanksgiving at the correct time",
-        wathgrithr = "*Excels in battle \n*Absorbs the power from fallen foes \n*Only eats meat",
+        wathgrithr = "*Excels in battle \n*Absorbs the power of fallen foes \n*Only eats meat",
         webber = "*Is a monster \n*Can befriend spiders \n*Grows a silky smooth beard",
         random = "\nThis will select a random character",
     },
@@ -1453,7 +1453,7 @@ STRINGS=
 
     PIG_TALK_FOLLOWWILSON = {"YOU FRIEND", "I LOVE FRIEND", "YOU IS GOOD", "I FOLLOW!"},
     PIG_TALK_FIND_LIGHT = {"SCARY", "NO LIKE DARK", "WHERE IS SUN?", "STAY NEAR FIRE", "FIRE IS GOOD"},
-    PIG_TALK_LOOKATWILSON = {"WHO ARE YOU?", "YOU NOT PIG", "UGLY MONKEY MAN", "YOU HAS MEAT?"},
+    PIG_TALK_LOOKATWILSON = {"WHO ARE YOU?", "YOU NOT PIG", "UGLY MONKEY PERSON", "YOU HAS MEAT?"},
     PIG_TALK_RUNAWAY_WILSON = {"TOO CLOSE!", "STAY AWAY!", "YOU BACK OFF!", "THAT MY SPACE."},
     PIG_TALK_FIGHT = {"I KILL NOW!", "YOU GO SMASH!", "RAAAWR!"},
     PIG_TALK_RUN_FROM_SPIDER = {"SPIDER BAD!", "NO LIKE SPIDER!", "SCARY SPIDER!"},
@@ -1482,10 +1482,24 @@ STRINGS=
 
     EPITAPHS =
     {
-        "Here lies some guy. Blah blah blah.",
-        "This headstone is blank",
-        "It says: 'Milk. Eggs. Bacon.'",
-        "Hey that's my name!",
+        "It says \"Come on in.\"",
+        "\"Here lies some guy.\"",
+        "\"Here lies some gal.\"",
+        "\"Here lies some person.\"",
+        "The headstone is blank.",
+        "\"Milk. Eggs. Bacon.\"",
+        "Huh? That's my name!",
+        "It says \"Finally, some peace and quiet.\"",
+        "It says \"Mind your own business.\"",
+        "It says \"Help, get me out!\" and \"Nah, just kidding,\" beneath.",
+        "It reads \"Pulvis Et Umbra Sumus.\"",
+        "\"Whoops.\"",
+        "\"Beware.\" Beware of what?",
+        "It reads \"I've made a grave error.\" Hm.",
+        "It reads \"I can dig it.\" Oh.",
+        "It reads \"Don't worry, it's cozy.\" Well that's nice.",
+        "\"And don't come back.\"",
+        "The inscription reads \"Always Watching\". Odd.",
     },
 
     TABS =
@@ -1910,6 +1924,9 @@ STRINGS.UI =
             "Reticulating",
             "Inserting",
             "Framing",
+            "Crafting",
+            "Imbuing",
+            "Randomizing",
         },
         NOUNS=
         {
@@ -1922,7 +1939,13 @@ STRINGS.UI =
             "Wilson's beard...",
             "buckets and buckets of loot...",
             "game theory...",
-            "food...",     
+            "food...",
+            "lovely roses...",
+            "gems...",
+            "unspeakable things...",
+            "primal instincts...",
+            "terrible darkness...",
+            "a touch of magic...",     
         }
     },
 
@@ -2064,9 +2087,9 @@ STRINGS.UI =
         NEWGAMEDESC = "This will erase your current save. Continue?",
         ADVGAMEDESC = "NOTE: This mode is still under development.\n\nFor experienced players only!\n\nYou've decided to bring the fight to Maxwell.\nCan you survive the increasingly harsh conditions he's created for you, and beat him at his own game?",
         NEWGAME = "Start a new game!",
-        NEWGO = "Lets Go!",
+        NEWGO = "Let's Go!",
         ASKQUIT = "Do you really want to quit?",
-        ASKQUITDESC = "Your friends will miss you!",
+        ASKQUITDESC = "Charlie will miss you!",
         QUIT = "Quit",
 
         FRESHBUILD = "Fresh Build!",
@@ -2141,7 +2164,7 @@ STRINGS.UI =
         TOOLTIP_BROWSE = "Browse the list of servers",
         TOOLTIP_HOST = "Start your own server",
         TOOLTIP_WIZARD = "Let us help you drill down the list of servers",
-        TOOLTIP_SKINS = "View and manage your items.",
+        TOOLTIP_SKINS = "View and manage your items",
         TOOLTIP_MODS = "Customize your game",
         TOOLTIP_HISTORY = "Revisit past lives and missed connections",
         TOOLTIP_OPTIONS = "Change your settings and controls",
@@ -2197,8 +2220,8 @@ STRINGS.UI =
         DEATH_ANNOUNCEMENT_2_DEFAULT = ". It became a spooky ghost!",
         GHOST_DEATH_ANNOUNCEMENT_MALE = "lost all of his humanity and is gone forever.",
         GHOST_DEATH_ANNOUNCEMENT_FEMALE = "lost all of her humanity and is gone forever.",
-        GHOST_DEATH_ANNOUNCEMENT_ROBOT = "lost all of their approximation of humanity and is gone forever.",
-        GHOST_DEATH_ANNOUNCEMENT_DEFAULT = "lost all of its humanity and is gone forever.",
+        GHOST_DEATH_ANNOUNCEMENT_ROBOT = "lost all of their humanity and is gone forever.",
+        GHOST_DEATH_ANNOUNCEMENT_DEFAULT = "lost all of its approximation of humanity and is gone forever.",
         REZ_ANNOUNCEMENT = "was resurrected by",
         START_AFK = "went away for a bit.",
         STOP_AFK = "has returned from their relaxing time away.",
@@ -2608,8 +2631,8 @@ STRINGS.UI =
         NO = "No",
         ENABLE = "Enable",
         DISABLE = "Disable",
-        WORKING_NORMALLY = "Mod is enabled.",
-        DISABLED_MANUAL = "Mod is disabled.",
+        WORKING_NORMALLY = "This mod is enabled.",
+        DISABLED_MANUAL = "This mod is disabled.",
         DISABLED_ERROR = "Crashed! Disabled.",
         STATUS = {
             WORKING_NORMALLY = "Enabled",
@@ -2971,14 +2994,14 @@ STRINGS.UI =
         INTENTION_TITLE = "What's your playstyle?",
         INTENTION_BUTTON = "Choose Playstyle",
         INTENTION_DESC = {
-            SOCIAL = "You want to relax, make friends, and play for fun. Winning or losing isn't super important, so long as everyone is having a good time.",
-            COOPERATIVE = "Teamwork is your guiding principal. It's not enough to just not starve, you have to not starve, Together!",
-            COMPETITIVE = "You plan to show to your opponents what you're made of by playing smarter, harder, faster and coming out on top!",
-            MADNESS = "Who knows what you'll do next? Fighting, dancing, filling the world with carnivorous spiders... it's pure madness!",
-            ANY = "You're, like, laidback and flexible man. You'll adapt to whatever world you find yourself in."
+            SOCIAL = "You want to hang out, make friends, and play for fun. You don't care so much if you win or lose, as long as everyone's having a good time!",
+            COOPERATIVE = "Teamwork is your guiding principal. It's not enough to just not starve, you have to not starve... Together!",
+            COMPETITIVE = "You'll show your opponents exactly what you're made of by playing smarter, harder, faster and coming out on top!",
+            MADNESS = "Who knows what'll happen next? Mass fighting, crazy dance parties, pits filled with carnivorous spiders... it's pure madness!",
+            ANY = "You're, like, laidback and flexible, man. Any world is good with you."
         },
         MISSINGDATATITLE = "Out-of-Date Server",
-        MISSINGDATABODY = "This server is not up to date. We can't display its world settings.",
+        MISSINGDATABODY = "This server is not up to date. We can not display its world settings.",
     },
 
     SERVERCREATIONSCREEN =
@@ -3006,10 +3029,10 @@ STRINGS.UI =
         INTENTION_TITLE = "What's your server's playstyle?",
         INTENTION_BUTTON = "Set Intention",
         INTENTION_DESC = {
-            SOCIAL = "This server is a place for friendly chatter, a relaxed playstyle, and getting to know people. Come on in!",
-            COOPERATIVE = "We're all trying to survive together. Here, we work together and do what we can to tame this hostile world.",
-            COMPETITIVE = "This is where you'll find a fair fight. Everyone needs a place to prove who's the best at surviving, fighting, building, or whatever.",
-            MADNESS = "Anything goes on this server! Forests will be burned, food will be nommed, and backs will be stabbed.",
+            SOCIAL = "This server is a place for friendly chatter, a relaxed playstyle, and getting to know people. Everyone's welcome here!",
+            COOPERATIVE = "Surviving's more fun when you do it as a team. On this server we want to work together and do our best to tame the hostile world.",
+            COMPETITIVE = "This server is the perfect arena for a fair fight. Everyone needs a place to prove who's the best at surviving, fighting, building, or... whatever.",
+            MADNESS = "Anything goes on this server! Forests will be burned, food will be nommed, and backs will be unceremoniously stabbed. Be prepared!",
         },
         NEWHOST_TITLE = "Creating your first world?",
         NEWHOST_TYPE =
@@ -3077,14 +3100,14 @@ STRINGS.UI =
     GAMEMODES =
     {
         SURVIVAL = "Survival",
-        SURVIVAL_DESCRIPTION = "We survive together, we die together.\n\n* Enter through the Jury-Rigged Portal.\n* Turn into a ghost when you die.\n* Dead players cause sanity drain for living players.",
+        SURVIVAL_DESCRIPTION = "We survive together, we die together!\n\n* Enter the world through the Florid Postern.\n* Become a ghost when you die.\n* Ghost players cause a sanity drain for living players.",
         WILDERNESS = "Wilderness",
-        WILDERNESS_DESCRIPTION = "It's wild and dangerous out there.\n\n* Enter at a random location in the world.\n* No safety net. If you die: try, try again.\n* Others may or may not be friendly.",
+        WILDERNESS_DESCRIPTION = "It's wild and dangerous out there!\n\n* Enter at a random location in the world.\n* No safety net. If you die: try, try again.\n* Those you encounter may or may not be friendly.",
         ENDLESS = "Endless",
-        ENDLESS_DESCRIPTION = "A Don't Starve sandbox.\n\n* Enter through the Jury-Rigged Portal.\n* Turn into a ghost when you die (no sanity drain).\n* Resurrection always available via Jury-Rigged Portal.",
+        ENDLESS_DESCRIPTION = "A neverending Don't Starve sandbox.\n\n* Enter the world through the Florid Postern.\n* Become a ghost when you die (no sanity drain).\n* Resurrection is always available via the Florid Postern.",
         CUSTOM = "Custom Game",
         UNKNOWN = "Game Mode Unknown",
-        UNKNOWN_DESCRIPTION = "We couldn't download the details of this game mode.",
+        UNKNOWN_DESCRIPTION = "We could not retrieve the details of this game mode.",
     },
     
     SERVERADMINSCREEN =
@@ -3206,13 +3229,13 @@ STRINGS.UI =
     	SELECT = "Select",
     	PICK = "Pick A Character",
     	SORRY = "Sorry",
-    	OFFLINE = "Your collection is not available offline.",
+    	OFFLINE = "Your item collection is not available in offline mode.",
     	NEW = "NEW",
     	TRADE = "Trade Inn",
     	BACK = "Back",
-    	TRADE_TOOLTIP = "Trade your unwanted items in for something new!",
+    	TRADE_TOOLTIP = "Trade all your unwanted items in for something new!",
 		NO_ITEMS_TITLE = "Nothing to see here",
-    	NO_ITEMS = "Play the game to get items!",
+    	NO_ITEMS = "Start playing to earn items!",
 	},
 
     -- Rarity and colour tables are to allow translation of item properties. Keys are the names as returned by the item server.
@@ -3259,11 +3282,11 @@ STRINGS.UI =
 		MARKET = "Steam",
         EQUIPPED = "Last one!",
         CHECK = "Warning!",
-        WARNING_SINGLE = "You won't be able to use an item if you give your last copy away. Really trade this item?",
-        WARNING = "You won't be able to use an item if you give your last copy away. Really trade these items?",
+        WARNING_SINGLE = "You won't be able to use an item if you give your last one away! Do you really want to trade this item?",
+        WARNING = "You won't be able to use an item if you give your last one away! Do you really want to trade these items?",
 		SERVER_ERROR_TITLE = "Error Trading Items",
-		SERVER_ERROR_BODY = "There was an error trading items. Please login again to correct your account inventory.",
-		OK = "Ok",
+		SERVER_ERROR_BODY = "There was an error your trading items. Please login again to refresh your account inventory.",
+		OK = "OK",
         SPECIALS_TITLE = "Specials",
         SPECIALS = "Specials",
         NOSPECIALS = "Unspecials",
@@ -4087,7 +4110,7 @@ STRINGS.UI =
         SAVE_FAILED = "An error occurred while saving your data.",
         LOAD_FAILED = "An error occurred while loading your data.",
         DELETE_FAILED = "An error occurred while deleting your data.",	    
-        DATA_DAMAGED = "Oh no! Your saved data is corrupt and cannot be used.",
+        DATA_DAMAGED = "Oh no! Your save data has become corrupt and cannot be used.",
         DISABLE_AUTOSAVE = "Are you sure you want to\ndisable the auto-save feature?",
         
         OVERWRITE = "Overwrite",	    
@@ -4111,7 +4134,7 @@ STRINGS.UI =
 STRINGS.CHARACTERS =
 {
     GENERIC = require "speech_wilson",
-    WAXWELL = require "speech_maxwell",
+    WAXWELL = require "speech_waxwell",
     WOLFGANG = require "speech_wolfgang",
     WX78 = require "speech_wx78",
     WILLOW = require "speech_willow",
@@ -4370,7 +4393,7 @@ STRINGS.MODS =
 {
 	VERSIONING =
 	{
-		OUT_OF_DATE = "Mod \"%s\" is out of date. The server needs to get the latest version from the Steam Workshop so users can join.",
+		OUT_OF_DATE = "Mod \"%s\" is out of date. The server needs to get the latest version from the Steam Workshop so other users can join.",
 	},
 }
 

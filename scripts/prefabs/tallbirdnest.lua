@@ -179,6 +179,9 @@ local function fn()
     -------------------
 
     inst:AddComponent("inspectable")
+    inst:AddComponent("hauntable")
+    inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
+
     inst:ListenForEvent("entitysleep", onsleep)
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad

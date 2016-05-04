@@ -1,12 +1,3 @@
-local assets =
-{
-    Asset("ANIM", "anim/waxwell_shadow_mod.zip"),
-    Asset("SOUND", "sound/maxwell.fsb"),
-    Asset("ANIM", "anim/swap_pickaxe.zip"),
-    Asset("ANIM", "anim/swap_axe.zip"),
-    Asset("ANIM", "anim/swap_nightmaresword.zip"),
-}
-
 local prefabs =
 {
     "shadow_despawn",
@@ -63,6 +54,13 @@ local function spearfn(inst)
 end
 
 local function MakeMinion(prefab, tool, hat, master_postinit)
+    local assets =
+    {
+        Asset("ANIM", "anim/waxwell_shadow_mod.zip"),
+        Asset("SOUND", "sound/maxwell.fsb"),
+        Asset("ANIM", "anim/"..tool..".zip"),
+    }
+
     local function fn()
         local inst = CreateEntity()
 
@@ -188,7 +186,7 @@ end
 return MakeMinion("shadowlumber", "swap_axe"),
     MakeMinion("shadowminer", "swap_pickaxe"),
     MakeMinion("shadowdigger", "swap_shovel"),
-    MakeMinion("shadowduelist", "swap_nightmaresword", nil, spearfn),
+    MakeMinion("shadowduelist", "swap_nightmaresword_shadow", nil, spearfn),
     MakeBuilder("shadowlumber"),
     MakeBuilder("shadowminer"),
     MakeBuilder("shadowdigger"),

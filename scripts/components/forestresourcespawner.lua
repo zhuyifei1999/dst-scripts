@@ -18,13 +18,37 @@ local easing = require("easing")
 
 local MIN_PLAYER_DISTANCE = 240
 local RENEW_RADIUS = 60
+
+--each renewable set contains a list of prefab spawns and prefab matches.
+--if there aren't any of the prefab matches in an area, it will spawn the
+--first non-diseased prefab in prefab spawns.
 local RENEWABLES =
 {
-    flint = { flint = true },
-    sapling = { sapling = true },
-    grass = { grass = true, depleted_grass = true },
-    berrybush = { berrybush = true, berrybush2 = true },
+    {
+        spawns = { "flint" },
+        matches = { "flint" },
+    },
+    {
+        spawns = { "sapling", "twigs" },
+        matches = { "sapling", "twigs" },
+    },
+    {
+        spawns = { "grass", "cutgrass" },
+        matches = { "grass", "depleted_grass", "cutgrass", "grassgekko" },
+    },
+    {
+        spawns = { "berrybush", "berrybush_juicy" },
+        matches = { "berrybush", "berrybush2", "berrybush_juicy" },
+    },
 }
+--turn the matches tables into key,value pairs
+for i, v in ipairs(RENEWABLES) do
+    local temp = {}
+    for i2, v2 in ipairs(v.matches) do
+        temp[v2] = true
+    end
+    v.matches = temp
+end
 
 --------------------------------------------------------------------------
 --[[ Member variables ]]
@@ -46,23 +70,30 @@ local function GetRenewablePeriod()
     return TUNING.SEG_TIME + math.random() * TUNING.SEG_TIME
 end
 
-local function DoPrefabRenew(x, z, ents, prefab, prefab_matches, max)
-    --Check if this prefab was found already
+local function DoPrefabRenew(x, z, ents, renewable_set, max)
+    --Check if this set's prefab matches were found already
     for i, v in ipairs(ents) do
-        if prefab_matches[v.prefab] then
+        if renewable_set.matches[v.prefab] then
             return
         end
     end
 
-    --Spawn random up to max count
-    for i = math.random(max), 1, -1 do
-        local theta = math.random() * 2 * PI
-        local radius = math.random() * RENEW_RADIUS
-        local x1 = x + radius * math.cos(theta)
-        local z1 = z - radius * math.sin(theta)
-        if inst.Map:CanPlantAtPoint(x1, 0, z1) and
-            not (RoadManager ~= nil and RoadManager:IsOnRoad(x1, 0, z1)) then
-            SpawnPrefab(prefab).Transform:SetPosition(x1, 0, z1)
+    --Check if this set has a spawnable prefab
+    local prefabswapmanager = inst.components.prefabswapmanager
+    for _, prefab in ipairs(renewable_set.spawns) do
+        if not (prefabswapmanager ~= nil and prefabswapmanager:IsDiseasedPrefab(prefab)) then
+            --Spawn random up to max count
+            for i = math.random(max), 1, -1 do
+                local theta = math.random() * 2 * PI
+                local radius = math.random() * RENEW_RADIUS
+                local x1 = x + radius * math.cos(theta)
+                local z1 = z - radius * math.sin(theta)
+                if inst.Map:CanPlantAtPoint(x1, 0, z1) and
+                    not (RoadManager ~= nil and RoadManager:IsOnRoad(x1, 0, z1)) then
+                    SpawnPrefab(prefab).Transform:SetPosition(x1, 0, z1)
+                end
+            end
+            return
         end
     end
 end
@@ -75,9 +106,9 @@ local function DoRenew()
 
     local x, y, z = target.Transform:GetWorldPosition()
     if not IsAnyPlayerInRange(x, y, z, MIN_PLAYER_DISTANCE) then
-        local ents = TheSim:FindEntities(x, y, z, RENEW_RADIUS, { "renewable" })
-        for k, v in pairs(RENEWABLES) do
-            DoPrefabRenew(x, z, ents, k, v, 3)
+        local ents = TheSim:FindEntities(x, y, z, RENEW_RADIUS, nil, { "INLIMBO" }, { "renewable", "grassgekko" })
+        for i, v in ipairs(RENEWABLES) do
+            DoPrefabRenew(x, z, ents, v, 3)
         end
     end
 

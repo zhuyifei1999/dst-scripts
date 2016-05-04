@@ -3284,7 +3284,6 @@ local states =
             if inst.components.inventory.activeitem and inst.components.inventory.activeitem.components.book then
                 inst.components.inventory:ReturnActiveItem()
             end
-            inst.SoundEmitter:PlaySound("dontstarve/common/use_book")
         end,
 
         timeline =
@@ -3298,14 +3297,18 @@ local states =
                 inst.sg.statemem.book_fx = fx
             end),
 
-            TimeEvent(58*FRAMES, function(inst)
+            TimeEvent(28 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/common/use_book_light")
+            end),
+
+            TimeEvent(54 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/common/use_book_close")
+            end),
+
+            TimeEvent(58 * FRAMES, function(inst)
                 inst.SoundEmitter:PlaySound("dontstarve/common/book_spell")
                 inst:PerformBufferedAction()
                 inst.sg.statemem.book_fx = nil
-            end),
-
-            TimeEvent(61 * FRAMES, function(inst)
-                inst.SoundEmitter:PlaySound("dontstarve/common/use_book_close")
             end),
         },
 

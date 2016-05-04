@@ -151,12 +151,13 @@ function RecipePopup:BuildWithSpinner(horizontal)
     self.ing = {}
 
     self.button = self.contents:AddChild(ImageButton())
-    self.button:SetOnClick(function()  if not DoRecipeClick(self.owner, self.recipe, self.skins_spinner.GetItem()) then 
-											self.owner.HUD.controls.crafttabs:Close() 
-										else
-											Profile:SetRecipeTimestamp(self.recipe.name, self.timestamp)
-											Profile:SetLastUsedSkinForItem(self.recipe.name, self.skins_spinner.GetItem())
-										end 
+    self.button:SetOnClick(function()
+								if not DoRecipeClick(self.owner, self.recipe, self.skins_spinner.GetItem()) then
+									self.owner.HUD.controls.crafttabs:Close()
+								else
+									Profile:SetRecipeTimestamp(self.recipe.name, self.timestamp)
+								end
+								Profile:SetLastUsedSkinForItem(self.recipe.name, self.skins_spinner.GetItem())
     						end)
     self.button:SetPosition(320, -155, 0)
   
@@ -261,12 +262,13 @@ function RecipePopup:BuildNoSpinner(horizontal)
     self.button = self.contents:AddChild(ImageButton())
     self.button:SetScale(.7,.7,.7)
     self.button.image:SetScale(.45, .7)
-    self.button:SetOnClick(function() 	if not DoRecipeClick(self.owner, self.recipe) then 
-    										self.owner.HUD.controls.crafttabs:Close() 
-    									else
-    										Profile:SetRecipeTimestamp(self.recipe.name, self.timestamp)
-    									end
-    								end)
+    self.button:SetOnClick(function()
+							if not DoRecipeClick(self.owner, self.recipe) then 
+									self.owner.HUD.controls.crafttabs:Close() 
+								else
+									Profile:SetRecipeTimestamp(self.recipe.name, self.timestamp)
+								end
+							end)
 
     self.recipecost = self.contents:AddChild(Text(NUMBERFONT, 40))
     self.recipecost:SetHAlign(ANCHOR_LEFT)

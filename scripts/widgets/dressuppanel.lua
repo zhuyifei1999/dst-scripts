@@ -200,16 +200,14 @@ function DressupPanel:SeparateAvatar()
 		self.base_spinner.spinner.background:ScaleToSize(220, option_height + 3)
 		self.base_spinner.spinner.background:SetPosition(0, -.5)
 		self.base_spinner.new_tag:SetScale(new_tag_scale)
-		self.base_spinner.new_tag:SetPosition(new_tag_x_offset, new_tag_offset) 
-		self.base_spinner.new_tag:MoveToFront()
+		self.base_spinner.new_tag:SetPosition(new_tag_x_offset, new_tag_offset)
 
 		self.body_spinner:SetPosition(0, body_offset-option_height + spinner_offset)
 		self.body_spinner.spinner:SetArrowScale(arrow_scale)
 		self.body_spinner.spinner.background:ScaleToSize(220, option_height + 3)
 		self.body_spinner.spinner.background:SetPosition(0, -.5)
 		self.body_spinner.new_tag:SetScale(new_tag_scale)
-		self.body_spinner.new_tag:SetPosition(new_tag_x_offset, new_tag_offset) 
-		self.body_spinner.new_tag:MoveToFront()
+		self.body_spinner.new_tag:SetPosition(new_tag_x_offset, new_tag_offset)
 		
 		self.hand_spinner:SetPosition(0, body_offset-2*option_height + spinner_offset)
 		self.hand_spinner.spinner:SetArrowScale(arrow_scale)
@@ -217,7 +215,6 @@ function DressupPanel:SeparateAvatar()
 		self.hand_spinner.spinner.background:SetPosition(0, -.5)
 		self.hand_spinner.new_tag:SetScale(new_tag_scale)
 		self.hand_spinner.new_tag:SetPosition(new_tag_x_offset, new_tag_offset)
-		self.hand_spinner.new_tag:MoveToFront()
 
 		self.legs_spinner:SetPosition(0, body_offset-3*option_height + spinner_offset)
 		self.legs_spinner.spinner:SetArrowScale(arrow_scale)
@@ -225,7 +222,6 @@ function DressupPanel:SeparateAvatar()
 		self.legs_spinner.spinner.background:SetPosition(0, -.5)
 		self.legs_spinner.new_tag:SetScale(new_tag_scale)
 		self.legs_spinner.new_tag:SetPosition(new_tag_x_offset, new_tag_offset)
-		self.legs_spinner.new_tag:MoveToFront()
 
 		self.feet_spinner:SetPosition(0, body_offset-4*option_height + spinner_offset)
 		self.feet_spinner.spinner:SetArrowScale(arrow_scale)
@@ -233,7 +229,6 @@ function DressupPanel:SeparateAvatar()
 		self.feet_spinner.spinner.background:SetPosition(0, -.5)
 		self.feet_spinner.new_tag:SetScale(new_tag_scale)
 		self.feet_spinner.new_tag:SetPosition(new_tag_x_offset, new_tag_offset)
-		self.feet_spinner.new_tag:MoveToFront()
 
 		self.base_spinner:EnableGlow()
 		self.body_spinner:EnableGlow()
@@ -340,7 +335,7 @@ function DressupPanel:MakeSpinner(slot)
     spinner_group.new_tag = spinner_group:AddChild(Image("images/ui.xml", "new_label.tex"))
     spinner_group.new_tag:SetScale(.4)
     spinner_group.new_tag:SetPosition(-70, spinner_height - 12) 
-
+	
     spinner_group.new_tag:Hide()
 
 	spinner_group.slot = slot
@@ -407,6 +402,8 @@ function DressupPanel:MakeSpinner(slot)
 													end
 
 													self:SetDefaultSkinsForBase()
+												else
+													spinner_group.new_tag:Hide() --none of the random options can be "new"												
 												end
 										end)
 
@@ -437,7 +434,9 @@ function DressupPanel:MakeSpinner(slot)
 								  	--print("Hiding new_tag", spinner_group.GetItem())
 								end
 								self:SetPuppetSkins()
-							end 
+							else
+								spinner_group.new_tag:Hide() --none of the random options can be "new"
+							end
 						end)
 	end
 
@@ -455,7 +454,9 @@ function DressupPanel:MakeSpinner(slot)
 
 		return 1
 	end
-
+	
+	spinner_group.new_tag:MoveToFront()
+	
 	spinner_group.focus_forward = spinner_group.spinner
 	return spinner_group
 

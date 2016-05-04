@@ -10,12 +10,18 @@ local function make_plantable(data)
         table.insert(assets, Asset("ANIM", "anim/"..data.build..".zip"))
     end
 
-    local function ondeploy(inst, pt)
+    local function ondeploy(inst, pt, deployer)
         local tree = SpawnPrefab(data.name)
         if tree ~= nil then
             tree.Transform:SetPosition(pt:Get())
             inst.components.stackable:Get():Remove()
             tree.components.pickable:OnTransplant()
+            if deployer ~= nil and deployer.SoundEmitter ~= nil then
+                --V2C: WHY?!! because many of the plantables don't
+                --     have SoundEmitter, and we don't want to add
+                --     one just for this sound!
+                deployer.SoundEmitter:PlaySound("dontstarve/common/plant")
+            end
         end
     end
 
@@ -85,9 +91,7 @@ local plantables =
     },
     {
         name = "berrybush_juicy",
-        bank = "berrybush",
         anim = "idle_dead",
-        build = "berrybush_juicy_build",
         inspectoverride = "dug_berrybush",
     },
     {

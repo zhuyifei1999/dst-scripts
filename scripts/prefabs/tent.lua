@@ -45,9 +45,16 @@ local function onfinished(inst)
     end
 end
 
-local function onbuilt(inst)
+local function onbuilt_tent(inst)
     inst.AnimState:PlayAnimation("place")
     inst.AnimState:PushAnimation("idle", true)
+    inst.SoundEmitter:PlaySound("dontstarve/common/tent_craft")
+end
+
+local function onbuilt_siestahut(inst)
+    inst.AnimState:PlayAnimation("place")
+    inst.AnimState:PushAnimation("idle", true)
+    inst.SoundEmitter:PlaySound("dontstarve/common/lean_to_craft")
 end
 
 local function onignite(inst)
@@ -142,7 +149,7 @@ local function onload(inst, data)
     end
 end
 
-local function common_fn(bank, build, icon, tag)
+local function common_fn(bank, build, icon, tag, onbuiltfn)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -192,7 +199,7 @@ local function common_fn(bank, build, icon, tag)
     inst.components.sleepingbag.dryingrate = math.max(0, -TUNING.SLEEP_WETNESS_PER_TICK / TUNING.SLEEP_TICK_PERIOD)
 
     MakeSnowCovered(inst)
-    inst:ListenForEvent("onbuilt", onbuilt)
+    inst:ListenForEvent("onbuilt", onbuiltfn)
 
     MakeLargeBurnable(inst, nil, nil, true)
     MakeMediumPropagator(inst)
@@ -206,7 +213,7 @@ local function common_fn(bank, build, icon, tag)
 end
 
 local function tent()
-    local inst = common_fn("tent", "tent", "tent.png")
+    local inst = common_fn("tent", "tent", "tent.png", nil, onbuilt_tent)
 
     if not TheWorld.ismastersim then
         return inst
@@ -224,7 +231,7 @@ local function tent()
 end
 
 local function siestahut()
-    local inst = common_fn("siesta_canopy", "siesta_canopy", "siestahut.png", "siestahut")
+    local inst = common_fn("siesta_canopy", "siesta_canopy", "siestahut.png", "siestahut", onbuilt_siestahut)
 
     if not TheWorld.ismastersim then
         return inst

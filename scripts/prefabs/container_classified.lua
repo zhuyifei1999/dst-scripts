@@ -276,10 +276,10 @@ local function SlotItem(item, slot)
     return item ~= nil and slot ~= nil and { item = item, slot = slot } or nil
 end
 
-local function PushItemGet(inst, data, isreturning)
+local function PushItemGet(inst, data, ignoresound)
     if data ~= nil then
         if inst._parent ~= nil then
-            if not isreturning and
+            if not ignoresound and
                 inst._parent.replica.inventoryitem ~= nil and
                 inst._parent.replica.inventoryitem:IsHeldBy(ThePlayer) then
                 ThePlayer:PushEvent("containergotitem", data)
@@ -377,7 +377,7 @@ local function PutOneOfActiveItemInSlot(inst, slot)
         local inventory, active_item, busy = QueryActiveItem()
         if not busy and active_item ~= nil then
             local giveitem = SlotItem(active_item, slot)
-            PushItemGet(inst, giveitem)
+            PushItemGet(inst, giveitem, true)
             PushStackSize(inst, inventory, active_item, 1, false, active_item.replica.stackable:StackSize() - 1, true)
             SendRPCToServer(RPC.PutOneOfActiveItemInSlot, slot, inst._parent)
         end
@@ -390,7 +390,7 @@ local function PutAllOfActiveItemInSlot(inst, slot)
         if not busy and active_item ~= nil then
             local giveitem = SlotItem(active_item, slot)
             inventory:PushNewActiveItem()
-            PushItemGet(inst, giveitem)
+            PushItemGet(inst, giveitem, true)
             SendRPCToServer(RPC.PutAllOfActiveItemInSlot, slot, inst._parent)
         end
     end

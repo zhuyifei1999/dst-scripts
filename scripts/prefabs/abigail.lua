@@ -99,6 +99,10 @@ local function linktoplayer(inst, player)
     player:ListenForEvent("onremove", unlink, inst)
 end
 
+local function AbleToAcceptTest(inst, item)
+    return false, item.prefab == "reviver" and "ABIGAILHEART" or nil
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -151,7 +155,7 @@ local function fn()
     inst:SetStateGraph("SGghost")
 
     inst:AddComponent("inspectable")
-    
+
     inst:AddComponent("health")
     inst.components.health:SetMaxHealth(TUNING.ABIGAIL_HEALTH)
     inst.components.health:StartRegen(1, 1)
@@ -170,7 +174,10 @@ local function fn()
     MakeHauntableGoToState(inst, "haunted", nil, 64 * FRAMES * 1.2)
 
     inst:AddComponent("lootdropper")
-    ------------------    
+    ------------------
+    --Added so you can attempt to give hearts to trigger flavour text when the action fails
+    inst:AddComponent("trader")
+    inst.components.trader:SetAbleToAcceptTest(AbleToAcceptTest)
 
     inst:AddComponent("follower")
     inst.components.follower:KeepLeaderOnAttacked()

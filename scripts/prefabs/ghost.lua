@@ -7,6 +7,10 @@ local assets =
 
 local brain = require "brains/ghostbrain"
 
+local function AbleToAcceptTest(inst, item)
+    return false, item.prefab == "reviver" and "GHOSTHEART" or nil
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -69,6 +73,10 @@ local function fn()
     inst:AddComponent("aura")
     inst.components.aura.radius = TUNING.GHOST_RADIUS
     inst.components.aura.tickperiod = TUNING.GHOST_DMG_PERIOD
+
+    --Added so you can attempt to give hearts to trigger flavour text when the action fails
+    inst:AddComponent("trader")
+    inst.components.trader:SetAbleToAcceptTest(AbleToAcceptTest)
 
     ------------------
 

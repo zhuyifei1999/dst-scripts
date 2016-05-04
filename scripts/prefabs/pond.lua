@@ -161,6 +161,9 @@ local function commonfn(pondtype)
     inst:AddComponent("fishable")
     inst.components.fishable:SetRespawnTime(TUNING.FISH_RESPAWN_TIME)
 
+    inst:AddComponent("hauntable")
+    inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
+
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad
 

@@ -434,7 +434,7 @@ function SaveIndex:GetSlotServerData(slot)
 end
 
 function SaveIndex:GetSlotGenOptions(slot)
-    return self.data.slots[slot or self.current_slot].world.options
+    return deepcopy(self.data.slots[slot or self.current_slot].world.options)
 end
 
 function SaveIndex:GetSlotSession(slot)

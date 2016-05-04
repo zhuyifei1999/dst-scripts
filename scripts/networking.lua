@@ -622,6 +622,16 @@ function UpdateServerWorldGenDataString()
         end
     end
 
+    local customise = require"map/customise"
+    for i,world in ipairs(clusteroptions) do
+        for option,value in pairs(world.overrides) do
+            -- we can aggressively prune these for network purposes, as the only use after this is the server info screen.
+            if value == "default" or not customise.ValidateOption(option, value, world.location) then
+                world.overrides[option] = nil
+            end
+        end
+    end
+
     --V2C: TODO: Likely to exceed data size limit with custom multilevel worlds
 
     TheNet:SetWorldGenData(DataDumper(clusteroptions, nil, false))
