@@ -30,8 +30,8 @@ STRINGS.SKIN_QUOTES =
 	woodie_shadow = "Forests are full of shadows, eh?", 
 	woodie_survivor = "I could do with a haircut and a cup of tea, eh?", 
 	wx78_formal = "I POLISHED MY CHASSIS FOR THE OCCASION", 
-	wx78_shadow = "I AM AN EVIL ROBOT", 
-	wx78_survivor = "PLEASE DIRECT ME TO THE NEAREST REPAIR SHOP", 
+	wx78_shadow = "NOW THE OUTSIDE MATCHES THE INSIDE. EVIL.", 
+	wx78_survivor = "RUSTED AND BUSTED.", 
 }
 STRINGS.SKIN_NAMES =
 {
@@ -333,7 +333,7 @@ STRINGS.SKIN_DESCRIPTIONS =
 	legs_skirt_basic_tan_cream = "Wearing this 'no-tan-lines tan' colored skirt won't help you survive... But you'll look great!", 
 	legs_skirt_plaid_blue_cornflower = "This 'rubber glove blue' colored skirt isn't a proper kilt, but you feel vaguely Scottish anyway.", 
 	legs_skirt_plaid_green_pistachio = "This 'science experiment green' colored skirt isn't a proper kilt, but you feel vaguely Scottish anyway.", 
-	missing = "This item completely mystifies you", 
+	missing = "This item completely mystifies you.", 
 	none = "Your usual look.", 
 	torch_rag = "Give your torch some visual flare with these hastily wrapped, desiccated rags. Smoky!", 
 	torch_shadow = "At first glance this torch appears menacing, but holding it makes you feel quite sad.", 
@@ -367,7 +367,7 @@ STRINGS.SKIN_DESCRIPTIONS =
 	woodie_formal = "Woodie puts bear fat in his hair when he goes out.", 
 	woodie_shadow = "The shadow realm is pretty much the same as here, just darker.", 
 	woodie_survivor = "Woodie looks like he's turning into a tree.", 
-	wx78_formal = "A moustached mechanical man.", 
-	wx78_shadow = "A truly evil robot.", 
+	wx78_formal = "ERROR: DO NOT RECOGNIZE COMMAND \"MOUSTACHE.TWIRL\"", 
+	wx78_shadow = "This robot was evil before. Now they're double evil.", 
 	wx78_survivor = "Exposure to the elements causes corrosion.", 
 }

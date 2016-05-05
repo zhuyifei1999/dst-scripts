@@ -203,7 +203,7 @@ function Crop:Harvest(harvester)
         end
         self.grower = nil
 
-        return true
+        return true, product
     end
 end
 

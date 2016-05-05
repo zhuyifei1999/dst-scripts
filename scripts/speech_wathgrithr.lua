@@ -31,6 +31,7 @@ return {
         MOUNT =
         {
             INUSE = "I'll need to be faster than that in battle!",
+            TARGETINCOMBAT = "I'll only ride it if it's the victor.",
         },
         SADDLE =
         {
@@ -65,9 +66,9 @@ return {
     	},
     	CHANGEIN =
         {
-            GENERIC = "Why change when my costume is already so magnificent?",
-            BURNING = "Gasp! My costumes!",
-            INUSE = "Even a trained actor can't perform a costume change that fast!.",
+            GENERIC = "That's where I keep all my favorite furs and pelts.",
+            BURNING = "Gasp! My furs!",
+            INUSE = "Let them finish choosing their garments first.",
         },
     	ATTUNE =
         {
@@ -81,6 +82,11 @@ return {
 	},
 	ANNOUNCE_MOUNT_LOWHEALTH = "Don't give up, beast! Fight!",
 	ACTIONFAIL_GENERIC = "If I can't do it, it can't be done!",
+	ANNOUNCE_BURNT = "By Hel's fire!",
+	ANNOUNCE_NODANGERAFK = "Only a coward would leave now!",
+	ANNOUNCE_NODANGERGIFT = "Not with the gift of battle before me!",
+	ANNOUNCE_NOWARDROBEONFIRE = "I cannot, it will soon be reduced to ash.",
+	ANNOUNCE_WORMS = "The earth quakes with the approach of a foe!",
 	ANNOUNCE_ADVENTUREFAIL = "Back to the Otherworld, victory shall be mine!",
 	ANNOUNCE_BEES = "Back wee speared creatures!",
 	ANNOUNCE_BOOMERANG = "Urg! I must master the curved weapon.",
@@ -228,9 +234,9 @@ return {
         WOODIE = 
         {
             GENERIC = "May Yggdrasil bind us as the nine worlds, %s!",
-            ATTACKER = "I'll fell you like so many trees should it come to that, %s.",
+            ATTACKER = "I could fell you like so many trees, %s.",
             MURDERER = "By Yggdrasil, I will cut you down!",
-            REVIVER = "Freya smiles on %s.",
+            REVIVER = "%s's heart is as mighty as his beard.",
             GHOST = "The worldtree still watches over you, %s. I shall retrieve a heart.",
         },
         WICKERBOTTOM = 
@@ -244,7 +250,7 @@ return {
         WES = 
         {
             GENERIC = "Good health to you, %s!",
-            ATTACKER = "If %s is looking for trouble, I'll give it to him!",
+            ATTACKER = "Do you challenge me, mime?",
             MURDERER = "May we meet again in Valhalla!",
             REVIVER = "%s has Hoenir's blessing.",
             GHOST = "Meditate on Hoenir's blessings, %s. I'll retrieve your heart.",
@@ -254,7 +260,7 @@ return {
             GENERIC = "Blessings upon you, spiderchild %s!",
             ATTACKER = "There's a new hunger in %s's eyes.",
             MURDERER = "I've felled greater monsters than you, %s! Let us fight!",
-            REVIVER = "%s's spirit burns bright like Sol.",
+            REVIVER = "%s's spirit burns brighter than Sol.",
             GHOST = "May you return with the swiftness of Sleipnir, many-legged one.",
         },
         WATHGRITHR = 
@@ -401,6 +407,8 @@ return {
 		CUTLICHEN = "I picked it. But I won't eat it.",
 
 		CAVE_BANANA = "Monkey food.",
+		SCORCHED_SKELETON = "Rest easy, spirit. Your fight is over.",
+		CAVE_BANANA_BURNT = "Thoroughly vanquished.",
 		CAVE_BANANA_COOKED = "Warmed monkey food.",
 		CAVE_BANANA_TREE = "A flimsy monkey tree.",
 		ROCKY = "He may be a worthy combat comrade.",
@@ -461,10 +469,12 @@ return {
 		SLURTLEHAT="A new battle helm for my collection!",
 		SLURTLEHOLE="Not where I'd choose to hang my helm.",
 		SLURTLESLIME="Yes. Slime.",
+		WATERMELON_SEEDS = "Seedy.",
 		SNURTLE="I like his helmet.",
 		SPIDER_HIDER="I'll smash you!",
 		SPIDER_SPITTER="This one's feisty.",
 		SPIDERHOLE="Webbing, never a good sign.",
+		SPIDERHOLE_ROCK = "Webbing, never a good sign.",
 		STALAGMITE="Cave boulder.",
 		STALAGMITE_FULL="Cave boulder.",
 		STALAGMITE_LOW="Cave boulder.",
@@ -484,14 +494,22 @@ return {
 		TURF_ROCKY = "A piece of the battlefield.",
 		TURF_SAVANNA = "A piece of the battlefield.",
 		TURF_WOODFLOOR = "Wooden flooring, a fine surface for mortal combat.",
-
+		BURNT_MARSH_BUSH = "Razed to the ground.",
 		TURF_CAVE="A piece of the battlefield.",
 		TURF_FUNGUS="A piece of the battlefield.",
 		TURF_SINKHOLE="A piece of the battlefield.",
 		TURF_UNDERROCK="A piece of the battlefield.",
 		TURF_MUD="A piece of the battlefield.",
+		TURF_BADLANDS = "A piece of the battlefield.",
+		TURF_DECIDUOUS = "A piece of the battlefield.",
+		TURF_DESERTDIRT = "A piece of the battlefield.",
+		TURF_FUNGUS_GREEN = "A piece of the battlefield.",
+		TURF_FUNGUS_RED = "A piece of the battlefield.",
+		TURF_SANDY = "A piece of the battlefield.",
 		TURF_DRAGONFLY = "A warm piece of the battlefield.",
-
+		PIGTENT = "It smells of breakfast!",
+		BIGFOOT = "That's something completely different!",
+		BISHOP_CHARGE_HIT = "Rrraugh!",
 		POWCAKE = "What in the name of the unicorn is this?",
         CAVE_ENTRANCE = "What treasures lie beneath?",
         CAVE_ENTRANCE_RUINS = "What treasures lie beneath?",
@@ -512,7 +530,7 @@ return {
 		MAXWELLPHONOGRAPH = "A mechanical songstress.",
 		BOOMERANG = "For flinging at foes!",
 		PIGGUARD = "He's battle ready, I can tell.",
-		ABIGAIL = "A lady ghost.",
+		ABIGAIL = "What do you desire, apparition?",
 		ADVENTURE_PORTAL = "Adventure is calling.",
 		AMULET = "It's red, and a fighter. Just like me!",
 		ANIMAL_TRACK = "Oh! I love a good hunt.",
@@ -548,6 +566,7 @@ return {
 		BEEBOX =
 		{
 			FULLHONEY = "It's a honey treasure trove!",
+			READY = "It's a honey treasure trove!",
 			GENERIC = "A sweet box of wee warriors.",
 			NOHONEY = "Where's the honey?",
 			SOMEHONEY = "Some honey. Patience is needed.",
@@ -902,7 +921,7 @@ return {
 		GHOST = "A spirit trapped between worlds.",
 		GOLDENAXE = "A tool of gold!",
 		GOLDENPICKAXE = "Gold for gold.",
-		GOLDENPITCHFORK = "",
+		GOLDENPITCHFORK = "A weapon of very wealthy farmers.",
 		GOLDENSHOVEL = "Digging like a king!",
 		GOLDNUGGET = "I am pleased with this gold piece.",
 		GRASSGEKKO = 
@@ -1106,8 +1125,19 @@ return {
 		PETALS = "Thank you Froh for this gift!",
 		PETALS_EVIL = "These were not made by Froh.",
 		PETRIFIED_TREE = "My mere presence struck terror into their tree-hearts!",
+		ROCK_PETRIFIED_TREE = "My mere presence struck terror into their tree-hearts!",
+		ROCK_PETRIFIED_TREE_OLD = "My mere presence struck terror into their tree-hearts!",
 		PICKAXE = "I can use it to get precious spear and helm materials.",
 		PIGGYBACK = "The pig died with honor and gave to me this pack.",
+
+		SHADOWDIGGER = "I hope this serf is being treated with dignity.",
+		SHADOWDIGGER_BUILDER = "I hope this serf is being treated with dignity.",
+		SHADOWDUELIST = "I hope this serf is being treated with dignity.",
+		SHADOWDUELIST_BUILDER = "I hope this serf is being treated with dignity.",
+		SHADOWLUMBER = "I hope this serf is being treated with dignity.",
+		SHADOWLUMBER_BUILDER = "I hope this serf is being treated with dignity.",
+		SHADOWMINER = "I hope this serf is being treated with dignity.",
+		SHADOWMINER_BUILDER = "I hope this serf is being treated with dignity.",
 		PIGHEAD = 
 		{	
 			GENERIC = "This is savagery.",
@@ -1149,7 +1179,7 @@ return {
 		POMEGRANATE_SEEDS = "Tiny nature bits.",
 		POND = "Something lurks in the deep.",
 		POOP = "If only I could use it as camouflage from predators.",
-		PORTABLECOOKPOT_ITEM = "",
+		PORTABLECOOKPOT_ITEM = "Cooking, a noble profession.",
 		FERTILIZER = "Its stench could raise the fallen.",
 		PUMPKIN = "It might make a good bludgeon, at least.",
 		PUMPKINCOOKIE = "Baked all the life out of it.",
@@ -1280,6 +1310,9 @@ return {
 			GENERIC = "With its many resources, I will triumph.",			
 			DISEASED = "The disease festers within its soul.",
 		},
+		TWIGGY_NUT_SAPLING = "Grow tall and strong.",
+		INSPECTSELF = "Who is that incredible warrior in the mirror?",
+        TWIGGY_OLD = "It will soon return to the earth.",
 		TWIGGY_NUT = "It will one one day rival Yggdrasil!",
 		SEEDS = "Tiny nature bits.",
 		SEEDS_COOKED = "Tiny nature bits, cooked to death.",
@@ -1510,6 +1543,7 @@ return {
         REVIVER = "Feel the passion inside!",
         LIFEINJECTOR = "This will return me to top form.",
         MOONROCKNUGGET = "A gift from Mani.",
+        ROCK_MOON = "A gift from Mani.",
         GOLDENMACHETE = "I shall swing you with pride.",
         MACHETE = "A fine length of blade.",
         MOWER = "A fine length of blade.",

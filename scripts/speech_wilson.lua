@@ -228,7 +228,7 @@ return {
 			GENERIC = "It's good to see you, %s!",
 			ATTACKER = "Let's not start a fight with the strongman...",
 			MURDERER = "Murderer! I can take you!",
-			REVIVER = "%s, friend of ghosts.",
+			REVIVER = "%s is just a big teddy bear.",
 			GHOST = "I told you you couldn't deadlift that boulder, %s. The numbers were all wrong.",
 		},
 		WAXWELL = 
@@ -244,14 +244,14 @@ return {
 			GENERIC = "Good day to you, %s!",
 			ATTACKER = "I think we need to tweak your primary directive, %s...",
 			MURDERER = "You've violated the first law!",
-			REVIVER = "Looks like %s got that empathy nodule up and running.",
+			REVIVER = "I guess %s got that empathy nodule up and running.",
 			GHOST = "I always thought %s could use a heart. Now I'm certain!",
 		},
 		WILLOW = 
 		{
 			GENERIC = "Good day to you, %s!",
 			ATTACKER = "%s is holding that lighter pretty tightly...",
-			MURDERER = "Murderer!",
+			MURDERER = "Murderer! Arsonist!",
 			REVIVER = "%s, friend of ghosts.",
 			GHOST = "I bet you're just burning for a heart, %s.",
 		},
@@ -482,6 +482,7 @@ return {
 		SPIDER_HIDER="Gah! More spiders!",
 		SPIDER_SPITTER="I hate spiders!",
 		SPIDERHOLE="It's encrusted with old webbing.",
+		SPIDERHOLE_ROCK ="It's encrusted with old webbing.",
 		STALAGMITE="Looks like a rock to me.",
 		STALAGMITE_FULL="Looks like a rock to me.",
 		STALAGMITE_LOW="Looks like a rock to me.",
@@ -490,7 +491,8 @@ return {
 		STALAGMITE_TALL_FULL="Rocks, rocks, rocks, rocks...",
 		STALAGMITE_TALL_LOW="Rocks, rocks, rocks, rocks...",
 		STALAGMITE_TALL_MED="Rocks, rocks, rocks, rocks...",
-
+		TREASURECHEST_TRAP = "How convenient!",
+		
         TURF_CARPETFLOOR = "It's surprisingly scratchy.",
         TURF_CHECKERFLOOR = "These are pretty snazzy.",
         TURF_DIRT = "A chunk of ground.",
@@ -511,6 +513,9 @@ return {
 		TURF_DECIDUOUS = "Yet another ground type.",
 		TURF_SANDY = "Yet another ground type.",
 		TURF_BADLANDS = "Yet another ground type.",
+		TURF_DESERTDIRT = "A chunk of ground.",
+		TURF_FUNGUS_GREEN = "A chunk of ground.",
+		TURF_FUNGUS_RED = "A chunk of ground.",
 		TURF_DRAGONFLY = "You want proof it's fireproof?",
 
 		POWCAKE = "I don't know if I'm hungry enough.",
@@ -584,7 +589,7 @@ return {
             DOMESTICATED = "This one is slightly less smelly than the others.",
             ORNERY = "It looks deeply angry.",
             RIDER = "This fellow appears quite ridable.",
-            PUDGY = "Hmmm, there maybe too much food inside it.",
+            PUDGY = "Hmmm, there may be too much food inside it.",
 		},
 		BEEFALOHAT = "What a nice hat.",
 		BEEFALOWOOL = "It smells like beefalo tears.",
@@ -624,6 +629,7 @@ return {
 			SKELETON = "That bird is definitely deceased.",
 		},
 		BIRDTRAP = "Gives me a net advantage!",
+		CAVE_BANANA_BURNT = "Not my fault!",
 		BIRD_EGG = "A small, normal egg.",
 		BIRD_EGG_COOKED = "Sunny side yum!",
 		BISHOP = "Back off, preacherman!",
@@ -657,6 +663,16 @@ return {
 		BUTTERFLYMUFFIN = "I threw the recipe away and just kind of winged it.",
 		BUTTERFLYWINGS = "Without these, it's just a butter.",
 		BUZZARD = "What a bizarre buzzard!",
+
+		SHADOWDIGGER = "Oh good. Now there's more of him.",
+		SHADOWDIGGER_BUILDER = "Oh good. Now there's more of him.",
+		SHADOWDUELIST = "Oh good. Now there's more of him.",
+		SHADOWDUELIST_BUILDER = "Oh good. Now there's more of him.",
+		SHADOWLUMBER = "Oh good. Now there's more of him.",
+		SHADOWLUMBER_BUILDER = "Oh good. Now there's more of him.",
+		SHADOWMINER = "Oh good. Now there's more of him.",
+		SHADOWMINER_BUILDER = "Oh good. Now there's more of him.",
+
 		CACTUS = 
 		{
 			GENERIC = "Sharp but delicious.",
@@ -846,8 +862,11 @@ return {
 			GENERIC = "It's all sticky.",			
 			DISEASED = "It looks sick. More so than usual.",
 		},
+		TWIGGY_NUT_SAPLING = "It doesn't need my help to grow.",
+        TWIGGY_OLD = "That tree looks pretty wimpy.",
 		TWIGGY_NUT = "There's a sticky tree inside it that wants to get out.",
 		EYEPLANT = "I think I'm being watched.",
+		INSPECTSELF = "Am I still in one piece?",
 		FARMPLOT =
 		{
 			GENERIC = "I should try planting some crops.",
@@ -1098,6 +1117,7 @@ return {
 		MONSTERMEAT = "Ugh. I don't think I should eat that.",
 		MONSTERMEAT_DRIED = "Strange-smelling jerky.",
 		MOOSE = "I don't exactly know what that thing is.",
+		MOOSE_NESTING_GROUND = "It puts its babies there.",
 		MOOSEEGG = "Its contents are like excited electrons trying to escape.",
 		MOSSLING = "Aaah! You are definitely not an electron!",
 		FEATHERFAN = "Down to bring my temperature down.",
@@ -1173,7 +1193,7 @@ return {
 		POMEGRANATE_SEEDS = "It's a seed.",
 		POND = "I can't see the bottom!",
 		POOP = "I should fill my pockets!",
-		PORTABLECOOKPOT_ITEM = "",
+		PORTABLECOOKPOT_ITEM = "Now we're cookin'.",
 		FERTILIZER = "That is definitely a bucket full of poop.",
 		PUMPKIN = "It's as big as my head!",
 		PUMPKINCOOKIE = "That's a pretty gourd cookie!",
@@ -1269,6 +1289,8 @@ return {
 		},
 		ROCK = "It wouldn't fit in my pocket.",
 		PETRIFIED_TREE = "It looks scared stiff.",
+		ROCK_PETRIFIED_TREE = "It looks scared stiff.",
+		ROCK_PETRIFIED_TREE_OLD = "It looks scared stiff.",
 		ROCK_ICE = 
 		{
 			GENERIC = "A very isolated glacier.",
@@ -1316,6 +1338,7 @@ return {
 		SPAT = "What a crusty looking animal.",
 		SPEAR = "That's one pointy stick.",
 		SPEAR_WATHGRITHR = "It feels very stabby.",
+		WATHGRITHRHAT = "Pretty fancy hat, that.",
 		SPIDER =
 		{
 			DEAD = "Ewwww!",
@@ -1438,6 +1461,7 @@ return {
 		TRINKET_26 = "Food and a cup! The ultimate survival container.",
 		TRINKET_27 = "Good, I can hang my clothes up if I ever find a hook.",
 		
+		BISHOP_CHARGE_HIT = "Ow!",
 		TRUNKVEST_SUMMER = "Wilderness casual.",
 		TRUNKVEST_WINTER = "Winter survival gear.",
 		TRUNK_COOKED = "Somehow even more nasal than before.",
@@ -1519,6 +1543,7 @@ return {
 		HUMANMEAT_COOKED = "Cooked nice and pink, but still morally gray.",
 		HUMANMEAT_DRIED = "Letting it dry makes it not come from a human, right?",
 		MOONROCKNUGGET = "That rock came from the moon.",
+		ROCK_MOON = "That rock came from the moon.",
 	},
 	DESCRIBE_GENERIC = "It's a... thing.",
 	DESCRIBE_TOODARK = "It's too dark to see!",

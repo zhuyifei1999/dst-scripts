@@ -36,6 +36,7 @@ return {
         MOUNT =
         {
             INUSE = "I should have reached for the saddle sooner.",
+            TARGETINCOMBAT = "Perhaps I should stand back.",
         },
         SADDLE =
         {
@@ -76,7 +77,7 @@ return {
     	TEACH =
         {
             KNOWN = "I am far too advanced for this.",
-            CANTLEARN = "There's a lessoned to be learned about tampering with secret knowledge.",
+            CANTLEARN = "There's a lesson to be learned about tampering with secret knowledge.",
         },
 	},
 	ACTIONFAIL_GENERIC = "That didn't work.",
@@ -86,7 +87,9 @@ return {
     ANNOUNCE_BECOMEGHOST = "oOooooOO!!",
 	ANNOUNCE_GHOSTDRAIN = "I can hear them...!",
 	ANNOUNCE_PETRIFED_TREES = "Oh, this should be good.",
-
+	ANNOUNCE_NODANGERAFK = "I must be ever vigilant!",
+	ANNOUNCE_NODANGERGIFT = "That's a terrible idea right now.",
+	ANNOUNCE_WORMS = "Oh dear. I know what's making that sound.",
     ANNOUNCE_NOSLEEPONFIRE = "That might not be the best idea.",
 	ANNOUNCE_NODANGERSIESTA = "They're hot on my heels!",
 	ANNOUNCE_NONIGHTSIESTA = "It's sleep-time, not siesta-time.",
@@ -149,6 +152,7 @@ return {
 	ANNOUNCE_CANFIX = "\nI think I can fix this!",
 	ANNOUNCE_NOSANITY = "I have the worst headache!",
 	ANNOUNCE_NOFUEL = "I need some nightmare fuel.",
+	ANNOUNCE_NOWARDROBEONFIRE = "You're kidding right?",
 	ANNOUNCE_ACCOMPLISHMENT= "I need to pass the time somehow.",
 	ANNOUNCE_ACCOMPLISHMENT_DONE = "Ah. The satisfaction of a job well done.",	
 	ANNOUNCE_INSUFFICIENTFERTILIZER = "It perked up just a tiny bit.",
@@ -157,13 +161,19 @@ return {
 	{
 		GENERIC = "To arms!",
 		PIG = "Brains over brawn!",
-		PREY = "You look tasty!",
+		PREY = "Sacrifice yourself for my comfort!",
+		SPIDER = "I'll not be made a fool of again!",
+		SPIDER_WARRIOR = "You've forced my hand!",
+		SPIDER = "I won't be made a fool of... next time!",
+		SPIDER_WARRIOR = "Next time the gloves come off!",
 	},
 	COMBAT_QUIT =
 	{
 		GENERIC = "And stay away!",
 		PIG = "Next time, pig!",
 		PREY = "You're not worth my time!",
+		SPIDER = "I won't be made a fool of... next time!",
+		SPIDER_WARRIOR = "Next time the gloves come off!",
 	},
 	DESCRIBE_SAMECHARACTER = "What a dapper fellow!",
 	--Pride... Arrogance... Conceit...
@@ -182,7 +192,7 @@ return {
 			GENERIC = "Err, greetings, Mr %s.",
 			ATTACKER = "You're going off the deep end, pal.",
 			MURDERER = "Our truce ends here, murderer!",
-			REVIVER = "%s tethers lost spirits to this world.",
+			REVIVER = "%s is a real pal...",
 			GHOST = "Are you certain you wish to return to this world, %s?",
 		},
 		WOLFGANG = 
@@ -260,7 +270,7 @@ return {
 		WATHGRITHR = 
 		{
 			GENERIC = "Greetings, Ms %s.",
-			ATTACKER = "What's %s's motivation?",
+			ATTACKER = "What is %s's motivation?",
 			MURDERER = "Bloodthirsty warrior! This ends now!",
 			REVIVER = "%s has excellent command of the spirit realm.",
 			GHOST = "Do you desire a heart, %s?",
@@ -272,6 +282,15 @@ return {
 			GENERIC = "It makes me a little nostalgic.",
 		},
 		BERNIE_ACTIVE = "Just what am I looking at here?",
+		BURNT_MARSH_BUSH = "Utterly destroyed.",
+		SHADOWDIGGER = "I'm a shadow of myself. Ha-ha!",
+		SHADOWDIGGER_BUILDER = "I'm a shadow of myself. Ha-ha!",
+		SHADOWDUELIST = "I'm a shadow of myself. Ha-ha!",
+		SHADOWDUELIST_BUILDER = "I'm a shadow of myself. Ha-ha!",
+		SHADOWLUMBER = "I'm a shadow of myself. Ha-ha!",
+		SHADOWLUMBER_BUILDER = "I'm a shadow of myself. Ha-ha!",
+		SHADOWMINER = "I'm a shadow of myself. Ha-ha!",
+		SHADOWMINER_BUILDER = "I'm a shadow of myself. Ha-ha!",
 		GLOMMER = "A flying goop factory.",
         GLOMMERFLOWER = 
         {
@@ -329,6 +348,7 @@ return {
 		BALLOONS_EMPTY = "Those look much too jovial for my liking.",
 		BALLOON = "This seems out of place here. Too cheery.",
 		SPEAR_WATHGRITHR = "I can appreciate a finely crafted weapon.",
+		WATHGRITHRHAT = "Well... it's no crown.",
 
 		BEARGER = "Take anything you want.",
 		BEARGERVEST = "See my vest.",
@@ -618,6 +638,7 @@ return {
 
 		SLURPER = "Simple creatures. They exist only to sleep and feed.",
 		SLURPER_PELT = "In death, this creature will serve me!",
+		SLURPERPELT = "In death, this creature will serve me!",
 		ARMORSLURPER = "Wet, soggy, and oddly filling.",
 		ORANGEAMULET = "Simple magic is often the best.",
 		YELLOWSTAFF = "With a bigger gem it would be so much more powerful.",
@@ -647,7 +668,9 @@ return {
 		CAVE_BANANA = "Like ashes in my mouth.",
 		CAVE_BANANA_COOKED = "Even worse than raw.",
 		CAVE_BANANA_TREE = "It looks like a banana, but I'm not buying it.",
+		CAVE_BANANA_BURNT = "I refuse to be held responsible for that.",
 		ROCKY = "I banished these guys down here for a reason.",
+		SCORCHED_SKELETON = "At least the fire cut down on the smell.",
 		
 		HOUNDSTOOTH="It could be used for fashion.",
 		ARMORSNURTLESHELL="That is not dapper at all.",
@@ -693,6 +716,7 @@ return {
 		SPIDER_HIDER="It's a tricky one.",
 		SPIDER_SPITTER="Aggressive little thing, isn't it?",
 		SPIDERHOLE="How did that get down here?",
+		SPIDERHOLE_ROCK ="How did that get down here?",
 		STALAGMITE="Rocks. How dull.",
 		STALAGMITE_FULL="Rocks. How dull.",
 		STALAGMITE_LOW="Rocks. How dull.",
@@ -758,6 +782,7 @@ return {
 			NOHONEY = "My bees are not working hard enough.",
 			SOMEHONEY = "I should wait a bit longer.",
 			BURNT = "Honey roasted.",
+			READY = "So tempting, but so full of bees.",
 		},
 		BEEFALO =
 		{
@@ -1187,6 +1212,8 @@ return {
 		PETALS = "I've a habit of destroying beautiful things, don't I?",
 		PETALS_EVIL = "It's dripping with nightmare essence.",
 		PETRIFIED_TREE = "I think it looks much better this way.",
+		ROCK_PETRIFIED_TREE = "I think it looks much better this way.",
+		ROCK_PETRIFIED_TREE_OLD = "I think it looks much better this way.",
 		PHLEGM = "I need to put on gloves for this.",
 		PICKAXE = "Everybody loves a little mining.",
 		PIGGYBACK = "Oh that's just demeaning.",
@@ -1199,6 +1226,7 @@ return {
 			GUARD = "They're starting to organize.",
 			WEREPIG = "That one's gone feral.",
 		},
+		MOOSE_NESTING_GROUND = "Filthy.",
 		PIGSKIN = "It was him or me.",
 		PIGTENT = "That's just nasty.",
 		PIGTORCH = "Great. Now they have fire.",
@@ -1220,7 +1248,7 @@ return {
 		POMEGRANATE_SEEDS = "This labor is beneath me.",
 		POND = "I can see my face reflected off the top.",
 		POOP = "It's the way of all mortal life.",
-		PORTABLECOOKPOT_ITEM = "",
+		PORTABLECOOKPOT_ITEM = "An instrument of the dark culinary arts.",
 		PUMPKIN = "Hallowe'en was always my favorite.",
 		PUMPKINCOOKIE = "It's been eons since I had a good biscuit.",
 		PUMPKIN_COOKED = "A little more refined, at least.",
@@ -1436,6 +1464,7 @@ return {
 		TRUNK_COOKED = "At least the mucus burned off.",
 		TRUNK_SUMMER = "Full of summer mucus.",
 		TRUNK_WINTER = "The trunk thickens in the winter to hold more mucus.",
+		WATERMELON_SEEDS = "I could probably plant these.",
 
 		TURF_CARPETFLOOR = "That's a quality, high-pile carpet sample!",
 		TURF_CHECKERFLOOR = "That's my natural habitat.",
@@ -1453,8 +1482,11 @@ return {
 		TURF_SINKHOLE="Turf.",
 		TURF_UNDERROCK="Turf.",
 		TURF_MUD="Turf.",
+		TURF_DESERTDIRT = "Turf.",
+		TURF_FUNGUS_GREEN = "Turf.",
+		TURF_FUNGUS_RED = "Turf.",
 		TURF_DRAGONFLY = "It's warm, but quells flame.",
-
+		INSPECTSELF = "I still look dapper, right? As if I needed to check.",
 		TURKEYDINNER = "How festive.",
 		TWIGS = "Common, but useful.",
 		TWIGGYTREE = 
@@ -1465,6 +1497,9 @@ return {
             GENERIC = "The tree of an amateur.",           
             DISEASED = "What has brought this blight upon my world?",
         },
+        BISHOP_CHARGE_HIT = "How DARE you!",
+        TWIGGY_NUT_SAPLING = "It's of no use in it's current state. Only time will tell.",
+        TWIGGY_OLD = "Look at you. You're useless.",
         TWIGGY_NUT = "I could plant it... but why?",
 		UMBRELLA = "It's crooked!",
 		WAFFLES = "An excellent start to the morning. Or evening.",
@@ -1500,6 +1535,7 @@ return {
         REVIVER = "I'm not sure I really want to give this up.",
         LIFEINJECTOR = "I'm supposed to put this filth in my veins?",
         MOONROCKNUGGET = "'Moon' rock.",
+        ROCK_MOON = "'Moon' rock.",
         MULTIPLAYER_PORTAL = "Always did have a flair for the dramatic...",
 		--...Make your jokes...I'll be seeing you soon...
 	},

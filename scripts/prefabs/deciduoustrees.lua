@@ -864,12 +864,12 @@ local function StopMonster(inst)
             inst.AnimState:ClearOverrideSymbol("mouth")
             if not inst:HasTag("stump") then 
                 inst.AnimState:ClearOverrideSymbol("legs")
-                inst.AnimState:ClearOverrideSymbol("legs_mouseover") 
+                inst.AnimState:ClearOverrideSymbol("legs_mouseover")
+                inst.components.growable:StartGrowing()
             end
             inst.AnimState:SetBank("tree_leaf")
             inst:AddTag("cattoyairborne")
 
-           
             if TheWorld.state.isautumn then
                 inst.target_leaf_state = "colorful"
             elseif TheWorld.state.iswinter then
@@ -877,7 +877,7 @@ local function StopMonster(inst)
             else
                 inst.target_leaf_state = "normal"
             end
-           
+
             inst.components.growable:DoGrowth()
             inst:DoTaskInTime(12 * FRAMES, OnChangeLeaves, false, true)
         end)

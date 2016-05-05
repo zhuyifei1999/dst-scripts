@@ -37,6 +37,7 @@ return {
         MOUNT =
         {
             INUSE = "Maybe I can find caribou to ride instead.",
+            TARGETINCOMBAT = "I should wait for the dust to settle, eh?.",
         },
         SADDLE =
         {
@@ -148,13 +149,30 @@ return {
 	ANNOUNCE_ACCOMPLISHMENT_DONE = "That's a wrap, eh!",
 	ANNOUNCE_INSUFFICIENTFERTILIZER = "Need more poop, eh?",
 	ANNOUNCE_LIGHTNING_DAMAGE_AVOIDED = "That tickled a bit, eh?",
+	ANNOUNCE_HIGHRESEARCH = "Informative.",
+	ANNOUNCE_LOWRESEARCH = "That was barely even worth it, eh?",
+	ANNOUNCE_NODANGERAFK = "I better deal with these hosers first.",
+	ANNOUNCE_NODANGERGIFT = "Now's the wrong time to be celebratin' Christmas.",
+	ANNOUNCE_NODAYSLEEP_CAVE = "I'm not feelin' too restful right now.",
+	ANNOUNCE_NOWARDROBEONFIRE = "That's okay. I just need a good flannel, anyway.",
+	ANNOUNCE_RESEARCH = "Learnin' keeps your mind sharp. Like an axe.",
+	ANNOUNCE_UNIMPLEMENTED = "Ouch! That wasn't very polite.",
+	ANNOUNCE_WORMS = "Oh geez. I hope you're ready, Luce.",
 	BATTLECRY =
 	{
 		GENERIC = "Get over here, eh!",
+		PIG = "I'll make bacon of you yet!",
+		PREY = "This is the end for you, eh!",
+		SPIDER = "For the North!",
+		SPIDER_WARRIOR = "Prepare for a choppin'!",
 	},
 	COMBAT_QUIT =
 	{
 		GENERIC = "I think that's enough.",
+		PIG = "I thought that would go better.",
+		PREY = "Sorry, sorry!",
+		SPIDER = "Sorry!",
+		SPIDER_WARRIOR = "Same time again tomorrow, eh?",
 	},
 	DESCRIBE =
 	{
@@ -169,7 +187,7 @@ return {
 		WILSON = 
 		{
 			GENERIC = "%s! Hey buddy!",
-			ATTACKER = "%s isn't very polite...",
+			ATTACKER = "You haven't been very gentlemanly lately, %s.",
 			MURDERER = "Enemy of the forest!",
 			REVIVER = "%s, you're an alright guy.",
 			GHOST = "Someone should rub a heart on %s.",
@@ -178,23 +196,23 @@ return {
 		{
 			GENERIC = "That's my buddy, %s! Hey!",
 			ATTACKER = "%s could be a bit more considerate...",
-			MURDERER = "Enemy of the forest!",
-			REVIVER = "%s, you're an alright guy.",
+			MURDERER = "You'll not strong arm me, %s!",
+			REVIVER = "%s has a big, squishy heart under those muscles.",
 			GHOST = "C'mon, bud, let's get you on your feet.",
 		},
 		WAXWELL = 
 		{
-			GENERIC = "Hey %s, how you doin', ya big hoser?",
-			ATTACKER = "%s should learn some manners...",
+			GENERIC = "Hey %s, how you doin' ya big hoser?",
+			ATTACKER = "%s'll end up on the wrong end of my axe if he's not careful...",
 			MURDERER = "Yer still a hoser! Now it's choppin' time!",
-			REVIVER = "%s, you're an alright guy.",
+			REVIVER = "You're growin' on me, %s. Like a fungus.",
 			GHOST = "Lucy says I have to help you, %s. Let's get goin'.",
 		},
 		WX78 = 
 		{
 			GENERIC = "It's my metal buddy, %s!",
-			ATTACKER = "%s isn't very polite...",
-			MURDERER = "Enemy of the forest!",
+			ATTACKER = "%s is cruisin' for a bruisin'...",
+			MURDERER = "It's time to power DOWN, %s!",
 			REVIVER = "%s, you're an alright sort.",
 			GHOST = "Huh, I guess %s had a soul after all.",
 		},
@@ -203,15 +221,15 @@ return {
 			GENERIC = "Look who it is! %s!",
 			ATTACKER = "You're tempting a forest fire, %s...",
 			MURDERER = "Here comes the wildfire!",
-			REVIVER = "%s, you're an alright gal.",
+			REVIVER = "You're on fire today, %s. No... actually.",
 			GHOST = "Just don't haunt anything while I look for a heart, %s.",
 		},
 		WENDY = 
 		{
 			GENERIC = "%s! Hi little buddy!",
-			ATTACKER = "%s isn't very polite...",
+			ATTACKER = "%s, I can't believe what I just SAW! Wait, no...",
 			MURDERER = "Hereeee's Woodie!",
-			REVIVER = "%s, you're an alright gal.",
+			REVIVER = "%s! You're doin' great, little buddy.",
 			GHOST = "With a heart you'll be tip-top in no time, %s.",
 		},
 		WOODIE = 
@@ -219,39 +237,39 @@ return {
 			GENERIC = "%s! Fancy seeing another Canadian here.",
 			ATTACKER = "%s isn't a true Canadian...",
 			MURDERER = "Hey, c'mere %s! I've gotta AXE you question!",
-			REVIVER = "%s, you're an alright guy.",
+			REVIVER = "%s is a Canadian patriot, eh.",
 			GHOST = "Canadians gotta stick together, %s. Let's get a heart.",
 		},
 		WICKERBOTTOM = 
 		{
 			GENERIC = "%s. Ma'am.",
-			ATTACKER = "%s isn't very polite...",
-			MURDERER = "Enemy of the forest!",
-			REVIVER = "%s, you're an alright gal.",
+			ATTACKER = "%s should read an etiquette book once in awhile.",
+			MURDERER = "This is gonna be a clear cut!",
+			REVIVER = "That's some good work ya did, Ma'am.",
 			GHOST = "You know where I can get a heart, %s?",
 		},
 		WES = 
 		{
 			GENERIC = "%s! How ya doin', buddy?",
 			ATTACKER = "%s could learn some manners...",
-			MURDERER = "Enemy of the forest!",
+			MURDERER = "You're MIME now, %s!",
 			REVIVER = "%s, you're an alright guy.",
 			GHOST = "First we'll get you a heart, then we'll get you some bacon, eh %s?",
 		},
 		WEBBER = 
         {
             GENERIC = "%s! Hi little buddy!",
-			ATTACKER = "%s isn't very polite...",
-			MURDERER = "Enemy of the forest!",
-			REVIVER = "%s, you're an alright spider.",
+			ATTACKER = "Hey %s, can't we all just get a-log?",
+			MURDERER = "Luce gave me the go-ahead! You're in trouble now, %s!",
+			REVIVER = "You're an alright spider, kiddo.",
 			GHOST = "We better get you a heart, hey kiddo?",
         },
         WATHGRITHR = 
         {
-            GENERIC = "Look who it is! %s!",
-			ATTACKER = "%s could learn some manners...",
+            GENERIC = "%s! Hey bud!",
+			ATTACKER = "%s has raiding and looting on the brain...",
 			MURDERER = "Your spear versus my axe, let's see whatcha got, eh!",
-			REVIVER = "%s, you're an alright gal.",
+			REVIVER = "I'm glad you're on our side, %s.",
 			GHOST = "With a heart you'll be feelin' like your mighty self in no time.",
         },
 
@@ -309,14 +327,19 @@ return {
 		BALLOONS_EMPTY = "Are those balloons?",
 		BALLOON = "It's squeaky. Just like a real woodland creature.",
 		SPEAR_WATHGRITHR = "Who needs a spear when you got ol' Luce?",
+		WATHGRITHRHAT = "Pretty snappy looking.",
 		WAXWELLJOURNAL = "Trees made into... paper? How unholy!",
+		BURNT_MARSH_BUSH = "Done for.",
 
+		PIGTENT = "Looks to be some sort of tent.",
 		BEARGER = "That's a big bear!",
+		CAVE_BANANA_BURNT = "Such a waste.",
+		SCORCHED_SKELETON = "Yikes.",
 		BEARGERVEST = "Now this is some proper winter gear.",
 		ICEPACK = "Good for long hikes.",
 		BEARGER_FUR = "It's as thick as my head!",
 		FURTUFT = "Shh! The creature might still be around.", 
-		BIGFOOT = "Watch where you're stepping!.",
+		BIGFOOT = "Watch where you're stepping!",
 		GOLDENMACHETE = "It chops AND sparkles!",
 		MACHETE = "Ooh, that's a thing for choppin'.",
 		MOWER = "Ooh, that's a thing for choppin'.",
@@ -579,11 +602,20 @@ return {
 
 		SLURPER = "I think it's living hair.",
 		SLURPER_PELT = "Looks like a dead beaver.",
+		SLURPERPELT = "Where's the nearest fur trader?",
 		ARMORSLURPER = "It tickles, I think it's still alive.",
+		SPIDERHOLE_ROCK ="I should skedaddle before they come out of there.",
 		ORANGEAMULET = "This'll make the chores go by quicker!",
 		YELLOWSTAFF = "Useful in a pinch!",
+		TREECLUMP = "You're asking for a good chop, bud.",
 		YELLOWGEM = "I can see the stars in it.",
+		WATERMELON_SEEDS = "Maybe I could plant them?",
 		ORANGEGEM = "It's shimmering.",
+		RELIC =
+		{
+			BROKEN = "I don't plan on fixin' that.",
+			GENERIC = "What's this all aboot?",
+		},
 		TELEBASE = 
 		{
 			VALID = "It's humming with energy.",
@@ -747,12 +779,13 @@ return {
 		BEE =
 		{
 			GENERIC = "She's making the flowers grow.",
-			HELD = "Now what do I do with it?",
+			HELD = "Now what do I do with her?",
 		},
 		BEEBOX =
 		{
-			FULLHONEY = "Honey!",
-			GENERIC = "Bees!",
+			FULLHONEY = "Maple syrup substitute!",
+			READY = "Maple syrup substitute!",
+			GENERIC = "Buzzers!",
 			NOHONEY = "I get hungry just looking at it.",
 			SOMEHONEY = "I could get more if I waited.",
 			BURNT = "No, not the bees!",
@@ -1103,7 +1136,7 @@ return {
 			GENERIC = "That bee doesn't seem as friendly.",
 			HELD = "He's none to pleased with his situation.",
 		},
-		KNIGHT = "",
+		KNIGHT = "Never did care for horses.",
 		KOALEFANT_SUMMER = "He looks tasty.",
 		KOALEFANT_WINTER = "They get tastier in the winter.",
 		KRAMPUS = "Back off, hoser!",
@@ -1186,6 +1219,8 @@ return {
 		PETALS = "I wonder if Lucy would like these.",
 		PETALS_EVIL = "They're frowning at me with little evil faces.",
 		PETRIFIED_TREE = "So... senseless.",
+		ROCK_PETRIFIED_TREE = "So... senseless.",
+		ROCK_PETRIFIED_TREE_OLD = "So... senseless.",
 		PHLEGM = "I hope it doesn't get stuck in my moustache.",
 		PICKAXE = "Almost an axe, but not quite.",
 		PIGGYBACK = "I used all parts of the pig.",
@@ -1196,6 +1231,7 @@ return {
 			GENERIC = "Walking back bacon!",
 			GUARD = "That one looks like he means business.",
 			WEREPIG = "What happened to him?!",
+			DEAD = "Not a pig anymore.",
 		},
 		PIGSKIN = "Bacon with tail.",
 		PIGTORCH = "How did they do that without thumbs?",
@@ -1218,7 +1254,7 @@ return {
 		POMEGRANATE_SEEDS = "Seedy.",
 		POND = "I can't swim!",
 		POOP = "Don't poop in camp!",
-		PORTABLECOOKPOT_ITEM = "",
+		PORTABLECOOKPOT_ITEM = "Sure makes the camp smell nice.",
 		PUMPKIN = "I don't like to eat things that grow on the ground.",
 		PUMPKINCOOKIE = "This will keep me chopping.",
 		PUMPKIN_COOKED = "Pies are good.",
@@ -1323,6 +1359,7 @@ return {
 		{
 			GENERIC = "That's the biggest spider I've ever seen!",
 			SLEEPING = "Careful, now, eh?",
+			DEAD = "Good!",
 		},
 		SPIDERDEN = "Holy Mackinaw! Look at that thing!",
 		SPIDEREGGSACK = "Why would I want to carry that around?",
@@ -1333,10 +1370,11 @@ return {
 		{
 			GENERIC = "They come in yellow now, eh?",
 			SLEEPING = "I don't want to wake it.",
+			DEAD = "Great!",
 		},
 		SPOILED_FOOD = "Aw, it's Diefenbakered.",
 		STATUEHARP = "You lost your head, eh?",
-		STATUEMAXWELL = "I'm gonna to make fun of him for this later, eh?",
+		STATUEMAXWELL = "I'm gonna make fun of him for this later, eh?",
 		STEELWOOL = "That'll put the shine back on my axe.",
 		STINGER = "Ouch! It's pointy.",
 		STRAWHAT = "It will keep the sun off my head.",
@@ -1439,9 +1477,19 @@ return {
 		TURF_ROCKY = "Just some ground, eh?",
 		TURF_SAVANNA = "Just some ground, eh?",
 		TURF_WOODFLOOR = "Flooring fit for a king!",
-		TURF_DRAGONFLY = "Just some ground, eh?",
+		TURF_DRAGONFLY = "Fire doesn't quite take here, eh?",
+		TURF_DESERTDIRT = "Just some ground, eh?",
+		TURF_FUNGUS_GREEN = "Just some ground, eh?",
+		TURF_FUNGUS_RED = "Just some ground, eh?",
 		TURKEYDINNER = "Turkey day is here again!",
 		TWIGS = "I should build a tiny axe to chop these.",
+		INSPECTSELF = "Beard's growing out nicely.",
+		BERNIE_ACTIVE = "I guess I should be used to weird stuff by now.",
+		BERNIE_INACTIVE =
+		{
+			BROKEN = "Poor lil' guy.",
+			GENERIC = "Cute, isn't it Luce?",
+		},
 		TWIGGYTREE = 
         {
             BURNING = "I'm sorry!",
@@ -1450,6 +1498,9 @@ return {
             GENERIC = "Choppin's choppin'.",           
             DISEASED = "It's caught a bit of a bug.",
         },
+        ABIGAIL = "That ain't right.",
+        TWIGGY_NUT_SAPLING = "One day it'll make good chopping.",
+        TWIGGY_OLD = "I'd be lucky to get two chops out of that thing.",
         TWIGGY_NUT = "With a little care, this could make fer some good choppin'.",
 		UMBRELLA = "This will keep my beard dry, eh?",
 		UNIMPLEMENTED = "It doesn't look safe.",
@@ -1477,23 +1528,33 @@ return {
 		WETGOOP = "Better than some things I've eaten!",
         WHIP = "I hope I don't hurt the little critters with this.",
 		WINTERHAT = "It's a nice toque, eh?",
+		SHADOWDIGGER = "Are your little buddies, uh... alive?",
+		SHADOWDIGGER_BUILDER = "Are your little buddies, uh... alive?",
+		SHADOWDUELIST = "Are your little buddies, uh... alive?",
+		SHADOWDUELIST_BUILDER = "Are your little buddies, uh... alive?",
+		SHADOWLUMBER = "Are your little buddies, uh... alive?",
+		SHADOWLUMBER_BUILDER = "Are your little buddies, uh... alive?",
+		SHADOWMINER = "Are your little buddies, uh... alive?",
+		SHADOWMINER_BUILDER = "Are your little buddies, uh... alive?",
 		WORMHOLE =
 		{
 			GENERIC = "That looks like a bum!",
 			OPEN = "I'm not sure I want to look at that, eh?",
 		},
 		WORMHOLE_LIMITED = "It smells a bit off, eh?",
-		ACCOMPLISHMENT_SHRINE = "It seems a bit show-offy to me.",        		
+		ACCOMPLISHMENT_SHRINE = "It seems a bit show-offy to me.",  
+		BISHOP_CHARGE_HIT = "Hey now!",      		
 		LIVINGTREE = "I feel conflicted, eh?",
 		ICESTAFF = "It reminds me of home.",
         REVIVER = "I need to share this with somebody!",
         LIFEINJECTOR = "This should cure those sniffles.",
         MOONROCKNUGGET = "It's uh, a moon rock.",
+        ROCK_MOON = "It's uh, a moon rock.",
 	},
 	DESCRIBE_GENERIC = "What's that, eh?",
 	DESCRIBE_TOODARK = "It's dark, eh!",
 	DESCRIBE_SMOLDERING = "It's aboot to go up in flames, eh?",
-	DESCRIBE_SAMECHARACTER = "Good to see another Canadian in these parts.",
+	DESCRIBE_SAMECHARACTER = "Hey bud. Good to see a fellow Canadian.",
 	EAT_FOOD =
 	{
 		TALLBIRDEGG_CRACKED = "You can taste the beak, eh?",

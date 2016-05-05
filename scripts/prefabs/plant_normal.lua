@@ -56,6 +56,20 @@ local function GetStatus(inst)
         or "GROWING"
 end
 
+local function OnHaunt(inst, haunter)
+    if inst.components.crop ~= nil and math.random() <= TUNING.HAUNT_CHANCE_OFTEN then
+        local harvested, product = inst.components.crop:Harvest()
+        if not harvested then
+            local fert = SpawnPrefab("spoiled_food")
+            inst.components.crop:Fertilize(fert, haunter)
+        elseif product ~= nil then
+            Launch(product, haunter, TUNING.LAUNCH_SPEED_SMALL)
+        end
+        return true
+    end
+    return false
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -90,19 +104,7 @@ local function fn()
 
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
-    inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
-        if math.random() <= TUNING.HAUNT_CHANCE_OFTEN then
-            if inst.components.crop then
-                local harvested = inst.components.crop:Harvest()
-                if not harvested then
-                    local fert = SpawnPrefab("spoiled_food")
-                    inst.components.crop:Fertilize(fert, haunter)
-                end
-                return true
-            end
-        end
-        return false
-    end)
+    inst.components.hauntable:SetOnHauntFn(OnHaunt)
 
     MakeSmallBurnable(inst)
     MakeSmallPropagator(inst)
