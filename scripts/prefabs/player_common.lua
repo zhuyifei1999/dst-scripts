@@ -431,7 +431,7 @@ local function OnPlayerJoined(inst)
         --     This was where we used to announce player joined.
         --     Now we announce as soon as you login to the lobby
         --     and not when you connect during shard migrations.
-        --TheNet:Announce(inst:GetDisplayName().." "..STRINGS.UI.NOTIFICATION.JOINEDGAME, inst.entity, true, "join_game")
+        --TheNet:Announce(string.format(STRINGS.UI.NOTIFICATION.JOINEDGAME, inst:GetDisplayName()), inst.entity, true, "join_game")
 
         --Register attuner server listeners here as "ms_playerjoined"
         --will trigger relinking saved attunements, and we don't want

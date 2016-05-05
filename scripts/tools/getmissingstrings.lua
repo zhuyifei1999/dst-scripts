@@ -286,7 +286,6 @@ function GetPrefabsFromFile( fileName )
 end
 
 local function GetCharacterSpeech(character)
-    if character == "waxwell" then character = "maxwell" end
     print("GETTING SPEECH STRINGS FOR", character)
 	local success, speechFile = pcall(require, "speech_"..character)
 

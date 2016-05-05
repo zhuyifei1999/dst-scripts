@@ -767,6 +767,8 @@ ANNOUNCEMENT_ICONS =
 	resurrect={atlas="images/button_icons.xml", texture="resurrect.tex"},
 	join_game={atlas="images/button_icons.xml", texture="join.tex"},
 	leave_game={atlas="images/button_icons.xml", texture="leave.tex"},
+    kicked_from_game={atlas="images/button_icons.xml", texture="kicked.tex"},
+    banned_from_game={atlas="images/button_icons.xml", texture="banned.tex"},
 	item_drop={atlas="images/button_icons.xml", texture="item_drop.tex"},
 	vote={atlas="images/button_icons.xml", texture="vote.tex"}, --#srosen vote2 also avail, though I prefer vote
 }

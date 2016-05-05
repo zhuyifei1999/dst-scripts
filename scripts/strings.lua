@@ -2351,8 +2351,10 @@ STRINGS.UI =
     {
         LOADING = "Loading",
         LOGIN = "Logging in",
-        JOINEDGAME = "has joined the game.",
-        LEFTGAME = "has left the game.",
+        JOINEDGAME = "%s has joined the game.",
+        LEFTGAME = "%s has left the game.",
+        KICKEDFROMGAME = "%s was kicked from the game.",
+        BANNEDFROMGAME = "%s was banned from the game.",
         PRESS_KB = "Press (",
         DISCONNECT_KB = ") to Disconnect",
         PRESS_CONTROLLER = "Press ",
@@ -3001,7 +3003,7 @@ STRINGS.UI =
             ANY = "You're, like, laidback and flexible, man. Any world is good with you."
         },
         MISSINGDATATITLE = "Out-of-Date Server",
-        MISSINGDATABODY = "This server is not up to date. We can not display its world settings.",
+        MISSINGDATABODY = "This server is not up to date. We cannot display its world settings.",
     },
 
     SERVERCREATIONSCREEN =
@@ -3285,7 +3287,7 @@ STRINGS.UI =
         WARNING_SINGLE = "You won't be able to use an item if you give your last one away! Do you really want to trade this item?",
         WARNING = "You won't be able to use an item if you give your last one away! Do you really want to trade these items?",
 		SERVER_ERROR_TITLE = "Error Trading Items",
-		SERVER_ERROR_BODY = "There was an error your trading items. Please login again to refresh your account inventory.",
+		SERVER_ERROR_BODY = "There was an error trading your items. Please login again to refresh your account inventory.",
 		OK = "OK",
         SPECIALS_TITLE = "Specials",
         SPECIALS = "Specials",

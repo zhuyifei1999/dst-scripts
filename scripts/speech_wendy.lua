@@ -8,6 +8,7 @@ return {
         MOUNT =
         {
             INUSE = "I'll have to be quicker to the saddle next time.",
+            TARGETINCOMBAT = "I'll wait for it to calm down...",
         },
         SHAVE =
 		{
@@ -63,14 +64,14 @@ return {
         {
         	FULL = "%s is already too burdened by this world...",
             DEAD = "%s has no need of material possessions where they've gone.",
-            SLEEPING = "They look so peaceful... I'll come back later.",
+            SLEEPING = "%s looks so peaceful... I'll come back later.",
             BUSY = "Oh... I can tell you're busy...",
     	},
     	GIVEALLTOPLAYER = 
         {
         	FULL = "%s is already too burdened by this world...",
             DEAD = "%s has no need of material possessions where they've gone.",
-            SLEEPING = "They look so peaceful... I'll come back later.",
+            SLEEPING = "%s looks so peaceful... I'll come back later.",
             BUSY = "Oh... I can tell you're busy...",
     	},
     	TEACH =
@@ -87,6 +88,13 @@ return {
 	ANNOUNCE_CHARLIE_ATTACK = "I am attacked!",
 	ANNOUNCE_COLD = "I am chilled to the bone.",
 	ANNOUNCE_HOT = "I am miserably hot.",
+	ANNOUNCE_NODANGERAFK = "I can't let my guard down right now...",
+	ANNOUNCE_NODANGERGIFT = "There's no time for presents, death is finally come for me!",
+	ANNOUNCE_NOWARDROBEONFIRE = "Sadly, it is ablaze.",
+	ANNOUNCE_NO_TRAP = "I was expecting great difficulty.",
+	ANNOUNCE_RESEARCH = "I now possess greater knowledge of this terrible world.",
+	ANNOUNCE_UNIMPLEMENTED = "Ouch. That was unnecessary.",
+	ANNOUNCE_WORMS = "Uh-oh. I think we should leave.",
 	ANNOUNCE_CRAFTING_FAIL = "I lack the necessary materials.",
 	ANNOUNCE_DUSK = "The sickly sweet scent of roses fills the air...",
 	ANNOUNCE_EAT =
@@ -157,6 +165,10 @@ return {
 	},
 	COMBAT_QUIT =
 	{
+		PIG = "You've eluded death today, beast.",
+		PREY = "You'll appreciate the gift of life better now.",
+		SPIDER = "You should be thankful I'm sparing you.",
+		SPIDER_WARRIOR = "I won't forget this.",
 		GENERIC = "You shall live. For now.",
 	},
 	DESCRIBE =
@@ -220,7 +232,7 @@ return {
 		},
 		WENDY = 
 		{
-			GENERIC = "Are you surviving, %s?",
+			GENERIC = "She looks sad...",
 			ATTACKER = "%s... she's no sister of mine.",
 			MURDERER = "Have we not seen enough death, %s?",
 			REVIVER = "I hope Abigail doesn't like you more than me...",
@@ -231,7 +243,7 @@ return {
 			GENERIC = "How do you do, %s?",
 			ATTACKER = "%s is plotting something dastardly with that axe.",
 			MURDERER = "I'll send you someplace much nicer than this, %s.",
-			REVIVER = "Abigail likes you, %s. And Lucy.",
+			REVIVER = "Abigail likes you, %s. But she likes Lucy more.",
 			GHOST = "We can get a heart, but are you sure you even want to come back, %s?",
 		},
 		WICKERBOTTOM = 
@@ -305,9 +317,20 @@ return {
 		BEARGER_FUR = "It smells like death.",
 		FURTUFT = "This came from a living creature.", 
 		BIGFOOT = "Harbinger of doom.",
+		BOAT = "It's a boat.",
 		BONESHARD = "Choking hazard.",
+		BURNT_MARSH_BUSH = "It's unspeakably burnt.",
 		TREEGUARD = "Oh... no...",
 		BUZZARD = "I hear they feed on the dead.",
+		FIREPIT =
+		{
+			EMBERS = "Don't give up, little flame!",
+			GENERIC = "A flame to keep the horrors at bay.",
+			HIGH = "This fire burns with passion!",
+			LOW = "It's losing the will to go on.",
+			NORMAL = "It's a comfort.",
+			OUT = "I'd better relight this.",
+		},
 		CACTUS = 
 		{
 			GENERIC = "Knives out.",
@@ -444,6 +467,7 @@ return {
 		BALLOONS_EMPTY = "These look as deflated as I feel...",
 		BALLOON = "A colorful reminder that my childhood is no more.",
 		SPEAR_WATHGRITHR = "It seems a tad dramatic.",
+		WATHGRITHRHAT = "I've never seen her take it off before...",
 		WAXWELLJOURNAL = "Do you want me to read you a story, Abigail?",
 
 		PIGHEAD = 
@@ -619,6 +643,7 @@ return {
 
 		SLURPER = "Ah, to be so simple.",
 		SLURPER_PELT = "An empty bag of hunger.",
+		SLURPERPELT = "An empty bag of hunger.",
 		ARMORSLURPER = "A clinging, dreary, living suit.",
 		ORANGEAMULET = "Temporary release from drudgery.",
 		YELLOWSTAFF = "The stick is as twisted as my soul.",
@@ -656,6 +681,7 @@ return {
 		CAVE_BANANA = "The peels look dangerous.",
 		CAVE_BANANA_COOKED = "Warmed banana mush is so much better.",
 		CAVE_BANANA_TREE = "Poor plant, locked away from the sun.",
+		CAVE_BANANA_BURNT = "The death and suffering never ends.",
 		ROCKY = "What terrible sights they have seen.",
 
 		BLUEAMULET = "A familiar chilling embrace.",
@@ -707,8 +733,12 @@ return {
 		SLURTLESLIME="It shimmers with slimy anticipation.",
 		SNURTLE="That one has a larger shell.",
 		SPIDER_HIDER="A cowardly spider.",
+		DIVININGRODSTART = "I could use that.",
 		SPIDER_SPITTER="It's chewing on something.",
+		TREASURECHEST_TRAP = "Every once in awhile, things go my way.",
+		BEEMINE_MAXWELL = "The furious creatures appreciate their freedom in retrospect.",
 		SPIDERHOLE="It is infested.",
+		SPIDERHOLE_ROCK ="It is infested.",
 		STALAGMITE="The earth gives up its bounty.",
 		STALAGMITE_FULL="The earth gives up its bounty.",
 		STALAGMITE_LOW="The earth gives up its bounty.",
@@ -735,6 +765,9 @@ return {
 		TURF_UNDERROCK="Some ground.",
 		TURF_MUD="Some ground.",
 		TURF_DRAGONFLY = "Some ground.",
+		TURF_DESERTDIRT = "Some ground.",
+		TURF_FUNGUS_GREEN = "Some ground.",
+		TURF_FUNGUS_RED = "Some ground.",
 
 		POWCAKE = "I would have to be desperate.",		
 		CAVE_ENTRANCE = "Someone is trying to keep the underground at bay.",
@@ -804,7 +837,7 @@ return {
 		BERRIES = "These berries are tart.",
 		BERRIES_COOKED = "More balanced flavor, but they won't last long.",
         BERRIES_JUICY = "I'd better consume these before death does.",
-        BERRIES_JUICY_COOKED = "This hasn't halted the decay, but it's stalled it.",
+        BERRIES_JUICY_COOKED = "This hasn't halted the decay, merely stalled it.",
 		BERRYBUSH =
 		{
 			BARREN = "It is barren.",
@@ -835,6 +868,15 @@ return {
 		BIRD_EGG = "So much hope, dashed.",
 		BIRD_EGG_COOKED = "No bird will ever come of it.",
 		BISHOP = "What does he pray for?",
+		BISHOP_CHARGE_HIT = "Ouch...",
+		SHADOWDIGGER = "Was he your brother?",
+		SHADOWDIGGER_BUILDER = "Was he your brother?",
+		SHADOWDUELIST = "Was he your brother?",
+		SHADOWDUELIST_BUILDER = "Was he your brother?",
+		SHADOWLUMBER = "Was he your brother?",
+		SHADOWLUMBER_BUILDER = "Was he your brother?",
+		SHADOWMINER = "Was he your brother?",
+		SHADOWMINER_BUILDER = "Was he your brother?",
 		BLOWDART_SLEEP = "Not even the big sleep, just a temporary one.",
 		BLOWDART_PIPE = "Blow in one end and pain comes out the other.",
 		BLOWDART_FIRE = "Shall we burn down the world?",
@@ -1005,7 +1047,7 @@ return {
 		FIREHOUND = "His disposition is fiery.",
 		FIRESTAFF = "The world will burn before this staff.",
 		FISH = "It was flopping around desperately for life. The poor fool.",
-		FISHINGROD = "With this the fishies can be ripped from the safety of their precious pond.",
+		FISHINGROD = "With this the fishies will be ripped from the safety of their precious pond.",
 		FISHSTICKS = "Perfectly molded blocks of fish.",
 		FISHTACOS = "Hopefully no bones still linger.",
 		FISH_COOKED = "A proper grilling puts a stop to the flopping.",
@@ -1107,7 +1149,14 @@ return {
 		LITTLE_WALRUS = "The cycle of violence continues.",
 		LIVINGLOG = "It is forever silently screaming.",
 		LOG = "If trees could talk, they would scream at the sight of this.",
+		LOG =
+		{
+			BURNING = "Just a burning log.",
+			GENERIC = "If trees could talk, they would scream at the sight of this.",
+		},
 		LUREPLANT = "It consumes all.",
+		MANDRAKE_COOKED = "Now it's just food.",
+		PIGTENT = "The place where they wrap pigs in blankets.",
 		LUREPLANTBULB = "Life goes on.",
 		MALE_PUPPET = "I wonder what he did.",
         MANDRAKE_ACTIVE = "Onward, my vegetable minion!",
@@ -1169,6 +1218,8 @@ return {
 		PETALS = "Its joy and happiness was so disparaging...",
 		PETALS_EVIL = "They are painted with the colors of my soul.",
 		PETRIFIED_TREE = "Now it will never die...",
+		ROCK_PETRIFIED_TREE = "Now it will never die...",
+		ROCK_PETRIFIED_TREE_OLD = "Now it will never die...",
 		PHLEGM = "The wretched beast must have been sick.",
 		PICKAXE = "That the earth itself might be penetrated.",
 		PIGGYBACK = "They are more useful in death.",
@@ -1201,9 +1252,10 @@ return {
 		POMEGRANATE_SEEDS = "I was expecting more seeds than this from that thing.",
 		POND = "Ophelia? Are you down there?",
 		POOP = "Life is blood and this.",
-		PORTABLECOOKPOT_ITEM = "",
+		SCORCHED_SKELETON = "The flame has cleansed this poor wretched soul.",
+		PORTABLECOOKPOT_ITEM = "For when the hunger gnaws at my tiny stomach...",
 		PUMPKIN = "It's as big as the hole where my heart once was.",
-		PUMPKINCOOKIE = "Do I dare indulge in childish things?",
+		PUMPKINCOOKIE = "Do I dare indulge in such childish things?",
 		PUMPKIN_COOKED = "It shriveled a tiny bit from the heat. I like that.",
 		PUMPKIN_LANTERN = "You're not so scary.",
 		PUMPKIN_SEEDS = "It's a seed. Exciting.",
@@ -1411,7 +1463,7 @@ return {
 		TRINKET_27 = "Now at least the wardrobe can be organized.",
 
 		TRUNKVEST_SUMMER = "Skin to wear over your skin.",
-		TRUNKVEST_WINTER = "It may warm the body, but what of my spirit?",
+		TRUNKVEST_WINTER = "It may warm the body, but what of the spirit?",
 		TRUNK_COOKED = "It looks even worse now.",
 		TRUNK_SUMMER = "I would have preferred the ears.",
 		TRUNK_WINTER = "Separated from its only friend.",
@@ -1425,8 +1477,11 @@ return {
             GENERIC = "How all must toil for the necessities of life.",           
             DISEASED = "It's not long for this world...",
         },
+        TWIGGY_NUT_SAPLING = "It looks so innocent.",
+        TWIGGY_OLD = "Thin. Sad. Shriveled.",
         TWIGGY_NUT = "It's sad it's not in the earth.",
 		UMBRELLA = "The clouds weep.",
+		INSPECTSELF = "When I look in the mirror, it's like Abigail's here.",
 		WAFFLES = "They're definitely waffles.",
 		WALL_HAY_ITEM = "Their defensive value is questionable.",
 		WALL_STONE = "What will protect me from what's inside?",
@@ -1465,12 +1520,15 @@ return {
 		},
 		WORMHOLE_LIMITED = "It will soon give up.",
 		ACCOMPLISHMENT_SHRINE = "I've never much cared for metaphor.",
+		WATERMELON_SEEDS = "Perfectly shaped for spitting.",
 		MOONROCKNUGGET = "It's traveled so far...",
+		ROCK_MOON = "It's traveled so far...",
+		TREECLUMP = "Was this placed intentionally?",
 	},
 	DESCRIBE_GENERIC = "Sigh... I don't know.",
 	DESCRIBE_TOODARK = "The darkness! It is too dark!",
 	DESCRIBE_SMOLDERING = "It's about to be swallowed by flames.",
-	DESCRIBE_SAMECHARACTER = "She looks sad...",
+	DESCRIBE_SAMECHARACTER = "Hi %s. Are you surviving okay?",
 	EAT_FOOD =
 	{
 		TALLBIRDEGG_CRACKED = "I spared it the torment of living.",

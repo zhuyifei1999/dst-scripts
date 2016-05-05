@@ -36,6 +36,7 @@ return {
         MOUNT =
         {
             INUSE = "Hair-cow is occupied by another.",
+            TARGETINCOMBAT = "I cannot ride it now! Hair-cow is proving itself in battle!",
         },
         SADDLE =
         {
@@ -155,6 +156,10 @@ return {
 	ANNOUNCE_ACCOMPLISHMENT_DONE = "I have defeated the tiny arrow!",	
 	ANNOUNCE_INSUFFICIENTFERTILIZER = "Is not enough poop.",
 	ANNOUNCE_LIGHTNING_DAMAGE_AVOIDED = "Lightning is weak compared to Wolfgang clothes!",
+	ANNOUNCE_NODANGERAFK = "Wolfgang will not abandon the fight!",
+	ANNOUNCE_NODANGERGIFT = "Fight is better than present!",
+	ANNOUNCE_NOWARDROBEONFIRE = "Ehh, Wolfgang do that later...",
+	ANNOUNCE_WORMS = "Earth tremble beneath Wolfgang's might feet!",
 	BATTLECRY =
 	{
 		GENERIC = "I will punch you!",
@@ -208,7 +213,7 @@ return {
         WX78 = 
         {
             GENERIC = "Is tiny robot, %s! Hello!",
-            ATTACKER = "Metal man wants to rock'em and sock'em!",
+            ATTACKER = "Ha! Metal can is want to rock'em and sock'em!",
             MURDERER = "%s is killer robot!",
             REVIVER = "%s is nice person. Deep down.",
            	GHOST = "Robot %s is broken! Wolfgang rub heart on problem.",
@@ -459,8 +464,11 @@ return {
 		BALLOONS_EMPTY = "Wolfgang will make balloon muscles.",
 		BALLOON = "Is full of clown breath!",
 		SPEAR_WATHGRITHR = "Is a good weapon.",
+		WATHGRITHRHAT = "Is strong helm for strong warrior!",
+
 		WAXWELLJOURNAL = "Wolfgang is glad he cannot read!",
 		MOONROCKNUGGET = "But is not cheese?",
+		ROCK_MOON = "But is not cheese?",
 
         TRAILMIX = "Berries and nuts, berries and nuts!",
         HOTCHILI = "Haha, nothing is too spicy for Wolfgang!",
@@ -585,7 +593,7 @@ return {
 		},
 		BEEBOX =
 		{
-			GENERIC = "Bees!",
+			GENERIC = "Many bees!",
 			READY = "Is ready for harvest!",
 			FULLHONEY = "Is ready for harvest!",
 			NOHONEY = "It has no honey.",
@@ -617,9 +625,12 @@ return {
 
 		SLURPER = "No! No! Stay off head!",
 		SLURPER_PELT = "It's still moving!",
+		SLURPERPELT = "Strange fur clump.",
 		ARMORSLURPER = "It moves with my many muscles!",
 		ORANGEAMULET = "I can wear it around my neck.",
 		YELLOWSTAFF = "Pretty gem sits in stick.",
+		TREECLUMP = "Do not block Wolfgang's way!",
+		WATERMELON_SEEDS = "Maybe will grow into tasty snacks?",
 		YELLOWGEM = "Pretty rock.",
 		ORANGEGEM = "Pretty rock.",
 		TELEBASE = 
@@ -645,7 +656,7 @@ return {
 
         LICHEN = "I'm lichen this!",
 		CUTLICHEN = "Tastes terrible.",
-
+		BOAT = "Mighty vessel fights the waters back.",
         CAVE_BANANA = "Is tasty!",
         CAVE_BANANA_COOKED = "Is warm and tasty!",
         CAVE_BANANA_TREE = "Hello, upside-down tree.",
@@ -702,6 +713,7 @@ return {
 		SPIDER_HIDER="Is scared spider!",
 		SPIDER_SPITTER="Ptoo! Ptoo!",
 		SPIDERHOLE="Spiders everywhere.",
+		SPIDERHOLE_ROCK ="Spiders everywhere.",
 		STALAGMITE="Is pointy.",
 		STALAGMITE_FULL="Is pointy.",
 		STALAGMITE_LOW="Is pointy.",
@@ -711,6 +723,7 @@ return {
 		STALAGMITE_TALL_LOW="Rock reaching for the roof.",
 		STALAGMITE_TALL_MED="Rock reaching for the roof.",
 
+		TREASURECHEST_TRAP = "Raagh!",
 		TURF_CARPETFLOOR = "Step stones.",
 		TURF_CHECKERFLOOR = "Step stones.",
 		TURF_DIRT = "Step stones.",
@@ -728,6 +741,9 @@ return {
 		TURF_UNDERROCK="Step stones.",
 		TURF_MUD="Step stones.",
 		TURF_DRAGONFLY = "Hot step stones.",
+		TURF_DESERTDIRT = "Step stones.",
+		TURF_FUNGUS_GREEN = "Step stones.",
+		TURF_FUNGUS_RED = "Step stones.",
 
 		POWCAKE = "Is made of nothings!",
         CAVE_ENTRANCE = "Even I am not that mighty.",
@@ -828,10 +844,19 @@ return {
 		BIRD_EGG = "Poor birdy.",
 		BIRD_EGG_COOKED = "Yum!",
 		BISHOP = "Padre!",
+		BISHOP_CHARGE_HIT = "Rrrraa!",
 		BLOWDART_FIRE = "Careful, Wolfgang.",
 		BLOWDART_SLEEP = "Dart do sleeping to enemies.",
 		BLOWDART_PIPE = "Dart do pain to enemies.",
 		BLUEGEM = "Pretty rock.",
+		SHADOWDIGGER = "Ha ha! Tiny men should dance for amusement!",
+		SHADOWDIGGER_BUILDER = "Ha ha! Tiny men should dance for amusement!",
+		SHADOWDUELIST = "Ha ha! Tiny men should dance for amusement!",
+		SHADOWDUELIST_BUILDER = "Ha ha! Tiny men should dance for amusement!",
+		SHADOWLUMBER = "Ha ha! Tiny men should dance for amusement!",
+		SHADOWLUMBER_BUILDER = "Ha ha! Tiny men should dance for amusement!",
+		SHADOWMINER = "Ha ha! Tiny men should dance for amusement!",
+		SHADOWMINER_BUILDER = "Ha ha! Tiny men should dance for amusement!",
 		BLUEPRINT = "Pretty pictures!",
 		BELL_BLUEPRINT = "Pretty pictures!",
 		BLUE_CAP = "Is good for me, I think.",
@@ -1110,7 +1135,17 @@ return {
 		},
 		LITTLE_WALRUS = "You think you are mightier than old man?",
 		LIVINGLOG = "Creepy face log!",
+		PIGTENT = "Is tent of pigs.",
+		MANDRAKE_COOKED = "Little plant man is ready for eating!",
+		BURNT_MARSH_BUSH = "Is burnt now.",
+		FOOTBALLHAT = "It protects my head!",
+		CAVE_BANANA_BURNT = "Is crisp.",
 		LOG = "Is thick like my arm.",
+		LOG =
+		{
+			BURNING = "When I stick my hand over it, it tickles.",
+			GENERIC = "The remains of tree-fights!",
+		},
 		LUREPLANT = "You cannot fool Wolfgang!",
 		LUREPLANTBULB = "Ah ha! Who is tricky now?",
 		MALE_PUPPET = "Scary chair scare him!",
@@ -1173,6 +1208,8 @@ return {
 		PETALS = "These smell nice.",
 		PETALS_EVIL = "They make my brain hurt.",
 		PETRIFIED_TREE = "Now I punch it apart!",
+		ROCK_PETRIFIED_TREE = "Now I punch it apart!",
+		ROCK_PETRIFIED_TREE_OLD = "Now I punch it apart!",
 		PHLEGM = "A ha ha ha! Boogers! Oh ho ho!",
 		PICKAXE = "Pick!",
 		PIGGYBACK = "Smelly bag!",
@@ -1205,7 +1242,8 @@ return {
 		POMEGRANATE_SEEDS = "Is piece of brain?",
 		POND = "Is all wet.",
 		POOP = "Smelly!",
-		PORTABLECOOKPOT_ITEM = "",
+		SCORCHED_SKELETON = "Wolfgang not like this!!",
+		PORTABLECOOKPOT_ITEM = "Wolfgang will prepare mighty meal!",
 		PUMPKIN = "Is big as head of weakling man! Not Wolfgang head.",
 		PUMPKINCOOKIE = "Is tasty cookie.",
 		PUMPKIN_COOKED = "I cook your head, puny man! I am strongest Wolfgang.",
@@ -1426,7 +1464,11 @@ return {
             GENERIC = "Wolfgang will snap like toothpick!",           
             DISEASED = "Is weak. Sickly!",
         },
+        ABIGAIL = "Are you friendly ghost?",
+        TWIGGY_NUT_SAPLING = "Grow, grow little tree!",
+        TWIGGY_OLD = "Wolfgang wishes to put weak tree out of misery!",
         TWIGGY_NUT = "Little cone make big tree!",
+        INSPECTSELF = "Everyone! Come watch Wolfgang flex!",
 		UMBRELLA = "The rain hurts my mighty skin.",
 		WAFFLES = "Why does bread have holes?",
 		WALL_HAY_ITEM = "Scratchy straws!",
@@ -1437,7 +1479,7 @@ return {
 		WALL_WOOD_ITEM = "Poky sticks!",
 		WALL_MOONROCK = "Rock of moon protects Wolfgang.",
 		WALL_MOONROCK_ITEM = "Wolfgang build with power of moon!",
-		WALRUS = "",
+		WALRUS = "Ha ha. Is blubbery flubbery man.",
 		WALRUSHAT = "I have sea cow man's hat!",
 		WALRUS_CAMP =
 		{
@@ -1497,7 +1539,7 @@ return {
 	DESCRIBE_GENERIC = "What is this thing?",
 	DESCRIBE_TOODARK = "Help me! It is dark!",
 	DESCRIBE_SMOLDERING = "Is almost on fire.",
-	DESCRIBE_SAMECHARACTER = "Friend! We must arm wrestle!",
+	DESCRIBE_SAMECHARACTER = "Hello friend-%s! We must arm wrestle!",
 	EAT_FOOD =
 	{
 		TALLBIRDEGG_CRACKED = "This egg too crunchy.",

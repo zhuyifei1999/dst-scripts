@@ -36,6 +36,7 @@ return {
         MOUNT =
         {
             INUSE = "We didn't climb on to saddle in time!",
+            TARGETINCOMBAT = "It's too angry!",
         },
         SADDLE =
         {
@@ -91,6 +92,10 @@ return {
 	ANNOUNCE_CRAFTING_FAIL = "We're missing something.",
 	ANNOUNCE_DEERCLOPS = "That sounded like a big meanie.",
 	ANNOUNCE_DUSK = "Almost time for bed.",
+	ANNOUNCE_NODANGERAFK = "No! Can't! There's scary-biteys about!",
+	ANNOUNCE_NODANGERGIFT = "We'll open it after as a celebration of surviving this!",
+	ANNOUNCE_NOWARDROBEONFIRE = "I can't! It's all burny!",
+	ANNOUNCE_WORMS = "Ohhh nooo. We're not friends with worms!",
 	ANNOUNCE_EAT =
 	{
 		GENERIC = "Yummy in our tummy!",
@@ -148,7 +153,7 @@ return {
 	ANNOUNCE_LIGHTNING_DAMAGE_AVOIDED = "We're invincible!",
 
 	ANNOUNCE_DAMP = "Splishy splashy.",
-	ANNOUNCE_WET = "Life is like a bathtub we can't crawl out of.",
+	ANNOUNCE_WET = "The rain is like a bathtub we can't crawl out of.",
 	ANNOUNCE_WETTER = "So wet!",
 	ANNOUNCE_SOAKED = "We're drenched!",
 	
@@ -191,13 +196,13 @@ return {
 			GENERIC = "Hi %s! Have you been working out?",
 			ATTACKER = "Hey %s, you look upset about something.",
 			MURDERER = "You're just a big bully!",
-			REVIVER = "%s is really nice! I wish he'd stop messing up our head fur, though.",
+			REVIVER = "%s's really nice! I wish he'd stop messing up our head fur, though.",
 			GHOST = "I'm sure you're the strongest ghost, %s. Let's find you a heart, though.",
 		},
 		WAXWELL =
 		{
 			GENERIC = "Hi %s! Lookin' dapper!",
-			ATTACKER = "%s looks eviller than usual...",
+			ATTACKER = "%s looks eviler than usual...",
 			MURDERER = "You're the real monster, %s!",
 			REVIVER = "Wow, %s is really nice! He's helping people!",
 			GHOST = "Aw, even you don't deserve to be stuck like that, %s!",
@@ -215,7 +220,7 @@ return {
 			GENERIC = "Hi %s! How's Bernie?",
 			ATTACKER = "%s's playing with fire. Err...",
 			MURDERER = "You're gonna get burned, %s!",
-			REVIVER = "%s is super nice to ghosts.",
+			REVIVER = "%s's like a burned marshmallow. Crispy on the outside, gooey on the inside!",
 			GHOST = "Uh-oh! Does that hurt, %s?",
 		},
 		WENDY =
@@ -230,7 +235,7 @@ return {
 		{
 			GENERIC = "Hi %s, hi Lucy!",
 			ATTACKER = "%s looks angry today.",
-			MURDERER = "You need to treat people nicer!",
+			MURDERER = "You need to treat people nicer, %s!",
 			REVIVER = "%s is gruff, but nice.",
 			GHOST = "Wanna go heart-hunting with us, %s?",
 		},
@@ -247,7 +252,7 @@ return {
 			GENERIC = "Hey! Hi %s!",
 			ATTACKER = "Maybe we can talk this out?",
 			MURDERER = "You're supposed to play nice!",
-			REVIVER = "%s is super nice to ghosts.",
+			REVIVER = "%s is super nice. And his makeup's cool!",
 			GHOST = "We'll help you get back on your feet, %s!",
 		},
 		WEBBER = 
@@ -263,7 +268,7 @@ return {
 			GENERIC = "Wow, %s! You're lookin' tough!",
 			ATTACKER = "%s looks really mean. And tough.",
 			MURDERER = "We're not scared of pointy spearsticks! Fight!",
-			REVIVER = "%s is super nice to ghosts.",
+			REVIVER = "%s is a super valiant lady.",
 			GHOST = "Wow! Even as a ghost you're super tough, %s!",
 		},
 
@@ -343,8 +348,10 @@ return {
 		BALLOONS_EMPTY = "Is there going to be a party?!",
 		BALLOON = "Balloon animals! Balloon animals!!",
 		SPEAR_WATHGRITHR = "Pointy ouchies!",
+		WATHGRITHRHAT = "Haha! It's way too big for us!",
 		WAXWELLJOURNAL = "I don't think we should play with that...",
 		MOONROCKNUGGET = "Neat!",
+		ROCK_MOON = "Neat!",
 		OBSIDIANMACHETE = "It cooks with every cut!",
 		MACHETE = "Hyah! Hyah!",
 		MOWER = "Hyah! Hyah!",
@@ -479,10 +486,15 @@ return {
 		SLURTLEHAT="A solid helmet.",
 		SLURTLEHOLE="Slimy and rocky.",
 		SLURTLESLIME="Slime-time!",
+		BURNT_MARSH_BUSH = "All burned up.",
 		SNURTLE="We'll snuff out that snurtle.",
 		SPIDER_HIDER="Friends!",
 		SPIDER_SPITTER="Lay down some web for us.",
 		SPIDERHOLE="We could stand to live there.",
+		TREECLUMP = "It's in our way!",
+		MAXWELLHEAD = "Imagine the trouble he has buying hats!",
+		WATERMELON_SEEDS = "If we eat these will they grow inside us?",
+		SPIDERHOLE_ROCK = "We could stand to live there.",
 		STALAGMITE="Rocks underground?! Shocking.",
 		STALAGMITE_FULL="Rocks underground?! Shocking.",
 		STALAGMITE_LOW="Rocks underground?! Shocking.",
@@ -565,6 +577,7 @@ return {
 		BEEBOX =
 		{
 			FULLHONEY = "It's full to brimming.",
+			READY = "It's full to brimming.",
 			GENERIC = "It's a box with bees in it.",
 			NOHONEY = "There's no honey inside.",
 			SOMEHONEY = "Work faster, bees!",
@@ -609,6 +622,7 @@ return {
 			DISEASED = "Maybe it needs some chicken soup?",
 		},
 		BIGFOOT = "AAAAAAAAAAH!",
+		SUNKBOAT = "So close, so far away.",
 		BIRDCAGE =
 		{
 			GENERIC = "It's the jail.",
@@ -621,6 +635,9 @@ return {
 		},
 		BIRDTRAP = "Come to our web trap, birds!",
 		BIRD_EGG = "A hard shelled egg.",
+		PANDORASCHEST = "Stylish storage.",
+		SCORCHED_SKELETON = "They're probably fine.",
+		CAVE_BANANA_BURNT = "Oopsie doodle.",
 		BIRD_EGG_COOKED = "Fried just like mum did.",
 		BISHOP = "You don't play by the chess rules that grandpa taught.",
 		BLOWDART_FIRE = "One step above blowing hot air.",
@@ -1110,6 +1127,8 @@ return {
 		PETALS = "How colorful.",
 		PETALS_EVIL = "They make our head hurt.",
 		PETRIFIED_TREE = "It's all stone and no bark.",
+		ROCK_PETRIFIED_TREE = "It's all stone and no bark.",
+		ROCK_PETRIFIED_TREE_OLD = "It's all stone and no bark.",
 		PICKAXE = "Rocks will be ours!",
 		PIGGYBACK = "It holds so much stuff!",
 		PIGHEAD = 
@@ -1131,6 +1150,7 @@ return {
 			GENERIC = "Aw, you're no fun.",
 			GUARD = "They look angry.",
 			WEREPIG = "He's all furry now!",
+			FOLLOWER = "I never knew we could be friends!",
 		},
 		PIGSKIN = "Take that!",
 		PIGTORCH = "If only we could get closer.",
@@ -1152,7 +1172,7 @@ return {
 		POMEGRANATE_SEEDS = "We could grow something with these.",
 		POND = "Water doesn't go well with our fur.",
 		POOP = "Doodoo.",
-		PORTABLECOOKPOT_ITEM = "",
+		PORTABLECOOKPOT_ITEM = "Makes yummies!",
 		FERTILIZER = "I saw mum use this in her gardens.",
 		PUMPKIN = "That's a huge pumpkin!",
 		PUMPKINCOOKIE = "Yum!",
@@ -1240,6 +1260,16 @@ return {
 		},
 		ROBOT_PUPPET = "I don't think it's having fun.",
 		ROCK = "We'll need to mine it before we can use it.",
+		ROCK_CHARCOAL = "Big, crumbly rock.",
+		MOOSE_NESTING_GROUND = "For its babies' sleepytime.",
+		PIGTENT = "Little pig, little pig, let me in!",
+		ROCK_LIGHT =
+		{
+			GENERIC = "This lava's all dried up.",
+			LOW = "It's a little less cozy.",
+			NORMAL = "Cozy!",
+			OUT = "It looks like it might break.",
+		},
 		ROCK_ICE = 
 		{
 			GENERIC = "Ice can be useful.",
@@ -1309,6 +1339,7 @@ return {
 		{
 			GENERIC = "He will protect us!",
 			SLEEPING = "They're so cute when they sleep.",
+			DEAD = "Forgive us, brother.",
 		},
 		SPOILED_FOOD = "Blech!",
 		STATUEHARP = "Someone took the head.",
@@ -1435,9 +1466,25 @@ return {
 		TURF_ROCKY = "Some ground that we dug up.",
 		TURF_SAVANNA = "Some grassy dirt.",
 		TURF_DRAGONFLY = "Warm and cozy ground!",
+		TURF_BADLANDS = "Some ground that we dug up.",
+		TURF_DECIDUOUS = "Some ground that we dug up.",
+		TURF_DESERTDIRT = "Some ground that we dug up.",
+		TURF_FUNGUS_GREEN = "Some ground that we dug up.",
+		TURF_FUNGUS_RED = "Some ground that we dug up.",
+		TURF_SANDY = "Some ground that we dug up.",
+		SHADOWDIGGER = "Sometimes scary things are nice.",
+		SHADOWDIGGER_BUILDER = "Sometimes scary things are nice.",
+		SHADOWDUELIST = "Sometimes scary things are nice.",
+		SHADOWDUELIST_BUILDER = "Sometimes scary things are nice.",
+		SHADOWLUMBER = "Sometimes scary things are nice.",
+		SHADOWLUMBER_BUILDER = "Sometimes scary things are nice.",
+		SHADOWMINER = "Sometimes scary things are nice.",
+		SHADOWMINER_BUILDER = "Sometimes scary things are nice.",
+		BISHOP_CHARGE_HIT = "Owie!",
 		TURF_WOODFLOOR = "If we put these on the ground we'll have a floor!",
-		TURKEYDINNER = "Like mother used to make in the before time!",
+		TURKEYDINNER = "Like mother used to make, in the before time!",
 		TWIGS = "Does anyone want to play stick swords with us??",
+		INSPECTSELF = "Ah! I'm a monster! Haha, we're just kidding.",
 		TWIGGYTREE = 
         {
             BURNING = "What a senseless waste of firewood.",
@@ -1446,6 +1493,8 @@ return {
             GENERIC = "We want to climb it!",           
             DISEASED = "Maybe it needs some chicken soup?",
         },
+        TWIGGY_NUT_SAPLING = "Little tree!",
+        TWIGGY_OLD = "It's too flimsy to climb.",
         TWIGGY_NUT = "The tree wants to come out and play!",
 		STEELWOOL = "Scratchy, like father's beard!",
 		SPAT = "Maybe it just needs a cuddle!",
@@ -1511,7 +1560,7 @@ return {
         REVIVER = "I think it loves me.",
         LIFEINJECTOR = "I hate taking my medicine!",
 	},
-	DESCRIBE_GENERIC = "Can we plays with it?",
+	DESCRIBE_GENERIC = "Can we play with it?",
 	DESCRIBE_TOODARK = "It's too dark to see!",
 	DESCRIBE_SMOLDERING = "That thing is about to catch fire.",
 	DESCRIBE_SAMECHARACTER = "Lookin' good!",

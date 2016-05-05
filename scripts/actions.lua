@@ -893,17 +893,18 @@ ACTIONS.PLANT.fn = function(act)
 end
 
 ACTIONS.HARVEST.fn = function(act)
-    if act.target.components.crop then
-        return act.target.components.crop:Harvest(act.doer)
-    elseif act.target.components.harvestable then
+    if act.target.components.crop ~= nil then
+        local harvested--[[, product]] = act.target.components.crop:Harvest(act.doer)
+        return harvested
+    elseif act.target.components.harvestable ~= nil then
         return act.target.components.harvestable:Harvest(act.doer)
-    elseif act.target.components.stewer then
+    elseif act.target.components.stewer ~= nil then
         return act.target.components.stewer:Harvest(act.doer)
-    elseif act.target.components.dryer then
+    elseif act.target.components.dryer ~= nil then
         return act.target.components.dryer:Harvest(act.doer)
-    elseif act.target.components.occupiable and act.target.components.occupiable:IsOccupied() then
-        local item =act.target.components.occupiable:Harvest(act.doer)
-        if item then
+    elseif act.target.components.occupiable ~= nil and act.target.components.occupiable:IsOccupied() then
+        local item = act.target.components.occupiable:Harvest(act.doer)
+        if item ~= nil then
             act.doer.components.inventory:GiveItem(item)
             return true
         end
