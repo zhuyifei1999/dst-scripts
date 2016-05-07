@@ -273,10 +273,29 @@ function Combat:CanTarget(target)
 end
 
 function Combat:IsAlly(guy)
-    return guy == self.inst or
-        (self.inst.replica.follower ~= nil and guy == self.inst.replica.follower:GetLeader()) or
-        (guy.replica.follower ~= nil and self.inst == guy.replica.follower:GetLeader()) or
-        (self.inst:HasTag("player") and guy:HasTag("companion"))
+    if guy == self.inst or
+        (self.inst.replica.follower ~= nil and guy == self.inst.replica.follower:GetLeader()) then
+        --It's me! or it's my leader
+        return true
+    end
+
+    local follower = guy.replica.follower
+    local leader = follower ~= nil and follower:GetLeader() or nil
+    --It's my follower
+    --or I'm a player and it's a companion (or following another player in non PVP)
+    --unless it's attacking me
+    return self.inst == leader
+        or (    self.inst:HasTag("player") and
+                (   guy:HasTag("companion") or
+                    (   leader ~= nil and
+                        not TheNet:GetPVPEnabled() and
+                        leader:HasTag("player")
+                    )
+                ) and
+                (   guy.replica.combat == nil or
+                    guy.replica.combat:GetTarget() ~= self.inst
+                )
+            )
 end
 
 function Combat:CanBeAttacked(attacker)

@@ -268,6 +268,8 @@ function SkinsScreen:OnBecomeActive()
 
 	    -- If we came from the tradescreen, we need to update the inventory list
     	self:UpdateInventoryList()
+    	self:OnItemSelect() --empty params, to go back to the default hanger
+    	
 	else
 		-- This triggers when the "sorry" popup closes. Just quit.
 		self:Quit()

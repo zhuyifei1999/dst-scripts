@@ -23,6 +23,7 @@ if JapaneseOnPS4() then --NB: JP PS4 values have NOT been updated for the new sc
         PLAYER_NAME = 50,
         PLAYER_CHAR = 160,
         SERVER_NAME = 285,
+        CLEAR = 385,
     }
 else
     column_offsets ={
@@ -30,12 +31,13 @@ else
         DECEASED = -50,
         CAUSE = 125,
         MODE = 400,
-        PLAYER_NAME = -155,
-        PLAYER_CHAR = -78,
-        SERVER_NAME = 210,
-        SEEN_DATE = 340,
-        PLAYER_AGE = 415,
-        NET_ID = 520,
+        PLAYER_NAME = -160,
+        PLAYER_CHAR = -110,
+        SERVER_NAME = 180,
+        SEEN_DATE = 290,
+        PLAYER_AGE = 385,
+        NET_ID = 450,
+        CLEAR = 460,
     }
 end
 
@@ -167,99 +169,6 @@ local function obit_widget_update(widget, data, index)
     widget.MODE:SetTruncatedString(data.server or "", widget.MODE._align.maxwidth, widget.MODE._align.maxchars, true)
 end
 
-local function encounter_widget_constructor(data, parent, obit_button)  
-    local font_size = JapaneseOnPS4() and 28 * .75 or 28
-
-    local slide_factor = 200
-
-    local group = parent:AddChild(Widget("control-encounter"))
-
-    group.bg = group:AddChild(Image("images/serverbrowser.xml", "textwidget_over.tex"))
-    group.bg:SetPosition(355,0)
-    group.bg:SetSize(880,37)
-    group.bg:Hide()
-    group.OnGainFocus = function()
-        group.bg:Show()
-    end
-    group.OnLoseFocus = function()
-        group.bg:Hide()
-    end
-
-    group.PLAYER_NAME = group:AddChild(Text(NEWFONT, font_size))
-    group.PLAYER_NAME:SetHAlign(ANCHOR_MIDDLE)
-    group.PLAYER_NAME:SetPosition(column_offsets.PLAYER_NAME-35+slide_factor, 0, 0)
-    group.PLAYER_NAME:SetColour(0,0,0,1)
-    group.PLAYER_NAME._align =
-    {
-        maxwidth = 170,
-        maxchars = 40,
-    }
-    group.PLAYER_NAME:SetTruncatedString(data.name or "", group.PLAYER_NAME._align.maxwidth, group.PLAYER_NAME._align.maxchars, true)
-
-    group.PLAYER_CHAR = group:AddChild(Widget("PLAYER_CHAR"))
-    group.PLAYER_CHAR:SetPosition(column_offsets.PLAYER_CHAR+12+slide_factor, 0, 0)
-
-    group.SERVER_NAME = group:AddChild(Text(NEWFONT, font_size))
-    group.SERVER_NAME:SetHAlign(ANCHOR_MIDDLE)
-    group.SERVER_NAME:SetPosition(column_offsets.SERVER_NAME-90+slide_factor, 0, 0)
-    group.SERVER_NAME:SetColour(0,0,0,1)
-    group.SERVER_NAME._align =
-    {
-        maxwidth = 285,
-        maxchars = 66,
-    }
-    group.SERVER_NAME:SetTruncatedString(data.server_name or "", group.SERVER_NAME._align.maxwidth, group.SERVER_NAME._align.maxchars, true)
-
-    group.PLAYER_CHAR.base = group.PLAYER_CHAR:AddChild(Widget("base"))
-    group.PLAYER_CHAR.base:SetPosition(1,0)
-    group.PLAYER_CHAR.portraitbg = group.PLAYER_CHAR.base:AddChild(Image("images/saveslot_portraits.xml", "background.tex"))
-    group.PLAYER_CHAR.portraitbg:SetScale(portrait_scale, portrait_scale, 1)
-    group.PLAYER_CHAR.portraitbg:SetClickable(false)
-    group.PLAYER_CHAR.portrait = group.PLAYER_CHAR.base:AddChild(Image())
-    group.PLAYER_CHAR.portrait:SetClickable(false)
-    group.PLAYER_CHAR.portrait:SetScale(portrait_scale, portrait_scale, 1)
-    if data.prefab ~= nil then
-        group.PLAYER_CHAR.portrait:SetTexture(get_character_icon(data.prefab))
-    else
-        group.PLAYER_CHAR:Hide()
-    end
-
-    group.SEEN_DATE = group:AddChild(Text(NEWFONT, font_size))
-    group.SEEN_DATE:SetHAlign(ANCHOR_MIDDLE)
-    group.SEEN_DATE:SetPosition(column_offsets.SEEN_DATE-13+slide_factor, 0, 0)
-    group.SEEN_DATE:SetRegionSize( 135, 30 )
-    group.SEEN_DATE:SetString(data.date or "")
-    group.SEEN_DATE:SetColour(0,0,0,1)
-
-    group.PLAYER_AGE = group:AddChild(Text(NEWFONT, font_size))
-    group.PLAYER_AGE:SetHAlign(ANCHOR_MIDDLE)
-    group.PLAYER_AGE:SetPosition(column_offsets.PLAYER_AGE+15+slide_factor+20, 0, 0)
-    group.PLAYER_AGE:SetRegionSize( 75, 30 )
-    group.PLAYER_AGE:SetString((data.playerage or STRINGS.UI.MORGUESCREEN.UNKNOWN_DAYS).." "..(tonumber(data.playerage) == 1 and STRINGS.UI.MORGUESCREEN.DAY or STRINGS.UI.MORGUESCREEN.DAYS))
-    group.PLAYER_AGE:SetColour(0,0,0,1)
-
-    group.NET_ID = group:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "player_info.tex", STRINGS.UI.PLAYERSTATUSSCREEN.VIEWPROFILE, false, false,
-        function()
-            if group.NET_ID._netid ~= nil then
-                TheNet:ViewNetProfile(group.NET_ID._netid)
-            end
-        end,
-        { size = 50, offset_y = 65 }))
-    group.NET_ID:SetPosition(column_offsets.NET_ID+8+slide_factor+18, -1, 0)
-    group.NET_ID:SetScale(.45)
-    group.NET_ID:SetHelpTextMessage(STRINGS.UI.PLAYERSTATUSSCREEN.VIEWPROFILE)
-    group.NET_ID._netid = data.netid
-    if not TheNet:IsNetIDPlatformValid(data.netid) then
-        group.NET_ID:Hide()
-    end
-
-    group.focus_forward = group.NET_ID
-
-    group:SetFocusChangeDir(MOVE_LEFT, obit_button)
-
-    return group
-end
-
 local function encounter_widget_update(widget, data, index)   
     if not widget then return end
 
@@ -274,7 +183,8 @@ local function encounter_widget_update(widget, data, index)
     end
 
     widget.SEEN_DATE:SetString(data.date or "")
-    widget.PLAYER_AGE:SetString((data.playerage or STRINGS.UI.MORGUESCREEN.UNKNOWN_DAYS).." "..(tonumber(data.playerage) == 1 and STRINGS.UI.MORGUESCREEN.DAY or STRINGS.UI.MORGUESCREEN.DAYS))
+    local age_str = (data.playerage or STRINGS.UI.MORGUESCREEN.UNKNOWN_DAYS).." "..(tonumber(data.playerage) == 1 and STRINGS.UI.MORGUESCREEN.DAY or STRINGS.UI.MORGUESCREEN.DAYS)
+    widget.PLAYER_AGE:SetTruncatedString(age_str, widget.PLAYER_AGE._align.maxwidth, widget.PLAYER_AGE._align.maxchars, true)
 
     widget.NET_ID._netid = data.netid
     if TheNet:IsNetIDPlatformValid(data.netid) then
@@ -282,6 +192,7 @@ local function encounter_widget_update(widget, data, index)
     else
         widget.NET_ID:Hide()
     end
+    widget.CLEAR._userid = data.userid
 end
 
 local MorgueScreen = Class(Screen, function(self, prev_screen)
@@ -322,6 +233,121 @@ local MorgueScreen = Class(Screen, function(self, prev_screen)
     self:SetTab("obituary")
     self.default_focus = self.obituary_button
 end)
+
+function MorgueScreen:EncounterWidgetConstructor(data, parent, obit_button)  
+    local font_size = JapaneseOnPS4() and 28 * .75 or 28
+
+    local slide_factor = 200
+
+    local group = parent:AddChild(Widget("control-encounter"))
+
+    group.bg = group:AddChild(Image("images/serverbrowser.xml", "textwidget_over.tex"))
+    group.bg:SetPosition(355,0)
+    group.bg:SetSize(880,37)
+    group.bg:Hide()
+    group.OnGainFocus = function()
+        group.bg:Show()
+    end
+    group.OnLoseFocus = function()
+        group.bg:Hide()
+    end
+
+    group.PLAYER_NAME = group:AddChild(Text(NEWFONT, font_size))
+    group.PLAYER_NAME:SetHAlign(ANCHOR_MIDDLE)
+    group.PLAYER_NAME:SetPosition(column_offsets.PLAYER_NAME-35+slide_factor, 0, 0)
+    group.PLAYER_NAME:SetColour(0,0,0,1)
+    group.PLAYER_NAME._align =
+    {
+        maxwidth = 160,
+        maxchars = 40,
+    }
+    group.PLAYER_NAME:SetTruncatedString(data.name or "", group.PLAYER_NAME._align.maxwidth, group.PLAYER_NAME._align.maxchars, true)
+
+    group.PLAYER_CHAR = group:AddChild(Widget("PLAYER_CHAR"))
+    group.PLAYER_CHAR:SetPosition(column_offsets.PLAYER_CHAR+24+slide_factor, 0, 0)
+
+    group.SERVER_NAME = group:AddChild(Text(NEWFONT, font_size))
+    group.SERVER_NAME:SetHAlign(ANCHOR_MIDDLE)
+    group.SERVER_NAME:SetPosition(column_offsets.SERVER_NAME-95+slide_factor, 0, 0)
+    group.SERVER_NAME:SetColour(0,0,0,1)
+    group.SERVER_NAME._align =
+    {
+        maxwidth = 285,
+        maxchars = 66,
+    }
+    group.SERVER_NAME:SetTruncatedString(data.server_name or "", group.SERVER_NAME._align.maxwidth, group.SERVER_NAME._align.maxchars, true)
+
+    group.PLAYER_CHAR.base = group.PLAYER_CHAR:AddChild(Widget("base"))
+    group.PLAYER_CHAR.base:SetPosition(1,0)
+    group.PLAYER_CHAR.portraitbg = group.PLAYER_CHAR.base:AddChild(Image("images/saveslot_portraits.xml", "background.tex"))
+    group.PLAYER_CHAR.portraitbg:SetScale(portrait_scale, portrait_scale, 1)
+    group.PLAYER_CHAR.portraitbg:SetClickable(false)
+    group.PLAYER_CHAR.portrait = group.PLAYER_CHAR.base:AddChild(Image())
+    group.PLAYER_CHAR.portrait:SetClickable(false)
+    group.PLAYER_CHAR.portrait:SetScale(portrait_scale, portrait_scale, 1)
+    if data.prefab ~= nil then
+        group.PLAYER_CHAR.portrait:SetTexture(get_character_icon(data.prefab))
+    else
+        group.PLAYER_CHAR:Hide()
+    end
+
+    group.SEEN_DATE = group:AddChild(Text(NEWFONT, font_size))
+    group.SEEN_DATE:SetHAlign(ANCHOR_MIDDLE)
+    group.SEEN_DATE:SetPosition(column_offsets.SEEN_DATE-4+slide_factor, 0, 0)
+    group.SEEN_DATE:SetRegionSize( 135, 30 )
+    group.SEEN_DATE:SetString(data.date or "")
+    group.SEEN_DATE:SetColour(0,0,0,1)
+
+    group.PLAYER_AGE = group:AddChild(Text(NEWFONT, font_size))
+    group.PLAYER_AGE:SetHAlign(ANCHOR_MIDDLE)
+    group.PLAYER_AGE:SetPosition(column_offsets.PLAYER_AGE-16+slide_factor+20, 0, 0)
+    group.PLAYER_AGE._align =
+    {
+        maxwidth = 90,
+        maxchars = 12,
+    }
+    local age_str = (data.playerage or STRINGS.UI.MORGUESCREEN.UNKNOWN_DAYS).." "..(tonumber(data.playerage) == 1 and STRINGS.UI.MORGUESCREEN.DAY or STRINGS.UI.MORGUESCREEN.DAYS)
+    group.PLAYER_AGE:SetTruncatedString(age_str, group.PLAYER_AGE._align.maxwidth, group.PLAYER_AGE._align.maxchars, true)
+    group.PLAYER_AGE:SetColour(0,0,0,1)
+
+    group.NET_ID = group:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "player_info.tex", STRINGS.UI.PLAYERSTATUSSCREEN.VIEWPROFILE, false, false,
+        function()
+            if group.NET_ID._netid ~= nil then
+                TheNet:ViewNetProfile(group.NET_ID._netid)
+            end
+        end,
+        { size = 50, offset_y = 65 }))
+    group.NET_ID:SetPosition(column_offsets.NET_ID+25+slide_factor, -1, 0)
+    group.NET_ID:SetScale(.45)
+    group.NET_ID:SetHelpTextMessage(STRINGS.UI.PLAYERSTATUSSCREEN.VIEWPROFILE)
+    group.NET_ID._netid = data.netid
+    if not TheNet:IsNetIDPlatformValid(data.netid) then
+        group.NET_ID:Hide()
+    end
+
+
+    group.CLEAR = group:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "delete.tex", STRINGS.UI.PLAYERSTATUSSCREEN.CLEAR, false, false,
+        function()
+            PlayerHistory:RemoveUser(group.CLEAR._userid)
+            self:UpdatePlayerHistory()
+        end,
+        { size = 50, offset_y = 65 }))
+    group.CLEAR:SetPosition(column_offsets.CLEAR+90+slide_factor, -1, 0)
+    group.CLEAR:SetScale(.45)
+    group.CLEAR:SetHelpTextMessage(STRINGS.UI.PLAYERSTATUSSCREEN.CLEAR)
+    group.CLEAR._userid = data.userid
+
+
+
+    group.focus_forward = group.NET_ID
+
+    group.NET_ID:SetFocusChangeDir(MOVE_LEFT, obit_button)
+    group.NET_ID:SetFocusChangeDir(MOVE_RIGHT, group.CLEAR)
+    
+    group.CLEAR:SetFocusChangeDir(MOVE_LEFT, group.NET_ID)
+
+    return group
+end
 
 function MorgueScreen:AddWhiteStripes(parent)
     local y_height = header_height-.5*row_height
@@ -474,7 +500,11 @@ function MorgueScreen:BuildEncountersTab()
 
         self.fifth_column_end = self.encounters_lines:AddChild(Image("images/ui.xml", "line_vertical_5.tex"))
         self.fifth_column_end:SetScale(.66, .68)
-        self.fifth_column_end:SetPosition(column_offsets.PLAYER_AGE+40, vertical_line_y_offset, 0)
+        self.fifth_column_end:SetPosition(column_offsets.PLAYER_AGE, vertical_line_y_offset, 0)
+        
+        self.sixth_column_end = self.encounters_lines:AddChild(Image("images/ui.xml", "line_vertical_5.tex"))
+        self.sixth_column_end:SetScale(.66, .68)
+        self.sixth_column_end:SetPosition(column_offsets.CLEAR, vertical_line_y_offset, 0)
     end
 
     self.encounters_rows = self.encountersroot:AddChild(Widget("encounters_rows"))
@@ -502,7 +532,7 @@ function MorgueScreen:BuildEncountersTab()
 
     self.PLAYER_CHAR = self.encounters_titles:AddChild(Text(NEWFONT, font_size))
     self.PLAYER_CHAR:SetHAlign(ANCHOR_MIDDLE)
-    self.PLAYER_CHAR:SetPosition(column_offsets.PLAYER_CHAR + 39, header_height, 0)
+    self.PLAYER_CHAR:SetPosition(column_offsets.PLAYER_CHAR + 50, header_height, 0)
     self.PLAYER_CHAR:SetRegionSize( 400, 30 )
     self.PLAYER_CHAR:SetString(STRINGS.UI.MORGUESCREEN.PLAYER_CHAR)
     self.PLAYER_CHAR:SetColour(0, 0, 0, 1)
@@ -510,7 +540,7 @@ function MorgueScreen:BuildEncountersTab()
 
     self.SERVER_NAME = self.encounters_titles:AddChild(Text(NEWFONT, font_size))
     self.SERVER_NAME:SetHAlign(ANCHOR_MIDDLE)
-    self.SERVER_NAME:SetPosition(column_offsets.SERVER_NAME - 65, header_height, 0)
+    self.SERVER_NAME:SetPosition(column_offsets.SERVER_NAME - 70, header_height, 0)
     self.SERVER_NAME:SetRegionSize( 400, 30 )
     self.SERVER_NAME:SetString(STRINGS.UI.MORGUESCREEN.SERVER_NAME)
     self.SERVER_NAME:SetColour(0, 0, 0, 1)
@@ -519,7 +549,7 @@ function MorgueScreen:BuildEncountersTab()
     if not JapaneseOnPS4() then
         self.SEEN_DATE = self.encounters_titles:AddChild(Text(NEWFONT, font_size))
         self.SEEN_DATE:SetHAlign(ANCHOR_MIDDLE)
-        self.SEEN_DATE:SetPosition(column_offsets.SEEN_DATE + 12, header_height, 0)
+        self.SEEN_DATE:SetPosition(column_offsets.SEEN_DATE + 20, header_height, 0)
         self.SEEN_DATE:SetRegionSize( 400, 30 )
         self.SEEN_DATE:SetString(STRINGS.UI.MORGUESCREEN.SEEN_DATE)
         self.SEEN_DATE:SetColour(0, 0, 0, 1)
@@ -527,7 +557,7 @@ function MorgueScreen:BuildEncountersTab()
 
         self.PLAYER_AGE = self.encounters_titles:AddChild(Text(NEWFONT, font_size))
         self.PLAYER_AGE:SetHAlign(ANCHOR_MIDDLE)
-        self.PLAYER_AGE:SetPosition(column_offsets.PLAYER_AGE + 40 + 20, header_height, 0)
+        self.PLAYER_AGE:SetPosition(column_offsets.PLAYER_AGE + 29, header_height, 0)
         self.PLAYER_AGE:SetRegionSize( 400, 30 )
         self.PLAYER_AGE:SetString(STRINGS.UI.MORGUESCREEN.PLAYER_AGE)
         self.PLAYER_AGE:SetColour(0, 0, 0, 1)
@@ -535,11 +565,19 @@ function MorgueScreen:BuildEncountersTab()
 
         self.NET_ID = self.encounters_titles:AddChild(Text(NEWFONT, font_size))
         self.NET_ID:SetHAlign(ANCHOR_MIDDLE)
-        self.NET_ID:SetPosition(column_offsets.NET_ID + 35 + 15, header_height, 0)
+        self.NET_ID:SetPosition(column_offsets.NET_ID + 48, header_height, 0)
         self.NET_ID:SetRegionSize( 400, 30 )
         self.NET_ID:SetString(STRINGS.UI.MORGUESCREEN.NET_ID)
         self.NET_ID:SetColour(0, 0, 0, 1)
         self.NET_ID:SetClickable(false)
+        
+        self.CLEAR = self.encounters_titles:AddChild(Text(NEWFONT, font_size))
+        self.CLEAR:SetHAlign(ANCHOR_MIDDLE)
+        self.CLEAR:SetPosition(column_offsets.CLEAR + 110, header_height, 0)
+        self.CLEAR:SetRegionSize( 400, 30 )
+        self.CLEAR:SetString(STRINGS.UI.MORGUESCREEN.CLEAR)
+        self.CLEAR:SetColour(0, 0, 0, 1)
+        self.CLEAR:SetClickable(false)
     end
 
     self.encounterslistroot = self.encountersroot:AddChild(Widget("encounterslistroot"))
@@ -550,12 +588,17 @@ function MorgueScreen:BuildEncountersTab()
 
     self.encounter_widgets = {}
     for i = 1, num_rows do
-        table.insert(self.encounter_widgets, encounter_widget_constructor(self.player_history[i] or {}, self.encountersrowsroot, self.obituary_button))
+        table.insert(self.encounter_widgets, self:EncounterWidgetConstructor(self.player_history[i] or {}, self.encountersrowsroot, self.obituary_button))
     end
 
     self.encounters_scroll_list = self.encounterslistroot:AddChild(ScrollableList(self.player_history, 900, row_height * num_rows, row_height - 1, 1, encounter_widget_update, self.encounter_widgets, nil, nil, nil, 30))
     self.encounters_scroll_list:LayOutStaticWidgets(-25)
     self.encounters_scroll_list:SetPosition(-95, -35)
+end
+
+function MorgueScreen:UpdatePlayerHistory()
+    self.player_history = PlayerHistory:GetRows()
+    self.encounters_scroll_list:SetList( self.player_history )
 end
 
 function MorgueScreen:SetTab(tab)

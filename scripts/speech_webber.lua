@@ -20,17 +20,17 @@ return {
 		WRITE =
         {
             GENERIC = "We can't write on that now.",
-            INUSE = "We'll get our crayons ready while they finish up!",
+            INUSE = "We'll get our crayons ready while %s finishes up!",
         },
 		RUMMAGE =
         {   
             GENERIC = "That's off-limits.",
-            INUSE = "It's okay, we'll wait for you to finish!",   
+            INUSE = "It's okay, we'll wait for you to finish, %s!",   
         },
 		COOK =
         {
             GENERIC = "That's off-limits.",
-            INUSE = "It's okay, we'll wait for you to finish!",
+            INUSE = "It's okay, we'll wait for you to finish, %s!",
             TOOFAR = "Let's scurry closer!",
         },
         MOUNT =
@@ -54,14 +54,14 @@ return {
         {
         	FULL = "Hey! Make room!",
             DEAD = "We should probably keep it.",
-            SLEEPING = "Aww... They're getting snoozies right now!",
+            SLEEPING = "Aww... %s's getting snoozies right now!",
             BUSY = "We have something for you!",
     	},
     	GIVEALLTOPLAYER = 
         {
         	FULL = "Hey! Make room!",
             DEAD = "We should probably keep it.",
-            SLEEPING = "Aww... They're getting snoozies right now!",
+            SLEEPING = "Aww... %s's getting snoozies right now!",
             BUSY = "We have something for you!",
     	},
     	ATTUNE =
@@ -72,7 +72,7 @@ return {
         {
             GENERIC = "Not right now, we're comfy.",
             BURNING = "Woah! Hot fashions!",
-            INUSE = "We'll give them some privacy while they change.",
+            INUSE = "We'll give %s some privacy while they change.",
         },
         TEACH =
         {
@@ -238,6 +238,8 @@ return {
 			MURDERER = "You need to treat people nicer, %s!",
 			REVIVER = "%s is gruff, but nice.",
 			GHOST = "Wanna go heart-hunting with us, %s?",
+			BEAVER = "%s's being gnawghty.",
+			BEAVERGHOST = "Can I pet your ghost ears or will our claws swish through them?",
 		},
 		WICKERBOTTOM =
 		{
@@ -313,7 +315,7 @@ return {
 			ABOVEGROUND = "Hello little guy!",
 		},
 		MOLEHILL = "Hidey-hole.",
-		MOLEHAT = "I can see for miles and miles.",
+		MOLEHAT = "It sees for miles and miles.",
 
 		EEL = "Fresh water-snake.",
 		EEL_COOKED = "We could slurp this down.",
@@ -529,7 +531,7 @@ return {
         {
             GENERIC = "We'd rather visit our spider friends on the surface.",
             OPEN = "I can hear some spider friends down there.",
-            FULL = "We'll explore when everyone else's had their turn!",
+            FULL = "We'll explore when everyone else has had their turn!",
         },
         CAVE_EXIT = 
         {
@@ -565,7 +567,7 @@ return {
 		BEARDHAIR = "In another life, I could've grown this.",
 		BEARGER = "Run for the hills!",
 		BEARGERVEST = "We'll be the hairiest spider ever.",
-		ICEPACK = "I can bear this pack!",
+		ICEPACK = "It's fuzzy!",
 		BEARGER_FUR = "It's so thick!",
 		FURTUFT = "Fluffy and not from a spider.",		
 		BEDROLL_STRAW = "Musty but relaxing.",
@@ -659,7 +661,7 @@ return {
 		BOAT = "All these legs, but we don't row.",
 		BONESHARD = "Boney bits.",
 		BONESTEW = "Smells like Sunday supper.",
-		BUGNET = "Good thing we're an arachnid.",
+		BUGNET = "I'm not a bug! We're an arachnid!",
 		BUSHHAT = "Spider in the bushes.",
 		BUTTER = "Butter is better.",
 		BUTTERFLY =
@@ -722,7 +724,7 @@ return {
 		},
 		COOKEDMANDRAKE = "Cooked to death.",
 		COOKEDMEAT = "Can't have any pudding if we don't eat it.",
-		COOKEDMONSTERMEAT = "It'll go down, but I won't be happy about it.",
+		COOKEDMONSTERMEAT = "It'll go down, but it'll also come back up.",
 		COOKEDSMALLMEAT = "Meat treat.",
 		COOKPOT =
 		{
@@ -1070,7 +1072,7 @@ return {
 		MERMHEAD = 
 		{
 			GENERIC = "A waste of food.",
-			BURNT = "I wonder who he was.",
+			BURNT = "I wonder who that was.",
 		},
 		MERMHOUSE = 
 		{
@@ -1258,7 +1260,7 @@ return {
 			GENERIC = "What pretty white feathers.",
 			HELD = "We will name it Francis.",
 		},
-		ROBOT_PUPPET = "I don't think it's having fun.",
+		ROBOT_PUPPET = "I don't think they're having fun.",
 		ROCK = "We'll need to mine it before we can use it.",
 		ROCK_CHARCOAL = "Big, crumbly rock.",
 		MOOSE_NESTING_GROUND = "For its babies' sleepytime.",
@@ -1332,8 +1334,8 @@ return {
 		},
 		SPIDERDEN = "Looks cozy in there.",
 		SPIDEREGGSACK = "A portable friendship pod!",
-		SPIDERGLAND = "This might sooth our cuts.",
-		SPIDERHAT = "What have I done?",
+		SPIDERGLAND = "It might sooth our cuts. I won't think about where it came from.",
+		SPIDERHAT = "Very upsetting...",
 		SPIDERQUEEN = "Mommy-Longlegs?",
 		SPIDER_WARRIOR =
 		{
@@ -1423,14 +1425,14 @@ return {
 			GENERIC = "We could keep our toys in it!",
 			BURNT = "It won't be very useful to us now.",
 		},
-		TRINKET_1 = "We could've had some fun if they weren't all melted.",
+		TRINKET_1 = "We could still play with these, if we're extra creative.",
 		TRINKET_2 = "A voiceless instrument.",
 		TRINKET_3 = "It won't come undone!",
 		TRINKET_4 = "It's watching us.",
 		TRINKET_5 = "Yay, a new toy!",
 		TRINKET_6 = "Maybe we'll find a use for these.",
 		TRINKET_7 = "Another toy!",
-		TRINKET_8 = "We could take a bath if only we had a tub.",
+		TRINKET_8 = "I miss bath toys.",
 		TRINKET_9 = "None of them match!",
 		TRINKET_10 = "Just like grandpa wears!",
 		TRINKET_11 = "Beep boop!",
@@ -1446,7 +1448,7 @@ return {
         TRINKET_21 = "Mom had one of these.",
         TRINKET_22 = "Maybe we'll find another use for this.",
         TRINKET_23 = "Are we supposed to blow on it?",
-        TRINKET_24 = "Maybe we can keep toys in it.",
+        TRINKET_24 = "No cookies.",
         TRINKET_25 = "It's stinky.",
 		TRINKET_26 = "You're our cuppy cup!",
 		TRINKET_27 = "This is stupid.",
@@ -1472,14 +1474,9 @@ return {
 		TURF_FUNGUS_GREEN = "Some ground that we dug up.",
 		TURF_FUNGUS_RED = "Some ground that we dug up.",
 		TURF_SANDY = "Some ground that we dug up.",
+		
 		SHADOWDIGGER = "Sometimes scary things are nice.",
-		SHADOWDIGGER_BUILDER = "Sometimes scary things are nice.",
-		SHADOWDUELIST = "Sometimes scary things are nice.",
-		SHADOWDUELIST_BUILDER = "Sometimes scary things are nice.",
-		SHADOWLUMBER = "Sometimes scary things are nice.",
-		SHADOWLUMBER_BUILDER = "Sometimes scary things are nice.",
-		SHADOWMINER = "Sometimes scary things are nice.",
-		SHADOWMINER_BUILDER = "Sometimes scary things are nice.",
+
 		BISHOP_CHARGE_HIT = "Owie!",
 		TURF_WOODFLOOR = "If we put these on the ground we'll have a floor!",
 		TURKEYDINNER = "Like mother used to make, in the before time!",
@@ -1563,7 +1560,7 @@ return {
 	DESCRIBE_GENERIC = "Can we play with it?",
 	DESCRIBE_TOODARK = "It's too dark to see!",
 	DESCRIBE_SMOLDERING = "That thing is about to catch fire.",
-	DESCRIBE_SAMECHARACTER = "Lookin' good!",
+
 	EAT_FOOD =
 	{
 		TALLBIRDEGG_CRACKED = "What if it hatches in our belly?",

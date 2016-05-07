@@ -46,7 +46,7 @@ return {
         {
             GENERIC = "How could you improve on perfection?",
             BURNING = "Oh. There go all my good pocket squares. Sigh.",
-            INUSE = "They're in much more dire need of it.",
+            INUSE = "%s's in much more dire need of it.",
         },
 		ATTUNE =
         {
@@ -62,14 +62,14 @@ return {
         },
         GIVETOPLAYER = 
         {
-        	FULL = "No sense giving them more than they can carry.",
+        	FULL = "No sense giving %s more than they can carry.",
             DEAD = "The dead have no need of such things.",
             SLEEPING = "Err... I'll let you rest.",
             BUSY = "When you have a moment.",
     	},
     	GIVEALLTOPLAYER = 
         {
-        	FULL = "No sense giving them more than they can carry.",
+        	FULL = "No sense giving %s more than they can carry.",
             DEAD = "The dead have no need of such things.",
             SLEEPING = "Err... I'll let you rest.",
             BUSY = "When you have a moment.",
@@ -138,7 +138,7 @@ return {
 	ANNOUNCE_NODAYSLEEP = "I can't sleep in the day.",
 	ANNOUNCE_NODAYSLEEP_CAVE = "Sleeping now would mess up my sleep schedule!",
 	ANNOUNCE_NOHUNGERSLEEP = "I'm too hungry. I can't sleep.",
-	ANNOUNCE_NO_TRAP = "Weird. They forgot to set it.",
+	ANNOUNCE_NO_TRAP = "Odd. They forgot to set it.",
 	ANNOUNCE_PECKED = "Have patience!",
 	ANNOUNCE_QUAKE = "That rumbling can't be good.",
 	ANNOUNCE_RESEARCH = "Knowledge is power. And power is... well, power.",
@@ -162,10 +162,8 @@ return {
 		GENERIC = "To arms!",
 		PIG = "Brains over brawn!",
 		PREY = "Sacrifice yourself for my comfort!",
-		SPIDER = "I'll not be made a fool of again!",
+		SPIDER = "I'll not be made a fool of!",
 		SPIDER_WARRIOR = "You've forced my hand!",
-		SPIDER = "I won't be made a fool of... next time!",
-		SPIDER_WARRIOR = "Next time the gloves come off!",
 	},
 	COMBAT_QUIT =
 	{
@@ -175,8 +173,6 @@ return {
 		SPIDER = "I won't be made a fool of... next time!",
 		SPIDER_WARRIOR = "Next time the gloves come off!",
 	},
-	DESCRIBE_SAMECHARACTER = "What a dapper fellow!",
-	--Pride... Arrogance... Conceit...
 	DESCRIBE =
 	{
 		PLAYER =
@@ -205,7 +201,8 @@ return {
 		},
 		WAXWELL = 
 		{
-			GENERIC = "Greetings, %s. Pleasure to see you.",
+			GENERIC = "What a dapper fellow!",
+			--Pride... Arrogance... Conceit...
 			ATTACKER = "I know that look, %s. What are you up to?",
 			MURDERER = "Old habits die hard... and so will you!",
 			REVIVER = "Trust only yourself, hey %s?.",
@@ -242,6 +239,8 @@ return {
 			MURDERER = "Fiend! Time to make like a tree...!",
 			REVIVER = "%s seems very in touch with the spirits of the forest.",
 			GHOST = "That blockhead could use a heart.",
+			BEAVER = "Ha! What a delightful curse.",
+			BEAVERGHOST = "Yew don't look so wood.",
 		},
 		WICKERBOTTOM = 
 		{
@@ -283,14 +282,9 @@ return {
 		},
 		BERNIE_ACTIVE = "Just what am I looking at here?",
 		BURNT_MARSH_BUSH = "Utterly destroyed.",
+		
 		SHADOWDIGGER = "I'm a shadow of myself. Ha-ha!",
-		SHADOWDIGGER_BUILDER = "I'm a shadow of myself. Ha-ha!",
-		SHADOWDUELIST = "I'm a shadow of myself. Ha-ha!",
-		SHADOWDUELIST_BUILDER = "I'm a shadow of myself. Ha-ha!",
-		SHADOWLUMBER = "I'm a shadow of myself. Ha-ha!",
-		SHADOWLUMBER_BUILDER = "I'm a shadow of myself. Ha-ha!",
-		SHADOWMINER = "I'm a shadow of myself. Ha-ha!",
-		SHADOWMINER_BUILDER = "I'm a shadow of myself. Ha-ha!",
+
 		GLOMMER = "A flying goop factory.",
         GLOMMERFLOWER = 
         {
@@ -340,7 +334,7 @@ return {
 		},
 
 		BOOK_BIRDS = "What a wasteful misuse of magic.",
-		BOOK_TENTACLES = "Shall I summon horrors from the depths?",
+		BOOK_TENTACLES = "What horrors shall be summoned from the depths?",
 		BOOK_GARDENING = "It's not wise to toy with forces beyond your comprehension.",
 		BOOK_SLEEP = "I haven't had a real sleep in... ages.",
 		BOOK_BRIMSTONE = "I've had enough fire and brimstone for one eternity.",
@@ -434,7 +428,7 @@ return {
 		},
 		COLDFIREPIT =
 		{
-			EMBERS = "I should attend to that.",
+			EMBERS = "Someone should attend to that.",
 			GENERIC = "A fire pit.",
 			HIGH = "A roaring, cold fire.",
 			LOW = "It's getting low.",
@@ -529,7 +523,7 @@ return {
 		RESURRECTIONSTATUE = 
 		{
 			GENERIC = "I'm not above using this.",
-			BURNT = "I won't be using it any longer.",
+			BURNT = "No one will be using that any longer.",
 		},
 		ROCK_ICE = 
 		{
@@ -600,12 +594,12 @@ return {
 		EEL_COOKED = "It will have to do.",
 		UNAGI = "It will have to do.",
 		EYETURRET = "Some of my better work.",
-		EYETURRET_ITEM = "Now I just have to set it up.",
-		MINOTAURHORN = "I'm sorry I had to do that, old friend.",
+		EYETURRET_ITEM = "Now it just needs to be set up.",
+		MINOTAURHORN = "A regrettably end, my old friend.",
 		MINOTAURCHEST = "It's almost like he's still alive.",
-		THULECITE_PIECES = "I could combine several piles to make a bigger piece.",
+		THULECITE_PIECES = "Several of these piles could be combined to form a bigger piece.",
 		POND_ALGAE = "It's some algae.",
-		GREENSTAFF = "I must rely on focusing tools in this form.",
+		GREENSTAFF = "It is a focusing tool.",
 		POTTEDFERN = "How quaint.",
 
 		THULECITE = "An exceedingly rare but useful material.",
@@ -630,11 +624,11 @@ return {
 		NIGHTMARELIGHT = "The over-use of fuel was their downfall.",	--Lights that activate during nightmare.
 		RELIC = "They were all dead when I got here.",	--Fixed relic
 		RUINS_RUBBLE = "The earthquakes have taken their toll.",	--Broken relic
-		MULTITOOL_AXE_PICKAXE = "I don't know why I didn't think of this.",	--Works as axe and pickaxe
+		MULTITOOL_AXE_PICKAXE = "The duality of mine.",	--Works as axe and pickaxe
 		GREENGEM = "The nightmare fuel will unlock its true potential.",
-		ORANGESTAFF = "I must rely on focusing tools in this form.",	--Teleports player.
+		ORANGESTAFF = "It's a focusing tool.",	--Teleports player.
 		YELLOWAMULET = "This will make me stand out.",	--Emits light, player walks faster.
-		GREENAMULET = "I swear I don't normally need this.",	--Reduce cost of crafting
+		GREENAMULET = "A crutch for pitiful mortals without godlike powers. What?",	--Reduce cost of crafting
 
 		SLURPER = "Simple creatures. They exist only to sleep and feed.",
 		SLURPER_PELT = "In death, this creature will serve me!",
@@ -642,7 +636,7 @@ return {
 		ARMORSLURPER = "Wet, soggy, and oddly filling.",
 		ORANGEAMULET = "Simple magic is often the best.",
 		YELLOWSTAFF = "With a bigger gem it would be so much more powerful.",
-		YELLOWGEM = "I can feel the magic in this.",
+		YELLOWGEM = "I can sense magic in it.",
 		ORANGEGEM = "This will be quite powerful with some fuel.",
 		TELEBASE = 
 		{
@@ -685,7 +679,7 @@ return {
 		FLOWER_CAVE_DOUBLE="It's so dark down here.",
 		FLOWER_CAVE_TRIPLE="It's so dark down here.",
 		GUANO="Disgusting!",
-		LANTERN="I hope this keeps Them away.",
+		LANTERN="I hope it keeps Them away.",
 		LIGHTBULB="It will run out eventually.",
 		MANRABBIT_TAIL="Silly rabbit.",
 		MUSHTREE_TALL={
@@ -709,7 +703,7 @@ return {
         SPORE_SMALL_INV = "I hope it doesn't stain my jacket.",
 		SLURTLE="I don't remember those...",
 		SLURTLE_SHELLPIECES="They don't fit back together.",
-		SLURTLEHAT="This will keep me standing, if I need to fight.",
+		SLURTLEHAT= "This will keep me standing, if I need to fight.",
 		SLURTLEHOLE="That's revolting.",
 		SLURTLESLIME="There must be a better way.",
 		SNURTLE="That's strange. They must be new.",
@@ -763,7 +757,7 @@ return {
 			REMAINS_THINGIE = "My trip through the portal made it unrecognizable.",
 		},
 		AXE = "Sometimes the direct approach is best.",
-		BABYBEEFALO = "They're even ugly as children.",
+		BABYBEEFALO = "They're even ugly as infants.",
 		BACKPACK = "I wish there were porters around here.",
 		BACONEGGS = "Now that is a proper breakfast.",
 		BANDAGE = "Sticky and gooey and good for putting on booboos.",
@@ -1339,10 +1333,10 @@ return {
 		SKELETON = "Ha! I remember that one.",
 		SKELETON_PLAYER =
 		{
-			MALE = "A pity, dear %s. He was not prepared for %s.",
-			FEMALE = "A pity, dear %s. She was not prepared for %s.",
-			ROBOT = "A pity, dear %s. They were not prepared for %s.",
-			DEFAULT = "A pity, dear %s. So ill-prepared for %s.",
+			MALE = "A pity, %s. He was not prepared for %s.",
+			FEMALE = "A pity, %s. She was not prepared for %s.",
+			ROBOT = "A pity, %s. They were not prepared for %s.",
+			DEFAULT = "A pity, %s. So ill-prepared for %s.",
 		},
 		SKULLCHEST = "That chest is calling to me.",
 		SMALLBIRD =
@@ -1432,33 +1426,33 @@ return {
 		--...
 		TREASURECHEST_TRAP = "Hmmm. Looks suspicious.",
 		TREECLUMP = "I can't get through there.",
-		TRINKET_1 = "This was important to someone once.",
-		TRINKET_2 = "This was important to someone once.",
-		TRINKET_3 = "This was important to someone once.",
-		TRINKET_4 = "This was important to someone once.",
-		TRINKET_5 = "This was important to someone once.",
-		TRINKET_6 = "This was important to someone once.",
-		TRINKET_7 = "This was important to someone once.",
-		TRINKET_8 = "This was important to someone once.",
-		TRINKET_9 = "This was important to someone once.",
-		TRINKET_10 = "This was important to someone once.",
-		TRINKET_11 = "This was important to someone once.",
-		TRINKET_12 = "This was important to someone once.",
-		TRINKET_13 = "This was important to someone once.",
-		TRINKET_14 = "This was important to someone once.",
-        TRINKET_15 = "This was important to someone once.",
-        TRINKET_16 = "This was important to someone once.",
-        TRINKET_17 = "This was important to someone once.",
-        TRINKET_18 = "This was important to someone once.",
-        TRINKET_19 = "This was important to someone once.",
-        TRINKET_20 = "This was important to someone once.",
-        TRINKET_21 = "This was important to someone once.",
-        TRINKET_22 = "This was important to someone once.",
-        TRINKET_23 = "This was important to someone once.",
-        TRINKET_24 = "This was important to someone once.",
-        TRINKET_25 = "This was important to someone once.",
+		TRINKET_1 = "These must have been heated to an incredible temperature.",
+		TRINKET_2 = "A complete and utter fraud...",
+		TRINKET_3 = "A tangled mess. Like life.",
+		TRINKET_4 = "Don't look at me like that.",
+		TRINKET_5 = "A toy for a child's mind.",
+		TRINKET_6 = "I might hide those in WX-78's bedroll if I get bored.",
+		TRINKET_7 = "Not something a grown man should be caught playing with.",
+		TRINKET_8 = "I'd prefer a pocketwatch on a chain.",
+		TRINKET_9 = "My suits don't deserve to be defaced with these tacky atrocities.",
+		TRINKET_10 = "Is that a crack about my age?",
+		TRINKET_11 = "I'm not listening.",
+		TRINKET_12 = "I'm not touching that without several pairs of gloves.",
+		TRINKET_13 = "Don't look at me like that.",
+		TRINKET_14 = "Perhaps I'll invite Ms. Wickerbottom for a nice mandrake tea.",
+        TRINKET_15 = "Charlie was the only one who ever kept me in check.",
+        TRINKET_16 = "Charlie was the only one who ever kept me in check.",
+        TRINKET_17 = "The product of a very immature magician, perhaps.",
+        TRINKET_18 = "A metaphor, perhaps.",
+        TRINKET_19 = "Admittedly, it's difficult to maintain balance when you're on top.",
+        TRINKET_20 = "Eliminates the need for the phrase \"You scratch my back and I'll scratch yours.\"",
+        TRINKET_21 = "I know when I've been beaten.",
+        TRINKET_22 = "The monster child gets tangled in this frequently.",
+        TRINKET_23 = "I was looking for that.",
+        TRINKET_24 = "It's been beheaded.",
+        TRINKET_25 = "The strongman's wardrobe is filled to the brim with these, judging from the odor.",
 		TRINKET_26 = "This was important to one very specific person once.",
-		TRINKET_27 = "It's important to hang one's clothes so they don't get wrinkled.",
+		TRINKET_27 = "Finally. My suits were getting wrinkles. Wrinkles!",
 		TRUNKVEST_SUMMER = "It's more of a fall vest.",
 		TRUNKVEST_WINTER = "It's so hard to look fashionable in the winter.",
 		TRUNK_COOKED = "At least the mucus burned off.",
@@ -1531,7 +1525,7 @@ return {
 			OPEN = "I assure you that it smells worse than it looks.",
 		},
 		WORMHOLE_LIMITED = "It looks ill.",
-		ACCOMPLISHMENT_SHRINE = "Even THEY couldn't build something so devious.",		
+		ACCOMPLISHMENT_SHRINE = "Even They couldn't build something so devious.",		
         REVIVER = "I'm not sure I really want to give this up.",
         LIFEINJECTOR = "I'm supposed to put this filth in my veins?",
         MOONROCKNUGGET = "'Moon' rock.",

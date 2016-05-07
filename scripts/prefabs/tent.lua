@@ -10,6 +10,33 @@ local siestahut_assets =
     Asset("ANIM", "anim/siesta_canopy.zip"),
 }
 
+-----------------------------------------------------------------------
+--For regular tents
+
+local function PlaySleepLoopSoundTask(inst, stopfn)
+    inst.SoundEmitter:PlaySound("dontstarve/common/tent_sleep")
+end
+
+local function stopsleepsound(inst)
+    if inst.sleep_tasks ~= nil then
+        for i, v in ipairs(inst.sleep_tasks) do
+            v:Cancel()
+        end
+        inst.sleep_tasks = nil
+    end
+end
+
+local function startsleepsound(inst, len)
+    stopsleepsound(inst)
+    inst.sleep_tasks =
+    {
+        inst:DoPeriodicTask(len, PlaySleepLoopSoundTask, 33 * FRAMES),
+        inst:DoPeriodicTask(len, PlaySleepLoopSoundTask, 47 * FRAMES),
+    }
+end
+
+-----------------------------------------------------------------------
+
 local function onhammered(inst, worker)
     if inst.components.burnable ~= nil and inst.components.burnable:IsBurning() then
         inst.components.burnable:Extinguish()
@@ -23,6 +50,7 @@ end
 
 local function onhit(inst, worker)
     if not inst:HasTag("burnt") then
+        stopsleepsound(inst)
         inst.AnimState:PlayAnimation("hit")
         inst.AnimState:PushAnimation("idle", true)
     end
@@ -37,6 +65,7 @@ end
 
 local function onfinished(inst)
     if not inst:HasTag("burnt") then
+        stopsleepsound(inst)
         inst.AnimState:PlayAnimation("destroy")
         inst:ListenForEvent("animover", inst.Remove)
         inst.SoundEmitter:PlaySound("dontstarve/common/tent_dis_pre")
@@ -87,6 +116,7 @@ local function onwake(inst, sleeper, nostatechange)
 
     if inst.sleep_anim ~= nil then
         inst.AnimState:PushAnimation("idle", true)
+        stopsleepsound(inst)
     end
 
     inst.components.finiteuses:Use()
@@ -129,6 +159,7 @@ local function onsleep(inst, sleeper)
 
     if inst.sleep_anim ~= nil then
         inst.AnimState:PlayAnimation(inst.sleep_anim, true)
+        startsleepsound(inst, inst.AnimState:GetCurrentAnimationLength())
     end
 
     if inst.sleeptask ~= nil then

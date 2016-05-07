@@ -26,15 +26,29 @@ local function GetStatus(inst, viewer)
         or nil
 end
 
+local function TryDescribe(descstrings, modifier)
+    return descstrings ~= nil and (
+            type(descstrings) == "string" and
+            descstrings or
+            descstrings[modifier] or
+            descstrings.GENERIC
+        ) or nil
+end
+
+local function TryCharStrings(inst, charstrings, modifier)
+    return charstrings ~= nil and (
+            TryDescribe(charstrings.DESCRIBE[string.upper(inst.prefab)], modifier) or
+            TryDescribe(charstrings.DESCRIBE.PLAYER, modifier)
+        ) or nil
+end
+
 local function GetDescription(inst, viewer)
-    local modifier = GetStatus(inst, viewer) or "GENERIC"
-    local charstrings = STRINGS.CHARACTERS[string.upper(viewer.prefab)] or STRINGS.CHARACTERS.GENERIC
-    local playerdesc =
-        charstrings.DESCRIBE[string.upper(inst.prefab)] or
-        STRINGS.CHARACTERS.GENERIC.DESCRIBE[string.upper(inst.prefab)] or
-        charstrings.DESCRIBE.PLAYER or
-        STRINGS.CHARACTERS.GENERIC.DESCRIBE.PLAYER
-    return string.format(playerdesc[modifier], inst:GetDisplayName())
+    local modifier = inst.components.inspectable:GetStatus(viewer) or "GENERIC"
+    return string.format(
+            TryCharStrings(inst, STRINGS.CHARACTERS[string.upper(viewer.prefab)], modifier) or
+            TryCharStrings(inst, STRINGS.CHARACTERS.GENERIC, modifier),
+            inst:GetDisplayName()
+        )
 end
 
 local TALLER_TALKER_OFFSET = Vector3(0, -700, 0)
@@ -711,7 +725,7 @@ local function OnPlayerDeath(inst, data)
 
             local announcement_string = GetNewDeathAnnouncementString(inst, inst.deathcause, inst.deathpkname, inst.deathbypet)
             if announcement_string ~= "" then
-               TheNet:Announce(announcement_string, inst.entity, false, "death")
+                TheNet:AnnounceDeath(announcement_string, inst.entity)
             end
         end
         --Early delete in case client disconnects before removal timeout
@@ -823,7 +837,7 @@ local function DoActualRez(inst, source)
     if inst.rezsource ~= nil then
         local announcement_string = GetNewRezAnnouncementString(inst, inst.rezsource)
         if announcement_string ~= "" then
-            TheNet:Announce(announcement_string, inst.entity, nil, "resurrect")
+            TheNet:AnnounceResurrect(announcement_string, inst.entity)
         end
         inst.rezsource = nil
     end
@@ -961,7 +975,7 @@ local function OnMakePlayerGhost( inst, data )
     else
         local announcement_string = GetNewDeathAnnouncementString(inst, inst.deathcause, inst.deathpkname, inst.deathbypet)
         if announcement_string ~= "" then
-           TheNet:Announce(announcement_string, inst.entity, false, "death" )
+            TheNet:AnnounceDeath(announcement_string, inst.entity)
         end
 
         -- Death FX

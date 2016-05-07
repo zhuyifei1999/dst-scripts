@@ -342,7 +342,7 @@ function Trap:OnSave()
     {
         sprung = self.issprung or nil,
         isset = self.isset or nil,
-        bait = self.bait and self.bait.GUID or nil,
+        bait = self.bait ~= nil and self.bait.GUID or nil,
         loot = self.lootprefabs,
         starvedloot = self.starvedlootprefabs,
     },
@@ -352,7 +352,7 @@ function Trap:OnSave()
 end
 
 function Trap:OnLoad(data)
-    self.sprung = (data.sprung == true)
+    self.issprung = (data.sprung == true)
     self.isset = (data.isset == true)
 
     --backwards compatability
@@ -368,8 +368,8 @@ function Trap:OnLoad(data)
 
     if self.isset then
         self:StartUpdate()
-    elseif self.sprung then
-        self.inst:PushEvent("springtrap")
+    elseif self.issprung then
+        self.inst:PushEvent("springtrap", { loading = true })
     end
 end
 

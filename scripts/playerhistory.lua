@@ -25,7 +25,7 @@ end
 function PlayerHistory:DiscardDownToMaxForNew()
     self:SortBackwards("sort_date")
     for idx = #self.persistdata, self.max_history - 1, -1 do
-            self.existing_map[self.persistdata[idx].userid] = nil
+		self.existing_map[self.persistdata[idx].userid] = nil
         table.remove(self.persistdata, idx)
     end
 end
@@ -84,25 +84,43 @@ function PlayerHistory:GetRows()
     return self.persistdata
 end
 
-function PlayerHistory:Sort(field, forwards)
+function PlayerHistory:RemoveUser(userid)	
+	self.existing_map[userid] = nil
+	
+	for k,v in pairs( self.persistdata ) do
+		if self.persistdata[k].userid == userid then
+			table.remove( self.persistdata, k )
+			break;
+		end
+	end
+	
+	self.dirty = true
+	self:Save()
+end
+
+function PlayerHistory:Sort(field_a, field_b, forwards)
     if forwards == nil then
         forwards = true
     end
     local sort_function = self.sort_function
-    if field ~= nil and self.persistdata[1] ~= nil then
+    if field_a ~= nil and field_b ~= nil and self.persistdata[1] ~= nil then
         sort_function = function(a,b)
-            if forwards then
-                return a[field] < b[field]
-            else
-                return a[field] > b[field]
-            end
+			if a[field_a] ~= b[field_a] then
+				if forwards then
+					return a[field_a] < b[field_a]
+				else
+					return a[field_a] > b[field_a]
+				end
+			else
+				return a[field_b] < b[field_b]
+			end
         end
         table.sort(self.persistdata, sort_function)
     end
 end
 
 function PlayerHistory:SortBackwards(field)
-    self:Sort(field, false)
+    self:Sort(field, "name", false)
 end
 
 ----------------------------
@@ -115,7 +133,7 @@ function PlayerHistory:Save(callback)
     if self.dirty then
         self:SortBackwards("sort_date")
         for idx = #self.persistdata, self.max_history, -1 do
-                self.existing_map[self.persistdata[idx].userid] = nil
+			self.existing_map[self.persistdata[idx].userid] = nil
             table.remove(self.persistdata, idx)
         end
         --print( "SAVING Player History", #self.persistdata )

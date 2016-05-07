@@ -591,7 +591,13 @@ function ModIndex:LoadModConfigurationOptions(modname, client_config)
 					if self:HasModConfigurationOptions(modname) then
 						self:UpdateConfigurationOptions(known_mod.modinfo.configuration_options, savedata)
 					else
-						known_mod.modinfo.configuration_options = savedata
+						if known_mod.modinfo ~= nil then
+							known_mod.modinfo.configuration_options = savedata
+						else
+							print("Error: modinfo was not available for mod ", modname) --something went wrong, likely due to workshop update during FE loading, load modinfo now to try to recover
+							self:UpdateSingleModInfo(modname)
+							known_mod.modinfo.configuration_options = savedata
+						end
 					end
 					print ("loaded "..filename)
 				else

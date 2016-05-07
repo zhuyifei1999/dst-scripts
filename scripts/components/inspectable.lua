@@ -47,11 +47,9 @@ function Inspectable:GetDescription(viewer)
         return
     elseif not CanEntitySeeTarget(viewer, self.inst) then
         return GetString(viewer, "DESCRIBE_TOODARK")
-    elseif self.inst.prefab == viewer.prefab and not (self.inst:HasTag("playerghost") or viewer:HasTag("playerghost")) then
-        return GetString(viewer, "DESCRIBE_SAMECHARACTER")
     end
 
-    local desc
+    local desc = nil
     if self.getspecialdescription ~= nil then
         -- for cases where we need to do additional processing before calling GetDescription (i.e. player skeleton)
         desc = self.getspecialdescription(self.inst, viewer)

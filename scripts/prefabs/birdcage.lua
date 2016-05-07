@@ -313,6 +313,7 @@ end
 local function OnBuilt(inst)
     inst.AnimState:PlayAnimation("place")
     inst:PlayStateAnim("idle", true)
+    inst.SoundEmitter:PlaySound("dontstarve/common/birdcage_craft")
 end
 
 local function OnBirdRot(inst)

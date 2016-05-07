@@ -41,6 +41,10 @@ local function onload(inst, data)
     end
 end
 
+local function onbuilt(inst)
+    inst.SoundEmitter:PlaySound("dontstarve/common/sign_craft")
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -96,6 +100,7 @@ local function fn()
     inst.OnLoad = onload
 
     MakeHauntableWork(inst)
+    inst:ListenForEvent("onbuilt", onbuilt)
 
     return inst
 end

@@ -28,8 +28,10 @@ local states =
 
         events =
         {
-            EventHandler("springtrap", function(inst)
-                if inst.entity:IsAwake() then
+            EventHandler("springtrap", function(inst, data)
+                if data ~= nil and data.loading then
+                    inst.sg:GoToState(inst.components.trap.lootprefabs ~= nil and "full" or "empty")
+                elseif inst.entity:IsAwake() then
                     inst.sg:GoToState("sprung")
                 else
                     inst.components.trap:DoSpring()
@@ -38,7 +40,7 @@ local states =
             end),
         },
     },
-    
+
     State{
         name = "full",
         onenter = function(inst, target)
@@ -57,7 +59,7 @@ local states =
         name = "empty",
         onenter = function(inst, target)
             inst.AnimState:PlayAnimation("side")
-         end,
+        end,
 
         events =
         {
@@ -74,7 +76,7 @@ local states =
         events =
         {
             EventHandler("animover", function(inst)
-                inst.SoundEmitter:PlaySound(inst.sounds.close)    
+                inst.SoundEmitter:PlaySound(inst.sounds.close)
                 inst.components.trap:DoSpring()
                 inst.sg:GoToState(inst.components.trap.lootprefabs ~= nil and "full" or "empty")
             end),
