@@ -40,6 +40,18 @@ function Networking_Announcement(message, colour, announce_type)
     end
 end
 
+function Networking_ModOutOfDateAnnouncement(mod)
+    Networking_Announcement(string.format(STRINGS.MODS.VERSIONING.OUT_OF_DATE, mod))
+end
+
+function Networking_DeathAnnouncement(message, colour)
+    Networking_Announcement(message, colour, "death")
+end
+
+function Networking_ResurrectAnnouncement(message, colour)
+    Networking_Announcement(message, colour, "resurrect")
+end
+
 function Networking_JoinAnnouncement(name, colour)
     Networking_Announcement(string.format(STRINGS.UI.NOTIFICATION.JOINEDGAME, name), colour, "join_game")
 end

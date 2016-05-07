@@ -19,7 +19,7 @@ return {
 		WRITE =
         {
             GENERIC = "I... I can't.",
-            INUSE = "Take your time... I'll just watch.",
+            INUSE = "Take your time, %s... I'll just watch.",
         },
 		STORE =
 		{
@@ -245,6 +245,8 @@ return {
 			MURDERER = "I'll send you someplace much nicer than this, %s.",
 			REVIVER = "Abigail likes you, %s. But she likes Lucy more.",
 			GHOST = "We can get a heart, but are you sure you even want to come back, %s?",
+			BEAVER = "He pinky-promised I'd get to ride on his shoulders next time. Such lies.",
+			BEAVERGHOST = "The curse haunts you even in death, %s? I'm so sorry.",
 		},
 		WICKERBOTTOM = 
 		{
@@ -800,8 +802,8 @@ return {
 		ASH =
 		{
 			GENERIC = "All that's left after another beautiful fire.",
-			REMAINS_GLOMMERFLOWER = "The flower was incinerated when I teleported!",
-			REMAINS_EYE_BONE = "The eyebone was incinerated when I teleported!",
+			REMAINS_GLOMMERFLOWER = "The flower was incinerated in the teleportation!",
+			REMAINS_EYE_BONE = "The eyebone was incinerated in the teleportation!",
 			REMAINS_THINGIE = "This was once some thing before it got burned...",
 		},
 		AXE = "An instrument for industry and murder.",
@@ -829,7 +831,7 @@ return {
             RIDER = "Together we can venture far.",
             PUDGY = "More of the world is within than without.",
 		},
-		BEEFALOHAT = "I shall cover my head.",
+		BEEFALOHAT = "To cover one's head.",
 		BEEFALOWOOL = "Somewhere, a beefalo is naked and cold.",
 		BEEHAT = "This will protect me from those happy buzzing sounds. Oh, and the stings.",
 		BEEHIVE = "A wretched hive of scum and pollen.",
@@ -869,14 +871,9 @@ return {
 		BIRD_EGG_COOKED = "No bird will ever come of it.",
 		BISHOP = "What does he pray for?",
 		BISHOP_CHARGE_HIT = "Ouch...",
+		
 		SHADOWDIGGER = "Was he your brother?",
-		SHADOWDIGGER_BUILDER = "Was he your brother?",
-		SHADOWDUELIST = "Was he your brother?",
-		SHADOWDUELIST_BUILDER = "Was he your brother?",
-		SHADOWLUMBER = "Was he your brother?",
-		SHADOWLUMBER_BUILDER = "Was he your brother?",
-		SHADOWMINER = "Was he your brother?",
-		SHADOWMINER_BUILDER = "Was he your brother?",
+
 		BLOWDART_SLEEP = "Not even the big sleep, just a temporary one.",
 		BLOWDART_PIPE = "Blow in one end and pain comes out the other.",
 		BLOWDART_FIRE = "Shall we burn down the world?",
@@ -1052,7 +1049,8 @@ return {
 		FISHTACOS = "Hopefully no bones still linger.",
 		FISH_COOKED = "A proper grilling puts a stop to the flopping.",
 		FLINT = "A tiny blade-like rock.",
-		FLOWER = {
+		FLOWER =
+		{
             GENERIC = "They are bright and cheery. Yuck.",
             ROSE = "Prickly and blood red...",
         },
@@ -1102,7 +1100,7 @@ return {
 		},
 		GUNPOWDER = "It is a dark path we tread.",
 		HAMBAT = "Death begets death.",
-		HAMMER = "Oh that I may crush the world.",
+		HAMMER = "This hammer does not create... it only destroys...",
 		HEALINGSALVE = "Life brings pain, pain brings life.",
 		HEATROCK =
 		{
@@ -1160,7 +1158,7 @@ return {
 		LUREPLANTBULB = "Life goes on.",
 		MALE_PUPPET = "I wonder what he did.",
         MANDRAKE_ACTIVE = "Onward, my vegetable minion!",
-        MANDRAKE_PLANTED = "The mighty mandrake. I should pick it at night.",
+        MANDRAKE_PLANTED = "The mighty mandrake. It's best picked at night.",
         MANDRAKE = "Alas, poor mandrake!",
 
 		MANDRAKESOUP = "Boiled the life out of him.",
@@ -1255,7 +1253,7 @@ return {
 		SCORCHED_SKELETON = "The flame has cleansed this poor wretched soul.",
 		PORTABLECOOKPOT_ITEM = "For when the hunger gnaws at my tiny stomach...",
 		PUMPKIN = "It's as big as the hole where my heart once was.",
-		PUMPKINCOOKIE = "Do I dare indulge in such childish things?",
+		PUMPKINCOOKIE = "Why indulge in such childish things?",
 		PUMPKIN_COOKED = "It shriveled a tiny bit from the heat. I like that.",
 		PUMPKIN_LANTERN = "You're not so scary.",
 		PUMPKIN_SEEDS = "It's a seed. Exciting.",
@@ -1305,7 +1303,7 @@ return {
 			GENERIC = "Life in the barren, frozen wastes.",
 			HELD = "It's so soft. It is my enemy.",
 		},
-		ROBOT_PUPPET = "I wonder what it did.",
+		ROBOT_PUPPET = "I wonder what they did.",
 		ROCK_LIGHT =
 		{
 			GENERIC = "There's a fire in the pit's belly.",
@@ -1340,7 +1338,7 @@ return {
 		SEWING_KIT = "Another implement for putting off inevitable decay.",
 		SHOVEL = "What terrible secrets might be uncovered with this?",
 		SILK = "So slippery and fine.",
-		SKELETON = "I envy his escape.",
+		SKELETON = "I envy your escape.",
 		--SKELETON_PLAYER = "I was so, so close.",
 
 		SKELETON_PLAYER =
@@ -1388,7 +1386,7 @@ return {
 		STUFFEDEGGPLANT = "A nightshade. Probably not filled with poison.",
 		SUNKBOAT = "A cruel trick!",
 		SWEATERVEST = "Pieces of dead things, made into a vest!",
-		TAFFY = "I never imagined a thing so sweet.",
+		TAFFY = "Who knew such sweet things could exist here.",
 		TALLBIRD = "Free from the shackles of the sky.",
 		TALLBIRDEGG = "So full of potential.",
 		TALLBIRDEGG_COOKED = "All that promise, snatched away. Not bad with bacon.",
@@ -1435,16 +1433,16 @@ return {
 		TRAP_TEETH = "A devious surprise from underground.",
 		TRAP_TEETH_MAXWELL = "Death when I least expect it.",
 		TRINKET_1 = "Perfectly misshapen.",
-		TRINKET_2 = "It's a fake. Just a temptation, like death.",
+		TRINKET_2 = "Just a temptation, like death.",
 		TRINKET_3 = "If only knives solved more of my problems...",
 		TRINKET_4 = "I'd carry this to the end of the world.",
-		TRINKET_5 = "I'd fly this straight into the sun, if only it was bigger.",
+		TRINKET_5 = "I'll hold onto it... but only for my friend.",
 		TRINKET_6 = "Once alive with electricity, they've met their end.",
 		TRINKET_7 = "Just a simple game.",
 		TRINKET_8 = "I wish I could take a bath.",
 		TRINKET_9 = "Mismatched buttons for a mismatched life.",
 		TRINKET_10 = "Another mouth to feed.",
-		TRINKET_11 = "Lucky robot, it never had a soul.",
+		TRINKET_11 = "I warned you automaton, never ingest bottles labeled \"Drink me.\"",
 		TRINKET_12 = "Not so slimy any more, are we?",
 		TRINKET_13 = "I'd carry this to the end of the world.",
 		TRINKET_14 = "I wish my life force would drain away like the tea.",
@@ -1498,11 +1496,11 @@ return {
 			EMPTY = "If they are not in there, where are they?",
 			GENERIC = "This home is not a happy one, I fear.",
 		},
-		WALRUS_TUSK = "I shall gnash thee.",
+		WALRUS_TUSK = "I gnash at thee.",
 		WARDROBE = 
 		{
 			GENERIC = "It reminds me of a story I used to read with Abigail.",
-            BURNING = "Soon it will be nothing but ashes",
+            BURNING = "Soon it will be nothing but ashes.",
 			BURNT = "Now it doesn't remind me of anything.",
 		},
 		WARG = "A true bastion of evil.",
@@ -1528,7 +1526,7 @@ return {
 	DESCRIBE_GENERIC = "Sigh... I don't know.",
 	DESCRIBE_TOODARK = "The darkness! It is too dark!",
 	DESCRIBE_SMOLDERING = "It's about to be swallowed by flames.",
-	DESCRIBE_SAMECHARACTER = "Hi %s. Are you surviving okay?",
+
 	EAT_FOOD =
 	{
 		TALLBIRDEGG_CRACKED = "I spared it the torment of living.",

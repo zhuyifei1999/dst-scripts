@@ -50,6 +50,28 @@ if BRANCH == "dev" then
     SHOW_DEBUG_UNLOCK_RESET = true
 end
 
+local function PickTwo(choices, no_dupe)
+    local choice1 = math.random(1, #choices)
+    local choice2 = math.random(2, #choices)
+	if choice2 == choice1 then 
+		choice2 = 1
+	end
+	
+	if no_dupe then
+		local choice2_start = choice2
+		while choices[choice1].name == choices[choice2].name do
+			choice2 = ((choice2 + 1) % #choices) + 1
+			--check if a player with this name is already chosen
+			if choice2 == choice2_start then
+				return {choices[choice1]} --no good second choice, so just return 1
+			end
+		end
+	end
+	
+    return {choices[choice1], choices[choice2]}
+end
+    
+    
 local MultiplayerMainScreen = Class(Screen, function(self, prev_screen, profile, offline, session_data)
 	Screen._ctor(self, "MultiplayerMainScreen")
     self.profile = profile
@@ -154,63 +176,13 @@ function MultiplayerMainScreen:DoInit()
     local shadowpos = {x=-6,y=-5}
     local shadowscale = .3
 
-    local function PickTwo(choices, no_dupe)
-        local choice1 = math.random(1, #choices)
-        local choice2 = math.random(2, #choices)
-		if choice2 == choice1 then 
-			choice2 = 1
-		end
-		
-		if no_dupe then
-			local choice2_start = choice2
-			while choices[choice1].name == choices[choice2].name do
-				choice2 = ((choice2 + 1) % #choices) + 1
-				--check if a player with this name is already chosen
-				if choice2 == choice2_start then
-					return {choices[choice1]} --no good second choice, so just return 1
-				end
-			end
-		end
-		
-        return {choices[choice1], choices[choice2]}
-    end
-
     local characters = PickTwo(DST_CHARACTERLIST) 
-    local tools = PickTwo(MAINSCREEN_TOOL_LIST) 
-    local torsos = PickTwo(MAINSCREEN_TORSO_LIST) 
-    local hats = PickTwo(MAINSCREEN_HAT_LIST) 
-
-    PlayerHistory:SortBackwards("sort_date")
-    self.player_history = PlayerHistory:GetRows()
-    
-    local players = {}
-    local total_characters = {}
-    if self.player_history and next(self.player_history) then 
-        for k,v in pairs(self.player_history) do 
-            table.insert(total_characters, v)
-        end
-    end
-	local player_characters = self.profile:GetAllRecentLoadouts()
-    if #player_characters > 0 then
-        table.insert(total_characters, player_characters[math.random(1, #player_characters)])
-    end
-    
-    if #total_characters >= 2 then 
-        players = PickTwo(total_characters, true)
-    elseif #total_characters == 1 then
-		players[1] = total_characters[1]
-    end
     
     self.puppets = {}
     
     for i,data in ipairs(puppet_data) do
         self.puppets[i] = self.fg.character_root:AddChild(SkinsAndEquipmentPuppet(characters[i], FRONTEND_CHARACTER_FAR_COLOUR, {(data.flip and -1 or 1)*data.endscale,data.endscale, data.endscale}))
-        if players[i] then 
-            self.puppets[i]:InitSkins(players[i])
-        end
-        self.puppets[i]:SetTool(tools[i])
-        self.puppets[i]:SetTorso(torsos[i])
-        self.puppets[i]:SetHat(hats[i])
+
         self.puppets[i]:StartAnimUpdate()
         self.puppets[i]:SetPosition(data.endpos.x, data.endpos.y,0)
         self.puppets[i].shadow = self.puppets[i]:AddChild(Image("images/frontscreen.xml", "char_shadow.tex"))
@@ -218,37 +190,9 @@ function MultiplayerMainScreen:DoInit()
         self.puppets[i].shadow:SetScale(shadowscale)
         self.puppets[i].shadow:MoveToBack()
 
-        local puppet_fade = nil
-        local puppet_alpha = -30*FRAMES - (i-1)*45*FRAMES
-        local puppet_lastalpha = puppet_alpha
-        self.puppets[i].animstate:SetMultColour(0,0,0,1)
-        puppet_fade = self.puppets[i].inst:DoPeriodicTask(0, function()
-            puppet_alpha = puppet_alpha + FRAMES
-            if puppet_alpha > -15*FRAMES and puppet_lastalpha <= -15*FRAMES then
-                self.bg.anim_root.portal:GetAnimState():PlayAnimation("portal_spawnplayer", false)
-                self.bg.anim_root.portal:GetAnimState():PushAnimation("portal_idle", true)
-            end
-            if puppet_alpha > -8*FRAMES and puppet_lastalpha <= -8*FRAMES then
-                TheFrontEnd:GetSound():PlaySound("dontstarve/common/spawn/spawnportal_open")
-            end
-            if puppet_alpha > 0 and puppet_lastalpha <= 0 then
-                self.puppets[i]:Show()
-            end
-            puppet_lastalpha = puppet_alpha
-            if puppet_alpha < 1 then
-                self.puppets[i].animstate:SetMultColour(puppet_alpha*puppet_alpha, puppet_alpha*puppet_alpha, puppet_alpha*puppet_alpha, 1)
-            else
-                self.puppets[i].animstate:SetMultColour(1,1,1,1)
-                puppet_fade:Cancel()
-            end
-        end)
     end
-
 
     self.countdown:Hide()
-    for i,puppet in ipairs(self.puppets) do
-        puppet:Hide()
-    end
 
     self.menu_bg = self.fixed_root:AddChild(TEMPLATES.LeftGradient())
 
@@ -262,7 +206,7 @@ function MultiplayerMainScreen:DoInit()
 	local updatename_root_y = -RESOLUTION_Y * .5 + 55
 	self.updatename_root_on = Vector3( updatename_root_x, updatename_root_y, 0 )
 	self.updatename_root_off = Vector3( updatename_root_x-300, updatename_root_y, 0 )
-	
+
     self.updatename_root = self.fixed_root:AddChild(Widget("updatename"))
     self.updatename_root:SetPosition( self.updatename_root_on )
     self.updatenameshadow = self.updatename_root:AddChild(Text(BUTTONFONT, 21))
@@ -291,8 +235,6 @@ function MultiplayerMainScreen:DoInit()
     self.update_blackcover:SetPosition( updatename_root_x-355, updatename_root_y )
     self.update_blackcover:ScaleToSize( 350, 45 )
 	self.update_blackcover:SetTint(0, 0, 0, 1)
-	
-	
 
     self:MakeMainMenu()
 	self:MakeSubMenu()
@@ -301,10 +243,6 @@ function MultiplayerMainScreen:DoInit()
 
 	self:UpdateMOTD()
 	--self:UpdateCountdown()
-    --V2C: Show puppets because we're skipping UpdateCountdown
-    --for i,puppet in ipairs(self.puppets) do
-        --puppet:Show()
-    --end
     ----------------------------------------------------------
 
 	self.filter_settings = nil
@@ -328,19 +266,96 @@ function MultiplayerMainScreen:DoInit()
         self.submenu:SetFocusChangeDir(MOVE_UP, self.motd.button)
     end
 
-	self.menu:SetFocus(#self.menu.items)
+    self.menu:SetFocus(#self.menu.items)
+
+    --V2C: This is so the first time we become active will trigger OnShow to UpdatePuppets
+    self:Hide()
+end
+
+function MultiplayerMainScreen:UpdatePuppets()
+    PlayerHistory:SortBackwards("sort_date")
+    self.player_history = PlayerHistory:GetRows()
+    
+    local tools = PickTwo(MAINSCREEN_TOOL_LIST) 
+    local torsos = PickTwo(MAINSCREEN_TORSO_LIST) 
+    local hats = PickTwo(MAINSCREEN_HAT_LIST) 
+    
+	local players = {}
+    local total_characters = {}
+    if self.player_history and next(self.player_history) then 
+        for k,v in pairs(self.player_history) do 
+            table.insert(total_characters, v)
+        end
+    end
+	local player_characters = self.profile:GetAllRecentLoadouts()
+    if #player_characters > 0 then
+        table.insert(total_characters, player_characters[math.random(1, #player_characters)])
+    end
+
+    if #total_characters >= 2 then 
+        players = PickTwo(total_characters, true)
+    elseif #total_characters == 1 then
+		players[1] = total_characters[1]
+    end
+
+    for i,puppet in pairs(self.puppets) do
+        if players[i] then
+            puppet:InitSkins(players[i])
+        end
+        puppet:SetTool(tools[i])
+        puppet:SetTorso(torsos[i])
+        puppet:SetHat(hats[i])
+
+        local puppet_alpha = -30*FRAMES - (i-1)*45*FRAMES
+        local puppet_lastalpha = puppet_alpha
+        puppet.animstate:SetMultColour(0,0,0,1)
+        if puppet.fadetask ~= nil then
+            puppet.fadetask:Cancel()
+        end
+        puppet.fadetask = puppet.inst:DoPeriodicTask(0, function()
+            puppet_alpha = puppet_alpha + FRAMES
+            if puppet_alpha > -15*FRAMES and puppet_lastalpha <= -15*FRAMES then
+                self.bg.anim_root.portal:GetAnimState():PlayAnimation("portal_spawnplayer", false)
+                self.bg.anim_root.portal:GetAnimState():PushAnimation("portal_idle", true)
+            end
+            if puppet_alpha > -8*FRAMES and puppet_lastalpha <= -8*FRAMES then
+                TheFrontEnd:GetSound():PlaySound("dontstarve/common/spawn/spawnportal_open")
+            end
+            if puppet_alpha > 0 and puppet_lastalpha <= 0 then
+                self.puppets[i]:Show()
+            end
+            puppet_lastalpha = puppet_alpha
+            if puppet_alpha < 1 then
+                puppet.animstate:SetMultColour(puppet_alpha*puppet_alpha, puppet_alpha*puppet_alpha, puppet_alpha*puppet_alpha, 1)
+            else
+                puppet.animstate:SetMultColour(1,1,1,1)
+                puppet.fadetask:Cancel()
+                puppet.fadetask = nil
+            end
+        end)
+
+        puppet:Hide()
+    end
 end
 
 function MultiplayerMainScreen:OnShow()
     self._base:OnShow()
     self.fg.character_root:SetCanFadeAlpha(false)
     self.fg.character_root:Show()
+    self:UpdatePuppets()
 end
 
 function MultiplayerMainScreen:OnHide()
     self._base:OnHide()
     self.fg.character_root:SetCanFadeAlpha(true)
     self.fg.character_root:Hide()
+    for i, puppet in pairs(self.puppets) do
+        if puppet.fadetask ~= nil then
+            puppet.fadetask:Cancel()
+            puppet.fadetask = nil
+        end
+        puppet:Hide()
+    end
 end
 
 function MultiplayerMainScreen:TransferPortalOwnership(src, dest)
@@ -749,7 +764,9 @@ end
 function MultiplayerMainScreen:OnBecomeActive()
     MultiplayerMainScreen._base.OnBecomeActive(self)
 
-    self:Show()
+    if not self.shown then
+        self:Show()
+    end
 
 	self.menu:Enable()
     local found = false

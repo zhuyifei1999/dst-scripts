@@ -3,6 +3,11 @@ local assets =
     Asset("ANIM", "anim/staff_projectile.zip"),
 }
 
+local ice_prefabs =
+{
+    "shatter",
+}
+
 local function OnHitIce(inst, owner, target)
     if target:IsValid() and not target:HasTag("freezable") then
         local fx = SpawnPrefab("shatter")
@@ -61,5 +66,5 @@ local function fire()
     return common("fire_spin_loop", "shaders/anim.ksh")
 end
 
-return Prefab("ice_projectile", ice, assets), 
+return Prefab("ice_projectile", ice, assets, ice_prefabs),
     Prefab("fire_projectile", fire, assets)

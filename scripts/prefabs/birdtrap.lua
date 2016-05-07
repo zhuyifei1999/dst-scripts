@@ -23,9 +23,10 @@ local function OnSleep(inst)
     if inst.components.trap ~= nil and inst.components.trap:IsBaited() and math.random() < .5 then
         local birdspawner = TheWorld.components.birdspawner
         if birdspawner ~= nil then
-            local bird = birdspawner:SpawnBird(Vector3(inst.Transform:GetWorldPosition()))
+            local pos = inst:GetPosition()
+            local bird = birdspawner:SpawnBird(pos)
             if bird ~= nil then
-                bird.Physics:Teleport(inst.Transform:GetWorldPosition())
+                bird.Physics:Teleport(pos:Get())
                 bird:ReturnToScene()
                 inst.components.trap.target = bird
                 inst.components.trap:DoSpring()

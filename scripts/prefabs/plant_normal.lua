@@ -14,8 +14,11 @@ local assets =
 
 require "prefabs/veggies"
 
-local prefabs = {}
-
+local prefabs =
+{
+    "ash",
+    "seeds_cooked",
+}
 for k, v in pairs(VEGGIES) do
     table.insert(prefabs, k)
 end
@@ -26,25 +29,27 @@ local function onmatured(inst)
 end
 
 local function onburnt(inst)
-    if inst.components.crop.product_prefab then 
-        local temp = SpawnPrefab(inst.components.crop.product_prefab)
-        local product = nil
-        if temp.components.cookable and temp.components.cookable.product then
-            product = SpawnPrefab(temp.components.cookable.product)
-        else
+    if inst.components.crop.product_prefab ~= nil then
+        local product
+        if inst.components.witherable ~= nil and inst.components.witherable:IsWithered() then
+            product = SpawnPrefab("ash")
+        elseif not inst.components.crop:IsReadyForHarvest() then
             product = SpawnPrefab("seeds_cooked")
+        else
+            local temp = SpawnPrefab(inst.components.crop.product_prefab)
+            product = SpawnPrefab(temp.components.cookable ~= nil and temp.components.cookable.product or "seeds_cooked")
+            temp:Remove()
         end
-        temp:Remove()
 
-        if inst.components.stackable and product.components.stackable then
+        if inst.components.stackable ~= nil and product.components.stackable ~= nil then
             product.components.stackable.stacksize = math.min(product.components.stackable.maxsize, inst.components.stackable.stacksize)
         end
 
-        if inst.components.crop and inst.components.crop.grower and inst.components.crop.grower.components.grower then
-            inst.components.crop.grower.components.grower:RemoveCrop(inst)
-        end
-
         product.Transform:SetPosition(inst.Transform:GetWorldPosition())
+    end
+
+    if inst.components.crop.grower ~= nil and inst.components.crop.grower.components.grower ~= nil then
+        inst.components.crop.grower.components.grower:RemoveCrop(inst)
     end
 
     inst:Remove()

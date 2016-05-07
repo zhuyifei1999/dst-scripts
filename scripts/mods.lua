@@ -776,14 +776,12 @@ function ModWrangler:IsModCharacterClothingSymbolExcluded( name, symbol )
 	return false
 end
 
-function ModVersionOutOfDate( mod_name )
-    print("Mod: " .. mod_name .. " is out of date and needs to be updated for new users to be able to join the server.")
-    --5th param true -> local server only announcement
-    TheNet:Announce(string.format(STRINGS.MODS.VERSIONING.OUT_OF_DATE, KnownModIndex:GetModFancyName(mod_name)), nil, nil, nil, true)
+function GetModFancyName(mod_name)
+    return KnownModIndex:GetModFancyName(mod_name)
 end
 
-function VerifyModVersions( mods_to_verify )
-	TheSim:VerifyModVersions( mods_to_verify )
+function VerifyModVersions(mods_to_verify)
+    TheSim:VerifyModVersions(mods_to_verify)
 end
 
 function ModWrangler:StartVersionChecking()

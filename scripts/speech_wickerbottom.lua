@@ -63,17 +63,17 @@ return
         },
         GIVETOPLAYER = 
         {
-            FULL = "They are already heavily burdened.",
+            FULL = "%s is already heavily burdened.",
             DEAD = "That would be a waste.",
-            SLEEPING = "They're in REM sleep. No need to disturb them.",
-            BUSY = "I'll try again when they're free.",
+            SLEEPING = "%s has entered REM sleep. No need to disturb them.",
+            BUSY = "I'll try again when %s is free.",
         },
         GIVEALLTOPLAYER = 
         {
-            FULL = "They are already heavily burdened.",
+            FULL = "%s is already heavily burdened.",
             DEAD = "That would be a waste.",
-            SLEEPING = "They're in REM sleep. No need to disturb them.",
-            BUSY = "I'll try again when they're free.",
+            SLEEPING = "%s has entered REM sleep. No need to disturb them.",
+            BUSY = "I'll try again when %s is free.",
         },
         TEACH =
         {
@@ -151,6 +151,8 @@ return
             MURDERER = "I will defend myself from you, foul cad!",
             REVIVER = "Excellent work, %s.",
             GHOST = "What did I say about playing with axes? Let's get you a heart.",
+            BEAVER = "The poor dear didn't tell me he was afflicted by Castorthropy.",
+            BEAVERGHOST = "I'll be sure to document \"Castorthrope\" in my endangered species list.",
         },
         WICKERBOTTOM = 
         {
@@ -842,14 +844,8 @@ return
             BURNING = "An axial section of tree trunk. On fire.",
             GENERIC = "An axial section of tree trunk.",
         },
+       
         SHADOWDIGGER = "Well, I suppose we did need an extra set of hands... Hm.",
-        SHADOWDIGGER_BUILDER = "Well, I suppose we did need an extra set of hands... Hm.",
-        SHADOWDUELIST = "Well, I suppose we did need an extra set of hands... Hm.",
-        SHADOWDUELIST_BUILDER = "Well, I suppose we did need an extra set of hands... Hm.",
-        SHADOWLUMBER = "Well, I suppose we did need an extra set of hands... Hm.",
-        SHADOWLUMBER_BUILDER = "Well, I suppose we did need an extra set of hands... Hm.",
-        SHADOWMINER = "Well, I suppose we did need an extra set of hands... Hm.",
-        SHADOWMINER_BUILDER = "Well, I suppose we did need an extra set of hands... Hm.",
 
         LIVINGLOG = "This log is special.",
         TWIGS = "Some small twigs.",
@@ -1262,10 +1258,10 @@ return
         TRINKET_4 = "What a positively, delightfully odd little fellow.",
         TRINKET_5 = "This spacecraft looks to have inadequate thermal controls.",
         TRINKET_6 = "A tangled mess of wires, not much good for anything.",
-        TRINKET_7 = "I'd rather use my hands to read a book.",
+        TRINKET_7 = "I think I'll keep this. I know someone who might like it.",
         TRINKET_8 = "It reminds me of my bath tub. I could use a long soak.",
         TRINKET_9 = "Hmm, don't think I'm missing any buttons at the moment.",
-        TRINKET_10 = "Don't need these yet: I've still got a few teeth left.",
+        TRINKET_10 = "I don't appreciate this insinuation, dear.",
         TRINKET_11 = "Ah, it's a scale replica of that mischievous robot.",
         TRINKET_12 = "A muscular hydrostat that's been sat near something hygroscopic.",
         TRINKET_13 = "What a positively, delightfully odd little lady.",
@@ -1275,11 +1271,11 @@ return
         TRINKET_17 = "This would be a practical eating utensil if it weren't bent.",
         TRINKET_18 = "Beware of Greeks bearing gifts.",
         TRINKET_19 = "A good illustration of gyroscopic precession.",
-        TRINKET_20 = "My back doesn't need scratching.",
+        TRINKET_20 = "An instrument of self-sufficiency.",
         TRINKET_21 = "I have an excellent meringue recipe.",
         TRINKET_22 = "My grandmother used to knit.",
         TRINKET_23 = "It reminds me of home.",
-        TRINKET_24 = "What a positively adorable kitty cat.",
+        TRINKET_24 = "What a positively adorable kitty cat. Sigh.",
         TRINKET_25 = "What an unpleasant scent.",
         TRINKET_26 = "It appears to be a primitive cup fashioned from a tuber.",
         TRINKET_27 = "I miss the comforts of home.",
@@ -1421,7 +1417,7 @@ return
         SMALLMEAT_DRIED = "High sodium content.",
         MEAT_DRIED = "Salty yet satisfying.",
         MONSTERMEAT_DRIED = "Salty yet satisfying.",
-        BACKPACK = "I could fit many books in here.",
+        BACKPACK = "That could carry so many books.",
         BACONEGGS = "My stomach is aching. Blue eggs and bacon!",
         BANDAGE = "Medicinal dressings.",
         HEALINGSALVE = "A natural disinfectant.",
@@ -1454,7 +1450,7 @@ return
         ROOK_NIGHTMARE = "It looks like it could break apart at any moment.",
         RELIC = "A relic of an ancient civilization long dead through the ravages of time.",  --Fixed relic
         RUINS_RUBBLE = "With a little elbow grease this could be put into working order.",   --Broken relic
-        RUINS_BAT = "I could hit things with this.",
+        RUINS_BAT = "An implement for administering devastating blows.",
         RUINSHAT = "A bit gaudy for my tastes, but it seems useful.",
         SPIDER_DROPPER = "Ah, this species of arachnid has adapted to life on the cave ceiling.", --White spider that comes from the roof
         THULECITE = "This seems to be an interesting, ectoplasmic residue-bearing variety of ziosite.",
@@ -1472,7 +1468,7 @@ return
     DESCRIBE_TOODARK = "I can't see in the dark.",
     DESCRIBE_SMOLDERING = "Seems it's about to ignite from the heat.",
     DESCRIBE_GENERIC = "A rare occurrence. I don't know what that is.",
-    DESCRIBE_SAMECHARACTER = "Ah, greetings %s! Fancy seeing you here.",
+
     ACTIONFAIL_GENERIC = "It seems I can't do that.",
 
     BATTLECRY =
@@ -1522,7 +1518,7 @@ return
     ANNOUNCE_HOUNDS = "Something is approaching.",
 
     ANNOUNCE_NOSLEEPONFIRE = "Even if I could sleep, those temperatures are highly unsafe.",
-    ANNOUNCE_NODANGERSIESTA = "I can't even lie down when I'm in danger!",
+    ANNOUNCE_NODANGERSIESTA = "I can't lie down when I'm in danger!",
     ANNOUNCE_NONIGHTSIESTA = "I can't sleep, no matter where I lie down.",
     ANNOUNCE_NONIGHTSIESTA_CAVE = "I couldn't possibly relax in these caves.",
     ANNOUNCE_NOHUNGERSIESTA = "My hunger won't make relaxing any easier!",

@@ -52,23 +52,23 @@ return {
         },
         GIVETOPLAYER = 
         {
-        	FULL = "They're not strong enough to carry more!",
-            DEAD = "They'll have better things in Valhalla.",
+        	FULL = "%s is not strong enough to carry more!",
+            DEAD = "%s'll have better things in Valhalla.",
             SLEEPING = "Such sweet slumber... Maybe later.",
-            BUSY = "I'll try once more when they're free.",
+            BUSY = "I'll try once more when %s is free.",
     	},
     	GIVEALLTOPLAYER = 
         {
-        	FULL = "They're not strong enough to carry more!",
-            DEAD = "They'll have better things in Valhalla.",
+        	FULL = "%s is not strong enough to carry more!",
+            DEAD = "%s'll have better things in Valhalla.",
             SLEEPING = "Such sweet slumber... Maybe later.",
-            BUSY = "I'll try once more when they're free.",
+            BUSY = "I'll try once more when %s is free.",
     	},
     	CHANGEIN =
         {
             GENERIC = "That's where I keep all my favorite furs and pelts.",
             BURNING = "Gasp! My furs!",
-            INUSE = "Let them finish choosing their garments first.",
+            INUSE = "I shall let %s select their garments first.",
         },
     	ATTUNE =
         {
@@ -238,6 +238,8 @@ return {
             MURDERER = "By Yggdrasil, I will cut you down!",
             REVIVER = "%s's heart is as mighty as his beard.",
             GHOST = "The worldtree still watches over you, %s. I shall retrieve a heart.",
+            BEAVER = "I did not know %s possessed such power!",
+			BEAVERGHOST = "You went out in a blaze of glory, %s.",
         },
         WICKERBOTTOM = 
         {
@@ -265,7 +267,7 @@ return {
         },
         WATHGRITHR = 
         {
-            GENERIC = "Good health to you, fellow %s!",
+            GENERIC = "Hail, %s, fellow shieldmaiden!",
             ATTACKER = "%s is tempting fate.",
             MURDERER = "There can be only one!",
             REVIVER = "%s, the perfect warrior!",
@@ -582,7 +584,7 @@ return {
             DOMESTICATED = "The critter has finally learned its role.",
             ORNERY = "The noble steed of a mighty warrior!",
             RIDER = "With stalwart beast at my side, we ride tonight!",
-            PUDGY = "My mouth's watering just looking at it..",
+            PUDGY = "My mouth's watering just looking at it...",
 		},
 		BEEFALOHAT = "This is going to look good on me, I can tell.",
 		BEEFALOWOOL = "I do love woolly things.",
@@ -619,7 +621,7 @@ return {
 			HUNGRY = "What do you want little friend?",
 			STARVING = "He wishes to feast!",
 			DEAD = "You can feast in Valhalla now, friend.",
-			SKELETON = "... Maybe I should clean that up.",
+			SKELETON = "...Maybe I should clean that up.",
 		},
 		BIRDTRAP = "I'm a cunning raven catcher!",
 		BIRD_EGG = "Eggy.",
@@ -1131,13 +1133,7 @@ return {
 		PIGGYBACK = "The pig died with honor and gave to me this pack.",
 
 		SHADOWDIGGER = "I hope this serf is being treated with dignity.",
-		SHADOWDIGGER_BUILDER = "I hope this serf is being treated with dignity.",
-		SHADOWDUELIST = "I hope this serf is being treated with dignity.",
-		SHADOWDUELIST_BUILDER = "I hope this serf is being treated with dignity.",
-		SHADOWLUMBER = "I hope this serf is being treated with dignity.",
-		SHADOWLUMBER_BUILDER = "I hope this serf is being treated with dignity.",
-		SHADOWMINER = "I hope this serf is being treated with dignity.",
-		SHADOWMINER_BUILDER = "I hope this serf is being treated with dignity.",
+
 		PIGHEAD = 
 		{	
 			GENERIC = "This is savagery.",
@@ -1443,9 +1439,9 @@ return {
 		TREASURECHEST_TRAP = "I am always ready.",
 		TREECLUMP = "A dead end! I must stand and fight.",
 		TRINKET_1 = "Toys do not interest a great warrior such as I.",
-		TRINKET_2 = "Accompaniment for the song of my triumphs.",
+		TRINKET_2 = "Accompaniment for my ballad of triumphs.",
 		TRINKET_3 = "Even my spear cannot undo this knot.",
-		TRINKET_4 = "A peculiar small man.",
+		TRINKET_4 = "A small, peculiar man.",
 		TRINKET_5 = "Will it take me to Asgard?",
 		TRINKET_6 = "Useless technology.",
 		TRINKET_7 = "No time for games! There is battle at hand!",
@@ -1454,7 +1450,7 @@ return {
 		TRINKET_10 = "A token of victory.",
 		TRINKET_11 = "A warrior encased in a fine armor.",
 		TRINKET_12 = "Shorn from a hideous monster.",
-		TRINKET_13 = "A peculiar small woman.",
+		TRINKET_13 = "A small, peculiar woman.",
         TRINKET_14 = "Tea is a luxury that warriors cannot afford.",
         TRINKET_15 = "A noble fighter.",
         TRINKET_16 = "A noble fighter.",
@@ -1465,7 +1461,7 @@ return {
         TRINKET_21 = "Cooking utensils do not interest me.",
         TRINKET_22 = "It won't stand up to the rigors of battle.",
         TRINKET_23 = "Not as useful as a battle horn.",
-        TRINKET_24 = "Will it bring me luck in battle?",
+        TRINKET_24 = "Grant me luck on the battlefield!",
         TRINKET_25 = "Perhaps the stench will drive the enemy away.",
 		TRINKET_26 = "A cup for a long march.",
 		TRINKET_27 = "Useless frippery!",
@@ -1552,7 +1548,7 @@ return {
 	DESCRIBE_GENERIC = "It is an artifact of this realm.",
 	DESCRIBE_TOODARK = "Too dark even for battle.",
 	DESCRIBE_SMOLDERING = "Flames will soon consume it.",
-	DESCRIBE_SAMECHARACTER = "Hail, fellow shieldmaiden!",
+
 	EAT_FOOD =
 	{
 		TALLBIRDEGG_CRACKED = "Bones and all.",

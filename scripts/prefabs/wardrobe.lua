@@ -60,6 +60,7 @@ end
 local function onbuilt(inst)
     inst.AnimState:PlayAnimation("place")
     inst.AnimState:PushAnimation("closed", false)
+    inst.SoundEmitter:PlaySound("dontstarve/common/wardrobe_craft")
 end
 
 local function onsave(inst, data)

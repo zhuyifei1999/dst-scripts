@@ -44,7 +44,7 @@ end
 local function onbuilt(inst)
     inst.AnimState:PlayAnimation("place")
     inst.AnimState:PushAnimation("closed", false)
-    inst.SoundEmitter:PlaySound("dontstarve/common/chest_craft")
+    inst.SoundEmitter:PlaySound("dontstarve/common/dragonfly_chest_craft")
 end
 
 local function fn()

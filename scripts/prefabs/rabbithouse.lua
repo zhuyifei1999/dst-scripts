@@ -101,6 +101,7 @@ end
 local function onbuilt(inst)
     inst.AnimState:PlayAnimation("place")
     inst.AnimState:PushAnimation("idle")
+    inst.SoundEmitter:PlaySound("dontstarve/common/rabbit_hutch_craft")
 end
 
 local function onburntup(inst)

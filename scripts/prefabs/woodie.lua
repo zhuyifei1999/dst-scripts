@@ -42,6 +42,12 @@ local BEAVERVISION_COLOURCUBES =
 
 --------------------------------------------------------------------------
 
+local function BeaverGetStatus(inst, viewer)
+    return inst:HasTag("playerghost") and "BEAVERGHOST" or "BEAVER"
+end
+
+--------------------------------------------------------------------------
+
 local BEAVER_DIET =
 {
     FOODTYPE.WOOD,
@@ -418,6 +424,11 @@ local function onbecamehuman(inst)
     inst.components.talker:StopIgnoringAll("becamebeaver")
     inst.components.catcher:SetEnabled(true)
 
+    if inst.components.inspectable.getstatus == BeaverGetStatus then
+        inst.components.inspectable.getstatus = inst._getstatus
+        inst._getstatus = nil
+    end
+
     inst.CanExamine = nil
 
     if inst.components.playercontroller ~= nil then
@@ -463,6 +474,11 @@ local function onbecamebeaver(inst)
     inst.components.moisture:SetInherentWaterproofness(TUNING.WATERPROOFNESS_LARGE)
     inst.components.talker:IgnoreAll("becamebeaver")
     inst.components.catcher:SetEnabled(false)
+
+    if inst.components.inspectable.getstatus ~= BeaverGetStatus then
+        inst._getstatus = inst.components.inspectable.getstatus
+        inst.components.inspectable.getstatus = BeaverGetStatus
+    end
 
     inst.CanExamine = CannotExamine
 
@@ -620,6 +636,7 @@ local function master_postinit(inst)
 
     inst:AddComponent("beaverness")
 
+    inst._getstatus = nil
     inst._wasnomorph = nil
     inst.TransformBeaver = TransformBeaver
 

@@ -53,23 +53,23 @@ return {
         },
         GIVETOPLAYER = 
         {
-        	FULL = "They need to make room, eh.",
-            DEAD = "I don't think they... um...",
-            SLEEPING = "Let them get their shut eye.",
-            BUSY = "I've something for you when you've got a mo'.",
+        	FULL = "%s needs to make room for my present, eh?",
+            DEAD = "I don't think %s will... um...",
+            SLEEPING = "Let %s get some shut eye.",
+            BUSY = "I've something for you when you've got a mo', %s.",
     	},
     	CHANGEIN =
         {
             GENERIC = "Ouch. Do I not look skookum enough already?",
             BURNING = "Better it than a tree.",
-            INUSE = "Could you hand me my plaid shirt while you're in there?",
+            INUSE = "Could you hand me my plaid shirt while you're in there, %s?",
         },
     	GIVEALLTOPLAYER = 
         {
-        	FULL = "They need to make room, eh.",
-            DEAD = "I don't think they... um...",
-            SLEEPING = "Let them get their shut eye.",
-            BUSY = "I've something for you when you've got a mo'.",
+        	FULL = "%s needs to make room for my present, eh?",
+            DEAD = "I don't think %s will... um...",
+            SLEEPING = "Let %s get some shut eye.",
+            BUSY = "I've something for you when you've got a mo', %s.",
     	},
     	ATTUNE =
         {
@@ -239,6 +239,8 @@ return {
 			MURDERER = "Hey, c'mere %s! I've gotta AXE you question!",
 			REVIVER = "%s is a Canadian patriot, eh.",
 			GHOST = "Canadians gotta stick together, %s. Let's get a heart.",
+			BEAVER = "Been there, bud.",
+			BEAVERGHOST = "You're gonna have one monster of a headache after this, buddy.",
 		},
 		WICKERBOTTOM = 
 		{
@@ -357,7 +359,7 @@ return {
 		COLDFIRE =
 		{
 			EMBERS = "It's almost gone.",
-			GENERIC = "Where's my electric guitar?",
+			GENERIC = "This'll' make it feel more like home.",
 			HIGH = "Uh oh! It's bit high!",
 			LOW = "I should probably do something aboot that, eh?",
 			NORMAL = "I love a cold fire in the evening.",
@@ -1436,21 +1438,21 @@ return {
 		TREASURECHEST_TRAP = "Something is not quite right aboot that chest.",
 
 		TRINKET_1 = "I used to play that game.",
-		TRINKET_2 = "Not the real thing, eh?",
+		TRINKET_2 = "Much kazoo about nothing.",
 		TRINKET_3 = "Reminds me of a story I heard once.",
-		TRINKET_4 = "Don't ask me.",
+		TRINKET_4 = "He looks friendly.",
 		TRINKET_5 = "It needs a robot arm, eh?",
 		TRINKET_6 = "They're not good any more, eh?",
-		TRINKET_7 = "I could play this for hours!",
-		TRINKET_8 = "If I find a tub, I'm all set.",
+		TRINKET_7 = "'Might take it to the kid.",
+		TRINKET_8 = "Reminds me... need to convince the arsonist to take a bath.",
 		TRINKET_9 = "I just sew my clothing shut around me when I put it on.",
 		TRINKET_10 = "Choppers for old folks.",
 		TRINKET_11 = "Quiet, you!",
 		TRINKET_12 = "It's all withered.",
-		TRINKET_13 = "Don't ask me.",
-		TRINKET_14 = "Not very useful, eh?",
-        TRINKET_15 = "I'm not smart enough for chess.",
-        TRINKET_16 = "I'm not smart enough for chess.",
+		TRINKET_13 = "She looks friendly.",
+		TRINKET_14 = "Gaudy as all get-out.",
+        TRINKET_15 = "And here I am just a pawn, eh?",
+        TRINKET_16 = "And here I am just a pawn, eh?",
         TRINKET_17 = "It needs to be straightened, eh?",
         TRINKET_18 = "I would have liked this when I was a boy.",
         TRINKET_19 = "It keeps falling over, eh?",
@@ -1458,8 +1460,8 @@ return {
         TRINKET_21 = "It belongs in a kitchen, not in the woods.",
         TRINKET_22 = "I'd rather have some proper rope.",
         TRINKET_23 = "I don't need help putting my shoes on, eh?",
-        TRINKET_24 = "Reminds me of a catcoon, eh?",
-        TRINKET_25 = "I'd rather smell real trees.",
+        TRINKET_24 = "We should whip up some pumpkin cookies to put in there, eh?",
+        TRINKET_25 = "I already smell like pine and woodchips, according to Lucy.",
 		TRINKET_26 = "Genius! A cup for a proper woodsman.",
 		TRINKET_27 = "Nowhere to hang clothes in the woods.",
 		TRUNKVEST_SUMMER = "Nice and breezy",
@@ -1528,14 +1530,9 @@ return {
 		WETGOOP = "Better than some things I've eaten!",
         WHIP = "I hope I don't hurt the little critters with this.",
 		WINTERHAT = "It's a nice toque, eh?",
+		
 		SHADOWDIGGER = "Are your little buddies, uh... alive?",
-		SHADOWDIGGER_BUILDER = "Are your little buddies, uh... alive?",
-		SHADOWDUELIST = "Are your little buddies, uh... alive?",
-		SHADOWDUELIST_BUILDER = "Are your little buddies, uh... alive?",
-		SHADOWLUMBER = "Are your little buddies, uh... alive?",
-		SHADOWLUMBER_BUILDER = "Are your little buddies, uh... alive?",
-		SHADOWMINER = "Are your little buddies, uh... alive?",
-		SHADOWMINER_BUILDER = "Are your little buddies, uh... alive?",
+
 		WORMHOLE =
 		{
 			GENERIC = "That looks like a bum!",
@@ -1554,7 +1551,7 @@ return {
 	DESCRIBE_GENERIC = "What's that, eh?",
 	DESCRIBE_TOODARK = "It's dark, eh!",
 	DESCRIBE_SMOLDERING = "It's aboot to go up in flames, eh?",
-	DESCRIBE_SAMECHARACTER = "Hey bud. Good to see a fellow Canadian.",
+
 	EAT_FOOD =
 	{
 		TALLBIRDEGG_CRACKED = "You can taste the beak, eh?",
