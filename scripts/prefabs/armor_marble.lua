@@ -4,7 +4,7 @@ local assets =
 }
 
 local function OnBlocked(owner) 
-    owner.SoundEmitter:PlaySound("dontstarve/wilson/hit_armour")
+    owner.SoundEmitter:PlaySound("dontstarve/wilson/hit_marble")
 end
 
 local function onequip(inst, owner) 

@@ -160,13 +160,11 @@ local states =
             if inst.LightWatcher:GetLightValue() > 1 then
                 inst.AnimState:PlayAnimation("cower" )
                 inst.AnimState:PushAnimation("cower_loop", true)
+            elseif start_anim then
+                inst.AnimState:PlayAnimation(start_anim)
+                inst.AnimState:PushAnimation("idle", true)
             else
-                if start_anim then
-                    inst.AnimState:PlayAnimation(start_anim)
-                    inst.AnimState:PushAnimation("idle", true)
-                else
-                    inst.AnimState:PlayAnimation("idle", true)
-                end
+                inst.AnimState:PlayAnimation("idle", true)
             end
         end,
     },
@@ -175,22 +173,19 @@ local states =
         name = "eat",
         tags = {"busy"},
 
-        onenter = function(inst)
+        onenter = function(inst, forced)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("eat")
+            inst.sg.statemem.forced = forced
         end,
 
-        events=
+        events =
         {
             EventHandler("animover", function(inst)
-                if inst:PerformBufferedAction() then
-                    inst.sg:GoToState("eat_loop")
-                else
-                    inst.sg:GoToState("idle")
-                end
+                inst.sg:GoToState((inst:PerformBufferedAction() or inst.sg.statemem.forced) and "eat_loop" or "idle")
             end),
         },
-    },  
+    },
 
     State{
         name = "born",

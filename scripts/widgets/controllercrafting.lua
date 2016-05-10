@@ -224,6 +224,7 @@ function ControllerCrafting:OnControl(control, down)
         	local skin = (self.recipepopup.skins_spinner and self.recipepopup.skins_spinner.GetItem()) or nil
             if skin ~= nil then
 				Profile:SetLastUsedSkinForItem(self.selected_recipe_by_tab_idx[self.tabidx].name, skin)
+				Profile:SetRecipeTimestamp(self.selected_recipe_by_tab_idx[self.tabidx].name, self.recipepopup.timestamp)
             end
             if not DoRecipeClick(self.owner, self.selected_recipe_by_tab_idx[self.tabidx], skin) then
                 self.owner.HUD:CloseControllerCrafting()

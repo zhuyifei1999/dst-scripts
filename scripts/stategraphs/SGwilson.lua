@@ -1335,7 +1335,7 @@ local states =
             ----------------------------------------------
             --Normal chop
 
-            TimeEvent(5 * FRAMES, function(inst)
+            TimeEvent(2 * FRAMES, function(inst)
                 if not inst.sg.statemem.iswoodcutter then
                     inst:PerformBufferedAction()
                 end

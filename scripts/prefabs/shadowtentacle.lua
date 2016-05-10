@@ -30,7 +30,6 @@ local function fn()
 
     inst:AddTag("shadow")
     inst:AddTag("notarget")
-    inst:AddTag("noattack")
 
     inst.entity:SetPristine()
 

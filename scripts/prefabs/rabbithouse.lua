@@ -69,20 +69,36 @@ end
 
 local function OnStopCaveDay(inst)
     --print(inst, "OnStopCaveDay")
-    if not inst:HasTag("burnt") then
-        if inst.components.spawner:IsOccupied() then
-            if inst.doortask ~= nil then
-                inst.doortask:Cancel()
-            end
-            inst.doortask = inst:DoTaskInTime(1 + math.random() * 2, onstopcavedaydoortask)
+    if not inst:HasTag("burnt") and inst.components.spawner:IsOccupied() then
+        if inst.doortask ~= nil then
+            inst.doortask:Cancel()
         end
+        inst.doortask = inst:DoTaskInTime(1 + math.random() * 2, onstopcavedaydoortask)
     end
 end
 
 local function SpawnCheckCaveDay(inst)
-    --print(inst, "spawn check cave day")
-    if not TheWorld.state.iscaveday then
-        OnStopCaveDay(inst)
+    inst.inittask = nil
+    inst:WatchWorldState("stopcaveday", OnStopCaveDay)
+    if inst.components.spawner ~= nil and inst.components.spawner:IsOccupied() then
+        if not TheWorld.state.iscaveday or
+            (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
+            inst.components.spawner:ReleaseChild()
+        end
+    end
+end
+
+local function oninit(inst)
+    inst.inittask = inst:DoTaskInTime(math.random(), SpawnCheckCaveDay)
+    if inst.components.spawner ~= nil and
+        inst.components.spawner.child == nil and
+        inst.components.spawner.childname ~= nil and
+        not inst.components.spawner:IsSpawnPending() then
+        local child = SpawnPrefab(inst.components.spawner.childname)
+        if child ~= nil then
+            inst.components.spawner:TakeOwnership(child)
+            inst.components.spawner:GoHome(child)
+        end
     end
 end
 
@@ -108,6 +124,10 @@ local function onburntup(inst)
     if inst.doortask ~= nil then
         inst.doortask:Cancel()
         inst.doortask = nil
+    end
+    if inst.inittask ~= nil then
+        inst.inittask:Cancel()
+        inst.inittask = nil
     end
 end
 
@@ -163,8 +183,7 @@ local function fn()
     inst.components.spawner:Configure("bunnyman", TUNING.TOTAL_DAY_TIME)
     --inst.components.spawner.onoccupied = onoccupied
     inst.components.spawner.onvacate = onvacate
-
-    inst:WatchWorldState("stopcaveday", OnStopCaveDay)
+    inst.components.spawner:CancelSpawning()
 
     inst:AddComponent("inspectable")
 
@@ -181,7 +200,7 @@ local function fn()
     inst.OnLoad = onload
 
     inst:ListenForEvent("onbuilt", onbuilt)
-    inst:DoTaskInTime(math.random(), SpawnCheckCaveDay)
+    inst.inittask = inst:DoTaskInTime(0, oninit)
 
     MakeHauntableWork(inst)
 

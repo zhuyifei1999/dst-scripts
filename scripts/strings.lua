@@ -2226,11 +2226,11 @@ STRINGS.UI =
         DEATH_ANNOUNCEMENT_2_MALE = ". He became a spooky ghost!",
         DEATH_ANNOUNCEMENT_2_FEMALE = ". She became a spooky ghost!",
         DEATH_ANNOUNCEMENT_2_ROBOT = ". They became a spooky ghost!",
-        DEATH_ANNOUNCEMENT_2_DEFAULT = ". It became a spooky ghost!",
+        DEATH_ANNOUNCEMENT_2_DEFAULT = ". They became a spooky ghost!",
         GHOST_DEATH_ANNOUNCEMENT_MALE = "lost all of his humanity and is gone forever.",
         GHOST_DEATH_ANNOUNCEMENT_FEMALE = "lost all of her humanity and is gone forever.",
         GHOST_DEATH_ANNOUNCEMENT_ROBOT = "lost all of their humanity and is gone forever.",
-        GHOST_DEATH_ANNOUNCEMENT_DEFAULT = "lost all of its approximation of humanity and is gone forever.",
+        GHOST_DEATH_ANNOUNCEMENT_DEFAULT = "lost all of their humanity and is gone forever.",
         REZ_ANNOUNCEMENT = "was resurrected by",
         START_AFK = "went away for a bit.",
         STOP_AFK = "has returned from their relaxing time away.",
@@ -3980,8 +3980,8 @@ STRINGS.UI =
         },
         DEFAULT =
         {
-            ONE = "it",
-            TWO = "its",
+            ONE = "they",
+            TWO = "their",
         }
     },
 

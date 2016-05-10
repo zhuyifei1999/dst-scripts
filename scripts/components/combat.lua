@@ -473,7 +473,6 @@ function Combat:GetImpactSound(target, weapon)
                 (tgtinv:ArmorHasTag("grass") and "straw_armour_") or
                 (tgtinv:ArmorHasTag("forcefield") and "forcefield_armour_") or
                 (tgtinv:ArmorHasTag("sanity") and "sanity_armour_") or
-                (tgtinv:ArmorHasTag("sanity") and "sanity_armour_") or
                 (tgtinv:ArmorHasTag("marble") and "marble_armour_") or
                 (tgtinv:ArmorHasTag("shell") and "shell_armour_") or
                 (tgtinv:ArmorHasTag("fur") and "fur_armour_") or
@@ -567,7 +566,7 @@ function Combat:CanAttack(target)
     if self.inst:HasTag("birchnutroot")
         and (target:HasTag("birchnutroot") or
             target:HasTag("birchnut") or
-            target:HasTag("birchnutdrage")) then
+            target:HasTag("birchnutdrake")) then
         return false
     end
 

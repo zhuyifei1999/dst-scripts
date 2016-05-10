@@ -70,6 +70,8 @@ function MakeWallType(data)
         inst:AddComponent("inspectable")
         inst.components.inspectable.nameoverride = "wall_"..data.name
 
+        inst:AddComponent("lootdropper")
+
         inst:AddComponent("named")
         inst.components.named:SetName(STRINGS.NAMES["WALL_RUINS"])      
 

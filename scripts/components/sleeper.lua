@@ -86,10 +86,10 @@ end
 
 function DefaultWakeTest(inst)
     return StandardWakeChecks(inst)
-        -- in caves, wake if it's day and we've got a light shining on us
-        or (TheWorld:HasTag("cave") and TheWorld.state.iscaveday and inst.LightWatcher and inst.LightWatcher:GetTimeInLight() > TUNING.CAVE_LIGHT_WAKE_TIME)
-        -- wake when it's day
-        or TheWorld.state.isday
+        -- in caves, wake if it's not night and we've got a light shining on us
+        or (TheWorld:HasTag("cave") and not TheWorld.state.iscavenight and inst.LightWatcher and inst.LightWatcher:GetTimeInLight() > TUNING.CAVE_LIGHT_WAKE_TIME)
+        -- wake when it's not night
+        or not TheWorld.state.isnight
 end
 
 function NocturnalSleepTest(inst)

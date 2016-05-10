@@ -1232,7 +1232,6 @@ local function makefn(build, stage, data)
         inst:AddTag("birchnut")
         inst:AddTag("workable")
         inst:AddTag("cattoyairborne")
-        inst:AddTag("noattack")
         inst:AddTag("deciduoustree")
 
         inst.build = build

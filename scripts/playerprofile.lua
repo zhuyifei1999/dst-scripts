@@ -256,7 +256,7 @@ function PlayerProfile:GetDressupTimestamp()
 end
 
 function PlayerProfile:SetRecipeTimestamp(recipe, time)
-	self.persistdata.recipe_timestamps = self.persistdata.recipetimestamps or {}
+	self.persistdata.recipe_timestamps = self.persistdata.recipe_timestamps or {}
 
 	self.persistdata.recipe_timestamps[recipe] = time
 	self:Save()

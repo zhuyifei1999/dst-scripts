@@ -66,9 +66,14 @@ function Grower:OnSave()
 end
 
 function Grower:Fertilize(obj, doer)
-    local was_fertile = self:IsFertile()    
+    local was_fertile = self:IsFertile()
 
     if obj.components.fertilizer ~= nil then
+        if doer ~= nil and
+            doer.SoundEmitter ~= nil and
+            obj.components.fertilizer.fertilize_sound ~= nil then
+            doer.SoundEmitter:PlaySound(obj.components.fertilizer.fertilize_sound)
+        end
         self.cycles_left = self.cycles_left + obj.components.fertilizer.soil_cycles
     end
 

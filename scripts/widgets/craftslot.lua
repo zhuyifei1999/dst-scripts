@@ -52,6 +52,7 @@ function CraftSlot:OnControl(control, down)
             
 				if skin ~= nil then
                		Profile:SetLastUsedSkinForItem(self.recipe.name, skin)
+					Profile:SetRecipeTimestamp(self.recipe.name, self.recipepopup.timestamp)
                	end
                 if not DoRecipeClick(self.owner, self.recipe, skin ) then 
                 	self:Close() 
