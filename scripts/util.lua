@@ -18,15 +18,14 @@ function DumpTableXML(t, name)
 end
 
 function DebugSpawn(prefab)
-    if TheSim and TheInput then
-        TheSim:LoadPrefabs({prefab})
+    if TheSim ~= nil and TheInput ~= nil then
+        TheSim:LoadPrefabs({ prefab })
         local inst = SpawnPrefab(prefab)
-        if inst then
-            SuUsed("c_spawn_" .. prefab , true)
-	        inst.Transform:SetPosition(TheInput:GetWorldPosition():Get())
-			return inst
-	    end
-	end
+        if inst ~= nil then
+            inst.Transform:SetPosition(ConsoleWorldPosition():Get())
+            return inst
+        end
+    end
 end
 
 function GetClosest(target, entities)
@@ -1181,5 +1180,3 @@ end
 function HexToPercentColor(hex)
     return RGBToPercentColor(HexToRGB(hex))
 end
-
-

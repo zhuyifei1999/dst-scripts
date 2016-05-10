@@ -595,11 +595,9 @@ function Inventory:GiveActiveItem(inst)
     end
 end
 
-function Inventory:GiveItem( inst, slot, src_pos )
-    --print("Inventory:GiveItem", inst, slot, src_pos)
-
-    if not inst.components.inventoryitem or not inst:IsValid() then
-        print("Warning: Can't give item because it's not the correct prefab.")
+function Inventory:GiveItem(inst, slot, src_pos)
+    if inst.components.inventoryitem == nil or not inst:IsValid() then
+        print("Warning: Can't give item because it's not an inventory item.")
         return
     end
 

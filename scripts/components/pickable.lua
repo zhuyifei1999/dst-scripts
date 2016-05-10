@@ -218,16 +218,26 @@ function Pickable:Fertilize(fertilizer, doer)
         self.inst.components.burnable:StopSmoldering()
     end
 
+    local fertilize_cycles = 0
+    if fertilizer.components.fertilizer ~= nil then
+        if doer ~= nil and
+            doer.SoundEmitter ~= nil and
+            fertilizer.components.fertilizer.fertilize_sound ~= nil then
+            doer.SoundEmitter:PlaySound(fertilizer.components.fertilizer.fertilize_sound)
+        end
+        fertilize_cycles = fertilizer.components.fertilizer.withered_cycles
+    end
+
     if fertilizer.components.finiteuses ~= nil then
         fertilizer.components.finiteuses:Use()
     else
-        fertilizer.components.stackable:Get(1):Remove()
+        fertilizer.components.stackable:Get():Remove()
     end
 
     self.cycles_left = self.max_cycles
 
     if self.inst.components.witherable ~= nil then
-        self.protected_cycles = (self.protected_cycles or 0) + fertilizer.components.fertilizer.withered_cycles
+        self.protected_cycles = (self.protected_cycles or 0) + fertilize_cycles
         if self.protected_cycles <= 0 then
             self.protected_cycles = nil
         end

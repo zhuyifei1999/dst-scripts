@@ -135,12 +135,11 @@ function c_spawn(prefab, count, dontselect)
     local inst = nil
     for i = 1, count do
         inst = DebugSpawn(prefab)
-        inst.Transform:SetPosition(ConsoleWorldPosition():Get())
     end
     if not dontselect then
         SetDebugEntity(inst)
     end
-    SuUsed("c_spawn_"..prefab , true)
+    SuUsed("c_spawn_"..prefab, true)
     return inst
 end
 
@@ -330,20 +329,17 @@ end
 
 -- Put an item(s) in the player's inventory
 function c_give(prefab, count, dontselect)
-    count = count or 1
-
     local MainCharacter = ConsoleCommandPlayer()
-
-    if MainCharacter then
-        for i=1,count do
+    if MainCharacter ~= nil then
+        for i = 1, count or 1 do
             local inst = DebugSpawn(prefab)
-            if inst then
-                print("giving ",inst)
+            if inst ~= nil then
+                print("giving ", inst)
                 MainCharacter.components.inventory:GiveItem(inst)
                 if not dontselect then
                     SetDebugEntity(inst)
                 end
-                SuUsed("c_give_" .. inst.prefab)
+                SuUsed("c_give_"..inst.prefab)
             end
         end
     end

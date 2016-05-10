@@ -63,17 +63,17 @@ return
         },
         GIVETOPLAYER = 
         {
-            FULL = "%s is already heavily burdened.",
+            FULL = "They're already heavily burdened.",
             DEAD = "That would be a waste.",
-            SLEEPING = "%s has entered REM sleep. No need to disturb them.",
-            BUSY = "I'll try again when %s is free.",
+            SLEEPING = "They've entered REM sleep. No need to disturb them.",
+            BUSY = "I'll try again when they're free.",
         },
         GIVEALLTOPLAYER = 
         {
-            FULL = "%s is already heavily burdened.",
+            FULL = "They're already heavily burdened.",
             DEAD = "That would be a waste.",
-            SLEEPING = "%s has entered REM sleep. No need to disturb them.",
-            BUSY = "I'll try again when %s is free.",
+            SLEEPING = "They've entered REM sleep. No need to disturb them.",
+            BUSY = "I'll try again when they're free.",
         },
         TEACH =
         {
@@ -151,8 +151,8 @@ return
             MURDERER = "I will defend myself from you, foul cad!",
             REVIVER = "Excellent work, %s.",
             GHOST = "What did I say about playing with axes? Let's get you a heart.",
-            BEAVER = "The poor dear didn't tell me he was afflicted by Castorthropy.",
-            BEAVERGHOST = "I'll be sure to document \"Castorthrope\" in my endangered species list.",
+            BEAVER = "Poor dear never mentioned he was afflicted by Castorthropy.",
+            BEAVERGHOST = "\"Castorthrope\" will have to be added to my endangered species list.",
         },
         WICKERBOTTOM = 
         {
@@ -214,7 +214,6 @@ return
 
         MOONROCKNUGGET = "Implications of a lunar body? Interesting.",
         ROCK_MOON = "Implications of a lunar body? Interesting.",
-
         MOLE =
         {
             HELD = "I don't think my pocket is its natural habitat.",
@@ -259,7 +258,6 @@ return
         FURTUFT = "Fur from a Bearger.", 
         BIGFOOT = "Prehistoric!",
         PIGTENT = "Filthy.",
-        WATERMELON_SEEDS = "Plant them to grow a lanatus.",
         MANDRAKE_COOKED = "Mandragora officinarum, cooked in the name of discovery.",
         BOAT = "Where did this vessel come from?",
         BURNT_MARSH_BUSH = "Reduced to ash.",
@@ -277,13 +275,13 @@ return
         COLDFIRE =
         {
             GENERIC = "A camp fire, after a fashion.",
-            OUT = "I can re-light it.",
+            OUT = "It can be re-lit.",
             EMBERS = "The fire has almost self-extinguished.",
             LOW = "The fire could use some more fuel.",
             NORMAL = "A perfectly unusual fire.",
             HIGH = "That fire is burning at an alarming rate.",
         },
-        CATCOON = "A sort of a wildcat.",
+        CATCOON = "A sort of a wildcat. Handsome fellow.",
         CATCOONDEN = 
         {
             GENERIC = "An excellent hollow for a den.",
@@ -327,7 +325,7 @@ return
             BURNT = "A carbonized tree.",
             POISON = "That is no tree I've seen before!",
         },
-        ACORN_COOKED = "I've cooked the poison out of them.",
+        ACORN_COOKED = "The poison has been successfully cooked out of them.",
         BIRCHNUTDRAKE = "Run awaaay!",
         FARMPLOT =
         {
@@ -339,7 +337,7 @@ return
         COLDFIREPIT =
         {
             GENERIC = "A fire pit. It's chilly.",
-            OUT = "I can re-light it.",
+            OUT = "It can be re-lit.",
             EMBERS = "The fire has almost self-extinguished.",
             LOW = "The fire could use some more fuel, whatever fuel it takes.",
             NORMAL = "A fire. Of some kind.",
@@ -382,7 +380,7 @@ return
         WATERMELONICLE = "The melon is entirely encased in an ice lattice.",
         TRAILMIX = "Mmmm, natural!",
         HOTCHILI = "Chili gives me indigestion.",
-        GUACAMOLE = "I always make guacamole for science day at the library.",
+        GUACAMOLE = "I always made guacamole for science day at the library.",
         MOOSE = "I dub it Alces canadensis.",
         MOOSEEGG = "What a marvel!",
         MOSSLING = "I suppose that's approximately what I expected.",
@@ -409,7 +407,7 @@ return
             BURNT = "I can't read any measurements from that husk.",
         },
         RAINCOAT = "Totally non-porous.",
-        RAINHAT = "I hate when my hair gets wet.",
+        RAINHAT = "I hate when my bun gets wet.",
         RESEARCHLAB = 
         {   
             GENERIC = "It's a research station. I can learn new things with it.",
@@ -509,9 +507,9 @@ return
         },
         BEEBOX =
         {
-            READY = "I can harvest honey from it.",
+            READY = "Honey can be harvested from it.",
             GENERIC = "A crude apiary.",
-            FULLHONEY = "I can harvest honey from it.",
+            FULLHONEY = "Honey can be harvested from it.",
             NOHONEY = "It's devoid of honey.",
             SOMEHONEY = "It's not ready for harvesting.",
             BURNT = "Poor bees!",
@@ -534,7 +532,7 @@ return
         EYETURRET_ITEM = "I'll need to place this.",
         MINOTAURHORN = "An amazingly large horn. I wonder if the nightmare helped fuel the growth.",
         MINOTAURCHEST = "That chest is absolutely marvelous.",
-        THULECITE_PIECES = "I could combine these to create a larger piece.",
+        THULECITE_PIECES = "These could be combined to make a bigger piece.",
         POND_ALGAE = "It is a good thing this algae has no need for photosynthesis.",
         GREENSTAFF = "It appears to rewind time on an object.",
         POTTEDFERN = "A potted plant.",
@@ -551,7 +549,7 @@ return
         ARMORSLURPER = "A disgusting and magical garment.",
         ORANGEAMULET = "The gem fades with each use.",
         TREASURECHEST_TRAP = "Looks suspicious...",
-        WATERMELON_SEEDS = "I could grow them, but that sounds boring.",
+        WATERMELON_SEEDS = "Plant them to grow a lanatus.",
         YELLOWSTAFF = "Luckily the star is a manageable size.",
         YELLOWGEM = "Perhaps it is similar to Citrine.",
         ORANGEGEM = "It looks like a Spessartite garnet.",
@@ -619,8 +617,8 @@ return
         SPORE_TALL_INV = "I'm a carrier of a carrier of genetic information.",
         SPORE_MEDIUM_INV = "I'm a carrier of a carrier of genetic information.",
         SPORE_SMALL_INV = "I'm a carrier of a carrier of genetic information.",
-        SLURTLE="A mineral-devouring gastropod.",
-        SLURTLE_SHELLPIECES="Pieces of the broken.",
+        SLURTLE = "A mineral-devouring gastropod.",
+        SLURTLE_SHELLPIECES = "Pieces of the broken.",
         SLURTLEHAT="It provides protection.",
         SLURTLEHOLE="A gastropod pod.",
         SLURTLESLIME="Their mucus is explosive for some reason.",
@@ -662,10 +660,10 @@ return
 
         BATBAT = "Interesting. This weapon appears to be alive.",
         LUREPLANT = "An invasive plant species.",
-        LUREPLANTBULB = "Now I can move the plant as I wish.",
+        LUREPLANTBULB = "Now it can be planted wherever is best.",
         EYEPLANT = "I believe they are controlled by the larger plant.",
         PLANTMEAT = "The plant produced a meaty substance.",
-        PLANTMEAT_COOKED = "I feel better about eating this now.",
+        PLANTMEAT_COOKED = "This looks much safer for consumption.",
         CAVE_FERN = "A lovely ornamental plant.",
         FOLIAGE = "These may have some nutritional value.",
         FOOTBALLHAT = "Protective gear for full-contact endeavors.",
@@ -697,14 +695,14 @@ return
         {
             GENERIC = "It is a magitechnical homing device.",
             COLD = "The dial is moving faintly.",
-            WARM = "I am definitely on the right track.",
-            WARMER = "I must be getting close.",
+            WARM = "This is definitely the right track.",
+            WARMER = "Must be getting close.",
             HOT = "Here we are!",
         },
         DIVININGRODBASE =
         {
             GENERIC = "This will need some work before it can function.",
-            READY = "Simply insert the key and I will be on my way.",
+            READY = "It simply needs a key now.",
             UNLOCKED = "Ah. The beauty of functionality.",
         },
         DIVININGRODSTART = "This rod could be useful!",
@@ -751,14 +749,14 @@ return
         DURIAN = "Aha, the Durio zibethinus. It really does reek.",
         DURIAN_COOKED = "Cooking this certainly did not improve its odor.",
         DURIAN_SEEDS = "Even the seeds of the Durio zibethinus smell a bit.",
-        EARMUFFSHAT = "Poor Leporidae. At least my ears will be warm.",
+        EARMUFFSHAT = "Poor Leporidae. At least it's warm.",
         EGGPLANT = "A nightshade, specifically Solanum melongena.",
-        EGGPLANT_COOKED = "I present: Braised Solanum melongena.",
+        EGGPLANT_COOKED = "For your enjoyment: Braised Solanum melongena.",
         EGGPLANT_SEEDS = "Seed of aubergine.",
         WAFFLES = "Salutations, waffles.",
         
         WALL_WOOD_ITEM = "Deployable pickets.",
-        WALL_STONE_ITEM = "I'm not sure why I can carry so many of these.",
+        WALL_STONE_ITEM = "I'll carry them. My strong backbone has always been my best asset.",
         WALL_RUINS_ITEM = "My pockets must be bigger on the inside.",
         WALL_HAY_ITEM = "Hay bales.",
         WALL_STONE = "That is quite secure.",
@@ -777,15 +775,15 @@ return
             DEAD = "I do believe he has starved.",
             SKELETON = "I guess I could study the bones.",
         },
-        MEAT = "I normally wouldn't eat this raw.",
+        MEAT = "It would be improper to eat this raw, but if it comes to the worst.",
         SMALLMEAT = "It's a small, raw piece of meat.",
         COOKEDSMALLMEAT = "It is slightly more appetizing when cooked.",
-        MONSTERMEAT = "I don't think it's safe to eat this.",
-        MONSTERLASAGNA = "Lasagna or no, I don't think it's safe to eat this.",
+        MONSTERMEAT = "It would be hazardous to consume this.",
+        MONSTERLASAGNA = "Lasagna or no, it would be hazardous to consume this.",
         COOKEDMEAT = "It is slightly more appetizing when cooked.",
         MEATBALLS = "A pile of processed meat. Who knows what went into this.",
         UMBRELLA = "A simple apparatus for keeping dry.",
-        PERD = "Nasty Meleagris, stay away from my berries!",
+        PERD = "Nasty Meleagris, you stay away from those berries!",
         TURKEYDINNER = "What a nice roast.",
         COOKEDMONSTERMEAT = "It's still a little bit poisonous.",
         MAXWELL = "What a rude gentleman.",
@@ -833,7 +831,7 @@ return
         SPEAR = "Ancient weapons technology.",
         STRAWHAT = "This will offer some protection from the sun.",
         STEELWOOL = "It has a variety of household uses.",
-        STUFFEDEGGPLANT = "I've cooked this aubergine and packed it with other comestibles.",
+        STUFFEDEGGPLANT = "This aubergine has been cooked and packed with other comestibles.",
         BEEFALOHAT = "This hat is hideous.",
         TOPHAT = "How bourgeois.",
         FLOWERHAT = "How celebratory.",
@@ -874,7 +872,7 @@ return
         NITRE = "Also known as saltpeter.",
         GUNPOWDER = "Knowledge is power!",
         BIRD_EGG = "It is unfertilized.",
-        BIRD_EGG_COOKED = "If only I had some toast.",
+        BIRD_EGG_COOKED = "Just needs some toast.",
         ROTTENEGG = "How unappetizing.",
         HAMBAT = "I'm not sure this was the most efficient use of resources.",
 
@@ -899,7 +897,7 @@ return
         ROBIN =
         {
             GENERIC = "Cardinalis! Beautiful plumage.",
-            HELD = "He will be my friend.",
+            HELD = "This little fellow will be my friend.",
         },
         ROBIN_WINTER =
         {
@@ -916,9 +914,9 @@ return
         ROCKS = "A handful of assorted rocks.",
         FIRESTAFF = "Some kind of fire-throwing contraption.",
         FISH = "Some kind of whitefish, I believe.",
-        FISHINGROD = "I've read all about fishing, this should be a snap.",
+        FISHINGROD = "I've read all about fishing. It should be a snap.",
         FISHSTICKS = "Give me some tartar sauce and I'm in heaven.",
-        FISHTACOS = "Oh, I do like a spot of spice on my fish.",
+        FISHTACOS = "Personally I relish a spot of spice on my fish.",
         FISH_COOKED = "Beautifully grilled.",
         FLINT = "A hard nodule of quartz.",
         AMULET = "A relic from another time.",
@@ -934,11 +932,11 @@ return
         BLOWDART_FIRE = "Improvised inflammatory device.",
         BLOWDART_SLEEP = "Improvised tranquilizer device.",
         BLOWDART_PIPE = "Improvised missile device.",
-        SPIDERHAT = "With this I should be able to exert psionic control over the spiders.",
+        SPIDERHAT = "Psionic control can be exerted over spiders with this. Excluding the boy, of course.",
         EARMUFFHAT = "Only the most insulating part was used.",
         WETGOOP = "Oh no. No, no, no. This won't do at all.",
         WHIP = "An instrument for developing pain compliance.",
-        WINTERHAT = "I knit it myself.",
+        WINTERHAT = "I ought to teach the children how to pick up a stitch.",
         NIGHTMAREFUEL = "Ectoplasmic residue.",
         NIGHTLIGHT = "Curiously luminescent.",
         NIGHTSWORD = "Transdimensional weaponry.",
@@ -975,7 +973,7 @@ return
         CORN_SEEDS = "These maize seeds will grow in many climates.",
         CROW = {
             GENERIC = "Corvus brachyrhynchos.",
-            HELD = "He's mine now.",
+            HELD = "A perfectly handsome specimen.",
         },
         GHOST = "It must be fake. I don't believe it.",
         GRASSGEKKO = 
@@ -986,12 +984,13 @@ return
         CUTGRASS = "Some grass cuttings.",
         CUTREEDS = "Some rush cuttings.",
         PEROGIES = "A wonderfully bland dumpling.",
-        PETALS = "I've made some potpourri.",
+        PETALS = "Now it's a delightful handful of potpourri.",
         PETALS_EVIL = "Interesting, these petals seem to have a mind of their own.",
         PETRIFIED_TREE = "Should make for an excellent building material.",
         ROCK_PETRIFIED_TREE = "Should make for an excellent building material.",
         ROCK_PETRIFIED_TREE_OLD = "Should make for an excellent building material.",       
-        FLOWER = {
+        FLOWER =
+        {
             GENERIC = "It's a wildflower. I'm unfamiliar with the species.",
             ROSE = "Ah, a Rosa Macdub... what's it doing out here?",
         },
@@ -1004,7 +1003,7 @@ return
         GOLDNUGGET = "A small lump of gold. Atomic number 79.",
         POOP = "A quantity of animal feces. How fragrant.",
         PORTABLECOOKPOT_ITEM = "It will be nice to eat some properly prepared food.",
-        SCORCHED_SKELETON = "You don't inspire a great deal of confidence in me, dear.",
+        SCORCHED_SKELETON = "You don't inspire a great deal of confidence, dear.",
         PUMPKIN = "Cucurbita pepo.",
         PUMPKINCOOKIE = "Pumpkin biscuits, goody!",
         PUMPKIN_COOKED = "Cooked Cucurbita pepo. Gooey and delicious.",
@@ -1025,10 +1024,10 @@ return
 
         SKELETON_PLAYER =
         {
-            MALE = "%s's skeleton is an excellent example of what happens when you're not careful around %s.",
-            FEMALE = "%s's skeleton is an excellent example of what happens when you're not careful around %s.",
-            ROBOT = "%s's skeleton is an excellent example of what happens when you're not careful around %s.",
-            DEFAULT = "%s's skeleton is an excellent example of what happens when you're not careful around %s.",
+            MALE = "%s's skeleton is a prime example of what happens when not careful with %s.",
+            FEMALE = "%s's skeleton is a prime example of what happens when not careful with %s.",
+            ROBOT = "%s's skeleton is a prime example of what happens when not careful with %s.",
+            DEFAULT = "%s's skeleton is a prime example of what happens when not careful with %s.",
         },
 
         RED_MUSHROOM =
@@ -1058,6 +1057,7 @@ return
         GREEN_CAP_COOKED = "Chemistry has happened.",
         BLUE_CAP_COOKED = "Chemistry has happened.",
 
+        MOOSE_NESTING_GROUND = "I should like to research its mating habits, someday.",
 
         BEE = {
             GENERIC = "Apis mellifera. Quite large!",
@@ -1080,7 +1080,7 @@ return
         BEEMINE_MAXWELL = "A dangerous mine filled with Culicidae.",
         HONEY = "Sweetened plant nectar.",
         HONEYCOMB = "Beeswax used for storing honey.",
-        HONEYHAM = "Honey was the only sweetener I used for this lovely ham.",
+        HONEYHAM = "Honey was the only sweetener used for this lovely ham.",
         HONEYNUGGETS = "Bite-sized sweetened meat!",
         HORN = "What an excellent specimen! I can almost hear the beefalo.",
         STINGER = "It tapers to a sharp point.",
@@ -1110,7 +1110,7 @@ return
             BARREN = "It needs some agricultural attention.",
             WITHERED = "The Ardisia crenata variant has shriveled in the heat.",
             GENERIC = "That bush looks ready for harvest.",
-            PICKED = "I will have to wait.",
+            PICKED = "It will have to wait.",
             DISEASED = "It's afflicted with an agrarian disease beyond my curing.",
         },
 
@@ -1224,7 +1224,7 @@ return
 
         FIREPIT = {
             GENERIC = "A fire pit.",
-            OUT = "I can re-light it.",
+            OUT = "It can be re-lit.",
             EMBERS = "The fire has almost self-extinguished.",
             LOW = "The fire could use some more fuel.",
             NORMAL = "A perfectly average fire.",
@@ -1240,14 +1240,14 @@ return
 
         CAMPFIRE = {
             GENERIC = "A camp fire.",
-            OUT = "I can re-light it.",
+            OUT = "It can be re-lit.",
             EMBERS = "The fire has almost self-extinguished.",
             LOW = "The fire could use some more fuel.",
             NORMAL = "A perfectly average fire.",
             HIGH = "That fire is burning at an alarming rate.",
         },
 
-        FEATHERHAT = "Not quite the genuine article, but I might fool some birds.",
+        FEATHERHAT = "Not quite the genuine article, but it might fool some birds.",
         FEATHER_CROW = "Feather of Corvus.",
         FEATHER_ROBIN = "Feather of Cardinalis.",
         FEATHER_ROBIN_WINTER = "It looks like a feather of Cardinalis, but white.",
@@ -1257,15 +1257,15 @@ return
         TRINKET_3 = "Oh, I just love the bard.",
         TRINKET_4 = "What a positively, delightfully odd little fellow.",
         TRINKET_5 = "This spacecraft looks to have inadequate thermal controls.",
-        TRINKET_6 = "A tangled mess of wires, not much good for anything.",
+        TRINKET_6 = "I do hope the automaton is feeling alright.",
         TRINKET_7 = "I think I'll keep this. I know someone who might like it.",
         TRINKET_8 = "It reminds me of my bath tub. I could use a long soak.",
         TRINKET_9 = "Hmm, don't think I'm missing any buttons at the moment.",
-        TRINKET_10 = "I don't appreciate this insinuation, dear.",
+        TRINKET_10 = "I don't appreciate the insinuation, dear.",
         TRINKET_11 = "Ah, it's a scale replica of that mischievous robot.",
         TRINKET_12 = "A muscular hydrostat that's been sat near something hygroscopic.",
         TRINKET_13 = "What a positively, delightfully odd little lady.",
-        TRINKET_14 = "This is a leaky vessel.",
+        TRINKET_14 = "I think it's quite lovely, despite the cracks left by age...",
         TRINKET_15 = "In medieval chess, this piece was called the elephant.",
         TRINKET_16 = "The groove in this piece symbolizes the bishop's ceremonial headwear.",
         TRINKET_17 = "This would be a practical eating utensil if it weren't bent.",
@@ -1391,7 +1391,7 @@ return
         BISHOP = "A clockwork clergyman.",
         ROOK = "A clockwork castle.",
         JAMMYPRESERVES = "I'd love some toast to put this jam on. Oh well.",
-        KABOBS = "Meat on a stick, what will I think up next?",
+        KABOBS = "Meat on a stick, what next?",
         WATERBALLOON = "A toy for children.",
         INSANITYROCK = {
             INACTIVE = "It appears to be a tiny pyramid.",
@@ -1407,7 +1407,7 @@ return
         },
         PIGTORCH = "I wonder how it's fueled.",
         PIGSKIN = "The haunch of a semi-intelligent bipedal pig.",
-        WASPHIVE = "I had better keep my distance.",
+        WASPHIVE = "I had best keep my distance.",
         MARBLEPILLAR = "It shows the touch of a Roman artisan. How amazing.",
         MARBLETREE = "Amazing. A tree made entirely of marble.",
         MARBLE = "A statuesque rock.",
@@ -1418,7 +1418,7 @@ return
         MEAT_DRIED = "Salty yet satisfying.",
         MONSTERMEAT_DRIED = "Salty yet satisfying.",
         BACKPACK = "That could carry so many books.",
-        BACONEGGS = "My stomach is aching. Blue eggs and bacon!",
+        BACONEGGS = "Blue eggs and bacon!",
         BANDAGE = "Medicinal dressings.",
         HEALINGSALVE = "A natural disinfectant.",
         CANE = "I'm no rabologist.",
@@ -1476,7 +1476,7 @@ return
         GENERIC = "Combat!",
         PIG = "Foul cad!",
         PREY = "Just give up.",
-        SPIDER = "Combat!",
+        SPIDER = "Behave!",
         SPIDER_WARRIOR = "Respect your elders.",
     },
 
@@ -1489,6 +1489,14 @@ return
         SPIDER_WARRIOR = "Back to the drawing board!",
     },
 
+        LAVA_POND_ROCK = "Recently cooled igneous rock. Dangerous.",
+        LAVA_POND_ROCK2 = "Recently cooled igneous rock. Dangerous.",
+        LAVA_POND_ROCK3 = "Recently cooled igneous rock. Dangerous.",
+        LAVA_POND_ROCK4 = "Recently cooled igneous rock. Dangerous.",
+        LAVA_POND_ROCK5 = "Recently cooled igneous rock. Dangerous.",
+        LAVA_POND_ROCK6 = "Recently cooled igneous rock. Dangerous.",
+        LAVA_POND_ROCK7 = "Recently cooled igneous rock. Dangerous.",
+
     ANNOUNCE_EAT =
     {
         GENERIC = "Yum!",
@@ -1496,7 +1504,7 @@ return
         STALE = "That was not at optimal freshness.",
         PAINFUL = "I should not have ingested that.",
         INVALID = "This cannot be consumed.",
-        YUCKY = "Ingesting this would be ill advised.",
+        YUCKY = "Ingesting this would be ill-advised.",
     },
     ANNOUNCE_CANFIX = "\nI do believe I can repair this.",
     ANNOUNCE_ADVENTUREFAIL = "We must learn from our failures.",
@@ -1513,7 +1521,7 @@ return
     ANNOUNCE_PETRIFED_TREES = "The chemical reaction has been catalyzed...",
 
     ANNOUNCE_CHARLIE_ATTACK = "OUCH! Something bit me!",
-    ANNOUNCE_CHARLIE = "Did you hear that?",
+    ANNOUNCE_CHARLIE = "A noise! And a distinctly floral scent?",
     ANNOUNCE_BOOMERANG = "I misjudged the timing of its return.",
     ANNOUNCE_HOUNDS = "Something is approaching.",
 

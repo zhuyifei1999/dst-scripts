@@ -66,6 +66,9 @@ local function OnHaunt(inst, haunter)
         local harvested, product = inst.components.crop:Harvest()
         if not harvested then
             local fert = SpawnPrefab("spoiled_food")
+            if fert.components.fertilizer ~= nil then
+                fert.components.fertilizer.fertilize_sound = nil
+            end
             inst.components.crop:Fertilize(fert, haunter)
         elseif product ~= nil then
             Launch(product, haunter, TUNING.LAUNCH_SPEED_SMALL)

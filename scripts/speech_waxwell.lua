@@ -46,7 +46,7 @@ return {
         {
             GENERIC = "How could you improve on perfection?",
             BURNING = "Oh. There go all my good pocket squares. Sigh.",
-            INUSE = "%s's in much more dire need of it.",
+            INUSE = "They're in much more dire need of it.",
         },
 		ATTUNE =
         {
@@ -62,14 +62,14 @@ return {
         },
         GIVETOPLAYER = 
         {
-        	FULL = "No sense giving %s more than they can carry.",
+        	FULL = "No sense giving them more than they can carry.",
             DEAD = "The dead have no need of such things.",
             SLEEPING = "Err... I'll let you rest.",
             BUSY = "When you have a moment.",
     	},
     	GIVEALLTOPLAYER = 
         {
-        	FULL = "No sense giving %s more than they can carry.",
+        	FULL = "No sense giving them more than they can carry.",
             DEAD = "The dead have no need of such things.",
             SLEEPING = "Err... I'll let you rest.",
             BUSY = "When you have a moment.",
@@ -106,7 +106,7 @@ return {
 	ANNOUNCE_BEES = "Killing me won't bring back your honey!",
 	ANNOUNCE_BOOMERANG = "Ow! Clumsy!",
 	ANNOUNCE_CHARLIE = "Charlie? It's me! Maxwell!",
-	ANNOUNCE_CHARLIE_ATTACK = "Ow! Charlie, that hurt!",
+	ANNOUNCE_CHARLIE_ATTACK = "Ow! Be gentle, Charlie!",
 	ANNOUNCE_COLD = "My heart grows cold.",
 	ANNOUNCE_HOT = "My heart can't stand the heat!",
 	ANNOUNCE_CRAFTING_FAIL = "Er... I can't do that.",
@@ -317,7 +317,7 @@ return {
 		TURF_DECIDUOUS = "Turf.",
 		TURF_SANDY = "Turf.",
 		TURF_BADLANDS = "Turf.",
-		GOLDENMACHETE = "I've always wanted to hack things in luxury.",
+		GOLDENMACHETE = "The only way to hack things is in luxury.",
 		MACHETE = "Truthfully I was always a hack.",
 		MOWER = "Truthfully I was always a hack.",
 		OBSIDIANMACHETE = "This seems like a dangerous thing to farm with.",
@@ -476,7 +476,7 @@ return {
 		MOOSE = "It's definitely from the North, whatever it is.",
 		MOOSEEGG = "Ride the lightning, you big egg.",
 		MOSSLING = "That's a fluffy... thing.",
-		FEATHERFAN = "Is it windy out or is it just my fan?",
+		FEATHERFAN = "Is it windy out or is it just this fan?",
         MINIFAN = "This pathetic device... gets the job done.",
 		GOOSE_FEATHER = "I could use a pillow filled with these.",
 		STAFF_TORNADO = "Wind power.",
@@ -492,10 +492,10 @@ return {
 			LIGHTSOUT = "I'll huff and I'll puff!",
 			BURNT = "Let's see you hide in there now.",
 		},
-		FERTILIZER = "Much better than carrying manure in my hands.",
+		FERTILIZER = "Much better than carrying manure in one's hands.",
 		RAINOMETER = 
 		{	
-			GENERIC = "I could also just look up to learn the same thing.",
+			GENERIC = "I could just look up and learn the same thing.",
 			BURNT = "The rain did not come in time.",
 		},
 		RAINCOAT = "Out out, rain!",
@@ -595,7 +595,7 @@ return {
 		UNAGI = "It will have to do.",
 		EYETURRET = "Some of my better work.",
 		EYETURRET_ITEM = "Now it just needs to be set up.",
-		MINOTAURHORN = "A regrettably end, my old friend.",
+		MINOTAURHORN = "A regrettable end, my old friend.",
 		MINOTAURCHEST = "It's almost like he's still alive.",
 		THULECITE_PIECES = "Several of these piles could be combined to form a bigger piece.",
 		POND_ALGAE = "It's some algae.",
@@ -659,7 +659,7 @@ return {
 
         ANCIENT_STATUE = "A once proud race.",
 
-		CAVE_BANANA = "Like ashes in my mouth.",
+		CAVE_BANANA = "Ashes in one's mouth.",
 		CAVE_BANANA_COOKED = "Even worse than raw.",
 		CAVE_BANANA_TREE = "It looks like a banana, but I'm not buying it.",
 		CAVE_BANANA_BURNT = "I refuse to be held responsible for that.",
@@ -672,9 +672,9 @@ return {
 		BATBAT = "Violence has never felt better.",
 		BATWING="I'm not eating that.",
 		BATWING_COOKED="I'm still not eating that.",
-        BATCAVE="Ugh. It stinks.",
-		BEDROLL_FURRY="At least they're good for something.",
-		BUNNYMAN="It reminds me of my old act.",
+        BATCAVE = "Ugh. It stinks.",
+		BEDROLL_FURRY = "At least they're good for something.",
+		BUNNYMAN = "It reminds me of my old act.",
 		FLOWER_CAVE="It's so dark down here.",
 		FLOWER_CAVE_DOUBLE="It's so dark down here.",
 		FLOWER_CAVE_TRIPLE="It's so dark down here.",
@@ -993,7 +993,7 @@ return {
 			GENERIC = "It looks sickly.",
 		},
 		EYEPLANT = "The Meat Bulb's pawns.",
-		FEATHERHAT = "I will lure them in with my magnificent plumage.",
+		FEATHERHAT = "I always considered myself the peacock of people.",
 		FEATHER_CROW = "Black is the color of sleep.",
 		FEATHER_ROBIN = "Red is the color of fire.",
 		FEATHER_ROBIN_WINTER = "Grey is the color of pain.",
@@ -1215,7 +1215,7 @@ return {
 		PIGMAN =
 		{
 			DEAD = "I dub thee 'Bacon'.",
-			FOLLOWER = "He's simple but he's mine.",
+			FOLLOWER = "He's simple, but he's mine.",
 			GENERIC = "What a slobbering fool.",
 			GUARD = "They're starting to organize.",
 			WEREPIG = "That one's gone feral.",
@@ -1295,7 +1295,7 @@ return {
 			GENERIC = "I don't recognize that one.",
 			HELD = "Quiet, you.",
 		},
-		ROBOT_PUPPET = "Better it than me.",
+		ROBOT_PUPPET = "Better them than me.",
 		ROCK_LIGHT =
 		{
 			GENERIC = "The top of this lava pit has cooled into a fine crust.",
@@ -1406,6 +1406,15 @@ return {
 			LOCKED = "Now to turn it on.",
 			PARTIAL = "It is still incomplete.",
 		},
+
+		LAVA_POND_ROCK = "With each day I get a little boulder.",
+		LAVA_POND_ROCK2 = "With each day I get a little boulder.",
+		LAVA_POND_ROCK3 = "With each day I get a little boulder.",
+		LAVA_POND_ROCK4 = "With each day I get a little boulder.",
+		LAVA_POND_ROCK5 = "With each day I get a little boulder.",
+		LAVA_POND_ROCK6 = "With each day I get a little boulder.",
+		LAVA_POND_ROCK7 = "With each day I get a little boulder.",
+
 		TELEPORTATO_BOX = "This is a box full of sadness and woe.",
 		TELEPORTATO_CRANK = "This is used to agitate the humors.",
 		TELEPORTATO_POTATO = "The gears in here are so small they turn the fabric of reality.",
@@ -1431,7 +1440,7 @@ return {
 		TRINKET_3 = "A tangled mess. Like life.",
 		TRINKET_4 = "Don't look at me like that.",
 		TRINKET_5 = "A toy for a child's mind.",
-		TRINKET_6 = "I might hide those in WX-78's bedroll if I get bored.",
+		TRINKET_6 = "I might hide those in the robot's bedroll if I get bored.",
 		TRINKET_7 = "Not something a grown man should be caught playing with.",
 		TRINKET_8 = "I'd prefer a pocketwatch on a chain.",
 		TRINKET_9 = "My suits don't deserve to be defaced with these tacky atrocities.",
@@ -1439,20 +1448,21 @@ return {
 		TRINKET_11 = "I'm not listening.",
 		TRINKET_12 = "I'm not touching that without several pairs of gloves.",
 		TRINKET_13 = "Don't look at me like that.",
-		TRINKET_14 = "Perhaps I'll invite Ms. Wickerbottom for a nice mandrake tea.",
+		TRINKET_14 = "Perhaps I'll invite the librarian for a nice mandrake tea.",
         TRINKET_15 = "Charlie was the only one who ever kept me in check.",
         TRINKET_16 = "Charlie was the only one who ever kept me in check.",
         TRINKET_17 = "The product of a very immature magician, perhaps.",
         TRINKET_18 = "A metaphor, perhaps.",
         TRINKET_19 = "Admittedly, it's difficult to maintain balance when you're on top.",
-        TRINKET_20 = "Eliminates the need for the phrase \"You scratch my back and I'll scratch yours.\"",
+        TRINKET_20 = "Eliminates the use of the phrase \"You scratch my back, I'll scratch yours.\"",
         TRINKET_21 = "I know when I've been beaten.",
         TRINKET_22 = "The monster child gets tangled in this frequently.",
         TRINKET_23 = "I was looking for that.",
         TRINKET_24 = "It's been beheaded.",
-        TRINKET_25 = "The strongman's wardrobe is filled to the brim with these, judging from the odor.",
+        TRINKET_25 = "The strongman’s wardrobe is brimming with them, judging from the odor.",
 		TRINKET_26 = "This was important to one very specific person once.",
 		TRINKET_27 = "Finally. My suits were getting wrinkles. Wrinkles!",
+
 		TRUNKVEST_SUMMER = "It's more of a fall vest.",
 		TRUNKVEST_WINTER = "It's so hard to look fashionable in the winter.",
 		TRUNK_COOKED = "At least the mucus burned off.",
@@ -1538,6 +1548,6 @@ return {
 	DESCRIBE_SMOLDERING = "Won't be long before it lights on fire.",
 	EAT_FOOD =
 	{
-		TALLBIRDEGG_CRACKED = "That tastes about as good as you'd expect.",
+		TALLBIRDEGG_CRACKED = "That tasted about as good as you'd expect.",
 	},	
 }

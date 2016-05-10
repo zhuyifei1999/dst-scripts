@@ -47,6 +47,10 @@ local PlayerController = Class(function(self, inst)
     self.terraformer = nil
     self.deploy_mode = not TheInput:ControllerAttached()
     self.deployplacer = nil
+    self.placer = nil
+    self.placer_recipe = nil
+    self.placer_recipe_skin = nil
+    self.placer_cached = nil
 
     self.LMBaction = nil
     self.RMBaction = nil
@@ -859,7 +863,15 @@ function PlayerController:GetHoverTextOverride()
     return self.placer_recipe ~= nil and (STRINGS.UI.HUD.BUILD.." "..(STRINGS.NAMES[string.upper(self.placer_recipe.name)] or STRINGS.UI.HUD.HERE)) or nil
 end
 
-function PlayerController:CancelPlacement()
+function PlayerController:CancelPlacement(cache)
+    if not cache then
+        self.placer_cached = nil
+    elseif self.placer_recipe ~= nil then
+        self.placer_cached = { self.placer_recipe, self.placer_recipe_skin }
+        --V2C: Leave cache alone if recipe is already nil
+        --     This can get called repeatedly when controls are disabled
+    end
+
     if self.placer ~= nil then
         self.placer:Remove()
         self.placer = nil
@@ -877,23 +889,22 @@ function PlayerController:CancelDeployPlacement()
 end
 
 function PlayerController:StartBuildPlacementMode(recipe, skin)
+    self.placer_cached = nil
     self.placer_recipe = recipe
     self.placer_recipe_skin = skin
-    if self.placer then
-        self.placer:Remove()
-        self.placer = nil
-    end
 
-    if skin ~= nil then
-        self.placer = SpawnPrefab(recipe.placer, skin, nil, self.inst.userid)
-    else
-        self.placer = SpawnPrefab(recipe.placer)
+    if self.placer ~= nil then
+        self.placer:Remove()
     end
-    
+    self.placer =
+        skin ~= nil and
+        SpawnPrefab(recipe.placer, skin, nil, self.inst.userid) or
+        SpawnPrefab(recipe.placer)
+
     self.placer.components.placer:SetBuilder(self.inst, recipe)
     self.placer.components.placer.testfn = function(pt)
-        return self.inst.replica.builder ~= nil and
-            self.inst.replica.builder:CanBuildAtPoint(pt, recipe)
+        local builder = self.inst.replica.builder
+        return builder ~= nil and builder:CanBuildAtPoint(pt, recipe)
     end
 end
 
@@ -1459,11 +1470,7 @@ function PlayerController:OnUpdate(dt)
         end
 
         if self.handler ~= nil then
-            if self.placer ~= nil then
-                self.placer:Remove()
-                self.placer = nil
-            end
-
+            self:CancelPlacement(true)
             self:CancelDeployPlacement()
 
             if self.reticule ~= nil and self.reticule.reticule ~= nil then
@@ -1503,6 +1510,11 @@ function PlayerController:OnUpdate(dt)
         self.attack_buffer = nil
         self.controller_attack_override = nil
         return
+    end
+
+    --Restore cached placer
+    if self.placer_cached ~= nil then
+        self:StartBuildPlacementMode(unpack(self.placer_cached))
     end
 
     --Attack controls are buffered and handled here in the update

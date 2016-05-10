@@ -14,12 +14,12 @@ return {
 		{
 			AWAKEBEEFALO = "I'd prefer to be blanketed by the night for this.",
 			GENERIC = "I'm not taking a razor to that.",
-			NOBITS = "I've already taken everything from her.",
+			NOBITS = "She's already lost everything.",
 		},
 		WRITE =
         {
             GENERIC = "I... I can't.",
-            INUSE = "Take your time, %s... I'll just watch.",
+            INUSE = "Take your time... I'll just watch.",
         },
 		STORE =
 		{
@@ -62,16 +62,16 @@ return {
         },
         GIVETOPLAYER = 
         {
-        	FULL = "%s is already too burdened by this world...",
-            DEAD = "%s has no need of material possessions where they've gone.",
-            SLEEPING = "%s looks so peaceful... I'll come back later.",
+        	FULL = "They're already too burdened by this world...",
+            DEAD = "They have no need of material possessions where they've gone.",
+            SLEEPING = "They looks so peaceful... I'll come back later.",
             BUSY = "Oh... I can tell you're busy...",
     	},
     	GIVEALLTOPLAYER = 
         {
-        	FULL = "%s is already too burdened by this world...",
-            DEAD = "%s has no need of material possessions where they've gone.",
-            SLEEPING = "%s looks so peaceful... I'll come back later.",
+        	FULL = "They're already too burdened by this world...",
+            DEAD = "They have no need of material possessions where they've gone.",
+            SLEEPING = "They looks so peaceful... I'll come back later.",
             BUSY = "Oh... I can tell you're busy...",
     	},
     	TEACH =
@@ -245,7 +245,7 @@ return {
 			MURDERER = "I'll send you someplace much nicer than this, %s.",
 			REVIVER = "Abigail likes you, %s. But she likes Lucy more.",
 			GHOST = "We can get a heart, but are you sure you even want to come back, %s?",
-			BEAVER = "He pinky-promised I'd get to ride on his shoulders next time. Such lies.",
+			BEAVER = "He pinky-promised I'd get to ride on his shoulders. Such lies.",
 			BEAVERGHOST = "The curse haunts you even in death, %s? I'm so sorry.",
 		},
 		WICKERBOTTOM = 
@@ -296,6 +296,15 @@ return {
         	EMPTY = "Death has claimed it.",
     	},
 		WEBBERSKULL = "He's better this way.",
+
+		LAVA_POND_ROCK = "As cold and hard as my heart...",
+		LAVA_POND_ROCK2 = "As cold and hard as my heart...",
+		LAVA_POND_ROCK3 = "As cold and hard as my heart...",
+		LAVA_POND_ROCK4 = "As cold and hard as my heart...",
+		LAVA_POND_ROCK5 = "As cold and hard as my heart...",
+		LAVA_POND_ROCK6 = "As cold and hard as my heart...",
+		LAVA_POND_ROCK7 = "As cold and hard as my heart...",
+
 		MOLE =
 		{
 			HELD = "How do you like being torn away from your family?",
@@ -314,7 +323,7 @@ return {
 		TURF_SANDY = "Some ground.",
 		TURF_BADLANDS = "Some ground.",
 		BEARGER = "It could crush me in one blow. I wish it would.",
-		BEARGERVEST = "Death surrounds me. Well, my torso anyhow.",
+		BEARGERVEST = "Death surrounds us. Well, our torsos anyhow.",
 		ICEPACK = "It won't insulate me from the horrors of this world.",
 		BEARGER_FUR = "It smells like death.",
 		FURTUFT = "This came from a living creature.", 
@@ -356,7 +365,7 @@ return {
 			GENERIC = "I could curl up and die in there.",
 			EMPTY = "All cats must die.",
 		},
-		CATCOONHAT = "Nothing like the stench of death on my head.",
+		CATCOONHAT = "Nothing like the stench of death on your head.",
 		COONTAIL = "It's matted, patchy and putrid.",
 		COOKPOT =
 		{
@@ -446,14 +455,14 @@ return {
         ICECREAM = "Ice cream could never replace Abigail.",
         WATERMELONICLE = "The melon is in stasis.",
         TRAILMIX = "A handful of sustenance.",
-        HOTCHILI = "Burn my insides.",
+        HOTCHILI = "Abigail hated spicy foods.",
         GUACAMOLE = "That's just gruesome. I like it.",
 		MOOSE = "It's an abomination.",
 		MOOSEEGG = "Not sure how a thing like that happens.",
 		MOSSLING = "A new life. The last thing anyone needs.",
 		FEATHERFAN = "That'll make quite a draft.",
         MINIFAN = "When I am still, it is as lifeless as Abigail.",
-		GOOSE_FEATHER = "Plucked like Abigail was from me.",
+		GOOSE_FEATHER = "Plucked, just like Abigail was from me.",
 		STAFF_TORNADO = "Some weather out there.",
 		GOLDENMACHETE = "What a fancy blade to ruin bamboo with!",
 		OBSIDIANMACHETE = "A blade that bites and burns.",
@@ -558,10 +567,10 @@ return {
 		WARG = "A true bastion of evil.",
 		WATERMELON = "It's mostly water. What's the big deal?",
 		WATERMELON_COOKED = "Now it's warm water.",
-		WATERMELONHAT = "It's sticky on my head. Yuck.",
+		WATERMELONHAT = "It makes the wearer's head sticky. Yuck.",
 		WINTEROMETER = 
 		{
-			GENERIC = "Why do I feel that it is measuring my mortality?",
+			GENERIC = "Why do I feel that it is measuring our mortality?",
 			BURNT = "Does that mean my day to die is here?",
 		},
 		HOME = "A pathetic simulcra...",
@@ -640,7 +649,7 @@ return {
 		MULTITOOL_AXE_PICKAXE = "An item with multiple uses.",	--Works as axe and pickaxe
 		GREENGEM = "The flaws are its most beautiful features.",
 		ORANGESTAFF = "With each use the wielder dies and is reborn.",	--Teleports player.
-		YELLOWAMULET = "A brief light in my dark life.",	--Emits light, player walks faster.
+		YELLOWAMULET = "A brief light in a dark life.",	--Emits light, player walks faster.
 		GREENAMULET = "A flash of brilliance!",	--Reduce cost of crafting
 
 		SLURPER = "Ah, to be so simple.",
@@ -796,7 +805,7 @@ return {
 		AMULET = "I wonder who used to own this.",
 		ANIMAL_TRACK = "Signs of the beast.",
 		ARMORGRASS = "To prolong the inevitable.",
-		ARMORMARBLE = "Stops the daggers that stab at mine heart.",
+		ARMORMARBLE = "Could stop the daggers that stab at mine heart.",
 		ARMORWOOD = "To hold off the inevitable a bit longer.",
 		ARMOR_SANITY = "A perfectly safe way to go insane.",
 		ASH =
@@ -1157,7 +1166,7 @@ return {
 		PIGTENT = "The place where they wrap pigs in blankets.",
 		LUREPLANTBULB = "Life goes on.",
 		MALE_PUPPET = "I wonder what he did.",
-        MANDRAKE_ACTIVE = "Onward, my vegetable minion!",
+        MANDRAKE_ACTIVE = "Onward, vegetable minion!",
         MANDRAKE_PLANTED = "The mighty mandrake. It's best picked at night.",
         MANDRAKE = "Alas, poor mandrake!",
 
@@ -1211,7 +1220,7 @@ return {
 		PANFLUTE = "Music is the window to my empty soul.",
 		PAPYRUS = "For documenting my pain.",
 		PENGUIN = "All dressed up, but where to go?",
-		PERD = "Dumb bird! Stay away from my berries!",
+		PERD = "Dumb bird! Stay away from the berries!",
 		PEROGIES = "A lovely little pouch of nutrients.",
 		PETALS = "Its joy and happiness was so disparaging...",
 		PETALS_EVIL = "They are painted with the colors of my soul.",
@@ -1304,6 +1313,7 @@ return {
 			HELD = "It's so soft. It is my enemy.",
 		},
 		ROBOT_PUPPET = "I wonder what they did.",
+		MOOSE_NESTING_GROUND = "A cradle of life. I hate it.",
 		ROCK_LIGHT =
 		{
 			GENERIC = "There's a fire in the pit's belly.",
@@ -1319,7 +1329,7 @@ return {
         SADDLE_BASIC = "As if the creature wasn't already burdened by the yoke of life...",
         SADDLE_WAR = "Oh, how we bend creatures to our ill intent.",
         SADDLEHORN = "I'm only taking back what's mine.",
-        BRUSH = "I'll rid the world of its fluff.",
+        BRUSH = "I'll rid the world of fluff.",
 		SANITYROCK =
 		{
 			ACTIVE = "It's calling to me.",
@@ -1453,8 +1463,8 @@ return {
         TRINKET_19 = "The spinning inevitably ends, just like life.",
         TRINKET_20 = "My back doesn't need scratching.",
         TRINKET_21 = "This tool has come to the end of its life.",
-        TRINKET_22 = "I wish it were stronger.",
-        TRINKET_23 = "I'm not a-frayed.",
+        TRINKET_22 = "I'm not a-frayed.",
+        TRINKET_23 = "I don't have a use for it.",
         TRINKET_24 = "I've never been lucky.",
         TRINKET_25 = "It smells of decay and death.",
 		TRINKET_26 = "That potato is as hollow as I am.",

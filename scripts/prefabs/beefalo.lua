@@ -284,7 +284,9 @@ end
 
 local function SetTendency(inst, changedomestication)
     -- tendency is locked in after we become domesticated
+    local tendencychanged = false
     if not inst.components.domesticatable:IsDomesticated() then
+        local oldtentency = inst.tendency
         local tendencysum = 0
         local maxtendency = nil
         local maxtendencyval = 0
@@ -296,6 +298,7 @@ local function SetTendency(inst, changedomestication)
             end
         end
         inst.tendency = (tendencysum < 0.1 or maxtendencyval < tendencysum * 0.5) and TENDENCY.DEFAULT or maxtendency
+        tendencychanged = inst.tendency ~= oldtentency
     end
 
     if changedomestication ~= nil then
@@ -306,23 +309,23 @@ local function SetTendency(inst, changedomestication)
         end
     end
 
+    if tendencychanged == true or changedomestication ~= nil then
+        if inst.components.domesticatable:IsDomesticated() then
+            inst.components.domesticatable:SetMinObedience(TUNING.BEEFALO_MIN_DOMESTICATED_OBEDIENCE[inst.tendency])
 
-    if inst.components.domesticatable:IsDomesticated() then
-        inst.components.domesticatable:SetMinObedience(TUNING.BEEFALO_MIN_DOMESTICATED_OBEDIENCE[inst.tendency])
-    else
-        inst.components.domesticatable:SetMinObedience(0)
-    end
+            inst.components.combat:SetDefaultDamage(TUNING.BEEFALO_DAMAGE[inst.tendency])
+            inst.components.locomotor.runspeed = TUNING.BEEFALO_RUN_SPEED[inst.tendency]
+        else
+            inst.components.domesticatable:SetMinObedience(0)
 
-    if inst.components.domesticatable:IsDomesticated() then
-        inst.components.combat:SetDefaultDamage(TUNING.BEEFALO_DAMAGE[inst.tendency])
-        inst.components.locomotor.runspeed = TUNING.BEEFALO_RUN_SPEED[inst.tendency]
-    else
-        inst.components.combat:SetDefaultDamage(TUNING.BEEFALO_DAMAGE.DEFAULT)
-        inst.components.locomotor.runspeed = TUNING.BEEFALO_RUN_SPEED.DEFAULT
-    end
-    inst:ApplyBuildOverrides(inst.AnimState)
-    if inst.components.rideable and inst.components.rideable:GetRider() ~= nil then
-        inst:ApplyBuildOverrides(inst.components.rideable:GetRider().AnimState)
+            inst.components.combat:SetDefaultDamage(TUNING.BEEFALO_DAMAGE.DEFAULT)
+            inst.components.locomotor.runspeed = TUNING.BEEFALO_RUN_SPEED.DEFAULT
+        end
+
+        inst:ApplyBuildOverrides(inst.AnimState)
+        if inst.components.rideable and inst.components.rideable:GetRider() ~= nil then
+            inst:ApplyBuildOverrides(inst.components.rideable:GetRider().AnimState)
+        end
     end
 end
 
@@ -658,6 +661,7 @@ local function beefalo()
     inst.DoFeral = DoFeral
     inst:ListenForEvent("goneferal", OnFeral)
     inst:ListenForEvent("obediencedelta", OnObedienceDelta)
+    inst:ListenForEvent("domesticationdelta", OnDomesticationDelta)
     inst:ListenForEvent("beingridden", OnBeingRidden)
     inst:ListenForEvent("riderchanged", OnRiderChanged)
     inst:ListenForEvent("riderdoattackother", OnRiderDoAttack)

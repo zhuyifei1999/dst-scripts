@@ -69,7 +69,14 @@ function Crop:Fertilize(fertilizer, doer)
     end
 
     if not (TheWorld.state.iswinter and TheWorld.state.temperature <= 0) then
-        self.growthpercent = self.growthpercent + fertilizer.components.fertilizer.fertilizervalue*self.rate
+        if fertilizer.components.fertilizer ~= nil then
+            if doer ~= nil and
+                doer.SoundEmitter ~= nil and
+                fertilizer.components.fertilizer.fertilize_sound ~= nil then
+                doer.SoundEmitter:PlaySound(fertilizer.components.fertilizer.fertilize_sound)
+            end
+            self.growthpercent = self.growthpercent + fertilizer.components.fertilizer.fertilizervalue * self.rate
+        end
         self.inst.AnimState:SetPercent("grow", self.growthpercent)
         if self.growthpercent >= 1 then
             self.inst.AnimState:PlayAnimation("grow_pst")

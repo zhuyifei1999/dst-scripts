@@ -49,7 +49,7 @@ local function fn()
     inst.AnimState:PlayAnimation("ground_loop")
 
     inst:AddTag("birchnutroot")
-    inst:AddTag("noattack")
+    inst:AddTag("notarget")
 
     inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/decidous/whip_move", "rumble")
 

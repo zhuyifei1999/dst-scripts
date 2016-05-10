@@ -174,7 +174,7 @@ function Combat:CanAttack(target)
         if self.inst:HasTag("birchnutroot")
             and (target:HasTag("birchnutroot") or
                 target:HasTag("birchnut") or
-                target:HasTag("birchnutdrage")) then
+                target:HasTag("birchnutdrake")) then
             return false
         end
 
@@ -266,6 +266,7 @@ function Combat:CanTarget(target)
     return self:IsValidTarget(target)
         and not (self._ispanic:value()
                 or target:HasTag("INLIMBO")
+                or target:HasTag("notarget")
                 or target:HasTag("invisible")
                 or target:HasTag("debugnoattack"))
         and (target.replica.combat == nil

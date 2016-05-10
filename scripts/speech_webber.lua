@@ -20,17 +20,17 @@ return {
 		WRITE =
         {
             GENERIC = "We can't write on that now.",
-            INUSE = "We'll get our crayons ready while %s finishes up!",
+            INUSE = "We'll get our crayons ready while they finish up!",
         },
 		RUMMAGE =
         {   
             GENERIC = "That's off-limits.",
-            INUSE = "It's okay, we'll wait for you to finish, %s!",   
+            INUSE = "It's okay, we'll wait for you to finish!",   
         },
 		COOK =
         {
             GENERIC = "That's off-limits.",
-            INUSE = "It's okay, we'll wait for you to finish, %s!",
+            INUSE = "It's okay, we'll wait for you to finish!",
             TOOFAR = "Let's scurry closer!",
         },
         MOUNT =
@@ -54,14 +54,14 @@ return {
         {
         	FULL = "Hey! Make room!",
             DEAD = "We should probably keep it.",
-            SLEEPING = "Aww... %s's getting snoozies right now!",
+            SLEEPING = "Aww... They're getting snoozies right now!",
             BUSY = "We have something for you!",
     	},
     	GIVEALLTOPLAYER = 
         {
         	FULL = "Hey! Make room!",
             DEAD = "We should probably keep it.",
-            SLEEPING = "Aww... %s's getting snoozies right now!",
+            SLEEPING = "Aww... They're getting snoozies right now!",
             BUSY = "We have something for you!",
     	},
     	ATTUNE =
@@ -72,7 +72,7 @@ return {
         {
             GENERIC = "Not right now, we're comfy.",
             BURNING = "Woah! Hot fashions!",
-            INUSE = "We'll give %s some privacy while they change.",
+            INUSE = "We'll give them some privacy while they change.",
         },
         TEACH =
         {
@@ -239,7 +239,7 @@ return {
 			REVIVER = "%s is gruff, but nice.",
 			GHOST = "Wanna go heart-hunting with us, %s?",
 			BEAVER = "%s's being gnawghty.",
-			BEAVERGHOST = "Can I pet your ghost ears or will our claws swish through them?",
+			BEAVERGHOST = "Can I pet your ears or will our claws swish through them?",
 		},
 		WICKERBOTTOM =
 		{
@@ -282,6 +282,14 @@ return {
 			GENERIC = "A teddy bear.",
 		},
 		BERNIE_ACTIVE = "That teddy bear is moving!",
+
+		LAVA_POND_ROCK = "Wow! A rock!",
+		LAVA_POND_ROCK2 = "Wow! A rock!",
+		LAVA_POND_ROCK3 = "Wow! A rock!",
+		LAVA_POND_ROCK4 = "Wow! A rock!",
+		LAVA_POND_ROCK5 = "Wow! A rock!",
+		LAVA_POND_ROCK6 = "Wow! A rock!",
+		LAVA_POND_ROCK7 = "Wow! A rock!",
 
         GLOMMER = "Nice eyes.",
         GLOMMERFLOWER = 
@@ -540,7 +548,7 @@ return {
             FULL = "They don't have enough space for us!",
         },
 
-		MAXWELLPHONOGRAPH = "It looks like grandpa's.",
+		MAXWELLPHONOGRAPH = "We could listen to that forever!",
 		BOOMERANG = "Boomerangarangarang!",
 		PIGGUARD = "We wouldn't want to cross that one.",
 		ABIGAIL = "That's no party poltergeist!",
@@ -860,7 +868,7 @@ return {
 			NEEDSFERTILIZER = "The soil is dried up.",
 			BURNT = "A razed farm is no farm at all.",
 		},
-		FEATHERHAT = "Feathers enough to cover our spiderness.",
+		FEATHERHAT = "There's feathers enough to cover our spiderness!",
 		FEATHER_CROW = "Feather of black.",
 		FEATHER_ROBIN = "Feather of red.",
 		FEATHER_ROBIN_WINTER = "Feather of white.",
@@ -920,7 +928,7 @@ return {
 		},
 		FROGGLEBUNWICH = "Sandwich for me, frog legs for him.",
 		FROGLEGS = "A fraction of a frog.",
-		FROGLEGS_COOKED = "I admit, I've acquired a taste for these.",
+		FROGLEGS_COOKED = "I admit, we've acquired a taste for those.",
 		FRUITMEDLEY = "Pile o' fruit.",
 		GEARS = "I could've been a robot.",
 		GHOST = "That's not a fun ghost!",
@@ -946,7 +954,7 @@ return {
 			INGROUND = "We can't get at it!",
 			PICKED = "It's gone now.",
 		},
-		GUNPOWDER = "We're getting good at making stuff.",
+		GUNPOWDER = "This black powder stuff packs a punch.",
 		HAMBAT = "An interesting way to use food.",
 		HAMMER = "Chaos and destruction!",
 		HEALINGSALVE = "Soothing.",
@@ -992,7 +1000,7 @@ return {
 			INACTIVE = "I wonder what that does.",
 		},
 		HONEYHAM = "Ooo, tasty!",
-		HONEYNUGGETS = "We wishes they were shaped like dinosaurs.",
+		HONEYNUGGETS = "We wish they were shaped like dinosaurs.",
 		JAMMYPRESERVES = "Ew... sticky fingies.",
 		KABOBS = "Foods on a stick!",
 		KILLERBEE =
@@ -1310,10 +1318,10 @@ return {
 
 		SKELETON_PLAYER =
 		{
-			MALE = "Oh no, it's %s! We think %s was hurting him.",
-			FEMALE = "Oh no, it's %s! We think %s was hurting her.",
-			ROBOT = "Oh no, it's %s! We think %s was hurting it.",
-			DEFAULT = "Oh no, it's %s! We think %s was the cause.",
+			MALE = "Oh no, %s! %s must have really hurt him!",
+			FEMALE = "Oh no, %s! %s must have really hurt her!",
+			ROBOT = "Oh no, %s! %s must have really hurt them!",
+			DEFAULT = "Oh no, %s! %s must have really hurt them!",
 		},
 
 		SKULLCHEST = "Who knows what could be hiding in there!",
@@ -1446,7 +1454,7 @@ return {
         TRINKET_19 = "This toy doesn't work very well.",
         TRINKET_20 = "Can we dig in the dirt with this?",
         TRINKET_21 = "Mom had one of these.",
-        TRINKET_22 = "Maybe we'll find another use for this.",
+        TRINKET_22 = "It's kinda like our webbing!",
         TRINKET_23 = "Are we supposed to blow on it?",
         TRINKET_24 = "No cookies.",
         TRINKET_25 = "It's stinky.",
