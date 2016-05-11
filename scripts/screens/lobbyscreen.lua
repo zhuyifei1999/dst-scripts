@@ -7,7 +7,6 @@ local Image = require "widgets/image"
 local UIAnim = require "widgets/uianim"
 local Widget = require "widgets/widget"
 local PlayerBadge = require "widgets/playerbadge"
-local ScrollableList = require "widgets/scrollablelist"
 local LobbyChatQueue = require "widgets/lobbychatqueue"
 local Spinner = require "widgets/spinner"
 local DressupPanel = require "widgets/dressuppanel"
@@ -804,6 +803,7 @@ function LobbyScreen:OnUpdate(dt)
                 for i2, data in ipairs(players) do
                     if widget.userid == data.userid and widget.characterBadge.ishost == (data.performance ~= nil) then
                         widget.characterBadge:Set(data.prefab or "", data.colour or DEFAULT_PLAYER_COLOUR, widget.characterBadge.ishost, data.userflags or 0)
+                        widget.name:SetDisplayNameFromData(data)
                     end
                 end
             end

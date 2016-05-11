@@ -7,10 +7,37 @@ local assets =
     Asset("SOUND", "sound/pig.fsb"),
 }
 
+local windowassets =
+{
+    Asset("ANIM", "anim/pig_house.zip"),
+}
+
 local prefabs =
 {
     "pigman",
+    "pighousewindow",
+    "pighousewindowsnow",
 }
+
+--Client update
+local function OnUpdateWindow(window, inst, snow)
+    if inst:HasTag("burnt") then
+        inst._windowsnow = nil
+        inst._window = nil
+        snow:Remove()
+        window:Remove()
+    elseif inst.Light:IsEnabled() and inst.AnimState:IsCurrentAnimation("lit") then
+        if not window._shown then
+            window._shown = true
+            window:Show()
+            snow:Show()
+        end
+    elseif window._shown then
+        window._shown = false
+        window:Hide()
+        snow:Hide()
+    end
+end
 
 local function LightsOn(inst)
     if not inst:HasTag("burnt") and not inst.lightson then
@@ -18,6 +45,14 @@ local function LightsOn(inst)
         inst.AnimState:PlayAnimation("lit", true)
         inst.SoundEmitter:PlaySound("dontstarve/pig/pighut_lighton")
         inst.lightson = true
+        if inst._window ~= nil then
+            inst._window.AnimState:PlayAnimation("windowlight_idle", true)
+            inst._window:Show()
+        end
+        if inst._windowsnow ~= nil then
+            inst._windowsnow.AnimState:PlayAnimation("windowsnow_idle", true)
+            inst._windowsnow:Show()
+        end
     end
 end
 
@@ -27,6 +62,12 @@ local function LightsOff(inst)
         inst.AnimState:PlayAnimation("idle", true)
         inst.SoundEmitter:PlaySound("dontstarve/pig/pighut_lightoff")
         inst.lightson = false
+        if inst._window ~= nil then
+            inst._window:Hide()
+        end
+        if inst._windowsnow ~= nil then
+            inst._windowsnow:Hide()
+        end
     end
 end
 
@@ -131,7 +172,19 @@ end
 local function onhit(inst, worker)
     if not inst:HasTag("burnt") then 
         inst.AnimState:PlayAnimation("hit")
-        inst.AnimState:PushAnimation(inst.lightson and "lit" or "idle")
+        if inst.lightson then
+            inst.AnimState:PushAnimation("lit")
+            if inst._window ~= nil then
+                inst._window.AnimState:PlayAnimation("windowlight_hit")
+                inst._window.AnimState:PushAnimation("windowlight_idle")
+            end
+            if inst._windowsnow ~= nil then
+                inst._windowsnow.AnimState:PlayAnimation("windowsnow_hit")
+                inst._windowsnow.AnimState:PushAnimation("windowsnow_idle")
+            end
+        else
+            inst.AnimState:PushAnimation("idle")
+        end
     end
 end
 
@@ -179,6 +232,14 @@ local function onburntup(inst)
         inst.inittask:Cancel()
         inst.inittask = nil
     end
+    if inst._window ~= nil then
+        inst._window:Remove()
+        inst._window = nil
+    end
+    if inst._windowsnow ~= nil then
+        inst._windowsnow:Remove()
+        inst._windowsnow = nil
+    end
 end
 
 local function onignite(inst)
@@ -207,6 +268,7 @@ local function spawncheckday(inst)
             (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
             inst.components.spawner:ReleaseChild()
         else
+            inst.components.playerprox:ForceUpdate()
             onoccupieddoortask(inst)
         end
     end
@@ -255,6 +317,16 @@ local function fn()
 
     MakeSnowCoveredPristine(inst)
 
+    if not TheNet:IsDedicated() then
+        inst._window = SpawnPrefab("pighousewindow")
+        inst._window.entity:SetParent(inst.entity)
+        inst._windowsnow = SpawnPrefab("pighousewindowsnow")
+        inst._windowsnow.entity:SetParent(inst.entity)
+        if not TheWorld.ismastersim then
+            inst._window:DoPeriodicTask(FRAMES, OnUpdateWindow, nil, inst, inst._windowsnow)
+        end
+    end
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -275,7 +347,7 @@ local function fn()
     inst.components.spawner:CancelSpawning()
 
     inst:AddComponent("playerprox")
-    inst.components.playerprox:SetDist(10,13)
+    inst.components.playerprox:SetDist(10, 13)
     inst.components.playerprox:SetOnPlayerNear(onnear)
     inst.components.playerprox:SetOnPlayerFar(onfar)
 
@@ -301,5 +373,51 @@ local function fn()
     return inst
 end
 
+local function windowfn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+
+    inst:AddTag("FX")
+    --[[Non-networked entity]]
+    inst.persists = false
+
+    inst.AnimState:SetBank("pig_house")
+    inst.AnimState:SetBuild("pig_house")
+    inst.AnimState:PlayAnimation("windowlight_idle")
+    inst.AnimState:SetLightOverride(1)
+    inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+    inst.AnimState:SetFinalOffset(1)
+
+    inst:Hide()
+
+    return inst
+end
+
+local function windowsnowfn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+
+    inst:AddTag("FX")
+    --[[Non-networked entity]]
+    inst.persists = false
+
+    inst.AnimState:SetBank("pig_house")
+    inst.AnimState:SetBuild("pig_house")
+    inst.AnimState:PlayAnimation("windowsnow_idle")
+    inst.AnimState:SetFinalOffset(2)
+
+    inst:Hide()
+
+    MakeSnowCovered(inst)
+
+    return inst
+end
+
 return Prefab("pighouse", fn, assets, prefabs),
+    Prefab("pighousewindow", windowfn, windowassets),
+    Prefab("pighousewindowsnow", windowsnowfn, windowassets),
     MakePlacer("pighouse_placer", "pig_house", "pig_house", "idle")

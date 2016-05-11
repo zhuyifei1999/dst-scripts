@@ -36,6 +36,15 @@ local PlayerAvatarPopup = Class(Widget, function(self, owner, player_name, data,
     self:Start()
 end)
 
+--For ease of overriding in mods
+function PlayerAvatarPopup:GetDisplayName(player_name, character)
+    return player_name or ""
+end
+
+function PlayerAvatarPopup:UpdateDisplayName()
+    self.title:SetTruncatedString(self:GetDisplayName(self.player_name, self.currentcharacter), 200, 35, true)
+end
+
 function PlayerAvatarPopup:SetPlayer(player_name, data, show_net_profile)
     local character = data.prefab or data.character or "wilson"
     if character == "" then 
@@ -64,7 +73,7 @@ function PlayerAvatarPopup:SetPlayer(player_name, data, show_net_profile)
         --title
         self.title = self.proot:AddChild(Text(TALKINGFONT, 32))
         self.title:SetPosition(left_column+15, 280, 0)
-        self.title:SetTruncatedString(player_name, 200, 35, true)
+        self:UpdateDisplayName()
 
         if data.playerage ~= nil then
             self.age = self.proot:AddChild(Text(BUTTONFONT, 25))
@@ -171,7 +180,7 @@ function PlayerAvatarPopup:SetPlayer(player_name, data, show_net_profile)
 
         self.title = self.proot:AddChild(Text(TALKINGFONT, 30))
         self.title:SetPosition(0, 75, 0)
-        self.title:SetTruncatedString(player_name, 200, 35, true)
+        self:UpdateDisplayName()
 
         self.text = self.proot:AddChild(Text(UIFONT, 25, STRINGS.UI.PLAYER_AVATAR.CHOOSING))
         self.text:SetColour(unpack(data.colour))

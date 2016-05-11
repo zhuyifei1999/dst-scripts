@@ -478,6 +478,13 @@ local function OnSaddleChanged(inst, data)
     end
 end
 
+local function OnRefuseRider(inst, data)
+    inst:DoTaskInTime(0, function()
+        -- this needs to happen after the stategraph
+        inst.components.sleeper:WakeUp()
+    end)
+end
+
 local function MountSleepTest(inst)
     return not inst.components.rideable:IsBeingRidden() and DefaultSleepTest(inst)
 end
@@ -611,6 +618,7 @@ local function beefalo()
     inst:AddComponent("rideable")
     inst.components.rideable:SetRequiredObedience(TUNING.BEEFALO_MIN_BUCK_OBEDIENCE)
     inst:ListenForEvent("saddlechanged", OnSaddleChanged)
+    inst:ListenForEvent("refusedrider", OnRefuseRider)
 
     inst:AddComponent("trader")
     inst.components.trader:SetAcceptTest(ShouldAcceptItem)

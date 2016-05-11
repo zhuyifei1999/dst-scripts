@@ -875,9 +875,9 @@ return {
 		CARROT_SEEDS = "This labor is beneath me.",
 		CAVE_FERN = "I'd like to step on it.",
 		CHARCOAL = "Nothing will steal my carbon!",
-        CHESSJUNK1 = "Mechanical refuse.",
-        CHESSJUNK2 = "Mechanical refuse.",
-        CHESSJUNK3 = "Mechanical refuse.",
+        CHESSJUNK1 = "There's a reason I never finished that.",
+        CHESSJUNK2 = "That one was a jerk.",
+        CHESSJUNK3 = "Didn't like that one's face.",
 		CHESTER = "Annoying little monster. Has his uses, though.",
 		CHESTER_EYEBONE =
 		{

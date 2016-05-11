@@ -83,7 +83,7 @@ function Hauntable:AdvanceFlickerState()
         self.flicker = "fadeout"
     elseif self.flicker == "fadeout" then
         self.flicker = "off"
-        self.inst.AnimState:SetMultColour(1, 1, 1, 1)
+        --self.inst.AnimState:SetMultColour(1, 1, 1, 1)
     end
 end
 
@@ -152,7 +152,7 @@ function Hauntable:OnUpdate(dt)
             self:StopFX()
         end
 
-        if self.flicker == "on" then
+        --[[if self.flicker == "on" then
             if math.random() <= .5 then
                 self.inst.AnimState:SetMultColour(1, 1, 1, 1)
             else
@@ -164,7 +164,7 @@ function Hauntable:OnUpdate(dt)
             else
                 self.inst.AnimState:SetMultColour(.7, .7, .7, 1)
             end
-        end
+        end]]
     end
 
     if self.panictimer <= 0 then

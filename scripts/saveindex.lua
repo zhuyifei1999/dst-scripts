@@ -437,11 +437,12 @@ function SaveIndex:GetSlotGenOptions(slot)
     return deepcopy(self.data.slots[slot or self.current_slot].world.options)
 end
 
-function SaveIndex:GetSlotSession(slot)
+function SaveIndex:GetSlotSession(slot, caves_session)
     if self:IsSlotMultiLevel(slot or self.current_slot) then
         local session_id = nil
         local clusterSaveIndex = SaveIndex()
-        clusterSaveIndex:LoadClusterSlot(slot or self.current_slot, "Master", function()
+		local shard_name = caves_session == true and "Caves" or "Master"
+        clusterSaveIndex:LoadClusterSlot(slot or self.current_slot, shard_name, function()
             session_id = clusterSaveIndex.data.slots[clusterSaveIndex.current_slot].session_id
         end)
         return session_id

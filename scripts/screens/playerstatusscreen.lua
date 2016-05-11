@@ -170,6 +170,7 @@ function PlayerStatusScreen:OnUpdate(dt)
     end
 end
 
+--For ease of overriding in mods
 function PlayerStatusScreen:GetDisplayName(clientrecord)
     return clientrecord.name or ""
 end

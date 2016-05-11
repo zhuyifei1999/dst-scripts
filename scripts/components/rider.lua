@@ -69,7 +69,8 @@ function Rider:Mount(target, instant)
     end
 
     if not target.components.rideable:TestObedience() then
-        target.sg:GoToState("matingcall")
+        self.inst:PushEvent("refusedmount", {rider=self.inst,rideable=target})
+        target:PushEvent("refusedrider", {rider=self.inst,rideable=target})
         return
     end
 

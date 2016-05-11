@@ -38,6 +38,11 @@ local events=
            inst.sg:GoToState("eat", data)
        end
     end),
+    EventHandler("refusedrider", function(inst, data)
+        if not inst.components.health:IsDead() and not inst.sg:HasStateTag("attack") then
+            inst.sg:GoToState("matingcall")
+        end
+    end),
     EventHandler("brushed", function(inst, data)
         if not inst.components.health:IsDead() and not inst.sg:HasStateTag("busy") then
             if data.numprizes > 0 then

@@ -52,20 +52,25 @@ function Networking_ResurrectAnnouncement(message, colour)
     Networking_Announcement(message, colour, "resurrect")
 end
 
+--For ease of overriding in mods
+function Networking_Announcement_GetDisplayName(name)
+    return name
+end
+
 function Networking_JoinAnnouncement(name, colour)
-    Networking_Announcement(string.format(STRINGS.UI.NOTIFICATION.JOINEDGAME, name), colour, "join_game")
+    Networking_Announcement(string.format(STRINGS.UI.NOTIFICATION.JOINEDGAME, Networking_Announcement_GetDisplayName(name)), colour, "join_game")
 end
 
 function Networking_LeaveAnnouncement(name, colour)
-    Networking_Announcement(string.format(STRINGS.UI.NOTIFICATION.LEFTGAME, name), colour, "leave_game")
+    Networking_Announcement(string.format(STRINGS.UI.NOTIFICATION.LEFTGAME, Networking_Announcement_GetDisplayName(name)), colour, "leave_game")
 end
 
 function Networking_KickAnnouncement(name, colour)
-    Networking_Announcement(string.format(STRINGS.UI.NOTIFICATION.KICKEDFROMGAME, name), colour, "kicked_from_game")
+    Networking_Announcement(string.format(STRINGS.UI.NOTIFICATION.KICKEDFROMGAME, Networking_Announcement_GetDisplayName(name)), colour, "kicked_from_game")
 end
 
 function Networking_BanAnnouncement(name, colour)
-    Networking_Announcement(string.format(STRINGS.UI.NOTIFICATION.BANNEDFROMGAME, name), colour, "banned_from_game")
+    Networking_Announcement(string.format(STRINGS.UI.NOTIFICATION.BANNEDFROMGAME, Networking_Announcement_GetDisplayName(name)), colour, "banned_from_game")
 end
 
 function Networking_SkinAnnouncement(user_name, user_colour, skin_name)

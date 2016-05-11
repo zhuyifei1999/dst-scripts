@@ -1160,10 +1160,12 @@ end
 --start: 1-based start position (can be negative to count from end)
 --end: 1-based end position (optional, can be negative to count from end)
 --returns a new string
-string.utf8sub = utf8substr
-string.utf8len = utf8strlen
-string.utf8upper = utf8strtoupper
-string.utf8lower = utf8strtolower
+if APP_VERSION ~= "MAPGEN" then
+    string.utf8sub = utf8substr
+    string.utf8len = utf8strlen
+    string.utf8upper = utf8strtoupper
+    string.utf8lower = utf8strtolower
+end
 
 -- Returns the 0 - 255 color of a hex code
 function HexToRGB(hex)
