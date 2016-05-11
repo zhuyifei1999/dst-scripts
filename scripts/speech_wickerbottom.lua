@@ -756,7 +756,7 @@ return
         WAFFLES = "Salutations, waffles.",
         
         WALL_WOOD_ITEM = "Deployable pickets.",
-        WALL_STONE_ITEM = "I'll carry them. My strong backbone has always been my best asset.",
+        WALL_STONE_ITEM = "I'll carry them. My strong backbone always was my best asset.",
         WALL_RUINS_ITEM = "My pockets must be bigger on the inside.",
         WALL_HAY_ITEM = "Hay bales.",
         WALL_STONE = "That is quite secure.",
@@ -775,11 +775,11 @@ return
             DEAD = "I do believe he has starved.",
             SKELETON = "I guess I could study the bones.",
         },
-        MEAT = "It would be improper to eat this raw, but if it comes to the worst.",
+        MEAT = "It's improper to eat it raw, but if we've no choice...",
         SMALLMEAT = "It's a small, raw piece of meat.",
         COOKEDSMALLMEAT = "It is slightly more appetizing when cooked.",
         MONSTERMEAT = "It would be hazardous to consume this.",
-        MONSTERLASAGNA = "Lasagna or no, it would be hazardous to consume this.",
+        MONSTERLASAGNA = "Lasagna or no, it would be hazardous to consume it.",
         COOKEDMEAT = "It is slightly more appetizing when cooked.",
         MEATBALLS = "A pile of processed meat. Who knows what went into this.",
         UMBRELLA = "A simple apparatus for keeping dry.",
@@ -831,7 +831,7 @@ return
         SPEAR = "Ancient weapons technology.",
         STRAWHAT = "This will offer some protection from the sun.",
         STEELWOOL = "It has a variety of household uses.",
-        STUFFEDEGGPLANT = "This aubergine has been cooked and packed with other comestibles.",
+        STUFFEDEGGPLANT = "This aubergine has been cooked and packed with comestibles.",
         BEEFALOHAT = "This hat is hideous.",
         TOPHAT = "How bourgeois.",
         FLOWERHAT = "How celebratory.",
@@ -874,7 +874,7 @@ return
         BIRD_EGG = "It is unfertilized.",
         BIRD_EGG_COOKED = "Just needs some toast.",
         ROTTENEGG = "How unappetizing.",
-        HAMBAT = "I'm not sure this was the most efficient use of resources.",
+        HAMBAT = "This was perhaps not the most efficient use of resources.",
 
         TRAP_TEETH = "It's covered with a thin film of canine digestive fluid.",
         TRAP_TEETH_MAXWELL = "A crude attempt at tricking me.",
@@ -932,7 +932,7 @@ return
         BLOWDART_FIRE = "Improvised inflammatory device.",
         BLOWDART_SLEEP = "Improvised tranquilizer device.",
         BLOWDART_PIPE = "Improvised missile device.",
-        SPIDERHAT = "Psionic control can be exerted over spiders with this. Excluding the boy, of course.",
+        SPIDERHAT = "Psionic control to exert over spiders. Excluding the boy, of course.",
         EARMUFFHAT = "Only the most insulating part was used.",
         WETGOOP = "Oh no. No, no, no. This won't do at all.",
         WHIP = "An instrument for developing pain compliance.",
@@ -962,7 +962,7 @@ return
         RABBITHOLE = 
         {
             GENERIC = "It looks like a small animal's burrow.",
-            SPRING = "I hope the small animal is still all right down there!",
+            SPRING = "I hope the Lagomorph is all right down there!",
         },
         FIREFLIES = {
             GENERIC = "They disperse when I approach.",
@@ -985,7 +985,7 @@ return
         CUTREEDS = "Some rush cuttings.",
         PEROGIES = "A wonderfully bland dumpling.",
         PETALS = "Now it's a delightful handful of potpourri.",
-        PETALS_EVIL = "Interesting, these petals seem to have a mind of their own.",
+        PETALS_EVIL = "Interesting. These petals seem to have a mind of their own.",
         PETRIFIED_TREE = "Should make for an excellent building material.",
         ROCK_PETRIFIED_TREE = "Should make for an excellent building material.",
         ROCK_PETRIFIED_TREE_OLD = "Should make for an excellent building material.",       
@@ -1024,38 +1024,38 @@ return
 
         SKELETON_PLAYER =
         {
-            MALE = "%s's skeleton is a prime example of what happens when not careful with %s.",
-            FEMALE = "%s's skeleton is a prime example of what happens when not careful with %s.",
-            ROBOT = "%s's skeleton is a prime example of what happens when not careful with %s.",
-            DEFAULT = "%s's skeleton is a prime example of what happens when not careful with %s.",
+            MALE = "%s's skeleton is a permanent reminder to be mindful around %s.",
+            FEMALE = "%s's skeleton is a permanent reminder to be mindful around %s.",
+            ROBOT = "%s's skeleton is a permanent reminder to be mindful around %s.",
+            DEFAULT = "%s's skeleton is a permanent reminder to be mindful around %s.",
         },
 
         RED_MUSHROOM =
         {
             GENERIC = "It is a fungus.",
-            PICKED = "It requires hydration before it will fruit again.",
+            PICKED = "It requires hydration before it can fruit again.",
             INGROUND = "It is dormant this time of day.",
         },
         GREEN_MUSHROOM = 
         {
             GENERIC = "It is a fungus.",
-            PICKED = "It requires hydration before it will fruit again.",
+            PICKED = "It requires hydration before it can fruit again.",
             INGROUND = "It is dormant this time of day.",
         },
 
         BLUE_MUSHROOM = 
         {
             GENERIC = "It is a fungus.",
-            PICKED = "It requires hydration before it will fruit again.",
+            PICKED = "It requires hydration before it can fruit again.",
             INGROUND = "It is dormant this time of day.",
         },
 
         RED_CAP = "Red usually indicates poison.",
-        GREEN_CAP = "I believe this one is just food.",
+        GREEN_CAP = "Seems edible, though it may not be totally sane to consume it.",
         BLUE_CAP = "This seems to have medicinal properties",
-        RED_CAP_COOKED = "Chemistry has happened.",
-        GREEN_CAP_COOKED = "Chemistry has happened.",
-        BLUE_CAP_COOKED = "Chemistry has happened.",
+        RED_CAP_COOKED = "Chemistry has altered it.",
+        GREEN_CAP_COOKED = "Chemistry has altered it.",
+        BLUE_CAP_COOKED = "Chemistry has altered it.",
 
         MOOSE_NESTING_GROUND = "I should like to research its mating habits, someday.",
 
@@ -1132,7 +1132,7 @@ return
             CHOPPED = "It has been harvested.",
             BURNING = "The tree is burning.",
             BURNT = "A carbonized tree.",
-            GENERIC = "It appears this species yields both lumber and pliable sprigs. Useful.",
+            GENERIC = "This species yields lumber and pliable sprigs. Useful.",
             DISEASED = "It's afflicted with an agrarian disease beyond my curing.",
         },
         INSPECTSELF = "I'm aging like a fine, intelligent wine, am I not?",
@@ -1156,7 +1156,7 @@ return
         },
         RELIC = 
         {
-            GENERIC = "An artifact of this extinct civilization,",
+            GENERIC = "An artifact of this extinct civilization.",
             BROKEN = "Just broken stone.",
         },
         RUBBLE = "Looks like a job for library paste!",
@@ -1177,7 +1177,7 @@ return
         {
             GENERIC = "It's a semi-intelligent bipedal pig.",
             FOLLOWER = "He seems to have bonded with me.",
-            DEAD = "Don't worry there are plenty more where that came from.",
+            DEAD = "Don't worry, there are plenty more where that came from.",
             WEREPIG = "It's a lycanthropic pig.",
             GUARD = "It appears to be a guardian.",
         },
@@ -1201,7 +1201,7 @@ return
             HELD = "It is captured.",
         },
         BUTTERFLYWINGS = "Wings from a captured butterfly.",
-        BUTTERFLYMUFFIN = "Who knew that butterflies made such nice baked goods?",
+        BUTTERFLYMUFFIN = "Who knew butterflies made such nice baked goods?",
         BUTTER = "Lepidopterous lipids?",
 
         ACORN = "Deciduous seeds encased in a Pericarp.",
@@ -1260,7 +1260,7 @@ return
         TRINKET_6 = "I do hope the automaton is feeling alright.",
         TRINKET_7 = "I think I'll keep this. I know someone who might like it.",
         TRINKET_8 = "It reminds me of my bath tub. I could use a long soak.",
-        TRINKET_9 = "Hmm, don't think I'm missing any buttons at the moment.",
+        TRINKET_9 = "What a coincidence. My cardigan is missing a button!",
         TRINKET_10 = "I don't appreciate the insinuation, dear.",
         TRINKET_11 = "Ah, it's a scale replica of that mischievous robot.",
         TRINKET_12 = "A muscular hydrostat that's been sat near something hygroscopic.",
@@ -1306,7 +1306,7 @@ return
             DEAD = "Considered a delicacy in some countries.",
             GENERIC = "A amphibian tetrapod.",
         },
-        FROGGLEBUNWICH = "Not typically served on a sandwich, but I'll give it a go!",
+        FROGGLEBUNWICH = "It was an interesting choice to serve it as a sandwich.",
         FROGLEGS = "They're still twitching a bit.",
         FROGLEGS_COOKED = "Not unlike a chicken wing.",
         FRUITMEDLEY = "What a nice selection of fruit!",
@@ -1316,9 +1316,10 @@ return
             OPEN = "Concentric rings of teeth for rapid ingestion.",
         },
         WORMHOLE_LIMITED = "It will only last a few trips.",
-        CHESSJUNK1 = "Clockwork junk",
-        CHESSJUNK2 = "Clockwork junk",
-        CHESSJUNK3 = "Clockwork junk",
+
+        CHESSJUNK1 = "The magician's unfinished projects.",
+        CHESSJUNK2 = "The magician's unfinished projects.",
+        CHESSJUNK3 = "The magician's unfinished projects.",
 
         CHESTER = "A motile storage chest.",
         CHESTER_EYEBONE = 
@@ -1432,7 +1433,7 @@ return
         BISHOP_NIGHTMARE = "Such exhilaratingly complex technology.",
         GREENAMULET = "I don't know what that is.", --Reduce cost of crafting
         GREENGEM = "Chromium impurities have colored this gem green.",
-        KNIGHT_NIGHTMARE = "Its nightmare fueled surroundings seem to have corrupted its programming.",
+        KNIGHT_NIGHTMARE = "Its nightmare fueled surroundings have corrupted its programming.",
         MINOTAUR = "Get away, you beast!",    --Monster in labyrinth
         MULTITOOL_AXE_PICKAXE = "Quite functional, it operates as both an axe and a pickaxe.", --Works as axe and pickaxe
         NIGHTMARELIGHT = "The ancients seem to have used nightmare fuel to power everything.",   --Lights that activate during nightmare.
@@ -1525,7 +1526,7 @@ return
     ANNOUNCE_BOOMERANG = "I misjudged the timing of its return.",
     ANNOUNCE_HOUNDS = "Something is approaching.",
 
-    ANNOUNCE_NOSLEEPONFIRE = "Even if I could sleep, those temperatures are highly unsafe.",
+    ANNOUNCE_NOSLEEPONFIRE = "Even if I could sleep, these temperatures are highly unsafe.",
     ANNOUNCE_NODANGERSIESTA = "I can't lie down when I'm in danger!",
     ANNOUNCE_NONIGHTSIESTA = "I can't sleep, no matter where I lie down.",
     ANNOUNCE_NONIGHTSIESTA_CAVE = "I couldn't possibly relax in these caves.",

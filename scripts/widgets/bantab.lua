@@ -327,7 +327,6 @@ function BanTab:MakePlayerList()
     end
 
     local function bannedPlayerRowUpdate(widget, data, index)
-        local y_offset = 15
         if data and not data.empty then 
             widget.index = index
                     
@@ -374,24 +373,23 @@ function BanTab:MakePlayerList()
     end
 
     self.ban_page_scroll_root = self.ban_page:AddChild(Widget("scroll_root"))
-    self.ban_page_scroll_root:SetPosition(-80, 0)
 
     self.ban_page_row_root = self.ban_page:AddChild(Widget("row_root"))
-    self.ban_page_row_root:SetPosition(-80, 0)
 
     self.banned_player_widgets = {}
     for i=1,5 do
         table.insert(self.banned_player_widgets, bannedPlayerRowConstructor(self.blacklist[i] or {empty=true}, i, self.ban_page_row_root))
     end
-    self.player_scroll_list = self.ban_page_scroll_root:AddChild(ScrollableList(self.blacklist, 183, 450, 70, 3, bannedPlayerRowUpdate, self.banned_player_widgets, 40, nil, nil, -15))  
-    self.player_scroll_list:LayOutStaticWidgets(-55)
+    self.player_scroll_list = self.ban_page_scroll_root:AddChild(ScrollableList(self.blacklist, 400, 360, 70, 3, bannedPlayerRowUpdate, self.banned_player_widgets, 80, nil, nil, 55))  
+	self.player_scroll_list:SetPosition(-110, 0)
+    self.player_scroll_list:LayOutStaticWidgets(-10)
+    
     if self.blacklist and #self.blacklist < self.player_scroll_list.widgets_per_view then
         while #self.blacklist < self.player_scroll_list.widgets_per_view do
             table.insert(self.blacklist, {empty=true})
         end
     end
     self.player_scroll_list:SetList(self.blacklist)
-    self.player_scroll_list:SetPosition(-152, 0)
 
     if self.clear_button ~= nil then
         self.ban_page_row_root:SetFocusChangeDir(MOVE_RIGHT, function() return self.clear_button:IsVisible() and self.clear_button:IsEnabled() and self.clear_button or nil end)

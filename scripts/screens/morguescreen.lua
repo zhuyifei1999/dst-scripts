@@ -338,8 +338,28 @@ function MorgueScreen:EncounterWidgetConstructor(data, parent, obit_button)
     group.CLEAR._userid = data.userid
 
 
-
-    group.focus_forward = group.NET_ID
+	--MAINTAIN COLUMN FOCUS IN THE SCROLLLLLIST
+	self.column_focus = 1
+	local screen = self
+	local old_netid_focus = group.NET_ID.OnGainFocus
+	group.NET_ID.OnGainFocus = function(self)
+		old_netid_focus(self)
+		screen.column_focus = 1
+	end
+	
+	local old_clear_focus = group.CLEAR.OnGainFocus
+	group.CLEAR.OnGainFocus = function(self)
+		old_clear_focus(self)
+		screen.column_focus = 2
+	end
+	
+	group.SetFocus = function()
+        if screen.column_focus == 1 then
+			group.NET_ID:SetFocus()
+		else
+			group.CLEAR:SetFocus()
+		end
+    end
 
     group.NET_ID:SetFocusChangeDir(MOVE_LEFT, obit_button)
     group.NET_ID:SetFocusChangeDir(MOVE_RIGHT, group.CLEAR)
@@ -590,7 +610,7 @@ function MorgueScreen:BuildEncountersTab()
     for i = 1, num_rows do
         table.insert(self.encounter_widgets, self:EncounterWidgetConstructor(self.player_history[i] or {}, self.encountersrowsroot, self.obituary_button))
     end
-
+    
     self.encounters_scroll_list = self.encounterslistroot:AddChild(ScrollableList(self.player_history, 900, row_height * num_rows, row_height - 1, 1, encounter_widget_update, self.encounter_widgets, nil, nil, nil, 30))
     self.encounters_scroll_list:LayOutStaticWidgets(-25)
     self.encounters_scroll_list:SetPosition(-95, -35)

@@ -52,7 +52,7 @@ return {
         },
         GIVETOPLAYER = 
         {
-        	FULL = "They're is not strong enough to carry more!",
+        	FULL = "They're not strong enough to carry more!",
             DEAD = "They'll have better things in Valhalla.",
             SLEEPING = "Such sweet slumber... Maybe later.",
             BUSY = "I'll try once more when they're free.",
@@ -189,7 +189,7 @@ return {
             ATTACKER = "Your honor wavers, %s.",
             MURDERER = "%s! Let us settle this in battle!",
             REVIVER = "%s protects our people.",
-            GHOST = "The fate of the Draugr is not yours to take, %s. We quest for a heart!",
+            GHOST = "The fate of the Draugr is not yours, %s. A heart!",
         },
         WOLFGANG = 
         {
@@ -213,21 +213,21 @@ return {
             ATTACKER = "If %s is looking for trouble, I'll give it to them!",
             MURDERER = "We shall see whose steel is stronger, %s!",
             REVIVER = "%s is brimming with honor.",
-            GHOST = "Metal warrior, it is not your time. I shall find you a heart.",
+            GHOST = "Metal warrior, it is not your time. A heart!",
         },
         WILLOW = 
         {
             GENERIC = "Greetings %s, the Inflammable!",
-            ATTACKER = "Should it come to blows, I wish only that the best maiden triumph.",
+            ATTACKER = "Should it come to blows, I wish only the best maiden triumph.",
             MURDERER = "My spear was forged in passionate fires, %s!",
             REVIVER = "%s has a noble heart.",
-            GHOST = "With a heart I shall wrench %s back from the jaws of death!",
+            GHOST = "A heart shall wrench %s back from the jaws of death!",
         },
         WENDY = 
         {
             GENERIC = "Spirits be with you, %s!",
             ATTACKER = "Do not test me, fair maiden!",
-            MURDERER = "%s, your body is weak but your heart is strong! Let us fight!",
+            MURDERER = "%s, your body is weak but your heart is strong! Fight!",
             REVIVER = "%s is channeling the spirit of Eir.",
             GHOST = "%s's restless spirit could be revived with a heart.",
         },
@@ -237,7 +237,7 @@ return {
             ATTACKER = "I could fell you like so many trees, %s.",
             MURDERER = "By Yggdrasil, I will cut you down!",
             REVIVER = "%s's heart is as mighty as his beard.",
-            GHOST = "The worldtree still watches over you, %s. I shall retrieve a heart.",
+            GHOST = "The worldtree still watches over you, %s.",
             BEAVER = "I did not know %s possessed such power!",
 			BEAVERGHOST = "You went out in a blaze of glory, %s.",
         },
@@ -255,7 +255,7 @@ return {
             ATTACKER = "Do you challenge me, mime?",
             MURDERER = "May we meet again in Valhalla!",
             REVIVER = "%s has Hoenir's blessing.",
-            GHOST = "Meditate on Hoenir's blessings, %s. I'll retrieve your heart.",
+            GHOST = "Meditate on Hoenir's blessings, %s. I'll find a heart.",
         },
         WEBBER = 
         {
@@ -305,7 +305,7 @@ return {
         	EMPTY = "That wasn't very respectful of me.",
         },
 
-		WEBBERSKULL = "He fought with boldness, but his burial will not be that of a viking.",
+		WEBBERSKULL = "He fought boldly, but his burial will not be that of a Viking.",
 		WORMLIGHT = "Glowing treasure, I can't resist!",
         WORMLIGHT_LESSER = "Glow! Glow with all your might!",
 		WORM =
@@ -322,7 +322,7 @@ return {
 			ABOVEGROUND = "He digs without abandon.",
 		},
 		MOLEHILL = "Something lives down there.",
-		MOLEHAT = "I use every part of the animal.",
+		MOLEHAT = "It's best to use every part of the animal.",
 
 		EEL = "Delicious slimy snake fish.",
 		EEL_COOKED = "Hot eel!",
@@ -334,7 +334,7 @@ return {
 		THULECITE_PIECES = "Looks like shiny popped corn.",
 		POND_ALGAE = "An ancient flora.",
 		GREENSTAFF = "Twirly green power.",
-		POTTEDFERN = "What am I supposed to do with this?",
+		POTTEDFERN = "What are you meant to do with such a thing?",
 
 		LIGHTER = "It lights the fires of mine heart!",
 		
@@ -348,7 +348,7 @@ return {
 			HAUNTED_GROUND = "What is it waiting for?!",
 		},
 
-		BOOK_BIRDS = "I will rule the skies!",
+		BOOK_BIRDS = "To rule the skies!",
 		BOOK_TENTACLES = "Knowledge to bring me power!",
 		BOOK_GARDENING = "But can it tend the garden of mine soul?",
 		BOOK_SLEEP = "Where's the drama? The suspense?",
@@ -381,7 +381,7 @@ return {
 		NIGHTSTICK = "A weapon worthy of Thor.",
 		GREENGEM = "An emerald stone.",
 		RELIC = "Old bits of a dwelling.",
-		RUINS_RUBBLE = "I'm quite crafty, I could repair this.",
+		RUINS_RUBBLE = "I'm quite crafty, I could repair that.",
 		MULTITOOL_AXE_PICKAXE = "A warrior tool!",
 		ORANGESTAFF = "The staff of magic movement.",
 		YELLOWAMULET = "A star captured in an amulet.",
@@ -414,7 +414,7 @@ return {
         ANCIENT_STATUE = "Treasure with mysterious aura.",
 
         LICHEN = "Sky blue nonsense plant.",
-		CUTLICHEN = "I picked it. But I won't eat it.",
+		CUTLICHEN = "Even if I ate plants, I wouldn't eat THAT plant.",
 
 		CAVE_BANANA = "Monkey food.",
 		SCORCHED_SKELETON = "Rest easy, spirit. Your fight is over.",
@@ -471,10 +471,10 @@ return {
         SPORE_SMALL_INV = "I'll direct this light where I please.",
 		RABBITHOUSE=
 		{
-			GENERIC = "What am I to do with a carrot that big?",
+			GENERIC = "What's to be done with a carrot that big?",
 			BURNT = "Good riddance giant carrot.",
 		},
-		SLURTLE="You are angel. Of nasty.",
+		SLURTLE="You are an angel. Of nasty.",
 		SLURTLE_SHELLPIECES="They're smashed up good.",
 		SLURTLEHAT = "A fine battle helm!",
 		SLURTLEHOLE = "Not where I'd choose to hang my helm.",
@@ -564,9 +564,9 @@ return {
 		BEARDHAIR = "Fur of the crazies.",
 		BEDROLL_STRAW = "A tool for valiant naps.",
 		BEARGER = "Beast or berserker?",
-		BEARGERVEST = "I am berserker!",
+		BEARGERVEST = "BERSERKER!",
 		ICEPACK = "A backpack of the beast.",
-		BEARGER_FUR = "It fought bravely, but I have claimed its hide.",
+		BEARGER_FUR = "It fought bravely, but its hide is forfeit.",
 		FURTUFT = "Fur from a large beastie.", 	
 		BEE =
 		{
@@ -594,7 +594,7 @@ return {
             RIDER = "With stalwart beast at my side, we ride tonight!",
             PUDGY = "My mouth's watering just looking at it...",
 		},
-		BEEFALOHAT = "This is going to look good on me, I can tell.",
+		BEEFALOHAT = "That would suit me.",
 		BEEFALOWOOL = "I do love woolly things.",
 		BEEHAT = "A bee helm, of course.",
 		BEEHIVE = "Always buzzing, always plotting.",
@@ -606,7 +606,7 @@ return {
         BERRIES_JUICY_COOKED = "You're not meat.",
 		BERRYBUSH =
 		{
-			BARREN = "Should I put some turds on it?",
+			BARREN = "Should we put some turds on it?",
 			WITHERED = "It's too hot to grow.",
 			GENERIC = "A fruit bush.",
 			PICKED = "The fruits have been snatched.",
@@ -629,7 +629,7 @@ return {
 			HUNGRY = "What do you want little friend?",
 			STARVING = "He wishes to feast!",
 			DEAD = "You can feast in Valhalla now, friend.",
-			SKELETON = "...Maybe I should clean that up.",
+			SKELETON = "The cage is soiled.",
 		},
 		BIRDTRAP = "I'm a cunning raven catcher!",
 		BIRD_EGG = "Eggy.",
@@ -643,7 +643,7 @@ return {
 		BLUEPRINT = "Oh, a map! No, wait. That's wrong.",
 		BELL_BLUEPRINT = "Oh, a map! No, wait. That's wrong.",
 		BLUE_CAP = "Hmm, a blue one.",
-		BLUE_CAP_COOKED = "I still don't want to eat it.",
+		BLUE_CAP_COOKED = "I have no desire to eat it.",
 		BLUE_MUSHROOM =
 		{
 			GENERIC = "It's mold, really.",
@@ -702,7 +702,7 @@ return {
 		COONTAIL = "It is the tail of cute meat.",
 		COMPASS =
 		{
-			GENERIC= "I cannot glean reading.",
+			GENERIC= "I cannot glean a reading.",
 			N = "North",
 			S = "South",
 			E = "East",
@@ -752,7 +752,7 @@ return {
 		CUTSTONE = "Solid stone!",
 		DEADLYFEAST = "A most potent dish.",
 		DEERCLOPS = "Rays will shine through my spear and poke out your eyeball!",
-		DEERCLOPS_EYEBALL = "Hmm, shall I eat it?",
+		DEERCLOPS_EYEBALL = "Delicious! I should like to share it with my new allies.",
 		EYEBRELLAHAT = "Don't get rain in your eye!",
 		DEPLETED_GRASS =
 		{
@@ -841,7 +841,7 @@ return {
 		},
 		ACORN = "There's a tree hiding within.",
         ACORN_SAPLING = "Grow strong young twigs!",
-		ACORN_COOKED = "I cooked the young tree.",
+		ACORN_COOKED = "The young tree has been cooked.",
 		BIRCHNUTDRAKE = "A young tree warrior!",
 		EVERGREEN =
 		{
@@ -908,7 +908,8 @@ return {
 		FISHTACOS = "Fish in a blanket!",
 		FISH_COOKED = "Joy!",
 		FLINT = "Vital for spear construction.",
-		FLOWER = {
+		FLOWER =
+		{
             GENERIC = "A flower from Freya.",
             ROSE = "Were that I smelled half as sweet.",
         },
@@ -933,7 +934,7 @@ return {
 		GOLDENPICKAXE = "Gold for gold.",
 		GOLDENPITCHFORK = "A weapon of very wealthy farmers.",
 		GOLDENSHOVEL = "Digging like a king!",
-		GOLDNUGGET = "I am pleased with this gold piece.",
+		GOLDNUGGET = "Such a pleasing gold piece.",
 		GRASSGEKKO = 
 		{
 			GENERIC = "What flaxen scales.",	
@@ -945,7 +946,7 @@ return {
 			WITHERED = "The heat has defeated this plant.",
 			BURNING = "Loge looks upon you!",
 			GENERIC = "That could be useful.",
-			PICKED = "I patiently await the next harvest.",
+			PICKED = "I eagerly await the next harvest.",
 			DISEASED = "The disease festers within its soul.",
 		},
 		GREEN_CAP = "Terrible!",
@@ -1015,7 +1016,7 @@ return {
 		KOALEFANT_SUMMER = "Dear creature, I am going to eat you.",
 		KOALEFANT_WINTER = "Poor unsuspecting meat beast.",
 		KRAMPUS = "You don't scare me goat!",
-		KRAMPUS_SACK = "I can fit everything in here!",
+		KRAMPUS_SACK = "The sack itself is the present.",
 		LEIF = "That's an ancient woodland being.",
 		LEIF_SPARSE = "That's an ancient woodland being.",
 		LIGHTNING_ROD =
@@ -1091,7 +1092,7 @@ return {
 			BURNT = "I won't miss it.",
 		},
 		MINERHAT = "A lighted helm! For the darkness.",
-		MONKEY = "I don't trust him.",
+		MONKEY = "I don't trust you.",
 		MONKEYBARREL = "What's in the barrel?",
 		MONSTERLASAGNA = "Monster casserole.",
 		FLOWERSALAD = "Leaves are for animals.",
@@ -1137,7 +1138,7 @@ return {
 		PETRIFIED_TREE = "My mere presence struck terror into their tree-hearts!",
 		ROCK_PETRIFIED_TREE = "My mere presence struck terror into their tree-hearts!",
 		ROCK_PETRIFIED_TREE_OLD = "My mere presence struck terror into their tree-hearts!",
-		PICKAXE = "I can use it to get precious spear and helm materials.",
+		PICKAXE = "A trusty tool for securing spear and helm materials.",
 		PIGGYBACK = "The pig died with honor and gave to me this pack.",
 
 		SHADOWDIGGER = "I hope this serf is being treated with dignity.",
@@ -1145,7 +1146,7 @@ return {
 		PIGHEAD = 
 		{	
 			GENERIC = "This is savagery.",
-			BURNT = "Normally, I like a good roast, but this is not right.",
+			BURNT = "Normally I like a good roast, but this is not right.",
 		},
 		PIGHOUSE =
 		{
@@ -1207,13 +1208,13 @@ return {
 			GENERIC = "Foretells the coming of rain.",
 			BURNT = "Its prophecy days are done.",
 		},
-		RAINCOAT = "Armour for rain.",
+		RAINCOAT = "Armor for rain.",
 		RAINHAT = "We will fight in the rain.",
 		RATATOUILLE = "A pile of vegetables. No thanks.",
 		RAZOR = "A small blade, but a blade nonetheless.",
 		REDGEM = "It is hot to the touch.",
 		RED_CAP = "Umami or not, I don't want it.",
-		RED_CAP_COOKED = "I won't eat it, but it was fun to put in the fire.",
+		RED_CAP_COOKED = "I don't want it, but I'm glad it survived trial by fire.",
 		RED_MUSHROOM =
 		{
 			GENERIC = "At least it's got a nice color.",
@@ -1290,7 +1291,7 @@ return {
         ROOK = "Chaaaarge!",
 		ROPE = "Strong enough to bind the sails of my longship.",
 		ROTTENEGG = "Ruined for eating, but primed for battle.",
-        SADDLE_BASIC = "Now I must find a faithful steed.",
+        SADDLE_BASIC = "Now to find a faithful steed.",
         SADDLE_WAR = "I ride to victory or death!",
         SADDLEHORN = "Mighty steeds can be unsaddled with this.",
         BRUSH = "Time for hair and makeup!",
@@ -1303,7 +1304,7 @@ return {
 		{
 			BURNING = "Nooo! My spears!",
 			WITHERED = "It has been shriveled by the heat.",
-			GENERIC = "I will make it into a spear.",
+			GENERIC = "It longs to be a spear.",
 			PICKED = "The small tree has been slain!",
 			DISEASED = "The disease festers within its soul.",
 		},
@@ -1312,7 +1313,7 @@ return {
 			BURNING = "The wood's ablaze!",
 			BURNT = "Loge took that one.",
 			CHOPPED = "Chopped by the warrior in the woods!",
-			GENERIC = "With its many resources, I will triumph.",			
+			GENERIC = "Triumph will accompany its many resources.",			
 			DISEASED = "The disease festers within its soul.",
 		},
 		TWIGGY_NUT_SAPLING = "Grow tall and strong.",
@@ -1416,7 +1417,7 @@ return {
 		TELEPORTATO_CRANK = "A sturdy crank.",
 		TELEPORTATO_POTATO = "No decency. It's not even metal meat.",
 		TELEPORTATO_RING = "It appears similar to the Bifrost.",
-		TELESTAFF = "I ride through the air and the sea!",
+		TELESTAFF = "Ride, through the air and the sea!",
 		TENT = 
 		{
 			GENERIC = "Sleep this night, and prepare for battle on the morrow.",
@@ -1457,14 +1458,14 @@ return {
 		TRINKET_8 = "It would make an okay weapon in a pinch.",
 		TRINKET_9 = "No decent armor can be made with these.",
 		TRINKET_10 = "A token of victory.",
-		TRINKET_11 = "A warrior encased in armor. I've been told its name is \"Hal.\"",
-		TRINKET_12 = "Remnants of the librarian's summons? Truly she is a fierce woman.",
+		TRINKET_11 = "A warrior encased in armor. I'm told its name is \"Hal.\"",
+		TRINKET_12 = "Remnants of the librarian's summons? Truly a fierce woman.",
 		TRINKET_13 = "A small, peculiar woman.",
         TRINKET_14 = "Tea is a luxury that warriors cannot afford.",
         TRINKET_15 = "A noble fighter.",
         TRINKET_16 = "A noble fighter.",
         TRINKET_17 = "A poor weapon.",
-        TRINKET_18 = "I must pass my deep knowledge of battle strategy to the young one.",
+        TRINKET_18 = "I must mentor the young one in battle strategy.",
         TRINKET_19 = "A useless toy.",
         TRINKET_20 = "Finally, a safe weapon with which to spar with my new allies.",
         TRINKET_21 = "Cooking utensils do not interest me.",
@@ -1472,7 +1473,7 @@ return {
         TRINKET_23 = "Not as useful as a battle horn.",
         TRINKET_24 = "Grant me luck on the battlefield!",
         TRINKET_25 = "Perhaps the stench will drive the enemy away.",
-		TRINKET_26 = "My allies must appreciate the rigorous survival training I've bestowed.",
+		TRINKET_26 = "My allies will appreciate my rigorous survival training.",
 		TRINKET_27 = "This weak, flimsy wire reminds me... I must toughen up the magician.",
 		TRUNKVEST_SUMMER = "It will not suffice in the frozen wastes.",
 		TRUNKVEST_WINTER = "The warm pelt of a bested creature. A fine garment.",
@@ -1485,7 +1486,7 @@ return {
 		STEELWOOL = "It could easily best regular wool in combat.",
 		SPAT = "How much meat is hiding under there?",
 		UMBRELLA = "Rain protection made from the trophy of a hunt.",
-		GRASS_UMBRELLA = "I dislike flowers, but I dislike wet armor more.",
+		GRASS_UMBRELLA = "Flowers are not befitting a warrior, but wet armor is even worse.",
 		UNIMPLEMENTED = "A mysterious relic, sure to contain great power.",
 		WAFFLES = "Waffles are no way to prepare for battle!",
 		WALL_HAY = 
@@ -1549,7 +1550,7 @@ return {
         LIFEINJECTOR = "This will return me to top form.",
         MOONROCKNUGGET = "A gift from Mani.",
         ROCK_MOON = "A gift from Mani.",
-        GOLDENMACHETE = "I shall swing you with pride.",
+        GOLDENMACHETE = "You shall be swung with pride.",
         MACHETE = "A fine length of blade.",
         MOWER = "A fine length of blade.",
         OBSIDIANMACHETE = "A tool for cutting. A tool for burning.",

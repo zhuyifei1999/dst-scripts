@@ -143,6 +143,12 @@ function PlayerProx:Schedule()
     self.task = self.inst:DoPeriodicTask(self.period, self.targetmode, nil, self)
 end
 
+function PlayerProx:ForceUpdate()
+    if self.task ~= nil and self.targetmode ~= nil then
+        self.targetmode(self.inst, self)
+    end
+end
+
 function PlayerProx:Stop()
     if self.task ~= nil then
         self.task:Cancel()

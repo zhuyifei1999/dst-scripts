@@ -1434,7 +1434,7 @@ return {
 		TRINKET_4 = "Ha ha! Is tiny man!",
 		TRINKET_5 = "What is do?",
 		TRINKET_6 = "Robot bits.",
-		TRINKET_7 = "You hit enemies with ball end?",
+		TRINKET_7 = "Tiny torch-lady can start firepit with toy! Very impressive.",
 		TRINKET_8 = "Hardened, like Wolfgang.",
 		TRINKET_9 = "Strong brain-lady maybe need for repair cardigans.",
 		TRINKET_10 = "Is pearly chompers!",

@@ -64,14 +64,14 @@ return {
         {
         	FULL = "They're already too burdened by this world...",
             DEAD = "They have no need of material possessions where they've gone.",
-            SLEEPING = "They looks so peaceful... I'll come back later.",
+            SLEEPING = "They look so peaceful... I'll come back later.",
             BUSY = "Oh... I can tell you're busy...",
     	},
     	GIVEALLTOPLAYER = 
         {
         	FULL = "They're already too burdened by this world...",
             DEAD = "They have no need of material possessions where they've gone.",
-            SLEEPING = "They looks so peaceful... I'll come back later.",
+            SLEEPING = "They look so peaceful... I'll come back later.",
             BUSY = "Oh... I can tell you're busy...",
     	},
     	TEACH =
