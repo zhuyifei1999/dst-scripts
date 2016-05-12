@@ -452,8 +452,8 @@ local function OnRiderChanged(inst, data)
         inst._bucktask = nil
     end
 
-    if data.oldrider ~= nil then
-    end
+    --if data.oldrider ~= nil then
+    --end
 
     if data.newrider ~= nil then
         if inst.components.sleeper ~= nil then
@@ -555,6 +555,8 @@ local function beefalo()
     if not TheWorld.ismastersim then
         return inst
     end
+
+    inst:AddComponent("bloomer")
 
     inst:AddComponent("beard")
     -- assume the beefalo has already grown its hair

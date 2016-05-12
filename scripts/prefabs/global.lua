@@ -140,6 +140,7 @@ local assets =
 	Asset("SHADER", "shaders/splat.ksh"),
 	Asset("SHADER", "shaders/texture.ksh"),
 	Asset("SHADER", "shaders/ui.ksh"),
+	Asset("SHADER", "shaders/ui_yuv.ksh"),
 	Asset("SHADER", "shaders/ui_anim.ksh"),
     Asset("SHADER", "shaders/combine_colour_cubes.ksh"),
 	Asset("SHADER", "shaders/postprocess.ksh"),

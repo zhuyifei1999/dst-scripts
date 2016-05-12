@@ -95,6 +95,36 @@ local function ClientExternalSpeedMultiplier(self)
     return self.inst.player_classified ~= nil and self.inst.player_classified.externalspeedmultiplier:value() or self.externalspeedmultiplier
 end
 
+local function ServerGetSpeedMultiplier(self)
+    local mult = self:ExternalSpeedMultiplier()
+    if self.inst.components.inventory ~= nil --[[and
+        (self.inst.components.rider == nil or not self.inst.components.rider:IsRiding())]] then
+        for k, v in pairs(self.inst.components.inventory.equipslots) do
+            if v.components.equippable ~= nil then
+                mult = mult * v.components.equippable:GetWalkSpeedMult()
+            end
+        end
+    end
+    return mult * self.groundspeedmultiplier * self.throttle
+end
+
+local function ClientGetSpeedMultiplier(self)
+    local mult = self:ExternalSpeedMultiplier()
+    local inventory = self.inst.replica.inventory
+    if inventory ~= nil then
+        --local rider = self.inst.replica.rider
+        --if rider == nil or not rider:IsRiding() then
+            for k, v in pairs(inventory:GetEquips()) do
+                local inventoryitem = v.replica.inventoryitem
+                if inventoryitem ~= nil then
+                    mult = mult * inventoryitem:GetWalkSpeedMult()
+                end
+            end
+        --end
+    end
+    return mult * self.groundspeedmultiplier * self.throttle
+end
+
 local LocoMotor = Class(function(self, inst)
     self.inst = inst
     self.ismastersim = TheWorld.ismastersim
@@ -104,10 +134,12 @@ local LocoMotor = Class(function(self, inst)
         self.RunSpeed = ServerRunSpeed
         self.FasterOnRoad = ServerFasterOnRoad
         self.ExternalSpeedMultiplier = ServerExternalSpeedMutliplier
+        self.GetSpeedMultiplier = ServerGetSpeedMultiplier
     else
         self.RunSpeed = ClientRunSpeed
         self.FasterOnRoad = ClientFasterOnRoad
         self.ExternalSpeedMultiplier = ClientExternalSpeedMultiplier
+        self.GetSpeedMultiplier = ClientGetSpeedMultiplier
         removesetter(self, "runspeed")
         removesetter(self, "externalspeedmultiplier")
     end
@@ -261,18 +293,6 @@ end
 
 function LocoMotor:GetRunSpeed()
     return self:RunSpeed() * self:GetSpeedMultiplier()
-end
-
-function LocoMotor:GetSpeedMultiplier()
-    local mult = self:ExternalSpeedMultiplier()
-    if self.inst.replica.inventory ~= nil then
-        for k, v in pairs(self.inst.replica.inventory:GetEquips()) do
-            if v.replica.inventoryitem ~= nil then
-                mult = mult * v.replica.inventoryitem:GetWalkSpeedMult()
-            end
-        end
-    end
-    return mult * self.groundspeedmultiplier * self.throttle
 end
 
 function LocoMotor:UpdateGroundSpeedMultiplier()

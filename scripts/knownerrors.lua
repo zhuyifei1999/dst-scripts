@@ -3,6 +3,9 @@ ERRORS = {
     CONFIG_DIR_WRITE_PERMISSION = {
         message = "Unable to write to config directory. Please make sure you have permissions for your Klei save folder.",
         url = "http://support.kleientertainment.com/customer/portal/articles/2409757",
+    },
+    CUSTOM_COMMANDS_ERROR = {
+        message = "Error loading customcommands.lua.",
     }
 }
 

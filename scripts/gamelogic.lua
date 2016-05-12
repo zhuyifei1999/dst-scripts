@@ -482,26 +482,44 @@ local function DrawDebugGraph(graph)
 	end 
 end
 
+--Called when clients receive loading state notification
+--so that clients can properly handle resets differently
+--from Wilderness or console command despawning.
+function DeactivateWorld()
+    if TheWorld ~= nil and not TheWorld.isdeactivated then
+        TheWorld.isdeactivated = true
+        TheMixer:PopMix("normal")
+        SetPause(true)
+    end
+end
+
 local function ActivateWorld()
-    SetPause(false)
-    TheMixer:SetLevel("master", 1)
-    TheMixer:PushMix("normal")
+    if TheWorld ~= nil and not TheWorld.isdeactivated then
+        SetPause(false)
+        TheMixer:SetLevel("master", 1)
+        TheMixer:PushMix("normal")
+    end
 end
 
 local function OnPlayerActivated(world)
-	start_game_time = GetTime()
-    if ThePlayer ~= nil and
-        ThePlayer.player_classified ~= nil and
-        not ThePlayer.player_classified.isfadein:value() then
-        --Stay faded out
-        ActivateWorld()
-    else
-        TheFrontEnd:Fade(FADE_IN, 1, ActivateWorld, nil, nil, "white")
+    if not world.isdeactivated then
+        start_game_time = GetTime()
+        if ThePlayer ~= nil and
+            ThePlayer.player_classified ~= nil and
+            not ThePlayer.player_classified.isfadein:value() then
+            --Stay faded out
+            ActivateWorld()
+        else
+            TheFrontEnd:Fade(FADE_IN, 1, ActivateWorld, nil, nil, "white")
+        end
     end
 end
 
 local function SendResumeRequestToServer(world, delay)
-    if delay > 0 then
+    if world.isdeactivated or world.net == nil then
+        --world reset/regen/disconnect triggered
+        return
+    elseif delay > 0 then
         world:DoTaskInTime(0, SendResumeRequestToServer, delay - 1)
     elseif not TheNet:IsDedicated() and ThePlayer == nil then
         TheNet:SendResumeRequestToServer(TheNet:GetUserID())
@@ -514,11 +532,13 @@ local function SendResumeRequestToServer(world, delay)
 end
 
 local function OnPlayerDeactivated(world, player)
-    TheFrontEnd:ClearScreens()
-    TheFrontEnd:SetFadeLevel(1)
-    TheMixer:PopMix("normal")
-    SetPause(true)
-    SendResumeRequestToServer(world, 2)
+    if not world.isdeactivated then
+        TheFrontEnd:ClearScreens()
+        TheFrontEnd:SetFadeLevel(1)
+        TheMixer:PopMix("normal")
+        SetPause(true)
+        SendResumeRequestToServer(world, 2)
+    end
 end
 
 --OK, we have our savedata and a profile. Instatiate everything and start the game!

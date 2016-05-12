@@ -445,6 +445,36 @@ function PlayerProfile:IsWathgrithrFontEnabled()
 	end
 end
 
+
+
+
+function PlayerProfile:SetIntroCineEnabled(enabled)
+ 	if USE_SETTINGS_FILE then
+		TheSim:SetSetting("misc", "intro_cine", tostring(enabled)) 
+	else
+		self:SetValue("intro_cine", enabled)
+		self.dirty = true
+	end
+end
+
+function PlayerProfile:IsIntroCineEnabled()
+ 	if USE_SETTINGS_FILE then
+ 		if TheSim:GetSetting("misc", "intro_cine") ~= nil then
+			return TheSim:GetSetting("misc", "intro_cine") == "true"
+		else
+			return true -- Default to true this value hasn't been created yet
+		end
+	else
+		if self:GetValue("intro_cine") ~= nil then
+			return self:GetValue("intro_cine")
+		else
+			return true -- Default to true this value hasn't been created yet
+		end
+	end
+end
+
+
+
 function PlayerProfile:SetHaveWarnedDifficultyRoG()
 	if USE_SETTINGS_FILE then
 		TheSim:SetSetting("misc", "warneddifficultyrog", "true") 
