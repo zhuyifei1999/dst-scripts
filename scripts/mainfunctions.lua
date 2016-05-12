@@ -787,9 +787,19 @@ function Start()
     TheFrontEnd = FrontEnd()
     require("gamelogic")
 
-    CheckControllers()
-
     known_assert(TheSim:CanWriteConfigurationDirectory(), "CONFIG_DIR_WRITE_PERMISSION")
+
+    --load the user's custom commands into the game
+    TheSim:GetPersistentString("../customcommands.lua",
+        function(load_success, str)
+            if load_success then
+                local fn = loadstring(str)
+                known_assert(fn ~= nil, "CUSTOM_COMMANDS_ERROR")
+                xpcall(fn, debug.traceback)
+            end
+        end)
+
+    CheckControllers()
 end
 
 --------------------------
@@ -995,7 +1005,7 @@ function DisplayError(error)
 
             if known_error_key == nil or ERRORS[known_error_key] == nil then
                 table.insert(buttons, {text=STRINGS.UI.MAINSCREEN.ISSUE, nopop=true, cb = function() VisitURL("http://forums.kleientertainment.com/klei-bug-tracker/dont-starve-together/") end })
-            else
+            elseif known_error.url ~= nil then
                 table.insert(buttons, {text=STRINGS.UI.MAINSCREEN.GETHELP, nopop=true, cb = function() VisitURL(known_error.url) end })
             end
         end
@@ -1320,27 +1330,34 @@ function ExecuteConsoleCommand(fnstr, guid, x, z)
     TheInput.overridepos = nil
 end
 
-LoadingStates = { 
-        None = 0,
-        Loading = 1,
-        Generating = 2,
-        DoneGenerating = 3,
-        DoneLoading = 4
-    }
+LoadingStates =
+{
+    None = 0,
+    Loading = 1,
+    Generating = 2,
+    DoneGenerating = 3,
+    DoneLoading = 4,
+}
 
-function NotifyLoadingState( loading_state )
+function NotifyLoadingState(loading_state)
     if TheNet:GetIsClient() then
+        --Let gamelogic know not to handle player deactivation messages
+        DeactivateWorld()
+        --
         if loading_state == LoadingStates.Loading then
             ShowLoading()
             TheFrontEnd:Fade(FADE_OUT, 1)
         elseif loading_state == LoadingStates.Generating then
-            local inst = CreateEntity()
-            inst:DoTaskInTime(0.15, function(inst) TheFrontEnd:PopScreen() TheFrontEnd:PushScreen(WorldGenScreen(nil, nil, nil)) inst.entity:Retire() end)
+            CreateEntity():DoTaskInTime(0.15, function(inst)
+                TheFrontEnd:PopScreen()
+                TheFrontEnd:PushScreen(WorldGenScreen(nil, nil, nil))
+                inst.entity:Retire()
+            end)
         elseif loading_state == LoadingStates.DoneGenerating then
             TheFrontEnd:PopScreen()
         end
     elseif TheNet:GetIsServer() then
-        TheNet:NotifyLoadingState( loading_state )
+        TheNet:NotifyLoadingState(loading_state)
     end
 end
 

@@ -28,8 +28,13 @@ local Combat = Class(function(self, inst)
     self.areahitrange = nil
     self.areahitdamagepercent = nil
     self.defaultdamage = 0
-    self.playerdamagepercent = 1
-    self.pvp_damagemod = 1
+    --
+    --use nil for defaults
+    --self.playerdamagepercent = 1 --modifier for NPC dmg on players, only works with NO WEAPON
+    --self.pvp_damagemod = 1
+    --self.damagemultiplier = 1
+    --self.damagebonus = 0
+    --
     self.min_attack_period = 4
     self.onhitfn = nil
     self.onhitotherfn = nil
@@ -619,41 +624,45 @@ function Combat:CalcDamage(target, weapon, multiplier)
     if target:HasTag("alwaysblock") then
         return 0
     end
-    multiplier = (multiplier or 1) * (self.damagemultiplier or 1)
-    local bonus = self.damagebonus or 0
+
+    local basedamage
+    local basemultiplier = self.damagemultiplier
+    local bonus = self.damagebonus --not affected by multipliers
+    local playermultiplier = target ~= nil and target:HasTag("player")
+    local pvpmultiplier = playermultiplier and self.inst:HasTag("player") and self.pvp_damagemod or 1
+
+    --NOTE: playermultiplier is for damage towards players
+    --      generally only applies for NPCs attacking players
+
     if weapon ~= nil then
-        local weapondamage = weapon.components.weapon.damage or 0
+        --No playermultiplier when using weapons
+        basedamage = weapon.components.weapon.damage or 0
+        playermultiplier = 1
+    else
+        basedamage = self.defaultdamage
+        playermultiplier = playermultiplier and self.playerdamagepercent or 1
 
-        return target ~= nil
-            and target:HasTag("player")
-            and self.inst:HasTag("player")
-            and weapondamage * multiplier * self.pvp_damagemod + bonus
-            or weapondamage * multiplier + bonus
+        if self.inst.components.rider ~= nil and self.inst.components.rider:IsRiding() then
+            local mount = self.inst.components.rider:GetMount()
+            if mount ~= nil and mount.components.combat ~= nil then
+                basedamage = mount.components.combat.defaultdamage
+                basemultiplier = mount.components.combat.damagemultiplier
+                bonus = mount.components.combat.damagebonus
+            end
+
+            local saddle = self.inst.components.rider:GetSaddle()
+            if saddle ~= nil and saddle.components.saddler ~= nil then
+                basedamage = basedamage + saddle.components.saddler:GetBonusDamage()
+            end
+        end
     end
 
-    local basedamage = self.defaultdamage
-
-    if self.inst.components.rider ~= nil and self.inst.components.rider:IsRiding() then
-        local mount = self.inst.components.rider:GetMount()
-        local saddle = self.inst.components.rider:GetSaddle()
-        basedamage =
-            (   mount ~= nil and
-                mount.components.combat ~= nil and
-                mount.components.combat.defaultdamage or
-                basedamage
-            ) +
-            (   saddle ~= nil and
-                saddle.components.saddler ~= nil and
-                saddle.components.saddler:GetBonusDamage() or
-                0
-            )
-    end
-
-    return (target == nil or not target:HasTag("player"))
-        and basedamage * multiplier + bonus
-        or (self.inst:HasTag("player") and
-            basedamage * self.playerdamagepercent * self.pvp_damagemod * multiplier + bonus or
-            basedamage * self.playerdamagepercent * multiplier + bonus)
+    return basedamage
+        * (basemultiplier or 1)
+        * (multiplier or 1)
+        * playermultiplier
+        * pvpmultiplier
+        + (bonus or 0)
 end
 
 local function _CalcReflectedDamage(inst, attacker, dmg, weapon, stimuli, reflect_list)

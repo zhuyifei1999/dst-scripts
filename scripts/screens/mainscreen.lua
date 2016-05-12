@@ -405,9 +405,9 @@ function MainScreen:OnBecomeActive()
 end
 
 function MainScreen:OnUpdate(dt)
-    if PLATFORM == "PS4" and TheSim:ShouldPlayIntroMovie() then
+    if false and self.profile:IsIntroCineEnabled() and TheSim:ShouldPlayIntroMovie() then
         TheFrontEnd:PushScreen(
-            MovieDialog("movies/forbidden_knowledge.mp4",
+            MovieDialog("movies/intro.ogv",
                 function()
                     TheFrontEnd:GetSound():PlaySound("dontstarve/music/music_FE", "FEMusic")
                     TheFrontEnd:GetSound():PlaySound("dontstarve/together_FE/portal_idle_vines", "FEPortalSFX")

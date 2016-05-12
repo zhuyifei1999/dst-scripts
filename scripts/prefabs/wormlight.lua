@@ -155,6 +155,22 @@ local function light_start(inst)
     inst.fx:setprogress(0)
 end
 
+local function pushbloom(inst, target)
+    if target.components.bloomer ~= nil then
+        target.components.bloomer:PushBloom(inst, "shaders/anim.ksh", -1)
+    else
+        target.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+    end
+end
+
+local function popbloom(inst, target)
+    if target.components.bloomer ~= nil then
+        target.components.bloomer:PopBloom(inst)
+    else
+        target.AnimState:ClearBloomEffectHandle()
+    end
+end
+
 local function light_ontarget(inst, target)
     if target == nil or target:HasTag("playerghost") or target:HasTag("overcharge") then
         inst:Remove()
@@ -167,7 +183,6 @@ local function light_ontarget(inst, target)
 
     target.wormlight = inst
     inst.Follower:FollowSymbol(target.GUID, "", 0, 0, 0)
-    inst.fx.entity:SetParent(target.entity)
     inst:ListenForEvent("onremove", forceremove, target)
     inst:ListenForEvent("death", function() inst.fx:setdead() end, target)
 
@@ -181,10 +196,29 @@ local function light_ontarget(inst, target)
         inst.persists = true
     end
 
-    if target.components.bloomer ~= nil then
-        target.components.bloomer:PushBloom(inst, "shaders/anim.ksh", -1)
+    pushbloom(inst, target)
+
+    if target.components.rideable ~= nil then
+        local rider = target.components.rideable:GetRider()
+        if rider ~= nil then
+            pushbloom(inst, rider)
+            inst.fx.entity:SetParent(rider.entity)
+        else
+            inst.fx.entity:SetParent(target.entity)
+        end
+
+        inst:ListenForEvent("riderchanged", function(target, data)
+            if data.oldrider ~= nil then
+                popbloom(inst, data.oldrider)
+                inst.fx.entity:SetParent(target.entity)
+            end
+            if data.newrider ~= nil then
+                pushbloom(inst, data.newrider)
+                inst.fx.entity:SetParent(data.newrider.entity)
+            end
+        end, target)
     else
-        target.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+        inst.fx.entity:SetParent(target.entity)
     end
 end
 
@@ -192,10 +226,14 @@ local function light_onfinish(inst)
     local target = inst.components.spell.target
     if target ~= nil then
         target.wormlight = nil
-        if target.components.bloomer ~= nil then
-            target.components.bloomer:PopBloom(inst)
-        else
-            target.AnimState:ClearBloomEffectHandle()
+
+        popbloom(inst, target)
+
+        if target.components.rideable ~= nil then
+            local rider = target.components.rideable:GetRider()
+            if rider ~= nil then
+                popbloom(inst, rider)
+            end
         end
     end
 end

@@ -317,15 +317,3 @@ if CHEATS_ENABLED then
 end
 
 TheSystemService:SetStalling(false)
-
-
---load the user's custom commands into the game
-local filename = "../customcommands.lua"
-TheSim:GetPersistentString( filename,
-	function(load_success, str)
-		if load_success == true then
-			local fn = loadstring(str)
-			local success, savedata = xpcall(fn, debug.traceback)
-		end
-	end
-)

@@ -340,6 +340,8 @@ local function fn()
     MakeMediumBurnableCharacter(inst)
     MakeMediumFreezableCharacter(inst)
 
+    inst:AddComponent("bloomer")
+
     inst:AddComponent("inventory")
 
     inst:AddComponent("inspectable")

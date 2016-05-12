@@ -386,7 +386,7 @@ local function windowfn()
     inst.AnimState:SetBank("pig_house")
     inst.AnimState:SetBuild("pig_house")
     inst.AnimState:PlayAnimation("windowlight_idle")
-    inst.AnimState:SetLightOverride(1)
+    inst.AnimState:SetLightOverride(.6)
     inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
     inst.AnimState:SetFinalOffset(1)
 
