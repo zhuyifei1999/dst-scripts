@@ -60,7 +60,8 @@ local function fn()
 	effect:SetBlendMode( 0, BLENDMODE.Additive )
 	effect:EnableBloomPass( 0, true )
 	effect:SetUVFrameSize( 0, 0.25, 1 )
-    effect:SetSortOrder( 0, 1 )
+    effect:SetSortOrder( 0, 0 )
+    effect:SetSortOffset( 0, 1 )
 
 	-----------------------------------------------------
 	local tick_time = TheSim:GetTickTime()

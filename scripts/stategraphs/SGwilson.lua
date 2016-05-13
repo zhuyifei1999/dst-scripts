@@ -140,10 +140,10 @@ end
 local function DoEmoteFX(inst, prefab)
     local fx = SpawnPrefab(prefab)
     if fx ~= nil then
-        fx.Transform:SetRotation(inst.Transform:GetRotation())
         if inst.components.rider ~= nil and inst.components.rider:IsRiding() then
             fx.Transform:SetSixFaced()
         end
+        fx.entity:SetParent(inst.entity)
         fx.entity:AddFollower()
         fx.Follower:FollowSymbol(inst.GUID, "emotefx", 0, 0, 0)
     end
@@ -851,10 +851,10 @@ local states =
             inst:ClearBufferedAction()
 
             inst.fx = SpawnPrefab("shock_fx")
-            inst.fx.Transform:SetRotation(inst.Transform:GetRotation())
             if inst.components.rider ~= nil and inst.components.rider:IsRiding() then
                 inst.fx.Transform:SetSixFaced()
             end
+            inst.fx.entity:SetParent(inst.entity)
             inst.fx.entity:AddFollower()
             inst.fx.Follower:FollowSymbol(inst.GUID, "swap_shock_fx", 0, 0, 0)
 
@@ -3291,9 +3291,8 @@ local states =
             TimeEvent(0, function(inst)
                 local fxtoplay = inst.components.rider ~= nil and inst.components.rider:IsRiding() and "book_fx_mount" or "book_fx"
                 local fx = SpawnPrefab(fxtoplay)
-                local x, y, z = inst.Transform:GetWorldPosition()
-                fx.Transform:SetRotation(inst.Transform:GetRotation())
-                fx.Transform:SetPosition(x, y - .2, z)
+                fx.entity:SetParent(inst.entity)
+                fx.Transform:SetPosition(0, 0.2, 0)
                 inst.sg.statemem.book_fx = fx
             end),
 
@@ -4151,6 +4150,7 @@ local states =
         tags = { "busy", "pausepredict" },
 
         onenter = function(inst, tool)
+            inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("hit")
             inst.SoundEmitter:PlaySound("dontstarve/wilson/use_break")
             inst.AnimState:Hide("ARM_carry") 
@@ -4191,13 +4191,15 @@ local states =
         name = "tool_slip",
         tags = { "busy", "pausepredict" },
         onenter = function(inst, tool)
+            inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("hit")
             inst.SoundEmitter:PlaySound("dontstarve/common/tool_slip")
             inst.AnimState:Hide("ARM_carry") 
             inst.AnimState:Show("ARM_normal") 
             local splash = SpawnPrefab("splash")
-            local follower = splash.entity:AddFollower()
-            follower:FollowSymbol(inst.GUID, "swap_object", 0, 0, 0)
+            splash.entity:SetParent(inst.entity)
+            splash.entity:AddFollower()
+            splash.Follower:FollowSymbol(inst.GUID, "swap_object", 0, 0, 0)
 
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:RemotePausePrediction()
@@ -4672,15 +4674,13 @@ local states =
             --Spawn an effect on the player's location
             local staff = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
             local colour = staff ~= nil and staff.fxcolour or { 1, 1, 1 }
-            local x, y, z = inst.Transform:GetWorldPosition()
 
             inst.stafffx = SpawnPrefab(inst.components.rider ~= nil and inst.components.rider:IsRiding() and "staffcastfx_mount" or "staffcastfx")
-            inst.stafffx.Transform:SetPosition(x, y, z)
-            inst.stafffx.Transform:SetRotation(inst.Transform:GetRotation())
+            inst.stafffx.entity:SetParent(inst.entity)
             inst.stafffx:SetUp(colour)
 
             local stafflight = SpawnPrefab("staff_castinglight")
-            stafflight.Transform:SetPosition(x, y, z)
+            stafflight.Transform:SetPosition(inst.Transform:GetWorldPosition())
             stafflight:SetUp(colour, 1.9, .33)
         end,
 

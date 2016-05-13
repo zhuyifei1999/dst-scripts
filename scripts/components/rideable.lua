@@ -86,7 +86,10 @@ function Rideable:SetSaddle(doer, newsaddle)
         self.inst:RemoveChild(self.saddle)
         self.saddle:ReturnToScene()
 
-        self.inst.components.lootdropper:FlingItem(self.saddle, nil, doer == nil and self.saddle.components.saddler.discardedcb or nil)
+        local pt = self.inst:GetPosition()
+        pt.y = 3
+
+        self.inst.components.lootdropper:FlingItem(self.saddle, pt, doer == nil and self.saddle.components.saddler.discardedcb or nil)
         self.canride = false
         self.saddle = nil
         self.inst:PushEvent("saddlechanged", { saddle = nil })

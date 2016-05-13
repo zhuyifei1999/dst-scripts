@@ -16,7 +16,7 @@ return {
 		{
 			GENERIC = "It's already packed tighter than a Toronto streetcar.",
 			NOTALLOWED = "That's not allowed, eh?",
-			INUSE = "Sorry! I'll wait til you're finished.",
+			INUSE = "Sorry! I'll wait 'til you're finished.",
 		},
 		WRITE =
         {
@@ -26,12 +26,12 @@ return {
 		RUMMAGE =
         {   
             GENERIC = "Sorry, I can't do that.",
-            INUSE = "Sorry! I'll wait til you're finished.",  
+            INUSE = "Sorry! I'll wait 'til you're finished.",  
         },
 		COOK =
         {
             GENERIC = "Sorry, I can't do that.",
-            INUSE = "Sorry! I'll wait til you're finished.",
+            INUSE = "Sorry! I'll wait 'til you're finished.",
             TOOFAR = "I gotta get closer, eh?",
         },
         MOUNT =
@@ -48,7 +48,7 @@ return {
             DEAD = "I don't think they... um...",
             SLEEPING = "It's sleeping.",
             BUSY = "I'll try again in a mo'.",
-            ABIGAILHEART = "I'd never hear the end of it from Luce if I didn't try.",
+            ABIGAILHEART = "I'd never hear the end of it from 'Luce if I didn't try.",
             GHOSTHEART = "Not today.",
         },
         GIVETOPLAYER = 
@@ -78,7 +78,7 @@ return {
         TEACH =
         {
             KNOWN = "I know that already, eh?",
-            CANTLEARN = "Err... do you understand this one, Luce?",
+            CANTLEARN = "Err... do you understand this one, 'Luce?",
         },
 	},
 	ANNOUNCE_MOUNT_LOWHEALTH = "This beast looks in a bad way, eh.",
@@ -157,7 +157,7 @@ return {
 	ANNOUNCE_NOWARDROBEONFIRE = "That's okay. I just need a good flannel, anyway.",
 	ANNOUNCE_RESEARCH = "Learnin' keeps your mind sharp. Like an axe.",
 	ANNOUNCE_UNIMPLEMENTED = "Ouch! That wasn't very polite.",
-	ANNOUNCE_WORMS = "Oh geez. I hope you're ready, Luce.",
+	ANNOUNCE_WORMS = "Oh geez. I hope you're ready, 'Luce.",
 	BATTLECRY =
 	{
 		GENERIC = "Get over here, eh!",
@@ -262,7 +262,7 @@ return {
         {
             GENERIC = "%s! Hi little buddy!",
 			ATTACKER = "Hey %s, can't we all just get a-log?",
-			MURDERER = "Luce gave me the go-ahead! You're in trouble now, %s!",
+			MURDERER = "'Luce gave me the go-ahead! You're in trouble now, %s!",
 			REVIVER = "You're an alright spider, kiddo.",
 			GHOST = "We better get you a heart, hey kiddo?",
         },
@@ -336,7 +336,7 @@ return {
 		BOOK_BRIMSTONE = "I know better than to mess with that, eh.",
 		BALLOONS_EMPTY = "Are those balloons?",
 		BALLOON = "It's squeaky. Just like a real woodland creature.",
-		SPEAR_WATHGRITHR = "Who needs a spear when you got ol' Luce?",
+		SPEAR_WATHGRITHR = "Who needs a spear when you got ol'Luce?",
 		WATHGRITHRHAT = "Pretty snappy looking.",
 		WAXWELLJOURNAL = "Trees made into... paper? How unholy!",
 		BURNT_MARSH_BUSH = "Done for.",
@@ -566,7 +566,7 @@ return {
 		WORMLIGHT = "This thing will be useful.",
 		WORM =
 		{
-		    PLANT = "I know a plant when I see one. This'n an impostor!",
+		    PLANT = "I know a plant when I see one. This's an impostor!",
 		    DIRT = "Be wary of the moving ground.",
 		    WORM = "WOOORM!",
 		},
@@ -758,7 +758,7 @@ return {
         {
             GENERIC = "Maybe later. I've gotten cozy down here.",
             OPEN = "There are probably trees up there.",
-            FULL = "Sorry! I'll wait til you're all done up there!",
+            FULL = "Sorry! I'll wait 'til you're all done up there!",
         },
 
 		MAXWELLPHONOGRAPH = "Better than most of the stuff on the radio.",
@@ -1324,6 +1324,7 @@ return {
 		ROPE = "Good for holding stuff to other stuff.",
 		ROTTENEGG = "One less bird. Good.",
         SADDLE_BASIC = "Yep, that'll get us there.",
+        SADDLE_RACE = "Makes me feel like some sorta woodland nymph, eh?",
         SADDLE_WAR = "Makes me feel like a Mountie.",
         SADDLEHORN = "Puts the critter back to how nature intended.",
         BRUSH = "You could debark a log with this thing.",
@@ -1498,7 +1499,7 @@ return {
 		BERNIE_INACTIVE =
 		{
 			BROKEN = "Poor lil' guy.",
-			GENERIC = "Cute, isn't it Luce?",
+			GENERIC = "Cute, isn't it 'Luce?",
 		},
 		TWIGGYTREE = 
         {

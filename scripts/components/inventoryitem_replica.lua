@@ -23,8 +23,13 @@ local InventoryItem = Class(function(self, inst)
             self:SetAttackRange(inst.components.weapon.attackrange or 0)
         end
 
+        --V2C: Look at this hack - _-"  (for network optimization...)
+        --     This means no item can be both equippable and saddler!
+        --     Avoiding asserts, but hopefully comments are enough =)
         if inst.components.equippable ~= nil then
             self:SetWalkSpeedMult(inst.components.equippable.walkspeedmult or 1)
+        elseif inst.components.saddler ~= nil then
+            self:SetWalkSpeedMult(inst.components.saddler.speedmult or 1)
         end
     elseif self.classified == nil and inst.inventoryitem_classified ~= nil then
         self:AttachClassified(inst.inventoryitem_classified)

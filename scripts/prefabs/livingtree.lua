@@ -137,7 +137,7 @@ local function fn()
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
-    inst.entity:AddAnimState()        
+    inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
@@ -147,7 +147,6 @@ local function fn()
     inst.MiniMapEntity:SetIcon("livingtree.png")
 
     inst:AddTag("tree")
-    inst:AddTag("workable")
 
     inst.AnimState:SetBank("evergreen_living_wood")
     inst.AnimState:SetBuild("evergreen_living_wood")

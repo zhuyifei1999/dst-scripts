@@ -86,7 +86,8 @@ local function fn()
     effect:SetBlendMode( 0, BLENDMODE.Premultiplied )
     effect:EnableBloomPass( 0, true )
     effect:SetUVFrameSize( 0, 0.25, 1 )
-    effect:SetSortOrder( 0, 1 )
+    effect:SetSortOrder( 0, 0 )
+    effect:SetSortOffset( 0, 1 )
     effect:SetRadius( 0, 2 ) --only needed on a single emitter
     
     --FIRE
@@ -98,7 +99,8 @@ local function fn()
     effect:SetBlendMode( 1, BLENDMODE.Additive )
     effect:EnableBloomPass( 1, true )
     effect:SetUVFrameSize( 1, 0.25, 1 )
-    effect:SetSortOrder( 1, 2 )
+    effect:SetSortOrder( 1, 0 )
+    effect:SetSortOffset( 1, 2 )
 
 
 	inst.fx_offset = -110

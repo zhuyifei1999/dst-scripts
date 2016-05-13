@@ -118,17 +118,14 @@ function Rider:SetMount(mount)
         if old ~= nil then
             old.Network:SetClassifiedTarget(nil)
             self.inst:RemoveEventCallback("healthdelta", self._onmounthealthdelta, old)
-            self:OnMountHealth(1)
         end
         if mount ~= nil then
             mount.Network:SetClassifiedTarget(self.inst)
             self.classified.riderrunspeed:set(mount.components.locomotor.runspeed)
             self.classified.riderfasteronroad:set(mount.components.locomotor.fasteronroad == true)
             self.inst:ListenForEvent("healthdelta", self._onmounthealthdelta, mount)
-            if mount.components.health ~= nil then
-                self:OnMountHealth(mount.components.health:GetPercent())
-            end
         end
+        self:OnMountHealth(mount ~= nil and mount.components.health ~= nil and mount.components.health:GetPercent() or 1)
         self.classified.ridermount:set(mount)
     end
 end
@@ -171,11 +168,22 @@ end
 
 function Rider:SetSaddle(saddle)
     if self.classified ~= nil and saddle ~= self.classified.ridersaddle:value() then
-        if self.classified.ridersaddle:value() then
-            self.classified.ridersaddle:value().Network:SetClassifiedTarget(nil)
+        local old = self.classified.ridersaddle:value()
+        if old ~= nil then
+            assert(not old.components.inventoryitem:IsHeld())
+            if old.components.inventoryitem ~= nil then
+                old.replica.inventoryitem:SetOwner(nil)
+            else
+                old.Network:SetClassifiedTarget(nil)
+            end
         end
         if saddle ~= nil then
-            saddle.Network:SetClassifiedTarget(self.inst)
+            assert(not saddle.components.inventoryitem:IsHeld())
+            if saddle.components.inventoryitem ~= nil then
+                saddle.replica.inventoryitem:SetOwner(self.inst)
+            else
+                saddle.Network:SetClassifiedTarget(self.inst)
+            end
         end
         self.classified.ridersaddle:set(saddle)
     end

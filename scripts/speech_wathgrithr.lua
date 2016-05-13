@@ -1293,6 +1293,7 @@ return {
 		ROTTENEGG = "Ruined for eating, but primed for battle.",
         SADDLE_BASIC = "Now to find a faithful steed.",
         SADDLE_WAR = "I ride to victory or death!",
+        SADDLE_RACE = "Oh to fly on the wings of Valkyrie!",
         SADDLEHORN = "Mighty steeds can be unsaddled with this.",
         BRUSH = "Time for hair and makeup!",
 		SANITYROCK =

@@ -68,7 +68,7 @@ return {
         {
             GENERIC = "Clothes only good for ripping with strong muscles!",
             BURNING = "Wolfgang's weekday undergarments burning? Wolfgang is sad.",
-            INUSE = "Wolfgang will wait til they leave to change. He is shy.",
+            INUSE = "Wolfgang will wait 'til they leave to change. He is shy.",
         },
     	ATTUNE =
         {
@@ -159,7 +159,7 @@ return {
 	ANNOUNCE_NODANGERAFK = "Wolfgang will not abandon the fight!",
 	ANNOUNCE_NODANGERGIFT = "Fight is better than present!",
 	ANNOUNCE_NOWARDROBEONFIRE = "Ehh, Wolfgang do that later...",
-	ANNOUNCE_WORMS = "Earth tremble beneath Wolfgang's might feet!",
+	ANNOUNCE_WORMS = "Earth tremble beneath Wolfgang's mighty feet!",
 	BATTLECRY =
 	{
 		GENERIC = "I will punch you!",
@@ -1315,6 +1315,7 @@ return {
 		ROTTENEGG = "Stinky!",
         SADDLE_BASIC = "Just need creature mighty enough to hold me!",
         SADDLE_WAR = "We ride like kings!",
+        SADDLE_RACE = "Butterflies feel soft under Wolfgang's strong butt!",
         SADDLEHORN = "I won't hurt you, hair cow!",
         BRUSH = "For brush really strong hair!",
 		SANITYROCK =

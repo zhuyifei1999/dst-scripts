@@ -19,37 +19,32 @@ end
 local function onequip(inst, owner)
     --owner.components.combat.damage = TUNING.PICK_DAMAGE 
     inst.components.burnable:Ignite()
-    
+
     local skin_build = inst:GetSkinBuild()
-	if skin_build ~= nil then
+    if skin_build ~= nil then
         owner:PushEvent("equipskinneditem", inst:GetSkinName())
-		owner.AnimState:OverrideItemSkinSymbol("swap_object", skin_build, "swap_torch", inst.GUID, "swap_torch" )
+        owner.AnimState:OverrideItemSkinSymbol("swap_object", skin_build, "swap_torch", inst.GUID, "swap_torch")
     else
         owner.AnimState:OverrideSymbol("swap_object", "swap_torch", "swap_torch")
     end
-    owner.AnimState:Show("ARM_carry") 
-    owner.AnimState:Hide("ARM_normal") 
+    owner.AnimState:Show("ARM_carry")
+    owner.AnimState:Hide("ARM_normal")
 
     inst.SoundEmitter:PlaySound("dontstarve/wilson/torch_LP", "torch")
     inst.SoundEmitter:PlaySound("dontstarve/wilson/torch_swing")
     inst.SoundEmitter:SetParameter("torch", "intensity", 1)
 
     if inst.fires == nil then
-		local fire_fx = nil
-		if inst:GetSkinName() ~= nil then
-			fire_fx = SKIN_FX_PREFAB[inst:GetSkinName()] or {}
-		else
-			fire_fx = {"torchfire"}	
-		end
-		
-		inst.fires = {}
-		for _,fx_prefab in pairs(fire_fx) do
-			local fx = SpawnPrefab(fx_prefab)
-			local follower = fx.entity:AddFollower()
-			follower:FollowSymbol(owner.GUID, "swap_object", 0, fx.fx_offset, 0)
-	        
-			table.insert( inst.fires, fx )
-		end
+        inst.fires = {}
+
+        for i, fx_prefab in ipairs(inst:GetSkinName() == nil and { "torchfire" } or SKIN_FX_PREFAB[inst:GetSkinName()] or {}) do
+            local fx = SpawnPrefab(fx_prefab)
+            fx.entity:SetParent(owner.entity)
+            fx.entity:AddFollower()
+            fx.Follower:FollowSymbol(owner.GUID, "swap_object", 0, fx.fx_offset, 0)
+
+            table.insert(inst.fires, fx)
+        end
     end
 
     --take a percent of fuel next frame instead of this one, so we can remove the torch properly if it runs out at that point
@@ -59,15 +54,15 @@ end
 local function onunequip(inst, owner)
     local skin_build = inst:GetSkinBuild()
     if skin_build ~= nil then
-		owner:PushEvent("unequipskinneditem", inst:GetSkinName())
+        owner:PushEvent("unequipskinneditem", inst:GetSkinName())
     end
-    
+
     if inst.fires ~= nil then
-		for _,fx in pairs(inst.fires) do
-			fx:Remove()
-		end
-		inst.fires = nil
-		inst.SoundEmitter:PlaySound("dontstarve/common/fireOut")
+        for i, fx in ipairs(inst.fires) do
+            fx:Remove()
+        end
+        inst.fires = nil
+        inst.SoundEmitter:PlaySound("dontstarve/common/fireOut")
     end
 
     inst.components.burnable:Extinguish()

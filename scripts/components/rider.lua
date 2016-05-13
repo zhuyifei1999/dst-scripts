@@ -176,12 +176,6 @@ function Rider:ActualDismount()
 
     self.inst:RemoveChild(self.mount)
     self.mount:ReturnToScene()
-    if self.mount.components.brain ~= nil then
-        BrainManager:Wake(self.mount)
-    end
-    if not self.mount.components.health:IsDead() then
-        self.mount.sg:GoToState("idle")
-    end
 
     if self.mount.Physics ~= nil then
         self.mount.Physics:Teleport(self.inst.Transform:GetWorldPosition())
@@ -189,6 +183,13 @@ function Rider:ActualDismount()
         self.mount.Transform:SetPosition(self.inst.Transform:GetWorldPosition())
     end
     self.mount.Transform:SetRotation(self.inst.Transform:GetRotation())
+
+    if self.mount.components.brain ~= nil then
+        BrainManager:Wake(self.mount)
+    end
+    if not self.mount.components.health:IsDead() then
+        self.mount.sg:GoToState("idle")
+    end
 
     local ex_mount = self.mount
     self:StopTracking(ex_mount)

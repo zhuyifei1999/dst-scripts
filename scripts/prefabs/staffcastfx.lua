@@ -32,6 +32,12 @@ local function PlayCastAnim(proxy, anim)
 
     inst.Transform:SetFromProxy(proxy.GUID)
 
+    local parent = proxy.entity:GetParent()
+    if parent ~= nil then
+        inst.Transform:SetPosition(parent.Transform:GetWorldPosition())
+        inst.Transform:SetRotation(parent.Transform:GetRotation())
+    end
+
     inst.AnimState:SetBank("staff_fx")
     inst.AnimState:SetBuild("staff")
     inst.AnimState:PlayAnimation(anim)
@@ -83,6 +89,10 @@ local function MakeStaffFX(anim)
         inst.entity:AddTransform()
         inst.entity:AddNetwork()
 
+        inst.Transform:SetFourFaced()
+
+        inst:AddTag("FX")
+
         inst._colour = net_uint(inst.GUID, "_colour", "setupdirty")
         inst._complete = false
 
@@ -90,15 +100,14 @@ local function MakeStaffFX(anim)
 
         inst.anim = anim
 
+        inst.entity:SetPristine()
+
         if not TheWorld.ismastersim then
             return inst
         end
 
-        inst.Transform:SetFourFaced()
-
         inst.SetUp = SetUp
 
-        inst:AddTag("FX")
         inst.persists = false
 
         --Disable instead of remove, because spawned fx also listens to the
@@ -109,5 +118,5 @@ local function MakeStaffFX(anim)
     end
 end
 
-return  Prefab("staffcastfx", MakeStaffFX("staff"), assets),
-        Prefab("staffcastfx_mount", MakeStaffFX("staff_mount"), assets)
+return Prefab("staffcastfx", MakeStaffFX("staff"), assets),
+    Prefab("staffcastfx_mount", MakeStaffFX("staff_mount"), assets)

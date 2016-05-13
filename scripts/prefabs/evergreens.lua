@@ -193,7 +193,7 @@ local function OnBurnt(inst, immediate)
             inst.components.workable:SetOnFinishCallback(chop_down_burnt_tree)
         end
     end
-        
+
     if immediate then
         changes()
     else
@@ -379,7 +379,7 @@ local function spawn_leif(target)
     leif.components.health:SetMaxHealth(maxhealth)
     leif.components.health:SetCurrentHealth(currenthealth)
 
-    leif.Transform:SetScale(scale,scale,scale) 
+    leif.Transform:SetScale(scale,scale,scale)
     if target.chopper then leif.components.combat:SuggestTarget(target.chopper) end
     leif.sg:GoToState("spawn")
     target:Remove()
@@ -723,7 +723,6 @@ local function tree(name, build, stage, data)
 
         inst:AddTag("tree")
         inst:AddTag("evergreens")
-        inst:AddTag("workable")
         inst:AddTag("shelter")
 
         inst.build = build

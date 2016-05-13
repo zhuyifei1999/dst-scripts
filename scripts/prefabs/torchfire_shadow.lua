@@ -1,6 +1,5 @@
 local anim_hand_texture = "fx/animhand.tex"
 local anim_smoke_texture = "fx/animsmoke.tex"
-local fire_texture = "fx/animflame.tex"
 
 local shader = "shaders/vfx_particle.ksh"
 local add_shader = "shaders/vfx_particle_add.ksh"
@@ -21,7 +20,6 @@ local assets =
 {
     Asset( "IMAGE", anim_hand_texture ),
     Asset( "IMAGE", anim_smoke_texture ),
-    Asset( "IMAGE", fire_texture ),
     Asset( "SHADER", shader ),
     Asset( "SHADER", add_shader ),
     Asset( "SHADER", reveal_shader ),
@@ -111,31 +109,34 @@ local function fn()
     local effect = inst.entity:AddVFXEffect()
     effect:InitEmitters( 3 )
     
-    --SMOKE
-    effect:SetRenderResources( 0, anim_smoke_texture, reveal_shader ) --reveal_shader --particle_add
-    effect:SetMaxNumParticles( 0, 32 )
-    effect:SetRotationStatus( 0, true )
-    effect:SetMaxLifetime( 0, smoke_max_lifetime )
-    effect:SetColourEnvelope( 0, colour_envelope_name_smoke )
-    effect:SetScaleEnvelope( 0, scale_envelope_name_smoke )
-    effect:SetBlendMode( 0, BLENDMODE.AlphaBlended ) --AlphaBlended Premultiplied
-    effect:EnableBloomPass( 0, true )
-    effect:SetUVFrameSize( 0, 1, 1 )
-    effect:SetSortOrder( 0, 1 )
     
     --FIRE
-    effect:SetRenderResources( 1, anim_smoke_texture, reveal_shader )
+    effect:SetRenderResources( 0, anim_smoke_texture, reveal_shader )
+    effect:SetMaxNumParticles( 0, 32 )
+    effect:SetRotationStatus( 0, true )
+    effect:SetMaxLifetime( 0, fire_max_lifetime )
+    effect:SetColourEnvelope( 0, colour_envelope_name )
+    effect:SetScaleEnvelope( 0, scale_envelope_name )
+    effect:SetBlendMode( 0, BLENDMODE.AlphaAdditive )
+    effect:EnableBloomPass( 0, true )
+    effect:SetUVFrameSize( 0, 1, 1 )
+    effect:SetSortOrder( 0, 0 )
+    effect:SetSortOffset( 0, 1 )
+    effect:SetFollowEmitter( 0, true )
+
+    --SMOKE
+    effect:SetRenderResources( 1, anim_smoke_texture, reveal_shader ) --reveal_shader --particle_add
     effect:SetMaxNumParticles( 1, 32 )
     effect:SetRotationStatus( 1, true )
-    effect:SetMaxLifetime( 1, fire_max_lifetime )
-    effect:SetColourEnvelope( 1, colour_envelope_name )
-    effect:SetScaleEnvelope( 1, scale_envelope_name )
-    effect:SetBlendMode( 1, BLENDMODE.AlphaAdditive )
+    effect:SetMaxLifetime( 1, smoke_max_lifetime )
+    effect:SetColourEnvelope( 1, colour_envelope_name_smoke )
+    effect:SetScaleEnvelope( 1, scale_envelope_name_smoke )
+    effect:SetBlendMode( 1, BLENDMODE.AlphaBlended ) --AlphaBlended Premultiplied
     effect:EnableBloomPass( 1, true )
     effect:SetUVFrameSize( 1, 1, 1 )
-    effect:SetSortOrder( 1, 2 )
-    effect:SetFollowEmitter( 1, true )
-    
+    effect:SetSortOrder( 1, 0 )
+    effect:SetSortOffset( 1, 1 )
+        
     --HAND
     effect:SetRenderResources( 2, anim_hand_texture, reveal_shader ) --reveal_shader --particle_add
     effect:SetMaxNumParticles( 2, 32 )
@@ -146,23 +147,23 @@ local function fn()
     effect:SetBlendMode( 2, BLENDMODE.AlphaBlended ) --AlphaBlended Premultiplied
     effect:EnableBloomPass( 2, true )
     effect:SetUVFrameSize( 2, 0.25, 1 )
-    effect:SetSortOrder( 2, 1 )
+    effect:SetSortOrder( 2, 0 )
+    effect:SetSortOffset( 2, 1 )
     --effect:SetDragCoefficient( 2, 50 )
-        
 
 	inst.fx_offset = -100
 
     -----------------------------------------------------
     local tick_time = TheSim:GetTickTime()
 
+    local fire_desired_pps = 6
+	local fire_particles_per_tick = fire_desired_pps * tick_time
+    local fire_num_particles_to_emit = 0
+    
     local smoke_desired_pps = 10
     local smoke_particles_per_tick = smoke_desired_pps * tick_time
     local smoke_num_particles_to_emit = -5 --start delay
 	
-    local fire_desired_pps = 6
-	local fire_particles_per_tick = fire_desired_pps * tick_time
-    local fire_num_particles_to_emit = 0
-
     local hand_desired_pps = 0.3
     local hand_particles_per_tick = hand_desired_pps * tick_time
     local hand_num_particles_to_emit = -1 ---50 --start delay
@@ -170,6 +171,25 @@ local function fn()
     
     local sphere_emitter = CreateSphereEmitter(0.05)
 
+    
+    local function emit_fire_fn()            
+        --FIRE
+        local vx, vy, vz = 0.005 * UnitRand(), 0, 0.0005 * UnitRand()
+        local lifetime = fire_max_lifetime * (0.9 + UnitRand() * 0.1)
+		local px, py, pz
+        px, py, pz = sphere_emitter()
+
+        effect:AddRotatingParticleUV(
+            0,
+            lifetime,           -- lifetime
+            px, py, pz,         -- position
+            vx, vy, vz,         -- velocity
+            math.random() * 360,	-- angle
+            UnitRand() * 2,			-- angle velocity
+            0, 0				-- uv offset
+        )
+    end
+    
     local function emit_smoke_fn()
 		--SMOKE
         local vx, vy, vz = 0.01 * UnitRand(), 0, 0.01 * UnitRand()
@@ -180,7 +200,7 @@ local function fn()
         py = py + 0.35 --offset the flame particles upwards a bit so they can be used on a torch
 
         effect:AddRotatingParticleUV(
-            0,
+            1,
             lifetime,           -- lifetime
             px, py, pz,         -- position
             vx, vy, vz,         -- velocity
@@ -188,24 +208,6 @@ local function fn()
             UnitRand() * 2,			-- angle velocity
             0, 0				-- uv offset
         )       
-    end
-    
-    local function emit_fire_fn()            
-        --FIRE
-        local vx, vy, vz = 0.005 * UnitRand(), 0, 0.0005 * UnitRand()
-        local lifetime = fire_max_lifetime * (0.9 + UnitRand() * 0.1)
-		local px, py, pz
-        px, py, pz = sphere_emitter()
-
-        effect:AddRotatingParticleUV(
-            1,
-            lifetime,           -- lifetime
-            px, py, pz,         -- position
-            vx, vy, vz,         -- velocity
-            math.random() * 360,	-- angle
-            UnitRand() * 2,			-- angle velocity
-            0, 0				-- uv offset
-        )
     end
     
     local function emit_hand_fn()
@@ -230,19 +232,19 @@ local function fn()
     
     
     local function updateFunc()
-		--SMOKE
-        while smoke_num_particles_to_emit > 1 do
-            emit_smoke_fn()
-            smoke_num_particles_to_emit = smoke_num_particles_to_emit - 1
-        end
-        smoke_num_particles_to_emit = smoke_num_particles_to_emit + smoke_particles_per_tick
-       
         --FIRE
         while fire_num_particles_to_emit > 1 do
             emit_fire_fn()
             fire_num_particles_to_emit = fire_num_particles_to_emit - 1
         end
         fire_num_particles_to_emit = fire_num_particles_to_emit + fire_particles_per_tick * (math.random() * 3)
+		
+		--SMOKE
+        while smoke_num_particles_to_emit > 1 do
+            emit_smoke_fn()
+            smoke_num_particles_to_emit = smoke_num_particles_to_emit - 1
+        end
+        smoke_num_particles_to_emit = smoke_num_particles_to_emit + smoke_particles_per_tick
         
 		--HAND
         while hand_num_particles_to_emit > 1 do

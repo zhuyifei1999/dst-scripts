@@ -18,10 +18,17 @@ local function PlayBookFX(proxy, tint, tintalpha, anim)
 
     inst.Transform:SetFromProxy(proxy.GUID)
 
+    local parent = proxy.entity:GetParent()
+    if parent ~= nil then
+        inst.Transform:SetPosition(parent.Transform:GetWorldPosition())
+        inst.Transform:SetRotation(parent.Transform:GetRotation())
+    end
+
     inst.AnimState:SetBank("book_fx")
     inst.AnimState:SetBuild("book_fx")
     inst.AnimState:PlayAnimation(anim)
     --inst.AnimState:SetScale(1.5, 1, 1)
+    inst.AnimState:SetFinalOffset(-1)
 
     if tint ~= nil then
         inst.AnimState:SetMultColour(tint.x, tint.y, tint.z, tintalpha or 1)
@@ -69,6 +76,10 @@ local function common_fn()
     inst.entity:AddTransform()
     inst.entity:AddNetwork()
 
+    inst.Transform:SetFourFaced()
+
+    inst:AddTag("FX")
+
     inst._state = net_tinybyte(inst.GUID, "_state", "statedirty")
     inst._complete = false
 
@@ -76,13 +87,12 @@ local function common_fn()
 
     inst:ListenForEvent("statedirty", OnStateDirty)
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst.Transform:SetFourFaced()
-
-    inst:AddTag("FX")
     inst.persists = false
 
     --Disable instead of remove, because spawned fx also listens to the
@@ -119,6 +129,6 @@ local function waxwell_book_fn()
     return inst
 end
 
-return  Prefab("book_fx", book_fn, assets),
-        Prefab("book_fx_mount", mount_book_fn, assets),
-        Prefab("waxwell_book_fx", waxwell_book_fn, assets)
+return Prefab("book_fx", book_fn, assets),
+    Prefab("book_fx_mount", mount_book_fn, assets),
+    Prefab("waxwell_book_fx", waxwell_book_fn, assets)

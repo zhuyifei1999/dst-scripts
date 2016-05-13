@@ -35,7 +35,7 @@ return {
         },
         MOUNT =
         {
-            INUSE = "They beat me to the hairy beast. Maybe that's for the best.",
+            INUSE = "They beat me to the hairy beast. Maybe it's for the best.",
             TARGETINCOMBAT = "I'll ride it when it settles down'.",
         },
 		SADDLE =
@@ -326,14 +326,6 @@ return {
 		BEARGER = "Whoa! Niiiice bear...",
 		BEARGERVEST = "It's like swimming in fur.",
 		ICEPACK = "Fuzzy backpack!",
-
-		LAVA_POND_ROCK = "Oh great, another stinkin' rock!",
-		LAVA_POND_ROCK2 = "Oh great, another stinkin' rock!",
-		LAVA_POND_ROCK3 = "Oh great, another stinkin' rock!",
-		LAVA_POND_ROCK4 = "Oh great, another stinkin' rock!",
-		LAVA_POND_ROCK5 = "Oh great, another stinkin' rock!",
-		LAVA_POND_ROCK6 = "Oh great, another stinkin' rock!",
-		LAVA_POND_ROCK7 = "Oh great, another stinkin' rock!",
 		
 		ABIGAIL_FLOWER = 
 		{
@@ -1358,6 +1350,7 @@ return {
         ROPE = "What should we tie up??!",
 		ROTTENEGG = "Ew! Why? Oh Why?!",
         SADDLE_BASIC = "It's so uncomfortable.",
+        SADDLE_RACE = "Was it worth it? I think it was worth it.",
         SADDLE_WAR = "I'm going to raze some villages!",
         SADDLEHORN = "I bet it stinks under the saddle.",
         BRUSH = "It smells like burnt hair.",
@@ -1494,7 +1487,7 @@ return {
 		TRINKET_6 = "These wires get the automaton all frazzled. Heh heh.",
 		TRINKET_7 = "Spinning the stick in the hole could start a fire. Thanks Girl Scouts!",
 		TRINKET_8 = "I've never liked bathing with water.",
-		TRINKET_9 = "Cute as the creepy girl's lil nose.",
+		TRINKET_9 = "Cute as the creepy girl's lil' nose.",
 		TRINKET_10 = "Hey magician, I think you dropped these!",
 		TRINKET_11 = "Ooh, I wonder if he has a flamethrower!",
 		TRINKET_12 = "I bet the scientist would enjoy dissecting this.",

@@ -453,10 +453,10 @@ return {
 		FLOWER_CAVE="Science makes it glow.",
 		FLOWER_CAVE_DOUBLE="Science makes it glow.",
 		FLOWER_CAVE_TRIPLE="Science makes it glow.",
-		GUANO="Another flavor of poop.",
-		LANTERN="A more civilized light.",
-		LIGHTBULB="It's strangely tasty looking.",
-		MANRABBIT_TAIL="I feel a lil better when I hold one.",
+		GUANO= "Another flavor of poop.",
+		LANTERN= "A more civilized light.",
+		LIGHTBULB= "It's strangely tasty looking.",
+		MANRABBIT_TAIL= "I feel a lil' better when I hold one.",
 		MUSHTREE_TALL =
 		{
             GENERIC = "That mushroom got too big for its own good.",
@@ -1304,6 +1304,7 @@ return {
 		ROPE = "Some short lengths of rope.",
 		ROTTENEGG = "Ew! It stinks!",
         SADDLE_BASIC = "That should allow the mounting of some smelly animal.",
+        SADDLE_RACE = "This saddle really flies!",
         SADDLE_WAR = "The only problem is the saddle sores.",
         SADDLEHORN = "This could take the saddle off.",
         BRUSH = "I bet the beefalo really like this.",
