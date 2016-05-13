@@ -51,7 +51,7 @@ local PlayerHud = Class(Screen, function(self)
             --pending server c_reset or c_regenerateworld.
             if self.playeravatarpopup ~= nil then
                 if self.playeravatarpopup.started and self.playeravatarpopup.inst:IsValid() then
-                    self.playeravatarpopup:CLose()
+                    self.playeravatarpopup:Close()
                 end
                 self.playeravatarpopup = nil
             end
