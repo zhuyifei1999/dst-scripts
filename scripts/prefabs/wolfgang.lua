@@ -9,13 +9,20 @@ local assets =
     Asset("SOUND", "sound/wolfgang.fsb"),
 }
 
+local function OnMounted(inst)
+    inst.components.locomotor:SetExternalSpeedMultiplier(inst, "mounted_mightiness", 1 / inst._mightiness_scale)
+end
+
+local function OnDismounted(inst)
+    inst.components.locomotor:RemoveExternalSpeedMultiplier(inst, "mounted_mightiness")
+end
+
 local function applymightiness(inst)
     local percent = inst.components.hunger:GetPercent()
 
     local damage_mult = TUNING.WOLFGANG_ATTACKMULT_NORMAL
     local hunger_rate = TUNING.WOLFGANG_HUNGER_RATE_MULT_NORMAL
     local health_max = TUNING.WOLFGANG_HEALTH_NORMAL
-    local scale = 1
 
     local mighty_scale = 1.25
     local wimpy_scale = .9
@@ -26,23 +33,29 @@ local function applymightiness(inst)
         damage_mult = easing.linear(mighty_percent, TUNING.WOLFGANG_ATTACKMULT_MIGHTY_MIN, TUNING.WOLFGANG_ATTACKMULT_MIGHTY_MAX - TUNING.WOLFGANG_ATTACKMULT_MIGHTY_MIN, 1)
         health_max = easing.linear(mighty_percent, TUNING.WOLFGANG_HEALTH_NORMAL, TUNING.WOLFGANG_HEALTH_MIGHTY - TUNING.WOLFGANG_HEALTH_NORMAL, 1) 
         hunger_rate = easing.linear(mighty_percent, TUNING.WOLFGANG_HUNGER_RATE_MULT_NORMAL, TUNING.WOLFGANG_HUNGER_RATE_MULT_MIGHTY - TUNING.WOLFGANG_HUNGER_RATE_MULT_NORMAL, 1)  
-        scale = easing.linear(mighty_percent, 1, mighty_scale - 1, 1)   
+        inst._mightiness_scale = easing.linear(mighty_percent, 1, mighty_scale - 1, 1)   
     elseif inst.strength == "wimpy" then
         local wimpy_start = (TUNING.WOLFGANG_START_WIMPY_THRESH/TUNING.WOLFGANG_HUNGER) 
         local wimpy_percent = math.min(1, percent/wimpy_start )
         damage_mult = easing.linear(wimpy_percent, TUNING.WOLFGANG_ATTACKMULT_WIMPY_MIN, TUNING.WOLFGANG_ATTACKMULT_WIMPY_MAX - TUNING.WOLFGANG_ATTACKMULT_WIMPY_MIN, 1)
         health_max = easing.linear(wimpy_percent, TUNING.WOLFGANG_HEALTH_WIMPY, TUNING.WOLFGANG_HEALTH_NORMAL - TUNING.WOLFGANG_HEALTH_WIMPY, 1)    
         hunger_rate = easing.linear(wimpy_percent, TUNING.WOLFGANG_HUNGER_RATE_MULT_WIMPY, TUNING.WOLFGANG_HUNGER_RATE_MULT_NORMAL - TUNING.WOLFGANG_HUNGER_RATE_MULT_WIMPY, 1) 
-        scale = easing.linear(wimpy_percent, wimpy_scale, 1 - wimpy_scale, 1)   
+        inst._mightiness_scale = easing.linear(wimpy_percent, wimpy_scale, 1 - wimpy_scale, 1)   
+    else
+        inst._mightiness_scale = 1
     end
 
-    inst:ApplyScale("mightiness", scale)
+    inst:ApplyScale("mightiness", inst._mightiness_scale)
     inst.components.hunger:SetRate(hunger_rate*TUNING.WILSON_HUNGER_RATE)
     inst.components.combat.damagemultiplier = damage_mult
 
     local health_percent = inst.components.health:GetPercent()
     inst.components.health:SetMaxHealth(health_max)
     inst.components.health:SetPercent(health_percent, true)
+
+    if inst.components.rider ~= nil and inst.components.rider:IsRiding() then
+        OnMounted(inst)
+    end
 end
 
 local function becomewimpy(inst, silent)
@@ -194,8 +207,11 @@ local function onpreload(inst, data)
     end
 end
 
+--------------------------------------------------------------------------
+
 local function master_init(inst)
     inst.strength = "normal"
+    inst._mightiness_scale = 1
     inst._wasnomorph = nil
     inst.talksoundoverride = nil
     inst.hurtsoundoverride = nil
@@ -211,6 +227,9 @@ local function master_init(inst)
     inst.OnPreLoad = onpreload
     inst.OnLoad = onload
     inst.OnNewSpawn = onload
+
+    inst:ListenForEvent("mounted", OnMounted)
+    inst:ListenForEvent("dismounted", OnDismounted)
 end
 
 return MakePlayerCharacter("wolfgang", nil, assets, nil, master_init)

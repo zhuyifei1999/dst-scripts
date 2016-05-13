@@ -28,7 +28,6 @@ local GiftItemPopUp = require "screens/giftitempopup"
 local WardrobePopupScreen = require "screens/wardrobepopup"
 local PlayerAvatarPopup = require "widgets/playeravatarpopup"
 
-
 local PlayerHud = Class(Screen, function(self)
     Screen._ctor(self, "HUD")
 
@@ -37,6 +36,7 @@ local PlayerHud = Class(Screen, function(self)
     self.under_root = self:AddChild(Widget("under_root"))
     self.root = self:AddChild(Widget("root"))
 
+    self.playerstatusscreen = nil
     self.giftitempopup = nil
     self.wardrobepopup = nil
     self.playeravatarpopup = nil
@@ -44,6 +44,22 @@ local PlayerHud = Class(Screen, function(self)
     self.recentgiftstask = nil
 
     self.inst:ListenForEvent("continuefrompause", function() self:RefreshControllers() end, TheWorld)
+
+    if not TheWorld.ismastersim then
+        self.inst:ListenForEvent("deactivateworld", function()
+            --Essential cleanup when client is notified of 
+            --pending server c_reset or c_regenerateworld.
+            if self.playeravatarpopup ~= nil then
+                if self.playeravatarpopup.started and self.playeravatarpopup.inst:IsValid() then
+                    self.playeravatarpopup:CLose()
+                end
+                self.playeravatarpopup = nil
+            end
+            if self.playerstatusscreen ~= nil and self.playerstatusscreen.shown then
+                self.playerstatusscreen:Close()
+            end
+        end, TheWorld)
+    end
 end)
 
 function PlayerHud:CreateOverlays(owner)
@@ -208,25 +224,21 @@ function PlayerHud:OpenContainer(container, side)
 end
 
 function PlayerHud:TogglePlayerAvatarPopup(player_name, data, show_net_profile)
-    if self.playeravatarpopup ~= nil then
-        if self.playeravatarpopup.started and
-            self.playeravatarpopup.inst:IsValid() then
-            self.playeravatarpopup:Close()
-            if player_name == nil or
-				data == nil or
-				(data.userid ~= nil and (self.playeravatarpopup.userid == data.userid or self.owner.userid == data.userid)) or --if we have a userid, test for that
-				(data.userid == nil and self.playeravatarpopup.target == data.inst) then --if no userid, then compare inst
-					self.playeravatarpopup = nil
-					return
-            end
+    if self.playeravatarpopup ~= nil and
+        self.playeravatarpopup.started and
+        self.playeravatarpopup.inst:IsValid() then
+        self.playeravatarpopup:Close()
+        if player_name == nil or
+            data == nil or
+            (data.userid ~= nil and (self.playeravatarpopup.userid == data.userid or self.owner.userid == data.userid)) or --if we have a userid, test for that
+            (data.userid == nil and self.playeravatarpopup.target == data.inst) then --if no userid, then compare inst
+            self.playeravatarpopup = nil
+            return
         end
     end
-    if self.owner.userid == data.userid or data.userid == nil then 
-    	-- Don't show steam button for yourself or targets without a userid(skeletons)
-    	self.playeravatarpopup = self.controls.right_root:AddChild(PlayerAvatarPopup(self.owner, player_name, data, false))
-    else
-    	self.playeravatarpopup = self.controls.right_root:AddChild(PlayerAvatarPopup(self.owner, player_name, data, show_net_profile))
-    end
+
+    -- Don't show steam button for yourself or targets without a userid(skeletons)
+    self.playeravatarpopup = self.controls.right_root:AddChild(PlayerAvatarPopup(self.owner, player_name, data, show_net_profile and data.userid ~= nil and data.userid ~= self.owner.userid))
 end
 
 function PlayerHud:OpenScreenUnderPause(screen)
@@ -559,7 +571,7 @@ function PlayerHud:CloseControllerCrafting()
 end
 
 function PlayerHud:ShowPlayerStatusScreen()
-    if not self.playerstatusscreen then
+    if self.playerstatusscreen == nil then
         self.playerstatusscreen = PlayerStatusScreen(self.owner)
     end
     TheFrontEnd:PushScreen(self.playerstatusscreen)

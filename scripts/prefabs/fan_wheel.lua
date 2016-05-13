@@ -65,6 +65,53 @@ local function SetSpinning(inst, isspinning)
     inst._isspinning:set(isspinning)
 end
 
+local function transfertostatemem(inst, sg)
+    if sg.statemem.followfx == nil then
+        sg.statemem.followfx = { inst }
+    else
+        table.insert(sg.statemem.followfx, inst)
+    end
+end
+
+local function delayedremove(inst)
+    inst._timeout = inst:DoTaskInTime(0, inst.Remove)
+end
+
+local function StartUnequipping(inst, item)
+    local parent = inst.entity:GetParent()
+    if parent == nil or
+        item.components.inventoryitem == nil or
+        item.components.inventoryitem.owner ~= parent then
+        --not held anymore
+        inst:Remove()
+        return
+    end
+
+    --The trick here is that we want to keep the fx around if
+    --the character is going to animate putting the item away
+
+    --Remove immediately if it gets dropped at anytime
+    inst:ListenForEvent("ondropped", function() inst:Remove() end, item)
+
+    --Now we try to pass the reference to this fx over to the
+    --character's stategraph, which will handle cleanup there
+
+    --If we're in the item_in state, push this fx to statemem
+    if parent.sg.currentstate.name ~= "item_in" then
+        inst._timeout = inst:DoTaskInTime(0, delayedremove)
+        inst:ListenForEvent("newstate", function(parent, data)
+            if data.statename ~= "item_in" then
+                inst:Remove()
+            else
+                inst._timeout:Cancel()
+                transfertostatemem(inst, parent.sg)
+            end
+        end, parent)
+    else
+        transfertostatemem(inst, parent.sg)
+    end
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -90,6 +137,7 @@ local function fn()
     end
 
     inst.SetSpinning = SetSpinning
+    inst.StartUnequipping = StartUnequipping
 
     inst.persists = false
 

@@ -375,11 +375,7 @@ local RPC_HANDLERS =
         if builder ~= nil then
             for k, v in pairs(AllRecipes) do
                 if v.rpc_id == recipe then
-					local skin = nil
-					if skin_index ~= -1 and PREFAB_SKINS[v.name] ~= nil then
-						skin = PREFAB_SKINS[v.name][skin_index]
-					end
-                    builder:MakeRecipeFromMenu(v, skin)
+                    builder:MakeRecipeFromMenu(v, skin_index ~= nil and PREFAB_SKINS[v.name] ~= nil and PREFAB_SKINS[v.name][skin_index] or nil)
                     return
                 end
             end
@@ -391,11 +387,7 @@ local RPC_HANDLERS =
         if builder ~= nil then
             for k, v in pairs(AllRecipes) do
                 if v.rpc_id == recipe then
-					local skin = nil
-                    if skin_index ~= nil then
-                       skin = PREFAB_SKINS[v.name][skin_index]
-                    end
-                    builder:MakeRecipeAtPoint(v, Vector3(x, 0, z), rot, skin)
+                    builder:MakeRecipeAtPoint(v, Vector3(x, 0, z), rot, skin_index ~= nil and PREFAB_SKINS[v.name] ~= nil and PREFAB_SKINS[v.name][skin_index] or nil)
                     return
                 end
             end
@@ -541,26 +533,25 @@ end
 
 MOD_RPC = {}
 MOD_RPC_HANDLERS = {}
- 
+
 setmetadata(MOD_RPC)
 setmetadata(MOD_RPC_HANDLERS)
 
-function AddModRPCHandler( namespace, name, fn )
-	if MOD_RPC[namespace] == nil then
-		MOD_RPC[namespace] = {}
-		MOD_RPC_HANDLERS[namespace] = {}
+function AddModRPCHandler(namespace, name, fn)
+    if MOD_RPC[namespace] == nil then
+        MOD_RPC[namespace] = {}
+        MOD_RPC_HANDLERS[namespace] = {}
 
         setmetadata(MOD_RPC[namespace])
         setmetadata(MOD_RPC_HANDLERS[namespace])
-	end
-	
+    end
 
-	table.insert(MOD_RPC_HANDLERS[namespace], fn)
+    table.insert(MOD_RPC_HANDLERS[namespace], fn)
     MOD_RPC[namespace][name] = { namespace = namespace, id = #MOD_RPC_HANDLERS[namespace] }
 
     setmetadata(MOD_RPC[namespace][name])
-	
-	setmetadata(MOD_RPC[namespace][name])
+
+    setmetadata(MOD_RPC[namespace][name])
 end
 
 function SendModRPCToServer(id_table, ...)
@@ -569,22 +560,29 @@ function SendModRPCToServer(id_table, ...)
 end
 
 function HandleModRPC(sender, tick, namespace, code, data)
-	if MOD_RPC_HANDLERS[namespace] ~= nil then
-		local fn = MOD_RPC_HANDLERS[namespace][code]
-		if fn ~= nil then
-			table.insert(RPC_Queue, { fn, sender, data, tick })
-		else
-			print("Invalid RPC code: ", namespace, code)
-		end
-	else
-		print("Invalid RPC namespace: ", namespace, code)
-	end
+    if MOD_RPC_HANDLERS[namespace] ~= nil then
+        local fn = MOD_RPC_HANDLERS[namespace][code]
+        if fn ~= nil then
+            table.insert(RPC_Queue, { fn, sender, data, tick })
+        else
+            print("Invalid RPC code: ", namespace, code)
+        end
+    else
+        print("Invalid RPC namespace: ", namespace, code)
+    end
 end
 
-function GetModRPCHandler( namespace, name )
-	return MOD_RPC_HANDLERS[namespace][MOD_RPC[namespace][name].id]
+function GetModRPCHandler(namespace, name)
+    return MOD_RPC_HANDLERS[namespace][MOD_RPC[namespace][name].id]
 end
 
-function GetModRPC( namespace, name )
-	return MOD_RPC[namespace][name]
+function GetModRPC(namespace, name)
+    return MOD_RPC[namespace][name]
+end
+
+--For gamelogic to deactivate world on a client when
+--server has initiated a reset or world regeneration
+function DisableRPCSending()
+    SendRPCToServer = function() end
+    SendModRPCToServer = SendRPCToServer
 end

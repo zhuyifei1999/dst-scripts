@@ -869,7 +869,7 @@ STRINGS=
         SLURTLEHAT = "Shelmet",
         SNURTLE = "Snurtle",
         SLURTLE_SHELLPIECES = "Broken Shell",
-        ARMORSNURTLESHELL = "Snurtle Shell Armour",
+        ARMORSNURTLESHELL = "Snurtle Shell Armor",
         MAGIC_BLUEPRINT = "Blank Blueprint",
         BLUEPRINT = "Blueprint",
         BAT = "Batilisk",
@@ -1102,7 +1102,6 @@ STRINGS=
         BOOK_SLEEP = "Soothing tales to send you off to dreamland.",
         BOOK_BRIMSTONE = "The world will end in fire and tribulation!",
 
-        SADDLE_RACE = "The speedboost might just offset the time you spent making it!",
         COMPASS = "Points the way north.",
         GUNPOWDER = "A handful of gunpowder.",
         TORCH = "Portable light source.",
@@ -1187,7 +1186,7 @@ STRINGS=
         REFLECTIVEVEST = "Keep cool and fresh in this stylish vest.",
         HAWAIIANSHIRT = "Fun in the sun. Or on Casual Fridays.",
         BEARGERVEST = "A bear of a vest.",
-        ARMORDRAGONFLY = "Armour with a fiery temper.",
+        ARMORDRAGONFLY = "Armor with a fiery temper.",
         STAFF_TORNADO = "Blow your enemies away.",
         TRUNKVEST_SUMMER = "Warm, but not that warm.",
         TRUNKVEST_WINTER = "Warm enough for winter storms.",
@@ -1269,6 +1268,7 @@ STRINGS=
         WHIP = "Dish out some constructive feedback.",
         SADDLE_BASIC = "Lets you sit on animals. In theory.",
         SADDLE_WAR = "A throne for the boss of the battlefield.",
+        SADDLE_RACE = "The speedboost might just offset the time you spent making it!",
 
         BELL = "This isn't just any bell.",
 
@@ -1281,7 +1281,7 @@ STRINGS=
 
         BERNIE_INACTIVE = "A familiar face in this mad world.",
 
-        WARDROBE = "Change your look.",
+        WARDROBE = "Change your look to suit your mood.",
 
         WAXWELLJOURNAL = "It'll blow your mind.",
         SHADOWLUMBER_BUILDER = "Holds a grudge against trees.",
@@ -2556,7 +2556,7 @@ STRINGS.UI =
         DST_TITLE = "Not Paused.",
         DST_SUBTITLE = "Seriously. It's Not.",
         SAVEANDQUITTITLE = "Save and return to main menu?",
-        SAVEANDQUITBODY = "Don't worry: we'll wait here for you.",
+        SAVEANDQUITBODY = "Don't worry. We'll wait here for you.",
         SAVEANDQUITYES = "I said quit!",
         SAVEANDQUITNO = "Never mind...",
         QUITTITLE = "Return to main menu?",

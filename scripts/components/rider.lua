@@ -131,6 +131,8 @@ function Rider:Mount(target, instant)
     self.inst:FacePoint(x, y, z)
 
     self._mountannouncetask = self.inst:DoTaskInTime(2 + math.random() * 2, AnnounceMountHealth, self)
+
+    self.inst:PushEvent("mounted", { target = target })
 end
 
 function Rider:Dismount()
@@ -194,6 +196,8 @@ function Rider:ActualDismount()
     local ex_mount = self.mount
     self:StopTracking(ex_mount)
     self.mount = nil
+
+    self.inst:PushEvent("dismounted", { target = ex_mount })
 
     return ex_mount
 end

@@ -10,7 +10,6 @@ local TEMPLATES = require "widgets/templates"
 
 require "constants"
 
-
 local REPEAT_TIME = .15
 local SCROLL_REPEAT_TIME = .05
 local MOUSE_SCROLL_REPEAT_TIME = 0
@@ -20,12 +19,11 @@ local save_fade_time = .5
 
 FrontEnd = Class(function(self, name)
 	self.screenstack = {}
-	
+
 	self.screenroot = Widget("screenroot")
 	self.overlayroot = Widget("overlayroot")
 
 	------ CONSOLE -----------	
-	
 	self.consoletext = Text(BODYTEXTFONT, 20, "CONSOLE TEXT")
 	self.consoletext:SetVAlign(ANCHOR_BOTTOM)
 	self.consoletext:SetHAlign(ANCHOR_LEFT)
@@ -38,8 +36,6 @@ FrontEnd = Class(function(self, name)
 	self.consoletext:Hide()
     -----------------
 
-
-
     self.blackoverlay = Image("images/global.xml", "square.tex")
     self.blackoverlay:SetVRegPoint(ANCHOR_MIDDLE)
     self.blackoverlay:SetHRegPoint(ANCHOR_MIDDLE)
@@ -49,7 +45,6 @@ FrontEnd = Class(function(self, name)
     self.blackoverlay:SetTint(0,0,0,0)
 	self.blackoverlay:SetClickable(false)
 	self.blackoverlay:Hide()
-
 
     self.topblackoverlay = Image("images/global.xml", "square.tex")
     self.topblackoverlay:SetVRegPoint(ANCHOR_MIDDLE)
@@ -263,7 +258,6 @@ function FrontEnd:GetHelpText()
 		end
 	end
 
-	
 	-- Show the help text for the focused widget
 	if widget and widget.GetHelpText then
 		if widget.HasExclusiveHelpText and widget:HasExclusiveHelpText() then
@@ -290,44 +284,43 @@ function FrontEnd:StopTrackingMouse(autofocus)
     end
 end
 
+function FrontEnd:IsControlsDisabled()
+    return self:GetFadeLevel() > 0
+        or (self.fadedir == FADE_OUT and self.fade_delay_time == nil)
+        or global_error_widget ~= nil
+end
+
 function FrontEnd:OnFocusMove(dir, down)
-    if self:GetFadeLevel() > 0 then return true end
-	
-	if self.focus_locked then return true end
-
-
-	if #self.screenstack > 0 then
+    if self.focus_locked or self:IsControlsDisabled() then
+        return true
+	elseif #self.screenstack > 0 then
 		if self.screenstack[#self.screenstack]:OnFocusMove(dir, down) then
-	   		TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover_controller")
+	   		self:GetSound():PlaySound("dontstarve/HUD/click_mouseover_controller")
 			self.tracking_mouse = false
 			return true
-		else
-			if self.tracking_mouse and down and self.screenstack[#self.screenstack]:SetDefaultFocus() then
-				self.tracking_mouse = false
-				return true
-			end
+		elseif self.tracking_mouse and down and self.screenstack[#self.screenstack]:SetDefaultFocus() then
+			self.tracking_mouse = false
+			return true
 		end
 	end
 end
 
 function FrontEnd:OnControl(control, down)
---	print ("FE:Oncontrol", control, down)
+    -- if there is a textedit that is currently editing, stop editing if the player clicks somewhere else
+    if self.textProcessorWidget ~= nil and not self.textProcessorWidget.focus and not down and control == CONTROL_PRIMARY then
+        self:SetForceProcessTextInput(false, self.textProcessorWidget)
+    end
 
-	-- if there is a textedit that is currently editing, stop editing if the player clicks somewhere else
-	if TheFrontEnd.textProcessorWidget and not TheFrontEnd.textProcessorWidget.focus and control == CONTROL_PRIMARY and not down then
-        TheFrontEnd:SetForceProcessTextInput(false, TheFrontEnd.textProcessorWidget)
-	end
-
-    if global_error_widget ~= nil or self:GetFadeLevel() > 0 then
+    if self:IsControlsDisabled() then
         return false
     --handle focus moves
 
     -- map CONTROL_PRIMARY to CONTROL_ACCEPT for buttons
     -- while editing a text box and hovering over something else, consume the accept button (the raw key handlers will deal with it).
-    elseif #self.screenstack > 0 and 
-    	not(TheFrontEnd.textProcessorWidget and not TheFrontEnd.textProcessorWidget.focus and control == CONTROL_ACCEPT) and
-    	self.screenstack[#self.screenstack]:OnControl(control == CONTROL_PRIMARY and CONTROL_ACCEPT or control, down) then
-    	return true
+    elseif #self.screenstack > 0
+        and not (self.textProcessorWidget ~= nil and not self.textProcessorWidget.focus and control == CONTROL_ACCEPT)
+        and self.screenstack[#self.screenstack]:OnControl(control == CONTROL_PRIMARY and CONTROL_ACCEPT or control, down) then
+        return true
 
     elseif CONSOLE_ENABLED and not down and control == CONTROL_OPEN_DEBUG_CONSOLE then
         self:PushScreen(ConsoleScreen())
@@ -430,7 +423,6 @@ function FrontEnd:SendScreenEvent(type, message)
 	end
 end
 
-
 function FrontEnd:GetSound()
 	return self.gameinterface.SoundEmitter
 end
@@ -483,7 +475,7 @@ function FrontEnd:SetFadeLevel(alpha)
         local screen = self:GetActiveScreen()
         if screen ~= nil and screen.children ~= nil then
             for k, v in pairs(screen.children) do
-				v:SetFadeAlpha(1-alpha) -- "alpha" here is the intensity of the fade, 1 is full intensity, so 0 widget alpha
+                v:SetFadeAlpha(1 - alpha) -- "alpha" here is the intensity of the fade, 1 is full intensity, so 0 widget alpha
             end
         end
     elseif self.fade_type == "black" then
@@ -552,7 +544,7 @@ function FrontEnd:Update(dt)
 	if CHEATS_ENABLED then
 	    ProbeReload(Input:IsKeyDown(KEY_F6))
 	end
-	
+
 	if self.saving_indicator ~= nil and self.saving_indicator.shown then
 		if self.save_indicator_fade then
 			local alpha = 1
@@ -593,9 +585,9 @@ function FrontEnd:Update(dt)
 
 	if #self.screenstack > 0 then
 		self.screenstack[#self.screenstack]:OnUpdate(dt)
-	end	
+	end
 
-	if not(global_error_widget ~= nil or self:GetFadeLevel() > 0) then
+    if not self:IsControlsDisabled() then
 
         --Spinner repeat
         if not (TheInput:IsControlPressed(CONTROL_PREVVALUE) or
@@ -661,19 +653,17 @@ function FrontEnd:Update(dt)
             end
         end
 
-		if self.tracking_mouse and not self.focus_locked and not (self:GetFadeLevel() > 0) then
-			local entitiesundermouse = TheInput:GetAllEntitiesUnderMouse()
-			local hover_inst = entitiesundermouse[1]
-			if hover_inst and hover_inst.widget then
-				hover_inst.widget:SetFocus()
-			else
-				if #self.screenstack > 0 then
-					self.screenstack[#self.screenstack]:SetFocus()
-				end
-			end
-		end
-	end
-	
+        if self.tracking_mouse and not self.focus_locked then
+            local entitiesundermouse = TheInput:GetAllEntitiesUnderMouse()
+            local hover_inst = entitiesundermouse[1]
+            if hover_inst and hover_inst.widget then
+                hover_inst.widget:SetFocus()
+            elseif #self.screenstack > 0 then
+                self.screenstack[#self.screenstack]:SetFocus()
+            end
+        end
+    end
+
 	TheSim:ProfilerPush("update widgets")
 	if not self.updating_widgets_alt then
 		self.updating_widgets_alt = {}
@@ -698,7 +688,7 @@ function FrontEnd:Update(dt)
 			self.helptexttext:SetString(str)
 		end
 	end
-	
+
 	TheSim:ProfilerPop()
 end
 
@@ -720,11 +710,11 @@ function FrontEnd:PushScreen(screen)
 	self.focus_locked = false
 	self:SetForceProcessTextInput(false)
 	TheInputProxy:FlushInput()
-	
+
 	--self.tracking_mouse = false
 	--jcheng: don't allow any other screens to push if we're displaying an error
     if global_error_widget ~= nil then return end
-	
+
     Print(VERBOSITY.DEBUG, 'FrontEnd:PushScreen', screen.name)
     if #self.screenstack > 0 then
         self.screenstack[#self.screenstack]:OnBecomeInactive()
@@ -732,7 +722,7 @@ function FrontEnd:PushScreen(screen)
 
     self.screenroot:AddChild(screen)
     table.insert(self.screenstack, screen)
-    
+
     -- screen:Show()
     if not self.tracking_mouse then
         screen:SetDefaultFocus()
@@ -745,7 +735,6 @@ function FrontEnd:PushScreen(screen)
 end
 
 function FrontEnd:ClearScreens()
-
 	if #self.screenstack > 0 then
 		self.screenstack[#self.screenstack]:OnLoseFocus()
 	end
@@ -754,7 +743,6 @@ function FrontEnd:ClearScreens()
 		self.screenstack[#self.screenstack]:OnDestroy()
 		table.remove(self.screenstack, #self.screenstack)
 	end
-
 end
 
 function FrontEnd:ShowConsoleLog()
@@ -766,7 +754,7 @@ function FrontEnd:HideConsoleLog()
 end
 
 function FrontEnd:DoFadeIn(time_to_take)
-	self:Fade(FADE_IN, time_to_take)	
+	self:Fade(FADE_IN, time_to_take)
 end
 
 -- **CAUTION** about using the "alpha" fade: it leaves your screen's widgets at alpha 0 when it's finished AND makes all children of the screen not clickable
@@ -807,7 +795,7 @@ function FrontEnd:PopScreen(screen)
 		Print(VERBOSITY.DEBUG,'FrontEnd:PopScreen', screen.name)
 		for k,v in ipairs(self.screenstack) do
 			if v == screen then
-				if old_head == v then 
+				if old_head == v then
 					screen:OnBecomeInactive()
 				end
 				table.remove(self.screenstack, k)
@@ -831,9 +819,9 @@ function FrontEnd:PopScreen(screen)
 	if #self.screenstack > 0 and old_head ~= self.screenstack[#self.screenstack] then
 		self.screenstack[#self.screenstack]:SetFocus()
 		self.screenstack[#self.screenstack]:OnBecomeActive()
-		
+
 		self:Update(0)
-		
+
 		--print ("POP!", self.screenstack[#self.screenstack]:GetDeepestFocus(), self.tracking_mouse)
 		--self:Fade(FADE_IN, 1)
 	end
@@ -878,189 +866,178 @@ function FrontEnd:SetForceProcessTextInput(takeText, widget)
 end
 
 function FrontEnd:OnRawKey(key, down)
---	print("FrontEnd:OnRawKey()", key, down)
-	if global_error_widget ~= nil or self:GetFadeLevel() > 0 then
-		return false
-	end
+    if self:IsControlsDisabled() then
+        return false
+    end
 
-	local screen = self:GetActiveScreen()
-    if screen then
-		if self.forceProcessText and self.textProcessorWidget then
-			self.textProcessorWidget:OnRawKey(key, down)
-		elseif not screen:OnRawKey(key, down) then
-			if PLATFORM ~= "NACL" and CHEATS_ENABLED then
-				DoDebugKey(key, down)
-			end
-		end
-	end
+    local screen = self:GetActiveScreen()
+    if screen ~= nil then
+        if self.forceProcessText and self.textProcessorWidget ~= nil then
+            self.textProcessorWidget:OnRawKey(key, down)
+        elseif not screen:OnRawKey(key, down) and CHEATS_ENABLED then
+            DoDebugKey(key, down)
+        end
+    end
 end
 
 function FrontEnd:OnTextInput(text)
-	if global_error_widget ~= nil or self:GetFadeLevel() > 0 then
-		return false
-	end
+    if self:IsControlsDisabled() then
+        return false
+    end
 
---	print("FrontEnd:OnTextInput()", text)
-	local screen = self:GetActiveScreen()
-    if screen then
-    	if self.forceProcessText and self.textProcessorWidget then
-			self.textProcessorWidget:OnTextInput(text)
-		else
-			screen:OnTextInput(text)
-		end
-	end
+    local screen = self:GetActiveScreen()
+    if screen ~= nil then
+        if self.forceProcessText and self.textProcessorWidget ~= nil then
+            self.textProcessorWidget:OnTextInput(text)
+        else
+            screen:OnTextInput(text)
+        end
+    end
 end
 
 function FrontEnd:GetHUDScale()
-	
-	local size = Profile:GetHUDSize()
-	local min_scale = .75
-	local max_scale = 1.1
-	
-	--testing high res displays
-	local w,h = TheSim:GetScreenSize()
-	
-	local res_scale_x = math.max(1, w / 1920)
-	local res_scale_y = math.max(1, h / 1200)
-	local res_scale = math.min(res_scale_x, res_scale_y)	
-	
-	local scale = easing.linear(size, min_scale, max_scale-min_scale, 10) * res_scale
-	return scale
+    local size = Profile:GetHUDSize()
+    local min_scale = .75
+    local max_scale = 1.1
+
+    --testing high res displays
+    local w, h = TheSim:GetScreenSize()
+
+    local res_scale_x = math.max(1, w / 1920)
+    local res_scale_y = math.max(1, h / 1200)
+    local res_scale = math.min(res_scale_x, res_scale_y)
+
+    return easing.linear(size, min_scale, max_scale - min_scale, 10) * res_scale
 end
 
 function FrontEnd:OnMouseButton(button, down, x, y)
-	if global_error_widget ~= nil or self:GetFadeLevel() > 0 then
-		return false
-	end
+    if self:IsControlsDisabled() then
+        return false
+    end
 
-	self.tracking_mouse = true
+    self.tracking_mouse = true
 
-	if #self.screenstack > 0 then
-		if self.screenstack[#self.screenstack]:OnMouseButton(button, down, x, y) then return true end
-	end
+    if #self.screenstack > 0 and self.screenstack[#self.screenstack]:OnMouseButton(button, down, x, y) then
+        return true
+    end
 
-	if BRANCH == "dev" and PLATFORM ~= "NACL" and CHEATS_ENABLED then
-		return DoDebugMouse(button, down, x, y)
-	end
+    return CHEATS_ENABLED and BRANCH == "dev" and DoDebugMouse(button, down, x, y)
 end
 
-function FrontEnd:OnMouseMove(x,y)
-	if global_error_widget ~= nil or self:GetFadeLevel() > 0 then
-		return false
-	end
+function FrontEnd:OnMouseMove(x, y)
+    if self:IsControlsDisabled() then
+        return false
+    end
 
+    if self.lastx ~= nil and self.lasty ~= nil and self.lastx ~= x and self.lasty ~= y then
+        self.tracking_mouse = true
+    end
 
-	if self.lastx and self.lasty and self.lastx ~= x and self.lasty ~= y then
-		self.tracking_mouse = true
-	end
-
-	self.lastx = x
-	self.lasty = y
+    self.lastx = x
+    self.lasty = y
 end
 
 function FrontEnd:OnSaveLoadError(operation, filename, status)
-    --print("OnSaveLoadError", operation, filename, status)
-    
-    TheFrontEnd:HideSavingIndicator() -- in case it's still being shown for some reason
-                
-    local function retry()  
-        TheFrontEnd:PopScreen() -- saveload error message box
+    self:HideSavingIndicator() -- in case it's still being shown for some reason
+
+    local function retry()
+        self:PopScreen() -- saveload error message box
         if operation == SAVELOAD.OPERATION.LOAD then
-            
+
             local function OnSaveGameIndexLoaded(success)
                 --print("OnSaveGameIndexLoaded", success)
-            end     
-            
+            end
+
             local function OnProfileLoaded(success)
                 --print("OnProfileLoaded", success)
                 if success then
                     SaveGameIndex:Load(OnSaveGameIndexLoaded)
                 end
             end
-                               
+
             local function OnMorgueLoaded(success)
                 --print("OnMorgueloaded", success)
                 if success then
                     Profile:Load(OnProfileLoaded)
                 end
             end
-            
+
             Morgue:Load(OnMorgueLoaded)
-            
+
         elseif operation == SAVELOAD.OPERATION.SAVE then
             -- the system service knows which files are not saved and will try to save them
-            TheFrontEnd:ShowSavingIndicator()
+            self:ShowSavingIndicator()
             TheSystemService:RetryOperation(operation, filename)
         elseif operation == SAVELOAD.OPERATION.DELETE then
             TheSystemService:RetryOperation(operation, filename)
-        end            
+        end
     end
-                        
-    if status == SAVELOAD.STATUS.DAMAGED then         
+
+    if status == SAVELOAD.STATUS.DAMAGED then
         print("OnSaveLoadError", "Damaged save data popup")
-        local function overwrite()   
+        local function overwrite()
             local function on_overwritten(success)
-                TheFrontEnd:HideSavingIndicator() 
+                self:HideSavingIndicator()
                 TheSystemService:EnableAutosave(success)
             end
-            
+
             -- OverwriteStorage will also try to resave any files found in the cache
-            TheFrontEnd:ShowSavingIndicator()
+            self:ShowSavingIndicator()
             TheSystemService:OverwriteStorage(on_overwritten)
-            TheFrontEnd:PopScreen() -- saveload error message box
+            self:PopScreen() -- saveload error message box
         end
-        
+
         local function cancel()
             TheSystemService:EnableStorage(TheSystemService:IsAutosaveEnabled())            
-            TheSystemService:ClearLastOperation()        
-            TheFrontEnd:PopScreen() -- saveload error message box
+            TheSystemService:ClearLastOperation()
+            self:PopScreen() -- saveload error message box
         end
-        
-        local function confirm_autosave_disable()   
-               
+
+        local function confirm_autosave_disable()
+
             local function disable_autosave()
-                TheSystemService:EnableStorage(false)            
-                TheSystemService:EnableAutosave(false)    
-                TheSystemService:ClearLastOperation()        
-                TheFrontEnd:PopScreen() -- confirmation message box
-                TheFrontEnd:PopScreen() -- saveload error message box
+                TheSystemService:EnableStorage(false)
+                TheSystemService:EnableAutosave(false)
+                TheSystemService:ClearLastOperation()
+                self:PopScreen() -- confirmation message box
+                self:PopScreen() -- saveload error message box
             end
-            
+
             local function dont_disable()
-                TheFrontEnd:PopScreen() -- confirmation message box
+                self:PopScreen() -- confirmation message box
             end
-            
+
             local confirmation = PopupDialogScreen(STRINGS.UI.SAVELOAD.DISABLE_AUTOSAVE, "",
-	            {
-	                {text=STRINGS.UI.SAVELOAD.YES, cb = disable_autosave},
-	                {text=STRINGS.UI.SAVELOAD.NO, cb = dont_disable}  
-	            }
-	        )
-	        confirmation.title:SetPosition(0, 40, 0)
-            self:PushScreen(confirmation) 
+                {
+                    {text=STRINGS.UI.SAVELOAD.YES, cb = disable_autosave},
+                    {text=STRINGS.UI.SAVELOAD.NO, cb = dont_disable},
+                }
+            )
+            confirmation.title:SetPosition(0, 40, 0)
+            self:PushScreen(confirmation)
         end
-        
+
         local cancel_cb = cancel
         if TheSystemService:IsAutosaveEnabled() then
             cancel_cb = confirm_autosave_disable
         end
-        
-        local popup = PopupDialogScreen(STRINGS.UI.SAVELOAD.DATA_DAMAGED, "", 
-	        {
-	            {text=STRINGS.UI.SAVELOAD.RETRY, cb = retry},
-	            {text=STRINGS.UI.SAVELOAD.OVERWRITE, cb = overwrite},
-	            {text=STRINGS.UI.SAVELOAD.CANCEL, cb = cancel_cb}  
-	        }
-	    )	  
-        self:PushScreen(popup) 
-        
+
+        local popup = PopupDialogScreen(STRINGS.UI.SAVELOAD.DATA_DAMAGED, "",
+            {
+                {text=STRINGS.UI.SAVELOAD.RETRY, cb = retry},
+                {text=STRINGS.UI.SAVELOAD.OVERWRITE, cb = overwrite},
+                {text=STRINGS.UI.SAVELOAD.CANCEL, cb = cancel_cb},
+            }
+        )
+        self:PushScreen(popup)
+
     elseif status == SAVELOAD.STATUS.FAILED then
-                
-        local function cancel()  
-            TheSystemService:ClearLastOperation()        
-            TheFrontEnd:PopScreen() -- saveload error message box
+
+        local function cancel()
+            TheSystemService:ClearLastOperation()
+            self:PopScreen() -- saveload error message box
         end
-    
+
         local text
         if operation == SAVELOAD.OPERATION.LOAD then
             text = STRINGS.UI.SAVELOAD.LOAD_FAILED
@@ -1069,34 +1046,34 @@ function FrontEnd:OnSaveLoadError(operation, filename, status)
         elseif operation == SAVELOAD.OPERATION.DELETE then
             text = STRINGS.UI.SAVELOAD.DELETE_FAILED
         end
-        
+
         local popup = PopupDialogScreen(text, "",
-	        {
-	            {text=STRINGS.UI.SAVELOAD.RETRY, cb = retry},
-	            {text=STRINGS.UI.SAVELOAD.CANCEL, cb = cancel}  
-	        }
-	    )
-        self:PushScreen(popup) 
-    end    
+            {
+                {text=STRINGS.UI.SAVELOAD.RETRY, cb = retry},
+                {text=STRINGS.UI.SAVELOAD.CANCEL, cb = cancel},
+            }
+        )
+        self:PushScreen(popup)
+    end
 end
 
 function OnSaveLoadError(operation, filename, status)
     TheFrontEnd:OnSaveLoadError(operation, filename, status)
 end
 
-function FrontEnd:IsScreenInStack( screen )
-	for _,screen_in_stack in pairs(self.screenstack) do
-		if screen_in_stack == screen then
-			return true
-		end
-	end
-	return false
+function FrontEnd:IsScreenInStack(screen)
+    for _,screen_in_stack in pairs(self.screenstack) do
+        if screen_in_stack == screen then
+            return true
+        end
+    end
+    return false
 end
 
 function FrontEnd:SetOfflineMode(isOffline)
-	self.offline = isOffline
+    self.offline = isOffline
 end
 
 function FrontEnd:GetIsOfflineMode()
-	return self.offline
+    return self.offline
 end

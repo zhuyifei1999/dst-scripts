@@ -3780,6 +3780,14 @@ local states =
                 end
             end),
         },
+
+        onexit = function(inst)
+            if inst.sg.statemem.followfx ~= nil then
+                for i, v in ipairs(inst.sg.statemem.followfx) do
+                    v:Remove()
+                end
+            end
+        end,
     },
 
     State{

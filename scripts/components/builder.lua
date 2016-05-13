@@ -330,7 +330,7 @@ function Builder:MakeRecipe(recipe, pt, rot, skin, onsuccess)
         if self:IsBuildBuffered(recipe.name) or self:CanBuild(recipe.name) then
             self.inst.components.locomotor:Stop()
             local buffaction = BufferedAction(self.inst, nil, ACTIONS.BUILD, nil, pt or self.inst:GetPosition(), recipe.name, 1, nil, rot)
-			buffaction.skin = skin
+            buffaction.skin = skin
             if onsuccess ~= nil then
                 buffaction:AddSuccessAction(onsuccess)
             end
@@ -485,20 +485,21 @@ end
 --------------------------------------------------------------------------
 
 function Builder:MakeRecipeFromMenu(recipe, skin)
-	local validated_skin = ValidateRecipeSkinRequest( self.inst.userid, recipe.name, skin )
-	
     if recipe.placer == nil then
         if self:KnowsRecipe(recipe.name) then
             if self:IsBuildBuffered(recipe.name) or self:CanBuild(recipe.name) then
-                self:MakeRecipe(recipe, nil, nil, validated_skin)
+                self:MakeRecipe(recipe, nil, nil, ValidateRecipeSkinRequest(self.inst.userid, recipe.name, skin))
             end
         elseif CanPrototypeRecipe(recipe.level, self.accessible_tech_trees) and
             self:CanLearn(recipe.name) and
             self:CanBuild(recipe.name) then
-            self:MakeRecipe(recipe, nil, nil, validated_skin, function()
-                self:ActivateCurrentResearchMachine()
-                self:UnlockRecipe(recipe.name)
-            end)
+            self:MakeRecipe(recipe, nil, nil,
+                ValidateRecipeSkinRequest(self.inst.userid, recipe.name, skin),
+                function()
+                    self:ActivateCurrentResearchMachine()
+                    self:UnlockRecipe(recipe.name)
+                end
+            )
         end
     end
 end

@@ -76,7 +76,7 @@ return {
         },
         TEACH =
         {
-            KNOWN = "Wolfgang already knows!",
+            KNOWN = "Wolfgang already knows this!",
             CANTLEARN = "I do not get it.",
         },
 	},
@@ -88,7 +88,7 @@ return {
 	ANNOUNCE_MIGHTYTONORMAL="I need to fill my mighty belly again!",
 
 	ANNOUNCE_NOSLEEPONFIRE = "Is too hot for sleeping.",
-	ANNOUNCE_NODANGERSIESTA = "Wolfgang prefer fight to nap.",
+	ANNOUNCE_NODANGERSIESTA = "I prefer fighting to napping!",
 	ANNOUNCE_NONIGHTSIESTA = "Wolfgang have principles against siesta at night.",
 	ANNOUNCE_NONIGHTSIESTA_CAVE = "Wolfgang is tense, too tense to relax.",
 	ANNOUNCE_NOHUNGERSIESTA = "Wolfgang take siesta after eating time.",
@@ -159,7 +159,7 @@ return {
 	ANNOUNCE_NODANGERAFK = "Wolfgang will not abandon the fight!",
 	ANNOUNCE_NODANGERGIFT = "Fight is better than present!",
 	ANNOUNCE_NOWARDROBEONFIRE = "Ehh, Wolfgang do that later...",
-	ANNOUNCE_WORMS = "Earth tremble beneath Wolfgang's mighty feet!",
+	ANNOUNCE_WORMS = "Earth is tremble beneath Wolfgang's mighty feet!",
 	BATTLECRY =
 	{
 		GENERIC = "I will punch you!",
@@ -188,15 +188,15 @@ return {
         },
         WILSON = 
         {
-            GENERIC = "Is tiny egghead-man, %s! Hello!",
+            GENERIC = "Is tiny egghead man, %s! Hello!",
             ATTACKER = "Does weak science man want to fight?",
             MURDERER = "%s stands no chance against Wolfgang!",
             REVIVER = "%s is nice, crazy man.",
-            GHOST = "Ha ha! Big brain did not save you. I will go get heart.",
+            GHOST = "Ha ha! Big brain did not save you. I will get heart.",
         },
         WOLFGANG = 
         {
-            GENERIC = "Hello friend-%s! We must arm wrestle!",
+            GENERIC = "Hello friend %s! We must arm wrestle!",
             ATTACKER = "%s will make a worthy fight!",
             MURDERER = "We will see who is best Wolfgang! Raaa!",
             REVIVER = "%s is nice man. Like me! Ha ha.",
@@ -204,7 +204,7 @@ return {
         },
         WAXWELL = 
         {
-            GENERIC = "Is tiny frail-man, %s! Hello!",
+            GENERIC = "Is tiny frailman, %s! Hello!",
             ATTACKER = "Does fragile %s want to fight? Ha ha! Is funny.",
             MURDERER = "%s has not changed. Killer!",
             REVIVER = "%s is one of us. Ha ha! Yes!",
@@ -220,11 +220,11 @@ return {
         },
         WILLOW = 
         {
-            GENERIC = "Is tiny torch-lady, %s! Hello!",
+            GENERIC = "Is tiny torchlady, %s! Hello!",
             ATTACKER = "Wolfgang is burning to fight!",
             MURDERER = "%s is no match for Wolfgang!",
             REVIVER = "%s is very nice, when not light moustache on fire.",
-            GHOST = "Do not hurt, torch-lady. Wolfgang get heart!",
+            GHOST = "Do not hurt, torchlady. Wolfgang get heart!",
         },
         WENDY = 
         {
@@ -246,15 +246,15 @@ return {
         },
         WICKERBOTTOM = 
         {
-            GENERIC = "Is strong brain-lady! Hello, tiny %s!",
-            ATTACKER = "Ha ha! %s should not pick a fight with dumb books!",
+            GENERIC = "Is strong brainlady! Hello, tiny %s!",
+            ATTACKER = "Ha ha! %s should not pick fight with dumb books!",
             MURDERER = "%s is killer!",
             REVIVER = "%s smell like mothballs and kindness.",
             GHOST = "Wolfgang will get raw pump-y heart for you!",
         },
         WES = 
         {
-            GENERIC = "Is tiny odd-man, %s! Hello!",
+            GENERIC = "Is tiny oddman, %s! Hello!",
             ATTACKER = "Wolfgang does not trust your rosy cheeks, %s.",
             MURDERER = "Ah! Is killer clown! %s!",
             REVIVER = "%s is nice, weird little man.",
@@ -262,10 +262,10 @@ return {
         },
         WEBBER = 
         {
-            GENERIC = "Is tiny monster-child, %s! H-hello!",
+            GENERIC = "Is tiny monsterchild, %s! H-hello!",
             ATTACKER = "Ah! Tiny child is try to fight me!",
-            MURDERER = "Monster child %s is killer! Wolfgang is run!",
-            REVIVER = "Creepy monster-%s is nice kid.",
+            MURDERER = "Monsterchild %s is killer! Wolfgang is run!",
+            REVIVER = "Creepy monster %s is nice kid.",
             GHOST = "Who squish small bug boy? Wolfgang will smash back!",
         },
         WATHGRITHR = 
@@ -273,7 +273,7 @@ return {
             GENERIC = "Is very strong %s! Hello!",
             ATTACKER = "%s will make a worthy fight!",
             MURDERER = "Stronglady %s is killer!",
-            REVIVER = "%s is nice, stronglady.",
+            REVIVER = "%s is nice, strong lady.",
             GHOST = "World needs stronglady! Wolfgang will get heart!",
         },
 
@@ -362,7 +362,7 @@ return {
 			GENERIC = "Stump is suspicious.",
 			EMPTY = "Wolfgang more comfortable now that stump is empty.",
 		},
-		CATCOONHAT = "Now Wolfgang not trust himself.",
+		CATCOONHAT = "Hat of untrust-y-ness.",
 		COONTAIL = "Wiggly cat part!",
 		COOKPOT =
 		{
@@ -458,14 +458,14 @@ return {
 		{
 			GENERIC = "Is pretty.",
 			LONG = "Is pretty.",
-			MEDIUM = "Little flower gives Wolfgang the 'heebie jeebies'.",
+			MEDIUM = "Little flower gives Wolfgang the \"heebie jeebies\".",
 			SOON = "I do not like.",
 			HAUNTED_POCKET = "Is making Wolfgang scared!",
 			HAUNTED_GROUND = "Does it want to fight?",
 		},
 
 		BOOK_BIRDS = "Book is for the birds!",
-		BOOK_TENTACLES = "Wolfgang will call many foes to fight!",
+		BOOK_TENTACLES = "Wolfgang wants many foes to fight!",
 		BOOK_GARDENING = "Wolfgang rather grow muscle than flowers.",
 		BOOK_SLEEP = "Wolfgang's eyes feel heavy like dumbbells.",
 		BOOK_BRIMSTONE = "Tiny book scares Wolfgang!",
@@ -496,8 +496,8 @@ return {
 		},
 		PIGHOUSE =
 		{
-			FULL = "Hey! Come out here, pig man!",
-			GENERIC = "The door is too small for me.",
+			FULL = "Come out and fight, pig man!",
+			GENERIC = "Door is too small for my broad shoulders.",
 			LIGHTSOUT = "Where did he go?",
 			BURNT = "Pig home is gone.",
 		},
@@ -574,12 +574,12 @@ return {
 		},
 		WARG = "Big puppy!",
 		WATERMELON = "So many seeds.",
-		WATERMELON_COOKED = "I cook seeds out of melon.",
+		WATERMELON_COOKED = "Seeds is cooked out of melon now.",
 		WATERMELONHAT = "Why not wear melon on head! Haha!",
 		WINTEROMETER = 
 		{
 			GENERIC = "Cold go up! Red go down!",
-			BURNT = "Flames go up! Thermometer go down!",
+			BURNT = "Flames go up! Measure machine go down!",
 		},
 		HOME = "Tiny house for weaklings!",
 		HOMESIGN =
@@ -624,13 +624,13 @@ return {
 		EEL_COOKED = "Eel has been cooked.",
 		UNAGI = "Food makes me mighty!",
 		EYETURRET = "Mighty structure will help me fight!",
-		EYETURRET_ITEM = "I must place this.",
+		EYETURRET_ITEM = "It needs strong placing.",
 		MINOTAURHORN = "Is trophy from mighty foe.",
 		MINOTAURCHEST = "Chest have big strong horns.",
 		THULECITE_PIECES = "Can smash together to make bigger piece!",
 		POND_ALGAE = "Plant is so small! Is funny to me.",
-		GREENSTAFF = "This stick has a green gem on it.",
-		POTTEDFERN = "It makes me happy.",
+		GREENSTAFF = "This stick has green gem in it.",
+		POTTEDFERN = "Wolfgang worry greenthumb is gangrene.",
 
 		SLURPER = "No! No! Stay off head!",
 		SLURPER_PELT = "It's still moving!",
@@ -656,7 +656,7 @@ return {
 
         ANCIENT_ALTAR =
         {
-        	WORKING = "Is nasty, creepy, altar.",
+        	WORKING = "Is nasty, creepy altar.",
         	BROKEN = "Is broken altar.",
         },  
         ANCIENT_ALTAR_BROKEN = "Is broken altar.",
@@ -673,7 +673,7 @@ return {
 
         BLUEAMULET = "Would make good ice cube!",
 		PURPLEAMULET = "This amulet... it frightens Wolfgang.",
-		TELESTAFF = "It gives me a headache.",
+		TELESTAFF = "Fancy headache stick.",
 		MINERHAT = "Lamp for put on head.",
 		MONKEY = "Ugly monkey man!",
 		MONKEYBARREL = "This... thing. It smells not so good.",
@@ -694,15 +694,18 @@ return {
 		LANTERN="It keeps me safe from dark.",
 		LIGHTBULB="Is food?",
 		MANRABBIT_TAIL="Puffy!",
-		MUSHTREE_TALL={
+		MUSHTREE_TALL=
+		{
             GENERIC = "Big mushtree is big.",
             BLOOM = "Woah! It's even bigger!",
         },
-		MUSHTREE_MEDIUM={
+		MUSHTREE_MEDIUM=
+		{
             GENERIC = "Mushy bush.",
             BLOOM = "It's having fun!",
         },
-		MUSHTREE_SMALL={
+		MUSHTREE_SMALL=
+		{
             GENERIC = "Mushy shrub.",
             BLOOM = "Even smell is strong!",
         },
@@ -727,10 +730,10 @@ return {
 		STALAGMITE_FULL="Is pointy.",
 		STALAGMITE_LOW="Is pointy.",
 		STALAGMITE_MED="Is pointy.",
-		STALAGMITE_TALL="Rock reaching for the roof.",
-		STALAGMITE_TALL_FULL="Rock reaching for the roof.",
-		STALAGMITE_TALL_LOW="Rock reaching for the roof.",
-		STALAGMITE_TALL_MED="Rock reaching for the roof.",
+		STALAGMITE_TALL="Rock, reaching for the roof.",
+		STALAGMITE_TALL_FULL="Rock, reaching for the roof.",
+		STALAGMITE_TALL_LOW="Rock, reaching for the roof.",
+		STALAGMITE_TALL_MED="Rock, reaching for the roof.",
 
 		TREASURECHEST_TRAP = "Raagh!",
 		TURF_CARPETFLOOR = "Step stones.",
@@ -817,8 +820,8 @@ return {
 		BEEFALOWOOL = "Clothes made of hair-cow.",
 		BEEHAT = "Is hat for to protect from stinger bees.",
 		BEEHIVE = "Oh, beehive!",
-		BEEMINE = "Is ball full of anger bees.",
-		BEEMINE_MAXWELL = "Is ball full of anger mosquitoes.",
+		BEEMINE = "Is ball full of angry bees.",
+		BEEMINE_MAXWELL = "Is ball full of angry bitebugs.",
 		BERRIES = "Is tasty!",
 		BERRIES_COOKED = "Is more tasty!",
         BERRIES_JUICY = "Is extra sweet and juicy!",
@@ -841,7 +844,7 @@ return {
 		},
 		BIRDCAGE =
 		{
-			GENERIC = "Is home for my birdies.",
+			GENERIC = "Is home for birdies.",
 			OCCUPIED = "Hello birdie!",
 			SLEEPING = "I should be quiet!",
 			HUNGRY = "I hear tiny grumbles!",
@@ -863,13 +866,13 @@ return {
 
 		BLUEPRINT = "Pretty pictures!",
 		BELL_BLUEPRINT = "Pretty pictures!",
-		BLUE_CAP = "Is good for me, I think.",
+		BLUE_CAP = "Is good for tired muscles, I think.",
 		BLUE_CAP_COOKED = "Is not same.",
 		BLUE_MUSHROOM =
 		{
 			GENERIC = "Is mushy room.",
 			INGROUND = "Mushy room is hiding!",
-			PICKED = "I already took that mushy room.",
+			PICKED = "Is taken already.",
 		},
 		BOARDS = "Log was broken to make board!",
 		BONESTEW = "Is stew full of strong meat.",
@@ -886,7 +889,7 @@ return {
 		CAMPFIRE =
 		{
 			EMBERS = "The darkness is coming!",
-			GENERIC = "Good bye dark times!",
+			GENERIC = "Goodbye dark times!",
 			HIGH = "Is too much fire!",
 			LOW = "The fire is not hot enough.",
 			NORMAL = "Is good fire!",
@@ -905,7 +908,7 @@ return {
 		CHESTER = "Strange box with legs.",
 		CHESTER_EYEBONE =
 		{
-			GENERIC = "It is eye bone. Eye bone connect to face bone.",
+			GENERIC = "It is eyebone. Eyebone connect to facebone.",
 			WAITING = "It sleeps now.",
 		},
 		COOKEDMEAT = "I made meat good with fire!",
@@ -916,7 +919,7 @@ return {
 		CORN_SEEDS = "Is seeds for grow corn.",
 		CROW =
 		{
-			GENERIC = "I do not like birds.",
+			GENERIC = "I do not like birds. Too fragile.",
 			HELD = "He is squawky.",
 		},
 		CUTGRASS = "Is pile of grass.",
@@ -945,7 +948,7 @@ return {
 			UNLOCKED = "Rod thing is on!",
 		},
 		DIVININGRODSTART = "Is funny rod thing.",
-		DRAGONFLY = "I confuse: is dragonfly or a dragon-fly?",
+		DRAGONFLY = "I confuse... Is dragonfly, or dragon-fly?",
 
 		HUTCH = "You are creepy.",
         HUTCH_FISHBOWL =
@@ -979,7 +982,7 @@ return {
 		},
 		LAVAE_TOOTH = "What a mighty tooth!",
 
-		DRAGONFRUIT = "Is funny looking fruit.",
+		DRAGONFRUIT = "Is funny-looking fruit.",
 		DRAGONFRUIT_COOKED = "Is cooked but still look funny.",
 		DRAGONFRUIT_SEEDS = "Could use this to grow funny fruit, maybe.",
 		DRAGONPIE = "Pie made of funny red fruit.",
@@ -993,8 +996,7 @@ return {
 		DURIAN = "Is spiky smelly fruit.",
 		DURIAN_COOKED = "Now is hot spiky smelly fruit.",
 		DURIAN_SEEDS = "Tiny baby spiky fruit plant.",
-		EARMUFFSHAT = "Now I look like little bunny!",
-		EARMUFFHAT = "Now I look like little bunny!",
+		EARMUFFSHAT = "Is could make me look like little bunny!",
 		EGGPLANT = "Is not egg!",
 		EGGPLANT_COOKED = "Has no yolk! Yolk is strongest part!",
 		EGGPLANT_SEEDS = "Teensy fake egg plant.",
@@ -1149,7 +1151,7 @@ return {
 		LOG =
 		{
 			BURNING = "When I stick my hand over it, it tickles.",
-			GENERIC = "The remains of tree-fights!",
+			GENERIC = "Remains of tree-fights!",
 		},
 		LUREPLANT = "You cannot fool Wolfgang!",
 		LUREPLANTBULB = "Ah ha! Who is tricky now?",
@@ -1177,7 +1179,7 @@ return {
 			GENERIC = "Is spiky.",
 		},
 		MAXWELL = "A fancy suit is no match for my muscles!",
-		MAXWELLHEAD = "Scary head is 12 feet tall!",
+		MAXWELLHEAD = "Scary head is twelve feet tall!",
 		MAXWELLLIGHT = "Scary light!",
 		MAXWELLLOCK = "Scary lock!",
 		MAXWELLTHRONE = "Scary chair!",
@@ -1242,7 +1244,7 @@ return {
 			READY = "Mmmm. Is tasty now.",
 			WITHERED = "Is sad and dried plant.",
 		},
-		POMEGRANATE = "Look like smartypants' brain.",
+		POMEGRANATE = "Look like smartypants brain.",
 		POMEGRANATE_COOKED = "Ha ha ha! Brain is cooked! Not so smart now.",
 		POMEGRANATE_SEEDS = "Is piece of brain?",
 		POND = "Is all wet.",
@@ -1268,7 +1270,7 @@ return {
 		RATATOUILLE = "Is food. Sort of.",
 		RAZOR = "My skin is too strong for hairs!",
 		REDGEM = "Pretty rock.",
-		RED_CAP = "Oh! Is Pretty and shiny!",
+		RED_CAP = "Oh! Is pretty and shiny!",
 		RED_CAP_COOKED = "Is not same.",
 		RED_MUSHROOM =
 		{
@@ -1280,7 +1282,7 @@ return {
 		{
 			BURNING = "Not good!",
 			GENERIC = "Is watery grass.",
-			PICKED = "Reeds have been beaten!",
+			PICKED = "Watery grass has been beaten!",
 		},
         RELIC = 
         {
@@ -1308,7 +1310,7 @@ return {
 			LOW = "Is getting cold.",
 			NORMAL = "Liquid fire!",
         },
-		ROCK = "Is hard! Like me!",
+		ROCK = "Everyone watch! Wolfgang will deadlift!",
 		ROCKS = "Is rock. What you not get?",
         ROOK = "This one jumps the queen!",
 		ROPE = "Strong! Like me!",
@@ -1334,7 +1336,7 @@ return {
 		SEEDS = "Too small to eat.",
 		SEEDS_COOKED = "Fire make bigger, can eat now.",
 		SEWING_KIT = "Is pokey!",
-		SHOVEL = "Dirt Spoon!",
+		SHOVEL = "Dirt spoon!",
 		SILK = "Is too fancy.",
 		SKELETON = "Not enough muscle.",
 		--SKELETON_PLAYER = "Where did all muscles go?!",
@@ -1362,7 +1364,7 @@ return {
 		{
 			DEAD = "Is made of sticky goo!",
 			GENERIC = "He has scary face!",
-			SLEEPING = "Walk quiet, and he might not see me.",
+			SLEEPING = "Walk quiet, he might not see me.",
 		},
 		SPIDERDEN = "The bugs are hiding in there.",
 		SPIDEREGGSACK = "Nasty spider eggs.",
@@ -1389,7 +1391,7 @@ return {
 		TALLBIRDEGG_COOKED = "Cooked bird. Good for breakfast!",
 		TALLBIRDEGG_CRACKED =
 		{
-			COLD = "Bird like ice cube!",
+			COLD = "Bird is like ice cube!",
 			GENERIC = "Little bird is trying to get out.",
 			HOT = "Is too hot for little bird!",
 			LONG = "I wait for bird.",
@@ -1404,7 +1406,7 @@ return {
 		{
 			GENERIC = "Hah! Not so tall.",
 			HUNGRY = "Is hungry, and noisy.",
-			STARVING = "Is hungry, noisy and angry!",
+			STARVING = "Is hungry, noisy, and angry!",
 		},
 		TELEPORTATO_BASE =
 		{
@@ -1435,13 +1437,13 @@ return {
 		TRINKET_4 = "Ha ha! Is tiny man!",
 		TRINKET_5 = "What is do?",
 		TRINKET_6 = "Robot bits.",
-		TRINKET_7 = "Tiny torch-lady can start firepit with toy! Very impressive.",
+		TRINKET_7 = "Tiny torchlady can start firepit with toy! Very impressive.",
 		TRINKET_8 = "Hardened, like Wolfgang.",
-		TRINKET_9 = "Strong brain-lady maybe need for repair cardigans.",
+		TRINKET_9 = "Strong brainlady maybe need for repair cardigans.",
 		TRINKET_10 = "Is pearly chompers!",
 		TRINKET_11 = "Metal friend would like this, yes!",
 		TRINKET_12 = "Yuck.",
-		TRINKET_13 = "Ah! Is creepy little girl! ...No, wait, is just toy.",
+		TRINKET_13 = "Ah! Is the creepy little girl! ...No, wait, is just toy.",
 		TRINKET_14 = "Beard will not like such pictures.",
         TRINKET_15 = "Junk from braingame!",
         TRINKET_16 = "Junk from braingame!",
@@ -1457,7 +1459,7 @@ return {
 		TRINKET_26 = "Is cup made of potato, I think.",
 		TRINKET_27 = "Is skinny and bendy, like clownman.",
 		TRUNKVEST_SUMMER = "Is warm fuzzy nose.",
-		TRUNKVEST_WINTER = "I'm real cozy in this nose!",
+		TRUNKVEST_WINTER = "Cozy nosy!",
 		TRUNK_COOKED = "Is cooked nose.",
 		TRUNK_SUMMER = "Is floppy nose.",
 		TRUNK_WINTER = "Is floppy hairy nose.",
@@ -1481,7 +1483,7 @@ return {
 		WALL_HAY_ITEM = "Scratchy straws!",
 		WALL_STONE = "Wall is strong like me!",
 		WALL_STONE_ITEM = "Piles of rocks!",
-		WALL_RUINS = "Old Wall is strong!",
+		WALL_RUINS = "Old wall is strong!",
 		WALL_RUINS_ITEM = "Stack of old rocks!",
 		WALL_WOOD_ITEM = "Pokey sticks!",
 		WALL_MOONROCK = "Rock of moon protects Wolfgang.",
@@ -1515,7 +1517,7 @@ return {
         ARMORRUINS = "Protect me? I don't need it!",
         BISHOP_NIGHTMARE = "Is angry man. Should relax.",
         GREENAMULET = "What is this thing?", 
-        GREENGEM = "Is pretty and not be crushed. Like me!",
+        GREENGEM = "Is pretty and cannot be crushed. Like me!",
         KNIGHT_NIGHTMARE = "Funny metal man.",
         MINOTAUR = "Strong! Like me! I like him!",    
         MULTITOOL_AXE_PICKAXE = "Chop and dig! I can do that all day.",

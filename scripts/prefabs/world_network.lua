@@ -18,6 +18,10 @@ end
 
 local function DoPostInit(inst)
     if not TheWorld.ismastersim then
+        if TheWorld.isdeactivated then
+            --wow what bad timing!
+            return
+        end
         --master sim would have already done a proper PostInit in loading
         TheWorld:PostInit()
     end

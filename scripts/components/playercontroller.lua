@@ -147,6 +147,12 @@ local function OnContinueFromPause()
     ThePlayer.components.playercontroller:ToggleController(TheInput:ControllerAttached())
 end
 
+local function OnDeactivateWorld()
+    --Essential cleanup when client is notified of
+    --pending server c_reset or c_regenerateworld.
+    ThePlayer.components.playercontroller:Deactivate()
+end
+
 local function OnReachDestination(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
     inst.components.playercontroller:RemotePredictWalking(x, z)
@@ -187,6 +193,7 @@ function PlayerController:Activate()
         OnContinueFromPause()
 
         if not self.ismastersim then
+            self.inst:ListenForEvent("deactivateworld", OnDeactivateWorld, TheWorld)
             self.inst:ListenForEvent("onreachdestination", OnReachDestination)
             self.inst:StartUpdatingComponent(self)
         end
@@ -225,6 +232,7 @@ function PlayerController:Deactivate()
         self.inst:RemoveEventCallback("continuefrompause", OnContinueFromPause, TheWorld)
 
         if not self.ismastersim then
+            self.inst:RemoveEventCallback("deactivateworld", OnDeactivateWorld, TheWorld)
             self.inst:RemoveEventCallback("onreachdestination", OnReachDestination)
             self.inst:StopUpdatingComponent(self)
         end
@@ -1310,12 +1318,10 @@ function PlayerController:OnRemoteActionButton(actioncode, target, isreleased, n
                     buffaction.forced = true
                 end
                 self.locomotor:PushAction(buffaction, true)
-           --else
-				--if mod_name ~= nil then
-					--print("Remote action button action failed: "..tostring(ACTION_MOD_IDS[mod_name][actioncode]))
-                --else
-					--print("Remote action button action failed: "..tostring(ACTION_IDS[actioncode]))
-				--end
+            --elseif mod_name ~= nil then
+                --print("Remote action button action failed: "..tostring(ACTION_MOD_IDS[mod_name][actioncode]))
+            --else
+                --print("Remote action button action failed: "..tostring(ACTION_IDS[actioncode]))
             end
         end
         if isreleased then
@@ -2801,13 +2807,10 @@ end
 
 function PlayerController:RemoteMakeRecipeFromMenu(recipe, skin)
     if not self.ismastersim then
-		local skin_index = -1
-		if PREFAB_SKINS_IDS[recipe.name] ~= nil and skin ~= nil then
-			skin_index = PREFAB_SKINS_IDS[recipe.name][skin]
-		end
+        local skin_index = skin ~= nil and PREFAB_SKINS_IDS[recipe.name][skin] or nil
         if self.locomotor == nil then
             SendRPCToServer(RPC.MakeRecipeFromMenu, recipe.rpc_id, skin_index)
-		elseif self:CanLocomote() then
+        elseif self:CanLocomote() then
             self.locomotor:Stop()
             local buffaction = BufferedAction(self.inst, nil, ACTIONS.BUILD, nil, nil, recipe.name, 1)
             buffaction.preview_cb = function()
@@ -2820,14 +2823,7 @@ end
 
 function PlayerController:RemoteMakeRecipeAtPoint(recipe, pt, rot, skin)
     if not self.ismastersim then
-
-        --if not skin then print ("############# SKIN IS NIL") return end
-
-		local skin_index = nil
-        if skin ~= nil then 
-           skin_index = PREFAB_SKINS_IDS[recipe.name][skin]
-        end
-
+        local skin_index = skin ~= nil and PREFAB_SKINS_IDS[recipe.name][skin] or nil
         if self.locomotor == nil then
             SendRPCToServer(RPC.MakeRecipeAtPoint, recipe.rpc_id, pt.x, pt.z, rot, skin_index)
         elseif self:CanLocomote() then
