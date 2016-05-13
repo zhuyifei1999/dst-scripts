@@ -47,7 +47,7 @@ end
 
 local function onunequip(inst, owner)
     if inst._wheel ~= nil then
-        inst._wheel:Remove()
+        inst._wheel:StartUnequipping(inst)
         inst._wheel = nil
     end
 

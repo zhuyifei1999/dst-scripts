@@ -452,34 +452,31 @@ local function DrawDebugGraph(graph)
 	local draw = debugdrawmap.entity:AddDebugRender()
 	draw:SetZ(0.1)
 	draw:SetRenderLoop(true)
-	
-	
+
 	for idx,node in ipairs(graph.nodes) do
 		local colour = graph.colours[node.c]
-		
+
 		for i =1, #node.poly-1 do
 			draw:Line(node.poly[i][1], node.poly[i][2], node.poly[i+1][1], node.poly[i+1][2], colour.r, colour.g, colour.b, 255)
 		end
 		draw:Line(node.poly[1][1], node.poly[1][2], node.poly[#node.poly][1], node.poly[#node.poly][2], colour.r, colour.g, colour.b, 255)
-		
 		draw:Poly(node.cent[1], node.cent[2], colour.r, colour.g, colour.b, colour.a, node.poly)
-			
 		draw:String(graph.ids[idx].."("..node.cent[1]..","..node.cent[2]..")", 	node.cent[1], node.cent[2], node.ts)
-	end 
-	
+	end
+
 	draw:SetZ(0.15)
 
 	for idx,edge in ipairs(graph.edges) do
 		if edge.n1 ~= nil and edge.n2 ~= nil then
 			local colour = graph.colours[edge.c]
-			
+
 			local n1 = graph.nodes[edge.n1]
 			local n2 = graph.nodes[edge.n2]
 			if n1 ~= nil and n2 ~= nil then
                 draw:Line(n1.cent[1], n1.cent[2], n2.cent[1], n2.cent[2], colour.r, colour.g, colour.b, colour.a)
 			end
 		end
-	end 
+	end
 end
 
 --Called when clients receive loading state notification
@@ -488,6 +485,8 @@ end
 function DeactivateWorld()
     if TheWorld ~= nil and not TheWorld.isdeactivated then
         TheWorld.isdeactivated = true
+        DisableRPCSending()
+        TheWorld:PushEvent("deactivateworld")
         TheMixer:PopMix("normal")
         SetPause(true)
     end

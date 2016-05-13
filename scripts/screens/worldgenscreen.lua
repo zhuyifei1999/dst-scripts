@@ -174,4 +174,10 @@ function WorldGenScreen:OnBecomeInactive()
     end
 end
 
+--V2C: For clients, this screen can be just thrown on top of a game
+--     in progress while waiting for the server to regenerate world
+function WorldGenScreen:OnControl(control, down)
+    return WorldGenScreen._base.OnControl(self, control, down) or true
+end
+
 return WorldGenScreen

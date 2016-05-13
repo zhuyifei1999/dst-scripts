@@ -1478,7 +1478,6 @@ ACTIONS.MOUNT.fn = function(act)
     elseif act.target.components.rideable:IsBeingRidden() then
         return false, "INUSE"
     end
-    act.doer:PushEvent("mount", { target = act.target })
     act.doer.components.rider:Mount(act.target)
     return true
 end

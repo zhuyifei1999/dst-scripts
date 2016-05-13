@@ -93,9 +93,9 @@ function PlayerStatusScreen:OnRawKey(key, down)
 	end
 
 	if PlayerStatusScreen._base.OnRawKey(self, key, down) then return true end
-	
+
 	if down then return end
-	
+
 	return true
 end
 
@@ -105,7 +105,9 @@ function PlayerStatusScreen:Close()
 end
 
 function PlayerStatusScreen:OnUpdate(dt)
-    if self.time_to_refresh > dt then
+    if TheFrontEnd:GetFadeLevel() > 0 then
+        self:Close()
+    elseif self.time_to_refresh > dt then
         self.time_to_refresh = self.time_to_refresh - dt
     else
         self.time_to_refresh = REFRESH_INTERVAL

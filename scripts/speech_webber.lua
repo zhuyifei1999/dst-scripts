@@ -440,7 +440,7 @@ return {
 			NE = "Northeast",
 			SE = "Southeast",
 			NW = "Northwest",
-			SW = "Southwest",
+			SW = "Lefty-Downy",
 		},
 		HOUNDSTOOTH= "Our very own tooth to gnash.",
 		ARMORSNURTLESHELL= "It didn't protect the last guy.",
