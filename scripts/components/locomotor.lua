@@ -97,11 +97,17 @@ end
 
 local function ServerGetSpeedMultiplier(self)
     local mult = self:ExternalSpeedMultiplier()
-    if self.inst.components.inventory ~= nil --[[and
-        (self.inst.components.rider == nil or not self.inst.components.rider:IsRiding())]] then
-        for k, v in pairs(self.inst.components.inventory.equipslots) do
-            if v.components.equippable ~= nil then
-                mult = mult * v.components.equippable:GetWalkSpeedMult()
+    if self.inst.components.inventory ~= nil then
+        if self.inst.components.rider ~= nil and self.inst.components.rider:IsRiding() then
+            local saddle = self.inst.components.rider:GetSaddle()
+            if saddle ~= nil and saddle.components.saddler ~= nil then
+                mult = mult * saddle.components.saddler:GetBonusSpeedMult()
+            end
+        else
+            for k, v in pairs(self.inst.components.inventory.equipslots) do
+                if v.components.equippable ~= nil then
+                    mult = mult * v.components.equippable:GetWalkSpeedMult()
+                end
             end
         end
     end
@@ -112,15 +118,21 @@ local function ClientGetSpeedMultiplier(self)
     local mult = self:ExternalSpeedMultiplier()
     local inventory = self.inst.replica.inventory
     if inventory ~= nil then
-        --local rider = self.inst.replica.rider
-        --if rider == nil or not rider:IsRiding() then
+        local rider = self.inst.replica.rider
+        if rider ~= nil and rider:IsRiding() then
+            local saddle = rider:GetSaddle()
+            local inventoryitem = saddle ~= nil and saddle.replica.inventoryitem or nil
+            if inventoryitem ~= nil then
+                mult = mult * inventoryitem:GetWalkSpeedMult()
+            end
+        else
             for k, v in pairs(inventory:GetEquips()) do
                 local inventoryitem = v.replica.inventoryitem
                 if inventoryitem ~= nil then
                     mult = mult * inventoryitem:GetWalkSpeedMult()
                 end
             end
-        --end
+        end
     end
     return mult * self.groundspeedmultiplier * self.throttle
 end

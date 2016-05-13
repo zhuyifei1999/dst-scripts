@@ -14,7 +14,7 @@ local function MakeExplosion(data)
 
         inst.entity:AddTransform()
         inst.entity:AddAnimState()
-            inst.entity:AddSoundEmitter()
+        inst.entity:AddSoundEmitter()
 
         inst.Transform:SetFromProxy(proxy.GUID)
 

@@ -111,9 +111,9 @@ local function fn()
     effect:SetBlendMode( 0, BLENDMODE.Premultiplied ) --AlphaBlended Premultiplied
     effect:EnableBloomPass( 0, true )
     effect:SetUVFrameSize( 0, 0.25, 1 )
-    effect:SetSortOrder( 0, 1 )
+    effect:SetSortOrder( 0, 0 )
+    effect:SetSortOffset( 0, 1 )
     effect:SetRadius( 0, 3 ) --only needed on a single emitter
-    
     
     --FIRE
     effect:SetRenderResources( 1, fire_texture, add_shader )
@@ -124,7 +124,8 @@ local function fn()
     effect:SetBlendMode( 1, BLENDMODE.Additive )
     effect:EnableBloomPass( 1, true )
     effect:SetUVFrameSize( 1, 0.25, 1 )
-    effect:SetSortOrder( 1, 2 )
+    effect:SetSortOrder( 1, 0 )
+    effect:SetSortOffset( 1, 2 )
 
     --EMBER
     effect:SetRenderResources( 2, ember_texture, add_shader )
@@ -135,7 +136,8 @@ local function fn()
     effect:SetBlendMode( 2, BLENDMODE.Additive )
     effect:EnableBloomPass( 2, true )
     effect:SetUVFrameSize( 2, 1, 1 )
-    effect:SetSortOrder( 2, 2 )
+    effect:SetSortOrder( 2, 0 )
+    effect:SetSortOffset( 2, 3 )
     effect:SetDragCoefficient( 2, 0.07 )
     
 

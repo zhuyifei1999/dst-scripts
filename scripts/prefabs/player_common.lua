@@ -1475,6 +1475,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         "emote_fx",
         "tears",
         "shock_fx",
+        "splash",
 
         -- Player specific classified prefabs
         "player_classified",

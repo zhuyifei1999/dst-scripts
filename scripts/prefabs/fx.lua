@@ -15,10 +15,23 @@ local function MakeFx(t)
         inst.entity:AddTransform()
         inst.entity:AddAnimState()
 
-        if proxy.entity:GetParent() ~= nil then
-            inst.entity:SetParent(proxy.entity:GetParent().entity)
+        local parent = proxy.entity:GetParent()
+        if parent ~= nil then
+            inst.entity:SetParent(parent.entity)
         end
+
+        if t.nameoverride == nil and t.description == nil then
+            inst:AddTag("FX")
+        end
+        --[[Non-networked entity]]
+        inst.entity:SetCanSleep(false)
+        inst.persists = false
+
         inst.Transform:SetFromProxy(proxy.GUID)
+
+        if t.autorotate and parent ~= nil then
+            inst.Transform:SetRotation(parent.Transform:GetRotation())
+        end
 
         if type(t.anim) ~= "string" then
             t.anim = t.anim[math.random(#t.anim)]
@@ -35,14 +48,6 @@ local function MakeFx(t)
             end
             inst:DoTaskInTime(t.sounddelay2 or 0, PlaySound, t.sound2)
         end
-        
-        if t.fn ~= nil then
-            if t.fntime ~= nil then
-                inst:DoTaskInTime(t.fntime, t.fn)
-            else
-                t.fn(inst)
-            end
-        end
 
         inst.AnimState:SetBank(t.bank)
         inst.AnimState:SetBuild(t.build)
@@ -57,33 +62,34 @@ local function MakeFx(t)
             inst.AnimState:SetScale(t.transform:Get())
         end
 
-        if t.nameoverride then
-            if not inst.components.inspectable then inst:AddComponent("inspectable") end
+        if t.nameoverride ~= nil then
+            if inst.components.inspectable == nil then
+                inst:AddComponent("inspectable")
+            end
             inst.components.inspectable.nameoverride = t.nameoverride
             inst.name = t.nameoverride
         end
 
-        if t.description then
-            if not inst.components.inspectable then inst:AddComponent("inspectable") end
+        if t.description ~= nil then
+            if inst.components.inspectable == nil then
+                inst:AddComponent("inspectable")
+            end
             inst.components.inspectable.descriptionfn = t.description
         end
 
         if t.bloom then
-            inst.bloom = true
             inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
-         end
-
-        if not t.nameoverride and not t.description then
-            inst:AddTag("FX")
         end
-        --[[Non-networked entity]]
-        inst.entity:SetCanSleep(false)
-        inst.persists = false
 
-        inst:ListenForEvent("animover", function() 
-            if inst.bloom then inst.AnimState:ClearBloomEffectHandle() end
-            inst:Remove() 
-        end)
+        inst:ListenForEvent("animover", inst.Remove)
+
+        if t.fn ~= nil then
+            if t.fntime ~= nil then
+                inst:DoTaskInTime(t.fntime, t.fn)
+            else
+                t.fn(inst)
+            end
+        end
     end
 
     local function fn()

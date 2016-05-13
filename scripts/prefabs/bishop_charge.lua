@@ -10,7 +10,7 @@ local function OnHit(inst, owner, target)
 end
 
 local function OnAnimOver(inst)
-    inst:DoTaskInTime(0.3, inst.Remove)
+    inst:DoTaskInTime(.3, inst.Remove)
 end
 
 local function OnThrown(inst)
@@ -76,19 +76,22 @@ local function hit_fn()
     inst.entity:AddTransform()
     inst.entity:AddNetwork()
 
+    inst:AddTag("FX")
+
     --Dedicated server does not need to spawn the local fx
     if not TheNet:IsDedicated() then
         --Delay one frame in case we are about to be removed
         inst:DoTaskInTime(0, PlayHitSound)
     end
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst:AddTag("FX")
     inst.persists = false
-    inst:DoTaskInTime(0.5, inst.Remove)
+    inst:DoTaskInTime(.5, inst.Remove)
 
     return inst
 end

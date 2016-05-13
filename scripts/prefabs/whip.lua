@@ -52,12 +52,17 @@ local function onattack(inst, attacker, target)
         snap.Transform:SetPosition(x1, y1, z1)
         snap.Transform:SetRotation(angle * RADIANS)
 
+        --impact sounds normally play through comabt component on the target
+        --whip has additional impact sounds logic, which we'll just add here
+
         if math.random() < chance then
             snap.Transform:SetScale(3, 3, 3)
-            snap.SoundEmitter:PlaySound("dontstarve/common/whip_large")
+            if target.SoundEmitter ~= nil then
+                target.SoundEmitter:PlaySound("dontstarve/common/whip_large")
+            end
             inst:DoTaskInTime(0, supercrack)
-        else
-            snap.SoundEmitter:PlaySound("dontstarve/common/whip_small")
+        elseif target.SoundEmitter ~= nil then
+            target.SoundEmitter:PlaySound("dontstarve/common/whip_small")
         end
     end
 end

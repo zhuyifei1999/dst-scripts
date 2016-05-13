@@ -39,6 +39,7 @@ local fx =
         bank = "splash",
         build = "splash",
         anim = "splash",
+        fn = function(inst) inst.AnimState:SetFinalOffset(1) end,
     },
     {
         name = "waterballoon_splash",
@@ -248,8 +249,8 @@ local fx =
         anim = "move",
         nameoverride = STRINGS.NAMES.MOLE_UNDERGROUND,
         description = function(inst, viewer)
-                        return GetString(viewer, "DESCRIBE", { "MOLE", "UNDERGROUND" })
-                    end,
+            return GetString(viewer, "DESCRIBE", { "MOLE", "UNDERGROUND" })
+        end,
     },
     --[[{
         name = "sparklefx",
@@ -270,6 +271,7 @@ local fx =
         bank = "emote_fx",
         build = "emote_fx",
         anim = "emote_fx",
+        autorotate = true,
         fn = function(inst) inst.AnimState:SetFinalOffset(1) end,
     },
     {
@@ -277,6 +279,7 @@ local fx =
         bank = "tears_fx",
         build = "tears",
         anim = "tears_fx",
+        autorotate = true,
         fn = function(inst) inst.AnimState:SetFinalOffset(1) end,
     },
     {
@@ -354,6 +357,7 @@ local fx =
         build = "shock_fx",
         anim = "shock",
         sound = "dontstarve_DLC001/common/shocked",
+        autorotate = true,
         fn = function(inst) inst.AnimState:SetFinalOffset(1) end,
     },
     {

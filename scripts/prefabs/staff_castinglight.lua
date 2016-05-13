@@ -72,6 +72,8 @@ local function fn()
     inst.entity:AddTransform()
     inst.entity:AddNetwork()
 
+    inst:AddTag("FX")
+
     inst._colour = net_uint(inst.GUID, "_colour", "setupdirty")
     inst._duration = net_float(inst.GUID, "_duration")
     inst._delay = net_float(inst.GUID, "_delay")
@@ -79,13 +81,14 @@ local function fn()
 
     inst:ListenForEvent("setupdirty", OnSetUpDirty)
 
+    inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
     inst.SetUp = SetUp
 
-    inst:AddTag("FX")
     inst.persists = false
 
     inst:DoTaskInTime(1.5, inst.Remove)

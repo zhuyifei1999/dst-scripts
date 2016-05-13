@@ -182,6 +182,8 @@ local function light_ontarget(inst, target)
     end
 
     target.wormlight = inst
+    --FollowSymbol position still works on blank symbol, just
+    --won't be visible, but we are an invisible proxy anyway.
     inst.Follower:FollowSymbol(target.GUID, "", 0, 0, 0)
     inst:ListenForEvent("onremove", forceremove, target)
     inst:ListenForEvent("death", function() inst.fx:setdead() end, target)

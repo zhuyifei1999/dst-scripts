@@ -1310,6 +1310,7 @@ return {
 		ROTTENEGG = "Disgusting. Why am I carrying this around?",
         SADDLE_BASIC = "But that means I'd have to touch the smelly thing.",
         SADDLE_WAR = "At least it affords some dignity to the rider.",
+        SADDLE_RACE = "But is it fast enough to escape the judgmental stares?",
         SADDLEHORN = "And I may never put it back on.",
         BRUSH = "It's like showing affection, without actually touching it.",
 		SANITYROCK =
@@ -1459,7 +1460,7 @@ return {
         TRINKET_22 = "The monster child gets tangled in this frequently.",
         TRINKET_23 = "I was looking for that.",
         TRINKET_24 = "It's been beheaded.",
-        TRINKET_25 = "The strongman’s wardrobe is brimming with them, judging from the odor.",
+        TRINKET_25 = "The strongman's wardrobe is brimming with them, judging from the odor.",
 		TRINKET_26 = "This was important to one very specific person once.",
 		TRINKET_27 = "Finally. My suits were getting wrinkles. Wrinkles!",
 

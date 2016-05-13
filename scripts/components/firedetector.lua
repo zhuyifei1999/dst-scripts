@@ -1,5 +1,5 @@
-local NOTAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO", "burnt", "player" }
-local EMERGENCYTAGS = { "structure", "wall", "workable", "pickable", "readyforharvest", "notreadyforharvest" }
+local NOTAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO", "burnt", "player", "monster" }
+local EMERGENCYTAGS = { "structure", "wall", "tree", "pickable", "witherable", "readyforharvest", "notreadyforharvest" }
 local TURN_ON_DELAY = 13 * FRAMES
 
 local function onemergency(self, emergency)
@@ -15,7 +15,7 @@ local FireDetector = Class(function(self, inst)
 
     self.range = TUNING.FIRE_DETECTOR_RANGE
     self.detectPeriod = TUNING.FIRE_DETECTOR_PERIOD
-    
+
     self.onfindfire = nil
     self.onbeginemergency = nil
     self.onendemergency = nil

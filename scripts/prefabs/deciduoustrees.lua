@@ -13,7 +13,7 @@ local assets =
     Asset("ANIM", "anim/dust_fx.zip"),
     Asset("SOUND", "sound/forest.fsb"),
     Asset("SOUND", "sound/decidous.fsb"),
-	Asset("MINIMAP_IMAGE", "tree_leaf"),
+    Asset("MINIMAP_IMAGE", "tree_leaf"),
 }
 
 local prefabs =
@@ -225,7 +225,6 @@ local function PushSway(inst, monster, monsterpost, skippre)
 end
 
 local function Sway(inst, monster, monsterpost)
-
     if inst.sg:HasStateTag("burning") or inst:HasTag("stump") then return end
     if monster then
         inst.sg:GoToState("gnash_pre", {push=false, skippre=false})
@@ -246,7 +245,7 @@ local function Sway(inst, monster, monsterpost)
                     inst.AnimState:PlayAnimation(inst.anims.sway2, true)
                 end
             end
-        end        
+        end
     end
 end
 
@@ -388,7 +387,7 @@ local function ChangeSizeFn(inst)
     end
 
     Sway(inst, nil, inst.monster)
-end          
+end
 
 local function SetShort(inst)
     if not inst.monster then
@@ -436,7 +435,7 @@ local function GrowTall(inst)
     inst.AnimState:PlayAnimation("grow_normal_to_tall")
     if inst.leaf_state == "colorful" then SpawnLeafFX(inst, 10*FRAMES) end
     inst:ListenForEvent("animover", ChangeSizeFn)
-    inst.SoundEmitter:PlaySound("dontstarve/forest/treeGrow")   
+    inst.SoundEmitter:PlaySound("dontstarve/forest/treeGrow")
 end
 
 local growth_stages =
@@ -530,7 +529,6 @@ local function make_stump(inst)
 end
 
 local function chop_down_tree(inst, chopper)
-
     local days_survived = TheWorld.state.cycles
     if not inst.monster and inst.leaf_state ~= "barren" and inst.components.growable ~= nil and inst.components.growable.stage == 3 and days_survived >= TUNING.DECID_MONSTER_MIN_DAY then
         --print("Chance of making a monster")
@@ -1141,7 +1139,7 @@ local function OnDayEnd(inst, data)
         }
 
         local seasonlengths = {
-            [SEASONS.AUTUMN] = "autumnlength", [SEASONS.WINTER] = "winterlength", 
+            [SEASONS.AUTUMN] = "autumnlength", [SEASONS.WINTER] = "winterlength",
             [SEASONS.SPRING] = "springlength", [SEASONS.SUMMER] = "summerlength"
         }
 
@@ -1230,7 +1228,6 @@ local function makefn(build, stage, data)
 
         inst:AddTag("tree")
         inst:AddTag("birchnut")
-        inst:AddTag("workable")
         inst:AddTag("cattoyairborne")
         inst:AddTag("deciduoustree")
 
@@ -1297,7 +1294,7 @@ local function makefn(build, stage, data)
         inst.components.workable:SetOnWorkCallback(chop_tree)
         inst.components.workable:SetOnFinishCallback(chop_down_tree)
 
-        inst:AddComponent("lootdropper") 
+        inst:AddComponent("lootdropper")
 
         inst:AddComponent("deciduoustreeupdater")
         inst:ListenForEvent("sway", onsway)

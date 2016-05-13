@@ -588,7 +588,7 @@ STRINGS=
         ARMORWOOD = "Log Suit",
         ARMORGRASS = "Grass Suit",
         ARMORMARBLE = "Marble Suit",
-        ARMOR_SANITY = "Night Armour",
+        ARMOR_SANITY = "Night Armor",
         SPEAR = "Spear",
         TENTACLESPIKE = "Tentacle Spike",
         TENTACLE = "Tentacle",
@@ -699,6 +699,7 @@ STRINGS=
         MAXWELLKEY = "Shadow Key",
         SADDLE_BASIC = "Saddle",
         SADDLE_WAR = "War Saddle",
+        SADDLE_RACE = "Glossamer Saddle",
         
         TELEPORTATO_RING = "Ring thing",
         TELEPORTATO_BOX = "Box thing",
@@ -1101,6 +1102,7 @@ STRINGS=
         BOOK_SLEEP = "Soothing tales to send you off to dreamland.",
         BOOK_BRIMSTONE = "The world will end in fire and tribulation!",
 
+        SADDLE_RACE = "The speedboost might just offset the time you spent making it!",
         COMPASS = "Points the way north.",
         GUNPOWDER = "A handful of gunpowder.",
         TORCH = "Portable light source.",

@@ -6,6 +6,8 @@ end
 
 local function onwalkspeedmult(self, walkspeedmult)
     if self.inst.replica.inventoryitem ~= nil then
+        --This network optimization hack is shared by saddler component,
+        --so a prefab must not have both components at the same time.
         self.inst.replica.inventoryitem:SetWalkSpeedMult(walkspeedmult)
     end
 end

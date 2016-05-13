@@ -39,6 +39,7 @@ local function MakeSaddle(name, data)
 
         inst:AddComponent("saddler")
         inst.components.saddler:SetBonusDamage(data.bonusdamage)
+        inst.components.saddler:SetBonusSpeedMult(data.speedmult)
         inst.components.saddler:SetSwaps(name, "swap_saddle")
         inst.components.saddler:SetDiscardedCallback(ondiscarded)
 
@@ -60,13 +61,22 @@ local data = {
         bonusdamage = TUNING.SADDLE_BASIC_BONUS_DAMAGE,
         foley = "regular_foley",
         uses = TUNING.SADDLE_BASIC_USES,
+        speedmult = TUNING.SADDLE_BASIC_SPEEDMULT,
     },
     war = {
         bonusdamage = TUNING.SADDLE_WAR_BONUS_DAMAGE,
         foley = "war_foley",
         uses = TUNING.SADDLE_WAR_USES,
+        speedmult = TUNING.SADDLE_WAR_SPEEDMULT,
+    },
+    race = {
+        bonusdamage = TUNING.SADDLE_RACE_BONUS_DAMAGE,
+        foley = "race_foley",
+        uses = TUNING.SADDLE_RACE_USES,
+        speedmult = TUNING.SADDLE_RACE_SPEEDMULT,
     },
 }
 
 return  MakeSaddle("saddle_basic", data.basic),
-        MakeSaddle("saddle_war", data.war)
+        MakeSaddle("saddle_war", data.war),
+        MakeSaddle("saddle_race", data.race)

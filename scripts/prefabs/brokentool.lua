@@ -6,6 +6,7 @@ local assets =
 local function PlayBrokenAnim(proxy)
     local inst = CreateEntity()
 
+    inst:AddTag("FX")
     --[[Non-networked entity]]
     inst.entity:SetCanSleep(false)
     inst.persists = false
