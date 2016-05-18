@@ -16,7 +16,7 @@ return {
 		{
 			GENERIC = "It's already packed tighter than a Toronto streetcar.",
 			NOTALLOWED = "That's not allowed, eh?",
-			INUSE = "Sorry! I'll wait 'til you're finished.",
+			INUSE = "Sorry! I'll wait til you're finished.",
 		},
 		WRITE =
         {
@@ -26,12 +26,12 @@ return {
 		RUMMAGE =
         {   
             GENERIC = "Sorry, I can't do that.",
-            INUSE = "Sorry! I'll wait 'til you're finished.",  
+            INUSE = "Sorry! I'll wait til you're finished.",  
         },
 		COOK =
         {
             GENERIC = "Sorry, I can't do that.",
-            INUSE = "Sorry! I'll wait 'til you're finished.",
+            INUSE = "Sorry! I'll wait til you're finished.",
             TOOFAR = "I gotta get closer, eh?",
         },
         MOUNT =
@@ -507,8 +507,8 @@ return {
 		},
 		RESURRECTIONSTATUE = 
 		{
-			GENERIC = "I look good in wood.",
-			BURNT = "I don't look as good burnt.",
+			GENERIC = "All my buddies could be improved with wood.",
+			BURNT = "That's a shame, that.",
 		},
 		ROCK_ICE = 
 		{
@@ -761,7 +761,7 @@ return {
         {
             GENERIC = "Maybe later. I've gotten cozy down here.",
             OPEN = "There are probably trees up there.",
-            FULL = "Sorry! I'll wait 'til you're all done up there!",
+            FULL = "Sorry! I'll wait til you're all done up there!",
         },
 
 		MAXWELLPHONOGRAPH = "Better than most of the stuff on the radio.",

@@ -68,7 +68,7 @@ return {
         {
             GENERIC = "Clothes only good for ripping with strong muscles!",
             BURNING = "Wolfgang's weekday undergarments burning? Wolfgang is sad.",
-            INUSE = "Wolfgang will wait 'til they leave to change. He is shy.",
+            INUSE = "Wolfgang will wait til they leave to change. He is shy.",
         },
     	ATTUNE =
         {

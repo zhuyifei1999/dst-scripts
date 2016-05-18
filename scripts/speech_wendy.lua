@@ -245,15 +245,15 @@ return {
 			MURDERER = "I'll send you someplace much nicer than this, %s.",
 			REVIVER = "Abigail likes you, %s. But she likes Lucy more.",
 			GHOST = "We'll get a heart, but are you sure you want to come back, %s?",
-			BEAVER = "He pinky-promised I'd get to ride on his shoulders. Such lies.",
+			BEAVER = "He pinky-promised I'd get to ride on his shoulders next time. Such lies.",
 			BEAVERGHOST = "The curse haunts you even in death, %s? I'm so sorry.",
 		},
 		WICKERBOTTOM = 
 		{
-			GENERIC = "How do you do, Ms %s?",
-			ATTACKER = "Ms %s... do you turn your wits against us?",
+			GENERIC = "How do you do, Ms. %s?",
+			ATTACKER = "Ms. %s... do you turn your wits against us?",
 			MURDERER = "'Murder', she wrote.",
-			REVIVER = "Abigail likes you, Ms %s.",
+			REVIVER = "Abigail likes you, Ms. %s.",
 			GHOST = "Everyone that leaves takes a piece of my heart...",
 		},
 		WES = 
@@ -523,7 +523,7 @@ return {
 		},
 		RESURRECTIONSTATUE = 
 		{
-			GENERIC = "I'm just putting off the inevitable.",
+			GENERIC = "It's just putting off the inevitable.",
 			BURNT = "I'm glad that fail-safe is gone.",
 		},
 		ROCK_ICE = 

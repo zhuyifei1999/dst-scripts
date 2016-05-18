@@ -4,9 +4,9 @@ USE_SETTINGS_FILE = PLATFORM ~= "PS4" and PLATFORM ~= "NACL"
 local PlayerProfile = Class(function(self)
     self.persistdata = 
     {
-    	-- TODO: Some of this data should be synced across computers
-    	-- so will need to be stored on a server somewhere 
-    	-- (In particular, collection_name, characterskins, and most_recent_item_skins)
+        -- TODO: Some of this data should be synced across computers
+        -- so will need to be stored on a server somewhere 
+        -- (In particular, collection_name, characterskins, and most_recent_item_skins)
         unlocked_worldgen = {},
         render_quality = RENDER_QUALITY.DEFAULT,
         -- Controlls should be a seperate file
@@ -23,9 +23,9 @@ local PlayerProfile = Class(function(self)
         play_instance = 0,
     }
 
-  	--we should migrate the non-gameplay stuff to a separate file, so that we can save them whenever we want
-  
- 	if not USE_SETTINGS_FILE then
+    --we should migrate the non-gameplay stuff to a separate file, so that we can save them whenever we want
+
+    if not USE_SETTINGS_FILE then
         self.persistdata.volume_ambient = 7
         self.persistdata.volume_sfx = 7
         self.persistdata.volume_music = 7
@@ -38,14 +38,13 @@ local PlayerProfile = Class(function(self)
         self.persistdata.warneddifficultyrog = false
         self.persistdata.controller_popup = false
         self.persistdata.warn_mods_enabled = true
-	end
+    end
 
     self.dirty = true
-
 end)
 
 function PlayerProfile:Reset()
-	self.persistdata.unlocked_worldgen = {}
+    self.persistdata.unlocked_worldgen = {}
     self.persistdata.saw_display_adjustment_popup = false
     self.persistdata.device_caps_a = 0
     self.persistdata.device_caps_b = 20
@@ -55,7 +54,7 @@ function PlayerProfile:Reset()
     self.persistdata.install_id = os.time()
     self.persistdata.play_instance = 0
 
- 	if not USE_SETTINGS_FILE then
+    if not USE_SETTINGS_FILE then
         self.persistdata.volume_ambient = 7
         self.persistdata.volume_sfx = 7
         self.persistdata.volume_music = 7
@@ -68,15 +67,15 @@ function PlayerProfile:Reset()
         self.persistdata.warneddifficultyrog = false
         self.persistdata.controller_popup = false
         self.persistdata.warn_mods_enabled = true
-	end
+    end
 
     --self.persistdata.starts = 0 -- save starts?
-	self.dirty = true
-	self:Save()
+    self.dirty = true
+    self:Save()
 end
 
 function PlayerProfile:SoftReset()
-	self.persistdata.unlocked_worldgen = {}
+    self.persistdata.unlocked_worldgen = {}
     self.persistdata.saw_display_adjustment_popup = false
     self.persistdata.device_caps_a = 0
     self.persistdata.device_caps_b = 20
@@ -86,7 +85,7 @@ function PlayerProfile:SoftReset()
     self.persistdata.install_id = os.time()
     self.persistdata.play_instance = 0
 
- 	if not USE_SETTINGS_FILE then
+    if not USE_SETTINGS_FILE then
         self.persistdata.volume_ambient = 7
         self.persistdata.volume_sfx = 7
         self.persistdata.volume_music = 7
@@ -99,7 +98,7 @@ function PlayerProfile:SoftReset()
         self.persistdata.warneddifficultyrog = false
         self.persistdata.controller_popup = false
         self.persistdata.warn_mods_enabled = true
-	end
+    end
     -- and apply these values
     local str = json.encode(self.persistdata)
     self:Set(str, nil)
@@ -444,36 +443,6 @@ function PlayerProfile:IsWathgrithrFontEnabled()
 		end
 	end
 end
-
-
-
-
-function PlayerProfile:SetIntroCineEnabled(enabled)
- 	if USE_SETTINGS_FILE then
-		TheSim:SetSetting("misc", "intro_cine", tostring(enabled)) 
-	else
-		self:SetValue("intro_cine", enabled)
-		self.dirty = true
-	end
-end
-
-function PlayerProfile:IsIntroCineEnabled()
- 	if USE_SETTINGS_FILE then
- 		if TheSim:GetSetting("misc", "intro_cine") ~= nil then
-			return TheSim:GetSetting("misc", "intro_cine") == "true"
-		else
-			return true -- Default to true this value hasn't been created yet
-		end
-	else
-		if self:GetValue("intro_cine") ~= nil then
-			return self:GetValue("intro_cine")
-		else
-			return true -- Default to true this value hasn't been created yet
-		end
-	end
-end
-
-
 
 function PlayerProfile:SetHaveWarnedDifficultyRoG()
 	if USE_SETTINGS_FILE then

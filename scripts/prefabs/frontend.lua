@@ -86,8 +86,8 @@ local assets =
 
     --Credits screen
     Asset("SOUND", "sound/gramaphone.fsb"),
-    
-    --Asset("PKGREF", "movies/intro.ogv"),
+
+    Asset("PKGREF", "movies/intro.ogv"),
 }
 
 if PLATFORM == "PS4" then

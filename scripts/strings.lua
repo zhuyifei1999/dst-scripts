@@ -1268,7 +1268,7 @@ STRINGS=
         WHIP = "Dish out some constructive feedback.",
         SADDLE_BASIC = "Lets you sit on animals. In theory.",
         SADDLE_WAR = "A throne for the boss of the battlefield.",
-        SADDLE_RACE = "The speedboost might just offset the time you spent making it!",
+        SADDLE_RACE = "Offsets the time spent making it. Maybe.",
 
         BELL = "This isn't just any bell.",
 
@@ -2131,6 +2131,7 @@ STRINGS.UI =
         EXIT = "Exit",
         LOGOUT = "Log Out",
         REDEEM = "Redeem",
+        MOVIE = "Theatre",
         CREDITS = "Credits",
         UPDATENAME = "All's Well That Maxwell",
         DLC_UPDATENAME = "Where There's a Wilson...",
@@ -4070,6 +4071,8 @@ STRINGS.UI =
         WINTER = "Winter",
         SPRING = "Spring",
         AUTUMN = "Autumn",
+        AUTUMN_SPRING = "Autumn or Spring",
+        WINTER_SUMMER = "Winter or Summer",
         RANDOM = "Random",
         HIGHLYRANDOM = "Highly Random",
         EXCLUDE = "No",

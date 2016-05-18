@@ -469,28 +469,38 @@ end)
 
 AddGameDebugKey(KEY_O, function()
     if TheInput:IsKeyDown(KEY_SHIFT) then
-        print("Going normal...")
-        --TheWorld:PushEvent("ms_setphase", "dusk")
-        --TheSim:SetAmbientColour(0.8,0.8,0.8)
-        -- Normal ruins (pretty, light, healthy)
-        --GetCeiling().MapCeiling:AddSubstitue(GROUND.WALL_HUNESTONE,GROUND.WALL_HUNESTONE_GLOW)
-        --GetCeiling().MapCeiling:AddSubstitue(GROUND.WALL_STONEEYE,GROUND.WALL_STONEEYE_GLOW)
-        local retune = require("tuning_override")
-        retune.colourcube("ruins_light_cc")
-        retune.areaambientdefault("cave")
-        TheWorld:PushEvent("setambientsounddaytime", 1)
-        --civruinsAMB (1.0)
+        print("Finding rooms with chester")
+        local Levels = require('map/levels')
+        local Tasks = require('map/tasks')
+        local TaskSets = require('map/tasksets')
+        local Rooms = require('map/rooms')
+        
+        local locationdata = Levels.GetDataForLocation("cave")
+        local taskset = locationdata.overrides.task_set
+        local tasksetdata = TaskSets.GetGenTasks(taskset)
+        local taskcount = 0
+        local roomcount = 0
+        local tagcount = 0
+        for i,taskname in ipairs(ArrayUnion(tasksetdata.tasks, tasksetdata.optionaltasks)) do
+            taskcount = taskcount+1
+            local taskdata = Tasks.GetTaskByName(taskname)
+            for roomname,count in pairs(taskdata.room_choices) do
+                roomcount = roomcount + 1
+                local roomdata = Rooms.GetRoomByName(roomname)
+                if roomdata.tags then
+                    tagcount = tagcount+1
+                    for i,tag in ipairs(roomdata.tags) do
+                        if tag == "Chester_Eyebone" then
+                            print("FOUND CHESTER EYEBONE",taskname,roomname)
+                        end
+                    end
+                end
+            end
+        end
+        print("DONE", taskcount, roomcount, tagcount)
+
+
     elseif TheInput:IsKeyDown(KEY_ALT) then
-        print("Going evil...")
-        --TheWorld:PushEvent("ms_setphase", "night")
-        --TheSim:SetAmbientColour(0.0,0.0,0.0)
-        --GetCeiling().MapCeiling:ClearSubstitues()
-        -- Evil ruins (ugly, dark, unhealthy)
-        local retune = require("tuning_override")
-        retune.colourcube("ruins_dark_cc")
-        retune.areaambient("CIVRUINS")
-        TheWorld:PushEvent("setambientsounddaytime", 2)
-        --civruinsAMB (2.0)
     end
     
     return true

@@ -413,7 +413,7 @@ AddTask("SpiderLand",{
     keys_given={ KEYS.CAVE, KEYS.SPIDERS, KEYS.TIER4 },
     room_choices={
         ["SpiderIncursion"] = 1,
-        ["SpiderMarsh"] = 1,
+        ["SpiderSinkholeMarsh"] = 1,
         ["SpidersAndBats"] = 1,
         ["PitRoom"] = 2,
     },

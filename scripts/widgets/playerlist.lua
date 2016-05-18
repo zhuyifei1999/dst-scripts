@@ -6,6 +6,10 @@ local PlayerBadge = require "widgets/playerbadge"
 local ScrollableList = require "widgets/scrollablelist"
 local TEMPLATES = require "widgets/templates"
 
+local VOICE_MUTE_COLOUR = { 242 / 255, 99 / 255, 99 / 255, 255 / 255 }
+local VOICE_ACTIVE_COLOUR = { 99 / 255, 242 / 255, 99 / 255, 255 / 255 }
+local VOICE_IDLE_COLOUR = { 1, 1, 1, 1 }
+
 local function doButtonFocusHookups(playerListing, nextWidgets)
     local rightFocusMoveSet = false
 
@@ -151,13 +155,37 @@ local function listingConstructor(v, i, parent, nextWidgets)
     end
 
     local mute_scale = .6
-    playerListing.isMuted = TheFrontEnd.mutedPlayers ~= nil and TheFrontEnd.mutedPlayers[v.userid] and TheFrontEnd.mutedPlayers[v.userid] == true
+    playerListing.isMuted = v.muted == true
 
     playerListing.mute = playerListing:AddChild(ImageButton("images/scoreboard.xml", "chat.tex", "chat.tex", "chat.tex", "chat.tex", nil, {1,1}, {0,0}))
     playerListing.mute:SetPosition(85+nudge_x,0,0)
     playerListing.mute.image:SetScale(mute_scale)
     playerListing.mute.scale_on_focus = false
     playerListing.mute:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.MUTE, { font = NEWFONT_OUTLINE, size = 24, offset_x = 0, offset_y = 30, colour = {1,1,1,1}})
+    playerListing.mute.image.inst.OnUpdateVoice = function(inst)
+        inst.widget:SetTint(unpack(playerListing.userid ~= nil and TheNet:IsVoiceActive(playerListing.userid) and VOICE_ACTIVE_COLOUR or VOICE_IDLE_COLOUR))
+    end
+    playerListing.mute.image.inst.SetMuted = function(inst, muted)
+        if muted then
+            inst.widget:SetTint(unpack(VOICE_MUTE_COLOUR))
+            if inst._task ~= nil then
+                inst._task:Cancel()
+                inst._task = nil
+            end
+        else
+            inst:OnUpdateVoice()
+            if inst._task == nil then
+                inst._task = inst:DoPeriodicTask(1, inst.OnUpdateVoice)
+            end
+        end
+    end
+    playerListing.mute.image.inst.DisableMute = function(inst)
+        inst.widget:SetTint(unpack(VOICE_IDLE_COLOUR))
+        if inst._task ~= nil then
+            inst._task:Cancel()
+            inst._task = nil
+        end
+    end
     local gainfocusfn = playerListing.mute.OnGainFocus
     playerListing.mute.OnGainFocus =
         function()
@@ -173,32 +201,21 @@ local function listingConstructor(v, i, parent, nextWidgets)
         end
     playerListing.mute:SetOnClick(
         function()
-            if v.userid then
+            if playerListing.userid ~= nil then
                 playerListing.isMuted = not playerListing.isMuted
+                TheNet:SetPlayerMuted(playerListing.userid, playerListing.isMuted)
                 if playerListing.isMuted then
-                    if TheFrontEnd.mutedPlayers == nil then
-                        TheFrontEnd.mutedPlayers = { [v.userid] = true }
-                    else
-                        TheFrontEnd.mutedPlayers[v.userid] = true
-                    end
                     playerListing.mute.image_focus = "mute.tex"
                     playerListing.mute.image:SetTexture("images/scoreboard.xml", "mute.tex") 
                     playerListing.mute:SetTextures("images/scoreboard.xml", "mute.tex") 
                     playerListing.mute:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.UNMUTE)
-                    playerListing.mute.image:SetTint(242/255, 99/255, 99/255, 255/255)
                 else
-                    if TheFrontEnd.mutedPlayers ~= nil then
-                        TheFrontEnd.mutedPlayers[v.userid] = nil
-                        if next(TheFrontEnd.mutedPlayers) == nil then
-                            TheFrontEnd.mutedPlayers = nil
-                        end
-                    end
                     playerListing.mute.image_focus = "chat.tex"
                     playerListing.mute.image:SetTexture("images/scoreboard.xml", "chat.tex")
                     playerListing.mute:SetTextures("images/scoreboard.xml", "chat.tex") 
                     playerListing.mute:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.MUTE)
-                    playerListing.mute.image:SetTint(1,1,1,1)
                 end
+                playerListing.mute.image.inst:SetMuted(playerListing.isMuted)
             end
         end)
 
@@ -207,11 +224,12 @@ local function listingConstructor(v, i, parent, nextWidgets)
         playerListing.mute.image:SetTexture("images/scoreboard.xml", "mute.tex") 
         playerListing.mute:SetTextures("images/scoreboard.xml", "mute.tex") 
         playerListing.mute:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.UNMUTE)
-        playerListing.mute.image:SetTint(242/255, 99/255, 99/255, 255/255)
     end
+    playerListing.mute.image.inst:SetMuted(playerListing.isMuted)
 
     if empty or v.userid == owner then
         playerListing.mute:Hide()
+        playerListing.mute.image.inst:DisableMute()
     end
 
     playerListing.OnGainFocus = function()
@@ -274,57 +292,25 @@ local function UpdatePlayerListing(widget, data, index)
         widget.viewprofile:Show()
     end
 
-    widget.isMuted = TheFrontEnd.mutedPlayers ~= nil and TheFrontEnd.mutedPlayers[data.userid] and TheFrontEnd.mutedPlayers[data.userid] == true
-
-    widget.mute:SetOnClick(
-        function()
-            if data.userid then
-                widget.isMuted = not widget.isMuted
-                if widget.isMuted then
-                    if TheFrontEnd.mutedPlayers == nil then
-                        TheFrontEnd.mutedPlayers = { [data.userid] = true }
-                    else
-                        TheFrontEnd.mutedPlayers[data.userid] = true
-                    end
-                    widget.mute.image_focus = "mute.tex"
-                    widget.mute.image:SetTexture("images/scoreboard.xml", "mute.tex") 
-                    widget.mute:SetTextures("images/scoreboard.xml", "mute.tex") 
-                    widget.mute:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.UNMUTE)
-                    widget.mute.image:SetTint(242/255, 99/255, 99/255, 255/255)
-                else
-                    if TheFrontEnd.mutedPlayers ~= nil then
-                        TheFrontEnd.mutedPlayers[data.userid] = nil
-                        if next(TheFrontEnd.mutedPlayers) == nil then
-                            TheFrontEnd.mutedPlayers = nil
-                        end
-                    end
-                    widget.mute.image_focus = "chat.tex"
-                    widget.mute.image:SetTexture("images/scoreboard.xml", "chat.tex")
-                    widget.mute:SetTextures("images/scoreboard.xml", "chat.tex") 
-                    widget.mute:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.MUTE)
-                    widget.mute.image:SetTint(1,1,1,1)
-                end
-            end
-        end)
-
+    widget.isMuted = data.muted == true
     if widget.isMuted then
         widget.mute.image_focus = "mute.tex"
         widget.mute.image:SetTexture("images/scoreboard.xml", "mute.tex")
         widget.mute:SetTextures("images/scoreboard.xml", "mute.tex")  
         widget.mute:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.UNMUTE)
-        widget.mute.image:SetTint(242/255, 99/255, 99/255, 255/255)
     else
         widget.mute.image_focus = "chat.tex"
         widget.mute.image:SetTexture("images/scoreboard.xml", "chat.tex")
         widget.mute:SetTextures("images/scoreboard.xml", "chat.tex") 
         widget.mute:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.MUTE)
-        widget.mute.image:SetTint(1,1,1,1)
     end
 
     if empty or data.userid == owner then
         widget.mute:Hide()
+        widget.mute.image.inst:DisableMute()
     else
         widget.mute:Show()
+        widget.mute.image.inst:SetMuted(widget.isMuted)
     end
 end
 

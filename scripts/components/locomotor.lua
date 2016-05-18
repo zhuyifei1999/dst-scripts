@@ -393,6 +393,9 @@ function LocoMotor:PreviewAction(bufferedaction, run, try_instant)
         self.inst.components.playercontroller ~= nil and
         not self.inst.components.playercontroller.directwalking then
         self:Stop()
+        if bufferedaction.target ~= nil then
+            self.inst:FacePoint(bufferedaction.target.Transform:GetWorldPosition())
+        end
         if not self.inst.sg:HasStateTag("idle") then
             local idle_anim = self.inst:HasTag("playerghost") and "idle" or "idle_loop"
             if not self.inst.AnimState:IsCurrentAnimation(idle_anim) then
@@ -476,17 +479,21 @@ function LocoMotor:GoToEntity(inst, bufferedaction, run)
     self:SetBufferedAction(bufferedaction)
     self.wantstomoveforward = true
 
-    if bufferedaction and bufferedaction.distance then
+    if bufferedaction ~= nil and bufferedaction.distance ~= nil then
         self.arrive_dist = bufferedaction.distance
     else
         self.arrive_dist = ARRIVE_STEP
 
-        if inst.Physics then
-            self.arrive_dist = self.arrive_dist + ( inst.Physics:GetRadius() or 0)
+        if inst.Physics ~= nil then
+            self.arrive_dist = self.arrive_dist + (inst.Physics:GetRadius() or 0)
         end
 
-        if self.inst.Physics then
+        if self.inst.Physics ~= nil then
             self.arrive_dist = self.arrive_dist + (self.inst.Physics:GetRadius() or 0)
+        end
+
+        if bufferedaction ~= nil and bufferedaction.action.mindistance ~= nil and bufferedaction.action.mindistance > self.arrive_dist then
+            self.arrive_dist = bufferedaction.action.mindistance
         end
     end
 
@@ -502,7 +509,7 @@ function LocoMotor:GoToEntity(inst, bufferedaction, run)
 
     self.wantstorun = run
     --self.arrive_step_dist = ARRIVE_STEP
-    self.inst:StartUpdatingComponent(self)    
+    self.inst:StartUpdatingComponent(self)
 end
 
 --V2C: Added overridedest for additional network controller support
@@ -510,11 +517,10 @@ function LocoMotor:GoToPoint(pt, bufferedaction, run, overridedest)
     self.dest = Dest(overridedest, pt)
     self.throttle = 1
 
-    if bufferedaction and bufferedaction.distance then
-        self.arrive_dist = bufferedaction.distance
-    else
-        self.arrive_dist = ARRIVE_STEP
-    end
+    self.arrive_dist =
+        bufferedaction ~= nil
+        and (bufferedaction.distance or math.max(bufferedaction.action.mindistance or 0, ARRIVE_STEP))
+        or ARRIVE_STEP
     --self.arrive_step_dist = ARRIVE_STEP
     self.wantstorun = run
 

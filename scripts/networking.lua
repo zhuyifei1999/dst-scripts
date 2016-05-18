@@ -82,21 +82,23 @@ end
 function Networking_Say(guid, userid, name, prefab, message, colour, whisper)
     local entity = Ents[guid]
     if entity ~= nil and entity.components.talker ~= nil then
-        entity.components.talker:Say(entity:HasTag("mime") and "" or message, nil, nil, nil, true, colour)
+        entity.components.talker:Say(not entity:HasTag("mime") and message or "", nil, nil, nil, true, colour)
     end
-    if not whisper then
-        local screen = TheFrontEnd:GetActiveScreen()
-        if screen ~= nil and screen.name == "LobbyScreen" then
-            screen.chatqueue:OnMessageReceived(userid, name, prefab, message, colour, whisper)
+    if message ~= nil then
+        if not whisper then
+            local screen = TheFrontEnd:GetActiveScreen()
+            if screen ~= nil and screen.name == "LobbyScreen" then
+                screen.chatqueue:OnMessageReceived(userid, name, prefab, message, colour, whisper)
+            end
         end
-    end
-    local hud = ThePlayer ~= nil and ThePlayer.HUD or nil
-    if hud ~= nil
-        and (not whisper
-            or (entity ~= nil
-                and (hud:HasTargetIndicator(entity) or
-                    entity.entity:FrustumCheck()))) then
-        hud.controls.networkchatqueue:OnMessageReceived(userid, name, prefab, message, colour, whisper)
+        local hud = ThePlayer ~= nil and ThePlayer.HUD or nil
+        if hud ~= nil
+            and (not whisper
+                or (entity ~= nil
+                    and (hud:HasTargetIndicator(entity) or
+                        entity.entity:FrustumCheck()))) then
+            hud.controls.networkchatqueue:OnMessageReceived(userid, name, prefab, message, colour, whisper)
+        end
     end
 end
 

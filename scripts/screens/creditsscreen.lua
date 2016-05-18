@@ -56,13 +56,11 @@ local klei_pages =
     {x=0,y=180, bg=1, build="credits8", bank="credits8", anim="24"},
 }
 
-
 local names_per_page = 5
 local PS4CREDITS = PLATFORM == "PS4"
 
 local CreditsScreen = Class(Screen, function(self)
-	Screen._ctor(self, "CreditsScreen")
-    
+    Screen._ctor(self, "CreditsScreen")
 
     self.bg = self:AddChild(Image("images/bg_plain.xml", "bg.tex"))
     self.bg:SetVRegPoint(ANCHOR_MIDDLE)
@@ -92,7 +90,7 @@ local CreditsScreen = Class(Screen, function(self)
     self.back_button_root:SetVAnchor(ANCHOR_MIDDLE)
     self.back_button_root:SetHAnchor(ANCHOR_MIDDLE)
     self.back_button_root:SetScaleMode(SCALEMODE_PROPORTIONAL)
-    
+
     self.worldanim = self.bottom_root:AddChild(UIAnim())
     self.worldanim:GetAnimState():SetBuild("credits")
     self.worldanim:GetAnimState():SetBank("credits")
@@ -103,19 +101,18 @@ local CreditsScreen = Class(Screen, function(self)
     self.thankyoutext:SetString(STRINGS.UI.CREDITS.THANKS)
     self.thankyoutext:Hide()
 
-    TheFrontEnd:DoFadeIn(2)
-    
+    TheFrontEnd:Fade(FADE_IN, 2)
+
     self.titletext = self.center_root:AddChild(Text(TITLEFONT, 70))
     self.titletext:SetPosition(0, 180, 0)
     self.titletext:SetString(STRINGS.UI.CREDITS.THANKYOU)
     self.titletext:Hide()
 
-	self:SetupRandomPages()
-	
+    self:SetupRandomPages()
+
     self.credit_name_idx = 1
     self.page_order_idx = 1
     self:ShowNextPage()
-    
 
     if not TheInput:ControllerAttached() then
         local right_pos_x = -150
@@ -127,7 +124,7 @@ local CreditsScreen = Class(Screen, function(self)
             TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
                 TheFrontEnd:PopScreen()
                 TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)
-            end) 
+            end)
         end , STRINGS.UI.MAINSCREEN.BACK))
 
         if PLATFORM ~= "PS4" then

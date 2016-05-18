@@ -111,11 +111,10 @@ end
 
 function ChatInputScreen:Run()
     local chat_string = self.chat_edit:GetString()
+    chat_string = chat_string ~= nil and chat_string:match("^%s*(.-%S)%s*$") or ""
     if chat_string == "" then
         return
-    end
-
-    if string.sub(chat_string, 1, 1) == "/" then
+    elseif string.sub(chat_string, 1, 1) == "/" then
         --Process slash commands:
         --Clients may process any local slash commands
         --here first instead of sending to the server.

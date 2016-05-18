@@ -404,16 +404,15 @@ function MainScreen:OnBecomeActive()
     self.leaving = nil
 end
 
+local function OnMovieDone()
+    TheFrontEnd:GetSound():PlaySound("dontstarve/music/music_FE", "FEMusic")
+    TheFrontEnd:GetSound():PlaySound("dontstarve/together_FE/portal_idle_vines", "FEPortalSFX")
+    TheFrontEnd:Fade(FADE_IN, 2)
+end
+
 function MainScreen:OnUpdate(dt)
-    if false and self.profile:IsIntroCineEnabled() and TheSim:ShouldPlayIntroMovie() then
-        TheFrontEnd:PushScreen(
-            MovieDialog("movies/intro.ogv",
-                function()
-                    TheFrontEnd:GetSound():PlaySound("dontstarve/music/music_FE", "FEMusic")
-                    TheFrontEnd:GetSound():PlaySound("dontstarve/together_FE/portal_idle_vines", "FEPortalSFX")
-                end
-            )
-        )
+    if TheSim:ShouldPlayIntroMovie() then
+        TheFrontEnd:PushScreen(MovieDialog("movies/intro.ogv", OnMovieDone))
         self.music_playing = true
     elseif not self.music_playing then
         TheFrontEnd:GetSound():PlaySound("dontstarve/music/music_FE", "FEMusic")
