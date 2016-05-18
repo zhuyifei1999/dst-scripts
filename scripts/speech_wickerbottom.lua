@@ -489,19 +489,19 @@ return
         HOME = "A place to kick up one's feet.",
         HOMESIGN =
         {
-            GENERIC = "A navigational aid. \"You are here.\"",
+            GENERIC = "A navigational aid. \"You are here\".",
             UNWRITTEN = "A chance to give direction.",
             BURNT = "Not much of an aid now.",
         },
         ARROWSIGN_POST =
         {
-            GENERIC = "A navigational aid. \"You are here.\"",
+            GENERIC = "A navigational aid. \"Thataway\".",
             UNWRITTEN = "A chance to give direction.",
             BURNT = "Not much of an aid now.",
         },
         ARROWSIGN_PANEL =
         {
-            GENERIC = "A navigational aid. \"You are here.\"",
+            GENERIC = "A navigational aid. \"Thataway\".",
             UNWRITTEN = "A chance to give direction.",
             BURNT = "Not much of an aid now.",
         },

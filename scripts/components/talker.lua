@@ -108,15 +108,7 @@ end
 
 local function sayfn(self, script, nobroadcast, colour)
     local player = ThePlayer
-    if self.inst.userid ~= nil and
-        player ~= nil and
-        TheFrontEnd.mutedPlayers ~= nil and
-        TheFrontEnd.mutedPlayers[self.inst.userid] then
-        if self.widget ~= nil then
-            self.widget:Kill()
-            self.widget = nil
-        end
-    elseif self.widget == nil and player ~= nil and player.HUD ~= nil then
+    if self.widget == nil and player ~= nil and player.HUD ~= nil then
         self.widget = player.HUD:AddChild(FollowText(self.font or TALKINGFONT, self.fontsize or 35))
     end
 

@@ -77,7 +77,7 @@ return {
         TEACH =
         {
             KNOWN = "I'm pretty sure one of us knows that one.",
-            CANTLEARN = "Ms Wickerbottom will have to explain this one.",
+            CANTLEARN = "Ms. Wickerbottom will have to explain this one.",
         },
 	},
 	ANNOUNCE_MOUNT_LOWHEALTH = "Our hairy friend is hurt!",
@@ -130,7 +130,7 @@ return {
 	ANNOUNCE_NOSLEEPONFIRE = "Mum always said \"Don't sleep in a burning building.\"",
 	ANNOUNCE_NODANGERSIESTA = "Can't nap with monsters nearby!",
 	ANNOUNCE_NONIGHTSIESTA = "We can't take a nap, it's nighttime!",
-	ANNOUNCE_NONIGHTSIESTA_CAVE = "No naps 'til daybreak!",
+	ANNOUNCE_NONIGHTSIESTA_CAVE = "No naps til daybreak!",
 	ANNOUNCE_NOHUNGERSIESTA = "Won't be able to nap with a rumbling tummy.",
 	ANNOUNCE_NO_TRAP = "Easy peasy.",
 	ANNOUNCE_PECKED = "Bad bird!",
@@ -243,11 +243,11 @@ return {
 		},
 		WICKERBOTTOM =
 		{
-			GENERIC = "Hello Ms %s!",
-			ATTACKER = "Uh-oh! We're in trouble with Ms %s!",
+			GENERIC = "Hello Ms. %s!",
+			ATTACKER = "Uh-oh! We're in trouble with Ms. %s!",
 			MURDERER = "Killer! Does this mean we don't have to do our homework?!",
-			REVIVER = "Ms %s is very smart and wise. She's neat!",
-			GHOST = "Don't worry Ms %s, we'll find you a heart!",
+			REVIVER = "Ms. %s is very smart and wise. She's neat!",
+			GHOST = "Don't worry Ms. %s, we'll find you a heart!",
 		},
 		WES =
 		{
@@ -1249,7 +1249,7 @@ return {
 		},
 		RESURRECTIONSTATUE = 
 		{
-			GENERIC = "Who is that supposed to be?",
+			GENERIC = "It's a giant doll of our friend!!",
 			BURNT = "It will be of no use to us in that state.",
 		},
 		RESURRECTIONSTONE = "Some sort of religious monument maybe?",

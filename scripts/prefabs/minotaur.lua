@@ -225,8 +225,6 @@ local function fn()
 
     inst:ListenForEvent("attacked", OnAttacked)
 
-    MakeHauntablePanic(inst)
-
     return inst
 end
 

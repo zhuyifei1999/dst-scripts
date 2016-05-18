@@ -352,12 +352,13 @@ function LobbyScreen:MakeTextEntryBox(parent)
     chatbox.gobutton:SetScale(.13)
     chatbox.gobutton.image:SetTint(.6,.6,.6,1)
     chatbox.textbox.OnTextEntered = function()
-        if self.chatbox.textbox:GetString() ~= "" then
-            TheNet:Say(self.chatbox.textbox:GetString(), false)
-            self.chatbox.textbox:SetString("")
+        local chat_string = self.chatbox.textbox:GetString()
+        chat_string = chat_string ~= nil and chat_string:match("^%s*(.-%S)%s*$") or ""
+        if chat_string ~= "" then
+            TheNet:Say(chat_string, false)
             TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/chat_send")
         end
-
+        self.chatbox.textbox:SetString("")
         self.chatbox.textbox:SetEditing(true)
     end
 

@@ -112,6 +112,8 @@ local function fn()
     inst:ListenForEvent("attacked", OnAttacked)
     inst:ListenForEvent("newcombattarget", OnNewCombatTarget)
 
+    MakeHauntablePanic(inst)
+
     return inst
 end
 

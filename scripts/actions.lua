@@ -31,6 +31,7 @@ Action = Class(function(self, data, instant, rmb, distance, ghost_valid, ghost_e
     self.instant = data.instant or false
     self.rmb = data.rmb or nil -- note! This actually only does something for tools, everything tests 'right' in componentactions
     self.distance = data.distance or nil
+    self.mindistance = data.mindistance or nil
     self.ghost_valid = data.ghost_valid or false
     self.ghost_exclusive = data.ghost_exclusive or false
     self.mount_valid = data.mount_valid or false
@@ -118,7 +119,7 @@ ACTIONS =
     SUMMONGUARDIAN = Action({ rmb=false, distance=5 }),
     LAVASPIT = Action({ rmb=false, distance=2 }),
     SPAWN = Action({ rmb=false, distance=5 }),
-    HAUNT = Action({ rmb=false, distance=2, ghost_valid=true, ghost_exclusive=true, canforce=true, rangecheckfn=DefaultRangeCheck }),
+    HAUNT = Action({ rmb=false, mindistance=2, ghost_valid=true, ghost_exclusive=true, canforce=true, rangecheckfn=DefaultRangeCheck }),
     UNPIN = Action(),
     STEALMOLEBAIT = Action({ rmb=false, distance=.75 }),
     MAKEMOLEHILL = Action({ priority=4, rmb=false, distance=0 }),

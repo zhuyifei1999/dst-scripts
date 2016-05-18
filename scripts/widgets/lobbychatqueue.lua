@@ -78,15 +78,6 @@ function LobbyChatQueue:GetDisplayName(name, prefab)
 end
 
 function LobbyChatQueue:OnMessageReceived(userid, name, prefab, message, colour)
-    -- Early out if this player is muted
-    if TheFrontEnd.mutedPlayers ~= nil and TheFrontEnd.mutedPlayers[userid] then
-        return
-    end
-
-    if message == "" then
-        return
-    end
-
     self.list_items[#self.list_items + 1] =
     {
         message = message,

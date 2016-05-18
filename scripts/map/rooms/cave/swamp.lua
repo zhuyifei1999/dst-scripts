@@ -97,6 +97,36 @@ AddRoom("TentaclesAndTrees", {
     }
 })
 
+AddRoom("SpiderSinkholeMarsh", {
+    colour={r=.45,g=.75,b=.45,a=.50},
+    value = GROUND.MARSH,
+    tags = {"Hutch_Fishbowl"},
+    contents =  {
+        distributepercent = .1,
+        distributeprefabs=
+        {
+            evergreen = 1.0,
+            tentacle = 2,
+            pond_mos = 0.1,
+            blue_mushroom = 0.1,
+            reeds =  4,
+            spiderden=3.15,
+
+            cavelight = 0.5,
+            cavelight_small = 0.5,
+            cavelight_tiny = 0.5,
+        },
+        prefabdata = {
+            spiderden = function() if math.random() < 0.2 then
+                return { growable={stage=2}}
+            else
+                return { growable={stage=1}}
+            end
+        end,
+    },
+}
+                    })
+
 local bgsinkholeswamp = {
     colour={r=0.4,g=0.1,b=0.6,a=0.9},
     value = GROUND.MARSH,
