@@ -13,7 +13,7 @@ return {
 		},
 		STORE =
 		{
-			GENERIC = "It's packed full.",
+			GENERIC = "It is already brimming with goods.",
 			NOTALLOWED = "That's not a good spot for this.",
 			INUSE = "My stalwart companion currently has use of that.",
 		},
@@ -117,7 +117,7 @@ return {
 	ANNOUNCE_HIGHRESEARCH = "I am an excellent craftswoman.",
 	ANNOUNCE_HOUNDS = "The beasts are approaching...",
 	ANNOUNCE_HUNGRY = "How I long for a feast!",
-	ANNOUNCE_HUNT_BEAST_NEARBY = "Keep quiet, the creature is near.",
+	ANNOUNCE_HUNT_BEAST_NEARBY = "Hush... The creature is near.",
 	ANNOUNCE_HUNT_LOST_TRAIL = "I've lost the tracks.",
 	ANNOUNCE_HUNT_LOST_TRAIL_SPRING = "It's too muddy for trailing.",
 	ANNOUNCE_INV_FULL = "I'm carrying all I can!",
@@ -136,7 +136,7 @@ return {
 	ANNOUNCE_NO_TRAP = "Thankfully, I am light of foot.",
 	ANNOUNCE_PECKED = "Away, feisty beaker!",
 	ANNOUNCE_QUAKE = "The world shudders!",
-	ANNOUNCE_RESEARCH = "The power of research is great.",
+	ANNOUNCE_RESEARCH = "The power of knowledge is great.",
 	ANNOUNCE_SHELTER = "Aha! Shelter!",
 	ANNOUNCE_THORNS = "Arg, I've been poked!",
 	ANNOUNCE_TORCH_OUT = "My light is quenched!",
@@ -173,8 +173,8 @@ return {
 		SPIDER = "Leggy coward.",
 		SPIDER_WARRIOR = "Flee, monster! I will return.",
 	},
-	DESCRIBE =
-	{		
+    DESCRIBE =
+    {
         PLAYER =
         {
             GENERIC = "Good health to you, %s!",
@@ -183,7 +183,7 @@ return {
             REVIVER = "Freya smiles on %s.",
             GHOST = "%s's restless spirit could be revived with a heart.",
         },
-        WILSON = 
+        WILSON =
         {
             GENERIC = "Wisdom guide you, %s!",
             ATTACKER = "Your honor wavers, %s.",
@@ -352,6 +352,7 @@ return {
 		BOOK_TENTACLES = "Knowledge grants great power!",
 		BOOK_GARDENING = "But can it tend the garden of mine soul?",
 		BOOK_SLEEP = "Where's the drama? The suspense?",
+		BOOK_METEOR = "Read a passage and call forth Ragnarok!",
 		BOOK_BRIMSTONE = "This tome is brimming with Hel's fire!",
 		LUCY = "It's nice, but it's no spear.",
 		BALLOONS_EMPTY = "Such colors! I could sing!",
@@ -693,7 +694,7 @@ return {
 			NORMAL = "Warm fire, warm Wigfrid.",
 			OUT = "And the light flickers out.",
 		},
-		CANE = "Turns walk to trot.",
+		CANE = "Turns \"walk\" to \"trot\".",
 		CATCOON = "Oh! Cute meat with fur.", 
 		CATCOONDEN = 
 		{
@@ -705,14 +706,14 @@ return {
 		COMPASS =
 		{
 			GENERIC= "A reading cannot be gleaned.",
-			N = "North",
-			S = "South",
-			E = "East",
-			W = "West",
-			NE = "Northeast",
-			SE = "Southeast",
-			NW = "Northwest",
-			SW = "Southwest",
+			N = "North.",
+			S = "South.",
+			E = "East.",
+			W = "West.",
+			NE = "Northeast.",
+			SE = "Southeast.",
+			NW = "Northwest.",
+			SW = "Southwest.",
 		},
 		CARROT = "Where's the protein?",
 		CARROT_COOKED = "Sad cooked carrots.",
@@ -735,7 +736,7 @@ return {
 		COOKEDSMALLMEAT = "Yum, yum, meat snacks.",
 		COOKPOT =
 		{
-			COOKING_LONG = "Might as well do something while I wait.",
+			COOKING_LONG = "Might as well do something whilst I wait.",
 			COOKING_SHORT = "Shouldn't be long now!",
 			DONE = "What have we here?",
 			EMPTY = "Nothing in there.",
@@ -830,7 +831,7 @@ return {
 		DURIAN_COOKED = "What was the purpose of cooking this?",
 		DURIAN_SEEDS = "Tiny nature bits.",
 		EARMUFFSHAT = "Yes, most practical!",
-		EGGPLANT = "Purpley and bulbous.",
+		EGGPLANT = "Purple and bulbous.",
 		EGGPLANT_COOKED = "Food for the weak.",
 		EGGPLANT_SEEDS = "Tiny nature bits.",
 		DECIDUOUSTREE = 
@@ -962,7 +963,7 @@ return {
 		GUNPOWDER = "Such energy!",
 		HAMBAT = "A weapon fit for the great dining halls!",
 		HAMMER = "More fit for labor than battle.",
-		HEALINGSALVE = "Fill me with life!",
+		HEALINGSALVE = "Be filled with life!",
 		HEATROCK =
 		{
 			FROZEN = "Cold teeth bite at me!",
@@ -975,7 +976,7 @@ return {
 		HOMESIGN =
 		{
 			GENERIC = "A most well placed sign.",
-            UNWRITTEN = "I shall write a tale to triumph!",
+            UNWRITTEN = "I shall write a tale of triumph!",
 			BURNT = "Signs of a battle past.",
 		},
 		ARROWSIGN_POST =
@@ -994,7 +995,7 @@ return {
 		HONEYCOMB = "Wouldn't make much of a comb.",
 		HONEYHAM = "A feast!",
 		HONEYNUGGETS = "A feast!",
-		HORN = "Makes me long for battle.",
+		HORN = "How I long for battle.",
 		HOUND = "Fenrir's spawn!",
 		HOUNDBONE = "A fallen foe.",
 		HOUNDMOUND = "These hounds are true warriors.",
@@ -1120,7 +1121,7 @@ return {
 		MOSQUITOSACK = "The blood will make me strong.",
 		MOUND =
 		{
-			DUG = "I wanted the loot!",
+			DUG = "Loot trumped desecration!",
 			GENERIC = "Are there treasures beneath the gravestones?",
 		},
 		NIGHTLIGHT = "I'm more comfortable around my own fire.",
@@ -1207,7 +1208,7 @@ return {
 		},
 		RAINOMETER = 
 		{	
-			GENERIC = "Foretells the coming of rain.",
+			GENERIC = "It foretells the coming of rains.",
 			BURNT = "Its prophecy days are done.",
 		},
 		RAINCOAT = "Armor for rain.",
@@ -1327,7 +1328,7 @@ return {
 		SEEDS_COOKED = "Tiny nature bits, cooked to death.",
 		SEWING_KIT = "I am no seamstress, but repairs are sometimes necessary.",
 		SHOVEL = "I'd prefer a ship burial, though this might have its uses.",
-		SILK = "Useful for binding and remembering victories past.",
+		SILK = "Useful for binding, and for remembering victories past.",
 		SKELETON = "Rest easy in Valhalla.",
 		--SKELETON_PLAYER = "This fight is not yet over.",
 
@@ -1375,16 +1376,16 @@ return {
 		SUNKBOAT = "No wonder it sank. It is not a longship.",
 		SWEATERVEST = "It is a handsome vest, but it offers no protection.",
 		REFLECTIVEVEST = "Ha! The sun is no warrior if it cannot penetrate this.",
-		HAWAIIANSHIRT = "Flowers will not stop a spear.",
+		HAWAIIANSHIRT = "Flowers cannot stop a spear.",
 		TAFFY = "Long will the saga of this taffy be told.",
-		TALLBIRD = "Fearsome bird! But I am not afraid.",
+		TALLBIRD = "A fearsome bird! But I am not afraid.",
 		TALLBIRDEGG = "It will grow into a formidable foe.",
 		TALLBIRDEGG_COOKED = "It was you or me, bird.",
 		TALLBIRDEGG_CRACKED =
 		{
 			COLD = "This egg would not survive a Norse winter.",
 			GENERIC = "Fight your way out, bird!",
-			HOT = "Borne of flame! Unless it cooks.",
+			HOT = "Borne of flame! Unless it cooks to death.",
 			LONG = "A time remains before this bird is to be born.",
 			SHORT = "It will soon wake to this world.",
 		},
@@ -1524,7 +1525,7 @@ return {
             BURNING = "No, my furs and cloaks!",
         	BURNT = "No use crying over burnt pelts.",
     	},
-		WARG = "Is it you, Fenrir?",
+		WARG = "Be that you, Fenrir?",
 		WASPHIVE = "Bees of war!",
 		WATERMELON = "It makes a good sound when you hit it.",
 		WATERMELON_COOKED = "Warm and red, but it doesn't flow.",

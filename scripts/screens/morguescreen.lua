@@ -194,12 +194,11 @@ local function encounter_widget_update(widget, data, index)
 
     widget.NET_ID._netid = data.netid
     if TheNet:IsNetIDPlatformValid(data.netid) then
-        widget.NET_ID:Show()
+        widget.NET_ID:Unselect()
     else
-        widget.NET_ID:Hide()
+        widget.NET_ID:Select()
     end
     widget.CLEAR._userid = data.userid
-    widget.CLEAR:SetPosition(column_offsets.SUBMENU + 12 + (widget.NET_ID.shown and 15 or 0) + 200, -1, 0)
 end
 
 local MorgueScreen = Class(Screen, function(self, prev_screen)
@@ -333,7 +332,7 @@ function MorgueScreen:EncounterWidgetConstructor(data, parent, obit_button)
     group.NET_ID:SetHelpTextMessage(STRINGS.UI.PLAYERSTATUSSCREEN.VIEWPROFILE)
     group.NET_ID._netid = data.netid
     if not TheNet:IsNetIDPlatformValid(data.netid) then
-        group.NET_ID:Hide()
+        group.NET_ID:Select()
     end
 
     group.CLEAR = group:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "delete.tex", STRINGS.UI.PLAYERSTATUSSCREEN.CLEAR, false, false,
@@ -342,7 +341,7 @@ function MorgueScreen:EncounterWidgetConstructor(data, parent, obit_button)
             self:UpdatePlayerHistory()
         end,
         { size = 50, offset_y = 65 }))
-    group.CLEAR:SetPosition(column_offsets.SUBMENU + 12 + (group.NET_ID.shown and 15 or 0) + slide_factor, -1, 0)
+    group.CLEAR:SetPosition(column_offsets.SUBMENU + 12 + 15 + slide_factor, -1, 0)
     group.CLEAR:SetScale(.45)
     group.CLEAR:SetHelpTextMessage(STRINGS.UI.PLAYERSTATUSSCREEN.CLEAR)
     group.CLEAR._userid = data.userid

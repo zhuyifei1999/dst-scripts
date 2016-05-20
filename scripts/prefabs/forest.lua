@@ -70,6 +70,7 @@ local prefabs =
     "pond", 
     "marsh_tree", 
     "marsh_bush", 
+    "burnt_marsh_bush",
     "reeds", 
     "mist",
     "snow",

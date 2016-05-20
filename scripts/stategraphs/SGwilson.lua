@@ -1263,7 +1263,7 @@ local states =
 
     State{
         name = "chop_start",
-        tags = { "prechop", "chopping", "working" },
+        tags = { "prechop", "working" },
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
@@ -1415,7 +1415,7 @@ local states =
 
         timeline =
         {
-            TimeEvent(9 * FRAMES, function(inst)
+            TimeEvent(7 * FRAMES, function(inst)
                 if inst.sg.statemem.action ~= nil then
                     local target = inst.sg.statemem.action.target
                     if target ~= nil and target:IsValid() then
@@ -1598,7 +1598,7 @@ local states =
                     inst.sg:GoToState("idle")
                 end
             end),
-        },        
+        },
     },
 
     State{

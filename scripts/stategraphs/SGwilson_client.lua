@@ -102,7 +102,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.UPGRADE, "dolongaction"),
     ActionHandler(ACTIONS.ACTIVATE,
         function(inst, action)
-            return action.target:HasTag("quickactivate") and "doshortaction" or "dolongaction"
+            return action.target:HasTag("quickactivation") and "doshortaction" or "dolongaction"
         end),
     ActionHandler(ACTIONS.PICK,
         function(inst, action)
@@ -452,7 +452,7 @@ local states =
     State
     {
         name = "chop_start",
-        tags = { "prechop", "chopping", "working" },
+        tags = { "prechop", "working" },
 
         onenter = function(inst)
             inst.components.locomotor:Stop()

@@ -69,7 +69,9 @@ local states =
         events =
         {
             EventHandler("animover", function(inst)
-                inst.sg:GoToState("run")
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("run")
+                end
             end),
         },
 
@@ -124,7 +126,9 @@ local states =
         events =
         {
             EventHandler("animover", function(inst)
-                inst.sg:GoToState("idle")
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
             end),
         },
     },
@@ -152,21 +156,16 @@ local states =
                 inst.sg:RemoveStateTag("busy")
             end),
             TimeEvent(13*FRAMES, function(inst)
-                if not inst.sg.statemem.slow then
-                    inst.sg:RemoveStateTag("attack")
-                end
-            end),
-            TimeEvent(24*FRAMES, function(inst)
-                if inst.sg.statemem.slow then
-                    inst.sg:RemoveStateTag("attack")
-                end
+                inst.sg:RemoveStateTag("attack")
             end),
         },
 
         events =
         {
             EventHandler("animover", function(inst)
-                inst.sg:GoToState("idle")
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
             end),
         },
     },
@@ -207,7 +206,9 @@ local states =
         events =
         {
             EventHandler("animover", function(inst)
-                inst.sg:GoToState("idle")
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
             end),
         },
 
@@ -238,7 +239,7 @@ local states =
 
     State{
         name = "chop_start",
-        tags = {"prechop", "chopping", "working"},
+        tags = {"prechop", "working"},
 
         onenter = function(inst)
             local buffaction = inst:GetBufferedAction()
@@ -251,7 +252,9 @@ local states =
         events =
         {
             EventHandler("animover", function(inst)
-                inst.sg:GoToState("chop")
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("chop")
+                end
             end),
         },
     },
@@ -269,12 +272,14 @@ local states =
 
         timeline =
         {
-            TimeEvent(2*FRAMES, function(inst)
-                    inst:PerformBufferedAction()
+            TimeEvent(2 * FRAMES, function(inst)
+                inst:PerformBufferedAction()
             end),
 
-            TimeEvent(9*FRAMES, function(inst)
-                    inst.sg:RemoveStateTag("prechop")
+            --NOTE: This is one frame off from SGwilson's since it was
+            --      too slow when coupled with our brain update period
+            TimeEvent(13 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("prechop")
             end),
 
             TimeEvent(16*FRAMES, function(inst)
@@ -285,7 +290,9 @@ local states =
         events =
         {
             EventHandler("animover", function(inst)
-                inst.sg:GoToState("idle")
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
             end),
         },
     },
@@ -305,7 +312,9 @@ local states =
         events =
         {
             EventHandler("animover", function(inst)
-                inst.sg:GoToState("mine")
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("mine")
+                end
             end),
         },
     },
@@ -323,7 +332,7 @@ local states =
 
         timeline =
         {
-            TimeEvent(9*FRAMES, function(inst)
+            TimeEvent(7 * FRAMES, function(inst)
                 local buffaction = inst:GetBufferedAction()
                 if buffaction ~= nil then
                     local target = buffaction.target
@@ -335,6 +344,9 @@ local states =
                     end
                     inst:PerformBufferedAction()
                 end
+            end),
+
+            TimeEvent(14 * FRAMES, function(inst)
                 inst.sg:RemoveStateTag("premine")
             end),
         },
@@ -342,8 +354,10 @@ local states =
         events =
         {
             EventHandler("animover", function(inst) 
-                inst.AnimState:PlayAnimation("pickaxe_pst") 
-                inst.sg:GoToState("idle", true)
+                if inst.AnimState:AnimDone() then
+                    inst.AnimState:PlayAnimation("pickaxe_pst") 
+                    inst.sg:GoToState("idle", true)
+                end
             end),
         },
     },
@@ -363,14 +377,16 @@ local states =
         events =
         {
             EventHandler("animover", function(inst)
-                inst.sg:GoToState("dig")
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("dig")
+                end
             end),
         },
     },
 
     State{
         name = "dig",
-        tags = {"predig", "mining", "working"},
+        tags = {"predig", "digging", "working"},
 
         onenter = function(inst)
             local buffaction = inst:GetBufferedAction()
@@ -383,16 +399,21 @@ local states =
         {
             TimeEvent(15 * FRAMES, function(inst)
                 inst:PerformBufferedAction()
-                inst.sg:RemoveStateTag("predig")
                 inst.SoundEmitter:PlaySound("dontstarve/wilson/dig")
+            end),
+
+            TimeEvent(35 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("predig")
             end),
         },
 
         events =
         {
             EventHandler("animover", function(inst)
-                inst.AnimState:PlayAnimation("shovel_pst")
-                inst.sg:GoToState("idle", true)
+                if inst.AnimState:AnimDone() then
+                    inst.AnimState:PlayAnimation("shovel_pst")
+                    inst.sg:GoToState("idle", true)
+                end
             end),
         },
     },
