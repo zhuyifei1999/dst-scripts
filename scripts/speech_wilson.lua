@@ -1306,7 +1306,7 @@ return {
         ROOK = "Storm the castle!",
 		ROPE = "Some short lengths of rope.",
 		ROTTENEGG = "Ew! It stinks!",
-        SADDLE_BASIC = "That'll' allow the mounting of some smelly animal.",
+        SADDLE_BASIC = "That'll allow the mounting of some smelly animal.",
         SADDLE_RACE = "This saddle really flies!",
         SADDLE_WAR = "The only problem is the saddle sores.",
         SADDLEHORN = "This could take a saddle off.",

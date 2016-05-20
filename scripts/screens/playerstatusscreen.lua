@@ -73,7 +73,7 @@ function PlayerStatusScreen:GetHelpText()
 	table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_TOGGLE_PLAYER_STATUS) .. " " .. STRINGS.UI.HELP.BACK)
 	
 	if self.server_group ~= "" then
-		table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_2) .. " " .. STRINGS.UI.HELP.VIEWGROUP)
+		table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_2) .. " " .. STRINGS.UI.HELP.VIEWGROUP)
 	end
 	
     return table.concat(t, "  ")
@@ -227,11 +227,14 @@ function PlayerStatusScreen:DoInit(ClientObjs)
 
     self.server_group = TheNet:GetServerClanID()
     if self.server_group ~= "" and not TheInput:ControllerAttached() then
-        if not self.viewgroup_button then
+        if self.viewgroup_button == nil then
             self.viewgroup_button = self.root:AddChild(ImageButton("images/scoreboard.xml", "clan_normal.tex", "clan_hover.tex", "clan.tex", "clan.tex", nil, {0.6,0.6}, {0,0}))
             self.viewgroup_button:SetOnClick(function() TheNet:ViewNetProfile(self.server_group) end)
             self.viewgroup_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.VIEWGROUP, { font = NEWFONT_OUTLINE, size = 24, offset_x = 0, offset_y = 48, colour = {1,1,1,1}})
         end
+    elseif self.viewgroup_button ~= nil then
+        self.viewgroup_button:Kill()
+        self.viewgroup_button = nil
     end
 
 	local Voter = TheWorld.net.components.voter
@@ -267,7 +270,7 @@ function PlayerStatusScreen:DoInit(ClientObjs)
 	if serverDescStr == "" then
 		self.servertitle:SetPosition(0,215)
 		self.serverdesc:SetPosition(0,175)
-        if self.viewgroup_button and not TheInput:ControllerAttached() then
+        if self.viewgroup_button ~= nil then
             self.viewgroup_button:SetPosition(-328,200)
         end
 		self.serverstate:SetPosition(0,175)
@@ -277,7 +280,7 @@ function PlayerStatusScreen:DoInit(ClientObjs)
 		self.servertitle:SetSize(40)
 		self.serverdesc:SetPosition(0,188)
 		self.serverdesc:SetSize(23)
-        if self.viewgroup_button and not TheInput:ControllerAttached() then
+        if self.viewgroup_button ~= nil then
             self.viewgroup_button:SetPosition(-328,208)
         end
 		self.serverstate:SetPosition(0,163)

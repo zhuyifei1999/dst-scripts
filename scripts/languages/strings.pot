@@ -14883,7 +14883,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SADDLE_BASIC
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SADDLE_BASIC"
-msgid "That'll' allow the mounting of some smelly animal."
+msgid "That'll allow the mounting of some smelly animal."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPORE_TALL_INV
@@ -37433,7 +37433,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.WX78.GHOST
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.WX78.GHOST"
-msgid "Say 'Pretty Please' and I might get you a heart, %s."
+msgid "Say \"Pretty Please\" and I might get you a heart, %s."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.WX78.REVIVER
@@ -37633,7 +37633,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.HONEYNUGGETS
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.HONEYNUGGETS"
-msgid "A sweet sauce for this creature's sweet embrace."
+msgid "Meat cut into tiny pieces. Just like my heart."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.MINIFAN
@@ -38418,7 +38418,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.WICKERBOTTOM.MURDERER
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.WICKERBOTTOM.MURDERER"
-msgid "'Murder', she wrote."
+msgid "\"Murder\", she wrote."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.WICKERBOTTOM.ATTACKER
@@ -42418,7 +42418,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.GIVEALLTOPLAYER.SLEEPING
 msgctxt "STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.GIVEALLTOPLAYER.SLEEPING"
-msgid "Aww... They're getting snoozies right now!"
+msgid "Aww... They're getting their snoozies right now!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.GIVEALLTOPLAYER.DEAD
@@ -42473,7 +42473,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.GIVETOPLAYER.SLEEPING
 msgctxt "STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.GIVETOPLAYER.SLEEPING"
-msgid "Aww... They're getting snoozies right now!"
+msgid "Aww... They're getting their snoozies right now!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.GIVETOPLAYER.DEAD
@@ -42558,7 +42558,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.COOK.INUSE
 msgctxt "STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.COOK.INUSE"
-msgid "It's okay, we can wait for you to finish!"
+msgid "Ooo, make something tasty!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.COOK.TOOFAR
@@ -42578,7 +42578,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.STORE.INUSE
 msgctxt "STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.STORE.INUSE"
-msgid "It's okay, we can wait for you to finish!"
+msgid "Are you finding everything okay in there?"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.STORE.NOTALLOWED
@@ -43148,7 +43148,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.DIVININGRODBASE.READY
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.DIVININGRODBASE.READY"
-msgid "Looks like there's a hole for an over-sized key."
+msgid "Looks like there's a hole for an oversized key."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.DIVININGRODBASE.UNLOCKED
@@ -43798,7 +43798,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.WALL_MOONROCK_ITEM
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.WALL_MOONROCK_ITEM"
-msgid "We thought 'moon' meant something totally different!"
+msgid "We thought \"moon\" meant something totally different!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.PENGUIN
@@ -45788,7 +45788,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.WILLOW.REVIVER
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.WILLOW.REVIVER"
-msgid "%s's like a burned marshmallow. Crispy on the outside, gooey on the inside!"
+msgid "%s's like a burnt marshmallow. Crispy on the outside, gooey on the inside!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.FIRESTAFF
@@ -51483,7 +51483,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.WAXWELL.MURDERER
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.WAXWELL.MURDERER"
-msgid "Fool me once, shame on you. Fool me twice - you're dead!"
+msgid "Fool me once, shame on you. Fool me twice... you're dead!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.WAXWELL.ATTACKER
@@ -57483,7 +57483,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.PIGGYBACK
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.PIGGYBACK"
-msgid "'Used all the parts of the pig."
+msgid "Used all the parts of the pig."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.PERD
@@ -58813,7 +58813,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.MOUNT.TARGETINCOMBAT
 msgctxt "STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.MOUNT.TARGETINCOMBAT"
-msgid "I'll ride it when it settles down'."
+msgid "I'll ride it when it settles down."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.MOUNT.INUSE
@@ -58838,7 +58838,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.SADDLE.TARGETINCOMBAT
 msgctxt "STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.SADDLE.TARGETINCOMBAT"
-msgid "I'll ride it when it settles down'."
+msgid "I'll ride it when it settles down."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.TEACH.KNOWN
@@ -63958,7 +63958,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.WATHGRITHRHAT
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.WATHGRITHRHAT"
-msgid "It's got a name scratched on the inside... 'W', uh..."
+msgid "It's got a name scratched on the inside... \"W\", uh..."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.MONKEYBARREL

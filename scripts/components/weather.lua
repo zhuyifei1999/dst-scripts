@@ -317,6 +317,11 @@ local function SetWithPeriodicSync(netvar, val, period, ismastersim)
     end
 end
 
+local ForceResync = _ismastersim and function(netvar)
+    netvar:set_local(netvar:value())
+    netvar:set(netvar:value())
+end or nil
+
 local CalculateMoistureRate = _ismastersim and function()
     return _moisturerateval * _moistureratemultiplier + _moisturerateoffset
 end or nil
@@ -573,6 +578,14 @@ local OnSendLightningStrike = _ismastersim and function(src, pos)
     SpawnPrefab("lightning").Transform:SetPosition(pos:Get())
 end or nil
 
+local OnSimUnpaused = _ismastersim and function()
+    --Force resync values that client may have simulated locally
+    ForceResync(_noisetime)
+    ForceResync(_moisture)
+    ForceResync(_wetness)
+    ForceResync(_snowlevel)
+end or nil
+
 --------------------------------------------------------------------------
 --[[ Initialization ]]
 --------------------------------------------------------------------------
@@ -658,6 +671,7 @@ if _ismastersim then
     inst:ListenForEvent("ms_setlightningmode", OnSetLightningMode, _world)
     inst:ListenForEvent("ms_setlightningdelay", OnSetLightningDelay, _world)
     inst:ListenForEvent("ms_sendlightningstrike", OnSendLightningStrike, _world)
+    inst:ListenForEvent("ms_simunpaused", OnSimUnpaused, _world)
 end
 
 PushWeather()

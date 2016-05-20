@@ -23,8 +23,8 @@ local ViewPlayersModalScreen = Class(Screen, function(self, players, maxPlayers)
     self.black:SetVAnchor(ANCHOR_MIDDLE)
     self.black:SetHAnchor(ANCHOR_MIDDLE)
     self.black:SetScaleMode(SCALEMODE_FILLSCREEN)
-	self.black:SetTint(0,0,0,.75)
-    
+    self.black:SetTint(0,0,0,.75)
+
     self.root = self:AddChild(Widget("root"))
     self.root:SetVAnchor(ANCHOR_MIDDLE)
     self.root:SetHAnchor(ANCHOR_MIDDLE)
@@ -42,23 +42,23 @@ local ViewPlayersModalScreen = Class(Screen, function(self, players, maxPlayers)
     --menu buttons
     self.panel_root = self.clickroot:AddChild(Widget("panel_root"))
     self.panel_root:SetPosition(0,20,0)
-    
+
     self.bg = self.root:AddChild(TEMPLATES.CurlyWindow(1, 325, .8, .8, 53, -32))
     self.bg.fill = self.root:AddChild(Image("images/fepanel_fills.xml", "panel_fill_tall.tex"))
     self.bg.fill:SetScale(.47, -.5)
     self.bg.fill:SetPosition(8, 10)
     self.bg:SetPosition(0,0,0)
-    
-    if not TheInput:ControllerAttached() then
-    	self.button = self.panel_root:AddChild(ImageButton())
-		self.button:SetText(STRINGS.UI.SERVERLISTINGSCREEN.OK)
-    	self.button:SetOnClick(function() self:Cancel() end)
-    	self.button:SetPosition(0,-225)
-        self.button:SetScale(.8)
-	end
 
-	self.title = self.panel_root:AddChild(Text(BUTTONFONT, 45, STRINGS.UI.SERVERLISTINGSCREEN.PLAYERS, {0,0,0,1}))
-	self.title:SetPosition(5,150)
+    if not TheInput:ControllerAttached() then
+        self.button = self.panel_root:AddChild(ImageButton())
+        self.button:SetText(STRINGS.UI.SERVERLISTINGSCREEN.OK)
+        self.button:SetOnClick(function() self:Cancel() end)
+        self.button:SetPosition(0,-225)
+        self.button:SetScale(.8)
+    end
+
+    self.title = self.panel_root:AddChild(Text(BUTTONFONT, 45, STRINGS.UI.SERVERLISTINGSCREEN.PLAYERS, {0,0,0,1}))
+    self.title:SetPosition(5,150)
 
     self.upper_horizontal_line = self.panel_root:AddChild(Image("images/ui.xml", "line_horizontal_6.tex"))
     self.upper_horizontal_line:SetScale(.95)
@@ -74,7 +74,6 @@ local ViewPlayersModalScreen = Class(Screen, function(self, players, maxPlayers)
     self.players_number:SetString(self.numPlayers.."/"..self.max_players)
 
     local function listingConstructor(v, i)
-
         local playerListing =  Widget("playerListing")
 
         local displayName = v.name or ""
@@ -136,7 +135,7 @@ local ViewPlayersModalScreen = Class(Screen, function(self, players, maxPlayers)
         end
         playerListing.viewprofile:SetOnClick(
             function()
-            	--TheFrontEnd:PushScreen(PlayerAvatarPopupScreen(v.name, v))
+                --TheFrontEnd:PushScreen(PlayerAvatarPopupScreen(v.name, v))
                 if v.netid ~= nil then
                     TheNet:ViewNetProfile(v.netid)
                 end
@@ -163,7 +162,6 @@ local ViewPlayersModalScreen = Class(Screen, function(self, players, maxPlayers)
         return playerListing
     end
 
-
     self.list_root = self.panel_root:AddChild(Widget("list_root"))
     self.list_root:SetPosition(90, -27)
 
@@ -181,7 +179,7 @@ local ViewPlayersModalScreen = Class(Screen, function(self, players, maxPlayers)
         self.empty_server_text:SetColour(0,0,0,1)
     end
 
-	self.default_focus = self.scroll_list
+    self.default_focus = self.scroll_list
 end)
 
 function ViewPlayersModalScreen:Cancel()
@@ -191,16 +189,16 @@ end
 function ViewPlayersModalScreen:OnControl(control, down)
     if ViewPlayersModalScreen._base.OnControl(self, control, down) then return true end
     if not down and control == CONTROL_CANCEL then
-		self:Cancel()
+        self:Cancel()
         TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
-		return true
+        return true
     end
 end
 
 function ViewPlayersModalScreen:GetHelpText()
     local controller_id = TheInput:GetControllerID()
     local t = {}
-	table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_CANCEL) .. " " .. STRINGS.UI.HELP.BACK)
+    table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_CANCEL) .. " " .. STRINGS.UI.HELP.BACK)
     return table.concat(t, "  ")
 end
 

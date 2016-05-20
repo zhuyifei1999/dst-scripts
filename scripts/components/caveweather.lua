@@ -263,6 +263,11 @@ local function SetWithPeriodicSync(netvar, val, period, ismastersim)
     end
 end
 
+local ForceResync = _ismastersim and function(netvar)
+    netvar:set_local(netvar:value())
+    netvar:set(netvar:value())
+end or nil
+
 local CalculateMoistureRate = _ismastersim and function()
     return _moisturerateval * _moistureratemultiplier + _moisturerateoffset
 end or nil
@@ -402,6 +407,13 @@ local OnDeltaWetness = _ismastersim and function(src, delta)
     _wetness:set(math.clamp(_wetness:value() + delta, MIN_WETNESS, MAX_WETNESS))
 end or nil
 
+local OnSimUnpaused = _ismastersim and function()
+    --Force resync values that client may have simulated locally
+    ForceResync(_noisetime)
+    ForceResync(_moisture)
+    ForceResync(_wetness)
+end or nil
+
 --------------------------------------------------------------------------
 --[[ Initialization ]]
 --------------------------------------------------------------------------
@@ -455,6 +467,7 @@ if _ismastersim then
     inst:ListenForEvent("ms_deltamoisture", OnDeltaMoisture, _world)
     inst:ListenForEvent("ms_deltamoistureceil", OnDeltaMoistureCeil, _world)
     inst:ListenForEvent("ms_deltawetness", OnDeltaWetness, _world)
+    inst:ListenForEvent("ms_simunpaused", OnSimUnpaused, _world)
 end
 
 PushWeather()

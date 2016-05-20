@@ -867,10 +867,10 @@ function Combat:GetDamageReflect(target, damage, weapon, stimuli)
 
 end
 
-function Combat:DoAreaAttack(target, range, weapon, validfn, stimuli)
+function Combat:DoAreaAttack(target, range, weapon, validfn, stimuli, excludetags)
     local hitcount = 0
     local x, y, z = target.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, range, { "_combat" })
+    local ents = TheSim:FindEntities(x, y, z, range, { "_combat" }, excludetags)
     for i, ent in ipairs(ents) do
         if ent ~= target and
             ent ~= self.inst and

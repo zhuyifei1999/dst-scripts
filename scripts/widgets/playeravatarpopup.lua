@@ -25,6 +25,10 @@ local PlayerAvatarPopup = Class(Widget, function(self, owner, player_name, data,
     self.player_name = nil
     self.userid = nil
     self.target = nil
+    self.anchorpos = nil
+    self.anchortime = 0
+    self.resetanchortime = -.3
+    self.targetmovetime = TheInput:ControllerAttached() and .5 or .75
     self.started = false
     self.settled = false
     self.time_to_refresh = REFRESH_INTERVAL
@@ -54,10 +58,15 @@ function PlayerAvatarPopup:SetPlayer(player_name, data, show_net_profile)
         character = "unknownmod"
     end
 
+    -- net profile button is unreachable with controllers
+    show_net_profile = show_net_profile and not TheInput:ControllerAttached()
+
     self.currentcharacter = character
     self.player_name = player_name
     self.userid = data.userid
     self.target = data.inst
+    self.anchorpos = self.owner:GetPosition()
+    self.anchortime = self.resetanchortime
 
     self.frame = self.proot:AddChild(TEMPLATES.CurlyWindow(130, 520, .6, .6, 39, -25))
     self.frame:SetPosition(0, 20)
@@ -71,7 +80,8 @@ function PlayerAvatarPopup:SetPlayer(player_name, data, show_net_profile)
         local right_column = 94
 
         --title
-        self.title = self.proot:AddChild(Text(TALKINGFONT, 32))
+        --could be skeleton with no player colour
+        self.title = self.proot:AddChild(Text(data.colour ~= nil and TALKINGFONT or BUTTONFONT, 32))
         self.title:SetPosition(left_column+15, 280, 0)
         self:UpdateDisplayName()
 
@@ -205,12 +215,18 @@ function PlayerAvatarPopup:UpdateData(data)
         if data.colour ~= nil then
             self.title:SetColour(unpack(data.colour))
         else
-            self.title:SetColour(1, 1, 1, 1)
+            self.title:SetColour(0, 0, 0, 1)
         end
     end
 
     if self.age ~= nil and data.playerage ~= nil then
         self.age:SetString(STRINGS.UI.PLAYER_AVATAR.AGE_SURVIVED.." "..data.playerage.." "..(data.playerage == 1 and STRINGS.UI.PLAYER_AVATAR.AGE_DAY or STRINGS.UI.PLAYER_AVATAR.AGE_DAYS))
+        if self.netprofilebutton ~= nil then
+            --left align to steam button if there is one
+            --otherwise it is centered by default
+            local w = self.age:GetRegionSize()
+            self.age:SetPosition(w * .5 - 130, 60, 0)
+        end
     end
 
     if self.puppet ~= nil then
@@ -316,16 +332,38 @@ function PlayerAvatarPopup:Close()
 end
 
 function PlayerAvatarPopup:OnUpdate(dt)
-    if self.owner.components.playercontroller == nil or
+    if not self.started then
+        return
+    elseif self.owner.components.playercontroller == nil or
         not self.owner.components.playercontroller:IsEnabled() or
         not self.owner.HUD:IsVisible() or
         (self.target ~= nil and
         not (self.target:IsValid() and
             self.owner:IsNear(self.target, 20))) then
+        -- Auto close when controls become disabled or target moves away
         self:Close()
-    elseif not self.started then
         return
-    elseif self.time_to_refresh > dt then
+    end
+
+    local pos = self.owner:GetPosition()
+    local moved = self.anchorpos ~= pos
+    if moved then
+        self.anchorpos = pos
+    end
+
+    -- Anchor to a position once we've stopped moving a certain time
+    -- Then auto-close once we've continuously moved a certain time
+    if self.anchortime < 0 then
+        self.anchortime = moved and self.resetanchortime or self.anchortime + dt
+    elseif self.anchortime < self.targetmovetime then
+        self.anchortime = moved and self.anchortime + dt or 0
+    else
+        self:Close()
+        return
+    end
+
+    -- Periodic refresh if we're still active
+    if self.time_to_refresh > dt then
         self.time_to_refresh = self.time_to_refresh - dt
     elseif self.userid ~= nil then
         self.time_to_refresh = REFRESH_INTERVAL

@@ -1350,19 +1350,25 @@ function PlayerController:GetInspectButtonAction(target)
 end
 
 function PlayerController:DoInspectButton()
-    if not self:IsEnabled() then
+    if not self:IsEnabled()
+        or (self.inst.HUD ~= nil and
+            self.inst.HUD:IsPlayerAvatarPopUpOpen()) then
+        --V2C: Closing the avatar popup takes priority
         return
     end
-    local buffaction = TheInput:ControllerAttached() and (self:GetInspectButtonAction(self:GetControllerTarget() or TheInput:GetWorldEntityUnderMouse())) or nil
+    local buffaction = TheInput:ControllerAttached() and self:GetInspectButtonAction(self:GetControllerTarget() or TheInput:GetWorldEntityUnderMouse()) or nil
     if buffaction == nil then
         return
     end
 
     if buffaction.action == ACTIONS.LOOKAT and
         buffaction.target ~= nil and
-        buffaction.target:HasTag("player") and
+        (buffaction.target:HasTag("player") or buffaction.target:HasTag("playerskeleton")) and
         self.inst.HUD ~= nil then
-        local client_obj = TheNet:GetClientTableForUser(buffaction.target.userid)
+        local client_obj =
+            (buffaction.target.userid ~= nil and TheNet:GetClientTableForUser(buffaction.target.userid)) or
+            (buffaction.target.GetSkeletonAvatarData ~= nil and buffaction.target:GetSkeletonAvatarData()) or
+            nil
         if client_obj ~= nil then
             client_obj.inst = buffaction.target
             self.inst.HUD:TogglePlayerAvatarPopup(client_obj.name, client_obj, true)

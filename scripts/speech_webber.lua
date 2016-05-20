@@ -15,7 +15,7 @@ return {
 		{
 			GENERIC = "All full!",
 			NOTALLOWED = "That's against the rules.",
-			INUSE = "It's okay, we can wait for you to finish!",
+			INUSE = "Are you finding everything okay in there?",
 		},
 		WRITE =
         {
@@ -30,7 +30,7 @@ return {
 		COOK =
         {
             GENERIC = "That's off-limits.",
-            INUSE = "It's okay, we can wait for you to finish!",
+            INUSE = "Ooo, make something tasty!",
             TOOFAR = "Let's scurry closer!",
         },
         MOUNT =
@@ -54,14 +54,14 @@ return {
         {
         	FULL = "Hey! Make room!",
             DEAD = "Um. We should probably keep it.",
-            SLEEPING = "Aww... They're getting snoozies right now!",
+            SLEEPING = "Aww... They're getting their snoozies right now!",
             BUSY = "We have something for you!",
     	},
     	GIVEALLTOPLAYER = 
         {
         	FULL = "Hey! Make room!",
             DEAD = "Um. We should probably keep it.",
-            SLEEPING = "Aww... They're getting snoozies right now!",
+            SLEEPING = "Aww... They're getting their snoozies right now!",
             BUSY = "We have something for you!",
     	},
     	ATTUNE =
@@ -220,7 +220,7 @@ return {
 			GENERIC = "Hi %s! How's Bernie?",
 			ATTACKER = "%s's playing with fire. Err...",
 			MURDERER = "You're gonna get burned, %s!",
-			REVIVER = "%s's like a burned marshmallow. Crispy on the outside, gooey on the inside!",
+			REVIVER = "%s's like a burnt marshmallow. Crispy on the outside, gooey on the inside!",
 			GHOST = "Uh-oh! Does that hurt, %s?",
 		},
 		WENDY =
@@ -769,7 +769,7 @@ return {
 		DIVININGRODBASE =
 		{
 			GENERIC = "It's a mystery.",
-			READY = "Looks like there's a hole for an over-sized key.",
+			READY = "Looks like there's a hole for an oversized key.",
 			UNLOCKED = "It's ready to go.",
 		},
 		DIVININGRODSTART = "Radical rod!",
@@ -1520,7 +1520,7 @@ return {
 		},
 		WALL_WOOD_ITEM = "They won't keep us safe if we keep holding them.",
 		WALL_MOONROCK = "We feel safe behind this wall... it makes us sleepy...",
-		WALL_MOONROCK_ITEM = "We thought 'moon' meant something totally different!",
+		WALL_MOONROCK_ITEM = "We thought \"moon\" meant something totally different!",
 		WALRUS = "I don't think he wants to be friends with us.",
 		WALRUSHAT = "Reminds me of grandpa.",
 		WALRUS_CAMP =

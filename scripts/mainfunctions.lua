@@ -479,9 +479,25 @@ function SetDefaultTimeScale(scale)
     end
 end
 
+---------------------------------------------------------------------
+--V2C: We don't use this in DST
 function SetSimPause(val)
     simpaused = val
 end
+
+---------------------------------------------------------------------
+--V2C: DST sim pauses via network checks, and will notify LUA here
+function OnSimPaused()
+    --Probably shouldn't do anything here, since sim is now paused
+    --and most likely anything triggered here won't actually work.
+end
+
+function OnSimUnpaused()
+    if TheWorld ~= nil then
+        TheWorld:PushEvent("ms_simunpaused")
+    end
+end
+---------------------------------------------------------------------
 
 function SetPause(val,reason)
     if val ~= paused then

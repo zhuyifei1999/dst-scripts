@@ -239,7 +239,6 @@ function BanTab:MakePlayerPanel()
 end
 
 function BanTab:MakePlayerList()
-
     local function bannedPlayerRowConstructor(entry, index, parent)
         local widget = parent:AddChild(Widget("option"))
         widget:SetScale(.8)
@@ -439,11 +438,9 @@ function BanTab:ShowPlayerDetails(selected_player)
 end
 
 function BanTab:ShowNetProfile(selected_player)
-    if selected_player then
-        if self.blacklist[selected_player] then
-        	--TheFrontEnd:PushScreen(PlayerAvatarPopupScreen(self.blacklist[selected_player].name, self.blacklist[selected_player]))
-            TheNet:ViewNetProfile(self.blacklist[selected_player].netid)
-        end
+    if selected_player and self.blacklist[selected_player] then
+        --TheFrontEnd:PushScreen(PlayerAvatarPopupScreen(self.blacklist[selected_player].name, self.blacklist[selected_player]))
+        TheNet:ViewNetProfile(self.blacklist[selected_player].netid)
     end
 end
 

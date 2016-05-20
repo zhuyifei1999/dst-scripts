@@ -350,7 +350,10 @@ function Controls:OnUpdate(dt)
                 table.insert(cmds, TheInput:GetLocalizedControl(controller_id, CONTROL_CONTROLLER_ATTACK) .. " " .. STRINGS.UI.HUD.ATTACK)
                 attack_shown = true
             end
-            if (self.owner.CanExamine == nil or self.owner:CanExamine()) and controller_target:HasTag("inspectable") then
+            if (self.owner.CanExamine == nil or self.owner:CanExamine()) and
+                --V2C: Closing the avatar popup takes priority
+                not self.owner.HUD:IsPlayerAvatarPopUpOpen() and
+                controller_target:HasTag("inspectable") then
                 table.insert(cmds, TheInput:GetLocalizedControl(controller_id, CONTROL_INSPECT) .. " " .. STRINGS.UI.HUD.INSPECT)
             end
             if l ~= nil then
