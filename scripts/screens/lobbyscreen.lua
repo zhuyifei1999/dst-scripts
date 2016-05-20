@@ -184,11 +184,14 @@ local LobbyScreen = Class(Screen, function(self, profile, cb, no_backbutton, def
     self.loadout_title:SetHAlign(ANCHOR_LEFT)
 
     if not TheInput:ControllerAttached() then
-        self.invitebutton = self.sidebar_root:AddChild(TEMPLATES.Button(STRINGS.UI.LOBBYSCREEN.INVITE, function()  TheNet:ViewNetFriends() end))
+        --This button doesn't offer enough value, otherwise please make it controller accessible
+        --[[
+        self.invitebutton = self.sidebar_root:AddChild(TEMPLATES.Button(STRINGS.UI.LOBBYSCREEN.INVITE, function() TheNet:ViewNetFriends() end))
         self.invitebutton:SetPosition(190, RESOLUTION_Y-20, 0)
         self.invitebutton.image:SetScale(.4)
         self.invitebutton:SetTextSize(22)
         self.invitebutton.text:SetPosition(0, -3)
+        ]]
 
         self.selectbutton = self.characterselect_root:AddChild(TEMPLATES.Button(STRINGS.UI.LOBBYSCREEN.SELECT, function() self:StartLoadout() end))
         self.selectbutton:SetPosition(RESOLUTION_X - 300, 60, 0)

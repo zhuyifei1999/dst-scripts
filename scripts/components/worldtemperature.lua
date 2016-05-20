@@ -95,6 +95,11 @@ local function SetWithPeriodicSync(netvar, val, period, ismastersim)
     end
 end
 
+local ForceResync = _ismastersim and function(netvar)
+    netvar:set_local(netvar:value())
+    netvar:set(netvar:value())
+end or nil
+
 local function CalculateSeasonTemperature(season, progress)
     return (season == "winter" and math.sin(PI * progress) * (MIN_TEMPERATURE - WINTER_CROSSOVER_TEMPERATURE) + WINTER_CROSSOVER_TEMPERATURE)
         or (season == "spring" and Lerp(WINTER_CROSSOVER_TEMPERATURE, SUMMER_CROSSOVER_TEMPERATURE, progress))
@@ -177,6 +182,11 @@ local function OnPhaseChanged(src, phase)
     _daylight = phase == "day"
 end
 
+local OnSimUnpaused = _ismastersim and function()
+    --Force resync values that client may have simulated locally
+    ForceResync(_noisetime)
+end or nil
+
 --------------------------------------------------------------------------
 --[[ Public member functions ]]
 --------------------------------------------------------------------------
@@ -201,6 +211,11 @@ _noisetime:set(0)
 inst:ListenForEvent("seasontick", OnSeasonTick, _world)
 inst:ListenForEvent("clocktick", OnClockTick, _world)
 inst:ListenForEvent("phasechanged", OnPhaseChanged, _world)
+
+if _ismastersim then
+    --Register master simulation events
+    inst:ListenForEvent("ms_simunpaused", OnSimUnpaused, _world)
+end
 
 PushTemperature()
 inst:StartUpdatingComponent(self)

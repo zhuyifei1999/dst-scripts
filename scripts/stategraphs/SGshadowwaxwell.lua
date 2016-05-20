@@ -269,7 +269,7 @@ local states =
 
         timeline =
         {
-            TimeEvent(5*FRAMES, function(inst)
+            TimeEvent(2*FRAMES, function(inst)
                     inst:PerformBufferedAction()
             end),
 

@@ -119,7 +119,10 @@ local ServerListingScreen = Class(Screen, function(self, prev_screen, filters, c
     end)
     self.intentions_overlay:SetPosition(0, 180)
 
-    self.table = self.server_list:AddChild(Widget("table container"))
+    self.nav_bar = self.root:AddChild(TEMPLATES.NavBarWithScreenTitle(STRINGS.UI.MAINSCREEN.BROWSE, "short"))
+    
+    self.table = self.root:AddChild(Widget("table container"))
+    self.table:SetPosition(-RESOLUTION_X*0.045, -RESOLUTION_Y*0.023, 0)
     self.table.titles = self.table:AddChild(Widget("table titles"))
     self.table.titles:SetPosition(column_offsets_x_pos, column_offsets_y_pos, 0)
 
@@ -147,8 +150,6 @@ local ServerListingScreen = Class(Screen, function(self, prev_screen, filters, c
     self.table.third_column_end = self.table:AddChild(Image("images/ui.xml", "line_vertical_5.tex"))
     self.table.third_column_end:SetScale(.66, .66)
     self.table.third_column_end:SetPosition(column_offsets.PING-slide+15, vertical_line_y_offset, 0)
-
-    self.nav_bar = self.root:AddChild(TEMPLATES.NavBarWithScreenTitle(STRINGS.UI.MAINSCREEN.BROWSE, "short"))
 
     self:MakeColumnHeaders()
 
@@ -860,9 +861,12 @@ function ServerListingScreen:MakeServerListWidgets()
         row.cursor:SetOnClick( function() self:OnFinishClickServerInList(i) end)
         row.cursor:Hide()
 
-        row.INTENTION = row:AddChild(Image("images/servericons.xml", "playstyle_social.tex"))
-        row.INTENTION:SetPosition(column_offsets.NAME-18, y_offset)
-        row.INTENTION:SetScale(0.08, 0.08)
+        local intent = row:AddChild(Widget("intention_image"))
+        intent:SetPosition(column_offsets.NAME-18, y_offset)
+        intent.img = intent:AddChild(Image("images/servericons.xml", "playstyle_social.tex"))
+        intent.img:SetScale(0.08, 0.08)
+        intent:SetHoverText("INTENTION", {font = NEWFONT_OUTLINE, size = 22, offset_x = 1, offset_y = 28, colour = {1,1,1,1}})
+        row.INTENTION = intent
         
         row.NAME = row:AddChild(Text(NEWFONT, font_size))
         row.NAME:SetHAlign(ANCHOR_MIDDLE)
@@ -996,7 +1000,9 @@ function ServerListingScreen:MakeServerListWidgets()
             -- TODO: right now checking for bad intention data here, but should probably write fallback data into serverdata earlier in the process. ~gjans
             if serverdata.intention ~= nil and serverdata.intention ~= "" and intention_images[serverdata.intention] ~= nil then
                 widget.INTENTION:Show()
-                widget.INTENTION:SetTexture("images/servericons.xml", intention_images[serverdata.intention].small)
+                widget.INTENTION.img:SetTexture("images/servericons.xml", intention_images[serverdata.intention].small)
+                widget.INTENTION:SetHoverText(STRINGS.UI.INTENTION[string.upper(serverdata.intention)])
+         
             else
                 widget.INTENTION:Hide()
             end

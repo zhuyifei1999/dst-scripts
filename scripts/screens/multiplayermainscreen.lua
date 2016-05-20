@@ -127,31 +127,49 @@ function MultiplayerMainScreen:DoInit()
 	self.motd.motdimage = self.motd:AddChild(ImageButton( "images/global.xml", "square.tex", "square.tex", "square.tex" ))
     self.motd.motdimage:SetPosition(-2, -15, 0)
     self.motd.motdimage:SetFocusScale(1, 1, 1)
-    self.motd.motdimage:Hide()
-    
-    local gainfocusfn = self.motd.motdimage.OnGainFocus
-    self.motd.motdimage.OnGainFocus =
-		function()
-    		gainfocusfn(self.motd.motdimage)
-			self.motd:SetScale(0.93,0.93,0.93)
-		end
-    local losefocusfn = self.motd.motdimage.OnLoseFocus
-	self.motd.motdimage.OnLoseFocus =
-		function()
-    		losefocusfn(self.motd.motdimage)
-			self.motd:SetScale(.9,.9,.9)
-		end
+    self.motd.motdimage:Hide()    
 	self.motd.motdimage:SetOnClick(
 		function()
 			self.motd.button.onclick()
 		end)
-
+		
     self.motd.button = self.motd:AddChild(ImageButton())
 	self.motd.button:SetPosition(0,-160)
     self.motd.button:SetScale(.8*.9)
     self.motd.button:SetText(STRINGS.UI.MAINSCREEN.MOTDBUTTON)
     self.motd.button:SetOnClick( function() VisitURL("http://store.kleientertainment.com/") end )
 	self.motd.motdtext:EnableWordWrap(true)  
+	
+	
+	local gainfocusfn_img = self.motd.motdimage.OnGainFocus
+    local losefocusfn_img = self.motd.motdimage.OnLoseFocus
+    
+    self.motd.motdimage.OnGainFocus =
+		function()
+    		gainfocusfn_img(self.motd.motdimage)
+    		self.motd.button.image:SetTexture(self.motd.button.atlas, self.motd.button.image_focus)
+		end
+	self.motd.motdimage.OnLoseFocus =
+		function()
+    		losefocusfn_img(self.motd.motdimage)
+			if not self.motd.button.focus then
+    			self.motd.button.image:SetTexture(self.motd.button.atlas, self.motd.button.image_normal)
+    		end
+		end
+
+    self.motd.button.OnGainFocus =
+		function()
+    		self.motd.button._base:OnGainFocus()
+    		self.motd.button.image:SetTexture(self.motd.button.atlas, self.motd.button.image_focus)
+		end
+	self.motd.button.OnLoseFocus =
+		function()
+    		self.motd.button._base:OnLoseFocus()
+			if not self.motd.motdimage.focus then
+    			self.motd.button.image:SetTexture(self.motd.button.atlas, self.motd.button.image_normal)
+    		end
+		end
+		
 	
 	self.fixed_root:AddChild(Widget("left"))
     
@@ -916,12 +934,13 @@ function MultiplayerMainScreen:SetMOTD(str, cache)
 	    end
 
 		local platform_motd = motd.dststeam
-		--Uncomment these to test Image MOTD
-		
-		--print("platform_motd")
-		--dumptable(platform_motd)
 		
 		if platform_motd then
+			--make sure we have an actual valid URL
+			if not string.match( platform_motd.link_url, "http://" ) and not string.match( platform_motd.link_url, "https://" ) then
+				platform_motd.link_url = "http://" .. platform_motd.link_url
+			end
+			
 		    self.motd:Show()
 		    if platform_motd.motd_title and string.len(platform_motd.motd_title) > 0 and
 			    	platform_motd.motd_body and string.len(platform_motd.motd_body) > 0 then

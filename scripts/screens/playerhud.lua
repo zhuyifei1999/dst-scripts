@@ -230,7 +230,7 @@ function PlayerHud:TogglePlayerAvatarPopup(player_name, data, show_net_profile)
         self.playeravatarpopup:Close()
         if player_name == nil or
             data == nil or
-            (data.userid ~= nil and (self.playeravatarpopup.userid == data.userid or self.owner.userid == data.userid)) or --if we have a userid, test for that
+            (data.userid ~= nil and self.playeravatarpopup.userid == data.userid) or --if we have a userid, test for that
             (data.userid == nil and self.playeravatarpopup.target == data.inst) then --if no userid, then compare inst
             self.playeravatarpopup = nil
             return
@@ -581,8 +581,7 @@ end
 
 function PlayerHud:InspectSelf()
     if self:IsVisible() and
-        self.owner.components.playercontroller:IsEnabled() and
-        self.owner.components.playercontroller:GetControllerTarget() == nil then
+        self.owner.components.playercontroller:IsEnabled() then
         local client_obj = TheNet:GetClientTableForUser(self.owner.userid)
         if client_obj ~= nil then
             --client_obj.inst = self.owner --don't track yourself
@@ -597,12 +596,28 @@ function PlayerHud:OnControl(control, down)
         return true
     elseif not self.shown then
         return
-    elseif not down and control == CONTROL_PAUSE then
+    end
+
+    if down then
+        if control == CONTROL_INSPECT then
+            if self:IsVisible() and
+                self:IsPlayerAvatarPopUpOpen() and
+                self.owner.components.playercontroller:IsEnabled() then
+                self:TogglePlayerAvatarPopup()
+                return true
+            elseif self.owner.components.playercontroller:GetControllerTarget() == nil
+                and self:InspectSelf() then
+                return true
+            end
+        elseif control == CONTROL_INSPECT_SELF and self:InspectSelf() then
+            return true
+        end
+    elseif control == CONTROL_PAUSE then
         TheFrontEnd:PushScreen(PauseScreen())
         return true
-    elseif down and control == CONTROL_INSPECT_SELF and self:InspectSelf() then 
-        return true
-    elseif self.owner == nil then
+    end
+
+    if self.owner == nil then
         return
     end
 

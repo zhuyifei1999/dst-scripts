@@ -103,6 +103,11 @@ local function CalculateMoonPhase(cycles)
     return MOON_PHASE_CYCLE[cycles % #MOON_PHASE_CYCLE + 1]
 end
 
+local ForceResync = _ismastersim and function(netvar)
+    netvar:set_local(netvar:value())
+    netvar:set(netvar:value())
+end or nil
+
 --------------------------------------------------------------------------
 --[[ Private event listeners ]]
 --------------------------------------------------------------------------
@@ -153,6 +158,11 @@ local OnNextCycle = _ismastersim and function()
     self:LongUpdate(0)
 end or nil
 
+local OnSimUnpaused = _ismastersim and function()
+    --Force resync values that client may have simulated locally
+    ForceResync(_remainingtimeinphase)
+end or nil
+
 local OnClockUpdate = _ismastersim and not _ismastershard and function(src, data)
     for i, v in ipairs(_segs) do
         v:set(data.segs[i])
@@ -190,6 +200,7 @@ if _ismastersim then
     inst:ListenForEvent("ms_setphase", OnSetPhase, _world)
     inst:ListenForEvent("ms_nextphase", OnNextPhase, _world)
     inst:ListenForEvent("ms_nextcycle", OnNextCycle, _world)
+    inst:ListenForEvent("ms_simunpaused", OnSimUnpaused, _world)
 
     if not _ismastershard then
         --Register slave shard events

@@ -220,7 +220,7 @@ return {
 			ATTACKER = "Do you have a conscience, %s?",
 			MURDERER = "None of us are above death, %s!",
 			REVIVER = "Abigail likes you, %s.",
-			GHOST = "Say 'Pretty Please' and I might get you a heart, %s.",
+			GHOST = "Say \"Pretty Please\" and I might get you a heart, %s.",
 		},
 		WILLOW = 
 		{
@@ -252,7 +252,7 @@ return {
 		{
 			GENERIC = "How do you do, Ms. %s?",
 			ATTACKER = "Ms. %s... do you turn your wits against us?",
-			MURDERER = "'Murder', she wrote.",
+			MURDERER = "\"Murder\", she wrote.",
 			REVIVER = "Abigail likes you, Ms. %s.",
 			GHOST = "Everyone that leaves takes a piece of my heart...",
 		},
@@ -1122,7 +1122,7 @@ return {
 		HONEY = "A sweet, but fleeting treat.",
 		HONEYCOMB = "Pieces of beehive, scattered.",
 		HONEYHAM = "A sweet sauce for this creature's sweet embrace.",
-		HONEYNUGGETS = "A sweet sauce for this creature's sweet embrace.",
+		HONEYNUGGETS = "Meat cut into tiny pieces. Just like my heart.",
 		HORN = "It sounds like there's a beefalo trapped inside.",
 		HOUND = "Stay back, foul minion of evil!",
 		HOUNDBONE = "The remains of an evil beast.",

@@ -116,7 +116,7 @@ return
         {
             GENERIC = "Ah, greetings dear %s!",
             ATTACKER = "Up to your old tricks, are you %s?",
-            MURDERER = "Fool me once, shame on you. Fool me twice - you're dead!",
+            MURDERER = "Fool me once, shame on you. Fool me twice... you're dead!",
             REVIVER = "There's good in you, %s.",
             GHOST = "Stings, doesn't it dear? Let me fetch you a heart.",
         },

@@ -36,11 +36,11 @@ return {
         MOUNT =
         {
             INUSE = "They beat me to the hairy beast. Maybe it's for the best.",
-            TARGETINCOMBAT = "I'll ride it when it settles down'.",
+            TARGETINCOMBAT = "I'll ride it when it settles down.",
         },
 		SADDLE =
         {
-            TARGETINCOMBAT = "I'll ride it when it settles down'.",
+            TARGETINCOMBAT = "I'll ride it when it settles down.",
         },
         ATTUNE =
         {
@@ -346,7 +346,7 @@ return {
 		BALLOONS_EMPTY = "I could fill them with flammable gas.",
 		BALLOON = "That's just asking to be popped.",
 		SPEAR_WATHGRITHR = "I prefer a flame, but to each her own.",
-		WATHGRITHRHAT = "It's got a name scratched on the inside... 'W', uh...",
+		WATHGRITHRHAT = "It's got a name scratched on the inside... \"W\", uh...",
 		WAXWELLJOURNAL = "Would make a great bedtime story... for nightmares!",
 		MOONROCKNUGGET = "Just another rock to me.",
 		ROCK_MOON = "Just another rock to me.",

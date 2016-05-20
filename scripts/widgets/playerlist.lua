@@ -149,7 +149,6 @@ local function listingConstructor(v, i, parent, nextWidgets)
                 TheNet:ViewNetProfile(v.netid)
             end
         end)
-
     if empty or v.userid == owner or not TheNet:IsNetIDPlatformValid(v.netid) then
         playerListing.viewprofile:Hide()
     end

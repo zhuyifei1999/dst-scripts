@@ -1236,7 +1236,7 @@ return {
 		ROCK_PETRIFIED_TREE_OLD = "So... senseless.",
 		PHLEGM = "I wouldn't want that in my moustache.",
 		PICKAXE = "Almost an axe, but not quite.",
-		PIGGYBACK = "'Used all the parts of the pig.",
+		PIGGYBACK = "Used all the parts of the pig.",
 		PIGKING = "He's not MY king.",
 		PIGMAN =
 		{
