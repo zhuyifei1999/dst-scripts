@@ -1,13 +1,24 @@
 local assets =
 {
     Asset("ANIM", "anim/marsh_bush.zip"),
-	--Asset("MINIMAP_IMAGE", "thorns_marsh"),    
+    --Asset("MINIMAP_IMAGE", "thorns_marsh"),
+}
+
+local erode_assets =
+{
+    Asset("ANIM", "anim/ash.zip"),
 }
 
 local prefabs =
 {
     "twigs",
     "dug_marsh_bush",
+}
+
+local burnt_prefabs =
+{
+    "ash",
+    "burnt_marsh_bush_erode",
 }
 
 local function ontransplantfn(inst)
@@ -38,6 +49,22 @@ end
 
 local function makeemptyfn(inst)
     inst.AnimState:PlayAnimation("idle_dead")
+end
+
+local function DropAsh(inst, pos)
+    if inst.components.lootdropper == nil then
+        inst:AddComponent("lootdropper")
+    end
+    inst.components.lootdropper:SpawnLootPrefab("ash", pos)
+end
+
+local function OnActivateBurnt(inst)
+    local pos = inst:GetPosition()
+    inst:DoTaskInTime(.25 + math.random() * .05, DropAsh, pos)
+    inst:AddTag("NOCLICK")
+    inst.persists = false
+    ErodeAway(inst)
+    SpawnPrefab("burnt_marsh_bush_erode").Transform:SetPosition(pos:Get())
 end
 
 local function fn()
@@ -89,6 +116,10 @@ local function fn()
     return inst
 end
 
+local function GetVerb()
+    return STRINGS.ACTIONS.ACTIVATE.TOUCH
+end
+
 local function burnt_fn()
     local inst = CreateEntity()
 
@@ -104,10 +135,12 @@ local function burnt_fn()
     inst:AddTag("burnt")
     MakeDragonflyBait(inst, 1)
 
+    inst.GetActivateVerb = GetVerb
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
-    return inst
+        return inst
     end
 
     local color = 0.5 + math.random() * 0.5
@@ -117,8 +150,69 @@ local function burnt_fn()
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
 
+    inst:AddComponent("activatable")
+    inst.components.activatable.quickaction = true
+    inst.components.activatable.OnActivate = OnActivateBurnt
+
+    return inst
+end
+
+local function PlayErodeAnim(proxy)
+    local inst = CreateEntity()
+
+    inst:AddTag("FX")
+    --[[Non-networked entity]]
+    inst.entity:SetCanSleep(false)
+    inst.persists = false
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
+
+    inst.Transform:SetFromProxy(proxy.GUID)
+
+    inst.AnimState:SetBank("ashes")
+    inst.AnimState:SetBuild("ash")
+    inst.AnimState:PlayAnimation("disappear")
+    inst.AnimState:SetMultColour(.4, .4, .4, 1)
+    inst.AnimState:SetTime(13 * FRAMES)
+
+    inst.SoundEmitter:PlaySound("dontstarve/forest/treeCrumble", nil, .2)
+
+    inst:ListenForEvent("animover", inst.Remove)
+end
+
+local function burnt_erode_fn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddNetwork()
+
+    inst.Transform:SetTwoFaced()
+
+    inst:AddTag("FX")
+
+    --Dedicated server does not need to spawn the local fx
+    if not TheNet:IsDedicated() then
+        --Delay one frame so that we are positioned properly before starting the effect
+        --or in case we are about to be removed
+        inst:DoTaskInTime(0, PlayErodeAnim)
+    end
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.Transform:SetRotation(math.random(360))
+
+    inst.persists = false
+    inst:DoTaskInTime(.5, inst.Remove)
+
     return inst
 end
 
 return Prefab("marsh_bush", fn, assets, prefabs),
-    Prefab("burnt_marsh_bush", burnt_fn, assets, prefabs)
+    Prefab("burnt_marsh_bush", burnt_fn, assets, burnt_prefabs),
+    Prefab("burnt_marsh_bush_erode", burnt_erode_fn, erode_assets)

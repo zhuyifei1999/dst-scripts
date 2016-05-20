@@ -105,38 +105,37 @@ local function FindFoodAction(inst)
     end
 end
 
-local function KeepChoppingAction(inst)
-    local keep_chop = inst.components.follower.leader and inst.components.follower.leader:GetDistanceSqToInst(inst) <= KEEP_CHOPPING_DIST*KEEP_CHOPPING_DIST
-    local target = FindEntity(inst, SEE_TREE_DIST/3, function(item)
-        return item.prefab == "deciduoustree" and item.monster and item.components.workable and item.components.workable.action == ACTIONS.CHOP 
-    end)
-    if inst.tree_target ~= nil then target = inst.tree_target end
+local function IsDeciduousTreeMonster(guy)
+    return guy.monster and guy.prefab == "deciduoustree"
+end
 
-    return (keep_chop or target ~= nil)
+local function FindDeciduousTreeMonster(inst)
+    return FindEntity(inst, SEE_TREE_DIST / 3, IsDeciduousTreeMonster, { "CHOP_workable" })
+end
+
+local function KeepChoppingAction(inst)
+    return inst.tree_target ~= nil
+        or (inst.components.follower.leader ~= nil and
+            inst:IsNear(inst.components.follower.leader, KEEP_CHOPPING_DIST))
+        or FindDeciduousTreeMonster(inst) ~= nil
 end
 
 local function StartChoppingCondition(inst)
-    local start_chop = inst.components.follower.leader and inst.components.follower.leader.sg and inst.components.follower.leader.sg:HasStateTag("chopping")
-    local target = FindEntity(inst, SEE_TREE_DIST/3, function(item)
-        return item.prefab == "deciduoustree" and item.monster and item.components.workable and item.components.workable.action == ACTIONS.CHOP 
-    end)
-    if inst.tree_target ~= nil then target = inst.tree_target end
-
-    return (start_chop or target ~= nil)
+    return inst.tree_target ~= nil
+        or (inst.components.follower.leader ~= nil and
+            inst.components.follower.leader.sg ~= nil and
+            inst.components.follower.leader.sg:HasStateTag("chopping"))
+        or FindDeciduousTreeMonster(inst) ~= nil
 end
 
 local function FindTreeToChopAction(inst)
-    local target = FindEntity(inst, SEE_TREE_DIST, function(item) return item.components.workable and item.components.workable.action == ACTIONS.CHOP end)
-    if target then
-        local decid_monst_target = FindEntity(inst, SEE_TREE_DIST/3, function(item)
-            return item.prefab == "deciduoustree" and item.monster and item.components.workable and item.components.workable.action == ACTIONS.CHOP 
-        end)
-        if decid_monst_target ~= nil then 
-            target = decid_monst_target 
-        end
-        if inst.tree_target then 
+    local target = FindEntity(inst, SEE_TREE_DIST, nil, { "CHOP_workable" })
+    if target ~= nil then
+        if inst.tree_target ~= nil then
             target = inst.tree_target
-            inst.tree_target = nil 
+            inst.tree_target = nil
+        else
+            target = FindDeciduousTreeMonster(inst) or target
         end
         return BufferedAction(inst, target, ACTIONS.CHOP)
     end

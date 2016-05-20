@@ -60,9 +60,13 @@ local function FindEntityToWorkAction(inst, action, addtltags)
         if target ~= nil and
             target:IsValid() and
             not target:IsInLimbo() and
+            not target:HasTag("NOCLICK") and
             target.components.workable ~= nil and
             target.components.workable:CanBeWorked() and
             target.components.workable:GetWorkAction() == action and
+            not (target.components.burnable ~= nil
+                and (target.components.burnable:IsBurning() or
+                    target.components.burnable:IsSmoldering())) and
             target.entity:IsVisible() and
             target:IsNear(leader, KEEP_WORKING_DIST) then
                 
@@ -78,7 +82,7 @@ local function FindEntityToWorkAction(inst, action, addtltags)
         end
 
         --Find new target
-        target = FindEntity(leader, SEE_WORK_DIST, nil, { action.id.."_workable" }, { "INLIMBO" }, addtltags)
+        target = FindEntity(leader, SEE_WORK_DIST, nil, { action.id.."_workable" }, { "fire", "smolder", "INLIMBO", "NOCLICK" }, addtltags)
         return target ~= nil and BufferedAction(inst, target, action) or nil
     end
 end
@@ -100,7 +104,7 @@ function ShadowWaxwellBrain:OnStart()
     local root = PriorityNode(
     {
         --#1 priority is dancing beside your leader. Obviously.
-        IfNode(function() return ShouldDanceParty(self.inst) end, "Dance Party",
+        WhileNode(function() return ShouldDanceParty(self.inst) end, "Dance Party",
             PriorityNode({
                 Leash(self.inst, GetLeaderPos, KEEP_DANCING_DIST, KEEP_DANCING_DIST),
                 ActionNode(function() DanceParty(self.inst) end),
@@ -128,7 +132,7 @@ function ShadowWaxwellBrain:OnStart()
 
         Follow(self.inst, GetLeader, MIN_FOLLOW_DIST, TARGET_FOLLOW_DIST, MAX_FOLLOW_DIST),
 
-        IfNode(function() return GetLeader(self.inst) ~= nil end, "Has Leader",
+        WhileNode(function() return GetLeader(self.inst) ~= nil end, "Has Leader",
             FaceEntity(self.inst, GetFaceTargetFn, KeepFaceTargetFn)),
     }, .25)
 

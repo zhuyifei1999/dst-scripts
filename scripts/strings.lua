@@ -221,6 +221,7 @@ STRINGS=
             SPELUNK = "Spelunk",
             CLIMB = "Climb",
             ACCOMPLISH = "Wind",
+            TOUCH = "Touch",
         },
         JUMPIN =
         {
@@ -4210,7 +4211,7 @@ STRINGS.LUCY =
         "You're abandoning me?!",
         "But... but we're inseparable!",
         "Hey! Get back over here!",
-        "I can't chop tree by myself!",
+        "I can't chop trees by myself!",
         "So... lonely...",
         "I guess I'll just stay here then...",
         "What if I get stolen?!",
