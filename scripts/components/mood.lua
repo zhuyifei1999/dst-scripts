@@ -101,7 +101,7 @@ local function GetSeasonLength()
 end
 
 function Mood:SetIsInMood(inmood, entireseason)
-    if inmood and not self.enabled then
+    if inmood and (not self.enabled or self.moodtimeindays.length == 0) then
         return
     end
 

@@ -190,11 +190,11 @@ local ServerListingScreen = Class(Screen, function(self, prev_screen, filters, c
     end
     self:RefreshView(false)
 
-    self.servers_scroll_list:SetFocusChangeDir(MOVE_LEFT, function() return self.online_button end)
+    self.servers_scroll_list:SetFocusChangeDir(MOVE_LEFT, function() return self:CurrentLeftFocus() end)
     self.filters_scroll_list:SetFocusChangeDir(MOVE_LEFT, function() return self:CurrentCenterFocus() end, MOVE_LEFT)
     self.server_details_additional:SetFocusChangeDir(MOVE_LEFT, function() return self:CurrentCenterFocus() end, MOVE_LEFT)
 
-    self.intentions_overlay:SetFocusChangeDir(MOVE_LEFT, function() return self.online_button end)
+    self.intentions_overlay:SetFocusChangeDir(MOVE_LEFT, function() return self:CurrentLeftFocus() end)
     self.intentions_overlay:SetFocusChangeDir(MOVE_RIGHT, function() return self:CurrentRightFocus() end)
 
     self.default_focus = self.online_button
@@ -355,8 +355,8 @@ function ServerListingScreen:Join(warnedOffline)
         else
 
             local filters = {}
-            for i,v in pairs(self.filters) do
-                if v.spinner then 
+            for i, v in ipairs(self.filters) do
+                if v.spinner ~= nil then 
                     table.insert(filters, {name=v.name, data=v.spinner:GetSelectedData()})
                 elseif v.textbox then
                     table.insert(filters, {name="search", data=v.textbox:GetString()})
@@ -702,7 +702,7 @@ function ServerListingScreen:StartPeriodicRefreshTask()
     if self.task ~= nil then
         self.task:Cancel()
     end
-    self.task = self.inst:DoPeriodicTask(self.tickperiod, function() self:RefreshView(false) end)
+    self.task = self.inst:DoPeriodicTask(self.tickperiod, function() self:RefreshView(false, true) end)
 end
 
 function ServerListingScreen:StopPeriodicRefreshTask()
@@ -754,10 +754,9 @@ function ServerListingScreen:SearchForServers()
         self.server_count:SetString("("..STRINGS.UI.SERVERLISTINGSCREEN.LAN..")")
     end
     
-    for i,v in pairs(self.filters) do
+    for i, v in ipairs(self.filters) do
         if v.name == "VERSIONCHECK" then
-            local version_check = v.spinner:GetSelectedData()
-            TheNet:SetCheckVersionOnQuery( version_check )
+            TheNet:SetCheckVersionOnQuery(v.spinner:GetSelectedData())
         end
     end
 
@@ -792,7 +791,7 @@ function ServerListingScreen:OnFinishClickServerInList(index)
     self.last_server_click_time = GetTime()
 end
 
-function ServerListingScreen:RefreshView(skipPoll)
+function ServerListingScreen:RefreshView(skipPoll, keepScrollFocusPos)
     -- If we're fading, don't mess with stuff
     if TheFrontEnd:GetFadeLevel() > 0 then return end
 
@@ -821,7 +820,7 @@ function ServerListingScreen:RefreshView(skipPoll)
 
         self.servers = servers
 
-        self:DoFiltering() -- This also calls DoSorting
+        self:DoFiltering(false, keepScrollFocusPos) -- This also calls DoSorting
     end
 
     self.servers_scroll_list:RefreshView()
@@ -953,7 +952,7 @@ function ServerListingScreen:MakeServerListWidgets()
         row.focus_forward = row.cursor
 
         row:SetFocusChangeDir(MOVE_RIGHT, function() return self:CurrentRightFocus() end)
-        row:SetFocusChangeDir(MOVE_LEFT, function() return self.online_button end)
+        row:SetFocusChangeDir(MOVE_LEFT, function() return self:CurrentLeftFocus() end)
 
         table.insert(self.list_widgets, row)--, id=i})
     end
@@ -1104,8 +1103,8 @@ function ServerListingScreen:MakeServerListWidgets()
     self.servers_scroll_list.onscrollcb = function()
         self:GuaranteeSelectedServerHighlighted()
     end
-    for i,v in pairs(self.list_widgets) do
-        if v and v.cursor then
+    for i, v in ipairs(self.list_widgets) do
+        if v.cursor ~= nil then
             v.cursor:SetParentList(self.servers_scroll_list)
         end
     end
@@ -1117,10 +1116,10 @@ function ServerListingScreen:MakeServerListWidgets()
 end
 
 function ServerListingScreen:GuaranteeSelectedServerHighlighted()
-    for i,v in pairs(self.list_widgets) do
+    for i, v in ipairs(self.list_widgets) do
         local dev_server = v.version and v.version == -1 or false
         local version_check_failed = v.version and v.version ~= tonumber(APP_VERSION) or false
-        if v and v.index ~= -1 and v.index == self.selected_index_actual then
+        if v.index ~= -1 and v.index == self.selected_index_actual then
             if dev_server then
                 self:SetRowColour(v, dev_color)
             elseif version_check_failed then 
@@ -1167,7 +1166,7 @@ end
 function ServerListingScreen:SetSort(column)
     local function DoSortArrow()
         local col = self.column_buttons[self.sort_column]
-        for i,v in pairs(self.column_buttons) do
+        for k, v in pairs(self.column_buttons) do
             if v ~= col then
                 v.arrow:Hide()
                 v.text:SetColour(0,0,0,1)
@@ -1396,9 +1395,9 @@ function ServerListingScreen:IsValidWithFilters(server)
     end
 
     -- Check spinner validation
-    for i,v in pairs(self.filters) do
+    for i, v in ipairs(self.filters) do
         -- First check with the spinners
-        if v and v.spinner then
+        if v.spinner ~= nil then
             if ((v.name == "HASPVP" and server.pvp ~= v.spinner:GetSelectedData() and v.spinner:GetSelectedData() ~= "ANY")
             or (v.name == "GAMEMODE" and v.spinner:GetSelectedData() ~= "ANY" and gameModeInvalid(server.mode, v.spinner:GetSelectedData()))
             or (v.name == "HASPASSWORD" and (v.spinner:GetSelectedData() ~= "ANY" and server.has_password ~= v.spinner:GetSelectedData()))
@@ -1441,8 +1440,8 @@ function ServerListingScreen:IsValidWithFilters(server)
 end
 
 function ServerListingScreen:ResetFilters()
-    for i,v in pairs(self.filters) do
-        if v and v.spinner then 
+    for i, v in ipairs(self.filters) do
+        if v.spinner ~= nil then 
             v.spinner:SetSelectedIndex(1)
             v.spinner.changed_image:Hide()
             if v.name == "GAMEMODE" then
@@ -1454,7 +1453,7 @@ function ServerListingScreen:ResetFilters()
     self:DoFiltering()
 end
 
-function ServerListingScreen:DoFiltering(doneSearching)
+function ServerListingScreen:DoFiltering(doneSearching, keepScrollFocusPos)
     if not self.filters then return end
 
     -- Reset the number of unjoinable servers
@@ -1501,8 +1500,8 @@ function ServerListingScreen:DoFiltering(doneSearching)
 
     local filtered_servers = {}
     if self.servers and #self.servers > 0 then
-        for i,v in pairs(self.servers) do
-            if v and self:IsValidWithFilters(v) then
+        for i, v in ipairs(self.servers) do
+            if self:IsValidWithFilters(v) then
                 table.insert(filtered_servers, 
                     {
                         name=v.name,
@@ -1560,7 +1559,22 @@ function ServerListingScreen:DoFiltering(doneSearching)
         self.server_count:SetString("("..STRINGS.UI.SERVERLISTINGSCREEN.LAN..")")
     end
     self:DoSorting()
-    self.servers_scroll_list:SetList(self.viewed_servers)
+
+    --Remember what position our selected server is on screen
+    local scrollto = nil
+    for i, v in ipairs(self.list_widgets) do
+        if v.index ~= -1 and v.index == self.selected_index_actual then
+            for i2, v2 in ipairs(self.viewed_servers) do
+                if v2.actualindex ~= -1 and v2.actualindex == self.selected_index_actual then
+                    scrollto = i2 - i
+                    break
+                end
+            end
+            break
+        end
+    end
+
+    self.servers_scroll_list:SetList(self.viewed_servers, false, scrollto, keepScrollFocusPos)
 end
 
 function ServerListingScreen:Cancel()
@@ -1569,8 +1583,8 @@ function ServerListingScreen:Cancel()
     TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
         if self.cb then
             local filters = {}
-            for i,v in pairs(self.filters) do
-                if v.spinner then 
+            for i, v in ipairs(self.filters) do
+                if v.spinner ~= nil then 
                     table.insert(filters, {name=v.name, data=v.spinner:GetSelectedData()})
                 elseif v.textbox then
                     table.insert(filters, {name="search", data=v.textbox:GetString()})
@@ -1793,18 +1807,18 @@ function ServerListingScreen:MakeFiltersPanel(filter_data)
     self.filters_scroll_list = self.server_detail_panel:AddChild(ScrollableList(self.filters, scroll_width, scroll_height, item_height, item_padding, nil, nil, 0))
     self.filters_scroll_list:SetPosition(50,-35)
 
-    if filter_data then
-        for i,v in pairs(filter_data) do
-            for j,k in pairs(self.filters) do
+    if filter_data ~= nil then
+        for i, v in ipairs(filter_data) do
+            for j, k in ipairs(self.filters) do
                 if v.name == k.name then
-                    if k.spinner then
+                    if k.spinner ~= nil then
                         k.spinner:SetSelected(v.data)
                         if k.spinner:GetSelectedIndex() ~= 1 then
                             k.spinner.changed_image:Show()
                         end
                     end
                 elseif v.name == "search" then
-                    if k.textbox then
+                    if k.textbox ~= nil then
                         k.textbox:SetString(v.data or "")
                     end
                 end
@@ -1907,7 +1921,6 @@ function ServerListingScreen:MakeDetailPanel(right_col)
     -- Container for the majority of the details in this panel, so we can hide them
     self.server_details_additional = self.server_detail_panel:AddChild(Widget("additionalservdetails"))
     self.server_details_additional:SetPosition(0,0) -- so we can use positioning relative to the whole panel
-    self.server_details_additional.focus_forward = self.viewworld_button
     self.server_details_additional:Hide()
 
     self.details_servername = self.server_detail_panel:AddChild(Text(BUTTONFONT, 40))
@@ -1961,6 +1974,8 @@ function ServerListingScreen:MakeDetailPanel(right_col)
     self.viewplayers_button:SetScale(.9)
     self.viewmods_button:SetScale(.9)
     self.viewtags_button:SetScale(.9)
+
+    self.server_details_additional.focus_forward = self.viewworld_button
 
     local buttons = self.server_details_additional:AddChild(Widget("buttons"))
     detail_y = detail_y - 70
@@ -2090,7 +2105,6 @@ function ServerListingScreen:MakeDetailPanel(right_col)
     self.pvp_description:SetRegionSize( 200, 50 )
     self.pvp_description:SetColour(0,0,0,1)
     SetChecked( self.checkbox_pvp, self.pvp_description, false )
-
 end
 
 local function MakeHeader(self, parent, xPos, name, onclick)
@@ -2241,6 +2255,10 @@ function ServerListingScreen:CurrentRightFocus()
     elseif self.server_details_additional:IsVisible() then
         return self.viewworld_button
     end
+end
+
+function ServerListingScreen:CurrentLeftFocus()
+    return self.view_online and self.online_button or self.lan_button
 end
 
 function ServerListingScreen:GetHelpText()

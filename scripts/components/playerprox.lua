@@ -9,14 +9,14 @@
 local function AnyPlayer(inst, self)
     local x, y, z = inst.Transform:GetWorldPosition()
     if not self.isclose then
-        local player = FindClosestPlayerInRange(x, y, z, self.near)
+        local player = FindClosestPlayerInRange(x, y, z, self.near, self.alivemode)
         if player ~= nil then
             self.isclose = true
             if self.onnear ~= nil then
                 self.onnear(inst, player)
             end
         end
-    elseif not IsAnyPlayerInRange(x, y, z, self.far) then
+    elseif not IsAnyPlayerInRange(x, y, z, self.far, self.alivemode) then
         self.isclose = false
         if self.onfar ~= nil then
             self.onfar(inst)
@@ -43,7 +43,7 @@ end
 local function LockOnPlayer(inst, self)
     if not self.isclose then
         local x, y, z = inst.Transform:GetWorldPosition()
-        local player = FindClosestPlayerInRange(x, y, z, self.near)
+        local player = FindClosestPlayerInRange(x, y, z, self.near, self.alivemode)
         if player ~= nil then
             self.isclose = true
             self:SetTarget(player)
@@ -63,7 +63,7 @@ end
 local function LockAndKeepPlayer(inst, self)
     if not self.isclose then
         local x, y, z = inst.Transform:GetWorldPosition()
-        local player = FindClosestPlayerInRange(x, y, z, self.near)
+        local player = FindClosestPlayerInRange(x, y, z, self.near, self.alivemode)
         if player ~= nil then
             self.isclose = true
             self:SetTargetMode(SpecificPlayer, player, true)
@@ -100,10 +100,18 @@ local PlayerProx = Class(function(self, inst, targetmode, target)
     self.task = nil
     self.target = nil
     self.losttargetfn = nil
+    self.alivemode = nil
     self._ontargetleft = function() OnTargetLeft(self) end
 
     self:SetTargetMode(targetmode or AnyPlayer, target)
 end)
+
+PlayerProx.AliveModes =
+{
+    AliveOnly =         true,
+    DeadOnly =          false,
+    DeadOrAlive =       nil,
+}
 
 PlayerProx.TargetModes =
 {
@@ -136,6 +144,10 @@ end
 
 function PlayerProx:SetLostTargetFn(func)
     self.losttargetfn = func
+end
+
+function PlayerProx:SetPlayerAliveMode(alivemode)
+    self.alivemode = alivemode
 end
 
 function PlayerProx:Schedule()

@@ -104,7 +104,7 @@ return {
 		SPOILED = "That tasted terrible!",
 		STALE = "That was kinda gross.",
 		INVALID = "How would I even eat that!",
-		YUCKY = "Eeeew no way!",
+		YUCKY = "Eeeew, no way!",
 	},
 	ANNOUNCE_NOSLEEPONFIRE = "It's just the collapsing that concerns me.",
 	ANNOUNCE_NODANGERSIESTA = "It's not time for a siesta, it's time for fighting!",
@@ -168,7 +168,7 @@ return {
 	BATTLECRY =
 	{
 		GENERIC = "It's you or me!",
-		PIG = "Stupid Pig!",
+		PIG = "Stupid pig!",
 		PREY = "Get over here!",
 		SPIDER = "Grrrrar!",
 		SPIDER_WARRIOR = "Ew, kill iiiit!",
@@ -352,7 +352,7 @@ return {
 		ROCK_MOON = "Just another rock to me.",
 
 		BEARGER_FUR = "It's fur all the way down.",
-		FURTUFT = "Black & white & fuzzy all over!",
+		FURTUFT = "Black and white and fuzzy all over!",
 		BIGFOOT = "What in the world!",
 		TREASURECHEST_TRAP = "Dirty trick!",
 		BONESHARD = "I don't think they make good tinder.",
@@ -381,10 +381,11 @@ return {
 			EMPTY = "It's all dried up and ready for burning.",
 		},
 		CATCOONHAT = "Cuddly hat.",
-		GOLDENMACHETE = "I don't want to scuff it up.",
-		OBSIDIANMACHETE = "A fire machete is a girl's best friend!",
-		MACHETE = "Or I could just burn my way through.",
-		MOWER = "Or I could just burn my way through.",
+		--GOLDENMACHETE = "I don't want to scuff it up.",
+		--OBSIDIANMACHETE = "A fire machete is a girl's best friend!",
+		--MACHETE = "Or I could just burn my way through.",
+		--MOWER = "Or I could just burn my way through.",
+		--BOOK_METEOR = "I'll burn through this book!",
 		COONTAIL = "I've kept stranger things than that.",
 		COOKPOT =
 		{
@@ -480,7 +481,7 @@ return {
 		MOOSE = "What in the world...",
 		MOOSEEGG = "It's huuuuge!",
 		MOSSLING = "Its feathers are frazzled.",
-		FEATHERFAN = "I donno... it could put out some fires...",
+		FEATHERFAN = "I dunno... it could put out some fires...",
         MINIFAN = "No fun, making me exercise to stay cool!",
 		GOOSE_FEATHER = "So snuggly!",
 		STAFF_TORNADO = "Always whirling! Swirling towards destruction!",
@@ -728,7 +729,7 @@ return {
 		},
 		GUANO="It burns like normal poop.",
 		LANTERN="Fire is not meant to be contained like this!",
-		LIGHTBULB="It's called a lightbulb but it's kinda heavy.",
+		LIGHTBULB="It's called a \"lightbulb\" but it's kinda heavy.",
 		MANRABBIT_TAIL="The rabbits lost that argument.",
 		MUSHTREE_TALL=
 		{
@@ -915,7 +916,7 @@ return {
 		BONESTEW = "Just add fire to food and voila!",
 		BUGNET = "Doesn't fit over Webber's big head.",
 		BUSHHAT = "Too passive!",
-		BUTTER = "Tasty, and just a little bit insecty",
+		BUTTER = "Tasty, and just a little bit insecty.",
 		BUTTERFLY =
 		{
 			GENERIC = "Flutter away, butterfly!",
@@ -1045,7 +1046,7 @@ return {
 			BURNT = "I wish it was still burning.",
 			CHOPPED = "One less tree in the world.",
 			GENERIC = "It looks like it would burn well.",
-			POISON = "A fire would set him straight.",
+			POISON = "A fire would set'em straight.",
 		},
 		ACORN = "Hey there, tree seed.",
         ACORN_SAPLING = "You'll be a real tree soon.",
@@ -1289,7 +1290,7 @@ return {
 		POMEGRANATE_SEEDS = "Looks like the part from inside the fruit.",
 		POOP = "Ew. Nasty. But useful.",
 		SCORCHED_SKELETON = "Ewwwwwwwwwww!",
-		PORTABLECOOKPOT_ITEM = "Just a dumb pot.",
+		--PORTABLECOOKPOT_ITEM = "Just a dumb pot.",
 		PUMPKIN = "I wonder what would happen if I applied fire.",
 		PUMPKINCOOKIE = "Cookies!!!",
 		PUMPKIN_COOKED = "Fire on the outside turned out pretty well.",
@@ -1388,7 +1389,7 @@ return {
 		SILK = "Mmmmmm. Smooth.",
 		INSPECTSELF = "Why didn't anyone tell me I had ashes on my face?",
 		ABIGAIL = "So, what happened to you?",
-		SKELETON = "I hope you went out in a blaze of glory.",
+		SKELETON = "I hope you at least went out in a blaze of glory.",
 		--SKELETON_PLAYER = "That gives me the willies.",
 
 		SKELETON_PLAYER =
@@ -1399,7 +1400,7 @@ return {
 			DEFAULT = "The fire of %s's life was extinguished by %s.",
 		},
 
-		SKULLCHEST = "Ooooh spooky!",
+		SKULLCHEST = "Ooooh, spooky!",
 		SMALLBIRD =
 		{
 			GENERIC = "Not quite a phoenix, but still cute. I guess.",
@@ -1428,7 +1429,7 @@ return {
 			SLEEPING = "Maybe I should just leave that one alone.",
 		},
 		SPOILED_FOOD = "At least it's still flammable.",
-		STATUEHARP = "Such a nice statue. 'Shame if something were to happen to it.",
+		STATUEHARP = "Such a nice statue. Shame if something were to happen to it.",
 		STATUEMAXWELL = "A big stone nerd.",
 		STEELWOOL = "Make a spark, it'll still burn.",
 		STINGER = "It's pokey!",
@@ -1487,26 +1488,26 @@ return {
 		TRINKET_3 = "Why use a knife when you can use fire?",
 		TRINKET_4 = "He looks like he was forged in flame.",
 		TRINKET_5 = "Check out those tiny thrusters. Such explosive power!",
-		TRINKET_6 = "These wires get the automaton all frazzled. Heh heh.",
+		TRINKET_6 = "These wires get WX all frazzled. Heh heh.",
 		TRINKET_7 = "Spinning the stick in the hole could start a fire. Thanks Girl Scouts!",
 		TRINKET_8 = "I've never liked bathing with water.",
-		TRINKET_9 = "Cute as the creepy girl's lil' nose.",
-		TRINKET_10 = "Hey magician, I think you dropped these!",
+		TRINKET_9 = "Cute as Wendy's lil nose.",
+		TRINKET_10 = "Hey Maxwell, I think you dropped these!",
 		TRINKET_11 = "Ooh, I wonder if he has a flamethrower!",
-		TRINKET_12 = "I bet the scientist would enjoy dissecting this.",
+		TRINKET_12 = "I bet Wilson would enjoy dissecting this.",
 		TRINKET_13 = "She looks like she was forged in flame.",
         TRINKET_14 = "They put a bird on it.",
         TRINKET_15 = "What is it with megalomaniacs and chess?",
         TRINKET_16 = "What is it with megalomaniacs and chess?",
         TRINKET_17 = "Metal bends when it gets nice and hot.",
-        TRINKET_18 = "I bet the Viking would be into this.",
+        TRINKET_18 = "I bet Wigfrid would be into this.",
         TRINKET_19 = "Useful only for kindling.",
         TRINKET_20 = "This looks a little like a fire iron.",
-        TRINKET_21 = "When I crank it the mime pretends to ride unicycle circles around me.",
+        TRINKET_21 = "When I crank it Wes pretends to ride unicycle circles around me.",
         TRINKET_22 = "I could use this as a very long fuse...",
         TRINKET_23 = "It looks like it might melt in a fire.",
-        TRINKET_24 = "I don't want the librarian to be sad. Let's burn it!",
-        TRINKET_25 = "I stuck one down the strongman's unitard when he wasn't looking. Haha.",
+        TRINKET_24 = "I don't want Ms. Wickerbottom to be sad. Let's burn it!",
+        TRINKET_25 = "I stuck one down Wolfgang's unitard when he wasn't looking. Haha.",
 		TRINKET_26 = "I would have roasted it.",
 		TRINKET_27 = "I want to stick it in a fire!",
 
@@ -1556,7 +1557,7 @@ return {
 		WORMHOLE =
 		{
 			GENERIC = "Poke it with a stick!",
-			OPEN = "I wonder if he likes spicy food?",
+			OPEN = "I wonder if it likes spicy food?",
 		},
 		WORMHOLE_LIMITED = "Yuck. That won't hold long.",
 		ACCOMPLISHMENT_SHRINE = "I hate that arrow!",        		

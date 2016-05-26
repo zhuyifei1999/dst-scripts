@@ -252,15 +252,16 @@ function Temperature:OnUpdate(dt, applyhealthdelta)
     -- Can override range, e.g. in special containers
     local mintemp = self.mintemp
     local maxtemp = self.maxtemp
+    local ambient_temperature = TheWorld.state.temperature
 
     local owner = self.inst.components.inventoryitem ~= nil and self.inst.components.inventoryitem.owner or nil
     if owner ~= nil and owner:HasTag("fridge") and not owner:HasTag("nocool") then
         -- Inside a fridge, excluding icepack ("nocool")
-        mintemp = 0 -- Don't cool it below freezing
+        -- Don't cool it below freezing unless ambient temperature is below freezing
+        mintemp = math.max(mintemp, math.min(0, ambient_temperature))
         self.rate = owner:HasTag("lowcool") and -.5 * TUNING.WARM_DEGREES_PER_SEC or -TUNING.WARM_DEGREES_PER_SEC
     else
         -- Prepare to figure out the temperature where we are standing
-        local ambient_temperature = TheWorld.state.temperature
         local x, y, z = self.inst.Transform:GetWorldPosition()
         local ents = self.usespawnlight and
             TheSim:FindEntities(x, y, z, ZERO_DISTANCE, nil, self.ignoreheatertags, { "HASHEATER", "spawnlight" }) or

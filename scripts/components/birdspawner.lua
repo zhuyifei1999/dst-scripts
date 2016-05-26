@@ -162,8 +162,14 @@ inst:WatchWorldState("isnight", ToggleUpdate)
 inst:ListenForEvent("ms_playerjoined", OnPlayerJoined, TheWorld)
 inst:ListenForEvent("ms_playerleft", OnPlayerLeft, TheWorld)
 
-OnIsRaining(inst, _worldstate.israining)
-ToggleUpdate(true)
+--------------------------------------------------------------------------
+--[[ Post initialization ]]
+--------------------------------------------------------------------------
+
+function self:OnPostInit()
+    OnIsRaining(inst, _worldstate.israining)
+    ToggleUpdate(true)
+end
 
 --------------------------------------------------------------------------
 --[[ Public member functions ]]

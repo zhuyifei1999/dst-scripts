@@ -226,14 +226,14 @@ function FrontEnd:GetIntermediateFocusWidgets()
 end
 
 function FrontEnd:GetHelpText()
-
 	local t = {}
 
 	local widget = self:GetFocusWidget()
+    local active_screen = self:GetActiveScreen()
 
-	if #self.screenstack > 0 and self.screenstack[#self.screenstack] ~= widget then
-		local str = self.screenstack[#self.screenstack]:GetHelpText()
-		if str and str ~= "" then
+	if active_screen ~= widget and active_screen ~= nil then
+		local str = active_screen:GetHelpText()
+		if str ~= nil and str ~= "" then
 			table.insert(t, str)
 		end
 	end
@@ -681,7 +681,9 @@ function FrontEnd:Update(dt)
 	end
 
 	self.helptext:Hide()
-	if TheInput:ControllerAttached() then
+	if TheInput:ControllerAttached() and
+        self:GetFadeLevel() < 1 and
+        not (self.fadedir == FADE_OUT and self.fade_type ~= "black") then
 		local str = self:GetHelpText()
 		if str ~= "" then
 			self.helptext:Show()
@@ -834,15 +836,11 @@ function FrontEnd:ClearFocus()
 end
 
 function FrontEnd:GetActiveScreen()
-	if #self.screenstack > 0 and self.screenstack[#self.screenstack] then
-		return self.screenstack[#self.screenstack]
-	else
-		return nil
-	end
+    return #self.screenstack > 0 and self.screenstack[#self.screenstack] or nil
 end
 
 function FrontEnd:ShowScreen(screen)
-	self:ClearScreens()	
+	self:ClearScreens()
 	if screen then
 		self:PushScreen(screen)
 	end

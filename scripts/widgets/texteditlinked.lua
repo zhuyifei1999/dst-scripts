@@ -5,7 +5,6 @@ local TextEditLinked = Class(TextEdit, function(self, font, size, text, colour)
     TextEdit._ctor(self, font, size, text, colour)
 end)
 
-
 function TextEditLinked:SetNextTextEdit(next_te)
 	self.next_text_edit = next_te
 end
@@ -58,12 +57,20 @@ function TextEditLinked:OnRawKey(key, down)
 				end
 				return true
 			else
+                self.pasting = true
+                if self.next_text_edit ~= nil then
+                    self.next_text_edit.pasting = true
+                end
 				for i=1,#clipboard do
 					local char = clipboard:sub(i,i)
 					if not self:OnTextInput(char) and self.next_text_edit ~= nil then
 						self.next_text_edit:OnTextInput(char)
 					end
 				end
+                self.pasting = false
+                if self.next_text_edit ~= nil then
+                    self.next_text_edit.pasting = false
+                end
 				if self.OnTextInputted ~= nil then
 					self.OnTextInputted()
 				end
@@ -71,7 +78,7 @@ function TextEditLinked:OnRawKey(key, down)
 			end
 		end
 	end
-    
+
     return TextEditLinked._base.OnRawKey(self, key, down)
 end
 

@@ -204,23 +204,30 @@ local burntdecor_defs =
           },
 }
 
-local function makeburnt(inst)
-    local burntdecor = {}
-    --print("level is ", inst.level)
-    for k, item_info in pairs( burntdecor_defs[ inst.components.grower.level ] ) do
-        for item_name, item_offsets in pairs( item_info ) do
-            for l, offset in pairs( item_offsets ) do
-                local item_inst = SpawnPrefab( item_name )
-                item_inst.entity:SetParent( inst.entity )
-                item_inst.Transform:SetPosition( offset[1], offset[2], offset[3] )
-                table.insert( burntdecor, item_inst )
+local function RefreshDecor(inst, burnt)
+    for i = 1, #inst.decor do
+        table.remove(inst.decor):Remove()
+    end
+    local decor_table = burnt and burntdecor_defs or decor_defs
+    for i, item_info in ipairs(decor_table[inst.level]) do
+        for item_name, item_offsets in pairs(item_info) do
+            for j, offset in ipairs(item_offsets) do
+                local item_inst = SpawnPrefab(item_name)
+                item_inst.entity:SetParent(inst.entity)
+                item_inst.Transform:SetPosition(unpack(offset))
+                table.insert(inst.decor, item_inst)
             end
         end
     end
-    for k, v in pairs(inst.decor) do
-        v:Remove()
-    end
-    inst.decor = burntdecor
+end
+
+local function OnBurntDirty(inst)
+    RefreshDecor(inst, inst._burnt:value())
+end
+
+local function OnBurnt(inst)
+    inst._burnt:set(true)
+    RefreshDecor(inst, true)
 end
 
 local function onsave(inst, data)
@@ -277,13 +284,19 @@ local function plot(level)
 
         --inst.Transform:SetRotation(45)
 
+        inst.level = level
+        inst.decor = {}
+        inst._burnt = net_bool(inst.GUID, "farmplot._burnt", "burntdirty")
+
+        RefreshDecor(inst, false)
+
         inst.entity:SetPristine()
 
         if not TheWorld.ismastersim then
+            inst:ListenForEvent("burntdirty", OnBurntDirty)
+
             return inst
         end
-
-        inst.level = level
 
         inst:AddComponent("inspectable")
         inst.components.inspectable.nameoverride = "FARMPLOT"
@@ -295,7 +308,7 @@ local function plot(level)
         inst.OnSave = onsave
         inst.OnLoad = onload
 
-        inst:ListenForEvent("burntup", makeburnt)
+        inst:ListenForEvent("burntup", OnBurnt)
 
         inst:AddComponent("grower")
         inst.components.grower.level = level
@@ -308,7 +321,6 @@ local function plot(level)
         inst.components.grower.max_cycles_left = cycles_per_level[level] or 6
         inst.components.grower.cycles_left = inst.components.grower.max_cycles_left
         inst.components.grower.setfertility = setfertilityfn
-        inst.decor = {}
 
         inst:AddComponent("lootdropper")
         inst:AddComponent("workable")
@@ -321,19 +333,6 @@ local function plot(level)
         inst:AddComponent("hauntable")
         inst.components.hauntable.cooldown = TUNING.HAUNT_COOLDOWN_SMALL
         inst.components.hauntable:SetOnHauntFn(OnHaunt)
-
-        local decor_items = decor_defs[level]
-
-        for k, item_info in pairs(decor_items) do
-            for item_name, item_offsets in pairs(item_info) do
-                for l, offset in pairs(item_offsets) do
-                    local item_inst = SpawnPrefab(item_name)
-                    item_inst.entity:SetParent(inst.entity)
-                    item_inst.Transform:SetPosition(unpack(offset))
-                    table.insert(inst.decor, item_inst)
-                end
-            end
-        end
 
         return inst
     end

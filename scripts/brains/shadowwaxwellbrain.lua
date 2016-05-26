@@ -100,6 +100,18 @@ local function ShouldDanceParty(inst)
     return leader ~= nil and leader.sg:HasStateTag("dancing")
 end
 
+local function ShouldRunAway(target)
+    return not (target.components.health ~= nil and target.components.health:IsDead())
+        and (not target:HasTag("shadowcreature") or (target.components.combat ~= nil and target.components.combat:HasTarget()))
+end
+
+local function ShouldKite(target, inst)
+    return target ~= nil
+        and target == inst.components.combat.target
+        and target.components.health ~= nil
+        and not target.components.health:IsDead()
+end
+
 function ShadowWaxwellBrain:OnStart()
     local root = PriorityNode(
     {
@@ -115,12 +127,12 @@ function ShadowWaxwellBrain:OnStart()
                 --Duelists will try to fight before fleeing
                 IfNode(function() return self.inst.prefab == "shadowduelist" end, "Is Duelist",
                     PriorityNode({
-                        WhileNode(function() return self.inst.components.combat:HasTarget() and self.inst.components.combat:GetCooldown() > .5 end, "Dodge",
-                            RunAway(self.inst, function() return self.inst.components.combat.target end, KITING_DIST, STOP_KITING_DIST)),
+                        WhileNode(function() return self.inst.components.combat:GetCooldown() > .5 and ShouldKite(self.inst.components.combat.target, self.inst) end, "Dodge",
+                            RunAway(self.inst, { fn = ShouldKite, tags = { "_combat", "_health" }, notags = { "INLIMBO" } }, KITING_DIST, STOP_KITING_DIST)),
                         ChaseAndAttack(self.inst),
                 }, .25)),
                 --All shadows will flee from danger at this point
-                RunAway(self.inst, { oneoftags = { "monster", "hostile" }, notags = { "INLIMBO" } }, RUN_AWAY_DIST, STOP_RUN_AWAY_DIST),
+                RunAway(self.inst, { fn = ShouldRunAway, oneoftags = { "monster", "hostile" }, notags = { "INLIMBO" } }, RUN_AWAY_DIST, STOP_RUN_AWAY_DIST),
                 --Workiers will try to work if not fleeing
                 IfNode(function() return self.inst.prefab == "shadowlumber" end, "Keep Chopping",
                     DoAction(self.inst, function() return FindEntityToWorkAction(self.inst, ACTIONS.CHOP) end)),

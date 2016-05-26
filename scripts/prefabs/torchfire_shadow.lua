@@ -122,6 +122,7 @@ local function fn()
     effect:SetUVFrameSize( 0, 1, 1 )
     effect:SetSortOrder( 0, 0 )
     effect:SetSortOffset( 0, 1 )
+    effect:SetKillOnEntityDeath( 0, true )
     effect:SetFollowEmitter( 0, true )
 
     --SMOKE

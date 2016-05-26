@@ -350,10 +350,10 @@ return {
 		BEARGER_FUR = "It's as thick as my head!",
 		FURTUFT = "Shh! The creature might still be around.", 
 		BIGFOOT = "Watch where you're stepping!",
-		GOLDENMACHETE = "It chops AND sparkles!",
-		MACHETE = "Ooh, that's a thing for choppin'.",
-		MOWER = "Ooh, that's a thing for choppin'.",
-		OBSIDIANMACHETE = "It singes everything it touches.",
+		--GOLDENMACHETE = "It chops AND sparkles!",
+		--MACHETE = "Ooh, that's a thing for choppin'.",
+		--MOWER = "Ooh, that's a thing for choppin'.",
+		--OBSIDIANMACHETE = "It singes everything it touches.",
 		BONESHARD = "I wish I knew how to make bread.",
 		BUZZARD = "Stay away from those meat snacks!",
 		CACTUS = 
@@ -954,7 +954,7 @@ return {
 		DIVININGRODSTART = "That's a weird looking rod.",
 		DRAGONFLY = "He'll burn all the trees before I can chop them!",
 
-		HUTCH = "Friendly lil' guy, eh?",
+		HUTCH = "Friendly lil guy, eh?",
         HUTCH_FISHBOWL =
         {
             GENERIC = "I've never had one of these before.",
@@ -967,7 +967,7 @@ return {
 			STARVING = "Skinnier than a blue heron's legs.",
 			HUNGRY = "Poor gal's getting hungry.",
 			CONTENT = "Look how happy she is!",
-			GENERIC = "That's my lil' critter.",
+			GENERIC = "That's my lil critter.",
 		},
 		LAVAE_EGG = 
 		{
@@ -1267,7 +1267,8 @@ return {
 		POMEGRANATE_SEEDS = "Seedy.",
 		POND = "I can't swim!",
 		POOP = "Don't poop in camp!",
-		PORTABLECOOKPOT_ITEM = "Sure makes the camp smell nice.",
+		--PORTABLECOOKPOT_ITEM = "Sure makes the camp smell nice.",
+		--BOOK_METEOR = "That there ain't right.",
 		PUMPKIN = "I don't like to eat things that grow on the ground.",
 		PUMPKINCOOKIE = "This will keep me chopping.",
 		PUMPKIN_COOKED = "Pies are good.",
@@ -1452,11 +1453,11 @@ return {
 		TRINKET_1 = "I used to play that game.",
 		TRINKET_2 = "Much kazoo about nothing.",
 		TRINKET_3 = "Reminds me of a story I heard once.",
-		TRINKET_4 = "The strongman would appreciate that moustache.",
+		TRINKET_4 = "Wolfgang would appreciate that moustache.",
 		TRINKET_5 = "It needs a robot arm, eh?",
 		TRINKET_6 = "They're not good any more, eh?",
 		TRINKET_7 = "'Might take it to the kid.",
-		TRINKET_8 = "Reminds me... gotta convince the pyromaniac to take a real bath.",
+		TRINKET_8 = "Reminds me... gotta convince Willow to take a *real* bath.",
 		TRINKET_9 = "I just sew my clothing shut around me when I put it on.",
 		TRINKET_10 = "Choppers for old folks.",
 		TRINKET_11 = "Quiet, you!",
@@ -1468,10 +1469,10 @@ return {
         TRINKET_17 = "It needs to be straightened, eh?",
         TRINKET_18 = "I would have liked this when I was a boy.",
         TRINKET_19 = "It keeps falling over, eh?",
-        TRINKET_20 = "The Viking keeps using it to \"spar\" with me and Lucy. We're afraid.",
+        TRINKET_20 = "Wigfrid keeps using it to \"spar\" with me and Lucy. We're afraid.",
         TRINKET_21 = "It belongs in a kitchen, not in the woods.",
         TRINKET_22 = "I'd rather have some proper rope.",
-        TRINKET_23 = "The magician probably needs that for his fancy shoes.",
+        TRINKET_23 = "Maxwell probably needs that for his fancy shoes.",
         TRINKET_24 = "We should whip up some pumpkin cookies to put in it, eh?",
         TRINKET_25 = "I already smell like pine and woodchips, according to Lucy.",
 		TRINKET_26 = "Genius! A cup for a proper woodsman.",
@@ -1501,7 +1502,7 @@ return {
 		BERNIE_ACTIVE = "I guess I should be used to weird stuff by now.",
 		BERNIE_INACTIVE =
 		{
-			BROKEN = "Poor lil' guy.",
+			BROKEN = "Poor lil guy.",
 			GENERIC = "Cute, isn't it 'Luce?",
 		},
 		TWIGGYTREE = 
@@ -1540,7 +1541,7 @@ return {
 		WATERBALLOON = "Could be fun times lobbin' these around.",
 		WORMLIGHT_LESSER = "Wrinklier than the underside of a beaver.",
 		WETGOOP = "Better than some of the things I've eaten!",
-        WHIP = "I hope that doesn't end up hurtin' any lil' critters.",
+        WHIP = "I hope that doesn't end up hurtin' any lil critters.",
 		WINTERHAT = "It's a nice toque, eh?",
 		
 		SHADOWDIGGER = "Are your little buddies, uh... alive?",

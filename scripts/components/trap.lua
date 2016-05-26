@@ -276,11 +276,16 @@ function Trap:Harvest(doer)
         end
         --WARNING: May have become invalid now!
 
-        if self.lootprefabs ~= nil and doer.components.inventory ~= nil then
+        local inventory = doer ~= nil and doer.components.inventory or nil
+        if self.lootprefabs ~= nil then
             for i, v in ipairs(self.lootprefabs) do
                 local loot = SpawnPrefab(v)
                 if loot ~= nil then
-                    doer.components.inventory:GiveItem(loot, nil, pos)
+                    if inventory ~= nil then
+                        inventory:GiveItem(loot, nil, pos)
+                    else
+                        loot.Transform:SetPosition(pos:Get())
+                    end
                     if loot.components.perishable ~= nil then
                         loot.components.perishable:LongUpdate(timeintrap)
                     end
@@ -291,8 +296,10 @@ function Trap:Harvest(doer)
         if self.inst:IsValid() then
             self:Reset()
 
-            if self.inst.components.finiteuses ~= nil and self.inst.components.finiteuses:GetUses() > 0 then
-                doer.components.inventory:GiveItem(self.inst, nil, pos)
+            if inventory ~= nil and
+                self.inst.components.finiteuses ~= nil and
+                self.inst.components.finiteuses:GetUses() > 0 then
+                inventory:GiveItem(self.inst, nil, pos)
             end
         end
     end

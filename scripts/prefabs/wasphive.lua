@@ -135,6 +135,7 @@ local function fn()
     inst:AddComponent("playerprox")
     inst.components.playerprox:SetDist(10, 13) --set specific values
     inst.components.playerprox:SetOnPlayerNear(onnear)
+    inst.components.playerprox:SetPlayerAliveMode(inst.components.playerprox.AliveModes.AliveOnly)
     inst.components.playerprox:Schedule()
     --inst.components.playerprox:SetOnPlayerFar(onfar)
     -------------------------

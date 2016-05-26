@@ -9,12 +9,22 @@ local assets =
 }
 
 local function OnSave(inst, data)
-    data.reachedHighTemp = inst.reachedHighTemp
+    if inst.highTemp ~= nil then
+        data.highTemp = math.ceil(inst.highTemp)
+    elseif inst.lowTemp ~= nil then
+        data.lowTemp = math.floor(inst.lowTemp)
+    end
 end
 
 local function OnLoad(inst, data)
-    if data then
-        inst.reachedHighTemp = data.reachedHighTemp
+    if data ~= nil then
+        if data.highTemp ~= nil then
+            inst.highTemp = data.highTemp
+            inst.lowTemp = nil
+        elseif data.lowTemp ~= nil then
+            inst.lowTemp = data.lowTemp
+            inst.highTemp = nil
+        end
     end
 end
 
@@ -76,9 +86,9 @@ local function UpdateImages(inst, range)
     end
 end
 
-local function AdjustLighting(inst, range)
+local function AdjustLighting(inst, range, ambient)
     if range == 5 then
-        local relativetemp = inst.components.temperature:GetCurrent() - TheWorld.state.temperature
+        local relativetemp = inst.components.temperature:GetCurrent() - ambient
         local baseline = relativetemp - relative_temperature_thresholds[4]
         local brightline = relative_temperature_thresholds[4] + 20
         inst._light.Light:SetIntensity( math.clamp(0.5 * baseline/brightline, 0, 0.5 ) )
@@ -88,21 +98,38 @@ local function AdjustLighting(inst, range)
 end
 
 local function TemperatureChange(inst, data)
-    local range = GetRangeForTemperature(inst.components.temperature:GetCurrent(), TheWorld.state.temperature)
-    AdjustLighting(inst, range)
-    if range ~= inst.currentTempRange then
+    local ambient_temp = TheWorld.state.temperature
+    local cur_temp = inst.components.temperature:GetCurrent()
+    local range = GetRangeForTemperature(cur_temp, ambient_temp)
 
+    AdjustLighting(inst, range, ambient_temp)
+
+    if range <= 1 then
+        if inst.lowTemp == nil or inst.lowTemp > cur_temp then
+            inst.lowTemp = math.floor(cur_temp)
+        end
+        inst.highTemp = nil
+    elseif range >= 5 then
+        if inst.highTemp == nil or inst.highTemp < cur_temp then
+            inst.highTemp = math.ceil(cur_temp)
+        end
+        inst.lowTemp = nil
+    elseif inst.lowTemp ~= nil then
+        if GetRangeForTemperature(inst.lowTemp, ambient_temp) >= 3 then
+            inst.lowTemp = nil
+        end
+    elseif inst.highTemp ~= nil and GetRangeForTemperature(inst.highTemp, ambient_temp) <= 3 then
+        inst.highTemp = nil
+    end
+
+    if range ~= inst.currentTempRange then
         UpdateImages(inst, range)
 
-        if range == 5 or range == 1 then
-            inst.reachedHighTemp = true
-        end
-
-        if range == 3 and inst.reachedHighTemp then
-            local percent = inst.components.fueled:GetPercent()
-            percent = percent - 1 / TUNING.HEATROCK_NUMUSES
-            inst.reachedHighTemp = false
-            inst.components.fueled:SetPercent(percent)
+        if (inst.lowTemp ~= nil and range >= 3) or
+            (inst.highTemp ~= nil and range <= 3) then
+            inst.lowTemp = nil
+            inst.highTemp = nil
+            inst.components.fueled:SetPercent(inst.components.fueled:GetPercent() - 1 / TUNING.HEATROCK_NUMUSES)
         end
     end
 end
