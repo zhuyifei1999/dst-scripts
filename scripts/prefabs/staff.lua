@@ -481,6 +481,22 @@ local function destroystructure(staff, target)
         target.components.container:DropEverything()
     end
 
+    if target.components.spawner ~= nil and target.components.spawner:IsOccupied() then
+        target.components.spawner:ReleaseChild()
+    end
+
+    if target.components.occupiable ~= nil and target.components.occupiable:IsOccupied() then
+        local item = target.components.occupiable:Harvest()
+        if item ~= nil then
+            item.Transform:SetPosition(target.Transform:GetWorldPosition())
+            item.components.inventoryitem:OnDropped()
+        end
+    end
+
+    if target.components.trap ~= nil then
+        target.components.trap:Harvest()
+    end
+
     if target.components.stackable ~= nil then
         --if it's stackable we only want to destroy one of them.
         target.components.stackable:Get():Remove()

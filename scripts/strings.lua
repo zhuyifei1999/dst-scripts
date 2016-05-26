@@ -1512,6 +1512,7 @@ STRINGS=
         "An engravement of their last words: \"This is fine.\"",
         "It reads \"Right behind you...\" and \"Made you look!\"",
         "\"Whoops.\"",
+        "It says \"On to the next adventure.\"",
         "\"It's worse than it looks.\"",
         "\"This is where I keep my stuff.\"",
         "It says \"I'm just pretending.\"",
@@ -1835,8 +1836,8 @@ STRINGS.UI =
         NEEDSHADOWMANIPULATOR = "Use a shadow manipulator to build a prototype!",
         NEEDPRESTIHATITATOR = "Use a Prestihatitator to build a prototype!",
         NEEDSANCIENT_FOUR = "It seems that this altar is not fully functional!",
-        NEEDWAXWELLJOURNAL = "If only I had my journal with me...",
-        CANTRESEARCH = "Some things are unknowable",
+        NEEDWAXWELLJOURNAL = "Curses! Now where did I put that journal...",
+        CANTRESEARCH = "Some things are unknowable.",
         DEFAULT = "Classic",
     },
     
@@ -2058,7 +2059,7 @@ STRINGS.UI =
         CONTINUE = "Continue",
         DELETE = "Delete",
         RESTART = "Restart",
-        NEWADVENTURE_WARN = "The new adventure system is currently in active development and is provided for testing purposes. It will probably contain bugs.",
+        NEWADVENTURE_WARN = "The new adventure system is currently in active development and is provided for testing purposes only. It will probably contain bugs.",
         NEWADVENTURE = "Adventure (TEST)",
         NEWFREEPLAY = "Sandbox",
         NEWFREEPLAYCUSTOM = "Sandbox (Custom)",
@@ -2143,7 +2144,7 @@ STRINGS.UI =
         PLAY_ON_STEAM_DETAIL = "Mods! And Stuff. It is better.",
         LATER = "Not Now",
         ADJUST_DISPLAY_HEADER = "Adjust Display Area.",
-        ADJUST_DISPLAY_TEXT = "Parts of the game may appear outside the edges of your screen. Do you want to check and adjust your display area now? You can do this later in the settings menu.",
+        ADJUST_DISPLAY_TEXT = "Parts of the game may appear outside the edges of your screen. Do you want to check your display area now? If not, you can do this later in the Settings menu.",
 
         SCREECHER_DIALOG_TITLE = "Restart Required",
         SCREECHER_DIALOG_TEXT = "The Screecher mod requires the game to be restarted.",
@@ -2173,7 +2174,7 @@ STRINGS.UI =
         VERSION_OUT_OF_DATE_CANCEL = "Cancel",
 
         CONTROLLER_DETECTED_HEADER = "Controller Detected",
-        CONTROLLER_DETECTED_BODY = "Play Don't Starve Together with a controller?\nYou won't be asked again but you can change this setting in the controls screen if you change your mind.\n\nNOTE: Controller support is not yet complete.",--"Do you want to use the controller to play Don't Starve?\n\nYou will not be asked again, but you can change this setting in the controls screen if you change your mind.",
+        CONTROLLER_DETECTED_BODY = "Do you want to play Don't Starve Together with a controller?\nYou won't be asked again, but you can revert your settings in the Controls screen of the Option menu if you change your mind.",
         ENABLECONTROLLER = "Enable Controller",
         DISABLECONTROLLER = "Disable Controller",
 
@@ -2188,7 +2189,7 @@ STRINGS.UI =
         VERSION_UPTODATE = "Up to date!",
         VERSION_NOTUPTODATE = "Update required!",
         VERSION_MOREINFO = "Instructions",
-        VERSION_ERROR = "Problem checking for latest version.",
+        VERSION_ERROR = "Problem checking for latest version",
 
         TOOLTIP_BROWSE = "Browse the list of servers",
         TOOLTIP_HOST = "Start your own server",

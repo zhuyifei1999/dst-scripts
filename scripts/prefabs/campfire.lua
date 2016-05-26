@@ -68,7 +68,7 @@ local function fn()
     inst.AnimState:SetBank("campfire")
     inst.AnimState:SetBuild("campfire")
     inst.AnimState:PlayAnimation("idle", false)
-    inst.AnimState:SetRayTestOnBB(true)
+    --inst.AnimState:SetRayTestOnBB(true)
 
     inst:AddTag("campfire")
 

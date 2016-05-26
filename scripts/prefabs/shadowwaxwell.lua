@@ -37,7 +37,8 @@ end
 
 local function keeptargetfn(inst, target)
     --Is your leader nearby and your target not dead? Stay on it.
-    return inst.components.follower:IsNearLeader(20)
+    --Match KEEP_WORKING_DIST in brain
+    return inst.components.follower:IsNearLeader(14)
         and inst.components.combat:CanTarget(target)
 end
 
