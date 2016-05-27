@@ -6,7 +6,7 @@ local Menu = require "widgets/menu"
 local UIAnim = require "widgets/uianim"
 local ImageButton = require "widgets/imagebutton"
 
-local STRING_MAX_LENGTH = 100 -- http://tools.ietf.org/html/rfc5321#section-4.5.3.1
+local STRING_MAX_LENGTH = 60 -- http://tools.ietf.org/html/rfc5321#section-4.5.3.1
 
 local function onaccept(inst, doer, widget)
     if not widget.isopen then
@@ -119,12 +119,13 @@ local WriteableWidget = Class(Screen, function(self, owner, writeable, config)
     self.edit_text:SetColour(0, 0, 0, 1)
     self.edit_text:SetForceEdit(true)
     self.edit_text:SetPosition(0, 40, 0)
-    self.edit_text:SetRegionSize(440, 70)
+    self.edit_text:SetRegionSize(430, 160)
     self.edit_text:SetHAlign(ANCHOR_LEFT)
+    self.edit_text:SetVAlign(ANCHOR_TOP)
     --self.edit_text:SetFocusedImage(self.edit_text_bg, "images/textboxes.xml", "textbox_long_over.tex", "textbox_long.tex")
     self.edit_text:SetTextLengthLimit(STRING_MAX_LENGTH)
-    self.edit_text:EnableWordWrap(false)
-    self.edit_text:EnableScrollEditWindow(true)
+    self.edit_text:EnableWordWrap(true)
+    self.edit_text:EnableScrollEditWindow(false)
 
     self.buttons = {}
     table.insert(self.buttons, { text = config.cancelbtn.text, cb = function() oncancel(self.writeable, self.owner, self) end, control = config.cancelbtn.control })
