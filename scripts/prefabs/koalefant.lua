@@ -100,6 +100,10 @@ local function create_base(build)
     inst.components.periodicspawner:SetMinimumSpacing(8)
     inst.components.periodicspawner:Start()
 
+    inst:AddComponent("timer")
+    inst:AddComponent("saltlicker")
+    inst.components.saltlicker:SetUp(TUNING.SALTLICK_KOALEFANT_DURATION) -- duration is the total time salt lasts, check 8 times that often
+
     MakeLargeBurnableCharacter(inst, "beefalo_body")
     MakeLargeFreezableCharacter(inst, "beefalo_body")
 

@@ -770,7 +770,8 @@ ANNOUNCEMENT_ICONS =
     kicked_from_game={atlas="images/button_icons.xml", texture="kicked.tex"},
     banned_from_game={atlas="images/button_icons.xml", texture="banned.tex"},
 	item_drop={atlas="images/button_icons.xml", texture="item_drop.tex"},
-	vote={atlas="images/button_icons.xml", texture="vote.tex"}, --#srosen vote2 also avail, though I prefer vote
+    vote={atlas="images/button_icons.xml", texture="vote.tex"},
+    mod={atlas="images/button_icons.xml", texture="mod_announcement.tex"},
 }
 
 ROAD_STRIPS = 
@@ -1155,12 +1156,26 @@ INTENTIONS =
     ANY = "any", -- for player use only, servers must have an intention
 }
 
-
 LEVELTYPE = {
-	SURVIVAL = "SURVIVAL",
-	CAVE = "CAVE",
-	ADVENTURE = "ADVENTURE",
-	TEST = "TEST",
-	UNKNOWN = "UNKNOWN",
-	CUSTOM = "CUSTOM",
+    SURVIVAL = "SURVIVAL",
+    CAVE = "CAVE",
+    ADVENTURE = "ADVENTURE",
+    TEST = "TEST",
+    UNKNOWN = "UNKNOWN",
+    CUSTOM = "CUSTOM",
 }
+
+COMMAND_PERMISSION = {
+    ADMIN = "ADMIN", -- only admins see and can activate
+    MODERATOR = "MODERATOR", -- only admins and mods can see and activate
+    USER = "USER", -- anyone can see and do instantly. Mostly for local commands, or if a mod wants to offer accessible functionality
+}
+
+COMMAND_RESULT = {
+    ALLOW = "ALLOW",
+    VOTE = "VOTE",
+    DENY = "DENY",
+    INVALID = "INVALID",
+}
+
+MAX_VOTE_OPTIONS = 6

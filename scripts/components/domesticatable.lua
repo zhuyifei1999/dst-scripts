@@ -25,6 +25,8 @@ local Domesticatable = Class(function(self, inst)
     self.minobedience = 0
     self.maxobedience = 1
 
+    self.domesticationdecaypaused = false
+
     self.tendencies = {}
 
     self.decaytask = nil
@@ -86,16 +88,19 @@ end
 
 local function UpdateDomestication(inst)
     local self = inst.components.domesticatable
-    for k,v in pairs(self.tendencies) do
-        self.tendencies[k] = math.max(v + FEEDBACK_DECAY_RATE * DECAY_TASK_PERIOD, 0)
+    if not self.domesticationdecaypaused then
+        for k,v in pairs(self.tendencies) do
+            self.tendencies[k] = math.max(v + FEEDBACK_DECAY_RATE * DECAY_TASK_PERIOD, 0)
+        end
     end
 
+    -- obedience still decays even if domestication decay is paused
     self:DeltaObedience(OBEDIENCE_DECAY_RATE * DECAY_TASK_PERIOD)
 
     if self.domestication_triggerfn(inst) then
         self:DeltaDomestication(TUNING.BEEFALO_DOMESTICATION_GAIN_DOMESTICATION * DECAY_TASK_PERIOD)
         self.lastdomesticationgain = GetTime()
-    else
+    elseif not self.domesticationdecaypaused then
         self:DeltaDomestication(CalculateLoss(GetTime(), self.lastdomesticationgain) * DECAY_TASK_PERIOD)
     end
 
@@ -130,6 +135,10 @@ function Domesticatable:DeltaTendency(tendency, delta)
     else
         self.tendencies[tendency] = self.tendencies[tendency] + delta
     end
+end
+
+function Domesticatable:PauseDomesticationDecay(pause)
+    self.domesticationdecaypaused = pause
 end
 
 function Domesticatable:TryBecomeDomesticated()
@@ -207,8 +216,9 @@ function Domesticatable:OnLoad(data)
 end
 
 function Domesticatable:GetDebugString()
-    local s = string.format("%s %.3f%% %s obedience: %.2f/%.3f/%.2f ",
+    local s = string.format("%s%s %.3f%% %s obedience: %.2f/%.3f/%.2f ",
         self.domesticated and "DOMO" or "NORMAL",
+        self.domesticationdecaypaused and "(nodecay)" or "",
         self.domestication * 100, self.decaytask ~= nil and (GetTime() % 2 < 1 and " ." or ". ") or "..",
         self.minobedience, self.obedience, self.maxobedience
         )

@@ -150,8 +150,16 @@ local function CheckAction(player)
                 target:HasTag("wall") or
                 target:HasTag("smoldering") or
                 target:HasTag("veggie")) then
-            StartDanger(player)
-            return
+            if target:HasTag("shadowminion") or target:HasTag("abigail") then
+                local follower = target.replica.follower
+                if not (follower ~= nil and follower:GetLeader() == player) then
+                    StartDanger(player)
+                    return
+                end
+            else
+                StartDanger(player)
+                return
+            end
         end
     end
     if player:HasTag("working") then

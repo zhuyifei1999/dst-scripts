@@ -1,33 +1,34 @@
 require "events"
 local Text = require "widgets/text"
 
+--V2C: WELL! this should've been local... =(
+--     TheInput is the correct global to reference
+--     At this point, gotta leave it in case MODs are using the wrong one =/
+
 Input = Class(function(self)
     self.onkey = EventProcessor()     -- all keys, down and up, with key param
     self.onkeyup = EventProcessor()   -- specific key up, no parameters
     self.onkeydown = EventProcessor() -- specific key down, no parameters
     self.onmousebutton = EventProcessor()
-    
+
     self.position = EventProcessor()
     self.oncontrol = EventProcessor()
     self.ontextinput = EventProcessor()
     self.ongesture = EventProcessor()
-    
+
     self.hoverinst = nil
     self.enabledebugtoggle = true
 
-	if PLATFORM == "PS4" or TheNet:IsDedicated() then     
-        self.mouse_enabled = false
-    else
-        self.mouse_enabled = true
-    end
+    self.mouse_enabled = PLATFORM ~= "PS4" and not TheNet:IsDedicated()
 
     self.overridepos = nil
+    self.controllerid_cached = nil
 
     self:DisableAllControllers()
 end)
 
 function Input:DisableAllControllers()
-    for i = 1, TheInputProxy:GetInputDeviceCount() -1 do
+    for i = 1, TheInputProxy:GetInputDeviceCount() - 1 do
         if TheInputProxy:IsInputDeviceEnabled(i) and TheInputProxy:IsInputDeviceConnected(i) then
             TheInputProxy:EnableInputDevice(i, false)
         end
@@ -35,7 +36,7 @@ function Input:DisableAllControllers()
 end
 
 function Input:EnableAllControllers()
-    for i = 1, TheInputProxy:GetInputDeviceCount() -1 do
+    for i = 1, TheInputProxy:GetInputDeviceCount() - 1 do
         if TheInputProxy:IsInputDeviceConnected(i) then
             TheInputProxy:EnableInputDevice(i, true)
         end
@@ -43,59 +44,43 @@ function Input:EnableAllControllers()
 end
 
 function Input:EnableMouse(enable)
-    self.mouse_enabled = enable
+    self.mouse_enabled = enable and PLATFORM ~= "PS4" and not TheNet:IsDedicated()
+end
+
+function Input:ClearCachedController()
+    self.controllerid_cached = nil
+end
+
+function Input:CacheController()
+    self.controllerid_cached = PLATFORM ~= "PS4" and (TheInputProxy:GetLastActiveControllerIndex() or 0) or nil
+    return self.controllerid_cached
+end
+
+function Input:TryRecacheController()
+    return self.controllerid_cached ~= nil and self.controllerid_cached ~= self:CacheController()
 end
 
 function Input:GetControllerID()
-    local device_id = 0
-    for i = 1, TheInputProxy:GetInputDeviceCount() -1 do
-        if TheInputProxy:IsInputDeviceEnabled(i) and TheInputProxy:IsInputDeviceConnected(i) then
-            device_id = i
-        end
-    end
-
-    return device_id
+    return self.controllerid_cached or TheInputProxy:GetLastActiveControllerIndex() or 0
 end
 
 function Input:ControllerAttached()
-	if PLATFORM == "PS4" then
-		return true	
-	elseif PLATFORM == "NACL" then
-		return false
-	else
-		--need to take enabled into account
-        for i = 1, TheInputProxy:GetInputDeviceCount() -1 do
-            if i > 0 and TheInputProxy:IsInputDeviceEnabled(i) and TheInputProxy:IsInputDeviceConnected(i) then
-                --print ("DEVICE", i, "of", TheInputProxy:GetInputDeviceCount(), "IS ENABLED")
-                return true
-            end
-        end
-        return false
-	end
+    if self.controllerid_cached ~= nil then
+        return self.controllerid_cached > 0
+    end
+    --Active means connected AND enabled
+    return PLATFORM == "PS4" or TheInputProxy:IsAnyControllerActive()
 end
 
 function Input:ControllerConnected()
-	if PLATFORM == "PS4" then
-		return true	
-	elseif PLATFORM == "NACL" then
-		return false
-	else
-		--need to take enabled into account
-        for i = 1, TheInputProxy:GetInputDeviceCount() -1 do
-            if i > 0 and TheInputProxy:IsInputDeviceConnected(i) then
-                --print ("DEVICE", i, "of", TheInputProxy:GetInputDeviceCount(), "IS CONNECTED")
-                return true
-            end
-        end
-        return false
-	end
+    --V2C: didn't cache this one because it's not used regularly
+    return PLATFORM == "PS4" or TheInputProxy:IsAnyControllerConnected()
 end
 
 -- Get a list of connected input devices and their ids
 function Input:GetInputDevices()
-    local numDevices = TheInputProxy:GetInputDeviceCount()
     local devices = {}
-    for i = 0, numDevices - 1 do
+    for i = 0, TheInputProxy:GetInputDeviceCount() - 1 do
         if TheInputProxy:IsInputDeviceConnected(i) then
             local device_type = TheInputProxy:GetInputDeviceType(i)
             table.insert(devices, { text = STRINGS.UI.CONTROLSSCREEN.INPUT_NAMES[device_type + 1], data = i })
@@ -104,28 +89,27 @@ function Input:GetInputDevices()
     return devices
 end
 
-
-function Input:AddTextInputHandler( fn )
+function Input:AddTextInputHandler(fn)
     return self.ontextinput:AddEventHandler("text", fn)
 end
 
-function Input:AddKeyUpHandler( key, fn )
+function Input:AddKeyUpHandler(key, fn)
     return self.onkeyup:AddEventHandler(key, fn)
 end
 
-function Input:AddKeyDownHandler( key, fn )
+function Input:AddKeyDownHandler(key, fn)
     return self.onkeydown:AddEventHandler(key, fn)
 end
 
-function Input:AddKeyHandler( fn )
+function Input:AddKeyHandler(fn)
     return self.onkey:AddEventHandler("onkey", fn)
 end
 
-function Input:AddMouseButtonHandler( fn)
+function Input:AddMouseButtonHandler(fn)
     return self.onmousebutton:AddEventHandler("onmousebutton", fn)
 end
 
-function Input:AddMoveHandler( fn )
+function Input:AddMoveHandler(fn)
     return self.position:AddEventHandler("move", fn)
 end
 
@@ -141,56 +125,54 @@ function Input:AddControlMappingHandler(fn)
     return self.oncontrol:AddEventHandler("onmap", fn)
 end
 
-function Input:AddGestureHandler( gesture, fn )
+function Input:AddGestureHandler(gesture, fn)
     return self.ongesture:AddEventHandler(gesture, fn)
 end
 
-function Input:UpdatePosition(x,y)
+function Input:UpdatePosition(x, y)
     if self.mouse_enabled then
-		self.position:HandleEvent("move", x, y)
-	end
+        self.position:HandleEvent("move", x, y)
+    end
 end
 
 -- Is for all the button devices (mouse, joystick (even the analog parts), keyboard as well, keyboard
 function Input:OnControl(control, digitalvalue, analogvalue)
-    if (control == CONTROL_PRIMARY or control == CONTROL_SECONDARY) and not self.mouse_enabled then return end
-    
-    if not TheFrontEnd:OnControl(control, digitalvalue) then
+    if (self.mouse_enabled or
+        (control ~= CONTROL_PRIMARY and control ~= CONTROL_SECONDARY)) and
+        not TheFrontEnd:OnControl(control, digitalvalue) then
         self.oncontrol:HandleEvent(control, digitalvalue, analogvalue)
         self.oncontrol:HandleEvent("oncontrol", control, digitalvalue, analogvalue)
     end
 end
 
-function Input:OnMouseMove(x,y)
-	if self.mouse_enabled then
-		TheFrontEnd:OnMouseMove(x,y)
-	end
+function Input:OnMouseMove(x, y)
+    if self.mouse_enabled then
+        TheFrontEnd:OnMouseMove(x, y)
+    end
 end
 
-function Input:OnMouseButton(button, down, x,y)
-	if self.mouse_enabled then
-		TheFrontEnd:OnMouseButton(button, down, x,y)
+function Input:OnMouseButton(button, down, x, y)
+    if self.mouse_enabled then
+        TheFrontEnd:OnMouseButton(button, down, x,y)
         self.onmousebutton:HandleEvent("onmousebutton", button, down, x, y)
-	end
+    end
 end
 
 function Input:OnRawKey(key, down)
-	self.onkey:HandleEvent("onkey", key, down)
-
-	if down then
-		self.onkeydown:HandleEvent(key)
-	else
-		self.onkeyup:HandleEvent(key)
-	end
+    self.onkey:HandleEvent("onkey", key, down)
+    if down then
+        self.onkeydown:HandleEvent(key)
+    else
+        self.onkeyup:HandleEvent(key)
+    end
 end
 
 function Input:OnText(text)
-	--print("Input:OnText", text)
-	self.ontextinput:HandleEvent("text", text)
+    self.ontextinput:HandleEvent("text", text)
 end
 
 function Input:OnGesture(gesture)
-	self.ongesture:HandleEvent(gesture)
+    self.ongesture:HandleEvent(gesture)
 end
 
 function Input:OnControlMapped(deviceId, controlId, inputId, hasChanged)
@@ -204,21 +186,16 @@ end
 
 function Input:GetScreenPosition()
     local x, y = TheSim:GetPosition()
-    return Vector3(x,y,0)
+    return Vector3(x, y, 0)
 end
 
 function Input:GetWorldPosition()
-    local x,y,z = TheSim:ProjectScreenPos(TheSim:GetPosition())
-    if x and y and z then
-        return Vector3(x,y,z)
-    end
+    local x, y, z = TheSim:ProjectScreenPos(TheSim:GetPosition())
+    return x ~= nil and y ~= nil and z ~= nil and Vector3(x, y, z) or nil
 end
 
 function Input:GetAllEntitiesUnderMouse()
-    if self.mouse_enabled then 
-		return self.entitiesundermouse or {}
-	end
-	return {}
+    return self.mouse_enabled and self.entitiesundermouse or {}
 end
 
 function Input:GetWorldEntityUnderMouse()
@@ -264,65 +241,42 @@ function Input:GetAnalogControlValue(control)
 end
 
 function Input:OnUpdate()
-	if PLATFORM == "PS4" then return end
+    if self.mouse_enabled then
+        self.entitiesundermouse = TheSim:GetEntitiesAtScreenPoint(TheSim:GetPosition())
 
-	if self.mouse_enabled then
-		self.entitiesundermouse = TheSim:GetEntitiesAtScreenPoint(TheSim:GetPosition())
-	    
-		local inst = self.entitiesundermouse[1]
-		if inst ~= self.hoverinst then
-	        
-			if inst and inst.Transform then
-				inst:PushEvent("mouseover")
-			end
+        local inst = self.entitiesundermouse[1]
+        if inst ~= self.hoverinst then
+            if inst ~= nil and inst.Transform ~= nil then
+                inst:PushEvent("mouseover")
+            end
 
-			if self.hoverinst and self.hoverinst.Transform then
-				self.hoverinst:PushEvent("mouseout")
-			end
-	        
-			self.hoverinst = inst
-		end
-	end
+            if self.hoverinst ~= nil and self.hoverinst.Transform ~= nil then
+                self.hoverinst:PushEvent("mouseout")
+            end
+
+            self.hoverinst = inst
+        end
+    end
 end
 
-
 function Input:GetLocalizedControl(deviceId, controlId, use_default_mapping, use_control_mapper)
-    
-    if nil == use_default_mapping then
-        -- default mapping not specified so don't use it
-        use_default_mapping = false
+    local device, numInputs, input1, input2, input3, input4, intParam = TheInputProxy:GetLocalizedControl(deviceId, controlId, use_default_mapping == true, use_control_mapper ~= false)
+
+    if device == nil then
+        return STRINGS.UI.CONTROLSSCREEN.INPUTS[9][1]
+    elseif numInputs < 1 then
+        return ""
     end
-	
-    if nil == use_control_mapper then
-        use_control_mapper = true
+
+    local inputs = { input1, input2, input3, input4 }
+    local text = STRINGS.UI.CONTROLSSCREEN.INPUTS[device][input1]
+    -- concatenate the inputs
+    for idx = 2, numInputs do
+        text = text.." + "..STRINGS.UI.CONTROLSSCREEN.INPUTS[device][inputs[idx]]
     end
-    
-    local device, numInputs, input1, input2, input3, input4, intParam = TheInputProxy:GetLocalizedControl(deviceId, controlId, use_default_mapping, use_control_mapper)
-    local inputs = {
-        [1] = input1,
-        [2] = input2,
-        [3] = input3,
-        [4] = input4,
-    }
-    local text = ""
-    if nil == device then
-        text = STRINGS.UI.CONTROLSSCREEN.INPUTS[9][1]
-    else
-        -- concatenate the inputs
-        for idx = 1, numInputs do
-            text = text .. STRINGS.UI.CONTROLSSCREEN.INPUTS[device][inputs[idx]]
-            if idx < numInputs then
-                text = text .. " + "
-            end
-        end
-        
-        -- process string format params if there are any
-        if not (nil == intParam) then
-            text = string.format(text, intParam)
-        end
-    end
-    --print ("Input Text:" .. tostring(text))
-    return text
+
+    -- process string format params if there are any
+    return intParam ~= nil and string.format(text, intParam) or text
 end
 
 function Input:GetControlIsMouseWheel(controlId)
@@ -335,15 +289,11 @@ function Input:GetControlIsMouseWheel(controlId)
 end
 
 function Input:GetStringIsButtonImage(str)
-    if table.contains(STRINGS.UI.CONTROLSSCREEN.INPUTS[2], str) or
-        table.contains(STRINGS.UI.CONTROLSSCREEN.INPUTS[4], str) or
-        table.contains(STRINGS.UI.CONTROLSSCREEN.INPUTS[5], str) or
-        table.contains(STRINGS.UI.CONTROLSSCREEN.INPUTS[7], str) or
-        table.contains(STRINGS.UI.CONTROLSSCREEN.INPUTS[8], str) then
-        return true
-    else
-        return false
-    end
+    return table.contains(STRINGS.UI.CONTROLSSCREEN.INPUTS[2], str)
+        or table.contains(STRINGS.UI.CONTROLSSCREEN.INPUTS[4], str)
+        or table.contains(STRINGS.UI.CONTROLSSCREEN.INPUTS[5], str)
+        or table.contains(STRINGS.UI.CONTROLSSCREEN.INPUTS[7], str)
+        or table.contains(STRINGS.UI.CONTROLSSCREEN.INPUTS[8], str)
 end
 
 ---------------- Globals
@@ -351,7 +301,7 @@ end
 TheInput = Input()
 
 function OnPosition(x, y)
-    TheInput:UpdatePosition(x,y)
+    TheInput:UpdatePosition(x, y)
 end
 
 function OnControl(control, digitalvalue, analogvalue)
@@ -359,7 +309,7 @@ function OnControl(control, digitalvalue, analogvalue)
 end
 
 function OnMouseButton(button, is_up, x, y)
-    TheInput:OnMouseButton(button, is_up, x,y)
+    TheInput:OnMouseButton(button, is_up, x, y)
 end
 
 function OnMouseMove(x, y)
@@ -371,16 +321,15 @@ function OnInputKey(key, is_up)
 end
 
 function OnInputText(text)
-	TheInput:OnText(text)
+    TheInput:OnText(text)
 end
 
 function OnGesture(gesture)
-	TheInput:OnGesture(gesture)
+    TheInput:OnGesture(gesture)
 end
 
 function OnControlMapped(deviceId, controlId, inputId, hasChanged)
     TheInput:OnControlMapped(deviceId, controlId, inputId, hasChanged)
 end
-
 
 return Input

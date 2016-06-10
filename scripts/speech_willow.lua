@@ -19,18 +19,18 @@ return {
 		},
 		WRITE =
         {
-            GENERIC = "I can't!",
+            GENERIC = "I can't write on it.",
             INUSE = "I wanna write when you're done!",
         },
 		RUMMAGE =
         {   
-            GENERIC = "I can'tttttt.",
-            INUSE = "I'll use it after they're done.",  
+            GENERIC = "Make someone else do it!",
+            INUSE = "There must be something good in there if you want it so bad!",  
         },
 		COOK =
         {
-            GENERIC = "I can'tttttt.",
-            INUSE = "I'll use it after they're done.",
+            GENERIC = "I'm not too big on cooking.",
+            INUSE = "Hey! What're you making? Can I have it?",
             TOOFAR = "It's all the way over thereeeee!",
         },
         MOUNT =
@@ -80,8 +80,9 @@ return {
             CANTLEARN = "Ugh, whatever, I didn't wanna know anyway.",
         },
 	},
-	ANNOUNCE_MOUNT_LOWHEALTH = "This beast is looking pretty bad.",
 	ACTIONFAIL_GENERIC = "I can'tttttt.",
+
+	ANNOUNCE_MOUNT_LOWHEALTH = "This beast is looking pretty bad.",
 	ANNOUNCE_ADVENTUREFAIL = "You win THIS time, Maxwell.",
 	ANNOUNCE_BOOMERANG = "Stupid boomerang!",
 	ANNOUNCE_CHARLIE = "I'm not afraid of you!",
@@ -1357,6 +1358,7 @@ return {
         SADDLE_RACE = "Was it worth it? I think it was worth it.",
         SADDLE_WAR = "I'm going to raze some villages!",
         SADDLEHORN = "I bet it stinks under the saddle.",
+        SALTLICK = "It's a big block of slobbery salt.",
         BRUSH = "It smells like burnt hair.",
 		SANITYROCK =
 		{

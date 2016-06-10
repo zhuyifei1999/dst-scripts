@@ -489,6 +489,10 @@ local function MountSleepTest(inst)
     return not inst.components.rideable:IsBeingRidden() and DefaultSleepTest(inst)
 end
 
+local function OnSaltChange(inst, salted)
+    inst.components.domesticatable:PauseDomesticationDecay(salted)
+end
+
 local function OnInit(inst)
     inst.components.mood:ValidateMood()
     inst:UpdateDomestication()
@@ -647,6 +651,11 @@ local function beefalo()
     inst:AddComponent("sleeper")
     inst.components.sleeper:SetResistance(3)
     inst.components.sleeper.sleeptestfn = MountSleepTest
+
+    inst:AddComponent("timer")
+    inst:AddComponent("saltlicker")
+    inst.components.saltlicker:SetUp(TUNING.SALTLICK_BEEFALO_DURATION) -- duration is the total time salt lasts, check 8 times that often
+    inst:ListenForEvent("saltchange", OnSaltChange)
 
     inst.ApplyBuildOverrides = ApplyBuildOverrides
     inst.ClearBuildOverrides = ClearBuildOverrides

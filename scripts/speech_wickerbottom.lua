@@ -6,6 +6,11 @@ return
         {
             MOUNTED = "In this elevated position, I can't reach the ground.",
         },
+        READ =
+        {
+            GENERIC = "Other matters await.",
+            NOBIRDS = "The birds are not keen on this weather."
+        },
         SHAVE =
         {
             GENERIC = "I would really rather not.",
@@ -16,17 +21,17 @@ return
         {
             GENERIC = "It's full to the brim, I'm afraid.",
             NOTALLOWED = "Nonsense.",
-            INUSE = "Someone's already using it.",
+            INUSE = "I do hope you're keeping organized, my dear.",
         },
         WRITE =
         {
-            GENERIC = "I cannot.",
+            GENERIC = "I'd rather write in my own books.",
             INUSE = "When you're done, dear.",
         },
         RUMMAGE =
         {   
-            GENERIC = "It seems I can't do that.",
-            INUSE = "Someone's already using it.",   
+            GENERIC = "I've other things on my mind currently.",
+            INUSE = "Be sure to sort by color and weight, dear.",   
         },
         CHANGEIN =
         {
@@ -36,8 +41,8 @@ return
         },
         COOK =
         {
-            GENERIC = "It seems I can't do that.",
-            INUSE = "Someone's already using it.",
+            GENERIC = "Perhaps later. Not all old ladies enjoy cooking, you know.",
+            INUSE = "Mmm, smells lovely, dear.",
             TOOFAR = "It is not within my reach.",
         },
         MOUNT =
@@ -81,11 +86,14 @@ return
             CANTLEARN = "A piece of knowledge I cannot grasp... Intriguing!",
         },
     },
+    ACTIONFAIL_GENERIC = "It seems I can't do that.",
+    
     ANNOUNCE_MOUNT_LOWHEALTH = "My mount requires attention of the medical variety.",
     ANNOUNCE_NODANGERAFK = "Were I to lose focus now I'd be sure to sustain bodily injury.",
     ANNOUNCE_NODANGERGIFT = "Presents are not a top survival priority at this moment.",
     ANNOUNCE_NOWARDROBEONFIRE = "As you can plainly see, it is ablaze.",
     ANNOUNCE_WORMS = "Something nasty intends to rear its head.",
+   
     DESCRIBE=
     {
         PLAYER =
@@ -390,8 +398,8 @@ return
         STAFF_TORNADO = "I've never seen a weather vane employed as a weapon.",
         PIGHEAD = 
         {   
-            GENERIC = "It's a head on a stick.",
-            BURNT = "It's the charred remains of a head on a stick.",
+            GENERIC = "Tut tut. It's a head on a stick.",
+            BURNT = "It's the charred remains of a head on a stick. Tsk!",
         },
         PIGHOUSE =
         {
@@ -598,15 +606,18 @@ return
         LANTERN="A refuelable light source.",
         LIGHTBULB="Is this animal or vegetable?",
         MANRABBIT_TAIL="They use their tails to balance.",
-        MUSHTREE_TALL={
+        MUSHTREE_TALL=
+        {
             GENERIC = "A tree with a fungal parasite.",
             BLOOM = "Apparently it's the breeding season for this species.",
         },
-        MUSHTREE_MEDIUM={
+        MUSHTREE_MEDIUM=
+        {
             GENERIC = "A red variety of Mycena luxaeterna.",
             BLOOM = "The smell is used to ward off predators.",
         },
-        MUSHTREE_SMALL={
+        MUSHTREE_SMALL=
+        {
             GENERIC = "My word! A huge Mycena silvaelucens.",
             BLOOM = "The light is caused by a chemical reaction.",
         },
@@ -779,14 +790,14 @@ return
         SMALLMEAT = "It's a small, raw piece of meat.",
         COOKEDSMALLMEAT = "It is slightly more appetizing when cooked.",
         MONSTERMEAT = "It would be hazardous to consume this.",
-        MONSTERLASAGNA = "Lasagna or no, it would still be hazardous to consume it.",
+        MONSTERLASAGNA = "Lasagna or no, it would be hazardous to consume it.",
         COOKEDMEAT = "It is slightly more appetizing when cooked.",
         MEATBALLS = "A pile of processed meat. Who knows what went into this.",
         UMBRELLA = "A simple apparatus for keeping dry.",
         PERD = "Nasty Meleagris, you stay away from those berries!",
         TURKEYDINNER = "What a nice roast.",
         COOKEDMONSTERMEAT = "It's still a little bit poisonous.",
-        MAXWELL = "What a rude gentleman.",
+        MAXWELL = "Get down from there this instant!",
         TENTACLE = "A horror waiting in the mud.",
         TENTACLESPIKE = "Never grab the pointy end.",
         TENTACLESPOTS = "Hmmm, reproductive organs.",
@@ -1192,7 +1203,6 @@ return
             GUARD = "It appears to be a guardian.",
         },
         SPIDEREGGSACK = "A highly portable spider egg sack.",
-
         TELEPORTATO_RING = "A torus of alloys and wiring.",
         TELEPORTATO_BOX = "An electrical charge regulator.",
         TELEPORTATO_CRANK = "It applies basic mechanical principles.",
@@ -1204,7 +1214,6 @@ return
             LOCKED = "The device needs to be activated.",
             ACTIVE = "This machine can be used to travel between worlds.",
         },
-
         BEARDHAIR = "This is human facial hair.",
         BUTTERFLY = 
         {
@@ -1373,7 +1382,7 @@ return
             PICKED = "The nest is empty. Soon the cycle will begin anew.",
         },
 
-        ANIMAL_TRACK = "Animal sign, leading away.",
+        ANIMAL_TRACK = "A sign of animal activity. Leads away.",
         DIRTPILE = "Unhygienic!",
         KOALEFANT_SUMMER = "Koalefanta Proboscidea.",
         KOALEFANT_WINTER = "Koalefanta Proboscidea in thick winter pelage.",
@@ -1413,10 +1422,18 @@ return
             INACTIVE = "It appears to be a tiny pyramid.",
             ACTIVE = "I must be seeing things.",
         },
+        LAVA_POND_ROCK = "Recently cooled igneous rock. Dangerous.",
+        LAVA_POND_ROCK2 = "Recently cooled igneous rock. Dangerous.",
+        LAVA_POND_ROCK3 = "Recently cooled igneous rock. Dangerous.",
+        LAVA_POND_ROCK4 = "Recently cooled igneous rock. Dangerous.",
+        LAVA_POND_ROCK5 = "Recently cooled igneous rock. Dangerous.",
+        LAVA_POND_ROCK6 = "Recently cooled igneous rock. Dangerous.",
+        LAVA_POND_ROCK7 = "Recently cooled igneous rock. Dangerous.",
         SADDLE_BASIC = "A crude device for equestrianism.",
         SADDLE_WAR = "A favorite perch of generals and assorted warlords.",
         SADDLE_RACE = "The decorative antennae are a lovely touch.",
         SADDLEHORN = "A device for forceful unfurnishment.",
+        SALTLICK = "A cube of sodium chloride to lure wild beasts.",
         BRUSH = "Microscopic barbs allow for optimal hair retrieval.",
         SANITYROCK = 
         {
@@ -1431,7 +1448,7 @@ return
         MARBLE = "A statuesque rock.",
         SUNKBOAT = "A shipwreck, looks to be useless.",
         SWEATERVEST = "This vest screams \"stylish, but well-read.\".",
-        TAFFY = "I don't much care for sweets, but... desperate times.",
+        TAFFY = "That's terrible for your teeth, dear.",
         SMALLMEAT_DRIED = "High sodium content.",
         MEAT_DRIED = "Salty, yet satisfying.",
         MONSTERMEAT_DRIED = "Salty, yet satisfying.",
@@ -1448,7 +1465,7 @@ return
  
         ARMORRUINS = "A hardy Thulecite armor.",
         BISHOP_NIGHTMARE = "Such exhilaratingly complex technology.",
-        GREENAMULET = "I don't know what that is.", --Reduce cost of crafting
+        GREENAMULET = "Works almost as a magical binding agent.", --Reduce cost of crafting
         GREENGEM = "Chromium impurities have colored this gem green.",
         KNIGHT_NIGHTMARE = "Its nightmare fueled surroundings have corrupted its programming.",
         MINOTAUR = "Get away, you beast!",    --Monster in labyrinth
@@ -1487,8 +1504,6 @@ return
     DESCRIBE_SMOLDERING = "Seems it's about to ignite from the heat.",
     DESCRIBE_GENERIC = "A rare occurrence. I don't know what that is.",
 
-    ACTIONFAIL_GENERIC = "It seems I can't do that.",
-
     BATTLECRY =
     {
         GENERIC = "Combat!",
@@ -1506,14 +1521,6 @@ return
         SPIDER = "I must read up on this!",
         SPIDER_WARRIOR = "Back to the drawing board!",
     },
-
-        LAVA_POND_ROCK = "Recently cooled igneous rock. Dangerous.",
-        LAVA_POND_ROCK2 = "Recently cooled igneous rock. Dangerous.",
-        LAVA_POND_ROCK3 = "Recently cooled igneous rock. Dangerous.",
-        LAVA_POND_ROCK4 = "Recently cooled igneous rock. Dangerous.",
-        LAVA_POND_ROCK5 = "Recently cooled igneous rock. Dangerous.",
-        LAVA_POND_ROCK6 = "Recently cooled igneous rock. Dangerous.",
-        LAVA_POND_ROCK7 = "Recently cooled igneous rock. Dangerous.",
 
     ANNOUNCE_EAT =
     {
@@ -1538,7 +1545,7 @@ return
     ANNOUNCE_GHOSTDRAIN = "My humanity... it's slipping.",
     ANNOUNCE_PETRIFED_TREES = "The chemical reaction has been catalyzed...",
 
-    ANNOUNCE_CHARLIE_ATTACK = "OUCH! Something bit me!",
+    ANNOUNCE_CHARLIE_ATTACK = "OUCH! Who dares?!",
     ANNOUNCE_CHARLIE = "A noise! And a distinctly floral scent?",
     ANNOUNCE_BOOMERANG = "I misjudged the timing of its return.",
     ANNOUNCE_HOUNDS = "Something is approaching.",
@@ -1573,7 +1580,7 @@ return
     ANNOUNCE_ACCOMPLISHMENT_DONE = "File that under completed!",
 
     ANNOUNCE_TRAP_WENT_OFF = "Eek!",
-    ANNOUNCE_QUAKE = "A tremor! Magnitude at least a 7 on the Richter scale.",
+    ANNOUNCE_QUAKE = "A tremor! At least magnitude seven on the Richter scale.",
     ANNOUNCE_NODANGERSLEEP = "I can barely sleep even when I'm not in danger!",
     ANNOUNCE_UNIMPLEMENTED = "Tut tut, I don't think it's quite ready.",
     ANNOUNCE_NOHUNGERSLEEP = "I can barely sleep even when I'm not starving!",

@@ -58,7 +58,7 @@ local function MakeWorldNetwork(name, customprefabs, customassets, custom_postin
         inst:AddComponent("worldtemperature")
         inst:AddComponent("seasons")
         inst:AddComponent("worldreset")
-        inst:AddComponent("voter")
+        inst:AddComponent("worldvoter")
 
         if custom_postinit ~= nil then
             custom_postinit(inst)

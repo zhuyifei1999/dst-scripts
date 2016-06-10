@@ -1,101 +1,82 @@
 local EMOTES =
 {
-    ["/wave"] =             { anim = { "emoteXL_waving1", "emoteXL_waving2" }, randomanim = true, mounted = true },
-    ["/waves"] =            "/wave",
-    ["/hi"] =               "/wave",
+    ["wave"] = {
+            aliases = { "waves", "hi" },
+            data = { anim = { "emoteXL_waving1", "emoteXL_waving2" }, randomanim = true, mounted = true },
+        },
 
-    ["/bye"] =              { anim = { "emoteXL_waving4", "emoteXL_waving3" }, randomanim = true, mounted = true },
-    ["/goaway"] =           "/bye",
-    ["/goodbye"] =          "/bye",
+    ["bye"] = {
+            aliases = { "goaway", "goodbye" },
+            data = { anim = { "emoteXL_waving4", "emoteXL_waving3" }, randomanim = true, mounted = true },
+        },
 
-    ["/cheer"] =            { anim = "emoteXL_happycheer", mounted = true },
-    ["/cheers"] =           "/cheer",
-    ["/happy"] =            "/cheer",
+    ["cheer"] = {
+            aliases = { "cheers", "happy" },
+            data = { anim = "emoteXL_happycheer", mounted = true },
+        },
 
-    ["/angry"] =            { anim = "emoteXL_angry", mounted = true },
-    ["/anger"] =            "/angry",
-    ["/grimace"] =          "/angry",
-    ["/grimaces"] =         "/angry",
-    ["/frustrate"] =        "/angry",
-    ["/frustrated"] =       "/angry",
-    ["/frustration"] =      "/angry",
+    ["angry"] = {
+            aliases = { "anger", "grimace", "grimaces", "frustrate", "frustrated", "frustration" },
+            data = { anim = "emoteXL_angry", mounted = true },
+        },
 
-    ["/cry"] =              { anim = "emoteXL_sad", fx = "tears", fxdelay = 17 * FRAMES, mounted = true },
-    ["/sad"] =              "/cry",
+    ["cry"] = {
+            aliases = { "sad", "cries" },
+            data = { anim = "emoteXL_sad", fx = "tears", fxdelay = 17 * FRAMES, mounted = true },
+        },
 
-    ["/no"] =               { anim = "emoteXL_annoyed", mounted = true },
-    ["/annoyed"] =          "/no",
-    ["/annoy"] =            "/no",
-    ["/shakehead"] =        "/no",
-    ["/shake"] =            "/no",
-    ["/confuse"] =          "/no",
-    ["/confused"] =         "/no",
+    ["no"] = {
+            aliases = { "annoyed", "annoy", "shakehead", "shake", "confuse", "confused" },
+            data = { anim = "emoteXL_annoyed", mounted = true },
+        },
 
-    ["/joy"] =              { anim = "research", fx = false },
-    ["/click"] =            "/joy",
-    ["/heelclick"] =        "/joy",
-    ["/heels"] =            "/joy",
-    ["/celebrate"] =        "/joy",
-    ["/celebration"] =      "/joy",
+    ["joy"] = {
+            aliases = { "click", "heelclick", "heels", "celebrate", "celebration" },
+            data = { anim = "research", fx = false },
+        },
 
-    ["/dance"] =            { anim = { "emoteXL_pre_dance0", "emoteXL_loop_dance0" }, loop = true, fx = false, beaver = true, mounted = true, tags = { "dancing" } },
+    ["dance"] = {
+            data = { anim = { "emoteXL_pre_dance0", "emoteXL_loop_dance0" }, loop = true, fx = false, beaver = true, mounted = true, tags = { "dancing" } },
+        },
 
-    ["/bonesaw"] =          { anim = "emoteXL_bonesaw", mounted = true },
-    ["/ready"] =            "/bonesaw",
-    ["/goingnowhere"] =     "/bonesaw",
-    ["/playtime"] =         "/bonesaw",
-    ["/threeminutes"] =     "/bonesaw",
+    ["bonesaw"] = {
+            aliases = { "ready", "goingnowhere", "playtime", "threeminutes" },
+            data = { anim = "emoteXL_bonesaw", mounted = true },
+        },
 
-    ["/facepalm"] =         { anim = "emoteXL_facepalm", mounted = true },
-    ["/doh"] =              "/facepalm",
-    ["/slapintheface"] =    "/facepalm",
+    ["facepalm"] = {
+            aliases = { "doh", "slapintheface" },
+            data = { anim = "emoteXL_facepalm", mounted = true },
+        },
 
-    ["/kiss"] =             { anim = "emoteXL_kiss", mounted = true },
-    ["/blowkiss"] =         "/kiss",
-    ["/smooch"] =           "/kiss",
-    ["/mwa"] =              "/kiss",
-    ["/mwah"] =             "/kiss",
+    ["kiss"] = {
+            aliases = { "blowkiss", "smooch", "mwa", "mwah" },
+            data = { anim = "emoteXL_kiss", mounted = true },
+        },
 
-    ["/pose"] =             { anim = "emote_strikepose", zoom = true, soundoverride = "/pose", mounted = true },
-    ["/strut"] =            "/pose",
-    ["/strikepose"] =       "/pose",
+    ["pose"] = {
+            aliases = { "strut", "strikepose" },
+            data = { anim = "emote_strikepose", zoom = true, soundoverride = "pose", mounted = true },
+        },
 }
 
 for k, v in pairs(EMOTES) do
-    if type(v) == "string" then
-        EMOTES[k] = EMOTES[v]
-    end
-end
-
-local REGEX_EMOTES =
-{
-    ["/bonesaw"] =          "/b+o+n+e+s+a+w+",
-    ["/ready"] =            "/r+e+a+d+y+",
-    ["/goingnowhere"] =     "/g+o+i+n+g+n+o+w+h+e+r+e+",
-    ["/playtime"] =         "/p+l+a+y+t+i+m+e+",
-    ["/threeminutes"] =     "/t+h+r+e+e+m+i+n+u+t+e+s+",
-    ["/mwa"] =              "/m+w+a+",
-    ["/mwah"] =             "/m+w+a+h+",
-}
-
-local function translate_regex(str)
-    for k, v in pairs(REGEX_EMOTES) do
-        if string.match(str, v) then
-            return k, EMOTES[k]
+    AddUserCommand(k, {
+        aliases = v.aliases,
+        prettyname = string.format("'%s' emote", k),
+        desc = "Perform an emote!",
+        permission = COMMAND_PERMISSION.USER,
+        params = {},
+        slash = true,
+        usermenu = false,
+        servermenu = false,
+        vote = false,
+        serverfn = function(params, caller)
+            local player = UserToPlayer(caller.userid)
+            if player ~= nil then
+                player:PushEvent("emote", v.data)
+            end
         end
-    end
+    })
 end
 
-local function translate(str)
-    str = string.lower(str)
-    local emote = EMOTES[str]
-    if emote ~= nil then
-        return str, emote
-    else
-        return translate_regex(str)
-    end
-end
-
-return {
-    translate = translate,
-}

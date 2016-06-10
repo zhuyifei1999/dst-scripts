@@ -5,7 +5,7 @@ local ImageButton = require "widgets/imagebutton"
 local Text = require "widgets/text"
 local ConnectingToGamePopup = require "screens/connectingtogamepopup"
 
-local emotes = require("emotes")
+local UserCommands = require('usercommands')
 
 FirstStartupForNetworking = false
 
@@ -23,14 +23,7 @@ end
 function Networking_SlashCmd(guid, cmd)
     local entity = Ents[guid]
     if entity ~= nil then
-        if string.sub(cmd, 2, 7) == "rescue" then
-            entity:PutBackOnGround()
-        else
-            local cmd, params = emotes.translate(cmd)
-            if params ~= nil then
-                entity:PushEvent("emote", params)
-            end
-        end
+        UserCommands.RunTextUserCommand(cmd, entity, true)
     end
 end
 
@@ -41,7 +34,7 @@ function Networking_Announcement(message, colour, announce_type)
 end
 
 function Networking_ModOutOfDateAnnouncement(mod)
-    Networking_Announcement(string.format(STRINGS.MODS.VERSIONING.OUT_OF_DATE, mod))
+    Networking_Announcement(string.format(STRINGS.MODS.VERSIONING.OUT_OF_DATE, mod), nil, "mod")
 end
 
 function Networking_DeathAnnouncement(message, colour)
@@ -71,6 +64,18 @@ end
 
 function Networking_BanAnnouncement(name, colour)
     Networking_Announcement(string.format(STRINGS.UI.NOTIFICATION.BANNEDFROMGAME, Networking_Announcement_GetDisplayName(name)), colour, "banned_from_game")
+end
+
+function Networking_VoteAnnouncement(commandid, targetname, passed)
+    local command = UserCommands.GetCommandFromHash(commandid)
+    if command ~= nil and command.vote then
+        local votename = string.format(command.votenamefmt or STRINGS.UI.NOTIFICATION.DEFAULTVOTENAMEFMT, targetname:len() > 0 and Networking_Announcement_GetDisplayName(targetname) or "")
+        local msgfmt = passed and
+            (command.votepassedfmt or STRINGS.UI.NOTIFICATION.DEFAULTVOTEPASSEDFMT) or
+            (command.votefailedfmt or STRINGS.UI.NOTIFICATION.DEFAULTVOTEFAILEDFMT)
+        Networking_Announcement(string.format(msgfmt, votename), nil, "vote")
+        return command.name
+    end
 end
 
 function Networking_SkinAnnouncement(user_name, user_colour, skin_name)
@@ -515,6 +520,11 @@ function MigrateToServer(serverIp, serverPort, serverPassword, serverNetId)
     end
 
     if InGamePlay() then
+        if ThePlayer ~= nil and TheWorld ~= nil and not TheWorld.ismastersim then
+            --Got here before player deactivation, so
+            --we will need to save local minimap now.
+            SerializeUserSession(ThePlayer)
+        end
         do_join_server()
     else
         DoLoadingPortal(do_join_server)

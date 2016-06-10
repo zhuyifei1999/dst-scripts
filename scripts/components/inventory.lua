@@ -1,6 +1,8 @@
+local EquipSlot = require("equipslotutil")
+
 local function OnDeath(inst)
     if inst.components.inventory ~= nil then
-		inst.components.inventory:DropEverything(true)
+        inst.components.inventory:DropEverything(true)
     end
 end
 
@@ -189,6 +191,30 @@ function Inventory:DropActiveItem()
     if self.activeitem ~= nil then
         self:DropItem(self.activeitem)
         self:SetActiveItem(nil)
+    end
+end
+
+function Inventory:ReturnActiveActionItem(item)
+    if item ~= nil and item == self.activeitem and self.inst.bufferedaction ~= nil then
+        --Hacks for altering normal inventory:GiveItem() behaviour
+        self.ignorefull = true
+        self.ignoreoverflow = true
+
+        if self:GiveItem(item) then
+            self:SetActiveItem(nil)
+
+            --Super hacks...
+            if item == self.inst.bufferedaction.invobject then
+                self.inst.bufferedaction.doerownsobject = item.components.inventoryitem:IsHeldBy(self.inst)
+            end
+            if item == self.inst.bufferedaction.target then
+                self.inst.bufferedaction.initialtargetowner = item.components.inventoryitem.owner
+            end
+        end
+
+        --Hacks for altering normal inventory:GiveItem() behaviour
+        self.ignorefull = false
+        self.ignoreoverflow = false
     end
 end
 
@@ -1514,6 +1540,10 @@ function Inventory:TakeActiveItemFromEquipSlot(eslot)
 
         self:SelectActiveItemFromEquipSlot(eslot)
     end
+end
+
+function Inventory:TakeActiveItemFromEquipSlotID(eslotid)
+    self:TakeActiveItemFromEquipSlot(EquipSlot.FromID(eslotid))
 end
 
 function Inventory:MoveItemFromAllOfSlot(slot, container)

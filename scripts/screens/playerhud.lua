@@ -136,11 +136,7 @@ end
 function PlayerHud:OnGainFocus()
     Screen.OnGainFocus(self)
     local controller = TheInput:ControllerAttached()
-    if controller then
-        TheInput:EnableMouse(false)
-    else
-        TheInput:EnableMouse(true)
-    end
+    TheInput:EnableMouse(not controller)
 
     if self.controls ~= nil then
         self.controls:SetHUDSize()
@@ -165,17 +161,20 @@ function PlayerHud:OnGainFocus()
 end
 
 function PlayerHud:Toggle()
-    self.shown = not self.shown
     if self.shown then
-        self.root:Show()
+        self:Hide()
     else
-        self.root:Hide()
+        self:Show()
     end
 end
 
 function PlayerHud:Hide()
     self.shown = false
     self.root:Hide()
+
+    --Normally, HUD hides are tied to gameplay logic, but we need to
+    --manually force close some locally controlled FE popup screens.
+    self.controls.votedialog:CloseControllerVoteScreen()
 end
 
 function PlayerHud:Show()
@@ -414,7 +413,7 @@ function PlayerHud:SetMainCharacter(maincharacter)
 end
 
 function PlayerHud:OnUpdate(dt)
-    if Profile and self.vig then
+    if Profile ~= nil and self.vig ~= nil then
         if RENDER_QUALITY.LOW == Profile:GetRenderQuality() or TheConfig:IsEnabled("hide_vignette") then
             self.vig:Hide()
         else
@@ -422,7 +421,8 @@ function PlayerHud:OnUpdate(dt)
         end
     end
 
-    if CHEATS_ENABLED and self.owner and self.controls then -- Just an indicator so we can tell if we're in godmode or not
+    if CHEATS_ENABLED and self.owner ~= nil and self.controls ~= nil then
+        -- Just an indicator so we can tell if we're in godmode or not
         if self.owner:HasTag("invincible") then
             if self.controls.godmodeindicator == nil then
                 self.controls.godmodeindicator = self.controls.inv:AddChild(UIAnim())
@@ -435,10 +435,9 @@ function PlayerHud:OnUpdate(dt)
                 self.controls.godmodeindicator:GetAnimState():PlayAnimation("idle_happy")
                 self.controls.godmodeindicator:GetAnimState():PushAnimation("idle_loop")
             end
-        elseif self.controls.godmodeindicator then
+        elseif self.controls.godmodeindicator ~= nil then
             self.controls.godmodeindicator:GetAnimState():PlayAnimation("death")
-            local indicator = self.controls.godmodeindicator
-            self.inst:DoTaskInTime(2, function() indicator:Kill() end)
+            self.controls.godmodeindicator.inst:DoTaskInTime(2, function(inst) inst.widget:Kill() end)
             self.controls.godmodeindicator = nil
         end
     end
@@ -465,7 +464,9 @@ function PlayerHud:OpenControllerInventory()
 end
 
 function PlayerHud:CloseControllerInventory()
-    TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/craft_close")
+    if self:IsControllerInventoryOpen() then
+        TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/craft_close")
+    end
     self.controls:HideStatusNumbers()
     self:ShowControllerCrafting()
     self.controls.inv:CloseControllerInventory()
@@ -512,6 +513,14 @@ end
 
 function PlayerHud:IsCraftingOpen()
     return self.controls ~= nil and self.controls.crafttabs:IsCraftingOpen()
+end
+
+function PlayerHud:IsControllerVoteOpen()
+    return self.controls ~= nil and self.controls.votedialog:IsControllerVoteOpen()
+end
+
+function PlayerHud:IsVoteOpen()
+    return self.controls ~= nil and self.controls.votedialog:IsOpen()
 end
 
 function PlayerHud:IsPauseScreenOpen()
@@ -564,7 +573,9 @@ function PlayerHud:OpenControllerCrafting()
 end
 
 function PlayerHud:CloseControllerCrafting()
-    TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/craft_close")
+    if self:IsControllerCraftingOpen() then
+        TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/craft_close")
+    end
     self.controls.crafttabs:CloseControllerCrafting()
     self.controls.inv:Enable()
     self.controls.item_notification:ToggleController(false)
@@ -605,6 +616,8 @@ function PlayerHud:OnControl(control, down)
                 self.owner.components.playercontroller:IsEnabled() then
                 self:TogglePlayerAvatarPopup()
                 return true
+            elseif self.controls.votedialog:CheckControl(control, down) then
+                return true
             elseif self.owner.components.playercontroller:GetControllerTarget() == nil
                 and self:InspectSelf() then
                 return true
@@ -615,10 +628,6 @@ function PlayerHud:OnControl(control, down)
     elseif control == CONTROL_PAUSE then
         TheFrontEnd:PushScreen(PauseScreen())
         return true
-    end
-
-    if self.owner == nil then
-        return
     end
 
     --V2C: This kinda hax? Cuz we don't rly want to set focus to it I guess?

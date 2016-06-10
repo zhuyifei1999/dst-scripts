@@ -513,8 +513,8 @@ function c_findnext(prefab, radius, inst)
     return found
 end
 
-function c_godmode()
-    local player = ConsoleCommandPlayer()
+function c_godmode(target)
+    local player = target or ConsoleCommandPlayer()
     if player ~= nil then
         SuUsed("c_godmode", true)
         if player:HasTag("playerghost") then
@@ -529,8 +529,8 @@ function c_godmode()
     end
 end
 
-function c_supergodmode()
-    local player = ConsoleCommandPlayer()
+function c_supergodmode(target)
+    local player = target or ConsoleCommandPlayer()
     if player ~= nil then
         SuUsed("c_supergodmode", true)
         if player:HasTag("playerghost") then
@@ -739,10 +739,6 @@ function c_skip(num)
     LongUpdate(TUNING.TOTAL_DAY_TIME * num)
 end
 
-function c_togglevotekick()
-	TheWorld.net.components.voter:ToggleVoteKick()
-end
-
 function c_groundtype()
     local index, table = ConsoleCommandPlayer():GetCurrentTileType()
     print("Ground type is ", index)
@@ -926,8 +922,10 @@ function c_migrationportal(worldId, portalId)
     end
 end
 
-function c_goadventuring()
-    ConsoleCommandPlayer().components.inventory:Equip( c_spawn("backpack", nil, true) )
+function c_goadventuring(target)
+    local player = target or ConsoleCommandPlayer()
+    c_select(player)
+    player.components.inventory:Equip( c_spawn("backpack", nil, true) )
     c_give("lantern", nil, true)
     c_give("minerhat", nil, true)
     c_give("axe", nil, true)
@@ -1021,4 +1019,16 @@ function c_repeatlastcommand()
         end
         ExecuteConsoleCommand(history[#history])
     end
+end
+
+function c_startvote(commandname, playeroruserid)
+    local userid = playeroruserid
+    if type(userid) == "table" then
+        userid = userid.userid
+    end
+    TheNet:StartVote(smallhash(commandname), userid)
+end
+
+function c_stopvote()
+    TheNet:StopVote()
 end

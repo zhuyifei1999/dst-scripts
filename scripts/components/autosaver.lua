@@ -102,8 +102,7 @@ end or nil
 
 local function OnSave(src, mintime, snapshot)
     if _restarting or
-        (mintime ~= nil and GetTime() - _starttime <= mintime) or
-        (PLATFORM == "PS4" and ThePlayer ~= nil and not ThePlayer.profile:GetAutosaveEnabled()) then
+        (mintime ~= nil and GetTime() - _starttime <= mintime) then
         return
     elseif _ismastersim then
         _issaving:set(true)

@@ -321,6 +321,9 @@ function self:OnUpdate(dt)
 
     local sanity = player ~= nil and player.replica.sanity or nil
     local sanityparam = sanity ~= nil and (1 - sanity:GetPercent()) or 0
+    if player ~= nil and player:HasTag("dappereffects") then
+        sanityparam = sanityparam * sanityparam
+    end
     if _sanityparam ~= sanityparam then
         inst.SoundEmitter:SetParameter("SANITY", "sanity", sanityparam)
         _sanityparam = sanityparam

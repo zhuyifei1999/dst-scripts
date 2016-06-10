@@ -396,7 +396,7 @@ function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOu
             cluster_info.settings.NETWORK.cluster_password       = serverdata.password
             cluster_info.settings.NETWORK.cluster_description    = serverdata.description
             cluster_info.settings.NETWORK.lan_only_cluster       = tostring(serverdata.privacy_type == PRIVACY_TYPE.LOCAL)
-            cluster_info.settings.NETWORK.server_intention       = serverdata.intention
+            cluster_info.settings.NETWORK.cluster_intention      = serverdata.intention
             cluster_info.settings.NETWORK.offline_cluster        = tostring(not serverdata.online_mode)
 
             cluster_info.settings.GAMEPLAY                       = {}

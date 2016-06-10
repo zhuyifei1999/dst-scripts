@@ -17,6 +17,8 @@ local ImageButton = Class(Button, function(self, atlas, normal, focus, disabled,
     self.focus_scale = {1.2, 1.2, 1.2}
     self.normal_scale = {1, 1, 1}
 
+    self.focus_sound = nil
+
     -- self.image:SetTexture(self.atlas, self.image_normal)
 end)
 
@@ -94,6 +96,9 @@ function ImageButton:OnGainFocus()
         end
     end
 
+    if self.focus_sound then
+        TheFrontEnd:GetSound():PlaySound(self.focus_sound)
+    end
 end
 
 function ImageButton:OnLoseFocus()
@@ -283,6 +288,10 @@ function ImageButton:SetImageSelectedColour(r,g,b,a)
     if self.selected then
         self.image:SetTint(self.imageselectedcolour[1], self.imageselectedcolour[2], self.imageselectedcolour[3], self.imageselectedcolour[4])
     end
+end
+
+function ImageButton:SetFocusSound(sound)
+    self.focus_sound = sound
 end
 
 return ImageButton

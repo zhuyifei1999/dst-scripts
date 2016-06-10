@@ -14,12 +14,12 @@ return {
 		STORE =
 		{
 			GENERIC = "It is already brimming with goods.",
-			NOTALLOWED = "That's not a good spot for this.",
+			NOTALLOWED = "I fear that does not go there.",
 			INUSE = "My stalwart companion currently has use of that.",
 		},
 		RUMMAGE =
         {   
-            GENERIC = "If I can't do it, it can't be done!",
+            GENERIC = "That is not a job for a warrior!",
             INUSE = "True warriors wait their turn.",   
         },
 		COOK =
@@ -37,6 +37,11 @@ return {
         {
             TARGETINCOMBAT = "I'll only ride it if it's the victor.",
         },
+        WRITE =
+        {
+            GENERIC = "I fear I cannot!",
+            INUSE = "I shall valiantly wait my turn.",
+        },
         GIVE =
         {
             DEAD = "They'll have better things in Valhalla.",
@@ -44,11 +49,6 @@ return {
             BUSY = "I'll try once more when it's done.",
             ABIGAILHEART = "The girl's spirit cannot be returned.",
             GHOSTHEART = "The spirit cannot be returned.",
-        },
-        WRITE =
-        {
-            GENERIC = "I fear I cannot!",
-            INUSE = "I shall valiantly wait my turn.",
         },
         GIVETOPLAYER = 
         {
@@ -80,8 +80,8 @@ return {
             CANTLEARN = "That knowledge is forbidden by the gods.",
         },
 	},
-	ANNOUNCE_MOUNT_LOWHEALTH = "Don't give up, beast! Fight!",
 	ACTIONFAIL_GENERIC = "If I can't do it, it can't be done!",
+	ANNOUNCE_MOUNT_LOWHEALTH = "Don't give up, beast! Fight!",
 	ANNOUNCE_BURNT = "By Hel's fire!",
 	ANNOUNCE_NODANGERAFK = "Only a coward would leave now!",
 	ANNOUNCE_NODANGERGIFT = "Not with the gift of battle before me!",
@@ -173,6 +173,7 @@ return {
 		SPIDER = "Leggy coward.",
 		SPIDER_WARRIOR = "Flee, monster! I will return.",
 	},
+	
     DESCRIBE =
     {
         PLAYER =
@@ -1298,6 +1299,7 @@ return {
         SADDLE_WAR = "I ride to victory or death!",
         SADDLE_RACE = "Oh to fly on the wings of Valkyrie!",
         SADDLEHORN = "Mighty steeds can be unsaddled with this.",
+        SALTLICK = "Minerals, not meat.",
         BRUSH = "Time for hair and makeup!",
 		SANITYROCK =
 		{

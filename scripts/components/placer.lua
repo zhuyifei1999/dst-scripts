@@ -32,7 +32,7 @@ function Placer:OnUpdate(dt)
     if ThePlayer == nil then
         return
     elseif not TheInput:ControllerAttached() then
-        local pt = self.selected_pos or Input:GetWorldPosition()
+        local pt = self.selected_pos or TheInput:GetWorldPosition()
         if self.snap_to_tile then
             self.inst.Transform:SetPosition(TheWorld.Map:GetTileCenterPoint(pt:Get()))
         elseif self.snap_to_meters then

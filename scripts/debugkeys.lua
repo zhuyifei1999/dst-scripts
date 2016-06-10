@@ -160,7 +160,7 @@ end)
 
 AddGameDebugKey(KEY_I, function()
 	if TheInput:IsKeyDown(KEY_CTRL) and TheInput:IsKeyDown(KEY_SHIFT) then
-		TheInventory:Debug_DropAllGifts()
+		TheInventory:Debug_LocalGift()
 		return true
     elseif TheInput:IsKeyDown(KEY_CTRL) then
         TheInventory:Debug_ForceHeartbeatGift("")
@@ -679,6 +679,15 @@ AddGameDebugKey(KEY_G, function()
         c_godmode()
     end
     return true
+end)
+
+AddGameDebugKey(KEY_D, function()
+    if TheInput:IsKeyDown(KEY_CTRL) then
+        local MouseCharacter = TheInput:GetWorldEntityUnderMouse()
+        if MouseCharacter then
+            MouseCharacter.components.diseaseable:ForceDiseased(1*TUNING.TOTAL_DAY_TIME, 1*TUNING.TOTAL_DAY_TIME)
+        end
+    end
 end)
 
 AddGameDebugKey(KEY_P, function()

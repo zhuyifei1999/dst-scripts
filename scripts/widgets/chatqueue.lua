@@ -110,6 +110,25 @@ function ChatQueue:GetDisplayName(name, prefab)
     return name ~= "" and name or STRINGS.UI.SERVERADMINSCREEN.UNKNOWN_USER_NAME
 end
 
+function ChatQueue:DisplaySystemMessage(message)
+    if type(message) == "string" then
+        message = {message}
+    end
+
+    for i,line in ipairs(message) do
+        -- HACK HACK HACK! Since the chat window is single-line only, we break this into multiple lines... by using
+        -- an invisible text box that wraps the text for us!
+        local textbox = require("widgets/text")(self.chat_font, self.chat_size)
+        textbox:SetMultilineTruncatedString(line, 100, self.message_width, self.message_max_chars, false)
+        local splitlines = string.split(textbox:GetString(), "\n")
+        textbox:Kill()
+
+        for i,splitline in ipairs(splitlines) do
+            self:OnMessageReceived(nil, STRINGS.UI.CHATINPUTSCREEN.SYSTEMNAME, nil, splitline, {1,1,1,1}, false)
+        end
+    end
+end
+
 function ChatQueue:OnMessageReceived(userid, name, prefab, message, colour, whisper)
     -- Process Chat username
     local username = self:GetDisplayName(name, prefab)

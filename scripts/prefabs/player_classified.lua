@@ -161,7 +161,7 @@ local function OnEntityReplicated(inst)
                 inst._parent.replica[v]:AttachClassified(inst)
             end
         end
-        for i, v in ipairs({ "playercontroller" }) do
+        for i, v in ipairs({ "playercontroller", "playervoter" }) do
             if inst._parent.components[v] ~= nil then
                 inst._parent.components[v]:AttachClassified(inst)
             end
@@ -795,6 +795,10 @@ local function fn()
     inst.pausepredictionframes = net_tinybyte(inst.GUID, "playercontroller.pausepredictionframes", "pausepredictionframesdirty")
     inst.iscontrollerenabled = net_bool(inst.GUID, "playercontroller.enabled")
     inst.iscontrollerenabled:set(true)
+
+    --PlayerVoter variables
+    inst.voteselection = net_tinybyte(inst.GUID, "playervoter.selection", "voteselectiondirty")
+    inst.votesquelched = net_bool(inst.GUID, "playervoter.issquelched")
 
     --Player HUD variables
     inst.ishudvisible = net_bool(inst.GUID, "playerhud.isvisible", "playerhuddirty")

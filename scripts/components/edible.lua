@@ -84,9 +84,9 @@ function Edible:GetHunger(eater)
 
     if not ignore_spoilage and self.inst.components.perishable ~= nil then
         if self.inst.components.perishable:IsStale() then
-            multiplier = self.stale_hunger
+            multiplier = eater ~= nil and eater.components.eater ~= nil and eater.components.eater.stale_hunger or self.stale_hunger
         elseif self.inst.components.perishable:IsSpoiled() then
-            multiplier = self.spoiled_hunger
+            multiplier = eater ~= nil and eater.components.eater ~= nil and eater.components.eater.spoiled_hunger or self.spoiled_hunger
         end
     end
 
@@ -101,9 +101,9 @@ function Edible:GetHealth(eater)
 
     if not ignore_spoilage and self.inst.components.perishable ~= nil then
         if self.inst.components.perishable:IsStale() then
-            multiplier = self.stale_health
+            multiplier = eater ~= nil and eater.components.eater ~= nil and eater.components.eater.stale_health or self.stale_health
         elseif self.inst.components.perishable:IsSpoiled() then
-            multiplier = self.spoiled_health
+            multiplier = eater ~= nil and eater.components.eater ~= nil and eater.components.eater.spoiled_health or self.spoiled_health
         end
     end
     return multiplier * healthvalue

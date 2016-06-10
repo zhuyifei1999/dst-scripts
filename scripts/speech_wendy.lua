@@ -24,12 +24,12 @@ return {
 		STORE =
 		{
 			GENERIC = "It wouldn't fit.",
-			NOTALLOWED = "That can't go in there.",
-			INUSE = "I can come back later...",
+			NOTALLOWED = "I must mind my manners.",
+			INUSE = "Can I use that after you?",
 		},
 		RUMMAGE =
         {   
-            GENERIC = "I can't do anything right.",
+            GENERIC = "Must everything in life be hard?",
             INUSE = "I can come back later...",   
         },
         CHANGEIN =
@@ -40,8 +40,8 @@ return {
         },
 		COOK =
         {
-            GENERIC = "I can't do anything right.",
-            INUSE = "I can come back later...",
+            GENERIC = "Oh. No one ever taught me to cook.",
+            INUSE = "What are you making...? Smells good...",
             TOOFAR = "It's so... far away...",
         },
 		SADDLE =
@@ -55,7 +55,7 @@ return {
         GIVE =
         {
             DEAD = "They've no need of material possessions where they've gone.",
-            SLEEPING = "I'll come back later...",
+            SLEEPING = "Another time. It's enjoying a temporary death right now...",
             BUSY = "It's too busy to pay attention to me...",
             ABIGAILHEART = "Why isn't it working, Abigail?",
             GHOSTHEART = "Some things should stay dead.",
@@ -80,8 +80,9 @@ return {
             CANTLEARN = "That knowledge is beyond me...",
         },
 	},
-	ANNOUNCE_MOUNT_LOWHEALTH = "This beast... is not long for this world.",
 	ACTIONFAIL_GENERIC = "I can't do anything right.",
+
+	ANNOUNCE_MOUNT_LOWHEALTH = "This beast... is not long for this world.",
 	ANNOUNCE_ADVENTUREFAIL = "Not all deaths are alike.",
 	ANNOUNCE_BOOMERANG = "Ow! That was karma.",
 	ANNOUNCE_CHARLIE = "Demon! Show yourself!",
@@ -139,7 +140,7 @@ return {
 	ANNOUNCE_FREEDOM = "Freedom. Great.",
 	ANNOUNCE_HIGHRESEARCH = "I have seen the void and it is deep and dark.",
 	ANNOUNCE_LOWRESEARCH = "Pithy knowledge...",
-	ANNOUNCE_MOSQUITOS = "Mosquitoes! Suck all my blood out!",
+	ANNOUNCE_MOSQUITOS = "Mosquitoes! Let my veins be a feast!",
 	ANNOUNCE_NODANGERSLEEP = "I can't sleep, there's death to be had.",
 	ANNOUNCE_NODAYSLEEP = "The sun upsets me. I couldn't possibly sleep.",
 	ANNOUNCE_NODAYSLEEP_CAVE = "I'm not tired yet.",
@@ -834,7 +835,7 @@ return {
 			FOLLOWER = "He follows me unto his doom.",
 			GENERIC = "What demented thoughts must lie behind those eyes.",
 			NAKED = "His nakedness is now on display.",
-			SLEEPING = "What nightmares he must be having.",
+			SLEEPING = "To sleep, perchance to dream.",
             --Domesticated states:
             DOMESTICATED = "I wonder if it misses its old family?",
             ORNERY = "The world has wronged you.",
@@ -935,7 +936,6 @@ return {
 			GENERIC = "It's looking into my soul.",
 			WAITING = "Not so much sleeping as... waiting.",
 		},
-		COOKEDMANDRAKE = "It was a good death. You will be delicious.",
 		COOKEDMEAT = "The remaining blood has been cooked away.",
 		COOKEDMONSTERMEAT = "Cooked evil is still evil.",
 		COOKEDSMALLMEAT = "Fire has purified it.",
@@ -1163,15 +1163,17 @@ return {
 			GENERIC = "If trees could talk, they would scream at the sight of this.",
 		},
 		LUREPLANT = "It consumes all.",
-		MANDRAKE_COOKED = "Now it's just food.",
 		PIGTENT = "The place where they wrap pigs in blankets.",
 		LUREPLANTBULB = "Life goes on.",
 		MALE_PUPPET = "I wonder what he did.",
+
+		MANDRAKE = "Alas, poor mandrake!",
+		MANDRAKESOUP = "Boiled the life out of him.",
         MANDRAKE_ACTIVE = "Onward, vegetable minion!",
         MANDRAKE_PLANTED = "The mighty mandrake. It's best picked at night.",
-        MANDRAKE = "Alas, poor mandrake!",
+        MANDRAKE_COOKED = "Now it's just food.",
+        COOKEDMANDRAKE = "It was a good death. You will be delicious.",
 
-		MANDRAKESOUP = "Boiled the life out of him.",
 		MARBLE = "Smooth and lifeless.",
 		MARBLEPILLAR = "Even stone can not withstand the constant pull of decay.",
 		MARBLETREE = "There is no beat of life within this cold tree.",
@@ -1179,7 +1181,7 @@ return {
 		{
 			BURNING = "Even thorns burn.",
 			GENERIC = "A bush that always hurts.",
-			PICKED = "It hurt me to do that.",
+			PICKED = "Life is pain. Now it has no life.",
 		},
 		MARSH_PLANT = "It's a plant.",
 		MARSH_TREE =
@@ -1223,7 +1225,7 @@ return {
 		PENGUIN = "All dressed up, but where to go?",
 		PERD = "Dumb bird! Stay away from the berries!",
 		PEROGIES = "A lovely little pouch of nutrients.",
-		PETALS = "Its joy and happiness were so disparaging...",
+		PETALS = "Its joy was so disparaging...",
 		PETALS_EVIL = "They are painted with the colors of my soul.",
 		PETRIFIED_TREE = "Now it will never die...",
 		ROCK_PETRIFIED_TREE = "Now it will never die...",
@@ -1331,7 +1333,9 @@ return {
         SADDLE_BASIC = "As if it wasn't already burdened by the yoke of life...",
         SADDLE_WAR = "Oh, how we bend creatures to our ill intent.",
         SADDLEHORN = "I'm only taking back what's mine.",
+        SALTLICK = "The beasts crave it...",
         BRUSH = "Oh, to rid the world of fluff.",
+
 		SANITYROCK =
 		{
 			ACTIVE = "It's calling to me.",
@@ -1347,7 +1351,7 @@ return {
 		},
 		SEEDS = "Life, or at least the promise of it.",
 		SEEDS_COOKED = "The fire has toasted their life away.",
-		SEWING_KIT = "Another implement for putting off the inevitable decay.",
+		SEWING_KIT = "Another implement for staving off the inevitable decay.",
 		SHOVEL = "What terrible secrets might be uncovered with this?",
 		SILK = "So slippery and fine.",
 		SKELETON = "I envy your escape.",

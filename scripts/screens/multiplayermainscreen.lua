@@ -33,6 +33,9 @@ local OnlineStatus = require "widgets/onlinestatus"
 
 local ThankYouPopup = require "screens/thankyoupopup"
 
+local Stats = require("stats")
+
+
 
 local rcol = RESOLUTION_X/2 -170
 local lcol = -RESOLUTION_X/2 +200
@@ -923,6 +926,14 @@ function MultiplayerMainScreen:OnGetMOTDImageQueryComplete( is_successful )
 	end	
 end
 
+local function push_motd_event( _event, _url, _image_version )
+	local event = {}
+	event.event = _event
+	event.values = {}
+	event.values.url = _url .. "#" .. tostring(_image_version)
+	Stats.PushMetricsEvent(event)
+end
+
 function MultiplayerMainScreen:SetMOTD(str, cache)
 	--print("MultiplayerMainScreen:SetMOTD", str, cache)
 
@@ -955,7 +966,10 @@ function MultiplayerMainScreen:SetMOTD(str, cache)
 			    if platform_motd.link_title and string.len(platform_motd.link_title) > 0 and
 				    	platform_motd.link_url and string.len(platform_motd.link_url) > 0 then
 				    self.motd.button:SetText(platform_motd.link_title)
-				    self.motd.button:SetOnClick( function() VisitURL(platform_motd.link_url) end )
+				    self.motd.button:SetOnClick( function()
+				    	push_motd_event( "motd.clicked", platform_motd.link_url, platform_motd.image_version or 0 )
+						VisitURL(platform_motd.link_url)
+					end )
 				else
 					self.motd.button:Hide()
 				end
@@ -973,7 +987,10 @@ function MultiplayerMainScreen:SetMOTD(str, cache)
 				if platform_motd.link_title and string.len(platform_motd.link_title) > 0 and
 				    	platform_motd.link_url and string.len(platform_motd.link_url) > 0 then
 				    self.motd.button:SetText(platform_motd.link_title)
-				    self.motd.button:SetOnClick( function() VisitURL(platform_motd.link_url) end )
+				    self.motd.button:SetOnClick( function()
+				    	push_motd_event( "motd.clicked", platform_motd.link_url, platform_motd.image_version or 0 )
+						VisitURL(platform_motd.link_url)
+					end )
 				else
 					self.motd.button:Hide()
 				end
@@ -982,6 +999,11 @@ function MultiplayerMainScreen:SetMOTD(str, cache)
 		    else
 				self.motd:Hide()
 		    end
+		    
+		    
+			if cache then --the one we cache is the latest we downloaded
+				push_motd_event( "motd.seen", platform_motd.link_url, platform_motd.image_version or 0 )
+			end
 	    else
 			self.motd:Hide()
 		end
@@ -1053,7 +1075,7 @@ function MultiplayerMainScreen:OnCountdownQueryComplete( result, isSuccessful, r
 end
 
 function MultiplayerMainScreen:OnCachedCountdownLoad(load_success, str)
-	--print("MultiplayerMainScreen:OnCachedMOTDLoad", load_success, str)
+	--print("MultiplayerMainScreen:OnCachedCountdownLoad", load_success, str)
 	if load_success and string.len(str) > 1 then
 		self:SetCountdown(str, false)
 	end

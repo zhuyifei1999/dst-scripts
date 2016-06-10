@@ -80,3 +80,30 @@ function Shard_WorldSave()
         TheWorld:PushEvent("ms_save")
     end
 end
+
+--------------------------------------------------------------------------
+
+function Shard_StartVote(command_id, starter_id, target_id)
+    if TheWorld ~= nil and TheWorld.ismastershard then
+        TheWorld:PushEvent("ms_startvote", {
+            commandhash = command_id,
+            starteruserid = starter_id,
+            targetuserid = target_id,
+        })
+    end
+end
+
+function Shard_StopVote()
+    if TheWorld ~= nil and TheWorld.ismastershard then
+        TheWorld:PushEvent("ms_stopvote")
+    end
+end
+
+function Shard_ReceiveVote(selection, user_id)
+    if TheWorld ~= nil and TheWorld.ismastershard then
+        TheWorld:PushEvent("ms_receivevote", {
+            selection = selection,
+            userid = user_id,
+        })
+    end
+end

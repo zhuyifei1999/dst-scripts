@@ -199,19 +199,3 @@ function d_cycle_clothing()
         end)
 
 end
-
--- NOTE: only works on the host
-function d_giftpopup()
-    local GiftItemPopUp = require "screens/giftitempopup"
-    TheFrontEnd:PushScreen(GiftItemPopUp(ThePlayer, { "hand_shortgloves_white_smoke" }, { 101010 }))
-end
-
-function d_avatarscreen()
-    if ThePlayer ~= nil and ThePlayer.HUD ~= nil then
-        local client_table = TheNet:GetClientTableForUser(ConsoleCommandPlayer().userid)
-        if client_table ~= nil then
-            --client_table.inst = ConsoleCommandPlayer() --don't track
-            ThePlayer.HUD:TogglePlayerAvatarPopup(client_table.name, client_table, true)
-        end
-    end
-end

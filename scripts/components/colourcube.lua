@@ -173,9 +173,12 @@ local function OnOverridePhaseEvent(inst)
 end
 
 local function OnSanityDelta(player, data)
-    local distortion = easing.outQuad(data.newpercent, 0, 1, 1)
-    PostProcessor:SetColourCubeLerp(1, 1 - distortion)
-    PostProcessor:SetDistortionFactor(distortion)
+    local distortion = 1 - easing.outQuad(data.newpercent, 0, 1, 1)
+    if player ~= nil and player:HasTag("dappereffects") then
+        distortion = distortion * distortion
+    end
+    PostProcessor:SetColourCubeLerp(1, distortion)
+    PostProcessor:SetDistortionFactor(1 - distortion)
     _fxspeed = easing.outQuad(1 - data.newpercent, 0, .2, 1)
 end
 

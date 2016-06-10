@@ -6,8 +6,12 @@ local TextEdit = Class(Text, function(self, font, size, text, colour)
 
     self.inst.entity:AddTextEditWidget()
     self:SetString(text)
+    self.limit = nil
+    self.regionlimit = false
     self.editing = false
     self.editing_enter_down = false --track enter key while editing: ignore enter key up if key down wasn't recorded while editing
+    self.allow_newline = false
+    self.enable_accept_control = true
     self:SetEditing(false)
     self.validrawkeys = {}
     self.force_edit = false
@@ -43,6 +47,15 @@ function TextEdit:SetString(str)
     if self.inst and self.inst.TextEditWidget then
         self.inst.TextEditWidget:SetString(str or "")
     end
+end
+
+function TextEdit:SetAllowNewline(allow_newline)
+	self.allow_newline = allow_newline
+
+	-- We have to enable the accept control when we're not editing, so that
+	-- the user can click the control to start editing, but while edting, we
+	-- don't want the enter key to stop editing.
+    self.enable_accept_control = not (self.allow_newline and self.editing)
 end
 
 function TextEdit:SetEditing(editing)
@@ -90,6 +103,9 @@ function TextEdit:SetEditing(editing)
         end
     end
 
+	-- Update the enable_accept_control flag
+	self:SetAllowNewline(self.allow_newline)
+
     self.inst.TextWidget:ShowEditCursor(self.editing)
 end
 
@@ -99,9 +115,13 @@ function TextEdit:OnMouseButton(button, down, x, y)
 end
 
 function TextEdit:ValidateChar(text)
+    local invalidchars = string.char(8, 22, 27)
+    if not self.allow_newline then
+        invalidchars = invalidchars .. string.char(10, 13)
+    end
     return (self.validchars == nil or string.find(self.validchars, text, 1, true))
         and (self.invalidchars == nil or not string.find(self.invalidchars, text, 1, true))
-        and not string.find(string.char(8, 10, 13, 22, 27), text, 1, true)
+        and not string.find(invalidchars, text, 1, true)
         -- Note: even though text is in utf8, only testing the first bit is enough based on the current exclusion list
 end
 
@@ -148,7 +168,7 @@ end
 --pasting: was from a pasted string, not a keypress, so skip the tab next widget test
 function TextEdit:OnTextInput(text)
     if not (self.shown and self.editing) or
-        (self.limit ~= nil and self:GetString():len() >= self.limit) or
+        (self.limit ~= nil and self:GetString():utf8len() >= self.limit) or
         (not self.pasting and self.nextTextEditWidget ~= nil and text == "\t") then
         --fail if we've reached our limit already
         --fail if we pressed tab (checked b4 text conversion) and tab advances to next widget
@@ -163,11 +183,16 @@ function TextEdit:OnTextInput(text)
     end
 
     self.inst.TextEditWidget:OnTextInput(text)
+
+    local overflow = self.regionlimit and self.inst.TextWidget:HasOverflow()
+    if overflow then
+        self.inst.TextEditWidget:OnKeyDown(KEY_BACKSPACE)
+    end
     if self.format ~= nil then
         self:SetString(self:FormatString(self:GetString()))
     end
 
-    return true
+    return true, overflow
 end
 
 function TextEdit:OnProcess()
@@ -202,9 +227,14 @@ function TextEdit:OnRawKey(key, down)
                 self.pasting = true
                 local clipboard = TheSim:GetClipboardData()
                 for i = 1, #clipboard do
-                    self:OnTextInput(clipboard:sub(i, i))
+                    local success, overflow = self:OnTextInput(clipboard:sub(i, i))
+                    if overflow then
+                        break
+                    end
                 end
                 self.pasting = false
+            elseif self.allow_newline and key == KEY_ENTER and down then
+                self:OnTextInput("\n")
             else
                 self.inst.TextEditWidget:OnKeyDown(key)
             end
@@ -213,7 +243,9 @@ function TextEdit:OnRawKey(key, down)
                 -- this is a fail safe incase the mouse changes the focus widget while editing the text field. We could look into FrontEnd:LockFocus but some screens require focus to be soft (eg: lobbyscreen's chat)
                 if self.editing_enter_down then
                     self.editing_enter_down = false
-                    self:OnProcess()
+                    if not self.allow_newline then
+                        self:OnProcess()
+                    end
                 end
                 return true
         elseif key == KEY_TAB and self.nextTextEditWidget ~= nil then
@@ -259,7 +291,7 @@ function TextEdit:OnControl(control, down)
         return not self.pass_controls_to_screen[control]
     end
 
-    if not down and control == CONTROL_ACCEPT then
+    if self.enable_accept_control and not down and control == CONTROL_ACCEPT then
         if not self.editing then
             self:SetEditing(true)
             return not self.pass_controls_to_screen[control]
@@ -383,6 +415,10 @@ end
 
 function TextEdit:SetTextLengthLimit(limit)
     self.limit = limit
+end
+
+function TextEdit:EnableRegionSizeLimit(enable)
+    self.regionlimit = enable
 end
 
 function TextEdit:SetCharacterFilter(validchars)

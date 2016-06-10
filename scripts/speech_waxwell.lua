@@ -15,7 +15,7 @@ return {
 		{
 			GENERIC = "It wouldn't fit.",
 			NOTALLOWED = "That can't go in there.",
-			INUSE = "I suppose I can wait.",
+			INUSE = "Worry not, pal. I've the patience of a saint.",
 		},
 		WRITE =
         {
@@ -25,12 +25,12 @@ return {
 		RUMMAGE =
 		{	
 			GENERIC = "Curses.",
-			INUSE = "I suppose I can wait.",	
+			INUSE = "I'm quite adept at waiting. I've had a lot of practice.",	
 		},
 		COOK =
         {
             GENERIC = "Nothing ever goes as planned.",
-            INUSE = "I suppose I can wait.",
+            INUSE = "Hmph. You're adding too much salt.",
             TOOFAR = "I must get closer.",
         },
         MOUNT =
@@ -58,7 +58,7 @@ return {
             SLEEPING = "It's thoroughly unconscious.",
             BUSY = "It's busy, currently.",
             ABIGAILHEART = "I had to try.",
-            GHOSTHEART = "They're beyond my help.",
+            GHOSTHEART = "I don't think so. They might still be mad.",
         },
         GIVETOPLAYER = 
         {
@@ -81,9 +81,8 @@ return {
         },
 	},
 	ACTIONFAIL_GENERIC = "That didn't work.",
+
 	ANNOUNCE_MOUNT_LOWHEALTH = "Say, pal, you don't look so good.",
-    LICHEN = "A slow growing cave plant.",
-    
     ANNOUNCE_BECOMEGHOST = "oOooooOO!!",
 	ANNOUNCE_GHOSTDRAIN = "They're whispering through the core of my mind...!",
 	ANNOUNCE_PETRIFED_TREES = "Oh, this should be good.",
@@ -284,7 +283,8 @@ return {
 		BURNT_MARSH_BUSH = "Utterly destroyed.",
 		
 		SHADOWDIGGER = "I'm a shadow of myself. Ha-ha!",
-
+		
+		LICHEN = "A slow growing cave plant.",
 		GLOMMER = "A flying goop factory.",
         GLOMMERFLOWER = 
         {
@@ -626,7 +626,7 @@ return {
 		RELIC = "They were all dead when I got here.",	--Fixed relic
 		RUINS_RUBBLE = "The earthquakes have taken their toll.",	--Broken relic
 		MULTITOOL_AXE_PICKAXE = "The duality of mine.",	--Works as axe and pickaxe
-		GREENGEM = "The nightmare fuel will unlock its true potential.",
+		GREENGEM = "Only the nightmare fuel will unlock its true potential.",
 		ORANGESTAFF = "It's a focusing tool.",	--Teleports player.
 		YELLOWAMULET = "This will make me stand out.",	--Emits light, player walks faster.
 		GREENAMULET = "A crutch for pitiful mortals without godlike powers. What?",	--Reduce cost of crafting
@@ -1317,6 +1317,7 @@ return {
         SADDLE_WAR = "At least it affords some dignity to the rider.",
         SADDLE_RACE = "But is it fast enough to escape the judgmental stares?",
         SADDLEHORN = "And I may never put it back on.",
+        SALTLICK = "So salty.",
         BRUSH = "It's like showing affection, without actually touching it.",
 		SANITYROCK =
 		{

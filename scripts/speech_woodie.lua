@@ -15,23 +15,23 @@ return {
 		STORE =
 		{
 			GENERIC = "It's already packed tighter than a Toronto streetcar.",
-			NOTALLOWED = "That's not allowed, eh?",
-			INUSE = "Sorry! I'll wait til you're finished.",
+			NOTALLOWED = "I could probably find a better place to put that.",
+			INUSE = "Oh, sorry. I didn't mean to hover over your shoulder.",
 		},
 		WRITE =
         {
-            GENERIC = "Sorry, I can't.",
+            GENERIC = "No thanks. I have terrible writing.",
             INUSE = "If I could just... scooch in there after you...",
         },
 		RUMMAGE =
         {   
-            GENERIC = "Sorry, I can't do that.",
-            INUSE = "Sorry! I'll wait til you're finished.",  
+            GENERIC = "I can't right now. Sorry!", 
+            INUSE = "Sorry! I'll wait til you're finished there.",  
         },
 		COOK =
         {
-            GENERIC = "Sorry, I can't do that.",
-            INUSE = "Sorry! I'll wait til you're finished.",
+            GENERIC = "That's not really in my wheelhouse, sorry.",
+            INUSE = "Careful now, don't burn it.",
             TOOFAR = "I gotta get closer, eh?",
         },
         MOUNT =
@@ -81,8 +81,8 @@ return {
             CANTLEARN = "Err... do you understand this one, 'Luce?",
         },
 	},
-	ANNOUNCE_MOUNT_LOWHEALTH = "This beast looks in a bad way, eh.",
 	ACTIONFAIL_GENERIC = "Sorry, I can't do that.",
+	ANNOUNCE_MOUNT_LOWHEALTH = "This beast looks in a bad way, eh.",
 	ANNOUNCE_ADVENTUREFAIL = "Oh well. I gave it a good try.",
 	ANNOUNCE_BEES = "Bees! Bees!",
 	ANNOUNCE_BOOMERANG = "Sorry! Clumsy me!",
@@ -104,7 +104,7 @@ return {
 	ANNOUNCE_DAMP = "A bit damp, eh?",
 	ANNOUNCE_WET = "Plaid's warm, even when wet.",
 	ANNOUNCE_WETTER = "I'm getting quite wet, eh?",
-	ANNOUNCE_SOAKED = "Better hold on tight to Lucy.",
+	ANNOUNCE_SOAKED = "Better hold on tight, Lucy.",
 
 	ANNOUNCE_PETRIFED_TREES = "No! Not the wood!",
 
@@ -127,7 +127,7 @@ return {
 	ANNOUNCE_HOUNDS = "There's something out there.",
 	ANNOUNCE_HUNGRY = "I'm getting peckish.",
 	ANNOUNCE_HUNT_BEAST_NEARBY = "The beastie is nearby.",
-	ANNOUNCE_HUNT_LOST_TRAIL = "The beastie got away.",
+	ANNOUNCE_HUNT_LOST_TRAIL = "I'm more of a woodsman than a hunter anyway.",
 	ANNOUNCE_HUNT_LOST_TRAIL_SPRING = "The beastie's tracks washed away.",
 	ANNOUNCE_INV_FULL = "I can't carry any more kit.",
 	ANNOUNCE_KNOCKEDOUT = "Ow. What was that?",
@@ -162,7 +162,7 @@ return {
 	{
 		GENERIC = "Get over here, eh!",
 		PIG = "I'll make bacon of you yet!",
-		PREY = "This is the end for you, eh!",
+		PREY = "This here's the end for you!",
 		SPIDER = "For the North!",
 		SPIDER_WARRIOR = "Prepare for a choppin'!",
 	},
@@ -359,7 +359,7 @@ return {
 		CACTUS = 
 		{
 			GENERIC = "That's gonna hurt.",
-			PICKED = "That definitely hurt.",
+			PICKED = "Called it.",
 		},
 		CACTUS_MEAT_COOKED = "Much better.",
 		CACTUS_MEAT = "Would you put nails in your mouth?",
@@ -540,7 +540,7 @@ return {
 		UNIMPLEMENTED = "It looks unfinished, eh?",
 		WALL_HAY = 
 		{	
-			GENERIC = "I could topple that with a single sneeze.",
+			GENERIC = "You could sneeze it down.",
 			BURNT = "Well that escalated quickly.",
 		},
 		WALL_WOOD = 
@@ -608,7 +608,7 @@ return {
 		GREENGEM = "How flashy.",
 		ORANGESTAFF = "This will help me get around quickly.",	--Teleports player.
 		YELLOWAMULET = "I could cut wood at night with this.",	--Emits light, player walks faster.
-		GREENAMULET = "I've always been better at cuttin' anyways.",	--Reduce cost of crafting
+		GREENAMULET = "I get a bit of a weird feeling around these things.",	--Reduce cost of crafting
 
 		SLURPER = "I think it's living hair.",
 		SLURPER_PELT = "Looks like a dead beaver.",
@@ -671,7 +671,7 @@ return {
 		MONKEY = "Well then. That's a new one.",
 		MONKEYBARREL = "What a fine choice of building material.",
 
-		HOUNDSTOOTH="Beauty, eh?",
+		HOUNDSTOOTH="It's a beaut.",
 		ARMORSNURTLESHELL="You can never be too safe.",
 		BAT="Who taught that rat to fly?",
 		BATBAT = "A mouse with wings?",
@@ -684,9 +684,9 @@ return {
 		FLOWER_CAVE="Shiny!",
 		FLOWER_CAVE_DOUBLE="Shiny!",
 		FLOWER_CAVE_TRIPLE="Shiny!",
-		GUANO="It stinks less than the other kind.",
-		LANTERN="High tech!",
-		LIGHTBULB="It looks chewy.",
+		GUANO= "It stinks less than the other kind.",
+		LANTERN= "Well that's enlightening, eh?",
+		LIGHTBULB= "It looks chewy.",
 		MANRABBIT_TAIL= "I feel sorry for it.",
 		MUSHTREE_TALL=
 		{
@@ -788,7 +788,7 @@ return {
 		BANDAGE = "At least I didn't have to pay for it.",
 		BASALT = "That rock ain't going to move.",
 		BEARDHAIR = "My hair's not that colour. Not my beard, anyway.",
-		BEDROLL_STRAW = "I've slept on worse than that back at the lumber camp.",
+		BEDROLL_STRAW = "I slept on worse back at the lumber camp.",
 		BEE =
 		{
 			GENERIC = "She's making the flowers grow.",
@@ -882,7 +882,7 @@ return {
 			GENERIC = "I never trusted those things, eh?",
 			HELD = "Where are you going to run?",
 		},
-		BUTTERFLYMUFFIN = "Crunchy!",
+		BUTTERFLYMUFFIN = "Crunchy! ...But soft?",
 		BUTTERFLYWINGS = "Sorry! Sorry. How awful!",
 		CAMPFIRE =
 		{
@@ -895,7 +895,7 @@ return {
 		},
 		CANE = "It's good for the back country.",
 		CARROT = "That's rabbit food.",
-		CARROT_COOKED = "That's still rabbit food.",
+		CARROT_COOKED = "That's cooked rabbit food.",
 		CARROT_PLANTED = "I'm not one for vegetables, eh?",
 		CARROT_SEEDS = "Tiny carrots.",
 		CAVE_FERN = "Hey! It's a fern!",
@@ -952,7 +952,7 @@ return {
 			UNLOCKED = "Now all it needs is to be turned on.",
 		},
 		DIVININGRODSTART = "That's a weird looking rod.",
-		DRAGONFLY = "He'll burn all the trees before I can chop them!",
+		DRAGONFLY = "She'll burn all the trees before I can chop them!",
 
 		HUTCH = "Friendly lil guy, eh?",
         HUTCH_FISHBOWL =
@@ -1048,7 +1048,8 @@ return {
 		FISHTACOS = "Tastes like the sea, eh?",
 		FISH_COOKED = "Could use some chips.",
 		FLINT = "This could be an axe head.",
-		FLOWER = {
+		FLOWER = 
+		{
             GENERIC = "That's nice.",
             ROSE = "Not very satisfying chopping, that.",
         },
@@ -1106,7 +1107,7 @@ return {
 			COLD = "It's gone cold, eh?",
 			GENERIC = "We call those \"night rocks\" back home.",
 			WARM = "It's getting a bit... tepid.",
-			HOT = "I could chop all winter with something like that in my pocket!",
+			HOT = "I could chop all winter with that in my pocket!",
 		},
 		HOME = "Who's there?",
 		HOMESIGN =
@@ -1131,7 +1132,7 @@ return {
 		HONEYCOMB = "The poor bees probably worked their stingers off on this.",
 		HONEYHAM = "But it's not a holiday...",
 		HONEYNUGGETS = "That's one of my favourite meals!",
-		HORN = "I don't know if anyone should be putting their mouth on that.",
+		HORN = "I don't know if anyone should put their mouth on that.",
 		HOUND = "They'd be good at pulling a sled.",
 		HOUNDBONE = "It's covered with dog spit, eh?",
 		HOUNDMOUND = "I know better than to mess with that.",
@@ -1331,6 +1332,7 @@ return {
         SADDLE_RACE = "Makes me feel like some sorta woodland nymph, eh?",
         SADDLE_WAR = "Makes me feel like a Mountie.",
         SADDLEHORN = "Puts the critter back to how nature intended.",
+        SALTLICK = "My mouth's dry just looking at it.",
         BRUSH = "You could debark a log with this thing.",
 		SANITYROCK =
 		{
@@ -1383,8 +1385,8 @@ return {
 		SPIDERQUEEN = "You're not MY queen!",
 		SPIDER_WARRIOR =
 		{
-			GENERIC = "They come in yellow now, eh?",
-			SLEEPING = "I don't want to wake it.",
+			GENERIC = "They come in yellow now?",
+			SLEEPING = "You're snoozin' fer a bruisin'.",
 			DEAD = "Great!",
 		},
 		SPOILED_FOOD = "Aw, it's Diefenbakered.",
@@ -1406,7 +1408,7 @@ return {
 			GENERIC = "It's hatching.",
 			HOT = "Is it crying?",
 			LONG = "Birds are never prompt.",
-			SHORT = "Any time now.",
+			SHORT = "Anytime now.",
 		},
 		TALLBIRDNEST =
 		{
@@ -1436,7 +1438,7 @@ return {
 		TELEPORTATO_POTATO = "Potato-y, eh?",
 		TELEPORTATO_RING = "Ring-y, eh?",
 		TELESTAFF = "I wonder what this thing does.",
-		TENTACLE = "Are there squid down there?",
+		TENTACLE = "There a squid down there?",
 		TENTACLESPIKE = "It wobbles when you wave it.",
 		TENTACLESPOTS = "I'm blushing!",
 		TENTACLE_PILLAR = "It's so big!",
@@ -1529,7 +1531,7 @@ return {
 		WALL_MOONROCK = "Looks nice'n'sturdy.",
 		WALL_MOONROCK_ITEM = "It's not much use like that.",
 		WALRUS = "Oh no. Walruses again!",
-		WALRUSHAT = "My grandad wore a hat like this.",
+		WALRUSHAT = "My grandad wore a hat like that.",
 		WALRUS_CAMP =
 		{
 			EMPTY = "This won't be safe come winter.",
@@ -1562,7 +1564,7 @@ return {
         ROCK_MOON = "It's uh, a moon rock.",
 	},
 	DESCRIBE_GENERIC = "What's that, eh?",
-	DESCRIBE_TOODARK = "It's dark, eh!",
+	DESCRIBE_TOODARK = "It's too dark, eh!",
 	DESCRIBE_SMOLDERING = "It's aboot to go up in flames, eh?",
 
 	EAT_FOOD =

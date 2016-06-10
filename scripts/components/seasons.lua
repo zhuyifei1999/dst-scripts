@@ -217,7 +217,7 @@ local UpdateSeasonMode = _ismastersim and function()
 
 end or nil
 
-local PushMasterSeasonData = _ismastersim and _ismastershard and function()
+local PushMasterSeasonData = _ismastershard and function()
     local data =
     {
         season = _season:value(),
@@ -238,7 +238,6 @@ end or nil
 --------------------------------------------------------------------------
 
 local function OnSeasonDirty()
-
     local data = {
         season = SEASON_NAMES[_season:value()],
         progress = 1 - (_totaldaysinseason:value() > 0 and _remainingdaysinseason:value() / _totaldaysinseason:value() or 0),
@@ -247,7 +246,7 @@ local function OnSeasonDirty()
     }
     _world:PushEvent("seasontick", data)
 
-    if _ismastersim and _ismastershard then
+    if _ismastershard then
         PushMasterSeasonData()
     end
 end
@@ -259,7 +258,7 @@ local function OnLengthsDirty()
     end
     _world:PushEvent("seasonlengthschanged", data)
 
-    if _ismastersim and _ismastershard then
+    if _ismastershard then
         PushMasterSeasonData()
     end
 end
@@ -363,7 +362,7 @@ local OnSetSeason = _ismastersim and function(src, season)
     PushSeasonClockSegs()
 end or nil
 
-local OnSetSeasonClockSegs = _ismastersim and _ismastershard and function(src, segs)
+local OnSetSeasonClockSegs = _ismastershard and function(src, segs)
     local default = nil
     for k, v in pairs(segs) do
         default = v
@@ -405,7 +404,7 @@ local OnSetSeasonLength = _ismastersim and function(src, data)
     end
 end or nil
 
-local OnSetSeasonSegModifier = _ismastersim and _ismastershard and function(src, mod)
+local OnSetSeasonSegModifier = _ismastershard and function(src, mod)
 	_segmod = mod
 	PushSeasonClockSegs()
 end or nil

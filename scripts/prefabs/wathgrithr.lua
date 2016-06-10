@@ -107,6 +107,8 @@ end
 
 local function common_init(inst)
     inst:AddTag("valkyrie")
+
+    inst.components.talker.mod_str_fn = Umlautify
 end
 
 local function master_init(inst)

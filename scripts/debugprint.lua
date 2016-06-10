@@ -1,3 +1,5 @@
+PRINT_SOURCE = false
+
 local print_loggers = {}
 
 function AddPrintLogger( fn )
@@ -33,28 +35,32 @@ end
 
 local function packstring(...)
     local str = ""
-    for i,v in ipairs({...}) do
-        str = str..tostring(v).."\t"
+    local n = select('#', ...)
+    local arg = {...}
+    for i=1,n do
+        str = str..tostring(arg[i]).."\t"
     end
     return str
 end
 --this wraps print in code that shows what line number it is coming from, and pushes it out to all of the print loggers
 print = function(...)
 
-	local info = debug.getinfo(2, "Sl")
-	local source = info and info.source
-	local str = ""
-	if info and info.source and string.sub(info.source,1,1)=="@" then
-		source = source:sub(2)
-		source = source:gsub("^"..escape_lua_pattern(dir), "")
-		str = string.format("%s(%d,1) %s", tostring(source), info.currentline, packstring(...))
-	else
-		str = packstring(...)
-	end
+    local str = ""
+    if PRINT_SOURCE then
+        local info = debug.getinfo(2, "Sl")
+        local source = info and info.source
+        if source then
+            str = string.format("%s(%d,1) %s", source, info.currentline, packstring(...))
+        else
+            str = packstring(...)
+        end
+    else
+        str = packstring(...)
+    end
 
-	for i,v in ipairs(print_loggers) do
-		v(str)
-	end
+    for i,v in ipairs(print_loggers) do
+        v(str)
+    end
 
 end
 

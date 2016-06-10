@@ -45,7 +45,9 @@ function WallUpdate(dt)
 
 	TheSim:ProfilerPush("RPC queue")
     HandleRPCQueue()
-	TheSim:ProfilerPop()	
+	TheSim:ProfilerPop()
+
+    HandleUserCmdQueue()
 
 	if TheFocalPoint ~= nil then
 		TheSim:SetActiveAreaCenterpoint(TheFocalPoint.Transform:GetWorldPosition())
@@ -63,31 +65,29 @@ function WallUpdate(dt)
             end
         end
     end
-    
 	for k,v in pairs(NewWallUpdatingEnts) do
 		WallUpdatingEnts[k] = v
 		NewWallUpdatingEnts[k] = nil
     end
-    
 	TheSim:ProfilerPop()
 
 	TheSim:ProfilerPush("mixer")
     TheMixer:Update(dt)
-	TheSim:ProfilerPop()	
+	TheSim:ProfilerPop()
 
 	if not IsSimPaused() then
 		TheSim:ProfilerPush("camera")
 		TheCamera:Update(dt)
-		TheSim:ProfilerPop()	
+		TheSim:ProfilerPop()
 	end
-    
+
 	CheckForUpsellTimeout(dt)
 
 	TheSim:ProfilerPush("input")
 	if not SimTearingDown then
 	    TheInput:OnUpdate()
 	end
-	TheSim:ProfilerPop()	
+	TheSim:ProfilerPop()
 
 	TheSim:ProfilerPush("fe")
     if global_error_widget == nil then
@@ -95,8 +95,8 @@ function WallUpdate(dt)
     else
         global_error_widget:OnUpdate(dt)
     end
-	TheSim:ProfilerPop()	
-	
+	TheSim:ProfilerPop()
+
 	--TheSim:ProfilerPop()
 
 	-- Server termination script
@@ -147,36 +147,36 @@ end
 
 local last_tick_seen = -1
 --This is where the magic happens
-function Update( dt )
+function Update(dt)
     HandleClassInstanceTracking()
-	--TheSim:ProfilerPush("LuaUpdate")    
+	--TheSim:ProfilerPush("LuaUpdate")
 	CheckDemoTimeout()
-    
+
     if PLATFORM == "NACL" then
         AccumulatedStatsHeartbeat(dt)
     end
-	
+
     if not IsSimPaused() then
 		local tick = TheSim:GetTick()
 		if tick > last_tick_seen then
 			TickRPCQueue()
-			
+
 			TheSim:ProfilerPush("scheduler")
 			for i = last_tick_seen +1, tick do
 				RunScheduler(i)
 			end
 			TheSim:ProfilerPop()
-			
+
 			if SimShuttingDown then
-			    return 
+			    return
 			end
-			
+
 			TheSim:ProfilerPush("static components")
 			for k,v in pairs(StaticComponentUpdates) do
 				v(dt)
 			end
 			TheSim:ProfilerPop()
-			
+
 			TheSim:ProfilerPush("updating components")
 			for k,v in pairs(UpdatingEnts) do
 				--TheSim:ProfilerPush(v.prefab)
@@ -184,7 +184,7 @@ function Update( dt )
 					for cmp in pairs(v.updatecomponents) do
 						--TheSim:ProfilerPush(v:GetComponentName(cmp))
 						if cmp.OnUpdate and not StopUpdatingComponents[cmp] then
-							cmp:OnUpdate( dt )
+							cmp:OnUpdate(dt)
 						end
 						--TheSim:ProfilerPop()
 					end
@@ -208,7 +208,7 @@ function Update( dt )
 				TheSim:ProfilerPush("LuaSG")
 				SGManager:Update(i)
 				TheSim:ProfilerPop()
-	            
+
 				TheSim:ProfilerPush("LuaBrain")
 				BrainManager:Update(i)
 				TheSim:ProfilerPop()
@@ -219,7 +219,7 @@ function Update( dt )
 		last_tick_seen = tick
 	end
 
-    --TheSim:ProfilerPop()        
+    --TheSim:ProfilerPop()
 end
 
 --this is for advancing the sim long periods of time (to skip nights, come back from caves, etc)

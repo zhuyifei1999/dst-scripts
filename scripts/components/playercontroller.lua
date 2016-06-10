@@ -1356,7 +1356,7 @@ function PlayerController:DoInspectButton()
         --V2C: Closing the avatar popup takes priority
         return
     end
-    local buffaction = TheInput:ControllerAttached() and self:GetInspectButtonAction(self:GetControllerTarget() or TheInput:GetWorldEntityUnderMouse()) or nil
+    local buffaction = TheInput:ControllerAttached() and self:GetInspectButtonAction(self:GetControllerTarget()) or nil
     if buffaction == nil then
         return
     end
@@ -1526,7 +1526,10 @@ function PlayerController:OnUpdate(dt)
 
     --Restore cached placer
     if self.placer_cached ~= nil then
-        self:StartBuildPlacementMode(unpack(self.placer_cached))
+        if self.inst.replica.inventory:IsVisible() then
+            self:StartBuildPlacementMode(unpack(self.placer_cached))
+        end
+        self.placer_cached = nil
     end
 
     --Attack controls are buffered and handled here in the update
@@ -1799,6 +1802,13 @@ function PlayerController:OnUpdate(dt)
                 end
             end
         end
+    end
+
+    if self.handler ~= nil and TheInput:TryRecacheController() then
+        --Could also push pause screen, but it won't come up right
+        --away if controls were disabled at the time of the switch
+        TheWorld:PushEvent("continuefrompause")
+        TheInput:EnableMouse(not TheInput:ControllerAttached())
     end
 end
 

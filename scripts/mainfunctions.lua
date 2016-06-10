@@ -734,7 +734,7 @@ local function CheckControllers()
         end
 
         -- enable all controllers so they can be used in the popup if desired
-        Input:EnableAllControllers()
+        TheInput:EnableAllControllers()
 
         local function enableControllers()
             -- set all connected controllers as enabled in the player profile
@@ -754,7 +754,7 @@ local function CheckControllers()
         end
 
         local function disableControllers()
-            Input:DisableAllControllers()
+            TheInput:DisableAllControllers()
             Profile:ShowedControllerPopup()
             TheFrontEnd:PopScreen() -- pop after updating settings otherwise this dialog might show again!
             Profile:Save()
@@ -782,12 +782,12 @@ local function CheckControllers()
         for i,v in pairs(popup.menu.items) do
             v.text:SetSize(33)
         end
-        if Input:ControllerAttached() then
+        if TheInput:ControllerAttached() then
             TheFrontEnd:StopTrackingMouse(true)
         end
         TheFrontEnd:PushScreen(popup)
     else
-        if Input:ControllerAttached() then
+        if TheInput:ControllerAttached() then
             TheFrontEnd:StopTrackingMouse(true)
         end
         Check_Mods()
@@ -1378,9 +1378,9 @@ function NotifyLoadingState(loading_state)
 end
 
 function BuildTagsStringCommon(tagsTable)
-    -- Vote command tags
-    if TheSim:GetSetting("GAMEPLAY", "vote_kick_enabled") == "true" then
-        table.insert(tagsTable, "vote kick")
+    -- Vote command tags (controlled by master server only)
+    if not TheShard:IsSlave() and TheNet:GetDefaultVoteEnabled() then
+        table.insert(tagsTable, STRINGS.TAGS.VOTE)
     end
 
     if TheShard:IsMaster() then

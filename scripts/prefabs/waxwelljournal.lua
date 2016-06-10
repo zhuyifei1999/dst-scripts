@@ -5,54 +5,6 @@ local assets =
     Asset("SOUND", "sound/together.fsb"),
 }
 
-local prefabs =
-{
-    "papyrus",
-}
-
-local function dodecay(inst)
-    if inst.components.lootdropper == nil then
-        inst:AddComponent("lootdropper")
-    end
-    inst.components.lootdropper:SpawnLootPrefab("papyrus")
-    inst.components.lootdropper:SpawnLootPrefab("papyrus")
-    SpawnPrefab("small_puff").Transform:SetPosition(inst.Transform:GetWorldPosition())
-    inst:Remove()
-end
-
-local function startdecay(inst)
-    if inst._decaytask == nil then
-        inst._decaytask = inst:DoTaskInTime(TUNING.WAXWELLJOURNAL_DECAY_TIME, dodecay)
-        inst._decaystart = GetTime()
-    end
-end
-
-local function stopdecay(inst)
-    if inst._decaytask ~= nil then
-        inst._decaytask:Cancel()
-        inst._decaytask = nil
-        inst._decaystart = nil
-    end
-end
-
-local function onsave(inst, data)
-    if inst._decaystart ~= nil then
-        local time = GetTime() - inst._decaystart
-        if time > 0 then
-            data.decaytime = time
-        end
-    end
-end    
-
-local function onload(inst, data)
-    if inst._decaytask ~= nil and data ~= nil and data.decaytime ~= nil then
-        local remaining = math.max(0, TUNING.WAXWELLJOURNAL_DECAY_TIME - data.decaytime)
-        inst._decaytask:Cancel()
-        inst._decaytask = inst:DoTaskInTime(remaining, dodecay)
-        inst._decaystart = GetTime() + remaining - TUNING.WAXWELLJOURNAL_DECAY_TIME
-    end
-end
-
 local function tryplaysound(inst, id, sound)
     inst._soundtasks[id] = nil
     if inst.AnimState:IsCurrentAnimation("proximity_pst") then
@@ -118,7 +70,6 @@ end
 local function onturnon(inst)
     if inst._activetask == nil then
         stopclosingsounds(inst)
-        stopdecay(inst)
         if inst.AnimState:IsCurrentAnimation("proximity_loop") then
             --In case other animations were still in queue
             inst.AnimState:PlayAnimation("proximity_loop", true)
@@ -134,7 +85,6 @@ end
 
 local function onturnoff(inst)
     if inst._activetask == nil and not inst.components.inventoryitem:IsHeld() then
-        startdecay(inst)
         inst.AnimState:PushAnimation("proximity_pst")
         inst.AnimState:PushAnimation("idle", false)
         startclosingsounds(inst)
@@ -186,7 +136,6 @@ local function onputininventory(inst)
         inst._activetask = nil
     end
     stopclosingsounds(inst)
-    stopdecay(inst)
     inst.AnimState:PlayAnimation("idle")
     inst.SoundEmitter:KillSound("idlesound")
 end
@@ -194,8 +143,6 @@ end
 local function ondropped(inst)
     if inst.components.prototyper.on then
         onturnon(inst)
-    else
-        startdecay(inst)
     end
 end
 
@@ -233,8 +180,6 @@ local function fn()
     end
 
     inst._activetask = nil
-    inst._decaytask = nil
-    inst._decaystart = nil
     inst._soundtasks = {}
 
     inst:AddComponent("inspectable")
@@ -246,6 +191,9 @@ local function fn()
     inst.components.prototyper.onactivate = onactivate
     inst.components.prototyper.trees = TUNING.PROTOTYPER_TREES.WAXWELLJOURNAL
 
+    inst:AddComponent("fuel")
+    inst.components.fuel.fuelvalue = TUNING.MED_FUEL
+
     MakeSmallBurnable(inst)
     MakeSmallPropagator(inst)
 
@@ -253,15 +201,10 @@ local function fn()
     inst.components.hauntable.cooldown = TUNING.HAUNT_COOLDOWN_SMALL
     inst.components.hauntable:SetOnHauntFn(OnHaunt)
 
-    startdecay(inst)
-
     inst:ListenForEvent("onputininventory", onputininventory)
     inst:ListenForEvent("ondropped", ondropped)
-
-    inst.OnLoad = onload
-    inst.OnSave = onsave
 
     return inst
 end
 
-return Prefab("waxwelljournal", fn, assets, prefabs)
+return Prefab("waxwelljournal", fn, assets)

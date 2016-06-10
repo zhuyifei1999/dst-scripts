@@ -1,3 +1,20 @@
+--Global so Mods can use them too
+function checkbool(val) return val == nil or type(val) == "boolean" end
+function checknumber(val) return type(val) == "number" end
+function checkstring(val) return type(val) == "string" end
+function checkentity(val) return type(val) == "table" end
+optbool = checkbool
+function optnumber(val) return val == nil or type(val) == "number" end
+function optstring(val) return val == nil or type(val) == "string" end
+function optentity(val) return val == nil or type(val) == "table" end
+
+local function printinvalid(rpcname, player)
+    print(string.format("Invalid %s RPC from (%s) %s", rpcname, player.userid or "", player.name or ""))
+    assert(false, string.format("Invalid %s RPC from (%s) %s", rpcname, player.userid or "", player.name or ""))--V2C: #TODO #TEMP #REMOVE #DELETE
+end
+
+--------------------------------------------------------------------------
+
 local function IsPointInRange(player, x, z)
     local px, py, pz = player.Transform:GetWorldPosition()
     return distsq(x, z, px, pz) <= 4096
@@ -6,8 +23,19 @@ end
 local RPC_HANDLERS =
 {
     LeftClick = function(player, action, x, z, target, isreleased, controlmods, noforce, mod_name)
+        if not (checknumber(action) and
+                checknumber(x) and
+                checknumber(z) and
+                optentity(target) and
+                optbool(isreleased) and
+                optnumber(controlmods) and
+                optbool(noforce) and
+                optstring(mod_name)) then
+            printinvalid("LeftClick", player)
+            return
+        end
         local playercontroller = player.components.playercontroller
-        if playercontroller ~= nil and action ~= nil and x ~= nil and z ~= nil then
+        if playercontroller ~= nil then
             if IsPointInRange(player, x, z) then
                 playercontroller:OnRemoteLeftClick(action, Vector3(x, 0, z), target, isreleased, controlmods, noforce, mod_name)
             else
@@ -17,8 +45,19 @@ local RPC_HANDLERS =
     end,
 
     RightClick = function(player, action, x, z, target, isreleased, controlmods, noforce, mod_name)
+        if not (checknumber(action) and
+                checknumber(x) and
+                checknumber(z) and
+                optentity(target) and
+                optbool(isreleased) and
+                optnumber(controlmods) and
+                optbool(noforce) and
+                optstring(mod_name)) then
+            printinvalid("RightClick", player)
+            return
+        end
         local playercontroller = player.components.playercontroller
-        if playercontroller ~= nil and action ~= nil and x ~= nil and z ~= nil then
+        if playercontroller ~= nil then
             if IsPointInRange(player, x, z) then
                 playercontroller:OnRemoteRightClick(action, Vector3(x, 0, z), target, isreleased, controlmods, noforce, mod_name)
             else
@@ -28,6 +67,14 @@ local RPC_HANDLERS =
     end,
 
     ActionButton = function(player, action, target, isreleased, noforce, mod_name)
+        if not (optnumber(action) and
+                optentity(target) and
+                optbool(isreleased) and
+                optbool(noforce) and
+                optstring(mod_name)) then
+            printinvalid("ActionButton", player)
+            return
+        end
         local playercontroller = player.components.playercontroller
         if playercontroller ~= nil then
             playercontroller:OnRemoteActionButton(action, target, isreleased, noforce, mod_name)
@@ -35,6 +82,12 @@ local RPC_HANDLERS =
     end,
 
     AttackButton = function(player, target, forceattack, noforce)
+        if not (optentity(target) and
+                optbool(forceattack) and
+                optbool(noforce)) then
+            printinvalid("AttackButton", player)
+            return
+        end
         local playercontroller = player.components.playercontroller
         if playercontroller ~= nil then
             playercontroller:OnRemoteAttackButton(target, forceattack, noforce)
@@ -42,8 +95,12 @@ local RPC_HANDLERS =
     end,
 
     InspectButton = function(player, target)
+        if not checkentity(target) then
+            printinvalid("InspectButton", player)
+            return
+        end
         local playercontroller = player.components.playercontroller
-        if playercontroller ~= nil and target ~= nil then
+        if playercontroller ~= nil then
             playercontroller:OnRemoteInspectButton(target)
         end
     end,
@@ -56,13 +113,28 @@ local RPC_HANDLERS =
     end,
 
     ControllerActionButton = function(player, action, target, isreleased, noforce, mod_name)
+        if not (checknumber(action) and
+                checkentity(target) and
+                optbool(isreleased) and
+                optbool(noforce) and
+                optstring(mod_name)) then
+            printinvalid("ControllerActionButton", player)
+            return
+        end
         local playercontroller = player.components.playercontroller
-        if playercontroller ~= nil and action ~= nil and target ~= nil then
+        if playercontroller ~= nil then
             playercontroller:OnRemoteControllerActionButton(action, target, isreleased, noforce, mod_name)
         end
     end,
 
     ControllerActionButtonDeploy = function(player, invobject, x, z, isreleased)
+        if not (checkentity(invobject) and
+                checknumber(x) and
+                checknumber(z) and
+                optbool(isreleased)) then
+            printinvalid("ControllerActionButtonDeploy", player)
+            return
+        end
         local playercontroller = player.components.playercontroller
         if playercontroller ~= nil and invobject ~= nil and x ~= nil and z ~= nil then
             if IsPointInRange(player, x, z) then
@@ -74,15 +146,32 @@ local RPC_HANDLERS =
     end,
 
     ControllerAltActionButton = function(player, action, target, isreleased, noforce, mod_name)
+        if not (checknumber(action) and
+                checkentity(target) and
+                optbool(isreleased) and
+                optbool(noforce) and
+                optstring(mod_name)) then
+            printinvalid("ControllerAltActionButton", player)
+            return
+        end
         local playercontroller = player.components.playercontroller
-        if playercontroller ~= nil and action ~= nil and target ~= nil then
+        if playercontroller ~= nil then
             playercontroller:OnRemoteControllerAltActionButton(action, target, isreleased, noforce, mod_name)
         end
     end,
 
     ControllerAltActionButtonPoint = function(player, action, x, z, isreleased, noforce, mod_name)
+        if not (checkaction(action) and
+                checknumber(x) and
+                checknumber(z) and
+                optbool(isreleased) and
+                optbool(noforce) and
+                optstring(mod_name)) then
+            printinvalid("ControllerAltActionButtonPoint", player)
+            return
+        end
         local playercontroller = player.components.playercontroller
-        if playercontroller ~= nil and x ~= nil and z ~= nil then
+        if playercontroller ~= nil then
             if IsPointInRange(player, x, z) then
                 playercontroller:OnRemoteControllerAltActionButtonPoint(action, Vector3(x, 0, z), isreleased, noforce, mod_name)
             else
@@ -92,6 +181,12 @@ local RPC_HANDLERS =
     end,
 
     ControllerAttackButton = function(player, target, isreleased, noforce)
+        if not ((target == true or optentity(target)) and
+                optbool(isreleased) and
+                optbool(noforce)) then
+            printinvalid("ControllerAttackButton", player)
+            return
+        end
         local playercontroller = player.components.playercontroller
         if playercontroller ~= nil then
             playercontroller:OnRemoteControllerAttackButton(target, isreleased, noforce)
@@ -99,8 +194,12 @@ local RPC_HANDLERS =
     end,
 
     StopControl = function(player, control)
+        if not checknumber(control) then
+            printinvalid("StopControl", player)
+            return
+        end
         local playercontroller = player.components.playercontroller
-        if playercontroller ~= nil and control ~= nil then
+        if playercontroller ~= nil then
             playercontroller:OnRemoteStopControl(control)
         end
     end,
@@ -113,22 +212,38 @@ local RPC_HANDLERS =
     end,
 
     DirectWalking = function(player, x, z)
+        if not (checknumber(x) and
+                checknumber(z)) then
+            printinvalid("DirectWalking", player)
+            return
+        end
         local playercontroller = player.components.playercontroller
-        if playercontroller ~= nil and x ~= nil and z ~= nil then
+        if playercontroller ~= nil then
             playercontroller:OnRemoteDirectWalking(x, z)
         end
     end,
 
     DragWalking = function(player, x, z)
+        if not (checknumber(x) and
+                checknumber(z)) then
+            printinvalid("DragWalking", player)
+            return
+        end
         local playercontroller = player.components.playercontroller
-        if playercontroller ~= nil and x ~= nil and z ~= nil then
+        if playercontroller ~= nil then
             playercontroller:OnRemoteDragWalking(x, z)
         end
     end,
 
     PredictWalking = function(player, x, z, isdirectwalking)
+        if not (checknumber(x) and
+                checknumber(z) and
+                checkbool(isdirectwalking)) then
+            printinvalid("PredictWalking", player)
+            return
+        end
         local playercontroller = player.components.playercontroller
-        if playercontroller ~= nil and x ~= nil and z ~= nil then
+        if playercontroller ~= nil then
             playercontroller:OnRemotePredictWalking(x, z, isdirectwalking)
         end
     end,
@@ -141,13 +256,18 @@ local RPC_HANDLERS =
     end,
 
     DoWidgetButtonAction = function(player, action, target, mod_name)
+        if not (checknumber(action) and
+                optentity(target) and
+                optstring(mod_name)) then
+            printinvalid("DoWidgetButtonAction", player)
+            return
+        end
         local playercontroller = player.components.playercontroller
         if playercontroller ~= nil and playercontroller:IsEnabled() and not player.sg:HasStateTag("busy") then
-            mod_name = mod_name or nil
             if mod_name ~= nil then
-                action = action ~= nil and ACTION_MOD_IDS[mod_name] ~= nil and ACTION_MOD_IDS[mod_name][action] ~= nil and ACTIONS[ACTION_MOD_IDS[mod_name][action]] or nil
+                action = ACTION_MOD_IDS[mod_name] ~= nil and ACTION_MOD_IDS[mod_name][action] ~= nil and ACTIONS[ACTION_MOD_IDS[mod_name][action]] or nil
             else
-                action = action ~= nil and ACTION_IDS[action] ~= nil and ACTIONS[ACTION_IDS[action]] or nil
+                action = ACTION_IDS[action] ~= nil and ACTIONS[ACTION_IDS[action]] or nil
             end
             if action ~= nil then
                 local container = target ~= nil and target.components.container or nil
@@ -166,8 +286,13 @@ local RPC_HANDLERS =
     end,
 
     PutOneOfActiveItemInSlot = function(player, slot, container)
+        if not (checknumber(slot) and
+                optentity(container)) then
+            printinvalid("PutOneOfActiveItemInSlot", player)
+            return
+        end
         local inventory = player.components.inventory
-        if inventory ~= nil and slot ~= nil then
+        if inventory ~= nil then
             if container == nil then
                 inventory:PutOneOfActiveItemInSlot(slot)
             else
@@ -180,8 +305,13 @@ local RPC_HANDLERS =
     end,
 
     PutAllOfActiveItemInSlot = function(player, slot, container)
+        if not (checknumber(slot) and
+                optentity(container)) then
+            printinvalid("PutAllOfActiveItemInSlot", player)
+            return
+        end
         local inventory = player.components.inventory
-        if inventory ~= nil and slot ~= nil then
+        if inventory ~= nil then
             if container == nil then
                 inventory:PutAllOfActiveItemInSlot(slot)
             else
@@ -194,8 +324,13 @@ local RPC_HANDLERS =
     end,
 
     TakeActiveItemFromHalfOfSlot = function(player, slot, container)
+        if not (checknumber(slot) and
+                optentity(container)) then
+            printinvalid("TakeActiveItemFromHalfOfSlot", player)
+            return
+        end
         local inventory = player.components.inventory
-        if inventory ~= nil and slot ~= nil then
+        if inventory ~= nil then
             if container == nil then
                 inventory:TakeActiveItemFromHalfOfSlot(slot)
             else
@@ -208,8 +343,13 @@ local RPC_HANDLERS =
     end,
 
     TakeActiveItemFromAllOfSlot = function(player, slot, container)
+        if not (checknumber(slot) and
+                optentity(container)) then
+            printinvalid("TakeActiveItemFromAllOfSlot", player)
+            return
+        end
         local inventory = player.components.inventory
-        if inventory ~= nil and slot ~= nil then
+        if inventory ~= nil then
             if container == nil then
                 inventory:TakeActiveItemFromAllOfSlot(slot)
             else
@@ -222,8 +362,13 @@ local RPC_HANDLERS =
     end,
 
     AddOneOfActiveItemToSlot = function(player, slot, container)
+        if not (checknumber(slot) and
+                optentity(container)) then
+            printinvalid("AddOneOfActiveItemToSlot", player)
+            return
+        end
         local inventory = player.components.inventory
-        if inventory ~= nil and slot ~= nil then
+        if inventory ~= nil then
             if container == nil then
                 inventory:AddOneOfActiveItemToSlot(slot)
             else
@@ -236,8 +381,13 @@ local RPC_HANDLERS =
     end,
 
     AddAllOfActiveItemToSlot = function(player, slot, container)
+        if not (checknumber(slot) and
+                optentity(container)) then
+            printinvalid("AddAllOfActiveItemToSlot", player)
+            return
+        end
         local inventory = player.components.inventory
-        if inventory ~= nil and slot ~= nil then
+        if inventory ~= nil then
             if container == nil then
                 inventory:AddAllOfActiveItemToSlot(slot)
             else
@@ -250,8 +400,13 @@ local RPC_HANDLERS =
     end,
 
     SwapActiveItemWithSlot = function(player, slot, container)
+        if not (checknumber(slot) and
+                optentity(container)) then
+            printinvalid("SwapActiveItemWithSlot", player)
+            return
+        end
         local inventory = player.components.inventory
-        if inventory ~= nil and slot ~= nil then
+        if inventory ~= nil then
             if container == nil then
                 inventory:SwapActiveItemWithSlot(slot)
             else
@@ -264,9 +419,16 @@ local RPC_HANDLERS =
     end,
 
     UseItemFromInvTile = function(player, action, item, controlmods, mod_name)
+        if not (checknumber(action) and
+                checkentity(item) and
+                optnumber(controlmods) and
+                optstring(mod_name)) then
+            printinvalid("UseItemFromInvTile", player)
+            return
+        end
         local playercontroller = player.components.playercontroller
         local inventory = player.components.inventory
-        if playercontroller ~= nil and inventory ~= nil and action ~= nil and item ~= nil then
+        if playercontroller ~= nil and inventory ~= nil then
             playercontroller:DecodeControlMods(controlmods)
             inventory:UseItemFromInvTile(item, action, mod_name)
             playercontroller:ClearControlMods()
@@ -274,42 +436,71 @@ local RPC_HANDLERS =
     end,
 
     ControllerUseItemOnItemFromInvTile = function(player, action, item, active_item, mod_name)
+        if not (checknumber(action) and
+                checkentity(item) and
+                checkentity(active_item) and
+                optstring(mod_name)) then
+            printinvalid("ControllerUseItemOnItemFromInvTile", player)
+            return
+        end
         local playercontroller = player.components.playercontroller
         local inventory = player.components.inventory
-        if playercontroller ~= nil and inventory ~= nil and action ~= nil and item ~= nil and active_item ~= nil then
+        if playercontroller ~= nil and inventory ~= nil then
             playercontroller:ClearControlMods()
             inventory:ControllerUseItemOnItemFromInvTile(item, active_item, action, mod_name)
         end
     end,
 
     ControllerUseItemOnSelfFromInvTile = function(player, action, item, mod_name)
+        if not (checknumber(action) and
+                checkentity(item) and
+                optstring(mod_name)) then
+            printinvalid("ControllerUseItemOnSelfFromInvTile", player)
+            return
+        end
         local playercontroller = player.components.playercontroller
         local inventory = player.components.inventory
-        if playercontroller ~= nil and inventory ~= nil and action ~= nil and item ~= nil then
+        if playercontroller ~= nil and inventory ~= nil then
             playercontroller:ClearControlMods()
             inventory:ControllerUseItemOnSelfFromInvTile(item, action, mod_name)
         end
     end,
 
     ControllerUseItemOnSceneFromInvTile = function(player, action, item, target, mod_name)
+        if not (checknumber(action) and
+                checkentity(item) and
+                optentity(target) and
+                optstring(mod_name)) then
+            printinvalid("ControllerUseItemOnSceneFromInvTile", player)
+            return
+        end
         local playercontroller = player.components.playercontroller
         local inventory = player.components.inventory
-        if playercontroller ~= nil and inventory ~= nil and action ~= nil and item ~= nil then
+        if playercontroller ~= nil and inventory ~= nil then
             playercontroller:ClearControlMods()
             inventory:ControllerUseItemOnSceneFromInvTile(item, target, action, mod_name)
         end
     end,
 
     InspectItemFromInvTile = function(player, item)
+        if not checkentity(item) then
+            printinvalid("InspectItemFromInvTile", player)
+            return
+        end
         local inventory = player.components.inventory
-        if inventory ~= nil and item ~= nil then
+        if inventory ~= nil then
             inventory:InspectItemFromInvTile(item)
         end
     end,
 
     DropItemFromInvTile = function(player, item, single)
+        if not (checkentity(item) and
+                optbool(single)) then
+            printinvalid("DropItemFromInvTile", player)
+            return
+        end
         local inventory = player.components.inventory
-        if inventory ~= nil and item ~= nil then
+        if inventory ~= nil then
             inventory:DropItemFromInvTile(item, single)
         end
     end,
@@ -322,6 +513,10 @@ local RPC_HANDLERS =
     end,
 
     EquipActionItem = function(player, item)
+        if not optentity(item) then
+            printinvalid("EquipActionItem", player)
+            return
+        end
         local inventory = player.components.inventory
         if inventory ~= nil then
             inventory:EquipActionItem(item)
@@ -336,41 +531,72 @@ local RPC_HANDLERS =
     end,
 
     TakeActiveItemFromEquipSlot = function(player, eslot)
+        if not checknumber(eslot) then
+            printinvalid("TakeActiveItemFromEquipSlot", player)
+            return
+        end
         local inventory = player.components.inventory
-        if inventory ~= nil and eslot ~= nil then
-            inventory:TakeActiveItemFromEquipSlot(eslot)
+        if inventory ~= nil then
+            inventory:TakeActiveItemFromEquipSlotID(eslot)
         end
     end,
 
     MoveInvItemFromAllOfSlot = function(player, slot, destcontainer)
+        if not (checknumber(slot) and
+                checkentity(destcontainer)) then
+            printinvalid("MoveInvItemFromAllOfSlot", player)
+            return
+        end
         local inventory = player.components.inventory
-        if inventory ~= nil and slot ~= nil and destcontainer ~= nil then
+        if inventory ~= nil then
             inventory:MoveItemFromAllOfSlot(slot, destcontainer)
         end
     end,
 
     MoveInvItemFromHalfOfSlot = function(player, slot, destcontainer)
+        if not (checknumber(slot) and
+                checkentity(destcontainer)) then
+            printinvalid("MoveInvItemFromHalfOfSlot", player)
+            return
+        end
         local inventory = player.components.inventory
-        if inventory ~= nil and slot ~= nil and destcontainer ~= nil then
+        if inventory ~= nil then
             inventory:MoveItemFromHalfOfSlot(slot, destcontainer)
         end
     end,
 
     MoveItemFromAllOfSlot = function(player, slot, srccontainer, destcontainer)
-        local container = srccontainer ~= nil and srccontainer.components.container or nil
-        if container ~= nil and slot ~= nil then
+        if not (checknumber(slot) and
+                checkentity(srccontainer) and
+                optentity(destcontainer)) then
+            printinvalid("MoveItemFromAllOfSlot", player)
+            return
+        end
+        local container = srccontainer.components.container
+        if container ~= nil then
             container:MoveItemFromAllOfSlot(slot, destcontainer or player)
         end
     end,
 
     MoveItemFromHalfOfSlot = function(player, slot, srccontainer, destcontainer)
-        local container = srccontainer ~= nil and srccontainer.components.container or nil
-        if container ~= nil and slot ~= nil then
+        if not (checknumber(slot) and
+                checkentity(srccontainer) and
+                optentity(destcontainer)) then
+            printinvalid("MoveItemFromHalfOfSlot", player)
+            return
+        end
+        local container = srccontainer.components.container
+        if container ~= nil then
             container:MoveItemFromHalfOfSlot(slot, destcontainer or player)
         end
     end,
 
     MakeRecipeFromMenu = function(player, recipe, skin_index)
+        if not (checknumber(recipe) and
+                optnumber(skin_index)) then
+            printinvalid("MakeRecipeFromMenu", player)
+            return
+        end
         local builder = player.components.builder
         if builder ~= nil then
             for k, v in pairs(AllRecipes) do
@@ -383,6 +609,14 @@ local RPC_HANDLERS =
     end,
 
     MakeRecipeAtPoint = function(player, recipe, x, z, rot, skin_index)
+        if not (checknumber(recipe) and
+                checknumber(x) and
+                checknumber(z) and
+                checknumber(rot) and
+                optnumber(skin_index)) then
+            printinvalid("MakeRecipeAtPoint", player)
+            return
+        end
         local builder = player.components.builder
         if builder ~= nil then
             for k, v in pairs(AllRecipes) do
@@ -395,6 +629,10 @@ local RPC_HANDLERS =
     end,
 
     BufferBuild = function(player, recipe)
+        if not checknumber(recipe) then
+            printinvalid("BufferBuild", player)
+            return
+        end
         local builder = player.components.builder
         if builder ~= nil then
             for k, v in pairs(AllRecipes) do
@@ -417,25 +655,26 @@ local RPC_HANDLERS =
     end,
 
     SetWriteableText = function(player, target, text)
-        local writeable = target ~= nil and target.components.writeable or nil
+        if not (checkentity(target) and
+                optstring(text)) then
+            printinvalid("SetWriteableText", player)
+            return
+        end
+        local writeable = target.components.writeable
         if writeable ~= nil then
             writeable:Write(player, text)
         end
     end,
 
     ToggleController = function(player, isattached)
+        if not checkbool(isattached) then
+            printinvalid("ToggleController", player)
+            return
+        end
         local playercontroller = player.components.playercontroller
         if playercontroller ~= nil then
             playercontroller:ToggleController(isattached)
         end
-    end,
-
-    StartVote = function(player, command, parameters)
-        TheWorld.net.components.voter:StartVote(player, command, parameters)
-    end,
-
-    Vote = function(player, option_index)
-        TheWorld.net.components.voter:ReceivedVote(player, option_index)
     end,
 
     OpenGift = function(player)
@@ -446,6 +685,10 @@ local RPC_HANDLERS =
     end,
 
     DoneOpenGift = function(player, usewardrobe)
+        if not optbool(usewardrobe) then
+            printinvalid("DoneOpenGift", player)
+            return
+        end
         local giftreceiver = player.components.giftreceiver
         if giftreceiver ~= nil then
             giftreceiver:OnStopOpenGift(usewardrobe)
@@ -453,6 +696,14 @@ local RPC_HANDLERS =
     end,
 
     CloseWardrobe = function(player, base_skin, body_skin, hand_skin, legs_skin, feet_skin)
+        if not (optstring(base_skin) and
+                optstring(body_skin) and
+                optstring(hand_skin) and
+                optstring(legs_skin) and
+                optstring(feet_skin)) then
+            printinvalid("CloseWardrobe", player)
+            return
+        end
         player:PushEvent("ms_closewardrobe", {
             base = base_skin,
             body = body_skin,
@@ -548,8 +799,6 @@ function AddModRPCHandler(namespace, name, fn)
 
     table.insert(MOD_RPC_HANDLERS[namespace], fn)
     MOD_RPC[namespace][name] = { namespace = namespace, id = #MOD_RPC_HANDLERS[namespace] }
-
-    setmetadata(MOD_RPC[namespace][name])
 
     setmetadata(MOD_RPC[namespace][name])
 end

@@ -257,6 +257,8 @@ local function common_postinit(inst)
     --electricdamageimmune is for combat and not lightning strikes
     --also used in stategraph for not stomping custom light values
 
+    inst.components.talker.mod_str_fn = string.utf8upper
+
     inst.foleysound = "dontstarve/movement/foley/wx78"
 end
 
@@ -280,8 +282,6 @@ local function master_postinit(inst)
 
     inst.components.playerlightningtarget:SetHitChance(1)
     inst.components.playerlightningtarget:SetOnStrikeFn(onlightingstrike)
-
-    inst.components.talker.mod_str_fn = string.utf8upper
 
     onbecamerobot(inst)
 

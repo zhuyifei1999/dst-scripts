@@ -97,7 +97,8 @@ local function CraftOooh() -- Ghost speech!
     return str..ooohpunc()
 end
 
-local function Umlautify(string)
+--V2C: Left this here as a global util function so mods or other characters can use it easily.
+function Umlautify(string)
     if not Profile:IsWathgrithrFontEnabled() then
         return string
     end
@@ -144,15 +145,10 @@ function GetSpecialCharacterString(character)
         or nil
 end
 
+--V2C: Deprecated, set talker.mod_str_fn in character prefab definitions instead
+--     Kept for backward compatibility with mods
 function GetSpecialCharacterPostProcess(character, string)
-    if character == nil then
-        return string
-    end
-
-    character = string.lower(character)
-
-    return (character == "wathgrithr" and Umlautify(string))
-            or string
+    return string
 end
 
 -- When calling GetString, must pass actual instance of entity if it might be used when ghost

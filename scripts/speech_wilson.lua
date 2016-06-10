@@ -21,12 +21,12 @@ return {
 		RUMMAGE =
 		{	
 			GENERIC = "I can't do that.",
-			INUSE = "I should wait my turn.",	
+			INUSE = "They're elbow deep in junk right now.",	
 		},
         COOK =
         {
-            GENERIC = "I can't do that.",
-            INUSE = "I should wait my turn.",
+            GENERIC = "I can't cook right now.",
+            INUSE = "Looks like we had the same idea.",
             TOOFAR = "It's too far away!",
         },
         GIVE =
@@ -53,12 +53,12 @@ return {
     	},
         WRITE =
         {
-            GENERIC = "I can't do that.",
+            GENERIC = "I think it's fine as is.",
             INUSE = "There's only room for one scribbler.",
         },
         CHANGEIN =
         {
-            GENERIC = "I can't do that.",
+            GENERIC = "I don't want to change right now.",
             BURNING = "It's too dangerous right now!",
             INUSE = "It can only handle one style change at a time.",
         },
@@ -393,7 +393,7 @@ return {
 		MULTITOOL_AXE_PICKAXE = "It's brilliant!",
 		ORANGESTAFF = "This beats walking.",
 		YELLOWAMULET = "Warm to the touch.",
-		GREENAMULET = "Just when I thought we couldn't get any better.",
+		GREENAMULET = "No base should be without one!",
 		SLURPERPELT = "Doesn't look all that much different dead.",	
 
 		SLURPER = "It's so hairy!",
@@ -1310,6 +1310,7 @@ return {
         SADDLE_RACE = "This saddle really flies!",
         SADDLE_WAR = "The only problem is the saddle sores.",
         SADDLEHORN = "This could take a saddle off.",
+        SALTLICK = "How many licks does it take to get to the center?",
         BRUSH = "I bet the beefalo really like this.",
 		SANITYROCK =
 		{

@@ -164,7 +164,7 @@ local COMPONENT_ACTIONS =
 
 
         sleepingbag = function(inst, doer, actions)
-        	if doer:HasTag("player") and not doer:HasTag("insomniac") and not inst:HasTag("hassleeper") then
+            if doer:HasTag("player") and not doer:HasTag("insomniac") and not inst:HasTag("hassleeper") then
                 table.insert(actions, ACTIONS.SLEEPIN)
             end
         end,

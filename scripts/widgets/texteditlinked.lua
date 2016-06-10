@@ -63,10 +63,14 @@ function TextEditLinked:OnRawKey(key, down)
                 end
 				for i=1,#clipboard do
 					local char = clipboard:sub(i,i)
-					if not self:OnTextInput(char) and self.next_text_edit ~= nil then
-						self.next_text_edit:OnTextInput(char)
+                    local success, overflow = self:OnTextInput(char)
+					if not success and self.next_text_edit ~= nil then
+						success, overflow = self.next_text_edit:OnTextInput(char)
 					end
-				end
+                    if overflow then
+                        break
+                    end
+                end
                 self.pasting = false
                 if self.next_text_edit ~= nil then
                     self.next_text_edit.pasting = false

@@ -10,7 +10,6 @@ local assets =
     Asset("ANIM", "anim/tree_leaf_orange_build.zip"), --autumn leaves build
     Asset("ANIM", "anim/tree_leaf_yellow_build.zip"), --autumn leaves build
     Asset("ANIM", "anim/tree_leaf_poison_build.zip"), --poison leaves build
-    Asset("ANIM", "anim/dust_fx.zip"),
     Asset("SOUND", "sound/forest.fsb"),
     Asset("SOUND", "sound/decidous.fsb"),
     Asset("MINIMAP_IMAGE", "tree_leaf"),

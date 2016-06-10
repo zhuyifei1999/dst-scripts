@@ -7,6 +7,11 @@ require "perfutil"
 require "maputil"
 require "constants"
 require "knownerrors"
+
+require "usercommands"
+require "builtinusercommands"
+require "emotes"
+
 local Stats = require("stats")
 
 -- globals
@@ -503,6 +508,7 @@ end
 local function OnPlayerActivated(world)
     if not world.isdeactivated then
         start_game_time = GetTime()
+        TheInput:CacheController()
         if ThePlayer ~= nil and
             ThePlayer.player_classified ~= nil and
             not ThePlayer.player_classified.isfadein:value() then
@@ -532,6 +538,7 @@ end
 
 local function OnPlayerDeactivated(world, player)
     if not world.isdeactivated then
+        TheInput:ClearCachedController()
         TheFrontEnd:ClearScreens()
         TheFrontEnd:SetFadeLevel(1)
         TheMixer:PopMix("normal")

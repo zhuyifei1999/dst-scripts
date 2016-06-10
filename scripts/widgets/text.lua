@@ -181,4 +181,8 @@ function Text:EnableWordWrap(enable)
     self.inst.TextWidget:EnableWordWrap(enable)
 end
 
+function Text:EnableWhitespaceWrap(enable)
+    self.inst.TextWidget:EnableWhitespaceWrap(enable)
+end
+
 return Text

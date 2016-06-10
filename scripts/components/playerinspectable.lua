@@ -1,16 +1,11 @@
-local EQUIPSLOT_NAMES = {}
-for k, v in pairs(EQUIPSLOTS) do
-    table.insert(EQUIPSLOT_NAMES, v)
-end
-local EQUIPSLOT_IDS = table.invert(EQUIPSLOT_NAMES)
-EQUIPSLOT_NAMES = nil
+local EquipSlot = require("equipslotutil")
 
 local function OnEquip(inst, data)
-    inst.Network:SetPlayerEquip(EQUIPSLOT_IDS[data.eslot], data.item:GetSkinName() or data.item.prefab)
+    inst.Network:SetPlayerEquip(EquipSlot.ToID(data.eslot), data.item:GetSkinName() or data.item.prefab)
 end
 
 local function OnUnequip(inst, data)
-    inst.Network:SetPlayerEquip(EQUIPSLOT_IDS[data.eslot], "")
+    inst.Network:SetPlayerEquip(EquipSlot.ToID(data.eslot), "")
 end
 
 local PlayerInspectable = Class(function(self, inst)

@@ -34,6 +34,17 @@ local function GetWanderDistFn(inst)
     return TheWorld.state.isday and WANDER_DIST_DAY or WANDER_DIST_NIGHT
 end
 
+local function CheckForSaltlick(inst)
+    local lick = FindEntity(inst, TUNING.SALTLICK_CHECK_DIST, nil, {"saltlick"})
+    if lick ~= nil then
+        inst.components.knownlocations:RememberLocation("saltlick", lick:GetPosition())
+        return true
+    else
+        inst.components.knownlocations:ForgetLocation("saltlick")
+        return false
+    end
+end
+
 local LightningGoatBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
 end)
@@ -50,6 +61,8 @@ function LightningGoatBrain:OnStart()
             RunAway(self.inst, ShouldRunAway, RUN_AWAY_DIST, STOP_RUN_AWAY_DIST)
         },
         FaceEntity(self.inst, GetFaceTargetFn, KeepFaceTargetFn),
+        IfNode(function() return CheckForSaltlick(self.inst) end, "Stay Near Salt",
+            Wander(self.inst, function() return self.inst.components.knownlocations:GetLocation("saltlick") end, GetWanderDistFn)),
         Wander(self.inst, function() return self.inst.components.knownlocations:GetLocation("herd") end, GetWanderDistFn)
     },.25)
 

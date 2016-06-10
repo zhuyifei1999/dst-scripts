@@ -47,7 +47,7 @@ local Builder = Class(function(self, inst)
         end
     end
 
-    self.exclude_tags = { "INLIMBO" }
+    self.exclude_tags = { "INLIMBO", "fire" }
     for k, v in pairs(CUSTOM_RECIPETABS) do
         if v.owner_tag ~= nil and not inst:HasTag(v.owner_tag) then
             table.insert(self.exclude_tags, v.owner_tag)
