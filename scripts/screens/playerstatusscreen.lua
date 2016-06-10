@@ -693,17 +693,21 @@ function PlayerStatusScreen:DoInit(ClientObjs)
             playerListing.ban:Hide()
         end
 
-        local actions = UserCommands.GetUserActions(self.owner, playerListing.userid)
-        for i=#actions,1,-1 do
-            if actions[i].commandname == "kick" or actions[i].commandname == "ban" then
-                table.remove(actions, i)
-            end
-        end
-        if #actions > 0 then
-            playerListing.useractions:Show()
-            playerListing.useractions:SetPosition(button_start+button_x_offset*4,3,0)
+        if this_user_is_dedicated_server then
+            playerListing.useractions.Hide()
         else
-            playerListing.useractions:Hide()
+            local actions = UserCommands.GetUserActions(self.owner, playerListing.userid)
+            for i=#actions,1,-1 do
+                if actions[i].commandname == "kick" or actions[i].commandname == "ban" then
+                    table.remove(actions, i)
+                end
+            end
+            if #actions > 0 then
+                playerListing.useractions:Show()
+                playerListing.useractions:SetPosition(button_start+button_x_offset*4,3,0)
+            else
+                playerListing.useractions:Hide()
+            end
         end
 
         doButtonFocusHookups(playerListing)
