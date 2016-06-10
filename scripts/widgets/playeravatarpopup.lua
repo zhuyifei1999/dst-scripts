@@ -8,15 +8,9 @@ local Widget = require "widgets/widget"
 local ImageButton = require "widgets/imagebutton"
 local SkinsPuppet = require "widgets/skinspuppet"
 local TEMPLATES = require "widgets/templates"
+local EquipSlot = require("equipslotutil")
 
 local REFRESH_INTERVAL = .5
-
-local EQUIPSLOT_NAMES = {}
-for k, v in pairs(EQUIPSLOTS) do
-    table.insert(EQUIPSLOT_NAMES, v)
-end
-local EQUIPSLOT_IDS = table.invert(EQUIPSLOT_NAMES)
-EQUIPSLOT_NAMES = nil
 
 local PlayerAvatarPopup = Class(Widget, function(self, owner, player_name, data, show_net_profile)
     Widget._ctor(self, "PlayerAvatarPopupScreen")
@@ -476,7 +470,7 @@ function PlayerAvatarPopup:CreateEquipWidgetForSlot()
 end
 
 function PlayerAvatarPopup:UpdateEquipWidgetForSlot(image_group, slot, equipdata)
-    local name = equipdata ~= nil and equipdata[EQUIPSLOT_IDS[slot]] or nil
+    local name = equipdata ~= nil and equipdata[EquipSlot.ToID(slot)] or nil
     name = name ~= nil and #name > 0 and name or "none"
 
     local rarity = GetRarityForItem("item", name)

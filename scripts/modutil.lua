@@ -526,8 +526,12 @@ local function InsertPostInitFunctions(env, isworldgen)
 			ThePlayer.HUD:SetModFocus(env.modname, focusid, hasfocus)
 		end
     end
-  
-    
+
+    env.AddUserCommand = function(command_name, data)
+        initprint("AddUserCommand", command_name)
+        AddModUserCommand(env.modname, command_name, data)
+    end
+
 	env.AddVoteCommand = function(command_name, init_options_fn, process_result_fn, vote_timeout )
 		initprint("AddVoteCommand", command_name, init_options_fn, process_result_fn, vote_timeout )
 		

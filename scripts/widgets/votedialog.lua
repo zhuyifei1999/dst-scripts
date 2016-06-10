@@ -5,221 +5,408 @@ local Image = require "widgets/image"
 local ThreeSlice = require "widgets/threeslice"
 local ControllerVoteScreen = require "screens/controllervotescreen"
 
-VOTE_DIALOG_X_OFFSET = 350
-VOTE_ROOT_SCALE = 0.75
-local VoteDialog = Class(Widget, function(self)
+--NOTE: some of these constants are copied to controllervotescreen.lua
+--      (make sure to keep them in sync!)
+local VOTE_ROOT_SCALE = .75
+local LABEL_SCALE = .8
+local BUTTON_SCALE = 1.2
+local DROP_SPEED = -400
+local DROP_ACCEL = 750
+local UP_ACCEL = 2000
+local BOUNCE_ABSORB = .25
+local SETTLE_SPEED = 25
+
+local CONTROLLER_POP_SPEED = .1
+local CONTROLLER_OPEN_SCALE = .95
+local CONTROLLER_OPEN_POS = Vector3(0, -56, 0)
+local CONTROLLER_CLOSE_POS = Vector3(0, 0, 0)
+
+local function empty()
+end
+
+local VoteDialog = Class(Widget, function(self, owner)
     Widget._ctor(self, "VoteDialog")
 
+    self.owner = owner
+
+    self.controller_mode = TheInput:ControllerAttached()
+    self.controller_hint_delay = 0
+    self.controllervotescreen = nil
+    self.controllerselection = nil
+    self.controllerscaling = 0
+
     self.root = self:AddChild(Widget("root"))
-    self.root:SetHAnchor(ANCHOR_MIDDLE)
-    self.root:SetVAnchor(ANCHOR_TOP)
-    self.root:SetScale(VOTE_ROOT_SCALE, VOTE_ROOT_SCALE, 1)
-    
-    self.bg = self.root:AddChild(ThreeSlice("images/ui.xml", "votewindow_top.tex", "votewindow_middle.tex", "votewindow_bottom.tex"))
-    self.bg:SetScale(1, 1, 1)
-    self.bg:SetPosition(0, 0)
-    
-    self.title = self.root:AddChild(Text(BUTTONFONT, 35))
+    self.root:SetScale(VOTE_ROOT_SCALE)
+
+    self.dialogroot = self.root:AddChild(Widget("dialogroot"))
+
+    self.bg = self.dialogroot:AddChild(ThreeSlice("images/ui.xml", "votewindow_top.tex", "votewindow_middle.tex", "votewindow_bottom.tex"))
+
+    self.title = self.dialogroot:AddChild(Text(BUTTONFONT, 35))
     self.title:SetColour(0, 0, 0, 1)
-    self.title:EnableWordWrap(true)
-    self.title:SetRegionSize( 195, 95 ) --set to fit the votewindow_top.tex resolution
-        
-    self.left_bar = self.root:AddChild(Image("images/ui.xml", "scrollbarline.tex"))
+
+    self.timer = self.dialogroot:AddChild(Text(BUTTONFONT, 35))
+    self.timer:SetColour(0, 0, 0, 1)
+
+    self.instruction = self.dialogroot:AddChild(Text(TALKINGFONT, 28))
+    self.instruction:SetScale(1 / VOTE_ROOT_SCALE)
+
+    self.left_bar = self.dialogroot:AddChild(Image("images/ui.xml", "scrollbarline.tex"))
     self.left_bar:SetPosition(-75, 200)
     self.left_bar:SetTint(0, 0, 0, 1)
-    self.left_bar:SetScale(1.5,1,1)
+    self.left_bar:SetScale(1.5, 1, 1)
     self.left_bar:MoveToBack()
-    
-    self.right_bar = self.root:AddChild(Image("images/ui.xml", "scrollbarline.tex"))
+
+    self.right_bar = self.dialogroot:AddChild(Image("images/ui.xml", "scrollbarline.tex"))
     self.right_bar:SetPosition(75, 200)
     self.right_bar:SetTint(0, 0, 0, 1)
-    self.right_bar:SetScale(-1.5,1,1)
+    self.right_bar:SetScale(-1.5, 1, 1)
     self.right_bar:MoveToBack()
-    
-    self.options_root = self.root:AddChild(Widget("root"))
 
-	self:Hide()
-    
-    self.inst:ListenForEvent("showvotedialog", function() self:ShowDialog() end, TheWorld)
-    self.inst:ListenForEvent("hidevotedialog", function() self:HideDialog() end, TheWorld)
-    self.inst:ListenForEvent("vote_screen_closed", function() self:ControllerVoteClosed() end, TheWorld)
+    self.options_root = self.dialogroot:AddChild(Widget("root"))
+    self.num_options = 0
+    self.buttons = {}
+    self.labels_desc = {}
+    for i = 1, MAX_VOTE_OPTIONS do
+        local desc = self.options_root:AddChild(Text(BUTTONFONT, 35)) 
+        desc:SetColour(0, 0, 0, 1)
+        desc:SetScale(LABEL_SCALE)
+        desc:Hide()
+        table.insert(self.labels_desc, desc)
 
-	if TheWorld.net.components.voter:GetShowDialog() then
-		self:ShowDialog()
-	end
-end)
+        local closure_index = i
+        local btn = self.options_root:AddChild(ImageButton("images/ui.xml", "checkbox_off.tex", "checkbox_off_highlight.tex", "checkbox_off_disabled.tex", "checkbox_off.tex", nil, { 1, 1 }, { 0, 0 }))
+        btn:SetFont(BUTTONFONT)
+        btn:SetScale(BUTTON_SCALE)
+        btn:SetOnClick(function()
+            if self.started and
+                self.settled and
+                self.owner ~= nil and
+                self.owner.components.playervoter ~= nil then
+                self.owner.components.playervoter:SubmitVote(closure_index)
+            end
+        end)
+        btn:Hide()
+        btn.GetHelpText = empty
+        table.insert(self.buttons, btn)
 
-DROP_SPEED = -400
-DROP_ACCEL = 750
-UP_ACCEL = 2000
-BOUNCE_ABSORB = 0.25
-SETTLE_SPEED = 25
-function VoteDialog:OnUpdate(dt)
-    if self.started then
-		if not self.settled then
-			self.current_speed = self.current_speed - DROP_ACCEL * dt
-			self.current_root_y_pos = self.current_root_y_pos + self.current_speed * dt
-			if self.current_root_y_pos < self.target_root_y_pos then
-				self.current_speed = -self.current_speed * BOUNCE_ABSORB
-				if self.current_speed < SETTLE_SPEED then
-					self.settled = true
-				end
-				self.current_root_y_pos = self.target_root_y_pos
-			end
-			self.root:SetPosition(Vector3(VOTE_DIALOG_X_OFFSET, self.current_root_y_pos, 0))
-		end
-	elseif self.current_root_y_pos < self.start_root_y_pos then
-		self.current_speed = self.current_speed + UP_ACCEL * dt
-		self.current_root_y_pos = self.current_root_y_pos + self.current_speed * dt
-		self.root:SetPosition(Vector3(VOTE_DIALOG_X_OFFSET, self.current_root_y_pos, 0))
-    else
-		self:StopUpdating()
-		self:Hide()
+        if i > 1 then
+            btn:SetFocusChangeDir(MOVE_UP, self.buttons[i - 1])
+            self.buttons[i - 1]:SetFocusChangeDir(MOVE_DOWN, btn)
+        end
     end
 
-	if not self.showing_controller_prompt then
-		local option_data = TheWorld.net.components.voter:GetOptionData()
-  		for option_index = 1,option_data.num_options,1 do
-			local option = option_data.options[option_index]
-			local vote_end_str = ""
-			if option.vote_count > 0 then
-				vote_end_str = " ("..tostring(option.vote_count)..")"
-			end
-			self.labels_desc[option_index]:SetString(option.description .. vote_end_str )
-		end
-	end
-	self.timer:SetString("Time Remaining: " .. string.format("%d",TheWorld.net.components.voter:GetTimer()).."s" )
-	
-	if self.started and self.showing_controller_prompt and not self.showing_controller_screen then
-		if TheInput:IsControlPressed(CONTROL_INSPECT) then
-			self.reset_hold_time = self.reset_hold_time + dt
-			if self.reset_hold_time > 2 then
-				self:ShowControllerDialog()
-			end
-		else
-			self.reset_hold_time = 0
-		end
-	end
+    self.start_root_y_pos = 0
+    self.target_root_y_pos = 0
+    self.current_root_y_pos = 0
+    self.current_speed = 0
+    self.started = false
+    self.settled = false
+    self.canvote = false
+    self:Hide()
+
+    self.inst:ListenForEvent("showvotedialog", function(world, data) self:ShowDialog(data) end, TheWorld)
+    self.inst:ListenForEvent("hidevotedialog", function() self:HideDialog() end, TheWorld)
+    self.inst:ListenForEvent("worldvotertick", function(world, data) self:UpdateTimer(data.time) end, TheWorld)
+    self.inst:ListenForEvent("votecountschanged", function(world, data) self:UpdateOptions(data) end, TheWorld)
+    self.inst:ListenForEvent("playervotechanged", function(owner, data) self:UpdateSelection(data.selection, data.canvote) end, self.owner)
+    self.inst:ListenForEvent("continuefrompause", function()
+        self.controller_mode = TheInput:ControllerAttached()
+        self:RefreshLayout()
+    end, TheWorld)
+end)
+
+function VoteDialog:OnUpdate(dt)
+    if self.controller_hint_delay > 0 and self.owner.HUD ~= nil and not self.owner.HUD:HasInputFocus() then
+        self.controller_hint_delay = self.controller_hint_delay - dt
+    end
+    if self.started then
+        if self.settled then
+            self:RefreshController()
+        else
+            self.current_speed = self.current_speed - DROP_ACCEL * dt
+            self.current_root_y_pos = self.current_root_y_pos + self.current_speed * dt
+            if self.current_root_y_pos < self.target_root_y_pos then
+                self.current_speed = -self.current_speed * BOUNCE_ABSORB
+                if self.current_speed < SETTLE_SPEED then
+                    self.settled = true
+                    if not self.controller_mode then
+                        self:StopUpdating()
+                    end
+                    self:RefreshController()
+                end
+                self.current_root_y_pos = self.target_root_y_pos
+            end
+            self.root:SetPosition(0, self.current_root_y_pos, 0)
+        end
+    elseif self.current_root_y_pos < self.start_root_y_pos then
+        self.current_speed = self.current_speed + UP_ACCEL * dt
+        self.current_root_y_pos = self.current_root_y_pos + self.current_speed * dt
+        self.root:SetPosition(0, self.current_root_y_pos, 0)
+    else
+        self:StopUpdating()
+        self:Hide()
+    end
 end
 
-function VoteDialog:ControllerVoteClosed()
-	self.showing_controller_screen = false
+--For ease of overriding in mods
+function VoteDialog:GetDisplayName(clientrecord)
+    return clientrecord.name or ""
 end
 
-function VoteDialog:EnableButtons(enable, selected_index)
-	if not enable then
-		self.buttons[selected_index]:SetTextures( "images/ui.xml", "checkbox_on.tex", "checkbox_on_disabled.tex", "checkbox_on_disabled.tex", "checkbox_on.tex" )
-	end
-	for _,button in pairs(self.buttons) do
-		if enable then
-			button:Show()
-		else
-			button:Disable()
-		end
-	end
-end
+function VoteDialog:ShowDialog(option_data)
+    if option_data == nil then
+        return
+    end
 
-function VoteDialog:ShowControllerDialog()
-	self.showing_controller_screen = true
-	
-	--push new controller screen
-    TheFrontEnd:PushScreen(ControllerVoteScreen())
-end
-
-function VoteDialog:ShowDialog()
     self.started = true
     self.settled = false
+    self.canvote = false
+    self.controllerselection = nil
     self:StartUpdating()
     self:Show()
-        
-    self.options_root:KillAllChildren()
-    
-	local option_data = TheWorld.net.components.voter:GetOptionData()
-    if TheInput:ControllerAttached() then
-		self.bg:SetImages("images/ui.xml", "votewindow_top.tex", "votewindow_middle.tex", "votewindow_controll_bottom.tex")
-		self.bg:ManualFlow(0)
-		
-		self.current_speed = DROP_SPEED
-		self.start_root_y_pos = (self.bg.end_cap_size) * VOTE_ROOT_SCALE
-		self.current_root_y_pos = self.start_root_y_pos
-		self.target_root_y_pos = (-self.bg.start_cap_size) * VOTE_ROOT_SCALE - 20
-		self.root:SetPosition(Vector3(VOTE_DIALOG_X_OFFSET, self.current_root_y_pos, 0))
-		
-		self.title:SetPosition(0, self.bg.start_cap_size*0.38, 0)
-		self.title:SetString( option_data.title )
-		
-		self.timer = self.options_root:AddChild(Text(BUTTONFONT, 35))
-		self.timer:SetColour(0, 0, 0, 1)
-		
-		self.instruction = self.options_root:AddChild(Text(UIFONT, 35))
-		self.instruction:SetString("Hold "..TheInput:GetLocalizedControl(TheInput:GetControllerID(), CONTROL_INSPECT).." to vote.")
-		local x,y = self.instruction:GetRegionSize()
-		if x > 195 then
-			self.instruction:EnableWordWrap(true)
-			self.instruction:SetRegionSize( 195, 95 )
-			
-			self.timer:SetPosition(0, -self.bg.end_cap_size * 0.12, 0)
-			self.instruction:SetPosition(3, -self.bg.end_cap_size * 0.50, 0)
-		else
-			self.timer:SetPosition(0, -self.bg.end_cap_size * 0.2, 0)
-			self.instruction:SetPosition(3, -self.bg.end_cap_size * 0.5, 0)
-		end
-    
-		self.showing_controller_prompt = true
-		self.showing_controller_screen = false
-    else
-		self.bg:SetImages("images/ui.xml", "votewindow_top.tex", "votewindow_middle.tex", "votewindow_bottom.tex")
-		self.bg:ManualFlow(option_data.num_options)
-	    
-		local fill_dist = option_data.num_options * self.bg.filler_size
-	    
-		self.current_speed = DROP_SPEED
-		self.start_root_y_pos = (fill_dist/2 + self.bg.end_cap_size) * VOTE_ROOT_SCALE
-		self.current_root_y_pos = self.start_root_y_pos
-		self.target_root_y_pos = (-fill_dist/2 - self.bg.start_cap_size) * VOTE_ROOT_SCALE - 20
-		self.root:SetPosition(Vector3(VOTE_DIALOG_X_OFFSET, self.current_root_y_pos, 0))
-	    
-		self.title:SetPosition(0, self.bg.start_cap_size*0.38 + (self.bg.filler_size * option_data.num_options)/2, 0)
-		self.title:SetString( option_data.title )
-	    
-	    
-		self.buttons = {}
-		self.labels_count = {}
-		self.labels_desc = {}
-		for option_index = 1,option_data.num_options,1 do
-			local option = option_data.options[option_index]
 
-			self.labels_desc[option_index] = self.options_root:AddChild(Text(BUTTONFONT, 35)) 
-			self.labels_desc[option_index]:SetPosition(-14,fill_dist/2 - self.bg.filler_size*(option_index-1+.5)-2,0 )
-			self.labels_desc[option_index]:SetString(option.description)
-			self.labels_desc[option_index]:SetColour(0, 0, 0, 1)
-			self.labels_desc[option_index]:SetScale(.8)
-			
-			self.buttons[option_index] = self.options_root:AddChild(ImageButton("images/ui.xml", "checkbox_off.tex", "checkbox_off_highlight.tex", "checkbox_off_disabled.tex", "checkbox_off.tex", nil, {1,1}, {0,0}))
-			self.buttons[option_index]:SetFont(BUTTONFONT)
-			local closure_index = option_index
-			self.buttons[option_index]:SetOnClick(function() self:EnableButtons(false, closure_index) TheWorld.net.components.voter:ReceivedVote( ThePlayer, closure_index ) end)
-			self.buttons[option_index]:SetText("")
-			self.buttons[option_index]:SetPosition(75,fill_dist/2 - self.bg.filler_size*(option_index-1+.5) - 5,0 )
-			self.buttons[option_index]:SetScale(1.2)
-		end
-		
-		self:EnableButtons(true)
-		
-		self.timer = self.options_root:AddChild(Text(BUTTONFONT, 35))
-		self.timer:SetColour(0, 0, 0, 1)
-		self.timer:SetPosition(0, -self.bg.end_cap_size * 0.42 -(self.bg.filler_size * option_data.num_options)/2, 0)
-		self.timer:SetString("time")
-		
-		self.showing_controller_screen = false
-		self.showing_controller_prompt = false
-	end
+    if self:IsVisible() then
+        TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/skin_drop_slide_gift_DOWN")
+    end
+
+    self:UpdateOptions(option_data, true)
+    self:RefreshLayout()
+    self.current_root_y_pos = self.start_root_y_pos
+    self.current_speed = DROP_SPEED
+    self.root:SetPosition(0, self.current_root_y_pos, 0)
+    self.timer:SetString("")
+
+    if self.owner ~= nil and self.owner.components.playervoter ~= nil then
+        self:UpdateSelection(self.owner.components.playervoter:GetSelection(), self.owner.components.playervoter:CanVote())
+    else
+        self:UpdateSelection(nil, false)
+    end
+end
+
+function VoteDialog:RefreshLayout()
+    self.bg:ManualFlow(self.num_options)
+
+    local fill_dist = self.num_options > 0 and self.num_options * self.bg.filler_size or 0
+
+    self.start_root_y_pos = (.5 * fill_dist + self.bg.end_cap_size) * VOTE_ROOT_SCALE
+    self.target_root_y_pos = (-.5 * fill_dist - self.bg.start_cap_size) * VOTE_ROOT_SCALE - 20
+
+    self.title:SetPosition(0, .38 * self.bg.start_cap_size + .5 * fill_dist, 0)
+    self.timer:SetPosition(0, -.42 * self.bg.end_cap_size - .5 * fill_dist, 0)
+    self.instruction:SetPosition(0, -25 - self.bg.end_cap_size - .5 * fill_dist, 0)
+
+    for i = 1, self.num_options do
+        self.labels_desc[i]:SetPosition(-16, .5 * fill_dist - self.bg.filler_size * (i - .5) - 2, 0)
+        self.buttons[i]:SetPosition(115, .5 * fill_dist - self.bg.filler_size * (i - .5) - 5, 0)
+    end
+
+    if self.controller_mode then
+        self:SetControllerInstruction()
+        if self.started and self.settled then
+            self:StartUpdating()
+        end
+    elseif self.started and self.settled then
+        self:StopUpdating()
+    end
+
+    self:RefreshController()
+end
+
+function VoteDialog:RefreshController()
+    if self.owner.HUD == nil or
+        self.owner.HUD:HasInputFocus() then
+        --Give time for playercontroller to recapture targets
+        self.controller_hint_delay = 2.5 * FRAMES
+        self.instruction:Hide()
+    elseif self.controller_mode and
+        self.started and
+        self.settled and
+        self.canvote and
+        self.controllerscaling <= 0 and
+        self.controller_hint_delay <= 0 and
+        self:IsVisible() and
+        not self.owner.HUD:IsPlayerAvatarPopUpOpen() and
+        self.owner.components.playercontroller ~= nil and
+        not (self.owner.components.playercontroller:IsEnabled() and
+            self.owner.components.playercontroller:GetInspectButtonAction(self.owner.components.playercontroller:GetControllerTarget()) ~= nil) then
+        self.instruction:Show()
+    else
+        self.instruction:Hide()
+    end
+end
+
+function VoteDialog:SetControllerInstruction()
+    self.instruction:SetString(TheInput:GetLocalizedControl(TheInput:GetControllerID(), CONTROL_INSPECT).." "..STRINGS.UI.VOTEDIALOG.VOTE)
 end
 
 function VoteDialog:HideDialog()
-    self.started = false
-    self.current_speed = 0
+    if self.started then
+        self.started = false
+        self.settled = false
+        self.canvote = false
+        self.current_speed = 0
+        self:StartUpdating()
+        self:RefreshController()
+
+        TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/skin_drop_slide_gift_UP")
+    end
 end
 
+function VoteDialog:UpdateTimer(remaining)
+    if not self.started then
+        return
+    end
+    self.timer:SetString(remaining ~= nil and string.format(STRINGS.UI.VOTEDIALOG.TIME_REMAINING, remaining) or "")
+end
+
+function VoteDialog:UpdateOptions(option_data, norefresh)
+    if not self.started then
+        return
+    end
+
+    self.title:SetMultilineTruncatedString(string.format(option_data.titlefmt or "", option_data.targetclient ~= nil and self:GetDisplayName(option_data.targetclient) or ""), 2, 260, 55, true)
+
+    local options = option_data.options
+    local old_num_options = self.num_options
+    self.num_options = math.min(MAX_VOTE_OPTIONS, options ~= nil and #options or 0)
+
+    for i = 1, self.num_options do
+        local option = options[i]
+        local label = self.labels_desc[i]
+        label:Show()
+        self.buttons[i]:Show()
+        if option == nil then
+            label:SetString("")
+        elseif option.vote_count == nil or option.vote_count <= 0 then
+            label:SetTruncatedString(option.description, 260, 55, true)
+        else
+            local str = option.description..string.format(" (%d)", option.vote_count)
+            label:SetTruncatedString(str, 260, 55, false)
+            if label:GetString():len() < str:len() then
+                label:SetTruncatedString(option.description, 260, 55, string.format("...(%d)", option.vote_count))
+            end
+        end
+    end
+
+    if old_num_options ~= self.num_options then
+        for i = self.num_options + 1, old_num_options do
+            self.labels_desc[i]:Hide()
+            self.buttons[i]:Hide()
+        end
+
+        if not norefresh then
+            --The only point of norefresh is so we don't refresh
+            --twice in a row when we are called from ShowDialog.
+            self:RefreshLayout()
+        end
+    end
+end
+
+function VoteDialog:UpdateSelection(selected_index, canvote)
+    if not self.started then
+        return
+    end
+    for i, v in ipairs(self.buttons) do
+        if i == selected_index then
+            v:SetTextures("images/ui.xml", "checkbox_on.tex", "checkbox_on_disabled.tex", "checkbox_on_disabled.tex", "checkbox_on.tex")
+        else
+            v:SetTextures("images/ui.xml", "checkbox_off.tex", "checkbox_off_highlight.tex", "checkbox_off_disabled.tex", "checkbox_off.tex")
+        end
+        if canvote then
+            v:Enable()
+        else
+            v:Disable()
+        end
+    end
+    self.canvote = canvote
+    if not canvote and self.controllervotescreen ~= nil then
+        self.controllervotescreen:Close()
+    end
+end
+
+--Called from PlayerHud:OnControl
+function VoteDialog:CheckControl(control, down)
+    if self.shown and down and self.enabled and control == CONTROL_INSPECT then
+        self:RefreshController()
+        if self.instruction.shown then
+            self:OnOpenControllerVoteScreen()
+            return true
+        end
+    end
+end
+
+function VoteDialog:IsOpen()
+    return self.started
+end
+
+function VoteDialog:IsControllerVoteScreenOpen()
+    return self.controllervotescreen ~= nil
+end
+
+function VoteDialog:OnOpenControllerVoteScreen()
+    if self.controllervotescreen == nil then
+        self:StopUpdating()
+
+        self.controllervotescreen = ControllerVoteScreen(self)
+        TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/craft_open")
+        TheFrontEnd:PushScreen(self.controllervotescreen)
+
+        self.instruction:SetString(TheInput:GetLocalizedControl(TheInput:GetControllerID(), CONTROL_CANCEL).." "..STRINGS.UI.VOTEDIALOG.CANCEL)
+        self.instruction:SetScale(1 / CONTROLLER_OPEN_SCALE)
+        self.instruction:Hide()
+
+        self.controllervotescreen:ClearFocus()
+
+        self.controllerscaling = self.controllerscaling + 1
+        self.dialogroot:MoveTo(CONTROLLER_CLOSE_POS, CONTROLLER_OPEN_POS, CONTROLLER_POP_SPEED)
+        self.root:ScaleTo(VOTE_ROOT_SCALE, CONTROLLER_OPEN_SCALE, CONTROLLER_POP_SPEED,
+            function()
+                self.controllerscaling = self.controllerscaling - 1
+                if self.controllerscaling <= 0 and self.controllervotescreen ~= nil then
+                    self.instruction:Show()
+                    self.controllervotescreen.default_focus =
+                        self.buttons[
+                            self.controllerselection ~= nil and
+                            self.controllerselection <= self.num_options and
+                            self.controllerselection >= 1 and
+                            self.controllerselection or 1
+                        ]
+                    self.controllervotescreen:SetDefaultFocus()
+                end
+            end)
+    end
+end
+
+function VoteDialog:CloseControllerVoteScreen()
+    if self.controllervotescreen ~= nil then
+        self.controllervotescreen:Close()
+    end
+end
+
+--For internal use only! Call :CloseControllerVoteScreen() instead of this one
+function VoteDialog:OnCloseControllerVoteScreen(selection)
+    if self:IsVisible() then
+        TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/craft_close")
+    end
+
+    self.controllerselection = selection or self.controllerselection
+    self.controllervotescreen = nil
+
+    self.instruction:SetScale(1 / VOTE_ROOT_SCALE)
+    self.instruction:Hide()
+
+    self.controllerscaling = self.controllerscaling + 1
+    self.dialogroot:MoveTo(CONTROLLER_OPEN_POS, CONTROLLER_CLOSE_POS, CONTROLLER_POP_SPEED)
+    self.root:ScaleTo(CONTROLLER_OPEN_SCALE, VOTE_ROOT_SCALE, CONTROLLER_POP_SPEED,
+        function()
+            self.controllerscaling = self.controllerscaling - 1
+        end)
+
+    if self.controller_mode then
+        self:SetControllerInstruction()
+        self:StartUpdating()
+    end
+end
 
 return VoteDialog

@@ -541,9 +541,9 @@ function FrontEnd:UpdateConsoleOutput()
 end
 
 function FrontEnd:Update(dt)
-	if CHEATS_ENABLED then
-	    ProbeReload(Input:IsKeyDown(KEY_F6))
-	end
+    if CHEATS_ENABLED then
+        ProbeReload(TheInput:IsKeyDown(KEY_F6))
+    end
 
 	if self.saving_indicator ~= nil and self.saving_indicator.shown then
 		if self.save_indicator_fade then

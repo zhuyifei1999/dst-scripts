@@ -54,7 +54,7 @@ function Tune(overrides)
 		MAX_FIRE_DAMAGE_PER_SECOND = 120,
 		
 		GOLDENTOOLFACTOR = 4*multiplayer_goldentool_modifier,
-	
+
 	    DARK_CUTOFF = 0,
 	    DARK_SPAWNCUTOFF = 0.1,
 	    WILSON_HEALTH = wilson_health,
@@ -69,9 +69,9 @@ function Tune(overrides)
 	    WX78_MAX_HEALTH = 400,
 	    WX78_MAX_HUNGER = 200,
 	    WX78_MAX_SANITY = 300,
-	    
+
 	    WILSON_SANITY = 200,
-	    
+
 	    WILLOW_SANITY = 120,
 	    WILLOW_SANITY_MODIFIER = 1.1,
 	    WILLOW_FIRE_DAMAGE = 0.5,
@@ -86,7 +86,7 @@ function Tune(overrides)
 	    BERNIE_DECAY_TIME = total_day_time * 3,
 	    BERNIE_SPEED = 1,
 
-	    BALLOON_PILE_DECAY_TIME = total_day_time * 3,
+        BALLOON_PILE_DECAY_TIME = total_day_time * 3,
         BALLOON_MAX_COUNT = 100,
 
 	    HAMMER_LOOT_PERCENT = .5,
@@ -403,6 +403,13 @@ function Tune(overrides)
 	        {base=5*day_time, random=2*day_time},   --tall
 	        {base=1*day_time, random=0.5*day_time}   --old
 	    },
+        TWIGGY_TREE_GROW_TIME =
+        {
+            {base=1.5*day_time, random=0.5*day_time},   --short
+            {base=3*day_time, random=1*day_time},   --normal
+            {base=3*day_time, random=1*day_time},   --tall
+            {base=5*day_time, random=0.5*day_time}   --old
+        },
 	    PINECONE_GROWTIME = {base=0.75*day_time, random=0.25*day_time},
 	    EVERGREEN_CHOPS_SMALL = 5,
 	    EVERGREEN_CHOPS_NORMAL = 10,
@@ -1674,8 +1681,6 @@ function Tune(overrides)
             SHADOWDUELIST = .35,
         },
 
-        WAXWELLJOURNAL_DECAY_TIME = total_day_time * 3,
-
 		LIVINGTREE_CHANCE = 0.55,
 
 		-- Birchnut monster chances have been reduced and tied to seasons instead of the number of days to balance things out for dedicated servers (which may be running for extremely long times)
@@ -1974,6 +1979,17 @@ function Tune(overrides)
         HUTCH_PRICKLY_DAMAGE = 30,
 
         NUM_PREFAB_SWAPS = 0,
+
+        SALTLICK_CHECK_DIST = 30,
+        SALTLICK_MAX_LICKS = 120, -- 15 days @ 8 licks per day
+        SALTLICK_BEEFALO_DURATION = total_day_time / 8,
+        SALTLICK_KOALEFANT_DURATION = total_day_time / 16,
+        SALTLICK_LIGHTNINGGOAT_DURATION = total_day_time / 6,
+
+        VOTE_PASSED_SQUELCH_TIME = 0,
+        VOTE_FAILED_SQUELCH_TIME = 30,
+        VOTE_CANCELLED_SQUELCH_TIME = 30,
+        VOTE_TIMEOUT_DEFAULT = 30,
     }
 end
 

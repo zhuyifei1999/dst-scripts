@@ -25,7 +25,13 @@ local Eater = Class(function(self, inst)
     self.lasteattime = nil
     self.ignoresspoilage = false
     self.eatwholestack = false
-
+--[[
+    --can be overridden by prefabs
+    self.stale_hunger = nil
+    self.stale_health = nil
+    self.spoiled_hunger = nil
+    self.spoiled_health = nil
+]]
     self.healthabsorption = 1
     self.hungerabsorption = 1
     self.sanityabsorption = 1

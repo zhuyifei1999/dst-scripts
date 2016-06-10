@@ -1426,9 +1426,12 @@ local states =
                     end
                 end
                 inst:PerformBufferedAction()
+            end),
+
+            TimeEvent(9 * FRAMES, function(inst)
                 inst.sg:RemoveStateTag("premine")
             end),
-            
+
             TimeEvent(14 * FRAMES, function(inst)
                 if inst.components.playercontroller ~= nil and
                     inst.components.playercontroller:IsAnyOfControlsPressed(
@@ -1490,10 +1493,14 @@ local states =
 
         timeline =
         {
-            TimeEvent(9 * FRAMES, function(inst)
+            TimeEvent(7 * FRAMES, function(inst)
                 inst:PerformBufferedAction()
                 inst.sg:RemoveStateTag("prehammer")
                 inst.SoundEmitter:PlaySound("dontstarve/wilson/hit")
+            end),
+
+            TimeEvent(9 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("prehammer")
             end),
 
             TimeEvent(14 * FRAMES, function(inst)
@@ -3149,9 +3156,7 @@ local states =
             inst.AnimState:OverrideSymbol("pan_flute01", "pan_flute", "pan_flute01")
             inst.AnimState:Hide("ARM_carry") 
             inst.AnimState:Show("ARM_normal")
-            if inst.components.inventory.activeitem and inst.components.inventory.activeitem.components.instrument then
-                inst.components.inventory:ReturnActiveItem()
-            end
+            inst.components.inventory:ReturnActiveActionItem(inst.bufferedaction ~= nil and inst.bufferedaction.invobject or nil)
         end,
 
         timeline =
@@ -3194,9 +3199,7 @@ local states =
             inst.AnimState:OverrideSymbol("horn01", "horn", "horn01")
             --inst.AnimState:Hide("ARM_carry") 
             inst.AnimState:Show("ARM_normal")
-            if inst.components.inventory.activeitem and inst.components.inventory.activeitem.components.instrument then
-                inst.components.inventory:ReturnActiveItem()
-            end
+            inst.components.inventory:ReturnActiveActionItem(inst.bufferedaction ~= nil and inst.bufferedaction.invobject or nil)
         end,
 
         timeline =
@@ -3234,9 +3237,7 @@ local states =
             inst.AnimState:OverrideSymbol("bell01", "bell", "bell01")
             --inst.AnimState:Hide("ARM_carry") 
             inst.AnimState:Show("ARM_normal")
-            if inst.components.inventory.activeitem and inst.components.inventory.activeitem.components.instrument then
-                inst.components.inventory:ReturnActiveItem()
-            end
+            inst.components.inventory:ReturnActiveActionItem(inst.bufferedaction ~= nil and inst.bufferedaction.invobject or nil)
         end,
 
         timeline =
@@ -3281,9 +3282,7 @@ local states =
             --inst.AnimState:OverrideSymbol("book_open_pages", "player_actions_uniqueitem", "book_open_pages")
             --inst.AnimState:Hide("ARM_carry") 
             inst.AnimState:Show("ARM_normal")
-            if inst.components.inventory.activeitem and inst.components.inventory.activeitem.components.book then
-                inst.components.inventory:ReturnActiveItem()
-            end
+            inst.components.inventory:ReturnActiveActionItem(inst.bufferedaction ~= nil and (inst.bufferedaction.target or inst.bufferedaction.invobject) or nil)
         end,
 
         timeline =
@@ -4843,7 +4842,7 @@ local states =
                     inst.sg.statemem.emotesoundtask = inst:DoTaskInTime(data.sounddelay, DoEmoteSound, data.sound)
                 end
             elseif data.sound ~= false then
-                inst.SoundEmitter:PlaySound((inst.talker_path_override or "dontstarve/characters/")..(inst.soundsname or inst.prefab)..(data.soundoverride or "/emote"), "emotesound")
+                inst.SoundEmitter:PlaySound((inst.talker_path_override or "dontstarve/characters/")..(inst.soundsname or inst.prefab).."/"..(data.soundoverride or "emote"), "emotesound")
             end
 
             if data.zoom ~= nil then
@@ -5165,9 +5164,7 @@ local states =
             inst.AnimState:PlayAnimation("fan")
             inst.AnimState:OverrideSymbol("fan01", "fan", "fan01") 
             inst.AnimState:Show("ARM_normal")
-            if inst.components.inventory.activeitem and inst.components.inventory.activeitem.components.fan then
-                inst.components.inventory:ReturnActiveItem()
-            end
+            inst.components.inventory:ReturnActiveActionItem(inst.bufferedaction ~= nil and inst.bufferedaction.invobject or nil)
         end,
 
         timeline =

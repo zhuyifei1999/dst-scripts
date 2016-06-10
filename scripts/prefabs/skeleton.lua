@@ -1,3 +1,5 @@
+local EquipSlot = require("equipslotutil")
+
 local assets =
 {
     Asset("ANIM", "anim/skeletons.zip"),
@@ -14,12 +16,6 @@ SetSharedLootTable('skeleton',
     {'boneshard',   1.00},
     {'boneshard',   1.00},
 })
-
-local EQUIPSLOT_NAMES = {}
-for k, v in pairs(EQUIPSLOTS) do
-    table.insert(EQUIPSLOT_NAMES, v)
-end
-local EQUIPSLOT_IDS = table.invert(EQUIPSLOT_NAMES)
 
 local function getdesc(inst, viewer)
     if inst.char ~= nil and not viewer:HasTag("playerghost") then
@@ -150,7 +146,7 @@ local function onsaveplayer(inst, data)
             end
         end
         for i, v in ipairs(data.avatar.equip) do
-            temp[EQUIPSLOT_NAMES[i]] = v
+            temp[EquipSlot.FromID(i)] = v
         end
         data.avatar.equip = temp
     end
@@ -176,8 +172,9 @@ local function onloadplayer(inst, data)
             if data.avatar.equip ~= nil then
                 local temp = {}
                 for k, v in pairs(data.avatar.equip) do
-                    if EQUIPSLOT_IDS[k] ~= nil then
-                        temp[EQUIPSLOT_IDS[k]] = v
+                    local eslotid = EquipSlot.ToID(k)
+                    if eslotid ~= nil then
+                        temp[eslotid] = v
                     elseif inst.unsupported_equips == nil then
                         inst.unsupported_equips = { [k] = v }
                     else
@@ -271,8 +268,8 @@ local function player_custominit(inst)
         equip = {},
     }
 
-    for i, v in ipairs(EQUIPSLOT_NAMES) do
-        table.insert(inst._avatar_net.equip, net_string(inst.GUID, "skeleton_player.avatar.equip."..v))
+    for i = 1, EquipSlot.Count() do
+        table.insert(inst._avatar_net.equip, net_string(inst.GUID, "skeleton_player.avatar.equip["..tostring(i).."]"))
     end
 
     inst.GetSkeletonAvatarData = GetSkeletonAvatarData

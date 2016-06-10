@@ -19,18 +19,18 @@ return {
 		},
 		WRITE =
         {
-            GENERIC = "I'm not mighty enough to do that.",
+            GENERIC = "Wolfgang not good with tiny letters.",
             INUSE = "Can Wolfgang help make scribblemarks when you're done?",
         },
 		RUMMAGE =
         {   
-            GENERIC = "I am not mighty enough to do that.",
-            INUSE = "Wolfgang can share!", 
+            GENERIC = "Maybe Wolfgang do later.",
+            INUSE = "Wolfgang would like to use after you, if okay.", 
         },
 		COOK =
         {
-            GENERIC = "I am not mighty enough to do that.",
-            INUSE = "Wolfgang can share!",
+            GENERIC = "Wolfgang not in cooking mood.",
+            INUSE = "Oh, smells good, friend!",
             TOOFAR = "Is pot very small, or just far away?",
         },
         MOUNT =
@@ -1321,6 +1321,7 @@ return {
         SADDLE_WAR = "We ride like kings!",
         SADDLE_RACE = "Butterflies feel soft under Wolfgang's strong butt!",
         SADDLEHORN = "I won't hurt you, hair cow!",
+        SALTLICK = "Heh heh. Hair cow has funny tongue!",
         BRUSH = "For brush really strong hair!",
 		SANITYROCK =
 		{
@@ -1518,7 +1519,7 @@ return {
  		WORMHOLE_LIMITED = "Is not looking very good.",
         ARMORRUINS = "Protect me? I don't need it!",
         BISHOP_NIGHTMARE = "Is angry man. Should relax.",
-        GREENAMULET = "What is this thing?", 
+        GREENAMULET = "Is so light! Feels like nothingness!", 
         GREENGEM = "Is pretty and cannot be crushed. Like me!",
         KNIGHT_NIGHTMARE = "Funny metal man.",
         MINOTAUR = "Strong! Like me! I like him!",    
@@ -1548,8 +1549,8 @@ return {
         LIFEINJECTOR = "EeeeEEeeEEE!!",
 	},
 	DESCRIBE_GENERIC = "What is this thing?",
-	DESCRIBE_TOODARK = "Help me! It is dark!",
-	DESCRIBE_SMOLDERING = "Is almost on fire.",
+	DESCRIBE_TOODARK = "Help friends! Save Wolfgang from dark!",
+	DESCRIBE_SMOLDERING = "Is almost fire.",
 	EAT_FOOD =
 	{
 		TALLBIRDEGG_CRACKED = "This egg too crunchy.",

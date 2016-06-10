@@ -2,17 +2,23 @@ local prefabs =
 {
     "shadow_despawn",
     "statue_transition_2",
+    "nightmarefuel",
 }
 
 local brain = require "brains/shadowwaxwellbrain"
 
 local function OnAttacked(inst, data)
-    if data.attacker ~= nil and
-        data.attacker.components.petleash ~= nil and
-        data.attacker.components.petleash:IsPet(inst) then
-        data.attacker.components.petleash:DespawnPet(inst)
-    else
-        inst.components.combat:SuggestTarget(data.attacker)
+    if data.attacker ~= nil then
+        if data.attacker.components.petleash ~= nil and
+            data.attacker.components.petleash:IsPet(inst) then
+            if inst.components.lootdropper == nil then
+                inst:AddComponent("lootdropper")
+            end
+            inst.components.lootdropper:SpawnLootPrefab("nightmarefuel", inst:GetPosition())
+            data.attacker.components.petleash:DespawnPet(inst)
+        elseif data.attacker.components.combat ~= nil then
+            inst.components.combat:SuggestTarget(data.attacker)
+        end
     end
 end
 
@@ -52,6 +58,10 @@ local function spearfn(inst)
     inst.components.combat:SetKeepTargetFunction(keeptargetfn) --Keep attacking while leader is near.
 
     return inst
+end
+
+local function nodebrisdmg(inst, amount, overtime, cause, ignore_invincible, afflicter, ignore_absorb)
+    return afflicter ~= nil and afflicter:HasTag("quakedebris")
 end
 
 local function MakeMinion(prefab, tool, hat, master_postinit)
@@ -114,6 +124,7 @@ local function MakeMinion(prefab, tool, hat, master_postinit)
         inst:AddComponent("health")
         inst.components.health:SetMaxHealth(1)
         inst.components.health.nofadeout = true
+        inst.components.health.redirect = nodebrisdmg
 
         inst:AddComponent("combat")
         inst.components.combat.hiteffectsymbol = "torso"

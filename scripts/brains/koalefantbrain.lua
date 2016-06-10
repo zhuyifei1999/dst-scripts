@@ -26,6 +26,17 @@ local function ShouldRunAway(guy)
     return guy:HasTag("character") and not guy:HasTag("notarget")
 end
 
+local function CheckForSaltlick(inst)
+    local lick = FindEntity(inst, TUNING.SALTLICK_CHECK_DIST, nil, {"saltlick"})
+    if lick ~= nil then
+        inst.components.knownlocations:RememberLocation("saltlick", lick:GetPosition())
+        return true
+    else
+        inst.components.knownlocations:ForgetLocation("saltlick")
+        return false
+    end
+end
+
 local KoalefantBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
 end)
@@ -41,6 +52,8 @@ function KoalefantBrain:OnStart()
             RunAway(self.inst, ShouldRunAway, RUN_AWAY_DIST, STOP_RUN_AWAY_DIST)
         },
         FaceEntity(self.inst, GetFaceTargetFn, KeepFaceTargetFn),
+        IfNode(function() return CheckForSaltlick(self.inst) end, "Stay Near Salt",
+            Wander(self.inst, function() return self.inst.components.knownlocations:GetLocation("saltlick") end, WANDER_DIST_DAY)),
         Wander(self.inst)
     }, .25)
 

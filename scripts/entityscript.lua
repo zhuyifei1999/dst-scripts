@@ -703,9 +703,14 @@ function EntityScript:GetDebugString()
     table.insert(str, "-----------\n")
 
     ----[[
+    local cmpkeys = {}
     for k,v in pairs(self.components) do
-        if v.GetDebugString and k and v:GetDebugString() then
-            table.insert(str, k..": "..v:GetDebugString().."\n")
+        table.insert(cmpkeys, k)
+    end
+    table.sort(cmpkeys)
+    for i,key in ipairs(cmpkeys) do
+        if self.components[key].GetDebugString and self.components[key]:GetDebugString() then
+            table.insert(str, key..": "..self.components[key]:GetDebugString().."\n")
         end
     end
     --]]

@@ -367,6 +367,7 @@ PREFABFILES = {
   "ruins_bat",
   "saddle",
   "saddlehorn",
+  "saltlick",
   "sapling",
   "scienceprototyper",
   "scorched_skeleton",

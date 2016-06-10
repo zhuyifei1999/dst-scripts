@@ -121,26 +121,13 @@ local function listingConstructor(v, i, parent, nextWidgets)
     end
 
     local owner = TheNet:GetUserID()
-    local profile_scale = .6
     
     playerListing.viewprofile = playerListing:AddChild(ImageButton("images/scoreboard.xml", "addfriend.tex", "addfriend.tex", "addfriend.tex", "addfriend.tex", nil, {1,1}, {0,0}))
     playerListing.viewprofile:SetPosition(60+nudge_x,0,0)
-    playerListing.viewprofile.scale_on_focus = false
-    playerListing.viewprofile.image:SetScale(profile_scale)
+    playerListing.viewprofile:SetNormalScale(0.234)
+    playerListing.viewprofile:SetFocusScale(0.234*1.1)
+    playerListing.viewprofile:SetFocusSound("dontstarve/HUD/click_mouseover")
     playerListing.viewprofile:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.VIEWPROFILE, { font = NEWFONT_OUTLINE, size = 24, offset_x = 0, offset_y = 30, colour = {1,1,1,1}})
-    local gainfocusfn = playerListing.viewprofile.OnGainFocus
-    playerListing.viewprofile.OnGainFocus =
-    function()
-        gainfocusfn(playerListing.viewprofile)
-        TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover")
-        playerListing.viewprofile.image:SetScale(profile_scale + profile_scale*.05)
-    end
-    local losefocusfn = playerListing.viewprofile.OnLoseFocus
-    playerListing.viewprofile.OnLoseFocus =
-    function()
-        losefocusfn(playerListing.viewprofile)
-        playerListing.viewprofile.image:SetScale(profile_scale)
-    end
     playerListing.viewprofile:SetOnClick(
         function()
             -- Can't do this here because HUD doesn't exist yet. TODO: add the playeravatarpopup to frontend, or wrap it in a screen.
@@ -153,13 +140,13 @@ local function listingConstructor(v, i, parent, nextWidgets)
         playerListing.viewprofile:Hide()
     end
 
-    local mute_scale = .6
     playerListing.isMuted = v.muted == true
 
     playerListing.mute = playerListing:AddChild(ImageButton("images/scoreboard.xml", "chat.tex", "chat.tex", "chat.tex", "chat.tex", nil, {1,1}, {0,0}))
     playerListing.mute:SetPosition(85+nudge_x,0,0)
-    playerListing.mute.image:SetScale(mute_scale)
-    playerListing.mute.scale_on_focus = false
+    playerListing.mute:SetNormalScale(0.234)
+    playerListing.mute:SetFocusScale(0.234*1.1)
+    playerListing.mute:SetFocusSound("dontstarve/HUD/click_mouseover")
     playerListing.mute:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.MUTE, { font = NEWFONT_OUTLINE, size = 24, offset_x = 0, offset_y = 30, colour = {1,1,1,1}})
     playerListing.mute.image.inst.OnUpdateVoice = function(inst)
         inst.widget:SetTint(unpack(playerListing.userid ~= nil and TheNet:IsVoiceActive(playerListing.userid) and VOICE_ACTIVE_COLOUR or VOICE_IDLE_COLOUR))
@@ -186,18 +173,6 @@ local function listingConstructor(v, i, parent, nextWidgets)
         end
     end
     local gainfocusfn = playerListing.mute.OnGainFocus
-    playerListing.mute.OnGainFocus =
-        function()
-            gainfocusfn(playerListing.mute)
-            TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover")
-            playerListing.mute.image:SetScale(mute_scale + .05)
-        end
-    local losefocusfn = playerListing.mute.OnLoseFocus
-    playerListing.mute.OnLoseFocus =
-        function()
-            losefocusfn(playerListing.mute)
-            playerListing.mute.image:SetScale(mute_scale)
-        end
     playerListing.mute:SetOnClick(
         function()
             if playerListing.userid ~= nil then

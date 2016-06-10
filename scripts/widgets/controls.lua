@@ -32,18 +32,22 @@ local Controls = Class(Widget, function(self, owner)
     self._scrnw, self._scrnh = TheSim:GetScreenSize()
 
     self.playeractionhint = self:AddChild(FollowText(TALKINGFONT, 28))
+    self.playeractionhint:SetHUD(owner.HUD.inst)
     self.playeractionhint:SetOffset(Vector3(0, 100, 0))
     self.playeractionhint:Hide()
 
     self.playeractionhint_itemhighlight = self:AddChild(FollowText(TALKINGFONT, 28))
+    self.playeractionhint_itemhighlight:SetHUD(owner.HUD.inst)
     self.playeractionhint_itemhighlight:SetOffset(Vector3(0, 100, 0))
     self.playeractionhint_itemhighlight:Hide()
 
     self.attackhint = self:AddChild(FollowText(TALKINGFONT, 28))
+    self.attackhint:SetHUD(owner.HUD.inst)
     self.attackhint:SetOffset(Vector3(0, 100, 0))
     self.attackhint:Hide()
 
     self.groundactionhint = self:AddChild(FollowText(TALKINGFONT, 28))
+    self.groundactionhint:SetHUD(owner.HUD.inst)
     self.groundactionhint:SetOffset(Vector3(0, 100, 0))
     self.groundactionhint:Hide()
 
@@ -60,13 +64,7 @@ local Controls = Class(Widget, function(self, owner)
     self.containerroot = self:AddChild(Widget(""))
     self:MakeScalingNodes()
 
-    self.savingroot = self:AddChild(Widget("savingroot"))
-    self.savingroot:SetHAnchor(ANCHOR_RIGHT)
-    self.savingroot:SetVAnchor(ANCHOR_TOP)
-    self.savingroot:SetScaleMode(SCALEMODE_PROPORTIONAL)
-    self.savingroot:SetMaxPropUpscale(MAX_HUD_SCALE)
-    self.savingroot = self.savingroot:AddChild(Widget("savingroot2"))
-    self.saving = self.savingroot:AddChild(SavingIndicator(self.owner))
+    self.saving = self.topright_over_root:AddChild(SavingIndicator(self.owner))
     self.saving:SetPosition(-440, 0, 0)
 
     self.item_notification = self.topleft_root:AddChild(GiftItemToast(self.owner))
@@ -80,6 +78,9 @@ local Controls = Class(Widget, function(self, owner)
     self.sidepanel = self.topright_root:AddChild(Widget("sidepanel"))
     self.sidepanel:SetScale(1,1,1)
     self.sidepanel:SetPosition(-80, -60, 0)
+
+    self.votedialog = self.topright_root:AddChild(VoteDialog(self.owner))
+    self.votedialog:SetPosition(-330, 0, 0)
 
     self.status = self.sidepanel:AddChild(StatusDisplays(self.owner))
     self.status:SetPosition(0,-110,0)
@@ -149,8 +150,6 @@ local Controls = Class(Widget, function(self, owner)
         self.desync = self.desync:AddChild(Desync(owner))
     end
 
-    self.votedialog = self:AddChild(VoteDialog())
-
     self.dismounthintdelay = 0
 
     self:SetHUDSize()
@@ -167,7 +166,11 @@ function Controls:HideStatusNumbers()
 end
 
 function Controls:SetDark(val)
-    if val then self.blackoverlay:Show() else self.blackoverlay:Hide() end
+    if val then
+        self.blackoverlay:Show()
+    else
+        self.blackoverlay:Hide()
+    end
 end
 
 function Controls:MakeScalingNodes()
@@ -215,6 +218,12 @@ function Controls:MakeScalingNodes()
     self.left_root:SetVAnchor(ANCHOR_MIDDLE)
     self.left_root:SetMaxPropUpscale(MAX_HUD_SCALE)    
 
+    self.topright_over_root = self:AddChild(Widget("topright_over"))
+    self.topright_over_root:SetScaleMode(SCALEMODE_PROPORTIONAL)
+    self.topright_over_root:SetHAnchor(ANCHOR_RIGHT)
+    self.topright_over_root:SetVAnchor(ANCHOR_TOP)
+    self.topright_over_root:SetMaxPropUpscale(MAX_HUD_SCALE)
+
     --these are for introducing user-configurable hud scale
     self.topleft_root = self.topleft_root:AddChild(Widget("tl_scale_root"))
     self.topright_root = self.topright_root:AddChild(Widget("tr_scale_root"))
@@ -223,29 +232,32 @@ function Controls:MakeScalingNodes()
     self.left_root = self.left_root:AddChild(Widget("left_scale_root"))
     self.right_root = self.right_root:AddChild(Widget("right_scale_root"))
     self.bottomright_root = self.bottomright_root:AddChild(Widget("br_scale_root"))
+    self.topright_over_root = self.topright_over_root:AddChild(Widget("tr_over_scale_root"))
     --
 end
 
-function Controls:SetHUDSize(  )
+function Controls:SetHUDSize()
     local scale = TheFrontEnd:GetHUDScale()
 
     self.topleft_root:SetScale(scale, scale, scale)
-    self.topright_root:SetScale(scale,scale,scale)
-    self.bottom_root:SetScale(scale,scale,scale)
-    self.top_root:SetScale(scale,scale,scale)
+    self.topright_root:SetScale(scale, scale, scale)
+    self.bottom_root:SetScale(scale, scale, scale)
+    self.top_root:SetScale(scale, scale, scale)
     self.right_root:SetScale(scale, scale, scale)
-    self.bottomright_root:SetScale(scale,scale,scale)
-    self.left_root:SetScale(scale,scale,scale)
-    self.containerroot:SetScale(scale,scale,scale)
-    self.containerroot_side:SetScale(scale,scale,scale)
-    self.hover:SetScale(scale,scale,scale)
-    self.savingroot:SetScale(scale, scale, scale)
+    self.bottomright_root:SetScale(scale, scale, scale)
+    self.left_root:SetScale(scale, scale, scale)
+    self.containerroot:SetScale(scale, scale, scale)
+    self.containerroot_side:SetScale(scale, scale, scale)
+    self.hover:SetScale(scale, scale, scale)
+    self.topright_over_root:SetScale(scale, scale, scale)
 
-    self.mousefollow:SetScale(scale,scale,scale)
+    self.mousefollow:SetScale(scale, scale, scale)
 
     if self.desync ~= nil then
         self.desync:SetScale(scale, scale, scale)
     end
+
+    self.owner.HUD.inst:PushEvent("refreshhudsize", scale)
 end
 
 function Controls:OnUpdate(dt)
@@ -343,7 +355,8 @@ function Controls:OnUpdate(dt)
             end
 
             local l, r = self.owner.components.playercontroller:GetSceneItemControllerAction(controller_target)
-            table.insert(cmds, controller_target:GetDisplayName())
+            local adjective = controller_target:GetAdjective()
+            table.insert(cmds, adjective ~= nil and (adjective.." "..controller_target:GetDisplayName()) or controller_target:GetDisplayName())
             shownItemIndex = #cmds
 
             if controller_target == controller_attack_target then
@@ -462,7 +475,8 @@ function Controls:HighlightActionItem(itemIndex, itemInActions)
         local target = self.owner.components.playercontroller.controller_target
         for idx,line in ipairs(string.split(str, "\r\n")) do
             if idx==itemIndex then
-                local itemString = target:GetDisplayName()
+                local adjective = target:GetAdjective()
+                local itemString = adjective ~= nil and (adjective.." "..target:GetDisplayName()) or target:GetDisplayName()
                 itemlines[#itemlines+1] = itemString
                 commandlines[#commandlines+1]=" "
             else

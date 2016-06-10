@@ -84,16 +84,9 @@ local GiftItemPopUp = Class(Screen, function(self, owner, item_types, item_ids)
 end)
 
 function GiftItemPopUp:OnDestroy()
-    TheCamera:PopScreenHOffset(self)
+	TheCamera:PopScreenHOffset(self)
     TheFrontEnd:GetSound():KillSound("gift_idle")
     self._base.OnDestroy(self)
-end
-
-function GiftItemPopUp:OnBecomeActive()
-    self._base.OnBecomeActive(self)
-    if TheInput:ControllerAttached() and self.menu ~= nil and self.menu:IsVisible() then
-        self.menu:SetFocus()
-    end
 end
 
 function GiftItemPopUp:ApplySkin()
@@ -110,24 +103,28 @@ function GiftItemPopUp:ApplySkin()
 end
 
 function GiftItemPopUp:ShowMenu()
-	--creates the buttons
-    local button_w = 200
-    local space_between = 40
-    local spacing = button_w + space_between
-    local buttons = {{text = STRINGS.UI.ITEM_SCREEN.USE_LATER, cb = function() self:OnClose() end}, 
-                     {text = STRINGS.UI.ITEM_SCREEN.USE_NOW, cb = function() self:ApplySkin() end}
-                    }
-    self.menu = self.proot:AddChild(Menu(buttons, spacing, true))
-    self.menu:SetPosition(25-(spacing*(#buttons-1))/2, -290, 0) 
-    self.menu:SetScale(0.8)
-    self.menu:Show()
-    self.menu:SetFocus()
+	self.show_menu = true
+	
+	if not TheInput:ControllerAttached() then
+		--creates the buttons
+		local button_w = 200
+		local space_between = 40
+		local spacing = button_w + space_between
+		local buttons = {{text = STRINGS.UI.ITEM_SCREEN.USE_LATER, cb = function() self:OnClose() end}, 
+						 {text = STRINGS.UI.ITEM_SCREEN.USE_NOW, cb = function() self:ApplySkin() end}
+						}
+		self.menu = self.proot:AddChild(Menu(buttons, spacing, true))
+		self.menu:SetPosition(25-(spacing*(#buttons-1))/2, -290, 0)
+		self.menu:SetScale(0.8)
+		self.menu:Show()
+		self.menu:SetFocus()
 
-    if self.disable_use_now then 
-    	self.menu:DisableItem(2)
-    end
+		if self.disable_use_now then
+    		self.menu:DisableItem(2)
+		end
 
-    self.default_focus = self.menu
+		self.default_focus = self.menu
+	end
 end
 
 function GiftItemPopUp:OnControl(control, down)
@@ -141,7 +138,10 @@ function GiftItemPopUp:OnClose()
     TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/player_receives_gift_animation_skinout")
     --self.spawn_portal:GetAnimState():PlayAnimation("put_away")
     self.spawn_portal:GetAnimState():PlayAnimation("skin_out")
-    self.menu:Kill()
+    if self.menu then
+		self.menu:Kill()
+	end
+	self.show_menu = false
 end
 
 function GiftItemPopUp:OnUpdate(dt)
@@ -227,6 +227,36 @@ function GiftItemPopUp:RevealItem(idx)
 
     self.name:SetColour(SKIN_RARITY_COLORS[rarity])
     self.item_name = item_name
+end
+
+function GiftItemPopUp:OnControl(control, down)
+    if GiftItemPopUp._base.OnControl(self, control, down) then return true end
+
+    if TheInput:ControllerAttached() and self.show_menu then 
+    	if not down and control == CONTROL_CANCEL then
+    		self:OnClose()
+			return true
+		elseif not down and not self.disable_use_now and control == CONTROL_PAUSE then 
+			self:ApplySkin()
+			return true
+		end
+    end
+end
+
+
+function GiftItemPopUp:GetHelpText()
+	if self.show_menu then
+		local controller_id = TheInput:GetControllerID()
+		local t = {}
+	    
+		table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_CANCEL) .. " " .. STRINGS.UI.ITEM_SCREEN.USE_LATER)
+   		
+		if not self.disable_use_now then
+			table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_PAUSE) .. " " .. STRINGS.UI.ITEM_SCREEN.USE_NOW)
+		end
+		
+		return table.concat(t, "  ")
+	end
 end
 
 return GiftItemPopUp

@@ -109,7 +109,22 @@ function dumptable(obj, indent, recurse_levels, visit_table)
                 visit_table[obj] = true
             end
         end
+        local keys = {}
+        local table_keys = {}
         for k,v in pairs(obj) do
+            if type(k) == "table" then
+                table.insert(table_keys, k)
+            else
+                table.insert(keys, k)
+            end
+        end
+        table.sort(keys)
+        for i,k in ipairs(table_keys) do
+            -- sort breaks on keys that are tables, so just put them on the end
+            table.insert(keys, k)
+        end
+        for i,k in ipairs(keys) do
+            local v = obj[k]
             if type(v) == "table" and i_recurse_levels>0 then
                 if v.entity and v.entity:GetGUID() then
                     print(dent.."K: ",k," V: ", v, "(Entity -- skipping.)")

@@ -568,11 +568,13 @@ local function OnSetOwner(inst)
             EnableMovementPrediction(inst, true)
             inst:AddComponent("playeractionpicker")
             inst:AddComponent("playercontroller")
+            inst:AddComponent("playervoter")
             inst.components.playeractionpicker:PushActionFilter( CheckGhostActionFilter )
         end
     elseif inst.components.playercontroller ~= nil then
         inst:RemoveComponent("playeractionpicker")
         inst:RemoveComponent("playercontroller")
+        inst:RemoveComponent("playervoter")
         DisableMovementPrediction(inst)
     end
 

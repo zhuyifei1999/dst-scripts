@@ -237,6 +237,12 @@ local function fn()
 
     ------------------------------------------
 
+    inst:AddComponent("timer")
+    inst:AddComponent("saltlicker")
+    inst.components.saltlicker:SetUp(TUNING.SALTLICK_LIGHTNINGGOAT_DURATION) -- duration is the total time salt lasts, check 8 times that often
+
+    ------------------------------------------
+
     MakeMediumBurnableCharacter(inst, "lightning_goat_body")
     MakeMediumFreezableCharacter(inst, "lightning_goat_body")
 

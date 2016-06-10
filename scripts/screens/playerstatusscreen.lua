@@ -5,8 +5,10 @@ local Text = require "widgets/text"
 local Image = require "widgets/image"
 local ImageButton = require "widgets/imagebutton"
 local PlayerBadge = require "widgets/playerbadge"
-local PopupDialogScreen = require "screens/popupdialog"
 local ScrollableList = require "widgets/scrollablelist"
+local UserCommandPickerScreen = require "screens/usercommandpickerscreen"
+
+local UserCommands = require "usercommands"
 
 local BAN_ENABLED = true
 
@@ -39,7 +41,6 @@ local REFRESH_INTERVAL = .5
 local PlayerStatusScreen = Class(Screen, function(self, owner)
     Screen._ctor(self, "PlayerStatusScreen")
     self.owner = owner
-    self.default_focus = self.scroll_list
     self.time_to_refresh = REFRESH_INTERVAL
 end)
 
@@ -62,6 +63,7 @@ end
 function PlayerStatusScreen:OnDestroy()
     --Overridden so we do part of Widget:Kill()
     --but keeps the screen around hidden
+    self:ClearFocus()
     self:StopFollowMouse()
     self:Hide()
 end
@@ -75,7 +77,11 @@ function PlayerStatusScreen:GetHelpText()
 	if self.server_group ~= "" then
 		table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_2) .. " " .. STRINGS.UI.HELP.VIEWGROUP)
 	end
-	
+
+    if #UserCommands.GetServerActions(self.owner) > 0 then
+        table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_1) .. " " .. STRINGS.UI.HELP.SERVERACTIONS)
+    end
+
     return table.concat(t, "  ")
 end
 
@@ -95,6 +101,10 @@ function PlayerStatusScreen:OnControl(control, down)
             return true
         elseif control == CONTROL_MENU_MISC_2 and self.server_group ~= "" then
             TheNet:ViewNetProfile(self.server_group)
+            return true
+        elseif control == CONTROL_MENU_MISC_1 then
+            TheFrontEnd:PopScreen()
+            TheFrontEnd:PushScreen(UserCommandPickerScreen(self.owner, nil))
             return true
         end
     end
@@ -132,11 +142,11 @@ function PlayerStatusScreen:OnUpdate(dt)
 
         --rebuild if players changed even though count didn't change
         if not needs_rebuild and self.scroll_list ~= nil then
-            for i, v in ipairs(ClientObjs) do
+            for i, client in ipairs(ClientObjs) do
                 local listitem = self.scroll_list.items[i]
                 if listitem == nil or
-                    v.userid ~= listitem.userid or
-                    (v.performance ~= nil) ~= (listitem.performance ~= nil) then
+                    client.userid ~= listitem.userid or
+                    (client.performance ~= nil) ~= (listitem.performance ~= nil) then
                     needs_rebuild = true
                     break
                 end
@@ -155,27 +165,43 @@ function PlayerStatusScreen:OnUpdate(dt)
             end
 
             if self.scroll_list ~= nil then
-                for i,v in ipairs(self.player_widgets) do
-                    for j,k in ipairs(ClientObjs) do
-                        if v.userid == k.userid and v.ishost == (k.performance ~= nil) then
-                            v.name:SetTruncatedString(self:GetDisplayName(k), v.name._align.maxwidth, v.name._align.maxchars, true)
-                            local w, h = v.name:GetRegionSize()
-                            v.name:SetPosition(v.name._align.x + w * .5, 0, 0)
+                for _,playerListing in ipairs(self.player_widgets) do
+                    for _,client in ipairs(ClientObjs) do
+                        if playerListing.userid == client.userid and playerListing.ishost == (client.performance ~= nil) then
+                            playerListing.name:SetTruncatedString(self:GetDisplayName(client), playerListing.name._align.maxwidth, playerListing.name._align.maxchars, true)
+                            local w, h = playerListing.name:GetRegionSize()
+                            playerListing.name:SetPosition(playerListing.name._align.x + w * .5, 0, 0)
 
-                            v.characterBadge:Set(k.prefab or "", k.colour or DEFAULT_PLAYER_COLOUR, v.ishost, k.userflags or 0)
+                            playerListing.characterBadge:Set(client.prefab or "", client.colour or DEFAULT_PLAYER_COLOUR, playerListing.ishost, client.userflags or 0)
 
-                            if v.characterBadge:IsAFK() then
-                                v.age:SetString(STRINGS.UI.PLAYERSTATUSSCREEN.AFK)
+                            if playerListing.characterBadge:IsAFK() then
+                                playerListing.age:SetString(STRINGS.UI.PLAYERSTATUSSCREEN.AFK)
                             else
-                                v.age:SetString(k.playerage ~= nil and k.playerage > 0 and (tostring(k.playerage)..(k.playerage == 1 and STRINGS.UI.PLAYERSTATUSSCREEN.AGE_DAY or STRINGS.UI.PLAYERSTATUSSCREEN.AGE_DAYS)) or "")
+                                playerListing.age:SetString(client.playerage ~= nil and client.playerage > 0 and (tostring(client.playerage)..(client.playerage == 1 and STRINGS.UI.PLAYERSTATUSSCREEN.AGE_DAY or STRINGS.UI.PLAYERSTATUSSCREEN.AGE_DAYS)) or "")
                             end
 
-                            if k.performance ~= nil then
-                                v.perf:SetTexture("images/scoreboard.xml", PERF_HOST_LEVELS[math.min(k.performance + 1, #PERF_HOST_LEVELS)])
-                            elseif k.netscore ~= nil then
-                                v.perf:SetTexture("images/scoreboard.xml", PERF_CLIENT_LEVELS[math.min(k.netscore + 1, #PERF_CLIENT_LEVELS)])
+                            if client.performance ~= nil then
+                                playerListing.perf:SetTexture("images/scoreboard.xml", PERF_HOST_LEVELS[math.min(client.performance + 1, #PERF_HOST_LEVELS)])
+                            elseif client.netscore ~= nil then
+                                playerListing.perf:SetTexture("images/scoreboard.xml", PERF_CLIENT_LEVELS[math.min(client.netscore + 1, #PERF_CLIENT_LEVELS)])
                             else
-                                v.perf:SetTexture("images/scoreboard.xml", PERF_CLIENT_UNKNOWN)
+                                playerListing.perf:SetTexture("images/scoreboard.xml", PERF_CLIENT_UNKNOWN)
+                            end
+
+                            if playerListing.kick:IsVisible() then
+                                if UserCommands.UserRunCommandResult("kick", self.owner, client.userid) == COMMAND_RESULT.DENY then
+                                    playerListing.kick:Select()
+                                else
+                                    playerListing.kick:Unselect()
+                                end
+                            end
+
+                            if playerListing.ban:IsVisible() then
+                                if UserCommands.UserRunCommandResult("ban", self.owner, client.userid) == COMMAND_RESULT.DENY then
+                                    playerListing.ban:Select()
+                                else
+                                    playerListing.ban:Unselect()
+                                end
                             end
                         end
                     end
@@ -194,8 +220,20 @@ function PlayerStatusScreen:DoInit(ClientObjs)
 
 	TheInput:EnableDebugToggle(false)
 
+    if not self.black then
+        --darken everything behind the dialog
+        self.black = self:AddChild(ImageButton("images/global.xml", "square.tex"))
+        self.black.image:SetVRegPoint(ANCHOR_MIDDLE)
+        self.black.image:SetHRegPoint(ANCHOR_MIDDLE)
+        self.black.image:SetVAnchor(ANCHOR_MIDDLE)
+        self.black.image:SetHAnchor(ANCHOR_MIDDLE)
+        self.black.image:SetScaleMode(SCALEMODE_FILLSCREEN)
+        self.black.image:SetTint(0,0,0,0) -- invisible, but clickable!
+        self.black:SetOnClick(function() --[[ eat the click ]] end)
+    end
+
 	if not self.root then
-		self.root = self:AddChild(Widget(""))
+		self.root = self:AddChild(Widget("ROOT"))
 	    self.root:SetScaleMode(SCALEMODE_PROPORTIONAL)
 	    self.root:SetHAnchor(ANCHOR_MIDDLE)
 	    self.root:SetVAnchor(ANCHOR_MIDDLE)
@@ -237,7 +275,20 @@ function PlayerStatusScreen:DoInit(ClientObjs)
         self.viewgroup_button = nil
     end
 
-	local Voter = TheWorld.net.components.voter
+    if not TheInput:ControllerAttached() then
+        if #UserCommands.GetServerActions(self.owner) > 0 and self.serveractions_button == nil then
+            self.serveractions_button = self.root:AddChild(ImageButton("images/scoreboard.xml", "more_actions_normal.tex", "more_actions_hover.tex", "more_actions.tex", "more_actions.tex", nil, {0.6,0.6}, {0,0}))
+            self.serveractions_button:SetOnClick(function()
+                TheFrontEnd:PopScreen()
+                TheFrontEnd:PushScreen(UserCommandPickerScreen(self.owner, nil))
+            end)
+            self.serveractions_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.SERVERACTIONS, { font = NEWFONT_OUTLINE, size = 24, offset_x = 0, offset_y = 48, colour = {1,1,1,1}})
+        end
+    elseif self.serveractions_button ~= nil then
+        self.serveractions_button:Kill()
+        self.serveractions_button = nil
+    end
+
     if ClientObjs == nil then
         ClientObjs = TheNet:GetClientTable() or {}
     end
@@ -273,6 +324,9 @@ function PlayerStatusScreen:DoInit(ClientObjs)
         if self.viewgroup_button ~= nil then
             self.viewgroup_button:SetPosition(-328,200)
         end
+        if self.serveractions_button ~= nil then
+            self.serveractions_button:SetPosition(-258,200)
+        end
 		self.serverstate:SetPosition(0,175)
 		self.divider:SetPosition(0,155)
 	else
@@ -282,6 +336,9 @@ function PlayerStatusScreen:DoInit(ClientObjs)
 		self.serverdesc:SetSize(23)
         if self.viewgroup_button ~= nil then
             self.viewgroup_button:SetPosition(-328,208)
+        end
+        if self.serveractions_button ~= nil then
+            self.serveractions_button:SetPosition(-258,208)
         end
 		self.serverstate:SetPosition(0,163)
 		self.serverstate:SetSize(23)
@@ -302,163 +359,84 @@ function PlayerStatusScreen:DoInit(ClientObjs)
 	end
 
 	local function doButtonFocusHookups(playerListing)
-		if playerListing.ban:IsVisible() then
-			if playerListing.kick:IsVisible() then
-				playerListing.ban:SetFocusChangeDir(MOVE_LEFT, playerListing.kick)
-			else
-				playerListing.ban:SetFocusChangeDir(MOVE_LEFT, playerListing.mute)
-			end
-		end
+        local buttons = {}
+        if playerListing.viewprofile:IsVisible() then table.insert(buttons, playerListing.viewprofile) end
+        if playerListing.mute:IsVisible() then table.insert(buttons, playerListing.mute) end
+        if playerListing.kick:IsVisible() then table.insert(buttons, playerListing.kick) end
+        if playerListing.ban:IsVisible() then table.insert(buttons, playerListing.ban) end
+        if playerListing.useractions:IsVisible() then table.insert(buttons, playerListing.useractions) end
 
-		if playerListing.kick:IsVisible() then
-			if playerListing.ban:IsVisible() then
-				playerListing.kick:SetFocusChangeDir(MOVE_RIGHT, playerListing.ban)
-			end
-			playerListing.kick:SetFocusChangeDir(MOVE_LEFT, playerListing.mute)
-		end
-
-		if playerListing.mute:IsVisible() then
-			if playerListing.kick:IsVisible() then
-				playerListing.mute:SetFocusChangeDir(MOVE_RIGHT, playerListing.kick)
-			elseif playerListing.ban:IsVisible() then
-				playerListing.mute:SetFocusChangeDir(MOVE_RIGHT, playerListing.ban)
-			end
-			playerListing.mute:SetFocusChangeDir(MOVE_LEFT, playerListing.viewprofile)
-			playerListing.focus_forward = playerListing.mute
-		end
-
-		if playerListing.viewprofile:IsVisible() then
-			playerListing.viewprofile:SetFocusChangeDir(MOVE_RIGHT, playerListing.mute)
-			playerListing.focus_forward = playerListing.viewprofile
-		end
-	end
-
-	local function listingConstructor(v, i, parent)
-
-		local playerListing =  parent:AddChild(Widget("playerListing"))
-
-		local empty = v == nil
-		if v then
-			empty = #v > 0
-		end
-
-        local displayName = self:GetDisplayName(v)
-
-		playerListing.userid = v.userid
-
-		playerListing.highlight = playerListing:AddChild(Image("images/scoreboard.xml", "row_goldoutline.tex"))
-	    playerListing.highlight:SetPosition(22, 5)
-		playerListing.highlight:Hide()
-
-		playerListing.characterBadge = nil
-		if empty then
-			playerListing.characterBadge = playerListing:AddChild(PlayerBadge("", DEFAULT_PLAYER_COLOUR, false, 0))
-			playerListing.characterBadge:Hide()
-		else
-			playerListing.characterBadge = playerListing:AddChild(PlayerBadge(v.prefab or "", v.colour or DEFAULT_PLAYER_COLOUR, v.performance ~= nil, v.userflags or 0))
-		end
-		playerListing.characterBadge:SetScale(.8)
-		playerListing.characterBadge:SetPosition(-328,5,0)
-
-
-		playerListing.number = playerListing:AddChild(Text(UIFONT, 35))
-		local visible_index = i
-		if not TheNet:GetServerIsClientHosted() then
-			playerListing.number:SetString(i-1)
-			visible_index = i-1
-            if i <= 1 then
-                playerListing.number:Hide()
+        local focusforwardset = false
+        for i,button in ipairs(buttons) do
+            if not focusforwardset then
+                focusforwardset = true
+                playerListing.focus_forward = button
             end
-		else
-			playerListing.number:SetString(i)
-		end
-		playerListing.number:SetPosition(-385,0,0)
-		playerListing.number:SetHAlign(ANCHOR_MIDDLE)
-		playerListing.number:SetColour(1,1,1,1)
-		if empty then
-			playerListing.number:Hide()
-		end
+            if buttons[i-1] then
+                button:SetFocusChangeDir(MOVE_LEFT, buttons[i-1])
+            end
+            if buttons[i+1] then
+                button:SetFocusChangeDir(MOVE_RIGHT, buttons[i+1])
+            end
+        end
+    end
 
-		playerListing.adminBadge = playerListing:AddChild(ImageButton("images/avatars.xml", "avatar_admin.tex", "avatar_admin.tex", "avatar_admin.tex", nil, nil, {1,1}, {0,0}))
-		playerListing.adminBadge:Disable()
-		playerListing.adminBadge:SetPosition(-359,-13,0)
-		playerListing.adminBadge.image:SetScale(.3)
-		playerListing.adminBadge.scale_on_focus = false
-		playerListing.adminBadge:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.ADMIN, { font = NEWFONT_OUTLINE, size = 24, offset_x = 0, offset_y = 30, colour = {1,1,1,1}})
-	    if not v.admin then
-	    	playerListing.adminBadge:Hide()
-		end
+    local function listingConstructor(i, parent)
+        local playerListing =  parent:AddChild(Widget("playerListing"))
 
-		playerListing.name = playerListing:AddChild(Text(UIFONT, 35, displayName))
-        playerListing.name._align =
-        {
+        playerListing.highlight = playerListing:AddChild(Image("images/scoreboard.xml", "row_goldoutline.tex"))
+        playerListing.highlight:SetPosition(22, 5)
+        playerListing.highlight:Hide()
+
+        playerListing.characterBadge = nil
+        playerListing.characterBadge = playerListing:AddChild(PlayerBadge("", DEFAULT_PLAYER_COLOUR, false, 0))
+        playerListing.characterBadge:SetScale(.8)
+        playerListing.characterBadge:SetPosition(-328,5,0)
+        playerListing.characterBadge:Hide()
+
+
+        playerListing.number = playerListing:AddChild(Text(UIFONT, 35))
+        playerListing.number:SetPosition(-385,0,0)
+        playerListing.number:SetHAlign(ANCHOR_MIDDLE)
+        playerListing.number:SetColour(1,1,1,1)
+        playerListing.number:Hide()
+
+        playerListing.adminBadge = playerListing:AddChild(ImageButton("images/avatars.xml", "avatar_admin.tex", "avatar_admin.tex", "avatar_admin.tex", nil, nil, {1,1}, {0,0}))
+        playerListing.adminBadge:Disable()
+        playerListing.adminBadge:SetPosition(-359,-13,0)
+        playerListing.adminBadge.image:SetScale(.3)
+        playerListing.adminBadge.scale_on_focus = false
+        playerListing.adminBadge:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.ADMIN, { font = NEWFONT_OUTLINE, size = 24, offset_x = 0, offset_y = 30, colour = {1,1,1,1}})
+        playerListing.adminBadge:Hide()
+
+        playerListing.name = playerListing:AddChild(Text(UIFONT, 35, ""))
+        playerListing.name._align = {
             maxwidth = 215,
             maxchars = 36,
             x = -286,
         }
-        playerListing.name:SetTruncatedString(displayName, playerListing.name._align.maxwidth, playerListing.name._align.maxchars, true)
-        local w, h = playerListing.name:GetRegionSize()
-        playerListing.name:SetPosition(playerListing.name._align.x + w * .5, 0, 0)
-		playerListing.name:SetColour(unpack(v.colour or DEFAULT_PLAYER_COLOUR))
 
-		playerListing.age = playerListing:AddChild(Text(UIFONT, 35, v.playerage ~= nil and v.playerage > 0 and (tostring(v.playerage)..(v.playerage == 1 and STRINGS.UI.PLAYERSTATUSSCREEN.AGE_DAY or STRINGS.UI.PLAYERSTATUSSCREEN.AGE_DAYS)) or ""))
-		playerListing.age:SetPosition(-20,0,0)
-		playerListing.age:SetHAlign(ANCHOR_MIDDLE)
-		
-		playerListing.ishost = v.performance ~= nil
+        playerListing.age = playerListing:AddChild(Text(UIFONT, 35, ""))
+        playerListing.age:SetPosition(-20,0,0)
+        playerListing.age:SetHAlign(ANCHOR_MIDDLE)
 
-        local perf_img
-        local perf_scale
-        if v.performance ~= nil then
-            perf_img = PERF_HOST_LEVELS[math.min(v.performance + 1, #PERF_HOST_LEVELS)]
-            perf_scale = PERF_HOST_SCALE
-        else
-            if v.netscore ~= nil then
-                perf_img = PERF_CLIENT_LEVELS[math.min(v.netscore + 1, #PERF_CLIENT_LEVELS)]
-            else
-                perf_img = PERF_CLIENT_UNKNOWN
-            end
-            perf_scale = PERF_CLIENT_SCALE
-        end
-		playerListing.perf = playerListing:AddChild(Image("images/scoreboard.xml", perf_img))
+        playerListing.perf = playerListing:AddChild(Image("images/scoreboard.xml", PERF_CLIENT_UNKNOWN))
         playerListing.perf:SetPosition(295, 4, 0)
-        playerListing.perf:SetScale(unpack(perf_scale))
+        playerListing.perf:SetScale(unpack(PERF_CLIENT_SCALE))
 
-        local this_user_is_dedicated_server = empty ~= true and v.performance ~= nil and not TheNet:GetServerIsClientHosted()
+        playerListing.viewprofile = playerListing:AddChild(ImageButton("images/scoreboard.xml", "addfriend.tex", "addfriend.tex", "addfriend.tex", "addfriend.tex", nil, {1,1}, {0,0}))
+        playerListing.viewprofile:SetPosition(120,3,0)
+        playerListing.viewprofile:SetNormalScale(0.39)
+        playerListing.viewprofile:SetFocusScale(0.39*1.1)
+        playerListing.viewprofile:SetFocusSound("dontstarve/HUD/click_mouseover")
+        playerListing.viewprofile:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.VIEWPROFILE, { font = NEWFONT_OUTLINE, size = 24, offset_x = 0, offset_y = 30, colour = {1,1,1,1}})
 
-    	playerListing.viewprofile = playerListing:AddChild(ImageButton("images/scoreboard.xml", "addfriend.tex", "addfriend.tex", "addfriend.tex", "addfriend.tex", nil, {1,1}, {0,0}))
-		playerListing.viewprofile:SetPosition(120,3,0)
-		playerListing.viewprofile:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.VIEWPROFILE, { font = NEWFONT_OUTLINE, size = 24, offset_x = 0, offset_y = 30, colour = {1,1,1,1}})
-		playerListing.viewprofile.scale_on_focus = false
-		local gainfocusfn = playerListing.viewprofile.OnGainFocus
-		playerListing.viewprofile.OnGainFocus =
-        function()	
-        	gainfocusfn(playerListing.viewprofile)
-            TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover")
-            playerListing.viewprofile:SetScale(1.1)
-        end
-        local losefocusfn = playerListing.viewprofile.OnLoseFocus
-    	playerListing.viewprofile.OnLoseFocus =
-        function()
-        	losefocusfn(playerListing.viewprofile)
-            playerListing.viewprofile:SetScale(1)
-        end
-		playerListing.viewprofile:SetOnClick(
-			function()
-                TheFrontEnd:PopScreen()
-                self.owner.HUD:TogglePlayerAvatarPopup(displayName, v, true)
-			end)
-
-		if empty or this_user_is_dedicated_server then
-			playerListing.viewprofile:Hide()
-		end
-
-        playerListing.isMuted = v.muted == true
-
-		playerListing.mute = playerListing:AddChild(ImageButton("images/scoreboard.xml", "chat.tex", "chat.tex", "chat.tex", "chat.tex", nil, {1,1}, {0,0}))
-		playerListing.mute:SetPosition(170,3,0)
-		playerListing.mute.scale_on_focus = false
-		playerListing.mute:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.MUTE, { font = NEWFONT_OUTLINE, size = 24, offset_x = 0, offset_y = 30, colour = {1,1,1,1}})
+        playerListing.mute = playerListing:AddChild(ImageButton("images/scoreboard.xml", "chat.tex", "chat.tex", "chat.tex", "chat.tex", nil, {1,1}, {0,0}))
+        playerListing.mute:SetPosition(170,3,0)
+        playerListing.mute:SetNormalScale(0.39)
+        playerListing.mute:SetFocusScale(0.39*1.1)
+        playerListing.mute:SetFocusSound("dontstarve/HUD/click_mouseover")
+        playerListing.mute:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.MUTE, { font = NEWFONT_OUTLINE, size = 24, offset_x = 0, offset_y = 30, colour = {1,1,1,1}})
         playerListing.mute.image.inst.OnUpdateVoice = function(inst)
             inst.widget:SetTint(unpack(playerListing.userid ~= nil and TheNet:IsVoiceActive(playerListing.userid) and VOICE_ACTIVE_COLOUR or VOICE_IDLE_COLOUR))
         end
@@ -483,375 +461,276 @@ function PlayerStatusScreen:DoInit(ClientObjs)
                 inst._task = nil
             end
         end
+
+        playerListing.mute:SetOnClick(
+            function()
+                if playerListing.userid ~= nil then
+                    playerListing.isMuted = not playerListing.isMuted
+                    TheNet:SetPlayerMuted(playerListing.userid, playerListing.isMuted)
+                    if playerListing.isMuted then
+                        playerListing.mute.image_focus = "mute.tex"
+                        playerListing.mute.image:SetTexture("images/scoreboard.xml", "mute.tex") 
+                        playerListing.mute:SetTextures("images/scoreboard.xml", "mute.tex")
+                        playerListing.mute:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.UNMUTE)
+                    else
+                        playerListing.mute.image_focus = "chat.tex"
+                        playerListing.mute.image:SetTexture("images/scoreboard.xml", "chat.tex")
+                        playerListing.mute:SetTextures("images/scoreboard.xml", "chat.tex")
+                        playerListing.mute:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.MUTE)
+                    end
+                    playerListing.mute.image.inst:SetMuted(playerListing.isMuted)
+                end
+            end)
+
+        playerListing.mute.image.inst:DisableMute()
+
+        playerListing.kick = playerListing:AddChild(ImageButton("images/scoreboard.xml", "kickout.tex", "kickout.tex", "kickout_disabled.tex", "kickout.tex", nil, {1,1}, {0,0}))
+        playerListing.kick:SetNormalScale(0.39)
+        playerListing.kick:SetFocusScale(0.39*1.1)
+        playerListing.kick:SetFocusSound("dontstarve/HUD/click_mouseover")
+        playerListing.kick:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.KICK, { font = NEWFONT_OUTLINE, size = 24, offset_x = 0, offset_y = 30, colour = {1,1,1,1}})
+        local gainfocusfn = playerListing.kick.OnGainFocus
+        playerListing.kick.OnGainFocus = function()
+            gainfocusfn(playerListing.kick)
+            --TODO gjans: same functionality for extended command list
+            local commandresult = UserCommands.UserRunCommandResult("kick", self.owner, playerListing.userid)
+            if commandresult == COMMAND_RESULT.ALLOW then
+                playerListing.kick:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.KICK)
+            elseif commandresult == COMMAND_RESULT.VOTE then
+                -- TODO: This thing should be voter-unaware, that should be handled by the usercommands and just return an appropriate result
+                playerListing.kick:SetHoverText(string.format(STRINGS.UI.PLAYERSTATUSSCREEN.VOTEHOVERFMT, STRINGS.UI.PLAYERSTATUSSCREEN.KICK))
+            elseif commandresult == COMMAND_RESULT.DENY then
+                local worldvoter = TheWorld.net ~= nil and TheWorld.net.components.worldvoter or nil
+                local playervoter = self.owner.components.playervoter
+                if worldvoter == nil or playervoter == nil or not worldvoter:IsEnabled() then
+                    --technically we should never get here (expected COMMAND_RESULT.INVALID)
+                elseif worldvoter:IsVoteActive() then
+                    playerListing.kick:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.VOTEACTIVEHOVER)
+                elseif playervoter:IsSquelched() then
+                    playerListing.kick:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.VOTESQUELCHEDHOVER)
+                end
+            end -- INVALID hides the button.
+        end
+        playerListing.kick:SetOnClick( function()
+            if playerListing.userid then
+                TheFrontEnd:PopScreen()
+                UserCommands.RunUserCommand("kick", {user=playerListing.userid}, self.owner)
+            end
+        end)
+
+        playerListing.ban = playerListing:AddChild(ImageButton("images/scoreboard.xml", "banhammer.tex", "banhammer.tex", "banhammer.tex", "banhammer.tex", nil, {1,1}, {0,0}))
+        playerListing.ban:SetPosition(220,3,0)
+        playerListing.ban:SetNormalScale(0.39)
+        playerListing.ban:SetFocusScale(0.39*1.1)
+        playerListing.ban:SetFocusSound("dontstarve/HUD/click_mouseover")
+        playerListing.ban:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.BAN, { font = NEWFONT_OUTLINE, size = 24, offset_x = 0, offset_y = 30, colour = {1,1,1,1}})
+        playerListing.ban:SetOnClick( function()
+            if playerListing.userid then
+                TheFrontEnd:PopScreen()
+                UserCommands.RunUserCommand("ban", {user=playerListing.userid}, self.owner)
+            end
+        end)
+
+        playerListing.useractions = playerListing:AddChild(ImageButton("images/scoreboard.xml", "more_actions.tex", "more_actions.tex", "more_actions.tex", "more_actions.tex", nil, {1,1}, {0,0}))
+        playerListing.useractions:SetPosition(220,3,0)
+        playerListing.useractions:SetNormalScale(0.39)
+        playerListing.useractions:SetFocusScale(0.39*1.1)
+        playerListing.useractions:SetFocusSound("dontstarve/HUD/click_mouseover")
+        playerListing.useractions:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.USERACTIONS, { font = NEWFONT_OUTLINE, size = 24, offset_x = 0, offset_y = 30, colour = {1,1,1,1}})
+        playerListing.useractions:SetOnClick(function()
+            TheFrontEnd:PopScreen()
+            local actions = UserCommands.GetUserActions(self.owner, playerListing.userid)
+            for i=#actions,1,-1 do
+                if actions[i].command == "kick" or actions[i].command == "ban" then
+                    table.remove(actions, i)
+                end
+            end
+            if #actions > 0 then
+                TheFrontEnd:PushScreen(UserCommandPickerScreen(self.owner, playerListing.userid, actions))
+            end
+        end)
+
+        playerListing.OnGainFocus = function()
+            playerListing.highlight:Show()
+        end
+        playerListing.OnLoseFocus = function()
+            playerListing.highlight:Hide()
+        end
+
+        return playerListing
+    end
+
+	local function UpdatePlayerListing(playerListing, client, i)
+
+        if client == nil or GetTableSize(client) == 0 then
+            playerListing:Hide()
+            return
+        end
+
+        playerListing:Show()
+
+        playerListing.displayName = self:GetDisplayName(client)
+
+        playerListing.userid = client.userid
+
+        playerListing.characterBadge:Set(client.prefab or "", client.colour or DEFAULT_PLAYER_COLOUR, client.performance ~= nil, client.userflags or 0)
+        playerListing.characterBadge:Show()
+
+        if client.admin then
+            playerListing.adminBadge:Show()
+        else
+            playerListing.adminBadge:Hide()
+        end
+
+        local visible_index = i
+        if not TheNet:GetServerIsClientHosted() then
+            playerListing.number:SetString(i-1)
+            visible_index = i-1
+            if i > 1 then
+                playerListing.number:Show()
+            else
+                playerListing.number:Hide()
+            end
+        else
+            playerListing.number:SetString(i)
+        end
+
+        playerListing.name:SetTruncatedString(playerListing.displayName, playerListing.name._align.maxwidth, playerListing.name._align.maxchars, true)
+        local w, h = playerListing.name:GetRegionSize()
+        playerListing.name:SetPosition(playerListing.name._align.x + w * .5, 0, 0)
+        playerListing.name:SetColour(unpack(client.colour or DEFAULT_PLAYER_COLOUR))
+
+        playerListing.age:SetString(client.playerage ~= nil and client.playerage > 0 and (tostring(client.playerage)..(client.playerage == 1 and STRINGS.UI.PLAYERSTATUSSCREEN.AGE_DAY or STRINGS.UI.PLAYERSTATUSSCREEN.AGE_DAYS)) or "")
+
+        playerListing.ishost = client.performance ~= nil
+
+        if client.performance ~= nil then
+            playerListing.perf:SetTexture("images/scoreboard.xml", PERF_HOST_LEVELS[math.min(client.performance + 1, #PERF_HOST_LEVELS)])
+            playerListing.perf:SetScale(unpack(PERF_HOST_SCALE))
+        else
+            if client.netscore ~= nil then
+                playerListing.perf:SetTexture("images/scoreboard.xml", PERF_CLIENT_LEVELS[math.min(client.netscore + 1, #PERF_CLIENT_LEVELS)])
+            else
+                playerListing.perf:SetTexture("images/scoreboard.xml", PERF_CLIENT_UNKNOWN)
+            end
+            playerListing.perf:SetScale(unpack(PERF_CLIENT_SCALE))
+        end
+
+        local this_user_is_dedicated_server = client.performance ~= nil and not TheNet:GetServerIsClientHosted()
+
+        playerListing.viewprofile:SetOnClick(
+            function()
+                TheFrontEnd:PopScreen()
+                self.owner.HUD:TogglePlayerAvatarPopup(playerListing.displayName, client, true)
+            end)
+
+
+        local button_start = 50
+        local button_x = button_start
+        local button_x_offset = 42
+
+        local can_kick = false
+        local can_ban = false
+
+        if not this_user_is_dedicated_server then
+            playerListing.viewprofile:Show()
+            playerListing.viewprofile:SetPosition(button_x,3,0)
+            button_x = button_x + button_x_offset
+            can_kick = UserCommands.CanUserRunCommand("kick", self.owner, client.userid)
+            can_ban = BAN_ENABLED and UserCommands.CanUserRunCommand("ban", self.owner, client.userid)
+        else
+            playerListing.viewprofile:Hide()
+        end
+
+        playerListing.isMuted = client.muted == true
         if playerListing.isMuted then
             playerListing.mute.image_focus = "mute.tex"
             playerListing.mute.image:SetTexture("images/scoreboard.xml", "mute.tex") 
             playerListing.mute:SetTextures("images/scoreboard.xml", "mute.tex")
             playerListing.mute:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.UNMUTE)
+        else
+            playerListing.mute.image_focus = "chat.tex"
+            playerListing.mute.image:SetTexture("images/scoreboard.xml", "chat.tex")
+            playerListing.mute:SetTextures("images/scoreboard.xml", "chat.tex")
+            playerListing.mute:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.MUTE)
         end
-        playerListing.mute.image.inst:SetMuted(playerListing.isMuted)
-		local gainfocusfn = playerListing.mute.OnGainFocus
-		playerListing.mute.OnGainFocus =
-	        function()
-	        	gainfocusfn(playerListing.mute)
-	            TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover")
-	            playerListing.mute.image:SetScale(1.1)
-	        end
-	    local losefocusfn = playerListing.mute.OnLoseFocus
-        playerListing.mute.OnLoseFocus =
-	        function()
-	        	losefocusfn(playerListing.mute)
-	            playerListing.mute.image:SetScale(1)
-	        end
-	    playerListing.mute:SetOnClick(
-	    	function()
-	    		if playerListing.userid ~= nil then
-		    		playerListing.isMuted = not playerListing.isMuted
-                    TheNet:SetPlayerMuted(playerListing.userid, playerListing.isMuted)
-		    		if playerListing.isMuted then
-		    			playerListing.mute.image_focus = "mute.tex"
-			        	playerListing.mute.image:SetTexture("images/scoreboard.xml", "mute.tex") 
-			        	playerListing.mute:SetTextures("images/scoreboard.xml", "mute.tex")
-			        	playerListing.mute:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.UNMUTE)
-		    		else
-		    			playerListing.mute.image_focus = "chat.tex"
-			        	playerListing.mute.image:SetTexture("images/scoreboard.xml", "chat.tex")
-			        	playerListing.mute:SetTextures("images/scoreboard.xml", "chat.tex")
-			        	playerListing.mute:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.MUTE)
-		    		end
-                    playerListing.mute.image.inst:SetMuted(playerListing.isMuted)
-		    	end
-	    	end)
 
-		if empty or not (v.userid ~= self.owner.userid and not this_user_is_dedicated_server) then
-			playerListing.mute:Hide()
+        if client.userid ~= self.owner.userid and not this_user_is_dedicated_server then
+            playerListing.mute:Show()
+            playerListing.mute:SetPosition(button_x,3,0)
+            button_x = button_x + button_x_offset
+            playerListing.mute.image.inst:SetMuted(playerListing.isMuted)
+        else
+            playerListing.mute:Hide()
             playerListing.mute.image.inst:DisableMute()
-		end
+        end
 
-		local is_server_admin = TheNet:GetIsServerAdmin()
+        if can_kick then
+            playerListing.kick:Show()
+            playerListing.kick:SetPosition(button_x,3,0)
+            button_x = button_x + button_x_offset
 
-		playerListing.kick = playerListing:AddChild(ImageButton("images/scoreboard.xml", "kickout.tex", "kickout.tex", "kickout_disabled.tex", "kickout.tex", nil, {1,1}, {0,0}))
-		playerListing.kick.scale_on_focus = false
-		playerListing.kick:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.KICK, { font = NEWFONT_OUTLINE, size = 24, offset_x = 0, offset_y = 30, colour = {1,1,1,1}})
-		local gainfocusfn = playerListing.kick.OnGainFocus
-		playerListing.kick.OnGainFocus =
-	        function()
-	        	gainfocusfn(playerListing.kick)
-				if is_server_admin and not v.admin then
-					playerListing.kick:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.KICK)
-				elseif Voter and Voter:IsVoteActive() then
-	        		playerListing.kick:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.VOTEACTIVE)
-	        	elseif Voter:IsUserSquelched(self.owner.userid) then
-					playerListing.kick:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.VOTEKICKSQUELCHED)				
-				else
-					playerListing.kick:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.VOTEKICK)
-				end
-	            TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover")
-	            playerListing.kick.image:SetScale(1.1)
-	        end
-	    local losefocusfn = playerListing.kick.OnLoseFocus
-    	playerListing.kick.OnLoseFocus =
-	        function()
-	        	losefocusfn(playerListing.kick)
-	            playerListing.kick.image:SetScale(1)
-	        end
-		playerListing.kick:Hide()
-
-		playerListing.ban = playerListing:AddChild(ImageButton("images/scoreboard.xml", "banhammer.tex", "banhammer.tex", "banhammer.tex", "banhammer.tex", nil, {1,1}, {0,0}))
-		playerListing.ban:SetPosition(220,3,0)
-		playerListing.ban.scale_on_focus = false
-		playerListing.ban:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.BAN, { font = NEWFONT_OUTLINE, size = 24, offset_x = 0, offset_y = 30, colour = {1,1,1,1}})
-		local gainfocusfn = playerListing.ban.OnGainFocus
-		playerListing.ban.OnGainFocus =
-	        function()
-	        	gainfocusfn(playerListing.ban)
-	            TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover")
-	            playerListing.ban.image:SetScale(1.1)
-	        end
-	    local losefocusfn = playerListing.ban.OnLoseFocus
-    	playerListing.ban.OnLoseFocus =
-	        function()
-	        	losefocusfn(playerListing.ban)
-	            playerListing.ban.image:SetScale(1)
-	        end
-
-		playerListing.ban:SetOnClick(
-			function()
-				if v.userid then
-					TheFrontEnd:PushScreen( 
-						PopupDialogScreen(
-							STRINGS.UI.PLAYERSTATUSSCREEN.BANCONFIRM_TITLE.." "..displayName,
-							STRINGS.UI.PLAYERSTATUSSCREEN.BANCONFIRM_BODY.." "..displayName.."?",
-							{ 
-								{text=STRINGS.UI.PLAYERSTATUSSCREEN.OK, cb = function() TheNet:Ban(v.userid) TheFrontEnd:PopScreen() TheFrontEnd:PopScreen() end},
-								{text=STRINGS.UI.PLAYERSTATUSSCREEN.CANCEL, cb = function() TheFrontEnd:PopScreen() TheFrontEnd:PopScreen() end}
-							}
-					))
-				end
-			end)
-		playerListing.ban:Hide()
-
-		if is_server_admin and not v.admin then
-			if BAN_ENABLED then
-				playerListing.viewprofile:SetPosition(70,3,0)
-				playerListing.mute:SetPosition(120,3,0)
-				playerListing.kick:SetPosition(170,3,0)
-				playerListing.ban:Show()
-			else
-				playerListing.viewprofile:SetPosition(90,3,0)
-				playerListing.mute:SetPosition(140,3,0)
-				playerListing.kick:SetPosition(190,3,0)
-			end
-			playerListing.kick:SetOnClick(
-				function()
-					if v.userid then
-						TheFrontEnd:PushScreen( 
-							PopupDialogScreen(
-								STRINGS.UI.PLAYERSTATUSSCREEN.KICKCONFIRM_TITLE.." "..displayName,
-								STRINGS.UI.PLAYERSTATUSSCREEN.KICKCONFIRM_BODY.." "..displayName.."?",
-								{ 
-									{text=STRINGS.UI.PLAYERSTATUSSCREEN.OK, cb = function() TheNet:Kick(v.userid) TheFrontEnd:PopScreen() TheFrontEnd:PopScreen() end},
-									{text=STRINGS.UI.PLAYERSTATUSSCREEN.CANCEL, cb = function() TheFrontEnd:PopScreen() TheFrontEnd:PopScreen() end}
-								}
-						))
-					end
-				end)
-			playerListing.kick:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.KICK)
-			playerListing.kick:Show()
-		elseif Voter and Voter:IsVoteKickEnabled() and not v.admin and not empty then
-			playerListing.viewprofile:SetPosition(90,3,0)
-			playerListing.mute:SetPosition(140,5,0)
-			playerListing.kick:SetPosition(190,3,0)
-			playerListing.kick:Show()
-			
-			if Voter:IsUserSquelched(self.owner.userid) then
-				playerListing.kick:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.VOTEKICKSQUELCHED)				
-			else
-				playerListing.kick:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.VOTEKICK)
-			end
-
-			playerListing.kick:SetOnClick(
-				function()
-					if Voter and not Voter:IsVoteActive() and not Voter:IsUserSquelched(self.owner.userid) then
-						Voter:StartVote( self.owner, "kick", visible_index ) --ThePlayer instead of self.owner?
-					end
-				end)
-
-			if empty or (not Voter) or (Voter and not Voter:IsVoteKickEnabled()) or self.owner.userid == v.userid then
-			    playerListing.kick:Hide()
-			elseif Voter then
-				if Voter:IsVoteActive() or Voter:IsUserSquelched(self.owner.userid) then						--print("### disable kick button")
-					playerListing.kick:Disable()
-				else
-					playerListing.kick:Enable()
-				end
-			end
-		end
-
-		doButtonFocusHookups(playerListing)
-
-		playerListing.OnGainFocus = function()
-			-- playerListing.name:SetSize(43)
-			if not empty then
-				playerListing.highlight:Show()
-			end
-		end
-		playerListing.OnLoseFocus = function()
-			-- playerListing.name:SetSize(35)
-			playerListing.highlight:Hide()
-		end
-
-		return playerListing
-	end
-
-	local function UpdatePlayerListing(playerListing, v, i)
-
-		local empty = v == nil
-		if v then
-			empty = #v > 0
-		end
-
-		if empty then
-			playerListing:Hide()
-		else
-			playerListing:Show()
-
-	        local displayName = self:GetDisplayName(v)
-
-			playerListing.userid = v.userid
-
-			playerListing.characterBadge:Set(v.prefab or "", v.colour or DEFAULT_PLAYER_COLOUR, v.performance ~= nil, v.userflags or 0)
-			playerListing.characterBadge:Show()
-
-		    if v.admin then
-		    	playerListing.adminBadge:Show()
-		    else
-		    	playerListing.adminBadge:Hide()
-			end
-			
-			local visible_index = i
-			if not TheNet:GetServerIsClientHosted() then
-				playerListing.number:SetString(i-1)
-				visible_index = i-1
-                if i > 1 then
-                    playerListing.number:Show()
-                else
-                    playerListing.number:Hide()
-                end
-			else
-				playerListing.number:SetString(i)
-			end
-
-			playerListing.name:SetTruncatedString(displayName, playerListing.name._align.maxwidth, playerListing.name._align.maxchars, true)
-            local w, h = playerListing.name:GetRegionSize()
-            playerListing.name:SetPosition(playerListing.name._align.x + w * .5, 0, 0)
-			playerListing.name:SetColour(unpack(v.colour or DEFAULT_PLAYER_COLOUR))
-
-			playerListing.age:SetString(v.playerage ~= nil and v.playerage > 0 and (tostring(v.playerage)..(v.playerage == 1 and STRINGS.UI.PLAYERSTATUSSCREEN.AGE_DAY or STRINGS.UI.PLAYERSTATUSSCREEN.AGE_DAYS)) or "")
-			
-			playerListing.ishost = v.performance ~= nil
-
-            if v.performance ~= nil then
-                playerListing.perf:SetTexture("images/scoreboard.xml", PERF_HOST_LEVELS[math.min(v.performance + 1, #PERF_HOST_LEVELS)])
-                playerListing.perf:SetScale(unpack(PERF_HOST_SCALE))
+            if UserCommands.UserRunCommandResult("kick", self.owner, client.userid) == COMMAND_RESULT.DENY then
+                playerListing.kick:Select()
             else
-                if v.netscore ~= nil then
-                    playerListing.perf:SetTexture("images/scoreboard.xml", PERF_CLIENT_LEVELS[math.min(v.netscore + 1, #PERF_CLIENT_LEVELS)])
-                else
-                    playerListing.perf:SetTexture("images/scoreboard.xml", PERF_CLIENT_UNKNOWN)
-                end
-                playerListing.perf:SetScale(unpack(PERF_CLIENT_SCALE))
+                playerListing.kick:Unselect()
             end
+        else
+            playerListing.kick:Hide()
+        end
 
-	        local this_user_is_dedicated_server = v.performance ~= nil and not TheNet:GetServerIsClientHosted()
+        if can_ban then
+            playerListing.ban:Show()
+            playerListing.ban:SetPosition(button_x,3,0)
+            button_x = button_x + button_x_offset
 
-			playerListing.viewprofile:SetOnClick(
-				function()
-                    TheFrontEnd:PopScreen()
-                    self.owner.HUD:TogglePlayerAvatarPopup(displayName, v, true)
-				end)
+            if UserCommands.UserRunCommandResult("ban", self.owner, client.userid) == COMMAND_RESULT.DENY then
+                playerListing.ban:Select()
+            else
+                playerListing.ban:Unselect()
+            end
+        else
+            playerListing.ban:Hide()
+        end
 
-			if not this_user_is_dedicated_server then
-				playerListing.viewprofile:Show()
-			else
-				playerListing.viewprofile:Hide()
-			end
+        local actions = UserCommands.GetUserActions(self.owner, playerListing.userid)
+        for i=#actions,1,-1 do
+            if actions[i].commandname == "kick" or actions[i].commandname == "ban" then
+                table.remove(actions, i)
+            end
+        end
+        if #actions > 0 then
+            playerListing.useractions:Show()
+            playerListing.useractions:SetPosition(button_start+button_x_offset*4,3,0)
+        else
+            playerListing.useractions:Hide()
+        end
 
-	        playerListing.isMuted = v.muted == true
-			if playerListing.isMuted then
-				playerListing.mute.image_focus = "mute.tex"
-	        	playerListing.mute.image:SetTexture("images/scoreboard.xml", "mute.tex") 
-	        	playerListing.mute:SetTextures("images/scoreboard.xml", "mute.tex")
-	        	playerListing.mute:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.UNMUTE)
-			else
-				playerListing.mute.image_focus = "chat.tex"
-	        	playerListing.mute.image:SetTexture("images/scoreboard.xml", "chat.tex")
-	        	playerListing.mute:SetTextures("images/scoreboard.xml", "chat.tex")
-	        	playerListing.mute:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.MUTE)
-			end
+        doButtonFocusHookups(playerListing)
+    end
 
-			if v.userid ~= self.owner.userid and not this_user_is_dedicated_server then
-				playerListing.mute:Show()
-                playerListing.mute.image.inst:SetMuted(playerListing.isMuted)
-			else
-				playerListing.mute:Hide()
-                playerListing.mute.image.inst:DisableMute()
-			end
+    if not self.scroll_list then
+        self.list_root = self.root:AddChild(Widget("list_root"))
+        self.list_root:SetPosition(190, -35)
 
-			playerListing.kick:Hide()
+        self.row_root = self.root:AddChild(Widget("row_root"))
+        self.row_root:SetPosition(190, -35)
 
-			playerListing.ban:SetOnClick(
-				function()
-					if v.userid then
-						TheFrontEnd:PushScreen( 
-							PopupDialogScreen(
-								STRINGS.UI.PLAYERSTATUSSCREEN.BANCONFIRM_TITLE.." "..displayName,
-								STRINGS.UI.PLAYERSTATUSSCREEN.BANCONFIRM_BODY.." "..displayName.."?",
-								{ 
-									{text=STRINGS.UI.PLAYERSTATUSSCREEN.OK, cb = function() TheNet:Ban(v.userid) TheFrontEnd:PopScreen() TheFrontEnd:PopScreen() end},
-									{text=STRINGS.UI.PLAYERSTATUSSCREEN.CANCEL, cb = function() TheFrontEnd:PopScreen() TheFrontEnd:PopScreen() end}
-								}
-						))
-					end
-				end)
-			playerListing.ban:Hide()
+        self.player_widgets = {}
+        for i=1,6 do
+            table.insert(self.player_widgets, listingConstructor(i, self.row_root))
+            UpdatePlayerListing(self.player_widgets[i], ClientObjs[i] or {}, i)
+        end
 
-			local is_server_admin = TheNet:GetIsServerAdmin()
-			if is_server_admin and not v.admin then
-				if BAN_ENABLED then
-					playerListing.viewprofile:SetPosition(70,3,0)
-					playerListing.mute:SetPosition(120,3,0)
-					playerListing.kick:SetPosition(170,3,0)
-					playerListing.ban:Show()
-				else
-					playerListing.viewprofile:SetPosition(90,3,0)
-					playerListing.mute:SetPosition(140,3,0)
-					playerListing.kick:SetPosition(190,3,0)
-				end
-				playerListing.kick:SetOnClick(
-					function()
-						if v.userid then
-							TheFrontEnd:PushScreen( 
-								PopupDialogScreen(
-									STRINGS.UI.PLAYERSTATUSSCREEN.KICKCONFIRM_TITLE.." "..displayName,
-									STRINGS.UI.PLAYERSTATUSSCREEN.KICKCONFIRM_BODY.." "..displayName.."?",
-									{ 
-										{text=STRINGS.UI.PLAYERSTATUSSCREEN.OK, cb = function() TheNet:Kick(v.userid) TheFrontEnd:PopScreen() TheFrontEnd:PopScreen() end},
-										{text=STRINGS.UI.PLAYERSTATUSSCREEN.CANCEL, cb = function() TheFrontEnd:PopScreen() TheFrontEnd:PopScreen() end}
-									}
-							))
-						end
-					end)
-				playerListing.kick:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.KICK)
-				playerListing.kick:Show()
-			elseif Voter and Voter:IsVoteKickEnabled() and not v.admin then
-				playerListing.viewprofile:SetPosition(90,3,0)
-				playerListing.mute:SetPosition(140,5,0)
-				playerListing.kick:SetPosition(190,3,0)
-				playerListing.kick:Show()
-				
-				playerListing.kick:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.VOTEKICK)
+        self.scroll_list = self.list_root:AddChild(ScrollableList(ClientObjs, 380, 370, 60, 5, UpdatePlayerListing, self.player_widgets, nil, nil, nil, -15))
+        self.scroll_list:LayOutStaticWidgets(-15)
+        self.scroll_list:SetPosition(0,-10)
 
-				playerListing.kick:SetOnClick(
-					function()
-						if Voter and not Voter:IsVoteActive() and not Voter:IsUserSquelched(self.owner.userid) then
-							Voter:StartVote( self.owner, "kick", visible_index ) --ThePlayer instead of self.owner?
-						end
-					end)
-
-				if not Voter or (Voter and not Voter:IsVoteKickEnabled()) or self.owner.userid == v.userid then
-				    playerListing.kick:Hide()
-				elseif Voter then
-					if Voter:IsVoteActive() or Voter:IsUserSquelched(self.owner.userid) then						--print("### disable kick button")
-						playerListing.kick:Disable()
-					else
-						playerListing.kick:Enable()
-					end
-				end
-			end
-
-			doButtonFocusHookups(playerListing)
-		end
-	end
-
-	if not self.scroll_list then
-		self.list_root = self.root:AddChild(Widget("list_root"))
-		self.list_root:SetPosition(190, -35)
-
-		self.row_root = self.root:AddChild(Widget("row_root"))
-		self.row_root:SetPosition(190, -35)
-
-		self.player_widgets = {}
-		for i=1,6 do
-			table.insert(self.player_widgets, listingConstructor(ClientObjs[i] or {}, i, self.row_root))
-		end
-
-		self.scroll_list = self.list_root:AddChild(ScrollableList(ClientObjs, 380, 370, 60, 5, UpdatePlayerListing, self.player_widgets, nil, nil, nil, -15))
-		self.scroll_list:LayOutStaticWidgets(-15)
-		self.scroll_list:SetPosition(0,-10)
-	else
-		self.scroll_list:SetList(ClientObjs)
-	end
+        self.focus_forward = self.scroll_list
+        self.default_focus = self.scroll_list
+    else
+        self.scroll_list:SetList(ClientObjs)
+    end
 
     if not self.bgs then
         self.bgs = {}

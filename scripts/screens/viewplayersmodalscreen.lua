@@ -114,25 +114,15 @@ local ViewPlayersModalScreen = Class(Screen, function(self, players, maxPlayers)
         playerListing.age:SetPosition(80,0,0)
         playerListing.age:SetHAlign(ANCHOR_MIDDLE)]]
 
-        local scale = .6
+        local scale = .5
 
-        playerListing.viewprofile = playerListing:AddChild(ImageButton("images/scoreboard.xml", "addfriend.tex", "addfriend.tex", "addfriend.tex", "addfriend.tex", nil, {1,1}, {0,0}))
-        playerListing.viewprofile:SetPosition(137,0,0)
-        playerListing.viewprofile.image:SetScale(scale)
-        playerListing.viewprofile:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.VIEWPROFILE, { font = NEWFONT_OUTLINE, size = 24, offset_x = 0, offset_y = 30, colour = {1,1,1,1}})
-        local gainfocusfn = playerListing.viewprofile.OnGainFocus
-        playerListing.viewprofile.OnGainFocus =
-        function()
-            gainfocusfn(playerListing.viewprofile)
-            TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover")
-            playerListing.viewprofile.image:SetScale(scale + .1)
-        end
-        local losefocusfn = playerListing.viewprofile.OnLoseFocus
-        playerListing.viewprofile.OnLoseFocus =
-        function()
-            losefocusfn(playerListing.viewprofile)
-            playerListing.viewprofile.image:SetScale(scale)
-        end
+        playerListing.viewprofile = playerListing:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "steam.tex" ))
+        playerListing.viewprofile:SetPosition(137,-2,0)
+        playerListing.viewprofile:SetScale(scale)
+        --playerListing.viewprofile:SetNormalScale(scale)
+        --playerListing.viewprofile:SetFocusScale(scale+.1)
+        --playerListing.viewprofile:SetFocusSound("dontstarve/HUD/click_mouseover")
+        --playerListing.viewprofile:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.VIEWPROFILE, { font = NEWFONT_OUTLINE, size = 24, offset_x = 0, offset_y = 30, colour = {1,1,1,1}})
         playerListing.viewprofile:SetOnClick(
             function()
                 --TheFrontEnd:PushScreen(PlayerAvatarPopupScreen(v.name, v))

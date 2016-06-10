@@ -1,3 +1,13 @@
+--------------------------------------------------------------------------
+--[[ Dependencies ]]
+--------------------------------------------------------------------------
+
+local EquipSlot = require("equipslotutil")
+
+--------------------------------------------------------------------------
+--[[ Constants ]]
+--------------------------------------------------------------------------
+
 local TIMEOUT = 2
 
 --------------------------------------------------------------------------
@@ -831,7 +841,7 @@ local function TakeActiveItemFromEquipSlot(inst, eslot)
             else
                 QueueRefresh(inst, TIMEOUT)
             end
-            SendRPCToServer(RPC.TakeActiveItemFromEquipSlot, eslot)
+            SendRPCToServer(RPC.TakeActiveItemFromEquipSlot, EquipSlot.ToID(eslot))
         end
     end
 end

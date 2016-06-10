@@ -5,7 +5,6 @@ local assets =
     Asset("ANIM", "anim/evergreen_tall_old.zip"),
     Asset("ANIM", "anim/evergreen_short_normal.zip"),
 
-    Asset("ANIM", "anim/dust_fx.zip"),
     Asset("SOUND", "sound/forest.fsb"),
     Asset("MINIMAP_IMAGE", "evergreen_lumpy"),
 }
@@ -16,11 +15,8 @@ local twiggy_assets =
     Asset("ANIM", "anim/twiggy_diseased_build.zip"), --build
     Asset("ANIM", "anim/twiggy_short_normal.zip"),
     Asset("ANIM", "anim/twiggy_tall_old.zip"),
-    Asset("ANIM", "anim/twiggy_diseased_short_normal.zip"),
-    Asset("ANIM", "anim/twiggy_diseased_tall_old.zip"),
-    Asset("ANIM", "anim/twiggy_diseased_transformed.zip"),
+    Asset("ANIM", "anim/twiggy_to_diseased.zip"),
 
-    Asset("ANIM", "anim/dust_fx.zip"),
     Asset("SOUND", "sound/forest.fsb"),
     Asset("MINIMAP_IMAGE", "twiggy"),
 }
@@ -69,6 +65,7 @@ local builds =
         prefab_name="evergreen",
         regrowth_product="pinecone_sapling",
         regrowth_tuning=TUNING.EVERGREEN_REGROWTH,
+        grow_times=TUNING.EVERGREEN_GROW_TIME,
         normal_loot = {"log", "log", "pinecone"},
         short_loot = {"log"},
         tall_loot = {"log", "log", "log", "pinecone", "pinecone"},
@@ -81,6 +78,7 @@ local builds =
         prefab_name="evergreen_sparse",
         regrowth_product="lumpy_sapling",
         regrowth_tuning=TUNING.EVERGREEN_SPARSE_REGROWTH,
+        grow_times=TUNING.EVERGREEN_GROW_TIME,
         normal_loot = {"log","log"},
         short_loot = {"log"},
         tall_loot = {"log", "log","log"},
@@ -91,14 +89,16 @@ local builds =
         file="twiggy_build",
         file_bank = "twiggy",
         file_disease = "twiggy_diseased_build",
-        file_disease_bank = "twiggy_diseased",
+        file_disease_bank = "twiggy",
         prefab_name="twiggytree",
         regrowth_product="twiggy_nut_sapling",
         regrowth_tuning=TUNING.EVERGREEN_REGROWTH,
+        grow_times=TUNING.TWIGGY_TREE_GROW_TIME,
         normal_loot = {"log","twigs","twiggy_nut"},
         short_loot = {"twigs"},
         tall_loot = {"log", "twigs","twigs","twiggy_nut","twiggy_nut"},
         drop_pinecones=false,
+        rebirth_loot = {loot="twigs", max=2},
         disease_fx = "green_leaves_chop",
     },
 }
@@ -209,6 +209,27 @@ local function OnBurnt(inst, immediate)
     end
 end
 
+local function DoRebirthLoot(inst)
+    local rebirth_loot = GetBuild(inst).rebirth_loot
+    if rebirth_loot ~= nil then
+        local x,y,z = inst.Transform:GetWorldPosition()
+        local ents = TheSim:FindEntities(x,y,z, 8)
+        local numloot = 0
+        for i,ent in ipairs(ents) do
+            if ent.prefab == rebirth_loot.loot then
+                numloot = numloot + 1
+            end
+        end
+        local prob = 1-(numloot/rebirth_loot.max)
+        if math.random() < prob then
+            inst:DoTaskInTime(17*FRAMES, function()
+                inst.components.lootdropper:SpawnLootPrefab(rebirth_loot.loot)
+            end)
+        end
+        inst._lastrebirth = GetTime()
+    end
+end
+
 local function PushSway(inst)
     if math.random() > .5 then
         inst.AnimState:PushAnimation(inst.anims.sway1, true)
@@ -243,6 +264,7 @@ local function GrowShort(inst)
     inst.AnimState:PlayAnimation("grow_old_to_short")
     inst.SoundEmitter:PlaySound("dontstarve/forest/treeGrowFromWilt")
     PushSway(inst)
+    DoRebirthLoot(inst)
 end
 
 local function SetNormal(inst)
@@ -318,13 +340,43 @@ local function inspect_tree(inst)
         or nil
 end
 
-local growth_stages =
-{
-    {name="short", time = function(inst) return GetRandomWithVariance(TUNING.EVERGREEN_GROW_TIME[1].base, TUNING.EVERGREEN_GROW_TIME[1].random) end, fn = function(inst) SetShort(inst) end,  growfn = function(inst) GrowShort(inst) end , leifscale=.7 },
-    {name="normal", time = function(inst) return GetRandomWithVariance(TUNING.EVERGREEN_GROW_TIME[2].base, TUNING.EVERGREEN_GROW_TIME[2].random) end, fn = function(inst) SetNormal(inst) end, growfn = function(inst) GrowNormal(inst) end, leifscale=1 },
-    {name="tall", time = function(inst) return GetRandomWithVariance(TUNING.EVERGREEN_GROW_TIME[3].base, TUNING.EVERGREEN_GROW_TIME[3].random) end, fn = function(inst) SetTall(inst) end, growfn = function(inst) GrowTall(inst) end, leifscale=1.25 },
-    {name="old", time = function(inst) return GetRandomWithVariance(TUNING.EVERGREEN_GROW_TIME[4].base, TUNING.EVERGREEN_GROW_TIME[4].random) end, fn = function(inst) SetOld(inst) end, growfn = function(inst) GrowOld(inst) end },
-}
+local growth_stages = {}
+for build,data in pairs(builds) do
+    growth_stages[build] =
+    {
+        {
+            name="short",
+            time = function(inst) return GetRandomWithVariance(data.grow_times[1].base, data.grow_times[1].random) end,
+            fn = function(inst) SetShort(inst) end,
+            growfn = function(inst) GrowShort(inst) end ,
+            leifscale=.7
+        },
+        {
+            name="normal",
+            time = function(inst) return GetRandomWithVariance(data.grow_times[2].base, data.grow_times[2].random) end,
+            fn = function(inst) SetNormal(inst) end,
+            growfn = function(inst) GrowNormal(inst) end,
+            leifscale=1
+        },
+        {
+            name="tall",
+            time = function(inst) return GetRandomWithVariance(data.grow_times[3].base, data.grow_times[3].random) end,
+            fn = function(inst) SetTall(inst) end,
+            growfn = function(inst) GrowTall(inst) end,
+            leifscale=1.25
+        },
+        {
+            name="old",
+            time = function(inst) return GetRandomWithVariance(data.grow_times[4].base, data.grow_times[4].random) end,
+            fn = function(inst) SetOld(inst) end,
+            growfn = function(inst) GrowOld(inst) end
+        },
+    }
+end
+
+local function GetGrowthStages(inst)
+    return growth_stages[inst.build] or growth_stages["normal"]
+end
 
 local function chop_tree(inst, chopper, chops)
     if chopper == nil or not chopper:HasTag("playerghost") then
@@ -470,7 +522,7 @@ local function chop_down_tree(inst, chopper)
                         local target = FindEntity(inst, TUNING.LEIF_MAXSPAWNDIST, find_leif_spawn_target, { "evergreens", "tree" }, { "leif", "stump", "burnt" })
                         if target ~= nil then
                             target.noleif = true
-                            target.leifscale = growth_stages[target.components.growable.stage].leifscale or 1
+                            target.leifscale = GetGrowthStages(target)[target.components.growable.stage].leifscale or 1
                             target.chopper = chopper
                             target:DoTaskInTime(1 + math.random() * 3, spawn_leif)
                         end
@@ -521,6 +573,10 @@ local function onsave(inst, data)
         data.build = inst.build
     end
 
+    if inst._lastrebirth ~= nil then
+        data.lastrebirth = inst._lastrebirth - GetTime()
+    end
+
     data.burntcone = inst.burntcone
 end
 
@@ -540,6 +596,10 @@ local function onload(inst, data)
 
         if not inst:IsValid() then
             return
+        end
+
+        if data.lastrebirth ~= nil then
+            inst._lastrebirth = data.lastrebirth + GetTime()
         end
 
         inst.burntcone = data.burntcone
@@ -584,6 +644,21 @@ local function OnEntityWake(inst)
     if inst.components.inspectable == nil then
         inst:AddComponent("inspectable")
         inst.components.inspectable.getstatus = inspect_tree
+    end
+
+    if GetBuild(inst).rebirth_loot ~= nil then
+        -- This is a failsafe because trees don't actually grow offscreen (or
+        -- rather, never more than one stage) So this will cause trees that
+        -- have been offscreen for multiple stages to drop some loot even if
+        -- their growth hasn't reached there yet.
+        local growthcycletime = 0
+        for i,data in ipairs(GetBuild(inst).grow_times) do
+            growthcycletime = growthcycletime + data.base
+        end
+        growthcycletime = growthcycletime
+        if inst._lastrebirth + growthcycletime < GetTime() then
+            DoRebirthLoot(inst)
+        end
     end
 end
 
@@ -667,6 +742,11 @@ local function ondiseasedfn_twiggy(inst)
     local disease_bank = GetBuild(inst).file_disease_bank
     if disease_bank ~= nil then
         inst.AnimState:SetBank(disease_bank)
+    end
+
+    if inst:HasTag("stump") then
+        ondiseaseddeathfn_evergreen(inst)
+        return
     end
 
     inst.components.lootdropper:SetLoot({})
@@ -771,7 +851,7 @@ local function tree(name, build, stage, data)
 
         ---------------------
         inst:AddComponent("growable")
-        inst.components.growable.stages = growth_stages
+        inst.components.growable.stages = GetGrowthStages(inst)
         inst.components.growable:SetStage(stage == 0 and math.random(1, 3) or stage)
         inst.components.growable.loopstages = true
         inst.components.growable.springgrowth = true
@@ -828,7 +908,7 @@ local function tree(name, build, stage, data)
                 find_leif_spawn_target(inst) and
                 not (inst:HasTag("burnt") or inst:HasTag("stump")) then
 
-                inst.leifscale = growth_stages[inst.components.growable.stage].leifscale or 1
+                inst.leifscale = GetGrowthStages(inst)[inst.components.growable.stage].leifscale or 1
                 spawn_leif(inst)
 
                 inst.components.hauntable.hauntvalue = TUNING.HAUNT_HUGE
@@ -845,6 +925,16 @@ local function tree(name, build, stage, data)
 
         MakeSnowCovered(inst)
         ---------------------
+
+        if GetBuild(inst).rebirth_loot ~= nil then
+            inst._lastrebirth = 0
+            for i,time in ipairs(GetBuild(inst).grow_times) do
+                if i == inst.components.growable.stage then
+                    break
+                end
+                inst._lastrebirth = inst._lastrebirth - time.base
+            end
+        end
 
         if data == "stump" then
             inst:RemoveComponent("burnable")

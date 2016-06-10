@@ -1,3 +1,7 @@
+--V2C: THIS IS A SCREEN NOT A WIDGET
+--...
+--...      !!!
+
 local Screen = require "widgets/screen"
 local Widget = require "widgets/widget"
 local Text = require "widgets/text"
@@ -6,7 +10,7 @@ local Menu = require "widgets/menu"
 local UIAnim = require "widgets/uianim"
 local ImageButton = require "widgets/imagebutton"
 
-local STRING_MAX_LENGTH = 60 -- http://tools.ietf.org/html/rfc5321#section-4.5.3.1
+local STRING_MAX_LENGTH = 200 -- http://tools.ietf.org/html/rfc5321#section-4.5.3.1
 
 local function onaccept(inst, doer, widget)
     if not widget.isopen then
@@ -87,6 +91,11 @@ local WriteableWidget = Class(Screen, function(self, owner, writeable, config)
             self.scalingroot:SetScale(TheFrontEnd:GetHUDScale())
         end
     end, TheWorld)
+    self.inst:ListenForEvent("refreshhudsize", function(hud, scale)
+        if self.isopen then
+            self.scalingroot:SetScale(scale)
+        end
+    end, owner.HUD.inst)
 
     self.root = self.scalingroot:AddChild(Widget("writeablewidgetroot"))
     self.root:SetScale(.6, .6, .6)
@@ -125,6 +134,8 @@ local WriteableWidget = Class(Screen, function(self, owner, writeable, config)
     --self.edit_text:SetFocusedImage(self.edit_text_bg, "images/textboxes.xml", "textbox_long_over.tex", "textbox_long.tex")
     self.edit_text:SetTextLengthLimit(STRING_MAX_LENGTH)
     self.edit_text:EnableWordWrap(true)
+    self.edit_text:EnableWhitespaceWrap(true)
+    self.edit_text:EnableRegionSizeLimit(true)
     self.edit_text:EnableScrollEditWindow(false)
 
     self.buttons = {}
@@ -275,16 +286,6 @@ function WriteableWidget:OnControl(control, down)
         end
         if control == CONTROL_OPEN_DEBUG_CONSOLE then
             return true
-        end
-    end
-end
-
-function WriteableWidget:OnUpdate()
-    if self.isopen then
-        local scrnw, scrnh = TheSim:GetScreenSize()
-        if scrnw ~= self._scrnw or scrnh ~= self._scrnh then
-            self._scrnw, self._scrnh = scrnw, scrnh
-            self.scalingroot:SetScale(TheFrontEnd:GetHUDScale())
         end
     end
 end

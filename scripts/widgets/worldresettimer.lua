@@ -7,6 +7,7 @@ local TEMPLATES = require "widgets/templates"
 
 local openY = -30
 local closedY = -250
+local row2height = 75
 
 local WorldResetTimer = Class(Widget, function(self, owner)
     Widget._ctor(self, "WorldResetTimer")
@@ -22,8 +23,6 @@ local WorldResetTimer = Class(Widget, function(self, owner)
     self.bg.fill = self.root:AddChild(Image("images/fepanel_fills.xml", "panel_fill_tiny.tex"))
     self.bg.fill:SetScale(1.1, .9)
     self.bg.fill:SetPosition(8, 12)
-
-	local row2height = 75
 
     self.title = self.root:AddChild(Text(BUTTONFONT, 50))
     self.title:SetColour(0, 0, 0, 1)
@@ -43,29 +42,15 @@ local WorldResetTimer = Class(Widget, function(self, owner)
     self.survived_message:SetPosition(105, 0, 0)
 
     self.reset_hold_time = 0
-------
-    if owner.Network:IsServerAdmin() then --for controller, don't show button, isntead show "Hold Start to Reset" string, if held for 1-2s, reset
-        if TheInput:ControllerAttached() then
-            local controller_id = TheInput:GetControllerID()
-            self.reset_text = self.root:AddChild(Text(UIFONT, 35, STRINGS.UI.WORLDRESETDIALOG.BUTTONPROMPT1..TheInput:GetLocalizedControl(controller_id, CONTROL_PAUSE).."\n"..STRINGS.UI.WORLDRESETDIALOG.BUTTONPROMPT2))
-            self.reset_text:SetPosition(260, row2height, 0)
-            self.reset_text:SetColour(1,1,1,1)
 
-            self.leftroot:SetPosition(-250, row2height)
-            self.countdown_message:SetPosition(60, row2height)
-        else
-        	self.reset_button = self.root:AddChild(ImageButton())
-    	    self.reset_button:SetOnClick(function() self:Reset() end)
-    	    self.reset_button:SetText(STRINGS.UI.WORLDRESETDIALOG.RESET_BUTTON)
-    	    self.reset_button:SetPosition(250, row2height, 0)
-    	    self.reset_button:SetScale(.75)
-
-    	    self.leftroot:SetPosition(-270, row2height)
-    	    self.countdown_message:SetPosition(35, row2height)
-
-    	    self.default_focus = self.reset_button
+    if owner.Network:IsServerAdmin() then
+        local function onrefreshcontrollers()
+            self:RefreshLayout()
         end
-	end
+        self.inst:ListenForEvent("continuefrompause", onrefreshcontrollers, TheWorld)
+        self.inst:ListenForEvent("refreshcontrollers", onrefreshcontrollers, TheWorld)
+        self:RefreshLayout()
+    end
 
     self:Hide()
 
@@ -76,6 +61,47 @@ local WorldResetTimer = Class(Widget, function(self, owner)
     self.inst:ListenForEvent("showworldreset", function() self:StartTimer() end, TheWorld)
     self.inst:ListenForEvent("hideworldreset", function() self:StopTimer() end, TheWorld)
 end)
+
+function WorldResetTimer:RefreshLayout()
+    --for controller, don't show button, isntead show "Hold Start to Reset" string, if held for 1-2s, reset
+    if TheInput:ControllerAttached() then
+        if self.reset_button ~= nil then
+            self.default_focus = nil
+            self.reset_button:Kill()
+            self.reset_button = nil
+        end
+
+        if self.reset_text == nil then
+            self.reset_text = self.root:AddChild(Text(UIFONT, 35))
+            self.reset_text:SetPosition(260, row2height, 0)
+            self.reset_text:SetColour(1, 1, 1, 1)
+
+            self.leftroot:SetPosition(-250, row2height)
+            self.countdown_message:SetPosition(60, row2height)
+        end
+
+        local controller_id = TheInput:GetControllerID()
+        self.reset_text:SetString(STRINGS.UI.WORLDRESETDIALOG.BUTTONPROMPT1..TheInput:GetLocalizedControl(controller_id, CONTROL_PAUSE).."\n"..STRINGS.UI.WORLDRESETDIALOG.BUTTONPROMPT2)
+    else
+        if self.reset_text ~= nil then
+            self.reset_text:Kill()
+            self.reset_text = nil
+        end
+
+        if self.reset_button == nil then
+            self.reset_button = self.root:AddChild(ImageButton())
+            self.reset_button:SetOnClick(function() self:Reset() end)
+            self.reset_button:SetText(STRINGS.UI.WORLDRESETDIALOG.RESET_BUTTON)
+            self.reset_button:SetPosition(250, row2height, 0)
+            self.reset_button:SetScale(.75)
+
+            self.leftroot:SetPosition(-270, row2height)
+            self.countdown_message:SetPosition(35, row2height)
+
+            self.default_focus = self.reset_button
+        end
+    end
+end
 
 function WorldResetTimer:OnUpdate(dt)
     if self.started then
@@ -93,7 +119,7 @@ function WorldResetTimer:OnUpdate(dt)
         -- self:StopUpdating() -- Disabled so we can detect holding start btn
     end
 
-    if TheInput:IsControlPressed(CONTROL_PAUSE) then
+    if self.reset_text ~= nil and TheInput:IsControlPressed(CONTROL_PAUSE) then
         self.reset_hold_time = self.reset_hold_time + dt
         if self.reset_hold_time > 2 then
             self:Reset()

@@ -110,6 +110,7 @@ local function sayfn(self, script, nobroadcast, colour)
     local player = ThePlayer
     if self.widget == nil and player ~= nil and player.HUD ~= nil then
         self.widget = player.HUD:AddChild(FollowText(self.font or TALKINGFONT, self.fontsize or 35))
+        self.widget:SetHUD(player.HUD.inst)
     end
 
     if self.widget ~= nil then
@@ -125,20 +126,19 @@ local function sayfn(self, script, nobroadcast, colour)
 
     for i, line in ipairs(script) do
         if line.message ~= nil then
-
-            if self.mod_str_fn ~= nil then
-                line.message = self.mod_str_fn(line.message)
-            end
-
-            line.message = GetSpecialCharacterPostProcess(self.inst.prefab, line.message)
-
-            if self.widget ~= nil then
-                self.widget.text:SetString(line.message)
-            end
-            self.inst:PushEvent("ontalk", { noanim = line.noanim })
             if not nobroadcast then
                 TheNet:Talker(line.message, self.inst.entity)
             end
+
+            if self.widget ~= nil then
+                self.widget.text:SetString(
+                    GetSpecialCharacterPostProcess(
+                        self.inst.prefab,
+                        self.mod_str_fn ~= nil and self.mod_str_fn(line.message) or line.message
+                    )
+                )
+            end
+            self.inst:PushEvent("ontalk", { noanim = line.noanim })
         elseif self.widget ~= nil then
             self.widget:Hide()
         end

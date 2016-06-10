@@ -217,6 +217,9 @@ local function MakeBook(def)
         inst.components.finiteuses:SetUses(def.uses)
         inst.components.finiteuses:SetOnFinished(inst.Remove)
 
+        inst:AddComponent("fuel")
+        inst.components.fuel.fuelvalue = TUNING.MED_FUEL
+
         MakeSmallBurnable(inst)
         MakeSmallPropagator(inst)
 

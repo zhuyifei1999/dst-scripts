@@ -103,10 +103,10 @@ function BlowInWind:OnUpdate(dt)
 
 	-- Map velocity magnitudes to a useful range of walkspeeds
 	local curr_speed = self.averageSpeed
-	local player = ThePlayer
+	--[[local player = ThePlayer
 	if player and player.components.locomotor then
 		curr_speed = (player.components.locomotor:GetRunSpeed() + TUNING.WILSON_WALK_SPEED) / 2
-	end
+	end]]
 	self.speed = Remap(self.velocity:Length(), 0, 1, 0, curr_speed) --maybe only if changing dir??
 
 	-- Do some variation on the speed if velocity is a reasonable amount

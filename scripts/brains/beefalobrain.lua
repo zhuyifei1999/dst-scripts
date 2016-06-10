@@ -87,6 +87,17 @@ local function GetLoiterAnchor(inst)
     return inst.components.knownlocations:GetLocation("loiteranchor")
 end
 
+local function CheckForSaltlick(inst)
+    local lick = FindEntity(inst, TUNING.SALTLICK_CHECK_DIST, nil, {"saltlick"})
+    if lick ~= nil then
+        inst.components.knownlocations:RememberLocation("saltlick", lick:GetPosition())
+        return true
+    else
+        inst.components.knownlocations:ForgetLocation("saltlick")
+        return false
+    end
+end
+
 local function TryBeginLoiterState(inst)
     local herd = inst.components.herdmember and inst.components.herdmember:GetHerd()
     if (herd and herd.components.mood and herd.components.mood:IsInMood())
@@ -166,6 +177,9 @@ function BeefaloBrain:OnStart()
             Follow(self.inst, GetGreetTarget, MIN_GREET_DIST, TARGET_GREET_DIST, MAX_GREET_DIST, true),
             ActionNode(function() TryBeginLoiterState(self.inst) end, "Finish greeting")
         }),
+
+        IfNode(function() return CheckForSaltlick(self.inst) end, "Stay Near Salt",
+            Wander(self.inst, function() return self.inst.components.knownlocations:GetLocation("saltlick") end, GetWanderDistFn)),
 
         Wander(self.inst, function() return self.inst.components.knownlocations:GetLocation("herd") end, GetWanderDistFn)
 

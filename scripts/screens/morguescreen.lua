@@ -361,7 +361,9 @@ function MorgueScreen:EncounterWidgetConstructor(data, parent, obit_button)
 		screen.column_focus = 2
 	end
 	
-	group.SetFocus = function()
+	local old_set_focus = group.SetFocus
+	group.SetFocus = function(self)
+		old_set_focus(self)
         if screen.column_focus == 1 then
 			group.NET_ID:SetFocus()
 		else

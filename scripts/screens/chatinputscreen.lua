@@ -4,7 +4,7 @@ local TextEdit = require "widgets/textedit"
 local Widget = require "widgets/widget"
 local Text = require "widgets/text"
 
-local emotes = require("emotes")
+local UserCommands = require('usercommands')
 
 local CHAT_INPUT_MAX_LENGTH = 150
 local CHAT_INPUT_HISTORY = {}
@@ -116,37 +116,7 @@ function ChatInputScreen:Run()
         return
     elseif string.sub(chat_string, 1, 1) == "/" then
         --Process slash commands:
-        --Clients may process any local slash commands
-        --here first instead of sending to the server.
-
-        if string.sub(chat_string, 2, 5) == "vote" then
-            local command_start = TrimString( chat_string:sub(7) )  
-            --print("command_start is [" .. command_start .. "]")
-
-            local command = nil
-            local parameters = ""
-            if command_start:find(" ") ~= nil then
-                command = command_start:sub( 0, command_start:find(" ")-1 )
-                parameters = TrimString( string.sub(command_start, command:len()+1) )
-            else
-                command = command_start;
-            end
-            --print("command is [" .. command .. "]")
-            --print("parameters is [".. parameters.. "]")
-
-            TheWorld.net.components.voter:StartVote( ThePlayer, command, parameters )
-        elseif string.sub(chat_string, 2, 4) == "bug" then
-            VisitURL("http://forums.kleientertainment.com/klei-bug-tracker/dont-starve-together/")
-        elseif string.sub(chat_string, 2, 7) == "rescue" then
-            -- This is a real command, send it to the server. Note: If we add more of these, they should probably be bundled up in chatcommands.lua or something...
-            TheNet:SendSlashCmdToServer(chat_string)
-        else
-            --Check emotes (remote command; must be sent to server)
-            local cmd--[[, params]] = emotes.translate(chat_string)
-            if cmd ~= nil then
-                TheNet:SendSlashCmdToServer(cmd)
-            end
-        end
+        UserCommands.RunTextUserCommand(string.sub(chat_string, 2), ThePlayer, false)
     else
         --Default to sending regular chat
         TheNet:Say(chat_string, self.whisper)

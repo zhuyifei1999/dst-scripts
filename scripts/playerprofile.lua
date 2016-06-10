@@ -1,11 +1,10 @@
-
-USE_SETTINGS_FILE = PLATFORM ~= "PS4" and PLATFORM ~= "NACL"
+local USE_SETTINGS_FILE = PLATFORM ~= "PS4" and PLATFORM ~= "NACL"
 
 local PlayerProfile = Class(function(self)
-    self.persistdata = 
+    self.persistdata =
     {
         -- TODO: Some of this data should be synced across computers
-        -- so will need to be stored on a server somewhere 
+        -- so will need to be stored on a server somewhere
         -- (In particular, collection_name, characterskins, and most_recent_item_skins)
         unlocked_worldgen = {},
         render_quality = RENDER_QUALITY.DEFAULT,
@@ -32,7 +31,6 @@ local PlayerProfile = Class(function(self)
         self.persistdata.HUDSize = 5
         self.persistdata.vibration = true
         self.persistdata.showpassword = false
-        self.persistdata.autosave = true
         self.persistdata.wathgrithrfont = true
         self.persistdata.screenshake = true
         self.persistdata.warneddifficultyrog = false
@@ -61,7 +59,6 @@ function PlayerProfile:Reset()
         self.persistdata.HUDSize = 5
         self.persistdata.vibration = true
         self.persistdata.showpassword = false
-        self.persistdata.autosave = true
         self.persistdata.wathgrithrfont = true
         self.persistdata.screenshake = true
         self.persistdata.warneddifficultyrog = false
@@ -92,7 +89,6 @@ function PlayerProfile:SoftReset()
         self.persistdata.HUDSize = 5
         self.persistdata.vibration = true
         self.persistdata.showpassword = false
-        self.persistdata.autosave = true
         self.persistdata.wathgrithrfont = true
         self.persistdata.screenshake = true
         self.persistdata.warneddifficultyrog = false
@@ -118,7 +114,7 @@ end
 function PlayerProfile:GetSkinsForPrefab(prefab)
 	local owned_skins = {}
 	table.insert(owned_skins, prefab.."_none") --everyone always has access to the nothing option
-	
+
 	local skins = PREFAB_SKINS[prefab]
 	if skins ~= nil then
 		for k,v in pairs(skins) do
@@ -135,7 +131,7 @@ end
 function PlayerProfile:GetClothingOptionsForType(type)
 	local owned_clothing = {}
 	table.insert(owned_clothing, "") --everyone always has access to the nothing option
-	
+
 	for clothing_name,data in pairs(CLOTHING) do
 		if data.type == type and TheInventory:CheckOwnership(clothing_name) then
 			table.insert(owned_clothing, clothing_name)
@@ -149,7 +145,7 @@ function PlayerProfile:GetBaseForCharacter(character)
 		self.persistdata.characterskins = {}
 	end
 
-	if not self.persistdata.characterskins[character] then 
+	if not self.persistdata.characterskins[character] then
 		self.persistdata.characterskins[character] = {}
 	end
 
@@ -161,7 +157,7 @@ function PlayerProfile:GetSkinsForCharacter(character, base)
 		self.persistdata.characterskins = {}
 	end
 
-	if not self.persistdata.characterskins[character] then 
+	if not self.persistdata.characterskins[character] then
 		self.persistdata.characterskins[character] = {}
 	end
 
@@ -176,14 +172,14 @@ function PlayerProfile:GetAllEquippedSkins()
 	local skinslist = {}
 	for character,data in pairs(self.persistdata.characterskins) do
 		for base, skins in pairs(data) do
-			if type(skins) == "table" then 
-				for slot, name in pairs(skins) do 
-					if name ~= "" then 
+			if type(skins) == "table" then
+				for slot, name in pairs(skins) do
+					if name ~= "" then
 						table.insert(skinslist, name)
 					end
 				end
 			end
-		end 
+		end
 	end
 
 	return skinslist
@@ -223,14 +219,14 @@ function PlayerProfile:SetSkinsForCharacter(character, base, skinList)
 		self.persistdata.characterskins = {}
 	end
 
-	if not self.persistdata.characterskins[character] then 
+	if not self.persistdata.characterskins[character] then
 		self.persistdata.characterskins[character] = {}
 	end
 
 	self.dirty = true
 	self.persistdata.characterskins[character].last_base = base
 	self.persistdata.characterskins[character][base] = skinList
-	
+
 	self:Save()
 end
 
@@ -262,8 +258,7 @@ function PlayerProfile:SetRecipeTimestamp(recipe, time)
 end
 
 function PlayerProfile:GetRecipeTimestamp(recipe)
-
-	if self.persistdata.recipe_timestamps then 
+	if self.persistdata.recipe_timestamps then
 		return self.persistdata.recipe_timestamps[recipe] or -10000
 	else 
 		return -10000
@@ -271,9 +266,8 @@ function PlayerProfile:GetRecipeTimestamp(recipe)
 end
 
 function PlayerProfile:IsSkinEquipped(name, type)
-
-	for character, data in pairs(self.persistdata.characterskins) do 
-		if data[type] == name then 
+	for character, data in pairs(self.persistdata.characterskins) do
+		if data[type] == name then
 			return true
 		end
 	end
@@ -283,9 +277,9 @@ end
 
 -- may return nil
 function PlayerProfile:GetLastUsedSkinForItem(item)
-	if not self.persistdata.most_recent_item_skins then 
+	if not self.persistdata.most_recent_item_skins then
 		self.persistdata.most_recent_item_skins = {}
-	--else 
+	--else
 		--print("Most recent item skins is ", self.persistdata.most_recent_item_skins)
 	end
 
@@ -294,7 +288,7 @@ function PlayerProfile:GetLastUsedSkinForItem(item)
 end
 
 function PlayerProfile:SetLastUsedSkinForItem(item, skin)
-	if not self.persistdata.most_recent_item_skins then 
+	if not self.persistdata.most_recent_item_skins then
 		self.persistdata.most_recent_item_skins = {}
 	end
 
@@ -310,8 +304,8 @@ function PlayerProfile:SetCollectionName(name)
 end
 
 function PlayerProfile:GetCollectionName()
-	if self.persistdata.collection_name then 
-		return self.persistdata.collection_name 
+	if self.persistdata.collection_name then
+		return self.persistdata.collection_name
 	end
 
 	return nil
@@ -332,20 +326,20 @@ end
 
 function PlayerProfile:SetVolume(ambient, sfx, music)
  	if USE_SETTINGS_FILE then
-		TheSim:SetSetting("audio", "volume_ambient", tostring(math.floor(ambient))) 
+		TheSim:SetSetting("audio", "volume_ambient", tostring(math.floor(ambient)))
 		TheSim:SetSetting("audio", "volume_sfx", tostring(math.floor(sfx)))
-		TheSim:SetSetting("audio", "volume_music", tostring(math.floor(music))) 		
+		TheSim:SetSetting("audio", "volume_music", tostring(math.floor(music)))
 	else
-	    self:SetValue("volume_ambient", ambient) 
-	    self:SetValue("volume_sfx", sfx) 
-	    self:SetValue("volume_music", music) 
+	    self:SetValue("volume_ambient", ambient)
+	    self:SetValue("volume_sfx", sfx)
+	    self:SetValue("volume_music", music)
 	    self.dirty = true
 	end
 end
 
 function PlayerProfile:SetBloomEnabled(enabled)
  	if USE_SETTINGS_FILE then
-		TheSim:SetSetting("graphics", "bloom", tostring(enabled)) 
+		TheSim:SetSetting("graphics", "bloom", tostring(enabled))
 	else
 		self:SetValue("bloom", enabled)
 		self.dirty = true
@@ -362,7 +356,7 @@ end
 
 function PlayerProfile:SetHUDSize(size)
  	if USE_SETTINGS_FILE then
-		TheSim:SetSetting("graphics", "HUDSize", tostring(size)) 
+		TheSim:SetSetting("graphics", "HUDSize", tostring(size))
 	else
 		self:SetValue("HUDSize", size)
 		self.dirty = true
@@ -379,7 +373,7 @@ end
 
 function PlayerProfile:SetDistortionEnabled(enabled)
  	if USE_SETTINGS_FILE then
-		TheSim:SetSetting("graphics", "distortion", tostring(enabled)) 
+		TheSim:SetSetting("graphics", "distortion", tostring(enabled))
 	else
 		self:SetValue("distortion", enabled)
 		self.dirty = true
@@ -396,7 +390,7 @@ end
 
 function PlayerProfile:SetScreenShakeEnabled(enabled)
  	if USE_SETTINGS_FILE then
-		TheSim:SetSetting("graphics", "screenshake", tostring(enabled)) 
+		TheSim:SetSetting("graphics", "screenshake", tostring(enabled))
 	else
 		self:SetValue("screenshake", enabled)
 		self.dirty = true
@@ -421,7 +415,7 @@ end
 
 function PlayerProfile:SetWathgrithrFontEnabled(enabled)
  	if USE_SETTINGS_FILE then
-		TheSim:SetSetting("misc", "wathgrithrfont", tostring(enabled)) 
+		TheSim:SetSetting("misc", "wathgrithrfont", tostring(enabled))
 	else
 		self:SetValue("wathgrithrfont", enabled)
 		self.dirty = true
@@ -446,7 +440,7 @@ end
 
 function PlayerProfile:SetHaveWarnedDifficultyRoG()
 	if USE_SETTINGS_FILE then
-		TheSim:SetSetting("misc", "warneddifficultyrog", "true") 
+		TheSim:SetSetting("misc", "warneddifficultyrog", "true")
 	else
 		self:SetValue("warneddifficultyrog", true)
 		self.dirty = true
@@ -463,7 +457,7 @@ end
 
 function PlayerProfile:SetVibrationEnabled(enabled)
  	if USE_SETTINGS_FILE then
-		TheSim:SetSetting("misc", "vibration", tostring(enabled)) 
+		TheSim:SetSetting("misc", "vibration", tostring(enabled))
 	else
 		self:SetValue("vibration", enabled)
 		self.dirty = true
@@ -480,7 +474,7 @@ end
 
 function PlayerProfile:SetShowPasswordEnabled(enabled)
  	if USE_SETTINGS_FILE then
-		TheSim:SetSetting("misc", "showpassword", tostring(enabled)) 
+		TheSim:SetSetting("misc", "showpassword", tostring(enabled))
 	else
 		self:SetValue("showpassword", enabled)
 		self.dirty = true
@@ -497,7 +491,7 @@ end
 
 function PlayerProfile:SetAutoSubscribeModsEnabled(enabled)
  	if USE_SETTINGS_FILE then
-		TheSim:SetSetting("misc", "autosubscribemods", tostring(enabled)) 
+		TheSim:SetSetting("misc", "autosubscribemods", tostring(enabled))
 	else
 		self:SetValue("autosubscribemods", enabled)
 		self.dirty = true
@@ -511,20 +505,6 @@ function PlayerProfile:GetAutoSubscribeModsEnabled()
 		return self:GetValue("autosubscribemods")
 	end
 end
-
-function PlayerProfile:SetAutosaveEnabled(enabled)
- 	if not USE_SETTINGS_FILE then
-		self:SetValue("autosave", enabled)
-		self.dirty = true
-	end
-end
-
-function PlayerProfile:GetAutosaveEnabled()
- 	if not USE_SETTINGS_FILE then
-		return self:GetValue("autosave")
-	end
-end
-
 
 -- gjans: Added this upgrade path 28/03/2016
 local function UpgradeProfilePresets(presets_string)
@@ -613,7 +593,7 @@ function PlayerProfile:GetVolume()
 		if sfx == nil then
 			sfx = 10
 		end
-		local music = TheSim:GetSetting("audio", "volume_music") 
+		local music = TheSim:GetSetting("audio", "volume_music")
 		if music == nil then
 			music = 10
 		end
@@ -665,7 +645,7 @@ function PlayerProfile:IsWorldGenUnlocked(area, item)
     if item == nil or self.persistdata.unlocked_worldgen[area][item] then
         return true
     end
-    
+
     return false
 end
 
@@ -673,11 +653,11 @@ function PlayerProfile:UnlockWorldGen(area, item)
 	if self.persistdata.unlocked_worldgen == nil then
 		self.persistdata.unlocked_worldgen = {}
 	end
-	
+
 	if self.persistdata.unlocked_worldgen[area] == nil then
 		self.persistdata.unlocked_worldgen[area] = {}
 	end
-	
+
     self.persistdata.unlocked_worldgen[area][item] = true
     self.dirty = true
 end
@@ -728,7 +708,7 @@ function PlayerProfile:Set(str, callback)
 		self.dirty = false
 
 		self.persistdata = TrackedAssert("TheSim:GetPersistentString profile",  json.decode, str)
-		    
+
         if self.persistdata.saw_display_adjustment_popup == nil then
             self.persistdata.saw_display_adjustment_popup = false
         end
@@ -740,7 +720,7 @@ function PlayerProfile:Set(str, callback)
         if self.persistdata.saw_new_host_picker == nil then
             self.persistdata.saw_new_host_picker = false
         end
-        
+
 		if self.persistdata.autosave == nil then
 		    self.persistdata.autosave = true
 		end
@@ -752,14 +732,14 @@ function PlayerProfile:Set(str, callback)
         if self.persistdata.play_instance == nil then
             self.persistdata.play_instance = 0
         end
-		    
+
  	    if USE_SETTINGS_FILE then
 			-- Copy over old settings
 			if self.persistdata.volume_ambient ~= nil and self.persistdata.volume_sfx ~= nil and self.persistdata.volume_music ~= nil then
 				print("Copying audio settings from profile to settings.ini")
 
 				self:SetVolume(self.persistdata.volume_ambient, self.persistdata.volume_sfx, self.persistdata.volume_music)
-				self.persistdata.volume_ambient = nil 
+				self.persistdata.volume_ambient = nil
 				self.persistdata.volume_sfx = nil
 				self.persistdata.volume_music = nil
 				self.dirty = true
@@ -772,16 +752,16 @@ function PlayerProfile:Set(str, callback)
                 self.persistdata.HUDSize = 5
                 self.persistdata.vibration = true
                 self.persistdata.showpassword = false
-		    end		    
+		    end
 		end
 
 		local amb, sfx, music = self:GetVolume()
 		Print(VERBOSITY.DEBUG, "volumes", amb, sfx, music )
-		
+
 		TheMixer:SetLevel("set_sfx", sfx / 10)
 		TheMixer:SetLevel("set_ambience", amb / 10)
 		TheMixer:SetLevel("set_music", music / 10)
-		
+
 		TheInputProxy:EnableVibration(self:GetVibrationEnabled())
 
 		if TheFrontEnd then
@@ -792,7 +772,7 @@ function PlayerProfile:Set(str, callback)
 				-- Copy over old settings
 				if self.persistdata.bloom ~= nil and self.persistdata.distortion ~= nil and self.persistdata.HUDSize ~= nil then
 					print("Copying render settings from profile to settings.ini")
-					
+
 					self:SetBloomEnabled(bloom_enabled)
 					self:SetDistortionEnabled(distortion_enabled)
 					self:SetHUDSize(self.persistdata.HUDSize)
@@ -809,23 +789,22 @@ function PlayerProfile:Set(str, callback)
 			TheFrontEnd:GetGraphicsOptions():SetBloomEnabled( bloom_enabled )
 			TheFrontEnd:GetGraphicsOptions():SetDistortionEnabled( distortion_enabled )
 		end
-		
+
 		-- old save data will not have the controls section so create it
 		if nil == self.persistdata.controls then
 		    self.persistdata.controls = {}
 		end
-		
+
 	    for idx,entry in pairs(self.persistdata.controls) do
-	        
 	        local enabled = true
 			if entry.enabled == nil then
 				enabled = false
-			else 
+			else
 				enabled = entry.enabled
 			end
 	        TheInputProxy:LoadControls(entry.guid, entry.data, enabled)
 	    end
-	    
+
 		if nil == self.persistdata.device_caps_a then
             self.persistdata.device_caps_a = 0
             self.persistdata.device_caps_b = 20
@@ -836,7 +815,7 @@ function PlayerProfile:Set(str, callback)
             self.persistdata.customizationpresets = upgraded
             self.dirty = true
         end
-		
+
 		self.persistdata.device_caps_a, self.persistdata.device_caps_b = TheSim:UpdateDeviceCaps(self.persistdata.device_caps_a, self.persistdata.device_caps_b)
         self.dirty = true
 
@@ -850,7 +829,7 @@ function PlayerProfile:SetDirty(dirty)
 	self.dirty = dirty
 end
 
-function PlayerProfile:GetControls(guid)  
+function PlayerProfile:GetControls(guid)
     local controls = nil
     local enabled = false
     for idx, entry in pairs(self.persistdata.controls) do
@@ -858,12 +837,11 @@ function PlayerProfile:GetControls(guid)
             controls = entry.data
             enabled = entry.enabled
         end
-    end  
+    end
     return controls, enabled
 end
 
-function PlayerProfile:SetControls(guid, data, enabled)  
-	
+function PlayerProfile:SetControls(guid, data, enabled)
 	-- check if this device is already in the list and update if found
 	local found = false
     for idx, entry in pairs(self.persistdata.controls) do
@@ -872,8 +850,8 @@ function PlayerProfile:SetControls(guid, data, enabled)
             entry.enabled = enabled
             found = true
         end
-    end  
-    
+    end
+
     -- not an existing device so add it
     if not found then
         table.insert(self.persistdata.controls, {["guid"]=guid, ["data"]=data, ["enabled"] = enabled})
@@ -894,20 +872,20 @@ end
 function PlayerProfile:SawControllerPopup()
     local sawPopup
  	if USE_SETTINGS_FILE then
-		sawPopup = TheSim:GetSetting("misc", "controller_popup") 
+		sawPopup = TheSim:GetSetting("misc", "controller_popup")
 		if nil == sawPopup then
 		    sawPopup = false
 		end
 	else
 		sawPopup = self:GetValueOrDefault(self.persistdata.controller_popup, false)
 	end
-	
+
 	return sawPopup
 end
 
 function PlayerProfile:ShowedControllerPopup()
  	if USE_SETTINGS_FILE then
-		TheSim:SetSetting("misc", "controller_popup", tostring(true)) 
+		TheSim:SetSetting("misc", "controller_popup", tostring(true))
 	else
 		self:SetValue("controller_popup", true)
 		self.dirty = true
@@ -932,7 +910,7 @@ end
 
 function PlayerProfile:SetWarnModsEnabled(do_warning)
  	if USE_SETTINGS_FILE then
-		TheSim:SetSetting("misc", "warn_mods_enabled", tostring(do_warning)) 
+		TheSim:SetSetting("misc", "warn_mods_enabled", tostring(do_warning))
 	else
 		self:SetValue("warn_mods_enabled", do_warning)
 		self.dirty = true

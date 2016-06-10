@@ -646,6 +646,7 @@ STRINGS=
         BUGNET = "Bug Net",
         SADDLEHORN = "Saddlehorn",
         BRUSH = "Brush",
+        SALTLICK = "Salt Lick",
         FROG = "Frog",
         FISHINGROD = "Fishing Rod",
         FISH = "Fish",
@@ -702,12 +703,12 @@ STRINGS=
         SADDLE_WAR = "War Saddle",
         SADDLE_RACE = "Glossamer Saddle",
         
-        TELEPORTATO_RING = "Ring thing",
-        TELEPORTATO_BOX = "Box thing",
-        TELEPORTATO_CRANK = "Crank thing",
-        TELEPORTATO_POTATO = "Metal potato thing",
-        TELEPORTATO_BASE = "Wooden thing",
-        TELEPORTATO_CHECKMATE = "Wooden thing",
+        TELEPORTATO_RING = "Ring Thing",
+        TELEPORTATO_BOX = "Box Thing",
+        TELEPORTATO_CRANK = "Crank Thing",
+        TELEPORTATO_POTATO = "Metal Potato Thing",
+        TELEPORTATO_BASE = "Wooden Thing",
+        TELEPORTATO_CHECKMATE = "Wooden Thing",
         
         TRINKET_1 = "Melty Marbles",
         TRINKET_2 = "Fake Kazoo",
@@ -1162,6 +1163,7 @@ STRINGS=
         BUGNET = "Catch bugs.",
         SADDLEHORN = "Pry that saddle off.",
         BRUSH = "Relieve beefalo of their hair buildup.",
+        SALTLICK = "Keep your livestock content.",
         BEEBOX = "Store your own bees.",
         BEEHAT = "Protection against angry bees.",
         TREASURECHEST = "A sturdy container.",
@@ -1497,6 +1499,9 @@ STRINGS=
         "There's just a big \"W\" etched in it.",
         "\"Not sick, just coffin.\"",
         "\"Sweet slumber.\"",
+        "\"This world could not hold me.\"",
+        "\"I didn't like it here anyway.\"",
+        "\"I've better places to be.\"",
         "\"It's dirty down here.\"",
         "\"Age makes fools of us all.\"",
         "\"Just needed a rest.\"",
@@ -1507,23 +1512,39 @@ STRINGS=
         "It says \"Mind your own business.\"",
         "It says \"Help, get me out!\" and \"Nah, just kidding,\" beneath.",
         "It reads \"Pulvis Et Umbra Sumus.\"",
+        "An engravement of their last words: \"I love it so much I could just die!\"",
         "An engravement of their last words: \"Hey, watch this.\"",
         "An engravement of their last words: \"Uh-oh.\"",
         "An engravement of their last words: \"This is fine.\"",
+        "An engravement of their last words: \"I'm out of here.\"",
+        "An engravement of their last words: \"That's enough of that.\"",
+        "An engravement of their last words: \"I'd rather die!\"",
+        "An engravement of their last words: \"Uh, okay bye.\"",
         "It reads \"Right behind you...\" and \"Made you look!\"",
         "\"Whoops.\"",
+        "It's cracked down the middle.",
+        "Someone left flowers.",
+        "It says \"Did I make it into the history book?\"",
+        "It says \"I'm taking a nap. In the dirt.\"",
+        "It says \"These are just the pieces we could find.\"",
+        "It says \"See you on the other side.\"",
+        "It says \"Catch you later.\"",
+        "It says \"Don't make fun. You'll be here too one day.\"",
         "It says \"On to the next adventure.\"",
         "\"It's worse than it looks.\"",
         "\"This is where I keep my stuff.\"",
         "It says \"I'm just pretending.\"",
         "It reads \"Is the coast clear yet?\"",
-        "It says \"Lost and Found\"",
+        "It says \"Lost and Found\".",
+        "It says \"I hope I turned the oven off.\"",
         "It says \"Right where I belong.\"",
         "It says \"I guess this is my life now.\"",
         "\"Not sick, just coffin.\"",
         "\"Beware.\" Beware of what?",
+        "It's covered in a peaceful moss.",
         "It reads \"I've made a grave error.\" Hm.",
         "It reads \"I can dig it.\" Oh.",
+        "It reads \"Care to join me?\"",
         "It reads \"Don't worry, it's cozy.\" That's nice.",
         "\"And don't come back.\"",
         "The inscription reads \"Always Watching\". Odd.",
@@ -1813,6 +1834,7 @@ STRINGS.UI =
         SHOWCHAT = "Show the Chat Tab",
         SHOWPLAYERS = "Show the Players Tab",
         VIEWGROUP = "View Group Page",
+        SERVERACTIONS = "More Server Actions",
         CANCEL = "Cancel",
     },
     CHARACTERSELECT=
@@ -1990,6 +2012,16 @@ STRINGS.UI =
     {
         REMOTEEXECUTE = "Remote:",
     },
+
+    BUGREPORTSCREEN = {
+        DESCRIPTION_LABEL = "Please enter a description of your issue.",
+    	SUBMIT = "Submit",
+        SUBMIT_SUCCESS_TITLE = "Success",
+        SUBMIT_SUCCESS_TEXT = "Bug report successfully submitted.",
+        SUBMIT_FAILURE_TITLE = "Error",
+        SUBMIT_FAILURE_TEXT = "There was a problem submitting your bug report.",
+    },
+
     EMAILSCREEN=
     {
         SIGNUPSUBMITTITLE="Sending...",
@@ -2385,6 +2417,9 @@ STRINGS.UI =
         LEFTGAME = "%s has left the game.",
         KICKEDFROMGAME = "%s was kicked from the game.",
         BANNEDFROMGAME = "%s was banned from the game.",
+        DEFAULTVOTEPASSEDFMT = "The %s has passed.",
+        DEFAULTVOTEFAILEDFMT = "The %s has failed.",
+        DEFAULTVOTENAMEFMT = "vote",
         PRESS_KB = "Press (",
         DISCONNECT_KB = ") to Disconnect",
         PRESS_CONTROLLER = "Press ",
@@ -2592,10 +2627,11 @@ STRINGS.UI =
         MUTE = "Mute",
         UNMUTE = "Unmute",
         KICK = "Kick",
-        VOTEKICK = "Vote to Kick",
-        VOTEKICKSQUELCHED = "You are currently on timeout for failed votes.",
-        VOTEACTIVE = "Vote In Progress",
+        VOTEHOVERFMT = "Vote to %s",
+        VOTESQUELCHEDHOVER = "You are currently on timeout for failed votes.",
+        VOTEACTIVEHOVER = "Vote In Progress",
         BAN = "Ban",
+        USERACTIONS = "More Actions...",
         ADMIN = "Admin",
         VIEWPROFILE = "View Player",
         CLEAR = "Remove Player",
@@ -2611,8 +2647,20 @@ STRINGS.UI =
         ENDLESS = "Endless",
         EMPTY_SERVER = "The server is empty.",
     },
-    
-    WORLDRESETDIALOG = 
+
+    COMMANDSSCREEN =
+    {
+        SERVERSUBTITLE = "Actions for",
+        SERVERTITLE = "The Server",
+        USERSUBTITLE = "User Actions for",
+        CANCEL = "Cancel",
+        VOTEFMT = "%s (vote)",
+        CONFIRMTITLE = "Really %s?",
+        CONFIRMTITLE_TARGET = "Really %s %s?",
+        CONFIRMBODY = "Are you sure?",
+    },
+
+    WORLDRESETDIALOG =
     {
         TITLE = "Day %d: Everyone is dead",
         TITLE_LATEJOIN = "Day %d: Everyone else is dead. Save them!",
@@ -2624,6 +2672,15 @@ STRINGS.UI =
         BUTTONPROMPT2 = "to Reset Now"
     },
 
+    VOTEDIALOG =
+    {
+        TIME_REMAINING = "Time Remaining: %d",
+        VOTE = "Vote",
+        CANCEL = "Cancel",
+        YES = "Yes",
+        NO = "No",
+    },
+
     CHATINPUTSCREEN =
     {
         WHISPER = "whisper:",
@@ -2631,6 +2688,67 @@ STRINGS.UI =
         WHISPER_DESIGNATOR = "[W]",
         HELP_WHISPER = "Whisper",
         HELP_SAY = "Say",
+        SYSTEMNAME = "[S] system",
+    },
+
+    USERCOMMANDS =
+    {
+        SQUELCHEDFMT = "You aren't allowed to start a '%s' vote right now.",
+        BADTARGETFMT = "You can't run '%s' on %s.",
+        NOTALLOWEDFMT = "You don't have permission to run '%s'.",
+        MISSINGPARAMSFMT = "Missing parameters! Type /help %s for more info.",
+        BADUSERFMT = "No one on the server goes by '%s'. Maybe try running this from the scoreboard?",
+    },
+
+    BUILTINCOMMANDS =
+    {
+        HELP = {
+            PRETTYNAME = "Command Help",
+            DESC = "Get more info on commands.",
+            OVERVIEW = "Type /help <command> for more info on a command.",
+            AVAILABLE = "Available commands:",
+            NOTFOUND = "Couldn't find a command called %s",
+        },
+        BUG = {
+            PRETTYNAME = "Report Bug",
+            DESC = "Run this to report a problem with the game!",
+        },
+        RESCUE = {
+            PRETTYNAME = "Rescue Me!",
+            DESC = "If you ever find yourself stuck in the ocean, /rescue will put you back on land.",
+        },
+        KICK = {
+            PRETTYNAME = "Kick",
+            DESC = "Boot someone off the server.",
+            VOTETITLEFMT = "Should we kick %s?",
+            VOTENAMEFMT = "vote to kick %s",
+        },
+        BAN = {
+            PRETTYNAME = "Ban",
+            DESC = "Boot someone off the server... permanently!",
+        },
+        STOPVOTE = {
+            PRETTYNAME = "Stop Vote",
+            DESC = "Cancel a vote in progress if you don't like it!",
+        },
+        RESET = {
+            PRETTYNAME = "Reset",
+            DESC = "Restart the server from the last save.",
+        },
+        ROLLBACK = {
+            PRETTYNAME = "Rollback",
+            DESC = "Rollback the server to a previous save.",
+            VOTETITLEFMT = "Should we roll back the world?",
+            VOTENAMEFMT = "vote to rollback the server",
+            VOTEPASSEDFMT = "Rolling back the server in 5 seconds...",
+        },
+        REGENERATE = {
+            PRETTYNAME = "Regenerate World",
+            DESC = "Destroy this world and start with a brand new one!",
+            VOTETITLEFMT = "Should we regenerate the world?",
+            VOTENAMEFMT = "vote to regenerate the world",
+            VOTEPASSEDFMT = "Regenerating the world in 5 seconds...",
+        },
     },
 
     MODSSCREEN = {
@@ -2986,6 +3104,7 @@ STRINGS.UI =
         GROUP_LOADING = "Group Loading...",
         GROUP_NONE = "No group",
         VIEWGROUP = "View Group Profile",
+        SERVERACTIONS = "Server Actions...",
         SEASONS = 
             {
                 SUMMER = "Summer",
@@ -3100,7 +3219,7 @@ STRINGS.UI =
         FULLSLOTSBODY = "All of your server slots are currently full. You must either select a slot to load from, or delete a slot and start a new world.",
         OK = "OK",
         NONAMEGAME = "[No Name]",
-        NEWGAME = "New Server",
+        NEWGAME = "New World",
         NEWGAME_SUFFIX = "'s World",
         DELETE = "Delete",
         SLOT = "Server Slot",
@@ -4281,7 +4400,7 @@ STRINGS.LUCY =
         "How dare you pick me up?!",
         "Yuck, your hands are greasy!",
         "Let me go!",
-        "Help! I'm being kidnapped",
+        "Help! I'm being kidnapped.",
         "Stranger danger!",
     },
 
@@ -4292,7 +4411,7 @@ STRINGS.LUCY =
         "It feels so good to be reunited!",
         "I was afraid you'd never come back.",
         "You came back for me!",
-        "Oh thank goodness.",
+        "Oh, thank goodness.",
         "Oh, it was awful!",
         "Never do that again! My little heart can't take it.",
         "From now on we'll be inseparable.",
@@ -4315,7 +4434,7 @@ STRINGS.LUCY =
         "It's like you don't even know me!",
         "Get rid of her! It's freaking me out.",
         "I'm having an identity crisis over here.",
-        "Oh you're just AXING for trouble!",
+        "Oh, you're just AXING for trouble!",
         "You can't have two Lucys!",
         "You can't have him! He's mine!",
 	},
@@ -4324,7 +4443,7 @@ STRINGS.LUCY =
     {
         "You'll come back, right?",
         "What did I say?",
-        "Oh that's low.",
+        "Oh, that's low.",
         "Don't leave! I... I think I smell roses!",
         "I know this is only temporary...",
         "Awww...",
@@ -4470,6 +4589,7 @@ STRINGS.TAGS =
     FRIENDSONLY = "friendsonly",
     CLAN = "group",
     LOCAL = "localonly",
+    VOTE = "vote",
     MULTISERVER = "multilevel",
     LOCATION =
     {

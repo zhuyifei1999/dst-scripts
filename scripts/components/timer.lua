@@ -27,7 +27,7 @@ function Timer:StartTimer(name, time, paused, initialtime_override)
 		return
 	end
 
-	local timerfn = function() self.inst:PushEvent("timerdone", {name = name}) self:StopTimer(name) end
+	local timerfn = function() self:StopTimer(name) self.inst:PushEvent("timerdone", {name = name}) end
 	self.timers[name] = {}
 	self.timers[name].timerfn = timerfn
 	self.timers[name].timer = self.inst:DoTaskInTime(time, timerfn)

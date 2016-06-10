@@ -320,17 +320,11 @@ function Health:SetVal(val, cause, afflicter)
 end
 
 function Health:DoDelta(amount, overtime, cause, ignore_invincible, afflicter, ignore_absorb)
-    if self.redirect ~= nil then
-        if self.redirect(self.inst, amount, overtime, cause) then
-            return
-        end
-    end
-
-    if not ignore_invincible and (self.invincible or self.inst.is_teleporting == true) then
+    if self.redirect ~= nil and self.redirect(self.inst, amount, overtime, cause, ignore_invincible, afflicter, ignore_absorb) then
         return
-    end
-
-    if amount < 0 and not ignore_absorb then
+    elseif not ignore_invincible and (self.invincible or self.inst.is_teleporting == true) then
+        return
+    elseif amount < 0 and not ignore_absorb then
         amount = amount - amount * self.absorb
         if afflicter ~= nil and afflicter:HasTag("player") then
             amount = amount - amount * self.playerabsorb
