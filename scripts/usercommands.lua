@@ -33,7 +33,7 @@ end
 -----------------------------------------------------------------------------------------------------------
 
 local function sendsystemmessage(msg)
-    if ThePlayer and ThePlayer.HUD then
+    if ThePlayer ~= nil and ThePlayer.HUD ~= nil then
         ThePlayer.HUD.controls.networkchatqueue:DisplaySystemMessage(msg)
     end
 end
@@ -49,7 +49,7 @@ local function getcommandfromhash(hash)
 end
 
 local function getcommand(name)
-    return getcommandfromhash(smallhash(name))
+    return name ~= nil and getcommandfromhash(smallhash(name)) or nil
 end
 
 --forward declared
@@ -135,7 +135,9 @@ end
 local function getexectype(command, caller, targetid)
     if command.usermenu == true and targetid ~= nil then
         local client = TheNet:GetClientTableForUser(targetid)
-        if command.cantargetadmin ~= true and client.admin == true then
+        if client == nil then
+            return COMMAND_RESULT.INVALID
+        elseif command.cantargetadmin ~= true and client.admin == true then
             return COMMAND_RESULT.INVALID
         elseif command.cantargetself ~= true and targetid == caller.userid then
             return COMMAND_RESULT.INVALID

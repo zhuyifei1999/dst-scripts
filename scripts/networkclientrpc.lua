@@ -161,7 +161,7 @@ local RPC_HANDLERS =
     end,
 
     ControllerAltActionButtonPoint = function(player, action, x, z, isreleased, noforce, mod_name)
-        if not (checkaction(action) and
+        if not (checknumber(action) and
                 checknumber(x) and
                 checknumber(z) and
                 optbool(isreleased) and
