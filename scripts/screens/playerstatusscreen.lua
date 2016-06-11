@@ -694,7 +694,7 @@ function PlayerStatusScreen:DoInit(ClientObjs)
         end
 
         if this_user_is_dedicated_server then
-            playerListing.useractions.Hide()
+            playerListing.useractions:Hide()
         else
             local actions = UserCommands.GetUserActions(self.owner, playerListing.userid)
             for i=#actions,1,-1 do
