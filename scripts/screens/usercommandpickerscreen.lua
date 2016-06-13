@@ -15,11 +15,11 @@ local SUBTITLE_HEIGHT = 22
 local BUTTON_HEIGHT = 30
 local CANCEL_OFFSET = 16
 
-
-local UserCommandPickerScreen = Class(Screen, function(self, owner, targetuserid)
+local UserCommandPickerScreen = Class(Screen, function(self, owner, targetuserid, onclosefn)
     Screen._ctor(self, "UserCommandPickerScreen")
     self.owner = owner
     self.targetuserid = targetuserid
+    self.onclosefn = onclosefn
 
     self.time_to_refresh = 0
 
@@ -125,8 +125,15 @@ local UserCommandPickerScreen = Class(Screen, function(self, owner, targetuserid
         top = top - CANCEL_OFFSET - BUTTON_HEIGHT
     end
 
-    self:UpdateActionButtons()
+    self:RefreshButtons()
 end)
+
+function UserCommandPickerScreen:OnDestroy()
+    if self.onclosefn ~= nil then
+        self.onclosefn()
+    end
+    self._base.OnDestroy(self)
+end
 
 function UserCommandPickerScreen:UpdateActions()
     if self.targetuserid ~= nil then
@@ -147,16 +154,13 @@ end
 function UserCommandPickerScreen:OnControl(control, down)
     if UserCommandPickerScreen._base.OnControl(self,control, down) then return true end
 
-    if (control == CONTROL_CANCEL) and not down then	
-        self.active = false
+    if not down and control == CONTROL_CANCEL then
         TheFrontEnd:PopScreen() 
         return true
     end
 end
 
-function UserCommandPickerScreen:UpdateActionButtons()
-    self:UpdateActions()
-
+function UserCommandPickerScreen:RefreshButtons()
     local worldvoter = TheWorld.net ~= nil and TheWorld.net.components.worldvoter or nil
     local playervoter = self.owner.components.playervoter
 
@@ -207,7 +211,7 @@ end
 
 function UserCommandPickerScreen:OnUpdate(dt)
     if TheFrontEnd:GetFadeLevel() > 0 then
-        self:Close()
+        TheFrontEnd:PopScreen(self)
         return
     elseif self.time_to_refresh > dt then
         self.time_to_refresh = self.time_to_refresh - dt
@@ -215,8 +219,12 @@ function UserCommandPickerScreen:OnUpdate(dt)
     end
 
     self.time_to_refresh = REFRESH_INTERVAL
-
-    self:UpdateActionButtons()
+    self:UpdateActions()
+    if #self.actions > 0 then
+        self:RefreshButtons()
+    else
+        TheFrontEnd:PopScreen(self)
+    end
 end
 
 function UserCommandPickerScreen:GetHelpText()

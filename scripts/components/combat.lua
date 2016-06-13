@@ -110,13 +110,18 @@ function Combat:SetAreaDamage(range, percent)
     end
 end
 
+local function OnBlankOutOver(inst, self)
+    self.blanktask = nil
+    self.canattack = true
+end
+
 function Combat:BlankOutAttacks(fortime)
     self.canattack = false
-    
-    if self.blanktask then
+
+    if self.blanktask ~= nil then
         self.blanktask:Cancel()
     end
-    self.blanktask = self.inst:DoTaskInTime(fortime, function() self.canattack = true self.blanktask = nil end)
+    self.blanktask = self.inst:DoTaskInTime(fortime, OnBlankOutOver, self)
 end
 
 
@@ -168,8 +173,8 @@ function Combat:SetKeepTargetFunction(fn)
     self.keeptargetfn = fn
 end
 
-function tryretarget(inst)
-    inst.components.combat:TryRetarget()
+local function dotryretarget(inst, self)
+    self:TryRetarget()
 end
 
 function Combat:TryRetarget()
@@ -196,42 +201,42 @@ end
 function Combat:SetRetargetFunction(period, fn)
     self.targetfn = fn
     self.retargetperiod = period
-    
-    if self.retargettask then
+
+    if self.retargettask ~= nil then
         self.retargettask:Cancel()
         self.retargettask = nil
     end
-    
-    if period and fn then
-        self.retargettask = self.inst:DoPeriodicTask(period, tryretarget)
+
+    if period ~= nil and fn ~= nil then
+        self.retargettask = self.inst:DoPeriodicTask(period, dotryretarget, nil, self)
     end
 end
 
 function Combat:OnEntitySleep()
-    if self.retargettask then
+    if self.retargettask ~= nil then
         self.retargettask:Cancel()
         self.retargettask = nil
     end
 end
 
 function Combat:OnEntityWake()
-    if self.retargettask then
+    if self.retargettask ~= nil then
         self.retargettask:Cancel()
         self.retargettask = nil
     end
 
-    if self.retargetperiod then
-        self.retargettask = self.inst:DoPeriodicTask(self.retargetperiod, tryretarget)
+    if self.retargetperiod ~= nil then
+        self.retargettask = self.inst:DoPeriodicTask(self.retargetperiod, dotryretarget, nil, self)
     end
 end
 
 function Combat:OnUpdate(dt)
-    if not self.target then
+    if self.target == nil then
         self.inst:StopUpdatingComponent(self)
         return
     end
 
-    if self.keeptargetfn then
+    if self.keeptargetfn ~= nil then
         self.keeptargettimeout = self.keeptargettimeout - dt
         if self.keeptargettimeout < 0 then
             if self.inst:IsAsleep() then
@@ -239,11 +244,11 @@ function Combat:OnUpdate(dt)
                 return
             end
             self.keeptargettimeout = 1
-            if not self.target:IsValid() or 
+            if not self.target:IsValid() or
                 self.target:IsInLimbo() or
                 not self.keeptargetfn(self.inst, self.target) or not 
-                (self.target and self.target.components.combat and self.target.components.combat:CanBeAttacked(self.inst)) then    
-                self.inst:PushEvent("losttarget")            
+                (self.target and self.target.components.combat and self.target.components.combat:CanBeAttacked(self.inst)) then
+                self.inst:PushEvent("losttarget")
                 self:DropTarget()
             end
         end
@@ -251,7 +256,7 @@ function Combat:OnUpdate(dt)
 end
 
 function Combat:IsRecentTarget(target)
-    return target and (target == self.target or target.GUID == self.lasttargetGUID)
+    return target ~= nil and (target == self.target or target.GUID == self.lasttargetGUID)
 end
 
 local function TargetDisappeared(self, target)
@@ -914,6 +919,14 @@ end
 function Combat:OnRemoveFromEntity()
     if self.target ~= nil then
         self:StopTrackingTarget(self.target)
+    end
+    if self.blanktask ~= nil then
+        self.blanktask:Cancel()
+        self.blanktask = nil
+    end
+    if self.retargettask ~= nil then
+        self.retargettask:Cancel()
+        self.retargettask = nil
     end
 end
 

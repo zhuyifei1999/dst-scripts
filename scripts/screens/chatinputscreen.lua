@@ -4,7 +4,7 @@ local TextEdit = require "widgets/textedit"
 local Widget = require "widgets/widget"
 local Text = require "widgets/text"
 
-local UserCommands = require('usercommands')
+local UserCommands = require("usercommands")
 
 local CHAT_INPUT_MAX_LENGTH = 150
 local CHAT_INPUT_HISTORY = {}

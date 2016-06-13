@@ -3,7 +3,10 @@ local EquipSlot = require("equipslotutil")
 local Equippable = Class(function(self, inst)
     self.inst = inst
 
-    self._equipslot = net_tinybyte(inst.GUID, "equippable._equipslot")
+    self._equipslot =
+        EquipSlot.Count() <= 7 and
+        net_tinybyte(inst.GUID, "equippable._equipslot") or
+        net_smallbyte(inst.GUID, "equippable._equipslot")
 end)
 
 function Equippable:SetEquipSlot(eslot)

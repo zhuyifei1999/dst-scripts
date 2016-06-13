@@ -272,7 +272,7 @@ end
 
 function Health:Kill()
     if self.currenthealth > 0 then
-        self:DoDelta(-self.currenthealth)
+        self:DoDelta(-self.currenthealth, nil, nil, nil, nil, true)
     end
 end
 

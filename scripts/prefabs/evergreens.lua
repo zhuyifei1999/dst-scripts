@@ -71,6 +71,7 @@ local builds =
         tall_loot = {"log", "log", "log", "pinecone", "pinecone"},
         drop_pinecones=true,
         leif="leif",
+        chop_camshake_delay=0.4,
     },
     sparse = {
         file="evergreen_new_2",
@@ -84,6 +85,7 @@ local builds =
         tall_loot = {"log", "log","log"},
         drop_pinecones=false,
         leif="leif_sparse",
+        chop_camshake_delay=0.4,
     },
     twiggy = {
         file="twiggy_build",
@@ -100,6 +102,7 @@ local builds =
         drop_pinecones=false,
         rebirth_loot = {loot="twigs", max=2},
         disease_fx = "green_leaves_chop",
+        chop_camshake_delay=20*FRAMES,
     },
 }
 
@@ -496,7 +499,7 @@ local function chop_down_tree(inst, chopper)
         inst.components.lootdropper:DropLoot(pt + TheCamera:GetRightVec())
     end
 
-    inst:DoTaskInTime(.4, chop_down_tree_shake)
+    inst:DoTaskInTime(GetBuild(inst).chop_camshake_delay, chop_down_tree_shake)
 
     if inst.components.diseaseable ~= nil and inst.components.diseaseable:IsDiseased() then
         inst:AddTag("NOCLICK")

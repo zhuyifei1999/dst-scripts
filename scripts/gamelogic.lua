@@ -12,6 +12,7 @@ require "usercommands"
 require "builtinusercommands"
 require "emotes"
 
+local EquipSlot = require("equipslotutil")
 local Stats = require("stats")
 
 -- globals
@@ -660,6 +661,9 @@ local function DoInitGame(savedata, profile)
 
     TheFrontEnd:GetSound():KillSound("FEMusic") -- just in case...
     TheFrontEnd:GetSound():KillSound("FEPortalSFX")
+
+    --All MODs should have finished adding their equip slots by now
+    EquipSlot.Initialize()
 
     PopulateWorld(savedata, profile)
 

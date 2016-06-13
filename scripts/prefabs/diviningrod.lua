@@ -181,7 +181,7 @@ local function fn()
     inst.components.equippable:SetOnUnequip(onunequip)
 
     MakeHauntableLaunch(inst)
-    
+
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad
 

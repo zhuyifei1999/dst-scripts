@@ -55,8 +55,11 @@ local PlayerHud = Class(Screen, function(self)
                 end
                 self.playeravatarpopup = nil
             end
-            if self.playerstatusscreen ~= nil and self.playerstatusscreen.shown then
-                self.playerstatusscreen:Close()
+            if self.playerstatusscreen ~= nil then
+                if self.playerstatusscreen.shown then
+                    self.playerstatusscreen:Close()
+                end
+                self.playerstatusscreen:CloseUserCommandPickerScreen()
             end
         end, TheWorld)
     end
@@ -105,6 +108,7 @@ function PlayerHud:OnDestroy()
     TheCamera:PopScreenHOffset(self)
 
     if self.playerstatusscreen ~= nil then
+        self.playerstatusscreen:CloseUserCommandPickerScreen()
         self.playerstatusscreen:Kill()
         self.playerstatusscreen = nil
     end
@@ -175,6 +179,9 @@ function PlayerHud:Hide()
     --Normally, HUD hides are tied to gameplay logic, but we need to
     --manually force close some locally controlled FE popup screens.
     self.controls.votedialog:CloseControllerVoteScreen()
+    if self.playerstatusscreen ~= nil then
+        self.playerstatusscreen:CloseUserCommandPickerScreen()
+    end
 end
 
 function PlayerHud:Show()

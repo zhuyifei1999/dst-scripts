@@ -271,7 +271,17 @@ AddGameDebugKey(KEY_F4, function()
 end)
 
 AddGameDebugKey(KEY_F5, function()
-    if TheInput:IsKeyDown(KEY_SHIFT) then
+    if TheInput:IsKeyDown(KEY_CTRL) then
+        local pos = TheInput:GetWorldPosition()
+        local met = SpawnPrefab("shadowmeteor")
+        if TheInput:IsKeyDown(KEY_SHIFT) then
+            met:SetSize("large", 1)
+        else
+            met:SetSize("small", 1)
+            met:SetPeripheral(true)
+        end
+        met.Transform:SetPosition(pos.x, pos.y, pos.z)
+    elseif TheInput:IsKeyDown(KEY_SHIFT) then
         local pos = TheInput:GetWorldPosition()
         TheWorld:PushEvent("ms_sendlightningstrike", pos)
     else
