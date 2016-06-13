@@ -43,20 +43,12 @@ local WorldResetTimer = Class(Widget, function(self, owner)
 
     self.reset_hold_time = 0
 
-    if owner.Network:IsServerAdmin() then
-        local function onrefreshcontrollers()
-            self:RefreshLayout()
-        end
-        self.inst:ListenForEvent("continuefrompause", onrefreshcontrollers, TheWorld)
-        self.inst:ListenForEvent("refreshcontrollers", onrefreshcontrollers, TheWorld)
-        self:RefreshLayout()
-    end
-
-    self:Hide()
-
+    self._oncontinuefrompause = nil
     self._oncycleschanged = nil
     self._onworldresettick = nil
     self._lastshowntime = nil
+
+    self:Hide()
 
     self.inst:ListenForEvent("showworldreset", function() self:StartTimer() end, TheWorld)
     self.inst:ListenForEvent("hideworldreset", function() self:StopTimer() end, TheWorld)
@@ -101,45 +93,94 @@ function WorldResetTimer:RefreshLayout()
             self.default_focus = self.reset_button
         end
     end
+
+    self:RefreshButtons()
+end
+
+function WorldResetTimer:RefreshButtons()
+    if self.reset_button ~= nil then
+        if not self.started or self.owner.HUD:HasInputFocus() then
+            if self.reset_button.enabled then
+                self.reset_button:Disable()
+            end
+        elseif not self.reset_button.enabled then
+            self.reset_button:Enable()
+        end
+    end
+
+    if self.reset_text ~= nil then
+        if self.owner.HUD:HasInputFocus() then
+            if self.reset_text.shown then
+                self.reset_text:Hide()
+            end
+        elseif not self.reset_text.shown then
+            self.reset_text:Show()
+        end
+    end
 end
 
 function WorldResetTimer:OnUpdate(dt)
+    self:RefreshButtons()
+
     if self.started then
         if self.y_pos < openY then
             self.y_pos = self.y_pos + 3
             self.root:SetPosition(0, self.y_pos)
+        elseif self.reset_text ~= nil
+            and self.reset_text:IsVisible()
+            and TheInput:IsControlPressed(CONTROL_PAUSE) then
+            self.reset_hold_time = self.reset_hold_time + dt
+            if self.reset_hold_time > 2 then
+                self:Reset()
+            end
         else
-            -- self:StopUpdating() -- Disabled so we can detect holding start btn
+            self.reset_hold_time = 0
         end
     elseif self.y_pos > closedY then
         self.y_pos = self.y_pos - 3
         self.root:SetPosition(0, self.y_pos)
     else
         self:Hide()
-        -- self:StopUpdating() -- Disabled so we can detect holding start btn
+        self:StopUpdating()
     end
+end
 
-    if self.reset_text ~= nil and TheInput:IsControlPressed(CONTROL_PAUSE) then
-        self.reset_hold_time = self.reset_hold_time + dt
-        if self.reset_hold_time > 2 then
-            self:Reset()
-        end
-    else
-        self.reset_hold_time = 0
+function WorldResetTimer:OnShow()
+    self._base.OnShow(self)
+
+    if self._oncontinuefrompause == nil and self.owner.Network:IsServerAdmin() then
+        self._oncontinuefrompause = function() self:RefreshLayout() end
+        self.inst:ListenForEvent("continuefrompause", self._oncontinuefrompause, TheWorld)
+        self:RefreshLayout()
+    end
+end
+
+function WorldResetTimer:OnHide()
+    self._base.OnHide(self)
+
+    if self._oncontinuefrompause ~= nil then
+        self.inst:RemoveEventCallback("continuefrompause", self._oncontinuefrompause, TheWorld)
+        self._oncontinuefrompause = nil
     end
 end
 
 function WorldResetTimer:StartTimer()
-    self.started = true
-    self:StartUpdating()
-    self:Show()
-
     local age = self.owner.Network:GetPlayerAge()
     self.survived_message:SetString(
         age > 1 and
         string.format(STRINGS.UI.WORLDRESETDIALOG.SURVIVED_MSG, age) or
         string.format(STRINGS.UI.WORLDRESETDIALOG.SURVIVED_MSG_1_DAY, 1)
     )
+
+    if self.started then
+        return
+    end
+
+    self.started = true
+    self.reset_hold_time = 0
+    self:RefreshButtons()
+    self:StartUpdating()
+    self:Show()
 
     if self._oncycleschanged == nil then
         self._oncycleschanged = function(world, cycles) self:UpdateCycles(cycles) end
@@ -154,7 +195,12 @@ function WorldResetTimer:StartTimer()
 end
 
 function WorldResetTimer:StopTimer()
+    if not self.started then
+        return
+    end
+
     self.started = false
+    self:RefreshButtons()
     self:StartUpdating()
 
     if self._oncycleschanged ~= nil then
@@ -168,7 +214,7 @@ function WorldResetTimer:StopTimer()
 end
 
 function WorldResetTimer:Reset()
-    if self.owner.Network:IsServerAdmin() then
+    if self.started and self.owner.Network:IsServerAdmin() then
         TheNet:SendWorldResetRequestToServer()
     end
 end

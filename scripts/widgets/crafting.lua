@@ -178,11 +178,14 @@ function Crafting:UpdateRecipes()
         self:Resize(num)
         self.craftslots:Clear()
 
-        local default_idx = -1 --By default, the recipe starts in the top slot.
-
         self:UpdateIdx()
 
-        self.idx = math.clamp(self.idx, default_idx, #self.valid_recipes - (self.max_slots - 1)) --Make sure our idx is in range
+        --V2C: NOTE: when it does need to scroll, there are 2 empty half-slots
+        --           at the top and bottom, which is why this math looks weird
+        --default is -1, the recipe starts in the top slot.
+        self.idx = #self.valid_recipes > self.max_slots
+            and math.clamp(self.idx, -1, #self.valid_recipes - (self.max_slots - 1))
+            or -1
 
         for i = 1, num + 1 do --For each visible slot assign a recipe
             local slot = self.craftslots.slots[i]

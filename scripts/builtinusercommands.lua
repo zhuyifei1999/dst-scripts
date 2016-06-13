@@ -9,6 +9,20 @@
 -- We would like to resolve these things soon, but until we do, those are the
 -- limitations of this system.
 
+local UserCommands = require("usercommands")
+
+local function DefaultUnanimousVote(params, voteresults)
+    --  Vote must be unanimous
+    --  Can't have any no or abstain
+    --  Minimum 3 yes votes
+    --  NOTE: If the target is a user, that user isn't included in any of the counts!
+    local yes = voteresults.options[1]
+    local no = voteresults.options[2]
+    return no <= 0
+        and yes >= 3
+        and voteresults.total_not_voted <= 0
+end
+
 AddUserCommand("help", {
     prettyname = "Command Help",
     desc = "Get more info on commands.",
@@ -26,7 +40,6 @@ AddUserCommand("help", {
 
         local s = {}
 
-        local UserCommands = require("usercommands")
         if params.commandname == nil then
             table.insert(s, STRINGS.UI.BUILTINCOMMANDS.HELP.OVERVIEW)
             table.insert(s, STRINGS.UI.BUILTINCOMMANDS.HELP.AVAILABLE)
@@ -102,18 +115,7 @@ AddUserCommand("kick", {
     votetimeout = 30,
     votetitlefmt = STRINGS.UI.BUILTINCOMMANDS.KICK.VOTETITLEFMT,
     votenamefmt = STRINGS.UI.BUILTINCOMMANDS.KICK.VOTENAMEFMT,
-    voteresultfn = function(params, voteresults)
-        --e.g. Not everyone needs to vote (in case of timeout)
-        --     Can't have any no
-        --     Minimum 2 yes votes
-        --     Needs more yes than not voted
-        --NOTE: The targetted guy is NOT included in any of the result counts
-        local yes = voteresults.options[1]
-        local no = voteresults.options[2]
-        return no <= 0
-            and yes >= 2
-            and yes > voteresults.total_not_voted
-    end,
+    voteresultfn = DefaultUnanimousVote,
     localfn = function(params, caller)
         --NOTE: must support nil caller for voting
         local clientid = UserToClientID(params.user)
@@ -173,15 +175,16 @@ AddUserCommand("rollback", {
     votetitlefmt = STRINGS.UI.BUILTINCOMMANDS.ROLLBACK.VOTETITLEFMT,
     votenamefmt = STRINGS.UI.BUILTINCOMMANDS.ROLLBACK.VOTENAMEFMT,
     votepassedfmt = STRINGS.UI.BUILTINCOMMANDS.ROLLBACK.VOTEPASSEDFMT,
-    voteresultfn = function(params, voteresults)
-        --e.g. Everyone must vote and must be unanimous
-        local yes = voteresults.options[1]
-        local no = voteresults.options[2]
-        return voteresults.total_not_voted <= 0
-            and no <= 0
-    end,
+    voteresultfn = DefaultUnanimousVote,
     serverfn = function(params, caller)
         --NOTE: must support nil caller for voting
+        if caller ~= nil then
+            --Wasn't a vote so we should send out an announcement manually
+            --NOTE: the vote rollback announcement is customized and still
+            --      makes sense even when it wasn't a vote, (run by admin)
+            local command = UserCommands.GetCommandFromName("rollback")
+            TheNet:AnnounceVoteResult(command.hash, nil, true)
+        end
         TheWorld:DoTaskInTime(5, function(world)
             if world.ismastersim then
                 TheNet:SendWorldRollbackRequestToServer(params.numsaves)
@@ -204,15 +207,16 @@ AddUserCommand("regenerate", {
     votetitlefmt = STRINGS.UI.BUILTINCOMMANDS.REGENERATE.VOTETITLEFMT,
     votenamefmt = STRINGS.UI.BUILTINCOMMANDS.REGENERATE.VOTENAMEFMT,
     votepassedfmt = STRINGS.UI.BUILTINCOMMANDS.REGENERATE.VOTEPASSEDFMT,
-    voteresultfn = function(params, voteresults)
-        --e.g. Everyone must vote and must be unanimous
-        local yes = voteresults.options[1]
-        local no = voteresults.options[2]
-        return voteresults.total_not_voted <= 0
-            and no <= 0
-    end,
+    voteresultfn = DefaultUnanimousVote,
     serverfn = function(params, caller)
         --NOTE: must support nil caller for voting
+        if caller ~= nil then
+            --Wasn't a vote so we should send out an announcement manually
+            --NOTE: the vote regenerate announcement is customized and still
+            --      makes sense even when it wasn't a vote, (run by admin)
+            local command = UserCommands.GetCommandFromName("regenerate")
+            TheNet:AnnounceVoteResult(command.hash, nil, true)
+        end
         TheWorld:DoTaskInTime(5, function(world)
             if world.ismastersim then
                 TheNet:SendWorldResetRequestToServer()

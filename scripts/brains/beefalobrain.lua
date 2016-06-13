@@ -162,6 +162,16 @@ function BeefaloBrain:OnStart()
         -- hanging around herd
         ConditionNode(function() return InState(self.inst, WANDERING) and TryBeginGreetingState(self.inst) end, "Wandering"),
 
+        -- wants to greet feeder
+        WhileNode(function() return InState(self.inst, GREETING) end, "Greeting", PriorityNode{
+            Follow(self.inst, GetGreetTarget, MIN_GREET_DIST, TARGET_GREET_DIST, MAX_GREET_DIST, true),
+            ActionNode(function() TryBeginLoiterState(self.inst) end, "Finish greeting")
+        }),
+
+        -- anchor to nearest saltlick
+        IfNode(function() return CheckForSaltlick(self.inst) end, "Stay Near Salt",
+            Wander(self.inst, function() return self.inst.components.knownlocations:GetLocation("saltlick") end, GetWanderDistFn)),
+
         -- waiting for feeder
         WhileNode(function() return InState(self.inst, LOITERING) end, "Loitering", PriorityNode{
             WhileNode(function() return GetLoiterTarget(self.inst) ~= nil end, "Anyone nearby?", PriorityNode{
@@ -171,15 +181,6 @@ function BeefaloBrain:OnStart()
             }),
             Wander(self.inst, function() return GetLoiterAnchor(self.inst) end, GetWanderDistFn),
         }),
-
-        -- wants to greet feeder
-        WhileNode(function() return InState(self.inst, GREETING) end, "Greeting", PriorityNode{
-            Follow(self.inst, GetGreetTarget, MIN_GREET_DIST, TARGET_GREET_DIST, MAX_GREET_DIST, true),
-            ActionNode(function() TryBeginLoiterState(self.inst) end, "Finish greeting")
-        }),
-
-        IfNode(function() return CheckForSaltlick(self.inst) end, "Stay Near Salt",
-            Wander(self.inst, function() return self.inst.components.knownlocations:GetLocation("saltlick") end, GetWanderDistFn)),
 
         Wander(self.inst, function() return self.inst.components.knownlocations:GetLocation("herd") end, GetWanderDistFn)
 

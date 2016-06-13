@@ -42,13 +42,14 @@ local PlayerStatusScreen = Class(Screen, function(self, owner)
     Screen._ctor(self, "PlayerStatusScreen")
     self.owner = owner
     self.time_to_refresh = REFRESH_INTERVAL
+    self.usercommandpickerscreen = nil
 end)
 
 function PlayerStatusScreen:OnBecomeActive()
-	PlayerStatusScreen._base.OnBecomeActive(self)
-	self:DoInit()
-	self.time_to_refresh = REFRESH_INTERVAL
-	self.scroll_list:SetFocus()
+    PlayerStatusScreen._base.OnBecomeActive(self)
+    self:DoInit()
+    self.time_to_refresh = REFRESH_INTERVAL
+    self.scroll_list:SetFocus()
 end
 
 function PlayerStatusScreen:OnBecomeInactive()
@@ -72,11 +73,11 @@ function PlayerStatusScreen:GetHelpText()
     local controller_id = TheInput:GetControllerID()
     local t = {}
 
-	table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_TOGGLE_PLAYER_STATUS) .. " " .. STRINGS.UI.HELP.BACK)
-	
-	if self.server_group ~= "" then
-		table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_2) .. " " .. STRINGS.UI.HELP.VIEWGROUP)
-	end
+    table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_TOGGLE_PLAYER_STATUS) .. " " .. STRINGS.UI.HELP.BACK)
+
+    if self.server_group ~= "" then
+        table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_2) .. " " .. STRINGS.UI.HELP.VIEWGROUP)
+    end
 
     if #UserCommands.GetServerActions(self.owner) > 0 then
         table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_1) .. " " .. STRINGS.UI.HELP.SERVERACTIONS)
@@ -104,27 +105,24 @@ function PlayerStatusScreen:OnControl(control, down)
             return true
         elseif control == CONTROL_MENU_MISC_1 then
             TheFrontEnd:PopScreen()
-            TheFrontEnd:PushScreen(UserCommandPickerScreen(self.owner, nil))
+            self:OpenUserCommandPickerScreen(nil)
             return true
         end
     end
 end
 
 function PlayerStatusScreen:OnRawKey(key, down)
-	if not self:IsVisible() then
-		return false
-	end
-
-	if PlayerStatusScreen._base.OnRawKey(self, key, down) then return true end
-
-	if down then return end
-
-	return true
+    if not self:IsVisible() then
+        return false
+    elseif PlayerStatusScreen._base.OnRawKey(self, key, down) then
+        return true
+    end
+    return not down
 end
 
 function PlayerStatusScreen:Close()
-	TheInput:EnableDebugToggle(true)
-	TheFrontEnd:PopScreen(self)
+    TheInput:EnableDebugToggle(true)
+    TheFrontEnd:PopScreen(self)
 end
 
 function PlayerStatusScreen:OnUpdate(dt)
@@ -218,7 +216,7 @@ end
 
 function PlayerStatusScreen:DoInit(ClientObjs)
 
-	TheInput:EnableDebugToggle(false)
+    TheInput:EnableDebugToggle(false)
 
     if not self.black then
         --darken everything behind the dialog
@@ -232,31 +230,31 @@ function PlayerStatusScreen:DoInit(ClientObjs)
         self.black:SetOnClick(function() --[[ eat the click ]] end)
     end
 
-	if not self.root then
-		self.root = self:AddChild(Widget("ROOT"))
-	    self.root:SetScaleMode(SCALEMODE_PROPORTIONAL)
-	    self.root:SetHAnchor(ANCHOR_MIDDLE)
-	    self.root:SetVAnchor(ANCHOR_MIDDLE)
-	end
+    if not self.root then
+        self.root = self:AddChild(Widget("ROOT"))
+        self.root:SetScaleMode(SCALEMODE_PROPORTIONAL)
+        self.root:SetHAnchor(ANCHOR_MIDDLE)
+        self.root:SetVAnchor(ANCHOR_MIDDLE)
+    end
 
-	if not self.bg then
-		self.bg = self.root:AddChild(Image( "images/scoreboard.xml", "scoreboard_frame.tex" ))
-		self.bg:SetScale(.95,.9)
-	end
+    if not self.bg then
+        self.bg = self.root:AddChild(Image( "images/scoreboard.xml", "scoreboard_frame.tex" ))
+        self.bg:SetScale(.95,.9)
+    end
 
-	local serverNameStr = TheNet:GetServerName()
-	if not self.servertitle then
-		self.servertitle = self.root:AddChild(Text(UIFONT,45))
-		self.servertitle:SetColour(1,1,1,1)
+    local serverNameStr = TheNet:GetServerName()
+    if not self.servertitle then
+        self.servertitle = self.root:AddChild(Text(UIFONT,45))
+        self.servertitle:SetColour(1,1,1,1)
     end
     if serverNameStr ~= "" then
         self.servertitle:SetTruncatedString(serverNameStr, 800, 100, true)
     else
         self.servertitle:SetString(serverNameStr)
-	end
+    end
 
-	if not self.serverstate then
-		self.serverstate = self.root:AddChild(Text(UIFONT,30))
+    if not self.serverstate then
+        self.serverstate = self.root:AddChild(Text(UIFONT,30))
         self.serverstate:SetColour(1,1,1,1)
     end
     self.serverage = TheWorld.state.cycles + 1
@@ -280,7 +278,7 @@ function PlayerStatusScreen:DoInit(ClientObjs)
             self.serveractions_button = self.root:AddChild(ImageButton("images/scoreboard.xml", "more_actions_normal.tex", "more_actions_hover.tex", "more_actions.tex", "more_actions.tex", nil, {0.6,0.6}, {0,0}))
             self.serveractions_button:SetOnClick(function()
                 TheFrontEnd:PopScreen()
-                TheFrontEnd:PushScreen(UserCommandPickerScreen(self.owner, nil))
+                self:OpenUserCommandPickerScreen(nil)
             end)
             self.serveractions_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.SERVERACTIONS, { font = NEWFONT_OUTLINE, size = 24, offset_x = 0, offset_y = 48, colour = {1,1,1,1}})
         end
@@ -292,73 +290,73 @@ function PlayerStatusScreen:DoInit(ClientObjs)
     if ClientObjs == nil then
         ClientObjs = TheNet:GetClientTable() or {}
     end
-	self.numPlayers = #ClientObjs
+    self.numPlayers = #ClientObjs
 
-	if not self.players_number then 
-	    self.players_number = self.root:AddChild(Text(UIFONT, 25, "x/y"))
-	    self.players_number:SetPosition(303,170) 
-	    self.players_number:SetRegionSize(100,30)
-	    self.players_number:SetHAlign(ANCHOR_RIGHT)
-	    self.players_number:SetColour(1,1,1,1)
-	end
+    if not self.players_number then 
+        self.players_number = self.root:AddChild(Text(UIFONT, 25, "x/y"))
+        self.players_number:SetPosition(303,170) 
+        self.players_number:SetRegionSize(100,30)
+        self.players_number:SetHAlign(ANCHOR_RIGHT)
+        self.players_number:SetColour(1,1,1,1)
+    end
     self.players_number:SetString(tostring(not TheNet:GetServerIsClientHosted() and self.numPlayers - 1 or self.numPlayers).."/"..(TheNet:GetServerMaxPlayers() or "?"))
 
-	local serverDescStr = TheNet:GetServerDescription()
-	if not self.serverdesc then
-		self.serverdesc = self.root:AddChild(Text(UIFONT,30))
-		self.serverdesc:SetColour(1,1,1,1)
-		if serverDescStr ~= "" then
+    local serverDescStr = TheNet:GetServerDescription()
+    if not self.serverdesc then
+        self.serverdesc = self.root:AddChild(Text(UIFONT,30))
+        self.serverdesc:SetColour(1,1,1,1)
+        if serverDescStr ~= "" then
             self.serverdesc:SetTruncatedString(serverDescStr, 800, 150, true)
-		else
-			self.serverdesc:SetString(serverDescStr)
-		end
-	end
+        else
+            self.serverdesc:SetString(serverDescStr)
+        end
+    end
 
-	if not self.divider then
-		self.divider = self.root:AddChild(Image("images/scoreboard.xml", "white_line.tex"))
-	end
+    if not self.divider then
+        self.divider = self.root:AddChild(Image("images/scoreboard.xml", "white_line.tex"))
+    end
 
-	if serverDescStr == "" then
-		self.servertitle:SetPosition(0,215)
-		self.serverdesc:SetPosition(0,175)
+    if serverDescStr == "" then
+        self.servertitle:SetPosition(0,215)
+        self.serverdesc:SetPosition(0,175)
         if self.viewgroup_button ~= nil then
             self.viewgroup_button:SetPosition(-328,200)
         end
         if self.serveractions_button ~= nil then
             self.serveractions_button:SetPosition(-258,200)
         end
-		self.serverstate:SetPosition(0,175)
-		self.divider:SetPosition(0,155)
-	else
-		self.servertitle:SetPosition(0,223)
-		self.servertitle:SetSize(40)
-		self.serverdesc:SetPosition(0,188)
-		self.serverdesc:SetSize(23)
+        self.serverstate:SetPosition(0,175)
+        self.divider:SetPosition(0,155)
+    else
+        self.servertitle:SetPosition(0,223)
+        self.servertitle:SetSize(40)
+        self.serverdesc:SetPosition(0,188)
+        self.serverdesc:SetSize(23)
         if self.viewgroup_button ~= nil then
             self.viewgroup_button:SetPosition(-328,208)
         end
         if self.serveractions_button ~= nil then
             self.serveractions_button:SetPosition(-258,208)
         end
-		self.serverstate:SetPosition(0,163)
-		self.serverstate:SetSize(23)
-		self.players_number:SetPosition(303,160)
-		self.players_number:SetSize(20)
-		self.divider:SetPosition(0,149)
-	end
+        self.serverstate:SetPosition(0,163)
+        self.serverstate:SetSize(23)
+        self.players_number:SetPosition(303,160)
+        self.players_number:SetSize(20)
+        self.divider:SetPosition(0,149)
+    end
 
-	if TheNet:GetServerModsEnabled() and not self.servermods then
-		local modsStr = TheNet:GetServerModsDescription()
-		self.servermods = self.root:AddChild(Text(UIFONT,25))
-		self.servermods:SetPosition(20,-250,0)
-		self.servermods:SetColour(1,1,1,1)
+    if TheNet:GetServerModsEnabled() and not self.servermods then
+        local modsStr = TheNet:GetServerModsDescription()
+        self.servermods = self.root:AddChild(Text(UIFONT,25))
+        self.servermods:SetPosition(20,-250,0)
+        self.servermods:SetColour(1,1,1,1)
         self.servermods:SetTruncatedString(STRINGS.UI.PLAYERSTATUSSCREEN.MODSLISTPRE.." "..modsStr, 650, 146, true)
 
-		self.bg:SetScale(.95,.95)
-		self.bg:SetPosition(0,-10)
-	end
+        self.bg:SetScale(.95,.95)
+        self.bg:SetPosition(0,-10)
+    end
 
-	local function doButtonFocusHookups(playerListing)
+    local function doButtonFocusHookups(playerListing)
         local buttons = {}
         if playerListing.viewprofile:IsVisible() then table.insert(buttons, playerListing.viewprofile) end
         if playerListing.mute:IsVisible() then table.insert(buttons, playerListing.mute) end
@@ -393,7 +391,6 @@ function PlayerStatusScreen:DoInit(ClientObjs)
         playerListing.characterBadge:SetScale(.8)
         playerListing.characterBadge:SetPosition(-328,5,0)
         playerListing.characterBadge:Hide()
-
 
         playerListing.number = playerListing:AddChild(Text(UIFONT, 35))
         playerListing.number:SetPosition(-385,0,0)
@@ -539,15 +536,7 @@ function PlayerStatusScreen:DoInit(ClientObjs)
         playerListing.useractions:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.USERACTIONS, { font = NEWFONT_OUTLINE, size = 24, offset_x = 0, offset_y = 30, colour = {1,1,1,1}})
         playerListing.useractions:SetOnClick(function()
             TheFrontEnd:PopScreen()
-            local actions = UserCommands.GetUserActions(self.owner, playerListing.userid)
-            for i=#actions,1,-1 do
-                if actions[i].command == "kick" or actions[i].command == "ban" then
-                    table.remove(actions, i)
-                end
-            end
-            if #actions > 0 then
-                TheFrontEnd:PushScreen(UserCommandPickerScreen(self.owner, playerListing.userid, actions))
-            end
+            self:OpenUserCommandPickerScreen(playerListing.userid)
         end)
 
         playerListing.OnGainFocus = function()
@@ -560,7 +549,7 @@ function PlayerStatusScreen:DoInit(ClientObjs)
         return playerListing
     end
 
-	local function UpdatePlayerListing(playerListing, client, i)
+    local function UpdatePlayerListing(playerListing, client, i)
 
         if client == nil or GetTableSize(client) == 0 then
             playerListing:Hide()
@@ -623,7 +612,6 @@ function PlayerStatusScreen:DoInit(ClientObjs)
                 TheFrontEnd:PopScreen()
                 self.owner.HUD:TogglePlayerAvatarPopup(playerListing.displayName, client, true)
             end)
-
 
         local button_start = 50
         local button_x = button_start
@@ -696,17 +684,14 @@ function PlayerStatusScreen:DoInit(ClientObjs)
         if this_user_is_dedicated_server then
             playerListing.useractions:Hide()
         else
-            local actions = UserCommands.GetUserActions(self.owner, playerListing.userid)
-            for i=#actions,1,-1 do
-                if actions[i].commandname == "kick" or actions[i].commandname == "ban" then
-                    table.remove(actions, i)
+            --Check if we have any user actions other than kick or ban (they have their own buttons)
+            playerListing.useractions:Hide()
+            for i, v in ipairs(UserCommands.GetUserActions(self.owner, playerListing.userid)) do
+                if v.commandname ~= "kick" or v.commandname ~= "ban" then
+                    playerListing.useractions:SetPosition(button_start + button_x_offset * 4, 3, 0)
+                    playerListing.useractions:Show()
+                    break
                 end
-            end
-            if #actions > 0 then
-                playerListing.useractions:Show()
-                playerListing.useractions:SetPosition(button_start+button_x_offset*4,3,0)
-            else
-                playerListing.useractions:Hide()
             end
         end
 
@@ -754,6 +739,23 @@ function PlayerStatusScreen:DoInit(ClientObjs)
                 table.insert(self.bgs, bg)
             end
         end
+    end
+end
+
+function PlayerStatusScreen:OpenUserCommandPickerScreen(targetuserid)
+    if self.usercommandpickerscreen == nil then
+        self.usercommandpickerscreen = UserCommandPickerScreen(self.owner, targetuserid, function() self.usercommandpickerscreen = nil end)
+        TheFrontEnd:PushScreen(self.usercommandpickerscreen)
+    end
+end
+
+function PlayerStatusScreen:IsUserCommandPickerScreenOpen()
+    return self.usercommandpickerscreen ~= nil
+end
+
+function PlayerStatusScreen:CloseUserCommandPickerScreen()
+    if self.usercommandpickerscreen ~= nil then
+        TheFrontEnd:PopScreen(self.usercommandpickerscreen)
     end
 end
 

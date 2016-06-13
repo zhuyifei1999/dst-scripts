@@ -5,7 +5,7 @@ local ImageButton = require "widgets/imagebutton"
 local Text = require "widgets/text"
 local ConnectingToGamePopup = require "screens/connectingtogamepopup"
 
-local UserCommands = require('usercommands')
+local UserCommands = require("usercommands")
 
 FirstStartupForNetworking = false
 
@@ -661,10 +661,15 @@ function UpdateServerWorldGenDataString()
 
     local customise = require"map/customise"
     for i,world in ipairs(clusteroptions) do
-        for option,value in pairs(world.overrides) do
-            -- we can aggressively prune these for network purposes, as the only use after this is the server info screen.
-            if value == "default" or not customise.ValidateOption(option, value, world.location) then
-                world.overrides[option] = nil
+        if world.overrides == nil then
+            -- gjans: I'm not sure how we got this far without crashing, but this isn't the right time to crash.
+            world.overrides = {}
+        else
+            for option,value in pairs(world.overrides) do
+                -- we can aggressively prune these for network purposes, as the only use after this is the server info screen.
+                if value == "default" or not customise.ValidateOption(option, value, world.location) then
+                    world.overrides[option] = nil
+                end
             end
         end
     end

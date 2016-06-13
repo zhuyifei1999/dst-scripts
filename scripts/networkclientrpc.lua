@@ -10,7 +10,14 @@ function optentity(val) return val == nil or type(val) == "table" end
 
 local function printinvalid(rpcname, player)
     print(string.format("Invalid %s RPC from (%s) %s", rpcname, player.userid or "", player.name or ""))
-    assert(false, string.format("Invalid %s RPC from (%s) %s", rpcname, player.userid or "", player.name or ""))--V2C: #TODO #TEMP #REMOVE #DELETE
+
+    --This event is for MODs that want to handle players sending invalid rpcs
+    TheWorld:PushEvent("invalidrpc", { player = player, rpcname = rpcname })
+
+    if BRANCH ~= "release" then
+        --Internal testing
+        assert(false, string.format("Invalid %s RPC from (%s) %s", rpcname, player.userid or "", player.name or ""))
+    end
 end
 
 --------------------------------------------------------------------------
@@ -219,7 +226,11 @@ local RPC_HANDLERS =
         end
         local playercontroller = player.components.playercontroller
         if playercontroller ~= nil then
-            playercontroller:OnRemoteDirectWalking(x, z)
+            if IsPointInRange(player, x, z) then
+                playercontroller:OnRemoteDirectWalking(x, z)
+            else
+                print("Remote direct walking out of range")
+            end
         end
     end,
 
@@ -231,7 +242,11 @@ local RPC_HANDLERS =
         end
         local playercontroller = player.components.playercontroller
         if playercontroller ~= nil then
-            playercontroller:OnRemoteDragWalking(x, z)
+            if IsPointInRange(player, x, z) then
+                playercontroller:OnRemoteDragWalking(x, z)
+            else
+                print("Remote drag walking out of range")
+            end
         end
     end,
 
@@ -244,7 +259,11 @@ local RPC_HANDLERS =
         end
         local playercontroller = player.components.playercontroller
         if playercontroller ~= nil then
-            playercontroller:OnRemotePredictWalking(x, z, isdirectwalking)
+            if IsPointInRange(player, x, z) then
+                playercontroller:OnRemotePredictWalking(x, z, isdirectwalking)
+            else
+                print("Remote predict walking out of range")
+            end
         end
     end,
 
@@ -619,11 +638,16 @@ local RPC_HANDLERS =
         end
         local builder = player.components.builder
         if builder ~= nil then
-            for k, v in pairs(AllRecipes) do
-                if v.rpc_id == recipe then
-                    builder:MakeRecipeAtPoint(v, Vector3(x, 0, z), rot, skin_index ~= nil and PREFAB_SKINS[v.name] ~= nil and PREFAB_SKINS[v.name][skin_index] or nil)
-                    return
+            --rot supported range really only needs to be [-180, 180]
+            if IsPointInRange(player, x, z) and rot >= -360 and rot <= 360 then
+                for k, v in pairs(AllRecipes) do
+                    if v.rpc_id == recipe then
+                        builder:MakeRecipeAtPoint(v, Vector3(x, 0, z), rot, skin_index ~= nil and PREFAB_SKINS[v.name] ~= nil and PREFAB_SKINS[v.name][skin_index] or nil)
+                        return
+                    end
                 end
+            else
+                print("Remote make recipe at point out of range")
             end
         end
     end,
