@@ -14,7 +14,7 @@ local function printinvalid(rpcname, player)
     --This event is for MODs that want to handle players sending invalid rpcs
     TheWorld:PushEvent("invalidrpc", { player = player, rpcname = rpcname })
 
-    if BRANCH ~= "release" then
+    if BRANCH ~= "release" or PLATFORM == "PS4" then
         --Internal testing
         assert(false, string.format("Invalid %s RPC from (%s) %s", rpcname, player.userid or "", player.name or ""))
     end
@@ -143,7 +143,7 @@ local RPC_HANDLERS =
             return
         end
         local playercontroller = player.components.playercontroller
-        if playercontroller ~= nil and invobject ~= nil and x ~= nil and z ~= nil then
+        if playercontroller ~= nil then
             if IsPointInRange(player, x, z) then
                 playercontroller:OnRemoteControllerActionButtonDeploy(invobject, Vector3(x, 0, z), isreleased)
             else
@@ -226,7 +226,7 @@ local RPC_HANDLERS =
         end
         local playercontroller = player.components.playercontroller
         if playercontroller ~= nil then
-            if IsPointInRange(player, x, z) then
+            if x * x + z * z < 1.01 then
                 playercontroller:OnRemoteDirectWalking(x, z)
             else
                 print("Remote direct walking out of range")
