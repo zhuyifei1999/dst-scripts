@@ -95,6 +95,7 @@ return {
 	ANNOUNCE_INV_FULL = "I can only carry so much!!",
 	ANNOUNCE_NODANGERAFK = "I'm not leaving now!",
 	ANNOUNCE_NODANGERGIFT = "That dumb box can wait!",
+	ANNOUNCE_NOMOUNTEDGIFT = "I gotta get down from this big oaf before opening that!",
 	ANNOUNCE_NOWARDROBEONFIRE = "Why? This is way better.",
 	ANNOUNCE_UNIMPLEMENTED = "Gah! That stung ya jerk!",
 	ANNOUNCE_WORMS = "I do NOT wanna see what made that sound!",
@@ -191,6 +192,7 @@ return {
             MURDERER = "Burn the murderer!",
             REVIVER = "Who do ghosts call? %s!",
             GHOST = "I better get a heart for %s.",
+            FIRESTARTER = "BUUURN!",
         },
 		WILSON = 
 		{
@@ -199,6 +201,7 @@ return {
 			MURDERER = "Hey %s! Your hair is dumb! Raaaugh!",
 			REVIVER = "%s won't leave anyone behind.",
 			GHOST = "I better get a heart for %s.",
+			FIRESTARTER = "Oh, %s!! Let me help with your next fire!!",
 		},
 		WOLFGANG = 
 		{
@@ -207,6 +210,7 @@ return {
 			MURDERER = "Burn the murderer!",
 			REVIVER = "Woah! %s ripped a spirit straight out of the afterlife!",
 			GHOST = "Hey %s, did you know the heart's a muscle?",
+			FIRESTARTER = "Don't hurt yourself, big guy.",
 		},
 		WAXWELL = 
 		{
@@ -215,6 +219,7 @@ return {
 			MURDERER = "%s! I knew you couldn't be trusted! Burn!!",
 			REVIVER = "Hahaha %s, you care about us!",
 			GHOST = "Have a heart, %s! Heh heh.",
+			FIRESTARTER = "Amateur.",
 		},
 		WX78 = 
 		{
@@ -223,6 +228,7 @@ return {
 			MURDERER = "Killer robot! Burn it!",
 			REVIVER = "Hahaha %s, you care about us!",
 			GHOST = "I better get a heart for %s.",
+			FIRESTARTER = "Are we lighting fires?! I want in!",
 		},
 		WILLOW = 
 		{
@@ -231,6 +237,7 @@ return {
 			MURDERER = "Murderer! Burn the impostor!",
 			REVIVER = "Haha, nice one %s.",
 			GHOST = "Is that really what my ghost hair looks like?",
+			FIRESTARTER = "Burny twins! High five.",
 		},
 		WENDY = 
 		{
@@ -239,6 +246,7 @@ return {
 			MURDERER = "She's gone nuts! Murderer!",
 			REVIVER = "That girl really likes ghosts!",
 			GHOST = "Isn't death kind of your thing, %s?",
+			FIRESTARTER = "%s! Was that your fire? I'm so proud!",
 		},
 		WOODIE = 
 		{
@@ -249,6 +257,7 @@ return {
 			GHOST = "I better get a heart for %s.",
 			BEAVER = "Calm down, %s. Wanna borrow Bernie?",
 			BEAVERGHOST = "%s! That was hilarious!",
+			FIRESTARTER = "Burn it all, %s! Burn it!",
 		},
 		WICKERBOTTOM = 
 		{
@@ -257,6 +266,7 @@ return {
 			MURDERER = "Time for a good ol' book burnin'! Murderer!",
 			REVIVER = "%s is a big softie!",
 			GHOST = "Did your heart give out, %s? Just kidding! Hey!",
+			FIRESTARTER = "Didn't know you had it in you, %s.",
 		},
 		WES = 
 		{
@@ -265,6 +275,7 @@ return {
 			MURDERER = "Your actions speak louder than words! Murderer!",
 			REVIVER = "Who do ghosts call? %s!",
 			GHOST = "%s, just tell me whatcha need and I'll get it for you. Heheheh!",
+			FIRESTARTER = "Make it BURN!",
 		},
 		WEBBER = 
         {
@@ -273,6 +284,7 @@ return {
 			MURDERER = "Monster! Burn them!",
 			REVIVER = "Who do ghosts call? %s!",
 			GHOST = "Don't cry, %s, I'm getting you a heart.",
+			FIRESTARTER = "Your fires are so cute, %s!",
         },
         WATHGRITHR = 
         {
@@ -281,6 +293,7 @@ return {
 			MURDERER = "Woahh! That's not an act! Murderer!",
 			REVIVER = "%s doesn't let anyone fall in battle!",
 			GHOST = "Hey %s, I'll get you a heart if you let me wear your helm!",
+			FIRESTARTER = "Yes, %s! Burn!!!",
         },
 
         MULTIPLAYER_PORTAL = "The vines coil away from my lighter... weird!",

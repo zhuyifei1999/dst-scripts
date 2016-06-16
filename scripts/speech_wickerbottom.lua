@@ -91,6 +91,7 @@ return
     ANNOUNCE_MOUNT_LOWHEALTH = "My mount requires attention of the medical variety.",
     ANNOUNCE_NODANGERAFK = "Were I to lose focus now I'd be sure to sustain bodily injury.",
     ANNOUNCE_NODANGERGIFT = "Presents are not a top survival priority at this moment.",
+    ANNOUNCE_NOMOUNTEDGIFT = "I do believe I should dismount first.",
     ANNOUNCE_NOWARDROBEONFIRE = "As you can plainly see, it is ablaze.",
     ANNOUNCE_WORMS = "Something nasty intends to rear its head.",
    
@@ -103,6 +104,7 @@ return
             MURDERER = "I'll erase you from the history books!",
             REVIVER = "I appreciate your commitment to group survival, %s.",
             GHOST = "Poor dear. %s needs a heart to anchor them to this plane.",
+            FIRESTARTER = "%s, what have I told you about lighting fires?",
         },
         WILSON = 
         {
@@ -111,6 +113,7 @@ return
             MURDERER = "It appears we've entered a battle of the wits, %s!",
             REVIVER = "You may know a thing or two after all, scientist!",
             GHOST = "Didn't I tell you to wear a jacket? I'll get the hearts...",
+            FIRESTARTER = "%s needs a stern talking to.",
         },
         WOLFGANG = 
         {
@@ -119,6 +122,7 @@ return
             MURDERER = "That's it, %s! I'm taking my glasses off!",
             REVIVER = "Excellent work, %s. You're a fast learner.",
             GHOST = "%s acts tough, but he needs my help. A heart should do it.",
+            FIRESTARTER = "Was that fire intentional, %s?",
         },
         WAXWELL = 
         {
@@ -127,6 +131,7 @@ return
             MURDERER = "Fool me once, shame on you. Fool me twice... you're dead!",
             REVIVER = "There's good in you, %s.",
             GHOST = "Stings, doesn't it dear? Let me fetch you a heart.",
+            FIRESTARTER = "Lighting fires are we now, %s? Tread carefully.",
         },
         WX78 = 
         {
@@ -135,6 +140,7 @@ return
             MURDERER = "The binary is simple, %s... On, or OFF.",
             REVIVER = "I appreciate your commitment to group survival, %s.",
             GHOST = "Fascinating. %s indeed has a specter, and it lingers still.",
+            FIRESTARTER = "Do be careful when trying to destroy all life, dear.",
         },
         WILLOW = 
         {
@@ -143,6 +149,7 @@ return
             MURDERER = "You WILL respect your elders, %s!",
             REVIVER = "You're doing so well, %s.",
             GHOST = "If you cross your ghosteyes they'll get stuck like that, dear.",
+            FIRESTARTER = "What have I said about lighting fires, dear?",
         },
         WENDY = 
         {
@@ -151,6 +158,7 @@ return
             MURDERER = "Someone needs to teach you some manners, %s!",
             REVIVER = "You're a dear, %s. And so uniquely qualified to handle specters!",
             GHOST = "Goodness, this just won't do. Let me find you a heart, %s.",
+            FIRESTARTER = "Who gave you flammable materials, %s?",
         },
         WOODIE = 
         {
@@ -161,6 +169,7 @@ return
             GHOST = "What did I say about playing with axes? Let's get you a heart.",
             BEAVER = "Poor dear never mentioned he was afflicted by Castorthropy.",
             BEAVERGHOST = "I'll add \"Castorthrope\" to my endangered species list.",
+            FIRESTARTER = "Keep lighting fires if you want to get burnt, dear.",
         },
         WICKERBOTTOM = 
         {
@@ -169,6 +178,7 @@ return
             MURDERER = "I am my own worst critic!",
             REVIVER = "Our knowledge comes in handy, doesn't it, %s?",
             GHOST = "All our self-help books will finally be put to use, hmm %s?",
+            FIRESTARTER = "Book burnings are quite gauche, %s.",
         },
         WES = 
         {
@@ -177,6 +187,7 @@ return
             MURDERER = "They'll tell tales of your defeat, %s!",
             REVIVER = "You're a fine young man, %s.",
             GHOST = "Poor dear. %s needs a heart to anchor him to this plane.",
+            FIRESTARTER = "Don't cry to me when you burn yourself, dear.",
         },
         WEBBER = 
         {
@@ -185,6 +196,7 @@ return
             MURDERER = "Someone needs to teach you some manners, %s!",
             REVIVER = "You're a sweet boy, %s.",
             GHOST = "Poor dear. We'll get you a nice colored bandaid once you're revived.",
+            FIRESTARTER = "Who gave you matches, %s?",
         },
         WATHGRITHR = 
         {
@@ -193,6 +205,7 @@ return
             MURDERER = "Your saga ends here, %s!",
             REVIVER = "I appreciate your commitment to group survival, %s.",
             GHOST = "%s, I told you not to run with spears. Tsk.",
+            FIRESTARTER = "\"By Hel's fire\" is just a turn of phrase, dear.",
         },
 
         MULTIPLAYER_PORTAL = "Hmm... This may require further reading.",

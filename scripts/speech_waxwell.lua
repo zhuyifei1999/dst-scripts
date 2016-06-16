@@ -88,6 +88,7 @@ return {
 	ANNOUNCE_PETRIFED_TREES = "Oh, this should be good.",
 	ANNOUNCE_NODANGERAFK = "I must be ever vigilant!",
 	ANNOUNCE_NODANGERGIFT = "That's a terrible idea right now.",
+	ANNOUNCE_NOMOUNTEDGIFT = "I'm not opening that on top of this thing.",
 	ANNOUNCE_WORMS = "Oh dear. I know what's making that sound.",
     ANNOUNCE_NOSLEEPONFIRE = "That might not be the best idea.",
 	ANNOUNCE_NODANGERSIESTA = "They're hot on my heels!",
@@ -181,6 +182,7 @@ return {
             MURDERER = "Murderous fiend! I'll stop at nothing!",
             REVIVER = "%s tethers lost spirits to this world.",
             GHOST = "%s needs heart-shaped assistance.",
+            FIRESTARTER = "%s has been lighting fires.",
         },
 		WILSON = 
 		{
@@ -189,6 +191,7 @@ return {
 			MURDERER = "Our truce ends here, murderer!",
 			REVIVER = "%s is a real pal...",
 			GHOST = "Are you certain you wish to return to this world, %s?",
+			FIRESTARTER = "The fire is supposed to go in the pit, Higgsbury.",
 		},
 		WOLFGANG = 
 		{
@@ -197,6 +200,7 @@ return {
 			MURDERER = "Murderous fiend! Behold my power!",
 			REVIVER = "%s tethers lost spirits to this world.",
 			GHOST = "Let's find a heart, %s. I'll prepare my incantations.",
+			FIRESTARTER = "Did you intend to burn that, %s?",
 		},
 		WAXWELL = 
 		{
@@ -206,6 +210,7 @@ return {
 			MURDERER = "Old habits die hard... and so will you!",
 			REVIVER = "Trust only yourself, hey %s?.",
 			GHOST = "I'll have to pay in blood to bring you back, %s.",
+			FIRESTARTER = "Do not blow this for us, %s.",
 		},
 		WX78 = 
 		{
@@ -214,6 +219,7 @@ return {
 			MURDERER = "Murderous fiend! This will be your destruction!",
 			REVIVER = "%s never did respect human mortality.",
 			GHOST = "A shame about your death, %s. You were the only one I half-liked.",
+			FIRESTARTER = "Mx. %s is finally making good on their promises of mayhem.",
 		},
 		WILLOW = 
 		{
@@ -222,6 +228,7 @@ return {
 			MURDERER = "Murderous fiend! Taste my wrath!",
 			REVIVER = "%s has bent reality to her fiery will.",
 			GHOST = "We will require a heart to bring you back, %s.",
+			FIRESTARTER = "She's a firestarter. And a twisted one, at that.",
 		},
 		WENDY = 
 		{
@@ -230,6 +237,7 @@ return {
 			MURDERER = "Don't think I'll hesitate, murderous fiend!",
 			REVIVER = "%s is a true death defier.",
 			GHOST = "%s's looking a little too much like her sister. Needs a heart.",
+			FIRESTARTER = "Don't play with fire, Ms. %s.",
 		},
 		WOODIE = 
 		{
@@ -240,6 +248,7 @@ return {
 			GHOST = "That blockhead could use a heart.",
 			BEAVER = "Ha! What a delightful curse.",
 			BEAVERGHOST = "Yew don't look so wood.",
+			FIRESTARTER = "Is it wise to be starting fires, given your predilections?",
 		},
 		WICKERBOTTOM = 
 		{
@@ -248,6 +257,7 @@ return {
 			MURDERER = "Do not start fights you cannot win!",
 			REVIVER = "%s has excellent command of the dark arts.",
 			GHOST = "You know the price of revival as well as I do, %s.",
+			FIRESTARTER = "Never pinned you for the wanton destruction type, Ms.",
 		},
 		WES = 
 		{
@@ -256,6 +266,7 @@ return {
 			MURDERER = "Murderous fiend! You cannot escape!",
 			REVIVER = "%s is an effective ally.",
 			GHOST = "I could get you a heart, %s... for a price.",
+			FIRESTARTER = "Stop burning things, mime.",
 		},
 		WEBBER = 
 		{
@@ -264,6 +275,7 @@ return {
 			MURDERER = "So, %s, you're a monster after all!",
 			REVIVER = "This child, %s, doesn't have a mean bone in his body.",
 			GHOST = "Looks like you got squashed, %s.",
+			FIRESTARTER = "Like a moth to flame. Or a spider, maybe.",
 		},
 		WATHGRITHR = 
 		{
@@ -272,6 +284,7 @@ return {
 			MURDERER = "Bloodthirsty warrior! This ends now!",
 			REVIVER = "%s has excellent command of the spirit realm.",
 			GHOST = "Do you desire a heart, %s?",
+			FIRESTARTER = "The next fire you start will be a funeral pyre.",
 		},
 
 		BERNIE_INACTIVE =
@@ -943,7 +956,7 @@ return {
 			STARVING = "I think it's going to die!",
 			HUNGRY = "It's hungry. Why is it hungry?",
 			CONTENT = "It's happy with me, and I with it.",
-			GENERIC = "You're not a hellbeast are you? Nooo. Just misunderstood!",
+			GENERIC = "You're not a hellbeast, are you? Nooo. Just misunderstood!",
 		},
 		LAVAE_EGG = 
 		{

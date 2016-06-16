@@ -11,7 +11,6 @@ local function makefn(bankname, buildname, animname, tag)
 
         inst.entity:AddTransform()
         inst.entity:AddAnimState()
-        inst.entity:AddNetwork()
 
         inst:AddTag("DECOR")
         if tag ~= nil then

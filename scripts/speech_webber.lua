@@ -95,6 +95,7 @@ return {
 	ANNOUNCE_DUSK = "Almost time for bed.",
 	ANNOUNCE_NODANGERAFK = "Can't! There's scary-biteys about!",
 	ANNOUNCE_NODANGERGIFT = "We'll open it later as a celebration of surviving this!",
+	ANNOUNCE_NOMOUNTEDGIFT = "I promise I'll ride you again after I open my present!",
 	ANNOUNCE_NOWARDROBEONFIRE = "I can't! It's all burny!",
 	ANNOUNCE_WORMS = "Ohhh nooo. We're not friends with worms!",
 	ANNOUNCE_EAT =
@@ -183,6 +184,7 @@ return {
             MURDERER = "Meanie! Get'em!",
             REVIVER = "%s is super nice to ghosts.",
             GHOST = "Don't worry, %s, we'll find you a heart!",
+            FIRESTARTER = "%s, you lit a fire!",
         },
 		WILSON =
 		{
@@ -191,6 +193,7 @@ return {
 			MURDERER = "Meanie! We will stop you no matter what!",
 			REVIVER = "%s doesn't believe in ghosts, but he believes in us!",
 			GHOST = "You're looking much paler than usual, %s!",
+			FIRESTARTER = "Uh... Is your hair smoking, %s?",
         },
 		WOLFGANG =
 		{
@@ -199,6 +202,7 @@ return {
 			MURDERER = "You're just a big bully!",
 			REVIVER = "%s's nice! I wish he'd stop messing up our head fur, though.",
 			GHOST = "I'm sure you're the strongest ghost, %s. Let's get a heart though.",
+			FIRESTARTER = "%s, no!! Fire can hurt you!",
 		},
 		WAXWELL =
 		{
@@ -207,6 +211,7 @@ return {
 			MURDERER = "You're the real monster, %s!",
 			REVIVER = "Wow, %s is really nice! He's helping people!",
 			GHOST = "Aw %s, no one deserves to be stuck like that!",
+			FIRESTARTER = "Don't burn our things please. We like them.",
 		},
 		WX78 =
 		{
@@ -215,6 +220,7 @@ return {
 			MURDERER = "Let us introduce you to our world wide web! Sh-sha!",
 			REVIVER = "Aww. We'd beep-boop %s on the nose if they had one!",
 			GHOST = "Bad day destroying humans, %s? Tomorrow will be better!",
+			FIRESTARTER = "Maybe they didn't know fire is dangerous to us.",
 		},
 		WILLOW =
 		{
@@ -223,6 +229,7 @@ return {
 			MURDERER = "You're gonna get burned, %s!",
 			REVIVER = "%s's like a burnt marshmallow. Crispy on the outside, gooey on the inside!",
 			GHOST = "Uh-oh! Does that hurt, %s?",
+			FIRESTARTER = "Another fire? Well, as long as you're happy...",
 		},
 		WENDY =
 		{
@@ -231,6 +238,7 @@ return {
 			MURDERER = "We're taking my friendship bracelet back!",
 			REVIVER = "%s always plays nice with ghosts.",
 			GHOST = "Don't worry, %s! Our spider friends will help bring you back!",
+			FIRESTARTER = "Uhh, uh-oh, let's play a different game, %s.",
 		},
 		WOODIE =
 		{
@@ -241,6 +249,7 @@ return {
 			GHOST = "Wanna go heart-hunting with us, %s?",
 			BEAVER = "%s's being gnawghty.",
 			BEAVERGHOST = "Can I pet your ears or will our claws swish through?",
+			FIRESTARTER = "Um. I think you lit a fire, %s.",
 		},
 		WICKERBOTTOM =
 		{
@@ -249,6 +258,7 @@ return {
 			MURDERER = "Killer! Does this mean we don't have to do our homework?!",
 			REVIVER = "Ms. %s is very smart and wise. She's neat!",
 			GHOST = "Don't worry Ms. %s, we'll find you a heart!",
+			FIRESTARTER = "Ms. %s! We already had our combustion lessons!",
 		},
 		WES =
 		{
@@ -257,6 +267,7 @@ return {
 			MURDERER = "You're supposed to play nice!",
 			REVIVER = "%s is super nice. And his makeup's cool!",
 			GHOST = "We'll help you get back on your feet, %s!",
+			FIRESTARTER = "You were just supposed to mime lighting it!",
 		},
 		WEBBER = 
 		{
@@ -265,6 +276,7 @@ return {
 			MURDERER = "We won't let you hurt our friends!",
 			REVIVER = "%s likes helping ghosts, just like us.",
 			GHOST = "Oh no! We should help ourselves!",
+			FIRESTARTER = "Spiderfriend, why did you light that fire?",
 		},
 		WATHGRITHR = 
 		{
@@ -273,6 +285,7 @@ return {
 			MURDERER = "We're not scared of pointy spearsticks! Fight!",
 			REVIVER = "%s is a super valiant lady.",
 			GHOST = "Wow! Even as a ghost you're super tough, %s!",
+			FIRESTARTER = "You're supposed to put fires out when you're finished.",
 		},
 
         MULTIPLAYER_PORTAL = "It's pretty... pretty scary!",

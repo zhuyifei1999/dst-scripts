@@ -147,12 +147,13 @@ local function getexectype(command, caller, targetid)
     local clevel = commandlevel(command)
     local ulevel = userlevel(caller)
     return (ulevel >= clevel and COMMAND_RESULT.ALLOW)
+        or (not command.vote and COMMAND_RESULT.INVALID)
         or ((TheWorld.net == nil or TheWorld.net.components.worldvoter == nil or not TheWorld.net.components.worldvoter:IsEnabled()) and COMMAND_RESULT.INVALID)
         or (caller.components.playervoter == nil and COMMAND_RESULT.INVALID)
-        or (command.vote and TheWorld.net.components.worldvoter:IsVoteActive() and COMMAND_RESULT.DENY)
-        or (command.vote and caller.components.playervoter:IsSquelched() and COMMAND_RESULT.DENY)
-        or (command.vote and COMMAND_RESULT.VOTE)
-        or COMMAND_RESULT.INVALID
+        or (TheWorld.net.components.worldvoter:IsVoteActive() and COMMAND_RESULT.DENY)
+        or (caller.components.playervoter:IsSquelched() and COMMAND_RESULT.DENY)
+        or (command.votecanstartfn ~= nil and not command.votecanstartfn(command, caller, targetid) and COMMAND_RESULT.DENY)
+        or COMMAND_RESULT.VOTE
 end
 
 local function runcommand(command, params, caller, onserver, confirm)
@@ -231,6 +232,16 @@ end
 local function CanUserRunCommand(commandname, player, targetid)
     local exectype = UserRunCommandResult(commandname, player, targetid)
     return exectype ~= COMMAND_RESULT.INVALID
+end
+
+local function CanUserStartVote(commandname, player, targetid)
+    local command = getcommand(commandname)
+    assert(command.vote)
+    if command.votecanstartfn == nil then
+        return true
+    end
+    --Returns 2 values, so don't inline!
+    return command.votecanstartfn(command, player, targetid)
 end
 
 local function RunUserCommand(commandname, params, caller, onserver)
@@ -445,6 +456,7 @@ return {
     RunTextUserCommand = RunTextUserCommand,
     UserRunCommandResult = UserRunCommandResult,
     CanUserRunCommand = CanUserRunCommand,
+    CanUserStartVote = CanUserStartVote,
     FinishVote = FinishVote,
     ClearModData = ClearModData,
     GetUserActions = GetUserActions,

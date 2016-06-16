@@ -23,11 +23,25 @@ local function OnPutInInventory(inst)
     inst.components.mine:Deactivate()
 end
 
-local function onissprung(self, onissprung)
-    if onissprung then
+local function onissprung(self, issprung)
+    if issprung then
         self.inst:AddTag("minesprung")
+        self.inst:RemoveTag("mineactive")
     else
         self.inst:RemoveTag("minesprung")
+        if not self.inactive then
+            self.inst:AddTag("mineactive")
+        end
+    end
+end
+
+local function oninactive(self, inactive)
+    if not self.issprung then
+        if inactive then
+            self.inst:RemoveTag("mineactive")
+        else
+            self.inst:AddTag("mineactive")
+        end
     end
 end
 
@@ -39,21 +53,23 @@ local Mine = Class(function(self, inst)
     self.onreset = nil
     self.onsetsprung = nil
     self.target = nil
-    self.issprung = false
     self.inactive = true
-    
+    self.issprung = false
+
     self.alignment = "player"
     self.inst:ListenForEvent("onputininventory", OnPutInInventory)
 end,
 nil,
 {
     issprung = onissprung,
+    inactive = oninactive,
 })
 
 function Mine:OnRemoveFromEntity()
     self:StopTesting()
     self.inst:RemoveEventCallback("onputininventory", OnPutInInventory)
     self.inst:RemoveTag("minesprung")
+    self.inst:RemoveTag("mineactive")
 end
 
 function Mine:SetRadius(radius)

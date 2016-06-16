@@ -780,30 +780,26 @@ function GetModFancyName(mod_name)
     return KnownModIndex:GetModFancyName(mod_name)
 end
 
-function VerifyModVersions(mods_to_verify)
+local function DoVerifyModVersions(world, mods_to_verify)
     TheSim:VerifyModVersions(mods_to_verify)
 end
 
 function ModWrangler:StartVersionChecking()
-	if TheWorld.ismastersim then
-		local mods_to_verify = {}
-		for k,mod_name in pairs(ModManager:GetEnabledServerModNames()) do
-
-			local modinfo = KnownModIndex:GetModInfo(mod_name)
-			if modinfo.all_clients_require_mod then
-				--print( "adding mod to verify ", mod_name )
-				table.insert( mods_to_verify, mod_name )
-				table.insert( mods_to_verify, modinfo.version )
-			end
-		end
-		if #mods_to_verify > 0 then
-			--Start mod version checking task
-			local time = 2 * 60
-			local limit = nil
-			local initialdelay = 60
-			local id = "mods_version_check"
-			local per = scheduler:ExecutePeriodic( time, function() VerifyModVersions( mods_to_verify ) end, limit, initialdelay, id, self )
-		end
+    if TheWorld.ismastersim then
+        local mods_to_verify = {}
+        for i, mod_name in ipairs(ModManager:GetEnabledServerModNames()) do
+            if mod_name:len() > 0 then
+                local modinfo = KnownModIndex:GetModInfo(mod_name)
+                if modinfo.all_clients_require_mod then
+                    --print("adding mod to verify", mod_name)
+                    table.insert(mods_to_verify, { name = mod_name, version = modinfo.version })
+                end
+            end
+        end
+        if #mods_to_verify > 0 then
+            --Start mod version checking task
+            TheWorld:DoPeriodicTask(120, DoVerifyModVersions, 60, mods_to_verify)
+        end
     end
 end
 

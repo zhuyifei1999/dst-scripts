@@ -158,6 +158,7 @@ return {
 	ANNOUNCE_LIGHTNING_DAMAGE_AVOIDED = "Lightning is weak compared to Wolfgang clothes!",
 	ANNOUNCE_NODANGERAFK = "Wolfgang will not abandon the fight!",
 	ANNOUNCE_NODANGERGIFT = "Fight is better than present!",
+	ANNOUNCE_NOMOUNTEDGIFT = "Wolfgang will fall if try to open on top of hair cow!",
 	ANNOUNCE_NOWARDROBEONFIRE = "Ehh, Wolfgang do that later...",
 	ANNOUNCE_WORMS = "Earth is tremble beneath Wolfgang's mighty feet!",
 	BATTLECRY =
@@ -185,6 +186,7 @@ return {
             MURDERER = "%s is killer!",
             REVIVER = "%s is nice person.",
             GHOST = "Wolfgang will get raw pump-y heart for you!",
+            FIRESTARTER = "%s is lighting burny fires!",
         },
         WILSON = 
         {
@@ -193,6 +195,7 @@ return {
             MURDERER = "%s stands no chance against Wolfgang!",
             REVIVER = "%s is nice, crazy man.",
             GHOST = "Ha ha! Big brain did not save you. I will get heart.",
+            FIRESTARTER = "Wolfgang thought he could trust %s!",
         },
         WOLFGANG = 
         {
@@ -201,6 +204,7 @@ return {
             MURDERER = "We will see who is best Wolfgang! Raaa!",
             REVIVER = "%s is nice man. Like me! Ha ha.",
             GHOST = "World needs more %s! I will get heart!",
+            FIRESTARTER = "Wolfgang cannot trust even himself not to light fire!",
         },
         WAXWELL = 
         {
@@ -209,6 +213,7 @@ return {
             MURDERER = "%s has not changed. Killer!",
             REVIVER = "%s is one of us. Ha ha! Yes!",
             GHOST = "%s is friend of Wolfgang. He will get raw heart.",
+            FIRESTARTER = "Is dastardly plan with fire, %s?",
         },
         WX78 = 
         {
@@ -217,6 +222,7 @@ return {
             MURDERER = "%s is killer robot!",
             REVIVER = "%s is nice person. Deep down.",
            	GHOST = "Robot %s is broken! Wolfgang rub heart on problem.",
+           	FIRESTARTER = "Robot trying to kill fleshypeople again, maybe?",
         },
         WILLOW = 
         {
@@ -225,6 +231,7 @@ return {
             MURDERER = "%s is no match for Wolfgang!",
             REVIVER = "%s is very nice, when not light moustache on fire.",
             GHOST = "Do not hurt, torchlady. Wolfgang get heart!",
+            FIRESTARTER = "Is not big surprise.",
         },
         WENDY = 
         {
@@ -233,6 +240,7 @@ return {
             MURDERER = "Creepy girl is killer! Attack!",
             REVIVER = "%s is nice little lady. But still scare Wolfgang.",
             GHOST = "Please no hauntings, %s! Wolfgang will get you heart!",
+            FIRESTARTER = "Oh no. Creepy girl is trying to burn us!",
         },
         WOODIE = 
         {
@@ -243,6 +251,7 @@ return {
             GHOST = "Wolfgang will get heart for you, beard!",
             BEAVER = "The beard ate %s!",
 			BEAVERGHOST = "Still have good moustache, %s.",
+			FIRESTARTER = "Be careful! Do not burn, beard!",
         },
         WICKERBOTTOM = 
         {
@@ -251,6 +260,7 @@ return {
             MURDERER = "%s is killer!",
             REVIVER = "%s smell like mothballs and kindness.",
             GHOST = "Wolfgang will get raw pump-y heart for you!",
+            FIRESTARTER = "Strong brainlady probably know what she's doing with fire.",
         },
         WES = 
         {
@@ -259,6 +269,7 @@ return {
             MURDERER = "Ah! Is killer clown! %s!",
             REVIVER = "%s is nice, weird little man.",
             GHOST = "Wolfgang will go get heart for odd clownman!",
+            FIRESTARTER = "You are looking very guilty, clownman.",
         },
         WEBBER = 
         {
@@ -267,6 +278,7 @@ return {
             MURDERER = "Monsterchild %s is killer! Wolfgang is run!",
             REVIVER = "Creepy monster %s is nice kid.",
             GHOST = "Who squish small bug boy? Wolfgang will smash back!",
+            FIRESTARTER = "Please no. Please no burnings!",
         },
         WATHGRITHR = 
         {
@@ -275,6 +287,7 @@ return {
             MURDERER = "Stronglady %s is killer!",
             REVIVER = "%s is nice, strong lady.",
             GHOST = "World needs stronglady! Wolfgang will get heart!",
+            FIRESTARTER = "Why starting fires, stronglady? To fight them?",
         },
 
 		MULTIPLAYER_PORTAL = "Why door not crumble under mighty Wolfgang punches?!",

@@ -407,8 +407,17 @@ local function chop_tree(inst, chopper, chops)
 end
 
 local function chop_down_tree_shake(inst)
-    local sz = inst.components.growable ~= nil and inst.components.growable.stage > 2 and .5 or .25
-    ShakeAllCameras(CAMERASHAKE.FULL, .25, .03, sz, inst, 6)
+    ShakeAllCameras(CAMERASHAKE.FULL, .25, .03,
+        inst.components.growable ~= nil and
+        inst.components.growable.stage > 2 and .5 or .25,
+        inst, 6)
+end
+
+local function chop_down_twiggy_shake(inst)
+    ShakeAllCameras(CAMERASHAKE.FULL, .25, .025,
+        inst.components.growable ~= nil and
+        inst.components.growable.stage > 2 and .14 or .07,
+        inst, 6)
 end
 
 local function find_leif_spawn_target(item)
@@ -499,7 +508,11 @@ local function chop_down_tree(inst, chopper)
         inst.components.lootdropper:DropLoot(pt + TheCamera:GetRightVec())
     end
 
-    inst:DoTaskInTime(GetBuild(inst).chop_camshake_delay, chop_down_tree_shake)
+    if inst.build ~= "twiggy" then
+        inst:DoTaskInTime(GetBuild(inst).chop_camshake_delay, chop_down_tree_shake)
+    elseif inst.components.growable == nil or inst.components.growable.stage > 1 then
+        inst:DoTaskInTime(GetBuild(inst).chop_camshake_delay, chop_down_twiggy_shake)
+    end
 
     if inst.components.diseaseable ~= nil and inst.components.diseaseable:IsDiseased() then
         inst:AddTag("NOCLICK")
@@ -795,17 +808,20 @@ local function tree(name, build, stage, data)
 
         MakeObstaclePhysics(inst, .25)
 
-        if build == "normal" then
-            inst.MiniMapEntity:SetIcon("evergreen.png")
-        elseif build == "sparse" then
-            inst.MiniMapEntity:SetIcon("evergreen_lumpy.png")
-        elseif build == "twiggy" then
+        if build == "twiggy" then
             inst.MiniMapEntity:SetIcon("twiggy.png")
+        else
+            inst:AddTag("evergreens")
+            if build == "normal" then
+                inst.MiniMapEntity:SetIcon("evergreen.png")
+            elseif build == "sparse" then
+                inst.MiniMapEntity:SetIcon("evergreen_lumpy.png")
+            end
         end
+
         inst.MiniMapEntity:SetPriority(-1)
 
         inst:AddTag("tree")
-        inst:AddTag("evergreens")
         inst:AddTag("shelter")
 
         inst.build = build
@@ -875,7 +891,6 @@ local function tree(name, build, stage, data)
         ---------------------
         inst:AddComponent("diseaseable")
         if build == "twiggy" then
-            inst.noleif = true
             inst.components.diseaseable:SetDiseasedFn(ondiseasedfn_twiggy)
             inst.components.diseaseable:SetRebirthedFn(SetShort)
             inst.components.diseaseable:SetDiseasedDeathFn(chop_down_tree)

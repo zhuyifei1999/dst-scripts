@@ -357,13 +357,27 @@ function MainScreen:Quit()
 end
 
 function MainScreen:OnHostButton()
-	SaveGameIndex:LoadServerEnabledModsFromSlot()
-	KnownModIndex:Save()
+    SaveGameIndex:LoadServerEnabledModsFromSlot()
+    KnownModIndex:Save()
     local start_in_online_mode = false
     local server_started = TheNet:StartServer(start_in_online_mode)
     if server_started == true then
         DisableAllDLC()
-        StartNextInstance({reset_action = RESET_ACTION.LOAD_SLOT, save_slot=SaveGameIndex:GetCurrentSaveSlot()})
+        if TheInput:IsKeyDown(KEY_SHIFT) then
+            SaveGameIndex:DeleteSlot(
+            SaveGameIndex:GetCurrentSaveSlot(),
+            function() StartNextInstance({reset_action = RESET_ACTION.LOAD_SLOT, save_slot=SaveGameIndex:GetCurrentSaveSlot()}) end,
+            true -- true causes world gen options to be preserved
+            )
+        elseif TheInput:IsKeyDown(KEY_CTRL) then
+            SaveGameIndex:DeleteSlot(
+            SaveGameIndex:GetCurrentSaveSlot(),
+            function() StartNextInstance({reset_action = RESET_ACTION.LOAD_SLOT, save_slot=SaveGameIndex:GetCurrentSaveSlot()}) end,
+            false -- false causes world gen options to be wiped!
+            )
+        else
+            StartNextInstance({reset_action = RESET_ACTION.LOAD_SLOT, save_slot=SaveGameIndex:GetCurrentSaveSlot()})
+        end
     end
 end
 

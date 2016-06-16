@@ -118,6 +118,7 @@ return {
 	ANNOUNCE_MOSQUITOS = "Aaah! Bug off!",
     ANNOUNCE_NOWARDROBEONFIRE = "I can't change while it's on fire!",
     ANNOUNCE_NODANGERGIFT = "I can't open presents with monsters about!",
+    ANNOUNCE_NOMOUNTEDGIFT = "I should get off my beefalo first.",
 	ANNOUNCE_NODANGERSLEEP = "I'm too scared of dying to sleep right now!",
 	ANNOUNCE_NODAYSLEEP = "It's too bright out.",
 	ANNOUNCE_NODAYSLEEP_CAVE = "I'm not tired.",
@@ -211,6 +212,7 @@ return {
             MURDERER = "Murderer!",
             REVIVER = "%s, friend of ghosts.",
             GHOST = "%s could use a heart.",
+            FIRESTARTER = "Burning that wasn't very scientific, %s.",
         },
 		WILSON = 
 		{
@@ -219,6 +221,7 @@ return {
 			MURDERER = "Your existence is an affront to the laws of science, %s!",
 			REVIVER = "%s has expertly put our theories into practice.",
 			GHOST = "Better concoct a revival device. Can't leave another man of science floating.",
+			FIRESTARTER = "Burning that wasn't very scientific, %s.",
 		},
 		WOLFGANG = 
 		{
@@ -227,6 +230,7 @@ return {
 			MURDERER = "Murderer! I can take you!",
 			REVIVER = "%s is just a big teddy bear.",
 			GHOST = "I told you you couldn't deadlift that boulder, %s. The numbers were all wrong.",
+			FIRESTARTER = "You can't actually \"fight\" fire, %s!",
 		},
 		WAXWELL = 
 		{
@@ -235,6 +239,7 @@ return {
 			MURDERER = "I'll show you Logic and Reason... those're my fists!",
 			REVIVER = "%s is using his powers for good.",
 			GHOST = "Don't look at me like that, %s! I'm working on it!",
+			FIRESTARTER = "%s's just asking to get roasted.",
 		},
 		WX78 = 
 		{
@@ -243,6 +248,7 @@ return {
 			MURDERER = "%s! You've violated the first law!",
 			REVIVER = "I guess %s got that empathy module up and running.",
 			GHOST = "I always thought %s could use a heart. Now I'm certain!",
+			FIRESTARTER = "You look like you're gonna melt, %s. What happened?",
 		},
 		WILLOW = 
 		{
@@ -251,6 +257,7 @@ return {
 			MURDERER = "Murderer! Arsonist!",
 			REVIVER = "%s, friend of ghosts.",
 			GHOST = "I bet you're just burning for a heart, %s.",
+			FIRESTARTER = "Again?",
 		},
 		WENDY = 
 		{
@@ -259,6 +266,7 @@ return {
 			MURDERER = "Murderer!",
 			REVIVER = "%s treats ghosts like family.",
 			GHOST = "I'm seeing double! I'd better concoct a heart for %s.",
+			FIRESTARTER = "I know you set those flames, %s.",
 		},
 		WOODIE = 
 		{
@@ -269,6 +277,7 @@ return {
 			GHOST = "Does \"universal\" coverage include the void, %s?",
 			BEAVER = "%s's gone on a wood chucking rampage!",
 			BEAVERGHOST = "Will you bea-very mad if I don't revive you, %s?",
+			FIRESTARTER = "Did you just light a fire, %s?",
 		},
 		WICKERBOTTOM = 
 		{
@@ -277,6 +286,7 @@ return {
 			MURDERER = "Here comes my peer review!",
 			REVIVER = "I have deep respect for %s's practical theorems.",
 			GHOST = "This doesn't seem very scientific, does it, %s?",
+			FIRESTARTER = "I'm sure you had a very clever reason for that fire.",
 		},
 		WES = 
 		{
@@ -285,6 +295,7 @@ return {
 			MURDERER = "Mime this!",
 			REVIVER = "%s thinks outside the invisible box.",
 			GHOST = "How do you say \"I'll conduct a revival device\" in mime?",
+			FIRESTARTER = "Don't tell me. You lit that fire, right %s?",
 		},
 		WEBBER = 
 		{
@@ -293,6 +304,7 @@ return {
 			MURDERER = "Murderer! I'll squash you, %s!",
 			REVIVER = "%s is playing well with others.",
 			GHOST = "%s is really buggin' me for a heart.",
+			FIRESTARTER = "We're gonna need to call a group meeting about fire safety.",
 		},
 		WATHGRITHR = 
 		{
@@ -301,6 +313,7 @@ return {
 			MURDERER = "%s's gone berserk!",
 			REVIVER = "%s has full command of spirits.",
 			GHOST = "Nice try. You're not escaping to Valhalla yet, %s.",
+			FIRESTARTER = "%s is really heating things up today.",
 		},
         MIGRATION_PORTAL = 
         {

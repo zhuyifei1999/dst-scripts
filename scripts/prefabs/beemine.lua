@@ -38,11 +38,11 @@ local function SpawnBees(inst)
 end
 
 local function OnExplode(inst)
-    if inst.rattletask then
+    if inst.rattletask ~= nil then
         inst.rattletask:Cancel()
         inst.rattletask = nil
     end
-    if inst.spawntask then -- We've already been told to explode
+    if inst.spawntask ~= nil then -- We've already been told to explode
         return
     end
     inst.AnimState:PlayAnimation("explode")
@@ -52,6 +52,10 @@ local function OnExplode(inst)
     if inst.components.inventoryitem ~= nil then
         inst.components.inventoryitem.canbepickedup = false
     end
+    inst:AddTag("NOCLICK")
+    inst.persists = false
+    --V2C: mine is lost if save happens during these 9 frames
+    --     but better than loading back into an invalid state
 end
 
 local function onhammered(inst, worker)
