@@ -1,4 +1,4 @@
-local groundtiles = require "worldtiledefs"
+local GroundTiles = require "worldtiledefs"
 require "components/map" --extends Map component
 
 local assets =
@@ -16,7 +16,7 @@ local assets =
     Asset("ASSET_PKGREF", "bigportraits/random.tex"),
     Asset("DYNAMIC_ATLAS", "bigportraits/random_none.xml"),
     Asset("ASSET_PKGREF", "bigportraits/random_none.tex"),
-    
+
     Asset("DYNAMIC_ATLAS", "images/names_random.xml"),
     Asset("ASSET_PKGREF", "images/names_random.tex"),
 
@@ -34,23 +34,23 @@ local assets =
 -- Add all the characters by name
 local charlist = GetActiveCharacterList ~= nil and GetActiveCharacterList() or DST_CHARACTERLIST
 for i, char in ipairs(charlist) do
-	if PREFAB_SKINS[char] then 
-	    for _,character in pairs(PREFAB_SKINS[char]) do
-			table.insert(assets, Asset("DYNAMIC_ATLAS", "bigportraits/"..character..".xml"))
-			table.insert(assets, Asset("ASSET_PKGREF", "bigportraits/"..character..".tex"))
-		end
-		table.insert(assets, Asset("DYNAMIC_ATLAS", "bigportraits/"..char..".xml"))
-		table.insert(assets, Asset("ASSET_PKGREF", "bigportraits/"..char..".tex"))
+    if PREFAB_SKINS[char] then
+        for _,character in pairs(PREFAB_SKINS[char]) do
+            table.insert(assets, Asset("DYNAMIC_ATLAS", "bigportraits/"..character..".xml"))
+            table.insert(assets, Asset("ASSET_PKGREF", "bigportraits/"..character..".tex"))
+        end
+        table.insert(assets, Asset("DYNAMIC_ATLAS", "bigportraits/"..char..".xml"))
+        table.insert(assets, Asset("ASSET_PKGREF", "bigportraits/"..char..".tex"))
 
-	    table.insert(assets, Asset("DYNAMIC_ATLAS", "images/names_"..char..".xml"))
-	    table.insert(assets, Asset("ASSET_PKGREF", "images/names_"..char..".tex"))
+        table.insert(assets, Asset("DYNAMIC_ATLAS", "images/names_"..char..".xml"))
+        table.insert(assets, Asset("ASSET_PKGREF", "images/names_"..char..".tex"))
 
-	    --table.insert(assets, Asset("IMAGE", "images/selectscreen_portraits/"..char..".tex"))
-    	--table.insert(assets, Asset("IMAGE", "images/selectscreen_portraits/"..char.."_silho.tex"))
-	end
+        --table.insert(assets, Asset("IMAGE", "images/selectscreen_portraits/"..char..".tex"))
+        --table.insert(assets, Asset("IMAGE", "images/selectscreen_portraits/"..char.."_silho.tex"))
+    end
 end
 
-for k, v in pairs(groundtiles.assets) do
+for k, v in pairs(GroundTiles.assets) do
     table.insert(assets, v)
 end
 
@@ -290,7 +290,7 @@ function MakeWorld(name, customprefabs, customassets, common_postinit, master_po
         inst.entity:AddSoundEmitter()
 
         --Initialize map
-        for i, data in ipairs(groundtiles.ground) do
+        for i, data in ipairs(GroundTiles.ground) do
             local tile_type, props = unpack(data)
             local layer_name = props.name
             local handle = MapLayerManager:CreateRenderLayer(
@@ -305,7 +305,7 @@ function MakeWorld(name, customprefabs, customassets, common_postinit, master_po
             --to ever change, we would have to clean up properly or we leak memory.
         end
 
-        for i, data in ipairs(groundtiles.creep) do
+        for i, data in ipairs(GroundTiles.creep) do
             local tile_type, props = unpack(data)
             local handle = MapLayerManager:CreateRenderLayer(
                 tile_type,
@@ -316,7 +316,7 @@ function MakeWorld(name, customprefabs, customassets, common_postinit, master_po
             inst.GroundCreep:AddRenderLayer(handle)
         end
 
-        local underground_layer = groundtiles.underground[1][2]
+        local underground_layer = GroundTiles.underground[1][2]
         local underground_handle = MapLayerManager:CreateRenderLayer(
             GROUND.UNDERGROUND,
             resolvefilepath(GroundAtlas(underground_layer.name)),
