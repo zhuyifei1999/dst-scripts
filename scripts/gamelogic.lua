@@ -13,6 +13,7 @@ require "builtinusercommands"
 require "emotes"
 
 local EquipSlot = require("equipslotutil")
+local GroundTiles = require("worldtiledefs")
 local Stats = require("stats")
 
 -- globals
@@ -646,7 +647,7 @@ local function DoInitGame(savedata, profile)
 		print("saving to "..server_file)
 		local insz, outsz = TheSim:SetPersistentString(server_file, data, COMPRESSED, nil)
 		savedata.ents = ent_ref
-        savedata.snapshot = snapshot_ref	   
+        savedata.snapshot = snapshot_ref
 	end
 
     --some lame explicit loads
@@ -662,8 +663,9 @@ local function DoInitGame(savedata, profile)
     TheFrontEnd:GetSound():KillSound("FEMusic") -- just in case...
     TheFrontEnd:GetSound():KillSound("FEPortalSFX")
 
-    --All MODs should have finished adding their equip slots by now
+    --All MODs should have finished adding equip slots and ground tiles by now
     EquipSlot.Initialize()
+    GroundTiles.Initialize()
 
     PopulateWorld(savedata, profile)
 
@@ -680,7 +682,7 @@ local function DoInitGame(savedata, profile)
 	    Stats.ClearProfileStats()
 
 		Stats.RecordSessionStartStats()
-		
+
 	    --after starting everything up, give the mods additional environment variables
 	    ModManager:SimPostInit( nil )
         TheWorld:PostInit()
