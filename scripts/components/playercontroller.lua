@@ -1110,6 +1110,8 @@ local function GetPickupAction(target, tool)
     end
     if target:HasTag("trapsprung") then
         return ACTIONS.CHECKTRAP
+    elseif target:HasTag("minesprung") then
+        return ACTIONS.RESETMINE
     elseif target:HasTag("inactive") then
         return ACTIONS.ACTIVATE
     elseif target.replica.inventoryitem ~= nil and
@@ -1150,7 +1152,7 @@ function PlayerController:IsDoingOrWorking()
 end
 
 local TARGET_EXCLUDE_TAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO" }
-local PICKUP_TARGET_EXCLUDE_TAGS = { "catchable" }
+local PICKUP_TARGET_EXCLUDE_TAGS = { "catchable", "mineactive" }
 local HAUNT_TARGET_EXCLUDE_TAGS = { "haunted", "catchable" }
 for i, v in ipairs(TARGET_EXCLUDE_TAGS) do
     table.insert(PICKUP_TARGET_EXCLUDE_TAGS, v)
@@ -1243,6 +1245,7 @@ function PlayerController:GetActionButtonAction(force_target)
                 "notreadyforharvest",
                 "harvestable",
                 "trapsprung",
+                "minesprung",
                 "dried",
                 "inactive",
                 "smolder",

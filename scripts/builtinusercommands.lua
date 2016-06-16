@@ -11,6 +11,19 @@
 
 local UserCommands = require("usercommands")
 
+local function DefaultCanStartVote(command, caller, targetid)
+    local isdedicated = not TheNet:GetServerIsClientHosted()
+    local clients = TheNet:GetClientTable()
+    local numclients = isdedicated and #clients - 1 or #clients
+    local minclients = targetid ~= nil and not command.cantargetself and 4 or 3
+    --Player targetted votes, and not cantargetself, means the targetted player
+    --is excluded from voting, so we need an extra voter to satisfy the minimum
+    if numclients >= minclients then
+        return true
+    end
+    return false, "MINPLAYERS"
+end
+
 local function DefaultUnanimousVote(params, voteresults)
     --  Vote must be unanimous
     --  Can't have any no or abstain
@@ -115,6 +128,7 @@ AddUserCommand("kick", {
     votetimeout = 30,
     votetitlefmt = STRINGS.UI.BUILTINCOMMANDS.KICK.VOTETITLEFMT,
     votenamefmt = STRINGS.UI.BUILTINCOMMANDS.KICK.VOTENAMEFMT,
+    votecanstartfn = DefaultCanStartVote,
     voteresultfn = DefaultUnanimousVote,
     localfn = function(params, caller)
         --NOTE: must support nil caller for voting
@@ -175,6 +189,7 @@ AddUserCommand("rollback", {
     votetitlefmt = STRINGS.UI.BUILTINCOMMANDS.ROLLBACK.VOTETITLEFMT,
     votenamefmt = STRINGS.UI.BUILTINCOMMANDS.ROLLBACK.VOTENAMEFMT,
     votepassedfmt = STRINGS.UI.BUILTINCOMMANDS.ROLLBACK.VOTEPASSEDFMT,
+    votecanstartfn = DefaultCanStartVote,
     voteresultfn = DefaultUnanimousVote,
     serverfn = function(params, caller)
         --NOTE: must support nil caller for voting
@@ -207,6 +222,7 @@ AddUserCommand("regenerate", {
     votetitlefmt = STRINGS.UI.BUILTINCOMMANDS.REGENERATE.VOTETITLEFMT,
     votenamefmt = STRINGS.UI.BUILTINCOMMANDS.REGENERATE.VOTENAMEFMT,
     votepassedfmt = STRINGS.UI.BUILTINCOMMANDS.REGENERATE.VOTEPASSEDFMT,
+    votecanstartfn = DefaultCanStartVote,
     voteresultfn = DefaultUnanimousVote,
     serverfn = function(params, caller)
         --NOTE: must support nil caller for voting
@@ -224,5 +240,3 @@ AddUserCommand("regenerate", {
         end)
     end,
 })
-
-

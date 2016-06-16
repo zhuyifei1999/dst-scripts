@@ -85,6 +85,7 @@ return {
 	ANNOUNCE_BURNT = "By Hel's fire!",
 	ANNOUNCE_NODANGERAFK = "Only a coward would leave now!",
 	ANNOUNCE_NODANGERGIFT = "Not with the gift of battle before me!",
+	ANNOUNCE_NOMOUNTEDGIFT = "I must dismount my mighty steed!",
 	ANNOUNCE_NOWARDROBEONFIRE = "I fear I cannot. It is being razed.",
 	ANNOUNCE_WORMS = "The earth quakes with the approach of a foe!",
 	ANNOUNCE_ADVENTUREFAIL = "Back to the Otherworld, victory shall be mine!",
@@ -183,6 +184,7 @@ return {
             MURDERER = "Murderer! To battle!",
             REVIVER = "Freya smiles on %s.",
             GHOST = "%s's restless spirit could be revived with a heart.",
+            FIRESTARTER = "Forged in flame!",
         },
         WILSON =
         {
@@ -191,6 +193,7 @@ return {
             MURDERER = "%s! Let us settle this in battle!",
             REVIVER = "%s protects our people.",
             GHOST = "The fate of the Draugr is not yours, %s. A heart!",
+            FIRESTARTER = "Hm. I worry about you sometimes, %s.",
         },
         WOLFGANG = 
         {
@@ -199,6 +202,7 @@ return {
             MURDERER = "You will pay for your heinous deeds, brute!",
             REVIVER = "%s, son of Magni.",
             GHOST = "A valiant warrior should not be wasted. A heart, a heart!",
+            FIRESTARTER = "%s seems to have mistakenly fumbled a torch.",
         },
         WAXWELL = 
         {
@@ -207,6 +211,7 @@ return {
             MURDERER = "%s! Back to your old tricks, I see!",
             REVIVER = "%s has uncovered the kindness buried within his heart.",
             GHOST = "A heart could return %s to this realm if we so wished.",
+            FIRESTARTER = "Loki has brought %s into a world of flame.",
         },
         WX78 = 
         {
@@ -215,6 +220,7 @@ return {
             MURDERER = "We shall see whose steel is stronger, %s!",
             REVIVER = "%s is brimming with honor.",
             GHOST = "Metal warrior, it is not your time. A heart!",
+            FIRESTARTER = "That metal warrior would see this world burn.",
         },
         WILLOW = 
         {
@@ -223,6 +229,7 @@ return {
             MURDERER = "My spear was forged in passionate fires, %s!",
             REVIVER = "%s has a noble heart.",
             GHOST = "A heart shall wrench %s back from the jaws of death!",
+            FIRESTARTER = "%s has more fire in her eyes than usual.",
         },
         WENDY = 
         {
@@ -231,6 +238,7 @@ return {
             MURDERER = "%s, your body is weak but your heart is strong! Fight!",
             REVIVER = "%s is channeling the spirit of Eir.",
             GHOST = "%s's restless spirit could be revived with a heart.",
+            FIRESTARTER = "Ah. Have you singed your dress, fair maiden?",
         },
         WOODIE = 
         {
@@ -241,6 +249,7 @@ return {
             GHOST = "The worldtree watches over you, %s.",
             BEAVER = "I did not know %s possessed such power!",
 			BEAVERGHOST = "You went out in a blaze of glory, %s.",
+			FIRESTARTER = "Did he mistake \"Loge\" for \"log\"?",
         },
         WICKERBOTTOM = 
         {
@@ -249,6 +258,7 @@ return {
             MURDERER = "Murderer! Face me in battle!",
             REVIVER = "The wisdom of Wotan dwells within you, %s.",
             GHOST = "A heart! A heart! My base for a heart!",
+            FIRESTARTER = "I'll not question your wisdom, %s.",
         },
         WES = 
         {
@@ -257,6 +267,7 @@ return {
             MURDERER = "May we meet again in Valhalla!",
             REVIVER = "%s has Hoenir's blessing.",
             GHOST = "Meditate on Hoenir's blessings, %s. I'll find a heart.",
+            FIRESTARTER = "Don't ruin your fair makeup with ashes, %s.",
         },
         WEBBER = 
         {
@@ -265,6 +276,7 @@ return {
             MURDERER = "I've felled greater monsters than you, %s! Let us fight!",
             REVIVER = "%s's spirit burns brighter than Sol.",
             GHOST = "May you return with the swiftness of Sleipnir, many-legged one.",
+            FIRESTARTER = "His flames are as open as his heart.",
         },
         WATHGRITHR = 
         {
@@ -273,6 +285,7 @@ return {
             MURDERER = "There can be only one!",
             REVIVER = "%s, the perfect warrior!",
             GHOST = "You'll not away to Valhalla without me, %s. A heart!",
+            FIRESTARTER = "A fellow Viking, forged in flames!",
         },
 
 		LAVA_POND_ROCK = "Stone belched forth by the earth's fiery heart!",

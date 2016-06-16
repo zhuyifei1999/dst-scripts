@@ -100,16 +100,12 @@ function Crop:DoGrow(dt, nowither)
         local shouldgrow = nowither or not TheWorld.state.isnight
         if not shouldgrow then
             local x,y,z = self.inst.Transform:GetWorldPosition()
-            local ents = TheSim:FindEntities(x,0,z, DAYLIGHT_SEARCH_RANGE, {"daylight"})
-            local wither = true
-            for k,v in pairs(ents) do
-                if v.Light then
-                    local darkness_sq = v.Light:GetCalculatedRadius() * 0.7
-                    darkness_sq = darkness_sq * darkness_sq
-                    if v:GetDistanceSqToPoint(x,y,z) < darkness_sq then
-                        shouldgrow = true
-                        break
-                    end
+            local ents = TheSim:FindEntities(x,0,z, DAYLIGHT_SEARCH_RANGE, { "daylight", "lightsource" })
+            for i,v in ipairs(ents) do
+                local lightrad = v.Light:GetCalculatedRadius() * .7
+                if v:GetDistanceSqToPoint(x,y,z) < lightrad * lightrad then
+                    shouldgrow = true
+                    break
                 end
             end
         end

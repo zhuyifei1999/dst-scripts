@@ -2390,11 +2390,16 @@ local states =
             inst.components.locomotor:Clear()
             inst:ClearBufferedAction()
 
-            if IsNearDanger(inst) then
-                inst.sg.statemem.isdanger = true
+            local failstr =
+                (IsNearDanger(inst) and "ANNOUNCE_NODANGERGIFT") or
+                (inst.components.rider ~= nil and inst.components.rider:IsRiding() and "ANNOUNCE_NOMOUNTEDGIFT") or
+                nil
+
+            if failstr ~= nil then
+                inst.sg.statemem.isfailed = true
                 inst.sg:GoToState("idle")
                 if inst.components.talker ~= nil then
-                    inst.components.talker:Say(GetString(inst, "ANNOUNCE_NODANGERGIFT"))
+                    inst.components.talker:Say(GetString(inst, failstr))
                 end
                 return
             end
@@ -2450,7 +2455,7 @@ local states =
         },
 
         onexit = function(inst)
-            if inst.sg.statemem.isdanger then
+            if inst.sg.statemem.isfailed then
                 return
             elseif not inst.sg.statemem.isopeningwardrobe then
                 if inst.components.playercontroller ~= nil then

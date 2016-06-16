@@ -669,6 +669,7 @@ function Widget:SetHoverText(text, params)
 
             local hover_parent = self.text or self
             if hover_parent.GetString ~= nil and hover_parent:GetString() ~= "" then
+				--Note(Peter): This block is here because Text widgets don't receive OnGainFocus calls.
                 self.hover = hover_parent:AddChild(ImageButton("images/ui.xml", "blank.tex", "blank.tex", "blank.tex", nil, nil, {1,1}, {0,0}))
                 self.hover.image:ScaleToSize(hover_parent:GetRegionSize())
 
@@ -681,19 +682,19 @@ function Widget:SetHoverText(text, params)
                     if self.hovertext_bg then self.hovertext_bg:Hide() end
                 end
             else
-                self._OnGainFocus = self.OnGainFocus --save these fns so we can undo the hovertext on focus when clearing the text
-                self._OnLoseFocus = self.OnLoseFocus
+				self._OnGainFocus = self.OnGainFocus --save these fns so we can undo the hovertext on focus when clearing the text
+				self._OnLoseFocus = self.OnLoseFocus
 
-                self.OnGainFocus = function()
-                    self.hovertext:Show()
-                    if self.hovertext_bg then self.hovertext_bg:Show() end
-                    self._OnGainFocus( self )
-                end
-                self.OnLoseFocus = function()
-                    self.hovertext:Hide()
-                    if self.hovertext_bg then self.hovertext_bg:Hide() end
-                    self._OnLoseFocus( self )
-                end
+				self.OnGainFocus = function()
+					self.hovertext:Show()
+					if self.hovertext_bg then self.hovertext_bg:Show() end
+					self._OnGainFocus( self )
+				end
+				self.OnLoseFocus = function()
+					self.hovertext:Hide()
+					if self.hovertext_bg then self.hovertext_bg:Hide() end
+					self._OnLoseFocus( self )
+				end
             end
         else
             self.hovertext:SetString(text)
@@ -707,14 +708,19 @@ end
 
 
 function Widget:ClearHoverText()
-	if self.hover then
-		assert( false, "not currently supported" )
+	if self.hover ~= nil then
+		self.hover:Kill()
+		self.hover = nil
 	end
+	
+	if self.hovertext_bg ~= nil then
+		self.hovertext_bg:Kill()
+		self.hovertext_bg = nil
+	end
+	
 	if self.hovertext ~= nil then
 		self.hovertext:Kill()
-		self.hovertext_bg:Kill()
 		self.hovertext = nil
-		self.hovertext_bg = nil
 		
 		--unhook the hover text focus functions
 		if self._OnGainFocus then

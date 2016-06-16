@@ -232,8 +232,9 @@ function Skinner:SetSkinMode(skintype, default_build)
 
 	self.skintype = skintype
 
-	if self.skin_data == nil then
-		--fix for legacy saved games with already spawned players that don't have a skin_name set
+	if self.skin_data == nil or next(self.skin_data) == nil then
+		--if we don't have a table or the table is empty
+		--fix for legacy saved games with already spawned players that don't have a skin_name set, or gracefully handle bad data (likely due to no lobby screen in a demo build)
 		self:SetSkinName(self.inst.prefab.."_none")
 	end
 	

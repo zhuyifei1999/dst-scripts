@@ -843,10 +843,12 @@ function TradeScreen:StartAddSelectedItem(item, start_pos)
 		moving_item.item = item
 		table.insert(self.moving_items_list, moving_item)
 		
+		items_in_use = ItemsInUse( self.selected_items, self.moving_items_list ) --update the items in use now that we've started moving one
+		
 		item.target_index = empty_slot
 		local numCopiesInUse = CountItemsInTable(item.item, items_in_use)
 		item.count = self.popup:NumItemsLikeThis(item.item)-numCopiesInUse 
-		if item.count <= 1 then -- moving item hasn't been added to items_in_use yet
+		if item.count == 0 then
 			item.last_item_warning = true
 		end
 		
@@ -864,8 +866,7 @@ function TradeScreen:AddSelectedItem(item)
 		self.selected_items[item.target_index] = item
 		self.frames_single[item.target_index]:SetItem( item.type, item.item, 0) --Swap item
 		
-	
-		if item.count == 0 then --the count will be 0 after it is refreshed with this item removed. 
+		if item.count == 0 then
 			if self.warning_timeout <= 0 then
 				self.innkeeper:Say( STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.WARNING )
 				self.warning_timeout = 8 --don't warn more than once per 8 seconds.

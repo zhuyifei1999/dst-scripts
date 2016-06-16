@@ -52,22 +52,17 @@ end
 
 local function DieInDarkness(inst)
     local x,y,z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x,0,z, DAYLIGHT_SEARCH_RANGE, {"daylight"})
-    local wither = true
-    for k,v in pairs(ents) do
-        if v.Light then
-            local darkness_sq = v.Light:GetCalculatedRadius() * 0.7
-            darkness_sq = darkness_sq * darkness_sq
-            if inst:GetDistanceSqToInst(v) < darkness_sq then
-                wither = false
-                break
-            end
+    local ents = TheSim:FindEntities(x,0,z, DAYLIGHT_SEARCH_RANGE, { "daylight", "lightsource" })
+    for i,v in ipairs(ents) do
+        local lightrad = v.Light:GetCalculatedRadius() * .7
+        if v:GetDistanceSqToPoint(x,y,z) < lightrad * lightrad then
+            --found light
+            return
         end
     end
-    if wither then
-        local withered = SpawnPrefab("flower_withered").Transform:SetPosition(x,y,z)
-        inst:Remove()
-    end
+    --in darkness
+    inst:Remove()
+    SpawnPrefab("flower_withered").Transform:SetPosition(x,y,z)
 end
 
 local function OnIsCaveDay(inst, isday)

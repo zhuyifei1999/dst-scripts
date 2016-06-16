@@ -227,7 +227,9 @@ end
 
 local function OnBurnt(inst)
     inst._burnt:set(true)
-    RefreshDecor(inst, true)
+    if not TheNet:IsDedicated() then
+        RefreshDecor(inst, true)
+    end
 end
 
 local function onsave(inst, data)
@@ -285,10 +287,13 @@ local function plot(level)
         --inst.Transform:SetRotation(45)
 
         inst.level = level
-        inst.decor = {}
         inst._burnt = net_bool(inst.GUID, "farmplot._burnt", "burntdirty")
 
-        RefreshDecor(inst, false)
+        --Dedicated server does not need to spawn the local decor
+        if not TheNet:IsDedicated() then
+            inst.decor = {}
+            RefreshDecor(inst, false)
+        end
 
         inst.entity:SetPristine()
 

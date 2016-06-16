@@ -1524,7 +1524,8 @@ STRINGS=
         "\"Whoops.\"",
         "It's cracked down the middle.",
         "Someone left flowers.",
-        "It says \"Did I make it into the history book?\"",
+        "It's old and worn.",
+        "It says \"Did I make it into the history books?\"",
         "It says \"I'm taking a nap. In the dirt.\"",
         "It says \"These are just the pieces we could find.\"",
         "It says \"See you on the other side.\"",
@@ -2014,12 +2015,22 @@ STRINGS.UI =
     },
 
     BUGREPORTSCREEN = {
+        YES = "Yes",
+        NO = "No",
+        OK = "OK",
+
+        SUBMIT_TITLE = "Upload files?",
+        SUBMIT_TEXT = "Would you like to upload your logs and data files to Klei?",
+
+        SUBMIT_SUCCESS_TITLE = "Success",
+        SUBMIT_SUCCESS_TEXT = "Files successfully uploaded.",
+
+        SUBMIT_FAILURE_TITLE = "Error",
+        SUBMIT_FAILURE_TEXT = "There was a problem uploading your files.",
+
         DESCRIPTION_LABEL = "Please enter a description of your issue.",
     	SUBMIT = "Submit",
-        SUBMIT_SUCCESS_TITLE = "Success",
-        SUBMIT_SUCCESS_TEXT = "Bug report successfully submitted.",
-        SUBMIT_FAILURE_TITLE = "Error",
-        SUBMIT_FAILURE_TEXT = "There was a problem submitting your bug report.",
+        SUBMITTING_TEXT = "Submitting files, please wait",
     },
 
     EMAILSCREEN=
@@ -2630,6 +2641,10 @@ STRINGS.UI =
         VOTEHOVERFMT = "Vote to %s",
         VOTESQUELCHEDHOVER = "You are currently on timeout for failed votes.",
         VOTEACTIVEHOVER = "Vote In Progress",
+        VOTECANNOTSTART =
+        {
+            MINPLAYERS = "Not enough players to start a vote.",
+        },
         BAN = "Ban",
         USERACTIONS = "More Actions...",
         ADMIN = "Admin",

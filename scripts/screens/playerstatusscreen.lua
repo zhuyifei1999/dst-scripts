@@ -505,6 +505,10 @@ function PlayerStatusScreen:DoInit(ClientObjs)
                     playerListing.kick:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.VOTEACTIVEHOVER)
                 elseif playervoter:IsSquelched() then
                     playerListing.kick:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.VOTESQUELCHEDHOVER)
+                else
+                    --we know canstart is false, but we want the reason
+                    local canstart, reason = UserCommands.CanUserStartVote("kick", self.owner, playerListing.userid)
+                    playerListing.kick:SetHoverText(reason ~= nil and STRINGS.UI.PLAYERSTATUSSCREEN.VOTECANNOTSTART[reason] or "")
                 end
             end -- INVALID hides the button.
         end
@@ -687,7 +691,7 @@ function PlayerStatusScreen:DoInit(ClientObjs)
             --Check if we have any user actions other than kick or ban (they have their own buttons)
             playerListing.useractions:Hide()
             for i, v in ipairs(UserCommands.GetUserActions(self.owner, playerListing.userid)) do
-                if v.commandname ~= "kick" or v.commandname ~= "ban" then
+                if v.commandname ~= "kick" and v.commandname ~= "ban" then
                     playerListing.useractions:SetPosition(button_start + button_x_offset * 4, 3, 0)
                     playerListing.useractions:Show()
                     break

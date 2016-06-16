@@ -153,6 +153,7 @@ return {
 	ANNOUNCE_LOWRESEARCH = "That was barely even worth it, eh?",
 	ANNOUNCE_NODANGERAFK = "I better deal with these hosers first.",
 	ANNOUNCE_NODANGERGIFT = "Now's definitely the wrong time to be celebratin' Christmas.",
+	ANNOUNCE_NOMOUNTEDGIFT = "I rather open that with my feet on the ground.",
 	ANNOUNCE_NODAYSLEEP_CAVE = "I'm not feelin' too restful right now.",
 	ANNOUNCE_NOWARDROBEONFIRE = "That's okay. I just need a good flannel, anyway.",
 	ANNOUNCE_RESEARCH = "Learnin' keeps your mind sharp. Like an axe.",
@@ -183,6 +184,7 @@ return {
             MURDERER = "Enemy of the forest!",
             REVIVER = "%s, you're an alright sort.",
             GHOST = "Someone should rub a heart on %s.",
+            FIRESTARTER = "Knock off the fire starting there, bud.",
         },
 		WILSON = 
 		{
@@ -191,6 +193,7 @@ return {
 			MURDERER = "Enemy of the forest!",
 			REVIVER = "%s, you're an alright guy.",
 			GHOST = "Someone should rub a heart on %s.",
+			FIRESTARTER = "Was that blaze some sort of experiment, %s?",
 		},
 		WOLFGANG = 
 		{
@@ -199,6 +202,7 @@ return {
 			MURDERER = "You'll not strong arm me, %s!",
 			REVIVER = "%s has a big, squishy heart under those muscles.",
 			GHOST = "C'mon, bud, let's get you on your feet.",
+			FIRESTARTER = "Don't singe your moustache, %s.",
 		},
 		WAXWELL = 
 		{
@@ -207,6 +211,7 @@ return {
 			MURDERER = "Yer still a hoser! Now it's choppin' time!",
 			REVIVER = "You're growin' on me, %s. Like a fungus.",
 			GHOST = "Lucy says I have to help you, %s. Let's get goin'.",
+			FIRESTARTER = "You'll not want to be burning things, bud.",
 		},
 		WX78 = 
 		{
@@ -215,6 +220,7 @@ return {
 			MURDERER = "It's time to power DOWN, %s!",
 			REVIVER = "%s, you're an alright sort.",
 			GHOST = "Huh, I guess %s had a soul after all.",
+			FIRESTARTER = "You're gonna singe your chassis, %s.",
 		},
 		WILLOW = 
 		{
@@ -223,6 +229,7 @@ return {
 			MURDERER = "Here comes the wildfire!",
 			REVIVER = "You're on fire today, %s. No... actually.",
 			GHOST = "Just don't haunt anything while I look for a heart, %s.",
+			FIRESTARTER = "Business as usual, I see.",
 		},
 		WENDY = 
 		{
@@ -231,6 +238,7 @@ return {
 			MURDERER = "Hereeee's Woodie!",
 			REVIVER = "%s! You're doin' great, little buddy.",
 			GHOST = "With a heart you'll be tip-top in no time, %s.",
+			FIRESTARTER = "Should you be setting fires, little buddy?",
 		},
 		WOODIE = 
 		{
@@ -241,6 +249,7 @@ return {
 			GHOST = "Canadians gotta stick together, %s. Let's get a heart.",
 			BEAVER = "Been there, bud.",
 			BEAVERGHOST = "You're gonna have one monster headache after this, buddy.",
+			FIRESTARTER = "Those fires are kind of counterproductive now, eh?",
 		},
 		WICKERBOTTOM = 
 		{
@@ -249,6 +258,7 @@ return {
 			MURDERER = "This is gonna be a clear cut!",
 			REVIVER = "That's some good work ya did, Ma'am.",
 			GHOST = "You know where I can get a heart, %s?",
+			FIRESTARTER = "Careful around those open flames, Ma'am.",
 		},
 		WES = 
 		{
@@ -257,6 +267,7 @@ return {
 			MURDERER = "You're MIME now, %s!",
 			REVIVER = "%s, you're an alright guy.",
 			GHOST = "First we'll get you a heart, then we'll get you some bacon, eh %s?",
+			FIRESTARTER = "Keep those flames away from my trees!",
 		},
 		WEBBER = 
         {
@@ -265,6 +276,7 @@ return {
 			MURDERER = "'Luce gave me the go-ahead! You're in trouble now, %s!",
 			REVIVER = "You're an alright spider, kiddo.",
 			GHOST = "We better get you a heart, hey kiddo?",
+			FIRESTARTER = "I better not see anymore fires, little buddy.",
         },
         WATHGRITHR = 
         {
@@ -273,6 +285,7 @@ return {
 			MURDERER = "Your spear versus my axe, let's see whatcha got, eh!",
 			REVIVER = "I'm glad you're on our side, %s.",
 			GHOST = "With a heart you'll be feelin' like your mighty self in no time.",
+			FIRESTARTER = "What's with the fires lately, bud?",
         },
 
 		MULTIPLAYER_PORTAL = "That'd be the thing I fell through, eh.",

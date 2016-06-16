@@ -91,6 +91,7 @@ return {
 	ANNOUNCE_HOT = "I am miserably hot.",
 	ANNOUNCE_NODANGERAFK = "I can't let my guard down right now...",
 	ANNOUNCE_NODANGERGIFT = "There's no time for presents, death has finally come for me!",
+	ANNOUNCE_NOMOUNTEDGIFT = "Can someone help me down... I have a present to open.",
 	ANNOUNCE_NOWARDROBEONFIRE = "Sadly, it is ablaze.",
 	ANNOUNCE_NO_TRAP = "I was expecting great difficulty.",
 	ANNOUNCE_RESEARCH = "I now possess greater knowledge of this terrible world.",
@@ -190,6 +191,7 @@ return {
             MURDERER = "Murderer! Cutthroat!",
             REVIVER = "Abigail likes you, %s.",
             GHOST = "A heart could return %s to this world...",
+            FIRESTARTER = "Do you wish to see the world burn, too?",
         },
 		WILSON = 
 		{
@@ -198,6 +200,7 @@ return {
 			MURDERER = "You've gone mad, scientist.",
 			REVIVER = "Abigail likes you, %s.",
 			GHOST = "That was a bad experiment, %s...",
+			FIRESTARTER = "Douse your fires, %s.",
 		},
 		WOLFGANG = 
 		{
@@ -206,6 +209,7 @@ return {
 			MURDERER = "Your strength is meaningless if you can't catch me...",
 			REVIVER = "Don't be scared, %s. Abigail just wants to be friends.",
 			GHOST = "%s... Everyone leaves...",
+			FIRESTARTER = "Fire won't protect you, %s.",
 		},
 		WAXWELL = 
 		{
@@ -214,6 +218,7 @@ return {
 			MURDERER = "Cursed villain!",
 			REVIVER = "From Sisyphus to Lazarus, hey %s?",
 			GHOST = "Should I revive you, %s? Hmm...",
+			FIRESTARTER = "Are you trying to encourage a bad reputation?",
 		},
 		WX78 = 
 		{
@@ -222,6 +227,7 @@ return {
 			MURDERER = "None of us are above death, %s!",
 			REVIVER = "Abigail likes you, %s.",
 			GHOST = "Say \"Pretty Please\" and I might get you a heart, %s.",
+			FIRESTARTER = "I was starting to think you were all talk, %s.",
 		},
 		WILLOW = 
 		{
@@ -230,6 +236,7 @@ return {
 			MURDERER = "You've made a terrible error, %s.",
 			REVIVER = "Abigail likes you, %s. Do you like her?",
 			GHOST = "Say hi to Abigail while I get you a heart, %s.",
+			FIRESTARTER = "Let's watch the world burn together, %s.",
 		},
 		WENDY = 
 		{
@@ -238,6 +245,7 @@ return {
 			MURDERER = "Have we not seen enough death, %s?",
 			REVIVER = "I hope Abigail doesn't like you more than me...",
 			GHOST = "At least a heart could return one sister to this world...",
+			FIRESTARTER = "Fire probably isn't the method I would choose...",
 		},
 		WOODIE = 
 		{
@@ -248,6 +256,7 @@ return {
 			GHOST = "We'll get a heart, but are you sure you want to come back, %s?",
 			BEAVER = "He pinky-promised I'd get to ride on his shoulders next time. Such lies.",
 			BEAVERGHOST = "The curse haunts you even in death, %s? I'm so sorry.",
+			FIRESTARTER = "Fire setting does not seem in your best interest...",
 		},
 		WICKERBOTTOM = 
 		{
@@ -256,6 +265,7 @@ return {
 			MURDERER = "\"Murder\", she wrote.",
 			REVIVER = "Abigail likes you, Ms. %s.",
 			GHOST = "Everyone that leaves takes a piece of my heart...",
+			FIRESTARTER = "Ms. %s, wreathed in flames.",
 		},
 		WES = 
 		{
@@ -264,6 +274,7 @@ return {
 			MURDERER = "%s, this is the end... for you!",
 			REVIVER = "Abigail says she understands you, %s.",
 			GHOST = "If I get you a heart you won't leave us, right %s?",
+			FIRESTARTER = "There are other ways to express yourself, %s.",
 		},
 		WEBBER = 
 		{
@@ -272,6 +283,7 @@ return {
 			MURDERER = "Don't worry, %s. This won't hurt a bit.",
 			REVIVER = "You could never be a monster, %s.",
 			GHOST = "A heart could bring back my friend, %s...",
+			FIRESTARTER = "%s, let's find a game that doesn't involve... burning.",
 		},
 		WATHGRITHR = 
 		{
@@ -280,6 +292,7 @@ return {
 			MURDERER = "It'll all be over soon, %s.",
 			REVIVER = "It seems your heart is strong too, %s...",
 			GHOST = "Come back, %s... Take my heart...",
+			FIRESTARTER = "Do the Norse have a god of fire, %s?",
 		},
 
 		GLOMMER = "Well aren't you a happy little fuzzball. Die.",

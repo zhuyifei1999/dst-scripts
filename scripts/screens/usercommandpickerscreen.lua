@@ -48,16 +48,16 @@ local UserCommandPickerScreen = Class(Screen, function(self, owner, targetuserid
 
     --title
     self.title = self.proot:AddChild(Text(UIFONT, 34))
-    self.title:SetRegionSize(245, 38)
+    --self.title:SetRegionSize(226, 38)
     --self.title:SetColour(0,0,0,1)
     self.subtitle = self.proot:AddChild(Text(NEWFONT_OUTLINE_SMALL, 16))
     --self.subtitle:SetColour(0,0,0,1)
     if self.targetuserid ~= nil then
         local client = TheNet:GetClientTableForUser(self.targetuserid)
-        self.title:SetString(client.name)
+        self.title:SetTruncatedString(client ~= nil and client.name or "", 226, 50, true)
         self.subtitle:SetString(STRINGS.UI.COMMANDSSCREEN.USERSUBTITLE)
     else
-        self.title:SetString(STRINGS.UI.COMMANDSSCREEN.SERVERTITLE)
+        self.title:SetTruncatedString(STRINGS.UI.COMMANDSSCREEN.SERVERTITLE, 226, 50, true)
         self.subtitle:SetString(STRINGS.UI.COMMANDSSCREEN.SERVERSUBTITLE)
     end
 
@@ -78,7 +78,10 @@ local UserCommandPickerScreen = Class(Screen, function(self, owner, targetuserid
         if action.exectype == COMMAND_RESULT.VOTE or action.exectype == COMMAND_RESULT.DENY then
             text = string.format(STRINGS.UI.COMMANDSSCREEN.VOTEFMT, text)
         end
-        button:SetText(text)
+        button.text:SetTruncatedString(text, 350, 58, true)
+        button:SetText(button.text:GetString())
+        --Max out the region size for triggering the hover text
+        button.text:SetRegionSize(370, 48)
 
         button:SetOnClick(function() TheFrontEnd:PopScreen() self:RunAction(action.commandname) end)
 
@@ -181,6 +184,10 @@ function UserCommandPickerScreen:RefreshButtons()
                     button:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.VOTEACTIVEHOVER)
                 elseif playervoter:IsSquelched() then
                     button:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.VOTESQUELCHEDHOVER)
+                else
+                    --we know canstart is false, but we want the reason
+                    local canstart, reason = UserCommands.CanUserStartVote(action.commandname, self.owner, self.targetuserid)
+                    button:SetHoverText(reason ~= nil and STRINGS.UI.PLAYERSTATUSSCREEN.VOTECANNOTSTART[reason] or "wot")
                 end
                 button:Select()
             else
