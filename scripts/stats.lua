@@ -59,6 +59,26 @@ local function SendTrackingStats()
     end
 end
 
+local function PrefabListToMetrics(list)
+    local metrics = {}
+    for i,item in ipairs(list) do
+        if metrics[item.prefab] == nil then
+            metrics[item.prefab] = 0
+        end
+        if item.components.stackable ~= nil then
+            metrics[item.prefab] = metrics[item.prefab] + item.components.stackable:StackSize()
+        else
+            metrics[item.prefab] = metrics[item.prefab] + 1
+        end
+    end
+    -- format for storage
+    local metrics_kvp = {}
+    for name,count in pairs(metrics) do
+        table.insert(metrics_kvp, {prefab=name, count=count})
+    end
+    return metrics_kvp
+end
+
 local function BuildContextTable(player)
     local sendstats = {}
 
@@ -83,6 +103,12 @@ local function BuildContextTable(player)
     else
         sendstats.user = player
     end
+    -- GJANS TODO: Send the host wherever we can!
+    --if type(host) == "table" then
+        --sendstats.host = host.userid
+    --else
+        --sendstats.host = host
+    --end
 
     sendstats.user =
         (sendstats.user ~= nil and (sendstats.user.."@chester")) or
@@ -172,6 +198,9 @@ local function RecordSessionStartStats()
 	TheSim:SendProfileStats( jsonstats )
 end
 
+local function RecordeSessionStopStats()
+end
+
 local function RecordGameStartStats()
 	if not STATS_ENABLE then
 		return
@@ -238,13 +267,13 @@ local function InitStats()
 	RegisterOnAccountEventListener(statsEventListener)
 end
 
-local function PushMetricsEvent(data)
+local function PushMetricsEvent(event_id, player, values)
 
-    local sendstats = BuildContextTable(data.player)
-    sendstats.event = data.event
+    local sendstats = BuildContextTable(player)
+    sendstats.event = event_id
 
-    if data.values then
-        for k,v in pairs(data.values) do
+    if values then
+        for k,v in pairs(values) do
             sendstats[k] = v
         end
     end
@@ -365,4 +394,5 @@ return {
     ClearProfileStats = ClearProfileStats,
     RecordSessionStartStats = RecordSessionStartStats,
     RecordGameStartStats = RecordGameStartStats,
+    PrefabListToMetrics = PrefabListToMetrics,
 }

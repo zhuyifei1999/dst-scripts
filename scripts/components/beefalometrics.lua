@@ -2,18 +2,9 @@
 local Stats = require("stats")
 
 local function PushEvent(id, beefalo, player, values)
-
-    local event = {}
-    event.event = id
-    event.player = player
-    event.values = {}
-    event.values.beefalo_id = beefalo.components.uniqueid.id
-    if values then
-        for k,v in pairs(values) do
-            event.values[k] = v
-        end
-    end
-    Stats.PushMetricsEvent(event)
+    values = values or {}
+    values.beefalo_id = beefalo.components.uniqueid.id
+    Stats.PushMetricsEvent(id, player, values)
 end
 
 local function OnDomesticationDelta(inst, data)
@@ -66,6 +57,7 @@ end
 local function OnFeral(inst)
     local self = inst.components.beefalometrics
     PushEvent("beefalo.domestication.feral", inst, self.lastdomesticator, {
+        domesticated = inst.components.domesticatable:IsDomesticated(),
         tendency = inst.tendency,
     })
 end

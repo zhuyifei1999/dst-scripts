@@ -73,85 +73,110 @@ function WorldOverseer:RecordPlayerLeft(player)
 		end
 
 	end
+
+    -- GJANS TODO: Enable the join_world and leave_world metrics
+    --local stat = self:CalcIndividualPlayerStats(player)
+    ----print("PLAYER LEFT")
+    ----dumptable(stat)
+    --self:DumpIndividualPlayerStats(stat, "player.leave_world")
+    --self._seenplayers[player] = nil
+end
+
+function WorldOverseer:CalcIndividualPlayerStats(player)
+    local playerstats = self._seenplayers[player]
+
+    local toremove = false
+
+    local time = GetTime()
+    local secondsplayed = 0
+    if playerstats.endtime then
+        -- player left
+        secondsplayed = playerstats.endtime - playerstats.starttime + playerstats.secondsplayed
+        toremove = true
+    else
+        -- still there
+        secondsplayed = time - playerstats.starttime + playerstats.secondsplayed
+        playerstats.starttime = time
+        playerstats.secondsplayed = 0
+    end
+
+    -- Calculates the time for each individual skin, check if it's already contained on the list
+    -- if not, insert it, if so, append the time
+    local total_worn_items = {}
+    local totaltime = 0
+    for index, worn_item in pairs(playerstats.worn_items) do
+        if worn_item.endtime then
+            totaltime = worn_item.endtime - worn_item.starttime
+        else
+            totaltime = time - worn_item.starttime
+        end
+
+        if not table.containskey(total_worn_items, worn_item.item_name) then
+            total_worn_items[worn_item.item_name] = totaltime
+        else
+            total_worn_items[worn_item.item_name] = total_worn_items[worn_item.item_name] + totaltime
+        end
+    end
+
+    local total_crafted_items = {}
+    for index,crafted_item in pairs(playerstats.crafted_items) do
+        if not table.containskey(total_crafted_items, crafted_item) then
+            total_crafted_items[crafted_item] = 1
+        else
+            total_crafted_items[crafted_item] = total_crafted_items[crafted_item] + 1
+        end
+        playerstats.crafted_items[index] = nil
+    end
+
+    return {
+        player = player,
+        secondsplayed = secondsplayed,
+        worn_items = total_worn_items,
+        crafted_items = total_crafted_items
+    }, toremove
 end
 
 function WorldOverseer:CalcPlayerStats()
-	-- Gather player playtimes for this segment
-	local result = {}
-
-	local time = GetTime()
-	local secondsplayed = 0
-	local toRemove = {}
-	for player, playerstats in pairs(self._seenplayers) do
-		if playerstats.endtime then
-			-- player left
-			secondsplayed = playerstats.endtime - playerstats.starttime + playerstats.secondsplayed
-			table.insert(toRemove, player)
-		else
-			-- still there
-			secondsplayed = time - playerstats.starttime + playerstats.secondsplayed
-			playerstats.starttime = time
-			playerstats.secondsplayed = 0
-		end
-
-		-- Calculates the time for each individual skin, check if it's already contained on the list
-		-- if not, insert it, if so, append the time
-		local total_worn_items = {}
-		local totaltime = 0
-		for index, worn_item in pairs(playerstats.worn_items) do
-			if worn_item.endtime then
-				totaltime = worn_item.endtime - worn_item.starttime
-			else
-				totaltime = time - worn_item.starttime
-			end
-
-			if not table.containskey(total_worn_items, worn_item.item_name) then
-				total_worn_items[worn_item.item_name] = totaltime
-			else
-				total_worn_items[worn_item.item_name] = total_worn_items[worn_item.item_name] + totaltime
-			end
-		end
-
-		local total_crafted_items = {}
-		for index,crafted_item in pairs(playerstats.crafted_items) do
-			if not table.containskey(total_crafted_items, crafted_item) then
-				total_crafted_items[crafted_item] = 1
-			else
-				total_crafted_items[crafted_item] = total_crafted_items[crafted_item] + 1
-			end
-			playerstats.crafted_items[index] = nil
-		end
-
-		result[#result+1] = 
-		{
-			player = player, 
-			secondsplayed = secondsplayed, 
-			worn_items = total_worn_items, 
-			crafted_items = total_crafted_items
-		}
-	end
-	-- cleanup
-	for i,v in ipairs(toRemove) do
-		self._seenplayers[v] = nil
-	end
-	return result
+    -- Gather player playtimes for this segment
+    local results = {}
+    local toRemove = {}
+    for player, playerstats in pairs(self._seenplayers) do
+        local result, shouldremove = self:CalcIndividualPlayerStats(player)
+        results[#results+1] = result
+        if shouldremove then
+            table.insert(toRemove, player)
+        end
+    end
+    -- cleanup
+    for i,v in ipairs(toRemove) do
+        self._seenplayers[v] = nil
+    end
+    return results
 end
 
+function WorldOverseer:DumpIndividualPlayerStats(stat, event)
+    local sendstats = Stats.BuildContextTable(stat.player)
+    sendstats.event = event
+    sendstats.play_t = RoundBiasedUp(stat.secondsplayed,2)
+    sendstats.character = stat.player and stat.player.prefab or nil
+    sendstats.save_id = self.inst.meta.session_identifier
+    sendstats.worn_items = stat.worn_items
+    sendstats.crafted_items = stat.crafted_items
+    if stat.player ~= nil and stat.player.components.inventory ~= nil then
+        sendstats.current_inventory = Stats.PrefabListToMetrics(stat.player.components.inventory:ReferenceAllItems())
+    end
+
+    --print("DUMP PLAYER STATS")
+    --dumptable(sendstats)
+    local jsonstats = json.encode(sendstats)
+    TheSim:SendProfileStats(jsonstats)
+end
 
 function WorldOverseer:DumpPlayerStats()
-	local playerstats = self:CalcPlayerStats() 
-	for i,stat in ipairs(playerstats) do
-		local sendstats = Stats.BuildContextTable(stat.player)
-        sendstats.event = "heartbeat.player"
-		sendstats.play_t = RoundBiasedUp(stat.secondsplayed,2)
-        sendstats.character = stat.player and stat.player.prefab or nil
-        sendstats.save_id = self.inst.meta.session_identifier
-        sendstats.worn_items = stat.worn_items
-        sendstats.crafted_items = stat.crafted_items
-	
-		local jsonstats = json.encode(sendstats)
-		TheSim:SendProfileStats(jsonstats)
-	end
+    local playerstats = self:CalcPlayerStats() 
+    for i,stat in ipairs(playerstats) do
+        self:DumpIndividualPlayerStats(stat, "heartbeat.player")
+    end
 end
 
 function WorldOverseer:OnPlayerDeath(player, data)
@@ -228,6 +253,20 @@ function WorldOverseer:OnUnequipSkinnedItem(player, data)
 	end
 end
 
+function WorldOverseer:GetWorldRecipeItems()
+    if TheWorld == nil then return nil end
+    if Ents == nil or not next(Ents) then return nil end
+
+    local found = {}
+    for k,ent in pairs(Ents) do
+        if ent.prefab ~= nil and (AllRecipes[ent.prefab] ~= nil or ent:HasTag("preparedfood")) then
+            table.insert(found, ent)
+        end
+    end
+
+    return Stats.PrefabListToMetrics(found)
+end
+
 function WorldOverseer:DumpSessionStats()
 	local hosting = TheNet:GetUserID()
 	local sendstats = Stats.BuildContextTable(hosting)
@@ -260,6 +299,8 @@ function WorldOverseer:DumpSessionStats()
         sendstats.mpsession.clan_only = TheNet:GetServerClanOnly()
         --sendstats.clan_admins = TheNet:GetServerClanAdmins() -- not available in the handshake!
     end
+    sendstats.recipe_items = self:GetWorldRecipeItems()
+
     --print("SENDING SESSION STATS VVVVVVVVVVVV")
     --dumptable(sendstats)
     --print("SENDING SESSION STATS ^^^^^^^^^^^^")

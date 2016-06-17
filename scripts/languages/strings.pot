@@ -10568,7 +10568,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WEBBER.FIRESTARTER
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WEBBER.FIRESTARTER"
-msgid "We're gonna need to call a group meeting about fire safety."
+msgid "We need to have a group meeting about fire safety."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WEBBER.ATTACKER
@@ -10968,7 +10968,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WOODIE.FIRESTARTER
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WOODIE.FIRESTARTER"
-msgid "Did you just light a fire, %s?"
+msgid "Don't burn yourself out, %s."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WOODIE.BEAVERGHOST
@@ -11093,7 +11093,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WES.FIRESTARTER
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WES.FIRESTARTER"
-msgid "Don't tell me. You lit that fire, right %s?"
+msgid "Wait, don't tell me. You lit a fire."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WES.ATTACKER
@@ -12698,7 +12698,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WINTEROMETER.GENERIC
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WINTEROMETER.GENERIC"
-msgid "I am one heck of a scientist."
+msgid "Mercurial."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WINTEROMETER.BURNT
@@ -32178,7 +32178,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.WX78.FIRESTARTER
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.WX78.FIRESTARTER"
-msgid "Mx. %s is finally making good on their promises of mayhem."
+msgid "Mx. %s is finally making good on their promise of mayhem."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.WX78.ATTACKER
@@ -41088,7 +41088,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.WAXWELL.FIRESTARTER
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.WAXWELL.FIRESTARTER"
-msgid "Are you trying to encourage a bad reputation?"
+msgid "Are you trying to kindle a bad reputation?"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.WAXWELL.ATTACKER
@@ -59033,7 +59033,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WOODIE.ANNOUNCE_NOMOUNTEDGIFT
 msgctxt "STRINGS.CHARACTERS.WOODIE.ANNOUNCE_NOMOUNTEDGIFT"
-msgid "I rather open that with my feet on the ground."
+msgid "I'd rather open that with my feet on the ground."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOODIE.ANNOUNCE_HOT
@@ -70521,6 +70521,56 @@ msgctxt "STRINGS.UI.WORLDGEN.VERBS.12"
 msgid "Randomizing"
 msgstr ""
 
+#. STRINGS.UI.WORLDGEN.VERBS.13
+msgctxt "STRINGS.UI.WORLDGEN.VERBS.13"
+msgid "Redecorating"
+msgstr ""
+
+#. STRINGS.UI.WORLDGEN.VERBS.14
+msgctxt "STRINGS.UI.WORLDGEN.VERBS.14"
+msgid "Sprucing up"
+msgstr ""
+
+#. STRINGS.UI.WORLDGEN.VERBS.15
+msgctxt "STRINGS.UI.WORLDGEN.VERBS.15"
+msgid "Manifesting"
+msgstr ""
+
+#. STRINGS.UI.WORLDGEN.VERBS.16
+msgctxt "STRINGS.UI.WORLDGEN.VERBS.16"
+msgid "Summoning"
+msgstr ""
+
+#. STRINGS.UI.WORLDGEN.VERBS.17
+msgctxt "STRINGS.UI.WORLDGEN.VERBS.17"
+msgid "Compiling"
+msgstr ""
+
+#. STRINGS.UI.WORLDGEN.VERBS.18
+msgctxt "STRINGS.UI.WORLDGEN.VERBS.18"
+msgid "Building"
+msgstr ""
+
+#. STRINGS.UI.WORLDGEN.VERBS.19
+msgctxt "STRINGS.UI.WORLDGEN.VERBS.19"
+msgid "Spawning"
+msgstr ""
+
+#. STRINGS.UI.WORLDGEN.VERBS.20
+msgctxt "STRINGS.UI.WORLDGEN.VERBS.20"
+msgid "Rendering"
+msgstr ""
+
+#. STRINGS.UI.WORLDGEN.VERBS.21
+msgctxt "STRINGS.UI.WORLDGEN.VERBS.21"
+msgid "Enchanting"
+msgstr ""
+
+#. STRINGS.UI.WORLDGEN.VERBS.22
+msgctxt "STRINGS.UI.WORLDGEN.VERBS.22"
+msgid "Solving"
+msgstr ""
+
 #. STRINGS.UI.WORLDGEN.NOUNS.1
 msgctxt "STRINGS.UI.WORLDGEN.NOUNS.1"
 msgid "trees..."
@@ -70558,56 +70608,141 @@ msgstr ""
 
 #. STRINGS.UI.WORLDGEN.NOUNS.8
 msgctxt "STRINGS.UI.WORLDGEN.NOUNS.8"
-msgid "buckets and buckets of loot..."
+msgid "Maxwell's ties..."
 msgstr ""
 
 #. STRINGS.UI.WORLDGEN.NOUNS.9
 msgctxt "STRINGS.UI.WORLDGEN.NOUNS.9"
-msgid "game theory..."
+msgid "Wendy's pigtails..."
 msgstr ""
 
 #. STRINGS.UI.WORLDGEN.NOUNS.10
 msgctxt "STRINGS.UI.WORLDGEN.NOUNS.10"
-msgid "poignant tragedy..."
+msgid "Webber's fur..."
 msgstr ""
 
 #. STRINGS.UI.WORLDGEN.NOUNS.11
 msgctxt "STRINGS.UI.WORLDGEN.NOUNS.11"
-msgid "a hint of shadow..."
+msgid "Wolfgang's moustache..."
 msgstr ""
 
 #. STRINGS.UI.WORLDGEN.NOUNS.12
 msgctxt "STRINGS.UI.WORLDGEN.NOUNS.12"
-msgid "food..."
+msgid "Wickerbottom's glasses..."
 msgstr ""
 
 #. STRINGS.UI.WORLDGEN.NOUNS.13
 msgctxt "STRINGS.UI.WORLDGEN.NOUNS.13"
-msgid "lovely roses..."
+msgid "Wigfrid's umlauts..."
 msgstr ""
 
 #. STRINGS.UI.WORLDGEN.NOUNS.14
 msgctxt "STRINGS.UI.WORLDGEN.NOUNS.14"
-msgid "gems..."
+msgid "Willow's teddy bear..."
 msgstr ""
 
 #. STRINGS.UI.WORLDGEN.NOUNS.15
 msgctxt "STRINGS.UI.WORLDGEN.NOUNS.15"
-msgid "unspeakable things..."
+msgid "Woodie's plaid..."
 msgstr ""
 
 #. STRINGS.UI.WORLDGEN.NOUNS.16
 msgctxt "STRINGS.UI.WORLDGEN.NOUNS.16"
-msgid "primal instincts..."
+msgid "WX-78's gears..."
 msgstr ""
 
 #. STRINGS.UI.WORLDGEN.NOUNS.17
 msgctxt "STRINGS.UI.WORLDGEN.NOUNS.17"
-msgid "terrible darkness..."
+msgid "a monarch's sorrow..."
 msgstr ""
 
 #. STRINGS.UI.WORLDGEN.NOUNS.18
 msgctxt "STRINGS.UI.WORLDGEN.NOUNS.18"
+msgid "an inescapable nostalgia..."
+msgstr ""
+
+#. STRINGS.UI.WORLDGEN.NOUNS.19
+msgctxt "STRINGS.UI.WORLDGEN.NOUNS.19"
+msgid "gold and marble..."
+msgstr ""
+
+#. STRINGS.UI.WORLDGEN.NOUNS.20
+msgctxt "STRINGS.UI.WORLDGEN.NOUNS.20"
+msgid "thorns..."
+msgstr ""
+
+#. STRINGS.UI.WORLDGEN.NOUNS.21
+msgctxt "STRINGS.UI.WORLDGEN.NOUNS.21"
+msgid "unbreakable bonds..."
+msgstr ""
+
+#. STRINGS.UI.WORLDGEN.NOUNS.22
+msgctxt "STRINGS.UI.WORLDGEN.NOUNS.22"
+msgid "intense friendship..."
+msgstr ""
+
+#. STRINGS.UI.WORLDGEN.NOUNS.23
+msgctxt "STRINGS.UI.WORLDGEN.NOUNS.23"
+msgid "common goals..."
+msgstr ""
+
+#. STRINGS.UI.WORLDGEN.NOUNS.24
+msgctxt "STRINGS.UI.WORLDGEN.NOUNS.24"
+msgid "a comforting togetherness..."
+msgstr ""
+
+#. STRINGS.UI.WORLDGEN.NOUNS.25
+msgctxt "STRINGS.UI.WORLDGEN.NOUNS.25"
+msgid "buckets and buckets of loot..."
+msgstr ""
+
+#. STRINGS.UI.WORLDGEN.NOUNS.26
+msgctxt "STRINGS.UI.WORLDGEN.NOUNS.26"
+msgid "game theory..."
+msgstr ""
+
+#. STRINGS.UI.WORLDGEN.NOUNS.27
+msgctxt "STRINGS.UI.WORLDGEN.NOUNS.27"
+msgid "poignant tragedy..."
+msgstr ""
+
+#. STRINGS.UI.WORLDGEN.NOUNS.28
+msgctxt "STRINGS.UI.WORLDGEN.NOUNS.28"
+msgid "a hint of shadow..."
+msgstr ""
+
+#. STRINGS.UI.WORLDGEN.NOUNS.29
+msgctxt "STRINGS.UI.WORLDGEN.NOUNS.29"
+msgid "food..."
+msgstr ""
+
+#. STRINGS.UI.WORLDGEN.NOUNS.30
+msgctxt "STRINGS.UI.WORLDGEN.NOUNS.30"
+msgid "lovely roses..."
+msgstr ""
+
+#. STRINGS.UI.WORLDGEN.NOUNS.31
+msgctxt "STRINGS.UI.WORLDGEN.NOUNS.31"
+msgid "gems..."
+msgstr ""
+
+#. STRINGS.UI.WORLDGEN.NOUNS.32
+msgctxt "STRINGS.UI.WORLDGEN.NOUNS.32"
+msgid "unspeakable things..."
+msgstr ""
+
+#. STRINGS.UI.WORLDGEN.NOUNS.33
+msgctxt "STRINGS.UI.WORLDGEN.NOUNS.33"
+msgid "primal instincts..."
+msgstr ""
+
+#. STRINGS.UI.WORLDGEN.NOUNS.34
+msgctxt "STRINGS.UI.WORLDGEN.NOUNS.34"
+msgid "terrible darkness..."
+msgstr ""
+
+#. STRINGS.UI.WORLDGEN.NOUNS.35
+msgctxt "STRINGS.UI.WORLDGEN.NOUNS.35"
 msgid "a touch of magic..."
 msgstr ""
 
@@ -72393,7 +72528,7 @@ msgstr ""
 
 #. STRINGS.UI.BUILTINCOMMANDS.HELP.OVERVIEW
 msgctxt "STRINGS.UI.BUILTINCOMMANDS.HELP.OVERVIEW"
-msgid "Type /help <command> for more info on a command."
+msgid "Type '/help commandname' for more info on a command."
 msgstr ""
 
 #. STRINGS.UI.BUILTINCOMMANDS.HELP.AVAILABLE
@@ -72403,7 +72538,7 @@ msgstr ""
 
 #. STRINGS.UI.BUILTINCOMMANDS.HELP.NOTFOUND
 msgctxt "STRINGS.UI.BUILTINCOMMANDS.HELP.NOTFOUND"
-msgid "Couldn't find a command called %s"
+msgid "Couldn't find a command called '%s'"
 msgstr ""
 
 #. STRINGS.UI.BUILTINCOMMANDS.HELP.DESC
@@ -72428,7 +72563,17 @@ msgstr ""
 
 #. STRINGS.UI.BUILTINCOMMANDS.BAN.DESC
 msgctxt "STRINGS.UI.BUILTINCOMMANDS.BAN.DESC"
-msgid "Boot someone off the server... permanently!"
+msgid "Boot someone off the server. 'seconds' param makes the ban temporary."
+msgstr ""
+
+#. STRINGS.UI.BUILTINCOMMANDS.EMOTES.PRETTYNAMEFMT
+msgctxt "STRINGS.UI.BUILTINCOMMANDS.EMOTES.PRETTYNAMEFMT"
+msgid "'%s' emote"
+msgstr ""
+
+#. STRINGS.UI.BUILTINCOMMANDS.EMOTES.DESC
+msgctxt "STRINGS.UI.BUILTINCOMMANDS.EMOTES.DESC"
+msgid "Perform an emote!"
 msgstr ""
 
 #. STRINGS.UI.BUILTINCOMMANDS.REGENERATE.PRETTYNAME

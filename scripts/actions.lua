@@ -923,6 +923,9 @@ end
 
 ACTIONS.LIGHT.fn = function(act)
     if act.invobject ~= nil and act.invobject.components.lighter ~= nil then
+        if act.doer ~= nil then
+            act.doer:PushEvent("onstartedfire", { target = act.target })
+        end
         act.invobject.components.lighter:Light(act.target)
         return true
     end

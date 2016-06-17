@@ -153,7 +153,7 @@ return {
 	ANNOUNCE_LOWRESEARCH = "That was barely even worth it, eh?",
 	ANNOUNCE_NODANGERAFK = "I better deal with these hosers first.",
 	ANNOUNCE_NODANGERGIFT = "Now's definitely the wrong time to be celebratin' Christmas.",
-	ANNOUNCE_NOMOUNTEDGIFT = "I rather open that with my feet on the ground.",
+	ANNOUNCE_NOMOUNTEDGIFT = "I'd rather open that with my feet on the ground.",
 	ANNOUNCE_NODAYSLEEP_CAVE = "I'm not feelin' too restful right now.",
 	ANNOUNCE_NOWARDROBEONFIRE = "That's okay. I just need a good flannel, anyway.",
 	ANNOUNCE_RESEARCH = "Learnin' keeps your mind sharp. Like an axe.",

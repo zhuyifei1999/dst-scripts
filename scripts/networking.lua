@@ -66,14 +66,30 @@ function Networking_BanAnnouncement(name, colour)
     Networking_Announcement(string.format(STRINGS.UI.NOTIFICATION.BANNEDFROMGAME, Networking_Announcement_GetDisplayName(name)), colour, "banned_from_game")
 end
 
+-- TODO V2C: Call these appropriately from C
+-- these should only run on the server. Could also call SendCommandMetricsEvent directly if you prefer.
+function Networking_KickMetricsEvent(caller, target) -- source) -- source is where the command was issued, i.e. console, slashcommand, vote
+    UserCommands.SendCommandMetricsEvent("kick", target, caller)
+end
+function Networking_BanMetricsEvent(caller, target) -- source) -- source is where the command was issued, i.e. console, slashcommand, vote
+    UserCommands.SendCommandMetricsEvent("ban", target, caller)
+end
+function Networking_RollbackMetricsEvent(caller) -- source) -- source is where the command was issued, i.e. console, slashcommand, vote
+    UserCommands.SendCommandMetricsEvent("rollback", nil, caller)
+end
+function Networking_RegenerateMetricsEvent(caller) -- source) -- source is where the command was issued, i.e. console, slashcommand, vote
+    UserCommands.SendCommandMetricsEvent("regenerate", nil, caller)
+end
+
 function Networking_VoteAnnouncement(commandid, targetname, passed)
     local command = UserCommands.GetCommandFromHash(commandid)
     if command ~= nil and command.vote then
-        local votename = string.format(command.votenamefmt or STRINGS.UI.NOTIFICATION.DEFAULTVOTENAMEFMT, targetname:len() > 0 and Networking_Announcement_GetDisplayName(targetname) or "")
-        local msgfmt = passed and
-            (command.votepassedfmt or STRINGS.UI.NOTIFICATION.DEFAULTVOTEPASSEDFMT) or
-            (command.votefailedfmt or STRINGS.UI.NOTIFICATION.DEFAULTVOTEFAILEDFMT)
-        Networking_Announcement(string.format(msgfmt, votename), nil, "vote")
+        local fmt = ResolveCommandStringProperty(command, "votenamefmt", STRINGS.UI.NOTIFICATION.DEFAULTVOTENAMEFMT)
+        local votename = string.format(fmt, targetname:len() > 0 and Networking_Announcement_GetDisplayName(targetname) or "")
+        fmt = passed and
+            ResolveCommandStringProperty(command, "votepassedfmt", STRINGS.UI.NOTIFICATION.DEFAULTVOTEPASSEDFMT) or
+            ResolveCommandStringProperty(command, "votefailedfmt", STRINGS.UI.NOTIFICATION.DEFAULTVOTEFAILEDFMT)
+        Networking_Announcement(string.format(fmt, votename), nil, "vote")
         return command.name
     end
 end

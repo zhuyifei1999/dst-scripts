@@ -23,6 +23,7 @@ local function GetStatus(inst, viewer)
         or (inst.hasRevivedPlayer and "REVIVER")
         or (inst.hasKilledPlayer and "MURDERER")
         or (inst.hasAttackedPlayer and "ATTACKER")
+        or (inst.hasStartedFire and "FIRESTARTER")
         or nil
 end
 
@@ -299,6 +300,17 @@ local function OnWork(inst, data)
 end
 
 --------------------------------------------------------------------------
+--Temperamental events
+--------------------------------------------------------------------------
+
+local function OnStartedFire(inst, data)
+    if data ~= nil and data.target ~= nil and data.target:HasTag("structure") and not data.target:HasTag("wildfireprotected") then
+        inst.hasStartedFire = true
+        inst.hasAttackedPlayer = nil
+    end
+end
+
+--------------------------------------------------------------------------
 --PVP events
 --------------------------------------------------------------------------
 
@@ -320,7 +332,7 @@ end
 local function OnKilled(inst, data)
     if data ~= nil and data.victim ~= nil and data.victim:HasTag("player") then
         inst.hasKilledPlayer = true
-        inst.hasRevivedPlayer = false
+        inst.hasRevivedPlayer = nil
     end
 end
 
@@ -349,6 +361,9 @@ local function RegisterMasterEventListeners(inst)
     inst:ListenForEvent("actionfailed", OnActionFailed)
     inst:ListenForEvent("wonteatfood", OnWontEatFood)
     inst:ListenForEvent("working", OnWork)
+
+    --Temperamental events
+    inst:ListenForEvent("onstartedfire", OnStartedFire)
 
     --PVP events
     inst:ListenForEvent("onattackother", OnAttackOther)
@@ -569,12 +584,14 @@ local function OnSetOwner(inst)
             inst:AddComponent("playeractionpicker")
             inst:AddComponent("playercontroller")
             inst:AddComponent("playervoter")
+            inst:AddComponent("playermetrics")
             inst.components.playeractionpicker:PushActionFilter( CheckGhostActionFilter )
         end
     elseif inst.components.playercontroller ~= nil then
         inst:RemoveComponent("playeractionpicker")
         inst:RemoveComponent("playercontroller")
         inst:RemoveComponent("playervoter")
+        inst:RemoveComponent("playermetrics")
         DisableMovementPrediction(inst)
     end
 

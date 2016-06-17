@@ -10,6 +10,7 @@ local Placer = Class(function(self, inst)
     self.selected_pos = nil
     self.oncanbuild = nil
     self.oncannotbuild = nil
+    self.linked = {}
 end)
 
 function Placer:SetBuilder(builder, recipe, invobject)
@@ -17,6 +18,10 @@ function Placer:SetBuilder(builder, recipe, invobject)
     self.recipe = recipe
     self.invobject = invobject
     self.inst:StartUpdatingComponent(self)
+end
+
+function Placer:LinkEntity(ent)
+    table.insert(self.linked, ent)
 end
 
 function Placer:GetDeployAction()
@@ -56,7 +61,11 @@ function Placer:OnUpdate(dt)
     end
 
     if self.fixedcameraoffset ~= nil then
-        self.inst.Transform:SetRotation(self.fixedcameraoffset - TheCamera:GetHeading()) -- rotate against the camera
+        local rot = self.fixedcameraoffset - TheCamera:GetHeading() -- rotate against the camera
+        self.inst.Transform:SetRotation(rot)
+        for i, v in ipairs(self.linked) do
+            v.Transform:SetRotation(rot)
+        end
     end
 
     self.can_build = self.testfn == nil or self.testfn(self.inst:GetPosition())
@@ -68,11 +77,17 @@ function Placer:OnUpdate(dt)
             self.oncanbuild(self.inst)
         else
             self.inst.AnimState:SetAddColour(.25, .75, .25, 0)
+            for i, v in ipairs(self.linked) do
+                v.AnimState:SetAddColour(.25, .75, .25, 0)
+            end
         end
     elseif self.oncannotbuild ~= nil then
         self.oncannotbuild(self.inst)
     else
         self.inst.AnimState:SetAddColour(.75, .25, .25, 0)
+        for i, v in ipairs(self.linked) do
+            v.AnimState:SetAddColour(.75, .25, .25, 0)
+        end
     end
 end
 
