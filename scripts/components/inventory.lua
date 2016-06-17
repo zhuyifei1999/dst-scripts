@@ -1117,6 +1117,27 @@ function Inventory:BurnNonpotatableInContainer(container)
     end
 end
 
+function Inventory:ReferenceAllItems()
+    local items = {}
+    for i=1,self.maxslots do
+        if self.itemslots[i] ~= nil then
+            table.insert(items, self.itemslots[i])
+        end
+    end
+    for k,v in pairs(self.equipslots) do
+        if v ~= nil then
+            table.insert(items, v)
+        end
+    end
+    local container = self:GetOverflowContainer()
+    if container ~= nil then
+        for i,item in ipairs(container:ReferenceAllItems()) do
+            table.insert(items, item)
+        end
+    end
+    return items
+end
+
 function Inventory:GetDebugString()
     local s = ""
     local count = 0
@@ -1358,7 +1379,7 @@ function Inventory:SwapActiveItemWithSlot(slot)
 end
 
 function Inventory:CanAccessItem(item)
-    if item == nil or item.components.inventoryitem == nil then
+    if not self.isvisible or item == nil or item.components.inventoryitem == nil then
         return false
     end
     local owner = item.components.inventoryitem.owner

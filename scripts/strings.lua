@@ -1977,6 +1977,16 @@ STRINGS.UI =
             "Crafting",
             "Imbuing",
             "Randomizing",
+            "Redecorating",
+            "Sprucing up",
+            "Manifesting",
+            "Summoning",
+            "Compiling",
+            "Building",
+            "Spawning",
+            "Rendering",
+            "Enchanting",
+            "Solving",
         },
         NOUNS=
         {
@@ -1987,6 +1997,23 @@ STRINGS.UI =
             "monsters...",
             "a keen sense of despair...",
             "Wilson's beard...",
+            "Maxwell's ties...",
+            "Wendy's pigtails...",
+            "Webber's fur...",
+            "Wolfgang's moustache...",
+            "Wickerbottom's glasses...",
+            "Wigfrid's umlauts...",
+            "Willow's teddy bear...",
+            "Woodie's plaid...",
+            "WX-78's gears...",
+            "a monarch's sorrow...",
+            "an inescapable nostalgia...",
+            "gold and marble...",
+            "thorns...",
+            "unbreakable bonds...",
+            "intense friendship...",
+            "common goals...",
+            "a comforting togetherness...",
             "buckets and buckets of loot...",
             "game theory...",
             "poignant tragedy...",
@@ -2717,12 +2744,16 @@ STRINGS.UI =
 
     BUILTINCOMMANDS =
     {
+        EMOTES = {
+            PRETTYNAMEFMT = "'%s' emote",
+            DESC = "Perform an emote!",
+        },
         HELP = {
             PRETTYNAME = "Command Help",
             DESC = "Get more info on commands.",
-            OVERVIEW = "Type /help <command> for more info on a command.",
+            OVERVIEW = "Type '/help commandname' for more info on a command.",
             AVAILABLE = "Available commands:",
-            NOTFOUND = "Couldn't find a command called %s",
+            NOTFOUND = "Couldn't find a command called '%s'",
         },
         BUG = {
             PRETTYNAME = "Report Bug",
@@ -2740,7 +2771,7 @@ STRINGS.UI =
         },
         BAN = {
             PRETTYNAME = "Ban",
-            DESC = "Boot someone off the server... permanently!",
+            DESC = "Boot someone off the server. 'seconds' param makes the ban temporary.",
         },
         STOPVOTE = {
             PRETTYNAME = "Stop Vote",

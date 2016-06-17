@@ -265,7 +265,8 @@ function VoteDialog:UpdateOptions(option_data, norefresh)
         return
     end
 
-    self.title:SetMultilineTruncatedString(string.format(option_data.titlefmt or "", option_data.targetclient ~= nil and self:GetDisplayName(option_data.targetclient) or ""), 2, 260, 55, true)
+    local titlefmt = ResolveCommandStringProperty(option_data, "votetitlefmt", "")
+    self.title:SetMultilineTruncatedString(string.format(titlefmt, option_data.targetclient ~= nil and self:GetDisplayName(option_data.targetclient) or ""), 2, 260, 55, true)
 
     local options = option_data.options
     local old_num_options = self.num_options

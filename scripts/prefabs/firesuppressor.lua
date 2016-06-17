@@ -396,6 +396,35 @@ local function glow_fn()
     return inst
 end
 
+local PLACER_SCALE = 1.55
+
+local function placer_postinit_fn(inst)
+    --Show the flingo placer on top of the flingo range ground placer
+
+    local placer2 = CreateEntity()
+
+    --[[Non-networked entity]]
+
+    placer2.entity:AddTransform()
+    placer2.entity:AddAnimState()
+
+    placer2:AddTag("NOCLICK")
+    placer2:AddTag("placer")
+
+    local s = 1 / PLACER_SCALE
+    placer2.Transform:SetScale(s, s, s)
+
+    placer2.AnimState:SetBank("firefighter")
+    placer2.AnimState:SetBuild("firefighter")
+    placer2.AnimState:PlayAnimation("idle_off")
+    placer2.AnimState:SetLightOverride(1)
+
+    placer2.persists = false
+    placer2.entity:SetParent(inst.entity)
+
+    inst.components.placer:LinkEntity(placer2)
+end
+
 return Prefab("firesuppressor", fn, assets, prefabs),
     Prefab("firesuppressor_glow", glow_fn, glow_assets),
-    MakePlacer("firesuppressor_placer", "firefighter_placement", "firefighter_placement", "idle", true, nil, nil, 1.55)
+    MakePlacer("firesuppressor_placer", "firefighter_placement", "firefighter_placement", "idle", true, nil, nil, PLACER_SCALE, nil, nil, placer_postinit_fn)

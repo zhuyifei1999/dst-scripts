@@ -926,12 +926,10 @@ function MultiplayerMainScreen:OnGetMOTDImageQueryComplete( is_successful )
 	end	
 end
 
-local function push_motd_event( _event, _url, _image_version )
-	local event = {}
-	event.event = _event
-	event.values = {}
-	event.values.url = _url .. "#" .. tostring(_image_version)
-	Stats.PushMetricsEvent(event)
+local function push_motd_event( event, url, image_version )
+	local values = {}
+	values.url = url .. "#" .. tostring(image_version)
+	Stats.PushMetricsEvent(event, TheNet:GetUserID(), values)
 end
 
 function MultiplayerMainScreen:SetMOTD(str, cache)

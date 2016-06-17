@@ -218,7 +218,7 @@ return {
 			MURDERER = "Cursed villain!",
 			REVIVER = "From Sisyphus to Lazarus, hey %s?",
 			GHOST = "Should I revive you, %s? Hmm...",
-			FIRESTARTER = "Are you trying to encourage a bad reputation?",
+			FIRESTARTER = "Are you trying to kindle a bad reputation?",
 		},
 		WX78 = 
 		{

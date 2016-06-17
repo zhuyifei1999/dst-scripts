@@ -63,8 +63,8 @@ local EMOTES =
 for k, v in pairs(EMOTES) do
     AddUserCommand(k, {
         aliases = v.aliases,
-        prettyname = string.format("'%s' emote", k),
-        desc = "Perform an emote!",
+        prettyname = function(command) return string.format(STRINGS.UI.BUILTINCOMMANDS.EMOTES.PRETTYNAMEFMT, command.name) end,
+        desc = function() return STRINGS.UI.BUILTINCOMMANDS.EMOTES.DESC end,
         permission = COMMAND_PERMISSION.USER,
         params = {},
         slash = true,
@@ -79,4 +79,3 @@ for k, v in pairs(EMOTES) do
         end
     })
 end
-

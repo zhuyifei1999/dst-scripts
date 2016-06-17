@@ -1329,13 +1329,6 @@ local function makefn(build, stage, data)
         inst:WatchWorldState("season", ValidateLeaves)
 
         inst.leaf_state = "normal"
-        OnSeasonStart(inst) -- for start of game this will be wrong, but it might be needed for c_spawns etc. to avoid flicker
-        -- The next line handles the start of game case.
-
-        -- Use a DoTaskInTime 0 because this will happen after everything else updates 
-        -- and the worldstate is not guaranteed to be correct until then.
-        -- This is the Vito-approved method (tm) of dealing with this.
-        inst:DoTaskInTime(0, OnSeasonStart)
 
         inst.StartMonster = StartMonster
         inst.StopMonster = StopMonster
@@ -1358,9 +1351,15 @@ local function makefn(build, stage, data)
             inst.components.workable:SetWorkLeft(1)
             inst.AnimState:PlayAnimation(inst.anims.stump)
         else
+            --When POPULATING, season won't be valid yet at this point,
+            --but we want this immediate for all later spawns.
+            OnSeasonStart(inst)
             inst.AnimState:SetTime(math.random() * 2)
             if data == "burnt" then
                 OnBurnt(inst, true)
+            elseif POPULATING then
+                --Redo this after season is valid
+                inst:DoTaskInTime(0, OnSeasonStart)
             end
         end
 

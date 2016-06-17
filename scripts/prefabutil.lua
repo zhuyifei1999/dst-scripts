@@ -1,4 +1,4 @@
-function MakePlacer(name, bank, build, anim, onground, snap, metersnap, scale, fixedcameraoffset, facing)
+function MakePlacer(name, bank, build, anim, onground, snap, metersnap, scale, fixedcameraoffset, facing, postinit_fn)
 
     local function fn()
         local inst = CreateEntity()
@@ -35,6 +35,10 @@ function MakePlacer(name, bank, build, anim, onground, snap, metersnap, scale, f
 
         if onground then
             inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
+        end
+
+        if postinit_fn ~= nil then
+            postinit_fn(inst)
         end
 
         return inst

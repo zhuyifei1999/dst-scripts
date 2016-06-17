@@ -343,8 +343,27 @@ local function plot(level)
     end
 end
 
+local function placerdecor(level)
+    return function(inst)
+        --Show decor on top of the ground placer
+        for i, item_info in ipairs(decor_defs[level]) do
+            for item_name, item_offsets in pairs(item_info) do
+                for j, offset in ipairs(item_offsets) do
+                    local item_inst = SpawnPrefab(item_name)
+                    item_inst:AddTag("placer")
+                    item_inst:AddTag("NOCLICK") --not all decor pieces come with NOCLICK by default
+                    item_inst.AnimState:SetLightOverride(1)
+                    item_inst.entity:SetParent(inst.entity)
+                    item_inst.Transform:SetPosition(unpack(offset))
+                    inst.components.placer:LinkEntity(item_inst)
+                end
+            end
+        end
+    end
+end
+
 return --Prefab("farmplot",  plot(1), assets, prefabs),
     Prefab("slow_farmplot", plot(2), assets, prefabs),
     Prefab("fast_farmplot", plot(3), assets, prefabs),
-    MakePlacer("slow_farmplot_placer", "farmplot", "farmplot", "full", true, nil, nil, nil, 90),
-    MakePlacer("fast_farmplot_placer", "farmplot", "farmplot", "full", true, nil, nil, nil, 90)
+    MakePlacer("slow_farmplot_placer", "farmplot", "farmplot", "full", true, nil, nil, nil, 90, nil, placerdecor(2)),
+    MakePlacer("fast_farmplot_placer", "farmplot", "farmplot", "full", true, nil, nil, nil, 90, nil, placerdecor(3))

@@ -277,7 +277,7 @@ return {
 			GHOST = "Does \"universal\" coverage include the void, %s?",
 			BEAVER = "%s's gone on a wood chucking rampage!",
 			BEAVERGHOST = "Will you bea-very mad if I don't revive you, %s?",
-			FIRESTARTER = "Did you just light a fire, %s?",
+			FIRESTARTER = "Don't burn yourself out, %s.",
 		},
 		WICKERBOTTOM = 
 		{
@@ -295,7 +295,7 @@ return {
 			MURDERER = "Mime this!",
 			REVIVER = "%s thinks outside the invisible box.",
 			GHOST = "How do you say \"I'll conduct a revival device\" in mime?",
-			FIRESTARTER = "Don't tell me. You lit that fire, right %s?",
+			FIRESTARTER = "Wait, don't tell me. You lit a fire.",
 		},
 		WEBBER = 
 		{
@@ -304,7 +304,7 @@ return {
 			MURDERER = "Murderer! I'll squash you, %s!",
 			REVIVER = "%s is playing well with others.",
 			GHOST = "%s is really buggin' me for a heart.",
-			FIRESTARTER = "We're gonna need to call a group meeting about fire safety.",
+			FIRESTARTER = "We need to have a group meeting about fire safety.",
 		},
 		WATHGRITHR = 
 		{
@@ -1537,7 +1537,7 @@ return {
 		WINTERHAT = "It'll be good for when winter comes.",
 		WINTEROMETER = 
 		{
-			GENERIC = "I am one heck of a scientist.",
+			GENERIC = "Mercurial.",
 			BURNT = "Its measuring days are over.",
 		},
 		WORMHOLE =

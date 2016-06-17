@@ -219,7 +219,7 @@ return {
 			MURDERER = "Murderous fiend! This will be your destruction!",
 			REVIVER = "%s never did respect human mortality.",
 			GHOST = "A shame about your death, %s. You were the only one I half-liked.",
-			FIRESTARTER = "Mx. %s is finally making good on their promises of mayhem.",
+			FIRESTARTER = "Mx. %s is finally making good on their promise of mayhem.",
 		},
 		WILLOW = 
 		{

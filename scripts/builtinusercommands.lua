@@ -10,40 +10,21 @@
 -- limitations of this system.
 
 local UserCommands = require("usercommands")
+local VoteUtil = require("voteutil")
 
-local function DefaultCanStartVote(command, caller, targetid)
-    local isdedicated = not TheNet:GetServerIsClientHosted()
-    local clients = TheNet:GetClientTable()
-    local numclients = isdedicated and #clients - 1 or #clients
-    local minclients = targetid ~= nil and not command.cantargetself and 4 or 3
-    --Player targetted votes, and not cantargetself, means the targetted player
-    --is excluded from voting, so we need an extra voter to satisfy the minimum
-    if numclients >= minclients then
-        return true
-    end
-    return false, "MINPLAYERS"
-end
-
-local function DefaultUnanimousVote(params, voteresults)
-    --  Vote must be unanimous
-    --  Can't have any no or abstain
-    --  Minimum 3 yes votes
-    --  NOTE: If the target is a user, that user isn't included in any of the counts!
-    local yes = voteresults.options[1]
-    local no = voteresults.options[2]
-    return no <= 0
-        and yes >= 3
-        and voteresults.total_not_voted <= 0
-end
+--------------------------------------------------------------------------
+--NOTE: For the strings and string fmt properties, it's better
+--      NOT to cache them here, when it comes to localization.
 
 AddUserCommand("help", {
-    prettyname = "Command Help",
-    desc = "Get more info on commands.",
+    prettyname = nil, --default to STRINGS.UI.BUILTINCOMMANDS.HELP.PRETTYNAME
+    desc = nil, --default to STRINGS.UI.BUILTINCOMMANDS.HELP.DESC
     permission = COMMAND_PERMISSION.USER,
     slash = true,
     usermenu = false,
     servermenu = false,
     params = {"commandname"},
+    paramsoptional = {true},
     vote = false,
     localfn = function(params, caller)
         local hud = ThePlayer ~= nil and ThePlayer.HUD or nil
@@ -65,11 +46,15 @@ AddUserCommand("help", {
                 local call = command.name
                 local params = deepcopy(command.params)
                 for i,param in ipairs(params) do
-                    params[i] = "<"..param..">"
+                    if command.paramsoptional ~= nil and command.paramsoptional[i] == true then
+                        params[i] = "["..param.."]"
+                    else
+                        params[i] = param
+                    end
                 end
-                table.insert(s, command.prettyname)
+                table.insert(s, ResolveCommandStringProperty(command, "prettyname", command.name))
                 table.insert(s, string.format("/%s %s", command.name, table.concat(params, " ")))
-                table.insert(s, command.desc)
+                table.insert(s, ResolveCommandStringProperty(command, "desc", ""))
             else
                 table.insert(s, string.format(STRINGS.UI.BUILTINCOMMANDS.HELP.NOTFOUND, params.commandname))
                 local names = UserCommands.GetCommandNames()
@@ -85,8 +70,8 @@ AddUserCommand("help", {
 
 
 AddUserCommand("bug", {
-    prettyname =  STRINGS.UI.BUILTINCOMMANDS.BUG.PRETTYNAME,
-    desc = STRINGS.UI.BUILTINCOMMANDS.BUG.DESC,
+    prettyname = nil, --default to STRINGS.UI.BUILTINCOMMANDS.BUG.PRETTYNAME
+    desc = nil, --default to STRINGS.UI.BUILTINCOMMANDS.BUG.DESC
     permission = COMMAND_PERMISSION.USER,
     slash = true,
     usermenu = false,
@@ -99,8 +84,8 @@ AddUserCommand("bug", {
 })
 
 AddUserCommand("rescue", {
-    prettyname = STRINGS.UI.BUILTINCOMMANDS.RESCUE.PRETTYNAME,
-    desc =  STRINGS.UI.BUILTINCOMMANDS.RESCUE.DESC,
+    prettyname = nil, --default to STRINGS.UI.BUILTINCOMMANDS.RESCUE.PRETTYNAME
+    desc = nil, --default to STRINGS.UI.BUILTINCOMMANDS.RESCUE.DESC
     permission = COMMAND_PERMISSION.USER,
     slash = true,
     usermenu = false,
@@ -114,8 +99,8 @@ AddUserCommand("rescue", {
 
 AddUserCommand("kick", {
     aliases = {"boot"},
-    prettyname = STRINGS.UI.BUILTINCOMMANDS.KICK.PRETTYNAME,
-    desc = STRINGS.UI.BUILTINCOMMANDS.KICK.DESC,
+    prettyname = nil, --default to STRINGS.UI.BUILTINCOMMANDS.KICK.PRETTYNAME
+    desc = nil, --default to STRINGS.UI.BUILTINCOMMANDS.KICK.DESC
     permission = COMMAND_PERMISSION.MODERATOR,
     confirm = true,
     slash = true,
@@ -126,10 +111,14 @@ AddUserCommand("kick", {
     params = {"user"},
     vote = true,
     votetimeout = 30,
-    votetitlefmt = STRINGS.UI.BUILTINCOMMANDS.KICK.VOTETITLEFMT,
-    votenamefmt = STRINGS.UI.BUILTINCOMMANDS.KICK.VOTENAMEFMT,
-    votecanstartfn = DefaultCanStartVote,
-    voteresultfn = DefaultUnanimousVote,
+    voteminpasscount = 3,
+    votecountvisible = true,
+    voteallownotvoted = true,
+    voteoptions = nil, --default to { "Yes", "No" }
+    votetitlefmt = nil, --default to STRINGS.UI.BUILTINCOMMANDS.KICK.VOTETITLEFMT
+    votenamefmt = nil, --default to STRINGS.UI.BUILTINCOMMANDS.KICK.VOTENAMEFMT
+    votecanstartfn = VoteUtil.DefaultCanStartVote,
+    voteresultfn = VoteUtil.YesNoUnanimousVote,
     localfn = function(params, caller)
         --NOTE: must support nil caller for voting
         local clientid = UserToClientID(params.user)
@@ -140,8 +129,8 @@ AddUserCommand("kick", {
 })
 
 AddUserCommand("ban", {
-    prettyname = STRINGS.UI.BUILTINCOMMANDS.BAN.PRETTYNAME,
-    desc = STRINGS.UI.BUILTINCOMMANDS.BAN.DESC,
+    prettyname = nil, --default to STRINGS.UI.BUILTINCOMMANDS.BAN.PRETTYNAME
+    desc = nil, --default to STRINGS.UI.BUILTINCOMMANDS.BAN.DESC
     permission = COMMAND_PERMISSION.ADMIN,
     confirm = true,
     slash = true,
@@ -149,20 +138,26 @@ AddUserCommand("ban", {
     cantargetself = false,
     cantargetadmin = false,
     servermenu = false,
-    params = {"user"},
+    params = {"user", "seconds"},
+    paramsoptional = {false, true}, -- NOTE: all non-optional commands must be before all optional commands
     vote = false,
     localfn = function(params, caller)
         local clientid = UserToClientID(params.user)
         if clientid ~= nil then
-            TheNet:Ban(clientid)
+            if params.seconds ~= nil then
+                local seconds = tonumber(params.seconds)
+                TheNet:BanForTime(clientid, seconds)
+            else
+                TheNet:Ban(clientid)
+            end
         end
     end,
 })
 
 AddUserCommand("stopvote", {
     aliases = {"veto"},
-    prettyname = STRINGS.UI.BUILTINCOMMANDS.STOPVOTE.PRETTYNAME,
-    desc = STRINGS.UI.BUILTINCOMMANDS.STOPVOTE.DESC,
+    prettyname = nil, --default to STRINGS.UI.BUILTINCOMMANDS.STOPVOTE.PRETTYNAME
+    desc = nil, --default to STRINGS.UI.BUILTINCOMMANDS.STOPVOTE.DESC
     permission = COMMAND_PERMISSION.ADMIN,
     confirm = false,
     slash = true,
@@ -176,21 +171,26 @@ AddUserCommand("stopvote", {
 })
 
 AddUserCommand("rollback", {
-    prettyname = STRINGS.UI.BUILTINCOMMANDS.ROLLBACK.PRETTYNAME,
-    desc = STRINGS.UI.BUILTINCOMMANDS.ROLLBACK.DESC,
+    prettyname = nil, --default to STRINGS.UI.BUILTINCOMMANDS.ROLLBACK.PRETTYNAME
+    desc = nil, --default to STRINGS.UI.BUILTINCOMMANDS.ROLLBACK.DESC
     permission = COMMAND_PERMISSION.ADMIN,
     confirm = true,
     slash = true,
     usermenu = false,
     servermenu = true,
     params = {"numsaves"},
-    paramsoptional = true,
+    paramsoptional = {true},
     vote = true,
-    votetitlefmt = STRINGS.UI.BUILTINCOMMANDS.ROLLBACK.VOTETITLEFMT,
-    votenamefmt = STRINGS.UI.BUILTINCOMMANDS.ROLLBACK.VOTENAMEFMT,
-    votepassedfmt = STRINGS.UI.BUILTINCOMMANDS.ROLLBACK.VOTEPASSEDFMT,
-    votecanstartfn = DefaultCanStartVote,
-    voteresultfn = DefaultUnanimousVote,
+    votetimeout = 30,
+    voteminpasscount = 3,
+    votecountvisible = true,
+    voteallownotvoted = true,
+    voteoptions = nil, --default to { "Yes", "No" }
+    votetitlefmt = nil, --default to STRINGS.UI.BUILTINCOMMANDS.ROLLBACK.VOTETITLEFMT
+    votenamefmt = nil, --default to STRINGS.UI.BUILTINCOMMANDS.ROLLBACK.VOTENAMEFMT
+    votepassedfmt = nil, --default to STRINGS.UI.BUILTINCOMMANDS.ROLLBACK.VOTEPASSEDFMT
+    votecanstartfn = VoteUtil.DefaultCanStartVote,
+    voteresultfn = VoteUtil.YesNoUnanimousVote,
     serverfn = function(params, caller)
         --NOTE: must support nil caller for voting
         if caller ~= nil then
@@ -209,8 +209,8 @@ AddUserCommand("rollback", {
 })
 
 AddUserCommand("regenerate", {
-    prettyname = STRINGS.UI.BUILTINCOMMANDS.REGENERATE.PRETTYNAME,
-    desc = STRINGS.UI.BUILTINCOMMANDS.REGENERATE.DESC,
+    prettyname = nil, --default to STRINGS.UI.BUILTINCOMMANDS.REGENERATE.PRETTYNAME
+    desc = nil, --default to STRINGS.UI.BUILTINCOMMANDS.REGENERATE.DESC
     permission = COMMAND_PERMISSION.ADMIN,
     confirm = true,
     slash = true,
@@ -219,11 +219,15 @@ AddUserCommand("regenerate", {
     params = {},
     vote = true,
     votetimeout = 30,
-    votetitlefmt = STRINGS.UI.BUILTINCOMMANDS.REGENERATE.VOTETITLEFMT,
-    votenamefmt = STRINGS.UI.BUILTINCOMMANDS.REGENERATE.VOTENAMEFMT,
-    votepassedfmt = STRINGS.UI.BUILTINCOMMANDS.REGENERATE.VOTEPASSEDFMT,
-    votecanstartfn = DefaultCanStartVote,
-    voteresultfn = DefaultUnanimousVote,
+    voteminpasscount = 3,
+    votecountvisible = true,
+    voteallownotvoted = true,
+    voteoptions = nil, --default to { "Yes", "No" }
+    votetitlefmt = nil, --default to STRINGS.UI.BUILTINCOMMANDS.REGENERATE.VOTETITLEFMT
+    votenamefmt = nil, --default to STRINGS.UI.BUILTINCOMMANDS.REGENERATE.VOTENAMEFMT
+    votepassedfmt = nil, --default to STRINGS.UI.BUILTINCOMMANDS.REGENERATE.VOTEPASSEDFMT
+    votecanstartfn = VoteUtil.DefaultCanStartVote,
+    voteresultfn = VoteUtil.YesNoUnanimousVote,
     serverfn = function(params, caller)
         --NOTE: must support nil caller for voting
         if caller ~= nil then

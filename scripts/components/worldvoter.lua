@@ -27,6 +27,8 @@ local VOTE_PENDING = MAX_VOTE_OPTIONS + 1
 --player_classified.voteselection is a net_tinybyte
 assert(VOTE_PENDING <= 7, "Vote options limited by network data type.")
 
+local DEFAULT_VOTE_OPTIONS = { STRINGS.UI.VOTEDIALOG.YES, STRINGS.UI.VOTEDIALOG.NO }
+
 --------------------------------------------------------------------------
 --[[ Member variables ]]
 --------------------------------------------------------------------------
@@ -85,7 +87,8 @@ local function GetVoteDialogData(commandhash, targetuserid)
                 hash = command.hash,
                 targetuserid = targetuserid,
                 cantargetself = command.cantargetself,
-                titlefmt = command.votetitlefmt,
+                votecountvisible = command.votecountvisible,
+                votetitlefmt = command.votetitlefmt,
                 votetimeout = command.votetimeout,
                 options = {},
             }
@@ -99,18 +102,16 @@ local function GetVoteDialogData(commandhash, targetuserid)
                 end
             end
 
-            --if command.voteoptions ~= nil then
-                for i, v in ipairs({ STRINGS.UI.VOTEDIALOG.YES, STRINGS.UI.VOTEDIALOG.NO }--[[command.voteoptions]]) do
-                    table.insert(_dialogdata.options, { description = v })
-                end
-            --end
+            for i, v in ipairs(command.voteoptions or DEFAULT_VOTE_OPTIONS) do
+                table.insert(_dialogdata.options, { description = v })
+            end
         else
             _dialogdata = nil
         end
     end
 
     --Always update vote counts
-    if _dialogdata ~= nil then
+    if _dialogdata ~= nil and _dialogdata.votecountvisible then
         for i, v in ipairs(_dialogdata.options) do
             v.vote_count = _votecounts[i] ~= nil and _votecounts[i]:value() or 0
         end
@@ -121,7 +122,7 @@ end
 
 local function UpdateVoteCounts()
     local data = GetVoteDialogData(_commandid:value(), _targetuserid:value())
-    if data ~= nil then
+    if data ~= nil and data.votecountvisible then
         _world:PushEvent("votecountschanged", data)
     end
 end
@@ -384,11 +385,13 @@ local CheckVoteResults = _ismastershard and function(timedout)
             return
         end
         local commandname = _dialogdata.name
-        local params = { user = _dialogdata.targetuserid }
+        local targetuserid = _dialogdata.targetuserid 
+        local params = { user = targetuserid }
         local starteruserid = _votestarter
         CancelCountdown()
         local success = UserCommands.FinishVote(commandname, params, results)
         SquelchPlayer(starteruserid, success and TUNING.VOTE_PASSED_SQUELCH_TIME or TUNING.VOTE_FAILED_SQUELCH_TIME)
+        UserCommands.SendVoteMetricsEvent(commandname, targetuserid, success, starteruserid)
     else
         OnStopVote()
     end
@@ -459,7 +462,7 @@ end
 --------------------------------------------------------------------------
 
 function self:OnPostInit()
-    if _ismastershard and TheNet:GetDefaultVoteEnabled() then
+    if _ismastershard and (TheNet:GetDefaultVoteEnabled() or BRANCH == "dev") then
         _enabled:set(true)
         _world:PushEvent("master_worldvoterenabled", true)
     end

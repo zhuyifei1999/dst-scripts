@@ -29,6 +29,64 @@ function HandleUserCmdQueue()
 end
 
 -----------------------------------------------------------------------------------------------------------
+-- METRICS
+-----------------------------------------------------------------------------------------------------------
+
+local Stats = require("stats")
+
+local METRICS_COMMANDS = {"kick", "ban", "rollback", "regenerate"}
+
+local function SendCommandMetricsEvent(command, targetid, caller)
+    local found = false
+    for i,name in ipairs(METRICS_COMMANDS) do
+        if command == name then
+            found = true
+            break
+        end
+    end
+    if not found then
+        return
+    end
+
+    local values = {}
+    values.target_user = targetid
+    --values.source = source
+    Stats.PushMetricsEvent("commands."..command, caller, values)
+end
+
+local function SendVoteMetricsEvent(command, targetid, success, caller)
+    local found = false
+    for i,name in ipairs(METRICS_COMMANDS) do
+        if command == name then
+            found = true
+            break
+        end
+    end
+    if not found then
+        return
+    end
+
+    local values = {}
+    values.target_user = targetid
+    values.success = success
+    Stats.PushMetricsEvent("commands."..command.."_vote", caller, values)
+end
+
+-----------------------------------------------------------------------------------------------------------
+-- GLOBAL HELPER FUNCTIONS
+-----------------------------------------------------------------------------------------------------------
+
+-- resolves string properties in user command definitions
+function ResolveCommandStringProperty(command, property, default)
+    local strtbl = STRINGS.UI.BUILTINCOMMANDS[string.upper(command.name)]
+    local val = command[property]
+    return (type(val) == "string" and val)
+        or (type(val) == "function" and val(command))
+        or (strtbl ~= nil and strtbl[string.upper(property)])
+        or default
+end
+
+-----------------------------------------------------------------------------------------------------------
 -- PRIVATE FUNCTIONS
 -----------------------------------------------------------------------------------------------------------
 
@@ -72,10 +130,10 @@ local function parseinput(input)
     local params = {}
     for i,paramname in ipairs(command.params) do
         if args[i+1] == nil then
-            print("Didn't supply enough arguments to command!")
-            if command.paramsoptional == true then
+            if command.paramsoptional ~= nil and command.paramsoptional[i] == true then
                 break
             else
+                print("Didn't supply enough arguments to command!")
                 sendsystemmessage(string.format(STRINGS.UI.USERCOMMANDS.MISSINGPARAMSFMT, command.name))
                 return
             end
@@ -118,6 +176,10 @@ local function unparsecommand(command, params)
     return s
 end
 
+local function prettyname(command)
+    return ResolveCommandStringProperty(command, "prettyname", command.name)
+end
+
 local function commandlevel(command)
     return (command.permission == COMMAND_PERMISSION.ADMIN and 3)
         or (command.permission == COMMAND_PERMISSION.MODERATOR and 2)
@@ -130,6 +192,29 @@ local function userlevel(user)
         or (client.moderator and 2)
         or ((user.components.playervoter == nil or not user.components.playervoter:IsSquelched()) and 1)
         or 0
+end
+
+local function validatevotestart(command, caller, targetid)
+    --Check min player count requirements
+    if command.voteminpasscount ~= nil then
+        local isdedicated = not TheNet:GetServerIsClientHosted()
+        local clients = TheNet:GetClientTable()
+        local numclients = isdedicated and #clients - 1 or #clients
+
+        --Require +1 player if target doesn't get to vote
+        local excludetarget = targetid ~= nil and not command.cantargetself
+        local minplayers = excludetarget and command.voteminpasscount + 1 or command.voteminpasscount
+
+        if numclients < minplayers then
+            return false, "MINPLAYERS"
+        end
+    end
+    --Custom checks
+    if command.votecanstartfn == nil then
+        return true, nil
+    end
+    --Expects 2 return values, so don't inline!
+    return command.votecanstartfn(command, caller, targetid)
 end
 
 local function getexectype(command, caller, targetid)
@@ -152,22 +237,22 @@ local function getexectype(command, caller, targetid)
         or (caller.components.playervoter == nil and COMMAND_RESULT.INVALID)
         or (TheWorld.net.components.worldvoter:IsVoteActive() and COMMAND_RESULT.DENY)
         or (caller.components.playervoter:IsSquelched() and COMMAND_RESULT.DENY)
-        or (command.votecanstartfn ~= nil and not command.votecanstartfn(command, caller, targetid) and COMMAND_RESULT.DENY)
+        or (not validatevotestart(command, caller, targetid) and COMMAND_RESULT.DENY)
         or COMMAND_RESULT.VOTE
 end
 
 local function runcommand(command, params, caller, onserver, confirm)
     local exec_type = getexectype(command, caller, UserToClientID(params.user)) -- 'user' is the magical param name
     if exec_type == COMMAND_RESULT.DENY then
-        sendsystemmessage(string.format(STRINGS.UI.USERCOMMANDS.SQUELCHEDFMT, command.prettyname))
+        sendsystemmessage(string.format(STRINGS.UI.USERCOMMANDS.SQUELCHEDFMT, prettyname(command)))
         print(string.format("User %s tried to run command %s but is squelched.", caller.name, command.name))
         return
     elseif exec_type == COMMAND_RESULT.INVALID then
         if params.user ~= nil then
-            sendsystemmessage(string.format(STRINGS.UI.USERCOMMANDS.BADTARGETFMT, command.prettyname, UserToName(params.user)))
+            sendsystemmessage(string.format(STRINGS.UI.USERCOMMANDS.BADTARGETFMT, prettyname(command), UserToName(params.user)))
             print(string.format("User %s tried to run command %s but target was bad.", caller.name, command.name))
         else
-            sendsystemmessage(string.format(STRINGS.UI.USERCOMMANDS.NOTALLOWEDFMT, command.prettyname))
+            sendsystemmessage(string.format(STRINGS.UI.USERCOMMANDS.NOTALLOWEDFMT, prettyname(command)))
             print(string.format("User %s tried to run command %s but not allowed.", caller.name, command.name))
         end
         return
@@ -175,14 +260,14 @@ local function runcommand(command, params, caller, onserver, confirm)
 
     if not onserver and command.confirm and not confirm then
         TheFrontEnd:PushScreen(
-                    PopupDialogScreen(
-                        params.user and string.format(STRINGS.UI.COMMANDSSCREEN.CONFIRMTITLE_TARGET, command.prettyname, UserToName(params.user)) or string.format(STRINGS.UI.COMMANDSSCREEN.CONFIRMTITLE, command.prettyname),
-                        command.desc, --STRINGS.UI.COMMANDSSCREEN.CONFIRMBODY,
-                        {
-                            {text=STRINGS.UI.PLAYERSTATUSSCREEN.OK, cb = function() TheFrontEnd:PopScreen() runcommand(command, params, caller, onserver, true) end},
-                            {text=STRINGS.UI.PLAYERSTATUSSCREEN.CANCEL, cb = function() TheFrontEnd:PopScreen() end}
-                        }
-                    ))
+            PopupDialogScreen(
+                params.user ~= nil and string.format(STRINGS.UI.COMMANDSSCREEN.CONFIRMTITLE_TARGET, prettyname(command), UserToName(params.user)) or string.format(STRINGS.UI.COMMANDSSCREEN.CONFIRMTITLE, prettyname(command)),
+                ResolveCommandStringProperty(command, "desc", ""),
+                {
+                    {text=STRINGS.UI.PLAYERSTATUSSCREEN.OK, cb = function() TheFrontEnd:PopScreen() runcommand(command, params, caller, onserver, true) end},
+                    {text=STRINGS.UI.PLAYERSTATUSSCREEN.CANCEL, cb = function() TheFrontEnd:PopScreen() end}
+                }
+            ))
     elseif exec_type == COMMAND_RESULT.VOTE then
         TheNet:StartVote(command.hash, UserToClientID(params.user))
     elseif exec_type == COMMAND_RESULT.ALLOW then
@@ -204,14 +289,14 @@ local function getsomecommands(user, targetid, predicate)
     for hash,command in pairs(usercommands) do
         if command.aliasfor == nil and predicate(command) then
             local exectype = user and getexectype(command, user, targetid) or COMMAND_RESULT.ALLOW
-            table.insert(ret, {commandname=command.name, prettyname=command.prettyname, exectype=exectype})
+            table.insert(ret, {commandname=command.name, prettyname=prettyname(command), exectype=exectype})
         end
     end
     for mod, modcommands in pairs(modusercommands) do
         for hash, command in pairs(modcommands) do
             if command.aliasfor == nil and predicate(command) then
                 local exectype = user and getexectype(command, user, targetid) or COMMAND_RESULT.ALLOW
-                table.insert(ret, {commandname=command.name, prettyname=command.prettyname, exectype=exectype, mod=mod})
+                table.insert(ret, {commandname=command.name, prettyname=prettyname(command), exectype=exectype, mod=mod})
             end
         end
     end
@@ -237,11 +322,8 @@ end
 local function CanUserStartVote(commandname, player, targetid)
     local command = getcommand(commandname)
     assert(command.vote)
-    if command.votecanstartfn == nil then
-        return true
-    end
-    --Returns 2 values, so don't inline!
-    return command.votecanstartfn(command, player, targetid)
+
+    return validatevotestart(command, player, targetid)
 end
 
 local function RunUserCommand(commandname, params, caller, onserver)
@@ -278,7 +360,19 @@ end
 
 local function FinishVote(commandname, params, voteresults)
     local command = getcommand(commandname)
-    local passed = command.voteresultfn(params, voteresults)
+
+    local passed = false
+    if command.allownotvoted or voteresults.total_not_voted <= 0 then
+        local result, count = command.voteresultfn(params, voteresults)
+        if result ~= nil and count >= (command.voteminpasscount or 1) then
+            --the winning selection passes and we have enough votes for it
+            --insert it into the params
+            passed = true
+            params.voteselection = result
+            params.votecount = count
+        end
+    end
+
     TheNet:AnnounceVoteResult(command.hash, UserToName(params.user), passed)
     if passed then
         -- Vote always runs commands they were called by the server, so just run both localfn and serverfn
@@ -452,6 +546,8 @@ end
 -----------------------------------------------------------------------------------------------------------
 
 return {
+    SendCommandMetricsEvent = SendCommandMetricsEvent,
+    SendVoteMetricsEvent = SendVoteMetricsEvent,
     RunUserCommand = RunUserCommand,
     RunTextUserCommand = RunTextUserCommand,
     UserRunCommandResult = UserRunCommandResult,

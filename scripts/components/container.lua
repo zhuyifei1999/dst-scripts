@@ -747,4 +747,14 @@ function Container:MoveItemFromHalfOfSlot(slot, container)
     end
 end
 
+function Container:ReferenceAllItems()
+    local items = {}
+    for i=1,self.numslots do
+        if self.slots[i] ~= nil then
+            table.insert(items, self.slots[i])
+        end
+    end
+    return items
+end
+
 return Container

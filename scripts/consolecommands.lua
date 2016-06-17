@@ -615,12 +615,18 @@ end
 
 function c_countallprefabs()
     local total = 0
+    local unk = 0
     local counted = {}
     for k,v in pairs(Ents) do
-        if v.prefab and not table.findfield(counted, v.prefab) then 
-            local num = c_countprefabs(v.prefab, true)
-            counted[v.prefab] = num
-            total = total + num
+        if v.prefab ~= nil then
+            if counted[v.prefab] == nil then
+            counted[v.prefab] = 1
+            else
+                counted[v.prefab] = counted[v.prefab] + 1
+            end
+            total = total + 1
+        else
+            unk = unk + 1
         end
     end
 
@@ -642,7 +648,7 @@ function c_countallprefabs()
         print(k, v)
     end
 
-    print("There are ", GetTableSize(counted), " different prefabs in the world, ", total, " in total.")
+    print(string.format("There are %d different prefabs in the world, %d total (and %d unknown)", GetTableSize(counted), total, unk))
 end
 
 function c_speedmult(multiplier)
