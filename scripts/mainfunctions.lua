@@ -1052,9 +1052,11 @@ end
 
 function IsMigrating()
     --Right now the only way to really tell if we are migrating is if we are neither in FE or in gameplay, which results in no screen...
-    --      e.g. if there is no active screen
+    --      e.g. if there is no active screen, or just a connecting to game popup
     --THIS SHOULD BE IMPROVED YARK YARK YARK
-    return TheFrontEnd:GetActiveScreen() == nil
+    --V2C: Who dat? ----------^
+    local screen = TheFrontEnd:GetActiveScreen()
+    return screen == nil or (screen.name == "ConnectingToGamePopup" and TheFrontEnd:GetScreenStackSize() <= 1)
 end
 
 --DoRestart helper

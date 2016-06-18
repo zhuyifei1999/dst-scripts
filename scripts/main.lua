@@ -244,6 +244,9 @@ local function ModSafeStartup()
 	-- If we failed to boot last time, disable all mods
 	-- Otherwise, set a flag file to test for boot success.
 
+	--Ensure we have a fresh filesystem
+	TheSim:ClearFileSystemAliases()
+	
 	---PREFABS AND ENTITY INSTANTIATION
 
 	ModManager:LoadMods()
