@@ -839,6 +839,10 @@ function FrontEnd:GetActiveScreen()
     return #self.screenstack > 0 and self.screenstack[#self.screenstack] or nil
 end
 
+function FrontEnd:GetScreenStackSize()
+    return #self.screenstack
+end
+
 function FrontEnd:ShowScreen(screen)
 	self:ClearScreens()
 	if screen then

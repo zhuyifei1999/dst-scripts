@@ -246,8 +246,12 @@ end
 
 function SkinsScreen:OnBecomeActive()
 	if not self.popup and (not TheNet:IsOnlineMode() or TheFrontEnd:GetIsOfflineMode()) then
-		-- The game is offline, open a popup saying "sorry"
-		self.popup =  PopupDialogScreen(STRINGS.UI.SKINSSCREEN.SORRY, STRINGS.UI.SKINSSCREEN.OFFLINE, 
+		--The game is offline, don't show any inventory
+		self.skins_list = {}
+		self.page_list:SetItemsData(self.skins_list)
+		
+		--now open a popup saying "sorry"
+		self.popup = PopupDialogScreen(STRINGS.UI.SKINSSCREEN.SORRY, STRINGS.UI.SKINSSCREEN.OFFLINE, 
 			{ {text=STRINGS.UI.POPUPDIALOG.OK, cb = function() TheFrontEnd:PopScreen() end}  }) 
 		TheFrontEnd:PushScreen(self.popup)
 
