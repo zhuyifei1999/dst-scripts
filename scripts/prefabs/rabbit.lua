@@ -229,9 +229,11 @@ end
 local function OnEat(inst, data)
     if data.feeder ~= nil then
         local owner = inst.components.inventoryitem:GetGrandOwner()
-        if owner == data.feeder or
-            (owner.components.container ~= nil and
-            owner.components.container.opener == data.feeder) then
+        if owner ~= nil and
+            (   owner == data.feeder or
+                (owner.components.container ~= nil and
+                owner.components.container.opener == data.feeder)
+            ) then
             data.feeder:PushEvent("feedsmallcreature")
         end
     end
