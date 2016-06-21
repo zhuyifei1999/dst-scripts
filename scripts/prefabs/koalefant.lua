@@ -65,6 +65,9 @@ local function create_base(build)
     inst:AddTag("animal")
     inst:AddTag("largecreature")
 
+    --saltlicker (from saltlicker component) added to pristine state for optimization
+    inst:AddTag("saltlicker")
+
     inst.AnimState:SetBank("koalefant")
     inst.AnimState:SetBuild(build)
     inst.AnimState:PlayAnimation("idle_loop", true)

@@ -395,7 +395,7 @@ CLOTHING =
 	{
 		type = "body",
 		symbol_overrides = { "torso", "torso_pelvis", },
-		symbol_hides = { "skirt", },
+		symbol_hides = { "skirt", "arm_upper", },
 		override_build = "body_webber_shadow",
 		torso_tuck = "untucked",
 		rarity = "Distinguished",

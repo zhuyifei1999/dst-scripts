@@ -107,6 +107,10 @@ local function OnMakeFriend(parent)
     parent.player_classified.makefriendevent:push()
 end
 
+local function OnFeedSmallCreature(parent)
+    parent.player_classified.feedsmallcreatureevent:push()
+end
+
 local function AddMorgueRecord(inst)
     if inst._parent ~= nil then
         SetDirty(inst.isdeathbypk, inst._parent.deathpkname ~= nil)
@@ -600,6 +604,12 @@ local function OnMakeFriendEvent(inst)
     end
 end
 
+local function OnFeedSmallCreatureEvent(inst)
+    if inst._parent ~= nil and TheFocalPoint.entity:GetParent() == inst._parent then
+        TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/feed")
+    end
+end
+
 local function OnMorgueDirty(inst)
     if inst._parent ~= nil and inst._parent.HUD ~= nil then
         Morgue:OnDeath({
@@ -668,6 +678,7 @@ local function RegisterNetListeners(inst)
         inst:ListenForEvent("actionfailed", OnActionFailed, inst._parent)
         inst:ListenForEvent("wormholetravel", OnWormholeTravel, inst._parent)
         inst:ListenForEvent("makefriend", OnMakeFriend, inst._parent)
+        inst:ListenForEvent("feedsmallcreature", OnFeedSmallCreature, inst._parent)
     else
         inst.ishealthpulse:set_local(false)
         inst.ishungerpulse:set_local(false)
@@ -717,6 +728,7 @@ local function RegisterNetListeners(inst)
     inst:ListenForEvent("playerfadedirty", OnPlayerFadeDirty)
     inst:ListenForEvent("wormholetraveldirty", OnWormholeTravelDirty)
     inst:ListenForEvent("leader.makefriend", OnMakeFriendEvent)
+    inst:ListenForEvent("eater.feedsmallcreature", OnFeedSmallCreatureEvent)
     inst:ListenForEvent("morguedirty", OnMorgueDirty)
     OnGiftsDirty(inst)
     OnMountHurtDirty(inst)
@@ -876,6 +888,9 @@ local function fn()
 
     --Leader variables
     inst.makefriendevent = net_event(inst.GUID, "leader.makefriend")
+
+    --Eater variables (more like feeding)
+    inst.feedsmallcreatureevent = net_event(inst.GUID, "eater.feedsmallcreature")
 
     --Rider variables
     inst.ridermount = net_entity(inst.GUID, "rider.mount")

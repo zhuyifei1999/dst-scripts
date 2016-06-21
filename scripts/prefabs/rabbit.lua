@@ -226,6 +226,17 @@ local function OnDropped(inst)
     inst.sg:GoToState("stunned")
 end
 
+local function OnEat(inst, data)
+    if data.feeder ~= nil then
+        local owner = inst.components.inventoryitem:GetGrandOwner()
+        if owner == data.feeder or
+            (owner.components.container ~= nil and
+            owner.components.container.opener == data.feeder) then
+            data.feeder:PushEvent("feedsmallcreature")
+        end
+    end
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -275,6 +286,7 @@ local function fn()
 
     inst:AddComponent("eater")
     inst.components.eater:SetDiet({ FOODTYPE.VEGGIE }, { FOODTYPE.VEGGIE })
+    inst:ListenForEvent("oneat", OnEat)
 
     inst:AddComponent("inventoryitem")
     inst.components.inventoryitem.nobounce = true

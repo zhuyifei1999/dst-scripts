@@ -35,7 +35,7 @@ local function GetWanderDistFn(inst)
 end
 
 local function CheckForSaltlick(inst)
-    local lick = FindEntity(inst, TUNING.SALTLICK_CHECK_DIST, nil, {"saltlick"})
+    local lick = FindEntity(inst, TUNING.SALTLICK_CHECK_DIST, nil, { "saltlick" }, { "INLIMBO", "fire", "burnt" })
     if lick ~= nil then
         inst.components.knownlocations:RememberLocation("saltlick", lick:GetPosition())
         return true

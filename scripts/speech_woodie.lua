@@ -37,11 +37,11 @@ return {
         MOUNT =
         {
             INUSE = "Maybe I can find a caribou to ride instead.",
-            TARGETINCOMBAT = "I should wait for the dust to settle, eh?.",
+            TARGETINCOMBAT = "I should wait for the dust to settle, eh?",
         },
         SADDLE =
         {
-            TARGETINCOMBAT = "I should wait for the dust to settle, eh?.",
+            TARGETINCOMBAT = "I should wait for the dust to settle, eh?",
         },
         GIVE =
         {

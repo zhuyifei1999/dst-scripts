@@ -6,9 +6,9 @@ local assets = {
 
 local function AlertNearbyCritters(inst)
     local x,y,z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x,y,z, TUNING.SALTLICK_CHECK_DIST, {"beefalo"}) -- could maybe be "animal" ?
+    local ents = TheSim:FindEntities(x,y,z, TUNING.SALTLICK_CHECK_DIST, { "saltlicker" }, { "INLIMBO" })
     for i,ent in ipairs(ents) do
-        ent:PushEvent("saltlick_placed", inst)
+        ent:PushEvent("saltlick_placed", { inst = inst })
     end
 end
 
@@ -37,6 +37,7 @@ local function OnUsed(inst, data)
 end
 
 local function OnBuilt(inst)
+    --inst.SoundEmitter:PlaySound("dontstarve/common/salt_lick_craft")
     inst.AnimState:PlayAnimation("place")
     PlayIdle(inst, true)
     AlertNearbyCritters(inst)
@@ -62,6 +63,7 @@ end
 
 local function OnHit(inst)
     if not inst:HasTag("burnt") then
+        --inst.SoundEmitter:PlaySound("dontstarve/common/salt_lick_hit")
         inst.AnimState:PlayAnimation("hit"..getimagenum(inst, inst.components.finiteuses:GetPercent()))
         PlayIdle(inst, true)
     end
@@ -77,6 +79,7 @@ local function fn()
 
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
 

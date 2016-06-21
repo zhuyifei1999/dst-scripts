@@ -489,8 +489,8 @@ local function MountSleepTest(inst)
     return not inst.components.rideable:IsBeingRidden() and DefaultSleepTest(inst)
 end
 
-local function OnSaltChange(inst, salted)
-    inst.components.domesticatable:PauseDomesticationDecay(salted)
+local function OnSaltChange(inst, data)
+    inst.components.domesticatable:PauseDomesticationDecay(data.salted)
 end
 
 local function OnInit(inst)
@@ -551,6 +551,9 @@ local function beefalo()
 
     --domesticatable (from domesticatable component) added to pristine state for optimization
     inst:AddTag("domesticatable")
+
+    --saltlicker (from saltlicker component) added to pristine state for optimization
+    inst:AddTag("saltlicker")
 
     inst.sounds = sounds
 

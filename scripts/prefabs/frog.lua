@@ -7,7 +7,7 @@ local assets =
 local prefabs =
 {
     "froglegs",
-    "splash",
+    "frogsplash",
 }
 
 local brain = require "brains/frogbrain"
@@ -34,12 +34,7 @@ local function OnAttacked(inst, data)
 end
 
 local function OnGoingHome(inst)
-    local fx = SpawnPrefab("splash")
-    local pos = inst:GetPosition()
-    fx.Transform:SetPosition(pos.x, pos.y, pos.z)
-
-    --local splash = PlayFX(Vector3(inst.Transform:GetWorldPosition() ), "splash", "splash", "splash")
-    inst.SoundEmitter:PlaySound("dontstarve/frog/splash")
+    SpawnPrefab("frogsplash").Transform:SetPosition(inst.Transform:GetWorldPosition())
 end
 
 local function OnHitOther(inst, other, damage)
